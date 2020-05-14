@@ -200,7 +200,7 @@ void TIASurface::setNTSC(NTSCFilter::Preset preset, bool show)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIASurface::changeNTSC(bool next, bool show)
+AdjustFunction TIASurface::changeNTSC(bool next)
 {
   constexpr NTSCFilter::Preset PRESETS[] = {
     NTSCFilter::Preset::OFF, NTSCFilter::Preset::RGB, NTSCFilter::Preset::SVIDEO,
@@ -222,11 +222,12 @@ void TIASurface::changeNTSC(bool next, bool show)
     else
       preset--;
   }
-  setNTSC(PRESETS[preset], show);
+  setNTSC(PRESETS[preset], true);
+  return std::bind(&TIASurface::changeNTSC, this, std::placeholders::_1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIASurface::setNTSCAdjustable(bool next)
+AdjustFunction TIASurface::setNTSCAdjustable(bool next)
 {
   string text, valueText;
   Int32 value;
@@ -234,11 +235,12 @@ void TIASurface::setNTSCAdjustable(bool next)
   setNTSC(NTSCFilter::Preset::CUSTOM);
   ntsc().selectAdjustable(next, text, valueText, value);
   myOSystem.frameBuffer().showMessage(text, valueText, value);
+  return std::bind(&TIASurface::changeNTSCAdjustable, this, std::placeholders::_1);
 
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIASurface::changeNTSCAdjustable(bool increase)
+AdjustFunction TIASurface::changeNTSCAdjustable(bool increase)
 {
   string text, valueText;
   Int32 newValue;
@@ -246,13 +248,14 @@ void TIASurface::changeNTSCAdjustable(bool increase)
   setNTSC(NTSCFilter::Preset::CUSTOM);
   ntsc().changeAdjustable(increase, text, valueText, newValue);
   myOSystem.frameBuffer().showMessage(text, valueText, newValue);
+  return std::bind(&TIASurface::changeNTSCAdjustable, this, std::placeholders::_1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIASurface::setScanlineIntensity(int amount)
+AdjustFunction TIASurface::setScanlineIntensity(bool increase)
 {
   ostringstream buf;
-  uInt32 intensity = enableScanlines(amount);
+  uInt32 intensity = enableScanlines(increase ? 2 : -2);
 
   myOSystem.settings().setValue("tv.scanlines", intensity);
   enableNTSC(ntscEnabled());
@@ -262,6 +265,7 @@ void TIASurface::setScanlineIntensity(int amount)
   else
     buf << "Off";
   myFB.showMessage("Scanline intensity", buf.str(), intensity);
+  return std::bind(&TIASurface::setScanlineIntensity, this, std::placeholders::_1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -55,7 +55,7 @@ string PaletteHandler::toPaletteName(PaletteType type) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PaletteHandler::cyclePalette(bool next)
+AdjustFunction PaletteHandler::cyclePalette(bool next)
 {
   const string MESSAGES[PaletteType::NumTypes] = {
     "Standard Stella", "Z26", "User-defined", "Custom"
@@ -89,6 +89,7 @@ void PaletteHandler::cyclePalette(bool next)
   myOSystem.frameBuffer().showMessage(message);
 
   setPalette(palette);
+  return std::bind(&PaletteHandler::cyclePalette, this, std::placeholders::_1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -112,12 +113,13 @@ void PaletteHandler::showAdjustableMessage()
   {
     const int value = scaleTo100(*myAdjustables[myCurrentAdjustable].value);
     buf << value << "%";
-    myOSystem.frameBuffer().showMessage(msg.str(), buf.str(), value);
+    myOSystem.frameBuffer().showMessage(
+      msg.str(), buf.str(), value);
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PaletteHandler::cycleAdjustable(bool next)
+AdjustFunction PaletteHandler::cycleAdjustable(bool next)
 {
   const bool isCustomPalette = SETTING_CUSTOM == myOSystem.settings().getString("palette");
   bool isPhaseShift;
@@ -141,10 +143,11 @@ void PaletteHandler::cycleAdjustable(bool next)
   } while(isPhaseShift && !isCustomPalette);
 
   showAdjustableMessage();
+  return std::bind(&PaletteHandler::changeAdjustable, this, std::placeholders::_1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PaletteHandler::changeAdjustable(bool increase)
+AdjustFunction PaletteHandler::changeAdjustable(bool increase)
 {
   if(myAdjustables[myCurrentAdjustable].value == nullptr)
     changeColorPhaseShift(increase);
@@ -163,6 +166,7 @@ void PaletteHandler::changeAdjustable(bool increase)
     showAdjustableMessage();
     setPalette();
   }
+  return std::bind(&PaletteHandler::changeAdjustable, this, std::placeholders::_1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

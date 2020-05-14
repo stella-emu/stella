@@ -186,15 +186,30 @@ bool SoundSDL2::mute(bool state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool SoundSDL2::toggleMute()
 {
-  bool enabled = myAudioSettings.enabled();
+  bool enabled = !myAudioSettings.enabled();
 
-  setEnabled(!enabled);
+  setEnabled(enabled);
   myOSystem.console().initializeAudio();
 
   string message = "Sound ";
-  message += !enabled ? "unmuted" : "muted";
+  message += enabled ? "unmuted" : "muted";
 
   myOSystem.frameBuffer().showMessage(message);
+
+  //ostringstream strval;
+  //uInt32 volume;
+  //// Now show an onscreen message
+  //if(enabled)
+  //{
+  //  volume = myVolume;
+  //  strval << volume << "%";
+  //}
+  //else
+  //{
+  //  volume = 0;
+  //  strval << "Muted";
+  //}
+  //myOSystem.frameBuffer().showMessage("Volume", strval.str(), volume);
 
   return enabled;
 }
@@ -214,17 +229,12 @@ void SoundSDL2::setVolume(uInt32 percent)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL2::adjustVolume(Int8 direction)
+AdjustFunction SoundSDL2::adjustVolume(bool increase)
 {
   ostringstream strval;
-
   Int32 percent = myVolume;
 
-  if(direction == -1)
-    percent -= 2;
-  else if(direction == 1)
-    percent += 2;
-  percent = BSPF::clamp(percent, 0, 100);
+  percent = BSPF::clamp(percent += increase ? 2 : -2, 0, 100);
 
   setVolume(percent);
 
@@ -243,6 +253,7 @@ void SoundSDL2::adjustVolume(Int8 direction)
   else
     strval << "Off";
   myOSystem.frameBuffer().showMessage("Volume", strval.str(), percent);
+  return std::bind(&SoundSDL2::adjustVolume, this, std::placeholders::_1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

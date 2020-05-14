@@ -533,11 +533,11 @@ void FrameBuffer::showMessage(const string& message, const string& valueText,
     return;
 
   const int fontWidth  = font().getMaxCharWidth(),
-            fontHeight = font().getFontHeight();
+    fontHeight = font().getFontHeight();
   const int VBORDER = fontHeight / 4;
   const int HBORDER = fontWidth * 1.25 / 2.0;
 
-  myMsg.counter = uInt32(myOSystem.frameRate()) * 5; // Show message for 5 seconds
+  myMsg.counter = uInt32(myOSystem.frameRate()) * 3; // Show message for 3 seconds
   if(myMsg.counter == 0)
     myMsg.counter = 120;
 
@@ -551,16 +551,26 @@ void FrameBuffer::showMessage(const string& message, const string& valueText,
     myMsg.value = 100.F;
   myMsg.valueText  = valueText;
   myMsg.w          = std::min(fontWidth * MESSAGE_WIDTH,
-                       font().getStringWidth(myMsg.text)
-                         + fontWidth * (GAUGEBAR_WIDTH + 2)
-                         + font().getStringWidth(myMsg.valueText))
-                     + HBORDER * 2;
+                              font().getStringWidth(myMsg.text)
+                              + fontWidth * (GAUGEBAR_WIDTH + 2)
+                              + font().getStringWidth(myMsg.valueText))
+    + HBORDER * 2;
   myMsg.h          = fontHeight + VBORDER * 2;
   myMsg.position   = MessagePosition::BottomCenter;
   myMsg.enabled    = true;
 
   myMsg.surface->setSrcSize(myMsg.w, myMsg.h);
   myMsg.surface->setDstSize(myMsg.w * hidpiScaleFactor(), myMsg.h * hidpiScaleFactor());
+#endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FrameBuffer::messageShown()
+{
+#ifdef GUI_SUPPORT
+  return myMsg.enabled;
+#else
+  return false;
 #endif
 }
 
@@ -662,6 +672,7 @@ inline bool FrameBuffer::drawMessage()
 #ifdef GUI_SUPPORT
   // Either erase the entire message (when time is reached),
   // or show again this frame
+  cerr << myMsg.counter << endl;
   if(myMsg.counter == 0)
   {
     myMsg.enabled = false;
@@ -749,7 +760,7 @@ inline bool FrameBuffer::drawMessage()
     // align bar with bottom of text
     const int y = VBORDER + font().desc().ascent - bheight;
 
-    // draw bar gauge
+    // draw gauge bar 
     myMsg.surface->fillRect(x - BORDER, y, swidth + BORDER * 2, bheight, kSliderBGColor);
     myMsg.surface->fillRect(x, y + BORDER, bwidth, bheight - BORDER * 2, kSliderColor);
     // draw tickmark in the middle of the bar
@@ -983,7 +994,7 @@ void FrameBuffer::toggleFullscreen()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::changeOverscan(bool increase)
+AdjustFunction FrameBuffer::changeOverscan(bool increase)
 {
   if (fullScreen())
   {
@@ -1002,10 +1013,11 @@ void FrameBuffer::changeOverscan(bool increase)
     val << (overscan ? overscan > 0 ? "+" : "" : " ") << overscan << "%";
     myOSystem.frameBuffer().showMessage("Overscan", val.str(), overscan, 0, 10);
   }
+  return std::bind(&FrameBuffer::changeOverscan, this, std::placeholders::_1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBuffer::selectVidMode(bool next)
+AdjustFunction FrameBuffer::selectVidMode(bool next)
 {
   EventHandlerState state = myOSystem.eventHandler().state();
   bool tiaMode = (state != EventHandlerState::DEBUGGER &&
@@ -1013,7 +1025,7 @@ bool FrameBuffer::selectVidMode(bool next)
 
   // Only applicable when in TIA/emulation mode
   if(!tiaMode)
-    return false;
+    return nullptr;
 
   if(next)
     myCurrentModeList->next();
@@ -1047,11 +1059,11 @@ bool FrameBuffer::selectVidMode(bool next)
     else
       myOSystem.settings().setValue("tia.zoom", mode.zoom);
 
-    return true;
+    return std::bind(&FrameBuffer::selectVidMode, this, std::placeholders::_1);
   }
   myOSystem.sound().mute(oldMuteState);
 
-  return false;
+  return nullptr;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

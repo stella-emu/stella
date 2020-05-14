@@ -63,6 +63,8 @@
   #include "ScrollBarWidget.hxx"
 #endif
 
+using namespace std::placeholders;
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandler::EventHandler(OSystem& osystem)
   : myOSystem(osystem)
@@ -347,8 +349,32 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
   // or need to be preprocessed before passing them on
   const bool pressed = (value != 0);
 
+  // The global settings keys react as long as the setting message from the previous event is
+  // still displayed. When no message is displayed, volume adjustment will be the default event.
+  if(!myOSystem.frameBuffer().messageShown() || myAdjustFunction == nullptr)
+    myAdjustFunction = std::bind(&Sound::adjustVolume, &myOSystem.sound(), std::placeholders::_1);
+
+  // Assume no adjust function will be pressed
+  const AdjustFunction oldAdjustFunction = myAdjustFunction;
+  if(pressed)
+    myAdjustFunction = nullptr;
+
   switch(event)
   {
+    ////////////////////////////////////////////////////////////////////////
+    // Allow adjusting several (mostly repeated) settings using the same two hotkeys
+    case Event::SettingDecrease:
+      if(pressed && oldAdjustFunction != nullptr)
+        oldAdjustFunction(false);
+      myAdjustFunction = oldAdjustFunction;
+      return;
+
+    case Event::SettingIncrease:
+      if(pressed && oldAdjustFunction != nullptr)
+        oldAdjustFunction(true);
+      myAdjustFunction = oldAdjustFunction;
+      return;
+
     ////////////////////////////////////////////////////////////////////////
     // If enabled, make sure 'impossible' joystick directions aren't allowed
     case Event::JoystickZeroUp:
@@ -401,55 +427,68 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::VolumeDecrease:
-      if(pressed) myOSystem.sound().adjustVolume(-1);
+      if(pressed)
+        myAdjustFunction = myOSystem.sound().adjustVolume(false);
       return;
 
     case Event::VolumeIncrease:
-      if(pressed) myOSystem.sound().adjustVolume(+1);
+      if(pressed)
+        myAdjustFunction = myOSystem.sound().adjustVolume(true);
       return;
 
     case Event::SoundToggle:
-      if(pressed && !repeated) myOSystem.sound().toggleMute();
+      if(pressed && !repeated)
+        myOSystem.sound().toggleMute();
       return;
 
     case Event::VidmodeDecrease:
-      if(pressed) myOSystem.frameBuffer().selectVidMode(false);
+      if(pressed)
+        myAdjustFunction = myOSystem.frameBuffer().selectVidMode(false);
       return;
 
     case Event::VidmodeIncrease:
-      if(pressed) myOSystem.frameBuffer().selectVidMode(true);
+      if(pressed)
+        myAdjustFunction = myOSystem.frameBuffer().selectVidMode(true);
       return;
 
     case Event::VCenterDecrease:
-      if (pressed) myOSystem.console().changeVerticalCenter(false);
+      if (pressed)
+        myAdjustFunction = myOSystem.console().changeVerticalCenter(false);
       return;
 
     case Event::VCenterIncrease:
-      if (pressed) myOSystem.console().changeVerticalCenter(true);
+      if (pressed)
+        myAdjustFunction = myOSystem.console().changeVerticalCenter(true);
       return;
 
     case Event::VSizeAdjustDecrease:
-      if (pressed) myOSystem.console().changeVSizeAdjust(false);
+      if (pressed)
+        myAdjustFunction = myOSystem.console().changeVSizeAdjust(false);
       return;
 
     case Event::VSizeAdjustIncrease:
-      if (pressed) myOSystem.console().changeVSizeAdjust(true);
+      if (pressed)
+        myAdjustFunction = myOSystem.console().changeVSizeAdjust(true);
       return;
 
     case Event::PreviousPaletteAttribute:
-      if (pressed) myOSystem.frameBuffer().tiaSurface().paletteHandler().cycleAdjustable(false);
+      if(pressed)
+        myAdjustFunction = myOSystem.frameBuffer().tiaSurface().paletteHandler().cycleAdjustable(false);
       return;
 
     case Event::NextPaletteAttribute:
-      if (pressed) myOSystem.frameBuffer().tiaSurface().paletteHandler().cycleAdjustable(true);
+      if(pressed)
+        myAdjustFunction = myOSystem.frameBuffer().tiaSurface().paletteHandler().cycleAdjustable(true);
       return;
 
     case Event::PaletteAttributeDecrease:
-      if (pressed) myOSystem.frameBuffer().tiaSurface().paletteHandler().changeAdjustable(false);
+      if(pressed)
+        myAdjustFunction = myOSystem.frameBuffer().tiaSurface().paletteHandler().changeAdjustable(false);
       return;
 
     case Event::PaletteAttributeIncrease:
-      if (pressed) myOSystem.frameBuffer().tiaSurface().paletteHandler().changeAdjustable(true);
+      if(pressed)
+        myAdjustFunction = myOSystem.frameBuffer().tiaSurface().paletteHandler().changeAdjustable(true);
       return;
 
     case Event::ToggleFullScreen:
@@ -457,19 +496,23 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::OverscanDecrease:
-      if (pressed) myOSystem.frameBuffer().changeOverscan(false);
+      if (pressed)
+        myAdjustFunction = myOSystem.frameBuffer().changeOverscan(false);
       return;
 
     case Event::OverscanIncrease:
-      if (pressed) myOSystem.frameBuffer().changeOverscan(true);
+      if (pressed)
+        myAdjustFunction = myOSystem.frameBuffer().changeOverscan(true);
       return;
 
     case Event::PreviousVideoMode:
-      if (pressed && !repeated) myOSystem.frameBuffer().tiaSurface().changeNTSC(false);
+      if (pressed && !repeated)
+        myAdjustFunction = myOSystem.frameBuffer().tiaSurface().changeNTSC(false);
       return;
 
     case Event::NextVideoMode:
-      if (pressed && !repeated) myOSystem.frameBuffer().tiaSurface().changeNTSC(true);
+      if (pressed && !repeated)
+        myAdjustFunction = myOSystem.frameBuffer().tiaSurface().changeNTSC(true);
       return;
 
     case Event::VidmodeStd:
@@ -497,39 +540,48 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::PreviousAttribute:
-      if (pressed) myOSystem.frameBuffer().tiaSurface().setNTSCAdjustable(false);
+      if(pressed)
+        myAdjustFunction = myOSystem.frameBuffer().tiaSurface().setNTSCAdjustable(false);
       return;
 
     case Event::NextAttribute:
-      if (pressed) myOSystem.frameBuffer().tiaSurface().setNTSCAdjustable(true);
+      if (pressed)
+        myAdjustFunction = myOSystem.frameBuffer().tiaSurface().setNTSCAdjustable(true);
       return;
 
     case Event::DecreaseAttribute:
-      if(pressed) myOSystem.frameBuffer().tiaSurface().changeNTSCAdjustable(false);
+      if(pressed)
+        myAdjustFunction = myOSystem.frameBuffer().tiaSurface().changeNTSCAdjustable(false);
       return;
 
     case Event::IncreaseAttribute:
-      if(pressed) myOSystem.frameBuffer().tiaSurface().changeNTSCAdjustable(true);
+      if(pressed)
+        myAdjustFunction = myOSystem.frameBuffer().tiaSurface().changeNTSCAdjustable(true);
       return;
 
     case Event::ScanlinesDecrease:
-      if (pressed) myOSystem.frameBuffer().tiaSurface().setScanlineIntensity(-2);
+      if (pressed)
+        myAdjustFunction = myOSystem.frameBuffer().tiaSurface().setScanlineIntensity(false);
       return;
 
     case Event::ScanlinesIncrease:
-      if (pressed) myOSystem.frameBuffer().tiaSurface().setScanlineIntensity(+2);
+      if (pressed)
+        myAdjustFunction = myOSystem.frameBuffer().tiaSurface().setScanlineIntensity(true);
       return;
 
     case Event::PhosphorDecrease:
-      if (pressed) myOSystem.console().changePhosphor(false);
+      if (pressed)
+        myAdjustFunction = myOSystem.console().changePhosphor(false);
       return;
 
     case Event::PhosphorIncrease:
-      if (pressed) myOSystem.console().changePhosphor(true);
+      if (pressed)
+        myAdjustFunction = myOSystem.console().changePhosphor(true);
       return;
 
     case Event::TogglePhosphor:
-      if (pressed && !repeated) myOSystem.console().togglePhosphor();
+      if(pressed && !repeated)
+        myAdjustFunction = myOSystem.console().togglePhosphor();
       return;
 
     case Event::ToggleColorLoss:
@@ -537,11 +589,13 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::PaletteDecrease:
-      if (pressed && !repeated) myOSystem.frameBuffer().tiaSurface().paletteHandler().cyclePalette(false);
+      if (pressed && !repeated)
+        myAdjustFunction = myOSystem.frameBuffer().tiaSurface().paletteHandler().cyclePalette(false);
       return;
 
     case Event::PaletteIncrease:
-      if (pressed && !repeated) myOSystem.frameBuffer().tiaSurface().paletteHandler().cyclePalette(true);
+      if (pressed && !repeated)
+        myAdjustFunction = myOSystem.frameBuffer().tiaSurface().paletteHandler().cyclePalette(true);
       return;
 
     case Event::ToggleInter:
@@ -583,11 +637,13 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::FormatDecrease:
-      if (pressed) myOSystem.console().selectFormat(false);
+      if (pressed && !repeated)
+        myAdjustFunction = myOSystem.console().selectFormat(false);
       return;
 
     case Event::FormatIncrease:
-      if (pressed) myOSystem.console().selectFormat(true);
+      if (pressed && !repeated)
+        myAdjustFunction = myOSystem.console().selectFormat(true);
       return;
 
     case Event::ToggleGrabMouse:
@@ -656,7 +712,8 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::SaveState:
-      if(pressed && !repeated) myOSystem.state().saveState();
+      if(pressed && !repeated)
+        myAdjustFunction = myOSystem.state().saveState();
       return;
 
     case Event::SaveAllStates:
@@ -664,12 +721,14 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
         myOSystem.frameBuffer().showMessage(myOSystem.state().rewindManager().saveAllStates());
       return;
 
-    case Event::NextState:
-      if(pressed) myOSystem.state().changeState(1);
+    case Event::PreviousState:
+      if (pressed)
+        myAdjustFunction = myOSystem.state().changeState(false);
       return;
 
-    case Event::PreviousState:
-      if (pressed) myOSystem.state().changeState(-1);
+    case Event::NextState:
+      if(pressed)
+        myAdjustFunction = myOSystem.state().changeState(true);
       return;
 
     case Event::ToggleAutoSlot:
@@ -677,7 +736,8 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::LoadState:
-      if(pressed && !repeated) myOSystem.state().loadState();
+      if(pressed && !repeated)
+        myAdjustFunction = myOSystem.state().loadState();
       return;
 
     case Event::LoadAllStates:
@@ -1950,6 +2010,10 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::PhosphorIncrease,        "Increase 'phosphor' blend",             "" },
   { Event::ScanlinesDecrease,       "Decrease scanlines",                    "" },
   { Event::ScanlinesIncrease,       "Increase scanlines",                    "" },
+
+  { Event::SettingDecrease,         "Decrease current setting",              "" },
+  { Event::SettingIncrease,         "Increase current setting",              "" },
+
   // Developer keys:
   { Event::ToggleFrameStats,        "Toggle frame stats",                    "" },
   { Event::ToggleP0Bit,             "Toggle TIA Player0 object",             "" },
@@ -2044,6 +2108,7 @@ const Event::EventSet EventHandler::MiscEvents = {
   // Event::MouseButtonLeftValue, Event::MouseButtonRightValue,
   Event::HandleMouseControl, Event::ToggleGrabMouse,
   Event::ToggleSAPortOrder,
+  Event::SettingDecrease, Event::SettingIncrease
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

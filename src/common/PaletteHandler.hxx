@@ -21,6 +21,7 @@
 #include "bspf.hxx"
 #include "OSystem.hxx"
 #include "ConsoleTiming.hxx"
+#include "EventHandlerConstants.hxx"
 
 class PaletteHandler
 {
@@ -51,21 +52,21 @@ class PaletteHandler
 
       @param next  Select next palette, else previous one
     */
-    void cyclePalette(bool next = true);
+    AdjustFunction cyclePalette(bool next = true);
 
     /*
       Cycle through each palette adjustable.
 
       @param next  Select next adjustable, else previous one
     */
-    void cycleAdjustable(bool next = true);
+    AdjustFunction cycleAdjustable(bool next = true);
 
     /*
       Increase or decrease current palette adjustable.
 
       @param increase  Increase adjustable if true, else decrease
     */
-    void changeAdjustable(bool increase = true);
+    AdjustFunction changeAdjustable(bool increase = true);
 
     // Load adjustables from settings
     void loadConfig(const Settings& settings);
@@ -129,7 +130,7 @@ class PaletteHandler
     string toPaletteName(PaletteType type) const;
 
     /**
-      Display current adjustable with bar gauge message
+      Display current adjustable with gauge bar message
     */
     void showAdjustableMessage();
 
