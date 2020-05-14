@@ -98,10 +98,10 @@ class SoundSDL2 : public Sound
     /**
       Adjusts the volume of the sound device based on the given direction.
 
-      @param direction  Increase or decrease the current volume by a predefined
-                        amount based on the direction (1 = increase, -1 = decrease)
-    */
-    void adjustVolume(Int8 direction) override;
+      @param increase  Increase or decrease the current volume by a predefined
+                       amount
+      */
+    AdjustFunction adjustVolume(bool increase) override;
 
     /**
       This method is called to provide information about the sound device.

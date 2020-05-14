@@ -148,16 +148,18 @@ class FrameBuffer
                      MessagePosition position = MessagePosition::BottomCenter,
                      bool force = false);
     /**
-      Shows a message with a bar gauge onscreen.
+      Shows a message with a gauge bar onscreen.
 
       @param message    The message to be shown
-      @param valueText  The value of the bar gauge as text
-      @param value      The bar gauge percentage
-      @param minValue   The minimal value of the bar gauge
-      @param maxValue   The maximal value of the bar gauge
+      @param valueText  The value of the gauge bar as text
+      @param value      The gauge bar percentage
+      @param minValue   The minimal value of the gauge bar
+      @param maxValue   The maximal value of the gauge bar
     */
     void showMessage(const string& message, const string& valueText,
                      float value, float minValue = 0.F, float maxValue = 100.F);
+
+    bool messageShown();
 
     /**
       Toggles showing or hiding framerate statistics.
@@ -265,7 +267,7 @@ class FrameBuffer
 
       @param increase  Increase if true, else decrease
     */
-    void changeOverscan(bool increase = true);
+    AdjustFunction changeOverscan(bool increase = true);
 
     /**
       This method is called when the user wants to switch to the next
@@ -277,7 +279,7 @@ class FrameBuffer
 
       @param next  Select next if true, else previous
     */
-    bool selectVidMode(bool next = true);
+    AdjustFunction selectVidMode(bool next = true);
 
     /**
       Sets the state of the cursor (hidden or grabbed) based on the

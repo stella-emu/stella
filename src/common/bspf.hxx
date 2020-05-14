@@ -43,6 +43,7 @@ using uInt64 = uint64_t;
 #include <algorithm>
 #include <iostream>
 #include <fstream>
+#include <functional>
 #include <iomanip>
 #include <memory>
 #include <string>
@@ -85,6 +86,8 @@ using ShortArray = std::vector<uInt16>;
 using StringList = std::vector<std::string>;
 using ByteBuffer = std::unique_ptr<uInt8[]>;  // NOLINT
 using DWordBuffer = std::unique_ptr<uInt32[]>;  // NOLINT
+
+using AdjustFunction = std::function<void(bool)>;
 
 // We use KB a lot; let's make a literal for it
 constexpr uInt32 operator "" _KB(unsigned long long size)

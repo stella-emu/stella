@@ -191,7 +191,7 @@ class Console : public Serializable, public ConsoleIO
 
       @param next  Select next if true, else previous
     */
-    void selectFormat(bool next = true);
+    AdjustFunction selectFormat(bool next = true);
 
     /**
       Set NTSC/PAL/SECAM (and variants) display format.
@@ -217,14 +217,14 @@ class Console : public Serializable, public ConsoleIO
     /**
       Toggles phosphor effect.
     */
-    void togglePhosphor();
+    AdjustFunction togglePhosphor();
 
     /**
       Change the "Display.PPBlend" variable.
 
       @param increase  Increase if true, else decrease
     */
-    void changePhosphor(bool increase = true);
+    AdjustFunction changePhosphor(bool increase = true);
 
     /**
       Toggles the PAL color-loss effect.
@@ -259,7 +259,7 @@ class Console : public Serializable, public ConsoleIO
 
       @param increase  Increase if true, else decrease
     */
-    void changeVerticalCenter(bool increase = true);
+    AdjustFunction changeVerticalCenter(bool increase = true);
 
     /**
       Change the "TIA scanline adjust" variable.
@@ -268,7 +268,7 @@ class Console : public Serializable, public ConsoleIO
 
       @param increase  Increase if true, else decrease
     */
-    void changeVSizeAdjust(bool increase = true);
+    AdjustFunction changeVSizeAdjust(bool increase = true);
 
     /**
       Returns the current framerate.

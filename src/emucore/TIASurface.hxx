@@ -92,17 +92,17 @@ class TIASurface
     /**
       Switch to next/previous NTSC filtering effect.
     */
-    void changeNTSC(bool next, bool show = true);
+    AdjustFunction changeNTSC(bool next);
 
     /**
       Switch to next/previous NTSC filtering adjustable.
     */
-    void setNTSCAdjustable(bool next = true);
+    AdjustFunction setNTSCAdjustable(bool next = true);
 
     /**
       Increase/decrease current NTSC filtering adjustable.
     */
-    void changeNTSCAdjustable(bool increase = true);
+    AdjustFunction changeNTSCAdjustable(bool increase = true);
 
     /**
       Retrieve palette handler.
@@ -112,7 +112,7 @@ class TIASurface
     /**
       Increase/decrease current scanline intensity by given relative amount.
     */
-    void setScanlineIntensity(int relative);
+    AdjustFunction setScanlineIntensity(bool increase);
 
     /**
       Change scanline intensity and interpolation.

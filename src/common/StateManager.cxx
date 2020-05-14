@@ -198,7 +198,7 @@ void StateManager::update()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StateManager::loadState(int slot)
+AdjustFunction StateManager::loadState(int slot)
 {
   if(myOSystem.hasConsole())
   {
@@ -216,7 +216,7 @@ void StateManager::loadState(int slot)
       buf.str("");
       buf << "Can't open/load from state file " << slot;
       myOSystem.frameBuffer().showMessage(buf.str());
-      return;
+      return nullptr;
     }
 
     // First test if we have a valid header
@@ -241,10 +241,11 @@ void StateManager::loadState(int slot)
 
     myOSystem.frameBuffer().showMessage(buf.str());
   }
+  return std::bind(&StateManager::changeState, this, std::placeholders::_1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StateManager::saveState(int slot)
+AdjustFunction StateManager::saveState(int slot)
 {
   if(myOSystem.hasConsole())
   {
@@ -262,7 +263,7 @@ void StateManager::saveState(int slot)
       buf.str("");
       buf << "Can't open/save to state file " << slot;
       myOSystem.frameBuffer().showMessage(buf.str());
-      return;
+      return nullptr;
     }
 
     try
@@ -275,7 +276,7 @@ void StateManager::saveState(int slot)
     {
       buf << "Error saving state " << slot;
       myOSystem.frameBuffer().showMessage(buf.str());
-      return;
+      return nullptr;
     }
 
     // Do a complete state save using the Console
@@ -294,12 +295,13 @@ void StateManager::saveState(int slot)
 
     myOSystem.frameBuffer().showMessage(buf.str());
   }
+  return std::bind(&StateManager::changeState, this, std::placeholders::_1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StateManager::changeState(int direction)
+AdjustFunction StateManager::changeState(bool next)
 {
-  myCurrentSlot += direction;
+  myCurrentSlot += next ? 1 : -1;
   if (myCurrentSlot < 0)
     myCurrentSlot = 9;
   else
@@ -309,6 +311,7 @@ void StateManager::changeState(int direction)
   ostringstream buf;
   buf << "Changed to slot " << myCurrentSlot;
   myOSystem.frameBuffer().showMessage(buf.str());
+  return std::bind(&StateManager::changeState, this, std::placeholders::_1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
