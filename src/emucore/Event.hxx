@@ -104,7 +104,7 @@ class Event
       PreviousPaletteAttribute, NextPaletteAttribute,
       PaletteAttributeDecrease, PaletteAttributeIncrease,
       ToggleFullScreen, VidmodeDecrease, VidmodeIncrease,
-      VCenterDecrease, VCenterIncrease, ScanlineAdjustDecrease, ScanlineAdjustIncrease,
+      VCenterDecrease, VCenterIncrease, VSizeAdjustDecrease, VSizeAdjustIncrease,
       OverscanDecrease, OverscanIncrease,
 
       VidmodeStd, VidmodeRGB, VidmodeSVideo, VidModeComposite, VidModeBad, VidModeCustom,

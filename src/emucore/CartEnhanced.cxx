@@ -35,7 +35,7 @@ CartridgeEnhanced::CartridgeEnhanced(const ByteBuffer& image, size_t size,
 void CartridgeEnhanced::install(System& system)
 {
   // limit banked RAM size to the size of one RAM bank
-  uInt32 ramSize = myRamBankCount > 0 ? 1 << (myBankShift - 1) : uInt32(myRamSize);
+  const uInt32 ramSize = myRamBankCount > 0 ? 1 << (myBankShift - 1) : uInt32(myRamSize);
 
   // calculate bank switching and RAM sizes and masks
   myBankSize = 1 << myBankShift;                    // e.g. = 2 ^ 12 = 4K = 0x1000
@@ -71,7 +71,7 @@ void CartridgeEnhanced::install(System& system)
     access.type = System::PageAccessType::WRITE;
     for(uInt16 addr = ROM_OFFSET + myWriteOffset; addr < ROM_OFFSET + myWriteOffset + myRamSize; addr += System::PAGE_SIZE)
     {
-      uInt16 offset = addr & myRamMask;
+      const uInt16 offset = addr & myRamMask;
 
       access.directPokeBase = &myRAM[offset];
       access.romAccessBase = &myRomAccessBase[myWriteOffset + offset];
@@ -85,7 +85,7 @@ void CartridgeEnhanced::install(System& system)
     access.directPokeBase = nullptr;
     for(uInt16 addr = ROM_OFFSET + myReadOffset; addr < ROM_OFFSET + myReadOffset + myRamSize; addr += System::PAGE_SIZE)
     {
-      uInt16 offset = addr & myRamMask;
+      const uInt16 offset = addr & myRamMask;
 
       access.directPeekBase = &myRAM[offset];
       access.romAccessBase = &myRomAccessBase[myReadOffset + offset];
@@ -117,7 +117,7 @@ void CartridgeEnhanced::reset()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeEnhanced::peek(uInt16 address)
 {
-  uInt16 peekAddress = address;
+  const uInt16 peekAddress = address;
 
   // hotspots in TIA range are reacting to pokes only
   if (hotspot() >= 0x80)
@@ -157,7 +157,7 @@ bool CartridgeEnhanced::poke(uInt16 address, uInt8 value)
   if(myRamSize > 0)
   {
     // Code should never get here (System::PageAccess::directPoke() handles this)
-    uInt16 pokeAddress = address;
+    const uInt16 pokeAddress = address;
 
     if(isRamBank(address))
     {
@@ -193,20 +193,20 @@ bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment)
 {
   if(bankLocked()) return false;
 
-  uInt16 segmentOffset = segment << myBankShift;
+  const uInt16 segmentOffset = segment << myBankShift;
 
   if(myRamBankCount == 0 || bank < romBankCount())
   {
     // Setup ROM bank
-    uInt16 romBank = bank % romBankCount();
+    const uInt16 romBank = bank % romBankCount();
     // Remember what bank is in this segment
-    uInt32 bankOffset = myCurrentSegOffset[segment] = romBank << myBankShift;
-    uInt16 hotspot = this->hotspot();
+    const uInt32 bankOffset = myCurrentSegOffset[segment] = romBank << myBankShift;
+    const uInt16 hotspot = this->hotspot();
     uInt16 hotSpotAddr;
     // Skip extra RAM; if existing it is only mapped into first segment
-    uInt16 fromAddr = (ROM_OFFSET + segmentOffset + (segment == 0 ? myRomOffset : 0)) & ~System::PAGE_MASK;
+    const uInt16 fromAddr = (ROM_OFFSET + segmentOffset + (segment == 0 ? myRomOffset : 0)) & ~System::PAGE_MASK;
     // for ROMs < 4_KB, the whole address space will be mapped.
-    uInt16 toAddr   = (ROM_OFFSET + segmentOffset + (mySize < 4_KB ? 4_KB : myBankSize)) & ~System::PAGE_MASK;
+    const uInt16 toAddr   = (ROM_OFFSET + segmentOffset + (mySize < 4_KB ? 4_KB : myBankSize)) & ~System::PAGE_MASK;
 
     if(hotspot & 0x1000)
       hotSpotAddr = (hotspot & ~System::PAGE_MASK);
@@ -217,7 +217,7 @@ bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment)
     // Setup the page access methods for the current bank
     for(uInt16 addr = fromAddr; addr < toAddr; addr += System::PAGE_SIZE)
     {
-      uInt32 offset = bankOffset + (addr & myBankMask);
+      const uInt32 offset = bankOffset + (addr & myBankMask);
 
       if(myDirectPeek && addr != hotSpotAddr)
         access.directPeekBase = &myImage[offset];
@@ -232,9 +232,9 @@ bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment)
   else
   {
     // Setup RAM bank
-    uInt16 ramBank = (bank - romBankCount()) % myRamBankCount;
+    const uInt16 ramBank = (bank - romBankCount()) % myRamBankCount;
     // The RAM banks follow the ROM banks and are half the size of a ROM bank
-    uInt32 bankOffset = uInt32(mySize) + (ramBank << (myBankShift - 1));
+    const uInt32 bankOffset = uInt32(mySize) + (ramBank << (myBankShift - 1));
 
     // Remember what bank is in this segment
     myCurrentSegOffset[segment] = uInt32(mySize) + (ramBank << myBankShift);
@@ -246,7 +246,7 @@ bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment)
 
     for(uInt16 addr = fromAddr; addr < toAddr; addr += System::PAGE_SIZE)
     {
-      uInt32 offset = bankOffset + (addr & myRamMask);
+      const uInt32 offset = bankOffset + (addr & myRamMask);
 
       access.directPokeBase = &myRAM[offset - mySize];
       access.romAccessBase = &myRomAccessBase[offset];
@@ -263,7 +263,7 @@ bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment)
 
     for(uInt16 addr = fromAddr; addr < toAddr; addr += System::PAGE_SIZE)
     {
-      uInt32 offset = bankOffset + (addr & myRamMask);
+      const uInt32 offset = bankOffset + (addr & myRamMask);
 
       access.directPeekBase = &myRAM[offset - mySize];
       access.romAccessBase = &myRomAccessBase[offset];

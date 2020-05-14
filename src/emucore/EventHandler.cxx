@@ -345,7 +345,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
 {
   // Take care of special events that aren't part of the emulation core
   // or need to be preprocessed before passing them on
-  bool pressed = (value != 0);
+  const bool pressed = (value != 0);
 
   switch(event)
   {
@@ -428,12 +428,12 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if (pressed) myOSystem.console().changeVerticalCenter(true);
       return;
 
-    case Event::ScanlineAdjustDecrease:
-      if (pressed) myOSystem.console().changeScanlineAdjust(false);
+    case Event::VSizeAdjustDecrease:
+      if (pressed) myOSystem.console().changeVSizeAdjust(false);
       return;
 
-    case Event::ScanlineAdjustIncrease:
-      if (pressed) myOSystem.console().changeScanlineAdjust(true);
+    case Event::VSizeAdjustIncrease:
+      if (pressed) myOSystem.console().changeVSizeAdjust(true);
       return;
 
     case Event::PreviousPaletteAttribute:
@@ -592,14 +592,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
 
     case Event::ToggleGrabMouse:
       if (pressed && !repeated && !myOSystem.frameBuffer().fullScreen())
-      {
-        bool oldState = myOSystem.frameBuffer().grabMouseEnabled();
         myOSystem.frameBuffer().toggleGrabMouse();
-        bool newState = myOSystem.frameBuffer().grabMouseEnabled();
-        myOSystem.frameBuffer().showMessage(oldState != newState ? myOSystem.frameBuffer().grabMouseEnabled()
-                                            ? "Grab mouse enabled" : "Grab mouse disabled"
-                                            : "Grab mouse not allowed while cursor shown");
-      }
       return;
 
     case Event::ToggleP0Collision:
@@ -760,7 +753,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
               if (myOSystem.settings().getBool("confirmexit"))
               {
                 StringList msg;
-                string saveOnExit = myOSystem.settings().getString("saveonexit");
+                const string saveOnExit = myOSystem.settings().getString("saveonexit");
                 bool activeTM = myOSystem.settings().getBool(
                   myOSystem.settings().getBool("dev.settings") ? "dev.timemachine" : "plr.timemachine");
 
@@ -1085,12 +1078,12 @@ void EventHandler::setActionMappings(EventMode mode)
       // Fill the EmulActionList with the current key and joystick mappings
       for(auto& item: ourEmulActionList)
       {
-        Event::Type event = item.event;
+        const Event::Type event = item.event;
         item.key = "None";
         string key = myPKeyHandler->getMappingDesc(event, mode);
 
     #ifdef JOYSTICK_SUPPORT
-        string joydesc = myPJoyHandler->getMappingDesc(event, mode);
+        const string joydesc = myPJoyHandler->getMappingDesc(event, mode);
         if(joydesc != "")
         {
           if(key != "")
@@ -1107,12 +1100,12 @@ void EventHandler::setActionMappings(EventMode mode)
       // Fill the MenuActionList with the current key and joystick mappings
       for(auto& item: ourMenuActionList)
       {
-        Event::Type event = item.event;
+        const Event::Type event = item.event;
         item.key = "None";
         string key = myPKeyHandler->getMappingDesc(event, mode);
 
     #ifdef JOYSTICK_SUPPORT
-        string joydesc = myPJoyHandler->getMappingDesc(event, mode);
+        const string joydesc = myPJoyHandler->getMappingDesc(event, mode);
         if(joydesc != "")
         {
           if(key != "")
@@ -1138,7 +1131,7 @@ void EventHandler::setComboMap()
   string list = myOSystem.settings().getString("combomap");
   replace(list.begin(), list.end(), ':', ' ');
   istringstream buf(list);
-  Int32 version = myOSystem.settings().getInt("event_ver");
+  const Int32 version = myOSystem.settings().getInt("event_ver");
 
   // Erase the 'combo' array
   auto ERASE_ALL = [&]() {
@@ -1200,7 +1193,7 @@ void EventHandler::removePhysicalJoystickFromDatabase(const string& name)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool EventHandler::addKeyMapping(Event::Type event, EventMode mode, StellaKey key, StellaMod mod)
 {
-  bool mapped = myPKeyHandler->addMapping(event, mode, key, mod);
+  const bool mapped = myPKeyHandler->addMapping(event, mode, key, mod);
   if(mapped)
     setActionMappings(mode);
 
@@ -1213,7 +1206,7 @@ bool EventHandler::addJoyMapping(Event::Type event, EventMode mode,
                                  bool updateMenus)
 {
 #ifdef JOYSTICK_SUPPORT
-  bool mapped = myPJoyHandler->addJoyMapping(event, mode, stick, button, axis, adir);
+  const bool mapped = myPJoyHandler->addJoyMapping(event, mode, stick, button, axis, adir);
   if (mapped && updateMenus)
     setActionMappings(mode);
 
@@ -1411,7 +1404,7 @@ VariantList EventHandler::getComboList(EventMode /**/) const
   VarList::push_back(l, "None", "-1");
   for(uInt32 i = 0; i < ourEmulActionList.size(); ++i)
   {
-    Event::Type event = EventHandler::ourEmulActionList[i].event;
+    const Event::Type event = EventHandler::ourEmulActionList[i].event;
     // exclude combos events
     if(!(event >= Event::Combo1 && event <= Event::Combo16))
     {
@@ -1433,7 +1426,7 @@ StringList EventHandler::getComboListForEvent(Event::Type event) const
     int combo = event - Event::Combo1;
     for(uInt32 i = 0; i < EVENTS_PER_COMBO; ++i)
     {
-      Event::Type e = myComboTable[combo][i];
+      const Event::Type e = myComboTable[combo][i];
       for(uInt32 j = 0; j < ourEmulActionList.size(); ++j)
       {
         if(EventHandler::ourEmulActionList[j].event == e)
@@ -1457,7 +1450,7 @@ void EventHandler::setComboListForEvent(Event::Type event, const StringList& eve
   if(event >= Event::Combo1 && event <= Event::Combo16)
   {
     assert(events.size() == 8);
-    int combo = event - Event::Combo1;
+    const int combo = event - Event::Combo1;
     for(uInt32 i = 0; i < 8; ++i)
     {
       uInt32 idx = BSPF::stringToInt(events[i]);
@@ -1544,7 +1537,7 @@ int EventHandler::getActionListIndex(int idx, Event::Group group) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Event::Type EventHandler::eventAtIndex(int idx, Event::Group group) const
 {
-  int index = getActionListIndex(idx, group);
+  const int index = getActionListIndex(idx, group);
 
   if(group == Event::Group::Menu)
   {
@@ -1565,7 +1558,7 @@ Event::Type EventHandler::eventAtIndex(int idx, Event::Group group) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string EventHandler::actionAtIndex(int idx, Event::Group group) const
 {
-  int index = getActionListIndex(idx, group);
+  const int index = getActionListIndex(idx, group);
 
   if(group == Event::Group::Menu)
   {
@@ -1586,7 +1579,7 @@ string EventHandler::actionAtIndex(int idx, Event::Group group) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string EventHandler::keyAtIndex(int idx, Event::Group group) const
 {
-  int index = getActionListIndex(idx, group);
+  const int index = getActionListIndex(idx, group);
 
   if(group == Event::Group::Menu)
   {
@@ -1797,8 +1790,8 @@ void EventHandler::setState(EventHandlerState state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::exitEmulation(bool checkLauncher)
 {
-  string saveOnExit = myOSystem.settings().getString("saveonexit");
-  bool activeTM = myOSystem.settings().getBool(
+  const string saveOnExit = myOSystem.settings().getString("saveonexit");
+  const bool activeTM = myOSystem.settings().getBool(
     myOSystem.settings().getBool("dev.settings") ? "dev.timemachine" : "plr.timemachine");
 
 
@@ -1924,8 +1917,8 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::OverscanIncrease,        "Increase overscan in fullscreen mode",  "" },
   { Event::VidmodeDecrease,         "Previous zoom level",                   "" },
   { Event::VidmodeIncrease,         "Next zoom level",                       "" },
-  { Event::ScanlineAdjustDecrease,  "Decrease vertical display size",        "" },
-  { Event::ScanlineAdjustIncrease,  "Increase vertical display size",        "" },
+  { Event::VSizeAdjustDecrease,     "Decrease vertical display size",        "" },
+  { Event::VSizeAdjustIncrease,     "Increase vertical display size",        "" },
   { Event::VCenterDecrease,         "Move display up",                       "" },
   { Event::VCenterIncrease,         "Move display down",                     "" },
   { Event::FormatDecrease,          "Decrease display format",               "" },
@@ -2064,7 +2057,7 @@ const Event::EventSet EventHandler::AudioVideoEvents = {
   Event::PhosphorDecrease, Event::PhosphorIncrease, Event::TogglePhosphor,
   Event::FormatDecrease, Event::FormatIncrease,
   Event::VCenterDecrease, Event::VCenterIncrease,
-  Event::ScanlineAdjustDecrease, Event::ScanlineAdjustIncrease,
+  Event::VSizeAdjustDecrease, Event::VSizeAdjustIncrease,
   Event::OverscanDecrease, Event::OverscanIncrease,
   Event::PaletteDecrease, Event::PaletteIncrease,
   Event::PreviousVideoMode, Event::NextVideoMode,

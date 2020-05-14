@@ -268,7 +268,7 @@ class Console : public Serializable, public ConsoleIO
 
       @param increase  Increase if true, else decrease
     */
-    void changeScanlineAdjust(bool increase = true);
+    void changeVSizeAdjust(bool increase = true);
 
     /**
       Returns the current framerate.

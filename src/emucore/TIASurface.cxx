@@ -257,7 +257,10 @@ void TIASurface::setScanlineIntensity(int amount)
   myOSystem.settings().setValue("tv.scanlines", intensity);
   enableNTSC(ntscEnabled());
 
-  buf << intensity << "%";
+  if(intensity)
+    buf << intensity << "%";
+  else
+    buf << "Off";
   myFB.showMessage("Scanline intensity", buf.str(), intensity);
 }
 

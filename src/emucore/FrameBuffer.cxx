@@ -1106,9 +1106,14 @@ void FrameBuffer::enableGrabMouse(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::toggleGrabMouse()
 {
+  const bool oldState = myGrabMouse;
+
   myGrabMouse = !myGrabMouse;
   setCursorState();
   myOSystem.settings().setValue("grabmouse", myGrabMouse);
+  myOSystem.frameBuffer().showMessage(oldState != myGrabMouse ? myGrabMouse
+                                      ? "Grab mouse enabled" : "Grab mouse disabled"
+                                      : "Grab mouse not allowed while cursor shown");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
