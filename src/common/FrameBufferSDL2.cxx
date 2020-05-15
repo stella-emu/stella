@@ -144,11 +144,11 @@ void FrameBufferSDL2::queryHardware(vector<Common::Size>& fullscreenRes,
 
   struct RenderName
   {
-    string sdlName;
-    string stellaName;
+    const char* const sdlName;
+    const char* const stellaName;
   };
   // Create name map for all currently known SDL renderers
-  static const std::array<RenderName, 6> RENDERER_NAMES = {{
+  static constexpr std::array<RenderName, 6> RENDERER_NAMES = {{
     { "direct3d",  "Direct3D"  },
     { "metal",     "Metal"     },
     { "opengl",    "OpenGL"    },
