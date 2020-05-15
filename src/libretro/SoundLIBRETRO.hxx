@@ -98,7 +98,7 @@ class SoundLIBRETRO : public Sound
       @param increase  Increase or decrease the current volume by a predefined
                        amount
     */
-    AdjustFunction adjustVolume(bool increase) override { return AdjustFunction{}; }
+    AdjustFunction adjustVolume(bool increase) override { return nullptr; }
 
     /**
       This method is called to provide information about the sound device.
