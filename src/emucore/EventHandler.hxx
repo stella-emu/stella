@@ -397,6 +397,7 @@ class EventHandler
       NONE = -1,
       VOLUME,
       ZOOM,
+      FULLSCREEN,
       OVERSCAN,
       TVFORMAT,
       VCENTER,
@@ -418,7 +419,8 @@ class EventHandler
       NTSC_BLEEDING,
       PHOSPHOR,
       SCANLINES,
-      MAX_ADJ = SCANLINES,
+      INTERPOLATION,
+      MAX_ADJ = INTERPOLATION,
       // Only used via direct hotkeys
       STATE,
       PALETTE_CHANGE_ATTRIBUTE,

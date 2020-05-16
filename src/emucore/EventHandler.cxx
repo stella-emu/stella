@@ -368,11 +368,14 @@ AdjustFunction EventHandler::cycleAdjustSetting(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AdjustFunction EventHandler::getAdjustSetting(AdjustSetting setting)
 {
-  // MUST have the same order as AdjustSetting
+  // Notes:
+  // - All methods MUST show a message
+  // - This array MUST have the same order as AdjustSetting
   const AdjustFunction ADJUST_FUNCTIONS[int(AdjustSetting::NUM_ADJ)] =
   {
     std::bind(&Sound::adjustVolume, &myOSystem.sound(), _1),
     std::bind(&FrameBuffer::selectVidMode, &myOSystem.frameBuffer(), _1),
+    std::bind(&FrameBuffer::toggleFullscreen, &myOSystem.frameBuffer(), _1),
     std::bind(&FrameBuffer::changeOverscan, &myOSystem.frameBuffer(), _1),
     std::bind(&Console::selectFormat, &myOSystem.console(), _1),
     std::bind(&Console::changeVerticalCenter, &myOSystem.console(), _1),
@@ -405,6 +408,7 @@ AdjustFunction EventHandler::getAdjustSetting(AdjustSetting setting)
       int(NTSCFilter::Adjustables::BLEEDING), _1),
     std::bind(&Console::changePhosphor, &myOSystem.console(), _1),
     std::bind(&TIASurface::setScanlineIntensity, &myOSystem.frameBuffer().tiaSurface(), _1),
+    std::bind(&Console::toggleInter, &myOSystem.console(), _1),
     // Following functions are not used when cycling settings but for "direct only" hotkeys
     std::bind(&StateManager::changeState, &myOSystem.state(), _1),
     std::bind(&PaletteHandler::changeCurrentAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(), _1),
@@ -643,7 +647,12 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::ToggleFullScreen:
-      if (pressed && !repeated) myOSystem.frameBuffer().toggleFullscreen();
+      if(pressed && !repeated)
+      {
+        myOSystem.frameBuffer().toggleFullscreen();
+        myAdjustSetting = AdjustSetting::FULLSCREEN;
+        myAdjustActive = true;
+      }
       return;
 
     case Event::OverscanDecrease:
@@ -807,7 +816,12 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::ToggleInter:
-      if (pressed && !repeated) myOSystem.console().toggleInter();
+      if(pressed && !repeated)
+      {
+        myOSystem.console().toggleInter();
+        myAdjustSetting = AdjustSetting::INTERPOLATION;
+        myAdjustActive = true;
+      }
       return;
 
     case Event::ToggleTurbo:
@@ -2338,8 +2352,6 @@ const Event::EventSet EventHandler::MiscEvents = {
   // Event::MouseButtonLeftValue, Event::MouseButtonRightValue,
   Event::HandleMouseControl, Event::ToggleGrabMouse,
   Event::ToggleSAPortOrder,
-  Event::SettingDecrease, Event::SettingIncrease,
-  Event::PreviousSetting, Event::NextSetting,
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2347,19 +2359,21 @@ const Event::EventSet EventHandler::AudioVideoEvents = {
   Event::VolumeDecrease, Event::VolumeIncrease, Event::SoundToggle,
   Event::VidmodeDecrease, Event::VidmodeIncrease,
   Event::ToggleFullScreen,
-  Event::VidmodeStd, Event::VidmodeRGB, Event::VidmodeSVideo, Event::VidModeComposite, Event::VidModeBad, Event::VidModeCustom,
-  Event::PreviousAttribute, Event::NextAttribute, Event::DecreaseAttribute, Event::IncreaseAttribute,
-  Event::ScanlinesDecrease, Event::ScanlinesIncrease,
-  Event::PhosphorDecrease, Event::PhosphorIncrease, Event::TogglePhosphor,
+  Event::OverscanDecrease, Event::OverscanIncrease,
   Event::FormatDecrease, Event::FormatIncrease,
   Event::VCenterDecrease, Event::VCenterIncrease,
   Event::VSizeAdjustDecrease, Event::VSizeAdjustIncrease,
-  Event::OverscanDecrease, Event::OverscanIncrease,
   Event::PaletteDecrease, Event::PaletteIncrease,
-  Event::PreviousVideoMode, Event::NextVideoMode,
   Event::PreviousPaletteAttribute, Event::NextPaletteAttribute,
   Event::PaletteAttributeDecrease, Event::PaletteAttributeIncrease,
-  Event::ToggleInter
+  Event::VidmodeStd, Event::VidmodeRGB, Event::VidmodeSVideo, Event::VidModeComposite, Event::VidModeBad, Event::VidModeCustom,
+  Event::PreviousVideoMode, Event::NextVideoMode,
+  Event::PreviousAttribute, Event::NextAttribute, Event::DecreaseAttribute, Event::IncreaseAttribute,
+  Event::PhosphorDecrease, Event::PhosphorIncrease, Event::TogglePhosphor,
+  Event::ScanlinesDecrease, Event::ScanlinesIncrease,
+  Event::ToggleInter,
+  Event::PreviousSetting, Event::NextSetting,
+  Event::SettingDecrease, Event::SettingIncrease,
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

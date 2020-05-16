@@ -206,7 +206,7 @@ class Console : public Serializable, public ConsoleIO
     /**
       Toggle interpolation on/off
     */
-    void toggleInter();
+    void toggleInter(bool toggle = true);
 
     /**
       Toggle turbo mode on/off
