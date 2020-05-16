@@ -456,6 +456,9 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
         // Get (and display) the previous|next adjustment function,
         //  but do not change its value
         cycleAdjustSetting(adjustActive ? direction : 0)(0);
+        // Fallback message when no message is displayed by method
+        //if(!myOSystem.frameBuffer().messageShown())
+        //  myOSystem.frameBuffer().showMessage("Message " + std::to_string(int(myAdjustSetting)));
         myAdjustActive = true;
       }
       break;

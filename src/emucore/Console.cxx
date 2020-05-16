@@ -373,7 +373,7 @@ void Console::setFormat(uInt32 format, bool force)
   {
     case 0:  // auto-detect
     {
-      if (myFormatAutodetected) return;
+      if (!force && myFormatAutodetected) return;
 
       myDisplayFormat = formatFromFilename();
       if (myDisplayFormat == "AUTO")
