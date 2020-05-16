@@ -55,33 +55,16 @@ string PaletteHandler::toPaletteName(PaletteType type) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AdjustFunction PaletteHandler::cyclePalette(bool next)
+void PaletteHandler::cyclePalette(int direction)
 {
   const string MESSAGES[PaletteType::NumTypes] = {
     "Standard Stella", "Z26", "User-defined", "Custom"
   };
   int type = toPaletteType(myOSystem.settings().getString("palette"));
 
-  if(next)
-  {
-    if(type == PaletteType::MaxType)
-      type = PaletteType::Standard;
-    else
-      type++;
-    // If we have no user-defined palette, we will skip it
-    if(type == PaletteType::User && !myUserPaletteDefined)
-      type++;
-  }
-  else
-  {
-    if(type == PaletteType::MinType)
-      type = PaletteType::MaxType;
-    else
-      type--;
-    // If we have no user-defined palette, we will skip it
-    if(type == PaletteType::User && !myUserPaletteDefined)
-      type--;
-  }
+  do {
+    type = BSPF::clampw(type + direction, int(PaletteType::MinType), int(PaletteType::MaxType));
+  } while(type == PaletteType::User && !myUserPaletteDefined);
 
   const string palette = toPaletteName(PaletteType(type));
   const string message = MESSAGES[type] + " palette";
@@ -89,7 +72,6 @@ AdjustFunction PaletteHandler::cyclePalette(bool next)
   myOSystem.frameBuffer().showMessage(message);
 
   setPalette(palette);
-  return std::bind(&PaletteHandler::cyclePalette, this, std::placeholders::_1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -119,58 +101,55 @@ void PaletteHandler::showAdjustableMessage()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AdjustFunction PaletteHandler::cycleAdjustable(bool next)
+void PaletteHandler::cycleAdjustable(int direction)
 {
   const bool isCustomPalette = SETTING_CUSTOM == myOSystem.settings().getString("palette");
   bool isPhaseShift;
 
   do {
-    if(next)
-    {
-      myCurrentAdjustable++;
-      myCurrentAdjustable %= NUM_ADJUSTABLES;
-    }
-    else
-    {
-      if(myCurrentAdjustable == 0)
-        myCurrentAdjustable = NUM_ADJUSTABLES - 1;
-      else
-        myCurrentAdjustable--;
-    }
+    myCurrentAdjustable = BSPF::clampw(int(myCurrentAdjustable + direction), 0, NUM_ADJUSTABLES - 1);
     isPhaseShift = myAdjustables[myCurrentAdjustable].value == nullptr;
-
     // skip phase shift when 'Custom' palette is not selected
+    if(!direction && isPhaseShift && !isCustomPalette)
+      myCurrentAdjustable++;
   } while(isPhaseShift && !isCustomPalette);
 
   showAdjustableMessage();
-  return std::bind(&PaletteHandler::changeAdjustable, this, std::placeholders::_1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AdjustFunction PaletteHandler::changeAdjustable(bool increase)
+void PaletteHandler::changeAdjustable(int adjustable, int direction)
+{
+  const bool isCustomPalette = SETTING_CUSTOM == myOSystem.settings().getString("palette");
+  const bool isPhaseShift = myAdjustables[adjustable].value == nullptr;
+
+  myCurrentAdjustable = adjustable;
+  if(isPhaseShift && !isCustomPalette)
+    myCurrentAdjustable++;
+
+  changeCurrentAdjustable(direction);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PaletteHandler::changeCurrentAdjustable(int direction)
 {
   if(myAdjustables[myCurrentAdjustable].value == nullptr)
-    changeColorPhaseShift(increase);
+    changeColorPhaseShift(direction);
   else
   {
     int newVal = scaleTo100(*myAdjustables[myCurrentAdjustable].value);
 
-    if(increase)
-      newVal += 2;    // += 2%
-    else
-      newVal -= 2;    // -= 2%
-    newVal = BSPF::clamp(newVal, 0, 100);
+    newVal = BSPF::clamp(newVal + direction * 2, 0, 100);
 
     *myAdjustables[myCurrentAdjustable].value = scaleFrom100(newVal);
 
     showAdjustableMessage();
     setPalette();
   }
-  return std::bind(&PaletteHandler::changeAdjustable, this, std::placeholders::_1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PaletteHandler::changeColorPhaseShift(bool increase)
+void PaletteHandler::changeColorPhaseShift(int direction)
 {
   const ConsoleTiming timing = myOSystem.console().timing();
 
@@ -181,11 +160,7 @@ void PaletteHandler::changeColorPhaseShift(bool increase)
     const float shift = isNTSC ? DEF_NTSC_SHIFT : DEF_PAL_SHIFT;
     float newPhase = isNTSC ? myPhaseNTSC : myPhasePAL;
 
-    if(increase)        // increase color phase shift
-      newPhase += 0.3F;
-    else                // decrease color phase shift
-      newPhase -= 0.3F;
-    newPhase = BSPF::clamp(newPhase, shift - MAX_SHIFT, shift + MAX_SHIFT);
+    newPhase = BSPF::clamp(newPhase + direction * 0.3F, shift - MAX_SHIFT, shift + MAX_SHIFT);
 
     if(isNTSC)
       myPhaseNTSC = newPhase;

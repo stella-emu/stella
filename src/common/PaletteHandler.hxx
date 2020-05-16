@@ -37,6 +37,15 @@ class PaletteHandler
     static constexpr float DEF_PAL_SHIFT = 31.3F; // ~= 360 / 11.5
     static constexpr float MAX_SHIFT = 4.5F;
 
+    enum Adjustables {
+      PHASE_SHIFT,
+      HUE,
+      SATURATION,
+      CONTRAST,
+      BRIGHTNESS,
+      GAMMA
+    };
+
     // Externally used adjustment parameters
     struct Adjustable {
       float phaseNtsc{0.F}, phasePal{0.F};
@@ -50,23 +59,31 @@ class PaletteHandler
     /**
       Cycle through available palettes.
 
-      @param next  Select next palette, else previous one
+      @param direction  +1 indicates increase, -1 indicates decrease.
     */
-    AdjustFunction cyclePalette(bool next = true);
+    void cyclePalette(int direction = +1);
 
     /*
       Cycle through each palette adjustable.
 
-      @param next  Select next adjustable, else previous one
+      @param direction  +1 indicates increase, -1 indicates decrease.
     */
-    AdjustFunction cycleAdjustable(bool next = true);
+    void cycleAdjustable(int direction = +1);
+
+    /*
+      Increase or decrease given palette adjustable.
+
+      @param adjustable  The adjustable to change
+      @param direction   +1 indicates increase, -1 indicates decrease.
+    */
+    void changeAdjustable(int adjustable, int direction);
 
     /*
       Increase or decrease current palette adjustable.
 
-      @param increase  Increase adjustable if true, else decrease
+      @param direction  +1 indicates increase, -1 indicates decrease.
     */
-    AdjustFunction changeAdjustable(bool increase = true);
+    void changeCurrentAdjustable(int direction = +1);
 
     // Load adjustables from settings
     void loadConfig(const Settings& settings);
@@ -139,9 +156,9 @@ class PaletteHandler
       Note that there are two of these (NTSC and PAL).  The currently
       active mode will determine which one is used.
 
-      @param increase  Increase if true, else decrease
+      @param direction  +1 indicates increase, -1 indicates decrease.
     */
-    void changeColorPhaseShift(bool increase = true);
+    void changeColorPhaseShift(int direction = +1);
 
     /**
       Generates a custom palette, based on user defined phase shifts.

@@ -47,6 +47,14 @@ class NTSCFilter
       BAD,
       CUSTOM
     };
+    enum class Adjustables {
+      SHARPNESS,
+      RESOLUTION,
+      ARTIFACTS,
+      FRINGING,
+      BLEEDING,
+      NUM_ADJUSTABLES
+    };
 
     /* Normally used in conjunction with custom mode, contains all
        aspects currently adjustable in NTSC TV emulation. */
@@ -90,8 +98,12 @@ class NTSCFilter
     // Changes are made this way since otherwise 20 key-combinations
     // would be needed to dynamically change each setting, and now
     // only 4 combinations are necessary
-    void selectAdjustable(bool next, string& text, string& valueText, Int32& value);
-    void changeAdjustable(bool increase, string& text, string& valueText, Int32& newValue);
+    void selectAdjustable(int direction,
+                          string& text, string& valueText, Int32& value);
+    void changeAdjustable(int adjustable, int direction,
+                          string& text, string& valueText, Int32& newValue);
+    void changeCurrentAdjustable(int direction,
+                                 string& text, string& valueText, Int32& newValue);
 
     // Load and save NTSC-related settings
     void loadConfig(const Settings& settings);

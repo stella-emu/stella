@@ -91,18 +91,32 @@ class TIASurface
 
     /**
       Switch to next/previous NTSC filtering effect.
+
+      @param direction  +1 indicates increase, -1 indicates decrease.
     */
-    AdjustFunction changeNTSC(bool next);
+    void changeNTSC(int direction = +1);
 
     /**
       Switch to next/previous NTSC filtering adjustable.
+
+      @param direction  +1 indicates increase, -1 indicates decrease.
     */
-    AdjustFunction setNTSCAdjustable(bool next = true);
+    void setNTSCAdjustable(int direction = +1);
+
+    /**
+      Increase/decrease given NTSC filtering adjustable.
+
+      @param adjustable  The adjustable to change
+      @param direction   +1 indicates increase, -1 indicates decrease.
+    */
+    void changeNTSCAdjustable(int adjustable, int direction);
 
     /**
       Increase/decrease current NTSC filtering adjustable.
+
+      @param direction  +1 indicates increase, -1 indicates decrease.
     */
-    AdjustFunction changeNTSCAdjustable(bool increase = true);
+    void changeCurrentNTSCAdjustable(int direction = +1);
 
     /**
       Retrieve palette handler.
@@ -111,17 +125,18 @@ class TIASurface
 
     /**
       Increase/decrease current scanline intensity by given relative amount.
+
+      @param direction  +1 indicates increase, -1 indicates decrease.
     */
-    AdjustFunction setScanlineIntensity(bool increase);
+    void setScanlineIntensity(int direction = +1);
 
     /**
       Change scanline intensity and interpolation.
 
-      @param relative  If non-zero, change current intensity by
-                       'relative' amount, otherwise set to 'absolute'
+      @param change  change current intensity by 'change'
       @return  New current intensity
     */
-    uInt32 enableScanlines(int relative, int absolute = 50);
+    uInt32 enableScanlines(int change);
 
     /**
       Enable/disable/query phosphor effect.

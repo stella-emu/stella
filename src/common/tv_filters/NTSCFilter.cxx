@@ -62,9 +62,9 @@ string NTSCFilter::getPreset() const
 {
   switch(myPreset)
   {
-    case Preset::COMPOSITE: return "COMPOSITE";
-    case Preset::SVIDEO:    return "S-VIDEO";
     case Preset::RGB:       return "RGB";
+    case Preset::SVIDEO:    return "S-VIDEO";
+    case Preset::COMPOSITE: return "COMPOSITE";
     case Preset::BAD:       return "BAD ADJUST";
     case Preset::CUSTOM:    return "CUSTOM";
     default:                return "Disabled";
@@ -72,9 +72,10 @@ string NTSCFilter::getPreset() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void NTSCFilter::selectAdjustable(bool next, string& text, string& valueText, Int32& value)
+void NTSCFilter::selectAdjustable(int direction,
+                                  string& text, string& valueText, Int32& value)
 {
-  if(next)
+  if(direction == +1)
   {
   #ifdef BLARGG_PALETTE
     myCurrentAdjustable = (myCurrentAdjustable + 1) % 10;
@@ -82,7 +83,7 @@ void NTSCFilter::selectAdjustable(bool next, string& text, string& valueText, In
     myCurrentAdjustable = (myCurrentAdjustable + 1) % 5;
   #endif
   }
-  else
+  else if(direction == -1)
   {
   #ifdef BLARGG_PALETTE
     if(myCurrentAdjustable == 0) myCurrentAdjustable = 9;
@@ -103,13 +104,22 @@ void NTSCFilter::selectAdjustable(bool next, string& text, string& valueText, In
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void NTSCFilter::changeAdjustable(bool increase, string& text, string& valueText, Int32& newValue)
+void NTSCFilter::changeAdjustable(int adjustable, int direction,
+                                  string& text, string& valueText, Int32& newValue)
+{
+  myCurrentAdjustable = adjustable;
+  changeCurrentAdjustable(direction, text, valueText, newValue);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void NTSCFilter::changeCurrentAdjustable(int direction,
+                                         string& text, string& valueText, Int32& newValue)
 {
   //if(myPreset != Preset::CUSTOM)
   //  return "'Custom' TV mode not selected";
 
   newValue = scaleTo100(*ourCustomAdjustables[myCurrentAdjustable].value);
-  newValue = BSPF::clamp(newValue + (increase ? 2 : -2), 0, 100);
+  newValue = BSPF::clamp(newValue + direction * 2, 0, 100);
 
   *ourCustomAdjustables[myCurrentAdjustable].value = scaleFrom100(newValue);
 
@@ -166,12 +176,12 @@ void NTSCFilter::getAdjustables(Adjustable& adjustable, Preset preset) const
 {
   switch(preset)
   {
-    case Preset::COMPOSITE:
-      convertToAdjustable(adjustable, AtariNTSC::TV_Composite);  break;
-    case Preset::SVIDEO:
-      convertToAdjustable(adjustable, AtariNTSC::TV_SVideo);  break;
     case Preset::RGB:
       convertToAdjustable(adjustable, AtariNTSC::TV_RGB);  break;
+    case Preset::SVIDEO:
+      convertToAdjustable(adjustable, AtariNTSC::TV_SVideo);  break;
+    case Preset::COMPOSITE:
+      convertToAdjustable(adjustable, AtariNTSC::TV_Composite);  break;
     case Preset::BAD:
       convertToAdjustable(adjustable, AtariNTSC::TV_Bad);  break;
     case Preset::CUSTOM:
@@ -228,7 +238,7 @@ const std::array<NTSCFilter::AdjustableTag, 10> NTSCFilter::ourCustomAdjustables
   { "saturation", &myCustomSetup.saturation },
   { "gamma", &myCustomSetup.gamma },
 #else
-const std::array<NTSCFilter::AdjustableTag, 5> NTSCFilter::ourCustomAdjustables = { {
+const std::array<NTSCFilter::AdjustableTag, int(NTSCFilter::Adjustables::NUM_ADJUSTABLES)> NTSCFilter::ourCustomAdjustables = { {
 #endif
   { "sharpness", &myCustomSetup.sharpness },
   { "resolution", &myCustomSetup.resolution },

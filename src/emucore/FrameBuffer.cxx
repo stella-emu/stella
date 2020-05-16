@@ -537,7 +537,7 @@ void FrameBuffer::showMessage(const string& message, const string& valueText,
   const int VBORDER = fontHeight / 4;
   const int HBORDER = fontWidth * 1.25 / 2.0;
 
-  myMsg.counter = uInt32(myOSystem.frameRate()) * 3; // Show message for 3 seconds
+  myMsg.counter = uInt32(myOSystem.frameRate()) * 2; // Show message for 2 seconds
   if(myMsg.counter == 0)
     myMsg.counter = 120;
 
@@ -672,7 +672,6 @@ inline bool FrameBuffer::drawMessage()
 #ifdef GUI_SUPPORT
   // Either erase the entire message (when time is reached),
   // or show again this frame
-  cerr << myMsg.counter << endl;
   if(myMsg.counter == 0)
   {
     myMsg.enabled = false;
@@ -760,7 +759,7 @@ inline bool FrameBuffer::drawMessage()
     // align bar with bottom of text
     const int y = VBORDER + font().desc().ascent - bheight;
 
-    // draw gauge bar 
+    // draw gauge bar
     myMsg.surface->fillRect(x - BORDER, y, swidth + BORDER * 2, bheight, kSliderBGColor);
     myMsg.surface->fillRect(x, y + BORDER, bwidth, bheight - BORDER * 2, kSliderColor);
     // draw tickmark in the middle of the bar
@@ -994,12 +993,12 @@ void FrameBuffer::toggleFullscreen()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AdjustFunction FrameBuffer::changeOverscan(bool increase)
+void FrameBuffer::changeOverscan(int direction)
 {
   if (fullScreen())
   {
     int oldOverscan = myOSystem.settings().getInt("tia.fs_overscan");
-    int overscan = BSPF::clamp(oldOverscan + (increase ? 1 : -1), 0, 10);
+    int overscan = BSPF::clamp(oldOverscan + direction, 0, 10);
 
     if (overscan != oldOverscan)
     {
@@ -1010,14 +1009,16 @@ AdjustFunction FrameBuffer::changeOverscan(bool increase)
     }
 
     ostringstream val;
-    val << (overscan ? overscan > 0 ? "+" : "" : " ") << overscan << "%";
+    if(overscan)
+      val << (overscan > 0 ? "+" : "" ) << overscan << "%";
+    else
+      val << "Off";
     myOSystem.frameBuffer().showMessage("Overscan", val.str(), overscan, 0, 10);
   }
-  return std::bind(&FrameBuffer::changeOverscan, this, std::placeholders::_1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AdjustFunction FrameBuffer::selectVidMode(bool next)
+void FrameBuffer::selectVidMode(int direction)
 {
   EventHandlerState state = myOSystem.eventHandler().state();
   bool tiaMode = (state != EventHandlerState::DEBUGGER &&
@@ -1025,11 +1026,11 @@ AdjustFunction FrameBuffer::selectVidMode(bool next)
 
   // Only applicable when in TIA/emulation mode
   if(!tiaMode)
-    return nullptr;
+    return;
 
-  if(next)
+  if(direction == +1)
     myCurrentModeList->next();
-  else
+  else if(direction == -1)
     myCurrentModeList->previous();
 
   saveCurrentWindowPosition();
@@ -1050,7 +1051,10 @@ AdjustFunction FrameBuffer::selectVidMode(bool next)
     myTIASurface->initialize(myOSystem.console(), mode);
 
     resetSurfaces();
-    showMessage("Zoom", mode.description, mode.zoom, supportedTIAMinZoom(), myTIAMaxZoom);
+    if(fullScreen())
+      showMessage(mode.description);
+    else
+      showMessage("Zoom", mode.description, mode.zoom, supportedTIAMinZoom(), myTIAMaxZoom);
     myOSystem.sound().mute(oldMuteState);
 
     if(fullScreen())
@@ -1059,11 +1063,9 @@ AdjustFunction FrameBuffer::selectVidMode(bool next)
     else
       myOSystem.settings().setValue("tia.zoom", mode.zoom);
 
-    return std::bind(&FrameBuffer::selectVidMode, this, std::placeholders::_1);
+    return;
   }
   myOSystem.sound().mute(oldMuteState);
-
-  return nullptr;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1196,12 +1198,12 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
       VideoMode mode1(baseWidth * myTIAMaxZoom, baseHeight * myTIAMaxZoom,
                       myFullscreenDisplays[i].w, myFullscreenDisplays[i].h,
                       VideoMode::Stretch::Preserve, overscan,
-                      "Preserve aspect, no stretch", myTIAMaxZoom, i);
+                      "Fullscreen: Preserve aspect, no stretch", myTIAMaxZoom, i);
       myFullscreenModeLists[i].add(mode1);
       VideoMode mode2(baseWidth * myTIAMaxZoom, baseHeight * myTIAMaxZoom,
                       myFullscreenDisplays[i].w, myFullscreenDisplays[i].h,
                       VideoMode::Stretch::Fill, overscan,
-                      "Ignore aspect, full stretch", myTIAMaxZoom, i);
+                      "Fullscreen: Ignore aspect, full stretch", myTIAMaxZoom, i);
       myFullscreenModeLists[i].add(mode2);
     }
   }

@@ -349,24 +349,20 @@ bool Console::load(Serializer& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AdjustFunction Console::selectFormat(bool next)
+void Console::selectFormat(int direction)
 {
   string saveformat, message;
-  uInt32 format = myCurrentFormat;
+  Int32 format = myCurrentFormat;
 
-  if(next)
-    format = (myCurrentFormat + 1) % 7;
-  else
-    format = myCurrentFormat > 0 ? (myCurrentFormat - 1) : 6;
+  format = BSPF::clampw(format + direction, 0, 6);
 
-  setFormat(format);
-  return std::bind(&Console::selectFormat, this, std::placeholders::_1);
+  setFormat(format, true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::setFormat(uInt32 format)
+void Console::setFormat(uInt32 format, bool force)
 {
-  if(myCurrentFormat == format)
+  if(!force && myCurrentFormat == format)
     return;
 
   string saveformat, message;
@@ -505,7 +501,7 @@ void Console::toggleTurbo()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AdjustFunction Console::togglePhosphor()
+void Console::togglePhosphor()
 {
   if(myOSystem.frameBuffer().tiaSurface().phosphorEnabled())
   {
@@ -519,19 +515,14 @@ AdjustFunction Console::togglePhosphor()
     myOSystem.frameBuffer().tiaSurface().enablePhosphor(true);
     myOSystem.frameBuffer().showMessage("Phosphor effect enabled");
   }
-  return std::bind(&Console::changePhosphor, this, std::placeholders::_1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AdjustFunction Console::changePhosphor(bool increase)
+void Console::changePhosphor(int direction)
 {
   int blend = BSPF::stringToInt(myProperties.get(PropType::Display_PPBlend));
 
-  if(increase)      // increase blend
-    blend += 2;
-  else              // decrease blend
-    blend -= 2;
-  blend = BSPF::clamp(blend, 0, 100);
+  blend = BSPF::clamp(blend + direction * 2, 0, 100);
   myOSystem.frameBuffer().tiaSurface().enablePhosphor(true, blend);
 
   ostringstream val;
@@ -545,7 +536,6 @@ AdjustFunction Console::changePhosphor(bool increase)
     val << "Off";
   }
   myOSystem.frameBuffer().showMessage("Phosphor blend", val.str(), blend);
-  return std::bind(&Console::changePhosphor, this, std::placeholders::_1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -622,15 +612,11 @@ void Console::fry() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AdjustFunction Console::changeVerticalCenter(bool increase)
+void Console::changeVerticalCenter(int direction)
 {
   Int32 vcenter = myTIA->vcenter();
 
-  if(increase)      // increase vcenter
-    ++vcenter;
-  else              // decrease vcenter
-    --vcenter;
-  vcenter = BSPF::clamp(vcenter, myTIA->minVcenter(), myTIA->maxVcenter());
+  vcenter = BSPF::clamp(vcenter + direction, myTIA->minVcenter(), myTIA->maxVcenter());
 
   ostringstream ss, val;
   ss << vcenter;
@@ -641,7 +627,6 @@ AdjustFunction Console::changeVerticalCenter(bool increase)
   val << (vcenter ? vcenter > 0 ? "+" : "" : " ") << vcenter << "px";
   myOSystem.frameBuffer().showMessage("V-Center", val.str(), vcenter,
                                       myTIA->minVcenter(), myTIA->maxVcenter());
-  return std::bind(&Console::changeVerticalCenter, this, std::placeholders::_1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -654,15 +639,11 @@ void Console::updateVcenter(Int32 vcenter)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AdjustFunction Console::changeVSizeAdjust(bool increase)
+void Console::changeVSizeAdjust(int direction)
 {
   Int32 newAdjustVSize = myTIA->adjustVSize();
 
-  if(increase)      // increase scanline adjustment
-    newAdjustVSize++;
-  else              // decrease scanline adjustment
-    newAdjustVSize--;
-  newAdjustVSize = BSPF::clamp(newAdjustVSize, -5, 5);
+  newAdjustVSize = BSPF::clamp(newAdjustVSize + direction, -5, 5);
 
   if (newAdjustVSize != myTIA->adjustVSize()) {
       myTIA->setAdjustVSize(newAdjustVSize);
@@ -674,7 +655,6 @@ AdjustFunction Console::changeVSizeAdjust(bool increase)
 
   val << (newAdjustVSize ? newAdjustVSize > 0 ? "+" : "" : " ") << newAdjustVSize << "%";
   myOSystem.frameBuffer().showMessage("V-Size", val.str(), newAdjustVSize, -5, 5);
-  return std::bind(&Console::changeVSizeAdjust, this, std::placeholders::_1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

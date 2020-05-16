@@ -229,12 +229,12 @@ void SoundSDL2::setVolume(uInt32 percent)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AdjustFunction SoundSDL2::adjustVolume(bool increase)
+void SoundSDL2::adjustVolume(int direction)
 {
   ostringstream strval;
   Int32 percent = myVolume;
 
-  percent = BSPF::clamp(percent += increase ? 2 : -2, 0, 100);
+  percent = BSPF::clamp(percent + direction * 2, 0, 100);
 
   setVolume(percent);
 
@@ -253,7 +253,6 @@ AdjustFunction SoundSDL2::adjustVolume(bool increase)
   else
     strval << "Off";
   myOSystem.frameBuffer().showMessage("Volume", strval.str(), percent);
-  return std::bind(&SoundSDL2::adjustVolume, this, std::placeholders::_1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
