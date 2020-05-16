@@ -265,9 +265,9 @@ class FrameBuffer
     /**
       Changes the fullscreen overscan.
 
-      @param increase  Increase if true, else decrease
+      @param direction  +1 indicates increase, -1 indicates decrease.
     */
-    AdjustFunction changeOverscan(bool increase = true);
+    void changeOverscan(int direction = +1);
 
     /**
       This method is called when the user wants to switch to the next
@@ -277,9 +277,9 @@ class FrameBuffer
         direction = -1 means go to the next lower video mode
         direction = +1 means go to the next higher video mode
 
-      @param next  Select next if true, else previous
+      @param direction  +1 indicates increase, -1 indicates decrease.
     */
-    AdjustFunction selectVidMode(bool next = true);
+    void selectVidMode(int direction = +1);
 
     /**
       Sets the state of the cursor (hidden or grabbed) based on the

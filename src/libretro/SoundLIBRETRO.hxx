@@ -95,10 +95,9 @@ class SoundLIBRETRO : public Sound
     /**
       Adjusts the volume of the sound device based on the given direction.
 
-      @param increase  Increase or decrease the current volume by a predefined
-                       amount
+      @param direction  +1 indicates increase, -1 indicates decrease.
     */
-    AdjustFunction adjustVolume(bool increase) override { return nullptr; }
+    void adjustVolume(int direction = +1) override { }
 
     /**
       This method is called to provide information about the sound device.

@@ -493,8 +493,12 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultCommo
   {Event::ToggleColorLoss,          KBDK_L, KBDM_CTRL},
   {Event::PaletteDecrease,          KBDK_P, KBDM_SHIFT | KBDM_CTRL},
   {Event::PaletteIncrease,          KBDK_P, KBDM_CTRL},
+
+  {Event::PreviousSetting,          KBDK_END},
+  {Event::NextSetting,              KBDK_HOME},
   {Event::SettingDecrease,          KBDK_PAGEDOWN},
   {Event::SettingIncrease,          KBDK_PAGEUP},
+
   {Event::ToggleInter,              KBDK_I, KBDM_CTRL},
   {Event::ToggleTurbo,              KBDK_T, KBDM_CTRL},
   {Event::ToggleJitter,             KBDK_J, MOD3},

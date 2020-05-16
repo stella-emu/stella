@@ -104,19 +104,21 @@ class StateManager
 
       @param slot  The state 'slot' to load state from
     */
-    AdjustFunction loadState(int slot = -1);
+    void loadState(int slot = -1);
 
     /**
       Save the current state from the system.
 
       @param slot  The state 'slot' to save into
     */
-    AdjustFunction saveState(int slot = -1);
+    void saveState(int slot = -1);
 
     /**
       Switches to the next higher or lower state slot (circular queue style).
+
+      @param direction  +1 indicates increase, -1 indicates decrease.
     */
-    AdjustFunction changeState(bool next);
+    void changeState(int direction = +1);
 
     /**
       Toggles auto slot mode.

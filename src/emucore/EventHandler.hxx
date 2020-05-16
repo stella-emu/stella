@@ -392,6 +392,41 @@ class EventHandler
     void removePhysicalJoystick(int index);
 
   private:
+    enum class AdjustSetting
+    {
+      NONE = -1,
+      VOLUME,
+      ZOOM,
+      OVERSCAN,
+      TVFORMAT,
+      VCENTER,
+      VSIZE,
+      // Palette adjustables
+      PALETTE,
+      PALETTE_PHASE,
+      PALETTE_HUE,
+      PALETTE_SATURATION,
+      PALETTE_CONTRAST,
+      PALETTE_BRIGHTNESS,
+      PALETTE_GAMMA,
+      // NTSC filter adjustables
+      NTSC_PRESET,
+      NTSC_SHARPNESS,
+      NTSC_RESOLUTION,
+      NTSC_ARTIFACTS,
+      NTSC_FRINGING,
+      NTSC_BLEEDING,
+      PHOSPHOR,
+      SCANLINES,
+      MAX_ADJ = SCANLINES,
+      // Only used via direct hotkeys
+      STATE,
+      PALETTE_CHANGE_ATTRIBUTE,
+      NTSC_CHANGE_ATTRIBUTE,
+      NUM_ADJ
+    };
+
+  private:
     // Define event groups
     static const Event::EventSet MiscEvents;
     static const Event::EventSet AudioVideoEvents;
@@ -417,6 +452,11 @@ class EventHandler
     int getEmulActionListIndex(int idx, const Event::EventSet& events) const;
     int getActionListIndex(int idx, Event::Group group) const;
 
+    // The following two methods are used for adjusting several settings using global hotkeys
+    // They return the function used to adjust the currenly selected setting
+    AdjustFunction cycleAdjustSetting(int direction);
+    AdjustFunction getAdjustSetting(AdjustSetting setting);
+
   private:
     // Structure used for action menu items
     struct ActionList {
@@ -425,7 +465,12 @@ class EventHandler
       string key;
     };
 
-    AdjustFunction myAdjustFunction{nullptr};
+    // ID of the currently selected global setting
+    AdjustSetting myAdjustSetting{AdjustSetting::VOLUME};
+    // If true, the setting is visible and its value can be changed
+    bool myAdjustActive{false};
+    // ID of the currently selected direct hotkey setting (0 if none)
+    AdjustSetting myAdjustDirect{AdjustSetting::NONE};
 
     // Global Event object
     Event myEvent;
@@ -470,7 +515,7 @@ class EventHandler
     #else
       PNG_SIZE             = 0,
     #endif
-      EMUL_ACTIONLIST_SIZE = 154 + PNG_SIZE + COMBO_SIZE,
+      EMUL_ACTIONLIST_SIZE = 156 + PNG_SIZE + COMBO_SIZE,
       MENU_ACTIONLIST_SIZE = 18
     ;
 

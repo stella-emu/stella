@@ -200,7 +200,7 @@ void TIASurface::setNTSC(NTSCFilter::Preset preset, bool show)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AdjustFunction TIASurface::changeNTSC(bool next)
+void TIASurface::changeNTSC(int direction)
 {
   constexpr NTSCFilter::Preset PRESETS[] = {
     NTSCFilter::Preset::OFF, NTSCFilter::Preset::RGB, NTSCFilter::Preset::SVIDEO,
@@ -208,14 +208,14 @@ AdjustFunction TIASurface::changeNTSC(bool next)
   };
   int preset = myOSystem.settings().getInt("tv.filter");
 
-  if(next)
+  if(direction == +1)
   {
     if(preset == int(NTSCFilter::Preset::CUSTOM))
       preset = int(NTSCFilter::Preset::OFF);
     else
       preset++;
   }
-  else
+  else if (direction == -1)
   {
     if(preset == int(NTSCFilter::Preset::OFF))
       preset = int(NTSCFilter::Preset::CUSTOM);
@@ -223,39 +223,46 @@ AdjustFunction TIASurface::changeNTSC(bool next)
       preset--;
   }
   setNTSC(PRESETS[preset], true);
-  return std::bind(&TIASurface::changeNTSC, this, std::placeholders::_1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AdjustFunction TIASurface::setNTSCAdjustable(bool next)
+void TIASurface::setNTSCAdjustable(int direction)
 {
   string text, valueText;
   Int32 value;
 
   setNTSC(NTSCFilter::Preset::CUSTOM);
-  ntsc().selectAdjustable(next, text, valueText, value);
+  ntsc().selectAdjustable(direction, text, valueText, value);
   myOSystem.frameBuffer().showMessage(text, valueText, value);
-  return std::bind(&TIASurface::changeNTSCAdjustable, this, std::placeholders::_1);
-
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AdjustFunction TIASurface::changeNTSCAdjustable(bool increase)
+void TIASurface::changeNTSCAdjustable(int adjustable, int direction)
 {
   string text, valueText;
   Int32 newValue;
 
   setNTSC(NTSCFilter::Preset::CUSTOM);
-  ntsc().changeAdjustable(increase, text, valueText, newValue);
+  ntsc().changeAdjustable(adjustable, direction, text, valueText, newValue);
   myOSystem.frameBuffer().showMessage(text, valueText, newValue);
-  return std::bind(&TIASurface::changeNTSCAdjustable, this, std::placeholders::_1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AdjustFunction TIASurface::setScanlineIntensity(bool increase)
+void TIASurface::changeCurrentNTSCAdjustable(int direction)
+{
+  string text, valueText;
+  Int32 newValue;
+
+  setNTSC(NTSCFilter::Preset::CUSTOM);
+  ntsc().changeCurrentAdjustable(direction, text, valueText, newValue);
+  myOSystem.frameBuffer().showMessage(text, valueText, newValue);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIASurface::setScanlineIntensity(int direction)
 {
   ostringstream buf;
-  uInt32 intensity = enableScanlines(increase ? 2 : -2);
+  uInt32 intensity = enableScanlines(direction * 2);
 
   myOSystem.settings().setValue("tv.scanlines", intensity);
   enableNTSC(ntscEnabled());
@@ -265,18 +272,15 @@ AdjustFunction TIASurface::setScanlineIntensity(bool increase)
   else
     buf << "Off";
   myFB.showMessage("Scanline intensity", buf.str(), intensity);
-  return std::bind(&TIASurface::setScanlineIntensity, this, std::placeholders::_1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 TIASurface::enableScanlines(int relative, int absolute)
+uInt32 TIASurface::enableScanlines(int change)
 {
   FBSurface::Attributes& attr = mySLineSurface->attributes();
-  if(relative == 0)  attr.blendalpha = absolute;
-  else               attr.blendalpha += relative;
-  attr.blendalpha = std::max(0, Int32(attr.blendalpha));
-  attr.blendalpha = std::min(100U, attr.blendalpha);
 
+  attr.blendalpha += change;
+  attr.blendalpha = BSPF::clamp(Int32(attr.blendalpha), 0, 100);
   mySLineSurface->applyAttributes();
 
   return attr.blendalpha;
