@@ -311,11 +311,11 @@ void VideoAudioDialog::addTVEffectsTab()
   CREATE_CUSTOM_SLIDERS(ScanIntense, "Intensity", kScanlinesChanged)
 
   // Create buttons in 2nd column
-  xpos = myTVSharp->getRight() + fontWidth * 2;
+  int cloneWidth = _font.getStringWidth("Clone Bad Adjust") + fontWidth * 2.5;
+  xpos = _w - HBORDER - 2 * 2 - cloneWidth;
   ypos = VBORDER - VGAP / 2;
 
   // Adjustable presets
-  int cloneWidth = _font.getStringWidth("Clone Bad Adjust") + fontWidth * 2.5;
 #define CREATE_CLONE_BUTTON(obj, desc)                                 \
   myClone ## obj =                                                     \
     new ButtonWidget(myTab, _font, xpos, ypos, cloneWidth, buttonHeight,\

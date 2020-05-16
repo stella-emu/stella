@@ -74,7 +74,7 @@ class PaletteHandler
       Increase or decrease given palette adjustable.
 
       @param adjustable  The adjustable to change
-      @param direction   +1 indicates increase, -1 indicates decrease.
+      @param direction  +1 indicates increase, -1 indicates decrease.
     */
     void changeAdjustable(int adjustable, int direction);
 
