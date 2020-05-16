@@ -987,9 +987,13 @@ void FrameBuffer::setFullscreen(bool enable)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::toggleFullscreen()
+void FrameBuffer::toggleFullscreen(bool toggle)
 {
-  setFullscreen(!fullScreen());
+  const bool isFullscreen = toggle ? !fullScreen() : fullScreen();
+
+  setFullscreen(isFullscreen);
+
+  showMessage(string("Fullscreen ") + (isFullscreen ? "enabled" : "disabled"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

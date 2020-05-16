@@ -468,17 +468,20 @@ void Console::enableColorLoss(bool state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::toggleInter()
+void Console::toggleInter(bool toggle)
 {
   bool enabled = myOSystem.settings().getBool("tia.inter");
 
-  myOSystem.settings().setValue("tia.inter", !enabled);
+  if(toggle)
+    enabled = !enabled;
+
+  myOSystem.settings().setValue("tia.inter", enabled);
 
   // ... and apply potential setting changes to the TIA surface
   myOSystem.frameBuffer().tiaSurface().updateSurfaceSettings();
   ostringstream ss;
 
-  ss << "Interpolation " << (!enabled ? "enabled" : "disabled");
+  ss << "Interpolation " << (enabled ? "enabled" : "disabled");
   myOSystem.frameBuffer().showMessage(ss.str());
 }
 

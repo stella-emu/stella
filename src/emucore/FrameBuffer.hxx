@@ -260,7 +260,7 @@ class FrameBuffer
     /**
       Toggles between fullscreen and window mode.
     */
-    void toggleFullscreen();
+    void toggleFullscreen(bool toggle = true);
 
     /**
       Changes the fullscreen overscan.
