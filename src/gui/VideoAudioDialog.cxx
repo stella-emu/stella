@@ -149,28 +149,22 @@ void VideoAudioDialog::addDisplayTab()
   wid.push_back(myFullscreen);
   ypos += lineHeight + VGAP;
 
-  /*pwidth = font.getStringWidth("0: 3840x2860@120Hz");
-  myFullScreenMode = new PopUpWidget(myTab, font, xpos + INDENT + 2, ypos, pwidth, lineHeight,
-  instance().frameBuffer().supportedScreenModes(), "Mode ");
-  wid.push_back(myFullScreenMode);
-  ypos += lineHeight + VGAP;*/
-
   // FS stretch
   myUseStretch = new CheckboxWidget(myTab, _font, xpos + INDENT, ypos + 1, "Stretch");
   wid.push_back(myUseStretch);
+
+  // Adapt refresh rate
   ypos += lineHeight + VGAP;
+  myRefreshAdapt = new CheckboxWidget(myTab, _font, xpos + INDENT, ypos + 1, "Adapt display refresh rate");
+  wid.push_back(myRefreshAdapt);
 
   // FS overscan
+  ypos += lineHeight + VGAP;
   myTVOverscan = new SliderWidget(myTab, _font, xpos + INDENT, ypos - 1, swidth, lineHeight,
                                   "Overscan", lwidth - INDENT, kOverscanChanged, fontWidth * 3, "%");
   myTVOverscan->setMinValue(0); myTVOverscan->setMaxValue(10);
   myTVOverscan->setTickmarkIntervals(2);
   wid.push_back(myTVOverscan);
-
-  // Adapt refresh rate
-  ypos += lineHeight + VGAP;
-  myRefreshAdjust = new CheckboxWidget(myTab, _font, xpos + INDENT, ypos + 1, "Adapt refresh rate");
-  wid.push_back(myRefreshAdjust);
 
   // Vertical size
   ypos += lineHeight + VGAP;
@@ -490,10 +484,10 @@ void VideoAudioDialog::loadConfig()
   myFullScreenMode->setSelected(mode);*/
   // Fullscreen stretch setting
   myUseStretch->setState(instance().settings().getBool("tia.fs_stretch"));
+  // Adapt refresh rate
+  myRefreshAdapt->setState(instance().settings().getBool("tia.fs_refresh"));
   // Fullscreen overscan setting
   myTVOverscan->setValue(instance().settings().getInt("tia.fs_overscan"));
-  // Adapt refresh rate
-  myRefreshAdjust->setState(instance().settings().getBool("tia.refresh"));
   handleFullScreenChange();
 
   // Aspect ratio setting (NTSC and PAL)
@@ -603,10 +597,10 @@ void VideoAudioDialog::saveConfig()
   instance().settings().setValue("fullscreen", myFullscreen->getState());
   // Fullscreen stretch setting
   instance().settings().setValue("tia.fs_stretch", myUseStretch->getState());
+  // Adapt refresh rate
+  instance().settings().setValue("tia.fs_refresh", myRefreshAdapt->getState());
   // Fullscreen overscan
   instance().settings().setValue("tia.fs_overscan", myTVOverscan->getValueLabel());
-  // Adapt refresh rate
-  instance().settings().setValue("tia.refresh", myRefreshAdjust->getState());
 
   // TIA zoom levels
   instance().settings().setValue("tia.zoom", myTIAZoom->getValue() / 100.0);
@@ -718,8 +712,8 @@ void VideoAudioDialog::setDefaults()
       myFullscreen->setState(false);
       //myFullScreenMode->setSelectedIndex(0);
       myUseStretch->setState(false);
+      myRefreshAdapt->setState(false);
       myTVOverscan->setValue(0);
-      myRefreshAdjust->setState(false);
       myTIAZoom->setValue(300);
       myVSizeAdjust->setValue(0);
 
@@ -844,8 +838,8 @@ void VideoAudioDialog::handleFullScreenChange()
 {
   bool enable = myFullscreen->getState();
   myUseStretch->setEnabled(enable);
+  myRefreshAdapt->setEnabled(enable);
   myTVOverscan->setEnabled(enable);
-  myRefreshAdjust->setEnabled(enable);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

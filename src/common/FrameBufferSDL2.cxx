@@ -218,6 +218,10 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
   if(SDL_WasInit(SDL_INIT_VIDEO) == 0)
     return false;
 
+  const bool fullScreen = mode.fsIndex != -1;
+  const bool shouldAdapt = fullScreen && myOSystem.settings().getBool("tia.fs_refresh")
+    && refreshRate() != gameRefreshRate();
+
   // TODO: On multiple displays, switching from centered mode, does not respect
   //  current window's display (which many not be centered anymore)
 
@@ -261,8 +265,11 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
     posX = BSPF::clamp(posX, x0 - Int32(mode.screen.w) + 50, x1 - 50);
     posY = BSPF::clamp(posY, y0 + 50, y1 - 50);
   }
-  uInt32 flags = mode.fsIndex != -1 ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0;
-  flags |= SDL_WINDOW_ALLOW_HIGHDPI;
+
+  SDL_DisplayMode adaptedSdlMode;
+  const bool adaptRefresh = shouldAdapt && adaptRefreshRate(displayIndex, adaptedSdlMode);
+  const uInt32 flags = SDL_WINDOW_ALLOW_HIGHDPI
+    | (fullScreen ? adaptRefresh ? SDL_WINDOW_FULLSCREEN : SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
 
   // macOS seems to have issues with destroying the window, and wants to
   // keep the same handle
@@ -278,12 +285,14 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
     int w, h;
 
     SDL_GetWindowSize(myWindow, &w, &h);
-    if(d != displayIndex || uInt32(w) != mode.screen.w || uInt32(h) != mode.screen.h)
+    if(d != displayIndex || uInt32(w) != mode.screen.w || uInt32(h) != mode.screen.h
+       || shouldAdapt)
     {
       SDL_DestroyWindow(myWindow);
       myWindow = nullptr;
     }
   }
+
   if(myWindow)
   {
     // Even though window size stayed the same, the title may have changed
@@ -312,7 +321,23 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
       Logger::error(msg);
       return false;
     }
+
     setWindowIcon();
+  }
+  if(adaptRefresh)
+  {
+    // Switch to mode for adapted refresh rate
+    if(SDL_SetWindowDisplayMode(myWindow, &adaptedSdlMode) != 0)
+    {
+      Logger::error("Display refresh rate change failed");
+    }
+    else
+    {
+      ostringstream msg;
+
+      msg << "Display refresh rate changed to " << adaptedSdlMode.refresh_rate << "Hz";
+      Logger::info(msg.str());
+    }
   }
 
   uInt32 renderFlags = SDL_RENDERER_ACCELERATED;
@@ -340,70 +365,35 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
   if(SDL_GetRendererInfo(myRenderer, &renderinfo) >= 0)
     myOSystem.settings().setValue("video", renderinfo.name);
 
-  adaptRefreshRate();
-
   return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBufferSDL2::adaptRefreshRate()
+bool FrameBufferSDL2::adaptRefreshRate(Int32 displayIndex, SDL_DisplayMode& closestSdlMode)
 {
-  const bool adapt = myOSystem.settings().getBool("tia.refresh");
+  SDL_DisplayMode sdlMode;
 
-  // adapt only in emulation (and debugger?) and fullscreen mode
-  // TODO: adapt while creating new window
-  if(adapt && fullScreen()
-     && (myBufferType == BufferType::Emulator/* || myBufferType == BufferType::Debugger*/))
+  if(SDL_GetCurrentDisplayMode(displayIndex, &sdlMode) != 0)
   {
-    SDL_DisplayMode sdlMode;
+    Logger::error("Display mode could not be retrieved");
+    return false;
+  }
 
-    if(SDL_GetWindowDisplayMode(myWindow, &sdlMode) != 0)
+  const int currentRefreshRate = sdlMode.refresh_rate;
+
+  sdlMode.refresh_rate = gameRefreshRate();
+
+  if(currentRefreshRate != sdlMode.refresh_rate)
+  {
+    // Note: Modes are scanned with size being first priority,
+    //       therefore the size will never change.
+    if(SDL_GetClosestDisplayMode(displayIndex, &sdlMode, &closestSdlMode) == NULL)
     {
-      Logger::error("Display mode could not be retrieved");
+      Logger::error("Closest display mode could not be retrieved");
       return false;
     }
-
-    const int currentRefreshRate = sdlMode.refresh_rate;
-    const string format = myOSystem.console().getFormatString();
-    const bool isNtsc = format == "NTSC" || format == "PAL60" || format == "SECAM60";
-
-    sdlMode.refresh_rate = isNtsc ? 60 : 50; // TODO: check for multiples e.g. 120/100 too
-
-    if(currentRefreshRate != sdlMode.refresh_rate)
-    {
-      const int display = SDL_GetWindowDisplayIndex(myWindow);
-      SDL_DisplayMode closestSdlMode;
-
-      if(SDL_GetClosestDisplayMode(display, &sdlMode, &closestSdlMode) == NULL)
-      {
-        Logger::error("Closest display mode could not be retrieved");
-        return false;
-      }
-      // Note: Modes are scanned with size being first priority,
-      //       therefore the size will never change.
-      // Only change if the display supports a better refresh rate
-      if(currentRefreshRate != closestSdlMode.refresh_rate)
-      {
-        // Switch to new mode
-        if(SDL_SetWindowDisplayMode(myWindow, &closestSdlMode) != 0)
-        {
-          Logger::error("Display refresh rate change failed");
-          return false;
-        }
-        // Any change only works in real fullscreen mode!
-        if(SDL_SetWindowFullscreen(myWindow, SDL_WINDOW_FULLSCREEN) != 0)
-        {
-          Logger::error("Display fullscreen change failed");
-          return false;
-        }
-        ostringstream msg;
-
-        msg << "Display refresh rate changed from " << currentRefreshRate << "Hz to "
-          << closestSdlMode.refresh_rate << "Hz";
-        Logger::info(msg.str());
-        return true;
-      }
-    }
+    // Only change if the display supports a better refresh rate
+    return currentRefreshRate != closestSdlMode.refresh_rate;
   }
   return false;
 }
@@ -467,6 +457,34 @@ bool FrameBufferSDL2::fullScreen() const
 #else
   return true;
 #endif
+}
+
+int FrameBufferSDL2::refreshRate() const
+{
+  ASSERT_MAIN_THREAD;
+
+  const uInt32 displayIndex = SDL_GetWindowDisplayIndex(myWindow);
+  SDL_DisplayMode sdlMode;
+
+  if(SDL_GetCurrentDisplayMode(displayIndex, &sdlMode) == 0)
+    return sdlMode.refresh_rate;
+
+  if (myWindow != NULL)
+    Logger::error("Could not retrieve current display mode");
+  return 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int FrameBufferSDL2::gameRefreshRate() const
+{
+  if(myOSystem.hasConsole())
+  {
+    const string format = myOSystem.console().getFormatString();
+    const bool isNtsc = format == "NTSC" || format == "PAL60" || format == "SECAM60";
+
+    return isNtsc ? 60 : 50; // TODO: check for multiples e.g. 120/100 too
+  }
+  return 60;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

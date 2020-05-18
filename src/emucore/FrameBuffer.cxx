@@ -993,7 +993,15 @@ void FrameBuffer::toggleFullscreen(bool toggle)
 
   setFullscreen(isFullscreen);
 
-  showMessage(string("Fullscreen ") + (isFullscreen ? "enabled" : "disabled"));
+  ostringstream msg;
+
+  msg << "Fullscreen ";
+  if(isFullscreen)
+    msg << "enabled (" << refreshRate() << " Hz)";
+  else
+    msg << "disabled";
+
+  showMessage(msg.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
