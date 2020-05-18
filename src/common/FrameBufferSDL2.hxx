@@ -183,11 +183,11 @@ class FrameBufferSDL2 : public FrameBuffer
 
 
     /**
-      Adapt display refresh rate to game refresh rate in (real) fullscreen mode
+      Checks if the display refresh rate should be adapted to game refresh rate in (real) fullscreen mode
 
-      @return  True if the refresh rate was changed
+      @return  True if the refresh rate should be changed
     */
-    bool adaptRefreshRate();
+    bool adaptRefreshRate(Int32 displayIndex, SDL_DisplayMode& closestSdlMode);
 
     /**
       This method is called to create a surface with the given attributes.
@@ -240,6 +240,16 @@ class FrameBufferSDL2 : public FrameBuffer
       Determine window and renderer dimensions.
      */
     void determineDimensions();
+
+    /**
+      Retrieve the current display's refresh rate, or 0 if no window
+    */
+    int refreshRate() const override;
+
+    /**
+      Retrieve the current game's refresh rate, or 60 if no game
+    */
+    int gameRefreshRate() const;
 
   private:
     // The SDL video buffer

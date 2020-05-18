@@ -52,9 +52,9 @@ Settings::Settings()
   setPermanent("tia.zoom", "3");
   setPermanent("fullscreen", "false");
   setPermanent("tia.fs_stretch", "false");
+  setPermanent("tia.fs_refresh", "false");
   setPermanent("tia.fs_overscan", "0");
   setPermanent("tia.vsizeadjust", 0);
-  setPermanent("tia.refresh", "false");
   setPermanent("tia.dbgcolors", "roygpb");
   // Palette options
   setPermanent("palette", PaletteHandler::SETTING_STANDARD);
@@ -442,6 +442,7 @@ void Settings::usage() const
     << "  -tia.inter       <1|0>        Enable interpolated (smooth) scaling for TIA\n"
     << "                                 image\n"
     << "  -tia.fs_stretch  <1|0>        Stretch TIA image to fill fullscreen mode\n"
+    << "  -tia.fs_refresh  <1|0>        Try to adapt display refresh rate to game\n"
     << "  -tia.fs_overscan <0-10>       Add overscan to TIA image in fullscreen mode\n"
     << "  -tia.dbgcolors   <string>     Debug colors to use for each object (see manual\n"
     << "                                 for description)\n"

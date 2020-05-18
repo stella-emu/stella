@@ -518,6 +518,11 @@ class FrameBuffer
     */
     virtual string about() const = 0;
 
+    /**
+      Retrieve the current display's refresh rate
+    */
+    virtual int refreshRate() const { return 0; }
+
   protected:
     // The parent system for the framebuffer
     OSystem& myOSystem;
