@@ -81,6 +81,13 @@ class FrameBuffer
       }
     };
 
+    struct DisplayMode
+    {
+      uInt32 display;
+      Common::Size size;
+      uInt32 refresh_rate;
+    };
+
     enum class BufferType {
       None,
       Launcher,
@@ -439,6 +446,7 @@ class FrameBuffer
     virtual int scaleY(int y) const { return y; }
 
   protected:
+
     /**
       This method is called to query and initialize the video hardware
       for desktop and fullscreen resolution information.  Since several

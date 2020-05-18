@@ -166,15 +166,21 @@ void VideoAudioDialog::addDisplayTab()
   myTVOverscan->setMinValue(0); myTVOverscan->setMaxValue(10);
   myTVOverscan->setTickmarkIntervals(2);
   wid.push_back(myTVOverscan);
+
+  // Adapt refresh rate
   ypos += lineHeight + VGAP;
+  myRefreshAdjust = new CheckboxWidget(myTab, _font, xpos + INDENT, ypos + 1, "Adapt refresh rate");
+  wid.push_back(myRefreshAdjust);
 
   // Vertical size
+  ypos += lineHeight + VGAP;
   myVSizeAdjust =
     new SliderWidget(myTab, _font, xpos, ypos-1, swidth, lineHeight,
                      "V-Size adjust", lwidth, kVSizeChanged, fontWidth * 7, "%", 0, true);
   myVSizeAdjust->setMinValue(-5); myVSizeAdjust->setMaxValue(5);
   myVSizeAdjust->setTickmarkIntervals(2);
   wid.push_back(myVSizeAdjust);
+
 
   // Add items for tab 0
   addToFocusList(wid, myTab, tabID);
@@ -486,6 +492,8 @@ void VideoAudioDialog::loadConfig()
   myUseStretch->setState(instance().settings().getBool("tia.fs_stretch"));
   // Fullscreen overscan setting
   myTVOverscan->setValue(instance().settings().getInt("tia.fs_overscan"));
+  // Adapt refresh rate
+  myRefreshAdjust->setState(instance().settings().getBool("tia.refresh"));
   handleFullScreenChange();
 
   // Aspect ratio setting (NTSC and PAL)
@@ -597,6 +605,8 @@ void VideoAudioDialog::saveConfig()
   instance().settings().setValue("tia.fs_stretch", myUseStretch->getState());
   // Fullscreen overscan
   instance().settings().setValue("tia.fs_overscan", myTVOverscan->getValueLabel());
+  // Adapt refresh rate
+  instance().settings().setValue("tia.refresh", myRefreshAdjust->getState());
 
   // TIA zoom levels
   instance().settings().setValue("tia.zoom", myTIAZoom->getValue() / 100.0);
@@ -709,6 +719,7 @@ void VideoAudioDialog::setDefaults()
       //myFullScreenMode->setSelectedIndex(0);
       myUseStretch->setState(false);
       myTVOverscan->setValue(0);
+      myRefreshAdjust->setState(false);
       myTIAZoom->setValue(300);
       myVSizeAdjust->setValue(0);
 
@@ -834,6 +845,7 @@ void VideoAudioDialog::handleFullScreenChange()
   bool enable = myFullscreen->getState();
   myUseStretch->setEnabled(enable);
   myTVOverscan->setEnabled(enable);
+  myRefreshAdjust->setEnabled(enable);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -181,6 +181,14 @@ class FrameBufferSDL2 : public FrameBuffer
     */
     bool setVideoMode(const string& title, const VideoMode& mode) override;
 
+
+    /**
+      Adapt display refresh rate to game refresh rate in (real) fullscreen mode
+
+      @return  True if the refresh rate was changed
+    */
+    bool adaptRefreshRate();
+
     /**
       This method is called to create a surface with the given attributes.
 
