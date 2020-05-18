@@ -340,7 +340,72 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
   if(SDL_GetRendererInfo(myRenderer, &renderinfo) >= 0)
     myOSystem.settings().setValue("video", renderinfo.name);
 
+  adaptRefreshRate();
+
   return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FrameBufferSDL2::adaptRefreshRate()
+{
+  const bool adapt = myOSystem.settings().getBool("tia.refresh");
+
+  // adapt only in emulation (and debugger?) and fullscreen mode
+  // TODO: adapt while creating new window
+  if(adapt && fullScreen()
+     && (myBufferType == BufferType::Emulator/* || myBufferType == BufferType::Debugger*/))
+  {
+    SDL_DisplayMode sdlMode;
+
+    if(SDL_GetWindowDisplayMode(myWindow, &sdlMode) != 0)
+    {
+      Logger::error("Display mode could not be retrieved");
+      return false;
+    }
+
+    const int currentRefreshRate = sdlMode.refresh_rate;
+    const string format = myOSystem.console().getFormatString();
+    const bool isNtsc = format == "NTSC" || format == "PAL60" || format == "SECAM60";
+
+    sdlMode.refresh_rate = isNtsc ? 60 : 50; // TODO: check for multiples e.g. 120/100 too
+
+    if(currentRefreshRate != sdlMode.refresh_rate)
+    {
+      const int display = SDL_GetWindowDisplayIndex(myWindow);
+      SDL_DisplayMode closestSdlMode;
+
+      if(SDL_GetClosestDisplayMode(display, &sdlMode, &closestSdlMode) == NULL)
+      {
+        Logger::error("Closest display mode could not be retrieved");
+        return false;
+      }
+      // Note: Modes are scanned with size being first priority,
+      //       therefore the size will never change.
+      // Only change if the display supports a better refresh rate
+      if(currentRefreshRate != closestSdlMode.refresh_rate)
+      {
+        // Switch to new mode
+        if(SDL_SetWindowDisplayMode(myWindow, &closestSdlMode) != 0)
+        {
+          Logger::error("Display refresh rate change failed");
+          return false;
+        }
+        // Any change only works in real fullscreen mode!
+        if(SDL_SetWindowFullscreen(myWindow, SDL_WINDOW_FULLSCREEN) != 0)
+        {
+          Logger::error("Display fullscreen change failed");
+          return false;
+        }
+        ostringstream msg;
+
+        msg << "Display refresh rate changed from " << currentRefreshRate << "Hz to "
+          << closestSdlMode.refresh_rate << "Hz";
+        Logger::info(msg.str());
+        return true;
+      }
+    }
+  }
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

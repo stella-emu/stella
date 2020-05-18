@@ -54,6 +54,7 @@ Settings::Settings()
   setPermanent("tia.fs_stretch", "false");
   setPermanent("tia.fs_overscan", "0");
   setPermanent("tia.vsizeadjust", 0);
+  setPermanent("tia.refresh", "false");
   setPermanent("tia.dbgcolors", "roygpb");
   // Palette options
   setPermanent("palette", PaletteHandler::SETTING_STANDARD);
