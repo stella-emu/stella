@@ -181,6 +181,14 @@ class FrameBufferSDL2 : public FrameBuffer
     */
     bool setVideoMode(const string& title, const VideoMode& mode) override;
 
+    /**
+      Create a new renderer if required
+
+      @param force  If true, force new renderer creation
+
+      @return  False on any errors, else true
+    */
+    bool createRenderer(bool force);
 
     /**
       Checks if the display refresh rate should be adapted to game refresh rate in (real) fullscreen mode
