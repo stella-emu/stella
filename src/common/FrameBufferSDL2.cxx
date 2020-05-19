@@ -482,7 +482,7 @@ int FrameBufferSDL2::gameRefreshRate() const
     const string format = myOSystem.console().getFormatString();
     const bool isNtsc = format == "NTSC" || format == "PAL60" || format == "SECAM60";
 
-    return isNtsc ? 75 : 50; // TODO: check for multiples e.g. 120/100 too
+    return isNtsc ? 60 : 50; // TODO: check for multiples e.g. 120/100 too
   }
   return 60;
 }
