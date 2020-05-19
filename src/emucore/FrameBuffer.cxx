@@ -959,6 +959,7 @@ void FrameBuffer::setFullscreen(bool enable)
     default:
       return;
   }
+  saveCurrentWindowPosition();
 
   // Changing the video mode can take some time, during which the last
   // sound played may get 'stuck'
@@ -993,15 +994,18 @@ void FrameBuffer::toggleFullscreen(bool toggle)
 
   setFullscreen(isFullscreen);
 
-  ostringstream msg;
+  if(myBufferType == BufferType::Emulator)
+  {
+    ostringstream msg;
 
-  msg << "Fullscreen ";
-  if(isFullscreen)
-    msg << "enabled (" << refreshRate() << " Hz)";
-  else
-    msg << "disabled";
+    msg << "Fullscreen ";
+    if(isFullscreen)
+      msg << "enabled (" << refreshRate() << " Hz)";
+    else
+      msg << "disabled";
 
-  showMessage(msg.str());
+    showMessage(msg.str());
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
