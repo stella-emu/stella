@@ -221,6 +221,7 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
   const bool fullScreen = mode.fsIndex != -1;
   const bool shouldAdapt = fullScreen && myOSystem.settings().getBool("tia.fs_refresh")
     && refreshRate() != gameRefreshRate();
+  bool forceCreateRenderer = false;
 
   // TODO: On multiple displays, switching from centered mode, does not respect
   //  current window's display (which many not be centered anymore)
@@ -230,12 +231,12 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
   // Get windowed window's last position
   myWindowedPos = myOSystem.settings().getPoint(getPositionKey());
 
-  // Always recreate renderer (some systems need this)
-  if(myRenderer)
-  {
-    SDL_DestroyRenderer(myRenderer);
-    myRenderer = nullptr;
-  }
+  //// Always recreate renderer (some systems need this)
+  //if(myRenderer)
+  //{
+  //  SDL_DestroyRenderer(myRenderer);
+  //  myRenderer = nullptr;
+  //}
 
   int posX, posY;
 
@@ -313,6 +314,7 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
 #endif
   else
   {
+    forceCreateRenderer = true;
     myWindow = SDL_CreateWindow(title.c_str(), posX, posY,
                                 mode.screen.w, mode.screen.h, flags);
     if(myWindow == nullptr)
@@ -340,24 +342,78 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
     }
   }
 
+  return createRenderer(forceCreateRenderer);
+
+  //uInt32 renderFlags = SDL_RENDERER_ACCELERATED;
+  //if(myOSystem.settings().getBool("vsync")
+  //   && !myOSystem.settings().getBool("turbo"))  // V'synced blits option
+  //  renderFlags |= SDL_RENDERER_PRESENTVSYNC;
+  //const string& video = myOSystem.settings().getString("video");  // Render hint
+  //if(video != "")
+  //  SDL_SetHint(SDL_HINT_RENDER_DRIVER, video.c_str());
+
+  //myRenderer = SDL_CreateRenderer(myWindow, -1, renderFlags);
+
+  //detectFeatures();
+  //determineDimensions();
+
+  //if(myRenderer == nullptr)
+  //{
+  //  string msg = "ERROR: Unable to create SDL renderer: " + string(SDL_GetError());
+  //  Logger::error(msg);
+  //  return false;
+  //}
+  //clear();
+
+  //SDL_RendererInfo renderinfo;
+  //if(SDL_GetRendererInfo(myRenderer, &renderinfo) >= 0)
+  //  myOSystem.settings().setValue("video", renderinfo.name);
+
+  //return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FrameBufferSDL2::createRenderer(bool force)
+{
+  // A new renderer is only created when necessary:
+  // - new myWindow (force = true)
+  // - no renderer existing
+  // - different renderer flags
+  // - different renderer name
+  bool recreate = force || myRenderer == nullptr;
   uInt32 renderFlags = SDL_RENDERER_ACCELERATED;
+  const string& video = myOSystem.settings().getString("video");  // Render hint
+  SDL_RendererInfo renderInfo;
+
   if(myOSystem.settings().getBool("vsync")
      && !myOSystem.settings().getBool("turbo"))  // V'synced blits option
     renderFlags |= SDL_RENDERER_PRESENTVSYNC;
-  const string& video = myOSystem.settings().getString("video");  // Render hint
-  if(video != "")
-    SDL_SetHint(SDL_HINT_RENDER_DRIVER, video.c_str());
 
-  myRenderer = SDL_CreateRenderer(myWindow, -1, renderFlags);
+  // check renderer flags and name
+  recreate |= (SDL_GetRendererInfo(myRenderer, &renderInfo) != 0)
+    || ((renderInfo.flags & (SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC)) != renderFlags
+    || (video != renderInfo.name));
 
-  detectFeatures();
-  determineDimensions();
-
-  if(myRenderer == nullptr)
+  if(recreate)
   {
-    string msg = "ERROR: Unable to create SDL renderer: " + string(SDL_GetError());
-    Logger::error(msg);
-    return false;
+    cerr << "Create new renderer " << int(myBufferType) << endl;
+    if(myRenderer)
+      SDL_DestroyRenderer(myRenderer);
+
+    if(video != "")
+      SDL_SetHint(SDL_HINT_RENDER_DRIVER, video.c_str());
+
+    myRenderer = SDL_CreateRenderer(myWindow, -1, renderFlags);
+
+    detectFeatures();
+    determineDimensions();
+
+    if(myRenderer == nullptr)
+    {
+      string msg = "ERROR: Unable to create SDL renderer: " + string(SDL_GetError());
+      Logger::error(msg);
+      return false;
+    }
   }
   clear();
 
@@ -482,7 +538,7 @@ int FrameBufferSDL2::gameRefreshRate() const
     const string format = myOSystem.console().getFormatString();
     const bool isNtsc = format == "NTSC" || format == "PAL60" || format == "SECAM60";
 
-    return isNtsc ? 60 : 50; // TODO: check for multiples e.g. 120/100 too
+    return isNtsc ? 75 : 50; // TODO: check for multiples e.g. 120/100 too
   }
   return 60;
 }
