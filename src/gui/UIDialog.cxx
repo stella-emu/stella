@@ -105,12 +105,13 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myDialogFontPopup);
 
   // Enable HiDPI mode
-  myHidpiWidget = new CheckboxWidget(myTab, font, myDialogFontPopup->getRight() + fontWidth * 5,
+  xpos = myDialogFontPopup->getRight() + fontWidth * 5;
+  myHidpiWidget = new CheckboxWidget(myTab, font, xpos,
                                      ypos + 1, "HiDPI mode (*)");
   wid.push_back(myHidpiWidget);
-  ypos += lineHeight + VGAP;
 
   // Dialog position
+  xpos = HBORDER; ypos += lineHeight + VGAP;
   items.clear();
   VarList::push_back(items, "Centered", 0);
   VarList::push_back(items, "Left top", 1);
@@ -120,14 +121,14 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   myPositionPopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                                     items, "Dialogs position", lwidth);
   wid.push_back(myPositionPopup);
-  ypos += lineHeight + VGAP * 2;
 
-  // Confirm dialog when exiting emulation
-  myConfirmExitWidget = new CheckboxWidget(myTab, font, xpos, ypos, "Confirm exiting emulation");
-  wid.push_back(myConfirmExitWidget);
-  ypos += lineHeight + VGAP * 3;
+  // Center window (in windowed mode)
+  xpos = myHidpiWidget->getLeft();
+  myCenter = new CheckboxWidget(myTab, _font, xpos, ypos + 1, "Center windows");
+  wid.push_back(myCenter);
 
   // Delay between quick-selecting characters in ListWidget
+  xpos = HBORDER; ypos += lineHeight + VGAP * 4;
   int swidth = myPalettePopup->getWidth() - lwidth;
   myListDelaySlider = new SliderWidget(myTab, font, xpos, ypos, swidth, lineHeight,
                                       "List input delay        ", 0, kListDelay,
@@ -303,6 +304,10 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   wid.clear();
   addDefaultsOKCancelBGroup(wid, font);
   addBGroupToFocusList(wid);
+
+#ifndef WINDOWED_SUPPORT
+  myCenter->clearFlags(Widget::FLAG_ENABLED);
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -353,6 +358,10 @@ void UIDialog::loadConfig()
   const string& pal = settings.getString("uipalette");
   myPalettePopup->setSelected(pal, "standard");
 
+  // Dialog font
+  const string& dialogFont = settings.getString("dialogfont");
+  myDialogFontPopup->setSelected(dialogFont, "medium");
+
   // Enable HiDPI mode
   if (!instance().frameBuffer().hidpiAllowed())
   {
@@ -364,15 +373,11 @@ void UIDialog::loadConfig()
     myHidpiWidget->setState(settings.getBool("hidpi"));
   }
 
-  // Confirm dialog when exiting emulation
-  myConfirmExitWidget->setState(settings.getBool("confirmexit"));
-
-  // Dialog font
-  const string& dialogFont = settings.getString("dialogfont");
-  myDialogFontPopup->setSelected(dialogFont, "medium");
-
   // Dialog position
   myPositionPopup->setSelected(settings.getString("dialogpos"), "0");
+
+  // Center window
+  myCenter->setState(settings.getBool("center"));
 
   // Listwidget quick delay
   int delay = settings.getInt("listdelay");
@@ -436,18 +441,18 @@ void UIDialog::saveConfig()
     myPalettePopup->getSelectedTag().toString());
   instance().frameBuffer().setUIPalette();
 
-  // Enable HiDPI mode
-  settings.setValue("hidpi", myHidpiWidget->getState());
-
   // Dialog font
   settings.setValue("dialogfont",
                     myDialogFontPopup->getSelectedTag().toString());
 
+  // Enable HiDPI mode
+  settings.setValue("hidpi", myHidpiWidget->getState());
+
   // Dialog position
   settings.setValue("dialogpos", myPositionPopup->getSelectedTag().toString());
 
-  // Confirm dialog when exiting emulation
-  settings.setValue("confirmexit", myConfirmExitWidget->getState());
+  // Center window
+  settings.setValue("center", myCenter->getState());
 
   // Listwidget quick delay
   settings.setValue("listdelay", myListDelaySlider->getValue());
@@ -481,10 +486,10 @@ void UIDialog::setDefaults()
   {
     case 0:  // Misc. options
       myPalettePopup->setSelected("standard");
-      myHidpiWidget->setState(false);
       myDialogFontPopup->setSelected("medium", "");
+      myHidpiWidget->setState(false);
       myPositionPopup->setSelected("0");
-      myConfirmExitWidget->setState(false);
+      myCenter->setState(false);
       myListDelaySlider->setValue(300);
       myWheelLinesSlider->setValue(4);
       myDoubleClickSlider->setValue(500);

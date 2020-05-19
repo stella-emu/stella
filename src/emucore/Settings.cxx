@@ -21,6 +21,7 @@
 #include "Version.hxx"
 #include "Logger.hxx"
 #include "AudioSettings.hxx"
+#include "PaletteHandler.hxx"
 #include "Paddles.hxx"
 
 #ifdef DEBUGGER_SUPPORT
@@ -45,31 +46,30 @@ Settings::Settings()
   setPermanent("center", "true");
   setPermanent("windowedpos", Common::Point(50, 50));
   setPermanent("display", 0);
-  setPermanent("palette", "standard");
-  setPermanent("phase_ntsc", "26.2");
-  setPermanent("phase_pal", "31.3");
   setPermanent("uimessages", "true");
-
   // TIA specific options
-  setPermanent("tia.zoom", "3");
   setPermanent("tia.inter", "false");
-  setPermanent("tia.vsizeadjust", 0);
+  setPermanent("tia.zoom", "3");
   setPermanent("fullscreen", "false");
   setPermanent("tia.fs_stretch", "false");
   setPermanent("tia.fs_overscan", "0");
+  setPermanent("tia.vsizeadjust", 0);
   setPermanent("tia.dbgcolors", "roygpb");
-
+  // Palette options
+  setPermanent("palette", PaletteHandler::SETTING_STANDARD);
+  setPermanent("pal.phase_ntsc", "26.2");
+  setPermanent("pal.phase_pal", "31.3");
+  setPermanent("pal.contrast", "0.0");
+  setPermanent("pal.brightness", "0.0");
+  setPermanent("pal.hue", "0.0");
+  setPermanent("pal.saturation", "0.0");
+  setPermanent("pal.gamma", "0.0");
   // TV filtering options
   setPermanent("tv.filter", "0");
   setPermanent("tv.phosphor", "byrom");
   setPermanent("tv.phosblend", "50");
   setPermanent("tv.scanlines", "25");
   // TV options when using 'custom' mode
-  setPermanent("tv.contrast", "0.0");
-  setPermanent("tv.brightness", "0.0");
-  setPermanent("tv.hue", "0.0");
-  setPermanent("tv.saturation", "0.0");
-  setPermanent("tv.gamma", "0.0");
   setPermanent("tv.sharpness", "0.0");
   setPermanent("tv.resolution", "0.0");
   setPermanent("tv.artifacts", "0.0");
@@ -358,8 +358,11 @@ void Settings::validate()
   else if(i > 10)  setValue("ssinterval", "10");
 
   s = getString("palette");
-  if(s != "standard" && s != "z26" && s != "user" && s != "custom")
-    setValue("palette", "standard");
+  if(s != PaletteHandler::SETTING_STANDARD
+     && s != PaletteHandler::SETTING_Z26
+     && s != PaletteHandler::SETTING_USER
+     && s != PaletteHandler::SETTING_CUSTOM)
+    setValue("palette", PaletteHandler::SETTING_STANDARD);
 
   s = getString("launcherfont");
   if(s != "small" && s != "low_medium" && s != "medium" && s != "large"
@@ -407,8 +410,13 @@ void Settings::usage() const
     << "  -palette      <standard|     Use the specified color palette\n"
     << "                 z26|user|\n"
     << "                 custom>\n"
-    << "  -phase_ntsc   <number>       Phase shift for NTSC custom color palette\n"
-    << "  -phase_pal    <number>       Phase shift for PAL custom color palette\n"
+    << "  -pal.phase_ntsc <number>      Phase shift for NTSC 'custom' palette\n"
+    << "  -pal.phase_pal  <number>      Phase shift for PAL 'custom' palette\n"
+    << "  -pal.hue        <-1.0 - 1.0>  Adjust hue for current palette\n"
+    << "  -pal.saturation <-1.0 - 1.0>  Adjust saturation of current palette\n"
+    << "  -pal.contrast   <-1.0 - 1.0>  Adjust contrast of current palette\n"
+    << "  -pal.brightness <-1.0 - 1.0>  Adjust brightness of current palette\n"
+    << "  -pal.gamma      <-1.0 - 1.0>  Adjust gamma of current palette\n"
     << "  -speed        <number>       Run emulation at the given speed\n"
     << "  -turbo        <1|0>          Enable 'Turbo' mode for maximum emulation speed\n"
     << "  -uimessages   <1|0>          Show onscreen UI messages for different events\n"
@@ -443,11 +451,6 @@ void Settings::usage() const
     << "  -tv.phosblend <0-100>         Set default blend level in phosphor mode\n"
     << "  -tv.scanlines <0-100>         Set scanline intensity to percentage\n"
     << "                                 (0 disables completely)\n"
-    << "  -tv.contrast    <-1.0 - 1.0>  Set TV effects custom contrast\n"
-    << "  -tv.brightness  <-1.0 - 1.0>  Set TV effects custom brightness\n"
-    << "  -tv.hue         <-1.0 - 1.0>  Set TV effects custom hue\n"
-    << "  -tv.saturation  <-1.0 - 1.0>  Set TV effects custom saturation\n"
-    << "  -tv.gamma       <-1.0 - 1.0>  Set TV effects custom gamma\n"
     << "  -tv.sharpness   <-1.0 - 1.0>  Set TV effects custom sharpness\n"
     << "  -tv.resolution  <-1.0 - 1.0>  Set TV effects custom resolution\n"
     << "  -tv.artifacts   <-1.0 - 1.0>  Set TV effects custom artifacts\n"

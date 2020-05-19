@@ -2,7 +2,6 @@ MODULE := src/gui
 
 MODULE_OBJS := \
 	src/gui/AboutDialog.o \
-	src/gui/AudioDialog.o \
 	src/gui/BrowserDialog.o \
 	src/gui/CheckListWidget.o \
 	src/gui/ColorWidget.o \
@@ -15,6 +14,7 @@ MODULE_OBJS := \
 	src/gui/Dialog.o \
 	src/gui/EditableWidget.o \
 	src/gui/EditTextWidget.o \
+	src/gui/EmulationDialog.o \
 	src/gui/EventMappingWidget.o \
 	src/gui/FileListWidget.o \
 	src/gui/Font.o \
@@ -49,7 +49,7 @@ MODULE_OBJS := \
 	src/gui/TimeMachineDialog.o \
 	src/gui/TimeMachine.o \
 	src/gui/UIDialog.o \
-	src/gui/VideoDialog.o \
+	src/gui/VideoAudioDialog.o \
 	src/gui/Widget.o
 
 MODULE_DIRS += \

@@ -147,6 +147,19 @@ class FrameBuffer
     void showMessage(const string& message,
                      MessagePosition position = MessagePosition::BottomCenter,
                      bool force = false);
+    /**
+      Shows a message with a gauge bar onscreen.
+
+      @param message    The message to be shown
+      @param valueText  The value of the gauge bar as text
+      @param value      The gauge bar percentage
+      @param minValue   The minimal value of the gauge bar
+      @param maxValue   The maximal value of the gauge bar
+    */
+    void showMessage(const string& message, const string& valueText,
+                     float value, float minValue = 0.F, float maxValue = 100.F);
+
+    bool messageShown();
 
     /**
       Toggles showing or hiding framerate statistics.
@@ -247,14 +260,14 @@ class FrameBuffer
     /**
       Toggles between fullscreen and window mode.
     */
-    void toggleFullscreen();
+    void toggleFullscreen(bool toggle = true);
 
     /**
       Changes the fullscreen overscan.
-        direction = -1 means less overscan
-        direction = +1 means more overscan
+
+      @param direction  +1 indicates increase, -1 indicates decrease.
     */
-    void changeOverscan(int direction);
+    void changeOverscan(int direction = +1);
 
     /**
       This method is called when the user wants to switch to the next
@@ -264,9 +277,9 @@ class FrameBuffer
         direction = -1 means go to the next lower video mode
         direction = +1 means go to the next higher video mode
 
-      @param direction  Described above
+      @param direction  +1 indicates increase, -1 indicates decrease.
     */
-    bool changeVidMode(int direction);
+    void selectVidMode(int direction = +1);
 
     /**
       Sets the state of the cursor (hidden or grabbed) based on the
@@ -502,6 +515,11 @@ class FrameBuffer
     OSystem& myOSystem;
 
   private:
+    // Maximum message width [chars]
+    static constexpr int MESSAGE_WIDTH = 56;
+    // Maximum gauge bar width [chars]
+    static constexpr int GAUGEBAR_WIDTH = 30;
+
     /**
       Draw pending messages.
 
@@ -648,6 +666,9 @@ class FrameBuffer
       ColorId color{kNone};
       shared_ptr<FBSurface> surface;
       bool enabled{false};
+      bool showGauge{false};
+      float value{0.0F};
+      string valueText;
     };
     Message myMsg;
     Message myStatsMsg;

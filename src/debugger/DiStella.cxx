@@ -1179,7 +1179,7 @@ void DiStella::outputColors()
     color = SECAM_COLOR[(byte >> 1) & 0x7];
     myDisasmBuf << "$" << Base::HEX1 << (byte >> 4) << "|" << color;
   }
-  myDisasmBuf << std::setw(16 - color.length()) << std::setfill(' ');
+  myDisasmBuf << std::setw(int(16 - color.length())) << std::setfill(' ');
 
   // output address
   myDisasmBuf << "; $" << Base::HEX4 << myPC + myOffset << " "

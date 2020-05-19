@@ -115,8 +115,10 @@ class StateManager
 
     /**
       Switches to the next higher or lower state slot (circular queue style).
+
+      @param direction  +1 indicates increase, -1 indicates decrease.
     */
-    void changeState(int direction);
+    void changeState(int direction = +1);
 
     /**
       Toggles auto slot mode.

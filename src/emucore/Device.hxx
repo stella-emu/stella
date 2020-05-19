@@ -20,9 +20,9 @@
 
 class System;
 
-#include "Console.hxx"
-#include "Serializable.hxx"
 #include "bspf.hxx"
+#include "ConsoleTiming.hxx"
+#include "Serializable.hxx"
 
 /**
   Abstract base class for devices which can be attached to a 6502

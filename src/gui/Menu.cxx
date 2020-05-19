@@ -19,6 +19,7 @@
 #include "FrameBufferConstants.hxx"
 #include "OptionsDialog.hxx"
 #include "StellaSettingsDialog.hxx"
+#include "OSystem.hxx"
 #include "FrameBuffer.hxx"
 #include "bspf.hxx"
 #include "Menu.hxx"

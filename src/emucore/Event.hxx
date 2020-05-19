@@ -22,7 +22,6 @@
 #include <set>
 
 #include "bspf.hxx"
-#include "StellaKeys.hxx"
 
 /**
   @author  Stephen Anthony, Christian Speckner, Thomas Jentzsch
@@ -92,6 +91,7 @@ class Event
       TogglePauseMode, StartPauseMode,
       OptionsMenuMode, CmdMenuMode, DebuggerMode, ExitMode,
       TakeSnapshot, ToggleContSnapshots, ToggleContSnapshotsFrame,
+      ToggleTurbo,
 
       NextState, PreviousState, LoadState, SaveState,
       SaveAllStates, LoadAllStates,
@@ -100,12 +100,15 @@ class Event
       Unwind1Menu, Unwind10Menu, UnwindAllMenu,
       RewindPause, UnwindPause,
 
-      FormatDecrease, FormatIncrease, TogglePalette, ToggleColorLoss,
+      FormatDecrease, FormatIncrease, PaletteDecrease, PaletteIncrease, ToggleColorLoss,
+      PreviousPaletteAttribute, NextPaletteAttribute,
+      PaletteAttributeDecrease, PaletteAttributeIncrease,
       ToggleFullScreen, VidmodeDecrease, VidmodeIncrease,
-      VCenterDecrease, VCenterIncrease, ScanlineAdjustDecrease, ScanlineAdjustIncrease,
+      VCenterDecrease, VCenterIncrease, VSizeAdjustDecrease, VSizeAdjustIncrease,
       OverscanDecrease, OverscanIncrease,
 
       VidmodeStd, VidmodeRGB, VidmodeSVideo, VidModeComposite, VidModeBad, VidModeCustom,
+      PreviousVideoMode, NextVideoMode,
       PreviousAttribute, NextAttribute, DecreaseAttribute, IncreaseAttribute,
       ScanlinesDecrease, ScanlinesIncrease,
       PhosphorDecrease, PhosphorIncrease, TogglePhosphor, ToggleInter, ToggleJitter,
@@ -118,10 +121,8 @@ class Event
       ToggleCollisions, ToggleBits, ToggleFixedColors,
 
       ToggleFrameStats, ToggleSAPortOrder, ExitGame,
-
       // add new events from here to avoid that user remapped events get overwritten
-      ToggleTurbo,
-      ColorShiftDecrease, ColorShiftIncrease,
+      SettingDecrease, SettingIncrease, PreviousSetting, NextSetting,
 
       LastType
     };
@@ -136,7 +137,7 @@ class Event
     };
 
     // Event list version, update only if the id of existing(!) event types changed
-    static constexpr Int32 VERSION = 3;
+    static constexpr Int32 VERSION = 4;
 
     using EventSet = std::set<Event::Type>;
 

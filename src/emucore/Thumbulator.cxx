@@ -108,6 +108,7 @@ void Thumbulator::setConsoleTiming(ConsoleTiming timing)
     case ConsoleTiming::ntsc:   timing_factor = NTSC;   break;
     case ConsoleTiming::secam:  timing_factor = SECAM;  break;
     case ConsoleTiming::pal:    timing_factor = PAL;    break;
+    default:  break;  // satisfy compiler
   }
 }
 

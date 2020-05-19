@@ -18,11 +18,10 @@
 #ifndef SYSTEM_HXX
 #define SYSTEM_HXX
 
-class Device;
 class M6502;
 class M6532;
 class TIA;
-class NullDevice;
+class Cartridge;
 
 #include "bspf.hxx"
 #include "Device.hxx"

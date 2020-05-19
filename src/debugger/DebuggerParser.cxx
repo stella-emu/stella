@@ -30,6 +30,7 @@
 #include "M6502.hxx"
 #include "Expression.hxx"
 #include "FSNode.hxx"
+#include "OSystem.hxx"
 #include "Settings.hxx"
 #include "PromptWidget.hxx"
 #include "RomWidget.hxx"
@@ -1743,7 +1744,7 @@ void DebuggerParser::executeRunTo()
 
   bool done = false;
   do {
-    debugger.step();
+    debugger.step(false);
 
     // Update romlist to point to current PC
     int pcline = cartdbg.addressToLine(debugger.cpuDebug().pc());
@@ -1777,22 +1778,32 @@ void DebuggerParser::executeRunToPc()
 
   uInt32 count = 0;
   bool done = false;
+  constexpr uInt32 max_iterations = 1000000;
+  // Create a progress dialog box to show the progress searching through the
+  // disassembly, since this may be a time-consuming operation
+  ostringstream buf;
+  buf << "RunTo PC searching through " << max_iterations << " instructions";
+  ProgressDialog progress(debugger.baseDialog(), debugger.lfont(), buf.str());
+  progress.setRange(0, max_iterations, 5);
+
   do {
-    debugger.step();
+    debugger.step(false);
 
     // Update romlist to point to current PC
     int pcline = cartdbg.addressToLine(debugger.cpuDebug().pc());
     done = (pcline >= 0) && (list[pcline].address == args[0]);
-  } while(!done && ++count < list.size());
+    progress.setProgress(count);
+  } while(!done && ++count < max_iterations/*list.size()*/);
+  progress.close();
 
   if(done)
     commandResult
-      << "set PC to " << Base::HEX4 << args[0] << " in "
-      << dec << count << " disassembled instructions";
+      << "Set PC to $" << Base::HEX4 << args[0] << " in "
+      << dec << count << " instructions";
   else
     commandResult
-      << "PC " << Base::HEX4 << args[0] << " not reached or found in "
-      << dec << count << " disassembled instructions";
+      << "PC $" << Base::HEX4 << args[0] << " not reached or found in "
+      << dec << count << " instructions";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1930,9 +1941,23 @@ void DebuggerParser::executeStepwhile()
   }
   Expression* expr = YaccParser::getResult();
   int ncycles = 0;
+  uInt32 count = 0;
+  constexpr uInt32 max_iterations = 1000000;
+
+  // Create a progress dialog box to show the progress searching through the
+  // disassembly, since this may be a time-consuming operation
+  ostringstream buf;
+  buf << "stepwhile running through " << max_iterations << " disassembled instructions";
+  ProgressDialog progress(debugger.baseDialog(), debugger.lfont(), buf.str());
+  progress.setRange(0, max_iterations, 5);
+
   do {
-    ncycles += debugger.step();
-  } while (expr->evaluate());
+    ncycles += debugger.step(false);
+
+    progress.setProgress(count);
+  } while (expr->evaluate() && ++count < max_iterations);
+
+  progress.close();
   commandResult << "executed " << ncycles << " cycles";
 }
 

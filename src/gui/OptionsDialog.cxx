@@ -23,8 +23,8 @@
 #include "Widget.hxx"
 #include "Font.hxx"
 #include "Control.hxx"
-#include "VideoDialog.hxx"
-#include "AudioDialog.hxx"
+#include "EmulationDialog.hxx"
+#include "VideoAudioDialog.hxx"
 #include "InputDialog.hxx"
 #include "UIDialog.hxx"
 #include "SnapshotDialog.hxx"
@@ -89,13 +89,10 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
     return bw;
   };
 
-  b = ADD_OD_BUTTON("Video" + ELLIPSIS, kVidCmd);
+  b = ADD_OD_BUTTON("Video & Audio" + ELLIPSIS, kVidCmd);
   wid.push_back(b);
 
-  b = ADD_OD_BUTTON("Audio" + ELLIPSIS, kAudCmd);
-#ifndef SOUND_SUPPORT
-  b->clearFlags(Widget::FLAG_ENABLED);
-#endif
+  b = ADD_OD_BUTTON("Emulation" + ELLIPSIS, kEmuCmd);
   wid.push_back(b);
 
   b = ADD_OD_BUTTON("Input" + ELLIPSIS, kInptCmd);
@@ -143,8 +140,8 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   addCancelWidget(b);
 
   // Now create all the dialogs attached to each menu button
-  myVideoDialog    = make_unique<VideoDialog>(osystem, parent, _font, max_w, max_h);
-  myAudioDialog    = make_unique<AudioDialog>(osystem, parent, _font);
+  myVideoDialog    = make_unique<VideoAudioDialog>(osystem, parent, _font, max_w, max_h);
+  myEmulationDialog= make_unique<EmulationDialog>(osystem, parent, _font, max_w, max_h);
   myInputDialog    = make_unique<InputDialog>(osystem, parent, _font, max_w, max_h);
   myUIDialog       = make_unique<UIDialog>(osystem, parent, _font, boss, max_w, max_h);
   mySnapshotDialog = make_unique<SnapshotDialog>(osystem, parent, _font, max_w, max_h);
@@ -212,6 +209,10 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
         instance().eventHandler().leaveMenuMode();
       break;
 
+    case kEmuCmd:
+      myEmulationDialog->open();
+      break;
+
     case kVidCmd:
     {
       // This dialog is resizable under certain conditions, so we need
@@ -220,17 +221,12 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
 
       if(myVideoDialog == nullptr || myVideoDialog->shouldResize(w, h))
       {
-        myVideoDialog = make_unique<VideoDialog>(instance(), parent(),
+        myVideoDialog = make_unique<VideoAudioDialog>(instance(), parent(),
                                                  instance().frameBuffer().font(), w, h);
       }
       myVideoDialog->open();
       break;
     }
-
-    case kAudCmd:
-      myAudioDialog->open();
-      break;
-
     case kInptCmd:
     {
       // This dialog is resizable under certain conditions, so we need

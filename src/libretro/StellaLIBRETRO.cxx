@@ -21,13 +21,13 @@
 #include "FrameBufferLIBRETRO.hxx"
 
 #include "AtariNTSC.hxx"
+#include "PaletteHandler.hxx"
 #include "AudioSettings.hxx"
 #include "Serializer.hxx"
 #include "StateManager.hxx"
 #include "Switches.hxx"
 #include "TIA.hxx"
 #include "TIASurface.hxx"
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StellaLIBRETRO::StellaLIBRETRO()
@@ -40,7 +40,7 @@ StellaLIBRETRO::StellaLIBRETRO()
   video_aspect_ntsc = 0;
   video_aspect_pal = 0;
 
-  video_palette = "standard";
+  video_palette = PaletteHandler::SETTING_STANDARD;
   video_filter = NTSCFilter::Preset::OFF;
   video_ready = false;
 
@@ -374,19 +374,12 @@ void StellaLIBRETRO::setVideoFilter(NTSCFilter::Preset mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StellaLIBRETRO::setVideoPalette(uInt32 mode)
+void StellaLIBRETRO::setVideoPalette(const string& mode)
 {
-  switch (mode)
-  {
-    case 0: video_palette = "standard"; break;
-    case 1: video_palette = "z26"; break;
-    case 2: video_palette = "user"; break;
-  }
-
   if (system_ready)
   {
     myOSystem->settings().setValue("palette", video_palette);
-    myOSystem->console().setPalette(video_palette);
+    myOSystem->frameBuffer().tiaSurface().paletteHandler().setPalette(video_palette);
   }
 }
 

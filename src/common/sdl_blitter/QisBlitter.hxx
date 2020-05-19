@@ -18,8 +18,9 @@
 #ifndef QIS_BLITTER_HXX
 #define QIS_BLITTER_HXX
 
+class FrameBufferSDL2;
+
 #include "Blitter.hxx"
-#include "FrameBufferSDL2.hxx"
 #include "SDL_lib.hxx"
 
 class QisBlitter : public Blitter {

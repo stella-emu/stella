@@ -24,7 +24,6 @@ class System;
 #include "Cart3E.hxx"
 
 #ifdef DEBUGGER_SUPPORT
-class Cartridge3EPlusWidget;
   #include "Cart3EPlusWidget.hxx"
 #endif
 

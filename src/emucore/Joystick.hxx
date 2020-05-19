@@ -19,8 +19,8 @@
 #define JOYSTICK_HXX
 
 #include "bspf.hxx"
-#include "Control.hxx"
 #include "Event.hxx"
+#include "Control.hxx"
 
 /**
   The standard Atari 2600 joystick controller.

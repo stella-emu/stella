@@ -39,7 +39,6 @@ class AudioSettings;
 #include "FrameBufferConstants.hxx"
 #include "Serializable.hxx"
 #include "EventHandlerConstants.hxx"
-#include "NTSCFilter.hxx"
 #include "EmulationTiming.hxx"
 #include "ConsoleTiming.hxx"
 #include "frame-manager/AbstractFrameManager.hxx"
@@ -190,14 +189,14 @@ class Console : public Serializable, public ConsoleIO
     /**
       Toggle between NTSC/PAL/SECAM (and variants) display format.
 
-      @param direction +1 indicates increase, -1 indicates decrease.
+      @param direction  +1 indicates increase, -1 indicates decrease.
     */
-    void toggleFormat(int direction = 1);
+    void selectFormat(int direction = +1);
 
     /**
       Set NTSC/PAL/SECAM (and variants) display format.
     */
-    void setFormat(uInt32 format);
+    void setFormat(uInt32 format, bool force = false);
 
     /**
       Get NTSC/PAL/SECAM (and variants) display format name
@@ -205,26 +204,9 @@ class Console : public Serializable, public ConsoleIO
     string getFormatString() const { return myDisplayFormat; }
 
     /**
-      Toggle between the available palettes.
-    */
-    void togglePalette();
-
-    /**
-      Generates a custom palette, based on user defined phase shifts.
-    */
-    void generateCustomPalette(int type);
-
-    /**
-      Sets the palette according to the given palette name.
-
-      @param palette  The palette to switch to.
-    */
-    void setPalette(const string& palette);
-
-    /**
       Toggle interpolation on/off
     */
-    void toggleInter();
+    void toggleInter(bool toggle = true);
 
     /**
       Toggle turbo mode on/off
@@ -240,9 +222,9 @@ class Console : public Serializable, public ConsoleIO
     /**
       Change the "Display.PPBlend" variable.
 
-      @param direction +1 indicates increase, -1 indicates decrease.
+      @param direction  +1 indicates increase, -1 indicates decrease.
     */
-    void changePhosphor(int direction);
+    void changePhosphor(int direction = +1);
 
     /**
       Toggles the PAL color-loss effect.
@@ -275,28 +257,18 @@ class Console : public Serializable, public ConsoleIO
     /**
       Change the "Display.VCenter" variable.
 
-      @param direction +1 indicates increase, -1 indicates decrease.
+      @param direction  +1 indicates increase, -1 indicates decrease.
     */
-    void changeVerticalCenter(int direction);
+    void changeVerticalCenter(int direction = +1);
 
     /**
       Change the "TIA scanline adjust" variable.
       Note that there are currently two of these (NTSC and PAL).  The currently
       active mode will determine which one is used.
 
-      @param direction +1 indicates increase, -1 indicates decrease.
+      @param direction  +1 indicates increase, -1 indicates decrease.
     */
-    void changeScanlineAdjust(int direction);
-
-    /**
-      Change the "phase shift" variable.
-      Note that there are two of these (NTSC and PAL).  The currently
-      active mode will determine which one is used.
-
-      @param direction +1 indicates increase, -1 indicates decrease.
-
-    */
-    void changeColorPhaseShift(int direction);
+    void changeVSizeAdjust(int direction = +1);
 
     /**
       Returns the current framerate.
@@ -379,35 +351,10 @@ class Console : public Serializable, public ConsoleIO
     unique_ptr<Controller> getControllerPort(const Controller::Type type,
                                              const Controller::Jack port, const string& romMd5);
 
-    /**
-      Loads a user-defined palette file (from OSystem::paletteFile), filling the
-      appropriate user-defined palette arrays.
-    */
-    void loadUserPalette();
-
-    /**
-      Loads all defined palettes with PAL color-loss data, even those that
-      normally can't have it enabled (NTSC), since it's also used for
-      'greying out' the frame in the debugger.
-    */
-    void generateColorLossPalette();
-
-    int getPaletteNum(const string& name) const;
-
-
     void toggleTIABit(TIABit bit, const string& bitname, bool show = true) const;
     void toggleTIACollision(TIABit bit, const string& bitname, bool show = true) const;
 
   private:
-
-    enum PaletteType {
-      Standard,
-      Z26,
-      User,
-      Custom,
-      NumTypes
-    };
-
     // Reference to the osystem object
     OSystem& myOSystem;
 
@@ -457,10 +404,6 @@ class Console : public Serializable, public ConsoleIO
     // Is the TV format autodetected?
     bool myFormatAutodetected{false};
 
-    // Indicates whether an external palette was found and
-    // successfully loaded
-    bool myUserPaletteDefined{false};
-
     // Contains detailed info about this console
     ConsoleInfo myConsoleInfo;
 
@@ -473,25 +416,6 @@ class Console : public Serializable, public ConsoleIO
 
     // The audio settings
     AudioSettings& myAudioSettings;
-
-    // Table of RGB values for NTSC, PAL and SECAM
-    static PaletteArray ourNTSCPalette;
-    static PaletteArray ourPALPalette;
-    static PaletteArray ourSECAMPalette;
-
-    // Table of RGB values for NTSC, PAL and SECAM - Z26 version
-    static PaletteArray ourNTSCPaletteZ26;
-    static PaletteArray ourPALPaletteZ26;
-    static PaletteArray ourSECAMPaletteZ26;
-
-    // Table of RGB values for NTSC, PAL and SECAM - user-defined
-    static PaletteArray ourUserNTSCPalette;
-    static PaletteArray ourUserPALPalette;
-    static PaletteArray ourUserSECAMPalette;
-
-    // Table of RGB values for NTSC, PAL - custom-defined
-    static PaletteArray ourCustomNTSCPalette;
-    static PaletteArray ourCustomPALPalette;
 
   private:
     // Following constructors and assignment operators not supported

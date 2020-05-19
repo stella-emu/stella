@@ -18,11 +18,11 @@
 #ifndef TIA_PLAYFIELD
 #define TIA_PLAYFIELD
 
-#include "Serializable.hxx"
+class TIA;
+
 #include "bspf.hxx"
 #include "TIAConstants.hxx"
-
-class TIA;
+#include "Serializable.hxx"
 
 class Playfield : public Serializable
 {

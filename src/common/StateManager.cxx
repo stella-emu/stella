@@ -299,15 +299,14 @@ void StateManager::saveState(int slot)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StateManager::changeState(int direction)
 {
-  myCurrentSlot += direction;
-  if (myCurrentSlot < 0)
-    myCurrentSlot = 9;
-  else
-    myCurrentSlot %= 10;
+  myCurrentSlot = BSPF::clampw(myCurrentSlot + direction, 0, 9);
 
   // Print appropriate message
   ostringstream buf;
-  buf << "Changed to slot " << myCurrentSlot;
+  if(direction)
+    buf << "Changed to state slot " << myCurrentSlot;
+  else
+    buf << "State slot " << myCurrentSlot;
   myOSystem.frameBuffer().showMessage(buf.str());
 }
 

@@ -88,10 +88,9 @@ class Sound
     /**
       Adjusts the volume of the sound device based on the given direction.
 
-      @param direction  Increase or decrease the current volume by a predefined
-                        amount based on the direction (1 = increase, -1 =decrease)
+      @param direction  +1 indicates increase, -1 indicates decrease.
     */
-    virtual void adjustVolume(Int8 direction) = 0;
+    virtual void adjustVolume(int direction = 1) = 0;
 
     /**
       This method is called to provide information about the sound device.

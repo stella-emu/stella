@@ -306,7 +306,7 @@ class Debugger : public DialogContainer
     */
     void setQuitState();
 
-    int step();
+    int step(bool save = true);
     int trace();
     void nextScanline(int lines);
     void nextFrame(int frames);

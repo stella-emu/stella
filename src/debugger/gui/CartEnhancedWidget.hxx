@@ -25,6 +25,7 @@ namespace GUI {
   class Font;
 }
 
+#include "Variant.hxx"
 #include "CartDebugWidget.hxx"
 
 class CartridgeEnhancedWidget : public CartDebugWidget

@@ -20,7 +20,7 @@
 
 #include "bspf.hxx"
 #include "Serializable.hxx"
-#include "Console.hxx"
+#include "ConsoleTiming.hxx"
 
 class PaddleReader : public Serializable
 {

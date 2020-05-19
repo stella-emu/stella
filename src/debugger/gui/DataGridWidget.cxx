@@ -18,6 +18,7 @@
 #include "Widget.hxx"
 #include "Dialog.hxx"
 #include "Font.hxx"
+#include "OSystem.hxx"
 #include "Debugger.hxx"
 #include "FrameBuffer.hxx"
 #include "FBSurface.hxx"

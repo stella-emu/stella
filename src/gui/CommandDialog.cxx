@@ -16,6 +16,7 @@
 //============================================================================
 
 #include "Console.hxx"
+#include "PaletteHandler.hxx"
 #include "TIA.hxx"
 #include "Switches.hxx"
 #include "Dialog.hxx"
@@ -198,12 +199,12 @@ void CommandDialog::handleCommand(CommandSender* sender, int cmd,
 
     // Column 3
     case kFormatCmd:
-      instance().console().toggleFormat();
+      instance().console().selectFormat();
       updateTVFormat();
       break;
 
     case kPaletteCmd:
-      instance().console().togglePalette();
+      instance().frameBuffer().tiaSurface().paletteHandler().cyclePalette();
       updatePalette();
       break;
 
@@ -269,11 +270,11 @@ void CommandDialog::updatePalette()
   string palette, label;
 
   palette = instance().settings().getString("palette");
-  if(BSPF::equalsIgnoreCase(palette, "standard"))
+  if(BSPF::equalsIgnoreCase(palette, PaletteHandler::SETTING_STANDARD))
     label = "Stella Palette";
-  else if(BSPF::equalsIgnoreCase(palette, "z26"))
+  else if(BSPF::equalsIgnoreCase(palette, PaletteHandler::SETTING_Z26))
     label = "Z26 Palette";
-  else if(BSPF::equalsIgnoreCase(palette, "user"))
+  else if(BSPF::equalsIgnoreCase(palette, PaletteHandler::SETTING_USER))
     label = "User Palette";
   else
     label = "Custom Palette";

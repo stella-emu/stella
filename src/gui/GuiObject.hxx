@@ -27,7 +27,6 @@ class Widget;
 class OSystem;
 
 #include "Command.hxx"
-#include "OSystem.hxx"
 #include "Vec.hxx"
 
 using WidgetArray = vector<Widget*>;

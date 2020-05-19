@@ -15,6 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include <cmath>
+
 #include "Control.hxx"
 #include "Event.hxx"
 #include "System.hxx"

@@ -17,6 +17,7 @@
 
 #include "M6502.hxx"
 #include "System.hxx"
+#include "Settings.hxx"
 #include "CartAR.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

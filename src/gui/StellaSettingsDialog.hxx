@@ -23,7 +23,6 @@ class PopUpWidget;
 #include "Props.hxx"
 #include "Menu.hxx"
 #include "Dialog.hxx"
-#include "MessageBox.hxx"
 
 #if defined(RETRON77)
   #include "R77HelpDialog.hxx"
@@ -33,6 +32,7 @@ class PopUpWidget;
 
 namespace GUI {
   class Font;
+  class MessageBox;
 }
 
 class StellaSettingsDialog : public Dialog
@@ -40,7 +40,7 @@ class StellaSettingsDialog : public Dialog
   public:
     StellaSettingsDialog(OSystem& osystem, DialogContainer& parent,
       int max_w, int max_h, Menu::AppMode mode);
-    virtual ~StellaSettingsDialog() = default;
+    virtual ~StellaSettingsDialog();
 
   private:
     void loadConfig() override;
