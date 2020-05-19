@@ -220,23 +220,13 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
 
   const bool fullScreen = mode.fsIndex != -1;
   const bool shouldAdapt = fullScreen && myOSystem.settings().getBool("tia.fs_refresh")
-    && refreshRate() != gameRefreshRate();
+    && gameRefreshRate() && refreshRate() != gameRefreshRate();
   bool forceCreateRenderer = false;
-
-  // TODO: On multiple displays, switching from centered mode, does not respect
-  //  current window's display (which many not be centered anymore)
 
   // Get windowed window's last display
   Int32 displayIndex = std::min(myNumDisplays, myOSystem.settings().getInt(getDisplayKey()));
   // Get windowed window's last position
   myWindowedPos = myOSystem.settings().getPoint(getPositionKey());
-
-  //// Always recreate renderer (some systems need this)
-  //if(myRenderer)
-  //{
-  //  SDL_DestroyRenderer(myRenderer);
-  //  myRenderer = nullptr;
-  //}
 
   int posX, posY;
 
@@ -282,7 +272,7 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
   // as it's not necessary, and causes flashing in fullscreen mode
   if(myWindow)
   {
-    int d = SDL_GetWindowDisplayIndex(myWindow);
+    const int d = SDL_GetWindowDisplayIndex(myWindow);
     int w, h;
 
     SDL_GetWindowSize(myWindow, &w, &h);
@@ -331,7 +321,7 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
     // Switch to mode for adapted refresh rate
     if(SDL_SetWindowDisplayMode(myWindow, &adaptedSdlMode) != 0)
     {
-      Logger::error("Display refresh rate change failed");
+      Logger::error("ERROR: Display refresh rate change failed");
     }
     else
     {
@@ -343,33 +333,6 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
   }
 
   return createRenderer(forceCreateRenderer);
-
-  //uInt32 renderFlags = SDL_RENDERER_ACCELERATED;
-  //if(myOSystem.settings().getBool("vsync")
-  //   && !myOSystem.settings().getBool("turbo"))  // V'synced blits option
-  //  renderFlags |= SDL_RENDERER_PRESENTVSYNC;
-  //const string& video = myOSystem.settings().getString("video");  // Render hint
-  //if(video != "")
-  //  SDL_SetHint(SDL_HINT_RENDER_DRIVER, video.c_str());
-
-  //myRenderer = SDL_CreateRenderer(myWindow, -1, renderFlags);
-
-  //detectFeatures();
-  //determineDimensions();
-
-  //if(myRenderer == nullptr)
-  //{
-  //  string msg = "ERROR: Unable to create SDL renderer: " + string(SDL_GetError());
-  //  Logger::error(msg);
-  //  return false;
-  //}
-  //clear();
-
-  //SDL_RendererInfo renderinfo;
-  //if(SDL_GetRendererInfo(myRenderer, &renderinfo) >= 0)
-  //  myOSystem.settings().setValue("video", renderinfo.name);
-
-  //return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -396,7 +359,7 @@ bool FrameBufferSDL2::createRenderer(bool force)
 
   if(recreate)
   {
-    cerr << "Create new renderer " << int(myBufferType) << endl;
+    //cerr << "Create new renderer " << int(myBufferType) << endl;
     if(myRenderer)
       SDL_DestroyRenderer(myRenderer);
 
@@ -418,6 +381,7 @@ bool FrameBufferSDL2::createRenderer(bool force)
   clear();
 
   SDL_RendererInfo renderinfo;
+
   if(SDL_GetRendererInfo(myRenderer, &renderinfo) >= 0)
     myOSystem.settings().setValue("video", renderinfo.name);
 
@@ -431,7 +395,7 @@ bool FrameBufferSDL2::adaptRefreshRate(Int32 displayIndex, SDL_DisplayMode& clos
 
   if(SDL_GetCurrentDisplayMode(displayIndex, &sdlMode) != 0)
   {
-    Logger::error("Display mode could not be retrieved");
+    Logger::error("ERROR: Display mode could not be retrieved");
     return false;
   }
 
@@ -445,11 +409,12 @@ bool FrameBufferSDL2::adaptRefreshRate(Int32 displayIndex, SDL_DisplayMode& clos
     //       therefore the size will never change.
     if(SDL_GetClosestDisplayMode(displayIndex, &sdlMode, &closestSdlMode) == NULL)
     {
-      Logger::error("Closest display mode could not be retrieved");
+      Logger::error("ERROR: Closest display mode could not be retrieved");
       return false;
     }
     // Only change if the display supports a better refresh rate
     return currentRefreshRate != closestSdlMode.refresh_rate;
+    // TODO: check for multiples e.g. 120/100 too
   }
   return false;
 }
@@ -538,9 +503,9 @@ int FrameBufferSDL2::gameRefreshRate() const
     const string format = myOSystem.console().getFormatString();
     const bool isNtsc = format == "NTSC" || format == "PAL60" || format == "SECAM60";
 
-    return isNtsc ? 75 : 50; // TODO: check for multiples e.g. 120/100 too
+    return isNtsc ? 60 : 50; // TODO: check for multiples e.g. 120/100 too
   }
-  return 60;
+  return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
