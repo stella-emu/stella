@@ -14,17 +14,24 @@
 
 6.1.2 to 6.2: (??? ??, 2020)
 
-  * Added that paddle centering and sensitivity can be adjusted (TODO: Doc)
-
-  * Added that Driving controller sensitivity can be adjusted (TODO: Doc)
-
   * Added high scores: Score addresses, game variation etc. can be defined for
     a game. This allows the user to save high scores for these games. For each
     game and variation, the top 10 scores can be saved. (TODO: Doc)
 
+  * Added interactive palette to Video & Audio settings.
+
   * Added 'Custom' palette, generated from user controlled phase shifts.
 
+  * Added that adjustable audio & video settings are displayed as gauge bars
+
+  * Added four global hotkeys which allow selecting and changing numerous
+    audio & video settings without having to remember the dedicated hotkeys
+
   * Added 'Turbo' mode, runs the game as fast as the computer allows.
+
+  * Added that paddle centering (per ROM) and sensitivity can be adjusted
+
+  * Added that mouse sensitivity for Driving controller can be adjusted
 
   * Added selectable dialog fonts
 
@@ -32,7 +39,13 @@
 
   * Added option which lets default ROM path follow launcher navigation
 
+  * Added debugger 'saveaccess' function, which saves memory access counts to
+    a CSV file.
+
   * Added displaying last write address in the debugger.
+
+  * Added debugger pseudo-register '_scanend', which gives the number of
+    scanlines at the end of the last frame.
 
   * Added detection of color and audio data in DiStella.
 
@@ -41,9 +54,6 @@
   * Added 3EX bank switching type.
 
   * Removed unused CV+ and DASH bank switching types.
-
-  * Added debugger pseudo-register '_scanend', which gives the number of
-    scanlines at the end of the last frame.
 
 -Have fun!
 

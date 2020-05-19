@@ -49,6 +49,7 @@
 #include "CartDetector.hxx"
 #include "FrameBuffer.hxx"
 #include "TIASurface.hxx"
+#include "PaletteHandler.hxx"
 #include "TIAConstants.hxx"
 #include "Settings.hxx"
 #include "PropsSet.hxx"
@@ -243,6 +244,8 @@ void OSystem::saveConfig()
 
     Logger::debug("Saving TV effects options ...");
     myFrameBuffer->tiaSurface().ntsc().saveConfig(settings());
+    Logger::debug("Saving palette settings...");
+    myFrameBuffer->tiaSurface().paletteHandler().saveConfig(settings());
   }
 
   Logger::debug("Saving config options ...");
@@ -645,35 +648,8 @@ ByteBuffer OSystem::openROM(const FilesystemNode& rom, string& md5, size_t& size
   if(md5 == "")
     md5 = MD5::hash(image, size);
 
-  // Handle ROM properties, do some error checking
-  // Only add to the database when necessary
-  bool toInsert = false;
-
-  // First, does this ROM have a per-ROM properties entry?
-  // If so, load it into the database
-  FilesystemNode propsNode(rom.getPathWithExt(".pro"));
-  if(propsNode.exists() && propsNode.isFile())
-  {
-    Logger::info("Loading per-ROM properties: " + propsNode.getShortPath());
-    myPropSet->load(propsNode.getPath(), false);
-  }
-
-  // Next, make sure we have a valid md5 and name
-  Properties props;
-  if(!myPropSet->getMD5(md5, props))
-  {
-    props.set(PropType::Cart_MD5, md5);
-    toInsert = true;
-  }
-  if(toInsert || props.get(PropType::Cart_Name) == EmptyString)
-  {
-    props.set(PropType::Cart_Name, rom.getNameWithExt(""));
-    toInsert = true;
-  }
-
-  // Finally, insert properties if any info was missing
-  if(toInsert)
-    myPropSet->insert(props, false);
+  // Make sure to load a per-ROM properties entry, if one exists
+  myPropSet->loadPerROM(rom, md5);
 
   return image;
 }

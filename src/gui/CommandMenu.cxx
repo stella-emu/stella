@@ -16,6 +16,8 @@
 //============================================================================
 
 #include "Dialog.hxx"
+#include "OSystem.hxx"
+#include "Settings.hxx"
 #include "CommandDialog.hxx"
 #include "MinUICommandDialog.hxx"
 #include "CommandMenu.hxx"

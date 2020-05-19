@@ -25,6 +25,7 @@
 #include "FSNode.hxx"
 #include "Font.hxx"
 #include "MessageBox.hxx"
+#include "OSystem.hxx"
 #include "FrameBuffer.hxx"
 #include "MD5.hxx"
 #include "Props.hxx"

@@ -503,6 +503,7 @@
     <ClCompile Include="..\common\Logger.cxx" />
     <ClCompile Include="..\common\main.cxx" />
     <ClCompile Include="..\common\MouseControl.cxx" />
+    <ClCompile Include="..\common\PaletteHandler.cxx" />
     <ClCompile Include="..\common\PhosphorHandler.cxx" />
     <ClCompile Include="..\common\PhysicalJoystick.cxx" />
     <ClCompile Include="..\common\PJoystickHandler.cxx" />
@@ -757,6 +758,7 @@
     <ClCompile Include="..\emucore\tia\TIA.cxx" />
     <ClCompile Include="..\gui\ColorWidget.cxx" />
     <ClCompile Include="..\gui\DeveloperDialog.cxx" />
+    <ClCompile Include="..\gui\EmulationDialog.cxx" />
     <ClCompile Include="..\gui\FileListWidget.cxx" />
     <ClCompile Include="..\gui\JoystickDialog.cxx" />
     <ClCompile Include="..\gui\LoggerDialog.cxx" />
@@ -906,7 +908,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\gui\AboutDialog.cxx" />
-    <ClCompile Include="..\gui\AudioDialog.cxx" />
     <ClCompile Include="..\gui\BrowserDialog.cxx" />
     <ClCompile Include="..\gui\CheckListWidget.cxx" />
     <ClCompile Include="..\gui\ComboDialog.cxx" />
@@ -938,7 +939,7 @@
     <ClCompile Include="..\gui\StringListWidget.cxx" />
     <ClCompile Include="..\gui\TabWidget.cxx" />
     <ClCompile Include="..\gui\UIDialog.cxx" />
-    <ClCompile Include="..\gui\VideoDialog.cxx" />
+    <ClCompile Include="..\gui\VideoAudioDialog.cxx" />
     <ClCompile Include="..\gui\Widget.cxx" />
     <ClCompile Include="..\zlib\adler32.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
@@ -1503,6 +1504,7 @@
     <ClInclude Include="..\common\Logger.hxx" />
     <ClInclude Include="..\common\MediaFactory.hxx" />
     <ClInclude Include="..\common\MouseControl.hxx" />
+    <ClInclude Include="..\common\PaletteHandler.hxx" />
     <ClInclude Include="..\common\PhosphorHandler.hxx" />
     <ClInclude Include="..\common\PhysicalJoystick.hxx" />
     <ClInclude Include="..\common\PJoystickHandler.hxx" />
@@ -1789,6 +1791,7 @@
     <ClInclude Include="..\gui\ConsoleMediumBFont.hxx" />
     <ClInclude Include="..\gui\ConsoleMediumFont.hxx" />
     <ClInclude Include="..\gui\DeveloperDialog.hxx" />
+    <ClInclude Include="..\gui\EmulationDialog.hxx" />
     <ClInclude Include="..\gui\FileListWidget.hxx" />
     <ClInclude Include="..\gui\JoystickDialog.hxx" />
     <ClInclude Include="..\gui\LoggerDialog.hxx" />
@@ -1965,7 +1968,6 @@
     <ClInclude Include="..\cheat\CheetahCheat.hxx" />
     <ClInclude Include="..\cheat\RamCheat.hxx" />
     <ClInclude Include="..\gui\AboutDialog.hxx" />
-    <ClInclude Include="..\gui\AudioDialog.hxx" />
     <ClInclude Include="..\gui\BrowserDialog.hxx" />
     <ClInclude Include="..\gui\CheckListWidget.hxx" />
     <ClInclude Include="..\gui\ComboDialog.hxx" />
@@ -2001,7 +2003,7 @@
     <ClInclude Include="..\gui\StringListWidget.hxx" />
     <ClInclude Include="..\gui\TabWidget.hxx" />
     <ClInclude Include="..\gui\UIDialog.hxx" />
-    <ClInclude Include="..\gui\VideoDialog.hxx" />
+    <ClInclude Include="..\gui\VideoAudioDialog.hxx" />
     <ClInclude Include="..\gui\Widget.hxx" />
     <ClInclude Include="..\zlib\crc32.h" />
     <ClInclude Include="..\zlib\deflate.h" />

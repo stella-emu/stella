@@ -18,11 +18,12 @@
 #ifndef COMPUMATE_HXX
 #define COMPUMATE_HXX
 
+class Console;
+class Event;
+class System;
+
 #include "bspf.hxx"
-#include "CartCM.hxx"
 #include "Control.hxx"
-#include "Event.hxx"
-#include "Console.hxx"
 
 /**
   Handler for SpectraVideo CompuMate bankswitched games.

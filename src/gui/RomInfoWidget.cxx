@@ -48,6 +48,11 @@ RomInfoWidget::RomInfoWidget(GuiObject* boss, const GUI::Font& font,
 void RomInfoWidget::setProperties(const FilesystemNode& node, const string& md5)
 {
   myHaveProperties = true;
+
+  // Make sure to load a per-ROM properties entry, if one exists
+  instance().propSet().loadPerROM(node, md5);
+
+  // And now get the properties for this ROM
   instance().propSet().getMD5(md5, myProperties);
 
   // Decide whether the information should be shown immediately

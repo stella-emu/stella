@@ -15,6 +15,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include "OSystem.hxx"
 #include "Debugger.hxx"
 #include "CartDebug.hxx"
 #include "CartCTY.hxx"

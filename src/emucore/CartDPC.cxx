@@ -15,6 +15,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include "Settings.hxx"
 #include "System.hxx"
 #include "AudioSettings.hxx"
 #include "CartDPC.hxx"

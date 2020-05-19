@@ -18,6 +18,8 @@
 #ifndef CONTROLLER_DETECTOR_HXX
 #define CONTROLLER_DETECTOR_HXX
 
+class Settings;
+
 #include "Control.hxx"
 
 /**

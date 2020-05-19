@@ -18,12 +18,12 @@
 #ifndef TIA_MISSILE
 #define TIA_MISSILE
 
+class TIA;
+class Player;
+
 #include "Serializable.hxx"
 #include "bspf.hxx"
-#include "Player.hxx"
 #include "TIAConstants.hxx"
-
-class TIA;
 
 class Missile : public Serializable
 {

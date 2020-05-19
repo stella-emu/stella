@@ -23,6 +23,7 @@ class ButtonWidget;
 
 #include "Font.hxx"
 #include "Widget.hxx"
+#include "OSystem.hxx"
 #include "Console.hxx"
 #include "Command.hxx"
 #include "ControlLowLevel.hxx"

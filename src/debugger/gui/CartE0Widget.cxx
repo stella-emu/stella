@@ -49,7 +49,7 @@ string CartridgeE0Widget::romDescription()
 
     info << "Segment #" << seg << " accessible @ $"
       << Common::Base::HEX4 << (ADDR_BASE | segmentOffset)
-      << " - $" << (ADDR_BASE | segmentOffset + /*myCart.myBankSize - 1*/ 0x3FF) << ",\n";
+      << " - $" << (ADDR_BASE | (segmentOffset + /*myCart.myBankSize - 1*/ 0x3FF)) << ",\n";
     if (seg < 3)
       info << "  Hotspots " << hotspotStr(0, seg, true) << " - " << hotspotStr(7, seg, true) << "\n";
     else

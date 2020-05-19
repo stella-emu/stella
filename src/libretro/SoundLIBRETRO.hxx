@@ -27,7 +27,6 @@ class AudioSettings;
 
 #include "bspf.hxx"
 #include "Sound.hxx"
-#include "AudioQueue.hxx"
 
 /**
   This class implements the sound API for LIBRTRO.
@@ -96,10 +95,9 @@ class SoundLIBRETRO : public Sound
     /**
       Adjusts the volume of the sound device based on the given direction.
 
-      @param direction  Increase or decrease the current volume by a predefined
-                        amount based on the direction (1 = increase, -1 = decrease)
+      @param direction  +1 indicates increase, -1 indicates decrease.
     */
-    void adjustVolume(Int8 direction) override { }
+    void adjustVolume(int direction = +1) override { }
 
     /**
       This method is called to provide information about the sound device.

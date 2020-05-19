@@ -23,14 +23,17 @@ class Properties;
 class CartDebugWidget;
 class CartRamWidget;
 class GuiObject;
+class Settings;
+
+#include <functional>
 
 #include "bspf.hxx"
 #include "Device.hxx"
-#include "Settings.hxx"
 #ifdef DEBUGGER_SUPPORT
-  #include "Font.hxx"
+  namespace GUI {
+    class Font;
+  }
 #endif
-
 
 /**
   A cartridge is a device which contains the machine code for a

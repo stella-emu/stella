@@ -15,6 +15,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include "OSystem.hxx"
 #include "Settings.hxx"
 #include "Debugger.hxx"
 #include "CartDebug.hxx"
@@ -199,7 +200,8 @@ void RomWidget::runtoPC(int disasm_line)
   {
     ostringstream command;
     command << "runtopc #" << list[disasm_line].address;
-    instance().debugger().run(command.str());
+    string msg = instance().debugger().run(command.str());
+    instance().frameBuffer().showMessage(msg);
   }
 }
 

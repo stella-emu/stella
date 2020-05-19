@@ -157,6 +157,37 @@ void PropertiesSet::insert(const Properties& properties, bool save)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PropertiesSet::loadPerROM(const FilesystemNode& rom, const string& md5)
+{
+  // Handle ROM properties, do some error checking
+  // Only add to the database when necessary
+  bool toInsert = false;
+
+  // First, does this ROM have a per-ROM properties entry?
+  // If so, load it into the database
+  FilesystemNode propsNode(rom.getPathWithExt(".pro"));
+  if(propsNode.exists() && propsNode.isFile())
+    load(propsNode.getPath(), false);
+
+  // Next, make sure we have a valid md5 and name
+  Properties props;
+  if(!getMD5(md5, props))
+  {
+    props.set(PropType::Cart_MD5, md5);
+    toInsert = true;
+  }
+  if(toInsert || props.get(PropType::Cart_Name) == EmptyString)
+  {
+    props.set(PropType::Cart_Name, rom.getNameWithExt(""));
+    toInsert = true;
+  }
+
+  // Finally, insert properties if any info was missing
+  if(toInsert)
+    insert(props, false);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PropertiesSet::print() const
 {
   // We only look at the external properties and the built-in ones;

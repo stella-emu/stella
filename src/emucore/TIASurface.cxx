@@ -23,6 +23,7 @@
 #include "Console.hxx"
 #include "TIA.hxx"
 #include "PNGLibrary.hxx"
+#include "PaletteHandler.hxx"
 #include "TIASurface.hxx"
 
 namespace {
@@ -76,6 +77,14 @@ TIASurface::TIASurface(OSystem& system)
 
   // Enable/disable threading in the NTSC TV effects renderer
   myNTSCFilter.enableThreading(myOSystem.settings().getBool("threads"));
+
+  myPaletteHandler = make_unique<PaletteHandler>(myOSystem);
+  myPaletteHandler->loadConfig(myOSystem.settings());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+TIASurface::~TIASurface()
+{
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -88,6 +97,8 @@ void TIASurface::initialize(const Console& console,
   myTiaSurface->setDstSize(mode.image.w(), mode.image.h());
   mySLineSurface->setDstPos(mode.image.x(), mode.image.y());
   mySLineSurface->setDstSize(mode.image.w(), mode.image.h());
+
+  myPaletteHandler->setPalette();
 
   // Phosphor mode can be enabled either globally or per-ROM
   int p_blend = 0;
@@ -189,37 +200,87 @@ void TIASurface::setNTSC(NTSCFilter::Preset preset, bool show)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIASurface::setScanlineIntensity(int amount)
+void TIASurface::changeNTSC(int direction)
 {
-  ostringstream buf;
-  uInt32 intensity = enableScanlines(amount);
+  constexpr NTSCFilter::Preset PRESETS[] = {
+    NTSCFilter::Preset::OFF, NTSCFilter::Preset::RGB, NTSCFilter::Preset::SVIDEO,
+    NTSCFilter::Preset::COMPOSITE, NTSCFilter::Preset::BAD, NTSCFilter::Preset::CUSTOM
+  };
+  int preset = myOSystem.settings().getInt("tv.filter");
 
-  if(intensity == 0)
-    buf << "Scanlines disabled";
-  else
+  if(direction == +1)
   {
-    buf << "Scanline intensity at ";
-    if(intensity < 100)
-      buf << intensity << "%";
+    if(preset == int(NTSCFilter::Preset::CUSTOM))
+      preset = int(NTSCFilter::Preset::OFF);
     else
-      buf << "maximum";
+      preset++;
   }
-  myOSystem.settings().setValue("tv.scanlines", intensity);
-
-  enableNTSC(ntscEnabled());
-
-  myFB.showMessage(buf.str());
+  else if (direction == -1)
+  {
+    if(preset == int(NTSCFilter::Preset::OFF))
+      preset = int(NTSCFilter::Preset::CUSTOM);
+    else
+      preset--;
+  }
+  setNTSC(PRESETS[preset], true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 TIASurface::enableScanlines(int relative, int absolute)
+void TIASurface::setNTSCAdjustable(int direction)
+{
+  string text, valueText;
+  Int32 value;
+
+  setNTSC(NTSCFilter::Preset::CUSTOM);
+  ntsc().selectAdjustable(direction, text, valueText, value);
+  myOSystem.frameBuffer().showMessage(text, valueText, value);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIASurface::changeNTSCAdjustable(int adjustable, int direction)
+{
+  string text, valueText;
+  Int32 newValue;
+
+  setNTSC(NTSCFilter::Preset::CUSTOM);
+  ntsc().changeAdjustable(adjustable, direction, text, valueText, newValue);
+  myOSystem.frameBuffer().showMessage(text, valueText, newValue);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIASurface::changeCurrentNTSCAdjustable(int direction)
+{
+  string text, valueText;
+  Int32 newValue;
+
+  setNTSC(NTSCFilter::Preset::CUSTOM);
+  ntsc().changeCurrentAdjustable(direction, text, valueText, newValue);
+  myOSystem.frameBuffer().showMessage(text, valueText, newValue);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIASurface::setScanlineIntensity(int direction)
+{
+  ostringstream buf;
+  uInt32 intensity = enableScanlines(direction * 2);
+
+  myOSystem.settings().setValue("tv.scanlines", intensity);
+  enableNTSC(ntscEnabled());
+
+  if(intensity)
+    buf << intensity << "%";
+  else
+    buf << "Off";
+  myFB.showMessage("Scanline intensity", buf.str(), intensity);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 TIASurface::enableScanlines(int change)
 {
   FBSurface::Attributes& attr = mySLineSurface->attributes();
-  if(relative == 0)  attr.blendalpha = absolute;
-  else               attr.blendalpha += relative;
-  attr.blendalpha = std::max(0, Int32(attr.blendalpha));
-  attr.blendalpha = std::min(100U, attr.blendalpha);
 
+  attr.blendalpha += change;
+  attr.blendalpha = BSPF::clamp(Int32(attr.blendalpha), 0, 100);
   mySLineSurface->applyAttributes();
 
   return attr.blendalpha;

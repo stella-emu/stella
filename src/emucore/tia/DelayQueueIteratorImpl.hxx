@@ -20,7 +20,6 @@
 
 #include "bspf.hxx"
 #include "DelayQueue.hxx"
-#include "DelayQueueMember.hxx"
 #include "DelayQueueIterator.hxx"
 
 template<unsigned length, unsigned capacity>

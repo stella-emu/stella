@@ -47,6 +47,8 @@
 #include "OptionsDialog.hxx"
 #include "StateManager.hxx"
 #include "FrameManager.hxx"
+#include "OSystem.hxx"
+#include "Console.hxx"
 #include "DebuggerDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -66,6 +68,11 @@ DebuggerDialog::DebuggerDialog(OSystem& osystem, DialogContainer& parent,
 
   myOptions = make_unique<OptionsDialog>(osystem, parent, this, w, h,
                                          Menu::AppMode::debugger);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+DebuggerDialog::~DebuggerDialog()
+{
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
