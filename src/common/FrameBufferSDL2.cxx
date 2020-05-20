@@ -220,7 +220,7 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
 
   const bool fullScreen = mode.fsIndex != -1;
   const bool shouldAdapt = fullScreen && myOSystem.settings().getBool("tia.fs_refresh")
-    && gameRefreshRate() && refreshRate() != gameRefreshRate();
+    && gameRefreshRate() && refreshRate() % gameRefreshRate() != 0;
   bool forceCreateRenderer = false;
 
   // Get windowed window's last display
@@ -277,7 +277,7 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
 
     SDL_GetWindowSize(myWindow, &w, &h);
     if(d != displayIndex || uInt32(w) != mode.screen.w || uInt32(h) != mode.screen.h
-       || shouldAdapt)
+       || adaptRefresh)
     {
       SDL_DestroyWindow(myWindow);
       myWindow = nullptr;
@@ -336,6 +336,57 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FrameBufferSDL2::adaptRefreshRate(Int32 displayIndex, SDL_DisplayMode& adaptedSdlMode)
+{
+  SDL_DisplayMode sdlMode;
+
+  if(SDL_GetCurrentDisplayMode(displayIndex, &sdlMode) != 0)
+  {
+    Logger::error("ERROR: Display mode could not be retrieved");
+    return false;
+  }
+
+  const int currentRefreshRate = sdlMode.refresh_rate;
+  const int wantedRefreshRate = gameRefreshRate();
+  float factor = float(currentRefreshRate) / wantedRefreshRate;
+  float bestDiff = std::abs(factor - std::round(factor)) / factor;
+  bool adapt = false;
+
+  // Display refresh rate should be an integer factor of the game's refresh rate
+  // Note: Modes are scanned with size being first priority,
+  //       therefore the size will never change.
+  // Check for integer factors 1 (60/50 Hz) and 2 (120/100 Hz)
+  for(int m = 1; m <= 2; ++m)
+  {
+    SDL_DisplayMode closestSdlMode;
+
+    sdlMode.refresh_rate = wantedRefreshRate * m;
+    if(SDL_GetClosestDisplayMode(displayIndex, &sdlMode, &closestSdlMode) == NULL)
+    {
+      Logger::error("ERROR: Closest display mode could not be retrieved");
+      return adapt;
+    }
+    factor = float(closestSdlMode.refresh_rate) / sdlMode.refresh_rate;
+    const float diff = std::abs(factor - std::round(factor)) / factor;
+    if(diff < bestDiff)
+    {
+      bestDiff = diff;
+      adaptedSdlMode = closestSdlMode;
+      adapt = true;
+    }
+  }
+  cerr << "refresh rate adapt ";
+  if(adapt)
+    cerr << "required (" << currentRefreshRate << " Hz -> " << adaptedSdlMode.refresh_rate << " Hz)";
+  else
+    cerr << "not required/possible";
+  cerr << endl;
+
+  // Only change if the display supports a better refresh rate
+  return adapt;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBufferSDL2::createRenderer(bool force)
 {
   // A new renderer is only created when necessary:
@@ -359,7 +410,7 @@ bool FrameBufferSDL2::createRenderer(bool force)
 
   if(recreate)
   {
-    //cerr << "Create new renderer " << int(myBufferType) << endl;
+    cerr << "Create new renderer " << int(myBufferType) << endl;
     if(myRenderer)
       SDL_DestroyRenderer(myRenderer);
 
@@ -386,37 +437,6 @@ bool FrameBufferSDL2::createRenderer(bool force)
     myOSystem.settings().setValue("video", renderinfo.name);
 
   return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBufferSDL2::adaptRefreshRate(Int32 displayIndex, SDL_DisplayMode& closestSdlMode)
-{
-  SDL_DisplayMode sdlMode;
-
-  if(SDL_GetCurrentDisplayMode(displayIndex, &sdlMode) != 0)
-  {
-    Logger::error("ERROR: Display mode could not be retrieved");
-    return false;
-  }
-
-  const int currentRefreshRate = sdlMode.refresh_rate;
-
-  sdlMode.refresh_rate = gameRefreshRate();
-
-  if(currentRefreshRate != sdlMode.refresh_rate)
-  {
-    // Note: Modes are scanned with size being first priority,
-    //       therefore the size will never change.
-    if(SDL_GetClosestDisplayMode(displayIndex, &sdlMode, &closestSdlMode) == NULL)
-    {
-      Logger::error("ERROR: Closest display mode could not be retrieved");
-      return false;
-    }
-    // Only change if the display supports a better refresh rate
-    return currentRefreshRate != closestSdlMode.refresh_rate;
-    // TODO: check for multiples e.g. 120/100 too
-  }
-  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -503,7 +523,7 @@ int FrameBufferSDL2::gameRefreshRate() const
     const string format = myOSystem.console().getFormatString();
     const bool isNtsc = format == "NTSC" || format == "PAL60" || format == "SECAM60";
 
-    return isNtsc ? 60 : 50; // TODO: check for multiples e.g. 120/100 too
+    return isNtsc ? 60 : 50;
   }
   return 0;
 }
