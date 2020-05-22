@@ -15,6 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include <cmath>
+
 #include "SDL_lib.hxx"
 #include "bspf.hxx"
 #include "Logger.hxx"
