@@ -101,19 +101,32 @@ void FrameBufferSDL2::queryHardware(vector<Common::Size>& fullscreenRes,
     int numModes = SDL_GetNumDisplayModes(i);
     ostringstream s;
 
-    s << "Supported video modes for display " << i << ":";
-    Logger::debug(s.str());
+    s << "Supported video modes (" << numModes << ") for display " << i << ":";
+
+    string lastRes = "";
+
     for (int m = 0; m < numModes; m++)
     {
       SDL_DisplayMode mode;
+      ostringstream res;
 
       SDL_GetDisplayMode(i, m, &mode);
-      s.str("");
-      s << "  " << m << ": " << mode.w << "x" << mode.h << "@" << mode.refresh_rate << "Hz";
-      if (mode.w == display.w && mode.h == display.h && mode.refresh_rate == display.refresh_rate)
-        s << " (active)";
-      Logger::debug(s.str());
+      res << std::setw(4) << mode.w << "x" << std::setw(4) << mode.h;
+
+      if(lastRes != res.str())
+      {
+        Logger::debug(s.str());
+        s.str("");
+        lastRes = res.str();
+        s << lastRes << ": ";
+      }
+      s << mode.refresh_rate << "Hz";
+      if(mode.w == display.w && mode.h == display.h && mode.refresh_rate == display.refresh_rate)
+        s << "* ";
+      else
+        s << "  ";
     }
+    Logger::debug(s.str());
   }
 
   // Now get the maximum windowed desktop resolution
@@ -329,7 +342,7 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
     {
       ostringstream msg;
 
-      msg << "Display refresh rate changed to " << adaptedSdlMode.refresh_rate << "Hz";
+      msg << "Display refresh rate changed to " << adaptedSdlMode.refresh_rate << " Hz";
       Logger::info(msg.str());
     }
   }
@@ -412,7 +425,7 @@ bool FrameBufferSDL2::createRenderer(bool force)
 
   if(recreate)
   {
-    cerr << "Create new renderer " << int(myBufferType) << endl;
+    cerr << "Create new renderer for buffer type #" << int(myBufferType) << endl;
     if(myRenderer)
       SDL_DestroyRenderer(myRenderer);
 
