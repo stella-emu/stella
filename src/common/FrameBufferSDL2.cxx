@@ -376,7 +376,7 @@ bool FrameBufferSDL2::adaptRefreshRate(Int32 displayIndex, SDL_DisplayMode& adap
     SDL_DisplayMode closestSdlMode;
 
     sdlMode.refresh_rate = wantedRefreshRate * m;
-    if(SDL_GetClosestDisplayMode(displayIndex, &sdlMode, &closestSdlMode) == NULL)
+    if(SDL_GetClosestDisplayMode(displayIndex, &sdlMode, &closestSdlMode) == nullptr)
     {
       Logger::error("ERROR: Closest display mode could not be retrieved");
       return adapt;
@@ -515,6 +515,7 @@ bool FrameBufferSDL2::fullScreen() const
 #endif
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int FrameBufferSDL2::refreshRate() const
 {
   ASSERT_MAIN_THREAD;
@@ -525,8 +526,9 @@ int FrameBufferSDL2::refreshRate() const
   if(SDL_GetCurrentDisplayMode(displayIndex, &sdlMode) == 0)
     return sdlMode.refresh_rate;
 
-  if (myWindow != NULL)
+  if(myWindow != nullptr)
     Logger::error("Could not retrieve current display mode");
+
   return 0;
 }
 
