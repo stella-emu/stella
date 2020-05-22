@@ -184,8 +184,8 @@ class FrameBufferSDL2 : public FrameBuffer
     /**
       Checks if the display refresh rate should be adapted to game refresh rate in (real) fullscreen mode
 
-      @param displayIndex  The display which should be checked
-      @adaptedSdlMode      The best matching mode if the refresh rate should be changed
+      @param displayIndex   The display which should be checked
+      @param adaptedSdlMode The best matching mode if the refresh rate should be changed
 
       @return  True if the refresh rate should be changed
     */
