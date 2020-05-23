@@ -270,8 +270,7 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
     posY = BSPF::clamp(posY, y0 + 50, y1 - 50);
   }
 
-#ifndef BSPF_MACOS
-  // macOS does not allow to change the display refresh rate
+#ifdef ADAPTABLE_REFRESH_SUPPORT
   SDL_DisplayMode adaptedSdlMode;
   const bool shouldAdapt = fullScreen && myOSystem.settings().getBool("tia.fs_refresh")
     && gameRefreshRate()
@@ -284,12 +283,6 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
   const uInt32 flags = SDL_WINDOW_ALLOW_HIGHDPI
     | (fullScreen ? adaptRefresh ? SDL_WINDOW_FULLSCREEN : SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
 
-  // macOS seems to have issues with destroying the window, and wants to
-  // keep the same handle
-  // Problem is, doing so on other platforms results in flickering when
-  // toggling fullscreen windowed mode
-  // So we have a special case for macOS
-#ifndef BSPF_MACOS
   // Don't re-create the window if its display and size hasn't changed,
   // as it's not necessary, and causes flashing in fullscreen mode
   if(myWindow)
@@ -312,18 +305,6 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
     SDL_SetWindowTitle(myWindow, title.c_str());
     SDL_SetWindowPosition(myWindow, posX, posY);
   }
-#else
-  // macOS wants to *never* re-create the window
-  // This sometimes results in the window being resized *after* it's displayed,
-  // but at least the code works and doesn't crash
-  if(myWindow)
-  {
-    SDL_SetWindowFullscreen(myWindow, flags);
-    SDL_SetWindowSize(myWindow, mode.screen.w, mode.screen.h);
-    SDL_SetWindowPosition(myWindow, posX, posY);
-    SDL_SetWindowTitle(myWindow, title.c_str());
-  }
-#endif
   else
   {
     forceCreateRenderer = true;
@@ -338,7 +319,8 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
 
     setWindowIcon();
   }
-#ifndef BSPF_MACOS
+
+#ifdef ADAPTABLE_REFRESH_SUPPORT
   if(adaptRefresh)
   {
     // Switch to mode for adapted refresh rate
@@ -355,10 +337,10 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
     }
   }
 #endif
+
   return createRenderer(forceCreateRenderer);
 }
 
-#ifndef BSPF_MACOS
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBufferSDL2::adaptRefreshRate(Int32 displayIndex, SDL_DisplayMode& adaptedSdlMode)
 {
@@ -412,74 +394,7 @@ bool FrameBufferSDL2::adaptRefreshRate(Int32 displayIndex, SDL_DisplayMode& adap
 
   // Only change if the display supports a better refresh rate
   return adapt;
-
-#if 0
-  // Adapting resfresh rate and display size
-  const bool hiDpi = myOSystem.settings().getBool("hidpi");
-  const float mult = float(font().getFontHeight()) / getFontDesc("medium").height * hiDpi ? 2 : 1;
-  const Int32 minWidth  = FBMinimum::Width * mult;
-  const Int32 minHeight = FBMinimum::Height * mult;
-  SDL_DisplayMode sdlMode;
-
-  if(SDL_GetCurrentDisplayMode(displayIndex, &sdlMode) != 0)
-  {
-    Logger::error("ERROR: Display mode could not be retrieved");
-    return false;
-  }
-
-  const int numModes = SDL_GetNumDisplayModes(displayIndex);
-  if(numModes < 0)
-  {
-    Logger::error("ERROR: Number of display modes could not be retrieved");
-    return false;
-  }
-
-  const int currentRefreshRate = sdlMode.refresh_rate;
-  const int wantedRefreshRate = gameRefreshRate();
-  // Take care of rounded refresh rates (e.g. 59.94)
-  float factor = std::min(float(currentRefreshRate) / wantedRefreshRate,
-                          float(currentRefreshRate) / (wantedRefreshRate - 1));
-  // Calculate difference taking care of integer factors (e.g. 100/120)
-  float bestDiff = std::abs(factor - std::round(factor)) / factor;
-  bool adapt = false;
-
-  for(int mode = 0; mode < numModes; ++mode)
-  {
-    // Note: Display modes returned are sorted by width, height,... refresh_rate
-    if(SDL_GetDisplayMode(displayIndex, mode, &sdlMode) != 0)
-    {
-      Logger::error("ERROR: Display modes could not be retrieved");
-      return false;
-    }
-    // skip too small modes
-    if(sdlMode.w < minWidth || sdlMode.h < minHeight)
-      continue;
-
-    cerr << sdlMode.w << "x" << sdlMode.h << " " << sdlMode.refresh_rate << " Hz" << endl;
-
-    factor = std::min(float(sdlMode.refresh_rate) / wantedRefreshRate,
-                      float(sdlMode.refresh_rate) / (wantedRefreshRate - 1));
-    const float diff = std::abs(factor - std::round(factor)) / factor;
-    if(diff < bestDiff)
-    {
-      bestDiff = diff;
-      adaptedSdlMode = sdlMode;
-      adapt = true;
-    }
-  }
-
-  cerr << "refresh rate adapt ";
-  if(adapt)
-    cerr << "required (" << currentRefreshRate << " Hz -> " << adaptedSdlMode.refresh_rate << " Hz)";
-  else
-    cerr << "not required/possible";
-  cerr << endl;
-
-  // Only change if the display supports a better refresh rate
-  return adapt;
-#endif
 }
-#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBufferSDL2::createRenderer(bool force)
@@ -637,10 +552,9 @@ void FrameBufferSDL2::renderToScreen()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSDL2::setWindowIcon()
 {
-  ASSERT_MAIN_THREAD;
-
 #if !defined(BSPF_MACOS) && !defined(RETRON77)
 #include "stella_icon.hxx"
+  ASSERT_MAIN_THREAD;
 
   SDL_Surface* surface = SDL_CreateRGBSurfaceFrom(stella_icon, 32, 32, 32,
                          32 * 4, 0xFF0000, 0x00FF00, 0x0000FF, 0xFF000000);

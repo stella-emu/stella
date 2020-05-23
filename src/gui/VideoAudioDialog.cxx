@@ -83,14 +83,6 @@ VideoAudioDialog::VideoAudioDialog(OSystem& osystem, DialogContainer& parent,
   addTVEffectsTab();
   addAudioTab();
 
-  //const int req_w = std::max(myFastSCBios->getRight(), myCloneBad->getRight()) + HBORDER + 1;
-  //const int req_h = _th + VGAP * 3
-  //  + std::max(myUseVSync->getBottom(), myTVScanIntense->getBottom())
-  //  + buttonHeight + VBORDER * 2;
-  //// Set real dimensions
-  //setSize(req_w, req_h, max_w, max_h);
-
-
   // Add Defaults, OK and Cancel buttons
   WidgetArray wid;
   addDefaultsOKCancelBGroup(wid, _font);
@@ -153,11 +145,13 @@ void VideoAudioDialog::addDisplayTab()
   myUseStretch = new CheckboxWidget(myTab, _font, xpos + INDENT, ypos + 1, "Stretch");
   wid.push_back(myUseStretch);
 
-#ifndef BSPF_MACOS
+#ifdef ADAPTABLE_REFRESH_SUPPORT
   // Adapt refresh rate
   ypos += lineHeight + VGAP;
   myRefreshAdapt = new CheckboxWidget(myTab, _font, xpos + INDENT, ypos + 1, "Adapt display refresh rate");
   wid.push_back(myRefreshAdapt);
+#else
+  myRefreshAdapt = nullptr;
 #endif
 
   // FS overscan
@@ -482,11 +476,9 @@ void VideoAudioDialog::loadConfig()
 
   // Fullscreen
   myFullscreen->setState(instance().settings().getBool("fullscreen"));
-  /*string mode = instance().settings().getString("fullscreenmode");
-  myFullScreenMode->setSelected(mode);*/
   // Fullscreen stretch setting
   myUseStretch->setState(instance().settings().getBool("tia.fs_stretch"));
-#ifndef BSPF_MACOS
+#ifdef ADAPTABLE_REFRESH_SUPPORT
   // Adapt refresh rate
   myRefreshAdapt->setState(instance().settings().getBool("tia.fs_refresh"));
 #endif
@@ -601,7 +593,7 @@ void VideoAudioDialog::saveConfig()
   instance().settings().setValue("fullscreen", myFullscreen->getState());
   // Fullscreen stretch setting
   instance().settings().setValue("tia.fs_stretch", myUseStretch->getState());
-#ifndef BSPF_MACOS
+#ifdef ADAPTABLE_REFRESH_SUPPORT
   // Adapt refresh rate
   instance().settings().setValue("tia.fs_refresh", myRefreshAdapt->getState());
 #endif
@@ -620,7 +612,6 @@ void VideoAudioDialog::saveConfig()
 
 
   // Note: Palette values are saved directly when changed!
-
 
   /////////////////////////////////////////////////////////////////////////////
   // TV Effects tab
@@ -716,9 +707,8 @@ void VideoAudioDialog::setDefaults()
       myTIAInterpolate->setState(false);
       // screen size
       myFullscreen->setState(false);
-      //myFullScreenMode->setSelectedIndex(0);
       myUseStretch->setState(false);
-    #ifndef BSPF_MACOS
+    #ifdef ADAPTABLE_REFRESH_SUPPORT
       myRefreshAdapt->setState(false);
     #endif
       myTVOverscan->setValue(0);
@@ -846,7 +836,7 @@ void VideoAudioDialog::handleFullScreenChange()
 {
   bool enable = myFullscreen->getState();
   myUseStretch->setEnabled(enable);
-#ifndef BSPF_MACOS
+#ifdef ADAPTABLE_REFRESH_SUPPORT
   myRefreshAdapt->setEnabled(enable);
 #endif
   myTVOverscan->setEnabled(enable);

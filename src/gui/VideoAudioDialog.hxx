@@ -73,9 +73,7 @@ class VideoAudioDialog : public Dialog
     CheckboxWidget*   myFullscreen{nullptr};
     CheckboxWidget*   myUseStretch{nullptr};
     SliderWidget*     myTVOverscan{nullptr};
-  #ifndef BSPF_MACOS
     CheckboxWidget*   myRefreshAdapt{nullptr};
-  #endif
     SliderWidget*     myTIAZoom{nullptr};
     SliderWidget*     myVSizeAdjust{nullptr};
 
