@@ -153,10 +153,12 @@ void VideoAudioDialog::addDisplayTab()
   myUseStretch = new CheckboxWidget(myTab, _font, xpos + INDENT, ypos + 1, "Stretch");
   wid.push_back(myUseStretch);
 
+#ifndef BSPF_MACOS
   // Adapt refresh rate
   ypos += lineHeight + VGAP;
   myRefreshAdapt = new CheckboxWidget(myTab, _font, xpos + INDENT, ypos + 1, "Adapt display refresh rate");
   wid.push_back(myRefreshAdapt);
+#endif
 
   // FS overscan
   ypos += lineHeight + VGAP;
@@ -484,8 +486,10 @@ void VideoAudioDialog::loadConfig()
   myFullScreenMode->setSelected(mode);*/
   // Fullscreen stretch setting
   myUseStretch->setState(instance().settings().getBool("tia.fs_stretch"));
+#ifndef BSPF_MACOS
   // Adapt refresh rate
   myRefreshAdapt->setState(instance().settings().getBool("tia.fs_refresh"));
+#endif
   // Fullscreen overscan setting
   myTVOverscan->setValue(instance().settings().getInt("tia.fs_overscan"));
   handleFullScreenChange();
@@ -597,8 +601,10 @@ void VideoAudioDialog::saveConfig()
   instance().settings().setValue("fullscreen", myFullscreen->getState());
   // Fullscreen stretch setting
   instance().settings().setValue("tia.fs_stretch", myUseStretch->getState());
+#ifndef BSPF_MACOS
   // Adapt refresh rate
   instance().settings().setValue("tia.fs_refresh", myRefreshAdapt->getState());
+#endif
   // Fullscreen overscan
   instance().settings().setValue("tia.fs_overscan", myTVOverscan->getValueLabel());
 
@@ -712,7 +718,9 @@ void VideoAudioDialog::setDefaults()
       myFullscreen->setState(false);
       //myFullScreenMode->setSelectedIndex(0);
       myUseStretch->setState(false);
+    #ifndef BSPF_MACOS
       myRefreshAdapt->setState(false);
+    #endif
       myTVOverscan->setValue(0);
       myTIAZoom->setValue(300);
       myVSizeAdjust->setValue(0);
@@ -838,7 +846,9 @@ void VideoAudioDialog::handleFullScreenChange()
 {
   bool enable = myFullscreen->getState();
   myUseStretch->setEnabled(enable);
+#ifndef BSPF_MACOS
   myRefreshAdapt->setEnabled(enable);
+#endif
   myTVOverscan->setEnabled(enable);
 }
 
