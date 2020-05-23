@@ -393,7 +393,6 @@ bool FrameBufferSDL2::adaptRefreshRate(Int32 displayIndex, SDL_DisplayMode& adap
       Logger::error("ERROR: Closest display mode could not be retrieved");
       return adapt;
     }
-    factor = float(closestSdlMode.refresh_rate) / sdlMode.refresh_rate;
     factor = std::min(float(sdlMode.refresh_rate) / sdlMode.refresh_rate,
                       float(sdlMode.refresh_rate) / (sdlMode.refresh_rate - 1));
     const float diff = std::abs(factor - std::round(factor)) / factor;
@@ -404,12 +403,12 @@ bool FrameBufferSDL2::adaptRefreshRate(Int32 displayIndex, SDL_DisplayMode& adap
       adapt = true;
     }
   }
-  cerr << "refresh rate adapt ";
-  if(adapt)
-    cerr << "required (" << currentRefreshRate << " Hz -> " << adaptedSdlMode.refresh_rate << " Hz)";
-  else
-    cerr << "not required/possible";
-  cerr << endl;
+  //cerr << "refresh rate adapt ";
+  //if(adapt)
+  //  cerr << "required (" << currentRefreshRate << " Hz -> " << adaptedSdlMode.refresh_rate << " Hz)";
+  //else
+  //  cerr << "not required/possible";
+  //cerr << endl;
 
   // Only change if the display supports a better refresh rate
   return adapt;
@@ -506,7 +505,7 @@ bool FrameBufferSDL2::createRenderer(bool force)
 
   if(recreate)
   {
-    cerr << "Create new renderer for buffer type #" << int(myBufferType) << endl;
+    //cerr << "Create new renderer for buffer type #" << int(myBufferType) << endl;
     if(myRenderer)
       SDL_DestroyRenderer(myRenderer);
 

@@ -2219,6 +2219,12 @@
   </tr>
 
   <tr>
+    <td><pre>-tia.fs_refresh &lt;1|0&gt;</pre></td>
+    <td>While in fullscreen mode, adapt the display's refresh rate to the game's frame rate
+      to minimize judder.</td>
+  </tr>
+
+  <tr>
     <td><pre>-tia.fs_overscan &lt;0 - 10&gt;</pre></td>
     <td>Add overscan to TIA image while in fullscreen mode</td>
     </tr>
@@ -2943,13 +2949,14 @@
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
           <tr><td>Renderer</td><td>Use specified rendering mode</td><td>-video</td></tr>
-          <tr><td>Interpolation</td><td>Interpolation of TIA image</td><td>-tia.inter</td></tr>
-          <tr><td>Zoom</td><td>Zoom level of TIA image</td><td>-tia.zoom</td></tr>
+          <tr><td>Interpolation</td><td>Enable interpolation of the TIA image</td><td>-tia.inter</td></tr>
+          <tr><td>Zoom</td><td>Zoom level of the TIA image</td><td>-tia.zoom</td></tr>
           <tr><td>Fullscreen</td><td>Self-explanatory - Note that colors may slightly change.
                   This depends on the OS and renderer used.</td><td>-fullscreen</td></tr>
-          <tr><td>Stretch</td><td>In fullscreen mode, completely fill screen with TIA image</td><td>-tia.fs_stretch</td></tr>
+          <tr><td>Stretch</td><td>In fullscreen mode, completely fill screen with the TIA image.</td><td>-tia.fs_stretch</td></tr>
+          <tr><td>Adapt display...</td><td>In fullscreen mode, adapt the display's refresh rate to the game's frame rate to minimize judder.</td><td>-tia.fs_refresh</td></tr>
           <tr><td>Overscan</td><td>In fullscreen mode, add overscan to the TIA image</td><td>-tia.fs_overscan</td></tr>
-          <tr><td>V-Size adjust</td><td>Adjust height of TIA image</td><td>-tia.vsizeadjust</td></tr>
+          <tr><td>V-Size adjust</td><td>Adjust height of the TIA image</td><td>-tia.vsizeadjust</td></tr>
         </table>
       </td>
     </tr>
