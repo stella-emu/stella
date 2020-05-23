@@ -181,7 +181,6 @@ class FrameBufferSDL2 : public FrameBuffer
     */
     bool setVideoMode(const string& title, const VideoMode& mode) override;
 
-  #ifndef BSPF_MACOS
     /**
       Checks if the display refresh rate should be adapted to game refresh rate in (real) fullscreen mode
 
@@ -191,7 +190,6 @@ class FrameBufferSDL2 : public FrameBuffer
       @return  True if the refresh rate should be changed
     */
     bool adaptRefreshRate(Int32 displayIndex, SDL_DisplayMode& adaptedSdlMode);
-  #endif
 
     /**
       Create a new renderer if required
