@@ -273,7 +273,7 @@ class FrameBuffer
     /**
       Toggles between adapt fullscreen refresh rate on and off.
     */
-    void FrameBuffer::toggleAdaptRefresh(bool toggle = true);
+    void toggleAdaptRefresh(bool toggle = true);
   #endif
 
     /**
