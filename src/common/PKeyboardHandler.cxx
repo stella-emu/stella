@@ -467,6 +467,7 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultCommo
   {Event::SoundToggle,              KBDK_RIGHTBRACKET, KBDM_CTRL},
 
   {Event::ToggleFullScreen,         KBDK_RETURN, MOD3},
+  {Event::ToggleAdaptRefresh,       KBDK_R, MOD3},
   {Event::OverscanDecrease,         KBDK_PAGEDOWN, KBDM_SHIFT},
   {Event::OverscanIncrease,         KBDK_PAGEUP, KBDM_SHIFT},
   //{Event::VidmodeStd,               KBDK_1, MOD3},

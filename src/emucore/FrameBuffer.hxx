@@ -269,6 +269,13 @@ class FrameBuffer
     */
     void toggleFullscreen(bool toggle = true);
 
+  #ifdef ADAPTABLE_REFRESH_SUPPORT
+    /**
+      Toggles between adapt fullscreen refresh rate on and off.
+    */
+    void FrameBuffer::toggleAdaptRefresh(bool toggle = true);
+  #endif
+
     /**
       Changes the fullscreen overscan.
 
