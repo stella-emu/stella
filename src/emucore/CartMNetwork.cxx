@@ -201,7 +201,7 @@ void CartridgeMNetwork::bankRAM(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeMNetwork::bank(uInt16 bank)
+bool CartridgeMNetwork::bank(uInt16 bank, uInt16)
 {
   if(bankLocked()) return false;
 

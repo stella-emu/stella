@@ -591,7 +591,7 @@ bool CartridgeDPCPlus::poke(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeDPCPlus::bank(uInt16 bank)
+bool CartridgeDPCPlus::bank(uInt16 bank, uInt16)
 {
   if(bankLocked()) return false;
 

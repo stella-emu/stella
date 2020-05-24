@@ -38,7 +38,7 @@ bool CartridgeTVBoy::checkSwitchBank(uInt16 address, uInt8)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeTVBoy::bank(uInt16 bank)
+bool CartridgeTVBoy::bank(uInt16 bank, uInt16)
 {
   if(myBankingDisabled) return false;
 
