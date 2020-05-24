@@ -523,7 +523,6 @@
     <ClCompile Include="..\debugger\BreakpointMap.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\debugger\CartTVBoyWidget.cxx" />
     <ClCompile Include="..\debugger\Debugger.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClCompile>
@@ -661,6 +660,9 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\debugger\gui\CartRamWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartTVBoyWidget.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\debugger\gui\CartSBWidget.cxx">
@@ -1534,7 +1536,6 @@
     <ClInclude Include="..\debugger\BreakpointMap.hxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="..\debugger\CartTVBoyWidget.hxx" />
     <ClInclude Include="..\debugger\gui\AmigaMouseWidget.hxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClInclude>
@@ -1672,6 +1673,9 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\debugger\gui\CartSBWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartTVBoyWidget.hxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\debugger\gui\CartUAWidget.hxx">
