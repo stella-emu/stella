@@ -1008,6 +1008,35 @@ void FrameBuffer::toggleFullscreen(bool toggle)
   }
 }
 
+#ifdef ADAPTABLE_REFRESH_SUPPORT
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::toggleAdaptRefresh(bool toggle)
+{
+  bool isAdaptRefresh = myOSystem.settings().getInt("tia.fs_refresh");
+
+  if(toggle)
+    isAdaptRefresh = !isAdaptRefresh;
+
+  if(myBufferType == BufferType::Emulator)
+  {
+    if(toggle)
+    {
+      myOSystem.settings().setValue("tia.fs_refresh", isAdaptRefresh);
+      // issue a complete framebuffer re-initialization
+      myOSystem.createFrameBuffer();
+    }
+
+    ostringstream msg;
+
+    msg << "Adapt refresh rate ";
+    msg << (isAdaptRefresh ? "enabled" : "disabled");
+    msg << " (" << refreshRate() << " Hz)";
+
+    showMessage(msg.str());
+  }
+}
+#endif
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::changeOverscan(int direction)
 {

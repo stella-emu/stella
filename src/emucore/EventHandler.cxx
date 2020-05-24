@@ -350,17 +350,25 @@ AdjustFunction EventHandler::cycleAdjustSetting(int direction)
     myOSystem.settings().getString("palette") == PaletteHandler::SETTING_CUSTOM;
   const bool isCustomFilter =
     myOSystem.settings().getInt("tv.filter") == int(NTSCFilter::Preset::CUSTOM);
+  bool repeat;
 
   do
   {
     myAdjustSetting =
       AdjustSetting(BSPF::clampw(int(myAdjustSetting) + direction, 0, int(AdjustSetting::MAX_ADJ)));
     // skip currently non-relevant adjustments
-  } while((myAdjustSetting == AdjustSetting::OVERSCAN && !isFullScreen)
-          || (myAdjustSetting == AdjustSetting::PALETTE_PHASE && !isCustomPalette)
-          || (myAdjustSetting >= AdjustSetting::NTSC_SHARPNESS
-              && myAdjustSetting <= AdjustSetting::NTSC_BLEEDING
-              && !isCustomFilter));
+    repeat = (myAdjustSetting == AdjustSetting::OVERSCAN && !isFullScreen)
+  #ifdef ADAPTABLE_REFRESH_SUPPORT
+      || (myAdjustSetting == AdjustSetting::ADAPT_REFRESH && !isFullScreen)
+  #endif
+      || (myAdjustSetting == AdjustSetting::PALETTE_PHASE && !isCustomPalette)
+      || (myAdjustSetting >= AdjustSetting::NTSC_SHARPNESS
+          && myAdjustSetting <= AdjustSetting::NTSC_BLEEDING
+          && !isCustomFilter);
+    // avoid endless loop
+    if(repeat && !direction)
+      direction = 1;
+  } while(repeat);
 
   return getAdjustSetting(myAdjustSetting);
 }
@@ -376,6 +384,9 @@ AdjustFunction EventHandler::getAdjustSetting(AdjustSetting setting)
     std::bind(&Sound::adjustVolume, &myOSystem.sound(), _1),
     std::bind(&FrameBuffer::selectVidMode, &myOSystem.frameBuffer(), _1),
     std::bind(&FrameBuffer::toggleFullscreen, &myOSystem.frameBuffer(), _1),
+  #ifdef ADAPTABLE_REFRESH_SUPPORT
+    std::bind(&FrameBuffer::toggleAdaptRefresh, &myOSystem.frameBuffer(), _1),
+  #endif
     std::bind(&FrameBuffer::changeOverscan, &myOSystem.frameBuffer(), _1),
     std::bind(&Console::selectFormat, &myOSystem.console(), _1),
     std::bind(&Console::changeVerticalCenter, &myOSystem.console(), _1),
@@ -657,6 +668,17 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
         myAdjustActive = true;
       }
       return;
+
+  #ifdef ADAPTABLE_REFRESH_SUPPORT
+    case Event::ToggleAdaptRefresh:
+      if(pressed && !repeated)
+      {
+        myOSystem.frameBuffer().toggleAdaptRefresh();
+        myAdjustSetting = AdjustSetting::ADAPT_REFRESH;
+        myAdjustActive = true;
+      }
+      return;
+  #endif
 
     case Event::OverscanDecrease:
       if(pressed)
@@ -2218,6 +2240,9 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::KeyboardOnePound,        "P1 Keyboard #",                         "" },
   // Video
   { Event::ToggleFullScreen,        "Toggle fullscreen",                     "" },
+#ifdef ADAPTABLE_REFRESH_SUPPORT
+  { Event::ToggleAdaptRefresh,      "Toggle fullscreen refresh rate adapt",  "" },
+#endif
   { Event::OverscanDecrease,        "Decrease overscan in fullscreen mode",  "" },
   { Event::OverscanIncrease,        "Increase overscan in fullscreen mode",  "" },
   { Event::VidmodeDecrease,         "Previous zoom level",                   "" },
@@ -2361,7 +2386,7 @@ const Event::EventSet EventHandler::MiscEvents = {
 const Event::EventSet EventHandler::AudioVideoEvents = {
   Event::VolumeDecrease, Event::VolumeIncrease, Event::SoundToggle,
   Event::VidmodeDecrease, Event::VidmodeIncrease,
-  Event::ToggleFullScreen,
+  Event::ToggleFullScreen, Event::ToggleAdaptRefresh,
   Event::OverscanDecrease, Event::OverscanIncrease,
   Event::FormatDecrease, Event::FormatIncrease,
   Event::VCenterDecrease, Event::VCenterIncrease,
