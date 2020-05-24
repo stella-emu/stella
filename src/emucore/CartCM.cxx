@@ -98,7 +98,7 @@ uInt8 CartridgeCM::column() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeCM::bank(uInt16 bank, uInt16)
+bool CartridgeCM::bank(uInt16 bank)
 {
   if(bankLocked()) return false;
 
