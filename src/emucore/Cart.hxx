@@ -169,8 +169,13 @@ class Cartridge : public Device
       scheme defines banks in a standard format (ie, 0 for first bank,
       1 for second, etc).  Carts which will handle their own bankswitching
       completely or non-bankswitched carts can ignore this method.
+
+      @param bank     The bank that should be installed in the system
+      @param segment  The segment the bank should be using
+
+      @return  true, if bank has changed
     */
-    virtual bool bank(uInt16) { return false; }
+    virtual bool bank(uInt16 bank, uInt16 segment = 0) { return false; }
 
     /**
       Get the current bank for the provided address. Carts which have only
@@ -196,7 +201,6 @@ class Cartridge : public Device
       cart will report having only one 'virtual' bank.
     */
     virtual uInt16 romBankCount() const { return 1; }
-
 
     /**
       Query the number of RAM 'banks' supported by the cartridge.  Note that
