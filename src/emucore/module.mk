@@ -47,6 +47,7 @@ MODULE_OBJS := \
 	src/emucore/CartFE.o \
 	src/emucore/CartMDM.o \
 	src/emucore/CartSB.o \
+	src/emucore/CartTVBoy.o \
 	src/emucore/CartUA.o \
 	src/emucore/CartWD.o \
 	src/emucore/CartX07.o \
