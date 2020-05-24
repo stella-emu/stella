@@ -86,12 +86,9 @@ class CartridgeDPCPlus : public Cartridge
     /**
       Install pages for the specified bank in the system.
 
-      @param bank     The bank that should be installed in the system
-      @param segment  The segment the bank should be using
-
-      @return  true, if bank has changed
+      @param bank The bank that should be installed in the system
     */
-    bool bank(uInt16 bank, uInt16 segment = 0) override;
+    bool bank(uInt16 bank) override;
 
     /**
       Get the current bank.

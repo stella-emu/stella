@@ -717,27 +717,57 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::VidmodeStd:
-      if (pressed && !repeated) myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::OFF);
+      if(pressed && !repeated)
+      {
+        myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::OFF);
+        myAdjustDirect = AdjustSetting::NTSC_PRESET;
+        myAdjustActive = true;
+      }
       return;
 
     case Event::VidmodeRGB:
-      if (pressed && !repeated) myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::RGB);
+      if(pressed && !repeated)
+      {
+        myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::RGB);
+        myAdjustSetting = AdjustSetting::NTSC_PRESET;
+        myAdjustActive = true;
+      }
       return;
 
     case Event::VidmodeSVideo:
-      if (pressed && !repeated) myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::SVIDEO);
+      if(pressed && !repeated)
+      {
+        myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::SVIDEO);
+        myAdjustSetting = AdjustSetting::NTSC_PRESET;
+        myAdjustActive = true;
+      }
       return;
 
     case Event::VidModeComposite:
-      if (pressed && !repeated) myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::COMPOSITE);
+      if(pressed && !repeated)
+      {
+        myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::COMPOSITE);
+        myAdjustSetting = AdjustSetting::NTSC_PRESET;
+        myAdjustActive = true;
+      }
       return;
 
     case Event::VidModeBad:
-      if (pressed && !repeated) myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::BAD);
+      if(pressed && !repeated)
+      {
+        myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::BAD);
+        myAdjustSetting = AdjustSetting::NTSC_PRESET;
+        myAdjustActive = true;
+      }
       return;
 
     case Event::VidModeCustom:
-      if (pressed && !repeated) myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::CUSTOM);
+      if(pressed && !repeated)
+      {
+        myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::CUSTOM);
+        myAdjustSetting = AdjustSetting::NTSC_PRESET;
+        myAdjustActive = true;
+      }
       return;
 
     case Event::PreviousAttribute:

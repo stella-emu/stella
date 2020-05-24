@@ -56,6 +56,7 @@
 #include "CartFE.hxx"
 #include "CartMDM.hxx"
 #include "CartSB.hxx"
+#include "CartTVBoy.hxx"
 #include "CartUA.hxx"
 #include "CartWD.hxx"
 #include "CartX07.hxx"
@@ -328,6 +329,8 @@ CartDetector::createFromImage(const ByteBuffer& image, size_t size, Bankswitch::
       return make_unique<CartridgeUA>(image, size, md5, settings, true);
     case Bankswitch::Type::_SB:
       return make_unique<CartridgeSB>(image, size, md5, settings);
+    case Bankswitch::Type::_TVBOY:
+      return make_unique<CartridgeTVBoy>(image, size, md5, settings);
     case Bankswitch::Type::_WD:
     case Bankswitch::Type::_WDSW:
       return make_unique<CartridgeWD>(image, size, md5, settings);
@@ -523,6 +526,11 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
       type = Bankswitch::Type::_3F;
     else /*if(isProbablySB(image, size))*/
       type = Bankswitch::Type::_SB;
+  }
+  else if(size == 512_KB)
+  {
+    if(isProbablyTVBoy(image, size))
+      type = Bankswitch::Type::_TVBOY;
   }
   else  // what else can we do?
   {
@@ -998,6 +1006,14 @@ bool CartDetector::isProbablySB(const ByteBuffer& image, size_t size)
     return true;
   else
     return searchForBytes(image, size, signature[1], 3);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartDetector::isProbablyTVBoy(const ByteBuffer& image, size_t size)
+{
+  // TV Boy cart bankswitching switches banks by accessing addresses 0x1800..$187F
+  uInt8 signature[5] = {0x91, 0x82, 0x6c, 0xfc, 0xff};  // STA ($82),Y; JMP ($FFFC)
+  return searchForBytes(image, size, signature, 5);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

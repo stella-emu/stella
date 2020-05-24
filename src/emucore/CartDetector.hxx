@@ -248,6 +248,11 @@ class CartDetector
     static bool isProbablySB(const ByteBuffer& image, size_t size);
 
     /**
+      Returns true if the image is probably a TV Boy bankswitching cartridge
+    */
+    static bool isProbablyTVBoy(const ByteBuffer& image, size_t size);
+
+    /**
       Returns true if the image is probably a UA bankswitching cartridge
     */
     static bool isProbablyUA(const ByteBuffer& image, size_t size);

@@ -429,7 +429,7 @@ bool CartridgeBUS::poke(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeBUS::bank(uInt16 bank, uInt16)
+bool CartridgeBUS::bank(uInt16 bank)
 {
   if(bankLocked()) return false;
 
