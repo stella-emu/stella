@@ -83,14 +83,6 @@ VideoAudioDialog::VideoAudioDialog(OSystem& osystem, DialogContainer& parent,
   addTVEffectsTab();
   addAudioTab();
 
-  //const int req_w = std::max(myFastSCBios->getRight(), myCloneBad->getRight()) + HBORDER + 1;
-  //const int req_h = _th + VGAP * 3
-  //  + std::max(myUseVSync->getBottom(), myTVScanIntense->getBottom())
-  //  + buttonHeight + VBORDER * 2;
-  //// Set real dimensions
-  //setSize(req_w, req_h, max_w, max_h);
-
-
   // Add Defaults, OK and Cancel buttons
   WidgetArray wid;
   addDefaultsOKCancelBGroup(wid, _font);
@@ -149,32 +141,36 @@ void VideoAudioDialog::addDisplayTab()
   wid.push_back(myFullscreen);
   ypos += lineHeight + VGAP;
 
-  /*pwidth = font.getStringWidth("0: 3840x2860@120Hz");
-  myFullScreenMode = new PopUpWidget(myTab, font, xpos + INDENT + 2, ypos, pwidth, lineHeight,
-  instance().frameBuffer().supportedScreenModes(), "Mode ");
-  wid.push_back(myFullScreenMode);
-  ypos += lineHeight + VGAP;*/
-
   // FS stretch
   myUseStretch = new CheckboxWidget(myTab, _font, xpos + INDENT, ypos + 1, "Stretch");
   wid.push_back(myUseStretch);
+
+#ifdef ADAPTABLE_REFRESH_SUPPORT
+  // Adapt refresh rate
   ypos += lineHeight + VGAP;
+  myRefreshAdapt = new CheckboxWidget(myTab, _font, xpos + INDENT, ypos + 1, "Adapt display refresh rate");
+  wid.push_back(myRefreshAdapt);
+#else
+  myRefreshAdapt = nullptr;
+#endif
 
   // FS overscan
+  ypos += lineHeight + VGAP;
   myTVOverscan = new SliderWidget(myTab, _font, xpos + INDENT, ypos - 1, swidth, lineHeight,
                                   "Overscan", lwidth - INDENT, kOverscanChanged, fontWidth * 3, "%");
   myTVOverscan->setMinValue(0); myTVOverscan->setMaxValue(10);
   myTVOverscan->setTickmarkIntervals(2);
   wid.push_back(myTVOverscan);
-  ypos += lineHeight + VGAP;
 
   // Vertical size
+  ypos += lineHeight + VGAP;
   myVSizeAdjust =
     new SliderWidget(myTab, _font, xpos, ypos-1, swidth, lineHeight,
                      "V-Size adjust", lwidth, kVSizeChanged, fontWidth * 7, "%", 0, true);
   myVSizeAdjust->setMinValue(-5); myVSizeAdjust->setMaxValue(5);
   myVSizeAdjust->setTickmarkIntervals(2);
   wid.push_back(myVSizeAdjust);
+
 
   // Add items for tab 0
   addToFocusList(wid, myTab, tabID);
@@ -480,10 +476,12 @@ void VideoAudioDialog::loadConfig()
 
   // Fullscreen
   myFullscreen->setState(instance().settings().getBool("fullscreen"));
-  /*string mode = instance().settings().getString("fullscreenmode");
-  myFullScreenMode->setSelected(mode);*/
   // Fullscreen stretch setting
   myUseStretch->setState(instance().settings().getBool("tia.fs_stretch"));
+#ifdef ADAPTABLE_REFRESH_SUPPORT
+  // Adapt refresh rate
+  myRefreshAdapt->setState(instance().settings().getBool("tia.fs_refresh"));
+#endif
   // Fullscreen overscan setting
   myTVOverscan->setValue(instance().settings().getInt("tia.fs_overscan"));
   handleFullScreenChange();
@@ -595,6 +593,10 @@ void VideoAudioDialog::saveConfig()
   instance().settings().setValue("fullscreen", myFullscreen->getState());
   // Fullscreen stretch setting
   instance().settings().setValue("tia.fs_stretch", myUseStretch->getState());
+#ifdef ADAPTABLE_REFRESH_SUPPORT
+  // Adapt refresh rate
+  instance().settings().setValue("tia.fs_refresh", myRefreshAdapt->getState());
+#endif
   // Fullscreen overscan
   instance().settings().setValue("tia.fs_overscan", myTVOverscan->getValueLabel());
 
@@ -610,7 +612,6 @@ void VideoAudioDialog::saveConfig()
 
 
   // Note: Palette values are saved directly when changed!
-
 
   /////////////////////////////////////////////////////////////////////////////
   // TV Effects tab
@@ -706,8 +707,10 @@ void VideoAudioDialog::setDefaults()
       myTIAInterpolate->setState(false);
       // screen size
       myFullscreen->setState(false);
-      //myFullScreenMode->setSelectedIndex(0);
       myUseStretch->setState(false);
+    #ifdef ADAPTABLE_REFRESH_SUPPORT
+      myRefreshAdapt->setState(false);
+    #endif
       myTVOverscan->setValue(0);
       myTIAZoom->setValue(300);
       myVSizeAdjust->setValue(0);
@@ -833,6 +836,9 @@ void VideoAudioDialog::handleFullScreenChange()
 {
   bool enable = myFullscreen->getState();
   myUseStretch->setEnabled(enable);
+#ifdef ADAPTABLE_REFRESH_SUPPORT
+  myRefreshAdapt->setEnabled(enable);
+#endif
   myTVOverscan->setEnabled(enable);
 }
 

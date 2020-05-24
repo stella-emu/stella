@@ -101,6 +101,12 @@ static const string EmptyString("");
 #undef PAGE_SIZE
 #undef PAGE_MASK
 
+// Adaptable refresh is currently not available on MacOS
+// In the future, this may expand to other systems
+#if !defined(BSPF_MACOS)
+  #define ADAPTABLE_REFRESH_SUPPORT
+#endif
+
 namespace BSPF
 {
   static constexpr float PI_f = 3.141592653589793238462643383279502884F;
