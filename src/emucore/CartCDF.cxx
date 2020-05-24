@@ -402,7 +402,7 @@ bool CartridgeCDF::poke(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeCDF::bank(uInt16 bank)
+bool CartridgeCDF::bank(uInt16 bank, uInt16)
 {
   if(bankLocked()) return false;
 

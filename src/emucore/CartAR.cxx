@@ -392,7 +392,7 @@ void CartridgeAR::loadIntoRAM(uInt8 load)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeAR::bank(uInt16 bank)
+bool CartridgeAR::bank(uInt16 bank, uInt16)
 {
   if(!bankLocked())
     return bankConfiguration(uInt8(bank));
