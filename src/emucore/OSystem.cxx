@@ -414,7 +414,7 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
   }
   catch(const runtime_error& e)
   {
-    buf << "ERROR: Couldn't create console (" << e.what() << ")";
+    buf << "ERROR: " << e.what();
     Logger::error(buf.str());
     return buf.str();
   }
