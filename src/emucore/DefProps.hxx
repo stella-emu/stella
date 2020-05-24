@@ -3357,7 +3357,7 @@ static const BSPF::array2D<const char*, DEF_PROPS_SIZE, 23> DefProps = {{
   { "f39e4bc99845edd8621b0f3c7b8c4fd9", "AtariAge", "", "Toyshop Trouble (AtariAge)", "F8 Emulator Release", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "f3c431930e035a457fe370ed4d230659", "", "", "Crackpots (Unknown) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "f3cd0f886201d1376f3abab2df53b1b9", "Commavid, Ben Burch", "CM-010", "Rush Hour (1983) (Commavid) (Prototype)", "", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
-  { "f3dfae774f3bd005a026e29894db40d3", "Otto Versand", "649635", "See Saw (Double-Game Package) (1983) (Otto Versand) (PAL)", "AKA Circus Atari", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "f3dfae774f3bd005a026e29894db40d3", "Otto Versand", "649635", "See Saw (Double-Game Package) (1983) (Otto Versand) (PAL)", "AKA Circus Atari", "", "", "", "", "", "", "", "", "JOYSTICK", "JOYSTICK", "", "", "", "", "", "", "", "" },
   { "f3f5f72bfdd67f3d0e45d097e11b8091", "Sears Tele-Games, Marilyn Churchill, Matthew L. Hubbard", "CX2647 - 49-75142", "Submarine Commander (1982) (Sears)", "AKA Seawolf 3", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "f3f92aad3a335f0a1ead24a0214ff446", "", "", "Spectrum Color Demo (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "f40e437a9ebf0bdfe26204152f74f868", "Bit Corporation", "R320", "Jawbreaker (32 in 1) (BitCorp) (Hack)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
