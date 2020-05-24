@@ -229,7 +229,7 @@ bool CartridgeCTY::poke(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeCTY::bank(uInt16 bank)
+bool CartridgeCTY::bank(uInt16 bank, uInt16)
 {
   if(bankLocked()) return false;
 
