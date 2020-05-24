@@ -70,16 +70,7 @@ class CartridgeEnhanced : public Cartridge
 
       @return  true, if bank has changed
     */
-    virtual bool bank(uInt16 bank, uInt16 segment);
-
-    /**
-      Install pages for the specified bank in the system.
-
-      @param bank  The bank that should be installed in the system
-
-      @return  true, if bank has changed
-    */
-    bool bank(uInt16 bank) override { return this->bank(bank, 0); }
+    bool bank(uInt16 bank, uInt16 segment = 0) override;
 
     /**
       Get the current bank.
