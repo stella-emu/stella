@@ -959,6 +959,7 @@ void FrameBuffer::setFullscreen(bool enable)
     default:
       return;
   }
+  saveCurrentWindowPosition();
 
   // Changing the video mode can take some time, during which the last
   // sound played may get 'stuck'
@@ -993,8 +994,48 @@ void FrameBuffer::toggleFullscreen(bool toggle)
 
   setFullscreen(isFullscreen);
 
-  showMessage(string("Fullscreen ") + (isFullscreen ? "enabled" : "disabled"));
+  if(myBufferType == BufferType::Emulator)
+  {
+    ostringstream msg;
+
+    msg << "Fullscreen ";
+    if(isFullscreen)
+      msg << "enabled (" << refreshRate() << " Hz)";
+    else
+      msg << "disabled";
+
+    showMessage(msg.str());
+  }
 }
+
+#ifdef ADAPTABLE_REFRESH_SUPPORT
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::toggleAdaptRefresh(bool toggle)
+{
+  bool isAdaptRefresh = myOSystem.settings().getInt("tia.fs_refresh");
+
+  if(toggle)
+    isAdaptRefresh = !isAdaptRefresh;
+
+  if(myBufferType == BufferType::Emulator)
+  {
+    if(toggle)
+    {
+      myOSystem.settings().setValue("tia.fs_refresh", isAdaptRefresh);
+      // issue a complete framebuffer re-initialization
+      myOSystem.createFrameBuffer();
+    }
+
+    ostringstream msg;
+
+    msg << "Adapt refresh rate ";
+    msg << (isAdaptRefresh ? "enabled" : "disabled");
+    msg << " (" << refreshRate() << " Hz)";
+
+    showMessage(msg.str());
+  }
+}
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::changeOverscan(int direction)

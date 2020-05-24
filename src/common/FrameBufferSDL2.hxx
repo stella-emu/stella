@@ -182,6 +182,25 @@ class FrameBufferSDL2 : public FrameBuffer
     bool setVideoMode(const string& title, const VideoMode& mode) override;
 
     /**
+      Checks if the display refresh rate should be adapted to game refresh rate in (real) fullscreen mode
+
+      @param displayIndex   The display which should be checked
+      @param adaptedSdlMode The best matching mode if the refresh rate should be changed
+
+      @return  True if the refresh rate should be changed
+    */
+    bool adaptRefreshRate(Int32 displayIndex, SDL_DisplayMode& adaptedSdlMode);
+
+    /**
+      Create a new renderer if required
+
+      @param force  If true, force new renderer creation
+
+      @return  False on any errors, else true
+    */
+    bool createRenderer(bool force);
+
+    /**
       This method is called to create a surface with the given attributes.
 
       @param w                The requested width of the new surface.
@@ -232,6 +251,16 @@ class FrameBufferSDL2 : public FrameBuffer
       Determine window and renderer dimensions.
      */
     void determineDimensions();
+
+    /**
+      Retrieve the current display's refresh rate, or 0 if no window
+    */
+    int refreshRate() const override;
+
+    /**
+      Retrieve the current game's refresh rate, or 60 if no game
+    */
+    int gameRefreshRate() const;
 
   private:
     // The SDL video buffer

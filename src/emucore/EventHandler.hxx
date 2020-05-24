@@ -398,6 +398,9 @@ class EventHandler
       VOLUME,
       ZOOM,
       FULLSCREEN,
+    #ifdef ADAPTABLE_REFRESH_SUPPORT
+      ADAPT_REFRESH,
+    #endif
       OVERSCAN,
       TVFORMAT,
       VCENTER,
@@ -517,7 +520,12 @@ class EventHandler
     #else
       PNG_SIZE             = 0,
     #endif
-      EMUL_ACTIONLIST_SIZE = 156 + PNG_SIZE + COMBO_SIZE,
+    #ifdef ADAPTABLE_REFRESH_SUPPORT
+      REFRESH_SIZE         = 1,
+    #else
+      REFRESH_SIZE         = 0,
+    #endif
+      EMUL_ACTIONLIST_SIZE = 156 + PNG_SIZE + COMBO_SIZE + REFRESH_SIZE,
       MENU_ACTIONLIST_SIZE = 18
     ;
 
