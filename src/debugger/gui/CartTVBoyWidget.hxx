@@ -19,30 +19,44 @@
 #define CARTRIDGETVBOY_WIDGET_HXX
 
 class CartridgeTVBoy;
+class CheckboxWidget;
 
 #include "CartEnhancedWidget.hxx"
 
 class CartridgeTVBoyWidget : public CartridgeEnhancedWidget
 {
-public:
-  CartridgeTVBoyWidget(GuiObject* boss, const GUI::Font& lfont,
-                    const GUI::Font& nfont,
-                    int x, int y, int w, int h,
-                    CartridgeTVBoy& cart);
-  virtual ~CartridgeTVBoyWidget() = default;
+  public:
+    CartridgeTVBoyWidget(GuiObject* boss, const GUI::Font& lfont,
+                      const GUI::Font& nfont,
+                      int x, int y, int w, int h,
+                      CartridgeTVBoy& cart);
+    virtual ~CartridgeTVBoyWidget() = default;
 
-private:
-  string manufacturer() override { return "Akor"; }
+  private:
+    string manufacturer() override { return "Akor"; }
 
-  string description() override;
+    string description() override;
 
-private:
-  // Following constructors and assignment operators not supported
-  CartridgeTVBoyWidget() = delete;
-  CartridgeTVBoyWidget(const CartridgeTVBoyWidget&) = delete;
-  CartridgeTVBoyWidget(CartridgeTVBoyWidget&&) = delete;
-  CartridgeTVBoyWidget& operator=(const CartridgeTVBoyWidget&) = delete;
-  CartridgeTVBoyWidget& operator=(CartridgeTVBoyWidget&&) = delete;
+    void bankSelect(int& ypos) override;
+
+    CartridgeTVBoy& myCartTVBoy;
+    CheckboxWidget* myBankLocked{nullptr};
+
+    enum {
+      kBankLocked = 'bkLO'
+    };
+
+  private:
+    void loadConfig() override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+  private:
+    // Following constructors and assignment operators not supported
+    CartridgeTVBoyWidget() = delete;
+    CartridgeTVBoyWidget(const CartridgeTVBoyWidget&) = delete;
+    CartridgeTVBoyWidget(CartridgeTVBoyWidget&&) = delete;
+    CartridgeTVBoyWidget& operator=(const CartridgeTVBoyWidget&) = delete;
+    CartridgeTVBoyWidget& operator=(CartridgeTVBoyWidget&&) = delete;
 };
 
 #endif

@@ -34,7 +34,7 @@
 */
 class CartridgeTVBoy : public CartridgeEnhanced
 {
-  friend class CartridgeMDMWidget;
+  friend class CartridgeTVBoyWidget;
 
   public:
     /**
