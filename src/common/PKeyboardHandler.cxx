@@ -443,7 +443,11 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultCommo
   {Event::LoadState,                KBDK_F11},
   {Event::LoadAllStates,            KBDK_F11, MOD3},
   {Event::TakeSnapshot,             KBDK_F12},
+#ifdef BSPF_MACOS
+  {Event::TogglePauseMode,          KBDK_P, KBDM_SHIFT | MOD3},
+#else
   {Event::TogglePauseMode,          KBDK_PAUSE},
+#endif
   {Event::OptionsMenuMode,          KBDK_TAB},
   {Event::CmdMenuMode,              KBDK_BACKSLASH},
   {Event::TimeMachineMode,          KBDK_T, KBDM_SHIFT},

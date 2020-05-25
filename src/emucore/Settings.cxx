@@ -69,7 +69,7 @@ Settings::Settings()
   setPermanent("tv.filter", "0");
   setPermanent("tv.phosphor", "byrom");
   setPermanent("tv.phosblend", "50");
-  setPermanent("tv.scanlines", "25");
+  setPermanent("tv.scanlines", "0");
   // TV options when using 'custom' mode
   setPermanent("tv.sharpness", "0.0");
   setPermanent("tv.resolution", "0.0");
