@@ -90,9 +90,9 @@ using DWordBuffer = std::unique_ptr<uInt32[]>;  // NOLINT
 using AdjustFunction = std::function<void(int)>;
 
 // We use KB a lot; let's make a literal for it
-constexpr uInt32 operator "" _KB(unsigned long long size)
+constexpr size_t operator "" _KB(unsigned long long size)
 {
-   return static_cast<uInt32>(size * 1024);
+   return static_cast<size_t>(size * 1024);
 }
 
 static const string EmptyString("");
@@ -127,6 +127,9 @@ namespace BSPF
   #else
     static const string ARCH = "NOARCH";
   #endif
+
+  // Maximum size of a ROM that Stella can support
+  inline constexpr size_t romMaxSize() { return 512_KB; }
 
   // Make 2D-arrays using std::array less verbose
   template<typename T, size_t ROW, size_t COL>

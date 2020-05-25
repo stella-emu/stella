@@ -83,7 +83,7 @@ uInt16 Cartridge::bankSize(uInt16 bank) const
 
   getImage(size);
 
-  return std::min(uInt32(size) / romBankCount(), 4_KB); // assuming that each bank has the same size
+  return std::min(size / romBankCount(), 4_KB); // assuming that each bank has the same size
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
