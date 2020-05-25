@@ -53,7 +53,7 @@
 
   * Restored 'cfg' directory for Distella config files.
 
-  * Added 3EX bank switching type.
+  * Added TV Boy and 3EX bank switching types.
 
   * Removed unused CV+ and DASH bank switching types.
 
