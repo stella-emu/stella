@@ -544,7 +544,11 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::ReloadConsole:
-      if(pressed && !repeated) myOSystem.reloadConsole();
+      if(pressed && !repeated) myOSystem.reloadConsole(true);
+      return;
+
+    case Event::PreviousMultiCartRom:
+      if(pressed && !repeated) myOSystem.reloadConsole(false);
       return;
 
     case Event::VolumeDecrease:
@@ -2172,6 +2176,7 @@ void EventHandler::exitEmulation(bool checkLauncher)
 EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::Quit,                    "Quit",                                  "" },
   { Event::ReloadConsole,           "Reload current ROM/load next game",     "" },
+  { Event::PreviousMultiCartRom,    "Load previous multicart game",          "" },
   { Event::ExitMode,                "Exit current Stella menu/mode",         "" },
   { Event::OptionsMenuMode,         "Enter Options menu UI",                 "" },
   { Event::CmdMenuMode,             "Toggle Commands menu UI",               "" },
@@ -2409,7 +2414,7 @@ const Event::EventSet EventHandler::MiscEvents = {
   // Event::MouseAxisXMove, Event::MouseAxisYMove,
   // Event::MouseButtonLeftValue, Event::MouseButtonRightValue,
   Event::HandleMouseControl, Event::ToggleGrabMouse,
-  Event::ToggleSAPortOrder,
+  Event::ToggleSAPortOrder, Event::PreviousMultiCartRom
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

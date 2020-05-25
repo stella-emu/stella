@@ -459,6 +459,7 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultCommo
   {Event::Quit,                     KBDK_Q, KBDM_CTRL},
 #endif
   {Event::ReloadConsole,            KBDK_R, KBDM_CTRL},
+  {Event::PreviousMultiCartRom,     KBDK_R, KBDM_SHIFT | KBDM_CTRL},
 
   {Event::VidmodeDecrease,          KBDK_MINUS, MOD3},
   {Event::VidmodeIncrease,          KBDK_EQUALS, MOD3},

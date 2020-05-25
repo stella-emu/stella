@@ -218,6 +218,14 @@ CartDetector::createFromMultiCart(const ByteBuffer& image, size_t& size,
 {
   // Get a piece of the larger image
   uInt32 i = settings.getInt("romloadcount");
+
+  // Move to the next game
+  if(!settings.getBool("romloadprev"))
+    i = (i + 1) % numroms;
+  else
+    i = (i - 1) % numroms;
+  settings.setValue("romloadcount", i);
+
   size /= numroms;
   ByteBuffer slice = make_unique<uInt8[]>(size);
   std::copy_n(image.get()+i*size, size, slice.get());
@@ -227,9 +235,6 @@ CartDetector::createFromMultiCart(const ByteBuffer& image, size_t& size,
   ostringstream buf;
   buf << " [G" << (i+1) << "]";
   id = buf.str();
-
-  // Move to the next game the next time this ROM is loaded
-  settings.setValue("romloadcount", (i+1)%numroms);
 
   if(size <= 2_KB)       type = Bankswitch::Type::_2K;
   else if(size == 4_KB)  type = Bankswitch::Type::_4K;
@@ -529,7 +534,13 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
   }
   else if(size == 512_KB)
   {
-    if(isProbablyTVBoy(image, size))
+    if(isProbably3EX(image, size))
+      type = Bankswitch::Type::_3EX;
+    else if(isProbably3E(image, size))
+      type = Bankswitch::Type::_3E;
+    else if(isProbably3F(image, size))
+      type = Bankswitch::Type::_3F;
+    else if(isProbablyTVBoy(image, size))
       type = Bankswitch::Type::_TVBOY;
   }
   else  // what else can we do?
