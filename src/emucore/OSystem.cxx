@@ -399,7 +399,7 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
     // Each time a new console is loaded, we simulate a cart removal
     // Some carts need knowledge of this, as they behave differently
     // based on how many power-cycles they've been through since plugged in
-    mySettings->setValue("romloadcount", 0);
+    mySettings->setValue("romloadcount", -1); // we move to the next game initially
   }
 
   // Create an instance of the 2600 game console
@@ -474,8 +474,10 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool OSystem::reloadConsole()
+bool OSystem::reloadConsole(bool nextrom)
 {
+  mySettings->setValue("romloadprev", !nextrom);
+
   return createConsole(myRomFile, myRomMD5, false) == EmptyString;
 }
 
