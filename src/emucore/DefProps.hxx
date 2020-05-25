@@ -25,7 +25,7 @@
   regenerated and the application recompiled.
 */
 
-static constexpr uInt32 DEF_PROPS_SIZE = 3514;
+static constexpr uInt32 DEF_PROPS_SIZE = 3516;
 
 static const BSPF::array2D<const char*, DEF_PROPS_SIZE, 23> DefProps = {{
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -405,6 +405,7 @@ static const BSPF::array2D<const char*, DEF_PROPS_SIZE, 23> DefProps = {{
   { "1b1daaa9aa5cded3d633bfcbeb06479c", "", "", "Ship Demo (V 1502) (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "1b22a3d79ddd79335b69c94dd9b3e44e", "Tron", "", "Moon Patrol (Tron)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "1b4b06c2a14ed3ee73b7d0fd61b6aaf5", "Arcadia Corporation, Stephen H. Landrum", "AR-4400", "Excalibur (Dragonstomper Beta) (1982) (Arcadia) (Prototype) [a]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "1b5a8da0622bffcee4c5b42aed4e0ef0", "Akor", "", "TV Boy II (1992) (Akor)", "Includes 127 games", "", "", "", "", "", "", "", "", "JOYSTICK", "JOYSTICK", "", "", "", "", "", "", "", "" },
   { "1b8c3c0bfb815b2a1010bba95998b66e", "Telegames", "", "Frogs and Flies (1988) (Telegames) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "1b8d35d93697450ea26ebf7ff17bd4d1", "Quelle - Otto Versand", "176.764 9 - 781644", "Marineflieger (1983) (Quelle) (PAL)", "AKA Seahawk", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "1bb91bae919ddbd655fa25c54ea6f532", "Suntek", "SS-026", "Treasure Island (1983) (Suntek) (PAL)", "AKA Treasure Discovery", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -1426,6 +1427,7 @@ static const BSPF::array2D<const char*, DEF_PROPS_SIZE, 23> DefProps = {{
   { "65917ae29a8c9785bb1f2acb0d6aafd0", "", "", "Junkosoft One Year Demo (1999) (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "6596b3737ae4b976e4aadb68d836c5c7", "Digivision", "", "Defender (Digivision)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "659a20019de4a23c748ec2292ea5f221", "Retroactive", "", "Qb (V2.05) (NTSC) (2001) (Retroactive)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
+  { "65a6f1255fe22468a8bf84ff28a4d289", "Akor", "", "Super TV Boy (1995) (Akor)", "Includes 127 games", "", "", "", "", "", "", "", "", "JOYSTICK", "JOYSTICK", "", "", "", "", "", "", "", "" },
   { "65b106eba3e45f3dab72ea907f39f8b4", "Christian Software Development - HomeComputer Software, Dan Schafer, Glenn Stohel, Jon Tedesco - Sparrow", "GCG 1001T", "Music Machine, The (1983) (Sparrow)", "Uses the Paddle Controllers (left only)", "", "", "", "", "", "", "", "", "", "", "", "", "", "AUTO 45", "", "", "", "" },
   { "65ba1a4c643d1ab44481bdddeb403827", "Quelle", "876.013 4", "Katastrophen-Einsatz (1983) (Quelle) (PAL)", "AKA M.A.S.H.", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "65bd29e8ab1b847309775b0de6b2e4fe", "Coleco, Ed English", "2667", "Roc 'n Rope (1984) (Coleco)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
