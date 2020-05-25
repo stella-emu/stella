@@ -21376,3 +21376,18 @@
 "Cart.Name" "Spitfire Attack (1983) (Milton Bradley) [h1]"
 ""
 
+"Cart.MD5" "1b5a8da0622bffcee4c5b42aed4e0ef0"
+"Cart.Manufacturer" "Akor"
+"Cart.Name" "TV Boy II (1992) (Akor)"
+"Cart.Note" "Includes 127 games"
+"Controller.Left" "JOYSTICK"
+"Controller.Right" "JOYSTICK"
+""
+
+"Cart.MD5" "65a6f1255fe22468a8bf84ff28a4d289"
+"Cart.Manufacturer" "Akor"
+"Cart.Name" "Super TV Boy (1995) (Akor)"
+"Cart.Note" "Includes 127 games"
+"Controller.Left" "JOYSTICK"
+"Controller.Right" "JOYSTICK"
+""
