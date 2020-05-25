@@ -236,7 +236,7 @@ size_t FilesystemNode::read(ByteBuffer& image) const
     return size;
 
   // Otherwise, the default behaviour is to read from a normal C++ ifstream
-  image = make_unique<uInt8[]>(512 * 1024);
+  image = make_unique<uInt8[]>(BSPF::romMaxSize());
   ifstream in(getPath(), std::ios::binary);
   if (in)
   {
@@ -247,7 +247,7 @@ size_t FilesystemNode::read(ByteBuffer& image) const
     if (length == 0)
       throw runtime_error("Zero-byte file");
 
-    size = std::min<size_t>(length, 512 * 1024);
+    size = std::min<size_t>(length, BSPF::romMaxSize());
     in.read(reinterpret_cast<char*>(image.get()), size);
   }
   else
