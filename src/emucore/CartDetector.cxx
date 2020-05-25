@@ -534,14 +534,14 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
   }
   else if(size == 512_KB)
   {
-    if(isProbably3EX(image, size))
+    if(isProbablyTVBoy(image, size))
+      type = Bankswitch::Type::_TVBOY;
+    else if(isProbably3EX(image, size))
       type = Bankswitch::Type::_3EX;
     else if(isProbably3E(image, size))
       type = Bankswitch::Type::_3E;
     else if(isProbably3F(image, size))
       type = Bankswitch::Type::_3F;
-    else if(isProbablyTVBoy(image, size))
-      type = Bankswitch::Type::_TVBOY;
   }
   else  // what else can we do?
   {
