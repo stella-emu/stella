@@ -32,7 +32,6 @@
 #include "TIA.hxx"
 #include "TIASurface.hxx"
 
-
 /**
   This class wraps Stella core for easier libretro maintenance
 */
@@ -52,46 +51,59 @@ class StellaLIBRETRO
     void runFrame();
 
     bool loadState(const void* data, size_t size);
-    bool saveState(void* data, size_t size);
+    bool saveState(void* data, size_t size) const;
 
   public:
-    const char* getCoreName() { return "Stella"; }
-    const char* getROMExtensions() { return "a26|bin"; }
+    const char* getCoreName() const { return "Stella"; }
+    const char* getROMExtensions() const { return "a26|bin"; }
 
-    void*  getROM() { return rom_image.get(); }
-    uInt32 getROMSize() { return rom_size; }
-    uInt32 getROMMax() { return 512 * 1024; }
+    void*  getROM() const { return rom_image.get(); }
+    uInt32 getROMSize() const { return rom_size; }
+    constexpr uInt32 getROMMax() const { return BSPF::romMaxSize(); }
 
     uInt8* getRAM() { return system_ram; }
-    uInt32 getRAMSize() { return 128; }
+    constexpr uInt32 getRAMSize() const { return 128; }
 
-    size_t getStateSize();
+    size_t getStateSize() const;
 
-    bool   getConsoleNTSC() { return console_timing == ConsoleTiming::ntsc; }
+    bool   getConsoleNTSC() const { return console_timing == ConsoleTiming::ntsc; }
 
-    float  getVideoAspectPar();
-    float  getVideoAspect();
-    bool   getVideoNTSC();
-    float  getVideoRate() { return getVideoNTSC() ? 60.0 : 50.0; }
+    float  getVideoAspectPar() const;
+    float  getVideoAspect() const;
+    bool   getVideoNTSC() const;
+    float  getVideoRate() const { return getVideoNTSC() ? 60.0 : 50.0; }
 
-    bool   getVideoReady() { return video_ready; }
-    uInt32 getVideoZoom() { return myOSystem->frameBuffer().tiaSurface().ntscEnabled() ? 2 : 1; }
+    bool   getVideoReady() const { return video_ready; }
+    uInt32 getVideoZoom() const {
+      return myOSystem->frameBuffer().tiaSurface().ntscEnabled() ? 2 : 1;
+    }
     bool   getVideoResize();
 
-    void*  getVideoBuffer();
-    uInt32 getVideoWidth() { return getVideoZoom()==1 ? myOSystem->console().tia().width() : getVideoWidthMax(); }
-    uInt32 getVideoHeight() { return myOSystem->console().tia().height(); }
-    uInt32 getVideoPitch() { return getVideoWidthMax() * 4; }
+    void*  getVideoBuffer() const;
+    uInt32 getVideoWidth() const {
+      return getVideoZoom() == 1 ? myOSystem->console().tia().width() : getVideoWidthMax();
+    }
+    uInt32 getVideoHeight() const {
+      return myOSystem->console().tia().height();
+    }
+    constexpr uInt32 getVideoPitch() const { return getVideoWidthMax() * 4; }
 
-    uInt32 getVideoWidthMax() { return AtariNTSC::outWidth(160); }
-    uInt32 getVideoHeightMax() { return 312; }
+    constexpr uInt32 getVideoWidthMax() const  { return AtariNTSC::outWidth(160); }
+    constexpr uInt32 getVideoHeightMax() const { return 312; }
 
-    uInt32 getRenderWidth() { return getVideoZoom()==1 ? myOSystem->console().tia().width() * 2 : getVideoWidthMax(); }
-    uInt32 getRenderHeight() { return myOSystem->console().tia().height() * getVideoZoom(); }
+    uInt32 getRenderWidth() const {
+      return getVideoZoom() == 1 ? myOSystem->console().tia().width() * 2
+                                 : getVideoWidthMax();
+    }
+    uInt32 getRenderHeight() const {
+      return myOSystem->console().tia().height() * getVideoZoom();
+    }
 
-    float  getAudioRate() { return getConsoleNTSC() ? (262 * 76 * 60) / 38.0 : (312 * 76 * 50) / 38.0; }
-    bool   getAudioReady() { return audio_samples > 0; }
-    uInt32 getAudioSize() { return audio_samples; }
+    float  getAudioRate() const {
+      return getConsoleNTSC() ? (262 * 76 * 60) / 38.0 : (312 * 76 * 50) / 38.0;
+    }
+    bool   getAudioReady() const { return audio_samples > 0; }
+    uInt32 getAudioSize() const  { return audio_samples; }
 
     Int16* getAudioBuffer() { return audio_buffer.get(); }
 
@@ -101,7 +113,7 @@ class StellaLIBRETRO
     void   setConsoleFormat(uInt32 mode);
 
     void   setVideoAspectNTSC(uInt32 value) { video_aspect_ntsc = value; };
-    void   setVideoAspectPAL(uInt32 value) { video_aspect_pal = value; };
+    void   setVideoAspectPAL(uInt32 value)  { video_aspect_pal = value; };
 
     void   setVideoFilter(NTSCFilter::Preset mode);
     void   setVideoPalette(const string& mode);
@@ -109,12 +121,18 @@ class StellaLIBRETRO
 
     void   setAudioStereo(int mode);
 
-    void   setInputEvent(Event::Type type, Int32 state) { myOSystem->eventHandler().handleEvent(type, state); }
+    void   setInputEvent(Event::Type type, Int32 state) {
+      myOSystem->eventHandler().handleEvent(type, state);
+    }
 
-    Controller::Type   getLeftControllerType() { return myOSystem->console().leftController().type(); }
-    Controller::Type   getRightControllerType() { return myOSystem->console().rightController().type(); }
+    Controller::Type getLeftControllerType() const {
+      return myOSystem->console().leftController().type();
+    }
+    Controller::Type getRightControllerType() const {
+      return myOSystem->console().rightController().type();
+    }
 
-    void   setPaddleJoypadSensitivity(int sensitivity)
+    void setPaddleJoypadSensitivity(int sensitivity)
     {
       if(getLeftControllerType() == Controller::Type::Paddles)
         static_cast<Paddles&>(myOSystem->console().leftController()).setDigitalSensitivity(sensitivity);
@@ -137,7 +155,7 @@ class StellaLIBRETRO
     unique_ptr<OSystemLIBRETRO> myOSystem;
     uInt32 system_ready;
 
-    unique_ptr<uInt8[]> rom_image;
+    ByteBuffer rom_image;
     uInt32 rom_size;
     string rom_path;
 
