@@ -15,6 +15,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include "bspf.hxx"
 #include "FSNodeLIBRETRO.hxx"
 
 #ifdef _WIN32
@@ -92,7 +93,7 @@ AbstractFSNodePtr FilesystemNodeLIBRETRO::getParent() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 size_t FilesystemNodeLIBRETRO::read(ByteBuffer& image) const
 {
-  image = make_unique<uInt8[]>(512 * 1024);
+  image = make_unique<uInt8[]>(BSPF::romMaxSize());
 
   extern uInt32 libretro_read_rom(void* data);
   return libretro_read_rom(image.get());
