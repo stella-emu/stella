@@ -2291,6 +2291,14 @@
 "Cart.Name" "Excalibur (Dragonstomper Beta) (1982) (Arcadia) (Prototype) [a]"
 ""
 
+"Cart.MD5" "1b5a8da0622bffcee4c5b42aed4e0ef0"
+"Cart.Manufacturer" "Akor"
+"Cart.Name" "TV Boy II (1992) (Akor)"
+"Cart.Note" "Includes 127 games"
+"Controller.Left" "JOYSTICK"
+"Controller.Right" "JOYSTICK"
+""
+
 "Cart.MD5" "1b8c3c0bfb815b2a1010bba95998b66e"
 "Cart.Manufacturer" "Telegames"
 "Cart.Name" "Frogs and Flies (1988) (Telegames) (PAL)"
@@ -8534,6 +8542,14 @@
 "Cart.Manufacturer" "Retroactive"
 "Cart.Name" "Qb (V2.05) (NTSC) (2001) (Retroactive)"
 "Display.Phosphor" "YES"
+""
+
+"Cart.MD5" "65a6f1255fe22468a8bf84ff28a4d289"
+"Cart.Manufacturer" "Akor"
+"Cart.Name" "Super TV Boy (1995) (Akor)"
+"Cart.Note" "Includes 127 games"
+"Controller.Left" "JOYSTICK"
+"Controller.Right" "JOYSTICK"
 ""
 
 "Cart.MD5" "65b106eba3e45f3dab72ea907f39f8b4"
@@ -18974,6 +18990,14 @@
 "Cart.Name" "Comitoid beta 4 (SnailSoft)"
 ""
 
+"Cart.MD5" "e4fa739c81b003c92bea7da5e84c7feb"
+"Cart.Manufacturer" "Akor"
+"Cart.Name" "TV Boy (1992) (Akor) (NTSC) [bad dump]"
+"Cart.Note" "Includes 127 games"
+"Controller.Left" "JOYSTICK"
+"Controller.Right" "JOYSTICK"
+""
+
 "Cart.MD5" "e505bd8e59e31aaed20718d47b15c61b"
 "Cart.Manufacturer" "Funvision - Fund. Int'l Co."
 "Cart.Name" "Space War (1982) (Funvision) (PAL)"
@@ -20633,6 +20657,14 @@
 "Cart.Note" "AKA Play Farm"
 ""
 
+"Cart.MD5" "f7ec2f2bdbe8fbea048c0d5fa6503b0b"
+"Cart.Manufacturer" "Akor"
+"Cart.Name" "TV Boy (1992) (Akor) (PAL)"
+"Cart.Note" "Includes 127 games"
+"Controller.Left" "JOYSTICK"
+"Controller.Right" "JOYSTICK"
+""
+
 "Cart.MD5" "f7f50d9c9d28bcc9f7d3075668b7ac89"
 "Cart.Manufacturer" "Activision, David Crane - Ariola"
 "Cart.ModelNo" "EAG-008, PAG-008, EAG-008-04I - 711 008-720"
@@ -21374,20 +21406,4 @@
 
 "Cart.MD5" "ffebb0070689b9d322687edd9c0a2bae"
 "Cart.Name" "Spitfire Attack (1983) (Milton Bradley) [h1]"
-""
-
-"Cart.MD5" "1b5a8da0622bffcee4c5b42aed4e0ef0"
-"Cart.Manufacturer" "Akor"
-"Cart.Name" "TV Boy II (1992) (Akor)"
-"Cart.Note" "Includes 127 games"
-"Controller.Left" "JOYSTICK"
-"Controller.Right" "JOYSTICK"
-""
-
-"Cart.MD5" "65a6f1255fe22468a8bf84ff28a4d289"
-"Cart.Manufacturer" "Akor"
-"Cart.Name" "Super TV Boy (1995) (Akor)"
-"Cart.Note" "Includes 127 games"
-"Controller.Left" "JOYSTICK"
-"Controller.Right" "JOYSTICK"
 ""
