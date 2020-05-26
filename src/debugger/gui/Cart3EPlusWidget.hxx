@@ -56,13 +56,10 @@ class Cartridge3EPlusWidget : public CartridgeEnhancedWidget
     std::array<ButtonWidget*, 4> myBankCommit{nullptr};
     std::array<EditTextWidget*, 8> myBankState{nullptr};
 
-    enum BankID {
-      kBank0Changed = 'b0CH',
-      kBank1Changed = 'b1CH',
-      kBank2Changed = 'b2CH',
-      kBank3Changed = 'b3CH'
+    enum {
+      kRomRamChanged = 'rrCh',
+      kChangeBank = 'chBk',
     };
-    static const std::array<BankID, 4> bankEnum;
 
   private:
     // Following constructors and assignment operators not supported

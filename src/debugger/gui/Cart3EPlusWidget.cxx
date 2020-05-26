@@ -39,7 +39,7 @@ string Cartridge3EPlusWidget::description()
   uInt16 numRomBanks = myCart.romBankCount();
   uInt16 numRamBanks = myCart.ramBankCount();
 
-  info << "3E+ cartridge - (4..64K ROM + RAM)\n"
+  info << "3E+ cartridge - (4" << ELLIPSIS << "64K ROM + RAM)\n"
     << "  " << numRomBanks << " 1K ROM banks + " << numRamBanks << " 512b RAM banks\n"
     << "  mapped into four segments\n"
        "ROM bank & segment selected by writing to $3F\n"
@@ -61,12 +61,15 @@ void Cartridge3EPlusWidget::bankSelect(int& ypos)
 {
   size_t size;
   const uInt8* image = myCart.getImage(size);
+  const int VGAP = myFontHeight / 4;
   VariantList banktype;
 
   VarList::push_back(banktype, "ROM", "ROM");
   VarList::push_back(banktype, "RAM", "RAM");
 
   myBankWidgets = make_unique<PopUpWidget* []>(bankSegs());
+
+  ypos -= VGAP * 2;
 
   for(uInt32 seg = 0; seg < bankSegs(); ++seg)
   {
@@ -77,20 +80,25 @@ void Cartridge3EPlusWidget::bankSelect(int& ypos)
     label << "Set segment " << seg << " as ";
 
     new StaticTextWidget(_boss, _font, xpos, ypos, label.str());
-    ypos += myLineHeight + 8;
+    ypos += myLineHeight + VGAP * 2;
 
     xpos += _font.getMaxCharWidth() * 2;
 
-    CartridgeEnhancedWidget::bankList(myCart.romBankCount(), seg, items, width);
+    CartridgeEnhancedWidget::bankList(std::max(myCart.romBankCount(), myCart.ramBankCount()),
+                                      seg, items, width);
     myBankWidgets[seg] =
       new PopUpWidget(_boss, _font, xpos, ypos - 2, width,
-                      myLineHeight, items, "Bank ");
+                      myLineHeight, items, "Bank ", 0, kBankChanged);
+    myBankWidgets[seg]->setID(seg);
+    myBankWidgets[seg]->setTarget(this);
     addFocusWidget(myBankWidgets[seg]);
 
     xpos += myBankWidgets[seg]->getWidth();
     myBankType[seg] =
       new PopUpWidget(_boss, _font, xpos, ypos - 2, 3 * _font.getMaxCharWidth(),
-                      myLineHeight, banktype, " of ");
+                      myLineHeight, banktype, " of ", 0, kRomRamChanged);
+    myBankType[seg]->setID(seg);
+    myBankType[seg]->setTarget(this);
     addFocusWidget(myBankType[seg]);
 
     xpos = myBankType[seg]->getRight() + _font.getMaxCharWidth();
@@ -98,7 +106,8 @@ void Cartridge3EPlusWidget::bankSelect(int& ypos)
     // add "Commit" button (why required?)
     myBankCommit[seg] = new ButtonWidget(_boss, _font, xpos, ypos - 4,
                                          _font.getStringWidth(" Commit "), myButtonHeight,
-                                         "Commit", bankEnum[seg]);
+                                         "Commit", kChangeBank);
+    myBankCommit[seg]->setID(seg);
     myBankCommit[seg]->setTarget(this);
     addFocusWidget(myBankCommit[seg]);
 
@@ -117,7 +126,7 @@ void Cartridge3EPlusWidget::bankSelect(int& ypos)
     myBankState[2 * seg] = new EditTextWidget(_boss, _font, xoffset, ypos_s,
                                               _w - xoffset - 10, myLineHeight, "");
     myBankState[2 * seg]->setEditable(false, true);
-    ypos_s += myLineHeight + 4;
+    ypos_s += myLineHeight + VGAP;
 
     label.str("");
     label << "$" << Common::Base::HEX4 << addr2 << "-$" << Common::Base::HEX4 << (addr2 + 0x1FF);
@@ -127,7 +136,7 @@ void Cartridge3EPlusWidget::bankSelect(int& ypos)
                                                   _w - xoffset - 10, myLineHeight, "");
     myBankState[2 * seg + 1]->setEditable(false, true);
 
-    ypos += 2 * myLineHeight;
+    ypos += myLineHeight + VGAP * 4;
   }
 }
 
@@ -142,42 +151,44 @@ void Cartridge3EPlusWidget::loadConfig()
 void Cartridge3EPlusWidget::handleCommand(CommandSender* sender,
                                           int cmd, int data, int id)
 {
-  uInt16 segment = 0;
+  const uInt16 segment = id;
+
   switch(cmd)
   {
-    case kBank0Changed:
-      segment = 0;
+    case kBankChanged:
+    case kRomRamChanged:
+    {
+      const bool isROM = myBankType[segment]->getSelectedTag() == "ROM";
+      int bank = myBankWidgets[segment]->getSelected();
+
+      myBankCommit[segment]->setEnabled((isROM && bank < myCart.romBankCount())
+        || (!isROM && bank < myCart.ramBankCount()));
       break;
-    case kBank1Changed:
-      segment = 1;
+    }
+    case kChangeBank:
+    {
+      // Ignore bank if either number or type hasn't been selected
+      if(myBankWidgets[segment]->getSelected() < 0 ||
+         myBankType[segment]->getSelected() < 0)
+        return;
+
+      uInt8 bank = myBankWidgets[segment]->getSelected();
+
+      myCart.unlockBank();
+
+      if(myBankType[segment]->getSelectedTag() == "ROM")
+        myCart.bank(bank, segment);
+      else
+        myCart.bank(bank + myCart.romBankCount(), segment);
+
+      myCart.lockBank();
+      invalidate();
+      updateUIState();
       break;
-    case kBank2Changed:
-      segment = 2;
-      break;
-    case kBank3Changed:
-      segment = 3;
-      break;
+    }
     default:
       break;
   }
-
-  // Ignore bank if either number or type hasn't been selected
-  if(myBankWidgets[segment]->getSelected() < 0 ||
-     myBankType[segment]->getSelected() < 0)
-    return;
-
-  uInt8 bank = myBankWidgets[segment]->getSelected();
-
-  myCart.unlockBank();
-
-  if(myBankType[segment]->getSelectedTag() == "ROM")
-    myCart.bank(bank, segment);
-  else
-    myCart.bank(bank + myCart.romBankCount(), segment);
-
-  myCart.lockBank();
-  invalidate();
-  updateUIState();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -234,8 +245,3 @@ string Cartridge3EPlusWidget::internalRamDescription()
 
   return desc.str();
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const std::array<Cartridge3EPlusWidget::BankID, 4> Cartridge3EPlusWidget::bankEnum = {
-  kBank0Changed, kBank1Changed, kBank2Changed, kBank3Changed
-};
