@@ -25,7 +25,7 @@
   regenerated and the application recompiled.
 */
 
-static constexpr uInt32 DEF_PROPS_SIZE = 3516;
+static constexpr uInt32 DEF_PROPS_SIZE = 3518;
 
 static const BSPF::array2D<const char*, DEF_PROPS_SIZE, 23> DefProps = {{
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -3148,6 +3148,7 @@ static const BSPF::array2D<const char*, DEF_PROPS_SIZE, 23> DefProps = {{
   { "e4c666ca0c36928b95b13d33474dbb44", "Arcadia Corporation, Steve Hales, Stephen H. Landrum", "4 AR-4102", "Suicide Mission (1982) (Arcadia)", "AKA Meteoroids", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
   { "e4d41f2d59a56a9d917038682b8e0b8c", "Cody Pittman", "", "Kiss Meets Pacman (Cody Pittman) (Hack)", "Hack of Pac-Man", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "e4e9125a8741977583776729359614e1", "SnailSoft", "", "Comitoid beta 4 (SnailSoft)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "e4fa739c81b003c92bea7da5e84c7feb", "Akor", "", "TV Boy (1992) (Akor) (NTSC) [bad dump]", "Includes 127 games", "", "", "", "", "", "", "", "", "JOYSTICK", "JOYSTICK", "", "", "", "", "", "", "", "" },
   { "e505bd8e59e31aaed20718d47b15c61b", "Funvision - Fund. Int'l Co.", "", "Space War (1982) (Funvision) (PAL)", "AKA Condor Attack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "e51030251e440cffaab1ac63438b44ae", "Parker Brothers - On-Time Software, Joe Gaucher, Louis Marbel", "PB5110", "James Bond 007 (1984) (Parker Bros)", "", "Rare", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
   { "e51c23389e43ab328ccfb05be7d451da", "Arcadia Corporation, Scott Nelson", "13", "Sweat! - The Decathlon Game (1983) (Arcadia) (Prototype)", "Uses the Paddle Controllers (left only)", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -3422,6 +3423,7 @@ static const BSPF::array2D<const char*, DEF_PROPS_SIZE, 23> DefProps = {{
   { "f7af41a87533524d9a478575b0d873d0", "Quelle", "495.663 7", "Spiderman (1983) (Quelle) (PAL)", "AKA Spider-Man", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "f7d6592dcb773c81c278140ed4d01669", "Activision, David Crane, Dan Kitchen", "EAG-108-04, EAZ-108-04B", "Ghostbusters (1985) (Activision) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "f7e07080ed8396b68f2e5788a5c245e2", "Video Game Cartridge - Ariola", "TP-617", "Farmyard Fun (Ariola)", "AKA Play Farm", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "f7ec2f2bdbe8fbea048c0d5fa6503b0b", "Akor", "", "TV Boy (1992) (Akor) (PAL)", "Includes 127 games", "", "", "", "", "", "", "", "", "JOYSTICK", "JOYSTICK", "", "", "", "", "", "", "", "" },
   { "f7f50d9c9d28bcc9f7d3075668b7ac89", "Activision, David Crane - Ariola", "EAG-008, PAG-008, EAG-008-04I - 711 008-720", "Laser Blast (1981) (Activision) (PAL) (4K)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "f7fac15cf54b55c5597718b6742dbec2", "Spiceware", "SW-01", "Medieval Mayhem (NTSC)", "", "Homebrew", "STEREO", "", "", "", "", "", "", "", "", "", "", "", "AUTO 55", "", "", "", "" },
   { "f802fa61011dd9eb6f80b271bac479d0", "Suntek", "SS-023", "Mole Hunter (1983) (Suntek) (PAL)", "AKA Topy", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
