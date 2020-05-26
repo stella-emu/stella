@@ -57,6 +57,8 @@
 
   * Removed unused CV+ and DASH bank switching types.
 
+  * Added support for loading grayscale PNG images in the ROM launcher.
+
 -Have fun!
 
 
