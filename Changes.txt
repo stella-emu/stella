@@ -33,6 +33,8 @@
 
   * Added that mouse sensitivity for Driving controller can be adjusted
 
+  * Added paddle filtering in UI to avoid unwanted navigation events
+
   * Added selectable dialog fonts
 
   * Added separate positioning of launcher, emulator and debugger
