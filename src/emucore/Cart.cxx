@@ -80,10 +80,10 @@ bool Cartridge::bankChanged()
 uInt16 Cartridge::bankSize(uInt16 bank) const
 {
   size_t size;
-
   getImage(size);
 
-  return std::min(size / romBankCount(), 4_KB); // assuming that each bank has the same size
+  return static_cast<uInt16>(
+     std::min(size / romBankCount(), 4_KB)); // assuming that each bank has the same size
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
