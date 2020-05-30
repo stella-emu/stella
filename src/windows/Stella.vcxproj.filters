@@ -1008,8 +1008,11 @@
     <ClCompile Include="..\emucore\CartTVBoy.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
-    <ClCompile Include="..\debugger\CartTVBoyWidget.cxx">
-      <Filter>Source Files\debugger</Filter>
+    <ClCompile Include="..\debugger\gui\CartTVBoyWidget.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\emucore\CartCreator.cxx">
+      <Filter>Source Files\emucore</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2072,8 +2075,11 @@
     <ClInclude Include="..\emucore\CartTVBoy.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
-    <ClInclude Include="..\debugger\CartTVBoyWidget.hxx">
-      <Filter>Header Files\debugger</Filter>
+    <ClInclude Include="..\debugger\gui\CartTVBoyWidget.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\CartCreator.hxx">
+      <Filter>Header Files\emucore</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

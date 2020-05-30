@@ -46,9 +46,9 @@ class MT24LC256
 
   public:
     // Sizes of the EEPROM
-    static constexpr uInt32 FLASH_SIZE = 32_KB;
-    static constexpr uInt32 PAGE_SIZE = 64;
-    static constexpr uInt32 PAGE_NUM = FLASH_SIZE / PAGE_SIZE;
+    static constexpr size_t FLASH_SIZE = 32_KB;
+    static constexpr size_t PAGE_SIZE = 64;
+    static constexpr size_t PAGE_NUM = FLASH_SIZE / PAGE_SIZE;
 
     // Initial state value of flash EEPROM
     static constexpr uInt8 INITIAL_VALUE = 0xff;
