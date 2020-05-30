@@ -46,7 +46,7 @@
 #include "FSNode.hxx"
 #include "MD5.hxx"
 #include "Cart.hxx"
-#include "CartDetector.hxx"
+#include "CartCreator.hxx"
 #include "FrameBuffer.hxx"
 #include "TIASurface.hxx"
 #include "PaletteHandler.hxx"
@@ -571,7 +571,7 @@ unique_ptr<Console> OSystem::openConsole(const FilesystemNode& romfile, string& 
     string cartmd5 = md5;
     const string& type = props.get(PropType::Cart_Type);
     unique_ptr<Cartridge> cart =
-      CartDetector::create(romfile, image, size, cartmd5, type, *mySettings);
+      CartCreator::create(romfile, image, size, cartmd5, type, *mySettings);
 
     // Some properties may not have a name set; we can't leave it blank
     if(props.get(PropType::Cart_Name) == EmptyString)
