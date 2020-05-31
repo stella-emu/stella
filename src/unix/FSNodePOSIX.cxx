@@ -159,7 +159,7 @@ bool FilesystemNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode) con
       if (entry._isDirectory)
         entry._path += "/";
 
-      entry._isValid = entry._isDirectory || entry._isFile;
+      entry._isValid = true;
     }
 #endif
 
