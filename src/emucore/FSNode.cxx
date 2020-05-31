@@ -47,7 +47,8 @@ bool FilesystemNode::exists() const
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FilesystemNode::getChildren(FSList& fslist, ListMode mode,
-                                 const NameFilter& filter) const
+                                 const NameFilter& filter,
+                                 bool includeParentDirectory) const
 {
   if (!_realNode || !_realNode->isDirectory())
     return false;
@@ -83,7 +84,7 @@ bool FilesystemNode::getChildren(FSList& fslist, ListMode mode,
   );
 
   // Add parent node, if it is valid to do so
-  if (hasParent())
+  if (includeParentDirectory && hasParent())
   {
     FilesystemNode parent = getParent();
     parent.setName(" [..]");

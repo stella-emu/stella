@@ -134,7 +134,8 @@ class FilesystemNode
      *         does not exist).
      */
     bool getChildren(FSList& fslist, ListMode mode = ListMode::DirectoriesOnly,
-                     const NameFilter& filter = [](const FilesystemNode&){ return true; }) const;
+                     const NameFilter& filter = [](const FilesystemNode&){ return true; },
+                     bool includeParentDirectory = true) const;
 
     /**
      * Set/get a string representation of the name of the file. This is can be
