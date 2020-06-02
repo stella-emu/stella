@@ -12,7 +12,7 @@
                               Release History
 ===========================================================================
 
-6.1.2 to 6.2: (??? ??, 2020)
+6.1.2 to 6.2: (June 7, 2020)
 
   * Added interactive palette to Video & Audio settings.
 
