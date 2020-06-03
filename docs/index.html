@@ -70,7 +70,7 @@
 
   <br><br><br>
 
-  <center><b>February 1999 - ??? 2020</b></center>
+  <center><b>February 1999 - June 2020</b></center>
     <center><b>The Stella Team</b></center>
   <center><b><a href="https://stella-emu.github.io">Stella Homepage</a></b></center>
 
@@ -2342,9 +2342,10 @@
     </tr>
 
     <tr>
-      <td><pre>-joyallow4 &lt;1|0&gt;</pre></td>
-      <td>Allow all 4 directions on a joystick to be pressed
-        simultaneously.</td>
+      <td><pre>-psense &lt;number&gt;</pre></td>
+      <td>Sensitivity for emulation of paddles when using analog paddles.
+      Valid range of values is from 1 to 30, with larger numbers causing
+      faster movement.</td>
     </tr>
 
     <tr>
@@ -2358,28 +2359,45 @@
     </tr>
 
     <tr>
+      <td><pre>-dcsense &lt;number&gt;</pre></td>
+      <td>Sensitivity for emulation of driving controllers when using a mouse.
+      Valid range of values is from 1 to 20, with larger numbers causing
+      faster movement.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-joyallow4 &lt;1|0&gt;</pre></td>
+      <td>Allow all 4 directions on a joystick to be pressed
+        simultaneously.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-modcombo &lt;1|0&gt;</pre></td>
+      <td>Use modifier(Shift/Alt/Control)-x key combos. This is normally enabled,
+      since the 'Quit' command is tied to 'Control-q'. However, there are times
+      when you want to disable them.</br>
+      E.g. a 2-player game is using either the 'f' or 'r' keys for movement,
+      and pressing Control (for Fire) will perform an unwanted action
+      associated with Control-r or Control-f default keys.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-saport &lt;lr|rl&gt;</pre></td>
+      <td>Determines how to enumerate the Stelladaptor/2600-daptor devices in the
+      order they are found: 'lr' means first is left port, second is right port,
+      'rl' means the opposite.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-avoxport &lt;name&gt;</pre></td>
+      <td>Set the name of the serial port where an AtariVox is connected.</td>
+    </tr>
+
+    <tr>
       <td><pre>-usemouse &lt;always|analog|never&gt;</pre></td>
       <td>Use mouse as a controller as specified by ROM properties in specific case.
       Always and never are self-explanatory, analog means only for analog-type devices
       (paddles, trackball, etc.).</td>
-    </tr>
-
-    <tr>
-      <td><pre>-grabmouse &lt;1|0&gt;</pre></td>
-      <td>Locks the mouse cursor in the game window in emulation mode.</td>
-    </tr>
-
-    <tr>
-      <td><pre>-cursor &lt;0|1|2|3&gt;</pre></td>
-      <td>Set mouse cursor state in UI/emulation modes.</td>
-    </tr>
-
-    <tr>
-      <td><pre>-dsense &lt;number&gt;</pre></td>
-      <td>Sensitivity for emulation of paddles when using a digital device
-      (ie, joystick digital axis or button, keyboard key, etc.).
-      Valid range of values is from 1 to 20, with larger numbers causing
-      faster movement.</td>
     </tr>
 
     <tr>
@@ -2397,27 +2415,21 @@
     </tr>
 
     <tr>
-      <td><pre>-dcsense &lt;number&gt;</pre></td>
-      <td>Sensitivity for emulation of driving controllers when using a mouse.
+      <td><pre>-dsense &lt;number&gt;</pre></td>
+      <td>Sensitivity for emulation of paddles when using a digital device
+      (ie, joystick digital axis or button, keyboard key, etc.).
       Valid range of values is from 1 to 20, with larger numbers causing
       faster movement.</td>
     </tr>
 
     <tr>
-      <td><pre>-saport &lt;lr|rl&gt;</pre></td>
-      <td>Determines how to enumerate the Stelladaptor/2600-daptor devices in the
-      order they are found: 'lr' means first is left port, second is right port,
-      'rl' means the opposite.</td>
+      <td><pre>-cursor &lt;0|1|2|3&gt;</pre></td>
+      <td>Set mouse cursor state in UI/emulation modes.</td>
     </tr>
 
     <tr>
-      <td><pre>-modcombo &lt;1|0&gt;</pre></td>
-      <td>Use modifier(Shift/Alt/Control)-x key combos. This is normally enabled,
-      since the 'Quit' command is tied to 'Control-q'. However, there are times
-      when you want to disable them.</br>
-      E.g. a 2-player game is using either the 'f' or 'r' keys for movement,
-      and pressing Control (for Fire) will perform an unwanted action
-      associated with Control-r or Control-f default keys.</td>
+      <td><pre>-grabmouse &lt;1|0&gt;</pre></td>
+      <td>Locks the mouse cursor in the game window in emulation mode.</td>
     </tr>
 
     <tr>
@@ -2586,11 +2598,6 @@
     <tr>
       <td><pre>-followlauncher &lt;0|1&gt;</pre></td>
       <td>Make the start path follow ROM launcher navigation.</td>
-    </tr>
-
-    <tr>
-      <td><pre>-avoxport &lt;name&gt;</pre></td>
-      <td>Set the name of the serial port where an AtariVox is connected.</td>
     </tr>
 
     <tr>
