@@ -112,6 +112,8 @@ string DebuggerParser::run(const string& command)
       if(validateArgs(i))
       {
         myCommand = i;
+        if(commands[i].refreshRequired)
+          debugger.baseDialog()->saveConfig();
         commands[i].executor(this);
       }
 
