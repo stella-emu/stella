@@ -278,7 +278,7 @@ bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeEnhanced::getBank(uInt16 address) const
 {
-  return myCurrentSegOffset[(address & ROM_MASK) >> myBankShift] >> myBankShift;
+  return myCurrentSegOffset[std::min((address & ROM_MASK) >> myBankShift, romBankCount() - 1)] >> myBankShift;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -290,7 +290,8 @@ uInt16 CartridgeEnhanced::getSegmentBank(uInt16 segment) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeEnhanced::romBankCount() const
 {
-  return uInt16(mySize >> myBankShift);
+  // take care of too small ROMs
+  return uInt16(mySize + ((1 << myBankShift) - 1)) >> myBankShift;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
