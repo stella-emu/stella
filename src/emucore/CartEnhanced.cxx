@@ -44,7 +44,7 @@ void CartridgeEnhanced::install(System& system)
   //  or the ROM is < 4K (-> 1 segment)
   myBankSegs = std::min(1 << (MAX_BANK_SHIFT - myBankShift),
                         int(mySize) / myBankSize);  // e.g. = 1
-  myRomOffset = myRamBankCount > 0 ? 0 : uInt32(myRamSize) * 2;
+  myRomOffset = myRamBankCount > 0U ? 0U : static_cast<uInt16>(myRamSize * 2);
   myRamMask = ramSize - 1;                          // e.g. = 0xFFFF (doesn't matter for RAM size 0)
   myWriteOffset = myRamWpHigh ? ramSize : 0;        // e.g. = 0x0000
   myReadOffset  = myRamWpHigh ? 0 : ramSize;        // e.g. = 0x0080
@@ -315,7 +315,7 @@ bool CartridgeEnhanced::patch(uInt16 address, uInt8 value)
   }
   else
   {
-    if((address & myBankMask) < myRamSize * 2)
+    if(static_cast<size_t>(address & myBankMask) < myRamSize * 2)
     {
       // Normally, a write to the read port won't do anything
       // However, the patch command is special in that ignores such
