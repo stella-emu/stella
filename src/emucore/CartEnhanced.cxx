@@ -33,7 +33,8 @@ CartridgeEnhanced::CartridgeEnhanced(const ByteBuffer& image, size_t size,
     if(size > bsSize)
     {
       ostringstream buf;
-      buf << "ROM larger than expected (" << size << " > " << bsSize << "), truncating\n";
+      buf << "ROM larger than expected (" << size << " > " << bsSize
+          << "), truncating " << (size - bsSize) << " bytes\n";
       Logger::info(buf.str());
 
       size = bsSize;
