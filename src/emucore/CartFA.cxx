@@ -21,7 +21,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeFA::CartridgeFA(const ByteBuffer& image, size_t size,
                          const string& md5, const Settings& settings)
-  : CartridgeEnhanced(image, size, md5, settings)
+  : CartridgeEnhanced(image, size, 12_KB, md5, settings)
 {
   myRamSize = RAM_SIZE;
 }

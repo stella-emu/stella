@@ -22,7 +22,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge3F::Cartridge3F(const ByteBuffer& image, size_t size,
                          const string& md5, const Settings& settings)
-  : CartridgeEnhanced(image, size, md5, settings)
+  : CartridgeEnhanced(image, size, BSPF::nextPowerOfTwo(size), md5, settings)
 {
   myBankShift = BANK_SHIFT;
 }
