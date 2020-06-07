@@ -21,7 +21,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeE0::CartridgeE0(const ByteBuffer& image, size_t size,
                          const string& md5, const Settings& settings)
-  : CartridgeEnhanced(image, size, md5, settings)
+  : CartridgeEnhanced(image, size, 8_KB, md5, settings)
 {
   myBankShift = BANK_SHIFT;
 }

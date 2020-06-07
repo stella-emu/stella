@@ -20,7 +20,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeF4::CartridgeF4(const ByteBuffer& image, size_t size,
                          const string& md5, const Settings& settings)
-  : CartridgeEnhanced(image, size, md5, settings)
+  : CartridgeEnhanced(image, size, 32_KB, md5, settings)
 {
 }
 
