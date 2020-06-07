@@ -291,7 +291,7 @@ uInt16 CartridgeEnhanced::getSegmentBank(uInt16 segment) const
 uInt16 CartridgeEnhanced::romBankCount() const
 {
   // take care of too small ROMs
-  return uInt16(mySize + ((1 << myBankShift) - 1)) >> myBankShift;
+  return uInt16((mySize + ((1 << myBankShift) - 1)) >> myBankShift);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
