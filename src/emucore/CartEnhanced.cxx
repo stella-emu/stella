@@ -87,6 +87,8 @@ CartridgeEnhanced::CartridgeEnhanced(const ByteBuffer& image, size_t size,
   else
   {
     mySize = size;
+    if(mySize < 4_KB)
+      myBankShift = 11;
 
     // Allocate array for the ROM image
     myImage = make_unique<uInt8[]>(mySize);
