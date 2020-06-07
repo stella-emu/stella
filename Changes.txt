@@ -12,6 +12,16 @@
                               Release History
 ===========================================================================
 
+6.2 to 6.2.1: (XXX xx, 2020)
+
+  * A ROM properties file may now be placed next to the ROM (with the same
+    name as the ROM, except ending in .pro), and Stella will automatically
+    apply the properties to the ROM. [NOTE: this was present in 6.2, but
+    was mistakenly left out of the changelog]
+
+-Have fun!
+
+
 6.1.2 to 6.2: (June 7, 2020)
 
   * Added interactive palette to Video & Audio settings.
@@ -56,8 +66,6 @@
   * Removed unused CV+ and DASH bank switching types.
 
   * Added support for loading grayscale PNG images in the ROM launcher.
-
--Have fun!
 
 
 6.1.1 to 6.1.2: (April 25, 2020)
