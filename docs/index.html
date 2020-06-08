@@ -549,7 +549,7 @@
   have to do anything yourself.  However, it is also possible to force the
   bankswitch type to use by adding a special filename extension.  These extensions
   are listed in the <a href="#Properties">ROM properties</a> section under
-  <a href="#PropertiesCartType">Cartridge.Type -&gt; File Extension</a>.</p>
+  <a href="#PropertiesCartType">Cart.Type -&gt; File Extension</a>.</p>
 
   <p><b>Note:</b> These extensions are the same as those used by the Harmony Cart
   and Unocart and are not case-sensitive, so you can name your files and have them
@@ -2732,7 +2732,7 @@
 
     <tr>
       <td><pre>-bs &lt;type&gt;</pre></td>
-      <td>Set "Cartridge.Type" property. See the <a href="#Properties"><b>Game Properties</b></a> section
+      <td>Set "Cart.Type" property. See the <a href="#Properties"><b>Game Properties</b></a> section
         for valid types.</td>
     </tr>
 
@@ -2743,27 +2743,27 @@
 
     <tr>
       <td><pre>-startbank &lt;bank&gt;</pre></td>
-      <td>Set "Cartridge.StartBank" property.</td>
+      <td>Set "Cart.StartBank" property.</td>
     </tr>
 
     <tr>
       <td><pre>-channels &lt;Mono|Stereo&gt;</pre></td>
-      <td>Set "Cartridge.Sound" property.</td>
+      <td>Set "Cart.Sound" property.</td>
     </tr>
 
     <tr>
       <td><pre>-ld &lt;A|B&gt;</pre></td>
-      <td>Set "Console.LeftDifficulty" property.</td>
+      <td>Set "Console.LeftDiff" property.</td>
     </tr>
 
     <tr>
       <td><pre>-rd &lt;A|B&gt;</pre></td>
-      <td>Set "Console.RightDifficulty" property.</td>
+      <td>Set "Console.RightDiff" property.</td>
     </tr>
 
     <tr>
       <td><pre>-tv &lt;Color|BW&gt;</pre></td>
-      <td>Set "Console.TelevisionType" property.</td>
+      <td>Set "Console.TVType" property.</td>
     </tr>
 
     <tr>
@@ -3962,24 +3962,24 @@ Ms Pac-Man (Stella extended codes):
   <p>
   <pre>
    ; Comments
-   "Cartridge.MD5"      "Value"
-   "Property"           "Value"
+   "Cart.MD5"  "Value"
+   "Property"  "Value"
    ""
 
    ; Comments
-   "Cartridge.MD5"      "Value"
-   "Property"           "Value"
+   "Cart.MD5"  "Value"
+   "Property"  "Value"
    ""
 
    . . .
 
    ; Comments
-   "Cartridge.MD5"      "Value"
-   "Property"           "Value"
+   "Cart.MD5"  "Value"
+   "Property"  "Value"
    ""</pre>
 
   <p>Every block in the property file must have a unique value for the
-  <i>Cartridge.MD5</i> property.</p>
+  <i>Cart.MD5</i> property.</p>
 
   <p>
   <h2><b>Properties</b></h2>
@@ -3993,7 +3993,7 @@ Ms Pac-Man (Stella extended codes):
   <table CELLSPACING="10">
 
   <tr>
-    <td VALIGN="TOP"><a name="PropertiesCartType"><i>Cartridge.Type:</i></a></td>
+    <td VALIGN="TOP"><a name="PropertiesCartType"><i>Cart.Type:</i></a></td>
     <td>Indicates the bank-switching type for the game.
       The value of this property must be either <b>Auto</b> or one of the following
       (for more information about bank-switching see Kevin Horton's <a href="http://kevtris.org/files/sizes.txt">2600 bankswitching
@@ -4058,7 +4058,7 @@ Ms Pac-Man (Stella extended codes):
     </tr>
 
     <tr>
-      <td VALIGN="TOP"><i>Cartridge.StartBank:</i></td>
+      <td VALIGN="TOP"><i>Cart.StartBank:</i></td>
       <td>Indicates which bank to use for reading the reset vector.</td>
     </tr>
 
@@ -4100,7 +4100,7 @@ Ms Pac-Man (Stella extended codes):
     </tr>
 
     <tr>
-      <td VALIGN="TOP"><i>Cartridge.Sound:</i></td>
+      <td VALIGN="TOP"><i>Cart.Sound:</i></td>
       <td>Indicates if the game should use 1 or 2 channels for sound output.
       All original Atari 2600 machines supported 1 channel only,
       but some homebrew games have been written to take advantage of stereo
@@ -4119,19 +4119,19 @@ Ms Pac-Man (Stella extended codes):
 
   <table CELLSPACING="10">
     <tr>
-      <td VALIGN="TOP"><i>Console.TelevisionType:</i></td>
+      <td VALIGN="TOP"><i>Console.TVType:</i></td>
       <td>Indicates the default television setting for the
       game. The value must be <b>Color</b> or <b>BW</b>.</td>
     </tr>
 
     <tr>
-      <td VALIGN="TOP"><i>Console.LeftDifficulty:</i></td>
+      <td VALIGN="TOP"><i>Console.LeftDiff:</i></td>
       <td>Indicates the default difficulty setting for the left
       player. The value must be <b>A</b> or <b>B</b>.</td>
     </tr>
 
     <tr>
-      <td VALIGN="TOP"><i>Console.RightDifficulty:</i></td>
+      <td VALIGN="TOP"><i>Console.RightDiff:</i></td>
       <td>Indicates the default difficulty setting for the
       right player. The value must be <b>A</b> or <b>B</b>.</td>
     </tr>
@@ -4232,14 +4232,14 @@ Ms Pac-Man (Stella extended codes):
   </p>
   <table CELLSPACING="10">
     <tr>
-      <td VALIGN="TOP"><i>Cartridge.Name:</i></td>
+      <td VALIGN="TOP"><i>Cart.Name:</i></td>
       <td>Indicates the actual name of the game. When you save snapshots,
         load/save state files, or use the <a href="#ROMAudit"><b>ROM Audit Mode</b></a> functionality,
         this is the name that will be used for the respective file(s).</td>
     </tr>
 
     <tr>
-      <td VALIGN="TOP"><i>Cartridge.MD5:</i></td>
+      <td VALIGN="TOP"><i>Cart.MD5:</i></td>
       <td>Indicates the MD5 checksum of the ROM image as a
       string of hexadecimal digits. Stella uses this property while
       attempting to match a game with its block of properties. If the
@@ -4250,22 +4250,22 @@ Ms Pac-Man (Stella extended codes):
     </tr>
 
     <tr>
-      <td VALIGN="TOP"><i>Cartridge.Manufacturer:</i></td>
+      <td VALIGN="TOP"><i>Cart.Manufacturer:</i></td>
       <td>Indicates the game's manufacturer.</td>
     </tr>
 
     <tr>
-      <td VALIGN="TOP"><i>Cartridge.ModelNo:</i></td>
+      <td VALIGN="TOP"><i>Cart.ModelNo:</i></td>
       <td>Indicates the manufacturer's model number for the game.</td>
     </tr>
 
     <tr>
-      <td VALIGN="TOP"><i>Cartridge.Rarity:</i></td>
+      <td VALIGN="TOP"><i>Cart.Rarity:</i></td>
       <td>Indicates how rare a cartridge is, based on the scale described on AtariAge.</td>
     </tr>
 
     <tr>
-      <td VALIGN="TOP"><i>Cartridge.Note:</i></td>
+      <td VALIGN="TOP"><i>Cart.Note:</i></td>
       <td>Contains any special notes about playing the game.</td>
     </tr>
 
