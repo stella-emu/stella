@@ -233,6 +233,7 @@ void VideoAudioDialog::addPaletteTab()
   CREATE_CUSTOM_SLIDERS(Contrast, "Contrast ", kPaletteUpdated)
   CREATE_CUSTOM_SLIDERS(Bright, "Brightness ", kPaletteUpdated)
   CREATE_CUSTOM_SLIDERS(Gamma, "Gamma ", kPaletteUpdated)
+  myTVHue->setStepValue(1);
 
   // The resulting palette
   xpos = myPhaseShiftNtsc->getRight() + fontWidth * 2;
@@ -729,6 +730,7 @@ void VideoAudioDialog::setDefaults()
       myTVBright->setValue(50);
       myTVGamma->setValue(50);
       handlePaletteChange();
+      handlePaletteUpdate();
       break;
 
     case 2:  // TV effects
