@@ -52,7 +52,8 @@ CartridgeEnhanced::CartridgeEnhanced(const ByteBuffer& image, size_t size,
       }
     }
     else
-      mySize = size;
+      // Make sure to use size defined by the bankswitching scheme
+      mySize = std::max(size, bsSize);
 
     // Initialize ROM with all 0's, to fill areas that the ROM may not cover
     size_t bufSize = std::max<size_t>(mySize, System::PAGE_SIZE);
@@ -73,7 +74,9 @@ CartridgeEnhanced::CartridgeEnhanced(const ByteBuffer& image, size_t size,
 
       // TODO: should we mirror here too??
       // Directly copy the ROM image into the buffer
-      std::copy_n(image.get(), mySize, myImage.get());
+      // Only copy up to the amount of data the ROM provides; extra unused
+      // space will be filled with 0's from above
+      std::copy_n(image.get(), std::min(mySize, size), myImage.get());
     }
     else
     {
