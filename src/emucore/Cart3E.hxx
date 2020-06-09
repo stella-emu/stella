@@ -65,7 +65,7 @@ class Cartridge3E : public CartridgeEnhanced
 
   public:
     /**
-      Create a new cartridge using the specified image and size
+      Create a new cartridge using the specified image and size.
 
       @param image     Pointer to the ROM image
       @param size      The size of the ROM image
@@ -75,6 +75,21 @@ class Cartridge3E : public CartridgeEnhanced
     Cartridge3E(const ByteBuffer& image, size_t size, const string& md5,
                 const Settings& settings);
     virtual ~Cartridge3E() = default;
+
+  protected:
+    /**
+      Create a new cartridge using the specified image and size.
+      This is an alternate version of the constructor, meant to be used
+      only by classes inheriting from this class.
+
+      @param image     Pointer to the ROM image
+      @param size      The size of the ROM image
+      @param bsSize    The size specified by the bankswitching scheme
+      @param md5       The md5sum of the ROM image
+      @param settings  A reference to the various settings (read-only)
+    */
+    Cartridge3E(const ByteBuffer& image, size_t size, size_t bsSize,
+                const string& md5, const Settings& settings);
 
   public:
 
