@@ -20,8 +20,8 @@
 
 #include "NTSCFilter.hxx"
 
-constexpr float scaleFrom100(float x) { return (x/50.F) - 1.F;     }
-constexpr uInt32 scaleTo100(float x)  { return uInt32(50*(x+1.F)); }
+constexpr float scaleFrom100(float x) { return (x / 50.F) - 1.F;     }
+constexpr uInt32 scaleTo100(float x)  { return uInt32(50.0001F * (x + 1.F)); }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string NTSCFilter::setPreset(Preset preset)

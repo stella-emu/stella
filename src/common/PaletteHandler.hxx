@@ -126,7 +126,7 @@ class PaletteHandler
       Convert adjustables from/to 100% scale
     */
     static constexpr float scaleFrom100(float x) { return (x / 50.F) - 1.F; }
-    static constexpr uInt32 scaleTo100(float x)  { return uInt32(50 * (x + 1.F)); }
+    static constexpr uInt32 scaleTo100(float x)  { return uInt32(50.0001F * (x + 1.F)); }
 
     /**
       Convert palette settings name to enumeration.
