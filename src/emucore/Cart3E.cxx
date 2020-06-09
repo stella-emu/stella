@@ -22,7 +22,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge3E::Cartridge3E(const ByteBuffer& image, size_t size,
                          const string& md5, const Settings& settings)
-  : CartridgeEnhanced(image, size, BSPF::nextPowerOfTwo(size), md5, settings)
+  : CartridgeEnhanced(image, size, BSPF::nextMultipleOf(size, 1_KB), md5, settings)
 {
   myBankShift = BANK_SHIFT;
   myRamSize = RAM_SIZE;
