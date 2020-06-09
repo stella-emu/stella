@@ -41,8 +41,8 @@ class CartridgeEnhanced : public Cartridge
 
       @param image     Pointer to the ROM image
       @param size      The size of the ROM image
-      @param md5       The md5sum of the ROM image
       @param bsSize    The size specified by the bankswitching scheme
+      @param md5       The md5sum of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
     CartridgeEnhanced(const ByteBuffer& image, size_t size, size_t bsSize,
