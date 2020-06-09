@@ -140,6 +140,12 @@ namespace BSPF
     return power2;
   }
 
+  // Get next multiple of the given value
+  // Note that this only works when multiple is a power of two
+  inline size_t nextMultipleOf(size_t size, size_t multiple) {
+    return (size + multiple - 1) & ~(multiple - 1);
+  }
+
   // Make 2D-arrays using std::array less verbose
   template<typename T, size_t ROW, size_t COL>
   using array2D = std::array<std::array<T, COL>, ROW>;
