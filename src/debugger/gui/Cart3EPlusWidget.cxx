@@ -46,7 +46,7 @@ string Cartridge3EPlusWidget::description()
        "RAM bank & segment selected by writing to $3E\n"
        "  Lower 512b of segment for read access\n"
        "  Upper 512b of segment for write access\n"
-       "Startup bank = 0/-1/-1/0 (ROM)\n";
+       "Startup bank = -1/-1/-1/0 (ROM)\n";
 
   // Eventually, we should query this from the debugger/disassembler
   uInt16 start = (image[0x400 - 3] << 8) | image[0x400 - 4];

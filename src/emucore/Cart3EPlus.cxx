@@ -34,7 +34,7 @@ void Cartridge3EPlus::reset()
 {
   CartridgeEnhanced::reset();
 
-  // 1st segment in mapped to start bank in CartridgeEnhanced
+  bank(mySystem->randGenerator().next() % romBankCount(), 0);
   bank(mySystem->randGenerator().next() % romBankCount(), 1);
   bank(mySystem->randGenerator().next() % romBankCount(), 2);
   bank(startBank(), 3);
