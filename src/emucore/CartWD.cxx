@@ -22,8 +22,9 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeWD::CartridgeWD(const ByteBuffer& image, size_t size,
-                         const string& md5, const Settings& settings)
-  : CartridgeEnhanced(image, size, 8_KB, md5, settings)
+                         const string& md5, const Settings& settings,
+                         size_t bsSize)
+  : CartridgeEnhanced(image, size, md5, settings, bsSize)
 {
   // Copy the ROM image into my buffer
   if(size == 8_KB + 3)

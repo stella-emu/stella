@@ -14,6 +14,8 @@
 
 6.2 to 6.2.1: (XXX xx, 2020)
 
+  * Fixed Pitfall II ROM not working correctly.
+
   * A ROM properties file may now be placed next to the ROM (with the same
     name as the ROM, except ending in .pro), and Stella will automatically
     apply the properties to the ROM. [NOTE: this was present in 6.2, but

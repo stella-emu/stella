@@ -19,9 +19,10 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeF6SC::CartridgeF6SC(const ByteBuffer& image, size_t size,
-                             const string& md5, const Settings& settings)
-  : CartridgeF6(image, size, md5, settings)
+                             const string& md5, const Settings& settings,
+                             size_t bsSize)
+  : CartridgeF6(image, size, md5, settings, bsSize)
 {
   myRamSize = RAM_SIZE;
-  myRamMask = RAM_SIZE - 1;  
+  myRamMask = RAM_SIZE - 1;
 }

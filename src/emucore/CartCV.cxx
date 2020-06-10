@@ -20,8 +20,9 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeCV::CartridgeCV(const ByteBuffer& image, size_t size,
-                         const string& md5, const Settings& settings)
-  : CartridgeEnhanced(image, size, 2_KB, md5, settings)
+                         const string& md5, const Settings& settings,
+                         size_t bsSize)
+  : CartridgeEnhanced(image, size, md5, settings, bsSize)
 {
   myBankShift = BANK_SHIFT;
   myRamSize = RAM_SIZE;
