@@ -21,8 +21,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeEnhanced::CartridgeEnhanced(const ByteBuffer& image, size_t size,
-                                     size_t bsSize, const string& md5,
-                                     const Settings& settings)
+                                     const string& md5, const Settings& settings,
+                                     size_t bsSize)
   : Cartridge(settings, md5)
 {
   // ROMs are not always at the 'legal' size for their associated
