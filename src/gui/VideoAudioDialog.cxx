@@ -47,7 +47,7 @@
     new SliderWidget(myTab, _font, xpos, ypos-1, swidth, lineHeight,     \
                      desc, lwidth, cmd, fontWidth*4, "%");               \
   myTV ## obj->setMinValue(0); myTV ## obj->setMaxValue(100);            \
-  myTV ## obj->setStepValue(2);                                          \
+  myTV ## obj->setStepValue(1);                                          \
   myTV ## obj->setTickmarkIntervals(2);                                  \
   wid.push_back(myTV ## obj);                                            \
   ypos += lineHeight + VGAP;
@@ -233,7 +233,6 @@ void VideoAudioDialog::addPaletteTab()
   CREATE_CUSTOM_SLIDERS(Contrast, "Contrast ", kPaletteUpdated)
   CREATE_CUSTOM_SLIDERS(Bright, "Brightness ", kPaletteUpdated)
   CREATE_CUSTOM_SLIDERS(Gamma, "Gamma ", kPaletteUpdated)
-  myTVHue->setStepValue(1);
 
   // The resulting palette
   xpos = myPhaseShiftNtsc->getRight() + fontWidth * 2;

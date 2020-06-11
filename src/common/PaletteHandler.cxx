@@ -139,7 +139,7 @@ void PaletteHandler::changeCurrentAdjustable(int direction)
   {
     int newVal = scaleTo100(*myAdjustables[myCurrentAdjustable].value);
 
-    newVal = BSPF::clamp(newVal + direction * 2, 0, 100);
+    newVal = BSPF::clamp(newVal + direction * 1, 0, 100);
 
     *myAdjustables[myCurrentAdjustable].value = scaleFrom100(newVal);
 
