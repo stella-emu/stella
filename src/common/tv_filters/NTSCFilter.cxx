@@ -119,7 +119,7 @@ void NTSCFilter::changeCurrentAdjustable(int direction,
   //  return "'Custom' TV mode not selected";
 
   newValue = scaleTo100(*ourCustomAdjustables[myCurrentAdjustable].value);
-  newValue = BSPF::clamp(newValue + direction * 2, 0, 100);
+  newValue = BSPF::clamp(newValue + direction * 1, 0, 100);
 
   *ourCustomAdjustables[myCurrentAdjustable].value = scaleFrom100(newValue);
 

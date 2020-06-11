@@ -23,7 +23,9 @@
 
   * Make NTSC custom phase shift not affect Yellow anymore.
 
-  * Allow changing palette adjustables in 1% steps again.
+  * Allow changing custom palette and TV effects adjustables in 1% steps again.
+
+  * Fixed custom palette and TV effects adjustable slider rounding issue.
 
   * Fixed some bugs in 3E+ scheme when using non-standard ROM sizes.
 
