@@ -89,7 +89,7 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
   // Snapshot in 1x mode (ignore scaling)
   ypos += lineHeight + VGAP;
   mySnap1x = new CheckboxWidget(this, font, xpos, ypos,
-                                "Ignore scaling (1x mode)");
+      "Create pixel-exact image (no zoom/post-processing)");
   wid.push_back(mySnap1x);
 
   // Add Defaults, OK and Cancel buttons
