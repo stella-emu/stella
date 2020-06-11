@@ -27,78 +27,33 @@ CartridgeEnhanced::CartridgeEnhanced(const ByteBuffer& image, size_t size,
 {
   // ROMs are not always at the 'legal' size for their associated
   // bankswitching scheme; here we deal with the differing sizes
-  if(size != bsSize)
+
+  // Is the ROM too large?  If so, we cap it
+  if(size > bsSize)
   {
-    // Is the ROM too large?  If so, we cap it
-    if(size > bsSize)
-    {
-      ostringstream buf;
-      buf << "ROM larger than expected (" << size << " > " << bsSize
-          << "), truncating " << (size - bsSize) << " bytes\n";
-      Logger::info(buf.str());
-
-      size = bsSize;
-    }
-
-    // Set image size to closest power-of-two for the given size
-    // This only applies for sizes less than the standard bank size
-    if(size < 4_KB)
-    {
-      mySize = 1; myBankShift = 0;
-      while(mySize < size)
-      {
-        mySize <<= 1;
-        myBankShift++;
-      }
-    }
-    else
-      // Make sure to use size defined by the bankswitching scheme
-      mySize = std::max(size, bsSize);
-
-    // Initialize ROM with all 0's, to fill areas that the ROM may not cover
-    size_t bufSize = std::max<size_t>(mySize, System::PAGE_SIZE);
-    myImage = make_unique<uInt8[]>(bufSize);
-    std::fill_n(myImage.get(), bufSize, 0);
-
-    // Handle cases where ROM is smaller than the page size
-    // It's much easier to do it this way rather than changing the page size
-    if(mySize >= System::PAGE_SIZE)
-    {
-      if(size < mySize)
-      {
-        ostringstream buf;
-        buf << "ROM smaller than expected (" << mySize << " > " << size
-            << "), appending " << (mySize - size) << " bytes\n";
-        Logger::info(buf.str());
-      }
-
-      // TODO: should we mirror here too??
-      // Directly copy the ROM image into the buffer
-      // Only copy up to the amount of data the ROM provides; extra unused
-      // space will be filled with 0's from above
-      std::copy_n(image.get(), std::min(mySize, size), myImage.get());
-    }
-    else
-    {
-      // Manually 'mirror' the ROM image into the buffer
-      for(size_t i = 0; i < System::PAGE_SIZE; i += mySize)
-        std::copy_n(image.get(), mySize, myImage.get() + i);
-      mySize = System::PAGE_SIZE;
-      myBankShift = 6;
-    }
+    ostringstream buf;
+    buf << "ROM larger than expected (" << size << " > " << bsSize
+        << "), truncating " << (size - bsSize) << " bytes\n";
+    Logger::info(buf.str());
   }
-  else
+  else if(size < mySize)
   {
-    mySize = size;
-    if(mySize < 4_KB)
-      myBankShift = 11;
-
-    // Allocate array for the ROM image
-    myImage = make_unique<uInt8[]>(mySize);
-
-    // Copy the ROM image into my buffer
-    std::copy_n(image.get(), mySize, myImage.get());
+    ostringstream buf;
+    buf << "ROM smaller than expected (" << mySize << " > " << size
+        << "), appending " << (mySize - size) << " bytes\n";
+    Logger::info(buf.str());
   }
+
+  mySize = bsSize;
+
+  // Initialize ROM with all 0's, to fill areas that the ROM may not cover
+  myImage = make_unique<uInt8[]>(mySize);
+  std::fill_n(myImage.get(), mySize, 0);
+
+  // Directly copy the ROM image into the buffer
+  // Only copy up to the amount of data the ROM provides; extra unused
+  // space will be filled with 0's from above
+  std::copy_n(image.get(), std::min(mySize, size), myImage.get());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
