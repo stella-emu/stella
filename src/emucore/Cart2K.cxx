@@ -46,6 +46,6 @@ Cartridge2K::Cartridge2K(const ByteBuffer& image, size_t size,
     for(size_t i = 0; i < System::PAGE_SIZE; i += mySize)
       std::copy_n(image.get(), mySize, myImage.get() + i);
     mySize = System::PAGE_SIZE;
-    myBankShift = 6;
+    myBankShift = System::PAGE_SHIFT;
   }
 }
