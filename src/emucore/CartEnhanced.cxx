@@ -155,8 +155,7 @@ uInt8 CartridgeEnhanced::peek(uInt16 address)
     // This is a read access to a write port!
     // Reading from the write port triggers an unwanted write
     // The RAM banks follow the ROM banks and are half the size of a ROM bank
-    return peekRAM(myRAM[((myCurrentSegOffset[(peekAddress & ROM_MASK) >> myBankShift] - mySize) >> 1) + address],
-                   peekAddress);
+    return peekRAM(myRAM[ramAddressSegmentOffset(peekAddress) + address], peekAddress);
   }
   address &= ROM_MASK;
 
@@ -168,8 +167,7 @@ uInt8 CartridgeEnhanced::peek(uInt16 address)
     return peekRAM(myRAM[address], peekAddress);
   }
 
-  return myImage[myCurrentSegOffset[(peekAddress & ROM_MASK) >> myBankShift]
-                  + (peekAddress & myBankMask)];
+  return myImage[romAddressSegmentOffset(peekAddress) + (peekAddress & myBankMask)];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -190,7 +188,7 @@ bool CartridgeEnhanced::poke(uInt16 address, uInt8 value)
       {
         address &= myRamMask;
         // The RAM banks follow the ROM banks and are half the size of a ROM bank
-        pokeRAM(myRAM[((myCurrentSegOffset[(pokeAddress & ROM_MASK) >> myBankShift] - mySize) >> 1) + address],
+        pokeRAM(myRAM[ramAddressSegmentOffset(pokeAddress) + address],
                 pokeAddress, value);
         return true;
       }
@@ -301,9 +299,21 @@ bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt16 CartridgeEnhanced::romAddressSegmentOffset(uInt16 address) const
+{
+  return myCurrentSegOffset[((address & ROM_MASK) >> myBankShift) % myBankSegs];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt16 CartridgeEnhanced::ramAddressSegmentOffset(uInt16 address) const
+{
+  return uInt16(myCurrentSegOffset[((address & ROM_MASK) >> myBankShift) % myBankSegs] - mySize) >> 1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeEnhanced::getBank(uInt16 address) const
 {
-  return myCurrentSegOffset[(address & ROM_MASK) >> myBankShift] >> myBankShift;
+  return romAddressSegmentOffset(address) >> myBankShift;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -335,7 +345,7 @@ bool CartridgeEnhanced::patch(uInt16 address, uInt8 value)
 {
   if(isRamBank(address))
   {
-    myRAM[((myCurrentSegOffset[(address & ROM_MASK) >> myBankShift] - mySize) >> 1) + (address & myRamMask)] = value;
+    myRAM[ramAddressSegmentOffset(address) + (address & myRamMask)] = value;
   }
   else
   {
@@ -347,7 +357,7 @@ bool CartridgeEnhanced::patch(uInt16 address, uInt8 value)
       myRAM[address & myRamMask] = value;
     }
     else
-      myImage[myCurrentSegOffset[(address & ROM_MASK) >> myBankShift] + (address & myBankMask)] = value;
+      myImage[romAddressSegmentOffset(address) + (address & myBankMask)] = value;
   }
 
   return myBankChanged = true;

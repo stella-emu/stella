@@ -256,6 +256,7 @@ class CartridgeEnhanced : public Cartridge
 
       @param address  The address to check
       @param value    The optional value used to determine the bank switched to
+
       @return  True if a bank switch happened.
     */
     virtual bool checkSwitchBank(uInt16 address, uInt8 value = 0) = 0;
@@ -267,6 +268,22 @@ class CartridgeEnhanced : public Cartridge
       @return  The bank the ROM will start in
     */
     virtual uInt16 getStartBank() const { return 0; }
+
+    /**
+      Get the ROM offset of the segment of the given address
+
+      @param address  The address to get the offset for
+      @return  The calculated offset
+    */
+    uInt16 romAddressSegmentOffset(uInt16 address) const;
+
+    /**
+      Get the RAM offset of the segment of the given address
+
+      @param address  The address to get the offset for
+      @return  The calculated offset
+    */
+    uInt16 ramAddressSegmentOffset(uInt16 address) const;
 
   private:
     // Following constructors and assignment operators not supported
