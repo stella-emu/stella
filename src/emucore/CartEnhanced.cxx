@@ -299,13 +299,13 @@ bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeEnhanced::romAddressSegmentOffset(uInt16 address) const
+inline uInt16 CartridgeEnhanced::romAddressSegmentOffset(uInt16 address) const
 {
   return myCurrentSegOffset[((address & ROM_MASK) >> myBankShift) % myBankSegs];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeEnhanced::ramAddressSegmentOffset(uInt16 address) const
+inline uInt16 CartridgeEnhanced::ramAddressSegmentOffset(uInt16 address) const
 {
   return uInt16(myCurrentSegOffset[((address & ROM_MASK) >> myBankShift) % myBankSegs] - mySize) >> 1;
 }
