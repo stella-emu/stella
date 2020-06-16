@@ -23,7 +23,11 @@
 
   * Make NTSC custom phase shift not affect Yellow anymore.
 
-  * Allow changing custom palette and TV effects adjustables in 1% steps again.
+  * Allow changing custom palette and TV effects adjustables in 1% steps
+    again.
+
+  * Fixed incorrectly setting D6 bit on TIA reads in some cases.  Related
+    to this, improve 'tiadriven' option to randomize only D5..D0 bits.
 
   * Fixed custom palette and TV effects adjustable slider rounding issue.
 
