@@ -33,6 +33,10 @@
 
   * Fixed some bugs in 3E+ scheme when using non-standard ROM sizes.
 
+  * Fixed custom palette and TV effects adjustable slider rounding issue.
+
+  * Fixed crash in Audio & Video dialog when opened from debugger.
+
   * Updated documentation for changes in ROM properties key names.
 
   * The codebase now compiles under gcc6 again.  Future versions will
