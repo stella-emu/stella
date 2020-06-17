@@ -1005,24 +1005,21 @@ void VideoAudioDialog::handleCommand(CommandSender* sender, int cmd,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoAudioDialog::addPalette(int x, int y, int w, int h)
 {
-  if(instance().hasConsole())
-  {
-    constexpr int NUM_LUMA = 8;
-    constexpr int NUM_CHROMA = 16;
-    const GUI::Font& ifont = instance().frameBuffer().infoFont();
-    const int lwidth = ifont.getMaxCharWidth() * 1.5;
-    const float COLW = float(w - lwidth) / NUM_LUMA;
-    const float COLH = float(h) / NUM_CHROMA;
-    const int yofs = (COLH - ifont.getFontHeight() + 1) / 2;
+  constexpr int NUM_LUMA = 8;
+  constexpr int NUM_CHROMA = 16;
+  const GUI::Font& ifont = instance().frameBuffer().infoFont();
+  const int lwidth = ifont.getMaxCharWidth() * 1.5;
+  const float COLW = float(w - lwidth) / NUM_LUMA;
+  const float COLH = float(h) / NUM_CHROMA;
+  const int yofs = (COLH - ifont.getFontHeight() + 1) / 2;
 
-    for(int idx = 0; idx < NUM_CHROMA; ++idx)
+  for(int idx = 0; idx < NUM_CHROMA; ++idx)
+  {
+    myColorLbl[idx] = new StaticTextWidget(myTab, ifont, x, y + yofs + idx * COLH, " ");
+    for(int lum = 0; lum < NUM_LUMA; ++lum)
     {
-      myColorLbl[idx] = new StaticTextWidget(myTab, ifont, x, y + yofs + idx * COLH, " ");
-      for(int lum = 0; lum < NUM_LUMA; ++lum)
-      {
-        myColor[idx][lum] = new ColorWidget(myTab, _font, x + lwidth + lum * COLW, y + idx * COLH,
-                                            COLW + 1, COLH + 1, 0, false);
-      }
+      myColor[idx][lum] = new ColorWidget(myTab, _font, x + lwidth + lum * COLW, y + idx * COLH,
+                                          COLW + 1, COLH + 1, 0, false);
     }
   }
 }
