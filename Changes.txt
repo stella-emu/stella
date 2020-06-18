@@ -16,15 +16,10 @@
 
   * Fixed Pitfall II ROM not working correctly.
 
-  * A ROM properties file may now be placed next to the ROM (with the same
-    name as the ROM, except ending in .pro), and Stella will automatically
-    apply the properties to the ROM. [NOTE: this was present in 6.2, but
-    was mistakenly left out of the changelog]
+  * Fixed crashes when using some combinations of bankswitching schemes on
+    incorrect ROMs, or when using invalid ROM file sizes, etc.
 
-  * Make NTSC custom phase shift not affect Yellow anymore.
-
-  * Allow changing custom palette and TV effects adjustables in 1% steps
-    again.
+  * Fixed RIOT timer behaviour on reading/writing at the wraparound cycle.
 
   * Fixed incorrectly setting D6 bit on TIA reads in some cases.  Related
     to this, improve 'tiadriven' option to randomize only D5..D0 bits.
@@ -35,7 +30,18 @@
 
   * Fixed custom palette and TV effects adjustable slider rounding issue.
 
-  * Fixed crash in Audio & Video dialog when opened from debugger.
+  * Fixed crash in Audio & Video dialog when opened from debugger, and the
+    debugger window sometimes being resized when using the Options dialog.
+
+  * Make NTSC custom phase shift not affect Yellow anymore.
+
+  * A ROM properties file may now be placed next to the ROM (with the same
+    name as the ROM, except ending in .pro), and Stella will automatically
+    apply the properties to the ROM. [NOTE: this was present in 6.2, but
+    was mistakenly left out of the changelog]
+
+  * Allow changing custom palette and TV effects adjustables in 1% steps
+    again.
 
   * Updated documentation for changes in ROM properties key names.
 
