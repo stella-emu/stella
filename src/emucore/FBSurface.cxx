@@ -329,7 +329,7 @@ bool FBSurface::isWhiteSpace(const char s) const
 int FBSurface::drawString(const GUI::Font& font, const string& s,
   int x, int y, int w, int h,
   ColorId color, TextAlign align,
-  int deltax, bool useEllipsis, ColorId shadowColor)
+  bool useEllipsis, ColorId shadowColor)
 {
   int lines = 1;
 
@@ -355,13 +355,13 @@ int FBSurface::drawString(const GUI::Font& font, const string& s,
       //str += inStr[i];
     }
     wrapString(inStr, i, leftStr, rightStr);
-    drawString(font, leftStr, x, y, w, color, align, deltax, false, shadowColor);
+    drawString(font, leftStr, x, y, w, color, align, false, shadowColor);
     h -= font.getFontHeight();
     y += font.getFontHeight();
     inStr = rightStr;
     lines++;
   }
-  drawString(font, inStr, x, y, w, color, align, deltax, useEllipsis, shadowColor);
+  drawString(font, inStr, x, y, w, color, align, useEllipsis, shadowColor);
 #endif
   return lines;
 }
@@ -370,7 +370,7 @@ int FBSurface::drawString(const GUI::Font& font, const string& s,
 void FBSurface::drawString(const GUI::Font& font, const string& s,
                            int x, int y, int w,
                            ColorId color, TextAlign align,
-                           int deltax, bool useEllipsis, ColorId shadowColor)
+                           bool useEllipsis, ColorId shadowColor)
 {
 #ifdef GUI_SUPPORT
   const string ELLIPSIS = "\x1d"; // "..."
@@ -410,7 +410,6 @@ void FBSurface::drawString(const GUI::Font& font, const string& s,
   else if(align == TextAlign::Right)
     x = x + w - width;
 
-  x += deltax;
   for(i = 0; i < str.size(); ++i)
   {
     w = font.getCharWidth(str[i]);
