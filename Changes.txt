@@ -35,6 +35,9 @@
 
   * Make NTSC custom phase shift not affect Yellow anymore.
 
+  * Fixed '1x' snapshot mode; TV effects are now disabled.  This mode
+    now generates a clean, pixel-exact image.
+
   * A ROM properties file may now be placed next to the ROM (with the same
     name as the ROM, except ending in .pro), and Stella will automatically
     apply the properties to the ROM. [NOTE: this was present in 6.2, but
