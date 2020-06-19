@@ -43,6 +43,10 @@
     apply the properties to the ROM. [NOTE: this was present in 6.2, but
     was mistakenly left out of the changelog]
 
+  * Added button to Game Info dialog to save properties of the currently
+    loaded ROM to a separate properties file (in the default save directory).
+    This is useful in conjunction with the previous item.
+
   * Allow changing custom palette and TV effects adjustables in 1% steps
     again.
 

@@ -53,9 +53,12 @@ class GameInfoDialog : public Dialog, public CommandSender
     void loadControllerProperties(const Properties& props);
     // load the properties for the 'Cartridge' tab
     void loadCartridgeProperties(const Properties& props);
+    // save properties from all tabs into the local properties object
+    void saveProperties();
 
     void updateControllerStates();
     void eraseEEPROM();
+    void saveCurrentPropertiesToDisk();
 
   private:
     TabWidget* myTab{nullptr};
@@ -115,10 +118,13 @@ class GameInfoDialog : public Dialog, public CommandSender
       kEEButtonPressed = 'EEgb',
       kPXCenterChanged = 'Pxch',
       kPYCenterChanged = 'Pych',
+      kSavePressed     = 'GIsp'
     };
 
     // Game properties for currently loaded ROM
     Properties myGameProperties;
+    // Filename of the currently loaded ROM
+    FilesystemNode myGameFile;
 
   private:
     // Following constructors and assignment operators not supported
