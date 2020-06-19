@@ -39,6 +39,7 @@ PhysicalKeyboardHandler::PhysicalKeyboardHandler(OSystem& system, EventHandler& 
     myHandler(handler)
 {
   Int32 version = myOSystem.settings().getInt("event_ver");
+  bool updateDefaults = false;
 
   // Compare if event list version has changed so that key maps became invalid
   if (version == Event::VERSION)
@@ -53,11 +54,12 @@ PhysicalKeyboardHandler::PhysicalKeyboardHandler(OSystem& system, EventHandler& 
     myKeyMap.loadMapping(list, EventMode::kKeypadMode);
     list = myOSystem.settings().getString("keymap_ui");
     myKeyMap.loadMapping(list, EventMode::kMenuMode);
+    updateDefaults = true;
   }
   myKeyMap.enableMod() = myOSystem.settings().getBool("modcombo");
 
-  setDefaultMapping(Event::NoType, EventMode::kEmulationMode, true);
-  setDefaultMapping(Event::NoType, EventMode::kMenuMode, true);
+  setDefaultMapping(Event::NoType, EventMode::kEmulationMode, updateDefaults);
+  setDefaultMapping(Event::NoType, EventMode::kMenuMode, updateDefaults);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
