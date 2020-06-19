@@ -600,7 +600,7 @@ void FrameBuffer::drawFrameStats(float framesPerSecond)
     << info.DisplayFormat;
 
   myStatsMsg.surface->drawString(f, ss.str(), xPos, yPos,
-                                 myStatsMsg.w, color, TextAlign::Left, 0, true, kBGColor);
+                                 myStatsMsg.w, color, TextAlign::Left, true, kBGColor);
 
   yPos += dy;
   ss.str("");
@@ -615,7 +615,7 @@ void FrameBuffer::drawFrameStats(float framesPerSecond)
     << "% speed";
 
   myStatsMsg.surface->drawString(f, ss.str(), xPos, yPos,
-      myStatsMsg.w, myStatsMsg.color, TextAlign::Left, 0, true, kBGColor);
+      myStatsMsg.w, myStatsMsg.color, TextAlign::Left, true, kBGColor);
 
   yPos += dy;
   ss.str("");
@@ -624,7 +624,7 @@ void FrameBuffer::drawFrameStats(float framesPerSecond)
   if (myOSystem.settings().getBool("dev.settings")) ss << "| Developer";
 
   myStatsMsg.surface->drawString(f, ss.str(), xPos, yPos,
-      myStatsMsg.w, myStatsMsg.color, TextAlign::Left, 0, true, kBGColor);
+      myStatsMsg.w, myStatsMsg.color, TextAlign::Left, true, kBGColor);
 
   myStatsMsg.surface->setDstPos(myImageRect.x() + 10, myImageRect.y() + 8);
   myStatsMsg.surface->setDstSize(myStatsMsg.w * hidpiScaleFactor(),
