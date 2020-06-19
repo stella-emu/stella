@@ -218,6 +218,7 @@ class FBSurface
       @param h      The height of the string area (for multi line strings)
       @param color  The color of the text
       @param align  The alignment of the text in the string width area
+      @param deltax FIXME
       @param useEllipsis  Whether to use '...' when the string is too long
       @return       Number of lines drawn
     */
@@ -225,7 +226,7 @@ class FBSurface
     virtual int drawString(
       const GUI::Font& font, const string& s, int x, int y, int w, int h,
       ColorId color, TextAlign align = TextAlign::Left,
-      bool useEllipsis = true, ColorId shadowColor = kNone);
+      int deltax = 0, bool useEllipsis = true, ColorId shadowColor = kNone);
 
     /**
       This method should be called to draw the specified string.
@@ -237,12 +238,13 @@ class FBSurface
       @param w      The width of the string area
       @param color  The color of the text
       @param align  The alignment of the text in the string width area
+      @param deltax FIXME
       @param useEllipsis  Whether to use '...' when the string is too long
     */
     virtual void drawString(
         const GUI::Font& font, const string& s, int x, int y, int w,
         ColorId color, TextAlign align = TextAlign::Left,
-        bool useEllipsis = true, ColorId shadowColor = kNone);
+        int deltax = 0, bool useEllipsis = true, ColorId shadowColor = kNone);
 
     //////////////////////////////////////////////////////////////////////////
     // Note:  The following methods are FBSurface-specific, and must be
