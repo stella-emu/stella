@@ -70,14 +70,18 @@ class TIASurface
     void setPalette(const PaletteArray& tia_palette, const PaletteArray& rgb_palette);
 
     /**
-      Get the TIA base surface for use in saving to a PNG image.
+      Get a TIA surface that has no post-processing whatsoever.  This is
+      currently used to save PNG image in the so-called '1x mode'.
+
+      @param rect   Specifies the area in which the surface data is valid
     */
     const FBSurface& baseSurface(Common::Rect& rect) const;
 
     /**
-      Use the palette to map a single indexed pixel color. This is used by the TIA output widget.
+      Use the palette to map a single indexed pixel color. This is used by the
+      TIA output widget.
      */
-    uInt32 mapIndexedPixel(uInt8 indexedColor, uInt8 shift = 0);
+    uInt32 mapIndexedPixel(uInt8 indexedColor, uInt8 shift = 0) const;
 
     /**
       Get the NTSCFilter object associated with the framebuffer
@@ -220,7 +224,7 @@ class TIASurface
     bool mySaveSnapFlag{false};
 
     // The palette handler
-    unique_ptr<PaletteHandler>myPaletteHandler;
+    unique_ptr<PaletteHandler> myPaletteHandler;
 
   private:
     // Following constructors and assignment operators not supported
