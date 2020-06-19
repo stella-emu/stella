@@ -12,7 +12,7 @@
                               Release History
 ===========================================================================
 
-6.2 to 6.2.1: (XXX xx, 2020)
+6.2 to 6.2.1: (June 20, 2020)
 
   * Fixed Pitfall II ROM not working correctly.
 
@@ -28,8 +28,6 @@
 
   * Fixed some bugs in 3E+ scheme when using non-standard ROM sizes.
 
-  * Fixed custom palette and TV effects adjustable slider rounding issue.
-
   * Fixed crash in Audio & Video dialog when opened from debugger, and the
     debugger window sometimes being resized when using the Options dialog.
 
@@ -37,6 +35,8 @@
 
   * Fixed '1x' snapshot mode; TV effects are now disabled.  This mode
     now generates a clean, pixel-exact image.
+
+  * Fixed mappings sometimes not being saved in the Retron77 port.
 
   * A ROM properties file may now be placed next to the ROM (with the same
     name as the ROM, except ending in .pro), and Stella will automatically
