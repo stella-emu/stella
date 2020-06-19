@@ -344,7 +344,7 @@ void StaticTextWidget::drawWidget(bool hilite)
   FBSurface& s = _boss->dialog().surface();
   bool onTop = _boss->dialog().isOnTop();
   s.drawString(_font, _label, _x, _y, _w,
-               isEnabled() && onTop ? _textcolor : kColor, _align, true, _shadowcolor);
+               isEnabled() && onTop ? _textcolor : kColor, _align, 0, true, _shadowcolor);
 
   setDirty();
 }
