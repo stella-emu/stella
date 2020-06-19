@@ -513,7 +513,8 @@ void FrameBuffer::showMessage(const string& message, MessagePosition position,
   myMsg.text      = message;
   myMsg.color     = kBtnTextColor;
   myMsg.showGauge = false;
-  myMsg.w         = font().getStringWidth(myMsg.text) + HBORDER * 2;
+  myMsg.w         = std::min(fontWidth * (MESSAGE_WIDTH) - HBORDER * 2,
+                             font().getStringWidth(myMsg.text) + HBORDER * 2);
   myMsg.h         = fontHeight + VBORDER * 2;
   myMsg.position  = position;
   myMsg.enabled   = true;
@@ -533,7 +534,7 @@ void FrameBuffer::showMessage(const string& message, const string& valueText,
     return;
 
   const int fontWidth  = font().getMaxCharWidth(),
-    fontHeight = font().getFontHeight();
+            fontHeight = font().getFontHeight();
   const int VBORDER = fontHeight / 4;
   const int HBORDER = fontWidth * 1.25 / 2.0;
 
@@ -565,7 +566,7 @@ void FrameBuffer::showMessage(const string& message, const string& valueText,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBuffer::messageShown()
+bool FrameBuffer::messageShown() const
 {
 #ifdef GUI_SUPPORT
   return myMsg.enabled;

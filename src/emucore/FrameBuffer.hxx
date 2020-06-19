@@ -166,7 +166,7 @@ class FrameBuffer
     void showMessage(const string& message, const string& valueText,
                      float value, float minValue = 0.F, float maxValue = 100.F);
 
-    bool messageShown();
+    bool messageShown() const;
 
     /**
       Toggles showing or hiding framerate statistics.
