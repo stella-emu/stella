@@ -714,7 +714,8 @@ class FrameBuffer
 
     FullPaletteArray myFullPalette;
     // Holds UI palette data (for each variation)
-    static UIPaletteArray ourStandardUIPalette, ourClassicUIPalette, ourLightUIPalette;
+    static UIPaletteArray ourStandardUIPalette, ourClassicUIPalette, 
+      ourLightUIPalette, ourDarkUIPalette;
 
   private:
     // Following constructors and assignment operators not supported

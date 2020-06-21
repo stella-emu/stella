@@ -85,6 +85,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "Standard", "standard");
   VarList::push_back(items, "Classic", "classic");
   VarList::push_back(items, "Light", "light");
+  VarList::push_back(items, "Dark", "dark");
   myPalettePopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                                    items, "Theme      ", lwidth);
   wid.push_back(myPalettePopup);

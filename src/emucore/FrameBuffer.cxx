@@ -862,6 +862,7 @@ void FrameBuffer::setUIPalette()
   const UIPaletteArray& ui_palette =
      (myOSystem.settings().getString("uipalette") == "classic") ? ourClassicUIPalette :
      (myOSystem.settings().getString("uipalette") == "light")   ? ourLightUIPalette :
+     (myOSystem.settings().getString("uipalette") == "dark")    ? ourDarkUIPalette :
       ourStandardUIPalette;
 
   for(size_t i = 0, j = myFullPalette.size() - ui_palette.size();
@@ -1551,5 +1552,18 @@ UIPaletteArray FrameBuffer::ourLightUIPalette = {
     0xffc0c0, 0x000000, 0xe00000, 0xc00000,                     // debugger
     0x333333, 0x0078d7, 0xc0c0c0, 0xffffff, 0xc0c0c0,           // slider 0xBDDEF9| 0xe1e1e1 | 0xffffff
     0xffffff, 0x333333, 0xf0f0f0, 0x808080, 0xc0c0c0            // other
+  }
+};
+
+UIPaletteArray FrameBuffer::ourDarkUIPalette = {
+  { 0x646464, 0xc0c0c0, 0x3c3c3c, 0x282828, 0x989898,           // base
+    0xc0c0c0, 0x1567a5, 0x0059a3, 0xc0c0c0,                     // text
+    0x202020, 0x000000, 0x0059a3, 0xb0b0b0,                     // UI elements
+    0x282828, 0x00467f, 0x646464, 0x0059a3, 0xc0c0c0, 0xc0c0c0, // buttons
+    0x989898,                                                   // checkbox
+    0x3c3c3c, 0x646464,                                         // scrollbar
+    0x7f2020, 0xc0c0c0, 0xe00000, 0xc00000,                     // debugger
+    0x989898, 0x0059a3, 0x3c3c3c, 0x000000, 0x3c3c3c,           // slider
+    0x000000, 0x989898, 0x202020, 0x646464, 0x3c3c3c            // other
   }
 };
