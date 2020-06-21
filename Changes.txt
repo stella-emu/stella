@@ -12,6 +12,11 @@
                               Release History
 ===========================================================================
 
+6.2.1 to 6.3 (XXXX XX, 2020)
+
+  * Added new interface palette 'Dark'. (TODO: DOC)
+
+
 6.2 to 6.2.1: (June 20, 2020)
 
   * Fixed Pitfall II ROM not working correctly.
