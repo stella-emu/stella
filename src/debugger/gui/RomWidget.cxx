@@ -165,13 +165,16 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomWidget::toggleBreak(int disasm_line)
 {
+  Debugger& debugger = instance().debugger();
   const CartDebug::DisassemblyList& list =
-      instance().debugger().cartDebug().disassembly().list;
+      debugger.cartDebug().disassembly().list;
+
   if(disasm_line >= int(list.size()))  return;
 
-  if(list[disasm_line].address != 0 && list[disasm_line].bytes != "")
-    instance().debugger().toggleBreakPoint(list[disasm_line].address,
-                                           instance().debugger().cartDebug().getBank(list[disasm_line].address));
+  const uInt16 address = list[disasm_line].address;
+
+  if(address != 0)
+    debugger.toggleBreakPoint(address, debugger.cartDebug().getBank(address));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
