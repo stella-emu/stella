@@ -121,9 +121,10 @@ class Event
       ToggleCollisions, ToggleBits, ToggleFixedColors,
 
       ToggleFrameStats, ToggleSAPortOrder, ExitGame,
-      // add new events from here to avoid that user remapped events get overwritten
       SettingDecrease, SettingIncrease, PreviousSetting, NextSetting,
       ToggleAdaptRefresh, PreviousMultiCartRom,
+      // add new events from here to avoid that user remapped events get overwritten
+      PreviousSettingGroup, NextSettingGroup,
 
       LastType
     };

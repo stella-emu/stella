@@ -1029,8 +1029,12 @@ bool TIA::toggleBit(TIABit b, uInt8 mode)
       mask = b;
       break;
 
-    default:
+    case 2:
       mask = (~mySpriteEnabledBits & b);
+      break;
+
+    default:
+      mask = (mySpriteEnabledBits & b);
       break;
   }
 
@@ -1047,9 +1051,11 @@ bool TIA::toggleBit(TIABit b, uInt8 mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool TIA::toggleBits()
+bool TIA::toggleBits(bool toggle)
 {
-  toggleBit(TIABit(0xFF), mySpriteEnabledBits > 0 ? 0 : 1);
+  toggleBit(TIABit(0xFF), toggle
+                          ? mySpriteEnabledBits > 0 ? 0 : 1
+                          : mySpriteEnabledBits);
 
   return mySpriteEnabledBits;
 }
@@ -1068,8 +1074,12 @@ bool TIA::toggleCollision(TIABit b, uInt8 mode)
       mask = b;
       break;
 
-    default:
+    case 2:
       mask = (~myCollisionsEnabledBits & b);
+      break;
+
+    default:
+      mask = (myCollisionsEnabledBits & b);
       break;
   }
 
@@ -1086,9 +1096,11 @@ bool TIA::toggleCollision(TIABit b, uInt8 mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool TIA::toggleCollisions()
+bool TIA::toggleCollisions(bool toggle)
 {
-  toggleCollision(TIABit(0xFF), myCollisionsEnabledBits > 0 ? 0 : 1);
+  toggleCollision(TIABit(0xFF), toggle
+                                ? myCollisionsEnabledBits > 0 ? 0 : 1
+                                : myCollisionsEnabledBits);
 
   return myCollisionsEnabledBits;
 }
@@ -1205,6 +1217,9 @@ bool TIA::toggleJitter(uInt8 mode)
 
     case 2:
       myEnableJitter = !myEnableJitter;
+      break;
+
+    case 3:
       break;
 
     default:

@@ -342,6 +342,16 @@ void EventHandler::handleSystemEvent(SystemEvent e, int, int)
   }
 }
 
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+EventHandler::AdjustGroup EventHandler::getAdjustGroup()
+{
+  if (myAdjustSetting >= AdjustSetting::START_DEBUG_ADJ && myAdjustSetting <= AdjustSetting::END_DEBUG_ADJ)
+    return AdjustGroup::DEBUG;
+
+  return AdjustGroup::AV;
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AdjustFunction EventHandler::cycleAdjustSetting(int direction)
 {
@@ -350,21 +360,38 @@ AdjustFunction EventHandler::cycleAdjustSetting(int direction)
     myOSystem.settings().getString("palette") == PaletteHandler::SETTING_CUSTOM;
   const bool isCustomFilter =
     myOSystem.settings().getInt("tv.filter") == int(NTSCFilter::Preset::CUSTOM);
-  bool repeat;
+  const bool isPAL = myOSystem.console().timing() == ConsoleTiming::pal;
+  bool repeat = false;
 
   do
   {
-    myAdjustSetting =
-      AdjustSetting(BSPF::clampw(int(myAdjustSetting) + direction, 0, int(AdjustSetting::MAX_ADJ)));
-    // skip currently non-relevant adjustments
-    repeat = (myAdjustSetting == AdjustSetting::OVERSCAN && !isFullScreen)
-  #ifdef ADAPTABLE_REFRESH_SUPPORT
-      || (myAdjustSetting == AdjustSetting::ADAPT_REFRESH && !isFullScreen)
-  #endif
-      || (myAdjustSetting == AdjustSetting::PALETTE_PHASE && !isCustomPalette)
-      || (myAdjustSetting >= AdjustSetting::NTSC_SHARPNESS
-          && myAdjustSetting <= AdjustSetting::NTSC_BLEEDING
-          && !isCustomFilter);
+    switch (getAdjustGroup())
+    {
+      case AdjustGroup::AV:
+        myAdjustSetting =
+          AdjustSetting(BSPF::clampw(int(myAdjustSetting) + direction,
+                        int(AdjustSetting::START_AV_ADJ), int(AdjustSetting::END_AV_ADJ)));
+        // skip currently non-relevant adjustments
+        repeat = (myAdjustSetting == AdjustSetting::OVERSCAN && !isFullScreen)
+        #ifdef ADAPTABLE_REFRESH_SUPPORT
+          || (myAdjustSetting == AdjustSetting::ADAPT_REFRESH && !isFullScreen)
+        #endif
+          || (myAdjustSetting == AdjustSetting::PALETTE_PHASE && !isCustomPalette)
+          || (myAdjustSetting >= AdjustSetting::NTSC_SHARPNESS
+              && myAdjustSetting <= AdjustSetting::NTSC_BLEEDING
+              && !isCustomFilter);
+        break;
+
+      case AdjustGroup::DEBUG:
+        myAdjustSetting =
+          AdjustSetting(BSPF::clampw(int(myAdjustSetting) + direction,
+                        int(AdjustSetting::START_DEBUG_ADJ), int(AdjustSetting::END_DEBUG_ADJ)));
+        repeat = (myAdjustSetting == AdjustSetting::COLOR_LOSS && !isPAL);
+        break;
+
+      default:
+        break;
+    }
     // avoid endless loop
     if(repeat && !direction)
       direction = 1;
@@ -381,6 +408,7 @@ AdjustFunction EventHandler::getAdjustSetting(AdjustSetting setting)
   // - This array MUST have the same order as AdjustSetting
   const AdjustFunction ADJUST_FUNCTIONS[int(AdjustSetting::NUM_ADJ)] =
   {
+    // Audio & Video settings
     std::bind(&Sound::adjustVolume, &myOSystem.sound(), _1),
     std::bind(&FrameBuffer::selectVidMode, &myOSystem.frameBuffer(), _1),
     std::bind(&FrameBuffer::toggleFullscreen, &myOSystem.frameBuffer(), _1),
@@ -424,6 +452,25 @@ AdjustFunction EventHandler::getAdjustSetting(AdjustSetting setting)
     std::bind(&StateManager::changeState, &myOSystem.state(), _1),
     std::bind(&PaletteHandler::changeCurrentAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(), _1),
     std::bind(&TIASurface::changeCurrentNTSCAdjustable, &myOSystem.frameBuffer().tiaSurface(), _1),
+    // Debug settings
+    std::bind(&FrameBuffer::toggleFrameStats, &myOSystem.frameBuffer(), _1),
+    std::bind(&Console::toggleP0Bit, &myOSystem.console(), _1),
+    std::bind(&Console::toggleP1Bit, &myOSystem.console(), _1),
+    std::bind(&Console::toggleM0Bit, &myOSystem.console(), _1),
+    std::bind(&Console::toggleM1Bit, &myOSystem.console(), _1),
+    std::bind(&Console::toggleBLBit, &myOSystem.console(), _1),
+    std::bind(&Console::togglePFBit, &myOSystem.console(), _1),
+    std::bind(&Console::toggleBits, &myOSystem.console(), _1),
+    std::bind(&Console::toggleP0Collision, &myOSystem.console(), _1),
+    std::bind(&Console::toggleP1Collision, &myOSystem.console(), _1),
+    std::bind(&Console::toggleM0Collision, &myOSystem.console(), _1),
+    std::bind(&Console::toggleM1Collision, &myOSystem.console(), _1),
+    std::bind(&Console::toggleBLCollision, &myOSystem.console(), _1),
+    std::bind(&Console::togglePFCollision, &myOSystem.console(), _1),
+    std::bind(&Console::toggleCollisions, &myOSystem.console(), _1),
+    std::bind(&Console::toggleFixedColors, &myOSystem.console(), _1),
+    std::bind(&Console::toggleColorLoss, &myOSystem.console(), _1),
+    std::bind(&Console::toggleJitter, &myOSystem.console(), _1),
   };
 
   return ADJUST_FUNCTIONS[int(setting)];
@@ -446,8 +493,10 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     myAdjustActive = false;
     myAdjustDirect = AdjustSetting::NONE;
   }
+
   const bool adjustActive = myAdjustActive;
-  const AdjustSetting adjustDirect = myAdjustDirect;
+  const AdjustSetting adjustAVDirect = myAdjustDirect;
+
   if(pressed)
   {
     myAdjustActive = false;
@@ -457,6 +506,36 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
   switch(event)
   {
     ////////////////////////////////////////////////////////////////////////
+    // Allow adjusting several (mostly repeated) settings using the same four hotkeys
+    case Event::PreviousSettingGroup:
+    case Event::NextSettingGroup:
+      if (pressed && !repeated)
+      {
+        const int direction = event == Event::PreviousSettingGroup ? -1 : +1;
+        AdjustGroup adjustGroup = AdjustGroup(BSPF::clampw(int(getAdjustGroup()) + direction,
+                                              0, int(AdjustGroup::NUM_GROUPS) - 1));
+        string msg;
+
+        switch (adjustGroup)
+        {
+          case AdjustGroup::AV:
+            msg = "Audio & Video";
+            myAdjustSetting = AdjustSetting::START_AV_ADJ;
+            break;
+
+          case AdjustGroup::DEBUG:
+            msg = "Debug";
+            myAdjustSetting = AdjustSetting::START_DEBUG_ADJ;
+            break;
+
+          default:
+            break;
+        }
+        myOSystem.frameBuffer().showMessage(msg + " settings");
+        myAdjustActive = false;
+      }
+      break;
+
     // Allow adjusting several (mostly repeated) settings using the same four hotkeys
     case Event::PreviousSetting:
     case Event::NextSetting:
@@ -481,9 +560,9 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
         const int direction = event == Event::SettingDecrease ? -1 : +1;
 
         // if a "direct only" hotkey was pressed last, use this one
-        if(adjustDirect != AdjustSetting::NONE)
+        if(adjustAVDirect != AdjustSetting::NONE)
         {
-          myAdjustDirect = adjustDirect;
+          myAdjustDirect = adjustAVDirect;
           getAdjustSetting(myAdjustDirect)(direction);
         }
         else
@@ -853,7 +932,12 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::ToggleColorLoss:
-      if (pressed && !repeated) myOSystem.console().toggleColorLoss();
+      if (pressed && !repeated)
+      {
+        myOSystem.console().toggleColorLoss();
+        myAdjustSetting = AdjustSetting::COLOR_LOSS;
+        myAdjustActive = true;
+      }
       return;
 
     case Event::PaletteDecrease:
@@ -888,11 +972,21 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::ToggleJitter:
-      if (pressed && !repeated) myOSystem.console().toggleJitter();
+      if (pressed && !repeated)
+      {
+        myOSystem.console().toggleJitter();
+        myAdjustSetting = AdjustSetting::JITTER;
+        myAdjustActive = true;
+      }
       return;
 
     case Event::ToggleFrameStats:
-      if (pressed) myOSystem.frameBuffer().toggleFrameStats();
+      if (pressed && !repeated)
+      {
+        myOSystem.frameBuffer().toggleFrameStats();
+        myAdjustSetting = AdjustSetting::STATS;
+        myAdjustActive = true;
+      }
       return;
 
     case Event::ToggleTimeMachine:
@@ -941,63 +1035,138 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::ToggleP0Collision:
-      if (pressed && !repeated) myOSystem.console().toggleP0Collision();
+      if (pressed && !repeated)
+      {
+        myOSystem.console().toggleP0Collision();
+        myAdjustSetting = AdjustSetting::P0_CX;
+        myAdjustActive = true;
+      }
       return;
 
     case Event::ToggleP0Bit:
-      if (pressed && !repeated) myOSystem.console().toggleP0Bit();
+      if (pressed && !repeated)
+      {
+        myOSystem.console().toggleP0Bit();
+        myAdjustSetting = AdjustSetting::P0_ENAM;
+        myAdjustActive = true;
+      }
       return;
 
     case Event::ToggleP1Collision:
-      if (pressed && !repeated) myOSystem.console().toggleP1Collision();
+      if (pressed && !repeated)
+      {
+        myOSystem.console().toggleP1Collision();
+        myAdjustSetting = AdjustSetting::P1_CX;
+        myAdjustActive = true;
+      }
       return;
 
     case Event::ToggleP1Bit:
-      if (pressed && !repeated) myOSystem.console().toggleP1Bit();
+      if (pressed && !repeated)
+      {
+        myOSystem.console().toggleP1Bit();
+        myAdjustSetting = AdjustSetting::P1_ENAM;
+        myAdjustActive = true;
+      }
       return;
 
     case Event::ToggleM0Collision:
-      if (pressed && !repeated) myOSystem.console().toggleM0Collision();
+      if (pressed && !repeated)
+      {
+        myOSystem.console().toggleM0Collision();
+        myAdjustSetting = AdjustSetting::M0_CX;
+        myAdjustActive = true;
+      }
       return;
 
     case Event::ToggleM0Bit:
-      if (pressed && !repeated) myOSystem.console().toggleM0Bit();
+      if (pressed && !repeated)
+      {
+        myOSystem.console().toggleM0Bit();
+        myAdjustSetting = AdjustSetting::M0_ENAM;
+        myAdjustActive = true;
+      }
       return;
 
     case Event::ToggleM1Collision:
-      if (pressed && !repeated) myOSystem.console().toggleM1Collision();
+      if (pressed && !repeated)
+      {
+        myOSystem.console().toggleM1Collision();
+        myAdjustSetting = AdjustSetting::M1_CX;
+        myAdjustActive = true;
+      }
       return;
 
     case Event::ToggleM1Bit:
-      if (pressed && !repeated) myOSystem.console().toggleM1Bit();
+      if (pressed && !repeated)
+      {
+        myOSystem.console().toggleM1Bit();
+        myAdjustSetting = AdjustSetting::M1_ENAM;
+        myAdjustActive = true;
+      }
       return;
 
     case Event::ToggleBLCollision:
-      if (pressed && !repeated) myOSystem.console().toggleBLCollision();
+      if (pressed && !repeated)
+      {
+        myOSystem.console().toggleBLCollision();
+        myAdjustSetting = AdjustSetting::BL_CX;
+        myAdjustActive = true;
+      }
       return;
 
     case Event::ToggleBLBit:
-      if (pressed) myOSystem.console().toggleBLBit();
+      if (pressed && !repeated)
+      {
+        myOSystem.console().toggleBLBit();
+        myAdjustSetting = AdjustSetting::BL_ENAM;
+        myAdjustActive = true;
+      }
       return;
 
     case Event::TogglePFCollision:
-      if (pressed && !repeated) myOSystem.console().togglePFCollision();
+      if (pressed && !repeated)
+      {
+        myOSystem.console().togglePFCollision();
+        myAdjustSetting = AdjustSetting::PF_CX;
+        myAdjustActive = true;
+      }
       return;
 
     case Event::TogglePFBit:
-      if (pressed && !repeated) myOSystem.console().togglePFBit();
-      return;
-
-    case Event::ToggleFixedColors:
-      if (pressed) myOSystem.console().toggleFixedColors();
+      if (pressed && !repeated)
+      {
+        myOSystem.console().togglePFBit();
+        myAdjustSetting = AdjustSetting::PF_ENAM;
+        myAdjustActive = true;
+      }
       return;
 
     case Event::ToggleCollisions:
-      if (pressed && !repeated) myOSystem.console().toggleCollisions();
+      if (pressed && !repeated)
+      {
+        myOSystem.console().toggleCollisions();
+        myAdjustSetting = AdjustSetting::ALL_CX;
+        myAdjustActive = true;
+      }
       return;
 
     case Event::ToggleBits:
-      if (pressed && !repeated) myOSystem.console().toggleBits();
+      if (pressed && !repeated)
+      {
+        myOSystem.console().toggleBits();
+        myAdjustSetting = AdjustSetting::ALL_ENAM;
+        myAdjustActive = true;
+      }
+      return;
+
+    case Event::ToggleFixedColors:
+      if (pressed && !repeated)
+      {
+        myOSystem.console().toggleFixedColors();
+        myAdjustSetting = AdjustSetting::FIXED_COL;
+        myAdjustActive = true;
+      }
       return;
 
     case Event::SaveState:
@@ -2316,6 +2485,8 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::ScanlinesDecrease,       "Decrease scanlines",                    "" },
   { Event::ScanlinesIncrease,       "Increase scanlines",                    "" },
 
+  { Event::PreviousSettingGroup,    "Select previous setting group",         "" },
+  { Event::NextSettingGroup,        "Select next setting group",             "" },
   { Event::PreviousSetting,         "Select previous setting",               "" },
   { Event::NextSetting,             "Select next setting",                   "" },
   { Event::SettingDecrease,         "Decrease current setting",              "" },
@@ -2414,7 +2585,10 @@ const Event::EventSet EventHandler::MiscEvents = {
   // Event::MouseAxisXMove, Event::MouseAxisYMove,
   // Event::MouseButtonLeftValue, Event::MouseButtonRightValue,
   Event::HandleMouseControl, Event::ToggleGrabMouse,
-  Event::ToggleSAPortOrder, Event::PreviousMultiCartRom
+  Event::ToggleSAPortOrder, Event::PreviousMultiCartRom,
+  Event::PreviousSettingGroup, Event::NextSettingGroup,
+  Event::PreviousSetting, Event::NextSetting,
+  Event::SettingDecrease, Event::SettingIncrease,
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2435,8 +2609,6 @@ const Event::EventSet EventHandler::AudioVideoEvents = {
   Event::PhosphorDecrease, Event::PhosphorIncrease, Event::TogglePhosphor,
   Event::ScanlinesDecrease, Event::ScanlinesIncrease,
   Event::ToggleInter,
-  Event::PreviousSetting, Event::NextSetting,
-  Event::SettingDecrease, Event::SettingIncrease,
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

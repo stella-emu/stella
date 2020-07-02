@@ -16,6 +16,7 @@
 
   * Added new interface palette 'Dark'. (TODO: DOC)
 
+  * Extended global hotkeys for debug options.
 
 6.2 to 6.2.1: (June 20, 2020)
 

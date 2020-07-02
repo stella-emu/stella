@@ -229,7 +229,7 @@ class Console : public Serializable, public ConsoleIO
     /**
       Toggles the PAL color-loss effect.
     */
-    void toggleColorLoss();
+    void toggleColorLoss(bool toggle = true);
     void enableColorLoss(bool state);
 
     /**
@@ -278,34 +278,34 @@ class Console : public Serializable, public ConsoleIO
     /**
       Toggles the TIA bit specified in the method name.
     */
-    void toggleP0Bit() const { toggleTIABit(P0Bit, "P0"); }
-    void toggleP1Bit() const { toggleTIABit(P1Bit, "P1"); }
-    void toggleM0Bit() const { toggleTIABit(M0Bit, "M0"); }
-    void toggleM1Bit() const { toggleTIABit(M1Bit, "M1"); }
-    void toggleBLBit() const { toggleTIABit(BLBit, "BL"); }
-    void togglePFBit() const { toggleTIABit(PFBit, "PF"); }
-    void toggleBits() const;
+    void toggleP0Bit(bool toggle = true) const { toggleTIABit(P0Bit, "P0", true, toggle); }
+    void toggleP1Bit(bool toggle = true) const { toggleTIABit(P1Bit, "P1", true, toggle); }
+    void toggleM0Bit(bool toggle = true) const { toggleTIABit(M0Bit, "M0", true, toggle); }
+    void toggleM1Bit(bool toggle = true) const { toggleTIABit(M1Bit, "M1", true, toggle); }
+    void toggleBLBit(bool toggle = true) const { toggleTIABit(BLBit, "BL", true, toggle); }
+    void togglePFBit(bool toggle = true) const { toggleTIABit(PFBit, "PF", true, toggle); }
+    void toggleBits(bool toggle = true) const;
 
     /**
       Toggles the TIA collisions specified in the method name.
     */
-    void toggleP0Collision() const { toggleTIACollision(P0Bit, "P0"); }
-    void toggleP1Collision() const { toggleTIACollision(P1Bit, "P1"); }
-    void toggleM0Collision() const { toggleTIACollision(M0Bit, "M0"); }
-    void toggleM1Collision() const { toggleTIACollision(M1Bit, "M1"); }
-    void toggleBLCollision() const { toggleTIACollision(BLBit, "BL"); }
-    void togglePFCollision() const { toggleTIACollision(PFBit, "PF"); }
-    void toggleCollisions() const;
+    void toggleP0Collision(bool toggle = true) const { toggleTIACollision(P0Bit, "P0", true, toggle); }
+    void toggleP1Collision(bool toggle = true) const { toggleTIACollision(P1Bit, "P1", true, toggle); }
+    void toggleM0Collision(bool toggle = true) const { toggleTIACollision(M0Bit, "M0", true, toggle); }
+    void toggleM1Collision(bool toggle = true) const { toggleTIACollision(M1Bit, "M1", true, toggle); }
+    void toggleBLCollision(bool toggle = true) const { toggleTIACollision(BLBit, "BL", true, toggle); }
+    void togglePFCollision(bool toggle = true) const { toggleTIACollision(PFBit, "PF", true, toggle); }
+    void toggleCollisions(bool toggle = true) const;
 
     /**
       Toggles the TIA 'fixed debug colors' mode.
     */
-    void toggleFixedColors() const;
+    void toggleFixedColors(bool toggle = true) const;
 
     /**
       Toggles the TIA 'scanline jitter' mode.
     */
-    void toggleJitter() const;
+    void toggleJitter(bool toggle = true) const;
 
     /**
      * Update vcenter
@@ -351,8 +351,10 @@ class Console : public Serializable, public ConsoleIO
     unique_ptr<Controller> getControllerPort(const Controller::Type type,
                                              const Controller::Jack port, const string& romMd5);
 
-    void toggleTIABit(TIABit bit, const string& bitname, bool show = true) const;
-    void toggleTIACollision(TIABit bit, const string& bitname, bool show = true) const;
+    void toggleTIABit(TIABit bit, const string& bitname,
+                      bool show = true, bool toggle = true) const;
+    void toggleTIACollision(TIABit bit, const string& bitname,
+                            bool show = true, bool toggle = true) const;
 
   private:
     // Reference to the osystem object
