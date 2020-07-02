@@ -992,21 +992,33 @@ void FrameBuffer::setFullscreen(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::toggleFullscreen(bool toggle)
 {
-  const bool isFullscreen = toggle ? !fullScreen() : fullScreen();
-
-  setFullscreen(isFullscreen);
-
-  if(myBufferType == BufferType::Emulator)
+  switch (myOSystem.eventHandler().state())
   {
-    ostringstream msg;
+    case EventHandlerState::LAUNCHER:
+    case EventHandlerState::EMULATION:
+    case EventHandlerState::PAUSE:
+    case EventHandlerState::DEBUGGER:
+    {
+      const bool isFullscreen = toggle ? !fullScreen() : fullScreen();
 
-    msg << "Fullscreen ";
-    if(isFullscreen)
-      msg << "enabled (" << refreshRate() << " Hz)";
-    else
-      msg << "disabled";
+      setFullscreen(isFullscreen);
 
-    showMessage(msg.str());
+      if (myBufferType != BufferType::Launcher)
+      {
+        ostringstream msg;
+
+        msg << "Fullscreen ";
+        if (isFullscreen)
+          msg << "enabled (" << refreshRate() << " Hz)";
+        else
+          msg << "disabled";
+
+        showMessage(msg.str());
+      }
+      break;
+    }
+    default:
+      break;
   }
 }
 
