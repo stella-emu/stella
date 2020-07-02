@@ -152,10 +152,10 @@ void RomInfoWidget::parseProperties(const FilesystemNode& node)
       (image = instance().openROM(node, md5, size)) != nullptr)
     {
       Logger::debug(myProperties.get(PropType::Cart_Name) + ":");
-      left = ControllerDetector::detectName(image.get(), size, leftType,
+      left = ControllerDetector::detectName(image, size, leftType,
           !swappedPorts ? Controller::Jack::Left : Controller::Jack::Right,
           instance().settings());
-      right = ControllerDetector::detectName(image.get(), size, rightType,
+      right = ControllerDetector::detectName(image, size, rightType,
           !swappedPorts ? Controller::Jack::Right : Controller::Jack::Left,
           instance().settings());
       if (bsDetected == "AUTO")

@@ -263,10 +263,10 @@ bool CartridgeMNetwork::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgeMNetwork::getImage(size_t& size) const
+const ByteBuffer& CartridgeMNetwork::getImage(size_t& size) const
 {
   size = romBankCount() * BANK_SIZE;
-  return myImage.get();
+  return myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

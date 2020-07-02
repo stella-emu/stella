@@ -707,7 +707,7 @@ void GameInfoDialog::updateControllerStates()
       label = (!swapPorts ? instance().console().leftController().name()
                : instance().console().rightController().name()) + " detected";
     else if(autoDetect)
-      label = ControllerDetector::detectName(image.get(), size, type,
+      label = ControllerDetector::detectName(image, size, type,
                                              !swapPorts ? Controller::Jack::Left : Controller::Jack::Right,
                                              instance().settings()) + " detected";
   }
@@ -722,7 +722,7 @@ void GameInfoDialog::updateControllerStates()
       label = (!swapPorts ? instance().console().rightController().name()
                : instance().console().leftController().name()) + " detected";
     else if(autoDetect)
-      label = ControllerDetector::detectName(image.get(), size, type,
+      label = ControllerDetector::detectName(image, size, type,
                                              !swapPorts ? Controller::Jack::Right : Controller::Jack::Left,
                                              instance().settings()) + " detected";
   }

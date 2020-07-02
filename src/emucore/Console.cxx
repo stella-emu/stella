@@ -726,7 +726,7 @@ void Console::setControllers(const string& romMd5)
     Controller::Type leftType = Controller::getType(myProperties.get(PropType::Controller_Left));
     Controller::Type rightType = Controller::getType(myProperties.get(PropType::Controller_Right));
     size_t size = 0;
-    const uInt8* image = myCart->getImage(size);
+    const ByteBuffer& image = myCart->getImage(size);
     const bool swappedPorts = myProperties.get(PropType::Console_SwapPorts) == "YES";
 
     // Try to detect controllers

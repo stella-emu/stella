@@ -37,4 +37,3 @@ bool CartridgeF6::checkSwitchBank(uInt16 address, uInt8)
   }
   return false;
 }
-

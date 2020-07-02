@@ -364,10 +364,10 @@ bool CartridgeEnhanced::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgeEnhanced::getImage(size_t& size) const
+const ByteBuffer& CartridgeEnhanced::getImage(size_t& size) const
 {
   size = mySize;
-  return myImage.get();
+  return myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

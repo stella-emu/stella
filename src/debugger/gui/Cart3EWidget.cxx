@@ -33,7 +33,7 @@ string Cartridge3EWidget::description()
 {
   ostringstream info;
   size_t size;
-  const uInt8* image = myCart.getImage(size);
+  const ByteBuffer& image = myCart.getImage(size);
   uInt16 numRomBanks = myCart.romBankCount();
   uInt16 numRamBanks = myCart.ramBankCount();
 

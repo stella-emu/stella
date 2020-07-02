@@ -173,9 +173,9 @@ class CartridgeCM : public Cartridge
       Access the internal ROM image for this cartridge.
 
       @param size  Set to the size of the internal ROM image data
-      @return  A pointer to the internal ROM image data
+      @return  A reference to the internal ROM image data
     */
-    const uInt8* getImage(size_t& size) const override;
+    const ByteBuffer& getImage(size_t& size) const override;
 
     /**
       Save the current state of this cart to the given Serializer.
@@ -246,7 +246,7 @@ class CartridgeCM : public Cartridge
     shared_ptr<CompuMate> myCompuMate;
 
     // The 16K ROM image of the cartridge
-    std::array<uInt8, 16_KB> myImage;
+    ByteBuffer myImage;
 
     // The 2K of RAM
     std::array<uInt8, 2_KB> myRAM;

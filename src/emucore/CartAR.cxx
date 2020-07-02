@@ -420,10 +420,10 @@ bool CartridgeAR::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgeAR::getImage(size_t& size) const
+const ByteBuffer& CartridgeAR::getImage(size_t& size) const
 {
   size = mySize;
-  return myLoadImages.get();
+  return myLoadImages;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
