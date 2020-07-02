@@ -171,7 +171,7 @@ class FrameBuffer
     /**
       Toggles showing or hiding framerate statistics.
     */
-    void toggleFrameStats();
+    void toggleFrameStats(bool toggle = true);
 
     /**
       Shows a message containing frame statistics for the current frame.

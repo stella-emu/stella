@@ -505,9 +505,13 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultCommo
 #ifndef BSPF_MACOS
   {Event::PreviousSetting,          KBDK_END},
   {Event::NextSetting,              KBDK_HOME},
+  {Event::PreviousSettingGroup,     KBDK_END, KBDM_CTRL},
+  {Event::NextSettingGroup,         KBDK_HOME, KBDM_CTRL},
 #else
   {Event::PreviousSetting,          KBDK_HOME},
   {Event::NextSetting,              KBDK_END},
+  {Event::PreviousSettingGroup,     KBDK_HOME, KBDM_CTRL},
+  {Event::NextSettingGroup,         KBDK_END, KBDM_CTRL},
 #endif
   {Event::SettingDecrease,          KBDK_PAGEDOWN},
   {Event::SettingIncrease,          KBDK_PAGEUP},

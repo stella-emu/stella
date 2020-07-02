@@ -1430,7 +1430,7 @@
     </tr>
     <tr>
       <td colspan="3"><center><font size="-1">
-      These settings can also be changed using <a href="#GlobalKeys"><b>Global Audio & Video Keys</a></font></center>
+      These settings can also be changed using <a href="#GlobalKeys"><b>Global Keys</a></font></center>
       </td>
     </tr>
   </table>
@@ -1480,7 +1480,7 @@
     </tr>
     <tr>
       <td colspan="3"><center><font size="-1">
-        These settings can also be changed using <a href="#GlobalKeys"><b>Global Audio & Video Keys</a></font></center>
+        These settings can also be changed using <a href="#GlobalKeys"><b>Global Keys</a></font></center>
       </td>
     </tr>
   </table>
@@ -1550,7 +1550,7 @@
     </tr>
     <tr>
       <td colspan="3"><center><font size="-1">
-        These settings can also be changed using <a href="#GlobalKeys"><b>Global Audio & Video Keys</a></font></center>
+        These settings can also be changed using <a href="#GlobalKeys"><b>Global Keys</a></font></center>
       </td>
     </tr>
     <tr>
@@ -1558,45 +1558,6 @@
       Items marked as (*) will also switch to 'Custom' mode</font></center></td>
     </tr>
   </table>
-
-  <p><b><a name="GlobalKeys">Global Audio & Video Keys</a> (can be remapped)</b></p>
-  <p>These keys allow selecting and changing audio & video settings without having to remember the
-  dedicated keys.</p>
-  <table BORDER=2 cellpadding=4>
-    <tr>
-      <th>Function</th>
-      <th>Key (Standard)</th>
-      <th>Key (macOS)</th>
-    </tr>
-    <tr>
-      <td>Select <i>previous</i> AV setting</td>
-      <td>End</td>
-      <td>Fn + Left arrow</td>
-    </tr>
-    <tr>
-      <td>Select <i>next</i> AV setting</td>
-      <td>Home</td>
-      <td>Fn + Right arrow</td>
-    </tr>
-    <tr>
-      <td><i>Decrease</i> current AV setting</td>
-      <td>PageDown</td>
-      <td>Fn + Down arrow</td>
-    </tr>
-    <tr>
-      <td><i>Increase</i> current AV setting
-      <td>PageUp</td>
-      <td>Fn + Up arrow</td>
-    </tr>
-  </table>
-  <p>Notes:
-      <ul>
-          <li>Only available if UI messages are enabled.</li>
-          <li>Currently not available settings are automatically skipped.</li>
-          <li>If a setting was selected via dedicated key, its value can also be changed with the
-          global keys.</li>
-      </ul>
-  </p></br>
 
   <a name="DeveloperKeys"></a>
   <p><b>Developer Keys (can be remapped)</b></p>
@@ -1715,7 +1676,61 @@
       <td>Alt + j</td>
       <td>Cmd + j</td>
     </tr>
+    <tr>
+      <td colspan="3"><center><font size="-1">
+        These settings can also be changed using <a href="#GlobalKeys"><b>Global Keys</a></font></center>
+      </td>
+    </tr>
   </table>
+
+  <p><b><a name="GlobalKeys">Global Keys</a> (can be remapped)</b></p>
+  <p>These keys allow selecting and changing settings without having to remember the
+  dedicated keys. They keys are grouped by Audio & Video and Debug settings.</p>
+  <table BORDER=2 cellpadding=4>
+    <tr>
+      <th>Function</th>
+      <th>Key (Standard)</th>
+      <th>Key (macOS)</th>
+    </tr>
+    <tr>
+      <td>Select <i>previous</i> setting group</td>
+      <td>Control + End</td>
+      <td>Control-Fn + Left arrow</td>
+    </tr>
+    <tr>
+      <td>Select <i>next</i> setting group</td>
+      <td>Control + Home</td>
+      <td>Control-Fn + Right arrow</td>
+    </tr>
+    <tr>
+      <td>Select <i>previous</i> setting</td>
+      <td>End</td>
+      <td>Fn + Left arrow</td>
+    </tr>
+    <tr>
+      <td>Select <i>next</i> setting</td>
+      <td>Home</td>
+      <td>Fn + Right arrow</td>
+    </tr>
+    <tr>
+      <td><i>Decrease</i> current setting</td>
+      <td>PageDown</td>
+      <td>Fn + Down arrow</td>
+    </tr>
+    <tr>
+      <td><i>Increase</i> current setting
+      <td>PageUp</td>
+      <td>Fn + Up arrow</td>
+    </tr>
+  </table>
+  <p>Notes:
+      <ul>
+          <li>Only available if UI messages are enabled.</li>
+          <li>Currently not available settings are automatically skipped.</li>
+          <li>If a setting was selected via dedicated key, its value can also be changed with the
+          global keys.</li>
+      </ul>
+  </p>
 
   <p><b>Other Emulation Keys (can be remapped)</b></p>
 

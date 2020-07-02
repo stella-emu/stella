@@ -634,11 +634,15 @@ void FrameBuffer::drawFrameStats(float framesPerSecond)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::toggleFrameStats()
+void FrameBuffer::toggleFrameStats(bool toggle)
 {
-  showFrameStats(!myStatsEnabled);
+  if (toggle)
+    showFrameStats(!myStatsEnabled);
   myOSystem.settings().setValue(
     myOSystem.settings().getBool("dev.settings") ? "dev.stats" : "plr.stats", myStatsEnabled);
+
+  myOSystem.frameBuffer().showMessage(string("Console info ") +
+                                      (myStatsEnabled ? "enabled" : "disabled"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
