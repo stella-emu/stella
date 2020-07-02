@@ -94,7 +94,7 @@ string CartridgeEnhancedWidget::romDescription()
 {
   ostringstream info;
   size_t size;
-  const uInt8* image = myCart.getImage(size);
+  const ByteBuffer& image = myCart.getImage(size);
 
   if(myCart.romBankCount() > 1)
   {

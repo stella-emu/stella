@@ -56,14 +56,14 @@ bool Cartridge::saveROM(ofstream& out) const
 {
   size_t size = 0;
 
-  const uInt8* image = getImage(size);
-  if(image == nullptr || size == 0)
+  const ByteBuffer& image = getImage(size);
+  if(size == 0)
   {
     cerr << "save not supported" << endl;
     return false;
   }
 
-  out.write(reinterpret_cast<const char*>(image), size);
+  out.write(reinterpret_cast<const char*>(image.get()), size);
 
   return true;
 }

@@ -171,9 +171,9 @@ class CartridgeCTY : public Cartridge
       Access the internal ROM image for this cartridge.
 
       @param size  Set to the size of the internal ROM image data
-      @return  A pointer to the internal ROM image data
+      @return  A reference to the internal ROM image data
     */
-    const uInt8* getImage(size_t& size) const override;
+    const ByteBuffer& getImage(size_t& size) const override;
 
     /**
       Save the current state of this cart to the given Serializer.
@@ -263,7 +263,7 @@ class CartridgeCTY : public Cartridge
 
   private:
     // The 32K ROM image of the cartridge
-    std::array<uInt8, 32_KB> myImage;
+    ByteBuffer myImage;
 
     // The 28K ROM image of the music
     std::array<uInt8, 28_KB> myTuneData;
