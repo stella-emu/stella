@@ -48,6 +48,9 @@ class Cartridge : public Device
   public:
     using StartBankFromPropsFunc = std::function<int()>;
 
+    // Maximum size of a ROM cart that Stella can support
+    static constexpr size_t maxSize() { return 512_KB; }
+
   public:
     /**
       Create a new cartridge
