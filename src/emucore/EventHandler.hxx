@@ -395,6 +395,7 @@ class EventHandler
     enum class AdjustSetting
     {
       NONE = -1,
+      // *** Audio & Video group ***
       VOLUME,
       ZOOM,
       FULLSCREEN,
@@ -424,11 +425,7 @@ class EventHandler
       PHOSPHOR,
       SCANLINES,
       INTERPOLATION,
-      // Only used via direct hotkeys
-      STATE,
-      PALETTE_CHANGE_ATTRIBUTE,
-      NTSC_CHANGE_ATTRIBUTE,
-      // Debug
+      // *** Debug group ***
       STATS,
       P0_ENAM,
       P1_ENAM,
@@ -447,7 +444,11 @@ class EventHandler
       FIXED_COL,
       COLOR_LOSS,
       JITTER,
-      // Ranges
+      // *** Only used via direct hotkeys ***
+      STATE,
+      PALETTE_CHANGE_ATTRIBUTE,
+      NTSC_CHANGE_ATTRIBUTE,
+      // *** Ranges ***
       NUM_ADJ,
       START_AV_ADJ = VOLUME,
       END_AV_ADJ = INTERPOLATION,
