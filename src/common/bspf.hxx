@@ -128,9 +128,6 @@ namespace BSPF
     static const string ARCH = "NOARCH";
   #endif
 
-  // Maximum size of a ROM that Stella can support
-  inline constexpr size_t romMaxSize() { return 512_KB; }
-
   // Get next power of two greater than or equal to the given value
   inline size_t nextPowerOfTwo(size_t size) {
     if(size < 2) return 1;

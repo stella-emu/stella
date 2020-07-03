@@ -21,6 +21,7 @@
 #include "bspf.hxx"
 #include "OSystemLIBRETRO.hxx"
 
+#include "Cart.hxx"
 #include "Console.hxx"
 #include "ConsoleTiming.hxx"
 #include "Control.hxx"
@@ -59,7 +60,7 @@ class StellaLIBRETRO
 
     void*  getROM() const { return rom_image.get(); }
     uInt32 getROMSize() const { return rom_size; }
-    constexpr uInt32 getROMMax() const { return BSPF::romMaxSize(); }
+    constexpr uInt32 getROMMax() const { return Cartridge::maxSize(); }
 
     uInt8* getRAM() { return system_ram; }
     constexpr uInt32 getRAMSize() const { return 128; }
