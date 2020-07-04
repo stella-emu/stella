@@ -508,13 +508,20 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultCommo
   {Event::PreviousSettingGroup,     KBDK_END, KBDM_CTRL},
   {Event::NextSettingGroup,         KBDK_HOME, KBDM_CTRL},
 #else
+  // HOME & END keys are swapped on Mac keyboards
   {Event::PreviousSetting,          KBDK_HOME},
   {Event::NextSetting,              KBDK_END},
   {Event::PreviousSettingGroup,     KBDK_HOME, KBDM_CTRL},
   {Event::NextSettingGroup,         KBDK_END, KBDM_CTRL},
 #endif
+  {Event::PreviousSetting,          KBDK_KP_1},
+  {Event::NextSetting,              KBDK_KP_7},
+  {Event::PreviousSettingGroup,     KBDK_KP_1, KBDM_CTRL},
+  {Event::NextSettingGroup,         KBDK_KP_7, KBDM_CTRL},
   {Event::SettingDecrease,          KBDK_PAGEDOWN},
+  {Event::SettingDecrease,          KBDK_KP_3},
   {Event::SettingIncrease,          KBDK_PAGEUP},
+  {Event::SettingIncrease,          KBDK_KP_9},
 
   {Event::ToggleInter,              KBDK_I, KBDM_CTRL},
   {Event::ToggleTurbo,              KBDK_T, KBDM_CTRL},
