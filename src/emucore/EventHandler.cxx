@@ -506,7 +506,8 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
   switch(event)
   {
     ////////////////////////////////////////////////////////////////////////
-    // Allow adjusting several (mostly repeated) settings using the same four hotkeys
+    // Allow adjusting several (mostly repeated) settings using the same six hotkeys
+
     case Event::PreviousSettingGroup:
     case Event::NextSettingGroup:
       if (pressed && !repeated)
