@@ -139,7 +139,7 @@ void PaletteHandler::changeCurrentAdjustable(int direction)
   {
     int newVal = scaleTo100(*myAdjustables[myCurrentAdjustable].value);
 
-    newVal = BSPF::clamp(newVal + direction * 2, 0, 100);
+    newVal = BSPF::clamp(newVal + direction * 1, 0, 100);
 
     *myAdjustables[myCurrentAdjustable].value = scaleFrom100(newVal);
 
@@ -385,7 +385,7 @@ void PaletteHandler::generateCustomPalette(ConsoleTiming timing)
     for(int chroma = 1; chroma < NUM_CHROMA; chroma++)
     {
       color[chroma][0] = SATURATION * sinf(offset + shift * (chroma - 1));
-      color[chroma][1] = SATURATION * sinf(offset + shift * (chroma - 1 - BSPF::PI_f));
+      color[chroma][1] = SATURATION * cosf(offset + shift * (chroma - 1) - BSPF::PI_f);
     }
 
     for(int chroma = 0; chroma < NUM_CHROMA; chroma++)

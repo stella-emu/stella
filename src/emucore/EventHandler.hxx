@@ -395,9 +395,13 @@ class EventHandler
     enum class AdjustSetting
     {
       NONE = -1,
+      // *** Audio & Video group ***
       VOLUME,
       ZOOM,
       FULLSCREEN,
+    #ifdef ADAPTABLE_REFRESH_SUPPORT
+      ADAPT_REFRESH,
+    #endif
       OVERSCAN,
       TVFORMAT,
       VCENTER,
@@ -417,15 +421,45 @@ class EventHandler
       NTSC_ARTIFACTS,
       NTSC_FRINGING,
       NTSC_BLEEDING,
+      // Other TV effects adjustables
       PHOSPHOR,
       SCANLINES,
       INTERPOLATION,
-      MAX_ADJ = INTERPOLATION,
-      // Only used via direct hotkeys
+      // *** Debug group ***
+      STATS,
+      P0_ENAM,
+      P1_ENAM,
+      M0_ENAM,
+      M1_ENAM,
+      BL_ENAM,
+      PF_ENAM,
+      ALL_ENAM,
+      P0_CX,
+      P1_CX,
+      M0_CX,
+      M1_CX,
+      BL_CX,
+      PF_CX,
+      ALL_CX,
+      FIXED_COL,
+      COLOR_LOSS,
+      JITTER,
+      // *** Only used via direct hotkeys ***
       STATE,
       PALETTE_CHANGE_ATTRIBUTE,
       NTSC_CHANGE_ATTRIBUTE,
-      NUM_ADJ
+      // *** Ranges ***
+      NUM_ADJ,
+      START_AV_ADJ = VOLUME,
+      END_AV_ADJ = INTERPOLATION,
+      START_DEBUG_ADJ = STATS,
+      END_DEBUG_ADJ = JITTER,
+    };
+    enum class AdjustGroup
+    {
+      AV,
+      DEBUG,
+      NUM_GROUPS
     };
 
   private:
@@ -456,6 +490,7 @@ class EventHandler
 
     // The following two methods are used for adjusting several settings using global hotkeys
     // They return the function used to adjust the currenly selected setting
+    AdjustGroup getAdjustGroup();
     AdjustFunction cycleAdjustSetting(int direction);
     AdjustFunction getAdjustSetting(AdjustSetting setting);
 
@@ -467,10 +502,10 @@ class EventHandler
       string key;
     };
 
-    // ID of the currently selected global setting
-    AdjustSetting myAdjustSetting{AdjustSetting::VOLUME};
     // If true, the setting is visible and its value can be changed
     bool myAdjustActive{false};
+    // ID of the currently selected global setting
+    AdjustSetting myAdjustSetting{AdjustSetting::START_AV_ADJ};
     // ID of the currently selected direct hotkey setting (0 if none)
     AdjustSetting myAdjustDirect{AdjustSetting::NONE};
 
@@ -517,7 +552,12 @@ class EventHandler
     #else
       PNG_SIZE             = 0,
     #endif
-      EMUL_ACTIONLIST_SIZE = 156 + PNG_SIZE + COMBO_SIZE,
+    #ifdef ADAPTABLE_REFRESH_SUPPORT
+      REFRESH_SIZE         = 1,
+    #else
+      REFRESH_SIZE         = 0,
+    #endif
+      EMUL_ACTIONLIST_SIZE = 159 + PNG_SIZE + COMBO_SIZE + REFRESH_SIZE,
       MENU_ACTIONLIST_SIZE = 18
     ;
 

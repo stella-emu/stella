@@ -56,14 +56,14 @@ bool Cartridge::saveROM(ofstream& out) const
 {
   size_t size = 0;
 
-  const uInt8* image = getImage(size);
-  if(image == nullptr || size == 0)
+  const ByteBuffer& image = getImage(size);
+  if(size == 0)
   {
     cerr << "save not supported" << endl;
     return false;
   }
 
-  out.write(reinterpret_cast<const char*>(image), size);
+  out.write(reinterpret_cast<const char*>(image.get()), size);
 
   return true;
 }
@@ -80,10 +80,10 @@ bool Cartridge::bankChanged()
 uInt16 Cartridge::bankSize(uInt16 bank) const
 {
   size_t size;
-
   getImage(size);
 
-  return std::min(uInt32(size) / romBankCount(), 4_KB); // assuming that each bank has the same size
+  return static_cast<uInt16>(
+     std::min(size / romBankCount(), 4_KB)); // assuming that each bank has the same size
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

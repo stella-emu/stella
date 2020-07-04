@@ -237,6 +237,7 @@ void EmulationDialog::saveConfig()
     instance().console().initializeAudio();
     // update VSync
     instance().console().initializeVideo();
+    instance().createFrameBuffer();
 
     instance().frameBuffer().tiaSurface().ntsc().enableThreading(myUseThreads->getState());
   }

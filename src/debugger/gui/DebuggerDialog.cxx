@@ -251,6 +251,7 @@ void DebuggerDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kDDOptionsCmd:
+      saveConfig();
       myOptions->open();
       loadConfig();
       break;

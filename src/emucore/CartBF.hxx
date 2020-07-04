@@ -45,9 +45,10 @@ class CartridgeBF : public CartridgeEnhanced
       @param size      The size of the ROM image
       @param md5       The md5sum of the ROM image
       @param settings  A reference to the various settings (read-only)
+      @param bsSize    The size specified by the bankswitching scheme
     */
     CartridgeBF(const ByteBuffer& image, size_t size, const string& md5,
-                const Settings& settings);
+                const Settings& settings, size_t bsSize = 256_KB);
     virtual ~CartridgeBF() = default;
 
   public:

@@ -39,6 +39,7 @@ PhysicalKeyboardHandler::PhysicalKeyboardHandler(OSystem& system, EventHandler& 
     myHandler(handler)
 {
   Int32 version = myOSystem.settings().getInt("event_ver");
+  bool updateDefaults = false;
 
   // Compare if event list version has changed so that key maps became invalid
   if (version == Event::VERSION)
@@ -53,11 +54,12 @@ PhysicalKeyboardHandler::PhysicalKeyboardHandler(OSystem& system, EventHandler& 
     myKeyMap.loadMapping(list, EventMode::kKeypadMode);
     list = myOSystem.settings().getString("keymap_ui");
     myKeyMap.loadMapping(list, EventMode::kMenuMode);
+    updateDefaults = true;
   }
   myKeyMap.enableMod() = myOSystem.settings().getBool("modcombo");
 
-  setDefaultMapping(Event::NoType, EventMode::kEmulationMode, true);
-  setDefaultMapping(Event::NoType, EventMode::kMenuMode, true);
+  setDefaultMapping(Event::NoType, EventMode::kEmulationMode, updateDefaults);
+  setDefaultMapping(Event::NoType, EventMode::kMenuMode, updateDefaults);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -443,7 +445,11 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultCommo
   {Event::LoadState,                KBDK_F11},
   {Event::LoadAllStates,            KBDK_F11, MOD3},
   {Event::TakeSnapshot,             KBDK_F12},
+#ifdef BSPF_MACOS
+  {Event::TogglePauseMode,          KBDK_P, KBDM_SHIFT | MOD3},
+#else
   {Event::TogglePauseMode,          KBDK_PAUSE},
+#endif
   {Event::OptionsMenuMode,          KBDK_TAB},
   {Event::CmdMenuMode,              KBDK_BACKSLASH},
   {Event::TimeMachineMode,          KBDK_T, KBDM_SHIFT},
@@ -455,6 +461,7 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultCommo
   {Event::Quit,                     KBDK_Q, KBDM_CTRL},
 #endif
   {Event::ReloadConsole,            KBDK_R, KBDM_CTRL},
+  {Event::PreviousMultiCartRom,     KBDK_R, KBDM_SHIFT | KBDM_CTRL},
 
   {Event::VidmodeDecrease,          KBDK_MINUS, MOD3},
   {Event::VidmodeIncrease,          KBDK_EQUALS, MOD3},
@@ -467,6 +474,7 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultCommo
   {Event::SoundToggle,              KBDK_RIGHTBRACKET, KBDM_CTRL},
 
   {Event::ToggleFullScreen,         KBDK_RETURN, MOD3},
+  {Event::ToggleAdaptRefresh,       KBDK_R, MOD3},
   {Event::OverscanDecrease,         KBDK_PAGEDOWN, KBDM_SHIFT},
   {Event::OverscanIncrease,         KBDK_PAGEUP, KBDM_SHIFT},
   //{Event::VidmodeStd,               KBDK_1, MOD3},
@@ -497,9 +505,13 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultCommo
 #ifndef BSPF_MACOS
   {Event::PreviousSetting,          KBDK_END},
   {Event::NextSetting,              KBDK_HOME},
+  {Event::PreviousSettingGroup,     KBDK_END, KBDM_CTRL},
+  {Event::NextSettingGroup,         KBDK_HOME, KBDM_CTRL},
 #else
   {Event::PreviousSetting,          KBDK_HOME},
   {Event::NextSetting,              KBDK_END},
+  {Event::PreviousSettingGroup,     KBDK_HOME, KBDM_CTRL},
+  {Event::NextSettingGroup,         KBDK_END, KBDM_CTRL},
 #endif
   {Event::SettingDecrease,          KBDK_PAGEDOWN},
   {Event::SettingIncrease,          KBDK_PAGEUP},

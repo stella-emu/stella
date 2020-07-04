@@ -90,9 +90,9 @@ using DWordBuffer = std::unique_ptr<uInt32[]>;  // NOLINT
 using AdjustFunction = std::function<void(int)>;
 
 // We use KB a lot; let's make a literal for it
-constexpr uInt32 operator "" _KB(unsigned long long size)
+constexpr size_t operator "" _KB(unsigned long long size)
 {
-   return static_cast<uInt32>(size * 1024);
+   return static_cast<size_t>(size * 1024);
 }
 
 static const string EmptyString("");
@@ -100,6 +100,12 @@ static const string EmptyString("");
 // This is defined by some systems, but Stella has other uses for it
 #undef PAGE_SIZE
 #undef PAGE_MASK
+
+// Adaptable refresh is currently not available on MacOS
+// In the future, this may expand to other systems
+#if !defined(BSPF_MACOS)
+  #define ADAPTABLE_REFRESH_SUPPORT
+#endif
 
 namespace BSPF
 {
@@ -121,6 +127,21 @@ namespace BSPF
   #else
     static const string ARCH = "NOARCH";
   #endif
+
+  // Get next power of two greater than or equal to the given value
+  inline size_t nextPowerOfTwo(size_t size) {
+    if(size < 2) return 1;
+    size_t power2 = 1;
+    while(power2 < size)
+      power2 <<= 1;
+    return power2;
+  }
+
+  // Get next multiple of the given value
+  // Note that this only works when multiple is a power of two
+  inline size_t nextMultipleOf(size_t size, size_t multiple) {
+    return (size + multiple - 1) & ~(multiple - 1);
+  }
 
   // Make 2D-arrays using std::array less verbose
   template<typename T, size_t ROW, size_t COL>

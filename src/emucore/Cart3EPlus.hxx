@@ -42,7 +42,7 @@ class System;
 
   ROM:
 
-  Note: in descriptions $F000 is equivalent to $1000 -- that is, we only deal
+  Note: In descriptions $F000 is equivalent to $1000 -- that is, we only deal
   with the low 13 bits of addressing. Stella code uses $1000, I'm used to $F000
   So, mask with top bits clear :) when reading this document.
 
@@ -51,16 +51,10 @@ class System;
 
   The last 1K ROM ($FC00-$FFFF) segment in the 6502 address space (ie: $1C00-$1FFF)
   is initialised to point to the FIRST 1K of the ROM image, so the reset vectors
-  must be placed at the end of the first 1K in the ROM image. Note, this is
-  DIFFERENT to 3E which switches in the UPPER bank and this bank is fixed.  This
-  allows variable sized ROM without having to detect size. First bank (0) in ROM is
-  the default fixed bank mapped to $FC00.
+  must be placed at the end of the first 1K in the ROM image.
 
-  The system requires the reset vectors to be valid on a reset, so either the
-  hardware first switches in the first bank, or the programmer must ensure
-  that the reset vector is present in ALL ROM banks which might be switched
-  into the last bank area.  Currently the latter (programmer onus) is required,
-  but it would be nice for the cartridge hardware to auto-switch on reset.
+  Note: This is DIFFERENT to 3E which switches in the UPPER bank and this bank is
+  fixed.  This allows variable sized ROM without having to detect size.
 
   ROM switching (write of block+bank number to $3F) D7D6 upper 2 bits of bank #
   indicates the destination segment (0-3, corresponding to $F000, $F400, $F800,
@@ -100,9 +94,11 @@ class Cartridge3EPlus: public Cartridge3E
       @param size      The size of the ROM image
       @param md5       The md5sum of the ROM image
       @param settings  A reference to the various settings (read-only)
+      @param bsSize    The size specified by the bankswitching scheme
+                       (where 0 means variable-sized ROM)
     */
     Cartridge3EPlus(const ByteBuffer& image, size_t size, const string& md5,
-                    const Settings& settings);
+                    const Settings& settings, size_t bsSize = 0);
     virtual ~Cartridge3EPlus() = default;
 
   public:

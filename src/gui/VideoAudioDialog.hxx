@@ -71,9 +71,9 @@ class VideoAudioDialog : public Dialog
     PopUpWidget*      myRenderer{nullptr};
     CheckboxWidget*   myTIAInterpolate{nullptr};
     CheckboxWidget*   myFullscreen{nullptr};
-    //PopUpWidget*      myFullScreenMode;
     CheckboxWidget*   myUseStretch{nullptr};
     SliderWidget*     myTVOverscan{nullptr};
+    CheckboxWidget*   myRefreshAdapt{nullptr};
     SliderWidget*     myTIAZoom{nullptr};
     SliderWidget*     myVSizeAdjust{nullptr};
 

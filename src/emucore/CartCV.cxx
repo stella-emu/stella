@@ -20,24 +20,21 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeCV::CartridgeCV(const ByteBuffer& image, size_t size,
-                         const string& md5, const Settings& settings)
-  : CartridgeEnhanced(image, size, md5, settings)
+                         const string& md5, const Settings& settings,
+                         size_t bsSize)
+  : CartridgeEnhanced(image, size, md5, settings, bsSize)
 {
   myBankShift = BANK_SHIFT;
   myRamSize = RAM_SIZE;
   myRamWpHigh = RAM_HIGH_WP;
 
-  if(mySize == 4_KB)
+  if(size == 4_KB)
   {
     // The game has something saved in the RAM
     // Useful for MagiCard program listings
 
-    // Allocate array for the ROM image
-    mySize = 2_KB;
-    myImage = make_unique<uInt8[]>(mySize);
-
     // Copy the ROM image into my buffer
-    std::copy_n(image.get() + mySize, mySize, myImage.get());
+    std::copy_n(image.get() + 2_KB, 2_KB, myImage.get());
 
     myInitialRAM = make_unique<uInt8[]>(1_KB);
     // Copy the RAM image into a buffer for use in reset()

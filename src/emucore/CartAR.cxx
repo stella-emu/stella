@@ -392,7 +392,7 @@ void CartridgeAR::loadIntoRAM(uInt8 load)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeAR::bank(uInt16 bank)
+bool CartridgeAR::bank(uInt16 bank, uInt16)
 {
   if(!bankLocked())
     return bankConfiguration(uInt8(bank));
@@ -420,10 +420,10 @@ bool CartridgeAR::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgeAR::getImage(size_t& size) const
+const ByteBuffer& CartridgeAR::getImage(size_t& size) const
 {
   size = mySize;
-  return myLoadImages.get();
+  return myLoadImages;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

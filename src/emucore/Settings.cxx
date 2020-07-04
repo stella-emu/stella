@@ -52,6 +52,7 @@ Settings::Settings()
   setPermanent("tia.zoom", "3");
   setPermanent("fullscreen", "false");
   setPermanent("tia.fs_stretch", "false");
+  setPermanent("tia.fs_refresh", "false");
   setPermanent("tia.fs_overscan", "0");
   setPermanent("tia.vsizeadjust", 0);
   setPermanent("tia.dbgcolors", "roygpb");
@@ -68,7 +69,7 @@ Settings::Settings()
   setPermanent("tv.filter", "0");
   setPermanent("tv.phosphor", "byrom");
   setPermanent("tv.phosblend", "50");
-  setPermanent("tv.scanlines", "25");
+  setPermanent("tv.scanlines", "0");
   // TV options when using 'custom' mode
   setPermanent("tv.sharpness", "0.0");
   setPermanent("tv.resolution", "0.0");
@@ -441,6 +442,7 @@ void Settings::usage() const
     << "  -tia.inter       <1|0>        Enable interpolated (smooth) scaling for TIA\n"
     << "                                 image\n"
     << "  -tia.fs_stretch  <1|0>        Stretch TIA image to fill fullscreen mode\n"
+    << "  -tia.fs_refresh  <1|0>        Try to adapt display refresh rate to game's FPS\n"
     << "  -tia.fs_overscan <0-10>       Add overscan to TIA image in fullscreen mode\n"
     << "  -tia.dbgcolors   <string>     Debug colors to use for each object (see manual\n"
     << "                                 for description)\n"
@@ -522,7 +524,8 @@ void Settings::usage() const
     << "                                launcher\n"
     << "  -romloadcount <number>       Number of ROM to load next from multicard\n"
     << "  -uipalette    <standard|     Selects GUI theme\n"
-    << "                 classic|light>\n"
+    << "                 classic|\n"
+    << "                 light|dark>\n"
     << "  -hidpi        <0|1>          Enable HiDPI mode\n"
     << "  -dialogfont   <small|        Use the specified font in the dialogs\n"
     << "                 low_medium|\n"

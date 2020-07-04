@@ -169,28 +169,6 @@ class System : public Serializable
     uInt8 getDataBusState() const { return myDataBusState; }
 
     /**
-      Get the current state of the data bus in the system, taking into
-      account that certain bits are in Z-state (undriven).  In those
-      cases, the bits are floating, but will usually be the same as the
-      last data bus value (the 'usually' is emulated by randomly driving
-      certain bits high).
-
-      However, some CMOS EPROM chips always drive Z-state bits high.
-      This is emulated by hmask, which specifies to push a specific
-      Z-state bit high.
-
-      @param zmask  The bits which are in Z-state
-      @param hmask  The bits which should always be driven high
-      @return  The data bus state
-    */
-    uInt8 getDataBusState(uInt8 zmask, uInt8 hmask = 0x00) const
-    {
-      // For the pins that are floating, randomly decide which are high or low
-      // Otherwise, they're specifically driven high
-      return (myDataBusState | (randGenerator().next() | hmask)) & zmask;
-    }
-
-    /**
       Get the byte at the specified address.  No masking of the
       address occurs before it's sent to the device mapped at
       the address.

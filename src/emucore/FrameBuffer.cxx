@@ -513,7 +513,8 @@ void FrameBuffer::showMessage(const string& message, MessagePosition position,
   myMsg.text      = message;
   myMsg.color     = kBtnTextColor;
   myMsg.showGauge = false;
-  myMsg.w         = font().getStringWidth(myMsg.text) + HBORDER * 2;
+  myMsg.w         = std::min(fontWidth * (MESSAGE_WIDTH) - HBORDER * 2,
+                             font().getStringWidth(myMsg.text) + HBORDER * 2);
   myMsg.h         = fontHeight + VBORDER * 2;
   myMsg.position  = position;
   myMsg.enabled   = true;
@@ -533,7 +534,7 @@ void FrameBuffer::showMessage(const string& message, const string& valueText,
     return;
 
   const int fontWidth  = font().getMaxCharWidth(),
-    fontHeight = font().getFontHeight();
+            fontHeight = font().getFontHeight();
   const int VBORDER = fontHeight / 4;
   const int HBORDER = fontWidth * 1.25 / 2.0;
 
@@ -565,7 +566,7 @@ void FrameBuffer::showMessage(const string& message, const string& valueText,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBuffer::messageShown()
+bool FrameBuffer::messageShown() const
 {
 #ifdef GUI_SUPPORT
   return myMsg.enabled;
@@ -633,11 +634,15 @@ void FrameBuffer::drawFrameStats(float framesPerSecond)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::toggleFrameStats()
+void FrameBuffer::toggleFrameStats(bool toggle)
 {
-  showFrameStats(!myStatsEnabled);
+  if (toggle)
+    showFrameStats(!myStatsEnabled);
   myOSystem.settings().setValue(
     myOSystem.settings().getBool("dev.settings") ? "dev.stats" : "plr.stats", myStatsEnabled);
+
+  myOSystem.frameBuffer().showMessage(string("Console info ") +
+                                      (myStatsEnabled ? "enabled" : "disabled"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -861,6 +866,7 @@ void FrameBuffer::setUIPalette()
   const UIPaletteArray& ui_palette =
      (myOSystem.settings().getString("uipalette") == "classic") ? ourClassicUIPalette :
      (myOSystem.settings().getString("uipalette") == "light")   ? ourLightUIPalette :
+     (myOSystem.settings().getString("uipalette") == "dark")    ? ourDarkUIPalette :
       ourStandardUIPalette;
 
   for(size_t i = 0, j = myFullPalette.size() - ui_palette.size();
@@ -959,6 +965,7 @@ void FrameBuffer::setFullscreen(bool enable)
     default:
       return;
   }
+  saveCurrentWindowPosition();
 
   // Changing the video mode can take some time, during which the last
   // sound played may get 'stuck'
@@ -989,12 +996,64 @@ void FrameBuffer::setFullscreen(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::toggleFullscreen(bool toggle)
 {
-  const bool isFullscreen = toggle ? !fullScreen() : fullScreen();
+  switch (myOSystem.eventHandler().state())
+  {
+    case EventHandlerState::LAUNCHER:
+    case EventHandlerState::EMULATION:
+    case EventHandlerState::PAUSE:
+    case EventHandlerState::DEBUGGER:
+    {
+      const bool isFullscreen = toggle ? !fullScreen() : fullScreen();
 
-  setFullscreen(isFullscreen);
+      setFullscreen(isFullscreen);
 
-  showMessage(string("Fullscreen ") + (isFullscreen ? "enabled" : "disabled"));
+      if (myBufferType != BufferType::Launcher)
+      {
+        ostringstream msg;
+
+        msg << "Fullscreen ";
+        if (isFullscreen)
+          msg << "enabled (" << refreshRate() << " Hz)";
+        else
+          msg << "disabled";
+
+        showMessage(msg.str());
+      }
+      break;
+    }
+    default:
+      break;
+  }
 }
+
+#ifdef ADAPTABLE_REFRESH_SUPPORT
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::toggleAdaptRefresh(bool toggle)
+{
+  bool isAdaptRefresh = myOSystem.settings().getInt("tia.fs_refresh");
+
+  if(toggle)
+    isAdaptRefresh = !isAdaptRefresh;
+
+  if(myBufferType == BufferType::Emulator)
+  {
+    if(toggle)
+    {
+      myOSystem.settings().setValue("tia.fs_refresh", isAdaptRefresh);
+      // issue a complete framebuffer re-initialization
+      myOSystem.createFrameBuffer();
+    }
+
+    ostringstream msg;
+
+    msg << "Adapt refresh rate ";
+    msg << (isAdaptRefresh ? "enabled" : "disabled");
+    msg << " (" << refreshRate() << " Hz)";
+
+    showMessage(msg.str());
+  }
+}
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::changeOverscan(int direction)
@@ -1509,5 +1568,18 @@ UIPaletteArray FrameBuffer::ourLightUIPalette = {
     0xffc0c0, 0x000000, 0xe00000, 0xc00000,                     // debugger
     0x333333, 0x0078d7, 0xc0c0c0, 0xffffff, 0xc0c0c0,           // slider 0xBDDEF9| 0xe1e1e1 | 0xffffff
     0xffffff, 0x333333, 0xf0f0f0, 0x808080, 0xc0c0c0            // other
+  }
+};
+
+UIPaletteArray FrameBuffer::ourDarkUIPalette = {
+  { 0x646464, 0xc0c0c0, 0x3c3c3c, 0x282828, 0x989898,           // base
+    0xc0c0c0, 0x1567a5, 0x0059a3, 0xc0c0c0,                     // text
+    0x202020, 0x000000, 0x0059a3, 0xb0b0b0,                     // UI elements
+    0x282828, 0x00467f, 0x646464, 0x0059a3, 0xc0c0c0, 0xc0c0c0, // buttons
+    0x989898,                                                   // checkbox
+    0x3c3c3c, 0x646464,                                         // scrollbar
+    0x7f2020, 0xc0c0c0, 0xe00000, 0xc00000,                     // debugger
+    0x989898, 0x0059a3, 0x3c3c3c, 0x000000, 0x3c3c3c,           // slider
+    0x000000, 0x989898, 0x202020, 0x646464, 0x3c3c3c            // other
   }
 };

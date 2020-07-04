@@ -46,7 +46,7 @@
 #include "FSNode.hxx"
 #include "MD5.hxx"
 #include "Cart.hxx"
-#include "CartDetector.hxx"
+#include "CartCreator.hxx"
 #include "FrameBuffer.hxx"
 #include "TIASurface.hxx"
 #include "PaletteHandler.hxx"
@@ -399,7 +399,7 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
     // Each time a new console is loaded, we simulate a cart removal
     // Some carts need knowledge of this, as they behave differently
     // based on how many power-cycles they've been through since plugged in
-    mySettings->setValue("romloadcount", 0);
+    mySettings->setValue("romloadcount", -1); // we move to the next game initially
   }
 
   // Create an instance of the 2600 game console
@@ -414,7 +414,7 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
   }
   catch(const runtime_error& e)
   {
-    buf << "ERROR: Couldn't create console (" << e.what() << ")";
+    buf << "ERROR: " << e.what();
     Logger::error(buf.str());
     return buf.str();
   }
@@ -474,8 +474,10 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool OSystem::reloadConsole()
+bool OSystem::reloadConsole(bool nextrom)
 {
+  mySettings->setValue("romloadprev", !nextrom);
+
   return createConsole(myRomFile, myRomMD5, false) == EmptyString;
 }
 
@@ -569,7 +571,7 @@ unique_ptr<Console> OSystem::openConsole(const FilesystemNode& romfile, string& 
     string cartmd5 = md5;
     const string& type = props.get(PropType::Cart_Type);
     unique_ptr<Cartridge> cart =
-      CartDetector::create(romfile, image, size, cartmd5, type, *mySettings);
+      CartCreator::create(romfile, image, size, cartmd5, type, *mySettings);
 
     // Some properties may not have a name set; we can't leave it blank
     if(props.get(PropType::Cart_Name) == EmptyString)

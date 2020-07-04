@@ -662,6 +662,9 @@
     <ClCompile Include="..\debugger\gui\CartRamWidget.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartTVBoyWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\debugger\gui\CartSBWidget.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClCompile>
@@ -714,6 +717,7 @@
     <ClCompile Include="..\emucore\Cart3EPlus.cxx" />
     <ClCompile Include="..\emucore\Cart3EX.cxx" />
     <ClCompile Include="..\emucore\Cart4KSC.cxx" />
+    <ClCompile Include="..\emucore\CartCreator.cxx" />
     <ClCompile Include="..\emucore\CartEnhanced.cxx" />
     <ClCompile Include="..\emucore\CartBF.cxx" />
     <ClCompile Include="..\emucore\CartBFSC.cxx" />
@@ -729,6 +733,7 @@
     <ClCompile Include="..\emucore\CartMDM.cxx" />
     <ClCompile Include="..\emucore\CartMNetwork.cxx" />
     <ClCompile Include="..\emucore\CartE78K.cxx" />
+    <ClCompile Include="..\emucore\CartTVBoy.cxx" />
     <ClCompile Include="..\emucore\CartWD.cxx" />
     <ClCompile Include="..\emucore\CompuMate.cxx" />
     <ClCompile Include="..\emucore\ControllerDetector.cxx" />
@@ -1671,6 +1676,9 @@
     <ClInclude Include="..\debugger\gui\CartSBWidget.hxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartTVBoyWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\debugger\gui\CartUAWidget.hxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClInclude>
@@ -1732,6 +1740,7 @@
     <ClInclude Include="..\emucore\Cart3EPlus.hxx" />
     <ClInclude Include="..\emucore\Cart3EX.hxx" />
     <ClInclude Include="..\emucore\Cart4KSC.hxx" />
+    <ClInclude Include="..\emucore\CartCreator.hxx" />
     <ClInclude Include="..\emucore\CartEnhanced.hxx" />
     <ClInclude Include="..\emucore\CartBF.hxx" />
     <ClInclude Include="..\emucore\CartBFSC.hxx" />
@@ -1747,6 +1756,7 @@
     <ClInclude Include="..\emucore\CartMDM.hxx" />
     <ClInclude Include="..\emucore\CartMNetwork.hxx" />
     <ClInclude Include="..\emucore\CartE78K.hxx" />
+    <ClInclude Include="..\emucore\CartTVBoy.hxx" />
     <ClInclude Include="..\emucore\CartWD.hxx" />
     <ClInclude Include="..\emucore\CompuMate.hxx" />
     <ClInclude Include="..\emucore\ControllerDetector.hxx" />

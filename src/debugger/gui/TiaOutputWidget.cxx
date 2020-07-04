@@ -179,7 +179,7 @@ void TiaOutputWidget::drawWidget(bool hilite)
   bool visible = instance().console().tia().electronBeamPos(scanx, scany);
   scanoffset = width * scany + scanx;
   uInt8* tiaOutputBuffer = instance().console().tia().outputBuffer();
-  TIASurface& tiaSurface(instance().frameBuffer().tiaSurface());
+  const TIASurface& tiaSurface = instance().frameBuffer().tiaSurface();
 
   for(uInt32 y = 0, i = yStart * width; y < height; ++y)
   {

@@ -56,9 +56,11 @@ class CartridgeMDM : public CartridgeEnhanced
       @param size      The size of the ROM image
       @param md5       The md5sum of the ROM image
       @param settings  A reference to the various settings (read-only)
+      @param bsSize    The size specified by the bankswitching scheme
+                       (where 0 means variable-sized ROM)
     */
     CartridgeMDM(const ByteBuffer& image, size_t size, const string& md5,
-                 const Settings& settings);
+                 const Settings& settings, size_t bsSize = 0);
     virtual ~CartridgeMDM() = default;
 
   public:
@@ -73,9 +75,12 @@ class CartridgeMDM : public CartridgeEnhanced
     /**
       Install pages for the specified bank in the system.
 
-      @param bank The bank that should be installed in the system
+      @param bank     The bank that should be installed in the system
+      @param segment  The segment the bank should be using
+
+      @return  true, if bank has changed
     */
-    bool bank(uInt16 bank) override;
+    bool bank(uInt16 bank, uInt16 segment = 0) override;
 
     /**
       Save the current state of this cart to the given Serializer.

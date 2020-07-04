@@ -34,14 +34,14 @@ class ControllerDetector
     /**
       Detects the controller type at the given port if no controller is provided.
 
-      @param image      A pointer to the ROM image
+      @param image      A reference to the ROM image
       @param size       The size of the ROM image
       @param controller The provided controller type of the ROM image
       @param port       The port to be checked
       @param settings   A reference to the various settings (read-only)
       @return   The detected controller type
     */
-    static Controller::Type detectType(const uInt8* image, size_t size,
+    static Controller::Type detectType(const ByteBuffer& image, size_t size,
         const Controller::Type controller, const Controller::Jack port,
         const Settings& settings);
 
@@ -49,7 +49,7 @@ class ControllerDetector
       Detects the controller type at the given port if no controller is provided
       and returns its name.
 
-      @param image      A pointer to the ROM image
+      @param image      A reference to the ROM image
       @param size       The size of the ROM image
       @param type       The provided controller type of the ROM image
       @param port       The port to be checked
@@ -57,7 +57,7 @@ class ControllerDetector
 
       @return   The (detected) controller name
     */
-    static string detectName(const uInt8* image, size_t size,
+    static string detectName(const ByteBuffer& image, size_t size,
         const Controller::Type type, const Controller::Jack port,
         const Settings& settings);
 
@@ -65,14 +65,14 @@ class ControllerDetector
     /**
       Detects the controller type at the given port.
 
-      @param image      A pointer to the ROM image
+      @param image      A reference to the ROM image
       @param size       The size of the ROM image
       @param port       The port to be checked
       @param settings   A reference to the various settings (read-only)
 
       @return   The detected controller type
     */
-    static Controller::Type autodetectPort(const uInt8* image, size_t size,
+    static Controller::Type autodetectPort(const ByteBuffer& image, size_t size,
         Controller::Jack port, const Settings& settings);
 
     /**
@@ -85,36 +85,41 @@ class ControllerDetector
 
       @return  True if the signature was found, else false
     */
-    static bool searchForBytes(const uInt8* image, size_t imagesize,
+    static bool searchForBytes(const ByteBuffer& image, size_t imagesize,
                                const uInt8* signature, uInt32 sigsize);
 
     // Returns true if the port's joystick button access code is found.
-    static bool usesJoystickButton(const uInt8* image, size_t size, Controller::Jack port);
+    static bool usesJoystickButton(const ByteBuffer& image, size_t size,
+                                   Controller::Jack port);
 
     // Returns true if the port's keyboard access code is found.
-    static bool usesKeyboard(const uInt8* image, size_t size, Controller::Jack port);
+    static bool usesKeyboard(const ByteBuffer& image, size_t size,
+                             Controller::Jack port);
 
     // Returns true if the port's 2nd Genesis button access code is found.
-    static bool usesGenesisButton(const uInt8* image, size_t size, Controller::Jack port);
+    static bool usesGenesisButton(const ByteBuffer& image, size_t size,
+                                  Controller::Jack port);
 
     // Returns true if the port's paddle button access code is found.
-    static bool usesPaddle(const uInt8* image, size_t size, Controller::Jack port,
-                           const Settings& settings);
+    static bool usesPaddle(const ByteBuffer& image, size_t size,
+                           Controller::Jack port, const Settings& settings);
 
     // Returns true if a Trak-Ball table is found.
-    static bool isProbablyTrakBall(const uInt8* image, size_t size);
+    static bool isProbablyTrakBall(const ByteBuffer& image, size_t size);
 
     // Returns true if an Atari Mouse table is found.
-    static bool isProbablyAtariMouse(const uInt8* image, size_t size);
+    static bool isProbablyAtariMouse(const ByteBuffer& image, size_t size);
 
     // Returns true if an Amiga Mouse table is found.
-    static bool isProbablyAmigaMouse(const uInt8* image, size_t size);
+    static bool isProbablyAmigaMouse(const ByteBuffer& image, size_t size);
 
     // Returns true if a SaveKey code pattern is found.
-    static bool isProbablySaveKey(const uInt8* image, size_t size, Controller::Jack port);
+    static bool isProbablySaveKey(const ByteBuffer& image, size_t size,
+                                  Controller::Jack port);
 
     // Returns true if a Lightgun code pattern is found
-    static bool isProbablyLightGun(const uInt8* image, size_t size, Controller::Jack port);
+    static bool isProbablyLightGun(const ByteBuffer& image, size_t size,
+                                   Controller::Jack port);
 
 
   private:
@@ -127,4 +132,3 @@ class ControllerDetector
 };
 
 #endif
-

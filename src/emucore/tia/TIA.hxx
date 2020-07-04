@@ -356,23 +356,25 @@ class TIA : public Device
       disabling a graphical object also disables its collisions.
 
       @param mode  1/0 indicates on/off, and values greater than 1 mean
-                   flip the bit from its current state
+                   2 means flip the bit from its current state
+                   and values greater than 2 mean return current state
 
       @return  Whether the bit was enabled or disabled
     */
     bool toggleBit(TIABit b, uInt8 mode = 2);
-    bool toggleBits();
+    bool toggleBits(bool toggle = true);
 
     /**
       Enables/disable/toggle the specified (or all) TIA bit collision(s).
 
-      @param mode  1/0 indicates on/off, and values greater than 1 mean
-                   flip the collision from its current state
+      @param mode  1/0 indicates on/off,
+                   2 means flip the collision from its current state
+                   and values greater than 2 mean return current state
 
       @return  Whether the collision was enabled or disabled
     */
     bool toggleCollision(TIABit b, uInt8 mode = 2);
-    bool toggleCollisions();
+    bool toggleCollisions(bool toggle = true);
 
     /**
       Enables/disable/toggle/query 'fixed debug colors' mode.

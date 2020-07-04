@@ -24,18 +24,19 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeCTY::CartridgeCTY(const ByteBuffer& image, size_t size,
                            const string& md5, const Settings& settings)
-  : Cartridge(settings, md5)
+  : Cartridge(settings, md5),
+    myImage(make_unique<uInt8[]>(32_KB))
 {
   // Copy the ROM image into my buffer
-  std::copy_n(image.get(), std::min(myImage.size(), size), myImage.begin());
-  createRomAccessArrays(myImage.size());
+  std::copy_n(image.get(), std::min(32_KB, size), myImage.get());
+  createRomAccessArrays(32_KB);
 
   // Default to no tune data in case user is utilizing an old ROM
   myTuneData.fill(0);
 
   // Extract tune data if it exists
-  if(size > myImage.size())
-    std::copy_n(image.get() + myImage.size(), size - myImage.size(), myTuneData.begin());
+  if(size > 32_KB)
+    std::copy_n(image.get() + 32_KB, size - 32_KB, myTuneData.begin());
 
   // Point to the first tune
   myFrequencyImage = myTuneData.data();
@@ -229,7 +230,7 @@ bool CartridgeCTY::poke(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeCTY::bank(uInt16 bank)
+bool CartridgeCTY::bank(uInt16 bank, uInt16)
 {
   if(bankLocked()) return false;
 
@@ -279,10 +280,10 @@ bool CartridgeCTY::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgeCTY::getImage(size_t& size) const
+const ByteBuffer& CartridgeCTY::getImage(size_t& size) const
 {
-  size = myImage.size();
-  return myImage.data();
+  size = 32_KB;
+  return myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

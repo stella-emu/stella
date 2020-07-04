@@ -48,6 +48,9 @@ class Cartridge : public Device
   public:
     using StartBankFromPropsFunc = std::function<int()>;
 
+    // Maximum size of a ROM cart that Stella can support
+    static constexpr size_t maxSize() { return 512_KB; }
+
   public:
     /**
       Create a new cartridge
@@ -140,7 +143,6 @@ class Cartridge : public Device
     */
     uInt16 getIllegalRAMWriteAccess() const { return myRamWriteAccess; }
 
-
     /**
       Query the access counters
 
@@ -169,8 +171,13 @@ class Cartridge : public Device
       scheme defines banks in a standard format (ie, 0 for first bank,
       1 for second, etc).  Carts which will handle their own bankswitching
       completely or non-bankswitched carts can ignore this method.
+
+      @param bank     The bank that should be installed in the system
+      @param segment  The segment the bank should be using
+
+      @return  true, if bank has changed
     */
-    virtual bool bank(uInt16) { return false; }
+    virtual bool bank(uInt16 bank, uInt16 segment = 0) { return false; }
 
     /**
       Get the current bank for the provided address. Carts which have only
@@ -196,7 +203,6 @@ class Cartridge : public Device
       cart will report having only one 'virtual' bank.
     */
     virtual uInt16 romBankCount() const { return 1; }
-
 
     /**
       Query the number of RAM 'banks' supported by the cartridge.  Note that
@@ -226,9 +232,9 @@ class Cartridge : public Device
       Access the internal ROM image for this cartridge.
 
       @param size  Set to the size of the internal ROM image data
-      @return  A pointer to the internal ROM image data
+      @return  A reference to the internal ROM image data
     */
-    virtual const uInt8* getImage(size_t& size) const = 0;
+    virtual const ByteBuffer& getImage(size_t& size) const = 0;
 
     /**
       Get a descriptor for the cart name.

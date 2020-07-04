@@ -444,7 +444,7 @@ void Console::setFormat(uInt32 format, bool force)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::toggleColorLoss()
+void Console::toggleColorLoss(bool toggle)
 {
   bool colorloss = !myTIA->colorLossEnabled();
   if(myTIA->enableColorLoss(colorloss))
@@ -726,7 +726,7 @@ void Console::setControllers(const string& romMd5)
     Controller::Type leftType = Controller::getType(myProperties.get(PropType::Controller_Left));
     Controller::Type rightType = Controller::getType(myProperties.get(PropType::Controller_Right));
     size_t size = 0;
-    const uInt8* image = myCart->getImage(size);
+    const ByteBuffer& image = myCart->getImage(size);
     const bool swappedPorts = myProperties.get(PropType::Console_SwapPorts) == "YES";
 
     // Try to detect controllers
@@ -876,51 +876,56 @@ float Console::getFramerate() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::toggleTIABit(TIABit bit, const string& bitname, bool show) const
+void Console::toggleTIABit(TIABit bit, const string& bitname, bool show, bool toggle) const
 {
-  bool result = myTIA->toggleBit(bit);
-  string message = bitname + (result ? " enabled" : " disabled");
+  bool result = myTIA->toggleBit(bit, toggle ? 2 : 3);
+  const string message = bitname + (result ? " enabled" : " disabled");
+
   myOSystem.frameBuffer().showMessage(message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::toggleBits() const
+void Console::toggleBits(bool toggle) const
 {
-  bool enabled = myTIA->toggleBits();
-  string message = string("TIA bits") + (enabled ? " enabled" : " disabled");
+  bool enabled = myTIA->toggleBits(toggle);
+  const string message = string("TIA bits ") + (enabled ? "enabled" : "disabled");
+
   myOSystem.frameBuffer().showMessage(message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::toggleTIACollision(TIABit bit, const string& bitname, bool show) const
+void Console::toggleTIACollision(TIABit bit, const string& bitname, bool show, bool toggle) const
 {
-  bool result = myTIA->toggleCollision(bit);
-  string message = bitname + (result ? " collision enabled" : " collision disabled");
+  bool result = myTIA->toggleCollision(bit, toggle ? 2 : 3);
+  const string message = bitname + (result ? " collision enabled" : " collision disabled");
+
   myOSystem.frameBuffer().showMessage(message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::toggleCollisions() const
+void Console::toggleCollisions(bool toggle) const
 {
-  bool enabled = myTIA->toggleCollisions();
-  string message = string("TIA collisions") + (enabled ? " enabled" : " disabled");
+  bool enabled = myTIA->toggleCollisions(toggle);
+  const string message = string("TIA collisions ") + (enabled ? "enabled" : "disabled");
+
   myOSystem.frameBuffer().showMessage(message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::toggleFixedColors() const
+void Console::toggleFixedColors(bool toggle) const
 {
-  if(myTIA->toggleFixedColors())
-    myOSystem.frameBuffer().showMessage("Fixed debug colors enabled");
-  else
-    myOSystem.frameBuffer().showMessage("Fixed debug colors disabled");
+  bool enabled = toggle ? myTIA->toggleFixedColors() : myTIA->usingFixedColors();
+  const string message = string("Fixed debug colors ") + (enabled ? "enabled" : "disabled");
+
+  myOSystem.frameBuffer().showMessage(message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::toggleJitter() const
+void Console::toggleJitter(bool toggle) const
 {
-  bool enabled = myTIA->toggleJitter();
-  string message = string("TV scanline jitter") + (enabled ? " enabled" : " disabled");
+  bool enabled = myTIA->toggleJitter(toggle ? 2 : 3);
+  const string message = string("TV scanline jitter ") + (enabled ? "enabled" : "disabled");
+
   myOSystem.frameBuffer().showMessage(message);
 }
 

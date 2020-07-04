@@ -19,8 +19,9 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeF6::CartridgeF6(const ByteBuffer& image, size_t size,
-                         const string& md5, const Settings& settings)
-  : CartridgeEnhanced(image, size, md5, settings)
+                         const string& md5, const Settings& settings,
+                         size_t bsSize)
+  : CartridgeEnhanced(image, size, md5, settings, bsSize)
 {
 }
 
@@ -36,4 +37,3 @@ bool CartridgeF6::checkSwitchBank(uInt16 address, uInt8)
   }
   return false;
 }
-

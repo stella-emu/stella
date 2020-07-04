@@ -20,8 +20,8 @@
 
 #include "NTSCFilter.hxx"
 
-constexpr float scaleFrom100(float x) { return (x/50.F) - 1.F;     }
-constexpr uInt32 scaleTo100(float x)  { return uInt32(50*(x+1.F)); }
+constexpr float scaleFrom100(float x) { return (x / 50.F) - 1.F;     }
+constexpr uInt32 scaleTo100(float x)  { return uInt32(50.0001F * (x + 1.F)); }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string NTSCFilter::setPreset(Preset preset)
@@ -119,7 +119,7 @@ void NTSCFilter::changeCurrentAdjustable(int direction,
   //  return "'Custom' TV mode not selected";
 
   newValue = scaleTo100(*ourCustomAdjustables[myCurrentAdjustable].value);
-  newValue = BSPF::clamp(newValue + direction * 2, 0, 100);
+  newValue = BSPF::clamp(newValue + direction * 1, 0, 100);
 
   *ourCustomAdjustables[myCurrentAdjustable].value = scaleFrom100(newValue);
 

@@ -20,8 +20,10 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeMDM::CartridgeMDM(const ByteBuffer& image, size_t size,
-                           const string& md5, const Settings& settings)
-  : CartridgeEnhanced(image, size, md5, settings)
+                           const string& md5, const Settings& settings,
+                           size_t bsSize)
+  : CartridgeEnhanced(image, size, md5, settings,
+                      bsSize == 0 ? BSPF::nextPowerOfTwo(size) : bsSize)
 {
 }
 
@@ -88,7 +90,7 @@ bool CartridgeMDM::poke(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeMDM::bank(uInt16 bank)
+bool CartridgeMDM::bank(uInt16 bank, uInt16)
 {
   if(bankLocked() || myBankingDisabled) return false;
 

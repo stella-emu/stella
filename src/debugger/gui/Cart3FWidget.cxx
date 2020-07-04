@@ -33,7 +33,7 @@ string Cartridge3FWidget::description()
 {
   ostringstream info;
   size_t size;
-  const uInt8* image = myCart.getImage(size);
+  const ByteBuffer& image = myCart.getImage(size);
 
   info << "Tigervision 3F cartridge, 2 - 256 2K banks\n"
        << "First 2K bank selected by writing to " << hotspotStr() << "\n"

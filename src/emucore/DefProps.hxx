@@ -25,7 +25,7 @@
   regenerated and the application recompiled.
 */
 
-static constexpr uInt32 DEF_PROPS_SIZE = 3514;
+static constexpr uInt32 DEF_PROPS_SIZE = 3518;
 
 static const BSPF::array2D<const char*, DEF_PROPS_SIZE, 23> DefProps = {{
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -405,6 +405,7 @@ static const BSPF::array2D<const char*, DEF_PROPS_SIZE, 23> DefProps = {{
   { "1b1daaa9aa5cded3d633bfcbeb06479c", "", "", "Ship Demo (V 1502) (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "1b22a3d79ddd79335b69c94dd9b3e44e", "Tron", "", "Moon Patrol (Tron)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "1b4b06c2a14ed3ee73b7d0fd61b6aaf5", "Arcadia Corporation, Stephen H. Landrum", "AR-4400", "Excalibur (Dragonstomper Beta) (1982) (Arcadia) (Prototype) [a]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "1b5a8da0622bffcee4c5b42aed4e0ef0", "Akor", "", "TV Boy II (1992) (Akor)", "Includes 127 games", "", "", "", "", "", "", "", "", "JOYSTICK", "JOYSTICK", "", "", "", "", "", "", "", "" },
   { "1b8c3c0bfb815b2a1010bba95998b66e", "Telegames", "", "Frogs and Flies (1988) (Telegames) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "1b8d35d93697450ea26ebf7ff17bd4d1", "Quelle - Otto Versand", "176.764 9 - 781644", "Marineflieger (1983) (Quelle) (PAL)", "AKA Seahawk", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "1bb91bae919ddbd655fa25c54ea6f532", "Suntek", "SS-026", "Treasure Island (1983) (Suntek) (PAL)", "AKA Treasure Discovery", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -1426,6 +1427,7 @@ static const BSPF::array2D<const char*, DEF_PROPS_SIZE, 23> DefProps = {{
   { "65917ae29a8c9785bb1f2acb0d6aafd0", "", "", "Junkosoft One Year Demo (1999) (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "6596b3737ae4b976e4aadb68d836c5c7", "Digivision", "", "Defender (Digivision)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "659a20019de4a23c748ec2292ea5f221", "Retroactive", "", "Qb (V2.05) (NTSC) (2001) (Retroactive)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
+  { "65a6f1255fe22468a8bf84ff28a4d289", "Akor", "", "Super TV Boy (1995) (Akor)", "Includes 127 games", "", "", "", "", "", "", "", "", "JOYSTICK", "JOYSTICK", "", "", "", "", "", "", "", "" },
   { "65b106eba3e45f3dab72ea907f39f8b4", "Christian Software Development - HomeComputer Software, Dan Schafer, Glenn Stohel, Jon Tedesco - Sparrow", "GCG 1001T", "Music Machine, The (1983) (Sparrow)", "Uses the Paddle Controllers (left only)", "", "", "", "", "", "", "", "", "", "", "", "", "", "AUTO 45", "", "", "", "" },
   { "65ba1a4c643d1ab44481bdddeb403827", "Quelle", "876.013 4", "Katastrophen-Einsatz (1983) (Quelle) (PAL)", "AKA M.A.S.H.", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "65bd29e8ab1b847309775b0de6b2e4fe", "Coleco, Ed English", "2667", "Roc 'n Rope (1984) (Coleco)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -3146,6 +3148,7 @@ static const BSPF::array2D<const char*, DEF_PROPS_SIZE, 23> DefProps = {{
   { "e4c666ca0c36928b95b13d33474dbb44", "Arcadia Corporation, Steve Hales, Stephen H. Landrum", "4 AR-4102", "Suicide Mission (1982) (Arcadia)", "AKA Meteoroids", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
   { "e4d41f2d59a56a9d917038682b8e0b8c", "Cody Pittman", "", "Kiss Meets Pacman (Cody Pittman) (Hack)", "Hack of Pac-Man", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "e4e9125a8741977583776729359614e1", "SnailSoft", "", "Comitoid beta 4 (SnailSoft)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "e4fa739c81b003c92bea7da5e84c7feb", "Akor", "", "TV Boy (1992) (Akor) (NTSC) [bad dump]", "Includes 127 games", "", "", "", "", "", "", "", "", "JOYSTICK", "JOYSTICK", "", "", "", "", "", "", "", "" },
   { "e505bd8e59e31aaed20718d47b15c61b", "Funvision - Fund. Int'l Co.", "", "Space War (1982) (Funvision) (PAL)", "AKA Condor Attack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "e51030251e440cffaab1ac63438b44ae", "Parker Brothers - On-Time Software, Joe Gaucher, Louis Marbel", "PB5110", "James Bond 007 (1984) (Parker Bros)", "", "Rare", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
   { "e51c23389e43ab328ccfb05be7d451da", "Arcadia Corporation, Scott Nelson", "13", "Sweat! - The Decathlon Game (1983) (Arcadia) (Prototype)", "Uses the Paddle Controllers (left only)", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -3357,7 +3360,7 @@ static const BSPF::array2D<const char*, DEF_PROPS_SIZE, 23> DefProps = {{
   { "f39e4bc99845edd8621b0f3c7b8c4fd9", "AtariAge", "", "Toyshop Trouble (AtariAge)", "F8 Emulator Release", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "f3c431930e035a457fe370ed4d230659", "", "", "Crackpots (Unknown) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "f3cd0f886201d1376f3abab2df53b1b9", "Commavid, Ben Burch", "CM-010", "Rush Hour (1983) (Commavid) (Prototype)", "", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
-  { "f3dfae774f3bd005a026e29894db40d3", "Otto Versand", "649635", "See Saw (Double-Game Package) (1983) (Otto Versand) (PAL)", "AKA Circus Atari", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "f3dfae774f3bd005a026e29894db40d3", "Otto Versand", "649635", "See Saw (Double-Game Package) (1983) (Otto Versand) (PAL)", "AKA Circus Atari", "", "", "", "", "", "", "", "", "JOYSTICK", "JOYSTICK", "", "", "", "", "", "", "", "" },
   { "f3f5f72bfdd67f3d0e45d097e11b8091", "Sears Tele-Games, Marilyn Churchill, Matthew L. Hubbard", "CX2647 - 49-75142", "Submarine Commander (1982) (Sears)", "AKA Seawolf 3", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "f3f92aad3a335f0a1ead24a0214ff446", "", "", "Spectrum Color Demo (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "f40e437a9ebf0bdfe26204152f74f868", "Bit Corporation", "R320", "Jawbreaker (32 in 1) (BitCorp) (Hack)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -3420,6 +3423,7 @@ static const BSPF::array2D<const char*, DEF_PROPS_SIZE, 23> DefProps = {{
   { "f7af41a87533524d9a478575b0d873d0", "Quelle", "495.663 7", "Spiderman (1983) (Quelle) (PAL)", "AKA Spider-Man", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "f7d6592dcb773c81c278140ed4d01669", "Activision, David Crane, Dan Kitchen", "EAG-108-04, EAZ-108-04B", "Ghostbusters (1985) (Activision) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "f7e07080ed8396b68f2e5788a5c245e2", "Video Game Cartridge - Ariola", "TP-617", "Farmyard Fun (Ariola)", "AKA Play Farm", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "f7ec2f2bdbe8fbea048c0d5fa6503b0b", "Akor", "", "TV Boy (1992) (Akor) (PAL)", "Includes 127 games", "", "", "", "", "", "", "", "", "JOYSTICK", "JOYSTICK", "", "", "", "", "", "", "", "" },
   { "f7f50d9c9d28bcc9f7d3075668b7ac89", "Activision, David Crane - Ariola", "EAG-008, PAG-008, EAG-008-04I - 711 008-720", "Laser Blast (1981) (Activision) (PAL) (4K)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "f7fac15cf54b55c5597718b6742dbec2", "Spiceware", "SW-01", "Medieval Mayhem (NTSC)", "", "Homebrew", "STEREO", "", "", "", "", "", "", "", "", "", "", "", "AUTO 55", "", "", "", "" },
   { "f802fa61011dd9eb6f80b271bac479d0", "Suntek", "SS-023", "Mole Hunter (1983) (Suntek) (PAL)", "AKA Topy", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
