@@ -540,7 +540,7 @@ void StellaSettingsDialog::updateControllerStates()
     if(instance().hasConsole())
       label = (instance().console().leftController().name()) + " detected";
     else if(autoDetect)
-      label = ControllerDetector::detectName(image.get(), size, type,
+      label = ControllerDetector::detectName(image, size, type,
                                              Controller::Jack::Left,
                                              instance().settings()) + " detected";
   }
@@ -554,7 +554,7 @@ void StellaSettingsDialog::updateControllerStates()
     if(instance().hasConsole())
       label = (instance().console().rightController().name()) + " detected";
     else if(autoDetect)
-      label = ControllerDetector::detectName(image.get(), size, type,
+      label = ControllerDetector::detectName(image, size, type,
                                              Controller::Jack::Right,
                                              instance().settings()) + " detected";
   }

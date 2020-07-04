@@ -196,8 +196,7 @@ class M6532 : public Device
     // The divider
     uInt32 myDivider{1};
 
-    // Has the timer wrapped?
-    bool myTimerWrapped{false};
+    // Has the timer wrapped this very cycle?
     bool myWrappedThisCycle{false};
 
     // Cycle when the timer set. Debugging only.

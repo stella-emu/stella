@@ -59,7 +59,6 @@ void M6532::reset()
   myTimer = mySystem->randGenerator().next() & 0xff;
   myDivider = 1024;
   mySubTimer = 0;
-  myTimerWrapped = false;
   myWrappedThisCycle = false;
 
   mySetTimerCycle = myLastCycle = 0;
@@ -121,16 +120,16 @@ void M6532::updateEmulation()
   myWrappedThisCycle = false;
   mySubTimer = (cycles + mySubTimer) % myDivider;
 
-  if(!myTimerWrapped)
+  if ((myInterruptFlag & TimerBit) == 0)
   {
     uInt32 timerTicks = (cycles + subTimer) / myDivider;
 
     if(timerTicks > myTimer)
     {
       cycles -= ((myTimer + 1) * myDivider - subTimer);
+
       myWrappedThisCycle = cycles == 0;
       myTimer = 0xFF;
-      myTimerWrapped = true;
       myInterruptFlag |= TimerBit;
     }
     else
@@ -140,8 +139,10 @@ void M6532::updateEmulation()
     }
   }
 
-  if(myTimerWrapped)
+  if((myInterruptFlag & TimerBit) != 0) {
     myTimer = (myTimer - cycles) & 0xFF;
+    myWrappedThisCycle = myTimer == 0xFF;
+  }
 
   myLastCycle = mySystem->cycles();
 }
@@ -219,7 +220,7 @@ uInt8 M6532::peek(uInt16 addr)
     {
       // Timer Flag is always cleared when accessing INTIM
       if (!myWrappedThisCycle) myInterruptFlag &= ~TimerBit;
-      myTimerWrapped = false;
+
       return myTimer;
     }
 
@@ -312,10 +313,9 @@ void M6532::setTimerRegister(uInt8 value, uInt8 interval)
 
   myTimer = value;
   mySubTimer = myDivider - 1;
-  myTimerWrapped = false;
 
   // Interrupt timer flag is cleared (and invalid) when writing to the timer
-  myInterruptFlag &= ~TimerBit;
+  if (!myWrappedThisCycle) myInterruptFlag &= ~TimerBit;
 
   mySetTimerCycle = mySystem->cycles();
 }
@@ -364,7 +364,6 @@ bool M6532::save(Serializer& out) const
     out.putInt(myTimer);
     out.putInt(mySubTimer);
     out.putInt(myDivider);
-    out.putBool(myTimerWrapped);
     out.putBool(myWrappedThisCycle);
     out.putLong(myLastCycle);
     out.putLong(mySetTimerCycle);
@@ -397,7 +396,6 @@ bool M6532::load(Serializer& in)
     myTimer = in.getInt();
     mySubTimer = in.getInt();
     myDivider = in.getInt();
-    myTimerWrapped = in.getBool();
     myWrappedThisCycle = in.getBool();
     myLastCycle = in.getLong();
     mySetTimerCycle = in.getLong();
@@ -446,7 +444,7 @@ Int32 M6532::intimClocks()
   // INTIM value, it will give the current number of clocks between one
   // INTIM value and the next
 
-  return myTimerWrapped ? 1 : (myDivider - mySubTimer);
+  return ((myInterruptFlag & TimerBit) != 0) ? 1 : (myDivider - mySubTimer);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

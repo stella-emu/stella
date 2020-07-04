@@ -407,6 +407,12 @@
 		DC8078DB0B4BD5F3005E9305 /* DebuggerExpressions.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8078DA0B4BD5F3005E9305 /* DebuggerExpressions.hxx */; };
 		DC8078EA0B4BD697005E9305 /* UIDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC8078E60B4BD697005E9305 /* UIDialog.cxx */; };
 		DC8078EB0B4BD697005E9305 /* UIDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8078E70B4BD697005E9305 /* UIDialog.hxx */; };
+		DC84397B247B294E00C6A4FC /* CartTVBoy.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC843979247B294D00C6A4FC /* CartTVBoy.hxx */; };
+		DC84397C247B294E00C6A4FC /* CartTVBoy.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC84397A247B294D00C6A4FC /* CartTVBoy.cxx */; };
+		DC84397F247B297A00C6A4FC /* CartTVBoyWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC84397D247B297A00C6A4FC /* CartTVBoyWidget.hxx */; };
+		DC843980247B297A00C6A4FC /* CartTVBoyWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC84397E247B297A00C6A4FC /* CartTVBoyWidget.cxx */; };
+		DC857D352482F66200C7C14F /* CartCreator.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC857D332482F66200C7C14F /* CartCreator.cxx */; };
+		DC857D362482F66200C7C14F /* CartCreator.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC857D342482F66200C7C14F /* CartCreator.hxx */; };
 		DC8C1BAD14B25DE7006440EE /* CartCM.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC8C1BA714B25DE7006440EE /* CartCM.cxx */; };
 		DC8C1BAE14B25DE7006440EE /* CartCM.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8C1BA814B25DE7006440EE /* CartCM.hxx */; };
 		DC8C1BAF14B25DE7006440EE /* CompuMate.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC8C1BA914B25DE7006440EE /* CompuMate.cxx */; };
@@ -700,6 +706,8 @@
 			isa = PBXBuildRule;
 			compilerSpec = com.apple.compilers.llvm.clang.1_0;
 			fileType = sourcecode.c;
+			inputFiles = (
+			);
 			isEditable = 1;
 			outputFiles = (
 			);
@@ -709,6 +717,8 @@
 			isa = PBXBuildRule;
 			compilerSpec = com.apple.compilers.llvm.clang.1_0;
 			fileType = sourcecode.asm;
+			inputFiles = (
+			);
 			isEditable = 1;
 			outputFiles = (
 			);
@@ -718,6 +728,8 @@
 			isa = PBXBuildRule;
 			compilerSpec = com.apple.compilers.llvm.clang.1_0;
 			fileType = sourcecode.cpp;
+			inputFiles = (
+			);
 			isEditable = 1;
 			outputFiles = (
 			);
@@ -1146,6 +1158,12 @@
 		DC8078DA0B4BD5F3005E9305 /* DebuggerExpressions.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = DebuggerExpressions.hxx; sourceTree = "<group>"; };
 		DC8078E60B4BD697005E9305 /* UIDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = UIDialog.cxx; sourceTree = "<group>"; };
 		DC8078E70B4BD697005E9305 /* UIDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = UIDialog.hxx; sourceTree = "<group>"; };
+		DC843979247B294D00C6A4FC /* CartTVBoy.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartTVBoy.hxx; sourceTree = "<group>"; };
+		DC84397A247B294D00C6A4FC /* CartTVBoy.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartTVBoy.cxx; sourceTree = "<group>"; };
+		DC84397D247B297A00C6A4FC /* CartTVBoyWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartTVBoyWidget.hxx; sourceTree = "<group>"; };
+		DC84397E247B297A00C6A4FC /* CartTVBoyWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartTVBoyWidget.cxx; sourceTree = "<group>"; };
+		DC857D332482F66200C7C14F /* CartCreator.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartCreator.cxx; sourceTree = "<group>"; };
+		DC857D342482F66200C7C14F /* CartCreator.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartCreator.hxx; sourceTree = "<group>"; };
 		DC8C1BA714B25DE7006440EE /* CartCM.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartCM.cxx; sourceTree = "<group>"; };
 		DC8C1BA814B25DE7006440EE /* CartCM.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartCM.hxx; sourceTree = "<group>"; };
 		DC8C1BA914B25DE7006440EE /* CompuMate.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CompuMate.cxx; sourceTree = "<group>"; };
@@ -1643,6 +1661,8 @@
 				DC2AADB3194F390F0026C7A4 /* CartRamWidget.hxx */,
 				DC676A3D1729A0B000E4E73D /* CartSBWidget.cxx */,
 				DC676A3E1729A0B000E4E73D /* CartSBWidget.hxx */,
+				DC84397E247B297A00C6A4FC /* CartTVBoyWidget.cxx */,
+				DC84397D247B297A00C6A4FC /* CartTVBoyWidget.hxx */,
 				DCAAE5D11715887B0080BB82 /* CartUAWidget.cxx */,
 				DCAAE5D21715887B0080BB82 /* CartUAWidget.hxx */,
 				DC6D39851A3CE65000171E71 /* CartWDWidget.cxx */,
@@ -1848,6 +1868,8 @@
 				CFE3F6121E84A9CE00A8204E /* CartCDF.hxx */,
 				DC8C1BA714B25DE7006440EE /* CartCM.cxx */,
 				DC8C1BA814B25DE7006440EE /* CartCM.hxx */,
+				DC857D332482F66200C7C14F /* CartCreator.cxx */,
+				DC857D342482F66200C7C14F /* CartCreator.hxx */,
 				DC6727081556F4860023653B /* CartCTY.cxx */,
 				DC6727091556F4860023653B /* CartCTY.hxx */,
 				2DE2DF1C0627AE07006BEC99 /* CartCV.cxx */,
@@ -1902,6 +1924,8 @@
 				DC71EA9C1FDA06D2008827CB /* CartMNetwork.hxx */,
 				DC0984830D3985160073C852 /* CartSB.cxx */,
 				DC0984840D3985160073C852 /* CartSB.hxx */,
+				DC84397A247B294D00C6A4FC /* CartTVBoy.cxx */,
+				DC843979247B294D00C6A4FC /* CartTVBoy.hxx */,
 				2DDBEB7008457B7D00812C11 /* CartUA.cxx */,
 				2DDBEB7108457B7D00812C11 /* CartUA.hxx */,
 				DCDA03AE1A2009BA00711920 /* CartWD.cxx */,
@@ -2362,6 +2386,7 @@
 				2D9173CF09BA90380026E9FF /* Cart3F.hxx in Headers */,
 				DC3EE86D1E2C0E6D00905161 /* zlib.h in Headers */,
 				E08FCD5523A037EB0051F59B /* Blitter.hxx in Headers */,
+				DC84397F247B297A00C6A4FC /* CartTVBoyWidget.hxx in Headers */,
 				E034A5EF209FB25D00C89E9E /* EmulationTiming.hxx in Headers */,
 				DC3EE86A1E2C0E6D00905161 /* trees.h in Headers */,
 				2D9173D009BA90380026E9FF /* Cart4K.hxx in Headers */,
@@ -2563,6 +2588,7 @@
 				DC9EA8880F729A36000452B5 /* KidVid.hxx in Headers */,
 				DCF7F128223D796000701A47 /* ConsoleIO.hxx in Headers */,
 				DCF467B80F93993B00B25D7A /* SoundNull.hxx in Headers */,
+				DC857D362482F66200C7C14F /* CartCreator.hxx in Headers */,
 				DCBDDE9F1D6A5F2F009DF1E9 /* Cart3EPlus.hxx in Headers */,
 				DCF467BD0F9399F500B25D7A /* Version.hxx in Headers */,
 				DC2B85E81EF5EF2300379EB9 /* AtariNTSC.hxx in Headers */,
@@ -2696,6 +2722,7 @@
 				DCAACAFB188D631500A4D282 /* CartBFSC.hxx in Headers */,
 				DCAACAFD188D631500A4D282 /* CartDF.hxx in Headers */,
 				DCAACAFF188D631500A4D282 /* CartDFSC.hxx in Headers */,
+				DC84397B247B294E00C6A4FC /* CartTVBoy.hxx in Headers */,
 				DCAACB0F188D636F00A4D282 /* Cart4KSCWidget.hxx in Headers */,
 				DCAACB11188D636F00A4D282 /* CartBFSCWidget.hxx in Headers */,
 				DCA82C741FEB4E780059340F /* TimeMachineDialog.hxx in Headers */,
@@ -2833,6 +2860,7 @@
 				2D91747D09BA90380026E9FF /* CartE0.cxx in Sources */,
 				DCF8621921C9D43300F95F52 /* StaggeredLogger.cxx in Sources */,
 				E0DCD3AA20A64E96000B614E /* ConvolutionBuffer.cxx in Sources */,
+				DC843980247B297A00C6A4FC /* CartTVBoyWidget.cxx in Sources */,
 				2D91747E09BA90380026E9FF /* CartE7.cxx in Sources */,
 				DC9616321F817830008A2206 /* PointingDeviceWidget.cxx in Sources */,
 				2D91747F09BA90380026E9FF /* CartF4.cxx in Sources */,
@@ -2893,6 +2921,7 @@
 				2D9174BD09BA90380026E9FF /* Widget.cxx in Sources */,
 				2D9174BE09BA90380026E9FF /* CartUA.cxx in Sources */,
 				DC3EE86E1E2C0E6D00905161 /* zutil.c in Sources */,
+				DC857D352482F66200C7C14F /* CartCreator.cxx in Sources */,
 				CFE3F60B1E84A9A200A8204E /* CartBUSWidget.cxx in Sources */,
 				DCEC58581E945125002F0246 /* DelayQueueWidget.cxx in Sources */,
 				2D9174BF09BA90380026E9FF /* FSNode.cxx in Sources */,
@@ -3068,6 +3097,7 @@
 				DCDA03B01A2009BB00711920 /* CartWD.cxx in Sources */,
 				DCC6A4B220A2622500863C59 /* SimpleResampler.cxx in Sources */,
 				DC21E5BF21CA903E007D0E1A /* OSystemMACOS.cxx in Sources */,
+				DC84397C247B294E00C6A4FC /* CartTVBoy.cxx in Sources */,
 				DCAAE5D91715887B0080BB82 /* Cart0840Widget.cxx in Sources */,
 				DCAAE5DB1715887B0080BB82 /* CartCVWidget.cxx in Sources */,
 				DCA233B423BAB1300032ABF3 /* Lightgun.cxx in Sources */,

@@ -21,8 +21,10 @@
 
 //  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge3EPlus::Cartridge3EPlus(const ByteBuffer& image, size_t size,
-                                 const string& md5, const Settings& settings)
-  : Cartridge3E(image, size, md5, settings)
+                                 const string& md5, const Settings& settings,
+                                 size_t bsSize)
+  : Cartridge3E(image, size, md5, settings,
+                bsSize == 0 ? BSPF::nextMultipleOf(size, 1_KB) : bsSize)
 {
   myBankShift = BANK_SHIFT;
   myRamSize = RAM_SIZE;
@@ -34,7 +36,7 @@ void Cartridge3EPlus::reset()
 {
   CartridgeEnhanced::reset();
 
-  // 1st segment in mapped to start bank in CartridgeEnhanced
+  bank(mySystem->randGenerator().next() % romBankCount(), 0);
   bank(mySystem->randGenerator().next() % romBankCount(), 1);
   bank(mySystem->randGenerator().next() % romBankCount(), 2);
   bank(startBank(), 3);

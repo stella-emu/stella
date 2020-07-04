@@ -414,85 +414,81 @@ uInt8 TIA::peek(uInt16 address)
 {
   updateEmulation();
 
-  // If pins are undriven, we start with the last databus value
-  // Otherwise, there is some randomness injected into the mix
-  // In either case, we start out with D7 and D6 disabled (the only
-  // valid bits in a TIA read), and selectively enable them
-  uInt8 lastDataBusValue =
-    !myTIAPinsDriven ? mySystem->getDataBusState() : mySystem->getDataBusState(0xFF);
-
-  uInt8 result;
+  // Start with all bits disabled
+  // In some cases both D7 and D6 are used; in other cases only D7 is used
+  uInt8 result = 0b0000000;
 
   switch (address & 0x0F) {
     case CXM0P:
-      result = collCXM0P();
+      result = collCXM0P() & 0b11000000;
       break;
 
     case CXM1P:
-      result = collCXM1P();
+      result = collCXM1P() & 0b11000000;
       break;
 
     case CXP0FB:
-      result = collCXP0FB();
+      result = collCXP0FB() & 0b11000000;
       break;
 
     case CXP1FB:
-      result = collCXP1FB();
+      result = collCXP1FB() & 0b11000000;
       break;
 
     case CXM0FB:
-      result = collCXM0FB();
+      result = collCXM0FB() & 0b11000000;
       break;
 
     case CXM1FB:
-      result = collCXM1FB();
+      result = collCXM1FB() & 0b11000000;
       break;
 
     case CXPPMM:
-      result = collCXPPMM();
+      result = collCXPPMM() & 0b11000000;
       break;
 
     case CXBLPF:
-      result = collCXBLPF();
+      result = collCXBLPF() & 0b10000000;
       break;
 
     case INPT0:
       updatePaddle(0);
-      result = myPaddleReaders[0].inpt(myTimestamp) | (lastDataBusValue & 0x40);
+      result = myPaddleReaders[0].inpt(myTimestamp) & 0b10000000;
       break;
 
     case INPT1:
       updatePaddle(1);
-      result = myPaddleReaders[1].inpt(myTimestamp) | (lastDataBusValue & 0x40);
+      result = myPaddleReaders[1].inpt(myTimestamp) & 0b10000000;
       break;
 
     case INPT2:
       updatePaddle(2);
-      result = myPaddleReaders[2].inpt(myTimestamp) | (lastDataBusValue & 0x40);
+      result = myPaddleReaders[2].inpt(myTimestamp) & 0b10000000;
       break;
 
     case INPT3:
       updatePaddle(3);
-      result = myPaddleReaders[3].inpt(myTimestamp) | (lastDataBusValue & 0x40);
+      result = myPaddleReaders[3].inpt(myTimestamp) & 0b10000000;
       break;
 
     case INPT4:
-      result =
-        myInput0.inpt(!myConsole.leftController().read(Controller::DigitalPin::Six)) |
-        (lastDataBusValue & 0x40);
+      result = myInput0.inpt(!myConsole.leftController().read(Controller::DigitalPin::Six))
+          & 0b10000000;
       break;
 
     case INPT5:
-      result =
-        myInput1.inpt(!myConsole.rightController().read(Controller::DigitalPin::Six)) |
-        (lastDataBusValue & 0x40);
+      result = myInput1.inpt(!myConsole.rightController().read(Controller::DigitalPin::Six))
+          & 0b10000000;
       break;
 
     default:
-      result = 0;
+      break;
   }
 
-  return (result & 0xC0) | (lastDataBusValue & 0x3F);
+  // Bits D5 .. D0 are floating
+  // The options are either to use the last databus value, or use random data
+  return result | ((!myTIAPinsDriven ? mySystem->getDataBusState() :
+    mySystem->randGenerator().next()) & 0b00111111);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1033,8 +1029,12 @@ bool TIA::toggleBit(TIABit b, uInt8 mode)
       mask = b;
       break;
 
-    default:
+    case 2:
       mask = (~mySpriteEnabledBits & b);
+      break;
+
+    default:
+      mask = (mySpriteEnabledBits & b);
       break;
   }
 
@@ -1051,9 +1051,11 @@ bool TIA::toggleBit(TIABit b, uInt8 mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool TIA::toggleBits()
+bool TIA::toggleBits(bool toggle)
 {
-  toggleBit(TIABit(0xFF), mySpriteEnabledBits > 0 ? 0 : 1);
+  toggleBit(TIABit(0xFF), toggle
+                          ? mySpriteEnabledBits > 0 ? 0 : 1
+                          : mySpriteEnabledBits);
 
   return mySpriteEnabledBits;
 }
@@ -1072,8 +1074,12 @@ bool TIA::toggleCollision(TIABit b, uInt8 mode)
       mask = b;
       break;
 
-    default:
+    case 2:
       mask = (~myCollisionsEnabledBits & b);
+      break;
+
+    default:
+      mask = (myCollisionsEnabledBits & b);
       break;
   }
 
@@ -1090,9 +1096,11 @@ bool TIA::toggleCollision(TIABit b, uInt8 mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool TIA::toggleCollisions()
+bool TIA::toggleCollisions(bool toggle)
 {
-  toggleCollision(TIABit(0xFF), myCollisionsEnabledBits > 0 ? 0 : 1);
+  toggleCollision(TIABit(0xFF), toggle
+                                ? myCollisionsEnabledBits > 0 ? 0 : 1
+                                : myCollisionsEnabledBits);
 
   return myCollisionsEnabledBits;
 }
@@ -1209,6 +1217,9 @@ bool TIA::toggleJitter(uInt8 mode)
 
     case 2:
       myEnableJitter = !myEnableJitter;
+      break;
+
+    case 3:
       break;
 
     default:

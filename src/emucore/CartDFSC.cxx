@@ -20,8 +20,9 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeDFSC::CartridgeDFSC(const ByteBuffer& image, size_t size,
-                             const string& md5, const Settings& settings)
-  : CartridgeDF(image, size, md5, settings)
+                             const string& md5, const Settings& settings,
+                             size_t bsSize)
+  : CartridgeDF(image, size, md5, settings, bsSize)
 {
   myRamSize = RAM_SIZE;
 }

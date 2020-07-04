@@ -559,7 +559,7 @@ bool retro_load_game(const struct retro_game_info *info)
     { 0, 0, 0, 0, NULL },
   };
 
-  if(!info || info->size >= stella.getROMMax()) return false;
+  if(!info || info->size > stella.getROMMax()) return false;
 
   environ_cb(RETRO_ENVIRONMENT_SET_INPUT_DESCRIPTORS, desc);
 

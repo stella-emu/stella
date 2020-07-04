@@ -81,6 +81,13 @@ class FrameBuffer
       }
     };
 
+    struct DisplayMode
+    {
+      uInt32 display;
+      Common::Size size;
+      uInt32 refresh_rate;
+    };
+
     enum class BufferType {
       None,
       Launcher,
@@ -159,12 +166,12 @@ class FrameBuffer
     void showMessage(const string& message, const string& valueText,
                      float value, float minValue = 0.F, float maxValue = 100.F);
 
-    bool messageShown();
+    bool messageShown() const;
 
     /**
       Toggles showing or hiding framerate statistics.
     */
-    void toggleFrameStats();
+    void toggleFrameStats(bool toggle = true);
 
     /**
       Shows a message containing frame statistics for the current frame.
@@ -261,6 +268,13 @@ class FrameBuffer
       Toggles between fullscreen and window mode.
     */
     void toggleFullscreen(bool toggle = true);
+
+  #ifdef ADAPTABLE_REFRESH_SUPPORT
+    /**
+      Toggles between adapt fullscreen refresh rate on and off.
+    */
+    void toggleAdaptRefresh(bool toggle = true);
+  #endif
 
     /**
       Changes the fullscreen overscan.
@@ -439,6 +453,7 @@ class FrameBuffer
     virtual int scaleY(int y) const { return y; }
 
   protected:
+
     /**
       This method is called to query and initialize the video hardware
       for desktop and fullscreen resolution information.  Since several
@@ -509,6 +524,11 @@ class FrameBuffer
       This method is called to provide information about the FrameBuffer.
     */
     virtual string about() const = 0;
+
+    /**
+      Retrieve the current display's refresh rate
+    */
+    virtual int refreshRate() const { return 0; }
 
   protected:
     // The parent system for the framebuffer
@@ -694,7 +714,8 @@ class FrameBuffer
 
     FullPaletteArray myFullPalette;
     // Holds UI palette data (for each variation)
-    static UIPaletteArray ourStandardUIPalette, ourClassicUIPalette, ourLightUIPalette;
+    static UIPaletteArray ourStandardUIPalette, ourClassicUIPalette, 
+      ourLightUIPalette, ourDarkUIPalette;
 
   private:
     // Following constructors and assignment operators not supported

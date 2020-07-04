@@ -345,9 +345,11 @@ class OSystem
       Reloads the current console (essentially deletes and re-creates it).
       This can be thought of as a real console off/on toggle.
 
+      @param nextrom  If true select next multicart ROM, else previous one
+
       @return  True on successful creation, otherwise false
     */
-    bool reloadConsole();
+    bool reloadConsole(bool nextrom = true);
 
     /**
       Creates a new ROM launcher, to select a new ROM to emulate.

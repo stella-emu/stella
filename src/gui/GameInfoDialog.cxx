@@ -383,7 +383,7 @@ GameInfoDialog::GameInfoDialog(
 
   // Add Defaults, OK and Cancel buttons
   wid.clear();
-  addDefaultsOKCancelBGroup(wid, font);
+  addDefaultsExtraOKCancelBGroup(wid, font, "Save", kSavePressed);
   addBGroupToFocusList(wid);
 }
 
@@ -393,11 +393,13 @@ void GameInfoDialog::loadConfig()
   if(instance().hasConsole())
   {
     myGameProperties = instance().console().properties();
+    myGameFile = instance().romFile();
   }
   else
   {
     const string& md5 = instance().launcher().selectedRomMD5();
     instance().propSet().getMD5(md5, myGameProperties);
+    myGameFile = FilesystemNode(instance().launcher().selectedRom());
   }
 
   loadEmulationProperties(myGameProperties);
@@ -568,7 +570,7 @@ void GameInfoDialog::loadCartridgeProperties(const Properties& props)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void GameInfoDialog::saveConfig()
+void GameInfoDialog::saveProperties()
 {
   // Emulation properties
   myGameProperties.set(PropType::Cart_Type, myBSType->getSelectedTag().toString());
@@ -613,6 +615,12 @@ void GameInfoDialog::saveConfig()
   myGameProperties.set(PropType::Cart_ModelNo, myModelNo->getText());
   myGameProperties.set(PropType::Cart_Rarity, myRarity->getText());
   myGameProperties.set(PropType::Cart_Note, myNote->getText());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void GameInfoDialog::saveConfig()
+{
+  saveProperties();
 
   // Always insert; if the properties are already present, nothing will happen
   instance().propSet().insert(myGameProperties);
@@ -626,7 +634,7 @@ void GameInfoDialog::saveConfig()
     // update 'Emulation' tab settings immediately
     instance().console().setFormat(myFormat->getSelected());
     instance().frameBuffer().tiaSurface().enablePhosphor(myPhosphor->getState(), myPPBlend->getValue());
-    instance().console().updateVcenter(vcenter);
+    instance().console().updateVcenter(myVCenter->getValue());
     instance().console().initializeAudio();
 
     // update 'Console' tab settings immediately
@@ -699,7 +707,7 @@ void GameInfoDialog::updateControllerStates()
       label = (!swapPorts ? instance().console().leftController().name()
                : instance().console().rightController().name()) + " detected";
     else if(autoDetect)
-      label = ControllerDetector::detectName(image.get(), size, type,
+      label = ControllerDetector::detectName(image, size, type,
                                              !swapPorts ? Controller::Jack::Left : Controller::Jack::Right,
                                              instance().settings()) + " detected";
   }
@@ -714,7 +722,7 @@ void GameInfoDialog::updateControllerStates()
       label = (!swapPorts ? instance().console().rightController().name()
                : instance().console().leftController().name()) + " detected";
     else if(autoDetect)
-      label = ControllerDetector::detectName(image.get(), size, type,
+      label = ControllerDetector::detectName(image, size, type,
                                              !swapPorts ? Controller::Jack::Right : Controller::Jack::Left,
                                              instance().settings()) + " detected";
   }
@@ -782,17 +790,36 @@ void GameInfoDialog::eraseEEPROM()
   Controller& lport = instance().console().leftController();
   Controller& rport = instance().console().rightController();
 
-  if(lport.type() == Controller::Type::SaveKey || lport.type() == Controller::Type::AtariVox)
+  if(lport.type() == Controller::Type::SaveKey ||
+     lport.type() == Controller::Type::AtariVox)
   {
     SaveKey& skey = static_cast<SaveKey&>(lport);
     skey.eraseCurrent();
   }
 
-  if(rport.type() == Controller::Type::SaveKey || rport.type() == Controller::Type::AtariVox)
+  if(rport.type() == Controller::Type::SaveKey ||
+     rport.type() == Controller::Type::AtariVox)
   {
     SaveKey& skey = static_cast<SaveKey&>(rport);
     skey.eraseCurrent();
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void GameInfoDialog::saveCurrentPropertiesToDisk()
+{
+  saveProperties();
+
+  FilesystemNode propfile(instance().defaultSaveDir() + myGameFile.getNameWithExt(".pro"));
+  ofstream out(propfile.getPath());
+  if(out)
+  {
+    out << myGameProperties;
+    instance().frameBuffer().showMessage("Properties saved to " +
+                                         propfile.getShortPath());
+  }
+  else
+    instance().frameBuffer().showMessage("Error saving properties");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -808,6 +835,10 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
 
     case GuiObject::kDefaultsCmd:
       setDefaults();
+      break;
+
+    case kSavePressed:
+      saveCurrentPropertiesToDisk();
       break;
 
     case TabWidget::kTabChangedCmd:

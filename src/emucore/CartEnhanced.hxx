@@ -43,9 +43,11 @@ class CartridgeEnhanced : public Cartridge
       @param size      The size of the ROM image
       @param md5       The md5sum of the ROM image
       @param settings  A reference to the various settings (read-only)
+      @param bsSize    The size specified by the bankswitching scheme
     */
-    CartridgeEnhanced(const ByteBuffer& image, size_t size, const string& md5,
-                      const Settings& settings);
+    CartridgeEnhanced(const ByteBuffer& image, size_t size,
+                      const string& md5, const Settings& settings,
+                      size_t bsSize);
     virtual ~CartridgeEnhanced() = default;
 
   public:
@@ -70,16 +72,7 @@ class CartridgeEnhanced : public Cartridge
 
       @return  true, if bank has changed
     */
-    virtual bool bank(uInt16 bank, uInt16 segment);
-
-    /**
-      Install pages for the specified bank in the system.
-
-      @param bank  The bank that should be installed in the system
-
-      @return  true, if bank has changed
-    */
-    bool bank(uInt16 bank) override { return this->bank(bank, 0); }
+    bool bank(uInt16 bank, uInt16 segment = 0) override;
 
     /**
       Get the current bank.
@@ -127,9 +120,9 @@ class CartridgeEnhanced : public Cartridge
       Access the internal ROM image for this cartridge.
 
       @param size  Set to the size of the internal ROM image data
-      @return  A pointer to the internal ROM image data
+      @return  A reference to the internal ROM image data
     */
-    const uInt8* getImage(size_t& size) const override;
+    const ByteBuffer& getImage(size_t& size) const override;
 
     /**
       Save the current state of this cart to the given Serializer.
@@ -263,6 +256,7 @@ class CartridgeEnhanced : public Cartridge
 
       @param address  The address to check
       @param value    The optional value used to determine the bank switched to
+
       @return  True if a bank switch happened.
     */
     virtual bool checkSwitchBank(uInt16 address, uInt8 value = 0) = 0;
@@ -274,6 +268,22 @@ class CartridgeEnhanced : public Cartridge
       @return  The bank the ROM will start in
     */
     virtual uInt16 getStartBank() const { return 0; }
+
+    /**
+      Get the ROM offset of the segment of the given address
+
+      @param address  The address to get the offset for
+      @return  The calculated offset
+    */
+    uInt16 romAddressSegmentOffset(uInt16 address) const;
+
+    /**
+      Get the RAM offset of the segment of the given address
+
+      @param address  The address to get the offset for
+      @return  The calculated offset
+    */
+    uInt16 ramAddressSegmentOffset(uInt16 address) const;
 
   private:
     // Following constructors and assignment operators not supported

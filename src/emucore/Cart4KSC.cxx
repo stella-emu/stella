@@ -20,8 +20,9 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge4KSC::Cartridge4KSC(const ByteBuffer& image, size_t size,
-                             const string& md5, const Settings& settings)
-  : Cartridge4K(image, size, md5, settings)
+                             const string& md5, const Settings& settings,
+                             size_t bsSize)
+  : Cartridge4K(image, size, md5, settings, bsSize)
 {
   myRamSize = RAM_SIZE;
 }

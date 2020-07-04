@@ -39,6 +39,7 @@ SOURCES_CXX := \
 	$(CORE_DIR)/emucore/Bankswitch.cxx \
 	$(CORE_DIR)/emucore/Booster.cxx \
 	$(CORE_DIR)/emucore/Cart.cxx \
+	$(CORE_DIR)/emucore/CartCreator.cxx \
 	$(CORE_DIR)/emucore/CartDetector.cxx \
 	$(CORE_DIR)/emucore/CartEnhanced.cxx \
 	$(CORE_DIR)/emucore/Cart0840.cxx \
@@ -81,6 +82,7 @@ SOURCES_CXX := \
 	$(CORE_DIR)/emucore/CartMDM.cxx \
 	$(CORE_DIR)/emucore/CartMNetwork.cxx \
 	$(CORE_DIR)/emucore/CartSB.cxx \
+	$(CORE_DIR)/emucore/CartTVBoy.cxx \
 	$(CORE_DIR)/emucore/CartUA.cxx \
 	$(CORE_DIR)/emucore/CartWD.cxx \
 	$(CORE_DIR)/emucore/CartX07.cxx \

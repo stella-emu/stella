@@ -112,6 +112,8 @@ string DebuggerParser::run(const string& command)
       if(validateArgs(i))
       {
         myCommand = i;
+        if(commands[i].refreshRequired)
+          debugger.baseDialog()->saveConfig();
         commands[i].executor(this);
       }
 
@@ -1733,6 +1735,8 @@ void DebuggerParser::executeRunTo()
   const CartDebug& cartdbg = debugger.cartDebug();
   const CartDebug::DisassemblyList& list = cartdbg.disassembly().list;
 
+  debugger.saveOldState();
+
   uInt32 count = 0, max_iterations = uInt32(list.size());
 
   // Create a progress dialog box to show the progress searching through the
@@ -1775,6 +1779,8 @@ void DebuggerParser::executeRunToPc()
 {
   const CartDebug& cartdbg = debugger.cartDebug();
   const CartDebug::DisassemblyList& list = cartdbg.disassembly().list;
+
+  debugger.saveOldState();
 
   uInt32 count = 0;
   bool done = false;

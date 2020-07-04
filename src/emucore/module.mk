@@ -5,6 +5,7 @@ MODULE_OBJS := \
 	src/emucore/Bankswitch.o \
 	src/emucore/Booster.o \
 	src/emucore/Cart.o \
+	src/emucore/CartCreator.o \
 	src/emucore/CartDetector.o \
 	src/emucore/CartEnhanced.o \
 	src/emucore/Cart0840.o \
@@ -47,6 +48,7 @@ MODULE_OBJS := \
 	src/emucore/CartFE.o \
 	src/emucore/CartMDM.o \
 	src/emucore/CartSB.o \
+	src/emucore/CartTVBoy.o \
 	src/emucore/CartUA.o \
 	src/emucore/CartWD.o \
 	src/emucore/CartX07.o \

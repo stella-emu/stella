@@ -59,17 +59,19 @@ namespace {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeCDF::CartridgeCDF(const ByteBuffer& image, size_t size,
                            const string& md5, const Settings& settings)
-  : Cartridge(settings, md5)
+  : Cartridge(settings, md5),
+    myImage(make_unique<uInt8[]>(32_KB))
 {
   // Copy the ROM image into my buffer
-  std::copy_n(image.get(), std::min(myImage.size(), size), myImage.begin());
+  std::fill_n(myImage.get(), 32_KB, 0);
+  std::copy_n(image.get(), std::min(32_KB, size), myImage.get());
 
   // even though the ROM is 32K, only 28K is accessible to the 6507
   createRomAccessArrays(28_KB);
 
   // Pointer to the program ROM (28K @ 0 byte offset)
   // which starts after the 2K CDF Driver and 2K C Code
-  myProgramImage = myImage.data() + 4_KB;
+  myProgramImage = myImage.get() + 4_KB;
 
   // Pointer to CDF driver in RAM
   myDriverImage = myRAM.data();
@@ -82,9 +84,9 @@ CartridgeCDF::CartridgeCDF(const ByteBuffer& image, size_t size,
   // Create Thumbulator ARM emulator
   bool devSettings = settings.getBool("dev.settings");
   myThumbEmulator = make_unique<Thumbulator>(
-    reinterpret_cast<uInt16*>(myImage.data()),
+    reinterpret_cast<uInt16*>(myImage.get()),
     reinterpret_cast<uInt16*>(myRAM.data()),
-    static_cast<uInt32>(myImage.size()),
+    static_cast<uInt32>(32_KB),
     devSettings ? settings.getBool("dev.thumb.trapfatal") : false, thumulatorConfiguration(myCDFSubtype), this);
 
   setInitialState();
@@ -111,7 +113,7 @@ void CartridgeCDF::reset()
 void CartridgeCDF::setInitialState()
 {
   // Copy initial CDF driver to Harmony RAM
-  std::copy_n(myImage.begin(), 2_KB, myDriverImage);
+  std::copy_n(myImage.get(), 2_KB, myDriverImage);
 
   myMusicWaveformSize.fill(27);
 
@@ -402,7 +404,7 @@ bool CartridgeCDF::poke(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeCDF::bank(uInt16 bank)
+bool CartridgeCDF::bank(uInt16 bank, uInt16)
 {
   if(bankLocked()) return false;
 
@@ -451,10 +453,10 @@ bool CartridgeCDF::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgeCDF::getImage(size_t& size) const
+const ByteBuffer& CartridgeCDF::getImage(size_t& size) const
 {
-  size = myImage.size();
-  return myImage.data();
+  size = 32_KB;
+  return myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

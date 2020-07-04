@@ -836,6 +836,34 @@ void Dialog::addDefaultsOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::addDefaultsExtraOKCancelBGroup(
+      WidgetArray& wid, const GUI::Font& font,
+      const string& extraText, int extraCmd,
+      const string& okText, const string& cancelText, const string& defaultsText,
+      bool focusOKButton)
+{
+  const int fontWidth    = font.getMaxCharWidth(),
+            fontHeight   = font.getFontHeight(),
+            buttonHeight = font.getLineHeight() * 1.25;
+  const int VBORDER = fontHeight / 2;
+  const int HBORDER = fontWidth * 1.25;
+  const int BTN_BORDER = fontWidth * 2.5;
+  const int BUTTON_GAP = fontWidth;
+  const int buttonWidth = font.getStringWidth(defaultsText) + BTN_BORDER;
+
+  addDefaultWidget(new ButtonWidget(this, font, HBORDER, _h - buttonHeight - VBORDER,
+                   buttonWidth, buttonHeight, defaultsText, GuiObject::kDefaultsCmd));
+  wid.push_back(_defaultWidget);
+
+  wid.push_back(new ButtonWidget(this, font, HBORDER + buttonWidth + BUTTON_GAP,
+                      _h - buttonHeight - VBORDER, buttonWidth, buttonHeight,
+                      extraText, extraCmd)
+  );
+
+  addOKCancelBGroup(wid, font, okText, cancelText, focusOKButton, buttonWidth);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::TabFocus::appendFocusList(WidgetArray& list)
 {
   int active = widget->getActiveTab();

@@ -297,7 +297,7 @@ class ZipHandler
     void addToCache();
 
   private:
-    static constexpr uInt32 DECOMPRESS_BUFSIZE = 16_KB;
+    static constexpr size_t DECOMPRESS_BUFSIZE = 16_KB;
     static constexpr uInt32 CACHE_SIZE = 8; // number of open files to cache
 
     ZipFilePtr myZip;

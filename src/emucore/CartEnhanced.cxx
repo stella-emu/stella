@@ -15,20 +15,45 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include "Logger.hxx"
 #include "System.hxx"
 #include "CartEnhanced.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeEnhanced::CartridgeEnhanced(const ByteBuffer& image, size_t size,
-                                     const string& md5, const Settings& settings)
-  : Cartridge(settings, md5),
-    mySize(size)
+                                     const string& md5, const Settings& settings,
+                                     size_t bsSize)
+  : Cartridge(settings, md5)
 {
-  // Allocate array for the ROM image (at least 64 bytzes)
-  myImage = make_unique<uInt8[]>(std::max(uInt32(mySize), uInt32(System::PAGE_SIZE)));
+  // ROMs are not always at the 'legal' size for their associated
+  // bankswitching scheme; here we deal with the differing sizes
 
-  // Copy the ROM image into my buffer
-  std::copy_n(image.get(), mySize, myImage.get());
+  // Is the ROM too large?  If so, we cap it
+  if(size > bsSize)
+  {
+    ostringstream buf;
+    buf << "ROM larger than expected (" << size << " > " << bsSize
+        << "), truncating " << (size - bsSize) << " bytes\n";
+    Logger::info(buf.str());
+  }
+  else if(size < mySize)
+  {
+    ostringstream buf;
+    buf << "ROM smaller than expected (" << mySize << " > " << size
+        << "), appending " << (mySize - size) << " bytes\n";
+    Logger::info(buf.str());
+  }
+
+  mySize = bsSize;
+
+  // Initialize ROM with all 0's, to fill areas that the ROM may not cover
+  myImage = make_unique<uInt8[]>(mySize);
+  std::fill_n(myImage.get(), mySize, 0);
+
+  // Directly copy the ROM image into the buffer
+  // Only copy up to the amount of data the ROM provides; extra unused
+  // space will be filled with 0's from above
+  std::copy_n(image.get(), std::min(mySize, size), myImage.get());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -44,7 +69,7 @@ void CartridgeEnhanced::install(System& system)
   //  or the ROM is < 4K (-> 1 segment)
   myBankSegs = std::min(1 << (MAX_BANK_SHIFT - myBankShift),
                         int(mySize) / myBankSize);  // e.g. = 1
-  myRomOffset = myRamBankCount > 0 ? 0 : uInt32(myRamSize) * 2;
+  myRomOffset = myRamBankCount > 0U ? 0U : static_cast<uInt16>(myRamSize * 2);
   myRamMask = ramSize - 1;                          // e.g. = 0xFFFF (doesn't matter for RAM size 0)
   myWriteOffset = myRamWpHigh ? ramSize : 0;        // e.g. = 0x0000
   myReadOffset  = myRamWpHigh ? 0 : ramSize;        // e.g. = 0x0080
@@ -130,8 +155,7 @@ uInt8 CartridgeEnhanced::peek(uInt16 address)
     // This is a read access to a write port!
     // Reading from the write port triggers an unwanted write
     // The RAM banks follow the ROM banks and are half the size of a ROM bank
-    return peekRAM(myRAM[((myCurrentSegOffset[(peekAddress & ROM_MASK) >> myBankShift] - mySize) >> 1) + address],
-                   peekAddress);
+    return peekRAM(myRAM[ramAddressSegmentOffset(peekAddress) + address], peekAddress);
   }
   address &= ROM_MASK;
 
@@ -143,8 +167,7 @@ uInt8 CartridgeEnhanced::peek(uInt16 address)
     return peekRAM(myRAM[address], peekAddress);
   }
 
-  return myImage[myCurrentSegOffset[(peekAddress & ROM_MASK) >> myBankShift]
-                  + (peekAddress & myBankMask)];
+  return myImage[romAddressSegmentOffset(peekAddress) + (peekAddress & myBankMask)];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -165,7 +188,7 @@ bool CartridgeEnhanced::poke(uInt16 address, uInt8 value)
       {
         address &= myRamMask;
         // The RAM banks follow the ROM banks and are half the size of a ROM bank
-        pokeRAM(myRAM[((myCurrentSegOffset[(pokeAddress & ROM_MASK) >> myBankShift] - mySize) >> 1) + address],
+        pokeRAM(myRAM[ramAddressSegmentOffset(pokeAddress) + address],
                 pokeAddress, value);
         return true;
       }
@@ -276,9 +299,21 @@ bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+inline uInt16 CartridgeEnhanced::romAddressSegmentOffset(uInt16 address) const
+{
+  return myCurrentSegOffset[((address & ROM_MASK) >> myBankShift) % myBankSegs];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+inline uInt16 CartridgeEnhanced::ramAddressSegmentOffset(uInt16 address) const
+{
+  return uInt16(myCurrentSegOffset[((address & ROM_MASK) >> myBankShift) % myBankSegs] - mySize) >> 1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeEnhanced::getBank(uInt16 address) const
 {
-  return myCurrentSegOffset[(address & ROM_MASK) >> myBankShift] >> myBankShift;
+  return romAddressSegmentOffset(address) >> myBankShift;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -310,11 +345,11 @@ bool CartridgeEnhanced::patch(uInt16 address, uInt8 value)
 {
   if(isRamBank(address))
   {
-    myRAM[((myCurrentSegOffset[(address & ROM_MASK) >> myBankShift] - mySize) >> 1) + (address & myRamMask)] = value;
+    myRAM[ramAddressSegmentOffset(address) + (address & myRamMask)] = value;
   }
   else
   {
-    if((address & myBankMask) < myRamSize * 2)
+    if(static_cast<size_t>(address & myBankMask) < myRamSize * 2)
     {
       // Normally, a write to the read port won't do anything
       // However, the patch command is special in that ignores such
@@ -322,17 +357,17 @@ bool CartridgeEnhanced::patch(uInt16 address, uInt8 value)
       myRAM[address & myRamMask] = value;
     }
     else
-      myImage[myCurrentSegOffset[(address & ROM_MASK) >> myBankShift] + (address & myBankMask)] = value;
+      myImage[romAddressSegmentOffset(address) + (address & myBankMask)] = value;
   }
 
   return myBankChanged = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgeEnhanced::getImage(size_t& size) const
+const ByteBuffer& CartridgeEnhanced::getImage(size_t& size) const
 {
   size = mySize;
-  return myImage.get();
+  return myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -18,6 +18,7 @@
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
+#include "Cart.hxx"
 #include "FSNodeFactory.hxx"
 #include "FSNode.hxx"
 
@@ -47,7 +48,8 @@ bool FilesystemNode::exists() const
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FilesystemNode::getChildren(FSList& fslist, ListMode mode,
-                                 const NameFilter& filter) const
+                                 const NameFilter& filter,
+                                 bool includeParentDirectory) const
 {
   if (!_realNode || !_realNode->isDirectory())
     return false;
@@ -83,7 +85,7 @@ bool FilesystemNode::getChildren(FSList& fslist, ListMode mode,
   );
 
   // Add parent node, if it is valid to do so
-  if (hasParent())
+  if (includeParentDirectory && hasParent())
   {
     FilesystemNode parent = getParent();
     parent.setName(" [..]");
@@ -236,7 +238,7 @@ size_t FilesystemNode::read(ByteBuffer& image) const
     return size;
 
   // Otherwise, the default behaviour is to read from a normal C++ ifstream
-  image = make_unique<uInt8[]>(512 * 1024);
+  image = make_unique<uInt8[]>(Cartridge::maxSize());
   ifstream in(getPath(), std::ios::binary);
   if (in)
   {
@@ -247,7 +249,7 @@ size_t FilesystemNode::read(ByteBuffer& image) const
     if (length == 0)
       throw runtime_error("Zero-byte file");
 
-    size = std::min<size_t>(length, 512 * 1024);
+    size = std::min<size_t>(length, Cartridge::maxSize());
     in.read(reinterpret_cast<char*>(image.get()), size);
   }
   else

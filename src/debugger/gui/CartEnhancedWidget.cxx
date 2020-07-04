@@ -94,7 +94,7 @@ string CartridgeEnhancedWidget::romDescription()
 {
   ostringstream info;
   size_t size;
-  const uInt8* image = myCart.getImage(size);
+  const ByteBuffer& image = myCart.getImage(size);
 
   if(myCart.romBankCount() > 1)
   {
@@ -125,7 +125,7 @@ string CartridgeEnhancedWidget::romDescription()
     start -= start % std::min(int(size), 0x1000);
     end = start + uInt16(myCart.mySize) - 1;
     // special check for ROMs where the extra RAM is not included in the image (e.g. CV).
-    if((start & 0xFFF) < size)
+    if((start & 0xFFFU) < size)
     {
       start += myCart.myRomOffset;
     }

@@ -57,9 +57,10 @@ class CartridgeFA2 : public CartridgeFA
       @param size      The size of the ROM image
       @param md5       The md5sum of the ROM image
       @param settings  A reference to the settings object
+      @param bsSize    The size specified by the bankswitching scheme
     */
     CartridgeFA2(const ByteBuffer& image, size_t size, const string& md5,
-                 const Settings& settings);
+                 const Settings& settings, size_t bsSize = 28_KB);
     virtual ~CartridgeFA2() = default;
 
   public:

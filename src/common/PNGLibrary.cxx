@@ -89,7 +89,7 @@ void PNGLibrary::loadImage(const string& filename, FBSurface& surface)
   }
   else if(color_type == PNG_COLOR_TYPE_GRAY || color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
   {
-    loadImageERROR("Greyscale PNG images not supported");
+    png_set_gray_to_rgb(png_ptr);
   }
   else if(color_type == PNG_COLOR_TYPE_PALETTE)
   {

@@ -19,7 +19,7 @@
   <br><br>
   <center><h2><b>A multi-platform Atari 2600 VCS emulator</b></h2></center>
 
-  <center><h4><b>Release 6.2</b></h4></center>
+  <center><h4><b>Release 6.2.1</b></h4></center>
   <br><br>
 
   <center><h2><b>User's Guide</b></h2></center>
@@ -70,7 +70,7 @@
 
   <br><br><br>
 
-  <center><b>February 1999 - ??? 2020</b></center>
+  <center><b>February 1999 - June 2020</b></center>
     <center><b>The Stella Team</b></center>
   <center><b><a href="https://stella-emu.github.io">Stella Homepage</a></b></center>
 
@@ -355,12 +355,11 @@
   <p>The Linux version of Stella is designed to work on a Linux Workstation with
   the following:</p>
   <ul>
-    <li>Linux Kernel 3.x</li>
     <li>i386 or x86_64 class machine, with 32 or 64-bit distribution</li>
     <li>OpenGL capable video card</li>
     <li>Other architectures (MIPS, PPC, PPC64, etc.) have been confirmed to work,
       but aren't as well tested as i386/x86_64</li>
-    <li>GNU g++ v/5 or Clang v/3.5 (with C++14 support) and the make utility are required for compiling the Stella source code</li>
+    <li>GNU g++ v/6 or Clang v/3.9 (with C++14 support) and the make utility are required for compiling the Stella source code</li>
   </ul>
 
   <p>
@@ -549,7 +548,7 @@
   have to do anything yourself.  However, it is also possible to force the
   bankswitch type to use by adding a special filename extension.  These extensions
   are listed in the <a href="#Properties">ROM properties</a> section under
-  <a href="#PropertiesCartType">Cartridge.Type -&gt; File Extension</a>.</p>
+  <a href="#PropertiesCartType">Cart.Type -&gt; File Extension</a>.</p>
 
   <p><b>Note:</b> These extensions are the same as those used by the Harmony Cart
   and Unocart and are not case-sensitive, so you can name your files and have them
@@ -775,7 +774,7 @@
     <tr>
       <td>Pause/resume emulation</td>
       <td>Pause</td>
-      <td>&nbsp;</td>
+      <td>Shift-Cmd + p</td>
     </tr>
 
   </table>
@@ -1378,6 +1377,13 @@
       <td>Cmd + Enter</td>
     </tr>
     <tr>
+      <td>Toggle adapting display refresh rate to game frame rate
+      </br>
+      Note: Not available for macOS.</td>
+      <td>Alt + r</td>
+      <td>Cmd + r</td>
+    </tr>
+    <tr>
       <td><i>Decrease</i> overscan in fullscreen mode</td>
       <td>Shift + PageDown</td>
       <td>Shift-Fn + Down arrow</td>
@@ -1424,7 +1430,7 @@
     </tr>
     <tr>
       <td colspan="3"><center><font size="-1">
-      These settings can also be changed using <a href="#GlobalKeys"><b>Global Audio & Video Keys</a></font></center>
+      These settings can also be changed using <a href="#GlobalKeys"><b>Global Keys</a></font></center>
       </td>
     </tr>
   </table>
@@ -1474,7 +1480,7 @@
     </tr>
     <tr>
       <td colspan="3"><center><font size="-1">
-        These settings can also be changed using <a href="#GlobalKeys"><b>Global Audio & Video Keys</a></font></center>
+        These settings can also be changed using <a href="#GlobalKeys"><b>Global Keys</a></font></center>
       </td>
     </tr>
   </table>
@@ -1544,7 +1550,7 @@
     </tr>
     <tr>
       <td colspan="3"><center><font size="-1">
-        These settings can also be changed using <a href="#GlobalKeys"><b>Global Audio & Video Keys</a></font></center>
+        These settings can also be changed using <a href="#GlobalKeys"><b>Global Keys</a></font></center>
       </td>
     </tr>
     <tr>
@@ -1552,45 +1558,6 @@
       Items marked as (*) will also switch to 'Custom' mode</font></center></td>
     </tr>
   </table>
-
-  <p><b><a name="GlobalKeys">Global Audio & Video Keys</a> (can be remapped)</b></p>
-  <p>These keys allow selecting and changing audio & video settings without having to remember the
-  dedicated keys.</p>
-  <table BORDER=2 cellpadding=4>
-    <tr>
-      <th>Function</th>
-      <th>Key (Standard)</th>
-      <th>Key (macOS)</th>
-    </tr>
-    <tr>
-      <td>Select <i>previous</i> AV setting</td>
-      <td>End</td>
-      <td>Fn + Left arrow</td>
-    </tr>
-    <tr>
-      <td>Select <i>next</i> AV setting</td>
-      <td>Home</td>
-      <td>Fn + Right arrow</td>
-    </tr>
-    <tr>
-      <td><i>Decrease</i> current AV setting</td>
-      <td>PageDown</td>
-      <td>Fn + Down arrow</td>
-    </tr>
-    <tr>
-      <td><i>Increase</i> current AV setting
-      <td>PageUp</td>
-      <td>Fn + Up arrow</td>
-    </tr>
-  </table>
-  <p>Notes:
-      <ul>
-          <li>Only available if UI messages are enabled.</li>
-          <li>Currently not available settings are automatically skipped.</li>
-          <li>If a setting was selected via dedicated key, its value can also be changed with the
-          global keys.</li>
-      </ul>
-  </p></br>
 
   <a name="DeveloperKeys"></a>
   <p><b>Developer Keys (can be remapped)</b></p>
@@ -1709,7 +1676,61 @@
       <td>Alt + j</td>
       <td>Cmd + j</td>
     </tr>
+    <tr>
+      <td colspan="3"><center><font size="-1">
+        These settings can also be changed using <a href="#GlobalKeys"><b>Global Keys</a></font></center>
+      </td>
+    </tr>
   </table>
+
+  <p><b><a name="GlobalKeys">Global Keys</a> (can be remapped)</b></p>
+  <p>These keys allow selecting and changing settings without having to remember the
+  dedicated keys. They keys are grouped by Audio & Video and Debug settings.</p>
+  <table BORDER=2 cellpadding=4>
+    <tr>
+      <th>Function</th>
+      <th>Key (Standard)</th>
+      <th>Key (macOS)</th>
+    </tr>
+    <tr>
+      <td>Select <i>previous</i> setting group</td>
+      <td>Control + End</td>
+      <td>Control-Fn + Left arrow</td>
+    </tr>
+    <tr>
+      <td>Select <i>next</i> setting group</td>
+      <td>Control + Home</td>
+      <td>Control-Fn + Right arrow</td>
+    </tr>
+    <tr>
+      <td>Select <i>previous</i> setting</td>
+      <td>End</td>
+      <td>Fn + Left arrow</td>
+    </tr>
+    <tr>
+      <td>Select <i>next</i> setting</td>
+      <td>Home</td>
+      <td>Fn + Right arrow</td>
+    </tr>
+    <tr>
+      <td><i>Decrease</i> current setting</td>
+      <td>PageDown</td>
+      <td>Fn + Down arrow</td>
+    </tr>
+    <tr>
+      <td><i>Increase</i> current setting
+      <td>PageUp</td>
+      <td>Fn + Up arrow</td>
+    </tr>
+  </table>
+  <p>Notes:
+      <ul>
+          <li>Only available if UI messages are enabled.</li>
+          <li>Currently not available settings are automatically skipped.</li>
+          <li>If a setting was selected via dedicated key, its value can also be changed with the
+          global keys.</li>
+      </ul>
+  </p>
 
   <p><b>Other Emulation Keys (can be remapped)</b></p>
 
@@ -1743,8 +1764,14 @@
     </tr>
 
     <tr>
+      <td>Load <i>previous</i> game in ROM (multicart ROM, TIA mode)</td>
+      <td>Shift-Control + r</td>
+      <td>Shift-Control + r</td>
+    </tr>
+
+    <tr>
       <td>Reload current ROM (singlecart ROM, TIA mode)<br>
-        Load next game in ROM (multicart ROM, TIA mode)</td>
+        Load <i>next</i> game in ROM (multicart ROM, TIA mode)</td>
       <td>Control + r</td>
       <td>Control + r</td>
     </tr>
@@ -1952,7 +1979,7 @@
       <td> N/A</td>
       <td> N/A</td>
       <td> N/A</td>
-      <td> N/A</td>
+      <td> voice (2600-daptor II)</td>
     </tr>
     <tr>
       <th> SaveKey</th>
@@ -2155,7 +2182,7 @@
   <tr>
     <td><pre>-audio.preset &lt;1 - 5&gt;</pre></td>
     <td>Set an audio preset. Numbers in sequence represent presets for
-    'custom', 'low quality, 'medium lag', 'high quality, medium lag',
+    'custom', 'low quality, medium lag', 'high quality, medium lag',
     'high quality, low lag' and 'ultra quality, minimal lag'.</td>
   </tr>
 
@@ -2191,7 +2218,7 @@
 
   <tr>
     <td><pre>-audio.dpc_pitch &lt;10000 - 30000&gt;</pre></td>
-    <td>Set the pitch o f Pitfall II music.</td>
+    <td>Set the pitch of Pitfall II music.</td>
   </tr>
 
   <tr>
@@ -2216,6 +2243,13 @@
     <td><pre>-tia.fs_stretch &lt;1|0&gt;</pre></td>
     <td>Stretch TIA image completely while in fullscreen mode, vs. keeping the correct
       aspect ratio.</td>
+  </tr>
+
+  <tr>
+    <td><pre>-tia.fs_refresh &lt;1|0&gt;</pre></td>
+    <td>While in fullscreen mode, adapt the display's refresh rate to the game's frame rate
+      to minimize judder.</br>
+      Note: Not available for macOS.</td>
   </tr>
 
   <tr>
@@ -2322,9 +2356,10 @@
     </tr>
 
     <tr>
-      <td><pre>-joyallow4 &lt;1|0&gt;</pre></td>
-      <td>Allow all 4 directions on a joystick to be pressed
-        simultaneously.</td>
+      <td><pre>-psense &lt;number&gt;</pre></td>
+      <td>Sensitivity for emulation of paddles when using analog paddles.
+      Valid range of values is from 1 to 30, with larger numbers causing
+      faster movement.</td>
     </tr>
 
     <tr>
@@ -2338,28 +2373,45 @@
     </tr>
 
     <tr>
+      <td><pre>-dcsense &lt;number&gt;</pre></td>
+      <td>Sensitivity for emulation of driving controllers when using a mouse.
+      Valid range of values is from 1 to 20, with larger numbers causing
+      faster movement.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-joyallow4 &lt;1|0&gt;</pre></td>
+      <td>Allow all 4 directions on a joystick to be pressed
+        simultaneously.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-modcombo &lt;1|0&gt;</pre></td>
+      <td>Use modifier(Shift/Alt/Control)-x key combos. This is normally enabled,
+      since the 'Quit' command is tied to 'Control-q'. However, there are times
+      when you want to disable them.</br>
+      E.g. a 2-player game is using either the 'f' or 'r' keys for movement,
+      and pressing Control (for Fire) will perform an unwanted action
+      associated with Control-r or Control-f default keys.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-saport &lt;lr|rl&gt;</pre></td>
+      <td>Determines how to enumerate the Stelladaptor/2600-daptor devices in the
+      order they are found: 'lr' means first is left port, second is right port,
+      'rl' means the opposite.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-avoxport &lt;name&gt;</pre></td>
+      <td>Set the name of the serial port where an AtariVox is connected.</td>
+    </tr>
+
+    <tr>
       <td><pre>-usemouse &lt;always|analog|never&gt;</pre></td>
       <td>Use mouse as a controller as specified by ROM properties in specific case.
       Always and never are self-explanatory, analog means only for analog-type devices
       (paddles, trackball, etc.).</td>
-    </tr>
-
-    <tr>
-      <td><pre>-grabmouse &lt;1|0&gt;</pre></td>
-      <td>Locks the mouse cursor in the game window in emulation mode.</td>
-    </tr>
-
-    <tr>
-      <td><pre>-cursor &lt;0|1|2|3&gt;</pre></td>
-      <td>Set mouse cursor state in UI/emulation modes.</td>
-    </tr>
-
-    <tr>
-      <td><pre>-dsense &lt;number&gt;</pre></td>
-      <td>Sensitivity for emulation of paddles when using a digital device
-      (ie, joystick digital axis or button, keyboard key, etc.).
-      Valid range of values is from 1 to 20, with larger numbers causing
-      faster movement.</td>
     </tr>
 
     <tr>
@@ -2377,27 +2429,21 @@
     </tr>
 
     <tr>
-      <td><pre>-dcsense &lt;number&gt;</pre></td>
-      <td>Sensitivity for emulation of driving controllers when using a mouse.
+      <td><pre>-dsense &lt;number&gt;</pre></td>
+      <td>Sensitivity for emulation of paddles when using a digital device
+      (ie, joystick digital axis or button, keyboard key, etc.).
       Valid range of values is from 1 to 20, with larger numbers causing
       faster movement.</td>
     </tr>
 
     <tr>
-      <td><pre>-saport &lt;lr|rl&gt;</pre></td>
-      <td>Determines how to enumerate the Stelladaptor/2600-daptor devices in the
-      order they are found: 'lr' means first is left port, second is right port,
-      'rl' means the opposite.</td>
+      <td><pre>-cursor &lt;0|1|2|3&gt;</pre></td>
+      <td>Set mouse cursor state in UI/emulation modes.</td>
     </tr>
 
     <tr>
-      <td><pre>-modcombo &lt;1|0&gt;</pre></td>
-      <td>Use modifier(Shift/Alt/Control)-x key combos. This is normally enabled,
-      since the 'Quit' command is tied to 'Control-q'. However, there are times
-      when you want to disable them.</br>
-      E.g. a 2-player game is using either the 'f' or 'r' keys for movement,
-      and pressing Control (for Fire) will perform an unwanted action
-      associated with Control-r or Control-f default keys.</td>
+      <td><pre>-grabmouse &lt;1|0&gt;</pre></td>
+      <td>Locks the mouse cursor in the game window in emulation mode.</td>
     </tr>
 
     <tr>
@@ -2569,11 +2615,6 @@
     </tr>
 
     <tr>
-      <td><pre>-avoxport &lt;name&gt;</pre></td>
-      <td>Set the name of the serial port where an AtariVox is connected.</td>
-    </tr>
-
-    <tr>
       <td><pre>-maxres &lt;WxH&gt;</pre></td>
       <td>Useful for developers, this sets the maximum size of window that
       can be created, allowing to simulate testing on 'smaller' systems.</td>
@@ -2705,7 +2746,7 @@
 
     <tr>
       <td><pre>-bs &lt;type&gt;</pre></td>
-      <td>Set "Cartridge.Type" property. See the <a href="#Properties"><b>Game Properties</b></a> section
+      <td>Set "Cart.Type" property. See the <a href="#Properties"><b>Game Properties</b></a> section
         for valid types.</td>
     </tr>
 
@@ -2716,27 +2757,27 @@
 
     <tr>
       <td><pre>-startbank &lt;bank&gt;</pre></td>
-      <td>Set "Cartridge.StartBank" property.</td>
+      <td>Set "Cart.StartBank" property.</td>
     </tr>
 
     <tr>
       <td><pre>-channels &lt;Mono|Stereo&gt;</pre></td>
-      <td>Set "Cartridge.Sound" property.</td>
+      <td>Set "Cart.Sound" property.</td>
     </tr>
 
     <tr>
       <td><pre>-ld &lt;A|B&gt;</pre></td>
-      <td>Set "Console.LeftDifficulty" property.</td>
+      <td>Set "Console.LeftDiff" property.</td>
     </tr>
 
     <tr>
       <td><pre>-rd &lt;A|B&gt;</pre></td>
-      <td>Set "Console.RightDifficulty" property.</td>
+      <td>Set "Console.RightDiff" property.</td>
     </tr>
 
     <tr>
       <td><pre>-tv &lt;Color|BW&gt;</pre></td>
-      <td>Set "Console.TelevisionType" property.</td>
+      <td>Set "Console.TVType" property.</td>
     </tr>
 
     <tr>
@@ -2943,13 +2984,15 @@
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
           <tr><td>Renderer</td><td>Use specified rendering mode</td><td>-video</td></tr>
-          <tr><td>Interpolation</td><td>Interpolation of TIA image</td><td>-tia.inter</td></tr>
-          <tr><td>Zoom</td><td>Zoom level of TIA image</td><td>-tia.zoom</td></tr>
+          <tr><td>Interpolation</td><td>Enable interpolation of the TIA image</td><td>-tia.inter</td></tr>
+          <tr><td>Zoom</td><td>Zoom level of the TIA image</td><td>-tia.zoom</td></tr>
           <tr><td>Fullscreen</td><td>Self-explanatory - Note that colors may slightly change.
                   This depends on the OS and renderer used.</td><td>-fullscreen</td></tr>
-          <tr><td>Stretch</td><td>In fullscreen mode, completely fill screen with TIA image</td><td>-tia.fs_stretch</td></tr>
+          <tr><td>Stretch</td><td>In fullscreen mode, completely fill screen with the TIA image.</td><td>-tia.fs_stretch</td></tr>
+          <tr><td>Adapt display...</td><td>In fullscreen mode, adapt the display's refresh rate to the game's frame rate to minimize judder.
+                  </br>Note: Not available for macOS.</td><td>-tia.fs_refresh</td></tr>
           <tr><td>Overscan</td><td>In fullscreen mode, add overscan to the TIA image</td><td>-tia.fs_overscan</td></tr>
-          <tr><td>V-Size adjust</td><td>Adjust height of TIA image</td><td>-tia.vsizeadjust</td></tr>
+          <tr><td>V-Size adjust</td><td>Adjust height of the TIA image</td><td>-tia.vsizeadjust</td></tr>
         </table>
       </td>
     </tr>
@@ -3144,9 +3187,9 @@
           <tr><td>Save path</td><td>Specifies where to save snapshots</td><td>-snapsavedir</td></tr>
         <!--<tr><td>Load path</td><td>Specifies where to load snapshots</td><td>-snaploaddir</td></tr>  -->
           <tr><td>Continuous snapshot interval</td><td>Interval (in seconds) between snapshots</td><td>-ssinterval</td></tr>
-          <tr><td>Use actual ROM name</td><td>Use the actual ROM filename instead of the internal database name.</td><td>-snapname</td></tr>
+          <tr><td>Use actual ROM name</td><td>Use the actual ROM filename instead of the internal database name</td><td>-snapname</td></tr>
           <tr><td>Overwrite existing files</td><td>Whether to overwrite old snapshots</td><td>-sssingle</td></tr>
-          <tr><td>Ignore scaling (1x mode)</td><td>Save snapshot in 1x mode without scaling</td><td>-ss1x</td></tr>
+          <tr><td>Create pixel-exact image (no zoom/post-processing)</td><td>Save snapshot using the exact pixels from the TIA image, without zoom or any post-processing effects</td><td>-ss1x</td></tr>
         </table>
       </td>
     </tr>
@@ -3933,24 +3976,24 @@ Ms Pac-Man (Stella extended codes):
   <p>
   <pre>
    ; Comments
-   "Cartridge.MD5"      "Value"
-   "Property"           "Value"
+   "Cart.MD5"  "Value"
+   "Property"  "Value"
    ""
 
    ; Comments
-   "Cartridge.MD5"      "Value"
-   "Property"           "Value"
+   "Cart.MD5"  "Value"
+   "Property"  "Value"
    ""
 
    . . .
 
    ; Comments
-   "Cartridge.MD5"      "Value"
-   "Property"           "Value"
+   "Cart.MD5"  "Value"
+   "Property"  "Value"
    ""</pre>
 
   <p>Every block in the property file must have a unique value for the
-  <i>Cartridge.MD5</i> property.</p>
+  <i>Cart.MD5</i> property.</p>
 
   <p>
   <h2><b>Properties</b></h2>
@@ -3964,7 +4007,7 @@ Ms Pac-Man (Stella extended codes):
   <table CELLSPACING="10">
 
   <tr>
-    <td VALIGN="TOP"><a name="PropertiesCartType"><i>Cartridge.Type:</i></a></td>
+    <td VALIGN="TOP"><a name="PropertiesCartType"><i>Cart.Type:</i></a></td>
     <td>Indicates the bank-switching type for the game.
       The value of this property must be either <b>Auto</b> or one of the following
       (for more information about bank-switching see Kevin Horton's <a href="http://kevtris.org/files/sizes.txt">2600 bankswitching
@@ -4019,6 +4062,7 @@ Ms Pac-Man (Stella extended codes):
         <tr><td>FE </td><td>8K Decathlon </td><td>.FE </td></tr>
         <tr><td>MDM </td><td>Menu Driven Megacart </td><td>.MDM </td></tr>
         <tr><td>SB </td><td>128-256K SUPERbanking </td><td>.SB </td></tr>
+        <tr><td>TVBOY</td><td>512K TV Boy (127 games)</td><td>.TVB, .TVBOY </td></tr>
         <tr><td>UA </td><td>8K UA Ltd. </td><td>.UA </td></tr>
         <tr><td>UASW </td><td>8K UA Ltd. (swapped banks)</td><td>.UASW </td></tr>
         <tr><td>WD </td><td>Wickstead Design (Pink Panther) </td><td>.WD </td></tr>
@@ -4028,7 +4072,7 @@ Ms Pac-Man (Stella extended codes):
     </tr>
 
     <tr>
-      <td VALIGN="TOP"><i>Cartridge.StartBank:</i></td>
+      <td VALIGN="TOP"><i>Cart.StartBank:</i></td>
       <td>Indicates which bank to use for reading the reset vector.</td>
     </tr>
 
@@ -4052,7 +4096,7 @@ Ms Pac-Man (Stella extended codes):
     <tr>
       <td VALIGN="TOP"><i>Display.VCenter:</i></td>
       <td>Indicates the offset for the vertical center of the display.
-      The value must be <i>n</i> such that -5 &lt;= <i>n</i> &lt;= 5.
+      The value must be <i>n</i> such that -20 &lt;= <i>n</i> &lt;= 20.
       </td>
     </tr>
 
@@ -4070,7 +4114,7 @@ Ms Pac-Man (Stella extended codes):
     </tr>
 
     <tr>
-      <td VALIGN="TOP"><i>Cartridge.Sound:</i></td>
+      <td VALIGN="TOP"><i>Cart.Sound:</i></td>
       <td>Indicates if the game should use 1 or 2 channels for sound output.
       All original Atari 2600 machines supported 1 channel only,
       but some homebrew games have been written to take advantage of stereo
@@ -4089,19 +4133,19 @@ Ms Pac-Man (Stella extended codes):
 
   <table CELLSPACING="10">
     <tr>
-      <td VALIGN="TOP"><i>Console.TelevisionType:</i></td>
+      <td VALIGN="TOP"><i>Console.TVType:</i></td>
       <td>Indicates the default television setting for the
       game. The value must be <b>Color</b> or <b>BW</b>.</td>
     </tr>
 
     <tr>
-      <td VALIGN="TOP"><i>Console.LeftDifficulty:</i></td>
+      <td VALIGN="TOP"><i>Console.LeftDiff:</i></td>
       <td>Indicates the default difficulty setting for the left
       player. The value must be <b>A</b> or <b>B</b>.</td>
     </tr>
 
     <tr>
-      <td VALIGN="TOP"><i>Console.RightDifficulty:</i></td>
+      <td VALIGN="TOP"><i>Console.RightDiff:</i></td>
       <td>Indicates the default difficulty setting for the
       right player. The value must be <b>A</b> or <b>B</b>.</td>
     </tr>
@@ -4202,14 +4246,14 @@ Ms Pac-Man (Stella extended codes):
   </p>
   <table CELLSPACING="10">
     <tr>
-      <td VALIGN="TOP"><i>Cartridge.Name:</i></td>
+      <td VALIGN="TOP"><i>Cart.Name:</i></td>
       <td>Indicates the actual name of the game. When you save snapshots,
         load/save state files, or use the <a href="#ROMAudit"><b>ROM Audit Mode</b></a> functionality,
         this is the name that will be used for the respective file(s).</td>
     </tr>
 
     <tr>
-      <td VALIGN="TOP"><i>Cartridge.MD5:</i></td>
+      <td VALIGN="TOP"><i>Cart.MD5:</i></td>
       <td>Indicates the MD5 checksum of the ROM image as a
       string of hexadecimal digits. Stella uses this property while
       attempting to match a game with its block of properties. If the
@@ -4220,26 +4264,36 @@ Ms Pac-Man (Stella extended codes):
     </tr>
 
     <tr>
-      <td VALIGN="TOP"><i>Cartridge.Manufacturer:</i></td>
+      <td VALIGN="TOP"><i>Cart.Manufacturer:</i></td>
       <td>Indicates the game's manufacturer.</td>
     </tr>
 
     <tr>
-      <td VALIGN="TOP"><i>Cartridge.ModelNo:</i></td>
+      <td VALIGN="TOP"><i>Cart.ModelNo:</i></td>
       <td>Indicates the manufacturer's model number for the game.</td>
     </tr>
 
     <tr>
-      <td VALIGN="TOP"><i>Cartridge.Rarity:</i></td>
+      <td VALIGN="TOP"><i>Cart.Rarity:</i></td>
       <td>Indicates how rare a cartridge is, based on the scale described on AtariAge.</td>
     </tr>
 
     <tr>
-      <td VALIGN="TOP"><i>Cartridge.Note:</i></td>
+      <td VALIGN="TOP"><i>Cart.Note:</i></td>
       <td>Contains any special notes about playing the game.</td>
     </tr>
 
   </table>
+
+  <p>The buttons at the bottom of the dialogs work as follows:
+  <ul>
+  <li><b>Defaults</b>: Reset the properties to those built into Stella.</li>
+  <li><b>Save</b>: Save the properties for the <i>currently selected ROM only</i>
+  to a properties file in the users default save directory.</li>
+  <li><b>OK</b>: Merge/commit any changes into the ROM properties database, which
+  contains info on all ROMs.</li>
+  <li><b>Cancel</b>: Revert any changes in the dialog, and cancel the operation.</li>
+  </ul>
 
   <p>The name of the properties file will depend on the version of Stella, as follows:</p>
 
@@ -4261,7 +4315,7 @@ Ms Pac-Man (Stella extended codes):
       <td><i>_BASEDIR_/stella.pro</i></td>
     </tr>
   </table>
-  <p>Stella will require a restart for changes to this file to take effect.</p>
+  <p>Note: For manual changes to the property files Stella will require a restart to take effect.</p>
   </blockquote></br>
 
   <h2><b><a name="Palette">Palette Support</a></b></h2>

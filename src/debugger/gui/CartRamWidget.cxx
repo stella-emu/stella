@@ -74,7 +74,6 @@ CartRamWidget::CartRamWidget(
   myDesc->setEditable(false);
   myDesc->setEnabled(false);
   myDesc->setList(sl);
-  addFocusWidget(myDesc);
 
   ypos += myDesc->getHeight() + myFontHeight / 2;
 
