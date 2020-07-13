@@ -132,7 +132,7 @@ bool OSystem::create()
         << FilesystemNode(myConfigFile).getShortPath() << "'" << endl;
 
   buf << "Game properties:    '"
-      << FilesystemNode(myPropertiesFile).getShortPath() << "'" << endl
+      << myPropertiesFile.getShortPath() << "'" << endl
       << "Cheat file:         '"
       << FilesystemNode(myCheatFile).getShortPath() << "'" << endl
       << "Palette file:       '"
@@ -251,7 +251,7 @@ void OSystem::saveConfig()
   Logger::debug("Saving config options ...");
   mySettings->save();
 
-  if(myPropSet && myPropSet->save(myPropertiesFile))
+  if(myPropSet && myPropSet->save(myPropertiesFile.getPath()))
     Logger::debug("Saving properties set ...");
 }
 
@@ -286,7 +286,7 @@ void OSystem::setConfigPaths()
 
   myCheatFile = FilesystemNode(myBaseDir + "stella.cht").getPath();
   myPaletteFile = FilesystemNode(myBaseDir + "stella.pal").getPath();
-  myPropertiesFile = FilesystemNode(myBaseDir + "stella.pro").getPath();
+  myPropertiesFile = FilesystemNode(myBaseDir + "stella.pro");
 
 #if 0
   // Debug code

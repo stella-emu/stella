@@ -545,7 +545,7 @@ class OSystem
     string myCheatFile;
     string myConfigFile;
     string myPaletteFile;
-    string myPropertiesFile;
+    FilesystemNode myPropertiesFile;
 
     FilesystemNode myRomFile;
     string myRomMD5;

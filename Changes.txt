@@ -18,6 +18,13 @@
 
   * Extended global hotkeys for debug options.
 
+  * Added ability to load per-ROM properties file from a ZIP file containing
+    the ROM.  This allows to distribute ROM and properties in one file,
+    which Stella can use directly.
+
+-Have fun!
+
+
 6.2 to 6.2.1: (June 20, 2020)
 
   * Fixed Pitfall II ROM not working correctly.
@@ -60,8 +67,6 @@
 
   * The codebase now compiles under gcc6 again.  Future versions will
     require gcc7, though.
-
--Have fun!
 
 
 6.1.2 to 6.2: (June 7, 2020)

@@ -63,6 +63,7 @@ class FilesystemNodeZIP : public AbstractFSNode
     AbstractFSNodePtr getParent() const override;
 
     size_t read(ByteBuffer& image) const override;
+    size_t read(stringstream& image) const override;
 
   private:
     FilesystemNodeZIP(const string& zipfile, const string& virtualpath,
