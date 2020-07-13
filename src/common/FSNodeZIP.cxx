@@ -185,6 +185,19 @@ size_t FilesystemNodeZIP::read(ByteBuffer& image) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+size_t FilesystemNodeZIP::read(stringstream& image) const
+{
+  // For now, we just read into a buffer and store in the stream
+  // TODO: maybe there's a more efficient way to do this?
+  ByteBuffer buffer;
+  size_t size = read(buffer);
+  if(size > 0)
+    image.write(reinterpret_cast<char*>(buffer.get()), size);
+
+  return size;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AbstractFSNodePtr FilesystemNodeZIP::getParent() const
 {
   if(_virtualPath == "")

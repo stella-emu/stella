@@ -242,6 +242,17 @@ class FilesystemNode
     size_t read(ByteBuffer& buffer) const;
 
     /**
+     * Read data (text format) into the given stream.
+     *
+     * @param buffer  The buffer stream to contain the data.
+     *
+     * @return  The number of bytes read (0 in the case of failure)
+     *          This method can throw exceptions, and should be used inside
+     *          a try-catch block.
+     */
+    size_t read(stringstream& buffer) const;
+
+    /**
      * The following methods are almost exactly the same as the various
      * getXXXX() methods above.  Internally, they call the respective methods
      * and replace the extension (if present) with the given one.  If no
@@ -400,6 +411,17 @@ class AbstractFSNode
      *          a try-catch block.
      */
     virtual size_t read(ByteBuffer& buffer) const { return 0; }
+
+    /**
+     * Read data (text format) into the given steam.
+     *
+     * @param buffer  The buffer stream to containing the data
+     *
+     * @return  The number of bytes read (0 in the case of failure)
+     *          This method can throw exceptions, and should be used inside
+     *          a try-catch block.
+     */
+    virtual size_t read(stringstream& buffer) const { return 0; }
 };
 
 #endif
