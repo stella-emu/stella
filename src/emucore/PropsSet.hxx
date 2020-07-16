@@ -57,14 +57,14 @@ class PropertiesSet
     /**
       Save properties to the specified file.
 
-      @param filename  Full pathname of output file to use
+      @param file  The node representing the output file to use
 
       @return  True on success, false on failure or save not needed
                Failure occurs if file couldn't be opened for writing,
                or if the file doesn't exist and a zero-byte file
                would be created
     */
-    bool save(const string& filename) const;
+    bool save(const FilesystemNode& file) const;
 
     /**
       Get the property from the set with the given MD5.

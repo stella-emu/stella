@@ -15,6 +15,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include "FSNode.hxx"
 #include "Settings.hxx"
 #include "System.hxx"
 #include "MD5.hxx"
@@ -52,18 +53,23 @@ void Cartridge::setAbout(const string& about, const string& type,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge::saveROM(ofstream& out) const
+bool Cartridge::saveROM(const FilesystemNode& out) const
 {
-  size_t size = 0;
-
-  const ByteBuffer& image = getImage(size);
-  if(size == 0)
+  try
   {
-    cerr << "save not supported" << endl;
+    size_t size = 0;
+    const ByteBuffer& image = getImage(size);
+    if(size == 0)
+    {
+      cerr << "save not supported" << endl;
+      return false;
+    }
+    out.write(image, size);
+  }
+  catch(...)
+  {
     return false;
   }
-
-  out.write(reinterpret_cast<const char*>(image.get()), size);
 
   return true;
 }

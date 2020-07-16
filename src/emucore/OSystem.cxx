@@ -251,7 +251,7 @@ void OSystem::saveConfig()
   Logger::debug("Saving config options ...");
   mySettings->save();
 
-  if(myPropSet && myPropSet->save(myPropertiesFile.getPath()))
+  if(myPropSet && myPropSet->save(myPropertiesFile))
     Logger::debug("Saving properties set ...");
 }
 
