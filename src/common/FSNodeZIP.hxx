@@ -64,6 +64,8 @@ class FilesystemNodeZIP : public AbstractFSNode
 
     size_t read(ByteBuffer& image) const override;
     size_t read(stringstream& image) const override;
+    size_t write(const ByteBuffer& buffer, size_t size) const override;
+    size_t write(const stringstream& buffer) const override;
 
   private:
     FilesystemNodeZIP(const string& zipfile, const string& virtualpath,

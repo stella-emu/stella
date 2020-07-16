@@ -19,6 +19,7 @@
 
 #include "bspf.hxx"
 #include "FSNode.hxx"
+#include "Logger.hxx"
 #include "DefProps.hxx"
 #include "Props.hxx"
 #include "PropsSet.hxx"
@@ -42,22 +43,31 @@ void PropertiesSet::load(const FilesystemNode& file, bool save)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PropertiesSet::save(const string& filename) const
+bool PropertiesSet::save(const FilesystemNode& file) const
 {
-  // Only save properties when it won't create an empty file
-  FilesystemNode props(filename);
-  if(!props.exists() && myExternalProps.size() == 0)
-    return false;
+  try
+  {
+    // Only save properties when it won't create an empty file
+    if(!file.exists() && myExternalProps.size() == 0)
+      return false;
 
-  ofstream out(filename);
-  if(!out)
-    return false;
+    // Only save those entries in the external list
+    stringstream out;
+    for(const auto& i: myExternalProps)
+      out << i.second;
 
-  // Only save those entries in the external list
-  for(const auto& i: myExternalProps)
-    out << i.second;
+    file.write(out);
+    return true;
+  }
+  catch(const runtime_error& e)
+  {
+    Logger::error(e.what());
+  }
+  catch(...)
+  {
+  }
 
-  return true;
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

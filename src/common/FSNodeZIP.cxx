@@ -181,7 +181,7 @@ size_t FilesystemNodeZIP::read(ByteBuffer& image) const
   while(myZipHandler->hasNext() && !found)
     found = myZipHandler->next() == _virtualPath;
 
-  return found ? uInt32(myZipHandler->decompress(image)) : 0; // TODO: 64bit
+  return found ? myZipHandler->decompress(image) : 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -195,6 +195,20 @@ size_t FilesystemNodeZIP::read(stringstream& image) const
     image.write(reinterpret_cast<char*>(buffer.get()), size);
 
   return size;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+size_t FilesystemNodeZIP::write(const ByteBuffer& buffer, size_t size) const
+{
+  // TODO: Not yet implemented
+  throw runtime_error("ZIP file not writable");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+size_t FilesystemNodeZIP::write(const stringstream& buffer) const
+{
+  // TODO: Not yet implemented
+  throw runtime_error("ZIP file not writable");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -20,6 +20,7 @@
 
 class Cartridge;
 class Properties;
+class FilesystemNode;
 class CartDebugWidget;
 class CartRamWidget;
 class GuiObject;
@@ -72,9 +73,9 @@ class Cartridge : public Device
     /**
       Save the internal (patched) ROM image.
 
-      @param out  The output file stream to save the image
+      @param out  The output file to save the image
     */
-    bool saveROM(ofstream& out) const;
+    bool saveROM(const FilesystemNode& out) const;
 
     /**
       Lock/unlock bankswitching capability.  The debugger will lock
