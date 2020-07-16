@@ -48,11 +48,11 @@ class PropertiesSet
       Load properties from the specified file, and create an internal
       searchable list.
 
-      @param filename  Full pathname of input file to use
-      @param save      Indicates whether the properties should be saved
-                       when the program exits
+      @param file  The node representing the input file to use
+      @param save  Indicates whether the properties should be saved
+                   when the program exits
     */
-    void load(const string& filename, bool save = true);
+    void load(const FilesystemNode& file, bool save = true);
 
     /**
       Save properties to the specified file.

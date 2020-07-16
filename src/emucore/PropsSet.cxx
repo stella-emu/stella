@@ -24,13 +24,21 @@
 #include "PropsSet.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PropertiesSet::load(const string& filename, bool save)
+void PropertiesSet::load(const FilesystemNode& file, bool save)
 {
-  ifstream in(filename);
-
-  Properties prop;
-  while(in >> prop)
-    insert(prop, save);
+  try
+  {
+    stringstream in;
+    if(file.exists() && file.read(in) > 0)
+    {
+      Properties prop;
+      while(in >> prop)
+        insert(prop, save);
+    }
+  }
+  catch(...)
+  {
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -166,8 +174,9 @@ void PropertiesSet::loadPerROM(const FilesystemNode& rom, const string& md5)
   // First, does this ROM have a per-ROM properties entry?
   // If so, load it into the database
   FilesystemNode propsNode(rom.getPathWithExt(".pro"));
-  if(propsNode.exists() && propsNode.isFile())
-    load(propsNode.getPath(), false);
+
+  if(propsNode.exists())
+    load(propsNode, false);
 
   // Next, make sure we have a valid md5 and name
   Properties props;
