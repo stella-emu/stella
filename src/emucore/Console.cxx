@@ -525,8 +525,11 @@ void Console::changePhosphor(int direction)
 {
   int blend = BSPF::stringToInt(myProperties.get(PropType::Display_PPBlend));
 
-  blend = BSPF::clamp(blend + direction * 2, 0, 100);
-  myOSystem.frameBuffer().tiaSurface().enablePhosphor(true, blend);
+  if(direction)
+  {
+    blend = BSPF::clamp(blend + direction * 2, 0, 100);
+    myOSystem.frameBuffer().tiaSurface().enablePhosphor(true, blend);
+  }
 
   ostringstream val;
   val << blend;
