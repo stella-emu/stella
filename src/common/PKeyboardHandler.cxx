@@ -519,9 +519,9 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultCommo
   {Event::PreviousSettingGroup,     KBDK_KP_1, KBDM_CTRL},
   {Event::NextSettingGroup,         KBDK_KP_7, KBDM_CTRL},
   {Event::SettingDecrease,          KBDK_PAGEDOWN},
-  {Event::SettingDecrease,          KBDK_KP_3},
+  {Event::SettingDecrease,          KBDK_KP_3, KBDM_CTRL},
   {Event::SettingIncrease,          KBDK_PAGEUP},
-  {Event::SettingIncrease,          KBDK_KP_9},
+  {Event::SettingIncrease,          KBDK_KP_9, KBDM_CTRL},
 
   {Event::ToggleInter,              KBDK_I, KBDM_CTRL},
   {Event::ToggleTurbo,              KBDK_T, KBDM_CTRL},
