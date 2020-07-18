@@ -342,9 +342,6 @@ class CartDebug : public DebuggerSystem
     // The maximum length of all labels currently defined
     uInt16 myLabelLength{8};  // longest pre-defined label
 
-    // Filenames to use for various I/O (currently these are hardcoded)
-    string myListFile, mySymbolFile, myCfgFile, myDisasmFile;
-
     /// Table of instruction mnemonics
     static std::array<const char*, 16>  ourTIAMnemonicR; // read mode
     static std::array<const char*, 64>  ourTIAMnemonicW; // write mode

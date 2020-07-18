@@ -734,19 +734,20 @@ string CartDebug::loadListFile()
   // The default naming/location for list files is the ROM dir based on the
   // actual ROM filename
 
-  if(myListFile == "")
-  {
-    FilesystemNode lst(myOSystem.romFile().getPathWithExt(".lst"));
-    if(lst.isFile() && lst.isReadable())
-      myListFile = lst.getPath();
-    else
-      return DebuggerParser::red("list file \'" + lst.getShortPath() + "\' not found");
-  }
+  FilesystemNode lst(myOSystem.romFile().getPathWithExt(".lst"));
+  if(!lst.isReadable())
+    return DebuggerParser::red("list file \'" + lst.getShortPath() + "\' not found");
 
-  FilesystemNode node(myListFile);
-  ifstream in(node.getPath());
-  if(!in.is_open())
-    return DebuggerParser::red("list file '" + node.getShortPath() + "' not readable");
+  stringstream in;
+  try
+  {
+    if(lst.read(in) == 0)
+      return DebuggerParser::red("list file '" + lst.getShortPath() + "' not readable");
+  }
+  catch(...)
+  {
+    return DebuggerParser::red("list file '" + lst.getShortPath() + "' not readable");
+  }
 
   while(!in.eof())
   {
@@ -785,7 +786,7 @@ string CartDebug::loadListFile()
   }
   myDebugger.rom().invalidate();
 
-  return "list file '" + node.getShortPath() + "' loaded OK";
+  return "list file '" + lst.getShortPath() + "' loaded OK";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -794,22 +795,23 @@ string CartDebug::loadSymbolFile()
   // The default naming/location for symbol files is the ROM dir based on the
   // actual ROM filename
 
-  if(mySymbolFile == "")
-  {
-    FilesystemNode sym(myOSystem.romFile().getPathWithExt(".sym"));
-    if(sym.isFile() && sym.isReadable())
-      mySymbolFile = sym.getPath();
-    else
-      return DebuggerParser::red("symbol file \'" + sym.getShortPath() + "\' not found");
-  }
-
-  FilesystemNode node(mySymbolFile);
-  ifstream in(node.getPath());
-  if(!in.is_open())
-    return DebuggerParser::red("symbol file '" + node.getShortPath() + "' not readable");
+  FilesystemNode sym(myOSystem.romFile().getPathWithExt(".sym"));
+  if(!sym.isReadable())
+    return DebuggerParser::red("symbol file \'" + sym.getShortPath() + "\' not found");
 
   myUserAddresses.clear();
   myUserLabels.clear();
+
+  stringstream in;
+  try
+  {
+    if(sym.read(in) == 0)
+      return DebuggerParser::red("symbol file '" + sym.getShortPath() + "' not readable");
+  }
+  catch(...)
+  {
+    return DebuggerParser::red("symbol file '" + sym.getShortPath() + "' not readable");
+  }
 
   while(!in.eof())
   {
@@ -845,7 +847,7 @@ string CartDebug::loadSymbolFile()
   }
   myDebugger.rom().invalidate();
 
-  return "symbol file '" + node.getShortPath() + "' loaded OK";
+  return "symbol file '" + sym.getShortPath() + "' loaded OK";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -854,20 +856,21 @@ string CartDebug::loadConfigFile()
   // The default naming/location for config files is the CFG dir and based
   // on the actual ROM filename
 
-  if(myCfgFile == "")
-  {
-    FilesystemNode romNode(myOSystem.romFile().getPathWithExt(".cfg"));
-    FilesystemNode cfg(myOSystem.cfgDir() + romNode.getName());
-    if(cfg.isFile() && cfg.isReadable())
-      myCfgFile = cfg.getPath();
-    else
-      return DebuggerParser::red("config file \'" + cfg.getShortPath() + "\' not found");
-  }
+  FilesystemNode romNode(myOSystem.romFile().getPathWithExt(".cfg"));
+  FilesystemNode cfg(myOSystem.cfgDir() + romNode.getName());
+  if(!cfg.isReadable())
+    return DebuggerParser::red("config file \'" + cfg.getShortPath() + "\' not found");
 
-  FilesystemNode node(myCfgFile);
-  ifstream in(node.getPath());
-  if(!in.is_open())
-    return "Unable to load directives from " + node.getPath();
+  stringstream in;
+  try
+  {
+    if(cfg.read(in) == 0)
+      return "Unable to load directives from " + cfg.getPath();
+  }
+  catch(...)
+  {
+    return "Unable to load directives from " + cfg.getPath();
+  }
 
   // Erase all previous directives
   for(auto& bi: myBankInfo)
@@ -965,7 +968,7 @@ string CartDebug::loadConfigFile()
   stringstream retVal;
   if(myConsole.cartridge().romBankCount() > 1)
     retVal << DebuggerParser::red("config file for multi-bank ROM not fully supported\n");
-  retVal << "config file '" << node.getShortPath() << "' loaded OK";
+  retVal << "config file '" << cfg.getShortPath() << "' loaded OK";
   return retVal.str();
 
 }
@@ -976,25 +979,11 @@ string CartDebug::saveConfigFile()
   // The default naming/location for config files is the CFG dir and based
   // on the actual ROM filename
 
-  if(myCfgFile == "")
-  {
-    FilesystemNode romNode(myOSystem.romFile().getPathWithExt(".cfg"));
-    FilesystemNode cfg(myOSystem.cfgDir() + romNode.getName());
-    if(cfg.getParent().isWritable())
-      myCfgFile = cfg.getPath();
-    else
-      return DebuggerParser::red("config file \'" + cfg.getShortPath() + "\' not writable");
-  }
-
   const string& name = myConsole.properties().get(PropType::Cart_Name);
   const string& md5 = myConsole.properties().get(PropType::Cart_MD5);
 
-  FilesystemNode cfg(myCfgFile);
-  ofstream out(cfg.getPath());
-  if(!out.is_open())
-    return "Unable to save directives to " + cfg.getShortPath();
-
   // Store all bank information
+  stringstream out;
   out << "// Stella.pro: \"" << name << "\"" << endl
       << "// MD5: " << md5 << endl
       << endl;
@@ -1005,9 +994,25 @@ string CartDebug::saveConfigFile()
   }
 
   stringstream retVal;
-  if(myConsole.cartridge().romBankCount() > 1)
-    retVal << DebuggerParser::red("config file for multi-bank ROM not fully supported\n");
-  retVal << "config file '" << cfg.getShortPath() << "' saved OK";
+  try
+  {
+    FilesystemNode romNode(myOSystem.romFile().getPathWithExt(".cfg"));
+    FilesystemNode cfg(myOSystem.cfgDir() + romNode.getName());
+    if(!cfg.getParent().isWritable())
+      return DebuggerParser::red("config file \'" + cfg.getShortPath() + "\' not writable");
+
+    size_t size = cfg.write(out);
+    if(size == 0)
+      return "Unable to save directives to " + cfg.getShortPath();
+
+    if(myConsole.cartridge().romBankCount() > 1)
+      retVal << DebuggerParser::red("config file for multi-bank ROM not fully supported\n");
+    retVal << "config file '" << cfg.getShortPath() << "' saved OK";
+  }
+  catch(const runtime_error& e)
+  {
+    retVal << e.what();
+  }
   return retVal.str();
 }
 
@@ -1032,19 +1037,6 @@ string CartDebug::saveDisassembly()
   };
   bool isNTSC = myConsole.timing() == ConsoleTiming::ntsc;
   bool isPAL = myConsole.timing() == ConsoleTiming::pal;
-
-  if(myDisasmFile == "")
-  {
-    const string& propsname =
-      myConsole.properties().get(PropType::Cart_Name) + ".asm";
-
-    myDisasmFile = FilesystemNode(myOSystem.defaultSaveDir() + propsname).getPath();
-  }
-
-  FilesystemNode node(myDisasmFile);
-  ofstream out(node.getPath());
-  if(!out.is_open())
-    return "Unable to save disassembly to " + node.getShortPath();
 
 #define ALIGN(x) setfill(' ') << left << setw(x)
 
@@ -1093,7 +1085,6 @@ string CartDebug::saveDisassembly()
     if (romBankCount > 1)
       buf << " / 0.." << romBankCount - 1;
     buf << "\n;***********************************************************\n\n";
-
 
     // Disassemble bank
     disasm.list.clear();
@@ -1183,6 +1174,7 @@ string CartDebug::saveDisassembly()
 
   // Some boilerplate, similar to what DiStella adds
   auto timeinfo = BSPF::localTime();
+  stringstream out;
   out << "; Disassembly of " << myOSystem.romFile().getShortPath() << "\n"
       << "; Disassembled " << std::put_time(&timeinfo, "%c\n")
       << "; Using Stella " << STELLA_VERSION << "\n;\n"
@@ -1335,9 +1327,24 @@ string CartDebug::saveDisassembly()
   out << buf.str();
 
   stringstream retVal;
-  if(myConsole.cartridge().romBankCount() > 1)
-    retVal << DebuggerParser::red("disassembly for multi-bank ROM not fully supported\n");
-  retVal << "saved " << node.getShortPath() << " OK";
+  try
+  {
+    const string& propsname =
+      myConsole.properties().get(PropType::Cart_Name) + ".asm";
+    FilesystemNode node(myOSystem.defaultSaveDir() + propsname);
+
+    size_t size = node.write(out);
+    if(size == 0)
+      return "Unable to save disassembly to " + node.getShortPath();
+
+    if(myConsole.cartridge().romBankCount() > 1)
+      retVal << DebuggerParser::red("disassembly for multi-bank ROM not fully supported\n");
+    retVal << "saved " << node.getShortPath() << " OK";
+  }
+  catch(const runtime_error& e)
+  {
+    retVal << e.what();
+  }
   return retVal.str();
 }
 
@@ -1356,19 +1363,25 @@ string CartDebug::saveRom()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::saveAccessFile()
 {
-  const string& rom = myConsole.properties().get(PropType::Cart_Name) + ".csv";
-  FilesystemNode node(myOSystem.defaultSaveDir() + rom);
-  ofstream out(node.getPath());
+  stringstream out;
+  out << myConsole.tia().getAccessCounters();
+  out << myConsole.riot().getAccessCounters();
+  out << myConsole.cartridge().getAccessCounters();
 
-  if(out)
+  try
   {
-    out << myConsole.tia().getAccessCounters();
-    out << myConsole.riot().getAccessCounters();
-    out << myConsole.cartridge().getAccessCounters();
-    return "saved access counters as " + node.getShortPath();
+    const string& rom = myConsole.properties().get(PropType::Cart_Name) + ".csv";
+    FilesystemNode node(myOSystem.defaultSaveDir() + rom);
+
+    size_t size = node.write(out);
+    if(size > 0)
+      return "saved access counters as " + node.getShortPath();
   }
-  else
-    return DebuggerParser::red("failed to save access counters file");
+  catch(const runtime_error& e)
+  {
+    return e.what();
+  }
+  return DebuggerParser::red("failed to save access counters file");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

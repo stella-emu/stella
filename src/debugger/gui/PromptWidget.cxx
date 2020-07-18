@@ -909,10 +909,7 @@ void PromptWidget::scrollToCurrent()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PromptWidget::saveBuffer(const FilesystemNode& file)
 {
-  ofstream out(file.getPath());
-  if(!out.is_open())
-    return false;
-
+  stringstream out;
   for(int start = 0; start < _promptStartPos; start += _lineWidth)
   {
     int end = start + _lineWidth - 1;
@@ -930,7 +927,8 @@ bool PromptWidget::saveBuffer(const FilesystemNode& file)
     out << endl;
   }
 
-  return true;
+  try { return file.write(out) > 0; }
+  catch(...) { return false; }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
