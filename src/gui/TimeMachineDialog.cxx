@@ -295,41 +295,51 @@ void TimeMachineDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TimeMachineDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
 {
-  // The following 'Alt' shortcuts duplicate the shortcuts in EventHandler
-  // It is best to keep them the same, so changes in EventHandler mean we
-  // need to update the logic here too
-  // Note: The hotkeys can be remapped in emulation mode, but this will not
-  //   affect the fixed hotkeys here.
-  if(StellaModTest::isAlt(mod))
+  // The following shortcuts duplicate the shortcuts in EventHandler
+
+  Event::Type event = instance().eventHandler().eventForKey(EventMode::kEmulationMode, key, mod);
+
+  switch (event)
   {
-    switch(key)
-    {
-      case KBDK_LEFT:  // Alt-left(-shift) rewinds 1(10) states
-        handleCommand(nullptr, StellaModTest::isShift(mod) ? kRewind10 : kRewind1, 0, 0);
-        break;
+    case Event::Rewind1Menu:
+      handleCommand(nullptr, kRewind1, 0, 0);
+      break;
 
-      case KBDK_RIGHT:  // Alt-right(-shift) unwinds 1(10) states
-        handleCommand(nullptr, StellaModTest::isShift(mod) ? kUnwind10 : kUnwind1, 0, 0);
-        break;
+    case Event::Rewind10Menu:
+      handleCommand(nullptr, kRewind10, 0, 0);
+      break;
 
-      case KBDK_DOWN:  // Alt-down rewinds to start of list
-        handleCommand(nullptr, kRewindAll, 0, 0);
-        break;
+    case Event::RewindAllMenu:
+      handleCommand(nullptr, kRewindAll, 0, 0);
+      break;
 
-      case KBDK_UP:  // Alt-up rewinds to end of list
-        handleCommand(nullptr, kUnwindAll, 0, 0);
-        break;
+    case Event::Unwind1Menu:
+      handleCommand(nullptr, kUnwind1, 0, 0);
+      break;
 
-      default:
+    case Event::Unwind10Menu:
+      handleCommand(nullptr, kUnwind10, 0, 0);
+      break;
+
+    case Event::UnwindAllMenu:
+      handleCommand(nullptr, kUnwindAll, 0, 0);
+      break;
+
+    case Event::TakeSnapshot:
+      if (!repeated)
+        handleCommand(nullptr, kSnapShot, 0, 0);
+      break;
+
+    case Event::ExitMode:
+      handleCommand(nullptr, kPlay, 0, 0);
+      break;
+
+    default:
+      if (key == KBDK_SPACE)
+        handleCommand(nullptr, kPlay, 0, 0);
+      else
         Dialog::handleKeyDown(key, mod);
-    }
   }
-  else if(key == KBDK_SPACE || key == KBDK_ESCAPE)
-    handleCommand(nullptr, kPlay, 0, 0);
-  else if (key == KBDK_F12)
-    handleCommand(nullptr, kSnapShot, 0, 0);
-  else
-    Dialog::handleKeyDown(key, mod);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
