@@ -18,6 +18,8 @@
 
   * Extended global hotkeys for debug options.
 
+  * Allow taking snapshots from within Time Machine dialog
+
   * Added ability to load per-ROM properties file from a ZIP file containing
     the ROM.  This allows to distribute ROM and properties in one file,
     which Stella can use directly.
