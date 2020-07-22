@@ -25,6 +25,7 @@
 #include "StateManager.hxx"
 #include "RewindManager.hxx"
 #include "TimeLineWidget.hxx"
+#include "TIASurface.hxx"
 
 #include "Console.hxx"
 #include "TIA.hxx"
@@ -297,6 +298,8 @@ void TimeMachineDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeate
   // The following 'Alt' shortcuts duplicate the shortcuts in EventHandler
   // It is best to keep them the same, so changes in EventHandler mean we
   // need to update the logic here too
+  // Note: The hotkeys can be remapped in emulation mode, but this will not
+  //   affect the fixed hotkeys here.
   if(StellaModTest::isAlt(mod))
   {
     switch(key)
@@ -323,6 +326,8 @@ void TimeMachineDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeate
   }
   else if(key == KBDK_SPACE || key == KBDK_ESCAPE)
     handleCommand(nullptr, kPlay, 0, 0);
+  else if (key == KBDK_F12)
+    handleCommand(nullptr, kSnapShot, 0, 0);
   else
     Dialog::handleKeyDown(key, mod);
 }
@@ -381,6 +386,10 @@ void TimeMachineDialog::handleCommand(CommandSender* sender, int cmd,
     case kLoadAll:
       instance().frameBuffer().showMessage(instance().state().rewindManager().loadAllStates());
       initBar();
+      break;
+
+    case kSnapShot:
+      instance().frameBuffer().tiaSurface().saveSnapShot();
       break;
 
     default:
