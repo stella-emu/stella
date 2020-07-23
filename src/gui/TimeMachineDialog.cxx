@@ -356,7 +356,7 @@ void TimeMachineDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeate
       break;
 
     default:
-      Dialog::handleKeyDown(key, mod);
+      Dialog::handleKeyDown(key, mod, repeated);
   }
 }
 
