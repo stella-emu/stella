@@ -1283,6 +1283,10 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
           if (pressed && !repeated) changeStateByEvent(Event::TimeMachineMode);
           return;
 
+        case EventHandlerState::PLAYBACK:
+          if (pressed && !repeated) changeStateByEvent(Event::TogglePlayBackMode);
+          return;
+
         // this event is called when exiting a ROM from the debugger, so it acts like pressing ESC in emulation
         case EventHandlerState::EMULATION:
         case EventHandlerState::DEBUGGER:
@@ -1556,7 +1560,7 @@ bool EventHandler::changeStateByEvent(Event::Type type)
   switch(type)
   {
     case Event::TogglePauseMode:
-      if(myState == EventHandlerState::EMULATION)
+      if(myState == EventHandlerState::EMULATION || myState == EventHandlerState::PLAYBACK)
         setState(EventHandlerState::PAUSE);
       else if(myState == EventHandlerState::PAUSE)
         setState(EventHandlerState::EMULATION);
@@ -1565,14 +1569,16 @@ bool EventHandler::changeStateByEvent(Event::Type type)
       break;
 
     case Event::OptionsMenuMode:
-      if (myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE)
+      if (myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE
+          || myState == EventHandlerState::PLAYBACK)
         enterMenuMode(EventHandlerState::OPTIONSMENU);
       else
         handled = false;
       break;
 
     case Event::CmdMenuMode:
-      if(myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE)
+      if(myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE
+         || myState == EventHandlerState::PLAYBACK)
         enterMenuMode(EventHandlerState::CMDMENU);
       else if(myState == EventHandlerState::CMDMENU && !myOSystem.settings().getBool("minimal_ui"))
         // The extra check for "minimal_ui" allows mapping e.g. right joystick fire
@@ -1583,7 +1589,8 @@ bool EventHandler::changeStateByEvent(Event::Type type)
       break;
 
     case Event::TimeMachineMode:
-      if(myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE)
+      if(myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE
+         || myState == EventHandlerState::PLAYBACK)
         enterTimeMachineMenuMode(0, false);
       else if(myState == EventHandlerState::TIMEMACHINE)
         leaveMenuMode();
@@ -1591,10 +1598,24 @@ bool EventHandler::changeStateByEvent(Event::Type type)
         handled = false;
       break;
 
+    case Event::TogglePlayBackMode:
+      if (myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE
+          || myState == EventHandlerState::TIMEMACHINE)
+        enterPlayBackMode();
+      else if (myState == EventHandlerState::PLAYBACK)
+    #ifdef GUI_SUPPORT
+        enterMenuMode(EventHandlerState::TIMEMACHINE);
+    #else
+        setState(EventHandlerState::PAUSE);
+    #endif
+      else
+        handled = false;
+      break;
+
     case Event::DebuggerMode:
   #ifdef DEBUGGER_SUPPORT
       if(myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE
-         || myState == EventHandlerState::TIMEMACHINE)
+         || myState == EventHandlerState::TIMEMACHINE || myState == EventHandlerState::PLAYBACK)
         enterDebugMode();
       else if(myState == EventHandlerState::DEBUGGER && myOSystem.debugger().canExit())
         leaveDebugMode();
@@ -2249,6 +2270,15 @@ void EventHandler::enterTimeMachineMenuMode(uInt32 numWinds, bool unwind)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::enterPlayBackMode()
+{
+#ifdef GUI_SUPPORT
+  setState(EventHandlerState::PLAYBACK);
+  myOSystem.sound().mute(true); // sound does not work in playback mode
+#endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setState(EventHandlerState state)
 {
   myState = state;
@@ -2263,6 +2293,7 @@ void EventHandler::setState(EventHandlerState state)
   switch(myState)
   {
     case EventHandlerState::EMULATION:
+    case EventHandlerState::PLAYBACK:
       myOSystem.sound().mute(false);
       enableTextEvents(false);
       break;
@@ -2541,6 +2572,7 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::Unwind1Menu,             "Unwind one state & enter TM UI",        "" },
   { Event::Unwind10Menu,            "Unwind 10 states & enter TM UI",        "" },
   { Event::UnwindAllMenu,           "Unwind all states & enter TM UI",       "" },
+  { Event::TogglePlayBackMode,          "Toggle 'Time Machine' playback mode",   "" },
 
   { Event::Combo1,                  "Combo 1",                               "" },
   { Event::Combo2,                  "Combo 2",                               "" },
@@ -2628,6 +2660,7 @@ const Event::EventSet EventHandler::StateEvents = {
   Event::TimeMachineMode, Event::RewindPause, Event::UnwindPause, Event::ToggleTimeMachine,
   Event::Rewind1Menu, Event::Rewind10Menu, Event::RewindAllMenu,
   Event::Unwind1Menu, Event::Unwind10Menu, Event::UnwindAllMenu,
+  Event::TogglePlayBackMode,
   Event::SaveAllStates, Event::LoadAllStates, Event::ToggleAutoSlot,
 };
 

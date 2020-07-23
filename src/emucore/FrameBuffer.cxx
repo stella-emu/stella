@@ -29,6 +29,8 @@
 #include "FBSurface.hxx"
 #include "TIASurface.hxx"
 #include "FrameBuffer.hxx"
+#include "StateManager.hxx"
+#include "RewindManager.hxx"
 
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
@@ -420,6 +422,44 @@ void FrameBuffer::update(bool force)
         myOSystem.timeMachine().draw(force);
       }
       break;  // EventHandlerState::TIMEMACHINE
+    }
+
+    case EventHandlerState::PLAYBACK:
+    {
+      static Int32 frames = 0;
+      RewindManager& r = myOSystem.state().rewindManager();
+      bool success = true;
+      Int64 frameCycles = 76 * std::max<Int32>(myOSystem.console().tia().scanlinesLastFrame(), 240);
+
+      if(--frames <= 0)
+      {
+        r.unwindStates(1);
+        // get time between current and next state
+        uInt64 startCycles = r.getCurrentCycles();
+        success = r.unwindStates(1);
+        // display larger state gaps faster
+        frames = std::sqrt((myOSystem.console().tia().cycles() - startCycles) / frameCycles);
+
+        if(success)
+          r.rewindStates(1);
+      }
+
+      force = force || success;
+      if (force)
+        myTIASurface->render();
+
+      // Stop playback mode at the end of the state buffer
+      // and switch to Time Machine or Pause mode
+      if (!success)
+      {
+        frames = 0;
+      #ifdef GUI_SUPPORT
+        myOSystem.eventHandler().enterMenuMode(EventHandlerState::TIMEMACHINE);
+      #else
+        myOSystem.eventHandler().changeStateByEvent(Event::TogglePauseMode);
+      #endif
+      }
+      break;  // EventHandlerState::PLAYBACK
     }
 
     case EventHandlerState::LAUNCHER:

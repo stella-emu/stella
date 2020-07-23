@@ -22,6 +22,7 @@
 enum class EventHandlerState {
   EMULATION,
   TIMEMACHINE,
+  PLAYBACK,
   PAUSE,
   LAUNCHER,
   OPTIONSMENU,

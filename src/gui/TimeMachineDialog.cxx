@@ -69,22 +69,23 @@ static constexpr std::array<uInt32, BUTTON_H> STOP = {
   0b11111111111111,
   0b11111111111111
 };
-static constexpr std::array<uInt32, BUTTON_H> PLAY = {
-  0b11000000000000,
-  0b11110000000000,
-  0b11111100000000,
-  0b11111111000000,
-  0b11111111110000,
-  0b11111111111100,
-  0b11111111111111,
-  0b11111111111111,
-  0b11111111111100,
-  0b11111111110000,
-  0b11111111000000,
-  0b11111100000000,
-  0b11110000000000,
-  0b11000000000000
+static constexpr std::array<uInt32, BUTTON_H> EXIT = {
+  0b01100000000110,
+  0b11110000001111,
+  0b11111000011111,
+  0b01111100111110,
+  0b00111111111100,
+  0b00011111111000,
+  0b00001111110000,
+  0b00001111110000,
+  0b00011111111000,
+  0b00111111111100,
+  0b01111100111110,
+  0b11111000011111,
+  0b11110000001111,
+  0b01100000000110
 };
+
 static constexpr std::array<uInt32, BUTTON_H> REWIND_ALL = {
   0,
   0b11000011000011,
@@ -116,6 +117,22 @@ static constexpr std::array<uInt32, BUTTON_H> REWIND_1 = {
   0b00001110001110,
   0b00000110001110,
   0
+};
+static constexpr std::array<uInt32, BUTTON_H> PLAYBACK = {
+  0b11000000000000,
+  0b11110000000000,
+  0b11111100000000,
+  0b11111111000000,
+  0b11111111110000,
+  0b11111111111100,
+  0b11111111111111,
+  0b11111111111111,
+  0b11111111111100,
+  0b11111111110000,
+  0b11111111000000,
+  0b11111100000000,
+  0b11110000000000,
+  0b11000000000000
 };
 static constexpr std::array<uInt32, BUTTON_H> UNWIND_1 = {
   0,
@@ -235,8 +252,8 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
                                     STOP.data(), BUTTON_W, BUTTON_H, kToggle);
   xpos += buttonWidth + BUTTON_GAP;
 
-  myPlayWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                                  PLAY.data(), BUTTON_W, BUTTON_H, kPlay);
+  myExitWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
+                                  EXIT.data(), BUTTON_W, BUTTON_H, kExit);
   xpos += buttonWidth + BUTTON_GAP * 4;
 
   myRewindAllWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
@@ -245,6 +262,10 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
 
   myRewind1Widget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
                                      REWIND_1.data(), BUTTON_W, BUTTON_H, kRewind1, true);
+  xpos += buttonWidth + BUTTON_GAP;
+
+  myPlayBackWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
+                                      PLAYBACK.data(), BUTTON_W, BUTTON_H, kPlayBack);
   xpos += buttonWidth + BUTTON_GAP;
 
   myUnwind1Widget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
@@ -331,14 +352,33 @@ void TimeMachineDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeate
       break;
 
     case Event::ExitMode:
-      handleCommand(nullptr, kPlay, 0, 0);
+      handleCommand(nullptr, kExit, 0, 0);
+      break;
+
+    default:
+      Dialog::handleKeyDown(key, mod);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TimeMachineDialog::handleKeyUp(StellaKey key, StellaMod mod)
+{
+  // The following shortcuts duplicate the shortcuts in EventHandler
+  // Note: mode switches must happen in key UP
+
+  Event::Type event = instance().eventHandler().eventForKey(EventMode::kEmulationMode, key, mod);
+
+  switch (event)
+  {
+    case Event::TogglePlayBackMode:
+      handleCommand(nullptr, kPlayBack, 0, 0);
       break;
 
     default:
       if (key == KBDK_SPACE)
-        handleCommand(nullptr, kPlay, 0, 0);
+        handleCommand(nullptr, kPlayBack, 0, 0);
       else
-        Dialog::handleKeyDown(key, mod);
+        Dialog::handleKeyUp(key, mod);
   }
 }
 
@@ -361,7 +401,7 @@ void TimeMachineDialog::handleCommand(CommandSender* sender, int cmd,
       handleToggle();
       break;
 
-    case kPlay:
+    case kExit:
       instance().eventHandler().leaveMenuMode();
       break;
 
@@ -375,6 +415,10 @@ void TimeMachineDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kRewindAll:
       handleWinds(-1000);
+      break;
+
+    case kPlayBack:
+      instance().eventHandler().enterPlayBackMode();
       break;
 
     case kUnwind1:
@@ -479,6 +523,7 @@ void TimeMachineDialog::handleWinds(Int32 numWinds)
   // Enable/disable buttons
   myRewindAllWidget->setEnabled(!r.atFirst());
   myRewind1Widget->setEnabled(!r.atFirst());
+  myPlayBackWidget->setEnabled(!r.atLast());
   myUnwindAllWidget->setEnabled(!r.atLast());
   myUnwind1Widget->setEnabled(!r.atLast());
   mySaveAllWidget->setEnabled(r.getLastIdx() != 0);
