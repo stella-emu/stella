@@ -302,7 +302,7 @@
     <li>Supports using ROM filename extensions to force specific bankswitching schemes</li>
     <li>Supports using ROM filename to force specific display formats</li>
     <li>Supports Supercharger single-load and multi-load games</li>
-    <li>Supports ROMs stored in ZIP and GZIP format, as well as the usual raw A26/BIN/ROM formats</li>
+    <li>Supports the usual raw A26/BIN/ROM formats, also when stored in ZIP files</li>
     <li>Supports property file for setting the properties associated with games</li>
     <li>Supports the NTSC, PAL and SECAM television standards in 50Hz and 60Hz mode</li>
     <li>Supports autodetection of display format for 50Hz vs. 60Hz modes</li>
@@ -535,12 +535,12 @@
   <p>
   <h3><b><u>Supported File formats</u></b></h3>
 
-  <p>Stella supports ROMs ending with extensions .a26, .bin, .rom, .gz, and .zip.
-  For the last two compressed formats (GZIP and ZIP, respectively), Stella will
-  automatically decompress the archive, and use the first ROM image it finds in
-  it (ie, the first one ending in a valid extension).  If a ZIP archive contains
-  many such files, Stella will display a <i>virtual filesystem</i> of the contents
-  of the archive.</p>
+  <p>Stella supports ROMs ending with extensions .a26, .bin, .rom, and .zip.
+  For the ZIP archive format, Stella will look into the archive and if it
+  contains only one ROM image file, Stella will automatically load it. If an
+  archive contains many such files, Stella will display a <i>virtual
+  filesystem</i> with the contents of the archive. This can be then browsed
+  like a normal directory.</p>
 
   <p>Other extensions are also possible, namely to force a specific bankswitch scheme.
   Normally, the bankswitching scheme for a ROM is determined automatically,
