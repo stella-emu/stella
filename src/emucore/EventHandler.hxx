@@ -136,6 +136,7 @@ class EventHandler
     bool enterDebugMode();
     void leaveDebugMode();
     void enterTimeMachineMenuMode(uInt32 numWinds, bool unwind);
+    void enterPlayBackMode();
 
     /**
       Send an event directly to the event handler.
@@ -557,7 +558,7 @@ class EventHandler
     #else
       REFRESH_SIZE         = 0,
     #endif
-      EMUL_ACTIONLIST_SIZE = 159 + PNG_SIZE + COMBO_SIZE + REFRESH_SIZE,
+      EMUL_ACTIONLIST_SIZE = 160 + PNG_SIZE + COMBO_SIZE + REFRESH_SIZE,
       MENU_ACTIONLIST_SIZE = 18
     ;
 

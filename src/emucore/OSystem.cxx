@@ -343,6 +343,7 @@ FBInitStatus OSystem::createFrameBuffer()
     case EventHandlerState::OPTIONSMENU:
     case EventHandlerState::CMDMENU:
     case EventHandlerState::TIMEMACHINE:
+    case EventHandlerState::PLAYBACK:
   #endif
       if((fbstatus = myConsole->initializeVideo()) != FBInitStatus::Success)
         return fbstatus;

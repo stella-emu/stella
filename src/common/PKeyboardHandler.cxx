@@ -416,6 +416,7 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool pre
   {
     case EventHandlerState::EMULATION:
     case EventHandlerState::PAUSE:
+    case EventHandlerState::PLAYBACK:
       myHandler.handleEvent(myKeyMap.get(EventMode::kEmulationMode, key, mod), pressed, repeated);
       break;
 
@@ -563,6 +564,7 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultCommo
   {Event::Unwind1Menu,              KBDK_RIGHT, MOD3},
   {Event::Unwind10Menu,             KBDK_RIGHT, KBDM_SHIFT | MOD3},
   {Event::UnwindAllMenu,            KBDK_UP, MOD3},
+  {Event::TogglePlayBackMode,       KBDK_SPACE, KBDM_SHIFT},
 
 #if defined(RETRON77)
   {Event::ConsoleColorToggle,       KBDK_F4},         // back ("COLOR","B/W")

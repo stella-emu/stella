@@ -125,6 +125,7 @@ class Event
       ToggleAdaptRefresh, PreviousMultiCartRom,
       // add new events from here to avoid that user remapped events get overwritten
       PreviousSettingGroup, NextSettingGroup,
+      TogglePlayBackMode,
 
       LastType
     };
