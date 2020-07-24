@@ -94,9 +94,37 @@ class CartDebug : public DebuggerSystem
     // Return the base (= non-mirrored) address of the last CPU write
     int lastWriteBaseAddress();
 
-    // TODO
+    /**
+      Disassemble from the given address and its bank using the Distella disassembler
+      Address-to-label mappings (and vice-versa) are also determined here
+
+      @param address The address to start with
+      @param force  Force a re-disassembly, even if the state hasn't changed
+
+      @return  True if disassembly changed from previous call, else false
+    */
+    bool disassembleAddr(uInt16 address, bool force = false);
+
+    /**
+      Disassemble from the current PC and its bank using the Distella disassembler
+      Address-to-label mappings (and vice-versa) are also determined here
+
+      @param force  Force a re-disassembly, even if the state hasn't changed
+
+      @return  True if disassembly changed from previous call, else false
+    */
     bool disassemblePC(bool force = false);
+
+    /**
+      Disassemble the given bank using the Distella disassembler
+      Address-to-label mappings (and vice-versa) are also determined here
+
+      @param bank  The bank to disassemble
+
+      @return  True if disassembly changed from previous call, else false
+    */
     bool disassembleBank(int bank);
+
 
     // First, a call is made to disassemble(), which updates the disassembly
     // list, is required; it will figure out when an actual complete
@@ -287,7 +315,6 @@ class CartDebug : public DebuggerSystem
       @return  True if disassembly changed from previous call, else false
     */
     bool disassemble(int bank, uInt16 PC, bool force = false);
-
 
     // Actually call DiStella to fill the DisassemblyList structure
     // Return whether the search address was actually in the list

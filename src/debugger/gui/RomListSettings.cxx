@@ -30,7 +30,7 @@ RomListSettings::RomListSettings(GuiObject* boss, const GUI::Font& font)
   : Dialog(boss->instance(), boss->parent()),
     CommandSender(boss)
 {
-  const int buttonWidth  = font.getStringWidth("RunTo PC @ current line") + 20,
+  const int buttonWidth  = font.getStringWidth("Disassemble @ current line") + 20,
             buttonHeight = font.getLineHeight() + 4;
   int xpos = 8, ypos = 8;
   WidgetArray wid;
@@ -52,7 +52,7 @@ RomListSettings::RomListSettings(GuiObject* boss, const GUI::Font& font)
   ypos += buttonHeight + 4;
   ButtonWidget* disasm =
     new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                     "Re-disassemble", RomListWidget::kDisassembleCmd);
+                     "Disassemble @ current line", RomListWidget::kDisassembleCmd);
   wid.push_back(disasm);
 
   // Settings for Distella
@@ -151,7 +151,7 @@ void RomListSettings::handleCommand(CommandSender* sender, int cmd, int data, in
     }
     case RomListWidget::kDisassembleCmd:
     {
-      sendCommand(cmd, -1, -1);
+      sendCommand(cmd, _item, -1);
       break;
     }
     case RomListWidget::kTentativeCodeCmd:

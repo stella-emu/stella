@@ -24,6 +24,8 @@
     the ROM.  This allows to distribute ROM and properties in one file,
     which Stella can use directly.
 
+  * Replaced "Re-disassemble" with "Disassemble @ current line" in debugger
+
 -Have fun!
 
 

@@ -113,7 +113,8 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       break;
 
     case RomListWidget::kDisassembleCmd:
-      invalidate();
+      // 'data' is the line in the disassemblylist to be accessed
+      disassemble(data);
       break;
 
     case RomListWidget::kTentativeCodeCmd:
@@ -165,29 +166,25 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomWidget::toggleBreak(int disasm_line)
 {
-  Debugger& debugger = instance().debugger();
-  const CartDebug::DisassemblyList& list =
-      debugger.cartDebug().disassembly().list;
+  const uInt16 address = getAddress(disasm_line);
 
-  if(disasm_line >= int(list.size()))  return;
+  if (address != 0)
+  {
+    Debugger& debugger = instance().debugger();
 
-  const uInt16 address = list[disasm_line].address;
-
-  if(address != 0)
     debugger.toggleBreakPoint(address, debugger.cartDebug().getBank(address));
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomWidget::setPC(int disasm_line)
 {
-  const CartDebug::DisassemblyList& list =
-      instance().debugger().cartDebug().disassembly().list;
-  if(disasm_line >= int(list.size()))  return;
+  const uInt16 address = getAddress(disasm_line);
 
-  if(list[disasm_line].address != 0)
+  if(address != 0)
   {
     ostringstream command;
-    command << "pc #" << list[disasm_line].address;
+    command << "pc #" << address;
     instance().debugger().run(command.str());
   }
 }
@@ -195,16 +192,29 @@ void RomWidget::setPC(int disasm_line)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomWidget::runtoPC(int disasm_line)
 {
-  const CartDebug::DisassemblyList& list =
-      instance().debugger().cartDebug().disassembly().list;
-  if(disasm_line >= int(list.size()))  return;
+  const uInt16 address = getAddress(disasm_line);
 
-  if(list[disasm_line].address != 0)
+  if(address != 0)
   {
     ostringstream command;
-    command << "runtopc #" << list[disasm_line].address;
+    command << "runtopc #" << address;
     string msg = instance().debugger().run(command.str());
     instance().frameBuffer().showMessage(msg);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RomWidget::disassemble(int disasm_line)
+{
+  const uInt16 address = getAddress(disasm_line);
+
+  if(address != 0)
+  {
+    CartDebug& cart = instance().debugger().cartDebug();
+
+    cart.disassembleAddr(address, true);
+    invalidate();
+    scrollTo(cart.addressToLine(address)); // the line might have been changed
   }
 }
 
@@ -212,11 +222,9 @@ void RomWidget::runtoPC(int disasm_line)
 void RomWidget::patchROM(int disasm_line, const string& bytes,
                          Common::Base::Fmt base)
 {
-  const CartDebug::DisassemblyList& list =
-      instance().debugger().cartDebug().disassembly().list;
-  if(disasm_line >= int(list.size()))  return;
+  const uInt16 address = getAddress(disasm_line);
 
-  if(list[disasm_line].address != 0)
+  if(address != 0)
   {
     ostringstream command;
 
@@ -225,12 +233,24 @@ void RomWidget::patchROM(int disasm_line, const string& bytes,
     Common::Base::Fmt oldbase = Common::Base::format();
 
     Common::Base::setFormat(base);
-    command << "rom #" << list[disasm_line].address << " " << bytes;
+    command << "rom #" << address << " " << bytes;
     instance().debugger().run(command.str());
 
     // Restore previous base
     Common::Base::setFormat(oldbase);
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt16 RomWidget::getAddress(int disasm_line)
+{
+  const CartDebug::DisassemblyList& list =
+    instance().debugger().cartDebug().disassembly().list;
+
+  if (disasm_line < int(list.size()) && list[disasm_line].address != 0)
+    return list[disasm_line].address;
+  else
+    return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
