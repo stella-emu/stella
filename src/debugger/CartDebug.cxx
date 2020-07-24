@@ -242,13 +242,18 @@ string CartDebug::toString()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartDebug::disassembleAddr(uInt16 address, bool force)
+{
+  // ROM/RAM bank or ZP-RAM?
+  int bank = (address & 0x1000) ? getBank(address) : int(myBankInfo.size()) - 1;
+
+  return disassemble(bank, address, force);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartDebug::disassemblePC(bool force)
 {
-  uInt16 PC = myDebugger.cpuDebug().pc();
-  // ROM/RAM bank or ZP-RAM?
-  int bank = (PC & 0x1000) ? getBank(PC) : int(myBankInfo.size()) - 1;
-
-  return disassemble(bank, PC, force);
+  return (disassembleAddr(myDebugger.cpuDebug().pc()));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
