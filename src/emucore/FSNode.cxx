@@ -302,7 +302,7 @@ size_t FilesystemNode::read(stringstream& buffer) const
 
   // Otherwise, the default behaviour is to read from a normal C++ ifstream
   // and convert to a stringstream
-  std::ifstream in(getPath(), std::ios::binary);
+  std::ifstream in(getPath());
   if (in)
   {
     in.seekg(0, std::ios::end);
@@ -355,7 +355,7 @@ size_t FilesystemNode::write(const stringstream& buffer) const
     return sizeWritten;
 
   // Otherwise, the default behaviour is to write to a normal C++ ofstream
-  std::ofstream out(getPath(), std::ios::binary);
+  std::ofstream out(getPath());
   if (out)
   {
     out << buffer.rdbuf();
