@@ -809,17 +809,22 @@ void GameInfoDialog::eraseEEPROM()
 void GameInfoDialog::saveCurrentPropertiesToDisk()
 {
   saveProperties();
+  stringstream out;
+  out << myGameProperties;
 
-  FilesystemNode propfile(instance().defaultSaveDir() + myGameFile.getNameWithExt(".pro"));
-  ofstream out(propfile.getPath());
-  if(out)
+  try
   {
-    out << myGameProperties;
+    FilesystemNode propfile = instance().defaultSaveDir();
+    propfile /= myGameFile.getNameWithExt(".pro");
+
+    propfile.write(out);
     instance().frameBuffer().showMessage("Properties saved to " +
                                          propfile.getShortPath());
   }
-  else
+  catch(...)
+  {
     instance().frameBuffer().showMessage("Error saving properties");
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

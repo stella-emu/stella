@@ -116,15 +116,18 @@ void LoggerDialog::saveConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LoggerDialog::saveLogFile()
 {
-  ostringstream path;
-  path << instance().defaultSaveDir() << "stella.log";
-  FilesystemNode node(path.str());
+  FilesystemNode node = instance().defaultSaveDir();
+  node /= "stella.log";
 
-  ofstream out(node.getPath());
-  if(out.is_open())
+  try
   {
+    stringstream out;
     out << Logger::instance().logMessages();
-    instance().frameBuffer().showMessage("Saving log file to " + path.str());
+    instance().frameBuffer().showMessage("Saving log file to " + node.getShortPath());
+  }
+  catch(...)
+  {
+    instance().frameBuffer().showMessage("Error savin log file to " + node.getShortPath());
   }
 }
 

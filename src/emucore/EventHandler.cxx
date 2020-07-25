@@ -334,15 +334,15 @@ void EventHandler::handleSystemEvent(SystemEvent e, int, int)
 #endif
 #if 0
     case SystemEvent::WINDOW_MINIMIZED:
-      if(myState == EventHandlerState::EMULATION) enterMenuMode(EventHandlerState::OPTIONSMENU);
-        break;
+      if(myState == EventHandlerState::EMULATION)
+        enterMenuMode(EventHandlerState::OPTIONSMENU);
+      break;
 #endif
     default:  // handle other events as testing requires
       // cerr << "handleSystemEvent: " << e << endl;
       break;
   }
 }
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandler::AdjustGroup EventHandler::getAdjustGroup()

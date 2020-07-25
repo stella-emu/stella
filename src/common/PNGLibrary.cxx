@@ -52,7 +52,7 @@ void PNGLibrary::loadImage(const string& filename, FBSurface& surface)
       throw runtime_error(s);
   };
 
-  ifstream in(filename, std::ios_base::binary);
+  std::ifstream in(filename, std::ios_base::binary);
   if(!in.is_open())
     loadImageERROR("No snapshot found");
 
@@ -125,7 +125,7 @@ void PNGLibrary::loadImage(const string& filename, FBSurface& surface)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PNGLibrary::saveImage(const string& filename, const VariantList& comments)
 {
-  ofstream out(filename, std::ios_base::binary);
+  std::ofstream out(filename, std::ios_base::binary);
   if(!out.is_open())
     throw runtime_error("ERROR: Couldn't create snapshot file");
 
@@ -156,7 +156,7 @@ void PNGLibrary::saveImage(const string& filename, const VariantList& comments)
 void PNGLibrary::saveImage(const string& filename, const FBSurface& surface,
                            const Common::Rect& rect, const VariantList& comments)
 {
-  ofstream out(filename, std::ios_base::binary);
+  std::ofstream out(filename, std::ios_base::binary);
   if(!out.is_open())
     throw runtime_error("ERROR: Couldn't create snapshot file");
 
@@ -182,7 +182,7 @@ void PNGLibrary::saveImage(const string& filename, const FBSurface& surface,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PNGLibrary::saveImageToDisk(ofstream& out, const vector<png_bytep>& rows,
+void PNGLibrary::saveImageToDisk(std::ofstream& out, const vector<png_bytep>& rows,
     png_uint_32 width, png_uint_32 height, const VariantList& comments)
 {
   png_structp png_ptr = nullptr;
@@ -297,7 +297,7 @@ void PNGLibrary::takeSnapshot(uInt32 number)
   // Figure out the correct snapshot name
   string filename;
   bool showmessage = number == 0;
-  string sspath = myOSystem.snapshotSaveDir() +
+  string sspath = myOSystem.snapshotSaveDir().getPath() +
       (myOSystem.settings().getString("snapname") != "int" ?
           myOSystem.romFile().getNameWithExt("")
         : myOSystem.console().properties().get(PropType::Cart_Name));
@@ -456,21 +456,21 @@ void PNGLibrary::writeComments(png_structp png_ptr, png_infop info_ptr,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PNGLibrary::png_read_data(png_structp ctx, png_bytep area, png_size_t size)
 {
-  (static_cast<ifstream*>(png_get_io_ptr(ctx)))->read(
+  (static_cast<std::ifstream*>(png_get_io_ptr(ctx)))->read(
     reinterpret_cast<char *>(area), size);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PNGLibrary::png_write_data(png_structp ctx, png_bytep area, png_size_t size)
 {
-  (static_cast<ofstream*>(png_get_io_ptr(ctx)))->write(
+  (static_cast<std::ofstream*>(png_get_io_ptr(ctx)))->write(
     reinterpret_cast<const char *>(area), size);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PNGLibrary::png_io_flush(png_structp ctx)
 {
-  (static_cast<ofstream*>(png_get_io_ptr(ctx)))->flush();
+  (static_cast<std::ofstream*>(png_get_io_ptr(ctx)))->flush();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

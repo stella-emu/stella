@@ -84,12 +84,18 @@ class FilesystemNode
 
     /**
      * Compare the name of this node to the name of another, testing for
-     * equality,
+     * equality.
      */
     inline bool operator==(const FilesystemNode& node) const
     {
       return BSPF::compareIgnoreCase(getName(), node.getName()) == 0;
     }
+
+    /**
+     * Append the given path to the node, adding a directory separator
+     * when necessary.  Modelled on the C++17 fs::path API.
+     */
+    FilesystemNode& operator/=(const string& path);
 
     /**
      * By default, the output operator simply outputs the fully-qualified
@@ -269,6 +275,7 @@ class FilesystemNode
   private:
     AbstractFSNodePtr _realNode;
     explicit FilesystemNode(const AbstractFSNodePtr& realNode);
+    void setPath(const string& path);
 };
 
 

@@ -43,27 +43,23 @@
 */
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-MT24LC256::MT24LC256(const string& filename, const System& system,
+MT24LC256::MT24LC256(const FilesystemNode& eepromfile, const System& system,
                      const Controller::onMessageCallback& callback)
   : mySystem(system),
     myCallback(callback),
-    myDataFile(filename)
+    myDataFile(eepromfile)
 {
   // Load the data from an external file (if it exists)
-  ifstream in(myDataFile, std::ios_base::binary);
-  if(in.is_open())
+  try
   {
     // Get length of file; it must be 32768
-    in.seekg(0, std::ios::end);
-    if(uInt32(in.tellg()) == FLASH_SIZE)
-    {
-      in.seekg(0, std::ios::beg);
-      in.read(reinterpret_cast<char*>(myData.data()), myData.size());
+    if(myDataFile.read(myData) == FLASH_SIZE)
       myDataFileExists = true;
-    }
   }
-  else
+  catch(...)
+  {
     myDataFileExists = false;
+  }
 
   // Then initialize the I2C state
   jpee_init();
@@ -77,9 +73,8 @@ MT24LC256::~MT24LC256()
   // Save EEPROM data to external file only when necessary
   if(!myDataFileExists || myDataChanged)
   {
-    ofstream out(myDataFile, std::ios_base::binary);
-    if(out.is_open())
-      out.write(reinterpret_cast<char*>(myData.data()), myData.size());
+    try { myDataFile.write(myData, FLASH_SIZE); }
+    catch(...) { }
   }
 }
 
@@ -139,7 +134,7 @@ void MT24LC256::eraseAll()
   // Work around a bug in XCode 11.2 with -O0 and -O1
   const uInt8 initialValue = INITIAL_VALUE;
 
-  myData.fill(initialValue);
+  std::fill_n(myData.get(), FLASH_SIZE, initialValue);
   myDataChanged = true;
 }
 
@@ -153,7 +148,7 @@ void MT24LC256::eraseCurrent()
   {
     if(myPageHit[page])
     {
-      std::fill_n(myData.begin() + page * PAGE_SIZE, PAGE_SIZE, initialValue);
+      std::fill_n(myData.get() + page * PAGE_SIZE, PAGE_SIZE, initialValue);
       myDataChanged = true;
     }
   }
@@ -182,7 +177,7 @@ void MT24LC256::jpee_init()
   jpee_smallmode = 0;
   jpee_logmode = -1;
   if(!myDataFileExists)
-    myData.fill(initialValue);
+    std::fill_n(myData.get(), FLASH_SIZE, initialValue);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

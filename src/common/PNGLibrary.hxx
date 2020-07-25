@@ -165,7 +165,7 @@ class PNGLibrary
       @param height   The height of the PNG image
       @param comments The text comments to add to the PNG image
     */
-    void saveImageToDisk(ofstream& out, const vector<png_bytep>& rows,
+    void saveImageToDisk(std::ofstream& out, const vector<png_bytep>& rows,
                          png_uint_32 width, png_uint_32 height,
                          const VariantList& comments);
 

@@ -85,11 +85,13 @@ void PaletteHandler::showAdjustableMessage()
   {
     const ConsoleTiming timing = myOSystem.console().timing();
     const bool isNTSC = timing == ConsoleTiming::ntsc;
-    const float value = myOSystem.console().timing() == ConsoleTiming::pal ? myPhasePAL : myPhaseNTSC;
+    const float value =
+        myOSystem.console().timing() == ConsoleTiming::pal ? myPhasePAL : myPhaseNTSC;
     buf << std::fixed << std::setprecision(1) << value << DEGREE;
-    myOSystem.frameBuffer().showMessage("Palette phase shift", buf.str(), value,
-                                        (isNTSC ? DEF_NTSC_SHIFT : DEF_PAL_SHIFT) - MAX_SHIFT,
-                                        (isNTSC ? DEF_NTSC_SHIFT : DEF_PAL_SHIFT) + MAX_SHIFT);
+    myOSystem.frameBuffer().showMessage(
+        "Palette phase shift", buf.str(), value,
+        (isNTSC ? DEF_NTSC_SHIFT : DEF_PAL_SHIFT) - MAX_SHIFT,
+        (isNTSC ? DEF_NTSC_SHIFT : DEF_PAL_SHIFT) + MAX_SHIFT);
   }
   else
   {
@@ -328,29 +330,25 @@ void PaletteHandler::loadUserPalette()
   if (!myOSystem.checkUserPalette(true))
     return;
 
-  const string& palette = myOSystem.paletteFile();
-  ifstream in(palette, std::ios::binary);
+  ByteBuffer in;
+  try        { myOSystem.paletteFile().read(in); }
+  catch(...) { return; }
 
-  // Now that we have valid data, create the user-defined palettes
-  std::array<uInt8, 3> pixbuf;  // Temporary buffer for one 24-bit pixel
-
-  for(int i = 0; i < 128; i++)  // NTSC palette
+  uInt8* pixbuf = in.get();
+  for(int i = 0; i < 128; i++, pixbuf += 3)  // NTSC palette
   {
-    in.read(reinterpret_cast<char*>(pixbuf.data()), 3);
     const uInt32 pixel = (int(pixbuf[0]) << 16) + (int(pixbuf[1]) << 8) + int(pixbuf[2]);
     ourUserNTSCPalette[(i<<1)] = pixel;
   }
-  for(int i = 0; i < 128; i++)  // PAL palette
+  for(int i = 0; i < 128; i++, pixbuf += 3)  // PAL palette
   {
-    in.read(reinterpret_cast<char*>(pixbuf.data()), 3);
     const uInt32 pixel = (int(pixbuf[0]) << 16) + (int(pixbuf[1]) << 8) + int(pixbuf[2]);
     ourUserPALPalette[(i<<1)] = pixel;
   }
 
   std::array<uInt32, 16> secam;  // All 8 24-bit pixels, plus 8 colorloss pixels
-  for(int i = 0; i < 8; i++)     // SECAM palette
+  for(int i = 0; i < 8; i++, pixbuf += 3)    // SECAM palette
   {
-    in.read(reinterpret_cast<char*>(pixbuf.data()), 3);
     const uInt32 pixel = (int(pixbuf[0]) << 16) + (int(pixbuf[1]) << 8) + int(pixbuf[2]);
     secam[(i<<1)]   = pixel;
     secam[(i<<1)+1] = 0;

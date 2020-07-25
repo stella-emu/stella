@@ -104,7 +104,7 @@ void RomInfoWidget::parseProperties(const FilesystemNode& node)
 
 #ifdef PNG_SUPPORT
   // Get a valid filename representing a snapshot file for this rom
-  const string& filename = instance().snapshotLoadDir() +
+  const string& filename = instance().snapshotLoadDir().getPath() +
       myProperties.get(PropType::Cart_Name) + ".png";
 
   // Read the PNG file

@@ -25,15 +25,49 @@ FilesystemNode::FilesystemNode(const AbstractFSNodePtr& realNode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FilesystemNode::FilesystemNode(const string& p)
+FilesystemNode::FilesystemNode(const string& path)
 {
+  setPath(path);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FilesystemNode::setPath(const string& path)
+{
+  // Only create a new object when necessary
+  if (path == getPath())
+    return;
+
   // Is this potentially a ZIP archive?
 #if defined(ZIP_SUPPORT)
-  if (BSPF::containsIgnoreCase(p, ".zip"))
-    _realNode = FilesystemNodeFactory::create(p, FilesystemNodeFactory::Type::ZIP);
+  if (BSPF::containsIgnoreCase(path, ".zip"))
+    _realNode = FilesystemNodeFactory::create(path, FilesystemNodeFactory::Type::ZIP);
   else
 #endif
-    _realNode = FilesystemNodeFactory::create(p, FilesystemNodeFactory::Type::SYSTEM);
+    _realNode = FilesystemNodeFactory::create(path, FilesystemNodeFactory::Type::SYSTEM);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FilesystemNode& FilesystemNode::operator/=(const string& path)
+{
+  // This part could probably be put in a virtual function, but it seems like
+  // a waste since almost every system uses the same separator, except Windows
+#ifdef BSPF_WINDOWS
+  #define PATH_SEPARATOR '\\'
+#else
+  #define PATH_SEPARATOR '/'
+#endif
+
+  if (path != EmptyString)
+  {
+    string newPath = getPath();
+    if (newPath != EmptyString && newPath[newPath.length()-1] != PATH_SEPARATOR)
+      newPath += PATH_SEPARATOR;
+    newPath += path;
+    setPath(newPath);
+  }
+
+  return *this;
+#undef PATH_SEPARATOR
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -234,7 +268,7 @@ size_t FilesystemNode::read(ByteBuffer& buffer) const
     return sizeRead;
 
   // Otherwise, the default behaviour is to read from a normal C++ ifstream
-  ifstream in(getPath(), std::ios::binary);
+  std::ifstream in(getPath(), std::ios::binary);
   if (in)
   {
     in.seekg(0, std::ios::end);
@@ -268,7 +302,7 @@ size_t FilesystemNode::read(stringstream& buffer) const
 
   // Otherwise, the default behaviour is to read from a normal C++ ifstream
   // and convert to a stringstream
-  ifstream in(getPath(), std::ios::binary);
+  std::ifstream in(getPath(), std::ios::binary);
   if (in)
   {
     in.seekg(0, std::ios::end);
@@ -296,7 +330,7 @@ size_t FilesystemNode::write(const ByteBuffer& buffer, size_t size) const
     return sizeWritten;
 
   // Otherwise, the default behaviour is to write to a normal C++ ofstream
-  ofstream out(getPath(), std::ios::binary);
+  std::ofstream out(getPath(), std::ios::binary);
   if (out)
   {
     out.write(reinterpret_cast<const char*>(buffer.get()), size);
@@ -321,7 +355,7 @@ size_t FilesystemNode::write(const stringstream& buffer) const
     return sizeWritten;
 
   // Otherwise, the default behaviour is to write to a normal C++ ofstream
-  ofstream out(getPath(), std::ios::binary);
+  std::ofstream out(getPath(), std::ios::binary);
   if (out)
   {
     out << buffer.rdbuf();

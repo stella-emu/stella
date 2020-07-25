@@ -64,8 +64,6 @@ using std::istream;
 using std::ostream;
 using std::fstream;
 using std::iostream;
-using std::ifstream;
-using std::ofstream;
 using std::ostringstream;
 using std::istringstream;
 using std::stringstream;
