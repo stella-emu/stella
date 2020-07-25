@@ -192,7 +192,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   myConsoleInfo.BankSwitch = myCart->about();
 
   // Some carts have an associated nvram file
-  myCart->setNVRamFile(myOSystem.nvramDir(), myConsoleInfo.CartName);
+  myCart->setNVRamFile(myOSystem.nvramDir().getPath(), myConsoleInfo.CartName);
 
   // Let the other devices know about the new console
   mySystem->consoleChanged(myConsoleTiming);
@@ -824,7 +824,8 @@ unique_ptr<Controller> Console::getControllerPort(const Controller::Type type,
 
     case Controller::Type::AtariVox:
     {
-      const string& nvramfile = myOSystem.nvramDir() + "atarivox_eeprom.dat";
+      FilesystemNode nvramfile = myOSystem.nvramDir();
+      nvramfile /= "atarivox_eeprom.dat";
       Controller::onMessageCallback callback = [&os = myOSystem](const string& msg) {
         bool devSettings = os.settings().getBool("dev.settings");
         if(os.settings().getBool(devSettings ? "dev.eepromaccess" : "plr.eepromaccess"))
@@ -836,7 +837,8 @@ unique_ptr<Controller> Console::getControllerPort(const Controller::Type type,
     }
     case Controller::Type::SaveKey:
     {
-      const string& nvramfile = myOSystem.nvramDir() + "savekey_eeprom.dat";
+      FilesystemNode nvramfile = myOSystem.nvramDir();
+      nvramfile /= "savekey_eeprom.dat";
       Controller::onMessageCallback callback = [&os = myOSystem](const string& msg) {
         bool devSettings = os.settings().getBool("dev.settings");
         if(os.settings().getBool(devSettings ? "dev.eepromaccess" : "plr.eepromaccess"))

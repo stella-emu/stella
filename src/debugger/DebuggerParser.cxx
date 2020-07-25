@@ -132,9 +132,9 @@ string DebuggerParser::exec(const FilesystemNode& file, StringList* history)
 {
   if(file.exists())
   {
-    ifstream in(file.getPath());
-    if(!in.is_open())
-      return red("script file \'" + file.getShortPath() + "\' not found");
+    stringstream in;
+    try        { file.read(in); }
+    catch(...) { return red("script file \'" + file.getShortPath() + "\' not found"); }
 
     ostringstream buf;
     int count = 0;
@@ -633,11 +633,7 @@ string DebuggerParser::saveScriptFile(string file)
   if(file.find_last_of('.') == string::npos)
     file += ".script";
 
-  FilesystemNode node(debugger.myOSystem.defaultSaveDir() + file);
-  ofstream out(node.getPath());
-  if(!out.is_open())
-    return "Unable to save script to " + node.getShortPath();
-
+  stringstream out;
   Debugger::FunctionDefMap funcs = debugger.getFunctionDefMap();
   for(const auto& f: funcs)
     if (!debugger.isBuiltinFunction(f.first))
@@ -676,6 +672,16 @@ string DebuggerParser::saveScriptFile(string file)
     if(myTraps[i]->begin != myTraps[i]->end)
       out << " " << Base::toString(myTraps[i]->end);
     out << endl;
+  }
+
+  FilesystemNode node(debugger.myOSystem.defaultSaveDir().getPath() + file);
+  try
+  {
+    node.write(out);
+  }
+  catch(...)
+  {
+    return "Unable to save script to " + node.getShortPath();
   }
 
   return "saved " + node.getShortPath() + " OK";
@@ -1140,7 +1146,7 @@ void DebuggerParser::executeDump()
     file << ".dump";
     FilesystemNode node(file.str());
     // cout << "dump " << args[0] << "-" << args[1] << " to " << file.str() << endl;
-    ofstream ofs(node.getPath(), ofstream::out | ofstream::app);
+    std::ofstream ofs(node.getPath(), std::ofstream::out | std::ofstream::app);
     if(!ofs.is_open())
     {
       outputCommandError("Unable to append dump to file " + node.getShortPath(), myCommand);
@@ -1221,9 +1227,8 @@ void DebuggerParser::executeExec()
   if(file.find_last_of('.') == string::npos)
     file += ".script";
   FilesystemNode node(file);
-  if (!node.exists()) {
-    node = FilesystemNode(debugger.myOSystem.defaultSaveDir() + file);
-  }
+  if (!node.exists())
+    node = FilesystemNode(debugger.myOSystem.defaultSaveDir().getPath() + file);
 
   if (argCount == 2) {
     execPrefix = argStrings[1];

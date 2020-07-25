@@ -121,22 +121,22 @@ bool OSystem::create()
       << "  Features: " << myFeatures << endl
       << "  " << myBuildInfo << endl << endl
       << "Base directory:     '"
-      << FilesystemNode(myBaseDir).getShortPath() << "'" << endl
+      << myBaseDir.getShortPath() << "'" << endl
       << "State directory:    '"
-      << FilesystemNode(myStateDir).getShortPath() << "'" << endl
+      << myStateDir.getShortPath() << "'" << endl
       << "NVRam directory:    '"
-      << FilesystemNode(myNVRamDir).getShortPath() << "'" << endl;
+      << myNVRamDir.getShortPath() << "'" << endl;
 
-  if(!myConfigFile.empty())
+  if(myConfigFile.getPath() != EmptyString)
     buf << "Configuration file: '"
-        << FilesystemNode(myConfigFile).getShortPath() << "'" << endl;
+        << myConfigFile.getShortPath() << "'" << endl;
 
   buf << "Game properties:    '"
       << myPropertiesFile.getShortPath() << "'" << endl
       << "Cheat file:         '"
-      << FilesystemNode(myCheatFile).getShortPath() << "'" << endl
+      << myCheatFile.getShortPath() << "'" << endl
       << "Palette file:       '"
-      << FilesystemNode(myPaletteFile).getShortPath() << "'" << endl;
+      << myPaletteFile.getShortPath() << "'" << endl;
   Logger::info(buf.str());
 
   // NOTE: The framebuffer MUST be created before any other object!!!
@@ -193,30 +193,27 @@ void OSystem::loadConfig(const Settings::Options& options)
 {
   // Get base directory and config file from derived class
   // It will decide whether it can override its default location
-  getBaseDirAndConfig(myBaseDir, myConfigFile,
-      myDefaultSaveDir, myDefaultLoadDir,
-      ourOverrideBaseDirWithApp, ourOverrideBaseDir);
+  string baseDir, cfgFile, defSaveDir, defLoadDir;
+  getBaseDirAndConfig(baseDir, cfgFile, defSaveDir, defLoadDir,
+                      ourOverrideBaseDirWithApp, ourOverrideBaseDir);
 
   // Get fully-qualified pathnames, and make directories when needed
-  FilesystemNode node(myBaseDir);
-  if(!node.isDirectory())
-    node.makeDir();
-  myBaseDir = node.getPath();
-  if(!myConfigFile.empty())
-    myConfigFile = FilesystemNode(myConfigFile).getPath();
+  myBaseDir = FilesystemNode(baseDir);
+  if(!myBaseDir.isDirectory())
+    myBaseDir.makeDir();
+  if(!cfgFile.empty())
+    myConfigFile = FilesystemNode(cfgFile);
 
-  FilesystemNode save(myDefaultSaveDir);
-  if(!save.isDirectory())
-    save.makeDir();
-  myDefaultSaveDir = save.getShortPath();
+  myDefaultSaveDir = FilesystemNode(defSaveDir);
+  if(!myDefaultSaveDir.isDirectory())
+    myDefaultSaveDir.makeDir();
 
-  FilesystemNode load(myDefaultLoadDir);
-  if(!load.isDirectory())
-    load.makeDir();
-  myDefaultLoadDir = load.getShortPath();
+  myDefaultLoadDir = FilesystemNode(defLoadDir);
+  if(!myDefaultLoadDir.isDirectory())
+    myDefaultLoadDir.makeDir();
 
 #ifdef SQLITE_SUPPORT
-  mySettingsDb = make_shared<SettingsDb>(myBaseDir, "settings");
+  mySettingsDb = make_shared<SettingsDb>(myBaseDir.getPath(), "settings");
   if(!mySettingsDb->initialize())
     mySettingsDb.reset();
 #endif
@@ -259,38 +256,48 @@ void OSystem::saveConfig()
 void OSystem::setConfigPaths()
 {
   // Make sure all required directories actually exist
-  auto buildDirIfRequired = [](string& path, const string& pathToBuild)
+  auto buildDirIfRequired = [](FilesystemNode& path,
+                               const FilesystemNode& initialPath,
+                               const string& pathToAppend = EmptyString)
   {
-    FilesystemNode node(pathToBuild);
-    if(!node.isDirectory())
-      node.makeDir();
-
-    path = node.getPath();
+    path = initialPath;
+    if(pathToAppend != EmptyString)
+      path /= pathToAppend;
+    if(!path.isDirectory())
+      path.makeDir();
   };
 
-  buildDirIfRequired(myStateDir, myBaseDir + "state");
-  buildDirIfRequired(myNVRamDir, myBaseDir + "nvram");
+  buildDirIfRequired(myStateDir, myBaseDir, "state");
+  buildDirIfRequired(myNVRamDir, myBaseDir, "nvram");
 #ifdef DEBUGGER_SUPPORT
-  buildDirIfRequired(myCfgDir, myBaseDir + "cfg");
+  buildDirIfRequired(myCfgDir, myBaseDir, "cfg");
 #endif
 
 #ifdef PNG_SUPPORT
-  mySnapshotSaveDir = mySettings->getString("snapsavedir");
-  if(mySnapshotSaveDir == "") mySnapshotSaveDir = defaultSaveDir();
-  buildDirIfRequired(mySnapshotSaveDir, mySnapshotSaveDir);
+  const string& ssSaveDir = mySettings->getString("snapsavedir");
+  if(ssSaveDir == EmptyString)
+    mySnapshotSaveDir = defaultSaveDir();
+  else
+    mySnapshotSaveDir = FilesystemNode(ssSaveDir);
+  if(!mySnapshotSaveDir.isDirectory())
+    mySnapshotSaveDir.makeDir();
 
-  mySnapshotLoadDir = mySettings->getString("snaploaddir");
-  if(mySnapshotLoadDir == "") mySnapshotLoadDir = defaultLoadDir();
-  buildDirIfRequired(mySnapshotLoadDir, mySnapshotLoadDir);
+  const string& ssLoadDir = mySettings->getString("snaploaddir");
+  if(ssLoadDir == EmptyString)
+    mySnapshotLoadDir = defaultLoadDir();
+  else
+    mySnapshotLoadDir = FilesystemNode(ssLoadDir);
+  if(!mySnapshotLoadDir.isDirectory())
+    mySnapshotLoadDir.makeDir();
 #endif
 
-  myCheatFile = FilesystemNode(myBaseDir + "stella.cht").getPath();
-  myPaletteFile = FilesystemNode(myBaseDir + "stella.pal").getPath();
-  myPropertiesFile = FilesystemNode(myBaseDir + "stella.pro");
+  myCheatFile = myBaseDir;  myCheatFile /= "stella.cht";
+  myPaletteFile = myBaseDir;  myPaletteFile /= "stella.pal";
+  myPropertiesFile = myBaseDir;  myPropertiesFile /= "stella.pro";
 
 #if 0
   // Debug code
-  auto dbgPath = [](const string& desc, const string& location)
+  auto dbgPath = [](const string& desc, const FilesystemNode& location)
   {
     cerr << desc << ": " << location << endl;
   };
@@ -310,21 +317,24 @@ void OSystem::setConfigPaths()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool OSystem::checkUserPalette(bool outputError) const
 {
-  const string& palette = paletteFile();
-  ifstream in(palette, std::ios::binary);
-  if (!in)
-    return false;
-
-  // Make sure the contains enough data for the NTSC, PAL and SECAM palettes
-  // This means 128 colours each for NTSC and PAL, at 3 bytes per pixel
-  // and 8 colours for SECAM at 3 bytes per pixel
-  in.seekg(0, std::ios::end);
-  std::streampos length = in.tellg();
-  in.seekg(0, std::ios::beg);
-  if (length < 128 * 3 * 2 + 8 * 3)
+  try
   {
-    if (outputError)
-      cerr << "ERROR: invalid palette file " << palette << endl;
+    ByteBuffer palette;
+    size_t size = paletteFile().read(palette);
+
+    // Make sure the contains enough data for the NTSC, PAL and SECAM palettes
+    // This means 128 colours each for NTSC and PAL, at 3 bytes per pixel
+    // and 8 colours for SECAM at 3 bytes per pixel
+    if(size != 128 * 3 * 2 + 8 * 3)
+    {
+      if(outputError)
+        cerr << "ERROR: invalid palette file " << paletteFile() << endl;
+
+      return false;
+    }
+  }
+  catch(...)
+  {
     return false;
   }
   return true;
@@ -457,8 +467,11 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
           myConsole->cartridge().detectedType() + ", loading ROM" + id);
     }
     buf << "Game console created:" << endl
-        << "  ROM file: " << myRomFile.getShortPath() << endl << endl
-        << getROMInfo(*myConsole);
+        << "  ROM file: " << myRomFile.getShortPath() << endl;
+    FilesystemNode propsFile(myRomFile.getPathWithExt(".pro"));
+    if(propsFile.exists())
+    buf << "  PRO file: " << propsFile.getShortPath() << endl;
+    buf << endl << getROMInfo(*myConsole);
     Logger::info(buf.str());
 
     myFrameBuffer->setCursorState();
@@ -821,7 +834,7 @@ shared_ptr<KeyValueRepository> OSystem::createSettingsRepository()
       ? shared_ptr<KeyValueRepository>(mySettingsDb, &mySettingsDb->settingsRepository())
       : make_shared<KeyValueRepositoryNoop>();
   #else
-    if (myConfigFile.empty())
+    if (myConfigFile.getPath() == EmptyString)
       return make_shared<KeyValueRepositoryNoop>();
 
     return make_shared<KeyValueRepositoryConfigfile>(myConfigFile);

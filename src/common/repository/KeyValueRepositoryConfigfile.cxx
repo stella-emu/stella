@@ -28,8 +28,8 @@ namespace {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-KeyValueRepositoryConfigfile::KeyValueRepositoryConfigfile(const string& filename)
-  : myFilename(filename)
+KeyValueRepositoryConfigfile::KeyValueRepositoryConfigfile(const FilesystemNode& file)
+  : myFile(file)
 {
 }
 
@@ -41,10 +41,14 @@ std::map<string, Variant> KeyValueRepositoryConfigfile::load()
   string line, key, value;
   string::size_type equalPos, garbage;
 
-  ifstream in(myFilename);
-  if(!in || !in.is_open()) {
-    Logger::error("ERROR: Couldn't load from settings file " + myFilename);
-
+  stringstream in;
+  try
+  {
+    myFile.read(in);
+  }
+  catch(...)
+  {
+    Logger::error("ERROR: Couldn't load from settings file " + myFile.getShortPath());
     return values;
   }
 
@@ -79,13 +83,7 @@ std::map<string, Variant> KeyValueRepositoryConfigfile::load()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void KeyValueRepositoryConfigfile::save(const std::map<string, Variant>& values)
 {
-  ofstream out(myFilename);
-  if(!out || !out.is_open()) {
-    Logger::error("ERROR: Couldn't save to settings file " + myFilename);
-
-    return;
-  }
-
+  stringstream out;
   out << ";  Stella configuration file" << endl
       << ";" << endl
       << ";  Lines starting with ';' are comments and are ignored." << endl
@@ -104,4 +102,13 @@ void KeyValueRepositoryConfigfile::save(const std::map<string, Variant>& values)
   // Write out each of the key and value pairs
   for(const auto& pair: values)
     out << pair.first << " = " << pair.second << endl;
+
+  try
+  {
+    myFile.write(out);
+  }
+  catch(...)
+  {
+    Logger::error("ERROR: Couldn't save to settings file " + myFile.getShortPath());
+  }
 }

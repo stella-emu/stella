@@ -246,53 +246,48 @@ class OSystem
     void setConfigPaths();
 
     /**
-      Return the default full/complete directory name for storing data.
+      Return the default full/complete path name for storing data.
     */
-    const string& baseDir() const { return myBaseDir; }
+    const FilesystemNode& baseDir() const { return myBaseDir; }
 
     /**
-      Return the full/complete directory name for storing state files.
+      Return the full/complete path name for storing state files.
     */
-    const string& stateDir() const { return myStateDir; }
+    const FilesystemNode& stateDir() const { return myStateDir; }
 
     /**
-      Return the full/complete directory name for storing nvram
+      Return the full/complete path name for storing nvram
       (flash/EEPROM) files.
     */
-    const string& nvramDir() const { return myNVRamDir; }
+    const FilesystemNode& nvramDir() const { return myNVRamDir; }
 
   #ifdef CHEATCODE_SUPPORT
     /**
-      This method should be called to get the full path of the cheat file.
-
-      @return String representing the full path of the cheat filename.
+      Return the full/complete path name of the cheat file.
     */
-    const string& cheatFile() const { return myCheatFile; }
+    const FilesystemNode& cheatFile() const { return myCheatFile; }
   #endif
 
   #ifdef DEBUGGER_SUPPORT
     /**
-      Return the full/complete directory name for storing Distella cfg files.
+      Return the full/complete path name for storing Distella cfg files.
     */
-    const string& cfgDir() const { return myCfgDir; }
+    const FilesystemNode& cfgDir() const { return myCfgDir; }
   #endif
 
   #ifdef PNG_SUPPORT
     /**
-      Return the full/complete directory name for saving and loading
+      Return the full/complete path name for saving and loading
       PNG snapshots.
     */
-    const string& snapshotSaveDir() const { return mySnapshotSaveDir; }
-    const string& snapshotLoadDir() const { return mySnapshotLoadDir; }
+    const FilesystemNode& snapshotSaveDir() const { return mySnapshotSaveDir; }
+    const FilesystemNode& snapshotLoadDir() const { return mySnapshotLoadDir; }
   #endif
 
     /**
-      This method should be called to get the full path of the
-      (optional) palette file.
-
-      @return String representing the full path of the properties filename.
+      Return the full/complete path name of the (optional) palette file.
     */
-    const string& paletteFile() const { return myPaletteFile; }
+    const FilesystemNode& paletteFile() const { return myPaletteFile; }
 
     /**
       Checks if a valid a user-defined palette file exists.
@@ -300,10 +295,7 @@ class OSystem
     bool checkUserPalette(bool outputError = false) const;
 
     /**
-      This method should be called to get the full path of the currently
-      loaded ROM.
-
-      @return FSNode object representing the ROM file.
+      Return the full/complete path name of the currently loaded ROM.
     */
     const FilesystemNode& romFile() const { return myRomFile; }
 
@@ -311,8 +303,8 @@ class OSystem
       The default locations for saving and loading various files that
       don't already have a specific location.
     */
-    const string& defaultSaveDir() const { return myDefaultSaveDir; }
-    const string& defaultLoadDir() const { return myDefaultLoadDir; }
+    const FilesystemNode& defaultSaveDir() const { return myDefaultSaveDir; }
+    const FilesystemNode& defaultLoadDir() const { return myDefaultLoadDir; }
 
     /**
       Open the given ROM and return an array containing its contents.
@@ -533,22 +525,10 @@ class OSystem
     bool myQuitLoop{false};
 
   private:
-    string myBaseDir;
-    string myStateDir;
-    string mySnapshotSaveDir;
-    string mySnapshotLoadDir;
-    string myNVRamDir;
-    string myCfgDir;
-    string myDefaultSaveDir;
-    string myDefaultLoadDir;
-
-    string myCheatFile;
-    string myConfigFile;
-    string myPaletteFile;
-    FilesystemNode myPropertiesFile;
-
-    FilesystemNode myRomFile;
-    string myRomMD5;
+    FilesystemNode myBaseDir, myStateDir, mySnapshotSaveDir, mySnapshotLoadDir,
+                   myNVRamDir, myCfgDir, myDefaultSaveDir, myDefaultLoadDir;
+    FilesystemNode myCheatFile, myConfigFile, myPaletteFile,  myPropertiesFile;
+    FilesystemNode myRomFile;  string myRomMD5;
 
     string myFeatures;
     string myBuildInfo;

@@ -213,10 +213,9 @@ void CheatManager::enable(const string& code, bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheatManager::loadCheatDatabase()
 {
-  const string& cheatfile = myOSystem.cheatFile();
-  ifstream in(cheatfile);
-  if(!in)
-    return;
+  stringstream in;
+  try         { myOSystem.cheatFile().read(in); }
+  catch(...)  { return; }
 
   string line, md5, cheat;
   string::size_type one, two, three, four;
@@ -253,13 +252,12 @@ void CheatManager::saveCheatDatabase()
   if(!myListIsDirty)
     return;
 
-  const string& cheatfile = myOSystem.cheatFile();
-  ofstream out(cheatfile);
-  if(!out)
-    return;
-
+  stringstream out;
   for(const auto& iter: myCheatMap)
     out << "\"" << iter.first << "\" " << "\"" << iter.second << "\"" << endl;
+
+  try         { myOSystem.cheatFile().write(out); }
+  catch(...)  { return; }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

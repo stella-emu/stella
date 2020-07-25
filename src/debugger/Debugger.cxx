@@ -167,7 +167,7 @@ string Debugger::autoExec(StringList* history)
   ostringstream buf;
 
   // autoexec.script is always run
-  FilesystemNode autoexec(myOSystem.baseDir() + "autoexec.script");
+  FilesystemNode autoexec(myOSystem.baseDir().getPath() + "autoexec.script");
   buf << "autoExec():" << endl
       << myParser->exec(autoexec, history) << endl;
 
@@ -304,7 +304,7 @@ int Debugger::step(bool save)
   myOSystem.console().tia().updateScanlineByStep().flushLineCache();
   lockSystem();
 
-  if(save)  
+  if(save)
     addState("step");
   return int(mySystem.cycles() - startCycle);
 }

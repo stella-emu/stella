@@ -747,7 +747,7 @@ string CartDebug::loadListFile()
   try
   {
     if(lst.read(in) == 0)
-      return DebuggerParser::red("list file '" + lst.getShortPath() + "' not readable");
+      return DebuggerParser::red("list file '" + lst.getShortPath() + "' not found");
   }
   catch(...)
   {
@@ -811,7 +811,7 @@ string CartDebug::loadSymbolFile()
   try
   {
     if(sym.read(in) == 0)
-      return DebuggerParser::red("symbol file '" + sym.getShortPath() + "' not readable");
+      return DebuggerParser::red("symbol file '" + sym.getShortPath() + "' not found");
   }
   catch(...)
   {
@@ -862,15 +862,14 @@ string CartDebug::loadConfigFile()
   // on the actual ROM filename
 
   FilesystemNode romNode(myOSystem.romFile().getPathWithExt(".cfg"));
-  FilesystemNode cfg(myOSystem.cfgDir() + romNode.getName());
+  FilesystemNode cfg = myOSystem.cfgDir();  cfg /= romNode.getName();
   if(!cfg.isReadable())
     return DebuggerParser::red("config file \'" + cfg.getShortPath() + "\' not found");
 
   stringstream in;
   try
   {
-    if(cfg.read(in) == 0)
-      return "Unable to load directives from " + cfg.getPath();
+    cfg.read(in);
   }
   catch(...)
   {
@@ -1002,12 +1001,11 @@ string CartDebug::saveConfigFile()
   try
   {
     FilesystemNode romNode(myOSystem.romFile().getPathWithExt(".cfg"));
-    FilesystemNode cfg(myOSystem.cfgDir() + romNode.getName());
+    FilesystemNode cfg = myOSystem.cfgDir();  cfg /= romNode.getName();
     if(!cfg.getParent().isWritable())
       return DebuggerParser::red("config file \'" + cfg.getShortPath() + "\' not writable");
 
-    size_t size = cfg.write(out);
-    if(size == 0)
+    if(cfg.write(out) == 0)
       return "Unable to save directives to " + cfg.getShortPath();
 
     if(myConsole.cartridge().romBankCount() > 1)
@@ -1016,7 +1014,7 @@ string CartDebug::saveConfigFile()
   }
   catch(const runtime_error& e)
   {
-    retVal << e.what();
+    retVal << "Unable to save directives: " << e.what();
   }
   return retVal.str();
 }
@@ -1331,24 +1329,21 @@ string CartDebug::saveDisassembly()
   // And finally, output the disassembly
   out << buf.str();
 
+  const string& propsname =
+    myConsole.properties().get(PropType::Cart_Name) + ".asm";
+  FilesystemNode node(myOSystem.defaultSaveDir().getPath() + propsname);
   stringstream retVal;
   try
   {
-    const string& propsname =
-      myConsole.properties().get(PropType::Cart_Name) + ".asm";
-    FilesystemNode node(myOSystem.defaultSaveDir() + propsname);
-
-    size_t size = node.write(out);
-    if(size == 0)
-      return "Unable to save disassembly to " + node.getShortPath();
+    node.write(out);
 
     if(myConsole.cartridge().romBankCount() > 1)
       retVal << DebuggerParser::red("disassembly for multi-bank ROM not fully supported\n");
     retVal << "saved " << node.getShortPath() << " OK";
   }
-  catch(const runtime_error& e)
+  catch(...)
   {
-    retVal << e.what();
+    retVal << "Unable to save disassembly to " << node.getShortPath();
   }
   return retVal.str();
 }
@@ -1358,7 +1353,7 @@ string CartDebug::saveRom()
 {
   const string& rom = myConsole.properties().get(PropType::Cart_Name) + ".a26";
 
-  FilesystemNode node(myOSystem.defaultSaveDir() + rom);
+  FilesystemNode node(myOSystem.defaultSaveDir().getPath() + rom);
   if(myConsole.cartridge().saveROM(node))
     return "saved ROM as " + node.getShortPath();
   else
@@ -1376,15 +1371,13 @@ string CartDebug::saveAccessFile()
   try
   {
     const string& rom = myConsole.properties().get(PropType::Cart_Name) + ".csv";
-    FilesystemNode node(myOSystem.defaultSaveDir() + rom);
+    FilesystemNode node(myOSystem.defaultSaveDir().getPath() + rom);
 
-    size_t size = node.write(out);
-    if(size > 0)
-      return "saved access counters as " + node.getShortPath();
+    node.write(out);
+    return "saved access counters as " + node.getShortPath();
   }
-  catch(const runtime_error& e)
+  catch(...)
   {
-    return e.what();
   }
   return DebuggerParser::red("failed to save access counters file");
 }
