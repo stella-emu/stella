@@ -275,8 +275,8 @@ class Controller : public Serializable
     /**
       Sets the auto fire rate. 0 disables auto fire.
 
-      @param speed  Auto fire rate (0..30/25) in Hz
-      @param isNTSC  NTSC or PAL frame rate
+      @param rate   Auto fire rate (0..30/25) in Hz
+      @param isNTSC NTSC or PAL frame rate
     */
     static void setAutoFireRate(int rate, bool isNTSC = true);
 
