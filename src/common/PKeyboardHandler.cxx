@@ -534,6 +534,9 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultCommo
   {Event::ToggleContSnapshots,      KBDK_S, MOD3},
   {Event::ToggleContSnapshotsFrame, KBDK_S, KBDM_SHIFT | MOD3},
 #endif
+
+  {Event::DecreaseAutoFire,         KBDK_A, KBDM_SHIFT | KBDM_CTRL},
+  {Event::IncreaseAutoFire,         KBDK_A, KBDM_CTRL },
   {Event::HandleMouseControl,       KBDK_0, KBDM_CTRL},
   {Event::ToggleGrabMouse,          KBDK_G, KBDM_CTRL},
   {Event::ToggleSAPortOrder,        KBDK_1, KBDM_CTRL},

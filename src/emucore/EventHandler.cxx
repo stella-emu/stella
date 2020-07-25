@@ -102,6 +102,7 @@ void EventHandler::initialize()
   Paddles::setMouseSensitivity(myOSystem.settings().getInt("msense"));
   PointingDevice::setSensitivity(myOSystem.settings().getInt("tsense"));
   Driving::setSensitivity(myOSystem.settings().getInt("dcsense"));
+  Controller::setAutoFireRate(myOSystem.settings().getInt("autofirerate"));
 
 #ifdef GUI_SUPPORT
   // Set quick select delay when typing characters in listwidgets
@@ -1248,6 +1249,14 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if (pressed && !repeated) myOSystem.png().toggleContinuousSnapshots(true);
       return;
   #endif
+
+    case Event::DecreaseAutoFire:
+      if(pressed) myOSystem.console().changeAutoFireRate(-1);
+      return;
+
+    case Event::IncreaseAutoFire:
+      if(pressed) myOSystem.console().changeAutoFireRate(+1);
+      return;
 
     case Event::HandleMouseControl:
       if (pressed && !repeated) handleMouseControl();
@@ -2558,6 +2567,8 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::VolumeDecrease,          "Decrease volume",                       "" },
   { Event::VolumeIncrease,          "Increase volume",                       "" },
 
+  { Event::DecreaseAutoFire,        "Decrease auto fire speed",              "" },
+  { Event::IncreaseAutoFire,        "Increase auto fire speed",              "" },
   { Event::HandleMouseControl,      "Switch mouse emulation modes",          "" },
   { Event::ToggleGrabMouse,         "Toggle grab mouse",                     "" },
   { Event::ToggleSAPortOrder,       "Swap Stelladaptor port ordering",       "" },
@@ -2627,6 +2638,7 @@ const Event::EventSet EventHandler::MiscEvents = {
   Event::TakeSnapshot, Event::ToggleContSnapshots, Event::ToggleContSnapshotsFrame,
   // Event::MouseAxisXMove, Event::MouseAxisYMove,
   // Event::MouseButtonLeftValue, Event::MouseButtonRightValue,
+  Event::DecreaseAutoFire, Event::IncreaseAutoFire,
   Event::HandleMouseControl, Event::ToggleGrabMouse,
   Event::ToggleSAPortOrder, Event::PreviousMultiCartRom,
   Event::PreviousSettingGroup, Event::NextSettingGroup,

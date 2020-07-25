@@ -100,6 +100,7 @@ Settings::Settings()
   setPermanent("combomap", "");
   setPermanent("joydeadzone", "13");
   setPermanent("joyallow4", "false");
+  setPermanent("autofirerate", "0");
   setPermanent("usemouse", "analog");
   setPermanent("grabmouse", "true");
   setPermanent("cursor", "2");
@@ -481,6 +482,7 @@ void Settings::usage() const
     << "  -tsense       <1-20>         Sensitivity of mouse emulated trackball movement\n"
     << "  -dcsense      <1-20>         Sensitivity of digital emulated driving controller\n"
     << "                                movement\n"
+    << "  -autofirerate <0-30>         Set fire button's autofire rate (0 means off)\n"
     << "  -saport       <lr|rl>        How to assign virtual ports to multiple\n"
     << "                                Stelladaptor/2600-daptors\n"
     << "  -modcombo     <1|0>          Enable modifer key combos\n"

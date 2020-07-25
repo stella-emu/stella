@@ -66,6 +66,7 @@ class InputDialog : public Dialog
     void handleCursorState();
     void updateDejitterAveraging();
     void updateDejitterReaction();
+    void updateAutoFireRate();
     void eraseEEPROM();
 
   private:
@@ -75,6 +76,7 @@ class InputDialog : public Dialog
       kDejitterAvChanged  = 'JAch',
       kDejitterReChanged  = 'JRch',
       kDPSpeedChanged     = 'PDch',
+      kAutoFireChanged    = 'AFch',
       kTBSpeedChanged     = 'TBch',
       kDCSpeedChanged     = 'DCch',
       kDBButtonPressed    = 'DBbp',
@@ -99,6 +101,7 @@ class InputDialog : public Dialog
     SliderWidget*     myDejitterBase{nullptr};
     SliderWidget*     myDejitterDiff{nullptr};
     SliderWidget*     myDPaddleSpeed{nullptr};
+    SliderWidget*     myAutoFireRate{nullptr};
     CheckboxWidget*   myAllowAll4{nullptr};
     CheckboxWidget*   myModCombo{nullptr};
 

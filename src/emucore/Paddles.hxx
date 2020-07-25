@@ -190,10 +190,6 @@ class Paddles : public Controller
     static int DEJITTER_BASE, DEJITTER_DIFF;
     static int MOUSE_SENSITIVITY;
 
-    // Lookup table for associating paddle buttons with controller pins
-    // Yes, this is hideously complex
-    static const std::array<Controller::DigitalPin, 2> ourButtonPin;
-
   private:
     // Following constructors and assignment operators not supported
     Paddles() = delete;

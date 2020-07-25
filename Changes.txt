@@ -14,6 +14,8 @@
 
 6.2.1 to 6.3 (XXXX XX, 2020)
 
+  * Added autofire.
+
   * Added new interface palette 'Dark'. (TODO: DOC)
 
   * Extended global hotkeys for debug options.

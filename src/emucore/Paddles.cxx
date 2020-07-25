@@ -186,8 +186,8 @@ void Paddles::update()
   setPin(DigitalPin::Four, true);
 
   // Digital events (from keyboard or joystick hats & buttons)
-  setPin(DigitalPin::Three, myEvent.get(myP1FireEvent) == 0);
-  setPin(DigitalPin::Four, myEvent.get(myP0FireEvent) == 0);
+  bool firePressedP0 = myEvent.get(myP0FireEvent) != 0;
+  bool firePressedP1 = myEvent.get(myP1FireEvent) != 0;
 
   // Paddle movement is a very difficult thing to accurately emulate,
   // since it originally came from an analog device that had very
@@ -269,9 +269,14 @@ void Paddles::update()
     myCharge[myMPaddleID] = BSPF::clamp(myCharge[myMPaddleID] -
         (myEvent.get(myAxisMouseMotion) * MOUSE_SENSITIVITY),
         TRIGMIN, TRIGRANGE);
-    if(myEvent.get(Event::MouseButtonLeftValue) ||
-       myEvent.get(Event::MouseButtonRightValue))
-      setPin(ourButtonPin[myMPaddleID], false);
+    if(myMPaddleID == 0)
+      firePressedP0 = firePressedP0
+        || myEvent.get(Event::MouseButtonLeftValue)
+        || myEvent.get(Event::MouseButtonRightValue);
+    else
+      firePressedP1 = firePressedP1
+        || myEvent.get(Event::MouseButtonLeftValue)
+        || myEvent.get(Event::MouseButtonRightValue);
   }
   else
   {
@@ -282,18 +287,30 @@ void Paddles::update()
       myCharge[myMPaddleIDX] = BSPF::clamp(myCharge[myMPaddleIDX] -
           (myEvent.get(Event::MouseAxisXMove) * MOUSE_SENSITIVITY),
           TRIGMIN, TRIGRANGE);
-      if(myEvent.get(Event::MouseButtonLeftValue))
-        setPin(ourButtonPin[myMPaddleIDX], false);
+
+      if(myMPaddleIDX == 0)
+        firePressedP0 = firePressedP0
+          || myEvent.get(Event::MouseButtonLeftValue);
+      else
+        firePressedP1 = firePressedP1
+          || myEvent.get(Event::MouseButtonLeftValue);
     }
     if(myMPaddleIDY > -1)
     {
       myCharge[myMPaddleIDY] = BSPF::clamp(myCharge[myMPaddleIDY] -
           (myEvent.get(Event::MouseAxisYMove) * MOUSE_SENSITIVITY),
           TRIGMIN, TRIGRANGE);
-      if(myEvent.get(Event::MouseButtonRightValue))
-        setPin(ourButtonPin[myMPaddleIDY], false);
+
+      if(myMPaddleIDY == 0)
+        firePressedP0 = firePressedP0
+          || myEvent.get(Event::MouseButtonRightValue);
+      else
+        firePressedP1 = firePressedP1
+          || myEvent.get(Event::MouseButtonRightValue);
     }
   }
+  setPin(DigitalPin::Four, !getAutoFireState(firePressedP0));
+  setPin(DigitalPin::Three, !getAutoFireStateP1(firePressedP1));
 
   // Finally, consider digital input, where movement happens
   // until a digital event is released
@@ -449,8 +466,3 @@ int Paddles::DIGITAL_DISTANCE = -1;
 int Paddles::MOUSE_SENSITIVITY = -1;
 int Paddles::DEJITTER_BASE = 0;
 int Paddles::DEJITTER_DIFF = 0;
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const std::array<Controller::DigitalPin, 2> Paddles::ourButtonPin = {
-  DigitalPin::Four, DigitalPin::Three
-};
