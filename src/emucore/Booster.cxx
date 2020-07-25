@@ -59,7 +59,7 @@ void BoosterGrip::update()
   setPin(DigitalPin::Two, myEvent.get(myDownEvent) == 0);
   setPin(DigitalPin::Three, myEvent.get(myLeftEvent) == 0);
   setPin(DigitalPin::Four, myEvent.get(myRightEvent) == 0);
-  setPin(DigitalPin::Six, myEvent.get(myFireEvent) == 0);
+  bool firePressed = myEvent.get(myFireEvent) != 0;
 
   // The CBS Booster-grip has two more buttons on it.  These buttons are
   // connected to the inputs usually used by paddles.
@@ -120,11 +120,12 @@ void BoosterGrip::update()
       }
     }
     // Get mouse button state
-    if(myEvent.get(Event::MouseButtonLeftValue))
-      setPin(DigitalPin::Six, false);
+    firePressed = firePressed
+      || myEvent.get(Event::MouseButtonLeftValue);
     if(myEvent.get(Event::MouseButtonRightValue))
       setPin(AnalogPin::Nine, MIN_RESISTANCE);
   }
+  setPin(DigitalPin::Six, !getAutoFireState(firePressed));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

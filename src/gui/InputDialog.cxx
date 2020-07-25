@@ -134,7 +134,7 @@ void InputDialog::addDevicePortTab()
   xpos += fontWidth * 2;
 
   // Add analog paddle sensitivity
-  ypos += lineHeight + VGAP;
+  ypos += lineHeight;
   myPaddleSpeed = new SliderWidget(myTab, _font, xpos, ypos - 1, 13 * fontWidth, lineHeight,
                                    "Sensitivity",
                                    lwidth - fontWidth * 2, kPSpeedChanged, 4 * fontWidth, "%");
@@ -171,6 +171,14 @@ void InputDialog::addDevicePortTab()
   myDPaddleSpeed->setMinValue(1); myDPaddleSpeed->setMaxValue(20);
   myDPaddleSpeed->setTickmarkIntervals(4);
   wid.push_back(myDPaddleSpeed);
+
+  ypos += lineHeight + VGAP * 4;
+  myAutoFireRate = new SliderWidget(myTab, _font, HBORDER, ypos - 1, 13 * fontWidth, lineHeight,
+                                    "Autofire rate",
+                                    lwidth, kAutoFireChanged, 5 * fontWidth, "Hz");
+  myAutoFireRate->setMinValue(0); myAutoFireRate->setMaxValue(30);
+  myAutoFireRate->setTickmarkIntervals(6);
+  wid.push_back(myAutoFireRate);
 
   // Add 'allow all 4 directions' for joystick
   ypos += lineHeight + VGAP * 4;
@@ -315,38 +323,43 @@ void InputDialog::addMouseTab()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputDialog::loadConfig()
 {
+  Settings& settings = instance().settings();
+
   // Left & right ports
-  mySAPort->setState(instance().settings().getString("saport") == "rl");
+  mySAPort->setState(settings.getString("saport") == "rl");
 
   // Use mouse as a controller
   myMouseControl->setSelected(
-    instance().settings().getString("usemouse"), "analog");
+    settings.getString("usemouse"), "analog");
   handleMouseControlState();
 
   // Mouse cursor state
-  myCursorState->setSelected(instance().settings().getString("cursor"), "2");
+  myCursorState->setSelected(settings.getString("cursor"), "2");
   handleCursorState();
 
   // Joystick deadzone
-  myDeadzone->setValue(instance().settings().getInt("joydeadzone"));
+  myDeadzone->setValue(settings.getInt("joydeadzone"));
 
   // Paddle speed (analog)
-  myPaddleSpeed->setValue(instance().settings().getInt("psense"));
+  myPaddleSpeed->setValue(settings.getInt("psense"));
   // Paddle dejitter (analog)
-  myDejitterBase->setValue(instance().settings().getInt("dejitter.base"));
-  myDejitterDiff->setValue(instance().settings().getInt("dejitter.diff"));
+  myDejitterBase->setValue(settings.getInt("dejitter.base"));
+  myDejitterDiff->setValue(settings.getInt("dejitter.diff"));
 
   // Paddle speed (digital and mouse)
-  myDPaddleSpeed->setValue(instance().settings().getInt("dsense"));
-  myMPaddleSpeed->setValue(instance().settings().getInt("msense"));
+  myDPaddleSpeed->setValue(settings.getInt("dsense"));
+  myMPaddleSpeed->setValue(settings.getInt("msense"));
 
   // Trackball speed
-  myTrackBallSpeed->setValue(instance().settings().getInt("tsense"));
+  myTrackBallSpeed->setValue(settings.getInt("tsense"));
   // Driving controller speed
-  myDrivingSpeed->setValue(instance().settings().getInt("dcsense"));
+  myDrivingSpeed->setValue(settings.getInt("dcsense"));
+
+  // Autofire rate
+  myAutoFireRate->setValue(settings.getInt("autofirerate"));
 
   // AtariVox serial port
-  myAVoxPort->setText(instance().settings().getString("avoxport"));
+  myAVoxPort->setText(settings.getString("avoxport"));
 
   // EEPROM erase (only enable in emulation mode and for valid controllers)
   if(instance().hasConsole())
@@ -361,13 +374,13 @@ void InputDialog::loadConfig()
     myEraseEEPROMButton->setEnabled(false);
 
   // Allow all 4 joystick directions
-  myAllowAll4->setState(instance().settings().getBool("joyallow4"));
+  myAllowAll4->setState(settings.getBool("joyallow4"));
 
   // Grab mouse
-  myGrabMouse->setState(instance().settings().getBool("grabmouse"));
+  myGrabMouse->setState(settings.getBool("grabmouse"));
 
   // Enable/disable modifier key-combos
-  myModCombo->setState(instance().settings().getBool("modcombo"));
+  myModCombo->setState(settings.getBool("modcombo"));
 
   myTab->loadConfig();
 }
@@ -375,70 +388,77 @@ void InputDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputDialog::saveConfig()
 {
+  Settings& settings = instance().settings();
+
   // Left & right ports
   instance().eventHandler().mapStelladaptors(mySAPort->getState() ? "rl": "lr");
 
   // Use mouse as a controller
   const string& usemouse = myMouseControl->getSelectedTag().toString();
-  instance().settings().setValue("usemouse", usemouse);
+  settings.setValue("usemouse", usemouse);
   instance().eventHandler().setMouseControllerMode(usemouse);
 
   // Joystick deadzone
   int deadzone = myDeadzone->getValue();
-  instance().settings().setValue("joydeadzone", deadzone);
+  settings.setValue("joydeadzone", deadzone);
   Joystick::setDeadZone(deadzone);
 
   // Paddle speed (analog)
   int sensitivity = myPaddleSpeed->getValue();
-  instance().settings().setValue("psense", sensitivity);
+  settings.setValue("psense", sensitivity);
   Paddles::setAnalogSensitivity(sensitivity);
 
   // Paddle speed (digital and mouse)
   int dejitter = myDejitterBase->getValue();
-  instance().settings().setValue("dejitter.base", dejitter);
+  settings.setValue("dejitter.base", dejitter);
   Paddles::setDejitterBase(dejitter);
   dejitter = myDejitterDiff->getValue();
-  instance().settings().setValue("dejitter.diff", dejitter);
+  settings.setValue("dejitter.diff", dejitter);
   Paddles::setDejitterDiff(dejitter);
 
   sensitivity = myDPaddleSpeed->getValue();
-  instance().settings().setValue("dsense", sensitivity);
+  settings.setValue("dsense", sensitivity);
   Paddles::setDigitalSensitivity(sensitivity);
 
   sensitivity = myMPaddleSpeed->getValue();
-  instance().settings().setValue("msense", sensitivity);
+  settings.setValue("msense", sensitivity);
   Paddles::setMouseSensitivity(sensitivity);
 
   // Trackball speed
   sensitivity = myTrackBallSpeed->getValue();
-  instance().settings().setValue("tsense", sensitivity);
+  settings.setValue("tsense", sensitivity);
   PointingDevice::setSensitivity(sensitivity);
 
   // Driving controller speed
   sensitivity = myDrivingSpeed->getValue();
-  instance().settings().setValue("dcsense", sensitivity);
+  settings.setValue("dcsense", sensitivity);
   Driving::setSensitivity(sensitivity);
 
+  // Autofire rate
+  int rate = myAutoFireRate->getValue();
+  settings.setValue("autofirerate", rate);
+  Controller::setAutoFireRate(rate);
+
   // AtariVox serial port
-  instance().settings().setValue("avoxport", myAVoxPort->getText());
+  settings.setValue("avoxport", myAVoxPort->getText());
 
   // Allow all 4 joystick directions
   bool allowall4 = myAllowAll4->getState();
-  instance().settings().setValue("joyallow4", allowall4);
+  settings.setValue("joyallow4", allowall4);
   instance().eventHandler().allowAllDirections(allowall4);
 
   // Grab mouse and hide cursor
   const string& cursor = myCursorState->getSelectedTag().toString();
-  instance().settings().setValue("cursor", cursor);
+  settings.setValue("cursor", cursor);
   // only allow grab mouse if cursor is hidden in emulation
   int state = myCursorState->getSelected();
   bool enableGrab = state != 1 && state != 3;
   bool grab = enableGrab ? myGrabMouse->getState() : false;
-  instance().settings().setValue("grabmouse", grab);
+  settings.setValue("grabmouse", grab);
   instance().frameBuffer().enableGrabMouse(grab);
 
   // Enable/disable modifier key-combos
-  instance().settings().setValue("modcombo", myModCombo->getState());
+  settings.setValue("modcombo", myModCombo->getState());
 
   instance().eventHandler().saveKeyMapping();
   instance().eventHandler().saveJoyMapping();
@@ -477,6 +497,8 @@ void InputDialog::setDefaults()
       myDejitterBase->setValue(0);
       myDejitterDiff->setValue(0);
     #endif
+      // Autofire rate
+      myAutoFireRate->setValue(0);
       // AtariVox serial port
       myAVoxPort->setText("");
 
@@ -659,6 +681,10 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
       myTrackBallSpeed->setValueLabel(myTrackBallSpeed->getValue() * 10);
       break;
 
+    case kAutoFireChanged:
+      updateAutoFireRate();
+      break;
+
     case kDBButtonPressed:
       if(!myJoyDialog)
       {
@@ -724,6 +750,15 @@ void InputDialog::updateDejitterReaction()
   int strength = myDejitterDiff->getValue();
 
   myDejitterDiff->setValueLabel(strength ? std::to_string(strength) : "Off");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void InputDialog::updateAutoFireRate()
+{
+  int rate = myAutoFireRate->getValue();
+
+  myAutoFireRate->setValueLabel(rate ? std::to_string(rate) : "Off");
+  myAutoFireRate->setValueUnit(rate ? " Hz" : "");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

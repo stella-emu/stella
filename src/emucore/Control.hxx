@@ -272,6 +272,14 @@ class Controller : public Serializable
     */
     static Type getType(const string& propName);
 
+    /**
+      Sets the auto fire rate. 0 disables auto fire.
+
+      @param speed  Auto fire rate (0..30/25) in Hz
+      @param isNTSC  NTSC or PAL frame rate
+    */
+    static void setAutoFireRate(int rate, bool isNTSC = true);
+
   public:
     /// Constant which represents maximum resistance for analog pins
     static constexpr Int32 MAX_RESISTANCE = 0x7FFFFFFF;
@@ -310,6 +318,44 @@ class Controller : public Serializable
       setPin(AnalogPin::Nine, MAX_RESISTANCE);
     }
 
+    /**
+      Checks for the next auto fire event.
+
+      @param pressed  True if the fire button is current pressed
+      @return  The result of the auto fire event check
+    */
+    inline bool getAutoFireState(bool pressed)
+    {
+      if(AUTO_FIRE_RATE && pressed)
+      {
+        myFireDelay -= AUTO_FIRE_RATE;
+        if(myFireDelay <= 0)
+          myFireDelay += 32 * 1024;
+        return myFireDelay > 16 * 1024;
+      }
+      myFireDelay = 0;
+      return pressed;
+    }
+
+    /**
+      Checks for the next auto fire event for paddle 1.
+
+      @param pressed  True if the fire button is current pressed
+      @return  The result of the auto fire event check
+    */
+    inline bool getAutoFireStateP1(bool pressed)
+    {
+      if(AUTO_FIRE_RATE && pressed)
+      {
+        myFireDelayP1 -= AUTO_FIRE_RATE;
+        if(myFireDelayP1 <= 0)
+          myFireDelayP1 += 32 * 1024;
+        return myFireDelayP1 > 16 * 1024;
+      }
+      myFireDelayP1 = 0;
+      return pressed;
+    }
+
   protected:
     /// Specifies which jack the controller is plugged in
     const Jack myJack;
@@ -325,6 +371,13 @@ class Controller : public Serializable
 
     /// The callback that is dispatched whenver an analog pin has changed
     onAnalogPinUpdateCallback myOnAnalogPinUpdateCallback{nullptr};
+
+    /// Defines the speed of the auto fire
+    static int AUTO_FIRE_RATE;
+
+    /// Delay[frames] until the next fire event
+    int myFireDelay{0};
+    int myFireDelayP1{0}; // required for paddles only
 
   private:
     /// The boolean value on each digital pin

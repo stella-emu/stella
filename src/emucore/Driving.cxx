@@ -50,7 +50,8 @@ Driving::Driving(Jack jack, const Event& event, const System& system)
 void Driving::update()
 {
   // Digital events (from keyboard or joystick hats & buttons)
-  setPin(DigitalPin::Six, myEvent.get(myFireEvent) == 0);
+  bool firePressed = myEvent.get(myFireEvent) != 0;
+
   int d_axis = myEvent.get(myXAxisValue);
   if(myEvent.get(myCCWEvent) != 0 || d_axis < -16384)     --myCounter;
   else if(myEvent.get(myCWEvent) != 0 || d_axis > 16384)  ++myCounter;
@@ -61,9 +62,9 @@ void Driving::update()
     int m_axis = myEvent.get(Event::MouseAxisXMove);
     if(m_axis < -2)     --myCounter;
     else if(m_axis > 2) ++myCounter;
-    if(myEvent.get(Event::MouseButtonLeftValue) ||
-       myEvent.get(Event::MouseButtonRightValue))
-      setPin(DigitalPin::Six, false);
+    firePressed = firePressed
+      || myEvent.get(Event::MouseButtonLeftValue)
+      || myEvent.get(Event::MouseButtonRightValue);
   }
   else
   {
@@ -74,18 +75,19 @@ void Driving::update()
       int m_axis = myEvent.get(Event::MouseAxisXMove);
       if(m_axis < -2)     --myCounter;
       else if(m_axis > 2) ++myCounter;
-      if(myEvent.get(Event::MouseButtonLeftValue))
-        setPin(DigitalPin::Six, false);
+      firePressed = firePressed
+        || myEvent.get(Event::MouseButtonLeftValue);
     }
     if(myControlIDY > -1)
     {
       int m_axis = myEvent.get(Event::MouseAxisYMove);
       if(m_axis < -2)     --myCounter;
       else if(m_axis > 2) ++myCounter;
-      if(myEvent.get(Event::MouseButtonRightValue))
-        setPin(DigitalPin::Six, false);
+      firePressed = firePressed
+        || myEvent.get(Event::MouseButtonRightValue);
     }
   }
+  setPin(DigitalPin::Six, !getAutoFireState(firePressed));
 
   // Only consider the lower-most bits (corresponding to pins 1 & 2)
   myGrayIndex = Int32(myCounter * SENSITIVITY / 4.0F) & 0b11;

@@ -318,6 +318,11 @@ class Console : public Serializable, public ConsoleIO
     */
     void setTIAProperties();
 
+    /**
+      Change the autofire speed for all controllers
+    */
+    void changeAutoFireRate(int direction = +1);
+
   private:
     /**
      * Define console timing based on current display format

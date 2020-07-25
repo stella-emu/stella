@@ -434,7 +434,7 @@ void Console::setFormat(uInt32 format, bool force)
 
   setTIAProperties();
   initializeVideo();  // takes care of refreshing the screen
-  initializeAudio(); // ensure that audio synthesis is set up to match emulation speed
+  initializeAudio(); // ensure that audio synthesis is set up to match emulation rate
   myOSystem.resetFps(); // Reset FPS measurement
 
   myOSystem.frameBuffer().showMessage(message);
@@ -492,7 +492,7 @@ void Console::toggleTurbo()
 
   myOSystem.settings().setValue("turbo", !enabled);
 
-  // update speed
+  // update rate
   initializeAudio();
 
   // update VSync
@@ -868,6 +868,30 @@ unique_ptr<Controller> Console::getControllerPort(const Controller::Type type,
   }
 
   return controller;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::changeAutoFireRate(int direction)
+{
+  const Int32 scanlines = std::max<Int32>(tia().scanlinesLastFrame(), 240);
+  const bool isNTSC = scanlines <= 287;
+
+  int rate = myOSystem.settings().getInt("autofirerate");
+
+  rate = BSPF::clamp(rate + direction, 0, isNTSC ? 30 : 25);
+
+  myOSystem.settings().setValue("autofirerate", rate);
+  Controller::setAutoFireRate(rate);
+
+  ostringstream val;
+
+  if(rate)
+    val << rate << " Hz";
+  else
+  {
+    val << "Off";
+  }
+  myOSystem.frameBuffer().showMessage("Autofire rate", val.str(), rate, 0, isNTSC ? 30 : 25);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
