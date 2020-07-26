@@ -14,14 +14,13 @@
 
 6.2.1 to 6.3 (XXXX XX, 2020)
 
-  * Fix bug when taking fullscreen snapshots; the dimensions were sometimes
-    cut off.
-
   * Added autofire.
 
   * Added new interface palette 'Dark'. (TODO: DOC)
 
   * Extended global hotkeys for debug options.
+
+  * Added option to playback a game using the Time Machine
 
   * Allow taking snapshots from within Time Machine dialog
 
@@ -35,6 +34,9 @@
     one ZIP file, and distribute just that file.
 
   * Replaced "Re-disassemble" with "Disassemble @ current line" in debugger
+
+  * Fix bug when taking fullscreen snapshots; the dimensions were sometimes
+    cut off.
 
 -Have fun!
 
