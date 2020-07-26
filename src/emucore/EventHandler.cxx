@@ -472,6 +472,7 @@ AdjustFunction EventHandler::getAdjustSetting(AdjustSetting setting)
     std::bind(&StateManager::changeState, &myOSystem.state(), _1),
     std::bind(&PaletteHandler::changeCurrentAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(), _1),
     std::bind(&TIASurface::changeCurrentNTSCAdjustable, &myOSystem.frameBuffer().tiaSurface(), _1),
+    std::bind(&Console::changeSpeed, &myOSystem.console(), _1),
   };
 
   return ADJUST_FUNCTIONS[int(setting)];
@@ -1221,11 +1222,19 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     // Misc events
 
     case Event::DecreaseSpeed:
-      if(pressed) myOSystem.console().changeSpeed(-1);
+      if(pressed)
+      {
+        myOSystem.console().changeSpeed(-1);
+        myAdjustDirect = AdjustSetting::CHANGE_SPEED;
+      }
       return;
 
     case Event::IncreaseSpeed:
-      if(pressed) myOSystem.console().changeSpeed(+1);
+      if(pressed)
+      {
+        myOSystem.console().changeSpeed(+1);
+        myAdjustDirect = AdjustSetting::CHANGE_SPEED;
+      }
       return;
 
     case Event::ToggleTurbo:

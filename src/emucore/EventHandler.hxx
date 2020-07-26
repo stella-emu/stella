@@ -449,6 +449,7 @@ class EventHandler
       STATE,
       PALETTE_CHANGE_ATTRIBUTE,
       NTSC_CHANGE_ATTRIBUTE,
+      CHANGE_SPEED,
       // *** Ranges ***
       NUM_ADJ,
       START_AV_ADJ = VOLUME,
