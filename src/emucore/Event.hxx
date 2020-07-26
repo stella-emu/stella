@@ -127,6 +127,7 @@ class Event
       PreviousSettingGroup, NextSettingGroup,
       TogglePlayBackMode,
       DecreaseAutoFire, IncreaseAutoFire,
+      DecreaseSpeed, IncreaseSpeed,
 
       LastType
     };

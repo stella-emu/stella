@@ -73,6 +73,45 @@
 
 #include "Console.hxx"
 
+namespace {
+  // Emulation speed is a positive float that multiplies the framerate. However, the UI controls
+  // adjust speed in terms of a speedup factor (1/10, 1/9 .. 1/2, 1, 2, 3, .., 10). The following
+  // mapping and formatting functions implement this conversion. The speedup factor is represented
+  // by an integer value between -900 and 900 (0 means no speedup).
+
+  constexpr int MAX_SPEED = 900;
+  constexpr int MIN_SPEED = -900;
+  constexpr int SPEED_STEP = 10;
+
+  int mapSpeed(float speed)
+  {
+    speed = std::abs(speed);
+
+    return BSPF::clamp(
+      static_cast<int>(round(100 * (speed >= 1 ? speed - 1 : -1 / speed + 1))),
+      MIN_SPEED, MAX_SPEED
+    );
+  }
+
+  float unmapSpeed(int speed)
+  {
+    float f_speed = static_cast<float>(speed) / 100;
+
+    return speed < 0 ? -1 / (f_speed - 1) : 1 + f_speed;
+  }
+
+  string formatSpeed(int speed) {
+    stringstream ss;
+
+    ss
+      << std::setw(3) << std::fixed << std::setprecision(0)
+      << (unmapSpeed(speed) * 100);
+
+    return ss.str();
+  }
+}
+
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
                  const Properties& props, AudioSettings& audioSettings)
@@ -504,6 +543,31 @@ void Console::toggleTurbo()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::changeSpeed(int direction)
+{
+  int speed = mapSpeed(myOSystem.settings().getFloat("speed"));
+  bool turbo = myOSystem.settings().getBool("turbo");
+
+  speed = BSPF::clamp(speed + direction * SPEED_STEP, MIN_SPEED, MAX_SPEED);
+  myOSystem.settings().setValue("speed", unmapSpeed(speed));
+
+  // update rate
+  initializeAudio();
+
+  if(turbo)
+  {
+    myOSystem.settings().setValue("turbo", false);
+    // update VSync
+    initializeVideo();
+  }
+
+  ostringstream val;
+
+  val << formatSpeed(speed) << "%";
+  myOSystem.frameBuffer().showMessage("Emulation speed", val.str(), speed, MIN_SPEED, MAX_SPEED);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::togglePhosphor()
 {
   if(myOSystem.frameBuffer().tiaSurface().phosphorEnabled())
@@ -890,9 +954,8 @@ void Console::changeAutoFireRate(int direction)
   if(rate)
     val << rate << " Hz";
   else
-  {
     val << "Off";
-  }
+
   myOSystem.frameBuffer().showMessage("Autofire rate", val.str(), rate, 0, isNTSC ? 30 : 25);
 }
 

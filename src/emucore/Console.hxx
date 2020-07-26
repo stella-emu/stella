@@ -213,6 +213,12 @@ class Console : public Serializable, public ConsoleIO
     */
     void toggleTurbo();
 
+    /**
+      Change emulation speed
+
+      @param direction  +1 indicates increase, -1 indicates decrease.
+    */
+    void changeSpeed(int direction = +1);
 
     /**
       Toggles phosphor effect.
