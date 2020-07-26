@@ -1220,6 +1220,14 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     ///////////////////////////////////////////////////////////////////////////
     // Misc events
 
+    case Event::DecreaseSpeed:
+      if(pressed) myOSystem.console().changeSpeed(-1);
+      return;
+
+    case Event::IncreaseSpeed:
+      if(pressed) myOSystem.console().changeSpeed(+1);
+      return;
+
     case Event::ToggleTurbo:
       if (pressed && !repeated) myOSystem.console().toggleTurbo();
       return;
@@ -2403,7 +2411,9 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::TogglePauseMode,         "Toggle Pause mode",                     "" },
   { Event::StartPauseMode,          "Start Pause mode",                      "" },
   { Event::Fry,                     "Fry cartridge",                         "" },
-  { Event::ToggleTurbo,             "Toggle Turbo mode",                     "" },
+  { Event::DecreaseSpeed,           "Decrease emulation speed",              "" },
+  { Event::IncreaseSpeed,           "Increase emulation speed",              "" },
+  { Event::ToggleTurbo,             "Toggle 'Turbo' mode",                   "" },
   { Event::DebuggerMode,            "Toggle Debugger mode",                  "" },
 
   { Event::ConsoleSelect,           "Select",                                "" },
@@ -2634,7 +2644,7 @@ EventHandler::MenuActionList EventHandler::ourMenuActionList = { {
 const Event::EventSet EventHandler::MiscEvents = {
   Event::Quit, Event::ReloadConsole, Event::Fry, Event::StartPauseMode,
   Event::TogglePauseMode, Event::OptionsMenuMode, Event::CmdMenuMode, Event::ExitMode,
-  Event::ToggleTurbo,
+  Event::ToggleTurbo, Event::DecreaseSpeed, Event::IncreaseSpeed,
   Event::TakeSnapshot, Event::ToggleContSnapshots, Event::ToggleContSnapshotsFrame,
   // Event::MouseAxisXMove, Event::MouseAxisYMove,
   // Event::MouseButtonLeftValue, Event::MouseButtonRightValue,

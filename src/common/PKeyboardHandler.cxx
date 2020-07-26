@@ -525,6 +525,8 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultCommo
   {Event::SettingIncrease,          KBDK_KP_9, KBDM_CTRL},
 
   {Event::ToggleInter,              KBDK_I, KBDM_CTRL},
+  {Event::DecreaseSpeed,            KBDK_S, KBDM_SHIFT | KBDM_CTRL},
+  {Event::IncreaseSpeed,            KBDK_S, KBDM_CTRL },
   {Event::ToggleTurbo,              KBDK_T, KBDM_CTRL},
   {Event::ToggleJitter,             KBDK_J, MOD3},
   {Event::ToggleFrameStats,         KBDK_L, MOD3},
