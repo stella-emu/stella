@@ -507,8 +507,6 @@ void FrameBuffer::update(bool force)
 void FrameBuffer::updateInEmulationMode(float framesPerSecond)
 {
   // Update method that is specifically tailored to emulation mode
-  // Typically called from a thread, so it needs to be separate from
-  // the normal update() method
   //
   // We don't worry about selective rendering here; the rendering
   // always happens at the full framerate
