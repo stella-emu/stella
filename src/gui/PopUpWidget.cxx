@@ -260,8 +260,9 @@ void PopUpWidget::drawWidget(bool hilite)
 
   // Draw the selected entry, if any
   const string& name = myMenu->getSelectedName();
-  TextAlign align = (_font.getStringWidth(name) > w - 6) ?
+  w -= dropDownWidth(_font);
+  TextAlign align = (_font.getStringWidth(name) > w) ?
                      TextAlign::Right : TextAlign::Left;
-  s.drawString(_font, name, x + _textOfs, _y + myTextY, w - 6,
+  s.drawString(_font, name, x + _textOfs, _y + myTextY, w,
                !(isEnabled() && onTop) ? kColor : _changed ? kDbgChangedTextColor : kTextColor, align);
 }
