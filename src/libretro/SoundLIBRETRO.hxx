@@ -104,7 +104,6 @@ class SoundLIBRETRO : public Sound
     */
     string about() const override { return ""; }
 
-  public:
     /**
       Empties the playback buffer.
 
@@ -112,6 +111,14 @@ class SoundLIBRETRO : public Sound
       @param samples  Number of audio samples read
     */
     void dequeue(Int16* stream, uInt32* samples);
+
+  protected:
+    /**
+      This method is called to query the audio devices.
+
+      @param devices  List of device names
+    */
+    void queryHardware(VariantList& devices) override;
 
   private:
     // Indicates if the sound device was successfully initialized
