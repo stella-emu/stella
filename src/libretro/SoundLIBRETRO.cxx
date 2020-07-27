@@ -120,4 +120,9 @@ void SoundLIBRETRO::dequeue(Int16* stream, uInt32* samples)
   *samples = outIndex / 2;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SoundLIBRETRO::queryHardware(VariantList& devices)
+{
+}
+
 #endif  // SOUND_SUPPORT

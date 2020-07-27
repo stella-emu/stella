@@ -58,7 +58,6 @@ SoundSDL2::SoundSDL2(OSystem& osystem, AudioSettings& audioSettings)
 
   queryHardware(myDevices);
 
-
   SDL_zero(myHardwareSpec);
   if(!openDevice())
     return;
