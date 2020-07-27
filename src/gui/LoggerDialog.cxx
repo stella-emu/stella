@@ -124,10 +124,11 @@ void LoggerDialog::saveLogFile()
     stringstream out;
     out << Logger::instance().logMessages();
     instance().frameBuffer().showMessage("Saving log file to " + node.getShortPath());
+    node.write(out);
   }
   catch(...)
   {
-    instance().frameBuffer().showMessage("Error savin log file to " + node.getShortPath());
+    instance().frameBuffer().showMessage("Error saving log file to " + node.getShortPath());
   }
 }
 
