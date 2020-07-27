@@ -56,6 +56,9 @@ SoundSDL2::SoundSDL2(OSystem& osystem, AudioSettings& audioSettings)
     return;
   }
 
+  queryHardware(myDevices);
+
+
   SDL_zero(myHardwareSpec);
   if(!openDevice())
     return;
@@ -77,6 +80,29 @@ SoundSDL2::~SoundSDL2()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SoundSDL2::queryHardware(VariantList& devices)
+{
+  ASSERT_MAIN_THREAD;
+
+  int numDevices = SDL_GetNumAudioDevices(0);
+
+  // log the available audio devices
+  ostringstream s;
+  s << "Supported audio devices (" << numDevices << "):";
+  Logger::debug(s.str());
+
+  VarList::push_back(devices, "Default", 0);
+  for(int i = 0; i < numDevices; ++i) {
+    ostringstream ss;
+
+    ss << "  " << i + 1 << ": " << SDL_GetAudioDeviceName(i, 0);
+    Logger::debug(ss.str());
+
+    VarList::push_back(devices, SDL_GetAudioDeviceName(i, 0), i + 1);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool SoundSDL2::openDevice()
 {
   ASSERT_MAIN_THREAD;
@@ -91,7 +117,11 @@ bool SoundSDL2::openDevice()
 
   if(myIsInitializedFlag)
     SDL_CloseAudioDevice(myDevice);
-  myDevice = SDL_OpenAudioDevice(nullptr, 0, &desired, &myHardwareSpec,
+
+  myDeviceId = BSPF::clamp(myAudioSettings.device(), 0u, uInt32(myDevices.size() - 1));
+  const char* device = myDeviceId ? myDevices.at(myDeviceId).first.c_str() : nullptr;
+
+  myDevice = SDL_OpenAudioDevice(device, 0, &desired, &myHardwareSpec,
                                  SDL_AUDIO_ALLOW_FREQUENCY_CHANGE);
 
   if(myDevice == 0)
@@ -126,7 +156,8 @@ void SoundSDL2::open(shared_ptr<AudioQueue> audioQueue,
   // Do we need to re-open the sound device?
   // Only do this when absolutely necessary
   if(myAudioSettings.sampleRate() != uInt32(myHardwareSpec.freq) ||
-     myAudioSettings.fragmentSize() != uInt32(myHardwareSpec.samples))
+     myAudioSettings.fragmentSize() != uInt32(myHardwareSpec.samples) ||
+     myAudioSettings.device() != myDeviceId)
     openDevice();
 
   myEmulationTiming = emulationTiming;
@@ -261,6 +292,7 @@ string SoundSDL2::about() const
   ostringstream buf;
   buf << "Sound enabled:"  << endl
       << "  Volume:   " << myVolume << "%" << endl
+      << "  Device:   " << myDevices.at(myDeviceId).first << endl
       << "  Channels: " << uInt32(myHardwareSpec.channels)
       << (myAudioQueue->isStereo() ? " (Stereo)" : " (Mono)") << endl
       << "  Preset:   ";

@@ -68,7 +68,7 @@ VideoAudioDialog::VideoAudioDialog(OSystem& osystem, DialogContainer& parent,
 
   // Set real dimensions
   setSize(44 * fontWidth + HBORDER * 2 + PopUpWidget::dropDownWidth(font) * 2,
-          _th + VGAP * 6 + lineHeight + 10 * (lineHeight + VGAP) + buttonHeight + VBORDER * 3,
+          _th + VGAP * 3 + lineHeight + 11 * (lineHeight + VGAP) + buttonHeight + VBORDER * 3,
           max_w, max_h);
 
   // The tab widget
@@ -365,6 +365,14 @@ void VideoAudioDialog::addAudioTab()
   wid.push_back(myVolumeSlider);
   ypos += lineHeight + VGAP;
 
+  // Device
+  myDevicePopup = new PopUpWidget(myTab, _font, xpos, ypos,
+                                  _w - xpos - lwidth - HBORDER - PopUpWidget::dropDownWidth(_font) - 2, lineHeight,
+                                  instance().sound().supportedDevices(),
+                                  "Device", lwidth, kDeviceChanged);
+  wid.push_back(myDevicePopup);
+  ypos += lineHeight + VGAP;
+
   // Mode
   items.clear();
   VarList::push_back(items, "Low quality, medium lag", static_cast<int>(AudioSettings::Preset::lowQualityMediumLag));
@@ -542,6 +550,11 @@ void VideoAudioDialog::loadConfig()
   // Volume
   myVolumeSlider->setValue(audioSettings.volume());
 
+  // Device
+  uInt32 deviceId = BSPF::clamp(audioSettings.device(), 0u,
+                                uInt32(instance().sound().supportedDevices().size() - 1));
+  myDevicePopup->setSelected(deviceId);
+
   // Stereo
   myStereoSoundCheckbox->setState(audioSettings.stereo());
 
@@ -666,6 +679,9 @@ void VideoAudioDialog::saveConfig()
   audioSettings.setVolume(myVolumeSlider->getValue());
   instance().sound().setVolume(myVolumeSlider->getValue());
 
+  // Device
+  audioSettings.setDevice(myDevicePopup->getSelected());
+
   // Stereo
   audioSettings.setStereo(myStereoSoundCheckbox->getState());
 
@@ -754,6 +770,7 @@ void VideoAudioDialog::setDefaults()
     case 3:  // Audio
       mySoundEnableCheckbox->setState(AudioSettings::DEFAULT_ENABLED);
       myVolumeSlider->setValue(AudioSettings::DEFAULT_VOLUME);
+      myDevicePopup->setSelected(AudioSettings::DEFAULT_DEVICE);
       myStereoSoundCheckbox->setState(AudioSettings::DEFAULT_STEREO);
       myDpcPitch->setValue(AudioSettings::DEFAULT_DPC_PITCH);
       myModePopup->setSelected(static_cast<int>(AudioSettings::DEFAULT_PRESET));
@@ -1061,6 +1078,7 @@ void VideoAudioDialog::updateEnabledState()
   bool userMode = preset == AudioSettings::Preset::custom;
 
   myVolumeSlider->setEnabled(active);
+  myDevicePopup->setEnabled(active);
   myStereoSoundCheckbox->setEnabled(active);
   myModePopup->setEnabled(active);
   // enable only for Pitfall II cart

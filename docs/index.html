@@ -2202,6 +2202,11 @@
   </tr>
 
   <tr>
+    <td><pre>-audio.device &lt;number&gt;</pre></td>
+    <td>Set the audio device (0 = default).</td>
+  </tr>
+
+  <tr>
     <td><pre>-audio.preset &lt;1 - 5&gt;</pre></td>
     <td>Set an audio preset. Numbers in sequence represent presets for
     'custom', 'low quality, medium lag', 'high quality, medium lag',
@@ -3084,7 +3089,8 @@
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
           <tr><td>Enable audio</td><td>Self-explanatory</td><td>-audio.enabled</td></tr>
           <tr><td>Volume</td><td>Self-explanatory</td><td>-audio.volume</td></tr>
-          <tr><td>Mode</td><td>Select an audio preset or choose 'custom' for manual configuration</td><td>-audio.preset</td></tr>
+          <tr><td>Device</td><td>Use the specified audio device.</td><td>-audio.device</td></tr>
+          <tr><td>Mode</td><td>Select an audio preset or choose 'Custom' for manual configuration.</td><td>-audio.preset</td></tr>
           <tr><td>Fragment size</td><td>The number of samples in a single fragment processed by the audio driver. Smaller values mean less latency, but may lead to dropouts (depending on OS and hardware).</td><td>-audio.fragment_size</td></tr>
           <tr><td>Sample rate</td><td>
             Output samples per second. Higher values reduce artifacts from resampling and decrease latency,
@@ -3097,7 +3103,7 @@
             some games (notably Quadrun).
           </td><td>-audio.resampling_quality</td></tr>
           <tr><td>Headroom</td><td>Number of frames to buffer before playback starts. Higher values increase latency, but reduce the potential for dropouts.</td><td>-audio.headroom</td></tr>
-          <tr><td>Buffer size</td><td>Maximum size of the audio buffer. Higher values increase maximum latency, but reduce the potential for dropouts</td><td>-audio.buffer_size</td></tr>
+          <tr><td>Buffer size</td><td>Maximum size of the audio buffer. Higher values increase maximum latency, but reduce the potential for dropouts.</td><td>-audio.buffer_size</td></tr>
       <tr><td>Stereo for all ROMs</td><td>Enable stereo mode for all ROMs.</td><td>-audio.stereo</td></tr>
           <tr><td>Pitfall II music pitch</td><td>Defines the pitch of Pitfall II music (which may vary between carts).</td><td>-audio.dpc_pitch</td></tr>
        </table>

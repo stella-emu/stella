@@ -109,6 +109,13 @@ class SoundSDL2 : public Sound
 
   protected:
     /**
+      This method is called to query the audio devices.
+
+      @param devices  List of device names
+    */
+    void queryHardware(VariantList& devices);
+
+    /**
       Invoked by the sound callback to process the next sound fragment.
       The stream is 16-bits (even though the callback is 8-bits), since
       the TIASnd class always generates signed 16-bit stereo samples.
@@ -138,6 +145,8 @@ class SoundSDL2 : public Sound
 
     // Audio specification structure
     SDL_AudioSpec myHardwareSpec;
+
+    uInt32 myDeviceId{0};
 
     SDL_AudioDeviceID myDevice{0};
 
