@@ -113,7 +113,7 @@ class SoundSDL2 : public Sound
 
       @param devices  List of device names
     */
-    void queryHardware(VariantList& devices);
+    void queryHardware(VariantList& devices) override;
 
     /**
       Invoked by the sound callback to process the next sound fragment.
