@@ -470,7 +470,7 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
         << "  ROM file: " << myRomFile.getShortPath() << endl;
     FilesystemNode propsFile(myRomFile.getPathWithExt(".pro"));
     if(propsFile.exists())
-    buf << "  PRO file: " << propsFile.getShortPath() << endl;
+      buf << "  PRO file: " << propsFile.getShortPath() << endl;
     buf << endl << getROMInfo(*myConsole);
     Logger::info(buf.str());
 
