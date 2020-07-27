@@ -115,6 +115,7 @@ class VideoAudioDialog : public Dialog
     // Audio
     CheckboxWidget*   mySoundEnableCheckbox{nullptr};
     SliderWidget*     myVolumeSlider{nullptr};
+    PopUpWidget*      myDevicePopup{nullptr};
     CheckboxWidget*   myStereoSoundCheckbox{nullptr};
     PopUpWidget*      myModePopup{nullptr};
     PopUpWidget*      myFragsizePopup{nullptr};
@@ -149,6 +150,7 @@ class VideoAudioDialog : public Dialog
       kScanlinesChanged   = 'VDsc',
 
       kSoundEnableChanged = 'ADse',
+      kDeviceChanged      = 'ADdc',
       kModeChanged        = 'ADmc',
       kHeadroomChanged    = 'ADhc',
       kBufferSizeChanged  = 'ADbc'

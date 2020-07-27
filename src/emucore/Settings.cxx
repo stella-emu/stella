@@ -80,6 +80,7 @@ Settings::Settings()
   // Sound options
   setPermanent(AudioSettings::SETTING_ENABLED, AudioSettings::DEFAULT_ENABLED);
   setPermanent(AudioSettings::SETTING_VOLUME, AudioSettings::DEFAULT_VOLUME);
+  setPermanent(AudioSettings::SETTING_DEVICE, AudioSettings::DEFAULT_DEVICE);
   setPermanent(AudioSettings::SETTING_PRESET, static_cast<int>(AudioSettings::DEFAULT_PRESET));
   setPermanent(AudioSettings::SETTING_FRAGMENT_SIZE, AudioSettings::DEFAULT_FRAGMENT_SIZE);
   setPermanent(AudioSettings::SETTING_SAMPLE_RATE, AudioSettings::DEFAULT_SAMPLE_RATE);
@@ -426,6 +427,7 @@ void Settings::usage() const
   #ifdef SOUND_SUPPORT
     << "  -audio.enabled            <1|0>      Enable audio\n"
     << "  -audio.volume             <0-100>    Volume\n"
+    << "  -audio.device             <number>   ID of the audio device (0 = default)\n"
     << "  -audio.preset             <1-5>      Audio preset (or 1 for custom)\n"
     << "  -audio.sample_rate        <number>   Output sample rate (44100|48000|96000)\n"
     << "  -audio.fragment_size      <number>   Fragment size (128|256|512|1024|\n"

@@ -118,7 +118,7 @@ void FrameBufferSDL2::queryHardware(vector<Common::Size>& fullscreenRes,
         Logger::debug(s.str());
         s.str("");
         lastRes = res.str();
-        s << lastRes << ": ";
+        s << "  " << lastRes << ": ";
       }
       s << mode.refresh_rate << "Hz";
       if(mode.w == display.w && mode.h == display.h && mode.refresh_rate == display.refresh_rate)

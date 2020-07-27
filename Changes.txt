@@ -20,9 +20,9 @@
 
   * Extended global hotkeys for debug options.
 
-  * Added option to playback a game using the Time Machine
+  * Added option to playback a game using the Time Machine.
 
-  * Allow taking snapshots from within Time Machine dialog
+  * Allow taking snapshots from within Time Machine dialog.
 
   * Added ability to access most files that Stella uses from within a ZIP
     file. This includes the following:
@@ -33,7 +33,9 @@
     Basically, you are now able to put many files that Stella uses inside
     one ZIP file, and distribute just that file.
 
-  * Replaced "Re-disassemble" with "Disassemble @ current line" in debugger
+  * Added option to select the audio device.
+
+  * Replaced "Re-disassemble" with "Disassemble @ current line" in debugger.
 
   * Fix bug when taking fullscreen snapshots; the dimensions were sometimes
     cut off.

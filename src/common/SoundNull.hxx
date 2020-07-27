@@ -102,6 +102,13 @@ class SoundNull : public Sound
     void adjustVolume(int direction = 1) override { }
 
     /**
+      Sets the audio device.
+
+      @param device  The number of the device to select (0 = default).
+    */
+    void setDevice(uInt32 device) override { };
+
+    /**
       This method is called to provide information about the sound device.
     */
     string about() const override { return "Sound disabled"; }

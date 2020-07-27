@@ -97,9 +97,27 @@ class Sound
     */
     virtual string about() const = 0;
 
+    /**
+      Get the supported devices for the audio hardware.
+
+      @return  An array of supported devices
+    */
+    const VariantList& supportedDevices() const {return myDevices;}
+
+  protected:
+    /**
+      This method is called to query the audio devices.
+
+      @param devices  List of device names
+    */
+    virtual void queryHardware(VariantList& devices) = 0;
+
   protected:
     // The OSystem for this sound object
     OSystem& myOSystem;
+
+    // Supported device
+    VariantList myDevices;
 
   private:
     // Following constructors and assignment operators not supported
