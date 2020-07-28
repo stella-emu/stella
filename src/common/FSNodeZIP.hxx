@@ -42,7 +42,7 @@ class FilesystemNodeZIP : public AbstractFSNode
      */
     explicit FilesystemNodeZIP(const string& path);
 
-    bool exists() const override     { return _realNode && _realNode->exists(); }
+    bool exists() const override;
     const string& getName() const override    { return _name; }
     void setName(const string& name) override { _name = name; }
     const string& getPath() const override { return _path;      }
