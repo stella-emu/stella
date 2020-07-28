@@ -90,6 +90,7 @@ class DeveloperDialog : public Dialog
     // Emulator widgets
     RadioButtonGroup*   mySettingsGroupEmulation{nullptr};
     CheckboxWidget*     myFrameStatsWidget{nullptr};
+    CheckboxWidget*     myDetectedInfoWidget{nullptr};
     PopUpWidget*        myConsoleWidget{nullptr};
     StaticTextWidget*   myLoadingROMLabel{nullptr};
     CheckboxWidget*     myRandomBankWidget{nullptr};
@@ -148,6 +149,7 @@ class DeveloperDialog : public Dialog
     bool    mySettings;
     // Emulator sets
     std::array<bool, 2>   myFrameStats;
+    std::array<bool, 2>   myDetectedInfo;
     std::array<int, 2>    myConsole;
     std::array<bool, 2>   myRandomBank;
     std::array<bool, 2>   myRandomizeRAM;

@@ -451,8 +451,8 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
     myConsole->initializeAudio();
 
     string saveOnExit = settings().getString("saveonexit");
-    bool activeTM = settings().getBool(
-      settings().getBool("dev.settings") ? "dev.timemachine" : "plr.timemachine");
+    bool devSettings = settings().getBool("dev.settings");
+    bool activeTM = settings().getBool(devSettings ? "dev.timemachine" : "plr.timemachine");
 
     if (saveOnExit == "all" && activeTM)
       myEventHandler->handleEvent(Event::LoadAllStates);
@@ -483,7 +483,19 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
       if(mySettings->getBool("debug"))
         myEventHandler->enterDebugMode();
     #endif
+
+    if(!showmessage &&
+       settings().getBool(devSettings ? "dev.detectedinfo" : "plr.detectedinfo"))
+    {
+      ostringstream msg;
+
+      msg << myConsole->leftController().name() << "/" << myConsole->rightController().name()
+        << " - " << myConsole->cartridge().detectedType()
+        << " - " << myConsole->getFormatString();
+      myFrameBuffer->showMessage(msg.str());
+    }
   }
+
   return EmptyString;
 }
 

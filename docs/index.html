@@ -2894,6 +2894,9 @@
       <td><pre>-&lt;plr.|dev.&gt;stats &lt;1|0&gt;</pre></td>
       <td>Overlay console info on the TIA image during emulation.</td>
     </tr><tr>
+      <td><pre>-&lt;plr.|dev.&gt;detectedinfo &lt;1|0&gt;</pre></td>
+      <td>Display detected settings info when a ROM is loaded.</td>
+    </tr><tr>
       <td><pre>-&lt;plr.|dev.&gt;console &lt;2600|7800&gt;</pre></td>
       <td>Select console for B/W and Pause key handling and RAM initialization.</td>
     </tr><tr>
@@ -3606,6 +3609,7 @@
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
           <tr><td>Player/Developer settings</td><td>Selects the active settings set</td><td>-dev.settings</td></tr>
           <tr><td>Console info overlay</td><td>Overlay console info on the TIA image during emulation.</td><td>-plr.stats<br/>-dev.stats</td></tr>
+          <tr><td>Detected settings info</td><td>Display detected settings when a ROM is loaded.</td><td>-plr.detectedinfo<br/>-dev.detectedinfo</td></tr>
           <tr><td>Console</td><td>Select the console type, this affects Color/B&W/Pause key emulation and zero-page RAM initialization</td><td>-plr.console <br/>-dev.console</td></tr>
           <tr><td>Random startup bank</td><td>Randomize the startup bank (only for selected bankswitch types)</td><td>-plr.bankrandom<br/>-dev.bankrandom</td></tr>
           <tr><td>Randomize zero-page ...</td><td>When loading a ROM, randomize all RAM content instead of initializing with all zeroes (for 'Console' = 'Atari 2600' only)</td><td>-plr.ramrandom<br/>-dev.ramrandom</td></tr>

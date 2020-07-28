@@ -111,8 +111,15 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   wid.push_back(r);
   ypos += lineHeight + VGAP * 1;
 
-  myFrameStatsWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1, "Console info overlay");
+  myFrameStatsWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1,
+                                          "Console info overlay");
   wid.push_back(myFrameStatsWidget);
+
+
+  myDetectedInfoWidget = new CheckboxWidget(myTab, font,
+                                            myFrameStatsWidget->getRight() + fontWidth * 2.5, ypos + 1,
+                                            "Detected settings info");
+  wid.push_back(myDetectedInfoWidget);
   ypos += lineHeight + VGAP;
 
   // 2600/7800 mode
@@ -611,6 +618,7 @@ void DeveloperDialog::loadSettings(SettingsSet set)
   const string& prefix = devSettings ? "dev." : "plr.";
 
   myFrameStats[set] = instance().settings().getBool(prefix + "stats");
+  myDetectedInfo[set] = instance().settings().getBool(prefix + "detectedinfo");
   myConsole[set] = instance().settings().getString(prefix + "console") == "7800" ? 1 : 0;
   // Randomization
   myRandomBank[set] = instance().settings().getBool(prefix + "bankrandom");
@@ -662,6 +670,7 @@ void DeveloperDialog::saveSettings(SettingsSet set)
   const string& prefix = devSettings ? "dev." : "plr.";
 
   instance().settings().setValue(prefix + "stats", myFrameStats[set]);
+  instance().settings().setValue(prefix + "detectedinfo", myDetectedInfo[set]);
   instance().settings().setValue(prefix + "console", myConsole[set] == 1 ? "7800" : "2600");
   if(instance().hasConsole())
     instance().eventHandler().set7800Mode();
@@ -724,6 +733,7 @@ void DeveloperDialog::saveSettings(SettingsSet set)
 void DeveloperDialog::getWidgetStates(SettingsSet set)
 {
   myFrameStats[set] = myFrameStatsWidget->getState();
+  myDetectedInfo[set] = myDetectedInfoWidget->getState();
   myConsole[set] = myConsoleWidget->getSelected() == 1;
   // Randomization
   myRandomBank[set] = myRandomBankWidget->getState();
@@ -775,6 +785,7 @@ void DeveloperDialog::getWidgetStates(SettingsSet set)
 void DeveloperDialog::setWidgetStates(SettingsSet set)
 {
   myFrameStatsWidget->setState(myFrameStats[set]);
+  myDetectedInfoWidget->setState(myDetectedInfo[set]);
   myConsoleWidget->setSelectedIndex(myConsole[set]);
   // Randomization
   myRandomBankWidget->setState(myRandomBank[set]);
@@ -955,6 +966,7 @@ void DeveloperDialog::setDefaults()
   {
     case 0: // Emulation
       myFrameStats[set] = devSettings ? true : false;
+      myDetectedInfo[set] = devSettings ? true : false;
       myConsole[set] = 0;
       // Randomization
       myRandomBank[set] = devSettings ? true : false;
