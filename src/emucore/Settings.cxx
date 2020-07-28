@@ -38,6 +38,7 @@ Settings::Settings()
 
   // If no version is recorded with the persisted settings, we set it to zero
   setPermanent(SETTINGS_VERSION_KEY, 0);
+  setPermanent("stella.version", "6.2.1");
 
   // Video-related options
   setPermanent("video", "");

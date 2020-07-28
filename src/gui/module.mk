@@ -50,6 +50,7 @@ MODULE_OBJS := \
 	src/gui/TimeMachine.o \
 	src/gui/UIDialog.o \
 	src/gui/VideoAudioDialog.o \
+	src/gui/WhatsNewDialog.o \
 	src/gui/Widget.o
 
 MODULE_DIRS += \
