@@ -127,6 +127,21 @@ void FilesystemNodeZIP::setFlags(const string& zipfile,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FilesystemNodeZIP::exists() const
+{
+  if(_realNode && _realNode->exists())
+  {
+    // We need to inspect the actual path, not just the ZIP file itself
+    myZipHandler->open(_zipFile);
+    while(myZipHandler->hasNext())
+      if(BSPF::startsWithIgnoreCase(myZipHandler->next(), _virtualPath))
+        return true;
+  }
+
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FilesystemNodeZIP::getChildren(AbstractFSList& myList, ListMode mode) const
 {
   // Files within ZIP archives don't contain children

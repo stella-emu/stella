@@ -184,7 +184,6 @@ void PropertiesSet::loadPerROM(const FilesystemNode& rom, const string& md5)
   // First, does this ROM have a per-ROM properties entry?
   // If so, load it into the database
   FilesystemNode propsNode(rom.getPathWithExt(".pro"));
-
   if(propsNode.exists())
     load(propsNode, false);
 
