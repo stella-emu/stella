@@ -26,6 +26,7 @@ class BrowserDialog;
 class OptionsDialog;
 class GlobalPropsDialog;
 class StellaSettingsDialog;
+class WhatsNewDialog;
 class OSystem;
 class Properties;
 class EditTextWidget;
@@ -122,6 +123,7 @@ class LauncherDialog : public Dialog
     void showOnlyROMs(bool state);
     void setDefaultDir();
     void openSettings();
+    void openWhatsNew();
 
   private:
     unique_ptr<OptionsDialog> myOptionsDialog;
@@ -129,6 +131,8 @@ class LauncherDialog : public Dialog
     unique_ptr<ContextMenu> myMenu;
     unique_ptr<GlobalPropsDialog> myGlobalProps;
     unique_ptr<BrowserDialog> myRomDir;
+    unique_ptr<WhatsNewDialog> myWhatsNewDialog;
+    unique_ptr<GUI::MessageBox> myWhatsNewMsg;
 
     // automatically sized font for ROM info viewer
     unique_ptr<GUI::Font> myROMInfoFont;

@@ -28,6 +28,7 @@
 #include "OptionsDialog.hxx"
 #include "GlobalPropsDialog.hxx"
 #include "StellaSettingsDialog.hxx"
+#include "WhatsNewDialog.hxx"
 #include "MessageBox.hxx"
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
@@ -287,6 +288,14 @@ void LauncherDialog::loadConfig()
   const string& tmpromdir = instance().settings().getString("tmpromdir");
   const string& romdir = tmpromdir != "" ? tmpromdir :
       instance().settings().getString("romdir");
+  const string& version = instance().settings().getString("stella.version");
+
+  // Show "What's New" message when a new version of Stella is run for the first time
+  if(version != STELLA_VERSION)
+  {
+    openWhatsNew();
+    instance().settings().setValue("stella.version", STELLA_VERSION);
+  }
 
   // Assume that if the list is empty, this is the first time that loadConfig()
   // has been called (and we should reload the list)
@@ -674,4 +683,12 @@ void LauncherDialog::openSettings()
         Menu::AppMode::launcher);
     myOptionsDialog->open();
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::openWhatsNew()
+{
+  if(myWhatsNewDialog == nullptr)
+    myWhatsNewDialog = make_unique<WhatsNewDialog>(instance(), parent(), _font, _w, _h);
+  myWhatsNewDialog->open();
 }

@@ -16,16 +16,16 @@
 
   * Added autofire.
 
-  * Added new interface palette 'Dark'. (TODO: DOC)
+  * Added new UI theme 'Dark'. (TODO: DOC)
 
   * Extended global hotkeys for debug options.
 
   * Added option to playback a game using the Time Machine.
 
-  * Allow taking snapshots from within Time Machine dialog.
+  * Allow taking snapshots from within the Time Machine dialog.
 
-  * Added ability to access most files that Stella uses from within a ZIP
-    file. This includes the following:
+  * Added the ability to access most files that Stella uses from within a
+    ZIP file. This includes the following:
       - Per-ROM properties file (so one can distribute a ROM and its
         associated properties).
       - Debugger symbol (.sym) and list (.lst) files, etc.
@@ -39,8 +39,8 @@
 
   * Replaced "Re-disassemble" with "Disassemble @ current line" in debugger.
 
-  * Fix bug when taking fullscreen snapshots; the dimensions were sometimes
-    cut off.
+  * Fixed bug when taking fullscreen snapshots; the dimensions were
+    sometimes cut off.
 
 -Have fun!
 

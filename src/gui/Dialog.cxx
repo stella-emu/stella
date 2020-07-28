@@ -768,6 +768,28 @@ Widget* Dialog::findWidget(int x, int y) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::addOKBGroup(WidgetArray& wid, const GUI::Font& font,
+                         const string& okText, int buttonWidth)
+{
+  const int fontWidth = font.getMaxCharWidth(),
+    fontHeight = font.getFontHeight(),
+    buttonHeight = font.getLineHeight() * 1.25;
+  const int VBORDER = fontHeight / 2;
+  const int HBORDER = fontWidth * 1.25;
+  const int BTN_BORDER = fontWidth * 2.5;
+  const int BUTTON_GAP = fontWidth;
+
+  buttonWidth = fontWidth * 6 + BTN_BORDER;
+  buttonWidth = std::max(buttonWidth, font.getStringWidth(okText) + BTN_BORDER);
+
+  _w = std::max(HBORDER * 2 + buttonWidth * 2 + BUTTON_GAP, _w);
+
+  addOKWidget(new ButtonWidget(this, font, (_w - buttonWidth) / 2,
+              _h - buttonHeight - VBORDER, buttonWidth, buttonHeight, okText, GuiObject::kCloseCmd));
+  wid.push_back(_okWidget);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::addOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
                                const string& okText, const string& cancelText,
                                bool focusOKButton, int buttonWidth)
