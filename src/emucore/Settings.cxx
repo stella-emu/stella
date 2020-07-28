@@ -198,6 +198,7 @@ Settings::Settings()
   setPermanent("plr.tm.uncompressed", 60);
   setPermanent("plr.tm.interval", "30f"); // = 0.5 seconds
   setPermanent("plr.tm.horizon", "10m"); // = ~10 minutes
+  setPermanent("plr.detectedinfo", "false");
   setPermanent("plr.eepromaccess", "false");
 
   // Developer settings
@@ -227,6 +228,7 @@ Settings::Settings()
   setPermanent("dev.tm.horizon", "30s"); // = ~30 seconds
   // Thumb ARM emulation options
   setPermanent("dev.thumb.trapfatal", "true");
+  setPermanent("dev.detectedinfo", "true");
   setPermanent("dev.eepromaccess", "true");
 }
 
@@ -616,6 +618,7 @@ void Settings::usage() const
     << "                                    mode\n"
     << endl
     << "  -plr.stats        <1|0>          Overlay console info during emulation\n"
+    << "  -plr.detectedinfo <1|0>          Enable initial detected settings info\n"
     << "  -plr.console      <2600|7800>    Select console for B/W and Pause key\n"
     << "                                    handling and RAM initialization\n"
     << "  -plr.bankrandom   <1|0>          Randomize the startup bank on reset\n"
@@ -631,6 +634,7 @@ void Settings::usage() const
     << endl
     << " The same parameters but for developer settings mode\n"
     << "  -dev.stats        <1|0>          Overlay console info during emulation\n"
+    << "  -dev.detectedinfo <1|0>          Enable initial detected settings info\n"
     << "  -dev.console      <2600|7800>    Select console for B/W and Pause key\n"
     << "                                    handling and RAM initialization\n"
     << "  -dev.bankrandom   <1|0>          Randomize the startup bank on reset\n"

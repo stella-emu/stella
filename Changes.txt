@@ -35,6 +35,8 @@
 
   * Added option to select the audio device.
 
+  * Added option to display detected settings info when a ROM is loaded.
+
   * Replaced "Re-disassemble" with "Disassemble @ current line" in debugger.
 
   * Fix bug when taking fullscreen snapshots; the dimensions were sometimes
