@@ -522,12 +522,15 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
   switch(cmd)
   {
     case GuiObject::kOKCmd:
+    {
+      bool inform = myIsGlobal &&
+        myRomPath->getText() != instance().settings().getString("romdir");
       saveConfig();
       close();
-      if(myIsGlobal)  // Let the boss know romdir has changed
+      if(inform) // Let the boss know romdir has changed
         sendCommand(LauncherDialog::kRomDirChosenCmd, 0, 0);
       break;
-
+    }
     case GuiObject::kDefaultsCmd:
       setDefaults();
       break;

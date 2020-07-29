@@ -626,11 +626,17 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kRomDirChosenCmd:
     {
-      FilesystemNode node(instance().settings().getString("romdir"));
-      if(!(node.exists() && node.isDirectory()))
-        node = FilesystemNode("~");
+      string romDir = instance().settings().getString("romdir");
 
-      myList->setDirectory(node);
+      if(myList->currentDir().getPath() != romDir)
+      {
+        FilesystemNode node(romDir);
+
+        if(!(node.exists() && node.isDirectory()))
+          node = FilesystemNode("~");
+
+        myList->setDirectory(node);
+      }
       break;
     }
 
@@ -668,6 +674,8 @@ void LauncherDialog::setDefaultDir()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::openSettings()
 {
+  saveConfig();
+
   // Create an options dialog, similar to the in-game one
   if (instance().settings().getBool("basic_settings"))
   {
