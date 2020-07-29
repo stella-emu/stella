@@ -89,6 +89,11 @@ AboutDialog::AboutDialog(OSystem& osystem, DialogContainer& parent,
   addToFocusList(wid);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+AboutDialog::~AboutDialog()
+{
+}
+
 // The following commands can be put at the start of a line (all subject to change):
 //   \C, \L, \R  -- set center/left/right alignment
 //   \c0 - \c5   -- set a custom color:

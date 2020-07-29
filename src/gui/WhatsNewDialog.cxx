@@ -26,8 +26,7 @@ WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent, const 
                                int max_w, int max_h)
   : Dialog(osystem, parent, font, "What's New in Stella " + string(STELLA_VERSION) + "?")
 {
-  const int lineHeight = _font.getLineHeight(),
-    fontHeight = _font.getFontHeight(),
+  const int fontHeight = _font.getFontHeight(),
     fontWidth = _font.getMaxCharWidth(),
     buttonHeight = _font.getLineHeight() * 1.25;
   const int VGAP = fontHeight / 4;
