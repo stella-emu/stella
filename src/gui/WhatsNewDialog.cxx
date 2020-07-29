@@ -19,6 +19,8 @@
 
 #include "WhatsNewDialog.hxx"
 
+constexpr int MAX_CHARS = 64; // maximum number of chars per line
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font,
                                int max_w, int max_h)
@@ -35,7 +37,7 @@ WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent, const 
 
 
   // Set preliminary dimensions
-  setSize(64 * fontWidth + HBORDER * 2, max_h,
+  setSize(MAX_CHARS * fontWidth + HBORDER * 2, max_h,
           max_w, max_h);
 
   add(ypos, "added autofire");
@@ -50,7 +52,7 @@ WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent, const 
   add(ypos, "fixed bug when taking fullscreen snapshots; the dimensions were sometimes cut");
 
   // Set needed dimensions
-  setSize(64 * fontWidth + HBORDER * 2,
+  setSize(MAX_CHARS * fontWidth + HBORDER * 2,
           ypos + VGAP + buttonHeight + VBORDER,
           max_w, max_h);
 
@@ -70,13 +72,13 @@ void WhatsNewDialog::add(int& ypos, const string& text)
     fontHeight = _font.getFontHeight(),
     fontWidth = _font.getMaxCharWidth(),
     HBORDER = fontWidth * 1.25;
-  const string DOT = "\x1f"; 
+  const string DOT = "\x1f";
   string txt = DOT + " " + text;
 
   // automatically wrap too long texts
-  while(txt.length() > 64)
+  while(txt.length() > MAX_CHARS)
   {
-    int i = 64;
+    int i = MAX_CHARS;
 
     while(--i && txt[i] != ' ');
     new StaticTextWidget(this, _font, HBORDER, ypos, txt.substr(0, i));

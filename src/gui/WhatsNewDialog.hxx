@@ -23,13 +23,6 @@
 class WhatsNewDialog : public Dialog
 {
   public:
-    // These must be accessible from dialogs created by this class
-    enum {
-      kLoadROMCmd = 'STRT',  // load currently selected ROM
-      kRomDirChosenCmd = 'romc'   // rom dir chosen
-    };
-
-  public:
     WhatsNewDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font,
                    int max_w, int max_h);
     virtual ~WhatsNewDialog() = default;
