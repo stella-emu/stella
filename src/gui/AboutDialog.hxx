@@ -23,6 +23,7 @@ class DialogContainer;
 class CommandSender;
 class ButtonWidget;
 class StaticTextWidget;
+class WhatsNewDialog;
 
 #include "Dialog.hxx"
 
@@ -41,6 +42,7 @@ class AboutDialog : public Dialog
     void loadConfig() override { displayInfo(); }
 
   private:
+    ButtonWidget* myWhatsNewButton{nullptr};
     ButtonWidget* myNextButton{nullptr};
     ButtonWidget* myPrevButton{nullptr};
 
@@ -51,6 +53,12 @@ class AboutDialog : public Dialog
     int myPage{1};
     int myNumPages{4};
     int myLinesPerPage{13};
+
+    unique_ptr<WhatsNewDialog> myWhatsNewDialog;
+
+    enum {
+      kWhatsNew = 'ADWN'
+    };
 
   private:
     // Following constructors and assignment operators not supported
