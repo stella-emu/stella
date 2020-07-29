@@ -1,0 +1,41 @@
+//============================================================================
+//
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
+//   SSSS    tt   ee  ee  ll   ll      aa
+//      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
+//  SS  SS   tt   ee      ll   ll  aa  aa
+//   SSSS     ttt  eeeee llll llll  aaaaa
+//
+// Copyright (c) 1995-2020 by Bradford W. Mott, Stephen Anthony
+// and the Stella Team
+//
+// See the file "License.txt" for information on usage and redistribution of
+// this file, and for a DISCLAIMER OF ALL WARRANTIES.
+//============================================================================
+
+#ifndef WHATSNEW_DIALOG_HXX
+#define WHATSNEW_DIALOG_HXX
+
+#include "Dialog.hxx"
+
+class WhatsNewDialog : public Dialog
+{
+  public:
+    // These must be accessible from dialogs created by this class
+    enum {
+      kLoadROMCmd = 'STRT',  // load currently selected ROM
+      kRomDirChosenCmd = 'romc'   // rom dir chosen
+    };
+
+  public:
+    WhatsNewDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font,
+                   int max_w, int max_h);
+    virtual ~WhatsNewDialog() = default;
+
+  private:
+    void add(int& ypos, const string& text);
+};
+
+#endif
