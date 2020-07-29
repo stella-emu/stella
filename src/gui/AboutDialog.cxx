@@ -20,6 +20,8 @@
 #include "Version.hxx"
 #include "Widget.hxx"
 #include "Font.hxx"
+#include "WhatsNewDialog.hxx"
+
 #include "AboutDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -64,10 +66,16 @@ AboutDialog::AboutDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(b);
   addCancelWidget(b);
 
-  xpos = HBORDER;  ypos = _th + VBORDER;
+  xpos = HBORDER;  ypos = _th + VBORDER + (buttonHeight - fontHeight) / 2;
   myTitle = new StaticTextWidget(this, font, xpos, ypos, _w - xpos * 2, fontHeight,
                                  "", TextAlign::Center);
   myTitle->setTextColor(kTextColorEm);
+
+  int bwidth = font.getStringWidth("What's New" + ELLIPSIS) + fontWidth * 2.5;
+  myWhatsNewButton =
+    new ButtonWidget(this, font, _w - HBORDER - bwidth, ypos - (buttonHeight - fontHeight) / 2,
+                     bwidth, buttonHeight, "What's New" + ELLIPSIS, kWhatsNew);
+  wid.push_back(myWhatsNewButton);
 
   xpos = HBORDER * 2;  ypos += lineHeight + VGAP * 2;
   for(int i = 0; i < myLinesPerPage; i++)
@@ -256,6 +264,13 @@ void AboutDialog::handleCommand(CommandSender* sender, int cmd, int data, int id
         myPrevButton->clearFlags(Widget::FLAG_ENABLED);
 
       displayInfo();
+      break;
+
+    case kWhatsNew:
+      if(myWhatsNewDialog == nullptr)
+        myWhatsNewDialog = make_unique<WhatsNewDialog>(instance(), parent(), _font,
+                                                       640 * 0.95, 480 * 0.95);
+      myWhatsNewDialog->open();
       break;
 
     default:

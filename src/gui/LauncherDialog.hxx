@@ -132,7 +132,6 @@ class LauncherDialog : public Dialog
     unique_ptr<GlobalPropsDialog> myGlobalProps;
     unique_ptr<BrowserDialog> myRomDir;
     unique_ptr<WhatsNewDialog> myWhatsNewDialog;
-    unique_ptr<GUI::MessageBox> myWhatsNewMsg;
 
     // automatically sized font for ROM info viewer
     unique_ptr<GUI::Font> myROMInfoFont;
