@@ -222,6 +222,8 @@
 		DC1B2EC81E50036100F62837 /* TrakBall.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC1B2EC21E50036100F62837 /* TrakBall.hxx */; };
 		DC1BC6662066B4390076F74A /* PKeyboardHandler.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC1BC6642066B4390076F74A /* PKeyboardHandler.cxx */; };
 		DC1BC6672066B4390076F74A /* PKeyboardHandler.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC1BC6652066B4390076F74A /* PKeyboardHandler.hxx */; };
+		DC1E474E24D34F3B0047E61A /* WhatsNewDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC1E474C24D34F3A0047E61A /* WhatsNewDialog.cxx */; };
+		DC1E474F24D34F3B0047E61A /* WhatsNewDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC1E474D24D34F3A0047E61A /* WhatsNewDialog.hxx */; };
 		DC21E5BF21CA903E007D0E1A /* OSystemMACOS.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC21E5B921CA903E007D0E1A /* OSystemMACOS.cxx */; };
 		DC21E5C021CA903E007D0E1A /* OSystemMACOS.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC21E5BA21CA903E007D0E1A /* OSystemMACOS.hxx */; };
 		DC21E5C121CA903E007D0E1A /* SerialPortMACOS.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC21E5BB21CA903E007D0E1A /* SerialPortMACOS.cxx */; };
@@ -973,6 +975,8 @@
 		DC1B2EC21E50036100F62837 /* TrakBall.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TrakBall.hxx; sourceTree = "<group>"; };
 		DC1BC6642066B4390076F74A /* PKeyboardHandler.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PKeyboardHandler.cxx; sourceTree = "<group>"; };
 		DC1BC6652066B4390076F74A /* PKeyboardHandler.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = PKeyboardHandler.hxx; sourceTree = "<group>"; };
+		DC1E474C24D34F3A0047E61A /* WhatsNewDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WhatsNewDialog.cxx; sourceTree = "<group>"; };
+		DC1E474D24D34F3A0047E61A /* WhatsNewDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = WhatsNewDialog.hxx; sourceTree = "<group>"; };
 		DC21E5B921CA903E007D0E1A /* OSystemMACOS.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OSystemMACOS.cxx; sourceTree = SOURCE_ROOT; };
 		DC21E5BA21CA903E007D0E1A /* OSystemMACOS.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = OSystemMACOS.hxx; sourceTree = SOURCE_ROOT; };
 		DC21E5BB21CA903E007D0E1A /* SerialPortMACOS.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SerialPortMACOS.cxx; sourceTree = SOURCE_ROOT; };
@@ -2133,6 +2137,8 @@
 				DC8078E70B4BD697005E9305 /* UIDialog.hxx */,
 				DC3C9BC72469C93D00CF2D47 /* VideoAudioDialog.cxx */,
 				DC3C9BC92469C93D00CF2D47 /* VideoAudioDialog.hxx */,
+				DC1E474C24D34F3A0047E61A /* WhatsNewDialog.cxx */,
+				DC1E474D24D34F3A0047E61A /* WhatsNewDialog.hxx */,
 				2DDBEAD4084578BF00812C11 /* Widget.cxx */,
 				2DDBEAD5084578BF00812C11 /* Widget.hxx */,
 			);
@@ -2509,6 +2515,7 @@
 				2D91745209BA90380026E9FF /* CommandDialog.hxx in Headers */,
 				2D91745309BA90380026E9FF /* CommandMenu.hxx in Headers */,
 				E0306E111F93E916003DDD52 /* JitterEmulation.hxx in Headers */,
+				DC1E474F24D34F3B0047E61A /* WhatsNewDialog.hxx in Headers */,
 				2D91745509BA90380026E9FF /* CpuWidget.hxx in Headers */,
 				2D91745609BA90380026E9FF /* DataGridOpsWidget.hxx in Headers */,
 				2D91745709BA90380026E9FF /* DataGridWidget.hxx in Headers */,
@@ -2911,6 +2918,7 @@
 				CFE3F60D1E84A9A200A8204E /* CartCDFWidget.cxx in Sources */,
 				2D9174B709BA90380026E9FF /* OptionsDialog.cxx in Sources */,
 				2D9174B809BA90380026E9FF /* PopUpWidget.cxx in Sources */,
+				DC1E474E24D34F3B0047E61A /* WhatsNewDialog.cxx in Sources */,
 				DCBDDE9A1D6A5F0E009DF1E9 /* Cart3EPlusWidget.cxx in Sources */,
 				DCE9158B201543B900960CC0 /* TimeLineWidget.cxx in Sources */,
 				DCE5CDE31BA10024005CD08A /* RiotRamWidget.cxx in Sources */,
