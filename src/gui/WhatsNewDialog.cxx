@@ -24,7 +24,11 @@ constexpr int MAX_CHARS = 64; // maximum number of chars per line
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font,
                                int max_w, int max_h)
+#if defined(RETRON77)
+  : Dialog(osystem, parent, font, "What's New in Stella " + string(STELLA_VERSION) + " for RetroN 77?")
+#else
   : Dialog(osystem, parent, font, "What's New in Stella " + string(STELLA_VERSION) + "?")
+#endif
 {
   const int fontHeight = _font.getFontHeight(),
     fontWidth = _font.getMaxCharWidth(),
@@ -39,20 +43,26 @@ WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent, const 
   setSize(MAX_CHARS * fontWidth + HBORDER * 2, max_h,
           max_w, max_h);
 
-  add(ypos, "added autofire");
-  add(ypos, "added new UI theme 'Dark'");
-  add(ypos, "extended global hotkeys for debug options");
+#if defined(RETRON77)
+  add(ypos, "added adjustable autofire (see 'Advanced Settings')");
+  add(ypos, "added new UI theme 'Dark' (see 'Advanced Settings')");
+#else
+  add(ypos, "added adjustable autofire");
+  add(ypos, "added 'Dark' UI theme");
+  //add(ypos, "extended global hotkeys for debug options");
   add(ypos, "added option to playback a game using the Time Machine");
-  add(ypos, "allow taking snapshots from within the Time Machine dialog");
+  //add(ypos, "allow taking snapshots from within the Time Machine dialog");
   add(ypos, "added the ability to access most files that Stella uses from within a ZIP file");
   add(ypos, "added option to select the audio device");
-  add(ypos, "added option to display detected settings info when a ROM is loaded");
-  add(ypos, "replaced 'Re-disassemble' with 'Disassemble @ current line' in debugger");
-  add(ypos, "fixed bug when taking fullscreen snapshots; the dimensions were sometimes cut");
+  //add(ypos, "added option to display detected settings info when a ROM is loaded");
+  //add(ypos, "replaced 'Re-disassemble' with 'Disassemble @ current line' in debugger");
+  //add(ypos, "fixed bug when taking fullscreen snapshots; the dimensions were sometimes cut");
+  add(ypos, ELLIPSIS + " (for a complete list see 'docs/Changes.txt')");
+#endif
 
   // Set needed dimensions
   setSize(MAX_CHARS * fontWidth + HBORDER * 2,
-          ypos + VGAP + buttonHeight + VBORDER,
+          ypos + VGAP * 2 + buttonHeight + VBORDER,
           max_w, max_h);
 
   WidgetArray wid;
