@@ -79,3 +79,15 @@ bool SerialPortWINDOWS::writeByte(uInt8 data)
   }
   return false;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool SerialPortWINDOWS::isCTS()
+{
+  if(myHandle)
+  {
+    DWORD modemStat;
+    GetCommModemStatus(myHandle, &modemStat);
+    return modemStat & MS_CTS_ON;
+  }
+  return false;
+}

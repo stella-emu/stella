@@ -2087,6 +2087,9 @@
     <ClInclude Include="..\gui\WhatsNewDialog.hxx">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
+    <ClInclude Include="..\emucore\SerialPort.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="stella.ico">
