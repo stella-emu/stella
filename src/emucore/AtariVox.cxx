@@ -51,8 +51,9 @@ bool AtariVox::read(DigitalPin pin)
   {
     // Pin 2: SpeakJet READY
     case DigitalPin::Two:
-      // For now, we just assume the device is always ready
-      return setPin(pin, true);
+    {
+      return setPin(pin, mySerialPort->isCTS());
+    }
 
     default:
       return SaveKey::read(pin);
