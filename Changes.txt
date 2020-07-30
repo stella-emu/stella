@@ -14,9 +14,9 @@
 
 6.2.1 to 6.3 (XXXX XX, 2020)
 
-  * Added autofire.
+  * Added adjustable autofire.
 
-  * Added new UI theme 'Dark'. (TODO: DOC)
+  * Added 'Dark' UI theme. (TODO: DOC)
 
   * Extended global hotkeys for debug options.
 
