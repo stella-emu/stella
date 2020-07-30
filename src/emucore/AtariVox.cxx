@@ -50,10 +50,11 @@ bool AtariVox::read(DigitalPin pin)
   switch(pin)
   {
     // Pin 2: SpeakJet READY
-    //        CTS enabled means the SpeakJet can accept more data
+    //        CTS (Clear To Send) is connected inverted
+    //        So CTS = 0 means the buffer is full, which pulls pin 2 high
     case DigitalPin::Two:
     {
-      return setPin(pin, mySerialPort->isCTS());
+      return setPin(pin, !mySerialPort->isCTS());
     }
 
     default:

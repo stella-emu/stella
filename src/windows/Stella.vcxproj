@@ -1774,6 +1774,7 @@
     <ClInclude Include="..\emucore\MindLink.hxx" />
     <ClInclude Include="..\emucore\PointingDevice.hxx" />
     <ClInclude Include="..\emucore\ProfilingRunner.hxx" />
+    <ClInclude Include="..\emucore\SerialPort.hxx" />
     <ClInclude Include="..\emucore\TIASurface.hxx" />
     <ClInclude Include="..\emucore\tia\Audio.hxx" />
     <ClInclude Include="..\emucore\tia\AudioChannel.hxx" />
