@@ -50,6 +50,7 @@ bool AtariVox::read(DigitalPin pin)
   switch(pin)
   {
     // Pin 2: SpeakJet READY
+    //        CTS enabled means the SpeakJet can accept more data
     case DigitalPin::Two:
     {
       return setPin(pin, mySerialPort->isCTS());
