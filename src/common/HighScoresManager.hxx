@@ -29,16 +29,16 @@ class OSystem;
 */
 
 namespace HSM {
-  static const uInt32 MAX_SCORE_DIGITS = 8;
-  static const uInt32 MAX_ADDR_CHARS = MAX_SCORE_DIGITS / 2;
-  static const uInt32 MAX_SCORE_ADDR = 4;
-  static const uInt32 MAX_SPECIAL_NAME = 5;
-  static const uInt32 MAX_SPECIAL_DIGITS = 3;
+  static constexpr uInt32 MAX_SCORE_DIGITS = 8;
+  static constexpr uInt32 MAX_ADDR_CHARS = MAX_SCORE_DIGITS / 2;
+  static constexpr uInt32 MAX_SCORE_ADDR = 4;
+  static constexpr uInt32 MAX_SPECIAL_NAME = 5;
+  static constexpr uInt32 MAX_SPECIAL_DIGITS = 3;
 
-  static const uInt32 DEFAULT_VARIATION = 1;
-  static const uInt32 DEFAULT_ADDRESS = 0;
+  static constexpr uInt32 DEFAULT_VARIATION = 1;
+  static constexpr uInt32 DEFAULT_ADDRESS = 0;
 
-  static const Int32 NO_VALUE = -1;
+  static constexpr Int32 NO_VALUE = -1;
 
   using ScoreAddresses = array<Int16, MAX_SCORE_ADDR>;
 
@@ -61,9 +61,6 @@ namespace HSM {
     uInt16 specialAddr;
   };
 } // namespace HSM
-
-using namespace HSM;
-
 
 /**
   This class provides an interface to define, load and save scores. It is meant
@@ -88,12 +85,12 @@ class HighScoresManager
       @return True if highscore data exists, else false
     */
     bool get(const Properties& props, uInt32& numVariations,
-             ScoresInfo& info) const;
+             HSM::ScoresInfo& info) const;
     /**
       Set the highscore data of game's properties
     */
     void set(Properties& props, uInt32 numVariations,
-             const ScoresInfo& info) const;
+             const HSM::ScoresInfo& info) const;
 
     /**
       Calculate the number of bytes for one player's score from given parameters
@@ -110,7 +107,7 @@ class HighScoresManager
       @return The current score or -1 if no valid data exists
     */
     Int32 score(uInt32 numAddrBytes, uInt32 trailingZeroes, bool isBCD,
-                const ScoreAddresses& scoreAddr) const;
+                const HSM::ScoreAddresses& scoreAddr) const;
 
     Int32 special(uInt16 addr, bool varBCD, bool zeroBased) const;
 
@@ -126,7 +123,7 @@ class HighScoresManager
 
     // converts the given value, using only the maximum bits required by maxVal
     //  and adjusted for BCD and zero based data
-    Int32 convert(uInt32 val, uInt32 maxVal, bool isBCD, bool zeroBased) const;
+    Int32 convert(Int32 val, uInt32 maxVal, bool isBCD, bool zeroBased) const;
 
     // Peek into memory
     Int16 peek(uInt16 addr) const;
@@ -150,18 +147,18 @@ class HighScoresManager
       IDX_SPECIAL_ADDRESS
     };
 
-    static const uInt32 MAX_VARIATIONS = 256;
+    static constexpr uInt32 MAX_VARIATIONS = 256;
 
-    static const uInt32 MAX_TRAILING = 3;
-    static const bool DEFAULT_ARM_RAM = false;
-    static const uInt32 DEFAULT_DIGITS = 4;
-    static const uInt32 DEFAULT_TRAILING = 0;
-    static const bool DEFAULT_SCORE_BCD = true;
-    static const bool DEFAULT_SCORE_REVERSED = false;
-    static const bool DEFAULT_VARS_BCD = true;
-    static const bool DEFAULT_VARS_ZERO_BASED = false;
-    static const bool DEFAULT_SPECIAL_BCD = true;
-    static const bool DEFAULT_SPECIAL_ZERO_BASED = false;
+    static constexpr uInt32 MAX_TRAILING = 3;
+    static constexpr bool DEFAULT_ARM_RAM = false;
+    static constexpr uInt32 DEFAULT_DIGITS = 4;
+    static constexpr uInt32 DEFAULT_TRAILING = 0;
+    static constexpr bool DEFAULT_SCORE_BCD = true;
+    static constexpr bool DEFAULT_SCORE_REVERSED = false;
+    static constexpr bool DEFAULT_VARS_BCD = true;
+    static constexpr bool DEFAULT_VARS_ZERO_BASED = false;
+    static constexpr bool DEFAULT_SPECIAL_BCD = true;
+    static constexpr bool DEFAULT_SPECIAL_ZERO_BASED = false;
 
   private:
     // Get individual highscore info from properties

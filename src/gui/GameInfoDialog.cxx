@@ -536,7 +536,7 @@ void GameInfoDialog::addHighScoresTab()
 
   vwidth = _font.getStringWidth("AB") + 3;
   items.clear();
-  for (int i = 1; i <= HSM::MAX_SCORE_DIGITS; ++i)
+  for (uInt32 i = 1; i <= HSM::MAX_SCORE_DIGITS; ++i)
     VarList::push_back(items, std::to_string(i), std::to_string(i));
 
   myScoreDigitsLabel = new StaticTextWidget(myTab, _font, xpos, ypos + 1, "Digits    ");
@@ -545,7 +545,7 @@ void GameInfoDialog::addHighScoresTab()
   wid.push_back(myScoreDigits);
 
   items.clear();
-  for (int i = 0; i <= HSM::MAX_SCORE_DIGITS - 3; ++i)
+  for (uInt32 i = 0; i <= HSM::MAX_SCORE_DIGITS - 3; ++i)
     VarList::push_back(items, std::to_string(i), std::to_string(i));
   pwidth = _font.getStringWidth("0");
 
@@ -837,12 +837,12 @@ void GameInfoDialog::loadHighScoresProperties(const Properties& props)
   myHighScoreNotes->setText(info.notes);
 
   ss.str("");
-  ss << hex << right //<< setw(HSM::MAX_ADDR_CHARS) << setfill(' ')
+  ss << hex << right // << setw(HSM::MAX_ADDR_CHARS) << setfill(' ')
     << uppercase << info.varsAddr;
   myVarAddress->setText(ss.str());
 
   ss.str("");
-  ss << hex << right //<< setw(HSM::MAX_ADDR_CHARS) << setfill(' ')
+  ss << hex << right // << setw(HSM::MAX_ADDR_CHARS) << setfill(' ')
     << uppercase << info.specialAddr;
   mySpecialAddress->setText(ss.str());
 
@@ -852,7 +852,7 @@ void GameInfoDialog::loadHighScoresProperties(const Properties& props)
     ss.str("");
     if(a < instance().highScores().numAddrBytes(info.numDigits, info.trailingZeroes))
     {
-      ss << hex << right //<< setw(HSM::MAX_ADDR_CHARS) << setfill(' ')
+      ss << hex << right // << setw(HSM::MAX_ADDR_CHARS) << setfill(' ')
         << uppercase << info.scoreAddr[a];
     }
     myScoreAddress[a]->setText(ss.str());
@@ -1268,9 +1268,9 @@ void GameInfoDialog::setAddressVal(EditTextWidget* addressWidget, EditTextWidget
     val = instance().highScores().convert(val, maxVal, isBCD, zeroBased);
 
     // format output and display in value widget
-    //if (isBCD)
+    // if (isBCD)
     //  ss << hex;
-    ss << right //<< setw(2) << setfill(' ')
+    ss << right // << setw(2) << setfill(' ')
       << uppercase << uInt16(val);
     valWidget->setText(ss.str());
   }

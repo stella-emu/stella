@@ -62,13 +62,13 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
                                    int max_w, int max_h,
                                    Menu::AppMode mode)
   : Dialog(osystem, parent, osystem.frameBuffer().font(), "High Scores"),
-    myMode(mode),
+    myDirty(false),
+    myHighScoreSaved(false),
     _max_w(max_w),
     _max_h(max_h),
     myVariation(HSM::DEFAULT_VARIATION),
     myInitials(""),
-    myDirty(false),
-    myHighScoreSaved(false)
+    myMode(mode)
 {
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
   const int lineHeight = _font.getLineHeight(),
@@ -328,7 +328,7 @@ void HighScoresDialog::updateWidgets(bool init)
   myPrevVarButton->setEnabled(myVariation > 1);
   myNextVarButton->setEnabled(myVariation < instance().highScores().numVariations());
 
-  for (Int32 r = 0; r < NUM_RANKS; ++r)
+  for (uInt32 r = 0; r < NUM_RANKS; ++r)
   {
     ostringstream buf;
 
@@ -354,7 +354,7 @@ void HighScoresDialog::updateWidgets(bool init)
     myNameWidgets[r]->setLabel(myNames[r]);
     myDateWidgets[r]->setLabel(myDates[r]);
 
-    if (r == myEditRank)
+    if (static_cast<Int32>(r) == myEditRank)
     {
       myNameWidgets[r]->setFlags(EditTextWidget::FLAG_INVISIBLE);
       myEditNameWidgets[r]->clearFlags(EditTextWidget::FLAG_INVISIBLE);
@@ -384,7 +384,7 @@ void HighScoresDialog::handlePlayedVariation()
     Int32 newSpecial = instance().highScores().special();
     bool scoreInvert = instance().highScores().scoreInvert();
 
-    for (myHighScoreRank = 0; myHighScoreRank < NUM_RANKS; ++myHighScoreRank)
+    for (myHighScoreRank = 0; myHighScoreRank < static_cast<Int32>(NUM_RANKS); ++myHighScoreRank)
     {
       if ((!scoreInvert && newScore > myHighScores[myHighScoreRank]) ||
         ((scoreInvert && newScore < myHighScores[myHighScoreRank]) || myHighScores[myHighScoreRank] == 0))
@@ -393,10 +393,10 @@ void HighScoresDialog::handlePlayedVariation()
         break;
     }
 
-    if (myHighScoreRank < NUM_RANKS)
+    if (myHighScoreRank < static_cast<Int32>(NUM_RANKS))
     {
       myEditRank = myHighScoreRank;
-      for (Int32 r = NUM_RANKS - 1; r > myHighScoreRank; --r)
+      for (uInt32 r = NUM_RANKS - 1; static_cast<Int32>(r) > myHighScoreRank; --r)
       {
         myHighScores[r] = myHighScores[r - 1];
         mySpecials[r] = mySpecials[r - 1];
@@ -416,7 +416,7 @@ void HighScoresDialog::handlePlayedVariation()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void HighScoresDialog::deleteRank(int rank)
 {
-  for (Int32 r = rank; r < NUM_RANKS - 1; ++r)
+  for (uInt32 r = rank; r < NUM_RANKS - 1; ++r)
   {
     myHighScores[r] = myHighScores[r + 1];
     mySpecials[r] = mySpecials[r + 1];
@@ -510,7 +510,7 @@ void HighScoresDialog::saveHighScores(Int32 variation) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void HighScoresDialog::loadHighScores(Int32 variation)
 {
-  for (Int32 r = 0; r < NUM_RANKS; ++r)
+  for (uInt32 r = 0; r < NUM_RANKS; ++r)
   {
     myHighScores[r] = 0;
     mySpecials[r] = 0;
@@ -562,7 +562,7 @@ bool HighScoresDialog::save(Serializer& out, Int32 variation) const
 
     out.putString(myMD5);
     out.putInt(variation);
-    for (Int32 r = 0; r < NUM_RANKS; ++r)
+    for (uInt32 r = 0; r < NUM_RANKS; ++r)
     {
       out.putInt(myHighScores[r]);
       out.putInt(mySpecials[r]);
@@ -588,7 +588,7 @@ bool HighScoresDialog::load(Serializer& in, Int32 variation)
     if (Int32(in.getInt()) != variation)
       return false;
 
-    for (Int32 r = 0; r < NUM_RANKS; ++r)
+    for (uInt32 r = 0; r < NUM_RANKS; ++r)
     {
       myHighScores[r] = in.getInt();
       mySpecials[r] = in.getInt();
