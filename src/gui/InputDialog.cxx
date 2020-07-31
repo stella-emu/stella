@@ -221,9 +221,9 @@ void InputDialog::addDevicePortTab()
 
   // Add AtariVox serial port
   ypos += lineHeight + VGAP * 3;
-  lwidth = _font.getStringWidth("AVox serial port ");
+  lwidth = _font.getStringWidth("AtariVox serial port ");
   fwidth = _w - HBORDER * 2 - 2 - lwidth;
-  new StaticTextWidget(myTab, _font, HBORDER, ypos + 2, "AVox serial port ");
+  new StaticTextWidget(myTab, _font, HBORDER, ypos + 2, "AtariVox serial port ");
   myAVoxPort = new EditTextWidget(myTab, _font, HBORDER + lwidth, ypos,
                                   fwidth, fontHeight);
   wid.push_back(myAVoxPort);
