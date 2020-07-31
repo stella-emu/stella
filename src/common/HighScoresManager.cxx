@@ -120,8 +120,9 @@ bool HighScoresManager::enabled() const
 uInt32 HighScoresManager::numVariations(const Properties& props) const
 {
   string numVariations = getPropIdx(props, PropType::Cart_Variations);
+  uInt32 maxVariations = MAX_VARIATIONS;
 
-  return min(uInt32(stringToInt(numVariations, DEFAULT_VARIATION)), MAX_VARIATIONS);
+  return min(uInt32(stringToInt(numVariations, DEFAULT_VARIATION)), maxVariations);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -161,8 +162,9 @@ void HighScoresManager::set(Properties& props, uInt32 numVariations,
 {
   ostringstream buf;
   string output;
+  uInt32 maxVariations = MAX_VARIATIONS;
 
-  props.set(PropType::Cart_Variations, to_string(min(numVariations, MAX_VARIATIONS)));
+  props.set(PropType::Cart_Variations, to_string(min(numVariations, maxVariations)));
 
   // fill from the back to skip default values
   if (output.length() || !info.notes.empty())
@@ -211,16 +213,18 @@ void HighScoresManager::set(Properties& props, uInt32 numVariations,
 uInt32 HighScoresManager::numDigits(const Properties& props) const
 {
   string digits = getPropIdx(props, PropType::Cart_Formats, IDX_SCORE_DIGITS);
+  uInt32 maxScoreDigits = MAX_SCORE_DIGITS;
 
-  return min(uInt32(stringToInt(digits, DEFAULT_DIGITS)), MAX_SCORE_DIGITS);
+  return min(uInt32(stringToInt(digits, DEFAULT_DIGITS)), maxScoreDigits);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 HighScoresManager::trailingZeroes(const Properties& props) const
 {
   string trailing = getPropIdx(props, PropType::Cart_Formats, IDX_TRAILING_ZEROES);
+  const uInt32 maxTrailing = MAX_TRAILING;
 
-  return min(uInt32(stringToInt(trailing, DEFAULT_TRAILING)), MAX_TRAILING);
+  return min(uInt32(stringToInt(trailing, DEFAULT_TRAILING)), maxTrailing);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -357,11 +361,12 @@ Int32 HighScoresManager::variation() const
   Properties props;
   uInt16 addr = varAddress(properties(props));
 
-  if(addr == DEFAULT_ADDRESS)
+  if(addr == DEFAULT_ADDRESS) {
     if(numVariations() == 1)
       return DEFAULT_VARIATION;
     else
       return NO_VALUE;
+  }
 
   return variation(addr, varBCD(props), varZeroBased(props), numVariations(props));
 }
@@ -378,7 +383,7 @@ Int32 HighScoresManager::score(uInt32 numAddrBytes, uInt32 trailingZeroes,
   for (uInt32 b = 0; b < numAddrBytes; ++b)
   {
     uInt16 addr = scoreAddr[b];
-    uInt32 score;
+    Int32 score;
 
     totalScore *= isBCD ? 100 : 256;
     score = peek(addr);
@@ -486,7 +491,7 @@ string HighScoresManager::notes() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Int32 HighScoresManager::convert(uInt32 val, uInt32 maxVal, bool isBCD, bool zeroBased) const
+Int32 HighScoresManager::convert(Int32 val, uInt32 maxVal, bool isBCD, bool zeroBased) const
 {
   maxVal += zeroBased ? 0 : 1;
   Int32 bits = isBCD
