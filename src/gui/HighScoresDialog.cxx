@@ -30,6 +30,7 @@
 #include "HighScoresDialog.hxx"
 
 static constexpr int BUTTON_GFX_W = 10, BUTTON_GFX_H = 10;
+static constexpr int BUTTON_GFX_W_LARGE = 16, BUTTON_GFX_H_LARGE = 16;
 
 static constexpr std::array<uInt32, BUTTON_GFX_H> PREV_GFX = {
   0b0000110000,
@@ -57,6 +58,44 @@ static constexpr std::array<uInt32, BUTTON_GFX_H> NEXT_GFX = {
   0b0000110000,
 };
 
+static constexpr std::array<uInt32, BUTTON_GFX_H_LARGE> PREV_GFX_LARGE = {
+  0b0000000110000000,
+  0b0000000110000000,
+  0b0000001111000000,
+  0b0000001111000000,
+  0b0000011111100000,
+  0b0000011111100000,
+  0b0000111001110000,
+  0b0000111001110000,
+  0b0001110000111000,
+  0b0001110000111000,
+  0b0011100000011100,
+  0b0011100000011100,
+  0b0111000000001110,
+  0b0111000000001110,
+  0b1110000000000111,
+  0b1110000000000111,
+};
+
+static constexpr std::array<uInt32, BUTTON_GFX_H_LARGE> NEXT_GFX_LARGE = {
+  0b1110000000000111,
+  0b1110000000000111,
+  0b0111000000001110,
+  0b0111000000001110,
+  0b0011100000011100,
+  0b0011100000011100,
+  0b0001110000111000,
+  0b0001110000111000,
+  0b0000111001110000,
+  0b0000111001110000,
+  0b0000011111100000,
+  0b0000011111100000,
+  0b0000001111000000,
+  0b0000001111000000,
+  0b0000000110000000,
+  0b0000000110000000,
+};
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
                                    int max_w, int max_h,
@@ -79,7 +118,17 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
   const int VBORDER = fontHeight / 2;
   const int HBORDER = fontWidth * 1.25;
   const int VGAP = fontHeight / 4;
+  const int BUTTON_GAP = fontWidth;
 
+  int xposRank = HBORDER;
+  int xposScore = xposRank + _font.getStringWidth("Rank");
+  int xposSpecial = xposScore + _font.getStringWidth("   Score  ");
+  int xposName = xposSpecial + _font.getStringWidth("Round  ");
+  int xposDate = xposName + _font.getStringWidth("Name  ");
+  int xposDelete = xposDate + _font.getStringWidth("YY-MM-DD HH:MM  ");
+  int nWidth = _font.getStringWidth("ABC") + _font.getMaxCharWidth() * 0.75;
+  bool smallFont = _font.getFontHeight() < 24;
+  int buttonSize = smallFont ? BUTTON_GFX_H : BUTTON_GFX_H_LARGE;
   int xpos, ypos;
   WidgetArray wid;
   VariantList items;
@@ -92,24 +141,19 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
                                       _font.getStringWidth("256"), lineHeight, items, "", 0,
                                       kVariationChanged);
   wid.push_back(myVariationPopup);
-  myPrevVarButton = new ButtonWidget(this, _font, myVariationPopup->getRight() + 157, ypos - 1,
-                                     48, myVariationPopup->getHeight(),
-                                     PREV_GFX.data(), BUTTON_GFX_W, BUTTON_GFX_H, kPrevVariation);
+  int bWidth = fontWidth * 5;
+  myPrevVarButton = new ButtonWidget(this, _font, xposDelete + fontWidth * 2 - bWidth * 2 - BUTTON_GAP, ypos - 1,
+                                     bWidth, myVariationPopup->getHeight(),
+                                     smallFont ? PREV_GFX.data() : PREV_GFX_LARGE.data(),
+                                     buttonSize, buttonSize, kPrevVariation);
   wid.push_back(myPrevVarButton);
-  myNextVarButton = new ButtonWidget(this, _font, myPrevVarButton->getRight() + 8, ypos - 1,
-                                     48, myVariationPopup->getHeight(),
-                                     NEXT_GFX.data(), BUTTON_GFX_W, BUTTON_GFX_H, kNextVariation);
+  myNextVarButton = new ButtonWidget(this, _font, xposDelete + fontHeight - bWidth, ypos - 1,
+                                     bWidth, myVariationPopup->getHeight(),
+                                     smallFont ? NEXT_GFX.data() : NEXT_GFX_LARGE.data(),
+                                     buttonSize, buttonSize, kNextVariation);
   wid.push_back(myNextVarButton);
 
   ypos += lineHeight + VGAP * 4;
-
-  int xposRank = HBORDER;
-  int xposScore = xposRank + _font.getStringWidth("Rank");
-  int xposSpecial = xposScore + _font.getStringWidth("   Score") + 16;
-  int xposName = xposSpecial + _font.getStringWidth("Round") + 16;
-  int xposDate = xposName + _font.getStringWidth("Name") + 16;
-  int xposDelete = xposDate + _font.getStringWidth("YY-MM-DD HH:MM") + 16;
-  int nWidth = _font.getStringWidth("ABC") + 4;
 
   new StaticTextWidget(this, _font, xposRank, ypos + 1, "Rank");
   new StaticTextWidget(this, _font, xposScore, ypos + 1, "   Score");
@@ -131,7 +175,7 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
     myEditNameWidgets[r]->setEnabled(false);
     wid.push_back(myEditNameWidgets[r]);
     myDateWidgets[r] = new StaticTextWidget(this, _font, xposDate, ypos + 1, "YY-MM-DD HH:MM");
-    myDeleteButtons[r] = new ButtonWidget(this, _font, xposDelete, ypos + 1, 18, 18, "X",
+    myDeleteButtons[r] = new ButtonWidget(this, _font, xposDelete, ypos + 1, fontWidth * 2, fontHeight, "X",
                                           kDeleteSingle);
     myDeleteButtons[r]->setID(r);
     wid.push_back(myDeleteButtons[r]);
