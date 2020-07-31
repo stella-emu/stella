@@ -22,15 +22,18 @@
 Cartridge2KWidget::Cartridge2KWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, Cartridge2K& cart)
-  : CartDebugWidget(boss, lfont, nfont, x, y, w, h)
+  : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart)
 {
-  // Eventually, we should query this from the debugger/disassembler
-  size_t size = cart.mySize;
-  uInt16 start = (cart.myImage[size-3] << 8) | cart.myImage[size-4];
-  start -= start % size;
+  initialize();
+}
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string Cartridge2KWidget::description()
+{
   ostringstream info;
-  info << "Standard 2K cartridge, non-bankswitched\n"
-       << "Accessible @ $" << Common::Base::HEX4 << start << " - " << "$" << (start + size - 1);
-  addBaseInformation(size, "Atari", info.str());
+
+  info << "Standard 2K cartridge, non-bankswitched\n";
+  info << CartridgeEnhancedWidget::description();
+
+  return info.str();
 }

@@ -16,6 +16,7 @@
 //============================================================================
 
 #include "Console.hxx"
+#include "PaletteHandler.hxx"
 #include "TIA.hxx"
 #include "Switches.hxx"
 #include "Dialog.hxx"
@@ -33,16 +34,18 @@
 CommandDialog::CommandDialog(OSystem& osystem, DialogContainer& parent)
   : Dialog(osystem, parent, osystem.frameBuffer().font(), "Commands")
 {
-  const int HBORDER = 10;
-  const int VBORDER = 10;
-  const int HGAP = 8;
-  const int VGAP = 4;
-  const int buttonWidth = _font.getStringWidth("Time Machine On") + 16,
-            buttonHeight = _font.getLineHeight() + 6,
-            rowHeight = buttonHeight + VGAP;
+  const int fontHeight   = _font.getFontHeight(),
+            fontWidth    = _font.getMaxCharWidth(),
+            buttonHeight = _font.getLineHeight() * 1.25,
+            buttonWidth  = _font.getStringWidth("Time Machine On") + fontWidth * 2;
+  const int VBORDER = fontHeight / 2;
+  const int HBORDER = fontWidth * 1.25;
+  const int VGAP = fontHeight / 4;
+  const int HGAP = fontWidth;
+  const int rowHeight = buttonHeight + VGAP;
 
   // Set real dimensions
-  _w = 3 * (buttonWidth + 5) + HBORDER * 2;
+  _w = 3 * (buttonWidth + HGAP) - HGAP + HBORDER * 2;
   _h = 6 * rowHeight - VGAP + VBORDER * 2 + _th;
   ButtonWidget* bw = nullptr;
   WidgetArray wid;
@@ -65,7 +68,7 @@ CommandDialog::CommandDialog(OSystem& osystem, DialogContainer& parent)
   wid.push_back(myColorButton);
   myLeftDiffButton = ADD_CD_BUTTON("", kLeftDiffCmd);
   wid.push_back(myLeftDiffButton);
-  myRightDiffButton = ADD_CD_BUTTON("", kLeftDiffCmd);
+  myRightDiffButton = ADD_CD_BUTTON("", kRightDiffCmd);
   wid.push_back(myRightDiffButton);
 
   // Column 2
@@ -196,12 +199,12 @@ void CommandDialog::handleCommand(CommandSender* sender, int cmd,
 
     // Column 3
     case kFormatCmd:
-      instance().console().toggleFormat();
+      instance().console().selectFormat();
       updateTVFormat();
       break;
 
     case kPaletteCmd:
-      instance().console().togglePalette();
+      instance().frameBuffer().tiaSurface().paletteHandler().cyclePalette();
       updatePalette();
       break;
 
@@ -267,11 +270,13 @@ void CommandDialog::updatePalette()
   string palette, label;
 
   palette = instance().settings().getString("palette");
-  if(BSPF::equalsIgnoreCase(palette, "standard"))
+  if(BSPF::equalsIgnoreCase(palette, PaletteHandler::SETTING_STANDARD))
     label = "Stella Palette";
-  else if(BSPF::equalsIgnoreCase(palette, "z26"))
+  else if(BSPF::equalsIgnoreCase(palette, PaletteHandler::SETTING_Z26))
     label = "Z26 Palette";
-  else
+  else if(BSPF::equalsIgnoreCase(palette, PaletteHandler::SETTING_USER))
     label = "User Palette";
+  else
+    label = "Custom Palette";
   myPaletteButton->setLabel(label);
 }

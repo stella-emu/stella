@@ -64,6 +64,8 @@ class GameInfoDialog : public Dialog, public CommandSender
     void loadHighScoresProperties(const Properties& props);
     // load the properties of the 'High Scores' tab
     void saveHighScoresProperties();
+    // save properties from all tabs into the local properties object
+    void saveProperties();
 
     // update 'Controller' tab widgets
     void updateControllerStates();
@@ -74,6 +76,7 @@ class GameInfoDialog : public Dialog, public CommandSender
     // set formatted memory value for given address field
     void setAddressVal(EditTextWidget* address, EditTextWidget* val,
                        bool isBCD = true, bool zeroBased = false, uInt8 maxVal = 255);
+    void saveCurrentPropertiesToDisk();
 
   private:
     TabWidget* myTab{nullptr};
@@ -107,6 +110,9 @@ class GameInfoDialog : public Dialog, public CommandSender
     StaticTextWidget* myEraseEEPROMLabel{nullptr};
     ButtonWidget*     myEraseEEPROMButton{nullptr};
     StaticTextWidget* myEraseEEPROMInfo{nullptr};
+    StaticTextWidget* myPaddlesCenter{nullptr};
+    SliderWidget*     myPaddleXCenter{nullptr};
+    SliderWidget*     myPaddleYCenter{nullptr};
     CheckboxWidget*   myMouseControl{nullptr};
     PopUpWidget*      myMouseX{nullptr};
     PopUpWidget*      myMouseY{nullptr};
@@ -166,10 +172,15 @@ class GameInfoDialog : public Dialog, public CommandSender
       kMCtrlChanged    = 'MCch',
       kEEButtonPressed = 'EEgb',
       kHiScoresChanged = 'HSch',
+      kPXCenterChanged = 'Pxch',
+      kPYCenterChanged = 'Pych',
+      kSavePressed     = 'GIsp'
     };
 
     // Game properties for currently loaded ROM
     Properties myGameProperties;
+    // Filename of the currently loaded ROM
+    FilesystemNode myGameFile;
 
   private:
     // Following constructors and assignment operators not supported

@@ -27,7 +27,6 @@ class Widget;
 class OSystem;
 
 #include "Command.hxx"
-#include "OSystem.hxx"
 #include "Vec.hxx"
 
 using WidgetArray = vector<Widget*>;
@@ -90,8 +89,9 @@ class GuiObject : public CommandReceiver
     /** Redraw the focus list */
     virtual void redrawFocus() { }
 
-    /** Special character for menues */
+    /** Special characters for menues */
     const string ELLIPSIS = "\x1d";
+    const string DEGREE = "\x1c";
 
   protected:
     virtual void releaseFocus() = 0;

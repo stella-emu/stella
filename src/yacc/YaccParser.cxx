@@ -181,10 +181,15 @@ CartMethod getCartSpecial(char* ch)
 {
   if(BSPF::equalsIgnoreCase(ch, "_bank"))
     return &CartDebug::getPCBank;
-  else if(BSPF::equalsIgnoreCase(ch, "__lastread"))
+
+  else if(BSPF::equalsIgnoreCase(ch, "__lastbaseread"))
     return &CartDebug::lastReadBaseAddress;
-  else if(BSPF::equalsIgnoreCase(ch, "__lastwrite"))
+  else if(BSPF::equalsIgnoreCase(ch, "__lastbasewrite"))
     return &CartDebug::lastWriteBaseAddress;
+  else if(BSPF::equalsIgnoreCase(ch, "__lastread"))
+    return &CartDebug::lastReadAddress;
+  else if(BSPF::equalsIgnoreCase(ch, "__lastwrite"))
+    return &CartDebug::lastWriteAddress;
   else
     return nullptr;
 }
@@ -229,7 +234,9 @@ TiaMethod getTiaSpecial(char* ch)
 {
   if(BSPF::equalsIgnoreCase(ch, "_scan"))
     return &TIADebug::scanlines;
-  if(BSPF::equalsIgnoreCase(ch, "_scycles"))
+  else if(BSPF::equalsIgnoreCase(ch, "_scanend"))
+    return &TIADebug::scanlinesLastFrame;
+  else if(BSPF::equalsIgnoreCase(ch, "_scycles"))
     return &TIADebug::cyclesThisLine;
   else if(BSPF::equalsIgnoreCase(ch, "_fcount"))
     return &TIADebug::frameCount;

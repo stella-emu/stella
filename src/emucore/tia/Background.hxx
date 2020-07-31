@@ -18,10 +18,10 @@
 #ifndef TIA_BACKGROUND
 #define TIA_BACKGROUND
 
+class TIA;
+
 #include "Serializable.hxx"
 #include "bspf.hxx"
-
-class TIA;
 
 class Background : public Serializable
 {

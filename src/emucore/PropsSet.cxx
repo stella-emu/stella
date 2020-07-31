@@ -19,37 +19,55 @@
 
 #include "bspf.hxx"
 #include "FSNode.hxx"
+#include "Logger.hxx"
 #include "DefProps.hxx"
 #include "Props.hxx"
 #include "PropsSet.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PropertiesSet::load(const string& filename)
+void PropertiesSet::load(const FilesystemNode& file, bool save)
 {
-  ifstream in(filename);
-
-  Properties prop;
-  while(in >> prop)
-    insert(prop);
+  try
+  {
+    stringstream in;
+    if(file.exists() && file.read(in) > 0)
+    {
+      Properties prop;
+      while(in >> prop)
+        insert(prop, save);
+    }
+  }
+  catch(...)
+  {
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PropertiesSet::save(const string& filename) const
+bool PropertiesSet::save(const FilesystemNode& file) const
 {
-  // Only save properties when it won't create an empty file
-  FilesystemNode props(filename);
-  if(!props.exists() && myExternalProps.size() == 0)
-    return false;
+  try
+  {
+    // Only save properties when it won't create an empty file
+    if(!file.exists() && myExternalProps.size() == 0)
+      return false;
 
-  ofstream out(filename);
-  if(!out)
-    return false;
+    // Only save those entries in the external list
+    stringstream out;
+    for(const auto& i: myExternalProps)
+      out << i.second;
 
-  // Only save those entries in the external list
-  for(const auto& i: myExternalProps)
-    out << i.second;
+    file.write(out);
+    return true;
+  }
+  catch(const runtime_error& e)
+  {
+    Logger::error(e.what());
+  }
+  catch(...)
+  {
+  }
 
-  return true;
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -118,26 +136,6 @@ bool PropertiesSet::getMD5(const string& md5, Properties& properties,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PropertiesSet::getMD5WithInsert(const FilesystemNode& rom,
-                                     const string& md5, Properties& properties)
-{
-  bool toInsert = false;
-
-  if(!getMD5(md5, properties))
-  {
-    properties.set(PropType::Cart_MD5, md5);
-    toInsert = true;
-  }
-  if(toInsert || properties.get(PropType::Cart_Name) == EmptyString)
-  {
-    properties.set(PropType::Cart_Name, rom.getNameWithExt(""));
-    toInsert = true;
-  }
-  if(toInsert)
-    insert(properties, false);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PropertiesSet::insert(const Properties& properties, bool save)
 {
   // Note that the following code is optimized for insertion when an item
@@ -174,6 +172,37 @@ void PropertiesSet::insert(const Properties& properties, bool save)
     list.erase(ret.first);
     list.emplace(md5, properties);
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PropertiesSet::loadPerROM(const FilesystemNode& rom, const string& md5)
+{
+  // Handle ROM properties, do some error checking
+  // Only add to the database when necessary
+  bool toInsert = false;
+
+  // First, does this ROM have a per-ROM properties entry?
+  // If so, load it into the database
+  FilesystemNode propsNode(rom.getPathWithExt(".pro"));
+  if(propsNode.exists())
+    load(propsNode, false);
+
+  // Next, make sure we have a valid md5 and name
+  Properties props;
+  if(!getMD5(md5, props))
+  {
+    props.set(PropType::Cart_MD5, md5);
+    toInsert = true;
+  }
+  if(toInsert || props.get(PropType::Cart_Name) == EmptyString)
+  {
+    props.set(PropType::Cart_Name, rom.getNameWithExt(""));
+    toInsert = true;
+  }
+
+  // Finally, insert properties if any info was missing
+  if(toInsert)
+    insert(props, false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

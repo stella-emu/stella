@@ -20,8 +20,8 @@
 
 #include "ProfilingRunner.hxx"
 #include "FSNode.hxx"
-#include "CartDetector.hxx"
 #include "Cart.hxx"
+#include "CartCreator.hxx"
 #include "MD5.hxx"
 #include "Control.hxx"
 #include "M6502.hxx"
@@ -53,7 +53,6 @@ namespace {
     }
   }
 }
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ProfilingRunner::ProfilingRunner(int argc, char* argv[])
@@ -110,7 +109,8 @@ bool ProfilingRunner::runOne(const ProfilingRun& run)
 
   string md5 = MD5::hash(image, size);
   string type = "";
-  unique_ptr<Cartridge> cartridge = CartDetector::create(imageFile, image, size, md5, type, mySettings);
+  unique_ptr<Cartridge> cartridge = CartCreator::create(
+      imageFile, image, size, md5, type, mySettings);
 
   if (!cartridge) {
     cout << "ERROR: unable to determine cartridge type" << endl;

@@ -30,6 +30,7 @@
 #include "TabWidget.hxx"
 #include "Widget.hxx"
 #include "Font.hxx"
+#include "StellaMediumFont.hxx"
 #include "LauncherDialog.hxx"
 #ifdef DEBUGGER_SUPPORT
   #include "DebuggerDialog.hxx"
@@ -48,12 +49,11 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
             fontHeight   = font.getFontHeight(),
-            buttonHeight = font.getLineHeight() + 4;
-
-  const int VBORDER = 8;
-  const int HBORDER = 10;
-  const int INDENT = 16;
-  const int V_GAP = 4;
+            buttonHeight = font.getLineHeight() * 1.25;
+  const int VBORDER = fontHeight / 2;
+  const int HBORDER = fontWidth * 1.25;
+  const int INDENT = fontWidth * 2;
+  const int VGAP = fontHeight / 4;
   int xpos, ypos, tabID;
   int lwidth, pwidth, bwidth;
   WidgetArray wid;
@@ -61,11 +61,14 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   const Common::Size& ds = instance().frameBuffer().desktopSize();
 
   // Set real dimensions
-  setSize(64 * fontWidth + HBORDER * 2, 11 * (lineHeight + V_GAP) + V_GAP * 9 + VBORDER + _th,
+  setSize(64 * fontWidth + HBORDER * 2,
+          _th + VGAP * 3 + lineHeight + 10 * (lineHeight + VGAP) + VGAP * 2 + buttonHeight + VBORDER * 3,
           max_w, max_h);
 
   // The tab widget
-  myTab = new TabWidget(this, font, 2, 4 + _th, _w - 2*2, _h - _th - buttonHeight - 20);
+  myTab = new TabWidget(this, font, 2, VGAP + _th,
+                        _w - 2*2,
+                        _h - _th - VGAP - buttonHeight - VBORDER * 2);
   addTabWidget(myTab);
 
   //////////////////////////////////////////////////////////
@@ -82,17 +85,34 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "Standard", "standard");
   VarList::push_back(items, "Classic", "classic");
   VarList::push_back(items, "Light", "light");
+  VarList::push_back(items, "Dark", "dark");
   myPalettePopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                                    items, "Theme      ", lwidth);
   wid.push_back(myPalettePopup);
+  ypos += lineHeight + VGAP;
+
+
+  // Dialog font
+  items.clear();
+  VarList::push_back(items, "Small", "small");            //  8x13
+  VarList::push_back(items, "Low Medium", "low_medium");  //  9x15
+  VarList::push_back(items, "Medium", "medium");          //  9x18
+  VarList::push_back(items, "Large (10pt)", "large");     // 10x20
+  VarList::push_back(items, "Large (12pt)", "large12");   // 12x24
+  VarList::push_back(items, "Large (14pt)", "large14");   // 14x28
+  VarList::push_back(items, "Large (16pt)", "large16");   // 16x32
+  myDialogFontPopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
+                                      items, "Dialogs font (*)", lwidth, kDialogFont);
+  wid.push_back(myDialogFontPopup);
 
   // Enable HiDPI mode
-  myHidpiWidget = new CheckboxWidget(myTab, font, myPalettePopup->getRight() + 40,
-                                     ypos, "HiDPI mode (*)");
+  xpos = myDialogFontPopup->getRight() + fontWidth * 5;
+  myHidpiWidget = new CheckboxWidget(myTab, font, xpos,
+                                     ypos + 1, "HiDPI mode (*)");
   wid.push_back(myHidpiWidget);
-  ypos += lineHeight + V_GAP;
 
   // Dialog position
+  xpos = HBORDER; ypos += lineHeight + VGAP;
   items.clear();
   VarList::push_back(items, "Centered", 0);
   VarList::push_back(items, "Left top", 1);
@@ -100,16 +120,16 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "Right bottom", 3);
   VarList::push_back(items, "Left bottom", 4);
   myPositionPopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                    items, "Dialogs position ", lwidth);
+                                    items, "Dialogs position", lwidth);
   wid.push_back(myPositionPopup);
-  ypos += lineHeight + V_GAP * 2;
 
-  // Confirm dialog when exiting emulation
-  myConfirmExitWidget = new CheckboxWidget(myTab, font, xpos, ypos, "Confirm exiting emulation");
-  wid.push_back(myConfirmExitWidget);
-  ypos += lineHeight + V_GAP * 3;
+  // Center window (in windowed mode)
+  xpos = myHidpiWidget->getLeft();
+  myCenter = new CheckboxWidget(myTab, _font, xpos, ypos + 1, "Center windows");
+  wid.push_back(myCenter);
 
   // Delay between quick-selecting characters in ListWidget
+  xpos = HBORDER; ypos += lineHeight + VGAP * 4;
   int swidth = myPalettePopup->getWidth() - lwidth;
   myListDelaySlider = new SliderWidget(myTab, font, xpos, ypos, swidth, lineHeight,
                                       "List input delay        ", 0, kListDelay,
@@ -119,7 +139,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   myListDelaySlider->setStepValue(50);
   myListDelaySlider->setTickmarkIntervals(5);
   wid.push_back(myListDelaySlider);
-  ypos += lineHeight + V_GAP;
+  ypos += lineHeight + VGAP;
 
   // Number of lines a mouse wheel will scroll
   myWheelLinesSlider = new SliderWidget(myTab, font, xpos, ypos, swidth, lineHeight,
@@ -129,7 +149,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   myWheelLinesSlider->setMaxValue(10);
   myWheelLinesSlider->setTickmarkIntervals(3);
   wid.push_back(myWheelLinesSlider);
-  ypos += lineHeight + V_GAP;
+  ypos += lineHeight + VGAP;
 
   // Mouse double click speed
   myDoubleClickSlider = new SliderWidget(myTab, font, xpos, ypos, swidth, lineHeight,
@@ -140,7 +160,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   myDoubleClickSlider->setStepValue(50);
   myDoubleClickSlider->setTickmarkIntervals(8);
   wid.push_back(myDoubleClickSlider);
-  ypos += lineHeight + V_GAP;
+  ypos += lineHeight + VGAP;
 
   // Initial delay before controller input will start repeating
   myControllerDelaySlider = new SliderWidget(myTab, font, xpos, ypos, swidth, lineHeight,
@@ -151,7 +171,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   myControllerDelaySlider->setStepValue(100);
   myControllerDelaySlider->setTickmarkIntervals(4);
   wid.push_back(myControllerDelaySlider);
-  ypos += lineHeight + V_GAP;
+  ypos += lineHeight + VGAP;
 
   // Controller repeat rate
   myControllerRateSlider = new SliderWidget(myTab, font, xpos, ypos, swidth, lineHeight,
@@ -164,10 +184,11 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myControllerRateSlider);
 
   // Add message concerning usage
-  ypos = myTab->getHeight() - 5 - fontHeight - ifont.getFontHeight() - 10;
-  lwidth = ifont.getStringWidth("(*) Change requires application restart");
-  new StaticTextWidget(myTab, ifont, xpos, ypos, std::min(lwidth, _w - 20), fontHeight,
-    "(*) Change requires application restart");
+  ypos = myTab->getHeight() - fontHeight - ifont.getFontHeight() - VGAP - VBORDER;
+  lwidth = ifont.getStringWidth("(*) Change requires an application restart");
+  new StaticTextWidget(myTab, ifont, xpos, ypos,
+                       std::min(lwidth, _w - HBORDER * 2), ifont.getFontHeight(),
+                       "(*) Change requires an application restart");
 
   // Add items for tab 0
   addToFocusList(wid, myTab, tabID);
@@ -185,68 +206,74 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
     new ButtonWidget(myTab, font, xpos, ypos, bwidth, buttonHeight,
                      "ROM path" + ELLIPSIS, kChooseRomDirCmd);
   wid.push_back(romButton);
-  xpos = romButton->getRight() + 8;
-  myRomPath = new EditTextWidget(myTab, font, xpos, ypos + 1,
+  xpos = romButton->getRight() + fontWidth;
+  myRomPath = new EditTextWidget(myTab, font, xpos, ypos + (buttonHeight - lineHeight) / 2 - 1,
                                  _w - xpos - HBORDER - 2, lineHeight, "");
   wid.push_back(myRomPath);
+
+  xpos = _w - HBORDER - font.getStringWidth("Follow Launcher path") - CheckboxWidget::prefixSize(font) - 1;
+  ypos += lineHeight + VGAP * 2;
+  myFollowLauncherWidget = new CheckboxWidget(myTab, font, xpos, ypos, "Follow Launcher path");
+  wid.push_back(myFollowLauncherWidget);
+
   xpos = HBORDER;
-  ypos += lineHeight + V_GAP * 4;
+  ypos += VGAP * 2;
 
   // Launcher width and height
   myLauncherWidthSlider = new SliderWidget(myTab, font, xpos, ypos, "Launcher width ",
-                                           lwidth, kLauncherSize, 6 * fontWidth, "px");
-  myLauncherWidthSlider->setMinValue(FBMinimum::Width);
+                                           lwidth, 0, 6 * fontWidth, "px");
   myLauncherWidthSlider->setMaxValue(ds.w);
   myLauncherWidthSlider->setStepValue(10);
-  // one tickmark every ~100 pixel
-  myLauncherWidthSlider->setTickmarkIntervals((ds.w - FBMinimum::Width + 50) / 100);
   wid.push_back(myLauncherWidthSlider);
-  ypos += lineHeight + V_GAP;
+  ypos += lineHeight + VGAP;
 
   myLauncherHeightSlider = new SliderWidget(myTab, font, xpos, ypos, "Launcher height ",
-                                            lwidth, kLauncherSize, 6 * fontWidth, "px");
-  myLauncherHeightSlider->setMinValue(FBMinimum::Height);
+                                            lwidth, 0, 6 * fontWidth, "px");
   myLauncherHeightSlider->setMaxValue(ds.h);
   myLauncherHeightSlider->setStepValue(10);
-  // one tickmark every ~100 pixel
-  myLauncherHeightSlider->setTickmarkIntervals((ds.h - FBMinimum::Height + 50) / 100);
   wid.push_back(myLauncherHeightSlider);
-  ypos += lineHeight + V_GAP;
+  ypos += lineHeight + VGAP;
 
   // Launcher font
   pwidth = font.getStringWidth("2x (1000x760)");
   items.clear();
-  VarList::push_back(items, "Small", "small");
-  VarList::push_back(items, "Medium", "medium");
-  VarList::push_back(items, "Large", "large");
+  VarList::push_back(items, "Small", "small");            //  8x13
+  VarList::push_back(items, "Low Medium", "low_medium");  //  9x15
+  VarList::push_back(items, "Medium", "medium");          //  9x18
+  VarList::push_back(items, "Large (10pt)", "large");     // 10x20
+  VarList::push_back(items, "Large (12pt)", "large12");   // 12x24
+  VarList::push_back(items, "Large (14pt)", "large14");   // 14x28
+  VarList::push_back(items, "Large (16pt)", "large16");   // 16x32
   myLauncherFontPopup =
     new PopUpWidget(myTab, font, xpos, ypos + 1, pwidth, lineHeight, items,
                     "Launcher font ", lwidth);
   wid.push_back(myLauncherFontPopup);
-  ypos += lineHeight + V_GAP * 4;
+  ypos += lineHeight + VGAP * 4;
 
   // ROM launcher info/snapshot viewer
-  items.clear();
-  VarList::push_back(items, "Off", "0");
-  VarList::push_back(items, "1x (640x480) ", "1");
-  VarList::push_back(items, "2x (1000x760)", "2");
-  myRomViewerPopup =
-    new PopUpWidget(myTab, font, xpos, ypos + 1, pwidth, lineHeight, items,
-                    "ROM info viewer ", lwidth, kRomViewer);
-  wid.push_back(myRomViewerPopup);
-  ypos += lineHeight + V_GAP;
+  myRomViewerSize = new SliderWidget(myTab, font, xpos, ypos, "ROM info width  ",
+                                     lwidth, kRomViewer, 6 * fontWidth, "%  ");
+  myRomViewerSize->setMinValue(0);
+  myRomViewerSize->setMaxValue(100);
+  myRomViewerSize->setStepValue(2);
+  // set tickmarks every ~20%
+  myRomViewerSize->setTickmarkIntervals((myRomViewerSize->getMaxValue() - myRomViewerSize->getMinValue()) / 20);
+
+  wid.push_back(myRomViewerSize);
+  ypos += lineHeight + VGAP;
 
   // Snapshot path (load files)
   xpos = HBORDER + INDENT;
-  bwidth = font.getStringWidth("Image path" + ELLIPSIS) + 20 + 1;
+  bwidth = font.getStringWidth("Image path" + ELLIPSIS) + fontWidth * 2 + 1;
   myOpenBrowserButton = new ButtonWidget(myTab, font, xpos, ypos, bwidth, buttonHeight,
                                          "Image path" + ELLIPSIS, kChooseSnapLoadDirCmd);
   wid.push_back(myOpenBrowserButton);
 
-  mySnapLoadPath = new EditTextWidget(myTab, font, HBORDER + lwidth, ypos + 1,
+  mySnapLoadPath = new EditTextWidget(myTab, font, HBORDER + lwidth,
+                                      ypos + (buttonHeight - lineHeight) / 2 - 1,
                                       _w - lwidth - HBORDER * 2 - 2, lineHeight, "");
   wid.push_back(mySnapLoadPath);
-  ypos += lineHeight + V_GAP * 4;
+  ypos += lineHeight + VGAP * 4;
 
   // Exit to Launcher
   xpos = HBORDER;
@@ -255,10 +282,11 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
 
   // Add message concerning usage
   xpos = HBORDER;
-  ypos = myTab->getHeight() - 5 - fontHeight - ifont.getFontHeight() - 10;
-  lwidth = ifont.getStringWidth("(*) Changes require application restart");
-  new StaticTextWidget(myTab, ifont, xpos, ypos, std::min(lwidth, _w - 20), fontHeight,
-                       "(*) Changes require application restart");
+  ypos = myTab->getHeight() - fontHeight - ifont.getFontHeight() - VGAP - VBORDER;
+  lwidth = ifont.getStringWidth("(*) Changes require an application restart");
+  new StaticTextWidget(myTab, ifont, xpos, ypos,
+                       std::min(lwidth, _w - HBORDER * 2), ifont.getFontHeight(),
+                       "(*) Changes require an application restart");
 
   // Add items for tab 1
   addToFocusList(wid, myTab, tabID);
@@ -277,6 +305,10 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   wid.clear();
   addDefaultsOKCancelBGroup(wid, font);
   addBGroupToFocusList(wid);
+
+#ifndef WINDOWED_SUPPORT
+  myCenter->clearFlags(Widget::FLAG_ENABLED);
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -304,13 +336,17 @@ void UIDialog::loadConfig()
   myLauncherWidthSlider->setValue(w);
   myLauncherHeightSlider->setValue(h);
 
+  // Follow Launcher path
+  myFollowLauncherWidget->setState(settings.getBool("followlauncher"));
+
   // Launcher font
-  const string& font = settings.getString("launcherfont");
-  myLauncherFontPopup->setSelected(font, "medium");
+  const string& launcherFont = settings.getString("launcherfont");
+  myLauncherFontPopup->setSelected(launcherFont, "medium");
 
   // ROM launcher info viewer
-  const string& viewer = settings.getString("romviewer");
-  myRomViewerPopup->setSelected(viewer, "0");
+  float zoom = instance().settings().getFloat("romviewer");
+  int percentage = zoom * TIAConstants::viewableWidth * 100 / w;
+  myRomViewerSize->setValue(percentage);
 
   // ROM launcher info viewer image path
   mySnapLoadPath->setText(settings.getString("snaploaddir"));
@@ -323,6 +359,10 @@ void UIDialog::loadConfig()
   const string& pal = settings.getString("uipalette");
   myPalettePopup->setSelected(pal, "standard");
 
+  // Dialog font
+  const string& dialogFont = settings.getString("dialogfont");
+  myDialogFontPopup->setSelected(dialogFont, "medium");
+
   // Enable HiDPI mode
   if (!instance().frameBuffer().hidpiAllowed())
   {
@@ -334,11 +374,11 @@ void UIDialog::loadConfig()
     myHidpiWidget->setState(settings.getBool("hidpi"));
   }
 
-  // Confirm dialog when exiting emulation
-  myConfirmExitWidget->setState(settings.getBool("confirmexit"));
-
   // Dialog position
   myPositionPopup->setSelected(settings.getString("dialogpos"), "0");
+
+  // Center window
+  myCenter->setState(settings.getBool("center"));
 
   // Listwidget quick delay
   int delay = settings.getInt("listdelay");
@@ -360,6 +400,7 @@ void UIDialog::loadConfig()
   int cr = settings.getInt("ctrlrate");
   myControllerRateSlider->setValue(cr);
 
+  handleLauncherSize();
   handleRomViewer();
 
   myTab->loadConfig();
@@ -373,6 +414,9 @@ void UIDialog::saveConfig()
   // ROM path
   settings.setValue("romdir", myRomPath->getText());
 
+  // Follow Launcher path
+  settings.setValue("followlauncher", myFollowLauncherWidget->getState());
+
   // Launcher size
   settings.setValue("launcherres",
     Common::Size(myLauncherWidthSlider->getValue(),
@@ -380,11 +424,12 @@ void UIDialog::saveConfig()
 
   // Launcher font
   settings.setValue("launcherfont",
-    myLauncherFontPopup->getSelectedTag().toString());
+                    myLauncherFontPopup->getSelectedTag().toString());
 
   // ROM launcher info viewer
-  settings.setValue("romviewer",
-    myRomViewerPopup->getSelectedTag().toString());
+  int w = myLauncherWidthSlider->getValue();
+  float zoom = myRomViewerSize->getValue() * w / 100.F / TIAConstants::viewableWidth;
+  settings.setValue("romviewer", zoom);
 
   // ROM launcher info viewer image path
   settings.setValue("snaploaddir", mySnapLoadPath->getText());
@@ -397,14 +442,18 @@ void UIDialog::saveConfig()
     myPalettePopup->getSelectedTag().toString());
   instance().frameBuffer().setUIPalette();
 
+  // Dialog font
+  settings.setValue("dialogfont",
+                    myDialogFontPopup->getSelectedTag().toString());
+
   // Enable HiDPI mode
   settings.setValue("hidpi", myHidpiWidget->getState());
 
   // Dialog position
   settings.setValue("dialogpos", myPositionPopup->getSelectedTag().toString());
 
-  // Confirm dialog when exiting emulation
-  settings.setValue("confirmexit", myConfirmExitWidget->getState());
+  // Center window
+  settings.setValue("center", myCenter->getState());
 
   // Listwidget quick delay
   settings.setValue("listdelay", myListDelaySlider->getValue());
@@ -438,9 +487,10 @@ void UIDialog::setDefaults()
   {
     case 0:  // Misc. options
       myPalettePopup->setSelected("standard");
+      myDialogFontPopup->setSelected("medium", "");
       myHidpiWidget->setState(false);
       myPositionPopup->setSelected("0");
-      myConfirmExitWidget->setState(false);
+      myCenter->setState(false);
       myListDelaySlider->setValue(300);
       myWheelLinesSlider->setValue(4);
       myDoubleClickSlider->setValue(500);
@@ -456,8 +506,8 @@ void UIDialog::setDefaults()
       myLauncherWidthSlider->setValue(w);
       myLauncherHeightSlider->setValue(h);
       myLauncherFontPopup->setSelected("medium", "");
-      myRomViewerPopup->setSelected("1", "");
-      mySnapLoadPath->setText(instance().defaultLoadDir());
+      myRomViewerSize->setValue(35);
+      mySnapLoadPath->setText(instance().defaultLoadDir().getShortPath());
       myLauncherExitWidget->setState(false);
       break;
     }
@@ -472,14 +522,21 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
   switch(cmd)
   {
     case GuiObject::kOKCmd:
+    {
+      bool inform = myIsGlobal &&
+        myRomPath->getText() != instance().settings().getString("romdir");
       saveConfig();
       close();
-      if(myIsGlobal)  // Let the boss know romdir has changed
+      if(inform) // Let the boss know romdir has changed
         sendCommand(LauncherDialog::kRomDirChosenCmd, 0, 0);
       break;
-
+    }
     case GuiObject::kDefaultsCmd:
       setDefaults();
+      break;
+
+    case kDialogFont:
+      handleLauncherSize();
       break;
 
     case kListDelay:
@@ -530,7 +587,6 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
       myRomPath->setText(myBrowser->getResult().getShortPath());
       break;
 
-    case kLauncherSize:
     case kRomViewer:
       handleRomViewer();
       break;
@@ -554,29 +610,87 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void UIDialog::handleLauncherSize()
+{
+  // Determine minimal launcher sizebased on the default font
+  //  So what fits with default font should fit for any font.
+  FontDesc fd = instance().frameBuffer().getFontDesc(myDialogFontPopup->getSelectedTag().toString());
+  int w = std::max(FBMinimum::Width, FBMinimum::Width * fd.maxwidth / GUI::stellaMediumDesc.maxwidth);
+  int h = std::max(FBMinimum::Height, FBMinimum::Height * fd.height / GUI::stellaMediumDesc.height);
+  const Common::Size& ds = instance().frameBuffer().desktopSize();
+
+  myLauncherWidthSlider->setMinValue(w);
+  if(myLauncherWidthSlider->getValue() < myLauncherWidthSlider->getMinValue())
+    myLauncherWidthSlider->setValue(w);
+  // one tickmark every ~100 pixel
+  myLauncherWidthSlider->setTickmarkIntervals((ds.w - w + 67) / 100);
+
+  myLauncherHeightSlider->setMinValue(h);
+  if(myLauncherHeightSlider->getValue() < myLauncherHeightSlider->getMinValue())
+    myLauncherHeightSlider->setValue(h);
+  // one tickmark every ~100 pixel
+  myLauncherHeightSlider->setTickmarkIntervals((ds.h - h + 67) / 100);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*void UIDialog::handleLauncherSize()
+// an attempt to limit the minimal and maximal ROM info percentages
+// whiche became too complex
+{
+  string launcherFont = myLauncherFontPopup->getSelectedTag().toString();
+  int fwidth, fheight;
+  if(launcherFont == "small")
+  {
+    fwidth = GUI::consoleDesc.maxwidth;
+    fheight = GUI::consoleDesc.height;
+  }
+  else if(launcherFont == "medium")
+  {
+    fwidth = GUI::stellaMediumDesc.maxwidth;
+    fheight = GUI::stellaMediumDesc.height;
+  }
+  else
+  {
+    fwidth = GUI::stellaLargeDesc.maxwidth;
+    fheight = GUI::stellaLargeDesc.height;
+  }
+  int minInfoWidth = instance().frameBuffer().smallFont().getMaxCharWidth() * 20 + 16;
+  int minInfoHeight = instance().frameBuffer().smallFont().getLineHeight() * 8 + 16;
+  int minLauncherWidth = fwidth * 20 + 64;
+  int w = myLauncherWidthSlider->getValue();
+  int h = myLauncherHeightSlider->getValue();
+  int size = std::max(minInfoWidth * 100.F / w, minInfoHeight * 100.F / h);
+
+  myRomViewerSize->setMinValue(size);
+  myRomViewerSize->setMaxValue(100 - minLauncherWidth * 100.F / w);
+  // set tickmarks every ~10%
+  myRomViewerSize->setTickmarkIntervals((myRomViewerSize->getMaxValue() - myRomViewerSize->getMinValue()) / 10);
+
+  size = myRomViewerSize->getValue();
+  size = std::max(size, myRomViewerSize->getMinValue());
+  size = std::min(size, myRomViewerSize->getMaxValue());
+
+  myRomViewerSize->setValue(size);
+}*/
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void UIDialog::handleRomViewer()
 {
-  int size = myRomViewerPopup->getSelected();
-  bool enable = myRomViewerPopup->getSelectedName() != "Off";
-  VariantList items;
+  int size = myRomViewerSize->getValue();
+  bool enable = size > myRomViewerSize->getMinValue();
 
+  if(enable)
+  {
+    myRomViewerSize->setValueLabel(size);
+    myRomViewerSize->setValueUnit("%");
+  }
+  else
+  {
+    myRomViewerSize->setValueLabel("Off");
+    myRomViewerSize->setValueUnit("");
+  }
   myOpenBrowserButton->setEnabled(enable);
   mySnapLoadPath->setEnabled(enable);
-
-  items.clear();
-  VarList::push_back(items, "Off", "0");
-  VarList::push_back(items, "1x (640x480) ", "1");
-  if(myLauncherWidthSlider->getValue() >= 1000 &&
-     myLauncherHeightSlider->getValue() >= 760)
-  {
-    VarList::push_back(items, "2x (1000x760)", "2");
-  }
-  else if (size == 2)
-  {
-    myRomViewerPopup->setSelected(1);
-  }
-
-  myRomViewerPopup->addItems(items);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

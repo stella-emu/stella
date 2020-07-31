@@ -19,11 +19,10 @@
 #define CARTRIDGEF8SC_WIDGET_HXX
 
 class CartridgeF8SC;
-class PopUpWidget;
 
-#include "CartDebugWidget.hxx"
+#include "CartEnhancedWidget.hxx"
 
-class CartridgeF8SCWidget : public CartDebugWidget
+class CartridgeF8SCWidget : public CartridgeEnhancedWidget
 {
   public:
     CartridgeF8SCWidget(GuiObject* boss, const GUI::Font& lfont,
@@ -33,35 +32,11 @@ class CartridgeF8SCWidget : public CartDebugWidget
     virtual ~CartridgeF8SCWidget() = default;
 
   private:
-    CartridgeF8SC& myCart;
-    PopUpWidget* myBank{nullptr};
+    string manufacturer() override { return "Atari"; }
 
-    struct CartState {
-      ByteArray internalram;
-      uInt16 bank{0};
-    };
-    CartState myOldState;
-
-    enum { kBankChanged = 'bkCH' };
+    string description() override;
 
   private:
-    void saveOldState() override;
-    void loadConfig() override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-
-    string bankState() override;
-
-    // start of functions for Cartridge RAM tab
-    uInt32 internalRamSize() override;
-    uInt32 internalRamRPort(int start) override;
-    string internalRamDescription() override;
-    const ByteArray& internalRamOld(int start, int count) override;
-    const ByteArray& internalRamCurrent(int start, int count) override;
-    void internalRamSetValue(int addr, uInt8 value) override;
-    uInt8 internalRamGetValue(int addr) override;
-    string internalRamLabel(int addr) override;
-    // end of functions for Cartridge RAM tab
-
     // Following constructors and assignment operators not supported
     CartridgeF8SCWidget() = delete;
     CartridgeF8SCWidget(const CartridgeF8SCWidget&) = delete;

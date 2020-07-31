@@ -356,23 +356,25 @@ class TIA : public Device
       disabling a graphical object also disables its collisions.
 
       @param mode  1/0 indicates on/off, and values greater than 1 mean
-                   flip the bit from its current state
+                   2 means flip the bit from its current state
+                   and values greater than 2 mean return current state
 
       @return  Whether the bit was enabled or disabled
     */
     bool toggleBit(TIABit b, uInt8 mode = 2);
-    bool toggleBits();
+    bool toggleBits(bool toggle = true);
 
     /**
       Enables/disable/toggle the specified (or all) TIA bit collision(s).
 
-      @param mode  1/0 indicates on/off, and values greater than 1 mean
-                   flip the collision from its current state
+      @param mode  1/0 indicates on/off,
+                   2 means flip the collision from its current state
+                   and values greater than 2 mean return current state
 
       @return  Whether the collision was enabled or disabled
     */
     bool toggleCollision(TIABit b, uInt8 mode = 2);
-    bool toggleCollisions();
+    bool toggleCollisions(bool toggle = true);
 
     /**
       Enables/disable/toggle/query 'fixed debug colors' mode.
@@ -530,6 +532,15 @@ class TIA : public Device
      */
     void updateEmulation();
 
+  #ifdef DEBUGGER_SUPPORT
+    /**
+      Query the access counters
+
+      @return  The access counters as comma separated string
+    */
+    string getAccessCounters() const override;
+  #endif
+
   private:
     /**
      * During each line, the TIA cycles through these two states.
@@ -678,21 +689,28 @@ class TIA : public Device
     void applyDeveloperSettings();
 
   #ifdef DEBUGGER_SUPPORT
-    void createAccessBase();
+    void createAccessArrays();
 
     /**
-     * Query the given address type for the associated disassembly flags.
+     * Query the given address type for the associated access flags.
      *
      * @param address  The address to query
      */
-    uInt8 getAccessFlags(uInt16 address) const override;
+    Device::AccessFlags getAccessFlags(uInt16 address) const override;
     /**
-     * Change the given address to use the given disassembly flags.
+     * Change the given address to use the given access flags.
      *
      * @param address  The address to modify
-     * @param flags    A bitfield of DisasmType directives for the given address
+     * @param flags    A bitfield of AccessType directives for the given address
      */
-    void setAccessFlags(uInt16 address, uInt8 flags) override;
+    void setAccessFlags(uInt16 address, Device::AccessFlags flags) override;
+
+    /**
+      Increase the given address's access counter
+
+      @param address The address to modify
+    */
+    void increaseAccessCounter(uInt16 address, bool isWrite) override;
   #endif // DEBUGGER_SUPPORT
 
   private:
@@ -896,12 +914,17 @@ class TIA : public Device
     uInt8 myJitterFactor{0};
 
     static constexpr uInt16
-      TIA_SIZE = 0x40, TIA_MASK = TIA_SIZE - 1, TIA_READ_MASK = 0x0f, TIA_BIT = 0x080, TIA_DELAY = 2;
+      TIA_SIZE = 0x40, TIA_MASK = TIA_SIZE - 1,
+      TIA_READ_SIZE = 0x10, TIA_READ_MASK = TIA_READ_SIZE - 1,
+      TIA_BIT = 0x080, TIA_DELAY = 2 * 2;
 
   #ifdef DEBUGGER_SUPPORT
     // The arrays containing information about every byte of TIA
     // indicating whether and how (RW) it is used.
-    std::array<uInt8, TIA_SIZE> myAccessBase;
+    std::array<Device::AccessFlags, TIA_SIZE> myAccessBase;
+    // The arrays containing information about every byte of TIA
+    // indicating how often it is accessed (read and write).
+    std::array<Device::AccessCounter, TIA_SIZE + TIA_READ_SIZE> myAccessCounter;
 
     // The array used to skip the first two TIA access trackings
     std::array<uInt8, TIA_SIZE> myAccessDelay;

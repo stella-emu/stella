@@ -29,17 +29,18 @@
 CartridgeDPCPlus::CartridgeDPCPlus(const ByteBuffer& image, size_t size,
                                    const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
-    mySize(std::min(size, myImage.size()))
+    myImage(make_unique<uInt8[]>(32_KB)),
+    mySize(std::min(size, 32_KB))
 {
-  // Image is always 32K, but in the case of ROM > 29K, the image is
+  // Image is always 32K, but in the case of ROM < 32K, the image is
   // copied to the end of the buffer
-  if(mySize < myImage.size())
-    myImage.fill(0);
-  std::copy_n(image.get(), size, myImage.begin() + (myImage.size() - mySize));
-  createCodeAccessBase(24_KB);
+  if(mySize < 32_KB)
+    std::fill_n(myImage.get(), mySize, 0);
+  std::copy_n(image.get(), size, myImage.get() + (32_KB - mySize));
+  createRomAccessArrays(24_KB);
 
   // Pointer to the program ROM (24K @ 3K offset; ignore first 3K)
-  myProgramImage = myImage.data() + 3_KB;
+  myProgramImage = myImage.get() + 3_KB;
 
   // Pointer to the display RAM
   myDisplayImage = myDPCRAM.data() + 3_KB;
@@ -50,16 +51,27 @@ CartridgeDPCPlus::CartridgeDPCPlus(const ByteBuffer& image, size_t size,
   // Create Thumbulator ARM emulator
   bool devSettings = settings.getBool("dev.settings");
   myThumbEmulator = make_unique<Thumbulator>
-      (reinterpret_cast<uInt16*>(myImage.data()),
+      (reinterpret_cast<uInt16*>(myImage.get()),
        reinterpret_cast<uInt16*>(myDPCRAM.data()),
-       static_cast<uInt32>(myImage.size()),
+       static_cast<uInt32>(32_KB),
        devSettings ? settings.getBool("dev.thumb.trapfatal") : false,
        Thumbulator::ConfigureFor::DPCplus,
        this);
 
-  // Currently only one known DPC+ ARM driver exhibits a problem
-  // with the default mask to use for DFxFRACLOW
-  if(MD5::hash(image, 3_KB) == "8dd73b44fd11c488326ce507cbeb19d1")
+  // Currently 4 DPC+ driver versions have been identified:
+  //   17884ec14f9b1d06fe8d617a1fbdcf47  Jitter  Encore Compatible
+  //   5f80b5a5adbe483addc3f6e6f1b472f8  Stable  Encore Compatible
+  //   8dd73b44fd11c488326ce507cbeb19d1  Stable  NOT Encore Compatible
+  //   b328dbdf787400c0f0e2b88b425872a5  Jitter  Encore Compatible
+  //
+  // Jitter/Stable refers to the appearance of the playfield in bB games if
+  // the DFxFRACINC registers are not updated before every drawscreen.
+  //
+  // The default mask for DFxFRACLOW implements the Jitter behavior. This
+  // changes the mask to implement the Stable behavior.
+  myDriverMD5 = MD5::hash(image, 3_KB);
+  if(myDriverMD5 == "5f80b5a5adbe483addc3f6e6f1b472f8" ||
+     myDriverMD5 == "8dd73b44fd11c488326ce507cbeb19d1" )
     myFractionalLowMask = 0x0F0000;
 
   setInitialState();
@@ -580,7 +592,7 @@ bool CartridgeDPCPlus::poke(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeDPCPlus::bank(uInt16 bank)
+bool CartridgeDPCPlus::bank(uInt16 bank, uInt16)
 {
   if(bankLocked()) return false;
 
@@ -593,7 +605,9 @@ bool CartridgeDPCPlus::bank(uInt16 bank)
   // Map Program ROM image into the system
   for(uInt16 addr = 0x1080; addr < 0x2000; addr += System::PAGE_SIZE)
   {
-    access.codeAccessBase = &myCodeAccessBase[myBankOffset + (addr & 0x0FFF)];
+    access.romAccessBase = &myRomAccessBase[myBankOffset + (addr & 0x0FFF)];
+    access.romPeekCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF)];
+    access.romPokeCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF) + 24_KB];
     mySystem->setPageAccess(addr, access);
   }
   return myBankChanged = true;
@@ -606,7 +620,7 @@ uInt16 CartridgeDPCPlus::getBank(uInt16) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeDPCPlus::bankCount() const
+uInt16 CartridgeDPCPlus::romBankCount() const
 {
   return 6;
 }
@@ -627,10 +641,10 @@ bool CartridgeDPCPlus::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgeDPCPlus::getImage(size_t& size) const
+const ByteBuffer& CartridgeDPCPlus::getImage(size_t& size) const
 {
   size = mySize;
-  return myImage.data() + (myImage.size() - mySize);
+  return myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

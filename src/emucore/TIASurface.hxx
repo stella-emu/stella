@@ -22,6 +22,7 @@ class TIA;
 class Console;
 class OSystem;
 class FBSurface;
+class PaletteHandler;
 
 #include <thread>
 
@@ -48,6 +49,7 @@ class TIASurface
       Creates a new TIASurface object
     */
     explicit TIASurface(OSystem& system);
+    virtual ~TIASurface();
 
     /**
       Set the TIA object, which is needed for actually rendering the TIA image.
@@ -68,14 +70,18 @@ class TIASurface
     void setPalette(const PaletteArray& tia_palette, const PaletteArray& rgb_palette);
 
     /**
-      Get the TIA base surface for use in saving to a PNG image.
+      Get a TIA surface that has no post-processing whatsoever.  This is
+      currently used to save PNG image in the so-called '1x mode'.
+
+      @param rect   Specifies the area in which the surface data is valid
     */
     const FBSurface& baseSurface(Common::Rect& rect) const;
 
     /**
-      Use the palette to map a single indexed pixel color. This is used by the TIA output widget.
+      Use the palette to map a single indexed pixel color. This is used by the
+      TIA output widget.
      */
-    uInt32 mapIndexedPixel(uInt8 indexedColor, uInt8 shift = 0);
+    uInt32 mapIndexedPixel(uInt8 indexedColor, uInt8 shift = 0) const;
 
     /**
       Get the NTSCFilter object associated with the framebuffer
@@ -88,19 +94,53 @@ class TIASurface
     void setNTSC(NTSCFilter::Preset preset, bool show = true);
 
     /**
-      Increase/decrease current scanline intensity by given relative amount.
+      Switch to next/previous NTSC filtering effect.
+
+      @param direction  +1 indicates increase, -1 indicates decrease.
     */
-    void setScanlineIntensity(int relative);
+    void changeNTSC(int direction = +1);
+
+    /**
+      Switch to next/previous NTSC filtering adjustable.
+
+      @param direction  +1 indicates increase, -1 indicates decrease.
+    */
+    void setNTSCAdjustable(int direction = +1);
+
+    /**
+      Increase/decrease given NTSC filtering adjustable.
+
+      @param adjustable  The adjustable to change
+      @param direction   +1 indicates increase, -1 indicates decrease.
+    */
+    void changeNTSCAdjustable(int adjustable, int direction);
+
+    /**
+      Increase/decrease current NTSC filtering adjustable.
+
+      @param direction  +1 indicates increase, -1 indicates decrease.
+    */
+    void changeCurrentNTSCAdjustable(int direction = +1);
+
+    /**
+      Retrieve palette handler.
+    */
+    PaletteHandler& paletteHandler() const { return *myPaletteHandler; }
+
+    /**
+      Increase/decrease current scanline intensity by given relative amount.
+
+      @param direction  +1 indicates increase, -1 indicates decrease.
+    */
+    void setScanlineIntensity(int direction = +1);
 
     /**
       Change scanline intensity and interpolation.
 
-      @param relative  If non-zero, change current intensity by
-                       'relative' amount, otherwise set to 'absolute'
+      @param change  change current intensity by 'change'
       @return  New current intensity
     */
-    uInt32 enableScanlines(int relative, int absolute = 50);
-    void enableScanlineInterpolation(bool enable);
+    uInt32 enableScanlines(int change);
 
     /**
       Enable/disable/query phosphor effect.
@@ -182,6 +222,9 @@ class TIASurface
 
     // Flag for saving a snapshot
     bool mySaveSnapFlag{false};
+
+    // The palette handler
+    unique_ptr<PaletteHandler> myPaletteHandler;
 
   private:
     // Following constructors and assignment operators not supported

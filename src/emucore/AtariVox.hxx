@@ -19,10 +19,11 @@
 #define ATARIVOX_HXX
 
 class OSystem;
+class SerialPort;
+class FilesystemNode;
 
 #include "Control.hxx"
 #include "SaveKey.hxx"
-#include "SerialPort.hxx"
 
 /**
   Richard Hutchinson's AtariVox "controller": A speech synthesizer and
@@ -47,9 +48,9 @@ class AtariVox : public SaveKey
       @param callback   Called to pass messages back to the parent controller
     */
     AtariVox(Jack jack, const Event& event, const System& system,
-             const string& portname, const string& eepromfile,
+             const string& portname, const FilesystemNode& eepromfile,
              const onMessageCallback& callback);
-    virtual ~AtariVox() = default;
+    virtual ~AtariVox();
 
   public:
     using Controller::read;
@@ -77,6 +78,11 @@ class AtariVox : public SaveKey
       events currently set.
     */
     void update() override { }
+
+    /**
+      Returns the name of this controller.
+    */
+    string name() const override { return "AtariVox"; }
 
     /**
       Notification method invoked by the system after its reset method has

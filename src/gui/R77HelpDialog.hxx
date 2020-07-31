@@ -41,7 +41,7 @@ class R77HelpDialog : public Dialog
     void loadConfig() override;
 
   private:
-    static constexpr uInt32 LINES_PER_PAGE = 11;
+    static constexpr uInt32 LINES_PER_PAGE = 13;
     ButtonWidget* myNextButton{nullptr};
     ButtonWidget* myPrevButton{nullptr};
 

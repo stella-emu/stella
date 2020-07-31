@@ -124,7 +124,7 @@ MouseControl::MouseControl(Console& console, const string& mode)
   int m_range = 100;
   if(!(m_axis >> m_range))
     m_range = 100;
-  Paddles::setPaddleRange(m_range);
+  Paddles::setDigitalPaddleRange(m_range);
 
   // If the mouse isn't used at all, we still need one item in the list
   if(myModeList.size() == 0)

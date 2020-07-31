@@ -186,8 +186,8 @@ void Paddles::update()
   setPin(DigitalPin::Four, true);
 
   // Digital events (from keyboard or joystick hats & buttons)
-  setPin(DigitalPin::Three, myEvent.get(myP1FireEvent) == 0);
-  setPin(DigitalPin::Four, myEvent.get(myP0FireEvent) == 0);
+  bool firePressedP0 = myEvent.get(myP0FireEvent) != 0;
+  bool firePressedP1 = myEvent.get(myP1FireEvent) != 0;
 
   // Paddle movement is a very difficult thing to accurately emulate,
   // since it originally came from an analog device that had very
@@ -234,12 +234,14 @@ void Paddles::update()
     new_val = sa_xaxis * (1 - dejitter) + myLastAxisX * dejitter;
 
     // only use new dejittered value for larger differences
-    if (abs(new_val - sa_xaxis) > 10)
+    if(abs(new_val - sa_xaxis) > 10)
       sa_xaxis = new_val;
 
-    setPin(AnalogPin::Nine, Int32(MAX_RESISTANCE * ((32767 - Int16(sa_xaxis)) / 65536.0)));
+    setPin(AnalogPin::Nine, Int32(MAX_RESISTANCE *
+      (BSPF::clamp(32768 - Int32(Int32(sa_xaxis) * SENSITIVITY + XCENTER), 0, 65536) / 65536.0)));
     sa_changed = true;
   }
+
   if(abs(myLastAxisY - sa_yaxis) > 10)
   {
     // dejitter, suppress small changes only
@@ -250,7 +252,8 @@ void Paddles::update()
     if (abs(new_val - sa_yaxis) > 10)
       sa_yaxis = new_val;
 
-    setPin(AnalogPin::Five, Int32(MAX_RESISTANCE * ((32767 - Int16(sa_yaxis)) / 65536.0)));
+    setPin(AnalogPin::Five, Int32(MAX_RESISTANCE *
+      (BSPF::clamp(32768 - Int32(Int32(sa_yaxis) * SENSITIVITY + YCENTER), 0, 65536) / 65536.0)));
     sa_changed = true;
   }
   myLastAxisX = sa_xaxis;
@@ -266,9 +269,14 @@ void Paddles::update()
     myCharge[myMPaddleID] = BSPF::clamp(myCharge[myMPaddleID] -
         (myEvent.get(myAxisMouseMotion) * MOUSE_SENSITIVITY),
         TRIGMIN, TRIGRANGE);
-    if(myEvent.get(Event::MouseButtonLeftValue) ||
-       myEvent.get(Event::MouseButtonRightValue))
-      setPin(ourButtonPin[myMPaddleID], false);
+    if(myMPaddleID == 0)
+      firePressedP0 = firePressedP0
+        || myEvent.get(Event::MouseButtonLeftValue)
+        || myEvent.get(Event::MouseButtonRightValue);
+    else
+      firePressedP1 = firePressedP1
+        || myEvent.get(Event::MouseButtonLeftValue)
+        || myEvent.get(Event::MouseButtonRightValue);
   }
   else
   {
@@ -279,18 +287,30 @@ void Paddles::update()
       myCharge[myMPaddleIDX] = BSPF::clamp(myCharge[myMPaddleIDX] -
           (myEvent.get(Event::MouseAxisXMove) * MOUSE_SENSITIVITY),
           TRIGMIN, TRIGRANGE);
-      if(myEvent.get(Event::MouseButtonLeftValue))
-        setPin(ourButtonPin[myMPaddleIDX], false);
+
+      if(myMPaddleIDX == 0)
+        firePressedP0 = firePressedP0
+          || myEvent.get(Event::MouseButtonLeftValue);
+      else
+        firePressedP1 = firePressedP1
+          || myEvent.get(Event::MouseButtonLeftValue);
     }
     if(myMPaddleIDY > -1)
     {
       myCharge[myMPaddleIDY] = BSPF::clamp(myCharge[myMPaddleIDY] -
           (myEvent.get(Event::MouseAxisYMove) * MOUSE_SENSITIVITY),
           TRIGMIN, TRIGRANGE);
-      if(myEvent.get(Event::MouseButtonRightValue))
-        setPin(ourButtonPin[myMPaddleIDY], false);
+
+      if(myMPaddleIDY == 0)
+        firePressedP0 = firePressedP0
+          || myEvent.get(Event::MouseButtonRightValue);
+      else
+        firePressedP1 = firePressedP1
+          || myEvent.get(Event::MouseButtonRightValue);
     }
   }
+  setPin(DigitalPin::Four, !getAutoFireState(firePressedP0));
+  setPin(DigitalPin::Three, !getAutoFireStateP1(firePressedP1));
 
   // Finally, consider digital input, where movement happens
   // until a digital event is released
@@ -380,6 +400,30 @@ bool Paddles::setMouseControl(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Paddles::setAnalogXCenter(int xcenter)
+{
+  // convert into ~5 pixel steps
+  XCENTER = BSPF::clamp(xcenter, MIN_ANALOG_CENTER, MAX_ANALOG_CENTER) * 860;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Paddles::setAnalogYCenter(int ycenter)
+{
+  // convert into ~5 pixel steps
+  YCENTER = BSPF::clamp(ycenter, MIN_ANALOG_CENTER, MAX_ANALOG_CENTER) * 860;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+float Paddles::setAnalogSensitivity(int sensitivity)
+{
+  // BASE_ANALOG_SENSE * (1.1 ^ 20) = 1.0
+  SENSITIVITY = BASE_ANALOG_SENSE * std::pow(1.1F,
+    static_cast<float>(BSPF::clamp(sensitivity, 0, MAX_ANALOG_SENSE)));
+
+  return SENSITIVITY;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Paddles::setDejitterBase(int strength)
 {
   DEJITTER_BASE = BSPF::clamp(strength, MIN_DEJITTER, MAX_DEJITTER);
@@ -405,21 +449,20 @@ void Paddles::setMouseSensitivity(int sensitivity)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Paddles::setPaddleRange(int range)
+void Paddles::setDigitalPaddleRange(int range)
 {
   range = BSPF::clamp(range, 1, 100);
   TRIGRANGE = int(TRIGMAX * (range / 100.0));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int Paddles::XCENTER = 0;
+int Paddles::YCENTER = 0;
+float Paddles::SENSITIVITY = 1.0;
+
 int Paddles::TRIGRANGE = Paddles::TRIGMAX;
 int Paddles::DIGITAL_SENSITIVITY = -1;
 int Paddles::DIGITAL_DISTANCE = -1;
 int Paddles::MOUSE_SENSITIVITY = -1;
 int Paddles::DEJITTER_BASE = 0;
 int Paddles::DEJITTER_DIFF = 0;
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const std::array<Controller::DigitalPin, 2> Paddles::ourButtonPin = {
-  DigitalPin::Four, DigitalPin::Three
-};

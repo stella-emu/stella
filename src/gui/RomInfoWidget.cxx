@@ -27,18 +27,17 @@
 #include "Logger.hxx"
 #include "Props.hxx"
 #include "PNGLibrary.hxx"
+#include "PropsSet.hxx"
 #include "Rect.hxx"
 #include "Widget.hxx"
-#include "TIAConstants.hxx"
 #include "RomInfoWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RomInfoWidget::RomInfoWidget(GuiObject* boss, const GUI::Font& font,
-                             int x, int y, int w, int h)
+                             int x, int y, int w, int h,
+                             const Common::Size& imgSize)
   : Widget(boss, font, x, y, w, h),
-    myAvail(w > 400 ?
-      Common::Size(TIAConstants::viewableWidth*2, TIAConstants::viewableHeight*2) :
-      Common::Size(TIAConstants::viewableWidth, TIAConstants::viewableHeight))
+    myAvail(imgSize)
 {
   _flags = Widget::FLAG_ENABLED;
   _bgcolor = kDlgColor;
@@ -46,20 +45,15 @@ RomInfoWidget::RomInfoWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomInfoWidget::reloadProperties(const FilesystemNode& node)
-{
-  // The ROM may have changed since we were last in the browser, either
-  // by saving a different image or through a change in video renderer,
-  // so we reload the properties
-  if(myHaveProperties)
-    parseProperties(node);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomInfoWidget::setProperties(const Properties& props, const FilesystemNode& node)
+void RomInfoWidget::setProperties(const FilesystemNode& node, const string& md5)
 {
   myHaveProperties = true;
-  myProperties = props;
+
+  // Make sure to load a per-ROM properties entry, if one exists
+  instance().propSet().loadPerROM(node, md5);
+
+  // And now get the properties for this ROM
+  instance().propSet().getMD5(md5, myProperties);
 
   // Decide whether the information should be shown immediately
   if(instance().eventHandler().state() == EventHandlerState::LAUNCHER)
@@ -79,6 +73,16 @@ void RomInfoWidget::clearProperties()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RomInfoWidget::reloadProperties(const FilesystemNode& node)
+{
+  // The ROM may have changed since we were last in the browser, either
+  // by saving a different image or through a change in video renderer,
+  // so we reload the properties
+  if(myHaveProperties)
+    parseProperties(node);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomInfoWidget::parseProperties(const FilesystemNode& node)
 {
   // Check if a surface has ever been created; if so, we use it
@@ -87,7 +91,7 @@ void RomInfoWidget::parseProperties(const FilesystemNode& node)
   if(mySurface == nullptr)
   {
     mySurface = instance().frameBuffer().allocateSurface(
-        TIAConstants::viewableWidth*2, TIAConstants::viewableHeight*2, FrameBuffer::ScalingInterpolation::blur);
+        myAvail.w, myAvail.h, FrameBuffer::ScalingInterpolation::blur);
     mySurface->applyAttributes();
 
     dialog().addSurface(mySurface);
@@ -100,7 +104,7 @@ void RomInfoWidget::parseProperties(const FilesystemNode& node)
 
 #ifdef PNG_SUPPORT
   // Get a valid filename representing a snapshot file for this rom
-  const string& filename = instance().snapshotLoadDir() +
+  const string& filename = instance().snapshotLoadDir().getPath() +
       myProperties.get(PropType::Cart_Name) + ".png";
 
   // Read the PNG file
@@ -142,17 +146,16 @@ void RomInfoWidget::parseProperties(const FilesystemNode& node)
   try
   {
     ByteBuffer image;
-    string md5 = myProperties.get(PropType::Cart_MD5);
-    size_t size = 0;
+    string md5 = "";  size_t size = 0;
 
     if(node.exists() && !node.isDirectory() &&
       (image = instance().openROM(node, md5, size)) != nullptr)
     {
       Logger::debug(myProperties.get(PropType::Cart_Name) + ":");
-      left = ControllerDetector::detectName(image.get(), size, leftType,
+      left = ControllerDetector::detectName(image, size, leftType,
           !swappedPorts ? Controller::Jack::Left : Controller::Jack::Right,
           instance().settings());
-      right = ControllerDetector::detectName(image.get(), size, rightType,
+      right = ControllerDetector::detectName(image, size, rightType,
           !swappedPorts ? Controller::Jack::Right : Controller::Jack::Left,
           instance().settings());
       if (bsDetected == "AUTO")
@@ -199,15 +202,27 @@ void RomInfoWidget::drawWidget(bool hilite)
   }
   else if(mySurfaceErrorMsg != "")
   {
-    const GUI::Font& font = instance().frameBuffer().font();
-    uInt32 x = _x + ((_w - font.getStringWidth(mySurfaceErrorMsg)) >> 1);
-    uInt32 y = _y + ((yoff - font.getLineHeight()) >> 1);
-    s.drawString(font, mySurfaceErrorMsg, x, y, _w - 10, onTop ? _textcolor : _shadowcolor);
+    uInt32 x = _x + ((_w - _font.getStringWidth(mySurfaceErrorMsg)) >> 1);
+    uInt32 y = _y + ((yoff - _font.getLineHeight()) >> 1);
+    s.drawString(_font, mySurfaceErrorMsg, x, y, _w - 10, onTop ? _textcolor : _shadowcolor);
   }
 
-  int xpos = _x + 8, ypos = _y + yoff + 10;
-  for(const auto& info: myRomInfo)
+  int xpos = _x + 8, ypos = _y + yoff + 5;
+  for(const auto& info : myRomInfo)
   {
+    if(info.length() * _font.getMaxCharWidth() <= uInt64(_w - 16))
+
+    {
+      // 1 line for next entry
+      if(ypos + _font.getFontHeight() > _h + _y)
+        break;
+    }
+    else
+    {
+      // assume 2 lines for next entry
+      if(ypos + _font.getLineHeight() + _font.getFontHeight() > _h + _y )
+        break;
+    }
     int lines = s.drawString(_font, info, xpos, ypos, _w - 16, _font.getFontHeight() * 3,
                              onTop ? _textcolor : _shadowcolor);
     ypos += _font.getLineHeight() + (lines - 1) * _font.getFontHeight();

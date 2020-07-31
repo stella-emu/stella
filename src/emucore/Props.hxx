@@ -37,6 +37,8 @@ enum class PropType : uInt8 {
   Controller_Left,
   Controller_Right,
   Controller_SwapPaddles,
+  Controller_PaddlesXCenter,
+  Controller_PaddlesYCenter,
   Controller_MouseAxis,
   Display_Format,
   Display_VCenter,

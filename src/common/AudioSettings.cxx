@@ -155,6 +155,12 @@ uInt32 AudioSettings::volume() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 AudioSettings::device() const
+{
+  return mySettings.getInt(SETTING_DEVICE);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool AudioSettings::enabled() const
 {
   return mySettings.getBool(SETTING_ENABLED);
@@ -283,6 +289,14 @@ void AudioSettings::setVolume(uInt32 volume)
 
   mySettings.setValue(SETTING_VOLUME, volume);
   normalize(mySettings);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void AudioSettings::setDevice(uInt32 device)
+{
+  if(!myIsPersistent) return;
+
+  mySettings.setValue(SETTING_DEVICE, device);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

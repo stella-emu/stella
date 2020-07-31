@@ -59,32 +59,34 @@ namespace {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeCDF::CartridgeCDF(const ByteBuffer& image, size_t size,
                            const string& md5, const Settings& settings)
-  : Cartridge(settings, md5)
+  : Cartridge(settings, md5),
+    myImage(make_unique<uInt8[]>(32_KB))
 {
   // Copy the ROM image into my buffer
-  std::copy_n(image.get(), std::min(myImage.size(), size), myImage.begin());
+  std::fill_n(myImage.get(), 32_KB, 0);
+  std::copy_n(image.get(), std::min(32_KB, size), myImage.get());
 
   // even though the ROM is 32K, only 28K is accessible to the 6507
-  createCodeAccessBase(28_KB);
+  createRomAccessArrays(28_KB);
 
   // Pointer to the program ROM (28K @ 0 byte offset)
   // which starts after the 2K CDF Driver and 2K C Code
-  myProgramImage = myImage.data() + 4_KB;
+  myProgramImage = myImage.get() + 4_KB;
 
   // Pointer to CDF driver in RAM
-  myBusDriverImage = myCDFRAM.data();
+  myDriverImage = myRAM.data();
 
   // Pointer to the display RAM
-  myDisplayImage = myCDFRAM.data() + DSRAM;
+  myDisplayImage = myRAM.data() + DSRAM;
 
   setupVersion();
 
   // Create Thumbulator ARM emulator
   bool devSettings = settings.getBool("dev.settings");
   myThumbEmulator = make_unique<Thumbulator>(
-    reinterpret_cast<uInt16*>(myImage.data()),
-    reinterpret_cast<uInt16*>(myCDFRAM.data()),
-    static_cast<uInt32>(myImage.size()),
+    reinterpret_cast<uInt16*>(myImage.get()),
+    reinterpret_cast<uInt16*>(myRAM.data()),
+    static_cast<uInt32>(32_KB),
     devSettings ? settings.getBool("dev.thumb.trapfatal") : false, thumulatorConfiguration(myCDFSubtype), this);
 
   setInitialState();
@@ -93,7 +95,7 @@ CartridgeCDF::CartridgeCDF(const ByteBuffer& image, size_t size,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCDF::reset()
 {
-  initializeRAM(myCDFRAM.data()+2_KB, myCDFRAM.size()-2_KB);
+  initializeRAM(myRAM.data()+2_KB, myRAM.size()-2_KB);
 
   // CDF always starts in bank 6
   initializeStartBank(6);
@@ -111,7 +113,7 @@ void CartridgeCDF::reset()
 void CartridgeCDF::setInitialState()
 {
   // Copy initial CDF driver to Harmony RAM
-  std::copy_n(myImage.begin(), 2_KB, myBusDriverImage);
+  std::copy_n(myImage.get(), 2_KB, myDriverImage);
 
   myMusicWaveformSize.fill(27);
 
@@ -255,7 +257,7 @@ uInt8 CartridgeCDF::peek(uInt16 address)
         if (sampleaddress < 0x8000)
           peekvalue = myImage[sampleaddress];
         else if (sampleaddress >= 0x40000000 && sampleaddress < 0x40002000) // check for RAM
-          peekvalue = myCDFRAM[sampleaddress - 0x40000000];
+          peekvalue = myRAM[sampleaddress - 0x40000000];
         else
           peekvalue = 0;
 
@@ -402,7 +404,7 @@ bool CartridgeCDF::poke(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeCDF::bank(uInt16 bank)
+bool CartridgeCDF::bank(uInt16 bank, uInt16)
 {
   if(bankLocked()) return false;
 
@@ -415,7 +417,9 @@ bool CartridgeCDF::bank(uInt16 bank)
   // Map Program ROM image into the system
   for(uInt16 addr = 0x1040; addr < 0x2000; addr += System::PAGE_SIZE)
   {
-    access.codeAccessBase = &myCodeAccessBase[myBankOffset + (addr & 0x0FFF)];
+    access.romAccessBase = &myRomAccessBase[myBankOffset + (addr & 0x0FFF)];
+    access.romPeekCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF)];
+    access.romPokeCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF) + 28_KB];
     mySystem->setPageAccess(addr, access);
   }
   return myBankChanged = true;
@@ -428,7 +432,7 @@ uInt16 CartridgeCDF::getBank(uInt16) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeCDF::bankCount() const
+uInt16 CartridgeCDF::romBankCount() const
 {
   return 7;
 }
@@ -449,10 +453,10 @@ bool CartridgeCDF::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgeCDF::getImage(size_t& size) const
+const ByteBuffer& CartridgeCDF::getImage(size_t& size) const
 {
-  size = myImage.size();
-  return myImage.data();
+  size = 32_KB;
+  return myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -491,7 +495,7 @@ uInt32 CartridgeCDF::thumbCallback(uInt8 function, uInt32 value1, uInt32 value2)
 uInt8 CartridgeCDF::internalRamGetValue(uInt16 addr) const
 {
   if(addr < internalRamSize())
-    return myCDFRAM[addr];
+    return myRAM[addr];
   else
     return 0;
 }
@@ -515,7 +519,7 @@ bool CartridgeCDF::save(Serializer& out) const
     out.putShort(myJMPoperandAddress);
 
     // Harmony RAM
-    out.putByteArray(myCDFRAM.data(), myCDFRAM.size());
+    out.putByteArray(myRAM.data(), myRAM.size());
 
     // Audio info
     out.putIntArray(myMusicCounters.data(), myMusicCounters.size());
@@ -555,7 +559,7 @@ bool CartridgeCDF::load(Serializer& in)
     myJMPoperandAddress = in.getShort();
 
     // Harmony RAM
-    in.getByteArray(myCDFRAM.data(), myCDFRAM.size());
+    in.getByteArray(myRAM.data(), myRAM.size());
 
     // Audio info
     in.getIntArray(myMusicCounters.data(), myMusicCounters.size());
@@ -584,10 +588,10 @@ uInt32 CartridgeCDF::getDatastreamPointer(uInt8 index) const
 {
   uInt16 address = myDatastreamBase + index * 4;
 
-  return myCDFRAM[address + 0]        +  // low byte
-        (myCDFRAM[address + 1] << 8)  +
-        (myCDFRAM[address + 2] << 16) +
-        (myCDFRAM[address + 3] << 24) ;  // high byte
+  return myRAM[address + 0]        +  // low byte
+        (myRAM[address + 1] << 8)  +
+        (myRAM[address + 2] << 16) +
+        (myRAM[address + 3] << 24) ;  // high byte
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -595,10 +599,10 @@ void CartridgeCDF::setDatastreamPointer(uInt8 index, uInt32 value)
 {
   uInt16 address = myDatastreamBase + index * 4;
 
-  myCDFRAM[address + 0] = value & 0xff;          // low byte
-  myCDFRAM[address + 1] = (value >> 8) & 0xff;
-  myCDFRAM[address + 2] = (value >> 16) & 0xff;
-  myCDFRAM[address + 3] = (value >> 24) & 0xff;  // high byte
+  myRAM[address + 0] = value & 0xff;          // low byte
+  myRAM[address + 1] = (value >> 8) & 0xff;
+  myRAM[address + 2] = (value >> 16) & 0xff;
+  myRAM[address + 3] = (value >> 24) & 0xff;  // high byte
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -606,10 +610,10 @@ uInt32 CartridgeCDF::getDatastreamIncrement(uInt8 index) const
 {
   uInt16 address = myDatastreamIncrementBase + index * 4;
 
-  return myCDFRAM[address + 0]        +   // low byte
-        (myCDFRAM[address + 1] << 8)  +
-        (myCDFRAM[address + 2] << 16) +
-        (myCDFRAM[address + 3] << 24) ;   // high byte
+  return myRAM[address + 0]        +   // low byte
+        (myRAM[address + 1] << 8)  +
+        (myRAM[address + 2] << 16) +
+        (myRAM[address + 3] << 24) ;   // high byte
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -617,10 +621,10 @@ uInt32 CartridgeCDF::getWaveform(uInt8 index) const
 {
   uInt16 address = myWaveformBase + index * 4;
 
-  uInt32 result = myCDFRAM[address + 0]        +  // low byte
-                 (myCDFRAM[address + 1] << 8)  +
-                 (myCDFRAM[address + 2] << 16) +
-                 (myCDFRAM[address + 3] << 24);   // high byte
+  uInt32 result = myRAM[address + 0]        +  // low byte
+                 (myRAM[address + 1] << 8)  +
+                 (myRAM[address + 2] << 16) +
+                 (myRAM[address + 3] << 24);   // high byte
 
   result -= (0x40000000 + DSRAM);
 
@@ -635,10 +639,10 @@ uInt32 CartridgeCDF::getSample()
 {
   uInt16 address = myWaveformBase;
 
-  uInt32 result = myCDFRAM[address + 0]        +  // low byte
-                 (myCDFRAM[address + 1] << 8)  +
-                 (myCDFRAM[address + 2] << 16) +
-                 (myCDFRAM[address + 3] << 24);   // high byte
+  uInt32 result = myRAM[address + 0]        +  // low byte
+                 (myRAM[address + 1] << 8)  +
+                 (myRAM[address + 2] << 16) +
+                 (myRAM[address + 3] << 24);   // high byte
 
   return result;
 }

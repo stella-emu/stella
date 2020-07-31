@@ -384,4 +384,3 @@ void DialogContainer::reset()
 uInt64 DialogContainer::_DOUBLE_CLICK_DELAY = 500;
 uInt64 DialogContainer::_REPEAT_INITIAL_DELAY = 400;
 uInt64 DialogContainer::_REPEAT_SUSTAIN_DELAY = 50;
-

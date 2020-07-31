@@ -17,6 +17,7 @@
 
 #include "bspf.hxx"
 #include "Debugger.hxx"
+#include "Device.hxx"
 #include "DiStella.hxx"
 using Common::Base;
 
@@ -73,7 +74,7 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
   // Add reserved line equates
   ostringstream reservedLabel;
   for (int k = 0; k <= myAppData.end; k++) {
-    if ((myLabels[k] & (CartDebug::REFERENCED | CartDebug::VALID_ENTRY)) == CartDebug::REFERENCED) {
+    if ((myLabels[k] & (Device::REFERENCED | Device::VALID_ENTRY)) == Device::REFERENCED) {
       // If we have a piece of code referenced somewhere else, but cannot
       // locate the label in code (i.e because the address is inside of a
       // multi-byte instruction, then we make note of that address for reference
@@ -107,70 +108,99 @@ void DiStella::disasm(uInt32 distart, int pass)
   uInt16 ad;
   Int32 cycles = 0;
   AddressingMode addrMode;
-  int labelFound = 0;
+  AddressType labelFound = AddressType::INVALID;
   stringstream nextLine, nextLineBytes;
 
-  mySegType = CartDebug::NONE; // create extra lines between code and data
+  mySegType = Device::NONE; // create extra lines between code and data
 
   myDisasmBuf.str("");
 
   /* pc=myAppData.start; */
   myPC = distart - myOffset;
-  while (myPC <= myAppData.end) {
-
+  while(myPC <= myAppData.end)
+  {
     // since -1 is used in m6502.m4 for clearing the last peek
     // and this results into an access at e.g. 0xffff,
     // we have to fix the consequences here (ugly!).
     if(myPC == myAppData.end)
       goto FIX_LAST;
 
-    if (checkBits(myPC, CartDebug::GFX | CartDebug::PGFX,
-        CartDebug::CODE)) {
-      if (pass == 2)
-        mark(myPC + myOffset, CartDebug::VALID_ENTRY);
-      if (pass == 3)
+    if(checkBits(myPC, Device::GFX | Device::PGFX,
+       Device::CODE))
+    {
+      if(pass == 2)
+        mark(myPC + myOffset, Device::VALID_ENTRY);
+      if(pass == 3)
         outputGraphics();
       ++myPC;
-    } else if (checkBits(myPC, CartDebug::DATA,
-               CartDebug::CODE | CartDebug::GFX | CartDebug::PGFX)) {
-      if (pass == 2)
-        mark(myPC + myOffset, CartDebug::VALID_ENTRY);
-      if (pass == 3)
-        outputBytes(CartDebug::DATA);
+    }
+    else if(checkBits(myPC, Device::COL | Device::PCOL | Device::BCOL,
+            Device::CODE | Device::GFX | Device::PGFX))
+    {
+      if(pass == 2)
+        mark(myPC + myOffset, Device::VALID_ENTRY);
+      if(pass == 3)
+        outputColors();
+      ++myPC;
+    }
+    else if(checkBits(myPC, Device::AUD,
+            Device::CODE | Device::GFX | Device::PGFX |
+            Device::COL | Device::PCOL | Device::BCOL))
+    {
+      if(pass == 2)
+        mark(myPC + myOffset, Device::VALID_ENTRY);
+      if(pass == 3)
+        outputBytes(Device::AUD);
       else
         ++myPC;
-    } else if (checkBits(myPC, CartDebug::ROW,
-               CartDebug::CODE | CartDebug::DATA | CartDebug::GFX | CartDebug::PGFX)) {
-FIX_LAST:
-      if (pass == 2)
-        mark(myPC + myOffset, CartDebug::VALID_ENTRY);
-
-      if (pass == 3)
-        outputBytes(CartDebug::ROW);
+    }
+    else if(checkBits(myPC, Device::DATA,
+            Device::CODE | Device::GFX | Device::PGFX |
+            Device::COL | Device::PCOL | Device::BCOL |
+            Device::AUD))
+    {
+      if(pass == 2)
+        mark(myPC + myOffset, Device::VALID_ENTRY);
+      if(pass == 3)
+        outputBytes(Device::DATA);
       else
         ++myPC;
-    } else {
-      // The following sections must be CODE
+    }
+    else if(checkBits(myPC, Device::ROW,
+            Device::CODE | Device::GFX | Device::PGFX |
+            Device::COL | Device::PCOL | Device::BCOL |
+            Device::AUD | Device::DATA)) {
+    FIX_LAST:
+      if(pass == 2)
+        mark(myPC + myOffset, Device::VALID_ENTRY);
 
-      // add extra spacing line when switching from non-code to code
-      if (pass == 3 && mySegType != CartDebug::CODE && mySegType != CartDebug::NONE) {
+      if(pass == 3)
+        outputBytes(Device::ROW);
+      else
+        ++myPC;
+    }
+    else {
+   // The following sections must be CODE
+
+   // add extra spacing line when switching from non-code to code
+      if(pass == 3 && mySegType != Device::CODE && mySegType != Device::NONE) {
         myDisasmBuf << "    '     ' ";
-        addEntry(CartDebug::NONE);
-        mark(myPC + myOffset, CartDebug::REFERENCED); // add label when switching
+        addEntry(Device::NONE);
+        mark(myPC + myOffset, Device::REFERENCED); // add label when switching
       }
-      mySegType = CartDebug::CODE;
+      mySegType = Device::CODE;
 
       /* version 2.1 bug fix */
-      if (pass == 2)
-        mark(myPC + myOffset, CartDebug::VALID_ENTRY);
+      if(pass == 2)
+        mark(myPC + myOffset, Device::VALID_ENTRY);
 
       // get opcode
       opcode = Debugger::debugger().peek(myPC + myOffset);
       // get address mode for opcode
       addrMode = ourLookup[opcode].addr_mode;
 
-      if (pass == 3) {
-        if (checkBit(myPC, CartDebug::REFERENCED))
+      if(pass == 3) {
+        if(checkBit(myPC, Device::REFERENCED))
           myDisasmBuf << Base::HEX4 << myPC + myOffset << "'L" << Base::HEX4 << myPC + myOffset << "'";
         else
           myDisasmBuf << Base::HEX4 << myPC + myOffset << "'     '";
@@ -178,17 +208,17 @@ FIX_LAST:
       ++myPC;
 
       // detect labels inside instructions (e.g. BIT masks)
-      labelFound = false;
-      for (Uint8 i = 0; i < ourLookup[opcode].bytes - 1; i++) {
-        if (checkBit(myPC + i, CartDebug::REFERENCED)) {
-          labelFound = true;
+      labelFound = AddressType::INVALID;
+      for(Uint8 i = 0; i < ourLookup[opcode].bytes - 1; i++) {
+        if(checkBit(myPC + i, Device::REFERENCED)) {
+          labelFound = AddressType::ROM;
           break;
         }
       }
-      if (labelFound) {
-        if (myOffset >= 0x1000) {
+      if(labelFound != AddressType::INVALID) {
+        if(myOffset >= 0x1000) {
           // the opcode's operand address matches a label address
-          if (pass == 3) {
+          if(pass == 3) {
             // output the byte of the opcode incl. cycles
             Uint8 nextOpcode = Debugger::debugger().peek(myPC + myOffset);
 
@@ -203,12 +233,13 @@ FIX_LAST:
 
             nextLine.str("");
             cycles = 0;
-            addEntry(CartDebug::CODE); // add the new found CODE entry
+            addEntry(Device::CODE); // add the new found CODE entry
           }
           // continue with the label's opcode
           continue;
-        } else {
-          if (pass == 3) {
+        }
+        else {
+          if(pass == 3) {
             // TODO
           }
         }
@@ -216,18 +247,18 @@ FIX_LAST:
 
       // Undefined opcodes start with a '.'
       // These are undefined wrt DASM
-      if (ourLookup[opcode].mnemonic[0] == '.' && pass == 3) {
+      if(ourLookup[opcode].mnemonic[0] == '.' && pass == 3) {
         nextLine << ".byte   $" << Base::HEX2 << int(opcode) << " ;";
       }
 
-      if (pass == 3) {
+      if(pass == 3) {
         nextLine << ourLookup[opcode].mnemonic;
         nextLineBytes << Base::HEX2 << int(opcode) << " ";
       }
 
       // Add operand(s) for PC values outside the app data range
-      if (myPC >= myAppData.end) {
-        switch (addrMode) {
+      if(myPC >= myAppData.end) {
+        switch(addrMode) {
           case AddressingMode::ABSOLUTE:
           case AddressingMode::ABSOLUTE_X:
           case AddressingMode::ABSOLUTE_Y:
@@ -235,17 +266,17 @@ FIX_LAST:
           case AddressingMode::INDIRECT_Y:
           case AddressingMode::ABS_INDIRECT:
           {
-            if (pass == 3) {
+            if(pass == 3) {
               /* Line information is already printed; append .byte since last
                  instruction will put recompilable object larger that original
                  binary file */
               myDisasmBuf << ".byte $" << Base::HEX2 << int(opcode) << "              $"
                 << Base::HEX4 << myPC + myOffset << "'"
                 << Base::HEX2 << int(opcode);
-              addEntry(CartDebug::DATA);
+              addEntry(Device::DATA);
 
-              if (myPC == myAppData.end) {
-                if (checkBit(myPC, CartDebug::REFERENCED))
+              if(myPC == myAppData.end) {
+                if(checkBit(myPC, Device::REFERENCED))
                   myDisasmBuf << Base::HEX4 << myPC + myOffset << "'L" << Base::HEX4 << myPC + myOffset << "'";
                 else
                   myDisasmBuf << Base::HEX4 << myPC + myOffset << "'     '";
@@ -254,7 +285,7 @@ FIX_LAST:
                 myDisasmBuf << ".byte $" << Base::HEX2 << int(opcode) << "              $"
                   << Base::HEX4 << myPC + myOffset << "'"
                   << Base::HEX2 << int(opcode);
-                addEntry(CartDebug::DATA);
+                addEntry(Device::DATA);
               }
             }
             myPCEnd = myAppData.end + myOffset;
@@ -267,11 +298,11 @@ FIX_LAST:
           case AddressingMode::ZERO_PAGE_Y:
           case AddressingMode::RELATIVE:
           {
-            if (pass == 3) {
+            if(pass == 3) {
               /* Line information is already printed, but we can remove the
                   Instruction (i.e. BMI) by simply clearing the buffer to print */
               myDisasmBuf << ".byte $" << Base::HEX2 << int(opcode);
-              addEntry(CartDebug::ROW);
+              addEntry(Device::ROW);
               nextLine.str("");
               nextLineBytes.str("");
             }
@@ -288,10 +319,10 @@ FIX_LAST:
       // Add operand(s)
       ad = d1 = 0; // not WSYNC by default!
       /* Version 2.1 added the extensions to mnemonics */
-      switch (addrMode) {
+      switch(addrMode) {
         case AddressingMode::ACCUMULATOR:
         {
-          if (pass == 3 && mySettings.aFlag)
+          if(pass == 3 && mySettings.aFlag)
             nextLine << "     A";
           break;
         }
@@ -299,26 +330,29 @@ FIX_LAST:
         case AddressingMode::ABSOLUTE:
         {
           ad = Debugger::debugger().dpeek(myPC + myOffset);  myPC += 2;
-          labelFound = mark(ad, CartDebug::REFERENCED);
-          if (pass == 3) {
-            if (ad < 0x100 && mySettings.fFlag)
+          labelFound = mark(ad, Device::REFERENCED);
+          if(pass == 3) {
+            if(ad < 0x100 && mySettings.fFlag)
               nextLine << ".w   ";
             else
               nextLine << "     ";
 
-            if (labelFound == 1) {
+            if(labelFound == AddressType::ROM) {
               LABEL_A12_HIGH(ad);
               nextLineBytes << Base::HEX2 << int(ad & 0xff) << " " << Base::HEX2 << int(ad >> 8);
-            } else if (labelFound == 4) {
-              if (mySettings.rFlag) {
+            }
+            else if(labelFound == AddressType::ROM_MIRROR) {
+              if(mySettings.rFlag) {
                 int tmp = (ad & myAppData.end) + myOffset;
                 LABEL_A12_HIGH(tmp);
                 nextLineBytes << Base::HEX2 << int(tmp & 0xff) << " " << Base::HEX2 << int(tmp >> 8);
-              } else {
+              }
+              else {
                 nextLine << "$" << Base::HEX4 << ad;
                 nextLineBytes << Base::HEX2 << int(ad & 0xff) << " " << Base::HEX2 << int(ad >> 8);
               }
-            } else {
+            }
+            else {
               LABEL_A12_LOW(ad);
               nextLineBytes << Base::HEX2 << int(ad & 0xff) << " " << Base::HEX2 << int(ad >> 8);
             }
@@ -329,8 +363,8 @@ FIX_LAST:
         case AddressingMode::ZERO_PAGE:
         {
           d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
-          labelFound = mark(d1, CartDebug::REFERENCED);
-          if (pass == 3) {
+          labelFound = mark(d1, Device::REFERENCED);
+          if(pass == 3) {
             nextLine << "     ";
             LABEL_A12_LOW(int(d1));
             nextLineBytes << Base::HEX2 << int(d1);
@@ -341,7 +375,7 @@ FIX_LAST:
         case AddressingMode::IMMEDIATE:
         {
           d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
-          if (pass == 3) {
+          if(pass == 3) {
             nextLine << "     #$" << Base::HEX2 << int(d1) << " ";
             nextLineBytes << Base::HEX2 << int(d1);
           }
@@ -351,34 +385,38 @@ FIX_LAST:
         case AddressingMode::ABSOLUTE_X:
         {
           ad = Debugger::debugger().dpeek(myPC + myOffset);  myPC += 2;
-          labelFound = mark(ad, CartDebug::REFERENCED);
-          if (pass == 2 && !checkBit(ad & myAppData.end, CartDebug::CODE)) {
+          labelFound = mark(ad, Device::REFERENCED);
+          if(pass == 2 && !checkBit(ad & myAppData.end, Device::CODE)) {
             // Since we can't know what address is being accessed unless we also
             // know the current X value, this is marked as ROW instead of DATA
             // The processing is left here, however, in case future versions of
             // the code can somehow track access to CPU registers
-            mark(ad, CartDebug::ROW);
-          } else if (pass == 3) {
-            if (ad < 0x100 && mySettings.fFlag)
+            mark(ad, Device::ROW);
+          }
+          else if(pass == 3) {
+            if(ad < 0x100 && mySettings.fFlag)
               nextLine << ".wx  ";
             else
               nextLine << "     ";
 
-            if (labelFound == 1) {
+            if(labelFound == AddressType::ROM) {
               LABEL_A12_HIGH(ad);
               nextLine << ",x";
               nextLineBytes << Base::HEX2 << int(ad & 0xff) << " " << Base::HEX2 << int(ad >> 8);
-            } else if (labelFound == 4) {
-              if (mySettings.rFlag) {
+            }
+            else if(labelFound == AddressType::ROM_MIRROR) {
+              if(mySettings.rFlag) {
                 int tmp = (ad & myAppData.end) + myOffset;
                 LABEL_A12_HIGH(tmp);
                 nextLine << ",x";
                 nextLineBytes << Base::HEX2 << int(tmp & 0xff) << " " << Base::HEX2 << int(tmp >> 8);
-              } else {
+              }
+              else {
                 nextLine << "$" << Base::HEX4 << ad << ",x";
                 nextLineBytes << Base::HEX2 << int(ad & 0xff) << " " << Base::HEX2 << int(ad >> 8);
               }
-            } else {
+            }
+            else {
               LABEL_A12_LOW(ad);
               nextLine << ",x";
               nextLineBytes << Base::HEX2 << int(ad & 0xff) << " " << Base::HEX2 << int(ad >> 8);
@@ -390,34 +428,38 @@ FIX_LAST:
         case AddressingMode::ABSOLUTE_Y:
         {
           ad = Debugger::debugger().dpeek(myPC + myOffset);  myPC += 2;
-          labelFound = mark(ad, CartDebug::REFERENCED);
-          if (pass == 2 && !checkBit(ad & myAppData.end, CartDebug::CODE)) {
+          labelFound = mark(ad, Device::REFERENCED);
+          if(pass == 2 && !checkBit(ad & myAppData.end, Device::CODE)) {
             // Since we can't know what address is being accessed unless we also
             // know the current Y value, this is marked as ROW instead of DATA
             // The processing is left here, however, in case future versions of
             // the code can somehow track access to CPU registers
-            mark(ad, CartDebug::ROW);
-          } else if (pass == 3) {
-            if (ad < 0x100 && mySettings.fFlag)
+            mark(ad, Device::ROW);
+          }
+          else if(pass == 3) {
+            if(ad < 0x100 && mySettings.fFlag)
               nextLine << ".wy  ";
             else
               nextLine << "     ";
 
-            if (labelFound == 1) {
+            if(labelFound == AddressType::ROM) {
               LABEL_A12_HIGH(ad);
               nextLine << ",y";
               nextLineBytes << Base::HEX2 << int(ad & 0xff) << " " << Base::HEX2 << int(ad >> 8);
-            } else if (labelFound == 4) {
-              if (mySettings.rFlag) {
+            }
+            else if(labelFound == AddressType::ROM_MIRROR) {
+              if(mySettings.rFlag) {
                 int tmp = (ad & myAppData.end) + myOffset;
                 LABEL_A12_HIGH(tmp);
                 nextLine << ",y";
                 nextLineBytes << Base::HEX2 << int(tmp & 0xff) << " " << Base::HEX2 << int(tmp >> 8);
-              } else {
+              }
+              else {
                 nextLine << "$" << Base::HEX4 << ad << ",y";
                 nextLineBytes << Base::HEX2 << int(ad & 0xff) << " " << Base::HEX2 << int(ad >> 8);
               }
-            } else {
+            }
+            else {
               LABEL_A12_LOW(ad);
               nextLine << ",y";
               nextLineBytes << Base::HEX2 << int(ad & 0xff) << " " << Base::HEX2 << int(ad >> 8);
@@ -429,7 +471,7 @@ FIX_LAST:
         case AddressingMode::INDIRECT_X:
         {
           d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
-          if (pass == 3) {
+          if(pass == 3) {
             labelFound = mark(d1, 0);  // dummy call to get address type
             nextLine << "     (";
             LABEL_A12_LOW(d1);
@@ -442,7 +484,7 @@ FIX_LAST:
         case AddressingMode::INDIRECT_Y:
         {
           d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
-          if (pass == 3) {
+          if(pass == 3) {
             labelFound = mark(d1, 0);  // dummy call to get address type
             nextLine << "     (";
             LABEL_A12_LOW(d1);
@@ -455,8 +497,8 @@ FIX_LAST:
         case AddressingMode::ZERO_PAGE_X:
         {
           d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
-          labelFound = mark(d1, CartDebug::REFERENCED);
-          if (pass == 3) {
+          labelFound = mark(d1, Device::REFERENCED);
+          if(pass == 3) {
             nextLine << "     ";
             LABEL_A12_LOW(d1);
             nextLine << ",x";
@@ -468,8 +510,8 @@ FIX_LAST:
         case AddressingMode::ZERO_PAGE_Y:
         {
           d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
-          labelFound = mark(d1, CartDebug::REFERENCED);
-          if (pass == 3) {
+          labelFound = mark(d1, Device::REFERENCED);
+          if(pass == 3) {
             nextLine << "     ";
             LABEL_A12_LOW(d1);
             nextLine << ",y";
@@ -486,12 +528,13 @@ FIX_LAST:
           d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
           ad = ((myPC + Int8(d1)) & 0xfff) + myOffset;
 
-          labelFound = mark(ad, CartDebug::REFERENCED);
-          if (pass == 3) {
-            if (labelFound == 1) {
+          labelFound = mark(ad, Device::REFERENCED);
+          if(pass == 3) {
+            if(labelFound == AddressType::ROM) {
               nextLine << "     ";
               LABEL_A12_HIGH(ad);
-            } else
+            }
+            else
               nextLine << "     $" << Base::HEX4 << ad;
 
             nextLineBytes << Base::HEX2 << int(d1);
@@ -502,25 +545,36 @@ FIX_LAST:
         case AddressingMode::ABS_INDIRECT:
         {
           ad = Debugger::debugger().dpeek(myPC + myOffset);  myPC += 2;
-          labelFound = mark(ad, CartDebug::REFERENCED);
-          if (pass == 2 && !checkBit(ad & myAppData.end, CartDebug::CODE)) {
+          labelFound = mark(ad, Device::REFERENCED);
+          if(pass == 2 && !checkBit(ad & myAppData.end, Device::CODE)) {
             // Since we can't know what address is being accessed unless we also
             // know the current X value, this is marked as ROW instead of DATA
             // The processing is left here, however, in case future versions of
             // the code can somehow track access to CPU registers
-            mark(ad, CartDebug::ROW);
-          } else if (pass == 3) {
-            if (ad < 0x100 && mySettings.fFlag)
+            mark(ad, Device::ROW);
+          }
+          else if(pass == 3) {
+            if(ad < 0x100 && mySettings.fFlag)
               nextLine << ".ind ";
             else
               nextLine << "     ";
           }
-          if (labelFound == 1) {
+          if(labelFound == AddressType::ROM) {
             nextLine << "(";
             LABEL_A12_HIGH(ad);
             nextLine << ")";
           }
-          // TODO - should we consider case 4??
+          else if(labelFound == AddressType::ROM_MIRROR) {
+            nextLine << "(";
+            if(mySettings.rFlag) {
+              int tmp = (ad & myAppData.end) + myOffset;
+              LABEL_A12_HIGH(tmp);
+            }
+            else {
+              LABEL_A12_LOW(ad);
+            }
+            nextLine << ")";
+          }
           else {
             nextLine << "(";
             LABEL_A12_LOW(ad);
@@ -535,36 +589,37 @@ FIX_LAST:
           break;
       } // end switch
 
-      if (pass == 3) {
+      if(pass == 3) {
         cycles += int(ourLookup[opcode].cycles);
         // A complete line of disassembly (text, cycle count, and bytes)
         myDisasmBuf << nextLine.str() << "'"
           << ";" << std::dec << int(ourLookup[opcode].cycles)
           << (addrMode == AddressingMode::RELATIVE ? (ad & 0xf00) != ((myPC + myOffset) & 0xf00) ? "/3!" : "/3 " : "   ");
-        if ((opcode == 0x40 || opcode == 0x60 || opcode == 0x4c || opcode == 0x00 // code block end
-            || checkBit(myPC, CartDebug::REFERENCED)                              // referenced address
-            || (ourLookup[opcode].rw_mode == RWMode::WRITE && d1 == WSYNC))       // strobe WSYNC
-            && cycles > 0) {
-          // output cycles for previous code block
+        if((opcode == 0x40 || opcode == 0x60 || opcode == 0x4c || opcode == 0x00 // code block end
+           || checkBit(myPC, Device::REFERENCED)                              // referenced address
+           || (ourLookup[opcode].rw_mode == RWMode::WRITE && d1 == WSYNC))       // strobe WSYNC
+           && cycles > 0) {
+         // output cycles for previous code block
           myDisasmBuf << "'= " << std::setw(3) << std::setfill(' ') << std::dec << cycles;
           cycles = 0;
-        } else {
+        }
+        else {
           myDisasmBuf << "'     ";
         }
         myDisasmBuf << "'" << nextLineBytes.str();
 
-        addEntry(CartDebug::CODE);
-        if (opcode == 0x40 || opcode == 0x60 || opcode == 0x4c || opcode == 0x00) {
+        addEntry(Device::CODE);
+        if(opcode == 0x40 || opcode == 0x60 || opcode == 0x4c || opcode == 0x00) {
           myDisasmBuf << "    '     ' ";
-          addEntry(CartDebug::NONE);
-          mySegType = CartDebug::NONE; // prevent extra lines if data follows
+          addEntry(Device::NONE);
+          mySegType = Device::NONE; // prevent extra lines if data follows
         }
 
         nextLine.str("");
         nextLineBytes.str("");
       }
-    }
-  }  /* while loop */
+    } // CODE
+  } /* while loop */
 
   /* Just in case we are disassembling outside of the address range, force the myPCEnd to EOF */
   myPCEnd = myAppData.end + myOffset;
@@ -602,20 +657,21 @@ void DiStella::disasmPass1(CartDebug::AddressList& debuggerAddresses)
       // Note that this is a 'best-effort' approach, since
       // Distella will normally keep going until the end of the
       // range or branch is encountered
-      // However, addresses *specifically* marked as DATA/GFX/PGFX
+      // However, addresses *specifically* marked as DATA/GFX/PGFX/COL/PCOL/BCOL/AUD
       // in the emulation core indicate that the CODE range has finished
       // Therefore, we stop at the first such address encountered
       for (uInt32 k = pcBeg; k <= myPCEnd; ++k) {
-        if (checkBits(k, CartDebug::CartDebug::DATA | CartDebug::GFX | CartDebug::PGFX,
-                      CartDebug::CODE)) {
+        if (checkBits(k, Device::Device::DATA | Device::GFX | Device::PGFX |
+            Device::COL | Device::PCOL | Device::BCOL | Device::AUD,
+            Device::CODE)) {
           //if (Debugger::debugger().getAccessFlags(k) &
-          //    (CartDebug::DATA | CartDebug::GFX | CartDebug::PGFX)) {
+          //    (Device::DATA | Device::GFX | Device::PGFX)) {
           // TODO: this should never happen, remove when we are sure
-          // TODO: NOT USED: uInt8 flags = Debugger::debugger().getAccessFlags(k);
+          // TODO: NOT USED: uInt16 flags = Debugger::debugger().getAccessFlags(k);
           myPCEnd = k - 1;
           break;
         }
-        mark(k, CartDebug::CODE);
+        mark(k, Device::CODE);
       }
     }
 
@@ -637,7 +693,7 @@ void DiStella::disasmPass1(CartDebug::AddressList& debuggerAddresses)
     while (myAddressQueue.empty() && it != debuggerAddresses.end()) {
       uInt16 addr = *it;
 
-      if (!checkBit(addr - myOffset, CartDebug::CODE)) {
+      if (!checkBit(addr - myOffset, Device::CODE)) {
         myAddressQueue.push(addr);
         ++it;
       } else // remove this address, it is redundant
@@ -647,8 +703,8 @@ void DiStella::disasmPass1(CartDebug::AddressList& debuggerAddresses)
     // Stella itself can provide hints on whether an address has ever
     // been referenced as CODE
     while (myAddressQueue.empty() && codeAccessPoint <= myAppData.end) {
-      if ((Debugger::debugger().getAccessFlags(codeAccessPoint + myOffset) & CartDebug::CODE)
-          && !(myLabels[codeAccessPoint & myAppData.end] & CartDebug::CODE)) {
+      if ((Debugger::debugger().getAccessFlags(codeAccessPoint + myOffset) & Device::CODE)
+          && !(myLabels[codeAccessPoint & myAppData.end] & Device::CODE)) {
         myAddressQueue.push(codeAccessPoint + myOffset);
         ++codeAccessPoint;
         break;
@@ -660,16 +716,17 @@ void DiStella::disasmPass1(CartDebug::AddressList& debuggerAddresses)
 
   for (int k = 0; k <= myAppData.end; k++) {
     // Let the emulation core know about tentative code
-    if (checkBit(k, CartDebug::CODE) &&
-      !(Debugger::debugger().getAccessFlags(k + myOffset) & CartDebug::CODE)
+    if (checkBit(k, Device::CODE) &&
+      !(Debugger::debugger().getAccessFlags(k + myOffset) & Device::CODE)
       && myOffset != 0) {
-      Debugger::debugger().setAccessFlags(k + myOffset, CartDebug::TCODE);
+      Debugger::debugger().setAccessFlags(k + myOffset, Device::TCODE);
     }
 
     // Must be ROW / unused bytes
-    if (!checkBit(k, CartDebug::CODE | CartDebug::GFX |
-        CartDebug::PGFX | CartDebug::DATA))
-      mark(k + myOffset, CartDebug::ROW);
+    if (!checkBit(k, Device::CODE | Device::GFX | Device::PGFX |
+        Device::COL | Device::PCOL | Device::BCOL | Device::AUD |
+        Device::DATA))
+      mark(k + myOffset, Device::ROW);
   }
 }
 
@@ -685,7 +742,9 @@ void DiStella::disasmFromAddress(uInt32 distart)
   while (myPC <= myAppData.end) {
 
     // abort when we reach non-code areas
-    if (checkBits(myPC, CartDebug::CartDebug::DATA | CartDebug::GFX | CartDebug::PGFX, CartDebug::CODE)) {
+    if (checkBits(myPC, Device::Device::DATA | Device::GFX | Device::PGFX |
+        Device::COL | Device::PCOL | Device::BCOL | Device::AUD,
+        Device::CODE)) {
       myPCEnd = (myPC - 1) + myOffset;
       return;
     }
@@ -729,22 +788,22 @@ void DiStella::disasmFromAddress(uInt32 distart)
     switch (addrMode) {
       case AddressingMode::ABSOLUTE:
         ad = Debugger::debugger().dpeek(myPC + myOffset);  myPC += 2;
-        mark(ad, CartDebug::REFERENCED);
+        mark(ad, Device::REFERENCED);
         // handle JMP/JSR
         if (ourLookup[opcode].source == AccessMode::ADDR) {
           // do NOT use flags set by debugger, else known CODE will not analyzed statically.
-          if (!checkBit(ad & myAppData.end, CartDebug::CODE, false)) {
+          if (!checkBit(ad & myAppData.end, Device::CODE, false)) {
             if (ad > 0xfff)
               myAddressQueue.push((ad & myAppData.end) + myOffset);
-            mark(ad, CartDebug::CODE);
+            mark(ad, Device::CODE);
           }
         } else
-          mark(ad, CartDebug::DATA);
+          mark(ad, Device::DATA);
         break;
 
       case AddressingMode::ZERO_PAGE:
         d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
-        mark(d1, CartDebug::REFERENCED);
+        mark(d1, Device::REFERENCED);
         break;
 
       case AddressingMode::IMMEDIATE:
@@ -753,12 +812,12 @@ void DiStella::disasmFromAddress(uInt32 distart)
 
       case AddressingMode::ABSOLUTE_X:
         ad = Debugger::debugger().dpeek(myPC + myOffset);  myPC += 2;
-        mark(ad, CartDebug::REFERENCED);
+        mark(ad, Device::REFERENCED);
         break;
 
       case AddressingMode::ABSOLUTE_Y:
         ad = Debugger::debugger().dpeek(myPC + myOffset);  myPC += 2;
-        mark(ad, CartDebug::REFERENCED);
+        mark(ad, Device::REFERENCED);
         break;
 
       case AddressingMode::INDIRECT_X:
@@ -771,12 +830,12 @@ void DiStella::disasmFromAddress(uInt32 distart)
 
       case AddressingMode::ZERO_PAGE_X:
         d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
-        mark(d1, CartDebug::REFERENCED);
+        mark(d1, Device::REFERENCED);
         break;
 
       case AddressingMode::ZERO_PAGE_Y:
         d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
-        mark(d1, CartDebug::REFERENCED);
+        mark(d1, Device::REFERENCED);
         break;
 
       case AddressingMode::RELATIVE:
@@ -785,17 +844,17 @@ void DiStella::disasmFromAddress(uInt32 distart)
         // indexing into the labels array caused a crash
         d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
         ad = ((myPC + Int8(d1)) & 0xfff) + myOffset;
-        mark(ad, CartDebug::REFERENCED);
+        mark(ad, Device::REFERENCED);
         // do NOT use flags set by debugger, else known CODE will not analyzed statically.
-        if (!checkBit(ad - myOffset, CartDebug::CODE, false)) {
+        if (!checkBit(ad - myOffset, Device::CODE, false)) {
           myAddressQueue.push(ad);
-          mark(ad, CartDebug::CODE);
+          mark(ad, Device::CODE);
         }
         break;
 
       case AddressingMode::ABS_INDIRECT:
         ad = Debugger::debugger().dpeek(myPC + myOffset);  myPC += 2;
-        mark(ad, CartDebug::REFERENCED);
+        mark(ad, Device::REFERENCED);
         break;
 
       default:
@@ -804,10 +863,10 @@ void DiStella::disasmFromAddress(uInt32 distart)
 
     // mark BRK vector
     if (opcode == 0x00) {
-      ad = Debugger::debugger().dpeek(0xfffe, CartDebug::DATA);
+      ad = Debugger::debugger().dpeek(0xfffe, Device::DATA);
       if (!myReserved.breakFound) {
         myAddressQueue.push(ad);
-        mark(ad, CartDebug::CODE);
+        mark(ad, Device::CODE);
         myReserved.breakFound = true;
       }
     }
@@ -823,7 +882,7 @@ void DiStella::disasmFromAddress(uInt32 distart)
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int DiStella::mark(uInt32 address, uInt8 mask, bool directive)
+DiStella::AddressType DiStella::mark(uInt32 address, uInt16 mask, bool directive)
 {
   /*-----------------------------------------------------------------------
     For any given offset and code range...
@@ -831,81 +890,88 @@ int DiStella::mark(uInt32 address, uInt8 mask, bool directive)
     If we're between the offset and the end of the code range, we mark
     the bit in the labels array for that data.  The labels array is an
     array of label info for each code address.  If this is the case,
-    return "1", else...
+    return "ROM", else...
 
     We sweep for hardware/system equates, which are valid addresses,
     outside the scope of the code/data range.  For these, we mark its
-    corresponding hardware/system array element, and return "2" or "3"
+    corresponding hardware/system array element, and return "TIA" or "RIOT"
     (depending on which system/hardware element was accessed).
     If this was not the case...
 
     Next we check if it is a code "mirror".  For the 2600, address ranges
     are limited with 13 bits, so other addresses can exist outside of the
     standard code/data range.  For these, we mark the element in the "labels"
-    array that corresponds to the mirrored address, and return "4"
+    array that corresponds to the mirrored address, and return "ROM_MIRROR"
 
-    If all else fails, it's not a valid address, so return 0.
+    If all else fails, it's not a valid address, so return INVALID.
 
     A quick example breakdown for a 2600 4K cart:
     ===========================================================
-      $00-$3d     = system equates (WSYNC, etc...); return 2.
-      $80-$ff     = zero-page RAM (ram_80, etc...); return 5.
+      $00-$3d     = system equates (WSYNC, etc...); return TIA.
+      $80-$ff     = zero-page RAM (ram_80, etc...); return ZP_RAM.
       $0280-$0297 = system equates (INPT0, etc...); mark the array's element
-                    with the appropriate bit; return 3.
+                    with the appropriate bit; return RIOT.
       $1000-$1FFF = mark the code/data array for the mirrored address
-                    with the appropriate bit; return 4.
+                    with the appropriate bit; return ROM_MIRROR.
       $3000-$3FFF = mark the code/data array for the mirrored address
-                    with the appropriate bit; return 4.
+                    with the appropriate bit; return ROM_MIRROR.
       $5000-$5FFF = mark the code/data array for the mirrored address
-                    with the appropriate bit; return 4.
+                    with the appropriate bit; return ROM_MIRROR.
       $7000-$7FFF = mark the code/data array for the mirrored address
-                    with the appropriate bit; return 4.
+                    with the appropriate bit; return ROM_MIRROR.
       $9000-$9FFF = mark the code/data array for the mirrored address
-                    with the appropriate bit; return 4.
+                    with the appropriate bit; return ROM_MIRROR.
       $B000-$BFFF = mark the code/data array for the mirrored address
-                    with the appropriate bit; return 4.
+                    with the appropriate bit; return ROM_MIRROR.
       $D000-$DFFF = mark the code/data array for the mirrored address
-                    with the appropriate bit; return 4.
+                    with the appropriate bit; return ROM_MIRROR.
       $F000-$FFFF = mark the code/data array for the address
-                    with the appropriate bit; return 1.
-      Anything else = invalid, return 0.
+                    with the appropriate bit; return ROM.
+      Anything else = invalid, return INVALID.
     ===========================================================
   -----------------------------------------------------------------------*/
 
   // Check for equates before ROM/ZP-RAM accesses, because the original logic
   // of Distella assumed either equates or ROM; it didn't take ZP-RAM into account
   CartDebug::AddrType type = myDbg.addressType(address);
-  if (type == CartDebug::AddrType::TIA) {
-    return 2;
-  } else if (type == CartDebug::AddrType::IO) {
-    return 3;
-  } else if (type == CartDebug::AddrType::ZPRAM && myOffset != 0) {
-    return 5;
-  } else if (address >= uInt32(myOffset) && address <= uInt32(myAppData.end + myOffset)) {
+  if(type == CartDebug::AddrType::TIA) {
+    return AddressType::TIA;
+  }
+  else if(type == CartDebug::AddrType::IO) {
+    return AddressType::RIOT;
+  }
+  else if(type == CartDebug::AddrType::ZPRAM && myOffset != 0) {
+    return AddressType::ZP_RAM;
+  }
+  else if(address >= uInt32(myOffset) && address <= uInt32(myAppData.end + myOffset)) {
     myLabels[address - myOffset] = myLabels[address - myOffset] | mask;
-    if (directive)  myDirectives[address - myOffset] = mask;
-    return 1;
-  } else if (address > 0x1000 && myOffset != 0)  // Exclude zero-page accesses
+    if(directive)
+      myDirectives[address - myOffset] = mask;
+    return AddressType::ROM;
+  }
+  else if(address > 0x1000 && myOffset != 0)  // Exclude zero-page accesses
   {
     /* 2K & 4K case */
     myLabels[address & myAppData.end] = myLabels[address & myAppData.end] | mask;
-    if (directive)  myDirectives[address & myAppData.end] = mask;
-    return 4;
-  } else
-    return 0;
+    if(directive)
+      myDirectives[address & myAppData.end] = mask;
+    return AddressType::ROM_MIRROR;
+  }
+  else
+    return AddressType::INVALID;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool DiStella::checkBit(uInt16 address, uInt8 mask, bool useDebugger) const
+bool DiStella::checkBit(uInt16 address, uInt16 mask, bool useDebugger) const
 {
   // The REFERENCED and VALID_ENTRY flags are needed for any inspection of
   // an address
   // Since they're set only in the labels array (as the lower two bits),
   // they must be included in the other bitfields
-  uInt8 label = myLabels[address & myAppData.end],
-    lastbits = label & 0x03,
-    directive = myDirectives[address & myAppData.end] & 0xFC,
-    debugger = Debugger::debugger().getAccessFlags(address | myOffset) & 0xFC;
+  uInt16 label = myLabels[address & myAppData.end],
+    lastbits = label & (Device::REFERENCED | Device::VALID_ENTRY),
+    directive = myDirectives[address & myAppData.end] & ~(Device::REFERENCED | Device::VALID_ENTRY),
+    debugger = Debugger::debugger().getAccessFlags(address | myOffset) & ~(Device::REFERENCED | Device::VALID_ENTRY);
 
   // Any address marked by a manual directive always takes priority
   if (directive)
@@ -918,7 +984,8 @@ bool DiStella::checkBit(uInt16 address, uInt8 mask, bool useDebugger) const
     return label & mask;
 }
 
-bool DiStella::checkBits(uInt16 address, uInt8 mask, uInt8 notMask, bool useDebugger) const
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool DiStella::checkBits(uInt16 address, uInt16 mask, uInt16 notMask, bool useDebugger) const
 {
   return checkBit(address, mask, useDebugger) && !checkBit(address, notMask, useDebugger);
 }
@@ -943,7 +1010,7 @@ bool DiStella::check_range(uInt16 beg, uInt16 end) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DiStella::addEntry(CartDebug::DisasmType type)
+void DiStella::addEntry(Device::AccessType type)
 {
   CartDebug::DisassemblyTag tag;
 
@@ -969,7 +1036,7 @@ void DiStella::addEntry(CartDebug::DisasmType type)
     if (tag.label == EmptyString) {
       if (myDisasmBuf.peek() != ' ')
         getline(myDisasmBuf, tag.label, '\'');
-      else if (mySettings.showAddresses && tag.type == CartDebug::CODE) {
+      else if (mySettings.showAddresses && tag.type == Device::CODE) {
         // Have addresses indented, to differentiate from actual labels
         tag.label = " " + Base::toString(tag.address, Base::Fmt::_16_4);
         tag.hllabel = false;
@@ -982,7 +1049,7 @@ void DiStella::addEntry(CartDebug::DisasmType type)
   // variable length labels, cycle counts, etc
   myDisasmBuf.seekg(11, std::ios::beg);
   switch (tag.type) {
-    case CartDebug::CODE:
+    case Device::CODE:
       getline(myDisasmBuf, tag.disasm, '\'');
       getline(myDisasmBuf, tag.ccount, '\'');
       getline(myDisasmBuf, tag.ctotal, '\'');
@@ -993,25 +1060,29 @@ void DiStella::addEntry(CartDebug::DisasmType type)
       // but it could also indicate that code will *never* be accessed
       // Since it is impossible to tell the difference, marking the address
       // in the disassembly at least tells the user about it
-      if (!(Debugger::debugger().getAccessFlags(tag.address) & CartDebug::CODE)
+      if (!(Debugger::debugger().getAccessFlags(tag.address) & Device::CODE)
           && myOffset != 0) {
         tag.ccount += " *";
-        Debugger::debugger().setAccessFlags(tag.address, CartDebug::TCODE);
+        Debugger::debugger().setAccessFlags(tag.address, Device::TCODE);
       }
       break;
-    case CartDebug::GFX:
-    case CartDebug::PGFX:
+
+    case Device::GFX:
+    case Device::PGFX:
+    case Device::COL:
+    case Device::PCOL:
+    case Device::BCOL:
+    case Device::DATA:
+    case Device::AUD:
       getline(myDisasmBuf, tag.disasm, '\'');
       getline(myDisasmBuf, tag.bytes);
       break;
-    case CartDebug::DATA:
-      getline(myDisasmBuf, tag.disasm, '\'');
-      getline(myDisasmBuf, tag.bytes);
-      break;
-    case CartDebug::ROW:
+
+    case Device::ROW:
       getline(myDisasmBuf, tag.disasm);
       break;
-    case CartDebug::NONE:
+
+    case Device::NONE:
     default:  // should never happen
       tag.disasm = " ";
       break;
@@ -1026,47 +1097,115 @@ DONE_WITH_ADD:
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DiStella::outputGraphics()
 {
-  bool isPGfx = checkBit(myPC, CartDebug::PGFX);
+  bool isPGfx = checkBit(myPC, Device::PGFX);
   const string& bitString = isPGfx ? "\x1f" : "\x1e";
   uInt8 byte = Debugger::debugger().peek(myPC + myOffset);
 
   // add extra spacing line when switching from non-graphics to graphics
-  if (mySegType != CartDebug::GFX && mySegType != CartDebug::NONE) {
+  if (mySegType != Device::GFX && mySegType != Device::NONE) {
     myDisasmBuf << "    '     ' ";
-    addEntry(CartDebug::NONE);
+    addEntry(Device::NONE);
   }
-  mySegType = CartDebug::GFX;
+  mySegType = Device::GFX;
 
-  if (checkBit(myPC, CartDebug::REFERENCED))
+  if (checkBit(myPC, Device::REFERENCED))
     myDisasmBuf << Base::HEX4 << myPC + myOffset << "'L" << Base::HEX4 << myPC + myOffset << "'";
   else
     myDisasmBuf << Base::HEX4 << myPC + myOffset << "'     '";
   myDisasmBuf << ".byte $" << Base::HEX2 << int(byte) << "  |";
   for (uInt8 i = 0, c = byte; i < 8; ++i, c <<= 1)
     myDisasmBuf << ((c > 127) ? bitString : " ");
-  myDisasmBuf << "|  $" << Base::HEX4 << myPC + myOffset << "'";
+  myDisasmBuf << "|   $" << Base::HEX4 << myPC + myOffset << "'";
   if (mySettings.gfxFormat == Base::Fmt::_2)
     myDisasmBuf << Base::toString(byte, Base::Fmt::_2_8);
   else
     myDisasmBuf << Base::HEX2 << int(byte);
 
-  addEntry(isPGfx ? CartDebug::PGFX : CartDebug::GFX);
+  addEntry(isPGfx ? Device::PGFX : Device::GFX);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DiStella::outputBytes(CartDebug::DisasmType type)
+void DiStella::outputColors()
+{
+  string NTSC_COLOR[16] = {
+    "BLACK", "YELLOW", "BROWN", "ORANGE",
+    "RED", "MAUVE", "VIOLET", "PURPLE",
+    "BLUE", "BLUE_CYAN", "CYAN", "CYAN_GREEN",
+    "GREEN", "GREEN_YELLOW", "GREEN_BEIGE", "BEIGE"
+  };
+  string PAL_COLOR[16] = {
+    "BLACK0", "BLACK1", "YELLOW", "GREEN_YELLOW",
+    "ORANGE", "GREEN", "RED", "CYAN_GREEN",
+    "MAUVE", "CYAN", "VIOLET", "BLUE_CYAN",
+    "PURPLE", "BLUE", "BLACKE", "BLACKF"
+  };
+  string SECAM_COLOR[8] = {
+    "BLACK", "BLUE", "RED", "PURPLE",
+    "GREEN", "CYAN", "YELLOW", "WHITE"
+  };
+
+  uInt8 byte = Debugger::debugger().peek(myPC + myOffset);
+
+  // add extra spacing line when switching from non-colors to colors
+  if(mySegType != Device::COL && mySegType != Device::NONE)
+  {
+    myDisasmBuf << "    '     ' ";
+    addEntry(Device::NONE);
+  }
+  mySegType = Device::COL;
+
+  // output label/address
+  if(checkBit(myPC, Device::REFERENCED))
+    myDisasmBuf << Base::HEX4 << myPC + myOffset << "'L" << Base::HEX4 << myPC + myOffset << "'";
+  else
+    myDisasmBuf << Base::HEX4 << myPC + myOffset << "'     '";
+
+  // output color
+  string color;
+
+  myDisasmBuf << ".byte ";
+  if(myDbg.myConsole.timing() == ConsoleTiming::ntsc)
+  {
+    color = NTSC_COLOR[byte >> 4];
+    myDisasmBuf << color << "|$" << Base::HEX1 << (byte & 0xf);
+  }
+  else if(myDbg.myConsole.timing() == ConsoleTiming::pal)
+  {
+    color = PAL_COLOR[byte >> 4];
+    myDisasmBuf << color << "|$" << Base::HEX1 << (byte & 0xf);
+  }
+  else
+  {
+    color = SECAM_COLOR[(byte >> 1) & 0x7];
+    myDisasmBuf << "$" << Base::HEX1 << (byte >> 4) << "|" << color;
+  }
+  myDisasmBuf << std::setw(int(16 - color.length())) << std::setfill(' ');
+
+  // output address
+  myDisasmBuf << "; $" << Base::HEX4 << myPC + myOffset << " "
+    << (checkBit(myPC, Device::COL) ? "(Px)" : checkBit(myPC, Device::PCOL) ? "(PF)" : "(BK)");
+
+  // output color value
+  myDisasmBuf << "'" << Base::HEX2 << int(byte);
+
+  addEntry(checkBit(myPC, Device::COL) ? Device::COL :
+           checkBit(myPC, Device::PCOL) ? Device::PCOL : Device::BCOL);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DiStella::outputBytes(Device::AccessType type)
 {
   bool isType = true;
-  bool referenced = checkBit(myPC, CartDebug::REFERENCED);
+  bool referenced = checkBit(myPC, Device::REFERENCED);
   bool lineEmpty = true;
   int numBytes = 0;
 
   // add extra spacing line when switching from non-data to data
-  if (mySegType != CartDebug::DATA && mySegType != CartDebug::NONE) {
+  if (mySegType != Device::DATA && mySegType != Device::NONE) {
     myDisasmBuf << "    '     ' ";
-    addEntry(CartDebug::NONE);
+    addEntry(Device::NONE);
   }
-  mySegType = CartDebug::DATA;
+  mySegType = Device::DATA;
 
   while (isType && myPC <= myAppData.end) {
     if (referenced) {
@@ -1097,13 +1236,15 @@ void DiStella::outputBytes(CartDebug::DisasmType type)
       ++myPC;
     }
     isType = checkBits(myPC, type,
-                        CartDebug::CODE | (type != CartDebug::DATA ? CartDebug::DATA : 0) | CartDebug::GFX | CartDebug::PGFX);
-    referenced = checkBit(myPC, CartDebug::REFERENCED);
+                       Device::CODE | (type != Device::DATA ? Device::DATA : 0) |
+                       Device::GFX | Device::PGFX |
+                       Device::COL | Device::PCOL | Device::BCOL | Device::AUD);
+    referenced = checkBit(myPC, Device::REFERENCED);
   }
   if (!lineEmpty)
     addEntry(type);
   /*myDisasmBuf << "    '     ' ";
-  addEntry(CartDebug::NONE);*/
+  addEntry(Device::NONE);*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

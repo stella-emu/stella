@@ -43,6 +43,7 @@ using uInt64 = uint64_t;
 #include <algorithm>
 #include <iostream>
 #include <fstream>
+#include <functional>
 #include <iomanip>
 #include <memory>
 #include <string>
@@ -63,8 +64,6 @@ using std::istream;
 using std::ostream;
 using std::fstream;
 using std::iostream;
-using std::ifstream;
-using std::ofstream;
 using std::ostringstream;
 using std::istringstream;
 using std::stringstream;
@@ -84,11 +83,14 @@ using ByteArray = std::vector<uInt8>;
 using ShortArray = std::vector<uInt16>;
 using StringList = std::vector<std::string>;
 using ByteBuffer = std::unique_ptr<uInt8[]>;  // NOLINT
+using DWordBuffer = std::unique_ptr<uInt32[]>;  // NOLINT
+
+using AdjustFunction = std::function<void(int)>;
 
 // We use KB a lot; let's make a literal for it
-constexpr uInt32 operator "" _KB(unsigned long long size)
+constexpr size_t operator "" _KB(unsigned long long size)
 {
-   return static_cast<uInt32>(size * 1024);
+   return static_cast<size_t>(size * 1024);
 }
 
 static const string EmptyString("");
@@ -96,6 +98,12 @@ static const string EmptyString("");
 // This is defined by some systems, but Stella has other uses for it
 #undef PAGE_SIZE
 #undef PAGE_MASK
+
+// Adaptable refresh is currently not available on MacOS
+// In the future, this may expand to other systems
+#if !defined(BSPF_MACOS)
+  #define ADAPTABLE_REFRESH_SUPPORT
+#endif
 
 namespace BSPF
 {
@@ -118,19 +126,38 @@ namespace BSPF
     static const string ARCH = "NOARCH";
   #endif
 
+  // Get next power of two greater than or equal to the given value
+  inline size_t nextPowerOfTwo(size_t size) {
+    if(size < 2) return 1;
+    size_t power2 = 1;
+    while(power2 < size)
+      power2 <<= 1;
+    return power2;
+  }
+
+  // Get next multiple of the given value
+  // Note that this only works when multiple is a power of two
+  inline size_t nextMultipleOf(size_t size, size_t multiple) {
+    return (size + multiple - 1) & ~(multiple - 1);
+  }
+
   // Make 2D-arrays using std::array less verbose
-  template<class T, size_t ROW, size_t COL>
+  template<typename T, size_t ROW, size_t COL>
   using array2D = std::array<std::array<T, COL>, ROW>;
 
   // Combines 'max' and 'min', and clamps value to the upper/lower value
   // if it is outside the specified range
-  template<class T> inline T clamp(T val, T lower, T upper)
+  template<typename T> inline T clamp(T val, T lower, T upper)
   {
     return (val < lower) ? lower : (val > upper) ? upper : val;
   }
-  template<class T> inline void clamp(T& val, T lower, T upper, T setVal)
+  template<typename T> inline void clamp(T& val, T lower, T upper, T setVal)
   {
     if(val < lower || val > upper)  val = setVal;
+  }
+  template<typename T> inline T clampw(T val, T lower, T upper)
+  {
+    return (val < lower) ? upper : (val > upper) ? lower : val;
   }
 
   // Convert string to given case

@@ -15,7 +15,7 @@
 <body>
 
   <center><b><font size="7">Stella</font></b></center>
-  <center><h4><b>Release 6.1</b></h4></center>
+  <center><h4><b>Release 6.2.1</b></h4></center>
   <center><h1><b>Integrated Debugger</b></h1></center>
   <center><h4><b>(a work in progress)</b></h4></center>
   <br>
@@ -121,13 +121,14 @@ feature that no other 2600 debugger has; it's <b>completely</b> cross-platform.<
 
   <li>Supports Distella 'configuration directives', which may be used to
     override automatic code/data determination in the disassembly. For now,
-    the following directives are supported: CODE, GFX, PGFX, DATA, ROW.
-    These directives can be entered at the debugger prompt, or (automatically)
+    the following directives are supported: CODE, GFX, PGFX, COL, PCOL, BCOL, AUD, DATA, ROW.
+    These directives can be entered at the debugger prompt, or be (automatically)
     loaded and saved in configuration files.</li>
 
   <li>Extensive disassembly support, both from the emulation core and with help
     from Distella. Where possible, the disassembly differentiates between code,
-    player graphics and playfield graphics (ie, addresses stored in GRPx and PFx)
+    player and playfield graphics, colors and audio (ie, addresses stored in
+    GRPx, PFx, COLUxx, AUDxx)
     and data (addresses used as an operand of a command). Code sections are also
     differentiated between actual code, and 'tentative' code (ie, areas that may
     represent code sections, but haven't actually been executed yet). Such
@@ -330,7 +331,7 @@ previous rewind operation. The rewind buffer is 100 levels deep by default, the
 size can be configured e.g. in the
 <b><a href="index.html#Debugger">Developer Settings</a> - Time Machine</b> dialog.<p>
 
-<p>The other operations are Step, Trace, Scan+1, Frame+1 and Exit (debugger).</p>
+<p>The other operations are Step, Trace, Scan+1, Frame+1 and Run.</p>
 
 <p>You can also use the buttons from anywhere in the GUI via hotkeys.</p>
 <p>
@@ -381,12 +382,12 @@ size can be configured e.g. in the
   </tr>
   <tr>
     <td>Backquote (`)</td>
-    <td>Exit</td>
+    <td>Run</td>
   </tr>
 </table>
 </p>
 For MacOS use 'Cmd' instead of &nbsp;'Alt' key.
-<p>To the left of the global buttons, you find the "Options..." button.</p>
+<p>To the left of the global buttons, you find the 'Options...' button.</p>
 <ul>
   <p><img src="graphics/debugger_options.png"></p>
 </ul>
@@ -607,7 +608,7 @@ created a symbol file, you can use labels for the expression.</p>
 
 <p>Example: You have got a label called "kernel". To break there,
 the command is "break kernel". After you've set the breakpoint,
-exit the debugger ("quit" or click the Exit button). The emulator
+exit the debugger (enter "run" or click the 'Run' button). The emulator
 will run until it gets to the breakpoint, then it will enter the
 debugger with the Program Counter pointing to the instruction
 at the breakpoint.</p>
@@ -754,6 +755,7 @@ that holds 'number of scanlines' on an actual console).</p>
 <tr><td> _fcycles</td><td> Number of cycles since frame started</td></tr>
 <tr><td> _icycles</td><td> Number of cycles of last instruction</td></tr>
 <tr><td> _scan</td><td> Current scanline count</td></tr>
+<tr><td> _scanend</td><td> Scanline count at end of last frame</td></tr>
 <tr><td> _scycles</td><td> Number of cycles in current scanline</td></tr>
 <tr><td> _vblank</td><td> Whether vertical blank is enabled (1 or 0)</td></tr>
 <tr><td> _vsync</td><td> Whether vertical sync is enabled (1 or 0)</td></tr>
@@ -906,7 +908,9 @@ Type "help 'cmd'" to see extended information about the given command.</p>
 
 <pre>
                 a - Set Accumulator to &lt;value&gt;
+              aud - Mark 'AUD' range in disassembly
              base - Set default number base to &lt;base&gt; (bin, dec, hex)
+             bcol - Mark 'BCOL' range in disassembly
             break - Set/clear breakpoint at &lt;address&gt; and &lt;bank&gt;
           breakif - Set/clear breakpoint on &lt;condition&gt;
        breaklabel - Set/clear breakpoint on &lt;address&gt; (no mirrors, all banks)
@@ -919,6 +923,7 @@ clearsavestateifs - Clear all savestate points
      clearwatches - Clear all watches
               cls - Clear prompt area of text
              code - Mark 'CODE' range in disassembly
+              col - Mark 'COL' range in disassembly
         colortest - Show value xx as TIA color
                 d - Decimal Mode Flag: set (0 or 1), or toggle (no arg)
              data - Mark 'DATA' range in disassembly
@@ -959,6 +964,7 @@ clearsavestateifs - Clear all savestate points
                 n - Negative Flag: set (0 or 1), or toggle (no arg)
           palette - Show current TIA palette
                pc - Set Program Counter to address xx
+             pcol - Mark 'PCOL' range in disassembly
              pgfx - Mark 'PGFX' range in disassembly
             print - Evaluate/print expression xx in hex/dec/binary
               ram - Show ZP RAM, or set address xx to yy1 [yy2 ...]
@@ -972,6 +978,7 @@ clearsavestateifs - Clear all savestate points
           runtopc - Run until PC is set to value xx
                 s - Set Stack Pointer to value xx
              save - Save breaks, watches, traps and functions to file xx
+       saveaccess - Save access counters to CSV file
        saveconfig - Save Distella config file (with default name)
           savedis - Save Distella disassembly (with default name)
           saverom - Save (possibly patched) ROM (with default name)
@@ -1022,8 +1029,8 @@ graphics and positions, and the playfield.</p>
 of the displays are editable. You can even toggle individual bits in
 the GRP0/1 and playfield registers (remember to double-click).</p>
 
-<p>The group of buttons labelled "Strobes" allows you to write to any
-of the strobe registers at any time.</p>
+<p>The buttons allow you to write to any of the strobe registers at
+any time.</p>
 
 <p>The collision registers are displayed in decoded format, in a table.
 You can see exactly which objects have hit what. These are read-only
@@ -1098,7 +1105,7 @@ or TV effects are enabled, you won't see the effects here; this shows the
 <b>raw</b> TIA image only.</p>
 
 <p>To e.g. watch the TIA draw the frame one scanline at a time, you can
-use the "Scan+1" button, the prompt "scan" command or the Control-L key.</p>
+use the 'Scan+1' button, the prompt "scan" command or the Control-L key.</p>
 
 <p>You can also right-click anywhere in this window to show a context menu,
 as illustrated:</p>
@@ -1193,6 +1200,8 @@ the reason will be shown as follows:
   <li>"WTrap:" for write traps</li>
   <li>"RTrapIf:" for conditional read traps</li>
   <li>"WTrapIf:" for conditional write traps</li>
+  <li>"RWP:" for reads from write ports</li>
+  <li>"WRP:" for writes to read ports</li>
 </ul>
 </p>
 See the <a href="#BreakpointsEtc"><b>Breakpoints, watches and traps...</b></a>
@@ -1206,7 +1215,7 @@ section for details.</p>
 <p><img src="graphics/debugger_cpuregs.png"></p>
 <p>All the registers and flags are displayed, and can be changed by
 double-clicking on them (to the left). Flags are toggled on double-click.
-Selected registers here can also be changed by using the "Data Operations" buttons,
+Selected registers here can also be changed by using the 'Data Operations' buttons,
 further described in (J). All items are shown in hex. Any label defined for the
 current PC value is shown to the right. Decimal and binary equivalents
 are shown for SP/A/X/Y to the right (first decimal, then binary).</p>
@@ -1215,6 +1224,8 @@ registers. For example, consider the command 'LDA ($80),Y'. The operand of
 the command resolves to some address, which isn't always easy to determine at
 first glance. The 'Src Addr' area shows the actual resulting operand/address
 being used with the given opcode.</p>
+<p>The destination address of the last write is shown besides 'Dest'.</p>
+
 <p>There's not much else to say about the CPU Registers widget: if you know 6502
 assembly, it's pretty self-explanatory. If you don't, well, you should
 learn :)</p>
@@ -1369,20 +1380,77 @@ can use. These are known as 'directives', and partly correspond to configuration
 options from the standalone Distella program. They are listed in order of
 decreasing hierarchy:</p>
 <table border="1" cellpadding=4>
-<tr><td><b>CODE</b></td><td>Addresses which have appeared in the program counter, or
-which tentatively can appear in the program counter. These can be edited in hex.</td></tr>
-<tr><td><b>GFX</b></td><td>Addresses which contain data stored in the player graphics registers
-(GRP0/GRP1). These addresses are shown with a bitmap of the graphics, which
-can be edited in either hex or binary. The bitmap is shown as large blocks.</td></tr>
-<tr><td><b>PGFX</b></td><td>Addresses which contain data stored in the playfield graphics registers
-(PF0/PF1/PF2). These addresses are shown with a bitmap of the graphics, which
-can be edited in either hex or binary. The bitmap is shown as small dashes.</td></tr>
-<tr><td><b>DATA</b></td><td>Addresses used as an operand for some opcode. These can be edited
-in hex.</td></tr>
-<tr><td><b>ROW</b></td><td>Addresses not used as any of the above. These are shown up
-to 8 per line, and cannot be edited.</td></tr>
+  <tr>
+    <td>
+      <b>CODE</b>
+    </td><td>
+      Addresses which have appeared in the program counter, or
+      which tentatively can appear in the program counter. These can be edited in hex.
+    </td>
+    </tr><tr>
+    <td>
+      <b>GFX</b>
+    </td><td>
+      Addresses which contain data stored in the player graphics registers
+      (GRP0/GRP1). These addresses are shown with a bitmap of the graphics, which
+      can be edited in either hex or binary. The bitmap is shown as large blocks.
+    </td>
+  </tr><tr>
+    <td>
+      <b>PGFX</b>
+    </td><td>
+      Addresses which contain data stored in the playfield graphics registers
+      (PF0/PF1/PF2). These addresses are shown with a bitmap of the graphics, which
+      can be edited in either hex or binary. The bitmap is shown as small dashes.
+    </td>
+  </tr><tr>
+    <td>
+      <b>COL</b>
+    </td><td>
+      Addresses which contain data stored in the player color registers
+      (COLUP0/COLUP1). These addresses are shown as color constants, which
+      can be edited in hex. The color constant names are depending on the ROM's TV type.
+    </td>
+  </tr><tr>
+    <td>
+      <b>PCOL</b>
+    </td><td>
+      Addresses which contain data stored in the playfield color register
+      (COLUPF). These addresses are shown as color constants, which
+      can be edited in hex. The color constant names are depending on the ROM's TV type.
+    </td>
+  </tr><tr>
+    <td>
+      <b>BCOL</b>
+    </td><td>
+      Addresses which contain data stored in the background color register
+      (COLUBK). These addresses are shown as color constants, which
+      can be edited in hex. The color constant names are depending on the ROM's TV type.
+    </td>
+  </tr><tr>
+    <td>
+      <b>AUD</b>
+    </td><td>
+      Addresses which contain data stored in the audio registers
+      (AUDC0/AUDC1/AUDF0/AUDF1/AUDV0/AUDV1). These can be edited
+      in hex.
+    </td>
+  </tr><tr>
+    <td>
+      <b>DATA</b>
+    </td><td>
+      Addresses used as an operand for some opcode. These can be edited
+      in hex.
+    </td>
+  </tr><tr>
+    <td>
+      <b>ROW</b>
+    </td><td>
+      Addresses not used as any of the above. These are shown up
+      to 8 per line and cannot be edited.
+    </td>
+  </tr>
 </table>
-
 
 <p>For code sections, the 6502 mnemonic will be UPPERCASE for all standard instructions,
 or lowercase for "illegal" 6502 instructions (like "dcp"). If automatic resolving
@@ -1428,13 +1496,13 @@ anywhere in the listing:</p>
 <p>The following options are available:</p>
 <ul>
 <li><b>Set PC @ current line</b>: Set the Program Counter to the address of the
-disassembly line where the mouse was clicked (highlighted in yellow).</li>
+disassembly line where the mouse was clicked.</li>
 
 <li><b>RunTo PC @ current line</b>: Single-step through code until the Program Counter
-matches the address of the disassembly line where the mouse was clicked (highlighted in yellow)</li>
+matches the address of the disassembly line where the mouse was clicked.</li>
 
-<li><b>Re-disassemble</b>: Self-explanatory; force the current bank to be
-disassembled, regardless of whether anything has changed.</li>
+<li><b>Disassemble @ current line</b>: Disassemble from the disassembly line where the mouse was clicked.
+This allows to fill gaps in the disassembly and is most useful for bankswitched ROMs.</li>
 
 <li><b>Show tentative code</b>: Allow Distella to do a static analysis/disassembly.</li>
 
@@ -1445,7 +1513,8 @@ isn't already a defined label).</li>
 in either binary or hexidecimal.</li>
 
 <li><b>Use address relocation</b>: Corresponds to the Distella '-r' option
-(Relocate calls out of address range).</li>
+(Relocate calls out of address range).</br>
+Note: The code will continue to run fine, but the ROM image will be altered.</li>
 
 </ul>
 
@@ -1520,12 +1589,12 @@ the RAM in the DPC scheme is not viewable by the 6507, so its addresses start fr
 <br>
 <h1><a name="DistellaConfiguration">Distella Configuration Files</a></h1>
 <p>As mentioned in <a href="#Disassembly"><b>ROM Disassembly</b></a>, Stella supports the following directives:
-CODE/GFX/PGFX/DATA/ROW. While the debugger will try to automatically mark address
+CODE, GFX, PGFX, COL, PCOL, BCOL, AUD, DATA, ROW. While the debugger will try to automatically mark address
 space with the appropriate directive, there are times when it will fail. There are
 several options in this case:</p>
 <ol>
 <li><b>Manually set the directives</b>: Directives can be set in the debugger
-prompt with the code/gfx/pgfx/data/row commands. These accept an address range
+prompt with the aud/code/col/bcol/gfx/pcol/pgfx/data/row commands. These accept an address range
 for the given directive type. Setting a range with the same type a second time
 will remove that directive from the range.</li>
 <li><b>Use configuration files</b>: Configuration files can be used to automatically
@@ -1564,7 +1633,7 @@ but it helps to know at least a little about 6502 programming.</p>
   <li>Enter the debugger by pressing the ` (backquote) key. Don't get
     killed before you do this, though. You should still have all 5 lives.</li>
 
-  <li>In the RAM display, click the "Search" button and enter "5" for input.
+  <li>In the RAM display, click the 'Search' button and enter "5" for input.
     This searches RAM for your value and highlights all addresses that match
     the input. You should see two addresses highlighted: "00a5" and "00ba".
     These are the only two addresses that currently have the value 5, so they're
@@ -1580,7 +1649,7 @@ but it helps to know at least a little about 6502 programming.</p>
   <li>Get killed! Ram an enemy tank, or let him shoot you. Wait for
     the explosion to finish. You will now have 4 lives.</li>
 
-  <li>Enter the debugger again. Click the "Compare" button in RAM widget and enter
+  <li>Enter the debugger again. Click the 'Compare...' button in RAM widget and enter
     a value of 4. Now the RAM widget should only show one highlighted address:
     "00ba". What we did was search within our previous results (the ones that
     were 5 before) for the new value 4. Address $00ba used to have the value 5,

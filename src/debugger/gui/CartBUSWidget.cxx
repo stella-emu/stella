@@ -238,7 +238,7 @@ void CartridgeBUSWidget::saveOldState()
   }
 
   for(uInt32 i = 0; i < internalRamSize(); ++i)
-    myOldState.internalram.push_back(myCart.myBUSRAM[i]);
+    myOldState.internalram.push_back(myCart.myRAM[i]);
 
   myOldState.samplepointer.push_back(myCart.getSample());
 }
@@ -438,18 +438,18 @@ const ByteArray& CartridgeBUSWidget::internalRamCurrent(int start, int count)
 {
   myRamCurrent.clear();
   for(int i = 0; i < count; i++)
-    myRamCurrent.push_back(myCart.myBUSRAM[start + i]);
+    myRamCurrent.push_back(myCart.myRAM[start + i]);
   return myRamCurrent;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeBUSWidget::internalRamSetValue(int addr, uInt8 value)
 {
-  myCart.myBUSRAM[addr] = value;
+  myCart.myRAM[addr] = value;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeBUSWidget::internalRamGetValue(int addr)
 {
-  return myCart.myBUSRAM[addr];
+  return myCart.myRAM[addr];
 }

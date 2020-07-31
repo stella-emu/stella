@@ -20,11 +20,10 @@
 
 class CartridgeMDM;
 class CheckboxWidget;
-class PopUpWidget;
 
-#include "CartDebugWidget.hxx"
+#include "CartEnhancedWidget.hxx"
 
-class CartridgeMDMWidget : public CartDebugWidget
+class CartridgeMDMWidget : public CartridgeEnhancedWidget
 {
   public:
     CartridgeMDMWidget(GuiObject* boss, const GUI::Font& lfont,
@@ -34,18 +33,24 @@ class CartridgeMDMWidget : public CartDebugWidget
     virtual ~CartridgeMDMWidget() = default;
 
   private:
-    CartridgeMDM& myCart;
-    PopUpWidget* myBank{nullptr};
+    string manufacturer() override { return "Edwin Blink"; }
+
+    string description() override;
+
+    void bankSelect(int& ypos) override;
+
+    CartridgeMDM& myCartMDM;
     CheckboxWidget* myBankDisabled{nullptr};
 
-    enum { kBankChanged = 'bkCH', kBankDisabled = 'bkDI' };
+    enum {
+      kBankDisabled = 'bkDI'
+    };
 
   private:
     void loadConfig() override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
-    string bankState() override;
-
+  private:
     // Following constructors and assignment operators not supported
     CartridgeMDMWidget() = delete;
     CartridgeMDMWidget(const CartridgeMDMWidget&) = delete;

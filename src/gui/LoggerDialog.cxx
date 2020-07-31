@@ -37,8 +37,14 @@ LoggerDialog::LoggerDialog(OSystem& osystem, DialogContainer& parent,
   : Dialog(osystem, parent, font, "System logs")
 {
   const int lineHeight   = font.getLineHeight(),
-            buttonWidth  = font.getStringWidth("Save log to disk") + 20,
-            buttonHeight = font.getLineHeight() + 4;
+            fontWidth    = font.getMaxCharWidth(),
+            fontHeight   = font.getFontHeight(),
+            buttonWidth  = font.getStringWidth("Save log to disk") + fontWidth * 2.5,
+            buttonHeight = font.getLineHeight() * 1.25;
+  const int VBORDER = fontHeight / 2;
+  const int HBORDER = fontWidth * 1.25;
+  const int VGAP = fontHeight / 4;
+
   int xpos, ypos;
   WidgetArray wid;
 
@@ -47,13 +53,13 @@ LoggerDialog::LoggerDialog(OSystem& osystem, DialogContainer& parent,
   setSize(4000, 4000, max_w, max_h);
 
   // Test listing of the log output
-  xpos = 10;  ypos = 10 + _th;
+  xpos = HBORDER;  ypos = VBORDER + _th;
   myLogInfo = new StringListWidget(this, uselargefont ? font :
                   instance().frameBuffer().infoFont(), xpos, ypos, _w - 2 * xpos,
-                  _h - buttonHeight - ypos - 20 - 2 * lineHeight, false);
+                  _h - buttonHeight - ypos - VBORDER - lineHeight - VGAP * 4, false);
   myLogInfo->setEditable(false);
   wid.push_back(myLogInfo);
-  ypos += myLogInfo->getHeight() + 8;
+  ypos += myLogInfo->getHeight() + VGAP * 2;
 
   // Level of logging (how much info to print)
   VariantList items;
@@ -67,13 +73,13 @@ LoggerDialog::LoggerDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myLogLevel);
 
   // Should log output also be shown on the console?
-  xpos += myLogLevel->getWidth() + 32;
+  xpos += myLogLevel->getWidth() + fontWidth * 4;
   myLogToConsole = new CheckboxWidget(this, font, xpos, ypos + 1, "Print to console");
   wid.push_back(myLogToConsole);
 
   // Add Save, OK and Cancel buttons
   ButtonWidget* b;
-  b = new ButtonWidget(this, font, 10, _h - buttonHeight - 10,
+  b = new ButtonWidget(this, font, HBORDER, _h - buttonHeight - VBORDER,
                        buttonWidth, buttonHeight, "Save log to disk",
                        GuiObject::kDefaultsCmd);
   wid.push_back(b);
@@ -110,15 +116,19 @@ void LoggerDialog::saveConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LoggerDialog::saveLogFile()
 {
-  ostringstream path;
-  path << instance().defaultSaveDir() << "stella.log";
-  FilesystemNode node(path.str());
+  FilesystemNode node = instance().defaultSaveDir();
+  node /= "stella.log";
 
-  ofstream out(node.getPath());
-  if(out.is_open())
+  try
   {
+    stringstream out;
     out << Logger::instance().logMessages();
-    instance().frameBuffer().showMessage("Saving log file to " + path.str());
+    instance().frameBuffer().showMessage("Saving log file to " + node.getShortPath());
+    node.write(out);
+  }
+  catch(...)
+  {
+    instance().frameBuffer().showMessage("Error saving log file to " + node.getShortPath());
   }
 }
 

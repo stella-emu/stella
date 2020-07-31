@@ -26,9 +26,9 @@ class Settings;
 class FBSurface;
 class TIASurface;
 
-namespace GUI {
-  class Font;
-}
+#ifdef GUI_SUPPORT
+  #include "Font.hxx"
+#endif
 
 #include "Rect.hxx"
 #include "Variant.hxx"
@@ -81,6 +81,20 @@ class FrameBuffer
       }
     };
 
+    struct DisplayMode
+    {
+      uInt32 display;
+      Common::Size size;
+      uInt32 refresh_rate;
+    };
+
+    enum class BufferType {
+      None,
+      Launcher,
+      Emulator,
+      Debugger
+    };
+
     enum class ScalingInterpolation {
       none,
       sharp,
@@ -115,7 +129,8 @@ class FrameBuffer
 
       @return  Status of initialization (see FBInitStatus 'enum')
     */
-    FBInitStatus createDisplay(const string& title, uInt32 width, uInt32 height,
+    FBInitStatus createDisplay(const string& title, BufferType type,
+                               uInt32 width, uInt32 height,
                                bool honourHiDPI = true);
 
     /**
@@ -139,11 +154,24 @@ class FrameBuffer
     void showMessage(const string& message,
                      MessagePosition position = MessagePosition::BottomCenter,
                      bool force = false);
+    /**
+      Shows a message with a gauge bar onscreen.
+
+      @param message    The message to be shown
+      @param valueText  The value of the gauge bar as text
+      @param value      The gauge bar percentage
+      @param minValue   The minimal value of the gauge bar
+      @param maxValue   The maximal value of the gauge bar
+    */
+    void showMessage(const string& message, const string& valueText,
+                     float value, float minValue = 0.F, float maxValue = 100.F);
+
+    bool messageShown() const;
 
     /**
       Toggles showing or hiding framerate statistics.
     */
-    void toggleFrameStats();
+    void toggleFrameStats(bool toggle = true);
 
     /**
       Shows a message containing frame statistics for the current frame.
@@ -223,7 +251,7 @@ class FrameBuffer
       Get the minimum/maximum supported TIA zoom level (windowed mode)
       for the framebuffer.
     */
-    float supportedTIAMinZoom() const { return 2 * hidpiScaleFactor(); }
+    float supportedTIAMinZoom() const { return myTIAMinZoom * hidpiScaleFactor(); }
     float supportedTIAMaxZoom() const { return myTIAMaxZoom; }
 
     /**
@@ -239,14 +267,21 @@ class FrameBuffer
     /**
       Toggles between fullscreen and window mode.
     */
-    void toggleFullscreen();
+    void toggleFullscreen(bool toggle = true);
+
+  #ifdef ADAPTABLE_REFRESH_SUPPORT
+    /**
+      Toggles between adapt fullscreen refresh rate on and off.
+    */
+    void toggleAdaptRefresh(bool toggle = true);
+  #endif
 
     /**
       Changes the fullscreen overscan.
-        direction = -1 means less overscan
-        direction = +1 means more overscan
+
+      @param direction  +1 indicates increase, -1 indicates decrease.
     */
-    void changeOverscan(int direction);
+    void changeOverscan(int direction = +1);
 
     /**
       This method is called when the user wants to switch to the next
@@ -256,9 +291,9 @@ class FrameBuffer
         direction = -1 means go to the next lower video mode
         direction = +1 means go to the next higher video mode
 
-      @param direction  Described above
+      @param direction  +1 indicates increase, -1 indicates decrease.
     */
-    bool changeVidMode(int direction);
+    void selectVidMode(int direction = +1);
 
     /**
       Sets the state of the cursor (hidden or grabbed) based on the
@@ -299,6 +334,13 @@ class FrameBuffer
     bool hidpiEnabled() const { return myHiDPIEnabled; }
     uInt32 hidpiScaleFactor() const { return myHiDPIEnabled ? 2 : 1; }
 
+    /**
+      These methods are used to load/save position and display of the current window.
+    */
+    string getPositionKey();
+    string getDisplayKey();
+    void saveCurrentWindowPosition();
+
   #ifdef GUI_SUPPORT
     /**
       Get the font object(s) of the framebuffer
@@ -307,6 +349,15 @@ class FrameBuffer
     const GUI::Font& infoFont() const { return *myInfoFont; }
     const GUI::Font& smallFont() const { return *mySmallFont; }
     const GUI::Font& launcherFont() const { return *myLauncherFont; }
+
+    /**
+      Get the font description from the font name
+
+      @param name  The settings name of the font
+
+      @return  The description of the font
+    */
+    FontDesc getFontDesc(const string& name) const;
   #endif
 
   //////////////////////////////////////////////////////////////////////
@@ -363,25 +414,46 @@ class FrameBuffer
     virtual void readPixels(uInt8* buffer, uInt32 pitch, const Common::Rect& rect) const = 0;
 
     /**
+      This method is called to query if the current window is not centered or fullscreen.
+
+      @return  True, if the current window is positioned
+    */
+    virtual bool isCurrentWindowPositioned() const = 0;
+
+    /**
+      This method is called to query the video hardware for position of
+      the current window
+
+      @return  The position of the currently displayed window
+    */
+    virtual Common::Point getCurrentWindowPos() const = 0;
+
+    /**
       This method is called to query the video hardware for the index
       of the display the current window is displayed on
 
       @return  the current display index or a negative value if no
                window is displayed
     */
-    virtual Int32 getCurrentDisplayIndex() = 0;
-
-    /**
-      This method is called to preserve the last current windowed position.
-    */
-    virtual void updateWindowedPos() = 0;
+    virtual Int32 getCurrentDisplayIndex() const = 0;
 
     /**
       Clear the framebuffer.
     */
     virtual void clear() = 0;
 
+    /**
+      Transform from window to renderer coordinates, x direction
+     */
+    virtual int scaleX(int x) const { return x; }
+
+    /**
+      Transform from window to renderer coordinates, y direction
+     */
+    virtual int scaleY(int y) const { return y; }
+
   protected:
+
     /**
       This method is called to query and initialize the video hardware
       for desktop and fullscreen resolution information.  Since several
@@ -453,11 +525,21 @@ class FrameBuffer
     */
     virtual string about() const = 0;
 
+    /**
+      Retrieve the current display's refresh rate
+    */
+    virtual int refreshRate() const { return 0; }
+
   protected:
     // The parent system for the framebuffer
     OSystem& myOSystem;
 
   private:
+    // Maximum message width [chars]
+    static constexpr int MESSAGE_WIDTH = 56;
+    // Maximum gauge bar width [chars]
+    static constexpr int GAUGEBAR_WIDTH = 30;
+
     /**
       Draw pending messages.
 
@@ -469,6 +551,13 @@ class FrameBuffer
       Frees and reloads all surfaces that the framebuffer knows about.
     */
     void resetSurfaces();
+
+  #ifdef GUI_SUPPORT
+    /**
+      Setup the UI fonts
+    */
+    void setupFonts();
+  #endif
 
     /**
       Calculate the maximum level by which the base window can be zoomed and
@@ -527,6 +616,9 @@ class FrameBuffer
   protected:
     // Title of the main window/screen
     string myScreenTitle;
+
+    // Type of the frame buffer
+    BufferType myBufferType{BufferType::None};
 
     // Number of displays
     int myNumDisplays{1};
@@ -594,6 +686,9 @@ class FrameBuffer
       ColorId color{kNone};
       shared_ptr<FBSurface> surface;
       bool enabled{false};
+      bool showGauge{false};
+      float value{0.0F};
+      string valueText;
     };
     Message myMsg;
     Message myStatsMsg;
@@ -609,6 +704,8 @@ class FrameBuffer
     VideoModeList myWindowedModeList;
     vector<VideoModeList> myFullscreenModeLists;
 
+    // Minimum TIA zoom level that can be used for this framebuffer
+    float myTIAMinZoom{2.F};
     // Maximum TIA zoom level that can be used for this framebuffer
     float myTIAMaxZoom{1.F};
 
@@ -617,7 +714,8 @@ class FrameBuffer
 
     FullPaletteArray myFullPalette;
     // Holds UI palette data (for each variation)
-    static UIPaletteArray ourStandardUIPalette, ourClassicUIPalette, ourLightUIPalette;
+    static UIPaletteArray ourStandardUIPalette, ourClassicUIPalette, 
+      ourLightUIPalette, ourDarkUIPalette;
 
   private:
     // Following constructors and assignment operators not supported

@@ -23,14 +23,24 @@
 #include "Console.hxx"
 #include "TIA.hxx"
 #include "PNGLibrary.hxx"
+#include "PaletteHandler.hxx"
 #include "TIASurface.hxx"
 
 namespace {
   FrameBuffer::ScalingInterpolation interpolationModeFromSettings(const Settings& settings)
   {
+#ifdef RETRON77
+  // Witv TV / and or scanline interpolation, the image has a height of ~480px. THe R77 runs at 720p, so there
+  // is no benefit from QIS in y-direction. In addition, QIS on the R77 has performance issues if TV effects are
+  // enabled.
+  return settings.getBool("tia.inter") || settings.getInt("tv.filter") != 0
+    ? FrameBuffer::ScalingInterpolation::blur
+    : FrameBuffer::ScalingInterpolation::sharp;
+#else
     return settings.getBool("tia.inter") ?
       FrameBuffer::ScalingInterpolation::blur :
       FrameBuffer::ScalingInterpolation::sharp;
+#endif
   }
 }
 
@@ -67,6 +77,14 @@ TIASurface::TIASurface(OSystem& system)
 
   // Enable/disable threading in the NTSC TV effects renderer
   myNTSCFilter.enableThreading(myOSystem.settings().getBool("threads"));
+
+  myPaletteHandler = make_unique<PaletteHandler>(myOSystem);
+  myPaletteHandler->loadConfig(myOSystem.settings());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+TIASurface::~TIASurface()
+{
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -79,6 +97,8 @@ void TIASurface::initialize(const Console& console,
   myTiaSurface->setDstSize(mode.image.w(), mode.image.h());
   mySLineSurface->setDstPos(mode.image.x(), mode.image.y());
   mySLineSurface->setDstSize(mode.image.w(), mode.image.h());
+
+  myPaletteHandler->setPalette();
 
   // Phosphor mode can be enabled either globally or per-ROM
   int p_blend = 0;
@@ -128,32 +148,19 @@ const FBSurface& TIASurface::baseSurface(Common::Rect& rect) const
   uInt32 tiaw = myTIA->width(), width = tiaw * 2, height = myTIA->height();
   rect.setBounds(0, 0, width, height);
 
-  // Get Blargg buffer and width
-  uInt32 *blarggBuf, blarggPitch;
-  myTiaSurface->basePtr(blarggBuf, blarggPitch);
-  double blarggXFactor = double(blarggPitch) / width;
-  bool useBlargg = ntscEnabled();
-
   // Fill the surface with pixels from the TIA, scaled 2x horizontally
   uInt32 *buf_ptr, pitch;
   myBaseTiaSurface->basePtr(buf_ptr, pitch);
 
   for(uInt32 y = 0; y < height; ++y)
-  {
     for(uInt32 x = 0; x < width; ++x)
-    {
-      if (useBlargg)
-        *buf_ptr++ = blarggBuf[y * blarggPitch + uInt32(nearbyint(x * blarggXFactor))];
-      else
         *buf_ptr++ = myPalette[*(myTIA->frameBuffer() + y * tiaw + x / 2)];
-    }
-  }
 
   return *myBaseTiaSurface;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 TIASurface::mapIndexedPixel(uInt8 indexedColor, uInt8 shift)
+uInt32 TIASurface::mapIndexedPixel(uInt8 indexedColor, uInt8 shift) const
 {
   return myPalette[indexedColor | shift];
 }
@@ -180,25 +187,87 @@ void TIASurface::setNTSC(NTSCFilter::Preset preset, bool show)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIASurface::setScanlineIntensity(int amount)
+void TIASurface::changeNTSC(int direction)
 {
-  ostringstream buf;
-  uInt32 intensity = enableScanlines(amount);
-  buf << "Scanline intensity at " << intensity  << "%";
-  myOSystem.settings().setValue("tv.scanlines", intensity);
+  constexpr NTSCFilter::Preset PRESETS[] = {
+    NTSCFilter::Preset::OFF, NTSCFilter::Preset::RGB, NTSCFilter::Preset::SVIDEO,
+    NTSCFilter::Preset::COMPOSITE, NTSCFilter::Preset::BAD, NTSCFilter::Preset::CUSTOM
+  };
+  int preset = myOSystem.settings().getInt("tv.filter");
 
-  myFB.showMessage(buf.str());
+  if(direction == +1)
+  {
+    if(preset == int(NTSCFilter::Preset::CUSTOM))
+      preset = int(NTSCFilter::Preset::OFF);
+    else
+      preset++;
+  }
+  else if (direction == -1)
+  {
+    if(preset == int(NTSCFilter::Preset::OFF))
+      preset = int(NTSCFilter::Preset::CUSTOM);
+    else
+      preset--;
+  }
+  setNTSC(PRESETS[preset], true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 TIASurface::enableScanlines(int relative, int absolute)
+void TIASurface::setNTSCAdjustable(int direction)
+{
+  string text, valueText;
+  Int32 value;
+
+  setNTSC(NTSCFilter::Preset::CUSTOM);
+  ntsc().selectAdjustable(direction, text, valueText, value);
+  myOSystem.frameBuffer().showMessage(text, valueText, value);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIASurface::changeNTSCAdjustable(int adjustable, int direction)
+{
+  string text, valueText;
+  Int32 newValue;
+
+  setNTSC(NTSCFilter::Preset::CUSTOM);
+  ntsc().changeAdjustable(adjustable, direction, text, valueText, newValue);
+  myOSystem.frameBuffer().showMessage(text, valueText, newValue);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIASurface::changeCurrentNTSCAdjustable(int direction)
+{
+  string text, valueText;
+  Int32 newValue;
+
+  setNTSC(NTSCFilter::Preset::CUSTOM);
+  ntsc().changeCurrentAdjustable(direction, text, valueText, newValue);
+  myOSystem.frameBuffer().showMessage(text, valueText, newValue);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIASurface::setScanlineIntensity(int direction)
+{
+  ostringstream buf;
+  uInt32 intensity = enableScanlines(direction * 2);
+
+  myOSystem.settings().setValue("tv.scanlines", intensity);
+  enableNTSC(ntscEnabled());
+
+  if(intensity)
+    buf << intensity << "%";
+  else
+    buf << "Off";
+  myFB.showMessage("Scanline intensity", buf.str(), intensity);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 TIASurface::enableScanlines(int change)
 {
   FBSurface::Attributes& attr = mySLineSurface->attributes();
-  if(relative == 0)  attr.blendalpha = absolute;
-  else               attr.blendalpha += relative;
-  attr.blendalpha = std::max(0, Int32(attr.blendalpha));
-  attr.blendalpha = std::min(100U, attr.blendalpha);
 
+  attr.blendalpha += change;
+  attr.blendalpha = BSPF::clamp(Int32(attr.blendalpha), 0, 100);
   mySLineSurface->applyAttributes();
 
   return attr.blendalpha;

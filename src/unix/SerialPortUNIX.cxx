@@ -49,6 +49,9 @@ bool SerialPortUNIX::openPort(const string& device)
   if(myHandle <= 0)
     return false;
 
+  // Open the device in nonblocking mode
+  fcntl(myHandle, F_SETFL, FNDELAY);
+
   struct termios termios;
   memset(&termios, 0, sizeof(struct termios));
 
@@ -68,6 +71,18 @@ bool SerialPortUNIX::writeByte(uInt8 data)
   {
 //    cerr << "SerialPortUNIX::writeByte " << int(data) << endl;
     return write(myHandle, &data, 1) == 1;
+  }
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool SerialPortUNIX::isCTS()
+{
+  if(myHandle)
+  {
+    int status = 0;
+    ioctl(myHandle, TIOCMGET, &status);
+    return status & TIOCM_CTS;
   }
   return false;
 }

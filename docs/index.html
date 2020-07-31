@@ -19,7 +19,7 @@
   <br><br>
   <center><h2><b>A multi-platform Atari 2600 VCS emulator</b></h2></center>
 
-  <center><h4><b>Release 6.1</b></h4></center>
+  <center><h4><b>Release 6.2.1</b></h4></center>
   <br><br>
 
   <center><h2><b>User's Guide</b></h2></center>
@@ -70,7 +70,7 @@
 
   <br><br><br>
 
-  <center><b>February 1999 - January 2020</b></center>
+  <center><b>February 1999 - June 2020</b></center>
     <center><b>The Stella Team</b></center>
   <center><b><a href="https://stella-emu.github.io">Stella Homepage</a></b></center>
 
@@ -302,7 +302,7 @@
     <li>Supports using ROM filename extensions to force specific bankswitching schemes</li>
     <li>Supports using ROM filename to force specific display formats</li>
     <li>Supports Supercharger single-load and multi-load games</li>
-    <li>Supports ROMs stored in ZIP and GZIP format, as well as the usual raw A26/BIN/ROM formats</li>
+    <li>Supports the usual raw A26/BIN/ROM formats, also when stored in ZIP files</li>
     <li>Supports property file for setting the properties associated with games</li>
     <li>Supports the NTSC, PAL and SECAM television standards in 50Hz and 60Hz mode</li>
     <li>Supports autodetection of display format for 50Hz vs. 60Hz modes</li>
@@ -355,12 +355,11 @@
   <p>The Linux version of Stella is designed to work on a Linux Workstation with
   the following:</p>
   <ul>
-    <li>Linux Kernel 3.x</li>
     <li>i386 or x86_64 class machine, with 32 or 64-bit distribution</li>
     <li>OpenGL capable video card</li>
     <li>Other architectures (MIPS, PPC, PPC64, etc.) have been confirmed to work,
       but aren't as well tested as i386/x86_64</li>
-    <li>GNU g++ v/5 or Clang v/3.5 (with C++14 support) and the make utility are required for compiling the Stella source code</li>
+    <li>GNU g++ v/6 or Clang v/3.9 (with C++14 support) and the make utility are required for compiling the Stella source code</li>
   </ul>
 
   <p>
@@ -536,12 +535,12 @@
   <p>
   <h3><b><u>Supported File formats</u></b></h3>
 
-  <p>Stella supports ROMs ending with extensions .a26, .bin, .rom, .gz, and .zip.
-  For the last two compressed formats (GZIP and ZIP, respectively), Stella will
-  automatically decompress the archive, and use the first ROM image it finds in
-  it (ie, the first one ending in a valid extension).  If a ZIP archive contains
-  many such files, Stella will display a <i>virtual filesystem</i> of the contents
-  of the archive.</p>
+  <p>Stella supports ROMs ending with extensions .a26, .bin, .rom, and .zip.
+  For the ZIP archive format, Stella will look into the archive and if it
+  contains only one ROM image file, Stella will automatically load it. If an
+  archive contains many such files, Stella will display a <i>virtual
+  filesystem</i> with the contents of the archive. This can be then browsed
+  like a normal directory.</p>
 
   <p>Other extensions are also possible, namely to force a specific bankswitch scheme.
   Normally, the bankswitching scheme for a ROM is determined automatically,
@@ -549,7 +548,7 @@
   have to do anything yourself.  However, it is also possible to force the
   bankswitch type to use by adding a special filename extension.  These extensions
   are listed in the <a href="#Properties">ROM properties</a> section under
-  <a href="#PropertiesCartType">Cartridge.Type -&gt; File Extension</a>.</p>
+  <a href="#PropertiesCartType">Cart.Type -&gt; File Extension</a>.</p>
 
   <p><b>Note:</b> These extensions are the same as those used by the Harmony Cart
   and Unocart and are not case-sensitive, so you can name your files and have them
@@ -775,7 +774,7 @@
     <tr>
       <td>Pause/resume emulation</td>
       <td>Pause</td>
-      <td>&nbsp;</td>
+      <td>Shift-Cmd + p</td>
     </tr>
 
   </table>
@@ -1022,6 +1021,50 @@
           <tr>
             <td>Fire Button</td>
             <td>Same as 'Joy1 Fire'</td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+
+  <p><b>Trackball Controller (uses mouse, left port only)</b></p>
+
+  <table BORDER=2>
+    <tr>
+      <th>Left Trackball</th>
+    </tr>
+    <tr>
+      <td>
+        <table BORDER=1 cellpadding=4>
+          <tr>
+            <th>Function</th>
+            <th>Key</th>
+          </tr>
+          <tr>
+            <td>Fire Button</td>
+            <td>Same as 'Joy0 Fire'</td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+
+  <p><b>Light Gun Controller (uses mouse, left port only)</b></p>
+
+  <table BORDER=2>
+    <tr>
+      <th>Left Light Gun</th>
+    </tr>
+    <tr>
+      <td>
+        <table BORDER=1 cellpadding=4>
+          <tr>
+            <th>Function</th>
+            <th>Key</th>
+          </tr>
+          <tr>
+            <td>Fire Button</td>
+            <td>Same as 'Joy0 Fire'</td>
           </tr>
         </table>
       </td>
@@ -1292,7 +1335,157 @@
 
   </table>
 
-  <p><b>TV effects (can be remapped, only active in TIA mode)</b></p>
+  <p><b>Audio & Video Keys (can be remapped)</b></p>
+  <table BORDER=2 cellpadding=4>
+    <tr>
+      <th>Function</th>
+      <th>Key (Standard)</th>
+      <th>Key (macOS)</th>
+    </tr>
+    <tr>
+      <td>Toggle sound</td>
+      <td>Control + ]</td>
+      <td>Control + ]</td>
+    </tr>
+    <tr>
+      <td><i>Decrease</i> volume</td>
+      <td>Alt + [</td>
+      <td>Cmd + [</td>
+    </tr>
+
+    <tr>
+      <td><i>Increase</i> volume</td>
+      <td>Alt + ]</td>
+      <td>Cmd + ]</td>
+    </tr>
+    <tr>
+      <td>Switch to next <i>larger</i> zoom level in windowed mode,
+      </br>toggle stretching in fullscreen mode</td>
+      <td>Alt + =</td>
+      <td>Cmd + =</td>
+    </tr>
+
+    <tr>
+      <td>Switch to next <i>smaller</i> zoom level in windowed mode,
+      </br>toggle stretching in fullscreen mode</td>
+      <td>Alt + -</td>
+      <td>Cmd + -</td>
+    </tr>
+    <tr>
+      <td>Toggle windowed/fullscreen mode</td>
+      <td>Alt + Enter</td>
+      <td>Cmd + Enter</td>
+    </tr>
+    <tr>
+      <td>Toggle adapting display refresh rate to game frame rate
+      </br>
+      Note: Not available for macOS.</td>
+      <td>Alt + r</td>
+      <td>Cmd + r</td>
+    </tr>
+    <tr>
+      <td><i>Decrease</i> overscan in fullscreen mode</td>
+      <td>Shift + PageDown</td>
+      <td>Shift-Fn + Down arrow</td>
+    </tr>
+    <tr>
+      <td><i>Increase</i> overscan in fullscreen mode</td>
+      <td>Shift + PageUp</td>
+      <td>Shift-Fn + Up arrow</td>
+    </tr>
+    <tr>
+      <td>Move display <i>down</i> (uses "Display.VCenter")</td>
+      <td>Alt + PageDown</td>
+      <td>Cmd-Fn + Down arrow</td>
+    </tr>
+    <tr>
+      <td>Move display <i>up</i> (uses "Display.VCenter")</td>
+      <td>Alt + PageUp</td>
+      <td>Cmd-Fn + Up arrow</td>
+    </tr>
+    <tr>
+      <td><i>Decrease</i> vertical display size</td>
+      <td>Shift-Alt + PageUp</td>
+      <td>Shift-Cmd-Fn + Up arrow</td>
+    </tr>
+    <tr>
+      <td><i>Increase</i> vertical display size</td>
+      <td>Shift-Alt + PageDown</td>
+      <td>Shift-Cmd-Fn + Down arrow</td>
+    </tr>
+    <tr>
+      <td>Switch to <i>previous</i> display format (NTSC/PAL/SECAM etc.)</td>
+      <td>Shift-Control + f</td>
+      <td>Shift-Control + f</td>
+    </tr>
+    <tr>
+      <td>Switch to <i>next</i> display format (NTSC/PAL/SECAM etc.)</td>
+      <td>Control + f</td>
+      <td>Control + f</td>
+    </tr>
+    <tr>
+      <td>Toggle display interpolation</td>
+      <td>Control + i</td>
+      <td>Control + i</td>
+    </tr>
+    <tr>
+      <td colspan="3"><center><font size="-1">
+      These settings can also be changed using <a href="#GlobalKeys"><b>Global Keys</a></font></center>
+      </td>
+    </tr>
+  </table>
+
+  <p><b>Palettes Keys (can be remapped)</b></p>
+  <table BORDER=2 cellpadding=4>
+    <tr>
+      <th>Function</th>
+      <th>Key (Standard)</th>
+      <th>Key (macOS)</th>
+    </tr>
+
+    <tr>
+      <td>Select <i>previous</i> palette (Standard/z26/User/Custom)</td>
+      <td>Shift-Control + p</td>
+      <td>Shift-Control + p</td>
+    </tr>
+
+    <tr>
+      <td>Select <i>next</i> palette (Standard/z26/User/Custom)</td>
+      <td>Control + p</td>
+      <td>Control + p</td>
+    </tr>
+
+    <tr>
+      <td>Select <i>previous</i> palette attribute</td>
+      <td>Shift-Alt + 9</td>
+      <td>Shift-Cmd + 9</td>
+    </tr>
+
+    <tr>
+      <td>Select <i>next</i> palette attribute</td>
+      <td>Alt + 9</td>
+      <td>Cmd + 9</td>
+    </tr>
+
+    <tr>
+      <td><i>Decrease</i> selected palette attribute</td>
+      <td>Shift-Alt + 0</td>
+      <td>Shift-Cmd + 0</td>
+    </tr>
+
+    <tr>
+      <td><i>Increase</i> selected palette attribute</td>
+      <td>Alt + 0</td>
+      <td>Cmd + 0</td>
+    </tr>
+    <tr>
+      <td colspan="3"><center><font size="-1">
+        These settings can also be changed using <a href="#GlobalKeys"><b>Global Keys</a></font></center>
+      </td>
+    </tr>
+  </table>
+
+  <p><b>TV effects Keys (can be remapped)</b></p>
 
   <table BORDER=2 cellpadding=4>
     <tr>
@@ -1301,93 +1494,73 @@
       <th>Key (macOS)</th>
     </tr>
     <tr>
-      <td>Disable TV effects</td>
+      <td>Select <i>previous</i> TV effects preset</td>
+      <td>Shift-Alt + 1</td>
+      <td>Shift-Cmd + 1</td>
+    </tr>
+    <tr>
+      <td>Select <i>next</i> TV effects preset</td>
       <td>Alt + 1</td>
       <td>Cmd + 1</td>
     </tr>
     <tr>
-      <td>Select 'RGB' preset</td>
+      <td>Select <i>previous</i> 'Custom' mode attribute (*)</td>
+      <td>Shift-Alt + 2</td>
+      <td>Shift-Cmd + 2</td>
+    </tr>
+    <tr>
+      <td>Select <i>next</i> 'Custom' mode attribute (*)</td>
       <td>Alt + 2</td>
       <td>Cmd + 2</td>
     </tr>
     <tr>
-      <td>Select 'S-Video' preset</td>
+      <td><i>Decrease</i> 'Custom' selected attribute value (*)</td>
+      <td>Shift-Alt + 3</td>
+      <td>Shift-Cmd + 3</td>
+    </tr>
+    <tr>
+      <td><i>Increase</i> 'Custom' selected attribute value (*)</td>
       <td>Alt + 3</td>
       <td>Cmd + 3</td>
     </tr>
     <tr>
-      <td>Select 'Composite' preset</td>
+      <td>Toggle 'phosphor' mode</td>
+      <td>Alt + p</td>
+      <td>Cmd + p</td>
+    </tr>
+    <tr>
+      <td><i>Decrease</i> 'phosphor' blend</td>
+      <td>Shift-Alt + 4</td>
+      <td>Shift-Cmd + 4</td>
+    </tr>
+    <tr>
+      <td><i>Increase</i> 'phosphor' blend</td>
       <td>Alt + 4</td>
       <td>Cmd + 4</td>
     </tr>
     <tr>
-      <td>Select 'Badly adjusted' preset</td>
+      <td><i>Decrease</i> scanline intensity</td>
+      <td>Shift-Alt + 5</td>
+      <td>Shift-Cmd + 5</td>
+    </tr>
+    <tr>
+      <td><i>Increase</i> scanline intensity</td>
       <td>Alt + 5</td>
       <td>Cmd + 5</td>
     </tr>
     <tr>
-      <td>Select 'Custom' preset</td>
-      <td>Alt + 6</td>
-      <td>Cmd + 6</td>
+      <td colspan="3"><center><font size="-1">
+        These settings can also be changed using <a href="#GlobalKeys"><b>Global Keys</a></font></center>
+      </td>
     </tr>
-    <tr>
-      <td>Select previous 'Custom' mode attribute (*)</td>
-      <td>Shift-Alt + 7</td>
-      <td>Shift-Cmd + 7</td>
-    </tr>
-    <tr>
-      <td>Select next 'Custom' mode attribute (*)</td>
-      <td>Alt + 7</td>
-      <td>Cmd + 7</td>
-    </tr>
-    <tr>
-      <td>Decrease 'Custom' selected attribute value (*)</td>
-      <td>Shift-Alt + 8</td>
-      <td>Shift-Cmd + 8</td>
-    </tr>
-    <tr>
-      <td>Increase 'Custom' selected attribute value (*)</td>
-      <td>Alt + 8</td>
-      <td>Cmd + 8</td>
-    </tr>
-
-    <tr>
-      <td>Toggle 'phosphor' effect</td>
-      <td>Alt + p</td>
-      <td>Cmd + p</td>
-    </tr>
-
-    <tr>
-      <td>Decrease 'phosphor' blend in phosphor mode</td>
-      <td>Shift-Alt + 9</td>
-      <td>Shift-Cmd + 9</td>
-    </tr>
-
-    <tr>
-      <td>Increase 'phosphor' blend in phosphor mode</td>
-      <td>Alt + 9</td>
-      <td>Cmd + 9</td>
-    </tr>
-
-    <tr>
-      <td>Decrease scanline intensity</td>
-      <td>Shift-Alt + 0</td>
-      <td>Shift-Cmd + 0</td>
-    </tr>
-    <tr>
-      <td>Increase scanline intensity</td>
-      <td>Alt + 0</td>
-      <td>Cmd + 0</td>
-    </tr>
-
     <tr>
       <td colspan="3"><center><font size="-1">
-      Items marked as (*) are only available in 'Custom' preset mode</font></center></td>
+      Items marked as (*) will also switch to 'Custom' mode</font></center></td>
     </tr>
   </table>
 
   <a name="DeveloperKeys"></a>
-  <p><b>Developer Keys in TIA mode (can be remapped)</b></p>
+  <p><b>Developer Keys (can be remapped)</b></p>
 
   <table BORDER=2 cellpadding=4>
     <tr>
@@ -1503,9 +1676,63 @@
       <td>Alt + j</td>
       <td>Cmd + j</td>
     </tr>
+    <tr>
+      <td colspan="3"><center><font size="-1">
+        These settings can also be changed using <a href="#GlobalKeys"><b>Global Keys</a></font></center>
+      </td>
+    </tr>
   </table>
 
-  <p><b>Other Keys (can be remapped)</b></p>
+  <p><b><a name="GlobalKeys">Global Keys</a> (can be remapped)</b></p>
+  <p>These keys allow selecting and changing settings without having to remember the
+  dedicated keys. They keys are grouped by Audio & Video and Debug settings.</p>
+  <table BORDER=2 cellpadding=4>
+    <tr>
+      <th>Function</th>
+      <th>Key (Standard)</th>
+      <th>Key (macOS)</th>
+    </tr>
+    <tr>
+      <td>Select <i>previous</i> setting group</td>
+      <td>Control + End</td>
+      <td>Control-Fn + Left arrow</td>
+    </tr>
+    <tr>
+      <td>Select <i>next</i> setting group</td>
+      <td>Control + Home</td>
+      <td>Control-Fn + Right arrow</td>
+    </tr>
+    <tr>
+      <td>Select <i>previous</i> setting</td>
+      <td>End</td>
+      <td>Fn + Left arrow</td>
+    </tr>
+    <tr>
+      <td>Select <i>next</i> setting</td>
+      <td>Home</td>
+      <td>Fn + Right arrow</td>
+    </tr>
+    <tr>
+      <td><i>Decrease</i> current setting</td>
+      <td>PageDown</td>
+      <td>Fn + Down arrow</td>
+    </tr>
+    <tr>
+      <td><i>Increase</i> current setting
+      <td>PageUp</td>
+      <td>Fn + Up arrow</td>
+    </tr>
+  </table>
+  <p>Notes:
+      <ul>
+          <li>Only available if UI messages are enabled.</li>
+          <li>Currently not available settings are automatically skipped.</li>
+          <li>If a setting was selected via dedicated key, its value can also be changed with the
+          global keys.</li>
+      </ul>
+  </p>
+
+  <p><b>Other Emulation Keys (can be remapped)</b></p>
 
   <table BORDER=2 cellpadding=4>
     <tr>
@@ -1513,91 +1740,56 @@
       <th>Key (Standard)</th>
       <th>Key (macOS)</th>
     </tr>
-
     <tr>
-      <td>Switch to next <i>larger</i> zoom level in windowed mode,
-      </br>toggle stretching in fullscreen mode</td>
-      <td>Alt + =</td>
-      <td>Cmd + =</td>
+      <td>Load <i>previous</i> game in ROM (multicart ROM, TIA mode)</td>
+      <td>Shift-Control + r</td>
+      <td>Shift-Control + r</td>
     </tr>
-
     <tr>
-      <td>Switch to next <i>smaller</i> zoom level in windowed mode,
-      </br>toggle stretching in fullscreen mode</td>
-      <td>Alt + -</td>
-      <td>Cmd + -</td>
+      <td>Reload current ROM (singlecart ROM, TIA mode)<br>
+        Load <i>next</i> game in ROM (multicart ROM, TIA mode)</td>
+      <td>Control + r</td>
+      <td>Control + r</td>
     </tr>
-
     <tr>
-      <td>Toggle fullscreen/windowed mode</td>
-      <td>Alt + Enter</td>
-      <td>Cmd + Enter</td>
+      <td>Reload ROM listing (ROM launcher mode)</td>
+      <td>Control + r</td>
+      <td>Control + r</td>
     </tr>
-
     <tr>
-      <td>Increase overscan in fullscreen mode</td>
-      <td>Shift + PageUp</td>
-      <td>Shift + PageUp</td>
+      <td>Emulate 'frying' effect (TIA mode)</td>
+      <td>Backspace</td>
+      <td>Backspace</td>
     </tr>
-
     <tr>
-      <td>Decrease overscan in fullscreen mode</td>
-      <td>Shift + PageDown</td>
-      <td>Shift + PageDown</td>
+      <td>Go to parent directory (UI mode)</td>
+      <td>Backspace</td>
+      <td>Backspace</td>
     </tr>
-
     <tr>
-      <td>Move display <i>up</i> (uses "Display.VCenter")</td>
-      <td>Alt + PageUp</td>
-      <td>Cmd + PageUp</td>
+      <td><i>Decrease</i> emulation speed (disables 'Turbo' mode)</td>
+      <td>Shift-Control + s</td>
+      <td>Shift-Control + s</td>
     </tr>
-
     <tr>
-      <td>Move display <i>down</i> (uses "Display.VCenter")</td>
-      <td>Alt + PageDown</td>
-      <td>Cmd + PageDown</td>
+      <td><i>Increase</i> emulation speed (disables 'Turbo' mode)</td>
+      <td>Control + s</td>
+      <td>Control + s</td>
     </tr>
-
     <tr>
-      <td>Switch display format in <i>increasing</i> order (NTSC/PAL/SECAM etc.)</td>
-      <td>Control + f</td>
-      <td>Control + f</td>
+      <td>Toggle 'Turbo' mode (maximum emulation speed)</td>
+      <td>Control + t</td>
+      <td>Control + t</td>
     </tr>
-
     <tr>
-      <td>Switch display format in <i>decreasing</i> order (NTSC/PAL/SECAM etc.)</td>
-      <td>Shift-Control + f</td>
-      <td>Shift-Control + f</td>
+      <td><i>Decrease</i> autofire rate</td>
+      <td>Shift-Control + a</td>
+      <td>Shift-Control + a</td>
     </tr>
-
     <tr>
-      <td>Switch palette (Standard/Z26/User)</td>
-      <td>Control + p</td>
-      <td>Control + p</td>
-    </tr>
-
-    <tr>
-      <td>Toggle display interpolation</td>
-      <td>Control + i</td>
-      <td>Control + i</td>
-    </tr>
-
-    <tr>
-      <td>Toggle sound on/off</td>
-      <td>Control + ]</td>
-      <td>Control + ]</td>
-    </tr>
-
-    <tr>
-      <td>Decrease volume</td>
-      <td>Alt + [</td>
-      <td>Cmd + [</td>
-    </tr>
-
-    <tr>
-      <td>Increase volume</td>
-      <td>Alt + ]</td>
-      <td>Cmd + ]</td>
+      <td><i>Increase</i> autofire rate</td>
+      <td>Control + a</td>
+      <td>Control + a</td>
     </tr>
 
     <tr>
@@ -1605,7 +1797,6 @@
       <td>Control + 0</td>
       <td>Control + 0</td>
     </tr>
-
     <tr>
       <td>Toggle grab mouse</td>
       <td>Control + g</td>
@@ -1617,38 +1808,11 @@
       <td>Control + 1</td>
       <td>Control + 1</td>
     </tr>
-
-    <tr>
-      <td>Reload current ROM (singlecart ROM, TIA mode)<br>
-        Load next game in ROM (multicart ROM, TIA mode)</td>
-      <td>Control + r</td>
-      <td>Control + r</td>
-    </tr>
-
-    <tr>
-      <td>Reload ROM listing (ROM launcher mode)</td>
-      <td>Control + r</td>
-      <td>Control + r</td>
-    </tr>
-
-    <tr>
-      <td>Emulate 'frying' effect (TIA mode)</td>
-      <td>Backspace</td>
-      <td>Backspace</td>
-    </tr>
-
-    <tr>
-      <td>Go to parent directory (UI mode)</td>
-      <td>Backspace</td>
-      <td>Backspace</td>
-    </tr>
-
     <tr>
       <td>Save continuous PNG snapshots</br>(per interval defined in <a href="#Snapshots"><b>Snapshot Settings</b></a>)</td>
       <td>Alt + s</td>
       <td>Cmd + s</td>
     </tr>
-
     <tr>
       <td>Save continuous PNG snapshots (every frame)</td>
       <td>Shift-Alt + s</td>
@@ -1660,13 +1824,21 @@
       <td>Alt + t</td>
       <td>Cmd + t</td>
     </tr>
-
     <tr>
       <td>Enter/Exit the <a href="#TimeMachine"><b>Time Machine</b></a> dialog</td>
-      <td>Shift + t to enter, Shift + t/Escape/Space to exit</td>
-      <td>Shift + t to enter, Shift + t/Escape/Space to exit</td>
+      <td>Shift + t to enter, Shift + t/Escape to exit and continue with emulation</td>
+      <td>Shift + t to enter, Shift + t/Escape to exit and continue with emulation</td>
     </tr>
-
+    <tr>
+      <td>Playback the <a href="#TimeMachine"><b>Time Machine</b></a> from current state (without sound, from the TM dialog only)</td>
+      <td>Shift</td>
+      <td>Shift</td>
+    </tr>
+    <tr>
+      <td>Start/Stop playback (exist/enters the <a href="#TimeMachine"><b>Time Machine</b></a> dialog)</td>
+      <td>Shift + Space</td>
+      <td>Shift + Space</td>
+    </tr>
     <tr>
       <td>Rewind by one state (enters the <a href="#TimeMachine"><b>Time Machine</b></a> dialog)</td>
       <td>Alt + Left arrow</td>
@@ -1699,7 +1871,7 @@
     </tr>
   </table>
 
-  <p><b>UI keys in Text Editing areas (cannot be remapped)</b></p>
+  <p><b>UI Keys in Text Editing areas (cannot be remapped)</b></p>
 
   <table BORDER=2 cellpadding=4>
     <tr><th>Key</th><th>Editor Function</th></tr>
@@ -1828,7 +2000,7 @@
       <td> N/A</td>
       <td> N/A</td>
       <td> N/A</td>
-      <td> N/A</td>
+      <td> voice (2600-daptor II)</td>
     </tr>
     <tr>
       <th> SaveKey</th>
@@ -1875,12 +2047,13 @@
   <p><b>Bottom row (left to right)</b></p>
   <table border="1" cellpadding="4">
     <tr><th>Item</th><th>Description</th></tr>
-    <tr><td>Current time</td><td>Shows the time of the currently selected status,
+    <tr><td>Current time</td><td>Shows the time of the currently selected state,
       relative to the first one</td></tr>
     <tr><td>'Start/Stop' button</td><td>Starts or stops the Time Machine</td></tr>
-    <tr><td>'Continue' button</td><td>Exits the dialog and continues emulation</td></tr>
+    <tr><td>'Exit' button</td><td>Exits the dialog and continues emulation, starting at current state</td></tr>
     <tr><td>'Rewind All' button</td><td>Navigates back to the begin of the timeline</td></tr>
     <tr><td>'Rewind One' button</td><td>Navigates back by one state</td></tr>
+    <tr><td>'Playback' button</td><td>Starts playback, starting at the current state (with sound disabled)</td></tr>
     <tr><td>'Unwind One' button</td><td>Navigates forward by one state</td></tr>
     <tr><td>'Unwind All' button</td><td>Navigates forward to the end of the timeline</td></tr>
     <tr><td>'Save All' button</td><td>Saves all Time Machine states to disk</td></tr>
@@ -1946,18 +2119,69 @@
 
     <tr>
       <td><pre>-center &lt;1|0&gt;</pre></td>
-      <td>Centers game window (if possible).</td>
+      <td>Centers all windows (if possible).</td>
     </tr>
 
     <tr>
-      <td><pre>-palette &lt;standard|z26|user&gt;</pre></td>
+      <td><pre>-windowedpos &lt;XxY&gt;</pre></td>
+      <td>Sets the window position in windowed emulator mode.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-display &lt;number&gt;</pre></td>
+      <td>Sets the display for Stella's emulator.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-palette &lt;standard|z26|user|custom&gt;</pre></td>
       <td>Set the palette to either normal Stella, the one used in the z26
-        emulator, or a user-defined palette.</td>
+        emulator, a user-defined palette, or a custom palette generated
+        from user-defined phase shifts.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-pal.phase_ntsc &lt;number&gt;</pre></td>
+      <td>Adjust phase shift of 'custom' NTSC palette.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-pal.phase_pal &lt;number&gt;</pre></td>
+      <td>Adjust phase shift of 'custom' PAL palette.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-pal.hue &lt;number&gt;</pre></td>
+      <td>Adjust hue of current palette (range -1.0 to 1.0).</td>
+    </tr>
+
+    <tr>
+      <td><pre>-pal.saturation &lt;number&gt;</pre></td>
+      <td>Adjust saturation of current palette (range -1.0 to 1.0).</td>
+    </tr>
+
+    <tr>
+      <td><pre>-pal.contrast &lt;number&gt;</pre></td>
+      <td>Adjust contrast of current palette (range -1.0 to 1.0).</td>
+    </tr>
+
+    <tr>
+      <td><pre>-pal.brightness &lt;number&gt;</pre></td>
+      <td>Adjust brightness of current palette (range -1.0 to 1.0).</td>
+    </tr>
+
+    <tr>
+      <td><pre>-pal.gamma &lt;number&gt;</pre></td>
+      <td>Adjust gamma of current palette (range -1.0 to 1.0).</td>
     </tr>
 
     <tr>
       <td><pre>-speed &lt;number&gt;</pre></td>
       <td>Control the emulation speed (as a percentage, 10 - 1000).</td>
+    </tr>
+
+    <tr>
+      <td><pre>-turbo &lt;1|0&gt;</pre></td>
+      <td>Enable 'Turbo' mode for maximum emulation speed.</td>
     </tr>
 
     <tr>
@@ -1978,9 +2202,14 @@
   </tr>
 
   <tr>
+    <td><pre>-audio.device &lt;number&gt;</pre></td>
+    <td>Set the audio device (0 = default).</td>
+  </tr>
+
+  <tr>
     <td><pre>-audio.preset &lt;1 - 5&gt;</pre></td>
     <td>Set an audio preset. Numbers in sequence represent presets for
-    'custom', 'low quality, 'medium lag', 'high quality, medium lag',
+    'custom', 'low quality, medium lag', 'high quality, medium lag',
     'high quality, low lag' and 'ultra quality, minimal lag'.</td>
   </tr>
 
@@ -2016,32 +2245,39 @@
 
   <tr>
     <td><pre>-audio.dpc_pitch &lt;10000 - 30000&gt;</pre></td>
-    <td>Set the pitch o f Pitfall II music.</td>
+    <td>Set the pitch of Pitfall II music.</td>
   </tr>
 
-    <tr>
-      <td><pre>-tia.zoom &lt;zoom&gt;</pre></td>
-      <td>Use the specified zoom level (integer) while in TIA/emulation mode.
-      </td>
-    </tr>
+  <tr>
+    <td><pre>-tia.zoom &lt;zoom&gt;</pre></td>
+    <td>Use the specified zoom level (integer) while in TIA/emulation mode.
+    </td>
+  </tr>
 
-    <tr>
-      <td><pre>-tia.vsizeadjust &lt;-5 - 5&gt;</pre></td>
-      <td>Adjust the display height of the TIA image
-      </td>
-    </tr>
+  <tr>
+    <td><pre>-tia.vsizeadjust &lt;-5 - 5&gt;</pre></td>
+    <td>Adjust the display height of the TIA image
+    </td>
+  </tr>
 
-    <tr>
-      <td><pre>-tia.inter &lt;1|0&gt;</pre></td>
-      <td>Use interpolation for the TIA image (results in blending/smoothing
-        of the image).</td>
-    </tr>
+  <tr>
+    <td><pre>-tia.inter &lt;1|0&gt;</pre></td>
+    <td>Use interpolation for the TIA image (results in blending/smoothing
+      of the image).</td>
+  </tr>
 
-    <tr>
-      <td><pre>-tia.fs_stretch &lt;1|0&gt;</pre></td>
-      <td>Stretch TIA image completely while in fullscreen mode, vs. keeping the correct
-        aspect ratio.</td>
-    </tr>
+  <tr>
+    <td><pre>-tia.fs_stretch &lt;1|0&gt;</pre></td>
+    <td>Stretch TIA image completely while in fullscreen mode, vs. keeping the correct
+      aspect ratio.</td>
+  </tr>
+
+  <tr>
+    <td><pre>-tia.fs_refresh &lt;1|0&gt;</pre></td>
+    <td>While in fullscreen mode, adapt the display's refresh rate to the game's frame rate
+      to minimize judder.</br>
+      Note: Not available for macOS.</td>
+  </tr>
 
   <tr>
     <td><pre>-tia.fs_overscan &lt;0 - 10&gt;</pre></td>
@@ -2062,36 +2298,6 @@
       <td>Blargg TV effects, 0 is disabled, next numbers in
         sequence represent presets for 'RGB', 'S-Video', 'Composite', 'Bad Adjust'
         and 'Custom' modes.</td>
-    </tr>
-
-    <tr>
-      <td><pre>-tv.contrast &lt;number&gt;</pre></td>
-      <td>Blargg TV effects 'contrast' (only available in custom mode,
-        range -1.0 to 1.0).</td>
-    </tr>
-
-    <tr>
-      <td><pre>-tv.brightness &lt;number&gt;</pre></td>
-      <td>Blargg TV effects 'brightness' (only available in custom mode,
-        range -1.0 to 1.0).</td>
-    </tr>
-
-    <tr>
-      <td><pre>-tv.hue &lt;number&gt;</pre></td>
-      <td>Blargg TV effects 'hue' (only available in custom mode,
-        range -1.0 to 1.0).</td>
-    </tr>
-
-    <tr>
-      <td><pre>-tv.saturation &lt;number&gt;</pre></td>
-      <td>Blargg TV effects 'saturation' (only available in custom mode,
-        range -1.0 to 1.0).</td>
-    </tr>
-
-    <tr>
-      <td><pre>-tv.gamma &lt;number&gt;</pre></td>
-      <td>Blargg TV effects 'gamma' (only available in custom mode,
-        range -1.0 to 1.0).</td>
     </tr>
 
     <tr>
@@ -2177,9 +2383,10 @@
     </tr>
 
     <tr>
-      <td><pre>-joyallow4 &lt;1|0&gt;</pre></td>
-      <td>Allow all 4 directions on a joystick to be pressed
-        simultaneously.</td>
+      <td><pre>-psense &lt;number&gt;</pre></td>
+      <td>Sensitivity for emulation of paddles when using analog paddles.
+      Valid range of values is from 1 to 30, with larger numbers causing
+      faster movement.</td>
     </tr>
 
     <tr>
@@ -2193,28 +2400,50 @@
     </tr>
 
     <tr>
+      <td><pre>-dcsense &lt;number&gt;</pre></td>
+      <td>Sensitivity for emulation of driving controllers when using a mouse.
+      Valid range of values is from 1 to 20, with larger numbers causing
+      faster movement.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-autofirerate &lt;0 - 30&gt;</pre></td>
+      <td>Automatic trigger rate of the fire buttons in Hz (0 = disabled)</td>
+    </tr>
+
+    <tr>
+      <td><pre>-joyallow4 &lt;1|0&gt;</pre></td>
+      <td>Allow all 4 directions on a joystick to be pressed
+        simultaneously.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-modcombo &lt;1|0&gt;</pre></td>
+      <td>Use modifier(Shift/Alt/Control)-x key combos. This is normally enabled,
+      since the 'Quit' command is tied to 'Control-q'. However, there are times
+      when you want to disable them.</br>
+      E.g. a 2-player game is using either the 'f' or 'r' keys for movement,
+      and pressing Control (for Fire) will perform an unwanted action
+      associated with Control-r or Control-f default keys.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-saport &lt;lr|rl&gt;</pre></td>
+      <td>Determines how to enumerate the Stelladaptor/2600-daptor devices in the
+      order they are found: 'lr' means first is left port, second is right port,
+      'rl' means the opposite.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-avoxport &lt;name&gt;</pre></td>
+      <td>Set the name of the serial port where an AtariVox is connected.</td>
+    </tr>
+
+    <tr>
       <td><pre>-usemouse &lt;always|analog|never&gt;</pre></td>
       <td>Use mouse as a controller as specified by ROM properties in specific case.
       Always and never are self-explanatory, analog means only for analog-type devices
       (paddles, trackball, etc.).</td>
-    </tr>
-
-    <tr>
-      <td><pre>-grabmouse &lt;1|0&gt;</pre></td>
-      <td>Locks the mouse cursor in the game window in emulation mode.</td>
-    </tr>
-
-    <tr>
-      <td><pre>-cursor &lt;0|1|2|3&gt;</pre></td>
-      <td>Set mouse cursor state in UI/emulation modes.</td>
-    </tr>
-
-    <tr>
-      <td><pre>-dsense &lt;number&gt;</pre></td>
-      <td>Sensitivity for emulation of paddles when using a digital device
-      (ie, joystick digital axis or button, keyboard key, etc.).
-      Valid range of values is from 1 to 20, with larger numbers causing
-      faster movement.</td>
     </tr>
 
     <tr>
@@ -2232,20 +2461,21 @@
     </tr>
 
     <tr>
-      <td><pre>-saport &lt;lr|rl&gt;</pre></td>
-      <td>Determines how to enumerate the Stelladaptor/2600-daptor devices in the
-      order they are found: 'lr' means first is left port, second is right port,
-      'rl' means the opposite.</td>
+      <td><pre>-dsense &lt;number&gt;</pre></td>
+      <td>Sensitivity for emulation of paddles when using a digital device
+      (ie, joystick digital axis or button, keyboard key, etc.).
+      Valid range of values is from 1 to 20, with larger numbers causing
+      faster movement.</td>
     </tr>
 
     <tr>
-      <td><pre>-modcombo &lt;1|0&gt;</pre></td>
-      <td>Use modifier(Shift/Alt/Control)-x key combos. This is normally enabled,
-      since the 'Quit' command is tied to 'Control-q'. However, there are times
-      when you want to disable them.</br>
-      E.g. a 2-player game is using either the 'f' or 'r' keys for movement,
-      and pressing Control (for Fire) will perform an unwanted action
-      associated with Control-r or Control-f default keys.</td>
+      <td><pre>-cursor &lt;0|1|2|3&gt;</pre></td>
+      <td>Set mouse cursor state in UI/emulation modes.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-grabmouse &lt;1|0&gt;</pre></td>
+      <td>Locks the mouse cursor in the game window in emulation mode.</td>
     </tr>
 
     <tr>
@@ -2322,12 +2552,22 @@
     </tr>
 
     <tr>
+      <td><pre>-launcherpos &lt;XxY&gt;</pre></td>
+      <td>Sets the window position in windowed ROM launcher mode.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-launcherdisplay &lt;number&gt;</pre></td>
+      <td>Sets the display for the ROM launcher.</td>
+    </tr>
+
+    <tr>
       <td><pre>-launcherres &lt;WxH&gt;</pre></td>
       <td>Set the size of the ROM launcher.</td>
     </tr>
 
     <tr>
-      <td><pre>-launcherfont &lt;small|medium|large&gt;</pre></td>
+      <td><pre>-launcherfont &lt;small|low_medium|medium|large|large12|large14|large16&gt;</pre></td>
       <td>Set the size of the font in the ROM launcher.</td>
     </tr>
 
@@ -2338,14 +2578,20 @@
     </tr>
 
     <tr>
-      <td><pre>-romviewer &lt;0|1|2&gt;</pre></td>
-      <td>Hide ROM Info Viewer in ROM launcher mode (0), or use the
-        given zoom level (1 or 2).</td>
+      <td><pre>-romviewer &lt;float&gt;</pre></td>
+      <td>Hide ROM Info Viewer in ROM launcher mode (0) or use the
+        given zoom level.</br>
+        Note: The zoom level is converted into a percentage in the UI.</td>
     </tr>
 
     <tr>
       <td><pre>-uipalette &lt;standard|classic|light&gt;</pre></td>
       <td>Use the specified palette for UI elements.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-dialogfont &lt;small|low_medium|medium|large|large12|large14|large16&gt;</pre></td>
+      <td>Set the size of the font in the dialogs.</td>
     </tr>
 
     <tr>
@@ -2392,12 +2638,12 @@
 
     <tr>
       <td><pre>-romdir &lt;dir&gt;</pre></td>
-      <td>Set the directory where the ROM launcher will start.</td>
+      <td>Set the path where the ROM launcher will start.</td>
     </tr>
 
     <tr>
-      <td><pre>-avoxport &lt;name&gt;</pre></td>
-      <td>Set the name of the serial port where an AtariVox is connected.</td>
+      <td><pre>-followlauncher &lt;0|1&gt;</pre></td>
+      <td>Make the start path follow ROM launcher navigation.</td>
     </tr>
 
     <tr>
@@ -2454,6 +2700,16 @@
     <tr>
       <td><pre>-dis.relocate &lt;1|0&gt;</pre></td>
       <td>Relocate calls out of address range in the disassembler.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-dbg.pos &lt;XxY&gt;</pre></td>
+      <td>Sets the window position in windowed debugger mode.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-dbg.display &lt;number&gt;</pre></td>
+      <td>Sets the display for the debugger.</td>
     </tr>
 
     <tr>
@@ -2522,7 +2778,7 @@
 
     <tr>
       <td><pre>-bs &lt;type&gt;</pre></td>
-      <td>Set "Cartridge.Type" property. See the <a href="#Properties"><b>Game Properties</b></a> section
+      <td>Set "Cart.Type" property. See the <a href="#Properties"><b>Game Properties</b></a> section
         for valid types.</td>
     </tr>
 
@@ -2533,27 +2789,27 @@
 
     <tr>
       <td><pre>-startbank &lt;bank&gt;</pre></td>
-      <td>Set "Cartridge.StartBank" property.</td>
+      <td>Set "Cart.StartBank" property.</td>
     </tr>
 
     <tr>
       <td><pre>-channels &lt;Mono|Stereo&gt;</pre></td>
-      <td>Set "Cartridge.Sound" property.</td>
+      <td>Set "Cart.Sound" property.</td>
     </tr>
 
     <tr>
       <td><pre>-ld &lt;A|B&gt;</pre></td>
-      <td>Set "Console.LeftDifficulty" property.</td>
+      <td>Set "Console.LeftDiff" property.</td>
     </tr>
 
     <tr>
       <td><pre>-rd &lt;A|B&gt;</pre></td>
-      <td>Set "Console.RightDifficulty" property.</td>
+      <td>Set "Console.RightDiff" property.</td>
     </tr>
 
     <tr>
       <td><pre>-tv &lt;Color|BW&gt;</pre></td>
-      <td>Set "Console.TelevisionType" property.</td>
+      <td>Set "Console.TVType" property.</td>
     </tr>
 
     <tr>
@@ -2582,6 +2838,16 @@
     <tr>
       <td><pre>-cp &lt;Yes|No&gt;</pre></td>
       <td>Set "Controller.SwapPaddles" property.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-pxcenter &lt;-10..30&gt;</pre></td>
+      <td>Set "Controller.PaddlesXCenter" property.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-pycenter &lt;-10..30&gt;</pre></td>
+      <td>Set "Controller.PaddlesYCenter" property.</td>
     </tr>
 
     <tr>
@@ -2627,6 +2893,9 @@
     </tr><tr>
       <td><pre>-&lt;plr.|dev.&gt;stats &lt;1|0&gt;</pre></td>
       <td>Overlay console info on the TIA image during emulation.</td>
+    </tr><tr>
+      <td><pre>-&lt;plr.|dev.&gt;detectedinfo &lt;1|0&gt;</pre></td>
+      <td>Display detected settings info when a ROM is loaded.</td>
     </tr><tr>
       <td><pre>-&lt;plr.|dev.&gt;console &lt;2600|7800&gt;</pre></td>
       <td>Select console for B/W and Pause key handling and RAM initialization.</td>
@@ -2741,7 +3010,7 @@
   <p><b>Options Menu</b> dialog:<br><br>
   <img src="graphics/options.png">
   <br><br>
-  <p><b>Video Settings</b> dialog:</p>
+  <p><b>Video & Audio Settings</b> dialog (Display):</p>
   <table border="5" cellpadding="2" frame="box" rules="none">
     <tr>
       <td><img src="graphics/options_video.png"></td>
@@ -2750,27 +3019,44 @@
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
           <tr><td>Renderer</td><td>Use specified rendering mode</td><td>-video</td></tr>
-          <tr><td>Palette</td><td>Palette for emulation mode</td><td>-palette</td></tr>
-          <tr><td>Interpolation</td><td>Interpolation for TIA image</td><td>-tia.inter</td></tr>
-        <tr><td>Zoom</td><td>Zoom level for emulation mode </td><td>-tia.zoom</td></tr>
-          <tr><td>V-Size adjust</td><td>Adjust height of TIA image</td><td>-tia.vsizeadjust</td></tr>
-          <tr><td>Emul. speed</td><td>Emulation speed</td><td>-speed</td></tr>
-          <tr><td>VSync</td><td>Enable vertical synced updates</td><td>-vsync</td></tr>
+          <tr><td>Interpolation</td><td>Enable interpolation of the TIA image</td><td>-tia.inter</td></tr>
+          <tr><td>Zoom</td><td>Zoom level of the TIA image</td><td>-tia.zoom</td></tr>
           <tr><td>Fullscreen</td><td>Self-explanatory - Note that colors may slightly change.
                   This depends on the OS and renderer used.</td><td>-fullscreen</td></tr>
-          <tr><td>Stretch</td><td>In fullscreen mode, completely fill screen with TIA image</td><td>-tia.fs_stretch</td></tr>
+          <tr><td>Stretch</td><td>In fullscreen mode, completely fill screen with the TIA image.</td><td>-tia.fs_stretch</td></tr>
+          <tr><td>Adapt display...</td><td>In fullscreen mode, adapt the display's refresh rate to the game's frame rate to minimize judder.
+                  </br>Note: Not available for macOS.</td><td>-tia.fs_refresh</td></tr>
           <tr><td>Overscan</td><td>In fullscreen mode, add overscan to the TIA image</td><td>-tia.fs_overscan</td></tr>
-          <tr><td>Fast SuperCharger load</td><td>Skip progress loading bars for SuperCharger ROMs</td><td>-fastscbios</td></tr>
-          <tr><td>Show UI messages</td><td>Overlay UI messages onscreen</td><td>-uimessages</td></tr>
-          <tr><td>Center window</td><td>Attempt to center application windows, else position at last position</td><td>-center</td></tr>
-          <tr><td>Multi-threading</td><td>Enable multi-threaded rendering</td><td>-threads</td></tr>
+          <tr><td>V-Size adjust</td><td>Adjust height of the TIA image</td><td>-tia.vsizeadjust</td></tr>
         </table>
       </td>
     </tr>
   </table>
   <br>
 
-  <p><b>Video Settings</b> dialog (TV Effects):</p>
+  <p><b>Video & Audio Settings</b> dialog (Palettes):</p>
+  <table border="5" cellpadding="2" frame="box" rules="none">
+    <tr>
+      <td><img src="graphics/options_video_palettes.png"></td>
+      <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+      <td valign="top">
+        <table border="1" cellpadding="4">
+          <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
+          <tr><td>Palette</td><td>Palette used for emulation mode</td><td>-palette</td></tr>
+          <tr><td>NTSC phase</td><td>Adjust phase shift for 'Custom' NTSC palette</td><td>-pal.phase_ntsc</td></tr>
+          <tr><td>PAL phase</td><td>Adjust phase shift for 'Custom' PAL palette</td><td>-pal.phase_pal</td></tr>
+          <tr><td>Hue</td><td>Adjust hue of currently selected palette</td><td>-pal.hue</td></tr>
+          <tr><td>Saturation</td><td>Adjust saturation of currently selected palette</td><td>-pal.saturation</td></tr>
+          <tr><td>Contrast</td><td>Adjust contrast of currently selected palette</td><td>-pal.contrast</td></tr>
+          <tr><td>Brightness</td><td>Adjust brightness of currently selected palette</td><td>-pal.brightness</td></tr>
+          <tr><td>Gamma</td><td>Adjust gamma of currently selected palette</td><td>-pal.gamma</td></tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <p><b>Video & Audio Settings</b> dialog (TV Effects):</p>
   <table border="5" cellpadding="2" frame="box" rules="none">
     <tr>
       <td><img src="graphics/options_video_tv.png"></td>
@@ -2779,24 +3065,24 @@
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
           <tr><td>TV mode</td><td>Disable TV effects, or select TV preset</td><td>-tv.filter</td></tr>
-          <tr><td>Adjustable sliders</td><td>Set specific attribute in 'Custom' TV mode</td><td>-tv.contrast, -tv.hue, etc.</td></tr>
+          <tr><td>Adjustable sliders</td><td>Set specific attribute in 'Custom' TV mode</td><td>-tv.sharpness, -tv.resolution, etc.</td></tr>
           <tr><td>Phosphor for all ROMs</td><td>Enable phosphor mode for all ROMs</td><td>-tv.phosphor</td></tr>
           <tr><td>Blend (phosphor)</td><td>Blend level to use in phosphor mode for all ROMs
                 (needs to be manually adjusted for your particular hardware)</td><td>-tv.phosblend</td></tr>
           <tr><td>Scanline intensity</td><td>Sets scanline black-level intensity.</br>
                   Note: No scanlines in 1x mode snapshots.</td><td>-tv.scanlines</td></tr>
-          <tr><td>Clone Composite</td><td>Copy 'Composite' attributes to 'Custom' sliders</td><td>&nbsp;</td></tr>
-          <tr><td>Clone S-Video</td><td>Copy 'S-Video' attributes to 'Custom' sliders</td><td>&nbsp;</td></tr>
-          <tr><td>Clone RGB</td><td>Copy 'RGB' attributes to 'Custom' sliders</td><td>&nbsp;</td></tr>
-          <tr><td>Clone Bad adjust</td><td>Copy 'Bad Adjust' attributes to 'Custom' sliders</td><td>&nbsp;</td></tr>
-          <tr><td>Revert</td><td>Revert attribute sliders to saved 'Custom' settings</td><td>&nbsp;</td></tr>
+          <tr><td>Clone RGB</td><td>Copy 'RGB' attributes to 'Custom' TV mode sliders</td><td>&nbsp;</td></tr>
+          <tr><td>Clone S-Video</td><td>Copy 'S-Video' attributes to 'Custom' TV mode sliders</td><td>&nbsp;</td></tr>
+          <tr><td>Clone Composite</td><td>Copy 'Composite' attributes to 'Custom' TV mode sliders</td><td>&nbsp;</td></tr>
+          <tr><td>Clone Bad adjust</td><td>Copy 'Bad Adjust' attributes to 'Custom' TV mode sliders</td><td>&nbsp;</td></tr>
+          <tr><td>Revert</td><td>Revert attribute sliders to saved 'Custom' TV mode settings</td><td>&nbsp;</td></tr>
         </table>
       </td>
     </tr>
   </table>
   <br>
 
-  <p><b>Audio Settings</b> dialog:</p>
+  <p><b>Video & Audio Settings</b> dialog (Audio):</p>
   <table border="5" cellpadding="2" frame="box" rules="none">
     <tr>
       <td><img src="graphics/options_audio.png"></td>
@@ -2806,7 +3092,8 @@
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
           <tr><td>Enable audio</td><td>Self-explanatory</td><td>-audio.enabled</td></tr>
           <tr><td>Volume</td><td>Self-explanatory</td><td>-audio.volume</td></tr>
-          <tr><td>Mode</td><td>Select an audio preset or choose 'custom' for manual configuration</td><td>-audio.preset</td></tr>
+          <tr><td>Device</td><td>Use the specified audio device.</td><td>-audio.device</td></tr>
+          <tr><td>Mode</td><td>Select an audio preset or choose 'Custom' for manual configuration.</td><td>-audio.preset</td></tr>
           <tr><td>Fragment size</td><td>The number of samples in a single fragment processed by the audio driver. Smaller values mean less latency, but may lead to dropouts (depending on OS and hardware).</td><td>-audio.fragment_size</td></tr>
           <tr><td>Sample rate</td><td>
             Output samples per second. Higher values reduce artifacts from resampling and decrease latency,
@@ -2819,8 +3106,8 @@
             some games (notably Quadrun).
           </td><td>-audio.resampling_quality</td></tr>
           <tr><td>Headroom</td><td>Number of frames to buffer before playback starts. Higher values increase latency, but reduce the potential for dropouts.</td><td>-audio.headroom</td></tr>
-          <tr><td>Buffer size</td><td>Maximum size of the audio buffer. Higher values increase maximum latency, but reduce the potential for dropouts</td><td>-audio.buffer_size</td></tr>
-      <tr><td>Stereo for all ROMs</td><td>Enables stereo mode for all ROMs.</td><td>-audio.stereo</td></tr>
+          <tr><td>Buffer size</td><td>Maximum size of the audio buffer. Higher values increase maximum latency, but reduce the potential for dropouts.</td><td>-audio.buffer_size</td></tr>
+      <tr><td>Stereo for all ROMs</td><td>Enable stereo mode for all ROMs.</td><td>-audio.stereo</td></tr>
           <tr><td>Pitfall II music pitch</td><td>Defines the pitch of Pitfall II music (which may vary between carts).</td><td>-audio.dpc_pitch</td></tr>
        </table>
         <p>
@@ -2839,6 +3126,44 @@
     </tr>
   </table>
   <br>
+
+  <p><b>Emulation</b> dialog:</p>
+  <table border="5" cellpadding="2" frame="box" rules="none">
+    <tr>
+      <td><img src="graphics/options_emulation.png"></td>
+      <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+      <td valign="top">
+        <table border="1" cellpadding="4">
+          <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
+          <tr><td>Emulation speed</td><td>Emulation speed</td><td>-speed</td></tr>
+          <tr><td>VSync</td><td>Enable vertical synced updates</td><td>-vsync</td></tr>
+          <tr><td>Turbo</td><td>Enable 'Turbo' mode for maximum emulation speed. This overwrites 'Emulation speed' setting and disables 'VSync'.</td><td>-turbo</td></tr>
+          <tr><td>Multi-threading</td><td>Enable multi-threaded rendering</td><td>-threads</td></tr>
+          <tr><td>Fast SuperCharger load</td><td>Skip progress loading bars for SuperCharger ROMs</td><td>-fastscbios</td></tr>
+          <tr><td>Show UI messages</td><td>Overlay UI messages onscreen</td><td>-uimessages</td></tr>
+          <tr><td>Confirm exiting...</td><td>Display a popup when emulation is exited</td><td>-confirmexit</td></tr>
+          <tr>
+            <td>When entering/exiting emulation:</td>
+            <td>
+              Automatically save no, current or all Time Machine states when exiting emulation.<br/>
+              The latter also loads all states when entering emulation. When this is enabled, you
+              can always continue your game session from where you exited it. Even including the
+              Time Machine buffer!
+            </td>
+            <td>-saveonexit</td>
+          </tr><tr>
+            <td>Automatically change...</td>
+            <td>
+              Automatically change to the next available save state slot after saving a ROM state file.
+            </td>
+            <td>-autoslot</td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+  <br>
+
   <p><b>Input Settings</b> dialog:</p>
   <table border="5" cellpadding="2" frame="box" rules="none">
     <tr>
@@ -2858,9 +3183,10 @@
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
           <tr><td>Theme</td><td>Theme to use for UI elements (see examples)</td><td>-uipalette</td></tr>
+          <tr><td>Dialogs font</td><td>The font used in the dialogs</td><td>-dialogfont</td></tr>
+          <tr><td>HiDPI mode</td><td>Scale the UI by a factor of two when enabled</td><td>-hidpi</td></tr>
           <tr><td>Dialogs position</td><td>Position of dialogs with Stella window</td><td>-dialogpos</td></tr>
-          <tr><td>HiDPI mode</td><td>Scales the UI by a factor of two when enabled</td><td>-hidpi</td></tr>
-          <tr><td>Confirm exiting...</td><td>Display a popup when emulation is exited</td><td>-confirmexit</td></tr>
+          <tr><td>Center windows</td><td>Attempt to center application windows, else position at last position</td><td>-center</td></tr>
           <tr><td>List input delay</td><td>Maximum delay between keypresses in filelist-widgets before a search string resets. </td><td>-listdelay</td></tr>
           <tr><td>Mouse wheel scroll</td><td>Number of lines a mouse scroll will move in list-widgets</td><td>-mwheel</td></tr>
           <tr><td>Double-click speed</td><td>Speed of mouse double-clicks</td><td>-mdouble</td></tr>
@@ -2897,9 +3223,9 @@
           <tr><td>Save path</td><td>Specifies where to save snapshots</td><td>-snapsavedir</td></tr>
         <!--<tr><td>Load path</td><td>Specifies where to load snapshots</td><td>-snaploaddir</td></tr>  -->
           <tr><td>Continuous snapshot interval</td><td>Interval (in seconds) between snapshots</td><td>-ssinterval</td></tr>
-          <tr><td>Use actual ROM name</td><td>Use the actual ROM filename instead of the internal database name.</td><td>-snapname</td></tr>
+          <tr><td>Use actual ROM name</td><td>Use the actual ROM filename instead of the internal database name</td><td>-snapname</td></tr>
           <tr><td>Overwrite existing files</td><td>Whether to overwrite old snapshots</td><td>-sssingle</td></tr>
-          <tr><td>Ignore scaling (1x mode)</td><td>Save snapshot in 1x mode without scaling</td><td>-ss1x</td></tr>
+          <tr><td>Create pixel-exact image (no zoom/post-processing)</td><td>Save snapshot using the exact pixels from the TIA image, without zoom or any post-processing effects</td><td>-ss1x</td></tr>
         </table>
       </td>
     </tr>
@@ -3007,25 +3333,43 @@
       <td valign="top">
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
-          <tr><td>Use mouse as ...</td><td>Allow the mouse to emulate various controllers</td><td>-usemouse</td></tr>
-          <tr><td>Mouse cursor visibility</td><td>Show/hide cursor depending on current state</td><td>-cursor</td></tr>
           <tr><td>Joystick deadzone size</td><td>Deadzone area for axes on joysticks/gamepads</td><td>-joydeadzone</td></tr>
-          <tr><td>Paddle dejitter strength</td><td>Strenght of paddle input averaging (base) and reaction to fast paddle movements (diff)</td><td>-dejitter.base, -dejitter.diff</td></tr>
+          <tr><td>(Analog paddle) Sensitivity</td><td>Sensitivity of an analog paddle</td><td>-psense</td></tr>
+          <tr><td>Analog paddle) Dejitter averaging</td><td>Strength of paddle input averaging, suppresses mouse jitter</td><td>-dejitter.base</td></tr>
+          <tr><td>(Analog paddle) Dejitter reaction</td><td>Strength of paddle reaction to fast paddle movements, suppresses mouse jitter</td><td>-dejitter.diff</td></tr>
           <tr><td>Digital paddle sensitivity</td><td>Sensitivity used when emulating a paddle using a digital device</td><td>-dsense</td></tr>
-          <tr><td>Mouse paddle sensitivity</td><td>Sensitivity used when emulating a paddle using a mouse</td><td>-msense</td></tr>
-          <tr><td>Trackball sensitivity</td><td>Sensitivity used when emulating a trackball device using a mouse</td><td>-tsense</td></tr>
+          <tr><td>Autofire rate</td><td>Automatic trigger rate of the fire buttons in Hz</td><td>-autofirerate</td></tr>
           <tr><td>Allow all 4 directions ...</td><td>Allow all 4 joystick directions to be pressed simultaneously</td><td>-joyallow4</td></tr>
-          <tr><td>Grab mouse ...</td><td>Keep mouse in window in emulation mode<br/>(only when used as controller)<br/>
-                  Note: The sensitivity may greatly vary when the mouse is not grabbed.</td><td>-grabmouse</td></tr>
           <tr><td>Use modifier key combos</td><td>Enable using modifier keys in keyboard actions</td><td>-modcombo</td></tr>
           <tr><td>Swap Stelladaptor ports</td><td>Swap the order of the detected Stelladaptors/2600-daptors (see <b>Advanced Configuration - <a href="#Adaptor">Stelladaptor/2600-daptor Support</a></b>)</td><td>-saport</td></tr>
           <tr><td>Joystick database</td><td>Show all joysticks that Stella knows about, with the option to remove them</td><td>&nbsp;</td></tr>
           <tr><td>Erase EEPROM</td><td>Erase the whole AtariVox/SaveKey flash memory</td><td>&nbsp;</td></tr>
-          <tr><td>AVox serial port</td><td>Described in further detail in <b>Advanced Configuration - <a href="#AtariVox">AtariVox/SaveKey Support</a></b> </td><td>-avoxport</td></tr>
+          <tr><td>AtariVox serial port</td><td>Described in further detail in <b>Advanced Configuration - <a href="#AtariVox">AtariVox/SaveKey Support</a></b> </td><td>-avoxport</td></tr>
         </table>
       </td>
     </tr>
   </table>
+
+  <p><b>Mouse</b> settings can be configured under the 'Mouse' tab, shown below:</p>
+  <table border="5" cellpadding="2" frame="box" rules="none">
+    <tr>
+      <td><img src="graphics/eventmapping_mouse.png"></td>
+      <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+      <td valign="top">
+        <table border="1" cellpadding="4">
+          <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
+          <tr><td>Use mouse as ...</td><td>Allow the mouse to emulate various controllers</td><td>-usemouse</td></tr>
+          <tr><td>(Sensitivity) Paddle</td><td>Sensitivity used when emulating a paddle using a mouse</td><td>-msense</td></tr>
+          <tr><td>(Sensitivity) Trackball</td><td>Sensitivity used when emulating a trackball device using a mouse</td><td>-tsense</td></tr>
+          <tr><td>(Sensitivity) Driving controller</td><td>Sensitivity used when emulating a driving controller device using a mouse</td><td>-dcsense</td></tr>
+          <tr><td>Mouse cursor visibility</td><td>Show/hide cursor depending on current state</td><td>-cursor</td></tr>
+          <tr><td>Grab mouse ...</td><td>Keep mouse in window in emulation mode<br/>(only when used as controller)<br/>
+                  Note: The sensitivity may greatly vary when the mouse is not grabbed.</td><td>-grabmouse</td></tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+
   </blockquote></br>
 
   <h2><b><a name="ROMInfo">ROM Launcher</a></b></h2>
@@ -3035,8 +3379,8 @@
   launcher and fonts, as well as the 'ROM Info Viewer' can be changed in
   <b>UI Settings - Launcher</b> dialog, as shown below:</p>
   <img src="graphics/options_ui.png">
-  <p>Most of the options are self-explanatory, except for the 'ROM Info
-  viewer', which is described below.</p>
+  <p>Most of the options are self-explanatory, except for the 'ROM info
+  width', which is described below.</p>
 
   <h3><b><a name="ROMInfoViewer">ROM Info Viewer</a></b></h3>
 
@@ -3048,27 +3392,21 @@
   for each new release of Stella. Note that the snapshots can be any size
   generated by Stella; they will be resized accordingly.</p>
 
-  <p>Currently, there are several restrictions for this feature:</p>
-  <ol>
-    <li>The ROM Info Viewer can be shown in 1x or 2x mode only.</li>
-    <li>To view snapshots in 1x mode, the ROM launcher window must be sized at
-      least 640x480. If the launcher isn't large enough, the functionality
-      will be disabled.</li>
-    <li>To view snapshots in 2x mode, the ROM launcher window must be sized at
-      least 1000x720. If the launcher isn't large enough, an attempt will
-      be made to use 1x mode.</li>
-  </ol>
+  The ROM Info Viewer's width can be defined between 0% (off) and 100%. The
+  value is relative to the launcher width. For too small or too large values,
+  Stella will automatically correct the width at runtime so that the ROM names
+  and the current ROM's information always have enough space.
 
   <p>The following snapshots illustrate the various font sizes and rom info
-  zoom levels:</p>
+  widths:</p>
 
-  <p>ROM Info Viewer in 1x mode, UI sized 800x480, small launcher font:</p>
+  <p>ROM Info Viewer width at 40%, UI sized 800x480, small launcher font:</p>
   <img src="graphics/rominfo_1x_small.png">
 
-  <p>ROM Info Viewer in 1x mode, UI sized 1000x720, medium launcher font:</p>
+  <p>ROM Info Viewer width at 32%, UI sized 1000x720, medium launcher font:</p>
   <img src="graphics/rominfo_1x_large.png">
 
-  <p>ROM Info Viewer in 2x mode, UI sized 1280x900, large launcher font:</p>
+  <p>ROM Info Viewer width at 50% , UI sized 1280x900, large launcher font:</p>
   <img src="graphics/rominfo_2x_small.png">
 
   <p>The text box in the upper right corner can be used to narrow down the
@@ -3117,8 +3455,6 @@
     </tr>
   </table>
     </li>
-
-
     <br><li><b>Show only ROM files</b>: Selecting this reloads the current listing,
     showing only files that have a valid ROM extension.</li>
 
@@ -3273,6 +3609,7 @@
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
           <tr><td>Player/Developer settings</td><td>Selects the active settings set</td><td>-dev.settings</td></tr>
           <tr><td>Console info overlay</td><td>Overlay console info on the TIA image during emulation.</td><td>-plr.stats<br/>-dev.stats</td></tr>
+          <tr><td>Detected settings info</td><td>Display detected settings when a ROM is loaded.</td><td>-plr.detectedinfo<br/>-dev.detectedinfo</td></tr>
           <tr><td>Console</td><td>Select the console type, this affects Color/B&W/Pause key emulation and zero-page RAM initialization</td><td>-plr.console <br/>-dev.console</td></tr>
           <tr><td>Random startup bank</td><td>Randomize the startup bank (only for selected bankswitch types)</td><td>-plr.bankrandom<br/>-dev.bankrandom</td></tr>
           <tr><td>Randomize zero-page ...</td><td>When loading a ROM, randomize all RAM content instead of initializing with all zeroes (for 'Console' = 'Atari 2600' only)</td><td>-plr.ramrandom<br/>-dev.ramrandom</td></tr>
@@ -3402,21 +3739,6 @@
               'Buffer size'.
             </td>
             <td>-plr.tm.horizon<br>-dev.tm.horizon</td>
-          </tr><tr>
-            <td>When entering/exiting emulation:</td>
-            <td>
-              Automatically save no, current or all Time Machine states when exiting emulation.<br/>
-              The latter also loads all states when entering emulation. When this is enabled, you
-              can always continue your game session from where you exited it. Even including the
-              Time Machine buffer!
-            </td>
-            <td>-saveonexit</td>
-          </tr><tr>
-            <td>Automatically change...</td>
-            <td>
-              Automatically change to the next available save state slot after saving a ROM state file.
-            </td>
-            <td>-autoslot</td>
           </tr>
         </table>
       </td>
@@ -3692,24 +4014,24 @@ Ms Pac-Man (Stella extended codes):
   <p>
   <pre>
    ; Comments
-   "Cartridge.MD5"      "Value"
-   "Property"           "Value"
+   "Cart.MD5"  "Value"
+   "Property"  "Value"
    ""
 
    ; Comments
-   "Cartridge.MD5"      "Value"
-   "Property"           "Value"
+   "Cart.MD5"  "Value"
+   "Property"  "Value"
    ""
 
    . . .
 
    ; Comments
-   "Cartridge.MD5"      "Value"
-   "Property"           "Value"
+   "Cart.MD5"  "Value"
+   "Property"  "Value"
    ""</pre>
 
   <p>Every block in the property file must have a unique value for the
-  <i>Cartridge.MD5</i> property.</p>
+  <i>Cart.MD5</i> property.</p>
 
   <p>
   <h2><b>Properties</b></h2>
@@ -3717,11 +4039,13 @@ Ms Pac-Man (Stella extended codes):
   <p>Each block in a property file consists of a set of properties for a single
   game. Stella supports the properties described below:</p>
 
-  <a><img src="graphics/options_gameinfo_emulation.png"></a>
+  <p>
+    <a><img src="graphics/options_gameinfo_emulation.png"></a>
+  </p>
   <table CELLSPACING="10">
 
   <tr>
-    <td VALIGN="TOP"><a name="PropertiesCartType"><i>Cartridge.Type:</i></a></td>
+    <td VALIGN="TOP"><a name="PropertiesCartType"><i>Cart.Type:</i></a></td>
     <td>Indicates the bank-switching type for the game.
       The value of this property must be either <b>Auto</b> or one of the following
       (for more information about bank-switching see Kevin Horton's <a href="http://kevtris.org/files/sizes.txt">2600 bankswitching
@@ -3738,9 +4062,10 @@ Ms Pac-Man (Stella extended codes):
         <tr><td>32IN1 &#185;</td><td>64-128K Multicart (32 games) </td><td>.32N, .32N1 </td></tr>
         <tr><td>64IN1 &#185;</td><td>64/128K Multicart </td><td>.64N, .64N1 </td></tr>
         <tr><td>128IN1 &#185;</td><td>256/512K Multicart </td><td>.128, .128N1 </td></tr>
-        <tr><td>2K </td><td>32-2048 byte Atari </td><td>.2K </td></tr>
-        <tr><td>3E </td><td>32K Tigervision </td><td>.3E </td></tr>
-        <tr><td>3E+ </td><td>3E+ (TJ modified DASH) </td><td>.3EP, .3E+ </td></tr>
+        <tr><td>2K </td><td>32-2048 bytes Atari </td><td>.2K </td></tr>
+        <tr><td>3E </td><td>512K Tigervision + 32K RAM</td><td>.3E </td></tr>
+        <tr><td>3EX </td><td>512K Tigervision + 256K RAM</td><td>.3EX </td></tr>
+        <tr><td>3E+ </td><td>3E+ (TJ modified 3E) </td><td>.3EP, .3E+ </td></tr>
         <tr><td>3F </td><td>512K Tigervision </td><td>.3F </td></tr>
         <tr><td>4A50 &#178;</td><td>64K 4A50 + RAM </td><td>.4A5, .4A50 </td></tr>
         <tr><td>4K </td><td>4K Atari </td><td>.4K </td></tr>
@@ -3752,9 +4077,7 @@ Ms Pac-Man (Stella extended codes):
         <tr><td>CDF </td><td>Chris, Darrell, Fred (includes CDFJ)</td><td>.CDF </td></tr>
         <tr><td>CM &#185;</td><td>Spectravideo CompuMate </td><td>.CM </td></tr>
         <tr><td>CTY &#178;</td><td>CDW - Chetiry </td><td>.CTY </td></tr>
-        <tr><td>CV </td><td>Commavid extra RAM </td><td>.CV </td></tr>
-        <tr><td>CV+ </td><td>Extended Commavid extra RAM</td><td>.CVP </td></tr>
-        <tr><td>DASH </td><td>Boulder Dash 2 </td><td>.DAS, .DASH </td></tr>
+        <tr><td>CV </td><td>CommaVid extra RAM </td><td>.CV </td></tr>
         <tr><td>DF </td><td>CPUWIZ 128K </td><td>.DF </td></tr>
         <tr><td>DFSC </td><td>CPUWIZ 128K + RAM</td><td>.DFS, .DFSC </td></tr>
         <tr><td>DPC </td><td>Pitfall II </td><td>.DPC </td></tr>
@@ -3776,7 +4099,8 @@ Ms Pac-Man (Stella extended codes):
         <tr><td>FC </td><td>Amiga Power Play Aracde 16/32K </td><td>.FC </td></tr>
         <tr><td>FE </td><td>8K Decathlon </td><td>.FE </td></tr>
         <tr><td>MDM </td><td>Menu Driven Megacart </td><td>.MDM </td></tr>
-        <tr><td>SB </td><td>128-256k SUPERbanking </td><td>.SB </td></tr>
+        <tr><td>SB </td><td>128-256K SUPERbanking </td><td>.SB </td></tr>
+        <tr><td>TVBOY</td><td>512K TV Boy (127 games)</td><td>.TVB, .TVBOY </td></tr>
         <tr><td>UA </td><td>8K UA Ltd. </td><td>.UA </td></tr>
         <tr><td>UASW </td><td>8K UA Ltd. (swapped banks)</td><td>.UASW </td></tr>
         <tr><td>WD </td><td>Wickstead Design (Pink Panther) </td><td>.WD </td></tr>
@@ -3786,7 +4110,7 @@ Ms Pac-Man (Stella extended codes):
     </tr>
 
     <tr>
-      <td VALIGN="TOP"><i>Cartridge.StartBank:</i></td>
+      <td VALIGN="TOP"><i>Cart.StartBank:</i></td>
       <td>Indicates which bank to use for reading the reset vector.</td>
     </tr>
 
@@ -3810,7 +4134,7 @@ Ms Pac-Man (Stella extended codes):
     <tr>
       <td VALIGN="TOP"><i>Display.VCenter:</i></td>
       <td>Indicates the offset for the vertical center of the display.
-      The value must be <i>n</i> such that -5 &lt;= <i>n</i> &lt;= 5.
+      The value must be <i>n</i> such that -20 &lt;= <i>n</i> &lt;= 20.
       </td>
     </tr>
 
@@ -3828,7 +4152,7 @@ Ms Pac-Man (Stella extended codes):
     </tr>
 
     <tr>
-      <td VALIGN="TOP"><i>Cartridge.Sound:</i></td>
+      <td VALIGN="TOP"><i>Cart.Sound:</i></td>
       <td>Indicates if the game should use 1 or 2 channels for sound output.
       All original Atari 2600 machines supported 1 channel only,
       but some homebrew games have been written to take advantage of stereo
@@ -3836,32 +4160,39 @@ Ms Pac-Man (Stella extended codes):
     </tr>
 
   </table>
+  </br>
 <!--
   <p><b>Note:</b> Items marked as '*' are deprecated, and will probably be
   removed in a future release.</p>
 -->
-  <a><img src="graphics/options_gameinfo_console.png"></a>
+  <p>
+    <a><img src="graphics/options_gameinfo_console.png"></a>
+  </p>
+
   <table CELLSPACING="10">
     <tr>
-      <td VALIGN="TOP"><i>Console.TelevisionType:</i></td>
+      <td VALIGN="TOP"><i>Console.TVType:</i></td>
       <td>Indicates the default television setting for the
       game. The value must be <b>Color</b> or <b>BW</b>.</td>
     </tr>
 
     <tr>
-      <td VALIGN="TOP"><i>Console.LeftDifficulty:</i></td>
+      <td VALIGN="TOP"><i>Console.LeftDiff:</i></td>
       <td>Indicates the default difficulty setting for the left
       player. The value must be <b>A</b> or <b>B</b>.</td>
     </tr>
 
     <tr>
-      <td VALIGN="TOP"><i>Console.RightDifficulty:</i></td>
+      <td VALIGN="TOP"><i>Console.RightDiff:</i></td>
       <td>Indicates the default difficulty setting for the
       right player. The value must be <b>A</b> or <b>B</b>.</td>
     </tr>
   </table>
+  </br>
 
-  <a name="Controller"><img src="graphics/options_gameinfo_controller.png"></a>
+  <p>
+    <a name="Controller"><img src="graphics/options_gameinfo_controller.png"></a>
+  </p>
   <table CELLSPACING="10">
     <tr>
       <td VALIGN="TOP"><i>Controller.Left:</i><br><i>Controller.Right:</i></td>
@@ -3909,6 +4240,16 @@ Ms Pac-Man (Stella extended codes):
     </tr>
 
     <tr>
+      <td VALIGN="TOP"><i>Controller.PaddlesXCenter:</i></td>
+      <td>Defines the horizontal center of the paddles (range -10..30).</td>
+    </tr>
+
+    <tr>
+      <td VALIGN="TOP"><i>Controller.PaddlesYCenter:</i></td>
+      <td>Defines the vertical center of the paddles (range -10..30).</td>
+    </tr>
+
+    <tr>
       <td VALIGN="TOP"><i>Controller.MouseAxis:</i></td>
       <td>Indicates how the mouse should emulate virtual controllers.
       In 'Auto' mode, the system decides how to best use the mouse. Otherwise,
@@ -3936,18 +4277,21 @@ Ms Pac-Man (Stella extended codes):
         how to use the X/Y axis (ie, 02 is paddle0/paddle2).
 -->
   </table>
+  </br>
 
-  <a><img src="graphics/options_gameinfo_cartridge.png"></a>
+  <p>
+    <a><img src="graphics/options_gameinfo_cartridge.png"></a>
+  </p>
   <table CELLSPACING="10">
     <tr>
-      <td VALIGN="TOP"><i>Cartridge.Name:</i></td>
+      <td VALIGN="TOP"><i>Cart.Name:</i></td>
       <td>Indicates the actual name of the game. When you save snapshots,
         load/save state files, or use the <a href="#ROMAudit"><b>ROM Audit Mode</b></a> functionality,
         this is the name that will be used for the respective file(s).</td>
     </tr>
 
     <tr>
-      <td VALIGN="TOP"><i>Cartridge.MD5:</i></td>
+      <td VALIGN="TOP"><i>Cart.MD5:</i></td>
       <td>Indicates the MD5 checksum of the ROM image as a
       string of hexadecimal digits. Stella uses this property while
       attempting to match a game with its block of properties. If the
@@ -3958,26 +4302,36 @@ Ms Pac-Man (Stella extended codes):
     </tr>
 
     <tr>
-      <td VALIGN="TOP"><i>Cartridge.Manufacturer:</i></td>
+      <td VALIGN="TOP"><i>Cart.Manufacturer:</i></td>
       <td>Indicates the game's manufacturer.</td>
     </tr>
 
     <tr>
-      <td VALIGN="TOP"><i>Cartridge.ModelNo:</i></td>
+      <td VALIGN="TOP"><i>Cart.ModelNo:</i></td>
       <td>Indicates the manufacturer's model number for the game.</td>
     </tr>
 
     <tr>
-      <td VALIGN="TOP"><i>Cartridge.Rarity:</i></td>
+      <td VALIGN="TOP"><i>Cart.Rarity:</i></td>
       <td>Indicates how rare a cartridge is, based on the scale described on AtariAge.</td>
     </tr>
 
     <tr>
-      <td VALIGN="TOP"><i>Cartridge.Note:</i></td>
+      <td VALIGN="TOP"><i>Cart.Note:</i></td>
       <td>Contains any special notes about playing the game.</td>
     </tr>
 
   </table>
+
+  <p>The buttons at the bottom of the dialogs work as follows:
+  <ul>
+  <li><b>Defaults</b>: Reset the properties to those built into Stella.</li>
+  <li><b>Save</b>: Save the properties for the <i>currently selected ROM only</i>
+  to a properties file in the users default save directory.</li>
+  <li><b>OK</b>: Merge/commit any changes into the ROM properties database, which
+  contains info on all ROMs.</li>
+  <li><b>Cancel</b>: Revert any changes in the dialog, and cancel the operation.</li>
+  </ul>
 
   <p>The name of the properties file will depend on the version of Stella, as follows:</p>
 
@@ -3999,7 +4353,7 @@ Ms Pac-Man (Stella extended codes):
       <td><i>_BASEDIR_/stella.pro</i></td>
     </tr>
   </table>
-  <p>Stella will require a restart for changes to this file to take effect.</p>
+  <p>Note: For manual changes to the property files Stella will require a restart to take effect.</p>
   </blockquote></br>
 
   <h2><b><a name="Palette">Palette Support</a></b></h2>
@@ -4021,6 +4375,10 @@ Ms Pac-Man (Stella extended codes):
     <tr>
       <td><b>user</b></td>
       <td>An external palette file, supplied by the user.</td>
+    </tr>
+    <tr>
+      <td><b>custom</b></td>
+      <td>A palette generate from user-defined phase shift.</td>
     </tr>
   </table>
 

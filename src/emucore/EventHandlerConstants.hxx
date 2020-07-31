@@ -22,6 +22,7 @@
 enum class EventHandlerState {
   EMULATION,
   TIMEMACHINE,
+  PLAYBACK,
   PAUSE,
   LAUNCHER,
   OPTIONSMENU,
@@ -83,7 +84,8 @@ enum class EventMode {
   kPaddlesMode,
   kKeypadMode,
   kCompuMateMode, // cannot be remapped
-  kCommonMode     // mapping common between controllers
+  kCommonMode,    // mapping common between controllers
+  kNumModes
 };
 
 namespace GUI

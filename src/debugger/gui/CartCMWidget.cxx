@@ -16,6 +16,7 @@
 //============================================================================
 
 #include "CartCM.hxx"
+#include "OSystem.hxx"
 #include "Debugger.hxx"
 #include "CartDebug.hxx"
 #include "RiotDebug.hxx"

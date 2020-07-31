@@ -19,7 +19,6 @@
 #define CART_DEBUG_WIDGET_HXX
 
 class GuiObject;
-class ButtonWidget;
 class StringListWidget;
 
 namespace GUI {
@@ -29,8 +28,6 @@ namespace GUI {
 #include "Base.hxx"  // not needed here, but all child classes need it
 #include "Command.hxx"
 #include "Widget.hxx"
-#include "Debugger.hxx"
-#include "CartDebug.hxx"
 
 class CartDebugWidget : public Widget, public CommandSender
 {
@@ -58,7 +55,7 @@ class CartDebugWidget : public Widget, public CommandSender
     virtual string bankState() { return "0 (non-bankswitched)"; }
 
     // To make the Cartridge RAM show up in the debugger, implement
-    // the following 8 functions for cartridges with internal RAM
+    // the following 9 functions for cartridges with internal RAM
     virtual uInt32 internalRamSize() { return 0; }
     virtual uInt32 internalRamRPort(int start) { return 0; }
     virtual string internalRamDescription() { return EmptyString; }
@@ -67,6 +64,7 @@ class CartDebugWidget : public Widget, public CommandSender
     virtual void internalRamSetValue(int addr, uInt8 value) { }
     virtual uInt8 internalRamGetValue(int addr) { return 0; }
     virtual string internalRamLabel(int addr) { return "Not available/applicable"; }
+    virtual string tabLabel() { return " Cartridge RAM "; }
 
   protected:
     // Arrays used to hold current and previous internal RAM values

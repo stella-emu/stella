@@ -18,6 +18,7 @@
 #include "Widget.hxx"
 #include "Dialog.hxx"
 #include "Font.hxx"
+#include "OSystem.hxx"
 #include "Debugger.hxx"
 #include "FrameBuffer.hxx"
 #include "FBSurface.hxx"
@@ -67,7 +68,8 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
   // Add a scrollbar if necessary
   if(useScrollbar)
   {
-    _scrollBar = new ScrollBarWidget(boss, font, _x + _w, _y, kScrollBarWidth, _h);
+    _scrollBar = new ScrollBarWidget(boss, font, _x + _w, _y,
+                                     ScrollBarWidget::scrollBarWidth(_font), _h);
     _scrollBar->setTarget(this);
     _scrollBar->_numEntries = 1;
     _scrollBar->_currentPos = 0;
@@ -675,7 +677,7 @@ Common::Rect DataGridWidget::getEditRect() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int DataGridWidget::getWidth() const
 {
-  return _w + (_scrollBar ? kScrollBarWidth : 0);
+  return _w + (_scrollBar ? ScrollBarWidget::scrollBarWidth(_font) : 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

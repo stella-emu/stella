@@ -21,7 +21,6 @@
 #include "Rect.hxx"
 #include "EditableWidget.hxx"
 
-
 /* EditTextWidget */
 class EditTextWidget : public EditableWidget
 {
@@ -31,6 +30,18 @@ class EditTextWidget : public EditableWidget
     virtual ~EditTextWidget() = default;
 
     void setText(const string& str, bool changed = false) override;
+
+    // Get total width of widget
+    static int calcWidth(const GUI::Font& font, int length = 0)
+    {
+      return length * font.getMaxCharWidth()
+        + (font.getFontHeight() < 24 ? 3 * 2 : 5 * 2);
+    }
+    // Get total width of widget
+    static int calcWidth(const GUI::Font& font, const string& str)
+    {
+      return calcWidth(font, int(str.length()));
+    }
 
   protected:
     void drawWidget(bool hilite) override;
@@ -49,6 +60,7 @@ class EditTextWidget : public EditableWidget
   protected:
     string _backupString;
     bool   _changed{false};
+    int    _textOfs{0};
 
   private:
     // Following constructors and assignment operators not supported

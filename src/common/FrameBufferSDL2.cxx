@@ -15,6 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include <cmath>
+
 #include "SDL_lib.hxx"
 #include "bspf.hxx"
 #include "Logger.hxx"
@@ -48,8 +50,6 @@ FrameBufferSDL2::FrameBufferSDL2(OSystem& osystem)
   // since the structure may be needed before any FBSurface's have
   // been created
   myPixelFormat = SDL_AllocFormat(SDL_PIXELFORMAT_ARGB8888);
-
-  myWindowedPos = myOSystem.settings().getPoint("windowedpos");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -101,19 +101,32 @@ void FrameBufferSDL2::queryHardware(vector<Common::Size>& fullscreenRes,
     int numModes = SDL_GetNumDisplayModes(i);
     ostringstream s;
 
-    s << "Supported video modes for display " << i << ":";
-    Logger::debug(s.str());
+    s << "Supported video modes (" << numModes << ") for display " << i << ":";
+
+    string lastRes = "";
+
     for (int m = 0; m < numModes; m++)
     {
       SDL_DisplayMode mode;
+      ostringstream res;
 
       SDL_GetDisplayMode(i, m, &mode);
-      s.str("");
-      s << "  " << m << ": " << mode.w << "x" << mode.h << "@" << mode.refresh_rate << "Hz";
-      if (mode.w == display.w && mode.h == display.h && mode.refresh_rate == display.refresh_rate)
-        s << " (active)";
-      Logger::debug(s.str());
+      res << std::setw(4) << mode.w << "x" << std::setw(4) << mode.h;
+
+      if(lastRes != res.str())
+      {
+        Logger::debug(s.str());
+        s.str("");
+        lastRes = res.str();
+        s << "  " << lastRes << ": ";
+      }
+      s << mode.refresh_rate << "Hz";
+      if(mode.w == display.w && mode.h == display.h && mode.refresh_rate == display.refresh_rate)
+        s << "* ";
+      else
+        s << "  ";
     }
+    Logger::debug(s.str());
   }
 
   // Now get the maximum windowed desktop resolution
@@ -183,25 +196,32 @@ void FrameBufferSDL2::queryHardware(vector<Common::Size>& fullscreenRes,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Int32 FrameBufferSDL2::getCurrentDisplayIndex()
+bool FrameBufferSDL2::isCurrentWindowPositioned() const
+{
+  ASSERT_MAIN_THREAD;
+
+  return !myCenter
+    && myWindow && !(SDL_GetWindowFlags(myWindow) & SDL_WINDOW_FULLSCREEN_DESKTOP);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Common::Point FrameBufferSDL2::getCurrentWindowPos() const
+{
+  ASSERT_MAIN_THREAD;
+
+  Common::Point pos;
+
+  SDL_GetWindowPosition(myWindow, &pos.x, &pos.y);
+
+  return pos;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Int32 FrameBufferSDL2::getCurrentDisplayIndex() const
 {
   ASSERT_MAIN_THREAD;
 
   return SDL_GetWindowDisplayIndex(myWindow);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSDL2::updateWindowedPos()
-{
-  ASSERT_MAIN_THREAD;
-
-  // only save if the window is not centered and not in full screen mode
-  if (!myCenter && myWindow && !(SDL_GetWindowFlags(myWindow) & SDL_WINDOW_FULLSCREEN_DESKTOP))
-  {
-    // save current windowed position
-    SDL_GetWindowPosition(myWindow, &myWindowedPos.x, &myWindowedPos.y);
-    myOSystem.settings().setValue("windowedpos", myWindowedPos);
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -213,31 +233,13 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
   if(SDL_WasInit(SDL_INIT_VIDEO) == 0)
     return false;
 
-  Int32 displayIndex = mode.fsIndex;
-  if (displayIndex == -1)
-  {
-    // windowed mode
-    if (myWindow)
-    {
-      // Show it on same screen as the previous window
-      displayIndex = SDL_GetWindowDisplayIndex(myWindow);
-    }
-    if (displayIndex < 0)
-    {
-      // fallback to the last used screen if still existing
-      displayIndex = std::min(myNumDisplays, myOSystem.settings().getInt("display"));
-    }
-  }
+  const bool fullScreen = mode.fsIndex != -1;
+  bool forceCreateRenderer = false;
 
-  // save and get last windowed window's position
-  updateWindowedPos();
-
-  // Always recreate renderer (some systems need this)
-  if(myRenderer)
-  {
-    SDL_DestroyRenderer(myRenderer);
-    myRenderer = nullptr;
-  }
+  // Get windowed window's last display
+  Int32 displayIndex = std::min(myNumDisplays, myOSystem.settings().getInt(getDisplayKey()));
+  // Get windowed window's last position
+  myWindowedPos = myOSystem.settings().getPoint(getPositionKey());
 
   int posX, posY;
 
@@ -249,7 +251,7 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
     posX = myWindowedPos.x;
     posY = myWindowedPos.y;
 
-    // make sure the window is at least partially visibile
+    // Make sure the window is at least partially visibile
     int x0 = 0, y0 = 0, x1 = 0, y1 = 0;
 
     for (int display = SDL_GetNumVideoDisplays() - 1; display >= 0; display--)
@@ -267,47 +269,45 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
     posX = BSPF::clamp(posX, x0 - Int32(mode.screen.w) + 50, x1 - 50);
     posY = BSPF::clamp(posY, y0 + 50, y1 - 50);
   }
-  uInt32 flags = mode.fsIndex != -1 ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0;
-  flags |= SDL_WINDOW_ALLOW_HIGHDPI;
 
-  // macOS seems to have issues with destroying the window, and wants to
-  // keep the same handle
-  // Problem is, doing so on other platforms results in flickering when
-  // toggling fullscreen windowed mode
-  // So we have a special case for macOS
-#ifndef BSPF_MACOS
-  // Don't re-create the window if its size hasn't changed, as it's not
-  // necessary, and causes flashing in fullscreen mode
+#ifdef ADAPTABLE_REFRESH_SUPPORT
+  SDL_DisplayMode adaptedSdlMode;
+  const bool shouldAdapt = fullScreen && myOSystem.settings().getBool("tia.fs_refresh")
+    && gameRefreshRate()
+    // take care of 59.94 Hz
+    && refreshRate() % gameRefreshRate() != 0 && refreshRate() % (gameRefreshRate() - 1) != 0;
+  const bool adaptRefresh = shouldAdapt && adaptRefreshRate(displayIndex, adaptedSdlMode);
+#else
+  const bool adaptRefresh = false;
+#endif
+  const uInt32 flags = SDL_WINDOW_ALLOW_HIGHDPI
+    | (fullScreen ? adaptRefresh ? SDL_WINDOW_FULLSCREEN : SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
+
+  // Don't re-create the window if its display and size hasn't changed,
+  // as it's not necessary, and causes flashing in fullscreen mode
   if(myWindow)
   {
+    const int d = SDL_GetWindowDisplayIndex(myWindow);
     int w, h;
+
     SDL_GetWindowSize(myWindow, &w, &h);
-    if(uInt32(w) != mode.screen.w || uInt32(h) != mode.screen.h)
+    if(d != displayIndex || uInt32(w) != mode.screen.w || uInt32(h) != mode.screen.h
+       || adaptRefresh)
     {
       SDL_DestroyWindow(myWindow);
       myWindow = nullptr;
     }
   }
+
   if(myWindow)
   {
     // Even though window size stayed the same, the title may have changed
     SDL_SetWindowTitle(myWindow, title.c_str());
     SDL_SetWindowPosition(myWindow, posX, posY);
   }
-#else
-  // macOS wants to *never* re-create the window
-  // This sometimes results in the window being resized *after* it's displayed,
-  // but at least the code works and doesn't crash
-  if(myWindow)
-  {
-    SDL_SetWindowFullscreen(myWindow, flags);
-    SDL_SetWindowSize(myWindow, mode.screen.w, mode.screen.h);
-    SDL_SetWindowPosition(myWindow, posX, posY);
-    SDL_SetWindowTitle(myWindow, title.c_str());
-  }
-#endif
   else
   {
+    forceCreateRenderer = true;
     myWindow = SDL_CreateWindow(title.c_str(), posX, posY,
                                 mode.screen.w, mode.screen.h, flags);
     if(myWindow == nullptr)
@@ -316,30 +316,133 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
       Logger::error(msg);
       return false;
     }
+
     setWindowIcon();
   }
 
-  uInt32 renderFlags = SDL_RENDERER_ACCELERATED;
-  if(myOSystem.settings().getBool("vsync"))  // V'synced blits option
-    renderFlags |= SDL_RENDERER_PRESENTVSYNC;
-  const string& video = myOSystem.settings().getString("video");  // Render hint
-  if(video != "")
-    SDL_SetHint(SDL_HINT_RENDER_DRIVER, video.c_str());
-
-  myRenderer = SDL_CreateRenderer(myWindow, -1, renderFlags);
-
-  detectFeatures();
-  determineDimensions();
-
-  if(myRenderer == nullptr)
+#ifdef ADAPTABLE_REFRESH_SUPPORT
+  if(adaptRefresh)
   {
-    string msg = "ERROR: Unable to create SDL renderer: " + string(SDL_GetError());
-    Logger::error(msg);
+    // Switch to mode for adapted refresh rate
+    if(SDL_SetWindowDisplayMode(myWindow, &adaptedSdlMode) != 0)
+    {
+      Logger::error("ERROR: Display refresh rate change failed");
+    }
+    else
+    {
+      ostringstream msg;
+
+      msg << "Display refresh rate changed to " << adaptedSdlMode.refresh_rate << " Hz";
+      Logger::info(msg.str());
+    }
+  }
+#endif
+
+  return createRenderer(forceCreateRenderer);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FrameBufferSDL2::adaptRefreshRate(Int32 displayIndex, SDL_DisplayMode& adaptedSdlMode)
+{
+  SDL_DisplayMode sdlMode;
+
+  if(SDL_GetCurrentDisplayMode(displayIndex, &sdlMode) != 0)
+  {
+    Logger::error("ERROR: Display mode could not be retrieved");
     return false;
+  }
+
+  const int currentRefreshRate = sdlMode.refresh_rate;
+  const int wantedRefreshRate = gameRefreshRate();
+  // Take care of rounded refresh rates (e.g. 59.94 Hz)
+  float factor = std::min(float(currentRefreshRate) / wantedRefreshRate,
+                          float(currentRefreshRate) / (wantedRefreshRate - 1));
+  // Calculate difference taking care of integer factors (e.g. 100/120)
+  float bestDiff = std::abs(factor - std::round(factor)) / factor;
+  bool adapt = false;
+
+  // Display refresh rate should be an integer factor of the game's refresh rate
+  // Note: Modes are scanned with size being first priority,
+  //       therefore the size will never change.
+  // Check for integer factors 1 (60/50 Hz) and 2 (120/100 Hz)
+  for(int m = 1; m <= 2; ++m)
+  {
+    SDL_DisplayMode closestSdlMode;
+
+    sdlMode.refresh_rate = wantedRefreshRate * m;
+    if(SDL_GetClosestDisplayMode(displayIndex, &sdlMode, &closestSdlMode) == nullptr)
+    {
+      Logger::error("ERROR: Closest display mode could not be retrieved");
+      return adapt;
+    }
+    factor = std::min(float(sdlMode.refresh_rate) / sdlMode.refresh_rate,
+                      float(sdlMode.refresh_rate) / (sdlMode.refresh_rate - 1));
+    const float diff = std::abs(factor - std::round(factor)) / factor;
+    if(diff < bestDiff)
+    {
+      bestDiff = diff;
+      adaptedSdlMode = closestSdlMode;
+      adapt = true;
+    }
+  }
+  //cerr << "refresh rate adapt ";
+  //if(adapt)
+  //  cerr << "required (" << currentRefreshRate << " Hz -> " << adaptedSdlMode.refresh_rate << " Hz)";
+  //else
+  //  cerr << "not required/possible";
+  //cerr << endl;
+
+  // Only change if the display supports a better refresh rate
+  return adapt;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FrameBufferSDL2::createRenderer(bool force)
+{
+  // A new renderer is only created when necessary:
+  // - new myWindow (force = true)
+  // - no renderer existing
+  // - different renderer flags
+  // - different renderer name
+  bool recreate = force || myRenderer == nullptr;
+  uInt32 renderFlags = SDL_RENDERER_ACCELERATED;
+  const string& video = myOSystem.settings().getString("video");  // Render hint
+  SDL_RendererInfo renderInfo;
+
+  if(myOSystem.settings().getBool("vsync")
+     && !myOSystem.settings().getBool("turbo"))  // V'synced blits option
+    renderFlags |= SDL_RENDERER_PRESENTVSYNC;
+
+  // check renderer flags and name
+  recreate |= (SDL_GetRendererInfo(myRenderer, &renderInfo) != 0)
+    || ((renderInfo.flags & (SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC)) != renderFlags
+    || (video != renderInfo.name));
+
+  if(recreate)
+  {
+    //cerr << "Create new renderer for buffer type #" << int(myBufferType) << endl;
+    if(myRenderer)
+      SDL_DestroyRenderer(myRenderer);
+
+    if(video != "")
+      SDL_SetHint(SDL_HINT_RENDER_DRIVER, video.c_str());
+
+    myRenderer = SDL_CreateRenderer(myWindow, -1, renderFlags);
+
+    detectFeatures();
+    determineDimensions();
+
+    if(myRenderer == nullptr)
+    {
+      string msg = "ERROR: Unable to create SDL renderer: " + string(SDL_GetError());
+      Logger::error(msg);
+      return false;
+    }
   }
   clear();
 
   SDL_RendererInfo renderinfo;
+
   if(SDL_GetRendererInfo(myRenderer, &renderinfo) >= 0)
     myOSystem.settings().setValue("video", renderinfo.name);
 
@@ -408,6 +511,36 @@ bool FrameBufferSDL2::fullScreen() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int FrameBufferSDL2::refreshRate() const
+{
+  ASSERT_MAIN_THREAD;
+
+  const uInt32 displayIndex = SDL_GetWindowDisplayIndex(myWindow);
+  SDL_DisplayMode sdlMode;
+
+  if(SDL_GetCurrentDisplayMode(displayIndex, &sdlMode) == 0)
+    return sdlMode.refresh_rate;
+
+  if(myWindow != nullptr)
+    Logger::error("Could not retrieve current display mode");
+
+  return 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int FrameBufferSDL2::gameRefreshRate() const
+{
+  if(myOSystem.hasConsole())
+  {
+    const string format = myOSystem.console().getFormatString();
+    const bool isNtsc = format == "NTSC" || format == "PAL60" || format == "SECAM60";
+
+    return isNtsc ? 60 : 50; // The code will take care of 59/49 Hz
+  }
+  return 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSDL2::renderToScreen()
 {
   ASSERT_MAIN_THREAD;
@@ -419,10 +552,9 @@ void FrameBufferSDL2::renderToScreen()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSDL2::setWindowIcon()
 {
-  ASSERT_MAIN_THREAD;
-
 #if !defined(BSPF_MACOS) && !defined(RETRON77)
 #include "stella_icon.hxx"
+  ASSERT_MAIN_THREAD;
 
   SDL_Surface* surface = SDL_CreateRGBSurfaceFrom(stella_icon, 32, 32, 32,
                          32 * 4, 0xFF0000, 0x00FF00, 0x0000FF, 0xFF000000);

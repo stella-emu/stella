@@ -23,9 +23,9 @@ class ButtonWidget;
 class EditTextWidget;
 class PopUpWidget;
 
-#include "CartDebugWidget.hxx"
+#include "CartEnhancedWidget.hxx"
 
-class Cartridge3EPlusWidget : public CartDebugWidget
+class Cartridge3EPlusWidget : public CartridgeEnhancedWidget
 {
   public:
     Cartridge3EPlusWidget(GuiObject* boss, const GUI::Font& lfont,
@@ -35,46 +35,33 @@ class Cartridge3EPlusWidget : public CartDebugWidget
     virtual ~Cartridge3EPlusWidget() = default;
 
   private:
+    string manufacturer() override { return "Thomas Jentzsch"; }
+
+    string description() override;
+
+    void bankSelect(int& ypos) override;
+
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
     void updateUIState();
 
-  private:
-    Cartridge3EPlus& myCart;
+    void loadConfig() override;
 
-    std::array<PopUpWidget*, 4> myBankNumber{nullptr};
+    string internalRamDescription() override;
+
+  private:
+    Cartridge3EPlus& myCart3EP;
+
     std::array<PopUpWidget*, 4> myBankType{nullptr};
     std::array<ButtonWidget*, 4> myBankCommit{nullptr};
     std::array<EditTextWidget*, 8> myBankState{nullptr};
 
-    struct CartState {
-      ByteArray internalram;
+    enum {
+      kRomRamChanged = 'rrCh',
+      kChangeBank = 'chBk',
     };
-    CartState myOldState;
-
-    enum BankID {
-      kBank0Changed = 'b0CH',
-      kBank1Changed = 'b1CH',
-      kBank2Changed = 'b2CH',
-      kBank3Changed = 'b3CH'
-    };
-    static const std::array<BankID, 4> bankEnum;
 
   private:
-    void saveOldState() override;
-    void loadConfig() override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-
-    string bankState() override;
-
-    // start of functions for Cartridge RAM tab
-    uInt32 internalRamSize() override;
-    uInt32 internalRamRPort(int start) override;
-    string internalRamDescription() override;
-    const ByteArray& internalRamOld(int start, int count) override;
-    const ByteArray& internalRamCurrent(int start, int count) override;
-    void internalRamSetValue(int addr, uInt8 value) override;
-    uInt8 internalRamGetValue(int addr) override;
-    // end of functions for Cartridge RAM tab
-
     // Following constructors and assignment operators not supported
     Cartridge3EPlusWidget() = delete;
     Cartridge3EPlusWidget(const Cartridge3EPlusWidget&) = delete;

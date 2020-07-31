@@ -29,7 +29,7 @@ CheckListWidget::CheckListWidget(GuiObject* boss, const GUI::Font& font,
 
   // rowheight is determined by largest item on a line,
   // possibly meaning that number of rows will change
-  _fontHeight = std::max(_fontHeight, CheckboxWidget::boxSize());
+  _fontHeight = std::max(_fontHeight, CheckboxWidget::boxSize(_font));
   _rows = h / _fontHeight;
 
   // Create a CheckboxWidget for each row in the list
@@ -100,7 +100,7 @@ void CheckListWidget::drawWidget(bool hilite)
 
   // Draw a thin frame around the list and to separate columns
   s.frameRect(_x, _y, _w, _h, hilite ? kWidColorHi : kColor);
-  s.vLine(_x + CheckboxWidget::boxSize() + 5, _y, _y + _h - 1, kColor);
+  s.vLine(_x + CheckboxWidget::boxSize(_font) + 5, _y, _y + _h - 1, kColor);
 
   // Draw the list items
   for (i = 0, pos = _currentPos; i < _rows && pos < len; i++, pos++)
@@ -150,7 +150,7 @@ void CheckListWidget::drawWidget(bool hilite)
 Common::Rect CheckListWidget::getEditRect() const
 {
   const int yoffset = (_selectedItem - _currentPos) * _fontHeight,
-            xoffset = CheckboxWidget::boxSize() + 10;
+            xoffset = CheckboxWidget::boxSize(_font) + 10;
 
   return Common::Rect(2 + xoffset, 1 + yoffset,
                       _w - (xoffset - 15), _fontHeight + yoffset);

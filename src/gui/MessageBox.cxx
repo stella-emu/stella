@@ -79,21 +79,24 @@ MessageBox::MessageBox(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MessageBox::addText(const GUI::Font& font, const StringList& text)
 {
-  const int fontWidth  = font.getMaxCharWidth(),
-            fontHeight = font.getFontHeight();
-  int xpos, ypos;
+  const int fontWidth    = font.getMaxCharWidth(),
+            fontHeight   = font.getFontHeight();
+  const int VBORDER = fontHeight / 2;
+  const int HBORDER = fontWidth * 1.25;
 
+  int xpos, ypos;
   // Set real dimensions
   int str_w = 0;
+
   for(const auto& s: text)
     str_w = std::max(int(s.length()), str_w);
-  _w = std::min(str_w * fontWidth + 20, _w);
-  _h = std::min(uInt32((text.size() + 2) * fontHeight + 20 + _th), uInt32(_h));
+  _w = std::min(str_w * fontWidth + HBORDER * 2, _w);
+  _h = std::min(uInt32((text.size() + 2) * fontHeight + VBORDER * 2 + _th), uInt32(_h));
 
-  xpos = 10;  ypos = 10 + _th;
+  xpos = HBORDER;  ypos = VBORDER + _th;
   for(const auto& s: text)
   {
-    new StaticTextWidget(this, font, xpos, ypos, _w - 20,
+    new StaticTextWidget(this, font, xpos, ypos, _w - HBORDER * 2,
                          fontHeight, s, TextAlign::Left);
     ypos += fontHeight;
   }

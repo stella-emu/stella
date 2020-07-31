@@ -47,6 +47,8 @@
 #include "OptionsDialog.hxx"
 #include "StateManager.hxx"
 #include "FrameManager.hxx"
+#include "OSystem.hxx"
+#include "Console.hxx"
 #include "DebuggerDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -69,14 +71,18 @@ DebuggerDialog::DebuggerDialog(OSystem& osystem, DialogContainer& parent,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+DebuggerDialog::~DebuggerDialog()
+{
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::loadConfig()
 {
-  // set initial focus to myPrompt
-  if (myFirstLoad)
-  {
-    setFocus(myPrompt);
-    myFirstLoad = false;
-  }
+  if(myFocusedWidget == nullptr)
+    // Set initial focus to prompt tab
+    myFocusedWidget = myPrompt;
+  // Restore focus
+  setFocus(myFocusedWidget);
 
   myTab->loadConfig();
   myTiaInfo->loadConfig();
@@ -87,6 +93,11 @@ void DebuggerDialog::loadConfig()
   myRomTab->loadConfig();
 
   myMessageBox->setText("");
+}
+
+void DebuggerDialog::saveConfig()
+{
+  myFocusedWidget = _focusedWidget;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -231,7 +242,7 @@ void DebuggerDialog::handleCommand(CommandSender* sender, int cmd,
       doUnwind();
       break;
 
-    case kDDExitCmd:
+    case kDDRunCmd:
       doExitDebugger();
       break;
 
@@ -240,6 +251,7 @@ void DebuggerDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kDDOptionsCmd:
+      saveConfig();
       myOptions->open();
       loadConfig();
       break;
@@ -541,7 +553,7 @@ void DebuggerDialog::addRomArea()
   wid2.push_back(b);
   buttonY += bheight + 4;
   b = new ButtonWidget(this, *myLFont, buttonX, buttonY,
-                       bwidth, bheight, "Exit", kDDExitCmd);
+                       bwidth, bheight, "Run", kDDRunCmd);
   wid2.push_back(b);
   addCancelWidget(b);
 
@@ -617,7 +629,7 @@ void DebuggerDialog::addRomArea()
 
   // The 'cart-specific' information tab (optional)
 
-  tabID = myRomTab->addTab(" " + instance().console().cartridge().name() + " ", TabWidget::AUTO_WIDTH);
+    tabID = myRomTab->addTab(" " + instance().console().cartridge().name() + " ", TabWidget::AUTO_WIDTH);
   myCartInfo = instance().console().cartridge().infoWidget(
     myRomTab, *myLFont, *myNFont, 2, 2, tabWidth - 1,
     tabHeight - myRomTab->getTabHeight() - 2);
@@ -640,7 +652,7 @@ void DebuggerDialog::addRomArea()
     // The cartridge RAM tab
     if (myCartDebug->internalRamSize() > 0)
     {
-      tabID = myRomTab->addTab(" Cartridge RAM ", TabWidget::AUTO_WIDTH);
+      tabID = myRomTab->addTab(myCartDebug->tabLabel(), TabWidget::AUTO_WIDTH);
       myCartRam =
         new CartRamWidget(myRomTab, *myLFont, *myNFont, 2, 2, tabWidth - 1,
                 tabHeight - myRomTab->getTabHeight() - 2, *myCartDebug);

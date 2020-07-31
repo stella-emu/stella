@@ -40,9 +40,14 @@ class RadioButtonWidget : public CheckboxWidget
   protected:
     void setFill(FillType type);
     void drawWidget(bool hilite) override;
+    static int buttonSize(const GUI::Font& font)
+    {
+      return font.getFontHeight() < 24 ? 14 : 22; // box is square
+    }
 
   private:
     RadioButtonGroup* myGroup{nullptr};
+    uInt32 _buttonSize{14};
 
   private:
     // Following constructors and assignment operators not supported

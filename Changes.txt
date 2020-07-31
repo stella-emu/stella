@@ -12,7 +12,155 @@
                               Release History
 ===========================================================================
 
-6.0.2 to 6.1: (MM dd, 2020)
+6.2.1 to 6.3 (XXXX XX, 2020)
+
+  * Added adjustable autofire.
+
+  * Added 'Dark' UI theme. (TODO: DOC)
+
+  * Extended global hotkeys for debug options.
+
+  * Added option to playback a game using the Time Machine.
+
+  * Allow taking snapshots from within the Time Machine dialog.
+
+  * Added the ability to access most files that Stella uses from within a
+    ZIP file. This includes the following:
+      - Per-ROM properties file (so one can distribute a ROM and its
+        associated properties).
+      - Debugger symbol (.sym) and list (.lst) files, etc.
+      - Several others, as we extend the support.
+    Basically, you are now able to put many files that Stella uses inside
+    one ZIP file, and distribute just that file.
+
+  * Added option to select the audio device.
+
+  * Added option to display detected settings info when a ROM is loaded.
+
+  * Replaced "Re-disassemble" with "Disassemble @ current line" in debugger.
+
+  * Fixed bug when taking fullscreen snapshots; the dimensions were
+    sometimes cut off.
+
+-Have fun!
+
+
+6.2 to 6.2.1: (June 20, 2020)
+
+  * Fixed Pitfall II ROM not working correctly.
+
+  * Fixed crashes when using some combinations of bankswitching schemes on
+    incorrect ROMs, or when using invalid ROM file sizes, etc.
+
+  * Fixed RIOT timer behaviour on reading/writing at the wraparound cycle.
+
+  * Fixed incorrectly setting D6 bit on TIA reads in some cases.  Related
+    to this, improve 'tiadriven' option to randomize only D5..D0 bits.
+
+  * Fixed custom palette and TV effects adjustable slider rounding issue.
+
+  * Fixed some bugs in 3E+ scheme when using non-standard ROM sizes.
+
+  * Fixed crash in Audio & Video dialog when opened from debugger, and the
+    debugger window sometimes being resized when using the Options dialog.
+
+  * Make NTSC custom phase shift not affect Yellow anymore.
+
+  * Fixed '1x' snapshot mode; TV effects are now disabled.  This mode
+    now generates a clean, pixel-exact image.
+
+  * Fixed mappings sometimes not being saved in the Retron77 port.
+
+  * A ROM properties file may now be placed next to the ROM (with the same
+    name as the ROM, except ending in .pro), and Stella will automatically
+    apply the properties to the ROM. [NOTE: this was present in 6.2, but
+    was mistakenly left out of the changelog]
+
+  * Added button to Game Info dialog to save properties of the currently
+    loaded ROM to a separate properties file (in the default save directory).
+    This is useful in conjunction with the previous item.
+
+  * Allow changing custom palette and TV effects adjustables in 1% steps
+    again.
+
+  * Updated documentation for changes in ROM properties key names.
+
+  * The codebase now compiles under gcc6 again.  Future versions will
+    require gcc7, though.
+
+
+6.1.2 to 6.2: (June 7, 2020)
+
+  * Added interactive palette to Video & Audio settings.
+
+  * Added 'Custom' palette, generated from user controlled phase shifts.
+
+  * Added that adjustable audio & video settings are displayed as gauge bars.
+
+  * Added four global hotkeys which allow selecting and changing numerous
+    audio & video settings without having to remember the dedicated hotkeys.
+
+  * Added 'Turbo' mode, runs the game as fast as the computer allows.
+
+  * Added that paddle centering (per ROM) and sensitivity can be adjusted.
+
+  * Added that mouse sensitivity for Driving controller can be adjusted.
+
+  * Added paddle filtering in UI to avoid unwanted navigation events.
+
+  * Added selectable dialog fonts.
+
+  * Added separate positioning of launcher, emulator and debugger.
+
+  * Added optional display to game refresh rate adaption in fullscreen mode.
+
+  * Added option which lets default ROM path follow launcher navigation.
+
+  * Added debugger 'saveaccess' function, which saves memory access counts to
+    a CSV file.
+
+  * Added displaying last write address in the debugger.
+
+  * Added debugger pseudo-register '_scanend', which gives the number of
+    scanlines at the end of the last frame.
+
+  * Added detection of color and audio data in DiStella.
+
+  * Restored 'cfg' directory for Distella config files.
+
+  * Added TV Boy and 3EX bank switching types.
+
+  * Removed unused CV+ and DASH bank switching types.
+
+  * Added support for loading grayscale PNG images in the ROM launcher.
+
+
+6.1.1 to 6.1.2: (April 25, 2020)
+
+  * Fixed bug with remapped events not being reloaded in certain cases.
+
+  * Fixed bug in debugger for 3E scheme when displaying active RAM bank.
+
+  * Fixed bug in "Dragon Defender" ROM being misconfigured for Mindlink
+    controller.
+
+
+6.1 to 6.1.1: (April 4, 2020)
+
+  * Fixed crash in 3E bankswitching scheme when writing to ROM addresses.
+
+  * Fix snapshots on Retina HiDPI displays capturing only the top-left
+    corner.
+
+  * Fixed wrong color for BK (background) swatch in the debugger.
+
+  * Fixed 'Right Diff' button in Command menu changing left difficulty
+    instead.
+
+  * Fixed compilation of libretro port on Debian Buster.
+
+
+6.0.2 to 6.1: (March 22, 2020)
 
   * IMPORTANT NOTES:
     - Because of major event remapping changes, all remappings will be reset
@@ -119,7 +267,9 @@
 
   * Added option to change pitch of Pitfall II music.
 
-  * ROM Info Launcher can now display multiple lines per property and
+  * ROM Info Viewer size is not limited to fixed zoom steps anymore.
+
+  * ROM Info Viewer can now display multiple lines per property and the
     bank switching type.
 
   * In file listings, you can now select directories by holding 'Shift' on
@@ -179,6 +329,10 @@
   * Fixed bug in DPC+ scheme; 'fast fetch mode' was enabled at startup,
     when it should be disabled by default.
 
+  * Some more work on DPC+ playfield 'jitter' effect for certain older DPC+
+    driver versions; more ROMs are now detected properly.  Special thanks
+    to SpiceWare for his research in this area.
+
   * Added proper Retron77 port.
 
   * Added proper libretro port, and fixed display for OpenGLES renderers.
@@ -192,7 +346,8 @@
 
   * Updated included PNG library to latest stable version.
 
--Have fun!
+  * Updated UNIX configure script to work with the gcc version 10 and
+    above.
 
 
 6.0.1 to 6.0.2: (October 11, 2019)

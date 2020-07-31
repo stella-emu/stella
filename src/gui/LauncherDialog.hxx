@@ -27,12 +27,16 @@ class OptionsDialog;
 class HighScoresDialog;
 class GlobalPropsDialog;
 class StellaSettingsDialog;
+class WhatsNewDialog;
 class OSystem;
 class Properties;
 class EditTextWidget;
 class FileListWidget;
 class RomInfoWidget;
 class StaticTextWidget;
+namespace Common {
+  struct Size;
+}
 namespace GUI {
   class MessageBox;
 }
@@ -42,7 +46,6 @@ namespace GUI {
 #include "bspf.hxx"
 #include "Dialog.hxx"
 #include "FSNode.hxx"
-#include "Stack.hxx"
 
 class LauncherDialog : public Dialog
 {
@@ -75,11 +78,18 @@ class LauncherDialog : public Dialog
     const string& selectedRomMD5();
 
     /**
-      Get node for the currently selected directory.
+      Get node for the currently selected entry.
 
-      @return FilesystemNode currently active
+      @return FilesystemNode currently selected
     */
     const FilesystemNode& currentNode() const;
+
+    /**
+      Get node for the current directory.
+
+      @return FilesystemNode (directory) currently active
+    */
+    const FilesystemNode& currentDir() const;
 
     /**
       Reload the current listing
@@ -87,6 +97,11 @@ class LauncherDialog : public Dialog
     void reload();
 
   private:
+    static constexpr int MIN_LAUNCHER_CHARS = 24;
+    static constexpr int MIN_ROMINFO_CHARS = 30;
+    static constexpr int MIN_ROMINFO_ROWS = 7; // full lines
+    static constexpr int MIN_ROMINFO_LINES = 4; // extra lines
+
     void center() override { positionAt(0); }
     void handleKeyDown(StellaKey key, StellaMod mod, bool repeated) override;
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
@@ -96,15 +111,21 @@ class LauncherDialog : public Dialog
     Event::Type getJoyAxisEvent(int stick, JoyAxis axis, JoyDir adir, int button) override;
 
     void loadConfig() override;
+    void saveConfig() override;
     void updateUI();
     void applyFiltering();
+
+    float getRomInfoZoom(int listHeight) const;
+    void setRomInfoFont(const Common::Size& area);
 
     void loadRom();
     void loadRomInfo();
     void handleContextMenu();
     void showOnlyROMs(bool state);
+    void setDefaultDir();
     void openSettings();
     void openHighScores();
+    void openWhatsNew();
 
   private:
     unique_ptr<OptionsDialog> myOptionsDialog;
@@ -113,6 +134,10 @@ class LauncherDialog : public Dialog
     unique_ptr<ContextMenu> myMenu;
     unique_ptr<GlobalPropsDialog> myGlobalProps;
     unique_ptr<BrowserDialog> myRomDir;
+    unique_ptr<WhatsNewDialog> myWhatsNewDialog;
+
+    // automatically sized font for ROM info viewer
+    unique_ptr<GUI::Font> myROMInfoFont;
 
     ButtonWidget* myStartButton{nullptr};
     ButtonWidget* myPrevDirButton{nullptr};
@@ -136,10 +161,10 @@ class LauncherDialog : public Dialog
     bool myEventHandled{false};
 
     enum {
-      kAllfilesCmd = 'lalf',  // show all files (or ROMs only)
-      kPrevDirCmd  = 'PRVD',
-      kOptionsCmd  = 'OPTI',
-      kQuitCmd     = 'QUIT'
+      kAllfilesCmd   = 'lalf',  // show all files (or ROMs only)
+      kPrevDirCmd    = 'PRVD',
+      kOptionsCmd    = 'OPTI',
+      kQuitCmd       = 'QUIT'
     };
 
   private:

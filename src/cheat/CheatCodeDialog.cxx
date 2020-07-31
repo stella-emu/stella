@@ -35,46 +35,49 @@ CheatCodeDialog::CheatCodeDialog(OSystem& osystem, DialogContainer& parent,
                                  const GUI::Font& font)
   : Dialog(osystem, parent, font, "Cheat codes")
 {
-  const int lineHeight   = font.getLineHeight(),
-            fontWidth    = font.getMaxCharWidth(),
-            buttonWidth  = font.getStringWidth("Defaults") + 20,
-            buttonHeight = font.getLineHeight() + 4;
-  const int HBORDER = 10;
-  const int VBORDER = 10 + _th;
+  const int lineHeight = font.getLineHeight(),
+    fontHeight = font.getFontHeight(),
+    fontWidth = font.getMaxCharWidth(),
+    buttonWidth  = font.getStringWidth("One shot ") + fontWidth * 2.5,
+    buttonHeight = font.getLineHeight() * 1.25;
+  const int VBORDER = fontHeight / 2;
+  const int HBORDER = fontWidth * 1.25;
+  const int VGAP = fontHeight / 4;
+
   int xpos, ypos;
   WidgetArray wid;
   ButtonWidget* b;
 
   // Set real dimensions
   _w = 45 * fontWidth + HBORDER * 2;
-  _h = 11 * (lineHeight + 4) + VBORDER;
+  _h = _th + 11 * (lineHeight + 4) + VBORDER * 2;
 
   // List of cheats, with checkboxes to enable/disable
-  xpos = HBORDER;  ypos = VBORDER;
+  xpos = HBORDER;  ypos = _th + VBORDER;
   myCheatList =
-    new CheckListWidget(this, font, xpos, ypos, _w - buttonWidth - HBORDER * 2 - 8,
-                        _h - 2*buttonHeight - VBORDER);
+    new CheckListWidget(this, font, xpos, ypos, _w - buttonWidth - HBORDER * 2 - fontWidth,
+                        _h - _th - buttonHeight - VBORDER * 3);
   myCheatList->setEditable(false);
   wid.push_back(myCheatList);
 
-  xpos += myCheatList->getWidth() + 8; ypos = VBORDER;
+  xpos += myCheatList->getWidth() + fontWidth; ypos = _th + VBORDER;
 
   b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
                        "Add" + ELLIPSIS, kAddCheatCmd);
   wid.push_back(b);
-  ypos += lineHeight + 8;
+  ypos += lineHeight + VGAP * 2;
 
   myEditButton =
     new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
                      "Edit" + ELLIPSIS, kEditCheatCmd);
   wid.push_back(myEditButton);
-  ypos += lineHeight + 8;
+  ypos += lineHeight + VGAP * 2;
 
   myRemoveButton =
     new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
                      "Remove", kRemCheatCmd);
   wid.push_back(myRemoveButton);
-  ypos += lineHeight + 8 * 3;
+  ypos += lineHeight + VGAP * 2 * 3;
 
   b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
                        "One shot" + ELLIPSIS, kAddOneShotCmd);

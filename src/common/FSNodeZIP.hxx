@@ -42,7 +42,7 @@ class FilesystemNodeZIP : public AbstractFSNode
      */
     explicit FilesystemNodeZIP(const string& path);
 
-    bool exists() const override     { return _realNode && _realNode->exists(); }
+    bool exists() const override;
     const string& getName() const override    { return _name; }
     void setName(const string& name) override { _name = name; }
     const string& getPath() const override { return _path;      }
@@ -63,6 +63,9 @@ class FilesystemNodeZIP : public AbstractFSNode
     AbstractFSNodePtr getParent() const override;
 
     size_t read(ByteBuffer& image) const override;
+    size_t read(stringstream& image) const override;
+    size_t write(const ByteBuffer& buffer, size_t size) const override;
+    size_t write(const stringstream& buffer) const override;
 
   private:
     FilesystemNodeZIP(const string& zipfile, const string& virtualpath,

@@ -96,18 +96,28 @@ class FrameBufferSDL2 : public FrameBuffer
     void readPixels(uInt8* buffer, uInt32 pitch, const Common::Rect& rect) const override;
 
     /**
+      This method is called to query if the current window is not centered
+      or fullscreen.
+
+      @return  True, if the current window is positioned
+    */
+    bool isCurrentWindowPositioned() const override;
+
+    /**
+      This method is called to query the video hardware for position of
+      the current window
+
+      @return  The position of the currently displayed window
+    */
+    Common::Point getCurrentWindowPos() const override;
+    /**
       This method is called to query the video hardware for the index
       of the display the current window is displayed on
 
       @return  the current display index or a negative value if no
                window is displayed
     */
-    Int32 getCurrentDisplayIndex() override;
-
-    /**
-      This method is called to preserve the last current windowed position.
-    */
-    void updateWindowedPos() override;
+    Int32 getCurrentDisplayIndex() const override;
 
     /**
       Clear the frame buffer.
@@ -137,12 +147,12 @@ class FrameBufferSDL2 : public FrameBuffer
     /**
       Transform from window to renderer coordinates, x direction
      */
-    int scaleX(int x) const { return (x * myRenderW) / myWindowW; }
+    int scaleX(int x) const override { return (x * myRenderW) / myWindowW; }
 
     /**
       Transform from window to renderer coordinates, y direction
      */
-    int scaleY(int y) const { return (y * myRenderH) / myWindowH; }
+    int scaleY(int y) const override { return (y * myRenderH) / myWindowH; }
 
   protected:
     //////////////////////////////////////////////////////////////////////
@@ -170,6 +180,25 @@ class FrameBufferSDL2 : public FrameBuffer
       @return  False on any errors, else true
     */
     bool setVideoMode(const string& title, const VideoMode& mode) override;
+
+    /**
+      Checks if the display refresh rate should be adapted to game refresh rate in (real) fullscreen mode
+
+      @param displayIndex   The display which should be checked
+      @param adaptedSdlMode The best matching mode if the refresh rate should be changed
+
+      @return  True if the refresh rate should be changed
+    */
+    bool adaptRefreshRate(Int32 displayIndex, SDL_DisplayMode& adaptedSdlMode);
+
+    /**
+      Create a new renderer if required
+
+      @param force  If true, force new renderer creation
+
+      @return  False on any errors, else true
+    */
+    bool createRenderer(bool force);
 
     /**
       This method is called to create a surface with the given attributes.
@@ -222,6 +251,16 @@ class FrameBufferSDL2 : public FrameBuffer
       Determine window and renderer dimensions.
      */
     void determineDimensions();
+
+    /**
+      Retrieve the current display's refresh rate, or 0 if no window
+    */
+    int refreshRate() const override;
+
+    /**
+      Retrieve the current game's refresh rate, or 60 if no game
+    */
+    int gameRefreshRate() const;
 
   private:
     // The SDL video buffer

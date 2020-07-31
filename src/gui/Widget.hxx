@@ -23,14 +23,13 @@
 
 class Dialog;
 
-namespace GUI {
-  class Font;
-}
-
 #include <cassert>
 
 #include "bspf.hxx"
 #include "Event.hxx"
+#include "EventHandlerConstants.hxx"
+#include "FrameBufferConstants.hxx"
+#include "StellaKeys.hxx"
 #include "GuiObject.hxx"
 #include "Font.hxx"
 
@@ -285,7 +284,14 @@ class CheckboxWidget : public ButtonWidget
     void handleMouseEntered() override;
     void handleMouseLeft() override;
 
-    static int boxSize() { return 14; }  // box is square
+    static int boxSize(const GUI::Font& font)
+    {
+      return font.getFontHeight() < 24 ? 14 : 22; // box is square
+    }
+    static int prefixSize(const GUI::Font& font)
+    {
+      return boxSize(font) + font.getMaxCharWidth() * 0.75;
+    }
 
   protected:
     void drawWidget(bool hilite) override;
@@ -296,10 +302,13 @@ class CheckboxWidget : public ButtonWidget
     bool _drawBox{true};
     bool _changed{false};
 
+    const uInt32* _outerCircle{nullptr};
+    const uInt32* _innerCircle{nullptr};
     const uInt32* _img{nullptr};
     ColorId _fillColor{kColor};
     int _boxY{0};
     int _textY{0};
+    int _boxSize{14};
 
   private:
     // Following constructors and assignment operators not supported
@@ -341,9 +350,6 @@ class SliderWidget : public ButtonWidget
     void setValueUnit(const string& valueUnit);
 
     void setTickmarkIntervals(int numIntervals);
-
-  protected:
-    const int DEF_LBL_GAP = 4;
 
   protected:
     void handleMouseMoved(int x, int y) override;

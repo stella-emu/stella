@@ -127,6 +127,21 @@ void FilesystemNodeZIP::setFlags(const string& zipfile,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FilesystemNodeZIP::exists() const
+{
+  if(_realNode && _realNode->exists())
+  {
+    // We need to inspect the actual path, not just the ZIP file itself
+    myZipHandler->open(_zipFile);
+    while(myZipHandler->hasNext())
+      if(BSPF::startsWithIgnoreCase(myZipHandler->next(), _virtualPath))
+        return true;
+  }
+
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FilesystemNodeZIP::getChildren(AbstractFSList& myList, ListMode mode) const
 {
   // Files within ZIP archives don't contain children
@@ -181,7 +196,34 @@ size_t FilesystemNodeZIP::read(ByteBuffer& image) const
   while(myZipHandler->hasNext() && !found)
     found = myZipHandler->next() == _virtualPath;
 
-  return found ? uInt32(myZipHandler->decompress(image)) : 0; // TODO: 64bit
+  return found ? myZipHandler->decompress(image) : 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+size_t FilesystemNodeZIP::read(stringstream& image) const
+{
+  // For now, we just read into a buffer and store in the stream
+  // TODO: maybe there's a more efficient way to do this?
+  ByteBuffer buffer;
+  size_t size = read(buffer);
+  if(size > 0)
+    image.write(reinterpret_cast<char*>(buffer.get()), size);
+
+  return size;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+size_t FilesystemNodeZIP::write(const ByteBuffer& buffer, size_t size) const
+{
+  // TODO: Not yet implemented
+  throw runtime_error("ZIP file not writable");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+size_t FilesystemNodeZIP::write(const stringstream& buffer) const
+{
+  // TODO: Not yet implemented
+  throw runtime_error("ZIP file not writable");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

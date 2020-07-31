@@ -76,6 +76,7 @@ class CpuWidget : public Widget, public CommandSender
     ToggleBitWidget* myPSRegister{nullptr};
     EditTextWidget*  myPCLabel{nullptr};
     std::array<EditTextWidget*, 4> myCpuDataSrc{nullptr};
+    EditTextWidget*  myCpuDataDest{nullptr};
 
   private:
     // Following constructors and assignment operators not supported

@@ -116,18 +116,28 @@ class FrameBufferLIBRETRO : public FrameBuffer
                        VariantList& renderers) override;
 
     /**
+      This method is called to query if the current window is not centered or fullscreen.
+
+      @return  True, if the current window is positioned
+    */
+    bool isCurrentWindowPositioned() const override { return true; }
+
+    /**
+      This method is called to query the video hardware for position of
+      the current window
+
+      @return  The position of the currently displayed window
+    */
+    Common::Point getCurrentWindowPos() const override { return Common::Point{}; }
+
+    /**
       This method is called to query the video hardware for the index
       of the display the current window is displayed on
 
       @return  the current display index or a negative value if no
                window is displayed
     */
-    Int32 getCurrentDisplayIndex() override { return 0; }
-
-    /**
-      This method is called to preserve the last current windowed position.
-    */
-    void updateWindowedPos() override { }
+    Int32 getCurrentDisplayIndex() const override { return 0; }
 
     /**
       This method is called to change to the given video mode.

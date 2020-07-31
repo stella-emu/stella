@@ -42,27 +42,29 @@ class PropertiesSet
     /**
       Trivial constructor.
     */
-   PropertiesSet() = default;
+    PropertiesSet() = default;
 
     /**
       Load properties from the specified file, and create an internal
       searchable list.
 
-      @param filename  Full pathname of input file to use
+      @param file  The node representing the input file to use
+      @param save  Indicates whether the properties should be saved
+                   when the program exits
     */
-    void load(const string& filename);
+    void load(const FilesystemNode& file, bool save = true);
 
     /**
       Save properties to the specified file.
 
-      @param filename  Full pathname of output file to use
+      @param file  The node representing the output file to use
 
       @return  True on success, false on failure or save not needed
                Failure occurs if file couldn't be opened for writing,
                or if the file doesn't exist and a zero-byte file
                would be created
     */
-    bool save(const string& filename) const;
+    bool save(const FilesystemNode& file) const;
 
     /**
       Get the property from the set with the given MD5.
@@ -79,19 +81,6 @@ class PropertiesSet
                 bool useDefaults = false) const;
 
     /**
-      Get the property from the set with the given MD5, at the same time
-      checking if it exists.  If it doesn't, insert a temporary copy into
-      the set.
-
-      @param rom         The ROM file used to calculate the MD5
-      @param md5         The md5 of the property to get
-      @param properties  The properties with the given MD5, or the default
-                         properties if not found
-    */
-    void getMD5WithInsert(const FilesystemNode& rom, const string& md5,
-                          Properties& properties);
-
-    /**
       Insert the properties into the set.  If a duplicate is inserted
       the old properties are overwritten with the new ones.
 
@@ -100,6 +89,21 @@ class PropertiesSet
                          when the program exits
     */
     void insert(const Properties& properties, bool save = true);
+
+    /**
+      Load properties for a specific ROM from a per-ROM properties file,
+      if it exists.  In any event, also do some error checking, like making
+      sure that the properties have a valid name, etc.
+
+      NOTE: This method is meant to be called only when starting Stella
+            and loading a ROM for the first time.  Currently, that means
+            only from the ROM launcher or when actually opening the ROM.
+            *** FOR ALL OTHER CASES, USE getMD5() ***
+
+      @param rom  The node representing the rom file
+      @param md5  The md5 of the property to get
+    */
+    void loadPerROM(const FilesystemNode& rom, const string& md5);
 
     /**
       Prints the contents of the PropertiesSet as a flat file.

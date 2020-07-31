@@ -15,9 +15,9 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "QisBlitter.hxx"
-
+#include "FrameBufferSDL2.hxx"
 #include "ThreadDebugging.hxx"
+#include "QisBlitter.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 QisBlitter::QisBlitter(FrameBufferSDL2& fb)

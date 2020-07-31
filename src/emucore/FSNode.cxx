@@ -13,9 +13,6 @@
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
 #include "FSNodeFactory.hxx"
@@ -28,15 +25,49 @@ FilesystemNode::FilesystemNode(const AbstractFSNodePtr& realNode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FilesystemNode::FilesystemNode(const string& p)
+FilesystemNode::FilesystemNode(const string& path)
 {
+  setPath(path);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FilesystemNode::setPath(const string& path)
+{
+  // Only create a new object when necessary
+  if (path == getPath())
+    return;
+
   // Is this potentially a ZIP archive?
 #if defined(ZIP_SUPPORT)
-  if (BSPF::containsIgnoreCase(p, ".zip"))
-    _realNode = FilesystemNodeFactory::create(p, FilesystemNodeFactory::Type::ZIP);
+  if (BSPF::containsIgnoreCase(path, ".zip"))
+    _realNode = FilesystemNodeFactory::create(path, FilesystemNodeFactory::Type::ZIP);
   else
 #endif
-    _realNode = FilesystemNodeFactory::create(p, FilesystemNodeFactory::Type::SYSTEM);
+    _realNode = FilesystemNodeFactory::create(path, FilesystemNodeFactory::Type::SYSTEM);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FilesystemNode& FilesystemNode::operator/=(const string& path)
+{
+  // This part could probably be put in a virtual function, but it seems like
+  // a waste since almost every system uses the same separator, except Windows
+#ifdef BSPF_WINDOWS
+  #define PATH_SEPARATOR '\\'
+#else
+  #define PATH_SEPARATOR '/'
+#endif
+
+  if (path != EmptyString)
+  {
+    string newPath = getPath();
+    if (newPath != EmptyString && newPath[newPath.length()-1] != PATH_SEPARATOR)
+      newPath += PATH_SEPARATOR;
+    newPath += path;
+    setPath(newPath);
+  }
+
+  return *this;
+#undef PATH_SEPARATOR
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -47,7 +78,8 @@ bool FilesystemNode::exists() const
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FilesystemNode::getChildren(FSList& fslist, ListMode mode,
-                                 const NameFilter& filter) const
+                                 const NameFilter& filter,
+                                 bool includeParentDirectory) const
 {
   if (!_realNode || !_realNode->isDirectory())
     return false;
@@ -57,6 +89,20 @@ bool FilesystemNode::getChildren(FSList& fslist, ListMode mode,
 
   if (!_realNode->getChildren(tmp, mode))
     return false;
+
+  #if defined(ZIP_SUPPORT)
+    // before sorting, replace single file ZIP archive names with contained file names
+    //  because they are displayed using their contained file names
+    for (auto& i : tmp)
+    {
+      if (BSPF::endsWithIgnoreCase(i->getPath(), ".zip"))
+      {
+        FilesystemNodeZIP node(i->getPath());
+
+        i->setName(node.getName());
+      }
+    }
+  #endif
 
   std::sort(tmp.begin(), tmp.end(),
     [](const AbstractFSNodePtr& node1, const AbstractFSNodePtr& node2)
@@ -69,7 +115,7 @@ bool FilesystemNode::getChildren(FSList& fslist, ListMode mode,
   );
 
   // Add parent node, if it is valid to do so
-  if (hasParent())
+  if (includeParentDirectory && hasParent())
   {
     FilesystemNode parent = getParent();
     parent.setName(" [..]");
@@ -209,35 +255,117 @@ bool FilesystemNode::rename(const string& newfile)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-size_t FilesystemNode::read(ByteBuffer& image) const
+size_t FilesystemNode::read(ByteBuffer& buffer) const
 {
-  size_t size = 0;
+  size_t sizeRead = 0;
 
   // File must actually exist
   if (!(exists() && isReadable()))
     throw runtime_error("File not found/readable");
 
   // First let the private subclass attempt to open the file
-  if (_realNode && (size = _realNode->read(image)) > 0)
-    return size;
+  if (_realNode && (sizeRead = _realNode->read(buffer)) > 0)
+    return sizeRead;
 
   // Otherwise, the default behaviour is to read from a normal C++ ifstream
-  image = make_unique<uInt8[]>(512 * 1024);
-  ifstream in(getPath(), std::ios::binary);
+  std::ifstream in(getPath(), std::ios::binary);
   if (in)
   {
     in.seekg(0, std::ios::end);
-    std::streampos length = in.tellg();
+    sizeRead = static_cast<size_t>(in.tellg());
     in.seekg(0, std::ios::beg);
 
-    if (length == 0)
+    if (sizeRead == 0)
       throw runtime_error("Zero-byte file");
 
-    size = std::min<size_t>(length, 512 * 1024);
-    in.read(reinterpret_cast<char*>(image.get()), size);
+    buffer = make_unique<uInt8[]>(sizeRead);
+    in.read(reinterpret_cast<char*>(buffer.get()), sizeRead);
   }
   else
     throw runtime_error("File open/read error");
 
-  return size;
+  return sizeRead;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+size_t FilesystemNode::read(stringstream& buffer) const
+{
+  size_t sizeRead = 0;
+
+  // File must actually exist
+  if (!(exists() && isReadable()))
+    throw runtime_error("File not found/readable");
+
+  // First let the private subclass attempt to open the file
+  if (_realNode && (sizeRead = _realNode->read(buffer)) > 0)
+    return sizeRead;
+
+  // Otherwise, the default behaviour is to read from a normal C++ ifstream
+  // and convert to a stringstream
+  std::ifstream in(getPath());
+  if (in)
+  {
+    in.seekg(0, std::ios::end);
+    sizeRead = static_cast<size_t>(in.tellg());
+    in.seekg(0, std::ios::beg);
+
+    if (sizeRead == 0)
+      throw runtime_error("Zero-byte file");
+
+    buffer << in.rdbuf();
+  }
+  else
+    throw runtime_error("File open/read error");
+
+  return sizeRead;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+size_t FilesystemNode::write(const ByteBuffer& buffer, size_t size) const
+{
+  size_t sizeWritten = 0;
+
+  // First let the private subclass attempt to open the file
+  if (_realNode && (sizeWritten = _realNode->write(buffer, size)) > 0)
+    return sizeWritten;
+
+  // Otherwise, the default behaviour is to write to a normal C++ ofstream
+  std::ofstream out(getPath(), std::ios::binary);
+  if (out)
+  {
+    out.write(reinterpret_cast<const char*>(buffer.get()), size);
+
+    out.seekp(0, std::ios::end);
+    sizeWritten = static_cast<size_t>(out.tellp());
+    out.seekp(0, std::ios::beg);
+  }
+  else
+    throw runtime_error("File open/write error");
+
+  return sizeWritten;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+size_t FilesystemNode::write(const stringstream& buffer) const
+{
+  size_t sizeWritten = 0;
+
+  // First let the private subclass attempt to open the file
+  if (_realNode && (sizeWritten = _realNode->write(buffer)) > 0)
+    return sizeWritten;
+
+  // Otherwise, the default behaviour is to write to a normal C++ ofstream
+  std::ofstream out(getPath());
+  if (out)
+  {
+    out << buffer.rdbuf();
+
+    out.seekp(0, std::ios::end);
+    sizeWritten = static_cast<size_t>(out.tellp());
+    out.seekp(0, std::ios::beg);
+  }
+  else
+    throw runtime_error("File open/write error");
+
+  return sizeWritten;
 }

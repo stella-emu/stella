@@ -48,6 +48,10 @@ class Paddles : public Controller
     virtual ~Paddles() = default;
 
   public:
+    static constexpr float BASE_ANALOG_SENSE = 0.148643628F;
+    static constexpr int MAX_ANALOG_SENSE = 30;
+    static constexpr int MIN_ANALOG_CENTER = -10;
+    static constexpr int MAX_ANALOG_CENTER = 30;
     static constexpr int MAX_DIGITAL_SENSE = 20;
     static constexpr int MAX_MOUSE_SENSE = 20;
     static constexpr int MIN_DEJITTER = 0;
@@ -89,6 +93,28 @@ class Paddles : public Controller
                          Controller::Type ytype, int yid) override;
 
     /**
+      Sets the x-center for analog paddles.
+
+      @param xcenter  Value from -10 to 30, representing the center offset/860
+    */
+    static void setAnalogXCenter(int xcenter);
+
+    /**
+      Sets the y-center for analog paddles.
+
+      @param ycenter  Value from -10 to 30, representing the center offset/860
+    */
+    static void setAnalogYCenter(int ycenter);
+
+    /**
+      Sets the sensitivity for analog paddles.
+
+      @param sensitivity  Value from 0 to 30, where 20 equals 1
+      @return  Resulting sensitivity
+    */
+    static float setAnalogSensitivity(int sensitivity);
+
+    /**
       @param strength  Value from 0 to 10
     */
     static void setDejitterBase(int strength);
@@ -127,7 +153,7 @@ class Paddles : public Controller
       @param range  Value from 1 to 100, representing the percentage
                     of the range to use
     */
-    static void setPaddleRange(int range);
+    static void setDigitalPaddleRange(int range);
 
     static constexpr double MAX_RESISTANCE = 1400000.0;
 
@@ -156,13 +182,13 @@ class Paddles : public Controller
     int myLastAxisX{0}, myLastAxisY{0};
     int myAxisDigitalZero{0}, myAxisDigitalOne{0};
 
+    static int XCENTER;
+    static int YCENTER;
+    static float SENSITIVITY;
+
     static int DIGITAL_SENSITIVITY, DIGITAL_DISTANCE;
     static int DEJITTER_BASE, DEJITTER_DIFF;
     static int MOUSE_SENSITIVITY;
-
-    // Lookup table for associating paddle buttons with controller pins
-    // Yes, this is hideously complex
-    static const std::array<Controller::DigitalPin, 2> ourButtonPin;
 
   private:
     // Following constructors and assignment operators not supported

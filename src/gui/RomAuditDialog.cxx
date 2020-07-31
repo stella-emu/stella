@@ -25,6 +25,7 @@
 #include "FSNode.hxx"
 #include "Font.hxx"
 #include "MessageBox.hxx"
+#include "OSystem.hxx"
 #include "FrameBuffer.hxx"
 #include "MD5.hxx"
 #include "Props.hxx"
@@ -40,15 +41,15 @@ RomAuditDialog::RomAuditDialog(OSystem& osystem, DialogContainer& parent,
     myMaxWidth(max_w),
     myMaxHeight(max_h)
 {
-  const int VBORDER = 10 + _th;
-  const int HBORDER = 10;
-
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
             fontHeight   = font.getFontHeight(),
-            buttonWidth  = font.getStringWidth("Audit path" + ELLIPSIS) + 20,
-            buttonHeight = font.getLineHeight() + 4,
+            buttonWidth  = font.getStringWidth("Audit path" + ELLIPSIS) + fontWidth * 2.5,
+            buttonHeight = font.getLineHeight() * 1.25,
             lwidth = font.getStringWidth("ROMs without properties (skipped) ");
+  const int VBORDER = _th + fontHeight / 2;
+  const int HBORDER = fontWidth * 1.25;
+
   int xpos, ypos = VBORDER;
   WidgetArray wid;
 
@@ -62,28 +63,24 @@ RomAuditDialog::RomAuditDialog(OSystem& osystem, DialogContainer& parent,
                      "Audit path" + ELLIPSIS, kChooseAuditDirCmd);
   wid.push_back(romButton);
   xpos = HBORDER + buttonWidth + 8;
-  myRomPath = new EditTextWidget(this, font, xpos, ypos + 1,
+  myRomPath = new EditTextWidget(this, font, xpos, ypos + (buttonHeight - lineHeight) / 2 - 1,
                                  _w - xpos - HBORDER, lineHeight, "");
   wid.push_back(myRomPath);
 
   // Show results of ROM audit
   ypos += buttonHeight + 16;
-  new StaticTextWidget(this, font, HBORDER, ypos, lwidth, fontHeight,
-                       "ROMs with properties (renamed) ", TextAlign::Left);
+  new StaticTextWidget(this, font, HBORDER, ypos, "ROMs with properties (renamed) ");
   myResults1 = new EditTextWidget(this, font, HBORDER + lwidth, ypos - 2,
                                   fontWidth * 6, lineHeight, "");
   myResults1->setEditable(false, true);
   ypos += buttonHeight;
-  new StaticTextWidget(this, font, HBORDER, ypos, lwidth, fontHeight,
-                       "ROMs without properties (skipped) ", TextAlign::Left);
+  new StaticTextWidget(this, font, HBORDER, ypos, "ROMs without properties (skipped) ");
   myResults2 = new EditTextWidget(this, font, HBORDER + lwidth, ypos - 2,
                                   fontWidth * 6, lineHeight, "");
   myResults2->setEditable(false, true);
 
   ypos += buttonHeight + 8;
-  new StaticTextWidget(this, font, HBORDER, ypos, _w - 20, fontHeight,
-                       "(*) WARNING: Operation cannot be undone!",
-                       TextAlign::Left);
+  new StaticTextWidget(this, font, HBORDER, ypos, "(*) WARNING: Operation cannot be undone!");
 
   // Add OK and Cancel buttons
   addOKCancelBGroup(wid, font, "Audit", "Close");
@@ -99,7 +96,7 @@ RomAuditDialog::~RomAuditDialog()
 void RomAuditDialog::loadConfig()
 {
   const string& currentdir =
-    instance().launcher().currentNode().getShortPath();
+    instance().launcher().currentDir().getShortPath();
   const string& path = currentdir == "" ?
     instance().settings().getString("romdir") : currentdir;
 

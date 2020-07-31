@@ -17,6 +17,7 @@
 
 #include "M6502.hxx"
 #include "System.hxx"
+#include "Settings.hxx"
 #include "CartAR.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -35,13 +36,13 @@ CartridgeAR::CartridgeAR(const ByteBuffer& image, size_t size,
     std::copy_n(ourDefaultHeader.data(), ourDefaultHeader.size(),
                 myLoadImages.get()+myImage.size());
 
-  // We use System::PageAccess.codeAccessBase, but don't allow its use
+  // We use System::PageAccess.romAccessBase, but don't allow its use
   // through a pointer, since the AR scheme doesn't support bankswitching
   // in the normal sense
   //
   // Instead, access will be through the getAccessFlags and setAccessFlags
   // methods below
-  createCodeAccessBase(mySize);
+  createRomAccessArrays(mySize);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -190,19 +191,21 @@ bool CartridgeAR::poke(uInt16 addr, uInt8)
   return modified;
 }
 
+#ifdef DEBUGGER_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 CartridgeAR::getAccessFlags(uInt16 address) const
+Device::AccessFlags CartridgeAR::getAccessFlags(uInt16 address) const
 {
-  return myCodeAccessBase[(address & 0x07FF) +
+  return myRomAccessBase[(address & 0x07FF) +
            myImageOffset[(address & 0x0800) ? 1 : 0]];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeAR::setAccessFlags(uInt16 address, uInt8 flags)
+void CartridgeAR::setAccessFlags(uInt16 address, Device::AccessFlags flags)
 {
-  myCodeAccessBase[(address & 0x07FF) +
+  myRomAccessBase[(address & 0x07FF) +
     myImageOffset[(address & 0x0800) ? 1 : 0]] |= flags;
 }
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeAR::bankConfiguration(uInt8 configuration)
@@ -389,7 +392,7 @@ void CartridgeAR::loadIntoRAM(uInt8 load)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeAR::bank(uInt16 bank)
+bool CartridgeAR::bank(uInt16 bank, uInt16)
 {
   if(!bankLocked())
     return bankConfiguration(uInt8(bank));
@@ -404,7 +407,7 @@ uInt16 CartridgeAR::getBank(uInt16) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeAR::bankCount() const
+uInt16 CartridgeAR::romBankCount() const
 {
   return 32;
 }
@@ -417,10 +420,10 @@ bool CartridgeAR::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgeAR::getImage(size_t& size) const
+const ByteBuffer& CartridgeAR::getImage(size_t& size) const
 {
   size = mySize;
-  return myLoadImages.get();
+  return myLoadImages;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

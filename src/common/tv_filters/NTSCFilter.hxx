@@ -47,12 +47,24 @@ class NTSCFilter
       BAD,
       CUSTOM
     };
+    enum class Adjustables {
+      SHARPNESS,
+      RESOLUTION,
+      ARTIFACTS,
+      FRINGING,
+      BLEEDING,
+      NUM_ADJUSTABLES
+    };
 
     /* Normally used in conjunction with custom mode, contains all
        aspects currently adjustable in NTSC TV emulation. */
     struct Adjustable {
+    #ifdef BLARGG_PALETTE
       uInt32 hue, saturation, contrast, brightness, gamma,
              sharpness, resolution, artifacts, fringing, bleed;
+    #else
+      uInt32 sharpness, resolution, artifacts, fringing, bleed;
+    #endif
     };
 
   public:
@@ -86,10 +98,12 @@ class NTSCFilter
     // Changes are made this way since otherwise 20 key-combinations
     // would be needed to dynamically change each setting, and now
     // only 4 combinations are necessary
-    string setNextAdjustable();
-    string setPreviousAdjustable();
-    string increaseAdjustable();
-    string decreaseAdjustable();
+    void selectAdjustable(int direction,
+                          string& text, string& valueText, Int32& value);
+    void changeAdjustable(int adjustable, int direction,
+                          string& text, string& valueText, Int32& newValue);
+    void changeCurrentAdjustable(int direction,
+                                 string& text, string& valueText, Int32& newValue);
 
     // Load and save NTSC-related settings
     void loadConfig(const Settings& settings);
@@ -139,7 +153,11 @@ class NTSCFilter
       float* value{nullptr};
     };
     uInt32 myCurrentAdjustable{0};
+  #ifdef BLARGG_PALETTE
     static const std::array<AdjustableTag, 10> ourCustomAdjustables;
+  #else
+    static const std::array<AdjustableTag, 5> ourCustomAdjustables;
+  #endif
 
   private:
     // Following constructors and assignment operators not supported

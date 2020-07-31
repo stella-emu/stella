@@ -73,3 +73,15 @@ bool SerialPortMACOS::writeByte(uInt8 data)
   }
   return false;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool SerialPortMACOS::isCTS()
+{
+  if(myHandle)
+  {
+    int status = 0;
+    ioctl(myHandle, TIOCMGET, &status);
+    return status & TIOCM_CTS;
+  }
+  return false;
+}

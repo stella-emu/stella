@@ -147,3 +147,14 @@ Controller::Type Controller::getType(const string& propName)
 
   return Type::Unknown;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Controller::setAutoFireRate(int rate, bool isNTSC)
+{
+  rate = BSPF::clamp(rate, 0, isNTSC ? 30 : 25);
+  AUTO_FIRE_RATE = 32 * 1024 * rate / (isNTSC ? 60 : 50);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int Controller::AUTO_FIRE_RATE = 0;
+

@@ -72,11 +72,13 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
 {
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
   const int lineHeight = _font.getLineHeight(),
+    fontHeight = _font.getFontHeight(),
     fontWidth = _font.getMaxCharWidth(),
-    infoLineHeight = ifont.getLineHeight();
-  const int VBORDER = 10;
-  const int HBORDER = 10;
-  const int VGAP = 4;
+    infoLineHeight = ifont.getLineHeight(),
+    buttonHeight = _font.getLineHeight() * 1.25;
+  const int VBORDER = fontHeight / 2;
+  const int HBORDER = fontWidth * 1.25;
+  const int VGAP = fontHeight / 4;
 
   int xpos, ypos;
   WidgetArray wid;
@@ -87,7 +89,7 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
 
   StaticTextWidget* s = new StaticTextWidget(this, _font, xpos, ypos + 1, "Variation ");
   myVariationPopup = new PopUpWidget(this, _font, s->getRight(), ypos,
-                                      _font.getStringWidth("256") - 4, lineHeight, items, "", 0,
+                                      _font.getStringWidth("256"), lineHeight, items, "", 0,
                                       kVariationChanged);
   wid.push_back(myVariationPopup);
   myPrevVarButton = new ButtonWidget(this, _font, myVariationPopup->getRight() + 157, ypos - 1,
@@ -147,7 +149,7 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
   myMD5Widget = new StaticTextWidget(this, ifont, xpos, ypos + 1,
                                      "MD5:  12345678901234567890123456789012");
 
-  _h = myMD5Widget->getBottom() + VBORDER + buttonHeight(_font) + VBORDER;
+  _h = myMD5Widget->getBottom() + VBORDER + buttonHeight + VBORDER;
 
   myGameNameWidget = new StaticTextWidget(this, _font, HBORDER, VBORDER + _th + 1,
                                           _w - HBORDER * 2, lineHeight);
@@ -472,7 +474,7 @@ string HighScoresDialog::cartName() const
 
     instance().propSet().getMD5(myMD5, props);
     if(props.get(PropType::Cart_Name).empty())
-      return instance().launcher().currentNode().getNameWithExt("");
+      return instance().launcher().currentDir().getNameWithExt("");
     else
       return props.get(PropType::Cart_Name);
   }
