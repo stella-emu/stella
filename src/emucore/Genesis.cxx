@@ -53,7 +53,7 @@ void Genesis::update()
   setPin(DigitalPin::Two, myEvent.get(myDownEvent) == 0);
   setPin(DigitalPin::Three, myEvent.get(myLeftEvent) == 0);
   setPin(DigitalPin::Four, myEvent.get(myRightEvent) == 0);
-  setPin(DigitalPin::Six, myEvent.get(myFire1Event) == 0);
+  bool firePressed = myEvent.get(myFire1Event) != 0;
 
   // The Genesis has one more button (C) that can be read by the 2600
   // However, it seems to work opposite to the BoosterGrip controller,
@@ -88,11 +88,12 @@ void Genesis::update()
       }
     }
     // Get mouse button state
-    if(myEvent.get(Event::MouseButtonLeftValue))
-      setPin(DigitalPin::Six, false);
+    firePressed = firePressed
+      || myEvent.get(Event::MouseButtonLeftValue);
     if(myEvent.get(Event::MouseButtonRightValue))
       setPin(AnalogPin::Five, MAX_RESISTANCE);
   }
+  setPin(DigitalPin::Six, !getAutoFireState(firePressed));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

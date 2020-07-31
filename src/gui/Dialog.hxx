@@ -146,6 +146,11 @@ class Dialog : public GuiObject
 
     Widget* findWidget(int x, int y) const; // Find the widget at pos x,y if any
 
+
+    void addOKBGroup(WidgetArray& wid, const GUI::Font& font,
+                     const string& okText = "OK",
+                     int buttonWidth = 0);
+
     void addOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
                            const string& okText = "OK",
                            const string& cancelText = "Cancel",
@@ -159,7 +164,16 @@ class Dialog : public GuiObject
                                    bool focusOKButton = true);
     int buttonHeight(const GUI::Font& font) const;
 
-    void processCancelWithoutWidget(bool state) { _processCancel = state; }
+    // NOTE: This method, and the three above it, are due to be refactored at some
+    //       point, since the parameter list is kind of getting ridiculous
+    void addDefaultsExtraOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
+                                        const string& extraText, int extraCmd,
+                                        const string& okText = "OK",
+                                        const string& cancelText = "Cancel",
+                                        const string& defaultsText = "Defaults",
+                                        bool focusOKButton = true);
+
+    void processCancelWithoutWidget(bool state = true) { _processCancel = state; }
     virtual void processCancel() { close(); }
 
     /** Define the size (allowed) for the dialog. */

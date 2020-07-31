@@ -18,6 +18,11 @@
 #ifndef LIGHTGUN_HXX
 #define LIGHTGUN_HXX
 
+class FrameBuffer;
+
+#include "bspf.hxx"
+#include "Control.hxx"
+
 /**
   This class handles the lightgun controller
 

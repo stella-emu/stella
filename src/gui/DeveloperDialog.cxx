@@ -39,7 +39,6 @@
 #include "M6502.hxx"
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
-  #include "CartDebug.hxx"
   #include "DebuggerDialog.hxx"
 #endif
 #include "DeveloperDialog.hxx"
@@ -49,18 +48,26 @@ DeveloperDialog::DeveloperDialog(OSystem& osystem, DialogContainer& parent,
                                  const GUI::Font& font, int max_w, int max_h)
   : Dialog(osystem, parent, font, "Developer settings")
 {
-  const int VGAP = 4;
   const int lineHeight = font.getLineHeight(),
-    fontWidth = font.getMaxCharWidth(),
-    buttonHeight = font.getLineHeight() + 4;
+            fontHeight = font.getFontHeight(),
+            fontWidth = font.getMaxCharWidth(),
+            buttonHeight = font.getLineHeight() * 1.25;
+  const int VBORDER = fontHeight / 2;
+  const int HBORDER = fontWidth * 1.25;
+  const int VGAP = fontHeight / 4;
+
   int xpos, ypos;
 
   // Set real dimensions
-  setSize(54 * fontWidth + 10, 16 * (lineHeight + VGAP) + 14 + _th, max_w, max_h);
+  setSize(53 * fontWidth + HBORDER * 2,
+          _th + VGAP * 3 + lineHeight + 13 * (lineHeight + VGAP) + buttonHeight + VBORDER * 3,
+          max_w, max_h);
 
   // The tab widget
-  xpos = 2; ypos = 4;
-  myTab = new TabWidget(this, font, xpos, ypos + _th, _w - 2 * xpos, _h - _th - buttonHeight - 16 - ypos);
+  xpos = 2; ypos = VGAP;
+  myTab = new TabWidget(this, font, xpos, ypos + _th,
+                        _w - 2 * xpos,
+                        _h - _th - VGAP - buttonHeight - VBORDER * 2);
   addTabWidget(myTab);
 
   addEmulationTab(font);
@@ -80,12 +87,15 @@ DeveloperDialog::DeveloperDialog(OSystem& osystem, DialogContainer& parent,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::addEmulationTab(const GUI::Font& font)
 {
-  const int HBORDER = 10;
-  const int INDENT = 16+4;
-  const int VBORDER = 8;
-  const int VGAP = 4;
+  const int lineHeight = font.getLineHeight(),
+            fontHeight = font.getFontHeight(),
+            fontWidth = font.getMaxCharWidth();
+  const int VBORDER = fontHeight / 2;
+  const int HBORDER = fontWidth * 1.25;
+  const int INDENT = fontWidth * 2;
+  const int VGAP = fontHeight / 4;
+
   int ypos = VBORDER;
-  int lineHeight = font.getLineHeight();
   WidgetArray wid;
   VariantList items;
   int tabID = myTab->addTab(" Emulation ", TabWidget::AUTO_WIDTH);
@@ -101,8 +111,15 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   wid.push_back(r);
   ypos += lineHeight + VGAP * 1;
 
-  myFrameStatsWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1, "Console info overlay");
+  myFrameStatsWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1,
+                                          "Console info overlay");
   wid.push_back(myFrameStatsWidget);
+
+
+  myDetectedInfoWidget = new CheckboxWidget(myTab, font,
+                                            myFrameStatsWidget->getRight() + fontWidth * 2.5, ypos + 1,
+                                            "Detected settings info");
+  wid.push_back(myDetectedInfoWidget);
   ypos += lineHeight + VGAP;
 
   // 2600/7800 mode
@@ -137,13 +154,13 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   myRandomizeCPULabel = new StaticTextWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1, "Randomize CPU ");
   wid.push_back(myRandomizeCPULabel);
 
-  int xpos = myRandomizeCPULabel->getRight() + 10;
+  int xpos = myRandomizeCPULabel->getRight() + fontWidth * 1.25;
   for(int i = 0; i < 5; ++i)
   {
     myRandomizeCPUWidget[i] = new CheckboxWidget(myTab, font, xpos, ypos + 1,
                                            ourCPUregs[i], kRandCPUID);
     wid.push_back(myRandomizeCPUWidget[i]);
-    xpos += CheckboxWidget::boxSize() + font.getStringWidth("XX") + 20;
+    xpos += CheckboxWidget::boxSize(font) + font.getStringWidth("XX") + fontWidth * 2.5;
   }
   ypos += lineHeight + VGAP;
 
@@ -183,12 +200,15 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::addTiaTab(const GUI::Font& font)
 {
-  const int HBORDER = 10;
-  const int INDENT = 16 + 4;
-  const int VBORDER = 8;
-  const int VGAP = 4;
+  const int lineHeight = font.getLineHeight(),
+            fontHeight = font.getFontHeight(),
+            fontWidth = font.getMaxCharWidth();
+  const int VBORDER = fontHeight / 2;
+  const int HBORDER = fontWidth * 1.25;
+  const int INDENT = fontWidth * 2;
+  const int VGAP = fontHeight / 4;
+
   int ypos = VBORDER;
-  int lineHeight = font.getLineHeight();
   int pwidth = font.getStringWidth("Faulty Cosmic Ark stars");
   WidgetArray wid;
   VariantList items;
@@ -251,8 +271,9 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
   wid.push_back(myPFColorWidget);
   ypos += lineHeight + VGAP * 1;
 
-  mySwapLabel = new StaticTextWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
-                                     "Delayed VDEL" + ELLIPSIS + " swap for");
+  ostringstream ss;
+  ss << "Delayed VDEL" << ELLIPSIS << " swap for";
+  mySwapLabel = new StaticTextWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1, ss.str());
   wid.push_back(mySwapLabel);
   ypos += lineHeight + VGAP * 1;
 
@@ -269,13 +290,15 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::addVideoTab(const GUI::Font& font)
 {
-  const int HBORDER = 10;
-  const int INDENT = 16 + 4;
-  const int VBORDER = 8;
-  const int VGAP = 4;
+  const int lineHeight = font.getLineHeight(),
+            fontHeight = font.getFontHeight(),
+            fontWidth = font.getMaxCharWidth();
+  const int VBORDER = fontHeight / 2;
+  const int HBORDER = fontWidth * 1.25;
+  const int INDENT = fontWidth * 2;
+  const int VGAP = fontHeight / 4;
+
   int ypos = VBORDER;
-  int lineHeight = font.getLineHeight();
-  int fontWidth = font.getMaxCharWidth(), fontHeight = font.getFontHeight();
   int lwidth = font.getStringWidth("Intensity ");
   int pwidth = font.getMaxCharWidth() * 6;
   WidgetArray wid;
@@ -341,7 +364,7 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
     myDbgColour[idx] = new PopUpWidget(myTab, font, x, ypos - 1,
                                        pwidth, lineHeight, items, desc, lwidth, dbg_cmds[idx]);
     wid.push_back(myDbgColour[idx]);
-    x += myDbgColour[idx]->getWidth() + 10;
+    x += myDbgColour[idx]->getWidth() + fontWidth * 1.25;
     myDbgColourSwatch[idx] = new ColorWidget(myTab, font, x, ypos - 1,
                                              uInt32(2 * lineHeight), lineHeight);
     ypos += lineHeight + VGAP * 1;
@@ -356,8 +379,11 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
 
   // Add message concerning usage
   const GUI::Font& infofont = instance().frameBuffer().infoFont();
-  ypos = myTab->getHeight() - 5 - fontHeight - infofont.getFontHeight() - 10;
-  new StaticTextWidget(myTab, infofont, HBORDER, ypos, "(*) Colors identical for player and developer settings");
+  ypos = myTab->getHeight() - fontHeight - infofont.getFontHeight() - VGAP - VBORDER;
+  lwidth = infofont.getStringWidth("(*) Colors identical for player and developer settings");
+  new StaticTextWidget(myTab, infofont, HBORDER, ypos,
+                       std::min(lwidth, _w - HBORDER * 2), infofont.getFontHeight(),
+                       "(*) Colors identical for player and developer settings");
 
   // Add items for tab 2
   addToFocusList(wid, myTab, tabID);
@@ -404,37 +430,41 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
     "30m",
     "60m"
   };
-  const int HBORDER = 10;
-  const int INDENT = 16+4;
-  const int VBORDER = 8;
-  const int VGAP = 4;
-  int ypos = VBORDER;
-  int lineHeight = font.getLineHeight(),
-    fontHeight = font.getFontHeight(),
-    fontWidth = font.getMaxCharWidth(),
-    lwidth = fontWidth * 11;
+  const int lineHeight = font.getLineHeight(),
+            fontHeight = font.getFontHeight(),
+            fontWidth = font.getMaxCharWidth();
+  const int VBORDER = fontHeight / 2;
+  const int HBORDER = fontWidth * 1.25;
+  const int INDENT = fontWidth * 2;
+  const int VGAP = fontHeight / 4;
+
+  int xpos = HBORDER,
+      ypos = VBORDER,
+      lwidth = fontWidth * 11;
   WidgetArray wid;
   VariantList items;
   int tabID = myTab->addTab(" Time Machine ", TabWidget::AUTO_WIDTH);
 
   // settings set
   mySettingsGroupTM = new RadioButtonGroup();
-  RadioButtonWidget* r = new RadioButtonWidget(myTab, font, HBORDER, ypos + 1,
+  RadioButtonWidget* r = new RadioButtonWidget(myTab, font, xpos, ypos + 1,
                                                "Player settings", mySettingsGroupTM, kPlrSettings);
   wid.push_back(r);
   ypos += lineHeight + VGAP;
-  r = new RadioButtonWidget(myTab, font, HBORDER, ypos + 1,
+  r = new RadioButtonWidget(myTab, font, xpos, ypos + 1,
                             "Developer settings", mySettingsGroupTM, kDevSettings);
   wid.push_back(r);
+  xpos += INDENT;
   ypos += lineHeight + VGAP * 1;
 
-  myTimeMachineWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT, ypos + 1,
+  myTimeMachineWidget = new CheckboxWidget(myTab, font, xpos, ypos + 1,
                                            "Time Machine", kTimeMachine);
   wid.push_back(myTimeMachineWidget);
+  xpos += CheckboxWidget::prefixSize(font);
   ypos += lineHeight + VGAP;
 
   int swidth = fontWidth * 12 + 5; // width of PopUpWidgets below
-  myStateSizeWidget = new SliderWidget(myTab, font, HBORDER + INDENT * 2, ypos - 1, swidth, lineHeight,
+  myStateSizeWidget = new SliderWidget(myTab, font, xpos,  ypos - 1, swidth, lineHeight,
                                        "Buffer size (*)   ", 0, kSizeChanged, lwidth, " states");
   myStateSizeWidget->setMinValue(20);
 #ifdef RETRON77
@@ -447,7 +477,7 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
   wid.push_back(myStateSizeWidget);
   ypos += lineHeight + VGAP;
 
-  myUncompressedWidget = new SliderWidget(myTab, font, HBORDER + INDENT * 2, ypos - 1, swidth, lineHeight,
+  myUncompressedWidget = new SliderWidget(myTab, font, xpos, ypos - 1, swidth, lineHeight,
                                           "Uncompressed size ", 0, kUncompressedChanged, lwidth, " states");
   myUncompressedWidget->setMinValue(0);
 #ifdef RETRON77
@@ -464,7 +494,7 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
   for(int i = 0; i < NUM_INTERVALS; ++i)
     VarList::push_back(items, INTERVALS[i], INT_SETTINGS[i]);
   int pwidth = font.getStringWidth("10 seconds");
-  myStateIntervalWidget = new PopUpWidget(myTab, font, HBORDER + INDENT * 2, ypos, pwidth,
+  myStateIntervalWidget = new PopUpWidget(myTab, font, xpos, ypos, pwidth,
                                           lineHeight, items, "Interval          ", 0, kIntervalChanged);
   wid.push_back(myStateIntervalWidget);
   ypos += lineHeight + VGAP;
@@ -472,37 +502,17 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
   items.clear();
   for(int i = 0; i < NUM_HORIZONS; ++i)
     VarList::push_back(items, HORIZONS[i], HOR_SETTINGS[i]);
-  myStateHorizonWidget = new PopUpWidget(myTab, font, HBORDER + INDENT * 2, ypos, pwidth,
+  myStateHorizonWidget = new PopUpWidget(myTab, font, xpos, ypos, pwidth,
                                          lineHeight, items, "Horizon         ~ ", 0, kHorizonChanged);
   wid.push_back(myStateHorizonWidget);
 
-  ypos += lineHeight + VGAP * 2;
-  new StaticTextWidget(myTab, font, HBORDER, ypos + 1,
-    "When entering/exiting emulation:");
-  ypos += lineHeight + VGAP;
-  mySaveOnExitGroup = new RadioButtonGroup();
-  r = new RadioButtonWidget(myTab, font, HBORDER + INDENT, ypos + 1,
-    "Do nothing", mySaveOnExitGroup);
-  wid.push_back(r);
-  ypos += lineHeight + VGAP;
-  r = new RadioButtonWidget(myTab, font, HBORDER + INDENT, ypos + 1,
-    "Save current state in current slot", mySaveOnExitGroup);
-  wid.push_back(r);
-  ypos += lineHeight + VGAP;
-  r = new RadioButtonWidget(myTab, font, HBORDER + INDENT, ypos + 1,
-    "Load/save all Time Machine states", mySaveOnExitGroup);
-  wid.push_back(r);
-  ypos += lineHeight + VGAP;
-
-
-  myAutoSlotWidget = new CheckboxWidget(myTab, font, HBORDER, ypos + 1, "Automatically change save state slots");
-  wid.push_back(myAutoSlotWidget);
-  ypos += lineHeight + VGAP;
-
   // Add message concerning usage
   const GUI::Font& infofont = instance().frameBuffer().infoFont();
-  ypos = myTab->getHeight() - 5 - fontHeight - infofont.getFontHeight() - 10;
-  new StaticTextWidget(myTab, infofont, HBORDER, ypos, "(*) Any size change clears the buffer");
+  ypos = myTab->getHeight() - fontHeight - infofont.getFontHeight() - VGAP - VBORDER;
+  lwidth = infofont.getStringWidth("(*) Any size change clears the buffer");
+  new StaticTextWidget(myTab, infofont, HBORDER, ypos,
+                       std::min(lwidth, _w - HBORDER * 2), infofont.getFontHeight(),
+                       "(*) Any size change clears the buffer");
 
   addToFocusList(wid, myTab, tabID);
 }
@@ -514,14 +524,14 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   WidgetArray wid;
 
 #ifdef DEBUGGER_SUPPORT
-  const int HBORDER = 10;
-  const int VBORDER = 8;
-  const int VGAP = 4;
+  const int lineHeight = font.getLineHeight(),
+            fontHeight = font.getFontHeight(),
+            fontWidth = font.getMaxCharWidth();
+  const int VBORDER = fontHeight / 2;
+  const int HBORDER = fontWidth * 1.25;
+  const int VGAP = fontHeight / 4;
 
   VariantList items;
-  int fontWidth = font.getMaxCharWidth(),
-    fontHeight = font.getFontHeight(),
-    lineHeight = font.getLineHeight();
   int xpos, ypos, pwidth;
   const Common::Size& ds = instance().frameBuffer().desktopSize();
 
@@ -538,7 +548,7 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
     new PopUpWidget(myTab, font, HBORDER, ypos + 1, pwidth, lineHeight, items,
                     "Font size (*)  ", 0, kDFontSizeChanged);
   wid.push_back(myDebuggerFontSize);
-  ypos += lineHeight + 4;
+  ypos += lineHeight + VGAP;
 
   // Font style (bold label vs. text, etc)
   items.clear();
@@ -581,8 +591,8 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
 
   // Add message concerning usage
   const GUI::Font& infofont = instance().frameBuffer().infoFont();
-  ypos = myTab->getHeight() - 5 - fontHeight - infofont.getFontHeight() - 10;
-  new StaticTextWidget(myTab, infofont, HBORDER, ypos, "(*) Changes require a ROM reload");
+  ypos = myTab->getHeight() - fontHeight - infofont.getFontHeight() - VGAP - VBORDER;
+  new StaticTextWidget(myTab, infofont, HBORDER, ypos, "(*) Change requires a ROM reload");
 
 #if defined(DEBUGGER_SUPPORT) && defined(WINDOWED_SUPPORT)
   // Debugger is only realistically available in windowed modes 800x600 or greater
@@ -608,6 +618,7 @@ void DeveloperDialog::loadSettings(SettingsSet set)
   const string& prefix = devSettings ? "dev." : "plr.";
 
   myFrameStats[set] = instance().settings().getBool(prefix + "stats");
+  myDetectedInfo[set] = instance().settings().getBool(prefix + "detectedinfo");
   myConsole[set] = instance().settings().getString(prefix + "console") == "7800" ? 1 : 0;
   // Randomization
   myRandomBank[set] = instance().settings().getBool(prefix + "bankrandom");
@@ -650,8 +661,6 @@ void DeveloperDialog::loadSettings(SettingsSet set)
   myUncompressed[set] = instance().settings().getInt(prefix + "tm.uncompressed");
   myStateInterval[set] = instance().settings().getString(prefix + "tm.interval");
   myStateHorizon[set] = instance().settings().getString(prefix + "tm.horizon");
-
-
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -661,6 +670,7 @@ void DeveloperDialog::saveSettings(SettingsSet set)
   const string& prefix = devSettings ? "dev." : "plr.";
 
   instance().settings().setValue(prefix + "stats", myFrameStats[set]);
+  instance().settings().setValue(prefix + "detectedinfo", myDetectedInfo[set]);
   instance().settings().setValue(prefix + "console", myConsole[set] == 1 ? "7800" : "2600");
   if(instance().hasConsole())
     instance().eventHandler().set7800Mode();
@@ -723,6 +733,7 @@ void DeveloperDialog::saveSettings(SettingsSet set)
 void DeveloperDialog::getWidgetStates(SettingsSet set)
 {
   myFrameStats[set] = myFrameStatsWidget->getState();
+  myDetectedInfo[set] = myDetectedInfoWidget->getState();
   myConsole[set] = myConsoleWidget->getSelected() == 1;
   // Randomization
   myRandomBank[set] = myRandomBankWidget->getState();
@@ -774,6 +785,7 @@ void DeveloperDialog::getWidgetStates(SettingsSet set)
 void DeveloperDialog::setWidgetStates(SettingsSet set)
 {
   myFrameStatsWidget->setState(myFrameStats[set]);
+  myDetectedInfoWidget->setState(myDetectedInfo[set]);
   myConsoleWidget->setSelectedIndex(myConsole[set]);
   // Randomization
   myRandomBankWidget->setState(myRandomBank[set]);
@@ -842,12 +854,6 @@ void DeveloperDialog::loadConfig()
 
   // Debug colours
   handleDebugColours(instance().settings().getString("tia.dbgcolors"));
-
-  // Save on exit
-  string saveOnExit = instance().settings().getString("saveonexit");
-  mySaveOnExitGroup->setSelected(saveOnExit == "all" ? 2 : saveOnExit == "current" ? 1 : 0);
-  // Automatically change save state slots
-  myAutoSlotWidget->setState(instance().settings().getBool("autoslot"));
 
 #ifdef DEBUGGER_SUPPORT
   uInt32 w, h;
@@ -925,13 +931,6 @@ void DeveloperDialog::saveConfig()
   instance().state().setRewindMode(myTimeMachineWidget->getState() ?
                                    StateManager::Mode::TimeMachine : StateManager::Mode::Off);
 
-  // Save on exit
-  int saveOnExit = mySaveOnExitGroup->getSelected();
-  instance().settings().setValue("saveonexit",
-    saveOnExit == 0 ? "none" : saveOnExit == 1 ? "current" : "all");
-  // Automatically change save state slots
-  instance().settings().setValue("autoslot", myAutoSlotWidget->getState());
-
 #ifdef DEBUGGER_SUPPORT
   // Debugger font style
   instance().settings().setValue("dbg.fontstyle",
@@ -967,6 +966,7 @@ void DeveloperDialog::setDefaults()
   {
     case 0: // Emulation
       myFrameStats[set] = devSettings ? true : false;
+      myDetectedInfo[set] = devSettings ? true : false;
       myConsole[set] = 0;
       // Randomization
       myRandomBank[set] = devSettings ? true : false;
@@ -1022,8 +1022,6 @@ void DeveloperDialog::setDefaults()
       myStateHorizon[set] = devSettings ? "30s" : "10m";
 
       setWidgetStates(set);
-      mySaveOnExitGroup->setSelected(0);
-      myAutoSlotWidget->setState(false);
       break;
 
     case 4: // Debugger options

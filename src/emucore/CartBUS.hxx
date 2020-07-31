@@ -84,9 +84,12 @@ class CartridgeBUS : public Cartridge
     /**
       Install pages for the specified bank in the system.
 
-      @param bank The bank that should be installed in the system
+      @param bank     The bank that should be installed in the system
+      @param segment  The segment the bank should be using
+
+      @return  true, if bank has changed
     */
-    bool bank(uInt16 bank) override;
+    bool bank(uInt16 bank, uInt16 segment = 0) override;
 
     /**
       Get the current bank.
@@ -98,7 +101,7 @@ class CartridgeBUS : public Cartridge
     /**
       Query the number of banks supported by the cartridge.
     */
-    uInt16 bankCount() const override;
+    uInt16 romBankCount() const override;
 
     /**
       Patch the cartridge ROM.
@@ -113,9 +116,9 @@ class CartridgeBUS : public Cartridge
       Access the internal ROM image for this cartridge.
 
       @param size  Set to the size of the internal ROM image data
-      @return  A pointer to the internal ROM image data
+      @return  A reference to the internal ROM image data
     */
-    const uInt8* getImage(size_t& size) const override;
+    const ByteBuffer& getImage(size_t& size) const override;
 
     /**
       Save the current state of this cart to the given Serializer.
@@ -225,7 +228,7 @@ class CartridgeBUS : public Cartridge
 
   private:
     // The 32K ROM image of the cartridge
-    std::array<uInt8, 32_KB> myImage;
+    ByteBuffer myImage;
 
     // Pointer to the 28K program ROM image of the cartridge
     uInt8* myProgramImage{nullptr};
@@ -234,13 +237,13 @@ class CartridgeBUS : public Cartridge
     uInt8* myDisplayImage{nullptr};
 
     // Pointer to the 2K BUS driver image in RAM
-    uInt8* myBusDriverImage{nullptr};
+    uInt8* myDriverImage{nullptr};
 
     // The BUS 8k RAM image, used as:
     //   $0000 - 2K BUS driver
     //   $0800 - 4K Display Data
     //   $1800 - 2K C Variable & Stack
-    std::array<uInt8, 8_KB> myBUSRAM;
+    std::array<uInt8, 8_KB> myRAM;
 
     // Pointer to the Thumb ARM emulator object
     unique_ptr<Thumbulator> myThumbEmulator;

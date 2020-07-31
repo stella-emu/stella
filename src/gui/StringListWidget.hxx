@@ -39,6 +39,7 @@ class StringListWidget : public ListWidget
 
   protected:
     bool _hilite{false};
+    int  _textOfs{0};
 
   private:
     // Following constructors and assignment operators not supported

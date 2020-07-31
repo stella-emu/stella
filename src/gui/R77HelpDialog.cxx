@@ -38,7 +38,7 @@ R77HelpDialog::R77HelpDialog(OSystem& osystem, DialogContainer& parent,
 
   // Set real dimensions
   _w = 47 * fontWidth + HBORDER * 2;
-  _h = (LINES_PER_PAGE + 2) * lineHeight + 20 + _th;
+  _h = (LINES_PER_PAGE + 2) * lineHeight + 12 + _th;
 
   // Add Previous, Next and Close buttons
   xpos = HBORDER;  ypos = _h - buttonHeight - 10;
@@ -130,6 +130,7 @@ void R77HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
       ADD_BIND("Right", "MODE", "Page down");
       ADD_BIND("Button 1", "SKILL P1", "Start selected game");
       ADD_BIND("\\c2Button 2", "SKILL P2", "Open power-on options");
+      ADD_BIND(" or hold Bu", "tton 1", "");
       ADD_BIND("\\c2Button 4", "Color,B/W", "Open settings");
       break;
 
@@ -144,7 +145,9 @@ void R77HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
       ADD_BIND("Button 1", "SKILL P1", "Select element");
       ADD_BIND("\\c2Button 2", "SKILL P2", "OK");
       ADD_BIND("\\c2Button 3", "4:3,16:9", "Previous tab");
+      ADD_BIND(" or Button ", "1+Left", "");
       ADD_BIND("\\c2Button 4", "FRY", "Next tab");
+      ADD_BIND(" or Button ", "1+Right", "");
       ADD_BIND("\\c2Button 6", "\\c2-", "Cancel");
       break;
 

@@ -232,7 +232,7 @@ void CartridgeCDFWidget::saveOldState()
   }
 
   for(uInt32 i = 0; i < internalRamSize(); ++i)
-    myOldState.internalram.push_back(myCart.myCDFRAM[i]);
+    myOldState.internalram.push_back(myCart.myRAM[i]);
 
   myOldState.samplepointer.push_back(myCart.getSample());
 }
@@ -437,20 +437,20 @@ const ByteArray& CartridgeCDFWidget::internalRamCurrent(int start, int count)
 {
   myRamCurrent.clear();
   for(int i = 0; i < count; i++)
-    myRamCurrent.push_back(myCart.myCDFRAM[start + i]);
+    myRamCurrent.push_back(myCart.myRAM[start + i]);
   return myRamCurrent;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCDFWidget::internalRamSetValue(int addr, uInt8 value)
 {
-  myCart.myCDFRAM[addr] = value;
+  myCart.myRAM[addr] = value;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeCDFWidget::internalRamGetValue(int addr)
 {
-  return myCart.myCDFRAM[addr];
+  return myCart.myRAM[addr];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

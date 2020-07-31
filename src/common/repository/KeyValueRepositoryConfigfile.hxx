@@ -18,13 +18,14 @@
 #ifndef KEY_VALUE_REPOSITORY_CONFIGFILE_HXX
 #define KEY_VALUE_REPOSITORY_CONFIGFILE_HXX
 
+#include "FSNode.hxx"
 #include "KeyValueRepository.hxx"
 
 class KeyValueRepositoryConfigfile : public KeyValueRepository
 {
   public:
 
-    explicit KeyValueRepositoryConfigfile(const string& filename);
+    explicit KeyValueRepositoryConfigfile(const FilesystemNode& file);
 
     std::map<string, Variant> load() override;
 
@@ -34,7 +35,7 @@ class KeyValueRepositoryConfigfile : public KeyValueRepository
 
   private:
 
-    const string& myFilename;
+    FilesystemNode myFile;
 };
 
 #endif // KEY_VALUE_REPOSITORY_CONFIGFILE_HXX

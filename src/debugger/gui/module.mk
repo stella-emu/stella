@@ -22,14 +22,13 @@ MODULE_OBJS := \
 	src/debugger/gui/CartCDFInfoWidget.o \
 	src/debugger/gui/CartCMWidget.o \
 	src/debugger/gui/CartCTYWidget.o \
-	src/debugger/gui/CartCVPlusWidget.o \
 	src/debugger/gui/CartCVWidget.o \
-	src/debugger/gui/CartDASHWidget.o \
 	src/debugger/gui/CartDFSCWidget.o \
 	src/debugger/gui/CartDFWidget.o \
 	src/debugger/gui/CartDPCPlusWidget.o \
 	src/debugger/gui/CartDPCWidget.o \
 	src/debugger/gui/CartE0Widget.o \
+	src/debugger/gui/CartEnhancedWidget.o \
 	src/debugger/gui/CartMNetworkWidget.o \
 	src/debugger/gui/CartE7Widget.o \
 	src/debugger/gui/CartE78KWidget.o \
@@ -49,6 +48,7 @@ MODULE_OBJS := \
 	src/debugger/gui/CartMDMWidget.o \
 	src/debugger/gui/CartRamWidget.o \
 	src/debugger/gui/CartSBWidget.o \
+	src/debugger/gui/CartTVBoyWidget.o \
 	src/debugger/gui/CartUAWidget.o \
 	src/debugger/gui/CartWDWidget.o \
 	src/debugger/gui/CartX07Widget.o \

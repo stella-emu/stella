@@ -48,6 +48,13 @@ class SerialPortMACOS : public SerialPort
     */
     bool writeByte(uInt8 data) override;
 
+  /**
+    Test for 'Clear To Send' enabled.
+
+    @return  True if CTS signal enabled, else false
+  */
+  bool isCTS() override;
+
   private:
     // File descriptor for serial connection
     int myHandle{0};

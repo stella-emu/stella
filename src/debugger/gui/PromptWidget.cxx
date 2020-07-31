@@ -20,6 +20,7 @@
 #include "Font.hxx"
 #include "StellaKeys.hxx"
 #include "Version.hxx"
+#include "OSystem.hxx"
 #include "Debugger.hxx"
 #include "DebuggerDialog.hxx"
 #include "DebuggerParser.hxx"
@@ -33,7 +34,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PromptWidget::PromptWidget(GuiObject* boss, const GUI::Font& font,
                            int x, int y, int w, int h)
-  : Widget(boss, font, x, y, w - kScrollBarWidth, h),
+  : Widget(boss, font, x, y, w - ScrollBarWidget::scrollBarWidth(font), h),
     CommandSender(boss),
     _historySize(0),
     _historyIndex(0),
@@ -53,12 +54,13 @@ PromptWidget::PromptWidget(GuiObject* boss, const GUI::Font& font,
   _kConsoleLineHeight = _kConsoleCharHeight + 2;
 
   // Calculate depending values
-  _lineWidth = (_w - kScrollBarWidth - 2) / _kConsoleCharWidth;
+  _lineWidth = (_w - ScrollBarWidget::scrollBarWidth(_font) - 2) / _kConsoleCharWidth;
   _linesPerPage = (_h - 2) / _kConsoleLineHeight;
   _linesInBuffer = kBufferSize / _lineWidth;
 
   // Add scrollbar
-  _scrollBar = new ScrollBarWidget(boss, font, _x + _w, _y, kScrollBarWidth, _h);
+  _scrollBar = new ScrollBarWidget(boss, font, _x + _w, _y,
+                                   ScrollBarWidget::scrollBarWidth(_font), _h);
   _scrollBar->setTarget(this);
 
   // Init colors
@@ -546,7 +548,7 @@ void PromptWidget::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int PromptWidget::getWidth() const
 {
-  return _w + kScrollBarWidth;
+  return _w + ScrollBarWidget::scrollBarWidth(_font);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -907,10 +909,7 @@ void PromptWidget::scrollToCurrent()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PromptWidget::saveBuffer(const FilesystemNode& file)
 {
-  ofstream out(file.getPath());
-  if(!out.is_open())
-    return false;
-
+  stringstream out;
   for(int start = 0; start < _promptStartPos; start += _lineWidth)
   {
     int end = start + _lineWidth - 1;
@@ -928,7 +927,8 @@ bool PromptWidget::saveBuffer(const FilesystemNode& file)
     out << endl;
   }
 
-  return true;
+  try { return file.write(out) > 0; }
+  catch(...) { return false; }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

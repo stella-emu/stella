@@ -13,41 +13,23 @@
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
 #ifndef FS_NODE_HXX
 #define FS_NODE_HXX
 
+#include <functional>
+
 #include "bspf.hxx"
 
 /*
  * The API described in this header is meant to allow for file system browsing in a
- * portable fashions. To this ends, multiple or single roots have to be supported
+ * portable fashion. To this end, multiple or single roots have to be supported
  * (compare Unix with a single root, Windows with multiple roots C:, D:, ...).
  *
  * To this end, we abstract away from paths; implementations can be based on
- * paths (and it's left to them whether / or \ or : is the path separator :-);
- * but it is also possible to use inodes or vrefs (MacOS 9) or anything else.
- *
- * You may ask now: "isn't this cheating? Why do we go through all this when we use
- * a path in the end anyway?!?".
- * Well, for once as long as we don't provide our own file open/read/write API, we
- * still have to use fopen(). Since all our targets already support fopen(), it should
- * be possible to get a fopen() compatible string for any file system node.
- *
- * Secondly, with this abstraction layer, we still avoid a lot of complications based on
- * differences in FS roots, different path separators, or even systems with no real
- * paths (MacOS 9 doesn't even have the notion of a "current directory").
- * And if we ever want to support devices with no FS in the classical sense (Palm...),
- * we can build upon this.
+ * paths (and it's left to them whether / or \ or : is the path separator :-).
  */
-
-#include <functional>
-
-#include "bspf.hxx"
 
 class FilesystemNode;
 class AbstractFSNode;
@@ -102,12 +84,18 @@ class FilesystemNode
 
     /**
      * Compare the name of this node to the name of another, testing for
-     * equality,
+     * equality.
      */
     inline bool operator==(const FilesystemNode& node) const
     {
       return BSPF::compareIgnoreCase(getName(), node.getName()) == 0;
     }
+
+    /**
+     * Append the given path to the node, adding a directory separator
+     * when necessary.  Modelled on the C++17 fs::path API.
+     */
+    FilesystemNode& operator/=(const string& path);
 
     /**
      * By default, the output operator simply outputs the fully-qualified
@@ -134,7 +122,8 @@ class FilesystemNode
      *         does not exist).
      */
     bool getChildren(FSList& fslist, ListMode mode = ListMode::DirectoriesOnly,
-                     const NameFilter& filter = [](const FilesystemNode&){ return true; }) const;
+                     const NameFilter& filter = [](const FilesystemNode&){ return true; },
+                     bool includeParentDirectory = true) const;
 
     /**
      * Set/get a string representation of the name of the file. This is can be
@@ -232,13 +221,47 @@ class FilesystemNode
     /**
      * Read data (binary format) into the given buffer.
      *
-     * @param buffer  The buffer to contain the data.
+     * @param buffer  The buffer to contain the data (allocated in this method).
      *
      * @return  The number of bytes read (0 in the case of failure)
      *          This method can throw exceptions, and should be used inside
      *          a try-catch block.
      */
     size_t read(ByteBuffer& buffer) const;
+
+    /**
+     * Read data (text format) into the given stream.
+     *
+     * @param buffer  The buffer stream to contain the data.
+     *
+     * @return  The number of bytes read (0 in the case of failure)
+     *          This method can throw exceptions, and should be used inside
+     *          a try-catch block.
+     */
+    size_t read(stringstream& buffer) const;
+
+    /**
+     * Write data (binary format) from the given buffer.
+     *
+     * @param buffer  The buffer that contains the data.
+     * @param size    The size of the buffer.
+     *
+     * @return  The number of bytes written (0 in the case of failure)
+     *          This method can throw exceptions, and should be used inside
+     *          a try-catch block.
+     */
+    size_t write(const ByteBuffer& buffer, size_t size) const;
+
+    /**
+     * Write data (text format) from the given stream.
+     *
+     * @param buffer  The buffer stream that contains the data.
+     *
+     * @return  The number of bytes written (0 in the case of failure)
+     *          This method can throw exceptions, and should be used inside
+     *          a try-catch block.
+     */
+    size_t write(const stringstream& buffer) const;
 
     /**
      * The following methods are almost exactly the same as the various
@@ -252,6 +275,7 @@ class FilesystemNode
   private:
     AbstractFSNodePtr _realNode;
     explicit FilesystemNode(const AbstractFSNodePtr& realNode);
+    void setPath(const string& path);
 };
 
 
@@ -391,14 +415,47 @@ class AbstractFSNode
     /**
      * Read data (binary format) into the given buffer.
      *
-     * @param buffer  The buffer to containing the data
-     *                This will be allocated by the method, and must be
-     *                freed by the caller.
+     * @param buffer  The buffer to contain the data (allocated in this method).
+     *
      * @return  The number of bytes read (0 in the case of failure)
      *          This method can throw exceptions, and should be used inside
      *          a try-catch block.
      */
     virtual size_t read(ByteBuffer& buffer) const { return 0; }
+
+    /**
+     * Read data (text format) into the given stream.
+     *
+     * @param buffer  The buffer stream to contain the data.
+     *
+     * @return  The number of bytes read (0 in the case of failure)
+     *          This method can throw exceptions, and should be used inside
+     *          a try-catch block.
+     */
+    virtual size_t read(stringstream& buffer) const { return 0; }
+
+    /**
+     * Write data (binary format) from the given buffer.
+     *
+     * @param buffer  The buffer that contains the data.
+     * @param size    The size of the buffer.
+     *
+     * @return  The number of bytes written (0 in the case of failure)
+     *          This method can throw exceptions, and should be used inside
+     *          a try-catch block.
+     */
+    virtual size_t write(const ByteBuffer& buffer, size_t size) const { return 0; }
+
+    /**
+     * Write data (text format) from the given stream.
+     *
+     * @param buffer  The buffer stream that contains the data.
+     *
+     * @return  The number of bytes written (0 in the case of failure)
+     *          This method can throw exceptions, and should be used inside
+     *          a try-catch block.
+     */
+    virtual size_t write(const stringstream& buffer) const { return 0; }
 };
 
 #endif

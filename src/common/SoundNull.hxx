@@ -18,12 +18,13 @@
 #ifndef SOUND_NULL_HXX
 #define SOUND_NULL_HXX
 
+class OSystem;
+class AudioQueue;
+class EmulationTiming;
+
 #include "bspf.hxx"
 #include "Logger.hxx"
 #include "Sound.hxx"
-#include "OSystem.hxx"
-#include "AudioQueue.hxx"
-#include "EmulationTiming.hxx"
 
 /**
   This class implements a Null sound object, where-by sound generation
@@ -96,10 +97,16 @@ class SoundNull : public Sound
     /**
       Adjusts the volume of the sound device based on the given direction.
 
-      @param direction  Increase or decrease the current volume by a predefined
-                        amount based on the direction (1 = increase, -1 =decrease)
+      @param direction  +1 indicates increase, -1 indicates decrease.
     */
-    void adjustVolume(Int8 direction) override { }
+    void adjustVolume(int direction = 1) override { }
+
+    /**
+      Sets the audio device.
+
+      @param device  The number of the device to select (0 = default).
+    */
+    void setDevice(uInt32 device) override { };
 
     /**
       This method is called to provide information about the sound device.

@@ -22,8 +22,8 @@ class Event;
 class Properties;
 class Settings;
 
-#include "Serializable.hxx"
 #include "bspf.hxx"
+#include "Serializable.hxx"
 
 /**
   This class represents the console switches of the game console.

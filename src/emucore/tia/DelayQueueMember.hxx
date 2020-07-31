@@ -18,8 +18,8 @@
 #ifndef TIA_DELAY_QUEUE_MEMBER
 #define TIA_DELAY_QUEUE_MEMBER
 
-#include "Serializable.hxx"
 #include "bspf.hxx"
+#include "Serializable.hxx"
 
 template<unsigned capacity>
 class DelayQueueMember : public Serializable {

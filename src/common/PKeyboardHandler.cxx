@@ -17,13 +17,7 @@
 
 #include "OSystem.hxx"
 #include "Console.hxx"
-#include "Settings.hxx"
 #include "EventHandler.hxx"
-#include "Sound.hxx"
-#include "StateManager.hxx"
-#include "StellaKeys.hxx"
-#include "TIASurface.hxx"
-#include "PNGLibrary.hxx"
 #include "PKeyboardHandler.hxx"
 
 #ifdef DEBUGGER_SUPPORT
@@ -45,6 +39,7 @@ PhysicalKeyboardHandler::PhysicalKeyboardHandler(OSystem& system, EventHandler& 
     myHandler(handler)
 {
   Int32 version = myOSystem.settings().getInt("event_ver");
+  bool updateDefaults = false;
 
   // Compare if event list version has changed so that key maps became invalid
   if (version == Event::VERSION)
@@ -59,11 +54,37 @@ PhysicalKeyboardHandler::PhysicalKeyboardHandler(OSystem& system, EventHandler& 
     myKeyMap.loadMapping(list, EventMode::kKeypadMode);
     list = myOSystem.settings().getString("keymap_ui");
     myKeyMap.loadMapping(list, EventMode::kMenuMode);
+    updateDefaults = true;
   }
   myKeyMap.enableMod() = myOSystem.settings().getBool("modcombo");
 
-  setDefaultMapping(Event::NoType, EventMode::kEmulationMode, true);
-  setDefaultMapping(Event::NoType, EventMode::kMenuMode, true);
+  setDefaultMapping(Event::NoType, EventMode::kEmulationMode, updateDefaults);
+  setDefaultMapping(Event::NoType, EventMode::kMenuMode, updateDefaults);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool PhysicalKeyboardHandler::isMappingUsed(EventMode mode, const EventMapping& map) const
+{
+  // Menu events can only interfere with
+  //   - other menu events
+  if(mode == EventMode::kMenuMode)
+    return myKeyMap.check(EventMode::kMenuMode, map.key, map.mod);
+
+  // Controller events can interfere with
+  //   - other events of the same controller
+  //   - and common emulation events
+  if(mode != EventMode::kCommonMode)
+    return myKeyMap.check(mode, map.key, map.mod)
+      || myKeyMap.check(EventMode::kCommonMode, map.key, map.mod);
+
+  // Common emulation events can interfere with
+  //   - other common emulation events
+  //   - and all controller events
+  return myKeyMap.check(EventMode::kCommonMode, map.key, map.mod)
+    || myKeyMap.check(EventMode::kJoystickMode, map.key, map.mod)
+    || myKeyMap.check(EventMode::kPaddlesMode, map.key, map.mod)
+    || myKeyMap.check(EventMode::kKeypadMode, map.key, map.mod)
+    || myKeyMap.check(EventMode::kCompuMateMode, map.key, map.mod);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -80,10 +101,10 @@ void PhysicalKeyboardHandler::setDefaultKey(EventMapping map, Event::Type event,
 
   if (updateDefaults)
   {
-    // if there is no existing mapping for the event or
+    // if there is no existing mapping for the event and
     //  the default mapping for the event is unused, set default key for event
-    if (myKeyMap.getEventMapping(map.event, mode).size() == 0 ||
-      !myKeyMap.check(mode, map.key, map.mod))
+    if (myKeyMap.getEventMapping(map.event, mode).size() == 0 &&
+        !isMappingUsed(mode, map))
     {
       addMapping(map.event, mode, map.key, StellaMod(map.mod));
     }
@@ -395,6 +416,7 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool pre
   {
     case EventHandlerState::EMULATION:
     case EventHandlerState::PAUSE:
+    case EventHandlerState::PLAYBACK:
       myHandler.handleEvent(myKeyMap.get(EventMode::kEmulationMode, key, mod), pressed, repeated);
       break;
 
@@ -424,7 +446,11 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultCommo
   {Event::LoadState,                KBDK_F11},
   {Event::LoadAllStates,            KBDK_F11, MOD3},
   {Event::TakeSnapshot,             KBDK_F12},
+#ifdef BSPF_MACOS
+  {Event::TogglePauseMode,          KBDK_P, KBDM_SHIFT | MOD3},
+#else
   {Event::TogglePauseMode,          KBDK_PAUSE},
+#endif
   {Event::OptionsMenuMode,          KBDK_TAB},
   {Event::CmdMenuMode,              KBDK_BACKSLASH},
   {Event::TimeMachineMode,          KBDK_T, KBDM_SHIFT},
@@ -436,45 +462,83 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultCommo
   {Event::Quit,                     KBDK_Q, KBDM_CTRL},
 #endif
   {Event::ReloadConsole,            KBDK_R, KBDM_CTRL},
+  {Event::PreviousMultiCartRom,     KBDK_R, KBDM_SHIFT | KBDM_CTRL},
 
   {Event::VidmodeDecrease,          KBDK_MINUS, MOD3},
   {Event::VidmodeIncrease,          KBDK_EQUALS, MOD3},
   {Event::VCenterDecrease,          KBDK_PAGEUP, MOD3},
   {Event::VCenterIncrease,          KBDK_PAGEDOWN, MOD3},
-  {Event::ScanlineAdjustDecrease,   KBDK_PAGEDOWN, KBDM_SHIFT | MOD3},
-  {Event::ScanlineAdjustIncrease,   KBDK_PAGEUP, KBDM_SHIFT | MOD3},
+  {Event::VSizeAdjustDecrease,      KBDK_PAGEDOWN, KBDM_SHIFT | MOD3},
+  {Event::VSizeAdjustIncrease,      KBDK_PAGEUP, KBDM_SHIFT | MOD3},
   {Event::VolumeDecrease,           KBDK_LEFTBRACKET, MOD3},
   {Event::VolumeIncrease,           KBDK_RIGHTBRACKET, MOD3},
   {Event::SoundToggle,              KBDK_RIGHTBRACKET, KBDM_CTRL},
 
   {Event::ToggleFullScreen,         KBDK_RETURN, MOD3},
+  {Event::ToggleAdaptRefresh,       KBDK_R, MOD3},
   {Event::OverscanDecrease,         KBDK_PAGEDOWN, KBDM_SHIFT},
   {Event::OverscanIncrease,         KBDK_PAGEUP, KBDM_SHIFT},
-  {Event::VidmodeStd,               KBDK_1, MOD3},
-  {Event::VidmodeRGB,               KBDK_2, MOD3},
-  {Event::VidmodeSVideo,            KBDK_3, MOD3},
-  {Event::VidModeComposite,         KBDK_4, MOD3},
-  {Event::VidModeBad,               KBDK_5, MOD3},
-  {Event::VidModeCustom,            KBDK_6, MOD3},
-  {Event::PreviousAttribute,        KBDK_7, KBDM_SHIFT | MOD3},
-  {Event::NextAttribute,            KBDK_7, MOD3},
-  {Event::DecreaseAttribute,        KBDK_8, KBDM_SHIFT | MOD3},
-  {Event::IncreaseAttribute,        KBDK_8, MOD3},
-  {Event::PhosphorDecrease,         KBDK_9, KBDM_SHIFT | MOD3},
-  {Event::PhosphorIncrease,         KBDK_9, MOD3},
+  //{Event::VidmodeStd,               KBDK_1, MOD3},
+  //{Event::VidmodeRGB,               KBDK_2, MOD3},
+  //{Event::VidmodeSVideo,            KBDK_3, MOD3},
+  //{Event::VidModeComposite,         KBDK_4, MOD3},
+  //{Event::VidModeBad,               KBDK_5, MOD3},
+  //{Event::VidModeCustom,            KBDK_6, MOD3},
+  {Event::PreviousVideoMode,        KBDK_1, KBDM_SHIFT | MOD3},
+  {Event::NextVideoMode,            KBDK_1, MOD3},
+  {Event::PreviousAttribute,        KBDK_2, KBDM_SHIFT | MOD3},
+  {Event::NextAttribute,            KBDK_2, MOD3},
+  {Event::DecreaseAttribute,        KBDK_3, KBDM_SHIFT | MOD3},
+  {Event::IncreaseAttribute,        KBDK_3, MOD3},
+  {Event::PhosphorDecrease,         KBDK_4, KBDM_SHIFT | MOD3},
+  {Event::PhosphorIncrease,         KBDK_4, MOD3},
   {Event::TogglePhosphor,           KBDK_P, MOD3},
-  {Event::ScanlinesDecrease,        KBDK_0, KBDM_SHIFT | MOD3},
-  {Event::ScanlinesIncrease,        KBDK_0, MOD3},
+  {Event::ScanlinesDecrease,        KBDK_5, KBDM_SHIFT | MOD3},
+  {Event::ScanlinesIncrease,        KBDK_5, MOD3},
+  {Event::PreviousPaletteAttribute, KBDK_9, KBDM_SHIFT | MOD3},
+  {Event::NextPaletteAttribute,     KBDK_9, MOD3},
+  {Event::PaletteAttributeDecrease, KBDK_0, KBDM_SHIFT | MOD3},
+  {Event::PaletteAttributeIncrease, KBDK_0, MOD3},
   {Event::ToggleColorLoss,          KBDK_L, KBDM_CTRL},
-  {Event::TogglePalette,            KBDK_P, KBDM_CTRL},
+  {Event::PaletteDecrease,          KBDK_P, KBDM_SHIFT | KBDM_CTRL},
+  {Event::PaletteIncrease,          KBDK_P, KBDM_CTRL},
+
+#ifndef BSPF_MACOS
+  {Event::PreviousSetting,          KBDK_END},
+  {Event::NextSetting,              KBDK_HOME},
+  {Event::PreviousSettingGroup,     KBDK_END, KBDM_CTRL},
+  {Event::NextSettingGroup,         KBDK_HOME, KBDM_CTRL},
+#else
+  // HOME & END keys are swapped on Mac keyboards
+  {Event::PreviousSetting,          KBDK_HOME},
+  {Event::NextSetting,              KBDK_END},
+  {Event::PreviousSettingGroup,     KBDK_HOME, KBDM_CTRL},
+  {Event::NextSettingGroup,         KBDK_END, KBDM_CTRL},
+#endif
+  {Event::PreviousSetting,          KBDK_KP_1},
+  {Event::NextSetting,              KBDK_KP_7},
+  {Event::PreviousSettingGroup,     KBDK_KP_1, KBDM_CTRL},
+  {Event::NextSettingGroup,         KBDK_KP_7, KBDM_CTRL},
+  {Event::SettingDecrease,          KBDK_PAGEDOWN},
+  {Event::SettingDecrease,          KBDK_KP_3, KBDM_CTRL},
+  {Event::SettingIncrease,          KBDK_PAGEUP},
+  {Event::SettingIncrease,          KBDK_KP_9, KBDM_CTRL},
+
   {Event::ToggleInter,              KBDK_I, KBDM_CTRL},
+  {Event::DecreaseSpeed,            KBDK_S, KBDM_SHIFT | KBDM_CTRL},
+  {Event::IncreaseSpeed,            KBDK_S, KBDM_CTRL },
+  {Event::ToggleTurbo,              KBDK_T, KBDM_CTRL},
   {Event::ToggleJitter,             KBDK_J, MOD3},
   {Event::ToggleFrameStats,         KBDK_L, MOD3},
   {Event::ToggleTimeMachine,        KBDK_T, MOD3},
+
 #ifdef PNG_SUPPORT
   {Event::ToggleContSnapshots,      KBDK_S, MOD3},
   {Event::ToggleContSnapshotsFrame, KBDK_S, KBDM_SHIFT | MOD3},
 #endif
+
+  {Event::DecreaseAutoFire,         KBDK_A, KBDM_SHIFT | KBDM_CTRL},
+  {Event::IncreaseAutoFire,         KBDK_A, KBDM_CTRL },
   {Event::HandleMouseControl,       KBDK_0, KBDM_CTRL},
   {Event::ToggleGrabMouse,          KBDK_G, KBDM_CTRL},
   {Event::ToggleSAPortOrder,        KBDK_1, KBDM_CTRL},
@@ -506,6 +570,7 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultCommo
   {Event::Unwind10Menu,             KBDK_RIGHT, KBDM_SHIFT | MOD3},
   {Event::UnwindAllMenu,            KBDK_UP, MOD3},
   {Event::HighScoresMenuMode,       KBDK_INSERT},
+  {Event::TogglePlayBackMode,       KBDK_SPACE, KBDM_SHIFT},
 
 #if defined(RETRON77)
   {Event::ConsoleColorToggle,       KBDK_F4},         // back ("COLOR","B/W")

@@ -16,6 +16,7 @@
 //============================================================================
 
 #include "Dialog.hxx"
+#include "OSystem.hxx"
 #include "FrameBuffer.hxx"
 #include "MessageDialog.hxx"
 #include "MessageMenu.hxx"

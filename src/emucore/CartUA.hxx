@@ -19,7 +19,7 @@
 #define CARTRIDGEUA_HXX
 
 #include "bspf.hxx"
-#include "Cart.hxx"
+#include "CartEnhanced.hxx"
 #include "System.hxx"
 #ifdef DEBUGGER_SUPPORT
   #include "CartUAWidget.hxx"
@@ -30,9 +30,9 @@
   are two 4K banks, which are switched by accessing $0220 (bank 0) and
   $0240 (bank 1).
 
-  @author  Bradford W. Mott
+  @author  Bradford W. Mott, Thomas Jentzsch
 */
-class CartridgeUA : public Cartridge
+class CartridgeUA : public CartridgeEnhanced
 {
   friend class CartridgeUAWidget;
 
@@ -52,11 +52,6 @@ class CartridgeUA : public Cartridge
 
   public:
     /**
-      Reset device to its power-on state
-    */
-    void reset() override;
-
-    /**
       Install cartridge in the specified system.  Invoked by the system
       when the cartridge is attached to it.
 
@@ -65,63 +60,13 @@ class CartridgeUA : public Cartridge
     void install(System& system) override;
 
     /**
-      Install pages for the specified bank in the system.
-
-      @param bank The bank that should be installed in the system
-    */
-    bool bank(uInt16 bank) override;
-
-    /**
-      Get the current bank.
-
-      @param address The address to use when querying the bank
-    */
-    uInt16 getBank(uInt16 address = 0) const override;
-
-    /**
-      Query the number of banks supported by the cartridge.
-    */
-    uInt16 bankCount() const override;
-
-    /**
-      Patch the cartridge ROM.
-
-      @param address  The ROM address to patch
-      @param value    The value to place into the address
-      @return    Success or failure of the patch operation
-    */
-    bool patch(uInt16 address, uInt8 value) override;
-
-    /**
-      Access the internal ROM image for this cartridge.
-
-      @param size  Set to the size of the internal ROM image data
-      @return  A pointer to the internal ROM image data
-    */
-    const uInt8* getImage(size_t& size) const override;
-
-    /**
-      Save the current state of this cart to the given Serializer.
-
-      @param out  The Serializer object to use
-      @return  False on any errors, else true
-    */
-    bool save(Serializer& out) const override;
-
-    /**
-      Load the current state of this cart from the given Serializer.
-
-      @param in  The Serializer object to use
-      @return  False on any errors, else true
-    */
-    bool load(Serializer& in) override;
-
-    /**
       Get a descriptor for the device name (used in error checking).
 
       @return The name of the object
     */
-    string name() const override { return mySwappedHotspots ? "CartridgeUASW" : "CartridgeUA"; }
+    string name() const override {
+      return mySwappedHotspots ? "CartridgeUASW" : "CartridgeUA";
+    }
 
   #ifdef DEBUGGER_SUPPORT
     /**
@@ -153,14 +98,13 @@ class CartridgeUA : public Cartridge
     bool poke(uInt16 address, uInt8 value) override;
 
   private:
-    // The 8K ROM image of the cartridge
-    std::array<uInt8, 8_KB> myImage;
+    bool checkSwitchBank(uInt16 address, uInt8 value = 0) override;
 
+    uInt16 hotspot() const override { return 0x0220; }
+
+  private:
     // Previous Device's page access
     std::array<System::PageAccess, 2> myHotSpotPageAccess;
-
-    // Indicates the offset into the ROM image (aligns to current bank)
-    uInt16 myBankOffset{0};
 
     // Indicates if banks are swapped ("Mickey" cart)
     bool mySwappedHotspots{false};

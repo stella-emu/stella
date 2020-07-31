@@ -18,11 +18,11 @@
 #ifndef TIA_PLAYER
 #define TIA_PLAYER
 
+class TIA;
+
 #include "bspf.hxx"
 #include "Serializable.hxx"
 #include "TIAConstants.hxx"
-
-class TIA;
 
 class Player : public Serializable
 {

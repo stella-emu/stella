@@ -250,9 +250,9 @@ void PhysicalJoystickHandler::setDefaultAction(int stick,
 
   if(updateDefaults)
   {
-    // if there is no existing mapping for the event or
+    // if there is no existing mapping for the event and
     //  the default mapping for the event is unused, set default key for event
-    if(j->joyMap.getEventMapping(map.event, mode).size() == 0 ||
+    if(j->joyMap.getEventMapping(map.event, mode).size() == 0 &&
        !j->joyMap.check(mode, map.button, map.axis, map.adir, map.hat, map.hdir))
     {
       if (map.hat == JOY_CTRL_NONE)
@@ -687,27 +687,32 @@ void PhysicalJoystickHandler::handleAxisEvent(int stick, int axis, int value)
       }
       j->axisLastValue[axis] = value;
     }
+  #ifdef GUI_SUPPORT
     else if(myHandler.hasOverlay())
     {
-      // First, clamp the values to simulate digital input
-      // (the only thing that the underlying code understands)
-      if(value > Joystick::deadzone())
-        value = 32000;
-      else if(value < -Joystick::deadzone())
-        value = -32000;
-      else
-        value = 0;
-
-      // Now filter out consecutive, similar values
-      // (only pass on the event if the state has changed)
-      if(value != j->axisLastValue[axis])
+      // A value change lower than Joystick::deadzone indicates analog input which is ignored
+      if((abs(j->axisLastValue[axis] - value) > Joystick::deadzone()))
       {
-#ifdef GUI_SUPPORT
-        myHandler.overlay().handleJoyAxisEvent(stick, JoyAxis(axis), convertAxisValue(value), button);
-#endif
-        j->axisLastValue[axis] = value;
+        // First, clamp the values to simulate digital input
+        // (the only thing that the underlying code understands)
+        if(value > Joystick::deadzone())
+          value = 32000;
+        else if(value < -Joystick::deadzone())
+          value = -32000;
+        else
+          value = 0;
+
+        // Now filter out consecutive, similar values
+        // (only pass on the event if the state has changed)
+        if(value != j->axisLastValue[axis])
+        {
+          myHandler.overlay().handleJoyAxisEvent(stick, JoyAxis(axis), convertAxisValue(value), button);
+
+        }
       }
+      j->axisLastValue[axis] = value;
     }
+  #endif
   }
 }
 

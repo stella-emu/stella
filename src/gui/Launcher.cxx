@@ -59,7 +59,8 @@ Launcher::~Launcher()
 FBInitStatus Launcher::initializeVideo()
 {
   string title = string("Stella ") + STELLA_VERSION;
-  return myOSystem.frameBuffer().createDisplay(title, myWidth, myHeight);
+  return myOSystem.frameBuffer().createDisplay(title, FrameBuffer::BufferType::Launcher,
+                                               myWidth, myHeight);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -75,9 +76,9 @@ const string& Launcher::selectedRomMD5()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const FilesystemNode& Launcher::currentNode() const
+const FilesystemNode& Launcher::currentDir() const
 {
-  return (static_cast<LauncherDialog*>(myBaseDialog))->currentNode();
+  return (static_cast<LauncherDialog*>(myBaseDialog))->currentDir();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

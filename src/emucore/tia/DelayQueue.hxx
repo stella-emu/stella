@@ -41,7 +41,7 @@ class DelayQueue : public Serializable
 
     void reset();
 
-    template<class T> void execute(T executor);
+    template<typename T> void execute(T executor);
 
     /**
       Serializable methods (see that class for more information).
@@ -103,7 +103,7 @@ void DelayQueue<length, capacity>::reset()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 template<unsigned length, unsigned capacity>
-template<class T>
+template<typename T>
 void DelayQueue<length, capacity>::execute(T executor)
 {
   DelayQueueMember<capacity>& currentMember = myMembers[myIndex];

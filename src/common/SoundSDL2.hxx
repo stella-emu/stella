@@ -24,12 +24,12 @@ class OSystem;
 class AudioQueue;
 class EmulationTiming;
 class AudioSettings;
+class Resampler;
 
 #include "SDL_lib.hxx"
 
 #include "bspf.hxx"
 #include "Sound.hxx"
-#include "audio/Resampler.hxx"
 
 /**
   This class implements the sound API for SDL.
@@ -98,10 +98,9 @@ class SoundSDL2 : public Sound
     /**
       Adjusts the volume of the sound device based on the given direction.
 
-      @param direction  Increase or decrease the current volume by a predefined
-                        amount based on the direction (1 = increase, -1 = decrease)
-    */
-    void adjustVolume(Int8 direction) override;
+      @param direction  +1 indicates increase, -1 indicates decrease.
+      */
+    void adjustVolume(int direction = 1) override;
 
     /**
       This method is called to provide information about the sound device.
@@ -109,6 +108,13 @@ class SoundSDL2 : public Sound
     string about() const override;
 
   protected:
+    /**
+      This method is called to query the audio devices.
+
+      @param devices  List of device names
+    */
+    void queryHardware(VariantList& devices) override;
+
     /**
       Invoked by the sound callback to process the next sound fragment.
       The stream is 16-bits (even though the callback is 8-bits), since
@@ -139,6 +145,8 @@ class SoundSDL2 : public Sound
 
     // Audio specification structure
     SDL_AudioSpec myHardwareSpec;
+
+    uInt32 myDeviceId{0};
 
     SDL_AudioDeviceID myDevice{0};
 

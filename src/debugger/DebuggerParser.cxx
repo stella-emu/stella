@@ -30,6 +30,7 @@
 #include "M6502.hxx"
 #include "Expression.hxx"
 #include "FSNode.hxx"
+#include "OSystem.hxx"
 #include "Settings.hxx"
 #include "PromptWidget.hxx"
 #include "RomWidget.hxx"
@@ -111,6 +112,8 @@ string DebuggerParser::run(const string& command)
       if(validateArgs(i))
       {
         myCommand = i;
+        if(commands[i].refreshRequired)
+          debugger.baseDialog()->saveConfig();
         commands[i].executor(this);
       }
 
@@ -129,9 +132,9 @@ string DebuggerParser::exec(const FilesystemNode& file, StringList* history)
 {
   if(file.exists())
   {
-    ifstream in(file.getPath());
-    if(!in.is_open())
-      return red("script file \'" + file.getShortPath() + "\' not found");
+    stringstream in;
+    try        { file.read(in); }
+    catch(...) { return red("script file \'" + file.getShortPath() + "\' not found"); }
 
     ostringstream buf;
     int count = 0;
@@ -630,11 +633,7 @@ string DebuggerParser::saveScriptFile(string file)
   if(file.find_last_of('.') == string::npos)
     file += ".script";
 
-  FilesystemNode node(debugger.myOSystem.defaultSaveDir() + file);
-  ofstream out(node.getPath());
-  if(!out.is_open())
-    return "Unable to save script to " + node.getShortPath();
-
+  stringstream out;
   Debugger::FunctionDefMap funcs = debugger.getFunctionDefMap();
   for(const auto& f: funcs)
     if (!debugger.isBuiltinFunction(f.first))
@@ -675,7 +674,40 @@ string DebuggerParser::saveScriptFile(string file)
     out << endl;
   }
 
+  FilesystemNode node(debugger.myOSystem.defaultSaveDir().getPath() + file);
+  try
+  {
+    node.write(out);
+  }
+  catch(...)
+  {
+    return "Unable to save script to " + node.getShortPath();
+  }
+
   return "saved " + node.getShortPath() + " OK";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerParser::executeDirective(Device::AccessType type)
+{
+  if(argCount != 2)
+  {
+    outputCommandError("specify start and end of range only", myCommand);
+    return;
+  }
+  else if(args[1] < args[0])
+  {
+    commandResult << red("start address must be <= end address");
+    return;
+  }
+
+  bool result = debugger.cartDebug().addDirective(type, args[0], args[1]);
+
+  commandResult << (result ? "added " : "removed ");
+  debugger.cartDebug().AccessTypeAsString(commandResult, type);
+  commandResult << " directive on range $"
+    << hex << args[0] << " $" << hex << args[1];
+  debugger.rom().invalidate();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -687,6 +719,13 @@ string DebuggerParser::saveScriptFile(string file)
 void DebuggerParser::executeA()
 {
   debugger.cpuDebug().setA(uInt8(args[0]));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "aud"
+void DebuggerParser::executeAud()
+{
+  executeDirective(Device::AUD);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -721,12 +760,19 @@ void DebuggerParser::executeBase()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "bcol"
+void DebuggerParser::executeBCol()
+{
+  executeDirective(Device::BCOL);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "break"
 void DebuggerParser::executeBreak()
 {
   uInt16 addr;
   uInt8 bank;
-  uInt32 bankCount = debugger.cartDebug().bankCount();
+  uInt32 romBankCount = debugger.cartDebug().romBankCount();
 
   if(argCount == 0)
     addr = debugger.cpuDebug().pc();
@@ -738,7 +784,7 @@ void DebuggerParser::executeBreak()
   else
   {
     bank = args[1];
-    if(bank >= bankCount && bank != 0xff)
+    if(bank >= romBankCount && bank != 0xff)
     {
       commandResult << red("invalid bank");
       return;
@@ -754,12 +800,12 @@ void DebuggerParser::executeBreak()
       commandResult << "cleared";
 
     commandResult << " breakpoint at $" << Base::HEX4 << addr << " + mirrors";
-    if(bankCount > 1)
+    if(romBankCount > 1)
       commandResult << " in bank #" << std::dec << int(bank);
   }
   else
   {
-    for(int i = 0; i < debugger.cartDebug().bankCount(); ++i)
+    for(int i = 0; i < debugger.cartDebug().romBankCount(); ++i)
     {
       bool set = debugger.toggleBreakPoint(addr, i);
 
@@ -772,7 +818,7 @@ void DebuggerParser::executeBreak()
         commandResult << "cleared";
 
       commandResult << " breakpoint at $" << Base::HEX4 << addr << " + mirrors";
-      if(bankCount > 1)
+      if(romBankCount > 1)
         commandResult << " in bank #" << std::dec << int(bank);
     }
   }
@@ -912,22 +958,14 @@ void DebuggerParser::executeCls()
 // "code"
 void DebuggerParser::executeCode()
 {
-  if(argCount != 2)
-  {
-    outputCommandError("specify start and end of range only", myCommand);
-    return;
-  }
-  else if(args[1] < args[0])
-  {
-    commandResult << red("start address must be <= end address");
-    return;
-  }
+  executeDirective(Device::CODE);
+}
 
-  bool result = debugger.cartDebug().addDirective(
-                  CartDebug::CODE, args[0], args[1]);
-  commandResult << (result ? "added" : "removed") << " CODE directive on range $"
-                << hex << args[0] << " $" << hex << args[1];
-  debugger.rom().invalidate();
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "col"
+void DebuggerParser::executeCol()
+{
+  executeDirective(Device::COL);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -953,22 +991,7 @@ void DebuggerParser::executeD()
 // "data"
 void DebuggerParser::executeData()
 {
-  if(argCount != 2)
-  {
-    outputCommandError("specify start and end of range only", myCommand);
-    return;
-  }
-  else if(args[1] < args[0])
-  {
-    commandResult << red("start address must be <= end address");
-    return;
-  }
-
-  bool result = debugger.cartDebug().addDirective(
-                  CartDebug::DATA, args[0], args[1]);
-  commandResult << (result ? "added" : "removed") << " DATA directive on range $"
-                << hex << args[0] << " $" << hex << args[1];
-  debugger.rom().invalidate();
+  executeDirective(Device::DATA);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1067,7 +1090,7 @@ void DebuggerParser::executeDisasm()
     return;
   }
 
-  commandResult << debugger.cartDebug().disassemble(start, lines);
+  commandResult << debugger.cartDebug().disassembleLines(start, lines);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1123,7 +1146,7 @@ void DebuggerParser::executeDump()
     file << ".dump";
     FilesystemNode node(file.str());
     // cout << "dump " << args[0] << "-" << args[1] << " to " << file.str() << endl;
-    ofstream ofs(node.getPath(), ofstream::out | ofstream::app);
+    std::ofstream ofs(node.getPath(), std::ofstream::out | std::ofstream::app);
     if(!ofs.is_open())
     {
       outputCommandError("Unable to append dump to file " + node.getShortPath(), myCommand);
@@ -1204,9 +1227,8 @@ void DebuggerParser::executeExec()
   if(file.find_last_of('.') == string::npos)
     file += ".script";
   FilesystemNode node(file);
-  if (!node.exists()) {
-    node = FilesystemNode(debugger.myOSystem.defaultSaveDir() + file);
-  }
+  if (!node.exists())
+    node = FilesystemNode(debugger.myOSystem.defaultSaveDir().getPath() + file);
 
   if (argCount == 2) {
     execPrefix = argStrings[1];
@@ -1270,22 +1292,7 @@ void DebuggerParser::executeFunction()
 // "gfx"
 void DebuggerParser::executeGfx()
 {
-  if(argCount != 2)
-  {
-    outputCommandError("specify start and end of range only", myCommand);
-    return;
-  }
-  else if(args[1] < args[0])
-  {
-    commandResult << red("start address must be <= end address");
-    return;
-  }
-
-  bool result = debugger.cartDebug().addDirective(
-                  CartDebug::GFX, args[0], args[1]);
-  commandResult << (result ? "added" : "removed") << " GFX directive on range $"
-                << hex << args[0] << " $" << hex << args[1];
-  debugger.rom().invalidate();
+  executeDirective(Device::GFX);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1460,11 +1467,11 @@ void DebuggerParser::executeListbreaks()
 {
   stringstream buf;
   int count = 0;
-  uInt32 bankCount = debugger.cartDebug().bankCount();
+  uInt32 romBankCount = debugger.cartDebug().romBankCount();
 
   for(const auto& bp : debugger.breakPoints().getBreakpoints())
   {
-    if(bankCount == 1)
+    if(romBankCount == 1)
     {
       buf << debugger.cartDebug().getLabel(bp.addr, true, 4) << " ";
       if(!(++count % 8)) buf << endl;
@@ -1627,25 +1634,17 @@ void DebuggerParser::executePc()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "pcol"
+void DebuggerParser::executePCol()
+{
+  executeDirective(Device::PCOL);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "pgfx"
 void DebuggerParser::executePGfx()
 {
-  if(argCount != 2)
-  {
-    outputCommandError("specify start and end of range only", myCommand);
-    return;
-  }
-  else if(args[1] < args[0])
-  {
-    commandResult << red("start address must be <= end address");
-    return;
-  }
-
-  bool result = debugger.cartDebug().addDirective(
-                  CartDebug::PGFX, args[0], args[1]);
-  commandResult << (result ? "added" : "removed") << " PGFX directive on range $"
-                << hex << args[0] << " $" << hex << args[1];
-  debugger.rom().invalidate();
+  executeDirective(Device::PGFX);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1722,22 +1721,7 @@ void DebuggerParser::executeRom()
 // "row"
 void DebuggerParser::executeRow()
 {
-  if(argCount != 2)
-  {
-    outputCommandError("specify start and end of range only", myCommand);
-    return;
-  }
-  else if(args[1] < args[0])
-  {
-    commandResult << red("start address must be <= end address");
-    return;
-  }
-
-  bool result = debugger.cartDebug().addDirective(
-                  CartDebug::ROW, args[0], args[1]);
-  commandResult << (result ? "added" : "removed") << " ROW directive on range $"
-                << hex << args[0] << " $" << hex << args[1];
-  debugger.rom().invalidate();
+  executeDirective(Device::ROW);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1756,6 +1740,8 @@ void DebuggerParser::executeRunTo()
   const CartDebug& cartdbg = debugger.cartDebug();
   const CartDebug::DisassemblyList& list = cartdbg.disassembly().list;
 
+  debugger.saveOldState();
+
   uInt32 count = 0, max_iterations = uInt32(list.size());
 
   // Create a progress dialog box to show the progress searching through the
@@ -1767,7 +1753,7 @@ void DebuggerParser::executeRunTo()
 
   bool done = false;
   do {
-    debugger.step();
+    debugger.step(false);
 
     // Update romlist to point to current PC
     int pcline = cartdbg.addressToLine(debugger.cpuDebug().pc());
@@ -1799,24 +1785,36 @@ void DebuggerParser::executeRunToPc()
   const CartDebug& cartdbg = debugger.cartDebug();
   const CartDebug::DisassemblyList& list = cartdbg.disassembly().list;
 
+  debugger.saveOldState();
+
   uInt32 count = 0;
   bool done = false;
+  constexpr uInt32 max_iterations = 1000000;
+  // Create a progress dialog box to show the progress searching through the
+  // disassembly, since this may be a time-consuming operation
+  ostringstream buf;
+  buf << "RunTo PC searching through " << max_iterations << " instructions";
+  ProgressDialog progress(debugger.baseDialog(), debugger.lfont(), buf.str());
+  progress.setRange(0, max_iterations, 5);
+
   do {
-    debugger.step();
+    debugger.step(false);
 
     // Update romlist to point to current PC
     int pcline = cartdbg.addressToLine(debugger.cpuDebug().pc());
     done = (pcline >= 0) && (list[pcline].address == args[0]);
-  } while(!done && ++count < list.size());
+    progress.setProgress(count);
+  } while(!done && ++count < max_iterations/*list.size()*/);
+  progress.close();
 
   if(done)
     commandResult
-      << "set PC to " << Base::HEX4 << args[0] << " in "
-      << dec << count << " disassembled instructions";
+      << "Set PC to $" << Base::HEX4 << args[0] << " in "
+      << dec << count << " instructions";
   else
     commandResult
-      << "PC " << Base::HEX4 << args[0] << " not reached or found in "
-      << dec << count << " disassembled instructions";
+      << "PC $" << Base::HEX4 << args[0] << " not reached or found in "
+      << dec << count << " instructions";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1831,6 +1829,13 @@ void DebuggerParser::executeS()
 void DebuggerParser::executeSave()
 {
   commandResult << saveScriptFile(argStrings[0]);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "saveaccess"
+void DebuggerParser::executeSaveAccess()
+{
+  commandResult << debugger.cartDebug().saveAccessFile();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1947,9 +1952,23 @@ void DebuggerParser::executeStepwhile()
   }
   Expression* expr = YaccParser::getResult();
   int ncycles = 0;
+  uInt32 count = 0;
+  constexpr uInt32 max_iterations = 1000000;
+
+  // Create a progress dialog box to show the progress searching through the
+  // disassembly, since this may be a time-consuming operation
+  ostringstream buf;
+  buf << "stepwhile running through " << max_iterations << " disassembled instructions";
+  ProgressDialog progress(debugger.baseDialog(), debugger.lfont(), buf.str());
+  progress.setRange(0, max_iterations, 5);
+
   do {
-    ncycles += debugger.step();
-  } while (expr->evaluate());
+    ncycles += debugger.step(false);
+
+    progress.setProgress(count);
+  } while (expr->evaluate() && ++count < max_iterations);
+
+  progress.close();
   commandResult << "executed " << ncycles << " cycles";
 }
 
@@ -2054,18 +2073,18 @@ void DebuggerParser::executeTraps(bool read, bool write, const string& command,
   if(read)
   {
     if(beginRead != endRead)
-      conditionBuf << "__lastread>=" << Base::toString(beginRead) << "&&__lastread<=" << Base::toString(endRead);
+      conditionBuf << "__lastbaseread>=" << Base::toString(beginRead) << "&&__lastbaseread<=" << Base::toString(endRead);
     else
-      conditionBuf << "__lastread==" << Base::toString(beginRead);
+      conditionBuf << "__lastbaseread==" << Base::toString(beginRead);
   }
   if(read && write)
     conditionBuf << "||";
   if(write)
   {
     if(beginWrite != endWrite)
-      conditionBuf << "__lastwrite>=" << Base::toString(beginWrite) << "&&__lastwrite<=" << Base::toString(endWrite);
+      conditionBuf << "__lastbasewrite>=" << Base::toString(beginWrite) << "&&__lastbasewrite<=" << Base::toString(endWrite);
     else
-      conditionBuf << "__lastwrite==" << Base::toString(beginWrite);
+      conditionBuf << "__lastbasewrite==" << Base::toString(beginWrite);
   }
   // parenthesize provided condition (end)
   if(hasCond)
@@ -2194,7 +2213,7 @@ void DebuggerParser::executeType()
   for(uInt32 i = beg; i <= end; ++i)
   {
     commandResult << Base::HEX4 << i << ": ";
-    debugger.cartDebug().addressTypeAsString(commandResult, i);
+    debugger.cartDebug().accessTypeAsString(commandResult, i);
     commandResult << endl;
   }
 }
@@ -2300,7 +2319,7 @@ void DebuggerParser::executeZ()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // List of all commands available to the parser
-std::array<DebuggerParser::Command, 95> DebuggerParser::commands = { {
+std::array<DebuggerParser::Command, 100> DebuggerParser::commands = { {
   {
     "a",
     "Set Accumulator to <value>",
@@ -2312,6 +2331,16 @@ std::array<DebuggerParser::Command, 95> DebuggerParser::commands = { {
   },
 
   {
+    "aud",
+    "Mark 'AUD' range in disassembly",
+    "Start and end of range required\nExample: aud f000 f010",
+    true,
+    false,
+    { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
+    std::mem_fn(&DebuggerParser::executeAud)
+  },
+
+  {
     "base",
     "Set default number base to <base>",
     "Base is #2, #10, #16, bin, dec or hex\nExample: base hex",
@@ -2320,6 +2349,17 @@ std::array<DebuggerParser::Command, 95> DebuggerParser::commands = { {
     { Parameters::ARG_BASE_SPCL, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeBase)
   },
+
+  {
+    "bcol",
+    "Mark 'BCOL' range in disassembly",
+    "Start and end of range required\nExample: bcol f000 f010",
+    true,
+    false,
+    { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
+    std::mem_fn(&DebuggerParser::executeBCol)
+  },
+
 
   {
     "break",
@@ -2440,6 +2480,16 @@ std::array<DebuggerParser::Command, 95> DebuggerParser::commands = { {
     false,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
     std::mem_fn(&DebuggerParser::executeCode)
+  },
+
+  {
+    "col",
+    "Mark 'COL' range in disassembly",
+    "Start and end of range required\nExample: col f000 f010",
+    true,
+    false,
+    { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
+    std::mem_fn(&DebuggerParser::executeCol)
   },
 
   {
@@ -2848,6 +2898,16 @@ std::array<DebuggerParser::Command, 95> DebuggerParser::commands = { {
   },
 
   {
+    "pcol",
+    "Mark 'PCOL' range in disassembly",
+    "Start and end of range required\nExample: col f000 f010",
+    true,
+    false,
+    { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
+    std::mem_fn(&DebuggerParser::executePCol)
+  },
+
+  {
     "pgfx",
     "Mark 'PGFX' range in disassembly",
     "Start and end of range required\nExample: pgfx f000 f010",
@@ -2978,6 +3038,16 @@ std::array<DebuggerParser::Command, 95> DebuggerParser::commands = { {
     false,
     { Parameters::ARG_FILE, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeSave)
+  },
+
+  {
+    "saveaccess",
+    "Save the access counters to CSV file",
+    "Example: saveaccess (no parameters)",
+      false,
+      false,
+    { Parameters::ARG_END_ARGS },
+      std::mem_fn(&DebuggerParser::executeSaveAccess)
   },
 
   {
@@ -3182,7 +3252,7 @@ std::array<DebuggerParser::Command, 95> DebuggerParser::commands = { {
 
   {
     "type",
-    "Show disassembly type for address xx [yy]",
+    "Show access type for address xx [yy]",
     "Example: type f000, type f000 f010",
     true,
     false,

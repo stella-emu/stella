@@ -18,6 +18,7 @@
 #include <cmath>
 
 #include "OSystem.hxx"
+#include "Console.hxx"
 #include "Serializer.hxx"
 #include "StateManager.hxx"
 #include "TIA.hxx"
@@ -180,7 +181,8 @@ uInt32 RewindManager::rewindStates(uInt32 numStates)
   else
     message = "Rewind not possible";
 
-  if(myOSystem.eventHandler().state() != EventHandlerState::TIMEMACHINE)
+  if(myOSystem.eventHandler().state() != EventHandlerState::TIMEMACHINE
+     && myOSystem.eventHandler().state() != EventHandlerState::PLAYBACK)
     myOSystem.frameBuffer().showMessage(message);
   return i;
 }
@@ -214,7 +216,8 @@ uInt32 RewindManager::unwindStates(uInt32 numStates)
   else
     message = "Unwind not possible";
 
-  if(myOSystem.eventHandler().state() != EventHandlerState::TIMEMACHINE)
+  if(myOSystem.eventHandler().state() != EventHandlerState::TIMEMACHINE
+     && myOSystem.eventHandler().state() != EventHandlerState::PLAYBACK)
     myOSystem.frameBuffer().showMessage(message);
   return i;
 }

@@ -115,7 +115,8 @@ void Debugger::initialize()
 FBInitStatus Debugger::initializeVideo()
 {
   string title = string("Stella ") + STELLA_VERSION + ": Debugger mode";
-  return myOSystem.frameBuffer().createDisplay(title, myWidth, myHeight);
+  return myOSystem.frameBuffer().createDisplay(title, FrameBuffer::BufferType::Debugger,
+                                               myWidth, myHeight);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -166,7 +167,7 @@ string Debugger::autoExec(StringList* history)
   ostringstream buf;
 
   // autoexec.script is always run
-  FilesystemNode autoexec(myOSystem.baseDir() + "autoexec.script");
+  FilesystemNode autoexec(myOSystem.baseDir().getPath() + "autoexec.script");
   buf << "autoExec():" << endl
       << myParser->exec(autoexec, history) << endl;
 
@@ -292,9 +293,10 @@ void Debugger::loadAllStates()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Debugger::step()
+int Debugger::step(bool save)
 {
-  saveOldState();
+  if(save)
+    saveOldState();
 
   uInt64 startCycle = mySystem.cycles();
 
@@ -302,7 +304,8 @@ int Debugger::step()
   myOSystem.console().tia().updateScanlineByStep().flushLineCache();
   lockSystem();
 
-  addState("step");
+  if(save)
+    addState("step");
   return int(mySystem.cycles() - startCycle);
 }
 
@@ -440,19 +443,19 @@ bool Debugger::writeTrap(uInt16 t)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 Debugger::peek(uInt16 addr, uInt8 flags)
+uInt8 Debugger::peek(uInt16 addr, Device::AccessFlags flags)
 {
   return mySystem.peek(addr, flags);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 Debugger::dpeek(uInt16 addr, uInt8 flags)
+uInt16 Debugger::dpeek(uInt16 addr, Device::AccessFlags flags)
 {
   return uInt16(mySystem.peek(addr, flags) | (mySystem.peek(addr+1, flags) << 8));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::poke(uInt16 addr, uInt8 value, uInt8 flags)
+void Debugger::poke(uInt16 addr, uInt8 value, Device::AccessFlags flags)
 {
   mySystem.poke(addr, value, flags);
 }
@@ -464,26 +467,26 @@ M6502& Debugger::m6502() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Debugger::peekAsInt(int addr, uInt8 flags)
+int Debugger::peekAsInt(int addr, Device::AccessFlags flags)
 {
   return mySystem.peek(uInt16(addr), flags);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Debugger::dpeekAsInt(int addr, uInt8 flags)
+int Debugger::dpeekAsInt(int addr, Device::AccessFlags flags)
 {
   return mySystem.peek(uInt16(addr), flags) |
       (mySystem.peek(uInt16(addr+1), flags) << 8);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Debugger::getAccessFlags(uInt16 addr) const
+Device::AccessFlags Debugger::getAccessFlags(uInt16 addr) const
 {
   return mySystem.getAccessFlags(addr);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::setAccessFlags(uInt16 addr, uInt8 flags)
+void Debugger::setAccessFlags(uInt16 addr, Device::AccessFlags flags)
 {
   mySystem.setAccessFlags(addr, flags);
 }
@@ -688,6 +691,7 @@ void Debugger::setStartState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::setQuitState()
 {
+  myDialog->saveConfig();
   saveOldState();
 
   // Bus must be unlocked for normal operation when leaving debugger mode
@@ -873,7 +877,7 @@ std::array<Debugger::BuiltinFunction, 18> Debugger::ourBuiltinFunctions = { {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Names are defined here, but processed in YaccParser
-std::array<Debugger::PseudoRegister, 11> Debugger::ourPseudoRegisters = { {
+std::array<Debugger::PseudoRegister, 12> Debugger::ourPseudoRegisters = { {
 // Debugger::PseudoRegister Debugger::ourPseudoRegisters[NUM_PSEUDO_REGS] = {
   { "_bank",      "Currently selected bank" },
   { "_cclocks",   "Color clocks on current scanline" },
@@ -881,12 +885,15 @@ std::array<Debugger::PseudoRegister, 11> Debugger::ourPseudoRegisters = { {
   { "_cycleslo",  "Lower 32 bits of number of cycles since emulation started" },
   { "_fcount",    "Number of frames since emulation started" },
   { "_fcycles",   "Number of cycles since frame started" },
-  { "_icycles",    "Number of cycles of last instruction" },
+  { "_icycles",   "Number of cycles of last instruction" },
   { "_scan",      "Current scanline count" },
+  { "_scanend",   "Scanline count at end of last frame" },
   { "_scycles",   "Number of cycles in current scanline" },
   { "_vblank",    "Whether vertical blank is enabled (1 or 0)" },
   { "_vsync",     "Whether vertical sync is enabled (1 or 0)" }
   // CPU address access functions:
-  /*{ "__lastread", "last CPU read address" },
-  { "__lastwrite", "last CPU write address" },*/
+  /*{ "_lastread", "last CPU read address" },
+  { "_lastwrite", "last CPU write address" },
+  { "__lastbaseread", "last CPU read base address" },
+  { "__lastbasewrite", "last CPU write base address" }*/
 } };

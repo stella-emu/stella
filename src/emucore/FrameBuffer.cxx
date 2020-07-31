@@ -29,6 +29,8 @@
 #include "FBSurface.hxx"
 #include "TIASurface.hxx"
 #include "FrameBuffer.hxx"
+#include "StateManager.hxx"
+#include "RewindManager.hxx"
 
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
@@ -36,9 +38,15 @@
 #ifdef GUI_SUPPORT
   #include "Font.hxx"
   #include "StellaFont.hxx"
+  #include "ConsoleMediumFont.hxx"
+  #include "ConsoleMediumBFont.hxx"
   #include "StellaMediumFont.hxx"
   #include "StellaLargeFont.hxx"
+  #include "Stella12x24tFont.hxx"
+  #include "Stella14x28tFont.hxx"
+  #include "Stella16x32tFont.hxx"
   #include "ConsoleFont.hxx"
+  #include "ConsoleBFont.hxx"
   #include "Launcher.hxx"
   #include "Menu.hxx"
   #include "CommandMenu.hxx"
@@ -93,41 +101,7 @@ bool FrameBuffer::initialize()
   }
 
 #ifdef GUI_SUPPORT
-  ////////////////////////////////////////////////////////////////////
-  // Create fonts to draw text
-  // NOTE: the logic determining appropriate font sizes is done here,
-  //       so that the UI classes can just use the font they expect,
-  //       and not worry about it
-  //       This logic should also take into account the size of the
-  //       framebuffer, and try to be intelligent about font sizes
-  //       We can probably add ifdefs to take care of corner cases,
-  //       but that means we've failed to abstract it enough ...
-  ////////////////////////////////////////////////////////////////////
-
-  // This font is used in a variety of situations when a really small
-  // font is needed; we let the specific widget/dialog decide when to
-  // use it
-  mySmallFont = make_unique<GUI::Font>(GUI::stellaDesc);
-
-  // The general font used in all UI elements
-  // This is determined by the size of the framebuffer
-  if(myOSystem.settings().getBool("minimal_ui"))
-    myFont = make_unique<GUI::Font>(GUI::stellaLargeDesc);
-  else
-    myFont = make_unique<GUI::Font>(GUI::stellaMediumDesc);
-
-  // The info font used in all UI elements
-  // This is determined by the size of the framebuffer
-  myInfoFont = make_unique<GUI::Font>(GUI::consoleDesc);
-
-  // The font used by the ROM launcher
-  const string& lf = myOSystem.settings().getString("launcherfont");
-  if(lf == "small")
-    myLauncherFont = make_unique<GUI::Font>(GUI::consoleDesc);
-  else if(lf == "medium")
-    myLauncherFont = make_unique<GUI::Font>(GUI::stellaMediumDesc);
-  else
-    myLauncherFont = make_unique<GUI::Font>(GUI::stellaLargeDesc);
+  setupFonts();
 #endif
 
   // Determine possible TIA windowed zoom levels
@@ -145,11 +119,100 @@ bool FrameBuffer::initialize()
   return true;
 }
 
+#ifdef GUI_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FBInitStatus FrameBuffer::createDisplay(const string& title,
+void FrameBuffer::setupFonts()
+{
+  ////////////////////////////////////////////////////////////////////
+  // Create fonts to draw text
+  // NOTE: the logic determining appropriate font sizes is done here,
+  //       so that the UI classes can just use the font they expect,
+  //       and not worry about it
+  //       This logic should also take into account the size of the
+  //       framebuffer, and try to be intelligent about font sizes
+  //       We can probably add ifdefs to take care of corner cases,
+  //       but that means we've failed to abstract it enough ...
+  ////////////////////////////////////////////////////////////////////
+
+  // This font is used in a variety of situations when a really small
+  // font is needed; we let the specific widget/dialog decide when to
+  // use it
+  mySmallFont = make_unique<GUI::Font>(GUI::stellaDesc); // 6x10
+
+  if(myOSystem.settings().getBool("minimal_ui"))
+  {
+    // The general font used in all UI elements
+    myFont = make_unique<GUI::Font>(GUI::stella12x24tDesc);           // 12x24
+    // The info font used in all UI elements
+    myInfoFont = make_unique<GUI::Font>(GUI::stellaLargeDesc);        // 10x20
+  }
+  else
+  {
+    const int NUM_FONTS = 7;
+    FontDesc FONT_DESC[NUM_FONTS] = {GUI::consoleDesc, GUI::consoleMediumDesc, GUI::stellaMediumDesc,
+      GUI::stellaLargeDesc, GUI::stella12x24tDesc, GUI::stella14x28tDesc, GUI::stella16x32tDesc};
+    const string& dialogFont = myOSystem.settings().getString("dialogfont");
+    FontDesc fd = getFontDesc(dialogFont);
+
+    // The general font used in all UI elements
+    myFont = make_unique<GUI::Font>(fd);                                //  default: 9x18
+    // The info font used in all UI elements,
+    //  automatically determined aiming for 1 / 1.4 (~= 18 / 13) size
+    int fontIdx = 0;
+    for(int i = 0; i < NUM_FONTS; ++i)
+    {
+      if(fd.height <= FONT_DESC[i].height * 1.4)
+      {
+        fontIdx = i;
+        break;
+      }
+    }
+    myInfoFont = make_unique<GUI::Font>(FONT_DESC[fontIdx]);            //  default 8x13
+
+    // Determine minimal zoom level based on the default font
+    //  So what fits with default font should fit for any font.
+    //  However, we have to make sure all Dialogs are sized using the fontsize.
+    int zoom_h = (fd.height * 4 * 2) / GUI::stellaMediumDesc.height;
+    int zoom_w = (fd.maxwidth * 4 * 2) / GUI::stellaMediumDesc.maxwidth;
+    myTIAMinZoom = std::max(std::max(zoom_w, zoom_h) / 4.F, 2.F); // round to 25% steps, >= 200%
+  }
+
+  // The font used by the ROM launcher
+  const string& lf = myOSystem.settings().getString("launcherfont");
+
+
+  myLauncherFont = make_unique<GUI::Font>(getFontDesc(lf));       //  8x13
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FontDesc FrameBuffer::getFontDesc(const string& name) const
+{
+  if(name == "small")
+    return GUI::consoleBDesc;       //  8x13
+  else if(name == "low_medium")
+    return GUI::consoleMediumBDesc; //  9x15
+  else if(name == "medium")
+    return GUI::stellaMediumDesc;   //  9x18
+  else if(name == "large" || name == "large10")
+    return GUI::stellaLargeDesc;    // 10x20
+  else if(name == "large12")
+    return GUI::stella12x24tDesc;   // 12x24
+  else if(name == "large14")
+    return GUI::stella14x28tDesc;   // 14x28
+  else // "large16"
+    return GUI::stella16x32tDesc;   // 16x32
+}
+#endif
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FBInitStatus FrameBuffer::createDisplay(const string& title, BufferType type,
                                         uInt32 width, uInt32 height,
                                         bool honourHiDPI)
 {
+  // always save, maybe only the mode of the window has changed
+  saveCurrentWindowPosition();
+  myBufferType = type;
+
   ++myInitializedCount;
   myScreenTitle = title;
 
@@ -249,7 +312,12 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
   }
 
   if(!myMsg.surface)
-    myMsg.surface = allocateSurface(FBMinimum::Width, font().getFontHeight()+10);
+  {
+    const int fontWidth = font().getMaxCharWidth(),
+              HBORDER = fontWidth * 1.25 / 2.0;
+    myMsg.surface = allocateSurface(fontWidth * MESSAGE_WIDTH + HBORDER * 2,
+                                    font().getFontHeight() * 1.5);
+  }
 #endif
 
   // Print initial usage message, but only print it later if the status has changed
@@ -369,6 +437,44 @@ void FrameBuffer::update(bool force)
       break;  // EventHandlerState::TIMEMACHINE
     }
 
+    case EventHandlerState::PLAYBACK:
+    {
+      static Int32 frames = 0;
+      RewindManager& r = myOSystem.state().rewindManager();
+      bool success = true;
+      Int64 frameCycles = 76 * std::max<Int32>(myOSystem.console().tia().scanlinesLastFrame(), 240);
+
+      if(--frames <= 0)
+      {
+        r.unwindStates(1);
+        // get time between current and next state
+        uInt64 startCycles = r.getCurrentCycles();
+        success = r.unwindStates(1);
+        // display larger state gaps faster
+        frames = std::sqrt((myOSystem.console().tia().cycles() - startCycles) / frameCycles);
+
+        if(success)
+          r.rewindStates(1);
+      }
+
+      force = force || success;
+      if (force)
+        myTIASurface->render();
+
+      // Stop playback mode at the end of the state buffer
+      // and switch to Time Machine or Pause mode
+      if (!success)
+      {
+        frames = 0;
+      #ifdef GUI_SUPPORT
+        myOSystem.eventHandler().enterMenuMode(EventHandlerState::TIMEMACHINE);
+      #else
+        myOSystem.eventHandler().changeStateByEvent(Event::TogglePauseMode);
+      #endif
+      }
+      break;  // EventHandlerState::PLAYBACK
+    }
+
     case EventHandlerState::LAUNCHER:
     {
       force = force || myOSystem.launcher().needsRedraw();
@@ -414,8 +520,6 @@ void FrameBuffer::update(bool force)
 void FrameBuffer::updateInEmulationMode(float framesPerSecond)
 {
   // Update method that is specifically tailored to emulation mode
-  // Typically called from a thread, so it needs to be separate from
-  // the normal update() method
   //
   // We don't worry about selective rendering here; the rendering
   // always happens at the full framerate
@@ -447,18 +551,78 @@ void FrameBuffer::showMessage(const string& message, MessagePosition position,
   if(myMsg.surface == nullptr || !(force || myOSystem.settings().getBool("uimessages")))
     return;
 
-  // Precompute the message coordinates
-  myMsg.text    = message;
-  myMsg.counter = uInt32(myOSystem.frameRate()) << 1; // Show message for 2 seconds
-  if(myMsg.counter == 0)  myMsg.counter = 60;
-  myMsg.color   = kBtnTextColor;
+  const int fontWidth  = font().getMaxCharWidth(),
+            fontHeight = font().getFontHeight();
+  const int VBORDER = fontHeight / 4;
+  const int HBORDER = fontWidth * 1.25 / 2.0;
 
-  myMsg.w = font().getStringWidth(myMsg.text) + 10;
-  myMsg.h = font().getFontHeight() + 8;
+  myMsg.counter = uInt32(myOSystem.frameRate()) * 2; // Show message for 2 seconds
+  if(myMsg.counter == 0)
+    myMsg.counter = 120;
+
+  // Precompute the message coordinates
+  myMsg.text      = message;
+  myMsg.color     = kBtnTextColor;
+  myMsg.showGauge = false;
+  myMsg.w         = std::min(fontWidth * (MESSAGE_WIDTH) - HBORDER * 2,
+                             font().getStringWidth(myMsg.text) + HBORDER * 2);
+  myMsg.h         = fontHeight + VBORDER * 2;
+  myMsg.position  = position;
+  myMsg.enabled   = true;
+
   myMsg.surface->setSrcSize(myMsg.w, myMsg.h);
   myMsg.surface->setDstSize(myMsg.w * hidpiScaleFactor(), myMsg.h * hidpiScaleFactor());
-  myMsg.position = position;
-  myMsg.enabled = true;
+#endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::showMessage(const string& message, const string& valueText,
+                              float value, float minValue, float maxValue)
+{
+#ifdef GUI_SUPPORT
+  // Only show messages if they've been enabled
+  if(myMsg.surface == nullptr || !myOSystem.settings().getBool("uimessages"))
+    return;
+
+  const int fontWidth  = font().getMaxCharWidth(),
+            fontHeight = font().getFontHeight();
+  const int VBORDER = fontHeight / 4;
+  const int HBORDER = fontWidth * 1.25 / 2.0;
+
+  myMsg.counter = uInt32(myOSystem.frameRate()) * 2; // Show message for 2 seconds
+  if(myMsg.counter == 0)
+    myMsg.counter = 120;
+
+  // Precompute the message coordinates
+  myMsg.text       = message;
+  myMsg.color      = kBtnTextColor;
+  myMsg.showGauge  = true;
+  if(maxValue - minValue != 0)
+    myMsg.value = (value - minValue) / (maxValue - minValue) * 100.F;
+  else
+    myMsg.value = 100.F;
+  myMsg.valueText  = valueText;
+  myMsg.w          = std::min(fontWidth * MESSAGE_WIDTH,
+                              font().getStringWidth(myMsg.text)
+                              + fontWidth * (GAUGEBAR_WIDTH + 2)
+                              + font().getStringWidth(myMsg.valueText))
+    + HBORDER * 2;
+  myMsg.h          = fontHeight + VBORDER * 2;
+  myMsg.position   = MessagePosition::BottomCenter;
+  myMsg.enabled    = true;
+
+  myMsg.surface->setSrcSize(myMsg.w, myMsg.h);
+  myMsg.surface->setDstSize(myMsg.w * hidpiScaleFactor(), myMsg.h * hidpiScaleFactor());
+#endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FrameBuffer::messageShown() const
+{
+#ifdef GUI_SUPPORT
+  return myMsg.enabled;
+#else
+  return false;
 #endif
 }
 
@@ -495,7 +659,10 @@ void FrameBuffer::drawFrameStats(float framesPerSecond)
   ss
     << std::fixed << std::setprecision(1) << framesPerSecond
     << "fps @ "
-    << std::fixed << std::setprecision(0) << 100 * myOSystem.settings().getFloat("speed")
+    << std::fixed << std::setprecision(0) << 100 *
+      (myOSystem.settings().getBool("turbo")
+        ? 20.0F
+        : myOSystem.settings().getFloat("speed"))
     << "% speed";
 
   myStatsMsg.surface->drawString(f, ss.str(), xPos, yPos,
@@ -518,11 +685,15 @@ void FrameBuffer::drawFrameStats(float framesPerSecond)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::toggleFrameStats()
+void FrameBuffer::toggleFrameStats(bool toggle)
 {
-  showFrameStats(!myStatsEnabled);
+  if (toggle)
+    showFrameStats(!myStatsEnabled);
   myOSystem.settings().setValue(
     myOSystem.settings().getBool("dev.settings") ? "dev.stats" : "plr.stats", myStatsEnabled);
+
+  myOSystem.frameBuffer().showMessage(string("Console info ") +
+                                      (myStatsEnabled ? "enabled" : "disabled"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -570,6 +741,11 @@ inline bool FrameBuffer::drawMessage()
 
   // Draw the bounded box and text
   const Common::Rect& dst = myMsg.surface->dstRect();
+  const int fontWidth  = font().getMaxCharWidth(),
+            fontHeight = font().getFontHeight();
+  const int VBORDER = fontHeight / 4;
+  const int HBORDER = fontWidth * 1.25 / 2.0;
+  constexpr int BORDER = 1;
 
   switch(myMsg.position)
   {
@@ -620,10 +796,44 @@ inline bool FrameBuffer::drawMessage()
   }
 
   myMsg.surface->setDstPos(myMsg.x + myImageRect.x(), myMsg.y + myImageRect.y());
-  myMsg.surface->fillRect(1, 1, myMsg.w-2, myMsg.h-2, kBtnColor);
-  myMsg.surface->frameRect(0, 0, myMsg.w, myMsg.h, kColor);
-  myMsg.surface->drawString(font(), myMsg.text, 5, 4,
-                            myMsg.w, myMsg.color, TextAlign::Left);
+  myMsg.surface->fillRect(0, 0, myMsg.w, myMsg.h, kColor);
+  myMsg.surface->fillRect(BORDER, BORDER, myMsg.w - BORDER * 2, myMsg.h - BORDER * 2, kBtnColor);
+  myMsg.surface->drawString(font(), myMsg.text, HBORDER, VBORDER,
+                            myMsg.w, myMsg.color);
+
+  if(myMsg.showGauge)
+  {
+    constexpr int NUM_TICKMARKS = 4;
+    // limit gauge bar width if texts are too long
+    const int swidth = std::min(fontWidth * GAUGEBAR_WIDTH,
+                                fontWidth * (MESSAGE_WIDTH - 2)
+                                - font().getStringWidth(myMsg.text)
+                                - font().getStringWidth(myMsg.valueText));
+    const int bwidth = swidth * myMsg.value / 100.F;
+    const int bheight = fontHeight >> 1;
+    const int x = HBORDER + font().getStringWidth(myMsg.text) + fontWidth;
+    // align bar with bottom of text
+    const int y = VBORDER + font().desc().ascent - bheight;
+
+    // draw gauge bar
+    myMsg.surface->fillRect(x - BORDER, y, swidth + BORDER * 2, bheight, kSliderBGColor);
+    myMsg.surface->fillRect(x, y + BORDER, bwidth, bheight - BORDER * 2, kSliderColor);
+    // draw tickmark in the middle of the bar
+    for(int i = 1; i < NUM_TICKMARKS; ++i)
+    {
+      ColorId color;
+      int xt = x + swidth * i / NUM_TICKMARKS;
+      if(bwidth < xt - x)
+        color = kCheckColor; // kSliderColor;
+      else
+        color = kSliderBGColor;
+      myMsg.surface->vLine(xt, y + bheight / 2, y + bheight - 1, color);
+    }
+    // draw value text
+    myMsg.surface->drawString(font(), myMsg.valueText,
+                              x + swidth + fontWidth, VBORDER,
+                              myMsg.w, myMsg.color);
+  }
   myMsg.surface->render();
   myMsg.counter--;
 #endif
@@ -707,6 +917,7 @@ void FrameBuffer::setUIPalette()
   const UIPaletteArray& ui_palette =
      (myOSystem.settings().getString("uipalette") == "classic") ? ourClassicUIPalette :
      (myOSystem.settings().getString("uipalette") == "light")   ? ourLightUIPalette :
+     (myOSystem.settings().getString("uipalette") == "dark")    ? ourDarkUIPalette :
       ourStandardUIPalette;
 
   for(size_t i = 0, j = myFullPalette.size() - ui_palette.size();
@@ -732,6 +943,58 @@ void FrameBuffer::stateChanged(EventHandlerState state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string FrameBuffer::getDisplayKey()
+{
+  // save current window's display and position
+  switch(myBufferType)
+  {
+    case BufferType::Launcher:
+      return "launcherdisplay";
+
+    case BufferType::Emulator:
+      return "display";
+
+  #ifdef DEBUGGER_SUPPORT
+    case BufferType::Debugger:
+      return "dbg.display";
+  #endif
+
+    default:
+      return "";
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string FrameBuffer::getPositionKey()
+{
+  // save current window's display and position
+  switch(myBufferType)
+  {
+    case BufferType::Launcher:
+      return "launcherpos";
+
+    case BufferType::Emulator:
+      return  "windowedpos";
+
+  #ifdef DEBUGGER_SUPPORT
+    case BufferType::Debugger:
+      return "dbg.pos";
+  #endif
+
+    default:
+      return "";
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::saveCurrentWindowPosition()
+{
+  myOSystem.settings().setValue(getDisplayKey(), getCurrentDisplayIndex());
+  if(isCurrentWindowPositioned())
+    myOSystem.settings().setValue(getPositionKey(), getCurrentWindowPos());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::setFullscreen(bool enable)
 {
 #ifdef WINDOWED_SUPPORT
@@ -753,6 +1016,7 @@ void FrameBuffer::setFullscreen(bool enable)
     default:
       return;
   }
+  saveCurrentWindowPosition();
 
   // Changing the video mode can take some time, during which the last
   // sound played may get 'stuck'
@@ -781,10 +1045,66 @@ void FrameBuffer::setFullscreen(bool enable)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::toggleFullscreen()
+void FrameBuffer::toggleFullscreen(bool toggle)
 {
-  setFullscreen(!fullScreen());
+  switch (myOSystem.eventHandler().state())
+  {
+    case EventHandlerState::LAUNCHER:
+    case EventHandlerState::EMULATION:
+    case EventHandlerState::PAUSE:
+    case EventHandlerState::DEBUGGER:
+    {
+      const bool isFullscreen = toggle ? !fullScreen() : fullScreen();
+
+      setFullscreen(isFullscreen);
+
+      if (myBufferType != BufferType::Launcher)
+      {
+        ostringstream msg;
+
+        msg << "Fullscreen ";
+        if (isFullscreen)
+          msg << "enabled (" << refreshRate() << " Hz)";
+        else
+          msg << "disabled";
+
+        showMessage(msg.str());
+      }
+      break;
+    }
+    default:
+      break;
+  }
 }
+
+#ifdef ADAPTABLE_REFRESH_SUPPORT
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::toggleAdaptRefresh(bool toggle)
+{
+  bool isAdaptRefresh = myOSystem.settings().getInt("tia.fs_refresh");
+
+  if(toggle)
+    isAdaptRefresh = !isAdaptRefresh;
+
+  if(myBufferType == BufferType::Emulator)
+  {
+    if(toggle)
+    {
+      myOSystem.settings().setValue("tia.fs_refresh", isAdaptRefresh);
+      // issue a complete framebuffer re-initialization
+      myOSystem.createFrameBuffer();
+    }
+
+    ostringstream msg;
+
+    msg << "Adapt refresh rate ";
+    msg << (isAdaptRefresh ? "enabled" : "disabled");
+    msg << " (" << refreshRate() << " Hz)";
+
+    showMessage(msg.str());
+  }
+}
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::changeOverscan(int direction)
@@ -801,14 +1121,18 @@ void FrameBuffer::changeOverscan(int direction)
       // issue a complete framebuffer re-initialization
       myOSystem.createFrameBuffer();
     }
-    ostringstream msg;
-    msg << "Overscan at " << overscan << "%";
-    showMessage(msg.str());
+
+    ostringstream val;
+    if(overscan)
+      val << (overscan > 0 ? "+" : "" ) << overscan << "%";
+    else
+      val << "Off";
+    myOSystem.frameBuffer().showMessage("Overscan", val.str(), overscan, 0, 10);
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBuffer::changeVidMode(int direction)
+void FrameBuffer::selectVidMode(int direction)
 {
   EventHandlerState state = myOSystem.eventHandler().state();
   bool tiaMode = (state != EventHandlerState::DEBUGGER &&
@@ -816,14 +1140,14 @@ bool FrameBuffer::changeVidMode(int direction)
 
   // Only applicable when in TIA/emulation mode
   if(!tiaMode)
-    return false;
+    return;
 
   if(direction == +1)
     myCurrentModeList->next();
   else if(direction == -1)
     myCurrentModeList->previous();
-  else
-    return false;
+
+  saveCurrentWindowPosition();
 
   // Changing the video mode can take some time, during which the last
   // sound played may get 'stuck'
@@ -841,7 +1165,10 @@ bool FrameBuffer::changeVidMode(int direction)
     myTIASurface->initialize(myOSystem.console(), mode);
 
     resetSurfaces();
-    showMessage(mode.description);
+    if(fullScreen())
+      showMessage(mode.description);
+    else
+      showMessage("Zoom", mode.description, mode.zoom, supportedTIAMinZoom(), myTIAMaxZoom);
     myOSystem.sound().mute(oldMuteState);
 
     if(fullScreen())
@@ -850,11 +1177,9 @@ bool FrameBuffer::changeVidMode(int direction)
     else
       myOSystem.settings().setValue("tia.zoom", mode.zoom);
 
-    return true;
+    return;
   }
   myOSystem.sound().mute(oldMuteState);
-
-  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -875,23 +1200,23 @@ void FrameBuffer::setCursorState()
   // Show/hide cursor in UI/emulation mode based on 'cursor' setting
   int cursor = myOSystem.settings().getInt("cursor");
   // always enable cursor in lightgun games
-  if (usesLightgun)
-    cursor |= 1;
+  if (usesLightgun && !myGrabMouse)
+    cursor |= 1;  // +Emulation
 
   switch(cursor)
   {
-    case 0:
+    case 0:                   // -UI, -Emulation
       showCursor(false);
       break;
     case 1:
-      showCursor(emulation);
+      showCursor(emulation);  //-UI, +Emulation
       myGrabMouse = false; // disable grab while cursor is shown in emulation
       break;
-    case 2:
+    case 2:                   // +UI, -Emulation
       showCursor(!emulation);
       break;
     case 3:
-      showCursor(true);
+      showCursor(true);       // +UI, +Emulation
       myGrabMouse = false; // disable grab while cursor is shown in emulation
       break;
   }
@@ -909,9 +1234,14 @@ void FrameBuffer::enableGrabMouse(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::toggleGrabMouse()
 {
+  const bool oldState = myGrabMouse;
+
   myGrabMouse = !myGrabMouse;
   setCursorState();
   myOSystem.settings().setValue("grabmouse", myGrabMouse);
+  myOSystem.frameBuffer().showMessage(oldState != myGrabMouse ? myGrabMouse
+                                      ? "Grab mouse enabled" : "Grab mouse disabled"
+                                      : "Grab mouse not allowed while cursor shown");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -955,14 +1285,14 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
   if(tiaMode)
   {
     // TIA windowed modes
-    uInt32 minZoom = supportedTIAMinZoom();
+    float minZoom = supportedTIAMinZoom();
     myTIAMaxZoom = maxZoomForScreen(baseWidth, baseHeight,
                      myAbsDesktopSize.w, myAbsDesktopSize.h);
     // Determine all zoom levels
     for(float zoom = minZoom; zoom <= myTIAMaxZoom; zoom += ZOOM_STEPS)
     {
       ostringstream desc;
-      desc << "Zoom " << zoom << "x";
+      desc << (zoom * 100) << "%";
 
       VideoMode mode(baseWidth*zoom, baseHeight*zoom, baseWidth*zoom, baseHeight*zoom,
                      VideoMode::Stretch::Fill, 1.0, desc.str(), zoom);
@@ -982,12 +1312,12 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
       VideoMode mode1(baseWidth * myTIAMaxZoom, baseHeight * myTIAMaxZoom,
                       myFullscreenDisplays[i].w, myFullscreenDisplays[i].h,
                       VideoMode::Stretch::Preserve, overscan,
-                      "Preserve aspect, no stretch", myTIAMaxZoom, i);
+                      "Fullscreen: Preserve aspect, no stretch", myTIAMaxZoom, i);
       myFullscreenModeLists[i].add(mode1);
       VideoMode mode2(baseWidth * myTIAMaxZoom, baseHeight * myTIAMaxZoom,
                       myFullscreenDisplays[i].w, myFullscreenDisplays[i].h,
                       VideoMode::Stretch::Fill, overscan,
-                      "Ignore aspect, full stretch", myTIAMaxZoom, i);
+                      "Fullscreen: Ignore aspect, full stretch", myTIAMaxZoom, i);
       myFullscreenModeLists[i].add(mode2);
     }
   }
@@ -1289,5 +1619,18 @@ UIPaletteArray FrameBuffer::ourLightUIPalette = {
     0xffc0c0, 0x000000, 0xe00000, 0xc00000,                     // debugger
     0x333333, 0x0078d7, 0xc0c0c0, 0xffffff, 0xc0c0c0,           // slider 0xBDDEF9| 0xe1e1e1 | 0xffffff
     0xffffff, 0x333333, 0xf0f0f0, 0x808080, 0xc0c0c0            // other
+  }
+};
+
+UIPaletteArray FrameBuffer::ourDarkUIPalette = {
+  { 0x646464, 0xc0c0c0, 0x3c3c3c, 0x282828, 0x989898,           // base
+    0xc0c0c0, 0x1567a5, 0x0059a3, 0xc0c0c0,                     // text
+    0x202020, 0x000000, 0x0059a3, 0xb0b0b0,                     // UI elements
+    0x282828, 0x00467f, 0x646464, 0x0059a3, 0xc0c0c0, 0xc0c0c0, // buttons
+    0x989898,                                                   // checkbox
+    0x3c3c3c, 0x646464,                                         // scrollbar
+    0x7f2020, 0xc0c0c0, 0xe00000, 0xc00000,                     // debugger
+    0x989898, 0x0059a3, 0x3c3c3c, 0x000000, 0x3c3c3c,           // slider
+    0x000000, 0x989898, 0x202020, 0x646464, 0x3c3c3c            // other
   }
 };

@@ -50,15 +50,20 @@ InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& lfont,
 void InputTextDialog::initialize(const GUI::Font& lfont, const GUI::Font& nfont,
                                  const StringList& labels)
 {
-  const int fontWidth  = lfont.getMaxCharWidth(),
-            fontHeight = lfont.getFontHeight(),
-            lineHeight = lfont.getLineHeight();
+  const int lineHeight   = lfont.getLineHeight(),
+            fontWidth    = lfont.getMaxCharWidth(),
+            fontHeight   = lfont.getFontHeight(),
+            buttonHeight = lfont.getLineHeight() * 1.25;
+  const int VBORDER = fontHeight / 2;
+  const int HBORDER = fontWidth * 1.25;
+  const int VGAP = fontHeight / 4;
+
   uInt32 xpos, ypos, i, lwidth = 0, maxIdx = 0;
   WidgetArray wid;
 
   // Calculate real dimensions
-  _w = fontWidth * 41;
-  _h = lineHeight * 4 + int(labels.size()) * (lineHeight + 5) + _th;
+  _w = HBORDER * 2 + fontWidth * 39;
+  _h = buttonHeight + lineHeight + VGAP + int(labels.size()) * (lineHeight + VGAP) + _th + VBORDER * 2;
 
   // Determine longest label
   for(i = 0; i < labels.size(); ++i)
@@ -72,25 +77,25 @@ void InputTextDialog::initialize(const GUI::Font& lfont, const GUI::Font& nfont,
   lwidth = lfont.getStringWidth(labels[maxIdx]);
 
   // Create editboxes for all labels
-  ypos = lineHeight + _th;
+  ypos = VBORDER + _th;
   for(i = 0; i < labels.size(); ++i)
   {
-    xpos = 10;
+    xpos = HBORDER;
     new StaticTextWidget(this, lfont, xpos, ypos + 2,
                          lwidth, fontHeight,
                          labels[i], TextAlign::Left);
 
     xpos += lwidth + fontWidth;
     EditTextWidget* w = new EditTextWidget(this, nfont, xpos, ypos,
-                                           _w - xpos - 10, lineHeight, "");
+                                           _w - xpos - HBORDER, lineHeight, "");
     wid.push_back(w);
 
     myInput.push_back(w);
-    ypos += lineHeight + 5;
+    ypos += lineHeight + VGAP;
   }
 
-  xpos = 10;
-  myMessage = new StaticTextWidget(this, lfont, xpos, ypos, _w - 2*xpos, fontHeight,
+  xpos = HBORDER; ypos += VGAP;
+  myMessage = new StaticTextWidget(this, lfont, xpos, ypos, _w - 2 * xpos, fontHeight,
                                  "", TextAlign::Left);
   myMessage->setTextColor(kTextColorEm);
 

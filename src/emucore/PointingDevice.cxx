@@ -15,6 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include <cmath>
+
 #include "Control.hxx"
 #include "Event.hxx"
 #include "System.hxx"
@@ -90,9 +92,8 @@ void PointingDevice::update()
   setPin(DigitalPin::Six, myEvent.get(Event::JoystickZeroFire) == 0);
 
   // We allow left and right mouse buttons for fire button
-  if(myEvent.get(Event::MouseButtonLeftValue) ||
-     myEvent.get(Event::MouseButtonRightValue))
-    setPin(DigitalPin::Six, false);
+  setPin(DigitalPin::Six, !getAutoFireState(
+    myEvent.get(Event::MouseButtonLeftValue) || myEvent.get(Event::MouseButtonRightValue)));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

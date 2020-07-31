@@ -34,15 +34,16 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
   : Widget(boss, lfont, x, y, 16, 16),
     CommandSender(boss)
 {
-  bool longstr = 34 * lfont.getMaxCharWidth() <= max_w;
+  bool longstr = 11 + 32 * lfont.getMaxCharWidth() + 9
+    + EditTextWidget::calcWidth(lfont) * 3 <= max_w;
   const int VGAP = 5;
 
   x += 11;
   const int lineHeight = lfont.getLineHeight();
   int xpos = x, ypos = y + 10;
   int lwidth = lfont.getStringWidth(longstr ? "Frame Cycle " : "F. Cycle ");
-  int fwidth = 5 * lfont.getMaxCharWidth() + 4;
-  int twidth = 8 * lfont.getMaxCharWidth() + 4;
+  int fwidth = EditTextWidget::calcWidth(lfont, 5);
+  int twidth = EditTextWidget::calcWidth(lfont, 8);
 
   // Add frame info
   // 1st column
@@ -78,11 +79,9 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
   // 2nd column
   xpos = x + lwidth + myFrameCycles->getWidth() + 9;  ypos = y + 10;
   lwidth = lfont.getStringWidth(longstr ? "Color Clock " : "Pixel Pos ");
-  fwidth = 3 * lfont.getMaxCharWidth() + 4;
+  fwidth = EditTextWidget::calcWidth(lfont, 3);
 
-  new StaticTextWidget(boss, lfont, xpos, ypos,
-    lfont.getStringWidth(longstr ? "Scanline" : "Scn Ln"), lineHeight,
-    longstr ? "Scanline" : "Scn Ln", TextAlign::Left);
+  new StaticTextWidget(boss, lfont, xpos, ypos, longstr ? "Scanline" : "Scn Ln");
   myScanlineCountLast = new EditTextWidget(boss, nfont, xpos+lwidth, ypos-1, fwidth,
                                        lineHeight, "");
   myScanlineCountLast->setEditable(false, true);
@@ -143,10 +142,10 @@ void TiaInfoWidget::loadConfig()
 
   uInt64 total = tia.cyclesLo() + (uInt64(tia.cyclesHi()) << 32);
   uInt64 totalOld = oldTia.info[2] + (uInt64(oldTia.info[3]) << 32);
-  myTotalCycles->setText(Common::Base::toString(total / 1000000, Common::Base::Fmt::_10_6) + "e6",
+  myTotalCycles->setText(Common::Base::toString(uInt32(total) / 1000000, Common::Base::Fmt::_10_6) + "e6",
                          total != totalOld);
-  uInt32 delta = total - totalOld;
-  myDeltaCycles->setText(Common::Base::toString(delta, Common::Base::Fmt::_10_8)); // no coloring
+  uInt64 delta = total - totalOld;
+  myDeltaCycles->setText(Common::Base::toString(uInt32(delta), Common::Base::Fmt::_10_8)); // no coloring
 
   int clk = tia.clocksThisLine();
   myScanlineCount->setText(Common::Base::toString(tia.scanlines(), Common::Base::Fmt::_10_3),

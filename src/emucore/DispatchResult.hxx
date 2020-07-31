@@ -55,7 +55,7 @@ class DispatchResult
       if (myStatus != status) throw runtime_error("invalid status for operation");
     }
 
-    template<class ...Ts> void assertStatus(Status status, Ts... more) const
+    template<typename ...Ts> void assertStatus(Status status, Ts... more) const
     {
       if (myStatus == status) return;
 

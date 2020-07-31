@@ -47,6 +47,14 @@ class SerialPortWINDOWS : public SerialPort
     */
     bool writeByte(uInt8 data) override;
 
+    /**
+      Test for 'Clear To Send' enabled.  By default, assume it's always
+      OK to send more data.
+
+      @return  True if CTS signal enabled, else false
+    */
+    bool isCTS() override;
+
   private:
     // Handle to serial port
     HANDLE myHandle{0};

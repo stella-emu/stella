@@ -7,15 +7,15 @@ environment:
   matrix:
     - Platform: x64
     - Platform: Win32
-    
+
   Configuration: Release
 
-  SDL2_version: 2.0.10
+  SDL2_version: 2.0.12
 
 
 install:
   - cmd: |
-      curl -o "C:\SDL2-devel.zip" https://www.libsdl.org/release/SDL2-devel-2.0.10-VC.zip
+      curl -o "C:\SDL2-devel.zip" "https://www.libsdl.org/release/SDL2-devel-%SDL2_version%-VC.zip"
       7z x "C:\SDL2-devel.zip" -o"C:\"
       xcopy /S "C:\SDL2-%SDL2_version%\include" src\common
 

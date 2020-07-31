@@ -12,6 +12,7 @@ MODULE_OBJS := \
 	src/common/Logger.o \
 	src/common/main.o \
 	src/common/MouseControl.o \
+	src/common/PaletteHandler.o \
 	src/common/PhosphorHandler.o \
 	src/common/PhysicalJoystick.o \
 	src/common/PJoystickHandler.o \

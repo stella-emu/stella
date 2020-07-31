@@ -36,20 +36,24 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
             fontHeight   = font.getFontHeight(),
-            buttonHeight = font.getLineHeight() + 4;
+            buttonHeight = lineHeight * 1.25;
+  const int VBORDER = fontHeight / 2;
+  const int HBORDER = fontWidth * 1.25;
+  const int VGAP = fontHeight / 4;
+
   int xpos, ypos;
   int lwidth = font.getStringWidth("Right difficulty "),
       pwidth = font.getStringWidth("CM (SpectraVideo CompuMate)");
-  const int VGAP = 4;
   WidgetArray wid;
   VariantList items;
   const GUI::Font& infofont = instance().frameBuffer().infoFont();
 
   // Set real dimensions
-  _w = lwidth + pwidth + fontWidth*3 + 15;
-  _h = 15 * (lineHeight + 4) + buttonHeight + 16 + _th;
+  _w = HBORDER * 2 + std::max(lwidth + pwidth + PopUpWidget::dropDownWidth(font),
+                              49 * infofont.getMaxCharWidth());
+  _h = _th + 11 * (lineHeight + VGAP) + 3 * infofont.getLineHeight() + VGAP * 12 + buttonHeight + VBORDER * 2;
 
-  xpos = 10;  ypos = 10 + _th;
+  xpos = HBORDER;  ypos = VBORDER + _th;
 
   // Bankswitch type
   new StaticTextWidget(this, font, xpos, ypos+1, "Bankswitch type");
@@ -112,12 +116,12 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
       "(automatically released shortly after start)");
 
   // Start with console joystick direction/buttons held down
-  xpos = 32;  ypos += infofont.getLineHeight() + VGAP * 2;
+  xpos = fontWidth * 4;  ypos += infofont.getLineHeight() + VGAP * 2;
   ypos = addHoldWidgets(font, xpos, ypos, wid);
 
   // Add message concerning usage
-  xpos = 10;  ypos += 2 * fontHeight;
-  ypos = _h - fontHeight * 2 - infofont.getLineHeight() - 24;
+  xpos = HBORDER;
+  ypos = _h - VBORDER - buttonHeight - VGAP * 3 - infofont.getLineHeight() * 2;
   new StaticTextWidget(this, infofont, xpos, ypos,
     "(*) These options are not saved, but apply to all");
   ypos += infofont.getLineHeight();
@@ -134,21 +138,24 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
 int GlobalPropsDialog::addHoldWidgets(const GUI::Font& font, int x, int y,
                                       WidgetArray& wid)
 {
-  int xpos = x, ypos = y;
-  const int VGAP = 4;
+  const int fontWidth    = font.getMaxCharWidth(),
+            fontHeight   = font.getFontHeight();
+  const int VGAP = fontHeight / 4;
+
+  int xpos = x, ypos = y, xdiff = CheckboxWidget::boxSize(font) - 9;
 
   // Left joystick
-  StaticTextWidget* t = new StaticTextWidget(this, font, xpos, ypos+2, "Left joy");
-  xpos += t->getWidth()/2 - 7;  ypos += t->getHeight() + VGAP;
+  StaticTextWidget* t = new StaticTextWidget(this, font, xpos, ypos + 2, "Left joy");
+  xpos += t->getWidth()/2 - xdiff - 2;  ypos += t->getHeight() + VGAP;
   myJoy[kJ0Up] = new CheckboxWidget(this, font, xpos, ypos, "", kJ0Up);
   ypos += myJoy[kJ0Up]->getHeight() * 2 + VGAP * 2;
   myJoy[kJ0Down] = new CheckboxWidget(this, font, xpos, ypos, "", kJ0Down);
-  xpos -= myJoy[kJ0Up]->getWidth() + 5;
+  xpos -= myJoy[kJ0Up]->getWidth() + xdiff;
   ypos -= myJoy[kJ0Up]->getHeight() + VGAP;
   myJoy[kJ0Left] = new CheckboxWidget(this, font, xpos, ypos, "", kJ0Left);
-  xpos += (myJoy[kJ0Up]->getWidth() + 5) * 2;
+  xpos += (myJoy[kJ0Up]->getWidth() + xdiff) * 2;
   myJoy[kJ0Right] = new CheckboxWidget(this, font, xpos, ypos, "", kJ0Right);
-  xpos -= (myJoy[kJ0Up]->getWidth() + 5) * 2;
+  xpos -= (myJoy[kJ0Up]->getWidth() + xdiff) * 2;
   ypos += myJoy[kJ0Down]->getHeight() * 2 + VGAP * 2;
   myJoy[kJ0Fire] = new CheckboxWidget(this, font, xpos, ypos, "Fire", kJ0Fire);
 
@@ -157,20 +164,20 @@ int GlobalPropsDialog::addHoldWidgets(const GUI::Font& font, int x, int y,
 
   // Right joystick
   t = new StaticTextWidget(this, font, xpos, ypos + 2, "Right joy");
-  xpos += t->getWidth()/2 - 7;  ypos += t->getHeight() + VGAP;
+  xpos += t->getWidth()/2 - xdiff - 2;  ypos += t->getHeight() + VGAP;
   myJoy[kJ1Up] = new CheckboxWidget(this, font, xpos, ypos, "", kJ1Up);
   ypos += myJoy[kJ1Up]->getHeight() * 2 + VGAP * 2;
   myJoy[kJ1Down] = new CheckboxWidget(this, font, xpos, ypos, "", kJ1Down);
-  xpos -= myJoy[kJ1Up]->getWidth() + 5;
+  xpos -= myJoy[kJ1Up]->getWidth() + xdiff;
   ypos -= myJoy[kJ1Up]->getHeight() + VGAP;
   myJoy[kJ1Left] = new CheckboxWidget(this, font, xpos, ypos, "", kJ1Left);
-  xpos += (myJoy[kJ1Up]->getWidth() + 5) * 2;
+  xpos += (myJoy[kJ1Up]->getWidth() + xdiff) * 2;
   myJoy[kJ1Right] = new CheckboxWidget(this, font, xpos, ypos, "", kJ1Right);
-  xpos -= (myJoy[kJ1Up]->getWidth() + 5) * 2;
+  xpos -= (myJoy[kJ1Up]->getWidth() + xdiff) * 2;
   ypos += myJoy[kJ1Down]->getHeight() * 2 + VGAP * 2;
   myJoy[kJ1Fire] = new CheckboxWidget(this, font, xpos, ypos, "Fire", kJ1Fire);
 
-  xpos = 2 * _w / 3 + 8;  ypos = y;
+  xpos = 2 * _w / 3 + fontWidth;  ypos = y;
 
   // Console Select/Reset
   t = new StaticTextWidget(this, font, xpos, ypos+2, "Console");

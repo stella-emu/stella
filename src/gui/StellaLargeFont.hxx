@@ -43,6 +43,55 @@ namespace GUI {
 static const uInt16 stellaLarge_font_bits[] = {  // NOLINT : too complicated to convert
 
   /* MODIFIED
+  Character 28 (0x1c):
+  width 10
+  bbx ( 10, 20, 0, -4 )
+
+  +----------+
+  |          |
+  |          |
+  |          |
+  |   XXXX   |
+  |  XX  XX  |
+  |  XX  XX  |
+  |  XX  XX  |
+  |  XX  XX  |
+  |   XXXX   |
+  |          |
+  |          |
+  |          |
+  |          |
+  |          |
+  |          |
+  |          |
+  |          |
+  |          |
+  |          |
+  |          |
+  +----------+
+  */
+  0x0000,
+  0x0000,
+  0x0000,
+  0b0001111000000000,
+  0b0011001100000000,
+  0b0011001100000000,
+  0b0011001100000000,
+  0b0011001100000000,
+  0b0001111000000000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+
+  /* MODIFIED
   Character 29 (0x1d):
   width 10
   bbx ( 10, 20, 0, -4 )
@@ -153,14 +202,14 @@ static const uInt16 stellaLarge_font_bits[] = {  // NOLINT : too complicated to 
   |          |
   |          |
   |          |
-  |          |
-  |          |
-  |          |
-  |          |
-  |          |
-  |          |
-  |          |
-  |          |
+  |   ****   |
+  |  ******  |
+  | ******** |
+  | ******** |
+  | ******** |
+  | ******** |
+  |  ******  |
+  |   ****   |
   |          |
   |          |
   |          |
@@ -175,14 +224,14 @@ static const uInt16 stellaLarge_font_bits[] = {  // NOLINT : too complicated to 
   0x0000,
   0x0000,
   0x0000,
-  0x0000,
-  0x0000,
-  0x0000,
-  0x0000,
-  0x0000,
-  0x0000,
-  0x0000,
-  0x0000,
+  0b0001111000000000,
+  0b0011111100000000,
+  0b0111111110000000,
+  0b0111111110000000,
+  0b0111111110000000,
+  0b0111111110000000,
+  0b0011111100000000,
+  0b0001111000000000,
   0x0000,
   0x0000,
   0x0000,
@@ -4759,8 +4808,8 @@ static const FontDesc stellaLargeDesc = {
   20,
   10, 20, 0, -4,
   16,
-  29,
-  98,
+  28,
+  99,
   stellaLarge_font_bits,
   nullptr,  /* no encode table*/
   nullptr,  /* fixed width*/

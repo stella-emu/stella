@@ -15,11 +15,11 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "Control.hxx"
-#include "Switches.hxx"
-
 #ifndef CONSOLE_IO_HXX
 #define CONSOLE_IO_HXX
+
+class Controller;
+class Switches;
 
 class ConsoleIO
 {

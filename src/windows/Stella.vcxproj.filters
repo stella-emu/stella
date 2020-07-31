@@ -342,9 +342,6 @@
     <ClCompile Include="..\gui\AboutDialog.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
-    <ClCompile Include="..\gui\AudioDialog.cxx">
-      <Filter>Source Files\gui</Filter>
-    </ClCompile>
     <ClCompile Include="..\gui\BrowserDialog.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
@@ -436,9 +433,6 @@
       <Filter>Source Files\gui</Filter>
     </ClCompile>
     <ClCompile Include="..\gui\UIDialog.cxx">
-      <Filter>Source Files\gui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gui\VideoDialog.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
     <ClCompile Include="..\gui\Widget.cxx">
@@ -723,9 +717,6 @@
     <ClCompile Include="..\emucore\TIASurface.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
-    <ClCompile Include="..\emucore\CartDASH.cxx">
-      <Filter>Source Files\emucore</Filter>
-    </ClCompile>
     <ClCompile Include="..\debugger\gui\CartRamWidget.cxx">
       <Filter>Source Files\debugger</Filter>
     </ClCompile>
@@ -733,9 +724,6 @@
       <Filter>Source Files\debugger</Filter>
     </ClCompile>
     <ClCompile Include="..\debugger\gui\SaveKeyWidget.cxx">
-      <Filter>Source Files\debugger</Filter>
-    </ClCompile>
-    <ClCompile Include="..\debugger\gui\CartDASHWidget.cxx">
       <Filter>Source Files\debugger</Filter>
     </ClCompile>
     <ClCompile Include="..\emucore\CartMDM.cxx">
@@ -757,12 +745,6 @@
       <Filter>Source Files\gui</Filter>
     </ClCompile>
     <ClCompile Include="..\debugger\gui\RiotRamWidget.cxx">
-      <Filter>Source Files\debugger</Filter>
-    </ClCompile>
-    <ClCompile Include="..\emucore\CartCVPlus.cxx">
-      <Filter>Source Files\emucore</Filter>
-    </ClCompile>
-    <ClCompile Include="..\debugger\gui\CartCVPlusWidget.cxx">
       <Filter>Source Files\debugger</Filter>
     </ClCompile>
     <ClCompile Include="..\debugger\gui\Cart3EPlusWidget.cxx">
@@ -1012,6 +994,36 @@
       <Filter>Source Files\gui</Filter>
     </ClCompile>
     <ClCompile Include="..\gui\HighScoresDialog.cxx">
+      <Filter>Source Files\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\emucore\CartEnhanced.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartEnhancedWidget.cxx">
+      <Filter>Source Files\debugger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\emucore\Cart3EX.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\PaletteHandler.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gui\EmulationDialog.cxx">
+      <Filter>Source Files\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gui\VideoAudioDialog.cxx">
+      <Filter>Source Files\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\emucore\CartTVBoy.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartTVBoyWidget.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\emucore\CartCreator.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gui\WhatsNewDialog.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1325,9 +1337,6 @@
     <ClInclude Include="..\gui\AboutDialog.hxx">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
-    <ClInclude Include="..\gui\AudioDialog.hxx">
-      <Filter>Header Files\gui</Filter>
-    </ClInclude>
     <ClInclude Include="..\gui\BrowserDialog.hxx">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
@@ -1431,9 +1440,6 @@
       <Filter>Header Files\gui</Filter>
     </ClInclude>
     <ClInclude Include="..\gui\UIDialog.hxx">
-      <Filter>Header Files\gui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\gui\VideoDialog.hxx">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
     <ClInclude Include="..\gui\Widget.hxx">
@@ -1715,9 +1721,6 @@
     <ClInclude Include="..\emucore\TIASurface.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
-    <ClInclude Include="..\emucore\CartDASH.hxx">
-      <Filter>Header Files\emucore</Filter>
-    </ClInclude>
     <ClInclude Include="..\debugger\gui\CartRamWidget.hxx">
       <Filter>Header Files\debugger</Filter>
     </ClInclude>
@@ -1725,9 +1728,6 @@
       <Filter>Header Files\debugger</Filter>
     </ClInclude>
     <ClInclude Include="..\debugger\gui\SaveKeyWidget.hxx">
-      <Filter>Header Files\debugger</Filter>
-    </ClInclude>
-    <ClInclude Include="..\debugger\gui\CartDASHWidget.hxx">
       <Filter>Header Files\debugger</Filter>
     </ClInclude>
     <ClInclude Include="..\emucore\CartMDM.hxx">
@@ -1753,12 +1753,6 @@
     </ClInclude>
     <ClInclude Include="..\debugger\gui\RiotRamWidget.hxx">
       <Filter>Header Files\debugger</Filter>
-    </ClInclude>
-    <ClInclude Include="..\debugger\gui\CartCVPlusWidget.hxx">
-      <Filter>Header Files\debugger</Filter>
-    </ClInclude>
-    <ClInclude Include="..\emucore\CartCVPlus.hxx">
-      <Filter>Header Files\emucore</Filter>
     </ClInclude>
     <ClInclude Include="..\debugger\gui\Cart3EPlusWidget.hxx">
       <Filter>Header Files\debugger</Filter>
@@ -2071,6 +2065,48 @@
     </ClInclude>
     <ClInclude Include="..\gui\HighScoresDialog.hxx">
       <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gui\Stella12x24tFont.hxx">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gui\Stella14x28tFont.hxx">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gui\Stella16x32tFont.hxx">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\CartEnhanced.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartEnhancedWidget.hxx">
+      <Filter>Header Files\debugger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\Cart3EX.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\PaletteHandler.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gui\EmulationDialog.hxx">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gui\VideoAudioDialog.hxx">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\CartTVBoy.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartTVBoyWidget.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\CartCreator.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gui\WhatsNewDialog.hxx">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\SerialPort.hxx">
+      <Filter>Header Files\emucore</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

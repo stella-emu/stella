@@ -23,7 +23,6 @@ class PopUpWidget;
 #include "Props.hxx"
 #include "Menu.hxx"
 #include "Dialog.hxx"
-#include "MessageBox.hxx"
 
 #if defined(RETRON77)
   #include "R77HelpDialog.hxx"
@@ -33,23 +32,24 @@ class PopUpWidget;
 
 namespace GUI {
   class Font;
+  class MessageBox;
 }
 
 class StellaSettingsDialog : public Dialog
 {
   public:
     StellaSettingsDialog(OSystem& osystem, DialogContainer& parent,
-      const GUI::Font& font, int max_w, int max_h, Menu::AppMode mode);
-    virtual ~StellaSettingsDialog() = default;
+      int max_w, int max_h, Menu::AppMode mode);
+    virtual ~StellaSettingsDialog();
 
   private:
     void loadConfig() override;
     void saveConfig() override;
     void setDefaults() override;
 
-    void addVideoOptions(WidgetArray& wid, int& xpos, int& ypos, const GUI::Font& font);
-    void addUIOptions(WidgetArray& wid, int& xpos, int& ypos, const GUI::Font& font);
-    void addGameOptions(WidgetArray& wid, int& xpos, int& ypos, const GUI::Font& font);
+    void addVideoOptions(WidgetArray& wid, int& xpos, int& ypos);
+    void addUIOptions(WidgetArray& wid, int& xpos, int& ypos);
+    void addGameOptions(WidgetArray& wid, int& xpos, int& ypos);
 
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
     void handleOverscanChange();

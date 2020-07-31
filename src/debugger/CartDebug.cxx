@@ -32,7 +32,10 @@
 #include "CartRamWidget.hxx"
 #include "RomWidget.hxx"
 #include "Base.hxx"
+#include "Device.hxx"
 #include "exception/EmulationWarning.hxx"
+#include "TIA.hxx"
+#include "M6532.hxx"
 
 using Common::Base;
 using std::hex;
@@ -68,15 +71,18 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
   }
 
   // Create bank information for each potential bank, and an extra one for ZP RAM
-  // Banksizes greater than 4096 indicate multi-bank ROMs, but we handle only
+  // ROM sizes greater than 4096 indicate multi-bank ROMs, but we handle only
   // 4K pieces at a time
-  // Banksizes less than 4K use the actual value
-  size_t banksize = 0;
-  myConsole.cartridge().getImage(banksize);
+  // ROM sizes less than 4K use the actual value
+  size_t romSize = 0;
+  myConsole.cartridge().getImage(romSize);
 
   BankInfo info;
-  info.size = std::min<size_t>(banksize, 4_KB);
-  for(uInt32 i = 0; i < myConsole.cartridge().bankCount(); ++i)
+  info.size = std::min<size_t>(romSize, 4_KB);
+  for(uInt32 i = 0; i < myConsole.cartridge().romBankCount(); ++i)
+    myBankInfo.push_back(info);
+
+  for(uInt32 i = 0; i < myConsole.cartridge().ramBankCount(); ++i)
     myBankInfo.push_back(info);
 
   info.size = 128;  // ZP RAM
@@ -85,7 +91,7 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
   // We know the address for the startup bank right now
   myBankInfo[myConsole.cartridge().startBank()].addressList.push_front(
     myDebugger.dpeek(0xfffc));
-  addLabel("Start", myDebugger.dpeek(0xfffc, DATA));
+  addLabel("Start", myDebugger.dpeek(0xfffc, Device::DATA)); // TOOD: ::CODE???
 
   // Add system equates
   for(uInt16 addr = 0x00; addr <= 0x0F; ++addr)
@@ -157,6 +163,18 @@ void CartDebug::saveOldState()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartDebug::lastReadAddress()
+{
+  return mySystem.m6502().lastReadAddress();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartDebug::lastWriteAddress()
+{
+  return mySystem.m6502().lastWriteAddress();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int CartDebug::lastReadBaseAddress()
 {
   return mySystem.m6502().lastReadBaseAddress();
@@ -224,12 +242,36 @@ string CartDebug::toString()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDebug::disassemble(bool force)
+bool CartDebug::disassembleAddr(uInt16 address, bool force)
+{
+  // ROM/RAM bank or ZP-RAM?
+  int bank = (address & 0x1000) ? getBank(address) : int(myBankInfo.size()) - 1;
+
+  return disassemble(bank, address, force);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartDebug::disassemblePC(bool force)
+{
+  return (disassembleAddr(myDebugger.cpuDebug().pc()));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartDebug::disassembleBank(int bank)
+{
+  BankInfo& info = myBankInfo[bank];
+
+  info.offset = myConsole.cartridge().bankOrigin(bank);
+
+  return disassemble(bank, info.offset, true);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartDebug::disassemble(int bank, uInt16 PC, bool force)
 {
   // Test current disassembly; don't re-disassemble if it hasn't changed
   // Also check if the current PC is in the current list
   bool bankChanged = myConsole.cartridge().bankChanged();
-  uInt16 PC = myDebugger.cpuDebug().pc();
   int pcline = addressToLine(PC);
   bool pcfound = (pcline != -1) && (uInt32(pcline) < myDisassembly.list.size()) &&
                   (myDisassembly.list[pcline].disasm[0] != '.');
@@ -241,8 +283,9 @@ bool CartDebug::disassemble(bool force)
   if(changed)
   {
     // Are we disassembling from ROM or ZP RAM?
-    BankInfo& info = (PC & 0x1000) ? myBankInfo[getBank(PC)] :
-        myBankInfo[myBankInfo.size()-1];
+    BankInfo& info = myBankInfo[bank];
+      //(PC & 0x1000) ? myBankInfo[getBank(PC)] :
+        //myBankInfo[myBankInfo.size()-1];
 
     // If the offset has changed, all old addresses must be 'converted'
     // For example, if the list contains any $fxxx and the address space is now
@@ -304,8 +347,8 @@ bool CartDebug::fillDisassemblyList(BankInfo& info, uInt16 search)
     const DisassemblyTag& tag = myDisassembly.list[i];
     const uInt16 address = tag.address & 0xFFF;
 
-    // Exclude 'ROW'; they don't have a valid address
-    if(tag.type != CartDebug::ROW)
+    // Exclude 'Device::ROW'; they don't have a valid address
+    if(tag.type != Device::ROW)
     {
       // Create a mapping from addresses to line numbers
       myAddrToLineList.emplace(address, i);
@@ -331,7 +374,7 @@ int CartDebug::addressToLine(uInt16 address) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartDebug::disassemble(uInt16 start, uInt16 lines) const
+string CartDebug::disassembleLines(uInt16 start, uInt16 lines) const
 {
   // Fill the string with disassembled data
   start &= 0xFFF;
@@ -346,7 +389,7 @@ string CartDebug::disassemble(uInt16 start, uInt16 lines) const
     if((tag.address & 0xfff) >= start)
     {
       if(begin == list_size) begin = end;
-      if(tag.type != CartDebug::ROW)
+      if(tag.type != Device::ROW)
         length = std::max(length, uInt32(tag.disasm.length()));
 
       --lines;
@@ -357,7 +400,7 @@ string CartDebug::disassemble(uInt16 start, uInt16 lines) const
   for(uInt32 i = begin; i < end; ++i)
   {
     const CartDebug::DisassemblyTag& tag = myDisassembly.list[i];
-    if(tag.type == CartDebug::NONE)
+    if(tag.type == Device::NONE)
       continue;
     else if(tag.address)
       buffer << std::uppercase << std::hex << std::setw(4)
@@ -374,7 +417,7 @@ string CartDebug::disassemble(uInt16 start, uInt16 lines) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDebug::addDirective(CartDebug::DisasmType type,
+bool CartDebug::addDirective(Device::AccessType type,
                              uInt16 start, uInt16 end, int bank)
 {
   if(end < start || start == 0 || end == 0)
@@ -384,7 +427,7 @@ bool CartDebug::addDirective(CartDebug::DisasmType type,
     bank = (myDebugger.cpuDebug().pc() & 0x1000) ?
       getBank(myDebugger.cpuDebug().pc()) : int(myBankInfo.size())-1;
 
-  bank = std::min(bank, bankCount());
+  bank = std::min(bank, romBankCount());
   BankInfo& info = myBankInfo[bank];
   DirectiveList& list = info.directiveList;
 
@@ -516,9 +559,9 @@ int CartDebug::getPCBank()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartDebug::bankCount() const
+int CartDebug::romBankCount() const
 {
-  return myConsole.cartridge().bankCount();
+  return myConsole.cartridge().romBankCount();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -696,19 +739,20 @@ string CartDebug::loadListFile()
   // The default naming/location for list files is the ROM dir based on the
   // actual ROM filename
 
-  if(myListFile == "")
-  {
-    FilesystemNode lst(myOSystem.romFile().getPathWithExt("") + ".lst");
-    if(lst.isFile() && lst.isReadable())
-      myListFile = lst.getPath();
-    else
-      return DebuggerParser::red("list file \'" + lst.getShortPath() + "\' not found");
-  }
+  FilesystemNode lst(myOSystem.romFile().getPathWithExt(".lst"));
+  if(!lst.isReadable())
+    return DebuggerParser::red("list file \'" + lst.getShortPath() + "\' not found");
 
-  FilesystemNode node(myListFile);
-  ifstream in(node.getPath());
-  if(!in.is_open())
-    return DebuggerParser::red("list file '" + node.getShortPath() + "' not readable");
+  stringstream in;
+  try
+  {
+    if(lst.read(in) == 0)
+      return DebuggerParser::red("list file '" + lst.getShortPath() + "' not found");
+  }
+  catch(...)
+  {
+    return DebuggerParser::red("list file '" + lst.getShortPath() + "' not readable");
+  }
 
   while(!in.eof())
   {
@@ -747,7 +791,7 @@ string CartDebug::loadListFile()
   }
   myDebugger.rom().invalidate();
 
-  return "list file '" + node.getShortPath() + "' loaded OK";
+  return "list file '" + lst.getShortPath() + "' loaded OK";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -756,22 +800,23 @@ string CartDebug::loadSymbolFile()
   // The default naming/location for symbol files is the ROM dir based on the
   // actual ROM filename
 
-  if(mySymbolFile == "")
-  {
-    FilesystemNode sym(myOSystem.romFile().getPathWithExt("") + ".sym");
-    if(sym.isFile() && sym.isReadable())
-      mySymbolFile = sym.getPath();
-    else
-      return DebuggerParser::red("symbol file \'" + sym.getShortPath() + "\' not found");
-  }
-
-  FilesystemNode node(mySymbolFile);
-  ifstream in(node.getPath());
-  if(!in.is_open())
-    return DebuggerParser::red("symbol file '" + node.getShortPath() + "' not readable");
+  FilesystemNode sym(myOSystem.romFile().getPathWithExt(".sym"));
+  if(!sym.isReadable())
+    return DebuggerParser::red("symbol file \'" + sym.getShortPath() + "\' not found");
 
   myUserAddresses.clear();
   myUserLabels.clear();
+
+  stringstream in;
+  try
+  {
+    if(sym.read(in) == 0)
+      return DebuggerParser::red("symbol file '" + sym.getShortPath() + "' not found");
+  }
+  catch(...)
+  {
+    return DebuggerParser::red("symbol file '" + sym.getShortPath() + "' not readable");
+  }
 
   while(!in.eof())
   {
@@ -807,28 +852,29 @@ string CartDebug::loadSymbolFile()
   }
   myDebugger.rom().invalidate();
 
-  return "symbol file '" + node.getShortPath() + "' loaded OK";
+  return "symbol file '" + sym.getShortPath() + "' loaded OK";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::loadConfigFile()
 {
-  // The default naming/location for config files is the ROM dir based on the
-  // actual ROM filename
+  // The default naming/location for config files is the CFG dir and based
+  // on the actual ROM filename
 
-  if(myCfgFile == "")
+  FilesystemNode romNode(myOSystem.romFile().getPathWithExt(".cfg"));
+  FilesystemNode cfg = myOSystem.cfgDir();  cfg /= romNode.getName();
+  if(!cfg.isReadable())
+    return DebuggerParser::red("config file \'" + cfg.getShortPath() + "\' not found");
+
+  stringstream in;
+  try
   {
-    FilesystemNode cfg(myOSystem.romFile().getPathWithExt("") + ".cfg");
-    if(cfg.isFile() && cfg.isReadable())
-      myCfgFile = cfg.getPath();
-    else
-      return DebuggerParser::red("config file \'" + cfg.getShortPath() + "\' not found");
+    cfg.read(in);
   }
-
-  FilesystemNode node(myCfgFile);
-  ifstream in(node.getPath());
-  if(!in.is_open())
-    return "Unable to load directives from " + node.getPath();
+  catch(...)
+  {
+    return "Unable to load directives from " + cfg.getPath();
+  }
 
   // Erase all previous directives
   for(auto& bi: myBankInfo)
@@ -876,37 +922,57 @@ string CartDebug::loadConfigFile()
       else if(BSPF::startsWithIgnoreCase(directive, "CODE"))
       {
         buf >> hex >> start >> hex >> end;
-        addDirective(CartDebug::CODE, start, end, currentbank);
+        addDirective(Device::CODE, start, end, currentbank);
       }
       else if(BSPF::startsWithIgnoreCase(directive, "GFX"))
       {
         buf >> hex >> start >> hex >> end;
-        addDirective(CartDebug::GFX, start, end, currentbank);
+        addDirective(Device::GFX, start, end, currentbank);
       }
       else if(BSPF::startsWithIgnoreCase(directive, "PGFX"))
       {
         buf >> hex >> start >> hex >> end;
-        addDirective(CartDebug::PGFX, start, end, currentbank);
+        addDirective(Device::PGFX, start, end, currentbank);
+      }
+      else if(BSPF::startsWithIgnoreCase(directive, "COL"))
+      {
+        buf >> hex >> start >> hex >> end;
+        addDirective(Device::COL, start, end, currentbank);
+      }
+      else if(BSPF::startsWithIgnoreCase(directive, "PCOL"))
+      {
+        buf >> hex >> start >> hex >> end;
+        addDirective(Device::PCOL, start, end, currentbank);
+      }
+      else if(BSPF::startsWithIgnoreCase(directive, "BCOL"))
+      {
+        buf >> hex >> start >> hex >> end;
+        addDirective(Device::BCOL, start, end, currentbank);
+      }
+      else if(BSPF::startsWithIgnoreCase(directive, "AUD"))
+      {
+        buf >> hex >> start >> hex >> end;
+        addDirective(Device::AUD, start, end, currentbank);
       }
       else if(BSPF::startsWithIgnoreCase(directive, "DATA"))
       {
         buf >> hex >> start >> hex >> end;
-        addDirective(CartDebug::DATA, start, end, currentbank);
+        addDirective(Device::DATA, start, end, currentbank);
       }
       else if(BSPF::startsWithIgnoreCase(directive, "ROW"))
       {
         buf >> hex >> start;
         buf >> hex >> end;
-        addDirective(CartDebug::ROW, start, end, currentbank);
+        addDirective(Device::ROW, start, end, currentbank);
       }
     }
   }
   myDebugger.rom().invalidate();
 
   stringstream retVal;
-  if(myConsole.cartridge().bankCount() > 1)
+  if(myConsole.cartridge().romBankCount() > 1)
     retVal << DebuggerParser::red("config file for multi-bank ROM not fully supported\n");
-  retVal << "config file '" << node.getShortPath() << "' loaded OK";
+  retVal << "config file '" << cfg.getShortPath() << "' loaded OK";
   return retVal.str();
 
 }
@@ -914,69 +980,72 @@ string CartDebug::loadConfigFile()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::saveConfigFile()
 {
-  // The default naming/location for config files is the ROM dir based on the
-  // actual ROM filename
-
-  FilesystemNode cfg;
-  if(myCfgFile == "")
-  {
-    cfg = FilesystemNode(myOSystem.romFile().getPathWithExt("") + ".cfg");
-    if(cfg.isFile() && cfg.isWritable())
-      myCfgFile = cfg.getPath();
-    else
-      return DebuggerParser::red("config file \'" + cfg.getShortPath() + "\' not writable");
-  }
+  // The default naming/location for config files is the CFG dir and based
+  // on the actual ROM filename
 
   const string& name = myConsole.properties().get(PropType::Cart_Name);
   const string& md5 = myConsole.properties().get(PropType::Cart_MD5);
 
-  ofstream out(cfg.getPath());
-  if(!out.is_open())
-    return "Unable to save directives to " + cfg.getShortPath();
-
   // Store all bank information
-  out << "//Stella.pro: \"" << name << "\"" << endl
-      << "//MD5: " << md5 << endl
+  stringstream out;
+  out << "// Stella.pro: \"" << name << "\"" << endl
+      << "// MD5: " << md5 << endl
       << endl;
-  for(uInt32 b = 0; b < myConsole.cartridge().bankCount(); ++b)
+  for(uInt32 b = 0; b < myConsole.cartridge().romBankCount(); ++b)
   {
     out << "[" << b << "]" << endl;
     getBankDirectives(out, myBankInfo[b]);
   }
 
   stringstream retVal;
-  if(myConsole.cartridge().bankCount() > 1)
-    retVal << DebuggerParser::red("config file for multi-bank ROM not fully supported\n");
-  retVal << "config file '" << cfg.getShortPath() << "' saved OK";
+  try
+  {
+    FilesystemNode romNode(myOSystem.romFile().getPathWithExt(".cfg"));
+    FilesystemNode cfg = myOSystem.cfgDir();  cfg /= romNode.getName();
+    if(!cfg.getParent().isWritable())
+      return DebuggerParser::red("config file \'" + cfg.getShortPath() + "\' not writable");
+
+    if(cfg.write(out) == 0)
+      return "Unable to save directives to " + cfg.getShortPath();
+
+    if(myConsole.cartridge().romBankCount() > 1)
+      retVal << DebuggerParser::red("config file for multi-bank ROM not fully supported\n");
+    retVal << "config file '" << cfg.getShortPath() << "' saved OK";
+  }
+  catch(const runtime_error& e)
+  {
+    retVal << "Unable to save directives: " << e.what();
+  }
   return retVal.str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::saveDisassembly()
 {
-  if(myDisasmFile == "")
-  {
-    const string& propsname =
-      myConsole.properties().get(PropType::Cart_Name) + ".asm";
-
-    myDisasmFile = FilesystemNode(myOSystem.defaultSaveDir() + propsname).getPath();
-  }
-
-  FilesystemNode node(myDisasmFile);
-  ofstream out(node.getPath());
-  if(!out.is_open())
-    return "Unable to save disassembly to " + node.getShortPath();
+  string NTSC_COLOR[16] = {
+    "BLACK", "YELLOW", "BROWN", "ORANGE",
+    "RED", "MAUVE", "VIOLET", "PURPLE",
+    "BLUE", "BLUE_CYAN", "CYAN", "CYAN_GREEN",
+    "GREEN", "GREEN_YELLOW", "GREEN_BEIGE", "BEIGE"
+  };
+  string PAL_COLOR[16] = {
+    "BLACK0", "BLACK1", "YELLOW", "GREEN_YELLOW",
+    "ORANGE", "GREEN", "RED", "CYAN_GREEN",
+    "MAUVE", "CYAN", "VIOLET", "BLUE_CYAN",
+    "PURPLE", "BLUE", "BLACKE", "BLACKF"
+  };
+  string SECAM_COLOR[8] = {
+    "BLACK", "BLUE", "RED", "PURPLE",
+    "GREEN", "CYAN", "YELLOW", "WHITE"
+  };
+  bool isNTSC = myConsole.timing() == ConsoleTiming::ntsc;
+  bool isPAL = myConsole.timing() == ConsoleTiming::pal;
 
 #define ALIGN(x) setfill(' ') << left << setw(x)
 
   // We can't print the header to the disassembly until it's actually
   // been processed; therefore buffer output to a string first
   ostringstream buf;
-  buf << "\n\n;***********************************************************\n"
-      << ";      Bank " << myConsole.cartridge().getBank();
-  if (myConsole.cartridge().bankCount() > 1)
-    buf << " / 0.." << myConsole.cartridge().bankCount() - 1;
-  buf << "\n;***********************************************************\n\n";
 
   // Use specific settings for disassembly output
   // This will most likely differ from what you see in the debugger
@@ -992,12 +1061,33 @@ string CartDebug::saveDisassembly()
 
   Disassembly disasm;
   disasm.list.reserve(2048);
-  for(int bank = 0; bank < myConsole.cartridge().bankCount(); ++bank)
+  uInt16 romBankCount = myConsole.cartridge().romBankCount();
+  uInt16 oldBank = myConsole.cartridge().getBank();
+
+  // prepare for switching banks
+  myConsole.cartridge().unlockBank();
+  uInt32 origin = 0;
+
+  for(int bank = 0; bank < romBankCount; ++bank)
   {
+    // TODO: not every CartDebugWidget does it like that, we need a method
+    myConsole.cartridge().unlockBank();
+    myConsole.cartridge().bank(bank);
+    myConsole.cartridge().lockBank();
+
     BankInfo& info = myBankInfo[bank];
+
+    disassembleBank(bank);
+
     // An empty address list means that DiStella can't do a disassembly
     if(info.addressList.size() == 0)
       continue;
+
+    buf << "\n\n;***********************************************************\n"
+      << ";      Bank " << bank;
+    if (romBankCount > 1)
+      buf << " / 0.." << romBankCount - 1;
+    buf << "\n;***********************************************************\n\n";
 
     // Disassemble bank
     disasm.list.clear();
@@ -1007,8 +1097,14 @@ string CartDebug::saveDisassembly()
     if (myReserved.breakFound)
       addLabel("Break", myDebugger.dpeek(0xfffe));
 
-    buf << "    SEG     CODE\n"
-        << "    ORG     $" << Base::HEX4 << info.offset << "\n\n";
+    buf << "    SEG     CODE\n";
+
+    if(romBankCount == 1)
+      buf << "    ORG     $" << Base::HEX4 << info.offset << "\n\n";
+    else
+      buf << "    ORG     $" << Base::HEX4 << origin << "\n"
+          << "    RORG    $" << Base::HEX4 << info.offset << "\n\n";
+    origin += uInt32(info.size);
 
     // Format in 'distella' style
     for(uInt32 i = 0; i < disasm.list.size(); ++i)
@@ -1022,76 +1118,115 @@ string CartDebug::saveDisassembly()
 
       switch(tag.type)
       {
-        case CartDebug::CODE:
-        {
+        case Device::CODE:
           buf << ALIGN(32) << tag.disasm << tag.ccount.substr(0, 5) << tag.ctotal << tag.ccount.substr(5, 2);
           if (tag.disasm.find("WSYNC") != std::string::npos)
             buf << "\n;---------------------------------------";
           break;
-        }
-        case CartDebug::ROW:
-        {
+
+        case Device::ROW:
           buf << ".byte   " << ALIGN(32) << tag.disasm.substr(6, 8*4-1) << "; $" << Base::HEX4 << tag.address << " (*)";
           break;
-        }
-        case CartDebug::GFX:
-        {
+
+        case Device::GFX:
           buf << ".byte   " << (settings.gfxFormat == Base::Fmt::_2 ? "%" : "$")
               << tag.bytes << " ; |";
           for(int c = 12; c < 20; ++c)
             buf << ((tag.disasm[c] == '\x1e') ? "#" : " ");
           buf << ALIGN(13) << "|" << "$" << Base::HEX4 << tag.address << " (G)";
           break;
-        }
-        case CartDebug::PGFX:
-        {
+
+        case Device::PGFX:
           buf << ".byte   " << (settings.gfxFormat == Base::Fmt::_2 ? "%" : "$")
               << tag.bytes << " ; |";
           for(int c = 12; c < 20; ++c)
             buf << ((tag.disasm[c] == '\x1f') ? "*" : " ");
           buf << ALIGN(13) << "|" << "$" << Base::HEX4 << tag.address << " (P)";
           break;
-        }
-        case CartDebug::DATA:
-        {
+
+        case Device::COL:
+          buf << ".byte   " << ALIGN(32) << tag.disasm.substr(6, 15) << "; $" << Base::HEX4 << tag.address << " (C)";
+          break;
+
+        case Device::PCOL:
+          buf << ".byte   " << ALIGN(32) << tag.disasm.substr(6, 15) << "; $" << Base::HEX4 << tag.address << " (CP)";
+          break;
+
+        case Device::BCOL:
+          buf << ".byte   " << ALIGN(32) << tag.disasm.substr(6, 15) << "; $" << Base::HEX4 << tag.address << " (CB)";
+          break;
+
+        case Device::AUD:
+          buf << ".byte   " << ALIGN(32) << tag.disasm.substr(6, 8 * 4 - 1) << "; $" << Base::HEX4 << tag.address << " (A)";
+          break;
+
+        case Device::DATA:
           buf << ".byte   " << ALIGN(32) << tag.disasm.substr(6, 8 * 4 - 1) << "; $" << Base::HEX4 << tag.address << " (D)";
           break;
-        }
-        case CartDebug::NONE:
+
+        case Device::NONE:
         default:
-        {
           break;
-        }
       } // switch
       buf << "\n";
     }
   }
+  myConsole.cartridge().unlockBank();
+  myConsole.cartridge().bank(oldBank);
+  myConsole.cartridge().lockBank();
 
   // Some boilerplate, similar to what DiStella adds
   auto timeinfo = BSPF::localTime();
+  stringstream out;
   out << "; Disassembly of " << myOSystem.romFile().getShortPath() << "\n"
       << "; Disassembled " << std::put_time(&timeinfo, "%c\n")
       << "; Using Stella " << STELLA_VERSION << "\n;\n"
       << "; ROM properties name : " << myConsole.properties().get(PropType::Cart_Name) << "\n"
       << "; ROM properties MD5  : " << myConsole.properties().get(PropType::Cart_MD5) << "\n"
       << "; Bankswitch type     : " << myConsole.cartridge().about() << "\n;\n"
-      << "; Legend: * = CODE not yet run (tentative code)\n"
-      << ";         D = DATA directive (referenced in some way)\n"
-      << ";         G = GFX directive, shown as '#' (stored in player, missile, ball)\n"
-      << ";         P = PGFX directive, shown as '*' (stored in playfield)\n"
-      << ";         i = indexed accessed only\n"
-      << ";         c = used by code executed in RAM\n"
-      << ";         s = used by stack\n"
-      << ";         ! = page crossed, 1 cycle penalty\n"
+      << "; Legend: *  = CODE not yet run (tentative code)\n"
+      << ";         D  = DATA directive (referenced in some way)\n"
+      << ";         G  = GFX directive, shown as '#' (stored in player, missile, ball)\n"
+      << ";         P  = PGFX directive, shown as '*' (stored in playfield)\n"
+      << ";         C  = COL directive, shown as color constants (stored in player color)\n"
+      << ";         CP = PCOL directive, shown as color constants (stored in playfield color)\n"
+      << ";         CB = BCOL directive, shown as color constants (stored in background color)\n"
+      << ";         A  = AUD directive (stored in audio registers)\n"
+      << ";         i  = indexed accessed only\n"
+      << ";         c  = used by code executed in RAM\n"
+      << ";         s  = used by stack\n"
+      << ";         !  = page crossed, 1 cycle penalty\n"
       << "\n    processor 6502\n\n";
+
+  out << "\n;-----------------------------------------------------------\n"
+      << ";      Color constants\n"
+      << ";-----------------------------------------------------------\n\n";
+
+  if(isNTSC)
+  {
+    for(int i = 0; i < 16; ++i)
+      out << ALIGN(16) << NTSC_COLOR[i] << " = $" << Base::HEX2 << (i << 4) << "\n";
+  }
+  else if(isPAL)
+  {
+    for(int i = 0; i < 16; ++i)
+      out << ALIGN(16) << PAL_COLOR[i] << " = $" << Base::HEX2 << (i << 4) << "\n";
+  }
+  else
+  {
+    for(int i = 0; i < 8; ++i)
+      out << ALIGN(16) << SECAM_COLOR[i] << " = $" << Base::HEX1 << (i << 1) << "\n";
+  }
+  out << "\n";
 
   bool addrUsed = false;
   for(uInt16 addr = 0x00; addr <= 0x0F; ++addr)
-    addrUsed = addrUsed || myReserved.TIARead[addr] || (mySystem.getAccessFlags(addr) & WRITE);
+    addrUsed = addrUsed || myReserved.TIARead[addr] || (mySystem.getAccessFlags(addr) & Device::WRITE);
   for(uInt16 addr = 0x00; addr <= 0x3F; ++addr)
-    addrUsed = addrUsed || myReserved.TIAWrite[addr] || (mySystem.getAccessFlags(addr) & DATA);
+    addrUsed = addrUsed || myReserved.TIAWrite[addr] || (mySystem.getAccessFlags(addr) & Device::DATA);
   for(uInt16 addr = 0x00; addr <= 0x17; ++addr)
     addrUsed = addrUsed || myReserved.IOReadWrite[addr];
+
   if(addrUsed)
   {
     out << "\n;-----------------------------------------------------------\n"
@@ -1103,7 +1238,7 @@ string CartDebug::saveDisassembly()
       if(myReserved.TIARead[addr] && ourTIAMnemonicR[addr])
         out << ALIGN(16) << ourTIAMnemonicR[addr] << "= $"
             << Base::HEX2 << right << addr << "  ; (R)\n";
-      else if (mySystem.getAccessFlags(addr) & DATA)
+      else if (mySystem.getAccessFlags(addr) & Device::DATA)
         out << ";" << ALIGN(16-1) << ourTIAMnemonicR[addr] << "= $"
         << Base::HEX2 << right << addr << "  ; (Ri)\n";
     out << "\n";
@@ -1113,7 +1248,7 @@ string CartDebug::saveDisassembly()
       if(myReserved.TIAWrite[addr] && ourTIAMnemonicW[addr])
         out << ALIGN(16) << ourTIAMnemonicW[addr] << "= $"
             << Base::HEX2 << right << addr << "  ; (W)\n";
-      else if (mySystem.getAccessFlags(addr) & WRITE)
+      else if (mySystem.getAccessFlags(addr) & Device::WRITE)
         out << ";" << ALIGN(16-1) << ourTIAMnemonicW[addr] << "= $"
         << Base::HEX2 << right << addr << "  ; (Wi)\n";
     out << "\n";
@@ -1128,8 +1263,8 @@ string CartDebug::saveDisassembly()
   addrUsed = false;
   for(uInt16 addr = 0x80; addr <= 0xFF; ++addr)
     addrUsed = addrUsed || myReserved.ZPRAM[addr-0x80]
-      || (mySystem.getAccessFlags(addr) & (DATA | WRITE))
-      || (mySystem.getAccessFlags(addr|0x100) & (DATA | WRITE));
+      || (mySystem.getAccessFlags(addr) & (Device::DATA | Device::WRITE))
+      || (mySystem.getAccessFlags(addr|0x100) & (Device::DATA | Device::WRITE));
   if(addrUsed)
   {
     bool addLine = false;
@@ -1138,9 +1273,9 @@ string CartDebug::saveDisassembly()
         << ";-----------------------------------------------------------\n\n";
 
     for (uInt16 addr = 0x80; addr <= 0xFF; ++addr) {
-      bool ramUsed = (mySystem.getAccessFlags(addr) & (DATA | WRITE));
-      bool codeUsed = (mySystem.getAccessFlags(addr) & CODE);
-      bool stackUsed = (mySystem.getAccessFlags(addr|0x100) & (DATA | WRITE));
+      bool ramUsed = (mySystem.getAccessFlags(addr) & (Device::DATA | Device::WRITE));
+      bool codeUsed = (mySystem.getAccessFlags(addr) & Device::CODE);
+      bool stackUsed = (mySystem.getAccessFlags(addr|0x100) & (Device::DATA | Device::WRITE));
 
       if (myReserved.ZPRAM[addr - 0x80] &&
           myUserLabels.find(addr) == myUserLabels.end()) {
@@ -1194,10 +1329,22 @@ string CartDebug::saveDisassembly()
   // And finally, output the disassembly
   out << buf.str();
 
+  const string& propsname =
+    myConsole.properties().get(PropType::Cart_Name) + ".asm";
+  FilesystemNode node(myOSystem.defaultSaveDir().getPath() + propsname);
   stringstream retVal;
-  if(myConsole.cartridge().bankCount() > 1)
-    retVal << DebuggerParser::red("disassembly for multi-bank ROM not fully supported, only currently enabled banks disassembled\n");
-  retVal << "saved " << node.getShortPath() << " OK";
+  try
+  {
+    node.write(out);
+
+    if(myConsole.cartridge().romBankCount() > 1)
+      retVal << DebuggerParser::red("disassembly for multi-bank ROM not fully supported\n");
+    retVal << "saved " << node.getShortPath() << " OK";
+  }
+  catch(...)
+  {
+    retVal << "Unable to save disassembly to " << node.getShortPath();
+  }
   return retVal.str();
 }
 
@@ -1206,22 +1353,40 @@ string CartDebug::saveRom()
 {
   const string& rom = myConsole.properties().get(PropType::Cart_Name) + ".a26";
 
-  FilesystemNode node(myOSystem.defaultSaveDir() + rom);
-  ofstream out(node.getPath(), std::ios::binary);
-  if(out && myConsole.cartridge().saveROM(out))
+  FilesystemNode node(myOSystem.defaultSaveDir().getPath() + rom);
+  if(myConsole.cartridge().saveROM(node))
     return "saved ROM as " + node.getShortPath();
   else
     return DebuggerParser::red("failed to save ROM");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CartDebug::saveAccessFile()
+{
+  stringstream out;
+  out << myConsole.tia().getAccessCounters();
+  out << myConsole.riot().getAccessCounters();
+  out << myConsole.cartridge().getAccessCounters();
+
+  try
+  {
+    const string& rom = myConsole.properties().get(PropType::Cart_Name) + ".csv";
+    FilesystemNode node(myOSystem.defaultSaveDir().getPath() + rom);
+
+    node.write(out);
+    return "saved access counters as " + node.getShortPath();
+  }
+  catch(...)
+  {
+  }
+  return DebuggerParser::red("failed to save access counters file");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::listConfig(int bank)
 {
-  if(myConsole.cartridge().bankCount() > 1)
-    return DebuggerParser::red("config file for multi-bank ROM not yet supported");
-
-  uInt32 startbank = 0, endbank = bankCount();
-  if(bank >= 0 && bank < bankCount())
+  uInt32 startbank = 0, endbank = romBankCount();
+  if(bank >= 0 && bank < romBankCount())
   {
     startbank = bank;
     endbank = startbank + 1;
@@ -1232,18 +1397,21 @@ string CartDebug::listConfig(int bank)
   for(uInt32 b = startbank; b < endbank; ++b)
   {
     BankInfo& info = myBankInfo[b];
-    buf << "[" << b << "]" << endl;
+    buf << "Bank [" << b << "]" << endl;
     for(const auto& i: info.directiveList)
     {
-      if(i.type != CartDebug::NONE)
+      if(i.type != Device::NONE)
       {
         buf << "(*) ";
-        disasmTypeAsString(buf, i.type);
+        AccessTypeAsString(buf, i.type);
         buf << " " << Base::HEX4 << i.start << " " << Base::HEX4 << i.end << endl;
       }
     }
     getBankDirectives(buf, info);
   }
+
+  if(myConsole.cartridge().romBankCount() > 1)
+    buf << DebuggerParser::red("config file for multi-bank ROM not fully supported") << endl;
 
   return buf.str();
 }
@@ -1251,8 +1419,8 @@ string CartDebug::listConfig(int bank)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::clearConfig(int bank)
 {
-  uInt32 startbank = 0, endbank = bankCount();
-  if(bank >= 0 && bank < bankCount())
+  uInt32 startbank = 0, endbank = romBankCount();
+  if(bank >= 0 && bank < romBankCount())
   {
     startbank = bank;
     endbank = startbank + 1;
@@ -1334,15 +1502,15 @@ void CartDebug::getBankDirectives(ostream& buf, BankInfo& info) const
 
   // Now consider each byte
   uInt32 prev = info.offset, addr = prev + 1;
-  DisasmType prevType = disasmTypeAbsolute(mySystem.getAccessFlags(prev));
+  Device::AccessType prevType = accessTypeAbsolute(mySystem.getAccessFlags(prev));
   for( ; addr < info.offset + info.size; ++addr)
   {
-    DisasmType currType = disasmTypeAbsolute(mySystem.getAccessFlags(addr));
+    Device::AccessType currType = accessTypeAbsolute(mySystem.getAccessFlags(addr));
 
     // Have we changed to a new type?
     if(currType != prevType)
     {
-      disasmTypeAsString(buf, prevType);
+      AccessTypeAsString(buf, prevType);
       buf << " " << Base::HEX4 << prev << " " << Base::HEX4 << (addr-1) << endl;
 
       prev = addr;
@@ -1353,13 +1521,13 @@ void CartDebug::getBankDirectives(ostream& buf, BankInfo& info) const
   // Grab the last directive, making sure it accounts for all remaining space
   if(prev != addr)
   {
-    disasmTypeAsString(buf, prevType);
+    AccessTypeAsString(buf, prevType);
     buf << " " << Base::HEX4 << prev << " " << Base::HEX4 << (addr-1) << endl;
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartDebug::addressTypeAsString(ostream& buf, uInt16 addr) const
+void CartDebug::accessTypeAsString(ostream& buf, uInt16 addr) const
 {
   if(!(addr & 0x1000))
   {
@@ -1372,70 +1540,88 @@ void CartDebug::addressTypeAsString(ostream& buf, uInt16 addr) const
         label     = myDisLabels[addr & 0xFFF];
 
   buf << endl << "directive: " << Base::toString(directive, Base::Fmt::_2_8) << " ";
-  disasmTypeAsString(buf, directive);
+  AccessTypeAsString(buf, directive);
   buf << endl << "emulation: " << Base::toString(debugger, Base::Fmt::_2_8) << " ";
-  disasmTypeAsString(buf, debugger);
+  AccessTypeAsString(buf, debugger);
   buf << endl << "tentative: " << Base::toString(label, Base::Fmt::_2_8) << " ";
-  disasmTypeAsString(buf, label);
+  AccessTypeAsString(buf, label);
   buf << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartDebug::DisasmType CartDebug::disasmTypeAbsolute(uInt8 flags) const
+Device::AccessType CartDebug::accessTypeAbsolute(Device::AccessFlags flags) const
 {
-  if(flags & CartDebug::CODE)
-    return CartDebug::CODE;
-  else if(flags & CartDebug::TCODE)
-    return CartDebug::CODE;          // TODO - should this be separate??
-  else if(flags & CartDebug::GFX)
-    return CartDebug::GFX;
-  else if(flags & CartDebug::PGFX)
-    return CartDebug::PGFX;
-  else if(flags & CartDebug::DATA)
-    return CartDebug::DATA;
-  else if(flags & CartDebug::ROW)
-    return CartDebug::ROW;
+  if(flags & Device::CODE)
+    return Device::CODE;
+  else if(flags & Device::TCODE)
+    return Device::CODE;          // TODO - should this be separate??
+  else if(flags & Device::GFX)
+    return Device::GFX;
+  else if(flags & Device::PGFX)
+    return Device::PGFX;
+  else if(flags & Device::COL)
+    return Device::COL;
+  else if(flags & Device::PCOL)
+    return Device::PCOL;
+  else if(flags & Device::BCOL)
+    return Device::BCOL;
+  else if(flags & Device::AUD)
+    return Device::AUD;
+  else if(flags & Device::DATA)
+    return Device::DATA;
+  else if(flags & Device::ROW)
+    return Device::ROW;
   else
-    return CartDebug::NONE;
+    return Device::NONE;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartDebug::disasmTypeAsString(ostream& buf, DisasmType type) const
+void CartDebug::AccessTypeAsString(ostream& buf, Device::AccessType type) const
 {
   switch(type)
   {
-    case CartDebug::CODE:   buf << "CODE";   break;
-    case CartDebug::TCODE:  buf << "TCODE";  break;
-    case CartDebug::GFX:    buf << "GFX";    break;
-    case CartDebug::PGFX:   buf << "PGFX";   break;
-    case CartDebug::DATA:   buf << "DATA";   break;
-    case CartDebug::ROW:    buf << "ROW";    break;
-    case CartDebug::REFERENCED:
-    case CartDebug::VALID_ENTRY:
-    case CartDebug::NONE:                    break;
+    case Device::CODE:   buf << "CODE";   break;
+    case Device::TCODE:  buf << "TCODE";  break;
+    case Device::GFX:    buf << "GFX";    break;
+    case Device::PGFX:   buf << "PGFX";   break;
+    case Device::COL:    buf << "COL";    break;
+    case Device::PCOL:   buf << "PCOL";   break;
+    case Device::BCOL:   buf << "BCOL";   break;
+    case Device::AUD:    buf << "AUD";    break;
+    case Device::DATA:   buf << "DATA";   break;
+    case Device::ROW:    buf << "ROW";    break;
+    default:                              break;
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartDebug::disasmTypeAsString(ostream& buf, uInt8 flags) const
+void CartDebug::AccessTypeAsString(ostream& buf, Device::AccessFlags flags) const
 {
   if(flags)
   {
-    if(flags & CartDebug::CODE)
+    if(flags & Device::CODE)
       buf << "CODE ";
-    if(flags & CartDebug::TCODE)
+    if(flags & Device::TCODE)
       buf << "TCODE ";
-    if(flags & CartDebug::GFX)
+    if(flags & Device::GFX)
       buf << "GFX ";
-    if(flags & CartDebug::PGFX)
+    if(flags & Device::PGFX)
       buf << "PGFX ";
-    if(flags & CartDebug::DATA)
+    if(flags & Device::COL)
+      buf << "COL ";
+    if(flags & Device::PCOL)
+      buf << "PCOL ";
+    if(flags & Device::BCOL)
+      buf << "BCOL ";
+    if(flags & Device::AUD)
+      buf << "AUD ";
+    if(flags & Device::DATA)
       buf << "DATA ";
-    if(flags & CartDebug::ROW)
+    if(flags & Device::ROW)
       buf << "ROW ";
-    if(flags & CartDebug::REFERENCED)
+    if(flags & Device::REFERENCED)
       buf << "*REFERENCED ";
-    if(flags & CartDebug::VALID_ENTRY)
+    if(flags & Device::VALID_ENTRY)
       buf << "*VALID_ENTRY ";
   }
   else

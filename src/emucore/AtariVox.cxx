@@ -22,7 +22,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AtariVox::AtariVox(Jack jack, const Event& event, const System& system,
-                   const string& portname, const string& eepromfile,
+                   const string& portname, const FilesystemNode& eepromfile,
                    const onMessageCallback& callback)
   : SaveKey(jack, event, system, eepromfile, callback, Controller::Type::AtariVox)
 {
@@ -37,6 +37,11 @@ AtariVox::AtariVox(Jack jack, const Event& event, const System& system,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+AtariVox::~AtariVox()
+{
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool AtariVox::read(DigitalPin pin)
 {
   // We need to override the Controller::read() method, since the timing
@@ -45,9 +50,12 @@ bool AtariVox::read(DigitalPin pin)
   switch(pin)
   {
     // Pin 2: SpeakJet READY
+    //        CTS (Clear To Send) is connected inverted
+    //        So CTS = 0 means the buffer is full, which pulls pin 2 high
     case DigitalPin::Two:
-      // For now, we just assume the device is always ready
-      return setPin(pin, true);
+    {
+      return setPin(pin, !mySerialPort->isCTS());
+    }
 
     default:
       return SaveKey::read(pin);

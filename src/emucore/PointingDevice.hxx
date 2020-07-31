@@ -18,7 +18,6 @@
 #ifndef POINTING_DEVICE_HXX
 #define POINTING_DEVICE_HXX
 
-class Controller;
 class Event;
 
 #include "Control.hxx"

@@ -33,14 +33,16 @@ class TiaOutputWidget;
 class TiaZoomWidget;
 class CartDebugWidget;
 class CartRamWidget;
+class OptionsDialog;
 
+namespace GUI {
+  class MessageBox;
+}
 namespace Common {
   struct Rect;
 }
 
 #include "Dialog.hxx"
-#include "MessageBox.hxx"
-#include "OptionsDialog.hxx"
 
 class DebuggerDialog : public Dialog
 {
@@ -55,7 +57,7 @@ class DebuggerDialog : public Dialog
 
     DebuggerDialog(OSystem& osystem, DialogContainer& parent,
                    int x, int y, int w, int h);
-    virtual ~DebuggerDialog() = default;
+    virtual ~DebuggerDialog();
 
     const GUI::Font& lfont() const     { return *myLFont;        }
     const GUI::Font& nfont() const     { return *myNFont;        }
@@ -71,6 +73,7 @@ class DebuggerDialog : public Dialog
     ButtonWidget& unwindButton() const { return *myUnwindButton; }
 
     void showFatalMessage(const string& msg);
+    void saveConfig() override;
 
   private:
     void center() override { positionAt(0); }
@@ -110,7 +113,7 @@ class DebuggerDialog : public Dialog
       kDDSAdvCmd      = 'DDsv',
       kDDRewindCmd    = 'DDrw',
       kDDUnwindCmd    = 'DDuw',
-      kDDExitCmd      = 'DDex',
+      kDDRunCmd      = 'DDex',
       kDDExitFatalCmd = 'DDer',
       kDDOptionsCmd   = 'DDop'
     };
@@ -136,7 +139,8 @@ class DebuggerDialog : public Dialog
 
     unique_ptr<GUI::Font> myLFont;  // used for labels
     unique_ptr<GUI::Font> myNFont;  // used for normal text
-    bool myFirstLoad{true};
+    Widget* myFocusedWidget{nullptr};
+
 
   private:
     // Following constructors and assignment operators not supported

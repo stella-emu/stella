@@ -22,7 +22,6 @@
 #include <set>
 
 #include "bspf.hxx"
-#include "StellaKeys.hxx"
 
 /**
   @author  Stephen Anthony, Christian Speckner, Thomas Jentzsch
@@ -92,6 +91,7 @@ class Event
       TogglePauseMode, StartPauseMode,
       OptionsMenuMode, CmdMenuMode, DebuggerMode, ExitMode,
       TakeSnapshot, ToggleContSnapshots, ToggleContSnapshotsFrame,
+      ToggleTurbo,
 
       NextState, PreviousState, LoadState, SaveState,
       SaveAllStates, LoadAllStates,
@@ -100,12 +100,15 @@ class Event
       Unwind1Menu, Unwind10Menu, UnwindAllMenu,
       RewindPause, UnwindPause,
 
-      FormatDecrease, FormatIncrease, TogglePalette, ToggleColorLoss,
+      FormatDecrease, FormatIncrease, PaletteDecrease, PaletteIncrease, ToggleColorLoss,
+      PreviousPaletteAttribute, NextPaletteAttribute,
+      PaletteAttributeDecrease, PaletteAttributeIncrease,
       ToggleFullScreen, VidmodeDecrease, VidmodeIncrease,
-      VCenterDecrease, VCenterIncrease, ScanlineAdjustDecrease, ScanlineAdjustIncrease,
+      VCenterDecrease, VCenterIncrease, VSizeAdjustDecrease, VSizeAdjustIncrease,
       OverscanDecrease, OverscanIncrease,
 
       VidmodeStd, VidmodeRGB, VidmodeSVideo, VidModeComposite, VidModeBad, VidModeCustom,
+      PreviousVideoMode, NextVideoMode,
       PreviousAttribute, NextAttribute, DecreaseAttribute, IncreaseAttribute,
       ScanlinesDecrease, ScanlinesIncrease,
       PhosphorDecrease, PhosphorIncrease, TogglePhosphor, ToggleInter, ToggleJitter,
@@ -118,10 +121,14 @@ class Event
       ToggleCollisions, ToggleBits, ToggleFixedColors,
 
       ToggleFrameStats, ToggleSAPortOrder, ExitGame,
-
+      SettingDecrease, SettingIncrease, PreviousSetting, NextSetting,
+      ToggleAdaptRefresh, PreviousMultiCartRom,
       // add new events from here to avoid that user remapped events get overwritten
+      PreviousSettingGroup, NextSettingGroup,
+      TogglePlayBackMode,
+      DecreaseAutoFire, IncreaseAutoFire,
+      DecreaseSpeed, IncreaseSpeed,
       HighScoresMenuMode,
-
       LastType
     };
 

@@ -58,6 +58,14 @@ class SerialPort
     */
     virtual bool writeByte(uInt8 data) { return false; }
 
+    /**
+      Test for 'Clear To Send' enabled.  By default, assume it's always
+      OK to send more data.
+
+      @return  True if CTS signal enabled, else false
+    */
+    virtual bool isCTS() { return true; }
+
   private:
     // Following constructors and assignment operators not supported
     SerialPort(const SerialPort&) = delete;

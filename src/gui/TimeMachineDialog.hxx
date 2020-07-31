@@ -38,6 +38,7 @@ class TimeMachineDialog : public Dialog
   private:
     void loadConfig() override;
     void handleKeyDown(StellaKey key, StellaMod mod, bool repeated) override;
+    void handleKeyUp(StellaKey key, StellaMod mod) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
     /** initialize timeline bar */
@@ -58,21 +59,24 @@ class TimeMachineDialog : public Dialog
     {
       kTimeline  = 'TMtl',
       kToggle    = 'TMtg',
-      kPlay      = 'TMpl',
+      kExit      = 'TMex',
+      kPlayBack  = 'TMpb',
       kRewindAll = 'TMra',
       kRewind10  = 'TMr1',
       kRewind1   = 'TMre',
       kUnwindAll = 'TMua',
       kUnwind10  = 'TMu1',
       kUnwind1   = 'TMun',
-      kSaveAll      = 'TMsv',
-      kLoadAll      = 'TMld',
+      kSaveAll   = 'TMsv',
+      kLoadAll   = 'TMld',
+      kSnapShot  = 'TMsn',
     };
 
     TimeLineWidget* myTimeline{nullptr};
 
     ButtonWidget* myToggleWidget{nullptr};
-    ButtonWidget* myPlayWidget{nullptr};
+    ButtonWidget* myExitWidget{ nullptr };
+    ButtonWidget* myPlayBackWidget{nullptr};
     ButtonWidget* myRewindAllWidget{nullptr};
     ButtonWidget* myRewind1Widget{nullptr};
     ButtonWidget* myUnwind1Widget{nullptr};
