@@ -155,7 +155,7 @@ class CartridgeBUS : public Cartridge
 
     @return The internal RAM size
   */
-  uInt32 internalRamSize() const override { return 8_KB; }
+  uInt32 internalRamSize() const override { return uInt32(myRAM.size()); }
 
   /**
     Read a byte from cart internal RAM.
