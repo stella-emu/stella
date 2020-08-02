@@ -28,7 +28,13 @@ AtariVox::AtariVox(Jack jack, const Event& event, const System& system,
 {
   mySerialPort = MediaFactory::createSerialPort();
   if(mySerialPort->openPort(portname))
-    myAboutString = " (using serial port \'" + portname + "\')";
+  {
+    myCTSFlip = !mySerialPort->isCTS();
+    if(myCTSFlip)
+      myAboutString = " (serial port \'" + portname + "\', inverted CTS)";
+    else
+      myAboutString = " (serial port \'" + portname + "\')";
+  }
   else
     myAboutString = " (invalid serial port \'" + portname + "\')";
 
@@ -50,12 +56,10 @@ bool AtariVox::read(DigitalPin pin)
   switch(pin)
   {
     // Pin 2: SpeakJet READY
-    //        CTS (Clear To Send) is connected inverted
-    //        So CTS = 0 means the buffer is full, which pulls pin 2 high
+    //        CTS (Clear To Send) is sent directly to pin 2
+    //        We also deal with the case where devices send CTS inverted
     case DigitalPin::Two:
-    {
-      return setPin(pin, !mySerialPort->isCTS());
-    }
+      return setPin(pin, mySerialPort->isCTS() ^ myCTSFlip);
 
     default:
       return SaveKey::read(pin);
