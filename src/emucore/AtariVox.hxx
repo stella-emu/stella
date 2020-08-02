@@ -117,6 +117,11 @@ class AtariVox : public SaveKey
     // "close enough".
     uInt64 myLastDataWriteCycle{0};
 
+    // Some USB-Serial adaptors either don't support CTS, or send the signal
+    // as inverted; we detect that when opening the port, and flip the signal
+    // when necessary
+    bool myCTSFlip{false};
+
     // Holds information concerning serial port usage
     string myAboutString;
 

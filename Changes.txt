@@ -33,6 +33,10 @@
     Basically, you are now able to put many files that Stella uses inside
     one ZIP file, and distribute just that file.
 
+  * Extended AtariVox support to handle flow control, so that long phrases
+    are no longer corrupted/cut off.  Note that some USB-serial adaptors
+    don't support this mode, so there may still be issues with those.
+
   * Added option to select the audio device.
 
   * Added option to display detected settings info when a ROM is loaded.
