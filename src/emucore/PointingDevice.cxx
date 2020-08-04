@@ -88,11 +88,8 @@ void PointingDevice::update()
   updateDirection(-myEvent.get(Event::MouseAxisYMove), myVCounterRemainder,
       myTrackBallDown, myTrackBallLinesV, myScanCountV, myFirstScanOffsetV);
 
-  // Digital events (from keyboard or joystick hats & buttons)
-  setPin(DigitalPin::Six, myEvent.get(Event::JoystickZeroFire) == 0);
-
   // We allow left and right mouse buttons for fire button
-  setPin(DigitalPin::Six, !getAutoFireState(
+  setPin(DigitalPin::Six, !getAutoFireState(myEvent.get(Event::JoystickZeroFire) == 0 ||
     myEvent.get(Event::MouseButtonLeftValue) || myEvent.get(Event::MouseButtonRightValue)));
 }
 
