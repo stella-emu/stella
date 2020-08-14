@@ -49,7 +49,7 @@
 */
 namespace Common {
 
-template <typename T, uInt32 CAPACITY = 100>
+template <typename T, size_t CAPACITY = 100>
 class LinkedObjectPool
 {
   public:
@@ -75,12 +75,12 @@ class LinkedObjectPool
 
       SLOW, but only required for messages
     */
-    uInt32 currentIdx() const {
+    size_t currentIdx() const {
       if(empty())
         return 0;
 
       iter it = myCurrent;
-      uInt32 idx = 1;
+      size_t idx = 1;
 
       while(it-- != myList.begin()) ++idx;
       return idx;
@@ -210,7 +210,7 @@ class LinkedObjectPool
       the beginning of the list. (ie, '0' means first element, '1' is second,
       and so on).
     */
-    void remove(uInt32 index) {
+    void remove(size_t index) {
       myPool.splice(myPool.end(), myList, std::next(myList.begin(), index));
     }
 
@@ -234,15 +234,15 @@ class LinkedObjectPool
       Resize the pool to specified size, invalidating the list in the process
       (ie, the list essentially becomes empty again).
     */
-    void resize(uInt32 capacity) {
+    void resize(size_t capacity) {
       if(myCapacity != capacity)  // only resize when necessary
       {
         myList.clear();  myPool.clear();
         myCurrent = myList.end();
         myCapacity = capacity;
 
-        for(uInt32 i = 0; i < myCapacity; ++i)
-          myPool.emplace_back(T());
+        for(size_t i = 0; i < myCapacity; ++i)
+          myPool.emplace_back();
       }
     }
 
@@ -254,11 +254,11 @@ class LinkedObjectPool
       myCurrent = myList.end();
     }
 
-    uInt32 capacity() const { return myCapacity; }
+    size_t capacity() const { return myCapacity; }
 
-    uInt32 size() const { return uInt32(myList.size()); }
-    bool empty() const  { return size() == 0;           }
-    bool full() const   { return size() >= capacity();  }
+    size_t size() const { return myList.size();        }
+    bool empty() const  { return size() == 0;          }
+    bool full() const   { return size() >= capacity(); }
 
     friend ostream& operator<<(ostream& os, const LinkedObjectPool<T>& p) {
       for(const auto& i: p.myList)
@@ -273,7 +273,7 @@ class LinkedObjectPool
     iter myCurrent{myList.end()};
 
     // Total capacity of the pool
-    uInt32 myCapacity{0};
+    size_t myCapacity{0};
 
   private:
     // Following constructors and assignment operators not supported
