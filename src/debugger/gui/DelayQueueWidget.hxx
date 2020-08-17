@@ -28,7 +28,7 @@ class DelayQueueWidget : public Widget
       const GUI::Font& font,
       int x, int y
     );
-    virtual ~DelayQueueWidget() = default;
+    ~DelayQueueWidget() override = default;
 
     void loadConfig() override;
 

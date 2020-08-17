@@ -31,7 +31,7 @@ class TiaOutputWidget : public Widget, public CommandSender
   public:
     TiaOutputWidget(GuiObject *boss, const GUI::Font& font,
                     int x, int y, int w, int h);
-    virtual ~TiaOutputWidget() = default;
+    ~TiaOutputWidget() override = default;
 
     void loadConfig() override;
     void setZoomWidget(TiaZoomWidget* w) { myZoom = w; }

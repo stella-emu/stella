@@ -43,7 +43,7 @@ class ContextMenu : public Dialog, public CommandSender
   public:
     ContextMenu(GuiObject* boss, const GUI::Font& font,
                 const VariantList& items, int cmd = 0, int width = 0);
-    virtual ~ContextMenu() = default;
+    ~ContextMenu() override = default;
 
     /** Set the parent widget's ID */
     void setID(uInt32 id) { _id = id; }

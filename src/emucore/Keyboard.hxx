@@ -38,7 +38,7 @@ class Keyboard : public Controller
       @param system The system using this controller
     */
     Keyboard(Jack jack, const Event& event, const System& system);
-    virtual ~Keyboard() = default;
+    ~Keyboard() override = default;
 
   public:
     /**

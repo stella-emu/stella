@@ -62,7 +62,7 @@ class CartridgeCDF : public Cartridge
     */
     CartridgeCDF(const ByteBuffer& image, size_t size, const string& md5,
                  const Settings& settings);
-    virtual ~CartridgeCDF() = default;
+    ~CartridgeCDF() override = default;
 
   public:
     /**

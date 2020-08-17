@@ -33,7 +33,7 @@ class FBSurfaceLIBRETRO : public FBSurface
   public:
     FBSurfaceLIBRETRO(FrameBufferLIBRETRO& buffer, uInt32 width, uInt32 height,
                   const uInt32* data);
-    virtual ~FBSurfaceLIBRETRO() { }
+    ~FBSurfaceLIBRETRO() override { }
 
     // Most of the surface drawing primitives are implemented in FBSurface;
     void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, ColorId color) override { }

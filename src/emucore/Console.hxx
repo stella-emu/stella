@@ -78,7 +78,7 @@ class Console : public Serializable, public ConsoleIO
     /**
       Destructor
     */
-    virtual ~Console();
+    ~Console() override;
 
   public:
 

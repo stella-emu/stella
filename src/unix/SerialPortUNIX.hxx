@@ -30,7 +30,7 @@ class SerialPortUNIX : public SerialPort
 {
   public:
     SerialPortUNIX();
-    virtual ~SerialPortUNIX();
+    ~SerialPortUNIX() override;
 
     /**
       Open the given serial port with the specified attributes.

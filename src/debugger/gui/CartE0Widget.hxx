@@ -29,7 +29,7 @@ class CartridgeE0Widget : public CartridgeEnhancedWidget
                       const GUI::Font& nfont,
                       int x, int y, int w, int h,
                       CartridgeE0& cart);
-    virtual ~CartridgeE0Widget() = default;
+    ~CartridgeE0Widget() override = default;
 
   private:
     string manufacturer() override { return "Parker Brothers"; }

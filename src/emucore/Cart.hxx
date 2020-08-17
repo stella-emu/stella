@@ -60,7 +60,7 @@ class Cartridge : public Device
       @param md5       The md5sum of the cart image
     */
     Cartridge(const Settings& settings, const string& md5);
-    virtual ~Cartridge() = default;
+    ~Cartridge() override = default;
 
     /**
       Set/query some information about this cartridge.

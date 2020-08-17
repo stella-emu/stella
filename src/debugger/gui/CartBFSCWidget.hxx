@@ -29,7 +29,7 @@ class CartridgeBFSCWidget : public CartridgeEnhancedWidget
                         const GUI::Font& nfont,
                         int x, int y, int w, int h,
                         CartridgeBFSC& cart);
-    virtual ~CartridgeBFSCWidget() = default;
+    ~CartridgeBFSCWidget() override = default;
 
   private:
     string manufacturer() override { return "CPUWIZ"; }

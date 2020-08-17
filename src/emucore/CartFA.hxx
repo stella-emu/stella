@@ -49,7 +49,7 @@ class CartridgeFA : public CartridgeEnhanced
     */
     CartridgeFA(const ByteBuffer& image, size_t size, const string& md5,
                 const Settings& settings, size_t bsSize = 12_KB);
-    virtual ~CartridgeFA() = default;
+    ~CartridgeFA() override = default;
 
   public:
     /**

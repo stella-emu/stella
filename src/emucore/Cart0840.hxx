@@ -48,7 +48,7 @@ class Cartridge0840 : public CartridgeEnhanced
     */
     Cartridge0840(const ByteBuffer& image, size_t size, const string& md5,
                   const Settings& settings, size_t bsSize = 8_KB);
-    virtual ~Cartridge0840() = default;
+    ~Cartridge0840() override = default;
 
   public:
     /**

@@ -48,7 +48,7 @@ class Cartridge4K : public CartridgeEnhanced
     */
     Cartridge4K(const ByteBuffer& image, size_t size, const string& md5,
                 const Settings& settings, size_t bsSize = 4_KB);
-    virtual ~Cartridge4K() = default;
+    ~Cartridge4K() override = default;
 
   public:
     /**

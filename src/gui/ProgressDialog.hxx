@@ -29,7 +29,7 @@ class ProgressDialog : public Dialog
   public:
     ProgressDialog(GuiObject* boss, const GUI::Font& font,
                    const string& message);
-    virtual ~ProgressDialog() = default;
+    ~ProgressDialog() override = default;
 
     void setMessage(const string& message);
     void setRange(int begin, int end, int step);

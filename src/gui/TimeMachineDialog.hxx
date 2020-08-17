@@ -29,7 +29,7 @@ class TimeMachineDialog : public Dialog
 {
   public:
     TimeMachineDialog(OSystem& osystem, DialogContainer& parent, int width);
-    virtual ~TimeMachineDialog() = default;
+    ~TimeMachineDialog() override = default;
 
     /** set/get number of winds when entering the dialog */
     void setEnterWinds(Int32 numWinds) { _enterWinds = numWinds; }

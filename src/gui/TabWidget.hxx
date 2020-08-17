@@ -35,7 +35,7 @@ class TabWidget : public Widget, public CommandSender
 
   public:
     TabWidget(GuiObject* boss, const GUI::Font& font, int x, int y, int w, int h);
-    virtual ~TabWidget();
+    ~TabWidget() override;
 
 // use Dialog::releaseFocus() when changing to another tab
 

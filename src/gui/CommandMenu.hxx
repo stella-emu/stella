@@ -35,7 +35,7 @@ class CommandMenu : public DialogContainer
       Create a new menu stack
     */
     explicit CommandMenu(OSystem& osystem);
-    virtual ~CommandMenu();
+    ~CommandMenu() override;
 
     /**
       Return (and possibly create) the bottom-most dialog of this container.

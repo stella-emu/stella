@@ -117,7 +117,7 @@ class TIA : public Device
     */
     TIA(ConsoleIO& console, const ConsoleTimingProvider& timingProvider,
         Settings& settings);
-    virtual ~TIA() = default;
+    ~TIA() override = default;
 
   public:
     /**

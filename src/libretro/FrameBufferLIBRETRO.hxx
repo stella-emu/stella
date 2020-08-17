@@ -39,7 +39,7 @@ class FrameBufferLIBRETRO : public FrameBuffer
       Creates a new LIBRETRO framebuffer
     */
     explicit FrameBufferLIBRETRO(OSystem& osystem);
-    virtual ~FrameBufferLIBRETRO() { }
+    ~FrameBufferLIBRETRO() override { }
 
     //////////////////////////////////////////////////////////////////////
     // The following are derived from public methods in FrameBuffer.hxx

@@ -46,7 +46,7 @@ class EditableWidget : public Widget, public CommandSender
   public:
     EditableWidget(GuiObject* boss, const GUI::Font& font,
                    int x, int y, int w, int h, const string& str = "");
-    virtual ~EditableWidget() = default;
+    ~EditableWidget() override = default;
 
     virtual void setText(const string& str, bool changed = false);
     const string& getText() const { return _editString; }

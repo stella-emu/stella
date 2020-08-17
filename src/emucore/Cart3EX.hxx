@@ -43,7 +43,7 @@ class Cartridge3EX : public Cartridge3E
     */
     Cartridge3EX(const ByteBuffer& image, size_t size, const string& md5,
                  const Settings& settings);
-    virtual ~Cartridge3EX() = default;
+    ~Cartridge3EX() override = default;
 
   public:
     /**

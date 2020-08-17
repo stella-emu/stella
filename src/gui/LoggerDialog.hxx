@@ -32,7 +32,7 @@ class LoggerDialog : public Dialog
     LoggerDialog(OSystem& osystem, DialogContainer& parent,
                  const GUI::Font& font, int max_w, int max_h,
                  bool useLargeFont = true);
-    virtual ~LoggerDialog() = default;
+    ~LoggerDialog() override = default;
 
   private:
     void loadConfig() override;

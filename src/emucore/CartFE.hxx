@@ -91,7 +91,7 @@ class CartridgeFE : public CartridgeEnhanced
     */
     CartridgeFE(const ByteBuffer& image, size_t size, const string& md5,
                 const Settings& settings, size_t bsSize = 8_KB);
-    virtual ~CartridgeFE() = default;
+    ~CartridgeFE() override = default;
 
   public:
     /**

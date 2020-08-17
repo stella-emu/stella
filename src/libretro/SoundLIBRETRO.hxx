@@ -29,7 +29,7 @@ class AudioSettings;
 #include "Sound.hxx"
 
 /**
-  This class implements the sound API for LIBRTRO.
+  This class implements the sound API for LIBRETRO.
 
   @author Stephen Anthony and Christian Speckner (DirtyHairy)
 */
@@ -41,11 +41,7 @@ class SoundLIBRETRO : public Sound
       using the object.
     */
     SoundLIBRETRO(OSystem& osystem, AudioSettings& audioSettings);
-
-    /**
-      Destructor
-    */
-    virtual ~SoundLIBRETRO();
+    ~SoundLIBRETRO() override;
 
   public:
     /**

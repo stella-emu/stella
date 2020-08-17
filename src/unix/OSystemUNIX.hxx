@@ -32,7 +32,7 @@ class OSystemUNIX : public OSystem
 {
   public:
     OSystemUNIX() = default;
-    virtual ~OSystemUNIX() = default;
+    ~OSystemUNIX() override = default;
 
     /**
       Determine the base directory and main configuration file from the

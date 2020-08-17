@@ -31,7 +31,7 @@ class MinUICommandDialog : public Dialog
 {
   public:
     MinUICommandDialog(OSystem& osystem, DialogContainer& parent);
-    virtual ~MinUICommandDialog() = default;
+    ~MinUICommandDialog() override = default;
 
   protected:
     void loadConfig() override;

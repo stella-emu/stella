@@ -29,7 +29,7 @@ class Cartridge4KSCWidget : public CartridgeEnhancedWidget
                       const GUI::Font& nfont,
                       int x, int y, int w, int h,
                       Cartridge4KSC& cart);
-    virtual ~Cartridge4KSCWidget() = default;
+    ~Cartridge4KSCWidget() override = default;
 
   private:
     string manufacturer() override { return "homebrew intermediate format"; }

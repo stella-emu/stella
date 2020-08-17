@@ -35,7 +35,7 @@ class SnapshotDialog : public Dialog
   public:
     SnapshotDialog(OSystem& osystem, DialogContainer& parent,
                    const GUI::Font& font, int max_w, int max_h);
-    virtual ~SnapshotDialog();
+    ~SnapshotDialog() override;
 
   private:
     void loadConfig() override;

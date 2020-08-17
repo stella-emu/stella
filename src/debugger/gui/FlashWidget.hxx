@@ -28,7 +28,7 @@ class FlashWidget : public ControllerWidget
   public:
     FlashWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
                 Controller& controller);
-    virtual ~FlashWidget() = default;
+    ~FlashWidget() override = default;
 
   protected:
     void init(GuiObject* boss, const GUI::Font& font, int x, int y);

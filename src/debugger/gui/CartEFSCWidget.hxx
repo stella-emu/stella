@@ -29,7 +29,7 @@ class CartridgeEFSCWidget : public CartridgeEnhancedWidget
                         const GUI::Font& nfont,
                         int x, int y, int w, int h,
                         CartridgeEFSC& cart);
-    virtual ~CartridgeEFSCWidget() = default;
+    ~CartridgeEFSCWidget() override = default;
 
   private:
     string manufacturer() override { return "Paul Slocum / Homestar Runner"; }

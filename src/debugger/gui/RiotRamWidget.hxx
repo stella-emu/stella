@@ -34,7 +34,7 @@ class RiotRamWidget : public RamWidget
   public:
     RiotRamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
                   int x, int y, int w);
-    virtual ~RiotRamWidget() = default;
+    ~RiotRamWidget() override = default;
 
   private:
     uInt8 getValue(int addr) const override;

@@ -40,7 +40,6 @@ class StellaLIBRETRO
 {
   public:
     StellaLIBRETRO();
-    virtual ~StellaLIBRETRO() = default;
 
   public:
     OSystemLIBRETRO& osystem() { return *myOSystem; }

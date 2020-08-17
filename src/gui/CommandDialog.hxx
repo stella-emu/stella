@@ -29,7 +29,7 @@ class CommandDialog : public Dialog
 {
   public:
     CommandDialog(OSystem& osystem, DialogContainer& parent);
-    virtual ~CommandDialog() = default;
+    ~CommandDialog() override = default;
 
   protected:
     void loadConfig() override;

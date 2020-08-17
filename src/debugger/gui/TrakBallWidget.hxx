@@ -28,7 +28,7 @@ class TrakBallWidget : public PointingDeviceWidget
     TrakBallWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
                    Controller& controller);
 
-    virtual ~TrakBallWidget() = default;
+    ~TrakBallWidget() override = default;
 
   private:
     const std::array<uInt8, 4> myGrayCodeTable = { 0b00, 0b10, 0b01, 0b11 };

@@ -39,7 +39,7 @@ class Menu : public DialogContainer
       Create a new menu stack
     */
     explicit Menu(OSystem& osystem);
-    virtual ~Menu();
+    ~Menu() override;
 
   private:
     Dialog* baseDialog() override;

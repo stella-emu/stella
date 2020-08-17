@@ -27,7 +27,7 @@ class CartridgeE7Widget : public CartridgeMNetworkWidget
                       const GUI::Font& nfont,
                       int x, int y, int w, int h,
                       CartridgeMNetwork& cart);
-    virtual ~CartridgeE7Widget() = default;
+    ~CartridgeE7Widget() override = default;
 
   protected:
     const char* getSpotLower(int idx) override;

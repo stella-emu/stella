@@ -48,7 +48,7 @@ class CartridgeTVBoy : public CartridgeEnhanced
     */
     CartridgeTVBoy(const ByteBuffer& image, size_t size, const string& md5,
                  const Settings& settings, size_t bsSize = 512_KB);
-    virtual ~CartridgeTVBoy() = default;
+    ~CartridgeTVBoy() override = default;
 
   public:
     /**

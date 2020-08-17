@@ -29,7 +29,7 @@ class TiaZoomWidget : public Widget, public CommandSender
   public:
     TiaZoomWidget(GuiObject *boss, const GUI::Font& font,
                   int x, int y, int w, int h);
-    virtual ~TiaZoomWidget() = default;
+    ~TiaZoomWidget() override = default;
 
     void loadConfig() override;
     void setPos(int x, int y);

@@ -33,7 +33,7 @@ class RomInfoWidget : public Widget
     RomInfoWidget(GuiObject *boss, const GUI::Font& font,
                   int x, int y, int w, int h,
                   const Common::Size& imgSize);
-    virtual ~RomInfoWidget() = default;
+    ~RomInfoWidget() override = default;
 
     void setProperties(const FilesystemNode& node, const string& md5);
     void clearProperties();

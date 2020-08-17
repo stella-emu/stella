@@ -52,7 +52,7 @@ class M6532 : public Device
       @param settings The settings used by the system
     */
     M6532(const ConsoleIO& console, const Settings& settings);
-    virtual ~M6532() = default;
+    ~M6532() override = default;
 
    public:
     /**

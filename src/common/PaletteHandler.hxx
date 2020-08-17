@@ -54,7 +54,6 @@ class PaletteHandler
 
   public:
     PaletteHandler(OSystem& system);
-    virtual ~PaletteHandler() = default;
 
     /**
       Cycle through available palettes.

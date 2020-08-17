@@ -28,7 +28,7 @@ class AmigaMouseWidget : public PointingDeviceWidget
     AmigaMouseWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
                      Controller& controller);
 
-    virtual ~AmigaMouseWidget() = default;
+    ~AmigaMouseWidget() override = default;
 
   private:
     const std::array<uInt8, 4> myGrayCodeTable = { 0b00, 0b10, 0b11, 0b01 };

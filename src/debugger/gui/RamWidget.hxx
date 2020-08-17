@@ -35,7 +35,7 @@ class RamWidget : public Widget, public CommandSender
     RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
               int x, int y, int w, int h,
               uInt32 ramsize, uInt32 numrows, uInt32 pagesize);
-    virtual ~RamWidget();
+    ~RamWidget() override;
 
     void loadConfig() override;
     void setOpsWidget(DataGridOpsWidget* w);

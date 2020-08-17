@@ -26,7 +26,7 @@ class JoystickWidget : public ControllerWidget
   public:
     JoystickWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
                    Controller& controller);
-    virtual ~JoystickWidget() = default;
+    ~JoystickWidget() override = default;
 
   private:
     enum { kJUp = 0, kJDown, kJLeft, kJRight, kJFire };

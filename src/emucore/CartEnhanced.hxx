@@ -48,7 +48,7 @@ class CartridgeEnhanced : public Cartridge
     CartridgeEnhanced(const ByteBuffer& image, size_t size,
                       const string& md5, const Settings& settings,
                       size_t bsSize);
-    virtual ~CartridgeEnhanced() = default;
+    ~CartridgeEnhanced() override = default;
 
   public:
     /**

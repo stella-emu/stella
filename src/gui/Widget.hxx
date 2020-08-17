@@ -57,7 +57,7 @@ class Widget : public GuiObject
 
   public:
     Widget(GuiObject* boss, const GUI::Font& font, int x, int y, int w, int h);
-    virtual ~Widget();
+    ~Widget() override;
 
     virtual int getAbsX() const override { return _x + _boss->getChildX(); }
     virtual int getAbsY() const override { return _y + _boss->getChildY(); }
@@ -187,7 +187,7 @@ class StaticTextWidget : public Widget
                      int x, int y,
                      const string& text = "", TextAlign align = TextAlign::Left,
                      ColorId shadowColor = kNone);
-    virtual ~StaticTextWidget() = default;
+    ~StaticTextWidget() override = default;
     void setValue(int value);
     void setLabel(const string& label);
     void setAlign(TextAlign align) { _align = align; setDirty(); }
@@ -228,7 +228,7 @@ class ButtonWidget : public StaticTextWidget, public CommandSender
                  int x, int y, int dw, int dh,
                  const uInt32* bitmap, int bmw, int bmh,
                  int cmd = 0, bool repeat = false);
-    virtual ~ButtonWidget() = default;
+    ~ButtonWidget() override = default;
 
     void setCmd(int cmd)  { _cmd = cmd; }
     int getCmd() const    { return _cmd; }
@@ -271,7 +271,7 @@ class CheckboxWidget : public ButtonWidget
   public:
     CheckboxWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
                    const string& label, int cmd = 0);
-    virtual ~CheckboxWidget() = default;
+    ~CheckboxWidget() override = default;
 
     void setEditable(bool editable);
     void setFill(FillType type);
@@ -333,7 +333,7 @@ class SliderWidget : public ButtonWidget
                  const string& label = "", int labelWidth = 0, int cmd = 0,
                  int valueLabelWidth = 0, const string& valueUnit = "",
                  int valueLabelGap = 0, bool forceLabelSign = false);
-    virtual ~SliderWidget() = default;
+    ~SliderWidget() override = default;
 
     void setValue(int value);
     int getValue() const { return _value; }

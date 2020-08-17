@@ -48,8 +48,7 @@ class Dialog : public GuiObject
            int x = 0, int y = 0, int w = 0, int h = 0);
     Dialog(OSystem& instance, DialogContainer& parent, const GUI::Font& font,
            const string& title = "", int x = 0, int y = 0, int w = 0, int h = 0);
-
-    virtual ~Dialog();
+    ~Dialog() override;
 
     void open();
     void close();
@@ -212,10 +211,6 @@ class Dialog : public GuiObject
       WidgetArray list;
 
       explicit Focus(Widget* w = nullptr) : widget(w) { }
-      virtual ~Focus() = default;
-
-      Focus(const Focus&) = default;
-      Focus& operator=(const Focus&) = default;
     };
     using FocusList = vector<Focus>;
 
@@ -225,10 +220,6 @@ class Dialog : public GuiObject
       uInt32 currentTab{0};
 
       explicit TabFocus(TabWidget* w = nullptr) : widget(w) { }
-      virtual ~TabFocus() = default;
-
-      TabFocus(const TabFocus&) = default;
-      TabFocus& operator=(const TabFocus&) = default;
 
       void appendFocusList(WidgetArray& list);
       void saveCurrentFocus(Widget* w);

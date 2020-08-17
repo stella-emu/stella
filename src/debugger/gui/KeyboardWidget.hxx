@@ -26,7 +26,7 @@ class KeyboardWidget : public ControllerWidget
   public:
     KeyboardWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
                    Controller& controller);
-    virtual ~KeyboardWidget() = default;
+    ~KeyboardWidget() override = default;
 
   private:
     std::array<CheckboxWidget*, 12> myBox{nullptr};

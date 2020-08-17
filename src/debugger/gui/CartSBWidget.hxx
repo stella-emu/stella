@@ -29,7 +29,7 @@ class CartridgeSBWidget : public CartridgeEnhancedWidget
                       const GUI::Font& nfont,
                       int x, int y, int w, int h,
                       CartridgeSB& cart);
-    virtual ~CartridgeSBWidget() = default;
+    ~CartridgeSBWidget() override = default;
 
   private:
     string manufacturer() override { return "Fred X. Quimby"; }

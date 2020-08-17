@@ -37,7 +37,7 @@ class PointingDevice : public Controller
     PointingDevice(Jack jack, const Event& event,
                    const System& system, Controller::Type type,
                    float sensitivity);
-    virtual ~PointingDevice() = default;
+    ~PointingDevice() override = default;
 
   public:
     using Controller::read;

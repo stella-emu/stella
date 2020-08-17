@@ -31,7 +31,7 @@ class QisBlitter : public Blitter {
 
     static bool isSupported(FrameBufferSDL2 &fb);
 
-    virtual ~QisBlitter();
+    ~QisBlitter() override;
 
     virtual void reinitialize(
       SDL_Rect srcRect,

@@ -220,7 +220,6 @@ void EventHandlerSDL2::pollEvent()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandlerSDL2::JoystickSDL2::JoystickSDL2(int idx)
-  : myStick(nullptr)
 {
   ASSERT_MAIN_THREAD;
 

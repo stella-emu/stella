@@ -40,7 +40,7 @@ class ControllerWidget : public Widget, public CommandSender, public ControllerL
       _w = 18 * font.getMaxCharWidth();
       _h = 8 * font.getLineHeight();
     }
-    virtual ~ControllerWidget() = default;
+    ~ControllerWidget() override = default;
 
     virtual void loadConfig() override { }
 

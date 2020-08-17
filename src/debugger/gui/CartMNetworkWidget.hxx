@@ -31,7 +31,7 @@ class CartridgeMNetworkWidget : public CartDebugWidget
                       int x, int y, int w, int h,
                       //CartridgeE7& cart);
                       CartridgeMNetwork& cart);
-    virtual ~CartridgeMNetworkWidget() = default;
+    ~CartridgeMNetworkWidget() override = default;
 
   protected:
     //CartridgeE7& myCart;
