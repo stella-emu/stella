@@ -34,7 +34,7 @@ class InputTextDialog : public Dialog, public CommandSender
     InputTextDialog(GuiObject* boss, const GUI::Font& lfont,
                     const GUI::Font& nfont, const StringList& labels,
                     const string& title = "");
-    virtual ~InputTextDialog() = default;
+    ~InputTextDialog() override = default;
 
     /** Place the input dialog onscreen and center it */
     void show();

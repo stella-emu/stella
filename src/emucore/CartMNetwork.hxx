@@ -75,7 +75,7 @@ class CartridgeMNetwork : public Cartridge
     */
     CartridgeMNetwork(const ByteBuffer& image, size_t size, const string& md5,
                       const Settings& settings);
-    virtual ~CartridgeMNetwork() = default;
+    ~CartridgeMNetwork() override = default;
 
   public:
     /**

@@ -37,7 +37,7 @@ class RomWidget : public Widget, public CommandSender
   public:
     RomWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
               int x, int y, int w, int h);
-    virtual ~RomWidget() = default;
+    ~RomWidget() override = default;
 
     void invalidate(bool forcereload = true)
     { myListIsDirty = true; if(forcereload) loadConfig(); }

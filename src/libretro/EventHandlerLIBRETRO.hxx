@@ -34,7 +34,7 @@ class EventHandlerLIBRETRO : public EventHandler
       Create a new LIBRETRO event handler object
     */
     explicit EventHandlerLIBRETRO(OSystem& osystem);
-    virtual ~EventHandlerLIBRETRO();
+    ~EventHandlerLIBRETRO() override;
 
   private:
     /**

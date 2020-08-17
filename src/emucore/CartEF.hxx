@@ -49,7 +49,7 @@ class CartridgeEF : public CartridgeEnhanced
     */
     CartridgeEF(const ByteBuffer& image, size_t size, const string& md5,
                 const Settings& settings, size_t bsSize = 64_KB);
-    virtual ~CartridgeEF() = default;
+    ~CartridgeEF() override = default;
 
   public:
     /**

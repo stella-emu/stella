@@ -43,7 +43,7 @@ class ListWidget : public EditableWidget
   public:
     ListWidget(GuiObject* boss, const GUI::Font& font,
                int x, int y, int w, int h);
-    virtual ~ListWidget() = default;
+    ~ListWidget() override = default;
 
     int rows() const        { return _rows; }
     int currentPos() const  { return _currentPos; }

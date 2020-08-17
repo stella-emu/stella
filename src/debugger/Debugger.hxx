@@ -73,7 +73,7 @@ class Debugger : public DialogContainer
       Create a new debugger parent object
     */
     Debugger(OSystem& osystem, Console& console);
-    virtual ~Debugger();
+    ~Debugger() override;
 
   private:
     static const Int8 ANY_BANK = -1;

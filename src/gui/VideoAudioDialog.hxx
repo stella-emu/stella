@@ -39,7 +39,7 @@ class VideoAudioDialog : public Dialog
   public:
     VideoAudioDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font,
                 int max_w, int max_h);
-    virtual ~VideoAudioDialog() = default;
+    ~VideoAudioDialog() override = default;
 
   private:
     void loadConfig() override;

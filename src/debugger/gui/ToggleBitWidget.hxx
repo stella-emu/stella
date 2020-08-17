@@ -26,7 +26,7 @@ class ToggleBitWidget : public ToggleWidget
   public:
     ToggleBitWidget(GuiObject* boss, const GUI::Font& font,
                     int x, int y, int cols, int rows, int colchars = 1);
-    virtual ~ToggleBitWidget() = default;
+    ~ToggleBitWidget() override = default;
 
     void setList(const StringList& off, const StringList& on);
     void setState(const BoolArray& state, const BoolArray& changed);

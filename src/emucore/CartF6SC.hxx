@@ -46,7 +46,7 @@ class CartridgeF6SC : public CartridgeF6
     */
     CartridgeF6SC(const ByteBuffer& image, size_t size, const string& md5,
                   const Settings& settings, size_t bsSize = 16_KB);
-    virtual ~CartridgeF6SC() = default;
+    ~CartridgeF6SC() override = default;
 
   public:
     /**

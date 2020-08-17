@@ -27,7 +27,7 @@ class AtariVoxWidget : public FlashWidget
   public:
     AtariVoxWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
                    Controller& controller);
-    virtual ~AtariVoxWidget() = default;
+    ~AtariVoxWidget() override = default;
 
   private:
     void eraseCurrent() override;

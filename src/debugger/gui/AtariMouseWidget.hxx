@@ -27,8 +27,7 @@ class AtariMouseWidget : public PointingDeviceWidget
   public:
     AtariMouseWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
                      Controller& controller);
-
-    virtual ~AtariMouseWidget() = default;
+    ~AtariMouseWidget() override = default;
 
   private:
     const std::array<uInt8, 4> myGrayCodeTable = { 0b00, 0b01, 0b11, 0b10 };

@@ -45,7 +45,7 @@ class OptionsDialog : public Dialog
   public:
     OptionsDialog(OSystem& osystem, DialogContainer& parent, GuiObject* boss,
                   int max_w, int max_h, Menu::AppMode mode);
-    virtual ~OptionsDialog();
+    ~OptionsDialog() override;
 
   private:
     void loadConfig() override;

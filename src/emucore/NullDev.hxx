@@ -34,7 +34,7 @@ class NullDevice : public Device
 {
   public:
     NullDevice() = default;
-    virtual ~NullDevice() = default;
+    ~NullDevice() override = default;
 
   public:
     /**

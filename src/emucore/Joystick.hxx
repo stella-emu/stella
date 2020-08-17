@@ -38,7 +38,7 @@ class Joystick : public Controller
       @param system The system using this controller
     */
     Joystick(Jack jack, const Event& event, const System& system);
-    virtual ~Joystick() = default;
+    ~Joystick() override = default;
 
   public:
     /**

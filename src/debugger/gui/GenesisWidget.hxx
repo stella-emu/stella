@@ -26,7 +26,7 @@ class GenesisWidget : public ControllerWidget
   public:
     GenesisWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
                   Controller& controller);
-    virtual ~GenesisWidget() = default;
+    ~GenesisWidget() override = default;
 
   private:
     enum { kJUp = 0, kJDown, kJLeft, kJRight, kJBbtn, kJCbtn };

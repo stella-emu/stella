@@ -44,7 +44,7 @@ class NullControlWidget : public ControllerWidget
                            TextAlign::Center);
     }
 
-    virtual ~NullControlWidget() = default;
+    ~NullControlWidget() override = default;
 
   private:
     // Following constructors and assignment operators not supported

@@ -39,7 +39,7 @@ class PopUpWidget : public Widget, public CommandSender
     PopUpWidget(GuiObject* boss, const GUI::Font& font,
                 int x, int y, int w, int h, const VariantList& items,
                 const string& label, int labelWidth = 0, int cmd = 0);
-    virtual ~PopUpWidget() = default;
+    ~PopUpWidget() override = default;
 
     void setID(uInt32 id);
 

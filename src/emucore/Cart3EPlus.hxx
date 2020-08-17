@@ -99,7 +99,7 @@ class Cartridge3EPlus: public Cartridge3E
     */
     Cartridge3EPlus(const ByteBuffer& image, size_t size, const string& md5,
                     const Settings& settings, size_t bsSize = 0);
-    virtual ~Cartridge3EPlus() = default;
+    ~Cartridge3EPlus() override = default;
 
   public:
     /** Reset device to its power-on state */

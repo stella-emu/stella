@@ -120,7 +120,7 @@ class CartridgeCTY : public Cartridge
     */
     CartridgeCTY(const ByteBuffer& image, size_t size, const string& md5,
                  const Settings& settings);
-    virtual ~CartridgeCTY() = default;
+    ~CartridgeCTY() override = default;
 
   public:
     /**

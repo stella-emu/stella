@@ -47,7 +47,7 @@ class RomListWidget : public EditableWidget
   public:
     RomListWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
                     int x, int y, int w, int h);
-    virtual ~RomListWidget() = default;
+    ~RomListWidget() override = default;
 
     void setList(const CartDebug::Disassembly& disasm);
 

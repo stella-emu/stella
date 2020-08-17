@@ -29,7 +29,7 @@ class ScrollBarWidget : public Widget, public CommandSender
   public:
     ScrollBarWidget(GuiObject* boss, const GUI::Font& font,
                     int x, int y, int w, int h);
-    virtual ~ScrollBarWidget() = default;
+    ~ScrollBarWidget() override = default;
 
     void recalc();
     void handleMouseWheel(int x, int y, int direction) override;

@@ -40,7 +40,7 @@ class InputDialog : public Dialog
   public:
     InputDialog(OSystem& osystem, DialogContainer& parent,
                 const GUI::Font& font, int max_w, int max_h);
-    virtual ~InputDialog();
+    ~InputDialog() override;
 
   protected:
     // disable repeat during and directly after mapping events

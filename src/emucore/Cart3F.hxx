@@ -55,7 +55,7 @@ class Cartridge3F : public CartridgeEnhanced
     */
     Cartridge3F(const ByteBuffer& image, size_t size, const string& md5,
                 const Settings& settings, size_t bsSize = 0);
-    virtual ~Cartridge3F() = default;
+    ~Cartridge3F() override = default;
 
   public:
     /**

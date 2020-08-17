@@ -25,7 +25,7 @@ class WhatsNewDialog : public Dialog
   public:
     WhatsNewDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font,
                    int max_w, int max_h);
-    virtual ~WhatsNewDialog() = default;
+    ~WhatsNewDialog() override = default;
 
   private:
     void add(int& ypos, const string& text);

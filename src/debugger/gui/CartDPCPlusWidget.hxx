@@ -32,7 +32,7 @@ class CartridgeDPCPlusWidget : public CartDebugWidget
                            const GUI::Font& nfont,
                            int x, int y, int w, int h,
                            CartridgeDPCPlus& cart);
-    virtual ~CartridgeDPCPlusWidget() = default;
+    ~CartridgeDPCPlusWidget() override = default;
 
   private:
     struct CartState {

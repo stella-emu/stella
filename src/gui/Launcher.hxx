@@ -37,7 +37,7 @@ class Launcher : public DialogContainer
       Create a new menu stack
     */
     explicit Launcher(OSystem& osystem);
-    virtual ~Launcher();
+    ~Launcher() override;
 
     /**
       Initialize the video subsystem wrt this class.

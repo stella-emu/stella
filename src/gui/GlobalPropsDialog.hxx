@@ -31,7 +31,7 @@ class GlobalPropsDialog : public Dialog, public CommandSender
 {
   public:
     GlobalPropsDialog(GuiObject* boss, const GUI::Font& font);
-    virtual ~GlobalPropsDialog() = default;
+    ~GlobalPropsDialog() override = default;
 
   private:
     int addHoldWidgets(const GUI::Font& font, int x, int y, WidgetArray& wid);

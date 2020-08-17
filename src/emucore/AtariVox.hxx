@@ -50,7 +50,7 @@ class AtariVox : public SaveKey
     AtariVox(Jack jack, const Event& event, const System& system,
              const string& portname, const FilesystemNode& eepromfile,
              const onMessageCallback& callback);
-    virtual ~AtariVox();
+    ~AtariVox() override;
 
   public:
     using Controller::read;

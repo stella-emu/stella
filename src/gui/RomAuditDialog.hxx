@@ -37,7 +37,7 @@ class RomAuditDialog : public Dialog
   public:
     RomAuditDialog(OSystem& osystem, DialogContainer& parent,
                    const GUI::Font& font, int max_w, int max_h);
-    virtual ~RomAuditDialog();
+    ~RomAuditDialog() override;
 
   private:
     void loadConfig() override;

@@ -38,7 +38,7 @@ class Driving : public Controller
       @param system The system using this controller
     */
     Driving(Jack jack, const Event& event, const System& system);
-    virtual ~Driving() = default;
+    ~Driving() override = default;
 
   public:
     /**

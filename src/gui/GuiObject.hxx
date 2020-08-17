@@ -60,7 +60,7 @@ class GuiObject : public CommandReceiver
         myDialog(dialog),
         _x(x), _y(y), _w(w), _h(h) { }
 
-    virtual ~GuiObject() = default;
+    ~GuiObject() override = default;
 
     OSystem& instance() const       { return myOSystem; }
     DialogContainer& parent() const { return myParent;  }

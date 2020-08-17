@@ -57,7 +57,7 @@ class DebuggerDialog : public Dialog
 
     DebuggerDialog(OSystem& osystem, DialogContainer& parent,
                    int x, int y, int w, int h);
-    virtual ~DebuggerDialog();
+    ~DebuggerDialog() override;
 
     const GUI::Font& lfont() const     { return *myLFont;        }
     const GUI::Font& nfont() const     { return *myNFont;        }

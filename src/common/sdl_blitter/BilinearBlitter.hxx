@@ -29,7 +29,7 @@ class BilinearBlitter : public Blitter {
 
     BilinearBlitter(FrameBufferSDL2& fb, bool interpolate);
 
-    virtual ~BilinearBlitter();
+    ~BilinearBlitter() override;
 
     virtual void reinitialize(
       SDL_Rect srcRect,

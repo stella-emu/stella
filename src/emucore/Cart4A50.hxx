@@ -67,7 +67,7 @@ class Cartridge4A50 : public Cartridge
     */
     Cartridge4A50(const ByteBuffer& image, size_t size, const string& md5,
                   const Settings& settings);
-    virtual ~Cartridge4A50() = default;
+    ~Cartridge4A50() override = default;
 
   public:
     /**

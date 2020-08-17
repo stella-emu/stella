@@ -119,7 +119,7 @@ class Controller : public Serializable
     */
     Controller(Jack jack, const Event& event, const System& system,
                Type type);
-    virtual ~Controller() = default;
+    ~Controller() override = default;
 
     /**
       Returns the jack that this controller is plugged into.

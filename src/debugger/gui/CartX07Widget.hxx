@@ -29,7 +29,7 @@ class CartridgeX07Widget : public CartridgeEnhancedWidget
                        const GUI::Font& nfont,
                        int x, int y, int w, int h,
                        CartridgeX07& cart);
-    virtual ~CartridgeX07Widget() = default;
+    ~CartridgeX07Widget() override = default;
 
   private:
     string manufacturer() override { return "AtariAge / John Payson / Fred Quimby"; }

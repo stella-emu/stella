@@ -29,7 +29,7 @@ class CartridgeF0Widget : public CartridgeEnhancedWidget
                       const GUI::Font& nfont,
                       int x, int y, int w, int h,
                       CartridgeF0& cart);
-    virtual ~CartridgeF0Widget() = default;
+    ~CartridgeF0Widget() override = default;
 
   private:
     string manufacturer() override { return "Dynacom Megaboy"; }

@@ -35,7 +35,7 @@ class FBSurfaceSDL2 : public FBSurface
     FBSurfaceSDL2(FrameBufferSDL2& buffer, uInt32 width, uInt32 height,
                   FrameBuffer::ScalingInterpolation interpolation,
                   const uInt32* staticData);
-    virtual ~FBSurfaceSDL2();
+    ~FBSurfaceSDL2() override;
 
     // Most of the surface drawing primitives are implemented in FBSurface;
     // the ones implemented here use SDL-specific code for extra performance

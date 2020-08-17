@@ -56,7 +56,7 @@ class CartridgeBUS : public Cartridge
     */
     CartridgeBUS(const ByteBuffer& image, size_t size, const string& md5,
                  const Settings& settings);
-    virtual ~CartridgeBUS() = default;
+    ~CartridgeBUS() override = default;
 
   public:
     /**

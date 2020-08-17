@@ -40,7 +40,7 @@ class StellaSettingsDialog : public Dialog
   public:
     StellaSettingsDialog(OSystem& osystem, DialogContainer& parent,
       int max_w, int max_h, Menu::AppMode mode);
-    virtual ~StellaSettingsDialog();
+    ~StellaSettingsDialog() override;
 
   private:
     void loadConfig() override;

@@ -51,7 +51,7 @@ class Cartridge2K : public CartridgeEnhanced
     */
     Cartridge2K(const ByteBuffer& image, size_t size, const string& md5,
                 const Settings& settings, size_t bsSize = 2_KB);
-    virtual ~Cartridge2K() = default;
+    ~Cartridge2K() override = default;
 
   public:
     /**

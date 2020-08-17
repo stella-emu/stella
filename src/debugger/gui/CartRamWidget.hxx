@@ -34,7 +34,7 @@ class CartRamWidget : public Widget, public CommandSender
     CartRamWidget(GuiObject* boss, const GUI::Font& lfont,
                   const GUI::Font& nfont,
                   int x, int y, int w, int h, CartDebugWidget& cartDebug);
-    virtual ~CartRamWidget() = default;
+    ~CartRamWidget() override = default;
 
     void loadConfig() override;
     void setOpsWidget(DataGridOpsWidget* w);
@@ -66,7 +66,7 @@ class CartRamWidget : public Widget, public CommandSender
                           const GUI::Font& nfont,
                           int x, int y, int w, int h,
                           CartDebugWidget& cartDebug);
-        virtual ~InternalRamWidget() = default;
+        ~InternalRamWidget() override = default;
 
       private:
         uInt8 getValue(int addr) const override;

@@ -33,7 +33,7 @@ class CpuWidget : public Widget, public CommandSender
   public:
     CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
               int x, int y, int max_w);
-    virtual ~CpuWidget() = default;
+    ~CpuWidget() override = default;
 
     void setOpsWidget(DataGridOpsWidget* w);
     void loadConfig() override;

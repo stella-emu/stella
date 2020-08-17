@@ -49,7 +49,7 @@ class CartridgeDFSC : public CartridgeDF
     */
     CartridgeDFSC(const ByteBuffer& image, size_t size, const string& md5,
                   const Settings& settings, size_t bsSize = 128_KB);
-    virtual ~CartridgeDFSC() = default;
+    ~CartridgeDFSC() override = default;
 
   public:
     /**

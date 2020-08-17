@@ -33,7 +33,7 @@ class SettingsR77 : public Settings
       Create a new UNIX settings object
     */
     explicit SettingsR77();
-    virtual ~SettingsR77() = default;
+    ~SettingsR77() override = default;
 
   private:
     // Following constructors and assignment operators not supported

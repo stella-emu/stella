@@ -31,7 +31,7 @@ class TimeMachine : public DialogContainer
 {
   public:
     explicit TimeMachine(OSystem& osystem);
-    virtual ~TimeMachine();
+    ~TimeMachine() override;
 
     /**
       This dialog has an adjustable size.  We need to make sure the

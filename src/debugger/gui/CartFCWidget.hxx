@@ -29,7 +29,7 @@ class CartridgeFCWidget : public CartridgeEnhancedWidget
                       const GUI::Font& nfont,
                       int x, int y, int w, int h,
                       CartridgeFC& cart);
-    virtual ~CartridgeFCWidget() = default;
+    ~CartridgeFCWidget() override = default;
 
   private:
     string manufacturer() override { return "Amiga Corp."; }

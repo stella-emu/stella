@@ -29,7 +29,7 @@ class CartridgeUAWidget : public CartridgeEnhancedWidget
                       const GUI::Font& nfont,
                       int x, int y, int w, int h,
                       CartridgeUA& cart, bool swapHotspots);
-    virtual ~CartridgeUAWidget() = default;
+    ~CartridgeUAWidget() override = default;
 
   private:
     string manufacturer() override { return "UA Limited"; }

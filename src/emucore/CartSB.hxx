@@ -50,7 +50,7 @@ class CartridgeSB : public CartridgeEnhanced
     */
     CartridgeSB(const ByteBuffer& image, size_t size, const string& md5,
                 const Settings& settings, size_t bsSize = 0);
-    virtual ~CartridgeSB() = default;
+    ~CartridgeSB() override = default;
 
   public:
     /**

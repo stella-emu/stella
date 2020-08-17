@@ -39,7 +39,7 @@ class FrameBufferSDL2 : public FrameBuffer
       Creates a new SDL2 framebuffer
     */
     explicit FrameBufferSDL2(OSystem& osystem);
-    virtual ~FrameBufferSDL2();
+    ~FrameBufferSDL2() override;
 
     //////////////////////////////////////////////////////////////////////
     // The following are derived from public methods in FrameBuffer.hxx

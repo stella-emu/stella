@@ -50,7 +50,7 @@ class FileListWidget : public StringListWidget
   public:
     FileListWidget(GuiObject* boss, const GUI::Font& font,
                    int x, int y, int w, int h);
-    virtual ~FileListWidget() = default;
+    ~FileListWidget() override = default;
 
     /** Determines how to display files/folders; either setDirectory or reload
         must be called after any of these are called. */

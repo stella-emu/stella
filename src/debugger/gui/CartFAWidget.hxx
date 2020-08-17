@@ -29,7 +29,7 @@ class CartridgeFAWidget : public CartridgeEnhancedWidget
                       const GUI::Font& nfont,
                       int x, int y, int w, int h,
                       CartridgeFA& cart);
-    virtual ~CartridgeFAWidget() = default;
+    ~CartridgeFAWidget() override = default;
 
   private:
     string manufacturer() override { return "CBS"; }

@@ -30,7 +30,7 @@ class DrivingWidget : public ControllerWidget
   public:
     DrivingWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
                   Controller& controller);
-    virtual ~DrivingWidget() = default;
+    ~DrivingWidget() override = default;
 
   private:
     enum {

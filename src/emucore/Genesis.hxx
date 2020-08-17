@@ -41,7 +41,7 @@ class Genesis : public Controller
       @param system The system using this controller
     */
     Genesis(Jack jack, const Event& event, const System& system);
-    virtual ~Genesis() = default;
+    ~Genesis() override = default;
 
   public:
     /**

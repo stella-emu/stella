@@ -24,40 +24,40 @@ class RadioButtonGroup;
 
 class EmulationDialog : public Dialog
 {
-public:
-  EmulationDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font,
-                  int max_w, int max_h);
-  virtual ~EmulationDialog() = default;
+  public:
+    EmulationDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font,
+                    int max_w, int max_h);
+    ~EmulationDialog() override = default;
 
-private:
-  void loadConfig() override;
-  void saveConfig() override;
-  void setDefaults() override;
+  private:
+    void loadConfig() override;
+    void saveConfig() override;
+    void setDefaults() override;
 
-  void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
-private:
-  SliderWidget*     mySpeed{nullptr};
-  CheckboxWidget*   myUseVSync{nullptr};
-  CheckboxWidget*   myTurbo{nullptr};
-  CheckboxWidget*   myUIMessages{nullptr};
-  CheckboxWidget*   myFastSCBios{nullptr};
-  CheckboxWidget*   myUseThreads{nullptr};
-  CheckboxWidget*   myConfirmExitWidget{nullptr};
-  RadioButtonGroup* mySaveOnExitGroup{nullptr};
-  CheckboxWidget*   myAutoSlotWidget{nullptr};
+  private:
+    SliderWidget*     mySpeed{nullptr};
+    CheckboxWidget*   myUseVSync{nullptr};
+    CheckboxWidget*   myTurbo{nullptr};
+    CheckboxWidget*   myUIMessages{nullptr};
+    CheckboxWidget*   myFastSCBios{nullptr};
+    CheckboxWidget*   myUseThreads{nullptr};
+    CheckboxWidget*   myConfirmExitWidget{nullptr};
+    RadioButtonGroup* mySaveOnExitGroup{nullptr};
+    CheckboxWidget*   myAutoSlotWidget{nullptr};
 
-  enum {
-    kSpeedupChanged = 'EDSp',
-  };
+    enum {
+      kSpeedupChanged = 'EDSp',
+    };
 
-private:
-  // Following constructors and assignment operators not supported
-  EmulationDialog() = delete;
-  EmulationDialog(const EmulationDialog&) = delete;
-  EmulationDialog(EmulationDialog&&) = delete;
-  EmulationDialog& operator=(const EmulationDialog&) = delete;
-  EmulationDialog& operator=(EmulationDialog&&) = delete;
+  private:
+    // Following constructors and assignment operators not supported
+    EmulationDialog() = delete;
+    EmulationDialog(const EmulationDialog&) = delete;
+    EmulationDialog(EmulationDialog&&) = delete;
+    EmulationDialog& operator=(const EmulationDialog&) = delete;
+    EmulationDialog& operator=(EmulationDialog&&) = delete;
 };
 
 #endif

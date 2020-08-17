@@ -24,7 +24,7 @@ class RamCheat : public Cheat
 {
   public:
     RamCheat(OSystem& os, const string& name, const string& code);
-    virtual ~RamCheat() = default;
+    ~RamCheat() override = default;
 
     bool enable() override;
     bool disable() override;

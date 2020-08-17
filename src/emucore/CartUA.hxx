@@ -48,7 +48,7 @@ class CartridgeUA : public CartridgeEnhanced
     */
     CartridgeUA(const ByteBuffer& image, size_t size, const string& md5,
                 const Settings& settings, bool swapHotspots = false);
-    virtual ~CartridgeUA() = default;
+    ~CartridgeUA() override = default;
 
   public:
     /**

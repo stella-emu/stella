@@ -58,7 +58,7 @@ class CartridgeDPCPlus : public Cartridge
     */
     CartridgeDPCPlus(const ByteBuffer& image, size_t size, const string& md5,
                      const Settings& settings);
-    virtual ~CartridgeDPCPlus() = default;
+    ~CartridgeDPCPlus() override = default;
 
   public:
     /**

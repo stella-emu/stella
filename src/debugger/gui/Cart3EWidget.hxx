@@ -31,7 +31,7 @@ class Cartridge3EWidget : public CartridgeEnhancedWidget
                       const GUI::Font& nfont,
                       int x, int y, int w, int h,
                       Cartridge3E& cart);
-    virtual ~Cartridge3EWidget() = default;
+    ~Cartridge3EWidget() override = default;
 
   private:
     enum {

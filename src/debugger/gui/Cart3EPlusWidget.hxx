@@ -32,7 +32,7 @@ class Cartridge3EPlusWidget : public CartridgeEnhancedWidget
                           const GUI::Font& nfont,
                           int x, int y, int w, int h,
                           Cartridge3EPlus& cart);
-    virtual ~Cartridge3EPlusWidget() = default;
+    ~Cartridge3EPlusWidget() override = default;
 
   private:
     string manufacturer() override { return "Thomas Jentzsch"; }

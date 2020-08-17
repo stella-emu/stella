@@ -41,7 +41,7 @@ class BrowserDialog : public Dialog, public CommandSender
   public:
     BrowserDialog(GuiObject* boss, const GUI::Font& font, int max_w, int max_h,
                   const string& title = "");
-    virtual ~BrowserDialog() = default;
+    ~BrowserDialog() override = default;
 
     /** Place the browser window onscreen, using the given attributes */
     void show(const string& startpath,

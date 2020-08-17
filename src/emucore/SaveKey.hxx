@@ -47,7 +47,7 @@ class SaveKey : public Controller
     */
     SaveKey(Jack jack, const Event& event, const System& system,
             const FilesystemNode& eepromfile, const onMessageCallback& callback);
-    virtual ~SaveKey();
+    ~SaveKey() override;
 
   protected:
     /**

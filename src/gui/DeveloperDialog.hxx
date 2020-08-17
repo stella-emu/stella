@@ -42,7 +42,7 @@ class DeveloperDialog : public Dialog
   public:
     DeveloperDialog(OSystem& osystem, DialogContainer& parent,
                 const GUI::Font& font, int max_w, int max_h);
-    virtual ~DeveloperDialog() = default;
+    ~DeveloperDialog() override = default;
 
   private:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;

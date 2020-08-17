@@ -31,7 +31,7 @@ class R77HelpDialog : public Dialog
 {
   public:
     R77HelpDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font);
-    virtual ~R77HelpDialog() = default;
+    ~R77HelpDialog() override = default;
 
   private:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;

@@ -32,7 +32,7 @@ class RomListSettings : public Dialog, public CommandSender
 {
   public:
     RomListSettings(GuiObject* boss, const GUI::Font& font);
-    virtual ~RomListSettings() = default;
+    ~RomListSettings() override = default;
 
     /** Show dialog onscreen at the specified coordinates
         ('data' will be the currently selected line number in RomListWidget) */
