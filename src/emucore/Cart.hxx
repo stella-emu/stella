@@ -354,7 +354,7 @@ class Cartridge : public Device
 
       @return  Whether the startup bank(s) should be randomized
     */
-    bool randomStartBank() const;
+    virtual bool randomStartBank() const;
 
   protected:
     // Settings class for the application

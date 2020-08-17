@@ -184,6 +184,13 @@ class CartridgeCDF : public Cartridge
 
   private:
     /**
+      Checks if startup bank randomization is enabled.
+
+      @return  Whether the startup bank(s) should be randomized
+    */
+    bool randomStartBank() const override { return false; };
+
+    /**
       Sets the initial state of the DPC pointers and RAM
     */
     void setInitialState();
