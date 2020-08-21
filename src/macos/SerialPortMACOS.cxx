@@ -64,13 +64,20 @@ bool SerialPortMACOS::openPort(const string& device)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool SerialPortMACOS::readByte(uInt8& data)
+{
+  if(myHandle)
+    return read(myHandle, &data, 1) == 1;
+
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool SerialPortMACOS::writeByte(uInt8 data)
 {
   if(myHandle)
-  {
-//    cerr << "SerialPortMACOS::writeByte " << int(data) << endl;
     return write(myHandle, &data, 1) == 1;
-  }
+
   return false;
 }
 

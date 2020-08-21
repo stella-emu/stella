@@ -40,6 +40,14 @@ class SerialPortWINDOWS : public SerialPort
     bool openPort(const string& device) override;
 
     /**
+      Read a byte from the serial port.
+
+      @param data  Destination for the byte read from the port
+      @return  True if a byte was read, else false
+    */
+    bool readByte(uInt8& data) override;
+
+    /**
       Write a byte to the serial port.
 
       @param data  The byte to write to the port

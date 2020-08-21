@@ -62,6 +62,14 @@ bool SerialPortWINDOWS::openPort(const string& device)
       dcb.Parity = NOPARITY;
       dcb.StopBits = ONESTOPBIT;
       SetCommState(myHandle, &dcb);
+
+      COMMTIMEOUTS commtimeouts;
+      commtimeouts.ReadIntervalTimeout = MAXDWORD;
+      commtimeouts.ReadTotalTimeoutMultiplier = 0;
+      commtimeouts.ReadTotalTimeoutConstant = 1;
+      commtimeouts.WriteTotalTimeoutMultiplier = 0;
+      commtimeouts.WriteTotalTimeoutConstant = 0;
+      SetCommTimeouts(myHandle, &commtimeouts);
     }
     else
       return false;
@@ -70,12 +78,25 @@ bool SerialPortWINDOWS::openPort(const string& device)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool SerialPortWINDOWS::readByte(uInt8& data)
+{
+  if(myHandle)
+  {
+    DWORD read;
+    ReadFile(myHandle, &data, 1, &read, NULL);
+    return read == 1;
+  }
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool SerialPortWINDOWS::writeByte(uInt8 data)
 {
   if(myHandle)
   {
     DWORD written;
-    return WriteFile(myHandle, &data, 1, &written, 0) == TRUE;
+    WriteFile(myHandle, &data, 1, &written, NULL);
+    return written == 1;
   }
   return false;
 }

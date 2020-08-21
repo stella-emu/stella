@@ -49,7 +49,9 @@ bool SerialPortUNIX::openPort(const string& device)
   if(myHandle <= 0)
     return false;
 
-  // Open the device in nonblocking mode
+  // Clear buffers, then open the device in nonblocking mode
+  tcflush(myHandle, TCOFLUSH);
+  tcflush(myHandle, TCIFLUSH);
   fcntl(myHandle, F_SETFL, FNDELAY);
 
   struct termios termios;
@@ -65,13 +67,20 @@ bool SerialPortUNIX::openPort(const string& device)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool SerialPortUNIX::readByte(uInt8& data)
+{
+  if(myHandle)
+    return read(myHandle, &data, 1) == 1;
+
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool SerialPortUNIX::writeByte(uInt8 data)
 {
   if(myHandle)
-  {
-//    cerr << "SerialPortUNIX::writeByte " << int(data) << endl;
     return write(myHandle, &data, 1) == 1;
-  }
+
   return false;
 }
 

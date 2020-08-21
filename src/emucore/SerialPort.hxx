@@ -43,7 +43,6 @@ class SerialPort
 
     /**
       Read a byte from the serial port.
-      NOTE: This is for potential future use; no class currently uses this.
 
       @param data  Destination for the byte read from the port
       @return  True if a byte was read, else false
