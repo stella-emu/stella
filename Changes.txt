@@ -34,8 +34,8 @@
     one ZIP file, and distribute just that file.
 
   * Extended AtariVox support to handle flow control, so that long phrases
-    are no longer corrupted/cut off.  Note that some USB-serial adaptors
-    don't support this mode, so there may still be issues with those.
+    are no longer corrupted/cut off.  This includes properly supporting the
+    2600-daptor II, which is flashable to an AVox-USB converter.
 
   * Added option to select the audio device.
 
