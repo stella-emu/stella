@@ -123,8 +123,8 @@ int PhysicalJoystickHandler::add(const PhysicalJoystickPtr& stick)
   {
     StickInfo info("", stick);
     myDatabase.emplace(stick->name, info);
-    setStickDefaultMapping(stick->ID, Event::NoType, EventMode::kEmulationMode, true);
-    setStickDefaultMapping(stick->ID, Event::NoType, EventMode::kMenuMode, true);
+    setStickDefaultMapping(stick->ID, Event::NoType, EventMode::kEmulationMode);
+    setStickDefaultMapping(stick->ID, Event::NoType, EventMode::kMenuMode);
   }
 
   return stick->ID;
