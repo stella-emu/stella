@@ -49,6 +49,11 @@
 -Have fun!
 
 
+6.2.1 to 6.2.2 (August 25, 2020)
+
+  * Fixed bug in initial controller mapping.
+
+
 6.2 to 6.2.1: (June 20, 2020)
 
   * Fixed Pitfall II ROM not working correctly.
