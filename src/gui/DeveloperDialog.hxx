@@ -115,6 +115,8 @@ class DeveloperDialog : public Dialog
     StaticTextWidget*   myPlayfieldLabel{nullptr};
     CheckboxWidget*     myPFBitsWidget{nullptr};
     CheckboxWidget*     myPFColorWidget{nullptr};
+    StaticTextWidget*   myBackgroundLabel{nullptr};
+    CheckboxWidget*     myBKColorWidget{nullptr};
     StaticTextWidget*   mySwapLabel{nullptr};
     CheckboxWidget*     myPlSwapWidget{nullptr};
     CheckboxWidget*     myBlSwapWidget{nullptr};
@@ -172,6 +174,7 @@ class DeveloperDialog : public Dialog
     std::array<bool, 2>   myBlInvPhase;
     std::array<bool, 2>   myPFBits;
     std::array<bool, 2>   myPFColor;
+    std::array<bool, 2>   myBKColor;
     std::array<bool, 2>   myPlSwap;
     std::array<bool, 2>   myBlSwap;
     // States sets

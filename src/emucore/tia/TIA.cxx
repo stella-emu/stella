@@ -285,6 +285,7 @@ bool TIA::save(Serializer& out) const
 
     out.putByte(myPFBitsDelay);
     out.putByte(myPFColorDelay);
+    out.putByte(myBKColorDelay);
     out.putByte(myPlSwapDelay);
   }
   catch(...)
@@ -356,6 +357,7 @@ bool TIA::load(Serializer& in)
 
     myPFBitsDelay = in.getByte();
     myPFColorDelay = in.getByte();
+    myBKColorDelay = in.getByte();
     myPlSwapDelay = in.getByte();
 
     // Re-apply dev settings
@@ -605,8 +607,13 @@ bool TIA::poke(uInt16 address, uInt8 value)
     case COLUBK:
     {
       value &= 0xFE;
-      myBackground.setColor(value);
-      myShadowRegisters[address] = value;
+      if(myBKColorDelay)
+        myDelayQueue.push(COLUBK, value, 1);
+      else
+      {
+        myBackground.setColor(value);
+        myShadowRegisters[address] = value;
+      }
     #ifdef DEBUGGER_SUPPORT
       uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
       if(dataAddr)
@@ -918,6 +925,9 @@ void TIA::applyDeveloperSettings()
     setPFColorDelay(custom
                     ? mySettings.getBool("dev.tia.delaypfcolor")
                     : BSPF::equalsIgnoreCase("quickstep", mySettings.getString("dev.tia.type")));
+    setBKColorDelay(custom
+                    ? mySettings.getBool("dev.tia.delaybkcolor")
+                    : BSPF::equalsIgnoreCase("indy500", mySettings.getString("dev.tia.type")));
     setPlSwapDelay(custom
                    ? mySettings.getBool("dev.tia.delayplswap")
                    : BSPF::equalsIgnoreCase("heman", mySettings.getString("dev.tia.type")));
@@ -930,6 +940,7 @@ void TIA::applyDeveloperSettings()
     setBlInvertedPhaseClock(false);
     setPFBitsDelay(false);
     setPFColorDelay(false);
+    setBKColorDelay(false);
     setPlSwapDelay(false);
     setBlSwapDelay(false);
   }
@@ -1609,6 +1620,12 @@ void TIA::setPFColorDelay(bool delayed)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::setBKColorDelay(bool delayed)
+{
+  myBKColorDelay = delayed ? 1 : 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::setPlSwapDelay(bool delayed)
 {
   myPlSwapDelay = delayed ? Delay::shufflePlayer + 1 : Delay::shufflePlayer;
@@ -1681,6 +1698,10 @@ void TIA::delayedWrite(uInt8 address, uInt8 value)
 
     case PF2:
       myPlayfield.pf2(value);
+      break;
+
+    case COLUBK:
+      myBackground.setColor(value);
       break;
 
     case COLUPF:

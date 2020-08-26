@@ -220,6 +220,7 @@ Settings::Settings()
   setPermanent("dev.tia.blinvphase", "true");
   setPermanent("dev.tia.delaypfbits", "true");
   setPermanent("dev.tia.delaypfcolor", "true");
+  setPermanent("dev.tia.delaybkcolor", "true");
   setPermanent("dev.tia.delayplswap", "true");
   setPermanent("dev.tia.delayblswap", "true");
   setPermanent("dev.timemachine", true);
@@ -659,13 +660,15 @@ void Settings::usage() const
     << "  -dev.tia.type <standard|custom|  Selects a TIA type\n"
     << "                 koolaidman|\n"
     << "                 cosmicark|pesco|\n"
-    << "                 quickstep|heman|>\n"
+    << "                 quickstep|\n"
+    << "                 indy500|heman|>\n"
     << "  -dev.tia.plinvphase   <1|0>      Enable inverted HMOVE clock phase for players\n"
     << "  -dev.tia.msinvphase   <1|0>      Enable inverted HMOVE clock phase for\n"
     << "                                    missiles\n"
     << "  -dev.tia.blinvphase   <1|0>      Enable inverted HMOVE clock phase for ball\n"
     << "  -dev.tia.delaypfbits  <1|0>      Enable extra delay cycle for PF bits access\n"
     << "  -dev.tia.delaypfcolor <1|0>      Enable extra delay cycle for PF color\n"
+    << "  -dev.tia.delaybkcolor <1|0>      Enable extra delay cycle for background color\n"
     << "  -dev.tia.delayplswap  <1|0>      Enable extra delay cycle for VDELP0/1 swap\n"
     << "  -dev.tia.delayblswap  <1|0>      Enable extra delay cycle for VDELBL swap\n"
     << endl << std::flush;

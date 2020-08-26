@@ -436,6 +436,13 @@ class TIA : public Device
     void setPFColorDelay(bool delayed);
 
     /**
+      Enables/disables delayed background colors.
+
+      @param delayed   Wether to enable delayed background colors
+    */
+    void setBKColorDelay(bool delayed);
+
+    /**
       Enables/disables delayed player swapping.
 
       @param delayed   Wether to enable delayed player swapping
@@ -740,6 +747,7 @@ class TIA : public Device
     */
     uInt8 myPFBitsDelay{0};
     uInt8 myPFColorDelay{0};
+    uInt8 myBKColorDelay{0};
     uInt8 myPlSwapDelay{0};
     uInt8 myBlSwapDelay{0};
 

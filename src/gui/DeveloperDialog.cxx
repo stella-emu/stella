@@ -233,6 +233,7 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
   VarList::push_back(items, "Faulty Cosmic Ark stars", "cosmicark");
   VarList::push_back(items, "Glitched Pesco", "pesco");
   VarList::push_back(items, "Glitched Quick Step!", "quickstep");
+  VarList::push_back(items, "Glitched Indy 500 menu", "indy500");
   VarList::push_back(items, "Glitched He-Man title", "heman");
   VarList::push_back(items, "Custom", "custom");
   myTIATypeWidget = new PopUpWidget(myTab, font, HBORDER + INDENT, ypos - 1,
@@ -269,6 +270,15 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
 
   myPFColorWidget = new CheckboxWidget(myTab, font, myPFBitsWidget->getRight() + 20, ypos + 1, "Color");
   wid.push_back(myPFColorWidget);
+  ypos += lineHeight + VGAP * 1;
+
+  myBackgroundLabel = new StaticTextWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
+                                          "Delayed background");
+  wid.push_back(myBackgroundLabel);
+  ypos += lineHeight + VGAP * 1;
+
+  myBKColorWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 3, ypos + 1, "Color");
+  wid.push_back(myBKColorWidget);
   ypos += lineHeight + VGAP * 1;
 
   ostringstream ss;
@@ -644,6 +654,7 @@ void DeveloperDialog::loadSettings(SettingsSet set)
   myBlInvPhase[set] = devSettings ? instance().settings().getBool("dev.tia.blinvphase") : false;
   myPFBits[set] = devSettings ? instance().settings().getBool("dev.tia.delaypfbits") : false;
   myPFColor[set] = devSettings ? instance().settings().getBool("dev.tia.delaypfcolor") : false;
+  myBKColor[set] = devSettings ? instance().settings().getBool("dev.tia.delaybkcolor") : false;
   myPlSwap[set] = devSettings ? instance().settings().getBool("dev.tia.delayplswap") : false;
   myBlSwap[set] = devSettings ? instance().settings().getBool("dev.tia.delayblswap") : false;
 
@@ -708,6 +719,7 @@ void DeveloperDialog::saveSettings(SettingsSet set)
       instance().settings().setValue("dev.tia.blinvphase", myBlInvPhase[set]);
       instance().settings().setValue("dev.tia.delaypfbits", myPFBits[set]);
       instance().settings().setValue("dev.tia.delaypfcolor", myPFColor[set]);
+      instance().settings().setValue("dev.tia.delaybkcolor", myBKColor[set]);
       instance().settings().setValue("dev.tia.delayplswap", myPlSwap[set]);
       instance().settings().setValue("dev.tia.delayblswap", myBlSwap[set]);
     }
@@ -762,6 +774,7 @@ void DeveloperDialog::getWidgetStates(SettingsSet set)
   myBlInvPhase[set] = myBlInvPhaseWidget->getState();
   myPFBits[set] = myPFBitsWidget->getState();
   myPFColor[set] = myPFColorWidget->getState();
+  myBKColor[set] = myBKColorWidget->getState();
   myPlSwap[set] = myPlSwapWidget->getState();
   myBlSwap[set] = myBlSwapWidget->getState();
 
@@ -909,6 +922,7 @@ void DeveloperDialog::saveConfig()
     instance().console().tia().setBlInvertedPhaseClock(myBlInvPhaseWidget->getState());
     instance().console().tia().setPFBitsDelay(myPFBitsWidget->getState());
     instance().console().tia().setPFColorDelay(myPFColorWidget->getState());
+    instance().console().tia().setBKColorDelay(myBKColorWidget->getState());
     instance().console().tia().setPlSwapDelay(myPlSwapWidget->getState());
     instance().console().tia().setBlSwapDelay(myBlSwapWidget->getState());
   }
@@ -995,6 +1009,7 @@ void DeveloperDialog::setDefaults()
       myBlInvPhase[set] = devSettings ? true : false;
       myPFBits[set] = devSettings ? true : false;
       myPFColor[set] = devSettings ? true : false;
+      myBKColor[set] = devSettings ? true : false;
       myPlSwap[set] = devSettings ? true : false;
       myBlSwap[set] = devSettings ? true : false;
 
@@ -1210,8 +1225,10 @@ void DeveloperDialog::handleTia()
   myMsInvPhaseWidget->setEnabled(enable);
   myBlInvPhaseWidget->setEnabled(enable);
   myPlayfieldLabel->setEnabled(enable);
+  myBackgroundLabel->setEnabled(enable);
   myPFBitsWidget->setEnabled(enable);
   myPFColorWidget->setEnabled(enable);
+  myBKColorWidget->setEnabled(enable);
   mySwapLabel->setEnabled(enable);
   myPlSwapWidget->setEnabled(enable);
   myBlSwapWidget->setEnabled(enable);
@@ -1223,6 +1240,7 @@ void DeveloperDialog::handleTia()
     myBlInvPhaseWidget->setState(myBlInvPhase[SettingsSet::developer]);
     myPFBitsWidget->setState(myPFBits[SettingsSet::developer]);
     myPFColorWidget->setState(myPFColor[SettingsSet::developer]);
+    myBKColorWidget->setState(myBKColor[SettingsSet::developer]);
     myPlSwapWidget->setState(myPlSwap[SettingsSet::developer]);
     myBlSwapWidget->setState(myBlSwap[SettingsSet::developer]);
   }
@@ -1233,6 +1251,7 @@ void DeveloperDialog::handleTia()
     myBlInvPhaseWidget->setState(false);
     myPFBitsWidget->setState(BSPF::equalsIgnoreCase("pesco", myTIATypeWidget->getSelectedTag().toString()));
     myPFColorWidget->setState(BSPF::equalsIgnoreCase("quickstep", myTIATypeWidget->getSelectedTag().toString()));
+    myBKColorWidget->setState(BSPF::equalsIgnoreCase("indy500", myTIATypeWidget->getSelectedTag().toString()));
     myPlSwapWidget->setState(BSPF::equalsIgnoreCase("heman", myTIATypeWidget->getSelectedTag().toString()));
     myBlSwapWidget->setState(false);
   }
