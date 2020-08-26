@@ -41,6 +41,8 @@
 
   * Added option to display detected settings info when a ROM is loaded.
 
+  * Added another oddball TIA glitch option for delayed background color. (TODO: DOC)
+
   * Replaced "Re-disassemble" with "Disassemble @ current line" in debugger.
 
   * Fixed bug when taking fullscreen snapshots; the dimensions were
@@ -51,7 +53,7 @@
 
 6.2.1 to 6.2.2 (August 25, 2020)
 
-  * Fixed bug in initial controller mapping.
+  * Fixed a bug in initial controller mapping.
 
 
 6.2 to 6.2.1: (June 20, 2020)
