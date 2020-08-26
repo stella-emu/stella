@@ -80,6 +80,11 @@ else
   endif
 endif
 
+ifdef RELEASE
+  CXXFLAGS += -flto
+  LDFLAGS += -flto
+endif
+
 #######################################################################
 # Misc stuff - you should never have to edit this                     #
 #######################################################################

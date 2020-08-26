@@ -33,7 +33,7 @@ on your PC.
 
 %build
 export CXXFLAGS=$RPM_OPT_FLAGS
-%configure \
+%configure --enable-release \
 %if %enable_sound
   --enable-sound \
 %else
