@@ -37,19 +37,20 @@
 #include "DataGridOpsWidget.hxx"
 #include "EditTextWidget.hxx"
 #include "MessageBox.hxx"
-#include "Debugger.hxx"
-#include "DebuggerParser.hxx"
+#include "debugger.hxx"
+#include "debuggerParser.hxx"
 #include "ConsoleFont.hxx"
 #include "ConsoleBFont.hxx"
 #include "ConsoleMediumFont.hxx"
 #include "ConsoleMediumBFont.hxx"
 #include "StellaMediumFont.hxx"
 #include "OptionsDialog.hxx"
+#include "BrowserDialog.hxx"
 #include "StateManager.hxx"
 #include "FrameManager.hxx"
 #include "OSystem.hxx"
 #include "Console.hxx"
-#include "DebuggerDialog.hxx"
+#include "debuggerDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DebuggerDialog::DebuggerDialog(OSystem& osystem, DialogContainer& parent,
@@ -256,6 +257,43 @@ void DebuggerDialog::handleCommand(CommandSender* sender, int cmd,
       loadConfig();
       break;
 
+    case kSvScriptCmd:
+      execSave("save");
+      break;
+
+    case kSvSessionCmd:
+      execSave("saveses");
+      break;
+
+    case kSvConfigCmd:
+      execSave("saveconfig");
+      break;
+
+    case kSvDisCmd:
+      execSave("savedis");
+      break;
+
+    case kSvAccessCmd:
+      execSave("saveaccess");
+      break;
+
+    case kSvRomCmd:
+      execSave("saverom");
+      break;
+
+    case kSvStateCmd:
+      execSave("savestate");
+      break;
+
+
+    case kSvAllStatesCmd:
+      execSave("saveallstates");
+      break;
+
+    case kSvSnapCmd:
+      execSave("savesnap"); // TODO: param
+      break;
+
     case RomWidget::kInvalidateListing:
       // Only do a full redraw if the disassembly tab is actually showing
       myRom->invalidate(myRomTab->getActiveTab() == 0);
@@ -406,6 +444,114 @@ void DebuggerDialog::createFont()
         break;
     }
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerDialog::showBrowser(BrowserType type)
+{
+  int cmd;
+  string title;
+  string key;
+  string defaultPath;
+
+  switch(type)
+  {
+    case BrowserType::svScript:
+      cmd = kSvScriptCmd;
+      title = "workbench";
+      key = "dbg.savepath";
+      defaultPath = instance().defaultSaveDir().getPath() + "commands.script";
+      break;
+
+    case BrowserType::svSession:
+      cmd = kSvSessionCmd;
+      title = "session";
+      key = "dbg.savesessionpath";
+      break;
+
+    case BrowserType::svConfig:
+      cmd = kSvConfigCmd;
+      title = "DiStella config";
+      key = "dbg.saveconfigpath";
+      break;
+
+    case BrowserType::svDis:
+      cmd = kSvDisCmd;
+      title = "disassembly";
+      key = "dbg.savedispath";
+      break;
+
+    case BrowserType::svAccess:
+      cmd = kSvAccessCmd;
+      title = "access counters";
+      key = "dbg.saveaccesspath";
+      break;
+
+    case BrowserType::svRom:
+      cmd = kSvRomCmd;
+      title = "ROM";
+      key = "dbg.saverompath";
+      break;
+
+    case BrowserType::svState:
+      cmd = kSvStateCmd;
+      title = "state";
+      key = "dbg.savestatepath";
+      break;
+
+    case BrowserType::svAllStates:
+      cmd = kSvAllStatesCmd;
+      title = "all states";
+      key = "dbg.savestatepath";
+      break;
+
+    case BrowserType::svSnap:
+      cmd = kSvSnapCmd;
+      title = "snapshot";
+      key = "snapsavedir";
+      break;
+
+    default:
+      cmd = 0;
+      break;
+  }
+
+  if(cmd)
+  {
+    //TODO: default path (path and filename)
+    string path = instance().settings().getString(key);
+
+    createBrowser("Save " + title + " as");
+
+    if(path.empty())
+      path = defaultPath;
+
+    //myBrowser->show(instance().defaultSaveDir().getPath(),
+    //                BrowserDialog::FileSave, cmd);
+    myBrowser->show(path, BrowserDialog::FileSave, cmd);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerDialog::execSave(const string& command)
+{
+  FilesystemNode dir(myBrowser->getResult());
+
+  instance().debugger().parser().run(command + " " + dir.getShortPath());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerDialog::createBrowser(const string& title)
+{
+  uInt32 w = 0, h = 0;
+  getDynamicBounds(w, h);
+
+  // Create file browser dialog
+  if(!myBrowser || uInt32(myBrowser->getWidth()) != w ||
+     uInt32(myBrowser->getHeight()) != h)
+    myBrowser = make_unique<BrowserDialog>(this, instance().frameBuffer().font(), w, h, title);
+  else
+    myBrowser->setTitle(title);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
