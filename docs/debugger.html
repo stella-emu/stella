@@ -74,7 +74,7 @@
         <li><a href="#CartridgeRAMInformation">Detailed Cartridge Extended RAM Information</a></li>
       </ul>
     </li>
-    <li><a href="#DistellaConfiguration">Distella Configuration Files</a></li>
+    <li><a href="#DistellaConfiguration">DiStella Configuration Files</a></li>
     <li><a href="#Howtohack">Tutorial: How to hack a ROM</a></li>
     </li>
   </ul>
@@ -119,14 +119,14 @@ feature that no other 2600 debugger has; it's <b>completely</b> cross-platform.<
 
   <li>Rewind previous advance operations and undo rewinds.</li>
 
-  <li>Supports Distella 'configuration directives', which may be used to
+  <li>Supports DiStella 'configuration directives', which may be used to
     override automatic code/data determination in the disassembly. For now,
     the following directives are supported: CODE, GFX, PGFX, COL, PCOL, BCOL, AUD, DATA, ROW.
     These directives can be entered at the debugger prompt, or be (automatically)
     loaded and saved in configuration files.</li>
 
   <li>Extensive disassembly support, both from the emulation core and with help
-    from Distella. Where possible, the disassembly differentiates between code,
+    from DiStella. Where possible, the disassembly differentiates between code,
     player and playfield graphics, colors and audio (ie, addresses stored in
     GRPx, PFx, COLUxx, AUDxx)
     and data (addresses used as an operand of a command). Code sections are also
@@ -294,7 +294,7 @@ more convenient.
   <li>
     "&lt;rom_filename&gt;.cfg"</br>
     This file is described in <a href="#DistellaConfiguration">
-    <b>Distella Configuration Files</b></a>.
+    <b>DiStella Configuration Files</b></a>.
     </br></br>
   </li>
   <li>
@@ -917,7 +917,7 @@ Type "help 'cmd'" to see extended information about the given command.</p>
                 c - Carry Flag: set (0 or 1), or toggle (no arg)
             cheat - Use a cheat code (see manual for cheat types)
       clearbreaks - Clear all breakpoints
-      clearconfig - Clear Distella config directives [bank xx]
+      clearconfig - Clear DiStella config directives [bank xx]
 clearsavestateifs - Clear all savestate points
        cleartraps - Clear all traps
      clearwatches - Clear all watches
@@ -954,11 +954,11 @@ clearsavestateifs - Clear all savestate points
          joy1fire - Set joystick 1 fire button to value &lt;x&gt; (0 or 1), or toggle (no arg)
              jump - Scroll disassembly to address xx
        listbreaks - List breakpoints
-       listconfig - List Distella config directives [bank xx]
+       listconfig - List DiStella config directives [bank xx]
     listfunctions - List user-defined functions
  listsavestateifs - List savestate points
         listtraps - List traps
-       loadconfig - Load Distella config file
+       loadconfig - Load DiStella config file
     loadallstates - Load all emulator states
         loadstate - Load emulator state xx (0-9)
                 n - Negative Flag: set (0 or 1), or toggle (no arg)
@@ -979,12 +979,12 @@ clearsavestateifs - Clear all savestate points
                 s - Set Stack Pointer to value xx
              save - Save breaks, watches, traps and functions to file xx
        saveaccess - Save access counters to CSV file
-       saveconfig - Save Distella config file (with default name)
-          savedis - Save Distella disassembly (with default name)
+       saveconfig - Save DiStella config file (with default name)
+          savedis - Save DiStella disassembly (with default name)
           saverom - Save (possibly patched) ROM (with default name)
           saveses - Save console session (with default name)
          savesnap - Save current TIA image to PNG file
-    saveallstatea - Save all emulator states
+    saveallstates - Save all emulator states
         savestate - Save emulator state xx (valid args 0-9)
       savestateif - Create savestate on &lt;condition&gt;
          scanline - Advance emulation by &lt;xx&gt; scanlines (default=1)
@@ -1333,11 +1333,11 @@ file is loaded, the disassembly will have labels. Even without a symbol file, th
 differentiate between code, graphics, data and unused bytes. There are actually two
 levels of disassembly in Stella. First, the emulation core tracks accesses as a game
 is running, making for very accurate results. This is known as a <b>dynamic</b> analysis.
-Second, the built-in Distella code does a <b>static</b> analysis, which tentatively fills
+Second, the built-in DiStella code does a <b>static</b> analysis, which tentatively fills
 in sections that the dynamic disassembler missed (usually because the addresses haven't
 been accessed at runtime yet).</p>
 <p>As such, code can be marked in two ways (absolute, when done by the emulation core),
-and tentative (when done by Distella, and the emulation core hasn't accessed it yet).
+and tentative (when done by DiStella, and the emulation core hasn't accessed it yet).
 Such 'tentative' code is marked with the '*' symbol, indicating that it has the potential
 to be accessed as code sometime during the program run. This gives very useful information,
 since it can indicate areas toggled by an option in the game (ie, when a player dies,
@@ -1363,7 +1363,7 @@ by the <a href="#Breakpoints">break</a> command, <b>not</b> the conditional "bre
 (which makes sense: conditional breaks can break on any condition, the Program
 Counter isn't necessarily involved).</li>
 <li><b>Labels</b>: Any labels assigned to the given address, either generated
-automatically by Distella, read from a DASM symbol file or custom
+automatically by DiStella, read from a DASM symbol file or custom
 labels created by the user. If 'Show PC addresses'
 (see <a href="#DisassemblySettings"><b>ROM Disassembly Settings</b></a>) is enabled,
 the address will be shown in grey.</li>
@@ -1377,7 +1377,7 @@ Note that only code, graphics or data will show bytes and can be edited.</li>
 
 <p>At this point, we should explain the various 'types' that the disassembler
 can use. These are known as 'directives', and partly correspond to configuration
-options from the standalone Distella program. They are listed in order of
+options from the standalone DiStella program. They are listed in order of
 decreasing hierarchy:</p>
 <table border="1" cellpadding=4>
   <tr>
@@ -1504,7 +1504,7 @@ matches the address of the disassembly line where the mouse was clicked.</li>
 <li><b>Disassemble @ current line</b>: Disassemble from the disassembly line where the mouse was clicked.
 This allows to fill gaps in the disassembly and is most useful for bankswitched ROMs.</li>
 
-<li><b>Show tentative code</b>: Allow Distella to do a static analysis/disassembly.</li>
+<li><b>Show tentative code</b>: Allow DiStella to do a static analysis/disassembly.</li>
 
 <li><b>Show PC addresses</b>: Show Program Counter addresses as labels (where there
 isn't already a defined label).</li>
@@ -1512,7 +1512,7 @@ isn't already a defined label).</li>
 <li><b>Show GFX as binary</b>: Switch between displaying/editing GFX and PGFX sections
 in either binary or hexidecimal.</li>
 
-<li><b>Use address relocation</b>: Corresponds to the Distella '-r' option
+<li><b>Use address relocation</b>: Corresponds to the DiStella '-r' option
 (Relocate calls out of address range).</br>
 Note: The code will continue to run fine, but the ROM image will be altered.</li>
 
@@ -1587,7 +1587,7 @@ the RAM in the DPC scheme is not viewable by the 6507, so its addresses start fr
 
 <!-- /////////////////////////////////////////////////////////////////////////  -->
 <br>
-<h1><a name="DistellaConfiguration">Distella Configuration Files</a></h1>
+<h1><a name="DistellaConfiguration">DiStella Configuration Files</a></h1>
 <p>As mentioned in <a href="#Disassembly"><b>ROM Disassembly</b></a>, Stella supports the following directives:
 CODE, GFX, PGFX, COL, PCOL, BCOL, AUD, DATA, ROW. While the debugger will try to automatically mark address
 space with the appropriate directive, there are times when it will fail. There are

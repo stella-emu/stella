@@ -73,9 +73,9 @@ class Dialog : public GuiObject
     void addToFocusList(WidgetArray& list, TabWidget* w, int tabId);
     void addBGroupToFocusList(WidgetArray& list) { _buttonGroup = list; }
     void addTabWidget(TabWidget* w);
-    void addDefaultWidget(Widget* w) { _defaultWidget = w; }
-    void addOKWidget(Widget* w)     { _okWidget = w;     }
-    void addCancelWidget(Widget* w) { _cancelWidget = w; }
+    void addDefaultWidget(ButtonWidget* w) { _defaultWidget = w; }
+    void addOKWidget(ButtonWidget* w)      { _okWidget = w;     }
+    void addCancelWidget(ButtonWidget* w)  { _cancelWidget = w; }
     void setFocus(Widget* w);
 
     /** Returns the base surface associated with this dialog. */
@@ -192,9 +192,9 @@ class Dialog : public GuiObject
     Widget* _mouseWidget{nullptr};
     Widget* _focusedWidget{nullptr};
     Widget* _dragWidget{nullptr};
-    Widget* _defaultWidget{nullptr};
-    Widget* _okWidget{nullptr};
-    Widget* _cancelWidget{nullptr};
+    ButtonWidget* _defaultWidget{nullptr};
+    ButtonWidget* _okWidget{nullptr};
+    ButtonWidget* _cancelWidget{nullptr};
 
     bool    _visible{false};
     bool    _onTop{true};

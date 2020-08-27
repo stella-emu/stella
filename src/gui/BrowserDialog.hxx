@@ -52,7 +52,7 @@ class BrowserDialog : public Dialog, public CommandSender
 
   private:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-    void updateUI();
+    void updateUI(bool fileSelected);
 
   private:
     enum {

@@ -35,6 +35,7 @@
 #include "PromptWidget.hxx"
 #include "RomWidget.hxx"
 #include "ProgressDialog.hxx"
+#include "BrowserDialog.hxx"
 #include "TimerManager.hxx"
 #include "Vec.hxx"
 
@@ -1828,14 +1829,20 @@ void DebuggerParser::executeS()
 // "save"
 void DebuggerParser::executeSave()
 {
-  commandResult << saveScriptFile(argStrings[0]);
+  if(argCount && argStrings[0] == "?")
+    debugger.myDialog->showBrowser(DebuggerDialog::svScript);
+  else
+    commandResult << saveScriptFile(argStrings[0]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "saveaccess"
 void DebuggerParser::executeSaveAccess()
 {
-  commandResult << debugger.cartDebug().saveAccessFile();
+  if(argCount && argStrings[0] == "?")
+    debugger.myDialog->showBrowser(DebuggerDialog::svAccess);
+  else
+    commandResult << debugger.cartDebug().saveAccessFile();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

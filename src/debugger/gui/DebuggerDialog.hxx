@@ -34,6 +34,7 @@ class TiaZoomWidget;
 class CartDebugWidget;
 class CartRamWidget;
 class OptionsDialog;
+class BrowserDialog;
 
 namespace GUI {
   class MessageBox;
@@ -53,6 +54,17 @@ class DebuggerDialog : public Dialog
       kSmallFontMinW  = 1090, kSmallFontMinH  = 720,
       kMediumFontMinW = 1160, kMediumFontMinH = 770,
       kLargeFontMinW  = 1160, kLargeFontMinH  = 870
+    };
+    enum BrowserType {
+      svScript,     // save
+      svSession,    // saveses
+      svConfig,     // saveconfig
+      svDis,        // savedis
+      svAccess,     // saveaccess
+      svRom,        // saverom
+      svState,      // savestate
+      svAllStates,  // saveallstates
+      svSnap        // savesnap
     };
 
     DebuggerDialog(OSystem& osystem, DialogContainer& parent,
@@ -74,6 +86,7 @@ class DebuggerDialog : public Dialog
 
     void showFatalMessage(const string& msg);
     void saveConfig() override;
+    void showBrowser(BrowserType type);
 
   private:
     void center() override { positionAt(0); }
@@ -113,10 +126,22 @@ class DebuggerDialog : public Dialog
       kDDSAdvCmd      = 'DDsv',
       kDDRewindCmd    = 'DDrw',
       kDDUnwindCmd    = 'DDuw',
-      kDDRunCmd      = 'DDex',
+      kDDRunCmd       = 'DDex',
       kDDExitFatalCmd = 'DDer',
-      kDDOptionsCmd   = 'DDop'
+      kDDOptionsCmd   = 'DDop',
+      kSvScriptCmd    = 'SvSc',
+      kSvSessionCmd   = 'SvSs',
+      kSvConfigCmd    = 'SvCn',
+      kSvDisCmd       = 'SvDs',
+      kSvAccessCmd    = 'SvAc',
+      kSvRomCmd       = 'SvRm',
+      kSvStateCmd     = 'SvSt',
+      kSvAllStatesCmd = 'SvAs',
+      kSvSnapCmd      = 'SvSn'
     };
+
+    void execSave(const string& command);
+    void createBrowser(const string& title);
 
     TabWidget *myTab{nullptr}, *myRomTab{nullptr};
 
@@ -135,7 +160,8 @@ class DebuggerDialog : public Dialog
     ButtonWidget*    myUnwindButton{nullptr};
 
     unique_ptr<GUI::MessageBox> myFatalError;
-    unique_ptr<OptionsDialog> myOptions;
+    unique_ptr<OptionsDialog>   myOptions;
+    unique_ptr<BrowserDialog>   myBrowser;
 
     unique_ptr<GUI::Font> myLFont;  // used for labels
     unique_ptr<GUI::Font> myNFont;  // used for normal text

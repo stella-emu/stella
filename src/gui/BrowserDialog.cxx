@@ -74,7 +74,7 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
   _type = new StaticTextWidget(this, font, xpos, ypos + 2, "Name ");
   _selected = new EditTextWidget(this, font, xpos + _type->getWidth(), ypos,
                                  _w - _type->getWidth() - 2 * xpos, lineHeight, "");
-  _selected->setEditable(false);
+  addFocusWidget(_selected);
 
   // Buttons
   _goUpButton = new ButtonWidget(this, font, xpos, _h - buttonHeight - VBORDER,
@@ -112,44 +112,70 @@ void BrowserDialog::show(const string& startpath,
                          BrowserDialog::ListMode mode, int cmd,
                          const string& ext)
 {
+#ifdef BSPF_WINDOWS
+  #define PATH_SEPARATOR '\\'
+#else
+  #define PATH_SEPARATOR '/'
+#endif
   _cmd = cmd;
   _mode = mode;
+  string fileName;
+
+  // Set start path
+  if(_mode != Directories)
+  {
+    // split startpath into path and filename
+    FilesystemNode fs = FilesystemNode(startpath);
+    fileName = fs.getName();
+    string directory = fs.isDirectory() ? "" : fs.getParent().getPath();
+
+    _fileList->setDirectory(FilesystemNode(directory), fileName);
+  }
+  else
+  {
+    _fileList->setDirectory(FilesystemNode(startpath));
+  }
 
   switch(_mode)
   {
     case FileLoad:
       _fileList->setListMode(FilesystemNode::ListMode::All);
-      _fileList->setNameFilter([&ext](const FilesystemNode& node) {
+      _fileList->setNameFilter([ext](const FilesystemNode& node) {
         return BSPF::endsWithIgnoreCase(node.getName(), ext);
       });
       _selected->setEditable(false);
+      _selected->setEnabled(false);
       _selected->clearFlags(Widget::FLAG_INVISIBLE);
       _type->clearFlags(Widget::FLAG_INVISIBLE);
+      _okWidget->setLabel("Load");
+      updateUI(true);
       break;
 
     case FileSave:
       _fileList->setListMode(FilesystemNode::ListMode::All);
-      _fileList->setNameFilter([&ext](const FilesystemNode& node) {
+      _fileList->setNameFilter([ext](const FilesystemNode& node) {
         return BSPF::endsWithIgnoreCase(node.getName(), ext);
       });
-      _selected->setEditable(false);  // FIXME - disable user input for now
+      _selected->setEditable(true);
+      _selected->setEnabled(true);
       _selected->clearFlags(Widget::FLAG_INVISIBLE);
       _type->clearFlags(Widget::FLAG_INVISIBLE);
+      _okWidget->setLabel("Save");
+      _selected->setText(fileName);
+      updateUI(false);
       break;
 
     case Directories:
       _fileList->setListMode(FilesystemNode::ListMode::DirectoriesOnly);
       _fileList->setNameFilter([](const FilesystemNode&) { return true; });
       _selected->setEditable(false);
+      _selected->setEnabled(false);
       _selected->setFlags(Widget::FLAG_INVISIBLE);
       _type->setFlags(Widget::FLAG_INVISIBLE);
+      _okWidget->setLabel("Choose");
+      updateUI(true);
       break;
   }
-
-  // Set start path
-  _fileList->setDirectory(FilesystemNode(startpath));
-
-  updateUI();
 
   // Finally, open the dialog after it has been fully updated
   open();
@@ -159,13 +185,17 @@ void BrowserDialog::show(const string& startpath,
 const FilesystemNode& BrowserDialog::getResult() const
 {
   if(_mode == FileLoad || _mode == FileSave)
-    return _fileList->selected();
+  {
+    static FilesystemNode node(_fileList->currentDir().getShortPath() + _selected->getText());
+
+    return node;
+  }
   else
     return _fileList->currentDir();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void BrowserDialog::updateUI()
+void BrowserDialog::updateUI(bool fileSelected)
 {
   // Only hilite the 'up' button if there's a parent directory
   _goUpButton->setEnabled(_fileList->currentDir().hasParent());
@@ -174,13 +204,56 @@ void BrowserDialog::updateUI()
   _currentPath->setText(_fileList->currentDir().getShortPath());
 
   // Enable/disable OK button based on current mode
-  bool enable = _mode == Directories || !_fileList->selected().isDirectory();
+  //bool enable = true;
+  //switch(_mode)
+  //{
+  //  case Directories:
+  //    enable = true;
+  //    break;
+
+  //  case FileLoad:
+  //    if(_fileList->selected().isDirectory())
+  //    {
+  //      enable = false;
+  //      _selected->setText("");
+  //    }
+  //    else
+  //    {
+  //      enable = fileSelected && !_selected->getText().empty();
+  //      _selected->setText(_fileList->getSelectedString());
+  //    }
+  //    break;
+
+  //  case FileSave:
+  //    if(_fileList->selected().isDirectory())
+  //    {
+  //      enable = false;
+  //      _selected->setText("");
+  //    }
+  //    else
+  //    {
+  //      enable = fileSelected && !_selected->getText().empty(); // TODO
+  //      _selected->setText(_fileList->getSelectedString());
+  //    }
+  //    break;
+
+  //  default:
+  //    break;
+  //}
+  //_okWidget->setEnabled(enable);
+
+  bool enable = _mode == Directories
+    || (!_fileList->selected().isDirectory() && fileSelected)
+    || (!_selected->getText().empty() && !fileSelected);
   _okWidget->setEnabled(enable);
 
-  if(!_fileList->selected().isDirectory())
-    _selected->setText(_fileList->getSelectedString());
-  else
-    _selected->setText("");
+  if(fileSelected)
+  {
+    if(!_fileList->selected().isDirectory())
+      _selected->setText(_fileList->getSelectedString());
+    else
+      _selected->setText("");
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -205,8 +278,13 @@ void BrowserDialog::handleCommand(CommandSender* sender, int cmd,
       _fileList->setDirectory(FilesystemNode(instance().baseDir()));
       break;
 
+    case EditableWidget::kChangedCmd:
+      Dialog::handleCommand(sender, cmd, data, 0);
+      updateUI(false);
+      break;
+
     case FileListWidget::ItemChanged:
-      updateUI();
+      updateUI(true);
       break;
 
     default:

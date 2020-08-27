@@ -684,7 +684,7 @@ bool Dialog::handleNavEvent(Event::Type e, bool repeated)
       if(_okWidget && _okWidget->isEnabled() && !repeated)
       {
         // Receiving 'OK' is the same as getting the 'Select' event
-        _okWidget->handleEvent(Event::UISelect);
+        //_okWidget->handleEvent(Event::UISelect);
         return true;
       }
       break;
@@ -693,7 +693,7 @@ bool Dialog::handleNavEvent(Event::Type e, bool repeated)
       if(_cancelWidget && _cancelWidget->isEnabled() && !repeated)
       {
         // Receiving 'Cancel' is the same as getting the 'Select' event
-        _cancelWidget->handleEvent(Event::UISelect);
+        //_cancelWidget->handleEvent(Event::UISelect);
         return true;
       }
       else if(_processCancel)
