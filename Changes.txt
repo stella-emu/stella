@@ -41,7 +41,7 @@
 
   * Added option to display detected settings info when a ROM is loaded.
 
-  * Added another oddball TIA glitch option for delayed background color. (TODO: DOC)
+  * Added another oddball TIA glitch option for delayed background color.
 
   * Replaced "Re-disassemble" with "Disassemble @ current line" in debugger.
 

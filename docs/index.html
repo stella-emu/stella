@@ -2940,7 +2940,7 @@
       <td>When enabled, each read or write access to the AtariVox/SaveKey EEPROM is
         signalled by a message.</td>
     </tr><tr>
-      <td><pre>-dev.tia.type &lt;standard|koolaidman|</br>  cosmicark|pesco|quickstep|heman|custom&gt;</pre></td>
+      <td><pre>-dev.tia.type &lt;standard|koolaidman|cosmicark|</br>  pesco|quickstep|indy500|heman|custom&gt;</pre></td>
       <td>Set emulated TIA type.</td>
     </tr><tr>
       <td><pre>-dev.tia.plinvphase &lt;1|0&gt;</pre></td>
@@ -2957,6 +2957,9 @@
     </tr><tr>
       <td><pre>-dev.tia.delaypfcolor &lt;1|0&gt;</pre></td>
       <td>Enable/disable playfield color delayed by one color clock (colored step borders in Quick Step!).</td>
+    </tr><tr>
+      <td><pre>-dev.tia.delaybkcolor &lt;1|0&gt;</pre></td>
+      <td>Enable/disable background color delayed by one color clock (stray pixels in Indy 500 menu hack).</td>
     </tr><tr>
       <td><pre>-dev.tia.delayplswap &lt;1|0&gt;</pre></td>
       <td>Enable/disable player swap delayed by one color clock (He-Man title glitch).</td>
@@ -3650,10 +3653,13 @@
     <tr><td>Inverted HMOVE clock...</td><td>Emulates the Kool-Aid Man
       collision and Cosmic Ark stars glitches for the given objects.</td>
       <td>-dev.tia.plinvphase</br>-dev.tia.msinvphase</br>-dev.tia.blinvphase</td></tr>
-    <tr><td>Delayed Playfield</td><td>Emulates playfield registers delayed
+    <tr><td>Delayed Playfield</td><td>Emulates playfield register changes delayed
       by one color clock. This e.g. causes glitches in Pesco (stray playfield
-      pixel) and Quick Step! (colored step borders)</td>
+      pixel) and Quick Step! (colored step borders).</td>
       <td>-dev.tia.delaypfbits</br>-dev.tia.delaypfcolor</td></tr>
+    <tr><td>Delayed Background</td><td>Emulates background color register changes delayed
+      by one color clock. This causes stray pixel in the Indy 500 menu hack.</td>
+      <td>-dev.tia.delaybkcolor</td></tr>
     <tr><td>Delayed VDEL... swap for</td><td>Emulates a VDELP0/P1/BL swap
       delayed by one color clock. This e.g cause glitches in the He-Man title
       screen.</td>
