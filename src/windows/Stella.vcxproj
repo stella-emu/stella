@@ -746,6 +746,7 @@
     <ClCompile Include="..\emucore\MindLink.cxx" />
     <ClCompile Include="..\emucore\PointingDevice.cxx" />
     <ClCompile Include="..\emucore\ProfilingRunner.cxx" />
+    <ClCompile Include="..\emucore\QuadTari.cxx" />
     <ClCompile Include="..\emucore\TIASurface.cxx" />
     <ClCompile Include="..\emucore\tia\Audio.cxx" />
     <ClCompile Include="..\emucore\tia\AudioChannel.cxx" />
@@ -1775,6 +1776,7 @@
     <ClInclude Include="..\emucore\MindLink.hxx" />
     <ClInclude Include="..\emucore\PointingDevice.hxx" />
     <ClInclude Include="..\emucore\ProfilingRunner.hxx" />
+    <ClInclude Include="..\emucore\QuadTari.hxx" />
     <ClInclude Include="..\emucore\SerialPort.hxx" />
     <ClInclude Include="..\emucore\TIASurface.hxx" />
     <ClInclude Include="..\emucore\tia\Audio.hxx" />

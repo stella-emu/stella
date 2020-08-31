@@ -35,6 +35,11 @@
 #include "Genesis.hxx"
 #include "MindLink.hxx"
 #include "CompuMate.hxx"
+#include "AmigaMouse.hxx"
+#include "AtariMouse.hxx"
+#include "TrakBall.hxx"
+#include "Lightgun.hxx"
+#include "QuadTari.hxx"
 #include "M6502.hxx"
 #include "M6532.hxx"
 #include "TIA.hxx"
@@ -46,10 +51,6 @@
 #include "Sound.hxx"
 #include "Switches.hxx"
 #include "System.hxx"
-#include "AmigaMouse.hxx"
-#include "AtariMouse.hxx"
-#include "TrakBall.hxx"
-#include "Lightgun.hxx"
 #include "FrameBuffer.hxx"
 #include "TIASurface.hxx"
 #include "OSystem.hxx"
@@ -925,6 +926,10 @@ unique_ptr<Controller> Console::getControllerPort(const Controller::Type type,
 
     case Controller::Type::Lightgun:
       controller = make_unique<Lightgun>(port, myEvent, *mySystem, romMd5, myOSystem.frameBuffer());
+      break;
+
+    case Controller::Type::QuadTari:
+      controller = make_unique<QuadTari>(port, myEvent, *mySystem);
       break;
 
     default:

@@ -123,11 +123,16 @@ class Event
       ToggleFrameStats, ToggleSAPortOrder, ExitGame,
       SettingDecrease, SettingIncrease, PreviousSetting, NextSetting,
       ToggleAdaptRefresh, PreviousMultiCartRom,
-      // add new events from here to avoid that user remapped events get overwritten
+      // add new (after Version 4) events from here to avoid that user remapped events get overwritten
       PreviousSettingGroup, NextSettingGroup,
       TogglePlayBackMode,
       DecreaseAutoFire, IncreaseAutoFire,
       DecreaseSpeed, IncreaseSpeed,
+
+      JoystickTwoUp, JoystickTwoDown, JoystickTwoLeft, JoystickTwoRight,
+      JoystickTwoFire,
+      JoystickThreeUp, JoystickThreeDown, JoystickThreeLeft, JoystickThreeRight,
+      JoystickThreeFire,
 
       LastType
     };
@@ -217,11 +222,15 @@ class Event
 static const Event::EventSet LeftJoystickEvents = {
   Event::JoystickZeroUp, Event::JoystickZeroDown, Event::JoystickZeroLeft, Event::JoystickZeroRight,
   Event::JoystickZeroFire, Event::JoystickZeroFire5, Event::JoystickZeroFire9,
+  Event::JoystickTwoUp, Event::JoystickTwoDown, Event::JoystickTwoLeft, Event::JoystickTwoRight,
+  Event::JoystickTwoFire
 };
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 static const Event::EventSet RightJoystickEvents = {
   Event::JoystickOneUp, Event::JoystickOneDown, Event::JoystickOneLeft, Event::JoystickOneRight,
-  Event::JoystickOneFire, Event::JoystickOneFire5, Event::JoystickOneFire9
+  Event::JoystickOneFire, Event::JoystickOneFire5, Event::JoystickOneFire9,
+  Event::JoystickThreeUp, Event::JoystickThreeDown, Event::JoystickThreeLeft, Event::JoystickThreeRight,
+  Event::JoystickThreeFire
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

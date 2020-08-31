@@ -620,6 +620,46 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
         myEvent.set(Event::JoystickOneLeft, 0);
       break;
 
+    case Event::JoystickTwoUp:
+      if(!myAllowAllDirectionsFlag && pressed)
+        myEvent.set(Event::JoystickTwoDown, 0);
+      break;
+
+    case Event::JoystickTwoDown:
+      if(!myAllowAllDirectionsFlag && pressed)
+        myEvent.set(Event::JoystickTwoUp, 0);
+      break;
+
+    case Event::JoystickTwoLeft:
+      if(!myAllowAllDirectionsFlag && pressed)
+        myEvent.set(Event::JoystickTwoRight, 0);
+      break;
+
+    case Event::JoystickTwoRight:
+      if(!myAllowAllDirectionsFlag && pressed)
+        myEvent.set(Event::JoystickTwoLeft, 0);
+      break;
+
+    case Event::JoystickThreeUp:
+      if(!myAllowAllDirectionsFlag && pressed)
+        myEvent.set(Event::JoystickThreeDown, 0);
+      break;
+
+    case Event::JoystickThreeDown:
+      if(!myAllowAllDirectionsFlag && pressed)
+        myEvent.set(Event::JoystickThreeUp, 0);
+      break;
+
+    case Event::JoystickThreeLeft:
+      if(!myAllowAllDirectionsFlag && pressed)
+        myEvent.set(Event::JoystickThreeRight, 0);
+      break;
+
+    case Event::JoystickThreeRight:
+      if(!myAllowAllDirectionsFlag && pressed)
+        myEvent.set(Event::JoystickThreeLeft, 0);
+      break;
+
     ///////////////////////////////////////////////////////////////////////////
     // Audio & Video events (with global hotkeys)
     case Event::VolumeDecrease:
@@ -2467,6 +2507,18 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::JoystickOneFire5,        "P1 Booster Top Booster Button",         "" },
   { Event::JoystickOneFire9,        "P1 Booster Handle Grip Trigger",        "" },
 
+  { Event::JoystickTwoUp,           "P2 Joystick Up",                        "" },
+  { Event::JoystickTwoDown,         "P2 Joystick Down",                      "" },
+  { Event::JoystickTwoLeft,         "P2 Joystick Left",                      "" },
+  { Event::JoystickTwoRight,        "P2 Joystick Right",                     "" },
+  { Event::JoystickTwoFire,         "P2 Joystick Fire",                      "" },
+ 
+  { Event::JoystickThreeUp,         "P3 Joystick Up",                        "" },
+  { Event::JoystickThreeDown,       "P3 Joystick Down",                      "" },
+  { Event::JoystickThreeLeft,       "P3 Joystick Left",                      "" },
+  { Event::JoystickThreeRight,      "P3 Joystick Right",                     "" },
+  { Event::JoystickThreeFire,       "P3 Joystick Fire",                      "" },
+
   { Event::PaddleZeroAnalog,        "Paddle 0 Analog",                       "" },
   { Event::PaddleZeroIncrease,      "Paddle 0 Turn Left",                    "" },
   { Event::PaddleZeroDecrease,      "Paddle 0 Turn Right",                   "" },
@@ -2711,6 +2763,10 @@ const Event::EventSet EventHandler::JoystickEvents = {
   Event::JoystickZeroFire, Event::JoystickZeroFire5, Event::JoystickZeroFire9,
   Event::JoystickOneUp, Event::JoystickOneDown, Event::JoystickOneLeft, Event::JoystickOneRight,
   Event::JoystickOneFire, Event::JoystickOneFire5, Event::JoystickOneFire9,
+  Event::JoystickTwoUp, Event::JoystickTwoDown, Event::JoystickTwoLeft, Event::JoystickTwoRight,
+  Event::JoystickTwoFire,
+  Event::JoystickThreeUp, Event::JoystickThreeDown, Event::JoystickThreeLeft, Event::JoystickThreeRight,
+  Event::JoystickThreeFire,
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

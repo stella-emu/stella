@@ -1017,6 +1017,9 @@
     <ClCompile Include="..\gui\WhatsNewDialog.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
+    <ClCompile Include="..\emucore\QuadTari.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">
@@ -2088,6 +2091,9 @@
       <Filter>Header Files\gui</Filter>
     </ClInclude>
     <ClInclude Include="..\emucore\SerialPort.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\QuadTari.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
   </ItemGroup>
