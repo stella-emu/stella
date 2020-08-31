@@ -658,6 +658,7 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultJoyst
   {Event::JoystickZeroFire9,        KBDK_5},
   {Event::JoystickZeroFire9,        KBDK_RCTRL},
   {Event::JoystickZeroFire9,        KBDK_KP_3},
+
   {Event::JoystickOneUp,            KBDK_Y},
   {Event::JoystickOneDown,          KBDK_H},
   {Event::JoystickOneLeft,          KBDK_G},
@@ -665,6 +666,22 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultJoyst
   {Event::JoystickOneFire,          KBDK_F},
   {Event::JoystickOneFire5,         KBDK_6},
   {Event::JoystickOneFire9,         KBDK_7},
+
+  {Event::JoystickTwoUp,            KBDK_UP, KBDM_SHIFT},
+  {Event::JoystickTwoDown,          KBDK_DOWN, KBDM_SHIFT},
+  {Event::JoystickTwoLeft,          KBDK_LEFT, KBDM_SHIFT},
+  {Event::JoystickTwoRight,         KBDK_RIGHT, KBDM_SHIFT},
+  {Event::JoystickTwoUp,            KBDK_KP_8, KBDM_SHIFT},
+  {Event::JoystickTwoDown,          KBDK_KP_2, KBDM_SHIFT},
+  {Event::JoystickTwoLeft,          KBDK_KP_4, KBDM_SHIFT},
+  {Event::JoystickTwoRight,         KBDK_KP_6, KBDM_SHIFT},
+  {Event::JoystickTwoFire,          KBDK_SPACE, KBDM_SHIFT},
+
+  {Event::JoystickThreeUp,          KBDK_Y, KBDM_SHIFT},
+  {Event::JoystickThreeDown,        KBDK_H, KBDM_SHIFT},
+  {Event::JoystickThreeLeft,        KBDK_G, KBDM_SHIFT},
+  {Event::JoystickThreeRight,       KBDK_J, KBDM_SHIFT},
+  {Event::JoystickThreeFire,        KBDK_F, KBDM_SHIFT},
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

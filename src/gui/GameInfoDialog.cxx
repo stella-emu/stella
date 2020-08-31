@@ -227,6 +227,7 @@ GameInfoDialog::GameInfoDialog(
   VarList::push_back(ctrls, "KidVid", "KIDVID");
   VarList::push_back(ctrls, "Lightgun", "LIGHTGUN");
   VarList::push_back(ctrls, "MindLink", "MINDLINK");
+  VarList::push_back(ctrls, "QuadTari", "QUADTARI");
 
   ypos = VBORDER;
   pwidth = font.getStringWidth("Paddles_IAxis");
@@ -770,7 +771,6 @@ void GameInfoDialog::updateControllerStates()
   myPaddlesCenter->setEnabled(enablePaddles);
   myPaddleXCenter->setEnabled(enablePaddles);
   myPaddleYCenter->setEnabled(enablePaddles);
-
 
   bool enableMouse = enablePaddles ||
     BSPF::startsWithIgnoreCase(contrLeft, "Driving") ||
