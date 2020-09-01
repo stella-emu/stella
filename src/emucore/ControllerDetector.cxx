@@ -62,6 +62,10 @@ Controller::Type ControllerDetector::autodetectPort(
 
   if(isProbablySaveKey(image, size, port))
     type = Controller::Type::SaveKey;
+  else if(isProbablyQuadTari(image, size, port))
+  {
+    type = Controller::Type::QuadTari;
+  }
   else if(usesJoystickButton(image, size, port))
   {
     if(isProbablyTrakBall(image, size))
@@ -692,4 +696,22 @@ bool ControllerDetector::isProbablyLightGun(const ByteBuffer& image, size_t size
   }
 
   return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool ControllerDetector::isProbablyQuadTari(const ByteBuffer& image, size_t size,
+                                            Controller::Jack port)
+{
+  if(port == Controller::Jack::Left)
+  {
+    uInt8 signature[] = { 'Q', 'U', 'A', 'D', 'L' };
+
+    return searchForBytes(image, size, signature, 5);
+  }
+  else if(port == Controller::Jack::Right)
+  {
+    uInt8 signature[] = { 'Q', 'U', 'A', 'D', 'R' };
+
+    return searchForBytes(image, size, signature, 5);
+  }
 }
