@@ -16,6 +16,9 @@
 //============================================================================
 
 #include "Event.hxx"
+#include "System.hxx"
+#include "TIA.hxx"
+#include "FrameBuffer.hxx"
 #include "Joystick.hxx"
 #include "QuadTari.hxx"
 
@@ -23,7 +26,7 @@
 QuadTari::QuadTari(Jack jack, const Event& event, const System& system)
   : Controller(jack, event, system, Controller::Type::QuadTari)
 {
-  // TODO: allow multiple controller types
+  // TODO: support multiple controller types
   if(myJack == Jack::Left)
   {
     myFirstController = make_unique<Joystick>(Jack::Left, event, system);
@@ -34,6 +37,9 @@ QuadTari::QuadTari(Jack jack, const Event& event, const System& system)
     myFirstController = make_unique<Joystick>(Jack::Right, event, system);
     mySecondController = make_unique<Joystick>(Jack::Left, event, system); // TODO: use P3 mapping
   }
+  // QuadTari auto detection setting
+  setPin(AnalogPin::Five, MIN_RESISTANCE);
+  setPin(AnalogPin::Nine, MAX_RESISTANCE);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -43,8 +49,11 @@ bool QuadTari::read(DigitalPin pin)
   // can switch the controller multiple times per frame
   // (we can't just read 60 times per second in the ::update() method)
 
-  if(true) // TODO handle controller switch
+  // If bit 7 of VBlank is not set, read first, else second controller
+  if(!(mySystem.tia().registerValue(VBLANK) & 0x80))
     return myFirstController->read(pin);
+  else
+    return mySecondController->read(pin);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -55,19 +64,24 @@ void QuadTari::update()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string QuadTari::name() const
+{
+  return "QuadTari (" + myFirstController->name() + "/" + mySecondController->name() + ")";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool QuadTari::isAnalog() const
 {
-  // TODO: does this work?
-  return myFirstController->isAnalog() || mySecondController->isAnalog();
+  // For now, use mouse for first controller only
+  return myFirstController->isAnalog();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool QuadTari::setMouseControl(
     Controller::Type xtype, int xid, Controller::Type ytype, int yid)
 {
-  // TODO: does this work?
-  myFirstController->setMouseControl(xtype, xid, ytype, yid);
-  mySecondController->setMouseControl(xtype, xid, ytype, yid);
+  // Use mouse for first controller only (TODO: support multiple controller types)
+  myFirstController->setMouseControl(Controller::Type::Joystick, xid, Controller::Type::Joystick, yid);
 
   return true;
 }

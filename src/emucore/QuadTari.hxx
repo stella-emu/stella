@@ -57,9 +57,8 @@ class QuadTari: public Controller
 
     /**
       Returns the name of this controller.
-      // TODO: Or the names of the attached controllers?
     */
-    string name() const override { return "QuadTari"; }
+    string name() const override;
 
     /**
       Answers whether the controller is intrinsically an analog controller.
