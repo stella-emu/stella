@@ -59,28 +59,3 @@ bool Cartridge3EPlus::checkSwitchBank(uInt16 address, uInt8 value)
   }
   return false;
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 Cartridge3EPlus::peek(uInt16 address)
-{
-  uInt16 peekAddress = address;
-  address &= ROM_MASK;
-
-  if(address < 0x0040)  // TIA peek
-    return mySystem->tia().peek(address);
-
-  return CartridgeEnhanced::peek(peekAddress);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge3EPlus::poke(uInt16 address, uInt8 value)
-{
-  if(CartridgeEnhanced::poke(address, value))
-    return true;
-
-  if(address < 0x0040)  // TIA poke
-    // Handle TIA space that we claimed above
-    return mySystem->tia().poke(address, value);
-
-  return false;
-}
