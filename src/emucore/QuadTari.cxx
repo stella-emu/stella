@@ -61,8 +61,17 @@ bool QuadTari::read(DigitalPin pin)
   // can switch the controller multiple times per frame
   // (we can't just read 60 times per second in the ::update() method)
 
-  // If bit 7 of VBlank is not set, read first, else second controller
-  if(!(mySystem.tia().registerValue(VBLANK) & 0x80))
+  constexpr int MIN_CYCLES = 30 * 76; // minimal cycles required for stable input switch (TODO: define cycles)
+  bool readFirst;
+
+  if(mySystem.tia().dumpPortsCycles() < MIN_CYCLES)
+    // Random controller if read too soon after dump ports changed
+    readFirst = mySystem.randGenerator().next() % 2;
+  else
+    // If bit 7 of VBlank is not set, read first, else second controller
+    readFirst = !(mySystem.tia().registerValue(VBLANK) & 0x80);
+
+  if(readFirst)
     return myFirstController->read(pin);
   else
     return mySecondController->read(pin);
