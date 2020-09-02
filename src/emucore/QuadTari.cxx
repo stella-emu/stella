@@ -23,20 +23,32 @@
 #include "QuadTari.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-QuadTari::QuadTari(Jack jack, const Event& event, const System& system)
+QuadTari::QuadTari(Jack jack, const Event& event, const System& system,
+                   const Controller::Type firstType, const Controller::Type secondType)
   : Controller(jack, event, system, Controller::Type::QuadTari)
 {
   // TODO: support multiple controller types
-  if(myJack == Jack::Left)
+  switch(firstType)
   {
-    myFirstController = make_unique<Joystick>(Jack::Left, event, system);
-    mySecondController = make_unique<Joystick>(Jack::Right, event, system); // TODO: use P2 mapping
+    case Controller::Type::Joystick:
+      myFirstController = make_unique<Joystick>(myJack, event, system);
+      break;
+
+    default:
+      // TODO
+      break;
   }
-  else
+  switch(secondType)
   {
-    myFirstController = make_unique<Joystick>(Jack::Right, event, system);
-    mySecondController = make_unique<Joystick>(Jack::Left, event, system); // TODO: use P3 mapping
+    case Controller::Type::Joystick:
+      mySecondController = make_unique<Joystick>(myJack, event, system, true); // use alternative mapping
+      break;
+
+    default:
+      // TODO
+      break;
   }
+
   // QuadTari auto detection setting
   setPin(AnalogPin::Five, MIN_RESISTANCE);
   setPin(AnalogPin::Nine, MAX_RESISTANCE);
@@ -80,8 +92,11 @@ bool QuadTari::isAnalog() const
 bool QuadTari::setMouseControl(
     Controller::Type xtype, int xid, Controller::Type ytype, int yid)
 {
-  // Use mouse for first controller only (TODO: support multiple controller types)
-  myFirstController->setMouseControl(Controller::Type::Joystick, xid, Controller::Type::Joystick, yid);
-
-  return true;
+  // Use mouse for first controller only
+  if(xtype == Controller::Type::QuadTari && ytype == Controller::Type::QuadTari)
+    return myFirstController->setMouseControl(myFirstController->type(), xid,
+                                              myFirstController->type(), yid);
+  else
+    // required for creating the MouseControl mode list
+    return myFirstController->setMouseControl(xtype, xid, ytype, yid);
 }
