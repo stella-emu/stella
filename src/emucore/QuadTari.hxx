@@ -18,8 +18,8 @@
 #ifndef QUADTARI_HXX
 #define QUADTARI_HXX
 
-#include "Control.hxx"
-#include "Event.hxx"
+class Controller;
+class Event;
 
 /**
   The QuadTari controller.
@@ -28,16 +28,20 @@
 */
 class QuadTari: public Controller
 {
+  friend class QuadTariWidget;
   public:
     /**
-      Create a QuadTari controller plugged into
-      the specified jack
+      Create a QuadTari controller plugged into the specified jack
 
-      @param jack   The jack the controller is plugged into
-      @param event  The event object to use for events
-      @param system The system using this controller
+      @param jack        The jack the controller is plugged into
+      @param event       The event object to use for events
+      @param system      The system using this controller
+      @param firstType   The type of the first, plugged-in controller
+      @param secondType  The type of the second, plugged-in controller
     */
-    QuadTari(Jack jack, const Event& event, const System& system);
+    QuadTari(Jack jack, const Event& event, const System& system,
+             const Controller::Type firstType = Controller::Type::Joystick,
+             const Controller::Type secondType = Controller::Type::Joystick);
     ~QuadTari() override = default;
 
   public:
@@ -62,7 +66,7 @@ class QuadTari: public Controller
 
     /**
       Answers whether the controller is intrinsically an analog controller.
-      TODO: Depends on the attached controllers.
+      Depends on the attached controllers.
     */
     bool isAnalog() const override;
 

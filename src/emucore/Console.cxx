@@ -929,6 +929,7 @@ unique_ptr<Controller> Console::getControllerPort(const Controller::Type type,
       break;
 
     case Controller::Type::QuadTari:
+      // TODO: support multiple controller types
       controller = make_unique<QuadTari>(port, myEvent, *mySystem);
       break;
 
