@@ -523,6 +523,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
 
       for (PaddleReader& paddleReader : myPaddleReaders)
         paddleReader.vblank(value, myTimestamp);
+      updateDumpPorts(value);
 
       myDelayQueue.push(VBLANK, value, Delay::vblank);
 
@@ -1979,6 +1980,24 @@ void TIA::toggleCollM1BL()
 void TIA::toggleCollBLPF()
 {
   myCollisionMask ^= (CollisionMask::ball & CollisionMask::playfield);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::updateDumpPorts(uInt8 value)
+{
+  bool newIsDumped = value & 0x80;
+
+  if(myArePortsDumped != newIsDumped)
+  {
+    myArePortsDumped = newIsDumped;
+    myDumpPortsTimestamp = myTimestamp;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Int64 TIA::dumpPortsCycles()
+{
+  return (myTimestamp - myDumpPortsTimestamp) / 3;
 }
 
 #ifdef DEBUGGER_SUPPORT

@@ -335,6 +335,13 @@ class TIA : public Device
     }
 
     /**
+     * Get the CPU cycles since the last dump ports change.
+     *
+     * @return  The number of CPU cycles since the last dump ports change
+    */
+    Int64 dumpPortsCycles();
+
+    /**
       Answers whether the TIA is currently in being rendered
       (we're in between the start and end of drawing a frame).
 
@@ -695,6 +702,13 @@ class TIA : public Device
      */
     void applyDeveloperSettings();
 
+    /**
+     * Updates the dump ports state with the time of change.
+     *
+     * @param value  The value to be stored at VBLANK
+    */
+    void updateDumpPorts(uInt8 value);
+
   #ifdef DEBUGGER_SUPPORT
     void createAccessArrays();
 
@@ -893,6 +907,16 @@ class TIA : public Device
      * The total number of color clocks since emulation started.
      */
     uInt64 myTimestamp{0};
+
+    /**
+     * The number of CPU clocks since the last dump ports state change.
+     */
+    uInt64 myDumpPortsTimestamp{0};
+
+    /**
+     * The current dump ports state.
+    */
+    bool myArePortsDumped{false};
 
     /**
      * The "shadow registers" track the last written register value for the
