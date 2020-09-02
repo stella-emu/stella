@@ -51,7 +51,11 @@ void Properties::set(PropType key, const string& value)
       case PropType::Console_TVType:
       case PropType::Console_SwapPorts:
       case PropType::Controller_Left:
+      case PropType::Controller_Left1:
+      case PropType::Controller_Left2:
       case PropType::Controller_Right:
+      case PropType::Controller_Right1:
+      case PropType::Controller_Right2:
       case PropType::Controller_SwapPaddles:
       case PropType::Controller_MouseAxis:
       case PropType::Display_Format:
@@ -249,7 +253,11 @@ void Properties::print() const
        << get(PropType::Console_TVType)         << "|"
        << get(PropType::Console_SwapPorts)      << "|"
        << get(PropType::Controller_Left)        << "|"
+       << get(PropType::Controller_Left1)       << "|"
+       << get(PropType::Controller_Left2)       << "|"
        << get(PropType::Controller_Right)       << "|"
+       << get(PropType::Controller_Right1)      << "|"
+       << get(PropType::Controller_Right2)     << "|"
        << get(PropType::Controller_SwapPaddles) << "|"
        << get(PropType::Controller_PaddlesXCenter) << "|"
        << get(PropType::Controller_PaddlesYCenter) << "|"
@@ -296,7 +304,11 @@ void Properties::printHeader()
        << "Console_TVType|"
        << "Console_SwapPorts|"
        << "Controller_Left|"
+       << "Controller_Left1|"
+       << "Controller_Left2|"
        << "Controller_Right|"
+       << "Controller_Right1|"
+       << "Controller_Right2|"
        << "Controller_SwapPaddles|"
        << "Controller_PaddlesXCenter|"
        << "Controller_PaddlesYCenter|"
@@ -325,7 +337,11 @@ std::array<string, Properties::NUM_PROPS> Properties::ourDefaultProperties =
   "COLOR",  // Console.TVType
   "NO",     // Console.SwapPorts
   "AUTO",   // Controller.Left
+  "",       // Controller.Left1
+  "",       // Controller.Left2
   "AUTO",   // Controller.Right
+  "",       // Controller.Right1
+  "",       // Controller.Right2
   "NO",     // Controller.SwapPaddles
   "0",      // Controller.PaddlesXCenter
   "0",      // Controller.PaddlesYCenter
@@ -353,7 +369,11 @@ std::array<string, Properties::NUM_PROPS> Properties::ourPropertyNames =
   "Console.TVType",
   "Console.SwapPorts",
   "Controller.Left",
+  "Controller.Left1",
+  "Controller.Left2",
   "Controller.Right",
+  "Controller.Right1",
+  "Controller.Right2",
   "Controller.SwapPaddles",
   "Controller.PaddlesXCenter",
   "Controller.PaddlesYCenter",

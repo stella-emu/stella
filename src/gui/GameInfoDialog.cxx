@@ -236,6 +236,10 @@ GameInfoDialog::GameInfoDialog(
                                myLeftPortLabel->getTop()-1,
                                pwidth, lineHeight, ctrls, "", 0, kLeftCChanged);
   wid.push_back(myLeftPort);
+
+  myLeftQuadTari = new ButtonWidget(myTab, font, myLeftPort->getRight() + fontWidth * 2, myLeftPort->getTop() - 2,
+                                    "QuadTari" + ELLIPSIS, kLeftQTPressed);
+  wid.push_back(myLeftQuadTari);
   ypos += lineHeight + VGAP;
 
   myLeftPortDetected = new StaticTextWidget(myTab, ifont, myLeftPort->getLeft(), ypos,
@@ -247,17 +251,19 @@ GameInfoDialog::GameInfoDialog(
                                 myRightPortLabel->getTop()-1,
                                 pwidth, lineHeight, ctrls, "", 0, kRightCChanged);
   wid.push_back(myRightPort);
+
+  myRightQuadTari = new ButtonWidget(myTab, font, myRightPort->getRight() + fontWidth * 2, myRightPort->getTop() - 2,
+                                    "QuadTari" + ELLIPSIS, kRightQTPressed);
+  wid.push_back(myRightQuadTari);
+
   ypos += lineHeight + VGAP;
   myRightPortDetected = new StaticTextWidget(myTab, ifont, myRightPort->getLeft(), ypos,
                                              "Sega Genesis detected");
   ypos += ifont.getLineHeight() + VGAP + 4;
 
-  mySwapPorts = new CheckboxWidget(myTab, font, myLeftPort->getRight() + fontWidth*4,
-                                   myLeftPort->getTop()+1, "Swap ports");
+  mySwapPorts = new CheckboxWidget(myTab, font, xpos + fontWidth * 2,
+                                   myLeftPortDetected->getTop()-1, "Swap ports");
   wid.push_back(mySwapPorts);
-  mySwapPaddles = new CheckboxWidget(myTab, font, myRightPort->getRight() + fontWidth*4,
-                                     myRightPort->getTop()+1, "Swap paddles");
-  wid.push_back(mySwapPaddles);
 
   // EEPROM erase button for left/right controller
   //ypos += lineHeight + VGAP + 4;
@@ -270,6 +276,10 @@ GameInfoDialog::GameInfoDialog(
                                            myEraseEEPROMLabel->getTop() + 3,
                                            "(for this game only)");
   ypos += lineHeight + VGAP * 4;
+
+  mySwapPaddles = new CheckboxWidget(myTab, font, xpos, ypos, "Swap paddles");
+  wid.push_back(mySwapPaddles);
+  ypos += lineHeight + VGAP;
 
   // Paddles
   myPaddlesCenter = new StaticTextWidget(myTab, font, xpos, ypos, "Paddles center:");
@@ -293,7 +303,7 @@ GameInfoDialog::GameInfoDialog(
 
   // Mouse
   xpos = HBORDER + fontWidth * 24 - INDENT;
-  ypos = myPaddlesCenter->getTop();
+  ypos = mySwapPaddles->getTop() - 1;
   myMouseControl = new CheckboxWidget(myTab, font, xpos, ypos + 1, "Specific mouse axes",
                                       kMCtrlChanged);
   wid.push_back(myMouseControl);
@@ -760,6 +770,8 @@ void GameInfoDialog::updateControllerStates()
   myRightPortLabel->setEnabled(enableSelectControl);
   myLeftPort->setEnabled(enableSelectControl);
   myRightPort->setEnabled(enableSelectControl);
+  myLeftQuadTari->setEnabled(BSPF::startsWithIgnoreCase(contrLeft, "QUADTARI"));
+  myRightQuadTari->setEnabled(BSPF::startsWithIgnoreCase(contrRight, "QUADTARI"));
 
   mySwapPorts->setEnabled(enableSelectControl);
   mySwapPaddles->setEnabled(enablePaddles);
@@ -857,6 +869,12 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
     case kLeftCChanged:
     case kRightCChanged:
       updateControllerStates();
+      break;
+
+    case kLeftQTPressed:
+      break;
+
+    case kRightQTPressed:
       break;
 
     case kEEButtonPressed:

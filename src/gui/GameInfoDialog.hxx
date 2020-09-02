@@ -87,6 +87,8 @@ class GameInfoDialog : public Dialog, public CommandSender
     StaticTextWidget* myLeftPortDetected{nullptr};
     PopUpWidget*      myRightPort{nullptr};
     StaticTextWidget* myRightPortDetected{nullptr};
+    ButtonWidget*     myLeftQuadTari{nullptr};
+    ButtonWidget*     myRightQuadTari{nullptr};
     CheckboxWidget*   mySwapPorts{nullptr};
     CheckboxWidget*   mySwapPaddles{nullptr};
     StaticTextWidget* myEraseEEPROMLabel{nullptr};
@@ -114,6 +116,8 @@ class GameInfoDialog : public Dialog, public CommandSender
       kPPBlendChanged  = 'PBch',
       kLeftCChanged    = 'LCch',
       kRightCChanged   = 'RCch',
+      kLeftQTPressed   = 'LQTp',
+      kRightQTPressed  = 'RQTp',
       kMCtrlChanged    = 'MCch',
       kEEButtonPressed = 'EEgb',
       kPXCenterChanged = 'Pxch',
