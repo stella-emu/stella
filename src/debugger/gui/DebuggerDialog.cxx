@@ -37,8 +37,8 @@
 #include "DataGridOpsWidget.hxx"
 #include "EditTextWidget.hxx"
 #include "MessageBox.hxx"
-#include "debugger.hxx"
-#include "debuggerParser.hxx"
+#include "Debugger.hxx"
+#include "DebuggerParser.hxx"
 #include "ConsoleFont.hxx"
 #include "ConsoleBFont.hxx"
 #include "ConsoleMediumFont.hxx"
@@ -50,7 +50,7 @@
 #include "FrameManager.hxx"
 #include "OSystem.hxx"
 #include "Console.hxx"
-#include "debuggerDialog.hxx"
+#include "DebuggerDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DebuggerDialog::DebuggerDialog(OSystem& osystem, DialogContainer& parent,
