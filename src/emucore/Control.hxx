@@ -178,7 +178,7 @@ class Controller : public Serializable
       Update the entire digital and analog pin state according to the
       events currently set.
     */
-    virtual void update() { };
+    virtual void update() { }
 
     /**
       Returns the name of this controller.
