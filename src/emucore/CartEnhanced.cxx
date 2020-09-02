@@ -91,14 +91,12 @@ void CartridgeEnhanced::install(System& system)
     System::PageAccess access(this, System::PageAccessType::READ);
 
     // Set the page accessing method for the RAM writing pages
-    // Map access to this class, since we need to inspect all accesses to
-    // check if RWP happens
+    // Note: Writes are mapped to poke() (NOT using direcPokeBase) to check for read from write port (RWP)
     access.type = System::PageAccessType::WRITE;
     for(uInt16 addr = ROM_OFFSET + myWriteOffset; addr < ROM_OFFSET + myWriteOffset + myRamSize; addr += System::PAGE_SIZE)
     {
       const uInt16 offset = addr & myRamMask;
 
-      access.directPokeBase = &myRAM[offset];
       access.romAccessBase = &myRomAccessBase[myWriteOffset + offset];
       access.romPeekCounter = &myRomAccessCounter[myWriteOffset + offset];
       access.romPokeCounter = &myRomAccessCounter[myWriteOffset + offset + myAccessSize];
@@ -107,7 +105,6 @@ void CartridgeEnhanced::install(System& system)
 
     // Set the page accessing method for the RAM reading pages
     access.type = System::PageAccessType::READ;
-    access.directPokeBase = nullptr;
     for(uInt16 addr = ROM_OFFSET + myReadOffset; addr < ROM_OFFSET + myReadOffset + myRamSize; addr += System::PAGE_SIZE)
     {
       const uInt16 offset = addr & myRamMask;
@@ -263,6 +260,7 @@ bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment)
     myCurrentSegOffset[segment] = uInt32(mySize) + (ramBank << myBankShift);
 
     // Set the page accessing method for the RAM writing pages
+    // Note: Writes are mapped to poke() (NOT using direcPokeBase) to check for read from write port (RWP)
     uInt16 fromAddr = (ROM_OFFSET + segmentOffset + myWriteOffset) & ~System::PAGE_MASK;
     uInt16 toAddr   = (ROM_OFFSET + segmentOffset + myWriteOffset + (myBankSize >> 1)) & ~System::PAGE_MASK;
     System::PageAccess access(this, System::PageAccessType::WRITE);
@@ -271,7 +269,6 @@ bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment)
     {
       const uInt32 offset = bankOffset + (addr & myRamMask);
 
-      access.directPokeBase = &myRAM[offset - mySize];
       access.romAccessBase = &myRomAccessBase[offset];
       access.romPeekCounter = &myRomAccessCounter[offset];
       access.romPokeCounter = &myRomAccessCounter[offset + myAccessSize];
@@ -282,7 +279,6 @@ bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment)
     fromAddr = (ROM_OFFSET + segmentOffset + myReadOffset) & ~System::PAGE_MASK;
     toAddr   = (ROM_OFFSET + segmentOffset + myReadOffset + (myBankSize >> 1)) & ~System::PAGE_MASK;
     access.type = System::PageAccessType::READ;
-    access.directPokeBase = nullptr;
 
     for(uInt16 addr = fromAddr; addr < toAddr; addr += System::PAGE_SIZE)
     {
