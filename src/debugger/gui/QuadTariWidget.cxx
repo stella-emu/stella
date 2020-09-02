@@ -30,7 +30,7 @@ QuadTariWidget::QuadTariWidget(GuiObject* boss, const GUI::Font& font,
 {
   string label = (isLeftPort() ? "Left" : "Right") + string(" (QuadTari)");
   StaticTextWidget* t = new StaticTextWidget(boss, font, x, y + 2, label);
-  QuadTari& qt = (QuadTari&)controller;
+  QuadTari& qt = static_cast<QuadTari&>(controller);
 
   x += font.getMaxCharWidth() * 2;
   y = t->getBottom() + font.getFontHeight() * 1.25;

@@ -113,6 +113,7 @@ SOURCES_CXX := \
 	$(CORE_DIR)/emucore/PointingDevice.cxx \
 	$(CORE_DIR)/emucore/Props.cxx \
 	$(CORE_DIR)/emucore/PropsSet.cxx \
+	$(CORE_DIR)/emucore/QuadTari.cxx \
 	$(CORE_DIR)/emucore/SaveKey.cxx \
 	$(CORE_DIR)/emucore/Serializer.cxx \
 	$(CORE_DIR)/emucore/Settings.cxx \
