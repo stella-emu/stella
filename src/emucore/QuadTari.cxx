@@ -15,43 +15,90 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include "OSystem.hxx"
+#include "EventHandler.hxx"
 #include "Event.hxx"
+#include "Console.hxx"
 #include "System.hxx"
 #include "TIA.hxx"
 #include "FrameBuffer.hxx"
+#include "AtariVox.hxx"
+#include "Driving.hxx"
 #include "Joystick.hxx"
+#include "SaveKey.hxx"
 #include "QuadTari.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-QuadTari::QuadTari(Jack jack, const Event& event, const System& system,
-                   const Controller::Type firstType, const Controller::Type secondType)
-  : Controller(jack, event, system, Controller::Type::QuadTari)
+QuadTari::QuadTari(Jack jack, OSystem& osystem, const System& system, const Properties& properties)
+  : Controller(jack, osystem.eventHandler().event(), system,
+               Controller::Type::QuadTari),
+    myOSystem(osystem)
 {
-  // TODO: support multiple controller types
-  switch(firstType)
-  {
-    case Controller::Type::Joystick:
-      myFirstController = make_unique<Joystick>(myJack, event, system);
-      break;
+  string first, second;
+  Controller::Type firstType = Controller::Type::Joystick,
+    secondType = Controller::Type::Joystick;
 
-    default:
-      // TODO
-      break;
-  }
-  switch(secondType)
+  if(jack == Controller::Jack::Left)
   {
-    case Controller::Type::Joystick:
-      mySecondController = make_unique<Joystick>(myJack, event, system, true); // use alternative mapping
-      break;
-
-    default:
-      // TODO
-      break;
+    first = properties.get(PropType::Controller_Left1);
+    second = properties.get(PropType::Controller_Left2);
   }
+  else
+  {
+    first = properties.get(PropType::Controller_Right1);
+    second = properties.get(PropType::Controller_Right2);
+  }
+
+  if(!first.empty())
+    firstType = Controller::getType(first);
+  if(!second.empty())
+    secondType = Controller::getType(second);
+
+  myFirstController = addController(firstType, false);
+  mySecondController = addController(secondType, true);
 
   // QuadTari auto detection setting
   setPin(AnalogPin::Five, MIN_RESISTANCE);
   setPin(AnalogPin::Nine, MAX_RESISTANCE);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+unique_ptr<Controller> QuadTari::addController(const Controller::Type type, bool second)
+{
+  switch(type)
+  {
+    case Controller::Type::AtariVox:
+    {
+      FilesystemNode nvramfile = myOSystem.nvramDir();
+      nvramfile /= "atarivox_eeprom.dat";
+      Controller::onMessageCallback callback = [&os = myOSystem](const string& msg) {
+        bool devSettings = os.settings().getBool("dev.settings");
+        if(os.settings().getBool(devSettings ? "dev.eepromaccess" : "plr.eepromaccess"))
+          os.frameBuffer().showMessage(msg);
+      };
+      return make_unique<AtariVox>(myJack, myEvent, mySystem,
+                                   myOSystem.settings().getString("avoxport"),
+                                   nvramfile, callback); // no alternative mapping here
+    }
+    case Controller::Type::Driving:
+      return make_unique<Driving>(myJack, myEvent, mySystem, second);
+
+    case Controller::Type::SaveKey:
+    {
+      FilesystemNode nvramfile = myOSystem.nvramDir();
+      nvramfile /= "savekey_eeprom.dat";
+      Controller::onMessageCallback callback = [&os = myOSystem](const string& msg) {
+        bool devSettings = os.settings().getBool("dev.settings");
+        if(os.settings().getBool(devSettings ? "dev.eepromaccess" : "plr.eepromaccess"))
+          os.frameBuffer().showMessage(msg);
+      };
+      return make_unique<SaveKey>(myJack, myEvent, mySystem,
+                                  nvramfile, callback); // no alternative mapping here
+    }
+    default:
+      // fall back to good old Joystick
+      return make_unique<Joystick>(myJack, myEvent, mySystem, second);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -711,5 +711,8 @@ bool ControllerDetector::isProbablyQuadTari(const ByteBuffer& image, size_t size
 
     return searchForBytes(image, size, signature, 5);
   }
-  return false;
+
+  uInt8 signature[] = { 0x1B, 0x1F, 0x0B, 0x0E, 0x1E, 0x0B, 0x1C, 0x13 };
+
+  return searchForBytes(image, size, signature, 8);
 }

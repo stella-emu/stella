@@ -39,9 +39,7 @@ class QuadTari: public Controller
       @param firstType   The type of the first, plugged-in controller
       @param secondType  The type of the second, plugged-in controller
     */
-    QuadTari(Jack jack, const Event& event, const System& system,
-             const Controller::Type firstType = Controller::Type::Joystick,
-             const Controller::Type secondType = Controller::Type::Joystick);
+    QuadTari(Jack jack, OSystem& osystem, const System& system, const Properties& properties);
     ~QuadTari() override = default;
 
   public:
@@ -90,6 +88,9 @@ class QuadTari: public Controller
       Controller::Type xtype, int xid, Controller::Type ytype, int yid) override;
 
   private:
+    unique_ptr<Controller> addController(const Controller::Type type, bool second);
+
+    OSystem& myOSystem;
     unique_ptr<Controller> myFirstController;
     unique_ptr<Controller> mySecondController;
 

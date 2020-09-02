@@ -618,11 +618,23 @@ unique_ptr<Console> OSystem::openConsole(const FilesystemNode& romfile, string& 
 
     CMDLINE_PROPS_UPDATE("sp", PropType::Console_SwapPorts);
     CMDLINE_PROPS_UPDATE("lc", PropType::Controller_Left);
+    CMDLINE_PROPS_UPDATE("lq1", PropType::Controller_Left1);
+    CMDLINE_PROPS_UPDATE("lq2", PropType::Controller_Left2);
     CMDLINE_PROPS_UPDATE("rc", PropType::Controller_Right);
-    const string& s = mySettings->getString("bc");
-    if(s != "") {
-      props.set(PropType::Controller_Left, s);
-      props.set(PropType::Controller_Right, s);
+    CMDLINE_PROPS_UPDATE("rq1", PropType::Controller_Right1);
+    CMDLINE_PROPS_UPDATE("rq2", PropType::Controller_Right2);
+    const string& bc = mySettings->getString("bc");
+    if(bc != "") {
+      props.set(PropType::Controller_Left, bc);
+      props.set(PropType::Controller_Right, bc);
+    }
+    const string& aq = mySettings->getString("aq");
+    if(aq != "")
+    {
+      props.set(PropType::Controller_Left1, aq);
+      props.set(PropType::Controller_Left2, aq);
+      props.set(PropType::Controller_Right1, aq);
+      props.set(PropType::Controller_Right2, aq);
     }
     CMDLINE_PROPS_UPDATE("cp", PropType::Controller_SwapPaddles);
     CMDLINE_PROPS_UPDATE("ma", PropType::Controller_MouseAxis);
