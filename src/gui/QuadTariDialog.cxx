@@ -33,8 +33,7 @@ QuadTariDialog::QuadTariDialog(GuiObject* boss, const GUI::Font& font, int max_w
 {
   const int lineHeight = font.getLineHeight(),
     fontHeight = font.getFontHeight(),
-    fontWidth = font.getMaxCharWidth(),
-    buttonHeight = font.getLineHeight() * 1.25;
+    fontWidth = font.getMaxCharWidth();
   const int VBORDER = fontHeight / 2;
   const int HBORDER = fontWidth * 1.25;
   const int VGAP = fontHeight / 4;
