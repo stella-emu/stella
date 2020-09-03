@@ -699,6 +699,11 @@ bool ControllerDetector::isProbablyLightGun(const ByteBuffer& image, size_t size
 bool ControllerDetector::isProbablyQuadTari(const ByteBuffer& image, size_t size,
                                             Controller::Jack port)
 {
+  uInt8 signatureBoth[] = { 0x1B, 0x1F, 0x0B, 0x0E, 0x1E, 0x0B, 0x1C, 0x13 }; // "QUADTARI"
+
+  if(searchForBytes(image, size, signatureBoth, 8))
+    return true;
+
   if(port == Controller::Jack::Left)
   {
     uInt8 signature[] = { 'Q', 'U', 'A', 'D', 'L' };
@@ -711,8 +716,5 @@ bool ControllerDetector::isProbablyQuadTari(const ByteBuffer& image, size_t size
 
     return searchForBytes(image, size, signature, 5);
   }
-
-  uInt8 signature[] = { 0x1B, 0x1F, 0x0B, 0x0E, 0x1E, 0x0B, 0x1C, 0x13 };
-
-  return searchForBytes(image, size, signature, 8);
+  return false;
 }

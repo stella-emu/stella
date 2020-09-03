@@ -31,6 +31,7 @@
 #include "PopUpWidget.hxx"
 #include "Props.hxx"
 #include "PropsSet.hxx"
+#include "QuadTariDialog.hxx"
 #include "TabWidget.hxx"
 #include "TIAConstants.hxx"
 #include "Widget.hxx"
@@ -236,10 +237,6 @@ GameInfoDialog::GameInfoDialog(
                                myLeftPortLabel->getTop()-1,
                                pwidth, lineHeight, ctrls, "", 0, kLeftCChanged);
   wid.push_back(myLeftPort);
-
-  myLeftQuadTari = new ButtonWidget(myTab, font, myLeftPort->getRight() + fontWidth * 2, myLeftPort->getTop() - 2,
-                                    "QuadTari" + ELLIPSIS, kLeftQTPressed);
-  wid.push_back(myLeftQuadTari);
   ypos += lineHeight + VGAP;
 
   myLeftPortDetected = new StaticTextWidget(myTab, ifont, myLeftPort->getLeft(), ypos,
@@ -252,17 +249,17 @@ GameInfoDialog::GameInfoDialog(
                                 pwidth, lineHeight, ctrls, "", 0, kRightCChanged);
   wid.push_back(myRightPort);
 
-  myRightQuadTari = new ButtonWidget(myTab, font, myRightPort->getRight() + fontWidth * 2, myRightPort->getTop() - 2,
-                                    "QuadTari" + ELLIPSIS, kRightQTPressed);
-  wid.push_back(myRightQuadTari);
+  myQuadTariButton = new ButtonWidget(myTab, font, myRightPort->getRight() + fontWidth * 4, myRightPort->getTop() - 2,
+                                    "QuadTari" + ELLIPSIS, kQuadTariPressed);
+  wid.push_back(myQuadTariButton);
 
   ypos += lineHeight + VGAP;
   myRightPortDetected = new StaticTextWidget(myTab, ifont, myRightPort->getLeft(), ypos,
                                              "Sega Genesis detected");
   ypos += ifont.getLineHeight() + VGAP + 4;
 
-  mySwapPorts = new CheckboxWidget(myTab, font, xpos + fontWidth * 2,
-                                   myLeftPortDetected->getTop()-1, "Swap ports");
+  mySwapPorts = new CheckboxWidget(myTab, font, myLeftPort->getRight() + fontWidth * 4,
+                                   myLeftPort->getTop() + 1, "Swap ports");
   wid.push_back(mySwapPorts);
 
   // EEPROM erase button for left/right controller
@@ -601,8 +598,22 @@ void GameInfoDialog::saveProperties()
   myGameProperties.set(PropType::Console_RightDiff, myRightDiffGroup->getSelected() ? "B" : "A");
 
   // Controller properties
-  myGameProperties.set(PropType::Controller_Left, myLeftPort->getSelectedTag().toString());
-  myGameProperties.set(PropType::Controller_Right, myRightPort->getSelectedTag().toString());
+  string controller = myLeftPort->getSelectedTag().toString();
+  myGameProperties.set(PropType::Controller_Left, controller);
+  if(controller != "AUTO" && controller != "QUADTARI")
+  {
+    myGameProperties.set(PropType::Controller_Left1, "");
+    myGameProperties.set(PropType::Controller_Left2, "");
+  }
+
+  controller = myRightPort->getSelectedTag().toString();
+  myGameProperties.set(PropType::Controller_Right, controller);
+  if(controller != "AUTO" && controller != "QUADTARI")
+  {
+    myGameProperties.set(PropType::Controller_Right1, "");
+    myGameProperties.set(PropType::Controller_Right2, "");
+  }
+
   myGameProperties.set(PropType::Console_SwapPorts, (mySwapPorts->isEnabled() && mySwapPorts->getState()) ? "YES" : "NO");
   myGameProperties.set(PropType::Controller_SwapPaddles, mySwapPaddles->getState() ? "YES" : "NO");
 
@@ -715,8 +726,12 @@ void GameInfoDialog::updateControllerStates()
   if(type == Controller::Type::Unknown)
   {
     if(instance().hasConsole())
+    {
       label = (!swapPorts ? instance().console().leftController().name()
-               : instance().console().rightController().name()) + " detected";
+               : instance().console().rightController().name() + " detected");
+      if(BSPF::startsWithIgnoreCase(label, "QUADTARI"))
+        label = "QuadTari detected"; // remove plugged-in controller names
+    }
     else if(autoDetect)
       label = ControllerDetector::detectName(image, size, type,
                                              !swapPorts ? Controller::Jack::Left : Controller::Jack::Right,
@@ -730,8 +745,12 @@ void GameInfoDialog::updateControllerStates()
   if(type == Controller::Type::Unknown)
   {
     if(instance().hasConsole())
+    {
       label = (!swapPorts ? instance().console().rightController().name()
                : instance().console().leftController().name()) + " detected";
+      if(BSPF::startsWithIgnoreCase(label, "QUADTARI"))
+        label = "QuadTari detected"; // remove plugged-in controller names
+    }
     else if(autoDetect)
       label = ControllerDetector::detectName(image, size, type,
                                              !swapPorts ? Controller::Jack::Right : Controller::Jack::Left,
@@ -770,8 +789,10 @@ void GameInfoDialog::updateControllerStates()
   myRightPortLabel->setEnabled(enableSelectControl);
   myLeftPort->setEnabled(enableSelectControl);
   myRightPort->setEnabled(enableSelectControl);
-  myLeftQuadTari->setEnabled(BSPF::startsWithIgnoreCase(contrLeft, "QUADTARI"));
-  myRightQuadTari->setEnabled(BSPF::startsWithIgnoreCase(contrRight, "QUADTARI"));
+  myQuadTariButton->setEnabled(BSPF::startsWithIgnoreCase(contrLeft, "QUADTARI") ||
+                               BSPF::startsWithIgnoreCase(contrRight, "QUADTARI") ||
+                               BSPF::startsWithIgnoreCase(myLeftPortDetected->getLabel(), "QUADTARI") ||
+                               BSPF::startsWithIgnoreCase(myRightPortDetected->getLabel(), "QUADTARI"));
 
   mySwapPorts->setEnabled(enableSelectControl);
   mySwapPaddles->setEnabled(enablePaddles);
@@ -843,7 +864,7 @@ void GameInfoDialog::saveCurrentPropertiesToDisk()
 void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
                                    int data, int id)
 {
-  switch (cmd)
+  switch(cmd)
   {
     case GuiObject::kOKCmd:
       saveConfig();
@@ -871,12 +892,22 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
       updateControllerStates();
       break;
 
-    case kLeftQTPressed:
-      break;
+    case kQuadTariPressed:
+    {
+      bool enableLeft =
+        BSPF::startsWithIgnoreCase(myLeftPort->getSelectedTag().toString(), "QUADTARI") ||
+        BSPF::startsWithIgnoreCase(myLeftPortDetected->getLabel(), "QUADTARI");
+      bool enableRight =
+        BSPF::startsWithIgnoreCase(myRightPort->getSelectedTag().toString(), "QUADTARI") ||
+        BSPF::startsWithIgnoreCase(myRightPortDetected->getLabel(), "QUADTARI");
 
-    case kRightQTPressed:
+      if(!myQuadTariDialog)
+        myQuadTariDialog = make_unique<QuadTariDialog>
+          (this, _font, _font.getMaxCharWidth() * 37, _font.getFontHeight() * 8,
+           myGameProperties);
+      myQuadTariDialog->show(enableLeft, enableRight);
       break;
-
+    }
     case kEEButtonPressed:
       eraseEEPROM();
       break;

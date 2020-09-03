@@ -37,7 +37,7 @@
     are no longer corrupted/cut off.  This includes properly supporting the
     2600-daptor II, which is flashable to an AVox-USB converter.
 
-  * Added QuadTari controller support for josticks (TODO: doc, settings etc.)
+  * Added QuadTari controller support for several controllers (TODO: docs)
 
   * Added option to select the audio device.
 
