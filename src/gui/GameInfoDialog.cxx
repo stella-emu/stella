@@ -395,6 +395,11 @@ GameInfoDialog::GameInfoDialog(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+GameInfoDialog::~GameInfoDialog()
+{
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::loadConfig()
 {
   if(instance().hasConsole())

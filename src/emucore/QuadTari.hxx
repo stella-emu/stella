@@ -26,23 +26,24 @@ class Event;
 
   @author  Thomas Jentzsch
 */
-class QuadTari: public Controller
+class QuadTari : public Controller
 {
   friend class QuadTariWidget;
   public:
     /**
       Create a QuadTari controller plugged into the specified jack
 
-      @param jack        The jack the controller is plugged into
-      @param event       The event object to use for events
-      @param system      The system using this controller
-      @param firstType   The type of the first, plugged-in controller
-      @param secondType  The type of the second, plugged-in controller
+      @param jack       The jack the controller is plugged into
+      @param osystem    The OSystem object to use
+      @param system     The system using this controller
+      @param properties The properties to use for the current ROM
     */
     QuadTari(Jack jack, OSystem& osystem, const System& system, const Properties& properties);
     ~QuadTari() override = default;
 
   public:
+     using Controller::read;
+
     /**
       Read the value of the specified digital pin for this controller.
 
