@@ -26,6 +26,7 @@ class StaticTextWidget;
 class RadioButtonGroup;
 class TabWidget;
 class SliderWidget;
+class QuadTariDialog;
 
 #include "Dialog.hxx"
 #include "Command.hxx"
@@ -87,8 +88,7 @@ class GameInfoDialog : public Dialog, public CommandSender
     StaticTextWidget* myLeftPortDetected{nullptr};
     PopUpWidget*      myRightPort{nullptr};
     StaticTextWidget* myRightPortDetected{nullptr};
-    ButtonWidget*     myLeftQuadTari{nullptr};
-    ButtonWidget*     myRightQuadTari{nullptr};
+    ButtonWidget*     myQuadTariButton{nullptr};
     CheckboxWidget*   mySwapPorts{nullptr};
     CheckboxWidget*   mySwapPaddles{nullptr};
     StaticTextWidget* myEraseEEPROMLabel{nullptr};
@@ -101,6 +101,9 @@ class GameInfoDialog : public Dialog, public CommandSender
     PopUpWidget*      myMouseX{nullptr};
     PopUpWidget*      myMouseY{nullptr};
     SliderWidget*     myMouseRange{nullptr};
+
+    // Allow assigning the four QuadTari controllers
+    unique_ptr<QuadTariDialog> myQuadTariDialog;
 
     // Cartridge properties
     EditTextWidget*   myName{nullptr};
@@ -116,8 +119,7 @@ class GameInfoDialog : public Dialog, public CommandSender
       kPPBlendChanged  = 'PBch',
       kLeftCChanged    = 'LCch',
       kRightCChanged   = 'RCch',
-      kLeftQTPressed   = 'LQTp',
-      kRightQTPressed  = 'RQTp',
+      kQuadTariPressed = 'QTpr',
       kMCtrlChanged    = 'MCch',
       kEEButtonPressed = 'EEgb',
       kPXCenterChanged = 'Pxch',

@@ -65,17 +65,18 @@ QuadTari::QuadTari(Jack jack, OSystem& osystem, const System& system, const Prop
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 unique_ptr<Controller> QuadTari::addController(const Controller::Type type, bool second)
 {
+  FilesystemNode nvramfile = myOSystem.nvramDir();
+  Controller::onMessageCallback callback = [&os = myOSystem](const string& msg) {
+    bool devSettings = os.settings().getBool("dev.settings");
+    if(os.settings().getBool(devSettings ? "dev.eepromaccess" : "plr.eepromaccess"))
+      os.frameBuffer().showMessage(msg);
+  };
+
   switch(type)
   {
     case Controller::Type::AtariVox:
     {
-      FilesystemNode nvramfile = myOSystem.nvramDir();
       nvramfile /= "atarivox_eeprom.dat";
-      Controller::onMessageCallback callback = [&os = myOSystem](const string& msg) {
-        bool devSettings = os.settings().getBool("dev.settings");
-        if(os.settings().getBool(devSettings ? "dev.eepromaccess" : "plr.eepromaccess"))
-          os.frameBuffer().showMessage(msg);
-      };
       return make_unique<AtariVox>(myJack, myEvent, mySystem,
                                    myOSystem.settings().getString("avoxport"),
                                    nvramfile, callback); // no alternative mapping here
@@ -85,13 +86,7 @@ unique_ptr<Controller> QuadTari::addController(const Controller::Type type, bool
 
     case Controller::Type::SaveKey:
     {
-      FilesystemNode nvramfile = myOSystem.nvramDir();
       nvramfile /= "savekey_eeprom.dat";
-      Controller::onMessageCallback callback = [&os = myOSystem](const string& msg) {
-        bool devSettings = os.settings().getBool("dev.settings");
-        if(os.settings().getBool(devSettings ? "dev.eepromaccess" : "plr.eepromaccess"))
-          os.frameBuffer().showMessage(msg);
-      };
       return make_unique<SaveKey>(myJack, myEvent, mySystem,
                                   nvramfile, callback); // no alternative mapping here
     }
