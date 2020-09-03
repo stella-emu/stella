@@ -249,21 +249,20 @@ GameInfoDialog::GameInfoDialog(
                                 pwidth, lineHeight, ctrls, "", 0, kRightCChanged);
   wid.push_back(myRightPort);
 
-  myQuadTariButton = new ButtonWidget(myTab, font, myRightPort->getRight() + fontWidth * 4, myRightPort->getTop() - 2,
-                                    "QuadTari" + ELLIPSIS, kQuadTariPressed);
-  wid.push_back(myQuadTariButton);
-
   ypos += lineHeight + VGAP;
   myRightPortDetected = new StaticTextWidget(myTab, ifont, myRightPort->getLeft(), ypos,
                                              "Sega Genesis detected");
-  ypos += ifont.getLineHeight() + VGAP + 4;
 
   mySwapPorts = new CheckboxWidget(myTab, font, myLeftPort->getRight() + fontWidth * 4,
                                    myLeftPort->getTop() + 1, "Swap ports");
   wid.push_back(mySwapPorts);
 
+  myQuadTariButton = new ButtonWidget(myTab, font, myRightPort->getRight() + fontWidth * 4, myRightPort->getTop() - 2,
+                                      " QuadTari" + ELLIPSIS + " ", kQuadTariPressed);
+  wid.push_back(myQuadTariButton);
+
   // EEPROM erase button for left/right controller
-  //ypos += lineHeight + VGAP + 4;
+  ypos += ifont.getLineHeight() + VGAP + 4;
   pwidth = myRightPort->getWidth();   //font.getStringWidth("Erase EEPROM ") + 23;
   myEraseEEPROMLabel = new StaticTextWidget(myTab, font, HBORDER, ypos, "AtariVox/SaveKey ");
   myEraseEEPROMButton = new ButtonWidget(myTab, font, myEraseEEPROMLabel->getRight(), ypos - 4,
@@ -728,7 +727,7 @@ void GameInfoDialog::updateControllerStates()
     if(instance().hasConsole())
     {
       label = (!swapPorts ? instance().console().leftController().name()
-               : instance().console().rightController().name() + " detected");
+               : instance().console().rightController().name()) + " detected";
       if(BSPF::startsWithIgnoreCase(label, "QUADTARI"))
         label = "QuadTari detected"; // remove plugged-in controller names
     }

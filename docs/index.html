@@ -4079,7 +4079,7 @@ Ms Pac-Man (Stella extended codes):
       (for more information about bank-switching see Kevin Horton's <a href="http://kevtris.org/files/sizes.txt">2600 bankswitching
       document</a> or the documentation in each cartridge's source code file) types. Types marked
       as (&#185;) do currently have no reliable auto-detection, those marked as (&#178;)
-      are not fully supported in the debugger:
+      are not fully supported in the debugger.
       <table cellpadding="2" border="1">
         <tr><th>&nbsp;Type&nbsp;</th><th>Description</th><th>File Extension<br>(to force type)</th></tr>
         <tr><td>0840 </td><td>8K ECONObanking </td><td>.084, .0840</td></tr>
@@ -4226,11 +4226,6 @@ Ms Pac-Man (Stella extended codes):
       <td VALIGN="TOP">
         <i>Controller.Left</i><br>
         <i>Controller.Right</i><br>
-        <br>For QuadTari:<br>
-        <i>Controller.Left1</i><br>
-        <i>Controller.Left2</i><br>
-        <i>Controller.Right1</i><br>
-        <i>Controller.Right2</i><br>
       </td>
       <td>Indicates what type of controller the left and right player
       uses. The value must be either <b>Auto</b> or one of the following types. Types marked
@@ -4254,7 +4249,7 @@ Ms Pac-Man (Stella extended codes):
         <tr><td>Lightgun</td><td>Atari XG-1 compatible Light Gun</td></tr>
         <tr><td>Mindlink &#185</td><td>Mindlink controller.</td></tr>
         <tr><td>KidVid &#185</td><td>KidVid controller, limited support (8, 9 and 0 start the games).</td></tr>
-        <tr><td>QuadTari</td><td>QuadTari controller, limited support (Joystick, Driving controller, SaveKey and AtariVox only).</td></tr>
+        <tr><td>QuadTari</td><td><a href="#Quadtari">QuadTari</a> controller, limited support (see below).</td></tr>
       </table></td>
     </tr>
 
@@ -4313,6 +4308,30 @@ Ms Pac-Man (Stella extended codes):
   In the latter case, XY indicates
         how to use the X/Y axis (ie, 02 is paddle0/paddle2).
 -->
+  </table>
+  </br>
+
+  <p>
+    <a name="Quadtari"><img src="graphics/options_gameinfo_quadtari.png"></a>
+  </p>
+  <table CELLSPACING="10">
+    <tr>
+      <td VALIGN="TOP">
+        <i>Controller.Left1</i><br>
+        <i>Controller.Left2</i><br>
+        <i>Controller.Right1</i><br>
+        <i>Controller.Right2</i><br>
+      </td>
+      <td>Indicates which controllers are plugged into one of the four QuadTari ports.
+      The value must be one of the following types.
+      <table cellpadding="2" border="1">
+        <tr><th>&nbsp;Type&nbsp;</th><th>Description</th></tr>
+        <tr><td>Joystick</td><td>Atari's famous black joystick that was originally included with the system.</td></tr>
+        <tr><td>Driving</td><td>Looks like a paddle, but allows 360° movement. Only one unit per connector, unlike paddles which were sold in pairs.</td></tr>
+        <tr><td><a href="http://atariage.com/store/index.php?l=product_list&c=98">AtariVox</a></td><td>A SpeakJet based unlimited-vocabulary speech/sound synthesizer with 32K EEPROM.</td></tr>
+        <tr><td>SaveKey</td><td>A 32K EEPROM for saving high scores, etc. (the EEPROM portion of an AtariVox).</td></tr>
+      </table></td>
+    </tr>
   </table>
   </br>
 
