@@ -103,7 +103,7 @@ bool QuadTari::read(DigitalPin pin)
   // can switch the controller multiple times per frame
   // (we can't just read 60 times per second in the ::update() method)
 
-  constexpr int MIN_CYCLES = 20 * 76; // minimal cycles required for stable input switch (TODO: define cycles)
+  constexpr int MIN_CYCLES = 76; // minimal cycles required for stable input switch (just to be safe)
   bool readFirst;
 
   if(mySystem.tia().dumpPortsCycles() < MIN_CYCLES)
