@@ -99,7 +99,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
 
   // SWCHB bits in 'peek' mode
   xpos = 10;  ypos += lineHeight + 5;
-  CREATE_IO_REGS("SWCHB(R)", mySWCHBReadBits, 0, false)
+  CREATE_IO_REGS("SWCHB(R)", mySWCHBReadBits, kSWCHBRBitsID, true)
 
   // Timer registers (R/W)
   static constexpr std::array<const char*, 4> writeNames = {
@@ -416,6 +416,17 @@ void RiotWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
           rport.setPin(Controller::DigitalPin::Two,   value & 0b00000010);
           rport.setPin(Controller::DigitalPin::Three, value & 0b00000100);
           rport.setPin(Controller::DigitalPin::Four,  value & 0b00001000);
+          break;
+        }
+        case kSWCHBRBitsID:
+        {
+          value = Debugger::get_bits(mySWCHBReadBits->getState());
+
+          riot.reset( value & 0b00000001);
+          riot.select(value & 0b00000010);
+          riot.tvType(value & 0b00001000);
+          riot.diffP0(value & 0b01000000);
+          riot.diffP1(value & 0b10000000);
           break;
         }
         default:
