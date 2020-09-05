@@ -195,6 +195,7 @@ void StellaSettingsDialog::addGameOptions(WidgetArray& wid, int& xpos, int& ypos
   VarList::push_back(ctrls, "AtariMouse", "ATARIMOUSE");
   VarList::push_back(ctrls, "Trakball", "TRAKBALL");
   VarList::push_back(ctrls, "Sega Genesis", "GENESIS");
+  VarList::push_back(ctrls, "QuadTari", "QUADTARI");
 
   int pwidth = _font.getStringWidth("Sega Genesis");
   myLeftPortLabel = new StaticTextWidget(this, _font, xpos, ypos + 1, "Left port  ");
