@@ -39,6 +39,8 @@
 
   * Added option to select the audio device.
 
+  * Further enhanced UA bankswitching to support more Brazilian carts.
+
   * Added option to display detected settings info when a ROM is loaded.
 
   * Added another oddball TIA glitch option for delayed background color.
