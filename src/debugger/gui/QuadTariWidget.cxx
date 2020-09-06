@@ -19,6 +19,7 @@
 #include "Console.hxx"
 #include "TIA.hxx"
 #include "QuadTari.hxx"
+#include "DrivingWidget.hxx"
 #include "JoystickWidget.hxx"
 #include "NullControlWidget.hxx"
 #include "QuadTariWidget.hxx"
@@ -28,40 +29,54 @@ QuadTariWidget::QuadTariWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, Controller& controller)
   : ControllerWidget(boss, font, x, y, controller)
 {
+  const int fontWidth = font.getMaxCharWidth(),
+    fontHeight = font.getFontHeight();
   string label = (isLeftPort() ? "Left" : "Right") + string(" (QuadTari)");
   StaticTextWidget* t = new StaticTextWidget(boss, font, x, y + 2, label);
   QuadTari& qt = static_cast<QuadTari&>(controller);
-
-  x += font.getMaxCharWidth() * 2;
-  y = t->getBottom() + font.getFontHeight() * 1.25;
 
   // TODO: support multiple controller types
   switch(qt.myFirstController->type())
   {
     case Controller::Type::Joystick:
+      x += fontWidth * 2;
+      y = t->getBottom() + fontHeight;
       myFirstControl = new JoystickWidget(boss, font, x, y, *qt.myFirstController, true);
-      x = myFirstControl->getRight() - font.getMaxCharWidth() * 8;
+      break;
+
+    case Controller::Type::Driving:
+      y = t->getBottom() + font.getFontHeight() * 1;
+      myFirstControl = new DrivingWidget(boss, font, x, y, *qt.myFirstController, true);
       break;
 
     default:
-      myFirstControl = new NullControlWidget(boss, font, x, y, *qt.myFirstController);
-      x += font.getMaxCharWidth() * 8;
+      y = t->getBottom() + font.getFontHeight() * 1.25;
+      myFirstControl = new NullControlWidget(boss, font, x, y, *qt.myFirstController, true);
       break;
   }
 
+  x = t->getLeft() + fontWidth * 10;
   switch(qt.mySecondController->type())
   {
     case Controller::Type::Joystick:
+      x += fontWidth * 2;
+      y = t->getBottom() + fontHeight;
       mySecondControl = new JoystickWidget(boss, font, x, y, *qt.mySecondController, true);
       break;
 
+    case Controller::Type::Driving:
+      y = t->getBottom() + font.getFontHeight();
+      myFirstControl = new DrivingWidget(boss, font, x, y, *qt.mySecondController, true);
+      break;
+
     default:
-      mySecondControl = new NullControlWidget(boss, font, x, y, *qt.mySecondController);
+      y = t->getBottom() + font.getFontHeight() * 1.25;
+      mySecondControl = new NullControlWidget(boss, font, x, y, *qt.mySecondController, true);
       break;
   }
 
   myPointer = new StaticTextWidget(boss, font,
-                                   x - font.getMaxCharWidth() * 5, y, "  ");
+                                   t->getLeft() + font.getMaxCharWidth() * 7, y, "  ");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

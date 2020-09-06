@@ -20,37 +20,52 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DrivingWidget::DrivingWidget(GuiObject* boss, const GUI::Font& font,
-                             int x, int y, Controller& controller)
+                             int x, int y, Controller& controller, bool embedded)
   : ControllerWidget(boss, font, x, y, controller)
 {
   const string& label = getHeader();
 
   const int fontHeight = font.getFontHeight(),
-            bwidth = font.getStringWidth("Gray code +") + 10,
+            fontWidth = font.getMaxCharWidth(),
             bheight = font.getLineHeight() + 4;
   int xpos = x, ypos = y, lwidth = font.getStringWidth("Right (Driving)");
   StaticTextWidget* t;
 
-  t = new StaticTextWidget(boss, font, xpos, ypos+2, lwidth,
-                           fontHeight, label, TextAlign::Left);
+  if(embedded)
+  {
+    const int bwidth = font.getStringWidth("GC+ ");
 
-  ypos += t->getHeight() + 20;
-  myGrayUp = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
-                              "Gray code +", kGrayUpCmd);
+    myGrayUp = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
+                                "GC+", kGrayUpCmd);
+
+    ypos += myGrayUp->getHeight() + 5;
+    myGrayDown = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
+                                  "GC-", kGrayDownCmd);
+  }
+  else
+  {
+    const int bwidth = font.getStringWidth("Gray code +") + 10;
+    t = new StaticTextWidget(boss, font, xpos, ypos + 2, lwidth,
+                             fontHeight, label, TextAlign::Left);
+
+    ypos += t->getHeight() + 20;
+    myGrayUp = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
+                                "Gray code +", kGrayUpCmd);
+
+    ypos += myGrayUp->getHeight() + 5;
+    myGrayDown = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
+                                  "Gray code -", kGrayDownCmd);
+  }
   myGrayUp->setTarget(this);
-
-  ypos += myGrayUp->getHeight() + 5;
-  myGrayDown = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
-                                "Gray code -", kGrayDownCmd);
   myGrayDown->setTarget(this);
 
-  xpos += myGrayDown->getWidth() + 10;  ypos -= 10;
+  xpos += myGrayDown->getWidth() + fontWidth;  ypos -= 10;
   myGrayValue = new DataGridWidget(boss, font, xpos, ypos,
                                    1, 1, 2, 8, Common::Base::Fmt::_16);
   myGrayValue->setTarget(this);
   myGrayValue->setEditable(false);
 
-  xpos = x + 30;  ypos += myGrayDown->getHeight() + 20;
+  xpos = x + fontWidth*3;  ypos += myGrayDown->getHeight() + 20;
   myFire = new CheckboxWidget(boss, font, xpos, ypos, "Fire", kFireCmd);
   myFire->setTarget(this);
 }

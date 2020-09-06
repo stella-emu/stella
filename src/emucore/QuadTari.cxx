@@ -25,18 +25,20 @@
 #include "AtariVox.hxx"
 #include "Driving.hxx"
 #include "Joystick.hxx"
+#include "Paddles.hxx"
 #include "SaveKey.hxx"
 #include "QuadTari.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-QuadTari::QuadTari(Jack jack, OSystem& osystem, const System& system, const Properties& properties)
+QuadTari::QuadTari(Jack jack, const OSystem& osystem, const System& system, const Properties& properties)
   : Controller(jack, osystem.eventHandler().event(), system,
                Controller::Type::QuadTari),
-    myOSystem(osystem)
+    myOSystem(osystem),
+    myProperties(properties)
 {
-  string first, second;
   Controller::Type firstType = Controller::Type::Joystick,
     secondType = Controller::Type::Joystick;
+  string first, second;
 
   if(jack == Controller::Jack::Left)
   {
@@ -74,6 +76,16 @@ unique_ptr<Controller> QuadTari::addController(const Controller::Type type, bool
 
   switch(type)
   {
+    case Controller::Type::Paddles:
+    {
+      // Check if we should swap the paddles plugged into a jack
+      bool swapPaddles = myProperties.get(PropType::Controller_SwapPaddles) == "YES";
+
+      return make_unique<Paddles>(myJack, myEvent, mySystem, swapPaddles, false, false);
+    }
+    case Controller::Type::Driving:
+      return make_unique<Driving>(myJack, myEvent, mySystem, second);
+
     case Controller::Type::AtariVox:
     {
       nvramfile /= "atarivox_eeprom.dat";
@@ -81,9 +93,6 @@ unique_ptr<Controller> QuadTari::addController(const Controller::Type type, bool
                                    myOSystem.settings().getString("avoxport"),
                                    nvramfile, callback); // no alternative mapping here
     }
-    case Controller::Type::Driving:
-      return make_unique<Driving>(myJack, myEvent, mySystem, second);
-
     case Controller::Type::SaveKey:
     {
       nvramfile /= "savekey_eeprom.dat";

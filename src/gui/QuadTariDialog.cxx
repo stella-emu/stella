@@ -47,7 +47,7 @@ QuadTariDialog::QuadTariDialog(GuiObject* boss, const GUI::Font& font, int max_w
   ctrls.clear();
   //VarList::push_back(ctrls, "Auto-detect", "AUTO");
   VarList::push_back(ctrls, "Joystick", "JOYSTICK");
-  //VarList::push_back(ctrls, "Paddles", "PADDLES");
+  VarList::push_back(ctrls, "Paddles", "PADDLES");
   //VarList::push_back(ctrls, "Paddles_IAxis", "PADDLES_IAXIS");
   //VarList::push_back(ctrls, "Paddles_IAxDr", "PADDLES_IAXDR");
   //VarList::push_back(ctrls, "BoosterGrip", "BOOSTERGRIP");
@@ -64,7 +64,7 @@ QuadTariDialog::QuadTariDialog(GuiObject* boss, const GUI::Font& font, int max_w
   //VarList::push_back(ctrls, "MindLink", "MINDLINK");
   //VarList::push_back(ctrls, "QuadTari", "QUADTARI");
 
-  int pwidth = font.getStringWidth("Joystick12"); // looks better overall
+  int pwidth = font.getStringWidth("Joystick12"); // a bit wider looks better overall
 
   myLeftPortLabel = new StaticTextWidget(this, font, xpos, ypos + 1, "Left port");
 

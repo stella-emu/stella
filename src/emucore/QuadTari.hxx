@@ -38,7 +38,7 @@ class QuadTari : public Controller
       @param system     The system using this controller
       @param properties The properties to use for the current ROM
     */
-    QuadTari(Jack jack, OSystem& osystem, const System& system, const Properties& properties);
+    QuadTari(Jack jack, const OSystem& osystem, const System& system, const Properties& properties);
     ~QuadTari() override = default;
 
   public:
@@ -91,7 +91,8 @@ class QuadTari : public Controller
   private:
     unique_ptr<Controller> addController(const Controller::Type type, bool second);
 
-    OSystem& myOSystem;
+    const OSystem& myOSystem;
+    const Properties& myProperties;
     unique_ptr<Controller> myFirstController;
     unique_ptr<Controller> mySecondController;
 
