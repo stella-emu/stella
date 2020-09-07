@@ -1784,7 +1784,7 @@
     </tr>
 
     <tr>
-      <td>Switch mouse between controller emulation modes</br>(see <b>Game Properties - <a href="#Controller">Controller</a></b>)</td>
+      <td>Switch mouse between controller emulation modes</br>(see <b><a href="#Controller">Controller Properties</a></b>)</td>
       <td>Control + 0</td>
       <td>Control + 0</td>
     </tr>
@@ -1870,16 +1870,16 @@
     <tr><td>End</td><td>Move cursor to end of line</td></tr>
     <tr><td>Delete</td><td>Remove character to right of cursor</td></tr>
     <tr><td>Backspace</td><td>Remove character to left of cursor</td></tr>
-    <tr><td>Control-a</td><td>Same function as 'Home'</td></tr>
-    <tr><td>Control-e</td><td>Same function as 'End'</td></tr>
-    <tr><td>Control-d</td><td>Same function as 'Delete'</td></tr>
-    <tr><td>Control-k</td><td>Remove all characters from cursor to end of line</td></tr>
-    <tr><td>Control-u</td><td>Remove all characters from cursor to beginning of line</td></tr>
-    <tr><td>Control-w</td><td>Remove entire word to left of cursor</td></tr>
-    <tr><td>Control-Left</td><td>Move cursor to beginning of word to the left</td></tr>
-    <tr><td>Control-Right</td><td>Move cursor to beginning of word to the right</td></tr>
-    <tr><td>Control-c</td><td>Copy entire line to clipboard (not complete)</td></tr>
-    <tr><td>Control-v</td><td>Paste clipboard contents (not complete)</td></tr>
+    <tr><td>Control + a</td><td>Same function as 'Home'</td></tr>
+    <tr><td>Control + e</td><td>Same function as 'End'</td></tr>
+    <tr><td>Control + d</td><td>Same function as 'Delete'</td></tr>
+    <tr><td>Control + k</td><td>Remove all characters from cursor to end of line</td></tr>
+    <tr><td>Control + u</td><td>Remove all characters from cursor to beginning of line</td></tr>
+    <tr><td>Control + w</td><td>Remove entire word to left of cursor</td></tr>
+    <tr><td>Control + Left</td><td>Move cursor to beginning of word to the left</td></tr>
+    <tr><td>Control + Right</td><td>Move cursor to beginning of word to the right</td></tr>
+    <tr><td>Control + c</td><td>Copy entire line to clipboard (not complete)</td></tr>
+    <tr><td>Control + v</td><td>Paste clipboard contents (not complete)</td></tr>
   </table>
   </blockquote></br>
 
@@ -2410,12 +2410,12 @@
 
     <tr>
       <td><pre>-modcombo &lt;1|0&gt;</pre></td>
-      <td>Use modifier(Shift/Alt/Control)-x key combos. This is normally enabled,
-      since the 'Quit' command is tied to 'Control-q'. However, there are times
+      <td>Use modifier(Shift/Alt/Control) + x key combos. This is normally enabled,
+      since the 'Quit' command is tied to 'Control + q'. However, there are times
       when you want to disable them.</br>
       E.g. a 2-player game is using either the 'f' or 'r' keys for movement,
       and pressing Control (for Fire) will perform an unwanted action
-      associated with Control-r or Control-f default keys.</td>
+      associated with 'Control + r' or 'Control + f' default keys.</td>
     </tr>
 
     <tr>
@@ -2769,7 +2769,7 @@
 
     <tr>
       <td><pre>-bs &lt;type&gt;</pre></td>
-      <td>Set "Cart.Type" property. See the <a href="#Properties"><b>Game Properties</b></a> section
+      <td>Set "Cart.Type" property. See the <a href="#Emulation"><b>Emulation Properties</b></a> section
         for valid types.</td>
     </tr>
 
@@ -2810,51 +2810,51 @@
 
     <tr>
       <td><pre>-lc &lt;type&gt;</pre></td>
-      <td>Set "Controller.Left" property. See the <a href="#Properties"><b>Game Properties</b></a>
+      <td>Set "Controller.Left" property. See the <a href="#Controller"><b>Controller Properties</b></a>
         section for valid types.</td>
     </tr>
 
     <tr>
       <td><pre>-lq1 &lt;type&gt;</pre></td>
-      <td>Set "Controller.Left1" property for QuadTari. See the <a href="#Properties"><b>Game Properties</b></a>
+      <td>Set "Controller.Left1" property for QuadTari. See the <a href="#Quadtari"><b>QuadTari Properties</b></a>
         section for valid types.</td>
     </tr>
 
     <tr>
       <td><pre>-lq2 &lt;type&gt;</pre></td>
-      <td>Set "Controller.Left2" property for QuadTari. See the <a href="#Properties"><b>Game Properties</b></a>
+      <td>Set "Controller.Left2" property for QuadTari. See the <a href="#Quadtari"><b>QuadTari Properties</b></a>
         section for valid types.</td>
     </tr>
 
     <tr>
       <td><pre>-rc &lt;type&gt;</pre></td>
-      <td>Set "Controller.Right" property. See the <a href="#Properties"><b>Game Properties</b></a>
+      <td>Set "Controller.Right" property. See the <a href="#Controller"><b>Controller Properties</b></a>
         section for valid types.</td>
     </tr>
 
 
     <tr>
       <td><pre>-rq1 &lt;type&gt;</pre></td>
-      <td>Set "Controller.Right1" property for QuadTari. See the <a href="#Properties"><b>Game Properties</b></a>
+      <td>Set "Controller.Right1" property for QuadTari. See the <a href="#Quadtari"><b>QuadTari Properties</b></a>
         section for valid types.</td>
     </tr>
 
     <tr>
       <td><pre>-rq2 &lt;type&gt;</pre></td>
-      <td>Set "Controller.Right2" property for QuadTari. See the <a href="#Properties"><b>Game Properties</b></a>
+      <td>Set "Controller.Right2" property for QuadTari. See the <a href="#Quadtari"><b>QuadTari Properties</b></a>
         section for valid types.</td>
     </tr>
 
     <tr>
       <td><pre>-bc &lt;type&gt;</pre></td>
       <td>Set both "Controller.Left" and "Controller.Right" properties.
-        See the <a href="#Properties"><b>Game Properties</b></a> section for valid types.</td>
+        See the <a href="#Controller"><b>Controller Properties</b></a> section for valid types.</td>
     </tr>
 
     <tr>
       <td><pre>-aq &lt;type&gt;</pre></td>
       <td>Set "Controller.Left1", "Controller.Left2", "Controller.Right1" and "Controller.Right2" properties for QuadTari.
-        See the <a href="#Properties"><b>Game Properties</b></a> section for valid types.</td>
+        See the <a href="#Quadtari"><b>QuadTari Properties</b></a> section for valid types.</td>
     </tr>
 
     <tr>
@@ -2875,12 +2875,12 @@
     <tr>
       <td><pre>-ma &lt;Auto|XY&gt;</pre></td>
       <td>Set "Controller.MouseAxis" property.
-        See the <a href="#Properties"><b>Game Properties</b></a> section for valid types.</td>
+        See the <a href="#Controller"><b>Controller Properties</b></a> section for valid types.</td>
     </tr>
 
     <tr>
       <td><pre>-format &lt;format&gt;</pre></td>
-      <td>Set "Display.Format" property. See the <a href="#Properties"><b>Game Properties</b></a> section
+      <td>Set "Display.Format" property. See the <a href="#Emulation"><b>Emulation Properties</b></a> section
         for valid formats.</td></td>
     </tr>
 
@@ -3487,7 +3487,7 @@
     showing <i>all</i> files (with no restriction on file name).</li>
 
     <br><li><b>Reload listing</b>: Selecting this performs a reload of the
-    current listing. It is an alternative to pressing the Control-r
+    current listing. It is an alternative to pressing the 'Control + r'
     key combo.</li>
   </ol></p>
   </blockquote></br>
@@ -3554,7 +3554,7 @@
     <li>Any other devices will be ignored.</li>
 
     <li>The assignment ordering of Stelladaptor/2600-daptor to port can be redefined with
-    'saport' (see description in <a href="#CommandLine"><b>Using the Command Line</b></a>) and dynamically with the 'Control-1' key
+    'saport' (see description in <a href="#CommandLine"><b>Using the Command Line</b></a>) and dynamically with the 'Control + 1' key
     combo.</li>
   </ul>
   </blockquote></br>
@@ -4067,8 +4067,9 @@ Ms Pac-Man (Stella extended codes):
   <p>Each block in a property file consists of a set of properties for a single
   game. Stella supports the properties described below:</p>
 
+  <h3><a name="Emulation"><b>Emulation Properties</b></a></h3>
   <p>
-    <a><img src="graphics/options_gameinfo_emulation.png"></a>
+    <img src="graphics/options_gameinfo_emulation.png">
   </p>
   <table CELLSPACING="10">
 
@@ -4193,8 +4194,9 @@ Ms Pac-Man (Stella extended codes):
   <p><b>Note:</b> Items marked as '*' are deprecated, and will probably be
   removed in a future release.</p>
 -->
+  <h3><a name="Consoler"><b>Console Properties</b></a></h3>
   <p>
-    <a><img src="graphics/options_gameinfo_console.png"></a>
+    <img src="graphics/options_gameinfo_console.png">
   </p>
 
   <table CELLSPACING="10">
@@ -4218,8 +4220,9 @@ Ms Pac-Man (Stella extended codes):
   </table>
   </br>
 
+  <h3><a name="Controller"><b>Controller Properties</b></a></h3>
   <p>
-    <a name="Controller"><img src="graphics/options_gameinfo_controller.png"></a>
+    <img src="graphics/options_gameinfo_controller.png">
   </p>
   <table CELLSPACING="10">
     <tr>
@@ -4311,8 +4314,9 @@ Ms Pac-Man (Stella extended codes):
   </table>
   </br>
 
+  <h3><a name="Quadtari"><b>QuadTari Properties</b></h3></a>
   <p>
-    <a name="Quadtari"><img src="graphics/options_gameinfo_quadtari.png"></a>
+    <img src="graphics/options_gameinfo_quadtari.png">
   </p>
   <table CELLSPACING="10">
     <tr>
@@ -4327,6 +4331,7 @@ Ms Pac-Man (Stella extended codes):
       <table cellpadding="2" border="1">
         <tr><th>&nbsp;Type&nbsp;</th><th>Description</th></tr>
         <tr><td>Joystick</td><td>Atari's famous black joystick that was originally included with the system.</td></tr>
+        <tr><td>Paddles </td><td>Standard paddle controllers, only (up to 8) fire buttons supported for QuadTari.</td></tr>
         <tr><td>Driving</td><td>Looks like a paddle, but allows 360° movement. Only one unit per connector, unlike paddles which were sold in pairs.</td></tr>
         <tr><td><a href="http://atariage.com/store/index.php?l=product_list&c=98">AtariVox</a></td><td>A SpeakJet based unlimited-vocabulary speech/sound synthesizer with 32K EEPROM.</td></tr>
         <tr><td>SaveKey</td><td>A 32K EEPROM for saving high scores, etc. (the EEPROM portion of an AtariVox).</td></tr>
@@ -4335,8 +4340,9 @@ Ms Pac-Man (Stella extended codes):
   </table>
   </br>
 
+  <h3><a name="Cartridge"><b>Cartridge Properties</b></h3></a>
   <p>
-    <a><img src="graphics/options_gameinfo_cartridge.png"></a>
+    <img src="graphics/options_gameinfo_cartridge.png">
   </p>
   <table CELLSPACING="10">
     <tr>
