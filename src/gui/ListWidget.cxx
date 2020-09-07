@@ -36,7 +36,7 @@ ListWidget::ListWidget(GuiObject* boss, const GUI::Font& font,
   _textcolorhi = kTextColor;
 
   _cols = w / _fontWidth;
-  _rows = h / _fontHeight;
+  _rows = h / _lineHeight;
 
   // Set real dimensions
   _w = w - ScrollBarWidget::scrollBarWidth(_font);
@@ -236,7 +236,7 @@ void ListWidget::handleMouseWheel(int x, int y, int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int ListWidget::findItem(int x, int y) const
 {
-  return (y - 1) / _fontHeight + _currentPos;
+  return (y - 1) / _lineHeight + _currentPos;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

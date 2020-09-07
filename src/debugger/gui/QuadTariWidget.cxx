@@ -19,9 +19,13 @@
 #include "Console.hxx"
 #include "TIA.hxx"
 #include "QuadTari.hxx"
+#include "AtariVoxWidget.hxx"
 #include "DrivingWidget.hxx"
 #include "JoystickWidget.hxx"
 #include "NullControlWidget.hxx"
+#include "PaddleWidget.hxx"
+#include "SaveKeyWidget.hxx"
+
 #include "QuadTariWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -29,54 +33,55 @@ QuadTariWidget::QuadTariWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, Controller& controller)
   : ControllerWidget(boss, font, x, y, controller)
 {
-  const int fontWidth = font.getMaxCharWidth(),
-    fontHeight = font.getFontHeight();
   string label = (isLeftPort() ? "Left" : "Right") + string(" (QuadTari)");
   StaticTextWidget* t = new StaticTextWidget(boss, font, x, y + 2, label);
   QuadTari& qt = static_cast<QuadTari&>(controller);
 
-  // TODO: support multiple controller types
-  switch(qt.myFirstController->type())
-  {
-    case Controller::Type::Joystick:
-      x += fontWidth * 2;
-      y = t->getBottom() + fontHeight;
-      myFirstControl = new JoystickWidget(boss, font, x, y, *qt.myFirstController, true);
-      break;
-
-    case Controller::Type::Driving:
-      y = t->getBottom() + font.getFontHeight() * 1;
-      myFirstControl = new DrivingWidget(boss, font, x, y, *qt.myFirstController, true);
-      break;
-
-    default:
-      y = t->getBottom() + font.getFontHeight() * 1.25;
-      myFirstControl = new NullControlWidget(boss, font, x, y, *qt.myFirstController, true);
-      break;
-  }
-
-  x = t->getLeft() + fontWidth * 10;
-  switch(qt.mySecondController->type())
-  {
-    case Controller::Type::Joystick:
-      x += fontWidth * 2;
-      y = t->getBottom() + fontHeight;
-      mySecondControl = new JoystickWidget(boss, font, x, y, *qt.mySecondController, true);
-      break;
-
-    case Controller::Type::Driving:
-      y = t->getBottom() + font.getFontHeight();
-      myFirstControl = new DrivingWidget(boss, font, x, y, *qt.mySecondController, true);
-      break;
-
-    default:
-      y = t->getBottom() + font.getFontHeight() * 1.25;
-      mySecondControl = new NullControlWidget(boss, font, x, y, *qt.mySecondController, true);
-      break;
-  }
+  y = t->getBottom() + _lineHeight;
+  addController(boss, x, y, *qt.myFirstController, false);
+  addController(boss, x, y, *qt.mySecondController, true);
 
   myPointer = new StaticTextWidget(boss, font,
-                                   t->getLeft() + font.getMaxCharWidth() * 7, y, "  ");
+                                   t->getLeft() + _fontWidth * 7, y, "  ");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void QuadTariWidget::addController(GuiObject* boss, int x, int y,
+                                   Controller& controller, bool second)
+{
+  ControllerWidget* widget;
+
+  x += second ? _fontWidth * 10 : 0;
+  switch(controller.type())
+  {
+    case Controller::Type::Joystick:
+      x += _fontWidth * 2;
+      widget = new JoystickWidget(boss, _font, x, y, controller, true);
+      break;
+
+    case Controller::Type::Driving:
+      widget = new DrivingWidget(boss, _font, x, y, controller, true);
+      break;
+
+    case Controller::Type::Paddles:
+      widget = new PaddleWidget(boss, _font, x, y, controller, true, second);
+      break;
+
+    case Controller::Type::AtariVox:
+      widget = new AtariVoxWidget(boss, _font, x, y, controller, true);
+      break;
+
+    case Controller::Type::SaveKey:
+      widget = new SaveKeyWidget(boss, _font, x, y, controller, true);
+      break;
+
+    default:
+      widget = new NullControlWidget(boss, _font, x, y, controller, true);
+      break;
+  }
+  WidgetArray focusList = widget->getFocusList();
+  if(!focusList.empty())
+    addToFocusList(focusList);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

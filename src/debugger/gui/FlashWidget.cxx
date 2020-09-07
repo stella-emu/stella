@@ -28,31 +28,43 @@ FlashWidget::FlashWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FlashWidget::init(GuiObject* boss, const GUI::Font& font, int x, int y)
+void FlashWidget::init(GuiObject* boss, const GUI::Font& font,
+                       int x, int y, bool embedded)
 {
-  const int lineHeight = font.getLineHeight();
+  const int fontHeight = font.getFontHeight();
   int xpos = x, ypos = y;
 
-  new StaticTextWidget(boss, font, xpos, ypos + 2, getHeader());
+  myEmbedded = embedded;
+  if(!embedded)
+  {
+    new StaticTextWidget(boss, font, xpos, ypos + 2, getHeader());
 
-  ypos += lineHeight + 6;
+    ypos += _lineHeight * 1.4;
+    new StaticTextWidget(boss, font, xpos, ypos, "Pages/Ranges used:");
+  }
+  else
+  {
+    ypos += _lineHeight * 0.4 - (2 + _lineHeight);
+    new StaticTextWidget(boss, font, xpos, ypos, "Pages:");
+  }
 
-  new StaticTextWidget(boss, font, xpos, ypos, "Pages/Ranges used:");
-
-  ypos += lineHeight + 2;
+  ypos += _lineHeight + 2;
   xpos += 8;
-
   for(uInt32 page = 0; page < MAX_PAGES; ++page)
   {
     myPage[page] = new StaticTextWidget(boss, font, xpos, ypos,
-        page ? "                  " : "none              ");
-    ypos += lineHeight;
+        embedded ? page ? "    " : "none"
+                 : page ? "                  " : "none              ");
+    ypos += _lineHeight;
   }
 
   xpos -= 8; ypos += 2;
   myEEPROMEraseCurrent = new ButtonWidget(boss, font, xpos, ypos,
-                                          "Erase used pages", kEEPROMEraseCurrent);
+                                          embedded ? "Erase" : "Erase used pages", 
+                                          kEEPROMEraseCurrent);
   myEEPROMEraseCurrent->setTarget(this);
+
+  addFocusWidget(myEEPROMEraseCurrent);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -86,12 +98,14 @@ void FlashWidget::loadConfig()
         label.str("");
         label << Common::Base::HEX3 << startPage;
 
-        if(int(page) - 1 != startPage)
-          label << "-" << Common::Base::HEX3 << page - 1;
-        else
-          label << "    ";
-        label << ": " << Common::Base::HEX4 << from << "-" << Common::Base::HEX4 << to;
-
+        if(!myEmbedded)
+        {
+          if(int(page) - 1 != startPage)
+            label << "-" << Common::Base::HEX3 << page - 1;
+          else
+            label << "    ";
+          label << ": " << Common::Base::HEX4 << from << "-" << Common::Base::HEX4 << to;
+        }
         myPage[useCount]->setLabel(label.str());
 
         startPage = -1;

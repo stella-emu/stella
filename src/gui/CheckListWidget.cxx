@@ -29,8 +29,8 @@ CheckListWidget::CheckListWidget(GuiObject* boss, const GUI::Font& font,
 
   // rowheight is determined by largest item on a line,
   // possibly meaning that number of rows will change
-  _fontHeight = std::max(_fontHeight, CheckboxWidget::boxSize(_font));
-  _rows = h / _fontHeight;
+  _lineHeight = std::max(_lineHeight, CheckboxWidget::boxSize(_font));
+  _rows = h / _lineHeight;
 
   // Create a CheckboxWidget for each row in the list
   for(int i = 0; i < _rows; ++i)
@@ -40,7 +40,7 @@ CheckListWidget::CheckListWidget(GuiObject* boss, const GUI::Font& font,
     t->setTextColor(kTextColor);
     t->setTarget(this);
     t->setID(i);
-    ypos += _fontHeight;
+    ypos += _lineHeight;
 
     _checkList.push_back(t);
   }
@@ -110,7 +110,7 @@ void CheckListWidget::drawWidget(bool hilite)
     _checkList[i]->setDirty();
     _checkList[i]->draw();
 
-    const int y = _y + 2 + _fontHeight * i + 2;
+    const int y = _y + 2 + _lineHeight * i + 2;
     ColorId textColor = kTextColor;
 
     Common::Rect r(getEditRect());
@@ -120,13 +120,13 @@ void CheckListWidget::drawWidget(bool hilite)
     {
       if(_hasFocus && !_editMode)
       {
-        s.fillRect(_x + r.x() - 3, _y + 1 + _fontHeight * i,
-                   _w - r.x(), _fontHeight, kTextColorHi);
+        s.fillRect(_x + r.x() - 3, _y + 1 + _lineHeight * i,
+                   _w - r.x(), _lineHeight, kTextColorHi);
         textColor = kTextColorInv;
       }
       else
-        s.frameRect(_x + r.x() - 3, _y + 1 + _fontHeight * i,
-                    _w - r.x(), _fontHeight, onTop ? kTextColorHi : kColor);
+        s.frameRect(_x + r.x() - 3, _y + 1 + _lineHeight * i,
+                    _w - r.x(), _lineHeight, onTop ? kTextColorHi : kColor);
     }
 
     if (_selectedItem == pos && _editMode)
@@ -149,11 +149,11 @@ void CheckListWidget::drawWidget(bool hilite)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Common::Rect CheckListWidget::getEditRect() const
 {
-  const int yoffset = (_selectedItem - _currentPos) * _fontHeight,
+  const int yoffset = (_selectedItem - _currentPos) * _lineHeight,
             xoffset = CheckboxWidget::boxSize(_font) + 10;
 
   return Common::Rect(2 + xoffset, 1 + yoffset,
-                      _w - (xoffset - 15), _fontHeight + yoffset);
+                      _w - (xoffset - 15), _lineHeight + yoffset);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

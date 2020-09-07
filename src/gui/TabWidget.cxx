@@ -292,7 +292,7 @@ void TabWidget::drawWidget(bool hilite)
                ? onTop ? kDlgColor : kBGColorLo
                : onTop ? kBGColorHi : kDlgColor); // ? kWidColor : kDlgColor
     s.drawString(_font, _tabs[i].title, x + kTabPadding + yOffset,
-                 _y + yOffset + (_tabHeight - _fontHeight - 1),
+                 _y + yOffset + (_tabHeight - _lineHeight - 1),
                  tabWidth - 2 * kTabPadding, fontcolor, TextAlign::Center);
     if(i == _activeTab)
     {

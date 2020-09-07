@@ -20,10 +20,10 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SaveKeyWidget::SaveKeyWidget(GuiObject* boss, const GUI::Font& font,
-                             int x, int y, Controller& controller)
+                             int x, int y, Controller& controller, bool embedded)
   : FlashWidget(boss, font, x, y, controller)
 {
-  init(boss, font, x, y);
+  init(boss, font, x, y, embedded);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
