@@ -39,7 +39,7 @@ Widget::Widget(GuiObject* boss, const GUI::Font& font,
   _boss->_firstWidget = this;
 
   _fontWidth  = _font.getMaxCharWidth();
-  _fontHeight = _font.getLineHeight();
+  _lineHeight = _font.getLineHeight();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -466,7 +466,7 @@ void ButtonWidget::drawWidget(bool hilite)
   s.frameRect(_x, _y, _w, _h, !onTop ? kShadowColor : hilite && isEnabled() ? kBtnBorderColorHi : kBtnBorderColor);
 
   if (!_useBitmap)
-    s.drawString(_font, _label, _x, _y + (_h - _fontHeight)/2 + 1, _w,
+    s.drawString(_font, _label, _x, _y + (_h - _lineHeight)/2 + 1, _w,
                  !(isEnabled() && onTop) ? _textcolorlo :
                  hilite ? _textcolorhi : _textcolor, _align);
   else

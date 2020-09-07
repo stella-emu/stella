@@ -141,9 +141,11 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   xpos = col;  ypos = 10;
   myLeftControl = addControlWidget(boss, lfont, xpos, ypos,
       instance().console().leftController());
+  addToFocusList(myLeftControl->getFocusList());
   xpos += myLeftControl->getWidth() + 15;
   myRightControl = addControlWidget(boss, lfont, xpos, ypos,
       instance().console().rightController());
+  addToFocusList(myRightControl->getFocusList());
 
   // TIA INPTx registers (R), left port
   static constexpr std::array<const char*, 3> contLeftReadNames = {

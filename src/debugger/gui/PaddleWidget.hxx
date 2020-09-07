@@ -26,7 +26,8 @@ class PaddleWidget : public ControllerWidget
 {
   public:
     PaddleWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
-                 Controller& controller);
+                 Controller& controller,
+                 bool embedded = false, bool second = false);
     ~PaddleWidget() override = default;
 
   private:

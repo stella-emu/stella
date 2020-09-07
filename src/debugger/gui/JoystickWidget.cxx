@@ -23,17 +23,17 @@ JoystickWidget::JoystickWidget(GuiObject* boss, const GUI::Font& font,
                                bool embedded)
   : ControllerWidget(boss, font, x, y, controller)
 {
+  const int fontHeight = font.getFontHeight();
   int xpos = x, ypos = y;
 
   if(!embedded)
   {
     const string& label = getHeader();
-    const int fontHeight = font.getFontHeight();
-    int lwidth = font.getStringWidth("Right (Joystick)");
+    const int lwidth = font.getStringWidth("Right (Joystick)");
     StaticTextWidget* t;
 
     t = new StaticTextWidget(boss, font, xpos, ypos + 2, lwidth,
-                             fontHeight, label, TextAlign::Left);
+                             _lineHeight, label, TextAlign::Left);
     xpos += t->getWidth() / 2 - 5;  ypos = t->getBottom() + fontHeight;
   }
   myPins[kJUp] = new CheckboxWidget(boss, font, xpos, ypos, "",
@@ -61,11 +61,17 @@ JoystickWidget::JoystickWidget(GuiObject* boss, const GUI::Font& font,
   myPins[kJRight]->setTarget(this);
 
   xpos -= (myPins[kJUp]->getWidth() + 5) * 2;
-  ypos = myPins[kJDown]->getBottom() + font.getFontHeight() * 0.5 - 1;
+  ypos = myPins[kJDown]->getBottom() + fontHeight * 0.75;
   myPins[kJFire] = new CheckboxWidget(boss, font, xpos, ypos, "Fire",
                                       CheckboxWidget::kCheckActionCmd);
   myPins[kJFire]->setID(kJFire);
   myPins[kJFire]->setTarget(this);
+
+  addFocusWidget(myPins[kJUp]);
+  addFocusWidget(myPins[kJLeft]);
+  addFocusWidget(myPins[kJRight]);
+  addFocusWidget(myPins[kJDown]);
+  addFocusWidget(myPins[kJFire]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

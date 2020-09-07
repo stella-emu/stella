@@ -26,7 +26,7 @@ class AtariVoxWidget : public FlashWidget
 {
   public:
     AtariVoxWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
-                   Controller& controller);
+                   Controller& controller, bool embedded = false);
     ~AtariVoxWidget() override = default;
 
   private:

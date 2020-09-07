@@ -79,7 +79,7 @@ void StringListWidget::drawWidget(bool hilite)
   // Draw the list items
   for (i = 0, pos = _currentPos; i < _rows && pos < len; i++, pos++)
   {
-    const int y = _y + 2 + _fontHeight * i;
+    const int y = _y + 2 + _lineHeight * i;
     ColorId textColor = onTop ? kTextColor : kShadowColor;
 
     // Draw the selected item inverted, on a highlighted background.
@@ -87,11 +87,11 @@ void StringListWidget::drawWidget(bool hilite)
     {
       if(_hasFocus && !_editMode)
       {
-        s.fillRect(_x + 1, _y + 1 + _fontHeight * i, _w - 1, _fontHeight, kTextColorHi);
+        s.fillRect(_x + 1, _y + 1 + _lineHeight * i, _w - 1, _lineHeight, kTextColorHi);
         textColor = kTextColorInv;
       }
       else
-        s.frameRect(_x + 1, _y + 1 + _fontHeight * i, _w - 1, _fontHeight, kWidColorHi);
+        s.frameRect(_x + 1, _y + 1 + _lineHeight * i, _w - 1, _lineHeight, kWidColorHi);
     }
 
     Common::Rect r(getEditRect());
@@ -115,6 +115,6 @@ void StringListWidget::drawWidget(bool hilite)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Common::Rect StringListWidget::getEditRect() const
 {
-  const int offset = std::max(0, (_selectedItem - _currentPos) * _fontHeight);
-  return Common::Rect(_textOfs, 1 + offset, _w - _textOfs, _fontHeight + offset);
+  const int offset = std::max(0, (_selectedItem - _currentPos) * _lineHeight);
+  return Common::Rect(_textOfs, 1 + offset, _w - _textOfs, _lineHeight + offset);
 }

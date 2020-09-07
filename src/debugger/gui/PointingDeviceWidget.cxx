@@ -68,6 +68,12 @@ PointingDeviceWidget::PointingDeviceWidget(GuiObject* boss, const GUI::Font& fon
 
   myFire = new CheckboxWidget(boss, font, xLeft, ypos, "Fire", kTBFire);
   myFire->setTarget(this);
+
+  addFocusWidget(myGrayUp);
+  addFocusWidget(myGrayLeft);
+  addFocusWidget(myGrayRight);
+  addFocusWidget(myGrayDown);
+  addFocusWidget(myFire);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

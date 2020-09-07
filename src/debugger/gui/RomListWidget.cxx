@@ -40,7 +40,7 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
   _textcolorhi = kTextColor;
 
   _cols = w / _fontWidth;
-  _rows = h / _fontHeight;
+  _rows = h / _lineHeight;
 
   // Set real dimensions
   _w = w - ScrollBarWidget::scrollBarWidth(_font);
@@ -67,8 +67,8 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
 
   // rowheight is determined by largest item on a line,
   // possibly meaning that number of rows will change
-  _fontHeight = std::max(_fontHeight, CheckboxWidget::boxSize(_font));
-  _rows = h / _fontHeight;
+  _lineHeight = std::max(_lineHeight, CheckboxWidget::boxSize(_font));
+  _rows = h / _lineHeight;
 
   // Create a CheckboxWidget for each row in the list
   for(int i = 0; i < _rows; ++i)
@@ -79,7 +79,7 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
     t->setID(i);
     t->setFill(CheckboxWidget::FillType::Circle);
     t->setTextColor(kTextColorEm);
-    ypos += _fontHeight;
+    ypos += _lineHeight;
 
     myCheckList.push_back(t);
   }
@@ -175,7 +175,7 @@ void RomListWidget::setHighlighted(int item)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int RomListWidget::findItem(int x, int y) const
 {
-  return (y - 1) / _fontHeight + _currentPos;
+  return (y - 1) / _lineHeight + _currentPos;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -479,7 +479,7 @@ void RomListWidget::drawWidget(bool hilite)
     codeDisasmW = actualWidth;
 
   xpos = _x + CheckboxWidget::boxSize(_font) + 10;  ypos = _y + 2;
-  for (i = 0, pos = _currentPos; i < _rows && pos < len; i++, pos++, ypos += _fontHeight)
+  for (i = 0, pos = _currentPos; i < _rows && pos < len; i++, pos++, ypos += _lineHeight)
   {
     ColorId bytesColor = textColor;
 
@@ -493,18 +493,18 @@ void RomListWidget::drawWidget(bool hilite)
 
     // Draw highlighted item in a frame
     if (_highlightedItem == pos)
-      s.frameRect(_x + l.x() - 3, ypos - 1, _w - l.x(), _fontHeight, onTop ? kWidColorHi : kBGColorLo);
+      s.frameRect(_x + l.x() - 3, ypos - 1, _w - l.x(), _lineHeight, onTop ? kWidColorHi : kBGColorLo);
 
     // Draw the selected item inverted, on a highlighted background.
     if(_selectedItem == pos && _hasFocus)
     {
       if(!_editMode)
       {
-        s.fillRect(_x + r.x() - 3, ypos - 1, r.w(), _fontHeight, kTextColorHi);
+        s.fillRect(_x + r.x() - 3, ypos - 1, r.w(), _lineHeight, kTextColorHi);
         bytesColor = kTextColorInv;
       }
       else
-        s.frameRect(_x + r.x() - 3, ypos - 1, r.w(), _fontHeight, kWidColorHi);
+        s.frameRect(_x + r.x() - 3, ypos - 1, r.w(), _lineHeight, kWidColorHi);
     }
 
     // Draw labels
@@ -537,7 +537,7 @@ void RomListWidget::drawWidget(bool hilite)
       }
 
       // Draw separator
-      s.vLine(_x + r.x() - 7, ypos, ypos + _fontHeight - 1, kColor);
+      s.vLine(_x + r.x() - 7, ypos, ypos + _lineHeight - 1, kColor);
 
       // Draw bytes
       {
@@ -567,20 +567,20 @@ void RomListWidget::drawWidget(bool hilite)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Common::Rect RomListWidget::getLineRect() const
 {
-  const int yoffset = std::max(0, (_selectedItem - _currentPos) * _fontHeight),
+  const int yoffset = std::max(0, (_selectedItem - _currentPos) * _lineHeight),
             xoffset = CheckboxWidget::boxSize(_font) + 10;
 
   return Common::Rect(2 + xoffset, 1 + yoffset,
-                      _w - (xoffset - 15), _fontHeight + yoffset);
+                      _w - (xoffset - 15), _lineHeight + yoffset);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Common::Rect RomListWidget::getEditRect() const
 {
-  const int yoffset = std::max(0, (_selectedItem - _currentPos) * _fontHeight);
+  const int yoffset = std::max(0, (_selectedItem - _currentPos) * _lineHeight);
 
   return Common::Rect(2 + _w - _bytesWidth, 1 + yoffset,
-                      _w, _fontHeight + yoffset);
+                      _w, _lineHeight + yoffset);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

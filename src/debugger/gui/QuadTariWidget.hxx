@@ -35,11 +35,12 @@ class QuadTariWidget: public ControllerWidget
     }
 
   private:
-    ControllerWidget* myFirstControl{nullptr};
-    ControllerWidget* mySecondControl{nullptr};
     StaticTextWidget* myPointer{nullptr};
 
     void loadConfig() override;
+
+    void addController(GuiObject* boss, int x, int y,
+                       Controller& controller, bool second);
 
     // Following constructors and assignment operators not supported
     QuadTariWidget() = delete;

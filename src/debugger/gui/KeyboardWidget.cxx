@@ -47,6 +47,7 @@ KeyboardWidget::KeyboardWidget(GuiObject* boss, const GUI::Font& font,
       xpos = x + 30;
       ypos += myBox[i]->getHeight() + 5;
     }
+    addFocusWidget(myBox[i]);
   }
   myEvent = leftport ? ourLeftEvents.data() : ourRightEvents.data();
 }

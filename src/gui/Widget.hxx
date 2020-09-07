@@ -139,7 +139,7 @@ class Widget : public GuiObject
     uInt32     _flags{0};
     bool       _hasFocus{false};
     int        _fontWidth{0};
-    int        _fontHeight{0};
+    int        _lineHeight{0};
     ColorId    _bgcolor{kWidColor};
     ColorId    _bgcolorhi{kWidColor};
     ColorId    _bgcolorlo{kBGColorLo};
