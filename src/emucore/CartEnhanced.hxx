@@ -275,7 +275,9 @@ class CartridgeEnhanced : public Cartridge
       @param address  The address to get the offset for
       @return  The calculated offset
     */
-    uInt32 romAddressSegmentOffset(uInt16 address) const;
+    uInt32 romAddressSegmentOffset(uInt16 address) const {
+      return myCurrentSegOffset[((address & ROM_MASK) >> myBankShift) % myBankSegs];
+    }
 
     /**
       Get the RAM offset of the segment of the given address
@@ -283,7 +285,10 @@ class CartridgeEnhanced : public Cartridge
       @param address  The address to get the offset for
       @return  The calculated offset
     */
-    uInt16 ramAddressSegmentOffset(uInt16 address) const;
+    uInt16 ramAddressSegmentOffset(uInt16 address) const {
+      return static_cast<uInt16>((myCurrentSegOffset[
+        ((address & ROM_MASK) >> myBankShift) % myBankSegs] - mySize) >> 1);
+    }
 
   private:
     // Following constructors and assignment operators not supported
