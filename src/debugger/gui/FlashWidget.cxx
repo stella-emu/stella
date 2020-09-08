@@ -31,7 +31,6 @@ FlashWidget::FlashWidget(GuiObject* boss, const GUI::Font& font,
 void FlashWidget::init(GuiObject* boss, const GUI::Font& font,
                        int x, int y, bool embedded)
 {
-  const int fontHeight = font.getFontHeight();
   int xpos = x, ypos = y;
 
   myEmbedded = embedded;
