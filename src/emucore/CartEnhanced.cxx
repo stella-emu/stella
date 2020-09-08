@@ -295,7 +295,7 @@ bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline uInt16 CartridgeEnhanced::romAddressSegmentOffset(uInt16 address) const
+inline uInt32 CartridgeEnhanced::romAddressSegmentOffset(uInt16 address) const
 {
   return myCurrentSegOffset[((address & ROM_MASK) >> myBankShift) % myBankSegs];
 }

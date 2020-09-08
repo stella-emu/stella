@@ -275,7 +275,7 @@ class CartridgeEnhanced : public Cartridge
       @param address  The address to get the offset for
       @return  The calculated offset
     */
-    uInt16 romAddressSegmentOffset(uInt16 address) const;
+    uInt32 romAddressSegmentOffset(uInt16 address) const;
 
     /**
       Get the RAM offset of the segment of the given address

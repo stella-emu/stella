@@ -28,7 +28,9 @@
 /**
   Cartridge class used for UA Limited's 8K bankswitched games.  There
   are two 4K banks, which are switched by accessing $0220 (bank 0) and
-  $0240 (bank 1).
+  $0240 (bank 1).  Similar addresses are used by Brazilian carts, e.g.
+  $02A0, $02C0 and $0FA0, $0FC0.  The code accepts further potential
+  hotspot addresses.
 
   @author  Bradford W. Mott, Thomas Jentzsch
 */
