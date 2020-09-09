@@ -16,7 +16,7 @@
 
   * Added adjustable autofire.
 
-  * Added 'Dark' UI theme. (TODO: DOC)
+  * Added 'Dark' UI theme.
 
   * Extended global hotkeys for debug options.
 
