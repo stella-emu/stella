@@ -228,6 +228,12 @@
 		DC21E5C021CA903E007D0E1A /* OSystemMACOS.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC21E5BA21CA903E007D0E1A /* OSystemMACOS.hxx */; };
 		DC21E5C121CA903E007D0E1A /* SerialPortMACOS.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC21E5BB21CA903E007D0E1A /* SerialPortMACOS.cxx */; };
 		DC21E5C221CA903E007D0E1A /* SerialPortMACOS.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC21E5BC21CA903E007D0E1A /* SerialPortMACOS.hxx */; };
+		DC22F12D2507D20800AB43E9 /* QuadTari.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC22F12B2507D20800AB43E9 /* QuadTari.hxx */; };
+		DC22F12E2507D20800AB43E9 /* QuadTari.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC22F12C2507D20800AB43E9 /* QuadTari.cxx */; };
+		DC22F1312507D22500AB43E9 /* QuadTariWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC22F12F2507D22500AB43E9 /* QuadTariWidget.hxx */; };
+		DC22F1322507D22500AB43E9 /* QuadTariWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC22F1302507D22500AB43E9 /* QuadTariWidget.cxx */; };
+		DC22F1352507D24E00AB43E9 /* QuadTariDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC22F1332507D24D00AB43E9 /* QuadTariDialog.hxx */; };
+		DC22F1362507D24E00AB43E9 /* QuadTariDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC22F1342507D24E00AB43E9 /* QuadTariDialog.cxx */; };
 		DC2410E32274BDA8007A4CBF /* MinUICommandDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2410E12274BDA7007A4CBF /* MinUICommandDialog.hxx */; };
 		DC2410E42274BDA8007A4CBF /* MinUICommandDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC2410E22274BDA8007A4CBF /* MinUICommandDialog.cxx */; };
 		DC2874071F8F2278004BF21A /* TrapArray.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2874061F8F2278004BF21A /* TrapArray.hxx */; };
@@ -981,6 +987,12 @@
 		DC21E5BA21CA903E007D0E1A /* OSystemMACOS.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = OSystemMACOS.hxx; sourceTree = SOURCE_ROOT; };
 		DC21E5BB21CA903E007D0E1A /* SerialPortMACOS.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SerialPortMACOS.cxx; sourceTree = SOURCE_ROOT; };
 		DC21E5BC21CA903E007D0E1A /* SerialPortMACOS.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SerialPortMACOS.hxx; sourceTree = SOURCE_ROOT; };
+		DC22F12B2507D20800AB43E9 /* QuadTari.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = QuadTari.hxx; sourceTree = "<group>"; };
+		DC22F12C2507D20800AB43E9 /* QuadTari.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = QuadTari.cxx; sourceTree = "<group>"; };
+		DC22F12F2507D22500AB43E9 /* QuadTariWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = QuadTariWidget.hxx; sourceTree = "<group>"; };
+		DC22F1302507D22500AB43E9 /* QuadTariWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = QuadTariWidget.cxx; sourceTree = "<group>"; };
+		DC22F1332507D24D00AB43E9 /* QuadTariDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = QuadTariDialog.hxx; sourceTree = "<group>"; };
+		DC22F1342507D24E00AB43E9 /* QuadTariDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = QuadTariDialog.cxx; sourceTree = "<group>"; };
 		DC2410E12274BDA7007A4CBF /* MinUICommandDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = MinUICommandDialog.hxx; sourceTree = "<group>"; };
 		DC2410E22274BDA8007A4CBF /* MinUICommandDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MinUICommandDialog.cxx; sourceTree = "<group>"; };
 		DC2874061F8F2278004BF21A /* TrapArray.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TrapArray.hxx; sourceTree = "<group>"; };
@@ -1701,6 +1713,8 @@
 				DC9616291F817830008A2206 /* PointingDeviceWidget.hxx */,
 				2D20F9EE08C603EC00A73076 /* PromptWidget.cxx */,
 				2D20F9EF08C603EC00A73076 /* PromptWidget.hxx */,
+				DC22F1302507D22500AB43E9 /* QuadTariWidget.cxx */,
+				DC22F12F2507D22500AB43E9 /* QuadTariWidget.hxx */,
 				2D20F9F008C603EC00A73076 /* RamWidget.cxx */,
 				2D20F9F108C603EC00A73076 /* RamWidget.hxx */,
 				DCE5CDE11BA10024005CD08A /* RiotRamWidget.cxx */,
@@ -2002,6 +2016,8 @@
 				2DE2DF850627AE34006BEC99 /* Props.hxx */,
 				2DE2DF860627AE34006BEC99 /* PropsSet.cxx */,
 				2DE2DF870627AE34006BEC99 /* PropsSet.hxx */,
+				DC22F12C2507D20800AB43E9 /* QuadTari.cxx */,
+				DC22F12B2507D20800AB43E9 /* QuadTari.hxx */,
 				2DE2DF890627AE34006BEC99 /* Random.hxx */,
 				DC4AC6F10DC8DAEF00CD3AD2 /* SaveKey.cxx */,
 				DC4AC6F20DC8DAEF00CD3AD2 /* SaveKey.hxx */,
@@ -2105,6 +2121,8 @@
 				2DDBEAC7084578BF00812C11 /* PopUpWidget.hxx */,
 				2DDBEAC8084578BF00812C11 /* ProgressDialog.cxx */,
 				2DDBEAC9084578BF00812C11 /* ProgressDialog.hxx */,
+				DC22F1342507D24E00AB43E9 /* QuadTariDialog.cxx */,
+				DC22F1332507D24D00AB43E9 /* QuadTariDialog.hxx */,
 				DC5AAC2A1FCB24DF00C420A6 /* RadioButtonWidget.cxx */,
 				DC5AAC2B1FCB24DF00C420A6 /* RadioButtonWidget.hxx */,
 				DC4613650D92C03600D8DAB9 /* RomAuditDialog.cxx */,
@@ -2467,6 +2485,7 @@
 				DCE801E3236DC25600D43EDD /* CartFC.hxx in Headers */,
 				DC2AADB5194F390F0026C7A4 /* CartRamWidget.hxx in Headers */,
 				2D91740E09BA90380026E9FF /* ListWidget.hxx in Headers */,
+				DC22F1312507D22500AB43E9 /* QuadTariWidget.hxx in Headers */,
 				2D91740F09BA90380026E9FF /* Menu.hxx in Headers */,
 				2D91741009BA90380026E9FF /* OptionsDialog.hxx in Headers */,
 				DCEC58591E945125002F0246 /* DelayQueueWidget.hxx in Headers */,
@@ -2513,6 +2532,7 @@
 				2D91745109BA90380026E9FF /* StringListWidget.hxx in Headers */,
 				DC62E64A1960E87B007AEF05 /* SaveKeyWidget.hxx in Headers */,
 				2D91745209BA90380026E9FF /* CommandDialog.hxx in Headers */,
+				DC22F1352507D24E00AB43E9 /* QuadTariDialog.hxx in Headers */,
 				2D91745309BA90380026E9FF /* CommandMenu.hxx in Headers */,
 				E0306E111F93E916003DDD52 /* JitterEmulation.hxx in Headers */,
 				DC1E474F24D34F3B0047E61A /* WhatsNewDialog.hxx in Headers */,
@@ -2584,6 +2604,7 @@
 				DC173F770E2CAC1E00320F94 /* ContextMenu.hxx in Headers */,
 				DC0DF86A0F0DAAF500B0F1F3 /* GlobalPropsDialog.hxx in Headers */,
 				E0DCD3A920A64E96000B614E /* ConvolutionBuffer.hxx in Headers */,
+				DC22F12D2507D20800AB43E9 /* QuadTari.hxx in Headers */,
 				DC71EAA81FDA070D008827CB /* CartMNetworkWidget.hxx in Headers */,
 				DC5D2C530F117CFD004D1660 /* StellaFont.hxx in Headers */,
 				DC5D2C540F117CFD004D1660 /* StellaLargeFont.hxx in Headers */,
@@ -2972,6 +2993,7 @@
 				DC21E5C121CA903E007D0E1A /* SerialPortMACOS.cxx in Sources */,
 				E007231F210FBF5E002CF343 /* FpsMeter.cxx in Sources */,
 				2D9174FD09BA90380026E9FF /* RomListWidget.cxx in Sources */,
+				DC22F1362507D24E00AB43E9 /* QuadTariDialog.cxx in Sources */,
 				DCF3A6F81DFC75E3008A8AF3 /* PaddleReader.cxx in Sources */,
 				2D9174FE09BA90380026E9FF /* RomWidget.cxx in Sources */,
 				DCA82C731FEB4E780059340F /* TimeMachineDialog.cxx in Sources */,
@@ -3034,6 +3056,7 @@
 				DCF7B0DD10A762FC007A2870 /* CartF0.cxx in Sources */,
 				DCF7B0DF10A762FC007A2870 /* CartFA.cxx in Sources */,
 				DCC527D210B9DA19005E1287 /* M6502.cxx in Sources */,
+				DC22F12E2507D20800AB43E9 /* QuadTari.cxx in Sources */,
 				DC3EE86B1E2C0E6D00905161 /* uncompr.c in Sources */,
 				DCC527D610B9DA19005E1287 /* System.cxx in Sources */,
 				DC6B2BA411037FF200F199A7 /* CartDebug.cxx in Sources */,
@@ -3066,6 +3089,7 @@
 				DCD6FC7E11C281ED005DA767 /* pngtrans.c in Sources */,
 				DC6F394D21B897F300897AD8 /* ThreadDebugging.cxx in Sources */,
 				DCD6FC7F11C281ED005DA767 /* pngwio.c in Sources */,
+				DC22F1322507D22500AB43E9 /* QuadTariWidget.cxx in Sources */,
 				DCD6FC8011C281ED005DA767 /* pngwrite.c in Sources */,
 				DC3EE8621E2C0E6D00905161 /* inffast.c in Sources */,
 				DCD6FC8111C281ED005DA767 /* pngwtran.c in Sources */,
