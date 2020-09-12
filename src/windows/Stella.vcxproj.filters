@@ -1829,9 +1829,6 @@
     <ClInclude Include="..\common\tv_filters\AtariNTSC.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\emucore\BSType.hxx">
-      <Filter>Header Files\emucore</Filter>
-    </ClInclude>
     <ClInclude Include="..\emucore\CartDetector.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>

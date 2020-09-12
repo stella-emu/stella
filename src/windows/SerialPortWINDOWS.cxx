@@ -112,3 +112,39 @@ bool SerialPortWINDOWS::isCTS()
   }
   return false;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+StringList SerialPortWINDOWS::portNames()
+{
+  StringList ports;
+
+  HKEY hKey = NULL;
+  LSTATUS result = RegOpenKeyExW(HKEY_LOCAL_MACHINE,
+    L"HARDWARE\\DEVICEMAP\\SERIALCOMM", 0, KEY_READ, &hKey);
+  if (result == ERROR_SUCCESS)
+  {
+    TCHAR deviceName[2048], friendlyName[32];
+    DWORD numValues = 0;
+
+    result = RegQueryInfoKey(hKey, NULL, NULL, NULL, NULL, NULL, NULL,
+      &numValues, NULL, NULL, NULL, NULL);
+    if (result == ERROR_SUCCESS)
+    {
+      DWORD type = 0;
+      DWORD deviceNameLen = 2047;
+      DWORD friendlyNameLen = 31;
+
+      for (DWORD i = 0; i < numValues; ++i)
+      {
+        result = RegEnumValue(hKey, i, deviceName, &deviceNameLen,
+          NULL, &type, (LPBYTE)friendlyName, &friendlyNameLen);
+
+        if (result == ERROR_SUCCESS && type == REG_SZ)
+          ports.emplace_back(friendlyName);
+      }
+    }
+  }
+  RegCloseKey(hKey);
+
+  return ports;
+}

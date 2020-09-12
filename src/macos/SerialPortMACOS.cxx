@@ -25,6 +25,7 @@
 #include <sys/filio.h>
 #include <sys/ioctl.h>
 
+#include "FSNode.hxx"
 #include "SerialPortMACOS.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -91,4 +92,27 @@ bool SerialPortMACOS::isCTS()
     return status & TIOCM_CTS;
   }
   return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+StringList SerialPortMACOS::portNames()
+{
+  StringList ports;
+
+  // Get all possible devices in the '/dev' directory
+  FilesystemNode::NameFilter filter = [](const FilesystemNode& node) {
+    return BSPF::startsWithIgnoreCase(node.getPath(), "/dev/tty.usb");
+  };
+  FSList portList;
+  portList.reserve(16);
+
+  FilesystemNode dev("/dev/");
+  dev.getChildren(portList, FilesystemNode::ListMode::All, filter, false);
+
+  // Add only those that can be opened
+  for(const auto& port: portList)
+    if(openPort(port.getPath()))
+      ports.emplace_back(port.getPath());
+
+  return ports;
 }
