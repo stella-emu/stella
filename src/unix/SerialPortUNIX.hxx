@@ -22,7 +22,7 @@
 
 /**
   Implement reading and writing from a serial port under UNIX.  For now,
-  it seems to be Linux-only, and reading isn't actually supported at all.
+  it seems to be Linux-only.
 
   @author  Stephen Anthony
 */
@@ -62,6 +62,13 @@ class SerialPortUNIX : public SerialPort
       @return  True if CTS signal enabled, else false
     */
     bool isCTS() override;
+
+    /**
+      Get all valid serial ports detected on this system.
+
+      @return  The (possibly empty) list of detected serial ports
+    */
+    StringList portNames() override;
 
   private:
     // File descriptor for serial connection

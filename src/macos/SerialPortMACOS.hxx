@@ -21,8 +21,7 @@
 #include "SerialPort.hxx"
 
 /**
-  Implement reading and writing from a serial port under macOS.  For now,
-  reading isn't actually supported at all.
+  Implement reading and writing from a serial port under macOS.
 
   @author  Stephen Anthony & D. Spice
 */
@@ -56,12 +55,19 @@ class SerialPortMACOS : public SerialPort
     */
     bool writeByte(uInt8 data) override;
 
-  /**
-    Test for 'Clear To Send' enabled.
+    /**
+      Test for 'Clear To Send' enabled.
 
-    @return  True if CTS signal enabled, else false
-  */
-  bool isCTS() override;
+      @return  True if CTS signal enabled, else false
+    */
+    bool isCTS() override;
+
+    /**
+      Get all valid serial ports detected on this system.
+
+      @return  The (possibly empty) list of detected serial ports
+    */
+    StringList portNames() override;
 
   private:
     // File descriptor for serial connection

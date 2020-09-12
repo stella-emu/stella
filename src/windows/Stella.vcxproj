@@ -1742,7 +1742,6 @@
     <ClInclude Include="..\emucore\AmigaMouse.hxx" />
     <ClInclude Include="..\emucore\AtariMouse.hxx" />
     <ClInclude Include="..\emucore\Bankswitch.hxx" />
-    <ClInclude Include="..\emucore\BSType.hxx" />
     <ClInclude Include="..\emucore\Cart3EPlus.hxx" />
     <ClInclude Include="..\emucore\Cart3EX.hxx" />
     <ClInclude Include="..\emucore\Cart4KSC.hxx" />
