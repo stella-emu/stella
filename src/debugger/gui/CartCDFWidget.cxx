@@ -467,6 +467,9 @@ string CartridgeCDFWidget::describeCDFVersion(CartridgeCDF::CDFSubtype subtype)
     case CartridgeCDF::CDFSubtype::CDFJ:
       return "CDFJ";
 
+    case CartridgeCDF::CDFSubtype::CDFJplus:
+      return "CDFJ+";
+
     default:
       throw runtime_error("unreachable");
   }
@@ -475,5 +478,6 @@ string CartridgeCDFWidget::describeCDFVersion(CartridgeCDF::CDFSubtype subtype)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeCDFWidget::isCDFJ() const
 {
-  return myCart.myCDFSubtype == CartridgeCDF::CDFSubtype::CDFJ;
+  return (myCart.myCDFSubtype == CartridgeCDF::CDFSubtype::CDFJ ||
+          myCart.myCDFSubtype == CartridgeCDF::CDFSubtype::CDFJplus); // FIXME: Separate settings for CDFJ+
 }
