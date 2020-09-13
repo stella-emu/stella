@@ -23,16 +23,28 @@ CartridgeCDFInfoWidget::CartridgeCDFInfoWidget(
     int x, int y, int w, int h, CartridgeCDF& cart)
   : CartDebugWidget(boss, lfont, nfont, x, y, w, h)
 {
-  uInt16 size = 8 * 4096;
-
+  uInt32 size;
   ostringstream info;
-  info << describeCDFVersion(cart.myCDFSubtype) << " cartridge\n"
-  << "32K ROM, seven 4K banks are accessible to 2600\n"
-  << "8K CDF RAM\n"
-  << "CDF registers accessible @ $FFF0 - $FFF3\n"
-  << "Banks accessible at hotspots $FFF5 to $FFFB\n"
-  << "Startup bank = " << cart.startBank() << "\n";
 
+  if (cart.myCDFSubtype == CartridgeCDF::CDFSubtype::CDFJplus) {
+    size = 512 * 1024;
+    info << describeCDFVersion(cart.myCDFSubtype) << " cartridge\n"
+      << "512K ROM (seven 4K banks are accessible to 2600)\n"
+      << "32K RAM\n"
+      << "Functions accessible @ $FFF0 - $FFF3\n"
+      << "Banks accessible @ $FFF4 to $FFFB\n"
+      << "Startup bank = " << cart.startBank() << "\n";
+
+  } else {
+    size = 8 * 4096;
+    info << describeCDFVersion(cart.myCDFSubtype) << " cartridge\n"
+      << "32K ROM (seven 4K banks are accessible to 2600)\n"
+      << "8K RAM\n"
+      << "Functions accessible @ $FFF0 - $FFF3\n"
+      << "Banks accessible @ $FFF4 to $FFFB\n"
+      << "Startup bank = " << cart.startBank() << "\n";
+  }
+ 
 #if 0
   // Eventually, we should query this from the debugger/disassembler
   for(uInt32 i = 0, offset = 0xFFC, spot = 0xFF5; i < 7; ++i, offset += 0x1000)
@@ -60,6 +72,9 @@ string CartridgeCDFInfoWidget::describeCDFVersion(CartridgeCDF::CDFSubtype subty
 
     case CartridgeCDF::CDFSubtype::CDFJ:
       return "CDFJ";
+
+    case CartridgeCDF::CDFSubtype::CDFJplus:
+      return "CDFJ+";
 
     default:
       throw runtime_error("unreachable");

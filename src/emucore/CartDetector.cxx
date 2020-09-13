@@ -169,6 +169,8 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
       type = Bankswitch::Type::_3E;
     else if(isProbably3F(image, size))
       type = Bankswitch::Type::_3F;
+    else if (isProbablyCDF(image, size))
+      type = Bankswitch::Type::_CDF;
     else if(isProbably4A50(image, size))
       type = Bankswitch::Type::_4A50;
     else if(isProbablyEF(image, size, type))
@@ -188,6 +190,8 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
       ; // type has been set directly in the function
     else if(isProbably3F(image, size))
       type = Bankswitch::Type::_3F;
+    else if (isProbablyCDF(image, size))
+      type = Bankswitch::Type::_CDF;
     else if(isProbably4A50(image, size))
       type = Bankswitch::Type::_4A50;
     else /*if(isProbablySB(image, size))*/
@@ -203,6 +207,8 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
       ; // type has been set directly in the function
     else if(isProbably3F(image, size))
       type = Bankswitch::Type::_3F;
+    else if (isProbablyCDF(image, size))
+      type = Bankswitch::Type::_CDF;
     else /*if(isProbablySB(image, size))*/
       type = Bankswitch::Type::_SB;
   }
@@ -216,6 +222,8 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
       type = Bankswitch::Type::_3E;
     else if(isProbably3F(image, size))
       type = Bankswitch::Type::_3F;
+    else if (isProbablyCDF(image, size))
+      type = Bankswitch::Type::_CDF;
   }
   else  // what else can we do?
   {
@@ -444,7 +452,9 @@ bool CartDetector::isProbablyCDF(const ByteBuffer& image, size_t size)
   // Note: all Harmony/Melody custom drivers also contain the value
   // 0x10adab1e (LOADABLE) if needed for future improvement
   uInt8 cdf[] = { 'C', 'D', 'F' };
-  return searchForBytes(image, size, cdf, 3, 3);
+  uInt8 cdfjplus[] = { 'P', 'L', 'U', 'S', 'C', 'D', 'F', 'J' };
+  return (searchForBytes(image, size, cdf, 3, 3) || 
+          searchForBytes(image, size, cdfjplus, 8, 1));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
