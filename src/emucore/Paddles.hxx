@@ -178,7 +178,7 @@ class Paddles : public Controller
 
     bool myKeyRepeat0{false}, myKeyRepeat1{false};
     int myPaddleRepeat0{0}, myPaddleRepeat1{0};
-    std::array<int, 2> myCharge{TRIGRANGE/2, TRIGRANGE/2}, myLastCharge{0};
+    std::array<int, 2> myCharge{{TRIGRANGE/2, TRIGRANGE/2}}, myLastCharge{{0}};
     int myLastAxisX{0}, myLastAxisY{0};
     int myAxisDigitalZero{0}, myAxisDigitalOne{0};
 
