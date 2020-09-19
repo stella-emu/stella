@@ -646,7 +646,7 @@ uInt32 CartridgeCDF::getWaveform(uInt8 index) const
                  (myRAM[address + 2] << 16) +
                  (myRAM[address + 3] << 24);   // high byte
 
-  result -= (0x40000000 + 2_KB);
+  result -= (0x40000000 + uInt32(2_KB));
 
   if (!isCDFJplus()) {
     if (result >= 4096) {
@@ -795,12 +795,12 @@ bool CartridgeCDF::isCDFJplus() const
 
 uInt32 CartridgeCDF::ramSize() const
 {
-  return isCDFJplus() ? 32_KB : 8_KB;
+  return uInt32(isCDFJplus() ? 32_KB : 8_KB);
 }
 
 uInt32 CartridgeCDF::romSize() const
 {
-  return isCDFJplus() ? 512_KB : 32_KB;  
+  return uInt32(isCDFJplus() ? 512_KB : 32_KB);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
