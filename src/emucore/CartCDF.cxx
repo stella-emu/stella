@@ -788,7 +788,7 @@ string CartridgeCDF::name() const
     case CDFSubtype::CDFJ:
       return "CartridgeCDFJ";
     case CDFSubtype::CDFJplus:
-      return "CartridgeCDFJplus";
+      return "CartridgeCDFJ+";
     default:
       return "Cart unknown";
   }
