@@ -27,14 +27,30 @@ class Thumbulator;
 /**
   Cartridge class used for CDF/CDFJ/CDFJ+.
 
-  There are seven 4K program banks, a 4K Display Data RAM,
-  1K C Variable and Stack, and the CDF chip.
-  CDF chip access is mapped to $1000 - $103F (both read and write).
-  Program banks are accessible by read/write to $1FF5 - $1FFB
-  FIXME: THIS NEEDS TO BE UPDATED
+  CDFJ bankswitching for Atari games using ARM/C code.
+  There are two variants supported:
+  1) CDF/CDFJ - initial scheme with 32K ROM and 8K RAM
+  2) CDFJ+ - support for larger ROM sizes (64/128/256/512K) and RAM sizes (16/32K)
+
+  Features:
+  32 fast fetchers
+  2 fast jump queues
+  1 parameter queue
+  3 channel digital audio/1 channel sampled sound
+  7 banks (4K) of atari code
+  4K display data (16K and 32K available with CDFJ+)
+
+  Note that for CDFJ+, the same driver is used for all RAM/RAM combinations.
+  It is left to the programmer to ensure that only the available RAM/ROM on the target device is used.
+
+  Bankswitching Note:
+  CDF/CDFJ uses $FFF5 through $FFFB (initial bank 6)
+  CDFJ+ uses $FFF4 through $FFFA (initial bank 0)
+
+  The letters CDFJ stand for Chris, Darrell, Fred, and John.
 
   @authors: Darrell Spice Jr, Chris Walton, Fred Quimby, John Champeau
-            Stephen Anthony, Bradford W. Mott
+            Thomas Jentzsch, Stephen Anthony, Bradford W. Mott
 */
 class CartridgeCDF : public Cartridge
 {
