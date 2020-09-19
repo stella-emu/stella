@@ -20,6 +20,7 @@ build/
 src/macosx/M6502.ins
 *.dSYM
 .vscode/c_cpp_properties.json
+.vscode/settings.json
 src/windows/sdl/*
 src/windows/x64/*
 src/windows/Win32/*
