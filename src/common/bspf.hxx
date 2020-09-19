@@ -160,6 +160,12 @@ namespace BSPF
     return (val < lower) ? upper : (val > upper) ? lower : val;
   }
 
+  // Test whether the vector contains the given value
+  template<typename T>
+  bool contains(const std::vector<T>& v, const T& elem) {
+    return !(v.empty() || std::find(v.begin(), v.end(), elem) == v.end());
+  }
+
   // Convert string to given case
   inline const string& toUpperCase(string& s)
   {
