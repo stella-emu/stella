@@ -41,6 +41,8 @@
 
   * Added option to select the audio device.
 
+  * Added support for CDFJ+ bankswitching type.
+
   * Further enhanced UA bankswitching to support more Brazilian carts.
 
   * Added option to display detected settings info when a ROM is loaded.
