@@ -497,10 +497,11 @@ string CartridgeCDFWidget::describeCDFVersion(CartridgeCDF::CDFSubtype subtype)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeCDFWidget::isCDFJ() const
 {
-  return (myCart.myCDFSubtype == CartridgeCDF::CDFSubtype::CDFJ);
+  return myCart.myCDFSubtype == CartridgeCDF::CDFSubtype::CDFJ;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeCDFWidget::isCDFJplus() const
 {
-  return (myCart.isCDFJplus());
+  return myCart.isCDFJplus();
 }
