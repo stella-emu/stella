@@ -75,15 +75,12 @@ CartridgeCDF::CartridgeCDF(const ByteBuffer& image, size_t size,
   // Detect cart version
   setupVersion();
 
-  // CDFJ+ has different settings
-  bool cdfjPlus = (myCDFSubtype == CDFSubtype::CDFJplus);
-
   // The lowest 2K is not accessible to the debugger
-  createRomAccessArrays(cdfjPlus ? 510_KB : 28_KB);
+  createRomAccessArrays(isCDFJplus() ? 510_KB : 28_KB);
 
   // Pointer to the program ROM
   // which starts after the 2K driver (and 2K C Code for CDF)
-  myProgramImage = myImage.get() + (cdfjPlus ? 2_KB : 4_KB);
+  myProgramImage = myImage.get() + (isCDFJplus() ? 2_KB : 4_KB);
 
   // Pointer to CDF driver in RAM
   myDriverImage = myRAM.data();
@@ -93,7 +90,7 @@ CartridgeCDF::CartridgeCDF(const ByteBuffer& image, size_t size,
 
   // C addresses
   uInt32 cBase, cStart, cStack;
-  if (cdfjPlus) {
+  if (isCDFJplus()) {
     cBase = getUInt32(myImage.get(), 0x17F8) & 0xFFFFFFFE;    // C Base Address
     cStart = cBase;                                           // C Start Address
     cStack = getUInt32(myImage.get(), 0x17F4);                // C Stack
@@ -123,7 +120,7 @@ void CartridgeCDF::reset()
   initializeRAM(myRAM.data()+2_KB, myRAM.size()-2_KB);
 
   // CDF always starts in bank 6, CDFJ+ in bank 0
-  initializeStartBank((myCDFSubtype == CDFSubtype::CDFJplus) ? 0 : 6);
+  initializeStartBank(isCDFJplus() ? 0 : 6);
 
   myAudioCycles = myARMCycles = 0;
   myFractionalClocks = 0.0;
@@ -218,8 +215,6 @@ inline void CartridgeCDF::callFunction(uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeCDF::peek(uInt16 address)
 {
-  bool cdfjPlus = (myCDFSubtype == CDFSubtype::CDFJplus);
-
   address &= 0x0FFF;
   uInt8 peekvalue = myProgramImage[myBankOffset + address];
 
@@ -239,7 +234,7 @@ uInt8 CartridgeCDF::peek(uInt16 address)
     ++myJMPoperandAddress;
 
     pointer = getDatastreamPointer(myFastJumpStream);
-    if (cdfjPlus) {
+    if (isCDFJplus()) {
       value = myDisplayImage[ pointer >> 16 ];
       pointer += 0x00010000;  // always increment by 1
     } else {
@@ -316,35 +311,35 @@ uInt8 CartridgeCDF::peek(uInt16 address)
   switch(address)
   {
     case 0x0FF4:
-      bank(cdfjPlus ? 0 : 6);
+      bank(isCDFJplus() ? 0 : 6);
       break;
 
     case 0x0FF5:
-      bank(cdfjPlus ? 1 : 0);
+      bank(isCDFJplus() ? 1 : 0);
       break;
 
     case 0x0FF6:
-      bank(cdfjPlus ? 2 : 1);
+      bank(isCDFJplus() ? 2 : 1);
       break;
 
     case 0x0FF7:
-      bank(cdfjPlus ? 3 : 2);
+      bank(isCDFJplus() ? 3 : 2);
       break;
 
     case 0x0FF8:
-      bank(cdfjPlus ? 4 : 3);
+      bank(isCDFJplus() ? 4 : 3);
       break;
 
     case 0x0FF9:
-      bank(cdfjPlus ? 5 : 4);
+      bank(isCDFJplus() ? 5 : 4);
       break;
 
     case 0x0FFA:
-      bank(cdfjPlus ? 6 : 5);
+      bank(isCDFJplus() ? 6 : 5);
       break;
 
     case 0x0FFB:
-      bank(cdfjPlus ? 0 : 6);
+      bank(isCDFJplus() ? 0 : 6);
       break;
 
     default:
@@ -361,14 +356,13 @@ uInt8 CartridgeCDF::peek(uInt16 address)
 bool CartridgeCDF::poke(uInt16 address, uInt8 value)
 {
   uInt32 pointer;
-  bool cdfjPlus = (myCDFSubtype == CDFSubtype::CDFJplus);
 
   address &= 0x0FFF;
   switch(address)
   {
     case 0x0FF0:   // DSWRITE
       pointer = getDatastreamPointer(COMMSTREAM);
-      if (cdfjPlus) {
+      if (isCDFJplus()) {
         myDisplayImage[ pointer >> 16 ] = value;
         pointer += 0x00010000;  // always increment by 1 when writing  
       } else {
@@ -381,7 +375,7 @@ bool CartridgeCDF::poke(uInt16 address, uInt8 value)
     case 0x0FF1:   // DSPTR
       pointer = getDatastreamPointer(COMMSTREAM);
       pointer <<= 8;
-      if (cdfjPlus) {
+      if (isCDFJplus()) {
         pointer &= 0xff000000;
         pointer |= (value << 16);
       } else {
@@ -400,35 +394,35 @@ bool CartridgeCDF::poke(uInt16 address, uInt8 value)
       break;
 
    case 0x00FF4:
-      bank(cdfjPlus ? 0 : 6);
+      bank(isCDFJplus() ? 0 : 6);
       break;
 
     case 0x0FF5:
-      bank(cdfjPlus ? 1 : 0);
+      bank(isCDFJplus() ? 1 : 0);
       break;
 
     case 0x0FF6:
-      bank(cdfjPlus ? 2 : 1);
+      bank(isCDFJplus() ? 2 : 1);
       break;
 
     case 0x0FF7:
-      bank(cdfjPlus ? 3 : 2);
+      bank(isCDFJplus() ? 3 : 2);
       break;
 
     case 0x0FF8:
-      bank(cdfjPlus ? 4 : 3);
+      bank(isCDFJplus() ? 4 : 3);
       break;
 
     case 0x0FF9:
-      bank(cdfjPlus ? 5 : 4);
+      bank(isCDFJplus() ? 5 : 4);
       break;
 
     case 0x0FFA:
-      bank(cdfjPlus ? 6 : 5);
+      bank(isCDFJplus() ? 6 : 5);
       break;
 
     case 0x0FFB:
-      bank(cdfjPlus ? 0 : 6);
+      bank(isCDFJplus() ? 0 : 6);
       break;
 
     default:
@@ -654,7 +648,7 @@ uInt32 CartridgeCDF::getWaveform(uInt8 index) const
 
   result -= (0x40000000 + 2_KB);
 
-  if (myCDFSubtype != CDFSubtype::CDFJplus) {
+  if (!isCDFJplus()) {
     if (result >= 4096) {
       result &= 4095;
     }
@@ -698,8 +692,7 @@ uInt8 CartridgeCDF::readFromDatastream(uInt8 index)
   uInt16 increment = getDatastreamIncrement(index);
 
   uInt8 value;
-  bool cdfjPlus = (myCDFSubtype == CDFSubtype::CDFJplus);
-  if (cdfjPlus) {
+  if (isCDFJplus()) {
     value = myDisplayImage[ pointer >> 16 ];
     pointer += (increment << 8);
   } else {
@@ -792,6 +785,22 @@ string CartridgeCDF::name() const
     default:
       return "Cart unknown";
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeCDF::isCDFJplus() const
+{
+  return (myCDFSubtype == CDFSubtype::CDFJplus);
+}
+
+uInt32 CartridgeCDF::ramSize() const
+{
+  return isCDFJplus() ? 32_KB : 8_KB;
+}
+
+uInt32 CartridgeCDF::romSize() const
+{
+  return isCDFJplus() ? 512_KB : 32_KB;  
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
