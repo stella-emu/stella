@@ -34,13 +34,23 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   int xpos = HBORDER, ypos = VBORDER;
 
   VariantList items;
-  VarList::push_back(items, "0 ($FFF5)");
-  VarList::push_back(items, "1 ($FFF6)");
-  VarList::push_back(items, "2 ($FFF7)");
-  VarList::push_back(items, "3 ($FFF8)");
-  VarList::push_back(items, "4 ($FFF9)");
-  VarList::push_back(items, "5 ($FFFA)");
-  VarList::push_back(items, "6 ($FFFB)");
+  if (isCDFJplus()) {
+    VarList::push_back(items, "0 ($FFF4)");
+    VarList::push_back(items, "1 ($FFF5)");
+    VarList::push_back(items, "2 ($FFF6)");
+    VarList::push_back(items, "3 ($FFF7)");
+    VarList::push_back(items, "4 ($FFF8)");
+    VarList::push_back(items, "5 ($FFF9)");
+    VarList::push_back(items, "6 ($FFFA)");
+  } else {
+    VarList::push_back(items, "0 ($FFF5)");
+    VarList::push_back(items, "1 ($FFF6)");
+    VarList::push_back(items, "2 ($FFF7)");
+    VarList::push_back(items, "3 ($FFF8)");
+    VarList::push_back(items, "4 ($FFF9)");
+    VarList::push_back(items, "5 ($FFFA)");
+    VarList::push_back(items, "6 ($FFFB)");
+  }
   myBank = new PopUpWidget(boss, _font, xpos, ypos, _font.getStringWidth("0 ($FFFx)"),
                            myLineHeight, items,
                            "Set bank ", 0, kBankChanged);
@@ -73,7 +83,7 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   myCommandStreamPointer->setTarget(this);
   myCommandStreamPointer->setEditable(false);
 
-  if (isCDFJ())
+  if (isCDFJ() || isCDFJplus())
     myJumpStreamPointers = new DataGridWidget(boss, _nfont, DS_X  + myDatastreamPointers->getWidth() * 2 / 4,
                                               ypos+myLineHeight + 9*myLineHeight, 2, 1, 6, 32,
                                               Common::Base::Fmt::_16_3_2);
@@ -102,7 +112,7 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   new StaticTextWidget(_boss, _font, DS_X - _font.getStringWidth("xx "),
                        ypos+myLineHeight + 9*myLineHeight + 2,
                        lwidth, myFontHeight,
-                       isCDFJ() ? "Jump Data (21|22)" : "Jump Data (21)");
+                       (isCDFJ() || isCDFJplus()) ? "Jump Data (21|22)" : "Jump Data (21)");
 
   // Datastream Increments
   xpos = DS_X + myDatastreamPointers->getWidth() + 16;
@@ -121,7 +131,7 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   myCommandStreamIncrement->setEditable(false);
 
   myJumpStreamIncrements = new DataGridWidget(boss, _nfont, xpos,
-                                              ypos+myLineHeight + 9*myLineHeight, isCDFJ() ? 2 : 1, 1, 5, 32,
+                                              ypos+myLineHeight + 9*myLineHeight, (isCDFJ() || isCDFJplus()) ? 2 : 1, 1, 5, 32,
                                               Common::Base::Fmt::_16_2_2);
   myJumpStreamIncrements->setTarget(this);
   myJumpStreamIncrements->setEditable(false);
@@ -205,7 +215,7 @@ void CartridgeCDFWidget::saveOldState()
   myOldState.internalram.clear();
   myOldState.samplepointer.clear();
 
-  for(uInt32 i = 0; i < static_cast<uInt32>(isCDFJ() ? 35 : 34); ++i)
+  for(uInt32 i = 0; i < static_cast<uInt32>((isCDFJ() || isCDFJplus()) ? 35 : 34); ++i)
   {
     // Pointers are stored as:
     // PPPFF---
@@ -281,7 +291,7 @@ void CartridgeCDFWidget::loadConfig()
   myCommandStreamPointer->setList(alist, vlist, changed);
 
   alist.clear();  vlist.clear();  changed.clear();
-  for(int i = 0; i < (isCDFJ() ? 2 : 1); ++i)
+  for(int i = 0; i < ((isCDFJ() || isCDFJplus()) ? 2 : 1); ++i)
   {
     Int32 pointervalue = myCart.getDatastreamPointer(0x21 + i) >> 12;
     alist.push_back(0);  vlist.push_back(pointervalue);
@@ -305,7 +315,7 @@ void CartridgeCDFWidget::loadConfig()
   myCommandStreamIncrement->setList(alist, vlist, changed);
 
   alist.clear();  vlist.clear();  changed.clear();
-  for(int i = 0; i < (isCDFJ() ? 2 : 1); ++i)
+  for(int i = 0; i < ((isCDFJ() || isCDFJplus()) ? 2 : 1); ++i)
   {
     Int32 pointervalue = myCart.getDatastreamIncrement(0x21 + i) >> 12;
     alist.push_back(0);  vlist.push_back(pointervalue);
@@ -387,11 +397,12 @@ string CartridgeCDFWidget::bankState()
 {
   ostringstream& buf = buffer();
 
-  static constexpr std::array<const char*, 7> spot = {
-    "$FFF5", "$FFF6", "$FFF7", "$FFF8", "$FFF9", "$FFFA", "$FFFB"
+  static constexpr std::array<const char*, 8> spot = {
+    "$FFF4", "$FFF5", "$FFF6", "$FFF7", "$FFF8", "$FFF9", "$FFFA", "$FFFB"
   };
+
   buf << "Bank = " << std::dec << myCart.getBank()
-  << ", hotspot = " << spot[myCart.getBank()];
+  << ", hotspot = " << spot[myCart.getBank() + (isCDFJplus() ? 0 : 1)];
 
   return buf.str();
 }
@@ -399,7 +410,7 @@ string CartridgeCDFWidget::bankState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 CartridgeCDFWidget::internalRamSize()
 {
-  return 8*1024;
+  return isCDFJplus() ? 32*1024 : 8*1024;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -412,13 +423,21 @@ uInt32 CartridgeCDFWidget::internalRamRPort(int start)
 string CartridgeCDFWidget::internalRamDescription()
 {
   ostringstream desc;
-  desc << "$0000 - $07FF - CDF driver\n"
-  << "                not accessible to 6507\n"
-  << "$0800 - $17FF - 4K Data Stream storage\n"
-  << "                indirectly accessible to 6507\n"
-  << "                via CDF's Data Stream registers\n"
-  << "$1800 - $1FFF - 2K C variable storage and stack\n"
-  << "                not accessible to 6507";
+  if (isCDFJplus()) {
+    desc << "$0000 - $07FF - CDFJ+ driver\n"
+    << "                not accessible to 6507\n"
+    << "$0800 - $7FFF - 30K Data Stream storage\n"
+    << "                indirectly accessible to 6507\n"
+    << "                via fast fecthers\n";
+  } else {
+    desc << "$0000 - $07FF - CDF/CDFJ driver\n"
+    << "                not accessible to 6507\n"
+    << "$0800 - $17FF - 4K Data Stream storage\n"
+    << "                indirectly accessible to 6507\n"
+    << "                via fast fetchers\n"
+    << "$1800 - $1FFF - 2K C variable storage and stack\n"
+    << "                not accessible to 6507";
+  }
 
   return desc.str();
 }
@@ -478,6 +497,10 @@ string CartridgeCDFWidget::describeCDFVersion(CartridgeCDF::CDFSubtype subtype)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeCDFWidget::isCDFJ() const
 {
-  return (myCart.myCDFSubtype == CartridgeCDF::CDFSubtype::CDFJ ||
-          myCart.myCDFSubtype == CartridgeCDF::CDFSubtype::CDFJplus); // FIXME: Separate settings for CDFJ+
+  return (myCart.myCDFSubtype == CartridgeCDF::CDFSubtype::CDFJ);
+}
+
+bool CartridgeCDFWidget::isCDFJplus() const
+{
+  return (myCart.myCDFSubtype == CartridgeCDF::CDFSubtype::CDFJplus);
 }
