@@ -410,7 +410,7 @@ string CartridgeCDFWidget::bankState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 CartridgeCDFWidget::internalRamSize()
 {
-  return isCDFJplus() ? 32*1024 : 8*1024;
+  return myCart.ramSize();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -502,5 +502,5 @@ bool CartridgeCDFWidget::isCDFJ() const
 
 bool CartridgeCDFWidget::isCDFJplus() const
 {
-  return (myCart.myCDFSubtype == CartridgeCDF::CDFSubtype::CDFJplus);
+  return (myCart.isCDFJplus());
 }

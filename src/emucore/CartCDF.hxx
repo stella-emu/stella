@@ -154,6 +154,21 @@ class CartridgeCDF : public Cartridge
     */
     uInt32 thumbCallback(uInt8 function, uInt32 value1, uInt32 value2) override;
 
+    /**
+      Set if we are using CDFJ+ bankswitching
+     */
+    bool isCDFJplus() const;
+
+    /**
+      Size of SRAM (RAM) area in cart
+     */   
+    uInt32 ramSize() const;
+
+    /**
+      Size of Flash memory (ROM) area in cart
+     */
+    uInt32 romSize() const;
+
 #ifdef DEBUGGER_SUPPORT
     /**
       Get debugger widget responsible for accessing the inner workings
