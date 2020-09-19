@@ -25,16 +25,15 @@ class Thumbulator;
 #include "Cart.hxx"
 
 /**
-  Cartridge class used for CDF.
+  Cartridge class used for CDF/CDFJ/CDFJ+.
 
   There are seven 4K program banks, a 4K Display Data RAM,
   1K C Variable and Stack, and the CDF chip.
   CDF chip access is mapped to $1000 - $103F (both read and write).
-  Program banks are accessible by read/write to $1FF5 - $1FFB.
-
+  Program banks are accessible by read/write to $1FF5 - $1FFB
   FIXME: THIS NEEDS TO BE UPDATED
 
-  @authors: Darrell Spice Jr, Chris Walton, Fred Quimby,
+  @authors: Darrell Spice Jr, Chris Walton, Fred Quimby, John Champeau
             Stephen Anthony, Bradford W. Mott
 */
 class CartridgeCDF : public Cartridge
@@ -48,7 +47,8 @@ class CartridgeCDF : public Cartridge
     enum class CDFSubtype {
       CDF0,
       CDF1,
-      CDFJ
+      CDFJ,
+      CDFJplus
     };
 
   public:
@@ -154,6 +154,21 @@ class CartridgeCDF : public Cartridge
     */
     uInt32 thumbCallback(uInt8 function, uInt32 value1, uInt32 value2) override;
 
+    /**
+      Set if we are using CDFJ+ bankswitching
+     */
+    bool isCDFJplus() const;
+
+    /**
+      Size of SRAM (RAM) area in cart
+     */   
+    uInt32 ramSize() const;
+
+    /**
+      Size of Flash memory (ROM) area in cart
+     */
+    uInt32 romSize() const;
+
 #ifdef DEBUGGER_SUPPORT
     /**
       Get debugger widget responsible for accessing the inner workings
@@ -220,23 +235,26 @@ class CartridgeCDF : public Cartridge
     void setupVersion();
 
   private:
-    // The 32K ROM image of the cartridge
+    // The ROM image of the cartridge
     ByteBuffer myImage;
 
-    // Pointer to the 28K program ROM image of the cartridge
+    // Pointer to the program ROM image of the cartridge
     uInt8* myProgramImage{nullptr};
 
-    // Pointer to the 4K display ROM image of the cartridge
+    // Pointer to the display ROM image of the cartridge
     uInt8* myDisplayImage{nullptr};
 
-    // Pointer to the 2K CDF driver image in RAM
+    // Pointer to the driver image in RAM
     uInt8* myDriverImage{nullptr};
 
-    // The CDF 8k RAM image, used as:
-    //   $0000 - 2K CDF driver
+    // The CDFJ 8K RAM image, used as:
+    //   $0000 - 2K Driver
     //   $0800 - 4K Display Data
     //   $1800 - 2K C Variable & Stack
-    std::array<uInt8, 8_KB> myRAM;
+    // For CDFJ+, used as:
+    //   $0000 - 2K Driver
+    //   $0800 - Display Data, C Variables & Stack
+    std::array<uInt8, 32_KB> myRAM;
 
     // Pointer to the Thumb ARM emulator object
     unique_ptr<Thumbulator> myThumbEmulator;

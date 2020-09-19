@@ -75,6 +75,7 @@ class CartridgeCDFWidget : public CartDebugWidget
 
   private:
     bool isCDFJ() const;
+    bool isCDFJplus() const;
 
     static string describeCDFVersion(CartridgeCDF::CDFSubtype subtype);
 
