@@ -37,6 +37,8 @@
     are no longer corrupted/cut off.  This includes properly supporting the
     2600-daptor II, which is flashable to an AVox-USB converter.
 
+  * The serial port to use for an AtariVox-USB adaptor is now autodetected.
+
   * Added QuadTari controller support.
 
   * Added option to select the audio device.

@@ -94,7 +94,7 @@ class InputDialog : public Dialog
 
     CheckboxWidget*   mySAPort{nullptr};
 
-    EditTextWidget*   myAVoxPort{nullptr};
+    PopUpWidget*      myAVoxPort{nullptr};
 
     SliderWidget*     myDeadzone{nullptr};
     SliderWidget*     myPaddleSpeed{nullptr};
