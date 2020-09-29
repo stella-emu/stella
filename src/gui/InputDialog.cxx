@@ -34,6 +34,7 @@
 #include "Widget.hxx"
 #include "Font.hxx"
 #include "MessageBox.hxx"
+#include "MediaFactory.hxx"
 #include "InputDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -222,10 +223,11 @@ void InputDialog::addDevicePortTab()
   // Add AtariVox serial port
   ypos += lineHeight + VGAP * 3;
   lwidth = _font.getStringWidth("AtariVox serial port ");
-  fwidth = _w - HBORDER * 2 - 2 - lwidth;
-  new StaticTextWidget(myTab, _font, HBORDER, ypos + 2, "AtariVox serial port ");
-  myAVoxPort = new EditTextWidget(myTab, _font, HBORDER + lwidth, ypos,
-                                  fwidth, fontHeight);
+  fwidth = _w - HBORDER * 2 - 2 - lwidth - 20;
+  VariantList items;
+  VarList::push_back(items, "None detected", "");
+  myAVoxPort = new PopUpWidget(myTab, _font, HBORDER, ypos, fwidth, lineHeight, items,
+                               "AtariVox serial port ", lwidth, kCursorStateChanged);
   wid.push_back(myAVoxPort);
 
   // Add items for virtual device ports
@@ -359,7 +361,16 @@ void InputDialog::loadConfig()
   myAutoFireRate->setValue(settings.getInt("autofirerate"));
 
   // AtariVox serial port
-  myAVoxPort->setText(settings.getString("avoxport"));
+  const string& avoxport = settings.getString("avoxport");
+  StringList ports = MediaFactory::createSerialPort()->portNames();
+  if(avoxport != EmptyString && !BSPF::contains(ports, avoxport))
+    ports.push_back(avoxport);
+  VariantList items;
+  VarList::push_back(items, "None detected", "");
+  for(const auto& port: ports)
+    VarList::push_back(items, port, port);
+  myAVoxPort->addItems(items);
+  myAVoxPort->setSelected(avoxport);
 
   // EEPROM erase (only enable in emulation mode and for valid controllers)
   if(instance().hasConsole())
@@ -440,7 +451,7 @@ void InputDialog::saveConfig()
   Controller::setAutoFireRate(rate);
 
   // AtariVox serial port
-  settings.setValue("avoxport", myAVoxPort->getText());
+  settings.setValue("avoxport", myAVoxPort->getSelectedTag().toString());
 
   // Allow all 4 joystick directions
   bool allowall4 = myAllowAll4->getState();
@@ -500,7 +511,7 @@ void InputDialog::setDefaults()
       // Autofire rate
       myAutoFireRate->setValue(0);
       // AtariVox serial port
-      myAVoxPort->setText("");
+      myAVoxPort->setSelectedMax();
 
       // Allow all 4 joystick directions
       myAllowAll4->setState(false);
