@@ -2038,6 +2038,7 @@
     <ClInclude Include="..\libpng\png.h" />
     <ClInclude Include="..\libpng\pngconf.h" />
     <ClInclude Include="..\libpng\pngpriv.h" />
+    <ClInclude Include="Windows.hxx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\emucore\tia\frame-manager\module.mk" />
