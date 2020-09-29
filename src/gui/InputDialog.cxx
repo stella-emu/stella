@@ -130,7 +130,7 @@ void InputDialog::addDevicePortTab()
   myDeadzone->setTickmarkIntervals(4);
   wid.push_back(myDeadzone);
 
-  xpos = HBORDER; ypos += lineHeight + VGAP * 4;
+  xpos = HBORDER; ypos += lineHeight + VGAP * 3;
   new StaticTextWidget(myTab, _font, xpos, ypos+1, "Analog paddle:");
   xpos += fontWidth * 2;
 
@@ -165,7 +165,7 @@ void InputDialog::addDevicePortTab()
   wid.push_back(myDejitterDiff);
 
   // Add paddle speed (digital emulation)
-  ypos += lineHeight + VGAP * 4;
+  ypos += lineHeight + VGAP * 3;
   myDPaddleSpeed = new SliderWidget(myTab, _font, HBORDER, ypos - 1, 13 * fontWidth, lineHeight,
                                     "Digital paddle sensitivity",
                                     lwidth, kDPSpeedChanged, 4 * fontWidth, "%");
@@ -173,7 +173,7 @@ void InputDialog::addDevicePortTab()
   myDPaddleSpeed->setTickmarkIntervals(4);
   wid.push_back(myDPaddleSpeed);
 
-  ypos += lineHeight + VGAP * 4;
+  ypos += lineHeight + VGAP * 3;
   myAutoFireRate = new SliderWidget(myTab, _font, HBORDER, ypos - 1, 13 * fontWidth, lineHeight,
                                     "Autofire rate",
                                     lwidth, kAutoFireChanged, 5 * fontWidth, "Hz");
@@ -223,7 +223,7 @@ void InputDialog::addDevicePortTab()
   // Add AtariVox serial port
   ypos += lineHeight + VGAP * 3;
   lwidth = _font.getStringWidth("AtariVox serial port ");
-  fwidth = _w - HBORDER * 2 - 2 - lwidth - 20;
+  fwidth = _w - HBORDER * 2 - 2 - lwidth - PopUpWidget::dropDownWidth(_font);
   VariantList items;
   VarList::push_back(items, "None detected", "");
   myAVoxPort = new PopUpWidget(myTab, _font, HBORDER, ypos, fwidth, lineHeight, items,
