@@ -18,16 +18,8 @@
 #include <cassert>
 #pragma warning( disable : 4091 )
 #include <shlobj.h>
-
-#ifdef ARRAYSIZE
-  #undef ARRAYSIZE
-#endif
-
 #include <io.h>
 #include <stdio.h>
-#include <windows.h>
-// winnt.h defines ARRAYSIZE, but we want our own one...
-#undef ARRAYSIZE
 
 // F_OK, R_OK and W_OK are not defined under MSVC, so we define them here
 // For more information on the modes used by MSVC, check:
@@ -44,6 +36,7 @@
   #define W_OK 2
 #endif
 
+#include "Windows.hxx"
 #include "FSNodeWINDOWS.hxx"
 
 /**

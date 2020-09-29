@@ -18,8 +18,7 @@
 #ifndef SERIALPORT_WINDOWS_HXX
 #define SERIALPORT_WINDOWS_HXX
 
-#include <windows.h>
-
+#include "Windows.hxx"
 #include "SerialPort.hxx"
 
 /**
