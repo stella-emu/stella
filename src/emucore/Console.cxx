@@ -622,11 +622,20 @@ FBInitStatus Console::initializeVideo(bool full)
 
   if(full)
   {
+    uInt32 width, height;
+    if (myOSystem.settings().getBool("plain-video")) {
+      width =  2 * myTIA->width();
+      height = myTIA->height();
+    } else {
+      width = TIAConstants::viewableWidth;
+      height = TIAConstants::viewableHeight;
+    }
+
     bool devSettings = myOSystem.settings().getBool("dev.settings");
     const string& title = string("Stella ") + STELLA_VERSION +
                    ": \"" + myProperties.get(PropType::Cart_Name) + "\"";
     fbstatus = myOSystem.frameBuffer().createDisplay(title, FrameBuffer::BufferType::Emulator,
-        TIAConstants::viewableWidth, TIAConstants::viewableHeight, false);
+        width, height, false);
     if(fbstatus != FBInitStatus::Success)
       return fbstatus;
 
