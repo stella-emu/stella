@@ -183,13 +183,10 @@ class TIASurface
     */
     uInt32 averageBuffers(uInt32 bufOfs);
 
+    // Is plain video mode enabled?
+    bool plainVideoEnabled() const;
+
   private:
-    OSystem& myOSystem;
-    FrameBuffer& myFB;
-    TIA* myTIA{nullptr};
-
-    shared_ptr<FBSurface> myTiaSurface, mySLineSurface, myBaseTiaSurface;
-
     // Enumeration created such that phosphor off/on is in LSB,
     // and Blargg off/on is in MSB
     enum class Filter: uInt8 {
@@ -199,6 +196,13 @@ class TIASurface
       BlarggPhosphor = 0x11
     };
     Filter myFilter{Filter::Normal};
+
+  private:
+    OSystem& myOSystem;
+    FrameBuffer& myFB;
+    TIA* myTIA{nullptr};
+
+    shared_ptr<FBSurface> myTiaSurface, mySLineSurface, myBaseTiaSurface;
 
     // NTSC object to use in TIA rendering mode
     NTSCFilter myNTSCFilter;

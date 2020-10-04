@@ -56,7 +56,9 @@ TIASurface::TIASurface(OSystem& system)
   myTiaSurface = myFB.allocateSurface(
     AtariNTSC::outWidth(TIAConstants::frameBufferWidth),
     TIAConstants::frameBufferHeight,
-    interpolationModeFromSettings(myOSystem.settings())
+    plainVideoEnabled()
+      ? FrameBuffer::ScalingInterpolation::none
+      : interpolationModeFromSettings(myOSystem.settings())
   );
 
   // Generate scanline data, and a pre-defined scanline surface
@@ -276,6 +278,8 @@ uInt32 TIASurface::enableScanlines(int change)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIASurface::enablePhosphor(bool enable, int blend)
 {
+  enable = enable && !plainVideoEnabled();
+
   if(myPhosphorHandler.initialize(enable, blend))
   {
     myFilter = Filter(enable ? uInt8(myFilter) | 0x01 : uInt8(myFilter) & 0x10);
@@ -286,6 +290,8 @@ void TIASurface::enablePhosphor(bool enable, int blend)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIASurface::enableNTSC(bool enable)
 {
+  enable = enable && !plainVideoEnabled();
+
   myFilter = Filter(enable ? uInt8(myFilter) | 0x10 : uInt8(myFilter) & 0x01);
 
   uInt32 surfaceWidth = enable ?
@@ -299,7 +305,7 @@ void TIASurface::enableNTSC(bool enable)
 
   mySLineSurface->setSrcSize(1, 2 * myTIA->height());
 
-  myScanlinesEnabled = myOSystem.settings().getInt("tv.scanlines") > 0;
+  myScanlinesEnabled = !plainVideoEnabled() && myOSystem.settings().getInt("tv.scanlines") > 0;
   FBSurface::Attributes& sl_attr = mySLineSurface->attributes();
   sl_attr.blending   = myScanlinesEnabled;
   sl_attr.blendalpha = myOSystem.settings().getInt("tv.scanlines");
@@ -311,8 +317,9 @@ void TIASurface::enableNTSC(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string TIASurface::effectsInfo() const
 {
-  const FBSurface::Attributes& attr = mySLineSurface->attributes();
+  if (plainVideoEnabled()) return "plain video mode";
 
+  const FBSurface::Attributes& attr = mySLineSurface->attributes();
   ostringstream buf;
   switch(myFilter)
   {
@@ -514,4 +521,9 @@ void TIASurface::updateSurfaceSettings()
   mySLineSurface->setScalingInterpolation(
       interpolationModeFromSettings(myOSystem.settings())
   );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool TIASurface::plainVideoEnabled() const {
+  return myOSystem.settings().getBool("plain-video");
 }
