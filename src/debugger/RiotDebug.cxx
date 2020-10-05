@@ -236,6 +236,18 @@ Int32 RiotDebug::timDivider() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int RiotDebug::timWrappedOnRead() const
+{
+  return mySystem.m6532().myTimWrappedOnRead;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int RiotDebug::timWrappedOnWrite() const
+{
+  return mySystem.m6532().myTimWrappedOnWrite;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool RiotDebug::diffP0(int newVal)
 {
   uInt8& switches = myConsole.switches().mySwitches;
