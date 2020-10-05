@@ -48,7 +48,6 @@ Settings::Settings()
   setPermanent("windowedpos", Common::Point(50, 50));
   setPermanent("display", 0);
   setPermanent("uimessages", "true");
-  setTemporary("plain-video", "false");
   // TIA specific options
   setPermanent("tia.inter", "false");
   setPermanent("tia.zoom", "3");
@@ -58,6 +57,7 @@ Settings::Settings()
   setPermanent("tia.fs_overscan", "0");
   setPermanent("tia.vsizeadjust", 0);
   setPermanent("tia.dbgcolors", "roygpb");
+  setTemporary("tia.plain_video", "false");
   // Palette options
   setPermanent("palette", PaletteHandler::SETTING_STANDARD);
   setPermanent("pal.phase_ntsc", "26.2");
@@ -418,7 +418,6 @@ void Settings::usage() const
     << "  -palette      <standard|     Use the specified color palette\n"
     << "                 z26|user|\n"
     << "                 custom>\n"
-    << "  -plain-video  <1|0>          Disable all scaling and postprocessing\n"
     << "  -pal.phase_ntsc <number>      Phase shift for NTSC 'custom' palette\n"
     << "  -pal.phase_pal  <number>      Phase shift for PAL 'custom' palette\n"
     << "  -pal.hue        <-1.0 - 1.0>  Adjust hue for current palette\n"
@@ -455,6 +454,7 @@ void Settings::usage() const
     << "  -tia.fs_overscan <0-10>       Add overscan to TIA image in fullscreen mode\n"
     << "  -tia.dbgcolors   <string>     Debug colors to use for each object (see manual\n"
     << "                                 for description)\n"
+    << "  -tia.plain_video <1|0>        Disable all scaling and postprocessing\n"
     << endl
     << "  -tv.filter    <0-5>           Set TV effects off (0) or to specified mode\n"
     << "                                 (1-5)\n"
