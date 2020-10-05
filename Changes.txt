@@ -53,11 +53,13 @@
 
   * Added option to disable aspect correct scaling.
 
+  * Bankswitching schemes BUS, DPC+ and CDFx now work when startup bank
+    randomization is enabled (these schemes now ignore that setting).
+
   * Replaced "Re-disassemble" with "Disassemble @ current line" in debugger.
 
   * Fixed bug when taking fullscreen snapshots; the dimensions were
     sometimes cut off.
-
 
 -Have fun!
 

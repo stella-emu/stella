@@ -177,7 +177,7 @@ class CartridgeCDF : public Cartridge
 
     /**
       Size of SRAM (RAM) area in cart
-     */   
+     */
     uInt32 ramSize() const;
 
     /**
@@ -215,9 +215,9 @@ class CartridgeCDF : public Cartridge
 
   private:
     /**
-      Checks if startup bank randomization is enabled.
-
-      @return  Whether the startup bank(s) should be randomized
+      Checks if startup bank randomization is enabled.  For this scheme,
+      randomization is not supported, since the ARM code is always in a
+      pre-defined bank, and we *must* start from there.
     */
     bool randomStartBank() const override { return false; }
 
