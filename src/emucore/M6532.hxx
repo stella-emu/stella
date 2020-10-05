@@ -250,6 +250,10 @@ class M6532 : public Device
     std::array<Device::AccessCounter, IO_SIZE * 2>    myIOAccessCounter;
     // The array used to skip the first ZP access tracking
     std::array<uInt8, RAM_SIZE>   myZPAccessDelay;
+
+    // Detect timer being accessed on wraparound
+    bool myTimWrappedOnRead{false};
+    bool myTimWrappedOnWrite{false};
 #endif // DEBUGGER_SUPPORT
 
   private:

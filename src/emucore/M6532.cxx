@@ -145,6 +145,10 @@ void M6532::updateEmulation()
   }
 
   myLastCycle = mySystem->cycles();
+
+#ifdef DEBUGGER_SUPPORT
+  myTimWrappedOnRead = myTimWrappedOnWrite = false;
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -220,7 +224,9 @@ uInt8 M6532::peek(uInt16 addr)
     {
       // Timer Flag is always cleared when accessing INTIM
       if (!myWrappedThisCycle) myInterruptFlag &= ~TimerBit;
-
+  #ifdef DEBUGGER_SUPPORT
+      myTimWrappedOnRead = myWrappedThisCycle;
+  #endif
       return myTimer;
     }
 
@@ -316,6 +322,9 @@ void M6532::setTimerRegister(uInt8 value, uInt8 interval)
 
   // Interrupt timer flag is cleared (and invalid) when writing to the timer
   if (!myWrappedThisCycle) myInterruptFlag &= ~TimerBit;
+#ifdef DEBUGGER_SUPPORT
+  myTimWrappedOnWrite = myWrappedThisCycle;
+#endif
 
   mySetTimerCycle = mySystem->cycles();
 }
