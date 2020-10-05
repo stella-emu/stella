@@ -53,6 +53,10 @@
 
   * Added option to disable aspect correct scaling.
 
+  * Added debugger pseudo-registers '_timwrapread' and '_timwrapwrite',
+    which are set when the RIOT timer is read/written on timer wraparound,
+    respectively.
+
   * Bankswitching schemes BUS, DPC+ and CDFx now work when startup bank
     randomization is enabled (these schemes now ignore that setting).
 
