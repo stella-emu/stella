@@ -623,7 +623,7 @@ FBInitStatus Console::initializeVideo(bool full)
   if(full)
   {
     uInt32 width, height;
-    if (myOSystem.settings().getBool("tia.plain_video")) {
+    if (myOSystem.settings().getBool("tia.correct_aspect")) {
       width =  2 * myTIA->width();
       height = myTIA->height();
     } else {
