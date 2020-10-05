@@ -2582,7 +2582,7 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::OverscanIncrease,        "Increase overscan in fullscreen mode",  "" },
   { Event::VidmodeDecrease,         "Previous zoom level",                   "" },
   { Event::VidmodeIncrease,         "Next zoom level",                       "" },
-  { Event::ToggleCorrectAspectRatio,"Toggle correct aspect ratio",           "" },
+  { Event::ToggleCorrectAspectRatio,"Toggle aspect ratio correct scaling",   "" },
   { Event::VSizeAdjustDecrease,     "Decrease vertical display size",        "" },
   { Event::VSizeAdjustIncrease,     "Increase vertical display size",        "" },
   { Event::VCenterDecrease,         "Move display up",                       "" },
