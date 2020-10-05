@@ -134,6 +134,8 @@ class Event
       JoystickThreeUp, JoystickThreeDown, JoystickThreeLeft, JoystickThreeRight,
       JoystickThreeFire,
 
+      ToggleCorrectAspectRatio,
+
       LastType
     };
 

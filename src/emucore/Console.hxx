@@ -277,6 +277,11 @@ class Console : public Serializable, public ConsoleIO
     void changeVSizeAdjust(int direction = +1);
 
     /**
+      Toggle the aspect ratio correction.
+    */
+    void toggleCorrectAspectRatio(bool toggle = true);
+
+    /**
       Returns the current framerate.
     */
     float getFramerate() const;

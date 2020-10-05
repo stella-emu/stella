@@ -127,8 +127,9 @@ void VideoAudioDialog::addDisplayTab()
 
   // TIA interpolation
   myTIAInterpolate = new CheckboxWidget(myTab, _font, xpos, ypos + 1, "Interpolation ");
-  wid.push_back(myTIAInterpolate);  ypos += lineHeight + VGAP * 4;
+  wid.push_back(myTIAInterpolate);
 
+  ypos += lineHeight + VGAP * 4;
   // TIA zoom levels (will be dynamically filled later)
   myTIAZoom = new SliderWidget(myTab, _font, xpos, ypos - 1, swidth, lineHeight,
                                "Zoom ", lwidth, 0, fontWidth * 4, "%");
@@ -162,6 +163,11 @@ void VideoAudioDialog::addDisplayTab()
   myTVOverscan->setTickmarkIntervals(2);
   wid.push_back(myTVOverscan);
 
+  // Aspect ratio correction
+  ypos += lineHeight + VGAP * 4;
+  myCorrectAspect = new CheckboxWidget(myTab, _font, xpos, ypos + 1, "Correct aspect ratio");
+  wid.push_back(myUseStretch);
+
   // Vertical size
   ypos += lineHeight + VGAP;
   myVSizeAdjust =
@@ -170,7 +176,6 @@ void VideoAudioDialog::addDisplayTab()
   myVSizeAdjust->setMinValue(-5); myVSizeAdjust->setMaxValue(5);
   myVSizeAdjust->setTickmarkIntervals(2);
   wid.push_back(myVSizeAdjust);
-
 
   // Add items for tab 0
   addToFocusList(wid, myTab, tabID);
@@ -494,6 +499,9 @@ void VideoAudioDialog::loadConfig()
   myTVOverscan->setValue(instance().settings().getInt("tia.fs_overscan"));
   handleFullScreenChange();
 
+  // Aspect ratio correction
+  myCorrectAspect->setState(instance().settings().getBool("tia.correct_aspect"));
+
   // Aspect ratio setting (NTSC and PAL)
   myVSizeAdjust->setValue(instance().settings().getInt("tia.vsizeadjust"));
 
@@ -616,6 +624,9 @@ void VideoAudioDialog::saveConfig()
   // TIA zoom levels
   instance().settings().setValue("tia.zoom", myTIAZoom->getValue() / 100.0);
 
+  // Aspect ratio correction
+  instance().settings().setValue("tia.correct_aspect", myCorrectAspect->getState());
+
   // Aspect ratio setting (NTSC and PAL)
   const int oldAdjust = instance().settings().getInt("tia.vsizeadjust");
   const int newAdjust = myVSizeAdjust->getValue();
@@ -729,6 +740,7 @@ void VideoAudioDialog::setDefaults()
     #endif
       myTVOverscan->setValue(0);
       myTIAZoom->setValue(300);
+      myCorrectAspect->setState(true);
       myVSizeAdjust->setValue(0);
 
       handleFullScreenChange();

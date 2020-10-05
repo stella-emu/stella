@@ -419,6 +419,7 @@ AdjustFunction EventHandler::getAdjustSetting(AdjustSetting setting)
     std::bind(&FrameBuffer::changeOverscan, &myOSystem.frameBuffer(), _1),
     std::bind(&Console::selectFormat, &myOSystem.console(), _1),
     std::bind(&Console::changeVerticalCenter, &myOSystem.console(), _1),
+    std::bind(&Console::toggleCorrectAspectRatio, &myOSystem.console(), _1),
     std::bind(&Console::changeVSizeAdjust, &myOSystem.console(), _1),
     // Palette adjustables
     std::bind(&PaletteHandler::cyclePalette, &myOSystem.frameBuffer().tiaSurface().paletteHandler(), _1),
@@ -780,7 +781,6 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
         myAdjustActive = true;
       }
       return;
-
     case Event::VSizeAdjustDecrease:
       if(pressed)
       {
@@ -798,6 +798,15 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
         myAdjustActive = true;
       }
       return;
+
+    case Event::ToggleCorrectAspectRatio:
+      if(pressed && !repeated)
+      {
+        myOSystem.console().toggleCorrectAspectRatio();
+        myAdjustSetting = AdjustSetting::ASPECT_RATIO;
+        myAdjustActive = true;
+      }
+      break;
 
     case Event::PaletteDecrease:
       if (pressed && !repeated)
@@ -2512,7 +2521,7 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::JoystickTwoLeft,         "P2 Joystick Left",                      "" },
   { Event::JoystickTwoRight,        "P2 Joystick Right",                     "" },
   { Event::JoystickTwoFire,         "P2 Joystick Fire",                      "" },
- 
+
   { Event::JoystickThreeUp,         "P3 Joystick Up",                        "" },
   { Event::JoystickThreeDown,       "P3 Joystick Down",                      "" },
   { Event::JoystickThreeLeft,       "P3 Joystick Left",                      "" },
@@ -2573,6 +2582,7 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::OverscanIncrease,        "Increase overscan in fullscreen mode",  "" },
   { Event::VidmodeDecrease,         "Previous zoom level",                   "" },
   { Event::VidmodeIncrease,         "Next zoom level",                       "" },
+  { Event::ToggleCorrectAspectRatio,"Toggle correct aspect ratio",           "" },
   { Event::VSizeAdjustDecrease,     "Decrease vertical display size",        "" },
   { Event::VSizeAdjustIncrease,     "Increase vertical display size",        "" },
   { Event::VCenterDecrease,         "Move display up",                       "" },
@@ -2725,7 +2735,7 @@ const Event::EventSet EventHandler::AudioVideoEvents = {
   Event::OverscanDecrease, Event::OverscanIncrease,
   Event::FormatDecrease, Event::FormatIncrease,
   Event::VCenterDecrease, Event::VCenterIncrease,
-  Event::VSizeAdjustDecrease, Event::VSizeAdjustIncrease,
+  Event::VSizeAdjustDecrease, Event::VSizeAdjustIncrease, Event::ToggleCorrectAspectRatio,
   Event::PaletteDecrease, Event::PaletteIncrease,
   Event::PreviousPaletteAttribute, Event::NextPaletteAttribute,
   Event::PaletteAttributeDecrease, Event::PaletteAttributeIncrease,
