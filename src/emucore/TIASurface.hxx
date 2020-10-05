@@ -184,7 +184,7 @@ class TIASurface
     uInt32 averageBuffers(uInt32 bufOfs);
 
     // Is plain video mode enabled?
-    bool plainVideoEnabled() const;
+    bool correctAspect() const;
 
   private:
     // Enumeration created such that phosphor off/on is in LSB,

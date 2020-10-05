@@ -56,7 +56,7 @@ TIASurface::TIASurface(OSystem& system)
   myTiaSurface = myFB.allocateSurface(
     AtariNTSC::outWidth(TIAConstants::frameBufferWidth),
     TIAConstants::frameBufferHeight,
-    plainVideoEnabled()
+    !correctAspect()
       ? FrameBuffer::ScalingInterpolation::none
       : interpolationModeFromSettings(myOSystem.settings())
   );
@@ -278,8 +278,6 @@ uInt32 TIASurface::enableScanlines(int change)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIASurface::enablePhosphor(bool enable, int blend)
 {
-  enable = enable && !plainVideoEnabled();
-
   if(myPhosphorHandler.initialize(enable, blend))
   {
     myFilter = Filter(enable ? uInt8(myFilter) | 0x01 : uInt8(myFilter) & 0x10);
@@ -290,8 +288,6 @@ void TIASurface::enablePhosphor(bool enable, int blend)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIASurface::enableNTSC(bool enable)
 {
-  enable = enable && !plainVideoEnabled();
-
   myFilter = Filter(enable ? uInt8(myFilter) | 0x10 : uInt8(myFilter) & 0x01);
 
   uInt32 surfaceWidth = enable ?
@@ -305,7 +301,7 @@ void TIASurface::enableNTSC(bool enable)
 
   mySLineSurface->setSrcSize(1, 2 * myTIA->height());
 
-  myScanlinesEnabled = !plainVideoEnabled() && myOSystem.settings().getInt("tv.scanlines") > 0;
+  myScanlinesEnabled = myOSystem.settings().getInt("tv.scanlines") > 0;
   FBSurface::Attributes& sl_attr = mySLineSurface->attributes();
   sl_attr.blending   = myScanlinesEnabled;
   sl_attr.blendalpha = myOSystem.settings().getInt("tv.scanlines");
@@ -317,10 +313,9 @@ void TIASurface::enableNTSC(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string TIASurface::effectsInfo() const
 {
-  if (plainVideoEnabled()) return "Plain video mode";
-
   const FBSurface::Attributes& attr = mySLineSurface->attributes();
   ostringstream buf;
+
   switch(myFilter)
   {
     case Filter::Normal:
@@ -333,12 +328,12 @@ string TIASurface::effectsInfo() const
       buf << myNTSCFilter.getPreset() << ", scanlines=" << attr.blendalpha;
       break;
     case Filter::BlarggPhosphor:
-      buf << myNTSCFilter.getPreset() << ", phosphor, scanlines="
-          << attr.blendalpha;
+      buf << myNTSCFilter.getPreset() << ", phosphor, scanlines=" << attr.blendalpha;
       break;
   }
 
   buf << ", inter=" << (myOSystem.settings().getBool("tia.inter") ? "enabled" : "disabled");
+  buf << ", aspect correction=" << (correctAspect() ? "enabled" : "disabled");
 
   return buf.str();
 }
@@ -524,6 +519,6 @@ void TIASurface::updateSurfaceSettings()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool TIASurface::plainVideoEnabled() const {
-  return myOSystem.settings().getBool("tia.plain_video");
+bool TIASurface::correctAspect() const {
+  return myOSystem.settings().getBool("tia.correct_aspect");
 }
