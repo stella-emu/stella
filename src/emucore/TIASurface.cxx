@@ -317,7 +317,7 @@ void TIASurface::enableNTSC(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string TIASurface::effectsInfo() const
 {
-  if (plainVideoEnabled()) return "plain video mode";
+  if (plainVideoEnabled()) return "Plain video mode";
 
   const FBSurface::Attributes& attr = mySLineSurface->attributes();
   ostringstream buf;
@@ -525,5 +525,5 @@ void TIASurface::updateSurfaceSettings()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIASurface::plainVideoEnabled() const {
-  return myOSystem.settings().getBool("plain-video");
+  return myOSystem.settings().getBool("tia.plain_video");
 }

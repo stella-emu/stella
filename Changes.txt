@@ -37,7 +37,7 @@
     are no longer corrupted/cut off.  This includes properly supporting the
     2600-daptor II, which is flashable to an AVox-USB converter.
 
-  * The serial port to use for an AtariVox-USB adaptor is now autodetected.
+  * Added auto-detection of the serial port used for an AtariVox-USB adaptor.
 
   * Added QuadTari controller support.
 
@@ -51,10 +51,13 @@
 
   * Added another oddball TIA glitch option for delayed background color.
 
+  * Added option to disable all scaling and postprocessing.
+
   * Replaced "Re-disassemble" with "Disassemble @ current line" in debugger.
 
   * Fixed bug when taking fullscreen snapshots; the dimensions were
     sometimes cut off.
+
 
 -Have fun!
 
