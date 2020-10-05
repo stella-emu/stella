@@ -57,7 +57,7 @@ Settings::Settings()
   setPermanent("tia.fs_overscan", "0");
   setPermanent("tia.vsizeadjust", 0);
   setPermanent("tia.dbgcolors", "roygpb");
-  setTemporary("tia.correct_aspect", "true");
+  setPermanent("tia.correct_aspect", "true");
   // Palette options
   setPermanent("palette", PaletteHandler::SETTING_STANDARD);
   setPermanent("pal.phase_ntsc", "26.2");
@@ -454,7 +454,7 @@ void Settings::usage() const
     << "  -tia.fs_overscan <0-10>       Add overscan to TIA image in fullscreen mode\n"
     << "  -tia.dbgcolors   <string>     Debug colors to use for each object (see manual\n"
     << "                                 for description)\n"
-    << "  -tia.correct_aspect <1|0>     Enable aspect correct scaling\n"
+    << "  -tia.correct_aspect <1|0>     Enable aspect ratio correct scaling\n"
     << endl
     << "  -tv.filter    <0-5>           Set TV effects off (0) or to specified mode\n"
     << "                                 (1-5)\n"

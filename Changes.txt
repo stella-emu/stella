@@ -51,7 +51,7 @@
 
   * Added another oddball TIA glitch option for delayed background color.
 
-  * Added option to disable aspect correct scaling.
+  * Added option to disable aspect ratio correct scaling.
 
   * Replaced "Re-disassemble" with "Disassemble @ current line" in debugger.
 

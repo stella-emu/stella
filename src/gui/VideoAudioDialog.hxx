@@ -75,6 +75,7 @@ class VideoAudioDialog : public Dialog
     SliderWidget*     myTVOverscan{nullptr};
     CheckboxWidget*   myRefreshAdapt{nullptr};
     SliderWidget*     myTIAZoom{nullptr};
+    CheckboxWidget*   myCorrectAspect{nullptr};
     SliderWidget*     myVSizeAdjust{nullptr};
 
     // TV effects adjustables (custom mode)

@@ -623,7 +623,7 @@ FBInitStatus Console::initializeVideo(bool full)
   if(full)
   {
     uInt32 width, height;
-    if (myOSystem.settings().getBool("tia.correct_aspect")) {
+    if (!myOSystem.settings().getBool("tia.correct_aspect")) {
       width =  2 * myTIA->width();
       height = myTIA->height();
     } else {
@@ -735,6 +735,22 @@ void Console::changeVSizeAdjust(int direction)
 
   val << (newAdjustVSize ? newAdjustVSize > 0 ? "+" : "" : " ") << newAdjustVSize << "%";
   myOSystem.frameBuffer().showMessage("V-Size", val.str(), newAdjustVSize, -5, 5);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::toggleCorrectAspectRatio(bool toggle)
+{
+  bool enabled = myOSystem.settings().getBool("tia.correct_aspect");
+
+  if(toggle)
+  {
+    enabled = !enabled;
+    myOSystem.settings().setValue("tia.correct_aspect", enabled);
+    initializeVideo();
+  }
+  const string message = string("Correct aspect ratio ") + (enabled ? "enabled" : "disabled");
+
+  myOSystem.frameBuffer().showMessage(message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
