@@ -102,6 +102,7 @@ VideoAudioDialog::VideoAudioDialog(OSystem& osystem, DialogContainer& parent,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoAudioDialog::addDisplayTab()
 {
+  const GUI::Font& ifont = instance().frameBuffer().infoFont();
   const int lineHeight   = _font.getLineHeight(),
             fontHeight   = _font.getFontHeight(),
             fontWidth    = _font.getMaxCharWidth();
@@ -165,7 +166,7 @@ void VideoAudioDialog::addDisplayTab()
 
   // Aspect ratio correction
   ypos += lineHeight + VGAP * 4;
-  myCorrectAspect = new CheckboxWidget(myTab, _font, xpos, ypos + 1, "Correct aspect ratio");
+  myCorrectAspect = new CheckboxWidget(myTab, _font, xpos, ypos + 1, "Correct aspect ratio (*)");
   wid.push_back(myUseStretch);
 
   // Vertical size
@@ -176,6 +177,14 @@ void VideoAudioDialog::addDisplayTab()
   myVSizeAdjust->setMinValue(-5); myVSizeAdjust->setMaxValue(5);
   myVSizeAdjust->setTickmarkIntervals(2);
   wid.push_back(myVSizeAdjust);
+
+
+  // Add message concerning usage
+  ypos = myTab->getHeight() - fontHeight - ifont.getFontHeight() - VGAP - VBORDER;
+  int iwidth = ifont.getStringWidth("(*) Change may require an application restart");
+  new StaticTextWidget(myTab, ifont, xpos, ypos,
+                       std::min(iwidth, _w - HBORDER * 2), ifont.getFontHeight(),
+                       "(*) Change may require an application restart");
 
   // Add items for tab 0
   addToFocusList(wid, myTab, tabID);
