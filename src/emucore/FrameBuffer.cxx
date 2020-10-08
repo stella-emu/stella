@@ -1049,12 +1049,14 @@ void FrameBuffer::toggleFullscreen(bool toggle)
       if (myBufferType != BufferType::Launcher)
       {
         ostringstream msg;
+        const VideoMode& mode = getSavedVidMode(isFullscreen);
 
         msg << "Fullscreen ";
-        if (isFullscreen)
-          msg << "enabled (" << refreshRate() << " Hz)";
+        if(isFullscreen)
+          msg << "enabled (" << refreshRate() << " Hz, ";
         else
-          msg << "disabled";
+          msg << "disabled (";
+        msg << "Zoom " << mode.zoom * 100 << "%)";
 
         showMessage(msg.str());
       }
