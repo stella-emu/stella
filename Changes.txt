@@ -12,6 +12,11 @@
                               Release History
 ===========================================================================
 
+6.3 to 6.4 (XXXX XX, 202X)
+
+  * Added basic (entire and single line only) text cut/copy and paste
+
+
 6.2.1 to 6.3 (October 7, 2020)
 
   * Added adjustable autofire.

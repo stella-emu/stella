@@ -59,6 +59,30 @@ void EventHandlerSDL2::enableTextEvents(bool enable)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandlerSDL2::copyText(const string& text) const
+{
+  SDL_SetClipboardText(text.c_str());
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandlerSDL2::cutText(string& text) const
+{
+  copyText(text);
+  text = "";
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string EventHandlerSDL2::pasteText(string& text) const
+{
+  if(SDL_HasClipboardText())
+    text = SDL_GetClipboardText();
+  else
+    text = "";
+
+  return text;
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandlerSDL2::pollEvent()
 {
   ASSERT_MAIN_THREAD;

@@ -327,6 +327,13 @@ class EventHandler
     virtual void enableTextEvents(bool enable) = 0;
 
     /**
+      Clipboard methods.
+    */
+    virtual void copyText(const string& text) const = 0;
+    virtual void cutText(string& text) const = 0;
+    virtual string pasteText(string& text) const = 0;
+
+    /**
       Handle changing mouse modes.
     */
     void handleMouseControl();
