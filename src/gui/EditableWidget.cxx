@@ -138,7 +138,13 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
 
     case KBDK_DELETE:
     case KBDK_KP_PERIOD:
-      dirty = killChar(+1);
+      if(StellaModTest::isShift(mod))
+      {
+        cutSelectedText();
+        dirty = true;
+      }
+      else
+        dirty = killChar(+1);
       if(dirty)  sendCommand(EditableWidget::kChangedCmd, key, _id);
       break;
 
@@ -162,6 +168,21 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
 
     case KBDK_END:
       dirty = setCaretPos(int(_editString.size()));
+      break;
+
+    case KBDK_INSERT:
+      if(StellaModTest::isControl(mod))
+      {
+        copySelectedText();
+        dirty = true;
+      }
+      else if(StellaModTest::isShift(mod))
+      {
+        pasteSelectedText();
+        dirty = true;
+      }
+      else
+        handled = false;
       break;
 
     default:
