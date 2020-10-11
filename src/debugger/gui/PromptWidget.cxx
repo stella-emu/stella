@@ -337,7 +337,10 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
 
     case KBDK_DELETE:
     case KBDK_KP_PERIOD: // actually the num delete
-      killChar(+1);
+      if(StellaModTest::isShift(mod))
+        textCut();
+      else
+        killChar(+1);
       dirty = true;
       break;
 
@@ -442,6 +445,21 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
         _currentPos--;
 
       dirty = true;
+      break;
+
+    case KBDK_INSERT:
+      if(StellaModTest::isShift(mod))
+      {
+        textPaste();
+        dirty = true;
+      }
+      else if(StellaModTest::isControl(mod))
+      {
+        textCopy();
+        dirty = true;
+      }
+      else
+        handled = false;
       break;
 
     default:
