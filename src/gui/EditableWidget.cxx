@@ -19,11 +19,13 @@
 #include "StellaKeys.hxx"
 #include "FBSurface.hxx"
 #include "Font.hxx"
+#include "OSystem.hxx"
+#include "EventHandler.hxx"
 #include "EditableWidget.hxx"
 
-// Uncomment the following to give full-line copy/paste
-// Note that this will be removed eventually, when we implement proper copy/paste
-//#define PSEUDO_COPY_PASTE
+// Uncomment the following to give full-line cut/copy/paste
+// Note that this will be removed eventually, when we implement proper cut/copy/paste
+#define PSEUDO_CUT_COPY_PASTE
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EditableWidget::EditableWidget(GuiObject* boss, const GUI::Font& font,
@@ -260,7 +262,7 @@ bool EditableWidget::specialKeys(StellaKey key)
 {
   bool handled = true;
 
-  switch (key)
+  switch(key)
   {
     case KBDK_A:
       setCaretPos(0);
@@ -268,7 +270,6 @@ bool EditableWidget::specialKeys(StellaKey key)
 
     case KBDK_C:
       copySelectedText();
-      if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
       break;
 
     case KBDK_E:
@@ -292,12 +293,17 @@ bool EditableWidget::specialKeys(StellaKey key)
 
     case KBDK_V:
       pasteSelectedText();
-      if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
+      sendCommand(EditableWidget::kChangedCmd, key, _id);
       break;
 
     case KBDK_W:
       handled = killLastWord();
       if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
+      break;
+
+    case KBDK_X:
+      cutSelectedText();
+      sendCommand(EditableWidget::kChangedCmd, key, _id);
       break;
 
     case KBDK_LEFT:
@@ -446,20 +452,27 @@ bool EditableWidget::moveWord(int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EditableWidget::cutSelectedText()
+{
+#if defined(PSEUDO_CUT_COPY_PASTE)
+  instance().eventHandler().cutText(_editString);
+  _caretPos = 0;
+#endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EditableWidget::copySelectedText()
 {
-#if defined(PSEUDO_COPY_PASTE)
-  _clippedText = _editString;
+#if defined(PSEUDO_CUT_COPY_PASTE)
+  instance().eventHandler().copyText(_editString);
 #endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EditableWidget::pasteSelectedText()
 {
-#if defined(PSEUDO_COPY_PASTE)
-  _editString = _clippedText;
+#if defined(PSEUDO_CUT_COPY_PASTE)
+  instance().eventHandler().pasteText(_editString);
+  _caretPos = int(_editString.length());
 #endif
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string EditableWidget::_clippedText = "";

@@ -72,6 +72,7 @@ class PromptWidget : public Widget, public CommandSender
 
     // Clipboard
     void textSelectAll();
+    string getLine();
     void textCut();
     void textCopy();
     void textPaste();

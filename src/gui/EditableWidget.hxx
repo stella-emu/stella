@@ -87,6 +87,7 @@ class EditableWidget : public Widget, public CommandSender
     bool moveWord(int direction);
 
     // Clipboard
+    void cutSelectedText();
     void copySelectedText();
     void pasteSelectedText();
 
@@ -106,8 +107,6 @@ class EditableWidget : public Widget, public CommandSender
     bool  _caretInverse{false};
 
     int   _editScrollOffset{0};
-
-    static string _clippedText;
 
   private:
     TextFilter _filter;
