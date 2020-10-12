@@ -43,7 +43,7 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
 
   // Create a 1x1 grid with label for the PC register
   xpos = x;  ypos = y;  lwidth = 4 * fontWidth;
-  new StaticTextWidget(boss, lfont, xpos, ypos+1, lwidth-2, fontHeight,
+  new StaticTextWidget(boss, lfont, xpos, ypos + 2, lwidth-2, fontHeight,
                        "PC ", TextAlign::Left);
   myPCGrid =
     new DataGridWidget(boss, nfont, xpos + lwidth, ypos, 1, 1, 4, 16, Common::Base::Fmt::_16);
@@ -66,14 +66,14 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   addFocusWidget(myCpuGrid);
 
   // Create a 1x4 grid with decimal and binary values for the other CPU registers
-  xpos = x + lwidth + myPCGrid->getWidth() + 10;
+  xpos = myPCGrid->getRight() + 10;
   myCpuGridDecValue =
     new DataGridWidget(boss, nfont, xpos, ypos, 1, 4, 3, 8, Common::Base::Fmt::_10);
   myCpuGridDecValue->setTarget(this);
   myCpuGridDecValue->setID(kCpuRegDecID);
   addFocusWidget(myCpuGridDecValue);
 
-  xpos += myCpuGridDecValue->getWidth() + 5;
+  xpos = myCpuGridDecValue->getRight() + fontWidth * 2;
   myCpuGridBinValue =
     new DataGridWidget(boss, nfont, xpos, ypos, 1, 4, 8, 8, Common::Base::Fmt::_2);
   myCpuGridBinValue->setTarget(this);
@@ -104,14 +104,25 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   const std::array<string, 4> labels = { "SP ", "A ", "X ", "Y " };
   for(int row = 0; row < 4; ++row)
   {
-    new StaticTextWidget(boss, lfont, xpos, ypos + row*lineHeight + 1,
+    new StaticTextWidget(boss, lfont, xpos, ypos + row*lineHeight + 2,
                          lwidth-2, fontHeight,
                          labels[row], TextAlign::Left);
   }
 
+  // Add prefixes for decimal and binary values
+  for(int row = 0; row < 4; ++row)
+  {
+    new StaticTextWidget(boss, lfont, myCpuGridDecValue->getLeft() - fontWidth,
+                         ypos + row * lineHeight + 2,
+                         lwidth - 2, fontHeight, "#");
+    new StaticTextWidget(boss, lfont, myCpuGridBinValue->getLeft() - fontWidth,
+                         ypos + row * lineHeight + 2,
+                         lwidth - 2, fontHeight, "%");
+  }
+
   // Create a bitfield widget for changing the processor status
   xpos = x;  ypos += 4*lineHeight + 2;
-  new StaticTextWidget(boss, lfont, xpos, ypos+1, lwidth-2, fontHeight,
+  new StaticTextWidget(boss, lfont, xpos, ypos + 2, lwidth-2, fontHeight,
                        "PS ", TextAlign::Left);
   myPSRegister = new ToggleBitWidget(boss, nfont, xpos+lwidth, ypos, 8, 1);
   myPSRegister->setTarget(this);

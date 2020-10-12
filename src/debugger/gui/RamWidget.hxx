@@ -79,8 +79,10 @@ class RamWidget : public Widget, public CommandSender
       kRestartCmd  = 'RWrs',
       kSValEntered = 'RWsv',
       kCValEntered = 'RWcv',
+      kRamGridID,
       kRamHexID,
       kRamDecID,
+      kRamSignID,
       kRamBinID
     };
 
@@ -96,7 +98,9 @@ class RamWidget : public Widget, public CommandSender
     std::array<StaticTextWidget*, 16> myRamLabels{nullptr};
 
     DataGridWidget* myRamGrid{nullptr};
+    DataGridWidget* myHexValue{nullptr};
     DataGridWidget* myDecValue{nullptr};
+    DataGridWidget* mySignValue{nullptr};
     DataGridWidget* myBinValue{nullptr};
     EditTextWidget* myLabel{nullptr};
 
