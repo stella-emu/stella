@@ -877,7 +877,7 @@ std::array<Debugger::BuiltinFunction, 18> Debugger::ourBuiltinFunctions = { {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Names are defined here, but processed in YaccParser
-std::array<Debugger::PseudoRegister, 14> Debugger::ourPseudoRegisters = { {
+std::array<Debugger::PseudoRegister, 15> Debugger::ourPseudoRegisters = { {
 // Debugger::PseudoRegister Debugger::ourPseudoRegisters[NUM_PSEUDO_REGS] = {
   { "_bank",          "Currently selected bank" },
   { "_cclocks",       "Color clocks on current scanline" },
@@ -885,6 +885,7 @@ std::array<Debugger::PseudoRegister, 14> Debugger::ourPseudoRegisters = { {
   { "_cycleslo",      "Lower 32 bits of number of cycles since emulation started" },
   { "_fcount",        "Number of frames since emulation started" },
   { "_fcycles",       "Number of cycles since frame started" },
+  { "_fwsynccycles",  "Number of cycles skipped by WSYNC since frame started" },
   { "_icycles",       "Number of cycles of last instruction" },
   { "_scan",          "Current scanline count" },
   { "_scanend",       "Scanline count at end of last frame" },

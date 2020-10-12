@@ -53,8 +53,9 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
 
   // Add RAM grid (with scrollbar)
   int xpos = x + _font.getStringWidth("xxxx");
+  bool useScrollbar = ramsize / numrows > 16;
   myRamGrid = new DataGridWidget(_boss, _nfont, xpos, ypos,
-                                 16, myNumRows, 2, 8, Common::Base::Fmt::_16, true);
+                                 16, myNumRows, 2, 8, Common::Base::Fmt::_16, useScrollbar);
   myRamGrid->setTarget(this);
   myRamGrid->setID(kRamGridID);
   addFocusWidget(myRamGrid);
@@ -144,7 +145,6 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
 
   // Add Hex display of selected RAM cell
   xpos -= 4.5 * myFontWidth;
-  //s = new StaticTextWidget(boss, lfont, xpos, ypos, "$");
   myHexValue = new DataGridWidget(boss, nfont, xpos, ypos - 2,
                                   1, 1, 2, 8, Common::Base::Fmt::_16);
   myHexValue->setTarget(this);
