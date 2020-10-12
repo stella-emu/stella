@@ -254,6 +254,8 @@ TiaMethod getTiaSpecial(char* ch)
     return &TIADebug::frameCount;
   else if(BSPF::equalsIgnoreCase(ch, "_fcycles"))
     return &TIADebug::frameCycles;
+  else if(BSPF::equalsIgnoreCase(ch, "_fwsynccycles"))
+    return &TIADebug::frameWsyncCycles;
   else if(BSPF::equalsIgnoreCase(ch, "_cyclesLo"))
     return &TIADebug::cyclesLo;
   else if(BSPF::equalsIgnoreCase(ch, "_cyclesHi"))

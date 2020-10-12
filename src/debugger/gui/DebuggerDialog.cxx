@@ -589,7 +589,7 @@ void DebuggerDialog::addRomArea()
   DataGridOpsWidget* ops = new DataGridOpsWidget(this, *myLFont, xpos, ypos);
 
   int max_w = xpos - r.x() - 10;
-  xpos = r.x() + 10;  ypos = 10;
+  xpos = r.x() + 10;  ypos = 5;
   myCpu = new CpuWidget(this, *myLFont, *myNFont, xpos, ypos, max_w);
   addToFocusList(myCpu->getFocusList());
 

@@ -163,6 +163,7 @@ void TIA::initialize()
   myDelayQueue.reset();
 
   myCyclesAtFrameStart = 0;
+  myFrameWsyncCycles = 0;
 
   if (myFrameManager)
     myFrameManager->reset();
@@ -279,6 +280,7 @@ bool TIA::save(Serializer& out) const
     out.putByteArray(myShadowRegisters.data(), myShadowRegisters.size());
 
     out.putLong(myCyclesAtFrameStart);
+    out.putLong(myFrameWsyncCycles);
 
     out.putInt(myFrameBufferScanlines);
     out.putInt(myFrontBufferScanlines);
@@ -351,6 +353,7 @@ bool TIA::load(Serializer& in)
     in.getByteArray(myShadowRegisters.data(), myShadowRegisters.size());
 
     myCyclesAtFrameStart = in.getLong();
+    myFrameWsyncCycles = in.getLong();
 
     myFrameBufferScanlines = in.getInt();
     myFrontBufferScanlines = in.getInt();
@@ -1304,6 +1307,7 @@ void TIA::updateEmulation()
 void TIA::onFrameStart()
 {
   myXAtRenderingStart = 0;
+  myFrameWsyncCycles = 0;
 
   // Check for colour-loss emulation
   if (myColorLossEnabled)
@@ -1351,6 +1355,7 @@ void TIA::onHalt()
 {
   mySubClock += (TIAConstants::H_CLOCKS - myHctr) % TIAConstants::H_CLOCKS;
   mySystem->incrementCycles(mySubClock / TIAConstants::CYCLE_CLOCKS);
+  myFrameWsyncCycles += mySubClock / TIAConstants::CYCLE_CLOCKS;
   mySubClock %= TIAConstants::CYCLE_CLOCKS;
 }
 

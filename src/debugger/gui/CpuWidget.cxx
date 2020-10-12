@@ -39,6 +39,7 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   const int fontWidth  = lfont.getMaxCharWidth(),
             fontHeight = lfont.getFontHeight(),
             lineHeight = lfont.getLineHeight();
+  const int VGAP = 2;
   int xpos, ypos, lwidth;
 
   // Create a 1x1 grid with label for the PC register
@@ -58,7 +59,7 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   myPCLabel->setEditable(false, true);
 
   // Create a 1x4 grid with labels for the other CPU registers
-  xpos = x + lwidth;  ypos += myPCGrid->getHeight() + 1;
+  xpos = x + lwidth;  ypos = myPCGrid->getBottom() + VGAP;
   myCpuGrid =
     new DataGridWidget(boss, nfont, xpos, ypos, 1, 4, 2, 8, Common::Base::Fmt::_16);
   myCpuGrid->setTarget(this);
@@ -88,16 +89,10 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   int src_y = ypos, src_w = (max_w - xpos + x) - 10;
   for(int i = 0; i < 4; ++i)
   {
-    myCpuDataSrc[i] = new EditTextWidget(boss, nfont, xpos, src_y, src_w,
-                                 fontHeight+1, "");
+    myCpuDataSrc[i] = new EditTextWidget(boss, nfont, xpos, src_y, src_w, fontHeight + 1);
     myCpuDataSrc[i]->setEditable(false, true);
-    src_y += fontHeight+2;
+    src_y += fontHeight + 2;
   }
-
-  // Last write destination address
-  new StaticTextWidget(boss, lfont, xpos - fontWidth * 4.5, src_y + 4, "Dest");
-  myCpuDataDest = new EditTextWidget(boss, nfont, xpos, src_y + 2, src_w, fontHeight+1);
-  myCpuDataDest->setEditable(false, true);
 
   // Add labels for other CPU registers
   xpos = x;
@@ -121,7 +116,7 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   }
 
   // Create a bitfield widget for changing the processor status
-  xpos = x;  ypos += 4*lineHeight + 2;
+  xpos = x;  ypos = myCpuGrid->getBottom() + VGAP;
   new StaticTextWidget(boss, lfont, xpos, ypos + 2, lwidth-2, fontHeight,
                        "PS ", TextAlign::Left);
   myPSRegister = new ToggleBitWidget(boss, nfont, xpos+lwidth, ypos, 8, 1);
@@ -139,6 +134,14 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
     on.push_back(onstr[i]);
   }
   myPSRegister->setList(off, on);
+
+  // Last write destination address
+  xpos = myCpuDataSrc[0]->getLeft();
+  new StaticTextWidget(boss, lfont, xpos - fontWidth * 4.5, ypos + 2, "Dest");
+  myCpuDataDest = new EditTextWidget(boss, nfont, xpos, ypos, src_w, fontHeight + 1);
+  myCpuDataDest->setEditable(false, true);
+
+
 
   _h = ypos + myPSRegister->getHeight() - y;
 }

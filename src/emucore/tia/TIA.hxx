@@ -335,6 +335,13 @@ class TIA : public Device
     }
 
     /**
+      Answers the system cycles used by WSYNC from the start of the current frame.
+    */
+    uInt32 frameWSyncCycles() const {
+      return uInt32(myFrameWsyncCycles);
+    }
+
+    /**
      * Get the CPU cycles since the last dump ports change.
      *
      * @return  The number of CPU cycles since the last dump ports change
@@ -938,6 +945,11 @@ class TIA : public Device
      * System cycles at the end of the previous frame / beginning of next frame.
      */
     uInt64 myCyclesAtFrameStart{0};
+
+    /**
+     * System cycles used by WSYNC during current frame.
+     */
+    uInt64 myFrameWsyncCycles{0};
 
     /**
      * The frame manager can change during our lifetime, so we buffer those two.
