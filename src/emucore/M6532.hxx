@@ -137,6 +137,11 @@ class M6532 : public Device
       @return  The access counters as comma separated string
     */
     string getAccessCounters() const override;
+
+    /**
+      Reset the timer read CPU cycle counter
+    */
+    void resetTimReadCylces() { myTimReadCycles = 0; }
   #endif
 
   private:
@@ -254,6 +259,8 @@ class M6532 : public Device
     // Detect timer being accessed on wraparound
     bool myTimWrappedOnRead{false};
     bool myTimWrappedOnWrite{false};
+    // Timer read CPU cycles
+    uInt16 myTimReadCycles{0};
 #endif // DEBUGGER_SUPPORT
 
   private:
