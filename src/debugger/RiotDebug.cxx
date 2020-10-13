@@ -68,6 +68,8 @@ const DebuggerState& RiotDebug::getState()
   myState.INTIMCLKS = intimClocks();
   myState.TIMDIV    = timDivider();
 
+  myState.timReadCycles = timReadCycles();
+
   return myState;
 }
 
@@ -111,6 +113,8 @@ void RiotDebug::saveOldState()
   myOldState.TIMCLKS   = timClocks();
   myOldState.INTIMCLKS = intimClocks();
   myOldState.TIMDIV    = timDivider();
+
+  myOldState.timReadCycles = timReadCycles();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -245,6 +249,12 @@ int RiotDebug::timWrappedOnRead() const
 int RiotDebug::timWrappedOnWrite() const
 {
   return mySystem.m6532().myTimWrappedOnWrite;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int RiotDebug::timReadCycles() const
+{
+  return mySystem.m6532().myTimReadCycles;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

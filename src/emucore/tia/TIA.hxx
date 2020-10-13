@@ -322,6 +322,7 @@ class TIA : public Device
     */
     uInt64 cycles() const { return uInt64(mySystem->cycles()); }
 
+  #ifdef DEBUGGER_SUPPORT
     /**
       Answers the frame count from the start of the emulation.
     */
@@ -340,6 +341,7 @@ class TIA : public Device
     uInt32 frameWSyncCycles() const {
       return uInt32(myFrameWsyncCycles);
     }
+  #endif // DEBUGGER_SUPPORT
 
     /**
      * Get the CPU cycles since the last dump ports change.
@@ -560,7 +562,7 @@ class TIA : public Device
       @return  The access counters as comma separated string
     */
     string getAccessCounters() const override;
-  #endif
+  #endif // DEBUGGER_SUPPORT
 
   private:
     /**
@@ -941,6 +943,7 @@ class TIA : public Device
 
     std::array<uInt32, 16> myColorCounts;
 
+  #ifdef DEBUGGER_SUPPORT
     /**
      * System cycles at the end of the previous frame / beginning of next frame.
      */
@@ -950,6 +953,7 @@ class TIA : public Device
      * System cycles used by WSYNC during current frame.
      */
     uInt64 myFrameWsyncCycles{0};
+  #endif // DEBUGGER_SUPPORT
 
     /**
      * The frame manager can change during our lifetime, so we buffer those two.

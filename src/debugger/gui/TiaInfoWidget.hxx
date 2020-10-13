@@ -41,6 +41,7 @@ class TiaInfoWidget : public Widget, public CommandSender
     EditTextWidget* myTotalCycles{nullptr};
     EditTextWidget* myDeltaCycles{nullptr};
     EditTextWidget* myWSyncCylces{nullptr};
+    EditTextWidget* myTimerCylces{nullptr};
 
     EditTextWidget* myScanlineCount{nullptr};
     EditTextWidget* myScanlineCountLast{nullptr};

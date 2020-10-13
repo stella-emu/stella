@@ -363,7 +363,7 @@ class Debugger : public DialogContainer
       string name, help;
     };
     static std::array<BuiltinFunction, 18> ourBuiltinFunctions;
-    static std::array<PseudoRegister, 15> ourPseudoRegisters;
+    static std::array<PseudoRegister, 16> ourPseudoRegisters;
 
   private:
     // rewind/unwind n states

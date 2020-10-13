@@ -226,6 +226,7 @@ uInt8 M6532::peek(uInt16 addr)
       if (!myWrappedThisCycle) myInterruptFlag &= ~TimerBit;
   #ifdef DEBUGGER_SUPPORT
       myTimWrappedOnRead = myWrappedThisCycle;
+      myTimReadCycles += 7;
   #endif
       return myTimer;
     }
@@ -236,6 +237,9 @@ uInt8 M6532::peek(uInt16 addr)
       // PA7 Flag is always cleared after accessing TIMINT
       uInt8 result = myInterruptFlag;
       myInterruptFlag &= ~PA7Bit;
+    #ifdef DEBUGGER_SUPPORT
+      myTimReadCycles += 7;
+    #endif
       return result;
     }
 
@@ -376,6 +380,9 @@ bool M6532::save(Serializer& out) const
     out.putBool(myWrappedThisCycle);
     out.putLong(myLastCycle);
     out.putLong(mySetTimerCycle);
+  #ifdef DEBUGGER_SUPPORT
+    out.putInt(myTimReadCycles);
+  #endif
 
     out.putByte(myDDRA);
     out.putByte(myDDRB);
@@ -408,6 +415,9 @@ bool M6532::load(Serializer& in)
     myWrappedThisCycle = in.getBool();
     myLastCycle = in.getLong();
     mySetTimerCycle = in.getLong();
+  #ifdef DEBUGGER_SUPPORT
+    myTimReadCycles = in.getInt();
+  #endif
 
     myDDRA = in.getByte();
     myDDRB = in.getByte();
