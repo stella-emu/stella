@@ -626,20 +626,11 @@ FBInitStatus Console::initializeVideo(bool full)
       Common::Size(TIAConstants::viewableWidth, TIAConstants::viewableHeight) :
       Common::Size(2 * myTIA->width(), myTIA->height());
 
-    uInt32 width, height;
-    if (!myOSystem.settings().getBool("tia.correct_aspect")) {
-      width =  2 * myTIA->width();
-      height = myTIA->height();
-    } else {
-      width = TIAConstants::viewableWidth;
-      height = TIAConstants::viewableHeight;
-    }
-
     bool devSettings = myOSystem.settings().getBool("dev.settings");
     const string& title = string("Stella ") + STELLA_VERSION +
                    ": \"" + myProperties.get(PropType::Cart_Name) + "\"";
-    fbstatus = myOSystem.frameBuffer().createDisplay(title, FrameBuffer::BufferType::Emulator,
-        width, height, false);
+    fbstatus = myOSystem.frameBuffer().createDisplay(title,
+        FrameBuffer::BufferType::Emulator, size, false);
     if(fbstatus != FBInitStatus::Success)
       return fbstatus;
 

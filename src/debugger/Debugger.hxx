@@ -44,6 +44,7 @@ class RewindManager;
 #include <map>
 
 #include "Base.hxx"
+#include "Rect.hxx"
 #include "DialogContainer.hxx"
 #include "DebuggerDialog.hxx"
 #include "FrameBufferConstants.hxx"
@@ -352,8 +353,8 @@ class Debugger : public DialogContainer
     FunctionDefMap myFunctionDefs;
 
     // Dimensions of the entire debugger window
-    uInt32 myWidth{DebuggerDialog::kSmallFontMinW};
-    uInt32 myHeight{DebuggerDialog::kSmallFontMinH};
+    Common::Size mySize{DebuggerDialog::kSmallFontMinW,
+                        DebuggerDialog::kSmallFontMinH};
 
     // Various builtin functions and operations
     struct BuiltinFunction {
