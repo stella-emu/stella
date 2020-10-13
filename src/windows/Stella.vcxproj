@@ -520,6 +520,7 @@
     <ClCompile Include="..\common\TimerManager.cxx" />
     <ClCompile Include="..\common\tv_filters\AtariNTSC.cxx" />
     <ClCompile Include="..\common\tv_filters\NTSCFilter.cxx" />
+    <ClCompile Include="..\common\VideoModeHandler.cxx" />
     <ClCompile Include="..\common\ZipHandler.cxx" />
     <ClCompile Include="..\debugger\BreakpointMap.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
@@ -1542,6 +1543,7 @@
     <ClInclude Include="..\common\tv_filters\NTSCFilter.hxx" />
     <ClInclude Include="..\common\Variant.hxx" />
     <ClInclude Include="..\common\Vec.hxx" />
+    <ClInclude Include="..\common\VideoModeHandler.hxx" />
     <ClInclude Include="..\common\ZipHandler.hxx" />
     <ClInclude Include="..\debugger\BreakpointMap.hxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
