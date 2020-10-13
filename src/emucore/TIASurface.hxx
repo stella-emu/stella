@@ -54,7 +54,7 @@ class TIASurface
     /**
       Set the TIA object, which is needed for actually rendering the TIA image.
     */
-    void initialize(const Console& console, const FrameBuffer::VideoMode& mode);
+    void initialize(const Console& console, const VideoModeHandler::Mode& mode);
 
     /**
       Set the palette for TIA rendering.  This currently consists of two

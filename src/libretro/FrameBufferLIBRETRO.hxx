@@ -147,7 +147,8 @@ class FrameBufferLIBRETRO : public FrameBuffer
 
       @return  False on any errors, else true
     */
-    bool setVideoMode(const string& title, const VideoMode& mode) override { return true; }
+    bool activateVideoMode(const string& title,
+                           const VideoModeHandler::Mode& mode) override { return true; }
 
     /**
       This method is called to create a surface with the given attributes.

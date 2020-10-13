@@ -104,9 +104,11 @@ bool FrameBuffer::initialize()
 #endif
 
   // Determine possible TIA windowed zoom levels
-  myTIAMaxZoom = maxZoomForScreen(
-      TIAConstants::viewableWidth, TIAConstants::viewableHeight,
-      myAbsDesktopSize.w, myAbsDesktopSize.h);
+  myTIAMaxZoom = maxWindowZoom(TIAConstants::viewableWidth,
+                               TIAConstants::viewableHeight);
+  float currentTIAZoom = myOSystem.settings().getFloat("tia.zoom");
+  myOSystem.settings().setValue("tia.zoom",
+      BSPF::clampw(currentTIAZoom, supportedTIAMinZoom(), myTIAMaxZoom));
 
   setUIPalette();
 
@@ -173,12 +175,12 @@ void FrameBuffer::setupFonts()
     //  However, we have to make sure all Dialogs are sized using the fontsize.
     int zoom_h = (fd.height * 4 * 2) / GUI::stellaMediumDesc.height;
     int zoom_w = (fd.maxwidth * 4 * 2) / GUI::stellaMediumDesc.maxwidth;
-    myTIAMinZoom = std::max(std::max(zoom_w, zoom_h) / 4.F, 2.F); // round to 25% steps, >= 200%
+    // round to 25% steps, >= 200%
+    myTIAMinZoom = std::max(std::max(zoom_w, zoom_h) / 4.F, 2.F);
   }
 
   // The font used by the ROM launcher
   const string& lf = myOSystem.settings().getString("launcherfont");
-
 
   myLauncherFont = make_unique<GUI::Font>(getFontDesc(lf));       //  8x13
 }
@@ -215,7 +217,7 @@ FBInitStatus FrameBuffer::createDisplay(const string& title, BufferType type,
   ++myInitializedCount;
   myScreenTitle = title;
 
-  // In HiDPI mode, all created displays must be scaled by 2x
+  // In HiDPI mode, all created displays must be scaled appropriately
   if(honourHiDPI && hidpiEnabled())
   {
     width  *= hidpiScaleFactor();
@@ -232,7 +234,6 @@ FBInitStatus FrameBuffer::createDisplay(const string& title, BufferType type,
   // If the WINDOWED_SUPPORT macro is defined, we treat the system as the
   // former type; if not, as the latter type
 
-  bool useFullscreen = false;
 #ifdef WINDOWED_SUPPORT
   // We assume that a desktop of at least minimum acceptable size means that
   // we're running on a 'large' system, and the window size requirements
@@ -241,40 +242,37 @@ FBInitStatus FrameBuffer::createDisplay(const string& title, BufferType type,
   if(myDesktopSize.w < FBMinimum::Width && myDesktopSize.h < FBMinimum::Height &&
     (myDesktopSize.w < width || myDesktopSize.h < height))
     return FBInitStatus::FailTooLarge;
-
-  useFullscreen = myOSystem.settings().getBool("fullscreen");
 #else
   // Make sure this mode is even possible
   // We only really need to worry about it in non-windowed environments,
   // where requesting a window that's too large will probably cause a crash
   if(myDesktopSize.w < width || myDesktopSize.h < height)
     return FBInitStatus::FailTooLarge;
-
-  useFullscreen = true;
 #endif
 
-  // Set the available video modes for this framebuffer
-  setAvailableVidModes(width, height);
+  // Initialize video mode handler, so it can know what video modes are
+  // appropriate for this framebuffer
+  myVidModeHandler.setImageSize(Common::Size(width, height));
 
   // Initialize video subsystem (make sure we get a valid mode)
   string pre_about = about();
-  const FrameBuffer::VideoMode& mode = getSavedVidMode(useFullscreen);
-  if(width <= mode.screen.w && height <= mode.screen.h)
+  myActiveVidMode = buildVideoMode();
+  if(width <= myActiveVidMode.screen.w && height <= myActiveVidMode.screen.h)
   {
     // Changing the video mode can take some time, during which the last
     // sound played may get 'stuck'
     // So we mute the sound until the operation completes
     bool oldMuteState = myOSystem.sound().mute(true);
-    if(setVideoMode(myScreenTitle, mode))
+    if(activateVideoMode(myScreenTitle, myActiveVidMode))
     {
-      myImageRect = mode.image;
-      myScreenSize = mode.screen;
-      myScreenRect = Common::Rect(mode.screen);
+      myImageRect = myActiveVidMode.image;
+      myScreenSize = myActiveVidMode.screen;
+      myScreenRect = Common::Rect(myActiveVidMode.screen);
 
       // Inform TIA surface about new mode
       if(myOSystem.eventHandler().state() != EventHandlerState::LAUNCHER &&
          myOSystem.eventHandler().state() != EventHandlerState::DEBUGGER)
-        myTIASurface->initialize(myOSystem.console(), mode);
+        myTIASurface->initialize(myOSystem.console(), myActiveVidMode);
 
       // Did we get the requested fullscreen state?
       myOSystem.settings().setValue("fullscreen", fullScreen());
@@ -835,8 +833,9 @@ void FrameBuffer::setPauseDelay()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-shared_ptr<FBSurface> FrameBuffer::allocateSurface(int w, int h, ScalingInterpolation interpolation,
-                                                   const uInt32* data)
+shared_ptr<FBSurface> FrameBuffer::allocateSurface(
+    int w, int h, ScalingInterpolation interpolation, const uInt32* data
+)
 {
   // Add new surface to the list
   mySurfaceList.push_back(createSurface(w, h, interpolation, data));
@@ -1011,17 +1010,18 @@ void FrameBuffer::setFullscreen(bool enable)
   // So we mute the sound until the operation completes
   bool oldMuteState = myOSystem.sound().mute(true);
 
-  const VideoMode& mode = getSavedVidMode(enable);
-  if(setVideoMode(myScreenTitle, mode))
+  myOSystem.settings().setValue("fullscreen", enable);
+  myActiveVidMode = buildVideoMode();
+  if(activateVideoMode(myScreenTitle, myActiveVidMode))
   {
-    myImageRect = mode.image;
-    myScreenSize = mode.screen;
-    myScreenRect = Common::Rect(mode.screen);
+    myImageRect = myActiveVidMode.image;
+    myScreenSize = myActiveVidMode.screen;
+    myScreenRect = Common::Rect(myActiveVidMode.screen);
 
     // Inform TIA surface about new mode
     if(myOSystem.eventHandler().state() != EventHandlerState::LAUNCHER &&
        myOSystem.eventHandler().state() != EventHandlerState::DEBUGGER)
-      myTIASurface->initialize(myOSystem.console(), mode);
+      myTIASurface->initialize(myOSystem.console(), myActiveVidMode);
 
     // Did we get the requested fullscreen state?
     myOSystem.settings().setValue("fullscreen", fullScreen());
@@ -1035,7 +1035,7 @@ void FrameBuffer::setFullscreen(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::toggleFullscreen(bool toggle)
 {
-  switch (myOSystem.eventHandler().state())
+  switch(myOSystem.eventHandler().state())
   {
     case EventHandlerState::LAUNCHER:
     case EventHandlerState::EMULATION:
@@ -1043,20 +1043,17 @@ void FrameBuffer::toggleFullscreen(bool toggle)
     case EventHandlerState::DEBUGGER:
     {
       const bool isFullscreen = toggle ? !fullScreen() : fullScreen();
-
       setFullscreen(isFullscreen);
 
-      if (myBufferType != BufferType::Launcher)
+      if(myBufferType != BufferType::Launcher)
       {
         ostringstream msg;
-        const VideoMode& mode = getSavedVidMode(isFullscreen);
-
         msg << "Fullscreen ";
         if(isFullscreen)
           msg << "enabled (" << refreshRate() << " Hz, ";
         else
           msg << "disabled (";
-        msg << "Zoom " << mode.zoom * 100 << "%)";
+        msg << "Zoom " << myActiveVidMode.zoom * 100 << "%)";
 
         showMessage(msg.str());
       }
@@ -1122,7 +1119,7 @@ void FrameBuffer::changeOverscan(int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::selectVidMode(int direction)
+void FrameBuffer::switchVideoMode(int direction)
 {
   EventHandlerState state = myOSystem.eventHandler().state();
   bool tiaMode = (state != EventHandlerState::DEBUGGER &&
@@ -1132,10 +1129,27 @@ void FrameBuffer::selectVidMode(int direction)
   if(!tiaMode)
     return;
 
-  if(direction == +1)
-    myCurrentModeList->next();
-  else if(direction == -1)
-    myCurrentModeList->previous();
+  if(!fullScreen())
+  {
+    // Windowed TIA modes support variable zoom levels
+    float zoom = myOSystem.settings().getFloat("tia.zoom");
+    if(direction == +1)       zoom += ZOOM_STEPS;
+    else if(direction == -1)  zoom -= ZOOM_STEPS;
+
+    // Make sure the level is within the allowable desktop size
+    zoom = BSPF::clampw(zoom, supportedTIAMinZoom(), myTIAMaxZoom);
+    myOSystem.settings().setValue("tia.zoom", zoom);
+  }
+  else
+  {
+    // In fullscreen mode, there are only two modes, so direction
+    // is irrelevant
+    if(direction == +1 || direction == -1)
+    {
+      bool stretch = myOSystem.settings().getBool("tia.fs_stretch");
+      myOSystem.settings().setValue("tia.fs_stretch", !stretch);
+    }
+  }
 
   saveCurrentWindowPosition();
 
@@ -1144,32 +1158,73 @@ void FrameBuffer::selectVidMode(int direction)
   // So we mute the sound until the operation completes
   bool oldMuteState = myOSystem.sound().mute(true);
 
-  const VideoMode& mode = myCurrentModeList->current();
-  if(setVideoMode(myScreenTitle, mode))
+  myActiveVidMode = buildVideoMode();
+  if(activateVideoMode(myScreenTitle, myActiveVidMode))
   {
-    myImageRect = mode.image;
-    myScreenSize = mode.screen;
-    myScreenRect = Common::Rect(mode.screen);
+    myImageRect = myActiveVidMode.image;
+    myScreenSize = myActiveVidMode.screen;
+    myScreenRect = Common::Rect(myActiveVidMode.screen);
 
     // Inform TIA surface about new mode
-    myTIASurface->initialize(myOSystem.console(), mode);
+    myTIASurface->initialize(myOSystem.console(), myActiveVidMode);
 
     resetSurfaces();
     if(fullScreen())
-      showMessage(mode.description);
+      showMessage(myActiveVidMode.description);
     else
-      showMessage("Zoom", mode.description, mode.zoom, supportedTIAMinZoom(), myTIAMaxZoom);
+      showMessage("Zoom", myActiveVidMode.description, myActiveVidMode.zoom,
+                  supportedTIAMinZoom(), myTIAMaxZoom);
     myOSystem.sound().mute(oldMuteState);
 
+    // Error check: were the settings applied as requested?
     if(fullScreen())
       myOSystem.settings().setValue("tia.fs_stretch",
-          mode.stretch == VideoMode::Stretch::Fill);
+          myActiveVidMode.stretch == VideoModeHandler::Mode::Stretch::Fill);
     else
-      myOSystem.settings().setValue("tia.zoom", mode.zoom);
+      myOSystem.settings().setValue("tia.zoom", myActiveVidMode.zoom);
 
     return;
   }
   myOSystem.sound().mute(oldMuteState);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const VideoModeHandler::Mode& FrameBuffer::buildVideoMode()
+{
+  // Update display size, in case windowed/fullscreen mode has changed
+  const Settings& s = myOSystem.settings();
+  if(s.getBool("fullscreen"))
+  {
+    Int32 fsIndex = std::max(getCurrentDisplayIndex(), 0);
+    myVidModeHandler.setDisplaySize(myFullscreenDisplays[fsIndex], fsIndex);
+  }
+  else
+    myVidModeHandler.setDisplaySize(myAbsDesktopSize);
+
+  // And now build the new mode based on current settings
+  const bool tiaMode =
+    myOSystem.eventHandler().state() != EventHandlerState::DEBUGGER &&
+    myOSystem.eventHandler().state() != EventHandlerState::LAUNCHER;
+
+  return myVidModeHandler.buildMode(s, tiaMode);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+float FrameBuffer::maxWindowZoom(uInt32 baseWidth, uInt32 baseHeight) const
+{
+  float multiplier = 1;
+  for(;;)
+  {
+    // Figure out the zoomed size of the window
+    uInt32 width  = baseWidth * multiplier;
+    uInt32 height = baseHeight * multiplier;
+
+    if((width > myAbsDesktopSize.w) || (height > myAbsDesktopSize.h))
+      break;
+
+    multiplier += ZOOM_STEPS;
+  }
+  return multiplier > 1 ? multiplier - ZOOM_STEPS : 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1232,296 +1287,6 @@ void FrameBuffer::toggleGrabMouse()
   myOSystem.frameBuffer().showMessage(oldState != myGrabMouse ? myGrabMouse
                                       ? "Grab mouse enabled" : "Grab mouse disabled"
                                       : "Grab mouse not allowed while cursor shown");
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-float FrameBuffer::maxZoomForScreen(uInt32 baseWidth, uInt32 baseHeight,
-                                    uInt32 screenWidth, uInt32 screenHeight) const
-{
-  float multiplier = 1;
-  for(;;)
-  {
-    // Figure out the zoomed size of the window
-    uInt32 width  = baseWidth * multiplier;
-    uInt32 height = baseHeight * multiplier;
-
-    if((width > screenWidth) || (height > screenHeight))
-      break;
-
-    multiplier += ZOOM_STEPS;
-  }
-  return multiplier > 1 ? multiplier - ZOOM_STEPS : 1;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
-{
-  myWindowedModeList.clear();
-
-  for(auto& mode: myFullscreenModeLists)
-    mode.clear();
-  for(size_t i = myFullscreenModeLists.size(); i < myFullscreenDisplays.size(); ++i)
-    myFullscreenModeLists.emplace_back(VideoModeList());
-
-  // Check if zooming is allowed for this state (currently only allowed
-  // for TIA screens)
-  EventHandlerState state = myOSystem.eventHandler().state();
-  bool tiaMode = (state != EventHandlerState::DEBUGGER &&
-                  state != EventHandlerState::LAUNCHER);
-  float overscan = 1 - myOSystem.settings().getInt("tia.fs_overscan") / 100.0;
-
-  // TIA mode allows zooming at integral factors in windowed modes,
-  // and also non-integral factors in fullscreen mode
-  if(tiaMode)
-  {
-    // TIA windowed modes
-    float minZoom = supportedTIAMinZoom();
-    myTIAMaxZoom = maxZoomForScreen(baseWidth, baseHeight,
-                     myAbsDesktopSize.w, myAbsDesktopSize.h);
-    // Determine all zoom levels
-    for(float zoom = minZoom; zoom <= myTIAMaxZoom; zoom += ZOOM_STEPS)
-    {
-      ostringstream desc;
-      desc << (zoom * 100) << "%";
-
-      VideoMode mode(baseWidth*zoom, baseHeight*zoom, baseWidth*zoom, baseHeight*zoom,
-                     VideoMode::Stretch::Fill, 1.0, desc.str(), zoom);
-      myWindowedModeList.add(mode);
-    }
-
-    // TIA fullscreen mode
-    for(uInt32 i = 0; i < myFullscreenDisplays.size(); ++i)
-    {
-      myTIAMaxZoom = maxZoomForScreen(baseWidth, baseHeight,
-          myFullscreenDisplays[i].w * overscan,
-          myFullscreenDisplays[i].h * overscan);
-
-      // Add both normal aspect and filled modes
-      // It's easier to define them both now, and simply switch between
-      // them when necessary
-      VideoMode mode1(baseWidth * myTIAMaxZoom, baseHeight * myTIAMaxZoom,
-                      myFullscreenDisplays[i].w, myFullscreenDisplays[i].h,
-                      VideoMode::Stretch::Preserve, overscan,
-                      "Fullscreen: Preserve aspect, no stretch", myTIAMaxZoom, i);
-      myFullscreenModeLists[i].add(mode1);
-      VideoMode mode2(baseWidth * myTIAMaxZoom, baseHeight * myTIAMaxZoom,
-                      myFullscreenDisplays[i].w, myFullscreenDisplays[i].h,
-                      VideoMode::Stretch::Fill, overscan,
-                      "Fullscreen: Ignore aspect, full stretch", myTIAMaxZoom, i);
-      myFullscreenModeLists[i].add(mode2);
-    }
-  }
-  else  // UI mode
-  {
-    // Windowed and fullscreen mode differ only in screen size
-    myWindowedModeList.add(
-        VideoMode(baseWidth, baseHeight, baseWidth, baseHeight,
-        VideoMode::Stretch::None)
-    );
-    for(uInt32 i = 0; i < myFullscreenDisplays.size(); ++i)
-    {
-      myFullscreenModeLists[i].add(
-          VideoMode(baseWidth, baseHeight,
-                    myFullscreenDisplays[i].w, myFullscreenDisplays[i].h,
-                    VideoMode::Stretch::None, 1.0, "", 1, i)
-      );
-    }
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const FrameBuffer::VideoMode& FrameBuffer::getSavedVidMode(bool fullscreen)
-{
-  if(fullscreen)
-  {
-    Int32 i = getCurrentDisplayIndex();
-    if(i < 0)
-    {
-      // default to the first display
-      i = 0;
-    }
-    myCurrentModeList = &myFullscreenModeLists[i];
-  }
-  else
-    myCurrentModeList = &myWindowedModeList;
-
-  // Now select the best resolution depending on the state
-  // UI modes (launcher and debugger) have only one supported resolution
-  // so the 'current' one is the only valid one
-  EventHandlerState state = myOSystem.eventHandler().state();
-  if(state == EventHandlerState::DEBUGGER || state == EventHandlerState::LAUNCHER)
-    myCurrentModeList->setByZoom(1);
-  else  // TIA mode
-  {
-    if(fullscreen)
-      myCurrentModeList->setByStretch(myOSystem.settings().getBool("tia.fs_stretch")
-        ? VideoMode::Stretch::Fill : VideoMode::Stretch::Preserve);
-    else
-      myCurrentModeList->setByZoom(myOSystem.settings().getFloat("tia.zoom"));
-  }
-
-  return myCurrentModeList->current();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-//
-// VideoMode implementation
-//
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FrameBuffer::VideoMode::VideoMode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
-                                  Stretch smode, float overscan, const string& desc,
-                                  float zoomLevel, Int32 fsindex)
-  : stretch(smode),
-    description(desc),
-    zoom(zoomLevel),
-    fsIndex(fsindex)
-{
-  // First set default size and positioning
-  sw = std::max(sw, TIAConstants::viewableWidth);
-  sh = std::max(sh, TIAConstants::viewableHeight);
-  iw = std::min(iw, sw);
-  ih = std::min(ih, sh);
-  int ix = (sw - iw) >> 1;
-  int iy = (sh - ih) >> 1;
-  image = Common::Rect(ix, iy, ix+iw, iy+ih);
-  screen = Common::Size(sw, sh);
-
-  // Now resize based on windowed/fullscreen mode and stretch factor
-  iw = image.w();
-  ih = image.h();
-
-  if(fsIndex != -1)
-  {
-    switch(stretch)
-    {
-      case Stretch::Preserve:
-      {
-        float stretchFactor = 1.0;
-        float scaleX = float(iw) / screen.w;
-        float scaleY = float(ih) / screen.h;
-
-        // Scale to all available space, keep aspect correct
-        if(scaleX > scaleY)
-          stretchFactor = float(screen.w) / iw;
-        else
-          stretchFactor = float(screen.h) / ih;
-
-        iw = uInt32(stretchFactor * iw) * overscan;
-        ih = uInt32(stretchFactor * ih) * overscan;
-        break;
-      }
-
-      case Stretch::Fill:
-        // Scale to all available space
-        iw = screen.w * overscan;
-        ih = screen.h * overscan;
-        break;
-
-      case Stretch::None:
-        // Don't do any scaling at all, but obey overscan
-        iw = std::min(iw, screen.w) * overscan;
-        ih = std::min(ih, screen.h) * overscan;
-        break;
-    }
-  }
-  else
-  {
-    // In windowed mode, currently the size is scaled to the screen
-    // TODO - this may be updated if/when we allow variable-sized windows
-    switch(stretch)
-    {
-      case Stretch::Preserve:
-      case Stretch::Fill:
-        screen.w = iw;
-        screen.h = ih;
-        break;
-      case Stretch::None:
-        break;  // Do not change image or screen rects whatsoever
-    }
-  }
-
-  // Now re-calculate the dimensions
-  iw = std::min(iw, screen.w);
-  ih = std::min(ih, screen.h);
-
-  image.moveTo((screen.w - iw) >> 1, (screen.h - ih) >> 1);
-  image.setWidth(iw);
-  image.setHeight(ih);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-//
-// VideoModeList implementation
-//
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::VideoModeList::add(const VideoMode& mode)
-{
-  myModeList.emplace_back(mode);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::VideoModeList::clear()
-{
-  myModeList.clear();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBuffer::VideoModeList::empty() const
-{
-  return myModeList.empty();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 FrameBuffer::VideoModeList::size() const
-{
-  return uInt32(myModeList.size());
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::VideoModeList::previous()
-{
-  --myIdx;
-  if(myIdx < 0) myIdx = int(myModeList.size()) - 1;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const FrameBuffer::VideoMode& FrameBuffer::VideoModeList::current() const
-{
-  return myModeList[myIdx];
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::VideoModeList::next()
-{
-  myIdx = (myIdx + 1) % myModeList.size();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::VideoModeList::setByZoom(float zoom)
-{
-  for(uInt32 i = 0; i < myModeList.size(); ++i)
-  {
-    if(myModeList[i].zoom == zoom)
-    {
-      myIdx = i;
-      return;
-    }
-  }
-  myIdx = 0;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::VideoModeList::setByStretch(FrameBuffer::VideoMode::Stretch stretch)
-{
-  for(uInt32 i = 0; i < myModeList.size(); ++i)
-  {
-    if(myModeList[i].stretch == stretch)
-    {
-      myIdx = i;
-      return;
-    }
-  }
-  myIdx = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

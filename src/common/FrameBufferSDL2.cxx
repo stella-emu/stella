@@ -225,7 +225,8 @@ Int32 FrameBufferSDL2::getCurrentDisplayIndex() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
+bool FrameBufferSDL2::activateVideoMode(const string& title,
+                                        const VideoModeHandler::Mode& mode)
 {
   ASSERT_MAIN_THREAD;
 

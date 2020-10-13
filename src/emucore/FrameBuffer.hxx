@@ -35,6 +35,7 @@ class TIASurface;
 #include "TIAConstants.hxx"
 #include "FrameBufferConstants.hxx"
 #include "EventHandlerConstants.hxx"
+#include "VideoModeHandler.hxx"
 #include "bspf.hxx"
 
 /**
@@ -50,38 +51,7 @@ class TIASurface;
 class FrameBuffer
 {
   public:
-    // Contains all relevant info for the dimensions of a video screen
-    // Also takes care of the case when the image should be 'centered'
-    // within the given screen:
-    //   'image' is the image dimensions into the screen
-    //   'screen' are the dimensions of the screen itself
-    struct VideoMode
-    {
-      enum class Stretch { Preserve, Fill, None };
-
-      Common::Rect image;
-      Common::Size screen;
-      Stretch stretch{VideoMode::Stretch::None};
-      string description;
-      float zoom{1.F};
-      Int32 fsIndex{-1};
-
-      VideoMode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
-                Stretch smode, float overscan = 1.F,
-                const string& desc = "", float zoomLevel = 1, Int32 fsindex = -1);
-
-      friend ostream& operator<<(ostream& os, const VideoMode& vm)
-      {
-        os << "image=" << vm.image << "  screen=" << vm.screen
-           << "  stretch=" << (vm.stretch == Stretch::Preserve ? "preserve" :
-                               vm.stretch == Stretch::Fill ? "fill" : "none")
-           << "  desc=" << vm.description << "  zoom=" << vm.zoom
-           << "  fsIndex= " << vm.fsIndex;
-        return os;
-      }
-    };
-
-    struct DisplayMode
+    struct DisplayMode  // FIXME - is this needed?
     {
       uInt32 display;
       Common::Size size;
@@ -260,11 +230,6 @@ class FrameBuffer
     TIASurface& tiaSurface() const { return *myTIASurface; }
 
     /**
-      Enables/disables fullscreen mode.
-    */
-    void setFullscreen(bool enable);
-
-    /**
       Toggles between fullscreen and window mode.
     */
     void toggleFullscreen(bool toggle = true);
@@ -285,15 +250,15 @@ class FrameBuffer
 
     /**
       This method is called when the user wants to switch to the next
-      available video mode.  In windowed mode, this typically means going to
-      the next/previous zoom level.  In fullscreen mode, this typically means
-      switching between normal aspect and fully filling the screen.
+      available TIA video mode.  In windowed mode, this typically means going
+      to the next/previous zoom level.  In fullscreen mode, this typically
+      means switching between normal aspect and fully filling the screen.
         direction = -1 means go to the next lower video mode
         direction = +1 means go to the next higher video mode
 
       @param direction  +1 indicates increase, -1 indicates decrease.
     */
-    void selectVidMode(int direction = +1);
+    void switchVideoMode(int direction = +1);
 
     /**
       Sets the state of the cursor (hidden or grabbed) based on the
@@ -453,7 +418,6 @@ class FrameBuffer
     virtual int scaleY(int y) const { return y; }
 
   protected:
-
     /**
       This method is called to query and initialize the video hardware
       for desktop and fullscreen resolution information.  Since several
@@ -475,8 +439,8 @@ class FrameBuffer
 
       @return  False on any errors, else true
     */
-    virtual bool setVideoMode(const string& title,
-                              const FrameBuffer::VideoMode& mode) = 0;
+    virtual bool activateVideoMode(const string& title,
+                                   const VideoModeHandler::Mode& mode) = 0;
 
     /**
       This method is called to create a surface with the given attributes.
@@ -547,6 +511,28 @@ class FrameBuffer
     */
     bool drawMessage();
 
+    // Draws the frame stats overlay
+    void drawFrameStats(float framesPerSecond);
+
+    /**
+      Build an applicable video mode based on the current settings in
+      effect, whether TIA mode is active, etc.
+      Note that this only creates the video mode definition itself;
+      to apply it, we need to call 'activateVideoMode()'.
+    */
+    const VideoModeHandler::Mode& buildVideoMode();
+
+    /**
+      Calculate the maximum level by which the base window can be zoomed and
+      still fit in the desktop screen.
+    */
+    float maxWindowZoom(uInt32 baseWidth, uInt32 baseHeight) const;
+
+    /**
+      Enables/disables fullscreen mode.
+    */
+    void setFullscreen(bool enable);
+
     /**
       Frees and reloads all surfaces that the framebuffer knows about.
     */
@@ -558,60 +544,6 @@ class FrameBuffer
     */
     void setupFonts();
   #endif
-
-    /**
-      Calculate the maximum level by which the base window can be zoomed and
-      still fit in the given screen dimensions.
-    */
-    float maxZoomForScreen(uInt32 baseWidth, uInt32 baseHeight,
-               uInt32 screenWidth, uInt32 screenHeight) const;
-
-    /**
-      Set all possible video modes (both windowed and fullscreen) available for
-      this framebuffer based on given image dimensions and maximum window size.
-    */
-    void setAvailableVidModes(uInt32 basewidth, uInt32 baseheight);
-
-    /**
-      Returns an appropriate video mode based on the current eventhandler
-      state, taking into account the maximum size of the window.
-
-      @param fullscreen  Whether to use a windowed or fullscreen mode
-      @return  A valid VideoMode for this framebuffer
-    */
-    const FrameBuffer::VideoMode& getSavedVidMode(bool fullscreen);
-
-  private:
-    /**
-      This class implements an iterator around an array of VideoMode objects.
-    */
-    class VideoModeList
-    {
-      public:
-        void add(const FrameBuffer::VideoMode& mode);
-        void clear();
-
-        bool empty() const;
-        uInt32 size() const;
-
-        void previous();
-        const FrameBuffer::VideoMode& current() const;
-        void next();
-
-        void setByZoom(float zoom);
-        void setByStretch(FrameBuffer::VideoMode::Stretch stretch);
-
-        friend ostream& operator<<(ostream& os, const VideoModeList& l)
-        {
-          for(const auto& vm: l.myModeList)
-            os << "-----\n" << vm << endl << "-----\n";
-          return os;
-        }
-
-      private:
-        vector<FrameBuffer::VideoMode> myModeList;
-        int myIdx{-1};
-    };
 
   protected:
     // Title of the main window/screen
@@ -629,9 +561,6 @@ class FrameBuffer
     vector<Common::Size> myFullscreenDisplays;
 
   private:
-    // Draws the frame stats overlay
-    void drawFrameStats(float framesPerSecond);
-
     // Indicates the number of times the framebuffer was initialized
     uInt32 myInitializedCount{0};
 
@@ -658,6 +587,10 @@ class FrameBuffer
 
     // Supported renderers
     VariantList myRenderers;
+
+    // The VideoModeHandler class takes responsibility for all video mode functionality
+    VideoModeHandler myVidModeHandler;
+    VideoModeHandler::Mode myActiveVidMode;
 
   #ifdef GUI_SUPPORT
     // The font object to use for the normal in-game GUI
@@ -699,11 +632,6 @@ class FrameBuffer
     bool myHiDPIAllowed{false};
     bool myHiDPIEnabled{false};
 
-    // The list of all available video modes for this framebuffer
-    VideoModeList* myCurrentModeList{nullptr};
-    VideoModeList myWindowedModeList;
-    vector<VideoModeList> myFullscreenModeLists;
-
     // Minimum TIA zoom level that can be used for this framebuffer
     float myTIAMinZoom{2.F};
     // Maximum TIA zoom level that can be used for this framebuffer
@@ -714,7 +642,7 @@ class FrameBuffer
 
     FullPaletteArray myFullPalette;
     // Holds UI palette data (for each variation)
-    static UIPaletteArray ourStandardUIPalette, ourClassicUIPalette, 
+    static UIPaletteArray ourStandardUIPalette, ourClassicUIPalette,
       ourLightUIPalette, ourDarkUIPalette;
 
   private:
