@@ -411,7 +411,7 @@ AdjustFunction EventHandler::getAdjustSetting(AdjustSetting setting)
   {
     // Audio & Video settings
     std::bind(&Sound::adjustVolume, &myOSystem.sound(), _1),
-    std::bind(&FrameBuffer::selectVidMode, &myOSystem.frameBuffer(), _1),
+    std::bind(&FrameBuffer::switchVideoMode, &myOSystem.frameBuffer(), _1),
     std::bind(&FrameBuffer::toggleFullscreen, &myOSystem.frameBuffer(), _1),
   #ifdef ADAPTABLE_REFRESH_SUPPORT
     std::bind(&FrameBuffer::toggleAdaptRefresh, &myOSystem.frameBuffer(), _1),
@@ -693,7 +693,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::VidmodeDecrease:
       if(pressed)
       {
-        myOSystem.frameBuffer().selectVidMode(-1);
+        myOSystem.frameBuffer().switchVideoMode(-1);
         myAdjustSetting = AdjustSetting::ZOOM;
         myAdjustActive = true;
       }
@@ -702,7 +702,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::VidmodeIncrease:
       if(pressed)
       {
-        myOSystem.frameBuffer().selectVidMode(+1);
+        myOSystem.frameBuffer().switchVideoMode(+1);
         myAdjustSetting = AdjustSetting::ZOOM;
         myAdjustActive = true;
       }

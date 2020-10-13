@@ -179,7 +179,8 @@ class FrameBufferSDL2 : public FrameBuffer
 
       @return  False on any errors, else true
     */
-    bool setVideoMode(const string& title, const VideoMode& mode) override;
+    bool activateVideoMode(const string& title,
+                           const VideoModeHandler::Mode& mode) override;
 
     /**
       Checks if the display refresh rate should be adapted to game refresh rate in (real) fullscreen mode
