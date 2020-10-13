@@ -517,6 +517,8 @@
 		DCB20EC71A0C506C0048F595 /* main.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCB20EC61A0C506C0048F595 /* main.cxx */; };
 		DCB2ECAF1F0AECA3009738A6 /* CartDetector.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCB2ECAC1F0AECA3009738A6 /* CartDetector.cxx */; };
 		DCB2ECB01F0AECA3009738A6 /* CartDetector.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB2ECAD1F0AECA3009738A6 /* CartDetector.hxx */; };
+		DCB60AC92535E30600A5C1D2 /* VideoModeHandler.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCB60AC72535E30500A5C1D2 /* VideoModeHandler.cxx */; };
+		DCB60ACA2535E30600A5C1D2 /* VideoModeHandler.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB60AC82535E30600A5C1D2 /* VideoModeHandler.hxx */; };
 		DCB87E581A104C1E00BF2A3B /* MediaFactory.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB87E571A104C1E00BF2A3B /* MediaFactory.hxx */; };
 		DCBD31E82299ADB400567357 /* KeyMap.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCBD31E52299ADB400567357 /* KeyMap.hxx */; };
 		DCBD31E92299ADB400567357 /* Rect.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCBD31E62299ADB400567357 /* Rect.hxx */; };
@@ -1277,6 +1279,8 @@
 		DCB20EC61A0C506C0048F595 /* main.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cxx; sourceTree = "<group>"; };
 		DCB2ECAC1F0AECA3009738A6 /* CartDetector.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartDetector.cxx; sourceTree = "<group>"; };
 		DCB2ECAD1F0AECA3009738A6 /* CartDetector.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartDetector.hxx; sourceTree = "<group>"; };
+		DCB60AC72535E30500A5C1D2 /* VideoModeHandler.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VideoModeHandler.cxx; sourceTree = "<group>"; };
+		DCB60AC82535E30600A5C1D2 /* VideoModeHandler.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = VideoModeHandler.hxx; sourceTree = "<group>"; };
 		DCB87E571A104C1E00BF2A3B /* MediaFactory.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = MediaFactory.hxx; sourceTree = "<group>"; };
 		DCBA710010DED62E0077193B /* Stella.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Stella.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCBD31E52299ADB400567357 /* KeyMap.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = KeyMap.hxx; sourceTree = "<group>"; };
@@ -1817,6 +1821,8 @@
 				DC7A24D4173B1CF600B20FE9 /* Variant.hxx */,
 				DCF490791A0ECE5B00A67AA9 /* Vec.hxx */,
 				DCF467BC0F9399F500B25D7A /* Version.hxx */,
+				DCB60AC72535E30500A5C1D2 /* VideoModeHandler.cxx */,
+				DCB60AC82535E30600A5C1D2 /* VideoModeHandler.hxx */,
 				DCE395ED16CB0B5F008DB1E5 /* ZipHandler.cxx */,
 				DCE395EE16CB0B5F008DB1E5 /* ZipHandler.hxx */,
 			);
@@ -2694,6 +2700,7 @@
 				DCAAE5D41715887B0080BB82 /* Cart2KWidget.hxx in Headers */,
 				DCF7F129223D796000701A47 /* ProfilingRunner.hxx in Headers */,
 				DCAAE5D61715887B0080BB82 /* Cart3FWidget.hxx in Headers */,
+				DCB60ACA2535E30600A5C1D2 /* VideoModeHandler.hxx in Headers */,
 				DCAAE5D81715887B0080BB82 /* Cart4KWidget.hxx in Headers */,
 				DCAAE5DA1715887B0080BB82 /* Cart0840Widget.hxx in Headers */,
 				DCAAE5DC1715887B0080BB82 /* CartCVWidget.hxx in Headers */,
@@ -2910,6 +2917,7 @@
 				2D91748C09BA90380026E9FF /* Driving.cxx in Sources */,
 				E0306E101F93E916003DDD52 /* FrameLayoutDetector.cxx in Sources */,
 				2D91748E09BA90380026E9FF /* Joystick.cxx in Sources */,
+				DCB60AC92535E30600A5C1D2 /* VideoModeHandler.cxx in Sources */,
 				2D91748F09BA90380026E9FF /* Keyboard.cxx in Sources */,
 				2D91749009BA90380026E9FF /* M6532.cxx in Sources */,
 				2D91749109BA90380026E9FF /* MD5.cxx in Sources */,
