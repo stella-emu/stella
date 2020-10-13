@@ -1026,6 +1026,9 @@
     <ClCompile Include="..\debugger\gui\CartTVBoyWidget.cxx">
       <Filter>Source Files\debugger</Filter>
     </ClCompile>
+    <ClCompile Include="..\common\VideoModeHandler.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">
@@ -2107,6 +2110,9 @@
     </ClInclude>
     <ClInclude Include="..\debugger\gui\CartTVBoyWidget.hxx">
       <Filter>Header Files\debugger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\VideoModeHandler.hxx">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
