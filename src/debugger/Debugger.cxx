@@ -90,21 +90,18 @@ Debugger::~Debugger()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::initialize()
 {
-  const Common::Size& s = myOSystem.settings().getSize("dbg.res");
+  mySize = myOSystem.settings().getSize("dbg.res");
   const Common::Size& d = myOSystem.frameBuffer().desktopSize();
-  myWidth = s.w;  myHeight = s.h;
 
   // The debugger dialog is resizable, within certain bounds
   // We check those bounds now
-  myWidth  = std::max(myWidth,  uInt32(DebuggerDialog::kSmallFontMinW));
-  myHeight = std::max(myHeight, uInt32(DebuggerDialog::kSmallFontMinH));
-  myWidth  = std::min(myWidth,  uInt32(d.w));
-  myHeight = std::min(myHeight, uInt32(d.h));
+  mySize.clamp(uInt32(DebuggerDialog::kSmallFontMinW), d.w,
+               uInt32(DebuggerDialog::kSmallFontMinH), d.h);
 
-  myOSystem.settings().setValue("dbg.res", Common::Size(myWidth, myHeight));
+  myOSystem.settings().setValue("dbg.res", mySize);
 
   delete myDialog;  myDialog = nullptr;
-  myDialog = new DebuggerDialog(myOSystem, *this, 0, 0, myWidth, myHeight);
+  myDialog = new DebuggerDialog(myOSystem, *this, 0, 0, mySize.w, mySize.h);
 
   myCartDebug->setDebugWidget(&(myDialog->cartDebug()));
 
@@ -115,8 +112,9 @@ void Debugger::initialize()
 FBInitStatus Debugger::initializeVideo()
 {
   string title = string("Stella ") + STELLA_VERSION + ": Debugger mode";
-  return myOSystem.frameBuffer().createDisplay(title, FrameBuffer::BufferType::Debugger,
-                                               myWidth, myHeight);
+  return myOSystem.frameBuffer().createDisplay(
+      title, FrameBuffer::BufferType::Debugger, mySize
+  );
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

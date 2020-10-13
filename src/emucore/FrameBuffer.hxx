@@ -91,8 +91,7 @@ class FrameBuffer
       calls are made to derived methods.
 
       @param title   The title of the application / window
-      @param width   The width of the framebuffer
-      @param height  The height of the framebuffer
+      @param size    The dimensions of the display
       @param honourHiDPI  If true, consult the 'hidpi' setting and enlarge
                           the display size accordingly; if false, use the
                           exact dimensions as given
@@ -100,8 +99,7 @@ class FrameBuffer
       @return  Status of initialization (see FBInitStatus 'enum')
     */
     FBInitStatus createDisplay(const string& title, BufferType type,
-                               uInt32 width, uInt32 height,
-                               bool honourHiDPI = true);
+                               Common::Size size, bool honourHiDPI = true);
 
     /**
       Updates the display, which depending on the current mode could mean

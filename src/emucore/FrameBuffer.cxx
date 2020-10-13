@@ -207,8 +207,7 @@ FontDesc FrameBuffer::getFontDesc(const string& name) const
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBInitStatus FrameBuffer::createDisplay(const string& title, BufferType type,
-                                        uInt32 width, uInt32 height,
-                                        bool honourHiDPI)
+                                        Common::Size size, bool honourHiDPI)
 {
   // always save, maybe only the mode of the window has changed
   saveCurrentWindowPosition();
@@ -220,8 +219,8 @@ FBInitStatus FrameBuffer::createDisplay(const string& title, BufferType type,
   // In HiDPI mode, all created displays must be scaled appropriately
   if(honourHiDPI && hidpiEnabled())
   {
-    width  *= hidpiScaleFactor();
-    height *= hidpiScaleFactor();
+    size.w *= hidpiScaleFactor();
+    size.h *= hidpiScaleFactor();
   }
 
   // A 'windowed' system is defined as one where the window size can be
@@ -240,24 +239,24 @@ FBInitStatus FrameBuffer::createDisplay(const string& title, BufferType type,
   // can be relaxed
   // Otherwise, we treat the system as if WINDOWED_SUPPORT is not defined
   if(myDesktopSize.w < FBMinimum::Width && myDesktopSize.h < FBMinimum::Height &&
-    (myDesktopSize.w < width || myDesktopSize.h < height))
+     size > myDesktopSize)
     return FBInitStatus::FailTooLarge;
 #else
   // Make sure this mode is even possible
   // We only really need to worry about it in non-windowed environments,
   // where requesting a window that's too large will probably cause a crash
-  if(myDesktopSize.w < width || myDesktopSize.h < height)
+  if(size > myDesktopSize)
     return FBInitStatus::FailTooLarge;
 #endif
 
   // Initialize video mode handler, so it can know what video modes are
   // appropriate for this framebuffer
-  myVidModeHandler.setImageSize(Common::Size(width, height));
+  myVidModeHandler.setImageSize(size);
 
   // Initialize video subsystem (make sure we get a valid mode)
   string pre_about = about();
   myActiveVidMode = buildVideoMode();
-  if(width <= myActiveVidMode.screen.w && height <= myActiveVidMode.screen.h)
+  if(size <= myActiveVidMode.screen)
   {
     // Changing the video mode can take some time, during which the last
     // sound played may get 'stuck'
