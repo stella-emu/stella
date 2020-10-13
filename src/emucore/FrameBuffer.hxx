@@ -51,13 +51,6 @@ class TIASurface;
 class FrameBuffer
 {
   public:
-    struct DisplayMode  // FIXME - is this needed?
-    {
-      uInt32 display;
-      Common::Size size;
-      uInt32 refresh_rate;
-    };
-
     enum class BufferType {
       None,
       Launcher,
