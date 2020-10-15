@@ -348,10 +348,10 @@ void RamWidget::fillGrid(bool updateOld)
 
   // Update RAM labels
   uInt32 rport = readPort(start), page = rport & 0xf0;
-  char buf[5];  // NOLINT : convert to stringstream
-  std::snprintf(buf, 5, "%04X", rport);
-  buf[2] = buf[3] = 'x';
-  myRamStart->setLabel(buf);
+  string label = Common::Base::toString(rport, Common::Base::Fmt::_16_4);
+
+  label[2] = label[3] = 'x';
+  myRamStart->setLabel(label);
   for(uInt32 row = 0; row < myNumRows; ++row, page += 0x10)
     myRamLabels[row]->setLabel(Common::Base::toString(page>>4, Common::Base::Fmt::_16_1));
 }
