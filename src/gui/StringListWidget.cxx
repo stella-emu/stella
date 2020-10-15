@@ -24,8 +24,9 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StringListWidget::StringListWidget(GuiObject* boss, const GUI::Font& font,
-                                   int x, int y, int w, int h, bool hilite)
-  : ListWidget(boss, font, x, y, w, h),
+                                   int x, int y, int w, int h, bool hilite,
+                                   bool useScrollbar)
+  : ListWidget(boss, font, x, y, w, h, useScrollbar),
     _hilite(hilite)
 {
   _bgcolorlo = kDlgColor;
@@ -107,8 +108,10 @@ void StringListWidget::drawWidget(bool hilite)
   }
 
   // Only draw the caret while editing, and if it's in the current viewport
-  if(_editMode && (_selectedItem >= _scrollBar->_currentPos) &&
-    (_selectedItem < _scrollBar->_currentPos + _rows))
+  if(_editMode &&
+     (!(_useScrollbar) ||
+     (_selectedItem >= _scrollBar->_currentPos) &&
+     (_selectedItem < _scrollBar->_currentPos + _rows)))
     drawCaret();
 }
 
