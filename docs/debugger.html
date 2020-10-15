@@ -227,6 +227,14 @@ tabs from left-to-right, Shift + Control/Cmd + Tab cycles right-to-left.
 Pressing Tab (or Shift + Tab) cycles between widgets in the current tab (except
 for in the Prompt Tab, where 'tab' is used for something else).</p>
 
+<p>Note for the GUI display:
+<ul>
+<li>Hexadecimal values are either not prefixed or with '$'.</li>
+<li>Decimal values are prefixed with '#'.</li>
+<li>Binary values are prefixed with '%'.</li>
+</ul>
+</p>
+
 <p>You can also enter the debugger at emulator startup by use the 'debug'
 command on the command line, or alternatively within the ROM launcher in
 'Power-on options':
@@ -1135,7 +1143,7 @@ as illustrated:</p>
 <!-- /////////////////////////////////////////////////////////////////////////  -->
 <br>
 <h2><a name="TIAInfo"><u>(F)</u> TIA Information</a></h2>
-<p>To the right of the <a href="#TIADisplay"><b>TIA Display</b></a> area, TIA information is displayed:</p>
+<p>To the right of the <a href="#TIADisplay"><b>TIA Display</b></a> area, TIA information is displayed (all values are decimal):</p>
 <p><img src="graphics/debugger_tiainfo.png"></p>
 <p>The indicators are as follows (note that all these are read-only):</p>
 <ul>
@@ -1577,7 +1585,7 @@ Go ahead and try to change something!</p>
 <p>If applicable, this area shows a detailed breakdown of any extra RAM supported by
 the bankswitching scheme. Since the bankswitch schemes can greatly vary in operation,
 this tab will be different for each scheme, but its specific functionality should be
-self-explanatory. An example of both F8SC (8K Atari + ram) and DPC (Pitfall II) is
+self-explanatory. An example of both F6SC (16K Atari + ram) and DPC (Pitfall II) is
 as follows:</p>
 
 <p><img src="graphics/debugger_ram-f8sc.png"></p>
