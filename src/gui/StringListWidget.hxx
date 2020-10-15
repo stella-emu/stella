@@ -25,7 +25,8 @@ class StringListWidget : public ListWidget
 {
   public:
     StringListWidget(GuiObject* boss, const GUI::Font& font,
-                     int x, int y, int w, int h, bool hilite = true);
+                     int x, int y, int w, int h, bool hilite = true,
+                     bool useScrollbar = true);
     ~StringListWidget() override = default;
 
     void setList(const StringList& list);
