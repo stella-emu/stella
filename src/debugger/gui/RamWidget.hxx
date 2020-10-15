@@ -100,7 +100,6 @@ class RamWidget : public Widget, public CommandSender
     DataGridWidget* myRamGrid{nullptr};
     DataGridWidget* myHexValue{nullptr};
     DataGridWidget* myDecValue{nullptr};
-    DataGridWidget* mySignValue{nullptr};
     DataGridWidget* myBinValue{nullptr};
     EditTextWidget* myLabel{nullptr};
 
