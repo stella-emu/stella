@@ -33,7 +33,7 @@ class FBSurfaceSDL2 : public FBSurface
 {
   public:
     FBSurfaceSDL2(FrameBufferSDL2& buffer, uInt32 width, uInt32 height,
-                  FrameBuffer::ScalingInterpolation interpolation,
+                  ScalingInterpolation interpolation,
                   const uInt32* staticData);
     ~FBSurfaceSDL2() override;
 
@@ -60,7 +60,7 @@ class FBSurfaceSDL2 : public FBSurface
     void reload() override;
     void resize(uInt32 width, uInt32 height) override;
 
-    void setScalingInterpolation(FrameBuffer::ScalingInterpolation) override;
+    void setScalingInterpolation(ScalingInterpolation) override;
 
   protected:
     void applyAttributes() override;
@@ -98,8 +98,8 @@ class FBSurfaceSDL2 : public FBSurface
     FrameBufferSDL2& myFB;
 
     unique_ptr<Blitter> myBlitter;
-    FrameBuffer::ScalingInterpolation myInterpolationMode
-        {FrameBuffer::ScalingInterpolation::none};
+    ScalingInterpolation myInterpolationMode
+        {ScalingInterpolation::none};
 
     SDL_Surface* mySurface{nullptr};
     SDL_Rect mySrcR{0, 0, 0, 0}, myDstR{0, 0, 0, 0};

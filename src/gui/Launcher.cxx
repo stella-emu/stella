@@ -56,7 +56,7 @@ FBInitStatus Launcher::initializeVideo()
 {
   string title = string("Stella ") + STELLA_VERSION;
   return myOSystem.frameBuffer().createDisplay(
-      title, FrameBuffer::BufferType::Launcher, mySize
+      title, BufferType::Launcher, mySize
   );
 }
 

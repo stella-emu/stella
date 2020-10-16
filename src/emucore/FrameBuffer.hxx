@@ -51,19 +51,6 @@ class TIASurface;
 class FrameBuffer
 {
   public:
-    enum class BufferType {
-      None,
-      Launcher,
-      Emulator,
-      Debugger
-    };
-
-    enum class ScalingInterpolation {
-      none,
-      sharp,
-      blur
-    };
-
     // Zoom level step interval
     static constexpr float ZOOM_STEPS = 0.25;
 
@@ -263,14 +250,14 @@ class FrameBuffer
     void enableGrabMouse(bool enable);
 
     /**
-      Sets the use of grabmouse.
-    */
-    bool grabMouseEnabled() const { return myGrabMouse; }
-
-    /**
       Toggles the use of grabmouse (only has effect in emulation mode).
     */
     void toggleGrabMouse();
+
+    /**
+      Query whether grabmouse is enabled.
+    */
+    bool grabMouseEnabled() const { return myGrabMouse; }
 
     /**
       Informs the Framebuffer of a change in EventHandler state.
@@ -291,7 +278,8 @@ class FrameBuffer
     uInt32 hidpiScaleFactor() const { return myHiDPIEnabled ? 2 : 1; }
 
     /**
-      These methods are used to load/save position and display of the current window.
+      These methods are used to load/save position and display of the
+      current window.
     */
     string getPositionKey();
     string getDisplayKey();

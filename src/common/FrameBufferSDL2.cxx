@@ -568,7 +568,7 @@ void FrameBufferSDL2::setWindowIcon()
 unique_ptr<FBSurface> FrameBufferSDL2::createSurface(
   uInt32 w,
   uInt32 h,
-  FrameBuffer::ScalingInterpolation interpolation,
+  ScalingInterpolation interpolation,
   const uInt32* data
 ) const
 {
