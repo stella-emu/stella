@@ -39,8 +39,9 @@ class VideoModeHandler
         None        // No stretching (1x zoom)
       };
 
-      Common::Rect image;
-      Common::Size screen;
+      Common::Rect imageR;
+      Common::Rect screenR;
+      Common::Size screenS;
       Stretch stretch{Mode::Stretch::None};
       string description;
       float zoom{1.F};
@@ -55,7 +56,7 @@ class VideoModeHandler
 
       friend ostream& operator<<(ostream& os, const Mode& vm)
       {
-        os << "image=" << vm.image << "  screen=" << vm.screen
+        os << "image=" << vm.imageR << "  screen=" << vm.screenS
            << "  stretch=" << (vm.stretch == Stretch::Preserve ? "preserve" :
                                vm.stretch == Stretch::Fill ? "fill" : "none")
            << "  desc=" << vm.description << "  zoom=" << vm.zoom
@@ -93,7 +94,8 @@ class VideoModeHandler
 
       @return  A video mode based on the given criteria
     */
-    const VideoModeHandler::Mode& buildMode(const Settings& settings, bool inTIAMode);
+    const VideoModeHandler::Mode& buildMode(const Settings& settings,
+                                            bool inTIAMode);
 
   private:
     Common::Size myImage, myDisplay;

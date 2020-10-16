@@ -209,10 +209,6 @@ FontDesc FrameBuffer::getFontDesc(const string& name) const
 FBInitStatus FrameBuffer::createDisplay(const string& title, BufferType type,
                                         Common::Size size, bool honourHiDPI)
 {
-  // always save, maybe only the mode of the window has changed
-  saveCurrentWindowPosition();
-  myBufferType = type;
-
   ++myInitializedCount;
   myScreenTitle = title;
 
@@ -250,44 +246,18 @@ FBInitStatus FrameBuffer::createDisplay(const string& title, BufferType type,
 #endif
 
   // Initialize video mode handler, so it can know what video modes are
-  // appropriate for this framebuffer
+  // appropriate for the requested image size
   myVidModeHandler.setImageSize(size);
 
-  // Initialize video subsystem (make sure we get a valid mode)
+  // Always save, maybe only the mode of the window has changed
+  saveCurrentWindowPosition();
+  myBufferType = type;
+
+  // Initialize video subsystem
   string pre_about = about();
-  myActiveVidMode = buildVideoMode();
-  if(size <= myActiveVidMode.screen)
-  {
-    // Changing the video mode can take some time, during which the last
-    // sound played may get 'stuck'
-    // So we mute the sound until the operation completes
-    bool oldMuteState = myOSystem.sound().mute(true);
-    if(activateVideoMode(myScreenTitle, myActiveVidMode))
-    {
-      myImageRect = myActiveVidMode.image;
-      myScreenSize = myActiveVidMode.screen;
-      myScreenRect = Common::Rect(myActiveVidMode.screen);
-
-      // Inform TIA surface about new mode
-      if(myOSystem.eventHandler().state() != EventHandlerState::LAUNCHER &&
-         myOSystem.eventHandler().state() != EventHandlerState::DEBUGGER)
-        myTIASurface->initialize(myOSystem.console(), myActiveVidMode);
-
-      // Did we get the requested fullscreen state?
-      myOSystem.settings().setValue("fullscreen", fullScreen());
-      resetSurfaces();
-      setCursorState();
-
-      myOSystem.sound().mute(oldMuteState);
-    }
-    else
-    {
-      Logger::error("ERROR: Couldn't initialize video subsystem");
-      return FBInitStatus::FailNotSupported;
-    }
-  }
-  else
-    return FBInitStatus::FailTooLarge;
+  FBInitStatus status = applyVideoMode();
+  if(status != FBInitStatus::Success)
+    return status;
 
 #ifdef GUI_SUPPORT
   // Erase any messages from a previous run
@@ -328,7 +298,7 @@ FBInitStatus FrameBuffer::createDisplay(const string& title, BufferType type,
       Logger::info(post_about);
   }
 
-  return FBInitStatus::Success;
+  return status;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -661,7 +631,7 @@ void FrameBuffer::drawFrameStats(float framesPerSecond)
   myStatsMsg.surface->drawString(f, ss.str(), xPos, yPos,
       myStatsMsg.w, myStatsMsg.color, TextAlign::Left, 0, true, kBGColor);
 
-  myStatsMsg.surface->setDstPos(myImageRect.x() + 10, myImageRect.y() + 8);
+  myStatsMsg.surface->setDstPos(imageRect().x() + 10, imageRect().y() + 8);
   myStatsMsg.surface->setDstSize(myStatsMsg.w * hidpiScaleFactor(),
                                  myStatsMsg.h * hidpiScaleFactor());
   myStatsMsg.surface->render();
@@ -739,47 +709,47 @@ inline bool FrameBuffer::drawMessage()
       break;
 
     case MessagePosition::TopCenter:
-      myMsg.x = (myImageRect.w() - dst.w()) >> 1;
+      myMsg.x = (imageRect().w() - dst.w()) >> 1;
       myMsg.y = 5;
       break;
 
     case MessagePosition::TopRight:
-      myMsg.x = myImageRect.w() - dst.w() - 5;
+      myMsg.x = imageRect().w() - dst.w() - 5;
       myMsg.y = 5;
       break;
 
     case MessagePosition::MiddleLeft:
       myMsg.x = 5;
-      myMsg.y = (myImageRect.h() - dst.h()) >> 1;
+      myMsg.y = (imageRect().h() - dst.h()) >> 1;
       break;
 
     case MessagePosition::MiddleCenter:
-      myMsg.x = (myImageRect.w() - dst.w()) >> 1;
-      myMsg.y = (myImageRect.h() - dst.h()) >> 1;
+      myMsg.x = (imageRect().w() - dst.w()) >> 1;
+      myMsg.y = (imageRect().h() - dst.h()) >> 1;
       break;
 
     case MessagePosition::MiddleRight:
-      myMsg.x = myImageRect.w() - dst.w() - 5;
-      myMsg.y = (myImageRect.h() - dst.h()) >> 1;
+      myMsg.x = imageRect().w() - dst.w() - 5;
+      myMsg.y = (imageRect().h() - dst.h()) >> 1;
       break;
 
     case MessagePosition::BottomLeft:
       myMsg.x = 5;
-      myMsg.y = myImageRect.h() - dst.h() - 5;
+      myMsg.y = imageRect().h() - dst.h() - 5;
       break;
 
     case MessagePosition::BottomCenter:
-      myMsg.x = (myImageRect.w() - dst.w()) >> 1;
-      myMsg.y = myImageRect.h() - dst.h() - 5;
+      myMsg.x = (imageRect().w() - dst.w()) >> 1;
+      myMsg.y = imageRect().h() - dst.h() - 5;
       break;
 
     case MessagePosition::BottomRight:
-      myMsg.x = myImageRect.w() - dst.w() - 5;
-      myMsg.y = myImageRect.h() - dst.h() - 5;
+      myMsg.x = imageRect().w() - dst.w() - 5;
+      myMsg.y = imageRect().h() - dst.h() - 5;
       break;
   }
 
-  myMsg.surface->setDstPos(myMsg.x + myImageRect.x(), myMsg.y + myImageRect.y());
+  myMsg.surface->setDstPos(myMsg.x + imageRect().x(), myMsg.y + imageRect().y());
   myMsg.surface->fillRect(0, 0, myMsg.w, myMsg.h, kColor);
   myMsg.surface->fillRect(BORDER, BORDER, myMsg.w - BORDER * 2, myMsg.h - BORDER * 2, kBtnColor);
   myMsg.surface->drawString(font(), myMsg.text, HBORDER, VBORDER,
@@ -1002,32 +972,10 @@ void FrameBuffer::setFullscreen(bool enable)
     default:
       return;
   }
-  saveCurrentWindowPosition();
-
-  // Changing the video mode can take some time, during which the last
-  // sound played may get 'stuck'
-  // So we mute the sound until the operation completes
-  bool oldMuteState = myOSystem.sound().mute(true);
 
   myOSystem.settings().setValue("fullscreen", enable);
-  myActiveVidMode = buildVideoMode();
-  if(activateVideoMode(myScreenTitle, myActiveVidMode))
-  {
-    myImageRect = myActiveVidMode.image;
-    myScreenSize = myActiveVidMode.screen;
-    myScreenRect = Common::Rect(myActiveVidMode.screen);
-
-    // Inform TIA surface about new mode
-    if(myOSystem.eventHandler().state() != EventHandlerState::LAUNCHER &&
-       myOSystem.eventHandler().state() != EventHandlerState::DEBUGGER)
-      myTIASurface->initialize(myOSystem.console(), myActiveVidMode);
-
-    // Did we get the requested fullscreen state?
-    myOSystem.settings().setValue("fullscreen", fullScreen());
-    resetSurfaces();
-    setCursorState();
-  }
-  myOSystem.sound().mute(oldMuteState);
+  saveCurrentWindowPosition();
+  applyVideoMode();
 #endif
 }
 
@@ -1120,12 +1068,8 @@ void FrameBuffer::changeOverscan(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::switchVideoMode(int direction)
 {
-  EventHandlerState state = myOSystem.eventHandler().state();
-  bool tiaMode = (state != EventHandlerState::DEBUGGER &&
-                  state != EventHandlerState::LAUNCHER);
-
   // Only applicable when in TIA/emulation mode
-  if(!tiaMode)
+  if(!myOSystem.eventHandler().inTIAMode())
     return;
 
   if(!fullScreen())
@@ -1151,44 +1095,18 @@ void FrameBuffer::switchVideoMode(int direction)
   }
 
   saveCurrentWindowPosition();
-
-  // Changing the video mode can take some time, during which the last
-  // sound played may get 'stuck'
-  // So we mute the sound until the operation completes
-  bool oldMuteState = myOSystem.sound().mute(true);
-
-  myActiveVidMode = buildVideoMode();
-  if(activateVideoMode(myScreenTitle, myActiveVidMode))
+  if(applyVideoMode() == FBInitStatus::Success)
   {
-    myImageRect = myActiveVidMode.image;
-    myScreenSize = myActiveVidMode.screen;
-    myScreenRect = Common::Rect(myActiveVidMode.screen);
-
-    // Inform TIA surface about new mode
-    myTIASurface->initialize(myOSystem.console(), myActiveVidMode);
-
-    resetSurfaces();
     if(fullScreen())
       showMessage(myActiveVidMode.description);
     else
       showMessage("Zoom", myActiveVidMode.description, myActiveVidMode.zoom,
                   supportedTIAMinZoom(), myTIAMaxZoom);
-    myOSystem.sound().mute(oldMuteState);
-
-    // Error check: were the settings applied as requested?
-    if(fullScreen())
-      myOSystem.settings().setValue("tia.fs_stretch",
-          myActiveVidMode.stretch == VideoModeHandler::Mode::Stretch::Fill);
-    else
-      myOSystem.settings().setValue("tia.zoom", myActiveVidMode.zoom);
-
-    return;
   }
-  myOSystem.sound().mute(oldMuteState);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const VideoModeHandler::Mode& FrameBuffer::buildVideoMode()
+FBInitStatus FrameBuffer::applyVideoMode()
 {
   // Update display size, in case windowed/fullscreen mode has changed
   const Settings& s = myOSystem.settings();
@@ -1200,12 +1118,47 @@ const VideoModeHandler::Mode& FrameBuffer::buildVideoMode()
   else
     myVidModeHandler.setDisplaySize(myAbsDesktopSize);
 
-  // And now build the new mode based on current settings
-  const bool tiaMode =
-    myOSystem.eventHandler().state() != EventHandlerState::DEBUGGER &&
-    myOSystem.eventHandler().state() != EventHandlerState::LAUNCHER;
+  const bool inTIAMode = myOSystem.eventHandler().inTIAMode();
 
-  return myVidModeHandler.buildMode(s, tiaMode);
+  // Build the new mode based on current settings
+  const VideoModeHandler::Mode& mode = myVidModeHandler.buildMode(s, inTIAMode);
+  if(mode.imageR.size() > mode.screenS)
+    return FBInitStatus::FailTooLarge;
+
+  // Changing the video mode can take some time, during which the last
+  // sound played may get 'stuck'
+  // So we mute the sound until the operation completes
+  bool oldMuteState = myOSystem.sound().mute(true);
+  FBInitStatus status = FBInitStatus::FailNotSupported;
+  if(activateVideoMode(myScreenTitle, mode))
+  {
+    myActiveVidMode = mode;
+    status = FBInitStatus::Success;
+
+    // Did we get the requested fullscreen state?
+    myOSystem.settings().setValue("fullscreen", fullScreen());
+
+    // Inform TIA surface about new mode, and update TIA settings
+    if(inTIAMode)
+    {
+      myTIASurface->initialize(myOSystem.console(), myActiveVidMode);
+      if(fullScreen())
+        myOSystem.settings().setValue("tia.fs_stretch",
+          myActiveVidMode.stretch == VideoModeHandler::Mode::Stretch::Fill);
+      else
+        myOSystem.settings().setValue("tia.zoom", myActiveVidMode.zoom);
+    }
+
+    resetSurfaces();
+    setCursorState();
+  }
+  else
+    Logger::error("ERROR: Couldn't initialize video subsystem");
+
+  // Restore sound settings
+  myOSystem.sound().mute(oldMuteState);
+
+  return status;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

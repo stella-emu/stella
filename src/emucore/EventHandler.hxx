@@ -102,7 +102,7 @@ class EventHandler
     void poll(uInt64 time);
 
     /**
-      Get/set the current state of the EventHandler
+      Get/set the current state of the EventHandler.
 
       @return The EventHandlerState type
     */
@@ -110,7 +110,18 @@ class EventHandler
     void setState(EventHandlerState state);
 
     /**
-      Resets the state machine of the EventHandler to the defaults
+      Convenience method that checks if we're in TIA mode.
+
+      @return Whether TIA mode is active
+    */
+    bool inTIAMode() const {
+      return !(myState == EventHandlerState::DEBUGGER ||
+               myState == EventHandlerState::LAUNCHER ||
+               myState == EventHandlerState::NONE);
+    }
+
+    /**
+      Resets the state machine of the EventHandler to the defaults.
 
       @param state  The current state to set
     */

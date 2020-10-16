@@ -186,15 +186,15 @@ class FrameBuffer
       Note that this will take into account the current scaling (if any)
       as well as image 'centering'.
     */
-    const Common::Rect& imageRect() const { return myImageRect; }
+    const Common::Rect& imageRect() const { return myActiveVidMode.imageR; }
 
     /**
       Returns the current dimensions of the framebuffer window.
       This is the entire area containing the framebuffer image as well as any
       'unusable' area.
     */
-    const Common::Size& screenSize() const { return myScreenSize; }
-    const Common::Rect& screenRect() const { return myScreenRect; }
+    const Common::Size& screenSize() const { return myActiveVidMode.screenS; }
+    const Common::Rect& screenRect() const { return myActiveVidMode.screenR; }
 
     /**
       Returns the current dimensions of the users' desktop.
@@ -507,11 +507,10 @@ class FrameBuffer
 
     /**
       Build an applicable video mode based on the current settings in
-      effect, whether TIA mode is active, etc.
-      Note that this only creates the video mode definition itself;
-      to apply it, we need to call 'activateVideoMode()'.
+      effect, whether TIA mode is active, etc.  Then tell the backend
+      to actually use the new mode.
     */
-    const VideoModeHandler::Mode& buildVideoMode();
+    FBInitStatus applyVideoMode();
 
     /**
       Calculate the maximum level by which the base window can be zoomed and
@@ -558,16 +557,6 @@ class FrameBuffer
     // Used to set intervals between messages while in pause mode
     Int32 myPausedCount{0};
 
-    // Dimensions of the actual image, after zooming, and taking into account
-    // any image 'centering'
-    Common::Rect myImageRect;
-
-    // Dimensions of the main window (not always the same as the image)
-    // Use 'size' version when only wxh are required
-    // Use 'rect' version when x/y, wxh are required
-    Common::Size myScreenSize;
-    Common::Rect myScreenRect;
-
     // Maximum dimensions of the desktop area
     // Note that this takes 'hidpi' mode into account, so in some cases
     // it will be less than the absolute desktop size
@@ -579,7 +568,8 @@ class FrameBuffer
     // Supported renderers
     VariantList myRenderers;
 
-    // The VideoModeHandler class takes responsibility for all video mode functionality
+    // The VideoModeHandler class takes responsibility for all video
+    // mode functionality
     VideoModeHandler myVidModeHandler;
     VideoModeHandler::Mode myActiveVidMode;
 
@@ -634,7 +624,7 @@ class FrameBuffer
     FullPaletteArray myFullPalette;
     // Holds UI palette data (for each variation)
     static UIPaletteArray ourStandardUIPalette, ourClassicUIPalette,
-      ourLightUIPalette, ourDarkUIPalette;
+                          ourLightUIPalette, ourDarkUIPalette;
 
   private:
     // Following constructors and assignment operators not supported
