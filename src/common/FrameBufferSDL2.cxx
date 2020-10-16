@@ -267,7 +267,7 @@ bool FrameBufferSDL2::activateVideoMode(const string& title,
         y1 = std::max(y1, rect.y + rect.h);
       }
     }
-    posX = BSPF::clamp(posX, x0 - Int32(mode.screen.w) + 50, x1 - 50);
+    posX = BSPF::clamp(posX, x0 - Int32(mode.screenS.w) + 50, x1 - 50);
     posY = BSPF::clamp(posY, y0 + 50, y1 - 50);
   }
 
@@ -292,8 +292,8 @@ bool FrameBufferSDL2::activateVideoMode(const string& title,
     int w, h;
 
     SDL_GetWindowSize(myWindow, &w, &h);
-    if(d != displayIndex || uInt32(w) != mode.screen.w || uInt32(h) != mode.screen.h
-       || adaptRefresh)
+    if(d != displayIndex || uInt32(w) != mode.screenS.w ||
+       uInt32(h) != mode.screenS.h || adaptRefresh)
     {
       SDL_DestroyWindow(myWindow);
       myWindow = nullptr;
@@ -310,7 +310,7 @@ bool FrameBufferSDL2::activateVideoMode(const string& title,
   {
     forceCreateRenderer = true;
     myWindow = SDL_CreateWindow(title.c_str(), posX, posY,
-                                mode.screen.w, mode.screen.h, flags);
+                                mode.screenS.w, mode.screenS.h, flags);
     if(myWindow == nullptr)
     {
       string msg = "ERROR: Unable to open SDL window: " + string(SDL_GetError());

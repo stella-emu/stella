@@ -111,7 +111,7 @@ VideoModeHandler::Mode::Mode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
     fsIndex(fsindex)
 {
   // First set default size and positioning
-  screen = Common::Size(sw, sh);
+  screenS = Common::Size(sw, sh);
 
   // Now resize based on windowed/fullscreen mode and stretch factor
   if(fsIndex != -1)  // fullscreen mode
@@ -119,22 +119,20 @@ VideoModeHandler::Mode::Mode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
     switch(stretch)
     {
       case Stretch::Preserve:
-      {
         iw *= overscan;
         ih *= overscan;
         break;
-      }
 
       case Stretch::Fill:
         // Scale to all available space
-        iw = screen.w * overscan;
-        ih = screen.h * overscan;
+        iw = screenS.w * overscan;
+        ih = screenS.h * overscan;
         break;
 
       case Stretch::None:
         // Don't do any scaling at all
-        iw = std::min(iw, screen.w) * overscan;
-        ih = std::min(ih, screen.h) * overscan;
+        iw = std::min(iw, screenS.w) * overscan;
+        ih = std::min(ih, screenS.h) * overscan;
         break;
     }
   }
@@ -146,19 +144,22 @@ VideoModeHandler::Mode::Mode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
     {
       case Stretch::Preserve:
       case Stretch::Fill:
-        screen.w = iw;
-        screen.h = ih;
+        screenS.w = iw;
+        screenS.h = ih;
         break;
+
       case Stretch::None:
         break;  // Do not change image or screen rects whatsoever
     }
   }
 
   // Now re-calculate the dimensions
-  iw = std::min(iw, screen.w);
-  ih = std::min(ih, screen.h);
+  iw = std::min(iw, screenS.w);
+  ih = std::min(ih, screenS.h);
 
-  image.moveTo((screen.w - iw) >> 1, (screen.h - ih) >> 1);
-  image.setWidth(iw);
-  image.setHeight(ih);
+  imageR.moveTo((screenS.w - iw) >> 1, (screenS.h - ih) >> 1);
+  imageR.setWidth(iw);
+  imageR.setHeight(ih);
+
+  screenR = Common::Rect(screenS);
 }

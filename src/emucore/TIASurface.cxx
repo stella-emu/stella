@@ -95,10 +95,10 @@ void TIASurface::initialize(const Console& console,
 {
   myTIA = &(console.tia());
 
-  myTiaSurface->setDstPos(mode.image.x(), mode.image.y());
-  myTiaSurface->setDstSize(mode.image.w(), mode.image.h());
-  mySLineSurface->setDstPos(mode.image.x(), mode.image.y());
-  mySLineSurface->setDstSize(mode.image.w(), mode.image.h());
+  myTiaSurface->setDstPos(mode.imageR.x(), mode.imageR.y());
+  myTiaSurface->setDstSize(mode.imageR.w(), mode.imageR.h());
+  mySLineSurface->setDstPos(mode.imageR.x(), mode.imageR.y());
+  mySLineSurface->setDstSize(mode.imageR.w(), mode.imageR.h());
 
   myPaletteHandler->setPalette();
 
