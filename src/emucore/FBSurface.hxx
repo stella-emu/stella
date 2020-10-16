@@ -246,6 +246,25 @@ class FBSurface
         ColorId color, TextAlign align = TextAlign::Left,
         int deltax = 0, bool useEllipsis = true, ColorId shadowColor = kNone);
 
+    /**
+      The rendering attributes that can be modified for this texture.
+      These probably can only be implemented in child FBSurfaces where
+      the specific functionality actually exists.
+    */
+    struct Attributes {
+      bool blending{false};    // Blending is enabled
+      uInt32 blendalpha{100};  // Alpha to use in blending mode (0-100%)
+
+      bool operator==(const Attributes& other) const {
+        return blendalpha == other.blendalpha && blending == other.blending;
+      }
+    };
+
+    /**
+      Get the currently applied attributes.
+    */
+    Attributes& attributes() { return myAttributes; }
+
     //////////////////////////////////////////////////////////////////////////
     // Note:  The following methods are FBSurface-specific, and must be
     //        implemented in child classes.
@@ -325,34 +344,16 @@ class FBSurface
     virtual void resize(uInt32 width, uInt32 height) = 0;
 
     /**
-      The rendering attributes that can be modified for this texture.
-      These probably can only be implemented in child FBSurfaces where
-      the specific functionality actually exists.
-    */
-    struct Attributes {
-      bool blending{false};    // Blending is enabled
-      uInt32 blendalpha{100};  // Alpha to use in blending mode (0-100%)
-
-      bool operator==(const Attributes& other) const {
-        return blendalpha == other.blendalpha && blending == other.blending;
-      }
-    };
-
-    /**
-      Get the currently applied attributes.
-    */
-    Attributes& attributes() { return myAttributes; }
-
-    /**
       Configure scaling interpolation.
      */
-    virtual void setScalingInterpolation(FrameBuffer::ScalingInterpolation) = 0;
+    virtual void setScalingInterpolation(ScalingInterpolation) = 0;
 
     /**
       The child class chooses which (if any) of the actual attributes
       can be applied.
     */
     virtual void applyAttributes() = 0;
+    //////////////////////////////////////////////////////////////////////////
 
     static void setPalette(const FullPaletteArray& palette) { myPalette = palette; }
 
@@ -367,7 +368,8 @@ class FBSurface
     */
     bool checkBounds(const uInt32 x, const uInt32 y) const;
 
-    void wrapString(const string& inStr, int pos, string& leftStr, string& rightStr) const;
+    void wrapString(const string& inStr, int pos,
+                    string& leftStr, string& rightStr) const;
 
     /**
       Check if the given character is a whitespace.

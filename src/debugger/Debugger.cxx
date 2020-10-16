@@ -113,7 +113,7 @@ FBInitStatus Debugger::initializeVideo()
 {
   string title = string("Stella ") + STELLA_VERSION + ": Debugger mode";
   return myOSystem.frameBuffer().createDisplay(
-      title, FrameBuffer::BufferType::Debugger, mySize
+      title, BufferType::Debugger, mySize
   );
 }
 

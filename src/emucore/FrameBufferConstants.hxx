@@ -35,6 +35,19 @@ enum class FBInitStatus {
   FailNotSupported
 };
 
+enum class BufferType {
+  None,
+  Launcher,
+  Emulator,
+  Debugger
+};
+
+enum class ScalingInterpolation {
+  none,
+  sharp,
+  blur
+};
+
 // Positions for onscreen/overlaid messages
 enum class MessagePosition {
   TopLeft,

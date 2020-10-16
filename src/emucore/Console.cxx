@@ -630,7 +630,7 @@ FBInitStatus Console::initializeVideo(bool full)
     const string& title = string("Stella ") + STELLA_VERSION +
                    ": \"" + myProperties.get(PropType::Cart_Name) + "\"";
     fbstatus = myOSystem.frameBuffer().createDisplay(title,
-        FrameBuffer::BufferType::Emulator, size, false);
+        BufferType::Emulator, size, false);
     if(fbstatus != FBInitStatus::Success)
       return fbstatus;
 

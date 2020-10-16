@@ -158,7 +158,7 @@ class FrameBufferLIBRETRO : public FrameBuffer
       @param data  If non-null, use the given data values as a static surface
     */
     unique_ptr<FBSurface>
-        createSurface(uInt32 w, uInt32 h, FrameBuffer::ScalingInterpolation, const uInt32* data) const override;
+        createSurface(uInt32 w, uInt32 h, ScalingInterpolation, const uInt32* data) const override;
 
     /**
       Grabs or ungrabs the mouse based on the given boolean value.

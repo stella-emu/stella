@@ -22,16 +22,16 @@
 #include "sdl_blitter/BlitterFactory.hxx"
 
 namespace {
-  BlitterFactory::ScalingAlgorithm scalingAlgorithm(FrameBuffer::ScalingInterpolation interpolation)
+  BlitterFactory::ScalingAlgorithm scalingAlgorithm(ScalingInterpolation interpolation)
   {
     switch (interpolation) {
-      case FrameBuffer::ScalingInterpolation::none:
+      case ScalingInterpolation::none:
         return BlitterFactory::ScalingAlgorithm::nearestNeighbour;
 
-      case FrameBuffer::ScalingInterpolation::blur:
+      case ScalingInterpolation::blur:
         return BlitterFactory::ScalingAlgorithm::bilinear;
 
-      case FrameBuffer::ScalingInterpolation::sharp:
+      case ScalingInterpolation::sharp:
         return BlitterFactory::ScalingAlgorithm::quasiInteger;
 
       default:
@@ -43,7 +43,7 @@ namespace {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBSurfaceSDL2::FBSurfaceSDL2(FrameBufferSDL2& buffer,
                              uInt32 width, uInt32 height,
-                             FrameBuffer::ScalingInterpolation interpolation,
+                             ScalingInterpolation interpolation,
                              const uInt32* staticData)
   : myFB(buffer),
     myInterpolationMode(interpolation)
@@ -256,7 +256,7 @@ void FBSurfaceSDL2::applyAttributes()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSDL2::setScalingInterpolation(FrameBuffer::ScalingInterpolation interpolation)
+void FBSurfaceSDL2::setScalingInterpolation(ScalingInterpolation interpolation)
 {
   if (interpolation == myInterpolationMode) return;
 

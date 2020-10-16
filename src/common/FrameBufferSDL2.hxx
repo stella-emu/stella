@@ -213,7 +213,7 @@ class FrameBufferSDL2 : public FrameBuffer
         createSurface(
           uInt32 w,
           uInt32 h,
-          FrameBuffer::ScalingInterpolation interpolation,
+          ScalingInterpolation interpolation,
           const uInt32* data
         ) const override;
 

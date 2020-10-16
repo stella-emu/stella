@@ -27,19 +27,19 @@
 #include "TIASurface.hxx"
 
 namespace {
-  FrameBuffer::ScalingInterpolation interpolationModeFromSettings(const Settings& settings)
+  ScalingInterpolation interpolationModeFromSettings(const Settings& settings)
   {
 #ifdef RETRON77
   // Witv TV / and or scanline interpolation, the image has a height of ~480px. THe R77 runs at 720p, so there
   // is no benefit from QIS in y-direction. In addition, QIS on the R77 has performance issues if TV effects are
   // enabled.
   return settings.getBool("tia.inter") || settings.getInt("tv.filter") != 0
-    ? FrameBuffer::ScalingInterpolation::blur
-    : FrameBuffer::ScalingInterpolation::sharp;
+    ? ScalingInterpolation::blur
+    : ScalingInterpolation::sharp;
 #else
     return settings.getBool("tia.inter") ?
-      FrameBuffer::ScalingInterpolation::blur :
-      FrameBuffer::ScalingInterpolation::sharp;
+      ScalingInterpolation::blur :
+      ScalingInterpolation::sharp;
 #endif
   }
 }
@@ -57,7 +57,7 @@ TIASurface::TIASurface(OSystem& system)
     AtariNTSC::outWidth(TIAConstants::frameBufferWidth),
     TIAConstants::frameBufferHeight,
     !correctAspect()
-      ? FrameBuffer::ScalingInterpolation::none
+      ? ScalingInterpolation::none
       : interpolationModeFromSettings(myOSystem.settings())
   );
 
