@@ -59,6 +59,7 @@ MT24LC256::MT24LC256(const FilesystemNode& eepromfile, const System& system,
   catch(...)
   {
     myDataFileExists = false;
+    myData = make_unique<uInt8[]>(FLASH_SIZE);
   }
 
   // Then initialize the I2C state
