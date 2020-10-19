@@ -35,8 +35,8 @@ class Cartridge;
   #define NO_THUMB_STATS
 #endif
 
-#define ROMADDMASK 0x7FFFF      
-#define RAMADDMASK 0x7FFF 
+#define ROMADDMASK 0x7FFFF
+#define RAMADDMASK 0x7FFF
 
 #define ROMSIZE (ROMADDMASK+1)      // 512KB
 #define RAMSIZE (RAMADDMASK+1)      // 32KB
