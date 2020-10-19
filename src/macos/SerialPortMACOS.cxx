@@ -111,8 +111,20 @@ StringList SerialPortMACOS::portNames()
 
   // Add only those that can be opened
   for(const auto& port: portList)
-    if(openPort(port.getPath()))
+    if(isValid(port.getPath()))
       ports.emplace_back(port.getPath());
 
   return ports;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool SerialPortMACOS::isValid(const string& port) const
+{
+  // For now, we can only detect whether the port could be opened
+  // Eventually we may extend this to do more intensive checks
+  int handle = open(port.c_str(), O_RDWR | O_NOCTTY | O_NONBLOCK);
+  if(handle > 0)
+    close(handle);
+
+  return handle > 0;
 }
