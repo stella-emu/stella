@@ -101,7 +101,7 @@ StringList SerialPortMACOS::portNames()
 
   // Get all possible devices in the '/dev' directory
   FilesystemNode::NameFilter filter = [](const FilesystemNode& node) {
-    return BSPF::startsWithIgnoreCase(node.getPath(), "/dev/tty.usb");
+    return BSPF::startsWithIgnoreCase(node.getPath(), "/dev/cu.usb");
   };
   FSList portList;
   portList.reserve(16);
