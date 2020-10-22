@@ -19,6 +19,8 @@
   * Fixed bug with aspect correction and fullscreen mode; snapshots from
     such a mode are now pixel-exact.
 
+  * Made serial port used for an AtariVox-USB adaptor editable. (TODO: Doc)
+
 -Have fun!
 
 

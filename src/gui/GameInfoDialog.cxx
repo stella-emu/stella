@@ -93,7 +93,7 @@ GameInfoDialog::GameInfoDialog(
   for(uInt32 i = 0; i < uInt32(Bankswitch::Type::NumSchemes); ++i)
     VarList::push_back(items, Bankswitch::BSList[i].desc, Bankswitch::BSList[i].name);
   myBSType = new PopUpWidget(myTab, font, t->getRight() + fontWidth, ypos,
-                           pwidth, lineHeight, items, "");
+                             pwidth, lineHeight, items);
   wid.push_back(myBSType);
   ypos += lineHeight + VGAP;
 
@@ -105,7 +105,7 @@ GameInfoDialog::GameInfoDialog(
   myStartBankLabel = new StaticTextWidget(myTab, font, HBORDER, ypos + 1, "Start bank (*) ");
   items.clear();
   myStartBank = new PopUpWidget(myTab, font, myStartBankLabel->getRight(), ypos,
-                                font.getStringWidth("AUTO"), lineHeight, items, "", 0, 0);
+                                font.getStringWidth("AUTO"), lineHeight, items);
   wid.push_back(myStartBank);
   ypos += lineHeight + VGAP * 4;
 
@@ -120,7 +120,7 @@ GameInfoDialog::GameInfoDialog(
   VarList::push_back(items, "PAL60", "PAL60");
   VarList::push_back(items, "SECAM60", "SECAM60");
   myFormat = new PopUpWidget(myTab, font, t->getRight(), ypos,
-                             pwidth, lineHeight, items, "", 0, 0);
+                             pwidth, lineHeight, items);
   wid.push_back(myFormat);
 
   myFormatDetected = new StaticTextWidget(myTab, ifont, myFormat->getRight() + fontWidth, ypos + 4,

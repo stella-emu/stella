@@ -27,8 +27,7 @@
 PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
                          int x, int y, int w, int h, const VariantList& list,
                          const string& label, int labelWidth, int cmd)
-  : Widget(boss, font, x, y - 1, w, h + 2),
-    CommandSender(boss),
+  : EditableWidget(boss, font, x, y - 1, w, h + 2),
     _label(label),
     _labelWidth(labelWidth)
 {
@@ -37,6 +36,8 @@ PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
   _bgcolorhi = kDlgColor;     // do not highlight the background
   _textcolor = kTextColor;
   _textcolorhi = kTextColor;  // do not highlight the label
+
+  setEditable(false);
 
   if(!_label.empty() && _labelWidth == 0)
     _labelWidth = _font.getStringWidth(_label);
@@ -70,6 +71,7 @@ void PopUpWidget::addItems(const VariantList& items)
 void PopUpWidget::setSelected(const Variant& tag, const Variant& def)
 {
   myMenu->setSelected(tag, def);
+  setText(myMenu->getSelectedName());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -77,6 +79,7 @@ void PopUpWidget::setSelectedIndex(int idx, bool changed)
 {
   _changed = changed;
   myMenu->setSelectedIndex(idx);
+  setText(myMenu->getSelectedName());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -84,6 +87,7 @@ void PopUpWidget::setSelectedMax(bool changed)
 {
   _changed = changed;
   myMenu->setSelectedMax();
+  setText(myMenu->getSelectedName());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -113,11 +117,31 @@ const Variant& PopUpWidget::getSelectedTag() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PopUpWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
-  if(isEnabled() && !myMenu->isVisible())
+  if(!isEditable() || x > _w - dropDownWidth(_font))
   {
-    // Add menu just underneath parent widget
-    myMenu->show(getAbsX() + _labelWidth, getAbsY() + getHeight(),
-                 dialog().surface().dstRect(), myMenu->getSelected());
+    if(isEnabled() && !myMenu->isVisible())
+    {
+      // Add menu just underneath parent widget
+      myMenu->show(getAbsX() + _labelWidth, getAbsY() + getHeight(),
+                   dialog().surface().dstRect(), myMenu->getSelected());
+    }
+  }
+  else
+  {
+    x += _editScrollOffset - _labelWidth;
+
+    int width = 0;
+    uInt32 i;
+
+    for(i = 0; i < editString().size(); ++i)
+    {
+      width += _font.getCharWidth(editString()[i]);
+      if(width >= x)
+        break;
+    }
+
+    if(setCaretPos(i))
+      setDirty();
   }
 }
 
@@ -180,6 +204,7 @@ void PopUpWidget::handleCommand(CommandSender* sender, int cmd, int data, int id
 {
   // Intercept all events sent through the PromptWidget
   // They're likely from our ContextMenu, indicating a redraw is required
+  setText(myMenu->getSelectedName());
   dialog().setDirty();
 
   // Pass the cmd on to our parent
@@ -246,23 +271,49 @@ void PopUpWidget::drawWidget(bool hilite)
 
   // Draw a thin frame around us.
   s.frameRect(x, _y, w, _h, isEnabled() && hilite ? kWidColorHi : kColor);
-  s.frameRect(x + w - (_arrowWidth * 2 - 2), _y + 1, (_arrowWidth * 2 - 3), _h - 2,
-              isEnabled() && hilite ? kWidColorHi : kBGColorLo);
+  if(isEnabled() && hilite)
+    s.frameRect(x + w - (_arrowWidth * 2 - 1), _y, (_arrowWidth * 2 - 1), _h, kWidColorHi);
 
   // Fill the background
-  s.fillRect(x + 1, _y + 1, w - (_arrowWidth * 2 - 1), _h - 2,
-             onTop ? _changed ? kDbgChangedColor : kWidColor : kDlgColor);
-  s.fillRect(x + w - (_arrowWidth * 2 - 3), _y + 2, (_arrowWidth * 2 - 5), _h - 4,
-             onTop ? isEnabled() && hilite ? kWidColor : kBGColorHi : kBGColorLo);
+  ColorId bgCol = isEditable() ? kWidColor : kDlgColor;
+  s.fillRect(x + 1, _y + 1, w - (_arrowWidth * 2 - 0), _h - 2,
+             onTop ? _changed ? kDbgChangedColor : bgCol : kDlgColor);
+  s.fillRect(x + w - (_arrowWidth * 2 - 2), _y + 1, (_arrowWidth * 2 - 3), _h - 2,
+             onTop ? isEnabled() && hilite ? kBtnColorHi : bgCol : kBGColorLo);
   // Draw an arrow pointing down at the right end to signal this is a dropdown/popup
   s.drawBitmap(_arrowImg, x + w - (_arrowWidth * 1.5 - 1), _y + myArrowsY + 1,
                !(isEnabled() && onTop) ? kColor : kTextColor, _arrowWidth, _arrowHeight);
 
   // Draw the selected entry, if any
-  const string& name = myMenu->getSelectedName();
+  const string& name = editString();
+  bool editable = isEditable();
+
   w -= dropDownWidth(_font);
-  TextAlign align = (_font.getStringWidth(name) > w) ?
+  TextAlign align = (_font.getStringWidth(name) > w && !editable) ?
                      TextAlign::Right : TextAlign::Left;
+  adjustOffset();
   s.drawString(_font, name, x + _textOfs, _y + myTextY, w,
-               !(isEnabled() && onTop) ? kColor : _changed ? kDbgChangedTextColor : kTextColor, align);
+               !(isEnabled() && onTop) ? kColor : _changed ? kDbgChangedTextColor : kTextColor,
+               align, editable ? -_editScrollOffset : 0, !editable);
+
+  if(editable)
+    drawCaret();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Common::Rect PopUpWidget::getEditRect() const
+{
+  return Common::Rect(_labelWidth + _textOfs, 1, _w - _textOfs - dropDownWidth(_font), _h);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PopUpWidget::endEditMode()
+{
+  // Editing is always enabled
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PopUpWidget::abortEditMode()
+{
+  // Editing is always enabled
 }

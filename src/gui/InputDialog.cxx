@@ -224,10 +224,9 @@ void InputDialog::addDevicePortTab()
   ypos += lineHeight + VGAP * 3;
   lwidth = _font.getStringWidth("AtariVox serial port ");
   fwidth = _w - HBORDER * 2 - 2 - lwidth - PopUpWidget::dropDownWidth(_font);
-  VariantList items;
-  VarList::push_back(items, "None detected", "");
-  myAVoxPort = new PopUpWidget(myTab, _font, HBORDER, ypos, fwidth, lineHeight, items,
+  myAVoxPort = new PopUpWidget(myTab, _font, HBORDER, ypos, fwidth, lineHeight, EmptyVarList,
                                "AtariVox serial port ", lwidth, kCursorStateChanged);
+  myAVoxPort->setEditable(true);
   wid.push_back(myAVoxPort);
 
   // Add items for virtual device ports
@@ -362,13 +361,16 @@ void InputDialog::loadConfig()
 
   // AtariVox serial port
   const string& avoxport = settings.getString("avoxport");
-  StringList ports = MediaFactory::createSerialPort()->portNames();
-  if(avoxport != EmptyString && !BSPF::contains(ports, avoxport))
-    ports.push_back(avoxport);
+  const StringList ports = MediaFactory::createSerialPort()->portNames();
   VariantList items;
-  VarList::push_back(items, "None detected", "");
+
   for(const auto& port: ports)
-    VarList::push_back(items, port, port);
+    VarList::push_back(items, port);
+  if(avoxport != EmptyString && !BSPF::contains(ports, avoxport))
+    VarList::push_back(items, avoxport, avoxport);
+  if(items.size() == 0)
+    VarList::push_back(items, "None detected");
+
   myAVoxPort->addItems(items);
   myAVoxPort->setSelected(avoxport);
 
@@ -451,7 +453,7 @@ void InputDialog::saveConfig()
   Controller::setAutoFireRate(rate);
 
   // AtariVox serial port
-  settings.setValue("avoxport", myAVoxPort->getSelectedTag().toString());
+  settings.setValue("avoxport", myAVoxPort->getText());
 
   // Allow all 4 joystick directions
   bool allowall4 = myAllowAll4->getState();
@@ -490,17 +492,11 @@ void InputDialog::setDefaults()
       break;
 
     case 2:  // Devices & Ports
-      // Left & right ports
-      mySAPort->setState(false);
-
       // Joystick deadzone
       myDeadzone->setValue(0);
 
       // Paddle speed (analog)
       myPaddleSpeed->setValue(20);
-
-      // Paddle speed (digital)
-      myDPaddleSpeed->setValue(10);
     #if defined(RETRON77)
       myDejitterBase->setValue(2);
       myDejitterDiff->setValue(6);
@@ -508,10 +504,12 @@ void InputDialog::setDefaults()
       myDejitterBase->setValue(0);
       myDejitterDiff->setValue(0);
     #endif
+
+      // Paddle speed (digital)
+      myDPaddleSpeed->setValue(10);
+
       // Autofire rate
       myAutoFireRate->setValue(0);
-      // AtariVox serial port
-      myAVoxPort->setSelectedMax();
 
       // Allow all 4 joystick directions
       myAllowAll4->setState(false);
@@ -519,6 +517,11 @@ void InputDialog::setDefaults()
       // Enable/disable modifier key-combos
       myModCombo->setState(true);
 
+      // Left & right ports
+      mySAPort->setState(false);
+
+      // AtariVox serial port
+      myAVoxPort->setSelectedIndex(0);
       break;
 
     case 3:  // Mouse
