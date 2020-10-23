@@ -246,8 +246,6 @@
 		DC2C5EDB1F8F2403007D2A09 /* smartmod.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2C5EDA1F8F2403007D2A09 /* smartmod.hxx */; };
 		DC30924C212F74930020DAD0 /* TimerManager.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC30924A212F74930020DAD0 /* TimerManager.cxx */; };
 		DC30924D212F74930020DAD0 /* TimerManager.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC30924B212F74930020DAD0 /* TimerManager.hxx */; };
-		DC368F5618A2FB710084199C /* FrameBufferSDL2.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC368F5018A2FB710084199C /* FrameBufferSDL2.cxx */; };
-		DC368F5718A2FB710084199C /* FrameBufferSDL2.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC368F5118A2FB710084199C /* FrameBufferSDL2.hxx */; };
 		DC368F5818A2FB710084199C /* SoundSDL2.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC368F5218A2FB710084199C /* SoundSDL2.cxx */; };
 		DC368F5918A2FB710084199C /* SoundSDL2.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC368F5318A2FB710084199C /* SoundSDL2.hxx */; };
 		DC36D2C814CAFAB0007DC821 /* CartFA2.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC36D2C614CAFAB0007DC821 /* CartFA2.cxx */; };
@@ -519,6 +517,10 @@
 		DCB2ECB01F0AECA3009738A6 /* CartDetector.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB2ECAD1F0AECA3009738A6 /* CartDetector.hxx */; };
 		DCB60AC92535E30600A5C1D2 /* VideoModeHandler.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCB60AC72535E30500A5C1D2 /* VideoModeHandler.cxx */; };
 		DCB60ACA2535E30600A5C1D2 /* VideoModeHandler.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB60AC82535E30600A5C1D2 /* VideoModeHandler.hxx */; };
+		DCB60ACC25430FC600A5C1D2 /* FBBackend.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB60ACB25430FC600A5C1D2 /* FBBackend.hxx */; };
+		DCB60AD02543100900A5C1D2 /* FBBackendSDL2.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCB60ACD2543100900A5C1D2 /* FBBackendSDL2.cxx */; };
+		DCB60AD12543100900A5C1D2 /* FBBackendSDL2.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB60ACE2543100900A5C1D2 /* FBBackendSDL2.hxx */; };
+		DCB60AD22543100900A5C1D2 /* audio in Resources */ = {isa = PBXBuildFile; fileRef = DCB60ACF2543100900A5C1D2 /* audio */; };
 		DCB87E581A104C1E00BF2A3B /* MediaFactory.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB87E571A104C1E00BF2A3B /* MediaFactory.hxx */; };
 		DCBD31E82299ADB400567357 /* KeyMap.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCBD31E52299ADB400567357 /* KeyMap.hxx */; };
 		DCBD31E92299ADB400567357 /* Rect.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCBD31E62299ADB400567357 /* Rect.hxx */; };
@@ -1007,8 +1009,6 @@
 		DC2C5EDA1F8F2403007D2A09 /* smartmod.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = smartmod.hxx; sourceTree = "<group>"; };
 		DC30924A212F74930020DAD0 /* TimerManager.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TimerManager.cxx; sourceTree = "<group>"; };
 		DC30924B212F74930020DAD0 /* TimerManager.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TimerManager.hxx; sourceTree = "<group>"; };
-		DC368F5018A2FB710084199C /* FrameBufferSDL2.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FrameBufferSDL2.cxx; sourceTree = "<group>"; };
-		DC368F5118A2FB710084199C /* FrameBufferSDL2.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FrameBufferSDL2.hxx; sourceTree = "<group>"; };
 		DC368F5218A2FB710084199C /* SoundSDL2.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SoundSDL2.cxx; sourceTree = "<group>"; };
 		DC368F5318A2FB710084199C /* SoundSDL2.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SoundSDL2.hxx; sourceTree = "<group>"; };
 		DC36D2C614CAFAB0007DC821 /* CartFA2.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartFA2.cxx; sourceTree = "<group>"; };
@@ -1281,6 +1281,10 @@
 		DCB2ECAD1F0AECA3009738A6 /* CartDetector.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartDetector.hxx; sourceTree = "<group>"; };
 		DCB60AC72535E30500A5C1D2 /* VideoModeHandler.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VideoModeHandler.cxx; sourceTree = "<group>"; };
 		DCB60AC82535E30600A5C1D2 /* VideoModeHandler.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = VideoModeHandler.hxx; sourceTree = "<group>"; };
+		DCB60ACB25430FC600A5C1D2 /* FBBackend.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FBBackend.hxx; sourceTree = "<group>"; };
+		DCB60ACD2543100900A5C1D2 /* FBBackendSDL2.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FBBackendSDL2.cxx; sourceTree = "<group>"; };
+		DCB60ACE2543100900A5C1D2 /* FBBackendSDL2.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FBBackendSDL2.hxx; sourceTree = "<group>"; };
+		DCB60ACF2543100900A5C1D2 /* audio */ = {isa = PBXFileReference; lastKnownFileType = folder; path = audio; sourceTree = "<group>"; };
 		DCB87E571A104C1E00BF2A3B /* MediaFactory.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = MediaFactory.hxx; sourceTree = "<group>"; };
 		DCBA710010DED62E0077193B /* Stella.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Stella.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCBD31E52299ADB400567357 /* KeyMap.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = KeyMap.hxx; sourceTree = "<group>"; };
@@ -1755,6 +1759,7 @@
 			isa = PBXGroup;
 			children = (
 				DCC6A4AD20A2620D00863C59 /* audio */,
+				DCB60ACF2543100900A5C1D2 /* audio */,
 				E09F413A201E901D004A3391 /* AudioQueue.cxx */,
 				E09F4139201E901C004A3391 /* AudioQueue.hxx */,
 				E0FABEEA20E9948100EB8E28 /* AudioSettings.cxx */,
@@ -1764,12 +1769,12 @@
 				DCC527D810B9DA6A005E1287 /* bspf.hxx */,
 				DCFF14CB18B0260300A20364 /* EventHandlerSDL2.cxx */,
 				DCFF14CC18B0260300A20364 /* EventHandlerSDL2.hxx */,
+				DCB60ACD2543100900A5C1D2 /* FBBackendSDL2.cxx */,
+				DCB60ACE2543100900A5C1D2 /* FBBackendSDL2.hxx */,
 				DC73BD831915E5B1003FAFAD /* FBSurfaceSDL2.cxx */,
 				DC73BD841915E5B1003FAFAD /* FBSurfaceSDL2.hxx */,
 				E007231D210FBF5D002CF343 /* FpsMeter.cxx */,
 				E007231C210FBF5C002CF343 /* FpsMeter.hxx */,
-				DC368F5018A2FB710084199C /* FrameBufferSDL2.cxx */,
-				DC368F5118A2FB710084199C /* FrameBufferSDL2.hxx */,
 				DCE395EA16CB0B5F008DB1E5 /* FSNodeFactory.hxx */,
 				DCE395EB16CB0B5F008DB1E5 /* FSNodeZIP.cxx */,
 				DCE395EC16CB0B5F008DB1E5 /* FSNodeZIP.hxx */,
@@ -1982,6 +1987,7 @@
 				2D733D6F062895B2006265D9 /* EventHandler.hxx */,
 				DC5AAC261FCB24AB00C420A6 /* EventHandlerConstants.hxx */,
 				DC6F394621B897AD00897AD8 /* exception */,
+				DCB60ACB25430FC600A5C1D2 /* FBBackend.hxx */,
 				DC73BD871915E5E3003FAFAD /* FBSurface.cxx */,
 				DC73BD881915E5E3003FAFAD /* FBSurface.hxx */,
 				2D733D70062895B2006265D9 /* FrameBuffer.cxx */,
@@ -2500,6 +2506,7 @@
 				2D91741209BA90380026E9FF /* ProgressDialog.hxx in Headers */,
 				2D91741309BA90380026E9FF /* ScrollBarWidget.hxx in Headers */,
 				2D91741609BA90380026E9FF /* TabWidget.hxx in Headers */,
+				DCB60ACC25430FC600A5C1D2 /* FBBackend.hxx in Headers */,
 				DCB2ECB01F0AECA3009738A6 /* CartDetector.hxx in Headers */,
 				2D91741809BA90380026E9FF /* Widget.hxx in Headers */,
 				2D91741909BA90380026E9FF /* CartUA.hxx in Headers */,
@@ -2614,6 +2621,7 @@
 				DC71EAA81FDA070D008827CB /* CartMNetworkWidget.hxx in Headers */,
 				DC5D2C530F117CFD004D1660 /* StellaFont.hxx in Headers */,
 				DC5D2C540F117CFD004D1660 /* StellaLargeFont.hxx in Headers */,
+				DCB60AD12543100900A5C1D2 /* FBBackendSDL2.hxx in Headers */,
 				DC5D2C550F117CFD004D1660 /* StellaMediumFont.hxx in Headers */,
 				DC3EE8681E2C0E6D00905161 /* inftrees.h in Headers */,
 				DC932D440F278A5200FEFEFC /* DefProps.hxx in Headers */,
@@ -2769,7 +2777,6 @@
 				DC96162D1F817830008A2206 /* AmigaMouseWidget.hxx in Headers */,
 				DCAACB17188D636F00A4D282 /* CartDFWidget.hxx in Headers */,
 				DCF3A6FF1DFC75E3008A8AF3 /* TIA.hxx in Headers */,
-				DC368F5718A2FB710084199C /* FrameBufferSDL2.hxx in Headers */,
 				DC368F5918A2FB710084199C /* SoundSDL2.hxx in Headers */,
 				DCF3A6F91DFC75E3008A8AF3 /* PaddleReader.hxx in Headers */,
 				DCFF14CE18B0260300A20364 /* EventHandlerSDL2.hxx in Headers */,
@@ -2848,6 +2855,7 @@
 				2D91747109BA90380026E9FF /* docs in Resources */,
 				2D91747209BA90380026E9FF /* AboutBox.nib in Resources */,
 				2DEFB40C09C3386F00754289 /* Cart.icns in Resources */,
+				DCB60AD22543100900A5C1D2 /* audio in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3187,11 +3195,11 @@
 				DCAACAFC188D631500A4D282 /* CartDF.cxx in Sources */,
 				DCAACAFE188D631500A4D282 /* CartDFSC.cxx in Sources */,
 				DCAACB0E188D636F00A4D282 /* Cart4KSCWidget.cxx in Sources */,
+				DCB60AD02543100900A5C1D2 /* FBBackendSDL2.cxx in Sources */,
 				DCAACB10188D636F00A4D282 /* CartBFSCWidget.cxx in Sources */,
 				DCAACB12188D636F00A4D282 /* CartBFWidget.cxx in Sources */,
 				DCAACB14188D636F00A4D282 /* CartDFSCWidget.cxx in Sources */,
 				DCAACB16188D636F00A4D282 /* CartDFWidget.cxx in Sources */,
-				DC368F5618A2FB710084199C /* FrameBufferSDL2.cxx in Sources */,
 				DC368F5818A2FB710084199C /* SoundSDL2.cxx in Sources */,
 				DCFF14CD18B0260300A20364 /* EventHandlerSDL2.cxx in Sources */,
 				DC3EE8561E2C0E6D00905161 /* adler32.c in Sources */,
