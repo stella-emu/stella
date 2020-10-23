@@ -69,7 +69,7 @@ Controller::Type ControllerDetector::autodetectPort(
     if(isProbablyTrakBall(image, size))
       type = Controller::Type::TrakBall;
     else if(isProbablyAtariMouse(image, size))
-      type = Controller::Type::AmigaMouse;
+      type = Controller::Type::AtariMouse;
     else if(isProbablyAmigaMouse(image, size))
       type = Controller::Type::AmigaMouse;
     else if(usesKeyboard(image, size, port))
