@@ -297,12 +297,7 @@ void* StellaLIBRETRO::getVideoBuffer() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool StellaLIBRETRO::getVideoNTSC() const
 {
-  const ConsoleInfo& console_info = myOSystem->console().about();
-  string format = console_info.DisplayFormat;
-
-  return (format == "NTSC") || (format == "NTSC*") ||
-         (format == "PAL60") || (format == "PAL60*") ||
-         (format == "SECAM60") || (format == "SECAM60*");
+  return myOSystem->console().gameRefreshRate() == 60;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

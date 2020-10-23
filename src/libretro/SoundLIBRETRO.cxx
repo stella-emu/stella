@@ -31,15 +31,10 @@
 #include "AudioQueue.hxx"
 #include "EmulationTiming.hxx"
 #include "AudioSettings.hxx"
-#include "StaggeredLogger.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SoundLIBRETRO::SoundLIBRETRO(OSystem& osystem, AudioSettings& audioSettings)
   : Sound(osystem),
-    myIsInitializedFlag(false),
-    myEmulationTiming(nullptr),
-    myCurrentFragment(nullptr),
-    myUnderrun(false),
     myAudioSettings(audioSettings)
 {
   Logger::debug("SoundLIBRETRO::SoundLIBRETRO started ...");
@@ -99,7 +94,6 @@ void SoundLIBRETRO::dequeue(Int16* stream, uInt32* samples)
 
     myCurrentFragment = nextFragment;
 
-
     for (uInt32 i = 0; i < myAudioQueue->fragmentSize(); ++i)
     {
       Int16 sampleL, sampleR;
@@ -118,11 +112,6 @@ void SoundLIBRETRO::dequeue(Int16* stream, uInt32* samples)
   }
 
   *samples = outIndex / 2;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundLIBRETRO::queryHardware(VariantList& devices)
-{
 }
 
 #endif  // SOUND_SUPPORT

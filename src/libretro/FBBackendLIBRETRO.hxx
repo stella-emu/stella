@@ -24,17 +24,14 @@ class OSystem;
 #include "FBBackend.hxx"
 
 /**
-  This class implements a standard LIBRETRO backend.  Most of the
-  functionality is not used, since libretro has its own rendering system.
+  This class implements a standard LIBRETRO framebuffer backend.  Most of
+  the functionality is not used, since libretro has its own rendering system.
 
   @author  Stephen Anthony
 */
 class FBBackendLIBRETRO : public FBBackend
 {
   public:
-    /**
-      Creates a new LIBRETRO framebuffer.
-    */
     explicit FBBackendLIBRETRO(OSystem&) { }
     ~FBBackendLIBRETRO() override { }
 
