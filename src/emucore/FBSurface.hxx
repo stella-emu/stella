@@ -177,7 +177,8 @@ class FBSurface
       @param y         The destination y-location to start drawing pixels
       @param numpixels The number of pixels to draw
     */
-    virtual void drawPixels(const uInt32* data, uInt32 x, uInt32 y, uInt32 numpixels);
+    virtual void drawPixels(const uInt32* data, uInt32 x, uInt32 y,
+                            uInt32 numpixels);
 
     /**
       This method should be called to draw a rectangular box with sides

@@ -20,7 +20,7 @@
 
 #include "bspf.hxx"
 #include "FBSurface.hxx"
-#include "FrameBufferSDL2.hxx"
+#include "FBBackendSDL2.hxx"
 #include "sdl_blitter/Blitter.hxx"
 
 /**
@@ -32,9 +32,8 @@
 class FBSurfaceSDL2 : public FBSurface
 {
   public:
-    FBSurfaceSDL2(FrameBufferSDL2& buffer, uInt32 width, uInt32 height,
-                  ScalingInterpolation interpolation,
-                  const uInt32* staticData);
+    FBSurfaceSDL2(FBBackendSDL2& backend, uInt32 width, uInt32 height,
+                  ScalingInterpolation inter, const uInt32* staticData);
     ~FBSurfaceSDL2() override;
 
     // Most of the surface drawing primitives are implemented in FBSurface;
@@ -95,7 +94,7 @@ class FBSurfaceSDL2 : public FBSurface
     FBSurfaceSDL2& operator=(FBSurfaceSDL2&&) = delete;
 
   private:
-    FrameBufferSDL2& myFB;
+    FBBackendSDL2& myBackend;
 
     unique_ptr<Blitter> myBlitter;
     ScalingInterpolation myInterpolationMode

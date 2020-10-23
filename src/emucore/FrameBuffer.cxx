@@ -25,6 +25,7 @@
 #include "Settings.hxx"
 #include "TIA.hxx"
 #include "Sound.hxx"
+#include "MediaFactory.hxx"
 
 #include "FBSurface.hxx"
 #include "TIASurface.hxx"
@@ -63,14 +64,24 @@ FrameBuffer::FrameBuffer(OSystem& osystem)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBuffer::~FrameBuffer()
 {
+  // Make sure to free surfaces/textures before destroying the backend itself
+  // Most platforms are fine with doing this in either order, but it seems
+  // that OpenBSD in particular crashes when attempting to destroy textures
+  // *after* the renderer is already destroyed
+  freeSurfaces();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBuffer::initialize()
+void FrameBuffer::initialize()
 {
+  // First create the platform-specific backend; it is needed before anything
+  // else can be used
+  try { myBackend = MediaFactory::createVideoBackend(myOSystem); }
+  catch(const runtime_error& e) { throw e; }
+
   // Get desktop resolution and supported renderers
   vector<Common::Size> windowedDisplays;
-  queryHardware(myFullscreenDisplays, windowedDisplays, myRenderers);
+  myBackend->queryHardware(myFullscreenDisplays, windowedDisplays, myRenderers);
   uInt32 query_w = windowedDisplays[0].w, query_h = windowedDisplays[0].h;
 
   // Check the 'maxres' setting, which is an undocumented developer feature
@@ -116,8 +127,6 @@ bool FrameBuffer::initialize()
 
   // Create a TIA surface; we need it for rendering TIA images
   myTIASurface = make_unique<TIASurface>(myOSystem);
-
-  return true;
 }
 
 #ifdef GUI_SUPPORT
@@ -210,7 +219,7 @@ FBInitStatus FrameBuffer::createDisplay(const string& title, BufferType type,
                                         Common::Size size, bool honourHiDPI)
 {
   ++myInitializedCount;
-  myScreenTitle = title;
+  myBackend->setTitle(title);
 
   // In HiDPI mode, all created displays must be scaled appropriately
   if(honourHiDPI && hidpiEnabled())
@@ -254,7 +263,7 @@ FBInitStatus FrameBuffer::createDisplay(const string& title, BufferType type,
   myBufferType = type;
 
   // Initialize video subsystem
-  string pre_about = about();
+  string pre_about = myBackend->about();
   FBInitStatus status = applyVideoMode();
   if(status != FBInitStatus::Success)
     return status;
@@ -289,11 +298,11 @@ FBInitStatus FrameBuffer::createDisplay(const string& title, BufferType type,
   // Print initial usage message, but only print it later if the status has changed
   if(myInitializedCount == 1)
   {
-    Logger::info(about());
+    Logger::info(myBackend->about());
   }
   else
   {
-    string post_about = about();
+    string post_about = myBackend->about();
     if(post_about != pre_about)
       Logger::info(post_about);
   }
@@ -467,7 +476,7 @@ void FrameBuffer::update(bool force)
 
   // Push buffers to screen only when necessary
   if(force)
-    renderToScreen();
+    myBackend->renderToScreen();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -493,7 +502,7 @@ void FrameBuffer::updateInEmulationMode(float framesPerSecond)
     drawMessage();
 
   // Push buffers to screen
-  renderToScreen();
+  myBackend->renderToScreen();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -600,7 +609,8 @@ void FrameBuffer::drawFrameStats(float framesPerSecond)
   ss
     << myOSystem.console().tia().frameBufferScanlinesLastFrame()
     << " / "
-    << std::fixed << std::setprecision(1) << myOSystem.console().getFramerate()
+    << std::fixed << std::setprecision(1)
+    << myOSystem.console().currentFrameRate()
     << "Hz => "
     << info.DisplayFormat;
 
@@ -803,11 +813,11 @@ void FrameBuffer::setPauseDelay()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 shared_ptr<FBSurface> FrameBuffer::allocateSurface(
-    int w, int h, ScalingInterpolation interpolation, const uInt32* data
+    int w, int h, ScalingInterpolation inter, const uInt32* data
 )
 {
   // Add new surface to the list
-  mySurfaceList.push_back(createSurface(w, h, interpolation, data));
+  mySurfaceList.push_back(myBackend->createSurface(w, h, inter, data));
 
   // And return a pointer to it (pointer should be treated read-only)
   return mySurfaceList.at(mySurfaceList.size() - 1);
@@ -945,9 +955,11 @@ string FrameBuffer::getPositionKey()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::saveCurrentWindowPosition()
 {
-  myOSystem.settings().setValue(getDisplayKey(), getCurrentDisplayIndex());
-  if(isCurrentWindowPositioned())
-    myOSystem.settings().setValue(getPositionKey(), getCurrentWindowPos());
+  myOSystem.settings().setValue(
+      getDisplayKey(), myBackend->getCurrentDisplayIndex());
+  if(myBackend->isCurrentWindowPositioned())
+    myOSystem.settings().setValue(
+        getPositionKey(), myBackend->getCurrentWindowPos());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -997,7 +1009,7 @@ void FrameBuffer::toggleFullscreen(bool toggle)
         ostringstream msg;
         msg << "Fullscreen ";
         if(isFullscreen)
-          msg << "enabled (" << refreshRate() << " Hz, ";
+          msg << "enabled (" << myBackend->refreshRate() << " Hz, ";
         else
           msg << "disabled (";
         msg << "Zoom " << myActiveVidMode.zoom * 100 << "%)";
@@ -1033,7 +1045,7 @@ void FrameBuffer::toggleAdaptRefresh(bool toggle)
 
     msg << "Adapt refresh rate ";
     msg << (isAdaptRefresh ? "enabled" : "disabled");
-    msg << " (" << refreshRate() << " Hz)";
+    msg << " (" << myBackend->refreshRate() << " Hz)";
 
     showMessage(msg.str());
   }
@@ -1112,7 +1124,7 @@ FBInitStatus FrameBuffer::applyVideoMode()
   const Settings& s = myOSystem.settings();
   if(s.getBool("fullscreen"))
   {
-    Int32 fsIndex = std::max(getCurrentDisplayIndex(), 0);
+    Int32 fsIndex = std::max(myBackend->getCurrentDisplayIndex(), 0);
     myVidModeHandler.setDisplaySize(myFullscreenDisplays[fsIndex], fsIndex);
   }
   else
@@ -1130,7 +1142,11 @@ FBInitStatus FrameBuffer::applyVideoMode()
   // So we mute the sound until the operation completes
   bool oldMuteState = myOSystem.sound().mute(true);
   FBInitStatus status = FBInitStatus::FailNotSupported;
-  if(activateVideoMode(myScreenTitle, mode))
+
+  if(myBackend->setVideoMode(mode,
+      myOSystem.settings().getInt(getDisplayKey()),
+      myOSystem.settings().getPoint(getPositionKey()))
+    )
   {
     myActiveVidMode = mode;
     status = FBInitStatus::Success;
@@ -1218,7 +1234,7 @@ void FrameBuffer::setCursorState()
       break;
   }
 
-  grabMouse(emulation && (analog || alwaysUseMouse) && myGrabMouse);
+  myBackend->grabMouse(emulation && (analog || alwaysUseMouse) && myGrabMouse);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

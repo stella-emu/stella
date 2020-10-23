@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef FRAMEBUFFER_SDL2_HXX
-#define FRAMEBUFFER_SDL2_HXX
+#ifndef FB_BACKEND_SDL2_HXX
+#define FB_BACKEND_SDL2_HXX
 
 #include "SDL_lib.hxx"
 
@@ -24,27 +24,55 @@ class OSystem;
 class FBSurfaceSDL2;
 
 #include "bspf.hxx"
-#include "FrameBuffer.hxx"
+#include "FBBackend.hxx"
 
 /**
-  This class implements a standard SDL2 2D, hardware accelerated framebuffer.
-  Behind the scenes, it may be using Direct3D, OpenGL(ES), etc.
+  This class implements a standard SDL2 2D, hardware accelerated framebuffer
+  backend.  Behind the scenes, it may be using Direct3D, OpenGL(ES), etc.
 
   @author  Stephen Anthony
 */
-class FrameBufferSDL2 : public FrameBuffer
+class FBBackendSDL2 : public FBBackend
 {
   public:
     /**
       Creates a new SDL2 framebuffer
     */
-    explicit FrameBufferSDL2(OSystem& osystem);
-    ~FrameBufferSDL2() override;
+    explicit FBBackendSDL2(OSystem& osystem);
+    ~FBBackendSDL2() override;
 
-    //////////////////////////////////////////////////////////////////////
-    // The following are derived from public methods in FrameBuffer.hxx
-    //////////////////////////////////////////////////////////////////////
+  public:
+    /**
+      Get a pointer to the SDL renderer.
+     */
+    SDL_Renderer* renderer() { return myRenderer; }
 
+    /**
+      Is the renderer initialized?
+     */
+    bool isInitialized() const { return myRenderer != nullptr; }
+
+    /**
+      Get the SDL pixel format.
+     */
+    const SDL_PixelFormat& pixelFormat() const { return *myPixelFormat; }
+
+    /**
+      Does the renderer support render targets?
+     */
+    bool hasRenderTargetSupport() const { return myRenderTargetSupport; }
+
+    /**
+      Transform from window to renderer coordinates, x direction
+     */
+    int scaleX(int x) const override { return (x * myRenderW) / myWindowW; }
+
+    /**
+      Transform from window to renderer coordinates, y direction
+     */
+    int scaleY(int y) const override { return (y * myRenderH) / myWindowH; }
+
+  protected:
     /**
       Updates window title.
 
@@ -93,7 +121,8 @@ class FrameBufferSDL2 : public FrameBuffer
       @param pitch   The pitch (in bytes) for the pixel data
       @param rect    The bounding rectangle for the buffer
     */
-    void readPixels(uInt8* buffer, uInt32 pitch, const Common::Rect& rect) const override;
+    void readPixels(uInt8* buffer, uInt32 pitch,
+                    const Common::Rect& rect) const override;
 
     /**
       This method is called to query if the current window is not centered
@@ -110,6 +139,7 @@ class FrameBufferSDL2 : public FrameBuffer
       @return  The position of the currently displayed window
     */
     Common::Point getCurrentWindowPos() const override;
+
     /**
       This method is called to query the video hardware for the index
       of the display the current window is displayed on
@@ -124,40 +154,6 @@ class FrameBufferSDL2 : public FrameBuffer
     */
     void clear() override;
 
-    /**
-      Get a pointer to the SDL renderer.
-     */
-    SDL_Renderer* renderer();
-
-    /**
-      Get the SDL pixel format.
-     */
-    const SDL_PixelFormat& pixelFormat() const;
-
-    /**
-      Is the renderer initialized?
-     */
-    bool isInitialized() const;
-
-    /**
-      Does the renderer support render targets?
-     */
-    bool hasRenderTargetSupport() const;
-
-    /**
-      Transform from window to renderer coordinates, x direction
-     */
-    int scaleX(int x) const override { return (x * myRenderW) / myWindowW; }
-
-    /**
-      Transform from window to renderer coordinates, y direction
-     */
-    int scaleY(int y) const override { return (y * myRenderH) / myWindowH; }
-
-  protected:
-    //////////////////////////////////////////////////////////////////////
-    // The following are derived from protected methods in FrameBuffer.hxx
-    //////////////////////////////////////////////////////////////////////
     /**
       This method is called to query and initialize the video hardware
       for desktop and fullscreen resolution information.  Since several
@@ -174,46 +170,28 @@ class FrameBufferSDL2 : public FrameBuffer
     /**
       This method is called to change to the given video mode.
 
-      @param title The title for the created window
-      @param mode  The video mode to use
+      @param mode   The video mode to use
+      @param winIdx The display/monitor that the window last opened on
+      @param winPos The position that the window last opened at
 
       @return  False on any errors, else true
     */
-    bool activateVideoMode(const string& title,
-                           const VideoModeHandler::Mode& mode) override;
-
-    /**
-      Checks if the display refresh rate should be adapted to game refresh rate in (real) fullscreen mode
-
-      @param displayIndex   The display which should be checked
-      @param adaptedSdlMode The best matching mode if the refresh rate should be changed
-
-      @return  True if the refresh rate should be changed
-    */
-    bool adaptRefreshRate(Int32 displayIndex, SDL_DisplayMode& adaptedSdlMode);
-
-    /**
-      Create a new renderer if required
-
-      @param force  If true, force new renderer creation
-
-      @return  False on any errors, else true
-    */
-    bool createRenderer(bool force);
+    bool setVideoMode(const VideoModeHandler::Mode& mode,
+                      int winIdx, const Common::Point& winPos) override;
 
     /**
       This method is called to create a surface with the given attributes.
 
-      @param w                The requested width of the new surface.
-      @param h                The requested height of the new surface.
-      @param interpolation    Interpolation mode
-      @param data             If non-null, use the given data values as a static surface
+      @param w      The requested width of the new surface.
+      @param h      The requested height of the new surface.
+      @param inter  Interpolation mode
+      @param data   If non-null, use the given data values as a static surface
     */
     unique_ptr<FBSurface>
         createSurface(
           uInt32 w,
           uInt32 h,
-          ScalingInterpolation interpolation,
+          ScalingInterpolation inter,
           const uInt32* data
         ) const override;
 
@@ -223,14 +201,18 @@ class FrameBufferSDL2 : public FrameBuffer
     void grabMouse(bool grab) override;
 
     /**
-      Set the icon for the main SDL window.
-    */
-    void setWindowIcon() override;
-
-    /**
-      This method is called to provide information about the FrameBuffer.
+      This method is called to provide information about the backend.
     */
     string about() const override;
+
+    /**
+      Create a new renderer if required.
+
+      @param force  If true, force new renderer creation
+
+      @return  False on any errors, else true
+    */
+    bool createRenderer(bool force);
 
     /**
       This method must be called after all drawing is done, and indicates
@@ -239,12 +221,29 @@ class FrameBufferSDL2 : public FrameBuffer
     void renderToScreen() override;
 
     /**
+      Retrieve the current display's refresh rate, or 0 if no window.
+    */
+    int refreshRate() const override;
+
+    /**
+      Checks if the display refresh rate should be adapted to game refresh
+      rate in (real) fullscreen mode.
+
+      @param displayIndex   The display which should be checked
+      @param adaptedSdlMode The best matching mode if the refresh rate
+                            should be changed
+
+      @return  True if the refresh rate should be changed
+    */
+    bool adaptRefreshRate(Int32 displayIndex, SDL_DisplayMode& adaptedSdlMode);
+
+    /**
       After the renderer has been created, detect the features it supports.
      */
     void detectFeatures();
 
     /**
-      Detect render target support;
+      Detect render target support.
      */
     bool detectRenderTargetSupport();
 
@@ -254,16 +253,13 @@ class FrameBufferSDL2 : public FrameBuffer
     void determineDimensions();
 
     /**
-      Retrieve the current display's refresh rate, or 0 if no window
+      Set the icon for the main SDL window.
     */
-    int refreshRate() const override;
-
-    /**
-      Retrieve the current game's refresh rate, or 60 if no game
-    */
-    int gameRefreshRate() const;
+    void setWindowIcon();
 
   private:
+    OSystem& myOSystem;
+
     // The SDL video buffer
     SDL_Window* myWindow{nullptr};
     SDL_Renderer* myRenderer{nullptr};
@@ -274,22 +270,25 @@ class FrameBufferSDL2 : public FrameBuffer
     // Center setting of current window
     bool myCenter{false};
 
-    // last position of windowed window
-    Common::Point myWindowedPos;
-
     // Does the renderer support render targets?
     bool myRenderTargetSupport{false};
+
+    // Title of the main window/screen
+    string myScreenTitle;
+
+    // Number of displays
+    int myNumDisplays{1};
 
     // Window and renderer dimensions
     int myWindowW{0}, myWindowH{0}, myRenderW{0}, myRenderH{0};
 
   private:
     // Following constructors and assignment operators not supported
-    FrameBufferSDL2() = delete;
-    FrameBufferSDL2(const FrameBufferSDL2&) = delete;
-    FrameBufferSDL2(FrameBufferSDL2&&) = delete;
-    FrameBufferSDL2& operator=(const FrameBufferSDL2&) = delete;
-    FrameBufferSDL2& operator=(FrameBufferSDL2&&) = delete;
+    FBBackendSDL2() = delete;
+    FBBackendSDL2(const FBBackendSDL2&) = delete;
+    FBBackendSDL2(FBBackendSDL2&&) = delete;
+    FBBackendSDL2& operator=(const FBBackendSDL2&) = delete;
+    FBBackendSDL2& operator=(FBBackendSDL2&&) = delete;
 };
 
 #endif

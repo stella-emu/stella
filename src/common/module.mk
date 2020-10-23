@@ -5,9 +5,9 @@ MODULE_OBJS := \
 	src/common/AudioSettings.o \
 	src/common/Base.o \
 	src/common/EventHandlerSDL2.o \
+	src/common/FBBackendSDL2.o \
 	src/common/FBSurfaceSDL2.o \
 	src/common/FpsMeter.o \
-	src/common/FrameBufferSDL2.o \
 	src/common/FSNodeZIP.o \
 	src/common/JoyMap.o \
 	src/common/KeyMap.o \
