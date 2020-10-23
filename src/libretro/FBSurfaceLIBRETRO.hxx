@@ -22,7 +22,7 @@
 #include "FBSurface.hxx"
 
 /**
-  An FBSurface suitable for the LIBRETRO Render2D API.  As with FBBackend,
+  An FBSurface suitable for the LIBRETRO API.  As with FBBackend,
   most of the functionality here is handled by libretro directly.
 
   @author  Stephen Anthony
