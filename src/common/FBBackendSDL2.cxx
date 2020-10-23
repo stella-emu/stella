@@ -27,11 +27,11 @@
 
 #include "ThreadDebugging.hxx"
 #include "FBSurfaceSDL2.hxx"
-#include "FrameBufferSDL2.hxx"
+#include "FBBackendSDL2.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FrameBufferSDL2::FrameBufferSDL2(OSystem& osystem)
-  : FrameBuffer(osystem)
+FBBackendSDL2::FBBackendSDL2(OSystem& osystem)
+  : myOSystem(osystem)
 {
   ASSERT_MAIN_THREAD;
 
@@ -43,7 +43,7 @@ FrameBufferSDL2::FrameBufferSDL2(OSystem& osystem)
     Logger::error(buf.str());
     throw runtime_error("FATAL ERROR");
   }
-  Logger::debug("FrameBufferSDL2::FrameBufferSDL2 SDL_Init()");
+  Logger::debug("FBBackendSDL2::FBBackendSDL2 SDL_Init()");
 
   // We need a pixel format for palette value calculations
   // It's done this way (vs directly accessing a FBSurfaceSDL2 object)
@@ -53,7 +53,7 @@ FrameBufferSDL2::FrameBufferSDL2(OSystem& osystem)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FrameBufferSDL2::~FrameBufferSDL2()
+FBBackendSDL2::~FBBackendSDL2()
 {
   ASSERT_MAIN_THREAD;
 
@@ -61,12 +61,6 @@ FrameBufferSDL2::~FrameBufferSDL2()
 
   if(myRenderer)
   {
-    // Make sure to free surfaces/textures before destroying the renderer itself
-    // Most platforms are fine with doing this in either order, but it seems
-    // that OpenBSD in particular crashes when attempting to destroy textures
-    // *after* the renderer is already destroyed
-    freeSurfaces();
-
     SDL_DestroyRenderer(myRenderer);
     myRenderer = nullptr;
   }
@@ -81,9 +75,9 @@ FrameBufferSDL2::~FrameBufferSDL2()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSDL2::queryHardware(vector<Common::Size>& fullscreenRes,
-                                    vector<Common::Size>& windowedRes,
-                                    VariantList& renderers)
+void FBBackendSDL2::queryHardware(vector<Common::Size>& fullscreenRes,
+                                  vector<Common::Size>& windowedRes,
+                                  VariantList& renderers)
 {
   ASSERT_MAIN_THREAD;
 
@@ -105,7 +99,7 @@ void FrameBufferSDL2::queryHardware(vector<Common::Size>& fullscreenRes,
 
     string lastRes = "";
 
-    for (int m = 0; m < numModes; m++)
+    for(int m = 0; m < numModes; ++m)
     {
       SDL_DisplayMode mode;
       ostringstream res;
@@ -196,7 +190,7 @@ void FrameBufferSDL2::queryHardware(vector<Common::Size>& fullscreenRes,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBufferSDL2::isCurrentWindowPositioned() const
+bool FBBackendSDL2::isCurrentWindowPositioned() const
 {
   ASSERT_MAIN_THREAD;
 
@@ -205,7 +199,7 @@ bool FrameBufferSDL2::isCurrentWindowPositioned() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Common::Point FrameBufferSDL2::getCurrentWindowPos() const
+Common::Point FBBackendSDL2::getCurrentWindowPos() const
 {
   ASSERT_MAIN_THREAD;
 
@@ -217,7 +211,7 @@ Common::Point FrameBufferSDL2::getCurrentWindowPos() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Int32 FrameBufferSDL2::getCurrentDisplayIndex() const
+Int32 FBBackendSDL2::getCurrentDisplayIndex() const
 {
   ASSERT_MAIN_THREAD;
 
@@ -225,8 +219,8 @@ Int32 FrameBufferSDL2::getCurrentDisplayIndex() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBufferSDL2::activateVideoMode(const string& title,
-                                        const VideoModeHandler::Mode& mode)
+bool FBBackendSDL2::setVideoMode(const VideoModeHandler::Mode& mode,
+                                 int winIdx, const Common::Point& winPos)
 {
   ASSERT_MAIN_THREAD;
 
@@ -236,26 +230,22 @@ bool FrameBufferSDL2::activateVideoMode(const string& title,
 
   const bool fullScreen = mode.fsIndex != -1;
   bool forceCreateRenderer = false;
-
-  // Get windowed window's last display
-  Int32 displayIndex = std::min(myNumDisplays, myOSystem.settings().getInt(getDisplayKey()));
-  // Get windowed window's last position
-  myWindowedPos = myOSystem.settings().getPoint(getPositionKey());
+  Int32 displayIndex = std::min(myNumDisplays, winIdx);
 
   int posX, posY;
 
   myCenter = myOSystem.settings().getBool("center");
-  if (myCenter)
+  if(myCenter)
     posX = posY = SDL_WINDOWPOS_CENTERED_DISPLAY(displayIndex);
   else
   {
-    posX = myWindowedPos.x;
-    posY = myWindowedPos.y;
+    posX = winPos.x;
+    posY = winPos.y;
 
     // Make sure the window is at least partially visibile
     int x0 = 0, y0 = 0, x1 = 0, y1 = 0;
 
-    for (int display = SDL_GetNumVideoDisplays() - 1; display >= 0; display--)
+    for(int display = SDL_GetNumVideoDisplays() - 1; display >= 0; --display)
     {
       SDL_Rect rect;
 
@@ -273,16 +263,22 @@ bool FrameBufferSDL2::activateVideoMode(const string& title,
 
 #ifdef ADAPTABLE_REFRESH_SUPPORT
   SDL_DisplayMode adaptedSdlMode;
-  const bool shouldAdapt = fullScreen && myOSystem.settings().getBool("tia.fs_refresh")
-    && gameRefreshRate()
+  const int gameRefreshRate =
+      myOSystem.hasConsole() ? myOSystem.console().gameRefreshRate() : 0;
+  const bool shouldAdapt = fullScreen
+    && myOSystem.settings().getBool("tia.fs_refresh")
+    && gameRefreshRate
     // take care of 59.94 Hz
-    && refreshRate() % gameRefreshRate() != 0 && refreshRate() % (gameRefreshRate() - 1) != 0;
-  const bool adaptRefresh = shouldAdapt && adaptRefreshRate(displayIndex, adaptedSdlMode);
+    && refreshRate() % gameRefreshRate != 0
+    && refreshRate() % (gameRefreshRate - 1) != 0;
+  const bool adaptRefresh = shouldAdapt &&
+      adaptRefreshRate(displayIndex, adaptedSdlMode);
 #else
   const bool adaptRefresh = false;
 #endif
   const uInt32 flags = SDL_WINDOW_ALLOW_HIGHDPI
-    | (fullScreen ? adaptRefresh ? SDL_WINDOW_FULLSCREEN : SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
+    | (fullScreen ? adaptRefresh ? SDL_WINDOW_FULLSCREEN :
+    SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
 
   // Don't re-create the window if its display and size hasn't changed,
   // as it's not necessary, and causes flashing in fullscreen mode
@@ -303,13 +299,13 @@ bool FrameBufferSDL2::activateVideoMode(const string& title,
   if(myWindow)
   {
     // Even though window size stayed the same, the title may have changed
-    SDL_SetWindowTitle(myWindow, title.c_str());
+    SDL_SetWindowTitle(myWindow, myScreenTitle.c_str());
     SDL_SetWindowPosition(myWindow, posX, posY);
   }
   else
   {
     forceCreateRenderer = true;
-    myWindow = SDL_CreateWindow(title.c_str(), posX, posY,
+    myWindow = SDL_CreateWindow(myScreenTitle.c_str(), posX, posY,
                                 mode.screenS.w, mode.screenS.h, flags);
     if(myWindow == nullptr)
     {
@@ -333,7 +329,8 @@ bool FrameBufferSDL2::activateVideoMode(const string& title,
     {
       ostringstream msg;
 
-      msg << "Display refresh rate changed to " << adaptedSdlMode.refresh_rate << " Hz";
+      msg << "Display refresh rate changed to "
+          << adaptedSdlMode.refresh_rate << " Hz";
       Logger::info(msg.str());
     }
   }
@@ -343,8 +340,11 @@ bool FrameBufferSDL2::activateVideoMode(const string& title,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBufferSDL2::adaptRefreshRate(Int32 displayIndex, SDL_DisplayMode& adaptedSdlMode)
+bool FBBackendSDL2::adaptRefreshRate(Int32 displayIndex,
+                                     SDL_DisplayMode& adaptedSdlMode)
 {
+  ASSERT_MAIN_THREAD;
+
   SDL_DisplayMode sdlMode;
 
   if(SDL_GetCurrentDisplayMode(displayIndex, &sdlMode) != 0)
@@ -354,7 +354,8 @@ bool FrameBufferSDL2::adaptRefreshRate(Int32 displayIndex, SDL_DisplayMode& adap
   }
 
   const int currentRefreshRate = sdlMode.refresh_rate;
-  const int wantedRefreshRate = gameRefreshRate();
+  const int wantedRefreshRate =
+      myOSystem.hasConsole() ? myOSystem.console().gameRefreshRate() : 0;
   // Take care of rounded refresh rates (e.g. 59.94 Hz)
   float factor = std::min(float(currentRefreshRate) / wantedRefreshRate,
                           float(currentRefreshRate) / (wantedRefreshRate - 1));
@@ -398,8 +399,10 @@ bool FrameBufferSDL2::adaptRefreshRate(Int32 displayIndex, SDL_DisplayMode& adap
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBufferSDL2::createRenderer(bool force)
+bool FBBackendSDL2::createRenderer(bool force)
 {
+  ASSERT_MAIN_THREAD;
+
   // A new renderer is only created when necessary:
   // - new myWindow (force = true)
   // - no renderer existing
@@ -451,7 +454,7 @@ bool FrameBufferSDL2::createRenderer(bool force)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSDL2::setTitle(const string& title)
+void FBBackendSDL2::setTitle(const string& title)
 {
   ASSERT_MAIN_THREAD;
 
@@ -462,7 +465,7 @@ void FrameBufferSDL2::setTitle(const string& title)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string FrameBufferSDL2::about() const
+string FBBackendSDL2::about() const
 {
   ASSERT_MAIN_THREAD;
 
@@ -484,7 +487,7 @@ string FrameBufferSDL2::about() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSDL2::showCursor(bool show)
+void FBBackendSDL2::showCursor(bool show)
 {
   ASSERT_MAIN_THREAD;
 
@@ -492,7 +495,7 @@ void FrameBufferSDL2::showCursor(bool show)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSDL2::grabMouse(bool grab)
+void FBBackendSDL2::grabMouse(bool grab)
 {
   ASSERT_MAIN_THREAD;
 
@@ -500,7 +503,7 @@ void FrameBufferSDL2::grabMouse(bool grab)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBufferSDL2::fullScreen() const
+bool FBBackendSDL2::fullScreen() const
 {
   ASSERT_MAIN_THREAD;
 
@@ -512,7 +515,7 @@ bool FrameBufferSDL2::fullScreen() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int FrameBufferSDL2::refreshRate() const
+int FBBackendSDL2::refreshRate() const
 {
   ASSERT_MAIN_THREAD;
 
@@ -529,20 +532,7 @@ int FrameBufferSDL2::refreshRate() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int FrameBufferSDL2::gameRefreshRate() const
-{
-  if(myOSystem.hasConsole())
-  {
-    const string format = myOSystem.console().getFormatString();
-    const bool isNtsc = format == "NTSC" || format == "PAL60" || format == "SECAM60";
-
-    return isNtsc ? 60 : 50; // The code will take care of 59/49 Hz
-  }
-  return 0;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSDL2::renderToScreen()
+void FBBackendSDL2::renderToScreen()
 {
   ASSERT_MAIN_THREAD;
 
@@ -551,7 +541,7 @@ void FrameBufferSDL2::renderToScreen()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSDL2::setWindowIcon()
+void FBBackendSDL2::setWindowIcon()
 {
 #if !defined(BSPF_MACOS) && !defined(RETRON77)
 #include "stella_icon.hxx"
@@ -565,19 +555,20 @@ void FrameBufferSDL2::setWindowIcon()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-unique_ptr<FBSurface> FrameBufferSDL2::createSurface(
+unique_ptr<FBSurface> FBBackendSDL2::createSurface(
   uInt32 w,
   uInt32 h,
-  ScalingInterpolation interpolation,
+  ScalingInterpolation inter,
   const uInt32* data
 ) const
 {
-  return make_unique<FBSurfaceSDL2>(const_cast<FrameBufferSDL2&>(*this), w, h, interpolation, data);
+  return make_unique<FBSurfaceSDL2>
+      (const_cast<FBBackendSDL2&>(*this), w, h, inter, data);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSDL2::readPixels(uInt8* pixels, uInt32 pitch,
-                                 const Common::Rect& rect) const
+void FBBackendSDL2::readPixels(uInt8* pixels, uInt32 pitch,
+                               const Common::Rect& rect) const
 {
   ASSERT_MAIN_THREAD;
 
@@ -589,7 +580,7 @@ void FrameBufferSDL2::readPixels(uInt8* pixels, uInt32 pitch,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSDL2::clear()
+void FBBackendSDL2::clear()
 {
   ASSERT_MAIN_THREAD;
 
@@ -597,49 +588,34 @@ void FrameBufferSDL2::clear()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SDL_Renderer* FrameBufferSDL2::renderer()
-{
-  return myRenderer;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBufferSDL2::isInitialized() const
-{
-  return myRenderer != nullptr;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const SDL_PixelFormat& FrameBufferSDL2::pixelFormat() const
-{
-  return *myPixelFormat;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSDL2::detectFeatures()
+void FBBackendSDL2::detectFeatures()
 {
   myRenderTargetSupport = detectRenderTargetSupport();
 
-  if (myRenderer) {
-    if (!myRenderTargetSupport) {
-      Logger::info("Render targets are not supported --- QIS not available");
-    }
-  }
+  if(myRenderer && !myRenderTargetSupport)
+    Logger::info("Render targets are not supported --- QIS not available");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBufferSDL2::detectRenderTargetSupport()
+bool FBBackendSDL2::detectRenderTargetSupport()
 {
-  if (myRenderer == nullptr) return false;
+  ASSERT_MAIN_THREAD;
+
+  if(myRenderer == nullptr)
+    return false;
 
   SDL_RendererInfo info;
-
   SDL_GetRendererInfo(myRenderer, &info);
 
-  if (!(info.flags & SDL_RENDERER_TARGETTEXTURE)) return false;
+  if(!(info.flags & SDL_RENDERER_TARGETTEXTURE))
+    return false;
 
-  SDL_Texture* tex = SDL_CreateTexture(myRenderer, myPixelFormat->format, SDL_TEXTUREACCESS_TARGET, 16, 16);
+  SDL_Texture* tex =
+      SDL_CreateTexture(myRenderer, myPixelFormat->format,
+                        SDL_TEXTUREACCESS_TARGET, 16, 16);
 
-  if (!tex) return false;
+  if(!tex)
+    return false;
 
   int sdlError = SDL_SetRenderTarget(myRenderer, tex);
   SDL_SetRenderTarget(myRenderer, nullptr);
@@ -650,20 +626,17 @@ bool FrameBufferSDL2::detectRenderTargetSupport()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBufferSDL2::hasRenderTargetSupport() const
+void FBBackendSDL2::determineDimensions()
 {
-  return myRenderTargetSupport;
-}
+  ASSERT_MAIN_THREAD;
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSDL2::determineDimensions()
-{
   SDL_GetWindowSize(myWindow, &myWindowW, &myWindowH);
 
-  if (myRenderer == nullptr) {
+  if(myRenderer == nullptr)
+  {
     myRenderW = myWindowW;
     myRenderH = myWindowH;
-  } else {
-    SDL_GetRendererOutputSize(myRenderer, &myRenderW, &myRenderH);
   }
+  else
+    SDL_GetRendererOutputSize(myRenderer, &myRenderW, &myRenderH);
 }

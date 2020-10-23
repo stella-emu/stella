@@ -167,7 +167,6 @@ uInt32 TIASurface::mapIndexedPixel(uInt8 indexedColor, uInt8 shift) const
   return myPalette[indexedColor | shift];
 }
 
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIASurface::setNTSC(NTSCFilter::Preset preset, bool show)
 {
@@ -512,13 +511,16 @@ void TIASurface::renderForSnapshot()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIASurface::updateSurfaceSettings()
 {
-  myTiaSurface->setScalingInterpolation(interpolationModeFromSettings(myOSystem.settings()));
+  myTiaSurface->setScalingInterpolation(
+      interpolationModeFromSettings(myOSystem.settings())
+  );
   mySLineSurface->setScalingInterpolation(
       interpolationModeFromSettings(myOSystem.settings())
   );
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool TIASurface::correctAspect() const {
+bool TIASurface::correctAspect() const
+{
   return myOSystem.settings().getBool("tia.correct_aspect");
 }

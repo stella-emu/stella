@@ -67,7 +67,8 @@ class TIASurface
       @param rgb_palette  The RGB components of the palette, needed for
                           calculating a phosphor palette
     */
-    void setPalette(const PaletteArray& tia_palette, const PaletteArray& rgb_palette);
+    void setPalette(const PaletteArray& tia_palette,
+                    const PaletteArray& rgb_palette);
 
     /**
       Get a TIA surface that has no post-processing whatsoever.  This is
@@ -76,6 +77,11 @@ class TIASurface
       @param rect   Specifies the area in which the surface data is valid
     */
     const FBSurface& baseSurface(Common::Rect& rect) const;
+
+    /**
+      Get a underlying FBSurface that the TIA is being rendered into.
+    */
+    const FBSurface& tiaSurface() const { return *myTiaSurface; }
 
     /**
       Use the palette to map a single indexed pixel color. This is used by the

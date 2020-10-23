@@ -18,10 +18,10 @@
 #include "bspf.hxx"
 #include "StellaLIBRETRO.hxx"
 #include "SoundLIBRETRO.hxx"
-#include "FrameBufferLIBRETRO.hxx"
+#include "FBBackendLIBRETRO.hxx"
+#include "FBSurfaceLIBRETRO.hxx"
 
 #include "AtariNTSC.hxx"
-#include "PaletteHandler.hxx"
 #include "AudioSettings.hxx"
 #include "Serializer.hxx"
 #include "StateManager.hxx"
@@ -33,27 +33,7 @@
 StellaLIBRETRO::StellaLIBRETRO()
 {
   audio_buffer = make_unique<Int16[]>(audio_buffer_max);
-
-  console_timing = ConsoleTiming::ntsc;
-  console_format = "AUTO";
-
-  video_aspect_ntsc = 0;
-  video_aspect_pal = 0;
-
-  video_palette = PaletteHandler::SETTING_STANDARD;
-  video_filter = NTSCFilter::Preset::OFF;
-  video_ready = false;
-
-  audio_samples = 0;
-  audio_mode = "byrom";
-
-  video_phosphor = "byrom";
-  video_phosphor_blend = 60;
-  phosphor_default = false;
-
   rom_image = make_unique<uInt8[]>(getROMMax());
-
-  system_ready = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -302,9 +282,16 @@ float StellaLIBRETRO::getVideoAspect() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void* StellaLIBRETRO::getVideoBuffer() const
 {
-  FrameBufferLIBRETRO& frame = static_cast<FrameBufferLIBRETRO&>(myOSystem->frameBuffer());
+  if (!render_surface)
+  {
+    const FBSurface& surface =
+        myOSystem->frameBuffer().tiaSurface().tiaSurface();
 
-  return static_cast<void*>(frame.getRenderSurface());
+    uInt32 pitch = 0;
+    surface.basePtr(render_surface, pitch);
+  }
+
+  return render_surface;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

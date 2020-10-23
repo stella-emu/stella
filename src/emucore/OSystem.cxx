@@ -143,10 +143,15 @@ bool OSystem::create()
   // Get relevant information about the video hardware
   // This must be done before any graphics context is created, since
   // it may be needed to initialize the size of graphical objects
-  try        { myFrameBuffer = MediaFactory::createVideo(*this); }
-  catch(...) { return false; }
-  if(!myFrameBuffer->initialize())
+  try
+  {
+    myFrameBuffer = make_unique<FrameBuffer>(*this);
+    myFrameBuffer->initialize();
+  }
+  catch(...)
+  {
     return false;
+  }
 
   // Create the event handler for the system
   myEventHandler = MediaFactory::createEventHandler(*this);
@@ -722,7 +727,7 @@ string OSystem::getROMInfo(const Console& console)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 float OSystem::frameRate() const
 {
-  return myConsole ? myConsole->getFramerate() : 0;
+  return myConsole ? myConsole->currentFrameRate() : 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -72,7 +72,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\common\FrameBufferSDL2.cxx">
+    <ClCompile Include="..\common\FBBackendSDL2.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FSNodeWINDOWS.cxx">
@@ -1034,7 +1034,7 @@
     <ClInclude Include="..\common\bspf.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\FrameBufferSDL2.hxx">
+    <ClInclude Include="..\common\FBBackendSDL2.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HomeFinder.hxx">
