@@ -1782,6 +1782,7 @@
     <ClInclude Include="..\emucore\EventHandlerConstants.hxx" />
     <ClInclude Include="..\emucore\exception\EmulationWarning.hxx" />
     <ClInclude Include="..\emucore\exception\FatalEmulationError.hxx" />
+    <ClInclude Include="..\emucore\FBBackend.hxx" />
     <ClInclude Include="..\emucore\FBSurface.hxx" />
     <ClInclude Include="..\emucore\FrameBufferConstants.hxx" />
     <ClInclude Include="..\emucore\Lightgun.hxx" />

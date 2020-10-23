@@ -2114,6 +2114,9 @@
     <ClInclude Include="..\common\VideoModeHandler.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\emucore\FBBackend.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="stella.ico">
