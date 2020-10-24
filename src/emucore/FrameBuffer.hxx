@@ -41,8 +41,8 @@ class TIASurface;
 
 /**
   This class encapsulates all video buffers and is the basis for the video
-  display in Stella.  All graphics ports should derive from this class for
-  platform-specific video stuff.
+  display in Stella.  The FBBackend object contained in this class is
+  platform-specific, and most rendering tasks are delegated to it.
 
   The TIA is drawn here, and all GUI elements (ala ScummVM, which are drawn
   into FBSurfaces), are in turn drawn here as well.
@@ -221,19 +221,17 @@ class FrameBuffer
     /**
       Changes the fullscreen overscan.
 
-      @param direction  +1 indicates increase, -1 indicates decrease.
+      @param direction  +1 indicates increase, -1 indicates decrease
     */
     void changeOverscan(int direction = +1);
 
     /**
-      This method is called when the user wants to switch to the next
+      This method is called when the user wants to switch to the previous/next
       available TIA video mode.  In windowed mode, this typically means going
       to the next/previous zoom level.  In fullscreen mode, this typically
       means switching between normal aspect and fully filling the screen.
-        direction = -1 means go to the next lower video mode
-        direction = +1 means go to the next higher video mode
 
-      @param direction  +1 indicates increase, -1 indicates decrease.
+      @param direction  +1 indicates next mode, -1 indicates previous mode
     */
     void switchVideoMode(int direction = +1);
 
@@ -373,19 +371,28 @@ class FrameBuffer
     void reloadSurfaces();
 
     /**
+      Frees and reloads all surfaces that the framebuffer knows about.
+    */
+    void resetSurfaces();
+
+    /**
       Draw pending messages.
 
       @return  Indicates whether any changes actually occurred.
     */
     bool drawMessage();
 
-    // Draws the frame stats overlay
+    /**
+      Draws the frame stats overlay.
+    */
     void drawFrameStats(float framesPerSecond);
 
     /**
       Build an applicable video mode based on the current settings in
       effect, whether TIA mode is active, etc.  Then tell the backend
       to actually use the new mode.
+
+      @return  Whether the operation succeeded or failed
     */
     FBInitStatus applyVideoMode();
 
@@ -399,11 +406,6 @@ class FrameBuffer
       Enables/disables fullscreen mode.
     */
     void setFullscreen(bool enable);
-
-    /**
-      Frees and reloads all surfaces that the framebuffer knows about.
-    */
-    void resetSurfaces();
 
   #ifdef GUI_SUPPORT
     /**
