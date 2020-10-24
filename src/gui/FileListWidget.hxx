@@ -55,7 +55,9 @@ class FileListWidget : public StringListWidget
     /** Determines how to display files/folders; either setDirectory or reload
         must be called after any of these are called. */
     void setListMode(FilesystemNode::ListMode mode) { _fsmode = mode; }
-    void setNameFilter(const FilesystemNode::NameFilter& filter) { _filter = filter; }
+    void setNameFilter(const FilesystemNode::NameFilter& filter) {
+      _filter = filter;
+    }
 
     /**
       Set initial directory, and optionally select the given item.
@@ -64,7 +66,8 @@ class FileListWidget : public StringListWidget
                      will instead be used, and the file will be selected
         @param select  An optional entry to select (if applicable)
     */
-    void setDirectory(const FilesystemNode& node, const string& select = EmptyString);
+    void setDirectory(const FilesystemNode& node,
+                      const string& select = EmptyString);
 
     /** Select parent directory (if applicable) */
     void selectParent();

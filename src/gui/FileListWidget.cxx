@@ -178,7 +178,10 @@ void FileListWidget::handleCommand(CommandSender* sender, int cmd, int data, int
         }
       }
       else
+      {
+        _selectedFile = selected().getName();
         cmd = ItemActivated;
+      }
       break;
 
     case ListWidget::kLongButtonPressCmd:
