@@ -193,10 +193,9 @@ bool OSystem::create()
   // Detect serial port for AtariVox-USB
   // If a previously set port is defined, use it;
   // otherwise use the first one found (if any)
-  const string& avoxport = mySettings->getString("avoxport");
-  const StringList ports = MediaFactory::createSerialPort()->portNames();
-
-  if(avoxport.empty() && ports.size() > 0)
+  StringList ports = MediaFactory::createSerialPort()->portNames();
+  bool oldPortFound = BSPF::contains(ports, mySettings->getString("avoxport"));
+  if(!oldPortFound && ports.size() > 0)
     mySettings->setValue("avoxport", ports[0]);
 
   return true;
