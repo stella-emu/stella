@@ -429,11 +429,7 @@ void FrameBuffer::update(bool force)
       if (!success)
       {
         frames = 0;
-      #ifdef GUI_SUPPORT
         myOSystem.eventHandler().enterMenuMode(EventHandlerState::TIMEMACHINE);
-      #else
-        myOSystem.eventHandler().changeStateByEvent(Event::TogglePauseMode);
-      #endif
       }
       break;  // EventHandlerState::PLAYBACK
     }
