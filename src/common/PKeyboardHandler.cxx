@@ -534,8 +534,8 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultCommo
   {Event::ToggleTimeMachine,        KBDK_T, MOD3},
 
 #ifdef PNG_SUPPORT
-  {Event::ToggleContSnapshots,      KBDK_S, MOD3},
-  {Event::ToggleContSnapshotsFrame, KBDK_S, KBDM_SHIFT | MOD3},
+  {Event::ToggleContSnapshots,      KBDK_S, MOD3 | KBDM_CTRL},
+  {Event::ToggleContSnapshotsFrame, KBDK_S, KBDM_SHIFT | MOD3 | KBDM_CTRL},
 #endif
 
   {Event::DecreaseAutoFire,         KBDK_A, KBDM_SHIFT | KBDM_CTRL},
