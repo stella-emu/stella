@@ -27,22 +27,22 @@ SerialPortWINDOWS::SerialPortWINDOWS()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SerialPortWINDOWS::~SerialPortWINDOWS()
 {
-  if(myHandle)
+  if(myHandle != INVALID_HANDLE_VALUE)
   {
     CloseHandle(myHandle);
-    myHandle = 0;
+    myHandle = INVALID_HANDLE_VALUE;
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool SerialPortWINDOWS::openPort(const string& device)
 {
-  if(!myHandle)
+  if(myHandle == INVALID_HANDLE_VALUE)
   {
     myHandle = CreateFile(device.c_str(), GENERIC_READ|GENERIC_WRITE, 0,
                           NULL, OPEN_EXISTING, 0, NULL);
 
-    if(myHandle)
+    if(myHandle != INVALID_HANDLE_VALUE)
     {
       DCB dcb;
 
@@ -51,7 +51,7 @@ bool SerialPortWINDOWS::openPort(const string& device)
       if(!BuildCommDCB("19200,n,8,1", &dcb))
       {
         CloseHandle(myHandle);
-        myHandle = 0;
+        myHandle = INVALID_HANDLE_VALUE;
         return false;
       }
 
@@ -79,7 +79,7 @@ bool SerialPortWINDOWS::openPort(const string& device)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool SerialPortWINDOWS::readByte(uInt8& data)
 {
-  if(myHandle)
+  if(myHandle != INVALID_HANDLE_VALUE)
   {
     DWORD read;
     ReadFile(myHandle, &data, 1, &read, NULL);
@@ -91,7 +91,7 @@ bool SerialPortWINDOWS::readByte(uInt8& data)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool SerialPortWINDOWS::writeByte(uInt8 data)
 {
-  if(myHandle)
+  if(myHandle != INVALID_HANDLE_VALUE)
   {
     DWORD written;
     WriteFile(myHandle, &data, 1, &written, NULL);
@@ -103,7 +103,7 @@ bool SerialPortWINDOWS::writeByte(uInt8 data)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool SerialPortWINDOWS::isCTS()
 {
-  if(myHandle)
+  if(myHandle != INVALID_HANDLE_VALUE)
   {
     DWORD modemStat;
     GetCommModemStatus(myHandle, &modemStat);
