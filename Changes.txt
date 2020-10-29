@@ -12,14 +12,23 @@
                               Release History
 ===========================================================================
 
-6.3 to 6.4 (XXXX XX, 2020)
+6.3 to 6.3.1 (November 2, 2020)
 
   * Added basic (entire and single line only) text cut/copy and paste.
 
   * Fixed bug with aspect correction and fullscreen mode; snapshots from
     such a mode are now pixel-exact.
 
-  * Made serial port used for an AtariVox-USB adaptor editable. (TODO: Doc)
+  * Some improvements to AVox-USB adaptor functionality:
+    - Made serial port used for an AtariVox-USB adaptor editable.
+    - Autodetection of serial ports no longer messes up devices plugged
+      into other serial ports.
+
+  * Fixed crash with missing or incorrectly sized SaveKey data file, and
+    with certain functions not working (erase pages, erase entire EEPROM).
+
+  * Fixed bug in ROM launcher, with last ROM selected not being remembered
+    when exiting and re-entering a directory.
 
 -Have fun!
 

@@ -43,22 +43,14 @@ WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent, const 
           max_w, max_h);
 
 #if defined(RETRON77)
-  add(ypos, "added adjustable autofire (see 'Advanced Settings')");
-  add(ypos, "added new UI theme 'Dark' (see 'Advanced Settings')");
+  add(ypos, "fixed crash with SaveKey ROMs (EEPROM file issues)");
+  add(ypos, "fixed bug with launcher not remembering last selected ROM");
 #else
-  add(ypos, "added adjustable autofire");
-  add(ypos, "added 'Dark' UI theme");
-  //add(ypos, "extended global hotkeys for debug options");
-  add(ypos, "added option to playback a game using the Time Machine");
-  //add(ypos, "allow taking snapshots from within the Time Machine dialog");
-  add(ypos, "added the ability to access most files that Stella uses from within a ZIP file");
-  add(ypos, "extended AtariVox support to handle flow control, so that long phrases are no longer corrupted / cut off");
-  add(ypos, "added QuadTari controller support");
-  add(ypos, "added option to select the audio device");
-  //add(ypos, "added option to display detected settings info when a ROM is loaded");
-  //add(ypos, "added another oddball TIA glitch option for delayed background color");
-  //add(ypos, "replaced 'Re-disassemble' with 'Disassemble @ current line' in debugger");
-  //add(ypos, "fixed bug when taking fullscreen snapshots; the dimensions were sometimes cut");
+  add(ypos, "added basic text cut/copy/paste to UI");
+  add(ypos, "fixed fullscreen mode, aspect correction and pixel-exact snapshots");
+  add(ypos, "improved AVox-USB adaptor autodetection");
+  add(ypos, "fixed crash with SaveKey ROMs (EEPROM file issues)");
+  add(ypos, "fixed bug with launcher not remembering last selected ROM");
   add(ypos, ELLIPSIS + " (for a complete list see 'docs/Changes.txt')");
 #endif
 
