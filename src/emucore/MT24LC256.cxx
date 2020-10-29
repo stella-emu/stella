@@ -50,17 +50,27 @@ MT24LC256::MT24LC256(const FilesystemNode& eepromfile, const System& system,
     myDataFile(eepromfile)
 {
   // Load the data from an external file (if it exists)
+  bool fileValid = false;
   try
   {
-    // Get length of file; it must be 32768
+    // A valid file must be 32768 bytes; otherwise we create a new one
     if(myDataFile.read(myData) == FLASH_SIZE)
-      myDataFileExists = true;
+      fileValid = true;
   }
   catch(...)
   {
-    myDataFileExists = false;
-    myData = make_unique<uInt8[]>(FLASH_SIZE);
+    fileValid = false;
   }
+
+  if(!fileValid)
+  {
+    // Work around a bug in XCode 11.2 with -O0 and -O1
+    const uInt8 initialValue = INITIAL_VALUE;
+
+    myData = make_unique<uInt8[]>(FLASH_SIZE);
+    std::fill_n(myData.get(), FLASH_SIZE, initialValue);
+    myDataChanged = true;
+   }
 
   // Then initialize the I2C state
   jpee_init();
@@ -72,7 +82,7 @@ MT24LC256::MT24LC256(const FilesystemNode& eepromfile, const System& system,
 MT24LC256::~MT24LC256()
 {
   // Save EEPROM data to external file only when necessary
-  if(!myDataFileExists || myDataChanged)
+  if(myDataChanged)
   {
     try { myDataFile.write(myData, FLASH_SIZE); }
     catch(...) { }
@@ -167,9 +177,6 @@ bool MT24LC256::isPageUsed(uInt32 page) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MT24LC256::jpee_init()
 {
-  // Work around a bug in XCode 11.2 with -O0 and -O1
-  const uInt8 initialValue = INITIAL_VALUE;
-
   jpee_sdat = 1;
   jpee_address = 0;
   jpee_state=0;
@@ -177,8 +184,6 @@ void MT24LC256::jpee_init()
   jpee_pagemask = PAGE_SIZE - 1;
   jpee_smallmode = 0;
   jpee_logmode = -1;
-  if(!myDataFileExists)
-    std::fill_n(myData.get(), FLASH_SIZE, initialValue);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
