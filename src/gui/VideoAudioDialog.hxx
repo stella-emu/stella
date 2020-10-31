@@ -53,6 +53,7 @@ class VideoAudioDialog : public Dialog
     void handleTVModeChange(NTSCFilter::Preset);
     void loadTVAdjustables(NTSCFilter::Preset preset);
     void handlePaletteChange();
+    void handleShiftChanged(SliderWidget* widget);
     void handlePaletteUpdate();
     void handleFullScreenChange();
     void handleOverscanChange();
@@ -105,6 +106,12 @@ class VideoAudioDialog : public Dialog
     PopUpWidget*      myTIAPalette{nullptr};
     SliderWidget*     myPhaseShiftNtsc{nullptr};
     SliderWidget*     myPhaseShiftPal{nullptr};
+    SliderWidget*     myTVRedScale{nullptr};
+    SliderWidget*     myTVRedShift{nullptr};
+    SliderWidget*     myTVGreenScale{nullptr};
+    SliderWidget*     myTVGreenShift{nullptr};
+    SliderWidget*     myTVBlueScale{nullptr};
+    SliderWidget*     myTVBlueShift{nullptr};
     SliderWidget*     myTVHue{nullptr};
     SliderWidget*     myTVSatur{nullptr};
     SliderWidget*     myTVBright{nullptr};
@@ -138,6 +145,9 @@ class VideoAudioDialog : public Dialog
       kPaletteChanged     = 'VDpl',
       kNtscShiftChanged   = 'VDns',
       kPalShiftChanged    = 'VDps',
+      kRedShiftChanged    = 'VDrs',
+      kGreenShiftChanged  = 'VDgs',
+      kBlueShiftChanged   = 'VDbs',
       kPaletteUpdated     = 'VDpu',
 
       kTVModeChanged      = 'VDtv',

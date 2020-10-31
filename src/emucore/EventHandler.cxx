@@ -377,7 +377,9 @@ AdjustFunction EventHandler::cycleAdjustSetting(int direction)
         #ifdef ADAPTABLE_REFRESH_SUPPORT
           || (myAdjustSetting == AdjustSetting::ADAPT_REFRESH && !isFullScreen)
         #endif
-          || (myAdjustSetting == AdjustSetting::PALETTE_PHASE && !isCustomPalette)
+          || (myAdjustSetting >= AdjustSetting::PALETTE_PHASE
+              && myAdjustSetting <= AdjustSetting::PALETTE_BLUE_SHIFT
+              && !isCustomPalette)
           || (myAdjustSetting >= AdjustSetting::NTSC_SHARPNESS
               && myAdjustSetting <= AdjustSetting::NTSC_BLEEDING
               && !isCustomFilter);
@@ -425,6 +427,18 @@ AdjustFunction EventHandler::getAdjustSetting(AdjustSetting setting)
     std::bind(&PaletteHandler::cyclePalette, &myOSystem.frameBuffer().tiaSurface().paletteHandler(), _1),
     std::bind(&PaletteHandler::changeAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(),
       PaletteHandler::PHASE_SHIFT, _1),
+    std::bind(&PaletteHandler::changeAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(),
+      PaletteHandler::RED_SCALE, _1),
+    std::bind(&PaletteHandler::changeAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(),
+      PaletteHandler::RED_SHIFT, _1),
+    std::bind(&PaletteHandler::changeAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(),
+      PaletteHandler::GREEN_SCALE, _1),
+    std::bind(&PaletteHandler::changeAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(),
+      PaletteHandler::GREEN_SHIFT, _1),
+    std::bind(&PaletteHandler::changeAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(),
+      PaletteHandler::BLUE_SCALE, _1),
+    std::bind(&PaletteHandler::changeAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(),
+      PaletteHandler::BLUE_SHIFT, _1),
     std::bind(&PaletteHandler::changeAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(),
       PaletteHandler::HUE, _1),
     std::bind(&PaletteHandler::changeAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(),
