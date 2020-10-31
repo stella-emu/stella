@@ -18,13 +18,17 @@
 
   * Added color parameters to 'Custom' palette
 
-  * Some improvements to AVox-USB adaptor functionality:
+  * Some improvements to AtariVox-USB adaptor functionality:
     - Made serial port used for an AtariVox-USB adaptor editable.
     - Autodetection of serial ports no longer messes up devices plugged
       into other serial ports.
 
+  * Added CPU load stats to debugger
+
   * Fixed bug with aspect correction and fullscreen mode; snapshots from
     such a mode are now pixel-exact.
+
+  * Fixed Atari mouse autodetection.
 
   * Fixed crash with missing or incorrectly sized SaveKey data file, and
     with certain functions not working (erase pages, erase entire EEPROM).
