@@ -46,10 +46,11 @@ WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent, const 
   add(ypos, "fixed crash with SaveKey ROMs (EEPROM file issues)");
   add(ypos, "fixed bug with launcher not remembering last selected ROM");
 #else
-  add(ypos, "added basic text cut/copy/paste to UI");
+  add(ypos, "added basic text cut/copy/paste from/to UI");
   add(ypos, "added color parameters to 'Custom' palette");
-  add(ypos, "improved AVox-USB adaptor autodetection");
+  add(ypos, "improved AtariVox-USB adaptor autodetection");
   add(ypos, "fixed fullscreen mode, aspect correction and pixel-exact snapshots");
+  add(ypos, "fixed Atari mouse autodetection");
   add(ypos, "fixed crash with SaveKey ROMs (EEPROM file issues)");
   add(ypos, "fixed bug with launcher not remembering last selected ROM");
   add(ypos, ELLIPSIS + " (for a complete list see 'docs/Changes.txt')");
