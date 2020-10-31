@@ -223,24 +223,81 @@ void VideoAudioDialog::addPaletteTab()
   const int swidth = myTIAPalette->getWidth() - lwidth;
   const int plWidth = _font.getStringWidth("NTSC phase ");
   const int pswidth = swidth - INDENT + lwidth - plWidth;
+  xpos += INDENT;
 
   myPhaseShiftNtsc =
-    new SliderWidget(myTab, _font, xpos + INDENT, ypos-1, pswidth, lineHeight,
+    new SliderWidget(myTab, _font, xpos, ypos - 1, pswidth, lineHeight,
                      "NTSC phase", plWidth, kNtscShiftChanged, fontWidth * 5);
-  myPhaseShiftNtsc->setMinValue((PaletteHandler::DEF_NTSC_SHIFT - PaletteHandler::MAX_SHIFT) * 10);
-  myPhaseShiftNtsc->setMaxValue((PaletteHandler::DEF_NTSC_SHIFT + PaletteHandler::MAX_SHIFT) * 10);
+  myPhaseShiftNtsc->setMinValue((PaletteHandler::DEF_NTSC_SHIFT - PaletteHandler::MAX_PHASE_SHIFT) * 10);
+  myPhaseShiftNtsc->setMaxValue((PaletteHandler::DEF_NTSC_SHIFT + PaletteHandler::MAX_PHASE_SHIFT) * 10);
   myPhaseShiftNtsc->setTickmarkIntervals(4);
   wid.push_back(myPhaseShiftNtsc);
   ypos += lineHeight + VGAP;
 
   myPhaseShiftPal =
-    new SliderWidget(myTab, _font, xpos + INDENT, ypos-1, pswidth, lineHeight,
+    new SliderWidget(myTab, _font, xpos, ypos - 1, pswidth, lineHeight,
                      "PAL phase", plWidth, kPalShiftChanged, fontWidth * 5);
-  myPhaseShiftPal->setMinValue((PaletteHandler::DEF_PAL_SHIFT - PaletteHandler::MAX_SHIFT) * 10);
-  myPhaseShiftPal->setMaxValue((PaletteHandler::DEF_PAL_SHIFT + PaletteHandler::MAX_SHIFT) * 10);
+  myPhaseShiftPal->setMinValue((PaletteHandler::DEF_PAL_SHIFT - PaletteHandler::MAX_PHASE_SHIFT) * 10);
+  myPhaseShiftPal->setMaxValue((PaletteHandler::DEF_PAL_SHIFT + PaletteHandler::MAX_PHASE_SHIFT) * 10);
   myPhaseShiftPal->setTickmarkIntervals(4);
   wid.push_back(myPhaseShiftPal);
   ypos += lineHeight + VGAP;
+
+  const int rgblWidth = _font.getStringWidth("R ");
+  const int rgbsWidth = (myTIAPalette->getWidth() - INDENT - rgblWidth - fontWidth * 5) / 2;
+
+  myTVRedScale =
+    new SliderWidget(myTab, _font, xpos, ypos - 1, rgbsWidth, lineHeight,
+                     "R", rgblWidth, kPaletteUpdated, fontWidth * 4, "%");
+  myTVRedScale->setMinValue(0);
+  myTVRedScale->setMaxValue(100);
+  myTVRedScale->setTickmarkIntervals(2);
+  wid.push_back(myTVRedScale);
+
+  const int xposr = myTIAPalette->getRight() - rgbsWidth;
+  myTVRedShift =
+    new SliderWidget(myTab, _font, xposr, ypos - 1, rgbsWidth, lineHeight,
+                     "", 0, kRedShiftChanged, fontWidth * 6);
+  myTVRedShift->setMinValue((PaletteHandler::DEF_RGB_SHIFT - PaletteHandler::MAX_RGB_SHIFT) * 10);
+  myTVRedShift->setMaxValue((PaletteHandler::DEF_RGB_SHIFT + PaletteHandler::MAX_RGB_SHIFT) * 10);
+  myTVRedShift->setTickmarkIntervals(2);
+  wid.push_back(myTVRedShift);
+  ypos += lineHeight + VGAP;
+
+  myTVGreenScale =
+    new SliderWidget(myTab, _font, xpos, ypos - 1, rgbsWidth, lineHeight,
+                     "G", rgblWidth, kPaletteUpdated, fontWidth * 4, "%");
+  myTVGreenScale->setMinValue(0);
+  myTVGreenScale->setMaxValue(100);
+  myTVGreenScale->setTickmarkIntervals(2);
+  wid.push_back(myTVGreenScale);
+
+  myTVGreenShift =
+    new SliderWidget(myTab, _font, xposr, ypos - 1, rgbsWidth, lineHeight,
+                     "", 0, kGreenShiftChanged, fontWidth * 6);
+  myTVGreenShift->setMinValue((PaletteHandler::DEF_RGB_SHIFT - PaletteHandler::MAX_RGB_SHIFT) * 10);
+  myTVGreenShift->setMaxValue((PaletteHandler::DEF_RGB_SHIFT + PaletteHandler::MAX_RGB_SHIFT) * 10);
+  myTVGreenShift->setTickmarkIntervals(2);
+  wid.push_back(myTVGreenShift);
+  ypos += lineHeight + VGAP;
+
+  myTVBlueScale =
+    new SliderWidget(myTab, _font, xpos, ypos - 1, rgbsWidth, lineHeight,
+                     "B", rgblWidth, kPaletteUpdated, fontWidth * 4, "%");
+  myTVBlueScale->setMinValue(0);
+  myTVBlueScale->setMaxValue(100);
+  myTVBlueScale->setTickmarkIntervals(2);
+  wid.push_back(myTVBlueScale);
+
+  myTVBlueShift =
+    new SliderWidget(myTab, _font, xposr, ypos - 1, rgbsWidth, lineHeight,
+                     "", 0, kBlueShiftChanged, fontWidth * 6);
+  myTVBlueShift->setMinValue((PaletteHandler::DEF_RGB_SHIFT - PaletteHandler::MAX_RGB_SHIFT) * 10);
+  myTVBlueShift->setMaxValue((PaletteHandler::DEF_RGB_SHIFT + PaletteHandler::MAX_RGB_SHIFT) * 10);
+  myTVBlueShift->setTickmarkIntervals(2);
+  wid.push_back(myTVBlueShift);
+  ypos += lineHeight + VGAP;
+  xpos -= INDENT;
 
   CREATE_CUSTOM_SLIDERS(Hue, "Hue ", kPaletteUpdated)
   CREATE_CUSTOM_SLIDERS(Satur, "Saturation ", kPaletteUpdated)
@@ -524,6 +581,12 @@ void VideoAudioDialog::loadConfig()
   instance().frameBuffer().tiaSurface().paletteHandler().getAdjustables(myPaletteAdj);
   myPhaseShiftNtsc->setValue(myPaletteAdj.phaseNtsc);
   myPhaseShiftPal->setValue(myPaletteAdj.phasePal);
+  myTVRedScale->setValue(myPaletteAdj.redScale);
+  myTVRedShift->setValue(myPaletteAdj.redShift);
+  myTVGreenScale->setValue(myPaletteAdj.greenScale);
+  myTVGreenShift->setValue(myPaletteAdj.greenShift);
+  myTVBlueScale->setValue(myPaletteAdj.blueScale);
+  myTVBlueShift->setValue(myPaletteAdj.blueShift);
   myTVHue->setValue(myPaletteAdj.hue);
   myTVBright->setValue(myPaletteAdj.brightness);
   myTVContrast->setValue(myPaletteAdj.contrast);
@@ -760,6 +823,12 @@ void VideoAudioDialog::setDefaults()
       myTIAPalette->setSelected(PaletteHandler::SETTING_STANDARD);
       myPhaseShiftNtsc->setValue(PaletteHandler::DEF_NTSC_SHIFT * 10);
       myPhaseShiftPal->setValue(PaletteHandler::DEF_PAL_SHIFT * 10);
+      myTVRedScale->setValue(50);
+      myTVRedShift->setValue(PaletteHandler::DEF_RGB_SHIFT);
+      myTVGreenScale->setValue(50);
+      myTVGreenShift->setValue(PaletteHandler::DEF_RGB_SHIFT);
+      myTVBlueScale->setValue(50);
+      myTVBlueShift->setValue(PaletteHandler::DEF_RGB_SHIFT);
       myTVHue->setValue(50);
       myTVSatur->setValue(50);
       myTVContrast->setValue(50);
@@ -847,6 +916,23 @@ void VideoAudioDialog::handlePaletteChange()
 
   myPhaseShiftNtsc->setEnabled(enable);
   myPhaseShiftPal->setEnabled(enable);
+  myTVRedScale->setEnabled(enable);
+  myTVRedShift->setEnabled(enable);
+  myTVGreenScale->setEnabled(enable);
+  myTVGreenShift->setEnabled(enable);
+  myTVBlueScale->setEnabled(enable);
+  myTVBlueShift->setEnabled(enable);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void VideoAudioDialog::handleShiftChanged(SliderWidget* widget)
+{
+  std::ostringstream ss;
+
+  ss << std::setw(4) << std::fixed << std::setprecision(1)
+    << (0.1 * (widget->getValue())) << DEGREE;
+  widget->setValueLabel(ss.str());
+  handlePaletteUpdate();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -859,6 +945,12 @@ void VideoAudioDialog::handlePaletteUpdate()
   PaletteHandler::Adjustable paletteAdj;
   paletteAdj.phaseNtsc  = myPhaseShiftNtsc->getValue();
   paletteAdj.phasePal   = myPhaseShiftPal->getValue();
+  paletteAdj.redScale   = myTVRedScale->getValue();
+  paletteAdj.redShift   = myTVRedShift->getValue();
+  paletteAdj.greenScale = myTVGreenScale->getValue();
+  paletteAdj.greenShift = myTVGreenShift->getValue();
+  paletteAdj.blueScale  = myTVBlueScale->getValue();
+  paletteAdj.blueShift  = myTVBlueShift->getValue();
   paletteAdj.hue        = myTVHue->getValue();
   paletteAdj.saturation = myTVSatur->getValue();
   paletteAdj.contrast   = myTVContrast->getValue();
@@ -931,25 +1023,25 @@ void VideoAudioDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kNtscShiftChanged:
-    {
-      std::ostringstream ss;
-
-      ss << std::setw(4) << std::fixed << std::setprecision(1)
-        << (0.1 * abs(myPhaseShiftNtsc->getValue())) << DEGREE;
-      myPhaseShiftNtsc->setValueLabel(ss.str());
-      handlePaletteUpdate();
+      handleShiftChanged(myPhaseShiftNtsc);
       break;
-    }
+
     case kPalShiftChanged:
-    {
-      std::ostringstream ss;
-
-      ss << std::setw(4) << std::fixed << std::setprecision(1)
-        << (0.1 * abs(myPhaseShiftPal->getValue())) << DEGREE;
-      myPhaseShiftPal->setValueLabel(ss.str());
-      handlePaletteUpdate();
+      handleShiftChanged(myPhaseShiftPal);
       break;
-    }
+
+    case kRedShiftChanged:
+      handleShiftChanged(myTVRedShift);
+      break;
+
+    case kGreenShiftChanged:
+      handleShiftChanged(myTVGreenShift);
+      break;
+
+    case kBlueShiftChanged:
+      handleShiftChanged(myTVBlueShift);
+      break;
+
     case kVSizeChanged:
     {
       int adjust = myVSizeAdjust->getValue();

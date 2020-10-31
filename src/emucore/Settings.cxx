@@ -62,6 +62,13 @@ Settings::Settings()
   setPermanent("palette", PaletteHandler::SETTING_STANDARD);
   setPermanent("pal.phase_ntsc", "26.2");
   setPermanent("pal.phase_pal", "31.3");
+  setPermanent("pal.red_scale", "0.0");
+  setPermanent("pal.green_scale", "0.0");
+  setPermanent("pal.blue_scale", "0.0");
+  setPermanent("pal.red_shift", "0.0");
+  setPermanent("pal.green_shift", "0.0");
+  setPermanent("pal.blue_shift", "0.0");
+
   setPermanent("pal.contrast", "0.0");
   setPermanent("pal.brightness", "0.0");
   setPermanent("pal.hue", "0.0");
@@ -415,16 +422,24 @@ void Settings::usage() const
     << "  -center       <1|0>          Centers game window in windowed modes\n"
     << "  -windowedpos  <XxY>          Sets the window position in windowed emulator mode\n"
     << "  -display      <number>       Sets the display for Stella's emulator\n"
-    << "  -palette      <standard|     Use the specified color palette\n"
-    << "                 z26|user|\n"
-    << "                 custom>\n"
-    << "  -pal.phase_ntsc <number>      Phase shift for NTSC 'custom' palette\n"
-    << "  -pal.phase_pal  <number>      Phase shift for PAL 'custom' palette\n"
-    << "  -pal.hue        <-1.0 - 1.0>  Adjust hue for current palette\n"
-    << "  -pal.saturation <-1.0 - 1.0>  Adjust saturation of current palette\n"
-    << "  -pal.contrast   <-1.0 - 1.0>  Adjust contrast of current palette\n"
-    << "  -pal.brightness <-1.0 - 1.0>  Adjust brightness of current palette\n"
-    << "  -pal.gamma      <-1.0 - 1.0>  Adjust gamma of current palette\n"
+    << endl
+    << "  -palette        <standard|     Use the specified color palette\n"
+    << "                   z26|user|\n"
+    << "                   custom>\n"
+    << "  -pal.phase_ntsc  <number>      Phase shift for NTSC 'custom' palette\n"
+    << "  -pal.phase_pal   <number>      Phase shift for PAL 'custom' palette\n"
+    << "  -pal.red_scale   <-1.0 - 1.0>  Adjust red scale for 'custom' palette\n"
+    << "  -pal.red_shift   <-1.0 - 1.0>  Adjust red shift for 'custom' palette\n"
+    << "  -pal.green_scale <-1.0 - 1.0>  Adjust green scale for 'custom' palette\n"
+    << "  -pal.green_shift <-1.0 - 1.0>  Adjust green shift for 'custom' palette\n"
+    << "  -pal.blue_scale  <-1.0 - 1.0>  Adjust blue scale for 'custom' palette\n"
+    << "  -pal.blue_shift  <-1.0 - 1.0>  Adjust blue shift for 'custom' palette\n"
+    << "  -pal.hue         <-1.0 - 1.0>  Adjust hue for current palette\n"
+    << "  -pal.saturation  <-1.0 - 1.0>  Adjust saturation of current palette\n"
+    << "  -pal.contrast    <-1.0 - 1.0>  Adjust contrast of current palette\n"
+    << "  -pal.brightness  <-1.0 - 1.0>  Adjust brightness of current palette\n"
+    << "  -pal.gamma       <-1.0 - 1.0>  Adjust gamma of current palette\n"
+    << endl
     << "  -speed        <number>       Run emulation at the given speed\n"
     << "  -turbo        <1|0>          Enable 'Turbo' mode for maximum emulation speed\n"
     << "  -uimessages   <1|0>          Show onscreen UI messages for different events\n"

@@ -2130,7 +2130,7 @@
       <td><pre>-palette &lt;standard|z26|user|custom&gt;</pre></td>
       <td>Set the palette to either normal Stella, the one used in the z26
         emulator, a user-defined palette, or a custom palette generated
-        from user-defined phase shifts.</td>
+        from user-defined parameters.</td>
     </tr>
 
     <tr>
@@ -2141,6 +2141,36 @@
     <tr>
       <td><pre>-pal.phase_pal &lt;number&gt;</pre></td>
       <td>Adjust phase shift of 'custom' PAL palette.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-pal.red_scale &lt;number&gt;</pre></td>
+      <td>Adjust red scale of 'custom' palette (range -1.0 to 1.0).</td>
+    </tr>
+
+    <tr>
+      <td><pre>-pal.red_shift &lt;number&gt;</pre></td>
+      <td>Adjust red shift of 'custom' palette (range -22.5 to 22.5).</td>
+    </tr>
+
+    <tr>
+      <td><pre>-pal.green_scale &lt;number&gt;</pre></td>
+      <td>Adjust green scale of 'custom' palette (range -1.0 to 1.0).</td>
+    </tr>
+
+    <tr>
+      <td><pre>-pal.green_shift &lt;number&gt;</pre></td>
+      <td>Adjust green shift of 'custom' palette (range -22.5 to 22.5).</td>
+    </tr>
+
+    <tr>
+      <td><pre>-pal.blue_scale &lt;number&gt;</pre></td>
+      <td>Adjust blue scale of 'custom' palette (range -1.0 to 1.0).</td>
+    </tr>
+
+    <tr>
+      <td><pre>-pal.blue_shift &lt;number&gt;</pre></td>
+      <td>Adjust blue shift of 'custom' palette (range -22.5 to 22.5).</td>
     </tr>
 
     <tr>
@@ -3078,8 +3108,11 @@
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">Command Line</a></th></tr>
           <tr><td>Palette</td><td>Palette used for emulation mode</td><td>-palette</td></tr>
-          <tr><td>NTSC phase</td><td>Adjust phase shift for 'Custom' NTSC palette</td><td>-pal.phase_ntsc</td></tr>
-          <tr><td>PAL phase</td><td>Adjust phase shift for 'Custom' PAL palette</td><td>-pal.phase_pal</td></tr>
+          <tr><td>NTSC phase</td><td>Adjust phase shift of 'Custom' NTSC palette</td><td>-pal.phase_ntsc</td></tr>
+          <tr><td>PAL phase</td><td>Adjust phase shift of 'Custom' PAL palette</td><td>-pal.phase_pal</td></tr>
+          <tr><td>R</td><td>Adjust red scale and shift of 'Custom' palette</td><td>-pal.red_scale, -pal.red_shift</td></tr>
+          <tr><td>G</td><td>Adjust green scale and shift of 'Custom' palette</td><td>-pal.green_scale, -pal.green_shift</td></tr>
+          <tr><td>B</td><td>Adjust blue scale and shift of 'Custom' palette</td><td>-pal.blue_scale, -pal.blue_shift</td></tr>
           <tr><td>Hue</td><td>Adjust hue of currently selected palette</td><td>-pal.hue</td></tr>
           <tr><td>Saturation</td><td>Adjust saturation of currently selected palette</td><td>-pal.saturation</td></tr>
           <tr><td>Contrast</td><td>Adjust contrast of currently selected palette</td><td>-pal.contrast</td></tr>

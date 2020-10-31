@@ -431,6 +431,12 @@ class EventHandler
       // Palette adjustables
       PALETTE,
       PALETTE_PHASE,
+      PALETTE_RED_SCALE,
+      PALETTE_RED_SHIFT,
+      PALETTE_GREEN_SCALE,
+      PALETTE_GREEN_SHIFT,
+      PALETTE_BLUE_SCALE,
+      PALETTE_BLUE_SHIFT,
       PALETTE_HUE,
       PALETTE_SATURATION,
       PALETTE_CONTRAST,
