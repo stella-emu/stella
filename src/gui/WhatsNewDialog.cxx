@@ -43,6 +43,7 @@ WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent, const 
           max_w, max_h);
 
 #if defined(RETRON77)
+  add(ypos, "fixed CDF cartridges crash");
   add(ypos, "fixed crash with SaveKey ROMs (EEPROM file issues)");
   add(ypos, "fixed bug with launcher not remembering last selected ROM");
 #else
@@ -50,8 +51,9 @@ WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent, const 
   add(ypos, "added color parameters to 'Custom' palette");
   add(ypos, "improved AtariVox-USB adaptor autodetection");
   add(ypos, "fixed fullscreen mode, aspect correction and pixel-exact snapshots");
-  add(ypos, "fixed Atari mouse autodetection");
+  add(ypos, "fixed reduced ARM emulation performance for CDF cartridges");
   add(ypos, "fixed crash with SaveKey ROMs (EEPROM file issues)");
+  add(ypos, "fixed Atari mouse autodetection");
   add(ypos, "fixed bug with launcher not remembering last selected ROM");
   add(ypos, ELLIPSIS + " (for a complete list see 'docs/Changes.txt')");
 #endif
