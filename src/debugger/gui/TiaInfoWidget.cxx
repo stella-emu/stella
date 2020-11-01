@@ -64,13 +64,13 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
 
   // Left: WSync Cycles
   ypos += lineHeight + VGAP;
-  new StaticTextWidget(boss, lfont, xpos, ypos + 1, longstr ? "WSync Cycl." : "WSync C.");
+  new StaticTextWidget(boss, lfont, xpos, ypos + 1, longstr ? "WSync Cycle" : "WSync C.");
   myWSyncCylces = new EditTextWidget(boss, nfont, xpos + lwidth, ypos - 1, fwidth, lineHeight);
   myWSyncCylces->setEditable(false, true);
 
   // Left: Timer Cycles
   ypos += lineHeight + VGAP;
-  new StaticTextWidget(boss, lfont, xpos, ypos + 1, longstr ? "Timer Cycl." : "Timer C.");
+  new StaticTextWidget(boss, lfont, xpos, ypos + 1, longstr ? "Timer Cycle" : "Timer C.");
   myTimerCylces = new EditTextWidget(boss, nfont, xpos + lwidth, ypos - 1, fwidth, lineHeight);
   myTimerCylces->setEditable(false, true);
 
