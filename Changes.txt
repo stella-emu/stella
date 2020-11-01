@@ -23,7 +23,10 @@
     - Autodetection of serial ports no longer messes up devices plugged
       into other serial ports.
 
-  * Added CPU load stats to debugger.
+  * Added CPU load stats to debugger.  Related to this, added debugger
+    pseudo-registers '_ftimreadcycles' and '_fwsynccycles' to show the
+    number of cycles since the start of frame under certain circumstances
+    (see manual for more details).
 
   * Fixed bug with aspect correction and fullscreen mode; snapshots from
     such a mode are now pixel-exact.
