@@ -28,14 +28,13 @@
   * Fixed bug with aspect correction and fullscreen mode; snapshots from
     such a mode are now pixel-exact.
 
-  * Fixed Atari mouse autodetection.
-
-  * Fixed a bug in 6.3 that caused CDF cartridges to crash on the Retron77
-    and that causes reduced ARM emulation performance for CDF cartridges on
-    other platforms.
+  * Fixed a bug that caused CDF cartridges to crash on the Retron77 and
+    reduced ARM emulation performance for CDF cartridges on other platforms.
 
   * Fixed crash with missing or incorrectly sized SaveKey data file, and
     with certain functions not working (erase pages, erase entire EEPROM).
+
+  * Fixed Atari mouse autodetection.
 
   * Fixed bug in ROM launcher, with last ROM selected not being remembered
     when exiting and re-entering a directory.
