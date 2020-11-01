@@ -751,9 +751,11 @@ void DeveloperDialog::getWidgetStates(SettingsSet set)
   myRandomBank[set] = myRandomBankWidget->getState();
   myRandomizeRAM[set] = myRandomizeRAMWidget->getState();
   string cpurandom;
+  const std::array<string, 5> cpuregs = {"S", "A", "X", "Y", "P"};
+
   for(int i = 0; i < 5; ++i)
     if(myRandomizeCPUWidget[i]->getState())
-      cpurandom += ourCPUregs[i];
+      cpurandom += cpuregs[i];
   myRandomizeCPU[set] = cpurandom;
   // Undriven TIA pins
   myUndrivenPins[set] = myUndrivenPinsWidget->getState();
@@ -805,8 +807,10 @@ void DeveloperDialog::setWidgetStates(SettingsSet set)
   myRandomizeRAMWidget->setState(myRandomizeRAM[set]);
 
   const string& cpurandom = myRandomizeCPU[set];
+  const std::array<string, 5> cpuregs = {"S", "A", "X", "Y", "P"};
+
   for(int i = 0; i < 5; ++i)
-    myRandomizeCPUWidget[i]->setState(BSPF::containsIgnoreCase(cpurandom, ourCPUregs[i]));
+    myRandomizeCPUWidget[i]->setState(BSPF::containsIgnoreCase(cpurandom, cpuregs[i]));
   // Undriven TIA pins
   myUndrivenPinsWidget->setState(myUndrivenPins[set]);
 #ifdef DEBUGGER_SUPPORT
