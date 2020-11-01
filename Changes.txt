@@ -12,18 +12,18 @@
                               Release History
 ===========================================================================
 
-6.3 to 6.3.1 (November 2, 2020)
+6.3 to 6.4 (November 2, 2020)
 
   * Added basic (entire and single line only) text cut/copy and paste.
 
-  * Added color parameters to 'Custom' palette
+  * Added color parameters to 'Custom' palette.
 
   * Some improvements to AtariVox-USB adaptor functionality:
     - Made serial port used for an AtariVox-USB adaptor editable.
     - Autodetection of serial ports no longer messes up devices plugged
       into other serial ports.
 
-  * Added CPU load stats to debugger
+  * Added CPU load stats to debugger.
 
   * Fixed bug with aspect correction and fullscreen mode; snapshots from
     such a mode are now pixel-exact.
