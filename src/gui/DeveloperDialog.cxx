@@ -154,11 +154,12 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   myRandomizeCPULabel = new StaticTextWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1, "Randomize CPU ");
   wid.push_back(myRandomizeCPULabel);
 
+  const std::array<string, 5> cpuregsLabels = {"SP", "A", "X", "Y", "PS"};
   int xpos = myRandomizeCPULabel->getRight() + fontWidth * 1.25;
   for(int i = 0; i < 5; ++i)
   {
     myRandomizeCPUWidget[i] = new CheckboxWidget(myTab, font, xpos, ypos + 1,
-                                           ourCPUregs[i], kRandCPUID);
+                                           cpuregsLabels[i], kRandCPUID);
     wid.push_back(myRandomizeCPUWidget[i]);
     xpos += CheckboxWidget::boxSize(font) + font.getStringWidth("XX") + fontWidth * 2.5;
   }
@@ -1535,8 +1536,3 @@ void DeveloperDialog::handleFontSize()
     myDebuggerHeightSlider->setValue(minH);
 #endif
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const std::array<string, 5> DeveloperDialog::ourCPUregs = {
-  "SP", "A", "X", "Y", "PS"
-};
