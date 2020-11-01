@@ -43,7 +43,7 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
     + EditTextWidget::calcWidth(lfont) * 3 <= max_w;
   const int lineHeight = lfont.getLineHeight();
   int xpos = x, ypos = y + VBORDER;
-  int lwidth = lfont.getStringWidth(longstr ? "Frame Cycle" : "F. Cycle");
+  int lwidth = lfont.getStringWidth(longstr ? "Frame Cycls" : "F. Cycls");
   int lwidth8 = lwidth - lfont.getMaxCharWidth() * 3;
   int lwidthR = lfont.getStringWidth(longstr ? "Frame Cnt." : "Frame   ");
   int fwidth = EditTextWidget::calcWidth(lfont, 5);
@@ -58,19 +58,19 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
   // Left column
   // Left: Frame Cycle
   xpos = x;
-  new StaticTextWidget(boss, lfont, xpos, ypos + 1, longstr ? "Frame Cycle" : "F. Cycle");
+  new StaticTextWidget(boss, lfont, xpos, ypos + 1, longstr ? "Frame Cycls" : "F. Cycls");
   myFrameCycles = new EditTextWidget(boss, nfont, xpos + lwidth, ypos - 1, fwidth, lineHeight);
   myFrameCycles->setEditable(false, true);
 
   // Left: WSync Cycles
   ypos += lineHeight + VGAP;
-  new StaticTextWidget(boss, lfont, xpos, ypos + 1, longstr ? "WSync Cycle" : "WSync C.");
+  new StaticTextWidget(boss, lfont, xpos, ypos + 1, longstr ? "WSync Cycls" : "WSync C.");
   myWSyncCylces = new EditTextWidget(boss, nfont, xpos + lwidth, ypos - 1, fwidth, lineHeight);
   myWSyncCylces->setEditable(false, true);
 
   // Left: Timer Cycles
   ypos += lineHeight + VGAP;
-  new StaticTextWidget(boss, lfont, xpos, ypos + 1, longstr ? "Timer Cycle" : "Timer C.");
+  new StaticTextWidget(boss, lfont, xpos, ypos + 1, longstr ? "Timer Cycls" : "Timer C.");
   myTimerCylces = new EditTextWidget(boss, nfont, xpos + lwidth, ypos - 1, fwidth, lineHeight);
   myTimerCylces->setEditable(false, true);
 
