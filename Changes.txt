@@ -30,6 +30,10 @@
 
   * Fixed Atari mouse autodetection.
 
+  * Fixed a bug in 6.3 that caused CDF cartridges to crash on the Retron77
+    and that causes reduced ARM emulation performance for CDF cartridges on
+    other platforms.
+
   * Fixed crash with missing or incorrectly sized SaveKey data file, and
     with certain functions not working (erase pages, erase entire EEPROM).
 
