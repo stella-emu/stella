@@ -28,8 +28,8 @@
   * Fixed bug with aspect correction and fullscreen mode; snapshots from
     such a mode are now pixel-exact.
 
-  * Fixed a bug that caused CDF cartridges to crash on the Retron77 and
-    reduced ARM emulation performance for CDF cartridges on other platforms.
+  * Fixed a bug that caused CDF ROMs to crash on the Retron77 and reduced
+    ARM emulation performance for CDF ROMs on other platforms.
 
   * Fixed crash with missing or incorrectly sized SaveKey data file, and
     with certain functions not working (erase pages, erase entire EEPROM).
