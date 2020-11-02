@@ -71,15 +71,6 @@ class SerialPortUNIX : public SerialPort
     StringList portNames() override;
 
   private:
-    /**
-      Tests whether this port can be opened, and is a valid
-      serial port.
-
-      @return  True if valid, else false
-    */
-    bool isValid(const string& port) const;
-
-  private:
     // File descriptor for serial connection
     int myHandle{0};
 
