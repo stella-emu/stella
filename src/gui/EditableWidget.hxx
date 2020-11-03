@@ -80,7 +80,9 @@ class EditableWidget : public Widget, public CommandSender
 
   private:
     // Line editing
-    bool specialKeys(StellaKey key);
+    bool handleControlKeys(StellaKey key);
+    bool handleShiftKeys(StellaKey key);
+    bool handleNormalKeys(StellaKey key);
     bool killChar(int direction);
     bool killLine(int direction);
     bool killLastWord();
@@ -98,14 +100,9 @@ class EditableWidget : public Widget, public CommandSender
   private:
     bool   _editable{true};
     string _editString;
-
-//     bool  _caretVisible{false};
-//     int   _caretTime{0};
-    int   _caretPos{0};
+    int    _caretPos{0};
 
   protected:
-    bool  _caretInverse{false};
-
     int   _editScrollOffset{0};
 
   private:

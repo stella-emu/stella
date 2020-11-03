@@ -46,10 +46,6 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_RETAIN_FOCUS | Widget::FLAG_WANTS_RAWDATA;
 
-  // The item is selected, thus _bgcolor is used to draw the caret and
-  // _textcolorhi to erase it
-  _caretInverse = true;
-
   // Make sure all lists contain some default values
   _hiliteList.clear();
   int size = _rows * _cols;
