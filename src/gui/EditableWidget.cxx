@@ -112,8 +112,19 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
   if(StellaModTest::isAlt(mod))
     return true;
 
+  if(StellaModTest::isShift(mod) && handleShiftKeys(key))
+    return true;
+
+  if(StellaModTest::isControl(mod) && handleControlKeys(key))
+    return true;
+
+  return handleNormalKeys(key);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool EditableWidget::handleNormalKeys(StellaKey key)
+{
   bool handled = true;
-  bool dirty = false;
 
   switch(key)
   {
@@ -122,79 +133,146 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
       // confirm edit and exit editmode
       endEditMode();
       sendCommand(EditableWidget::kAcceptCmd, 0, _id);
-      dirty = true;
       break;
 
     case KBDK_ESCAPE:
       abortEditMode();
       sendCommand(EditableWidget::kCancelCmd, 0, _id);
-      dirty = true;
       break;
 
     case KBDK_BACKSPACE:
-      dirty = killChar(-1);
-      if(dirty)  sendCommand(EditableWidget::kChangedCmd, key, _id);
+      handled = killChar(-1);
+      if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
       break;
 
     case KBDK_DELETE:
     case KBDK_KP_PERIOD:
-      if(StellaModTest::isShift(mod))
-      {
-        cutSelectedText();
-        dirty = true;
-      }
-      else
-        dirty = killChar(+1);
-      if(dirty)  sendCommand(EditableWidget::kChangedCmd, key, _id);
+      handled = killChar(+1);
+      if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
       break;
 
     case KBDK_LEFT:
-      if(StellaModTest::isControl(mod))
-        dirty = specialKeys(key);
-      else if(_caretPos > 0)
-        dirty = setCaretPos(_caretPos - 1);
+      if(_caretPos > 0)
+        handled = setCaretPos(_caretPos - 1);
       break;
 
     case KBDK_RIGHT:
-      if(StellaModTest::isControl(mod))
-        dirty = specialKeys(key);
-      else if(_caretPos < int(_editString.size()))
-        dirty = setCaretPos(_caretPos + 1);
+      if(_caretPos < int(_editString.size()))
+        handled = setCaretPos(_caretPos + 1);
       break;
 
     case KBDK_HOME:
-      dirty = setCaretPos(0);
+      handled = setCaretPos(0);
       break;
 
     case KBDK_END:
-      dirty = setCaretPos(int(_editString.size()));
-      break;
-
-    case KBDK_INSERT:
-      if(StellaModTest::isControl(mod))
-      {
-        copySelectedText();
-        dirty = true;
-      }
-      else if(StellaModTest::isShift(mod))
-      {
-        pasteSelectedText();
-        dirty = true;
-      }
-      else
-        handled = false;
+      handled = setCaretPos(int(_editString.size()));
       break;
 
     default:
-      if (StellaModTest::isControl(mod))
-      {
-        dirty = specialKeys(key);
-      }
-      else
-        handled = false;
+      handled = false;
   }
 
-  if (dirty)
+  if(handled)
+    setDirty();
+
+  return handled;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool EditableWidget::handleShiftKeys(StellaKey key)
+{
+  bool handled = true;
+
+  switch(key)
+  {
+    case KBDK_DELETE:
+    case KBDK_KP_PERIOD:
+      cutSelectedText();
+      sendCommand(EditableWidget::kChangedCmd, key, _id);
+      break;
+
+    case KBDK_INSERT:
+      pasteSelectedText();
+      sendCommand(EditableWidget::kChangedCmd, key, _id);
+      break;
+
+    default:
+      handled = false;
+  }
+
+  if(handled)
+    setDirty();
+
+  return handled;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool EditableWidget::handleControlKeys(StellaKey key)
+{
+  bool handled = true;
+
+  switch(key)
+  {
+    case KBDK_A:
+      setCaretPos(0);
+      break;
+
+    case KBDK_C:
+      copySelectedText();
+      break;
+
+    case KBDK_E:
+      setCaretPos(int(_editString.size()));
+      break;
+
+    case KBDK_D:
+      handled = killChar(+1);
+      if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
+      break;
+
+    case KBDK_K:
+      handled = killLine(+1);
+      if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
+      break;
+
+    case KBDK_U:
+      handled = killLine(-1);
+      if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
+      break;
+
+    case KBDK_V:
+      pasteSelectedText();
+      sendCommand(EditableWidget::kChangedCmd, key, _id);
+      break;
+
+    case KBDK_W:
+      handled = killLastWord();
+      if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
+      break;
+
+    case KBDK_X:
+      cutSelectedText();
+      sendCommand(EditableWidget::kChangedCmd, key, _id);
+      break;
+
+    case KBDK_LEFT:
+      handled = moveWord(-1);
+      break;
+
+    case KBDK_RIGHT:
+      handled = moveWord(+1);
+      break;
+
+    case KBDK_INSERT:
+      copySelectedText();
+      break;
+
+    default:
+      handled = false;
+  }
+
+  if(handled)
     setDirty();
 
   return handled;
@@ -276,70 +354,6 @@ bool EditableWidget::adjustOffset()
   }
 
   return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool EditableWidget::specialKeys(StellaKey key)
-{
-  bool handled = true;
-
-  switch(key)
-  {
-    case KBDK_A:
-      setCaretPos(0);
-      break;
-
-    case KBDK_C:
-      copySelectedText();
-      break;
-
-    case KBDK_E:
-      setCaretPos(int(_editString.size()));
-      break;
-
-    case KBDK_D:
-      handled = killChar(+1);
-      if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
-      break;
-
-    case KBDK_K:
-      handled = killLine(+1);
-      if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
-      break;
-
-    case KBDK_U:
-      handled = killLine(-1);
-      if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
-      break;
-
-    case KBDK_V:
-      pasteSelectedText();
-      sendCommand(EditableWidget::kChangedCmd, key, _id);
-      break;
-
-    case KBDK_W:
-      handled = killLastWord();
-      if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
-      break;
-
-    case KBDK_X:
-      cutSelectedText();
-      sendCommand(EditableWidget::kChangedCmd, key, _id);
-      break;
-
-    case KBDK_LEFT:
-      handled = moveWord(-1);
-      break;
-
-    case KBDK_RIGHT:
-      handled = moveWord(+1);
-      break;
-
-    default:
-      handled = false;
-  }
-
-  return handled;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
