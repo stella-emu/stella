@@ -264,8 +264,11 @@ bool EditableWidget::handleNormalKeys(StellaKey key)
   {
     case KBDK_LSHIFT:
     case KBDK_RSHIFT:
+    case KBDK_LCTRL:
+    case KBDK_RCTRL:
       // stay in select mode
       selectMode = _selectSize;
+      handled = false;
       break;
 
     case KBDK_RETURN:
