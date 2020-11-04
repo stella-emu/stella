@@ -174,7 +174,7 @@ bool EditableWidget::handleControlKeys(StellaKey key, StellaMod mod)
       sendCommand(EditableWidget::kChangedCmd, key, _id);
       break;
 
-    case KBDK_W: // TODO
+    case KBDK_W:
       handled = killLastWord();
       if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
       break;
