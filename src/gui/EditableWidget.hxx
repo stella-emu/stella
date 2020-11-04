@@ -96,7 +96,8 @@ class EditableWidget : public Widget, public CommandSender
     bool moveWord(int direction, bool select);
 
     bool killSelectedText();
-    int selectPos();
+    int selectStartPos();
+    int selectEndPos();
     // Clipboard
     void cutSelectedText();
     void copySelectedText();
