@@ -64,6 +64,8 @@ class EditableWidget : public Widget, public CommandSender
     void setTextFilter(const TextFilter& filter) { _filter = filter; }
 
   protected:
+    void lostFocusWidget() override;
+
     virtual void startEditMode() { setFlags(Widget::FLAG_WANTS_RAWDATA);   }
     virtual void endEditMode()   { clearFlags(Widget::FLAG_WANTS_RAWDATA); }
     virtual void abortEditMode() { clearFlags(Widget::FLAG_WANTS_RAWDATA); }
@@ -72,22 +74,29 @@ class EditableWidget : public Widget, public CommandSender
     virtual int getCaretOffset() const;
     void drawCaret();
     bool setCaretPos(int newPos);
+    bool moveCaretPos(int direction);
     bool adjustOffset();
 
     // This method is used internally by child classes wanting to
     // access/edit the internal buffer
     string& editString() { return _editString; }
+    const string selectString() const;
+    void resetSelection() { _selectSize = 0; }
+    void drawSelection();
+    int scrollOffset();
 
   private:
     // Line editing
-    bool handleControlKeys(StellaKey key);
+    bool handleControlKeys(StellaKey key, StellaMod mod);
     bool handleShiftKeys(StellaKey key);
     bool handleNormalKeys(StellaKey key);
     bool killChar(int direction);
     bool killLine(int direction);
     bool killLastWord();
-    bool moveWord(int direction);
+    bool moveWord(int direction, bool select);
 
+    bool killSelectedText();
+    int selectPos();
     // Clipboard
     void cutSelectedText();
     void copySelectedText();
@@ -101,6 +110,7 @@ class EditableWidget : public Widget, public CommandSender
     bool   _editable{true};
     string _editString;
     int    _caretPos{0};
+    int    _selectSize{0};
 
   protected:
     int   _editScrollOffset{0};

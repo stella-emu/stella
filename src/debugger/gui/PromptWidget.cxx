@@ -718,7 +718,7 @@ void PromptWidget::textCut()
 #if defined(PSEUDO_CUT_COPY_PASTE)
   string text = getLine();
 
-  instance().eventHandler().cutText(text);
+  instance().eventHandler().copyText(text);
 
   // Remove the current line
   _currentPos = _promptStartPos;
