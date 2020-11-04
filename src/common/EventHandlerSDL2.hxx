@@ -48,7 +48,6 @@ private:
       Clipboard methods.
     */
     void copyText(const string& text) const override;
-    void cutText(string& text) const override;
     string pasteText(string& text) const override;
 
     /**

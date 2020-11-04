@@ -76,6 +76,12 @@ void EditableWidget::setEditable(bool editable, bool hiliteBG)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EditableWidget::lostFocusWidget()
+{
+  _selectSize = 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool EditableWidget::tryInsertChar(char c, int pos)
 {
   if(_filter(tolower(c)))
@@ -112,13 +118,140 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
   if(StellaModTest::isAlt(mod))
     return true;
 
+  if(StellaModTest::isControl(mod) && handleControlKeys(key, mod))
+    return true;
+
   if(StellaModTest::isShift(mod) && handleShiftKeys(key))
     return true;
 
-  if(StellaModTest::isControl(mod) && handleControlKeys(key))
-    return true;
-
   return handleNormalKeys(key);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool EditableWidget::handleControlKeys(StellaKey key, StellaMod mod)
+{
+  bool shift = StellaModTest::isShift(mod);
+  bool handled = true;
+  bool dirty = true;
+
+  switch(key)
+  {
+    case KBDK_A:
+      setCaretPos(0);
+      _selectSize = -int(_editString.size());
+      break;
+
+    case KBDK_C:
+    case KBDK_INSERT:
+      copySelectedText();
+      break;
+
+    case KBDK_E:
+      if(shift)
+        _selectSize += _caretPos - int(_editString.size());
+      else
+        _selectSize = 0;
+      setCaretPos(int(_editString.size()));
+      break;
+
+    case KBDK_D:
+      handled = killChar(+1);
+      if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
+      break;
+
+    case KBDK_K: // TODO
+      handled = killLine(+1);
+      if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
+      break;
+
+    case KBDK_U: // TODO
+      handled = killLine(-1);
+      if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
+      break;
+
+    case KBDK_V:
+      pasteSelectedText();
+      sendCommand(EditableWidget::kChangedCmd, key, _id);
+      break;
+
+    case KBDK_W: // TODO
+      handled = killLastWord();
+      if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
+      break;
+
+    case KBDK_X:
+      cutSelectedText();
+      sendCommand(EditableWidget::kChangedCmd, key, _id);
+      break;
+
+    case KBDK_LEFT:
+      handled = moveWord(-1, shift);
+      if(!shift)
+        _selectSize = 0;
+      break;
+
+    case KBDK_RIGHT:
+      handled = moveWord(+1, shift);
+      if(!shift)
+        _selectSize = 0;
+      break;
+
+    default:
+      handled = false;
+      dirty = false;
+  }
+
+  if(dirty)
+    setDirty();
+
+  return handled;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool EditableWidget::handleShiftKeys(StellaKey key)
+{
+  bool handled = true;
+
+  switch(key)
+  {
+    case KBDK_DELETE:
+    case KBDK_KP_PERIOD:
+      cutSelectedText();
+      sendCommand(EditableWidget::kChangedCmd, key, _id);
+      break;
+
+    case KBDK_INSERT:
+      pasteSelectedText();
+      sendCommand(EditableWidget::kChangedCmd, key, _id);
+      break;
+
+    case KBDK_LEFT:
+      if(_caretPos > 0)
+        handled = moveCaretPos(-1);
+      break;
+
+    case KBDK_RIGHT:
+      if(_caretPos < int(_editString.size()))
+        handled = moveCaretPos(+1);
+      break;
+
+    case KBDK_HOME:
+      handled = moveCaretPos(-_caretPos);
+      break;
+
+    case KBDK_END:
+      handled = moveCaretPos(int(_editString.size()) - _caretPos);
+      break;
+
+
+    default:
+      handled = false;
+  }
+
+  if(handled)
+    setDirty();
+
+  return handled;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -128,6 +261,12 @@ bool EditableWidget::handleNormalKeys(StellaKey key)
 
   switch(key)
   {
+    case KBDK_LSHIFT:
+    case KBDK_RSHIFT:
+      // stay in select mode
+      handled = false;
+      break;
+
     case KBDK_RETURN:
     case KBDK_KP_ENTER:
       // confirm edit and exit editmode
@@ -174,106 +313,10 @@ bool EditableWidget::handleNormalKeys(StellaKey key)
   }
 
   if(handled)
-    setDirty();
-
-  return handled;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool EditableWidget::handleShiftKeys(StellaKey key)
-{
-  bool handled = true;
-
-  switch(key)
   {
-    case KBDK_DELETE:
-    case KBDK_KP_PERIOD:
-      cutSelectedText();
-      sendCommand(EditableWidget::kChangedCmd, key, _id);
-      break;
-
-    case KBDK_INSERT:
-      pasteSelectedText();
-      sendCommand(EditableWidget::kChangedCmd, key, _id);
-      break;
-
-    default:
-      handled = false;
-  }
-
-  if(handled)
     setDirty();
-
-  return handled;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool EditableWidget::handleControlKeys(StellaKey key)
-{
-  bool handled = true;
-
-  switch(key)
-  {
-    case KBDK_A:
-      setCaretPos(0);
-      break;
-
-    case KBDK_C:
-      copySelectedText();
-      break;
-
-    case KBDK_E:
-      setCaretPos(int(_editString.size()));
-      break;
-
-    case KBDK_D:
-      handled = killChar(+1);
-      if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
-      break;
-
-    case KBDK_K:
-      handled = killLine(+1);
-      if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
-      break;
-
-    case KBDK_U:
-      handled = killLine(-1);
-      if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
-      break;
-
-    case KBDK_V:
-      pasteSelectedText();
-      sendCommand(EditableWidget::kChangedCmd, key, _id);
-      break;
-
-    case KBDK_W:
-      handled = killLastWord();
-      if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
-      break;
-
-    case KBDK_X:
-      cutSelectedText();
-      sendCommand(EditableWidget::kChangedCmd, key, _id);
-      break;
-
-    case KBDK_LEFT:
-      handled = moveWord(-1);
-      break;
-
-    case KBDK_RIGHT:
-      handled = moveWord(+1);
-      break;
-
-    case KBDK_INSERT:
-      copySelectedText();
-      break;
-
-    default:
-      handled = false;
+    _selectSize = 0;
   }
-
-  if(handled)
-    setDirty();
 
   return handled;
 }
@@ -281,13 +324,13 @@ bool EditableWidget::handleControlKeys(StellaKey key)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int EditableWidget::getCaretOffset() const
 {
-  int caretpos = 0;
+  int caretOfs = 0;
   for (int i = 0; i < _caretPos; i++)
-    caretpos += _font.getCharWidth(_editString[i]);
+    caretOfs += _font.getCharWidth(_editString[i]);
 
-  caretpos -= _editScrollOffset;
+  caretOfs -= _editScrollOffset;
 
-  return caretpos;
+  return caretOfs;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -307,7 +350,46 @@ void EditableWidget::drawCaret()
   y += _y;
 
   FBSurface& s = _boss->dialog().surface();
-  s.vLine(x, y+2, y + editRect.h() - 2, kTextColorHi);
+  s.vLine(x, y + 2, y + editRect.h() - 2, kTextColorHi);
+  s.vLine(x-1, y + 2, y + editRect.h() - 2, kTextColorHi);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EditableWidget::drawSelection()
+{
+  // Only draw if item is visible
+  if(!_editable || !isVisible() || !_boss->isVisible() || !_hasFocus
+     || !_selectSize)
+    return;
+
+  FBSurface& s = _boss->dialog().surface();
+  string text = selectString();
+  const Common::Rect& editRect = getEditRect();
+  int x = editRect.x();
+  int y = editRect.y();
+  int w = editRect.w();
+  int h = editRect.h();
+  int wt = int(text.length()) * _font.getMaxCharWidth() + 1;
+  int dx = selectPos() * _font.getMaxCharWidth() - _editScrollOffset;
+
+  if(dx < 0)
+  {
+    // selected text starts left of displayed rect
+    text = text.substr(-(dx - 1) / _font.getMaxCharWidth());
+    wt += dx;
+    dx = 0;
+  }
+  else
+    x += dx;
+  // limit selection to the right of displayed rect
+  w = std::min(w - dx + 1, wt);
+
+  x += _x;
+  y += _y;
+
+  s.fillRect(x - 1, y + 1, w + 1, h - 3, kTextColorHi);
+  s.drawString(_font, text, x, y + 1, w, h,
+               kTextColorInv, TextAlign::Left, 0, false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -320,6 +402,17 @@ bool EditableWidget::setCaretPos(int newPos)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool EditableWidget::moveCaretPos(int direction)
+{
+  if(setCaretPos(_caretPos + direction))
+  {
+    _selectSize -= direction;
+    return true;
+  }
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool EditableWidget::adjustOffset()
 {
   // check if the caret is still within the textbox; if it isn't,
@@ -328,18 +421,18 @@ bool EditableWidget::adjustOffset()
   // For some reason (differences in ScummVM event handling??),
   // this method should always return true.
 
-  int caretpos = getCaretOffset();
+  int caretOfs = getCaretOffset();
   const int editWidth = getEditRect().w();
 
-  if (caretpos < 0)
+  if (caretOfs < 0)
   {
     // scroll left
-    _editScrollOffset += caretpos;
+    _editScrollOffset += caretOfs;
   }
-  else if (caretpos >= editWidth)
+  else if (caretOfs >= editWidth)
   {
     // scroll right
-    _editScrollOffset -= (editWidth - caretpos);
+    _editScrollOffset -= (editWidth - caretOfs);
   }
   else if (_editScrollOffset > 0)
   {
@@ -357,23 +450,32 @@ bool EditableWidget::adjustOffset()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int EditableWidget::scrollOffset()
+{
+  return _editable ? -_editScrollOffset : 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool EditableWidget::killChar(int direction)
 {
-  bool handled = false;
+  bool handled = killSelectedText();
 
-  if(direction == -1)      // Delete previous character (backspace)
+  if(!handled)
   {
-    if(_caretPos > 0)
+    if(direction == -1)      // Delete previous character (backspace)
     {
-      _caretPos--;
+      if(_caretPos > 0)
+      {
+        _caretPos--;
+        _editString.erase(_caretPos, 1);
+        handled = true;
+      }
+    }
+    else if(direction == 1)  // Delete next character (delete)
+    {
       _editString.erase(_caretPos, 1);
       handled = true;
     }
-  }
-  else if(direction == 1)  // Delete next character (delete)
-  {
-    _editString.erase(_caretPos, 1);
-    handled = true;
   }
 
   return handled;
@@ -442,7 +544,7 @@ bool EditableWidget::killLastWord()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool EditableWidget::moveWord(int direction)
+bool EditableWidget::moveWord(int direction, bool select)
 {
   bool handled = false;
   bool space = true;
@@ -461,6 +563,8 @@ bool EditableWidget::moveWord(int direction)
         space = false;
 
       currentPos--;
+      if(select)
+        _selectSize++;
     }
     _caretPos = currentPos;
     handled = true;
@@ -478,6 +582,8 @@ bool EditableWidget::moveWord(int direction)
         space = false;
 
       currentPos++;
+      if(select)
+        _selectSize--;
     }
     _caretPos = currentPos;
     handled = true;
@@ -487,11 +593,55 @@ bool EditableWidget::moveWord(int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const string EditableWidget::selectString() const
+{
+  if(_selectSize)
+  {
+    int caretPos = _caretPos;
+    int selectSize = _selectSize;
+
+    if(selectSize < 0)
+    {
+      caretPos += selectSize;
+      selectSize = -selectSize;
+    }
+    return _editString.substr(caretPos, selectSize);
+  }
+  return EmptyString;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int EditableWidget::selectPos()
+{
+  if(_selectSize < 0)
+    return _caretPos + _selectSize;
+  else
+    return _caretPos;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool EditableWidget::killSelectedText()
+{
+  if(_selectSize)
+  {
+    if(_selectSize < 0)
+    {
+      _caretPos += _selectSize;
+      _selectSize = -_selectSize;
+    }
+    _editString.erase(_caretPos, _selectSize);
+    _selectSize = 0;
+    return true;
+  }
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EditableWidget::cutSelectedText()
 {
 #if defined(PSEUDO_CUT_COPY_PASTE)
-  instance().eventHandler().cutText(_editString);
-  _caretPos = 0;
+  instance().eventHandler().copyText(selectString());
+  killSelectedText();
 #endif
 }
 
@@ -499,7 +649,7 @@ void EditableWidget::cutSelectedText()
 void EditableWidget::copySelectedText()
 {
 #if defined(PSEUDO_CUT_COPY_PASTE)
-  instance().eventHandler().copyText(_editString);
+  instance().eventHandler().copyText(selectString());
 #endif
 }
 
@@ -507,7 +657,11 @@ void EditableWidget::copySelectedText()
 void EditableWidget::pasteSelectedText()
 {
 #if defined(PSEUDO_CUT_COPY_PASTE)
-  instance().eventHandler().pasteText(_editString);
-  _caretPos = int(_editString.length());
+  string text;
+
+  instance().eventHandler().pasteText(text);
+  killSelectedText();
+  _editString.insert(_caretPos, text);
+  _caretPos += int(text.length());
 #endif
 }

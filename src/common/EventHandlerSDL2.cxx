@@ -65,13 +65,6 @@ void EventHandlerSDL2::copyText(const string& text) const
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandlerSDL2::cutText(string& text) const
-{
-  copyText(text);
-  text = "";
-};
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string EventHandlerSDL2::pasteText(string& text) const
 {
   if(SDL_HasClipboardText())
