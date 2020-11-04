@@ -110,6 +110,10 @@ class EditableWidget : public Widget, public CommandSender
     bool   _editable{true};
     string _editString;
     int    _caretPos{0};
+    // Size of current selected text
+    //    0 = no selection
+    //   <0 = selected left of caret
+    //   >0 = selected right of caret
     int    _selectSize{0};
 
   protected:

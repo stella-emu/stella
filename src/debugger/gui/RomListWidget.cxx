@@ -235,6 +235,7 @@ void RomListWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
   if (!isEnabled())
     return;
 
+  resetSelection();
   // Grab right mouse button for context menu, left for selection/edit mode
   if(b == MouseButton::RIGHT)
   {
