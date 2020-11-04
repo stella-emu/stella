@@ -547,7 +547,7 @@ void RomListWidget::drawWidget(bool hilite)
           s.drawString(_font, editString(), _x + r.x(), ypos, r.w(), textColor,
                        TextAlign::Left, -_editScrollOffset, false);
 
-          drawCaret();
+          drawCaretSelection();
         }
         else
         {

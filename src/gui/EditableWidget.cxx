@@ -159,12 +159,12 @@ bool EditableWidget::handleControlKeys(StellaKey key, StellaMod mod)
       if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
       break;
 
-    case KBDK_K: // TODO
+    case KBDK_K:
       handled = killLine(+1);
       if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
       break;
 
-    case KBDK_U: // TODO
+    case KBDK_U:
       handled = killLine(-1);
       if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
       break;
@@ -284,13 +284,17 @@ bool EditableWidget::handleNormalKeys(StellaKey key)
       break;
 
     case KBDK_BACKSPACE:
-      handled = killChar(-1);
+      handled = killSelectedText();
+      if(!handled)
+        handled = killChar(-1);
       if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
       break;
 
     case KBDK_DELETE:
     case KBDK_KP_PERIOD:
-      handled = killChar(+1);
+      handled = killSelectedText();
+      if(!handled)
+        handled = killChar(+1);
       if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
       break;
 
@@ -342,7 +346,7 @@ int EditableWidget::getCaretOffset() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EditableWidget::drawCaret()
+void EditableWidget::drawCaretSelection()
 {
   // Only draw if item is visible
   if (!_editable || !isVisible() || !_boss->isVisible() || !_hasFocus)
@@ -360,44 +364,36 @@ void EditableWidget::drawCaret()
   FBSurface& s = _boss->dialog().surface();
   s.vLine(x, y + 2, y + editRect.h() - 2, kTextColorHi);
   s.vLine(x-1, y + 2, y + editRect.h() - 2, kTextColorHi);
-}
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EditableWidget::drawSelection()
-{
-  // Only draw if item is visible
-  if(!_editable || !isVisible() || !_boss->isVisible() || !_hasFocus
-     || !_selectSize)
-    return;
-
-  FBSurface& s = _boss->dialog().surface();
-  string text = selectString();
-  const Common::Rect& editRect = getEditRect();
-  int x = editRect.x();
-  int y = editRect.y();
-  int w = editRect.w();
-  int h = editRect.h();
-  int wt = int(text.length()) * _font.getMaxCharWidth() + 1;
-  int dx = selectStartPos() * _font.getMaxCharWidth() - _editScrollOffset;
-
-  if(dx < 0)
+  if(_selectSize)
   {
-    // selected text starts left of displayed rect
-    text = text.substr(-(dx - 1) / _font.getMaxCharWidth());
-    wt += dx;
-    dx = 0;
+    string text = selectString();
+    x = editRect.x();
+    y = editRect.y();
+    int w = editRect.w();
+    int h = editRect.h();
+    int wt = int(text.length()) * _font.getMaxCharWidth() + 1;
+    int dx = selectStartPos() * _font.getMaxCharWidth() - _editScrollOffset;
+
+    if(dx < 0)
+    {
+      // selected text starts left of displayed rect
+      text = text.substr(-(dx - 1) / _font.getMaxCharWidth());
+      wt += dx;
+      dx = 0;
+    }
+    else
+      x += dx;
+    // limit selection to the right of displayed rect
+    w = std::min(w - dx + 1, wt);
+
+    x += _x;
+    y += _y;
+
+    s.fillRect(x - 1, y + 1, w + 1, h - 3, kTextColorHi);
+    s.drawString(_font, text, x, y + 1, w, h,
+                 kTextColorInv, TextAlign::Left, 0, false);
   }
-  else
-    x += dx;
-  // limit selection to the right of displayed rect
-  w = std::min(w - dx + 1, wt);
-
-  x += _x;
-  y += _y;
-
-  s.fillRect(x - 1, y + 1, w + 1, h - 3, kTextColorHi);
-  s.drawString(_font, text, x, y + 1, w, h,
-               kTextColorInv, TextAlign::Left, 0, false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -466,24 +462,21 @@ int EditableWidget::scrollOffset()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool EditableWidget::killChar(int direction)
 {
-  bool handled = killSelectedText();
+  bool handled = false;
 
-  if(!handled)
+  if(direction == -1)      // Delete previous character (backspace)
   {
-    if(direction == -1)      // Delete previous character (backspace)
+    if(_caretPos > 0)
     {
-      if(_caretPos > 0)
-      {
-        _caretPos--;
-        _editString.erase(_caretPos, 1);
-        handled = true;
-      }
-    }
-    else if(direction == 1)  // Delete next character (delete)
-    {
+      _caretPos--;
       _editString.erase(_caretPos, 1);
       handled = true;
     }
+  }
+  else if(direction == 1)  // Delete next character (delete)
+  {
+    _editString.erase(_caretPos, 1);
+    handled = true;
   }
 
   return handled;
@@ -503,6 +496,9 @@ bool EditableWidget::killLine(int direction)
         killChar(-1);
 
       handled = true;
+      // remove selection for removed text
+      if(_selectSize < 0)
+        _selectSize = 0;
     }
   }
   else if(direction == 1)  // erase from current position to end of line
@@ -514,6 +510,9 @@ bool EditableWidget::killLine(int direction)
         killChar(+1);
 
       handled = true;
+      // remove selection for removed text
+      if(_selectSize > 0)
+        _selectSize = 0;
     }
   }
 
@@ -546,6 +545,9 @@ bool EditableWidget::killLastWord()
       killChar(-1);
 
     handled = true;
+    // remove selection for removed word
+    if(_selectSize < 0)
+      _selectSize = std::min(_selectSize + count, 0);
   }
 
   return handled;

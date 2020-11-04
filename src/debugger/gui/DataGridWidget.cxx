@@ -646,7 +646,7 @@ void DataGridWidget::drawWidget(bool hilite)
 
   // Only draw the caret while editing, and if it's in the current viewport
   if(_editMode)
-    drawCaret();
+    drawCaretSelection();
 
   // Draw the scrollbar
   if(_scrollBar)

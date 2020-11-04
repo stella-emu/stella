@@ -145,7 +145,7 @@ void CheckListWidget::drawWidget(bool hilite)
      (!_useScrollbar ||
      ((_selectedItem >= _scrollBar->_currentPos) &&
       (_selectedItem < _scrollBar->_currentPos + _rows))))
-    drawCaret();
+    drawCaretSelection();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
