@@ -259,6 +259,7 @@ void DataGridWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount
   if (!isEnabled())
     return;
 
+  resetSelection();
   // First check whether the selection changed
   int newSelectedItem;
   newSelectedItem = findItem(x, y);

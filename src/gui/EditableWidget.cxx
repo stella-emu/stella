@@ -118,12 +118,15 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
   if(StellaModTest::isAlt(mod))
     return true;
 
+  // Handle Control and Control-Shift keys
   if(StellaModTest::isControl(mod) && handleControlKeys(key, mod))
     return true;
 
+  // Handle Shift keys
   if(StellaModTest::isShift(mod) && handleShiftKeys(key))
     return true;
 
+  // Handle keys without modifiers
   return handleNormalKeys(key);
 }
 

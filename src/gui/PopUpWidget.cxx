@@ -117,6 +117,7 @@ const Variant& PopUpWidget::getSelectedTag() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PopUpWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
+  resetSelection();
   if(!isEditable() || x > _w - dropDownWidth(_font))
   {
     if(isEnabled() && !myMenu->isVisible())
