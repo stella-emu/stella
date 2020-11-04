@@ -108,10 +108,8 @@ void EditTextWidget::drawWidget(bool hilite)
                : onTop && isEnabled() ? _textcolor : kColor,
                TextAlign::Left, scrollOffset(), !isEditable());
 
-  // Draw selected text
-  drawSelection();
-  // Draw the caret
-  drawCaret();
+  // Draw the caret and selection
+  drawCaretSelection();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

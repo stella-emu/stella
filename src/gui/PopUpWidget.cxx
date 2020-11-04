@@ -297,7 +297,7 @@ void PopUpWidget::drawWidget(bool hilite)
                align, editable ? -_editScrollOffset : 0, !editable);
 
   if(editable)
-    drawCaret();
+    drawCaretSelection();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

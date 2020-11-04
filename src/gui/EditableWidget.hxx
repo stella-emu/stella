@@ -72,7 +72,7 @@ class EditableWidget : public Widget, public CommandSender
 
     virtual Common::Rect getEditRect() const = 0;
     virtual int getCaretOffset() const;
-    void drawCaret();
+    void drawCaretSelection();
     bool setCaretPos(int newPos);
     bool moveCaretPos(int direction);
     bool adjustOffset();
@@ -82,7 +82,6 @@ class EditableWidget : public Widget, public CommandSender
     string& editString() { return _editString; }
     const string selectString() const;
     void resetSelection() { _selectSize = 0; }
-    void drawSelection();
     int scrollOffset();
 
   private:
