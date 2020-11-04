@@ -257,6 +257,7 @@ bool EditableWidget::handleShiftKeys(StellaKey key)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool EditableWidget::handleNormalKeys(StellaKey key)
 {
+  bool selectMode = false;
   bool handled = true;
 
   switch(key)
@@ -264,7 +265,7 @@ bool EditableWidget::handleNormalKeys(StellaKey key)
     case KBDK_LSHIFT:
     case KBDK_RSHIFT:
       // stay in select mode
-      handled = false;
+      selectMode = _selectSize;
       break;
 
     case KBDK_RETURN:
@@ -291,12 +292,16 @@ bool EditableWidget::handleNormalKeys(StellaKey key)
       break;
 
     case KBDK_LEFT:
-      if(_caretPos > 0)
+      if (_selectSize)
+        handled = setCaretPos(selectStartPos());
+      else if(_caretPos > 0)
         handled = setCaretPos(_caretPos - 1);
       break;
 
     case KBDK_RIGHT:
-      if(_caretPos < int(_editString.size()))
+      if(_selectSize)
+        handled = setCaretPos(selectEndPos());
+      else if(_caretPos < int(_editString.size()))
         handled = setCaretPos(_caretPos + 1);
       break;
 
@@ -309,14 +314,14 @@ bool EditableWidget::handleNormalKeys(StellaKey key)
       break;
 
     default:
+      killSelectedText();
       handled = false;
   }
 
   if(handled)
-  {
     setDirty();
+  if(!selectMode)
     _selectSize = 0;
-  }
 
   return handled;
 }
@@ -370,7 +375,7 @@ void EditableWidget::drawSelection()
   int w = editRect.w();
   int h = editRect.h();
   int wt = int(text.length()) * _font.getMaxCharWidth() + 1;
-  int dx = selectPos() * _font.getMaxCharWidth() - _editScrollOffset;
+  int dx = selectStartPos() * _font.getMaxCharWidth() - _editScrollOffset;
 
   if(dx < 0)
   {
@@ -611,13 +616,23 @@ const string EditableWidget::selectString() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int EditableWidget::selectPos()
+int EditableWidget::selectStartPos()
 {
   if(_selectSize < 0)
     return _caretPos + _selectSize;
   else
     return _caretPos;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int EditableWidget::selectEndPos()
+{
+  if(_selectSize > 0)
+    return _caretPos + _selectSize;
+  else
+    return _caretPos;
+}
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool EditableWidget::killSelectedText()
