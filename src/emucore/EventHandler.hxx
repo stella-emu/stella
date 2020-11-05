@@ -339,6 +339,11 @@ class EventHandler
 
   #ifdef GUI_SUPPORT
     /**
+      Check for QWERTZ keyboard layout
+    */
+    bool isQwertz() { return myQwertz; }
+
+    /**
       Clipboard methods.
     */
     virtual void copyText(const string& text) const = 0;
@@ -358,6 +363,11 @@ class EventHandler
   protected:
     // Global OSystem object
     OSystem& myOSystem;
+
+  #ifdef GUI_SUPPORT
+    // Keyboard layout
+    bool myQwertz{false};
+  #endif
 
     /**
       Methods which are called by derived classes to handle specific types
