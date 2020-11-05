@@ -23,10 +23,6 @@
 #include "EventHandler.hxx"
 #include "EditableWidget.hxx"
 
-// Uncomment the following to give full-line cut/copy/paste
-// Note that this will be removed eventually, when we implement proper cut/copy/paste
-#define PSEUDO_CUT_COPY_PASTE
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EditableWidget::EditableWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, int w, int h, const string& str)
@@ -148,7 +144,7 @@ bool EditableWidget::handleControlKeys(StellaKey key, StellaMod mod)
 
     case KBDK_C:
     case KBDK_INSERT:
-      copySelectedText();
+      handled = copySelectedText();
       break;
 
     case KBDK_E:
@@ -175,8 +171,9 @@ bool EditableWidget::handleControlKeys(StellaKey key, StellaMod mod)
       break;
 
     case KBDK_V:
-      pasteSelectedText();
-      sendCommand(EditableWidget::kChangedCmd, key, _id);
+      handled = pasteSelectedText();
+      if(handled)
+        sendCommand(EditableWidget::kChangedCmd, key, _id);
       break;
 
     case KBDK_W:
@@ -185,8 +182,9 @@ bool EditableWidget::handleControlKeys(StellaKey key, StellaMod mod)
       break;
 
     case KBDK_X:
-      cutSelectedText();
-      sendCommand(EditableWidget::kChangedCmd, key, _id);
+      handled = cutSelectedText();
+      if(handled)
+        sendCommand(EditableWidget::kChangedCmd, key, _id);
       break;
 
     case KBDK_LEFT:
@@ -221,13 +219,15 @@ bool EditableWidget::handleShiftKeys(StellaKey key)
   {
     case KBDK_DELETE:
     case KBDK_KP_PERIOD:
-      cutSelectedText();
-      sendCommand(EditableWidget::kChangedCmd, key, _id);
+      handled = cutSelectedText();
+      if(handled)
+        sendCommand(EditableWidget::kChangedCmd, key, _id);
       break;
 
     case KBDK_INSERT:
-      pasteSelectedText();
-      sendCommand(EditableWidget::kChangedCmd, key, _id);
+      handled = pasteSelectedText();
+      if(handled)
+        sendCommand(EditableWidget::kChangedCmd, key, _id);
       break;
 
     case KBDK_LEFT:
@@ -662,31 +662,48 @@ bool EditableWidget::killSelectedText()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EditableWidget::cutSelectedText()
+bool EditableWidget::cutSelectedText()
 {
-#if defined(PSEUDO_CUT_COPY_PASTE)
-  instance().eventHandler().copyText(selectString());
-  killSelectedText();
-#endif
+  string selected = selectString();
+
+  // only cut and copy if anything is selected, else keep old cut text
+  if(!selected.empty())
+  {
+    instance().eventHandler().copyText(selected);
+    killSelectedText();
+    return true;
+  }
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EditableWidget::copySelectedText()
+bool EditableWidget::copySelectedText()
 {
-#if defined(PSEUDO_CUT_COPY_PASTE)
-  instance().eventHandler().copyText(selectString());
-#endif
+  string selected = selectString();
+
+  // only copy if anything is selected, else keep old copied text
+  if(!selected.empty())
+  {
+    instance().eventHandler().copyText(selected);
+    return true;
+  }
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EditableWidget::pasteSelectedText()
+bool EditableWidget::pasteSelectedText()
 {
-#if defined(PSEUDO_CUT_COPY_PASTE)
-  string text;
+  bool selected = !selectString().empty();
+  string pasted;
 
-  instance().eventHandler().pasteText(text);
+  // retrieve the pasted text
+  instance().eventHandler().pasteText(pasted);
+  // remove the currently selected text
   killSelectedText();
-  _editString.insert(_caretPos, text);
-  _caretPos += int(text.length());
-#endif
+  // insert paste text instead
+  _editString.insert(_caretPos, pasted);
+  // position cursor at the end of pasted text
+  _caretPos += int(pasted.length());
+
+  return selected || !pasted.empty();
 }
