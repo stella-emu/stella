@@ -52,6 +52,7 @@ void EditableWidget::setText(const string& str, bool)
       _editString.push_back(c);
 
   _caretPos = int(_editString.size());
+  _selectSize = 0;
 
   _editScrollOffset = (_font.getStringWidth(_editString) - (getEditRect().w()));
   if (_editScrollOffset < 0)
@@ -101,6 +102,7 @@ bool EditableWidget::handleText(char text)
   if(tryInsertChar(text, _caretPos))
   {
     _caretPos++;
+    _selectSize = 0;
     sendCommand(EditableWidget::kChangedCmd, 0, _id);
     setDirty();
     return true;
