@@ -187,6 +187,10 @@ bool EditableWidget::handleControlKeys(StellaKey key, StellaMod mod)
         sendCommand(EditableWidget::kChangedCmd, key, _id);
       break;
 
+    case KBDK_Z:
+      // TODO: undo
+      break;
+
     case KBDK_LEFT:
       handled = moveWord(-1, shift);
       if(!shift)
@@ -700,10 +704,26 @@ bool EditableWidget::pasteSelectedText()
   instance().eventHandler().pasteText(pasted);
   // remove the currently selected text
   killSelectedText();
-  // insert paste text instead
-  _editString.insert(_caretPos, pasted);
+  // insert filtered paste text instead
+  ostringstream buf;
+  bool lastOk = true; // only one filler char per invalid character (block)
+
+  for(char c : pasted)
+    if(_filter(tolower(c)))
+    {
+      buf << c;
+      lastOk = true;
+    }
+    else
+    {
+      if(lastOk)
+        buf << '_';
+      lastOk = false;
+    }
+
+  _editString.insert(_caretPos, buf.str());
   // position cursor at the end of pasted text
-  _caretPos += int(pasted.length());
+  _caretPos += int(buf.str().length());
 
   return selected || !pasted.empty();
 }
