@@ -365,7 +365,7 @@ void InputDialog::loadConfig()
   VariantList items;
 
   for(const auto& port: ports)
-    VarList::push_back(items, port);
+    VarList::push_back(items, port, port);
   if(avoxport != EmptyString && !BSPF::contains(ports, avoxport))
     VarList::push_back(items, avoxport, avoxport);
   if(items.size() == 0)
