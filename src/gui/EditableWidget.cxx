@@ -138,8 +138,8 @@ bool EditableWidget::handleControlKeys(StellaKey key, StellaMod mod)
   switch(key)
   {
     case KBDK_A:
-      setCaretPos(0);
-      _selectSize = -int(_editString.size());
+      if(setCaretPos(int(_editString.size())))
+        _selectSize = -int(_editString.size());
       break;
 
     case KBDK_C:
