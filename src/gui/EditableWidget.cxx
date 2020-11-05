@@ -47,6 +47,9 @@ void EditableWidget::setText(const string& str, bool)
     if(_filter(tolower(c)))
       _editString.push_back(c);
 
+  clearEdits();
+  doEdit();
+
   _caretPos = int(_editString.size());
   _selectSize = 0;
 
@@ -79,11 +82,63 @@ void EditableWidget::lostFocusWidget()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EditableWidget::clearEdits()
+{
+  _editBuffer.clear();
+  _redoCount = 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EditableWidget::doEdit()
+{
+  constexpr size_t UNDO_SIZE = 100;
+
+  // clear redos
+  for(; _redoCount; _redoCount--)
+    _editBuffer.pop_back();
+
+  if(_editBuffer.size() == UNDO_SIZE)
+    _editBuffer.pop_front();
+  _editBuffer.push_back(_editString);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool EditableWidget::undoEdit()
+{
+  if(_editBuffer.size() - _redoCount - 1)
+  {
+    _redoCount++;
+    _editString = _editBuffer[_editBuffer.size() - _redoCount - 1];
+    _caretPos = int(_editString.size()); // TODO: put at last difference
+    _selectSize = 0;
+
+    return true;
+  }
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool EditableWidget::redoEdit()
+{
+  if(_redoCount)
+  {
+    _redoCount--;
+    _editString = _editBuffer[_editBuffer.size() - _redoCount - 1];
+    _caretPos = int(_editString.size()); // TODO: put at last difference
+    _selectSize = 0;
+
+    return true;
+  }
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool EditableWidget::tryInsertChar(char c, int pos)
 {
   if(_filter(tolower(c)))
   {
     _editString.insert(pos, 1, c);
+    doEdit();
     return true;
   }
   return false;
@@ -187,8 +242,12 @@ bool EditableWidget::handleControlKeys(StellaKey key, StellaMod mod)
         sendCommand(EditableWidget::kChangedCmd, key, _id);
       break;
 
+    case KBDK_Y:
     case KBDK_Z:
-      // TODO: undo
+      if(key == KBDK_Y != instance().eventHandler().isQwertz())
+        dirty = redoEdit();
+      else
+        dirty = undoEdit();
       break;
 
     case KBDK_LEFT:
@@ -469,7 +528,7 @@ int EditableWidget::scrollOffset()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool EditableWidget::killChar(int direction)
+bool EditableWidget::killChar(int direction, bool addEdit)
 {
   bool handled = false;
 
@@ -480,12 +539,20 @@ bool EditableWidget::killChar(int direction)
       _caretPos--;
       _editString.erase(_caretPos, 1);
       handled = true;
+      if(_selectSize < 0)
+        _selectSize++;
+      if(addEdit)
+        doEdit();
     }
   }
   else if(direction == 1)  // Delete next character (delete)
   {
     _editString.erase(_caretPos, 1);
     handled = true;
+    if(_selectSize > 0)
+      _selectSize--;
+    if(addEdit)
+      doEdit();
   }
 
   return handled;
@@ -502,12 +569,13 @@ bool EditableWidget::killLine(int direction)
     if(count > 0)
     {
       for (int i = 0; i < count; i++)
-        killChar(-1);
+        killChar(-1, false);
 
       handled = true;
       // remove selection for removed text
       if(_selectSize < 0)
         _selectSize = 0;
+      doEdit();
     }
   }
   else if(direction == 1)  // erase from current position to end of line
@@ -516,12 +584,13 @@ bool EditableWidget::killLine(int direction)
     if(count > 0)
     {
       for (int i = 0; i < count; i++)
-        killChar(+1);
+        killChar(+1, false);
 
       handled = true;
       // remove selection for removed text
       if(_selectSize > 0)
         _selectSize = 0;
+      doEdit();
     }
   }
 
@@ -551,12 +620,13 @@ bool EditableWidget::killLastWord()
   if(count > 0)
   {
     for (int i = 0; i < count; i++)
-      killChar(-1);
+      killChar(-1, false);
 
     handled = true;
     // remove selection for removed word
     if(_selectSize < 0)
       _selectSize = std::min(_selectSize + count, 0);
+    doEdit();
   }
 
   return handled;
@@ -649,7 +719,7 @@ int EditableWidget::selectEndPos()
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool EditableWidget::killSelectedText()
+bool EditableWidget::killSelectedText(bool addEdit)
 {
   if(_selectSize)
   {
@@ -660,6 +730,8 @@ bool EditableWidget::killSelectedText()
     }
     _editString.erase(_caretPos, _selectSize);
     _selectSize = 0;
+    if(addEdit)
+      doEdit();
     return true;
   }
   return false;
@@ -703,7 +775,7 @@ bool EditableWidget::pasteSelectedText()
   // retrieve the pasted text
   instance().eventHandler().pasteText(pasted);
   // remove the currently selected text
-  killSelectedText();
+  killSelectedText(false);
   // insert filtered paste text instead
   ostringstream buf;
   bool lastOk = true; // only one filler char per invalid character (block)
@@ -725,5 +797,10 @@ bool EditableWidget::pasteSelectedText()
   // position cursor at the end of pasted text
   _caretPos += int(buf.str().length());
 
-  return selected || !pasted.empty();
+  if(selected || !pasted.empty())
+  {
+    doEdit();
+    return true;
+  }
+  return false;
 }

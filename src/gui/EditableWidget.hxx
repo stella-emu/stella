@@ -19,6 +19,7 @@
 #define EDITABLE_WIDGET_HXX
 
 #include <functional>
+#include <deque>
 
 #include "Widget.hxx"
 #include "Rect.hxx"
@@ -89,18 +90,23 @@ class EditableWidget : public Widget, public CommandSender
     bool handleControlKeys(StellaKey key, StellaMod mod);
     bool handleShiftKeys(StellaKey key);
     bool handleNormalKeys(StellaKey key);
-    bool killChar(int direction);
+    bool killChar(int direction, bool addEdit = true);
     bool killLine(int direction);
     bool killLastWord();
     bool moveWord(int direction, bool select);
 
-    bool killSelectedText();
+    bool killSelectedText(bool addEdit = true);
     int selectStartPos();
     int selectEndPos();
     // Clipboard
     bool cutSelectedText();
     bool copySelectedText();
     bool pasteSelectedText();
+    // Undo
+    void clearEdits();
+    void doEdit();
+    bool undoEdit();
+    bool redoEdit();
 
     // Use the current TextFilter to insert a character into the
     // internal buffer
@@ -109,6 +115,9 @@ class EditableWidget : public Widget, public CommandSender
   private:
     bool   _editable{true};
     string _editString;
+
+    std::deque<string> _editBuffer;
+    int    _redoCount{0};
     int    _caretPos{0};
     // Size of current selected text
     //    0 = no selection

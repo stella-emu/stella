@@ -27,6 +27,15 @@ EventHandlerSDL2::EventHandlerSDL2(OSystem& osystem)
 {
   ASSERT_MAIN_THREAD;
 
+#ifdef GUI_SUPPORT
+  {
+    ostringstream buf;
+    myQwertz = int('y') == int(SDL_GetKeyFromScancode(SDL_Scancode(KBDK_Z)));
+    buf << "Keyboard: " << (myQwertz ? "QWERTZ" : "QWERTY");
+    Logger::debug(buf.str());
+  }
+#endif
+
 #ifdef JOYSTICK_SUPPORT
   if(SDL_InitSubSystem(SDL_INIT_JOYSTICK) < 0)
   {
