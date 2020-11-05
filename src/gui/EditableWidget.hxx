@@ -98,9 +98,9 @@ class EditableWidget : public Widget, public CommandSender
     int selectStartPos();
     int selectEndPos();
     // Clipboard
-    void cutSelectedText();
-    void copySelectedText();
-    void pasteSelectedText();
+    bool cutSelectedText();
+    bool copySelectedText();
+    bool pasteSelectedText();
 
     // Use the current TextFilter to insert a character into the
     // internal buffer

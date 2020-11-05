@@ -12,6 +12,13 @@
                               Release History
 ===========================================================================
 
+6.4 to 6.5 (December XX, 2020)
+
+  * Enhanced cut/copy/paste	to allow selecting text (TODO: PromptWidget, doc)
+
+-Have fun!
+
+
 6.3 to 6.4 (November 2, 2020)
 
   * Added basic (entire and single line only) text cut/copy and paste.
@@ -41,8 +48,6 @@
 
   * Fixed bug in ROM launcher, with last ROM selected not being remembered
     when exiting and re-entering a directory.
-
--Have fun!
 
 
 6.2.1 to 6.3 (October 7, 2020)
