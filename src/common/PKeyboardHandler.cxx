@@ -593,6 +593,7 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultMenuM
   {Event::UILeft,                   KBDK_LEFT},
   {Event::UIRight,                  KBDK_RIGHT},
   {Event::UISelect,                 KBDK_RETURN},
+  {Event::UISelect,                 KBDK_SPACE},
 
   {Event::UIHome,                   KBDK_HOME},
   {Event::UIEnd,                    KBDK_END},
