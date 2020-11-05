@@ -167,7 +167,7 @@ void VideoAudioDialog::addDisplayTab()
   // Aspect ratio correction
   ypos += lineHeight + VGAP * 4;
   myCorrectAspect = new CheckboxWidget(myTab, _font, xpos, ypos + 1, "Correct aspect ratio (*)");
-  wid.push_back(myUseStretch);
+  wid.push_back(myCorrectAspect);
 
   // Vertical size
   ypos += lineHeight + VGAP;
