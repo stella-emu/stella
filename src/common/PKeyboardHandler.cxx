@@ -165,7 +165,7 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
 
     case EventMode::kEditMode:
       // Edit mode events are always set because they are not saved
-      for(const auto& item : FixedEditMapping)
+      for(const auto& item: FixedEditMapping)
         setDefaultKey(item, event, EventMode::kEditMode);
       break;
 
@@ -661,7 +661,6 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultMenuM
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::FixedEditMapping = {
-// TOOD: check MacOS mappings
   {Event::MoveLeftChar,             KBDK_LEFT},
   {Event::MoveRightChar,            KBDK_RIGHT},
   {Event::SelectLeftChar,           KBDK_LEFT, KBDM_SHIFT},
@@ -687,7 +686,7 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::FixedEditMap
   {Event::Delete,                   KBDK_DELETE},
   {Event::DeleteChar,               KBDK_D, KBDM_CTRL},
   {Event::DeleteWord,               KBDK_W, KBDM_CTRL},
-  {Event::DeleteWord,               KBDK_BACKSPACE, KBDM_CTRL},
+  {Event::DeleteWord,               KBDK_BACKSPACE, OPTION},
   {Event::DeleteHome,               KBDK_U, KBDM_CTRL},
   {Event::DeleteHome,               KBDK_BACKSPACE, CMD},
   {Event::DeleteEnd,                KBDK_K, KBDM_CTRL},
@@ -711,8 +710,11 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::FixedEditMap
   {Event::Delete,                   KBDK_DELETE},
   {Event::Delete,                   KBDK_KP_PERIOD},
   {Event::DeleteChar,               KBDK_D, KBDM_CTRL},
+  {Event::DeleteWord,               KBDK_BACKSPACE, KBDM_CTRL},
   {Event::DeleteWord,               KBDK_W, KBDM_CTRL},
+  {Event::DeleteHome,               KBDK_HOME, KBDM_CTRL},
   {Event::DeleteHome,               KBDK_U, KBDM_CTRL},
+  {Event::DeleteEnd,                KBDK_END, KBDM_CTRL},
   {Event::DeleteEnd,                KBDK_K, KBDM_CTRL},
   {Event::Backspace,                KBDK_BACKSPACE},
   {Event::Undo,                     KBDK_Z, KBDM_CTRL},
