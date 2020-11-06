@@ -90,7 +90,7 @@ bool EditableWidget::tryInsertChar(char c, int pos)
   if(_filter(tolower(c)))
   {
     _editString.insert(pos, 1, c);
-    myUndoHandler->doo(_editString);
+    myUndoHandler->doChar(); // aggregate single chars
     return true;
   }
   return false;
@@ -140,7 +140,6 @@ bool EditableWidget::handleControlKeys(StellaKey key, StellaMod mod)
 {
   bool shift = StellaModTest::isShift(mod);
   bool handled = true;
-  bool dirty = true;
 
   switch(key)
   {
@@ -154,13 +153,13 @@ bool EditableWidget::handleControlKeys(StellaKey key, StellaMod mod)
       handled = copySelectedText();
       break;
 
-    case KBDK_E:
-      if(shift)
-        _selectSize += _caretPos - int(_editString.size());
-      else
-        _selectSize = 0;
-      setCaretPos(int(_editString.size()));
-      break;
+    //case KBDK_E:
+    //  if(shift)
+    //    _selectSize += _caretPos - int(_editString.size());
+    //  else
+    //    _selectSize = 0;
+    //  setCaretPos(int(_editString.size()));
+    //  break;
 
     case KBDK_D:
       handled = killChar(+1);
@@ -196,13 +195,29 @@ bool EditableWidget::handleControlKeys(StellaKey key, StellaMod mod)
 
     case KBDK_Y:
     case KBDK_Z:
+    {
+      string oldString = _editString;
+
+      myUndoHandler->endChars(_editString);
+      // Reverse Y and Z for QWERTZ keyboards
       if(key == KBDK_Y != instance().eventHandler().isQwertz())
-        dirty = myUndoHandler->redo(_editString);
+        handled = myUndoHandler->redo(_editString);
       else
-        dirty = myUndoHandler->undo(_editString);
-      _caretPos = int(_editString.size()); // TODO: put at last difference
-      _selectSize = 0;
+        if(shift)
+          handled = myUndoHandler->redo(_editString);
+        else
+          handled = myUndoHandler->undo(_editString);
+
+      if(handled)
+      {
+        // Put caret at last difference
+        myUndoHandler->lastDiff(_editString, oldString);
+        _caretPos = myUndoHandler->lastDiff(_editString, oldString);
+        _selectSize = 0;
+        sendCommand(EditableWidget::kChangedCmd, key, _id);
+      }
       break;
+    }
 
     case KBDK_LEFT:
       handled = moveWord(-1, shift);
@@ -218,11 +233,13 @@ bool EditableWidget::handleControlKeys(StellaKey key, StellaMod mod)
 
     default:
       handled = false;
-      dirty = false;
   }
 
-  if(dirty)
+  if(handled)
+  {
+    myUndoHandler->endChars(_editString);
     setDirty();
+  }
 
   return handled;
 }
@@ -271,7 +288,10 @@ bool EditableWidget::handleShiftKeys(StellaKey key)
   }
 
   if(handled)
+  {
+    myUndoHandler->endChars(_editString);
     setDirty();
+  }
 
   return handled;
 }
@@ -321,7 +341,7 @@ bool EditableWidget::handleNormalKeys(StellaKey key)
       break;
 
     case KBDK_LEFT:
-      if (_selectSize)
+      if(_selectSize)
         handled = setCaretPos(selectStartPos());
       else if(_caretPos > 0)
         handled = setCaretPos(_caretPos - 1);
@@ -348,7 +368,10 @@ bool EditableWidget::handleNormalKeys(StellaKey key)
   }
 
   if(handled)
+  {
+    myUndoHandler->endChars(_editString);
     setDirty();
+  }
   if(!selectMode)
     _selectSize = 0;
 
@@ -490,6 +513,7 @@ bool EditableWidget::killChar(int direction, bool addEdit)
   {
     if(_caretPos > 0)
     {
+      myUndoHandler->endChars(_editString);
       _caretPos--;
       _editString.erase(_caretPos, 1);
       handled = true;
@@ -501,6 +525,7 @@ bool EditableWidget::killChar(int direction, bool addEdit)
   }
   else if(direction == 1)  // Delete next character (delete)
   {
+    myUndoHandler->endChars(_editString);
     _editString.erase(_caretPos, 1);
     handled = true;
     if(_selectSize > 0)
@@ -616,7 +641,7 @@ bool EditableWidget::moveWord(int direction, bool select)
   {
     while (currentPos < int(_editString.size()))
     {
-      if (_editString[currentPos - 1] == ' ')
+      if (currentPos && _editString[currentPos - 1] == ' ')
       {
         if (!space)
           break;
@@ -677,6 +702,7 @@ bool EditableWidget::killSelectedText(bool addEdit)
 {
   if(_selectSize)
   {
+    myUndoHandler->endChars(_editString);
     if(_selectSize < 0)
     {
       _caretPos += _selectSize;
@@ -694,16 +720,7 @@ bool EditableWidget::killSelectedText(bool addEdit)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool EditableWidget::cutSelectedText()
 {
-  string selected = selectString();
-
-  // only cut and copy if anything is selected, else keep old cut text
-  if(!selected.empty())
-  {
-    instance().eventHandler().copyText(selected);
-    killSelectedText();
-    return true;
-  }
-  return false;
+  return copySelectedText() && killSelectedText();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -725,6 +742,8 @@ bool EditableWidget::pasteSelectedText()
 {
   bool selected = !selectString().empty();
   string pasted;
+
+  myUndoHandler->endChars(_editString);
 
   // retrieve the pasted text
   instance().eventHandler().pasteText(pasted);

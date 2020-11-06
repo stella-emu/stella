@@ -33,14 +33,31 @@ class UndoHandler
     UndoHandler(size_t size = 100);
     ~UndoHandler() = default;
 
+    // Reset undo buffer
     void reset();
+
+    // Add input to undo buffer
     void doo(const string& text);
+    // Retrieve last input from undo buffer
     bool undo(string& text);
+    // Retrieve next input from undo buffer
     bool redo(string& text);
+
+    // Add single char for aggregation
+    void doChar();
+    // Add aggregated single chars to undo buffer
+    bool endChars(const string& text);
+
+    // Get index into text of last different character
+    uInt32 lastDiff(const string& text, const string& oldText) const;
 
   private:
     std::deque<string> myBuffer;
+    // Undo buffer size
     size_t  mySize{0};
+    // Aggregated single chars flag
+    bool    myCharMode{false};
+    // Number of chars available for redo
     uInt32  myRedoCount{0};
 
   private:
