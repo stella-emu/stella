@@ -249,7 +249,7 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
 
       myUndoHandler->endChars(_editString);
       // Reverse Y and Z for QWERTZ keyboards
-      if(event == Event::Redo != instance().eventHandler().isQwertz())
+      if(event == Event::Redo)
         handled = myUndoHandler->redo(_editString);
       else
         handled = myUndoHandler->undo(_editString);

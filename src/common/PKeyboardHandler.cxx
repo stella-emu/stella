@@ -102,6 +102,15 @@ void PhysicalKeyboardHandler::setDefaultKey(EventMapping map, Event::Type event,
   // Otherwise, only reset the given event
   bool eraseAll = !updateDefaults && (event == Event::NoType);
 
+  // Swap Y and Z for QWERTZ keyboards
+  if(mode == EventMode::kEditMode && myHandler.isQwertz())
+  {
+    if(map.key == KBDK_Z)
+      map.key = KBDK_Y;
+    else if(map.key == KBDK_Y)
+      map.key = KBDK_Z;
+  }
+
   if (updateDefaults)
   {
     // if there is no existing mapping for the event and
@@ -678,7 +687,7 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::FixedEditMap
   {Event::Delete,                   KBDK_DELETE},
   {Event::DeleteChar,               KBDK_D, KBDM_CTRL},
   {Event::DeleteWord,               KBDK_W, KBDM_CTRL},
-  {Event::DeleteWord,               KBDK_BACKSPACE, OPTION},
+  {Event::DeleteWord,               KBDK_BACKSPACE, KBDM_CTRL},
   {Event::DeleteHome,               KBDK_U, KBDM_CTRL},
   {Event::DeleteHome,               KBDK_BACKSPACE, CMD},
   {Event::DeleteEnd,                KBDK_K, KBDM_CTRL},

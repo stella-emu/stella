@@ -69,16 +69,6 @@ using namespace std::placeholders;
 EventHandler::EventHandler(OSystem& osystem)
   : myOSystem(osystem)
 {
-  // Create keyboard handler (to handle all physical keyboard functionality)
-  myPKeyHandler = make_unique<PhysicalKeyboardHandler>(osystem, *this);
-
-  // Create joystick handler (to handle all physical joystick functionality)
-  myPJoyHandler = make_unique<PhysicalJoystickHandler>(osystem, *this);
-
-  // Erase the 'combo' array
-  for(int i = 0; i < COMBO_SIZE; ++i)
-    for(int j = 0; j < EVENTS_PER_COMBO; ++j)
-      myComboTable[i][j] = Event::NoType;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -89,6 +79,17 @@ EventHandler::~EventHandler()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::initialize()
 {
+  // Create keyboard handler (to handle all physical keyboard functionality)
+  myPKeyHandler = make_unique<PhysicalKeyboardHandler>(myOSystem, *this);
+
+  // Create joystick handler (to handle all physical joystick functionality)
+  myPJoyHandler = make_unique<PhysicalJoystickHandler>(myOSystem, *this);
+
+  // Erase the 'combo' array
+  for(int i = 0; i < COMBO_SIZE; ++i)
+    for(int j = 0; j < EVENTS_PER_COMBO; ++j)
+      myComboTable[i][j] = Event::NoType;
+
   // Make sure the event/action mappings are correctly set,
   // and fill the ActionList structure with valid values
   setComboMap();
