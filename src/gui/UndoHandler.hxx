@@ -40,8 +40,8 @@ class UndoHandler
 
   private:
     std::deque<string> myBuffer;
-    size_t  mySize;
-    uInt32  myRedoCount;
+    size_t  mySize{0};
+    uInt32  myRedoCount{0};
 
   private:
     // Following constructors and assignment operators not supported
@@ -50,4 +50,5 @@ class UndoHandler
     UndoHandler& operator=(const UndoHandler&) = delete;
     UndoHandler& operator=(UndoHandler&&) = delete;
 };
+
 #endif

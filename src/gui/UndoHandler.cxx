@@ -19,9 +19,9 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 UndoHandler::UndoHandler(size_t size)
-  : myRedoCount(0),
-    mySize(size)
-{}
+  : mySize(size)
+{
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void UndoHandler::reset()
