@@ -21,13 +21,33 @@
 UndoHandler::UndoHandler(size_t size)
   : mySize(size)
 {
+  reset();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void UndoHandler::reset()
 {
   myBuffer.clear();
+  myCharMode = false;
   myRedoCount = 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void UndoHandler::doChar()
+{
+  myCharMode = true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool UndoHandler::endChars(const string& text)
+{
+  if(myCharMode)
+  {
+    doo(text);
+
+    return true;
+  }
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -43,6 +63,7 @@ void UndoHandler::doo(const string& text)
 
   // add text to buffer
   myBuffer.push_front(text);
+  myCharMode = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -67,4 +88,19 @@ bool UndoHandler::redo(string& text)
     return true;
   }
   return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 UndoHandler::lastDiff(const string& text, const string& oldText) const
+{
+  uInt32 pos = uInt32(text.size());
+
+  for(auto itn = text.crbegin(), ito = oldText.crbegin();
+      itn != text.crend() && ito != oldText.crend(); ++itn, ++ito)
+  {
+    if(*itn != *ito)
+      break;
+    pos--;
+  }
+  return uInt32(pos);
 }
