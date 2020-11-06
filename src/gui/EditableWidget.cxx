@@ -62,6 +62,7 @@ void EditableWidget::setText(const string& str, bool)
 
   setDirty();
 }
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EditableWidget::setEditable(bool editable, bool hiliteBG)
 {
@@ -607,7 +608,6 @@ int EditableWidget::selectEndPos()
   else
     return _caretPos;
 }
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool EditableWidget::killSelectedText(bool addEdit)

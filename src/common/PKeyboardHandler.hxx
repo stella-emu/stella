@@ -106,6 +106,7 @@ class PhysicalKeyboardHandler
     void enableMappings(const Event::EventSet& events, EventMode mode);
     void enableMapping(const Event::Type event, EventMode mode);
 
+  private:
     OSystem& myOSystem;
     EventHandler& myHandler;
 
