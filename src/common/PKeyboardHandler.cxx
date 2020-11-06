@@ -175,7 +175,8 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalKeyboardHandler::defineControllerMappings(const Controller::Type type, Controller::Jack port)
+void PhysicalKeyboardHandler::defineControllerMappings(
+    const Controller::Type type, Controller::Jack port)
 {
   // determine controller events to use
   switch(type)
@@ -217,7 +218,8 @@ void PhysicalKeyboardHandler::enableEmulationMappings()
   myKeyMap.eraseMode(EventMode::kEmulationMode);
   enableCommonMappings();
 
-  // enable right mode first, so that in case of mapping clashes the left controller has preference
+  // enable right mode first, so that in case of mapping clashes the left
+  // controller has preference
   switch (myRightMode)
   {
     case EventMode::kPaddlesMode:
@@ -271,14 +273,16 @@ void PhysicalKeyboardHandler::enableCommonMappings()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalKeyboardHandler::enableMappings(const Event::EventSet& events, EventMode mode)
+void PhysicalKeyboardHandler::enableMappings(const Event::EventSet& events,
+                                             EventMode mode)
 {
   for (const auto& event : events)
     enableMapping(event, mode);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalKeyboardHandler::enableMapping(const Event::Type event, EventMode mode)
+void PhysicalKeyboardHandler::enableMapping(const Event::Type event,
+                                            EventMode mode)
 {
   // copy from controller mode into emulation mode
   KeyMap::MappingArray mappings = myKeyMap.getEventMapping(event, mode);
@@ -288,7 +292,8 @@ void PhysicalKeyboardHandler::enableMapping(const Event::Type event, EventMode m
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-EventMode PhysicalKeyboardHandler::getEventMode(const Event::Type event, const EventMode mode) const
+EventMode PhysicalKeyboardHandler::getEventMode(const Event::Type event,
+                                                const EventMode mode) const
 {
   if (mode == EventMode::kEmulationMode)
   {
@@ -389,11 +394,12 @@ bool PhysicalKeyboardHandler::addMapping(Event::Type event, EventMode mode,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool pressed, bool repeated)
+void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod,
+                                          bool pressed, bool repeated)
 {
 #ifdef BSPF_UNIX
   // Swallow KBDK_TAB under certain conditions
-  // See commments on 'myAltKeyCounter' for more information
+  // See comments on 'myAltKeyCounter' for more information
   if(myAltKeyCounter > 1 && key == KBDK_TAB)
   {
     myAltKeyCounter = 0;
@@ -449,7 +455,8 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool pre
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultCommonMapping = {
+PhysicalKeyboardHandler::EventMappingArray
+PhysicalKeyboardHandler::DefaultCommonMapping = {
   {Event::ConsoleSelect,            KBDK_F1},
   {Event::ConsoleReset,             KBDK_F2},
   {Event::ConsoleColor,             KBDK_F3},
@@ -605,7 +612,8 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultCommo
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultMenuMapping = {
+PhysicalKeyboardHandler::EventMappingArray
+PhysicalKeyboardHandler::DefaultMenuMapping = {
   {Event::UIUp,                     KBDK_UP},
   {Event::UIDown,                   KBDK_DOWN},
   {Event::UILeft,                   KBDK_LEFT},
@@ -660,7 +668,8 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultMenuM
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::FixedEditMapping = {
+PhysicalKeyboardHandler::EventMappingArray
+PhysicalKeyboardHandler::FixedEditMapping = {
   {Event::MoveLeftChar,             KBDK_LEFT},
   {Event::MoveRightChar,            KBDK_RIGHT},
   {Event::SelectLeftChar,           KBDK_LEFT, KBDM_SHIFT},
@@ -779,7 +788,8 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultJoyst
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultPaddleMapping = {
+PhysicalKeyboardHandler::EventMappingArray
+PhysicalKeyboardHandler::DefaultPaddleMapping = {
   {Event::PaddleZeroDecrease,       KBDK_RIGHT},
   {Event::PaddleZeroIncrease,       KBDK_LEFT},
   {Event::PaddleZeroFire,           KBDK_SPACE},
@@ -801,7 +811,8 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultPaddl
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultKeypadMapping = {
+PhysicalKeyboardHandler::EventMappingArray
+PhysicalKeyboardHandler::DefaultKeypadMapping = {
   {Event::KeyboardZero1,            KBDK_1},
   {Event::KeyboardZero2,            KBDK_2},
   {Event::KeyboardZero3,            KBDK_3},
@@ -830,7 +841,8 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultKeypa
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::CompuMateMapping = {
+PhysicalKeyboardHandler::EventMappingArray
+PhysicalKeyboardHandler::CompuMateMapping = {
   {Event::CompuMateShift,         KBDK_LSHIFT},
   {Event::CompuMateShift,         KBDK_RSHIFT},
   {Event::CompuMateFunc,          KBDK_LCTRL},
