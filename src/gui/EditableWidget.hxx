@@ -19,10 +19,10 @@
 #define EDITABLE_WIDGET_HXX
 
 #include <functional>
-#include <deque>
 
 #include "Widget.hxx"
 #include "Rect.hxx"
+#include "UndoHandler.hxx"
 
 /**
  * Base class for widgets which need to edit text, like ListWidget and
@@ -102,11 +102,6 @@ class EditableWidget : public Widget, public CommandSender
     bool cutSelectedText();
     bool copySelectedText();
     bool pasteSelectedText();
-    // Undo
-    void clearEdits();
-    void doEdit();
-    bool undoEdit();
-    bool redoEdit();
 
     // Use the current TextFilter to insert a character into the
     // internal buffer
@@ -115,10 +110,10 @@ class EditableWidget : public Widget, public CommandSender
   private:
     bool   _editable{true};
     string _editString;
+    unique_ptr<UndoHandler> myUndoHandler;
 
-    std::deque<string> _editBuffer;
-    int    _redoCount{0};
     int    _caretPos{0};
+
     // Size of current selected text
     //    0 = no selection
     //   <0 = selected left of caret
