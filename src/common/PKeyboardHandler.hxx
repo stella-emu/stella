@@ -132,6 +132,7 @@ class PhysicalKeyboardHandler
 
     // Controller menu and common emulation mappings
     static EventMappingArray DefaultMenuMapping;
+    static EventMappingArray FixedEditMapping;
     static EventMappingArray DefaultCommonMapping;
     // Controller specific mappings
     static EventMappingArray DefaultJoystickMapping;

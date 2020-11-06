@@ -511,6 +511,7 @@ class EventHandler
     static const Event::EventSet KeyboardEvents;
     static const Event::EventSet ComboEvents;
     static const Event::EventSet DebugEvents;
+    static const Event::EventSet EditEvents;
 
     /**
       The following methods take care of assigning action mappings.

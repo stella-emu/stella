@@ -2830,3 +2830,8 @@ const Event::EventSet EventHandler::DebugEvents = {
   Event::ToggleColorLoss,
   Event::ToggleJitter,
 };
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const Event::EventSet EventHandler::EditEvents = {
+
+};
