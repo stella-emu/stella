@@ -678,7 +678,7 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::FixedEditMap
   {Event::Delete,                   KBDK_DELETE},
   {Event::DeleteChar,               KBDK_D, KBDM_CTRL},
   {Event::DeleteWord,               KBDK_W, KBDM_CTRL},
-  {Event::DeleteWord,               KBDK_BACKSPACE, KBDM_CTRL},
+  {Event::DeleteWord,               KBDK_BACKSPACE, OPTION},
   {Event::DeleteHome,               KBDK_U, KBDM_CTRL},
   {Event::DeleteHome,               KBDK_BACKSPACE, CMD},
   {Event::DeleteEnd,                KBDK_K, KBDM_CTRL},
