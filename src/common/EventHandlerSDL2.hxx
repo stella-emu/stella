@@ -38,7 +38,7 @@ class EventHandlerSDL2 : public EventHandler
     explicit EventHandlerSDL2(OSystem& osystem);
     ~EventHandlerSDL2() override;
 
-private:
+  private:
     /**
       Enable/disable text events (distinct from single-key events).
     */
