@@ -81,6 +81,7 @@ void EditableWidget::setEditable(bool editable, bool hiliteBG)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EditableWidget::lostFocusWidget()
 {
+  myUndoHandler->reset();
   _selectSize = 0;
 }
 
@@ -90,8 +91,8 @@ bool EditableWidget::tryInsertChar(char c, int pos)
   if(_filter(tolower(c)))
   {
     killSelectedText();
-    _editString.insert(pos, 1, c);
     myUndoHandler->doChar(); // aggregate single chars
+    _editString.insert(pos, 1, c);
     return true;
   }
   return false;
@@ -106,7 +107,6 @@ bool EditableWidget::handleText(char text)
   if(tryInsertChar(text, _caretPos))
   {
     _caretPos++;
-    //_selectSize = 0;
     sendCommand(EditableWidget::kChangedCmd, 0, _id);
     setDirty();
     return true;
@@ -192,6 +192,13 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
         _selectSize = -int(_editString.size());
       break;
 
+    case Event::Backspace:
+      handled = killSelectedText();
+      if(!handled)
+        handled = killChar(-1);
+      if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
+      break;
+
     case Event::Delete:
       handled = killSelectedText();
       if(!handled)
@@ -216,13 +223,6 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
 
     case Event::DeleteHome:
       handled = killLine(-1);
-      if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
-      break;
-
-    case Event::Backspace:
-      handled = killSelectedText();
-      if(!handled)
-        handled = killChar(-1);
       if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
       break;
 

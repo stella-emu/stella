@@ -365,7 +365,7 @@ bool PhysicalKeyboardHandler::addMapping(Event::Type event, EventMode mode,
       myKeyMap.erase(EventMode::kKeypadMode, key, mod);
       myKeyMap.erase(EventMode::kCompuMateMode, key, mod);
     }
-    else if(evMode != EventMode::kMenuMode)
+    else if(evMode != EventMode::kMenuMode && evMode != EventMode::kEditMode)
     {
       // erase identical mapping for kCommonMode
       myKeyMap.erase(EventMode::kCommonMode, key, mod);
