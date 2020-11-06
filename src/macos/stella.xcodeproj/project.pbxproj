@@ -522,6 +522,8 @@
 		DCB60AD12543100900A5C1D2 /* FBBackendSDL2.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB60ACE2543100900A5C1D2 /* FBBackendSDL2.hxx */; };
 		DCB60AD22543100900A5C1D2 /* audio in Resources */ = {isa = PBXBuildFile; fileRef = DCB60ACF2543100900A5C1D2 /* audio */; };
 		DCB87E581A104C1E00BF2A3B /* MediaFactory.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB87E571A104C1E00BF2A3B /* MediaFactory.hxx */; };
+		DCBA539925557E2800087DD7 /* UndoHandler.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCBA539725557E2700087DD7 /* UndoHandler.hxx */; };
+		DCBA539A25557E2800087DD7 /* UndoHandler.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCBA539825557E2800087DD7 /* UndoHandler.cxx */; };
 		DCBD31E82299ADB400567357 /* KeyMap.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCBD31E52299ADB400567357 /* KeyMap.hxx */; };
 		DCBD31E92299ADB400567357 /* Rect.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCBD31E62299ADB400567357 /* Rect.hxx */; };
 		DCBD31EA2299ADB400567357 /* KeyMap.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCBD31E72299ADB400567357 /* KeyMap.cxx */; };
@@ -1286,6 +1288,8 @@
 		DCB60ACE2543100900A5C1D2 /* FBBackendSDL2.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FBBackendSDL2.hxx; sourceTree = "<group>"; };
 		DCB60ACF2543100900A5C1D2 /* audio */ = {isa = PBXFileReference; lastKnownFileType = folder; path = audio; sourceTree = "<group>"; };
 		DCB87E571A104C1E00BF2A3B /* MediaFactory.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = MediaFactory.hxx; sourceTree = "<group>"; };
+		DCBA539725557E2700087DD7 /* UndoHandler.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = UndoHandler.hxx; sourceTree = "<group>"; };
+		DCBA539825557E2800087DD7 /* UndoHandler.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UndoHandler.cxx; sourceTree = "<group>"; };
 		DCBA710010DED62E0077193B /* Stella.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Stella.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCBD31E52299ADB400567357 /* KeyMap.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = KeyMap.hxx; sourceTree = "<group>"; };
 		DCBD31E62299ADB400567357 /* Rect.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Rect.hxx; sourceTree = "<group>"; };
@@ -2165,6 +2169,8 @@
 				DCA82C701FEB4E780059340F /* TimeMachineDialog.hxx */,
 				DC8078E60B4BD697005E9305 /* UIDialog.cxx */,
 				DC8078E70B4BD697005E9305 /* UIDialog.hxx */,
+				DCBA539825557E2800087DD7 /* UndoHandler.cxx */,
+				DCBA539725557E2700087DD7 /* UndoHandler.hxx */,
 				DC3C9BC72469C93D00CF2D47 /* VideoAudioDialog.cxx */,
 				DC3C9BC92469C93D00CF2D47 /* VideoAudioDialog.hxx */,
 				DC1E474C24D34F3A0047E61A /* WhatsNewDialog.cxx */,
@@ -2513,6 +2519,7 @@
 				DCE8B1871E7E03B300189864 /* FrameLayout.hxx in Headers */,
 				DCA233B523BAB1300032ABF3 /* Lightgun.hxx in Headers */,
 				DCBD31E92299ADB400567357 /* Rect.hxx in Headers */,
+				DCBA539925557E2800087DD7 /* UndoHandler.hxx in Headers */,
 				2D91741A09BA90380026E9FF /* FSNode.hxx in Headers */,
 				2D91741B09BA90380026E9FF /* OSystem.hxx in Headers */,
 				DC6A18F919B3E65500DEB242 /* CartMDMWidget.hxx in Headers */,
@@ -3166,6 +3173,7 @@
 				DCAAE5F01715887B0080BB82 /* CartFAWidget.cxx in Sources */,
 				DCAAE5F21715887B0080BB82 /* CartUAWidget.cxx in Sources */,
 				DC676A411729A0B000E4E73D /* Cart3EWidget.cxx in Sources */,
+				DCBA539A25557E2800087DD7 /* UndoHandler.cxx in Sources */,
 				DC676A431729A0B000E4E73D /* Cart4A50Widget.cxx in Sources */,
 				DC3EE85A1E2C0E6D00905161 /* deflate.c in Sources */,
 				DC676A451729A0B000E4E73D /* CartARWidget.cxx in Sources */,
