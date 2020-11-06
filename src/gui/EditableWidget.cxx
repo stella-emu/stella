@@ -21,6 +21,7 @@
 #include "Font.hxx"
 #include "OSystem.hxx"
 #include "EventHandler.hxx"
+#include "UndoHandler.hxx"
 #include "EditableWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -36,6 +37,8 @@ EditableWidget::EditableWidget(GuiObject* boss, const GUI::Font& font,
   _bgcolorlo = kDlgColor;
   _textcolor = kTextColor;
   _textcolorhi = kTextColor;
+
+  myUndoHandler = make_unique<UndoHandler>();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -47,8 +50,8 @@ void EditableWidget::setText(const string& str, bool)
     if(_filter(tolower(c)))
       _editString.push_back(c);
 
-  clearEdits();
-  doEdit();
+  myUndoHandler->reset();
+  myUndoHandler->doo(_editString);
 
   _caretPos = int(_editString.size());
   _selectSize = 0;
@@ -82,63 +85,12 @@ void EditableWidget::lostFocusWidget()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EditableWidget::clearEdits()
-{
-  _editBuffer.clear();
-  _redoCount = 0;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EditableWidget::doEdit()
-{
-  constexpr size_t UNDO_SIZE = 100;
-
-  // clear redos
-  for(; _redoCount; _redoCount--)
-    _editBuffer.pop_back();
-
-  if(_editBuffer.size() == UNDO_SIZE)
-    _editBuffer.pop_front();
-  _editBuffer.push_back(_editString);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool EditableWidget::undoEdit()
-{
-  if(_editBuffer.size() - _redoCount - 1)
-  {
-    _redoCount++;
-    _editString = _editBuffer[_editBuffer.size() - _redoCount - 1];
-    _caretPos = int(_editString.size()); // TODO: put at last difference
-    _selectSize = 0;
-
-    return true;
-  }
-  return false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool EditableWidget::redoEdit()
-{
-  if(_redoCount)
-  {
-    _redoCount--;
-    _editString = _editBuffer[_editBuffer.size() - _redoCount - 1];
-    _caretPos = int(_editString.size()); // TODO: put at last difference
-    _selectSize = 0;
-
-    return true;
-  }
-  return false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool EditableWidget::tryInsertChar(char c, int pos)
 {
   if(_filter(tolower(c)))
   {
     _editString.insert(pos, 1, c);
-    doEdit();
+    myUndoHandler->doo(_editString);
     return true;
   }
   return false;
@@ -245,9 +197,11 @@ bool EditableWidget::handleControlKeys(StellaKey key, StellaMod mod)
     case KBDK_Y:
     case KBDK_Z:
       if(key == KBDK_Y != instance().eventHandler().isQwertz())
-        dirty = redoEdit();
+        dirty = myUndoHandler->redo(_editString);
       else
-        dirty = undoEdit();
+        dirty = myUndoHandler->undo(_editString);
+      _caretPos = int(_editString.size()); // TODO: put at last difference
+      _selectSize = 0;
       break;
 
     case KBDK_LEFT:
@@ -542,7 +496,7 @@ bool EditableWidget::killChar(int direction, bool addEdit)
       if(_selectSize < 0)
         _selectSize++;
       if(addEdit)
-        doEdit();
+        myUndoHandler->doo(_editString);
     }
   }
   else if(direction == 1)  // Delete next character (delete)
@@ -552,7 +506,7 @@ bool EditableWidget::killChar(int direction, bool addEdit)
     if(_selectSize > 0)
       _selectSize--;
     if(addEdit)
-      doEdit();
+      myUndoHandler->doo(_editString);
   }
 
   return handled;
@@ -575,7 +529,7 @@ bool EditableWidget::killLine(int direction)
       // remove selection for removed text
       if(_selectSize < 0)
         _selectSize = 0;
-      doEdit();
+      myUndoHandler->doo(_editString);
     }
   }
   else if(direction == 1)  // erase from current position to end of line
@@ -590,7 +544,7 @@ bool EditableWidget::killLine(int direction)
       // remove selection for removed text
       if(_selectSize > 0)
         _selectSize = 0;
-      doEdit();
+      myUndoHandler->doo(_editString);
     }
   }
 
@@ -626,7 +580,7 @@ bool EditableWidget::killLastWord()
     // remove selection for removed word
     if(_selectSize < 0)
       _selectSize = std::min(_selectSize + count, 0);
-    doEdit();
+    myUndoHandler->doo(_editString);
   }
 
   return handled;
@@ -731,7 +685,7 @@ bool EditableWidget::killSelectedText(bool addEdit)
     _editString.erase(_caretPos, _selectSize);
     _selectSize = 0;
     if(addEdit)
-      doEdit();
+      myUndoHandler->doo(_editString);
     return true;
   }
   return false;
@@ -799,7 +753,7 @@ bool EditableWidget::pasteSelectedText()
 
   if(selected || !pasted.empty())
   {
-    doEdit();
+    myUndoHandler->doo(_editString);
     return true;
   }
   return false;

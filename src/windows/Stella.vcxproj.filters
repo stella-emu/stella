@@ -1029,6 +1029,9 @@
     <ClCompile Include="..\common\VideoModeHandler.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\gui\UndoHandler.cxx">
+      <Filter>Source Files\gui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">
@@ -2116,6 +2119,9 @@
     </ClInclude>
     <ClInclude Include="..\emucore\FBBackend.hxx">
       <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gui\UndoHandler.hxx">
+      <Filter>Header Files\gui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -786,6 +786,7 @@
     <ClCompile Include="..\gui\TimeLineWidget.cxx" />
     <ClCompile Include="..\gui\TimeMachine.cxx" />
     <ClCompile Include="..\gui\TimeMachineDialog.cxx" />
+    <ClCompile Include="..\gui\UndoHandler.cxx" />
     <ClCompile Include="..\gui\WhatsNewDialog.cxx" />
     <ClCompile Include="FSNodeWINDOWS.cxx" />
     <ClCompile Include="OSystemWINDOWS.cxx" />
@@ -1837,6 +1838,7 @@
     <ClInclude Include="..\gui\TimeLineWidget.hxx" />
     <ClInclude Include="..\gui\TimeMachine.hxx" />
     <ClInclude Include="..\gui\TimeMachineDialog.hxx" />
+    <ClInclude Include="..\gui\UndoHandler.hxx" />
     <ClInclude Include="..\gui\WhatsNewDialog.hxx" />
     <ClInclude Include="..\libpng\pngdebug.h" />
     <ClInclude Include="..\libpng\pnginfo.h" />
