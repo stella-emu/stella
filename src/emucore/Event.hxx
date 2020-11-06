@@ -136,6 +136,14 @@ class Event
 
       ToggleCorrectAspectRatio,
 
+      MoveLeftChar, MoveRightChar, MoveLeftWord, MoveRightWord,
+      MoveHome, MoveEnd,
+      SelectLeftChar, SelectRightChar, SelectLeftWord, SelectRightWord,
+      SelectHome, SelectEnd, SelectAll,
+      Delete, DeleteChar, DeleteWord, DeleteHome, DeleteEnd, Backspace,
+      Cut, Copy, Paste, Undo, Redo,
+      AbortEdit, EndEdit,
+
       LastType
     };
 

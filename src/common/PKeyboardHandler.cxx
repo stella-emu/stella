@@ -29,6 +29,8 @@
 
 #if defined(BSPF_MACOS) || defined(MACOS_KEYS)
 static constexpr int MOD3 = KBDM_GUI;
+static constexpr int CMD = KBDM_GUI;
+static constexpr int OPTION = KBDM_ALT;
 #else
 static constexpr int MOD3 = KBDM_ALT;
 #endif
@@ -60,6 +62,7 @@ PhysicalKeyboardHandler::PhysicalKeyboardHandler(OSystem& system, EventHandler& 
 
   setDefaultMapping(Event::NoType, EventMode::kEmulationMode, updateDefaults);
   setDefaultMapping(Event::NoType, EventMode::kMenuMode, updateDefaults);
+  setDefaultMapping(Event::NoType, EventMode::kEditMode, updateDefaults);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -149,6 +152,12 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
     case EventMode::kMenuMode:
       for (const auto& item: DefaultMenuMapping)
         setDefaultKey(item, event, EventMode::kMenuMode, updateDefaults);
+      break;
+
+    case EventMode::kEditMode:
+      // Edit mode events are always set because they are not saved
+      for(const auto& item : FixedEditMapping)
+        setDefaultKey(item, event, EventMode::kEditMode);
       break;
 
     default:
@@ -639,6 +648,73 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultMenuM
 #else // defining duplicate keys must be avoided!
   {Event::UIPrevDir,                KBDK_BACKSPACE},
 #endif
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::FixedEditMapping = {
+// TOOD: check MacOS mappings
+  {Event::MoveLeftChar,             KBDK_LEFT},
+  {Event::MoveRightChar,            KBDK_RIGHT},
+  {Event::SelectLeftChar,           KBDK_LEFT, KBDM_SHIFT},
+  {Event::SelectRightChar,          KBDK_RIGHT, KBDM_SHIFT},
+#ifdef BSPF_MACOS
+  {Event::MoveLeftWord,             KBDK_LEFT, CMD},
+//  {Event::MoveRightWord,            KBDK_RIGHT, KBDM_CTRL},
+  {Event::MoveHome,                 KBDK_LEFT, CMD},
+  {Event::MoveHome,                 KBDK_A, KBDM_CTRL},
+  {Event::MoveEnd,                  KBDK_RIGHT, CMD},
+  {Event::MoveEnd,                  KBDK_E, KBDM_CTRL},
+  {Event::SelectLeftWord,           KBDK_LEFT, KBDM_SHIFT | OPTION},
+//  {Event::SelectRightWord,          KBDK_RIGHT, KBDM_SHIFT | OPTION},
+  {Event::SelectHome,               KBDK_A, KBDM_SHIFT | KBDM_CTRL},
+  {Event::SelectHome,               KBDK_LEFT, KBDM_SHIFT | CMD},
+  {Event::SelectEnd,                KBDK_E, KBDM_SHIFT | KBDM_CTRL},
+  {Event::SelectEnd,                KBDK_RIGHT, KBDM_SHIFT | CMD},
+  {Event::SelectAll,                KBDK_A, CMD},
+  {Event::Delete,                   KBDK_DELETE},
+  {Event::Delete,                   KBDK_KP_PERIOD}, // ???
+//  {Event::DeleteChar,               }, // ???
+  {Event::DeleteWord,               KBDK_W, OPTION},
+  {Event::DeleteHome,               KBDK_BACKSPACE, CMD},
+  {Event::DeleteEnd,                KBDK_BACKSPACE, KBDM_SHIFT | KBDM_CTRL},
+  {Event::Backspace,                KBDK_BACKSPACE}, // ???
+  {Event::Undo,                     KBDK_Z, CMD},
+  {Event::Redo,                     KBDK_Y, CMD},
+  {Event::Redo,                     KBDK_Z, KBDM_SHIFT | CMD},
+  {Event::Cut,                      KBDK_X, CMD},
+  {Event::Copy,                     KBDK_C, CMD},
+  {Event::Paste,                    KBDK_V, CMD},
+#else
+  {Event::MoveLeftWord,             KBDK_LEFT, KBDM_CTRL},
+  {Event::MoveRightWord,            KBDK_RIGHT, KBDM_CTRL},
+  {Event::MoveHome,                 KBDK_HOME},
+  {Event::MoveEnd,                  KBDK_END},
+  {Event::SelectLeftWord,           KBDK_LEFT, KBDM_SHIFT | KBDM_CTRL},
+  {Event::SelectRightWord,          KBDK_RIGHT, KBDM_SHIFT | KBDM_CTRL},
+  {Event::SelectHome,               KBDK_HOME, KBDM_SHIFT},
+  {Event::SelectEnd,                KBDK_END, KBDM_SHIFT},
+  {Event::SelectAll,                KBDK_A, KBDM_CTRL},
+  {Event::Delete,                   KBDK_DELETE},
+  {Event::Delete,                   KBDK_KP_PERIOD},
+  {Event::DeleteChar,               KBDK_D, KBDM_CTRL},
+  {Event::DeleteWord,               KBDK_W, KBDM_CTRL},
+  {Event::DeleteHome,               KBDK_U, KBDM_CTRL},
+  {Event::DeleteEnd,                KBDK_K, KBDM_CTRL},
+  {Event::Backspace,                KBDK_BACKSPACE},
+  {Event::Undo,                     KBDK_Z, KBDM_CTRL},
+  {Event::Redo,                     KBDK_Y, KBDM_CTRL},
+  {Event::Redo,                     KBDK_Z, KBDM_SHIFT | KBDM_CTRL},
+  {Event::Cut,                      KBDK_X, KBDM_CTRL},
+  {Event::Cut,                      KBDK_DELETE, KBDM_SHIFT},
+  {Event::Cut,                      KBDK_KP_PERIOD, KBDM_SHIFT},
+  {Event::Copy,                     KBDK_C, KBDM_CTRL},
+  {Event::Copy,                     KBDK_INSERT, KBDM_CTRL},
+  {Event::Paste,                    KBDK_V, KBDM_CTRL},
+  {Event::Paste,                    KBDK_INSERT, KBDM_SHIFT},
+#endif
+  {Event::EndEdit,                  KBDK_RETURN},
+  {Event::EndEdit,                  KBDK_KP_ENTER},
+  {Event::AbortEdit,                KBDK_ESCAPE},
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

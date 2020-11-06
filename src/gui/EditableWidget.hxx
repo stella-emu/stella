@@ -87,9 +87,6 @@ class EditableWidget : public Widget, public CommandSender
 
   private:
     // Line editing
-    bool handleControlKeys(StellaKey key, StellaMod mod);
-    bool handleShiftKeys(StellaKey key);
-    bool handleNormalKeys(StellaKey key);
     bool killChar(int direction, bool addEdit = true);
     bool killLine(int direction);
     bool killLastWord();

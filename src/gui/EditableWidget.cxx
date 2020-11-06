@@ -89,6 +89,7 @@ bool EditableWidget::tryInsertChar(char c, int pos)
 {
   if(_filter(tolower(c)))
   {
+    killSelectedText();
     _editString.insert(pos, 1, c);
     myUndoHandler->doChar(); // aggregate single chars
     return true;
@@ -105,7 +106,7 @@ bool EditableWidget::handleText(char text)
   if(tryInsertChar(text, _caretPos))
   {
     _caretPos++;
-    _selectSize = 0;
+    //_selectSize = 0;
     sendCommand(EditableWidget::kChangedCmd, 0, _id);
     setDirty();
     return true;
@@ -119,94 +120,139 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
   if(!_editable)
     return true;
 
-  // Ignore all alt-mod keys
-  if(StellaModTest::isAlt(mod))
-    return true;
-
-  // Handle Control and Control-Shift keys
-  if(StellaModTest::isControl(mod) && handleControlKeys(key, mod))
-    return true;
-
-  // Handle Shift keys
-  if(StellaModTest::isShift(mod) && handleShiftKeys(key))
-    return true;
-
-  // Handle keys without modifiers
-  return handleNormalKeys(key);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool EditableWidget::handleControlKeys(StellaKey key, StellaMod mod)
-{
-  bool shift = StellaModTest::isShift(mod);
   bool handled = true;
+  Event::Type event = instance().eventHandler().eventForKey(EventMode::kEditMode, key, mod);
 
-  switch(key)
+  switch(event)
   {
-    case KBDK_A:
+    case Event::MoveLeftChar:
+      if(_selectSize)
+        handled = setCaretPos(selectStartPos());
+      else if(_caretPos > 0)
+        handled = setCaretPos(_caretPos - 1);
+      _selectSize = 0;
+      break;
+
+    case Event::MoveRightChar:
+      if(_selectSize)
+        handled = setCaretPos(selectEndPos());
+      else if(_caretPos < int(_editString.size()))
+        handled = setCaretPos(_caretPos + 1);
+      _selectSize = 0;
+      break;
+
+    case Event::MoveLeftWord:
+      handled = moveWord(-1, false);
+      _selectSize = 0;
+      break;
+
+    case Event::MoveRightWord:
+      handled = moveWord(+1, false);
+      _selectSize = 0;
+      break;
+
+    case Event::MoveHome:
+      handled = setCaretPos(0);
+      _selectSize = 0;
+      break;
+
+    case Event::MoveEnd:
+      handled = setCaretPos(int(_editString.size()));
+      _selectSize = 0;
+      break;
+
+    case Event::SelectLeftChar:
+      if(_caretPos > 0)
+        handled = moveCaretPos(-1);
+      break;
+
+    case Event::SelectRightChar:
+      if(_caretPos < int(_editString.size()))
+        handled = moveCaretPos(+1);
+      break;
+
+    case Event::SelectLeftWord:
+      handled = moveWord(-1, true);
+      break;
+
+    case Event::SelectRightWord:
+      handled = moveWord(+1, true);
+      break;
+
+    case Event::SelectHome:
+      handled = moveCaretPos(-_caretPos);
+      break;
+
+    case Event::SelectEnd:
+      handled = moveCaretPos(int(_editString.size()) - _caretPos);
+      break;
+
+    case Event::SelectAll:
       if(setCaretPos(int(_editString.size())))
         _selectSize = -int(_editString.size());
       break;
 
-    case KBDK_C:
-    case KBDK_INSERT:
-      handled = copySelectedText();
+    case Event::Delete:
+      handled = killSelectedText();
+      if(!handled)
+        handled = killChar(+1);
+      if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
       break;
 
-    //case KBDK_E:
-    //  if(shift)
-    //    _selectSize += _caretPos - int(_editString.size());
-    //  else
-    //    _selectSize = 0;
-    //  setCaretPos(int(_editString.size()));
-    //  break;
-
-    case KBDK_D:
+    case Event::DeleteChar:
       handled = killChar(+1);
       if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
       break;
 
-    case KBDK_K:
-      handled = killLine(+1);
-      if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
-      break;
-
-    case KBDK_U:
-      handled = killLine(-1);
-      if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
-      break;
-
-    case KBDK_V:
-      handled = pasteSelectedText();
-      if(handled)
-        sendCommand(EditableWidget::kChangedCmd, key, _id);
-      break;
-
-    case KBDK_W:
+    case Event::DeleteWord:
       handled = killLastWord();
       if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
       break;
 
-    case KBDK_X:
+    case Event::DeleteEnd:
+      handled = killLine(+1);
+      if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
+      break;
+
+    case Event::DeleteHome:
+      handled = killLine(-1);
+      if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
+      break;
+
+    case Event::Backspace:
+      handled = killSelectedText();
+      if(!handled)
+        handled = killChar(-1);
+      if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
+      break;
+
+    case Event::Cut:
       handled = cutSelectedText();
       if(handled)
         sendCommand(EditableWidget::kChangedCmd, key, _id);
       break;
 
-    case KBDK_Y:
-    case KBDK_Z:
+    case Event::Copy:
+      handled = copySelectedText();
+      break;
+
+    case Event::Paste:
+      handled = pasteSelectedText();
+      if(handled)
+        sendCommand(EditableWidget::kChangedCmd, key, _id);
+      break;
+
+    case Event::Undo:
+    case Event::Redo:
     {
       string oldString = _editString;
 
       myUndoHandler->endChars(_editString);
       // Reverse Y and Z for QWERTZ keyboards
-      if(key == KBDK_Y != instance().eventHandler().isQwertz())
+      if(event == Event::Redo != instance().eventHandler().isQwertz())
         handled = myUndoHandler->redo(_editString);
       else
-        if(shift)
-          handled = myUndoHandler->redo(_editString);
-        else
-          handled = myUndoHandler->undo(_editString);
+        handled = myUndoHandler->undo(_editString);
 
       if(handled)
       {
@@ -219,152 +265,20 @@ bool EditableWidget::handleControlKeys(StellaKey key, StellaMod mod)
       break;
     }
 
-    case KBDK_LEFT:
-      handled = moveWord(-1, shift);
-      if(!shift)
-        _selectSize = 0;
-      break;
-
-    case KBDK_RIGHT:
-      handled = moveWord(+1, shift);
-      if(!shift)
-        _selectSize = 0;
-      break;
-
-    default:
-      handled = false;
-  }
-
-  if(handled)
-  {
-    myUndoHandler->endChars(_editString);
-    setDirty();
-  }
-
-  return handled;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool EditableWidget::handleShiftKeys(StellaKey key)
-{
-  bool handled = true;
-
-  switch(key)
-  {
-    case KBDK_DELETE:
-    case KBDK_KP_PERIOD:
-      handled = cutSelectedText();
-      if(handled)
-        sendCommand(EditableWidget::kChangedCmd, key, _id);
-      break;
-
-    case KBDK_INSERT:
-      handled = pasteSelectedText();
-      if(handled)
-        sendCommand(EditableWidget::kChangedCmd, key, _id);
-      break;
-
-    case KBDK_LEFT:
-      if(_caretPos > 0)
-        handled = moveCaretPos(-1);
-      break;
-
-    case KBDK_RIGHT:
-      if(_caretPos < int(_editString.size()))
-        handled = moveCaretPos(+1);
-      break;
-
-    case KBDK_HOME:
-      handled = moveCaretPos(-_caretPos);
-      break;
-
-    case KBDK_END:
-      handled = moveCaretPos(int(_editString.size()) - _caretPos);
-      break;
-
-
-    default:
-      handled = false;
-  }
-
-  if(handled)
-  {
-    myUndoHandler->endChars(_editString);
-    setDirty();
-  }
-
-  return handled;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool EditableWidget::handleNormalKeys(StellaKey key)
-{
-  bool selectMode = false;
-  bool handled = true;
-
-  switch(key)
-  {
-    case KBDK_LSHIFT:
-    case KBDK_RSHIFT:
-    case KBDK_LCTRL:
-    case KBDK_RCTRL:
-      // stay in select mode
-      selectMode = _selectSize;
-      handled = false;
-      break;
-
-    case KBDK_RETURN:
-    case KBDK_KP_ENTER:
+    case Event::EndEdit:
       // confirm edit and exit editmode
       endEditMode();
       sendCommand(EditableWidget::kAcceptCmd, 0, _id);
       break;
 
-    case KBDK_ESCAPE:
+    case Event::AbortEdit:
       abortEditMode();
       sendCommand(EditableWidget::kCancelCmd, 0, _id);
       break;
 
-    case KBDK_BACKSPACE:
-      handled = killSelectedText();
-      if(!handled)
-        handled = killChar(-1);
-      if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
-      break;
-
-    case KBDK_DELETE:
-    case KBDK_KP_PERIOD:
-      handled = killSelectedText();
-      if(!handled)
-        handled = killChar(+1);
-      if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
-      break;
-
-    case KBDK_LEFT:
-      if(_selectSize)
-        handled = setCaretPos(selectStartPos());
-      else if(_caretPos > 0)
-        handled = setCaretPos(_caretPos - 1);
-      break;
-
-    case KBDK_RIGHT:
-      if(_selectSize)
-        handled = setCaretPos(selectEndPos());
-      else if(_caretPos < int(_editString.size()))
-        handled = setCaretPos(_caretPos + 1);
-      break;
-
-    case KBDK_HOME:
-      handled = setCaretPos(0);
-      break;
-
-    case KBDK_END:
-      handled = setCaretPos(int(_editString.size()));
-      break;
-
     default:
-      killSelectedText();
       handled = false;
+      break;
   }
 
   if(handled)
@@ -372,8 +286,6 @@ bool EditableWidget::handleNormalKeys(StellaKey key)
     myUndoHandler->endChars(_editString);
     setDirty();
   }
-  if(!selectMode)
-    _selectSize = 0;
 
   return handled;
 }
