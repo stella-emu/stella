@@ -440,7 +440,7 @@ bool EditableWidget::killChar(int direction, bool addEdit)
   }
   else if(direction == 1)  // Delete next character (delete)
   {
-    if(_caretPos < _editString.size())
+    if(_caretPos < int(_editString.size()))
     {
       if(_selectSize > 0)
         _selectSize--;
