@@ -197,34 +197,40 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
       handled = killSelectedText();
       if(!handled)
         handled = killChar(-1);
-      if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
+      if(handled)
+        sendCommand(EditableWidget::kChangedCmd, key, _id);
       break;
 
     case Event::Delete:
       handled = killSelectedText();
       if(!handled)
         handled = killChar(+1);
-      if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
+      if(handled)
+        sendCommand(EditableWidget::kChangedCmd, key, _id);
       break;
 
-    case Event::DeleteChar:
-      handled = killChar(+1);
-      if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
+    case Event::DeleteLeftWord:
+      handled = killWord(-1);
+      if(handled)
+        sendCommand(EditableWidget::kChangedCmd, key, _id);
       break;
 
-    case Event::DeleteWord:
-      handled = killLastWord();
-      if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
+    case Event::DeleteRightWord:
+      handled = killWord(+1);
+      if(handled)
+        sendCommand(EditableWidget::kChangedCmd, key, _id);
       break;
 
     case Event::DeleteEnd:
       handled = killLine(+1);
-      if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
+      if(handled)
+        sendCommand(EditableWidget::kChangedCmd, key, _id);
       break;
 
     case Event::DeleteHome:
       handled = killLine(-1);
-      if(handled) sendCommand(EditableWidget::kChangedCmd, key, _id);
+      if(handled)
+        sendCommand(EditableWidget::kChangedCmd, key, _id);
       break;
 
     case Event::Cut:
@@ -426,23 +432,27 @@ bool EditableWidget::killChar(int direction, bool addEdit)
   {
     if(_caretPos > 0)
     {
-      myUndoHandler->endChars(_editString);
       _caretPos--;
-      _editString.erase(_caretPos, 1);
-      handled = true;
       if(_selectSize < 0)
         _selectSize++;
-      if(addEdit)
-        myUndoHandler->doo(_editString);
+      handled = true;
     }
   }
   else if(direction == 1)  // Delete next character (delete)
   {
+    if(_caretPos < _editString.size())
+    {
+      if(_selectSize > 0)
+        _selectSize--;
+      handled = true;
+    }
+  }
+
+  if(handled)
+  {
     myUndoHandler->endChars(_editString);
     _editString.erase(_caretPos, 1);
-    handled = true;
-    if(_selectSize > 0)
-      _selectSize--;
+
     if(addEdit)
       myUndoHandler->doo(_editString);
   }
@@ -453,75 +463,74 @@ bool EditableWidget::killChar(int direction, bool addEdit)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool EditableWidget::killLine(int direction)
 {
-  bool handled = false;
+  int count = 0;
 
   if(direction == -1)  // erase from current position to beginning of line
-  {
-    int count = _caretPos;
-    if(count > 0)
-    {
-      for (int i = 0; i < count; i++)
-        killChar(-1, false);
+    count = _caretPos;
+  else if(direction == +1)  // erase from current position to end of line
+    count = int(_editString.size()) - _caretPos;
 
-      handled = true;
-      // remove selection for removed text
-      if(_selectSize < 0)
-        _selectSize = 0;
-      myUndoHandler->doo(_editString);
-    }
-  }
-  else if(direction == 1)  // erase from current position to end of line
+  if(count > 0)
   {
-    int count = int(_editString.size()) - _caretPos;
-    if(count > 0)
-    {
-      for (int i = 0; i < count; i++)
-        killChar(+1, false);
+    for(int i = 0; i < count; i++)
+      killChar(direction, false);
 
-      handled = true;
-      // remove selection for removed text
-      if(_selectSize > 0)
-        _selectSize = 0;
-      myUndoHandler->doo(_editString);
-    }
+    myUndoHandler->doo(_editString);
+    return true;
   }
 
-  return handled;
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool EditableWidget::killLastWord()
+bool EditableWidget::killWord(int direction)
 {
-  bool handled = false;
-  int count = 0, currentPos = _caretPos;
   bool space = true;
-  while (currentPos > 0)
-  {
-    if (_editString[currentPos - 1] == ' ')
-    {
-      if (!space)
-        break;
-    }
-    else
-      space = false;
+  int count = 0, currentPos = _caretPos;
 
-    currentPos--;
-    count++;
+  if(direction == -1)  // move to first character of previous word
+  {
+    while(currentPos > 0)
+    {
+      if(_editString[currentPos - 1] == ' ')
+      {
+        if(!space)
+          break;
+      }
+      else
+        space = false;
+
+      currentPos--;
+      count++;
+    }
+  }
+  else if(direction == +1)  // move to first character of next word
+  {
+    while(currentPos < int(_editString.size()))
+    {
+      if(currentPos && _editString[currentPos - 1] == ' ')
+      {
+        if(!space)
+          break;
+      }
+      else
+        space = false;
+
+      currentPos++;
+      count++;
+    }
   }
 
   if(count > 0)
   {
-    for (int i = 0; i < count; i++)
-      killChar(-1, false);
+    for(int i = 0; i < count; i++)
+      killChar(direction, false);
 
-    handled = true;
-    // remove selection for removed word
-    if(_selectSize < 0)
-      _selectSize = std::min(_selectSize + count, 0);
     myUndoHandler->doo(_editString);
+    return true;
   }
 
-  return handled;
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -591,7 +591,7 @@ void PromptWidget::specialKeys(StellaKey key)
       killLine(-1);
       break;
     case KBDK_W:
-      killLastWord();
+      killWord();
       break;
     case KBDK_A:
       textSelectAll();
@@ -666,7 +666,7 @@ void PromptWidget::killLine(int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PromptWidget::killLastWord()
+void PromptWidget::killWord()
 {
   int cnt = 0;
   bool space = true;
