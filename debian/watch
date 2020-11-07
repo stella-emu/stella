@@ -1,2 +1,4 @@
-version=3
-http://sf.net/stella/stella-(.*)-src\.tar\.gz
+version=4
+opts="filenamemangle=s%(?:.*?)?v?(\d[\d.]*)\.tar\.gz%stella-$1.tar.gz%" \
+    https://github.com/stella-emu/stella/tags \
+    (?:.*?/)?v?(\d[\d.]*)\.tar\.gz debian uupdate
