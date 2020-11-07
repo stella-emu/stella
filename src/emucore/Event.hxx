@@ -140,7 +140,7 @@ class Event
       MoveHome, MoveEnd,
       SelectLeftChar, SelectRightChar, SelectLeftWord, SelectRightWord,
       SelectHome, SelectEnd, SelectAll,
-      Delete, DeleteChar, DeleteWord, DeleteHome, DeleteEnd, Backspace,
+      Delete, DeleteLeftWord, DeleteRightWord, DeleteHome, DeleteEnd, Backspace,
       Cut, Copy, Paste, Undo, Redo,
       AbortEdit, EndEdit,
 

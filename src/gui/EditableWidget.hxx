@@ -89,7 +89,7 @@ class EditableWidget : public Widget, public CommandSender
     // Line editing
     bool killChar(int direction, bool addEdit = true);
     bool killLine(int direction);
-    bool killLastWord();
+    bool killWord(int direction);
     bool moveWord(int direction, bool select);
 
     bool killSelectedText(bool addEdit = true);
