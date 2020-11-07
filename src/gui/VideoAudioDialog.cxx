@@ -941,21 +941,49 @@ void VideoAudioDialog::handlePaletteUpdate()
   // TIA Palette
   instance().settings().setValue("palette",
                                   myTIAPalette->getSelectedTag().toString());
+
   // Palette adjustables
   PaletteHandler::Adjustable paletteAdj;
+
+  if (myPhaseShiftNtsc->getValue() < 0) return;
   paletteAdj.phaseNtsc  = myPhaseShiftNtsc->getValue();
+
+  if (myPhaseShiftPal->getValue() < 0) return;
   paletteAdj.phasePal   = myPhaseShiftPal->getValue();
+
+  if (myTVRedScale->getValue() < 0) return;
   paletteAdj.redScale   = myTVRedScale->getValue();
+
+  if (myTVRedShift->getValue() < 0) return;
   paletteAdj.redShift   = myTVRedShift->getValue();
+
+  if (myTVGreenScale->getValue() < 0) return;
   paletteAdj.greenScale = myTVGreenScale->getValue();
+
+  if (myTVGreenShift->getValue() < 0) return;
   paletteAdj.greenShift = myTVGreenShift->getValue();
+
+  if (myTVBlueScale->getValue() < 0) return;
   paletteAdj.blueScale  = myTVBlueScale->getValue();
+
+  if (myTVBlueShift->getValue() < 0) return;
   paletteAdj.blueShift  = myTVBlueShift->getValue();
+
+  if (myTVHue->getValue() < 0) return;
   paletteAdj.hue        = myTVHue->getValue();
+
+  if (myTVSatur->getValue() < 0) return;
   paletteAdj.saturation = myTVSatur->getValue();
+
+  if (myTVContrast->getValue() < 0) return;
   paletteAdj.contrast   = myTVContrast->getValue();
+
+  if (myTVBright->getValue() < 0) return;
   paletteAdj.brightness = myTVBright->getValue();
+
+  if (myTVGamma->getValue() < 0) return;
   paletteAdj.gamma      = myTVGamma->getValue();
+
   instance().frameBuffer().tiaSurface().paletteHandler().setAdjustables(paletteAdj);
 
   if(instance().hasConsole())
