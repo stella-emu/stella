@@ -62,7 +62,9 @@ PhysicalKeyboardHandler::PhysicalKeyboardHandler(OSystem& system, EventHandler& 
 
   setDefaultMapping(Event::NoType, EventMode::kEmulationMode, updateDefaults);
   setDefaultMapping(Event::NoType, EventMode::kMenuMode, updateDefaults);
+#ifdef GUI_SUPPORT
   setDefaultMapping(Event::NoType, EventMode::kEditMode, updateDefaults);
+#endif // DEBUG
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -102,6 +104,7 @@ void PhysicalKeyboardHandler::setDefaultKey(EventMapping map, Event::Type event,
   // Otherwise, only reset the given event
   bool eraseAll = !updateDefaults && (event == Event::NoType);
 
+#ifdef GUI_SUPPORT
   // Swap Y and Z for QWERTZ keyboards
   if(mode == EventMode::kEditMode && myHandler.isQwertz())
   {
@@ -110,6 +113,7 @@ void PhysicalKeyboardHandler::setDefaultKey(EventMapping map, Event::Type event,
     else if(map.key == KBDK_Y)
       map.key = KBDK_Z;
   }
+#endif
 
   if (updateDefaults)
   {
@@ -163,11 +167,13 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
         setDefaultKey(item, event, EventMode::kMenuMode, updateDefaults);
       break;
 
+  #ifdef GUI_SUPPORT
     case EventMode::kEditMode:
       // Edit mode events are always set because they are not saved
       for(const auto& item: FixedEditMapping)
         setDefaultKey(item, event, EventMode::kEditMode);
       break;
+  #endif
 
     default:
       break;
@@ -667,6 +673,7 @@ PhysicalKeyboardHandler::DefaultMenuMapping = {
 #endif
 };
 
+#ifdef GUI_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PhysicalKeyboardHandler::EventMappingArray
 PhysicalKeyboardHandler::FixedEditMapping = {
@@ -746,6 +753,7 @@ PhysicalKeyboardHandler::FixedEditMapping = {
   {Event::EndEdit,                  KBDK_KP_ENTER},
   {Event::AbortEdit,                KBDK_ESCAPE},
 };
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultJoystickMapping = {
