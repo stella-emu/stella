@@ -69,12 +69,17 @@ struct Size
   }
   bool valid() const { return w > 0 && h > 0; }
 
+  void clamp(uInt32 lower_w, uInt32 upper_w, uInt32 lower_h, uInt32 upper_h) {
+    w = BSPF::clamp(w, lower_w, upper_w);
+    h = BSPF::clamp(h, lower_h, upper_h);
+  }
+
   bool operator==(const Size& s) const { return w == s.w && h == s.h; }
   bool operator!=(const Size& s) const { return w != s.w || h != s.h; }
-  bool operator<(const Size& s)  const { return w < s.w && h < s.h;   }
+  bool operator<(const Size& s)  const { return w <  s.w && h <  s.h; }
   bool operator<=(const Size& s) const { return w <= s.w && h <= s.h; }
-  bool operator>(const Size& s)  const { return w > s.w && h > s.h;   }
-  bool operator>=(const Size& s) const { return w >= s.w && h >= s.h; }
+  bool operator>(const Size& s)  const { return w >  s.w || h >  s.h; }
+  bool operator>=(const Size& s) const { return w >= s.w || h >= s.h; }
 
   friend ostream& operator<<(ostream& os, const Size& s) {
     os << s.w << "x" << s.h;

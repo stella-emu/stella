@@ -22,16 +22,16 @@
 #include "sdl_blitter/BlitterFactory.hxx"
 
 namespace {
-  BlitterFactory::ScalingAlgorithm scalingAlgorithm(FrameBuffer::ScalingInterpolation interpolation)
+  BlitterFactory::ScalingAlgorithm scalingAlgorithm(ScalingInterpolation inter)
   {
-    switch (interpolation) {
-      case FrameBuffer::ScalingInterpolation::none:
+    switch (inter) {
+      case ScalingInterpolation::none:
         return BlitterFactory::ScalingAlgorithm::nearestNeighbour;
 
-      case FrameBuffer::ScalingInterpolation::blur:
+      case ScalingInterpolation::blur:
         return BlitterFactory::ScalingAlgorithm::bilinear;
 
-      case FrameBuffer::ScalingInterpolation::sharp:
+      case ScalingInterpolation::sharp:
         return BlitterFactory::ScalingAlgorithm::quasiInteger;
 
       default:
@@ -41,12 +41,12 @@ namespace {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FBSurfaceSDL2::FBSurfaceSDL2(FrameBufferSDL2& buffer,
+FBSurfaceSDL2::FBSurfaceSDL2(FBBackendSDL2& backend,
                              uInt32 width, uInt32 height,
-                             FrameBuffer::ScalingInterpolation interpolation,
+                             ScalingInterpolation inter,
                              const uInt32* staticData)
-  : myFB(buffer),
-    myInterpolationMode(interpolation)
+  : myBackend(backend),
+    myInterpolationMode(inter)
 {
   createSurface(width, height, staticData);
 }
@@ -214,7 +214,7 @@ void FBSurfaceSDL2::createSurface(uInt32 width, uInt32 height,
   ASSERT_MAIN_THREAD;
 
   // Create a surface in the same format as the parent GL class
-  const SDL_PixelFormat& pf = myFB.pixelFormat();
+  const SDL_PixelFormat& pf = myBackend.pixelFormat();
 
   mySurface = SDL_CreateRGBSurface(0, width, height,
       pf.BitsPerPixel, pf.Rmask, pf.Gmask, pf.Bmask, pf.Amask);
@@ -242,11 +242,13 @@ void FBSurfaceSDL2::createSurface(uInt32 width, uInt32 height,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL2::reinitializeBlitter()
 {
-  if (!myBlitter && myFB.isInitialized())
-    myBlitter = BlitterFactory::createBlitter(myFB, scalingAlgorithm(myInterpolationMode));
+  if (!myBlitter && myBackend.isInitialized())
+    myBlitter = BlitterFactory::createBlitter(
+        myBackend, scalingAlgorithm(myInterpolationMode));
 
   if (myBlitter)
-    myBlitter->reinitialize(mySrcR, myDstR, myAttributes, myIsStatic ? mySurface : nullptr);
+    myBlitter->reinitialize(mySrcR, myDstR, myAttributes,
+                            myIsStatic ? mySurface : nullptr);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -256,7 +258,7 @@ void FBSurfaceSDL2::applyAttributes()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSDL2::setScalingInterpolation(FrameBuffer::ScalingInterpolation interpolation)
+void FBSurfaceSDL2::setScalingInterpolation(ScalingInterpolation interpolation)
 {
   if (interpolation == myInterpolationMode) return;
 

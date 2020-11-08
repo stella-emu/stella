@@ -102,7 +102,7 @@ class EventHandler
     void poll(uInt64 time);
 
     /**
-      Get/set the current state of the EventHandler
+      Get/set the current state of the EventHandler.
 
       @return The EventHandlerState type
     */
@@ -110,7 +110,18 @@ class EventHandler
     void setState(EventHandlerState state);
 
     /**
-      Resets the state machine of the EventHandler to the defaults
+      Convenience method that checks if we're in TIA mode.
+
+      @return Whether TIA mode is active
+    */
+    bool inTIAMode() const {
+      return !(myState == EventHandlerState::DEBUGGER ||
+               myState == EventHandlerState::LAUNCHER ||
+               myState == EventHandlerState::NONE);
+    }
+
+    /**
+      Resets the state machine of the EventHandler to the defaults.
 
       @param state  The current state to set
     */
@@ -326,6 +337,19 @@ class EventHandler
     */
     virtual void enableTextEvents(bool enable) = 0;
 
+  #ifdef GUI_SUPPORT
+    /**
+      Check for QWERTZ keyboard layout
+    */
+    bool isQwertz() { return myQwertz; }
+
+    /**
+      Clipboard methods.
+    */
+    virtual void copyText(const string& text) const = 0;
+    virtual string pasteText(string& text) const = 0;
+  #endif
+
     /**
       Handle changing mouse modes.
     */
@@ -339,6 +363,11 @@ class EventHandler
   protected:
     // Global OSystem object
     OSystem& myOSystem;
+
+  #ifdef GUI_SUPPORT
+    // Keyboard layout
+    bool myQwertz{false};
+  #endif
 
     /**
       Methods which are called by derived classes to handle specific types
@@ -406,10 +435,17 @@ class EventHandler
       OVERSCAN,
       TVFORMAT,
       VCENTER,
+      ASPECT_RATIO,
       VSIZE,
       // Palette adjustables
       PALETTE,
       PALETTE_PHASE,
+      PALETTE_RED_SCALE,
+      PALETTE_RED_SHIFT,
+      PALETTE_GREEN_SCALE,
+      PALETTE_GREEN_SHIFT,
+      PALETTE_BLUE_SCALE,
+      PALETTE_BLUE_SHIFT,
       PALETTE_HUE,
       PALETTE_SATURATION,
       PALETTE_CONTRAST,
@@ -475,6 +511,7 @@ class EventHandler
     static const Event::EventSet KeyboardEvents;
     static const Event::EventSet ComboEvents;
     static const Event::EventSet DebugEvents;
+    static const Event::EventSet EditEvents;
 
     /**
       The following methods take care of assigning action mappings.
@@ -559,7 +596,7 @@ class EventHandler
     #else
       REFRESH_SIZE         = 0,
     #endif
-      EMUL_ACTIONLIST_SIZE = 174 + PNG_SIZE + COMBO_SIZE + REFRESH_SIZE,
+      EMUL_ACTIONLIST_SIZE = 175 + PNG_SIZE + COMBO_SIZE + REFRESH_SIZE,
       MENU_ACTIONLIST_SIZE = 18
     ;
 

@@ -35,8 +35,8 @@ class Cartridge;
   #define NO_THUMB_STATS
 #endif
 
-#define ROMADDMASK 0x7FFFF      
-#define RAMADDMASK 0x7FFF 
+#define ROMADDMASK 0x7FFFF
+#define RAMADDMASK 0x7FFF
 
 #define ROMSIZE (ROMADDMASK+1)      // 512KB
 #define RAMSIZE (RAMADDMASK+1)      // 32KB
@@ -60,7 +60,7 @@ class Thumbulator
       DPCplus   // cartridges of type DPC+
     };
 
-    Thumbulator(const uInt16* rom_ptr, uInt16* ram_ptr, uInt16 rom_size,
+    Thumbulator(const uInt16* rom_ptr, uInt16* ram_ptr, uInt32 rom_size,
                 const uInt32 c_base, const uInt32 c_start, const uInt32 c_stack,
                 bool traponfatal, Thumbulator::ConfigureFor configurefor,
                 Cartridge* cartridge);
@@ -188,7 +188,7 @@ class Thumbulator
 
   private:
     const uInt16* rom{nullptr};
-    uInt16 romSize{0};
+    uInt32 romSize{0};
     uInt32 cBase{0};
     uInt32 cStart{0};
     uInt32 cStack{0};

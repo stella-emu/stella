@@ -26,8 +26,9 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ListWidget::ListWidget(GuiObject* boss, const GUI::Font& font,
-                       int x, int y, int w, int h)
-  : EditableWidget(boss, font, x, y, 16, 16)
+                       int x, int y, int w, int h, bool useScrollbar)
+  : EditableWidget(boss, font, x, y, 16, 16),
+    _useScrollbar(useScrollbar)
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG | Widget::FLAG_RETAIN_FOCUS;
   _bgcolor = kWidColor;
@@ -39,13 +40,18 @@ ListWidget::ListWidget(GuiObject* boss, const GUI::Font& font,
   _rows = h / _lineHeight;
 
   // Set real dimensions
-  _w = w - ScrollBarWidget::scrollBarWidth(_font);
   _h = h + 2;
 
   // Create scrollbar and attach to the list
-  _scrollBar = new ScrollBarWidget(boss, font, _x + _w, _y,
-                                   ScrollBarWidget::scrollBarWidth(_font), _h);
-  _scrollBar->setTarget(this);
+  if(_useScrollbar)
+  {
+    _w = w - ScrollBarWidget::scrollBarWidth(_font);
+    _scrollBar = new ScrollBarWidget(boss, font, _x + _w, _y,
+                                     ScrollBarWidget::scrollBarWidth(_font), _h);
+    _scrollBar->setTarget(this);
+  }
+  else
+    _w = w - 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -168,10 +174,13 @@ void ListWidget::recalc()
 
   _editMode = false;
 
-  _scrollBar->_numEntries     = int(_list.size());
-  _scrollBar->_entriesPerPage = _rows;
-  // disable scrollbar if no longer necessary
-  scrollBarRecalc();
+  if(_useScrollbar)
+  {
+    _scrollBar->_numEntries = int(_list.size());
+    _scrollBar->_entriesPerPage = _rows;
+    // disable scrollbar if no longer necessary
+    scrollBarRecalc();
+  }
 
   // Reset to normal data entry
   abortEditMode();
@@ -182,9 +191,12 @@ void ListWidget::recalc()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::scrollBarRecalc()
 {
-  _scrollBar->_currentPos = _currentPos;
-  _scrollBar->recalc();
-  sendCommand(ListWidget::kScrolledCmd, _currentPos, _id);
+  if(_useScrollbar)
+  {
+    _scrollBar->_currentPos = _currentPos;
+    _scrollBar->recalc();
+    sendCommand(ListWidget::kScrolledCmd, _currentPos, _id);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -193,6 +205,7 @@ void ListWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
   if (!isEnabled())
     return;
 
+  resetSelection();
   // First check whether the selection changed
   int newSelectedItem;
   newSelectedItem = findItem(x, y);
@@ -230,7 +243,8 @@ void ListWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::handleMouseWheel(int x, int y, int direction)
 {
-  _scrollBar->handleMouseWheel(x, y, direction);
+  if(_useScrollbar)
+    _scrollBar->handleMouseWheel(x, y, direction);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -354,8 +368,11 @@ bool ListWidget::handleEvent(Event::Type e)
 
   if (_selectedItem != oldSelectedItem)
   {
-    _scrollBar->draw();
-    scrollToSelected();
+    if(_useScrollbar)
+    {
+      _scrollBar->draw();
+      scrollToSelected();
+    }
 
     sendCommand(ListWidget::kSelectionChangedCmd, _selectedItem, _id);
   }
@@ -408,14 +425,17 @@ void ListWidget::scrollToCurrent(int item)
   else if (_currentPos + _rows > int(_list.size()))
     _currentPos = int(_list.size()) - _rows;
 
-  int oldScrollPos = _scrollBar->_currentPos;
-  _scrollBar->_currentPos = _currentPos;
-  _scrollBar->recalc();
+  if(_useScrollbar)
+  {
+    int oldScrollPos = _scrollBar->_currentPos;
+    _scrollBar->_currentPos = _currentPos;
+    _scrollBar->recalc();
 
-  setDirty();
+    setDirty();
 
-  if(oldScrollPos != _currentPos)
-    sendCommand(ListWidget::kScrolledCmd, _currentPos, _id);
+    if(oldScrollPos != _currentPos)
+      sendCommand(ListWidget::kScrolledCmd, _currentPos, _id);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

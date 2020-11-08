@@ -119,21 +119,21 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
 
   // Timer registers (RO)
   static constexpr std::array<const char*, 5> readNames = {
-    "INTIM", "TIMINT", "Total Clks", "INTIM Clks", "Divider"
+    "INTIM", "TIMINT", "Total Clks", "INTIM Clks", "Divider  #"
   };
   xpos = 10;  ypos += myTimWrite->getHeight() + lineHeight / 2;
   for(int row = 0; row < 5; ++row)
   {
-    t = new StaticTextWidget(boss, lfont, xpos, ypos + row*lineHeight + 2,
-                             10*fontWidth, fontHeight, readNames[row], TextAlign::Left);
+    t = new StaticTextWidget(boss, lfont, xpos, ypos + row * lineHeight + 2,
+                             readNames[row]);
   }
   xpos += t->getWidth() + 5;
-  myTimRead = new DataGridWidget(boss, nfont, xpos, ypos, 1, 4, 8, 32, Common::Base::Fmt::_16);
+  myTimRead = new DataGridWidget(boss, nfont, xpos, ypos, 1, 4, 4, 30, Common::Base::Fmt::_16);
   myTimRead->setTarget(this);
   myTimRead->setEditable(false);
 
   ypos += myTimRead->getHeight() - 1;
-  myTimDivider = new DataGridWidget(boss, nfont, xpos, ypos, 1, 1, 4, 32, Common::Base::Fmt::_10_4);
+  myTimDivider = new DataGridWidget(boss, nfont, xpos, ypos, 1, 1, 4, 12, Common::Base::Fmt::_10_4);
   myTimDivider->setTarget(this);
   myTimDivider->setEditable(false);
 

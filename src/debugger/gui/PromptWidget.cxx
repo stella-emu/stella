@@ -24,11 +24,16 @@
 #include "Debugger.hxx"
 #include "DebuggerDialog.hxx"
 #include "DebuggerParser.hxx"
+#include "EventHandler.hxx"
 
 #include "PromptWidget.hxx"
 #include "CartDebug.hxx"
 
 #define PROMPT  "> "
+
+// Uncomment the following to give full-line cut/copy/paste
+// Note that this will be removed eventually, when we implement proper cut/copy/paste
+#define PSEUDO_CUT_COPY_PASTE
 
 // TODO: Github issue #361
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -332,7 +337,10 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
 
     case KBDK_DELETE:
     case KBDK_KP_PERIOD: // actually the num delete
-      killChar(+1);
+      if(StellaModTest::isShift(mod))
+        textCut();
+      else
+        killChar(+1);
       dirty = true;
       break;
 
@@ -437,6 +445,21 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
         _currentPos--;
 
       dirty = true;
+      break;
+
+    case KBDK_INSERT:
+      if(StellaModTest::isShift(mod))
+      {
+        textPaste();
+        dirty = true;
+      }
+      else if(StellaModTest::isControl(mod))
+      {
+        textCopy();
+        dirty = true;
+      }
+      else
+        handled = false;
       break;
 
     default:
@@ -568,7 +591,7 @@ void PromptWidget::specialKeys(StellaKey key)
       killLine(-1);
       break;
     case KBDK_W:
-      killLastWord();
+      killWord();
       break;
     case KBDK_A:
       textSelectAll();
@@ -643,7 +666,7 @@ void PromptWidget::killLine(int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PromptWidget::killLastWord()
+void PromptWidget::killWord()
 {
   int cnt = 0;
   bool space = true;
@@ -674,18 +697,60 @@ void PromptWidget::textSelectAll()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string PromptWidget::getLine()
+{
+#if defined(PSEUDO_CUT_COPY_PASTE)
+  assert(_promptEndPos >= _promptStartPos);
+  int len = _promptEndPos - _promptStartPos;
+  string text;
+
+  // Copy current line to text
+  for(int i = 0; i < len; i++)
+    text += buffer(_promptStartPos + i) & 0x7f;
+
+  return text;
+#endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::textCut()
 {
+#if defined(PSEUDO_CUT_COPY_PASTE)
+  string text = getLine();
+
+  instance().eventHandler().copyText(text);
+
+  // Remove the current line
+  _currentPos = _promptStartPos;
+  killLine(1);  // to end of line
+  _promptEndPos = _currentPos;
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::textCopy()
 {
+#if defined(PSEUDO_CUT_COPY_PASTE)
+  string text = getLine();
+
+  instance().eventHandler().copyText(text);
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::textPaste()
 {
+#if defined(PSEUDO_CUT_COPY_PASTE)
+  string text;
+
+  // Remove the current line
+  _currentPos = _promptStartPos;
+  killLine(1);  // to end of line
+
+  instance().eventHandler().pasteText(text);
+  print(text);
+  _promptEndPos = _currentPos;
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

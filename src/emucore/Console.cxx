@@ -250,7 +250,6 @@ Console::~Console()
   myOSystem.sound().close();
 }
 
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::setConsoleTiming()
 {
@@ -622,11 +621,15 @@ FBInitStatus Console::initializeVideo(bool full)
 
   if(full)
   {
+    auto size = myOSystem.settings().getBool("tia.correct_aspect") ?
+      Common::Size(TIAConstants::viewableWidth, TIAConstants::viewableHeight) :
+      Common::Size(2 * myTIA->width(), myTIA->height());
+
     bool devSettings = myOSystem.settings().getBool("dev.settings");
     const string& title = string("Stella ") + STELLA_VERSION +
                    ": \"" + myProperties.get(PropType::Cart_Name) + "\"";
-    fbstatus = myOSystem.frameBuffer().createDisplay(title, FrameBuffer::BufferType::Emulator,
-        TIAConstants::viewableWidth, TIAConstants::viewableHeight, false);
+    fbstatus = myOSystem.frameBuffer().createDisplay(title,
+        BufferType::Emulator, size, false);
     if(fbstatus != FBInitStatus::Success)
       return fbstatus;
 
@@ -724,8 +727,26 @@ void Console::changeVSizeAdjust(int direction)
 
   ostringstream val;
 
-  val << (newAdjustVSize ? newAdjustVSize > 0 ? "+" : "" : " ") << newAdjustVSize << "%";
+  val << (newAdjustVSize ? newAdjustVSize > 0 ? "+" : "" : " ")
+      << newAdjustVSize << "%";
   myOSystem.frameBuffer().showMessage("V-Size", val.str(), newAdjustVSize, -5, 5);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::toggleCorrectAspectRatio(bool toggle)
+{
+  bool enabled = myOSystem.settings().getBool("tia.correct_aspect");
+
+  if(toggle)
+  {
+    enabled = !enabled;
+    myOSystem.settings().setValue("tia.correct_aspect", enabled);
+    initializeVideo();
+  }
+  const string& message = string("Correct aspect ratio ") +
+      (enabled ? "enabled" : "disabled");
+
+  myOSystem.frameBuffer().showMessage(message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -735,8 +756,7 @@ void Console::setTIAProperties()
     static_cast<Int32>(BSPF::stringToInt(myProperties.get(PropType::Display_VCenter))), TIAConstants::minVcenter, TIAConstants::maxVcenter
   );
 
-  if(myDisplayFormat == "NTSC" || myDisplayFormat == "PAL60" ||
-     myDisplayFormat == "SECAM60")
+  if(gameRefreshRate() == 60)
   {
     // Assume we've got ~262 scanlines (NTSC-like format)
     myTIA->setLayout(FrameLayout::ntsc);
@@ -785,17 +805,22 @@ void Console::setControllers(const string& romMd5)
 
     myLeftControl  = std::move(myCMHandler->leftController());
     myRightControl = std::move(myCMHandler->rightController());
-    myOSystem.eventHandler().defineKeyControllerMappings(Controller::Type::CompuMate, Controller::Jack::Left);
-    myOSystem.eventHandler().defineJoyControllerMappings(Controller::Type::CompuMate, Controller::Jack::Left);
+    myOSystem.eventHandler().defineKeyControllerMappings(
+        Controller::Type::CompuMate, Controller::Jack::Left);
+    myOSystem.eventHandler().defineJoyControllerMappings(
+        Controller::Type::CompuMate, Controller::Jack::Left);
   }
   else
   {
     // Setup the controllers based on properties
-    Controller::Type leftType = Controller::getType(myProperties.get(PropType::Controller_Left));
-    Controller::Type rightType = Controller::getType(myProperties.get(PropType::Controller_Right));
+    Controller::Type leftType =
+        Controller::getType(myProperties.get(PropType::Controller_Left));
+    Controller::Type rightType =
+        Controller::getType(myProperties.get(PropType::Controller_Right));
     size_t size = 0;
     const ByteBuffer& image = myCart->getImage(size);
-    const bool swappedPorts = myProperties.get(PropType::Console_SwapPorts) == "YES";
+    const bool swappedPorts =
+        myProperties.get(PropType::Console_SwapPorts) == "YES";
 
     // Try to detect controllers
     if(image != nullptr && size != 0)
@@ -807,7 +832,8 @@ void Console::setControllers(const string& romMd5)
           !swappedPorts ? Controller::Jack::Right : Controller::Jack::Left, myOSystem.settings());
     }
 
-    unique_ptr<Controller> leftC = getControllerPort(leftType, Controller::Jack::Left, romMd5),
+    unique_ptr<Controller>
+      leftC = getControllerPort(leftType, Controller::Jack::Left, romMd5),
       rightC = getControllerPort(rightType, Controller::Jack::Right, romMd5);
 
     // Swap the ports if necessary
@@ -965,11 +991,19 @@ void Console::changeAutoFireRate(int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-float Console::getFramerate() const
+float Console::currentFrameRate() const
 {
   return
     (myConsoleTiming == ConsoleTiming::ntsc ? 262.F * 60.F : 312.F * 50.F) /
      myTIA->frameBufferScanlinesLastFrame();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int Console::gameRefreshRate() const
+{
+  return
+    myDisplayFormat == "NTSC" || myDisplayFormat == "PAL60" ||
+    myDisplayFormat == "SECAM60" ? 60 : 50;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

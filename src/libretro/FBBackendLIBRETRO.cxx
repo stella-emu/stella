@@ -16,25 +16,13 @@
 //============================================================================
 
 #include "bspf.hxx"
-
-#include "OSystem.hxx"
-#include "AtariNTSC.hxx"
-#include "TIAConstants.hxx"
-
 #include "FBSurfaceLIBRETRO.hxx"
-#include "FrameBufferLIBRETRO.hxx"
+#include "FBBackendLIBRETRO.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FrameBufferLIBRETRO::FrameBufferLIBRETRO(OSystem& osystem)
-  : FrameBuffer(osystem),
-    myRenderSurface(nullptr)
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferLIBRETRO::queryHardware(vector<Common::Size>& fullscreenRes,
-                                        vector<Common::Size>& windowedRes,
-                                        VariantList& renderers)
+void FBBackendLIBRETRO::queryHardware(vector<Common::Size>& fullscreenRes,
+                                      vector<Common::Size>& windowedRes,
+                                      VariantList& renderers)
 {
   fullscreenRes.emplace_back(1920, 1080);
   windowedRes.emplace_back(1920, 1080);
@@ -43,18 +31,8 @@ void FrameBufferLIBRETRO::queryHardware(vector<Common::Size>& fullscreenRes,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-unique_ptr<FBSurface>
-    FrameBufferLIBRETRO::createSurface(uInt32 w, uInt32 h, FrameBuffer::ScalingInterpolation, const uInt32* data) const
+unique_ptr<FBSurface> FBBackendLIBRETRO::createSurface(
+    uInt32 w, uInt32 h, ScalingInterpolation, const uInt32*) const
 {
-  unique_ptr<FBSurface> ptr = make_unique<FBSurfaceLIBRETRO>
-      (const_cast<FrameBufferLIBRETRO&>(*this), w, h, data);
-
-  if(w == AtariNTSC::outWidth(TIAConstants::frameBufferWidth) &&
-     h == TIAConstants::frameBufferHeight)
-  {
-    uInt32 pitch;
-    ptr.get()->basePtr(myRenderSurface, pitch);
-  }
-
-  return ptr;
+  return make_unique<FBSurfaceLIBRETRO>(w, h);
 }

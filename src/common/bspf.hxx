@@ -93,6 +93,14 @@ constexpr size_t operator "" _KB(unsigned long long size)
    return static_cast<size_t>(size * 1024);
 }
 
+// Output contents of a vector
+template<typename T>
+std::ostream& operator<< (std::ostream& out, const std::vector<T>& v) {
+  for(const auto& elem: v)
+    out << elem << " ";
+  return out;
+}
+
 static const string EmptyString("");
 
 // This is defined by some systems, but Stella has other uses for it

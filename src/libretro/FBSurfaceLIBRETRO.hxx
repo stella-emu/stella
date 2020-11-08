@@ -20,23 +20,22 @@
 
 #include "bspf.hxx"
 #include "FBSurface.hxx"
-#include "FrameBufferLIBRETRO.hxx"
 
 /**
-  An FBSurface suitable for the LIBRETRO Render2D API, making use of hardware
-  acceleration behind the scenes.
+  An FBSurface suitable for the LIBRETRO API.  As with FBBackend,
+  most of the functionality here is handled by libretro directly.
 
   @author  Stephen Anthony
 */
 class FBSurfaceLIBRETRO : public FBSurface
 {
   public:
-    FBSurfaceLIBRETRO(FrameBufferLIBRETRO& buffer, uInt32 width, uInt32 height,
-                  const uInt32* data);
+    FBSurfaceLIBRETRO(uInt32 width, uInt32 height);
     ~FBSurfaceLIBRETRO() override { }
 
     // Most of the surface drawing primitives are implemented in FBSurface;
-    void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, ColorId color) override { }
+    void fillRect(uInt32 x, uInt32 y, uInt32 w,
+                  uInt32 h, ColorId color) override { }
 
     uInt32 width() const override { return myWidth; }
     uInt32 height() const override { return myHeight; }
@@ -50,33 +49,28 @@ class FBSurfaceLIBRETRO : public FBSurface
     void setVisible(bool visible) override { }
 
     void translateCoords(Int32& x, Int32& y) const override { }
-    bool render() override;
+    bool render() override { return true; }
     void invalidate() override { }
     void free() override { }
     void reload() override { }
     void resize(uInt32 width, uInt32 height) override { }
-    void setScalingInterpolation(FrameBuffer::ScalingInterpolation) override { }
+    void setScalingInterpolation(ScalingInterpolation) override { }
 
   protected:
     void applyAttributes() override { }
 
   private:
-    void createSurface(uInt32 width, uInt32 height, const uInt32* data);
+    unique_ptr<uInt32[]> myPixelData;
+    uInt32 myWidth, myHeight;
+    Common::Rect mySrcGUIR, myDstGUIR;
 
+  private:
     // Following constructors and assignment operators not supported
     FBSurfaceLIBRETRO() = delete;
     FBSurfaceLIBRETRO(const FBSurfaceLIBRETRO&) = delete;
     FBSurfaceLIBRETRO(FBSurfaceLIBRETRO&&) = delete;
     FBSurfaceLIBRETRO& operator=(const FBSurfaceLIBRETRO&) = delete;
     FBSurfaceLIBRETRO& operator=(FBSurfaceLIBRETRO&&) = delete;
-
-  private:
-    Common::Rect mySrcGUIR, myDstGUIR;
-
-  private:
-    unique_ptr<uInt32[]> myPixelData;
-
-    uInt32 myWidth, myHeight;
 };
 
 #endif

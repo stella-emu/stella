@@ -19,7 +19,7 @@
   <br><br>
   <center><h2><b>A multi-platform Atari 2600 VCS emulator</b></h2></center>
 
-  <center><h4><b>Release 6.2.1</b></h4></center>
+  <center><h4><b>Release 6.4</b></h4></center>
   <br><br>
 
   <center><h2><b>User's Guide</b></h2></center>
@@ -70,7 +70,7 @@
 
   <br><br><br>
 
-  <center><b>February 1999 - June 2020</b></center>
+  <center><b>February 1999 - November 2020</b></center>
     <center><b>The Stella Team</b></center>
   <center><b><a href="https://stella-emu.github.io">Stella Homepage</a></b></center>
 
@@ -368,7 +368,7 @@
   <p>
   <h3><b><u>Windows</u></b></h3>
 
-  <p>The Windows version of Stella is designed to work on Windows Vista/7/8/10
+  <p>The Windows version of Stella is designed to work on Windows 7/8/10
   with the following:</p>
 
   <ul>
@@ -1364,8 +1364,8 @@
     </tr>
     <tr>
       <td>Toggle windowed/fullscreen mode</td>
-      <td>Alt + Enter</td>
-      <td>Cmd + Enter</td>
+      <td>Alt + Return</td>
+      <td>Cmd + Return</td>
     </tr>
     <tr>
       <td>Toggle adapting display refresh rate to game frame rate
@@ -1393,6 +1393,11 @@
       <td>Move display <i>up</i> (uses "Display.VCenter")</td>
       <td>Alt + PageUp</td>
       <td>Cmd-Fn + Up arrow</td>
+    </tr>
+    <tr>
+      <td>Toggle aspect ratio correct scaling</td>
+      <td>Control + c</td>
+      <td>Control + c</td>
     </tr>
     <tr>
       <td><i>Decrease</i> vertical display size</td>
@@ -1753,11 +1758,6 @@
       <td>Backspace</td>
     </tr>
     <tr>
-      <td>Go to parent directory (UI mode)</td>
-      <td>Backspace</td>
-      <td>Backspace</td>
-    </tr>
-    <tr>
       <td><i>Decrease</i> emulation speed (disables 'Turbo' mode)</td>
       <td>Shift-Control + s</td>
       <td>Shift-Control + s</td>
@@ -1801,13 +1801,13 @@
     </tr>
     <tr>
       <td>Save continuous PNG snapshots</br>(per interval defined in <a href="#Snapshots"><b>Snapshot Settings</b></a>)</td>
-      <td>Alt + s</td>
-      <td>Cmd + s</td>
+      <td>Control-Alt + s</td>
+      <td>Control-Cmd + s</td>
     </tr>
     <tr>
       <td>Save continuous PNG snapshots (every frame)</td>
-      <td>Shift-Alt + s</td>
-      <td>Shift-Cmd + s</td>
+      <td>Shift-Control-Alt + s</td>
+      <td>Shift-Control-Cmd + s</td>
     </tr>
 
     <tr>
@@ -1862,25 +1862,237 @@
     </tr>
   </table>
 
+  <p><b>UI Keys (can be remapped)</b></p>
+
+  <table BORDER=2 cellpadding=4>
+    <tr>
+      <th>Function</th>
+      <th>Key (Standard)</th>
+      <th>Key (macOS)</th>
+    </tr>
+    <tr>
+      <td>Move Up</td>
+      <td>Up arrow</td>
+      <td>Up arrow</td>
+    </tr>
+    <tr>
+      <td>Move Down</td>
+      <td>Down arrow</td>
+      <td>Down arrow</td>
+    </tr>
+    <tr>
+      <td>Move Left</td>
+      <td>Left arrow</td>
+      <td>Left arrow</td>
+    </tr>
+    <tr>
+      <td>Move Right</td>
+      <td>Right arrow</td>
+      <td>Right arrow</td>
+    </tr>
+    <tr>
+      <td>Move Home</td>
+      <td>Home</td>
+      <td>Home</td>
+    </tr>
+    <tr>
+      <td>Move End</td>
+      <td>End</td>
+      <td>End</td>
+    </tr>
+    <tr>
+      <td>Move Page Up</td>
+      <td>Page Up</td>
+      <td>Page Up</td>
+    </tr>
+    <tr>
+      <td>Move Page Down</td>
+      <td>Page Down</td>
+      <td>Page Down</td>
+    </tr>
+    <tr>
+      <td>OK</td>
+      <td>-</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>Cancel</td>
+      <td>Escape</td>
+      <td>Escape</td>
+    </tr>
+    <tr>
+      <td>Select item</td>
+      <td>Return/Enter/Space</td>
+      <td>Return/Enter/Space</td>
+    </tr>
+    <tr>
+      <td>Move to previous object</td>
+      <td>Shift + Tab</td>
+      <td>Shift + Tab</td>
+    </tr>
+    <tr>
+      <td>Move to next object</td>
+      <td>Tab</td>
+      <td>Tab</td>
+    </tr>
+    <tr>
+      <td>Move to previous tab</td>
+      <td>Shift-Control + Tab</td>
+      <td>Shift-Control + Tab</td>
+    </tr>
+    <tr>
+      <td>Move to next tab</td>
+      <td>Control + Tab</td>
+      <td>Control + Tab</td>
+    </tr>
+    <tr>
+      <td>Go to parent directory</td>
+      <td>Backspace</td>
+      <td>Backspace</td>
+    </tr>
+    <tr>
+      <td>Toggle windowed/fullscreen mode</td>
+      <td>Alt + Return</td>
+      <td>Cmd + Return</td>
+    </tr>
+    <tr>
+      <td>Exit emulator</td>
+      <td>Control + q</td>
+      <td>Cmd + q</td>
+    </tr>
+  </table>
+
   <p><b>UI Keys in Text Editing areas (cannot be remapped)</b></p>
 
   <table BORDER=2 cellpadding=4>
-    <tr><th>Key</th><th>Editor Function</th></tr>
-    <tr><td>Home</td><td>Move cursor to beginning of line</td></tr>
-    <tr><td>End</td><td>Move cursor to end of line</td></tr>
-    <tr><td>Delete</td><td>Remove character to right of cursor</td></tr>
-    <tr><td>Backspace</td><td>Remove character to left of cursor</td></tr>
-    <tr><td>Control + a</td><td>Same function as 'Home'</td></tr>
-    <tr><td>Control + e</td><td>Same function as 'End'</td></tr>
-    <tr><td>Control + d</td><td>Same function as 'Delete'</td></tr>
-    <tr><td>Control + k</td><td>Remove all characters from cursor to end of line</td></tr>
-    <tr><td>Control + u</td><td>Remove all characters from cursor to beginning of line</td></tr>
-    <tr><td>Control + w</td><td>Remove entire word to left of cursor</td></tr>
-    <tr><td>Control + Left</td><td>Move cursor to beginning of word to the left</td></tr>
-    <tr><td>Control + Right</td><td>Move cursor to beginning of word to the right</td></tr>
-    <tr><td>Control + c</td><td>Copy entire line to clipboard (not complete)</td></tr>
-    <tr><td>Control + v</td><td>Paste clipboard contents (not complete)</td></tr>
+    <tr>
+      <th>Function</th>
+      <th>Key (Standard)</th>
+      <th>Key (macOS)</th>
+    </tr>
+    <tr>
+      <td>Move cursor to previous character</td>
+      <td>Left arrow</td>
+      <td>Left arrow</td>
+    </tr>
+    <tr>
+      <td>Move cursor to next character</td>
+      <td>Right arrow</td>
+      <td>Right arrow</td>
+    </tr>
+    <tr>
+      <td>Move cursor to beginning of current word</td>
+      <td>Control + Left arrow</td>
+      <td>Option + Left arrow</td>
+    </tr>
+    <tr>
+      <td>Move cursor to beginning of next word</td>
+      <td>Control + Right arrow</td>
+      <td>Option + Right arrow</td>
+    </tr>
+    <tr>
+      <td>Move cursor to beginning of line</td>
+      <td>Home</td>
+      <td>Home, Control + a, Command + Left arrow</td>
+    </tr>
+    <tr>
+      <td>Move cursor to end of line</td>
+      <td>End</td>
+      <td>End, Control + e, Command + Right arrow</td>
+    </tr>
+    <tr>
+      <td>Delete character to left of cursor</td>
+      <td>Backspace</td>
+      <td>Backspace</td>
+    </tr>
+    <tr>
+      <td>Delete character to right of cursor</td>
+      <td>Delete, Control + d</td>
+      <td>Delete, Control + d</td>
+    </tr>
+    <tr>
+      <td>Delete word to left of cursor</td>
+      <td>Control + Backspace, Control + w</td>
+      <td>Option + Backspace, Control + w</td>
+    </tr>
+    <tr>
+      <td>Delete word to right of cursor</td>
+      <td>Control + Delete, Alt + d</td>
+      <td>Option + Delete</td>
+    </tr>
+    <tr>
+      <td>Delete all text to beginning of line</td>
+      <td>Control + Home, Control + u</td>
+      <td>Command + Backspace, Control + u</td>
+    </tr>
+    <tr>
+      <td>Delete all text to end of line</td>
+      <td>Control + End, Control + k</td>
+      <td>Control + k</td>
+    </tr>
+    <tr>
+      <td>Select character to left of cursor</td>
+      <td>Shift + Left arrow</td>
+      <td>Shift + Left arrow</td>
+    </tr>
+    <tr>
+      <td>Select character to right of cursor</td>
+      <td>Shift + Right arrow</td>
+      <td>Shift + Right arrow</td>
+    </tr>
+    <tr>
+      <td>Select all text to beginning of current word</td>
+      <td>Shift-Control + Left arrow</td>
+      <td>Shift-Option + Left arrow</td>
+    </tr>
+    <tr>
+      <td>Select all text to beginning of next word</td>
+      <td>Shift-Control + Right arrow</td>
+      <td>Shift-Option + Right arrow</td>
+    </tr>
+    <tr>
+      <td>Select all text to beginning of line</td>
+      <td>Shift + Home</td>
+      <td>Shift + Home, Shift-Control + a, Shift-Command + Left arrow</td>
+    </tr>
+    <tr>
+      <td>Select all text to end of line</td>
+      <td>Shift + End</td>
+      <td>Shift + End, Shift-Control + e, Shift-Command + Right arrow</td>
+    </tr>
+    <tr>
+      <td>Select all text</td>
+      <td>Control + a</td>
+      <td>Command + a</td>
+    </tr>
+    <tr>
+      <td>Cut selected text</td>
+      <td>Control + x, Shift + Delete</td>
+      <td>Command + x</td>
+    </tr>
+    <tr>
+      <td>Copy selected text</td>
+      <td>Control + c, Control + Insert</td>
+      <td>Command + c</td>
+    </tr>
+    <tr>
+      <td>Paste at cursor and replace selection</td>
+      <td>Control + v, Shift + Insert</td>
+      <td>Command + v</td>
+    </tr>
+    <tr>
+      <td>Undo last operation</td>
+      <td>Control + z</td>
+      <td>Command + z</td>
+    </tr>
+    <tr>
+      <td>Redo last operation</td>
+      <td>Control + y, Shift-Control + z</td>
+      <td>Command + y, Shift-Command + z</td>
+    </tr>
   </table>
+  </br>
+
   </blockquote></br>
 
   <h2><b><a name="ControlMap">Controller Map</a></b></h2>
@@ -2127,7 +2339,7 @@
       <td><pre>-palette &lt;standard|z26|user|custom&gt;</pre></td>
       <td>Set the palette to either normal Stella, the one used in the z26
         emulator, a user-defined palette, or a custom palette generated
-        from user-defined phase shifts.</td>
+        from user-defined parameters.</td>
     </tr>
 
     <tr>
@@ -2138,6 +2350,36 @@
     <tr>
       <td><pre>-pal.phase_pal &lt;number&gt;</pre></td>
       <td>Adjust phase shift of 'custom' PAL palette.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-pal.red_scale &lt;number&gt;</pre></td>
+      <td>Adjust red scale of 'custom' palette (range -1.0 to 1.0).</td>
+    </tr>
+
+    <tr>
+      <td><pre>-pal.red_shift &lt;number&gt;</pre></td>
+      <td>Adjust red shift of 'custom' palette (range -22.5 to 22.5).</td>
+    </tr>
+
+    <tr>
+      <td><pre>-pal.green_scale &lt;number&gt;</pre></td>
+      <td>Adjust green scale of 'custom' palette (range -1.0 to 1.0).</td>
+    </tr>
+
+    <tr>
+      <td><pre>-pal.green_shift &lt;number&gt;</pre></td>
+      <td>Adjust green shift of 'custom' palette (range -22.5 to 22.5).</td>
+    </tr>
+
+    <tr>
+      <td><pre>-pal.blue_scale &lt;number&gt;</pre></td>
+      <td>Adjust blue scale of 'custom' palette (range -1.0 to 1.0).</td>
+    </tr>
+
+    <tr>
+      <td><pre>-pal.blue_shift &lt;number&gt;</pre></td>
+      <td>Adjust blue shift of 'custom' palette (range -22.5 to 22.5).</td>
     </tr>
 
     <tr>
@@ -2182,97 +2424,97 @@
         shown.</td>
     </tr>
 
-  <tr>
-    <td><pre>-audio.enabled &lt;1|0&gt;</pre></td>
-    <td>Enable or disable sound generation.</td>
-  </tr>
+    <tr>
+      <td><pre>-audio.enabled &lt;1|0&gt;</pre></td>
+      <td>Enable or disable sound generation.</td>
+    </tr>
 
-  <tr>
-    <td><pre>-audio.volume &lt;0 - 100&gt;</pre></td>
-    <td>Set the volume.</td>
-  </tr>
+    <tr>
+      <td><pre>-audio.volume &lt;0 - 100&gt;</pre></td>
+      <td>Set the volume.</td>
+    </tr>
 
-  <tr>
-    <td><pre>-audio.device &lt;number&gt;</pre></td>
-    <td>Set the audio device (0 = default).</td>
-  </tr>
+    <tr>
+      <td><pre>-audio.device &lt;number&gt;</pre></td>
+      <td>Set the audio device (0 = default).</td>
+    </tr>
 
-  <tr>
-    <td><pre>-audio.preset &lt;1 - 5&gt;</pre></td>
-    <td>Set an audio preset. Numbers in sequence represent presets for
-    'custom', 'low quality, medium lag', 'high quality, medium lag',
-    'high quality, low lag' and 'ultra quality, minimal lag'.</td>
-  </tr>
+    <tr>
+      <td><pre>-audio.preset &lt;1 - 5&gt;</pre></td>
+      <td>Set an audio preset. Numbers in sequence represent presets for
+      'custom', 'low quality, medium lag', 'high quality, medium lag',
+      'high quality, low lag' and 'ultra quality, minimal lag'.</td>
+    </tr>
 
-  <tr>
-    <td><pre>-audio.fragment_size &lt;128|256|512|1024|2048|4096&gt;</pre></td>
-    <td>Set the number of samples in a single fragment processed by the audio driver.</td>
-  </tr>
+    <tr>
+      <td><pre>-audio.fragment_size &lt;128|256|512|1024|2048|4096&gt;</pre></td>
+      <td>Set the number of samples in a single fragment processed by the audio driver.</td>
+    </tr>
 
-  <tr>
-    <td><pre>-audio.sample_rate &lt;44100|48000|96000&gt;</pre></td>
-    <td>Set sound sample output frequency.</td>
-  </tr>
+    <tr>
+      <td><pre>-audio.sample_rate &lt;44100|48000|96000&gt;</pre></td>
+      <td>Set sound sample output frequency.</td>
+    </tr>
 
-  <tr>
-    <td><pre>-audio.resampling_quality &lt;1|2|3&gt;</pre></td>
-    <td>Set resampling quality to low (1), high (2) or ultra (3).</td>
-  </tr>
+    <tr>
+      <td><pre>-audio.resampling_quality &lt;1|2|3&gt;</pre></td>
+      <td>Set resampling quality to low (1), high (2) or ultra (3).</td>
+    </tr>
 
-  <tr>
-    <td><pre>-audio.headroom &lt;0 - 20&gt;</pre></td>
-    <td>Set number of additional half-frames to prebuffer.</td>
-  </tr>
+    <tr>
+      <td><pre>-audio.headroom &lt;0 - 20&gt;</pre></td>
+      <td>Set number of additional half-frames to prebuffer.</td>
+    </tr>
 
-  <tr>
-    <td><pre>-audio.buffer_size &lt;0 - 20&gt;</pre></td>
-    <td>Set maximum number of additional half-frames to buffer.</td>
-  </tr>
+    <tr>
+      <td><pre>-audio.buffer_size &lt;0 - 20&gt;</pre></td>
+      <td>Set maximum number of additional half-frames to buffer.</td>
+    </tr>
 
-  <tr>
-    <td><pre>-audio.stereo &lt;1|0&gt;</pre></td>
-    <td>Enable or disable stereo mode for all ROMs.</td>
-  </tr>
+    <tr>
+      <td><pre>-audio.stereo &lt;1|0&gt;</pre></td>
+      <td>Enable or disable stereo mode for all ROMs.</td>
+    </tr>
 
-  <tr>
-    <td><pre>-audio.dpc_pitch &lt;10000 - 30000&gt;</pre></td>
-    <td>Set the pitch of Pitfall II music.</td>
-  </tr>
+    <tr>
+      <td><pre>-audio.dpc_pitch &lt;10000 - 30000&gt;</pre></td>
+      <td>Set the pitch of Pitfall II music.</td>
+    </tr>
 
-  <tr>
-    <td><pre>-tia.zoom &lt;zoom&gt;</pre></td>
-    <td>Use the specified zoom level (integer) while in TIA/emulation mode.
-    </td>
-  </tr>
+    <tr>
+      <td><pre>-tia.zoom &lt;zoom&gt;</pre></td>
+      <td>Use the specified zoom level (integer) while in TIA/emulation mode.
+      </td>
+    </tr>
 
-  <tr>
-    <td><pre>-tia.vsizeadjust &lt;-5 - 5&gt;</pre></td>
-    <td>Adjust the display height of the TIA image
-    </td>
-  </tr>
+    <tr>
+      <td><pre>-tia.vsizeadjust &lt;-5 - 5&gt;</pre></td>
+      <td>Adjust the display height of the TIA image
+      </td>
+    </tr>
 
-  <tr>
-    <td><pre>-tia.inter &lt;1|0&gt;</pre></td>
-    <td>Use interpolation for the TIA image (results in blending/smoothing
-      of the image).</td>
-  </tr>
+    <tr>
+      <td><pre>-tia.inter &lt;1|0&gt;</pre></td>
+      <td>Use interpolation for the TIA image (results in blending/smoothing
+        of the image).</td>
+    </tr>
 
-  <tr>
-    <td><pre>-tia.fs_stretch &lt;1|0&gt;</pre></td>
-    <td>Stretch TIA image completely while in fullscreen mode, vs. keeping the correct
-      aspect ratio.</td>
-  </tr>
+    <tr>
+      <td><pre>-tia.fs_stretch &lt;1|0&gt;</pre></td>
+      <td>Stretch TIA image completely while in fullscreen mode, vs. keeping the correct
+        aspect ratio.</td>
+    </tr>
 
-  <tr>
-    <td><pre>-tia.fs_refresh &lt;1|0&gt;</pre></td>
-    <td>While in fullscreen mode, adapt the display's refresh rate to the game's frame rate
-      to minimize judder.</br>
-      Note: Not available for macOS.</td>
-  </tr>
+    <tr>
+      <td><pre>-tia.fs_refresh &lt;1|0&gt;</pre></td>
+      <td>While in fullscreen mode, adapt the display's refresh rate to the game's frame rate
+        to minimize judder.</br>
+        Note: Not available for macOS.</td>
+    </tr>
 
-  <tr>
-    <td><pre>-tia.fs_overscan &lt;0 - 10&gt;</pre></td>
-    <td>Add overscan to TIA image while in fullscreen mode</td>
+    <tr>
+      <td><pre>-tia.fs_overscan &lt;0 - 10&gt;</pre></td>
+      <td>Add overscan to TIA image while in fullscreen mode</td>
     </tr>
 
     <tr>
@@ -2282,6 +2524,11 @@
         these change be changed around to apply different colours to the
         respective register.
       </td>
+    </tr>
+
+    <tr>
+      <td><pre>-tia.correct_aspect &lt;1|0&gt;</pre></td>
+      <td>Enable aspect ratio correct scaling.</td>
     </tr>
 
     <tr>
@@ -3043,16 +3290,18 @@
       <td valign="top">
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">Command Line</a></th></tr>
-          <tr><td>Renderer</td><td>Use specified rendering mode</td><td>-video</td></tr>
-          <tr><td>Interpolation</td><td>Enable interpolation of the TIA image</td><td>-tia.inter</td></tr>
-          <tr><td>Zoom</td><td>Zoom level of the TIA image</td><td>-tia.zoom</td></tr>
+          <tr><td>Renderer</td><td>Use specified rendering mode.</td><td>-video</td></tr>
+          <tr><td>Interpolation</td><td>Enable interpolation of the TIA image.</td><td>-tia.inter</td></tr>
+          <tr><td>Zoom</td><td>Adjust the zoom level of the TIA image</td><td>-tia.zoom</td></tr>
           <tr><td>Fullscreen</td><td>Self-explanatory - Note that colors may slightly change.
                   This depends on the OS and renderer used.</td><td>-fullscreen</td></tr>
           <tr><td>Stretch</td><td>In fullscreen mode, completely fill screen with the TIA image.</td><td>-tia.fs_stretch</td></tr>
           <tr><td>Adapt display...</td><td>In fullscreen mode, adapt the display's refresh rate to the game's frame rate to minimize judder.
                   </br>Note: Not available for macOS.</td><td>-tia.fs_refresh</td></tr>
-          <tr><td>Overscan</td><td>In fullscreen mode, add overscan to the TIA image</td><td>-tia.fs_overscan</td></tr>
-          <tr><td>V-Size adjust</td><td>Adjust height of the TIA image</td><td>-tia.vsizeadjust</td></tr>
+          <tr><td>Overscan</td><td>In fullscreen mode, add overscan to the TIA image.</td><td>-tia.fs_overscan</td></tr>
+          <tr><td>Correct aspect ratio</td><td>Enable aspect ratio correct scaling.
+                  </br>Note: Creates a cleaner looking TIA image when disabled (like z26 and old versions of Stella) vs. a correctly emulated aspect ratio when enabled.</td><td>-tia.correct_aspect</td></tr>
+          <tr><td>V-Size adjust</td><td>Adjust the height of the TIA image.</td><td>-tia.vsizeadjust</td></tr>
         </table>
       </td>
     </tr>
@@ -3068,8 +3317,11 @@
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">Command Line</a></th></tr>
           <tr><td>Palette</td><td>Palette used for emulation mode</td><td>-palette</td></tr>
-          <tr><td>NTSC phase</td><td>Adjust phase shift for 'Custom' NTSC palette</td><td>-pal.phase_ntsc</td></tr>
-          <tr><td>PAL phase</td><td>Adjust phase shift for 'Custom' PAL palette</td><td>-pal.phase_pal</td></tr>
+          <tr><td>NTSC phase</td><td>Adjust phase shift of 'Custom' NTSC palette</td><td>-pal.phase_ntsc</td></tr>
+          <tr><td>PAL phase</td><td>Adjust phase shift of 'Custom' PAL palette</td><td>-pal.phase_pal</td></tr>
+          <tr><td>R</td><td>Adjust red scale and shift of 'Custom' palette</td><td>-pal.red_scale, -pal.red_shift</td></tr>
+          <tr><td>G</td><td>Adjust green scale and shift of 'Custom' palette</td><td>-pal.green_scale, -pal.green_shift</td></tr>
+          <tr><td>B</td><td>Adjust blue scale and shift of 'Custom' palette</td><td>-pal.blue_scale, -pal.blue_shift</td></tr>
           <tr><td>Hue</td><td>Adjust hue of currently selected palette</td><td>-pal.hue</td></tr>
           <tr><td>Saturation</td><td>Adjust saturation of currently selected palette</td><td>-pal.saturation</td></tr>
           <tr><td>Contrast</td><td>Adjust contrast of currently selected palette</td><td>-pal.contrast</td></tr>

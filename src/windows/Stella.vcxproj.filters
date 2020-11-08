@@ -72,7 +72,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\common\FrameBufferSDL2.cxx">
+    <ClCompile Include="..\common\FBBackendSDL2.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FSNodeWINDOWS.cxx">
@@ -1008,9 +1008,6 @@
     <ClCompile Include="..\emucore\CartTVBoy.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
-    <ClCompile Include="..\debugger\gui\CartTVBoyWidget.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\emucore\CartCreator.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
@@ -1026,12 +1023,21 @@
     <ClCompile Include="..\gui\QuadTariDialog.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartTVBoyWidget.cxx">
+      <Filter>Source Files\debugger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\VideoModeHandler.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gui\UndoHandler.cxx">
+      <Filter>Source Files\gui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\FrameBufferSDL2.hxx">
+    <ClInclude Include="..\common\FBBackendSDL2.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HomeFinder.hxx">
@@ -2084,9 +2090,6 @@
     <ClInclude Include="..\emucore\CartTVBoy.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
-    <ClInclude Include="..\debugger\gui\CartTVBoyWidget.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\emucore\CartCreator.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
@@ -2103,6 +2106,21 @@
       <Filter>Header Files\debugger</Filter>
     </ClInclude>
     <ClInclude Include="..\gui\QuadTariDialog.hxx">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartTVBoyWidget.hxx">
+      <Filter>Header Files\debugger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\VideoModeHandler.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\FBBackend.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gui\UndoHandler.hxx">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
   </ItemGroup>

@@ -296,7 +296,6 @@ void PNGLibrary::takeSnapshot(uInt32 number)
 
   // Figure out the correct snapshot name
   string filename;
-  bool showmessage = number == 0;
   string sspath = myOSystem.snapshotSaveDir().getPath() +
       (myOSystem.settings().getString("snapname") != "int" ?
           myOSystem.romFile().getNameWithExt("")
@@ -347,9 +346,9 @@ void PNGLibrary::takeSnapshot(uInt32 number)
   VarList::push_back(comments, "TV Effects", myOSystem.frameBuffer().tiaSurface().effectsInfo());
 
   // Now create a PNG snapshot
+  string message = "Snapshot saved";
   if(myOSystem.settings().getBool("ss1x"))
   {
-    string message = "Snapshot saved";
     try
     {
       Common::Rect rect;
@@ -360,8 +359,6 @@ void PNGLibrary::takeSnapshot(uInt32 number)
     {
       message = e.what();
     }
-    if(showmessage)
-      myOSystem.frameBuffer().showMessage(message);
   }
   else
   {
@@ -369,7 +366,6 @@ void PNGLibrary::takeSnapshot(uInt32 number)
     myOSystem.frameBuffer().enableMessages(false);
     myOSystem.frameBuffer().tiaSurface().renderForSnapshot();
 
-    string message = "Snapshot saved";
     try
     {
       myOSystem.png().saveImage(filename, comments);
@@ -381,9 +377,8 @@ void PNGLibrary::takeSnapshot(uInt32 number)
 
     // Re-enable old messages
     myOSystem.frameBuffer().enableMessages(true);
-    if(showmessage)
-      myOSystem.frameBuffer().showMessage(message);
   }
+  myOSystem.frameBuffer().showMessage(message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

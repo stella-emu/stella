@@ -27,19 +27,19 @@
 #include "TIASurface.hxx"
 
 namespace {
-  FrameBuffer::ScalingInterpolation interpolationModeFromSettings(const Settings& settings)
+  ScalingInterpolation interpolationModeFromSettings(const Settings& settings)
   {
 #ifdef RETRON77
   // Witv TV / and or scanline interpolation, the image has a height of ~480px. THe R77 runs at 720p, so there
   // is no benefit from QIS in y-direction. In addition, QIS on the R77 has performance issues if TV effects are
   // enabled.
   return settings.getBool("tia.inter") || settings.getInt("tv.filter") != 0
-    ? FrameBuffer::ScalingInterpolation::blur
-    : FrameBuffer::ScalingInterpolation::sharp;
+    ? ScalingInterpolation::blur
+    : ScalingInterpolation::sharp;
 #else
     return settings.getBool("tia.inter") ?
-      FrameBuffer::ScalingInterpolation::blur :
-      FrameBuffer::ScalingInterpolation::sharp;
+      ScalingInterpolation::blur :
+      ScalingInterpolation::sharp;
 #endif
   }
 }
@@ -56,7 +56,9 @@ TIASurface::TIASurface(OSystem& system)
   myTiaSurface = myFB.allocateSurface(
     AtariNTSC::outWidth(TIAConstants::frameBufferWidth),
     TIAConstants::frameBufferHeight,
-    interpolationModeFromSettings(myOSystem.settings())
+    !correctAspect()
+      ? ScalingInterpolation::none
+      : interpolationModeFromSettings(myOSystem.settings())
   );
 
   // Generate scanline data, and a pre-defined scanline surface
@@ -89,14 +91,14 @@ TIASurface::~TIASurface()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIASurface::initialize(const Console& console,
-                            const FrameBuffer::VideoMode& mode)
+                            const VideoModeHandler::Mode& mode)
 {
   myTIA = &(console.tia());
 
-  myTiaSurface->setDstPos(mode.image.x(), mode.image.y());
-  myTiaSurface->setDstSize(mode.image.w(), mode.image.h());
-  mySLineSurface->setDstPos(mode.image.x(), mode.image.y());
-  mySLineSurface->setDstSize(mode.image.w(), mode.image.h());
+  myTiaSurface->setDstPos(mode.imageR.x(), mode.imageR.y());
+  myTiaSurface->setDstSize(mode.imageR.w(), mode.imageR.h());
+  mySLineSurface->setDstPos(mode.imageR.x(), mode.imageR.y());
+  mySLineSurface->setDstSize(mode.imageR.w(), mode.imageR.h());
 
   myPaletteHandler->setPalette();
 
@@ -164,7 +166,6 @@ uInt32 TIASurface::mapIndexedPixel(uInt8 indexedColor, uInt8 shift) const
 {
   return myPalette[indexedColor | shift];
 }
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIASurface::setNTSC(NTSCFilter::Preset preset, bool show)
@@ -312,8 +313,8 @@ void TIASurface::enableNTSC(bool enable)
 string TIASurface::effectsInfo() const
 {
   const FBSurface::Attributes& attr = mySLineSurface->attributes();
-
   ostringstream buf;
+
   switch(myFilter)
   {
     case Filter::Normal:
@@ -326,12 +327,12 @@ string TIASurface::effectsInfo() const
       buf << myNTSCFilter.getPreset() << ", scanlines=" << attr.blendalpha;
       break;
     case Filter::BlarggPhosphor:
-      buf << myNTSCFilter.getPreset() << ", phosphor, scanlines="
-          << attr.blendalpha;
+      buf << myNTSCFilter.getPreset() << ", phosphor, scanlines=" << attr.blendalpha;
       break;
   }
 
   buf << ", inter=" << (myOSystem.settings().getBool("tia.inter") ? "enabled" : "disabled");
+  buf << ", aspect correction=" << (correctAspect() ? "enabled" : "disabled");
 
   return buf.str();
 }
@@ -510,8 +511,16 @@ void TIASurface::renderForSnapshot()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIASurface::updateSurfaceSettings()
 {
-  myTiaSurface->setScalingInterpolation(interpolationModeFromSettings(myOSystem.settings()));
+  myTiaSurface->setScalingInterpolation(
+      interpolationModeFromSettings(myOSystem.settings())
+  );
   mySLineSurface->setScalingInterpolation(
       interpolationModeFromSettings(myOSystem.settings())
   );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool TIASurface::correctAspect() const
+{
+  return myOSystem.settings().getBool("tia.correct_aspect");
 }

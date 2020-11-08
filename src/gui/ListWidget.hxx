@@ -42,7 +42,7 @@ class ListWidget : public EditableWidget
 
   public:
     ListWidget(GuiObject* boss, const GUI::Font& font,
-               int x, int y, int w, int h);
+               int x, int y, int w, int h, bool useScrollbar = true);
     ~ListWidget() override = default;
 
     int rows() const        { return _rows; }
@@ -100,6 +100,7 @@ class ListWidget : public EditableWidget
     int  _selectedItem{-1};
     int  _highlightedItem{-1};
     bool _editMode{false};
+    bool _useScrollbar{true};
 
     ScrollBarWidget* _scrollBar{nullptr};
 

@@ -495,9 +495,9 @@
     <ClCompile Include="..\common\audio\SimpleResampler.cxx" />
     <ClCompile Include="..\common\Base.cxx" />
     <ClCompile Include="..\common\EventHandlerSDL2.cxx" />
+    <ClCompile Include="..\common\FBBackendSDL2.cxx" />
     <ClCompile Include="..\common\FBSurfaceSDL2.cxx" />
     <ClCompile Include="..\common\FpsMeter.cxx" />
-    <ClCompile Include="..\common\FrameBufferSDL2.cxx" />
     <ClCompile Include="..\common\FSNodeZIP.cxx" />
     <ClCompile Include="..\common\JoyMap.cxx" />
     <ClCompile Include="..\common\KeyMap.cxx" />
@@ -520,6 +520,7 @@
     <ClCompile Include="..\common\TimerManager.cxx" />
     <ClCompile Include="..\common\tv_filters\AtariNTSC.cxx" />
     <ClCompile Include="..\common\tv_filters\NTSCFilter.cxx" />
+    <ClCompile Include="..\common\VideoModeHandler.cxx" />
     <ClCompile Include="..\common\ZipHandler.cxx" />
     <ClCompile Include="..\debugger\BreakpointMap.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
@@ -620,7 +621,9 @@
     <ClCompile Include="..\debugger\gui\CartEFWidget.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\debugger\gui\CartEnhancedWidget.cxx" />
+    <ClCompile Include="..\debugger\gui\CartEnhancedWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\debugger\gui\CartF0Widget.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClCompile>
@@ -702,7 +705,9 @@
     <ClCompile Include="..\debugger\gui\PointingDeviceWidget.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\debugger\gui\QuadTariWidget.cxx" />
+    <ClCompile Include="..\debugger\gui\QuadTariWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\debugger\gui\RiotRamWidget.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClCompile>
@@ -781,6 +786,7 @@
     <ClCompile Include="..\gui\TimeLineWidget.cxx" />
     <ClCompile Include="..\gui\TimeMachine.cxx" />
     <ClCompile Include="..\gui\TimeMachineDialog.cxx" />
+    <ClCompile Include="..\gui\UndoHandler.cxx" />
     <ClCompile Include="..\gui\WhatsNewDialog.cxx" />
     <ClCompile Include="FSNodeWINDOWS.cxx" />
     <ClCompile Include="OSystemWINDOWS.cxx" />
@@ -1503,9 +1509,9 @@
     <ClInclude Include="..\common\Base.hxx" />
     <ClInclude Include="..\common\bspf.hxx" />
     <ClInclude Include="..\common\EventHandlerSDL2.hxx" />
+    <ClInclude Include="..\common\FBBackendSDL2.hxx" />
     <ClInclude Include="..\common\FBSurfaceSDL2.hxx" />
     <ClInclude Include="..\common\FpsMeter.hxx" />
-    <ClInclude Include="..\common\FrameBufferSDL2.hxx" />
     <ClInclude Include="..\common\FSNodeFactory.hxx" />
     <ClInclude Include="..\common\FSNodeZIP.hxx" />
     <ClInclude Include="..\common\JoyMap.hxx" />
@@ -1538,6 +1544,7 @@
     <ClInclude Include="..\common\tv_filters\NTSCFilter.hxx" />
     <ClInclude Include="..\common\Variant.hxx" />
     <ClInclude Include="..\common\Vec.hxx" />
+    <ClInclude Include="..\common\VideoModeHandler.hxx" />
     <ClInclude Include="..\common\ZipHandler.hxx" />
     <ClInclude Include="..\debugger\BreakpointMap.hxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
@@ -1635,7 +1642,9 @@
     <ClInclude Include="..\debugger\gui\CartEFWidget.hxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="..\debugger\gui\CartEnhancedWidget.hxx" />
+    <ClInclude Include="..\debugger\gui\CartEnhancedWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\debugger\gui\CartF0Widget.hxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClInclude>
@@ -1723,7 +1732,9 @@
     <ClInclude Include="..\debugger\gui\PointingDeviceWidget.hxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="..\debugger\gui\QuadTariWidget.hxx" />
+    <ClInclude Include="..\debugger\gui\QuadTariWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\debugger\gui\RiotRamWidget.hxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClInclude>
@@ -1772,6 +1783,7 @@
     <ClInclude Include="..\emucore\EventHandlerConstants.hxx" />
     <ClInclude Include="..\emucore\exception\EmulationWarning.hxx" />
     <ClInclude Include="..\emucore\exception\FatalEmulationError.hxx" />
+    <ClInclude Include="..\emucore\FBBackend.hxx" />
     <ClInclude Include="..\emucore\FBSurface.hxx" />
     <ClInclude Include="..\emucore\FrameBufferConstants.hxx" />
     <ClInclude Include="..\emucore\Lightgun.hxx" />
@@ -1826,6 +1838,7 @@
     <ClInclude Include="..\gui\TimeLineWidget.hxx" />
     <ClInclude Include="..\gui\TimeMachine.hxx" />
     <ClInclude Include="..\gui\TimeMachineDialog.hxx" />
+    <ClInclude Include="..\gui\UndoHandler.hxx" />
     <ClInclude Include="..\gui\WhatsNewDialog.hxx" />
     <ClInclude Include="..\libpng\pngdebug.h" />
     <ClInclude Include="..\libpng\pnginfo.h" />
@@ -2038,6 +2051,7 @@
     <ClInclude Include="..\libpng\png.h" />
     <ClInclude Include="..\libpng\pngconf.h" />
     <ClInclude Include="..\libpng\pngpriv.h" />
+    <ClInclude Include="Windows.hxx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\emucore\tia\frame-manager\module.mk" />

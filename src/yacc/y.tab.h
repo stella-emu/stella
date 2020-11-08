@@ -1,8 +1,9 @@
-/* A Bison parser, made by GNU Bison 3.0.4.  */
+/* A Bison parser, made by GNU Bison 3.5.1.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2020 Free Software Foundation,
+   Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -30,6 +31,9 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
+/* Undocumented macros, especially those whose name start with YY_,
+   are private implementation details.  Do not rely on them.  */
+
 #ifndef YY_YY_Y_TAB_H_INCLUDED
 # define YY_YY_Y_TAB_H_INCLUDED
 /* Debug traces.  */
@@ -50,19 +54,20 @@ extern int yydebug;
     EQUATE = 260,
     CART_METHOD = 261,
     CPU_METHOD = 262,
-    TIA_METHOD = 263,
-    FUNCTION = 264,
-    LOG_OR = 265,
-    LOG_AND = 266,
-    LOG_NOT = 267,
-    SHR = 268,
-    SHL = 269,
-    GTE = 270,
-    LTE = 271,
-    NE = 272,
-    EQ = 273,
-    DEREF = 274,
-    UMINUS = 275
+    RIOT_METHOD = 263,
+    TIA_METHOD = 264,
+    FUNCTION = 265,
+    LOG_OR = 266,
+    LOG_AND = 267,
+    LOG_NOT = 268,
+    SHR = 269,
+    SHL = 270,
+    GTE = 271,
+    LTE = 272,
+    NE = 273,
+    EQ = 274,
+    DEREF = 275,
+    UMINUS = 276
   };
 #endif
 /* Tokens.  */
@@ -71,38 +76,39 @@ extern int yydebug;
 #define EQUATE 260
 #define CART_METHOD 261
 #define CPU_METHOD 262
-#define TIA_METHOD 263
-#define FUNCTION 264
-#define LOG_OR 265
-#define LOG_AND 266
-#define LOG_NOT 267
-#define SHR 268
-#define SHL 269
-#define GTE 270
-#define LTE 271
-#define NE 272
-#define EQ 273
-#define DEREF 274
-#define UMINUS 275
+#define RIOT_METHOD 263
+#define TIA_METHOD 264
+#define FUNCTION 265
+#define LOG_OR 266
+#define LOG_AND 267
+#define LOG_NOT 268
+#define SHR 269
+#define SHL 270
+#define GTE 271
+#define LTE 272
+#define NE 273
+#define EQ 274
+#define DEREF 275
+#define UMINUS 276
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-
 union YYSTYPE
 {
-#line 28 "stella.y" /* yacc.c:1909  */
+#line 28 "stella.y"
 
 	int val;
 	char* Equate;
 	CartMethod cartMethod;
 	CpuMethod cpuMethod;
+	RiotMethod riotMethod;
 	TiaMethod tiaMethod;
 	Expression* exp;
 	char* DefinedFunction;
 
-#line 104 "y.tab.h" /* yacc.c:1909  */
-};
+#line 110 "y.tab.h"
 
+};
 typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1

@@ -15,12 +15,12 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "FrameBufferSDL2.hxx"
+#include "FBBackendSDL2.hxx"
 #include "ThreadDebugging.hxx"
 #include "BilinearBlitter.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-BilinearBlitter::BilinearBlitter(FrameBufferSDL2& fb, bool interpolate)
+BilinearBlitter::BilinearBlitter(FBBackendSDL2& fb, bool interpolate)
   : myFB(fb),
     myInterpolate(interpolate)
 {

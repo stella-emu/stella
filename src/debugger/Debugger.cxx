@@ -90,21 +90,18 @@ Debugger::~Debugger()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::initialize()
 {
-  const Common::Size& s = myOSystem.settings().getSize("dbg.res");
+  mySize = myOSystem.settings().getSize("dbg.res");
   const Common::Size& d = myOSystem.frameBuffer().desktopSize();
-  myWidth = s.w;  myHeight = s.h;
 
   // The debugger dialog is resizable, within certain bounds
   // We check those bounds now
-  myWidth  = std::max(myWidth,  uInt32(DebuggerDialog::kSmallFontMinW));
-  myHeight = std::max(myHeight, uInt32(DebuggerDialog::kSmallFontMinH));
-  myWidth  = std::min(myWidth,  uInt32(d.w));
-  myHeight = std::min(myHeight, uInt32(d.h));
+  mySize.clamp(uInt32(DebuggerDialog::kSmallFontMinW), d.w,
+               uInt32(DebuggerDialog::kSmallFontMinH), d.h);
 
-  myOSystem.settings().setValue("dbg.res", Common::Size(myWidth, myHeight));
+  myOSystem.settings().setValue("dbg.res", mySize);
 
   delete myDialog;  myDialog = nullptr;
-  myDialog = new DebuggerDialog(myOSystem, *this, 0, 0, myWidth, myHeight);
+  myDialog = new DebuggerDialog(myOSystem, *this, 0, 0, mySize.w, mySize.h);
 
   myCartDebug->setDebugWidget(&(myDialog->cartDebug()));
 
@@ -115,8 +112,9 @@ void Debugger::initialize()
 FBInitStatus Debugger::initializeVideo()
 {
   string title = string("Stella ") + STELLA_VERSION + ": Debugger mode";
-  return myOSystem.frameBuffer().createDisplay(title, FrameBuffer::BufferType::Debugger,
-                                               myWidth, myHeight);
+  return myOSystem.frameBuffer().createDisplay(
+      title, BufferType::Debugger, mySize
+  );
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -877,23 +875,28 @@ std::array<Debugger::BuiltinFunction, 18> Debugger::ourBuiltinFunctions = { {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Names are defined here, but processed in YaccParser
-std::array<Debugger::PseudoRegister, 12> Debugger::ourPseudoRegisters = { {
+std::array<Debugger::PseudoRegister, 16> Debugger::ourPseudoRegisters = { {
 // Debugger::PseudoRegister Debugger::ourPseudoRegisters[NUM_PSEUDO_REGS] = {
-  { "_bank",      "Currently selected bank" },
-  { "_cclocks",   "Color clocks on current scanline" },
-  { "_cycleshi",  "Higher 32 bits of number of cycles since emulation started" },
-  { "_cycleslo",  "Lower 32 bits of number of cycles since emulation started" },
-  { "_fcount",    "Number of frames since emulation started" },
-  { "_fcycles",   "Number of cycles since frame started" },
-  { "_icycles",   "Number of cycles of last instruction" },
-  { "_scan",      "Current scanline count" },
-  { "_scanend",   "Scanline count at end of last frame" },
-  { "_scycles",   "Number of cycles in current scanline" },
-  { "_vblank",    "Whether vertical blank is enabled (1 or 0)" },
-  { "_vsync",     "Whether vertical sync is enabled (1 or 0)" }
+  { "_bank",          "Currently selected bank" },
+  { "_cclocks",       "Color clocks on current scanline" },
+  { "_cycleshi",      "Higher 32 bits of number of cycles since emulation started" },
+  { "_cycleslo",      "Lower 32 bits of number of cycles since emulation started" },
+  { "_fcount",        "Number of frames since emulation started" },
+  { "_fcycles",       "Number of cycles since frame started" },
+  { "_ftimreadcycles","Number of cycles used by timer reads since frame started" },
+  { "_fwsynccycles",  "Number of cycles skipped by WSYNC since frame started" },
+  { "_icycles",       "Number of cycles of last instruction" },
+  { "_scan",          "Current scanline count" },
+  { "_scanend",       "Scanline count at end of last frame" },
+  { "_scycles",       "Number of cycles in current scanline" },
+  { "_timwrapread",   "Timer read wrapped on this cycle" },
+  { "_timwrapwrite",  "Timer write wrapped on this cycle" },
+  { "_vblank",        "Whether vertical blank is enabled (1 or 0)" },
+  { "_vsync",         "Whether vertical sync is enabled (1 or 0)" }
   // CPU address access functions:
   /*{ "_lastread", "last CPU read address" },
   { "_lastwrite", "last CPU write address" },
   { "__lastbaseread", "last CPU read base address" },
   { "__lastbasewrite", "last CPU write base address" }*/
 } };
+//

@@ -68,6 +68,7 @@ void EditTextWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount
   if(!isEditable())
     return;
 
+  resetSelection();
   x += _editScrollOffset;
 
   int width = 0;
@@ -105,10 +106,10 @@ void EditTextWidget::drawWidget(bool hilite)
                _changed && onTop && isEnabled()
                ? kDbgChangedTextColor
                : onTop && isEnabled() ? _textcolor : kColor,
-               TextAlign::Left, isEditable() ? -_editScrollOffset : 0, !isEditable());
+               TextAlign::Left, scrollOffset(), !isEditable());
 
-  // Draw the caret
-  drawCaret();
+  // Draw the caret and selection
+  drawCaretSelection();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -120,6 +121,7 @@ Common::Rect EditTextWidget::getEditRect() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EditTextWidget::lostFocusWidget()
 {
+  EditableWidget::lostFocusWidget();
   // If we loose focus, 'commit' the user changes
   _backupString = editString();
 }

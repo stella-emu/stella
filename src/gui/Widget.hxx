@@ -336,7 +336,7 @@ class SliderWidget : public ButtonWidget
     ~SliderWidget() override = default;
 
     void setValue(int value);
-    int getValue() const { return _value; }
+    int getValue() const { return BSPF::clamp(_value, _valueMin, _valueMax); }
 
     void setMinValue(int value);
     int  getMinValue() const { return _valueMin; }

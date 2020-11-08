@@ -141,9 +141,11 @@ void CheckListWidget::drawWidget(bool hilite)
   }
 
   // Only draw the caret while editing, and if it's in the current viewport
-  if(_editMode && (_selectedItem >= _scrollBar->_currentPos) &&
-    (_selectedItem < _scrollBar->_currentPos + _rows))
-    drawCaret();
+  if(_editMode &&
+     (!_useScrollbar ||
+     ((_selectedItem >= _scrollBar->_currentPos) &&
+      (_selectedItem < _scrollBar->_currentPos + _rows))))
+    drawCaretSelection();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

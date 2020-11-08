@@ -35,20 +35,32 @@ class PaletteHandler
     // Phase shift default and limits
     static constexpr float DEF_NTSC_SHIFT = 26.2F;
     static constexpr float DEF_PAL_SHIFT = 31.3F; // ~= 360 / 11.5
-    static constexpr float MAX_SHIFT = 4.5F;
+    static constexpr float MAX_PHASE_SHIFT = 4.5F;
+    static constexpr float DEF_RGB_SHIFT = 0.0F;
+    static constexpr float MAX_RGB_SHIFT = 22.5F;
 
     enum Adjustables {
       PHASE_SHIFT,
+      RED_SCALE,
+      GREEN_SCALE,
+      BLUE_SCALE,
+      RED_SHIFT,
+      GREEN_SHIFT,
+      BLUE_SHIFT,
       HUE,
       SATURATION,
       CONTRAST,
       BRIGHTNESS,
-      GAMMA
+      GAMMA,
+      CUSTOM_START = PHASE_SHIFT,
+      CUSTOM_END = BLUE_SHIFT,
     };
 
     // Externally used adjustment parameters
     struct Adjustable {
-      float phaseNtsc{0.F}, phasePal{0.F};
+      float phaseNtsc{0.F}, phasePal{0.F},
+        redScale{0.F}, greenScale{0.F}, blueScale{0.F},
+        redShift{0.F}, greenShift{0.F}, blueShift{0.F};
       uInt32 hue{0}, saturation{0}, contrast{0}, brightness{0}, gamma{0};
     };
 
@@ -108,6 +120,7 @@ class PaletteHandler
     */
     void setPalette();
 
+
   private:
     static constexpr char DEGREE = 0x1c;
 
@@ -121,11 +134,44 @@ class PaletteHandler
       MaxType = Custom
     };
 
+    struct vector2d {
+      float x;
+      float y;
+
+      explicit vector2d()
+        : x(0.F), y(0.F) { }
+      explicit vector2d(float _x, float _y)
+        : x(_x), y(_y) { }
+    };
+
+    /**
+      Convert RGB adjustables from/to 100% scale
+    */
+    static constexpr float scaleRGBFrom100(float x) { return x / 50.F; }
+    static constexpr uInt32 scaleRGBTo100(float x) { return uInt32(50.0001F * (x - 0.F)); }
+
+    /**
+      Convert angles
+    */
+    static constexpr float scaleFromAngles(float x) { return x / 10.F; }
+    static constexpr Int32 scaleToAngles(float x) { return uInt32(10.F * x); }
+
     /**
       Convert adjustables from/to 100% scale
     */
     static constexpr float scaleFrom100(float x) { return (x / 50.F) - 1.F; }
     static constexpr uInt32 scaleTo100(float x)  { return uInt32(50.0001F * (x + 1.F)); }
+
+    /**
+      Check for 'Custom' palette only adjustables
+    */
+    bool isCustomAdjustable() const;
+
+    bool isPhaseShift() const;
+
+    bool isRGBScale() const;
+
+    bool isRGBShift() const;
 
     /**
       Convert palette settings name to enumeration.
@@ -187,13 +233,28 @@ class PaletteHandler
     void adjustHueSaturation(int& R, int& G, int& B, float H, float S);
 
     /**
+      Rotate a 2D vector.
+    */
+    vector2d rotate(const vector2d& vec, float angle) const;
+
+    /**
+      Scale a 2D vector.
+    */
+    vector2d scale(const vector2d& vec, float factor) const;
+
+    /**
+      Get the dot product of two 2D vectors.
+    */
+    float dotProduct(const vector2d& vec1, const vector2d& vec2) const;
+
+    /**
       Loads a user-defined palette file (from OSystem::paletteFile), filling the
       appropriate user-defined palette arrays.
     */
     void loadUserPalette();
 
   private:
-    static constexpr int NUM_ADJUSTABLES = 6;
+    static constexpr int NUM_ADJUSTABLES = 12;
 
     OSystem& myOSystem;
 
@@ -207,6 +268,12 @@ class PaletteHandler
     const std::array<AdjustableTag, NUM_ADJUSTABLES> myAdjustables =
     { {
       { "phase shift", nullptr },
+      { "red scale", &myRedScale },
+      { "green scale", &myGreenScale },
+      { "blue scale", &myBlueScale },
+      { "red shift", &myRedShift },
+      { "green shift", &myGreenShift },
+      { "blue shift", &myBlueShift },
       { "hue", &myHue },
       { "saturation", &mySaturation },
       { "contrast", &myContrast },
@@ -217,6 +284,14 @@ class PaletteHandler
     // NTSC and PAL color phase shifts
     float myPhaseNTSC{DEF_NTSC_SHIFT};
     float myPhasePAL{DEF_PAL_SHIFT};
+    // Color intensities
+    float myRedScale{1.0F};
+    float myGreenScale{1.0F};
+    float myBlueScale{1.0F};
+    // Color shifts
+    float myRedShift{0.0F};
+    float myGreenShift{0.0F};
+    float myBlueShift{0.0F};
     // range -1.0 to +1.0 (as in AtariNTSC)
     // Basic parameters
     float myHue{0.0F};        // -1 = -180 degrees     +1 = +180 degrees

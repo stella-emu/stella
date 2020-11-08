@@ -12,7 +12,45 @@
                               Release History
 ===========================================================================
 
-6.2.1 to 6.3 (XXXX XX, 2020)
+6.4 to 6.5 (December XX, 2020)
+
+  * Enhanced cut/copy/paste	to allow selecting text (TODO: PromptWidget, doc)
+
+-Have fun!
+
+
+6.3 to 6.4 (November 2, 2020)
+
+  * Added basic (entire and single line only) text cut/copy and paste.
+
+  * Added color parameters to 'Custom' palette.
+
+  * Some improvements to AtariVox-USB adaptor functionality:
+    - Made serial port used for an AtariVox-USB adaptor editable.
+    - Autodetection of serial ports no longer messes up devices plugged
+      into other serial ports.
+
+  * Added CPU load stats to debugger.  Related to this, added debugger
+    pseudo-registers '_ftimreadcycles' and '_fwsynccycles' to show the
+    number of cycles since the start of frame under certain circumstances
+    (see manual for more details).
+
+  * Fixed bug with aspect correction and fullscreen mode; snapshots from
+    such a mode are now pixel-exact.
+
+  * Fixed a bug that caused CDF ROMs to crash on the Retron77 and reduced
+    ARM emulation performance for CDF ROMs on other platforms.
+
+  * Fixed crash with missing or incorrectly sized SaveKey data file, and
+    with certain functions not working (erase pages, erase entire EEPROM).
+
+  * Fixed Atari mouse autodetection.
+
+  * Fixed bug in ROM launcher, with last ROM selected not being remembered
+    when exiting and re-entering a directory.
+
+
+6.2.1 to 6.3 (October 7, 2020)
 
   * Added adjustable autofire.
 
@@ -37,6 +75,8 @@
     are no longer corrupted/cut off.  This includes properly supporting the
     2600-daptor II, which is flashable to an AVox-USB converter.
 
+  * Added auto-detection of the serial port used for an AtariVox-USB adaptor.
+
   * Added QuadTari controller support.
 
   * Added option to select the audio device.
@@ -49,12 +89,19 @@
 
   * Added another oddball TIA glitch option for delayed background color.
 
+  * Added option to disable aspect ratio correct scaling.
+
+  * Added debugger pseudo-registers '_timwrapread' and '_timwrapwrite',
+    which are set when the RIOT timer is read/written on timer wraparound,
+    respectively.
+
+  * Bankswitching schemes BUS, DPC+ and CDFx now work when startup bank
+    randomization is enabled (these schemes now ignore that setting).
+
   * Replaced "Re-disassemble" with "Disassemble @ current line" in debugger.
 
   * Fixed bug when taking fullscreen snapshots; the dimensions were
     sometimes cut off.
-
--Have fun!
 
 
 6.2.1 to 6.2.2 (August 25, 2020)

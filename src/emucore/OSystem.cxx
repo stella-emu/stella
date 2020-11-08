@@ -143,10 +143,15 @@ bool OSystem::create()
   // Get relevant information about the video hardware
   // This must be done before any graphics context is created, since
   // it may be needed to initialize the size of graphical objects
-  try        { myFrameBuffer = MediaFactory::createVideo(*this); }
-  catch(...) { return false; }
-  if(!myFrameBuffer->initialize())
+  try
+  {
+    myFrameBuffer = make_unique<FrameBuffer>(*this);
+    myFrameBuffer->initialize();
+  }
+  catch(...)
+  {
     return false;
+  }
 
   // Create the event handler for the system
   myEventHandler = MediaFactory::createEventHandler(*this);
@@ -186,11 +191,12 @@ bool OSystem::create()
   myPropSet->load(myPropertiesFile);
 
   // Detect serial port for AtariVox-USB
-  // If a previously set port is available, use it;
+  // If a previously set port is defined, use it;
   // otherwise use the first one found (if any)
-  StringList ports = MediaFactory::createSerialPort()->portNames();
-  bool oldPortFound = BSPF::contains(ports, mySettings->getString("avoxport"));
-  if(!oldPortFound && ports.size() > 0)
+  const string& avoxport = mySettings->getString("avoxport");
+  const StringList ports = MediaFactory::createSerialPort()->portNames();
+
+  if(avoxport.empty() && ports.size() > 0)
     mySettings->setValue("avoxport", ports[0]);
 
   return true;
@@ -721,7 +727,7 @@ string OSystem::getROMInfo(const Console& console)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 float OSystem::frameRate() const
 {
-  return myConsole ? myConsole->getFramerate() : 0;
+  return myConsole ? myConsole->currentFrameRate() : 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

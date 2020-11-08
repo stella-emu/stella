@@ -134,6 +134,16 @@ class Event
       JoystickThreeUp, JoystickThreeDown, JoystickThreeLeft, JoystickThreeRight,
       JoystickThreeFire,
 
+      ToggleCorrectAspectRatio,
+
+      MoveLeftChar, MoveRightChar, MoveLeftWord, MoveRightWord,
+      MoveHome, MoveEnd,
+      SelectLeftChar, SelectRightChar, SelectLeftWord, SelectRightWord,
+      SelectHome, SelectEnd, SelectAll,
+      Delete, DeleteLeftWord, DeleteRightWord, DeleteHome, DeleteEnd, Backspace,
+      Cut, Copy, Paste, Undo, Redo,
+      AbortEdit, EndEdit,
+
       LastType
     };
 

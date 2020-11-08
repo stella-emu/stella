@@ -69,6 +69,7 @@ class DataGridWidget : public EditableWidget
 
     int getSelectedAddr() const   { return _addrList[_selectedItem]; }
     int getSelectedValue() const  { return _valueList[_selectedItem]; }
+    bool getSelectedChanged() const { return _changedList[_selectedItem]; }
 
     void setRange(int lower, int upper);
 
