@@ -128,12 +128,12 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
                              readNames[row]);
   }
   xpos += t->getWidth() + 5;
-  myTimRead = new DataGridWidget(boss, nfont, xpos, ypos, 1, 4, 4, 32, Common::Base::Fmt::_16);
+  myTimRead = new DataGridWidget(boss, nfont, xpos, ypos, 1, 4, 4, 30, Common::Base::Fmt::_16);
   myTimRead->setTarget(this);
   myTimRead->setEditable(false);
 
   ypos += myTimRead->getHeight() - 1;
-  myTimDivider = new DataGridWidget(boss, nfont, xpos, ypos, 1, 1, 4, 32, Common::Base::Fmt::_10_4);
+  myTimDivider = new DataGridWidget(boss, nfont, xpos, ypos, 1, 1, 4, 12, Common::Base::Fmt::_10_4);
   myTimDivider->setTarget(this);
   myTimDivider->setEditable(false);
 
