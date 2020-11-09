@@ -631,7 +631,7 @@ void VideoAudioDialog::loadConfig()
   myVolumeSlider->setValue(audioSettings.volume());
 
   // Device
-  uInt32 deviceId = BSPF::clamp(audioSettings.device(), 0u,
+  uInt32 deviceId = BSPF::clamp(audioSettings.device(), 0U,
                                 uInt32(instance().sound().supportedDevices().size() - 1));
   myDevicePopup->setSelected(deviceId);
 
