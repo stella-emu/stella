@@ -26,14 +26,13 @@ CartridgeMNetworkWidget::CartridgeMNetworkWidget(
     int x, int y, int w, int h,
     CartridgeMNetwork& cart)
   : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
-    myCart(cart),
-    myLower2K(nullptr),
-    myUpper256B(nullptr)
+    myCart(cart)
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeMNetworkWidget::initialize(GuiObject* boss, CartridgeMNetwork& cart, ostringstream& info)
+void CartridgeMNetworkWidget::initialize(GuiObject* boss,
+    CartridgeMNetwork& cart, ostringstream& info)
 {
   uInt32 size = cart.romBankCount() * cart.BANK_SIZE;
 
