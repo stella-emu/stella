@@ -117,7 +117,7 @@ bool SoundSDL2::openDevice()
   if(myIsInitializedFlag)
     SDL_CloseAudioDevice(myDevice);
 
-  myDeviceId = BSPF::clamp(myAudioSettings.device(), 0u, uInt32(myDevices.size() - 1));
+  myDeviceId = BSPF::clamp(myAudioSettings.device(), 0U, uInt32(myDevices.size() - 1));
   const char* device = myDeviceId ? myDevices.at(myDeviceId).first.c_str() : nullptr;
 
   myDevice = SDL_OpenAudioDevice(device, 0, &desired, &myHardwareSpec,

@@ -143,7 +143,8 @@ void RomAuditDialog::auditRoms()
         // Only rename the file if we found a valid properties entry
         if(name != "" && name != files[idx].getName())
         {
-          const string& newfile = node.getPath() + name + "." + extension;
+          string newfile = node.getPath();
+          newfile.append(name).append(".").append(extension);
           if(files[idx].getPath() != newfile && files[idx].rename(newfile))
             renameSucceeded = true;
         }

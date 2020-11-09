@@ -135,12 +135,10 @@ class PaletteHandler
     };
 
     struct vector2d {
-      float x;
-      float y;
+      float x{0.F};
+      float y{0.F};
 
-      explicit vector2d()
-        : x(0.F), y(0.F) { }
-      explicit vector2d(float _x, float _y)
+      explicit vector2d(float _x = 0.F, float _y = 0.F)
         : x(_x), y(_y) { }
     };
 
