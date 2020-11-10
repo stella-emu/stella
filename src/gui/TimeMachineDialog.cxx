@@ -225,6 +225,7 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   // Add index info
   myCurrentIdxWidget = new StaticTextWidget(this, font, xpos, ypos, "1000", TextAlign::Left, kBGColor);
   myCurrentIdxWidget->setTextColor(kColorInfo);
+  myCurrentIdxWidget->setFlags(Widget::FLAG_CLEARBG | Widget::FLAG_TRANSPARENT);
   myLastIdxWidget = new StaticTextWidget(this, font, _w - H_BORDER - font.getStringWidth("1000"), ypos,
                                          "1000", TextAlign::Right, kBGColor);
   myLastIdxWidget->setTextColor(kColorInfo);
@@ -241,6 +242,7 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   // Add time info
   int ypos_s = ypos + (buttonHeight - font.getFontHeight() + 1) / 2; // align to button vertical center
   myCurrentTimeWidget = new StaticTextWidget(this, font, xpos, ypos_s, "00:00.00", TextAlign::Left, kBGColor);
+  myCurrentTimeWidget->setFlags(Widget::FLAG_CLEARBG | Widget::FLAG_TRANSPARENT);
   myCurrentTimeWidget->setTextColor(kColorInfo);
   myLastTimeWidget = new StaticTextWidget(this, font, _w - H_BORDER - font.getStringWidth("00:00.00"), ypos_s,
                                           "00:00.00", TextAlign::Right, kBGColor);
@@ -287,6 +289,7 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   // Add message
   myMessageWidget = new StaticTextWidget(this, font, xpos, ypos_s,
       "                                             ", TextAlign::Left, kBGColor);
+  myMessageWidget->setFlags(Widget::FLAG_CLEARBG | Widget::FLAG_TRANSPARENT);
   myMessageWidget->setTextColor(kColorInfo);
 }
 

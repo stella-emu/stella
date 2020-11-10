@@ -177,6 +177,22 @@ void FBSurfaceSDL2::invalidate()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurfaceSDL2::invalidateRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
+{
+  ASSERT_MAIN_THREAD;
+
+  // Clear the rectangle
+  SDL_Rect tmp;
+  tmp.x = x;
+  tmp.y = y;
+  tmp.w = w;
+  tmp.h = h;
+  // Note: Transparency has to be 0 to clear the rectangle foreground
+  //  without affecting the background display.
+  SDL_FillRect(mySurface, &tmp, 0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL2::free()
 {
   myBlitter.reset();

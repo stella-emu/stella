@@ -55,6 +55,8 @@ class FBSurfaceSDL2 : public FBSurface
     void translateCoords(Int32& x, Int32& y) const override;
     bool render() override;
     void invalidate() override;
+    void invalidateRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h) override;
+
     void free() override;
     void reload() override;
     void resize(uInt32 width, uInt32 height) override;
