@@ -64,8 +64,9 @@ class Dialog : public GuiObject
 
     // A dialog being dirty indicates that its underlying surface needs to be
     // redrawn and then re-rendered; this is taken care of in ::render()
-    void setDirty() override { _dirty = true; }
-    bool isDirty() const { return _dirty; }
+    void setDirty() override;
+    bool isDirty() const override;
+    bool isChainDirty() const override;
     bool render();
 
     void addFocusWidget(Widget* w) override;
@@ -235,7 +236,7 @@ class Dialog : public GuiObject
 
     int _tabID{0};
     int _flags{0};
-    bool _dirty{false};
+    //bool _dirty{false};
     uInt32 _max_w{0}; // maximum wanted width
     uInt32 _max_h{0}; // maximum wanted height
 

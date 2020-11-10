@@ -91,21 +91,32 @@ void DialogContainer::updateTime(uInt64 time)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool DialogContainer::draw(bool full)
 {
+  cerr << "draw " << full << endl;
   if(myDialogStack.empty())
     return false;
 
   // Make the top dialog dirty if a full redraw is requested
-  if(full)
-    myDialogStack.top()->setDirty();
+  //if(full)
+  //  myDialogStack.top()->setDirty();
 
   // If the top dialog is dirty, then all below it must be redrawn too
   const bool dirty = needsRedraw();
+  //if(dirty)
+  //  myDialogStack.top()->setDirty();
 
-  myDialogStack.applyAll([&](Dialog*& d){
-    if(dirty)
-      d->setDirty();
-    full |= d->render();
-  });
+  //myDialogStack.applyAll([&](Dialog*& d){
+  //  if(dirty)
+  //    d->setDirty();
+  //  full |= d->render();
+  //});
+  //if(dirty)
+  {
+    myDialogStack.applyAll([&](Dialog*& d) {
+      if(d->needsRedraw())
+        //d->setDirty();
+        full |= d->render();
+    });
+  }
 
   return full;
 }
@@ -113,7 +124,9 @@ bool DialogContainer::draw(bool full)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool DialogContainer::needsRedraw() const
 {
-  return !myDialogStack.empty() ? myDialogStack.top()->isDirty() : false;
+  return !myDialogStack.empty()
+    ? myDialogStack.top()->needsRedraw()
+    : false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -133,6 +146,9 @@ int DialogContainer::addDialog(Dialog* d)
         "Unable to show dialog box; FIX THE CODE");
   else
   {
+    // fade out current top dialog
+    if(!myDialogStack.empty())
+      myDialogStack.top()->setDirty();
     d->setDirty();
     myDialogStack.push(d);
   }
@@ -145,8 +161,16 @@ void DialogContainer::removeDialog()
   if(!myDialogStack.empty())
   {
     myDialogStack.pop();
+    // necessary as long as all dialogs share the same surface
     if(!myDialogStack.empty())
-      myDialogStack.top()->setDirty();
+    {
+      //myDialogStack.top()->setDirty();
+
+      // Mark all dialogs for redraw
+      myDialogStack.applyAll([&](Dialog*& d){
+          d->setDirty();
+      });
+    }
   }
 }
 

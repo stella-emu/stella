@@ -56,7 +56,41 @@ void Widget::setDirty()
 {
   // A widget being dirty indicates that its parent dialog is dirty
   // So we inform the parent about it
-  _boss->dialog().setDirty();
+  //_boss->dialog().setDirty();
+  //cerr << "set dirty " << typeid(*this).name() << endl;
+
+  _dirty = true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Widget::isDirty() const
+{
+  string name = typeid(*this).name();
+  if(_dirty && name == "class TabWidget")
+    cerr << "is dirty " << typeid(*this).name() << endl;
+
+  return _dirty;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Widget::isChainDirty() const
+{
+  string name = typeid(*this).name();
+  if(_dirty && name == "class TabWidget")
+    cerr << "is chain dirty " << typeid(*this).name() << endl;
+
+  bool dirty = false;
+
+  // Check if widget or any subwidgets are dirty
+  Widget* w = _firstWidget;
+
+  while(!dirty && w)
+  {
+    dirty |= w->isDirty();
+    w = w->_next;
+  }
+
+  return dirty;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -65,60 +99,67 @@ void Widget::draw()
   if(!isVisible() || !_boss->isVisible())
     return;
 
-  FBSurface& s = _boss->dialog().surface();
-
-  bool onTop = _boss->dialog().isOnTop();
-
-  bool hasBorder = _flags & Widget::FLAG_BORDER; // currently only used by Dialog widget
-  int oldX = _x, oldY = _y;
-
-  // Account for our relative position in the dialog
-  _x = getAbsX();
-  _y = getAbsY();
-
-  // Clear background (unless alpha blending is enabled)
-  if(_flags & Widget::FLAG_CLEARBG)
+  if(isDirty())
   {
-    int x = _x, y = _y, w = _w, h = _h;
+    //cerr << "  *** draw widget " << typeid(*this).name() << " ***" << endl;
+
+    FBSurface& s = _boss->dialog().surface();
+
+    bool onTop = _boss->dialog().isOnTop();
+
+    bool hasBorder = _flags & Widget::FLAG_BORDER; // currently only used by Dialog widget
+    int oldX = _x, oldY = _y;
+
+    // Account for our relative position in the dialog
+    _x = getAbsX();
+    _y = getAbsY();
+
+    // Clear background (unless alpha blending is enabled)
+    if(_flags & Widget::FLAG_CLEARBG)
+    {
+      int x = _x, y = _y, w = _w, h = _h;
+      if(hasBorder)
+      {
+        x++; y++; w -= 2; h -= 2;
+      }
+      s.fillRect(x, y, w, h, !onTop ? _bgcolorlo : (_flags & Widget::FLAG_HILITED) && isEnabled() ? _bgcolorhi : _bgcolor);
+    }
+
+    // Draw border
     if(hasBorder)
     {
-      x++; y++; w-=2; h-=2;
+      s.frameRect(_x, _y, _w, _h, !onTop ? kColor : (_flags & Widget::FLAG_HILITED) && isEnabled() ? kWidColorHi : kColor);
+      _x += 4;
+      _y += 4;
+      _w -= 8;
+      _h -= 8;
     }
-    s.fillRect(x, y, w, h, !onTop ? _bgcolorlo : (_flags & Widget::FLAG_HILITED) && isEnabled() ? _bgcolorhi : _bgcolor);
+
+    // Now perform the actual widget draw
+    drawWidget((_flags & Widget::FLAG_HILITED) ? true : false);
+
+    // Restore x/y
+    if(hasBorder)
+    {
+      _x -= 4;
+      _y -= 4;
+      _w += 8;
+      _h += 8;
+    }
+
+    _x = oldX;
+    _y = oldY;
   }
-
-  // Draw border
-  if(hasBorder)
-  {
-    s.frameRect(_x, _y, _w, _h, !onTop ? kColor : (_flags & Widget::FLAG_HILITED) && isEnabled() ? kWidColorHi : kColor);
-    _x += 4;
-    _y += 4;
-    _w -= 8;
-    _h -= 8;
-  }
-
-  // Now perform the actual widget draw
-  drawWidget((_flags & Widget::FLAG_HILITED) ? true : false);
-
-  // Restore x/y
-  if (hasBorder)
-  {
-    _x -= 4;
-    _y -= 4;
-    _w += 8;
-    _h += 8;
-  }
-
-  _x = oldX;
-  _y = oldY;
 
   // Draw all children
   Widget* w = _firstWidget;
   while(w)
   {
-    w->draw();
+    if(w->needsRedraw())
+      w->draw();
     w = w->_next;
   }
+  clearDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -290,6 +331,7 @@ void Widget::setDirtyInChain(Widget* start)
 {
   while(start)
   {
+    //cerr << "setDirtyInChain " << typeid(*start).name() << endl;
     start->setDirty();
     start = start->_next;
   }
@@ -345,8 +387,6 @@ void StaticTextWidget::drawWidget(bool hilite)
   bool onTop = _boss->dialog().isOnTop();
   s.drawString(_font, _label, _x, _y, _w,
                isEnabled() && onTop ? _textcolor : kColor, _align, 0, true, _shadowcolor);
-
-  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -454,6 +494,7 @@ void ButtonWidget::setBitmap(const uInt32* bitmap, int bmw, int bmh)
   _bmh = bmh;
   _bmw = bmw;
 
+  cerr << "setBitmap" << endl;
   setDirty();
 }
 
@@ -474,8 +515,6 @@ void ButtonWidget::drawWidget(bool hilite)
                  !(isEnabled() && onTop) ? _textcolorlo :
                  hilite ? _textcolorhi : _textcolor,
                  _bmw, _bmh);
-
-  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -635,8 +674,6 @@ void CheckboxWidget::drawWidget(bool hilite)
   // Finally draw the label
   s.drawString(_font, _label, _x + prefixSize(_font), _y + _textY, _w,
                onTop && isEnabled() ? kTextColor : kColor);
-
-  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -652,7 +689,7 @@ SliderWidget::SliderWidget(GuiObject* boss, const GUI::Font& font,
     _valueLabelWidth(valueLabelWidth),
     _forceLabelSign(forceLabelSign)
 {
-  _flags = Widget::FLAG_ENABLED | Widget::FLAG_TRACK_MOUSE;
+  _flags = Widget::FLAG_ENABLED | Widget::FLAG_TRACK_MOUSE | Widget::FLAG_CLEARBG;;
   _bgcolor = kDlgColor;
   _bgcolorhi = kDlgColor;
 
@@ -870,8 +907,6 @@ void SliderWidget::drawWidget(bool hilite)
   if(_valueLabelWidth > 0)
     s.drawString(_font, _valueLabel + _valueUnit, _x + _w - _valueLabelWidth, _y + 2,
                  _valueLabelWidth, isEnabled() ? kTextColor : kColor);
-
-  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

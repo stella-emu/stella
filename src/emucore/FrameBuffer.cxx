@@ -439,7 +439,7 @@ void FrameBuffer::update(bool force)
       force = force || myOSystem.launcher().needsRedraw();
       if(force)
       {
-        clear();
+        //clear();
         myOSystem.launcher().draw(force);
       }
       break;  // EventHandlerState::LAUNCHER

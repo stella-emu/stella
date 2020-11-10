@@ -150,6 +150,35 @@ void Dialog::center()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::setDirty()
+{
+  _dirty = true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Dialog::isDirty() const
+{
+  return _dirty;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Dialog::isChainDirty() const
+{
+  bool dirty = false;
+
+  // Check if widget or any subwidgets are dirty
+  Widget* w = _firstWidget;
+
+  while(!dirty && w)
+  {
+    dirty |= w->needsRedraw();
+    w = w->_next;
+  }
+
+  return dirty;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::positionAt(uInt32 pos)
 {
   const bool fullscreen = instance().settings().getBool("fullscreen");
@@ -192,7 +221,9 @@ void Dialog::positionAt(uInt32 pos)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Dialog::render()
 {
-  if(!_dirty || !isVisible())
+  //assert(_dirty);
+
+  if(!isVisible() || !needsRedraw())
     return false;
 
   // Draw this dialog
@@ -207,7 +238,7 @@ bool Dialog::render()
       surface->render();
     });
   }
-  _dirty = false;
+  //_dirty = false;
 
   return true;
 }
@@ -371,37 +402,49 @@ void Dialog::drawDialog()
 
   FBSurface& s = surface();
 
-  // Dialog is still on top if e.g a ContextMenu is opened
-  _onTop = parent().myDialogStack.top() == this
-    || (parent().myDialogStack.get(parent().myDialogStack.size() - 2) == this
-    && !parent().myDialogStack.top()->hasTitle());
-
-  if(_flags & Widget::FLAG_CLEARBG)
+  if(isDirty())
   {
-    //    cerr << "Dialog::drawDialog(): w = " << _w << ", h = " << _h << " @ " << &s << endl << endl;
-    s.fillRect(_x, _y + _th, _w, _h - _th, _onTop ? kDlgColor : kBGColorLo);
-    if(_th)
-    {
-      s.fillRect(_x, _y, _w, _th, _onTop ? kColorTitleBar : kColorTitleBarLo);
-      s.drawString(_font, _title, _x + _font.getMaxCharWidth() * 1.25, _y + _font.getFontHeight() / 6,
-                   _font.getStringWidth(_title),
-                   _onTop ? kColorTitleText : kColorTitleTextLo);
-    }
-  }
-  else
-    s.invalidate();
-  if(_flags & Widget::FLAG_BORDER) // currently only used by Dialog itself
-    s.frameRect(_x, _y, _w, _h, _onTop ? kColor : kShadowColor);
+    //cerr << "*** draw dialog " << typeid(*this).name() << " ***" << endl;
 
-  // Make all child widget dirty
+    // Dialog is still on top if e.g a ContextMenu is opened
+    _onTop = parent().myDialogStack.top() == this
+      || (parent().myDialogStack.get(parent().myDialogStack.size() - 2) == this
+          && !parent().myDialogStack.top()->hasTitle());
+
+    if(_flags & Widget::FLAG_CLEARBG)
+    {
+      //    cerr << "Dialog::drawDialog(): w = " << _w << ", h = " << _h << " @ " << &s << endl << endl;
+      s.fillRect(_x, _y + _th, _w, _h - _th, _onTop ? kDlgColor : kBGColorLo);
+      if(_th)
+      {
+        s.fillRect(_x, _y, _w, _th, _onTop ? kColorTitleBar : kColorTitleBarLo);
+        s.drawString(_font, _title, _x + _font.getMaxCharWidth() * 1.25, _y + _font.getFontHeight() / 6,
+                     _font.getStringWidth(_title),
+                     _onTop ? kColorTitleText : kColorTitleTextLo);
+      }
+    }
+    else {
+      s.invalidate();
+      cerr << "invalidate " << typeid(*this).name() << endl;
+    }
+    if(_flags & Widget::FLAG_BORDER) // currently only used by Dialog itself
+      s.frameRect(_x, _y, _w, _h, _onTop ? kColor : kShadowColor);
+
+    // Make all child widgets dirty
+    Widget::setDirtyInChain(_firstWidget);
+
+    clearDirty();
+  }
+
   Widget* w = _firstWidget;
-  Widget::setDirtyInChain(w);
 
   // Draw all children
   w = _firstWidget;
   while(w)
   {
-    w->draw();
+    // only redraw changed widgets
+    if(w->needsRedraw())
+      w->draw();
     w = w->_next;
   }
 

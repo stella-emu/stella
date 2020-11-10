@@ -621,5 +621,5 @@ void ContextMenu::drawDialog()
     s.drawBitmap(_downImg, ((_w-_x)>>1)-4, (_rowHeight>>1)+y-4, _scrollDnColor, _arrowSize);
   }
 
-  setDirty();
+  clearDirty();
 }

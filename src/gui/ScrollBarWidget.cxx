@@ -315,6 +315,7 @@ void ScrollBarWidget::drawWidget(bool hilite)
     s.fillRect(_x + 1, _y + _sliderPos - 1, _w - 2, _sliderHeight + 2,
               onTop ? (hilite && _part == Part::Slider) ? kScrollColorHi : kScrollColor : kColor);
   }
+  clearDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
