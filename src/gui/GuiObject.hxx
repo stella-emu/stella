@@ -78,6 +78,10 @@ class GuiObject : public CommandReceiver
 
     virtual bool isVisible() const = 0;
     virtual void setDirty() = 0;
+    virtual void clearDirty() { _dirty = false; }
+    virtual bool isDirty() const { return _dirty; }
+    virtual bool isChainDirty() const = 0;
+    virtual bool needsRedraw() const { return isDirty() || isChainDirty(); };
 
     /** Add given widget(s) to the focus list */
     virtual void addFocusWidget(Widget* w) = 0;
@@ -104,6 +108,7 @@ class GuiObject : public CommandReceiver
 
   protected:
     int _x{0}, _y{0}, _w{0}, _h{0};
+    bool _dirty{false};
 
     Widget* _firstWidget{nullptr};
     WidgetArray _focusList;
