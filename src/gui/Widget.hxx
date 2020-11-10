@@ -52,7 +52,8 @@ class Widget : public GuiObject
       FLAG_TRACK_MOUSE   = 1 << 5,
       FLAG_RETAIN_FOCUS  = 1 << 6,
       FLAG_WANTS_TAB     = 1 << 7,
-      FLAG_WANTS_RAWDATA = 1 << 8
+      FLAG_WANTS_RAWDATA = 1 << 8,
+      FLAG_TRANSPARENT   = 1 << 9
     };
 
   public:
@@ -105,6 +106,7 @@ class Widget : public GuiObject
     virtual bool wantsFocus() const { return _flags & FLAG_RETAIN_FOCUS;    }
     bool wantsTab() const           { return _flags & FLAG_WANTS_TAB;       }
     bool wantsRaw() const           { return _flags & FLAG_WANTS_RAWDATA;   }
+    bool isTransparent() const      { return _flags & FLAG_TRANSPARENT;     }
 
     void setID(uInt32 id) { _id = id;   }
     uInt32 getID() const  { return _id; }

@@ -65,9 +65,9 @@ void Widget::setDirty()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Widget::isDirty() const
 {
-  string name = typeid(*this).name();
-  if(_dirty && name == "class TabWidget")
-    cerr << "is dirty " << typeid(*this).name() << endl;
+  //string name = typeid(*this).name();
+  //if(_dirty && name == "class TabWidget")
+  //  cerr << "is dirty " << typeid(*this).name() << endl;
 
   return _dirty;
 }
@@ -101,7 +101,7 @@ void Widget::draw()
 
   if(isDirty())
   {
-    //cerr << "  *** draw widget " << typeid(*this).name() << " ***" << endl;
+    cerr << "  *** draw widget " << typeid(*this).name() << " ***" << endl;
 
     FBSurface& s = _boss->dialog().surface();
 
@@ -122,7 +122,10 @@ void Widget::draw()
       {
         x++; y++; w -= 2; h -= 2;
       }
-      s.fillRect(x, y, w, h, !onTop ? _bgcolorlo : (_flags & Widget::FLAG_HILITED) && isEnabled() ? _bgcolorhi : _bgcolor);
+      if(isTransparent())
+        s.invalidateRect(x, y, w, h);
+      else
+        s.fillRect(x, y, w, h, !onTop ? _bgcolorlo : (_flags & Widget::FLAG_HILITED) && isEnabled() ? _bgcolorhi : _bgcolor);
     }
 
     // Draw border

@@ -326,6 +326,17 @@ class FBSurface
     virtual void invalidate() = 0;
 
     /**
+      This method should be called to reset a surface area to empty
+
+      @param x      The x coordinate
+      @param y      The y coordinate
+      @param w      The width of the area
+      @param h      The height of the area
+    */
+    virtual void invalidateRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h) = 0;
+
+
+    /**
       This method should be called to free any resources being used by
       the surface.
     */

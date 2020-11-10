@@ -404,7 +404,7 @@ void Dialog::drawDialog()
 
   if(isDirty())
   {
-    //cerr << "*** draw dialog " << typeid(*this).name() << " ***" << endl;
+    cerr << "*** draw dialog " << typeid(*this).name() << " ***" << endl;
 
     // Dialog is still on top if e.g a ContextMenu is opened
     _onTop = parent().myDialogStack.top() == this
@@ -414,7 +414,11 @@ void Dialog::drawDialog()
     if(_flags & Widget::FLAG_CLEARBG)
     {
       //    cerr << "Dialog::drawDialog(): w = " << _w << ", h = " << _h << " @ " << &s << endl << endl;
-      s.fillRect(_x, _y + _th, _w, _h - _th, _onTop ? kDlgColor : kBGColorLo);
+
+      if(_flags & Widget::FLAG_TRANSPARENT)
+        s.invalidateRect(_x, _y + _th, _w, _h - _th);
+      else
+        s.fillRect(_x, _y + _th, _w, _h - _th, _onTop ? kDlgColor : kBGColorLo);
       if(_th)
       {
         s.fillRect(_x, _y, _w, _th, _onTop ? kColorTitleBar : kColorTitleBarLo);

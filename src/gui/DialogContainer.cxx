@@ -91,7 +91,7 @@ void DialogContainer::updateTime(uInt64 time)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool DialogContainer::draw(bool full)
 {
-  cerr << "draw " << full << endl;
+  //cerr << "draw " << full << endl;
   if(myDialogStack.empty())
     return false;
 
