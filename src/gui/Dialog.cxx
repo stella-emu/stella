@@ -438,19 +438,6 @@ void Dialog::drawDialog()
     clearDirty();
   }
 
-  Widget* w = _firstWidget;
-
-  // Draw all children
-  w = _firstWidget;
-  while(w)
-  {
-
-    // only redraw changed widgets
-    if(w->needsRedraw())
-      w->draw();
-    w = w->_next;
-  }
-
   // Draw outlines for focused widgets
   // Don't change focus, since this will trigger lost and received
   // focus events
@@ -458,8 +445,20 @@ void Dialog::drawDialog()
   {
     _focusedWidget = Widget::setFocusForChain(this, getFocusList(),
       _focusedWidget, 0, false);
-    if(_focusedWidget)
-      _focusedWidget->draw(); // make sure the highlight color is drawn initially
+  //  if(_focusedWidget)
+  //    _focusedWidget->draw(); // make sure the highlight color is drawn initially
+  }
+
+  Widget* w = _firstWidget;
+
+  // Draw all children
+  w = _firstWidget;
+  while(w)
+  {
+    // only redraw changed widgets
+    if(w->needsRedraw())
+      w->draw();
+    w = w->_next;
   }
 }
 
