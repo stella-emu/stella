@@ -144,7 +144,6 @@ class RewindManager
     bool atLast() const  { return myStateList.atLast();  }
     void resize(uInt32 size) { myStateList.resize(size); }
     void clear() {
-      myStateSize = 0;
       myStateList.clear();
     }
 
@@ -176,7 +175,6 @@ class RewindManager
     uInt64 myHorizon{0};
     double myFactor{0.0};
     bool   myLastTimeMachineAdd{false};
-    uInt32 myStateSize{0};
 
     struct RewindState {
       Serializer data;  // actual save state
