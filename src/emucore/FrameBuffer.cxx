@@ -323,13 +323,14 @@ void FrameBuffer::update(bool force)
   //    last, since they are always drawn on top of everything else).
 
   // Full rendering is required when messages are enabled
-  force = force || myMsg.counter >= 0;
+  force |= (myMsg.counter >= 0);
 
   // Detect when a message has been turned off; one last redraw is required
   // in this case, to draw over the area that the message occupied
   if(myMsg.counter == 0)
     myMsg.counter = -1;
 
+  bool redraw = false;
   switch(myOSystem.eventHandler().state())
   {
     case EventHandlerState::NONE:
@@ -354,8 +355,8 @@ void FrameBuffer::update(bool force)
   #ifdef GUI_SUPPORT
     case EventHandlerState::OPTIONSMENU:
     {
-      force = force || myOSystem.menu().needsRedraw();
-      if(force)
+      redraw = myOSystem.menu().needsRedraw();
+      if(force || redraw)
       {
         clear();
         myTIASurface->render();
@@ -366,8 +367,8 @@ void FrameBuffer::update(bool force)
 
     case EventHandlerState::CMDMENU:
     {
-      force = force || myOSystem.commandMenu().needsRedraw();
-      if(force)
+      redraw = myOSystem.commandMenu().needsRedraw();
+      if(force || redraw)
       {
         clear();
         myTIASurface->render();
@@ -378,8 +379,8 @@ void FrameBuffer::update(bool force)
 
     case EventHandlerState::MESSAGEMENU:
     {
-      force = force || myOSystem.messageMenu().needsRedraw();
-      if (force)
+      redraw = myOSystem.messageMenu().needsRedraw();
+      if(force || redraw)
       {
         clear();
         myTIASurface->render();
@@ -390,8 +391,8 @@ void FrameBuffer::update(bool force)
 
     case EventHandlerState::TIMEMACHINE:
     {
-      force = force || myOSystem.timeMachine().needsRedraw();
-      if(force)
+      redraw = myOSystem.timeMachine().needsRedraw();
+      if(force || redraw)
       {
         clear();
         myTIASurface->render();
@@ -436,10 +437,9 @@ void FrameBuffer::update(bool force)
 
     case EventHandlerState::LAUNCHER:
     {
-      force = force || myOSystem.launcher().needsRedraw();
-      if(force)
+      redraw = myOSystem.launcher().needsRedraw();
+      if(force || redraw)
       {
-        //clear();
         myOSystem.launcher().draw(force);
       }
       break;  // EventHandlerState::LAUNCHER
@@ -449,10 +449,10 @@ void FrameBuffer::update(bool force)
   #ifdef DEBUGGER_SUPPORT
     case EventHandlerState::DEBUGGER:
     {
-      force = force || myOSystem.debugger().needsRedraw();
-      if(force)
+      redraw = myOSystem.debugger().needsRedraw();
+      if(force || redraw)
       {
-        clear();
+
         myOSystem.debugger().draw(force);
       }
       break;  // EventHandlerState::DEBUGGER
@@ -471,7 +471,7 @@ void FrameBuffer::update(bool force)
     drawMessage();
 
   // Push buffers to screen only when necessary
-  if(force)
+  if(force || redraw)
     myBackend->renderToScreen();
 }
 
