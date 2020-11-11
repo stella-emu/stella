@@ -156,7 +156,7 @@ void Dialog::setDirty()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Dialog::isDirty() const
+bool Dialog::isDirty()
 {
   return _dirty;
 }
@@ -221,8 +221,6 @@ void Dialog::positionAt(uInt32 pos)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Dialog::render()
 {
-  //assert(_dirty);
-
   if(!isVisible() || !needsRedraw())
     return false;
 
@@ -404,7 +402,7 @@ void Dialog::drawDialog()
 
   if(isDirty())
   {
-    cerr << "*** draw dialog " << typeid(*this).name() << " ***" << endl;
+    //cerr << "*** draw dialog " << typeid(*this).name() << " ***" << endl;
 
     // Dialog is still on top if e.g a ContextMenu is opened
     _onTop = parent().myDialogStack.top() == this
@@ -446,6 +444,7 @@ void Dialog::drawDialog()
   w = _firstWidget;
   while(w)
   {
+
     // only redraw changed widgets
     if(w->needsRedraw())
       w->draw();
