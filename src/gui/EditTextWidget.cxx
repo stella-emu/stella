@@ -51,15 +51,15 @@ void EditTextWidget::setText(const string& str, bool changed)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EditTextWidget::handleMouseEntered()
 {
-  setFlags(Widget::FLAG_HILITED);
-  setDirty();
+  if(isEnabled() && isEditable())
+    setFlags(Widget::FLAG_HILITED);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EditTextWidget::handleMouseLeft()
 {
-  clearFlags(Widget::FLAG_HILITED);
-  setDirty();
+  if(isEnabled() && isEditable())
+    clearFlags(Widget::FLAG_HILITED);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

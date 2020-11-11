@@ -43,15 +43,15 @@ ToggleWidget::ToggleWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ToggleWidget::handleMouseEntered()
 {
-  setFlags(Widget::FLAG_HILITED);
-  setDirty();
+  if(isEnabled())
+    setFlags(Widget::FLAG_HILITED);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ToggleWidget::handleMouseLeft()
 {
-  clearFlags(Widget::FLAG_HILITED);
-  setDirty();
+  if(isEnabled())
+    clearFlags(Widget::FLAG_HILITED);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

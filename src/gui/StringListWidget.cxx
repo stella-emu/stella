@@ -53,15 +53,15 @@ void StringListWidget::setList(const StringList& list)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StringListWidget::handleMouseEntered()
 {
-  setFlags(Widget::FLAG_HILITED);
-  setDirty();
+  if(isEnabled())
+    setFlags(Widget::FLAG_HILITED);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StringListWidget::handleMouseLeft()
 {
-  clearFlags(Widget::FLAG_HILITED);
-  setDirty();
+  if(isEnabled())
+    clearFlags(Widget::FLAG_HILITED);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

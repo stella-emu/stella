@@ -181,15 +181,15 @@ void TiaZoomWidget::handleMouseMoved(int x, int y)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaZoomWidget::handleMouseEntered()
 {
-  setFlags(Widget::FLAG_HILITED);
-  setDirty();
+  if(isEnabled())
+    setFlags(Widget::FLAG_HILITED);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaZoomWidget::handleMouseLeft()
 {
-  clearFlags(Widget::FLAG_HILITED);
-  setDirty();
+  if(isEnabled())
+    clearFlags(Widget::FLAG_HILITED);
   myMouseMoving = false;
 }
 

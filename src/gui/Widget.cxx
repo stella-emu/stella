@@ -157,6 +157,7 @@ void Widget::draw()
     _x = oldX;
     _y = oldY;
   }
+  clearDirty();
 
   // Draw all children
   Widget* w = _firstWidget;
@@ -166,7 +167,6 @@ void Widget::draw()
       w->draw();
     w = w->_next;
   }
-  clearDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -448,13 +448,15 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ButtonWidget::handleMouseEntered()
 {
-  setFlags(Widget::FLAG_HILITED);
+  if(isEnabled())
+    setFlags(Widget::FLAG_HILITED);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ButtonWidget::handleMouseLeft()
 {
-  clearFlags(Widget::FLAG_HILITED);
+  if(isEnabled())
+    clearFlags(Widget::FLAG_HILITED);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -558,13 +560,15 @@ CheckboxWidget::CheckboxWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheckboxWidget::handleMouseEntered()
 {
-  setFlags(Widget::FLAG_HILITED);
+  if(isEnabled())
+    setFlags(Widget::FLAG_HILITED);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheckboxWidget::handleMouseLeft()
 {
-  clearFlags(Widget::FLAG_HILITED);
+  if(isEnabled())
+    clearFlags(Widget::FLAG_HILITED);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

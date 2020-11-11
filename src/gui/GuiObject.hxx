@@ -97,8 +97,22 @@ class GuiObject : public CommandReceiver
     virtual bool isChainDirty() const = 0;
     virtual bool needsRedraw() { return isDirty() || isChainDirty(); };
 
-    void setFlags(uInt32 flags) { _flags |= flags; setDirty(); }
-    void clearFlags(uInt32 flags) { _flags &= ~flags; setDirty(); }
+    void setFlags(uInt32 flags)
+    {
+      uInt32 oldFlags = _flags;
+
+      _flags |= flags;
+      if(oldFlags != _flags)
+        setDirty();
+    }
+    void clearFlags(uInt32 flags)
+    {
+      uInt32 oldFlags = _flags;
+
+      _flags &= ~flags;
+      if(oldFlags != _flags)
+        setDirty();
+    }
     uInt32 getFlags() const { return _flags; }
 
     bool hasBorder() const { return _flags & FLAG_BORDER; }
