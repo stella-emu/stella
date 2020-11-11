@@ -43,20 +43,6 @@ class Widget : public GuiObject
   friend class Dialog;
 
   public:
-    enum : uInt32 {
-      FLAG_ENABLED       = 1 << 0,
-      FLAG_INVISIBLE     = 1 << 1,
-      FLAG_HILITED       = 1 << 2,
-      FLAG_BORDER        = 1 << 3,
-      FLAG_CLEARBG       = 1 << 4,
-      FLAG_TRACK_MOUSE   = 1 << 5,
-      FLAG_RETAIN_FOCUS  = 1 << 6,
-      FLAG_WANTS_TAB     = 1 << 7,
-      FLAG_WANTS_RAWDATA = 1 << 8,
-      FLAG_TRANSPARENT   = 1 << 9
-    };
-
-  public:
     Widget(GuiObject* boss, const GUI::Font& font, int x, int y, int w, int h);
     ~Widget() override;
 
@@ -97,16 +83,11 @@ class Widget : public GuiObject
     /** Set/clear FLAG_ENABLED */
     void setEnabled(bool e);
 
-    void setFlags(uInt32 flags)    { _flags |= flags;  setDirty(); }
-    void clearFlags(uInt32 flags)  { _flags &= ~flags; setDirty(); }
-    uInt32 getFlags() const        { return _flags; }
-
     bool isEnabled() const          { return _flags & FLAG_ENABLED;         }
     bool isVisible() const override { return !(_flags & FLAG_INVISIBLE);    }
     virtual bool wantsFocus() const { return _flags & FLAG_RETAIN_FOCUS;    }
     bool wantsTab() const           { return _flags & FLAG_WANTS_TAB;       }
     bool wantsRaw() const           { return _flags & FLAG_WANTS_RAWDATA;   }
-    bool isTransparent() const      { return _flags & FLAG_TRANSPARENT;     }
 
     void setID(uInt32 id) { _id = id;   }
     uInt32 getID() const  { return _id; }
@@ -140,7 +121,6 @@ class Widget : public GuiObject
     const GUI::Font& _font;
     Widget*    _next{nullptr};
     uInt32     _id{0};
-    uInt32     _flags{0};
     bool       _hasFocus{false};
     int        _fontWidth{0};
     int        _lineHeight{0};

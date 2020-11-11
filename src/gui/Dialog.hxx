@@ -90,10 +90,6 @@ class Dialog : public GuiObject
     */
     void addSurface(const shared_ptr<FBSurface>& surface);
 
-    void setFlags(int flags) { _flags |= flags;  setDirty(); }
-    void clearFlags(int flags) { _flags &= ~flags; setDirty(); }
-    int  getFlags() const { return _flags; }
-
     void setTitle(const string& title);
     bool hasTitle() { return !_title.empty(); }
 
@@ -235,8 +231,6 @@ class Dialog : public GuiObject
     shared_ptr<FBSurface> _surface;
 
     int _tabID{0};
-    int _flags{0};
-    //bool _dirty{false};
     uInt32 _max_w{0}; // maximum wanted width
     uInt32 _max_h{0}; // maximum wanted height
 

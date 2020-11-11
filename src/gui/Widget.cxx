@@ -106,8 +106,6 @@ void Widget::draw()
     FBSurface& s = _boss->dialog().surface();
 
     bool onTop = _boss->dialog().isOnTop();
-
-    bool hasBorder = _flags & Widget::FLAG_BORDER; // currently only used by Dialog widget
     int oldX = _x, oldY = _y;
 
     // Account for our relative position in the dialog
@@ -115,23 +113,29 @@ void Widget::draw()
     _y = getAbsY();
 
     // Clear background (unless alpha blending is enabled)
-    if(_flags & Widget::FLAG_CLEARBG)
+    if(clearsBackground())
     {
       int x = _x, y = _y, w = _w, h = _h;
-      if(hasBorder)
+      if(hasBorder())
       {
         x++; y++; w -= 2; h -= 2;
       }
-      if(isTransparent())
-        s.invalidateRect(x, y, w, h);
+      if(hasBackground())
+        s.fillRect(x, y, w, h, !onTop
+                   ? _bgcolorlo
+                   : (_flags & Widget::FLAG_HILITED) && isEnabled()
+                   ? _bgcolorhi : _bgcolor);
       else
-        s.fillRect(x, y, w, h, !onTop ? _bgcolorlo : (_flags & Widget::FLAG_HILITED) && isEnabled() ? _bgcolorhi : _bgcolor);
+        s.invalidateRect(x, y, w, h);
     }
 
     // Draw border
-    if(hasBorder)
+    if(hasBorder())
     {
-      s.frameRect(_x, _y, _w, _h, !onTop ? kColor : (_flags & Widget::FLAG_HILITED) && isEnabled() ? kWidColorHi : kColor);
+      s.frameRect(_x, _y, _w, _h, !onTop
+                  ? kColor
+                  : (_flags & Widget::FLAG_HILITED) && isEnabled()
+                  ? kWidColorHi : kColor);
       _x += 4;
       _y += 4;
       _w -= 8;
@@ -142,7 +146,7 @@ void Widget::draw()
     drawWidget((_flags & Widget::FLAG_HILITED) ? true : false);
 
     // Restore x/y
-    if(hasBorder)
+    if(hasBorder())
     {
       _x -= 4;
       _y -= 4;
@@ -350,6 +354,7 @@ StaticTextWidget::StaticTextWidget(GuiObject* boss, const GUI::Font& font,
     _align(align)
 {
   _flags = Widget::FLAG_ENABLED;
+
   _bgcolor = kDlgColor;
   _bgcolorhi = kDlgColor;
   _textcolor = kTextColor;
@@ -692,7 +697,7 @@ SliderWidget::SliderWidget(GuiObject* boss, const GUI::Font& font,
     _valueLabelWidth(valueLabelWidth),
     _forceLabelSign(forceLabelSign)
 {
-  _flags = Widget::FLAG_ENABLED | Widget::FLAG_TRACK_MOUSE | Widget::FLAG_CLEARBG;;
+  _flags = Widget::FLAG_ENABLED | Widget::FLAG_TRACK_MOUSE | Widget::FLAG_CLEARBG;
   _bgcolor = kDlgColor;
   _bgcolorhi = kDlgColor;
 
