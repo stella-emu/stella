@@ -89,11 +89,11 @@ void DialogContainer::updateTime(uInt64 time)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool DialogContainer::draw(bool full)
+void DialogContainer::draw(bool full)
 {
   cerr << "draw " << full << " " << typeid(*this).name() << endl;
   if(myDialogStack.empty())
-    return false;
+    return;
 
   // Make the top dialog dirty if a full redraw is requested
   if(full)
@@ -102,10 +102,8 @@ bool DialogContainer::draw(bool full)
   // Render all dirty dialogs
   myDialogStack.applyAll([&](Dialog*& d) {
     if(d->needsRedraw())
-      full |= d->render();
+      d->redraw();
   });
-
-  return full;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -133,7 +131,7 @@ int DialogContainer::addDialog(Dialog* d)
         "Unable to show dialog box; FIX THE CODE");
   else
   {
-    // fade out current top dialog
+    // "darken" current top dialog
     if(!myDialogStack.empty())
       myDialogStack.top()->setDirty();
     d->setDirty();
@@ -148,14 +146,16 @@ void DialogContainer::removeDialog()
   if(!myDialogStack.empty())
   {
     myDialogStack.pop();
-    // necessary as long as all dialogs share the same surface
+
     if(!myDialogStack.empty())
     {
-      //myDialogStack.top()->setDirty();
+      // this "undarkens" the top dialog
+      myDialogStack.top()->setDirty();
 
-      // Mark all dialogs for redraw
+      // Rerender all dialogs (TODO: top dialog is rendered twice)
       myDialogStack.applyAll([&](Dialog*& d){
-          d->setDirty();
+          //d->setDirty();
+          d->render();
       });
     }
   }

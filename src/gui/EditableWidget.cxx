@@ -74,7 +74,6 @@ bool EditableWidget::isDirty()
       _caretEnabled = !_caretEnabled;
       _dirty = true;
     }
-    cerr << ".";
   }
 
   return _dirty;

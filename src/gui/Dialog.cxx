@@ -128,7 +128,6 @@ void Dialog::close()
   _visible = false;
 
   parent().removeDialog();
-  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -219,26 +218,30 @@ void Dialog::positionAt(uInt32 pos)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Dialog::render()
+void Dialog::redraw()
 {
   if(!isVisible() || !needsRedraw())
-    return false;
+    return;// false;
 
   // Draw this dialog
   center();
   drawDialog();
+  render();
 
+//  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::render()
+{
   // Update dialog surface; also render any extra surfaces
   // Extra surfaces must be rendered afterwards, so they are drawn on top
   if(_surface->render())
   {
-    mySurfaceStack.applyAll([](shared_ptr<FBSurface>& surface){
+    mySurfaceStack.applyAll([](shared_ptr<FBSurface>& surface) {
       surface->render();
     });
   }
-  //_dirty = false;
-
-  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
