@@ -62,6 +62,23 @@ void EditableWidget::setText(const string& str, bool)
 
   setDirty();
 }
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool EditableWidget::isDirty()
+{
+  if(_hasFocus && _editable && isVisible() && _boss->isVisible())
+  {
+    _caretTimer++;
+    if(_caretTimer > 40) // switch every 2/3rd seconds
+    {
+      _caretTimer = 0;
+      _caretEnabled = !_caretEnabled;
+      _dirty = true;
+    }
+    cerr << ".";
+  }
+
+  return _dirty;
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EditableWidget::setEditable(bool editable, bool hiliteBG)
@@ -77,6 +94,15 @@ void EditableWidget::setEditable(bool editable, bool hiliteBG)
     clearFlags(Widget::FLAG_WANTS_RAWDATA | Widget::FLAG_RETAIN_FOCUS);
     _bgcolor = hiliteBG ? kBGColorHi : kWidColor;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EditableWidget::receivedFocusWidget()
+{
+  _caretTimer = 0;
+  _caretEnabled = true;
+
+  Widget::receivedFocusWidget();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -316,22 +342,31 @@ void EditableWidget::drawCaretSelection()
   if (!_editable || !isVisible() || !_boss->isVisible() || !_hasFocus)
     return;
 
-  const Common::Rect& editRect = getEditRect();
-  int x = editRect.x();
-  int y = editRect.y();
+  if(_caretEnabled)
+  {
+    FBSurface& s = _boss->dialog().surface();
+    const Common::Rect& editRect = getEditRect();
+    int x = editRect.x();
+    int y = editRect.y();
+    x += getCaretOffset();
 
-  x += getCaretOffset();
+    x += _x;
+    y += _y;
 
-  x += _x;
-  y += _y;
-
-  FBSurface& s = _boss->dialog().surface();
-  s.vLine(x, y + 2, y + editRect.h() - 2, kTextColorHi);
-  s.vLine(x-1, y + 2, y + editRect.h() - 2, kTextColorHi);
+    s.vLine(x, y + 2, y + editRect.h() - 2, kTextColorHi);
+    s.vLine(x-1, y + 2, y + editRect.h() - 2, kTextColorHi);
+    clearDirty();
+  }
 
   if(_selectSize)
   {
+    FBSurface& s = _boss->dialog().surface();
+    const Common::Rect& editRect = getEditRect();
+    int x = editRect.x();
+    int y = editRect.y();
+
     string text = selectString();
+
     x = editRect.x();
     y = editRect.y();
     int w = editRect.w();

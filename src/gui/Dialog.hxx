@@ -65,7 +65,7 @@ class Dialog : public GuiObject
     // A dialog being dirty indicates that its underlying surface needs to be
     // redrawn and then re-rendered; this is taken care of in ::render()
     void setDirty() override;
-    bool isDirty() const override;
+    bool isDirty() override; // TODO: remove
     bool isChainDirty() const override;
     bool render();
 

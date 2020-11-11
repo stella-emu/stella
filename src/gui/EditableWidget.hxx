@@ -65,7 +65,9 @@ class EditableWidget : public Widget, public CommandSender
     void setTextFilter(const TextFilter& filter) { _filter = filter; }
 
   protected:
+    void receivedFocusWidget() override;
     void lostFocusWidget() override;
+    bool isDirty() override;
 
     virtual void startEditMode() { setFlags(Widget::FLAG_WANTS_RAWDATA);   }
     virtual void endEditMode()   { clearFlags(Widget::FLAG_WANTS_RAWDATA); }
@@ -110,6 +112,8 @@ class EditableWidget : public Widget, public CommandSender
     unique_ptr<UndoHandler> myUndoHandler;
 
     int    _caretPos{0};
+    int    _caretTimer{0};
+    bool   _caretEnabled{true};
 
     // Size of current selected text
     //    0 = no selection

@@ -63,7 +63,7 @@ void Widget::setDirty()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Widget::isDirty() const
+bool Widget::isDirty()
 {
   //string name = typeid(*this).name();
   //if(_dirty && name == "class TabWidget")
@@ -353,7 +353,7 @@ StaticTextWidget::StaticTextWidget(GuiObject* boss, const GUI::Font& font,
     _label(text),
     _align(align)
 {
-  _flags = Widget::FLAG_ENABLED;
+  _flags = Widget::FLAG_ENABLED | FLAG_CLEARBG;
 
   _bgcolor = kDlgColor;
   _bgcolorhi = kDlgColor;

@@ -93,9 +93,9 @@ class GuiObject : public CommandReceiver
     virtual bool isVisible() const = 0;
     virtual void setDirty() = 0;
     virtual void clearDirty() { _dirty = false; }
-    virtual bool isDirty() const { return _dirty; }
+    virtual bool isDirty() { return _dirty; }
     virtual bool isChainDirty() const = 0;
-    virtual bool needsRedraw() const { return isDirty() || isChainDirty(); };
+    virtual bool needsRedraw() { return isDirty() || isChainDirty(); };
 
     void setFlags(uInt32 flags) { _flags |= flags; setDirty(); }
     void clearFlags(uInt32 flags) { _flags &= ~flags; setDirty(); }
