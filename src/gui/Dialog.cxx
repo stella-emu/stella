@@ -49,9 +49,9 @@ Dialog::Dialog(OSystem& instance, DialogContainer& parent, const GUI::Font& font
                const string& title, int x, int y, int w, int h)
   : GuiObject(instance, parent, *this, x, y, w, h),
     _font(font),
-    _title(title),
-    _flags(Widget::FLAG_ENABLED | Widget::FLAG_BORDER | Widget::FLAG_CLEARBG)
+    _title(title)
 {
+  _flags = Widget::FLAG_ENABLED | Widget::FLAG_BORDER | Widget::FLAG_CLEARBG;
   setTitle(title);
 }
 
@@ -411,14 +411,14 @@ void Dialog::drawDialog()
       || (parent().myDialogStack.get(parent().myDialogStack.size() - 2) == this
           && !parent().myDialogStack.top()->hasTitle());
 
-    if(_flags & Widget::FLAG_CLEARBG)
+    if(clearsBackground())
     {
       //    cerr << "Dialog::drawDialog(): w = " << _w << ", h = " << _h << " @ " << &s << endl << endl;
 
-      if(_flags & Widget::FLAG_TRANSPARENT)
-        s.invalidateRect(_x, _y + _th, _w, _h - _th);
-      else
+      if(hasBackground())
         s.fillRect(_x, _y + _th, _w, _h - _th, _onTop ? kDlgColor : kBGColorLo);
+      else
+        s.invalidateRect(_x, _y + _th, _w, _h - _th);
       if(_th)
       {
         s.fillRect(_x, _y, _w, _th, _onTop ? kColorTitleBar : kColorTitleBarLo);
@@ -431,7 +431,7 @@ void Dialog::drawDialog()
       s.invalidate();
       cerr << "invalidate " << typeid(*this).name() << endl;
     }
-    if(_flags & Widget::FLAG_BORDER) // currently only used by Dialog itself
+    if(hasBorder()) // currently only used by Dialog itself
       s.frameRect(_x, _y, _w, _h, _onTop ? kColor : kShadowColor);
 
     // Make all child widgets dirty

@@ -36,10 +36,9 @@ TimeLineWidget::TimeLineWidget(GuiObject* boss, const GUI::Font& font,
     _labelWidth(labelWidth)
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_TRACK_MOUSE
-    | Widget::FLAG_CLEARBG | Widget::FLAG_TRANSPARENT;
+    | Widget::FLAG_CLEARBG | Widget::FLAG_NOBG;
 
   _bgcolor = kDlgColor;
-  //_bgcolor = kBGColor;
   _bgcolorhi = kDlgColor;
 
   if(!_label.empty() && _labelWidth == 0)

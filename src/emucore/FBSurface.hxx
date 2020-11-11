@@ -323,7 +323,7 @@ class FBSurface
       This method should be called to reset the surface to empty
       pixels / colour black.
     */
-    virtual void invalidate() = 0;
+    virtual void invalidate() {};
 
     /**
       This method should be called to reset a surface area to empty
