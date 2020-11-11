@@ -67,7 +67,8 @@ class Dialog : public GuiObject
     void setDirty() override;
     bool isDirty() override; // TODO: remove
     bool isChainDirty() const override;
-    bool render();
+    void redraw();
+    void render();
 
     void addFocusWidget(Widget* w) override;
     void addToFocusList(WidgetArray& list) override;

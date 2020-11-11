@@ -277,7 +277,7 @@ void PopUpWidget::drawWidget(bool hilite)
 
   // Fill the background
   ColorId bgCol = isEditable() ? kWidColor : kDlgColor;
-  s.fillRect(x + 1, _y + 1, w - (_arrowWidth * 2 - 0), _h - 2,
+  s.fillRect(x + 1, _y + 1, w - (_arrowWidth * 2 - 1), _h - 2,
              onTop ? _changed ? kDbgChangedColor : bgCol : kDlgColor);
   s.fillRect(x + w - (_arrowWidth * 2 - 2), _y + 1, (_arrowWidth * 2 - 3), _h - 2,
              onTop ? isEnabled() && hilite ? kBtnColorHi : bgCol : kBGColorLo);

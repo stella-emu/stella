@@ -121,10 +121,8 @@ class DialogContainer
 
     /**
       Draw the stack of menus (full indicates to redraw all items).
-
-      @return  Answers whether any drawing actually occurred.
     */
-    bool draw(bool full = false);
+    void draw(bool full = false);
 
     /**
       Answers whether a full redraw is required.
