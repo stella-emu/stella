@@ -322,10 +322,11 @@ void FrameBuffer::update(bool force)
   //  - at the bottom of ::update(), to actually draw them (this must come
   //    last, since they are always drawn on top of everything else).
 
-  // Forced full rendering is required when messages are being disabled
-  force |= (myMsg.enabled && myMsg.counter == 0);
+  // Forced rendering without drawing is required when messages are being disabled
+  // Only relevant for LAUNCHER, PAUSE and DEBUGGER modes
+  bool rerender = force || (myMsg.enabled && myMsg.counter == 0);
 
-  bool redraw = false;
+  bool redraw = force;
   switch(myOSystem.eventHandler().state())
   {
     case EventHandlerState::NONE:
@@ -341,7 +342,7 @@ void FrameBuffer::update(bool force)
         myPausedCount = uInt32(7 * myOSystem.frameRate());
         showTextMessage("Paused", MessagePosition::MiddleCenter);
       }
-      if(force)
+      if(rerender)
         myTIASurface->render();
 
       break;  // EventHandlerState::PAUSE
@@ -350,8 +351,8 @@ void FrameBuffer::update(bool force)
   #ifdef GUI_SUPPORT
     case EventHandlerState::OPTIONSMENU:
     {
-      redraw = myOSystem.menu().needsRedraw();
-      if(force || redraw)
+      redraw |= myOSystem.menu().needsRedraw();
+      if(redraw)
       {
         clear();
         myTIASurface->render();
@@ -362,8 +363,8 @@ void FrameBuffer::update(bool force)
 
     case EventHandlerState::CMDMENU:
     {
-      redraw = myOSystem.commandMenu().needsRedraw();
-      if(force || redraw)
+      redraw |= myOSystem.commandMenu().needsRedraw();
+      if(redraw)
       {
         clear();
         myTIASurface->render();
@@ -374,8 +375,8 @@ void FrameBuffer::update(bool force)
 
     case EventHandlerState::MESSAGEMENU:
     {
-      redraw = myOSystem.messageMenu().needsRedraw();
-      if(force || redraw)
+      redraw |= myOSystem.messageMenu().needsRedraw();
+      if(redraw)
       {
         clear();
         myTIASurface->render();
@@ -386,8 +387,8 @@ void FrameBuffer::update(bool force)
 
     case EventHandlerState::TIMEMACHINE:
     {
-      redraw = myOSystem.timeMachine().needsRedraw();
-      if(force || redraw)
+      redraw |= myOSystem.timeMachine().needsRedraw();
+      if(redraw)
       {
         clear();
         myTIASurface->render();
@@ -416,8 +417,8 @@ void FrameBuffer::update(bool force)
           r.rewindStates(1);
       }
 
-      force = force || success;
-      if(force)
+      redraw |= success;
+      if(redraw)
         myTIASurface->render();
 
       // Stop playback mode at the end of the state buffer
@@ -432,11 +433,11 @@ void FrameBuffer::update(bool force)
 
     case EventHandlerState::LAUNCHER:
     {
-      redraw = myOSystem.launcher().needsRedraw();
-      if(force || redraw)
-      {
+      redraw |= myOSystem.launcher().needsRedraw();
+      if(redraw)
         myOSystem.launcher().draw(force);
-      }
+      else if(rerender)
+        myOSystem.launcher().render();
       break;  // EventHandlerState::LAUNCHER
     }
   #endif
@@ -444,12 +445,11 @@ void FrameBuffer::update(bool force)
   #ifdef DEBUGGER_SUPPORT
     case EventHandlerState::DEBUGGER:
     {
-      redraw = myOSystem.debugger().needsRedraw();
-      if(force || redraw)
-      {
-
+      redraw |= myOSystem.debugger().needsRedraw();
+      if(redraw)
         myOSystem.debugger().draw(force);
-      }
+      else if(rerender)
+        myOSystem.debugger().render();
       break;  // EventHandlerState::DEBUGGER
     }
   #endif
@@ -466,7 +466,7 @@ void FrameBuffer::update(bool force)
     redraw |= drawMessage();
 
   // Push buffers to screen only when necessary
-  if(force || redraw)
+  if(redraw || rerender)
     myBackend->renderToScreen();
 }
 
@@ -517,7 +517,6 @@ void FrameBuffer::createMessage(const string& message, MessagePosition position,
   myMsg.position  = position;
   myMsg.enabled   = true;
   myMsg.dirty     = true;
-
 
   myMsg.surface->setSrcSize(myMsg.w, myMsg.h);
   myMsg.surface->setDstSize(myMsg.w * hidpiScaleFactor(), myMsg.h * hidpiScaleFactor());
@@ -666,7 +665,7 @@ void FrameBuffer::enableMessages(bool enable)
 
     // Erase old messages on the screen
     myMsg.counter = 0;
-    update(true);  // Force update immediately
+    update();  // update immediately
   }
 }
 
@@ -892,7 +891,7 @@ void FrameBuffer::stateChanged(EventHandlerState state)
   // Make sure any onscreen messages are removed
   myMsg.counter = 0;
 
-  update(true); // force full update
+  update(); // update immediately
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
