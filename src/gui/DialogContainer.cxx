@@ -91,18 +91,33 @@ void DialogContainer::updateTime(uInt64 time)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DialogContainer::draw(bool full)
 {
-  cerr << "draw " << full << " " << typeid(*this).name() << endl;
   if(myDialogStack.empty())
     return;
+
+  cerr << "draw " << full << " " << typeid(*this).name() << endl;
 
   // Make the top dialog dirty if a full redraw is requested
   if(full)
     myDialogStack.top()->setDirty();
 
-  // Render all dirty dialogs
+  // Draw and render all dirty dialogs
   myDialogStack.applyAll([&](Dialog*& d) {
     if(d->needsRedraw())
       d->redraw();
+  });
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DialogContainer::render()
+{
+  if(myDialogStack.empty())
+    return;
+
+  cerr << "render " << typeid(*this).name() << endl;
+
+  // Render all dirty dialogs
+  myDialogStack.applyAll([&](Dialog*& d) {
+    d->render();
   });
 }
 

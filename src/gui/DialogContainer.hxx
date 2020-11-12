@@ -125,6 +125,11 @@ class DialogContainer
     void draw(bool full = false);
 
     /**
+      Render the stack of menus.
+    */
+    void render();
+
+    /**
       Answers whether a full redraw is required.
     */
     bool needsRedraw() const;
