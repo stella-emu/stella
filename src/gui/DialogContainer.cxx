@@ -108,6 +108,13 @@ void DialogContainer::draw(bool full)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DialogContainer::tick()
+{
+  if(!myDialogStack.empty())
+    myDialogStack.top()->tick();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DialogContainer::render()
 {
   if(myDialogStack.empty())

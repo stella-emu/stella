@@ -62,8 +62,9 @@ void EditableWidget::setText(const string& str, bool)
 
   setDirty();
 }
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool EditableWidget::isDirty()
+void EditableWidget::tick()
 {
   if(_hasFocus && _editable && isVisible() && _boss->isVisible())
   {
@@ -75,8 +76,7 @@ bool EditableWidget::isDirty()
       _dirty = true;
     }
   }
-
-  return _dirty;
+  Widget::tick();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

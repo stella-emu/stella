@@ -76,7 +76,7 @@ class DebuggerDialog : public Dialog
     void saveConfig() override;
 
   private:
-    void center() override { positionAt(0); }
+    void setPosition() override { positionAt(0); }
     void loadConfig() override;
     void handleKeyDown(StellaKey key, StellaMod mod, bool repeated) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;

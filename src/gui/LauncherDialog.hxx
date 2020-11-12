@@ -101,7 +101,7 @@ class LauncherDialog : public Dialog
     static constexpr int MIN_ROMINFO_ROWS = 7; // full lines
     static constexpr int MIN_ROMINFO_LINES = 4; // extra lines
 
-    void center() override { positionAt(0); }
+    void setPosition() override { positionAt(0); }
     void handleKeyDown(StellaKey key, StellaMod mod, bool repeated) override;
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;

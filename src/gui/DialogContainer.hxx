@@ -120,6 +120,11 @@ class DialogContainer
     void handleJoyHatEvent(int stick, int hat, JoyHatDir hdir, int button);
 
     /**
+      Tick the dialog and all its widgets.
+    */
+    void tick();
+
+    /**
       Draw the stack of menus (full indicates to redraw all items).
     */
     void draw(bool full = false);

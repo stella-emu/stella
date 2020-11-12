@@ -351,6 +351,7 @@ void FrameBuffer::update(bool force)
   #ifdef GUI_SUPPORT
     case EventHandlerState::OPTIONSMENU:
     {
+      myOSystem.menu().tick();
       redraw |= myOSystem.menu().needsRedraw();
       if(redraw)
       {
@@ -363,6 +364,7 @@ void FrameBuffer::update(bool force)
 
     case EventHandlerState::CMDMENU:
     {
+      myOSystem.commandMenu().tick();
       redraw |= myOSystem.commandMenu().needsRedraw();
       if(redraw)
       {
@@ -375,6 +377,7 @@ void FrameBuffer::update(bool force)
 
     case EventHandlerState::MESSAGEMENU:
     {
+      myOSystem.messageMenu().tick();
       redraw |= myOSystem.messageMenu().needsRedraw();
       if(redraw)
       {
@@ -387,6 +390,7 @@ void FrameBuffer::update(bool force)
 
     case EventHandlerState::TIMEMACHINE:
     {
+      myOSystem.timeMachine().tick();
       redraw |= myOSystem.timeMachine().needsRedraw();
       if(redraw)
       {
@@ -433,6 +437,7 @@ void FrameBuffer::update(bool force)
 
     case EventHandlerState::LAUNCHER:
     {
+      myOSystem.launcher().tick();
       redraw |= myOSystem.launcher().needsRedraw();
       if(redraw)
         myOSystem.launcher().draw(force);
@@ -445,6 +450,7 @@ void FrameBuffer::update(bool force)
   #ifdef DEBUGGER_SUPPORT
     case EventHandlerState::DEBUGGER:
     {
+      myOSystem.debugger().tick();
       redraw |= myOSystem.debugger().needsRedraw();
       if(redraw)
         myOSystem.debugger().draw(force);

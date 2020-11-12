@@ -52,45 +52,33 @@ Widget::~Widget()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Widget::setDirty()
-{
-  // A widget being dirty indicates that its parent dialog is dirty
-  // So we inform the parent about it
-  //_boss->dialog().setDirty();
-  //cerr << "set dirty " << typeid(*this).name() << endl;
-
-  _dirty = true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Widget::isDirty()
-{
-  //string name = typeid(*this).name();
-  //if(_dirty && name == "class TabWidget")
-  //  cerr << "is dirty " << typeid(*this).name() << endl;
-
-  return _dirty;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Widget::isChainDirty() const
 {
-  string name = typeid(*this).name();
-  if(_dirty && name == "class TabWidget")
-    cerr << "is chain dirty " << typeid(*this).name() << endl;
-
   bool dirty = false;
 
-  // Check if widget or any subwidgets are dirty
+  // Recursively check if widget or any child dialogs or widgets are dirty
   Widget* w = _firstWidget;
 
-  while(!dirty && w)
+  while(w && !dirty)
   {
-    dirty |= w->isDirty();
+    dirty |= w->needsRedraw();
     w = w->_next;
   }
 
   return dirty;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Widget::tick()
+{
+  // Recursively tick widget and all child dialogs and widgets
+  Widget* w = _firstWidget;
+
+  while(w)
+  {
+    w->tick();
+    w = w->_next;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

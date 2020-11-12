@@ -91,7 +91,7 @@ void Dialog::open()
   const uInt32 scale = instance().frameBuffer().hidpiScaleFactor();
   _surface->setDstSize(_w * scale, _h * scale);
 
-  center();
+  setPosition();
 
   if(_myTabList.size())
     // (Re)-build the focus list to use for all widgets of all tabs
@@ -143,21 +143,9 @@ void Dialog::setTitle(const string& title)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::center()
+void Dialog::setPosition()
 {
   positionAt(instance().settings().getInt("dialogpos"));
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::setDirty()
-{
-  _dirty = true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Dialog::isDirty()
-{
-  return _dirty;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -165,16 +153,29 @@ bool Dialog::isChainDirty() const
 {
   bool dirty = false;
 
-  // Check if widget or any subwidgets are dirty
+  // Recursively check if dialog or any chick dialogs or widgets are dirty
   Widget* w = _firstWidget;
 
-  while(!dirty && w)
+  while(w && !dirty)
   {
     dirty |= w->needsRedraw();
     w = w->_next;
   }
 
   return dirty;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::tick()
+{
+  // Recursively tick dialog and all child dialogs and widgets
+  Widget* w = _firstWidget;
+
+  while(w)
+  {
+    w->tick();
+    w = w->_next;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -224,7 +225,7 @@ void Dialog::redraw()
     return;// false;
 
   // Draw this dialog
-  center();
+  setPosition();
   drawDialog();
   render();
 }
