@@ -56,16 +56,13 @@ class Dialog : public GuiObject
     bool isVisible() const override { return _visible; }
     bool isOnTop() const { return _onTop;  }
 
-    virtual void center();
+    virtual void setPosition();
     virtual void drawDialog();
     virtual void loadConfig()  { }
     virtual void saveConfig()  { }
     virtual void setDefaults() { }
 
-    // A dialog being dirty indicates that its underlying surface needs to be
-    // redrawn and then re-rendered; this is taken care of in ::render()
-    void setDirty() override;
-    bool isDirty() override; // TODO: remove
+    void tick() override;
     bool isChainDirty() const override;
     void redraw();
     void render();

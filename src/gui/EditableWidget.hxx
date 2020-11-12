@@ -67,7 +67,7 @@ class EditableWidget : public Widget, public CommandSender
   protected:
     void receivedFocusWidget() override;
     void lostFocusWidget() override;
-    bool isDirty() override;
+    void tick() override;
 
     virtual void startEditMode() { setFlags(Widget::FLAG_WANTS_RAWDATA);   }
     virtual void endEditMode()   { clearFlags(Widget::FLAG_WANTS_RAWDATA); }

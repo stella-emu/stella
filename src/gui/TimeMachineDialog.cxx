@@ -297,7 +297,7 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TimeMachineDialog::center()
+void TimeMachineDialog::setPosition()
 {
   // Place on the bottom of the screen, centered horizontally
   const Common::Size& screen = instance().frameBuffer().screenSize();

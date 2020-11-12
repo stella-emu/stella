@@ -69,8 +69,7 @@ class Widget : public GuiObject
     virtual bool handleJoyHat(int stick, int hat, JoyHatDir hdir, int button = JOY_CTRL_NONE) { return false; }
     virtual bool handleEvent(Event::Type event) { return false; }
 
-    void setDirty() override;
-    bool isDirty() override; // TODO: remove
+    void tick() override;
     bool isChainDirty() const override;
     void draw() override;
     void receivedFocus();
