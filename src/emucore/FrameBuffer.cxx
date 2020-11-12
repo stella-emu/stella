@@ -322,13 +322,8 @@ void FrameBuffer::update(bool force)
   //  - at the bottom of ::update(), to actually draw them (this must come
   //    last, since they are always drawn on top of everything else).
 
-  // Full rendering is required when messages are enabled
-  force |= (myMsg.counter >= 0);
-
-  // Detect when a message has been turned off; one last redraw is required
-  // in this case, to draw over the area that the message occupied
-  if(myMsg.counter == 0)
-    myMsg.counter = -1;
+  // Forced full rendering is required when messages are being disabled
+  force |= (myMsg.enabled && myMsg.counter == 0);
 
   bool redraw = false;
   switch(myOSystem.eventHandler().state())
@@ -344,7 +339,7 @@ void FrameBuffer::update(bool force)
       if(myPausedCount-- <= 0)
       {
         myPausedCount = uInt32(7 * myOSystem.frameRate());
-        showMessage("Paused", MessagePosition::MiddleCenter);
+        showTextMessage("Paused", MessagePosition::MiddleCenter);
       }
       if(force)
         myTIASurface->render();
@@ -422,12 +417,12 @@ void FrameBuffer::update(bool force)
       }
 
       force = force || success;
-      if (force)
+      if(force)
         myTIASurface->render();
 
       // Stop playback mode at the end of the state buffer
       // and switch to Time Machine or Pause mode
-      if (!success)
+      if(!success)
       {
         frames = 0;
         myOSystem.eventHandler().enterMenuMode(EventHandlerState::TIMEMACHINE);
@@ -468,7 +463,7 @@ void FrameBuffer::update(bool force)
   // indicates that, and then the code at the top of this method sees
   // the change and redraws everything
   if(myMsg.enabled)
-    drawMessage();
+    redraw |= drawMessage();
 
   // Push buffers to screen only when necessary
   if(force || redraw)
@@ -501,19 +496,15 @@ void FrameBuffer::updateInEmulationMode(float framesPerSecond)
   myBackend->renderToScreen();
 }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::showMessage(const string& message, MessagePosition position,
-                              bool force)
-{
 #ifdef GUI_SUPPORT
+void FrameBuffer::createMessage(const string& message, MessagePosition position, bool force)
+{
   // Only show messages if they've been enabled
   if(myMsg.surface == nullptr || !(force || myOSystem.settings().getBool("uimessages")))
     return;
 
-  const int fontWidth  = font().getMaxCharWidth(),
-            fontHeight = font().getFontHeight();
+  const int fontHeight = font().getFontHeight();
   const int VBORDER = fontHeight / 4;
-  const int HBORDER = fontWidth * 1.25 / 2.0;
 
   myMsg.counter = uInt32(myOSystem.frameRate()) * 2; // Show message for 2 seconds
   if(myMsg.counter == 0)
@@ -522,39 +513,41 @@ void FrameBuffer::showMessage(const string& message, MessagePosition position,
   // Precompute the message coordinates
   myMsg.text      = message;
   myMsg.color     = kBtnTextColor;
-  myMsg.showGauge = false;
-  myMsg.w         = std::min(fontWidth * (MESSAGE_WIDTH) - HBORDER * 2,
-                             font().getStringWidth(myMsg.text) + HBORDER * 2);
   myMsg.h         = fontHeight + VBORDER * 2;
   myMsg.position  = position;
   myMsg.enabled   = true;
+  myMsg.dirty     = true;
+
 
   myMsg.surface->setSrcSize(myMsg.w, myMsg.h);
   myMsg.surface->setDstSize(myMsg.w * hidpiScaleFactor(), myMsg.h * hidpiScaleFactor());
+}
+#endif
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::showTextMessage(const string& message, MessagePosition position,
+                                  bool force)
+{
+#ifdef GUI_SUPPORT
+  const int fontWidth = font().getMaxCharWidth();
+  const int HBORDER = fontWidth * 1.25 / 2.0;
+
+  myMsg.showGauge = false;
+  myMsg.w         = std::min(fontWidth * (MESSAGE_WIDTH) - HBORDER * 2,
+                             font().getStringWidth(message) + HBORDER * 2);
+
+  createMessage(message, position, force);
 #endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::showMessage(const string& message, const string& valueText,
-                              float value, float minValue, float maxValue)
+void FrameBuffer::showGaugeMessage(const string& message, const string& valueText,
+                                   float value, float minValue, float maxValue)
 {
 #ifdef GUI_SUPPORT
-  // Only show messages if they've been enabled
-  if(myMsg.surface == nullptr || !myOSystem.settings().getBool("uimessages"))
-    return;
-
-  const int fontWidth  = font().getMaxCharWidth(),
-            fontHeight = font().getFontHeight();
-  const int VBORDER = fontHeight / 4;
+  const int fontWidth = font().getMaxCharWidth();
   const int HBORDER = fontWidth * 1.25 / 2.0;
 
-  myMsg.counter = uInt32(myOSystem.frameRate()) * 2; // Show message for 2 seconds
-  if(myMsg.counter == 0)
-    myMsg.counter = 120;
-
-  // Precompute the message coordinates
-  myMsg.text       = message;
-  myMsg.color      = kBtnTextColor;
   myMsg.showGauge  = true;
   if(maxValue - minValue != 0)
     myMsg.value = (value - minValue) / (maxValue - minValue) * 100.F;
@@ -562,16 +555,12 @@ void FrameBuffer::showMessage(const string& message, const string& valueText,
     myMsg.value = 100.F;
   myMsg.valueText  = valueText;
   myMsg.w          = std::min(fontWidth * MESSAGE_WIDTH,
-                              font().getStringWidth(myMsg.text)
+                              font().getStringWidth(message)
                               + fontWidth * (GAUGEBAR_WIDTH + 2)
-                              + font().getStringWidth(myMsg.valueText))
-    + HBORDER * 2;
-  myMsg.h          = fontHeight + VBORDER * 2;
-  myMsg.position   = MessagePosition::BottomCenter;
-  myMsg.enabled    = true;
+                              + font().getStringWidth(valueText))
+                              + HBORDER * 2;
 
-  myMsg.surface->setSrcSize(myMsg.w, myMsg.h);
-  myMsg.surface->setDstSize(myMsg.w * hidpiScaleFactor(), myMsg.h * hidpiScaleFactor());
+  createMessage(message, MessagePosition::BottomCenter);
 #endif
 }
 
@@ -652,8 +641,8 @@ void FrameBuffer::toggleFrameStats(bool toggle)
   myOSystem.settings().setValue(
     myOSystem.settings().getBool("dev.settings") ? "dev.stats" : "plr.stats", myStatsEnabled);
 
-  myOSystem.frameBuffer().showMessage(string("Console info ") +
-                                      (myStatsEnabled ? "enabled" : "disabled"));
+  myOSystem.frameBuffer().showTextMessage(string("Console info ") +
+                                          (myStatsEnabled ? "enabled" : "disabled"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -676,7 +665,6 @@ void FrameBuffer::enableMessages(bool enable)
     myStatsMsg.enabled = false;
 
     // Erase old messages on the screen
-    myMsg.enabled = false;
     myMsg.counter = 0;
     update(true);  // Force update immediately
   }
@@ -691,114 +679,118 @@ inline bool FrameBuffer::drawMessage()
   if(myMsg.counter == 0)
   {
     myMsg.enabled = false;
-    return true;
-  }
-  else if(myMsg.counter < 0)
-  {
-    myMsg.enabled = false;
     return false;
   }
 
-  // Draw the bounded box and text
-  const Common::Rect& dst = myMsg.surface->dstRect();
-  const int fontWidth  = font().getMaxCharWidth(),
-            fontHeight = font().getFontHeight();
-  const int VBORDER = fontHeight / 4;
-  const int HBORDER = fontWidth * 1.25 / 2.0;
-  constexpr int BORDER = 1;
-
-  switch(myMsg.position)
+  if(myMsg.dirty)
   {
-    case MessagePosition::TopLeft:
-      myMsg.x = 5;
-      myMsg.y = 5;
-      break;
+    cerr << "--- draw message ---" << endl;
 
-    case MessagePosition::TopCenter:
-      myMsg.x = (imageRect().w() - dst.w()) >> 1;
-      myMsg.y = 5;
-      break;
+    // Draw the bounded box and text
+    const Common::Rect& dst = myMsg.surface->dstRect();
+    const int fontWidth = font().getMaxCharWidth(),
+      fontHeight = font().getFontHeight();
+    const int VBORDER = fontHeight / 4;
+    const int HBORDER = fontWidth * 1.25 / 2.0;
+    constexpr int BORDER = 1;
 
-    case MessagePosition::TopRight:
-      myMsg.x = imageRect().w() - dst.w() - 5;
-      myMsg.y = 5;
-      break;
-
-    case MessagePosition::MiddleLeft:
-      myMsg.x = 5;
-      myMsg.y = (imageRect().h() - dst.h()) >> 1;
-      break;
-
-    case MessagePosition::MiddleCenter:
-      myMsg.x = (imageRect().w() - dst.w()) >> 1;
-      myMsg.y = (imageRect().h() - dst.h()) >> 1;
-      break;
-
-    case MessagePosition::MiddleRight:
-      myMsg.x = imageRect().w() - dst.w() - 5;
-      myMsg.y = (imageRect().h() - dst.h()) >> 1;
-      break;
-
-    case MessagePosition::BottomLeft:
-      myMsg.x = 5;
-      myMsg.y = imageRect().h() - dst.h() - 5;
-      break;
-
-    case MessagePosition::BottomCenter:
-      myMsg.x = (imageRect().w() - dst.w()) >> 1;
-      myMsg.y = imageRect().h() - dst.h() - 5;
-      break;
-
-    case MessagePosition::BottomRight:
-      myMsg.x = imageRect().w() - dst.w() - 5;
-      myMsg.y = imageRect().h() - dst.h() - 5;
-      break;
-  }
-
-  myMsg.surface->setDstPos(myMsg.x + imageRect().x(), myMsg.y + imageRect().y());
-  myMsg.surface->fillRect(0, 0, myMsg.w, myMsg.h, kColor);
-  myMsg.surface->fillRect(BORDER, BORDER, myMsg.w - BORDER * 2, myMsg.h - BORDER * 2, kBtnColor);
-  myMsg.surface->drawString(font(), myMsg.text, HBORDER, VBORDER,
-                            myMsg.w, myMsg.color);
-
-  if(myMsg.showGauge)
-  {
-    constexpr int NUM_TICKMARKS = 4;
-    // limit gauge bar width if texts are too long
-    const int swidth = std::min(fontWidth * GAUGEBAR_WIDTH,
-                                fontWidth * (MESSAGE_WIDTH - 2)
-                                - font().getStringWidth(myMsg.text)
-                                - font().getStringWidth(myMsg.valueText));
-    const int bwidth = swidth * myMsg.value / 100.F;
-    const int bheight = fontHeight >> 1;
-    const int x = HBORDER + font().getStringWidth(myMsg.text) + fontWidth;
-    // align bar with bottom of text
-    const int y = VBORDER + font().desc().ascent - bheight;
-
-    // draw gauge bar
-    myMsg.surface->fillRect(x - BORDER, y, swidth + BORDER * 2, bheight, kSliderBGColor);
-    myMsg.surface->fillRect(x, y + BORDER, bwidth, bheight - BORDER * 2, kSliderColor);
-    // draw tickmark in the middle of the bar
-    for(int i = 1; i < NUM_TICKMARKS; ++i)
+    switch(myMsg.position)
     {
-      ColorId color;
-      int xt = x + swidth * i / NUM_TICKMARKS;
-      if(bwidth < xt - x)
-        color = kCheckColor; // kSliderColor;
-      else
-        color = kSliderBGColor;
-      myMsg.surface->vLine(xt, y + bheight / 2, y + bheight - 1, color);
+      case MessagePosition::TopLeft:
+        myMsg.x = 5;
+        myMsg.y = 5;
+        break;
+
+      case MessagePosition::TopCenter:
+        myMsg.x = (imageRect().w() - dst.w()) >> 1;
+        myMsg.y = 5;
+        break;
+
+      case MessagePosition::TopRight:
+        myMsg.x = imageRect().w() - dst.w() - 5;
+        myMsg.y = 5;
+        break;
+
+      case MessagePosition::MiddleLeft:
+        myMsg.x = 5;
+        myMsg.y = (imageRect().h() - dst.h()) >> 1;
+        break;
+
+      case MessagePosition::MiddleCenter:
+        myMsg.x = (imageRect().w() - dst.w()) >> 1;
+        myMsg.y = (imageRect().h() - dst.h()) >> 1;
+        break;
+
+      case MessagePosition::MiddleRight:
+        myMsg.x = imageRect().w() - dst.w() - 5;
+        myMsg.y = (imageRect().h() - dst.h()) >> 1;
+        break;
+
+      case MessagePosition::BottomLeft:
+        myMsg.x = 5;
+        myMsg.y = imageRect().h() - dst.h() - 5;
+        break;
+
+      case MessagePosition::BottomCenter:
+        myMsg.x = (imageRect().w() - dst.w()) >> 1;
+        myMsg.y = imageRect().h() - dst.h() - 5;
+        break;
+
+      case MessagePosition::BottomRight:
+        myMsg.x = imageRect().w() - dst.w() - 5;
+        myMsg.y = imageRect().h() - dst.h() - 5;
+        break;
     }
-    // draw value text
-    myMsg.surface->drawString(font(), myMsg.valueText,
-                              x + swidth + fontWidth, VBORDER,
+
+    myMsg.surface->setDstPos(myMsg.x + imageRect().x(), myMsg.y + imageRect().y());
+    myMsg.surface->fillRect(0, 0, myMsg.w, myMsg.h, kColor);
+    myMsg.surface->fillRect(BORDER, BORDER, myMsg.w - BORDER * 2, myMsg.h - BORDER * 2, kBtnColor);
+    myMsg.surface->drawString(font(), myMsg.text, HBORDER, VBORDER,
                               myMsg.w, myMsg.color);
+
+    if(myMsg.showGauge)
+    {
+      constexpr int NUM_TICKMARKS = 4;
+      // limit gauge bar width if texts are too long
+      const int swidth = std::min(fontWidth * GAUGEBAR_WIDTH,
+                                  fontWidth * (MESSAGE_WIDTH - 2)
+                                  - font().getStringWidth(myMsg.text)
+                                  - font().getStringWidth(myMsg.valueText));
+      const int bwidth = swidth * myMsg.value / 100.F;
+      const int bheight = fontHeight >> 1;
+      const int x = HBORDER + font().getStringWidth(myMsg.text) + fontWidth;
+      // align bar with bottom of text
+      const int y = VBORDER + font().desc().ascent - bheight;
+
+      // draw gauge bar
+      myMsg.surface->fillRect(x - BORDER, y, swidth + BORDER * 2, bheight, kSliderBGColor);
+      myMsg.surface->fillRect(x, y + BORDER, bwidth, bheight - BORDER * 2, kSliderColor);
+      // draw tickmark in the middle of the bar
+      for(int i = 1; i < NUM_TICKMARKS; ++i)
+      {
+        ColorId color;
+        int xt = x + swidth * i / NUM_TICKMARKS;
+        if(bwidth < xt - x)
+          color = kCheckColor; // kSliderColor;
+        else
+          color = kSliderBGColor;
+        myMsg.surface->vLine(xt, y + bheight / 2, y + bheight - 1, color);
+      }
+      // draw value text
+      myMsg.surface->drawString(font(), myMsg.valueText,
+                                x + swidth + fontWidth, VBORDER,
+                                myMsg.w, myMsg.color);
+    }
+    myMsg.dirty = false;
+    myMsg.surface->render();
+    return true;
   }
-  myMsg.surface->render();
+
   myMsg.counter--;
+  myMsg.surface->render();
 #endif
 
-  return true;
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -898,7 +890,6 @@ void FrameBuffer::setUIPalette()
 void FrameBuffer::stateChanged(EventHandlerState state)
 {
   // Make sure any onscreen messages are removed
-  myMsg.enabled = false;
   myMsg.counter = 0;
 
   update(true); // force full update
@@ -1010,7 +1001,7 @@ void FrameBuffer::toggleFullscreen(bool toggle)
           msg << "disabled (";
         msg << "Zoom " << myActiveVidMode.zoom * 100 << "%)";
 
-        showMessage(msg.str());
+        showTextMessage(msg.str());
       }
       break;
     }
@@ -1043,7 +1034,7 @@ void FrameBuffer::toggleAdaptRefresh(bool toggle)
     msg << (isAdaptRefresh ? "enabled" : "disabled");
     msg << " (" << myBackend->refreshRate() << " Hz)";
 
-    showMessage(msg.str());
+    showTextMessage(msg.str());
   }
 }
 #endif
@@ -1069,7 +1060,7 @@ void FrameBuffer::changeOverscan(int direction)
       val << (overscan > 0 ? "+" : "" ) << overscan << "%";
     else
       val << "Off";
-    myOSystem.frameBuffer().showMessage("Overscan", val.str(), overscan, 0, 10);
+    myOSystem.frameBuffer().showGaugeMessage("Overscan", val.str(), overscan, 0, 10);
   }
 }
 
@@ -1106,9 +1097,9 @@ void FrameBuffer::switchVideoMode(int direction)
   if(applyVideoMode() == FBInitStatus::Success)
   {
     if(fullScreen())
-      showMessage(myActiveVidMode.description);
+      showTextMessage(myActiveVidMode.description);
     else
-      showMessage("Zoom", myActiveVidMode.description, myActiveVidMode.zoom,
+      showGaugeMessage("Zoom", myActiveVidMode.description, myActiveVidMode.zoom,
                   supportedTIAMinZoom(), myTIAMaxZoom);
   }
 }
@@ -1248,9 +1239,9 @@ void FrameBuffer::toggleGrabMouse()
   myGrabMouse = !myGrabMouse;
   setCursorState();
   myOSystem.settings().setValue("grabmouse", myGrabMouse);
-  myOSystem.frameBuffer().showMessage(oldState != myGrabMouse ? myGrabMouse
-                                      ? "Grab mouse enabled" : "Grab mouse disabled"
-                                      : "Grab mouse not allowed while cursor shown");
+  myOSystem.frameBuffer().showTextMessage(oldState != myGrabMouse ? myGrabMouse
+                                          ? "Grab mouse enabled" : "Grab mouse disabled"
+                                          : "Grab mouse not allowed while cursor shown");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -662,7 +662,7 @@ void LauncherDialog::loadRom()
       instance().settings().setValue("romdir", currentNode().getParent().getShortPath());
   }
   else
-    instance().frameBuffer().showMessage(result, MessagePosition::MiddleCenter, true);
+    instance().frameBuffer().showTextMessage(result, MessagePosition::MiddleCenter, true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

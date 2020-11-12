@@ -127,8 +127,8 @@ int DialogContainer::addDialog(Dialog* d)
   const uInt32 scale = myOSystem.frameBuffer().hidpiScaleFactor();
 
   if(uInt32(d->getWidth() * scale) > r.w() || uInt32(d->getHeight() * scale) > r.h())
-    myOSystem.frameBuffer().showMessage(
-        "Unable to show dialog box; FIX THE CODE");
+    myOSystem.frameBuffer().showTextMessage(
+      "Unable to show dialog box; FIX THE CODE", MessagePosition::BottomCenter, true);
   else
   {
     // "darken" current top dialog
