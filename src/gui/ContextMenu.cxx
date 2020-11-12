@@ -346,8 +346,12 @@ int ContextMenu::findItem(int x, int y) const
 void ContextMenu::drawCurrentSelection(int item)
 {
   // Change selection
-  _selectedOffset = item;
-  setDirty();
+  if(_selectedOffset != item)
+  {
+    _selectedOffset = item;
+    cerr << "ContextMenu" << endl;
+    setDirty();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

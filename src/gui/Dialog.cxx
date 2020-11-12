@@ -240,7 +240,15 @@ void Dialog::render()
       surface->render();
     });
   }
-  if(parent().myDialogStack.top() != this)
+
+  //cerr << "is ContextMenu "
+  //  << (typeid(*parent().myDialogStack.top()) == typeid(ContextMenu)) << endl;
+
+  // Dialog is still on top if e.g a ContextMenu is opened
+  if(!(parent().myDialogStack.top() == this)
+     && !((parent().myDialogStack.get(parent().myDialogStack.size() - 2) == this
+       //&& !(typeid(*parent().myDialogStack.top()) == typeid(ContextMenu)))
+          && !parent().myDialogStack.top()->hasTitle())))
   {
     if(_shadeSurface == nullptr)
     {
@@ -432,6 +440,7 @@ void Dialog::drawDialog()
       || (parent().myDialogStack.get(parent().myDialogStack.size() - 2) == this
           && !parent().myDialogStack.top()->hasTitle());
 
+    cerr << "on top " << isOnTop() << endl;
     if(clearsBackground())
     {
       //    cerr << "Dialog::drawDialog(): w = " << _w << ", h = " << _h << " @ " << &s << endl << endl;
