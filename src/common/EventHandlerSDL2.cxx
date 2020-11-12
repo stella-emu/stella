@@ -93,7 +93,6 @@ void EventHandlerSDL2::pollEvent()
 
   while(SDL_PollEvent(&myEvent))
   {
-    cerr << myEvent.type << endl;
     switch(myEvent.type)
     {
       // keyboard events
@@ -201,7 +200,6 @@ void EventHandlerSDL2::pollEvent()
       }
 
       case SDL_WINDOWEVENT:
-        cerr << myEvent.window.event << endl;
         switch(myEvent.window.event)
         {
           case SDL_WINDOWEVENT_SHOWN:
