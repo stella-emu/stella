@@ -262,7 +262,7 @@ void TiaZoomWidget::handleCommand(CommandSender* sender, int cmd, int data, int 
       {
         command << "scanline #" << lines;
         string message = instance().debugger().parser().run(command.str());
-        instance().frameBuffer().showMessage(message);
+        instance().frameBuffer().showTextMessage(message);
       }
     }
     else if(rmb == "bp")
@@ -271,7 +271,7 @@ void TiaZoomWidget::handleCommand(CommandSender* sender, int cmd, int data, int 
       int scanline = myClickY / myZoomLevel + myOffY + startLine;
       command << "breakif _scan==#" << scanline;
       string message = instance().debugger().parser().run(command.str());
-      instance().frameBuffer().showMessage(message);
+      instance().frameBuffer().showTextMessage(message);
     }
     else
     {

@@ -92,15 +92,15 @@ class FrameBuffer
     void updateInEmulationMode(float framesPerSecond);
 
     /**
-      Shows a message onscreen.
+      Shows a text message onscreen.
 
       @param message  The message to be shown
       @param position Onscreen position for the message
       @param force    Force showing this message, even if messages are disabled
     */
-    void showMessage(const string& message,
-                     MessagePosition position = MessagePosition::BottomCenter,
-                     bool force = false);
+    void showTextMessage(const string& message,
+                         MessagePosition position = MessagePosition::BottomCenter,
+                         bool force = false);
     /**
       Shows a message with a gauge bar onscreen.
 
@@ -110,8 +110,8 @@ class FrameBuffer
       @param minValue   The minimal value of the gauge bar
       @param maxValue   The maximal value of the gauge bar
     */
-    void showMessage(const string& message, const string& valueText,
-                     float value, float minValue = 0.F, float maxValue = 100.F);
+    void showGaugeMessage(const string& message, const string& valueText,
+                          float value, float minValue = 0.F, float maxValue = 100.F);
 
     bool messageShown() const;
 
@@ -375,6 +375,18 @@ class FrameBuffer
     */
     void resetSurfaces();
 
+  #ifdef GUI_SUPPORT
+    /**
+      Helps to create a basic message onscreen.
+
+      @param message  The message to be shown
+      @param position Onscreen position for the message
+      @param force    Force showing this message, even if messages are disabled
+    */
+    void createMessage(const string& message, MessagePosition position,
+                       bool force = false);
+  #endif
+
     /**
       Draw pending messages.
 
@@ -478,6 +490,7 @@ class FrameBuffer
       ColorId color{kNone};
       shared_ptr<FBSurface> surface;
       bool enabled{false};
+      bool dirty{false};
       bool showGauge{false};
       float value{0.0F};
       string valueText;

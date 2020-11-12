@@ -181,7 +181,7 @@ uInt32 RewindManager::rewindStates(uInt32 numStates)
 
   if(myOSystem.eventHandler().state() != EventHandlerState::TIMEMACHINE
      && myOSystem.eventHandler().state() != EventHandlerState::PLAYBACK)
-    myOSystem.frameBuffer().showMessage(message);
+    myOSystem.frameBuffer().showTextMessage(message);
   return i;
 }
 
@@ -216,7 +216,7 @@ uInt32 RewindManager::unwindStates(uInt32 numStates)
 
   if(myOSystem.eventHandler().state() != EventHandlerState::TIMEMACHINE
      && myOSystem.eventHandler().state() != EventHandlerState::PLAYBACK)
-    myOSystem.frameBuffer().showMessage(message);
+    myOSystem.frameBuffer().showTextMessage(message);
   return i;
 }
 

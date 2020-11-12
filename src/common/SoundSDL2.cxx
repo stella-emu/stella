@@ -224,7 +224,7 @@ bool SoundSDL2::toggleMute()
   string message = "Sound ";
   message += enabled ? "unmuted" : "muted";
 
-  myOSystem.frameBuffer().showMessage(message);
+  myOSystem.frameBuffer().showTextMessage(message);
 
   //ostringstream strval;
   //uInt32 volume;
@@ -282,7 +282,7 @@ void SoundSDL2::adjustVolume(int direction)
     strval << percent << "%";
   else
     strval << "Off";
-  myOSystem.frameBuffer().showMessage("Volume", strval.str(), percent);
+  myOSystem.frameBuffer().showGaugeMessage("Volume", strval.str(), percent);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

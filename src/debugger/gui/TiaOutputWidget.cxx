@@ -92,10 +92,10 @@ void TiaOutputWidget::saveSnapshot(int execDepth, const string& execPrefix)
     message = e.what();
   }
   if (execDepth == 0) {
-    instance().frameBuffer().showMessage(message);
+    instance().frameBuffer().showTextMessage(message);
   }
 #else
-  instance().frameBuffer().showMessage("PNG image saving not supported");
+  instance().frameBuffer().showTextMessage("PNG image saving not supported");
 #endif
 }
 
@@ -135,7 +135,7 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
       {
         command << "scanline #" << lines;
         string message = instance().debugger().parser().run(command.str());
-        instance().frameBuffer().showMessage(message);
+        instance().frameBuffer().showTextMessage(message);
       }
     }
     else if(rmb == "bp")
@@ -144,7 +144,7 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
       int scanline = myClickY + startLine;
       command << "breakif _scan==#" << scanline;
       string message = instance().debugger().parser().run(command.str());
-      instance().frameBuffer().showMessage(message);
+      instance().frameBuffer().showTextMessage(message);
     }
     else if(rmb == "zoom")
     {

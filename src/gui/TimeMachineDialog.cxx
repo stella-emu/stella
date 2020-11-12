@@ -440,11 +440,11 @@ void TimeMachineDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kSaveAll:
-      instance().frameBuffer().showMessage(instance().state().rewindManager().saveAllStates());
+      instance().frameBuffer().showTextMessage(instance().state().rewindManager().saveAllStates());
       break;
 
     case kLoadAll:
-      instance().frameBuffer().showMessage(instance().state().rewindManager().loadAllStates());
+      instance().frameBuffer().showTextMessage(instance().state().rewindManager().loadAllStates());
       initBar();
       break;
 
