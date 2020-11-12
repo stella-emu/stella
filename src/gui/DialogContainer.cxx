@@ -146,9 +146,10 @@ int DialogContainer::addDialog(Dialog* d)
       "Unable to show dialog box; FIX THE CODE", MessagePosition::BottomCenter, true);
   else
   {
-    // "darken" current top dialog
-    if(!myDialogStack.empty())
-      myDialogStack.top()->setDirty();
+    //// "shade" current top dialog
+    //if(!myDialogStack.empty())
+    //  myDialogStack.top()->setDirty();
+
     d->setDirty();
     myDialogStack.push(d);
   }
@@ -164,14 +165,16 @@ void DialogContainer::removeDialog()
 
     if(!myDialogStack.empty())
     {
-      // this "undarkens" the top dialog
-      myDialogStack.top()->setDirty();
+      //// this "unshades" the top dialog
+      //myDialogStack.top()->setDirty();
 
       // Rerender all dialogs (TODO: top dialog is rendered twice)
       myDialogStack.applyAll([&](Dialog*& d){
           //d->setDirty();
           d->render();
       });
+      // TODO: the screen is not updated until an event happens
+      // FrameBuffer::myBackend->renderToScreen() doesn't help
     }
   }
 }
