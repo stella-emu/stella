@@ -227,8 +227,6 @@ void Dialog::redraw()
   center();
   drawDialog();
   render();
-
-//  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -241,6 +239,28 @@ void Dialog::render()
     mySurfaceStack.applyAll([](shared_ptr<FBSurface>& surface) {
       surface->render();
     });
+  }
+  if(parent().myDialogStack.top() != this)
+  {
+    if(_shadeSurface == nullptr)
+    {
+      uInt32 data = 0xff000000;
+
+      _shadeSurface = instance().frameBuffer().allocateSurface(
+        1, 1, ScalingInterpolation::sharp, &data);
+
+      FBSurface::Attributes& attr = _shadeSurface->attributes();
+
+      attr.blending = true;
+      attr.blendalpha = 25; // darken background dialogs by 25%
+      _shadeSurface->applyAttributes();
+    }
+
+    const Common::Rect& rect = _surface->dstRect();
+    _shadeSurface->setDstPos(rect.x(), rect.y());
+    _shadeSurface->setDstSize(rect.w(), rect.h());
+
+    _shadeSurface->render();
   }
 }
 
@@ -408,7 +428,7 @@ void Dialog::drawDialog()
     //cerr << "*** draw dialog " << typeid(*this).name() << " ***" << endl;
 
     // Dialog is still on top if e.g a ContextMenu is opened
-    _onTop = parent().myDialogStack.top() == this
+    _onTop = true/*parent().myDialogStack.top() == this*/
       || (parent().myDialogStack.get(parent().myDialogStack.size() - 2) == this
           && !parent().myDialogStack.top()->hasTitle());
 

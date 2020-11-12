@@ -230,6 +230,7 @@ class Dialog : public GuiObject
 
     WidgetArray _buttonGroup;
     shared_ptr<FBSurface> _surface;
+    shared_ptr<FBSurface> _shadeSurface;
 
     int _tabID{0};
     uInt32 _max_w{0}; // maximum wanted width
