@@ -45,6 +45,8 @@ EventHandlerSDL2::EventHandlerSDL2(OSystem& osystem)
   }
   Logger::debug("EventHandlerSDL2::EventHandlerSDL2 SDL_INIT_JOYSTICK");
 #endif
+
+  SDL_SetHint(SDL_HINT_MOUSE_FOCUS_CLICKTHROUGH, "1");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -91,6 +93,7 @@ void EventHandlerSDL2::pollEvent()
 
   while(SDL_PollEvent(&myEvent))
   {
+    cerr << myEvent.type << endl;
     switch(myEvent.type)
     {
       // keyboard events
@@ -198,6 +201,7 @@ void EventHandlerSDL2::pollEvent()
       }
 
       case SDL_WINDOWEVENT:
+        cerr << myEvent.window.event << endl;
         switch(myEvent.window.event)
         {
           case SDL_WINDOWEVENT_SHOWN:
