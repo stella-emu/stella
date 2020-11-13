@@ -311,7 +311,7 @@ FBInitStatus FrameBuffer::createDisplay(const string& title, BufferType type,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::update(bool force)
+void FrameBuffer::update(bool forceRedraw)
 {
   // Onscreen messages are a special case and require different handling than
   // other objects; they aren't UI dialogs in the normal sense nor are they
@@ -322,11 +322,12 @@ void FrameBuffer::update(bool force)
   //  - at the bottom of ::update(), to actually draw them (this must come
   //    last, since they are always drawn on top of everything else).
 
-  // Forced rendering without drawing is required when messages are being disabled
-  // Only relevant for LAUNCHER, PAUSE and DEBUGGER modes
-  bool rerender = force || (myMsg.enabled && myMsg.counter == 0);
+  // Forced render without draw required if messages or dialogs were closed
+  // Note: For dialogs only relevant when two or more dialogs were stacked
+  bool rerender = forceRedraw || myPendingRender;
+  myPendingRender = false;
 
-  bool redraw = force;
+  bool redraw = forceRedraw;
   switch(myOSystem.eventHandler().state())
   {
     case EventHandlerState::NONE:
@@ -357,7 +358,13 @@ void FrameBuffer::update(bool force)
       {
         clear();
         myTIASurface->render();
-        myOSystem.menu().draw(force);
+        myOSystem.menu().draw(forceRedraw);
+      }
+      else if(rerender)
+      {
+        clear();
+        myTIASurface->render();
+        myOSystem.menu().render();
       }
       break;  // EventHandlerState::OPTIONSMENU
     }
@@ -370,7 +377,7 @@ void FrameBuffer::update(bool force)
       {
         clear();
         myTIASurface->render();
-        myOSystem.commandMenu().draw(force);
+        myOSystem.commandMenu().draw(forceRedraw);
       }
       break;  // EventHandlerState::CMDMENU
     }
@@ -383,7 +390,7 @@ void FrameBuffer::update(bool force)
       {
         clear();
         myTIASurface->render();
-        myOSystem.messageMenu().draw(force);
+        myOSystem.messageMenu().draw(forceRedraw);
       }
       break;  // EventHandlerState::MESSAGEMENU
     }
@@ -396,7 +403,7 @@ void FrameBuffer::update(bool force)
       {
         clear();
         myTIASurface->render();
-        myOSystem.timeMachine().draw(force);
+        myOSystem.timeMachine().draw(forceRedraw);
       }
       break;  // EventHandlerState::TIMEMACHINE
     }
@@ -440,7 +447,7 @@ void FrameBuffer::update(bool force)
       myOSystem.launcher().tick();
       redraw |= myOSystem.launcher().needsRedraw();
       if(redraw)
-        myOSystem.launcher().draw(force);
+        myOSystem.launcher().draw(forceRedraw);
       else if(rerender)
         myOSystem.launcher().render();
       break;  // EventHandlerState::LAUNCHER
@@ -453,7 +460,7 @@ void FrameBuffer::update(bool force)
       myOSystem.debugger().tick();
       redraw |= myOSystem.debugger().needsRedraw();
       if(redraw)
-        myOSystem.debugger().draw(force);
+        myOSystem.debugger().draw(forceRedraw);
       else if(rerender)
         myOSystem.debugger().render();
       break;  // EventHandlerState::DEBUGGER
@@ -684,6 +691,7 @@ inline bool FrameBuffer::drawMessage()
   if(myMsg.counter == 0)
   {
     myMsg.enabled = false;
+    myPendingRender = true;
     return false;
   }
 
