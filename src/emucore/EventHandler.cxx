@@ -323,9 +323,8 @@ void EventHandler::handleSystemEvent(SystemEvent e, int, int)
   {
     case SystemEvent::WINDOW_EXPOSED:
     case SystemEvent::WINDOW_RESIZED:
-      //myOSystem.frameBuffer().update(true); // force full update
-      // TODO: test and maybe force a render update instead
-      myOSystem.frameBuffer().update();
+      // Force full render update
+      myOSystem.frameBuffer().update(FrameBuffer::UpdateMode::RERENDER);
       break;
 #ifdef BSPF_UNIX
     case SystemEvent::WINDOW_FOCUS_GAINED:
