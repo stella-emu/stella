@@ -323,7 +323,8 @@ void EventHandler::handleSystemEvent(SystemEvent e, int, int)
   {
     case SystemEvent::WINDOW_EXPOSED:
     case SystemEvent::WINDOW_RESIZED:
-      myOSystem.frameBuffer().update(true); // force full update
+      //myOSystem.frameBuffer().update(true); // force full update
+      myOSystem.frameBuffer().update();
       break;
 #ifdef BSPF_UNIX
     case SystemEvent::WINDOW_FOCUS_GAINED:
