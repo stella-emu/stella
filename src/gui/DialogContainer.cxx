@@ -102,8 +102,8 @@ void DialogContainer::draw(bool full)
 
   // Draw and render all dirty dialogs
   myDialogStack.applyAll([&](Dialog*& d) {
-    if(d->needsRedraw())
-      d->redraw();
+    if(full || d->needsRedraw())
+      d->redraw(full);
   });
   // Always render all surfaces, bottom to top
   render();
