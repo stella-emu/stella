@@ -270,7 +270,7 @@ FBInitStatus FrameBuffer::createDisplay(const string& title, BufferType type,
 
 #ifdef GUI_SUPPORT
   // Erase any messages from a previous run
-  myMsg.counter = 0;
+  myMsg.enabled = false;
 
   // Create surfaces for TIA statistics and general messages
   const GUI::Font& f = hidpiEnabled() ? infoFont() : font();
@@ -677,9 +677,17 @@ void FrameBuffer::enableMessages(bool enable)
     myStatsMsg.enabled = false;
 
     // Erase old messages on the screen
-    myMsg.counter = 0;
+    hideMessage();
+
     update();  // update immediately
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::hideMessage()
+{
+  myPendingRender = myMsg.enabled;
+  myMsg.enabled = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -690,8 +698,7 @@ inline bool FrameBuffer::drawMessage()
   // or show again this frame
   if(myMsg.counter == 0)
   {
-    myMsg.enabled = false;
-    myPendingRender = true;
+    hideMessage();
     return false;
   }
 
@@ -897,15 +904,13 @@ void FrameBuffer::setUIPalette()
     myFullPalette[j] = mapRGB(r, g, b);
   }
   FBSurface::setPalette(myFullPalette);
-//  if(&myOSystem.eventHandler())
-//    update(true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::stateChanged(EventHandlerState state)
 {
   // Make sure any onscreen messages are removed
-  myMsg.counter = 0;
+  hideMessage();
 
   update(); // update immediately
 }
@@ -1169,6 +1174,7 @@ FBInitStatus FrameBuffer::applyVideoMode()
 
     resetSurfaces();
     setCursorState();
+    myPendingRender = true;
   }
   else
     Logger::error("ERROR: Couldn't initialize video subsystem");

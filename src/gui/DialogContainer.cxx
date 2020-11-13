@@ -181,6 +181,9 @@ void DialogContainer::reStack()
   while(!myDialogStack.empty())
     myDialogStack.top()->close();
 
+  // Make sure that all surfaces are cleared
+  myOSystem.frameBuffer().clear();
+
   baseDialog()->open();
 
   // Reset all continuous events

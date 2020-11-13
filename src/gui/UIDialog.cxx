@@ -441,6 +441,7 @@ void UIDialog::saveConfig()
   settings.setValue("uipalette",
     myPalettePopup->getSelectedTag().toString());
   instance().frameBuffer().setUIPalette();
+  instance().frameBuffer().update(true);
 
   // Dialog font
   settings.setValue("dialogfont",
