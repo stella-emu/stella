@@ -1157,10 +1157,11 @@ void VideoAudioDialog::addPalette(int x, int y, int w, int h)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoAudioDialog::colorPalette()
 {
+  constexpr int NUM_LUMA = 8;
+  constexpr int NUM_CHROMA = 16;
+
   if(instance().hasConsole())
   {
-    constexpr int NUM_LUMA = 8;
-    constexpr int NUM_CHROMA = 16;
     const int order[2][NUM_CHROMA] =
     {
       {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
@@ -1176,11 +1177,14 @@ void VideoAudioDialog::colorPalette()
       ss << Common::Base::HEX1 << std::uppercase << color;
       myColorLbl[idx]->setLabel(ss.str());
       for(int lum = 0; lum < NUM_LUMA; ++lum)
-      {
         myColor[idx][lum]->setColor(color * NUM_CHROMA + lum * 2); // skip grayscale colors
-      }
     }
   }
+  else
+    // disable palette
+    for(int idx = 0; idx < NUM_CHROMA; ++idx)
+      for(int lum = 0; lum < NUM_LUMA; ++lum)
+        myColor[idx][lum]->setEnabled(false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
