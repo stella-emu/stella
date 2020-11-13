@@ -84,7 +84,7 @@ class FrameBuffer
       Updates the display, which depending on the current mode could mean
       drawing the TIA, any pending menus, etc.
     */
-    void update(bool force = false);
+    void update(bool forceRedraw = false);
 
     /**
       There is a dedicated update method for emulation mode.
@@ -92,9 +92,9 @@ class FrameBuffer
     void updateInEmulationMode(float framesPerSecond);
 
     /**
-      Render backend to screen.
+      Set pending rendering flag.
     */
-    void renderToScreen() { myBackend->renderToScreen(); }
+    void setPendingRender() { myPendingRender = true; }
 
     /**
       Shows a text message onscreen.
@@ -459,6 +459,9 @@ class FrameBuffer
 
     // Supported renderers
     VariantList myRenderers;
+
+    // Flag for pending render
+    bool myPendingRender{false};
 
     // The VideoModeHandler class takes responsibility for all video
     // mode functionality

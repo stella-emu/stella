@@ -169,14 +169,8 @@ void DialogContainer::removeDialog()
     cerr << "remove dialog" << endl;
     myDialogStack.pop();
 
-    if(!myDialogStack.empty())
-    {
-      // Rerender all dialogs
-      myDialogStack.applyAll([&](Dialog*& d){
-        d->render();
-      });
-      myOSystem.frameBuffer().renderToScreen();
-    }
+    // Inform the frame buffer that it has to render all surfaces
+    myOSystem.frameBuffer().setPendingRender();
   }
 }
 
