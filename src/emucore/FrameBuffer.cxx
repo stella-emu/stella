@@ -311,7 +311,7 @@ FBInitStatus FrameBuffer::createDisplay(const string& title, BufferType type,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::update(bool forceRedraw)
+void FrameBuffer::update(UpdateMode mode)
 {
   // Onscreen messages are a special case and require different handling than
   // other objects; they aren't UI dialogs in the normal sense nor are they
@@ -322,12 +322,15 @@ void FrameBuffer::update(bool forceRedraw)
   //  - at the bottom of ::update(), to actually draw them (this must come
   //    last, since they are always drawn on top of everything else).
 
+  bool forceRedraw = mode & UpdateMode::REDRAW;
+  bool redraw = forceRedraw;
+
   // Forced render without draw required if messages or dialogs were closed
   // Note: For dialogs only relevant when two or more dialogs were stacked
-  bool rerender = forceRedraw || myPendingRender;
+  bool rerender = (mode & (UpdateMode::REDRAW | UpdateMode::RERENDER))
+    || myPendingRender;
   myPendingRender = false;
 
-  bool redraw = forceRedraw;
   switch(myOSystem.eventHandler().state())
   {
     case EventHandlerState::NONE:
@@ -342,10 +345,10 @@ void FrameBuffer::update(bool forceRedraw)
       {
         myPausedCount = uInt32(7 * myOSystem.frameRate());
         showTextMessage("Paused", MessagePosition::MiddleCenter);
+        myTIASurface->render();
       }
       if(rerender)
         myTIASurface->render();
-
       break;  // EventHandlerState::PAUSE
     }
 
@@ -857,7 +860,7 @@ void FrameBuffer::resetSurfaces()
   freeSurfaces();
   reloadSurfaces();
 
-  update(true); // force full update
+  update(UpdateMode::REDRAW); // force full update
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -55,6 +55,12 @@ class FrameBuffer
     // Zoom level step interval
     static constexpr float ZOOM_STEPS = 0.25;
 
+    enum UpdateMode {
+      NONE = 0,
+      REDRAW = 1,
+      RERENDER = 2
+    };
+
   public:
     FrameBuffer(OSystem& osystem);
     ~FrameBuffer();
@@ -84,7 +90,7 @@ class FrameBuffer
       Updates the display, which depending on the current mode could mean
       drawing the TIA, any pending menus, etc.
     */
-    void update(bool forceRedraw = false);
+    void update(UpdateMode mode = UpdateMode::NONE);
 
     /**
       There is a dedicated update method for emulation mode.
