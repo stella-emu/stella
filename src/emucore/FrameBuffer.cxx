@@ -897,8 +897,8 @@ void FrameBuffer::setUIPalette()
     myFullPalette[j] = mapRGB(r, g, b);
   }
   FBSurface::setPalette(myFullPalette);
-  if(&myOSystem.eventHandler())
-    update(true);
+//  if(&myOSystem.eventHandler())
+//    update(true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

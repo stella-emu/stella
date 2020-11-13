@@ -531,6 +531,8 @@
 		DCBDDE9B1D6A5F0E009DF1E9 /* Cart3EPlusWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCBDDE991D6A5F0E009DF1E9 /* Cart3EPlusWidget.hxx */; };
 		DCBDDE9E1D6A5F2F009DF1E9 /* Cart3EPlus.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCBDDE9C1D6A5F2F009DF1E9 /* Cart3EPlus.cxx */; };
 		DCBDDE9F1D6A5F2F009DF1E9 /* Cart3EPlus.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCBDDE9D1D6A5F2F009DF1E9 /* Cart3EPlus.hxx */; };
+		DCC2FDF5255EB82500FA5E81 /* ToolTip.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCC2FDF3255EB82500FA5E81 /* ToolTip.hxx */; };
+		DCC2FDF6255EB82500FA5E81 /* ToolTip.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCC2FDF4255EB82500FA5E81 /* ToolTip.cxx */; };
 		DCC527D110B9DA19005E1287 /* Device.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCC527C910B9DA19005E1287 /* Device.hxx */; };
 		DCC527D210B9DA19005E1287 /* M6502.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCC527CA10B9DA19005E1287 /* M6502.cxx */; };
 		DCC527D310B9DA19005E1287 /* M6502.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCC527CB10B9DA19005E1287 /* M6502.hxx */; };
@@ -1298,6 +1300,8 @@
 		DCBDDE991D6A5F0E009DF1E9 /* Cart3EPlusWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Cart3EPlusWidget.hxx; sourceTree = "<group>"; };
 		DCBDDE9C1D6A5F2F009DF1E9 /* Cart3EPlus.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Cart3EPlus.cxx; sourceTree = "<group>"; };
 		DCBDDE9D1D6A5F2F009DF1E9 /* Cart3EPlus.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Cart3EPlus.hxx; sourceTree = "<group>"; };
+		DCC2FDF3255EB82500FA5E81 /* ToolTip.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ToolTip.hxx; sourceTree = "<group>"; };
+		DCC2FDF4255EB82500FA5E81 /* ToolTip.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ToolTip.cxx; sourceTree = "<group>"; };
 		DCC527C910B9DA19005E1287 /* Device.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Device.hxx; sourceTree = "<group>"; };
 		DCC527CA10B9DA19005E1287 /* M6502.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = M6502.cxx; sourceTree = "<group>"; };
 		DCC527CB10B9DA19005E1287 /* M6502.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = M6502.hxx; sourceTree = "<group>"; };
@@ -2167,6 +2171,8 @@
 				DCA82C6E1FEB4E780059340F /* TimeMachine.hxx */,
 				DCA82C6F1FEB4E780059340F /* TimeMachineDialog.cxx */,
 				DCA82C701FEB4E780059340F /* TimeMachineDialog.hxx */,
+				DCC2FDF4255EB82500FA5E81 /* ToolTip.cxx */,
+				DCC2FDF3255EB82500FA5E81 /* ToolTip.hxx */,
 				DC8078E60B4BD697005E9305 /* UIDialog.cxx */,
 				DC8078E70B4BD697005E9305 /* UIDialog.hxx */,
 				DCBA539825557E2800087DD7 /* UndoHandler.cxx */,
@@ -2651,6 +2657,7 @@
 				DC5D1AA7102C6FC900E59AC1 /* Stack.hxx in Headers */,
 				DCF7B0DE10A762FC007A2870 /* CartF0.hxx in Headers */,
 				DCF7B0E010A762FC007A2870 /* CartFA.hxx in Headers */,
+				DCC2FDF5255EB82500FA5E81 /* ToolTip.hxx in Headers */,
 				DCC527D110B9DA19005E1287 /* Device.hxx in Headers */,
 				DC6F394E21B897F300897AD8 /* ThreadDebugging.hxx in Headers */,
 				DCC527D310B9DA19005E1287 /* M6502.hxx in Headers */,
@@ -3205,6 +3212,7 @@
 				DCAACB0E188D636F00A4D282 /* Cart4KSCWidget.cxx in Sources */,
 				DCB60AD02543100900A5C1D2 /* FBBackendSDL2.cxx in Sources */,
 				DCAACB10188D636F00A4D282 /* CartBFSCWidget.cxx in Sources */,
+				DCC2FDF6255EB82500FA5E81 /* ToolTip.cxx in Sources */,
 				DCAACB12188D636F00A4D282 /* CartBFWidget.cxx in Sources */,
 				DCAACB14188D636F00A4D282 /* CartDFSCWidget.cxx in Sources */,
 				DCAACB16188D636F00A4D282 /* CartDFWidget.cxx in Sources */,
