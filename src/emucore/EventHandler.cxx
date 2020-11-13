@@ -324,6 +324,7 @@ void EventHandler::handleSystemEvent(SystemEvent e, int, int)
     case SystemEvent::WINDOW_EXPOSED:
     case SystemEvent::WINDOW_RESIZED:
       //myOSystem.frameBuffer().update(true); // force full update
+      // TODO: test and maybe force a render update instead
       myOSystem.frameBuffer().update();
       break;
 #ifdef BSPF_UNIX

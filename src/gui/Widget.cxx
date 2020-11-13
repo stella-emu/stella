@@ -269,7 +269,7 @@ Widget* Widget::setFocusForChain(GuiObject* boss, WidgetArray& arr,
 
       s.frameRect(x, y, w, h, onTop ? kDlgColor : kBGColorLo);
 
-      tmp->setDirty();
+      //tmp->setDirty();
     }
   }
 
@@ -325,7 +325,7 @@ Widget* Widget::setFocusForChain(GuiObject* boss, WidgetArray& arr,
   if (onTop)
       s.frameRect(x, y, w, h, kWidFrameColor, FrameStyle::Dashed);
 
-  tmp->setDirty();
+  //tmp->setDirty();
 
   return tmp;
 }
