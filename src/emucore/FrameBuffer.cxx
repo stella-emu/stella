@@ -927,10 +927,10 @@ string FrameBuffer::getDisplayKey()
     case BufferType::Emulator:
       return "display";
 
-  #ifdef DEBUGGER_SUPPORT
+    #ifdef DEBUGGER_SUPPORT
     case BufferType::Debugger:
       return "dbg.display";
-  #endif
+    #endif
 
     default:
       return "";
@@ -949,10 +949,10 @@ string FrameBuffer::getPositionKey()
     case BufferType::Emulator:
       return  "windowedpos";
 
-  #ifdef DEBUGGER_SUPPORT
+    #ifdef DEBUGGER_SUPPORT
     case BufferType::Debugger:
       return "dbg.pos";
-  #endif
+    #endif
 
     default:
       return "";
@@ -963,10 +963,10 @@ string FrameBuffer::getPositionKey()
 void FrameBuffer::saveCurrentWindowPosition()
 {
   myOSystem.settings().setValue(
-      getDisplayKey(), myBackend->getCurrentDisplayIndex());
+    getDisplayKey(), myBackend->getCurrentDisplayIndex());
   if(myBackend->isCurrentWindowPositioned())
     myOSystem.settings().setValue(
-        getPositionKey(), myBackend->getCurrentWindowPos());
+      getPositionKey(), myBackend->getCurrentWindowPos());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1001,7 +1001,9 @@ void FrameBuffer::setFullscreen(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::toggleFullscreen(bool toggle)
 {
-  switch(myOSystem.eventHandler().state())
+  EventHandlerState state = myOSystem.eventHandler().state();
+
+  switch(state)
   {
     case EventHandlerState::LAUNCHER:
     case EventHandlerState::EMULATION:
@@ -1011,16 +1013,26 @@ void FrameBuffer::toggleFullscreen(bool toggle)
       const bool isFullscreen = toggle ? !fullScreen() : fullScreen();
       setFullscreen(isFullscreen);
 
-      if(myBufferType != BufferType::Launcher)
+      if(state != EventHandlerState::LAUNCHER)
       {
         ostringstream msg;
         msg << "Fullscreen ";
-        if(isFullscreen)
-          msg << "enabled (" << myBackend->refreshRate() << " Hz, ";
-        else
-          msg << "disabled (";
-        msg << "Zoom " << myActiveVidMode.zoom * 100 << "%)";
 
+        if(state != EventHandlerState::DEBUGGER)
+        {
+          if(isFullscreen)
+            msg << "enabled (" << myBackend->refreshRate() << " Hz, ";
+          else
+            msg << "disabled (";
+          msg << "Zoom " << myActiveVidMode.zoom * 100 << "%)";
+        }
+        else
+        {
+          if(isFullscreen)
+            msg << "enabled";
+          else
+            msg << "disabled";
+        }
         showTextMessage(msg.str());
       }
       break;
