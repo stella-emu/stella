@@ -99,6 +99,9 @@ class Widget : public GuiObject
     void setBGColorHi(ColorId color)   { _bgcolorhi = color;   setDirty(); }
     void setShadowColor(ColorId color) { _shadowcolor = color; setDirty(); }
 
+    void setToolTip(const string& text) { _toolTipText = text; }
+    bool hasToolTip() const { return !_toolTipText.empty(); }
+
     virtual void loadConfig() { }
 
   protected:
@@ -130,6 +133,7 @@ class Widget : public GuiObject
     ColorId    _textcolorhi{kTextColorHi};
     ColorId    _textcolorlo{kBGColorLo};
     ColorId    _shadowcolor{kShadowColor};
+    string     _toolTipText;
 
   public:
     static Widget* findWidgetInChain(Widget* start, int x, int y);

@@ -110,8 +110,6 @@ void Dialog::open()
   loadConfig(); // has to be done AFTER (re)building the focus list
 
   _visible = true;
-
-  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -227,12 +225,14 @@ void Dialog::redraw()
   // Draw this dialog
   setPosition();
   drawDialog();
-  render();
+  // full rendering is caused in  dialog container
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::render()
 {
+  cerr << "  render " << typeid(*this).name() << endl;
+
   // Update dialog surface; also render any extra surfaces
   // Extra surfaces must be rendered afterwards, so they are drawn on top
   if(_surface->render())
@@ -242,15 +242,17 @@ void Dialog::render()
     });
   }
 
-  //cerr << "is ContextMenu "
-  //  << (typeid(*parent().myDialogStack.top()) == typeid(ContextMenu)) << endl;
+  // Dialog is still on top if e.g a dialog without title is opened
+  //  (e.g. ContextMenu)
+  bool onTop = parent().myDialogStack.top() == this
+    || (parent().myDialogStack.get(parent().myDialogStack.size() - 2) == this
+        && !parent().myDialogStack.top()->hasTitle());
+        //&& typeid(*parent().myDialogStack.top()) == typeid(ContextMenu))
 
-  // Dialog is still on top if e.g a ContextMenu is opened
-  if(!(parent().myDialogStack.top() == this)
-     && !((parent().myDialogStack.get(parent().myDialogStack.size() - 2) == this
-       //&& !(typeid(*parent().myDialogStack.top()) == typeid(ContextMenu)))
-          && !parent().myDialogStack.top()->hasTitle())))
+  if(!onTop)
   {
+    cerr << "    shade " << typeid(*this).name() << endl;
+
     if(_shadeSurface == nullptr)
     {
       uInt32 data = 0xff000000;
