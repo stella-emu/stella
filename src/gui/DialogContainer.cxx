@@ -97,14 +97,16 @@ void DialogContainer::draw(bool full)
   cerr << "draw " << full << " " << typeid(*this).name() << endl;
 
   // Make the top dialog dirty if a full redraw is requested
-  if(full)
-    myDialogStack.top()->setDirty();
+  //if(full)
+  //  myDialogStack.top()->setDirty();
 
   // Draw and render all dirty dialogs
   myDialogStack.applyAll([&](Dialog*& d) {
     if(d->needsRedraw())
       d->redraw();
   });
+  // Always render all surfaces, bottom to top
+  render();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -120,9 +122,9 @@ void DialogContainer::render()
   if(myDialogStack.empty())
     return;
 
-  cerr << "render " << typeid(*this).name() << endl;
+  cerr << "full re-render " << typeid(*this).name() << endl;
 
-  // Render all dirty dialogs
+  // Render all dialogs
   myDialogStack.applyAll([&](Dialog*& d) {
     d->render();
   });
@@ -153,10 +155,6 @@ int DialogContainer::addDialog(Dialog* d)
       "Unable to show dialog box; FIX THE CODE", MessagePosition::BottomCenter, true);
   else
   {
-    //// "shade" current top dialog
-    //if(!myDialogStack.empty())
-    //  myDialogStack.top()->setDirty();
-
     d->setDirty();
     myDialogStack.push(d);
   }
@@ -168,20 +166,16 @@ void DialogContainer::removeDialog()
 {
   if(!myDialogStack.empty())
   {
+    cerr << "remove dialog" << endl;
     myDialogStack.pop();
 
     if(!myDialogStack.empty())
     {
-      //// this "unshades" the top dialog
-      //myDialogStack.top()->setDirty();
-
-      // Rerender all dialogs (TODO: top dialog is rendered twice)
+      // Rerender all dialogs
       myDialogStack.applyAll([&](Dialog*& d){
-          //d->setDirty();
-          d->render();
+        d->render();
       });
-      // TODO: the screen is not updated until an event happens
-      // FrameBuffer::myBackend->renderToScreen() doesn't help
+      myOSystem.frameBuffer().renderToScreen();
     }
   }
 }

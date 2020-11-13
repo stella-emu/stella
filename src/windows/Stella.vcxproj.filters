@@ -1032,6 +1032,9 @@
     <ClCompile Include="..\gui\UndoHandler.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
+    <ClCompile Include="..\gui\ToolTip.cxx">
+      <Filter>Source Files\gui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">
@@ -2121,6 +2124,9 @@
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
     <ClInclude Include="..\gui\UndoHandler.hxx">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gui\ToolTip.hxx">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
   </ItemGroup>

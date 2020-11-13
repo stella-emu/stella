@@ -88,8 +88,13 @@ class FrameBuffer
 
     /**
       There is a dedicated update method for emulation mode.
-     */
+    */
     void updateInEmulationMode(float framesPerSecond);
+
+    /**
+      Render backend to screen.
+    */
+    void renderToScreen() { myBackend->renderToScreen(); }
 
     /**
       Shows a text message onscreen.

@@ -71,13 +71,22 @@ bool Widget::isChainDirty() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Widget::tick()
 {
-  // Recursively tick widget and all child dialogs and widgets
-  Widget* w = _firstWidget;
-
-  while(w)
+  if(isEnabled())
   {
-    w->tick();
-    w = w->_next;
+    //if(_hasFocus && hasToolTip())
+    //{
+    //  if(dialog().enableToolTip())
+    //    dialog().showToolTip(10, 10);
+    //}
+
+    // Recursively tick widget and all child dialogs and widgets
+    Widget* w = _firstWidget;
+
+    while(w)
+    {
+      w->tick();
+      w = w->_next;
+    }
   }
 }
 
