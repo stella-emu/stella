@@ -2320,6 +2320,7 @@ bool EventHandler::enterDebugMode()
   }
   myOverlay->reStack();
   myOSystem.sound().mute(true);
+
 #else
   myOSystem.frameBuffer().showTextMessage("Debugger support not included",
                                           MessagePosition::BottomCenter, true);

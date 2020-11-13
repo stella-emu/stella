@@ -268,6 +268,7 @@ void StellaSettingsDialog::saveConfig()
   settings.setValue("uipalette",
     myThemePopup->getSelectedTag().toString());
   instance().frameBuffer().setUIPalette();
+  instance().frameBuffer().update(true);
 
   // Dialog position
   settings.setValue("dialogpos", myPositionPopup->getSelectedTag().toString());

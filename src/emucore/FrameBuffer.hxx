@@ -400,6 +400,11 @@ class FrameBuffer
     bool drawMessage();
 
     /**
+      Hide pending messages.
+    */
+    void hideMessage();
+
+    /**
       Draws the frame stats overlay.
     */
     void drawFrameStats(float framesPerSecond);
