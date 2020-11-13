@@ -217,10 +217,13 @@ void Dialog::positionAt(uInt32 pos)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::redraw()
+void Dialog::redraw(bool force)
 {
-  if(!isVisible() || !needsRedraw())
-    return;// false;
+  if(!isVisible())
+    return;
+
+  if(force)
+    setDirty();
 
   // Draw this dialog
   setPosition();
