@@ -476,13 +476,17 @@ void Dialog::drawDialog()
     clearDirty();
   }
 
+  // Draw all children
+  drawChain();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::drawChain()
+{
   Widget* w = _firstWidget;
 
-  // Draw all children
-  w = _firstWidget;
   while(w)
   {
-    // only redraw changed widgets
     if(w->needsRedraw())
       w->draw();
     w = w->_next;

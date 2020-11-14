@@ -157,7 +157,14 @@ void Widget::draw()
   clearDirty();
 
   // Draw all children
+  drawChain();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Widget::drawChain()
+{
   Widget* w = _firstWidget;
+
   while(w)
   {
     if(w->needsRedraw())

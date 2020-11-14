@@ -123,6 +123,7 @@ class EditableWidget : public Widget, public CommandSender
 
   protected:
     int   _editScrollOffset{0};
+    bool  _editMode{true};
 
   private:
     TextFilter _filter;
