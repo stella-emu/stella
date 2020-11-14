@@ -441,26 +441,19 @@ void Dialog::drawDialog()
   {
     //cerr << "*** draw dialog " << typeid(*this).name() << " ***" << endl;
 
-    // Dialog is still on top if e.g a ContextMenu is opened
-    _onTop = true/*parent().myDialogStack.top() == this*/
-      || (parent().myDialogStack.get(parent().myDialogStack.size() - 2) == this
-          && !parent().myDialogStack.top()->hasTitle());
-
-    cerr << "on top " << isOnTop() << endl;
     if(clearsBackground())
     {
       //    cerr << "Dialog::drawDialog(): w = " << _w << ", h = " << _h << " @ " << &s << endl << endl;
 
       if(hasBackground())
-        s.fillRect(_x, _y + _th, _w, _h - _th, _onTop ? kDlgColor : kBGColorLo);
+        s.fillRect(_x, _y + _th, _w, _h - _th, kDlgColor);
       else
         s.invalidateRect(_x, _y + _th, _w, _h - _th);
       if(_th)
       {
-        s.fillRect(_x, _y, _w, _th, _onTop ? kColorTitleBar : kColorTitleBarLo);
+        s.fillRect(_x, _y, _w, _th, kColorTitleBar);
         s.drawString(_font, _title, _x + _font.getMaxCharWidth() * 1.25, _y + _font.getFontHeight() / 6,
-                     _font.getStringWidth(_title),
-                     _onTop ? kColorTitleText : kColorTitleTextLo);
+                     _font.getStringWidth(_title), kColorTitleText);
       }
     }
     else {
@@ -468,7 +461,7 @@ void Dialog::drawDialog()
       cerr << "invalidate " << typeid(*this).name() << endl;
     }
     if(hasBorder()) // currently only used by Dialog itself
-      s.frameRect(_x, _y, _w, _h, _onTop ? kColor : kShadowColor);
+      s.frameRect(_x, _y, _w, _h, kColor);
 
     // Make all child widgets dirty
     Widget::setDirtyInChain(_firstWidget);
