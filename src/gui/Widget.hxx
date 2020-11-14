@@ -70,7 +70,9 @@ class Widget : public GuiObject
     virtual bool handleEvent(Event::Type event) { return false; }
 
     void tick() override;
-    bool isChainDirty() const override;
+
+    void setDirty() override;
+    void setDirtyChain() override;
     void draw() override;
     void drawChain() override;
     void receivedFocus();

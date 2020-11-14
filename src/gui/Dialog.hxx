@@ -62,11 +62,13 @@ class Dialog : public GuiObject
     virtual void saveConfig()  { }
     virtual void setDefaults() { }
 
-    void tick() override;
-    bool isChainDirty() const override;
+    void setDirty() override;
+    void setDirtyChain() override;
     void redraw(bool force = false);
     void drawChain() override;
     void render();
+
+    void tick() override;
 
     void addFocusWidget(Widget* w) override;
     void addToFocusList(WidgetArray& list) override;

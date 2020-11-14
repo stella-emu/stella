@@ -73,7 +73,7 @@ void EditableWidget::tick()
     {
       _caretTimer = 0;
       _caretEnabled = !_caretEnabled;
-      _dirty = true;
+      setDirty();
     }
   }
   Widget::tick();
