@@ -54,7 +54,7 @@ class Dialog : public GuiObject
     void close();
 
     bool isVisible() const override { return _visible; }
-    bool isOnTop() const { return _onTop;  }
+    bool isOnTop() const { return true;  } // TODO: remove
 
     virtual void setPosition();
     virtual void drawDialog();
@@ -197,7 +197,6 @@ class Dialog : public GuiObject
     Widget* _cancelWidget{nullptr};
 
     bool    _visible{false};
-    bool    _onTop{true};
     bool    _processCancel{false};
     string  _title;
     int     _th{0};
