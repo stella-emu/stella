@@ -96,7 +96,6 @@ class RomListWidget : public EditableWidget
     int  _currentPos{0}; // position of first line in visible window
     int  _selectedItem{-1};
     int  _highlightedItem{-1};
-    bool _editMode{false};
     StellaKey _currentKeyDown{KBDK_UNKNOWN};
     Common::Base::Fmt _base{Common::Base::Fmt::_DEFAULT};  // base used during editing
 

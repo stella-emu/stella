@@ -91,15 +91,17 @@ class GuiObject : public CommandReceiver
     virtual void setHeight(int h)   { _h = h; }
 
     virtual bool isVisible() const = 0;
-    virtual void setDirty() { _dirty = true; }
-    virtual void clearDirty() { _dirty = false; }
 
-    virtual void tick() = 0;
-    virtual bool isDirty() const { return _dirty; }
+    void setDirty() { _dirty = true; }
+    void clearDirty() { _dirty = false; }
+    bool isDirty() const { return _dirty; }
     virtual bool isChainDirty() const = 0;
+
     // The GUI indicates if its underlying surface needs to be redrawn
     //  and then re-rendered
     virtual bool needsRedraw() { return isDirty() || isChainDirty(); }
+
+    virtual void tick() = 0;
 
     void setFlags(uInt32 flags)
     {
@@ -140,6 +142,7 @@ class GuiObject : public CommandReceiver
   protected:
     virtual void releaseFocus() = 0;
     virtual void draw() = 0;
+    virtual void drawChain() = 0;
 
   private:
     OSystem&         myOSystem;

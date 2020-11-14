@@ -39,6 +39,8 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
   _textcolor = kTextColor;
   _textcolorhi = kTextColor;
 
+  _editMode = false;
+
   _cols = w / _fontWidth;
   _rows = h / _lineHeight;
 
@@ -480,20 +482,18 @@ void RomListWidget::drawWidget(bool hilite)
     codeDisasmW = actualWidth;
 
   xpos = _x + CheckboxWidget::boxSize(_font) + 10;  ypos = _y + 2;
-  for (i = 0, pos = _currentPos; i < _rows && pos < len; i++, pos++, ypos += _lineHeight)
+  for(i = 0, pos = _currentPos; i < _rows && pos < len; i++, pos++, ypos += _lineHeight)
   {
     ColorId bytesColor = textColor;
 
-    // Draw checkboxes for correct lines (takes scrolling into account)
+    // Mark checkboxes dirty for correct lines (takes scrolling into account)
     myCheckList[i]->setState(instance().debugger().
                              checkBreakPoint(dlist[pos].address,
                              instance().debugger().cartDebug().getBank(dlist[pos].address)));
-
     myCheckList[i]->setDirty();
-    myCheckList[i]->draw();
 
     // Draw highlighted item in a frame
-    if (_highlightedItem == pos)
+    if(_highlightedItem == pos)
       s.frameRect(_x + l.x() - 3, ypos - 1, _w - l.x(), _lineHeight, onTop ? kWidColorHi : kBGColorLo);
 
     // Draw the selected item inverted, on a highlighted background.
@@ -510,31 +510,31 @@ void RomListWidget::drawWidget(bool hilite)
 
     // Draw labels
     s.drawString(_font, dlist[pos].label, xpos, ypos, _labelWidth,
-                 dlist[pos].hllabel ? textColor : kColor);
+                  dlist[pos].hllabel ? textColor : kColor);
 
     // Bytes are only editable if they represent code, graphics, or accessible data
     // Otherwise, the disassembly should get all remaining space
-    if(dlist[pos].type & (Device::CODE|Device::GFX|Device::PGFX|
-       Device::COL|Device::PCOL|Device::BCOL|Device::DATA))
+    if(dlist[pos].type & (Device::CODE | Device::GFX | Device::PGFX |
+       Device::COL | Device::PCOL | Device::BCOL | Device::DATA))
     {
       if(dlist[pos].type == Device::CODE)
       {
         // Draw mnemonic
         s.drawString(_font, dlist[pos].disasm.substr(0, 7), xpos + _labelWidth, ypos,
-                     7 * _fontWidth, textColor);
+                      7 * _fontWidth, textColor);
         // Draw operand
-        if (dlist[pos].disasm.length() > 8)
+        if(dlist[pos].disasm.length() > 8)
           s.drawString(_font, dlist[pos].disasm.substr(8), xpos + _labelWidth + 7 * _fontWidth, ypos,
-                       codeDisasmW - 7 * _fontWidth, textColor);
+                        codeDisasmW - 7 * _fontWidth, textColor);
         // Draw cycle count
         s.drawString(_font, dlist[pos].ccount, xpos + _labelWidth + codeDisasmW, ypos,
-                     cycleCountW, textColor);
+                      cycleCountW, textColor);
       }
       else
       {
         // Draw disassembly only
         s.drawString(_font, dlist[pos].disasm, xpos + _labelWidth, ypos,
-                     noCodeDisasmW - 4, kTextColor);
+                      noCodeDisasmW - 4, kTextColor);
       }
 
       // Draw separator
@@ -542,11 +542,11 @@ void RomListWidget::drawWidget(bool hilite)
 
       // Draw bytes
       {
-        if (_selectedItem == pos && _editMode)
+        if(_selectedItem == pos && _editMode)
         {
           adjustOffset();
           s.drawString(_font, editString(), _x + r.x(), ypos, r.w(), textColor,
-                       TextAlign::Left, -_editScrollOffset, false);
+                        TextAlign::Left, -_editScrollOffset, false);
 
           drawCaretSelection();
         }
@@ -560,7 +560,7 @@ void RomListWidget::drawWidget(bool hilite)
     {
       // Draw disassembly, giving it all remaining horizontal space
       s.drawString(_font, dlist[pos].disasm, xpos + _labelWidth, ypos,
-                   noTypeDisasmW, textColor);
+                    noTypeDisasmW, textColor);
     }
   }
 }

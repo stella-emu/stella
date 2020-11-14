@@ -66,7 +66,7 @@ void EditableWidget::setText(const string& str, bool)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EditableWidget::tick()
 {
-  if(_hasFocus && _editable && isVisible() && _boss->isVisible())
+  if(_hasFocus && isEditable() && _editMode && isVisible() && _boss->isVisible())
   {
     _caretTimer++;
     if(_caretTimer > 40) // switch every 2/3rd seconds

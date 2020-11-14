@@ -72,6 +72,7 @@ class Widget : public GuiObject
     void tick() override;
     bool isChainDirty() const override;
     void draw() override;
+    void drawChain() override;
     void receivedFocus();
     void lostFocus();
     void addFocusWidget(Widget* w) override { _focusList.push_back(w); }

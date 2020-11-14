@@ -65,6 +65,7 @@ class Dialog : public GuiObject
     void tick() override;
     bool isChainDirty() const override;
     void redraw(bool force = false);
+    void drawChain() override;
     void render();
 
     void addFocusWidget(Widget* w) override;
