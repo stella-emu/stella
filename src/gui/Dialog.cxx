@@ -147,20 +147,15 @@ void Dialog::setPosition()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Dialog::isChainDirty() const
+void Dialog::setDirty()
 {
-  bool dirty = false;
+  _dirty = true;
+}
 
-  // Recursively check if dialog or any chick dialogs or widgets are dirty
-  Widget* w = _firstWidget;
-
-  while(w && !dirty)
-  {
-    dirty |= w->needsRedraw();
-    w = w->_next;
-  }
-
-  return dirty;
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::setDirtyChain()
+{
+  _dirtyChain = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -440,6 +435,7 @@ void Dialog::drawDialog()
   if(isDirty())
   {
     //cerr << "*** draw dialog " << typeid(*this).name() << " ***" << endl;
+    cerr << "d";
 
     if(clearsBackground())
     {
@@ -458,7 +454,7 @@ void Dialog::drawDialog()
     }
     else {
       s.invalidate();
-      cerr << "invalidate " << typeid(*this).name() << endl;
+      //cerr << "invalidate " << typeid(*this).name() << endl;
     }
     if(hasBorder()) // currently only used by Dialog itself
       s.frameRect(_x, _y, _w, _h, kColor);
@@ -471,19 +467,6 @@ void Dialog::drawDialog()
 
   // Draw all children
   drawChain();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::drawChain()
-{
-  Widget* w = _firstWidget;
-
-  while(w)
-  {
-    if(w->needsRedraw())
-      w->draw();
-    w = w->_next;
-  }
 
   // Draw outlines for focused widgets
   // Don't change focus, since this will trigger lost and received
@@ -494,6 +477,23 @@ void Dialog::drawChain()
                                               _focusedWidget, 0, false);
     //if(_focusedWidget)
     //  _focusedWidget->draw(); // make sure the highlight color is drawn initially
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::drawChain()
+{
+  // Clear chain *before* drawing, because some widgets may set it again when
+  //   being drawn (e.g. RomListWidget)
+  clearDirtyChain();
+
+  Widget* w = _firstWidget;
+
+  while(w)
+  {
+    if(w->needsRedraw())
+      w->draw();
+    w = w->_next;
   }
 }
 

@@ -92,10 +92,12 @@ class GuiObject : public CommandReceiver
 
     virtual bool isVisible() const = 0;
 
-    void setDirty() { _dirty = true; }
+    virtual void setDirty() = 0;
+    virtual void setDirtyChain() = 0;
     void clearDirty() { _dirty = false; }
+    void clearDirtyChain() { _dirtyChain = false; }
     bool isDirty() const { return _dirty; }
-    virtual bool isChainDirty() const = 0;
+    bool isChainDirty() const { return _dirtyChain; }
 
     // The GUI indicates if its underlying surface needs to be redrawn
     //  and then re-rendered
@@ -152,6 +154,7 @@ class GuiObject : public CommandReceiver
   protected:
     int         _x{0}, _y{0}, _w{0}, _h{0};
     bool        _dirty{false};
+    bool        _dirtyChain{false};
     uInt32      _flags{0};
 
     Widget*     _firstWidget{nullptr};

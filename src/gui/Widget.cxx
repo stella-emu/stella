@@ -52,20 +52,21 @@ Widget::~Widget()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Widget::isChainDirty() const
+void Widget::setDirty()
 {
-  bool dirty = false;
+  _dirty = true;
 
-  // Recursively check if widget or any child dialogs or widgets are dirty
-  Widget* w = _firstWidget;
+  // Inform the parent object that its children chain is dirty
+  _boss->setDirtyChain();
+}
 
-  while(w && !dirty)
-  {
-    dirty |= w->needsRedraw();
-    w = w->_next;
-  }
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Widget::setDirtyChain()
+{
+  _dirtyChain = true;
 
-  return dirty;
+  // Inform the parent object that its children chain is dirty
+  _boss->setDirtyChain();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -98,7 +99,8 @@ void Widget::draw()
 
   if(isDirty())
   {
-    cerr << "  *** draw widget " << typeid(*this).name() << " ***" << endl;
+    //cerr << "  *** draw widget " << typeid(*this).name() << " ***" << endl;
+    cerr << "w";
 
     FBSurface& s = _boss->dialog().surface();
 
@@ -163,6 +165,10 @@ void Widget::draw()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Widget::drawChain()
 {
+  // Clear chain *before* drawing, because some widgets may set it again when
+  //   being drawn (e.g. RomListWidget)
+  clearDirtyChain();
+
   Widget* w = _firstWidget;
 
   while(w)
@@ -508,7 +514,6 @@ void ButtonWidget::setBitmap(const uInt32* bitmap, int bmw, int bmh)
   _bmh = bmh;
   _bmw = bmw;
 
-  cerr << "setBitmap" << endl;
   setDirty();
 }
 
