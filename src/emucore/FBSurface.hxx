@@ -292,11 +292,14 @@ class FBSurface
       These methods set the origin point and width/height for the
       specified service.  They are defined as separate x/y and w/h
       methods since these items are sometimes set separately.
+      Other times they are set together, so we can use a Rect instead.
     */
     virtual void setSrcPos(uInt32 x, uInt32 y)  = 0;
     virtual void setSrcSize(uInt32 w, uInt32 h) = 0;
+    virtual void setSrcRect(const Common::Rect& r) = 0;
     virtual void setDstPos(uInt32 x, uInt32 y)  = 0;
     virtual void setDstSize(uInt32 w, uInt32 h) = 0;
+    virtual void setDstRect(const Common::Rect& r) = 0;
 
     /**
       This method should be called to enable/disable showing the surface

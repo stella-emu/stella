@@ -104,41 +104,49 @@ const Common::Rect& FBSurfaceSDL2::dstRect() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL2::setSrcPos(uInt32 x, uInt32 y)
 {
-  if(x != static_cast<uInt32>(mySrcR.x) || y != static_cast<uInt32>(mySrcR.y))
-  {
-    setSrcPosInternal(x, y);
+  if(setSrcPosInternal(x, y))
     reinitializeBlitter();
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL2::setSrcSize(uInt32 w, uInt32 h)
 {
-  if(w != static_cast<uInt32>(mySrcR.w) || h != static_cast<uInt32>(mySrcR.h))
-  {
-    setSrcSizeInternal(w, h);
+  if(setSrcSizeInternal(w, h))
     reinitializeBlitter();
-  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurfaceSDL2::setSrcRect(const Common::Rect& r)
+{
+  const bool posChanged = setSrcPosInternal(r.x(), r.y()),
+             sizeChanged = setSrcSizeInternal(r.w(), r.h());
+
+  if(posChanged || sizeChanged)
+    reinitializeBlitter();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL2::setDstPos(uInt32 x, uInt32 y)
 {
-  if(x != static_cast<uInt32>(myDstR.x) || y != static_cast<uInt32>(myDstR.y))
-  {
-    setDstPosInternal(x, y);
+  if(setDstPosInternal(x, y))
     reinitializeBlitter();
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL2::setDstSize(uInt32 w, uInt32 h)
 {
-  if(w != static_cast<uInt32>(myDstR.w) || h != static_cast<uInt32>(myDstR.h))
-  {
-    setDstSizeInternal(w, h);
+  if(setDstSizeInternal(w, h))
     reinitializeBlitter();
-  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurfaceSDL2::setDstRect(const Common::Rect& r)
+{
+  const bool posChanged = setDstPosInternal(r.x(), r.y()),
+             sizeChanged = setDstSizeInternal(r.w(), r.h());
+
+  if(posChanged || sizeChanged)
+    reinitializeBlitter();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
