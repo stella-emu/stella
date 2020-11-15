@@ -672,7 +672,8 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kPSpeedChanged:
-      myPaddleSpeed->setValueLabel(Paddles::setAnalogSensitivity(myPaddleSpeed->getValue()) * 100.F + 0.5F);
+      myPaddleSpeed->setValueLabel(std::round(Paddles::setAnalogSensitivity(
+            myPaddleSpeed->getValue()) * 100.F));
       break;
 
     case kDejitterAvChanged:

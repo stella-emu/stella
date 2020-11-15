@@ -60,7 +60,7 @@ CartridgeEnhanced::CartridgeEnhanced(const ByteBuffer& image, size_t size,
 void CartridgeEnhanced::install(System& system)
 {
   // limit banked RAM size to the size of one RAM bank
-  const uInt32 ramSize = myRamBankCount > 0 ? 1 << (myBankShift - 1) : uInt32(myRamSize);
+  const uInt16 ramSize = myRamBankCount > 0 ? 1 << (myBankShift - 1) : uInt16(myRamSize);
 
   // calculate bank switching and RAM sizes and masks
   myBankSize = 1 << myBankShift;                    // e.g. = 2 ^ 12 = 4K = 0x1000
