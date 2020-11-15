@@ -959,7 +959,16 @@ void VideoAudioDialog::handlePaletteUpdate()
   instance().frameBuffer().tiaSurface().paletteHandler().setAdjustables(paletteAdj);
 
   if(instance().hasConsole())
+  {
     instance().frameBuffer().tiaSurface().paletteHandler().setPalette();
+
+    constexpr int NUM_LUMA = 8;
+    constexpr int NUM_CHROMA = 16;
+
+    for(int idx = 0; idx < NUM_CHROMA; ++idx)
+      for(int lum = 0; lum < NUM_LUMA; ++lum)
+        myColor[idx][lum]->setDirty();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

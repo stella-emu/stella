@@ -122,6 +122,10 @@ void DialogContainer::render()
   if(myDialogStack.empty())
     return;
 
+  // Make sure we start in a clean state (with zero'ed buffers)
+  if(!myOSystem.eventHandler().inTIAMode())
+    myOSystem.frameBuffer().clear();
+
   cerr << "full re-render " << typeid(*this).name() << endl;
 
   // Make sure we start in a clean state (with zero'ed buffers)
