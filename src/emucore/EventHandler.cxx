@@ -2288,6 +2288,7 @@ void EventHandler::enterMenuMode(EventHandlerState state)
 void EventHandler::leaveMenuMode()
 {
 #ifdef GUI_SUPPORT
+  myOverlay->removeDialog(); // remove the base dialog from dialog stack
   setState(EventHandlerState::EMULATION);
   myOSystem.sound().mute(false);
 #endif
