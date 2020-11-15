@@ -48,8 +48,11 @@ class FBSurfaceSDL2 : public FBSurface
     const Common::Rect& dstRect() const override;
     void setSrcPos(uInt32 x, uInt32 y) override;
     void setSrcSize(uInt32 w, uInt32 h) override;
+    void setSrcRect(const Common::Rect& r) override;
     void setDstPos(uInt32 x, uInt32 y) override;
     void setDstSize(uInt32 w, uInt32 h) override;
+    void setDstRect(const Common::Rect& r) override;
+
     void setVisible(bool visible) override;
 
     void translateCoords(Int32& x, Int32& y) const override;
@@ -67,21 +70,41 @@ class FBSurfaceSDL2 : public FBSurface
     void applyAttributes() override;
 
   private:
-    inline void setSrcPosInternal(uInt32 x, uInt32 y) {
-      mySrcR.x = x;  mySrcR.y = y;
-      mySrcGUIR.moveTo(x, y);
+    inline bool setSrcPosInternal(uInt32 x, uInt32 y) {
+      if(x != static_cast<uInt32>(mySrcR.x) || y != static_cast<uInt32>(mySrcR.y))
+      {
+        mySrcR.x = x;  mySrcR.y = y;
+        mySrcGUIR.moveTo(x, y);
+        return true;
+      }
+      return false;
     }
-    inline void setSrcSizeInternal(uInt32 w, uInt32 h) {
-      mySrcR.w = w;  mySrcR.h = h;
-      mySrcGUIR.setWidth(w);  mySrcGUIR.setHeight(h);
+    inline bool setSrcSizeInternal(uInt32 w, uInt32 h) {
+      if(w != static_cast<uInt32>(mySrcR.w) || h != static_cast<uInt32>(mySrcR.h))
+      {
+        mySrcR.w = w;  mySrcR.h = h;
+        mySrcGUIR.setWidth(w);  mySrcGUIR.setHeight(h);
+        return true;
+      }
+      return false;
     }
-    inline void setDstPosInternal(uInt32 x, uInt32 y) {
-      myDstR.x = x;  myDstR.y = y;
-      myDstGUIR.moveTo(x, y);
+    inline bool setDstPosInternal(uInt32 x, uInt32 y) {
+      if(x != static_cast<uInt32>(myDstR.x) || y != static_cast<uInt32>(myDstR.y))
+      {
+        myDstR.x = x;  myDstR.y = y;
+        myDstGUIR.moveTo(x, y);
+        return true;
+      }
+      return false;
     }
-    inline void setDstSizeInternal(uInt32 w, uInt32 h) {
-      myDstR.w = w;  myDstR.h = h;
-      myDstGUIR.setWidth(w);  myDstGUIR.setHeight(h);
+    inline bool setDstSizeInternal(uInt32 w, uInt32 h) {
+      if(w != static_cast<uInt32>(myDstR.w) || h != static_cast<uInt32>(myDstR.h))
+      {
+        myDstR.w = w;  myDstR.h = h;
+        myDstGUIR.setWidth(w);  myDstGUIR.setHeight(h);
+        return true;
+      }
+      return false;
     }
 
     void createSurface(uInt32 width, uInt32 height, const uInt32* data);
@@ -103,7 +126,7 @@ class FBSurfaceSDL2 : public FBSurface
         {ScalingInterpolation::none};
 
     SDL_Surface* mySurface{nullptr};
-    SDL_Rect mySrcR{0, 0, 0, 0}, myDstR{0, 0, 0, 0};
+    SDL_Rect mySrcR{-1, -1, -1, -1}, myDstR{-1, -1, -1, -1};
 
     bool myIsVisible{true};
     bool myIsStatic{false};
