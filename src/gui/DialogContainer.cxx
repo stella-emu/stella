@@ -122,10 +122,6 @@ void DialogContainer::render()
   if(myDialogStack.empty())
     return;
 
-  // Make sure we start in a clean state (with zero'ed buffers)
-  if(!myOSystem.eventHandler().inTIAMode())
-    myOSystem.frameBuffer().clear();
-
   cerr << "full re-render " << typeid(*this).name() << endl;
 
   // Make sure we start in a clean state (with zero'ed buffers)
@@ -174,7 +170,7 @@ void DialogContainer::removeDialog()
 {
   if(!myDialogStack.empty())
   {
-    cerr << "remove dialog" << endl;
+    cerr << "remove dialog " << typeid(*myDialogStack.top()).name() << endl;
     myDialogStack.pop();
 
     // Inform the frame buffer that it has to render all surfaces

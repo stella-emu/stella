@@ -100,8 +100,6 @@ void EditableWidget::receivedFocusWidget()
 {
   _caretTimer = 0;
   _caretEnabled = true;
-
-  Widget::receivedFocusWidget();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
