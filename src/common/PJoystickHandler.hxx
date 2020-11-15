@@ -28,6 +28,7 @@ class Event;
 #include "EventHandlerConstants.hxx"
 #include "PhysicalJoystick.hxx"
 #include "Variant.hxx"
+#include "json.hxx"
 
 using PhysicalJoystickPtr = shared_ptr<PhysicalJoystick>;
 
@@ -48,10 +49,10 @@ class PhysicalJoystickHandler
   private:
     struct StickInfo
     {
-      StickInfo(const string& map = EmptyString, PhysicalJoystickPtr stick = nullptr)
+      StickInfo(const nlohmann::json& map = nullptr, PhysicalJoystickPtr stick = nullptr)
         : mapping(map), joy(std::move(stick)) {}
 
-      string mapping;
+      nlohmann::json mapping;
       PhysicalJoystickPtr joy;
 
       friend ostream& operator<<(ostream& os, const StickInfo& si) {

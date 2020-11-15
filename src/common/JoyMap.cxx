@@ -16,6 +16,9 @@
 //============================================================================
 
 #include "JoyMap.hxx"
+#include "jsonDefinitions.hxx"
+
+using json = nlohmann::json;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void JoyMap::add(const Event::Type event, const JoyMapping& mapping)
@@ -183,48 +186,26 @@ JoyMap::JoyMappingArray JoyMap::getEventMapping(const Event::Type event, const E
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string JoyMap::saveMapping(const EventMode mode) const
+json JoyMap::saveMapping(const EventMode mode) const
 {
-  using MapType = std::pair<JoyMapping, Event::Type>;
-  std::vector<MapType> sortedMap(myMap.begin(), myMap.end());
+  json eventMappings = json::array();
 
-  std::sort(sortedMap.begin(), sortedMap.end(),
-    [](const MapType& a, const MapType& b)
-    {
-      // Event::Type first
-      if(a.second != b.second)
-        return a.second < b.second;
+  for (auto& item: myMap) {
+    if (item.first.mode != mode) continue;
 
-      if(a.first.button != b.first.button)
-        return a.first.button < b.first.button;
+    json eventMapping = json::object();
 
-      if(a.first.axis != b.first.axis)
-        return a.first.axis < b.first.axis;
+    eventMapping["event"] = item.second;
+    eventMapping["button"] = item.first.button;
+    eventMapping["axis"] = item.first.axis;
+    eventMapping["axisDirection"] = item.first.adir;
+    eventMapping["hat"] = item.first.hat;
+    eventMapping["hatDirection"] = item.first.hdir;
 
-      if(a.first.adir != b.first.adir)
-        return a.first.adir < b.first.adir;
-
-      if(a.first.hat != b.first.hat)
-        return a.first.hat < b.first.hat;
-
-      return a.first.hdir < b.first.hdir;
-    }
-  );
-
-  ostringstream buf;
-
-  for (auto item : sortedMap)
-  {
-    if (item.first.mode == mode)
-    {
-      if (buf.str() != "")
-        buf << "|";
-      buf << item.second << ":" << item.first.button << ","
-        << int(item.first.axis) << "," << int(item.first.adir) << ","
-        << item.first.hat << "," << int(item.first.hdir);
-    }
+    eventMappings.push_back(eventMapping);
   }
-  return buf.str();
+
+  return eventMappings;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
