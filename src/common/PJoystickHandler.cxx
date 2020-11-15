@@ -29,6 +29,8 @@
 
 static constexpr char CTRL_DELIM = '^';
 
+using json = nlohmann::json;
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PhysicalJoystickHandler::PhysicalJoystickHandler(
       OSystem& system, EventHandler& handler)
@@ -51,7 +53,8 @@ PhysicalJoystickHandler::PhysicalJoystickHandler(
       istringstream namebuf(joymap);
       getline(namebuf, joyname, PhysicalJoystick::MODE_DELIM);
       if(joyname.length() != 0)
-        myDatabase.emplace(joyname, StickInfo(joymap));
+        // TODO: convert old mapping to json
+        myDatabase.emplace(joyname, StickInfo());
     }
   }
 }
@@ -526,15 +529,16 @@ void PhysicalJoystickHandler::saveMapping()
 {
   // Save the joystick mapping hash table, making sure to update it with
   // any changes that have been made during the program run
-  ostringstream joybuf;
+  json mapping = json::array();
 
   for(const auto& i: myDatabase)
   {
-    const string& map = i.second.joy ? i.second.joy->getMap() : i.second.mapping;
-    if(map != "")
-      joybuf << CTRL_DELIM << map;
+    json map = i.second.joy ? i.second.joy->getMap() : i.second.mapping;
+
+    if (!map.is_null()) mapping.emplace_back(map);
   }
-  myOSystem.settings().setValue("joymap", joybuf.str());
+
+  myOSystem.settings().setValue("joymap", mapping.dump());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

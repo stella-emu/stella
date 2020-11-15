@@ -22,6 +22,17 @@
 #include "Vec.hxx"
 #include "bspf.hxx"
 #include "PhysicalJoystick.hxx"
+#include "jsonDefinitions.hxx"
+
+using json = nlohmann::json;
+
+namespace {
+  string jsonName(EventMode eventMode) {
+    json serializedName = eventMode;
+
+    return serializedName.get<string>();
+  }
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalJoystick::initialize(int index, const string& desc,
@@ -45,21 +56,18 @@ void PhysicalJoystick::initialize(int index, const string& desc,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string PhysicalJoystick::getMap() const
+json PhysicalJoystick::getMap() const
 {
-  // The mapping structure (for remappable devices) is defined as follows:
-  // <NAME>'>'<MODE>['|'(<EVENT>':'<BUTTON>','<AXIS>','<VALUE>)|(<EVENT>':'<BUTTON>','<HAT>','<HATDIR>)]
+  json mapping = json::object();
 
-  ostringstream joybuf;
+  mapping["name"] = name;
 
-  joybuf << name;
-  joybuf << MODE_DELIM << int(EventMode::kMenuMode) << "|" << joyMap.saveMapping(EventMode::kMenuMode);
-  joybuf << MODE_DELIM << int(EventMode::kJoystickMode) << "|" << joyMap.saveMapping(EventMode::kJoystickMode);
-  joybuf << MODE_DELIM << int(EventMode::kPaddlesMode) << "|" << joyMap.saveMapping(EventMode::kPaddlesMode);
-  joybuf << MODE_DELIM << int(EventMode::kKeypadMode) << "|" << joyMap.saveMapping(EventMode::kKeypadMode);
-  joybuf << MODE_DELIM << int(EventMode::kCommonMode) << "|" << joyMap.saveMapping(EventMode::kCommonMode);
+  for (auto& mode: {
+    EventMode::kMenuMode, EventMode::kJoystickMode, EventMode::kPaddlesMode, EventMode::kKeypadMode, EventMode::kCommonMode
+  })
+    mapping[jsonName(mode)] = joyMap.saveMapping(mode);
 
-  return joybuf.str();
+  return mapping;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
