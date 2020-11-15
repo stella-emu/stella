@@ -361,7 +361,7 @@ void Dialog::setFocus(Widget* w)
 {
   // If the click occured inside a widget which is not the currently
   // focused one, change the focus to that widget.
-  if(w && w != _focusedWidget && w->wantsFocus())
+  if(w && w != _focusedWidget && w->wantsFocus() && w->isEnabled())
   {
     // Redraw widgets for new focus
     _focusedWidget = Widget::setFocusForChain(this, getFocusList(), w, 0);
@@ -427,10 +427,10 @@ void Dialog::drawDialog()
 
   FBSurface& s = surface();
 
+  cerr << endl << "d";
   if(isDirty())
   {
     //cerr << "*** draw dialog " << typeid(*this).name() << " ***" << endl;
-    cerr << "d";
 
     if(clearsBackground())
     {

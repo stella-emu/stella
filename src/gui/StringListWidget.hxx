@@ -35,6 +35,9 @@ class StringListWidget : public ListWidget
   protected:
     void handleMouseEntered() override;
     void handleMouseLeft() override;
+    // display depends on _hasFocus so we have to redraw when focus changes
+    void receivedFocusWidget() override { setDirty(); }
+    void lostFocusWidget() override { setDirty(); }
     void drawWidget(bool hilite) override;
     Common::Rect getEditRect() const override;
 
