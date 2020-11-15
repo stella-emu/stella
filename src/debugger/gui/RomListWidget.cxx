@@ -491,6 +491,8 @@ void RomListWidget::drawWidget(bool hilite)
                              checkBreakPoint(dlist[pos].address,
                              instance().debugger().cartDebug().getBank(dlist[pos].address)));
     myCheckList[i]->setDirty();
+    // draw immediately, because chain order is not deterministic
+    myCheckList[i]->draw();
 
     // Draw highlighted item in a frame
     if(_highlightedItem == pos)
