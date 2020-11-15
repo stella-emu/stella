@@ -124,6 +124,10 @@ void DialogContainer::render()
 
   cerr << "full re-render " << typeid(*this).name() << endl;
 
+  // Make sure we start in a clean state (with zero'ed buffers)
+  if(!myOSystem.eventHandler().inTIAMode())
+    myOSystem.frameBuffer().clear();
+
   // Render all dialogs
   myDialogStack.applyAll([&](Dialog*& d) {
     d->render();
