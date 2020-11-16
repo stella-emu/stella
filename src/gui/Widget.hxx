@@ -87,6 +87,7 @@ class Widget : public GuiObject
 
     bool isEnabled() const          { return _flags & FLAG_ENABLED;         }
     bool isVisible() const override { return !(_flags & FLAG_INVISIBLE);    }
+    bool isHighlighted() const      { return _flags & FLAG_HILITED; }
     virtual bool wantsFocus() const { return _flags & FLAG_RETAIN_FOCUS;    }
     bool wantsTab() const           { return _flags & FLAG_WANTS_TAB;       }
     bool wantsRaw() const           { return _flags & FLAG_WANTS_RAWDATA;   }
@@ -102,7 +103,8 @@ class Widget : public GuiObject
     void setBGColorHi(ColorId color)   { _bgcolorhi = color;   setDirty(); }
     void setShadowColor(ColorId color) { _shadowcolor = color; setDirty(); }
 
-    void setToolTip(const string& text) { _toolTipText = text; }
+    void setToolTip(const string& text);
+    const string& getToolTip() const { return _toolTipText; }
     bool hasToolTip() const { return !_toolTipText.empty(); }
 
     virtual void loadConfig() { }

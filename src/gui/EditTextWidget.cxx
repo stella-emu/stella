@@ -18,6 +18,7 @@
 #include "OSystem.hxx"
 #include "FBSurface.hxx"
 #include "Dialog.hxx"
+#include "ToolTip.hxx"
 #include "Font.hxx"
 #include "EditTextWidget.hxx"
 

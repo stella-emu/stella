@@ -26,6 +26,7 @@ class OSystem;
 class DialogContainer;
 class TabWidget;
 class CommandSender;
+class ToolTip;
 
 #include "Stack.hxx"
 #include "Widget.hxx"
@@ -122,6 +123,7 @@ class Dialog : public GuiObject
     */
     bool shouldResize(uInt32& w, uInt32& h) const;
 
+    ToolTip& tooltip() { return *_toolTip; };
     //bool enableToolTip();
     //void showToolTip(int x, int y);
     //void hideToolTip();
@@ -203,7 +205,7 @@ class Dialog : public GuiObject
     string  _title;
     int     _th{0};
     int     _layer{0};
-    int     _toolTipTimer{0};
+    unique_ptr<ToolTip> _toolTip;
 
     Common::FixedStack<shared_ptr<FBSurface>> mySurfaceStack;
 
