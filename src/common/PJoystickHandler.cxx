@@ -22,12 +22,11 @@
 #include "Settings.hxx"
 #include "EventHandler.hxx"
 #include "PJoystickHandler.hxx"
+#include "Logger.hxx"
 
 #ifdef GUI_SUPPORT
   #include "DialogContainer.hxx"
 #endif
-
-static constexpr char CTRL_DELIM = '^';
 
 using json = nlohmann::json;
 
@@ -37,25 +36,29 @@ PhysicalJoystickHandler::PhysicalJoystickHandler(
   : myOSystem(system),
     myHandler(handler)
 {
-  Int32 version = myOSystem.settings().getInt("event_ver");
-  // Load previously saved joystick mapping (if any) from settings
-  istringstream buf(myOSystem.settings().getString("joymap"));
-  string joymap, joyname;
+  if(myOSystem.settings().getInt("event_ver") != Event::VERSION) {
+    Logger::info("event version mismatch; dropping previous joystick mappings");
 
-  // First compare if event list version has changed, and disregard the entire
-  // mapping if true
-  getline(buf, joymap, CTRL_DELIM); // event list size, ignore
-  if(version == Event::VERSION)
-  {
-    // Otherwise, put each joystick mapping entry into the database
-    while(getline(buf, joymap, CTRL_DELIM))
-    {
-      istringstream namebuf(joymap);
-      getline(namebuf, joyname, PhysicalJoystick::MODE_DELIM);
-      if(joyname.length() != 0)
-        // TODO: convert old mapping to json
-        myDatabase.emplace(joyname, StickInfo());
+    return;
+  }
+
+  json mappings;
+
+  try {
+    mappings = json::parse(myOSystem.settings().getString("joymap"));
+  } catch (json::exception) {
+    // TODO: error handling + migration
+
+    mappings = json::array();
+  }
+
+  for (const json& mapping: mappings) {
+    if (!mapping.contains("name")) {
+      Logger::error("igmoring bad joystick mapping");
+      continue;
     }
+
+    myDatabase.emplace(mapping.at("name").get<string>(), StickInfo(mapping));
   }
 }
 

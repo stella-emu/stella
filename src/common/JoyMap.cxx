@@ -17,6 +17,7 @@
 
 #include "JoyMap.hxx"
 #include "jsonDefinitions.hxx"
+#include "Logger.hxx"
 
 using json = nlohmann::json;
 
@@ -209,6 +210,31 @@ json JoyMap::saveMapping(const EventMode mode) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int JoyMap::loadMapping(const json& eventMappings, const EventMode mode)
+{
+  int i = 0;
+
+  for (const json& eventMapping: eventMappings) {
+    try {
+      add(
+        eventMapping.at("event").get<Event::Type>(),
+        mode,
+        eventMapping.at("button").get<int>(),
+        eventMapping.at("axis").get<JoyAxis>(),
+        eventMapping.at("axisDirection").get<JoyDir>(),
+        eventMapping.at("hat").get<int>(),
+        eventMapping.at("hatDirection").get<JoyHatDir>()
+      );
+
+      i++;
+    } catch (json::exception) {
+      Logger::error("ignoring invalid joystick event");
+    }
+  }
+
+  return i;
+}
+#if 0
 int JoyMap::loadMapping(string& list, const EventMode mode)
 {
   // Since istringstream swallows whitespace, we have to make the
@@ -226,6 +252,7 @@ int JoyMap::loadMapping(string& list, const EventMode mode)
 
   return i;
 }
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void JoyMap::eraseMode(const EventMode mode)
