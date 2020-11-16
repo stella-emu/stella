@@ -124,9 +124,6 @@ class Dialog : public GuiObject
     bool shouldResize(uInt32& w, uInt32& h) const;
 
     ToolTip& tooltip() { return *_toolTip; }
-    //bool enableToolTip();
-    //void showToolTip(int x, int y);
-    //void hideToolTip();
 
   protected:
     void draw() override { }

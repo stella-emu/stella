@@ -19,7 +19,7 @@
 #define TOOL_TIP_HXX
 
 /**
- * Class for providing tooltip functionality
+ * Class for providing tool tip functionality
  *
  * @author Thomas Jentzsch
  */
@@ -37,13 +37,13 @@ public:
   // Maximum tooltip length
   static constexpr uInt32 MAX_LEN = 80;
 
-  ToolTip(OSystem& instance, Dialog& dialog, const GUI::Font& font);
+  ToolTip(Dialog& dialog, const GUI::Font& font);
   ~ToolTip() = default;
 
   /**
     Request a tooltip display
   */
-  void request(Widget* widget);
+  void request(const Widget* widget);
 
 
   /**
@@ -63,18 +63,19 @@ public:
 
 private:
   static constexpr uInt32 DELAY_TIME = 45; // display delay
-  static constexpr int TEXT_Y_OFS = 2;
+  //static constexpr int TEXT_Y_OFS = 2;
 
   Dialog& myDialog;
   const GUI::Font& myFont;
 
-  Widget* myWidget{nullptr};
+  const Widget* myWidget{nullptr};
   uInt32 myTimer{0};
   Common::Point myPos;
   uInt32 myWidth{0};
   uInt32 myHeight{0};
   uInt32 myScale{1};
   uInt32 myTextXOfs{0};
+  uInt32 myTextYOfs{0};
   shared_ptr<FBSurface> mySurface;
 };
 

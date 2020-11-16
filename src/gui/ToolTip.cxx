@@ -24,35 +24,44 @@
 
 #include "ToolTip.hxx"
 
+// TODO:
+// - disable when in edit mode
+// - option to disable tips
+// - multi line tips
+// - nicer formating of DataDridWidget tip
+// - allow reversing ToogleWidget (TooglePixelWidget)
+
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ToolTip::ToolTip(OSystem& instance, Dialog& dialog, const GUI::Font& font)
+ToolTip::ToolTip(Dialog& dialog, const GUI::Font& font)
   : myDialog(dialog),
     myFont(font)
 {
   const int fontWidth = font.getMaxCharWidth(),
     fontHeight = font.getFontHeight();
 
-  myTextXOfs = fontHeight < 24 ? 5 : 8; //3 : 5;
-  myWidth = myTextXOfs * 2 + fontWidth * MAX_LEN;
-  myHeight = fontHeight + TEXT_Y_OFS * 2;
+  myTextXOfs = fontHeight < 24 ? 5 : 8; // 3 : 5;
+  myTextYOfs = fontHeight < 24 ? 2 : 3;
+  myWidth = fontWidth * MAX_LEN + myTextXOfs * 2;
+  myHeight = fontHeight + myTextYOfs * 2;
+
   mySurface = myDialog.instance().frameBuffer().allocateSurface(myWidth, myHeight);
   myScale = myDialog.instance().frameBuffer().hidpiScaleFactor();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ToolTip::request(Widget* widget)
+void ToolTip::request(const Widget* widget)
 {
   if(myWidget != widget)
-  {
     release();
-  }
+
   if(myTimer == DELAY_TIME)
   {
     myWidget = widget;
 
     const uInt32 VGAP = 1;
     const uInt32 hCursor = 18;
-    string text = widget->getToolTip();
+    string text = widget->getToolTip(myPos.x, myPos.y);
     uInt32 width = std::min(myWidth, myFont.getStringWidth(text) + myTextXOfs * 2);
     // Note: These include HiDPI scaling:
     const Common::Rect imageRect = myDialog.instance().frameBuffer().imageRect();
@@ -77,8 +86,8 @@ void ToolTip::request(Widget* widget)
 
     mySurface->frameRect(0, 0, width, myHeight, kColor);
     mySurface->fillRect(1, 1, width - 2, myHeight - 2, kWidColor);
-    mySurface->drawString(myFont, text, myTextXOfs, TEXT_Y_OFS,
-                          width - myTextXOfs * 2, myHeight - TEXT_Y_OFS * 2, kTextColor);
+    mySurface->drawString(myFont, text, myTextXOfs, myTextYOfs,
+                          width - myTextXOfs * 2, myHeight - myTextYOfs * 2, kTextColor);
     myDialog.setDirtyChain();
   }
   myTimer++;

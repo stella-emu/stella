@@ -16,6 +16,7 @@
 //============================================================================
 
 #include "OSystem.hxx"
+#include "Base.hxx"
 #include "StellaKeys.hxx"
 #include "Widget.hxx"
 #include "ToggleWidget.hxx"
@@ -209,3 +210,28 @@ void ToggleWidget::handleCommand(CommandSender* sender, int cmd,
     }
   }
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string ToggleWidget::getToolTip(int x, int y) const
+{
+  const int row = (y - getAbsY()) / _rowHeight;
+  const int pos = row * _cols;// +col;
+  Int32 val = 0;
+
+  for(int col = 0; col < _cols; ++col)
+  {
+    val <<= 1;
+    val += _stateList[pos + col];
+  }
+
+  const string hex = Common::Base::toString(val, Common::Base::Fmt::_16);
+  const string dec = Common::Base::toString(val, Common::Base::Fmt::_10);
+  const string bin = Common::Base::toString(val, Common::Base::Fmt::_2);
+  ostringstream buf;
+
+  // TODO: time leading spaces and zeroes
+  buf << "$" << hex << " = #" << dec << " = %" << bin;
+  return buf.str();
+}
+
+

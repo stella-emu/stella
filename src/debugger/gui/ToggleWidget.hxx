@@ -46,6 +46,9 @@ class ToggleWidget : public Widget, public CommandSender
     void setEditable(bool editable) { _editable = editable; }
     bool isEditable() const { return _editable; }
 
+    string getToolTip(int x = 0, int y = 0) const override;
+    bool hasToolTip() const override { return true; }
+
   protected:
 
   protected:
