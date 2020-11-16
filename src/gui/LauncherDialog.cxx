@@ -56,7 +56,8 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
                                int x, int y, int w, int h)
-  : Dialog(osystem, parent, x, y, w, h)
+  : Dialog(osystem, parent, osystem.frameBuffer().launcherFont(), "",
+           x, y, w, h)
 {
   myUseMinimalUI = instance().settings().getBool("minimal_ui");
 

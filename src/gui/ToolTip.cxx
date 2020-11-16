@@ -48,8 +48,10 @@ void ToolTip::request(Widget* widget)
   }
   if(myTimer == DELAY_TIME)
   {
+    myWidget = widget;
+
     const uInt32 VGAP = 1;
-    const uInt32 hCursor = 19; // TODO: query cursor height
+    const uInt32 hCursor = 18;
     string text = widget->getToolTip();
     uInt32 width = std::min(myWidth, myFont.getStringWidth(text) + myTextXOfs * 2);
     // Note: These include HiDPI scaling:
@@ -69,7 +71,6 @@ void ToolTip::request(Widget* widget)
       width = imageRect.w() / myScale;
     }
 
-    myWidget = widget;
     mySurface->setSrcSize(width, myHeight);
     mySurface->setDstSize(width * myScale, myHeight * myScale);
     mySurface->setDstPos(x * myScale, y * myScale);
