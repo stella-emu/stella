@@ -58,8 +58,8 @@ class Widget : public GuiObject
     virtual bool handleKeyUp(StellaKey key, StellaMod mod)    { return false; }
     virtual void handleMouseDown(int x, int y, MouseButton b, int clickCount) { }
     virtual void handleMouseUp(int x, int y, MouseButton b, int clickCount) { }
-    virtual void handleMouseEntered() { }
-    virtual void handleMouseLeft() { }
+    virtual void handleMouseEntered();
+    virtual void handleMouseLeft();
     virtual void handleMouseMoved(int x, int y) { }
     virtual void handleMouseWheel(int x, int y, int direction) { }
     virtual bool handleMouseClicks(int x, int y, MouseButton b) { return false; }
@@ -88,6 +88,7 @@ class Widget : public GuiObject
     bool isEnabled() const          { return _flags & FLAG_ENABLED;         }
     bool isVisible() const override { return !(_flags & FLAG_INVISIBLE);    }
     bool isHighlighted() const      { return _flags & FLAG_HILITED; }
+    bool hasMouseFocus() const      { return _flags & FLAG_MOUSE_FOCUS; }
     virtual bool wantsFocus() const { return _flags & FLAG_RETAIN_FOCUS;    }
     bool wantsTab() const           { return _flags & FLAG_WANTS_TAB;       }
     bool wantsRaw() const           { return _flags & FLAG_WANTS_RAWDATA;   }
@@ -231,8 +232,6 @@ class ButtonWidget : public StaticTextWidget, public CommandSender
     bool handleMouseClicks(int x, int y, MouseButton b) override;
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
-    void handleMouseEntered() override;
-    void handleMouseLeft() override;
     bool handleEvent(Event::Type event) override;
 
     void drawWidget(bool hilite) override;
@@ -273,8 +272,6 @@ class CheckboxWidget : public ButtonWidget
     bool getState() const  { return _state;     }
 
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
-    void handleMouseEntered() override;
-    void handleMouseLeft() override;
 
     static int boxSize(const GUI::Font& font)
     {

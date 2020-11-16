@@ -52,7 +52,8 @@ class GuiObject : public CommandReceiver
       FLAG_RETAIN_FOCUS = 1 << 6,
       FLAG_WANTS_TAB = 1 << 7,
       FLAG_WANTS_RAWDATA = 1 << 8,
-      FLAG_NOBG = 1 << 9
+      FLAG_NOBG = 1 << 9,
+      FLAG_MOUSE_FOCUS = 1 << 10
     };
 
   public:

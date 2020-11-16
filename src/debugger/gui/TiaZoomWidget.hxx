@@ -34,9 +34,6 @@ class TiaZoomWidget : public Widget, public CommandSender
     void loadConfig() override;
     void setPos(int x, int y);
 
-  protected:
-    void handleMouseEntered() override;
-
   private:
     void zoom(int level);
     void recalc();

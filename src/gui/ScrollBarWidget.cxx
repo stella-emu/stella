@@ -241,18 +241,10 @@ void ScrollBarWidget::checkBounds(int old_pos)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ScrollBarWidget::handleMouseEntered()
-{
-  if(isEnabled())
-    setFlags(Widget::FLAG_HILITED);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ScrollBarWidget::handleMouseLeft()
 {
   _part = Part::None;
-  if(isEnabled())
-    clearFlags(Widget::FLAG_HILITED);
+  Widget::handleMouseLeft();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

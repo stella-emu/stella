@@ -75,12 +75,8 @@ void Widget::tick()
 {
   if(isEnabled())
   {
-    if(isHighlighted() && hasToolTip())
+    if(hasMouseFocus() && hasToolTip())
       dialog().tooltip().request(this);
-    //{
-    //  if(dialog().enableToolTip())
-    //    dialog().showToolTip(10, 10);
-    //}
 
     // Recursively tick widget and all child dialogs and widgets
     Widget* w = _firstWidget;
@@ -179,6 +175,20 @@ void Widget::drawChain()
       w->draw();
     w = w->_next;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Widget::handleMouseEntered()
+{
+  if(isEnabled())
+    setFlags(Widget::FLAG_HILITED | Widget::FLAG_MOUSE_FOCUS);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Widget::handleMouseLeft()
+{
+  if(isEnabled())
+    clearFlags(Widget::FLAG_HILITED | Widget::FLAG_MOUSE_FOCUS);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -466,20 +476,6 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ButtonWidget::handleMouseEntered()
-{
-  if(isEnabled())
-    setFlags(Widget::FLAG_HILITED);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ButtonWidget::handleMouseLeft()
-{
-  if(isEnabled())
-    clearFlags(Widget::FLAG_HILITED);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool ButtonWidget::handleEvent(Event::Type e)
 {
   if(!isEnabled() || e != Event::UISelect)
@@ -574,20 +570,6 @@ CheckboxWidget::CheckboxWidget(GuiObject* boss, const GUI::Font& font,
     _textY = (_boxSize - _font.getFontHeight()) / 2;
 
   setFill(CheckboxWidget::FillType::Normal);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CheckboxWidget::handleMouseEntered()
-{
-  if(isEnabled())
-    setFlags(Widget::FLAG_HILITED);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CheckboxWidget::handleMouseLeft()
-{
-  if(isEnabled())
-    clearFlags(Widget::FLAG_HILITED);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
