@@ -112,7 +112,7 @@ class JoyMap
     JoyMappingArray getEventMapping(const Event::Type event, const EventMode mode) const;
 
     nlohmann::json saveMapping(const EventMode mode) const;
-    int loadMapping(string& list, const EventMode mode);
+    int loadMapping(const nlohmann::json& eventMappings, const EventMode mode);
 
     /** Erase all mappings for given mode */
     void eraseMode(const EventMode mode);

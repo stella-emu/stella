@@ -23,14 +23,21 @@
 #include "bspf.hxx"
 #include "PhysicalJoystick.hxx"
 #include "jsonDefinitions.hxx"
+#include "Logger.hxx"
 
 using json = nlohmann::json;
 
 namespace {
   string jsonName(EventMode eventMode) {
-    json serializedName = eventMode;
+    return json(eventMode).get<string>();
+  }
 
-    return serializedName.get<string>();
+  EventMode eventModeFromJsonName(const string& name) {
+    EventMode result;
+
+    from_json(json(name), result);
+
+    return result;
   }
 }
 
@@ -71,6 +78,35 @@ json PhysicalJoystick::getMap() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool PhysicalJoystick::setMap(const json& map)
+{
+  int i = 0;
+
+  for (auto& entry: map.items()) {
+    if (entry.key() == "name") continue;
+
+    try {
+      joyMap.loadMapping(entry.value(), eventModeFromJsonName(entry.key()));
+    } catch (json::exception) {
+      Logger::error("ignoring invalid json mapping for " + entry.key());
+    }
+
+    i++;
+  }
+
+  if(i != 5)
+  {
+    Logger::error("invalid controller mappings found for " +
+      ((map.contains("name") && map.at("name").is_string()) ? ("stick " + map["name"].get<string>()) : "unknown stick")
+    );
+
+    return false;
+  }
+
+  return true;
+}
+
+#if 0
 bool PhysicalJoystick::setMap(const string& mapString)
 {
   istringstream buf(mapString);
@@ -104,6 +140,7 @@ bool PhysicalJoystick::setMap(const string& mapString)
 
   return true;
 }
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalJoystick::eraseMap(EventMode mode)
