@@ -122,6 +122,7 @@ void VideoAudioDialog::addDisplayTab()
   myRenderer = new PopUpWidget(myTab, _font, xpos, ypos, pwidth, lineHeight,
                                instance().frameBuffer().supportedRenderers(),
                                "Renderer ", lwidth);
+  myRenderer->setToolTip("Select renderer used for displaying screen.");
   wid.push_back(myRenderer);
   const int swidth = myRenderer->getWidth() - lwidth;
   ypos += lineHeight + VGAP;
