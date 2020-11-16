@@ -67,7 +67,7 @@ Dialog::Dialog(OSystem& instance, DialogContainer& parent, const GUI::Font& font
   attr.blendalpha = 25; // darken background dialogs by 25%
   _shadeSurface->applyAttributes();
 
-  _toolTip = make_unique<ToolTip>(instance, *this, font);
+  _toolTip = make_unique<ToolTip>(*this, font);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

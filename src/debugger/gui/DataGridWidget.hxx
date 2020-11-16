@@ -84,6 +84,9 @@ class DataGridWidget : public EditableWidget
 
     void setCrossed(bool enable) { _crossGrid = enable; }
 
+    string getToolTip(int x = 0, int y = 0) const override;
+    bool hasToolTip() const override { return true; }
+
   protected:
     void drawWidget(bool hilite) override;
 

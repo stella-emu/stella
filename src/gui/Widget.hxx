@@ -105,8 +105,8 @@ class Widget : public GuiObject
     void setShadowColor(ColorId color) { _shadowcolor = color; setDirty(); }
 
     void setToolTip(const string& text);
-    const string& getToolTip() const { return _toolTipText; }
-    bool hasToolTip() const { return !_toolTipText.empty(); }
+    virtual string getToolTip(int x = 0, int y = 0) const { return _toolTipText; }
+    virtual bool hasToolTip() const { return !_toolTipText.empty(); }
 
     virtual void loadConfig() { }
 
@@ -181,6 +181,10 @@ class StaticTextWidget : public Widget
                      const string& text = "", TextAlign align = TextAlign::Left,
                      ColorId shadowColor = kNone);
     ~StaticTextWidget() override = default;
+
+    void handleMouseEntered() override {}
+    void handleMouseLeft() override {}
+
     void setValue(int value);
     void setLabel(const string& label);
     void setAlign(TextAlign align) { _align = align; setDirty(); }

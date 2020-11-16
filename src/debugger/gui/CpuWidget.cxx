@@ -109,10 +109,10 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   {
     new StaticTextWidget(boss, lfont, myCpuGridDecValue->getLeft() - fontWidth,
                          ypos + row * lineHeight + 2,
-                         lwidth - 2, fontHeight, "#");
+                         fontWidth, fontHeight, "#");
     new StaticTextWidget(boss, lfont, myCpuGridBinValue->getLeft() - fontWidth,
                          ypos + row * lineHeight + 2,
-                         lwidth - 2, fontHeight, "%");
+                         fontWidth, fontHeight, "%");
   }
 
   // Create a bitfield widget for changing the processor status

@@ -571,6 +571,23 @@ void DataGridWidget::handleCommand(CommandSender* sender, int cmd,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string DataGridWidget::getToolTip(int x, int y) const
+{
+  const int col = (x - getAbsX()) / _colWidth;
+  const int row = (y - getAbsY()) / _rowHeight;
+  const int pos = row * _cols + col;
+  const Int32 val = _valueList[pos];
+  const string hex = Common::Base::toString(val, Common::Base::Fmt::_16);
+  const string dec = Common::Base::toString(val, Common::Base::Fmt::_10);
+  const string bin = Common::Base::toString(val, Common::Base::Fmt::_2);
+  ostringstream buf;
+
+  // TODO: time leading spaces and zeroes
+  buf << "$" << hex << " = #" << dec << " = %" << bin;
+  return buf.str();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DataGridWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
