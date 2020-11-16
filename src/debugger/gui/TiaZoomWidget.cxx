@@ -179,18 +179,10 @@ void TiaZoomWidget::handleMouseMoved(int x, int y)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TiaZoomWidget::handleMouseEntered()
-{
-  if(isEnabled())
-    setFlags(Widget::FLAG_HILITED);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaZoomWidget::handleMouseLeft()
 {
-  if(isEnabled())
-    clearFlags(Widget::FLAG_HILITED);
   myMouseMoving = false;
+  Widget::handleMouseLeft();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

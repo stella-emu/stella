@@ -285,20 +285,6 @@ void RomListWidget::handleMouseWheel(int x, int y, int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomListWidget::handleMouseEntered()
-{
-  if(isEnabled())
-    setFlags(Widget::FLAG_HILITED);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomListWidget::handleMouseLeft()
-{
-  if(isEnabled())
-    clearFlags(Widget::FLAG_HILITED);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool RomListWidget::handleText(char text)
 {
   if(_editMode)

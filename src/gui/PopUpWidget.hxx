@@ -70,8 +70,6 @@ class PopUpWidget : public EditableWidget
   protected:
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseWheel(int x, int y, int direction) override;
-    void handleMouseEntered() override;
-    void handleMouseLeft() override;
     bool handleEvent(Event::Type e) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 

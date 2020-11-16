@@ -214,20 +214,6 @@ void TabWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TabWidget::handleMouseEntered()
-{
-  //if(isEnabled())
-  //  setFlags(Widget::FLAG_HILITED);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TabWidget::handleMouseLeft()
-{
-  //if(isEnabled())
-  //  clearFlags(Widget::FLAG_HILITED);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TabWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
   // Command is not inspected; simply forward it to the caller

@@ -50,20 +50,6 @@ void EditTextWidget::setText(const string& str, bool changed)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EditTextWidget::handleMouseEntered()
-{
-  if(isEnabled() && isEditable())
-    setFlags(Widget::FLAG_HILITED);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EditTextWidget::handleMouseLeft()
-{
-  if(isEnabled() && isEditable())
-    clearFlags(Widget::FLAG_HILITED);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EditTextWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
   if(!isEditable())

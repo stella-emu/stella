@@ -33,8 +33,6 @@ class StringListWidget : public ListWidget
     bool wantsFocus() const override { return true; }
 
   protected:
-    void handleMouseEntered() override;
-    void handleMouseLeft() override;
     // display depends on _hasFocus so we have to redraw when focus changes
     void receivedFocusWidget() override { setDirty(); }
     void lostFocusWidget() override { setDirty(); }
