@@ -18,22 +18,62 @@
 #ifndef TOOL_TIP_HXX
 #define TOOL_TIP_HXX
 
-class OSystem;
-class DialogContainer;
-
 /**
  * Class for providing tooltip functionality
  *
  * @author Thomas Jentzsch
  */
-class ToolTip : public Dialog
-{
-  public:
 
-  public:
-    ToolTip(OSystem& instance, DialogContainer& parent,
-            const GUI::Font& font);
-    ~ToolTip() override = default;
+class OSystem;
+class FBSurface;
+class Widget;
+
+#include "Rect.hxx"
+
+class ToolTip
+{
+public:
+  // Maximum tooltip length
+  static constexpr int MAX_LEN = 60;
+
+  ToolTip(OSystem& instance, Dialog& dialog, const GUI::Font& font);
+  ~ToolTip() = default;
+
+  /**
+    Request a tooltip display
+  */
+  void request(Widget* widget);
+
+
+  /**
+    Hide an existing tooltip (if displayed)
+  */
+  void release();
+
+  /**
+    Update with current mouse position
+  */
+  void update(int x, int y);
+
+  /*
+    Render the tooltip
+  */
+  void render();
+
+private:
+  static constexpr uInt32 DELAY_TIME = 45; // display delay
+  static constexpr int TEXT_Y_OFS = 2;
+
+  const GUI::Font& myFont;
+  Dialog& myDialog;
+
+  Widget* myWidget{nullptr};
+  uInt32 myTimer{0};
+  Common::Point myPos;
+  int myWidth{0};
+  int myHeight{0};
+  int myTextXOfs{0};
+  shared_ptr<FBSurface> mySurface;
 };
 
 #endif

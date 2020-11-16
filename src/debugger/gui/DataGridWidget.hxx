@@ -128,7 +128,6 @@ class DataGridWidget : public EditableWidget
     BoolArray   _changedList;
     BoolArray   _hiliteList;
 
-    bool      _editMode{false};
     int       _selectedItem{0};
     StellaKey _currentKeyDown{KBDK_UNKNOWN};
     string    _backupString;

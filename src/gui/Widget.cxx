@@ -21,6 +21,7 @@
 #include "bspf.hxx"
 #include "Command.hxx"
 #include "Dialog.hxx"
+#include "ToolTip.hxx"
 #include "FBSurface.hxx"
 #include "GuiObject.hxx"
 #include "OSystem.hxx"
@@ -74,7 +75,8 @@ void Widget::tick()
 {
   if(isEnabled())
   {
-    //if(_hasFocus && hasToolTip())
+    if(isHighlighted() && hasToolTip())
+      dialog().tooltip().request(this);
     //{
     //  if(dialog().enableToolTip())
     //    dialog().showToolTip(10, 10);
@@ -206,6 +208,14 @@ void Widget::setEnabled(bool e)
 {
   if(e) setFlags(Widget::FLAG_ENABLED);
   else  clearFlags(Widget::FLAG_ENABLED);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Widget::setToolTip(const string& text)
+{
+  assert(text.length() <= ToolTip::MAX_LEN);
+
+  _toolTipText = text;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

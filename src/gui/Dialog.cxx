@@ -27,6 +27,7 @@
 #include "Dialog.hxx"
 #include "Widget.hxx"
 #include "TabWidget.hxx"
+#include "ToolTip.hxx"
 
 #include "ContextMenu.hxx"
 #include "PopUpWidget.hxx"
@@ -65,6 +66,8 @@ Dialog::Dialog(OSystem& instance, DialogContainer& parent, const GUI::Font& font
   attr.blending = true;
   attr.blendalpha = 25; // darken background dialogs by 25%
   _shadeSurface->applyAttributes();
+
+  _toolTip = make_unique<ToolTip>(instance, *this, font);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -266,6 +269,8 @@ void Dialog::render()
     _shadeSurface->setDstRect(_surface->dstRect());
     _shadeSurface->render();
   }
+
+  _toolTip->render();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -587,6 +592,9 @@ void Dialog::handleMouseWheel(int x, int y, int direction)
 void Dialog::handleMouseMoved(int x, int y)
 {
   Widget* w;
+
+  // Update mouse coordinates for tooltips
+  _toolTip->update(x, y);
 
   if(_focusedWidget && !_dragWidget)
   {

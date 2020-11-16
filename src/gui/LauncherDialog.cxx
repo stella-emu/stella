@@ -120,12 +120,14 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
     // Show the filter input field
     xpos -= fwidth + LBL_GAP;
     myPattern = new EditTextWidget(this, font, xpos, ypos - 2, fwidth, lineHeight, "");
+    myPattern->setToolTip("Enter a filter text to reduce file list.");
     // Show the "Filter" label
     xpos -= lwidth3 + LBL_GAP;
     new StaticTextWidget(this, font, xpos, ypos, lblFilter);
     // Show the checkbox for all files
     xpos -= lwidth2 + LBL_GAP * 3;
     myAllFiles = new CheckboxWidget(this, font, xpos, ypos, lblAllFiles, kAllfilesCmd);
+    myAllFiles->setToolTip("Uncheck to show ROM files only.");
     wid.push_back(myAllFiles);
     wid.push_back(myPattern);
   }
@@ -178,6 +180,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   #ifndef BSPF_MACOS
     myStartButton = new ButtonWidget(this, font, xpos, ypos, (buttonWidth + 0) / 4, buttonHeight,
                                      "Select", kLoadROMCmd);
+    myStartButton->setToolTip("Start emulation of selected ROM.");
     wid.push_back(myStartButton);
 
     xpos += (buttonWidth + 0) / 4 + BUTTON_GAP;
