@@ -52,7 +52,7 @@ ifdef HAVE_GCC
 endif
 
 ifdef HAVE_CLANG
-  CXXFLAGS+= -Wno-multichar -Wunused -fno-rtti -Woverloaded-virtual -Wnon-virtual-dtor -std=c++14 -frtti
+  CXXFLAGS+= -Wno-multichar -Wunused -frtti -Woverloaded-virtual -Wnon-virtual-dtor -std=c++14
 endif
 
 ifdef CLANG_WARNINGS
