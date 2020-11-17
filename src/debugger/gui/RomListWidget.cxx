@@ -476,7 +476,7 @@ string RomListWidget::getToolTip(Common::Point pos) const
   }
   else
   {
-    // hex 1..3 values
+    // 1..3 hex values
     if(idx.x % 3 == 2)
       // Skip gaps between hex values
       return EmptyString;
