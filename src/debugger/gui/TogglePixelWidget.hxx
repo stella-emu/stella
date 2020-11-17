@@ -36,7 +36,7 @@ class TogglePixelWidget : public ToggleWidget
 
     void setState(const BoolArray& state);
 
-    void setIntState(int value, bool swap);
+    void setIntState(int value, bool swap = false);
     int  getIntState();
 
     void setCrossed(bool enable) { _crossBits = enable; }
