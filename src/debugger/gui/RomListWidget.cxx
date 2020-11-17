@@ -465,14 +465,14 @@ string RomListWidget::getToolTip(Common::Point pos) const
 
   const string bytes = myDisasm->list[idx.y].bytes;
 
-  if(bytes.length() < idx.x + 1)
+  if(bytes.length() < size_t(idx.x + 1))
     return EmptyString;
 
   Int32 val;
   if(bytes.length() == 8 && bytes[2] != ' ')
   {
     // Binary value
-    val = stol(bytes, 0, 2);
+    val = static_cast<Int32>(stol(bytes, 0, 2));
   }
   else
   {
@@ -484,7 +484,7 @@ string RomListWidget::getToolTip(Common::Point pos) const
     // Get one hex byte
     const string valStr = bytes.substr((idx.x / 3) * 3, 2);
 
-    val = stol(valStr, 0, 16);
+    val = static_cast<Int32>(stol(valStr, 0, 16));
 
   }
   ostringstream buf;

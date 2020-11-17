@@ -53,14 +53,14 @@ class ToggleWidget : public Widget, public CommandSender
     bool hasToolTip() const override { return true; }
 
   protected:
-    int  _rows;
-    int  _cols;
-    int  _currentRow;
-    int  _currentCol;
-    int  _rowHeight;   // explicitly set in child classes
-    int  _colWidth;    // explicitly set in child classes
-    int  _selectedItem;
-    bool _editable;
+    int  _rows{0};
+    int  _cols{0};
+    int  _currentRow{0};
+    int  _currentCol{0};
+    int  _rowHeight{0};   // explicitly set in child classes
+    int  _colWidth{0};    // explicitly set in child classes
+    int  _selectedItem{0};
+    bool _editable{true};
     bool _swapBits{false};
     int  _shiftBits{0}; // shift bits for tooltip display
 
