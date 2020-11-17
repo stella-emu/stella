@@ -32,16 +32,24 @@
 // + disable when in edit mode
 // - option to disable tips
 // - multi line tips
-// - nicer formating of DataDridWidget tip
-// - allow reversing ToogleWidget (TooglePixelWidget)
-// - shift checkbox bits
+// + nicer formating of DataDridWidget tip
+// + allow reversing ToogleWidget (TooglePixelWidget)
+// + shift checkbox bits
 // - RomListWidget (hex codes, maybe disassembly operands)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ToolTip::ToolTip(Dialog& dialog, const GUI::Font& font)
-  : myDialog(dialog),
-    myFont(font)
+  : myDialog(dialog)
 {
+  myScale = myDialog.instance().frameBuffer().hidpiScaleFactor();
+
+  setFont(font);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ToolTip::setFont(const GUI::Font& font)
+{
+  myFont = &font;
   const int fontWidth = font.getMaxCharWidth(),
     fontHeight = font.getFontHeight();
 
@@ -51,7 +59,6 @@ ToolTip::ToolTip(Dialog& dialog, const GUI::Font& font)
   myHeight = fontHeight + myTextYOfs * 2;
 
   mySurface = myDialog.instance().frameBuffer().allocateSurface(myWidth, myHeight);
-  myScale = myDialog.instance().frameBuffer().hidpiScaleFactor();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -86,7 +93,7 @@ void ToolTip::release()
 {
   if(myTipShown)
   {
-    myTimer = DELAY_TIME;
+    myTimer = DELAY_TIME - 1;
 
     myTipShown = false;
     myDialog.setDirtyChain();
@@ -118,7 +125,16 @@ void ToolTip::show()
   const uInt32 V_GAP = 1;
   const uInt32 H_CURSOR = 18;
   string text = myTipWidget->getToolTip(myPos);
-  uInt32 width = std::min(myWidth, myFont.getStringWidth(text) + myTextXOfs * 2);
+
+  myTipShown = true;
+  if(text.empty())
+  {
+    release();
+    return;
+  }
+
+  uInt32 width = std::min(myWidth, myFont->getStringWidth(text) + myTextXOfs * 2);
+  //uInt32 height = std::min(myHeight, font.getFontHeight() + myTextYOfs * 2);
   // Note: The rects include HiDPI scaling
   const Common::Rect imageRect = myDialog.instance().frameBuffer().imageRect();
   const Common::Rect dialogRect = myDialog.surface().dstRect();
@@ -142,7 +158,7 @@ void ToolTip::show()
 
   mySurface->frameRect(0, 0, width, myHeight, kColor);
   mySurface->fillRect(1, 1, width - 2, myHeight - 2, kWidColor);
-  mySurface->drawString(myFont, text, myTextXOfs, myTextYOfs,
+  mySurface->drawString(*myFont, text, myTextXOfs, myTextYOfs,
                         width - myTextXOfs * 2, myHeight - myTextYOfs * 2, kTextColor);
 
   myTipShown = true;

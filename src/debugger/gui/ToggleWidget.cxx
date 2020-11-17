@@ -223,6 +223,7 @@ string ToggleWidget::getToolTip(Common::Point pos) const
 {
   const int idx = getToolTipIndex(pos);
   Int32 val = 0;
+  ostringstream buf;
 
   if(_swapBits)
     for(int col = _cols - 1; col >= 0; --col)
@@ -238,13 +239,12 @@ string ToggleWidget::getToolTip(Common::Point pos) const
     }
   val <<= _shiftBits;
 
-  const string hex = Common::Base::toString(val, Common::Base::Fmt::_16);
-  const string dec = Common::Base::toString(val, Common::Base::Fmt::_10);
-  const string bin = Common::Base::toString(val, Common::Base::Fmt::_2);
-  ostringstream buf;
+  buf << _toolTipText
+    << "$" << Common::Base::toString(val, Common::Base::Fmt::_16)
+    << " = #" << val;
+  if(val < 0x100)
+    buf << " = %" << Common::Base::toString(val, Common::Base::Fmt::_2);
 
-  // TODO: time leading spaces and zeroes
-  buf << "$" << hex << " = #" << dec << " = %" << bin;
   return buf.str();
 }
 
