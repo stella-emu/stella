@@ -563,7 +563,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   new StaticTextWidget(boss, lfont, xpos, ypos+2, 2*fontWidth, fontHeight,
                        "PF", TextAlign::Left);
   xpos += 2*fontWidth + 5;
-  myPF[0] = new TogglePixelWidget(boss, nfont, xpos, ypos+1, 4, 1);
+  myPF[0] = new TogglePixelWidget(boss, nfont, xpos, ypos+1, 4, 1, 4);
   myPF[0]->setTarget(this);
   myPF[0]->setID(kPF0ID);
   addFocusWidget(myPF[0]);

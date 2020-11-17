@@ -25,7 +25,8 @@ class TogglePixelWidget : public ToggleWidget
 {
   public:
     TogglePixelWidget(GuiObject* boss, const GUI::Font& font,
-                      int x, int y, int cols, int rows);
+                      int x, int y, int cols = 1, int rows = 1,
+                      int shiftBits = 0);
     ~TogglePixelWidget() override = default;
 
     void setColor(ColorId color) { _pixelColor = color; }
@@ -42,7 +43,6 @@ class TogglePixelWidget : public ToggleWidget
 
   private:
     ColorId _pixelColor{kNone}, _backgroundColor{kDlgColor};
-    bool _swapBits{false};
     bool _crossBits{false};
 
   private:
