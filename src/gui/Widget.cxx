@@ -75,8 +75,8 @@ void Widget::tick()
 {
   if(isEnabled())
   {
-    if(hasMouseFocus() && hasToolTip())
-      dialog().tooltip().request(this);
+    if(wantsToolTip())
+      dialog().tooltip().request();
 
     // Recursively tick widget and all child dialogs and widgets
     Widget* w = _firstWidget;

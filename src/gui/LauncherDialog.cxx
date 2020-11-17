@@ -121,7 +121,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
     // Show the filter input field
     xpos -= fwidth + LBL_GAP;
     myPattern = new EditTextWidget(this, font, xpos, ypos - 2, fwidth, lineHeight, "");
-    myPattern->setToolTip("Enter a filter text to reduce file list.");
+    myPattern->setToolTip("Enter filter text to reduce file list.");
     // Show the "Filter" label
     xpos -= lwidth3 + LBL_GAP;
     new StaticTextWidget(this, font, xpos, ypos, lblFilter);

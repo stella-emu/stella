@@ -593,9 +593,6 @@ void Dialog::handleMouseMoved(int x, int y)
 {
   Widget* w;
 
-  // Update mouse coordinates for tooltips
-  _toolTip->update(x, y);
-
   if(_focusedWidget && !_dragWidget)
   {
     w = _focusedWidget;
@@ -639,6 +636,9 @@ void Dialog::handleMouseMoved(int x, int y)
 
   if (w && (w->getFlags() & Widget::FLAG_TRACK_MOUSE))
     w->handleMouseMoved(x - (w->getAbsX() - _x), y - (w->getAbsY() - _y));
+
+  // Update mouse coordinates for tooltips
+  _toolTip->update(_mouseWidget, Common::Point(x, y));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

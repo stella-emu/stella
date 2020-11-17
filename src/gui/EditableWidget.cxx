@@ -22,6 +22,7 @@
 #include "OSystem.hxx"
 #include "EventHandler.hxx"
 #include "UndoHandler.hxx"
+#include "ToolTip.hxx"
 #include "EditableWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -80,6 +81,12 @@ void EditableWidget::tick()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool EditableWidget::wantsToolTip() const
+{
+  return !(_hasFocus && isEditable() && _editMode) && Widget::wantsToolTip();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EditableWidget::setEditable(bool editable, bool hiliteBG)
 {
   _editable = editable;
@@ -100,6 +107,7 @@ void EditableWidget::receivedFocusWidget()
 {
   _caretTimer = 0;
   _caretEnabled = true;
+  dialog().tooltip().release();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

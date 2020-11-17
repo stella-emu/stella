@@ -24,8 +24,12 @@
 
 #include "ToolTip.hxx"
 
-// TODO:
-// - disable when in edit mode
+// TODOs:
+// + keep enabled when mouse moves over same widget
+//   + static position and text for normal widgets
+//   + moving position and text over e.g. DataGridWidget
+// + reenable tip faster
+// + disable when in edit mode
 // - option to disable tips
 // - multi line tips
 // - nicer formating of DataDridWidget tip
@@ -41,7 +45,7 @@ ToolTip::ToolTip(Dialog& dialog, const GUI::Font& font)
   const int fontWidth = font.getMaxCharWidth(),
     fontHeight = font.getFontHeight();
 
-  myTextXOfs = fontHeight < 24 ? 5 : 8; // 3 : 5;
+  myTextXOfs = fontHeight < 24 ? 5 : 8;
   myTextYOfs = fontHeight < 24 ? 2 : 3;
   myWidth = fontWidth * MAX_LEN + myTextXOfs * 2;
   myHeight = fontHeight + myTextYOfs * 2;
@@ -51,72 +55,103 @@ ToolTip::ToolTip(Dialog& dialog, const GUI::Font& font)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ToolTip::request(const Widget* widget)
+void ToolTip::update(const Widget* widget, Common::Point pos)
 {
-  if(myWidget != widget)
-    release();
-
-  if(myTimer == DELAY_TIME)
+  if(myTipWidget != widget)
   {
-    myWidget = widget;
+    myFocusWidget = widget;
+    release();
+  }
+  if(myTipShown && myTipWidget->changedToolTip(myPos, pos))
+    myPos = pos, show();
+  else
+    myPos = pos;
+}
 
-    const uInt32 VGAP = 1;
-    const uInt32 hCursor = 18;
-    string text = widget->getToolTip(myPos.x, myPos.y);
-    uInt32 width = std::min(myWidth, myFont.getStringWidth(text) + myTextXOfs * 2);
-    // Note: These include HiDPI scaling:
-    const Common::Rect imageRect = myDialog.instance().frameBuffer().imageRect();
-    const Common::Rect dialogRect = myDialog.surface().dstRect();
-    // Limit to app or screen size and adjust position
-    const Int32 xAbs = myPos.x + dialogRect.x() / myScale;
-    const uInt32 yAbs = myPos.y + dialogRect.y() / myScale;
-    Int32 x = std::min(xAbs, Int32(imageRect.w() / myScale - width));
-    const uInt32 y = (yAbs + myHeight + hCursor > imageRect.h() / myScale)
-      ? yAbs - myHeight - VGAP
-      : yAbs + hCursor / myScale + VGAP;
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ToolTip::hide()
+{
+  if(myTipShown)
+  {
+    myTimer = 0;
+    myTipWidget = myFocusWidget = nullptr;
 
-    if(x < 0)
-    {
-      x = 0;
-      width = imageRect.w() / myScale;
-    }
-
-    mySurface->setSrcSize(width, myHeight);
-    mySurface->setDstSize(width * myScale, myHeight * myScale);
-    mySurface->setDstPos(x * myScale, y * myScale);
-
-    mySurface->frameRect(0, 0, width, myHeight, kColor);
-    mySurface->fillRect(1, 1, width - 2, myHeight - 2, kWidColor);
-    mySurface->drawString(myFont, text, myTextXOfs, myTextYOfs,
-                          width - myTextXOfs * 2, myHeight - myTextYOfs * 2, kTextColor);
+    myTipShown = false;
     myDialog.setDirtyChain();
   }
-  myTimer++;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ToolTip::release()
 {
-  if(myWidget != nullptr)
+  if(myTipShown)
   {
-    myTimer = 0;
-    myWidget = nullptr;
+    myTimer = DELAY_TIME;
+
+    myTipShown = false;
     myDialog.setDirtyChain();
   }
+
+  // After displaying a tip, slowly reset the timer to 0
+  //  until a new tip is requested
+  if(myTipWidget != myFocusWidget && myTimer)
+    myTimer--;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ToolTip::request()
+{
+  myTipWidget = myFocusWidget;
+
+  if(myTimer == DELAY_TIME)
+    show();
+
+  myTimer++;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ToolTip::show()
+{
+  if(myTipWidget == nullptr)
+    return;
+
+  const uInt32 V_GAP = 1;
+  const uInt32 H_CURSOR = 18;
+  string text = myTipWidget->getToolTip(myPos);
+  uInt32 width = std::min(myWidth, myFont.getStringWidth(text) + myTextXOfs * 2);
+  // Note: The rects include HiDPI scaling
+  const Common::Rect imageRect = myDialog.instance().frameBuffer().imageRect();
+  const Common::Rect dialogRect = myDialog.surface().dstRect();
+  // Limit position to app size and adjust accordingly
+  const Int32 xAbs = myPos.x + dialogRect.x() / myScale;
+  const uInt32 yAbs = myPos.y + dialogRect.y() / myScale;
+  Int32 x = std::min(xAbs, Int32(imageRect.w() / myScale - width));
+  const uInt32 y = (yAbs + myHeight + H_CURSOR > imageRect.h() / myScale)
+    ? yAbs - myHeight - V_GAP
+    : yAbs + H_CURSOR / myScale + V_GAP;
+
+  if(x < 0)
+  {
+    x = 0;
+    width = imageRect.w() / myScale;
+  }
+
+  mySurface->setSrcSize(width, myHeight);
+  mySurface->setDstSize(width * myScale, myHeight * myScale);
+  mySurface->setDstPos(x * myScale, y * myScale);
+
+  mySurface->frameRect(0, 0, width, myHeight, kColor);
+  mySurface->fillRect(1, 1, width - 2, myHeight - 2, kWidColor);
+  mySurface->drawString(myFont, text, myTextXOfs, myTextYOfs,
+                        width - myTextXOfs * 2, myHeight - myTextYOfs * 2, kTextColor);
+
+  myTipShown = true;
+  myDialog.setDirtyChain();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ToolTip::render()
 {
-  if(myWidget != nullptr)
-    mySurface->render();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ToolTip::update(int x, int y)
-{
-  if(myWidget != nullptr && x != myPos.x || y != myPos.y)
-    release();
-  myPos.x = x;
-  myPos.y = y;
+  if(myTipShown)
+    mySurface->render(), cerr << "    render tooltip" << endl;
 }

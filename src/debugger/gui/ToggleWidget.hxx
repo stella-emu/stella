@@ -46,10 +46,11 @@ class ToggleWidget : public Widget, public CommandSender
     void setEditable(bool editable) { _editable = editable; }
     bool isEditable() const { return _editable; }
 
-    string getToolTip(int x = 0, int y = 0) const override;
-    bool hasToolTip() const override { return true; }
+    string getToolTip(Common::Point pos) const override;
+    bool changedToolTip(Common::Point oldPos, Common::Point newPos) const override;
 
   protected:
+    bool hasToolTip() const override { return true; }
 
   protected:
     int  _rows;
@@ -73,6 +74,8 @@ class ToggleWidget : public Widget, public CommandSender
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
     bool handleKeyDown(StellaKey key, StellaMod mod) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+    int getToolTipIndex(Common::Point pos) const;
 
     // Following constructors and assignment operators not supported
     ToggleWidget() = delete;

@@ -33,50 +33,59 @@ class FBSurface;
 
 class ToolTip
 {
-public:
-  // Maximum tooltip length
-  static constexpr uInt32 MAX_LEN = 80;
+  public:
+    // Maximum tooltip length
+    static constexpr uInt32 MAX_LEN = 80;
 
-  ToolTip(Dialog& dialog, const GUI::Font& font);
-  ~ToolTip() = default;
+    ToolTip(Dialog& dialog, const GUI::Font& font);
+    ~ToolTip() = default;
 
-  /**
-    Request a tooltip display
-  */
-  void request(const Widget* widget);
+    /**
+      Request a tooltip display.
+    */
+    void request();
 
+    /**
+      Hide a displayed tooltip and reset the timer.
+    */
+    void hide();
 
-  /**
-    Hide an existing tooltip (if displayed)
-  */
-  void release();
+    /**
+      Hide a displayed tooltip and reset the timer slowly.
+      This allows faster tip display of the next tip.
+    */
+    void release();
 
-  /**
-    Update with current mouse position
-  */
-  void update(int x, int y);
+    /**
+      Update focussed widget and current mouse position.
+    */
+    void update(const Widget* widget, Common::Point pos);
 
-  /*
-    Render the tooltip
-  */
-  void render();
+    /*
+      Render the tooltip
+    */
+    void render();
 
-private:
-  static constexpr uInt32 DELAY_TIME = 45; // display delay
-  //static constexpr int TEXT_Y_OFS = 2;
+  private:
+    void show();
 
-  Dialog& myDialog;
-  const GUI::Font& myFont;
+  private:
+    static constexpr uInt32 DELAY_TIME = 45; // display delay
 
-  const Widget* myWidget{nullptr};
-  uInt32 myTimer{0};
-  Common::Point myPos;
-  uInt32 myWidth{0};
-  uInt32 myHeight{0};
-  uInt32 myScale{1};
-  uInt32 myTextXOfs{0};
-  uInt32 myTextYOfs{0};
-  shared_ptr<FBSurface> mySurface;
+    Dialog& myDialog;
+    const GUI::Font& myFont;
+    const Widget* myTipWidget{nullptr};
+    const Widget* myFocusWidget{nullptr};
+
+    uInt32 myTimer{0};
+    Common::Point myPos;
+    uInt32 myWidth{0};
+    uInt32 myHeight{0};
+    uInt32 myTextXOfs{0};
+    uInt32 myTextYOfs{0};
+    bool myTipShown{false};
+    uInt32 myScale{1};
+    shared_ptr<FBSurface> mySurface;
 };
 
 #endif

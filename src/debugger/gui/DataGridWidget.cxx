@@ -571,12 +571,18 @@ void DataGridWidget::handleCommand(CommandSender* sender, int cmd,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string DataGridWidget::getToolTip(int x, int y) const
+int DataGridWidget::getToolTipIndex(Common::Point pos) const
 {
-  const int col = (x - getAbsX()) / _colWidth;
-  const int row = (y - getAbsY()) / _rowHeight;
-  const int pos = row * _cols + col;
-  const Int32 val = _valueList[pos];
+  const int col = (pos.x - getAbsX()) / _colWidth;
+  const int row = (pos.y - getAbsY()) / _rowHeight;
+
+  return row * _cols + col;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string DataGridWidget::getToolTip(Common::Point pos) const
+{
+  const Int32 val = _valueList[getToolTipIndex(pos)];
   const string hex = Common::Base::toString(val, Common::Base::Fmt::_16);
   const string dec = Common::Base::toString(val, Common::Base::Fmt::_10);
   const string bin = Common::Base::toString(val, Common::Base::Fmt::_2);
@@ -585,6 +591,12 @@ string DataGridWidget::getToolTip(int x, int y) const
   // TODO: time leading spaces and zeroes
   buf << "$" << hex << " = #" << dec << " = %" << bin;
   return buf.str();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool DataGridWidget::changedToolTip(Common::Point oldPos, Common::Point newPos) const
+{
+  return getToolTipIndex(oldPos) != getToolTipIndex(newPos);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
