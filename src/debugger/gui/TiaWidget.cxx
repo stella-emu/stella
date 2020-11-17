@@ -919,10 +919,14 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 
         case kRefP0ID:
           tia.refP0(myRefP0->getState() ? 1 : 0);
+          myGRP0->setIntState(myGRP0->getIntState(), !myRefP0->getState());
+          myGRP0Old->setIntState(myGRP0Old->getIntState(), !myRefP0->getState());
           break;
 
         case kRefP1ID:
           tia.refP1(myRefP1->getState() ? 1 : 0);
+          myGRP1->setIntState(myGRP1->getIntState(), !myRefP1->getState());
+          myGRP1Old->setIntState(myGRP1Old->getIntState(), !myRefP1->getState());
           break;
 
         case kDelP0ID:
@@ -1043,8 +1047,8 @@ void TiaWidget::loadConfig()
     myGRP0Old->setColor(kBGColorLo);
     myGRP0Old->setCrossed(true);
   }
-  myGRP0->setIntState(state.gr[TiaState::P0], false);
-  myGRP0Old->setIntState(state.gr[TiaState::P0+2], false);
+  myGRP0->setIntState(state.gr[TiaState::P0], state.ref[TiaState::P0]);
+  myGRP0Old->setIntState(state.gr[TiaState::P0+2], state.ref[TiaState::P0]);
 
   // posP0
   myPosP0->setList(0, state.pos[TiaState::P0],
@@ -1079,8 +1083,8 @@ void TiaWidget::loadConfig()
     myGRP1Old->setColor(kBGColorLo);
     myGRP1Old->setCrossed(true);
   }
-  myGRP1->setIntState(state.gr[TiaState::P1], false);
-  myGRP1Old->setIntState(state.gr[TiaState::P1+2], false);
+  myGRP1->setIntState(state.gr[TiaState::P1], state.ref[TiaState::P1]);
+  myGRP1Old->setIntState(state.gr[TiaState::P1+2], state.ref[TiaState::P1]);
 
   // posP1
   myPosP1->setList(0, state.pos[TiaState::P1],
