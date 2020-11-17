@@ -60,30 +60,35 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
   xpos = x;
   new StaticTextWidget(boss, lfont, xpos, ypos + 1, longstr ? "Frame Cycls" : "F. Cycls");
   myFrameCycles = new EditTextWidget(boss, nfont, xpos + lwidth, ypos - 1, fwidth, lineHeight);
+  myFrameCycles->setToolTip("CPU cycles executed this frame.");
   myFrameCycles->setEditable(false, true);
 
   // Left: WSync Cycles
   ypos += lineHeight + VGAP;
   new StaticTextWidget(boss, lfont, xpos, ypos + 1, longstr ? "WSync Cycls" : "WSync C.");
   myWSyncCylces = new EditTextWidget(boss, nfont, xpos + lwidth, ypos - 1, fwidth, lineHeight);
+  myWSyncCylces->setToolTip("CPU cycles used for WSYNC this frame.");
   myWSyncCylces->setEditable(false, true);
 
   // Left: Timer Cycles
   ypos += lineHeight + VGAP;
   new StaticTextWidget(boss, lfont, xpos, ypos + 1, longstr ? "Timer Cycls" : "Timer C.");
   myTimerCylces = new EditTextWidget(boss, nfont, xpos + lwidth, ypos - 1, fwidth, lineHeight);
+  myTimerCylces->setToolTip("CPU cycles roughly used for INTIM reads this frame.");
   myTimerCylces->setEditable(false, true);
 
   // Left: Total Cycles
   ypos += lineHeight + VGAP;
   new StaticTextWidget(boss, lfont, xpos, ypos + 1, "Total");
   myTotalCycles = new EditTextWidget(boss, nfont, xpos + lwidth8, ypos - 1, twidth, lineHeight);
+  myTotalCycles->setToolTip("Total CPU cycles executed for this session (E notation).");
   myTotalCycles->setEditable(false, true);
 
   // Left: Delta Cycles
   ypos += lineHeight + VGAP;
   new StaticTextWidget(boss, lfont, xpos, ypos + 1, "Delta");
   myDeltaCycles = new EditTextWidget(boss, nfont, xpos + lwidth8, ypos - 1, twidth, lineHeight);
+  myDeltaCycles->setToolTip("CPU cycles executed since last debug break.");
   myDeltaCycles->setEditable(false, true);
 
   // Right column
@@ -93,6 +98,7 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
   // Right: Frame Count
   new StaticTextWidget(boss, lfont, xpos, ypos + 1, longstr ? "Frame Cnt." : "Frame");
   myFrameCount = new EditTextWidget(boss, nfont, xpos + lwidthR, ypos - 1, fwidth, lineHeight);
+  myFrameCount->setToolTip("Total number of frames executed this session.");
   myFrameCount->setEditable(false, true);
 
   lwidth = lfont.getStringWidth(longstr ? "Color Clock " : "Pixel Pos ") + LGAP;
@@ -102,28 +108,33 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
   ypos += lineHeight + VGAP;
   new StaticTextWidget(boss, lfont, xpos, ypos + 1, longstr ? "Scanline" : "Scn Ln");
   myScanlineCountLast = new EditTextWidget(boss, nfont, xpos + lwidth, ypos - 1, fwidth, lineHeight);
+  myScanlineCountLast->setToolTip("Number of scanlines of last frame.");
   myScanlineCountLast->setEditable(false, true);
   myScanlineCount = new EditTextWidget(boss, nfont,
                                        xpos + lwidth - myScanlineCountLast->getWidth() - 2, ypos - 1,
                                        fwidth, lineHeight);
+  myScanlineCount->setToolTip("Current scanline of this frame.");
   myScanlineCount->setEditable(false, true);
 
   // Right: Scan Cycle
   ypos += lineHeight + VGAP;
   new StaticTextWidget(boss, lfont, xpos, ypos + 1, longstr ? "Scan Cycle" : "Scn Cycle");
   myScanlineCycles = new EditTextWidget(boss, nfont, xpos + lwidth, ypos - 1, fwidth, lineHeight);
+  myScanlineCycles->setToolTip("CPU cycles in current scanline.");
   myScanlineCycles->setEditable(false, true);
 
   // Right: Pixel Pos
   ypos += lineHeight + VGAP;
   new StaticTextWidget(boss, lfont, xpos, ypos + 1, "Pixel Pos");
   myPixelPosition = new EditTextWidget(boss, nfont, xpos + lwidth, ypos - 1, fwidth, lineHeight);
+  myPixelPosition->setToolTip("Pixel position in current scanline.");
   myPixelPosition->setEditable(false, true);
 
   // Right: Color Clock
   ypos += lineHeight + VGAP;
   new StaticTextWidget(boss, lfont, xpos, ypos + 1, longstr ? "Color Clock" : "Color Clk");
   myColorClocks = new EditTextWidget(boss, nfont, xpos + lwidth, ypos - 1, fwidth, lineHeight);
+  myColorClocks->setToolTip("Color clocks in current scanline.");
   myColorClocks->setEditable(false, true);
 
   // Calculate actual dimensions
