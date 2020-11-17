@@ -129,7 +129,7 @@ void VideoAudioDialog::addDisplayTab()
 
   // TIA interpolation
   myTIAInterpolate = new CheckboxWidget(myTab, _font, xpos, ypos + 1, "Interpolation ");
-  myTIAInterpolate->setToolTip("Blur the emulated display.");
+  myTIAInterpolate->setToolTip("Blur emulated display.");
   wid.push_back(myTIAInterpolate);
 
   ypos += lineHeight + VGAP * 4;
@@ -147,14 +147,14 @@ void VideoAudioDialog::addDisplayTab()
 
   // FS stretch
   myUseStretch = new CheckboxWidget(myTab, _font, xpos + INDENT, ypos + 1, "Stretch");
-  myUseStretch->setToolTip("Stretch the emulated display to fill the whole screen.");
+  myUseStretch->setToolTip("Stretch emulated display to fill whole screen.");
   wid.push_back(myUseStretch);
 
 #ifdef ADAPTABLE_REFRESH_SUPPORT
   // Adapt refresh rate
   ypos += lineHeight + VGAP;
   myRefreshAdapt = new CheckboxWidget(myTab, _font, xpos + INDENT, ypos + 1, "Adapt display refresh rate");
-  myRefreshAdapt->setToolTip("Select the optimal display refresh rate for each ROM.");
+  myRefreshAdapt->setToolTip("Select optimal display refresh rate for each ROM.");
   wid.push_back(myRefreshAdapt);
 #else
   myRefreshAdapt = nullptr;
@@ -181,7 +181,7 @@ void VideoAudioDialog::addDisplayTab()
                      "V-Size adjust", lwidth, kVSizeChanged, fontWidth * 7, "%", 0, true);
   myVSizeAdjust->setMinValue(-5); myVSizeAdjust->setMaxValue(5);
   myVSizeAdjust->setTickmarkIntervals(2);
-  myVSizeAdjust->setToolTip("Adapt vertical size to emulated TV display.");
+  myVSizeAdjust->setToolTip("Adjust vertical size to match emulated TV display.");
   wid.push_back(myVSizeAdjust);
 
 

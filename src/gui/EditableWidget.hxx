@@ -68,6 +68,7 @@ class EditableWidget : public Widget, public CommandSender
     void receivedFocusWidget() override;
     void lostFocusWidget() override;
     void tick() override;
+    bool wantsToolTip() const override; 
 
     virtual void startEditMode() { setFlags(Widget::FLAG_WANTS_RAWDATA);   }
     virtual void endEditMode()   { clearFlags(Widget::FLAG_WANTS_RAWDATA); }

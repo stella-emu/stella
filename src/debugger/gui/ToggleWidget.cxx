@@ -212,16 +212,23 @@ void ToggleWidget::handleCommand(CommandSender* sender, int cmd,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string ToggleWidget::getToolTip(int, int y) const
+int ToggleWidget::getToolTipIndex(Common::Point pos) const
 {
-  const int row = (y - getAbsY()) / _rowHeight;
-  const int pos = row * _cols;// +col;
+  const int row = (pos.y - getAbsY()) / _rowHeight;
+
+  return row * _cols;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string ToggleWidget::getToolTip(Common::Point pos) const
+{
+  const int idx = getToolTipIndex(pos);
   Int32 val = 0;
 
   for(int col = 0; col < _cols; ++col)
   {
     val <<= 1;
-    val += _stateList[pos + col];
+    val += _stateList[idx + col];
   }
 
   const string hex = Common::Base::toString(val, Common::Base::Fmt::_16);
@@ -233,5 +240,12 @@ string ToggleWidget::getToolTip(int, int y) const
   buf << "$" << hex << " = #" << dec << " = %" << bin;
   return buf.str();
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool ToggleWidget::changedToolTip(Common::Point oldPos, Common::Point newPos) const
+{
+  return getToolTipIndex(oldPos) != getToolTipIndex(newPos);
+}
+
 
 

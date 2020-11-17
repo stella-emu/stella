@@ -84,8 +84,8 @@ class DataGridWidget : public EditableWidget
 
     void setCrossed(bool enable) { _crossGrid = enable; }
 
-    string getToolTip(int x = 0, int y = 0) const override;
-    bool hasToolTip() const override { return true; }
+    string getToolTip(Common::Point pos) const override;
+    bool changedToolTip(Common::Point oldPos, Common::Point newPos) const override;
 
   protected:
     void drawWidget(bool hilite) override;
@@ -100,6 +100,8 @@ class DataGridWidget : public EditableWidget
 
     void receivedFocusWidget() override;
     void lostFocusWidget() override;
+
+    bool hasToolTip() const override { return true; }
 
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
@@ -147,6 +149,8 @@ class DataGridWidget : public EditableWidget
     void zeroCell();
 
     void enableEditMode(bool state) { _editMode = state; }
+
+    int getToolTipIndex(Common::Point pos) const;
 
   private:
     // Following constructors and assignment operators not supported

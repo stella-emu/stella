@@ -26,6 +26,7 @@ class Dialog;
 #include <cassert>
 
 #include "bspf.hxx"
+#include "Rect.hxx"
 #include "Event.hxx"
 #include "EventHandlerConstants.hxx"
 #include "FrameBufferConstants.hxx"
@@ -105,8 +106,8 @@ class Widget : public GuiObject
     void setShadowColor(ColorId color) { _shadowcolor = color; setDirty(); }
 
     void setToolTip(const string& text);
-    virtual string getToolTip(int x = 0, int y = 0) const { return _toolTipText; }
-    virtual bool hasToolTip() const { return !_toolTipText.empty(); }
+    virtual string getToolTip(Common::Point pos) const { return _toolTipText; }
+    virtual bool changedToolTip(Common::Point oldPos, Common::Point newPos) const { return false; }
 
     virtual void loadConfig() { }
 
@@ -119,6 +120,9 @@ class Widget : public GuiObject
     virtual Widget* findWidget(int x, int y) { return this; }
 
     void releaseFocus() override { assert(_boss); _boss->releaseFocus(); }
+
+    virtual bool wantsToolTip() const { return hasMouseFocus() && hasToolTip(); }
+    virtual bool hasToolTip() const { return !_toolTipText.empty(); }
 
     // By default, delegate unhandled commands to the boss
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override
