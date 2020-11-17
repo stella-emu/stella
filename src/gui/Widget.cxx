@@ -476,6 +476,20 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ButtonWidget::handleMouseEntered()
+{
+  if(isEnabled())
+    setFlags(Widget::FLAG_HILITED | Widget::FLAG_MOUSE_FOCUS);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ButtonWidget::handleMouseLeft()
+{
+  if(isEnabled())
+    clearFlags(Widget::FLAG_HILITED | Widget::FLAG_MOUSE_FOCUS);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool ButtonWidget::handleEvent(Event::Type e)
 {
   if(!isEnabled() || e != Event::UISelect)

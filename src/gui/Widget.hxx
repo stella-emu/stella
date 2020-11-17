@@ -236,6 +236,8 @@ class ButtonWidget : public StaticTextWidget, public CommandSender
     bool handleMouseClicks(int x, int y, MouseButton b) override;
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
+    void handleMouseEntered() override;
+    void handleMouseLeft() override;
     bool handleEvent(Event::Type event) override;
 
     void drawWidget(bool hilite) override;

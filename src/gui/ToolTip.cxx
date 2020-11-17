@@ -30,7 +30,8 @@
 // - multi line tips
 // - nicer formating of DataDridWidget tip
 // - allow reversing ToogleWidget (TooglePixelWidget)
-
+// - shift checkbox bits
+// - RomListWidget (hex codes, maybe disassembly operands)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ToolTip::ToolTip(Dialog& dialog, const GUI::Font& font)

@@ -212,7 +212,7 @@ void ToggleWidget::handleCommand(CommandSender* sender, int cmd,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string ToggleWidget::getToolTip(int x, int y) const
+string ToggleWidget::getToolTip(int, int y) const
 {
   const int row = (y - getAbsY()) / _rowHeight;
   const int pos = row * _cols;// +col;
