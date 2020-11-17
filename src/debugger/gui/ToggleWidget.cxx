@@ -23,8 +23,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ToggleWidget::ToggleWidget(GuiObject* boss, const GUI::Font& font,
-                           int x, int y, int cols, int rows,
-                           int clicksToChange)
+                           int x, int y, int cols, int rows, int shiftBits)
   : Widget(boss, font, x, y, 16, 16),
     CommandSender(boss),
     _rows(rows),
@@ -34,7 +33,7 @@ ToggleWidget::ToggleWidget(GuiObject* boss, const GUI::Font& font,
     _rowHeight(0),
     _colWidth(0),
     _selectedItem(0),
-    _clicksToChange(clicksToChange),
+    _shiftBits(shiftBits),
     _editable(true)
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG | Widget::FLAG_RETAIN_FOCUS |
@@ -70,7 +69,7 @@ void ToggleWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 
   // If this was a double click and the mouse is still over the selected item,
   // send the double click command
-  if (clickCount == _clicksToChange && (_selectedItem == findItem(x, y)))
+  if (clickCount == 1 && (_selectedItem == findItem(x, y)))
   {
     _stateList[_selectedItem] = !_stateList[_selectedItem];
     _changedList[_selectedItem] = !_changedList[_selectedItem];
@@ -225,11 +224,19 @@ string ToggleWidget::getToolTip(Common::Point pos) const
   const int idx = getToolTipIndex(pos);
   Int32 val = 0;
 
-  for(int col = 0; col < _cols; ++col)
-  {
-    val <<= 1;
-    val += _stateList[idx + col];
-  }
+  if(_swapBits)
+    for(int col = _cols - 1; col >= 0; --col)
+    {
+      val <<= 1;
+      val += _stateList[idx + col];
+    }
+  else
+    for(int col = 0; col < _cols; ++col)
+    {
+      val <<= 1;
+      val += _stateList[idx + col];
+    }
+  val <<= _shiftBits;
 
   const string hex = Common::Base::toString(val, Common::Base::Fmt::_16);
   const string dec = Common::Base::toString(val, Common::Base::Fmt::_10);
