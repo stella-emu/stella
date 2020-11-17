@@ -30,6 +30,7 @@
 #include "StellaSettingsDialog.hxx"
 #include "WhatsNewDialog.hxx"
 #include "MessageBox.hxx"
+#include "ToolTip.hxx"
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
 #include "FBSurface.hxx"
@@ -56,8 +57,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
                                int x, int y, int w, int h)
-  : Dialog(osystem, parent, osystem.frameBuffer().launcherFont(), "",
-           x, y, w, h)
+  : Dialog(osystem, parent, x, y, w, h)
 {
   myUseMinimalUI = instance().settings().getBool("minimal_ui");
 
@@ -79,6 +79,8 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   const string& lblFilter = "Filter";
   const string& lblAllFiles = "Show all files";
   const string& lblFound = "XXXX items found";
+
+  tooltip().setFont(font);
 
   lwidth = font.getStringWidth(lblRom);
   lwidth2 = font.getStringWidth(lblAllFiles) + CheckboxWidget::boxSize(font);

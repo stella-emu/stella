@@ -56,6 +56,9 @@ class RomListWidget : public EditableWidget
     void setSelected(int item);
     void setHighlighted(int item);
 
+    string getToolTip(Common::Point pos) const override;
+    bool changedToolTip(Common::Point oldPos, Common::Point newPos) const override;
+
   protected:
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
@@ -77,11 +80,15 @@ class RomListWidget : public EditableWidget
     void endEditMode() override;
     void abortEditMode() override;
     void lostFocusWidget() override;
+
+    bool hasToolTip() const override { return true; }
+
     void scrollToSelected()    { scrollToCurrent(_selectedItem);    }
     void scrollToHighlighted() { scrollToCurrent(_highlightedItem); }
 
   private:
     void scrollToCurrent(int item);
+    Common::Point getToolTipIndex(Common::Point pos) const;
 
   private:
     unique_ptr<RomListSettings> myMenu;

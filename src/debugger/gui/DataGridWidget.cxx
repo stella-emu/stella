@@ -583,13 +583,14 @@ int DataGridWidget::getToolTipIndex(Common::Point pos) const
 string DataGridWidget::getToolTip(Common::Point pos) const
 {
   const Int32 val = _valueList[getToolTipIndex(pos)];
-  const string hex = Common::Base::toString(val, Common::Base::Fmt::_16);
-  const string dec = Common::Base::toString(val, Common::Base::Fmt::_10);
-  const string bin = Common::Base::toString(val, Common::Base::Fmt::_2);
   ostringstream buf;
 
-  // TODO: time leading spaces and zeroes
-  buf << "$" << hex << " = #" << dec << " = %" << bin;
+  buf << _toolTipText
+    << "$" << Common::Base::toString(val, Common::Base::Fmt::_16)
+    << " = #" << val;
+  if(val < 0x100)
+    buf << " = %" << Common::Base::toString(val, Common::Base::Fmt::_2);
+
   return buf.str();
 }
 

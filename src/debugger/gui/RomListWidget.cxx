@@ -443,6 +443,69 @@ void RomListWidget::lostFocusWidget()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Common::Point RomListWidget::getToolTipIndex(Common::Point pos) const
+{
+  const Common::Rect& r = getEditRect();
+  const int col = (pos.x - r.x() - getAbsX()) / _font.getMaxCharWidth();
+  const int row = (pos.y - getAbsY()) / _lineHeight;
+
+  if(col < 0)
+    return Common::Point(-1, -1);
+  else
+    return Common::Point(col, row + _currentPos);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string RomListWidget::getToolTip(Common::Point pos) const
+{
+  const Common::Point idx = getToolTipIndex(pos);
+
+  if(idx.y == -1)
+    return EmptyString;
+
+  const string bytes = myDisasm->list[idx.y].bytes;
+
+  if(bytes.length() < idx.x + 1)
+    return EmptyString;
+
+  Int32 val;
+  if(bytes.length() == 8 && bytes[2] != ' ')
+  {
+    // Binary value
+    val = stol(bytes, 0, 2);
+  }
+  else
+  {
+    // hex 1..3 values
+    if(idx.x % 3 == 2)
+      // Skip gaps between hex values
+      return EmptyString;
+
+    // Get one hex byte
+    const string valStr = bytes.substr((idx.x / 3) * 3, 2);
+
+    val = stol(valStr, 0, 16);
+
+  }
+  ostringstream buf;
+
+  buf << _toolTipText
+    << "$" << Common::Base::toString(val, Common::Base::Fmt::_16)
+    << " = #" << val;
+  if(val < 0x100)
+    buf << " = %" << Common::Base::toString(val, Common::Base::Fmt::_2);
+
+  return buf.str();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool RomListWidget::changedToolTip(Common::Point oldPos, Common::Point newPos) const
+{
+  return getToolTipIndex(oldPos) != getToolTipIndex(newPos);
+}
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomListWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();

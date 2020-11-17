@@ -40,6 +40,8 @@ class ToolTip
     ToolTip(Dialog& dialog, const GUI::Font& font);
     ~ToolTip() = default;
 
+    void setFont(const GUI::Font& font);
+
     /**
       Request a tooltip display.
     */
@@ -73,7 +75,7 @@ class ToolTip
     static constexpr uInt32 DELAY_TIME = 45; // display delay
 
     Dialog& myDialog;
-    const GUI::Font& myFont;
+    const GUI::Font* myFont{nullptr};
     const Widget* myTipWidget{nullptr};
     const Widget* myFocusWidget{nullptr};
 
