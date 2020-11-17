@@ -19,7 +19,7 @@
 #define TOOL_TIP_HXX
 
 /**
- * Class for providing tool tip functionality
+ * Class for providing tooltip functionality
  *
  * @author Thomas Jentzsch
  */
