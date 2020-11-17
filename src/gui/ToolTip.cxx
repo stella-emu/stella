@@ -62,7 +62,7 @@ void ToolTip::setFont(const GUI::Font& font)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ToolTip::update(const Widget* widget, Common::Point pos)
+void ToolTip::update(const Widget* widget, const Common::Point& pos)
 {
   if(myTipWidget != widget)
   {
@@ -70,7 +70,10 @@ void ToolTip::update(const Widget* widget, Common::Point pos)
     release();
   }
   if(myTipShown && myTipWidget->changedToolTip(myPos, pos))
-    myPos = pos, show();
+  {
+    myPos = pos;
+    show();
+  }
   else
     myPos = pos;
 }

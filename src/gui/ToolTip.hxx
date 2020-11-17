@@ -59,9 +59,9 @@ class ToolTip
     void release();
 
     /**
-      Update focussed widget and current mouse position.
+      Update focused widget and current mouse position.
     */
-    void update(const Widget* widget, Common::Point pos);
+    void update(const Widget* widget, const Common::Point& pos);
 
     /*
       Render the tooltip
