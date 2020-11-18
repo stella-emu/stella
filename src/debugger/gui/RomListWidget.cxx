@@ -40,6 +40,7 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
   _textcolorhi = kTextColor;
 
   _editMode = false;
+  _dyCaret = 1;
 
   _cols = w / _fontWidth;
   _rows = h / _lineHeight;
@@ -485,7 +486,6 @@ string RomListWidget::getToolTip(Common::Point pos) const
     const string valStr = bytes.substr((idx.x / 3) * 3, 2);
 
     val = static_cast<Int32>(stol(valStr, nullptr, 16));
-
   }
   ostringstream buf;
 

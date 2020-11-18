@@ -186,8 +186,8 @@ class StaticTextWidget : public Widget
                      ColorId shadowColor = kNone);
     ~StaticTextWidget() override = default;
 
-    void handleMouseEntered() override {}
-    void handleMouseLeft() override {}
+    void handleMouseEntered() override;
+    void handleMouseLeft() override;
 
     void setValue(int value);
     void setLabel(const string& label);

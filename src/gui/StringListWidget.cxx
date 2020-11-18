@@ -51,6 +51,36 @@ void StringListWidget::setList(const StringList& list)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int StringListWidget::getToolTipIndex(Common::Point pos) const
+{
+  return (pos.y - getAbsY()) / _lineHeight + _currentPos;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string StringListWidget::getToolTip(Common::Point pos) const
+{
+  Common::Rect rect = getEditRect();
+  const string value = _list[getToolTipIndex(pos)];
+
+  if(uInt32(_font.getStringWidth(value)) > rect.w())
+    return _toolTipText + value;
+  else
+    return _toolTipText;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool StringListWidget::changedToolTip(Common::Point oldPos, Common::Point newPos) const
+{
+  bool ch = getToolTipIndex(oldPos) != getToolTipIndex(newPos)
+    && getToolTip(oldPos) != getToolTip(newPos);
+
+  if(ch)
+    cerr << "changed" << endl;
+
+  return ch;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StringListWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
