@@ -571,7 +571,7 @@ void DataGridWidget::handleCommand(CommandSender* sender, int cmd,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int DataGridWidget::getToolTipIndex(Common::Point pos) const
+int DataGridWidget::getToolTipIndex(const Common::Point& pos) const
 {
   const int col = (pos.x - getAbsX()) / _colWidth;
   const int row = (pos.y - getAbsY()) / _rowHeight;
@@ -580,7 +580,7 @@ int DataGridWidget::getToolTipIndex(Common::Point pos) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string DataGridWidget::getToolTip(Common::Point pos) const
+string DataGridWidget::getToolTip(const Common::Point& pos) const
 {
   const Int32 val = _valueList[getToolTipIndex(pos)];
   ostringstream buf;
@@ -595,7 +595,8 @@ string DataGridWidget::getToolTip(Common::Point pos) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool DataGridWidget::changedToolTip(Common::Point oldPos, Common::Point newPos) const
+bool DataGridWidget::changedToolTip(const Common::Point& oldPos,
+                                    const Common::Point& newPos) const
 {
   return getToolTipIndex(oldPos) != getToolTipIndex(newPos);
 }

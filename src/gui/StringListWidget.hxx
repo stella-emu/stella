@@ -32,8 +32,8 @@ class StringListWidget : public ListWidget
     void setList(const StringList& list);
     bool wantsFocus() const override { return true; }
 
-    string getToolTip(Common::Point pos) const override;
-    bool changedToolTip(Common::Point oldPos, Common::Point newPos) const override;
+    string getToolTip(const Common::Point& pos) const override;
+    bool changedToolTip(const Common::Point& oldPos, const Common::Point& newPos) const override;
 
   protected:
     // display depends on _hasFocus so we have to redraw when focus changes
@@ -50,7 +50,7 @@ class StringListWidget : public ListWidget
     int  _textOfs{0};
 
   private:
-    int getToolTipIndex(Common::Point pos) const;
+    int getToolTipIndex(const Common::Point& pos) const;
 
   private:
     // Following constructors and assignment operators not supported
