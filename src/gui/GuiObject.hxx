@@ -106,20 +106,20 @@ class GuiObject : public CommandReceiver
 
     virtual void tick() = 0;
 
-    void setFlags(uInt32 flags)
+    void setFlags(uInt32 flags, bool updateDirty = true)
     {
       uInt32 oldFlags = _flags;
 
       _flags |= flags;
-      if(oldFlags != _flags)
+      if(updateDirty && oldFlags != _flags)
         setDirty();
     }
-    void clearFlags(uInt32 flags)
+    void clearFlags(uInt32 flags, bool updateDirty = true)
     {
       uInt32 oldFlags = _flags;
 
       _flags &= ~flags;
-      if(oldFlags != _flags)
+      if(updateDirty && oldFlags != _flags)
         setDirty();
     }
     uInt32 getFlags() const { return _flags; }

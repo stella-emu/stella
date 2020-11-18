@@ -56,7 +56,7 @@ class ToolTip
       Hide a displayed tooltip and reset the timer slowly.
       This allows faster tip display of the next tip.
     */
-    void release();
+    void release(bool emptyTip);
 
     /**
       Update focused widget and current mouse position.
@@ -69,10 +69,13 @@ class ToolTip
     void render();
 
   private:
-    void show();
+    void show(const string& tip);
 
   private:
-    static constexpr uInt32 DELAY_TIME = 45; // display delay
+    static constexpr uInt32 DELAY_TIME = 45;   // display delay [frames]
+    // Tips are slower released than requested, so that repeated tips are shown
+    //  faster. This constant defines how much faster.
+    static constexpr uInt32 RELEASE_SPEED = 2;
 
     Dialog& myDialog;
     const GUI::Font* myFont{nullptr};
@@ -80,7 +83,8 @@ class ToolTip
     const Widget* myFocusWidget{nullptr};
 
     uInt32 myTimer{0};
-    Common::Point myPos;
+    Common::Point myMousePos;
+    Common::Point myTipPos;
     uInt32 myWidth{0};
     uInt32 myHeight{0};
     uInt32 myTextXOfs{0};

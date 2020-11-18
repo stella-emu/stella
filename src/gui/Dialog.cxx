@@ -432,9 +432,9 @@ void Dialog::drawDialog()
 
   FBSurface& s = surface();
 
-  cerr << endl << "d";
   if(isDirty())
   {
+    cerr << endl << "d";
     //cerr << "*** draw dialog " << typeid(*this).name() << " ***" << endl;
 
     if(clearsBackground())
@@ -464,6 +464,8 @@ void Dialog::drawDialog()
 
     clearDirty();
   }
+  else
+    cerr << endl;
 
   // Draw all children
   drawChain();

@@ -97,8 +97,8 @@ void Widget::draw()
 
   if(isDirty())
   {
-    //cerr << "  *** draw widget " << typeid(*this).name() << " ***" << endl;
-    cerr << "w";
+    cerr << "  *** draw widget " << typeid(*this).name() << " ***" << endl;
+    //cerr << "w";
 
     FBSurface& s = _boss->dialog().surface();
 
@@ -416,6 +416,23 @@ void StaticTextWidget::setLabel(const string& label)
   _label = label;
 
   setDirty();
+}
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void StaticTextWidget::handleMouseEntered()
+{
+  if(isEnabled())
+    // Mouse focus for tooltips must not change dirty status
+    setFlags(Widget::FLAG_MOUSE_FOCUS, false);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void StaticTextWidget::handleMouseLeft()
+{
+  if(isEnabled())
+    // Mouse focus for tooltips must not change dirty status
+    clearFlags(Widget::FLAG_MOUSE_FOCUS, false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
