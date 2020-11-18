@@ -40,7 +40,7 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
   _textcolorhi = kTextColor;
 
   _editMode = false;
-  _dyCaret = 1;
+  _dyText = -1; // fixes the vertical position of selected text
 
   _cols = w / _fontWidth;
   _rows = h / _lineHeight;
@@ -631,8 +631,8 @@ Common::Rect RomListWidget::getEditRect() const
 {
   const int yoffset = std::max(0, (_selectedItem - _currentPos) * _lineHeight);
 
-  return Common::Rect(2 + _w - _bytesWidth, 1 + yoffset,
-                      _w, _lineHeight + yoffset);
+  return Common::Rect(2 + _w - _bytesWidth, 1 + yoffset + 1,
+                      _w, _lineHeight + yoffset + 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

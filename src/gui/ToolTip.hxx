@@ -33,9 +33,13 @@ class FBSurface;
 
 class ToolTip
 {
+  private:
+    static constexpr uInt32 MAX_COLUMNS = 60;
+    static constexpr uInt32 MAX_ROWS = 5;
+
   public:
     // Maximum tooltip length
-    static constexpr uInt32 MAX_LEN = 80;
+    static constexpr uInt32 MAX_LEN = MAX_COLUMNS * MAX_ROWS;
 
     ToolTip(Dialog& dialog, const GUI::Font& font);
     ~ToolTip() = default;

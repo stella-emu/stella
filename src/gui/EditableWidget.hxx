@@ -125,7 +125,7 @@ class EditableWidget : public Widget, public CommandSender
   protected:
     int   _editScrollOffset{0};
     bool  _editMode{true};
-    int   _dyCaret{0};
+    int   _dyText{0};
 
   private:
     TextFilter _filter;

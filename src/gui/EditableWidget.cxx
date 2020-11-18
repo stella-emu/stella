@@ -379,8 +379,8 @@ void EditableWidget::drawCaretSelection()
     x += _x;
     y += _y;
 
-    s.fillRect(x - 1, y + 1 + _dyCaret, w + 1, h - 3, kTextColorHi);
-    s.drawString(_font, text, x, y + 1, w, h,
+    s.fillRect(x - 1, y + 1, w + 1, h - 3, kTextColorHi);
+    s.drawString(_font, text, x, y + 1 + _dyText, w, h,
                  kTextColorInv, TextAlign::Left, 0, false);
   }
 
@@ -397,8 +397,8 @@ void EditableWidget::drawCaretSelection()
     x += _x;
     y += _y;
 
-    s.vLine(x, y + 1 + _dyCaret, y + editRect.h() - 3, color);
-    s.vLine(x - 1, y + 1 + _dyCaret, y + editRect.h() - 3, color);
+    s.vLine(x, y + 1, y + editRect.h() - 3, color);
+    s.vLine(x - 1, y + 1, y + editRect.h() - 3, color);
     clearDirty();
   }
 }
