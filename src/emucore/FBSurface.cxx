@@ -307,7 +307,7 @@ void FBSurface::splitString(const GUI::Font& font, const string& s, int w,
   for(pos = 0; pos < s.size(); ++pos)
   {
     int charWidth = font.getCharWidth(s[pos]);
-    if(w2 + charWidth > w)
+    if(w2 + charWidth > w || s[pos] == '\n')
     {
       split = true;
       break;
@@ -321,7 +321,7 @@ void FBSurface::splitString(const GUI::Font& font, const string& s, int w,
       if(isWhiteSpace(s[i]))
       {
         left = s.substr(0, i);
-        if(s[i] == ' ') // skip leading space after line break
+        if(s[i] == ' ' || s[pos] == '\n') // skip leading space after line break
           i++;
         right = s.substr(i);
         return;
@@ -334,7 +334,7 @@ void FBSurface::splitString(const GUI::Font& font, const string& s, int w,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FBSurface::isWhiteSpace(const char s) const
 {
-  const string WHITESPACES = " ,.;:+-";
+  const string WHITESPACES = " ,.;:+-*/'([\n";
 
   for(size_t i = 0; i < WHITESPACES.length(); ++i)
     if(s == WHITESPACES[i])
@@ -349,13 +349,14 @@ int FBSurface::drawString(const GUI::Font& font, const string& s,
   ColorId color, TextAlign align,
   int deltax, bool useEllipsis, ColorId shadowColor)
 {
-  int lines = 1;
+  int lines = 0;
 
 #ifdef GUI_SUPPORT
   string inStr = s;
 
   // draw multiline string
-  while (font.getStringWidth(inStr) > w && h >= font.getFontHeight() * 2)
+  //while (font.getStringWidth(inStr) > w && h >= font.getFontHeight() * 2)
+  while(inStr.length() && h >= font.getFontHeight() * 2)
   {
     // String is too wide.
     string leftStr, rightStr;
@@ -367,7 +368,11 @@ int FBSurface::drawString(const GUI::Font& font, const string& s,
     inStr = rightStr;
     lines++;
   }
-  drawString(font, inStr, x, y, w, color, align, deltax, useEllipsis, shadowColor);
+  if(inStr.length())
+  {
+    drawString(font, inStr, x, y, w, color, align, deltax, useEllipsis, shadowColor);
+    lines++;
+  }
 #endif
   return lines;
 }
