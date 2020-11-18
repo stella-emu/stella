@@ -106,8 +106,9 @@ class Widget : public GuiObject
     void setShadowColor(ColorId color) { _shadowcolor = color; setDirty(); }
 
     void setToolTip(const string& text);
-    virtual string getToolTip(Common::Point pos) const { return _toolTipText; }
-    virtual bool changedToolTip(Common::Point oldPos, Common::Point newPos) const { return false; }
+    virtual string getToolTip(const Common::Point& pos) const { return _toolTipText; }
+    virtual bool changedToolTip(const Common::Point& oldPos,
+                                const Common::Point& newPos) const { return false; }
 
     virtual void loadConfig() { }
 

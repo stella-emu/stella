@@ -51,7 +51,7 @@ void StringListWidget::setList(const StringList& list)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int StringListWidget::getToolTipIndex(Common::Point pos) const
+int StringListWidget::getToolTipIndex(const Common::Point& pos) const
 {
   int idx = (pos.y - getAbsY()) / _lineHeight + _currentPos;
 
@@ -62,7 +62,7 @@ int StringListWidget::getToolTipIndex(Common::Point pos) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string StringListWidget::getToolTip(Common::Point pos) const
+string StringListWidget::getToolTip(const Common::Point& pos) const
 {
   Common::Rect rect = getEditRect();
   int idx = getToolTipIndex(pos);
@@ -79,7 +79,8 @@ string StringListWidget::getToolTip(Common::Point pos) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool StringListWidget::changedToolTip(Common::Point oldPos, Common::Point newPos) const
+bool StringListWidget::changedToolTip(const Common::Point& oldPos,
+                                      const Common::Point& newPos) const
 {
   bool ch = getToolTipIndex(oldPos) != getToolTipIndex(newPos)
     && getToolTip(oldPos) != getToolTip(newPos);
