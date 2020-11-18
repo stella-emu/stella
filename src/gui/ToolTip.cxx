@@ -27,7 +27,6 @@
 
 // TODOs:
 // - option to disable tips
-// - multi line tips
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ToolTip::ToolTip(Dialog& dialog, const GUI::Font& font)
@@ -47,8 +46,8 @@ void ToolTip::setFont(const GUI::Font& font)
 
   myTextXOfs = fontHeight < 24 ? 5 : 8;
   myTextYOfs = fontHeight < 24 ? 2 : 3;
-  myWidth = fontWidth * MAX_LEN + myTextXOfs * 2;
-  myHeight = fontHeight + myTextYOfs * 2;
+  myWidth = fontWidth * MAX_COLUMNS + myTextXOfs * 2;
+  myHeight = fontHeight * MAX_ROWS + myTextYOfs * 2;
 
   mySurface = myDialog.instance().frameBuffer().allocateSurface(myWidth, myHeight);
 }
@@ -129,9 +128,30 @@ void ToolTip::show(const string& tip)
 {
   myTipPos = myMousePos;
 
+  uInt32 maxWidth = std::min(myWidth - myTextXOfs * 2, uInt32(myFont->getStringWidth(tip)));
+
+  mySurface->fillRect(1, 1, maxWidth + myTextXOfs * 2 - 2, myHeight - 2, kWidColor);
+  int lines = std::min(MAX_ROWS,
+                       uInt32(mySurface->drawString(*myFont, tip, myTextXOfs, myTextYOfs,
+                                                    maxWidth, myHeight - myTextYOfs * 2,
+                                                    kTextColor)));
+  // Calculate maximum width of drawn string lines
+  uInt32 width = 0;
+  string inStr = tip;
+  for(int i = 0; i < lines; ++i)
+  {
+    string leftStr, rightStr;
+
+    mySurface->splitString(*myFont, inStr, maxWidth, leftStr, rightStr);
+    width = std::max(width, uInt32(myFont->getStringWidth(leftStr)));
+    inStr = rightStr;
+  }
+  width += myTextXOfs * 2;
+
+  // Calculate and set surface size and position
+  const uInt32 height = std::min(myHeight, myFont->getFontHeight() * lines + myTextYOfs * 2);
   const uInt32 V_GAP = 1;
   const uInt32 H_CURSOR = 18;
-  uInt32 width = std::min(myWidth, myFont->getStringWidth(tip) + myTextXOfs * 2);
   // Note: The rects include HiDPI scaling
   const Common::Rect imageRect = myDialog.instance().frameBuffer().imageRect();
   const Common::Rect dialogRect = myDialog.surface().dstRect();
@@ -139,24 +159,20 @@ void ToolTip::show(const string& tip)
   const Int32 xAbs = myTipPos.x + dialogRect.x() / myScale;
   const uInt32 yAbs = myTipPos.y + dialogRect.y() / myScale;
   Int32 x = std::min(xAbs, Int32(imageRect.w() / myScale - width));
-  const uInt32 y = (yAbs + myHeight + H_CURSOR > imageRect.h() / myScale)
-    ? yAbs - myHeight - V_GAP
+  const uInt32 y = (yAbs + height + H_CURSOR > imageRect.h() / myScale)
+    ? yAbs - height - V_GAP
     : yAbs + H_CURSOR / myScale + V_GAP;
 
   if(x < 0)
   {
     x = 0;
-    width = imageRect.w() / myScale;
+    width = std::min(width, imageRect.w() / myScale);
   }
 
-  mySurface->setSrcSize(width, myHeight);
-  mySurface->setDstSize(width * myScale, myHeight * myScale);
+  mySurface->setSrcSize(width, height);
+  mySurface->setDstSize(width * myScale, height * myScale);
   mySurface->setDstPos(x * myScale, y * myScale);
-
-  mySurface->frameRect(0, 0, width, myHeight, kColor);
-  mySurface->fillRect(1, 1, width - 2, myHeight - 2, kWidColor);
-  mySurface->drawString(*myFont, tip, myTextXOfs, myTextYOfs,
-                        width - myTextXOfs * 2, myHeight - myTextYOfs * 2, kTextColor);
+  mySurface->frameRect(0, 0, width, height, kColor);
 
   myTipShown = true;
   myDialog.instance().frameBuffer().setPendingRender();

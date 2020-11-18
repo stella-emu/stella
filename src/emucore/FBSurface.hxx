@@ -248,6 +248,18 @@ class FBSurface
         int deltax = 0, bool useEllipsis = true, ColorId shadowColor = kNone);
 
     /**
+      Splits a given string to a given width considering whitespaces.
+
+      @param font   The font to draw the string with
+      @param s      The string to split
+      @param w      The width of the string area
+      @param left   The left part of the split string
+      @param right  The right part of the split string
+    */
+    void splitString(const GUI::Font& font, const string& s, int w,
+                     string& left, string& right) const;
+
+    /**
       The rendering attributes that can be modified for this texture.
       These probably can only be implemented in child FBSurfaces where
       the specific functionality actually exists.
@@ -382,9 +394,6 @@ class FBSurface
       @return       True if coordinates are in bounds
     */
     bool checkBounds(const uInt32 x, const uInt32 y) const;
-
-    void wrapString(const string& inStr, int pos,
-                    string& leftStr, string& rightStr) const;
 
     /**
       Check if the given character is a whitespace.

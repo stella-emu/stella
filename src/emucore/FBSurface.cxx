@@ -296,21 +296,39 @@ void FBSurface::frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurface::wrapString(const string& inStr, int pos, string& leftStr, string& rightStr) const
+void FBSurface::splitString(const GUI::Font& font, const string& s, int w,
+                            string& left, string& right) const
 {
-  for(int i = pos; i > 0; --i)
+  uInt32 pos;
+  int w2 = 0;
+  bool split = false;
+
+  // SLOW algorithm to find the acceptable length. But it is good enough for now.
+  for(pos = 0; pos < s.size(); ++pos)
   {
-    if(isWhiteSpace(inStr[i]))
+    int charWidth = font.getCharWidth(s[pos]);
+    if(w2 + charWidth > w)
     {
-      leftStr = inStr.substr(0, i);
-      if(inStr[i] == ' ') // skip leading space after line break
-        i++;
-      rightStr = inStr.substr(i);
-      return;
+      split = true;
+      break;
     }
+    w2 += charWidth;
   }
-  leftStr = inStr.substr(0, pos);
-  rightStr = inStr.substr(pos);
+
+  if(split)
+    for(int i = pos; i > 0; --i)
+    {
+      if(isWhiteSpace(s[i]))
+      {
+        left = s.substr(0, i);
+        if(s[i] == ' ') // skip leading space after line break
+          i++;
+        right = s.substr(i);
+        return;
+      }
+    }
+  left = s.substr(0, pos);
+  right = s.substr(pos);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -340,21 +358,9 @@ int FBSurface::drawString(const GUI::Font& font, const string& s,
   while (font.getStringWidth(inStr) > w && h >= font.getFontHeight() * 2)
   {
     // String is too wide.
-    uInt32 i;
     string leftStr, rightStr;
-    int w2 = 0;
 
-    // SLOW algorithm to find the acceptable length. But it is good enough for now.
-    for(i = 0; i < inStr.size(); ++i)
-    {
-      int charWidth = font.getCharWidth(inStr[i]);
-      if(w2 + charWidth > w)
-        break;
-
-      w2 += charWidth;
-      //str += inStr[i];
-    }
-    wrapString(inStr, i, leftStr, rightStr);
+    splitString(font, inStr, w, leftStr, rightStr);
     drawString(font, leftStr, x, y, w, color, align, deltax, false, shadowColor);
     h -= font.getFontHeight();
     y += font.getFontHeight();
