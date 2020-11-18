@@ -16,7 +16,7 @@
 //============================================================================
 
 #ifndef VIDEOAUDIO_DIALOG_HXX
-#define VIDEOAUDIO_DIALOG_HXX
+#define D
 
 class CommandSender;
 class CheckboxWidget;
