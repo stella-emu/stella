@@ -53,14 +53,24 @@ void StringListWidget::setList(const StringList& list)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int StringListWidget::getToolTipIndex(Common::Point pos) const
 {
-  return (pos.y - getAbsY()) / _lineHeight + _currentPos;
+  int idx = (pos.y - getAbsY()) / _lineHeight + _currentPos;
+
+  if(idx >= int(_list.size()))
+     return -1;
+  else
+     return idx;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string StringListWidget::getToolTip(Common::Point pos) const
 {
   Common::Rect rect = getEditRect();
-  const string value = _list[getToolTipIndex(pos)];
+  int idx = getToolTipIndex(pos);
+
+  if(idx < 0)
+    return EmptyString;
+
+  const string value = _list[idx];
 
   if(uInt32(_font.getStringWidth(value)) > rect.w())
     return _toolTipText + value;

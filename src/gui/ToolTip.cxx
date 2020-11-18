@@ -25,9 +25,6 @@
 
 #include "ToolTip.hxx"
 
-// TODOs:
-// - option to disable tips
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ToolTip::ToolTip(Dialog& dialog, const GUI::Font& font)
   : myDialog(dialog)
