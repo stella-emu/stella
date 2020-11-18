@@ -20,6 +20,8 @@
 #include "Debugger.hxx"
 #include "DiStella.hxx"
 #include "Widget.hxx"
+#include "Dialog.hxx"
+#include "ToolTip.hxx"
 #include "StellaKeys.hxx"
 #include "FBSurface.hxx"
 #include "Font.hxx"
@@ -646,6 +648,7 @@ void RomListWidget::startEditMode()
       return;
 
     _editMode = true;
+    dialog().tooltip().hide();
     switch(myDisasm->list[_selectedItem].type)
     {
       case Device::GFX:

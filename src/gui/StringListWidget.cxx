@@ -56,9 +56,9 @@ int StringListWidget::getToolTipIndex(const Common::Point& pos) const
   int idx = (pos.y - getAbsY()) / _lineHeight + _currentPos;
 
   if(idx >= int(_list.size()))
-     return -1;
+    return -1;
   else
-     return idx;
+    return idx;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

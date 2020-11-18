@@ -17,6 +17,7 @@
 
 #include "Widget.hxx"
 #include "Dialog.hxx"
+#include "ToolTip.hxx"
 #include "Font.hxx"
 #include "OSystem.hxx"
 #include "Debugger.hxx"
@@ -294,6 +295,7 @@ void DataGridWidget::handleMouseWheel(int x, int y, int direction)
     else if(direction < 0)
       incrementCell();
   }
+  dialog().tooltip().hide();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -491,6 +493,7 @@ bool DataGridWidget::handleKeyDown(StellaKey key, StellaMod mod)
       sendCommand(DataGridWidget::kSelectionChangedCmd, _selectedItem, _id);
 
     setDirty();
+    dialog().tooltip().hide();
   }
 
   _currentKeyDown = key;
@@ -582,7 +585,8 @@ int DataGridWidget::getToolTipIndex(const Common::Point& pos) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string DataGridWidget::getToolTip(const Common::Point& pos) const
 {
-  const Int32 val = _valueList[getToolTipIndex(pos)];
+  const int idx = getToolTipIndex(pos);
+  const Int32 val = _valueList[idx];
   ostringstream buf;
 
   buf << _toolTipText
