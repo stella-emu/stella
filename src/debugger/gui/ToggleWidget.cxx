@@ -19,6 +19,8 @@
 #include "Base.hxx"
 #include "StellaKeys.hxx"
 #include "Widget.hxx"
+#include "Dialog.hxx"
+#include "ToolTip.hxx"
 #include "ToggleWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -51,6 +53,7 @@ void ToggleWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
     _selectedItem = newSelectedItem;
     _currentRow = _selectedItem / _cols;
     _currentCol = _selectedItem - (_currentRow * _cols);
+    dialog().tooltip().hide();
     setDirty();
   }
 }
@@ -182,6 +185,7 @@ bool ToggleWidget::handleKeyDown(StellaKey key, StellaMod mod)
       _stateList[_selectedItem] = !_stateList[_selectedItem];
       _changedList[_selectedItem] = !_changedList[_selectedItem];
       sendCommand(ToggleWidget::kItemDataChangedCmd, _selectedItem, _id);
+      dialog().tooltip().hide();
     }
 
     setDirty();
