@@ -444,7 +444,7 @@ void RomListWidget::lostFocusWidget()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Common::Point RomListWidget::getToolTipIndex(Common::Point pos) const
+Common::Point RomListWidget::getToolTipIndex(const Common::Point& pos) const
 {
   const Common::Rect& r = getEditRect();
   const int col = (pos.x - r.x() - getAbsX()) / _font.getMaxCharWidth();
@@ -457,9 +457,9 @@ Common::Point RomListWidget::getToolTipIndex(Common::Point pos) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string RomListWidget::getToolTip(Common::Point pos) const
+string RomListWidget::getToolTip(const Common::Point& pos) const
 {
-  const Common::Point idx = getToolTipIndex(pos);
+  const Common::Point& idx = getToolTipIndex(pos);
 
   if(idx.y == -1)
     return EmptyString;
@@ -499,7 +499,8 @@ string RomListWidget::getToolTip(Common::Point pos) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool RomListWidget::changedToolTip(Common::Point oldPos, Common::Point newPos) const
+bool RomListWidget::changedToolTip(const Common::Point& oldPos,
+                                   const Common::Point& newPos) const
 {
   return getToolTipIndex(oldPos) != getToolTipIndex(newPos);
 }
