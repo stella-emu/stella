@@ -179,14 +179,14 @@ Common::Point TiaOutputWidget::getToolTipIndex(const Common::Point& pos) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string TiaOutputWidget::getToolTip(const Common::Point& pos) const
 {
-  Common::Point idx = getToolTipIndex(pos);
+  const Common::Point& idx = getToolTipIndex(pos);
 
   if(idx.x < 0)
     return EmptyString;
 
-  uInt32 height = instance().console().tia().height();
+  const uInt32 height = instance().console().tia().height();
   // limit to 274 lines (PAL default without scaling)
-  uInt32 yStart = height <= FrameManager::Metrics::baseHeightPAL
+  const uInt32 yStart = height <= FrameManager::Metrics::baseHeightPAL
     ? 0 : (height - FrameManager::Metrics::baseHeightPAL) >> 1;
   const Int32 i = idx.x + (yStart + idx.y) * instance().console().tia().width();
   uInt8* tiaOutputBuffer = instance().console().tia().outputBuffer();

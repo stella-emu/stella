@@ -296,7 +296,7 @@ Common::Point TiaZoomWidget::getToolTipIndex(const Common::Point& pos) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string TiaZoomWidget::getToolTip(const Common::Point& pos) const
 {
-  Common::Point idx = getToolTipIndex(pos);
+  const Common::Point& idx = getToolTipIndex(pos);
 
   if(idx.x < 0)
     return EmptyString;
