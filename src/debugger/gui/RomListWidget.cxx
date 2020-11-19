@@ -468,7 +468,7 @@ string RomListWidget::getToolTip(const Common::Point& pos) const
 
   const string bytes = myDisasm->list[idx.y].bytes;
 
-  if(bytes.length() < size_t(idx.x + 1))
+  if(static_cast<Int32>(bytes.length()) < idx.x + 1)
     return EmptyString;
 
   Int32 val;
