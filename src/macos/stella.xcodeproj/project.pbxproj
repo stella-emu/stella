@@ -3405,7 +3405,7 @@
 					.,
 					"$(HOME)/Library/Frameworks",
 				);
-				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_VERSION = "";
@@ -3480,7 +3480,7 @@
 					.,
 					"$(HOME)/Library/Frameworks",
 				);
-				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_VERSION = "";
