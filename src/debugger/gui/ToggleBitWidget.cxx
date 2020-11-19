@@ -82,14 +82,14 @@ void ToggleBitWidget::setState(const BoolArray& state, const BoolArray& changed)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string ToggleBitWidget::getToolTip(const Common::Point& pos) const
 {
-  Common::Point idx = getToolTipIndex(pos);
+  const Common::Point& idx = getToolTipIndex(pos);
 
   if(idx.y < 0)
     return EmptyString;
 
   const string tip = ToggleWidget::getToolTip(pos);
 
-  if(idx.x < _labelList.size())
+  if(idx.x < static_cast<int>(_labelList.size()))
   {
     const string label = _labelList[idx.x];
 
