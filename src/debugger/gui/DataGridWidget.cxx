@@ -579,13 +579,20 @@ int DataGridWidget::getToolTipIndex(const Common::Point& pos) const
   const int col = (pos.x - getAbsX()) / _colWidth;
   const int row = (pos.y - getAbsY()) / _rowHeight;
 
-  return row * _cols + col;
+  if(row >= 0 && row < _rows && col >= 0 && col < _cols)
+    return row * _cols + col;
+  else
+    return -1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string DataGridWidget::getToolTip(const Common::Point& pos) const
 {
   const int idx = getToolTipIndex(pos);
+
+  if(idx < 0)
+    return EmptyString;
+
   const Int32 val = _valueList[idx];
   ostringstream buf;
 
@@ -593,7 +600,11 @@ string DataGridWidget::getToolTip(const Common::Point& pos) const
     << "$" << Common::Base::toString(val, Common::Base::Fmt::_16)
     << " = #" << val;
   if(val < 0x100)
+  {
+    if(val >= 0x80)
+      buf << '/' << -(0x100 - val);
     buf << " = %" << Common::Base::toString(val, Common::Base::Fmt::_2);
+  }
 
   return buf.str();
 }

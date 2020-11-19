@@ -525,6 +525,9 @@
     <ClCompile Include="..\debugger\BreakpointMap.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\debugger\DataGridRamWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\debugger\Debugger.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClCompile>
@@ -1548,6 +1551,9 @@
     <ClInclude Include="..\common\VideoModeHandler.hxx" />
     <ClInclude Include="..\common\ZipHandler.hxx" />
     <ClInclude Include="..\debugger\BreakpointMap.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\DataGridRamWidget.hxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\debugger\gui\AmigaMouseWidget.hxx">

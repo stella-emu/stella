@@ -15,7 +15,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "DataGridWidget.hxx"
+#include "DataGridRamWidget.hxx"
 #include "EditTextWidget.hxx"
 #include "GuiObject.hxx"
 #include "InputTextDialog.hxx"
@@ -54,8 +54,8 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   // Add RAM grid (with scrollbar)
   int xpos = x + _font.getStringWidth("xxxx");
   bool useScrollbar = ramsize / numrows > 16;
-  myRamGrid = new DataGridWidget(_boss, _nfont, xpos, ypos,
-                                 16, myNumRows, 2, 8, Common::Base::Fmt::_16, useScrollbar);
+  myRamGrid = new DataGridRamWidget(_boss, *this, _nfont, xpos, ypos,
+                                    16, myNumRows, 2, 8, Common::Base::Fmt::_16, useScrollbar);
   myRamGrid->setTarget(this);
   myRamGrid->setID(kRamGridID);
   addFocusWidget(myRamGrid);
