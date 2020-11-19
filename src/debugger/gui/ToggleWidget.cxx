@@ -209,17 +209,25 @@ void ToggleWidget::handleCommand(CommandSender* sender, int cmd,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int ToggleWidget::getToolTipIndex(const Common::Point& pos) const
+Common::Point ToggleWidget::getToolTipIndex(const Common::Point& pos) const
 {
+  const int col = (pos.x - getAbsX()) / _colWidth;
   const int row = (pos.y - getAbsY()) / _rowHeight;
 
-  return row * _cols;
+  if(row >= 0 && row < _rows && col >= 0 && col < _cols)
+    return Common::Point(col, row);
+  else
+    return Common::Point(-1, -1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string ToggleWidget::getToolTip(const Common::Point& pos) const
 {
-  const int idx = getToolTipIndex(pos);
+  const int idx = getToolTipIndex(pos).y * _cols;
+
+  if(idx < 0)
+    return EmptyString;
+
   Int32 val = 0;
   ostringstream buf;
 

@@ -102,6 +102,7 @@ class DataGridWidget : public EditableWidget
     void lostFocusWidget() override;
 
     bool hasToolTip() const override { return true; }
+    int getToolTipIndex(const Common::Point& pos) const;
 
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
@@ -150,7 +151,6 @@ class DataGridWidget : public EditableWidget
 
     void enableEditMode(bool state) { _editMode = state; }
 
-    int getToolTipIndex(const Common::Point& pos) const;
 
   private:
     // Following constructors and assignment operators not supported

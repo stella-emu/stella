@@ -51,6 +51,7 @@ class ToggleWidget : public Widget, public CommandSender
 
   protected:
     bool hasToolTip() const override { return true; }
+    Common::Point getToolTipIndex(const Common::Point& pos) const;
 
   protected:
     int  _rows{0};
@@ -75,8 +76,6 @@ class ToggleWidget : public Widget, public CommandSender
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
     bool handleKeyDown(StellaKey key, StellaMod mod) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-
-    int getToolTipIndex(const Common::Point& pos) const;
 
     // Following constructors and assignment operators not supported
     ToggleWidget() = delete;

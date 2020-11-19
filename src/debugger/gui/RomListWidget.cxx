@@ -452,7 +452,8 @@ Common::Point RomListWidget::getToolTipIndex(const Common::Point& pos) const
   const int col = (pos.x - r.x() - getAbsX()) / _font.getMaxCharWidth();
   const int row = (pos.y - getAbsY()) / _lineHeight;
 
-  if(col < 0)
+  if(col < 0 || col >= 8
+     || row < 0 || row + _currentPos >= int(myDisasm->list.size()))
     return Common::Point(-1, -1);
   else
     return Common::Point(col, row + _currentPos);
@@ -463,7 +464,7 @@ string RomListWidget::getToolTip(const Common::Point& pos) const
 {
   const Common::Point& idx = getToolTipIndex(pos);
 
-  if(idx.y == -1)
+  if(idx.y < 0)
     return EmptyString;
 
   const string bytes = myDisasm->list[idx.y].bytes;
@@ -480,12 +481,18 @@ string RomListWidget::getToolTip(const Common::Point& pos) const
   else
   {
     // 1..3 hex values
-    if(idx.x % 3 == 2)
-      // Skip gaps between hex values
+    if(idx.x == 2)
+      // Skip gap after first byte
       return EmptyString;
 
-    // Get one hex byte
-    const string valStr = bytes.substr((idx.x / 3) * 3, 2);
+    string valStr;
+
+    if(idx.x < 2 || bytes.length() < 8)
+      // 1 or 2 hex bytes, get one hex byte
+      valStr = bytes.substr((idx.x / 3) * 3, 2);
+    else
+      // 3 hex bytes, get two rightmost hex bytes
+      valStr = bytes.substr(6, 2) + bytes.substr(3, 2);
 
     val = static_cast<Int32>(stol(valStr, nullptr, 16));
   }
@@ -495,7 +502,11 @@ string RomListWidget::getToolTip(const Common::Point& pos) const
     << "$" << Common::Base::toString(val, Common::Base::Fmt::_16)
     << " = #" << val;
   if(val < 0x100)
+  {
+    if(val >= 0x80)
+      buf << '/' << -(0x100 - val);
     buf << " = %" << Common::Base::toString(val, Common::Base::Fmt::_2);
+  }
 
   return buf.str();
 }
