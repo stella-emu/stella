@@ -76,13 +76,12 @@ void EditTextWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount
 void EditTextWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
-  bool onTop = _boss->dialog().isOnTop();
 
   // Highlight changes
-  if(_changed && onTop)
+  if(_changed)
     s.fillRect(_x, _y, _w, _h, kDbgChangedColor);
   else if(!isEditable() || !isEnabled())
-    s.fillRect(_x, _y, _w, _h, onTop ? kDlgColor : kBGColorLo);
+    s.fillRect(_x, _y, _w, _h, kDlgColor);
 
   // Draw a thin frame around us.
   s.frameRect(_x, _y, _w, _h, hilite && isEditable() && isEnabled() ? kWidColorHi : kColor);
@@ -90,9 +89,9 @@ void EditTextWidget::drawWidget(bool hilite)
   // Draw the text
   adjustOffset();
   s.drawString(_font, editString(), _x + _textOfs, _y + 2, getEditRect().w(), getEditRect().h(),
-               _changed && onTop && isEnabled()
+               _changed && isEnabled()
                ? kDbgChangedTextColor
-               : onTop && isEnabled() ? _textcolor : kColor,
+               : isEnabled() ? _textcolor : kColor,
                TextAlign::Left, scrollOffset(), !isEditable());
 
   // Draw the caret and selection

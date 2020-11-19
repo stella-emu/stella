@@ -249,7 +249,6 @@ void PopUpWidget::drawWidget(bool hilite)
 {
 //cerr << "PopUpWidget::drawWidget\n";
   FBSurface& s = dialog().surface();
-  bool onTop = _boss->dialog().isOnTop();
 
   int x = _x + _labelWidth;
   int w = _w - _labelWidth;
@@ -257,7 +256,7 @@ void PopUpWidget::drawWidget(bool hilite)
   // Draw the label, if any
   if(_labelWidth > 0)
     s.drawString(_font, _label, _x, _y + myTextY, _labelWidth,
-                 isEnabled() && onTop ? _textcolor : kColor, TextAlign::Left);
+                 isEnabled() ? _textcolor : kColor, TextAlign::Left);
 
   // Draw a thin frame around us.
   s.frameRect(x, _y, w, _h, isEnabled() && hilite ? kWidColorHi : kColor);
@@ -267,12 +266,12 @@ void PopUpWidget::drawWidget(bool hilite)
   // Fill the background
   ColorId bgCol = isEditable() ? kWidColor : kDlgColor;
   s.fillRect(x + 1, _y + 1, w - (_arrowWidth * 2 - 1), _h - 2,
-             onTop ? _changed ? kDbgChangedColor : bgCol : kDlgColor);
+             _changed ? kDbgChangedColor : bgCol);
   s.fillRect(x + w - (_arrowWidth * 2 - 2), _y + 1, (_arrowWidth * 2 - 3), _h - 2,
-             onTop ? isEnabled() && hilite ? kBtnColorHi : bgCol : kBGColorLo);
+             isEnabled() && hilite ? kBtnColorHi : bgCol);
   // Draw an arrow pointing down at the right end to signal this is a dropdown/popup
   s.drawBitmap(_arrowImg, x + w - (_arrowWidth * 1.5 - 1), _y + myArrowsY + 1,
-               !(isEnabled() && onTop) ? kColor : kTextColor, _arrowWidth, _arrowHeight);
+               !isEnabled() ? kColor : kTextColor, _arrowWidth, _arrowHeight);
 
   // Draw the selected entry, if any
   const string& name = editString();
@@ -283,7 +282,7 @@ void PopUpWidget::drawWidget(bool hilite)
                      TextAlign::Right : TextAlign::Left;
   adjustOffset();
   s.drawString(_font, name, x + _textOfs, _y + myTextY, w,
-               !(isEnabled() && onTop) ? kColor : _changed ? kDbgChangedTextColor : kTextColor,
+               !isEnabled() ? kColor : _changed ? kDbgChangedTextColor : kTextColor,
                align, editable ? -_editScrollOffset : 0, !editable);
 
   if(editable)

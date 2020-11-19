@@ -523,10 +523,9 @@ bool RomListWidget::changedToolTip(const Common::Point& oldPos,
 void RomListWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
-  bool onTop = _boss->dialog().isOnTop();
   const CartDebug::DisassemblyList& dlist = myDisasm->list;
   int i, pos, xpos, ypos, len = int(dlist.size());
-  ColorId textColor = onTop ? kTextColor : kColor;
+  ColorId textColor = kTextColor;
 
   const Common::Rect& r = getEditRect();
   const Common::Rect& l = getLineRect();
@@ -559,7 +558,7 @@ void RomListWidget::drawWidget(bool hilite)
 
     // Draw highlighted item in a frame
     if(_highlightedItem == pos)
-      s.frameRect(_x + l.x() - 3, ypos - 1, _w - l.x(), _lineHeight, onTop ? kWidColorHi : kBGColorLo);
+      s.frameRect(_x + l.x() - 3, ypos - 1, _w - l.x(), _lineHeight, kWidColorHi);
 
     // Draw the selected item inverted, on a highlighted background.
     if(_selectedItem == pos && _hasFocus)

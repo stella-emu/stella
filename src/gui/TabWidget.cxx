@@ -265,36 +265,34 @@ void TabWidget::drawWidget(bool hilite)
   if(isDirty())
   {
     FBSurface& s = dialog().surface();
-    bool onTop = _boss->dialog().isOnTop();
 
     // Iterate over all tabs and draw them
     int i, x = _x + kTabLeftOffset;
     for(i = 0; i < int(_tabs.size()); ++i)
     {
       int tabWidth = _tabs[i].tabWidth ? _tabs[i].tabWidth : _tabWidth;
-      ColorId fontcolor = _tabs[i].enabled && onTop ? kTextColor : kColor;
+      ColorId fontcolor = _tabs[i].enabled ? kTextColor : kColor;
       int yOffset = (i == _activeTab) ? 0 : 1;
       s.fillRect(x, _y + 1, tabWidth, _tabHeight - 1,
                  (i == _activeTab)
-                 ? onTop ? kDlgColor : kBGColorLo
-                 : onTop ? kBGColorHi : kDlgColor); // ? kWidColor : kDlgColor
+                 ? kDlgColor : kBGColorHi); // ? kWidColor : kDlgColor
       s.drawString(_font, _tabs[i].title, x + kTabPadding + yOffset,
                    _y + yOffset + (_tabHeight - _lineHeight - 1),
                    tabWidth - 2 * kTabPadding, fontcolor, TextAlign::Center);
       if(i == _activeTab)
       {
-        s.hLine(x, _y, x + tabWidth - 1, onTop ? kWidColor : kDlgColor);
-        s.vLine(x + tabWidth, _y + 1, _y + _tabHeight - 1, onTop ? kBGColorLo : kColor);
+        s.hLine(x, _y, x + tabWidth - 1, kWidColor);
+        s.vLine(x + tabWidth, _y + 1, _y + _tabHeight - 1, kBGColorLo);
       }
       else
-        s.hLine(x, _y + _tabHeight, x + tabWidth, onTop ? kWidColor : kDlgColor);
+        s.hLine(x, _y + _tabHeight, x + tabWidth, kWidColor);
 
       x += tabWidth + kTabSpacing;
     }
 
     // fill empty right space
-    s.hLine(x - kTabSpacing + 1, _y + _tabHeight, _x + _w - 1, onTop ? kWidColor : kDlgColor);
-    s.hLine(_x, _y + _h - 1, _x + _w - 1, onTop ? kBGColorLo : kColor);
+    s.hLine(x - kTabSpacing + 1, _y + _tabHeight, _x + _w - 1, kWidColor);
+    s.hLine(_x, _y + _h - 1, _x + _w - 1, kBGColorLo);
 
     clearDirty();
     // Make all child widgets of currently active tab dirty
