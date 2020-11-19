@@ -20,6 +20,8 @@
 #include "FBSurface.hxx"
 #include "Font.hxx"
 #include "ContextMenu.hxx"
+#include "Dialog.hxx"
+#include "ToolTip.hxx"
 #include "DialogContainer.hxx"
 #include "PopUpWidget.hxx"
 
@@ -122,6 +124,7 @@ void PopUpWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
   {
     if(isEnabled() && !myMenu->isVisible())
     {
+      dialog().tooltip().hide();
       // Add menu just underneath parent widget
       myMenu->show(getAbsX() + _labelWidth, getAbsY() + getHeight(),
                    dialog().surface().dstRect(), myMenu->getSelected());
@@ -156,20 +159,6 @@ void PopUpWidget::handleMouseWheel(int x, int y, int direction)
     else
       myMenu->sendSelectionDown();
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PopUpWidget::handleMouseEntered()
-{
-  setFlags(Widget::FLAG_HILITED);
-  setDirty();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PopUpWidget::handleMouseLeft()
-{
-  clearFlags(Widget::FLAG_HILITED);
-  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -277,7 +266,7 @@ void PopUpWidget::drawWidget(bool hilite)
 
   // Fill the background
   ColorId bgCol = isEditable() ? kWidColor : kDlgColor;
-  s.fillRect(x + 1, _y + 1, w - (_arrowWidth * 2 - 0), _h - 2,
+  s.fillRect(x + 1, _y + 1, w - (_arrowWidth * 2 - 1), _h - 2,
              onTop ? _changed ? kDbgChangedColor : bgCol : kDlgColor);
   s.fillRect(x + w - (_arrowWidth * 2 - 2), _y + 1, (_arrowWidth * 2 - 3), _h - 2,
              onTop ? isEnabled() && hilite ? kBtnColorHi : bgCol : kBGColorLo);

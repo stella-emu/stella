@@ -58,7 +58,7 @@ class InputTextDialog : public Dialog, public CommandSender
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
     /** This dialog uses its own positioning, so we override Dialog::center() */
-    void center() override;
+    void setPosition() override;
 
   private:
     vector<EditTextWidget*> myInput;

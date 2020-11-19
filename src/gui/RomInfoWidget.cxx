@@ -172,6 +172,8 @@ void RomInfoWidget::parseProperties(const FilesystemNode& node)
     myRomInfo.push_back("Controllers: " + (left + " (left), " + right + " (right)"));
   if (bsDetected != "")
     myRomInfo.push_back("Type: " + Bankswitch::typeToDesc(Bankswitch::nameToType(bsDetected)));
+
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -227,4 +229,5 @@ void RomInfoWidget::drawWidget(bool hilite)
                              onTop ? _textcolor : _shadowcolor);
     ypos += _font.getLineHeight() + (lines - 1) * _font.getFontHeight();
   }
+  clearDirty();
 }

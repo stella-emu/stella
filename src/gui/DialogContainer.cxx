@@ -89,31 +89,57 @@ void DialogContainer::updateTime(uInt64 time)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool DialogContainer::draw(bool full)
+void DialogContainer::draw(bool full)
 {
   if(myDialogStack.empty())
-    return false;
+    return;
+
+  cerr << "draw " << full << " " << typeid(*this).name() << endl;
 
   // Make the top dialog dirty if a full redraw is requested
-  if(full)
-    myDialogStack.top()->setDirty();
+  //if(full)
+  //  myDialogStack.top()->setDirty();
 
-  // If the top dialog is dirty, then all below it must be redrawn too
-  const bool dirty = needsRedraw();
-
-  myDialogStack.applyAll([&](Dialog*& d){
-    if(dirty)
-      d->setDirty();
-    full |= d->render();
+  // Draw and render all dirty dialogs
+  myDialogStack.applyAll([&](Dialog*& d) {
+    if(full || d->needsRedraw())
+      d->redraw(full);
   });
+  // Always render all surfaces, bottom to top
+  render();
+}
 
-  return full;
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DialogContainer::tick()
+{
+  if(!myDialogStack.empty())
+    myDialogStack.top()->tick();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DialogContainer::render()
+{
+  if(myDialogStack.empty())
+    return;
+
+  cerr << "full re-render " << typeid(*this).name() << endl;
+
+  // Make sure we start in a clean state (with zero'ed buffers)
+  if(!myOSystem.eventHandler().inTIAMode())
+    myOSystem.frameBuffer().clear();
+
+  // Render all dialogs
+  myDialogStack.applyAll([&](Dialog*& d) {
+    d->render();
+  });
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool DialogContainer::needsRedraw() const
 {
-  return !myDialogStack.empty() ? myDialogStack.top()->isDirty() : false;
+  return !myDialogStack.empty()
+    ? myDialogStack.top()->needsRedraw()
+    : false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -129,8 +155,8 @@ int DialogContainer::addDialog(Dialog* d)
   const uInt32 scale = myOSystem.frameBuffer().hidpiScaleFactor();
 
   if(uInt32(d->getWidth() * scale) > r.w() || uInt32(d->getHeight() * scale) > r.h())
-    myOSystem.frameBuffer().showMessage(
-        "Unable to show dialog box; FIX THE CODE");
+    myOSystem.frameBuffer().showTextMessage(
+      "Unable to show dialog box; FIX THE CODE", MessagePosition::BottomCenter, true);
   else
   {
     d->setDirty();
@@ -144,9 +170,11 @@ void DialogContainer::removeDialog()
 {
   if(!myDialogStack.empty())
   {
+    cerr << "remove dialog " << typeid(*myDialogStack.top()).name() << endl;
     myDialogStack.pop();
-    if(!myDialogStack.empty())
-      myDialogStack.top()->setDirty();
+
+    // Inform the frame buffer that it has to render all surfaces
+    myOSystem.frameBuffer().setPendingRender();
   }
 }
 
@@ -156,6 +184,9 @@ void DialogContainer::reStack()
   // Pop all items from the stack, and then add the base menu
   while(!myDialogStack.empty())
     myDialogStack.top()->close();
+
+  // Make sure that all surfaces are cleared
+  myOSystem.frameBuffer().clear();
 
   baseDialog()->open();
 

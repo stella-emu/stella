@@ -855,12 +855,12 @@ void GameInfoDialog::saveCurrentPropertiesToDisk()
     propfile /= myGameFile.getNameWithExt(".pro");
 
     propfile.write(out);
-    instance().frameBuffer().showMessage("Properties saved to " +
-                                         propfile.getShortPath());
+    instance().frameBuffer().showTextMessage("Properties saved to " +
+                                             propfile.getShortPath());
   }
   catch(...)
   {
-    instance().frameBuffer().showMessage("Error saving properties");
+    instance().frameBuffer().showTextMessage("Error saving properties");
   }
 }
 

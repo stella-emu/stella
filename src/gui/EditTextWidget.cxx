@@ -18,6 +18,7 @@
 #include "OSystem.hxx"
 #include "FBSurface.hxx"
 #include "Dialog.hxx"
+#include "ToolTip.hxx"
 #include "Font.hxx"
 #include "EditTextWidget.hxx"
 
@@ -46,20 +47,6 @@ void EditTextWidget::setText(const string& str, bool changed)
   EditableWidget::setText(str, changed);
   _backupString = str;
   _changed = changed;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EditTextWidget::handleMouseEntered()
-{
-  setFlags(Widget::FLAG_HILITED);
-  setDirty();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EditTextWidget::handleMouseLeft()
-{
-  clearFlags(Widget::FLAG_HILITED);
-  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

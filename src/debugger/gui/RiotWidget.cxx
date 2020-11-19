@@ -66,11 +66,13 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
     on.push_back("1");
   }
 
+  StringList labels;
+
 #define CREATE_IO_REGS(desc, bits, bitsID, editable)                     \
   t = new StaticTextWidget(boss, lfont, xpos, ypos+2, lwidth, fontHeight,\
-                           desc, TextAlign::Left);                        \
+                           desc);                                        \
   xpos += t->getWidth() + 5;                                             \
-  bits = new ToggleBitWidget(boss, nfont, xpos, ypos, 8, 1);             \
+  bits = new ToggleBitWidget(boss, nfont, xpos, ypos, 8, 1, 1, labels);  \
   bits->setTarget(this);                                                 \
   bits->setID(bitsID);                                                   \
   if(editable) addFocusWidget(bits); else bits->setEditable(false);      \
@@ -78,6 +80,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   bits->setList(off, on);
 
   // SWCHA bits in 'poke' mode
+  labels.clear();
   CREATE_IO_REGS("SWCHA(W)", mySWCHAWriteBits, kSWCHABitsID, true)
   col = xpos + 20;  // remember this for adding widgets to the second column
 
@@ -87,10 +90,20 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
 
   // SWCHA bits in 'peek' mode
   xpos = 10;  ypos += lineHeight + 5;
+  labels.clear();
+  labels.push_back("P0 right");
+  labels.push_back("P0 left");
+  labels.push_back("P0 down");
+  labels.push_back("P0 up");
+  labels.push_back("P1 right");
+  labels.push_back("P1 left");
+  labels.push_back("P1 down");
+  labels.push_back("P1 up");
   CREATE_IO_REGS("SWCHA(R)", mySWCHAReadBits, kSWCHARBitsID, true)
 
   // SWCHB bits in 'poke' mode
   xpos = 10;  ypos += 2 * lineHeight;
+  labels.clear();
   CREATE_IO_REGS("SWCHB(W)", mySWCHBWriteBits, kSWCHBBitsID, true)
 
   // SWBCNT bits
@@ -99,6 +112,15 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
 
   // SWCHB bits in 'peek' mode
   xpos = 10;  ypos += lineHeight + 5;
+  labels.clear();
+  labels.push_back("P1 difficulty");
+  labels.push_back("P0 difficulty");
+  labels.push_back("");
+  labels.push_back("");
+  labels.push_back("Color/B+W");
+  labels.push_back("");
+  labels.push_back("Select");
+  labels.push_back("Reset");
   CREATE_IO_REGS("SWCHB(R)", mySWCHBReadBits, kSWCHBRBitsID, true)
 
   // Timer registers (R/W)

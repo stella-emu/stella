@@ -270,7 +270,7 @@ FBInitStatus FrameBuffer::createDisplay(const string& title, BufferType type,
 
 #ifdef GUI_SUPPORT
   // Erase any messages from a previous run
-  myMsg.counter = 0;
+  myMsg.enabled = false;
 
   // Create surfaces for TIA statistics and general messages
   const GUI::Font& f = hidpiEnabled() ? infoFont() : font();
@@ -311,7 +311,7 @@ FBInitStatus FrameBuffer::createDisplay(const string& title, BufferType type,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::update(bool force)
+void FrameBuffer::update(UpdateMode mode)
 {
   // Onscreen messages are a special case and require different handling than
   // other objects; they aren't UI dialogs in the normal sense nor are they
@@ -322,13 +322,14 @@ void FrameBuffer::update(bool force)
   //  - at the bottom of ::update(), to actually draw them (this must come
   //    last, since they are always drawn on top of everything else).
 
-  // Full rendering is required when messages are enabled
-  force = force || myMsg.counter >= 0;
+  bool forceRedraw = mode & UpdateMode::REDRAW;
+  bool redraw = forceRedraw;
 
-  // Detect when a message has been turned off; one last redraw is required
-  // in this case, to draw over the area that the message occupied
-  if(myMsg.counter == 0)
-    myMsg.counter = -1;
+  // Forced render without draw required if messages or dialogs were closed
+  // Note: For dialogs only relevant when two or more dialogs were stacked
+  bool rerender = (mode & (UpdateMode::REDRAW | UpdateMode::RERENDER))
+    || myPendingRender;
+  myPendingRender = false;
 
   switch(myOSystem.eventHandler().state())
   {
@@ -343,59 +344,69 @@ void FrameBuffer::update(bool force)
       if(myPausedCount-- <= 0)
       {
         myPausedCount = uInt32(7 * myOSystem.frameRate());
-        showMessage("Paused", MessagePosition::MiddleCenter);
-      }
-      if(force)
+        showTextMessage("Paused", MessagePosition::MiddleCenter);
         myTIASurface->render();
-
+      }
+      if(rerender)
+        myTIASurface->render();
       break;  // EventHandlerState::PAUSE
     }
 
   #ifdef GUI_SUPPORT
     case EventHandlerState::OPTIONSMENU:
     {
-      force = force || myOSystem.menu().needsRedraw();
-      if(force)
+      myOSystem.menu().tick();
+      redraw |= myOSystem.menu().needsRedraw();
+      if(redraw)
       {
         clear();
         myTIASurface->render();
-        myOSystem.menu().draw(force);
+        myOSystem.menu().draw(forceRedraw);
+      }
+      else if(rerender)
+      {
+        clear();
+        myTIASurface->render();
+        myOSystem.menu().render();
       }
       break;  // EventHandlerState::OPTIONSMENU
     }
 
     case EventHandlerState::CMDMENU:
     {
-      force = force || myOSystem.commandMenu().needsRedraw();
-      if(force)
+      myOSystem.commandMenu().tick();
+      redraw |= myOSystem.commandMenu().needsRedraw();
+      if(redraw)
       {
         clear();
         myTIASurface->render();
-        myOSystem.commandMenu().draw(force);
+        myOSystem.commandMenu().draw(forceRedraw);
       }
       break;  // EventHandlerState::CMDMENU
     }
 
     case EventHandlerState::MESSAGEMENU:
     {
-      force = force || myOSystem.messageMenu().needsRedraw();
-      if (force)
+      myOSystem.messageMenu().tick();
+      redraw |= myOSystem.messageMenu().needsRedraw();
+      if(redraw)
       {
         clear();
         myTIASurface->render();
-        myOSystem.messageMenu().draw(force);
+        myOSystem.messageMenu().draw(forceRedraw);
       }
       break;  // EventHandlerState::MESSAGEMENU
     }
 
     case EventHandlerState::TIMEMACHINE:
     {
-      force = force || myOSystem.timeMachine().needsRedraw();
-      if(force)
+      myOSystem.timeMachine().tick();
+      redraw |= myOSystem.timeMachine().needsRedraw();
+      if(redraw)
       {
         clear();
         myTIASurface->render();
-        myOSystem.timeMachine().draw(force);
+        myOSystem.timeMachine().draw(forceRedraw);
       }
       break;  // EventHandlerState::TIMEMACHINE
     }
@@ -420,13 +431,13 @@ void FrameBuffer::update(bool force)
           r.rewindStates(1);
       }
 
-      force = force || success;
-      if (force)
+      redraw |= success;
+      if(redraw)
         myTIASurface->render();
 
       // Stop playback mode at the end of the state buffer
       // and switch to Time Machine or Pause mode
-      if (!success)
+      if(!success)
       {
         frames = 0;
         myOSystem.eventHandler().enterMenuMode(EventHandlerState::TIMEMACHINE);
@@ -436,12 +447,12 @@ void FrameBuffer::update(bool force)
 
     case EventHandlerState::LAUNCHER:
     {
-      force = force || myOSystem.launcher().needsRedraw();
-      if(force)
-      {
-        clear();
-        myOSystem.launcher().draw(force);
-      }
+      myOSystem.launcher().tick();
+      redraw |= myOSystem.launcher().needsRedraw();
+      if(redraw)
+        myOSystem.launcher().draw(forceRedraw);
+      else if(rerender)
+        myOSystem.launcher().render();
       break;  // EventHandlerState::LAUNCHER
     }
   #endif
@@ -449,12 +460,12 @@ void FrameBuffer::update(bool force)
   #ifdef DEBUGGER_SUPPORT
     case EventHandlerState::DEBUGGER:
     {
-      force = force || myOSystem.debugger().needsRedraw();
-      if(force)
-      {
-        clear();
-        myOSystem.debugger().draw(force);
-      }
+      myOSystem.debugger().tick();
+      redraw |= myOSystem.debugger().needsRedraw();
+      if(redraw)
+        myOSystem.debugger().draw(forceRedraw);
+      else if(rerender)
+        myOSystem.debugger().render();
       break;  // EventHandlerState::DEBUGGER
     }
   #endif
@@ -468,10 +479,10 @@ void FrameBuffer::update(bool force)
   // indicates that, and then the code at the top of this method sees
   // the change and redraws everything
   if(myMsg.enabled)
-    drawMessage();
+    redraw |= drawMessage();
 
   // Push buffers to screen only when necessary
-  if(force)
+  if(redraw || rerender)
     myBackend->renderToScreen();
 }
 
@@ -501,19 +512,15 @@ void FrameBuffer::updateInEmulationMode(float framesPerSecond)
   myBackend->renderToScreen();
 }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::showMessage(const string& message, MessagePosition position,
-                              bool force)
-{
 #ifdef GUI_SUPPORT
+void FrameBuffer::createMessage(const string& message, MessagePosition position, bool force)
+{
   // Only show messages if they've been enabled
   if(myMsg.surface == nullptr || !(force || myOSystem.settings().getBool("uimessages")))
     return;
 
-  const int fontWidth  = font().getMaxCharWidth(),
-            fontHeight = font().getFontHeight();
+  const int fontHeight = font().getFontHeight();
   const int VBORDER = fontHeight / 4;
-  const int HBORDER = fontWidth * 1.25 / 2.0;
 
   myMsg.counter = uInt32(myOSystem.frameRate()) * 2; // Show message for 2 seconds
   if(myMsg.counter == 0)
@@ -522,39 +529,40 @@ void FrameBuffer::showMessage(const string& message, MessagePosition position,
   // Precompute the message coordinates
   myMsg.text      = message;
   myMsg.color     = kBtnTextColor;
-  myMsg.showGauge = false;
-  myMsg.w         = std::min(fontWidth * (MESSAGE_WIDTH) - HBORDER * 2,
-                             font().getStringWidth(myMsg.text) + HBORDER * 2);
   myMsg.h         = fontHeight + VBORDER * 2;
   myMsg.position  = position;
   myMsg.enabled   = true;
+  myMsg.dirty     = true;
 
   myMsg.surface->setSrcSize(myMsg.w, myMsg.h);
   myMsg.surface->setDstSize(myMsg.w * hidpiScaleFactor(), myMsg.h * hidpiScaleFactor());
+}
+#endif
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::showTextMessage(const string& message, MessagePosition position,
+                                  bool force)
+{
+#ifdef GUI_SUPPORT
+  const int fontWidth = font().getMaxCharWidth();
+  const int HBORDER = fontWidth * 1.25 / 2.0;
+
+  myMsg.showGauge = false;
+  myMsg.w         = std::min(fontWidth * (MESSAGE_WIDTH) - HBORDER * 2,
+                             font().getStringWidth(message) + HBORDER * 2);
+
+  createMessage(message, position, force);
 #endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::showMessage(const string& message, const string& valueText,
-                              float value, float minValue, float maxValue)
+void FrameBuffer::showGaugeMessage(const string& message, const string& valueText,
+                                   float value, float minValue, float maxValue)
 {
 #ifdef GUI_SUPPORT
-  // Only show messages if they've been enabled
-  if(myMsg.surface == nullptr || !myOSystem.settings().getBool("uimessages"))
-    return;
-
-  const int fontWidth  = font().getMaxCharWidth(),
-            fontHeight = font().getFontHeight();
-  const int VBORDER = fontHeight / 4;
+  const int fontWidth = font().getMaxCharWidth();
   const int HBORDER = fontWidth * 1.25 / 2.0;
 
-  myMsg.counter = uInt32(myOSystem.frameRate()) * 2; // Show message for 2 seconds
-  if(myMsg.counter == 0)
-    myMsg.counter = 120;
-
-  // Precompute the message coordinates
-  myMsg.text       = message;
-  myMsg.color      = kBtnTextColor;
   myMsg.showGauge  = true;
   if(maxValue - minValue != 0)
     myMsg.value = (value - minValue) / (maxValue - minValue) * 100.F;
@@ -562,16 +570,12 @@ void FrameBuffer::showMessage(const string& message, const string& valueText,
     myMsg.value = 100.F;
   myMsg.valueText  = valueText;
   myMsg.w          = std::min(fontWidth * MESSAGE_WIDTH,
-                              font().getStringWidth(myMsg.text)
+                              font().getStringWidth(message)
                               + fontWidth * (GAUGEBAR_WIDTH + 2)
-                              + font().getStringWidth(myMsg.valueText))
-    + HBORDER * 2;
-  myMsg.h          = fontHeight + VBORDER * 2;
-  myMsg.position   = MessagePosition::BottomCenter;
-  myMsg.enabled    = true;
+                              + font().getStringWidth(valueText))
+                              + HBORDER * 2;
 
-  myMsg.surface->setSrcSize(myMsg.w, myMsg.h);
-  myMsg.surface->setDstSize(myMsg.w * hidpiScaleFactor(), myMsg.h * hidpiScaleFactor());
+  createMessage(message, MessagePosition::BottomCenter);
 #endif
 }
 
@@ -652,8 +656,8 @@ void FrameBuffer::toggleFrameStats(bool toggle)
   myOSystem.settings().setValue(
     myOSystem.settings().getBool("dev.settings") ? "dev.stats" : "plr.stats", myStatsEnabled);
 
-  myOSystem.frameBuffer().showMessage(string("Console info ") +
-                                      (myStatsEnabled ? "enabled" : "disabled"));
+  myOSystem.frameBuffer().showTextMessage(string("Console info ") +
+                                          (myStatsEnabled ? "enabled" : "disabled"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -676,10 +680,17 @@ void FrameBuffer::enableMessages(bool enable)
     myStatsMsg.enabled = false;
 
     // Erase old messages on the screen
-    myMsg.enabled = false;
-    myMsg.counter = 0;
-    update(true);  // Force update immediately
+    hideMessage();
+
+    update();  // update immediately
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::hideMessage()
+{
+  myPendingRender = myMsg.enabled;
+  myMsg.enabled = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -690,115 +701,119 @@ inline bool FrameBuffer::drawMessage()
   // or show again this frame
   if(myMsg.counter == 0)
   {
-    myMsg.enabled = false;
-    return true;
-  }
-  else if(myMsg.counter < 0)
-  {
-    myMsg.enabled = false;
+    hideMessage();
     return false;
   }
 
-  // Draw the bounded box and text
-  const Common::Rect& dst = myMsg.surface->dstRect();
-  const int fontWidth  = font().getMaxCharWidth(),
-            fontHeight = font().getFontHeight();
-  const int VBORDER = fontHeight / 4;
-  const int HBORDER = fontWidth * 1.25 / 2.0;
-  constexpr int BORDER = 1;
-
-  switch(myMsg.position)
+  if(myMsg.dirty)
   {
-    case MessagePosition::TopLeft:
-      myMsg.x = 5;
-      myMsg.y = 5;
-      break;
+    cerr << "--- draw message ---" << endl;
 
-    case MessagePosition::TopCenter:
-      myMsg.x = (imageRect().w() - dst.w()) >> 1;
-      myMsg.y = 5;
-      break;
+    // Draw the bounded box and text
+    const Common::Rect& dst = myMsg.surface->dstRect();
+    const int fontWidth = font().getMaxCharWidth(),
+      fontHeight = font().getFontHeight();
+    const int VBORDER = fontHeight / 4;
+    const int HBORDER = fontWidth * 1.25 / 2.0;
+    constexpr int BORDER = 1;
 
-    case MessagePosition::TopRight:
-      myMsg.x = imageRect().w() - dst.w() - 5;
-      myMsg.y = 5;
-      break;
-
-    case MessagePosition::MiddleLeft:
-      myMsg.x = 5;
-      myMsg.y = (imageRect().h() - dst.h()) >> 1;
-      break;
-
-    case MessagePosition::MiddleCenter:
-      myMsg.x = (imageRect().w() - dst.w()) >> 1;
-      myMsg.y = (imageRect().h() - dst.h()) >> 1;
-      break;
-
-    case MessagePosition::MiddleRight:
-      myMsg.x = imageRect().w() - dst.w() - 5;
-      myMsg.y = (imageRect().h() - dst.h()) >> 1;
-      break;
-
-    case MessagePosition::BottomLeft:
-      myMsg.x = 5;
-      myMsg.y = imageRect().h() - dst.h() - 5;
-      break;
-
-    case MessagePosition::BottomCenter:
-      myMsg.x = (imageRect().w() - dst.w()) >> 1;
-      myMsg.y = imageRect().h() - dst.h() - 5;
-      break;
-
-    case MessagePosition::BottomRight:
-      myMsg.x = imageRect().w() - dst.w() - 5;
-      myMsg.y = imageRect().h() - dst.h() - 5;
-      break;
-  }
-
-  myMsg.surface->setDstPos(myMsg.x + imageRect().x(), myMsg.y + imageRect().y());
-  myMsg.surface->fillRect(0, 0, myMsg.w, myMsg.h, kColor);
-  myMsg.surface->fillRect(BORDER, BORDER, myMsg.w - BORDER * 2, myMsg.h - BORDER * 2, kBtnColor);
-  myMsg.surface->drawString(font(), myMsg.text, HBORDER, VBORDER,
-                            myMsg.w, myMsg.color);
-
-  if(myMsg.showGauge)
-  {
-    constexpr int NUM_TICKMARKS = 4;
-    // limit gauge bar width if texts are too long
-    const int swidth = std::min(fontWidth * GAUGEBAR_WIDTH,
-                                fontWidth * (MESSAGE_WIDTH - 2)
-                                - font().getStringWidth(myMsg.text)
-                                - font().getStringWidth(myMsg.valueText));
-    const int bwidth = swidth * myMsg.value / 100.F;
-    const int bheight = fontHeight >> 1;
-    const int x = HBORDER + font().getStringWidth(myMsg.text) + fontWidth;
-    // align bar with bottom of text
-    const int y = VBORDER + font().desc().ascent - bheight;
-
-    // draw gauge bar
-    myMsg.surface->fillRect(x - BORDER, y, swidth + BORDER * 2, bheight, kSliderBGColor);
-    myMsg.surface->fillRect(x, y + BORDER, bwidth, bheight - BORDER * 2, kSliderColor);
-    // draw tickmark in the middle of the bar
-    for(int i = 1; i < NUM_TICKMARKS; ++i)
+    switch(myMsg.position)
     {
-      ColorId color;
-      int xt = x + swidth * i / NUM_TICKMARKS;
-      if(bwidth < xt - x)
-        color = kCheckColor; // kSliderColor;
-      else
-        color = kSliderBGColor;
-      myMsg.surface->vLine(xt, y + bheight / 2, y + bheight - 1, color);
+      case MessagePosition::TopLeft:
+        myMsg.x = 5;
+        myMsg.y = 5;
+        break;
+
+      case MessagePosition::TopCenter:
+        myMsg.x = (imageRect().w() - dst.w()) >> 1;
+        myMsg.y = 5;
+        break;
+
+      case MessagePosition::TopRight:
+        myMsg.x = imageRect().w() - dst.w() - 5;
+        myMsg.y = 5;
+        break;
+
+      case MessagePosition::MiddleLeft:
+        myMsg.x = 5;
+        myMsg.y = (imageRect().h() - dst.h()) >> 1;
+        break;
+
+      case MessagePosition::MiddleCenter:
+        myMsg.x = (imageRect().w() - dst.w()) >> 1;
+        myMsg.y = (imageRect().h() - dst.h()) >> 1;
+        break;
+
+      case MessagePosition::MiddleRight:
+        myMsg.x = imageRect().w() - dst.w() - 5;
+        myMsg.y = (imageRect().h() - dst.h()) >> 1;
+        break;
+
+      case MessagePosition::BottomLeft:
+        myMsg.x = 5;
+        myMsg.y = imageRect().h() - dst.h() - 5;
+        break;
+
+      case MessagePosition::BottomCenter:
+        myMsg.x = (imageRect().w() - dst.w()) >> 1;
+        myMsg.y = imageRect().h() - dst.h() - 5;
+        break;
+
+      case MessagePosition::BottomRight:
+        myMsg.x = imageRect().w() - dst.w() - 5;
+        myMsg.y = imageRect().h() - dst.h() - 5;
+        break;
     }
-    // draw value text
-    myMsg.surface->drawString(font(), myMsg.valueText,
-                              x + swidth + fontWidth, VBORDER,
+
+    myMsg.surface->setDstPos(myMsg.x + imageRect().x(), myMsg.y + imageRect().y());
+    myMsg.surface->fillRect(0, 0, myMsg.w, myMsg.h, kColor);
+    myMsg.surface->fillRect(BORDER, BORDER, myMsg.w - BORDER * 2, myMsg.h - BORDER * 2, kBtnColor);
+    myMsg.surface->drawString(font(), myMsg.text, HBORDER, VBORDER,
                               myMsg.w, myMsg.color);
+
+    if(myMsg.showGauge)
+    {
+      constexpr int NUM_TICKMARKS = 4;
+      // limit gauge bar width if texts are too long
+      const int swidth = std::min(fontWidth * GAUGEBAR_WIDTH,
+                                  fontWidth * (MESSAGE_WIDTH - 2)
+                                  - font().getStringWidth(myMsg.text)
+                                  - font().getStringWidth(myMsg.valueText));
+      const int bwidth = swidth * myMsg.value / 100.F;
+      const int bheight = fontHeight >> 1;
+      const int x = HBORDER + font().getStringWidth(myMsg.text) + fontWidth;
+      // align bar with bottom of text
+      const int y = VBORDER + font().desc().ascent - bheight;
+
+      // draw gauge bar
+      myMsg.surface->fillRect(x - BORDER, y, swidth + BORDER * 2, bheight, kSliderBGColor);
+      myMsg.surface->fillRect(x, y + BORDER, bwidth, bheight - BORDER * 2, kSliderColor);
+      // draw tickmark in the middle of the bar
+      for(int i = 1; i < NUM_TICKMARKS; ++i)
+      {
+        ColorId color;
+        int xt = x + swidth * i / NUM_TICKMARKS;
+        if(bwidth < xt - x)
+          color = kCheckColor; // kSliderColor;
+        else
+          color = kSliderBGColor;
+        myMsg.surface->vLine(xt, y + bheight / 2, y + bheight - 1, color);
+      }
+      // draw value text
+      myMsg.surface->drawString(font(), myMsg.valueText,
+                                x + swidth + fontWidth, VBORDER,
+                                myMsg.w, myMsg.color);
+    }
+    myMsg.dirty = false;
+    myMsg.surface->render();
+    return true;
   }
-  myMsg.surface->render();
+
   myMsg.counter--;
+  myMsg.surface->render();
 #endif
 
-  return true;
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -845,7 +860,7 @@ void FrameBuffer::resetSurfaces()
   freeSurfaces();
   reloadSurfaces();
 
-  update(true); // force full update
+  update(UpdateMode::REDRAW); // force full update
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -898,10 +913,9 @@ void FrameBuffer::setUIPalette()
 void FrameBuffer::stateChanged(EventHandlerState state)
 {
   // Make sure any onscreen messages are removed
-  myMsg.enabled = false;
-  myMsg.counter = 0;
+  hideMessage();
 
-  update(true); // force full update
+  update(); // update immediately
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -916,10 +930,10 @@ string FrameBuffer::getDisplayKey()
     case BufferType::Emulator:
       return "display";
 
-  #ifdef DEBUGGER_SUPPORT
+    #ifdef DEBUGGER_SUPPORT
     case BufferType::Debugger:
       return "dbg.display";
-  #endif
+    #endif
 
     default:
       return "";
@@ -938,10 +952,10 @@ string FrameBuffer::getPositionKey()
     case BufferType::Emulator:
       return  "windowedpos";
 
-  #ifdef DEBUGGER_SUPPORT
+    #ifdef DEBUGGER_SUPPORT
     case BufferType::Debugger:
       return "dbg.pos";
-  #endif
+    #endif
 
     default:
       return "";
@@ -952,10 +966,10 @@ string FrameBuffer::getPositionKey()
 void FrameBuffer::saveCurrentWindowPosition()
 {
   myOSystem.settings().setValue(
-      getDisplayKey(), myBackend->getCurrentDisplayIndex());
+    getDisplayKey(), myBackend->getCurrentDisplayIndex());
   if(myBackend->isCurrentWindowPositioned())
     myOSystem.settings().setValue(
-        getPositionKey(), myBackend->getCurrentWindowPos());
+      getPositionKey(), myBackend->getCurrentWindowPos());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -990,7 +1004,9 @@ void FrameBuffer::setFullscreen(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::toggleFullscreen(bool toggle)
 {
-  switch(myOSystem.eventHandler().state())
+  EventHandlerState state = myOSystem.eventHandler().state();
+
+  switch(state)
   {
     case EventHandlerState::LAUNCHER:
     case EventHandlerState::EMULATION:
@@ -1000,17 +1016,27 @@ void FrameBuffer::toggleFullscreen(bool toggle)
       const bool isFullscreen = toggle ? !fullScreen() : fullScreen();
       setFullscreen(isFullscreen);
 
-      if(myBufferType != BufferType::Launcher)
+      if(state != EventHandlerState::LAUNCHER)
       {
         ostringstream msg;
         msg << "Fullscreen ";
-        if(isFullscreen)
-          msg << "enabled (" << myBackend->refreshRate() << " Hz, ";
-        else
-          msg << "disabled (";
-        msg << "Zoom " << myActiveVidMode.zoom * 100 << "%)";
 
-        showMessage(msg.str());
+        if(state != EventHandlerState::DEBUGGER)
+        {
+          if(isFullscreen)
+            msg << "enabled (" << myBackend->refreshRate() << " Hz, ";
+          else
+            msg << "disabled (";
+          msg << "Zoom " << myActiveVidMode.zoom * 100 << "%)";
+        }
+        else
+        {
+          if(isFullscreen)
+            msg << "enabled";
+          else
+            msg << "disabled";
+        }
+        showTextMessage(msg.str());
       }
       break;
     }
@@ -1043,7 +1069,7 @@ void FrameBuffer::toggleAdaptRefresh(bool toggle)
     msg << (isAdaptRefresh ? "enabled" : "disabled");
     msg << " (" << myBackend->refreshRate() << " Hz)";
 
-    showMessage(msg.str());
+    showTextMessage(msg.str());
   }
 }
 #endif
@@ -1069,7 +1095,7 @@ void FrameBuffer::changeOverscan(int direction)
       val << (overscan > 0 ? "+" : "" ) << overscan << "%";
     else
       val << "Off";
-    myOSystem.frameBuffer().showMessage("Overscan", val.str(), overscan, 0, 10);
+    myOSystem.frameBuffer().showGaugeMessage("Overscan", val.str(), overscan, 0, 10);
   }
 }
 
@@ -1106,9 +1132,9 @@ void FrameBuffer::switchVideoMode(int direction)
   if(applyVideoMode() == FBInitStatus::Success)
   {
     if(fullScreen())
-      showMessage(myActiveVidMode.description);
+      showTextMessage(myActiveVidMode.description);
     else
-      showMessage("Zoom", myActiveVidMode.description, myActiveVidMode.zoom,
+      showGaugeMessage("Zoom", myActiveVidMode.description, myActiveVidMode.zoom,
                   supportedTIAMinZoom(), myTIAMaxZoom);
   }
 }
@@ -1163,6 +1189,7 @@ FBInitStatus FrameBuffer::applyVideoMode()
 
     resetSurfaces();
     setCursorState();
+    myPendingRender = true;
   }
   else
     Logger::error("ERROR: Couldn't initialize video subsystem");
@@ -1248,9 +1275,9 @@ void FrameBuffer::toggleGrabMouse()
   myGrabMouse = !myGrabMouse;
   setCursorState();
   myOSystem.settings().setValue("grabmouse", myGrabMouse);
-  myOSystem.frameBuffer().showMessage(oldState != myGrabMouse ? myGrabMouse
-                                      ? "Grab mouse enabled" : "Grab mouse disabled"
-                                      : "Grab mouse not allowed while cursor shown");
+  myOSystem.frameBuffer().showTextMessage(oldState != myGrabMouse ? myGrabMouse
+                                          ? "Grab mouse enabled" : "Grab mouse disabled"
+                                          : "Grab mouse not allowed while cursor shown");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1299,8 +1326,6 @@ void FrameBuffer::toggleGrabMouse()
     kColorInfo            TIA output position color
     kColorTitleBar        Title bar color
     kColorTitleText       Title text color
-    kColorTitleBarLo      Disabled title bar color
-    kColorTitleTextLo     Disabled title text color
 */
 UIPaletteArray FrameBuffer::ourStandardUIPalette = {
   { 0x686868, 0x000000, 0xa38c61, 0xdccfa5, 0x404040,           // base
@@ -1311,7 +1336,7 @@ UIPaletteArray FrameBuffer::ourStandardUIPalette = {
     0xac3410, 0xd55941,                                         // scrollbar
     0xc80000, 0xffff80, 0xc8c8ff, 0xc80000,                     // debugger
     0xac3410, 0xd55941, 0xdccfa5, 0xf0f0cf, 0xa38c61,           // slider
-    0xffffff, 0xac3410, 0xf0f0cf, 0x686868, 0xdccfa5            // other
+    0xffffff, 0xac3410, 0xf0f0cf                                // other
   }
 };
 
@@ -1324,7 +1349,7 @@ UIPaletteArray FrameBuffer::ourClassicUIPalette = {
     0x20a020, 0x00ff00,                                         // scrollbar
     0xc80000, 0x00ff00, 0xc8c8ff, 0xc80000,                     // debugger
     0x20a020, 0x00ff00, 0x404040, 0x686868, 0x404040,           // slider
-    0x00ff00, 0x20a020, 0x000000, 0x686868, 0x404040            // other
+    0x00ff00, 0x20a020, 0x000000                                // other
   }
 };
 
@@ -1337,7 +1362,7 @@ UIPaletteArray FrameBuffer::ourLightUIPalette = {
     0xc0c0c0, 0x808080,                                         // scrollbar
     0xffc0c0, 0x000000, 0xe00000, 0xc00000,                     // debugger
     0x333333, 0x0078d7, 0xc0c0c0, 0xffffff, 0xc0c0c0,           // slider 0xBDDEF9| 0xe1e1e1 | 0xffffff
-    0xffffff, 0x333333, 0xf0f0f0, 0x808080, 0xc0c0c0            // other
+    0xffffff, 0x333333, 0xf0f0f0                                // other
   }
 };
 
@@ -1350,6 +1375,6 @@ UIPaletteArray FrameBuffer::ourDarkUIPalette = {
     0x3c3c3c, 0x646464,                                         // scrollbar
     0x7f2020, 0xc0c0c0, 0xe00000, 0xc00000,                     // debugger
     0x989898, 0x0059a3, 0x3c3c3c, 0x000000, 0x3c3c3c,           // slider
-    0x000000, 0x989898, 0x202020, 0x646464, 0x3c3c3c            // other
+    0x000000, 0x989898, 0x202020                                // other
   }
 };

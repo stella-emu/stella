@@ -25,8 +25,10 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ToggleBitWidget::ToggleBitWidget(GuiObject* boss, const GUI::Font& font,
-                                 int x, int y, int cols, int rows, int colchars)
-  : ToggleWidget(boss, font, x, y, cols, rows, 1)
+                                 int x, int y, int cols, int rows, int colchars,
+                                 const StringList& labels)
+  : ToggleWidget(boss, font, x, y, cols, rows),
+    _labelList(labels)
 {
   _rowHeight = font.getLineHeight();
   _colWidth  = colchars * font.getMaxCharWidth() + 8;
@@ -45,6 +47,13 @@ ToggleBitWidget::ToggleBitWidget(GuiObject* boss, const GUI::Font& font,
   // Calculate real dimensions
   _w = _colWidth  * cols + 1;
   _h = _rowHeight * rows + 1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ToggleBitWidget::ToggleBitWidget(GuiObject* boss, const GUI::Font& font,
+                                 int x, int y, int cols, int rows, int colchars)
+  : ToggleBitWidget(boss, font, x, y, cols, rows, colchars, StringList())
+{
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -67,6 +76,27 @@ void ToggleBitWidget::setState(const BoolArray& state, const BoolArray& changed)
   _changedList = changed;
 
   setDirty();
+}
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string ToggleBitWidget::getToolTip(const Common::Point& pos) const
+{
+  const Common::Point& idx = getToolTipIndex(pos);
+
+  if(idx.y < 0)
+    return EmptyString;
+
+  const string tip = ToggleWidget::getToolTip(pos);
+
+  if(idx.x < static_cast<int>(_labelList.size()))
+  {
+    const string label = _labelList[idx.x];
+
+    if(!label.empty())
+      return tip + "\n" + label;
+  }
+  return tip;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -55,6 +55,12 @@ class FrameBuffer
     // Zoom level step interval
     static constexpr float ZOOM_STEPS = 0.25;
 
+    enum UpdateMode {
+      NONE = 0,
+      REDRAW = 1,
+      RERENDER = 2
+    };
+
   public:
     FrameBuffer(OSystem& osystem);
     ~FrameBuffer();
@@ -84,23 +90,28 @@ class FrameBuffer
       Updates the display, which depending on the current mode could mean
       drawing the TIA, any pending menus, etc.
     */
-    void update(bool force = false);
+    void update(UpdateMode mode = UpdateMode::NONE);
 
     /**
       There is a dedicated update method for emulation mode.
-     */
+    */
     void updateInEmulationMode(float framesPerSecond);
 
     /**
-      Shows a message onscreen.
+      Set pending rendering flag.
+    */
+    void setPendingRender() { myPendingRender = true; }
+
+    /**
+      Shows a text message onscreen.
 
       @param message  The message to be shown
       @param position Onscreen position for the message
       @param force    Force showing this message, even if messages are disabled
     */
-    void showMessage(const string& message,
-                     MessagePosition position = MessagePosition::BottomCenter,
-                     bool force = false);
+    void showTextMessage(const string& message,
+                         MessagePosition position = MessagePosition::BottomCenter,
+                         bool force = false);
     /**
       Shows a message with a gauge bar onscreen.
 
@@ -110,8 +121,8 @@ class FrameBuffer
       @param minValue   The minimal value of the gauge bar
       @param maxValue   The maximal value of the gauge bar
     */
-    void showMessage(const string& message, const string& valueText,
-                     float value, float minValue = 0.F, float maxValue = 100.F);
+    void showGaugeMessage(const string& message, const string& valueText,
+                          float value, float minValue = 0.F, float maxValue = 100.F);
 
     bool messageShown() const;
 
@@ -375,12 +386,29 @@ class FrameBuffer
     */
     void resetSurfaces();
 
+  #ifdef GUI_SUPPORT
+    /**
+      Helps to create a basic message onscreen.
+
+      @param message  The message to be shown
+      @param position Onscreen position for the message
+      @param force    Force showing this message, even if messages are disabled
+    */
+    void createMessage(const string& message, MessagePosition position,
+                       bool force = false);
+  #endif
+
     /**
       Draw pending messages.
 
       @return  Indicates whether any changes actually occurred.
     */
     bool drawMessage();
+
+    /**
+      Hide pending messages.
+    */
+    void hideMessage();
 
     /**
       Draws the frame stats overlay.
@@ -443,6 +471,9 @@ class FrameBuffer
     // Supported renderers
     VariantList myRenderers;
 
+    // Flag for pending render
+    bool myPendingRender{false};
+
     // The VideoModeHandler class takes responsibility for all video
     // mode functionality
     VideoModeHandler myVidModeHandler;
@@ -478,6 +509,7 @@ class FrameBuffer
       ColorId color{kNone};
       shared_ptr<FBSurface> surface;
       bool enabled{false};
+      bool dirty{false};
       bool showGauge{false};
       float value{0.0F};
       string valueText;

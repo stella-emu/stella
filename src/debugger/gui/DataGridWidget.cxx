@@ -17,6 +17,7 @@
 
 #include "Widget.hxx"
 #include "Dialog.hxx"
+#include "ToolTip.hxx"
 #include "Font.hxx"
 #include "OSystem.hxx"
 #include "Debugger.hxx"
@@ -45,6 +46,7 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
     _base(base)
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_RETAIN_FOCUS | Widget::FLAG_WANTS_RAWDATA;
+  _editMode = false;
 
   // Make sure all lists contain some default values
   _hiliteList.clear();
@@ -240,20 +242,6 @@ void DataGridWidget::setRange(int lower, int upper)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DataGridWidget::handleMouseEntered()
-{
-  setFlags(Widget::FLAG_HILITED);
-  setDirty();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DataGridWidget::handleMouseLeft()
-{
-  clearFlags(Widget::FLAG_HILITED);
-  setDirty();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DataGridWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
   if (!isEnabled())
@@ -307,6 +295,7 @@ void DataGridWidget::handleMouseWheel(int x, int y, int direction)
     else if(direction < 0)
       incrementCell();
   }
+  dialog().tooltip().hide();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -504,6 +493,7 @@ bool DataGridWidget::handleKeyDown(StellaKey key, StellaMod mod)
       sendCommand(DataGridWidget::kSelectionChangedCmd, _selectedItem, _id);
 
     setDirty();
+    dialog().tooltip().hide();
   }
 
   _currentKeyDown = key;
@@ -581,6 +571,49 @@ void DataGridWidget::handleCommand(CommandSender* sender, int cmd,
     default:
       return;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int DataGridWidget::getToolTipIndex(const Common::Point& pos) const
+{
+  const int col = (pos.x - getAbsX()) / _colWidth;
+  const int row = (pos.y - getAbsY()) / _rowHeight;
+
+  if(row >= 0 && row < _rows && col >= 0 && col < _cols)
+    return row * _cols + col;
+  else
+    return -1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string DataGridWidget::getToolTip(const Common::Point& pos) const
+{
+  const int idx = getToolTipIndex(pos);
+
+  if(idx < 0)
+    return EmptyString;
+
+  const Int32 val = _valueList[idx];
+  ostringstream buf;
+
+  buf << _toolTipText
+    << "$" << Common::Base::toString(val, Common::Base::Fmt::_16)
+    << " = #" << val;
+  if(val < 0x100)
+  {
+    if(val >= 0x80)
+      buf << '/' << -(0x100 - val);
+    buf << " = %" << Common::Base::toString(val, Common::Base::Fmt::_2);
+  }
+
+  return buf.str();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool DataGridWidget::changedToolTip(const Common::Point& oldPos,
+                                    const Common::Point& newPos) const
+{
+  return getToolTipIndex(oldPos) != getToolTipIndex(newPos);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

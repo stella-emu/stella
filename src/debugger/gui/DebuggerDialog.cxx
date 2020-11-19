@@ -18,6 +18,7 @@
 #include "Cart.hxx"
 #include "Widget.hxx"
 #include "Dialog.hxx"
+#include "ToolTip.hxx"
 #include "Settings.hxx"
 #include "StellaKeys.hxx"
 #include "EventHandler.hxx"
@@ -406,6 +407,7 @@ void DebuggerDialog::createFont()
         break;
     }
   }
+  tooltip().setFont(*myNFont);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
