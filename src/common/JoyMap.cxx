@@ -197,11 +197,18 @@ json JoyMap::saveMapping(const EventMode mode) const
     json eventMapping = json::object();
 
     eventMapping["event"] = item.second;
-    eventMapping["button"] = item.first.button;
-    eventMapping["axis"] = item.first.axis;
-    eventMapping["axisDirection"] = item.first.adir;
-    eventMapping["hat"] = item.first.hat;
-    eventMapping["hatDirection"] = item.first.hdir;
+
+    if (item.first.button != JOY_CTRL_NONE) eventMapping["button"] = item.first.button;
+
+    if (item.first.axis != JoyAxis::NONE) {
+      eventMapping["axis"] = item.first.axis;
+      eventMapping["axisDirection"] = item.first.adir;
+    }
+
+    if (item.first.hat != -1) {
+      eventMapping["hat"] = item.first.hat;
+      eventMapping["hatDirection"] = item.first.hdir;
+    }
 
     eventMappings.push_back(eventMapping);
   }
@@ -215,15 +222,21 @@ int JoyMap::loadMapping(const json& eventMappings, const EventMode mode)
   int i = 0;
 
   for (const json& eventMapping: eventMappings) {
+    int button = eventMapping.contains("button") ? eventMapping.at("button").get<int>() : JOY_CTRL_NONE;
+    JoyAxis axis = eventMapping.contains("axis") ? eventMapping.at("axis").get<JoyAxis>() : JoyAxis::NONE;
+    JoyDir axisDirection = eventMapping.contains("axis") ? eventMapping.at("axisDirection").get<JoyDir>() : JoyDir::NONE;
+    int hat = eventMapping.contains("hat") ? eventMapping.at("hat").get<int>() : -1;
+    JoyHatDir hatDirection = eventMapping.contains("hat") ? eventMapping.at("hatDirection").get<JoyHatDir>() : JoyHatDir::CENTER;
+
     try {
       add(
         eventMapping.at("event").get<Event::Type>(),
         mode,
-        eventMapping.at("button").get<int>(),
-        eventMapping.at("axis").get<JoyAxis>(),
-        eventMapping.at("axisDirection").get<JoyDir>(),
-        eventMapping.at("hat").get<int>(),
-        eventMapping.at("hatDirection").get<JoyHatDir>()
+        button,
+        axis,
+        axisDirection,
+        hat,
+        hatDirection
       );
 
       i++;

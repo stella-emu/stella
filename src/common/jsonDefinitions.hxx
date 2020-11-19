@@ -16,7 +16,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(JoyAxis, {
   NLOHMANN_JSON_SERIALIZE_ENUM(JoyDir, {
     {JoyDir::ANALOG, "analog"},
     {JoyDir::NEG, "negative"},
-    {JoyDir::NONE, "none"},
+    {JoyDir::NONE, nullptr},
     {JoyDir::POS, "position"}
   })
 
