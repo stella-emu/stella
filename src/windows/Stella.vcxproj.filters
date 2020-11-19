@@ -1035,7 +1035,7 @@
     <ClCompile Include="..\gui\ToolTip.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
-    <ClCompile Include="..\debugger\DataGridRamWidget.cxx">
+    <ClCompile Include="..\debugger\gui\DataGridRamWidget.cxx">
       <Filter>Source Files\debugger</Filter>
     </ClCompile>
   </ItemGroup>
@@ -2132,7 +2132,7 @@
     <ClInclude Include="..\gui\ToolTip.hxx">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
-    <ClInclude Include="..\debugger\DataGridRamWidget.hxx">
+    <ClInclude Include="..\debugger\gui\DataGridRamWidget.hxx">
       <Filter>Header Files\debugger</Filter>
     </ClInclude>
   </ItemGroup>
