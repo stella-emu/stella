@@ -104,14 +104,14 @@ void TiaOutputWidget::saveSnapshot(int execDepth, const string& execPrefix)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaOutputWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
-{
+{  
   if(b == MouseButton::LEFT)
     myZoom->setPos(x, y);
   // Grab right mouse button for command context menu
   else if(b == MouseButton::RIGHT)
   {
     myClickX = x;
-    myClickY = y;
+    myClickY = y - 1;
 
     dialog().tooltip().hide();
     // Add menu at current x,y mouse location
@@ -184,6 +184,7 @@ string TiaOutputWidget::getToolTip(const Common::Point& pos) const
   if(idx.x < 0)
     return EmptyString;
 
+  const uInt32 startLine = instance().console().tia().startLine();
   const uInt32 height = instance().console().tia().height();
   // limit to 274 lines (PAL default without scaling)
   const uInt32 yStart = height <= FrameManager::Metrics::baseHeightPAL
@@ -194,7 +195,7 @@ string TiaOutputWidget::getToolTip(const Common::Point& pos) const
 
   buf << _toolTipText
     << "X: #" << idx.x
-    << "\nY: #" << idx.y
+    << "\nY: #" << idx.y + startLine
     << "\nC: $" << Common::Base::toString(tiaOutputBuffer[i], Common::Base::Fmt::_16);
 
   return buf.str();
