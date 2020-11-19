@@ -247,6 +247,7 @@ void RomListWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
     // Set selected and add menu at current x,y mouse location
     _selectedItem = findItem(x, y);
     scrollToSelected();
+    dialog().tooltip().hide();
     myMenu->show(x + getAbsX(), y + getAbsY(),
                  dialog().surface().dstRect(), _selectedItem);
   }
@@ -517,7 +518,6 @@ bool RomListWidget::changedToolTip(const Common::Point& oldPos,
 {
   return getToolTipIndex(oldPos) != getToolTipIndex(newPos);
 }
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomListWidget::drawWidget(bool hilite)

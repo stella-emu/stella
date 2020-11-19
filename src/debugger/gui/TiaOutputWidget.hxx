@@ -47,6 +47,13 @@ class TiaOutputWidget : public Widget, public CommandSender
     bool handleKeyDown(StellaKey key, StellaMod mod) override;
     bool handleKeyUp(StellaKey key, StellaMod mod) override;
 */
+    string getToolTip(const Common::Point& pos) const override;
+    bool changedToolTip(const Common::Point& oldPos, const Common::Point& newPos) const override;
+
+  protected:
+    bool hasToolTip() const override { return true; }
+    Common::Point getToolTipIndex(const Common::Point& pos) const;
+
   private:
     unique_ptr<ContextMenu> myMenu;
     TiaZoomWidget* myZoom{nullptr};
