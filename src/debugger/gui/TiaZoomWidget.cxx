@@ -117,7 +117,7 @@ void TiaZoomWidget::recalc()
 void TiaZoomWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
   myClickX = x;
-  myClickY = y;
+  myClickY = y - 1;
 
   // Button 1 is for 'drag'/movement of the image
   // Button 2 is for context menu
@@ -148,7 +148,7 @@ void TiaZoomWidget::handleMouseWheel(int x, int y, int direction)
 
   // zoom towards mouse position
   myClickX = x;
-  myClickY = y;
+  myClickY = y - 1;
 
   if(direction > 0)
   {
@@ -167,6 +167,7 @@ void TiaZoomWidget::handleMouseMoved(int x, int y)
 {
   if(myMouseMoving)
   {
+    y--;
     int diffx = x + myOffXLo - myClickX;
     int diffy = y + myOffYLo - myClickY;
 
@@ -302,12 +303,13 @@ string TiaZoomWidget::getToolTip(const Common::Point& pos) const
     return EmptyString;
 
   const Int32 i = idx.x + idx.y * instance().console().tia().width();
+  const uInt32 startLine = instance().console().tia().startLine();
   uInt8* tiaOutputBuffer = instance().console().tia().outputBuffer();
   ostringstream buf;
 
   buf << _toolTipText
     << "X: #" << idx.x
-    << "\nY: #" << idx.y
+    << "\nY: #" << idx.y + startLine
     << "\nC: $" << Common::Base::toString(tiaOutputBuffer[i], Common::Base::Fmt::_16);
 
   return buf.str();
