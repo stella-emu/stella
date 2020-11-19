@@ -90,7 +90,6 @@ void DelayQueueWidget::loadConfig() {
 void DelayQueueWidget::drawWidget(bool hilite)
 {
   FBSurface& surface = _boss->dialog().surface();
-  bool onTop = _boss->dialog().isOnTop();
 
   int y = _y,
       x = _x,
@@ -102,14 +101,14 @@ void DelayQueueWidget::drawWidget(bool hilite)
   y += 1;
   x += 1;
   w -= 1;
-  surface.fillRect(x, y, w - 1, _h - 2, onTop ? kDlgColor : _bgcolorlo);
+  surface.fillRect(x, y, w - 1, _h - 2, kDlgColor);
 
   y += 2;
   x += 2;
   w -= 3;
 
   for (const auto& line : myLines) {
-    surface.drawString(_font, line, x, y, w, onTop ? _textcolor : kColor);
+    surface.drawString(_font, line, x, y, w, _textcolor);
     y += lineHeight;
   }
 }

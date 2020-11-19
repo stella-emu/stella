@@ -104,7 +104,6 @@ void ToggleBitWidget::drawWidget(bool hilite)
 {
 //cerr << "ToggleBitWidget::drawWidget\n";
   FBSurface& s = dialog().surface();
-  bool onTop = _boss->dialog().isOnTop();
   int row, col;
   string buffer;
 
@@ -146,18 +145,16 @@ void ToggleBitWidget::drawWidget(bool hilite)
         // Highlight changes
         if(_changedList[pos])
         {
-          s.fillRect(x - 3, y - 1, _colWidth-1, _rowHeight-1,
-                     onTop ? kDbgChangedColor : _bgcolorlo);
-          s.drawString(_font, buffer, x, y, _colWidth, onTop ? kDbgChangedTextColor : kColor);
+          s.fillRect(x - 3, y - 1, _colWidth-1, _rowHeight-1, kDbgChangedColor);
+          s.drawString(_font, buffer, x, y, _colWidth, kDbgChangedTextColor);
         }
         else
-          s.drawString(_font, buffer, x, y, _colWidth,
-                       onTop ? textColor : kColor);
+          s.drawString(_font, buffer, x, y, _colWidth, textColor);
       }
       else
       {
-        s.fillRect(x - 3, y - 1, _colWidth-1, _rowHeight-1, onTop ? kBGColorHi : kDlgColor);
-        s.drawString(_font, buffer, x, y, _colWidth, onTop ? kTextColor : kColor);
+        s.fillRect(x - 3, y - 1, _colWidth-1, _rowHeight-1, kBGColorHi);
+        s.drawString(_font, buffer, x, y, _colWidth, kTextColor);
       }
     }
   }

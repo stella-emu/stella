@@ -101,8 +101,6 @@ void Widget::draw()
     //cerr << "w";
 
     FBSurface& s = _boss->dialog().surface();
-
-    bool onTop = _boss->dialog().isOnTop();
     int oldX = _x, oldY = _y;
 
     // Account for our relative position in the dialog
@@ -118,9 +116,7 @@ void Widget::draw()
         x++; y++; w -= 2; h -= 2;
       }
       if(hasBackground())
-        s.fillRect(x, y, w, h, !onTop
-                   ? _bgcolorlo
-                   : (_flags & Widget::FLAG_HILITED) && isEnabled()
+        s.fillRect(x, y, w, h, (_flags & Widget::FLAG_HILITED) && isEnabled()
                    ? _bgcolorhi : _bgcolor);
       else
         s.invalidateRect(x, y, w, h);
@@ -129,9 +125,7 @@ void Widget::draw()
     // Draw border
     if(hasBorder())
     {
-      s.frameRect(_x, _y, _w, _h, !onTop
-                  ? kColor
-                  : (_flags & Widget::FLAG_HILITED) && isEnabled()
+      s.frameRect(_x, _y, _w, _h, (_flags & Widget::FLAG_HILITED) && isEnabled()
                   ? kWidColorHi : kColor);
       _x += 4;
       _y += 4;
@@ -275,7 +269,6 @@ Widget* Widget::setFocusForChain(GuiObject* boss, WidgetArray& arr,
   FBSurface& s = boss->dialog().surface();
   int size = int(arr.size()), pos = -1;
   Widget* tmp;
-  bool onTop = boss->dialog().isOnTop();
 
   for(int i = 0; i < size; ++i)
   {
@@ -300,9 +293,7 @@ Widget* Widget::setFocusForChain(GuiObject* boss, WidgetArray& arr,
       else
         tmp->_hasFocus = false;
 
-      s.frameRect(x, y, w, h, onTop ? kDlgColor : kBGColorLo);
-
-      //tmp->setDirty();
+      s.frameRect(x, y, w, h, kDlgColor);
     }
   }
 
@@ -355,10 +346,7 @@ Widget* Widget::setFocusForChain(GuiObject* boss, WidgetArray& arr,
     tmp->setFlags(Widget::FLAG_HILITED);
   }
 
-  if (onTop)
-      s.frameRect(x, y, w, h, kWidFrameColor, FrameStyle::Dashed);
-
-  //tmp->setDirty();
+  s.frameRect(x, y, w, h, kWidFrameColor, FrameStyle::Dashed);
 
   return tmp;
 }
@@ -439,9 +427,9 @@ void StaticTextWidget::handleMouseLeft()
 void StaticTextWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
-  bool onTop = _boss->dialog().isOnTop();
+
   s.drawString(_font, _label, _x, _y, _w,
-               isEnabled() && onTop ? _textcolor : kColor, _align, 0, true, _shadowcolor);
+               isEnabled() ? _textcolor : kColor, _align, 0, true, _shadowcolor);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -558,17 +546,16 @@ void ButtonWidget::setBitmap(const uInt32* bitmap, int bmw, int bmh)
 void ButtonWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
-  bool onTop = _boss->dialog().isOnTop();
 
-  s.frameRect(_x, _y, _w, _h, !onTop ? kShadowColor : hilite && isEnabled() ? kBtnBorderColorHi : kBtnBorderColor);
+  s.frameRect(_x, _y, _w, _h, hilite && isEnabled() ? kBtnBorderColorHi : kBtnBorderColor);
 
   if (!_useBitmap)
     s.drawString(_font, _label, _x, _y + (_h - _lineHeight)/2 + 1, _w,
-                 !(isEnabled() && onTop) ? _textcolorlo :
+                 !isEnabled() ? _textcolorlo :
                  hilite ? _textcolorhi : _textcolor, _align);
   else
     s.drawBitmap(_bitmap, _x + (_w - _bmw) / 2, _y + (_h - _bmh) / 2,
-                 !(isEnabled() && onTop) ? _textcolorlo :
+                 !isEnabled() ? _textcolorlo :
                  hilite ? _textcolorhi : _textcolor,
                  _bmw, _bmh);
 }
@@ -703,21 +690,19 @@ void CheckboxWidget::setState(bool state, bool changed)
 void CheckboxWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
-  bool onTop = _boss->dialog().isOnTop();
 
   if(_drawBox)
-    s.frameRect(_x, _y + _boxY, _boxSize, _boxSize, onTop && hilite && isEnabled() && isEditable() ? kWidColorHi : kColor);
+    s.frameRect(_x, _y + _boxY, _boxSize, _boxSize, hilite && isEnabled() && isEditable() ? kWidColorHi : kColor);
   // Do we draw a square or cross?
   s.fillRect(_x + 1, _y + _boxY + 1, _boxSize - 2, _boxSize - 2,
-      _changed ? onTop ? kDbgChangedColor : kDlgColor :
-      isEnabled() && onTop ? _bgcolor : kDlgColor);
+      _changed ? kDbgChangedColor : isEnabled() ? _bgcolor : kDlgColor);
   if(_state)
-    s.drawBitmap(_img, _x + 2, _y + _boxY + 2, onTop && isEnabled() ? hilite && isEditable() ? kWidColorHi : kCheckColor
+    s.drawBitmap(_img, _x + 2, _y + _boxY + 2, isEnabled() ? hilite && isEditable() ? kWidColorHi : kCheckColor
                  : kColor, _boxSize - 4);
 
   // Finally draw the label
   s.drawString(_font, _label, _x + prefixSize(_font), _y + _textY, _w,
-               onTop && isEnabled() ? kTextColor : kColor);
+               isEnabled() ? kTextColor : kColor);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -118,7 +118,6 @@ void TogglePixelWidget::drawWidget(bool hilite)
 {
 //cerr << "TogglePixelWidget::drawWidget\n";
   FBSurface& s = dialog().surface();
-  bool onTop = _boss->dialog().isOnTop();
   int row, col;
 
   s.frameRect(_x, _y, _w, _h, hilite && isEnabled() && isEditable() ? kWidColorHi : kColor);
@@ -146,7 +145,7 @@ void TogglePixelWidget::drawWidget(bool hilite)
 
       // Either draw the pixel in given color, or erase (show background)
       s.fillRect(x - 3, y - 1, _colWidth-1, _rowHeight-1,
-                 _stateList[pos] ? onTop ? _pixelColor : kColor : onTop ? _backgroundColor : kBGColorLo);
+                 _stateList[pos] ? _pixelColor : _backgroundColor);
       if (_changedList[pos])
         s.frameRect(x - 3, y - 1, _colWidth - 1, _rowHeight - 1, kDbgChangedColor);
     }
