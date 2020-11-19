@@ -30,6 +30,7 @@
 #include "StellaSettingsDialog.hxx"
 #include "WhatsNewDialog.hxx"
 #include "MessageBox.hxx"
+#include "ToolTip.hxx"
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
 #include "FBSurface.hxx"
@@ -79,6 +80,8 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   const string& lblAllFiles = "Show all files";
   const string& lblFound = "XXXX items found";
 
+  tooltip().setFont(font);
+
   lwidth = font.getStringWidth(lblRom);
   lwidth2 = font.getStringWidth(lblAllFiles) + CheckboxWidget::boxSize(font);
   int lwidth3 = font.getStringWidth(lblFilter);
@@ -120,12 +123,14 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
     // Show the filter input field
     xpos -= fwidth + LBL_GAP;
     myPattern = new EditTextWidget(this, font, xpos, ypos - 2, fwidth, lineHeight, "");
+    myPattern->setToolTip("Enter filter text to reduce file list.");
     // Show the "Filter" label
     xpos -= lwidth3 + LBL_GAP;
     new StaticTextWidget(this, font, xpos, ypos, lblFilter);
     // Show the checkbox for all files
     xpos -= lwidth2 + LBL_GAP * 3;
     myAllFiles = new CheckboxWidget(this, font, xpos, ypos, lblAllFiles, kAllfilesCmd);
+    myAllFiles->setToolTip("Uncheck to show ROM files only.");
     wid.push_back(myAllFiles);
     wid.push_back(myPattern);
   }
@@ -178,6 +183,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   #ifndef BSPF_MACOS
     myStartButton = new ButtonWidget(this, font, xpos, ypos, (buttonWidth + 0) / 4, buttonHeight,
                                      "Select", kLoadROMCmd);
+    myStartButton->setToolTip("Start emulation of selected ROM.");
     wid.push_back(myStartButton);
 
     xpos += (buttonWidth + 0) / 4 + BUTTON_GAP;
@@ -562,6 +568,7 @@ void LauncherDialog::handleMouseDown(int x, int y, MouseButton b, int clickCount
   // Grab right mouse button for context menu, send left to base class
   if(b == MouseButton::RIGHT)
   {
+    dialog().tooltip().hide();
     // Dynamically create context menu for ROM list options
     VariantList items;
 
@@ -662,7 +669,7 @@ void LauncherDialog::loadRom()
       instance().settings().setValue("romdir", currentNode().getParent().getShortPath());
   }
   else
-    instance().frameBuffer().showMessage(result, MessagePosition::MiddleCenter, true);
+    instance().frameBuffer().showTextMessage(result, MessagePosition::MiddleCenter, true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

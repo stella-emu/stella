@@ -24,8 +24,9 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TogglePixelWidget::TogglePixelWidget(GuiObject* boss, const GUI::Font& font,
-                                     int x, int y, int cols, int rows)
-  : ToggleWidget(boss, font, x, y, cols, rows, 1)
+                                     int x, int y, int cols, int rows,
+                                     int shiftBits)
+  : ToggleWidget(boss, font, x, y, cols, rows, shiftBits)
 {
   _rowHeight = _colWidth = font.getLineHeight();
 

@@ -267,7 +267,7 @@ void PNGLibrary::toggleContinuousSnapshots(bool perFrame)
       buf << "Enabling snapshots in " << interval << " second intervals";
       interval *= uInt32(myOSystem.frameRate());
     }
-    myOSystem.frameBuffer().showMessage(buf.str());
+    myOSystem.frameBuffer().showTextMessage(buf.str());
     setContinuousSnapInterval(interval);
   }
   else
@@ -276,7 +276,7 @@ void PNGLibrary::toggleContinuousSnapshots(bool perFrame)
     buf << "Disabling snapshots, generated "
       << (mySnapCounter / mySnapInterval)
       << " files";
-    myOSystem.frameBuffer().showMessage(buf.str());
+    myOSystem.frameBuffer().showTextMessage(buf.str());
     setContinuousSnapInterval(0);
   }
 }
@@ -378,7 +378,7 @@ void PNGLibrary::takeSnapshot(uInt32 number)
     // Re-enable old messages
     myOSystem.frameBuffer().enableMessages(true);
   }
-  myOSystem.frameBuffer().showMessage(message);
+  myOSystem.frameBuffer().showTextMessage(message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

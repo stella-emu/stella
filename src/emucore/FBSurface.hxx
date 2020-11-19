@@ -248,6 +248,18 @@ class FBSurface
         int deltax = 0, bool useEllipsis = true, ColorId shadowColor = kNone);
 
     /**
+      Splits a given string to a given width considering whitespaces.
+
+      @param font   The font to draw the string with
+      @param s      The string to split
+      @param w      The width of the string area
+      @param left   The left part of the split string
+      @param right  The right part of the split string
+    */
+    void splitString(const GUI::Font& font, const string& s, int w,
+                     string& left, string& right) const;
+
+    /**
       The rendering attributes that can be modified for this texture.
       These probably can only be implemented in child FBSurfaces where
       the specific functionality actually exists.
@@ -292,11 +304,14 @@ class FBSurface
       These methods set the origin point and width/height for the
       specified service.  They are defined as separate x/y and w/h
       methods since these items are sometimes set separately.
+      Other times they are set together, so we can use a Rect instead.
     */
     virtual void setSrcPos(uInt32 x, uInt32 y)  = 0;
     virtual void setSrcSize(uInt32 w, uInt32 h) = 0;
+    virtual void setSrcRect(const Common::Rect& r) = 0;
     virtual void setDstPos(uInt32 x, uInt32 y)  = 0;
     virtual void setDstSize(uInt32 w, uInt32 h) = 0;
+    virtual void setDstRect(const Common::Rect& r) = 0;
 
     /**
       This method should be called to enable/disable showing the surface
@@ -323,7 +338,18 @@ class FBSurface
       This method should be called to reset the surface to empty
       pixels / colour black.
     */
-    virtual void invalidate() = 0;
+    virtual void invalidate() {}
+
+    /**
+      This method should be called to reset a surface area to empty
+
+      @param x      The x coordinate
+      @param y      The y coordinate
+      @param w      The width of the area
+      @param h      The height of the area
+    */
+    virtual void invalidateRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h) = 0;
+
 
     /**
       This method should be called to free any resources being used by
@@ -368,9 +394,6 @@ class FBSurface
       @return       True if coordinates are in bounds
     */
     bool checkBounds(const uInt32 x, const uInt32 y) const;
-
-    void wrapString(const string& inStr, int pos,
-                    string& leftStr, string& rightStr) const;
 
     /**
       Check if the given character is a whitespace.

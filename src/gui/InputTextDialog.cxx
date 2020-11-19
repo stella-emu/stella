@@ -130,7 +130,7 @@ void InputTextDialog::show(uInt32 x, uInt32 y, const Common::Rect& bossRect)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void InputTextDialog::center()
+void InputTextDialog::setPosition()
 {
   if(!myEnableCenter)
   {
@@ -144,7 +144,7 @@ void InputTextDialog::center()
       surface().setDstPos(myXOrig, myYOrig);
   }
   else
-    Dialog::center();
+    Dialog::setPosition();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -38,8 +38,8 @@ class RomListSettings : public Dialog, public CommandSender
         ('data' will be the currently selected line number in RomListWidget) */
     void show(uInt32 x, uInt32 y, const Common::Rect& bossRect, int data = -1);
 
-    /** This dialog uses its own positioning, so we override Dialog::center() */
-    void center() override;
+    /** This dialog uses its own positioning, so we override Dialog::setPosition() */
+    void setPosition() override;
 
   private:
     uInt32 _xorig{0}, _yorig{0};

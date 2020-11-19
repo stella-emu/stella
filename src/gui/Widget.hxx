@@ -26,6 +26,7 @@ class Dialog;
 #include <cassert>
 
 #include "bspf.hxx"
+#include "Rect.hxx"
 #include "Event.hxx"
 #include "EventHandlerConstants.hxx"
 #include "FrameBufferConstants.hxx"
@@ -43,19 +44,6 @@ class Widget : public GuiObject
   friend class Dialog;
 
   public:
-    enum : uInt32 {
-      FLAG_ENABLED       = 1 << 0,
-      FLAG_INVISIBLE     = 1 << 1,
-      FLAG_HILITED       = 1 << 2,
-      FLAG_BORDER        = 1 << 3,
-      FLAG_CLEARBG       = 1 << 4,
-      FLAG_TRACK_MOUSE   = 1 << 5,
-      FLAG_RETAIN_FOCUS  = 1 << 6,
-      FLAG_WANTS_TAB     = 1 << 7,
-      FLAG_WANTS_RAWDATA = 1 << 8
-    };
-
-  public:
     Widget(GuiObject* boss, const GUI::Font& font, int x, int y, int w, int h);
     ~Widget() override;
 
@@ -71,8 +59,8 @@ class Widget : public GuiObject
     virtual bool handleKeyUp(StellaKey key, StellaMod mod)    { return false; }
     virtual void handleMouseDown(int x, int y, MouseButton b, int clickCount) { }
     virtual void handleMouseUp(int x, int y, MouseButton b, int clickCount) { }
-    virtual void handleMouseEntered() { }
-    virtual void handleMouseLeft() { }
+    virtual void handleMouseEntered();
+    virtual void handleMouseLeft();
     virtual void handleMouseMoved(int x, int y) { }
     virtual void handleMouseWheel(int x, int y, int direction) { }
     virtual bool handleMouseClicks(int x, int y, MouseButton b) { return false; }
@@ -82,8 +70,12 @@ class Widget : public GuiObject
     virtual bool handleJoyHat(int stick, int hat, JoyHatDir hdir, int button = JOY_CTRL_NONE) { return false; }
     virtual bool handleEvent(Event::Type event) { return false; }
 
+    void tick() override;
+
     void setDirty() override;
+    void setDirtyChain() override;
     void draw() override;
+    void drawChain() override;
     void receivedFocus();
     void lostFocus();
     void addFocusWidget(Widget* w) override { _focusList.push_back(w); }
@@ -94,12 +86,10 @@ class Widget : public GuiObject
     /** Set/clear FLAG_ENABLED */
     void setEnabled(bool e);
 
-    void setFlags(uInt32 flags)    { _flags |= flags;  setDirty(); }
-    void clearFlags(uInt32 flags)  { _flags &= ~flags; setDirty(); }
-    uInt32 getFlags() const        { return _flags; }
-
     bool isEnabled() const          { return _flags & FLAG_ENABLED;         }
     bool isVisible() const override { return !(_flags & FLAG_INVISIBLE);    }
+    bool isHighlighted() const      { return _flags & FLAG_HILITED; }
+    bool hasMouseFocus() const      { return _flags & FLAG_MOUSE_FOCUS; }
     virtual bool wantsFocus() const { return _flags & FLAG_RETAIN_FOCUS;    }
     bool wantsTab() const           { return _flags & FLAG_WANTS_TAB;       }
     bool wantsRaw() const           { return _flags & FLAG_WANTS_RAWDATA;   }
@@ -115,6 +105,11 @@ class Widget : public GuiObject
     void setBGColorHi(ColorId color)   { _bgcolorhi = color;   setDirty(); }
     void setShadowColor(ColorId color) { _shadowcolor = color; setDirty(); }
 
+    void setToolTip(const string& text);
+    virtual string getToolTip(const Common::Point& pos) const { return _toolTipText; }
+    virtual bool changedToolTip(const Common::Point& oldPos,
+                                const Common::Point& newPos) const { return false; }
+
     virtual void loadConfig() { }
 
   protected:
@@ -127,6 +122,9 @@ class Widget : public GuiObject
 
     void releaseFocus() override { assert(_boss); _boss->releaseFocus(); }
 
+    virtual bool wantsToolTip() const { return hasMouseFocus() && hasToolTip(); }
+    virtual bool hasToolTip() const { return !_toolTipText.empty(); }
+
     // By default, delegate unhandled commands to the boss
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override
          { assert(_boss); _boss->handleCommand(sender, cmd, data, id); }
@@ -136,7 +134,6 @@ class Widget : public GuiObject
     const GUI::Font& _font;
     Widget*    _next{nullptr};
     uInt32     _id{0};
-    uInt32     _flags{0};
     bool       _hasFocus{false};
     int        _fontWidth{0};
     int        _lineHeight{0};
@@ -147,6 +144,7 @@ class Widget : public GuiObject
     ColorId    _textcolorhi{kTextColorHi};
     ColorId    _textcolorlo{kBGColorLo};
     ColorId    _shadowcolor{kShadowColor};
+    string     _toolTipText;
 
   public:
     static Widget* findWidgetInChain(Widget* start, int x, int y);
@@ -188,6 +186,10 @@ class StaticTextWidget : public Widget
                      const string& text = "", TextAlign align = TextAlign::Left,
                      ColorId shadowColor = kNone);
     ~StaticTextWidget() override = default;
+
+    void handleMouseEntered() override;
+    void handleMouseLeft() override;
+
     void setValue(int value);
     void setLabel(const string& label);
     void setAlign(TextAlign align) { _align = align; setDirty(); }
@@ -281,8 +283,6 @@ class CheckboxWidget : public ButtonWidget
     bool getState() const  { return _state;     }
 
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
-    void handleMouseEntered() override;
-    void handleMouseLeft() override;
 
     static int boxSize(const GUI::Font& font)
     {

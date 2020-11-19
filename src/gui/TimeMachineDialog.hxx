@@ -44,8 +44,8 @@ class TimeMachineDialog : public Dialog
     /** initialize timeline bar */
     void initBar();
 
-    /** This dialog uses its own positioning, so we override Dialog::center() */
-    void center() override;
+    /** This dialog uses its own positioning, so we override Dialog::setPosition() */
+    void setPosition() override;
 
     /** convert cycles into time */
     string getTimeString(uInt64 cycles);

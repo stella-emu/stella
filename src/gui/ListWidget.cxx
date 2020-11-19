@@ -36,6 +36,8 @@ ListWidget::ListWidget(GuiObject* boss, const GUI::Font& font,
   _textcolor = kTextColor;
   _textcolorhi = kTextColor;
 
+  _editMode = false;
+
   _cols = w / _fontWidth;
   _rows = h / _lineHeight;
 

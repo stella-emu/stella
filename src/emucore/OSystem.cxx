@@ -475,9 +475,9 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
     {
       const string& id = myConsole->cartridge().multiCartID();
       if(id == "")
-        myFrameBuffer->showMessage("New console created");
+        myFrameBuffer->showTextMessage("New console created");
       else
-        myFrameBuffer->showMessage("Multicart " +
+        myFrameBuffer->showTextMessage("Multicart " +
           myConsole->cartridge().detectedType() + ", loading ROM" + id);
     }
     buf << "Game console created:" << endl
@@ -506,7 +506,7 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
       msg << myConsole->leftController().name() << "/" << myConsole->rightController().name()
         << " - " << myConsole->cartridge().detectedType()
         << " - " << myConsole->getFormatString();
-      myFrameBuffer->showMessage(msg.str());
+      myFrameBuffer->showTextMessage(msg.str());
     }
   }
 

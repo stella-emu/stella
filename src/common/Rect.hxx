@@ -44,8 +44,8 @@ struct Point
     if(c != 'x')
       x = y = 0;
   }
-  bool operator==(const Point & p) const { return x == p.x && y == p.y; }
-  bool operator!=(const Point & p) const { return x != p.x || y != p.y; }
+  bool operator==(const Point& p) const { return x == p.x && y == p.y; }
+  bool operator!=(const Point& p) const { return !(*this == p);        }
 
   friend ostream& operator<<(ostream& os, const Point& p) {
     os << p.x << "x" << p.y;
@@ -75,11 +75,11 @@ struct Size
   }
 
   bool operator==(const Size& s) const { return w == s.w && h == s.h; }
-  bool operator!=(const Size& s) const { return w != s.w || h != s.h; }
-  bool operator<(const Size& s)  const { return w <  s.w && h <  s.h; }
-  bool operator<=(const Size& s) const { return w <= s.w && h <= s.h; }
-  bool operator>(const Size& s)  const { return w >  s.w || h >  s.h; }
-  bool operator>=(const Size& s) const { return w >= s.w || h >= s.h; }
+  bool operator< (const Size& s) const { return w <  s.w && h <  s.h; }
+  bool operator> (const Size& s) const { return w >  s.w || h >  s.h; }
+  bool operator!=(const Size& s) const { return !(*this == s); }
+  bool operator<=(const Size& s) const { return !(*this >  s); }
+  bool operator>=(const Size& s) const { return !(*this <  s); }
 
   friend ostream& operator<<(ostream& os, const Size& s) {
     os << s.w << "x" << s.h;
@@ -174,6 +174,11 @@ struct Rect
 
       return r.left != x || r.top != y;
     }
+
+    bool operator==(const Rect& r) const {
+      return top == r.top && left == r.left && bottom == r.bottom && right == r.right;
+    }
+    bool operator!=(const Rect& r) const { return !(*this == r); }
 
     friend ostream& operator<<(ostream& os, const Rect& r) {
       os << r.point() << "," << r.size();

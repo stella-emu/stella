@@ -681,6 +681,7 @@
     <ClCompile Include="..\debugger\gui\CartX07Widget.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\debugger\gui\DataGridRamWidget.cxx" />
     <ClCompile Include="..\debugger\gui\DelayQueueWidget.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClCompile>
@@ -786,6 +787,7 @@
     <ClCompile Include="..\gui\TimeLineWidget.cxx" />
     <ClCompile Include="..\gui\TimeMachine.cxx" />
     <ClCompile Include="..\gui\TimeMachineDialog.cxx" />
+    <ClCompile Include="..\gui\ToolTip.cxx" />
     <ClCompile Include="..\gui\UndoHandler.cxx" />
     <ClCompile Include="..\gui\WhatsNewDialog.cxx" />
     <ClCompile Include="FSNodeWINDOWS.cxx" />
@@ -1705,6 +1707,7 @@
     <ClInclude Include="..\debugger\gui\ControllerWidget.hxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="..\debugger\gui\DataGridRamWidget.hxx" />
     <ClInclude Include="..\debugger\gui\DelayQueueWidget.hxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClInclude>
@@ -1838,6 +1841,7 @@
     <ClInclude Include="..\gui\TimeLineWidget.hxx" />
     <ClInclude Include="..\gui\TimeMachine.hxx" />
     <ClInclude Include="..\gui\TimeMachineDialog.hxx" />
+    <ClInclude Include="..\gui\ToolTip.hxx" />
     <ClInclude Include="..\gui\UndoHandler.hxx" />
     <ClInclude Include="..\gui\WhatsNewDialog.hxx" />
     <ClInclude Include="..\libpng\pngdebug.h" />
