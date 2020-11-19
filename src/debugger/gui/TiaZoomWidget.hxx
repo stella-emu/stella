@@ -34,6 +34,13 @@ class TiaZoomWidget : public Widget, public CommandSender
     void loadConfig() override;
     void setPos(int x, int y);
 
+    string getToolTip(const Common::Point& pos) const override;
+    bool changedToolTip(const Common::Point& oldPos, const Common::Point& newPos) const override;
+
+  protected:
+    bool hasToolTip() const override { return true; }
+    Common::Point getToolTipIndex(const Common::Point& pos) const;
+
   private:
     void zoom(int level);
     void recalc();

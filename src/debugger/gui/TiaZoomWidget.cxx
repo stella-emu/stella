@@ -26,6 +26,8 @@
 #include "FBSurface.hxx"
 #include "Widget.hxx"
 #include "GuiObject.hxx"
+#include "Dialog.hxx"
+#include "ToolTip.hxx"
 #include "ContextMenu.hxx"
 #include "FrameManager.hxx"
 #include "TiaZoomWidget.hxx"
@@ -127,6 +129,7 @@ void TiaZoomWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
   }
   else if(b == MouseButton::RIGHT)
   {
+    dialog().tooltip().hide();
     // Add menu at current x,y mouse location
     myMenu->show(x + getAbsX(), y + getAbsY(), dialog().surface().dstRect());
   }
@@ -141,6 +144,8 @@ void TiaZoomWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaZoomWidget::handleMouseWheel(int x, int y, int direction)
 {
+  dialog().tooltip().hide();
+
   // zoom towards mouse position
   myClickX = x;
   myClickY = y;
@@ -272,6 +277,47 @@ void TiaZoomWidget::handleCommand(CommandSender* sender, int cmd, int data, int 
         zoom(level);
     }
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Common::Point TiaZoomWidget::getToolTipIndex(const Common::Point& pos) const
+{
+  const Int32 width = instance().console().tia().width() * 2;
+  const Int32 height = instance().console().tia().height();
+  const int col = (pos.x - 1 - getAbsX()) / (myZoomLevel << 1) + (myOffX >> 1);
+  const int row = (pos.y - 1 - getAbsY()) / myZoomLevel + myOffY;
+
+  if(col < 0 || col >= width || row < 0 || row >= height)
+    return Common::Point(-1, -1);
+  else
+    return Common::Point(col, row);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string TiaZoomWidget::getToolTip(const Common::Point& pos) const
+{
+  Common::Point idx = getToolTipIndex(pos);
+
+  if(idx.x < 0)
+    return EmptyString;
+
+  const Int32 i = idx.x + idx.y * instance().console().tia().width();
+  uInt8* tiaOutputBuffer = instance().console().tia().outputBuffer();
+  ostringstream buf;
+
+  buf << _toolTipText
+    << "X: #" << idx.x
+    << "\nY: #" << idx.y
+    << "\nC: $" << Common::Base::toString(tiaOutputBuffer[i], Common::Base::Fmt::_16);
+
+  return buf.str();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool TiaZoomWidget::changedToolTip(const Common::Point& oldPos,
+                                     const Common::Point& newPos) const
+{
+  return getToolTipIndex(oldPos) != getToolTipIndex(newPos);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

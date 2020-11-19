@@ -568,6 +568,7 @@ void LauncherDialog::handleMouseDown(int x, int y, MouseButton b, int clickCount
   // Grab right mouse button for context menu, send left to base class
   if(b == MouseButton::RIGHT)
   {
+    dialog().tooltip().hide();
     // Dynamically create context menu for ROM list options
     VariantList items;
 
