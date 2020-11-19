@@ -16,7 +16,7 @@
 //============================================================================
 
 #ifndef VIDEOAUDIO_DIALOG_HXX
-#define D
+#define VIDEOAUDIO_DIALOG_HXX
 
 class CommandSender;
 class CheckboxWidget;
@@ -38,7 +38,7 @@ class VideoAudioDialog : public Dialog
 {
   public:
     VideoAudioDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font,
-                int max_w, int max_h);
+                     int max_w, int max_h);
     ~VideoAudioDialog() override = default;
 
   private:
