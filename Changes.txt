@@ -14,15 +14,17 @@
 
 6.4 to 6.5 (December XX, 2020)
 
-  * Enhanced cut/copy/paste	for text editing (TODO: PromptWidget)
+  * Enhanced cut/copy/paste	for text editing. (TODO: PromptWidget)
 
-  * Added undo and redo to text editing (TODO: PromptWidget)
+  * Added undo and redo to text editing. (TODO: PromptWidget)
 
-  * Added static tooltips to some UI items
+  * Added wildcard support to launcher dialog filter.
 
-  * Added dynamic tooltips to most debugger items
+  * Added static tooltips to some UI items.
 
-  * Increased sample size for CDFJ+
+  * Added dynamic tooltips to most debugger items.
+
+  * Increased sample size for CDFJ+.
 
 -Have fun!
 
