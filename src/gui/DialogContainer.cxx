@@ -95,11 +95,7 @@ void DialogContainer::draw(bool full)
   if(myDialogStack.empty())
     return;
 
-  cerr << "draw " << full << " " << typeid(*this).name() << endl;
-
-  // Make the top dialog dirty if a full redraw is requested
-  //if(full)
-  //  myDialogStack.top()->setDirty();
+  //cerr << "draw " << full << " " << typeid(*this).name() << endl;
 
   // Draw and render all dirty dialogs
   myDialogStack.applyAll([&](Dialog*& d) {
@@ -123,7 +119,7 @@ void DialogContainer::render()
   if(myDialogStack.empty())
     return;
 
-  cerr << "full re-render " << typeid(*this).name() << endl;
+  //cerr << "full re-render " << typeid(*this).name() << endl;
 
   // Make sure we start in a clean state (with zero'ed buffers)
   if(!myOSystem.eventHandler().inTIAMode())

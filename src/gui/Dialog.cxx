@@ -244,7 +244,7 @@ void Dialog::redraw(bool force)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::render()
 {
-  cerr << "  render " << typeid(*this).name() << endl;
+  //cerr << "  render " << typeid(*this).name() << endl;
 
   // Update dialog surface; also render any extra surfaces
   // Extra surfaces must be rendered afterwards, so they are drawn on top
@@ -641,8 +641,10 @@ void Dialog::handleMouseMoved(int x, int y)
   if (w && (w->getFlags() & Widget::FLAG_TRACK_MOUSE))
     w->handleMouseMoved(x - (w->getAbsX() - _x), y - (w->getAbsY() - _y));
 
+#ifndef RETRON77
   // Update mouse coordinates for tooltips
   _toolTip->update(_mouseWidget, Common::Point(x, y));
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

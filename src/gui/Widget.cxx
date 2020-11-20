@@ -75,8 +75,10 @@ void Widget::tick()
 {
   if(isEnabled())
   {
+  #ifndef RETRON77
     if(wantsToolTip())
       dialog().tooltip().request();
+  #endif
 
     // Recursively tick widget and all child dialogs and widgets
     Widget* w = _firstWidget;
@@ -97,8 +99,8 @@ void Widget::draw()
 
   if(isDirty())
   {
-    cerr << "  *** draw widget " << typeid(*this).name() << " ***" << endl;
-    //cerr << "w";
+    //cerr << "  *** draw widget " << typeid(*this).name() << " ***" << endl;
+    cerr << "w";
 
     FBSurface& s = _boss->dialog().surface();
     int oldX = _x, oldY = _y;
