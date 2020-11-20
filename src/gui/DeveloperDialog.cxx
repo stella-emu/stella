@@ -361,7 +361,7 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
                                          "Recovery ", 0, kTVJitterChanged);
   myTVJitterRecWidget->setMinValue(1); myTVJitterRecWidget->setMaxValue(20);
   myTVJitterRecWidget->setTickmarkIntervals(5);
-  myTVJitterRecWidget->setToolTip("Define speed of sync revovery.");
+  myTVJitterRecWidget->setToolTip("Define speed of sync recovery.");
   wid.push_back(myTVJitterRecWidget);
   myTVJitterRecLabelWidget = new StaticTextWidget(myTab, font,
                                                   myTVJitterRecWidget->getRight() + 4,
