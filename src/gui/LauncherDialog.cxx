@@ -348,6 +348,60 @@ void LauncherDialog::updateUI()
   loadRomInfo();
 }
 
+size_t LauncherDialog::matchWithJoker(const string& str, const string& pattern)
+{
+  if(str.length() >= pattern.length())
+  {
+    for(size_t pos = 0; pos < str.length() - pattern.length() + 1; ++pos)
+    {
+      bool found = true;
+
+      for(size_t i = 0; found && i < pattern.length(); ++i)
+        if(pattern[i] != str[pos + i] && pattern[i] != '?')
+          found = false;
+
+      if(found)
+        return pos;
+    }
+  }
+  return string::npos;
+}
+
+bool LauncherDialog::matchWithWildcards(const string& str, const string& pattern)
+{
+  string in = str;
+  string pat = pattern;
+  size_t pos = string::npos;
+
+  BSPF::toUpperCase(in);
+  BSPF::toUpperCase(pat);
+
+  for(size_t i = 0; i < pat.length(); ++i)
+    if(pat[i] == '*')
+    {
+      pos = i;
+      break;
+    }
+
+  if(pos != string::npos)
+  {
+    // '*' found, split pattern into left and right part, search recursively
+    const string leftPat = pat.substr(0, pos);
+    const string rightPat = pat.substr(pos + 1);
+    size_t posLeft = matchWithJoker(in, leftPat);
+
+    if(posLeft != string::npos)
+      return matchWithWildcards(in.substr(pos + posLeft), rightPat);
+    else
+      return false;
+  }
+  else
+  {
+    // no further '*' found
+    return matchWithJoker(in, pat) != string::npos;
+  }
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::applyFiltering()
 {
@@ -361,7 +415,7 @@ void LauncherDialog::applyFiltering()
 
         // Skip over files that don't match the pattern in the 'pattern' textbox
         if(myPattern && myPattern->getText() != "" &&
-          !BSPF::containsIgnoreCase(node.getName(), myPattern->getText()))
+           !matchWithWildcards(node.getName(), myPattern->getText()))
           return false;
       }
       return true;
