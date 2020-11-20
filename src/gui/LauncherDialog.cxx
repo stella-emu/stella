@@ -183,7 +183,6 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   #ifndef BSPF_MACOS
     myStartButton = new ButtonWidget(this, font, xpos, ypos, (buttonWidth + 0) / 4, buttonHeight,
                                      "Select", kLoadROMCmd);
-    myStartButton->setToolTip("Start emulation of selected ROM.");
     wid.push_back(myStartButton);
 
     xpos += (buttonWidth + 0) / 4 + BUTTON_GAP;
@@ -220,6 +219,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
                                      "Select", kLoadROMCmd);
     wid.push_back(myStartButton);
   #endif
+    myStartButton->setToolTip("Start emulation of selected ROM.");
   }
   if(myUseMinimalUI) // Highlight 'Rom Listing'
     mySelectedItem = 0;
