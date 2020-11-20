@@ -91,7 +91,7 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   for(int i = 0; i < 4; ++i)
   {
     myCpuDataSrc[i] = new EditTextWidget(boss, nfont, xpos, src_y, src_w, fontHeight + 1);
-    myCpuDataSrc[i]->setToolTip("Source label of last load into " + labels[i] + ".");
+    myCpuDataSrc[i]->setToolTip("Source label of last read for " + labels[i] + ".");
     myCpuDataSrc[i]->setEditable(false, true);
     src_y += fontHeight + 2;
   }
@@ -140,7 +140,7 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   xpos = myCpuDataSrc[0]->getLeft();
   new StaticTextWidget(boss, lfont, xpos - fontWidth * 4.5, ypos + 2, "Dest");
   myCpuDataDest = new EditTextWidget(boss, nfont, xpos, ypos, src_w, fontHeight + 1);
-  myCpuDataDest->setToolTip("Destination label of last store.");
+  myCpuDataDest->setToolTip("Destination label of last write.");
   myCpuDataDest->setEditable(false, true);
 
   _h = ypos + myPSRegister->getHeight() - y;

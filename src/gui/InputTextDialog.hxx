@@ -46,6 +46,7 @@ class InputTextDialog : public Dialog, public CommandSender
 
     void setText(const string& str, int idx = 0);
     void setTextFilter(const EditableWidget::TextFilter& f, int idx = 0);
+    void setToolTip(const string& str, int idx = 0);
 
     void setEmitSignal(int cmd) { myCmd = cmd; }
     void setMessage(const string& title);
@@ -61,6 +62,7 @@ class InputTextDialog : public Dialog, public CommandSender
     void setPosition() override;
 
   private:
+    vector<StaticTextWidget*> myLabel;
     vector<EditTextWidget*> myInput;
     StaticTextWidget* myMessage{nullptr};
 

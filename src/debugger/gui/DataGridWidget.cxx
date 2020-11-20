@@ -713,6 +713,7 @@ void DataGridWidget::startEditMode()
 {
   if (isEditable() && !_editMode && _selectedItem >= 0)
   {
+    dialog().tooltip().hide();
     enableEditMode(true);
     setText("", true);  // Erase current entry when starting editing
   }

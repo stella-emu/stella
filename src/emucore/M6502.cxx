@@ -243,7 +243,9 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
           myJustHitReadTrapFlag = myJustHitWriteTrapFlag = false;
 
           myLastBreakCycle = mySystem->cycles();
-          result.setDebugger(currentCycles, myHitTrapInfo.message, myHitTrapInfo.address, read);
+          result.setDebugger(currentCycles, myHitTrapInfo.message,
+                             read ? "Read trap" : "Write trap",
+                             myHitTrapInfo.address, read);
           return;
         }
 
@@ -264,7 +266,7 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
               ostringstream msg;
 
               msg << "BP: $" << Common::Base::HEX4 << PC << ", bank #" << std::dec << int(bank);
-              result.setDebugger(currentCycles, msg.str());
+              result.setDebugger(currentCycles, msg.str(), "Breakpoint");
             }
             return;
           }
@@ -278,7 +280,7 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
           msg << "CBP[" << Common::Base::HEX2 << cond << "]: " << myCondBreakNames[cond];
 
           myLastBreakCycle = mySystem->cycles();
-          result.setDebugger(currentCycles, msg.str());
+          result.setDebugger(currentCycles, msg.str(), "Conditional breakpoint");
           return;
         }
       }
@@ -327,7 +329,7 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
           {
             ostringstream msg;
             msg << "RWP[@ $" << Common::Base::HEX4 << rwpAddr << "]: ";
-            result.setDebugger(currentCycles, msg.str(), oldPC);
+            result.setDebugger(currentCycles, msg.str(), "Read from write port", oldPC);
             return;
           }
         }
@@ -339,7 +341,7 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
           {
             ostringstream msg;
             msg << "WRP[@ $" << Common::Base::HEX4 << wrpAddr << "]: ";
-            result.setDebugger(currentCycles, msg.str(), oldPC);
+            result.setDebugger(currentCycles, msg.str(), "Write to read port", oldPC);
             return;
           }
         }
@@ -348,7 +350,7 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
         myExecutionStatus |= FatalErrorBit;
         result.setMessage(e.what());
       } catch (const EmulationWarning& e) {
-        result.setDebugger(currentCycles, e.what(), PC);
+        result.setDebugger(currentCycles, e.what(), "Emulation exception", PC);
         return;
       }
 

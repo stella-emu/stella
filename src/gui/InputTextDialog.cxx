@@ -81,9 +81,10 @@ void InputTextDialog::initialize(const GUI::Font& lfont, const GUI::Font& nfont,
   for(i = 0; i < labels.size(); ++i)
   {
     xpos = HBORDER;
-    new StaticTextWidget(this, lfont, xpos, ypos + 2,
-                         lwidth, fontHeight,
-                         labels[i], TextAlign::Left);
+    StaticTextWidget* s = new StaticTextWidget(this, lfont, xpos, ypos + 2,
+                                               lwidth, fontHeight,
+                                               labels[i]);
+    myLabel.push_back(s);
 
     xpos += lwidth + fontWidth;
     EditTextWidget* w = new EditTextWidget(this, nfont, xpos, ypos,
@@ -175,6 +176,13 @@ void InputTextDialog::setTextFilter(const EditableWidget::TextFilter& f, int idx
 {
   if(uInt32(idx) < myInput.size())
     myInput[idx]->setTextFilter(f);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void InputTextDialog::setToolTip(const string& str, int idx)
+{
+  if(uInt32(idx) < myLabel.size())
+    myLabel[idx]->setToolTip(str);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

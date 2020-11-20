@@ -21,7 +21,6 @@
 #include "Font.hxx"
 #include "ContextMenu.hxx"
 #include "Dialog.hxx"
-#include "ToolTip.hxx"
 #include "DialogContainer.hxx"
 #include "PopUpWidget.hxx"
 
@@ -124,7 +123,6 @@ void PopUpWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
   {
     if(isEnabled() && !myMenu->isVisible())
     {
-      dialog().tooltip().hide();
       // Add menu just underneath parent widget
       myMenu->show(getAbsX() + _labelWidth, getAbsY() + getHeight(),
                    dialog().surface().dstRect(), myMenu->getSelected());

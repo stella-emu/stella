@@ -78,18 +78,21 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   by += bheight + VGAP * 6;
   mySearchButton = new ButtonWidget(boss, lfont, bx, by, bwidth, bheight,
                                     "Search" + ELLIPSIS, kSearchCmd);
+  mySearchButton->setToolTip("Search and highlight found values.");
   wid.push_back(mySearchButton);
   mySearchButton->setTarget(this);
 
   by += bheight + VGAP;
   myCompareButton = new ButtonWidget(boss, lfont, bx, by, bwidth, bheight,
                                      "Compare" + ELLIPSIS, kCmpCmd);
+  myCompareButton->setToolTip("Compare highlighted values.");
   wid.push_back(myCompareButton);
   myCompareButton->setTarget(this);
 
   by += bheight + VGAP;
   myRestartButton = new ButtonWidget(boss, lfont, bx, by, bwidth, bheight,
                                      "Reset", kRestartCmd);
+  myRestartButton->setToolTip("Reset search/compare mode.");
   wid.push_back(myRestartButton);
   myRestartButton->setTarget(this);
 
@@ -366,6 +369,9 @@ void RamWidget::showInputBox(int cmd)
   myInputBox->show(x, y, dialog().surface().dstRect());
   myInputBox->setText("");
   myInputBox->setMessage("");
+  myInputBox->setToolTip(cmd == kSValEntered
+                         ? "Enter search value (leave blank for all)."
+                         : "Enter relative or absolute value\nto compare with searched values.");
   myInputBox->setFocus(0);
   myInputBox->setEmitSignal(cmd);
   myInputBox->setTitle(cmd == kSValEntered ? "Search" : "Compare");
