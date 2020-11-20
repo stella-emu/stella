@@ -94,6 +94,7 @@ void DebuggerDialog::loadConfig()
   myRomTab->loadConfig();
 
   myMessageBox->setText("");
+  myMessageBox->setToolTip("");
 }
 
 void DebuggerDialog::saveConfig()

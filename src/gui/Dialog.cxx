@@ -512,6 +512,8 @@ void Dialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
 {
   Event::Type e = Event::NoType;
 
+  tooltip().hide();
+
 // FIXME - I don't think this will compile!
 #if defined(RETRON77)
   // special keys used for R77

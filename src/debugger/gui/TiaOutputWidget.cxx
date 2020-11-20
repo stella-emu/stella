@@ -23,7 +23,6 @@
 #include "Widget.hxx"
 #include "GuiObject.hxx"
 #include "Dialog.hxx"
-#include "ToolTip.hxx"
 #include "ContextMenu.hxx"
 #include "TiaZoomWidget.hxx"
 #include "Debugger.hxx"
@@ -104,7 +103,7 @@ void TiaOutputWidget::saveSnapshot(int execDepth, const string& execPrefix)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaOutputWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
-{  
+{
   if(b == MouseButton::LEFT)
     myZoom->setPos(x, y);
   // Grab right mouse button for command context menu
@@ -113,7 +112,6 @@ void TiaOutputWidget::handleMouseDown(int x, int y, MouseButton b, int clickCoun
     myClickX = x;
     myClickY = y - 1;
 
-    dialog().tooltip().hide();
     // Add menu at current x,y mouse location
     myMenu->show(x + getAbsX(), y + getAbsY(), dialog().surface().dstRect());
   }

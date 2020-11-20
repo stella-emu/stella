@@ -775,7 +775,8 @@ double OSystem::dispatchEmulation(EmulationWorker& emulationWorker)
        myDebugger->start(
           dispatchResult.getMessage(),
           dispatchResult.getAddress(),
-          dispatchResult.wasReadTrap()
+          dispatchResult.wasReadTrap(),
+          dispatchResult.getToolTip()
         );
       #endif
 

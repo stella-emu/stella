@@ -17,6 +17,7 @@
 
 #include "OSystem.hxx"
 #include "Dialog.hxx"
+#include "ToolTip.hxx"
 #include "Stack.hxx"
 #include "EventHandler.hxx"
 #include "FrameBuffer.hxx"
@@ -159,6 +160,10 @@ int DialogContainer::addDialog(Dialog* d)
       "Unable to show dialog box; FIX THE CODE", MessagePosition::BottomCenter, true);
   else
   {
+    // Close all open tooltips
+    if(!myDialogStack.empty())
+      myDialogStack.top()->tooltip().hide();
+
     d->setDirty();
     myDialogStack.push(d);
   }

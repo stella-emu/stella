@@ -118,7 +118,8 @@ FBInitStatus Debugger::initializeVideo()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::start(const string& message, int address, bool read)
+bool Debugger::start(const string& message, int address, bool read,
+                     const string& toolTip)
 {
   if(myOSystem.eventHandler().enterDebugMode())
   {
@@ -129,6 +130,7 @@ bool Debugger::start(const string& message, int address, bool read)
     if(address > -1)
       buf << cartDebug().getLabel(address, read, 4);
     myDialog->message().setText(buf.str());
+    myDialog->message().setToolTip(toolTip);
     return true;
   }
   return false;
