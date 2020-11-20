@@ -14,7 +14,15 @@
 
 6.4 to 6.5 (December XX, 2020)
 
-  * Enhanced cut/copy/paste	to allow selecting text (TODO: PromptWidget, doc)
+  * Enhanced cut/copy/paste	for text editing (TODO: PromptWidget)
+
+  * Added undo and redo to text editing (TODO: PromptWidget)
+
+  * Added static tooltips to some UI items
+
+  * Added dynamic tooltips to most debugger items
+
+  * Increased sample size for CDFJ+
 
 -Have fun!
 
