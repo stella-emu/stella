@@ -264,7 +264,7 @@ void Dialog::render()
 
   if(!onTop)
   {
-    cerr << "    shade " << typeid(*this).name() << endl;
+    //cerr << "    shade " << typeid(*this).name() << endl;
 
     _shadeSurface->setDstRect(_surface->dstRect());
     _shadeSurface->render();
