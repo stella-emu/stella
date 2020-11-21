@@ -299,6 +299,7 @@ void FBSurface::frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
 void FBSurface::splitString(const GUI::Font& font, const string& s, int w,
                             string& left, string& right) const
 {
+#ifdef GUI_SUPPORT
   uInt32 pos;
   int w2 = 0;
   bool split = false;
@@ -329,6 +330,7 @@ void FBSurface::splitString(const GUI::Font& font, const string& s, int w,
     }
   left = s.substr(0, pos);
   right = s.substr(pos);
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
