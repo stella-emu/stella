@@ -352,54 +352,69 @@ size_t LauncherDialog::matchWithJoker(const string& str, const string& pattern)
 {
   if(str.length() >= pattern.length())
   {
-    for(size_t pos = 0; pos < str.length() - pattern.length() + 1; ++pos)
+    // optimize a bit
+    if(pattern.find('?') != string::npos)
     {
-      bool found = true;
+      for(size_t pos = 0; pos < str.length() - pattern.length() + 1; ++pos)
+      {
+        bool found = true;
 
-      for(size_t i = 0; found && i < pattern.length(); ++i)
-        if(pattern[i] != str[pos + i] && pattern[i] != '?')
-          found = false;
+        for(size_t i = 0; found && i < pattern.length(); ++i)
+          if(pattern[i] != str[pos + i] && pattern[i] != '?')
+            found = false;
 
-      if(found)
-        return pos;
+        if(found)
+          return pos;
+      }
     }
+    else
+      return str.find(pattern);
   }
   return string::npos;
 }
 
 bool LauncherDialog::matchWithWildcards(const string& str, const string& pattern)
 {
-  string in = str;
   string pat = pattern;
-  size_t pos = string::npos;
 
-  BSPF::toUpperCase(in);
-  BSPF::toUpperCase(pat);
+  // remove leading and trailing '*'
+  size_t i = 0;
+  while(pat[i++] == '*');
+  pat = pat.substr(i - 1);
 
-  for(size_t i = 0; i < pat.length(); ++i)
-    if(pat[i] == '*')
-    {
-      pos = i;
-      break;
-    }
+  i = pat.length();
+  while(pat[--i] == '*');
+  pat.erase(i + 1);
+
+  // Search for first '*'
+  size_t pos = pat.find('*');
 
   if(pos != string::npos)
   {
     // '*' found, split pattern into left and right part, search recursively
     const string leftPat = pat.substr(0, pos);
     const string rightPat = pat.substr(pos + 1);
-    size_t posLeft = matchWithJoker(in, leftPat);
+    size_t posLeft = matchWithJoker(str, leftPat);
 
     if(posLeft != string::npos)
-      return matchWithWildcards(in.substr(pos + posLeft), rightPat);
+      return matchWithWildcards(str.substr(pos + posLeft), rightPat);
     else
       return false;
   }
-  else
-  {
-    // no further '*' found
-    return matchWithJoker(in, pat) != string::npos;
-  }
+  // no further '*' found
+  return matchWithJoker(str, pat) != string::npos;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool LauncherDialog::matchWithWildcardsIgnoreCase(const string& str, const string& pattern)
+{
+  string in = str;
+  string pat = pattern;
+
+  BSPF::toUpperCase(in);
+  BSPF::toUpperCase(pat);
+
+  return matchWithWildcards(in, pat);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -415,7 +430,7 @@ void LauncherDialog::applyFiltering()
 
         // Skip over files that don't match the pattern in the 'pattern' textbox
         if(myPattern && myPattern->getText() != "" &&
-           !matchWithWildcards(node.getName(), myPattern->getText()))
+           !matchWithWildcardsIgnoreCase(node.getName(), myPattern->getText()))
           return false;
       }
       return true;
