@@ -198,7 +198,7 @@ void FrameBuffer::setupFonts()
 FontDesc FrameBuffer::getFontDesc(const string& name) const
 {
   if(name == "small")
-    return GUI::consoleBDesc;       //  8x13
+    return GUI::consoleDesc;        //  8x13
   else if(name == "low_medium")
     return GUI::consoleMediumBDesc; //  9x15
   else if(name == "medium")
