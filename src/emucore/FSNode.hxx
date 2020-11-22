@@ -115,6 +115,17 @@ class FilesystemNode
     bool exists() const;
 
     /**
+     * Return a list of child nodes of this and all sub-directories. If called on a node
+     * that does not represent a directory, false is returned.
+     *
+     * @return true if successful, false otherwise (e.g. when the directory
+     *         does not exist).
+     */
+    bool getAllChildren(FSList& fslist, ListMode mode = ListMode::DirectoriesOnly,
+                        const NameFilter& filter = [](const FilesystemNode&) { return true; },
+                        bool includeParentDirectory = true) const;
+
+    /**
      * Return a list of child nodes of this directory node. If called on a node
      * that does not represent a directory, false is returned.
      *
@@ -123,6 +134,7 @@ class FilesystemNode
      */
     bool getChildren(FSList& fslist, ListMode mode = ListMode::DirectoriesOnly,
                      const NameFilter& filter = [](const FilesystemNode&){ return true; },
+                     bool includeChildDirectories = false,
                      bool includeParentDirectory = true) const;
 
     /**
@@ -273,8 +285,8 @@ class FilesystemNode
     string getPathWithExt(const string& ext) const;
 
   private:
-    AbstractFSNodePtr _realNode;
     explicit FilesystemNode(const AbstractFSNodePtr& realNode);
+    AbstractFSNodePtr _realNode;
     void setPath(const string& path);
 };
 

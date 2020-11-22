@@ -179,5 +179,5 @@ void ToolTip::show(const string& tip)
 void ToolTip::render()
 {
   if(myTipShown)
-    mySurface->render(), cerr << "    render tooltip" << endl;
+    mySurface->render(); // , cerr << "    render tooltip" << endl;
 }

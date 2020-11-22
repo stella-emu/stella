@@ -19,6 +19,7 @@
 #define FILE_LIST_WIDGET_HXX
 
 class CommandSender;
+class ProgressDialog;
 
 #include "FSNode.hxx"
 #include "Stack.hxx"
@@ -59,12 +60,16 @@ class FileListWidget : public StringListWidget
       _filter = filter;
     }
 
+    // When enabled, all subdirectories will be searched too.
+    void setIncludeSubDirs(bool enable) { _includeSubDirs = enable; }
+
     /**
       Set initial directory, and optionally select the given item.
 
-        @param node  The directory to display.  If this is a file, its parent
-                     will instead be used, and the file will be selected
-        @param select  An optional entry to select (if applicable)
+        @param node       The directory to display.  If this is a file, its parent
+                          will instead be used, and the file will be selected
+        @param select     An optional entry to select (if applicable)
+        @param recursive  Recursively list sub-directories too
     */
     void setDirectory(const FilesystemNode& node,
                       const string& select = EmptyString);
@@ -84,6 +89,12 @@ class FileListWidget : public StringListWidget
 
     static void setQuickSelectDelay(uInt64 time) { _QUICK_SELECT_DELAY = time; }
 
+    ProgressDialog& progress();
+    void incProgress();
+
+  protected:
+    static unique_ptr<ProgressDialog> myProgressDialog;
+
   private:
     /** Very similar to setDirectory(), but also updates the history */
     void setLocation(const FilesystemNode& node, const string& select);
@@ -99,6 +110,7 @@ class FileListWidget : public StringListWidget
     FilesystemNode::NameFilter _filter;
     FilesystemNode _node;
     FSList _fileList;
+    bool _includeSubDirs{false};
 
     Common::FixedStack<string> _history;
     uInt32 _selected{0};

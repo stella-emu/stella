@@ -45,6 +45,8 @@ class ContextMenu : public Dialog, public CommandSender
                 const VariantList& items, int cmd = 0, int width = 0);
     ~ContextMenu() override = default;
 
+    bool isShading() const override { return false; }
+
     /** Set the parent widget's ID */
     void setID(uInt32 id) { _id = id; }
 

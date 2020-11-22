@@ -255,12 +255,11 @@ void Dialog::render()
     });
   }
 
-  // Dialog is still on top if e.g a dialog without title is opened
-  //  (e.g. ContextMenu)
+  // A dialog is still on top if a non-shading dialog (e.g. ContextMenu)
+  // is opended above it.
   bool onTop = parent().myDialogStack.top() == this
     || (parent().myDialogStack.get(parent().myDialogStack.size() - 2) == this
-        && !parent().myDialogStack.top()->hasTitle());
-        //&& typeid(*parent().myDialogStack.top()) == typeid(ContextMenu))
+        && !parent().myDialogStack.top()->isShading());
 
   if(!onTop)
   {

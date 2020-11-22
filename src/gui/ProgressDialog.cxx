@@ -26,8 +26,9 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ProgressDialog::ProgressDialog(GuiObject* boss, const GUI::Font& font,
-                               const string& message)
-  : Dialog(boss->instance(), boss->parent())
+                               const string& message, bool openDialog)
+  : Dialog(boss->instance(), boss->parent()),
+    myFont(font)
 {
   const int fontWidth  = font.getMaxCharWidth(),
             fontHeight = font.getFontHeight(),
@@ -52,13 +53,23 @@ ProgressDialog::ProgressDialog(GuiObject* boss, const GUI::Font& font,
   mySlider->setMinValue(1);
   mySlider->setMaxValue(100);
 
-  open();
+  if(openDialog)
+    open();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ProgressDialog::setMessage(const string& message)
 {
+  const int fontWidth = myFont.getMaxCharWidth(),
+    HBORDER = fontWidth * 1.25;
+  const int lwidth = myFont.getStringWidth(message);
+
+  // Recalculate real dimensions
+  _w = HBORDER * 2 + lwidth;
+
+  myMessage->setWidth(lwidth);
   myMessage->setLabel(message);
+  mySlider->setWidth(lwidth);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -68,17 +79,25 @@ void ProgressDialog::setRange(int start, int finish, int step)
   myFinish = finish;
   myStep = int((step / 100.0) * (myFinish - myStart + 1));
 
-  mySlider->setMinValue(myStart);
+  mySlider->setMinValue(myStart + myStep);
   mySlider->setMaxValue(myFinish);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ProgressDialog::resetProgress()
+{
+  myProgress = myStepProgress = 0;
+  mySlider->setValue(0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ProgressDialog::setProgress(int progress)
 {
   // Only increase the progress bar if we have arrived at a new step
-  if(progress - mySlider->getValue() > myStep)
+  if(progress - myStepProgress >= myStep)
   {
-    mySlider->setValue(progress);
+    myStepProgress = progress;
+    mySlider->setValue(progress % (myFinish - myStart + 1));
 
     // Since this dialog is usually called in a tight loop that doesn't
     // yield, we need to manually tell the framebuffer that a redraw is
@@ -87,4 +106,10 @@ void ProgressDialog::setProgress(int progress)
     // event handling is suspended until the dialog is closed
     instance().frameBuffer().update();
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ProgressDialog::incProgress()
+{
+  setProgress(++myProgress);
 }
