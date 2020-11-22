@@ -20,6 +20,7 @@
 #include "ScrollBarWidget.hxx"
 #include "FileListWidget.hxx"
 #include "TimerManager.hxx"
+#include "ProgressDialog.hxx"
 
 #include "bspf.hxx"
 
@@ -72,22 +73,37 @@ void FileListWidget::setDirectory(const FilesystemNode& node,
 void FileListWidget::setLocation(const FilesystemNode& node,
                                  const string& select)
 {
+  progress().resetProgress();
+  progress().open();
+
   _node = node;
 
   // Read in the data from the file system (start with an empty list)
   _fileList.clear();
-  _fileList.reserve(512);
-  _node.getChildren(_fileList, _fsmode, _filter);
+
+  if(_includeSubDirs)
+  {
+    // Actually this could become HUGE
+    _fileList.reserve(0x2000);
+    _node.getAllChildren(_fileList, _fsmode, _filter);
+  }
+  else
+  {
+    _fileList.reserve(0x200);
+    _node.getChildren(_fileList, _fsmode, _filter);
+  }
 
   // Now fill the list widget with the names from the file list
   StringList l;
-  for(const auto& file: _fileList)
+  for(const auto& file : _fileList)
     l.push_back(file.getName());
 
   setList(l);
   setSelected(select);
 
   ListWidget::recalc();
+
+  progress().close();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -112,6 +128,21 @@ void FileListWidget::reload()
     _selectedFile = selected().getName();
     setLocation(_node, _selectedFile);
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ProgressDialog& FileListWidget::progress()
+{
+  if(myProgressDialog == nullptr)
+    myProgressDialog = make_unique<ProgressDialog>(this, _font, "", false);
+
+  return *myProgressDialog;
+}
+
+void FileListWidget::incProgress()
+{
+  if(_includeSubDirs)
+    progress().incProgress();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -202,3 +233,5 @@ void FileListWidget::handleCommand(CommandSender* sender, int cmd, int data, int
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt64 FileListWidget::_QUICK_SELECT_DELAY = 300;
+
+unique_ptr<ProgressDialog> FileListWidget::myProgressDialog{nullptr};

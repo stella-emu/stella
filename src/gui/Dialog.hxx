@@ -94,6 +94,8 @@ class Dialog : public GuiObject
     void setTitle(const string& title);
     bool hasTitle() { return !_title.empty(); }
 
+    virtual bool isShading() const { return true; }
+
     /**
       Determine the maximum width/height of a dialog based on the minimum
       allowable bounds, also taking into account the current window size.

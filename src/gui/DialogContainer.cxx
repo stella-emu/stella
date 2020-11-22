@@ -171,7 +171,7 @@ void DialogContainer::removeDialog()
 {
   if(!myDialogStack.empty())
   {
-    cerr << "remove dialog " << typeid(*myDialogStack.top()).name() << endl;
+    //cerr << "remove dialog " << typeid(*myDialogStack.top()).name() << endl;
     myDialogStack.pop();
 
     // Inform the frame buffer that it has to render all surfaces

@@ -23,23 +23,29 @@ class StaticTextWidget;
 class SliderWidget;
 
 #include "bspf.hxx"
+#include "Dialog.hxx"
 
 class ProgressDialog : public Dialog
 {
   public:
     ProgressDialog(GuiObject* boss, const GUI::Font& font,
-                   const string& message);
+                   const string& message, bool openDialog = true);
     ~ProgressDialog() override = default;
 
     void setMessage(const string& message);
     void setRange(int begin, int end, int step);
+    void resetProgress();
     void setProgress(int progress);
+    void incProgress();
 
   private:
+    const GUI::Font& myFont;
     StaticTextWidget* myMessage{nullptr};
     SliderWidget*     mySlider{nullptr};
 
     int myStart{0}, myFinish{0}, myStep{0};
+    int myProgress{0};
+    int myStepProgress{0};
 
   private:
     // Following constructors and assignment operators not supported

@@ -100,6 +100,7 @@ class LauncherDialog : public Dialog
     static constexpr int MIN_ROMINFO_CHARS = 30;
     static constexpr int MIN_ROMINFO_ROWS = 7; // full lines
     static constexpr int MIN_ROMINFO_LINES = 4; // extra lines
+    static constexpr int MIN_SUBDIRS_CHARS = 3; // minimum filter chars for subdirectory search
 
     void setPosition() override { positionAt(0); }
     void handleKeyDown(StellaKey key, StellaMod mod, bool repeated) override;
@@ -169,19 +170,22 @@ class LauncherDialog : public Dialog
     // automatically sized font for ROM info viewer
     unique_ptr<GUI::Font> myROMInfoFont;
 
-    ButtonWidget* myStartButton{nullptr};
-    ButtonWidget* myPrevDirButton{nullptr};
-    ButtonWidget* myOptionsButton{nullptr};
-    ButtonWidget* myQuitButton{nullptr};
+    CheckboxWidget*   myAllFiles{nullptr};
+    EditTextWidget*   myPattern{nullptr};
+    CheckboxWidget*   mySubDirs{nullptr};
+    StaticTextWidget* myRomCount{nullptr};
 
     FileListWidget*   myList{nullptr};
+
     StaticTextWidget* myDirLabel{nullptr};
     EditTextWidget*   myDir{nullptr};
-    StaticTextWidget* myRomCount{nullptr};
-    EditTextWidget*   myPattern{nullptr};
-    CheckboxWidget*   myAllFiles{nullptr};
 
-    RomInfoWidget* myRomInfoWidget{nullptr};
+    ButtonWidget*     myStartButton{nullptr};
+    ButtonWidget*     myPrevDirButton{nullptr};
+    ButtonWidget*     myOptionsButton{nullptr};
+    ButtonWidget*     myQuitButton{nullptr};
+
+    RomInfoWidget*    myRomInfoWidget{nullptr};
     std::unordered_map<string,string> myMD5List;
 
     int mySelectedItem{0};
@@ -189,9 +193,11 @@ class LauncherDialog : public Dialog
     bool myShowOnlyROMs{false};
     bool myUseMinimalUI{false};
     bool myEventHandled{false};
+    bool myShortCount{false};
 
     enum {
       kAllfilesCmd   = 'lalf',  // show all files (or ROMs only)
+      kSubDirsCmd    = 'lred',
       kPrevDirCmd    = 'PRVD',
       kOptionsCmd    = 'OPTI',
       kQuitCmd       = 'QUIT'
