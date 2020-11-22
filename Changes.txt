@@ -20,6 +20,8 @@
 
   * Added wildcard support to launcher dialog filter.
 
+  * Added option to search subdirectories in launcher.
+
   * Added static tooltips to some UI items.
 
   * Added dynamic tooltips to most debugger items.

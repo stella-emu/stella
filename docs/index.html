@@ -3689,16 +3689,19 @@
   <p>ROM Info Viewer width at 50% , UI sized 1280x900, large launcher font:</p>
   <img src="graphics/rominfo_2x_small.png">
 
-  <p>The text box in the upper right corner can be used to narrow down the
-  results in the ROM listing. When this box is empty, all files are shown
-  (subject to the restrictions from the filtering option, explained below).
+  <p>The 'Show all files' checkbox allows displaying files which do not
+  have a valid ROM extension. The 'Filter' text box can be used to narrow down
+  the results in the ROM listing. When this box is empty, all files are shown.
   Typing characters here will show only those files that match that
   pattern. For example, typing 'Activision' will show only files that
   contain the word 'Activision' in their name. This is very useful for
   quickly finding a group of related ROMs.</p>
-  <p>
-  Note that the search is not case sensitive, so you don't need to worry about
-  capital or lower-case letters. Also you can use '*' and '?' as wildcards.</p>
+  <p>Note that the search is not case sensitive, so you don't need to worry about
+  capital or lower-case letters. Also you can use '*' and '?' as wildcards. E.g.
+  for '(198?)*atari' only games from the 1980s made by Atari will be listed.</p>
+  <p>When there are least three characters in the filter, the checkbox 'Incl.
+  subdirectories' gets enabled. When checked, Stella will search files in all
+  subdirectories too.</p>
 
   <h3><b><a name="ROMLauncherContextMenu">ROM Launcher Context Menu</a></b></h3>
 
@@ -3736,12 +3739,6 @@
     </tr>
   </table>
     </li>
-    <br><li><b>Show only ROM files</b>: Selecting this reloads the current listing,
-    showing only files that have a valid ROM extension.</li>
-
-    <br><li><b>Show all files</b>: Selecting this reloads the current listing,
-    showing <i>all</i> files (with no restriction on file name).</li>
-
     <br><li><b>Reload listing</b>: Selecting this performs a reload of the
     current listing. It is an alternative to pressing the 'Control + r'
     key combo.</li>
