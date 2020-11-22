@@ -294,7 +294,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   if(myUseMinimalUI) // Highlight 'Rom Listing'
     mySelectedItem = 0;
   else
-    mySelectedItem = 2;
+    mySelectedItem = 3;
 
   addToFocusList(wid);
 
@@ -312,7 +312,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
 
   // Do we show only ROMs or all files?
   bool onlyROMs = instance().settings().getBool("launcherroms");
-
+  showOnlyROMs(onlyROMs);
   if(myAllFiles)
     myAllFiles->setState(!onlyROMs);
 }
