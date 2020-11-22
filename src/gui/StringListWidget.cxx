@@ -82,13 +82,8 @@ string StringListWidget::getToolTip(const Common::Point& pos) const
 bool StringListWidget::changedToolTip(const Common::Point& oldPos,
                                       const Common::Point& newPos) const
 {
-  bool ch = getToolTipIndex(oldPos) != getToolTipIndex(newPos)
+  return getToolTipIndex(oldPos) != getToolTipIndex(newPos)
     && getToolTip(oldPos) != getToolTip(newPos);
-
-  if(ch)
-    cerr << "changed" << endl;
-
-  return ch;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
