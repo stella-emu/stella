@@ -19,6 +19,9 @@
 #include "Console.hxx"
 #include "EventHandler.hxx"
 #include "PKeyboardHandler.hxx"
+#include "json.hxx"
+
+using json = nlohmann::json;
 
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
@@ -46,16 +49,36 @@ PhysicalKeyboardHandler::PhysicalKeyboardHandler(OSystem& system, EventHandler& 
   // Compare if event list version has changed so that key maps became invalid
   if (version == Event::VERSION)
   {
-    string list = myOSystem.settings().getString("keymap_emu");
-    myKeyMap.loadMapping(list, EventMode::kCommonMode);
-    list = myOSystem.settings().getString("keymap_joy");
-    myKeyMap.loadMapping(list, EventMode::kJoystickMode);
-    list = myOSystem.settings().getString("keymap_pad");
-    myKeyMap.loadMapping(list, EventMode::kPaddlesMode);
-    list = myOSystem.settings().getString("keymap_key");
-    myKeyMap.loadMapping(list, EventMode::kKeypadMode);
-    list = myOSystem.settings().getString("keymap_ui");
-    myKeyMap.loadMapping(list, EventMode::kMenuMode);
+    try {
+      myKeyMap.loadMapping(json::parse(myOSystem.settings().getString("keymap_emu")), EventMode::kCommonMode);
+    } catch (json::exception) {
+      Logger::error("ignoring bad keyboard mappings for mode: common");
+    }
+
+    try {
+      myKeyMap.loadMapping(json::parse(myOSystem.settings().getString("keymap_joy")), EventMode::kJoystickMode);
+    } catch (json::exception) {
+      Logger::error("ignoring bad keyboard mappings for mode: joystick");
+    }
+
+    try {
+      myKeyMap.loadMapping(json::parse(myOSystem.settings().getString("keymap_pad")), EventMode::kPaddlesMode);
+    } catch (json::exception) {
+      Logger::error("ignoring bad keyboard mappings for mode: paddles");
+    }
+
+    try {
+      myKeyMap.loadMapping(json::parse(myOSystem.settings().getString("keymap_key")), EventMode::kKeypadMode);
+    } catch (json::exception) {
+      Logger::error("ignoring bad keyboard mappings for mode: keypad");
+    }
+
+    try {
+      myKeyMap.loadMapping(json::parse(myOSystem.settings().getString("keymap_ui")), EventMode::kMenuMode);
+    } catch (json::exception) {
+      Logger::error("ignoring bad keyboard mappings for mode: UI");
+    }
+
     updateDefaults = true;
   }
   myKeyMap.enableMod() = myOSystem.settings().getBool("modcombo");
@@ -357,11 +380,11 @@ void PhysicalKeyboardHandler::eraseMapping(Event::Type event, EventMode mode)
 void PhysicalKeyboardHandler::saveMapping()
 {
   myOSystem.settings().setValue("event_ver", Event::VERSION);
-  myOSystem.settings().setValue("keymap_emu", myKeyMap.saveMapping(EventMode::kCommonMode));
-  myOSystem.settings().setValue("keymap_joy", myKeyMap.saveMapping(EventMode::kJoystickMode));
-  myOSystem.settings().setValue("keymap_pad", myKeyMap.saveMapping(EventMode::kPaddlesMode));
-  myOSystem.settings().setValue("keymap_key", myKeyMap.saveMapping(EventMode::kKeypadMode));
-  myOSystem.settings().setValue("keymap_ui", myKeyMap.saveMapping(EventMode::kMenuMode));
+  myOSystem.settings().setValue("keymap_emu", myKeyMap.saveMapping(EventMode::kCommonMode).dump());
+  myOSystem.settings().setValue("keymap_joy", myKeyMap.saveMapping(EventMode::kJoystickMode).dump());
+  myOSystem.settings().setValue("keymap_pad", myKeyMap.saveMapping(EventMode::kPaddlesMode).dump());
+  myOSystem.settings().setValue("keymap_key", myKeyMap.saveMapping(EventMode::kKeypadMode).dump());
+  myOSystem.settings().setValue("keymap_ui", myKeyMap.saveMapping(EventMode::kMenuMode).dump());
   enableEmulationMappings();
 }
 

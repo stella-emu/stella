@@ -16,7 +16,10 @@
 //============================================================================
 
 #include "KeyMap.hxx"
+#include "jsonDefinitions.hxx"
 #include <map>
+
+using json = nlohmann::json;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void KeyMap::add(const Event::Type event, const Mapping& mapping)
@@ -169,40 +172,45 @@ KeyMap::MappingArray KeyMap::getEventMapping(const Event::Type event, const Even
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string KeyMap::saveMapping(const EventMode mode) const
+json KeyMap::saveMapping(const EventMode mode) const
 {
-  using MapType = std::pair<Mapping, Event::Type>;
-  std::vector<MapType> sortedMap(myMap.begin(), myMap.end());
+  json mappings = json::array();
 
-  std::sort(sortedMap.begin(), sortedMap.end(),
-    [](const MapType& a, const MapType& b)
-    {
-      // Event::Type first
-      if(a.second != b.second)
-        return a.second < b.second;
+  for (auto item : myMap) {
+    if (item.first.mode != mode) continue;
 
-      if(a.first.key != b.first.key)
-        return a.first.key < b.first.key;
+    json mapping = json::object();
 
-      return a.first.mod < b.first.mod;
-    }
-  );
+    mapping["event"] = item.second;
+    mapping["key"] = item.first.key;
 
-  ostringstream buf;
+    if (item.first.mod != StellaMod::KBDM_NONE)
+      mapping["mod"] = item.first.mod;
 
-  for (auto item : sortedMap)
-  {
-    if (item.first.mode == mode)
-    {
-      if (buf.str() != "")
-        buf << "|";
-      buf << item.second << ":" << item.first.key << "," << item.first.mod;
-    }
+    mappings.push_back(mapping);
   }
-  return buf.str();
+
+  return mappings;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int KeyMap::loadMapping(const json& mappings, const EventMode mode) {
+  int i = 0;
+
+  for (const json& mapping: mappings) {
+    add(
+      mapping.at("event").get<Event::Type>(),
+      mode,
+      mapping.at("key").get<StellaKey>(),
+      mapping.contains("mod") ? mapping.at("mod").get<StellaMod>() : StellaMod::KBDM_NONE
+    );
+
+    i++;
+  }
+
+  return i;
+}
+/*
 int KeyMap::loadMapping(string& list, const EventMode mode)
 {
   // Since istringstream swallows whitespace, we have to make the
@@ -218,6 +226,7 @@ int KeyMap::loadMapping(string& list, const EventMode mode)
 
   return i;
 }
+*/
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void KeyMap::eraseMode(const EventMode mode)
