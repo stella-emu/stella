@@ -69,7 +69,6 @@ class FileListWidget : public StringListWidget
         @param node       The directory to display.  If this is a file, its parent
                           will instead be used, and the file will be selected
         @param select     An optional entry to select (if applicable)
-        @param recursive  Recursively list sub-directories too
     */
     void setDirectory(const FilesystemNode& node,
                       const string& select = EmptyString);
