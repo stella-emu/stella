@@ -88,6 +88,7 @@ class FileListWidget : public StringListWidget
     const FilesystemNode& currentDir() const { return _node; }
 
     static void setQuickSelectDelay(uInt64 time) { _QUICK_SELECT_DELAY = time; }
+    uInt64 getQuickSelectDelay() { return _QUICK_SELECT_DELAY; }
 
     ProgressDialog& progress();
     void incProgress();

@@ -35,6 +35,7 @@
 #include "ProgressDialog.hxx"
 #include "MessageBox.hxx"
 #include "ToolTip.hxx"
+#include "TimerManager.hxx"
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
 #include "FBSurface.hxx"
@@ -358,6 +359,16 @@ void LauncherDialog::reload()
 {
   myMD5List.clear();
   myList->reload();
+  myPendingReload = false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::tick()
+{
+  if(myPendingReload && myReloadTime < TimerManager::getTicks() / 1000)
+    reload();
+
+  Dialog::tick();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -771,11 +782,20 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
     case EditableWidget::kChangedCmd:
     {
       bool subAllowed = myPattern->getText().length() >= MIN_SUBDIRS_CHARS;
+      bool subDirs = subAllowed && mySubDirs->getState();
 
       mySubDirs->setEnabled(subAllowed);
-      myList->setIncludeSubDirs(mySubDirs->getState() && subAllowed);
+      myList->setIncludeSubDirs(subDirs);
       applyFiltering();  // pattern matching taken care of directly in this method
-      reload();
+
+      if(subDirs)
+      {
+        // delay (potentially slow) subdirectories reloads until user stops typing
+        myReloadTime = TimerManager::getTicks() / 1000 + myList->getQuickSelectDelay();
+        myPendingReload = true;
+      }
+      else
+        reload();
       break;
     }
 
