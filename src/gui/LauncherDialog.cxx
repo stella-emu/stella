@@ -177,10 +177,8 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
     // Show the subdirectories checkbox
     xpos -= cwSubDirs + LBL_GAP;
     mySubDirs = new CheckboxWidget(this, font, xpos, ypos, lblSubDirs, kSubDirsCmd);
-    mySubDirs->setEnabled(false);
     ostringstream tip;
-    tip << "Search files in subdirectories too.\n"
-      << "Filter must have at least " << MIN_SUBDIRS_CHARS << " chars.";
+    tip << "Search files in subdirectories too.";
     mySubDirs->setToolTip(tip.str());
 
     // Show the filter input field
@@ -780,15 +778,14 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case EditableWidget::kChangedCmd:
+    case EditableWidget::kAcceptCmd:
     {
-      bool subAllowed = myPattern->getText().length() >= MIN_SUBDIRS_CHARS;
-      bool subDirs = subAllowed && mySubDirs->getState();
+      bool subDirs = mySubDirs->getState();
 
-      mySubDirs->setEnabled(subAllowed);
       myList->setIncludeSubDirs(subDirs);
       applyFiltering();  // pattern matching taken care of directly in this method
 
-      if(subDirs)
+      if(subDirs && cmd == EditableWidget::kChangedCmd)
       {
         // delay (potentially slow) subdirectories reloads until user stops typing
         myReloadTime = TimerManager::getTicks() / 1000 + myList->getQuickSelectDelay();

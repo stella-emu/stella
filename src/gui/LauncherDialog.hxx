@@ -102,7 +102,6 @@ class LauncherDialog : public Dialog
     static constexpr int MIN_ROMINFO_CHARS = 30;
     static constexpr int MIN_ROMINFO_ROWS = 7; // full lines
     static constexpr int MIN_ROMINFO_LINES = 4; // extra lines
-    static constexpr int MIN_SUBDIRS_CHARS = 3; // minimum filter chars for subdirectory search
 
     void setPosition() override { positionAt(0); }
     void handleKeyDown(StellaKey key, StellaMod mod, bool repeated) override;

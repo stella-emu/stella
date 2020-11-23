@@ -1747,9 +1747,13 @@ void DebuggerParser::executeRunTo()
   // Create a progress dialog box to show the progress searching through the
   // disassembly, since this may be a time-consuming operation
   ostringstream buf;
-  buf << "RunTo searching through " << max_iterations << " disassembled instructions";
-  ProgressDialog progress(debugger.baseDialog(), debugger.lfont(), buf.str());
+  ProgressDialog progress(debugger.baseDialog(), debugger.lfont());
+
+  buf << "RunTo searching through " << max_iterations << " disassembled instructions"
+    << progress.ELLIPSIS;
+  progress.setMessage(buf.str());
   progress.setRange(0, max_iterations, 5);
+  progress.open();
 
   bool done = false;
   do {
@@ -1763,8 +1767,8 @@ void DebuggerParser::executeRunTo()
       done = (BSPF::findIgnoreCase(next, argStrings[0]) != string::npos);
     }
     // Update the progress bar
-    progress.setProgress(count);
-  } while(!done && ++count < max_iterations);
+    progress.incProgress();
+  } while(!done && ++count < max_iterations && !progress.isCancelled());
 
   progress.close();
 
@@ -1789,13 +1793,15 @@ void DebuggerParser::executeRunToPc()
 
   uInt32 count = 0;
   bool done = false;
-  constexpr uInt32 max_iterations = 1000000;
   // Create a progress dialog box to show the progress searching through the
   // disassembly, since this may be a time-consuming operation
   ostringstream buf;
-  buf << "RunTo PC searching through " << max_iterations << " instructions";
-  ProgressDialog progress(debugger.baseDialog(), debugger.lfont(), buf.str());
-  progress.setRange(0, max_iterations, 5);
+  ProgressDialog progress(debugger.baseDialog(), debugger.lfont());
+
+  buf << "        RunTo PC running" << progress.ELLIPSIS << "        ";
+  progress.setMessage(buf.str());
+  progress.setRange(0, 100000, 5);
+  progress.open();
 
   do {
     debugger.step(false);
@@ -1803,8 +1809,9 @@ void DebuggerParser::executeRunToPc()
     // Update romlist to point to current PC
     int pcline = cartdbg.addressToLine(debugger.cpuDebug().pc());
     done = (pcline >= 0) && (list[pcline].address == args[0]);
-    progress.setProgress(count);
-  } while(!done && ++count < max_iterations/*list.size()*/);
+    progress.incProgress();
+    ++count;
+  } while(!done && !progress.isCancelled());
   progress.close();
 
   if(done)
@@ -1953,20 +1960,24 @@ void DebuggerParser::executeStepwhile()
   Expression* expr = YaccParser::getResult();
   int ncycles = 0;
   uInt32 count = 0;
-  constexpr uInt32 max_iterations = 1000000;
 
   // Create a progress dialog box to show the progress searching through the
   // disassembly, since this may be a time-consuming operation
   ostringstream buf;
-  buf << "stepwhile running through " << max_iterations << " disassembled instructions";
-  ProgressDialog progress(debugger.baseDialog(), debugger.lfont(), buf.str());
-  progress.setRange(0, max_iterations, 5);
+  ProgressDialog progress(debugger.baseDialog(), debugger.lfont());
+
+  buf << "stepwhile running through disassembled instructions"
+    << progress.ELLIPSIS;
+  progress.setMessage(buf.str());
+  progress.setRange(0, 100000, 5);
+  progress.open();
 
   do {
     ncycles += debugger.step(false);
 
-    progress.setProgress(count);
-  } while (expr->evaluate() && ++count < max_iterations);
+    progress.incProgress();
+    ++count;
+  } while (expr->evaluate() && !progress.isCancelled());
 
   progress.close();
   commandResult << "executed " << ncycles << " cycles";

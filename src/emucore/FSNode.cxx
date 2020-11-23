@@ -79,9 +79,10 @@ bool FilesystemNode::exists() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FilesystemNode::getAllChildren(FSList& fslist, ListMode mode,
                                     const NameFilter& filter,
-                                    bool includeParentDirectory) const
+                                    bool includeParentDirectory,
+                                    const CancelCheck& isCancelled) const
 {
-  if(getChildren(fslist, mode, filter, includeParentDirectory))
+  if(getChildren(fslist, mode, filter, includeParentDirectory, true, isCancelled))
   {
     // Sort only once at the end
   #if defined(ZIP_SUPPORT)
@@ -124,7 +125,6 @@ bool FilesystemNode::getAllChildren(FSList& fslist, ListMode mode,
   #endif
     return true;
   }
-
   return false;
 }
 
@@ -132,7 +132,8 @@ bool FilesystemNode::getAllChildren(FSList& fslist, ListMode mode,
 bool FilesystemNode::getChildren(FSList& fslist, ListMode mode,
                                  const NameFilter& filter,
                                  bool includeChildDirectories,
-                                 bool includeParentDirectory) const
+                                 bool includeParentDirectory,
+                                 const CancelCheck& isCancelled) const
 {
   if (!_realNode || !_realNode->isDirectory())
     return false;
@@ -146,6 +147,9 @@ bool FilesystemNode::getChildren(FSList& fslist, ListMode mode,
   // when incuding child directories, everything must be sorted once at the end
   if(!includeChildDirectories)
   {
+    if(isCancelled())
+      return false;
+
   #if defined(ZIP_SUPPORT)
     // before sorting, replace single file ZIP archive names with contained file names
     //  because they are displayed using their contained file names
@@ -182,6 +186,9 @@ bool FilesystemNode::getChildren(FSList& fslist, ListMode mode,
   // And now add the rest of the entries
   for (const auto& i: tmp)
   {
+    if(isCancelled())
+      return false;
+
   #if defined(ZIP_SUPPORT)
     if (BSPF::endsWithIgnoreCase(i->getPath(), ".zip"))
     {
@@ -214,7 +221,7 @@ bool FilesystemNode::getChildren(FSList& fslist, ListMode mode,
       if(includeChildDirectories)
       {
         if(i->isDirectory())
-          node.getChildren(fslist, mode, filter, includeChildDirectories, false);
+          node.getChildren(fslist, mode, filter, includeChildDirectories, false, isCancelled);
         else
           // do not add directories in this mode
           if(filter(node))
@@ -227,7 +234,6 @@ bool FilesystemNode::getChildren(FSList& fslist, ListMode mode,
       }
     }
   }
-
   return true;
 }
 

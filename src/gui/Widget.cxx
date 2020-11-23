@@ -174,6 +174,36 @@ void Widget::drawChain()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Widget::setPosX(int x)
+{
+  setPos(x, _y);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Widget::setPosY(int y)
+{
+  setPos(_x, y);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Widget::setPos(int x, int y)
+{
+  setPos(Common::Point(x, y));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Widget::setPos(const Common::Point& pos)
+{
+  if(pos != Common::Point(_x, _y))
+  {
+    _x = pos.x;
+    _y = pos.y;
+    // we have to redraw the whole dialog!
+    dialog().setDirty();
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Widget::handleMouseEntered()
 {
   if(isEnabled())

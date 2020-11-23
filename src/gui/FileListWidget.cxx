@@ -75,6 +75,9 @@ void FileListWidget::setLocation(const FilesystemNode& node,
 {
   progress().resetProgress();
   progress().open();
+  class FilesystemNode::CancelCheck isCancelled = []() {
+    return myProgressDialog->isCancelled();
+  };
 
   _node = node;
 
@@ -85,21 +88,24 @@ void FileListWidget::setLocation(const FilesystemNode& node,
   {
     // Actually this could become HUGE
     _fileList.reserve(0x2000);
-    _node.getAllChildren(_fileList, _fsmode, _filter);
+    _node.getAllChildren(_fileList, _fsmode, _filter, true, isCancelled);
   }
   else
   {
     _fileList.reserve(0x200);
-    _node.getChildren(_fileList, _fsmode, _filter);
+    _node.getChildren(_fileList, _fsmode, _filter, false, true, isCancelled);
   }
 
-  // Now fill the list widget with the names from the file list
-  StringList l;
-  for(const auto& file : _fileList)
-    l.push_back(file.getName());
+  if(!isCancelled())
+  {
+    // Now fill the list widget with the names from the file list
+    StringList l;
+    for(const auto& file : _fileList)
+      l.push_back(file.getName());
 
-  setList(l);
-  setSelected(select);
+    setList(l);
+    setSelected(select);
+  }
 
   ListWidget::recalc();
 
@@ -134,7 +140,7 @@ void FileListWidget::reload()
 ProgressDialog& FileListWidget::progress()
 {
   if(myProgressDialog == nullptr)
-    myProgressDialog = make_unique<ProgressDialog>(this, _font, "", false);
+    myProgressDialog = make_unique<ProgressDialog>(this, _font, "");
 
   return *myProgressDialog;
 }

@@ -21,6 +21,7 @@
 class GuiObject;
 class StaticTextWidget;
 class SliderWidget;
+class ButtonWidget;
 
 #include "bspf.hxx"
 #include "Dialog.hxx"
@@ -29,7 +30,7 @@ class ProgressDialog : public Dialog
 {
   public:
     ProgressDialog(GuiObject* boss, const GUI::Font& font,
-                   const string& message, bool openDialog = true);
+                   const string& message = "");
     ~ProgressDialog() override = default;
 
     void setMessage(const string& message);
@@ -37,6 +38,7 @@ class ProgressDialog : public Dialog
     void resetProgress();
     void setProgress(int progress);
     void incProgress();
+    bool isCancelled() const { return myIsCancelled; }
 
   private:
     const GUI::Font& myFont;
@@ -46,6 +48,10 @@ class ProgressDialog : public Dialog
     int myStart{0}, myFinish{0}, myStep{0};
     int myProgress{0};
     int myStepProgress{0};
+    bool myIsCancelled{false};
+
+  private:
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
     // Following constructors and assignment operators not supported
