@@ -95,6 +95,8 @@ class LauncherDialog : public Dialog
     */
     void reload();
 
+    void tick() override;
+
   private:
     static constexpr int MIN_LAUNCHER_CHARS = 24;
     static constexpr int MIN_ROMINFO_CHARS = 30;
@@ -194,6 +196,8 @@ class LauncherDialog : public Dialog
     bool myUseMinimalUI{false};
     bool myEventHandled{false};
     bool myShortCount{false};
+    bool myPendingReload{false};
+    uInt64 myReloadTime{0};
 
     enum {
       kAllfilesCmd   = 'lalf',  // show all files (or ROMs only)
