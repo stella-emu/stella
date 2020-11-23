@@ -22,6 +22,7 @@
 #include "Event.hxx"
 #include "EventHandlerConstants.hxx"
 #include "StellaKeys.hxx"
+#include "json.hxx"
 
 /**
   This class handles keyboard mappings in Stella.
@@ -86,8 +87,8 @@ class KeyMap
 
     MappingArray getEventMapping(const Event::Type event, const EventMode mode) const;
 
-    string saveMapping(const EventMode mode) const;
-    int loadMapping(string& list, const EventMode mode);
+    nlohmann::json saveMapping(const EventMode mode) const;
+    int loadMapping(const nlohmann::json& mapping, const EventMode mode);
 
     /** Erase all mappings for given mode */
     void eraseMode(const EventMode mode);
