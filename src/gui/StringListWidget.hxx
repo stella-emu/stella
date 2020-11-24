@@ -41,6 +41,7 @@ class StringListWidget : public ListWidget
     void lostFocusWidget() override { setDirty(); }
 
     bool hasToolTip() const override { return true; }
+    int getToolTipIndex(const Common::Point& pos) const;
 
     void drawWidget(bool hilite) override;
     Common::Rect getEditRect() const override;
@@ -48,9 +49,6 @@ class StringListWidget : public ListWidget
   protected:
     bool _hilite{false};
     int  _textOfs{0};
-
-  private:
-    int getToolTipIndex(const Common::Point& pos) const;
 
   private:
     // Following constructors and assignment operators not supported

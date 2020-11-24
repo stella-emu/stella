@@ -75,7 +75,7 @@ void FileListWidget::setLocation(const FilesystemNode& node,
 {
   progress().resetProgress();
   progress().open();
-  FilesystemNode::CancelCheck isCancelled = []() {
+  class FilesystemNode::CancelCheck isCancelled = []() {
     return myProgressDialog->isCancelled();
   };
 
@@ -96,17 +96,26 @@ void FileListWidget::setLocation(const FilesystemNode& node,
     _node.getChildren(_fileList, _fsmode, _filter, false, true, isCancelled);
   }
 
-  if(!isCancelled())
-  {
-    // Now fill the list widget with the names from the file list
-    StringList l;
-    for(const auto& file : _fileList)
-      l.push_back(file.getName());
+  // Now fill the list widget with the names from the file list,
+  // even if cancelled
+  StringList l;
+  size_t orgLen = node.getShortPath().length();
 
-    setList(l);
-    setSelected(select);
+  _dirList.clear();
+  for(const auto& file : _fileList)
+  {
+    const string path = file.getShortPath();
+
+    l.push_back(file.getName());
+    // display only relative path in tooltip
+    if(path.length() >= orgLen)
+      _dirList.push_back(path.substr(orgLen));
+    else
+      _dirList.push_back(path);
   }
 
+  setList(l);
+  setSelected(select);
   ListWidget::recalc();
 
   progress().close();
@@ -236,6 +245,27 @@ void FileListWidget::handleCommand(CommandSender* sender, int cmd, int data, int
   sendCommand(cmd, data, id);
   setTarget(this);
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string FileListWidget::getToolTip(const Common::Point& pos) const
+{
+  Common::Rect rect = getEditRect();
+  int idx = getToolTipIndex(pos);
+
+  if(idx < 0)
+    return EmptyString;
+
+  if(_includeSubDirs && _dirList.size() > idx)
+    return _toolTipText + _dirList[idx];
+
+  const string value = _list[idx];
+
+  if(uInt32(_font.getStringWidth(value)) > rect.w())
+    return _toolTipText + value;
+  else
+    return _toolTipText;
+}
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt64 FileListWidget::_QUICK_SELECT_DELAY = 300;
