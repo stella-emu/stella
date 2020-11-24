@@ -15,9 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-// TODO:
-// - abort current file list reload when typing
-
 #include "bspf.hxx"
 #include "Bankswitch.hxx"
 #include "BrowserDialog.hxx"
@@ -90,10 +87,10 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
 
   int lwSelect = font.getStringWidth(lblSelect);
   int cwAllFiles = font.getStringWidth(lblAllFiles) + CheckboxWidget::prefixSize(font);
-  int lwFilter = font.getStringWidth(lblFilter);
   int cwSubDirs = font.getStringWidth(lblSubDirs) + CheckboxWidget::prefixSize(font);
+  int lwFilter = font.getStringWidth(lblFilter);
   int lwFound = font.getStringWidth(lblFound);
-  int wTotal = HBORDER * 2 + lwSelect + cwAllFiles + lwFilter + cwSubDirs + lwFound
+  int wTotal = HBORDER * 2 + lwSelect + cwAllFiles + cwSubDirs + lwFilter + lwFound
     + EditTextWidget::calcWidth(font, "123456") + LBL_GAP * 7;
   bool noSelect = false;
 
@@ -174,13 +171,6 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
                             xpos - cwSubDirs - lwFilter - cwAllFiles
                             - lwSelect - HBORDER - LBL_GAP * (noSelect ? 5 : 7));
 
-    // Show the subdirectories checkbox
-    xpos -= cwSubDirs + LBL_GAP;
-    mySubDirs = new CheckboxWidget(this, font, xpos, ypos, lblSubDirs, kSubDirsCmd);
-    ostringstream tip;
-    tip << "Search files in subdirectories too.";
-    mySubDirs->setToolTip(tip.str());
-
     // Show the filter input field
     xpos -= fwFilter + LBL_GAP;
     myPattern = new EditTextWidget(this, font, xpos, ypos - 2, fwFilter, lineHeight, "");
@@ -191,11 +181,18 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
     xpos -= lwFilter + LBL_GAP;
     new StaticTextWidget(this, font, xpos, ypos, lblFilter);
 
+    // Show the subdirectories checkbox
+    xpos -= cwSubDirs + LBL_GAP * 2;
+    mySubDirs = new CheckboxWidget(this, font, xpos, ypos, lblSubDirs, kSubDirsCmd);
+    ostringstream tip;
+    tip << "Search files in subdirectories too.";
+    mySubDirs->setToolTip(tip.str());
+
     // Show the checkbox for all files
     if(noSelect)
       xpos = HBORDER;
     else
-      xpos -= cwAllFiles + LBL_GAP * 2;
+      xpos -= cwAllFiles + LBL_GAP;
     myAllFiles = new CheckboxWidget(this, font, xpos, ypos, lblAllFiles, kAllfilesCmd);
     myAllFiles->setToolTip("Uncheck to show ROM files only.");
 
@@ -386,6 +383,10 @@ void LauncherDialog::loadConfig()
     instance().settings().setValue("stella.version", STELLA_VERSION);
   }
 
+  bool subDirs = instance().settings().getBool("launchersubdirs");
+  mySubDirs->setState(subDirs);
+  myList->setIncludeSubDirs(subDirs);
+
   // Assume that if the list is empty, this is the first time that loadConfig()
   // has been called (and we should reload the list)
   if(myList->getList().empty())
@@ -408,6 +409,7 @@ void LauncherDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::saveConfig()
 {
+  instance().settings().setValue("launchersubdirs", mySubDirs->getState());
   if(instance().settings().getBool("followlauncher"))
     instance().settings().setValue("romdir", myList->currentDir().getShortPath());
 }

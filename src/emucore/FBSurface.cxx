@@ -336,7 +336,7 @@ void FBSurface::splitString(const GUI::Font& font, const string& s, int w,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FBSurface::isWhiteSpace(const char s) const
 {
-  const string WHITESPACES = " ,.;:+-*/'([\n";
+  const string WHITESPACES = " ,.;:+-*/\\'([\n";
 
   for(size_t i = 0; i < WHITESPACES.length(); ++i)
     if(s == WHITESPACES[i])
