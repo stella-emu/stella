@@ -75,7 +75,7 @@ void FileListWidget::setLocation(const FilesystemNode& node,
 {
   progress().resetProgress();
   progress().open();
-  class FilesystemNode::CancelCheck isCancelled = []() {
+  FilesystemNode::CancelCheck isCancelled = []() {
     return myProgressDialog->isCancelled();
   };
 
@@ -255,7 +255,7 @@ string FileListWidget::getToolTip(const Common::Point& pos) const
   if(idx < 0)
     return EmptyString;
 
-  if(_includeSubDirs && _dirList.size() > idx)
+  if(_includeSubDirs && static_cast<int>(_dirList.size()) > idx)
     return _toolTipText + _dirList[idx];
 
   const string value = _list[idx];
