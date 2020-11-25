@@ -707,7 +707,8 @@ inline bool FrameBuffer::drawMessage()
 
   if(myMsg.dirty)
   {
-    cerr << "--- draw message ---" << endl;
+    cerr << "m";
+    //cerr << "--- draw message ---" << endl;
 
     // Draw the bounded box and text
     const Common::Rect& dst = myMsg.surface->dstRect();
