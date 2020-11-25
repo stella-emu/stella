@@ -86,7 +86,7 @@ void ProgressDialog::setMessage(const string& message)
   myMessage->setLabel(message);
   mySlider->setWidth(lwidth);
 
-  _cancelWidget->setPos((_w - buttonWidth) / 2, _cancelWidget->getTop());
+  _cancelWidget->setPosX((_w - buttonWidth) / 2);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
