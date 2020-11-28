@@ -384,7 +384,7 @@ void LauncherDialog::loadConfig()
   }
 
   bool subDirs = instance().settings().getBool("launchersubdirs");
-  mySubDirs->setState(subDirs);
+  if (mySubDirs) mySubDirs->setState(subDirs);
   myList->setIncludeSubDirs(subDirs);
 
   // Assume that if the list is empty, this is the first time that loadConfig()
