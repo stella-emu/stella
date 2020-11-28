@@ -16,6 +16,10 @@
 //============================================================================
 
 #include "JoyMap.hxx"
+#include "jsonDefinitions.hxx"
+#include "Logger.hxx"
+
+using json = nlohmann::json;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void JoyMap::add(const Event::Type event, const JoyMapping& mapping)
@@ -183,67 +187,105 @@ JoyMap::JoyMappingArray JoyMap::getEventMapping(const Event::Type event, const E
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string JoyMap::saveMapping(const EventMode mode) const
+json JoyMap::saveMapping(const EventMode mode) const
 {
-  using MapType = std::pair<JoyMapping, Event::Type>;
-  std::vector<MapType> sortedMap(myMap.begin(), myMap.end());
+  json eventMappings = json::array();
 
-  std::sort(sortedMap.begin(), sortedMap.end(),
-    [](const MapType& a, const MapType& b)
-    {
-      // Event::Type first
-      if(a.second != b.second)
-        return a.second < b.second;
+  for (auto& item: myMap) {
+    if (item.first.mode != mode) continue;
 
-      if(a.first.button != b.first.button)
-        return a.first.button < b.first.button;
+    json eventMapping = json::object();
 
-      if(a.first.axis != b.first.axis)
-        return a.first.axis < b.first.axis;
+    eventMapping["event"] = item.second;
 
-      if(a.first.adir != b.first.adir)
-        return a.first.adir < b.first.adir;
+    if (item.first.button != JOY_CTRL_NONE) eventMapping["button"] = item.first.button;
 
-      if(a.first.hat != b.first.hat)
-        return a.first.hat < b.first.hat;
-
-      return a.first.hdir < b.first.hdir;
+    if (item.first.axis != JoyAxis::NONE) {
+      eventMapping["axis"] = item.first.axis;
+      eventMapping["axisDirection"] = item.first.adir;
     }
-  );
 
-  ostringstream buf;
-
-  for (auto item : sortedMap)
-  {
-    if (item.first.mode == mode)
-    {
-      if (buf.str() != "")
-        buf << "|";
-      buf << item.second << ":" << item.first.button << ","
-        << int(item.first.axis) << "," << int(item.first.adir) << ","
-        << item.first.hat << "," << int(item.first.hdir);
+    if (item.first.hat != -1) {
+      eventMapping["hat"] = item.first.hat;
+      eventMapping["hatDirection"] = item.first.hdir;
     }
+
+    eventMappings.push_back(eventMapping);
   }
-  return buf.str();
+
+  return eventMappings;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int JoyMap::loadMapping(string& list, const EventMode mode)
+int JoyMap::loadMapping(const json& eventMappings, const EventMode mode)
 {
+  int i = 0;
+
+  for (const json& eventMapping: eventMappings) {
+    int button = eventMapping.contains("button") ? eventMapping.at("button").get<int>() : JOY_CTRL_NONE;
+    JoyAxis axis = eventMapping.contains("axis") ? eventMapping.at("axis").get<JoyAxis>() : JoyAxis::NONE;
+    JoyDir axisDirection = eventMapping.contains("axis") ? eventMapping.at("axisDirection").get<JoyDir>() : JoyDir::NONE;
+    int hat = eventMapping.contains("hat") ? eventMapping.at("hat").get<int>() : -1;
+    JoyHatDir hatDirection = eventMapping.contains("hat") ? eventMapping.at("hatDirection").get<JoyHatDir>() : JoyHatDir::CENTER;
+
+    try {
+      add(
+        eventMapping.at("event").get<Event::Type>(),
+        mode,
+        button,
+        axis,
+        axisDirection,
+        hat,
+        hatDirection
+      );
+
+      i++;
+    } catch (json::exception) {
+      Logger::error("ignoring invalid joystick event");
+    }
+  }
+
+  return i;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+json JoyMap::convertLegacyMapping(string list)
+{
+  json eventMappings = json::array();
+
   // Since istringstream swallows whitespace, we have to make the
   // delimiters be spaces
   std::replace(list.begin(), list.end(), '|', ' ');
   std::replace(list.begin(), list.end(), ':', ' ');
   std::replace(list.begin(), list.end(), ',', ' ');
+
   istringstream buf(list);
-  int event, button, axis, adir, hat, hdir, i = 0;
+  int event, button, axis, adir, hat, hdir;
 
   while (buf >> event && buf >> button
          && buf >> axis && buf >> adir
-         && buf >> hat && buf >> hdir && ++i)
-    add(Event::Type(event), EventMode(mode), button, JoyAxis(axis), JoyDir(adir), hat, JoyHatDir(hdir));
+         && buf >> hat && buf >> hdir)
+  {
+    json eventMapping = json::object();
 
-  return i;
+    eventMapping["event"] = Event::Type(event);
+
+    if (button != JOY_CTRL_NONE) eventMapping["button"] = button;
+
+    if (JoyAxis(axis) != JoyAxis::NONE) {
+      eventMapping["axis"] = JoyAxis(axis);
+      eventMapping["axisDirection"] = JoyDir(adir);
+    }
+
+    if (hat != -1) {
+      eventMapping["hat"] = hat;
+      eventMapping["hatDirection"] = JoyHatDir(hdir);
+    }
+
+    eventMappings.push_back(eventMapping);
+  }
+
+  return eventMappings;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

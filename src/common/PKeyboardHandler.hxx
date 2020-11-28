@@ -45,6 +45,8 @@ class PhysicalKeyboardHandler
 
     PhysicalKeyboardHandler(OSystem& system, EventHandler& handler);
 
+    void loadSerializedMappings(const string& serializedMappings, EventMode mode);
+
     void setDefaultMapping(Event::Type type, EventMode mode, bool updateDefaults = false);
 
     /** define mappings for current controllers */
