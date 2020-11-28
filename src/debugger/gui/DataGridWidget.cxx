@@ -107,14 +107,20 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
 void DataGridWidget::setList(const IntArray& alist, const IntArray& vlist,
                              const BoolArray& changed)
 {
-/*
-cerr << "alist.size() = "     << alist.size()
-     << ", vlist.size() = "   << vlist.size()
-     << ", changed.size() = " << changed.size()
-     << ", _rows*_cols = "    << _rows * _cols << endl << endl;
-*/
+  /*
+  cerr << "alist.size() = "     << alist.size()
+       << ", vlist.size() = "   << vlist.size()
+       << ", changed.size() = " << changed.size()
+       << ", _rows*_cols = "    << _rows * _cols << endl << endl;
+  */
   int size = int(vlist.size());  // assume the alist is the same size
   assert(size == _rows * _cols);
+
+  bool dirty = _editMode
+    || !std::equal(_valueList.begin(), _valueList.end(),
+                   vlist.begin(), vlist.end())
+    || !std::equal(_changedList.begin(), _changedList.end(),
+                   changed.begin(), changed.end());
 
   _addrList.clear();
   _valueList.clear();
@@ -130,19 +136,22 @@ cerr << "alist.size() = "     << alist.size()
   for(int i = 0; i < size; ++i)
     _valueStringList.push_back(Common::Base::toString(_valueList[i], _base));
 
-/*
-cerr << "_addrList.size() = "     << _addrList.size()
-     << ", _valueList.size() = "   << _valueList.size()
-     << ", _changedList.size() = " << _changedList.size()
-     << ", _valueStringList.size() = " << _valueStringList.size()
-     << ", _rows*_cols = "    << _rows * _cols << endl << endl;
-*/
+  /*
+  cerr << "_addrList.size() = "     << _addrList.size()
+       << ", _valueList.size() = "   << _valueList.size()
+       << ", _changedList.size() = " << _changedList.size()
+       << ", _valueStringList.size() = " << _valueStringList.size()
+       << ", _rows*_cols = "    << _rows * _cols << endl << endl;
+  */
   enableEditMode(false);
 
-  // Send item selected signal for starting with cell 0
-  sendCommand(DataGridWidget::kSelectionChangedCmd, _selectedItem, _id);
+  if(dirty)
+  {
+    // Send item selected signal for starting with cell 0
+    sendCommand(DataGridWidget::kSelectionChangedCmd, _selectedItem, _id);
 
-  setDirty();
+    setDirty();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -706,6 +715,16 @@ Common::Rect DataGridWidget::getEditRect() const
 int DataGridWidget::getWidth() const
 {
   return _w + (_scrollBar ? ScrollBarWidget::scrollBarWidth(_font) : 0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DataGridWidget::setCrossed(bool enable)
+{
+  if(_crossGrid != enable)
+  {
+    _crossGrid = enable;
+    setDirty();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

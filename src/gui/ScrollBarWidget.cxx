@@ -251,6 +251,9 @@ void ScrollBarWidget::handleMouseLeft()
 void ScrollBarWidget::recalc()
 {
 //cerr << "ScrollBarWidget::recalc()\n";
+  int oldSliderHeight = _sliderHeight,
+    oldSliderPos = _sliderPos;
+
   if(_numEntries > _entriesPerPage)
   {
     _sliderHeight = (_h - 2 * _upDownBoxHeight) * _entriesPerPage / _numEntries;
@@ -268,7 +271,8 @@ void ScrollBarWidget::recalc()
     _sliderPos = _upDownBoxHeight;
   }
 
-  setDirty();
+  if(oldSliderHeight != _sliderHeight || oldSliderPos != _sliderPos)
+    setDirty(); // only set dirty when something changed
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

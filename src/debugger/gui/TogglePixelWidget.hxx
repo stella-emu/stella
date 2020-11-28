@@ -39,7 +39,7 @@ class TogglePixelWidget : public ToggleWidget
     void setIntState(int value, bool swap = false);
     int  getIntState();
 
-    void setCrossed(bool enable) { _crossBits = enable; }
+    void setCrossed(bool enable);
 
   private:
     ColorId _pixelColor{kNone}, _backgroundColor{kDlgColor};

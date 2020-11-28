@@ -37,8 +37,21 @@ ColorWidget::ColorWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ColorWidget::setColor(ColorId color)
 {
-  _color = color;
-  setDirty();
+  if(_color != color)
+  {
+    _color = color;
+    setDirty();
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ColorWidget::setCrossed(bool enable)
+{
+  if(_crossGrid != enable)
+  {
+    _crossGrid = enable;
+    setDirty();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

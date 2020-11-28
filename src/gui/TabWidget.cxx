@@ -110,6 +110,9 @@ void TabWidget::setActiveTab(int tabID, bool show)
     _tabs[_activeTab].firstWidget = _firstWidget;
   }
 
+  if(_activeTab != tabID)
+    setDirty();
+
   _activeTab = tabID;
   _firstWidget  = _tabs[tabID].firstWidget;
 
@@ -137,8 +140,6 @@ void TabWidget::updateActiveTab()
 
   if(_tabs[_activeTab].parentWidget)
     _tabs[_activeTab].parentWidget->loadConfig();
-
-  setDirty();
 
   // Redraw focused areas
   _boss->redrawFocus(); // TJ: Does nothing!

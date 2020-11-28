@@ -425,19 +425,18 @@ StaticTextWidget::StaticTextWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StaticTextWidget::setValue(int value)
 {
-  _label = std::to_string(value);
-
-  setDirty();
+  setLabel(std::to_string(value));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StaticTextWidget::setLabel(const string& label)
 {
-  _label = label;
-
-  setDirty();
+  if(_label != label)
+  {
+    _label = label;
+    setDirty();
+  }
 }
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StaticTextWidget::handleMouseEntered()
@@ -710,12 +709,13 @@ void CheckboxWidget::setFill(FillType type)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheckboxWidget::setState(bool state, bool changed)
 {
-  if(_state != state)
+  if(_state != state || _changed != changed)
   {
-    _state = state;
     setDirty();
+
+    _state = state;
+    _changed = changed;
   }
-  _changed = changed;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
