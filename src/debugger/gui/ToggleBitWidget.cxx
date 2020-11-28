@@ -70,12 +70,14 @@ void ToggleBitWidget::setList(const StringList& off, const StringList& on)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ToggleBitWidget::setState(const BoolArray& state, const BoolArray& changed)
 {
+  if(!std::equal(_changedList.begin(), _changedList.end(),
+     changed.begin(), changed.end()))
+    setDirty();
+
   _stateList.clear();
   _stateList = state;
   _changedList.clear();
   _changedList = changed;
-
-  setDirty();
 }
 
 

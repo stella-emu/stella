@@ -272,84 +272,72 @@ void DebuggerDialog::handleCommand(CommandSender* sender, int cmd,
 void DebuggerDialog::doStep()
 {
   instance().debugger().parser().run("step");
-  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::doTrace()
 {
   instance().debugger().parser().run("trace");
-  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::doAdvance()
 {
   instance().debugger().parser().run("frame #1");
-  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::doScanlineAdvance()
 {
   instance().debugger().parser().run("scanline #1");
-  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::doRewind()
 {
   instance().debugger().parser().run("rewind");
-  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::doUnwind()
 {
   instance().debugger().parser().run("unwind");
-  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::doRewind10()
 {
   instance().debugger().parser().run("rewind #10");
-  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::doUnwind10()
 {
   instance().debugger().parser().run("unwind #10");
-  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::doRewindAll()
 {
   instance().debugger().parser().run("rewind #1000");
-  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::doUnwindAll()
 {
   instance().debugger().parser().run("unwind #1000");
-  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::doExitDebugger()
 {
   instance().debugger().parser().run("run");
-  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::doExitRom()
 {
   instance().debugger().parser().run("exitrom");
-  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

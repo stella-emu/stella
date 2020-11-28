@@ -81,7 +81,6 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
   ypos += lineHeight + VGAP;
   new StaticTextWidget(boss, lfont, xpos, ypos + 1, "Total");
   myTotalCycles = new EditTextWidget(boss, nfont, xpos + lwidth8, ypos - 1, twidth, lineHeight);
-  myTotalCycles->setToolTip("Total CPU cycles executed for this session (E notation).");
   myTotalCycles->setEditable(false, true);
 
   // Left: Delta Cycles
@@ -170,7 +169,10 @@ void TiaInfoWidget::loadConfig()
   uInt64 total = tia.cyclesLo() + (uInt64(tia.cyclesHi()) << 32);
   uInt64 totalOld = oldTia.info[2] + (uInt64(oldTia.info[3]) << 32);
   myTotalCycles->setText(Common::Base::toString(uInt32(total) / 1000000, Common::Base::Fmt::_10_6) + "e6",
-                         total != totalOld);
+                         total / 1000000 != totalOld / 1000000);
+  myTotalCycles->setToolTip("Total CPU cycles (E notation) executed for this session ("
+                            + std::to_string(total) + ").");
+
   uInt64 delta = total - totalOld;
   myDeltaCycles->setText(Common::Base::toString(uInt32(delta), Common::Base::Fmt::_10_8)); // no coloring
 

@@ -78,7 +78,11 @@ void PopUpWidget::setSelected(const Variant& tag, const Variant& def)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PopUpWidget::setSelectedIndex(int idx, bool changed)
 {
-  _changed = changed;
+  if(_changed != changed)
+  {
+    _changed = changed;
+    setDirty();
+  }
   myMenu->setSelectedIndex(idx);
   setText(myMenu->getSelectedName());
 }
@@ -86,6 +90,11 @@ void PopUpWidget::setSelectedIndex(int idx, bool changed)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PopUpWidget::setSelectedMax(bool changed)
 {
+  if(_changed != changed)
+  {
+    _changed = changed;
+    setDirty();
+  }
   _changed = changed;
   myMenu->setSelectedMax();
   setText(myMenu->getSelectedName());

@@ -82,7 +82,7 @@ class DataGridWidget : public EditableWidget
 
     void setOpsWidget(DataGridOpsWidget* w) { _opsWidget = w; }
 
-    void setCrossed(bool enable) { _crossGrid = enable; }
+    void setCrossed(bool enable);
 
     string getToolTip(const Common::Point& pos) const override;
     bool changedToolTip(const Common::Point& oldPos, const Common::Point& newPos) const override;

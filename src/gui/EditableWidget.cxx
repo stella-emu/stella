@@ -43,13 +43,17 @@ EditableWidget::EditableWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EditableWidget::setText(const string& str, bool)
+void EditableWidget::setText(const string& str, bool changed)
 {
+  const string oldEditString = _editString;
   // Filter input string
   _editString = "";
   for(char c: str)
     if(_filter(tolower(c)))
       _editString.push_back(c);
+
+  if(oldEditString != _editString)
+    setDirty();
 
   myUndoHandler->reset();
   myUndoHandler->doo(_editString);
@@ -60,8 +64,6 @@ void EditableWidget::setText(const string& str, bool)
   _editScrollOffset = (_font.getStringWidth(_editString) - (getEditRect().w()));
   if (_editScrollOffset < 0)
     _editScrollOffset = 0;
-
-  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

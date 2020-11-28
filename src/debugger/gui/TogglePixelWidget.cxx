@@ -51,15 +51,18 @@ void TogglePixelWidget::setState(const BoolArray& state)
     for(int col = 0; col < _cols; col++)
     {
       int pos = row * _cols + col;
+      bool changed = _stateList[pos] != state[pos];
 
-       _changedList[pos] = _stateList[pos] != state[pos];
+      if(_changedList[pos] != changed)
+      {
+        _changedList[pos] = changed;
+        setDirty();
+      }
     }
   }
 
   _stateList.clear();
   _stateList = state;
-
-  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -111,6 +114,16 @@ int TogglePixelWidget::getIntState()
   }
 
   return value;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TogglePixelWidget::setCrossed(bool enable)
+{
+  if(_crossBits != enable)
+  {
+    _crossBits = enable;
+    setDirty();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
