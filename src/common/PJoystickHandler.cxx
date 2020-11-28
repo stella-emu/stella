@@ -48,7 +48,7 @@ PhysicalJoystickHandler::PhysicalJoystickHandler(
   try {
     mappings = json::parse(serializedMapping);
   } catch (json::exception) {
-    Logger::info("converting legacy joystrick mappings");
+    Logger::info("converting legacy joystick mappings");
 
     mappings = convertLegacyMapping(serializedMapping);
   }
