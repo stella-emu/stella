@@ -43,7 +43,7 @@ TARGET_NAME = stella
 
 
 ifeq (,$(findstring msvc,$(platform)))
-   CXXFLAGS += -std=c++14 -fno-rtti
+   CXXFLAGS += -std=c++17 -fno-rtti
    LIBS := -lm
 else
    LIBS :=
@@ -282,8 +282,8 @@ else ifneq (,$(filter $(platform), ngc wii wiiu))
 else ifeq ($(platform), emscripten)
    TARGET := $(TARGET_NAME)_libretro_$(platform).bc
    STATIC_LINKING = 1
-   CXXFLAGS += $(PTHREAD_FLAGS) -std=c++14
-   LDFLAGS += $(PTHREAD_FLAGS) -std=c++14
+   CXXFLAGS += $(PTHREAD_FLAGS) -std=c++17
+   LDFLAGS += $(PTHREAD_FLAGS) -std=c++17
 
 # Genode
 else ifeq ($(platform), genode)
