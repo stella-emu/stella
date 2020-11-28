@@ -22,7 +22,7 @@
 #include "Event.hxx"
 #include "EventHandlerConstants.hxx"
 #include "StellaKeys.hxx"
-#include "json.hxx"
+#include "json_lib.hxx"
 
 /**
   This class handles keyboard mappings in Stella.
