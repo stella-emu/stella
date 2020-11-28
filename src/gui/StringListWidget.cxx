@@ -24,8 +24,9 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StringListWidget::StringListWidget(GuiObject* boss, const GUI::Font& font,
-                                   int x, int y, int w, int h, bool hilite)
-  : ListWidget(boss, font, x, y, w, h),
+                                   int x, int y, int w, int h, bool hilite,
+                                   bool useScrollbar)
+  : ListWidget(boss, font, x, y, w, h, useScrollbar),
     _hilite(hilite)
 {
   _bgcolorlo = kDlgColor;
@@ -50,48 +51,69 @@ void StringListWidget::setList(const StringList& list)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StringListWidget::handleMouseEntered()
+int StringListWidget::getToolTipIndex(const Common::Point& pos) const
 {
-  setFlags(Widget::FLAG_HILITED);
-  setDirty();
+  int idx = (pos.y - getAbsY()) / _lineHeight + _currentPos;
+
+  if(idx >= int(_list.size()))
+    return -1;
+  else
+    return idx;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StringListWidget::handleMouseLeft()
+string StringListWidget::getToolTip(const Common::Point& pos) const
 {
-  clearFlags(Widget::FLAG_HILITED);
-  setDirty();
+  Common::Rect rect = getEditRect();
+  int idx = getToolTipIndex(pos);
+
+  if(idx < 0)
+    return EmptyString;
+
+  const string value = _list[idx];
+
+  if(uInt32(_font.getStringWidth(value)) > rect.w())
+    return _toolTipText + value;
+  else
+    return _toolTipText;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool StringListWidget::changedToolTip(const Common::Point& oldPos,
+                                      const Common::Point& newPos) const
+{
+  return getToolTipIndex(oldPos) != getToolTipIndex(newPos)
+    && getToolTip(oldPos) != getToolTip(newPos);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StringListWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
-  bool onTop = _boss->dialog().isOnTop();
   int i, pos, len = int(_list.size());
 
   // Draw a thin frame around the list.
-  s.frameRect(_x, _y, _w + 1, _h, onTop && hilite && _hilite ? kWidColorHi : kColor);
+  s.frameRect(_x, _y, _w + 1, _h, hilite && _hilite ? kWidColorHi : kColor);
 
   if (!isEnabled())
-    s.fillRect(_x + 1, _y + 1, _w - 1, _h - 2, onTop ? kDlgColor : kBGColorLo);
+    s.fillRect(_x + 1, _y + 1, _w - 1, _h - 2, kDlgColor);
 
   // Draw the list items
   for (i = 0, pos = _currentPos; i < _rows && pos < len; i++, pos++)
   {
-    const int y = _y + 2 + _fontHeight * i;
-    ColorId textColor = onTop ? kTextColor : kShadowColor;
+    const int y = _y + 2 + _lineHeight * i;
+    ColorId textColor = kTextColor;
 
     // Draw the selected item inverted, on a highlighted background.
-    if (onTop && _selectedItem == pos && _hilite)
+    if (_selectedItem == pos && _hilite)
     {
       if(_hasFocus && !_editMode)
       {
-        s.fillRect(_x + 1, _y + 1 + _fontHeight * i, _w - 1, _fontHeight, kTextColorHi);
+        s.fillRect(_x + 1, _y + 1 + _lineHeight * i, _w - 1, _lineHeight, kTextColorHi);
         textColor = kTextColorInv;
       }
       else
-        s.frameRect(_x + 1, _y + 1 + _fontHeight * i, _w - 1, _fontHeight, kWidColorHi);
+        s.frameRect(_x + 1, _y + 1 + _lineHeight * i, _w - 1, _lineHeight, kWidColorHi);
     }
 
     Common::Rect r(getEditRect());
@@ -107,14 +129,16 @@ void StringListWidget::drawWidget(bool hilite)
   }
 
   // Only draw the caret while editing, and if it's in the current viewport
-  if(_editMode && (_selectedItem >= _scrollBar->_currentPos) &&
-    (_selectedItem < _scrollBar->_currentPos + _rows))
-    drawCaret();
+  if(_editMode &&
+     (!_useScrollbar ||
+     ((_selectedItem >= _scrollBar->_currentPos) &&
+      (_selectedItem < _scrollBar->_currentPos + _rows))))
+    drawCaretSelection();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Common::Rect StringListWidget::getEditRect() const
 {
-  const int offset = std::max(0, (_selectedItem - _currentPos) * _fontHeight);
-  return Common::Rect(_textOfs, 1 + offset, _w - _textOfs, _fontHeight + offset);
+  const int offset = std::max(0, (_selectedItem - _currentPos) * _lineHeight);
+  return Common::Rect(_textOfs, 1 + offset, _w - _textOfs, _lineHeight + offset);
 }

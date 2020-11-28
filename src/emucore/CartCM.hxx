@@ -122,7 +122,7 @@ class CartridgeCM : public Cartridge
     */
     CartridgeCM(const ByteBuffer& image, size_t size, const string& md5,
                 const Settings& settings);
-    virtual ~CartridgeCM() = default;
+    ~CartridgeCM() override = default;
 
   public:
     /**
@@ -257,7 +257,7 @@ class CartridgeCM : public Cartridge
     // Indicates the offset into the ROM image (aligns to current bank)
     uInt16 myBankOffset{0};
 
-private:
+  private:
     // Following constructors and assignment operators not supported
     CartridgeCM() = delete;
     CartridgeCM(const CartridgeCM&) = delete;

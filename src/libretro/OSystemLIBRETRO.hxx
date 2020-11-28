@@ -32,7 +32,7 @@ class OSystemLIBRETRO : public OSystem
 {
   public:
     OSystemLIBRETRO() = default;
-    virtual ~OSystemLIBRETRO() = default;
+    ~OSystemLIBRETRO() override = default;
 
     /**
       Determine the base directory and main configuration file from the

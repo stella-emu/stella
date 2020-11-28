@@ -17,6 +17,7 @@
 
 #include "TIA.hxx"
 #include "M6502.hxx"
+#include "M6532.hxx"
 #include "Control.hxx"
 #include "Paddles.hxx"
 #include "DelayQueueIteratorImpl.hxx"
@@ -162,7 +163,10 @@ void TIA::initialize()
 
   myDelayQueue.reset();
 
+#ifdef DEBUGGER_SUPPORT
   myCyclesAtFrameStart = 0;
+  myFrameWsyncCycles = 0;
+#endif
 
   if (myFrameManager)
     myFrameManager->reset();
@@ -278,13 +282,17 @@ bool TIA::save(Serializer& out) const
 
     out.putByteArray(myShadowRegisters.data(), myShadowRegisters.size());
 
+  #ifdef DEBUGGER_SUPPORT
     out.putLong(myCyclesAtFrameStart);
+    out.putLong(myFrameWsyncCycles);
+  #endif
 
     out.putInt(myFrameBufferScanlines);
     out.putInt(myFrontBufferScanlines);
 
     out.putByte(myPFBitsDelay);
     out.putByte(myPFColorDelay);
+    out.putByte(myBKColorDelay);
     out.putByte(myPlSwapDelay);
   }
   catch(...)
@@ -349,13 +357,17 @@ bool TIA::load(Serializer& in)
 
     in.getByteArray(myShadowRegisters.data(), myShadowRegisters.size());
 
+  #ifdef DEBUGGER_SUPPORT
     myCyclesAtFrameStart = in.getLong();
+    myFrameWsyncCycles = in.getLong();
+  #endif
 
     myFrameBufferScanlines = in.getInt();
     myFrontBufferScanlines = in.getInt();
 
     myPFBitsDelay = in.getByte();
     myPFColorDelay = in.getByte();
+    myBKColorDelay = in.getByte();
     myPlSwapDelay = in.getByte();
 
     // Re-apply dev settings
@@ -521,6 +533,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
 
       for (PaddleReader& paddleReader : myPaddleReaders)
         paddleReader.vblank(value, myTimestamp);
+      updateDumpPorts(value);
 
       myDelayQueue.push(VBLANK, value, Delay::vblank);
 
@@ -605,8 +618,13 @@ bool TIA::poke(uInt16 address, uInt8 value)
     case COLUBK:
     {
       value &= 0xFE;
-      myBackground.setColor(value);
-      myShadowRegisters[address] = value;
+      if(myBKColorDelay)
+        myDelayQueue.push(COLUBK, value, 1);
+      else
+      {
+        myBackground.setColor(value);
+        myShadowRegisters[address] = value;
+      }
     #ifdef DEBUGGER_SUPPORT
       uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
       if(dataAddr)
@@ -918,6 +936,9 @@ void TIA::applyDeveloperSettings()
     setPFColorDelay(custom
                     ? mySettings.getBool("dev.tia.delaypfcolor")
                     : BSPF::equalsIgnoreCase("quickstep", mySettings.getString("dev.tia.type")));
+    setBKColorDelay(custom
+                    ? mySettings.getBool("dev.tia.delaybkcolor")
+                    : BSPF::equalsIgnoreCase("indy500", mySettings.getString("dev.tia.type")));
     setPlSwapDelay(custom
                    ? mySettings.getBool("dev.tia.delayplswap")
                    : BSPF::equalsIgnoreCase("heman", mySettings.getString("dev.tia.type")));
@@ -930,6 +951,7 @@ void TIA::applyDeveloperSettings()
     setBlInvertedPhaseClock(false);
     setPFBitsDelay(false);
     setPFColorDelay(false);
+    setBKColorDelay(false);
     setPlSwapDelay(false);
     setBlSwapDelay(false);
   }
@@ -1292,6 +1314,10 @@ void TIA::updateEmulation()
 void TIA::onFrameStart()
 {
   myXAtRenderingStart = 0;
+#ifdef DEBUGGER_SUPPORT
+  myFrameWsyncCycles = 0;
+  mySystem->m6532().resetTimReadCylces();
+#endif
 
   // Check for colour-loss emulation
   if (myColorLossEnabled)
@@ -1317,7 +1343,9 @@ void TIA::onFrameStart()
 void TIA::onFrameComplete()
 {
   mySystem->m6502().stop();
+#ifdef DEBUGGER_SUPPORT
   myCyclesAtFrameStart = mySystem->cycles();
+#endif
 
   if (myXAtRenderingStart > 0)
     std::fill_n(myBackBuffer.begin(), myXAtRenderingStart, 0);
@@ -1339,6 +1367,9 @@ void TIA::onHalt()
 {
   mySubClock += (TIAConstants::H_CLOCKS - myHctr) % TIAConstants::H_CLOCKS;
   mySystem->incrementCycles(mySubClock / TIAConstants::CYCLE_CLOCKS);
+#ifdef DEBUGGER_SUPPORT
+  myFrameWsyncCycles += 3 + mySubClock / TIAConstants::CYCLE_CLOCKS;
+#endif
   mySubClock %= TIAConstants::CYCLE_CLOCKS;
 }
 
@@ -1609,6 +1640,12 @@ void TIA::setPFColorDelay(bool delayed)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::setBKColorDelay(bool delayed)
+{
+  myBKColorDelay = delayed ? 1 : 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::setPlSwapDelay(bool delayed)
 {
   myPlSwapDelay = delayed ? Delay::shufflePlayer + 1 : Delay::shufflePlayer;
@@ -1681,6 +1718,10 @@ void TIA::delayedWrite(uInt8 address, uInt8 value)
 
     case PF2:
       myPlayfield.pf2(value);
+      break;
+
+    case COLUBK:
+      myBackground.setColor(value);
       break;
 
     case COLUPF:
@@ -1958,6 +1999,24 @@ void TIA::toggleCollM1BL()
 void TIA::toggleCollBLPF()
 {
   myCollisionMask ^= (CollisionMask::ball & CollisionMask::playfield);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::updateDumpPorts(uInt8 value)
+{
+  bool newIsDumped = value & 0x80;
+
+  if(myArePortsDumped != newIsDumped)
+  {
+    myArePortsDumped = newIsDumped;
+    myDumpPortsTimestamp = myTimestamp;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Int64 TIA::dumpPortsCycles()
+{
+  return (myTimestamp - myDumpPortsTimestamp) / 3;
 }
 
 #ifdef DEBUGGER_SUPPORT

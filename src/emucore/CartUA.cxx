@@ -39,11 +39,21 @@ void CartridgeUA::install(System& system)
 
   // Set the page accessing methods for the hot spots
   System::PageAccess access(this, System::PageAccessType::READ);
-  mySystem->setPageAccess(0x0220, access);
-  mySystem->setPageAccess(0x0240, access);
-  mySystem->setPageAccess(0x0220 | 0x80, access);
-  mySystem->setPageAccess(0x0240 | 0x80, access);
+  // Map all potential addresses
+  // - A11, A10 and A8 are not connected to RIOT
+  // - A9 is the fixed part of the hotspot address
+  // - A7 is used by Brazilian carts
+  // - A5 and A4 determine bank
+  for(uInt16 a11 = 0; a11 <= 1; ++a11)
+    for(uInt16 a10 = 0; a10 <= 1; ++a10)
+      for(uInt16 a8 = 0; a8 <= 1; ++a8)
+        for(uInt16 a7 = 0; a7 <= 1; ++a7)
+        {
+          uInt16 addr = (a11 << 11) + (a10 << 10) + (a8 << 8) + (a7 << 7);
 
+          mySystem->setPageAccess(0x0220 | addr, access);
+          mySystem->setPageAccess(0x0240 | addr, access);
+        }
   // Install pages for the startup bank
   bank(startBank());
 }

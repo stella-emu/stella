@@ -117,7 +117,7 @@ bool SoundSDL2::openDevice()
   if(myIsInitializedFlag)
     SDL_CloseAudioDevice(myDevice);
 
-  myDeviceId = BSPF::clamp(myAudioSettings.device(), 0u, uInt32(myDevices.size() - 1));
+  myDeviceId = BSPF::clamp(myAudioSettings.device(), 0U, uInt32(myDevices.size() - 1));
   const char* device = myDeviceId ? myDevices.at(myDeviceId).first.c_str() : nullptr;
 
   myDevice = SDL_OpenAudioDevice(device, 0, &desired, &myHardwareSpec,
@@ -224,7 +224,7 @@ bool SoundSDL2::toggleMute()
   string message = "Sound ";
   message += enabled ? "unmuted" : "muted";
 
-  myOSystem.frameBuffer().showMessage(message);
+  myOSystem.frameBuffer().showTextMessage(message);
 
   //ostringstream strval;
   //uInt32 volume;
@@ -282,7 +282,7 @@ void SoundSDL2::adjustVolume(int direction)
     strval << percent << "%";
   else
     strval << "Off";
-  myOSystem.frameBuffer().showMessage("Volume", strval.str(), percent);
+  myOSystem.frameBuffer().showGaugeMessage("Volume", strval.str(), percent);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

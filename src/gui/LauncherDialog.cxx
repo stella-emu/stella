@@ -31,7 +31,10 @@
 #include "GlobalPropsDialog.hxx"
 #include "StellaSettingsDialog.hxx"
 #include "WhatsNewDialog.hxx"
+#include "ProgressDialog.hxx"
 #include "MessageBox.hxx"
+#include "ToolTip.hxx"
+#include "TimerManager.hxx"
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
 #include "FBSurface.hxx"
@@ -74,23 +77,71 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
             buttonHeight = myUseMinimalUI ? lineHeight - VGAP * 2: lineHeight * 1.25,
             buttonWidth  = (_w - 2 * HBORDER - BUTTON_GAP * (4 - 1));
 
-  int xpos = HBORDER, ypos = VBORDER, lwidth = 0, lwidth2 = 0;
+  int xpos = HBORDER, ypos = VBORDER;
   WidgetArray wid;
-  string lblRom = "Select a ROM from the list" + ELLIPSIS;
+  string lblSelect = "Select a ROM from the list" + ELLIPSIS;
+  string lblAllFiles = "Show all files";
   const string& lblFilter = "Filter";
-  const string& lblAllFiles = "Show all files";
-  const string& lblFound = "XXXX items found";
+  string lblSubDirs = "Incl. subdirectories";
+  string lblFound = "12345 items found";
 
-  lwidth = font.getStringWidth(lblRom);
-  lwidth2 = font.getStringWidth(lblAllFiles) + CheckboxWidget::boxSize(font);
-  int lwidth3 = font.getStringWidth(lblFilter);
-  int lwidth4 = font.getStringWidth(lblFound);
+  tooltip().setFont(font);
 
-  if(w < HBORDER * 2 + lwidth + lwidth2 + lwidth3 + lwidth4 + fontWidth * 6 + LBL_GAP * 8)
+  int lwSelect = font.getStringWidth(lblSelect);
+  int cwAllFiles = font.getStringWidth(lblAllFiles) + CheckboxWidget::prefixSize(font);
+  int cwSubDirs = font.getStringWidth(lblSubDirs) + CheckboxWidget::prefixSize(font);
+  int lwFilter = font.getStringWidth(lblFilter);
+  int lwFound = font.getStringWidth(lblFound);
+  int wTotal = HBORDER * 2 + lwSelect + cwAllFiles + cwSubDirs + lwFilter + lwFound
+    + EditTextWidget::calcWidth(font, "123456") + LBL_GAP * 7;
+  bool noSelect = false;
+
+  if(w < wTotal)
   {
     // make sure there is space for at least 6 characters in the filter field
-    lblRom = "Select a ROM" + ELLIPSIS;
-    lwidth = font.getStringWidth(lblRom);
+    lblSelect = "Select a ROM" + ELLIPSIS;
+    int lwSelectShort = font.getStringWidth(lblSelect);
+
+    wTotal -= lwSelect - lwSelectShort;
+    lwSelect = lwSelectShort;
+  }
+  if(w < wTotal)
+  {
+    // make sure there is space for at least 6 characters in the filter field
+    lblSubDirs = "Subdir.";
+    int cwSubDirsShort = font.getStringWidth(lblSubDirs) + CheckboxWidget::prefixSize(font);
+
+    wTotal -= cwSubDirs - cwSubDirsShort;
+    cwSubDirs = cwSubDirsShort;
+  }
+  if(w < wTotal)
+  {
+    // make sure there is space for at least 6 characters in the filter field
+    lblAllFiles = "All files";
+    int cwAllFilesShort = font.getStringWidth(lblAllFiles) + CheckboxWidget::prefixSize(font);
+
+    wTotal -= cwAllFiles - cwAllFilesShort;
+    cwAllFiles = cwAllFilesShort;
+  }
+  if(w < wTotal)
+  {
+    // make sure there is space for at least 6 characters in the filter field
+    lblFound = "12345 found";
+    int lwFoundShort = font.getStringWidth(lblFound);
+
+    wTotal -= lwFound - lwFoundShort;
+    lwFound = lwFoundShort;
+    myShortCount = true;
+  }
+  if(w < wTotal)
+  {
+    // make sure there is space for at least 6 characters in the filter field
+    lblSelect = "";
+    int lwSelectShort = font.getStringWidth(lblSelect);
+
+    wTotal -= lwSelect - lwSelectShort;
+    lwSelect = lwSelectShort;
+    noSelect = true;
   }
 
   if(myUseMinimalUI)
@@ -107,29 +158,49 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   }
 
   // Show the header
-  new StaticTextWidget(this, font, xpos, ypos, lblRom);
+  new StaticTextWidget(this, font, xpos, ypos, lblSelect);
   // Shop the files counter
-  xpos = _w - HBORDER - lwidth4;
+  xpos = _w - HBORDER - lwFound;
   myRomCount = new StaticTextWidget(this, font, xpos, ypos,
-                                    lwidth4, fontHeight,
+                                    lwFound, fontHeight,
                                     "", TextAlign::Right);
 
   // Add filter that can narrow the results shown in the listing
   // It has to fit between both labels
   if(!myUseMinimalUI && w >= 640)
   {
-    int fwidth = std::min(15 * fontWidth, xpos - lwidth3 - lwidth2 - lwidth - HBORDER - LBL_GAP * 8);
+    int fwFilter = std::min(EditTextWidget::calcWidth(font, "123456789012345"),
+                            xpos - cwSubDirs - lwFilter - cwAllFiles
+                            - lwSelect - HBORDER - LBL_GAP * (noSelect ? 5 : 7));
+
     // Show the filter input field
-    xpos -= fwidth + LBL_GAP;
-    myPattern = new EditTextWidget(this, font, xpos, ypos - 2, fwidth, lineHeight, "");
+    xpos -= fwFilter + LBL_GAP;
+    myPattern = new EditTextWidget(this, font, xpos, ypos - 2, fwFilter, lineHeight, "");
+    myPattern->setToolTip("Enter filter text to reduce file list.\n"
+                          "Use '*' and '?' as wildcards.");
+
     // Show the "Filter" label
-    xpos -= lwidth3 + LBL_GAP;
+    xpos -= lwFilter + LBL_GAP;
     new StaticTextWidget(this, font, xpos, ypos, lblFilter);
+
+    // Show the subdirectories checkbox
+    xpos -= cwSubDirs + LBL_GAP * 2;
+    mySubDirs = new CheckboxWidget(this, font, xpos, ypos, lblSubDirs, kSubDirsCmd);
+    ostringstream tip;
+    tip << "Search files in subdirectories too.";
+    mySubDirs->setToolTip(tip.str());
+
     // Show the checkbox for all files
-    xpos -= lwidth2 + LBL_GAP * 3;
+    if(noSelect)
+      xpos = HBORDER;
+    else
+      xpos -= cwAllFiles + LBL_GAP;
     myAllFiles = new CheckboxWidget(this, font, xpos, ypos, lblAllFiles, kAllfilesCmd);
+    myAllFiles->setToolTip("Uncheck to show ROM files only.");
+
     wid.push_back(myAllFiles);
     wid.push_back(myPattern);
+    wid.push_back(mySubDirs);
   }
 
   // Add list with game titles
@@ -164,11 +235,11 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
 
   // Add textfield to show current directory
   xpos = HBORDER;
-  ypos += myList->getHeight() + VGAP * 2;
-  lwidth = font.getStringWidth("Path") + LBL_GAP;
-  myDirLabel = new StaticTextWidget(this, font, xpos, ypos+2, lwidth, fontHeight,
+  ypos += myList->getHeight() + VGAP;
+  lwSelect = font.getStringWidth("Path") + LBL_GAP;
+  myDirLabel = new StaticTextWidget(this, font, xpos, ypos+2, lwSelect, fontHeight,
                                     "Path", TextAlign::Left);
-  xpos += lwidth;
+  xpos += lwSelect;
   myDir = new EditTextWidget(this, font, xpos, ypos, _w - xpos - HBORDER, lineHeight, "");
   myDir->setEditable(false, true);
   myDir->clearFlags(Widget::FLAG_RETAIN_FOCUS);
@@ -216,11 +287,12 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
                                      "Select", kLoadROMCmd);
     wid.push_back(myStartButton);
   #endif
+    myStartButton->setToolTip("Start emulation of selected ROM.");
   }
   if(myUseMinimalUI) // Highlight 'Rom Listing'
     mySelectedItem = 0;
   else
-    mySelectedItem = 2;
+    mySelectedItem = 3;
 
   addToFocusList(wid);
 
@@ -231,6 +303,10 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   // ROM properties
   myGlobalProps = make_unique<GlobalPropsDialog>(this,
     myUseMinimalUI ? osystem.frameBuffer().launcherFont() : osystem.frameBuffer().font());
+
+  // since we cannot know how many files there are, use are really high value here
+  myList->progress().setRange(0, 50000, 5);
+  myList->progress().setMessage("        Filtering files" + ELLIPSIS + "        ");
 
   // Do we show only ROMs or all files?
   bool onlyROMs = instance().settings().getBool("launcherroms");
@@ -280,6 +356,16 @@ void LauncherDialog::reload()
 {
   myMD5List.clear();
   myList->reload();
+  myPendingReload = false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::tick()
+{
+  if(myPendingReload && myReloadTime < TimerManager::getTicks() / 1000)
+    reload();
+
+  Dialog::tick();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -298,6 +384,10 @@ void LauncherDialog::loadConfig()
     openWhatsNew();
     instance().settings().setValue("stella.version", STELLA_VERSION);
   }
+
+  bool subDirs = instance().settings().getBool("launchersubdirs");
+  if (mySubDirs) mySubDirs->setState(subDirs);
+  myList->setIncludeSubDirs(subDirs);
 
   // Assume that if the list is empty, this is the first time that loadConfig()
   // has been called (and we should reload the list)
@@ -321,6 +411,7 @@ void LauncherDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::saveConfig()
 {
+  instance().settings().setValue("launchersubdirs", mySubDirs->getState());
   if(instance().settings().getBool("followlauncher"))
     instance().settings().setValue("romdir", myList->currentDir().getShortPath());
 }
@@ -337,11 +428,80 @@ void LauncherDialog::updateUI()
 
   // Indicate how many files were found
   ostringstream buf;
-  buf << (myList->getList().size() - 1) << " items found";
+  buf << (myList->getList().size() - 1) << (myShortCount ? " found" : " items found");
   myRomCount->setLabel(buf.str());
 
   // Update ROM info UI item
   loadRomInfo();
+}
+
+size_t LauncherDialog::matchWithJoker(const string& str, const string& pattern)
+{
+  if(str.length() >= pattern.length())
+  {
+    // optimize a bit
+    if(pattern.find('?') != string::npos)
+    {
+      for(size_t pos = 0; pos < str.length() - pattern.length() + 1; ++pos)
+      {
+        bool found = true;
+
+        for(size_t i = 0; found && i < pattern.length(); ++i)
+          if(pattern[i] != str[pos + i] && pattern[i] != '?')
+            found = false;
+
+        if(found)
+          return pos;
+      }
+    }
+    else
+      return str.find(pattern);
+  }
+  return string::npos;
+}
+
+bool LauncherDialog::matchWithWildcards(const string& str, const string& pattern)
+{
+  string pat = pattern;
+
+  // remove leading and trailing '*'
+  size_t i = 0;
+  while(pat[i++] == '*');
+  pat = pat.substr(i - 1);
+
+  i = pat.length();
+  while(pat[--i] == '*');
+  pat.erase(i + 1);
+
+  // Search for first '*'
+  size_t pos = pat.find('*');
+
+  if(pos != string::npos)
+  {
+    // '*' found, split pattern into left and right part, search recursively
+    const string leftPat = pat.substr(0, pos);
+    const string rightPat = pat.substr(pos + 1);
+    size_t posLeft = matchWithJoker(str, leftPat);
+
+    if(posLeft != string::npos)
+      return matchWithWildcards(str.substr(pos + posLeft), rightPat);
+    else
+      return false;
+  }
+  // no further '*' found
+  return matchWithJoker(str, pat) != string::npos;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool LauncherDialog::matchWithWildcardsIgnoreCase(const string& str, const string& pattern)
+{
+  string in = str;
+  string pat = pattern;
+
+  BSPF::toUpperCase(in);
+  BSPF::toUpperCase(pat);
+
+  return matchWithWildcards(in, pat);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -349,6 +509,7 @@ void LauncherDialog::applyFiltering()
 {
   myList->setNameFilter(
     [&](const FilesystemNode& node) {
+      myList->incProgress();
       if(!node.isDirectory())
       {
         // Do we want to show only ROMs or all files?
@@ -357,7 +518,7 @@ void LauncherDialog::applyFiltering()
 
         // Skip over files that don't match the pattern in the 'pattern' textbox
         if(myPattern && myPattern->getText() != "" &&
-          !BSPF::containsIgnoreCase(node.getName(), myPattern->getText()))
+           !matchWithWildcardsIgnoreCase(node.getName(), myPattern->getText()))
           return false;
       }
       return true;
@@ -595,6 +756,11 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       reload();
       break;
 
+    case kSubDirsCmd:
+      myList->setIncludeSubDirs(mySubDirs->getState());
+      reload();
+      break;
+
     case kLoadROMCmd:
     case FileListWidget::ItemActivated:
       saveConfig();
@@ -620,9 +786,23 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case EditableWidget::kChangedCmd:
+    case EditableWidget::kAcceptCmd:
+    {
+      bool subDirs = mySubDirs->getState();
+
+      myList->setIncludeSubDirs(subDirs);
       applyFiltering();  // pattern matching taken care of directly in this method
-      reload();
+
+      if(subDirs && cmd == EditableWidget::kChangedCmd)
+      {
+        // delay (potentially slow) subdirectories reloads until user stops typing
+        myReloadTime = TimerManager::getTicks() / 1000 + myList->getQuickSelectDelay();
+        myPendingReload = true;
+      }
+      else
+        reload();
       break;
+    }
 
     case kQuitCmd:
       saveConfig();
@@ -668,7 +848,7 @@ void LauncherDialog::loadRom()
       instance().settings().setValue("romdir", currentNode().getParent().getShortPath());
   }
   else
-    instance().frameBuffer().showMessage(result, MessagePosition::MiddleCenter, true);
+    instance().frameBuffer().showTextMessage(result, MessagePosition::MiddleCenter, true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

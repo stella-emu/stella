@@ -34,7 +34,7 @@ class OSystemR77 : public OSystem
 {
   public:
     OSystemR77() = default;
-    virtual ~OSystemR77() = default;
+    ~OSystemR77() override = default;
 
     /**
       Determine the base directory and main configuration file from the

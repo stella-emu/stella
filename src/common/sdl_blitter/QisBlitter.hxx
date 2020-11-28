@@ -18,7 +18,7 @@
 #ifndef QIS_BLITTER_HXX
 #define QIS_BLITTER_HXX
 
-class FrameBufferSDL2;
+class FBBackendSDL2;
 
 #include "Blitter.hxx"
 #include "SDL_lib.hxx"
@@ -27,11 +27,11 @@ class QisBlitter : public Blitter {
 
   public:
 
-    explicit QisBlitter(FrameBufferSDL2& fb);
+    explicit QisBlitter(FBBackendSDL2& fb);
 
-    static bool isSupported(FrameBufferSDL2 &fb);
+    static bool isSupported(FBBackendSDL2& fb);
 
-    virtual ~QisBlitter();
+    ~QisBlitter() override;
 
     virtual void reinitialize(
       SDL_Rect srcRect,
@@ -44,7 +44,7 @@ class QisBlitter : public Blitter {
 
   private:
 
-    FrameBufferSDL2& myFB;
+    FBBackendSDL2& myFB;
 
     SDL_Texture* mySrcTexture{nullptr};
     SDL_Texture* mySecondarySrcTexture{nullptr};

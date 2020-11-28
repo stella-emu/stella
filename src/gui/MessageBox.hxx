@@ -54,7 +54,7 @@ class MessageBox : public Dialog, public CommandSender
                const string& okText = "OK", const string& cancelText = "Cancel",
                const string& title = "",
                bool focusOKButton = true);
-    virtual ~MessageBox() = default;
+    ~MessageBox() override = default;
 
     /** Place the input dialog onscreen and center it */
     void show() { open(); }

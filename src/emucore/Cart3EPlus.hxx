@@ -99,7 +99,7 @@ class Cartridge3EPlus: public Cartridge3E
     */
     Cartridge3EPlus(const ByteBuffer& image, size_t size, const string& md5,
                     const Settings& settings, size_t bsSize = 0);
-    virtual ~Cartridge3EPlus() = default;
+    ~Cartridge3EPlus() override = default;
 
   public:
     /** Reset device to its power-on state */
@@ -123,23 +123,6 @@ class Cartridge3EPlus: public Cartridge3E
       return new Cartridge3EPlusWidget(boss, lfont, nfont, x, y, w, h, *this);
     }
   #endif
-
-  public:
-    /**
-      Get the byte at the specified address
-
-      @return The byte at the specified address
-    */
-    uInt8 peek(uInt16 address) override;
-
-    /**
-      Change the byte at the specified address to the given value
-
-      @param address  The address where the value should be stored
-      @param value    The value to be stored at the address
-      @return         True if the poke changed the device address space, else false
-    */
-    bool poke(uInt16 address, uInt8 value) override;
 
   private:
     bool checkSwitchBank(uInt16 address, uInt8 value) override;

@@ -25,17 +25,32 @@ class Thumbulator;
 #include "Cart.hxx"
 
 /**
-  Cartridge class used for CDF.
+  Cartridge class used for CDF/CDFJ/CDFJ+.
 
-  There are seven 4K program banks, a 4K Display Data RAM,
-  1K C Variable and Stack, and the CDF chip.
-  CDF chip access is mapped to $1000 - $103F (both read and write).
-  Program banks are accessible by read/write to $1FF5 - $1FFB.
+  CDFJ bankswitching for Atari games using ARM/C code.
+  There are two variants supported:
+  1) CDF/CDFJ - initial scheme with 32K ROM and 8K RAM
+  2) CDFJ+ - support for larger ROM sizes (64/128/256/512K) and RAM sizes (16/32K)
 
-  FIXME: THIS NEEDS TO BE UPDATED
+  Features:
+  32 fast fetchers
+  2 fast jump queues
+  1 parameter queue
+  3 channel digital audio/1 channel sampled sound
+  7 banks (4K) of atari code
+  4K display data (16K and 32K available with CDFJ+)
 
-  @authors: Darrell Spice Jr, Chris Walton, Fred Quimby,
-            Stephen Anthony, Bradford W. Mott
+  Note that for CDFJ+, the same driver is used for all RAM/RAM combinations.
+  It is left to the programmer to ensure that only the available RAM/ROM on the target device is used.
+
+  Bankswitching Note:
+  CDF/CDFJ uses $FFF5 through $FFFB (initial bank 6)
+  CDFJ+ uses $FFF4 through $FFFA (initial bank 0)
+
+  The letters CDFJ stand for Chris, Darrell, Fred, and John.
+
+  @authors: Darrell Spice Jr, Chris Walton, Fred Quimby, John Champeau
+            Thomas Jentzsch, Stephen Anthony, Bradford W. Mott
 */
 class CartridgeCDF : public Cartridge
 {
@@ -48,7 +63,8 @@ class CartridgeCDF : public Cartridge
     enum class CDFSubtype {
       CDF0,
       CDF1,
-      CDFJ
+      CDFJ,
+      CDFJplus
     };
 
   public:
@@ -62,7 +78,7 @@ class CartridgeCDF : public Cartridge
     */
     CartridgeCDF(const ByteBuffer& image, size_t size, const string& md5,
                  const Settings& settings);
-    virtual ~CartridgeCDF() = default;
+    ~CartridgeCDF() override = default;
 
   public:
     /**
@@ -168,6 +184,21 @@ class CartridgeCDF : public Cartridge
     */
     uInt8 internalRamGetValue(uInt16 addr) const override;
 
+    /**
+      Set if we are using CDFJ+ bankswitching
+     */
+    bool isCDFJplus() const;
+
+    /**
+      Size of SRAM (RAM) area in cart
+     */
+    uInt32 ramSize() const;
+
+    /**
+      Size of Flash memory (ROM) area in cart
+     */
+    uInt32 romSize() const;
+
 #ifdef DEBUGGER_SUPPORT
     /**
       Get debugger widget responsible for accessing the inner workings
@@ -198,6 +229,13 @@ class CartridgeCDF : public Cartridge
 
   private:
     /**
+      Checks if startup bank randomization is enabled.  For this scheme,
+      randomization is not supported, since the ARM code is always in a
+      pre-defined bank, and we *must* start from there.
+    */
+    bool randomStartBank() const override { return false; }
+
+    /**
       Sets the initial state of the DPC pointers and RAM
     */
     void setInitialState();
@@ -227,23 +265,26 @@ class CartridgeCDF : public Cartridge
     void setupVersion();
 
   private:
-    // The 32K ROM image of the cartridge
+    // The ROM image of the cartridge
     ByteBuffer myImage;
 
-    // Pointer to the 28K program ROM image of the cartridge
+    // Pointer to the program ROM image of the cartridge
     uInt8* myProgramImage{nullptr};
 
-    // Pointer to the 4K display ROM image of the cartridge
+    // Pointer to the display ROM image of the cartridge
     uInt8* myDisplayImage{nullptr};
 
-    // Pointer to the 2K CDF driver image in RAM
+    // Pointer to the driver image in RAM
     uInt8* myDriverImage{nullptr};
 
-    // The CDF 8k RAM image, used as:
-    //   $0000 - 2K CDF driver
+    // The CDFJ 8K RAM image, used as:
+    //   $0000 - 2K Driver
     //   $0800 - 4K Display Data
     //   $1800 - 2K C Variable & Stack
-    std::array<uInt8, 8_KB> myRAM;
+    // For CDFJ+, used as:
+    //   $0000 - 2K Driver
+    //   $0800 - Display Data, C Variables & Stack
+    std::array<uInt8, 32_KB> myRAM;
 
     // Pointer to the Thumb ARM emulator object
     unique_ptr<Thumbulator> myThumbEmulator;

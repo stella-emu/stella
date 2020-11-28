@@ -18,8 +18,7 @@
 #ifndef SERIALPORT_WINDOWS_HXX
 #define SERIALPORT_WINDOWS_HXX
 
-#include <windows.h>
-
+#include "Windows.hxx"
 #include "SerialPort.hxx"
 
 /**
@@ -29,7 +28,7 @@ class SerialPortWINDOWS : public SerialPort
 {
   public:
     SerialPortWINDOWS();
-    virtual ~SerialPortWINDOWS();
+    ~SerialPortWINDOWS() override;
 
     /**
       Open the given serial port with the specified attributes.
@@ -38,6 +37,14 @@ class SerialPortWINDOWS : public SerialPort
       @return  False on any errors, else true
     */
     bool openPort(const string& device) override;
+
+    /**
+      Read a byte from the serial port.
+
+      @param data  Destination for the byte read from the port
+      @return  True if a byte was read, else false
+    */
+    bool readByte(uInt8& data) override;
 
     /**
       Write a byte to the serial port.
@@ -55,9 +62,16 @@ class SerialPortWINDOWS : public SerialPort
     */
     bool isCTS() override;
 
+    /**
+      Get all valid serial ports detected on this system.
+
+      @return  The (possibly empty) list of detected serial ports
+    */
+    StringList portNames() override;
+
   private:
     // Handle to serial port
-    HANDLE myHandle{0};
+    HANDLE myHandle{INVALID_HANDLE_VALUE};
 
   private:
     // Following constructors and assignment operators not supported

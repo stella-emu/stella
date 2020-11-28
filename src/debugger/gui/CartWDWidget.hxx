@@ -29,9 +29,9 @@ class CartridgeWDWidget : public CartridgeEnhancedWidget
                       const GUI::Font& nfont,
                       int x, int y, int w, int h,
                       CartridgeWD& cart);
-    virtual ~CartridgeWDWidget() = default;
+    ~CartridgeWDWidget() override = default;
 
-private:
+  private:
     CartridgeWD& myCartWD;
 
   private:

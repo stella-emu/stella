@@ -1,10 +1,13 @@
 MODULE := src/common
 
 MODULE_OBJS := \
+	src/common/AudioQueue.o \
+	src/common/AudioSettings.o \
 	src/common/Base.o \
 	src/common/EventHandlerSDL2.o \
+	src/common/FBBackendSDL2.o \
 	src/common/FBSurfaceSDL2.o \
-	src/common/FrameBufferSDL2.o \
+	src/common/FpsMeter.o \
 	src/common/FSNodeZIP.o \
 	src/common/HighScoresManager.o \
 	src/common/JoyMap.o \
@@ -20,14 +23,12 @@ MODULE_OBJS := \
 	src/common/PNGLibrary.o \
 	src/common/RewindManager.o \
 	src/common/SoundSDL2.o \
-	src/common/StateManager.o \
-	src/common/TimerManager.o \
-	src/common/ZipHandler.o \
-	src/common/AudioQueue.o \
-	src/common/AudioSettings.o \
-	src/common/FpsMeter.o \
-	src/common/ThreadDebugging.o \
 	src/common/StaggeredLogger.o \
+	src/common/StateManager.o \
+	src/common/ThreadDebugging.o \
+	src/common/TimerManager.o \
+	src/common/VideoModeHandler.o \
+	src/common/ZipHandler.o \
 	src/common/repository/KeyValueRepositoryConfigfile.o \
 	src/common/sdl_blitter/BilinearBlitter.o \
 	src/common/sdl_blitter/QisBlitter.o \

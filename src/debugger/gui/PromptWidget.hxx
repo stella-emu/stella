@@ -39,7 +39,7 @@ class PromptWidget : public Widget, public CommandSender
   public:
     PromptWidget(GuiObject* boss, const GUI::Font& font,
                  int x, int y, int w, int h);
-    virtual ~PromptWidget() = default;
+    ~PromptWidget() override = default;
 
   public:
     ATTRIBUTE_FMT_PRINTF int printf(const char* format, ...);
@@ -68,10 +68,11 @@ class PromptWidget : public Widget, public CommandSender
     void nextLine();
     void killChar(int direction);
     void killLine(int direction);
-    void killLastWord();
+    void killWord();
 
     // Clipboard
     void textSelectAll();
+    string getLine();
     void textCut();
     void textCopy();
     void textPaste();

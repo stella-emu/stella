@@ -26,8 +26,8 @@ class SaveKeyWidget : public FlashWidget
 {
   public:
     SaveKeyWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
-                  Controller& controller);
-    virtual ~SaveKeyWidget() = default;
+                  Controller& controller, bool embedded = false);
+    ~SaveKeyWidget() override = default;
 
   private:
     void eraseCurrent() override;

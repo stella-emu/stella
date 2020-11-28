@@ -30,7 +30,7 @@ class CartridgeMDMWidget : public CartridgeEnhancedWidget
                        const GUI::Font& nfont,
                        int x, int y, int w, int h,
                        CartridgeMDM& cart);
-    virtual ~CartridgeMDMWidget() = default;
+    ~CartridgeMDMWidget() override = default;
 
   private:
     string manufacturer() override { return "Edwin Blink"; }

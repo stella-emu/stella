@@ -68,6 +68,8 @@ const DebuggerState& RiotDebug::getState()
   myState.INTIMCLKS = intimClocks();
   myState.TIMDIV    = timDivider();
 
+  myState.timReadCycles = timReadCycles();
+
   return myState;
 }
 
@@ -75,10 +77,11 @@ const DebuggerState& RiotDebug::getState()
 void RiotDebug::saveOldState()
 {
   // Port A & B registers
-  myOldState.SWCHA_R = swcha();
+  // read from myState where other widgets can update pins directly
+  myOldState.SWCHA_R = myState.SWCHA_R; // swcha();
   myOldState.SWCHA_W = mySystem.m6532().myOutA;
   myOldState.SWACNT  = swacnt();
-  myOldState.SWCHB_R = swchb();
+  myOldState.SWCHB_R = myState.SWCHB_R; // swchb();
   myOldState.SWCHB_W = mySystem.m6532().myOutB;
   myOldState.SWBCNT  = swbcnt();
   Debugger::set_bits(myOldState.SWCHA_R, myOldState.swchaReadBits);
@@ -93,8 +96,9 @@ void RiotDebug::saveOldState()
   myOldState.INPT1 = inpt(1);
   myOldState.INPT2 = inpt(2);
   myOldState.INPT3 = inpt(3);
-  myOldState.INPT4 = inpt(4);
-  myOldState.INPT5 = inpt(5);
+  // read from myState where other widgets can update pins directly
+  myOldState.INPT4 = myState.INPT4; // inpt(4);
+  myOldState.INPT5 = myState.INPT5; // inpt(5);
 
   myOldState.INPTLatch = vblank(6);
   myOldState.INPTDump = vblank(7);
@@ -109,6 +113,8 @@ void RiotDebug::saveOldState()
   myOldState.TIMCLKS   = timClocks();
   myOldState.INTIMCLKS = intimClocks();
   myOldState.TIMDIV    = timDivider();
+
+  myOldState.timReadCycles = timReadCycles();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -231,6 +237,24 @@ Int32 RiotDebug::intimClocks() const
 Int32 RiotDebug::timDivider() const
 {
   return mySystem.m6532().myDivider;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int RiotDebug::timWrappedOnRead() const
+{
+  return mySystem.m6532().myTimWrappedOnRead;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int RiotDebug::timWrappedOnWrite() const
+{
+  return mySystem.m6532().myTimWrappedOnWrite;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int RiotDebug::timReadCycles() const
+{
+  return mySystem.m6532().myTimReadCycles;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

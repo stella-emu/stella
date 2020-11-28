@@ -33,7 +33,7 @@ class AtariMouse : public PointingDevice
     AtariMouse(Jack jack, const Event& event, const System& system)
       : PointingDevice(jack, event, system, Controller::Type::AtariMouse,
         trackballSensitivity) { }
-    virtual ~AtariMouse() = default;
+    ~AtariMouse() override = default;
 
     /**
       Returns the name of this controller.

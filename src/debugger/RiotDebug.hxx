@@ -22,6 +22,10 @@ class M6532;
 class Debugger;
 class RiotDebug;
 
+// Function type for RiotDebug instance methods
+class RiotDebug;
+using RiotMethod = int (RiotDebug::*)() const;
+
 #include "DebuggerSystem.hxx"
 
 class RiotState : public DebuggerState
@@ -37,6 +41,7 @@ class RiotState : public DebuggerState
 
     uInt8 TIM1T{0}, TIM8T{0}, TIM64T{0}, T1024T{0}, INTIM{0}, TIMINT{0};
     Int32 TIMCLKS{0}, INTIMCLKS{0}, TIMDIV{0};
+    uInt16 timReadCycles;
 
     // These are actually from the TIA, but are I/O related
     uInt8 INPT0{0}, INPT1{0}, INPT2{0}, INPT3{0}, INPT4{0}, INPT5{0};
@@ -75,6 +80,11 @@ class RiotDebug : public DebuggerSystem
     Int32 timClocks() const;
     Int32 intimClocks() const;
     Int32 timDivider() const;
+    /* Debugger pseudo-registers for timer accesses */
+    int timWrappedOnRead() const;
+    int timWrappedOnWrite() const;
+
+    int timReadCycles() const;
 
     /* Console switches */
     bool diffP0(int newVal = -1);

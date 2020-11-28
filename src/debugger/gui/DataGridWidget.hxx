@@ -45,7 +45,7 @@ class DataGridWidget : public EditableWidget
                    int colchars, int bits,
                    Common::Base::Fmt format = Common::Base::Fmt::_DEFAULT,
                    bool useScrollbar = false);
-    virtual ~DataGridWidget() = default;
+    ~DataGridWidget() override = default;
 
     void setList(const IntArray& alist, const IntArray& vlist,
                  const BoolArray& changed);
@@ -69,6 +69,7 @@ class DataGridWidget : public EditableWidget
 
     int getSelectedAddr() const   { return _addrList[_selectedItem]; }
     int getSelectedValue() const  { return _valueList[_selectedItem]; }
+    bool getSelectedChanged() const { return _changedList[_selectedItem]; }
 
     void setRange(int lower, int upper);
 
@@ -81,7 +82,10 @@ class DataGridWidget : public EditableWidget
 
     void setOpsWidget(DataGridOpsWidget* w) { _opsWidget = w; }
 
-    void setCrossed(bool enable) { _crossGrid = enable; }
+    void setCrossed(bool enable);
+
+    string getToolTip(const Common::Point& pos) const override;
+    bool changedToolTip(const Common::Point& oldPos, const Common::Point& newPos) const override;
 
   protected:
     void drawWidget(bool hilite) override;
@@ -97,11 +101,12 @@ class DataGridWidget : public EditableWidget
     void receivedFocusWidget() override;
     void lostFocusWidget() override;
 
+    bool hasToolTip() const override { return true; }
+    int getToolTipIndex(const Common::Point& pos) const;
+
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseWheel(int x, int y, int direction) override;
-    void handleMouseEntered() override;
-    void handleMouseLeft() override;
     bool handleText(char text) override;
     bool handleKeyDown(StellaKey key, StellaMod mod) override;
     bool handleKeyUp(StellaKey key, StellaMod mod) override;
@@ -127,7 +132,6 @@ class DataGridWidget : public EditableWidget
     BoolArray   _changedList;
     BoolArray   _hiliteList;
 
-    bool      _editMode{false};
     int       _selectedItem{0};
     StellaKey _currentKeyDown{KBDK_UNKNOWN};
     string    _backupString;
@@ -146,6 +150,7 @@ class DataGridWidget : public EditableWidget
     void zeroCell();
 
     void enableEditMode(bool state) { _editMode = state; }
+
 
   private:
     // Following constructors and assignment operators not supported

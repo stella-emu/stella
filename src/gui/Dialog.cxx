@@ -27,6 +27,7 @@
 #include "Dialog.hxx"
 #include "Widget.hxx"
 #include "TabWidget.hxx"
+#include "ToolTip.hxx"
 
 #include "ContextMenu.hxx"
 #include "PopUpWidget.hxx"
@@ -49,10 +50,24 @@ Dialog::Dialog(OSystem& instance, DialogContainer& parent, const GUI::Font& font
                const string& title, int x, int y, int w, int h)
   : GuiObject(instance, parent, *this, x, y, w, h),
     _font(font),
-    _title(title),
-    _flags(Widget::FLAG_ENABLED | Widget::FLAG_BORDER | Widget::FLAG_CLEARBG)
+    _title(title)
 {
+  _flags = Widget::FLAG_ENABLED | Widget::FLAG_BORDER | Widget::FLAG_CLEARBG;
   setTitle(title);
+
+  // Create shading surface
+  uInt32 data = 0xff000000;
+
+  _shadeSurface = instance.frameBuffer().allocateSurface(
+      1, 1, ScalingInterpolation::sharp, &data);
+
+  FBSurface::Attributes& attr = _shadeSurface->attributes();
+
+  attr.blending = true;
+  attr.blendalpha = 25; // darken background dialogs by 25%
+  _shadeSurface->applyAttributes();
+
+  _toolTip = make_unique<ToolTip>(*this, font);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -91,7 +106,7 @@ void Dialog::open()
   const uInt32 scale = instance().frameBuffer().hidpiScaleFactor();
   _surface->setDstSize(_w * scale, _h * scale);
 
-  center();
+  setPosition();
 
   if(_myTabList.size())
     // (Re)-build the focus list to use for all widgets of all tabs
@@ -110,8 +125,6 @@ void Dialog::open()
   loadConfig(); // has to be done AFTER (re)building the focus list
 
   _visible = true;
-
-  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -128,7 +141,6 @@ void Dialog::close()
   _visible = false;
 
   parent().removeDialog();
-  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -144,9 +156,34 @@ void Dialog::setTitle(const string& title)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::center()
+void Dialog::setPosition()
 {
   positionAt(instance().settings().getInt("dialogpos"));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::setDirty()
+{
+  _dirty = true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::setDirtyChain()
+{
+  _dirtyChain = true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::tick()
+{
+  // Recursively tick dialog and all child dialogs and widgets
+  Widget* w = _firstWidget;
+
+  while(w)
+  {
+    w->tick();
+    w = w->_next;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -190,26 +227,49 @@ void Dialog::positionAt(uInt32 pos)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Dialog::render()
+void Dialog::redraw(bool force)
 {
-  if(!_dirty || !isVisible())
-    return false;
+  if(!isVisible())
+    return;
+
+  if(force)
+    setDirty();
 
   // Draw this dialog
-  center();
+  setPosition();
   drawDialog();
+  // full rendering is caused in dialog container
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::render()
+{
+  //cerr << "  render " << typeid(*this).name() << endl;
 
   // Update dialog surface; also render any extra surfaces
   // Extra surfaces must be rendered afterwards, so they are drawn on top
   if(_surface->render())
   {
-    mySurfaceStack.applyAll([](shared_ptr<FBSurface>& surface){
+    mySurfaceStack.applyAll([](shared_ptr<FBSurface>& surface) {
       surface->render();
     });
   }
-  _dirty = false;
 
-  return true;
+  // A dialog is still on top if a non-shading dialog (e.g. ContextMenu)
+  // is opended above it.
+  bool onTop = parent().myDialogStack.top() == this
+    || (parent().myDialogStack.get(parent().myDialogStack.size() - 2) == this
+        && !parent().myDialogStack.top()->isShading());
+
+  if(!onTop)
+  {
+    //cerr << "    shade " << typeid(*this).name() << endl;
+
+    _shadeSurface->setDstRect(_surface->dstRect());
+    _shadeSurface->render();
+  }
+
+  _toolTip->render();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -305,7 +365,7 @@ void Dialog::setFocus(Widget* w)
 {
   // If the click occured inside a widget which is not the currently
   // focused one, change the focus to that widget.
-  if(w && w != _focusedWidget && w->wantsFocus())
+  if(w && w != _focusedWidget && w->wantsFocus() && w->isEnabled())
   {
     // Redraw widgets for new focus
     _focusedWidget = Widget::setFocusForChain(this, getFocusList(), w, 0);
@@ -371,39 +431,43 @@ void Dialog::drawDialog()
 
   FBSurface& s = surface();
 
-  // Dialog is still on top if e.g a ContextMenu is opened
-  _onTop = parent().myDialogStack.top() == this
-    || (parent().myDialogStack.get(parent().myDialogStack.size() - 2) == this
-    && !parent().myDialogStack.top()->hasTitle());
-
-  if(_flags & Widget::FLAG_CLEARBG)
+  if(isDirty())
   {
-    //    cerr << "Dialog::drawDialog(): w = " << _w << ", h = " << _h << " @ " << &s << endl << endl;
-    s.fillRect(_x, _y + _th, _w, _h - _th, _onTop ? kDlgColor : kBGColorLo);
-    if(_th)
+    cerr << endl << "d";
+    //cerr << "*** draw dialog " << typeid(*this).name() << " ***" << endl;
+
+    if(clearsBackground())
     {
-      s.fillRect(_x, _y, _w, _th, _onTop ? kColorTitleBar : kColorTitleBarLo);
-      s.drawString(_font, _title, _x + _font.getMaxCharWidth() * 1.25, _y + _font.getFontHeight() / 6,
-                   _font.getStringWidth(_title),
-                   _onTop ? kColorTitleText : kColorTitleTextLo);
+      //    cerr << "Dialog::drawDialog(): w = " << _w << ", h = " << _h << " @ " << &s << endl << endl;
+
+      if(hasBackground())
+        s.fillRect(_x, _y + _th, _w, _h - _th, kDlgColor);
+      else
+        s.invalidateRect(_x, _y + _th, _w, _h - _th);
+      if(_th)
+      {
+        s.fillRect(_x, _y, _w, _th, kColorTitleBar);
+        s.drawString(_font, _title, _x + _font.getMaxCharWidth() * 1.25, _y + _font.getFontHeight() / 6,
+                     _font.getStringWidth(_title), kColorTitleText);
+      }
     }
+    else {
+      s.invalidate();
+      //cerr << "invalidate " << typeid(*this).name() << endl;
+    }
+    if(hasBorder()) // currently only used by Dialog itself
+      s.frameRect(_x, _y, _w, _h, kColor);
+
+    // Make all child widgets dirty
+    Widget::setDirtyInChain(_firstWidget);
+
+    clearDirty();
   }
   else
-    s.invalidate();
-  if(_flags & Widget::FLAG_BORDER) // currently only used by Dialog itself
-    s.frameRect(_x, _y, _w, _h, _onTop ? kColor : kShadowColor);
-
-  // Make all child widget dirty
-  Widget* w = _firstWidget;
-  Widget::setDirtyInChain(w);
+    cerr << endl;
 
   // Draw all children
-  w = _firstWidget;
-  while(w)
-  {
-    w->draw();
-    w = w->_next;
-  }
+  drawChain();
 
   // Draw outlines for focused widgets
   // Don't change focus, since this will trigger lost and received
@@ -411,9 +475,26 @@ void Dialog::drawDialog()
   if(_focusedWidget)
   {
     _focusedWidget = Widget::setFocusForChain(this, getFocusList(),
-      _focusedWidget, 0, false);
-    if(_focusedWidget)
-      _focusedWidget->draw(); // make sure the highlight color is drawn initially
+                                              _focusedWidget, 0, false);
+    //if(_focusedWidget)
+    //  _focusedWidget->draw(); // make sure the highlight color is drawn initially
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::drawChain()
+{
+  // Clear chain *before* drawing, because some widgets may set it again when
+  //   being drawn (e.g. RomListWidget)
+  clearDirtyChain();
+
+  Widget* w = _firstWidget;
+
+  while(w)
+  {
+    if(w->needsRedraw())
+      w->draw();
+    w = w->_next;
   }
 }
 
@@ -429,6 +510,8 @@ void Dialog::handleText(char text)
 void Dialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
 {
   Event::Type e = Event::NoType;
+
+  tooltip().hide();
 
 // FIXME - I don't think this will compile!
 #if defined(RETRON77)
@@ -556,6 +639,11 @@ void Dialog::handleMouseMoved(int x, int y)
 
   if (w && (w->getFlags() & Widget::FLAG_TRACK_MOUSE))
     w->handleMouseMoved(x - (w->getAbsX() - _x), y - (w->getAbsY() - _y));
+
+#ifndef RETRON77
+  // Update mouse coordinates for tooltips
+  _toolTip->update(_mouseWidget, Common::Point(x, y));
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

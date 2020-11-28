@@ -49,7 +49,7 @@ class CartridgeBFSC : public CartridgeBF
     */
     CartridgeBFSC(const ByteBuffer& image, size_t size, const string& md5,
                   const Settings& settings, size_t bsSize = 256_KB);
-    virtual ~CartridgeBFSC() = default;
+    ~CartridgeBFSC() override = default;
 
     /**
       Get a descriptor for the device name (used in error checking).

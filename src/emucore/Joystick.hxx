@@ -33,12 +33,13 @@ class Joystick : public Controller
     /**
       Create a new joystick controller plugged into the specified jack
 
-      @param jack   The jack the controller is plugged into
-      @param event  The event object to use for events
-      @param system The system using this controller
+      @param jack    The jack the controller is plugged into
+      @param event   The event object to use for events
+      @param system  The system using this controller
+      @param altmap  If true, use alternative mapping
     */
-    Joystick(Jack jack, const Event& event, const System& system);
-    virtual ~Joystick() = default;
+    Joystick(Jack jack, const Event& event, const System& system, bool altmap = false);
+    ~Joystick() override = default;
 
   public:
     /**

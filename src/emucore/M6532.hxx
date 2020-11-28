@@ -52,7 +52,7 @@ class M6532 : public Device
       @param settings The settings used by the system
     */
     M6532(const ConsoleIO& console, const Settings& settings);
-    virtual ~M6532() = default;
+    ~M6532() override = default;
 
    public:
     /**
@@ -137,6 +137,11 @@ class M6532 : public Device
       @return  The access counters as comma separated string
     */
     string getAccessCounters() const override;
+
+    /**
+      Reset the timer read CPU cycle counter
+    */
+    void resetTimReadCylces() { myTimReadCycles = 0; }
   #endif
 
   private:
@@ -250,6 +255,12 @@ class M6532 : public Device
     std::array<Device::AccessCounter, IO_SIZE * 2>    myIOAccessCounter;
     // The array used to skip the first ZP access tracking
     std::array<uInt8, RAM_SIZE>   myZPAccessDelay;
+
+    // Detect timer being accessed on wraparound
+    bool myTimWrappedOnRead{false};
+    bool myTimWrappedOnWrite{false};
+    // Timer read CPU cycles
+    uInt16 myTimReadCycles{0};
 #endif // DEBUGGER_SUPPORT
 
   private:

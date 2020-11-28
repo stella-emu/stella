@@ -22,6 +22,7 @@
 
 #include "Widget.hxx"
 #include "Rect.hxx"
+#include "UndoHandler.hxx"
 
 /**
  * Base class for widgets which need to edit text, like ListWidget and
@@ -46,7 +47,7 @@ class EditableWidget : public Widget, public CommandSender
   public:
     EditableWidget(GuiObject* boss, const GUI::Font& font,
                    int x, int y, int w, int h, const string& str = "");
-    virtual ~EditableWidget() = default;
+    ~EditableWidget() override = default;
 
     virtual void setText(const string& str, bool changed = false);
     const string& getText() const { return _editString; }
@@ -64,31 +65,43 @@ class EditableWidget : public Widget, public CommandSender
     void setTextFilter(const TextFilter& filter) { _filter = filter; }
 
   protected:
+    void receivedFocusWidget() override;
+    void lostFocusWidget() override;
+    void tick() override;
+    bool wantsToolTip() const override; 
+
     virtual void startEditMode() { setFlags(Widget::FLAG_WANTS_RAWDATA);   }
     virtual void endEditMode()   { clearFlags(Widget::FLAG_WANTS_RAWDATA); }
     virtual void abortEditMode() { clearFlags(Widget::FLAG_WANTS_RAWDATA); }
 
     virtual Common::Rect getEditRect() const = 0;
     virtual int getCaretOffset() const;
-    void drawCaret();
+    void drawCaretSelection();
     bool setCaretPos(int newPos);
+    bool moveCaretPos(int direction);
     bool adjustOffset();
 
     // This method is used internally by child classes wanting to
     // access/edit the internal buffer
     string& editString() { return _editString; }
+    const string selectString() const;
+    void resetSelection() { _selectSize = 0; }
+    int scrollOffset();
 
   private:
     // Line editing
-    bool specialKeys(StellaKey key);
-    bool killChar(int direction);
+    bool killChar(int direction, bool addEdit = true);
     bool killLine(int direction);
-    bool killLastWord();
-    bool moveWord(int direction);
+    bool killWord(int direction);
+    bool moveWord(int direction, bool select);
 
+    bool killSelectedText(bool addEdit = true);
+    int selectStartPos();
+    int selectEndPos();
     // Clipboard
-    void copySelectedText();
-    void pasteSelectedText();
+    bool cutSelectedText();
+    bool copySelectedText();
+    bool pasteSelectedText();
 
     // Use the current TextFilter to insert a character into the
     // internal buffer
@@ -97,17 +110,22 @@ class EditableWidget : public Widget, public CommandSender
   private:
     bool   _editable{true};
     string _editString;
+    unique_ptr<UndoHandler> myUndoHandler;
 
-//     bool  _caretVisible{false};
-//     int   _caretTime{0};
-    int   _caretPos{0};
+    int    _caretPos{0};
+    int    _caretTimer{0};
+    bool   _caretEnabled{true};
+
+    // Size of current selected text
+    //    0 = no selection
+    //   <0 = selected left of caret
+    //   >0 = selected right of caret
+    int    _selectSize{0};
 
   protected:
-    bool  _caretInverse{false};
-
     int   _editScrollOffset{0};
-
-    static string _clippedText;
+    bool  _editMode{true};
+    int   _dyText{0};
 
   private:
     TextFilter _filter;

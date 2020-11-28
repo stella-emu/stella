@@ -33,9 +33,9 @@ class ToggleWidget : public Widget, public CommandSender
 
   public:
     ToggleWidget(GuiObject* boss, const GUI::Font& font,
-                 int x, int y, int cols, int rows,
-                 int clicksToChange = 2);
-    virtual ~ToggleWidget() = default;
+                 int x, int y, int cols = 1, int rows = 1,
+                 int shiftBits = 0);
+    ~ToggleWidget() override = default;
 
     const BoolArray& getState()    { return _stateList; }
     bool getSelectedState() const  { return _stateList[_selectedItem]; }
@@ -46,18 +46,24 @@ class ToggleWidget : public Widget, public CommandSender
     void setEditable(bool editable) { _editable = editable; }
     bool isEditable() const { return _editable; }
 
-  protected:
+    string getToolTip(const Common::Point& pos) const override;
+    bool changedToolTip(const Common::Point& oldPos, const Common::Point& newPos) const override;
 
   protected:
-    int  _rows;
-    int  _cols;
-    int  _currentRow;
-    int  _currentCol;
-    int  _rowHeight;   // explicitly set in child classes
-    int  _colWidth;    // explicitly set in child classes
-    int  _selectedItem;
-    int  _clicksToChange;  // number of clicks to register a change
-    bool _editable;
+    bool hasToolTip() const override { return true; }
+    Common::Point getToolTipIndex(const Common::Point& pos) const;
+
+  protected:
+    int  _rows{0};
+    int  _cols{0};
+    int  _currentRow{0};
+    int  _currentCol{0};
+    int  _rowHeight{0};   // explicitly set in child classes
+    int  _colWidth{0};    // explicitly set in child classes
+    int  _selectedItem{0};
+    bool _editable{true};
+    bool _swapBits{false};
+    int  _shiftBits{0}; // shift bits for tooltip display
 
     BoolArray  _stateList;
     BoolArray  _changedList;
@@ -68,8 +74,6 @@ class ToggleWidget : public Widget, public CommandSender
 
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
-    void handleMouseEntered() override;
-    void handleMouseLeft() override;
     bool handleKeyDown(StellaKey key, StellaMod mod) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 

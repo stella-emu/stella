@@ -52,7 +52,6 @@ class CompuMate
       @param system   The system using this controller
     */
     CompuMate(const Console& console, const Event& event, const System& system);
-    virtual ~CompuMate() = default;  // Controllers are deleted outside this class
 
     /**
       Return the left and right CompuMate controllers
@@ -88,7 +87,7 @@ class CompuMate
                   const System& system)
           : Controller(jack, event, system, Controller::Type::CompuMate),
             myHandler(handler) { }
-        virtual ~CMControl() = default;
+        ~CMControl() override = default;
 
       public:
         /**

@@ -62,12 +62,14 @@ Controller::Type ControllerDetector::autodetectPort(
 
   if(isProbablySaveKey(image, size, port))
     type = Controller::Type::SaveKey;
+  else if(isProbablyQuadTari(image, size, port))
+    type = Controller::Type::QuadTari;
   else if(usesJoystickButton(image, size, port))
   {
     if(isProbablyTrakBall(image, size))
       type = Controller::Type::TrakBall;
     else if(isProbablyAtariMouse(image, size))
-      type = Controller::Type::AmigaMouse;
+      type = Controller::Type::AtariMouse;
     else if(isProbablyAmigaMouse(image, size))
       type = Controller::Type::AmigaMouse;
     else if(usesKeyboard(image, size, port))
@@ -121,7 +123,7 @@ bool ControllerDetector::usesJoystickButton(const ByteBuffer& image, size_t size
   if(port == Controller::Jack::Left)
   {
     // check for INPT4 access
-    const int NUM_SIGS_0 = 23;
+    const int NUM_SIGS_0 = 24;
     const int SIG_SIZE_0 = 3;
     uInt8 signature_0[NUM_SIGS_0][SIG_SIZE_0] = {
       { 0x24, 0x0c, 0x10 }, // bit INPT4; bpl (joystick games only)
@@ -139,6 +141,7 @@ bool ControllerDetector::usesJoystickButton(const ByteBuffer& image, size_t size
       { 0xb4, 0x0c, 0x30 }, // ldy INPT4|$30,x; bmi (joystick games only)
       { 0xa5, 0x3c, 0x2a }, // ldy INPT4|$30; rol (joystick games only)
       { 0xa6, 0x3c, 0x8e }, // ldx INPT4|$30; stx (joystick games only)
+      { 0xa6, 0x0c, 0x8e }, // ldx INPT4; stx (joystick games only)
       { 0xa4, 0x3c, 0x8c }, // ldy INPT4; sty (joystick games only, Scramble)
       { 0xa5, 0x0c, 0x8d }, // lda INPT4; sta (joystick games only, Super Cobra Arcade)
       { 0xa4, 0x0c, 0x30 }, // ldy INPT4|; bmi (only Game of Concentration)
@@ -392,7 +395,7 @@ bool ControllerDetector::usesGenesisButton(const ByteBuffer& image, size_t size,
   if(port == Controller::Jack::Left)
   {
     // check for INPT1 access
-    const int NUM_SIGS_0 = 18;
+    const int NUM_SIGS_0 = 19;
     const int SIG_SIZE_0 = 3;
     uInt8 signature_0[NUM_SIGS_0][SIG_SIZE_0] = {
       { 0x24, 0x09, 0x10 }, // bit INPT1; bpl (Genesis only)
@@ -408,6 +411,7 @@ bool ControllerDetector::usesGenesisButton(const ByteBuffer& image, size_t size,
       { 0xa4, 0x39, 0x30 }, // ldy INPT1|$30; bmi (keyboard ROMS too)
       { 0xa5, 0x39, 0x6a }, // lda INPT1|$30; ror (Genesis only)
       { 0xa6, 0x39, 0x8e }, // ldx INPT1|$30; stx (Genesis only)
+      { 0xa6, 0x09, 0x8e }, // ldx INPT1; stx (Genesis only)
       { 0xa4, 0x39, 0x8c }, // ldy INPT1|$30; sty (Genesis only, Scramble)
       { 0xa5, 0x09, 0x8d }, // lda INPT1; sta (Genesis only, Super Cobra Arcade)
       { 0xa5, 0x09, 0x29 }, // lda INPT1; and (Genesis only)
@@ -688,6 +692,29 @@ bool ControllerDetector::isProbablyLightGun(const ByteBuffer& image, size_t size
       if (searchForBytes(image, size, signature[i], SIG_SIZE))
         return true;
   }
+  return false;
+}
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool ControllerDetector::isProbablyQuadTari(const ByteBuffer& image, size_t size,
+                                            Controller::Jack port)
+{
+  uInt8 signatureBoth[] = { 0x1B, 0x1F, 0x0B, 0x0E, 0x1E, 0x0B, 0x1C, 0x13 }; // "QUADTARI"
+
+  if(searchForBytes(image, size, signatureBoth, 8))
+    return true;
+
+  if(port == Controller::Jack::Left)
+  {
+    uInt8 signature[] = { 'Q', 'U', 'A', 'D', 'L' };
+
+    return searchForBytes(image, size, signature, 5);
+  }
+  else if(port == Controller::Jack::Right)
+  {
+    uInt8 signature[] = { 'Q', 'U', 'A', 'D', 'R' };
+
+    return searchForBytes(image, size, signature, 5);
+  }
   return false;
 }

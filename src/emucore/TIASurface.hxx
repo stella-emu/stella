@@ -54,7 +54,7 @@ class TIASurface
     /**
       Set the TIA object, which is needed for actually rendering the TIA image.
     */
-    void initialize(const Console& console, const FrameBuffer::VideoMode& mode);
+    void initialize(const Console& console, const VideoModeHandler::Mode& mode);
 
     /**
       Set the palette for TIA rendering.  This currently consists of two
@@ -67,7 +67,8 @@ class TIASurface
       @param rgb_palette  The RGB components of the palette, needed for
                           calculating a phosphor palette
     */
-    void setPalette(const PaletteArray& tia_palette, const PaletteArray& rgb_palette);
+    void setPalette(const PaletteArray& tia_palette,
+                    const PaletteArray& rgb_palette);
 
     /**
       Get a TIA surface that has no post-processing whatsoever.  This is
@@ -76,6 +77,11 @@ class TIASurface
       @param rect   Specifies the area in which the surface data is valid
     */
     const FBSurface& baseSurface(Common::Rect& rect) const;
+
+    /**
+      Get a underlying FBSurface that the TIA is being rendered into.
+    */
+    const FBSurface& tiaSurface() const { return *myTiaSurface; }
 
     /**
       Use the palette to map a single indexed pixel color. This is used by the
@@ -183,13 +189,10 @@ class TIASurface
     */
     uInt32 averageBuffers(uInt32 bufOfs);
 
+    // Is plain video mode enabled?
+    bool correctAspect() const;
+
   private:
-    OSystem& myOSystem;
-    FrameBuffer& myFB;
-    TIA* myTIA{nullptr};
-
-    shared_ptr<FBSurface> myTiaSurface, mySLineSurface, myBaseTiaSurface;
-
     // Enumeration created such that phosphor off/on is in LSB,
     // and Blargg off/on is in MSB
     enum class Filter: uInt8 {
@@ -199,6 +202,13 @@ class TIASurface
       BlarggPhosphor = 0x11
     };
     Filter myFilter{Filter::Normal};
+
+  private:
+    OSystem& myOSystem;
+    FrameBuffer& myFB;
+    TIA* myTIA{nullptr};
+
+    shared_ptr<FBSurface> myTiaSurface, mySLineSurface, myBaseTiaSurface;
 
     // NTSC object to use in TIA rendering mode
     NTSCFilter myNTSCFilter;

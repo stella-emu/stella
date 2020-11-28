@@ -34,7 +34,7 @@ class InputTextDialog : public Dialog, public CommandSender
     InputTextDialog(GuiObject* boss, const GUI::Font& lfont,
                     const GUI::Font& nfont, const StringList& labels,
                     const string& title = "");
-    virtual ~InputTextDialog() = default;
+    ~InputTextDialog() override = default;
 
     /** Place the input dialog onscreen and center it */
     void show();
@@ -46,6 +46,7 @@ class InputTextDialog : public Dialog, public CommandSender
 
     void setText(const string& str, int idx = 0);
     void setTextFilter(const EditableWidget::TextFilter& f, int idx = 0);
+    void setToolTip(const string& str, int idx = 0);
 
     void setEmitSignal(int cmd) { myCmd = cmd; }
     void setMessage(const string& title);
@@ -58,9 +59,10 @@ class InputTextDialog : public Dialog, public CommandSender
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
     /** This dialog uses its own positioning, so we override Dialog::center() */
-    void center() override;
+    void setPosition() override;
 
   private:
+    vector<StaticTextWidget*> myLabel;
     vector<EditTextWidget*> myInput;
     StaticTextWidget* myMessage{nullptr};
 

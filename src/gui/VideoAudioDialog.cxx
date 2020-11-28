@@ -102,6 +102,7 @@ VideoAudioDialog::VideoAudioDialog(OSystem& osystem, DialogContainer& parent,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoAudioDialog::addDisplayTab()
 {
+  const GUI::Font& ifont = instance().frameBuffer().infoFont();
   const int lineHeight   = _font.getLineHeight(),
             fontHeight   = _font.getFontHeight(),
             fontWidth    = _font.getMaxCharWidth();
@@ -121,14 +122,17 @@ void VideoAudioDialog::addDisplayTab()
   myRenderer = new PopUpWidget(myTab, _font, xpos, ypos, pwidth, lineHeight,
                                instance().frameBuffer().supportedRenderers(),
                                "Renderer ", lwidth);
+  myRenderer->setToolTip("Select renderer used for displaying screen.");
   wid.push_back(myRenderer);
   const int swidth = myRenderer->getWidth() - lwidth;
   ypos += lineHeight + VGAP;
 
   // TIA interpolation
   myTIAInterpolate = new CheckboxWidget(myTab, _font, xpos, ypos + 1, "Interpolation ");
-  wid.push_back(myTIAInterpolate);  ypos += lineHeight + VGAP * 4;
+  myTIAInterpolate->setToolTip("Blur emulated display.");
+  wid.push_back(myTIAInterpolate);
 
+  ypos += lineHeight + VGAP * 4;
   // TIA zoom levels (will be dynamically filled later)
   myTIAZoom = new SliderWidget(myTab, _font, xpos, ypos - 1, swidth, lineHeight,
                                "Zoom ", lwidth, 0, fontWidth * 4, "%");
@@ -143,12 +147,14 @@ void VideoAudioDialog::addDisplayTab()
 
   // FS stretch
   myUseStretch = new CheckboxWidget(myTab, _font, xpos + INDENT, ypos + 1, "Stretch");
+  myUseStretch->setToolTip("Stretch emulated display to fill whole screen.");
   wid.push_back(myUseStretch);
 
 #ifdef ADAPTABLE_REFRESH_SUPPORT
   // Adapt refresh rate
   ypos += lineHeight + VGAP;
   myRefreshAdapt = new CheckboxWidget(myTab, _font, xpos + INDENT, ypos + 1, "Adapt display refresh rate");
+  myRefreshAdapt->setToolTip("Select optimal display refresh rate for each ROM.");
   wid.push_back(myRefreshAdapt);
 #else
   myRefreshAdapt = nullptr;
@@ -162,6 +168,12 @@ void VideoAudioDialog::addDisplayTab()
   myTVOverscan->setTickmarkIntervals(2);
   wid.push_back(myTVOverscan);
 
+  // Aspect ratio correction
+  ypos += lineHeight + VGAP * 4;
+  myCorrectAspect = new CheckboxWidget(myTab, _font, xpos, ypos + 1, "Correct aspect ratio (*)");
+  myCorrectAspect->setToolTip("Uncheck to disable real world aspect ratio correction.");
+  wid.push_back(myCorrectAspect);
+
   // Vertical size
   ypos += lineHeight + VGAP;
   myVSizeAdjust =
@@ -169,8 +181,16 @@ void VideoAudioDialog::addDisplayTab()
                      "V-Size adjust", lwidth, kVSizeChanged, fontWidth * 7, "%", 0, true);
   myVSizeAdjust->setMinValue(-5); myVSizeAdjust->setMaxValue(5);
   myVSizeAdjust->setTickmarkIntervals(2);
+  myVSizeAdjust->setToolTip("Adjust vertical size to match emulated TV display.");
   wid.push_back(myVSizeAdjust);
 
+
+  // Add message concerning usage
+  ypos = myTab->getHeight() - fontHeight - ifont.getFontHeight() - VGAP - VBORDER;
+  int iwidth = ifont.getStringWidth("(*) Change may require an application restart");
+  new StaticTextWidget(myTab, ifont, xpos, ypos,
+                       std::min(iwidth, _w - HBORDER * 2), ifont.getFontHeight(),
+                       "(*) Change may require an application restart");
 
   // Add items for tab 0
   addToFocusList(wid, myTab, tabID);
@@ -209,24 +229,89 @@ void VideoAudioDialog::addPaletteTab()
   const int swidth = myTIAPalette->getWidth() - lwidth;
   const int plWidth = _font.getStringWidth("NTSC phase ");
   const int pswidth = swidth - INDENT + lwidth - plWidth;
+  xpos += INDENT;
 
   myPhaseShiftNtsc =
-    new SliderWidget(myTab, _font, xpos + INDENT, ypos-1, pswidth, lineHeight,
+    new SliderWidget(myTab, _font, xpos, ypos - 1, pswidth, lineHeight,
                      "NTSC phase", plWidth, kNtscShiftChanged, fontWidth * 5);
-  myPhaseShiftNtsc->setMinValue((PaletteHandler::DEF_NTSC_SHIFT - PaletteHandler::MAX_SHIFT) * 10);
-  myPhaseShiftNtsc->setMaxValue((PaletteHandler::DEF_NTSC_SHIFT + PaletteHandler::MAX_SHIFT) * 10);
+  myPhaseShiftNtsc->setMinValue((PaletteHandler::DEF_NTSC_SHIFT - PaletteHandler::MAX_PHASE_SHIFT) * 10);
+  myPhaseShiftNtsc->setMaxValue((PaletteHandler::DEF_NTSC_SHIFT + PaletteHandler::MAX_PHASE_SHIFT) * 10);
   myPhaseShiftNtsc->setTickmarkIntervals(4);
+  myPhaseShiftNtsc->setToolTip("Adjust NTSC phase shift of 'Custom' palette.");
   wid.push_back(myPhaseShiftNtsc);
   ypos += lineHeight + VGAP;
 
   myPhaseShiftPal =
-    new SliderWidget(myTab, _font, xpos + INDENT, ypos-1, pswidth, lineHeight,
+    new SliderWidget(myTab, _font, xpos, ypos - 1, pswidth, lineHeight,
                      "PAL phase", plWidth, kPalShiftChanged, fontWidth * 5);
-  myPhaseShiftPal->setMinValue((PaletteHandler::DEF_PAL_SHIFT - PaletteHandler::MAX_SHIFT) * 10);
-  myPhaseShiftPal->setMaxValue((PaletteHandler::DEF_PAL_SHIFT + PaletteHandler::MAX_SHIFT) * 10);
+  myPhaseShiftPal->setMinValue((PaletteHandler::DEF_PAL_SHIFT - PaletteHandler::MAX_PHASE_SHIFT) * 10);
+  myPhaseShiftPal->setMaxValue((PaletteHandler::DEF_PAL_SHIFT + PaletteHandler::MAX_PHASE_SHIFT) * 10);
   myPhaseShiftPal->setTickmarkIntervals(4);
+  myPhaseShiftPal->setToolTip("Adjust PAL phase shift of 'Custom' palette.");
   wid.push_back(myPhaseShiftPal);
   ypos += lineHeight + VGAP;
+
+  const int rgblWidth = _font.getStringWidth("R ");
+  const int rgbsWidth = (myTIAPalette->getWidth() - INDENT - rgblWidth - fontWidth * 5) / 2;
+
+  myTVRedScale =
+    new SliderWidget(myTab, _font, xpos, ypos - 1, rgbsWidth, lineHeight,
+                     "R", rgblWidth, kPaletteUpdated, fontWidth * 4, "%");
+  myTVRedScale->setMinValue(0);
+  myTVRedScale->setMaxValue(100);
+  myTVRedScale->setTickmarkIntervals(2);
+  myTVRedScale->setToolTip("Adjust red saturation of 'Custom' palette.");
+  wid.push_back(myTVRedScale);
+
+  const int xposr = myTIAPalette->getRight() - rgbsWidth;
+  myTVRedShift =
+    new SliderWidget(myTab, _font, xposr, ypos - 1, rgbsWidth, lineHeight,
+                     "", 0, kRedShiftChanged, fontWidth * 6);
+  myTVRedShift->setMinValue((PaletteHandler::DEF_RGB_SHIFT - PaletteHandler::MAX_RGB_SHIFT) * 10);
+  myTVRedShift->setMaxValue((PaletteHandler::DEF_RGB_SHIFT + PaletteHandler::MAX_RGB_SHIFT) * 10);
+  myTVRedShift->setTickmarkIntervals(2);
+  myTVRedShift->setToolTip("Adjust red shift of 'Custom' palette.");
+  wid.push_back(myTVRedShift);
+  ypos += lineHeight + VGAP;
+
+  myTVGreenScale =
+    new SliderWidget(myTab, _font, xpos, ypos - 1, rgbsWidth, lineHeight,
+                     "G", rgblWidth, kPaletteUpdated, fontWidth * 4, "%");
+  myTVGreenScale->setMinValue(0);
+  myTVGreenScale->setMaxValue(100);
+  myTVGreenScale->setTickmarkIntervals(2);
+  myTVGreenScale->setToolTip("Adjust green saturation of 'Custom' palette.");
+  wid.push_back(myTVGreenScale);
+
+  myTVGreenShift =
+    new SliderWidget(myTab, _font, xposr, ypos - 1, rgbsWidth, lineHeight,
+                     "", 0, kGreenShiftChanged, fontWidth * 6);
+  myTVGreenShift->setMinValue((PaletteHandler::DEF_RGB_SHIFT - PaletteHandler::MAX_RGB_SHIFT) * 10);
+  myTVGreenShift->setMaxValue((PaletteHandler::DEF_RGB_SHIFT + PaletteHandler::MAX_RGB_SHIFT) * 10);
+  myTVGreenShift->setTickmarkIntervals(2);
+  myTVGreenShift->setToolTip("Adjust green shift of 'Custom' palette.");
+  wid.push_back(myTVGreenShift);
+  ypos += lineHeight + VGAP;
+
+  myTVBlueScale =
+    new SliderWidget(myTab, _font, xpos, ypos - 1, rgbsWidth, lineHeight,
+                     "B", rgblWidth, kPaletteUpdated, fontWidth * 4, "%");
+  myTVBlueScale->setMinValue(0);
+  myTVBlueScale->setMaxValue(100);
+  myTVBlueScale->setTickmarkIntervals(2);
+  myTVBlueScale->setToolTip("Adjust blue saturation of 'Custom' palette.");
+  wid.push_back(myTVBlueScale);
+
+  myTVBlueShift =
+    new SliderWidget(myTab, _font, xposr, ypos - 1, rgbsWidth, lineHeight,
+                     "", 0, kBlueShiftChanged, fontWidth * 6);
+  myTVBlueShift->setMinValue((PaletteHandler::DEF_RGB_SHIFT - PaletteHandler::MAX_RGB_SHIFT) * 10);
+  myTVBlueShift->setMaxValue((PaletteHandler::DEF_RGB_SHIFT + PaletteHandler::MAX_RGB_SHIFT) * 10);
+  myTVBlueShift->setTickmarkIntervals(2);
+  myTVBlueShift->setToolTip("Adjust blue shift of 'Custom' palette.");
+  wid.push_back(myTVBlueShift);
+  ypos += lineHeight + VGAP;
+  xpos -= INDENT;
 
   CREATE_CUSTOM_SLIDERS(Hue, "Hue ", kPaletteUpdated)
   CREATE_CUSTOM_SLIDERS(Satur, "Saturation ", kPaletteUpdated)
@@ -494,6 +579,9 @@ void VideoAudioDialog::loadConfig()
   myTVOverscan->setValue(instance().settings().getInt("tia.fs_overscan"));
   handleFullScreenChange();
 
+  // Aspect ratio correction
+  myCorrectAspect->setState(instance().settings().getBool("tia.correct_aspect"));
+
   // Aspect ratio setting (NTSC and PAL)
   myVSizeAdjust->setValue(instance().settings().getInt("tia.vsizeadjust"));
 
@@ -507,6 +595,12 @@ void VideoAudioDialog::loadConfig()
   instance().frameBuffer().tiaSurface().paletteHandler().getAdjustables(myPaletteAdj);
   myPhaseShiftNtsc->setValue(myPaletteAdj.phaseNtsc);
   myPhaseShiftPal->setValue(myPaletteAdj.phasePal);
+  myTVRedScale->setValue(myPaletteAdj.redScale);
+  myTVRedShift->setValue(myPaletteAdj.redShift);
+  myTVGreenScale->setValue(myPaletteAdj.greenScale);
+  myTVGreenShift->setValue(myPaletteAdj.greenShift);
+  myTVBlueScale->setValue(myPaletteAdj.blueScale);
+  myTVBlueShift->setValue(myPaletteAdj.blueShift);
   myTVHue->setValue(myPaletteAdj.hue);
   myTVBright->setValue(myPaletteAdj.brightness);
   myTVContrast->setValue(myPaletteAdj.contrast);
@@ -551,7 +645,7 @@ void VideoAudioDialog::loadConfig()
   myVolumeSlider->setValue(audioSettings.volume());
 
   // Device
-  uInt32 deviceId = BSPF::clamp(audioSettings.device(), 0u,
+  uInt32 deviceId = BSPF::clamp(audioSettings.device(), 0U,
                                 uInt32(instance().sound().supportedDevices().size() - 1));
   myDevicePopup->setSelected(deviceId);
 
@@ -615,6 +709,9 @@ void VideoAudioDialog::saveConfig()
 
   // TIA zoom levels
   instance().settings().setValue("tia.zoom", myTIAZoom->getValue() / 100.0);
+
+  // Aspect ratio correction
+  instance().settings().setValue("tia.correct_aspect", myCorrectAspect->getState());
 
   // Aspect ratio setting (NTSC and PAL)
   const int oldAdjust = instance().settings().getInt("tia.vsizeadjust");
@@ -729,6 +826,7 @@ void VideoAudioDialog::setDefaults()
     #endif
       myTVOverscan->setValue(0);
       myTIAZoom->setValue(300);
+      myCorrectAspect->setState(true);
       myVSizeAdjust->setValue(0);
 
       handleFullScreenChange();
@@ -739,6 +837,12 @@ void VideoAudioDialog::setDefaults()
       myTIAPalette->setSelected(PaletteHandler::SETTING_STANDARD);
       myPhaseShiftNtsc->setValue(PaletteHandler::DEF_NTSC_SHIFT * 10);
       myPhaseShiftPal->setValue(PaletteHandler::DEF_PAL_SHIFT * 10);
+      myTVRedScale->setValue(50);
+      myTVRedShift->setValue(PaletteHandler::DEF_RGB_SHIFT);
+      myTVGreenScale->setValue(50);
+      myTVGreenShift->setValue(PaletteHandler::DEF_RGB_SHIFT);
+      myTVBlueScale->setValue(50);
+      myTVBlueShift->setValue(PaletteHandler::DEF_RGB_SHIFT);
       myTVHue->setValue(50);
       myTVSatur->setValue(50);
       myTVContrast->setValue(50);
@@ -826,6 +930,23 @@ void VideoAudioDialog::handlePaletteChange()
 
   myPhaseShiftNtsc->setEnabled(enable);
   myPhaseShiftPal->setEnabled(enable);
+  myTVRedScale->setEnabled(enable);
+  myTVRedShift->setEnabled(enable);
+  myTVGreenScale->setEnabled(enable);
+  myTVGreenShift->setEnabled(enable);
+  myTVBlueScale->setEnabled(enable);
+  myTVBlueShift->setEnabled(enable);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void VideoAudioDialog::handleShiftChanged(SliderWidget* widget)
+{
+  std::ostringstream ss;
+
+  ss << std::setw(4) << std::fixed << std::setprecision(1)
+    << (0.1 * (widget->getValue())) << DEGREE;
+  widget->setValueLabel(ss.str());
+  handlePaletteUpdate();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -838,6 +959,12 @@ void VideoAudioDialog::handlePaletteUpdate()
   PaletteHandler::Adjustable paletteAdj;
   paletteAdj.phaseNtsc  = myPhaseShiftNtsc->getValue();
   paletteAdj.phasePal   = myPhaseShiftPal->getValue();
+  paletteAdj.redScale   = myTVRedScale->getValue();
+  paletteAdj.redShift   = myTVRedShift->getValue();
+  paletteAdj.greenScale = myTVGreenScale->getValue();
+  paletteAdj.greenShift = myTVGreenShift->getValue();
+  paletteAdj.blueScale  = myTVBlueScale->getValue();
+  paletteAdj.blueShift  = myTVBlueShift->getValue();
   paletteAdj.hue        = myTVHue->getValue();
   paletteAdj.saturation = myTVSatur->getValue();
   paletteAdj.contrast   = myTVContrast->getValue();
@@ -846,7 +973,16 @@ void VideoAudioDialog::handlePaletteUpdate()
   instance().frameBuffer().tiaSurface().paletteHandler().setAdjustables(paletteAdj);
 
   if(instance().hasConsole())
+  {
     instance().frameBuffer().tiaSurface().paletteHandler().setPalette();
+
+    constexpr int NUM_LUMA = 8;
+    constexpr int NUM_CHROMA = 16;
+
+    for(int idx = 0; idx < NUM_CHROMA; ++idx)
+      for(int lum = 0; lum < NUM_LUMA; ++lum)
+        myColor[idx][lum]->setDirty();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -910,25 +1046,25 @@ void VideoAudioDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kNtscShiftChanged:
-    {
-      std::ostringstream ss;
-
-      ss << std::setw(4) << std::fixed << std::setprecision(1)
-        << (0.1 * abs(myPhaseShiftNtsc->getValue())) << DEGREE;
-      myPhaseShiftNtsc->setValueLabel(ss.str());
-      handlePaletteUpdate();
+      handleShiftChanged(myPhaseShiftNtsc);
       break;
-    }
+
     case kPalShiftChanged:
-    {
-      std::ostringstream ss;
-
-      ss << std::setw(4) << std::fixed << std::setprecision(1)
-        << (0.1 * abs(myPhaseShiftPal->getValue())) << DEGREE;
-      myPhaseShiftPal->setValueLabel(ss.str());
-      handlePaletteUpdate();
+      handleShiftChanged(myPhaseShiftPal);
       break;
-    }
+
+    case kRedShiftChanged:
+      handleShiftChanged(myTVRedShift);
+      break;
+
+    case kGreenShiftChanged:
+      handleShiftChanged(myTVGreenShift);
+      break;
+
+    case kBlueShiftChanged:
+      handleShiftChanged(myTVBlueShift);
+      break;
+
     case kVSizeChanged:
     {
       int adjust = myVSizeAdjust->getValue();
@@ -1044,10 +1180,11 @@ void VideoAudioDialog::addPalette(int x, int y, int w, int h)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoAudioDialog::colorPalette()
 {
+  constexpr int NUM_LUMA = 8;
+  constexpr int NUM_CHROMA = 16;
+
   if(instance().hasConsole())
   {
-    constexpr int NUM_LUMA = 8;
-    constexpr int NUM_CHROMA = 16;
     const int order[2][NUM_CHROMA] =
     {
       {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
@@ -1063,11 +1200,14 @@ void VideoAudioDialog::colorPalette()
       ss << Common::Base::HEX1 << std::uppercase << color;
       myColorLbl[idx]->setLabel(ss.str());
       for(int lum = 0; lum < NUM_LUMA; ++lum)
-      {
         myColor[idx][lum]->setColor(color * NUM_CHROMA + lum * 2); // skip grayscale colors
-      }
     }
   }
+  else
+    // disable palette
+    for(int idx = 0; idx < NUM_CHROMA; ++idx)
+      for(int lum = 0; lum < NUM_LUMA; ++lum)
+        myColor[idx][lum]->setEnabled(false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

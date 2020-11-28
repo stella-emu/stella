@@ -115,10 +115,11 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
                                           "Console info overlay");
   wid.push_back(myFrameStatsWidget);
 
-
   myDetectedInfoWidget = new CheckboxWidget(myTab, font,
                                             myFrameStatsWidget->getRight() + fontWidth * 2.5, ypos + 1,
                                             "Detected settings info");
+  myDetectedInfoWidget->setToolTip("Display detected controllers, bankswitching\n"
+                                   "and TV types at ROM start.");
   wid.push_back(myDetectedInfoWidget);
   ypos += lineHeight + VGAP;
 
@@ -131,6 +132,8 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
 
   myConsoleWidget = new PopUpWidget(myTab, font, HBORDER + INDENT * 1, ypos, pwidth, lineHeight, items,
                                     "Console ", lwidth, kConsole);
+  myConsoleWidget->setToolTip("Emulate Color/B&W/Pause key and zero\n"
+                              "page RAM initialization differenly.");
   wid.push_back(myConsoleWidget);
   ypos += lineHeight + VGAP;
 
@@ -141,6 +144,8 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
 
   myRandomBankWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
                                           "Random startup bank");
+  myRandomBankWidget->setToolTip("Randomize the startup bank for\n"
+                                 "most classic bankswitching types.");
   wid.push_back(myRandomBankWidget);
   ypos += lineHeight + VGAP;
 
@@ -154,11 +159,12 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   myRandomizeCPULabel = new StaticTextWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1, "Randomize CPU ");
   wid.push_back(myRandomizeCPULabel);
 
+  const std::array<string, 5> cpuregsLabels = {"SP", "A", "X", "Y", "PS"};
   int xpos = myRandomizeCPULabel->getRight() + fontWidth * 1.25;
   for(int i = 0; i < 5; ++i)
   {
     myRandomizeCPUWidget[i] = new CheckboxWidget(myTab, font, xpos, ypos + 1,
-                                           ourCPUregs[i], kRandCPUID);
+                                           cpuregsLabels[i], kRandCPUID);
     wid.push_back(myRandomizeCPUWidget[i]);
     xpos += CheckboxWidget::boxSize(font) + font.getStringWidth("XX") + fontWidth * 2.5;
   }
@@ -167,17 +173,23 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   // How to handle undriven TIA pins
   myUndrivenPinsWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1,
                                             "Drive unused TIA pins randomly on a read/peek");
+  myUndrivenPinsWidget->setToolTip("Read TIA pins random instead of last databus values.\n"
+                                   "Helps detecting missing '#' for immediate loads.");
   wid.push_back(myUndrivenPinsWidget);
   ypos += lineHeight + VGAP;
 
 #ifdef DEBUGGER_SUPPORT
   myRWPortBreakWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1,
                                            "Break on reads from write ports");
+  myRWPortBreakWidget->setToolTip("Cause reads from write ports to interrupt\n"
+                                  "emulation and enter debugger.");
   wid.push_back(myRWPortBreakWidget);
   ypos += lineHeight + VGAP;
 
   myWRPortBreakWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1,
                                            "Break on writes to read ports");
+  myWRPortBreakWidget->setToolTip("Cause writes to read ports to interrupt\n"
+                                  "emulation and enter debugger.");
   wid.push_back(myWRPortBreakWidget);
   ypos += lineHeight + VGAP;
 #endif
@@ -185,12 +197,16 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   // Thumb ARM emulation exception
   myThumbExceptionWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1,
                                               "Fatal ARM emulation error throws exception");
+  myThumbExceptionWidget->setToolTip("Cause Thumb ARM emulation to throw exceptions\n"
+                                     "on fatal errors and enter the debugger.");
   wid.push_back(myThumbExceptionWidget);
   ypos += lineHeight + VGAP;
 
   // AtariVox/SaveKey EEPROM access
   myEEPROMAccessWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1,
                                             "Display AtariVox/SaveKey EEPROM R/W access");
+  myEEPROMAccessWidget->setToolTip("Cause message display when AtariVox/\n"
+                                   "SaveKey EEPROM is read or written.");
   wid.push_back(myEEPROMAccessWidget);
 
   // Add items for tab 0
@@ -233,15 +249,20 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
   VarList::push_back(items, "Faulty Cosmic Ark stars", "cosmicark");
   VarList::push_back(items, "Glitched Pesco", "pesco");
   VarList::push_back(items, "Glitched Quick Step!", "quickstep");
+  VarList::push_back(items, "Glitched Indy 500 menu", "indy500");
   VarList::push_back(items, "Glitched He-Man title", "heman");
   VarList::push_back(items, "Custom", "custom");
   myTIATypeWidget = new PopUpWidget(myTab, font, HBORDER + INDENT, ypos - 1,
                                     pwidth, lineHeight, items, "Chip type ", 0, kTIAType);
+  myTIATypeWidget->setToolTip("Select which TIA chip type to emulate.\n"
+                              "Some types cause defined glitches.");
   wid.push_back(myTIATypeWidget);
   ypos += lineHeight + VGAP * 1;
 
   myInvPhaseLabel = new StaticTextWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
                                          "Inverted HMOVE clock phase for");
+  myInvPhaseLabel->setToolTip("Objects react different to too\n"
+                              "early HM" + ELLIPSIS + " after HMOVE changes.");
   wid.push_back(myInvPhaseLabel);
   ypos += lineHeight + VGAP * 1;
 
@@ -260,6 +281,7 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
 
   myPlayfieldLabel = new StaticTextWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
                                          "Delayed playfield");
+  myPlayfieldLabel->setToolTip("Playfield reacts one color clock slower to updates.");
   wid.push_back(myPlayfieldLabel);
   ypos += lineHeight + VGAP * 1;
 
@@ -271,9 +293,20 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
   wid.push_back(myPFColorWidget);
   ypos += lineHeight + VGAP * 1;
 
+  myBackgroundLabel = new StaticTextWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
+                                          "Delayed background");
+  myBackgroundLabel->setToolTip("Background color reacts one color clock slower to updates.");
+  wid.push_back(myBackgroundLabel);
+  ypos += lineHeight + VGAP * 1;
+
+  myBKColorWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 3, ypos + 1, "Color");
+  wid.push_back(myBKColorWidget);
+  ypos += lineHeight + VGAP * 1;
+
   ostringstream ss;
   ss << "Delayed VDEL" << ELLIPSIS << " swap for";
   mySwapLabel = new StaticTextWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1, ss.str());
+  mySwapLabel->setToolTip("VDELed objects react one color clock slower to updates.");
   wid.push_back(mySwapLabel);
   ypos += lineHeight + VGAP * 1;
 
@@ -321,12 +354,14 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
   // TV jitter effect
   myTVJitterWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1,
                                         "Jitter/roll effect", kTVJitter);
+  myTVJitterWidget->setToolTip("Enable to emulate TV loss of sync.");
   wid.push_back(myTVJitterWidget);
   myTVJitterRecWidget = new SliderWidget(myTab, font,
                                          myTVJitterWidget->getRight() + fontWidth * 3, ypos - 1,
                                          "Recovery ", 0, kTVJitterChanged);
   myTVJitterRecWidget->setMinValue(1); myTVJitterRecWidget->setMaxValue(20);
   myTVJitterRecWidget->setTickmarkIntervals(5);
+  myTVJitterRecWidget->setToolTip("Define speed of sync recovery.");
   wid.push_back(myTVJitterRecWidget);
   myTVJitterRecLabelWidget = new StaticTextWidget(myTab, font,
                                                   myTVJitterRecWidget->getRight() + 4,
@@ -336,6 +371,8 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
 
   myColorLossWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1,
                                          "PAL color-loss");
+  myColorLossWidget->setToolTip("PAL games with odd scanline count\n"
+                                "will be displayed without color.");
   wid.push_back(myColorLossWidget);
   ypos += lineHeight + VGAP;
 
@@ -474,6 +511,7 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
 #endif
   myStateSizeWidget->setStepValue(20);
   myStateSizeWidget->setTickmarkIntervals(5);
+  myStateSizeWidget->setToolTip("Define the total Time Machine buffer size.");
   wid.push_back(myStateSizeWidget);
   ypos += lineHeight + VGAP;
 
@@ -487,6 +525,9 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
 #endif
   myUncompressedWidget->setStepValue(20);
   myUncompressedWidget->setTickmarkIntervals(5);
+  myUncompressedWidget->setToolTip("Define the number of completely kept states.\n"
+                                   "States beyond this number will be slowly removed\n"
+                                   "to fit the requested horizon into the buffer.");
   wid.push_back(myUncompressedWidget);
   ypos += lineHeight + VGAP;
 
@@ -496,6 +537,7 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
   int pwidth = font.getStringWidth("10 seconds");
   myStateIntervalWidget = new PopUpWidget(myTab, font, xpos, ypos, pwidth,
                                           lineHeight, items, "Interval          ", 0, kIntervalChanged);
+  myStateIntervalWidget->setToolTip("Define the interval between each saved state.");
   wid.push_back(myStateIntervalWidget);
   ypos += lineHeight + VGAP;
 
@@ -504,6 +546,8 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
     VarList::push_back(items, HORIZONS[i], HOR_SETTINGS[i]);
   myStateHorizonWidget = new PopUpWidget(myTab, font, xpos, ypos, pwidth,
                                          lineHeight, items, "Horizon         ~ ", 0, kHorizonChanged);
+  myStateHorizonWidget->setToolTip("Define how far the Time Machine\n"
+                                   "will allow moving back in time.");
   wid.push_back(myStateHorizonWidget);
 
   // Add message concerning usage
@@ -587,6 +631,7 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
 
   myGhostReadsTrapWidget = new CheckboxWidget(myTab, font, HBORDER, ypos + 1,
                                              "Trap on 'ghost' reads");
+  myGhostReadsTrapWidget->setToolTip("Traps will consider CPU 'ghost' reads too.");
   wid.push_back(myGhostReadsTrapWidget);
 
   // Add message concerning usage
@@ -644,6 +689,7 @@ void DeveloperDialog::loadSettings(SettingsSet set)
   myBlInvPhase[set] = devSettings ? instance().settings().getBool("dev.tia.blinvphase") : false;
   myPFBits[set] = devSettings ? instance().settings().getBool("dev.tia.delaypfbits") : false;
   myPFColor[set] = devSettings ? instance().settings().getBool("dev.tia.delaypfcolor") : false;
+  myBKColor[set] = devSettings ? instance().settings().getBool("dev.tia.delaybkcolor") : false;
   myPlSwap[set] = devSettings ? instance().settings().getBool("dev.tia.delayplswap") : false;
   myBlSwap[set] = devSettings ? instance().settings().getBool("dev.tia.delayblswap") : false;
 
@@ -708,6 +754,7 @@ void DeveloperDialog::saveSettings(SettingsSet set)
       instance().settings().setValue("dev.tia.blinvphase", myBlInvPhase[set]);
       instance().settings().setValue("dev.tia.delaypfbits", myPFBits[set]);
       instance().settings().setValue("dev.tia.delaypfcolor", myPFColor[set]);
+      instance().settings().setValue("dev.tia.delaybkcolor", myBKColor[set]);
       instance().settings().setValue("dev.tia.delayplswap", myPlSwap[set]);
       instance().settings().setValue("dev.tia.delayblswap", myBlSwap[set]);
     }
@@ -739,9 +786,11 @@ void DeveloperDialog::getWidgetStates(SettingsSet set)
   myRandomBank[set] = myRandomBankWidget->getState();
   myRandomizeRAM[set] = myRandomizeRAMWidget->getState();
   string cpurandom;
+  const std::array<string, 5> cpuregs = {"S", "A", "X", "Y", "P"};
+
   for(int i = 0; i < 5; ++i)
     if(myRandomizeCPUWidget[i]->getState())
-      cpurandom += ourCPUregs[i];
+      cpurandom += cpuregs[i];
   myRandomizeCPU[set] = cpurandom;
   // Undriven TIA pins
   myUndrivenPins[set] = myUndrivenPinsWidget->getState();
@@ -762,6 +811,7 @@ void DeveloperDialog::getWidgetStates(SettingsSet set)
   myBlInvPhase[set] = myBlInvPhaseWidget->getState();
   myPFBits[set] = myPFBitsWidget->getState();
   myPFColor[set] = myPFColorWidget->getState();
+  myBKColor[set] = myBKColorWidget->getState();
   myPlSwap[set] = myPlSwapWidget->getState();
   myBlSwap[set] = myBlSwapWidget->getState();
 
@@ -792,8 +842,10 @@ void DeveloperDialog::setWidgetStates(SettingsSet set)
   myRandomizeRAMWidget->setState(myRandomizeRAM[set]);
 
   const string& cpurandom = myRandomizeCPU[set];
+  const std::array<string, 5> cpuregs = {"S", "A", "X", "Y", "P"};
+
   for(int i = 0; i < 5; ++i)
-    myRandomizeCPUWidget[i]->setState(BSPF::containsIgnoreCase(cpurandom, ourCPUregs[i]));
+    myRandomizeCPUWidget[i]->setState(BSPF::containsIgnoreCase(cpurandom, cpuregs[i]));
   // Undriven TIA pins
   myUndrivenPinsWidget->setState(myUndrivenPins[set]);
 #ifdef DEBUGGER_SUPPORT
@@ -909,6 +961,7 @@ void DeveloperDialog::saveConfig()
     instance().console().tia().setBlInvertedPhaseClock(myBlInvPhaseWidget->getState());
     instance().console().tia().setPFBitsDelay(myPFBitsWidget->getState());
     instance().console().tia().setPFColorDelay(myPFColorWidget->getState());
+    instance().console().tia().setBKColorDelay(myBKColorWidget->getState());
     instance().console().tia().setPlSwapDelay(myPlSwapWidget->getState());
     instance().console().tia().setBlSwapDelay(myBlSwapWidget->getState());
   }
@@ -995,6 +1048,7 @@ void DeveloperDialog::setDefaults()
       myBlInvPhase[set] = devSettings ? true : false;
       myPFBits[set] = devSettings ? true : false;
       myPFColor[set] = devSettings ? true : false;
+      myBKColor[set] = devSettings ? true : false;
       myPlSwap[set] = devSettings ? true : false;
       myBlSwap[set] = devSettings ? true : false;
 
@@ -1210,8 +1264,10 @@ void DeveloperDialog::handleTia()
   myMsInvPhaseWidget->setEnabled(enable);
   myBlInvPhaseWidget->setEnabled(enable);
   myPlayfieldLabel->setEnabled(enable);
+  myBackgroundLabel->setEnabled(enable);
   myPFBitsWidget->setEnabled(enable);
   myPFColorWidget->setEnabled(enable);
+  myBKColorWidget->setEnabled(enable);
   mySwapLabel->setEnabled(enable);
   myPlSwapWidget->setEnabled(enable);
   myBlSwapWidget->setEnabled(enable);
@@ -1223,6 +1279,7 @@ void DeveloperDialog::handleTia()
     myBlInvPhaseWidget->setState(myBlInvPhase[SettingsSet::developer]);
     myPFBitsWidget->setState(myPFBits[SettingsSet::developer]);
     myPFColorWidget->setState(myPFColor[SettingsSet::developer]);
+    myBKColorWidget->setState(myBKColor[SettingsSet::developer]);
     myPlSwapWidget->setState(myPlSwap[SettingsSet::developer]);
     myBlSwapWidget->setState(myBlSwap[SettingsSet::developer]);
   }
@@ -1233,6 +1290,7 @@ void DeveloperDialog::handleTia()
     myBlInvPhaseWidget->setState(false);
     myPFBitsWidget->setState(BSPF::equalsIgnoreCase("pesco", myTIATypeWidget->getSelectedTag().toString()));
     myPFColorWidget->setState(BSPF::equalsIgnoreCase("quickstep", myTIATypeWidget->getSelectedTag().toString()));
+    myBKColorWidget->setState(BSPF::equalsIgnoreCase("indy500", myTIATypeWidget->getSelectedTag().toString()));
     myPlSwapWidget->setState(BSPF::equalsIgnoreCase("heman", myTIATypeWidget->getSelectedTag().toString()));
     myBlSwapWidget->setState(false);
   }
@@ -1512,8 +1570,3 @@ void DeveloperDialog::handleFontSize()
     myDebuggerHeightSlider->setValue(minH);
 #endif
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const std::array<string, 5> DeveloperDialog::ourCPUregs = {
-  "SP", "A", "X", "Y", "PS"
-};

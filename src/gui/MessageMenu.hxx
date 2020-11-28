@@ -30,28 +30,28 @@ class MessageDialog;
 */
 class MessageMenu : public DialogContainer
 {
-public:
-  /**
-    Create a new menu stack
-  */
-  explicit MessageMenu(OSystem& osystem);
-  virtual ~MessageMenu();
+  public:
+    /**
+      Create a new menu stack
+    */
+    explicit MessageMenu(OSystem& osystem);
+    ~MessageMenu() override;
 
-  void setMessage(const string& title, const string& text, bool yesNo = false);
-  void setMessage(const string& title, const StringList& text, bool yesNo = false);
-  bool confirmed();
+    void setMessage(const string& title, const string& text, bool yesNo = false);
+    void setMessage(const string& title, const StringList& text, bool yesNo = false);
+    bool confirmed();
 
-private:
-  Dialog* baseDialog() override;
-  MessageDialog* myMessageDialog{nullptr};
+  private:
+    Dialog* baseDialog() override;
+    MessageDialog* myMessageDialog{nullptr};
 
-private:
-  // Following constructors and assignment operators not supported
-  MessageMenu() = delete;
-  MessageMenu(const MessageMenu&) = delete;
-  MessageMenu(MessageMenu&&) = delete;
-  MessageMenu& operator=(const MessageMenu&) = delete;
-  MessageMenu& operator=(MessageMenu&&) = delete;
+  private:
+    // Following constructors and assignment operators not supported
+    MessageMenu() = delete;
+    MessageMenu(const MessageMenu&) = delete;
+    MessageMenu(MessageMenu&&) = delete;
+    MessageMenu& operator=(const MessageMenu&) = delete;
+    MessageMenu& operator=(MessageMenu&&) = delete;
 };
 
 #endif

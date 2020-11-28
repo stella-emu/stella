@@ -27,7 +27,7 @@ class EditTextWidget : public EditableWidget
   public:
     EditTextWidget(GuiObject* boss, const GUI::Font& font,
                    int x, int y, int w, int h, const string& text = "");
-    virtual ~EditTextWidget() = default;
+    ~EditTextWidget() override = default;
 
     void setText(const string& str, bool changed = false) override;
 
@@ -54,8 +54,6 @@ class EditTextWidget : public EditableWidget
     Common::Rect getEditRect() const override;
 
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
-    void handleMouseEntered() override;
-    void handleMouseLeft() override;
 
   protected:
     string _backupString;

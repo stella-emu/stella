@@ -34,7 +34,7 @@ class CartridgeCMWidget : public CartDebugWidget
                       const GUI::Font& nfont,
                       int x, int y, int w, int h,
                       CartridgeCM& cart);
-    virtual ~CartridgeCMWidget() = default;
+    ~CartridgeCMWidget() override = default;
 
   private:
     struct CartState {

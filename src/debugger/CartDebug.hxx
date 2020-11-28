@@ -70,7 +70,7 @@ class CartDebug : public DebuggerSystem
 
   public:
     CartDebug(Debugger& dbg, Console& console, const OSystem& osystem);
-    virtual ~CartDebug() = default;
+    ~CartDebug() override = default;
 
     const DebuggerState& getState() override;
     const DebuggerState& getOldState() override { return myOldState; }
@@ -211,8 +211,10 @@ class CartDebug : public DebuggerSystem
       If places is not -1 and a label hasn't been defined, return a
       formatted hexidecimal address
     */
-    bool getLabel(ostream& buf, uInt16 addr, bool isRead, int places = -1) const;
-    string getLabel(uInt16 addr, bool isRead, int places = -1) const;
+    bool getLabel(ostream& buf, uInt16 addr, bool isRead,
+                  int places = -1, bool isRam = false) const;
+    string getLabel(uInt16 addr, bool isRead,
+                    int places = -1, bool isRam = false) const;
     int getAddress(const string& label) const;
 
     /**

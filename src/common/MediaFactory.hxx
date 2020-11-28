@@ -51,10 +51,10 @@
 
 #if defined(__LIB_RETRO__)
   #include "EventHandlerLIBRETRO.hxx"
-  #include "FrameBufferLIBRETRO.hxx"
+  #include "FBBackendLIBRETRO.hxx"
 #elif defined(SDL_SUPPORT)
   #include "EventHandlerSDL2.hxx"
-  #include "FrameBufferSDL2.hxx"
+  #include "FBBackendSDL2.hxx"
 #else
   #error Unsupported backend!
 #endif
@@ -128,12 +128,12 @@ class MediaFactory
     #endif
     }
 
-    static unique_ptr<FrameBuffer> createVideo(OSystem& osystem)
+    static unique_ptr<FBBackend> createVideoBackend(OSystem& osystem)
     {
     #if defined(__LIB_RETRO__)
-      return make_unique<FrameBufferLIBRETRO>(osystem);
+      return make_unique<FBBackendLIBRETRO>(osystem);
     #elif defined(SDL_SUPPORT)
-      return make_unique<FrameBufferSDL2>(osystem);
+      return make_unique<FBBackendSDL2>(osystem);
     #else
       #error Unsupported platform for FrameBuffer!
     #endif

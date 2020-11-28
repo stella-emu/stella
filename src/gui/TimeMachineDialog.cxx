@@ -218,6 +218,7 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
 
   this->clearFlags(Widget::FLAG_CLEARBG); // does only work combined with blending (0..100)!
   this->clearFlags(Widget::FLAG_BORDER);
+  this->setFlags(Widget::FLAG_NOBG);
 
   xpos = H_BORDER;
   ypos = V_BORDER;
@@ -225,8 +226,10 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   // Add index info
   myCurrentIdxWidget = new StaticTextWidget(this, font, xpos, ypos, "1000", TextAlign::Left, kBGColor);
   myCurrentIdxWidget->setTextColor(kColorInfo);
+  myCurrentIdxWidget->setFlags(Widget::FLAG_CLEARBG | Widget::FLAG_NOBG);
   myLastIdxWidget = new StaticTextWidget(this, font, _w - H_BORDER - font.getStringWidth("1000"), ypos,
                                          "1000", TextAlign::Right, kBGColor);
+  myLastIdxWidget->setFlags(Widget::FLAG_CLEARBG | Widget::FLAG_NOBG);
   myLastIdxWidget->setTextColor(kColorInfo);
 
   // Add timeline
@@ -241,9 +244,11 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   // Add time info
   int ypos_s = ypos + (buttonHeight - font.getFontHeight() + 1) / 2; // align to button vertical center
   myCurrentTimeWidget = new StaticTextWidget(this, font, xpos, ypos_s, "00:00.00", TextAlign::Left, kBGColor);
+  myCurrentTimeWidget->setFlags(Widget::FLAG_CLEARBG | Widget::FLAG_NOBG);
   myCurrentTimeWidget->setTextColor(kColorInfo);
   myLastTimeWidget = new StaticTextWidget(this, font, _w - H_BORDER - font.getStringWidth("00:00.00"), ypos_s,
                                           "00:00.00", TextAlign::Right, kBGColor);
+  myLastTimeWidget->setFlags(Widget::FLAG_CLEARBG | Widget::FLAG_NOBG);
   myLastTimeWidget->setTextColor(kColorInfo);
   xpos = myCurrentTimeWidget->getRight() + BUTTON_GAP * 4;
 
@@ -287,11 +292,12 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   // Add message
   myMessageWidget = new StaticTextWidget(this, font, xpos, ypos_s,
       "                                             ", TextAlign::Left, kBGColor);
+  myMessageWidget->setFlags(Widget::FLAG_CLEARBG | Widget::FLAG_NOBG);
   myMessageWidget->setTextColor(kColorInfo);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TimeMachineDialog::center()
+void TimeMachineDialog::setPosition()
 {
   // Place on the bottom of the screen, centered horizontally
   const Common::Size& screen = instance().frameBuffer().screenSize();
@@ -434,11 +440,11 @@ void TimeMachineDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kSaveAll:
-      instance().frameBuffer().showMessage(instance().state().rewindManager().saveAllStates());
+      instance().frameBuffer().showTextMessage(instance().state().rewindManager().saveAllStates());
       break;
 
     case kLoadAll:
-      instance().frameBuffer().showMessage(instance().state().rewindManager().loadAllStates());
+      instance().frameBuffer().showTextMessage(instance().state().rewindManager().loadAllStates());
       initBar();
       break;
 

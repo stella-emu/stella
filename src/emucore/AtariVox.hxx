@@ -32,7 +32,7 @@ class FilesystemNode;
   This code owes a great debt to Alex Herbert's AtariVox documentation and
   driver code.
 
-  @author  B. Watson
+  @author  B. Watson, Stephen Anthony
 */
 class AtariVox : public SaveKey
 {
@@ -50,7 +50,7 @@ class AtariVox : public SaveKey
     AtariVox(Jack jack, const Event& event, const System& system,
              const string& portname, const FilesystemNode& eepromfile,
              const onMessageCallback& callback);
-    virtual ~AtariVox();
+    ~AtariVox() override;
 
   public:
     using Controller::read;
@@ -91,7 +91,9 @@ class AtariVox : public SaveKey
     */
     void reset() override;
 
-    string about(bool swappedPorts) const override { return Controller::about(swappedPorts) + myAboutString; }
+    string about(bool swappedPorts) const override {
+      return Controller::about(swappedPorts) + myAboutString;
+    }
 
   private:
    void clockDataIn(bool value);
@@ -116,6 +118,13 @@ class AtariVox : public SaveKey
     // driver code sends data at 62 CPU cycles per bit, which is
     // "close enough".
     uInt64 myLastDataWriteCycle{0};
+
+    // When using software flow control, assume the device starts in READY mode
+    bool myReadyStateSoftFlow{true};
+
+    // Some USB-Serial adaptors send the CTS signal inverted; we detect
+    // that when opening the port, and flip the signal when necessary
+    bool myCTSFlip{false};
 
     // Holds information concerning serial port usage
     string myAboutString;

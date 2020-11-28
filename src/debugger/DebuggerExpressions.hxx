@@ -23,6 +23,7 @@
 #include "bspf.hxx"
 #include "CartDebug.hxx"
 #include "CpuDebug.hxx"
+#include "RiotDebug.hxx"
 #include "TIADebug.hxx"
 #include "Debugger.hxx"
 #include "Expression.hxx"
@@ -308,6 +309,18 @@ class ShiftRightExpression : public Expression
     ShiftRightExpression(Expression* left, Expression* right) : Expression(left, right) { }
     Int32 evaluate() const override
       { return myLHS->evaluate() >> myRHS->evaluate(); }
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+class RiotMethodExpression : public Expression
+{
+  public:
+    RiotMethodExpression(RiotMethod method) : Expression(), myMethod(std::mem_fn(method)) { }
+    Int32 evaluate() const override
+      { return myMethod(Debugger::debugger().riotDebug()); }
+
+  private:
+    std::function<int(const RiotDebug&)> myMethod;
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

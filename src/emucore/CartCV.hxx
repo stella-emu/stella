@@ -51,7 +51,7 @@ class CartridgeCV : public CartridgeEnhanced
     */
     CartridgeCV(const ByteBuffer& image, size_t size, const string& md5,
                 const Settings& settings, size_t bsSize = 2_KB);
-    virtual ~CartridgeCV() = default;
+    ~CartridgeCV() override = default;
 
   public:
     /**

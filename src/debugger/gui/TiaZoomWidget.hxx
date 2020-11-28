@@ -27,15 +27,21 @@ class ContextMenu;
 class TiaZoomWidget : public Widget, public CommandSender
 {
   public:
+    using Widget::setPos;
+
     TiaZoomWidget(GuiObject *boss, const GUI::Font& font,
                   int x, int y, int w, int h);
-    virtual ~TiaZoomWidget() = default;
+    ~TiaZoomWidget() override = default;
 
     void loadConfig() override;
-    void setPos(int x, int y);
+    void setPos(int x, int y) override;
+
+    string getToolTip(const Common::Point& pos) const override;
+    bool changedToolTip(const Common::Point& oldPos, const Common::Point& newPos) const override;
 
   protected:
-    void handleMouseEntered() override;
+    bool hasToolTip() const override { return true; }
+    Common::Point getToolTipIndex(const Common::Point& pos) const;
 
   private:
     void zoom(int level);

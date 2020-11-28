@@ -39,7 +39,7 @@ class BoosterGrip : public Controller
       @param system The system using this controller
     */
     BoosterGrip(Jack jack, const Event& event, const System& system);
-    virtual ~BoosterGrip() = default;
+    ~BoosterGrip() override = default;
 
   public:
     /**

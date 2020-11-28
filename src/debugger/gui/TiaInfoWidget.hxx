@@ -31,19 +31,21 @@ class TiaInfoWidget : public Widget, public CommandSender
   public:
     TiaInfoWidget(GuiObject *boss, const GUI::Font& lfont, const GUI::Font& nfont,
                   int x, int y, int max_w);
-    virtual ~TiaInfoWidget() = default;
+    ~TiaInfoWidget() override = default;
 
     void loadConfig() override;
 
   private:
     EditTextWidget* myFrameCount{nullptr};
     EditTextWidget* myFrameCycles{nullptr};
-    EditTextWidget* myTotalCycles{ nullptr };
+    EditTextWidget* myTotalCycles{nullptr};
+    EditTextWidget* myDeltaCycles{nullptr};
+    EditTextWidget* myWSyncCylces{nullptr};
+    EditTextWidget* myTimerCylces{nullptr};
 
     EditTextWidget* myScanlineCount{nullptr};
     EditTextWidget* myScanlineCountLast{nullptr};
     EditTextWidget* myScanlineCycles{nullptr};
-    EditTextWidget* myDeltaCycles{ nullptr };
     EditTextWidget* myPixelPosition{nullptr};
     EditTextWidget* myColorClocks{nullptr};
 

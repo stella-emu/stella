@@ -35,7 +35,7 @@ class CartDebugWidget : public Widget, public CommandSender
     CartDebugWidget(GuiObject* boss, const GUI::Font& lfont,
                     const GUI::Font& nfont,
                     int x, int y, int w, int h);
-    virtual ~CartDebugWidget() = default;
+    ~CartDebugWidget() override = default;
 
   public:
     int addBaseInformation(size_t bytes, const string& manufacturer,

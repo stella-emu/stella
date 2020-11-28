@@ -78,7 +78,7 @@ class Console : public Serializable, public ConsoleIO
     /**
       Destructor
     */
-    virtual ~Console();
+    ~Console() override;
 
   public:
 
@@ -185,6 +185,11 @@ class Console : public Serializable, public ConsoleIO
      */
     EmulationTiming& emulationTiming() { return myEmulationTiming; }
 
+    /**
+      Retrieve the current game's refresh rate, or 0 if no game.
+    */
+    int refreshRate() const;
+
   public:
     /**
       Toggle between NTSC/PAL/SECAM (and variants) display format.
@@ -277,9 +282,21 @@ class Console : public Serializable, public ConsoleIO
     void changeVSizeAdjust(int direction = +1);
 
     /**
-      Returns the current framerate.
+      Toggle the aspect ratio correction.
     */
-    float getFramerate() const;
+    void toggleCorrectAspectRatio(bool toggle = true);
+
+    /**
+      Returns the current framerate.  Note that this is the actual,
+      dynamic frame rate while a game is running.
+    */
+    float currentFrameRate() const;
+
+    /**
+      Retrieve the current game's refresh rate.  Note that this is a
+      static, basic frame rate based on the current TV format.
+    */
+    int gameRefreshRate() const;
 
     /**
       Toggles the TIA bit specified in the method name.

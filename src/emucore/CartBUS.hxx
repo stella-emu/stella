@@ -56,7 +56,7 @@ class CartridgeBUS : public Cartridge
     */
     CartridgeBUS(const ByteBuffer& image, size_t size, const string& md5,
                  const Settings& settings);
-    virtual ~CartridgeBUS() = default;
+    ~CartridgeBUS() override = default;
 
   public:
     /**
@@ -195,6 +195,13 @@ class CartridgeBUS : public Cartridge
     bool poke(uInt16 address, uInt8 value) override;
 
   private:
+    /**
+      Checks if startup bank randomization is enabled.  For this scheme,
+      randomization is not supported, since the ARM code is always in a
+      pre-defined bank, and we *must* start from there.
+    */
+    bool randomStartBank() const override { return false; }
+
     /**
       Sets the initial state of the DPC pointers and RAM
     */

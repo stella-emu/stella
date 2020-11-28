@@ -97,6 +97,7 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
   myCancelMapButton = new ButtonWidget(boss, font, xpos, ypos,
                                        buttonWidth, buttonHeight,
                                        "Cancel", kStopMapCmd);
+  myCancelMapButton->setToolTip("Cancel current mapping.");
   myCancelMapButton->setTarget(this);
   myCancelMapButton->clearFlags(Widget::FLAG_ENABLED);
   addFocusWidget(myCancelMapButton);
@@ -106,12 +107,14 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
                                    buttonWidth, buttonHeight,
                                    "Erase", kEraseCmd);
   myEraseButton->setTarget(this);
+  myEraseButton->setToolTip("Erase any mapping for selected event.");
   addFocusWidget(myEraseButton);
 
   ypos += buttonHeight + VGAP;
   myResetButton = new ButtonWidget(boss, font, xpos, ypos,
                                    buttonWidth, buttonHeight,
                                    "Reset", kResetCmd);
+  myResetButton->setToolTip("Reset mapping for selected event to defaults.");
   myResetButton->setTarget(this);
   addFocusWidget(myResetButton);
 

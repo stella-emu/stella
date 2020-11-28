@@ -18,7 +18,7 @@
 #ifndef BILINEAR_BLITTER_HXX
 #define BILINEAR_BLITTER_HXX
 
-class FrameBufferSDL2;
+class FBBackendSDL2;
 
 #include "Blitter.hxx"
 #include "SDL_lib.hxx"
@@ -27,9 +27,9 @@ class BilinearBlitter : public Blitter {
 
   public:
 
-    BilinearBlitter(FrameBufferSDL2& fb, bool interpolate);
+    BilinearBlitter(FBBackendSDL2& fb, bool interpolate);
 
-    virtual ~BilinearBlitter();
+    ~BilinearBlitter() override;
 
     virtual void reinitialize(
       SDL_Rect srcRect,
@@ -41,7 +41,7 @@ class BilinearBlitter : public Blitter {
     virtual void blit(SDL_Surface& surface) override;
 
   private:
-    FrameBufferSDL2& myFB;
+    FBBackendSDL2& myFB;
 
     SDL_Texture* myTexture{nullptr};
     SDL_Texture* mySecondaryTexture{nullptr};

@@ -34,6 +34,7 @@
 #include "Widget.hxx"
 #include "Font.hxx"
 #include "MessageBox.hxx"
+#include "MediaFactory.hxx"
 #include "InputDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -129,7 +130,7 @@ void InputDialog::addDevicePortTab()
   myDeadzone->setTickmarkIntervals(4);
   wid.push_back(myDeadzone);
 
-  xpos = HBORDER; ypos += lineHeight + VGAP * 4;
+  xpos = HBORDER; ypos += lineHeight + VGAP * 3;
   new StaticTextWidget(myTab, _font, xpos, ypos+1, "Analog paddle:");
   xpos += fontWidth * 2;
 
@@ -164,7 +165,7 @@ void InputDialog::addDevicePortTab()
   wid.push_back(myDejitterDiff);
 
   // Add paddle speed (digital emulation)
-  ypos += lineHeight + VGAP * 4;
+  ypos += lineHeight + VGAP * 3;
   myDPaddleSpeed = new SliderWidget(myTab, _font, HBORDER, ypos - 1, 13 * fontWidth, lineHeight,
                                     "Digital paddle sensitivity",
                                     lwidth, kDPSpeedChanged, 4 * fontWidth, "%");
@@ -172,7 +173,7 @@ void InputDialog::addDevicePortTab()
   myDPaddleSpeed->setTickmarkIntervals(4);
   wid.push_back(myDPaddleSpeed);
 
-  ypos += lineHeight + VGAP * 4;
+  ypos += lineHeight + VGAP * 3;
   myAutoFireRate = new SliderWidget(myTab, _font, HBORDER, ypos - 1, 13 * fontWidth, lineHeight,
                                     "Autofire rate",
                                     lwidth, kAutoFireChanged, 5 * fontWidth, "Hz");
@@ -222,10 +223,10 @@ void InputDialog::addDevicePortTab()
   // Add AtariVox serial port
   ypos += lineHeight + VGAP * 3;
   lwidth = _font.getStringWidth("AtariVox serial port ");
-  fwidth = _w - HBORDER * 2 - 2 - lwidth;
-  new StaticTextWidget(myTab, _font, HBORDER, ypos + 2, "AtariVox serial port ");
-  myAVoxPort = new EditTextWidget(myTab, _font, HBORDER + lwidth, ypos,
-                                  fwidth, fontHeight);
+  fwidth = _w - HBORDER * 2 - 2 - lwidth - PopUpWidget::dropDownWidth(_font);
+  myAVoxPort = new PopUpWidget(myTab, _font, HBORDER, ypos, fwidth, lineHeight, EmptyVarList,
+                               "AtariVox serial port ", lwidth, kCursorStateChanged);
+  myAVoxPort->setEditable(true);
   wid.push_back(myAVoxPort);
 
   // Add items for virtual device ports
@@ -359,7 +360,19 @@ void InputDialog::loadConfig()
   myAutoFireRate->setValue(settings.getInt("autofirerate"));
 
   // AtariVox serial port
-  myAVoxPort->setText(settings.getString("avoxport"));
+  const string& avoxport = settings.getString("avoxport");
+  const StringList ports = MediaFactory::createSerialPort()->portNames();
+  VariantList items;
+
+  for(const auto& port: ports)
+    VarList::push_back(items, port, port);
+  if(avoxport != EmptyString && !BSPF::contains(ports, avoxport))
+    VarList::push_back(items, avoxport, avoxport);
+  if(items.size() == 0)
+    VarList::push_back(items, "None detected");
+
+  myAVoxPort->addItems(items);
+  myAVoxPort->setSelected(avoxport);
 
   // EEPROM erase (only enable in emulation mode and for valid controllers)
   if(instance().hasConsole())
@@ -479,17 +492,11 @@ void InputDialog::setDefaults()
       break;
 
     case 2:  // Devices & Ports
-      // Left & right ports
-      mySAPort->setState(false);
-
       // Joystick deadzone
       myDeadzone->setValue(0);
 
       // Paddle speed (analog)
       myPaddleSpeed->setValue(20);
-
-      // Paddle speed (digital)
-      myDPaddleSpeed->setValue(10);
     #if defined(RETRON77)
       myDejitterBase->setValue(2);
       myDejitterDiff->setValue(6);
@@ -497,10 +504,12 @@ void InputDialog::setDefaults()
       myDejitterBase->setValue(0);
       myDejitterDiff->setValue(0);
     #endif
+
+      // Paddle speed (digital)
+      myDPaddleSpeed->setValue(10);
+
       // Autofire rate
       myAutoFireRate->setValue(0);
-      // AtariVox serial port
-      myAVoxPort->setText("");
 
       // Allow all 4 joystick directions
       myAllowAll4->setState(false);
@@ -508,6 +517,11 @@ void InputDialog::setDefaults()
       // Enable/disable modifier key-combos
       myModCombo->setState(true);
 
+      // Left & right ports
+      mySAPort->setState(false);
+
+      // AtariVox serial port
+      myAVoxPort->setSelectedIndex(0);
       break;
 
     case 3:  // Mouse
@@ -658,7 +672,8 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kPSpeedChanged:
-      myPaddleSpeed->setValueLabel(Paddles::setAnalogSensitivity(myPaddleSpeed->getValue()) * 100.F + 0.5F);
+      myPaddleSpeed->setValueLabel(std::round(Paddles::setAnalogSensitivity(
+            myPaddleSpeed->getValue()) * 100.F));
       break;
 
     case kDejitterAvChanged:

@@ -48,7 +48,7 @@ class MindLink : public Controller
       @param system The system using this controller
     */
     MindLink(Jack jack, const Event& event, const System& system);
-    virtual ~MindLink() = default;
+    ~MindLink() override = default;
 
   public:
     /**

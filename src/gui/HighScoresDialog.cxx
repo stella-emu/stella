@@ -538,7 +538,7 @@ void HighScoresDialog::saveHighScores(Int32 variation) const
   {
     buf.str("");
     buf << "Can't open/save to high scores file for variation " << variation;
-    instance().frameBuffer().showMessage(buf.str());
+    instance().frameBuffer().showTextMessage(buf.str());
   }
 
   // Do a complete high scores save
@@ -546,7 +546,7 @@ void HighScoresDialog::saveHighScores(Int32 variation) const
   {
     buf.str("");
     buf << "Error saving high scores for variation" << variation;
-    instance().frameBuffer().showMessage(buf.str());
+    instance().frameBuffer().showTextMessage(buf.str());
   }
 
 }
@@ -592,7 +592,7 @@ void HighScoresDialog::loadHighScores(Int32 variation)
     buf << "Invalid data in high scores for variation " << variation << " file";
   }
 
-  instance().frameBuffer().showMessage(buf.str());
+  instance().frameBuffer().showTextMessage(buf.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

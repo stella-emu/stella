@@ -41,7 +41,7 @@ class EventMappingWidget : public Widget, public CommandSender
     EventMappingWidget(GuiObject* boss, const GUI::Font& font,
                        int x, int y, int w, int h,
                        EventMode mode);
-    virtual ~EventMappingWidget() = default;
+    ~EventMappingWidget() override = default;
 
     bool remapMode() { return myRemapStatus; }
 

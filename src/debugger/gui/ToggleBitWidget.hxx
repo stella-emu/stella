@@ -26,10 +26,15 @@ class ToggleBitWidget : public ToggleWidget
   public:
     ToggleBitWidget(GuiObject* boss, const GUI::Font& font,
                     int x, int y, int cols, int rows, int colchars = 1);
-    virtual ~ToggleBitWidget() = default;
+    ToggleBitWidget(GuiObject* boss, const GUI::Font& font,
+                    int x, int y, int cols, int rows, int colchars,
+                    const StringList& labels);
+    ~ToggleBitWidget() override = default;
 
     void setList(const StringList& off, const StringList& on);
     void setState(const BoolArray& state, const BoolArray& changed);
+
+    string getToolTip(const Common::Point& pos) const override;
 
   protected:
     void drawWidget(bool hilite) override;
@@ -37,6 +42,7 @@ class ToggleBitWidget : public ToggleWidget
   protected:
     StringList _offList;
     StringList _onList;
+    StringList _labelList;
 
   private:
     // Following constructors and assignment operators not supported

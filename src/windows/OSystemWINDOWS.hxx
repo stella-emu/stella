@@ -32,7 +32,7 @@ class OSystemWINDOWS : public OSystem
 {
   public:
     OSystemWINDOWS() = default;
-    virtual ~OSystemWINDOWS() = default;
+    ~OSystemWINDOWS() override = default;
 
     /**
       Determine the base directory and main configuration file from the

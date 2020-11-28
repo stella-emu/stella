@@ -69,7 +69,7 @@ class CartridgeWD : public CartridgeEnhanced
     */
     CartridgeWD(const ByteBuffer& image, size_t size, const string& md5,
                 const Settings& settings, size_t bsSize = 8_KB);
-    virtual ~CartridgeWD() = default;
+    ~CartridgeWD() override = default;
 
   public:
     /**

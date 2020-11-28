@@ -33,7 +33,7 @@ class CartridgeCDFWidget : public CartDebugWidget
                        const GUI::Font& nfont,
                        int x, int y, int w, int h,
                        CartridgeCDF& cart);
-    virtual ~CartridgeCDFWidget() = default;
+    ~CartridgeCDFWidget() override = default;
 
   private:
     struct CartState {
@@ -75,6 +75,7 @@ class CartridgeCDFWidget : public CartDebugWidget
 
   private:
     bool isCDFJ() const;
+    bool isCDFJplus() const;
 
     static string describeCDFVersion(CartridgeCDF::CDFSubtype subtype);
 

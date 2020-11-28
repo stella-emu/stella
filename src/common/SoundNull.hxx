@@ -43,11 +43,7 @@ class SoundNull : public Sound
     {
       Logger::info("Sound disabled.\n");
     }
-
-    /**
-      Destructor
-    */
-    virtual ~SoundNull() = default;
+    ~SoundNull() override = default;
 
   public:
     /**

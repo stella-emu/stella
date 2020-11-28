@@ -34,17 +34,13 @@ class CheckListWidget : public ListWidget
   public:
     CheckListWidget(GuiObject* boss, const GUI::Font& font,
                     int x, int y, int w, int h);
-    virtual ~CheckListWidget() = default;
+    ~CheckListWidget() override = default;
 
     void setList(const StringList& list, const BoolArray& state);
     void setLine(int line, const string& str, const bool& state);
 
     bool getState(int line);
     bool getSelectedState() { return getState(_selectedItem); }
-
-  protected:
-    void handleMouseEntered() override;
-    void handleMouseLeft() override;
 
   private:
     bool handleEvent(Event::Type e) override;

@@ -30,7 +30,7 @@ class CartridgeTVBoyWidget : public CartridgeEnhancedWidget
                       const GUI::Font& nfont,
                       int x, int y, int w, int h,
                       CartridgeTVBoy& cart);
-    virtual ~CartridgeTVBoyWidget() = default;
+    ~CartridgeTVBoyWidget() override = default;
 
   private:
     string manufacturer() override { return "Akor"; }

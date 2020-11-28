@@ -45,14 +45,14 @@ class OptionsDialog : public Dialog
   public:
     OptionsDialog(OSystem& osystem, DialogContainer& parent, GuiObject* boss,
                   int max_w, int max_h, Menu::AppMode mode);
-    virtual ~OptionsDialog();
+    ~OptionsDialog() override;
 
   private:
     void loadConfig() override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
-    unique_ptr<VideoAudioDialog>      myVideoDialog;
+    unique_ptr<VideoAudioDialog> myVideoDialog;
     unique_ptr<EmulationDialog>  myEmulationDialog;
     unique_ptr<InputDialog>      myInputDialog;
     unique_ptr<UIDialog>         myUIDialog;

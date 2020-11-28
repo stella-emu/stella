@@ -28,7 +28,13 @@ AtariVox::AtariVox(Jack jack, const Event& event, const System& system,
 {
   mySerialPort = MediaFactory::createSerialPort();
   if(mySerialPort->openPort(portname))
-    myAboutString = " (using serial port \'" + portname + "\')";
+  {
+    myCTSFlip = !mySerialPort->isCTS();
+    if(myCTSFlip)
+      myAboutString = " (serial port \'" + portname + "\', inverted CTS)";
+    else
+      myAboutString = " (serial port \'" + portname + "\')";
+  }
   else
     myAboutString = " (invalid serial port \'" + portname + "\')";
 
@@ -50,11 +56,26 @@ bool AtariVox::read(DigitalPin pin)
   switch(pin)
   {
     // Pin 2: SpeakJet READY
-    //        CTS (Clear To Send) is connected inverted
-    //        So CTS = 0 means the buffer is full, which pulls pin 2 high
+    //        READY signal is sent directly to pin 2
     case DigitalPin::Two:
     {
-      return setPin(pin, !mySerialPort->isCTS());
+      // Some USB-serial adaptors support only CTS, others support only
+      // software flow control
+      // So we check the state of both then AND the results, on the
+      // assumption that if a mode isn't supported, then it reads as TRUE
+      // and doesn't change the boolean result
+      // Thus the logic is:
+      //   READY_SIGNAL = READY_STATE_CTS && READY_STATE_FLOW
+      // Note that we also have to take inverted CTS into account
+
+      // When using software flow control, only update on a state change
+      uInt8 flowCtrl = 0;
+      if(mySerialPort->readByte(flowCtrl))
+        myReadyStateSoftFlow = flowCtrl == 0x11;  // XON
+
+      // Now combine the results of CTS and'ed with flow control
+      return setPin(pin,
+          (mySerialPort->isCTS() ^ myCTSFlip) && myReadyStateSoftFlow);
     }
 
     default:

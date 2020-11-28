@@ -50,7 +50,7 @@ class CartridgeEFSC : public CartridgeEF
     */
     CartridgeEFSC(const ByteBuffer& image, size_t size, const string& md5,
                   const Settings& settings, size_t bsSize = 64_KB);
-    virtual ~CartridgeEFSC() = default;
+    ~CartridgeEFSC() override = default;
 
   public:
     /**
