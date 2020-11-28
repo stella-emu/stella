@@ -50,7 +50,11 @@ void DelayQueueWidget::loadConfig() {
   using Common::Base;
   for (auto&& line : myLines) {
     if (!delayQueueIterator->isValid()) {
-      line = "";
+      if(line != "")
+      {
+        setDirty();
+        line = "";
+      }
       continue;
     }
 
@@ -81,7 +85,11 @@ void DelayQueueWidget::loadConfig() {
         break;
     }
 
-    line = ss.str();
+    if(line != ss.str())
+    {
+      setDirty();
+      line = ss.str();
+    }
     delayQueueIterator->next();
   }
 }
