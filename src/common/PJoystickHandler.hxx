@@ -28,7 +28,7 @@ class Event;
 #include "EventHandlerConstants.hxx"
 #include "PhysicalJoystick.hxx"
 #include "Variant.hxx"
-#include "json.hxx"
+#include "json_lib.hxx"
 
 using PhysicalJoystickPtr = shared_ptr<PhysicalJoystick>;
 

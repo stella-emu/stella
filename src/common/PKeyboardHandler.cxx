@@ -19,7 +19,7 @@
 #include "Console.hxx"
 #include "EventHandler.hxx"
 #include "PKeyboardHandler.hxx"
-#include "json.hxx"
+#include "json_lib.hxx"
 
 using json = nlohmann::json;
 

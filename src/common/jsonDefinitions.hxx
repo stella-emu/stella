@@ -3,7 +3,7 @@
 
 #include "EventHandlerConstants.hxx"
 #include "Event.hxx"
-#include "json.hxx"
+#include "json_lib.hxx"
 #include "StellaKeys.hxx"
 
 NLOHMANN_JSON_SERIALIZE_ENUM(JoyAxis, {
