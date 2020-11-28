@@ -30,6 +30,8 @@
 
   * Fixed autofire bug for trackball controllers.
 
+  * Codebase now uses C++17 features.
+
 -Have fun!
 
 

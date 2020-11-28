@@ -48,11 +48,11 @@ endif
 CXXFLAGS+= -Wall -Wextra -Wno-unused-parameter
 
 ifdef HAVE_GCC
-  CXXFLAGS+= -Wno-multichar -Wunused -Woverloaded-virtual -Wnon-virtual-dtor -std=c++14
+  CXXFLAGS+= -Wno-multichar -Wunused -Woverloaded-virtual -Wnon-virtual-dtor -std=c++17
 endif
 
 ifdef HAVE_CLANG
-  CXXFLAGS+= -Wno-multichar -Wunused -Woverloaded-virtual -Wnon-virtual-dtor -std=c++14
+  CXXFLAGS+= -Wno-multichar -Wunused -Woverloaded-virtual -Wnon-virtual-dtor -std=c++17
 endif
 
 ifdef CLANG_WARNINGS
