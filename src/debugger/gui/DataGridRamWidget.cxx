@@ -48,7 +48,7 @@ string DataGridRamWidget::getToolTip(const Common::Point& pos) const
 
   ostringstream buf;
 
-  buf << _ram.getLabel(addr) << '\n' << tip;
+  buf << label << '\n' << tip;
 
   return buf.str();
 }
