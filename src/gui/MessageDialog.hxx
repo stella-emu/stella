@@ -29,7 +29,7 @@ class MessageDialog : public Dialog
 public:
   MessageDialog(OSystem& osystem, DialogContainer& parent,
                 const GUI::Font& font, int max_w, int max_h);
-  virtual ~MessageDialog();
+  ~MessageDialog() override;
 
   // Define the message displayed
   void setMessage(const string& title, const string& text, bool yesNo = false);

@@ -32,7 +32,7 @@ class OSystemMACOS : public OSystem
 {
   public:
     OSystemMACOS() = default;
-    virtual ~OSystemMACOS() = default;
+    ~OSystemMACOS() override = default;
 
     /**
       Determine the base directory and main configuration file from the

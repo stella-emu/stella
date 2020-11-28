@@ -47,7 +47,7 @@ class RomListWidget : public EditableWidget
   public:
     RomListWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
                     int x, int y, int w, int h);
-    virtual ~RomListWidget() = default;
+    ~RomListWidget() override = default;
 
     void setList(const CartDebug::Disassembly& disasm);
 
@@ -56,12 +56,13 @@ class RomListWidget : public EditableWidget
     void setSelected(int item);
     void setHighlighted(int item);
 
+    string getToolTip(const Common::Point& pos) const override;
+    bool changedToolTip(const Common::Point& oldPos, const Common::Point& newPos) const override;
+
   protected:
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseWheel(int x, int y, int direction) override;
-    void handleMouseEntered() override;
-    void handleMouseLeft() override;
     bool handleText(char text) override;
     bool handleKeyDown(StellaKey key, StellaMod mod) override;
     bool handleKeyUp(StellaKey key, StellaMod mod) override;
@@ -79,11 +80,15 @@ class RomListWidget : public EditableWidget
     void endEditMode() override;
     void abortEditMode() override;
     void lostFocusWidget() override;
+
+    bool hasToolTip() const override { return true; }
+
     void scrollToSelected()    { scrollToCurrent(_selectedItem);    }
     void scrollToHighlighted() { scrollToCurrent(_highlightedItem); }
 
   private:
     void scrollToCurrent(int item);
+    Common::Point getToolTipIndex(const Common::Point& pos) const;
 
   private:
     unique_ptr<RomListSettings> myMenu;
@@ -96,7 +101,6 @@ class RomListWidget : public EditableWidget
     int  _currentPos{0}; // position of first line in visible window
     int  _selectedItem{-1};
     int  _highlightedItem{-1};
-    bool _editMode{false};
     StellaKey _currentKeyDown{KBDK_UNKNOWN};
     Common::Base::Fmt _base{Common::Base::Fmt::_DEFAULT};  // base used during editing
 

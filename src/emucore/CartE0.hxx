@@ -57,7 +57,7 @@ class CartridgeE0 : public CartridgeEnhanced
     */
     CartridgeE0(const ByteBuffer& image, size_t size, const string& md5,
                 const Settings& settings, size_t bsSize = 8_KB);
-    virtual ~CartridgeE0() = default;
+    ~CartridgeE0() override = default;
 
   public:
     /**

@@ -45,7 +45,7 @@ class CartridgeF8 : public CartridgeEnhanced
     */
     CartridgeF8(const ByteBuffer& image, size_t size, const string& md5,
                 const Settings& settings, size_t bsSize = 8_KB);
-    virtual ~CartridgeF8() = default;
+    ~CartridgeF8() override = default;
 
   public:
     /**

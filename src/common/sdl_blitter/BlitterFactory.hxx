@@ -21,8 +21,8 @@
 #include <string>
 
 #include "Blitter.hxx"
+#include "FBBackendSDL2.hxx"
 #include "bspf.hxx"
-#include "FrameBufferSDL2.hxx"
 
 class BlitterFactory {
   public:
@@ -35,7 +35,7 @@ class BlitterFactory {
 
   public:
 
-    static unique_ptr<Blitter> createBlitter(FrameBufferSDL2& fb, ScalingAlgorithm scaling);
+    static unique_ptr<Blitter> createBlitter(FBBackendSDL2& fb, ScalingAlgorithm scaling);
 };
 
 #endif // BLITTER_FACTORY_HXX

@@ -29,6 +29,8 @@
 
 #if defined(BSPF_MACOS) || defined(MACOS_KEYS)
 static constexpr int MOD3 = KBDM_GUI;
+static constexpr int CMD = KBDM_GUI;
+static constexpr int OPTION = KBDM_ALT;
 #else
 static constexpr int MOD3 = KBDM_ALT;
 #endif
@@ -60,6 +62,9 @@ PhysicalKeyboardHandler::PhysicalKeyboardHandler(OSystem& system, EventHandler& 
 
   setDefaultMapping(Event::NoType, EventMode::kEmulationMode, updateDefaults);
   setDefaultMapping(Event::NoType, EventMode::kMenuMode, updateDefaults);
+#ifdef GUI_SUPPORT
+  setDefaultMapping(Event::NoType, EventMode::kEditMode, updateDefaults);
+#endif // DEBUG
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -98,6 +103,17 @@ void PhysicalKeyboardHandler::setDefaultKey(EventMapping map, Event::Type event,
   // If event is 'NoType', erase and reset all mappings
   // Otherwise, only reset the given event
   bool eraseAll = !updateDefaults && (event == Event::NoType);
+
+#ifdef GUI_SUPPORT
+  // Swap Y and Z for QWERTZ keyboards
+  if(mode == EventMode::kEditMode && myHandler.isQwertz())
+  {
+    if(map.key == KBDK_Z)
+      map.key = KBDK_Y;
+    else if(map.key == KBDK_Y)
+      map.key = KBDK_Z;
+  }
+#endif
 
   if (updateDefaults)
   {
@@ -151,13 +167,22 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
         setDefaultKey(item, event, EventMode::kMenuMode, updateDefaults);
       break;
 
+  #ifdef GUI_SUPPORT
+    case EventMode::kEditMode:
+      // Edit mode events are always set because they are not saved
+      for(const auto& item: FixedEditMapping)
+        setDefaultKey(item, event, EventMode::kEditMode);
+      break;
+  #endif
+
     default:
       break;
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalKeyboardHandler::defineControllerMappings(const Controller::Type type, Controller::Jack port)
+void PhysicalKeyboardHandler::defineControllerMappings(
+    const Controller::Type type, Controller::Jack port)
 {
   // determine controller events to use
   switch(type)
@@ -199,7 +224,8 @@ void PhysicalKeyboardHandler::enableEmulationMappings()
   myKeyMap.eraseMode(EventMode::kEmulationMode);
   enableCommonMappings();
 
-  // enable right mode first, so that in case of mapping clashes the left controller has preference
+  // enable right mode first, so that in case of mapping clashes the left
+  // controller has preference
   switch (myRightMode)
   {
     case EventMode::kPaddlesMode:
@@ -253,14 +279,16 @@ void PhysicalKeyboardHandler::enableCommonMappings()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalKeyboardHandler::enableMappings(const Event::EventSet& events, EventMode mode)
+void PhysicalKeyboardHandler::enableMappings(const Event::EventSet& events,
+                                             EventMode mode)
 {
   for (const auto& event : events)
     enableMapping(event, mode);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalKeyboardHandler::enableMapping(const Event::Type event, EventMode mode)
+void PhysicalKeyboardHandler::enableMapping(const Event::Type event,
+                                            EventMode mode)
 {
   // copy from controller mode into emulation mode
   KeyMap::MappingArray mappings = myKeyMap.getEventMapping(event, mode);
@@ -270,7 +298,8 @@ void PhysicalKeyboardHandler::enableMapping(const Event::Type event, EventMode m
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-EventMode PhysicalKeyboardHandler::getEventMode(const Event::Type event, const EventMode mode) const
+EventMode PhysicalKeyboardHandler::getEventMode(const Event::Type event,
+                                                const EventMode mode) const
 {
   if (mode == EventMode::kEmulationMode)
   {
@@ -356,7 +385,7 @@ bool PhysicalKeyboardHandler::addMapping(Event::Type event, EventMode mode,
       myKeyMap.erase(EventMode::kKeypadMode, key, mod);
       myKeyMap.erase(EventMode::kCompuMateMode, key, mod);
     }
-    else if(evMode != EventMode::kMenuMode)
+    else if(evMode != EventMode::kMenuMode && evMode != EventMode::kEditMode)
     {
       // erase identical mapping for kCommonMode
       myKeyMap.erase(EventMode::kCommonMode, key, mod);
@@ -371,11 +400,12 @@ bool PhysicalKeyboardHandler::addMapping(Event::Type event, EventMode mode,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool pressed, bool repeated)
+void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod,
+                                          bool pressed, bool repeated)
 {
 #ifdef BSPF_UNIX
   // Swallow KBDK_TAB under certain conditions
-  // See commments on 'myAltKeyCounter' for more information
+  // See comments on 'myAltKeyCounter' for more information
   if(myAltKeyCounter > 1 && key == KBDK_TAB)
   {
     myAltKeyCounter = 0;
@@ -431,7 +461,8 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool pre
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultCommonMapping = {
+PhysicalKeyboardHandler::EventMappingArray
+PhysicalKeyboardHandler::DefaultCommonMapping = {
   {Event::ConsoleSelect,            KBDK_F1},
   {Event::ConsoleReset,             KBDK_F2},
   {Event::ConsoleColor,             KBDK_F3},
@@ -470,6 +501,7 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultCommo
   {Event::VCenterIncrease,          KBDK_PAGEDOWN, MOD3},
   {Event::VSizeAdjustDecrease,      KBDK_PAGEDOWN, KBDM_SHIFT | MOD3},
   {Event::VSizeAdjustIncrease,      KBDK_PAGEUP, KBDM_SHIFT | MOD3},
+  {Event::ToggleCorrectAspectRatio, KBDK_C, KBDM_CTRL},
   {Event::VolumeDecrease,           KBDK_LEFTBRACKET, MOD3},
   {Event::VolumeIncrease,           KBDK_RIGHTBRACKET, MOD3},
   {Event::SoundToggle,              KBDK_RIGHTBRACKET, KBDM_CTRL},
@@ -533,8 +565,8 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultCommo
   {Event::ToggleTimeMachine,        KBDK_T, MOD3},
 
 #ifdef PNG_SUPPORT
-  {Event::ToggleContSnapshots,      KBDK_S, MOD3},
-  {Event::ToggleContSnapshotsFrame, KBDK_S, KBDM_SHIFT | MOD3},
+  {Event::ToggleContSnapshots,      KBDK_S, MOD3 | KBDM_CTRL},
+  {Event::ToggleContSnapshotsFrame, KBDK_S, KBDM_SHIFT | MOD3 | KBDM_CTRL},
 #endif
 
   {Event::DecreaseAutoFire,         KBDK_A, KBDM_SHIFT | KBDM_CTRL},
@@ -587,12 +619,14 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultCommo
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultMenuMapping = {
+PhysicalKeyboardHandler::EventMappingArray
+PhysicalKeyboardHandler::DefaultMenuMapping = {
   {Event::UIUp,                     KBDK_UP},
   {Event::UIDown,                   KBDK_DOWN},
   {Event::UILeft,                   KBDK_LEFT},
   {Event::UIRight,                  KBDK_RIGHT},
   {Event::UISelect,                 KBDK_RETURN},
+  {Event::UISelect,                 KBDK_SPACE},
 
   {Event::UIHome,                   KBDK_HOME},
   {Event::UIEnd,                    KBDK_END},
@@ -640,6 +674,88 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultMenuM
 #endif
 };
 
+#ifdef GUI_SUPPORT
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+PhysicalKeyboardHandler::EventMappingArray
+PhysicalKeyboardHandler::FixedEditMapping = {
+  {Event::MoveLeftChar,             KBDK_LEFT},
+  {Event::MoveRightChar,            KBDK_RIGHT},
+  {Event::SelectLeftChar,           KBDK_LEFT, KBDM_SHIFT},
+  {Event::SelectRightChar,          KBDK_RIGHT, KBDM_SHIFT},
+#if defined(BSPF_MACOS) || defined(MACOS_KEYS)
+  {Event::MoveLeftWord,             KBDK_LEFT, OPTION},
+  {Event::MoveRightWord,            KBDK_RIGHT, OPTION},
+  {Event::MoveHome,                 KBDK_HOME},
+  {Event::MoveHome,                 KBDK_A, KBDM_CTRL},
+  {Event::MoveHome,                 KBDK_LEFT, CMD},
+  {Event::MoveEnd,                  KBDK_END},
+  {Event::MoveEnd,                  KBDK_E, KBDM_CTRL},
+  {Event::MoveEnd,                  KBDK_RIGHT, CMD},
+  {Event::SelectLeftWord,           KBDK_LEFT, KBDM_SHIFT | OPTION},
+  {Event::SelectRightWord,          KBDK_RIGHT, KBDM_SHIFT | OPTION},
+  {Event::SelectHome,               KBDK_HOME, KBDM_SHIFT},
+  {Event::SelectHome,               KBDK_LEFT, KBDM_SHIFT | CMD},
+  {Event::SelectHome,               KBDK_A, KBDM_CTRL | KBDM_SHIFT},
+  {Event::SelectEnd,                KBDK_E, KBDM_SHIFT | KBDM_CTRL},
+  {Event::SelectEnd,                KBDK_RIGHT, KBDM_SHIFT | CMD},
+  {Event::SelectEnd,                KBDK_END, KBDM_SHIFT},
+  {Event::SelectAll,                KBDK_A, CMD},
+  {Event::Delete,                   KBDK_DELETE},
+  {Event::Delete,                   KBDK_D, KBDM_CTRL},
+  {Event::DeleteLeftWord,           KBDK_W, KBDM_CTRL},
+  {Event::DeleteLeftWord,           KBDK_BACKSPACE, OPTION},
+  {Event::DeleteRightWord,          KBDK_DELETE, OPTION},
+  {Event::DeleteHome,               KBDK_U, KBDM_CTRL},
+  {Event::DeleteHome,               KBDK_BACKSPACE, CMD},
+  {Event::DeleteEnd,                KBDK_K, KBDM_CTRL},
+  {Event::Backspace,                KBDK_BACKSPACE},
+  {Event::Undo,                     KBDK_Z, CMD},
+  {Event::Redo,                     KBDK_Y, CMD},
+  {Event::Redo,                     KBDK_Z, KBDM_SHIFT | CMD},
+  {Event::Cut,                      KBDK_X, CMD},
+  {Event::Copy,                     KBDK_C, CMD},
+  {Event::Paste,                    KBDK_V, CMD},
+#else
+  {Event::MoveLeftWord,             KBDK_LEFT, KBDM_CTRL},
+  {Event::MoveRightWord,            KBDK_RIGHT, KBDM_CTRL},
+  {Event::MoveHome,                 KBDK_HOME},
+  {Event::MoveEnd,                  KBDK_END},
+  {Event::SelectLeftWord,           KBDK_LEFT, KBDM_SHIFT | KBDM_CTRL},
+  {Event::SelectRightWord,          KBDK_RIGHT, KBDM_SHIFT | KBDM_CTRL},
+  {Event::SelectHome,               KBDK_HOME, KBDM_SHIFT},
+  {Event::SelectEnd,                KBDK_END, KBDM_SHIFT},
+  {Event::SelectAll,                KBDK_A, KBDM_CTRL},
+  {Event::Delete,                   KBDK_DELETE},
+  {Event::Delete,                   KBDK_KP_PERIOD},
+  {Event::Delete,                   KBDK_D, KBDM_CTRL},
+  {Event::DeleteLeftWord,           KBDK_BACKSPACE, KBDM_CTRL},
+  {Event::DeleteLeftWord,           KBDK_W, KBDM_CTRL},
+  {Event::DeleteRightWord,          KBDK_DELETE, KBDM_CTRL},
+  {Event::DeleteRightWord,          KBDK_D, KBDM_ALT},
+  {Event::DeleteHome,               KBDK_HOME, KBDM_CTRL},
+  {Event::DeleteHome,               KBDK_U, KBDM_CTRL},
+  {Event::DeleteEnd,                KBDK_END, KBDM_CTRL},
+  {Event::DeleteEnd,                KBDK_K, KBDM_CTRL},
+  {Event::Backspace,                KBDK_BACKSPACE},
+  {Event::Undo,                     KBDK_Z, KBDM_CTRL},
+  {Event::Undo,                     KBDK_BACKSPACE, KBDM_ALT},
+  {Event::Redo,                     KBDK_Y, KBDM_CTRL},
+  {Event::Redo,                     KBDK_Z, KBDM_SHIFT | KBDM_CTRL},
+  {Event::Redo,                     KBDK_BACKSPACE, KBDM_SHIFT | KBDM_ALT},
+  {Event::Cut,                      KBDK_X, KBDM_CTRL},
+  {Event::Cut,                      KBDK_DELETE, KBDM_SHIFT},
+  {Event::Cut,                      KBDK_KP_PERIOD, KBDM_SHIFT},
+  {Event::Copy,                     KBDK_C, KBDM_CTRL},
+  {Event::Copy,                     KBDK_INSERT, KBDM_CTRL},
+  {Event::Paste,                    KBDK_V, KBDM_CTRL},
+  {Event::Paste,                    KBDK_INSERT, KBDM_SHIFT},
+#endif
+  {Event::EndEdit,                  KBDK_RETURN},
+  {Event::EndEdit,                  KBDK_KP_ENTER},
+  {Event::AbortEdit,                KBDK_ESCAPE},
+};
+#endif
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultJoystickMapping = {
   {Event::JoystickZeroUp,           KBDK_UP},
@@ -659,6 +775,7 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultJoyst
   {Event::JoystickZeroFire9,        KBDK_5},
   {Event::JoystickZeroFire9,        KBDK_RCTRL},
   {Event::JoystickZeroFire9,        KBDK_KP_3},
+
   {Event::JoystickOneUp,            KBDK_Y},
   {Event::JoystickOneDown,          KBDK_H},
   {Event::JoystickOneLeft,          KBDK_G},
@@ -666,10 +783,27 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultJoyst
   {Event::JoystickOneFire,          KBDK_F},
   {Event::JoystickOneFire5,         KBDK_6},
   {Event::JoystickOneFire9,         KBDK_7},
+
+  {Event::JoystickTwoUp,            KBDK_UP, KBDM_SHIFT},
+  {Event::JoystickTwoDown,          KBDK_DOWN, KBDM_SHIFT},
+  {Event::JoystickTwoLeft,          KBDK_LEFT, KBDM_SHIFT},
+  {Event::JoystickTwoRight,         KBDK_RIGHT, KBDM_SHIFT},
+  {Event::JoystickTwoUp,            KBDK_KP_8, KBDM_SHIFT},
+  {Event::JoystickTwoDown,          KBDK_KP_2, KBDM_SHIFT},
+  {Event::JoystickTwoLeft,          KBDK_KP_4, KBDM_SHIFT},
+  {Event::JoystickTwoRight,         KBDK_KP_6, KBDM_SHIFT},
+  {Event::JoystickTwoFire,          KBDK_SPACE, KBDM_SHIFT},
+
+  {Event::JoystickThreeUp,          KBDK_Y, KBDM_SHIFT},
+  {Event::JoystickThreeDown,        KBDK_H, KBDM_SHIFT},
+  {Event::JoystickThreeLeft,        KBDK_G, KBDM_SHIFT},
+  {Event::JoystickThreeRight,       KBDK_J, KBDM_SHIFT},
+  {Event::JoystickThreeFire,        KBDK_F, KBDM_SHIFT},
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultPaddleMapping = {
+PhysicalKeyboardHandler::EventMappingArray
+PhysicalKeyboardHandler::DefaultPaddleMapping = {
   {Event::PaddleZeroDecrease,       KBDK_RIGHT},
   {Event::PaddleZeroIncrease,       KBDK_LEFT},
   {Event::PaddleZeroFire,           KBDK_SPACE},
@@ -691,7 +825,8 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultPaddl
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultKeypadMapping = {
+PhysicalKeyboardHandler::EventMappingArray
+PhysicalKeyboardHandler::DefaultKeypadMapping = {
   {Event::KeyboardZero1,            KBDK_1},
   {Event::KeyboardZero2,            KBDK_2},
   {Event::KeyboardZero3,            KBDK_3},
@@ -720,7 +855,8 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultKeypa
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::CompuMateMapping = {
+PhysicalKeyboardHandler::EventMappingArray
+PhysicalKeyboardHandler::CompuMateMapping = {
   {Event::CompuMateShift,         KBDK_LSHIFT},
   {Event::CompuMateShift,         KBDK_RSHIFT},
   {Event::CompuMateFunc,          KBDK_LCTRL},

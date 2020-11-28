@@ -29,7 +29,7 @@ class CartridgeCVWidget : public CartridgeEnhancedWidget
                       const GUI::Font& nfont,
                       int x, int y, int w, int h,
                       CartridgeCV& cart);
-    virtual ~CartridgeCVWidget() = default;
+    ~CartridgeCVWidget() override = default;
 
   private:
     string manufacturer() override { return "CommaVid"; }

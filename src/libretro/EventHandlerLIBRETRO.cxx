@@ -31,8 +31,10 @@ EventHandlerLIBRETRO::~EventHandlerLIBRETRO()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandlerLIBRETRO::enableTextEvents(bool enable)
-{}
+{
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandlerLIBRETRO::pollEvent()
-{}
+{
+}

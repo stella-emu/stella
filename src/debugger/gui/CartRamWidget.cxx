@@ -65,12 +65,18 @@ CartRamWidget::CartRamWidget(
   StringParser bs(desc, (fwidth - ScrollBarWidget::scrollBarWidth(_font)) / myFontWidth);
   const StringList& sl = bs.stringList();
   uInt32 lines = uInt32(sl.size());
+  bool useScrollbar = false;
+
   if(lines < 2) lines = 2;
-  if(lines > maxlines) lines = maxlines;
+  if(lines > maxlines)
+  {
+    lines = maxlines;
+    useScrollbar = true;
+  }
 
   new StaticTextWidget(_boss, _font, xpos, ypos + 1, "Description ");
   myDesc = new StringListWidget(boss, nfont, xpos+lwidth, ypos - 1,
-                                fwidth, lines * myLineHeight, false);
+                                fwidth, lines * myLineHeight, false, useScrollbar);
   myDesc->setEditable(false);
   myDesc->setEnabled(false);
   myDesc->setList(sl);

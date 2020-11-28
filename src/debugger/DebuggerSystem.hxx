@@ -31,7 +31,7 @@ class DebuggerState
 {
   public:
     DebuggerState()  = default;
-    ~DebuggerState() = default;
+    virtual ~DebuggerState() = default;
 
     DebuggerState(const DebuggerState&) = default;
     DebuggerState(DebuggerState&&) = delete;

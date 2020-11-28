@@ -50,7 +50,7 @@ class CartridgeDPC : public CartridgeF8
     */
     CartridgeDPC(const ByteBuffer& image, size_t size, const string& md5,
                  const Settings& settings, size_t bsSize = 10_KB);
-    virtual ~CartridgeDPC() = default;
+    ~CartridgeDPC() override = default;
 
   public:
     /**

@@ -35,6 +35,19 @@ enum class FBInitStatus {
   FailNotSupported
 };
 
+enum class BufferType {
+  None,
+  Launcher,
+  Emulator,
+  Debugger
+};
+
+enum class ScalingInterpolation {
+  none,
+  sharp,
+  blur
+};
+
 // Positions for onscreen/overlaid messages
 enum class MessagePosition {
   TopLeft,
@@ -96,9 +109,7 @@ static constexpr ColorId
   kColorInfo = 287,
   kColorTitleBar = 288,
   kColorTitleText = 289,
-  kColorTitleBarLo = 290,
-  kColorTitleTextLo = 291,
-  kNumColors = 292,
+  kNumColors = 290,
   kNone = 0  // placeholder to represent default/no color
 ;
 

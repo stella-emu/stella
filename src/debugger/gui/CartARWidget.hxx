@@ -30,7 +30,7 @@ class CartridgeARWidget : public CartDebugWidget
                       const GUI::Font& nfont,
                       int x, int y, int w, int h,
                       CartridgeAR& cart);
-    virtual ~CartridgeARWidget() = default;
+    ~CartridgeARWidget() override = default;
 
   private:
     CartridgeAR& myCart;

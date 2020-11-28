@@ -30,7 +30,7 @@ class CartridgeFA2Widget : public CartridgeEnhancedWidget
                        const GUI::Font& nfont,
                        int x, int y, int w, int h,
                        CartridgeFA2& cart);
-    virtual ~CartridgeFA2Widget() = default;
+    ~CartridgeFA2Widget() override = default;
 
   private:
     CartridgeFA2& myCartFA2;

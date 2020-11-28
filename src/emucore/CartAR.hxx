@@ -54,7 +54,7 @@ class CartridgeAR : public Cartridge
     */
     CartridgeAR(const ByteBuffer& image, size_t size, const string& md5,
                 const Settings& settings);
-    virtual ~CartridgeAR() = default;
+    ~CartridgeAR() override = default;
 
   public:
     /**

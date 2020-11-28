@@ -26,8 +26,9 @@ class PaddleWidget : public ControllerWidget
 {
   public:
     PaddleWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
-                 Controller& controller);
-    virtual ~PaddleWidget() = default;
+                 Controller& controller,
+                 bool embedded = false, bool second = false);
+    ~PaddleWidget() override = default;
 
   private:
     enum { kP0Changed = 'P0ch', kP1Changed = 'P1ch',

@@ -33,7 +33,7 @@ class TrakBall : public PointingDevice
     TrakBall(Jack jack, const Event& event, const System& system)
       : PointingDevice(jack, event, system, Controller::Type::TrakBall,
         trackballSensitivity) { }
-    virtual ~TrakBall() = default;
+    ~TrakBall() override = default;
 
     /**
       Returns the name of this controller.

@@ -33,14 +33,16 @@ class TIASurface;
 #include "Rect.hxx"
 #include "Variant.hxx"
 #include "TIAConstants.hxx"
+#include "FBBackend.hxx"
 #include "FrameBufferConstants.hxx"
 #include "EventHandlerConstants.hxx"
+#include "VideoModeHandler.hxx"
 #include "bspf.hxx"
 
 /**
   This class encapsulates all video buffers and is the basis for the video
-  display in Stella.  All graphics ports should derive from this class for
-  platform-specific video stuff.
+  display in Stella.  The FBBackend object contained in this class is
+  platform-specific, and most rendering tasks are delegated to it.
 
   The TIA is drawn here, and all GUI elements (ala ScummVM, which are drawn
   into FBSurfaces), are in turn drawn here as well.
@@ -50,79 +52,31 @@ class TIASurface;
 class FrameBuffer
 {
   public:
-    // Contains all relevant info for the dimensions of a video screen
-    // Also takes care of the case when the image should be 'centered'
-    // within the given screen:
-    //   'image' is the image dimensions into the screen
-    //   'screen' are the dimensions of the screen itself
-    struct VideoMode
-    {
-      enum class Stretch { Preserve, Fill, None };
-
-      Common::Rect image;
-      Common::Size screen;
-      Stretch stretch{VideoMode::Stretch::None};
-      string description;
-      float zoom{1.F};
-      Int32 fsIndex{-1};
-
-      VideoMode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
-                Stretch smode, float overscan = 1.F,
-                const string& desc = "", float zoomLevel = 1, Int32 fsindex = -1);
-
-      friend ostream& operator<<(ostream& os, const VideoMode& vm)
-      {
-        os << "image=" << vm.image << "  screen=" << vm.screen
-           << "  stretch=" << (vm.stretch == Stretch::Preserve ? "preserve" :
-                               vm.stretch == Stretch::Fill ? "fill" : "none")
-           << "  desc=" << vm.description << "  zoom=" << vm.zoom
-           << "  fsIndex= " << vm.fsIndex;
-        return os;
-      }
-    };
-
-    struct DisplayMode
-    {
-      uInt32 display;
-      Common::Size size;
-      uInt32 refresh_rate;
-    };
-
-    enum class BufferType {
-      None,
-      Launcher,
-      Emulator,
-      Debugger
-    };
-
-    enum class ScalingInterpolation {
-      none,
-      sharp,
-      blur
-    };
-
     // Zoom level step interval
     static constexpr float ZOOM_STEPS = 0.25;
 
+    enum UpdateMode {
+      NONE = 0,
+      REDRAW = 1,
+      RERENDER = 2
+    };
+
   public:
-    /**
-      Creates a new Frame Buffer
-    */
     FrameBuffer(OSystem& osystem);
-    virtual ~FrameBuffer();
+    ~FrameBuffer();
 
     /**
-      Initialize the framebuffer object (set up the underlying hardware)
+      Initialize the framebuffer object (set up the underlying hardware).
+      Throws an exception upon encountering any errors.
     */
-    bool initialize();
+    void initialize();
 
     /**
       (Re)creates the framebuffer display.  This must be called before any
       calls are made to derived methods.
 
       @param title   The title of the application / window
-      @param width   The width of the framebuffer
-      @param height  The height of the framebuffer
+      @param size    The dimensions of the display
       @param honourHiDPI  If true, consult the 'hidpi' setting and enlarge
                           the display size accordingly; if false, use the
                           exact dimensions as given
@@ -130,30 +84,34 @@ class FrameBuffer
       @return  Status of initialization (see FBInitStatus 'enum')
     */
     FBInitStatus createDisplay(const string& title, BufferType type,
-                               uInt32 width, uInt32 height,
-                               bool honourHiDPI = true);
+                               Common::Size size, bool honourHiDPI = true);
 
     /**
       Updates the display, which depending on the current mode could mean
       drawing the TIA, any pending menus, etc.
     */
-    void update(bool force = false);
+    void update(UpdateMode mode = UpdateMode::NONE);
 
     /**
       There is a dedicated update method for emulation mode.
-     */
+    */
     void updateInEmulationMode(float framesPerSecond);
 
     /**
-      Shows a message onscreen.
+      Set pending rendering flag.
+    */
+    void setPendingRender() { myPendingRender = true; }
+
+    /**
+      Shows a text message onscreen.
 
       @param message  The message to be shown
       @param position Onscreen position for the message
       @param force    Force showing this message, even if messages are disabled
     */
-    void showMessage(const string& message,
-                     MessagePosition position = MessagePosition::BottomCenter,
-                     bool force = false);
+    void showTextMessage(const string& message,
+                         MessagePosition position = MessagePosition::BottomCenter,
+                         bool force = false);
     /**
       Shows a message with a gauge bar onscreen.
 
@@ -163,8 +121,8 @@ class FrameBuffer
       @param minValue   The minimal value of the gauge bar
       @param maxValue   The maximal value of the gauge bar
     */
-    void showMessage(const string& message, const string& valueText,
-                     float value, float minValue = 0.F, float maxValue = 100.F);
+    void showGaugeMessage(const string& message, const string& valueText,
+                          float value, float minValue = 0.F, float maxValue = 100.F);
 
     bool messageShown() const;
 
@@ -193,17 +151,17 @@ class FrameBuffer
       Allocate a new surface.  The FrameBuffer class takes all responsibility
       for freeing this surface (ie, other classes must not delete it directly).
 
-      @param w                The requested width of the new surface.
-      @param h                The requested height of the new surface.
-      @param interpolation    Interpolation mode
-      @param data             If non-null, use the given data values as a static surface
+      @param w      The requested width of the new surface
+      @param h      The requested height of the new surface
+      @param inter  Interpolation mode
+      @param data   If non-null, use the given data values as a static surface
 
-      @return  A pointer to a valid surface object, or nullptr.
+      @return  A pointer to a valid surface object, or nullptr
     */
     shared_ptr<FBSurface> allocateSurface(
       int w,
       int h,
-      ScalingInterpolation interpolation = ScalingInterpolation::none,
+      ScalingInterpolation inter = ScalingInterpolation::none,
       const uInt32* data = nullptr
     );
 
@@ -225,15 +183,15 @@ class FrameBuffer
       Note that this will take into account the current scaling (if any)
       as well as image 'centering'.
     */
-    const Common::Rect& imageRect() const { return myImageRect; }
+    const Common::Rect& imageRect() const { return myActiveVidMode.imageR; }
 
     /**
       Returns the current dimensions of the framebuffer window.
       This is the entire area containing the framebuffer image as well as any
       'unusable' area.
     */
-    const Common::Size& screenSize() const { return myScreenSize; }
-    const Common::Rect& screenRect() const { return myScreenRect; }
+    const Common::Size& screenSize() const { return myActiveVidMode.screenS; }
+    const Common::Rect& screenRect() const { return myActiveVidMode.screenR; }
 
     /**
       Returns the current dimensions of the users' desktop.
@@ -260,11 +218,6 @@ class FrameBuffer
     TIASurface& tiaSurface() const { return *myTIASurface; }
 
     /**
-      Enables/disables fullscreen mode.
-    */
-    void setFullscreen(bool enable);
-
-    /**
       Toggles between fullscreen and window mode.
     */
     void toggleFullscreen(bool toggle = true);
@@ -279,21 +232,19 @@ class FrameBuffer
     /**
       Changes the fullscreen overscan.
 
-      @param direction  +1 indicates increase, -1 indicates decrease.
+      @param direction  +1 indicates increase, -1 indicates decrease
     */
     void changeOverscan(int direction = +1);
 
     /**
-      This method is called when the user wants to switch to the next
-      available video mode.  In windowed mode, this typically means going to
-      the next/previous zoom level.  In fullscreen mode, this typically means
-      switching between normal aspect and fully filling the screen.
-        direction = -1 means go to the next lower video mode
-        direction = +1 means go to the next higher video mode
+      This method is called when the user wants to switch to the previous/next
+      available TIA video mode.  In windowed mode, this typically means going
+      to the next/previous zoom level.  In fullscreen mode, this typically
+      means switching between normal aspect and fully filling the screen.
 
-      @param direction  +1 indicates increase, -1 indicates decrease.
+      @param direction  +1 indicates next mode, -1 indicates previous mode
     */
-    void selectVidMode(int direction = +1);
+    void switchVideoMode(int direction = +1);
 
     /**
       Sets the state of the cursor (hidden or grabbed) based on the
@@ -307,14 +258,14 @@ class FrameBuffer
     void enableGrabMouse(bool enable);
 
     /**
-      Sets the use of grabmouse.
-    */
-    bool grabMouseEnabled() const { return myGrabMouse; }
-
-    /**
       Toggles the use of grabmouse (only has effect in emulation mode).
     */
     void toggleGrabMouse();
+
+    /**
+      Query whether grabmouse is enabled.
+    */
+    bool grabMouseEnabled() const { return myGrabMouse; }
 
     /**
       Informs the Framebuffer of a change in EventHandler state.
@@ -335,7 +286,8 @@ class FrameBuffer
     uInt32 hidpiScaleFactor() const { return myHiDPIEnabled ? 2 : 1; }
 
     /**
-      These methods are used to load/save position and display of the current window.
+      These methods are used to load/save position and display of the
+      current window.
     */
     string getPositionKey();
     string getDisplayKey();
@@ -360,27 +312,15 @@ class FrameBuffer
     FontDesc getFontDesc(const string& name) const;
   #endif
 
-  //////////////////////////////////////////////////////////////////////
-  // The following methods are system-specific and can/must be
-  // implemented in derived classes.
-  //////////////////////////////////////////////////////////////////////
-  public:
-    /**
-      Updates window title
-
-      @param title   The title of the application / window
-    */
-    virtual void setTitle(const string& title) = 0;
-
     /**
       Shows or hides the cursor based on the given boolean value.
     */
-    virtual void showCursor(bool show) = 0;
+    void showCursor(bool show) { myBackend->showCursor(show); }
 
     /**
       Answers if the display is currently in fullscreen mode.
     */
-    virtual bool fullScreen() const = 0;
+    bool fullScreen() const { return myBackend->fullScreen(); }
 
     /**
       This method is called to retrieve the R/G/B data from the given pixel.
@@ -390,7 +330,9 @@ class FrameBuffer
       @param g      The green component of the color
       @param b      The blue component of the color
     */
-    virtual void getRGB(uInt32 pixel, uInt8* r, uInt8* g, uInt8* b) const = 0;
+    void getRGB(uInt32 pixel, uInt8* r, uInt8* g, uInt8* b) const {
+      myBackend->getRGB(pixel, r, g, b);
+    }
 
     /**
       This method is called to map a given R/G/B triple to the screen palette.
@@ -399,7 +341,9 @@ class FrameBuffer
       @param g  The green component of the color.
       @param b  The blue component of the color.
     */
-    virtual uInt32 mapRGB(uInt8 r, uInt8 g, uInt8 b) const = 0;
+    uInt32 mapRGB(uInt8 r, uInt8 g, uInt8 b) const {
+      return myBackend->mapRGB(r, g, b);
+    }
 
     /**
       This method is called to get the specified ARGB data from the viewable
@@ -411,89 +355,22 @@ class FrameBuffer
       @param pitch   The pitch (in bytes) for the pixel data
       @param rect    The bounding rectangle for the buffer
     */
-    virtual void readPixels(uInt8* buffer, uInt32 pitch, const Common::Rect& rect) const = 0;
-
-    /**
-      This method is called to query if the current window is not centered or fullscreen.
-
-      @return  True, if the current window is positioned
-    */
-    virtual bool isCurrentWindowPositioned() const = 0;
-
-    /**
-      This method is called to query the video hardware for position of
-      the current window
-
-      @return  The position of the currently displayed window
-    */
-    virtual Common::Point getCurrentWindowPos() const = 0;
-
-    /**
-      This method is called to query the video hardware for the index
-      of the display the current window is displayed on
-
-      @return  the current display index or a negative value if no
-               window is displayed
-    */
-    virtual Int32 getCurrentDisplayIndex() const = 0;
+    void readPixels(uInt8* buffer, uInt32 pitch, const Common::Rect& rect) const {
+      myBackend->readPixels(buffer, pitch, rect);
+    }
 
     /**
       Clear the framebuffer.
     */
-    virtual void clear() = 0;
+    void clear() { myBackend->clear(); }
 
     /**
-      Transform from window to renderer coordinates, x direction
+      Transform from window to renderer coordinates, x/y direction
      */
-    virtual int scaleX(int x) const { return x; }
+    int scaleX(int x) const { return myBackend->scaleX(x); }
+    int scaleY(int y) const { return myBackend->scaleY(y); }
 
-    /**
-      Transform from window to renderer coordinates, y direction
-     */
-    virtual int scaleY(int y) const { return y; }
-
-  protected:
-
-    /**
-      This method is called to query and initialize the video hardware
-      for desktop and fullscreen resolution information.  Since several
-      monitors may be attached, we need the resolution for all of them.
-
-      @param fullscreenRes  Maximum resolution supported in fullscreen mode
-      @param windowedRes    Maximum resolution supported in windowed mode
-      @param renderers      List of renderer names (internal name -> end-user name)
-    */
-    virtual void queryHardware(vector<Common::Size>& fullscreenRes,
-                               vector<Common::Size>& windowedRes,
-                               VariantList& renderers) = 0;
-
-    /**
-      This method is called to change to the given video mode.
-
-      @param title The title for the created window
-      @param mode  The video mode to use
-
-      @return  False on any errors, else true
-    */
-    virtual bool setVideoMode(const string& title,
-                              const FrameBuffer::VideoMode& mode) = 0;
-
-    /**
-      This method is called to create a surface with the given attributes.
-
-      @param w                The requested width of the new surface.
-      @param h                The requested height of the new surface.
-      @param interpolation    Interpolation mode
-      @param data             If non-null, use the given data values as a static surface
-    */
-    virtual unique_ptr<FBSurface>
-        createSurface(
-          uInt32 w,
-          uInt32 h,
-          ScalingInterpolation interpolation = ScalingInterpolation::none,
-          const uInt32* data = nullptr
-    ) const = 0;
-
+  private:
     /**
       Calls 'free()' on all surfaces that the framebuffer knows about.
     */
@@ -505,40 +382,21 @@ class FrameBuffer
     void reloadSurfaces();
 
     /**
-      Grabs or ungrabs the mouse based on the given boolean value.
+      Frees and reloads all surfaces that the framebuffer knows about.
     */
-    virtual void grabMouse(bool grab) = 0;
+    void resetSurfaces();
 
+  #ifdef GUI_SUPPORT
     /**
-      Set the icon for the main window.
+      Helps to create a basic message onscreen.
+
+      @param message  The message to be shown
+      @param position Onscreen position for the message
+      @param force    Force showing this message, even if messages are disabled
     */
-    virtual void setWindowIcon() = 0;
-
-    /**
-      This method must be called after all drawing is done, and indicates
-      that the buffers should be pushed to the physical screen.
-    */
-    virtual void renderToScreen() = 0;
-
-    /**
-      This method is called to provide information about the FrameBuffer.
-    */
-    virtual string about() const = 0;
-
-    /**
-      Retrieve the current display's refresh rate
-    */
-    virtual int refreshRate() const { return 0; }
-
-  protected:
-    // The parent system for the framebuffer
-    OSystem& myOSystem;
-
-  private:
-    // Maximum message width [chars]
-    static constexpr int MESSAGE_WIDTH = 56;
-    // Maximum gauge bar width [chars]
-    static constexpr int GAUGEBAR_WIDTH = 30;
+    void createMessage(const string& message, MessagePosition position,
+                       bool force = false);
+  #endif
 
     /**
       Draw pending messages.
@@ -548,9 +406,34 @@ class FrameBuffer
     bool drawMessage();
 
     /**
-      Frees and reloads all surfaces that the framebuffer knows about.
+      Hide pending messages.
     */
-    void resetSurfaces();
+    void hideMessage();
+
+    /**
+      Draws the frame stats overlay.
+    */
+    void drawFrameStats(float framesPerSecond);
+
+    /**
+      Build an applicable video mode based on the current settings in
+      effect, whether TIA mode is active, etc.  Then tell the backend
+      to actually use the new mode.
+
+      @return  Whether the operation succeeded or failed
+    */
+    FBInitStatus applyVideoMode();
+
+    /**
+      Calculate the maximum level by which the base window can be zoomed and
+      still fit in the desktop screen.
+    */
+    float maxWindowZoom(uInt32 baseWidth, uInt32 baseHeight) const;
+
+    /**
+      Enables/disables fullscreen mode.
+    */
+    void setFullscreen(bool enable);
 
   #ifdef GUI_SUPPORT
     /**
@@ -559,94 +442,18 @@ class FrameBuffer
     void setupFonts();
   #endif
 
-    /**
-      Calculate the maximum level by which the base window can be zoomed and
-      still fit in the given screen dimensions.
-    */
-    float maxZoomForScreen(uInt32 baseWidth, uInt32 baseHeight,
-               uInt32 screenWidth, uInt32 screenHeight) const;
-
-    /**
-      Set all possible video modes (both windowed and fullscreen) available for
-      this framebuffer based on given image dimensions and maximum window size.
-    */
-    void setAvailableVidModes(uInt32 basewidth, uInt32 baseheight);
-
-    /**
-      Returns an appropriate video mode based on the current eventhandler
-      state, taking into account the maximum size of the window.
-
-      @param fullscreen  Whether to use a windowed or fullscreen mode
-      @return  A valid VideoMode for this framebuffer
-    */
-    const FrameBuffer::VideoMode& getSavedVidMode(bool fullscreen);
-
   private:
-    /**
-      This class implements an iterator around an array of VideoMode objects.
-    */
-    class VideoModeList
-    {
-      public:
-        void add(const FrameBuffer::VideoMode& mode);
-        void clear();
+    // The parent system for the framebuffer
+    OSystem& myOSystem;
 
-        bool empty() const;
-        uInt32 size() const;
-
-        void previous();
-        const FrameBuffer::VideoMode& current() const;
-        void next();
-
-        void setByZoom(float zoom);
-        void setByStretch(FrameBuffer::VideoMode::Stretch stretch);
-
-        friend ostream& operator<<(ostream& os, const VideoModeList& l)
-        {
-          for(const auto& vm: l.myModeList)
-            os << "-----\n" << vm << endl << "-----\n";
-          return os;
-        }
-
-      private:
-        vector<FrameBuffer::VideoMode> myModeList;
-        int myIdx{-1};
-    };
-
-  protected:
-    // Title of the main window/screen
-    string myScreenTitle;
-
-    // Type of the frame buffer
-    BufferType myBufferType{BufferType::None};
-
-    // Number of displays
-    int myNumDisplays{1};
-
-    // The resolution of the attached displays in fullscreen mode
-    // The primary display is typically the first in the array
-    // Windowed modes use myDesktopSize directly
-    vector<Common::Size> myFullscreenDisplays;
-
-  private:
-    // Draws the frame stats overlay
-    void drawFrameStats(float framesPerSecond);
+    // Backend used for all platform-specific graphics operations
+    unique_ptr<FBBackend> myBackend;
 
     // Indicates the number of times the framebuffer was initialized
     uInt32 myInitializedCount{0};
 
     // Used to set intervals between messages while in pause mode
     Int32 myPausedCount{0};
-
-    // Dimensions of the actual image, after zooming, and taking into account
-    // any image 'centering'
-    Common::Rect myImageRect;
-
-    // Dimensions of the main window (not always the same as the image)
-    // Use 'size' version when only wxh are required
-    // Use 'rect' version when x/y, wxh are required
-    Common::Size myScreenSize;
-    Common::Rect myScreenRect;
 
     // Maximum dimensions of the desktop area
     // Note that this takes 'hidpi' mode into account, so in some cases
@@ -656,8 +463,24 @@ class FrameBuffer
     // Maximum absolute dimensions of the desktop area
     Common::Size myAbsDesktopSize;
 
+    // The resolution of the attached displays in fullscreen mode
+    // The primary display is typically the first in the array
+    // Windowed modes use myDesktopSize directly
+    vector<Common::Size> myFullscreenDisplays;
+
     // Supported renderers
     VariantList myRenderers;
+
+    // Flag for pending render
+    bool myPendingRender{false};
+
+    // The VideoModeHandler class takes responsibility for all video
+    // mode functionality
+    VideoModeHandler myVidModeHandler;
+    VideoModeHandler::Mode myActiveVidMode;
+
+    // Type of the frame buffer
+    BufferType myBufferType{BufferType::None};
 
   #ifdef GUI_SUPPORT
     // The font object to use for the normal in-game GUI
@@ -686,6 +509,7 @@ class FrameBuffer
       ColorId color{kNone};
       shared_ptr<FBSurface> surface;
       bool enabled{false};
+      bool dirty{false};
       bool showGauge{false};
       float value{0.0F};
       string valueText;
@@ -699,11 +523,6 @@ class FrameBuffer
     bool myHiDPIAllowed{false};
     bool myHiDPIEnabled{false};
 
-    // The list of all available video modes for this framebuffer
-    VideoModeList* myCurrentModeList{nullptr};
-    VideoModeList myWindowedModeList;
-    vector<VideoModeList> myFullscreenModeLists;
-
     // Minimum TIA zoom level that can be used for this framebuffer
     float myTIAMinZoom{2.F};
     // Maximum TIA zoom level that can be used for this framebuffer
@@ -712,10 +531,15 @@ class FrameBuffer
     // Holds a reference to all the surfaces that have been created
     vector<shared_ptr<FBSurface>> mySurfaceList;
 
+    // Maximum message width [chars]
+    static constexpr int MESSAGE_WIDTH = 56;
+    // Maximum gauge bar width [chars]
+    static constexpr int GAUGEBAR_WIDTH = 30;
+
     FullPaletteArray myFullPalette;
     // Holds UI palette data (for each variation)
-    static UIPaletteArray ourStandardUIPalette, ourClassicUIPalette, 
-      ourLightUIPalette, ourDarkUIPalette;
+    static UIPaletteArray ourStandardUIPalette, ourClassicUIPalette,
+                          ourLightUIPalette, ourDarkUIPalette;
 
   private:
     // Following constructors and assignment operators not supported

@@ -43,7 +43,6 @@ class SerialPort
 
     /**
       Read a byte from the serial port.
-      NOTE: This is for potential future use; no class currently uses this.
 
       @param data  Destination for the byte read from the port
       @return  True if a byte was read, else false
@@ -65,6 +64,13 @@ class SerialPort
       @return  True if CTS signal enabled, else false
     */
     virtual bool isCTS() { return true; }
+
+    /**
+      Get all valid serial ports detected on this system.
+
+      @return  The (possibly empty) list of detected serial ports
+    */
+    virtual StringList portNames() { return StringList{}; }
 
   private:
     // Following constructors and assignment operators not supported

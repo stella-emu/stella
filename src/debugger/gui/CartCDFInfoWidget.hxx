@@ -28,7 +28,7 @@ class CartridgeCDFInfoWidget : public CartDebugWidget
                             const GUI::Font& nfont,
                             int x, int y, int w, int h,
                             CartridgeCDF& cart);
-    virtual ~CartridgeCDFInfoWidget() = default;
+    ~CartridgeCDFInfoWidget() override = default;
 
   private:
     static string describeCDFVersion(CartridgeCDF::CDFSubtype subtype);

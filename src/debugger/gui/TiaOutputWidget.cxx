@@ -22,6 +22,7 @@
 #include "FBSurface.hxx"
 #include "Widget.hxx"
 #include "GuiObject.hxx"
+#include "Dialog.hxx"
 #include "ContextMenu.hxx"
 #include "TiaZoomWidget.hxx"
 #include "Debugger.hxx"
@@ -55,6 +56,7 @@ TiaOutputWidget::TiaOutputWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaOutputWidget::loadConfig()
 {
+  setEnabled(true);
   setDirty();
 }
 
@@ -92,10 +94,10 @@ void TiaOutputWidget::saveSnapshot(int execDepth, const string& execPrefix)
     message = e.what();
   }
   if (execDepth == 0) {
-    instance().frameBuffer().showMessage(message);
+    instance().frameBuffer().showTextMessage(message);
   }
 #else
-  instance().frameBuffer().showMessage("PNG image saving not supported");
+  instance().frameBuffer().showTextMessage("PNG image saving not supported");
 #endif
 }
 
@@ -108,7 +110,7 @@ void TiaOutputWidget::handleMouseDown(int x, int y, MouseButton b, int clickCoun
   else if(b == MouseButton::RIGHT)
   {
     myClickX = x;
-    myClickY = y;
+    myClickY = y - 1;
 
     // Add menu at current x,y mouse location
     myMenu->show(x + getAbsX(), y + getAbsY(), dialog().surface().dstRect());
@@ -135,7 +137,7 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
       {
         command << "scanline #" << lines;
         string message = instance().debugger().parser().run(command.str());
-        instance().frameBuffer().showMessage(message);
+        instance().frameBuffer().showTextMessage(message);
       }
     }
     else if(rmb == "bp")
@@ -144,7 +146,7 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
       int scanline = myClickY + startLine;
       command << "breakif _scan==#" << scanline;
       string message = instance().debugger().parser().run(command.str());
-      instance().frameBuffer().showMessage(message);
+      instance().frameBuffer().showTextMessage(message);
     }
     else if(rmb == "zoom")
     {
@@ -156,6 +158,52 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
       instance().debugger().parser().run("savesnap");
     }
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Common::Point TiaOutputWidget::getToolTipIndex(const Common::Point& pos) const
+{
+  const Int32 width = instance().console().tia().width();
+  const Int32 height = instance().console().tia().height();
+  const int col = (pos.x - 1 - getAbsX()) >> 1;
+  const int row = pos.y - 1 - getAbsY();
+
+  if(col < 0 || col >= width || row < 0 || row >= height)
+    return Common::Point(-1, -1);
+  else
+    return Common::Point(col, row);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string TiaOutputWidget::getToolTip(const Common::Point& pos) const
+{
+  const Common::Point& idx = getToolTipIndex(pos);
+
+  if(idx.x < 0)
+    return EmptyString;
+
+  const uInt32 startLine = instance().console().tia().startLine();
+  const uInt32 height = instance().console().tia().height();
+  // limit to 274 lines (PAL default without scaling)
+  const uInt32 yStart = height <= FrameManager::Metrics::baseHeightPAL
+    ? 0 : (height - FrameManager::Metrics::baseHeightPAL) >> 1;
+  const Int32 i = idx.x + (yStart + idx.y) * instance().console().tia().width();
+  uInt8* tiaOutputBuffer = instance().console().tia().outputBuffer();
+  ostringstream buf;
+
+  buf << _toolTipText
+    << "X: #" << idx.x
+    << "\nY: #" << idx.y + startLine
+    << "\nC: $" << Common::Base::toString(tiaOutputBuffer[i], Common::Base::Fmt::_16);
+
+  return buf.str();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool TiaOutputWidget::changedToolTip(const Common::Point& oldPos,
+                                     const Common::Point& newPos) const
+{
+  return getToolTipIndex(oldPos) != getToolTipIndex(newPos);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

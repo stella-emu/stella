@@ -113,9 +113,6 @@ class MT24LC256
     // The file containing the EEPROM data
     FilesystemNode myDataFile;
 
-    // Indicates if a valid EEPROM data file exists/was successfully loaded
-    bool myDataFileExists{false};
-
     // Indicates if the EEPROM has changed since class invocation
     bool myDataChanged{false};
 

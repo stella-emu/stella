@@ -29,7 +29,7 @@ class CartridgeFEWidget : public CartridgeEnhancedWidget
                       const GUI::Font& nfont,
                       int x, int y, int w, int h,
                       CartridgeFE& cart);
-    virtual ~CartridgeFEWidget() = default;
+    ~CartridgeFEWidget() override = default;
 
   private:
     string manufacturer() override { return "Activision"; }

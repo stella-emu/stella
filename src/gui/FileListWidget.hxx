@@ -19,6 +19,7 @@
 #define FILE_LIST_WIDGET_HXX
 
 class CommandSender;
+class ProgressDialog;
 
 #include "FSNode.hxx"
 #include "Stack.hxx"
@@ -50,21 +51,29 @@ class FileListWidget : public StringListWidget
   public:
     FileListWidget(GuiObject* boss, const GUI::Font& font,
                    int x, int y, int w, int h);
-    virtual ~FileListWidget() = default;
+    ~FileListWidget() override = default;
+
+    string getToolTip(const Common::Point& pos) const override;
 
     /** Determines how to display files/folders; either setDirectory or reload
         must be called after any of these are called. */
     void setListMode(FilesystemNode::ListMode mode) { _fsmode = mode; }
-    void setNameFilter(const FilesystemNode::NameFilter& filter) { _filter = filter; }
+    void setNameFilter(const FilesystemNode::NameFilter& filter) {
+      _filter = filter;
+    }
+
+    // When enabled, all subdirectories will be searched too.
+    void setIncludeSubDirs(bool enable) { _includeSubDirs = enable; }
 
     /**
       Set initial directory, and optionally select the given item.
 
-        @param node  The directory to display.  If this is a file, its parent
-                     will instead be used, and the file will be selected
-        @param select  An optional entry to select (if applicable)
+        @param node       The directory to display.  If this is a file, its parent
+                          will instead be used, and the file will be selected
+        @param select     An optional entry to select (if applicable)
     */
-    void setDirectory(const FilesystemNode& node, const string& select = EmptyString);
+    void setDirectory(const FilesystemNode& node,
+                      const string& select = EmptyString);
 
     /** Select parent directory (if applicable) */
     void selectParent();
@@ -80,6 +89,13 @@ class FileListWidget : public StringListWidget
     const FilesystemNode& currentDir() const { return _node; }
 
     static void setQuickSelectDelay(uInt64 time) { _QUICK_SELECT_DELAY = time; }
+    uInt64 getQuickSelectDelay() { return _QUICK_SELECT_DELAY; }
+
+    ProgressDialog& progress();
+    void incProgress();
+
+  protected:
+    static unique_ptr<ProgressDialog> myProgressDialog;
 
   private:
     /** Very similar to setDirectory(), but also updates the history */
@@ -96,6 +112,9 @@ class FileListWidget : public StringListWidget
     FilesystemNode::NameFilter _filter;
     FilesystemNode _node;
     FSList _fileList;
+    bool _includeSubDirs{false};
+
+    StringList _dirList;
 
     Common::FixedStack<string> _history;
     uInt32 _selected{0};

@@ -49,7 +49,7 @@ class Cartridge4KSC : public Cartridge4K
     */
     Cartridge4KSC(const ByteBuffer& image, size_t size, const string& md5,
                   const Settings& settings, size_t bsSize = 4_KB);
-    virtual ~Cartridge4KSC() = default;
+    ~Cartridge4KSC() override = default;
 
   public:
     /**

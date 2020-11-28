@@ -21,22 +21,40 @@
 #include "Driving.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Driving::Driving(Jack jack, const Event& event, const System& system)
+Driving::Driving(Jack jack, const Event& event, const System& system, bool altmap)
   : Controller(jack, event, system, Controller::Type::Driving)
 {
   if(myJack == Jack::Left)
   {
-    myCCWEvent   = Event::JoystickZeroLeft;
-    myCWEvent    = Event::JoystickZeroRight;
-    myFireEvent  = Event::JoystickZeroFire;
+    if(!altmap)
+    {
+      myCCWEvent  = Event::JoystickZeroLeft;
+      myCWEvent   = Event::JoystickZeroRight;
+      myFireEvent = Event::JoystickZeroFire;
+    }
+    else
+    {
+      myCCWEvent  = Event::JoystickTwoLeft;
+      myCWEvent   = Event::JoystickTwoRight;
+      myFireEvent = Event::JoystickTwoFire;
+    }
     myXAxisValue = Event::PaddleZeroAnalog;
     myYAxisValue = Event::PaddleOneAnalog;
   }
   else
   {
-    myCCWEvent   = Event::JoystickOneLeft;
-    myCWEvent    = Event::JoystickOneRight;
-    myFireEvent  = Event::JoystickOneFire;
+    if(!altmap)
+    {
+      myCCWEvent  = Event::JoystickOneLeft;
+      myCWEvent   = Event::JoystickOneRight;
+      myFireEvent = Event::JoystickOneFire;
+    }
+    else
+    {
+      myCCWEvent  = Event::JoystickThreeLeft;
+      myCWEvent   = Event::JoystickThreeRight;
+      myFireEvent = Event::JoystickThreeFire;
+    }
     myXAxisValue = Event::PaddleTwoAnalog;
     myYAxisValue = Event::PaddleThreeAnalog;
   }

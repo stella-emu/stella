@@ -29,7 +29,7 @@ class CartridgeF8SCWidget : public CartridgeEnhancedWidget
                         const GUI::Font& nfont,
                         int x, int y, int w, int h,
                         CartridgeF8SC& cart);
-    virtual ~CartridgeF8SCWidget() = default;
+    ~CartridgeF8SCWidget() override = default;
 
   private:
     string manufacturer() override { return "Atari"; }

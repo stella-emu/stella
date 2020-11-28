@@ -67,7 +67,7 @@ class Device : public Serializable
 
   public:
     Device() = default;
-    virtual ~Device() = default;
+    ~Device() override = default;
 
   public:
     /**

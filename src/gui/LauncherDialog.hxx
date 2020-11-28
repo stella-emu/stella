@@ -59,7 +59,7 @@ class LauncherDialog : public Dialog
   public:
     LauncherDialog(OSystem& osystem, DialogContainer& parent,
                    int x, int y, int w, int h);
-    virtual ~LauncherDialog() = default;
+    ~LauncherDialog() override = default;
 
     /**
       Get path for the currently selected file.
@@ -96,13 +96,15 @@ class LauncherDialog : public Dialog
     */
     void reload();
 
+    void tick() override;
+
   private:
     static constexpr int MIN_LAUNCHER_CHARS = 24;
     static constexpr int MIN_ROMINFO_CHARS = 30;
     static constexpr int MIN_ROMINFO_ROWS = 7; // full lines
     static constexpr int MIN_ROMINFO_LINES = 4; // extra lines
 
-    void center() override { positionAt(0); }
+    void setPosition() override { positionAt(0); }
     void handleKeyDown(StellaKey key, StellaMod mod, bool repeated) override;
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
@@ -113,6 +115,39 @@ class LauncherDialog : public Dialog
     void loadConfig() override;
     void saveConfig() override;
     void updateUI();
+
+    /**
+      Search if string contains pattern including wildcard '*'
+      and '?' as joker, ignoring case.
+
+      @param str      The searched string
+      @param pattern  The pattern to search for
+
+      @return True if pattern was found.
+    */
+    bool matchWithWildcardsIgnoreCase(const string& str, const string& pattern);
+
+    /**
+      Search if string contains pattern including wildcard '*'
+      and '?' as joker.
+
+      @param str      The searched string
+      @param pattern  The pattern to search for
+
+      @return True if pattern was found.
+    */
+    bool matchWithWildcards(const string& str, const string& pattern);
+
+    /**
+      Search if string contains pattern including '?' as joker.
+
+      @param str      The searched string
+      @param pattern  The pattern to search for
+
+      @return Position of pattern in string.
+    */
+    size_t matchWithJoker(const string& str, const string& pattern);
+
     void applyFiltering();
 
     float getRomInfoZoom(int listHeight) const;
@@ -139,19 +174,22 @@ class LauncherDialog : public Dialog
     // automatically sized font for ROM info viewer
     unique_ptr<GUI::Font> myROMInfoFont;
 
-    ButtonWidget* myStartButton{nullptr};
-    ButtonWidget* myPrevDirButton{nullptr};
-    ButtonWidget* myOptionsButton{nullptr};
-    ButtonWidget* myQuitButton{nullptr};
+    CheckboxWidget*   myAllFiles{nullptr};
+    EditTextWidget*   myPattern{nullptr};
+    CheckboxWidget*   mySubDirs{nullptr};
+    StaticTextWidget* myRomCount{nullptr};
 
     FileListWidget*   myList{nullptr};
+
     StaticTextWidget* myDirLabel{nullptr};
     EditTextWidget*   myDir{nullptr};
-    StaticTextWidget* myRomCount{nullptr};
-    EditTextWidget*   myPattern{nullptr};
-    CheckboxWidget*   myAllFiles{nullptr};
 
-    RomInfoWidget* myRomInfoWidget{nullptr};
+    ButtonWidget*     myStartButton{nullptr};
+    ButtonWidget*     myPrevDirButton{nullptr};
+    ButtonWidget*     myOptionsButton{nullptr};
+    ButtonWidget*     myQuitButton{nullptr};
+
+    RomInfoWidget*    myRomInfoWidget{nullptr};
     std::unordered_map<string,string> myMD5List;
 
     int mySelectedItem{0};
@@ -159,9 +197,13 @@ class LauncherDialog : public Dialog
     bool myShowOnlyROMs{false};
     bool myUseMinimalUI{false};
     bool myEventHandled{false};
+    bool myShortCount{false};
+    bool myPendingReload{false};
+    uInt64 myReloadTime{0};
 
     enum {
       kAllfilesCmd   = 'lalf',  // show all files (or ROMs only)
+      kSubDirsCmd    = 'lred',
       kPrevDirCmd    = 'PRVD',
       kOptionsCmd    = 'OPTI',
       kQuitCmd       = 'QUIT'

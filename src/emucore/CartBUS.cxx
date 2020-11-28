@@ -68,8 +68,12 @@ CartridgeBUS::CartridgeBUS(const ByteBuffer& image, size_t size,
     reinterpret_cast<uInt16*>(myImage.get()),
     reinterpret_cast<uInt16*>(myRAM.data()),
     static_cast<uInt32>(32_KB),
-    devSettings ? settings.getBool("dev.thumb.trapfatal") : false, Thumbulator::ConfigureFor::BUS, this
-  );
+    0x00000800,
+    0x00000808,
+    0x40001FDC,
+    devSettings ? settings.getBool("dev.thumb.trapfatal") : false, 
+    Thumbulator::ConfigureFor::BUS, 
+    this);
 
   setInitialState();
 }

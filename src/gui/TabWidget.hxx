@@ -35,7 +35,7 @@ class TabWidget : public Widget, public CommandSender
 
   public:
     TabWidget(GuiObject* boss, const GUI::Font& font, int x, int y, int w, int h);
-    virtual ~TabWidget();
+    ~TabWidget() override;
 
 // use Dialog::releaseFocus() when changing to another tab
 
@@ -63,8 +63,8 @@ class TabWidget : public Widget, public CommandSender
 
   protected:
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
-    void handleMouseEntered() override;
-    void handleMouseLeft() override;
+    void handleMouseEntered() override {}
+    void handleMouseLeft() override {}
 
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
     bool handleEvent(Event::Type event) override;

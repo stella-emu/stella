@@ -25,7 +25,7 @@ class UIDialog : public Dialog, public CommandSender
   public:
     UIDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font,
              GuiObject* boss, int max_w, int max_h);
-    virtual ~UIDialog();
+    ~UIDialog() override;
 
   private:
     void loadConfig() override;

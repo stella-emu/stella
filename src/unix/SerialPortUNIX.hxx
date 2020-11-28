@@ -22,7 +22,7 @@
 
 /**
   Implement reading and writing from a serial port under UNIX.  For now,
-  it seems to be Linux-only, and reading isn't actually supported at all.
+  it seems to be Linux-only.
 
   @author  Stephen Anthony
 */
@@ -30,7 +30,7 @@ class SerialPortUNIX : public SerialPort
 {
   public:
     SerialPortUNIX();
-    virtual ~SerialPortUNIX();
+    ~SerialPortUNIX() override;
 
     /**
       Open the given serial port with the specified attributes.
@@ -39,6 +39,14 @@ class SerialPortUNIX : public SerialPort
       @return  False on any errors, else true
     */
     bool openPort(const string& device) override;
+
+    /**
+      Read a byte from the serial port.
+
+      @param data  Destination for the byte read from the port
+      @return  True if a byte was read, else false
+    */
+    bool readByte(uInt8& data) override;
 
     /**
       Write a byte to the serial port.
@@ -54,6 +62,13 @@ class SerialPortUNIX : public SerialPort
       @return  True if CTS signal enabled, else false
     */
     bool isCTS() override;
+
+    /**
+      Get all valid serial ports detected on this system.
+
+      @return  The (possibly empty) list of detected serial ports
+    */
+    StringList portNames() override;
 
   private:
     // File descriptor for serial connection

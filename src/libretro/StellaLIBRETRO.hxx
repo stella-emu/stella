@@ -29,6 +29,7 @@
 #include "EventHandler.hxx"
 #include "M6532.hxx"
 #include "Paddles.hxx"
+#include "PaletteHandler.hxx"
 #include "System.hxx"
 #include "TIA.hxx"
 #include "TIASurface.hxx"
@@ -40,7 +41,6 @@ class StellaLIBRETRO
 {
   public:
     StellaLIBRETRO();
-    virtual ~StellaLIBRETRO() = default;
 
   public:
     OSystemLIBRETRO& osystem() { return *myOSystem; }
@@ -123,7 +123,7 @@ class StellaLIBRETRO
     void   setAudioStereo(int mode);
 
     void   setInputEvent(Event::Type type, Int32 state) {
-      myOSystem->eventHandler().handleEvent(type, state);
+             myOSystem->eventHandler().handleEvent(type, state);
     }
 
     Controller::Type getLeftControllerType() const {
@@ -154,39 +154,40 @@ class StellaLIBRETRO
     StellaLIBRETRO& operator=(StellaLIBRETRO&&) = delete;
 
     unique_ptr<OSystemLIBRETRO> myOSystem;
-    uInt32 system_ready;
+    uInt32 system_ready{false};
 
     ByteBuffer rom_image;
-    uInt32 rom_size;
+    uInt32 rom_size{0};
     string rom_path;
 
-    ConsoleTiming console_timing;
-    string console_format;
+    ConsoleTiming console_timing{ConsoleTiming::ntsc};
+    string console_format{"AUTO"};
 
-    uInt32 render_width, render_height;
+    mutable uInt32* render_surface{nullptr};
+    uInt32 render_width{0}, render_height{0};
 
-    bool video_ready;
+    bool video_ready{false};
 
     unique_ptr<Int16[]> audio_buffer;
-    uInt32 audio_samples;
-
-    // (31440 rate / 50 Hz) * 16-bit stereo * 1.25x padding
-    const uInt32 audio_buffer_max = (31440 / 50 * 4 * 5) / 4;
+    uInt32 audio_samples{0};
 
     uInt8 system_ram[128];
 
+    // (31440 rate / 50 Hz) * 16-bit stereo * 1.25x padding
+    static constexpr uInt32 audio_buffer_max = (31440 / 50 * 4 * 5) / 4;
+
   private:
-    string video_palette;
-    string video_phosphor;
-    uInt32 video_phosphor_blend;
+    string video_palette{PaletteHandler::SETTING_STANDARD};
+    string video_phosphor{"byrom"};
+    uInt32 video_phosphor_blend{60};
 
-    uInt32 video_aspect_ntsc;
-    uInt32 video_aspect_pal;
-    NTSCFilter::Preset video_filter;
+    uInt32 video_aspect_ntsc{0};
+    uInt32 video_aspect_pal{0};
+    NTSCFilter::Preset video_filter{NTSCFilter::Preset::OFF};
 
-    string audio_mode;
+    string audio_mode{"byrom"};
 
-    bool phosphor_default;
+    bool phosphor_default{false};
 };
 
 #endif

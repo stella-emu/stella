@@ -45,7 +45,7 @@ class CartridgeF4 : public CartridgeEnhanced
     */
     CartridgeF4(const ByteBuffer& image, size_t size, const string& md5,
                 const Settings& settings, size_t bsSize = 32_KB);
-    virtual ~CartridgeF4() = default;
+    ~CartridgeF4() override = default;
 
   public:
     /**

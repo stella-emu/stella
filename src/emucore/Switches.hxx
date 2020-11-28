@@ -47,7 +47,7 @@ class Switches : public Serializable
       @param settings The settings used by the system
     */
     Switches(const Event& event, const Properties& props, const Settings& settings);
-    virtual ~Switches() = default;
+    ~Switches() override = default;
 
   public:
     /**

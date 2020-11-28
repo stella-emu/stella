@@ -28,8 +28,7 @@ class PointingDeviceWidget : public ControllerWidget
   public:
     PointingDeviceWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
                          Controller& controller);
-
-    virtual ~PointingDeviceWidget() = default;
+    ~PointingDeviceWidget() override = default;
 
   private:
     enum {

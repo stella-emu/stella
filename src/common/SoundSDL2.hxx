@@ -48,7 +48,7 @@ class SoundSDL2 : public Sound
     /**
       Destructor
     */
-    virtual ~SoundSDL2();
+    ~SoundSDL2() override;
 
   public:
     /**

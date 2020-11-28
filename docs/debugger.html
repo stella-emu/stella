@@ -15,7 +15,7 @@
 <body>
 
   <center><b><font size="7">Stella</font></b></center>
-  <center><h4><b>Release 6.2.1</b></h4></center>
+  <center><h4><b>Release 6.4</b></h4></center>
   <center><h1><b>Integrated Debugger</b></h1></center>
   <center><h4><b>(a work in progress)</b></h4></center>
   <br>
@@ -226,6 +226,14 @@ keyboard to select which tab you want to view. Control/Cmd + Tab cycles between
 tabs from left-to-right, Shift + Control/Cmd + Tab cycles right-to-left.
 Pressing Tab (or Shift + Tab) cycles between widgets in the current tab (except
 for in the Prompt Tab, where 'tab' is used for something else).</p>
+
+<p>Note for the GUI display:
+<ul>
+<li>Hexadecimal values are either not prefixed or with '$'.</li>
+<li>Decimal values are prefixed with '#'.</li>
+<li>Binary values are prefixed with '%'.</li>
+</ul>
+</p>
 
 <p>You can also enter the debugger at emulator startup by use the 'debug'
 command on the command line, or alternatively within the ROM launcher in
@@ -753,10 +761,14 @@ that holds 'number of scanlines' on an actual console).</p>
 <tr><td> _cycleslo</td><td> Lower 32 bits of number of cycles since emulation started</td></tr>
 <tr><td> _fcount</td><td> Number of frames since emulation started</td></tr>
 <tr><td> _fcycles</td><td> Number of cycles since frame started</td></tr>
+<tr><td> _ftimreadcycles</td><td>Number of cycles used by timer reads since frame started</td></tr>
+<tr><td> _fwsynccycles</td><td>Number of cycles skipped by WSYNC since frame started</td></tr>
 <tr><td> _icycles</td><td> Number of cycles of last instruction</td></tr>
 <tr><td> _scan</td><td> Current scanline count</td></tr>
 <tr><td> _scanend</td><td> Scanline count at end of last frame</td></tr>
 <tr><td> _scycles</td><td> Number of cycles in current scanline</td></tr>
+<tr><td> _timwrapread</td><td> Timer read wrapped on this cycle</td></tr>
+<tr><td> _timwrapwrite</td><td> Timer write wrapped on this cycle</td></tr>
 <tr><td> _vblank</td><td> Whether vertical blank is enabled (1 or 0)</td></tr>
 <tr><td> _vsync</td><td> Whether vertical sync is enabled (1 or 0)</td></tr>
 </table>
@@ -1131,16 +1143,20 @@ as illustrated:</p>
 <!-- /////////////////////////////////////////////////////////////////////////  -->
 <br>
 <h2><a name="TIAInfo"><u>(F)</u> TIA Information</a></h2>
-<p>To the right of the <a href="#TIADisplay"><b>TIA Display</b></a> area, TIA information is displayed:</p>
+<p>To the right of the <a href="#TIADisplay"><b>TIA Display</b></a> area, TIA information is displayed (all values are decimal):</p>
 <p><img src="graphics/debugger_tiainfo.png"></p>
 <p>The indicators are as follows (note that all these are read-only):</p>
 <ul>
-<li><b>Frame Count</b>: The number of frames since this ROM was loaded or reset.</li>
-<li><b>Frame Cycle</b>: The number of CPU cycles that have been executed this frame since
+<li><b>Frame Cycls</b>: The number of CPU cycles that have been executed this frame since
+VSYNC was cleared at scanline 0.</li>
+<li><b>WSync Cycls</b>: The number of CPU cycles that have been skipped by WSYNC this frame since
+VSYNC was cleared at scanline 0.</li>
+<li><b>Timer Cycls</b>: The number of CPU cycles (approximately) that have been used by timer read loops since
 VSYNC was cleared at scanline 0.</li>
 <li><b>Total</b>: The total number of CPU cycles since this ROM was loaded or reset.</li>
 <li><b>Delta</b>: The number of CPU cycles that have been executed since the last debugger
 interrupt.</li>
+<li><b>Frame Cnt.</b>: The number of frames since this ROM was loaded or reset.</li>
 <li><b>Scanline</b>: The scanline that's currently being drawn, and the count from the
 previous frame. Scanline 0 is the one on which VSYNC is cleared (after being set for
 3 scanlines, as per the Stella Programmer's Guide).</li>
@@ -1273,10 +1289,9 @@ are lost (they will NOT end up in the Carry flag).</p>
 <p>This is a spreadsheet-like GUI for inspecting and changing the contents
 of the 2600's zero-page RAM.</p>
 <p>You can navigate with either the mouse or the keyboard arrow keys.
-To change a RAM location, either double-click on it or press Enter while
-it's highlighted. Enter the new value (hex only for now, sorry), then
-press Enter to make the change. If you change your mind, press Escape
-and the original value will be restored. The currently selected RAM cell
+To change a RAM location, either double-click on it or press 'Enter' while
+it's highlighted. Enter the new value (hex, other formats using the bottom textboxes), then
+press 'Enter' to make the change. The currently selected RAM cell
 can also be changed by using the
 <a href="#DataOpButtons"><b>Data Operations Buttons</b></a> or the associated
 shortcut keys.</p>
@@ -1287,7 +1302,8 @@ more comprehensive. It will undo <b>all</b> operations on <b>all</b> cells
 since you first made a change.</p>
 <p>The UI objects at the bottom refer to the currently selected RAM cell.
 The 'Label' textbox shows the label attached to this RAM location (if any),
-and the other two textboxes show the decimal and binary equivalent value.</p>
+and the other three textboxes show the hex, decimal and binary equivalent value.
+The values can be edited here too.</p>
 
 <p>The remaining buttons to the right are further explained in the next section.</p>
 
@@ -1569,7 +1585,7 @@ Go ahead and try to change something!</p>
 <p>If applicable, this area shows a detailed breakdown of any extra RAM supported by
 the bankswitching scheme. Since the bankswitch schemes can greatly vary in operation,
 this tab will be different for each scheme, but its specific functionality should be
-self-explanatory. An example of both F8SC (8K Atari + ram) and DPC (Pitfall II) is
+self-explanatory. An example of both F6SC (16K Atari + ram) and DPC (Pitfall II) is
 as follows:</p>
 
 <p><img src="graphics/debugger_ram-f8sc.png"></p>

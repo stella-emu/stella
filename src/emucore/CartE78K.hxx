@@ -43,7 +43,7 @@ class CartridgeE78K : public CartridgeMNetwork
     */
     CartridgeE78K(const ByteBuffer& image, size_t size, const string& md5,
                   const Settings& settings);
-    virtual ~CartridgeE78K() = default;
+    ~CartridgeE78K() override = default;
 
   public:
     /**

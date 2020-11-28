@@ -44,7 +44,7 @@ class Lightgun : public Controller
     */
     Lightgun(Jack jack, const Event& event, const System& system,
              const string& romMd5, const FrameBuffer& frameBuffer);
-    virtual ~Lightgun() = default;
+    ~Lightgun() override = default;
 
   public:
     using Controller::read;

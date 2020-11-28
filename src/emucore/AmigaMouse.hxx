@@ -33,7 +33,7 @@ class AmigaMouse : public PointingDevice
     AmigaMouse(Jack jack, const Event& event, const System& system)
       : PointingDevice(jack, event, system, Controller::Type::AmigaMouse,
         trackballSensitivity) { }
-    virtual ~AmigaMouse() = default;
+    ~AmigaMouse() override = default;
 
     /**
       Returns the name of this controller.

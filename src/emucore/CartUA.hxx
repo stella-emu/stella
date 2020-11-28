@@ -28,7 +28,9 @@
 /**
   Cartridge class used for UA Limited's 8K bankswitched games.  There
   are two 4K banks, which are switched by accessing $0220 (bank 0) and
-  $0240 (bank 1).
+  $0240 (bank 1).  Similar addresses are used by Brazilian carts, e.g.
+  $02A0, $02C0 and $0FA0, $0FC0.  The code accepts further potential
+  hotspot addresses.
 
   @author  Bradford W. Mott, Thomas Jentzsch
 */
@@ -48,7 +50,7 @@ class CartridgeUA : public CartridgeEnhanced
     */
     CartridgeUA(const ByteBuffer& image, size_t size, const string& md5,
                 const Settings& settings, bool swapHotspots = false);
-    virtual ~CartridgeUA() = default;
+    ~CartridgeUA() override = default;
 
   public:
     /**

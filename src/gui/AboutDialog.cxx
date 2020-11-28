@@ -67,11 +67,12 @@ AboutDialog::AboutDialog(OSystem& osystem, DialogContainer& parent,
   addCancelWidget(b);
 
   xpos = HBORDER;  ypos = _th + VBORDER + (buttonHeight - fontHeight) / 2;
-  myTitle = new StaticTextWidget(this, font, xpos, ypos, _w - xpos * 2, fontHeight,
-                                 "", TextAlign::Center);
+  int bwidth = font.getStringWidth("What's New" + ELLIPSIS) + fontWidth * 2.5;
+
+  myTitle = new StaticTextWidget(this, font, xpos + bwidth, ypos, _w - (xpos + bwidth) * 2,
+                                 fontHeight, "", TextAlign::Center);
   myTitle->setTextColor(kTextColorEm);
 
-  int bwidth = font.getStringWidth("What's New" + ELLIPSIS) + fontWidth * 2.5;
   myWhatsNewButton =
     new ButtonWidget(this, font, _w - HBORDER - bwidth, ypos - (buttonHeight - fontHeight) / 2,
                      bwidth, buttonHeight, "What's New" + ELLIPSIS, kWhatsNew);

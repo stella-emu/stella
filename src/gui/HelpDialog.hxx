@@ -31,7 +31,7 @@ class HelpDialog : public Dialog
 {
   public:
     HelpDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font);
-    virtual ~HelpDialog() = default;
+    ~HelpDialog() override = default;
 
   private:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;

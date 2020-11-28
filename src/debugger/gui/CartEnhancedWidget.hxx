@@ -35,7 +35,7 @@ class CartridgeEnhancedWidget : public CartDebugWidget
                             const GUI::Font& nfont,
                             int x, int y, int w, int h,
                             CartridgeEnhanced& cart);
-    virtual ~CartridgeEnhancedWidget() = default;
+    ~CartridgeEnhancedWidget() override = default;
 
   protected:
     int initialize();

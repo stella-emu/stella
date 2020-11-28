@@ -42,7 +42,7 @@ class DeveloperDialog : public Dialog
   public:
     DeveloperDialog(OSystem& osystem, DialogContainer& parent,
                 const GUI::Font& font, int max_w, int max_h);
-    virtual ~DeveloperDialog() = default;
+    ~DeveloperDialog() override = default;
 
   private:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
@@ -115,6 +115,8 @@ class DeveloperDialog : public Dialog
     StaticTextWidget*   myPlayfieldLabel{nullptr};
     CheckboxWidget*     myPFBitsWidget{nullptr};
     CheckboxWidget*     myPFColorWidget{nullptr};
+    StaticTextWidget*   myBackgroundLabel{nullptr};
+    CheckboxWidget*     myBKColorWidget{nullptr};
     StaticTextWidget*   mySwapLabel{nullptr};
     CheckboxWidget*     myPlSwapWidget{nullptr};
     CheckboxWidget*     myBlSwapWidget{nullptr};
@@ -172,6 +174,7 @@ class DeveloperDialog : public Dialog
     std::array<bool, 2>   myBlInvPhase;
     std::array<bool, 2>   myPFBits;
     std::array<bool, 2>   myPFColor;
+    std::array<bool, 2>   myBKColor;
     std::array<bool, 2>   myPlSwap;
     std::array<bool, 2>   myBlSwap;
     // States sets
@@ -180,8 +183,6 @@ class DeveloperDialog : public Dialog
     std::array<int, 2>    myUncompressed;
     std::array<string, 2> myStateInterval;
     std::array<string, 2> myStateHorizon;
-
-    static const std::array<string, 5> ourCPUregs;
 
   private:
     void addEmulationTab(const GUI::Font& font);

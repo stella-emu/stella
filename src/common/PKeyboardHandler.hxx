@@ -106,6 +106,7 @@ class PhysicalKeyboardHandler
     void enableMappings(const Event::EventSet& events, EventMode mode);
     void enableMapping(const Event::Type event, EventMode mode);
 
+  private:
     OSystem& myOSystem;
     EventHandler& myHandler;
 
@@ -132,6 +133,9 @@ class PhysicalKeyboardHandler
 
     // Controller menu and common emulation mappings
     static EventMappingArray DefaultMenuMapping;
+  #ifdef GUI_SUPPORT
+    static EventMappingArray FixedEditMapping;
+  #endif
     static EventMappingArray DefaultCommonMapping;
     // Controller specific mappings
     static EventMappingArray DefaultJoystickMapping;

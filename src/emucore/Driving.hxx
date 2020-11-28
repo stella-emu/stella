@@ -33,12 +33,13 @@ class Driving : public Controller
       Create a new Indy 500 driving controller plugged into
       the specified jack
 
-      @param jack   The jack the controller is plugged into
-      @param event  The event object to use for events
-      @param system The system using this controller
+      @param jack    The jack the controller is plugged into
+      @param event   The event object to use for events
+      @param system  The system using this controller
+      @param altmap  If true, use alternative mapping
     */
-    Driving(Jack jack, const Event& event, const System& system);
-    virtual ~Driving() = default;
+    Driving(Jack jack, const Event& event, const System& system, bool altmap = false);
+    ~Driving() override = default;
 
   public:
     /**

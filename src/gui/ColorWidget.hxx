@@ -37,12 +37,12 @@ class ColorWidget : public Widget, public CommandSender
   public:
     ColorWidget(GuiObject* boss, const GUI::Font& font,
                 int x, int y, int w, int h, int cmd = 0, bool framed = true);
-    virtual ~ColorWidget() = default;
+    ~ColorWidget() override = default;
 
     void setColor(ColorId color);
     ColorId getColor() const { return _color;  }
 
-    void setCrossed(bool enable) { _crossGrid = enable; }
+    void setCrossed(bool enable);
 
   protected:
     void drawWidget(bool hilite) override;

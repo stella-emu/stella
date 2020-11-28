@@ -15,7 +15,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "DataGridWidget.hxx"
+#include "DataGridRamWidget.hxx"
 #include "EditTextWidget.hxx"
 #include "GuiObject.hxx"
 #include "InputTextDialog.hxx"
@@ -37,24 +37,27 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
     myFontWidth(lfont.getMaxCharWidth()),
     myFontHeight(lfont.getFontHeight()),
     myLineHeight(lfont.getLineHeight()),
-    myButtonHeight(myLineHeight + 4),
+    myButtonHeight(myLineHeight * 1.25),
     myRamSize(ramsize),
     myNumRows(numrows),
     myPageSize(pagesize)
 {
   const int bwidth  = lfont.getStringWidth("Compare " + ELLIPSIS),
             bheight = myLineHeight + 2;
-  const int VGAP = 4;
+  //const int VGAP = 4;
+  const int VGAP = myFontHeight / 4;
+  StaticTextWidget* s;
   WidgetArray wid;
 
   int ypos = y + myLineHeight;
 
   // Add RAM grid (with scrollbar)
   int xpos = x + _font.getStringWidth("xxxx");
-  myRamGrid = new DataGridWidget(_boss, _nfont, xpos, ypos,
-                                 16, myNumRows, 2, 8, Common::Base::Fmt::_16, true);
+  bool useScrollbar = ramsize / numrows > 16;
+  myRamGrid = new DataGridRamWidget(_boss, *this, _nfont, xpos, ypos,
+                                    16, myNumRows, 2, 8, Common::Base::Fmt::_16, useScrollbar);
   myRamGrid->setTarget(this);
-  myRamGrid->setID(kRamHexID);
+  myRamGrid->setID(kRamGridID);
   addFocusWidget(myRamGrid);
 
   // Create actions buttons to the left of the RAM grid
@@ -75,18 +78,21 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   by += bheight + VGAP * 6;
   mySearchButton = new ButtonWidget(boss, lfont, bx, by, bwidth, bheight,
                                     "Search" + ELLIPSIS, kSearchCmd);
+  mySearchButton->setToolTip("Search and highlight found values.");
   wid.push_back(mySearchButton);
   mySearchButton->setTarget(this);
 
   by += bheight + VGAP;
   myCompareButton = new ButtonWidget(boss, lfont, bx, by, bwidth, bheight,
                                      "Compare" + ELLIPSIS, kCmpCmd);
+  myCompareButton->setToolTip("Compare highlighted values.");
   wid.push_back(myCompareButton);
   myCompareButton->setTarget(this);
 
   by += bheight + VGAP;
   myRestartButton = new ButtonWidget(boss, lfont, bx, by, bwidth, bheight,
                                      "Reset", kRestartCmd);
+  myRestartButton->setToolTip("Reset search/compare mode.");
   wid.push_back(myRestartButton);
   myRestartButton->setTarget(this);
 
@@ -119,35 +125,43 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
 
   // For smaller grids, make sure RAM cell detail fields are below the RESET button
   row = myNumRows < 8 ? 9 : myNumRows + 1;
-  ypos += row * myLineHeight;
+  ypos += (row - 1) * myLineHeight + VGAP * 2;
 
   // We need to define these widgets from right to left since the leftmost
   // one resizes as much as possible
 
   // Add Binary display of selected RAM cell
-  xpos = x + w - 11*myFontWidth - 22;
-  new StaticTextWidget(boss, lfont, xpos, ypos, "Bin");
-  myBinValue = new DataGridWidget(boss, nfont, xpos + 3*myFontWidth + 5, ypos-2,
+  xpos = x + w - 9.6 * myFontWidth - 9;
+  s = new StaticTextWidget(boss, lfont, xpos, ypos, "%");
+  myBinValue = new DataGridWidget(boss, nfont, s->getRight() + myFontWidth * 0.1, ypos-2,
                                   1, 1, 8, 8, Common::Base::Fmt::_2);
   myBinValue->setTarget(this);
   myBinValue->setID(kRamBinID);
 
   // Add Decimal display of selected RAM cell
-  xpos -= 7*myFontWidth + 5 + 20;
-  new StaticTextWidget(boss, lfont, xpos, ypos, "Dec");
-  myDecValue = new DataGridWidget(boss, nfont, xpos + 3*myFontWidth + 5, ypos-2,
+  xpos -= 6.5 * myFontWidth;
+  s = new StaticTextWidget(boss, lfont, xpos, ypos, "#");
+  myDecValue = new DataGridWidget(boss, nfont, s->getRight(), ypos-2,
                                   1, 1, 3, 8, Common::Base::Fmt::_10);
   myDecValue->setTarget(this);
   myDecValue->setID(kRamDecID);
 
+  // Add Hex display of selected RAM cell
+  xpos -= 4.5 * myFontWidth;
+  myHexValue = new DataGridWidget(boss, nfont, xpos, ypos - 2,
+                                  1, 1, 2, 8, Common::Base::Fmt::_16);
+  myHexValue->setTarget(this);
+  myHexValue->setID(kRamHexID);
+
+  addFocusWidget(myHexValue);
   addFocusWidget(myDecValue);
   addFocusWidget(myBinValue);
 
   // Add Label of selected RAM cell
-  int xpos_r = xpos - 20;
+  int xpos_r = xpos - myFontWidth * 1.5;
   xpos = x;
-  new StaticTextWidget(boss, lfont, xpos, ypos, "Label");
-  xpos += 5*myFontWidth + 5;
+  s = new StaticTextWidget(boss, lfont, xpos, ypos, "Label");
+  xpos = s->getRight() + myFontWidth / 2;
   myLabel = new EditTextWidget(boss, nfont, xpos, ypos-2, xpos_r-xpos,
                                myLineHeight);
   myLabel->setEditable(false, true);
@@ -184,9 +198,14 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
     {
       switch(id)
       {
-        case kRamHexID:
+        case kRamGridID:
           addr  = myRamGrid->getSelectedAddr();
           value = myRamGrid->getSelectedValue();
+          break;
+
+        case kRamHexID:
+          addr  = myRamGrid->getSelectedAddr();
+          value = myHexValue->getSelectedValue();
           break;
 
         case kRamDecID:
@@ -210,6 +229,7 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       myUndoValue = oldval;
 
       myRamGrid->setValueInternal(addr - myCurrentRamBank*myPageSize, value, true);
+      myHexValue->setValueInternal(0, value, true);
       myDecValue->setValueInternal(0, value, true);
       myBinValue->setValueInternal(0, value, true);
 
@@ -222,10 +242,12 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
     {
       addr  = myRamGrid->getSelectedAddr();
       value = myRamGrid->getSelectedValue();
+      bool changed = myRamGrid->getSelectedChanged();
 
       myLabel->setText(getLabel(addr));
-      myDecValue->setValueInternal(0, value, false);
-      myBinValue->setValueInternal(0, value, false);
+      myHexValue->setValueInternal(0, value, changed);
+      myDecValue->setValueInternal(0, value, changed);
+      myBinValue->setValueInternal(0, value, changed);
       break;
     }
 
@@ -288,6 +310,7 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 void RamWidget::setOpsWidget(DataGridOpsWidget* w)
 {
   myRamGrid->setOpsWidget(w);
+  myHexValue->setOpsWidget(w);
   myBinValue->setOpsWidget(w);
   myDecValue->setOpsWidget(w);
 }
@@ -296,6 +319,13 @@ void RamWidget::setOpsWidget(DataGridOpsWidget* w)
 void RamWidget::loadConfig()
 {
   fillGrid(true);
+
+  int value = myRamGrid->getSelectedValue();
+  bool changed = myRamGrid->getSelectedChanged();
+
+  myHexValue->setValueInternal(0, value, changed);
+  myDecValue->setValueInternal(0, value, changed);
+  myBinValue->setValueInternal(0, value, changed);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -321,10 +351,10 @@ void RamWidget::fillGrid(bool updateOld)
 
   // Update RAM labels
   uInt32 rport = readPort(start), page = rport & 0xf0;
-  char buf[5];  // NOLINT : convert to stringstream
-  std::snprintf(buf, 5, "%04X", rport);
-  buf[2] = buf[3] = 'x';
-  myRamStart->setLabel(buf);
+  string label = Common::Base::toString(rport, Common::Base::Fmt::_16_4);
+
+  label[2] = label[3] = 'x';
+  myRamStart->setLabel(label);
   for(uInt32 row = 0; row < myNumRows; ++row, page += 0x10)
     myRamLabels[row]->setLabel(Common::Base::toString(page>>4, Common::Base::Fmt::_16_1));
 }
@@ -339,6 +369,9 @@ void RamWidget::showInputBox(int cmd)
   myInputBox->show(x, y, dialog().surface().dstRect());
   myInputBox->setText("");
   myInputBox->setMessage("");
+  myInputBox->setToolTip(cmd == kSValEntered
+                         ? "Enter search value (leave blank for all)."
+                         : "Enter relative or absolute value\nto compare with searched values.");
   myInputBox->setFocus(0);
   myInputBox->setEmitSignal(cmd);
   myInputBox->setTitle(cmd == kSValEntered ? "Search" : "Compare");

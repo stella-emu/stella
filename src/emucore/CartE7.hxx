@@ -45,7 +45,7 @@ class CartridgeE7 : public CartridgeMNetwork
     */
     CartridgeE7(const ByteBuffer& image, size_t size, const string& md5,
                 const Settings& settings);
-    virtual ~CartridgeE7() = default;
+    ~CartridgeE7() override = default;
 
   public:
     /**

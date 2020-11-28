@@ -36,13 +36,19 @@ class EventHandlerSDL2 : public EventHandler
       Create a new SDL2 event handler object
     */
     explicit EventHandlerSDL2(OSystem& osystem);
-    virtual ~EventHandlerSDL2();
+    ~EventHandlerSDL2() override;
 
   private:
     /**
       Enable/disable text events (distinct from single-key events).
     */
     void enableTextEvents(bool enable) override;
+
+    /**
+      Clipboard methods.
+    */
+    void copyText(const string& text) const override;
+    string pasteText(string& text) const override;
 
     /**
       Collects and dispatches any pending SDL2 events.
@@ -61,7 +67,7 @@ class EventHandlerSDL2 : public EventHandler
         virtual ~JoystickSDL2();
 
       private:
-        SDL_Joystick* myStick;
+        SDL_Joystick* myStick{nullptr};
     };
 
   private:

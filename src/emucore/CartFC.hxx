@@ -52,7 +52,7 @@ class CartridgeFC : public CartridgeEnhanced
     */
     CartridgeFC(const ByteBuffer& image, size_t size, const string& md5,
                 const Settings& settings, size_t bsSize = 0);
-    virtual ~CartridgeFC() = default;
+    ~CartridgeFC() override = default;
 
   public:
     /**

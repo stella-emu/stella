@@ -49,7 +49,7 @@ class KidVid : public Controller
     */
     KidVid(Jack jack, const Event& event, const System& system,
            const string& romMd5);
-    virtual ~KidVid();
+    ~KidVid() override;
 
   public:
     /**

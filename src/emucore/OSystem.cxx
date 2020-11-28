@@ -147,10 +147,15 @@ bool OSystem::create()
   // Get relevant information about the video hardware
   // This must be done before any graphics context is created, since
   // it may be needed to initialize the size of graphical objects
-  try        { myFrameBuffer = MediaFactory::createVideo(*this); }
-  catch(...) { return false; }
-  if(!myFrameBuffer->initialize())
+  try
+  {
+    myFrameBuffer = make_unique<FrameBuffer>(*this);
+    myFrameBuffer->initialize();
+  }
+  catch(...)
+  {
     return false;
+  }
 
   // Create the event handler for the system
   myEventHandler = MediaFactory::createEventHandler(*this);
@@ -194,6 +199,15 @@ bool OSystem::create()
 #endif
 
   myPropSet->load(myPropertiesFile);
+
+  // Detect serial port for AtariVox-USB
+  // If a previously set port is defined, use it;
+  // otherwise use the first one found (if any)
+  const string& avoxport = mySettings->getString("avoxport");
+  const StringList ports = MediaFactory::createSerialPort()->portNames();
+
+  if(avoxport.empty() && ports.size() > 0)
+    mySettings->setValue("avoxport", ports[0]);
 
   return true;
 }
@@ -471,9 +485,9 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
     {
       const string& id = myConsole->cartridge().multiCartID();
       if(id == "")
-        myFrameBuffer->showMessage("New console created");
+        myFrameBuffer->showTextMessage("New console created");
       else
-        myFrameBuffer->showMessage("Multicart " +
+        myFrameBuffer->showTextMessage("Multicart " +
           myConsole->cartridge().detectedType() + ", loading ROM" + id);
     }
     buf << "Game console created:" << endl
@@ -502,7 +516,7 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
       msg << myConsole->leftController().name() << "/" << myConsole->rightController().name()
         << " - " << myConsole->cartridge().detectedType()
         << " - " << myConsole->getFormatString();
-      myFrameBuffer->showMessage(msg.str());
+      myFrameBuffer->showTextMessage(msg.str());
     }
   }
 
@@ -628,11 +642,23 @@ unique_ptr<Console> OSystem::openConsole(const FilesystemNode& romfile, string& 
 
     CMDLINE_PROPS_UPDATE("sp", PropType::Console_SwapPorts);
     CMDLINE_PROPS_UPDATE("lc", PropType::Controller_Left);
+    CMDLINE_PROPS_UPDATE("lq1", PropType::Controller_Left1);
+    CMDLINE_PROPS_UPDATE("lq2", PropType::Controller_Left2);
     CMDLINE_PROPS_UPDATE("rc", PropType::Controller_Right);
-    const string& s = mySettings->getString("bc");
-    if(s != "") {
-      props.set(PropType::Controller_Left, s);
-      props.set(PropType::Controller_Right, s);
+    CMDLINE_PROPS_UPDATE("rq1", PropType::Controller_Right1);
+    CMDLINE_PROPS_UPDATE("rq2", PropType::Controller_Right2);
+    const string& bc = mySettings->getString("bc");
+    if(bc != "") {
+      props.set(PropType::Controller_Left, bc);
+      props.set(PropType::Controller_Right, bc);
+    }
+    const string& aq = mySettings->getString("aq");
+    if(aq != "")
+    {
+      props.set(PropType::Controller_Left1, aq);
+      props.set(PropType::Controller_Left2, aq);
+      props.set(PropType::Controller_Right1, aq);
+      props.set(PropType::Controller_Right2, aq);
     }
     CMDLINE_PROPS_UPDATE("cp", PropType::Controller_SwapPaddles);
     CMDLINE_PROPS_UPDATE("ma", PropType::Controller_MouseAxis);
@@ -711,7 +737,7 @@ string OSystem::getROMInfo(const Console& console)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 float OSystem::frameRate() const
 {
-  return myConsole ? myConsole->getFramerate() : 0;
+  return myConsole ? myConsole->currentFrameRate() : 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -759,7 +785,8 @@ double OSystem::dispatchEmulation(EmulationWorker& emulationWorker)
        myDebugger->start(
           dispatchResult.getMessage(),
           dispatchResult.getAddress(),
-          dispatchResult.wasReadTrap()
+          dispatchResult.wasReadTrap(),
+          dispatchResult.getToolTip()
         );
       #endif
 

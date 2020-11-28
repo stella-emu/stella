@@ -21,8 +21,7 @@
 #include "SerialPort.hxx"
 
 /**
-  Implement reading and writing from a serial port under macOS.  For now,
-  reading isn't actually supported at all.
+  Implement reading and writing from a serial port under macOS.
 
   @author  Stephen Anthony & D. Spice
 */
@@ -30,7 +29,7 @@ class SerialPortMACOS : public SerialPort
 {
   public:
     SerialPortMACOS();
-    virtual ~SerialPortMACOS();
+    ~SerialPortMACOS() override;
 
     /**
       Open the given serial port with the specified attributes.
@@ -41,6 +40,14 @@ class SerialPortMACOS : public SerialPort
     bool openPort(const string& device) override;
 
     /**
+      Read a byte from the serial port.
+
+      @param data  Destination for the byte read from the port
+      @return  True if a byte was read, else false
+    */
+    bool readByte(uInt8& data) override;
+
+    /**
       Write a byte to the serial port.
 
       @param data  The byte to write to the port
@@ -48,12 +55,19 @@ class SerialPortMACOS : public SerialPort
     */
     bool writeByte(uInt8 data) override;
 
-  /**
-    Test for 'Clear To Send' enabled.
+    /**
+      Test for 'Clear To Send' enabled.
 
-    @return  True if CTS signal enabled, else false
-  */
-  bool isCTS() override;
+      @return  True if CTS signal enabled, else false
+    */
+    bool isCTS() override;
+
+    /**
+      Get all valid serial ports detected on this system.
+
+      @return  The (possibly empty) list of detected serial ports
+    */
+    StringList portNames() override;
 
   private:
     // File descriptor for serial connection

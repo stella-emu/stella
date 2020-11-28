@@ -50,7 +50,7 @@ class System : public Serializable
     */
     System(Random& random, M6502& m6502, M6532& m6532,
            TIA& mTIA, Cartridge& mCart);
-    virtual ~System() = default;
+    ~System() override = default;
 
     // Mask to apply to an address before accessing memory
     static constexpr uInt16 ADDRESS_MASK = (1 << 13) - 1;

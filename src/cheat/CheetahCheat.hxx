@@ -24,7 +24,7 @@ class CheetahCheat : public Cheat
 {
   public:
     CheetahCheat(OSystem& os, const string& name, const string& code);
-    virtual ~CheetahCheat() = default;
+    ~CheetahCheat() override = default;
 
     bool enable() override;
     bool disable() override;

@@ -28,14 +28,16 @@ class FlashWidget : public ControllerWidget
   public:
     FlashWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
                 Controller& controller);
-    virtual ~FlashWidget() = default;
+    ~FlashWidget() override = default;
 
   protected:
-    void init(GuiObject* boss, const GUI::Font& font, int x, int y);
+    void init(GuiObject* boss, const GUI::Font& font, int x, int y, bool embedded);
 
   private:
-    ButtonWidget* myEEPROMEraseCurrent{nullptr};
     enum { kEEPROMEraseCurrent = 'eeEC' };
+
+    bool myEmbedded{false};
+    ButtonWidget* myEEPROMEraseCurrent{nullptr};
 
     static constexpr uInt32 MAX_PAGES = 5;
     std::array<StaticTextWidget*, MAX_PAGES> myPage{nullptr};

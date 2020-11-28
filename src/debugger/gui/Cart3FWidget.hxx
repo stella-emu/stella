@@ -29,7 +29,7 @@ class Cartridge3FWidget : public CartridgeEnhancedWidget
                       const GUI::Font& nfont,
                       int x, int y, int w, int h,
                       Cartridge3F& cart);
-    virtual ~Cartridge3FWidget() = default;
+    ~Cartridge3FWidget() override = default;
 
   private:
     string manufacturer() override { return "TigerVision"; }
