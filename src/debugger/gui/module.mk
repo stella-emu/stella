@@ -55,6 +55,7 @@ MODULE_OBJS := \
         src/debugger/gui/CartDebugWidget.o \
         src/debugger/gui/CpuWidget.o \
         src/debugger/gui/DataGridOpsWidget.o \
+	src/debugger/gui/DataGridRamWidget.o \
         src/debugger/gui/DataGridWidget.o \
         src/debugger/gui/DebuggerDialog.o \
         src/debugger/gui/DelayQueueWidget.o \

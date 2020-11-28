@@ -99,7 +99,6 @@ class ListWidget : public EditableWidget
     int  _currentPos{0};
     int  _selectedItem{-1};
     int  _highlightedItem{-1};
-    bool _editMode{false};
     bool _useScrollbar{true};
 
     ScrollBarWidget* _scrollBar{nullptr};

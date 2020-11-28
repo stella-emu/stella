@@ -37,15 +37,27 @@ ColorWidget::ColorWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ColorWidget::setColor(ColorId color)
 {
-  _color = color;
-  setDirty();
+  if(_color != color)
+  {
+    _color = color;
+    setDirty();
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ColorWidget::setCrossed(bool enable)
+{
+  if(_crossGrid != enable)
+  {
+    _crossGrid = enable;
+    setDirty();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ColorWidget::drawWidget(bool hilite)
 {
   FBSurface& s = dialog().surface();
-  bool onTop = _boss->dialog().isOnTop();
 
   if(_framed)
   {
@@ -53,11 +65,11 @@ void ColorWidget::drawWidget(bool hilite)
     s.frameRect(_x, _y, _w, _h + 1, kColor);
 
     // Show the currently selected color
-    s.fillRect(_x + 1, _y + 1, _w - 2, _h - 1, onTop ? isEnabled() ? _color : kWidColor : kBGColorLo);
+    s.fillRect(_x + 1, _y + 1, _w - 2, _h - 1, isEnabled() ? _color : kWidColor);
   }
   else
   {
-    s.fillRect(_x, _y, _w, _h, onTop ? isEnabled() ? _color : kWidColor : kBGColorLo);
+    s.fillRect(_x, _y, _w, _h, isEnabled() ? _color : kWidColor);
   }
 
   // Cross out the grid?

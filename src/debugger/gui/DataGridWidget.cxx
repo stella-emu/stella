@@ -17,6 +17,7 @@
 
 #include "Widget.hxx"
 #include "Dialog.hxx"
+#include "ToolTip.hxx"
 #include "Font.hxx"
 #include "OSystem.hxx"
 #include "Debugger.hxx"
@@ -45,6 +46,7 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
     _base(base)
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_RETAIN_FOCUS | Widget::FLAG_WANTS_RAWDATA;
+  _editMode = false;
 
   // Make sure all lists contain some default values
   _hiliteList.clear();
@@ -105,14 +107,20 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
 void DataGridWidget::setList(const IntArray& alist, const IntArray& vlist,
                              const BoolArray& changed)
 {
-/*
-cerr << "alist.size() = "     << alist.size()
-     << ", vlist.size() = "   << vlist.size()
-     << ", changed.size() = " << changed.size()
-     << ", _rows*_cols = "    << _rows * _cols << endl << endl;
-*/
+  /*
+  cerr << "alist.size() = "     << alist.size()
+       << ", vlist.size() = "   << vlist.size()
+       << ", changed.size() = " << changed.size()
+       << ", _rows*_cols = "    << _rows * _cols << endl << endl;
+  */
   int size = int(vlist.size());  // assume the alist is the same size
   assert(size == _rows * _cols);
+
+  bool dirty = _editMode
+    || !std::equal(_valueList.begin(), _valueList.end(),
+                   vlist.begin(), vlist.end())
+    || !std::equal(_changedList.begin(), _changedList.end(),
+                   changed.begin(), changed.end());
 
   _addrList.clear();
   _valueList.clear();
@@ -128,19 +136,22 @@ cerr << "alist.size() = "     << alist.size()
   for(int i = 0; i < size; ++i)
     _valueStringList.push_back(Common::Base::toString(_valueList[i], _base));
 
-/*
-cerr << "_addrList.size() = "     << _addrList.size()
-     << ", _valueList.size() = "   << _valueList.size()
-     << ", _changedList.size() = " << _changedList.size()
-     << ", _valueStringList.size() = " << _valueStringList.size()
-     << ", _rows*_cols = "    << _rows * _cols << endl << endl;
-*/
+  /*
+  cerr << "_addrList.size() = "     << _addrList.size()
+       << ", _valueList.size() = "   << _valueList.size()
+       << ", _changedList.size() = " << _changedList.size()
+       << ", _valueStringList.size() = " << _valueStringList.size()
+       << ", _rows*_cols = "    << _rows * _cols << endl << endl;
+  */
   enableEditMode(false);
 
-  // Send item selected signal for starting with cell 0
-  sendCommand(DataGridWidget::kSelectionChangedCmd, _selectedItem, _id);
+  if(dirty)
+  {
+    // Send item selected signal for starting with cell 0
+    sendCommand(DataGridWidget::kSelectionChangedCmd, _selectedItem, _id);
 
-  setDirty();
+    setDirty();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -240,20 +251,6 @@ void DataGridWidget::setRange(int lower, int upper)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DataGridWidget::handleMouseEntered()
-{
-  setFlags(Widget::FLAG_HILITED);
-  setDirty();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DataGridWidget::handleMouseLeft()
-{
-  clearFlags(Widget::FLAG_HILITED);
-  setDirty();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DataGridWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
   if (!isEnabled())
@@ -307,6 +304,7 @@ void DataGridWidget::handleMouseWheel(int x, int y, int direction)
     else if(direction < 0)
       incrementCell();
   }
+  dialog().tooltip().hide();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -504,6 +502,7 @@ bool DataGridWidget::handleKeyDown(StellaKey key, StellaMod mod)
       sendCommand(DataGridWidget::kSelectionChangedCmd, _selectedItem, _id);
 
     setDirty();
+    dialog().tooltip().hide();
   }
 
   _currentKeyDown = key;
@@ -584,13 +583,55 @@ void DataGridWidget::handleCommand(CommandSender* sender, int cmd,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int DataGridWidget::getToolTipIndex(const Common::Point& pos) const
+{
+  const int col = (pos.x - getAbsX()) / _colWidth;
+  const int row = (pos.y - getAbsY()) / _rowHeight;
+
+  if(row >= 0 && row < _rows && col >= 0 && col < _cols)
+    return row * _cols + col;
+  else
+    return -1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string DataGridWidget::getToolTip(const Common::Point& pos) const
+{
+  const int idx = getToolTipIndex(pos);
+
+  if(idx < 0)
+    return EmptyString;
+
+  const Int32 val = _valueList[idx];
+  ostringstream buf;
+
+  buf << _toolTipText
+    << "$" << Common::Base::toString(val, Common::Base::Fmt::_16)
+    << " = #" << val;
+  if(val < 0x100)
+  {
+    if(val >= 0x80)
+      buf << '/' << -(0x100 - val);
+    buf << " = %" << Common::Base::toString(val, Common::Base::Fmt::_2);
+  }
+
+  return buf.str();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool DataGridWidget::changedToolTip(const Common::Point& oldPos,
+                                    const Common::Point& newPos) const
+{
+  return getToolTipIndex(oldPos) != getToolTipIndex(newPos);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DataGridWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
-  bool onTop = _boss->dialog().isOnTop();
   int row, col;
 
-  s.fillRect(_x, _y, _w, _h, hilite && isEnabled() && isEditable() ? _bgcolorhi : onTop ? _bgcolor : kBGColorHi);
+  s.fillRect(_x, _y, _w, _h, hilite && isEnabled() && isEditable() ? _bgcolorhi : _bgcolor);
   // Draw the internal grid and labels
   int linewidth = _cols * _colWidth;
   s.frameRect(_x, _y, _w, _h, hilite && isEnabled() && isEditable() ? kWidColorHi : kColor);
@@ -609,7 +650,7 @@ void DataGridWidget::drawWidget(bool hilite)
       int x = _x + 4 + (col * _colWidth);
       int y = _y + 2 + (row * _rowHeight);
       int pos = row*_cols + col;
-      ColorId textColor = onTop ? kTextColor : kColor;
+      ColorId textColor = kTextColor;
 
       // Draw the selected item inverted, on a highlighted background.
       if (_currentRow == row && _currentCol == col &&
@@ -629,13 +670,12 @@ void DataGridWidget::drawWidget(bool hilite)
       {
         if(_changedList[pos])
         {
-          s.fillRect(x - 3, y - 1, _colWidth-1, _rowHeight-1,
-                     onTop ? kDbgChangedColor : _bgcolorlo);
+          s.fillRect(x - 3, y - 1, _colWidth-1, _rowHeight-1, kDbgChangedColor);
 
           if(_hiliteList[pos])
             textColor = kDbgColorHi;
           else
-            textColor = onTop ? kDbgChangedTextColor : textColor;
+            textColor = kDbgChangedTextColor;
         }
         else if(_hiliteList[pos])
           textColor = kDbgColorHi;
@@ -678,10 +718,21 @@ int DataGridWidget::getWidth() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DataGridWidget::setCrossed(bool enable)
+{
+  if(_crossGrid != enable)
+  {
+    _crossGrid = enable;
+    setDirty();
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DataGridWidget::startEditMode()
 {
   if (isEditable() && !_editMode && _selectedItem >= 0)
   {
+    dialog().tooltip().hide();
     enableEditMode(true);
     setText("", true);  // Erase current entry when starting editing
   }

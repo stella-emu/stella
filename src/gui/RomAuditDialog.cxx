@@ -119,13 +119,17 @@ void RomAuditDialog::auditRoms()
 
   // Create a progress dialog box to show the progress of processing
   // the ROMs, since this is usually a time-consuming operation
-  ProgressDialog progress(this, instance().frameBuffer().font(),
-                          "Auditing ROM files ...");
+  ostringstream buf;
+  ProgressDialog progress(this, instance().frameBuffer().font());
+
+  buf << "Auditing ROM files" << ELLIPSIS;
+  progress.setMessage(buf.str());
   progress.setRange(0, int(files.size()) - 1, 5);
+  progress.open();
 
   Properties props;
   uInt32 renamed = 0, notfound = 0;
-  for(uInt32 idx = 0; idx < files.size(); ++idx)
+  for(uInt32 idx = 0; idx < files.size() && !progress.isCancelled(); ++idx)
   {
     string extension;
     if(files[idx].isFile() &&
@@ -156,7 +160,7 @@ void RomAuditDialog::auditRoms()
     }
 
     // Update the progress bar, indicating one more ROM has been processed
-    progress.setProgress(idx);
+    progress.incProgress();
   }
   progress.close();
 

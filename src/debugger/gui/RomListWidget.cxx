@@ -20,6 +20,8 @@
 #include "Debugger.hxx"
 #include "DiStella.hxx"
 #include "Widget.hxx"
+#include "Dialog.hxx"
+#include "ToolTip.hxx"
 #include "StellaKeys.hxx"
 #include "FBSurface.hxx"
 #include "Font.hxx"
@@ -38,6 +40,9 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
   _bgcolorhi = kWidColor;
   _textcolor = kTextColor;
   _textcolorhi = kTextColor;
+
+  _editMode = false;
+  _dyText = -1; // fixes the vertical position of selected text
 
   _cols = w / _fontWidth;
   _rows = h / _lineHeight;
@@ -242,6 +247,7 @@ void RomListWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
     // Set selected and add menu at current x,y mouse location
     _selectedItem = findItem(x, y);
     scrollToSelected();
+    dialog().tooltip().hide();
     myMenu->show(x + getAbsX(), y + getAbsY(),
                  dialog().surface().dstRect(), _selectedItem);
   }
@@ -280,20 +286,6 @@ void RomListWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 void RomListWidget::handleMouseWheel(int x, int y, int direction)
 {
   myScrollBar->handleMouseWheel(x, y, direction);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomListWidget::handleMouseEntered()
-{
-  setFlags(Widget::FLAG_HILITED);
-  setDirty();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomListWidget::handleMouseLeft()
-{
-  clearFlags(Widget::FLAG_HILITED);
-  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -455,13 +447,85 @@ void RomListWidget::lostFocusWidget()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Common::Point RomListWidget::getToolTipIndex(const Common::Point& pos) const
+{
+  const Common::Rect& r = getEditRect();
+  const int col = (pos.x - r.x() - getAbsX()) / _font.getMaxCharWidth();
+  const int row = (pos.y - getAbsY()) / _lineHeight;
+
+  if(col < 0 || col >= 8
+     || row < 0 || row + _currentPos >= int(myDisasm->list.size()))
+    return Common::Point(-1, -1);
+  else
+    return Common::Point(col, row + _currentPos);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string RomListWidget::getToolTip(const Common::Point& pos) const
+{
+  const Common::Point& idx = getToolTipIndex(pos);
+
+  if(idx.y < 0)
+    return EmptyString;
+
+  const string bytes = myDisasm->list[idx.y].bytes;
+
+  if(static_cast<Int32>(bytes.length()) < idx.x + 1)
+    return EmptyString;
+
+  Int32 val;
+  if(bytes.length() == 8 && bytes[2] != ' ')
+  {
+    // Binary value
+    val = static_cast<Int32>(stol(bytes, nullptr, 2));
+  }
+  else
+  {
+    // 1..3 hex values
+    if(idx.x == 2)
+      // Skip gap after first byte
+      return EmptyString;
+
+    string valStr;
+
+    if(idx.x < 2 || bytes.length() < 8)
+      // 1 or 2 hex bytes, get one hex byte
+      valStr = bytes.substr((idx.x / 3) * 3, 2);
+    else
+      // 3 hex bytes, get two rightmost hex bytes
+      valStr = bytes.substr(6, 2) + bytes.substr(3, 2);
+
+    val = static_cast<Int32>(stol(valStr, nullptr, 16));
+  }
+  ostringstream buf;
+
+  buf << _toolTipText
+    << "$" << Common::Base::toString(val, Common::Base::Fmt::_16)
+    << " = #" << val;
+  if(val < 0x100)
+  {
+    if(val >= 0x80)
+      buf << '/' << -(0x100 - val);
+    buf << " = %" << Common::Base::toString(val, Common::Base::Fmt::_2);
+  }
+
+  return buf.str();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool RomListWidget::changedToolTip(const Common::Point& oldPos,
+                                   const Common::Point& newPos) const
+{
+  return getToolTipIndex(oldPos) != getToolTipIndex(newPos);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomListWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
-  bool onTop = _boss->dialog().isOnTop();
   const CartDebug::DisassemblyList& dlist = myDisasm->list;
   int i, pos, xpos, ypos, len = int(dlist.size());
-  ColorId textColor = onTop ? kTextColor : kColor;
+  ColorId textColor = kTextColor;
 
   const Common::Rect& r = getEditRect();
   const Common::Rect& l = getLineRect();
@@ -480,21 +544,22 @@ void RomListWidget::drawWidget(bool hilite)
     codeDisasmW = actualWidth;
 
   xpos = _x + CheckboxWidget::boxSize(_font) + 10;  ypos = _y + 2;
-  for (i = 0, pos = _currentPos; i < _rows && pos < len; i++, pos++, ypos += _lineHeight)
+  for(i = 0, pos = _currentPos; i < _rows && pos < len; i++, pos++, ypos += _lineHeight)
   {
     ColorId bytesColor = textColor;
 
-    // Draw checkboxes for correct lines (takes scrolling into account)
+    // Mark checkboxes dirty for correct lines (takes scrolling into account)
     myCheckList[i]->setState(instance().debugger().
                              checkBreakPoint(dlist[pos].address,
                              instance().debugger().cartDebug().getBank(dlist[pos].address)));
-
     myCheckList[i]->setDirty();
+    // All checkboxes have to be redrawn because RomListWidget clears its whole area
+    // Also draw immediately, because chain order is not deterministic
     myCheckList[i]->draw();
 
     // Draw highlighted item in a frame
-    if (_highlightedItem == pos)
-      s.frameRect(_x + l.x() - 3, ypos - 1, _w - l.x(), _lineHeight, onTop ? kWidColorHi : kBGColorLo);
+    if(_highlightedItem == pos)
+      s.frameRect(_x + l.x() - 3, ypos - 1, _w - l.x(), _lineHeight, kWidColorHi);
 
     // Draw the selected item inverted, on a highlighted background.
     if(_selectedItem == pos && _hasFocus)
@@ -510,31 +575,31 @@ void RomListWidget::drawWidget(bool hilite)
 
     // Draw labels
     s.drawString(_font, dlist[pos].label, xpos, ypos, _labelWidth,
-                 dlist[pos].hllabel ? textColor : kColor);
+                  dlist[pos].hllabel ? textColor : kColor);
 
     // Bytes are only editable if they represent code, graphics, or accessible data
     // Otherwise, the disassembly should get all remaining space
-    if(dlist[pos].type & (Device::CODE|Device::GFX|Device::PGFX|
-       Device::COL|Device::PCOL|Device::BCOL|Device::DATA))
+    if(dlist[pos].type & (Device::CODE | Device::GFX | Device::PGFX |
+       Device::COL | Device::PCOL | Device::BCOL | Device::DATA))
     {
       if(dlist[pos].type == Device::CODE)
       {
         // Draw mnemonic
         s.drawString(_font, dlist[pos].disasm.substr(0, 7), xpos + _labelWidth, ypos,
-                     7 * _fontWidth, textColor);
+                      7 * _fontWidth, textColor);
         // Draw operand
-        if (dlist[pos].disasm.length() > 8)
+        if(dlist[pos].disasm.length() > 8)
           s.drawString(_font, dlist[pos].disasm.substr(8), xpos + _labelWidth + 7 * _fontWidth, ypos,
-                       codeDisasmW - 7 * _fontWidth, textColor);
+                        codeDisasmW - 7 * _fontWidth, textColor);
         // Draw cycle count
         s.drawString(_font, dlist[pos].ccount, xpos + _labelWidth + codeDisasmW, ypos,
-                     cycleCountW, textColor);
+                      cycleCountW, textColor);
       }
       else
       {
         // Draw disassembly only
         s.drawString(_font, dlist[pos].disasm, xpos + _labelWidth, ypos,
-                     noCodeDisasmW - 4, kTextColor);
+                      noCodeDisasmW - 4, kTextColor);
       }
 
       // Draw separator
@@ -542,11 +607,11 @@ void RomListWidget::drawWidget(bool hilite)
 
       // Draw bytes
       {
-        if (_selectedItem == pos && _editMode)
+        if(_selectedItem == pos && _editMode)
         {
           adjustOffset();
           s.drawString(_font, editString(), _x + r.x(), ypos, r.w(), textColor,
-                       TextAlign::Left, -_editScrollOffset, false);
+                        TextAlign::Left, -_editScrollOffset, false);
 
           drawCaretSelection();
         }
@@ -560,7 +625,7 @@ void RomListWidget::drawWidget(bool hilite)
     {
       // Draw disassembly, giving it all remaining horizontal space
       s.drawString(_font, dlist[pos].disasm, xpos + _labelWidth, ypos,
-                   noTypeDisasmW, textColor);
+                    noTypeDisasmW, textColor);
     }
   }
 }
@@ -580,8 +645,8 @@ Common::Rect RomListWidget::getEditRect() const
 {
   const int yoffset = std::max(0, (_selectedItem - _currentPos) * _lineHeight);
 
-  return Common::Rect(2 + _w - _bytesWidth, 1 + yoffset,
-                      _w, _lineHeight + yoffset);
+  return Common::Rect(2 + _w - _bytesWidth, 1 + yoffset + 1,
+                      _w, _lineHeight + yoffset + 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -594,6 +659,7 @@ void RomListWidget::startEditMode()
       return;
 
     _editMode = true;
+    dialog().tooltip().hide();
     switch(myDisasm->list[_selectedItem].type)
     {
       case Device::GFX:

@@ -77,9 +77,63 @@ bool FilesystemNode::exists() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FilesystemNode::getAllChildren(FSList& fslist, ListMode mode,
+                                    const NameFilter& filter,
+                                    bool includeParentDirectory,
+                                    const CancelCheck& isCancelled) const
+{
+  if(getChildren(fslist, mode, filter, includeParentDirectory, true, isCancelled))
+  {
+    // Sort only once at the end
+  #if defined(ZIP_SUPPORT)
+    // before sorting, replace single file ZIP archive names with contained file names
+    //  because they are displayed using their contained file names
+    for(auto& i : fslist)
+    {
+      if(BSPF::endsWithIgnoreCase(i.getPath(), ".zip"))
+      {
+        FilesystemNodeZIP zipNode(i.getPath());
+
+        i.setName(zipNode.getName());
+      }
+    }
+  #endif
+
+    std::sort(fslist.begin(), fslist.end(),
+              [](const FilesystemNode& node1, const FilesystemNode& node2)
+    {
+      if(node1.isDirectory() != node2.isDirectory())
+        return node1.isDirectory();
+      else
+        return BSPF::compareIgnoreCase(node1.getName(), node2.getName()) < 0;
+    }
+    );
+
+  #if defined(ZIP_SUPPORT)
+    // After sorting replace zip files with zip nodes
+    for(auto& i : fslist)
+    {
+      if(BSPF::endsWithIgnoreCase(i.getPath(), ".zip"))
+      {
+        // Force ZIP c'tor to be called
+        AbstractFSNodePtr ptr = FilesystemNodeFactory::create(i.getPath(),
+                                                              FilesystemNodeFactory::Type::ZIP);
+        FilesystemNode zipNode(ptr);
+        i = zipNode;
+      }
+    }
+  #endif
+    return true;
+  }
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FilesystemNode::getChildren(FSList& fslist, ListMode mode,
                                  const NameFilter& filter,
-                                 bool includeParentDirectory) const
+                                 bool includeChildDirectories,
+                                 bool includeParentDirectory,
+                                 const CancelCheck& isCancelled) const
 {
   if (!_realNode || !_realNode->isDirectory())
     return false;
@@ -90,12 +144,18 @@ bool FilesystemNode::getChildren(FSList& fslist, ListMode mode,
   if (!_realNode->getChildren(tmp, mode))
     return false;
 
+  // when incuding child directories, everything must be sorted once at the end
+  if(!includeChildDirectories)
+  {
+    if(isCancelled())
+      return false;
+
   #if defined(ZIP_SUPPORT)
     // before sorting, replace single file ZIP archive names with contained file names
     //  because they are displayed using their contained file names
-    for (auto& i : tmp)
+    for(auto& i : tmp)
     {
-      if (BSPF::endsWithIgnoreCase(i->getPath(), ".zip"))
+      if(BSPF::endsWithIgnoreCase(i->getPath(), ".zip"))
       {
         FilesystemNodeZIP node(i->getPath());
 
@@ -104,15 +164,16 @@ bool FilesystemNode::getChildren(FSList& fslist, ListMode mode,
     }
   #endif
 
-  std::sort(tmp.begin(), tmp.end(),
-    [](const AbstractFSNodePtr& node1, const AbstractFSNodePtr& node2)
+    std::sort(tmp.begin(), tmp.end(),
+              [](const AbstractFSNodePtr& node1, const AbstractFSNodePtr& node2)
     {
-      if (node1->isDirectory() != node2->isDirectory())
+      if(node1->isDirectory() != node2->isDirectory())
         return node1->isDirectory();
       else
         return BSPF::compareIgnoreCase(node1->getName(), node2->getName()) < 0;
     }
-  );
+    );
+  }
 
   // Add parent node, if it is valid to do so
   if (includeParentDirectory && hasParent())
@@ -125,29 +186,54 @@ bool FilesystemNode::getChildren(FSList& fslist, ListMode mode,
   // And now add the rest of the entries
   for (const auto& i: tmp)
   {
+    if(isCancelled())
+      return false;
+
   #if defined(ZIP_SUPPORT)
     if (BSPF::endsWithIgnoreCase(i->getPath(), ".zip"))
     {
       // Force ZIP c'tor to be called
       AbstractFSNodePtr ptr = FilesystemNodeFactory::create(i->getPath(),
-          FilesystemNodeFactory::Type::ZIP);
-      FilesystemNode node(ptr);
-      if (filter(node))
-        fslist.emplace_back(node);
+                                                            FilesystemNodeFactory::Type::ZIP);
+      FilesystemNode zipNode(ptr);
+
+      if(filter(zipNode))
+      {
+        if(!includeChildDirectories)
+          fslist.emplace_back(zipNode);
+        else
+        {
+          // filter by zip node but add file node
+          FilesystemNode node(i);
+          fslist.emplace_back(node);
+        }
+      }
     }
     else
   #endif
     {
       // Make directories stand out
-      if (i->isDirectory())
+      if(i->isDirectory())
         i->setName(" [" + i->getName() + "]");
 
       FilesystemNode node(i);
-      if (filter(node))
-        fslist.emplace_back(node);
+
+      if(includeChildDirectories)
+      {
+        if(i->isDirectory())
+          node.getChildren(fslist, mode, filter, includeChildDirectories, false, isCancelled);
+        else
+          // do not add directories in this mode
+          if(filter(node))
+            fslist.emplace_back(node);
+      }
+      else
+      {
+        if(filter(node))
+          fslist.emplace_back(node);
+      }
     }
   }
-
   return true;
 }
 

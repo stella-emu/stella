@@ -47,20 +47,6 @@ CheckListWidget::CheckListWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CheckListWidget::handleMouseEntered()
-{
-  setFlags(Widget::FLAG_HILITED);
-  setDirty();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CheckListWidget::handleMouseLeft()
-{
-  clearFlags(Widget::FLAG_HILITED);
-  setDirty();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheckListWidget::setList(const StringList& list, const BoolArray& state)
 {
   _list = list;
@@ -95,7 +81,6 @@ void CheckListWidget::drawWidget(bool hilite)
 {
 //cerr << "CheckListWidget::drawWidget\n";
   FBSurface& s = _boss->dialog().surface();
-  bool onTop = _boss->dialog().isOnTop();
   int i, pos, len = int(_list.size());
 
   // Draw a thin frame around the list and to separate columns
@@ -126,18 +111,17 @@ void CheckListWidget::drawWidget(bool hilite)
       }
       else
         s.frameRect(_x + r.x() - 3, _y + 1 + _lineHeight * i,
-                    _w - r.x(), _lineHeight, onTop ? kTextColorHi : kColor);
+                    _w - r.x(), _lineHeight, kTextColorHi);
     }
 
     if (_selectedItem == pos && _editMode)
     {
       adjustOffset();
-      s.drawString(_font, editString(), _x + r.x(), y, r.w(), onTop ? kTextColor : kColor,
+      s.drawString(_font, editString(), _x + r.x(), y, r.w(), kTextColor,
                    TextAlign::Left, -_editScrollOffset, false);
     }
     else
-      s.drawString(_font, _list[pos], _x + r.x(), y, r.w(),
-                   onTop ? textColor : kColor);
+      s.drawString(_font, _list[pos], _x + r.x(), y, r.w(), textColor);
   }
 
   // Only draw the caret while editing, and if it's in the current viewport

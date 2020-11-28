@@ -172,17 +172,17 @@ void RomInfoWidget::parseProperties(const FilesystemNode& node)
     myRomInfo.push_back("Controllers: " + (left + " (left), " + right + " (right)"));
   if (bsDetected != "")
     myRomInfo.push_back("Type: " + Bankswitch::typeToDesc(Bankswitch::nameToType(bsDetected)));
+
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomInfoWidget::drawWidget(bool hilite)
 {
   FBSurface& s = dialog().surface();
-  bool onTop = _boss->dialog().isOnTop();
-
   const int yoff = myAvail.h + 10;
 
-  s.fillRect(_x+2, _y+2, _w-4, _h-4, onTop ? _bgcolor : _bgcolorlo);
+  s.fillRect(_x+2, _y+2, _w-4, _h-4, _bgcolor);
   s.frameRect(_x, _y, _w, _h, kColor);
   s.frameRect(_x, _y+yoff, _w, _h-yoff, kColor);
 
@@ -204,7 +204,7 @@ void RomInfoWidget::drawWidget(bool hilite)
   {
     uInt32 x = _x + ((_w - _font.getStringWidth(mySurfaceErrorMsg)) >> 1);
     uInt32 y = _y + ((yoff - _font.getLineHeight()) >> 1);
-    s.drawString(_font, mySurfaceErrorMsg, x, y, _w - 10, onTop ? _textcolor : _shadowcolor);
+    s.drawString(_font, mySurfaceErrorMsg, x, y, _w - 10, _textcolor);
   }
 
   int xpos = _x + 8, ypos = _y + yoff + 5;
@@ -224,7 +224,8 @@ void RomInfoWidget::drawWidget(bool hilite)
         break;
     }
     int lines = s.drawString(_font, info, xpos, ypos, _w - 16, _font.getFontHeight() * 3,
-                             onTop ? _textcolor : _shadowcolor);
+                             _textcolor);
     ypos += _font.getLineHeight() + (lines - 1) * _font.getFontHeight();
   }
+  clearDirty();
 }

@@ -476,7 +476,7 @@ void Console::setFormat(uInt32 format, bool force)
   initializeAudio(); // ensure that audio synthesis is set up to match emulation rate
   myOSystem.resetFps(); // Reset FPS measurement
 
-  myOSystem.frameBuffer().showMessage(message);
+  myOSystem.frameBuffer().showTextMessage(message);
 
   // Let the other devices know about the console change
   mySystem->consoleChanged(myConsoleTiming);
@@ -493,10 +493,10 @@ void Console::toggleColorLoss(bool toggle)
 
     string message = string("PAL color-loss ") +
                      (colorloss ? "enabled" : "disabled");
-    myOSystem.frameBuffer().showMessage(message);
+    myOSystem.frameBuffer().showTextMessage(message);
   }
   else
-    myOSystem.frameBuffer().showMessage(
+    myOSystem.frameBuffer().showTextMessage(
       "PAL color-loss not available in non PAL modes");
 }
 
@@ -521,7 +521,7 @@ void Console::toggleInter(bool toggle)
   ostringstream ss;
 
   ss << "Interpolation " << (enabled ? "enabled" : "disabled");
-  myOSystem.frameBuffer().showMessage(ss.str());
+  myOSystem.frameBuffer().showTextMessage(ss.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -539,7 +539,7 @@ void Console::toggleTurbo()
 
   ostringstream ss;
   ss << "Turbo mode " << (!enabled ? "enabled" : "disabled");
-  myOSystem.frameBuffer().showMessage(ss.str());
+  myOSystem.frameBuffer().showTextMessage(ss.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -564,7 +564,7 @@ void Console::changeSpeed(int direction)
   ostringstream val;
 
   val << formatSpeed(speed) << "%";
-  myOSystem.frameBuffer().showMessage("Emulation speed", val.str(), speed, MIN_SPEED, MAX_SPEED);
+  myOSystem.frameBuffer().showGaugeMessage("Emulation speed", val.str(), speed, MIN_SPEED, MAX_SPEED);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -574,13 +574,13 @@ void Console::togglePhosphor()
   {
     myProperties.set(PropType::Display_Phosphor, "NO");
     myOSystem.frameBuffer().tiaSurface().enablePhosphor(false);
-    myOSystem.frameBuffer().showMessage("Phosphor effect disabled");
+    myOSystem.frameBuffer().showTextMessage("Phosphor effect disabled");
   }
   else
   {
     myProperties.set(PropType::Display_Phosphor, "YES");
     myOSystem.frameBuffer().tiaSurface().enablePhosphor(true);
-    myOSystem.frameBuffer().showMessage("Phosphor effect enabled");
+    myOSystem.frameBuffer().showTextMessage("Phosphor effect enabled");
   }
 }
 
@@ -605,7 +605,7 @@ void Console::changePhosphor(int direction)
     val.str("");
     val << "Off";
   }
-  myOSystem.frameBuffer().showMessage("Phosphor blend", val.str(), blend);
+  myOSystem.frameBuffer().showGaugeMessage("Phosphor blend", val.str(), blend);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -699,7 +699,7 @@ void Console::changeVerticalCenter(int direction)
   if (vcenter != myTIA->vcenter()) myTIA->setVcenter(vcenter);
 
   val << (vcenter ? vcenter > 0 ? "+" : "" : " ") << vcenter << "px";
-  myOSystem.frameBuffer().showMessage("V-Center", val.str(), vcenter,
+  myOSystem.frameBuffer().showGaugeMessage("V-Center", val.str(), vcenter,
                                       myTIA->minVcenter(), myTIA->maxVcenter());
 }
 
@@ -729,7 +729,7 @@ void Console::changeVSizeAdjust(int direction)
 
   val << (newAdjustVSize ? newAdjustVSize > 0 ? "+" : "" : " ")
       << newAdjustVSize << "%";
-  myOSystem.frameBuffer().showMessage("V-Size", val.str(), newAdjustVSize, -5, 5);
+  myOSystem.frameBuffer().showGaugeMessage("V-Size", val.str(), newAdjustVSize, -5, 5);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -746,7 +746,7 @@ void Console::toggleCorrectAspectRatio(bool toggle)
   const string& message = string("Correct aspect ratio ") +
       (enabled ? "enabled" : "disabled");
 
-  myOSystem.frameBuffer().showMessage(message);
+  myOSystem.frameBuffer().showTextMessage(message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -920,7 +920,7 @@ unique_ptr<Controller> Console::getControllerPort(const Controller::Type type,
       Controller::onMessageCallback callback = [&os = myOSystem](const string& msg) {
         bool devSettings = os.settings().getBool("dev.settings");
         if(os.settings().getBool(devSettings ? "dev.eepromaccess" : "plr.eepromaccess"))
-          os.frameBuffer().showMessage(msg);
+          os.frameBuffer().showTextMessage(msg);
       };
       controller = make_unique<AtariVox>(port, myEvent, *mySystem,
           myOSystem.settings().getString("avoxport"), nvramfile, callback);
@@ -933,7 +933,7 @@ unique_ptr<Controller> Console::getControllerPort(const Controller::Type type,
       Controller::onMessageCallback callback = [&os = myOSystem](const string& msg) {
         bool devSettings = os.settings().getBool("dev.settings");
         if(os.settings().getBool(devSettings ? "dev.eepromaccess" : "plr.eepromaccess"))
-          os.frameBuffer().showMessage(msg);
+          os.frameBuffer().showTextMessage(msg);
       };
       controller = make_unique<SaveKey>(port, myEvent, *mySystem, nvramfile, callback);
       break;
@@ -987,7 +987,7 @@ void Console::changeAutoFireRate(int direction)
   else
     val << "Off";
 
-  myOSystem.frameBuffer().showMessage("Autofire rate", val.str(), rate, 0, isNTSC ? 30 : 25);
+  myOSystem.frameBuffer().showGaugeMessage("Autofire rate", val.str(), rate, 0, isNTSC ? 30 : 25);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1012,7 +1012,7 @@ void Console::toggleTIABit(TIABit bit, const string& bitname, bool show, bool to
   bool result = myTIA->toggleBit(bit, toggle ? 2 : 3);
   const string message = bitname + (result ? " enabled" : " disabled");
 
-  myOSystem.frameBuffer().showMessage(message);
+  myOSystem.frameBuffer().showTextMessage(message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1021,7 +1021,7 @@ void Console::toggleBits(bool toggle) const
   bool enabled = myTIA->toggleBits(toggle);
   const string message = string("TIA bits ") + (enabled ? "enabled" : "disabled");
 
-  myOSystem.frameBuffer().showMessage(message);
+  myOSystem.frameBuffer().showTextMessage(message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1030,7 +1030,7 @@ void Console::toggleTIACollision(TIABit bit, const string& bitname, bool show, b
   bool result = myTIA->toggleCollision(bit, toggle ? 2 : 3);
   const string message = bitname + (result ? " collision enabled" : " collision disabled");
 
-  myOSystem.frameBuffer().showMessage(message);
+  myOSystem.frameBuffer().showTextMessage(message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1039,7 +1039,7 @@ void Console::toggleCollisions(bool toggle) const
   bool enabled = myTIA->toggleCollisions(toggle);
   const string message = string("TIA collisions ") + (enabled ? "enabled" : "disabled");
 
-  myOSystem.frameBuffer().showMessage(message);
+  myOSystem.frameBuffer().showTextMessage(message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1048,7 +1048,7 @@ void Console::toggleFixedColors(bool toggle) const
   bool enabled = toggle ? myTIA->toggleFixedColors() : myTIA->usingFixedColors();
   const string message = string("Fixed debug colors ") + (enabled ? "enabled" : "disabled");
 
-  myOSystem.frameBuffer().showMessage(message);
+  myOSystem.frameBuffer().showTextMessage(message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1057,7 +1057,7 @@ void Console::toggleJitter(bool toggle) const
   bool enabled = myTIA->toggleJitter(toggle ? 2 : 3);
   const string message = string("TV scanline jitter ") + (enabled ? "enabled" : "disabled");
 
-  myOSystem.frameBuffer().showMessage(message);
+  myOSystem.frameBuffer().showTextMessage(message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

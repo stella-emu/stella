@@ -110,6 +110,9 @@ void TabWidget::setActiveTab(int tabID, bool show)
     _tabs[_activeTab].firstWidget = _firstWidget;
   }
 
+  if(_activeTab != tabID)
+    setDirty();
+
   _activeTab = tabID;
   _firstWidget  = _tabs[tabID].firstWidget;
 
@@ -137,8 +140,6 @@ void TabWidget::updateActiveTab()
 
   if(_tabs[_activeTab].parentWidget)
     _tabs[_activeTab].parentWidget->loadConfig();
-
-  setDirty();
 
   // Redraw focused areas
   _boss->redrawFocus(); // TJ: Does nothing!
@@ -214,20 +215,6 @@ void TabWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TabWidget::handleMouseEntered()
-{
-  setFlags(Widget::FLAG_HILITED);
-  setDirty();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TabWidget::handleMouseLeft()
-{
-  clearFlags(Widget::FLAG_HILITED);
-  setDirty();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TabWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
   // Command is not inspected; simply forward it to the caller
@@ -275,39 +262,43 @@ void TabWidget::drawWidget(bool hilite)
   // The tab widget is strange in that it acts as both a widget (obviously)
   // and a dialog (it contains other widgets).  Because of the latter,
   // it must assume responsibility for refreshing all its children.
-  Widget::setDirtyInChain(_tabs[_activeTab].firstWidget);
 
-  FBSurface& s = dialog().surface();
-  bool onTop = _boss->dialog().isOnTop();
-
-  // Iterate over all tabs and draw them
-  int i, x = _x + kTabLeftOffset;
-  for (i = 0; i < int(_tabs.size()); ++i)
+  if(isDirty())
   {
-    int tabWidth = _tabs[i].tabWidth ? _tabs[i].tabWidth : _tabWidth;
-    ColorId fontcolor = _tabs[i].enabled && onTop? kTextColor : kColor;
-    int yOffset = (i == _activeTab) ? 0 : 1;
-    s.fillRect(x, _y + 1, tabWidth, _tabHeight - 1,
-              (i == _activeTab)
-               ? onTop ? kDlgColor : kBGColorLo
-               : onTop ? kBGColorHi : kDlgColor); // ? kWidColor : kDlgColor
-    s.drawString(_font, _tabs[i].title, x + kTabPadding + yOffset,
-                 _y + yOffset + (_tabHeight - _lineHeight - 1),
-                 tabWidth - 2 * kTabPadding, fontcolor, TextAlign::Center);
-    if(i == _activeTab)
+    FBSurface& s = dialog().surface();
+
+    // Iterate over all tabs and draw them
+    int i, x = _x + kTabLeftOffset;
+    for(i = 0; i < int(_tabs.size()); ++i)
     {
-      s.hLine(x, _y, x + tabWidth - 1, onTop ? kWidColor : kDlgColor);
-      s.vLine(x + tabWidth, _y + 1, _y + _tabHeight - 1, onTop ? kBGColorLo : kColor);
+      int tabWidth = _tabs[i].tabWidth ? _tabs[i].tabWidth : _tabWidth;
+      ColorId fontcolor = _tabs[i].enabled ? kTextColor : kColor;
+      int yOffset = (i == _activeTab) ? 0 : 1;
+      s.fillRect(x, _y + 1, tabWidth, _tabHeight - 1,
+                 (i == _activeTab)
+                 ? kDlgColor : kBGColorHi); // ? kWidColor : kDlgColor
+      s.drawString(_font, _tabs[i].title, x + kTabPadding + yOffset,
+                   _y + yOffset + (_tabHeight - _lineHeight - 1),
+                   tabWidth - 2 * kTabPadding, fontcolor, TextAlign::Center);
+      if(i == _activeTab)
+      {
+        s.hLine(x, _y, x + tabWidth - 1, kWidColor);
+        s.vLine(x + tabWidth, _y + 1, _y + _tabHeight - 1, kBGColorLo);
+      }
+      else
+        s.hLine(x, _y + _tabHeight, x + tabWidth, kWidColor);
+
+      x += tabWidth + kTabSpacing;
     }
-    else
-      s.hLine(x, _y + _tabHeight, x + tabWidth, onTop ? kWidColor : kDlgColor);
 
-    x += tabWidth + kTabSpacing;
+    // fill empty right space
+    s.hLine(x - kTabSpacing + 1, _y + _tabHeight, _x + _w - 1, kWidColor);
+    s.hLine(_x, _y + _h - 1, _x + _w - 1, kBGColorLo);
+
+    clearDirty();
+    // Make all child widgets of currently active tab dirty
+    Widget::setDirtyInChain(_tabs[_activeTab].firstWidget);
   }
-
-  // fill empty right space
-  s.hLine(x - kTabSpacing + 1, _y + _tabHeight, _x + _w - 1, onTop ? kWidColor : kDlgColor);
-  s.hLine(_x, _y + _h - 1, _x + _w - 1, onTop ? kBGColorLo : kColor);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

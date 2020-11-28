@@ -145,6 +145,7 @@ Settings::Settings()
   setPermanent("launcherres", Common::Size(900, 600));
   setPermanent("launcherfont", "medium");
   setPermanent("launcherroms", "true");
+  setPermanent("launchersubdirs", "false");
   setPermanent("romviewer", "1");
   setPermanent("lastrom", "");
 
@@ -542,6 +543,7 @@ void Settings::usage() const
     << "                 large12|large14|\n"
     << "                 large16>\n"
     << "  -launcherroms <1|0>          Show only ROMs in the launcher (vs. all files)\n"
+    << "  -launchersubdirs <1|0>       Show files from subdirectories too\n"
     << "  -romviewer    <float>        Show ROM info viewer at given zoom level in ROM\n"
     << "                                launcher (use 0 for off)\n"
     << "  -followlauncher <0|1>        Default ROM path follows launcher navigation\n"

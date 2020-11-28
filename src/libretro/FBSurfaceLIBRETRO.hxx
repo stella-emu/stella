@@ -44,13 +44,17 @@ class FBSurfaceLIBRETRO : public FBSurface
     const Common::Rect& dstRect() const override { return myDstGUIR; }
     void setSrcPos(uInt32 x, uInt32 y) override { }
     void setSrcSize(uInt32 w, uInt32 h) override { }
+    void setSrcRect(const Common::Rect& r) override { }
     void setDstPos(uInt32 x, uInt32 y) override { }
     void setDstSize(uInt32 w, uInt32 h) override { }
+    void setDstRect(const Common::Rect& r) override { }
+
     void setVisible(bool visible) override { }
 
     void translateCoords(Int32& x, Int32& y) const override { }
     bool render() override { return true; }
     void invalidate() override { }
+    void invalidateRect(uInt32, uInt32, uInt32, uInt32) override { }
     void free() override { }
     void reload() override { }
     void resize(uInt32 width, uInt32 height) override { }

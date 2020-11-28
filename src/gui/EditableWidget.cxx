@@ -22,6 +22,7 @@
 #include "OSystem.hxx"
 #include "EventHandler.hxx"
 #include "UndoHandler.hxx"
+#include "ToolTip.hxx"
 #include "EditableWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -42,13 +43,17 @@ EditableWidget::EditableWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EditableWidget::setText(const string& str, bool)
+void EditableWidget::setText(const string& str, bool changed)
 {
+  const string oldEditString = _editString;
   // Filter input string
   _editString = "";
   for(char c: str)
     if(_filter(tolower(c)))
       _editString.push_back(c);
+
+  if(oldEditString != _editString)
+    setDirty();
 
   myUndoHandler->reset();
   myUndoHandler->doo(_editString);
@@ -59,8 +64,28 @@ void EditableWidget::setText(const string& str, bool)
   _editScrollOffset = (_font.getStringWidth(_editString) - (getEditRect().w()));
   if (_editScrollOffset < 0)
     _editScrollOffset = 0;
+}
 
-  setDirty();
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EditableWidget::tick()
+{
+  if(_hasFocus && isEditable() && _editMode && isVisible() && _boss->isVisible())
+  {
+    _caretTimer++;
+    if(_caretTimer > 40) // switch every 2/3rd seconds
+    {
+      _caretTimer = 0;
+      _caretEnabled = !_caretEnabled;
+      setDirty();
+    }
+  }
+  Widget::tick();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool EditableWidget::wantsToolTip() const
+{
+  return !(_hasFocus && isEditable() && _editMode) && Widget::wantsToolTip();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -77,6 +102,14 @@ void EditableWidget::setEditable(bool editable, bool hiliteBG)
     clearFlags(Widget::FLAG_WANTS_RAWDATA | Widget::FLAG_RETAIN_FOCUS);
     _bgcolor = hiliteBG ? kBGColorHi : kWidColor;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EditableWidget::receivedFocusWidget()
+{
+  _caretTimer = 0;
+  _caretEnabled = true;
+  dialog().tooltip().hide();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -107,7 +140,7 @@ bool EditableWidget::handleText(char text)
 
   if(tryInsertChar(text, _caretPos))
   {
-    _caretPos++;
+    setCaretPos(_caretPos + 1);
     sendCommand(EditableWidget::kChangedCmd, 0, _id);
     setDirty();
     return true;
@@ -265,7 +298,7 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
       {
         // Put caret at last difference
         myUndoHandler->lastDiff(_editString, oldString);
-        _caretPos = myUndoHandler->lastDiff(_editString, oldString);
+        setCaretPos(myUndoHandler->lastDiff(_editString, oldString));
         _selectSize = 0;
         sendCommand(EditableWidget::kChangedCmd, key, _id);
       }
@@ -316,22 +349,16 @@ void EditableWidget::drawCaretSelection()
   if (!_editable || !isVisible() || !_boss->isVisible() || !_hasFocus)
     return;
 
-  const Common::Rect& editRect = getEditRect();
-  int x = editRect.x();
-  int y = editRect.y();
-
-  x += getCaretOffset();
-
-  x += _x;
-  y += _y;
-
-  FBSurface& s = _boss->dialog().surface();
-  s.vLine(x, y + 2, y + editRect.h() - 2, kTextColorHi);
-  s.vLine(x-1, y + 2, y + editRect.h() - 2, kTextColorHi);
-
+  // Draw the selection
   if(_selectSize)
   {
+    FBSurface& s = _boss->dialog().surface();
+    const Common::Rect& editRect = getEditRect();
+    int x = editRect.x();
+    int y = editRect.y();
+
     string text = selectString();
+
     x = editRect.x();
     y = editRect.y();
     int w = editRect.w();
@@ -355,8 +382,26 @@ void EditableWidget::drawCaretSelection()
     y += _y;
 
     s.fillRect(x - 1, y + 1, w + 1, h - 3, kTextColorHi);
-    s.drawString(_font, text, x, y + 1, w, h,
+    s.drawString(_font, text, x, y + 1 + _dyText, w, h,
                  kTextColorInv, TextAlign::Left, 0, false);
+  }
+
+  // Draw the caret
+  if(_caretEnabled ^ (_selectSize != 0))
+  {
+    FBSurface& s = _boss->dialog().surface();
+    const Common::Rect& editRect = getEditRect();
+    int x = editRect.x();
+    int y = editRect.y();
+    ColorId color = _caretEnabled ? kTextColorHi : kTextColorInv;
+
+    x += getCaretOffset();
+    x += _x;
+    y += _y;
+
+    s.vLine(x, y + 1, y + editRect.h() - 3, color);
+    s.vLine(x - 1, y + 1, y + editRect.h() - 3, color);
+    clearDirty();
   }
 }
 
@@ -365,6 +410,9 @@ bool EditableWidget::setCaretPos(int newPos)
 {
   assert(newPos >= 0 && newPos <= int(_editString.size()));
   _caretPos = newPos;
+
+  _caretTimer = 0;
+  _caretEnabled = true;
 
   return adjustOffset();
 }
@@ -375,6 +423,8 @@ bool EditableWidget::moveCaretPos(int direction)
   if(setCaretPos(_caretPos + direction))
   {
     _selectSize -= direction;
+    _caretTimer = 0;
+    _caretEnabled = true;
     return true;
   }
   return false;
@@ -452,6 +502,7 @@ bool EditableWidget::killChar(int direction, bool addEdit)
   {
     myUndoHandler->endChars(_editString);
     _editString.erase(_caretPos, 1);
+    setCaretPos(_caretPos);
 
     if(addEdit)
       myUndoHandler->doo(_editString);
@@ -556,7 +607,7 @@ bool EditableWidget::moveWord(int direction, bool select)
       if(select)
         _selectSize++;
     }
-    _caretPos = currentPos;
+    setCaretPos(currentPos);
     handled = true;
   }
   else if(direction == +1)  // move to first character of next word
@@ -575,7 +626,7 @@ bool EditableWidget::moveWord(int direction, bool select)
       if(select)
         _selectSize--;
     }
-    _caretPos = currentPos;
+    setCaretPos(currentPos);
     handled = true;
   }
 
@@ -630,6 +681,7 @@ bool EditableWidget::killSelectedText(bool addEdit)
       _selectSize = -_selectSize;
     }
     _editString.erase(_caretPos, _selectSize);
+    setCaretPos(_caretPos);
     _selectSize = 0;
     if(addEdit)
       myUndoHandler->doo(_editString);
@@ -689,7 +741,7 @@ bool EditableWidget::pasteSelectedText()
 
   _editString.insert(_caretPos, buf.str());
   // position cursor at the end of pasted text
-  _caretPos += int(buf.str().length());
+  setCaretPos(_caretPos + int(buf.str().length()));
 
   if(selected || !pasted.empty())
   {

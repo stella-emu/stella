@@ -81,9 +81,7 @@ void PromptWidget::drawWidget(bool hilite)
 {
 //cerr << "PromptWidget::drawWidget\n";
   ColorId fgcolor, bgcolor;
-
   FBSurface& s = _boss->dialog().surface();
-  bool onTop = _boss->dialog().isOnTop();
 
   // Draw text
   int start = _scrollLine - _linesPerPage + 1;
@@ -104,7 +102,7 @@ void PromptWidget::drawWidget(bool hilite)
       else
         fgcolor = ColorId(c >> 8);
 
-      s.drawChar(_font, c & 0x7f, x, y, onTop ? fgcolor : kColor);
+      s.drawChar(_font, c & 0x7f, x, y, fgcolor);
       x += _kConsoleCharWidth;
     }
     y += _kConsoleLineHeight;
@@ -938,8 +936,6 @@ void PromptWidget::drawCaret()
 {
 //cerr << "PromptWidget::drawCaret()\n";
   FBSurface& s = _boss->dialog().surface();
-  bool onTop = _boss->dialog().isOnTop();
-
   int line = _currentPos / _lineWidth;
 
   // Don't draw the cursor if it's not in the current view
@@ -951,7 +947,7 @@ void PromptWidget::drawCaret()
   int y = _y + displayLine * _kConsoleLineHeight;
 
   char c = buffer(_currentPos); //FIXME: int to char??
-  s.fillRect(x, y, _kConsoleCharWidth, _kConsoleLineHeight, onTop ? kTextColor : kColor);
+  s.fillRect(x, y, _kConsoleCharWidth, _kConsoleLineHeight, kTextColor);
   s.drawChar(_font, c, x, y + 2, kBGColor);
 }
 

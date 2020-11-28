@@ -24,8 +24,9 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TogglePixelWidget::TogglePixelWidget(GuiObject* boss, const GUI::Font& font,
-                                     int x, int y, int cols, int rows)
-  : ToggleWidget(boss, font, x, y, cols, rows, 1)
+                                     int x, int y, int cols, int rows,
+                                     int shiftBits)
+  : ToggleWidget(boss, font, x, y, cols, rows, shiftBits)
 {
   _rowHeight = _colWidth = font.getLineHeight();
 
@@ -50,15 +51,18 @@ void TogglePixelWidget::setState(const BoolArray& state)
     for(int col = 0; col < _cols; col++)
     {
       int pos = row * _cols + col;
+      bool changed = _stateList[pos] != state[pos];
 
-       _changedList[pos] = _stateList[pos] != state[pos];
+      if(_changedList[pos] != changed)
+      {
+        _changedList[pos] = changed;
+        setDirty();
+      }
     }
   }
 
   _stateList.clear();
   _stateList = state;
-
-  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -113,11 +117,20 @@ int TogglePixelWidget::getIntState()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TogglePixelWidget::setCrossed(bool enable)
+{
+  if(_crossBits != enable)
+  {
+    _crossBits = enable;
+    setDirty();
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TogglePixelWidget::drawWidget(bool hilite)
 {
 //cerr << "TogglePixelWidget::drawWidget\n";
   FBSurface& s = dialog().surface();
-  bool onTop = _boss->dialog().isOnTop();
   int row, col;
 
   s.frameRect(_x, _y, _w, _h, hilite && isEnabled() && isEditable() ? kWidColorHi : kColor);
@@ -145,7 +158,7 @@ void TogglePixelWidget::drawWidget(bool hilite)
 
       // Either draw the pixel in given color, or erase (show background)
       s.fillRect(x - 3, y - 1, _colWidth-1, _rowHeight-1,
-                 _stateList[pos] ? onTop ? _pixelColor : kColor : onTop ? _backgroundColor : kBGColorLo);
+                 _stateList[pos] ? _pixelColor : _backgroundColor);
       if (_changedList[pos])
         s.frameRect(x - 3, y - 1, _colWidth - 1, _rowHeight - 1, kDbgChangedColor);
     }

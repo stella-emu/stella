@@ -43,18 +43,16 @@ WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent, const 
           max_w, max_h);
 
 #if defined(RETRON77)
-  add(ypos, "fixed CDF cartridges crash");
-  add(ypos, "fixed crash with SaveKey ROMs (EEPROM file issues)");
-  add(ypos, "fixed bug with launcher not remembering last selected ROM");
+  add(ypos, "increased sample size for CDFJ+");
+  add(ypos, "fixed navigation bug in Video & Audio settings dialog");
+  add(ypos, "fixed autofire bug for trackball controllers");
 #else
-  add(ypos, "added basic text cut/copy/paste from/to UI");
-  add(ypos, "added color parameters to 'Custom' palette");
-  add(ypos, "improved AtariVox-USB adaptor autodetection");
-  add(ypos, "fixed fullscreen mode, aspect correction and pixel-exact snapshots");
-  add(ypos, "fixed reduced ARM emulation performance for CDF ROMs");
-  add(ypos, "fixed crash with SaveKey ROMs (EEPROM file issues)");
-  add(ypos, "fixed Atari mouse autodetection");
-  add(ypos, "fixed bug with launcher not remembering last selected ROM");
+  add(ypos, "enhanced cut/copy/paste for text editing");
+  add(ypos, "added undo and redo to text editing");
+  add(ypos, "added wildcard support to launcher dialog filter");
+  add(ypos, "added option to search subdirectories in launcher");
+  add(ypos, "added tooltips to many UI items");
+  add(ypos, "increased sample size for CDFJ+");
   add(ypos, ELLIPSIS + " (for a complete list see 'docs/Changes.txt')");
 #endif
 

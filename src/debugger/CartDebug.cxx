@@ -605,7 +605,8 @@ bool CartDebug::removeLabel(const string& label)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDebug::getLabel(ostream& buf, uInt16 addr, bool isRead, int places) const
+bool CartDebug::getLabel(ostream& buf, uInt16 addr, bool isRead,
+                         int places, bool isRam) const
 {
   switch(addressType(addr))
   {
@@ -662,21 +663,24 @@ bool CartDebug::getLabel(ostream& buf, uInt16 addr, bool isRead, int places) con
     {
       // RAM can use user-defined labels; otherwise we default to
       // standard mnemonics
-      auto iter = myUserLabels.find(addr);
-      if(iter != myUserLabels.end())
-      {
-        buf << iter->second;
-      }
-      else
-      {
-        uInt16 a = addr & 0xFF, offset = addr & 0xFF00;
-        if((iter = myUserLabels.find(a)) != myUserLabels.end())
+      AddrToLabel::const_iterator iter;
+      uInt16 a = addr & 0xFF, offset = addr & 0xFF00;
+      bool found = false;
+
+      // Search for nearest label
+      for(uInt16 i = a; i >= 0x80; --i)
+        if((iter = myUserLabels.find(i)) != myUserLabels.end())
+        {
           buf << iter->second;
-        else
-          buf << ourZPMnemonic[a - 0x80];
-        if(offset > 0)
-          buf << "|$" << Base::HEX2 << offset;
-      }
+          if(a != i)
+            buf << "+$" << Base::HEX1 << (a - i);
+          found = true;
+          break;
+        }
+      if(!found)
+        buf << ourZPMnemonic[a - 0x80];
+      if(offset > 0)
+        buf << "|$" << Base::HEX2 << offset;
 
       return true;
     }
@@ -684,11 +688,28 @@ bool CartDebug::getLabel(ostream& buf, uInt16 addr, bool isRead, int places) con
     case AddrType::ROM:
     {
       // These addresses can never be in the system labels list
-      const auto& iter = myUserLabels.find(addr);
-      if(iter != myUserLabels.end())
+      if(isRam) // cartridge RAM
       {
-        buf << iter->second;
-        return true;
+        AddrToLabel::const_iterator iter;
+
+        // Search for nearest label
+        for(uInt16 i = addr; i >= (addr & 0xf000); --i)
+          if((iter = myUserLabels.find(i)) != myUserLabels.end())
+          {
+            buf << iter->second;
+            if(addr != i)
+              buf << "+$" << Base::HEX1 << (addr - i);
+            return true;
+          }
+      }
+      else
+      {
+        const auto& iter = myUserLabels.find(addr);
+        if(iter != myUserLabels.end())
+        {
+          buf << iter->second;
+          return true;
+        }
       }
       break;
     }
@@ -713,10 +734,10 @@ bool CartDebug::getLabel(ostream& buf, uInt16 addr, bool isRead, int places) con
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartDebug::getLabel(uInt16 addr, bool isRead, int places) const
+string CartDebug::getLabel(uInt16 addr, bool isRead, int places, bool isRam) const
 {
   ostringstream buf;
-  getLabel(buf, addr, isRead, places);
+  getLabel(buf, addr, isRead, places, isRam);
   return buf.str();
 }
 
