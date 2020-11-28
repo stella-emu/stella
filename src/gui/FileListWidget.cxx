@@ -51,7 +51,7 @@ void FileListWidget::setDirectory(const FilesystemNode& node,
 
   // Initialize history
   FilesystemNode tmp = _node;
-  while(tmp.hasParent())
+  while(tmp.hasParent() && !_history.full())
   {
     string name = tmp.getName();
     if(name.back() == '/' || name.back() == '\\')
