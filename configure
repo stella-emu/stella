@@ -580,10 +580,6 @@ else
 		darwin*)
 			DEFINES="$DEFINES -DUNIX -DDARWIN"
 			_host_os=darwin
-			if test "$have_clang" = yes; then
-				CXXFLAGS="$CXXFLAGS -Wno-documentation-unknown-command -Wno-documentation-pedantic -Wno-poison-system-directories"
-				CXXFLAGS="$CXXFLAGS -Wno-unknown-warning-option"
-			fi
 			;;
 		irix*)
 			DEFINES="$DEFINES -DUNIX"

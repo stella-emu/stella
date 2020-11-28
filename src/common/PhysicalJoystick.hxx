@@ -21,7 +21,7 @@
 #include "Event.hxx"
 #include "EventHandlerConstants.hxx"
 #include "JoyMap.hxx"
-#include "json.hxx"
+#include "json_lib.hxx"
 
 /**
   An abstraction of a physical (real) joystick in Stella.
