@@ -28,6 +28,8 @@
 
   * Increased sample size for CDFJ+.
 
+  * Fixed autofire bug for trackball controllers.
+
 -Have fun!
 
 
