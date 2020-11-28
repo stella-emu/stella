@@ -106,12 +106,12 @@ bool PhysicalJoystick::setMap(const json& map)
   return true;
 }
 
-#if 0
-bool PhysicalJoystick::setMap(const string& mapString)
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+json PhysicalJoystick::convertLegacyMapping(const string& mapping, const string& name)
 {
-  istringstream buf(mapString);
+  istringstream buf(mapping);
+  json convertedMapping = json::object();
   string map;
-  int i = 0;
 
   // Skip joystick name
   getline(buf, map, MODE_DELIM);
@@ -128,19 +128,14 @@ bool PhysicalJoystick::setMap(const string& mapString)
     // Remove leading "<mode>|" string
     map.erase(0, 2);
 
-    joyMap.loadMapping(map, EventMode(mode));
-    i++;
-  }
-  // Brief error checking
-  if(i != 5)
-  {
-    cerr << "ERROR: Invalid controller mappings found" << endl;
-    return false;
+    json mappingForMode = JoyMap::convertLegacyMapping(map);
+    mappingForMode["name"] = name;
+
+    convertedMapping[jsonName(EventMode(mode))] = mappingForMode;
   }
 
-  return true;
+  return convertedMapping;
 }
-#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalJoystick::eraseMap(EventMode mode)

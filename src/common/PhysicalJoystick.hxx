@@ -47,6 +47,9 @@ class PhysicalJoystick
 
     nlohmann::json getMap() const;
     bool setMap(const nlohmann::json& map);
+
+    static nlohmann::json convertLegacyMapping(const string& mapping, const string& name);
+
     void eraseMap(EventMode mode);
     void eraseEvent(Event::Type event, EventMode mode);
     string about() const;

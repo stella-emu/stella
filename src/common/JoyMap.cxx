@@ -247,25 +247,39 @@ int JoyMap::loadMapping(const json& eventMappings, const EventMode mode)
 
   return i;
 }
-#if 0
-int JoyMap::loadMapping(string& list, const EventMode mode)
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+json JoyMap::convertLegacyMapping(string list)
 {
+  json eventMappings = json::array();
+
   // Since istringstream swallows whitespace, we have to make the
   // delimiters be spaces
   std::replace(list.begin(), list.end(), '|', ' ');
   std::replace(list.begin(), list.end(), ':', ' ');
   std::replace(list.begin(), list.end(), ',', ' ');
+
   istringstream buf(list);
-  int event, button, axis, adir, hat, hdir, i = 0;
+  int event, button, axis, adir, hat, hdir;
 
   while (buf >> event && buf >> button
          && buf >> axis && buf >> adir
-         && buf >> hat && buf >> hdir && ++i)
-    add(Event::Type(event), EventMode(mode), button, JoyAxis(axis), JoyDir(adir), hat, JoyHatDir(hdir));
+         && buf >> hat && buf >> hdir)
+  {
+    json eventMapping = json::object();
 
-  return i;
+    eventMapping["event"] = Event::Type(event);
+    eventMapping["button"] = button;
+    eventMapping["axis"] = JoyAxis(axis);
+    eventMapping["axisDirection"] = JoyDir(adir);
+    eventMapping["hat"] = hat;
+    eventMapping["hatDirection"] = JoyHatDir(hdir);
+
+    eventMappings.push_back(eventMapping);
+  }
+
+  return eventMappings;
 }
-#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void JoyMap::eraseMode(const EventMode mode)
