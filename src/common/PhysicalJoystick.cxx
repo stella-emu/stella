@@ -129,10 +129,11 @@ json PhysicalJoystick::convertLegacyMapping(const string& mapping, const string&
     map.erase(0, 2);
 
     json mappingForMode = JoyMap::convertLegacyMapping(map);
-    mappingForMode["name"] = name;
 
     convertedMapping[jsonName(EventMode(mode))] = mappingForMode;
   }
+
+  convertedMapping["name"] = name;
 
   return convertedMapping;
 }

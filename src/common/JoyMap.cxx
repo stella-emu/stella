@@ -269,11 +269,18 @@ json JoyMap::convertLegacyMapping(string list)
     json eventMapping = json::object();
 
     eventMapping["event"] = Event::Type(event);
-    eventMapping["button"] = button;
-    eventMapping["axis"] = JoyAxis(axis);
-    eventMapping["axisDirection"] = JoyDir(adir);
-    eventMapping["hat"] = hat;
-    eventMapping["hatDirection"] = JoyHatDir(hdir);
+
+    if (button != JOY_CTRL_NONE) eventMapping["button"] = button;
+
+    if (JoyAxis(axis) != JoyAxis::NONE) {
+      eventMapping["axis"] = JoyAxis(axis);
+      eventMapping["axisDirection"] = JoyDir(adir);
+    }
+
+    if (hat != -1) {
+      eventMapping["hat"] = hat;
+      eventMapping["hatDirection"] = JoyHatDir(hdir);
+    }
 
     eventMappings.push_back(eventMapping);
   }

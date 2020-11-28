@@ -234,7 +234,8 @@ json KeyMap::convertLegacyMapping(string list)
 
     mapping["event"] = Event::Type(event);
     mapping["key"] = StellaKey(key);
-    mapping["mod"] = StellaMod(mod);
+
+    if (StellaMod(mod) != StellaMod::KBDM_NONE) mapping["mod"] = StellaMod(mod);
 
     convertedMapping.push_back(mapping);
   }
