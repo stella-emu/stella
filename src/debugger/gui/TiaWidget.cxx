@@ -919,14 +919,10 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 
         case kRefP0ID:
           tia.refP0(myRefP0->getState() ? 1 : 0);
-          myGRP0->setIntState(myGRP0->getIntState(), !myRefP0->getState());
-          myGRP0Old->setIntState(myGRP0Old->getIntState(), !myRefP0->getState());
           break;
 
         case kRefP1ID:
           tia.refP1(myRefP1->getState() ? 1 : 0);
-          myGRP1->setIntState(myGRP1->getIntState(), !myRefP1->getState());
-          myGRP1Old->setIntState(myGRP1Old->getIntState(), !myRefP1->getState());
           break;
 
         case kDelP0ID:
