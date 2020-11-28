@@ -16,6 +16,7 @@
 //============================================================================
 
 #include "KeyMap.hxx"
+#include "Logger.hxx"
 #include "jsonDefinitions.hxx"
 #include <map>
 
@@ -198,35 +199,48 @@ int KeyMap::loadMapping(const json& mappings, const EventMode mode) {
   int i = 0;
 
   for (const json& mapping: mappings) {
-    add(
-      mapping.at("event").get<Event::Type>(),
-      mode,
-      mapping.at("key").get<StellaKey>(),
-      mapping.contains("mod") ? mapping.at("mod").get<StellaMod>() : StellaMod::KBDM_NONE
-    );
+    try {
+      add(
+        mapping.at("event").get<Event::Type>(),
+        mode,
+        mapping.at("key").get<StellaKey>(),
+        mapping.contains("mod") ? mapping.at("mod").get<StellaMod>() : StellaMod::KBDM_NONE
+      );
 
-    i++;
+      i++;
+    } catch (json::exception) {
+      Logger::error("ignoring bad keyboard mapping");
+    }
   }
 
   return i;
 }
-/*
-int KeyMap::loadMapping(string& list, const EventMode mode)
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+json KeyMap::convertLegacyMapping(string list)
 {
+  json convertedMapping = json::array();
+
   // Since istringstream swallows whitespace, we have to make the
   // delimiters be spaces
   std::replace(list.begin(), list.end(), '|', ' ');
   std::replace(list.begin(), list.end(), ':', ' ');
   std::replace(list.begin(), list.end(), ',', ' ');
   istringstream buf(list);
-  int event, key, mod, i = 0;
+  int event, key, mod;
 
-  while (buf >> event && buf >> key && buf >> mod && ++i)
-    add(Event::Type(event), mode, key, mod);
+  while (buf >> event && buf >> key && buf >> mod) {
+    json mapping = json::object();
 
-  return i;
+    mapping["event"] = Event::Type(event);
+    mapping["key"] = StellaKey(key);
+    mapping["mod"] = StellaMod(mod);
+
+    convertedMapping.push_back(mapping);
+  }
+
+  return convertedMapping;
 }
-*/
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void KeyMap::eraseMode(const EventMode mode)

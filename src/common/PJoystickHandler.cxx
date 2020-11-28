@@ -55,7 +55,7 @@ PhysicalJoystickHandler::PhysicalJoystickHandler(
 
   for (const json& mapping: mappings) {
     if (!mapping.contains("name")) {
-      Logger::error("igmoring bad joystick mapping");
+      Logger::error("ignoring bad joystick mapping");
       continue;
     }
 
