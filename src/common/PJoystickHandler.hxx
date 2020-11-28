@@ -64,6 +64,8 @@ class PhysicalJoystickHandler
   public:
     PhysicalJoystickHandler(OSystem& system, EventHandler& handler);
 
+    static nlohmann::json convertLegacyMapping(const string& mapping);
+
     /** Return stick ID on success, -1 on failure. */
     int add(const PhysicalJoystickPtr& stick);
     bool remove(int id);

@@ -43,13 +43,14 @@ PhysicalJoystickHandler::PhysicalJoystickHandler(
   }
 
   json mappings;
+  const string& serializedMapping = myOSystem.settings().getString("joymap");
 
   try {
-    mappings = json::parse(myOSystem.settings().getString("joymap"));
+    mappings = json::parse(serializedMapping);
   } catch (json::exception) {
-    // TODO: error handling + migration
+    Logger::info("converting legacy joystrick mappings");
 
-    mappings = json::array();
+    mappings = convertLegacyMapping(serializedMapping);
   }
 
   for (const json& mapping: mappings) {
@@ -60,6 +61,29 @@ PhysicalJoystickHandler::PhysicalJoystickHandler(
 
     myDatabase.emplace(mapping.at("name").get<string>(), StickInfo(mapping));
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+json PhysicalJoystickHandler::convertLegacyMapping(const string& mapping)
+{
+  constexpr char CTRL_DELIM = '^';
+
+  istringstream buf(mapping);
+  string joymap, joyname;
+
+  getline(buf, joymap, CTRL_DELIM); // event list size, ignore
+
+  json convertedMapping = json::array();
+
+  while(getline(buf, joymap, CTRL_DELIM))
+  {
+    istringstream namebuf(joymap);
+    getline(namebuf, joyname, PhysicalJoystick::MODE_DELIM);
+
+    convertedMapping.push_back(PhysicalJoystick::convertLegacyMapping(joymap, joyname));
+  }
+
+  return convertedMapping;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
