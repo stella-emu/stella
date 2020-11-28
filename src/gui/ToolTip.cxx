@@ -123,12 +123,13 @@ void ToolTip::release(bool emptyTip)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ToolTip::show(const string& tip)
 {
+  uInt32 maxRows = MAX_ROWS;
   myTipPos = myMousePos;
 
   uInt32 maxWidth = std::min(myWidth - myTextXOfs * 2, uInt32(myFont->getStringWidth(tip)));
 
   mySurface->fillRect(1, 1, maxWidth + myTextXOfs * 2 - 2, myHeight - 2, kWidColor);
-  int lines = std::min(MAX_ROWS,
+  int lines = std::min(maxRows,
                        uInt32(mySurface->drawString(*myFont, tip, myTextXOfs, myTextYOfs,
                                                     maxWidth, myHeight - myTextYOfs * 2,
                                                     kTextColor)));
