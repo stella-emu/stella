@@ -45,6 +45,7 @@ WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent, const 
 #if defined(RETRON77)
   add(ypos, "increased sample size for CDFJ+");
   add(ypos, "fixed navigation bug in Video & Audio settings dialog");
+  add(ypos, "fixed autofire bug for trackball controllers");
 #else
   add(ypos, "enhanced cut/copy/paste for text editing");
   add(ypos, "added undo and redo to text editing");
