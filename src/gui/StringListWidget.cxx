@@ -51,40 +51,61 @@ void StringListWidget::setList(const StringList& list)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StringListWidget::handleMouseEntered()
+int StringListWidget::getToolTipIndex(const Common::Point& pos) const
 {
-  setFlags(Widget::FLAG_HILITED);
-  setDirty();
+  int idx = (pos.y - getAbsY()) / _lineHeight + _currentPos;
+
+  if(idx >= int(_list.size()))
+    return -1;
+  else
+    return idx;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StringListWidget::handleMouseLeft()
+string StringListWidget::getToolTip(const Common::Point& pos) const
 {
-  clearFlags(Widget::FLAG_HILITED);
-  setDirty();
+  Common::Rect rect = getEditRect();
+  int idx = getToolTipIndex(pos);
+
+  if(idx < 0)
+    return EmptyString;
+
+  const string value = _list[idx];
+
+  if(uInt32(_font.getStringWidth(value)) > rect.w())
+    return _toolTipText + value;
+  else
+    return _toolTipText;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool StringListWidget::changedToolTip(const Common::Point& oldPos,
+                                      const Common::Point& newPos) const
+{
+  return getToolTipIndex(oldPos) != getToolTipIndex(newPos)
+    && getToolTip(oldPos) != getToolTip(newPos);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StringListWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
-  bool onTop = _boss->dialog().isOnTop();
   int i, pos, len = int(_list.size());
 
   // Draw a thin frame around the list.
-  s.frameRect(_x, _y, _w + 1, _h, onTop && hilite && _hilite ? kWidColorHi : kColor);
+  s.frameRect(_x, _y, _w + 1, _h, hilite && _hilite ? kWidColorHi : kColor);
 
   if (!isEnabled())
-    s.fillRect(_x + 1, _y + 1, _w - 1, _h - 2, onTop ? kDlgColor : kBGColorLo);
+    s.fillRect(_x + 1, _y + 1, _w - 1, _h - 2, kDlgColor);
 
   // Draw the list items
   for (i = 0, pos = _currentPos; i < _rows && pos < len; i++, pos++)
   {
     const int y = _y + 2 + _lineHeight * i;
-    ColorId textColor = onTop ? kTextColor : kShadowColor;
+    ColorId textColor = kTextColor;
 
     // Draw the selected item inverted, on a highlighted background.
-    if (onTop && _selectedItem == pos && _hilite)
+    if (_selectedItem == pos && _hilite)
     {
       if(_hasFocus && !_editMode)
       {

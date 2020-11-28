@@ -26,6 +26,8 @@
 #include "FBSurface.hxx"
 #include "Widget.hxx"
 #include "GuiObject.hxx"
+#include "Dialog.hxx"
+#include "ToolTip.hxx"
 #include "ContextMenu.hxx"
 #include "FrameManager.hxx"
 #include "TiaZoomWidget.hxx"
@@ -115,7 +117,7 @@ void TiaZoomWidget::recalc()
 void TiaZoomWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
   myClickX = x;
-  myClickY = y;
+  myClickY = y - 1;
 
   // Button 1 is for 'drag'/movement of the image
   // Button 2 is for context menu
@@ -141,9 +143,11 @@ void TiaZoomWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaZoomWidget::handleMouseWheel(int x, int y, int direction)
 {
+  dialog().tooltip().hide();
+
   // zoom towards mouse position
   myClickX = x;
-  myClickY = y;
+  myClickY = y - 1;
 
   if(direction > 0)
   {
@@ -162,6 +166,7 @@ void TiaZoomWidget::handleMouseMoved(int x, int y)
 {
   if(myMouseMoving)
   {
+    y--;
     int diffx = x + myOffXLo - myClickX;
     int diffy = y + myOffYLo - myClickY;
 
@@ -179,18 +184,10 @@ void TiaZoomWidget::handleMouseMoved(int x, int y)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TiaZoomWidget::handleMouseEntered()
-{
-  setFlags(Widget::FLAG_HILITED);
-  setDirty();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaZoomWidget::handleMouseLeft()
 {
-  clearFlags(Widget::FLAG_HILITED);
-  setDirty();
   myMouseMoving = false;
+  Widget::handleMouseLeft();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -262,7 +259,7 @@ void TiaZoomWidget::handleCommand(CommandSender* sender, int cmd, int data, int 
       {
         command << "scanline #" << lines;
         string message = instance().debugger().parser().run(command.str());
-        instance().frameBuffer().showMessage(message);
+        instance().frameBuffer().showTextMessage(message);
       }
     }
     else if(rmb == "bp")
@@ -271,7 +268,7 @@ void TiaZoomWidget::handleCommand(CommandSender* sender, int cmd, int data, int 
       int scanline = myClickY / myZoomLevel + myOffY + startLine;
       command << "breakif _scan==#" << scanline;
       string message = instance().debugger().parser().run(command.str());
-      instance().frameBuffer().showMessage(message);
+      instance().frameBuffer().showTextMessage(message);
     }
     else
     {
@@ -280,6 +277,48 @@ void TiaZoomWidget::handleCommand(CommandSender* sender, int cmd, int data, int 
         zoom(level);
     }
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Common::Point TiaZoomWidget::getToolTipIndex(const Common::Point& pos) const
+{
+  const Int32 width = instance().console().tia().width() * 2;
+  const Int32 height = instance().console().tia().height();
+  const int col = (pos.x - 1 - getAbsX()) / (myZoomLevel << 1) + (myOffX >> 1);
+  const int row = (pos.y - 1 - getAbsY()) / myZoomLevel + myOffY;
+
+  if(col < 0 || col >= width || row < 0 || row >= height)
+    return Common::Point(-1, -1);
+  else
+    return Common::Point(col, row);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string TiaZoomWidget::getToolTip(const Common::Point& pos) const
+{
+  const Common::Point& idx = getToolTipIndex(pos);
+
+  if(idx.x < 0)
+    return EmptyString;
+
+  const Int32 i = idx.x + idx.y * instance().console().tia().width();
+  const uInt32 startLine = instance().console().tia().startLine();
+  uInt8* tiaOutputBuffer = instance().console().tia().outputBuffer();
+  ostringstream buf;
+
+  buf << _toolTipText
+    << "X: #" << idx.x
+    << "\nY: #" << idx.y + startLine
+    << "\nC: $" << Common::Base::toString(tiaOutputBuffer[i], Common::Base::Fmt::_16);
+
+  return buf.str();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool TiaZoomWidget::changedToolTip(const Common::Point& oldPos,
+                                     const Common::Point& newPos) const
+{
+  return getToolTipIndex(oldPos) != getToolTipIndex(newPos);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

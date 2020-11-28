@@ -184,7 +184,7 @@ void TIASurface::setNTSC(NTSCFilter::Preset preset, bool show)
   }
   myOSystem.settings().setValue("tv.filter", int(preset));
 
-  if(show) myFB.showMessage(buf.str());
+  if(show) myFB.showTextMessage(buf.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -221,7 +221,7 @@ void TIASurface::setNTSCAdjustable(int direction)
 
   setNTSC(NTSCFilter::Preset::CUSTOM);
   ntsc().selectAdjustable(direction, text, valueText, value);
-  myOSystem.frameBuffer().showMessage(text, valueText, value);
+  myOSystem.frameBuffer().showGaugeMessage(text, valueText, value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -232,7 +232,7 @@ void TIASurface::changeNTSCAdjustable(int adjustable, int direction)
 
   setNTSC(NTSCFilter::Preset::CUSTOM);
   ntsc().changeAdjustable(adjustable, direction, text, valueText, newValue);
-  myOSystem.frameBuffer().showMessage(text, valueText, newValue);
+  myOSystem.frameBuffer().showGaugeMessage(text, valueText, newValue);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -243,7 +243,7 @@ void TIASurface::changeCurrentNTSCAdjustable(int direction)
 
   setNTSC(NTSCFilter::Preset::CUSTOM);
   ntsc().changeCurrentAdjustable(direction, text, valueText, newValue);
-  myOSystem.frameBuffer().showMessage(text, valueText, newValue);
+  myOSystem.frameBuffer().showGaugeMessage(text, valueText, newValue);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -259,7 +259,7 @@ void TIASurface::setScanlineIntensity(int direction)
     buf << intensity << "%";
   else
     buf << "Off";
-  myFB.showMessage("Scanline intensity", buf.str(), intensity);
+  myFB.showGaugeMessage("Scanline intensity", buf.str(), intensity);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

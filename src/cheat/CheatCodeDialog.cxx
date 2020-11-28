@@ -100,6 +100,7 @@ CheatCodeDialog::CheatCodeDialog(OSystem& osystem, DialogContainer& parent,
     return (c >= 'a' && c <= 'f') || (c >= '0' && c <= '9');
   };
   myCheatInput->setTextFilter(f1, 1);
+  myCheatInput->setToolTip("See Stella documentation for details.", 1);
 
   addToFocusList(wid);
 

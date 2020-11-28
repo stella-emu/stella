@@ -20,6 +20,7 @@
 #include "ScrollBarWidget.hxx"
 #include "FileListWidget.hxx"
 #include "TimerManager.hxx"
+#include "ProgressDialog.hxx"
 
 #include "bspf.hxx"
 
@@ -50,7 +51,7 @@ void FileListWidget::setDirectory(const FilesystemNode& node,
 
   // Initialize history
   FilesystemNode tmp = _node;
-  while(tmp.hasParent())
+  while(tmp.hasParent() && !_history.full())
   {
     string name = tmp.getName();
     if(name.back() == '/' || name.back() == '\\')
@@ -72,22 +73,52 @@ void FileListWidget::setDirectory(const FilesystemNode& node,
 void FileListWidget::setLocation(const FilesystemNode& node,
                                  const string& select)
 {
+  progress().resetProgress();
+  progress().open();
+  FilesystemNode::CancelCheck isCancelled = []() {
+    return myProgressDialog->isCancelled();
+  };
+
   _node = node;
 
   // Read in the data from the file system (start with an empty list)
   _fileList.clear();
-  _fileList.reserve(512);
-  _node.getChildren(_fileList, _fsmode, _filter);
 
-  // Now fill the list widget with the names from the file list
+  if(_includeSubDirs)
+  {
+    // Actually this could become HUGE
+    _fileList.reserve(0x2000);
+    _node.getAllChildren(_fileList, _fsmode, _filter, true, isCancelled);
+  }
+  else
+  {
+    _fileList.reserve(0x200);
+    _node.getChildren(_fileList, _fsmode, _filter, false, true, isCancelled);
+  }
+
+  // Now fill the list widget with the names from the file list,
+  // even if cancelled
   StringList l;
-  for(const auto& file: _fileList)
+  size_t orgLen = node.getShortPath().length();
+
+  _dirList.clear();
+  for(const auto& file : _fileList)
+  {
+    const string path = file.getShortPath();
+
     l.push_back(file.getName());
+    // display only relative path in tooltip
+    if(path.length() >= orgLen)
+      _dirList.push_back(path.substr(orgLen));
+    else
+      _dirList.push_back(path);
+  }
 
   setList(l);
   setSelected(select);
-
   ListWidget::recalc();
+
+  progress().close();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -112,6 +143,21 @@ void FileListWidget::reload()
     _selectedFile = selected().getName();
     setLocation(_node, _selectedFile);
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ProgressDialog& FileListWidget::progress()
+{
+  if(myProgressDialog == nullptr)
+    myProgressDialog = make_unique<ProgressDialog>(this, _font, "");
+
+  return *myProgressDialog;
+}
+
+void FileListWidget::incProgress()
+{
+  if(_includeSubDirs)
+    progress().incProgress();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -201,4 +247,27 @@ void FileListWidget::handleCommand(CommandSender* sender, int cmd, int data, int
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string FileListWidget::getToolTip(const Common::Point& pos) const
+{
+  Common::Rect rect = getEditRect();
+  int idx = getToolTipIndex(pos);
+
+  if(idx < 0)
+    return EmptyString;
+
+  if(_includeSubDirs && static_cast<int>(_dirList.size()) > idx)
+    return _toolTipText + _dirList[idx];
+
+  const string value = _list[idx];
+
+  if(uInt32(_font.getStringWidth(value)) > rect.w())
+    return _toolTipText + value;
+  else
+    return _toolTipText;
+}
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt64 FileListWidget::_QUICK_SELECT_DELAY = 300;
+
+unique_ptr<ProgressDialog> FileListWidget::myProgressDialog{nullptr};

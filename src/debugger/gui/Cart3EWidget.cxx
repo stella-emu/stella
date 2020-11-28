@@ -117,7 +117,7 @@ void Cartridge3EWidget::loadConfig()
     myBankWidgets[1]->setSelectedIndex(bank - myCart.romBankCount(), oldBank != bank);
   }
 
-  CartDebugWidget::loadConfig();
+  CartDebugWidget::loadConfig();  // Intentionally calling grand-parent method
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

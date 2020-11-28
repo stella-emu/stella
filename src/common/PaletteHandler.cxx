@@ -69,7 +69,7 @@ void PaletteHandler::cyclePalette(int direction)
   const string palette = toPaletteName(PaletteType(type));
   const string message = MESSAGES[type] + " palette";
 
-  myOSystem.frameBuffer().showMessage(message);
+  myOSystem.frameBuffer().showTextMessage(message);
 
   setPalette(palette);
 }
@@ -112,7 +112,7 @@ void PaletteHandler::showAdjustableMessage()
     const float value =
         myOSystem.console().timing() == ConsoleTiming::pal ? myPhasePAL : myPhaseNTSC;
     buf << std::fixed << std::setprecision(1) << value << DEGREE;
-    myOSystem.frameBuffer().showMessage(
+    myOSystem.frameBuffer().showGaugeMessage(
         "Palette phase shift", buf.str(), value,
         (isNTSC ? DEF_NTSC_SHIFT : DEF_PAL_SHIFT) - MAX_PHASE_SHIFT,
         (isNTSC ? DEF_NTSC_SHIFT : DEF_PAL_SHIFT) + MAX_PHASE_SHIFT);
@@ -122,7 +122,7 @@ void PaletteHandler::showAdjustableMessage()
     const float value = *myAdjustables[myCurrentAdjustable].value;
 
     buf << std::fixed << std::setprecision(1) << value << DEGREE;
-    myOSystem.frameBuffer().showMessage(
+    myOSystem.frameBuffer().showGaugeMessage(
       msg.str(), buf.str(), value, -MAX_RGB_SHIFT, +MAX_RGB_SHIFT);
   }
   else
@@ -131,7 +131,7 @@ void PaletteHandler::showAdjustableMessage()
       ? scaleRGBTo100(*myAdjustables[myCurrentAdjustable].value)
       : scaleTo100(*myAdjustables[myCurrentAdjustable].value);
     buf << value << "%";
-    myOSystem.frameBuffer().showMessage(
+    myOSystem.frameBuffer().showGaugeMessage(
       msg.str(), buf.str(), value);
   }
 }

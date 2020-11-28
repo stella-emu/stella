@@ -90,10 +90,6 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
     case RomListWidget::kBPointChangedCmd:
       // 'data' is the line in the disassemblylist to be accessed
       toggleBreak(data);
-      // Refresh the romlist, since the breakpoint may not have
-      // actually changed
-      myRomList->setDirty();
-      myRomList->draw();
       break;
 
     case RomListWidget::kRomChangedCmd:
@@ -199,7 +195,7 @@ void RomWidget::runtoPC(int disasm_line)
     ostringstream command;
     command << "runtopc #" << address;
     string msg = instance().debugger().run(command.str());
-    instance().frameBuffer().showMessage(msg);
+    instance().frameBuffer().showTextMessage(msg);
   }
 }
 

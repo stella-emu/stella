@@ -100,7 +100,7 @@ void RomListSettings::show(uInt32 x, uInt32 y, const Common::Rect& bossRect, int
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomListSettings::center()
+void RomListSettings::setPosition()
 {
   // First set position according to original coordinates
   surface().setDstPos(_xorig, _yorig);

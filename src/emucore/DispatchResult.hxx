@@ -37,12 +37,14 @@ class DispatchResult
 
     bool wasReadTrap() const { assertStatus(Status::debugger); return myWasReadTrap; }
 
+    const string& getToolTip() const { assertStatus(Status::debugger, Status::fatal); return myToolTip; }
+
     bool isSuccess() const;
 
     void setOk(uInt64 cycles);
 
-    void setDebugger(uInt64 cycles, const string& message = "", int address = -1,
-                     bool wasReadTrap = true);
+    void setDebugger(uInt64 cycles, const string& message = "",
+                     const string& tooltip = "", int address = -1, bool wasReadTrap = true);
 
     void setFatal(uInt64 cycles);
 
@@ -73,6 +75,8 @@ class DispatchResult
     int myAddress{0};
 
     bool myWasReadTrap{false};
+
+    string myToolTip;
 };
 
 #endif // DISPATCH_RESULT_HXX

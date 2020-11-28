@@ -45,6 +45,8 @@ EventHandlerSDL2::EventHandlerSDL2(OSystem& osystem)
   }
   Logger::debug("EventHandlerSDL2::EventHandlerSDL2 SDL_INIT_JOYSTICK");
 #endif
+
+  SDL_SetHint(SDL_HINT_MOUSE_FOCUS_CLICKTHROUGH, "1");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

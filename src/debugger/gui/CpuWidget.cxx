@@ -85,18 +85,19 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   _w = lwidth + myPCGrid->getWidth() + myPCLabel->getWidth() + 20;
 
   // Create labels showing the source of data for SP/A/X/Y registers
+  const std::array<string, 4> labels = { "SP", "A", "X", "Y" };
   xpos += myCpuGridBinValue->getWidth() + 20;
   int src_y = ypos, src_w = (max_w - xpos + x) - 10;
   for(int i = 0; i < 4; ++i)
   {
     myCpuDataSrc[i] = new EditTextWidget(boss, nfont, xpos, src_y, src_w, fontHeight + 1);
+    myCpuDataSrc[i]->setToolTip("Source label of last read for " + labels[i] + ".");
     myCpuDataSrc[i]->setEditable(false, true);
     src_y += fontHeight + 2;
   }
 
   // Add labels for other CPU registers
   xpos = x;
-  const std::array<string, 4> labels = { "SP ", "A ", "X ", "Y " };
   for(int row = 0; row < 4; ++row)
   {
     new StaticTextWidget(boss, lfont, xpos, ypos + row*lineHeight + 2,
@@ -109,10 +110,10 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   {
     new StaticTextWidget(boss, lfont, myCpuGridDecValue->getLeft() - fontWidth,
                          ypos + row * lineHeight + 2,
-                         lwidth - 2, fontHeight, "#");
+                         fontWidth, fontHeight, "#");
     new StaticTextWidget(boss, lfont, myCpuGridBinValue->getLeft() - fontWidth,
                          ypos + row * lineHeight + 2,
-                         lwidth - 2, fontHeight, "%");
+                         fontWidth, fontHeight, "%");
   }
 
   // Create a bitfield widget for changing the processor status
@@ -139,9 +140,8 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   xpos = myCpuDataSrc[0]->getLeft();
   new StaticTextWidget(boss, lfont, xpos - fontWidth * 4.5, ypos + 2, "Dest");
   myCpuDataDest = new EditTextWidget(boss, nfont, xpos, ypos, src_w, fontHeight + 1);
+  myCpuDataDest->setToolTip("Destination label of last write.");
   myCpuDataDest->setEditable(false, true);
-
-
 
   _h = ypos + myPSRegister->getHeight() - y;
 }

@@ -52,7 +52,7 @@ class OptionsDialog : public Dialog
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
-    unique_ptr<VideoAudioDialog>      myVideoDialog;
+    unique_ptr<VideoAudioDialog> myVideoDialog;
     unique_ptr<EmulationDialog>  myEmulationDialog;
     unique_ptr<InputDialog>      myInputDialog;
     unique_ptr<UIDialog>         myUIDialog;

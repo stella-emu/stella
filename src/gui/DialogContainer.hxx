@@ -120,11 +120,19 @@ class DialogContainer
     void handleJoyHatEvent(int stick, int hat, JoyHatDir hdir, int button);
 
     /**
-      Draw the stack of menus (full indicates to redraw all items).
-
-      @return  Answers whether any drawing actually occurred.
+      Tick the dialog and all its widgets.
     */
-    bool draw(bool full = false);
+    void tick();
+
+    /**
+      Draw the stack of menus (full indicates to redraw all items).
+    */
+    void draw(bool full = false);
+
+    /**
+      Render the stack of menus.
+    */
+    void render();
 
     /**
       Answers whether a full redraw is required.

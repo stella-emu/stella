@@ -97,7 +97,8 @@ class Debugger : public DialogContainer
       @param message  Message to display when entering debugger
       @param address  An address associated with the message
     */
-    bool start(const string& message = "", int address = -1, bool read = true);
+    bool start(const string& message = "", int address = -1, bool read = true,
+               const string& toolTip = "");
     bool startWithFatalError(const string& message = "");
 
     /**

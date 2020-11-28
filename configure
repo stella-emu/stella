@@ -385,7 +385,7 @@ else
 	fi
 
 	for compiler in $compilers; do
-		if test_compiler "$compiler -std=c++14"; then
+		if test_compiler "$compiler -std=c++17"; then
 			CXX=$compiler
 			echo $CXX
 			break
