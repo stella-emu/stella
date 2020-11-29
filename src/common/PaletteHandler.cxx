@@ -22,6 +22,7 @@
 
 #include "PaletteHandler.hxx"
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PaletteHandler::PaletteHandler(OSystem& system)
   : myOSystem(system)
 {

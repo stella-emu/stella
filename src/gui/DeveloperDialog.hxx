@@ -81,10 +81,10 @@ class DeveloperDialog : public Dialog
     enum SettingsSet { player = 0, developer = 1 };
 
     // MUST be aligned with RewindManager!
-    static const int NUM_INTERVALS = 7;
-    static const int NUM_HORIZONS = 8;
+    static constexpr int NUM_INTERVALS = 7;
+    static constexpr int NUM_HORIZONS = 8;
 
-    static const int DEBUG_COLORS = 6;
+    static constexpr int DEBUG_COLORS = 6;
 
     TabWidget* myTab{nullptr};
     // Emulator widgets
