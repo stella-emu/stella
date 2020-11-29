@@ -30,10 +30,7 @@ my %prop_type = (
   "Display.VCenter"           => 24,
   "Display.Phosphor"          => 25,
   "Display.PPBlend"           => 26,
-  "Cart.Variations"           => 27,
-  "Cart.Formats"              => 28,
-  "Cart.Addresses"            => 29,
-  "Cart.Highscore"	      => 30
+  "Cart.Highscore"	      => 27
 );
 my @prop_type_as_string = (
   "Cart.MD5",			
@@ -62,9 +59,6 @@ my @prop_type_as_string = (
   "Display.VCenter",
   "Display.Phosphor",
   "Display.PPBlend",
-  "Cart.Variations",		
-  "Cart.Formats",		
-  "Cart.Addresses",	
   "Cart_Highscore"
 );				
 
