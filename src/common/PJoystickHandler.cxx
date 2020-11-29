@@ -122,8 +122,8 @@ int PhysicalJoystickHandler::add(const PhysicalJoystickPtr& stick)
     // For non-unique names that already have a database entry,
     // we append ' #x', where 'x' increases consecutively
     int count = 0;
-    for(const auto& i: myDatabase)
-      if(BSPF::startsWithIgnoreCase(i.first, stick->name) && i.second.joy)
+    for(const auto& [_name, _info]: myDatabase)
+      if(BSPF::startsWithIgnoreCase(_name, stick->name) && _info.joy)
         ++count;
 
     if(count > 0)
@@ -223,39 +223,39 @@ void PhysicalJoystickHandler::mapStelladaptors(const string& saport)
     saOrder[0] = 2; saOrder[1] = 1;
   }
 
-  for(auto& stick: mySticks)
+  for(auto& [_id, _joyptr]: mySticks)
   {
     // remove previously added emulated ports
-    size_t pos = stick.second->name.find(" (emulates ");
+    size_t pos = _joyptr->name.find(" (emulates ");
 
     if(pos != std::string::npos)
-      stick.second->name.erase(pos);
+      _joyptr->name.erase(pos);
 
-    if(BSPF::startsWithIgnoreCase(stick.second->name, "Stelladaptor"))
+    if(BSPF::startsWithIgnoreCase(_joyptr->name, "Stelladaptor"))
     {
       if(saOrder[saCount] == 1)
       {
-        stick.second->name += " (emulates left joystick port)";
-        stick.second->type = PhysicalJoystick::JT_STELLADAPTOR_LEFT;
+        _joyptr->name += " (emulates left joystick port)";
+        _joyptr->type = PhysicalJoystick::JT_STELLADAPTOR_LEFT;
       }
       else if(saOrder[saCount] == 2)
       {
-        stick.second->name += " (emulates right joystick port)";
-        stick.second->type = PhysicalJoystick::JT_STELLADAPTOR_RIGHT;
+        _joyptr->name += " (emulates right joystick port)";
+        _joyptr->type = PhysicalJoystick::JT_STELLADAPTOR_RIGHT;
       }
       saCount++;
     }
-    else if(BSPF::startsWithIgnoreCase(stick.second->name, "2600-daptor"))
+    else if(BSPF::startsWithIgnoreCase(_joyptr->name, "2600-daptor"))
     {
       if(saOrder[saCount] == 1)
       {
-        stick.second->name += " (emulates left joystick port)";
-        stick.second->type = PhysicalJoystick::JT_2600DAPTOR_LEFT;
+        _joyptr->name += " (emulates left joystick port)";
+        _joyptr->type = PhysicalJoystick::JT_2600DAPTOR_LEFT;
       }
       else if(saOrder[saCount] == 2)
       {
-        stick.second->name += " (emulates right joystick port)";
-        stick.second->type = PhysicalJoystick::JT_2600DAPTOR_RIGHT;
+        _joyptr->name += " (emulates right joystick port)";
+        _joyptr->type = PhysicalJoystick::JT_2600DAPTOR_RIGHT;
       }
       saCount++;
     }
@@ -354,8 +354,8 @@ void PhysicalJoystickHandler::setStickDefaultMapping(int stick, Event::Type even
 void PhysicalJoystickHandler::setDefaultMapping(Event::Type event, EventMode mode)
 {
   eraseMapping(event, mode);
-  for (auto& i : mySticks)
-    setStickDefaultMapping(i.first, event, mode);
+  for (const auto& [_id, _joyptr]: mySticks)
+    setStickDefaultMapping(_id, event, mode);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -529,24 +529,24 @@ void PhysicalJoystickHandler::eraseMapping(Event::Type event, EventMode mode)
   // Otherwise, only reset the given event
   if(event == Event::NoType)
   {
-    for (auto& stick : mySticks)
+    for (auto& [_id, _joyptr]: mySticks)
     {
-      stick.second->eraseMap(mode);          // erase all events
+      _joyptr->eraseMap(mode);          // erase all events
       if(mode == EventMode::kEmulationMode)
       {
-        stick.second->eraseMap(EventMode::kCommonMode);
-        stick.second->eraseMap(EventMode::kJoystickMode);
-        stick.second->eraseMap(EventMode::kPaddlesMode);
-        stick.second->eraseMap(EventMode::kKeypadMode);
+        _joyptr->eraseMap(EventMode::kCommonMode);
+        _joyptr->eraseMap(EventMode::kJoystickMode);
+        _joyptr->eraseMap(EventMode::kPaddlesMode);
+        _joyptr->eraseMap(EventMode::kKeypadMode);
       }
     }
   }
   else
   {
-    for (auto& stick : mySticks)
+    for (auto& [_id, _joyptr]: mySticks)
     {
-      stick.second->eraseEvent(event, mode); // only reset the specific event
-      stick.second->eraseEvent(event, getEventMode(event, mode));
+      _joyptr->eraseEvent(event, mode); // only reset the specific event
+      _joyptr->eraseEvent(event, getEventMode(event, mode));
     }
   }
 }
@@ -558,9 +558,9 @@ void PhysicalJoystickHandler::saveMapping()
   // any changes that have been made during the program run
   json mapping = json::array();
 
-  for(const auto& i: myDatabase)
+  for(const auto& [_name, _info]: myDatabase)
   {
-    json map = i.second.joy ? i.second.joy->getMap() : i.second.mapping;
+    json map = _info.joy ? _info.joy->getMap() : _info.mapping;
 
     if (!map.is_null()) mapping.emplace_back(map);
   }
@@ -574,19 +574,16 @@ string PhysicalJoystickHandler::getMappingDesc(Event::Type event, EventMode mode
   ostringstream buf;
   EventMode evMode = getEventMode(event, mode);
 
-  for(const auto& s: mySticks)
+  for(const auto& [_id, _joyptr]: mySticks)
   {
-    uInt32 stick = s.first;
-    const PhysicalJoystickPtr j = s.second;
-
-    if(j)
+    if(_joyptr)
     {
       //Joystick mapping / labeling
-      if(j->joyMap.getEventMapping(event, evMode).size())
+      if(_joyptr->joyMap.getEventMapping(event, evMode).size())
       {
         if(buf.str() != "")
           buf << ", ";
-        buf << j->joyMap.getEventMappingDesc(stick, event, evMode);
+        buf << _joyptr->joyMap.getEventMappingDesc(_id, event, evMode);
       }
     }
   }
@@ -819,8 +816,8 @@ void PhysicalJoystickHandler::handleHatEvent(int stick, int hat, int value)
 VariantList PhysicalJoystickHandler::database() const
 {
   VariantList db;
-  for(const auto& i: myDatabase)
-    VarList::push_back(db, i.first, i.second.joy ? i.second.joy->ID : -1);
+  for(const auto& [_name, _info]: myDatabase)
+    VarList::push_back(db, _name, _info.joy ? _info.joy->ID : -1);
 
   return db;
 }
@@ -830,13 +827,13 @@ ostream& operator<<(ostream& os, const PhysicalJoystickHandler& jh)
 {
   os << "---------------------------------------------------------" << endl
      << "joy database:"  << endl;
-  for(const auto& i: jh.myDatabase)
-    os << i.first << endl << i.second << endl << endl;
+  for(const auto& [_name, _info]: jh.myDatabase)
+    os << _name << endl << _info << endl << endl;
 
   os << "---------------------" << endl
      << "joy active:"  << endl;
-  for(const auto& i: jh.mySticks)
-    os << i.first << ": " << *i.second << endl;
+  for(const auto& [_id, _joyptr]: jh.mySticks)
+    os << _id << ": " << *_joyptr << endl;
   os << "---------------------------------------------------------"
      << endl << endl << endl;
 

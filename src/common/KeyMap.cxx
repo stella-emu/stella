@@ -194,13 +194,13 @@ string KeyMap::getEventMappingDesc(const Event::Type event, const EventMode mode
 {
   ostringstream buf;
 
-  for (auto item : myMap)
+  for (const auto& [_mapping, _event]: myMap)
   {
-    if (item.second == event && item.first.mode == mode)
+    if (_event == event && _mapping.mode == mode)
     {
       if (buf.str() != "")
         buf << ", ";
-      buf << getDesc(item.first);
+      buf << getDesc(_mapping);
     }
   }
   return buf.str();
@@ -211,9 +211,9 @@ KeyMap::MappingArray KeyMap::getEventMapping(const Event::Type event, const Even
 {
   MappingArray map;
 
-  for (auto item : myMap)
-    if (item.second == event && item.first.mode == mode)
-      map.push_back(item.first);
+  for (const auto& [_mapping, _event]: myMap)
+    if (_event == event && _mapping.mode == mode)
+      map.push_back(_mapping);
 
   return map;
 }
@@ -223,16 +223,16 @@ json KeyMap::saveMapping(const EventMode mode) const
 {
   json mappings = json::array();
 
-  for (auto item : myMap) {
-    if (item.first.mode != mode) continue;
+  for (const auto& [_mapping, _event]: myMap) {
+    if (_mapping.mode != mode) continue;
 
     json mapping = json::object();
 
-    mapping["event"] = item.second;
-    mapping["key"] = item.first.key;
+    mapping["event"] = _event;
+    mapping["key"] = _mapping.key;
 
-    if (item.first.mod != StellaMod::KBDM_NONE)
-      mapping["mod"] = serializeModkeyMask(item.first.mod);
+    if (_mapping.mod != StellaMod::KBDM_NONE)
+      mapping["mod"] = serializeModkeyMask(_mapping.mod);
 
     mappings.push_back(mapping);
   }
