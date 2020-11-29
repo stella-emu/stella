@@ -123,27 +123,25 @@ void ContextMenu::setSelectedIndex(int idx)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::setSelected(const Variant& tag, const Variant& defaultTag)
 {
-  if(tag != "")  // indicates that the defaultTag should be used instead
+  auto SEARCH_AND_SELECT = [&](const Variant& t)
   {
     for(uInt32 item = 0; item < _entries.size(); ++item)
     {
-      if(BSPF::equalsIgnoreCase(_entries[item].second.toString(), tag.toString()))
+      if(BSPF::equalsIgnoreCase(_entries[item].second.toString(), t.toString()))
       {
         setSelectedIndex(item);
-        return;
+        return true;
       }
     }
-  }
+    return false;
+  };
 
-  // If we get this far, the value wasn't found; use the default value
-  for(uInt32 item = 0; item < _entries.size(); ++item)
-  {
-    if(BSPF::equalsIgnoreCase(_entries[item].second.toString(), defaultTag.toString()))
-    {
-      setSelectedIndex(item);
-      return;
-    }
-  }
+  // First try searching for a valid tag
+  bool tagSelected = tag != "" && SEARCH_AND_SELECT(tag);
+
+  // Otherwise use the default tag
+  if(!tagSelected)
+    SEARCH_AND_SELECT(defaultTag);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
