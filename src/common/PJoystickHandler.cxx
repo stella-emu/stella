@@ -47,7 +47,7 @@ PhysicalJoystickHandler::PhysicalJoystickHandler(
 
   try {
     mappings = json::parse(serializedMapping);
-  } catch (json::exception) {
+  } catch (const json::exception&) {
     Logger::info("converting legacy joystick mappings");
 
     mappings = convertLegacyMapping(serializedMapping);
@@ -217,7 +217,7 @@ void PhysicalJoystickHandler::mapStelladaptors(const string& saport)
   // We know there will be only two such devices (at most), since the logic
   // in setupJoysticks take care of that
   int saCount = 0;
-  int saOrder[NUM_PORTS] = { 1, 2 };
+  int saOrder[] = { 1, 2 };
   if(BSPF::equalsIgnoreCase(saport, "rl"))
   {
     saOrder[0] = 2; saOrder[1] = 1;

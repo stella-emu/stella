@@ -413,6 +413,8 @@
 		DC8078DB0B4BD5F3005E9305 /* DebuggerExpressions.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8078DA0B4BD5F3005E9305 /* DebuggerExpressions.hxx */; };
 		DC8078EA0B4BD697005E9305 /* UIDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC8078E60B4BD697005E9305 /* UIDialog.cxx */; };
 		DC8078EB0B4BD697005E9305 /* UIDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8078E70B4BD697005E9305 /* UIDialog.hxx */; };
+		DC816CF62572F92A00FBCCDA /* json.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC816CF42572F92A00FBCCDA /* json.hxx */; };
+		DC816CF72572F92A00FBCCDA /* json_lib.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC816CF52572F92A00FBCCDA /* json_lib.hxx */; };
 		DC84397B247B294E00C6A4FC /* CartTVBoy.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC843979247B294D00C6A4FC /* CartTVBoy.hxx */; };
 		DC84397C247B294E00C6A4FC /* CartTVBoy.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC84397A247B294D00C6A4FC /* CartTVBoy.cxx */; };
 		DC84397F247B297A00C6A4FC /* CartTVBoyWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC84397D247B297A00C6A4FC /* CartTVBoyWidget.hxx */; };
@@ -520,7 +522,6 @@
 		DCB60ACC25430FC600A5C1D2 /* FBBackend.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB60ACB25430FC600A5C1D2 /* FBBackend.hxx */; };
 		DCB60AD02543100900A5C1D2 /* FBBackendSDL2.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCB60ACD2543100900A5C1D2 /* FBBackendSDL2.cxx */; };
 		DCB60AD12543100900A5C1D2 /* FBBackendSDL2.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB60ACE2543100900A5C1D2 /* FBBackendSDL2.hxx */; };
-		DCB60AD22543100900A5C1D2 /* audio in Resources */ = {isa = PBXBuildFile; fileRef = DCB60ACF2543100900A5C1D2 /* audio */; };
 		DCB87E581A104C1E00BF2A3B /* MediaFactory.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB87E571A104C1E00BF2A3B /* MediaFactory.hxx */; };
 		DCBA539925557E2800087DD7 /* UndoHandler.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCBA539725557E2700087DD7 /* UndoHandler.hxx */; };
 		DCBA539A25557E2800087DD7 /* UndoHandler.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCBA539825557E2800087DD7 /* UndoHandler.cxx */; };
@@ -1182,6 +1183,8 @@
 		DC8078DA0B4BD5F3005E9305 /* DebuggerExpressions.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = DebuggerExpressions.hxx; sourceTree = "<group>"; };
 		DC8078E60B4BD697005E9305 /* UIDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = UIDialog.cxx; sourceTree = "<group>"; };
 		DC8078E70B4BD697005E9305 /* UIDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = UIDialog.hxx; sourceTree = "<group>"; };
+		DC816CF42572F92A00FBCCDA /* json.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = json.hxx; sourceTree = "<group>"; };
+		DC816CF52572F92A00FBCCDA /* json_lib.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = json_lib.hxx; sourceTree = "<group>"; };
 		DC843979247B294D00C6A4FC /* CartTVBoy.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartTVBoy.hxx; sourceTree = "<group>"; };
 		DC84397A247B294D00C6A4FC /* CartTVBoy.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartTVBoy.cxx; sourceTree = "<group>"; };
 		DC84397D247B297A00C6A4FC /* CartTVBoyWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartTVBoyWidget.hxx; sourceTree = "<group>"; };
@@ -1290,7 +1293,6 @@
 		DCB60ACB25430FC600A5C1D2 /* FBBackend.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FBBackend.hxx; sourceTree = "<group>"; };
 		DCB60ACD2543100900A5C1D2 /* FBBackendSDL2.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FBBackendSDL2.cxx; sourceTree = "<group>"; };
 		DCB60ACE2543100900A5C1D2 /* FBBackendSDL2.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FBBackendSDL2.hxx; sourceTree = "<group>"; };
-		DCB60ACF2543100900A5C1D2 /* audio */ = {isa = PBXFileReference; lastKnownFileType = folder; path = audio; sourceTree = "<group>"; };
 		DCB87E571A104C1E00BF2A3B /* MediaFactory.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = MediaFactory.hxx; sourceTree = "<group>"; };
 		DCBA539725557E2700087DD7 /* UndoHandler.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = UndoHandler.hxx; sourceTree = "<group>"; };
 		DCBA539825557E2800087DD7 /* UndoHandler.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UndoHandler.cxx; sourceTree = "<group>"; };
@@ -1563,6 +1565,7 @@
 				2D605130089879BA00C6DE89 /* debugger */,
 				2D6050CC0898776500C6DE89 /* emucore */,
 				2D6050FA0898786C00C6DE89 /* gui */,
+				DC816CF32572F8B400FBCCDA /* json */,
 				DCD6FC5A11C281A1005DA767 /* libpng */,
 				2D6050C60898771C00C6DE89 /* macos */,
 				2D6050C90898774B00C6DE89 /* unix */,
@@ -1773,7 +1776,6 @@
 			isa = PBXGroup;
 			children = (
 				DCC6A4AD20A2620D00863C59 /* audio */,
-				DCB60ACF2543100900A5C1D2 /* audio */,
 				E09F413A201E901D004A3391 /* AudioQueue.cxx */,
 				E09F4139201E901C004A3391 /* AudioQueue.hxx */,
 				E0FABEEA20E9948100EB8E28 /* AudioSettings.cxx */,
@@ -2274,6 +2276,15 @@
 			name = exception;
 			sourceTree = "<group>";
 		};
+		DC816CF32572F8B400FBCCDA /* json */ = {
+			isa = PBXGroup;
+			children = (
+				DC816CF52572F92A00FBCCDA /* json_lib.hxx */,
+				DC816CF42572F92A00FBCCDA /* json.hxx */,
+			);
+			path = json;
+			sourceTree = "<group>";
+		};
 		DCC467EA14FBEC9600E15508 /* tv_filters */ = {
 			isa = PBXGroup;
 			children = (
@@ -2533,6 +2544,7 @@
 				DCBD31E92299ADB400567357 /* Rect.hxx in Headers */,
 				DCBA539925557E2800087DD7 /* UndoHandler.hxx in Headers */,
 				2D91741A09BA90380026E9FF /* FSNode.hxx in Headers */,
+				DC816CF72572F92A00FBCCDA /* json_lib.hxx in Headers */,
 				2D91741B09BA90380026E9FF /* OSystem.hxx in Headers */,
 				DC6A18F919B3E65500DEB242 /* CartMDMWidget.hxx in Headers */,
 				2D91741F09BA90380026E9FF /* AboutBox.h in Headers */,
@@ -2743,6 +2755,7 @@
 				DCF8621A21C9D43300F95F52 /* StaggeredLogger.hxx in Headers */,
 				DCAAE5E31715887B0080BB82 /* CartF0Widget.hxx in Headers */,
 				DCAAE5E51715887B0080BB82 /* CartF4SCWidget.hxx in Headers */,
+				DC816CF62572F92A00FBCCDA /* json.hxx in Headers */,
 				DCAAE5E71715887B0080BB82 /* CartF4Widget.hxx in Headers */,
 				DC5963142139FA14002736F2 /* Bankswitch.hxx in Headers */,
 				DCAAE5E91715887B0080BB82 /* CartF6SCWidget.hxx in Headers */,
@@ -2876,7 +2889,6 @@
 				2D91747109BA90380026E9FF /* docs in Resources */,
 				2D91747209BA90380026E9FF /* AboutBox.nib in Resources */,
 				2DEFB40C09C3386F00754289 /* Cart.icns in Resources */,
-				DCB60AD22543100900A5C1D2 /* audio in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
