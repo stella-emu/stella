@@ -208,7 +208,7 @@ int KeyMap::loadMapping(const json& mappings, const EventMode mode) {
       );
 
       i++;
-    } catch (json::exception) {
+    } catch (const json::exception&) {
       Logger::error("ignoring bad keyboard mapping");
     }
   }
