@@ -51,10 +51,10 @@ Event::Type KeyMap::get(const Mapping& mapping) const
 {
   Mapping m = convertMod(mapping);
 
-  if (myModEnabled)
+  if(myModEnabled)
   {
     auto find = myMap.find(m);
-    if (find != myMap.end())
+    if(find != myMap.end())
       return find->second;
   }
 
@@ -62,7 +62,7 @@ Event::Type KeyMap::get(const Mapping& mapping) const
   m.mod = StellaMod(0);
 
   auto find = myMap.find(m);
-  if (find != myMap.end())
+  if(find != myMap.end())
     return find->second;
 
   return Event::Type::NoType;
@@ -112,26 +112,26 @@ string KeyMap::getDesc(const Mapping& mapping) const
   int RMOD3 = KBDM_RALT;
 #endif
 
-  if ((mapping.mod & KBDM_CTRL) == KBDM_CTRL) buf << "Ctrl";
-  else if (mapping.mod & KBDM_LCTRL) buf << "Left Ctrl";
-  else if (mapping.mod & KBDM_RCTRL) buf << "Right Ctrl";
+  if((mapping.mod & KBDM_CTRL) == KBDM_CTRL) buf << "Ctrl";
+  else if(mapping.mod & KBDM_LCTRL) buf << "Left Ctrl";
+  else if(mapping.mod & KBDM_RCTRL) buf << "Right Ctrl";
 
-  if ((mapping.mod & (MOD2)) && buf.tellp()) buf << "+";
-  if ((mapping.mod & MOD2) == MOD2) buf << mod2;
-  else if (mapping.mod & LMOD2) buf << "Left " << mod2;
-  else if (mapping.mod & RMOD2) buf << "Right " << mod2;
+  if((mapping.mod & (MOD2)) && buf.tellp()) buf << "+";
+  if((mapping.mod & MOD2) == MOD2) buf << mod2;
+  else if(mapping.mod & LMOD2) buf << "Left " << mod2;
+  else if(mapping.mod & RMOD2) buf << "Right " << mod2;
 
-  if ((mapping.mod & (MOD3)) && buf.tellp()) buf << "+";
-  if ((mapping.mod & MOD3) == MOD3) buf << mod3;
-  else if (mapping.mod & LMOD3) buf << "Left " << mod3;
-  else if (mapping.mod & RMOD3) buf << "Right " << mod3;
+  if((mapping.mod & (MOD3)) && buf.tellp()) buf << "+";
+  if((mapping.mod & MOD3) == MOD3) buf << mod3;
+  else if(mapping.mod & LMOD3) buf << "Left " << mod3;
+  else if(mapping.mod & RMOD3) buf << "Right " << mod3;
 
-  if ((mapping.mod & (KBDM_SHIFT)) && buf.tellp()) buf << "+";
-  if ((mapping.mod & KBDM_SHIFT) == KBDM_SHIFT) buf << "Shift";
-  else if (mapping.mod & KBDM_LSHIFT) buf << "Left Shift";
-  else if (mapping.mod & KBDM_RSHIFT) buf << "Right Shift";
+  if((mapping.mod & (KBDM_SHIFT)) && buf.tellp()) buf << "+";
+  if((mapping.mod & KBDM_SHIFT) == KBDM_SHIFT) buf << "Shift";
+  else if(mapping.mod & KBDM_LSHIFT) buf << "Left Shift";
+  else if(mapping.mod & KBDM_RSHIFT) buf << "Right Shift";
 
-  if (buf.tellp()) buf << "+";
+  if(buf.tellp()) buf << "+";
   buf << StellaKeyName::forKey(mapping.key);
 
   return buf.str();
@@ -148,11 +148,11 @@ string KeyMap::getEventMappingDesc(const Event::Type event, const EventMode mode
 {
   ostringstream buf;
 
-  for (auto item : myMap)
+  for(auto item : myMap)
   {
-    if (item.second == event && item.first.mode == mode)
+    if(item.second == event && item.first.mode == mode)
     {
-      if (buf.str() != "")
+      if(buf.str() != "")
         buf << ", ";
       buf << getDesc(item.first);
     }
@@ -165,8 +165,8 @@ KeyMap::MappingArray KeyMap::getEventMapping(const Event::Type event, const Even
 {
   MappingArray map;
 
-  for (auto item : myMap)
-    if (item.second == event && item.first.mode == mode)
+  for(auto item : myMap)
+    if(item.second == event && item.first.mode == mode)
       map.push_back(item.first);
 
   return map;
@@ -177,15 +177,16 @@ json KeyMap::saveMapping(const EventMode mode) const
 {
   json mappings = json::array();
 
-  for (auto item : myMap) {
-    if (item.first.mode != mode) continue;
+  for(auto item : myMap)
+  {
+    if(item.first.mode != mode) continue;
 
     json mapping = json::object();
 
     mapping["event"] = item.second;
     mapping["key"] = item.first.key;
 
-    if (item.first.mod != StellaMod::KBDM_NONE)
+    if(item.first.mod != StellaMod::KBDM_NONE)
       mapping["mod"] = item.first.mod;
 
     mappings.push_back(mapping);
@@ -198,7 +199,8 @@ json KeyMap::saveMapping(const EventMode mode) const
 int KeyMap::loadMapping(const json& mappings, const EventMode mode) {
   int i = 0;
 
-  for (const json& mapping: mappings) {
+  for(const json& mapping : mappings)
+  {
     try {
       add(
         mapping.at("event").get<Event::Type>(),
@@ -208,7 +210,8 @@ int KeyMap::loadMapping(const json& mappings, const EventMode mode) {
       );
 
       i++;
-    } catch (json::exception) {
+    }
+    catch(json::exception) {
       Logger::error("ignoring bad keyboard mapping");
     }
   }
@@ -229,13 +232,14 @@ json KeyMap::convertLegacyMapping(string list)
   istringstream buf(list);
   int event, key, mod;
 
-  while (buf >> event && buf >> key && buf >> mod) {
+  while(buf >> event && buf >> key && buf >> mod)
+  {
     json mapping = json::object();
 
     mapping["event"] = Event::Type(event);
     mapping["key"] = StellaKey(key);
 
-    if (StellaMod(mod) != StellaMod::KBDM_NONE) mapping["mod"] = StellaMod(mod);
+    if(StellaMod(mod) != StellaMod::KBDM_NONE) mapping["mod"] = StellaMod(mod);
 
     convertedMapping.push_back(mapping);
   }
@@ -246,8 +250,8 @@ json KeyMap::convertLegacyMapping(string list)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void KeyMap::eraseMode(const EventMode mode)
 {
-  for (auto item = myMap.begin(); item != myMap.end();)
-    if (item->first.mode == mode) {
+  for(auto item = myMap.begin(); item != myMap.end();)
+    if(item->first.mode == mode) {
       auto _item = item++;
       erase(_item->first);
     }
@@ -257,8 +261,8 @@ void KeyMap::eraseMode(const EventMode mode)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void KeyMap::eraseEvent(const Event::Type event, const EventMode mode)
 {
-  for (auto item = myMap.begin(); item != myMap.end();)
-    if (item->second == event && item->first.mode == mode) {
+  for(auto item = myMap.begin(); item != myMap.end();)
+    if(item->second == event && item->first.mode == mode) {
       auto _item = item++;
       erase(_item->first);
     }
@@ -270,7 +274,7 @@ KeyMap::Mapping KeyMap::convertMod(const Mapping& mapping) const
 {
   Mapping m = mapping;
 
-  if (m.key >= KBDK_LCTRL && m.key <= KBDK_RGUI)
+  if(m.key >= KBDK_LCTRL && m.key <= KBDK_RGUI)
     // handle solo modifier keys differently
     m.mod = KBDM_NONE;
   else

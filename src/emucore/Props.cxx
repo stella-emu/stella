@@ -270,7 +270,8 @@ void Properties::print() const
        << get(PropType::Display_PPBlend)        << "|"
        << get(PropType::Cart_Variations)        << "|"
        << get(PropType::Cart_Formats)           << "|"
-       << get(PropType::Cart_Addresses)
+       << get(PropType::Cart_Addresses)         << "|"
+       << get(PropType::Cart_Highscore)
        << endl;
 }
 
@@ -332,7 +333,8 @@ void Properties::printHeader()
        << "Display_PPBlend|"
        << "Cart_Variations|"
        << "Cart_Formats|"
-       << "Cart_Addresses"
+       << "Cart_Addresses|"
+       << "Cart_Highscore"
        << endl;
 }
 
@@ -368,7 +370,8 @@ std::array<string, Properties::NUM_PROPS> Properties::ourDefaultProperties =
   "0",      // Display.PPBlend
   "1",      // Cart.Variations
   "",       // Cart.Formats,
-  ""        // Cart.Addresses
+  "",       // Cart.Addresses
+  ""        // Cart.Highscore
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -403,5 +406,6 @@ std::array<string, Properties::NUM_PROPS> Properties::ourPropertyNames =
   "Display.PPBlend",
   "Cart.Variations",
   "Cart.Formats",
-  "Cart.Addresses"
+  "Cart.Addresses",
+  "Cart.Highscore"
 };

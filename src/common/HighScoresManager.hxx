@@ -129,23 +129,42 @@ class HighScoresManager
     Int16 peek(uInt16 addr) const;
 
   private:
-    enum {
-      //IDX_ARM_RAM = 0,
-      IDX_SCORE_DIGITS = 0,
-      IDX_TRAILING_ZEROES,
-      IDX_SCORE_BCD,
-      IDX_SCORE_INVERT,
-      IDX_VAR_BCD,
-      IDX_VAR_ZERO_BASED,
-      IDX_SPECIAL_LABEL,
-      IDX_SPECIAL_BCD,
-      IDX_SPECIAL_ZERO_BASED,
-      IDX_NOTES,
-    };
-    enum {
-      IDX_VARS_ADDRESS = 0,
-      IDX_SPECIAL_ADDRESS
-    };
+    //enum {
+    //  //IDX_ARM_RAM = 0,
+    //  IDX_SCORE_DIGITS = 0,
+    //  IDX_TRAILING_ZEROES,
+    //  IDX_SCORE_BCD,
+    //  IDX_SCORE_INVERT,
+    //  IDX_VAR_BCD,
+    //  IDX_VAR_ZERO_BASED,
+    //  IDX_SPECIAL_LABEL,
+    //  IDX_SPECIAL_BCD,
+    //  IDX_SPECIAL_ZERO_BASED,
+    //  IDX_NOTES,
+    //};
+    //enum {
+    //  IDX_VARS_ADDRESS = 0,
+    //  IDX_SPECIAL_ADDRESS
+    //};
+
+    static const string VARIATIONS_COUNT;
+    static const string VARIATIONS_ADDRESS;
+    static const string VARIATIONS_BCD;
+    static const string VARIATIONS_ZERO_BASED;
+    static const string SCORE_DIGITS;
+    static const string SCORE_TRAILING_ZEROES;
+    static const string SCORE_BCD;
+    static const string SCORE_INVERTED;
+    static const string SCORE_ADDRESSES;
+    static const string SCORE_ADDRESS_0;
+    static const string SCORE_ADDRESS_1;
+    static const string SCORE_ADDRESS_2;
+    static const string SCORE_ADDRESS_3;
+    static const string SPECIAL_LABEL;
+    static const string SPECIAL_ADDRESS;
+    static const string SPECIAL_BCD;
+    static const string SPECIAL_ZERO_BASED;
+    static const string NOTES;
 
     static constexpr uInt32 MAX_VARIATIONS = 256;
 
@@ -177,14 +196,25 @@ class HighScoresManager
     string notes(const Properties& props) const;
     //bool armRAM(const Properties& props) const;
 
+
     // Calculate the number of bytes for one player's score from property parameters
     uInt32 numAddrBytes(const Properties& props) const;
 
     // Get properties
     Properties& properties(Properties& props) const;
-    // Get value from highscore propterties at given index
-    string getPropIdx(const Properties& props, PropType type, uInt32 idx = 0) const;
+    //// Get value from highscore propterties at given index
+    //string getPropIdx(const Properties& props, PropType type, uInt32 idx = 0) const;
 
+    bool getPropBool(const Properties& props, const string& key,
+                     bool defVal = false) const;
+    uInt32 getPropInt(const Properties& props, const string& key,
+                      uInt32 defVal = 0) const;
+    string getPropStr(const Properties& props, const string& key,
+                      const string& defVal = "") const;
+    uInt16 getPropAddr(const Properties& props, const string& key,
+                       uInt16 defVal = 0) const;
+
+    uInt16 fromHexStr(const string& addr) const;
     Int32 fromBCD(uInt8 bcd) const;
     string toPropString(const string& test) const;
     string fromPropString(const string& test) const;

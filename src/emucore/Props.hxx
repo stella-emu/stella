@@ -51,6 +51,7 @@ enum class PropType : uInt8 {
   Cart_Variations,
   Cart_Formats,
   Cart_Addresses,
+  Cart_Highscore,
   NumTypes
 };
 
