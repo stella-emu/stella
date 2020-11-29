@@ -58,8 +58,8 @@ namespace {
 
   int deserializeModkeyMask(json serializedMask)
   {
-    if (serializedMask.is_null()) return StellaMod::KBDM_NONE;
-    if (!serializedMask.is_array()) return serializedMask.get<StellaMod>();
+    if(serializedMask.is_null()) return StellaMod::KBDM_NONE;
+    if(!serializedMask.is_array()) return serializedMask.get<StellaMod>();
 
     int mask = 0;
     for(const json& mod: serializedMask) mask |= mod.get<StellaMod>();
