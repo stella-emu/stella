@@ -232,7 +232,7 @@ class AtariNTSC
     }
 
     // Common ntsc macros
-    static inline constexpr void ATARI_NTSC_CLAMP( uInt32& io, uInt32 shift ) {
+    static constexpr void ATARI_NTSC_CLAMP( uInt32& io, uInt32 shift ) {
       uInt32 sub = io >> (9-(shift)) & atari_ntsc_clamp_mask;
       uInt32 clamp = atari_ntsc_clamp_add - sub;
       io |= clamp;
@@ -240,31 +240,31 @@ class AtariNTSC
       io &= clamp;
     }
 
-    static inline constexpr void RGB_TO_YIQ(float r, float g, float b,
+    static constexpr void RGB_TO_YIQ(float r, float g, float b,
         float& y, float& i, float& q) {
       y = r * 0.299F + g * 0.587F + b * 0.114F;
       i = r * 0.595716F - g * 0.274453F - b * 0.321263F;
       q = r * 0.211456F - g * 0.522591F + b * 0.311135F;
     }
-    static inline constexpr void YIQ_TO_RGB(float y, float i, float q,
+    static constexpr void YIQ_TO_RGB(float y, float i, float q,
         const float* to_rgb, int& ir, int& ig, int& ib) {
       ir = static_cast<int>(y + to_rgb[0] * i + to_rgb[1] * q);
       ig = static_cast<int>(y + to_rgb[2] * i + to_rgb[3] * q);
       ib = static_cast<int>(y + to_rgb[4] * i + to_rgb[5] * q);
     }
 
-    static inline constexpr uInt32 PACK_RGB( int r, int g, int b ) {
+    static constexpr uInt32 PACK_RGB( int r, int g, int b ) {
       return r << 21 | g << 11 | b << 1;
     }
 
     // Converted from C-style macros; I don't even pretend to understand the logic here :)
-    static inline constexpr int PIXEL_OFFSET1( int ntsc, int scaled ) {
+    static constexpr int PIXEL_OFFSET1( int ntsc, int scaled ) {
       return (kernel_size / 2 + ((ntsc) - (scaled) / rescale_out * rescale_in) +
         ((((scaled) + rescale_out * 10) % rescale_out) != 0) +
         (rescale_out - (((scaled) + rescale_out * 10) % rescale_out)) % rescale_out +
         (kernel_size * 2 * (((scaled) + rescale_out * 10) % rescale_out)));
     }
-    static inline constexpr int PIXEL_OFFSET2( int ntsc ) {
+    static constexpr int PIXEL_OFFSET2( int ntsc ) {
       return 1.0F - (((ntsc) + 100) & 2);
     }
 

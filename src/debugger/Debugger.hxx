@@ -76,9 +76,6 @@ class Debugger : public DialogContainer
     Debugger(OSystem& osystem, Console& console);
     ~Debugger() override;
 
-  private:
-    static const Int8 ANY_BANK = -1;
-
   public:
     /**
       Initialize the debugger dialog container.
@@ -284,8 +281,6 @@ class Debugger : public DialogContainer
     */
     Dialog* baseDialog() override { return myDialog; }
 
-    static const Int32 NOT_FOUND = -1;
-
   private:
     /**
       Save state of each debugger subsystem and, by default, mark all
@@ -366,6 +361,8 @@ class Debugger : public DialogContainer
     };
     static std::array<BuiltinFunction, 18> ourBuiltinFunctions;
     static std::array<PseudoRegister, 16> ourPseudoRegisters;
+
+    static constexpr Int8 ANY_BANK = -1;
 
   private:
     // rewind/unwind n states

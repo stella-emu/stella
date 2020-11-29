@@ -131,13 +131,13 @@ class AudioSettings
 
     Preset myPreset;
 
-    uInt32 myPresetSampleRate;
-    uInt32 myPresetFragmentSize;
-    uInt32 myPresetBufferSize;
-    uInt32 myPresetHeadroom;
+    uInt32 myPresetSampleRate{0};
+    uInt32 myPresetFragmentSize{0};
+    uInt32 myPresetBufferSize{0};
+    uInt32 myPresetHeadroom{0};
     ResamplingQuality myPresetResamplingQuality;
 
-    bool myIsPersistent;
+    bool myIsPersistent{true};
 };
 
 #endif // AUDIO_PARAMTERS_HXX

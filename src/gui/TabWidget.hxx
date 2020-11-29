@@ -26,8 +26,8 @@
 class TabWidget : public Widget, public CommandSender
 {
   public:
-    static const int NO_WIDTH = 0;
-    static const int AUTO_WIDTH = -1;
+    static constexpr int NO_WIDTH = 0;
+    static constexpr int AUTO_WIDTH = -1;
 
     enum {
       kTabChangedCmd = 'TBCH'
