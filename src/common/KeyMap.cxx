@@ -22,6 +22,52 @@
 
 using json = nlohmann::json;
 
+namespace {
+  json serializeModkeyMask(int mask)
+  {
+    if(mask == StellaMod::KBDM_NONE) return json(nullptr);
+
+    json serializedMask = json::array();
+
+    for(StellaMod mod: {
+      StellaMod::KBDM_CTRL,
+      StellaMod::KBDM_SHIFT,
+      StellaMod::KBDM_ALT,
+      StellaMod::KBDM_GUI,
+      StellaMod::KBDM_LSHIFT,
+      StellaMod::KBDM_RSHIFT,
+      StellaMod::KBDM_LCTRL,
+      StellaMod::KBDM_RCTRL,
+      StellaMod::KBDM_LALT,
+      StellaMod::KBDM_RALT,
+      StellaMod::KBDM_LGUI,
+      StellaMod::KBDM_RGUI,
+      StellaMod::KBDM_NUM,
+      StellaMod::KBDM_CAPS,
+      StellaMod::KBDM_MODE,
+      StellaMod::KBDM_RESERVED
+    }) {
+      if((mask & mod) != mod) continue;
+
+      serializedMask.push_back(json(mod));
+      mask &= ~mod;
+    }
+
+    return serializedMask.size() == 1 ? serializedMask.at(0) : serializedMask;
+  }
+
+  int deserializeModkeyMask(json serializedMask)
+  {
+    if (serializedMask.is_null()) return StellaMod::KBDM_NONE;
+    if (!serializedMask.is_array()) return serializedMask.get<StellaMod>();
+
+    int mask = 0;
+    for(const json& mod: serializedMask) mask |= mod.get<StellaMod>();
+
+    return mask;
+  }
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void KeyMap::add(const Event::Type event, const Mapping& mapping)
 {
@@ -186,7 +232,7 @@ json KeyMap::saveMapping(const EventMode mode) const
     mapping["key"] = item.first.key;
 
     if (item.first.mod != StellaMod::KBDM_NONE)
-      mapping["mod"] = item.first.mod;
+      mapping["mod"] = serializeModkeyMask(item.first.mod);
 
     mappings.push_back(mapping);
   }
@@ -204,7 +250,7 @@ int KeyMap::loadMapping(const json& mappings, const EventMode mode) {
         mapping.at("event").get<Event::Type>(),
         mode,
         mapping.at("key").get<StellaKey>(),
-        mapping.contains("mod") ? mapping.at("mod").get<StellaMod>() : StellaMod::KBDM_NONE
+        mapping.contains("mod") ? deserializeModkeyMask(mapping.at("mod")) : StellaMod::KBDM_NONE
       );
 
       i++;
@@ -235,7 +281,7 @@ json KeyMap::convertLegacyMapping(string list)
     mapping["event"] = Event::Type(event);
     mapping["key"] = StellaKey(key);
 
-    if (StellaMod(mod) != StellaMod::KBDM_NONE) mapping["mod"] = StellaMod(mod);
+    if (StellaMod(mod) != StellaMod::KBDM_NONE) mapping["mod"] = serializeModkeyMask(mod);
 
     convertedMapping.push_back(mapping);
   }
