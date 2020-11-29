@@ -207,6 +207,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(Event::Type, {
   {Event::StartPauseMode, "StartPauseMode"},
   {Event::OptionsMenuMode, "OptionsMenuMode"},
   {Event::CmdMenuMode, "CmdMenuMode"},
+  {Event::HighScoresMenuMode, "HighScoresMenuMode"},
   {Event::DebuggerMode, "DebuggerMode"},
   {Event::ExitMode, "ExitMode"},
   {Event::TakeSnapshot, "TakeSnapshot"},

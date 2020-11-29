@@ -60,8 +60,6 @@ void Properties::set(PropType key, const string& value)
       case PropType::Controller_MouseAxis:
       case PropType::Display_Format:
       case PropType::Display_Phosphor:
-      case PropType::Cart_Formats:
-      case PropType::Cart_Addresses:
       {
         BSPF::toUpperCase(myProperties[pos]);
         break;
@@ -268,9 +266,6 @@ void Properties::print() const
        << get(PropType::Display_VCenter)        << "|"
        << get(PropType::Display_Phosphor)       << "|"
        << get(PropType::Display_PPBlend)        << "|"
-       << get(PropType::Cart_Variations)        << "|"
-       << get(PropType::Cart_Formats)           << "|"
-       << get(PropType::Cart_Addresses)         << "|"
        << get(PropType::Cart_Highscore)
        << endl;
 }
@@ -331,9 +326,6 @@ void Properties::printHeader()
        << "Display_VCenter|"
        << "Display_Phosphor|"
        << "Display_PPBlend|"
-       << "Cart_Variations|"
-       << "Cart_Formats|"
-       << "Cart_Addresses|"
        << "Cart_Highscore"
        << endl;
 }
@@ -368,9 +360,6 @@ std::array<string, Properties::NUM_PROPS> Properties::ourDefaultProperties =
   "0",      // Display.VCenter
   "NO",     // Display.Phosphor
   "0",      // Display.PPBlend
-  "1",      // Cart.Variations
-  "",       // Cart.Formats,
-  "",       // Cart.Addresses
   ""        // Cart.Highscore
 };
 
@@ -404,8 +393,5 @@ std::array<string, Properties::NUM_PROPS> Properties::ourPropertyNames =
   "Display.VCenter",
   "Display.Phosphor",
   "Display.PPBlend",
-  "Cart.Variations",
-  "Cart.Formats",
-  "Cart.Addresses",
   "Cart.Highscore"
 };

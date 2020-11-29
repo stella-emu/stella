@@ -1022,9 +1022,7 @@ void GameInfoDialog::saveHighScoresProperties()
   }
   else
   {
-    myGameProperties.reset(PropType::Cart_Variations);
-    myGameProperties.reset(PropType::Cart_Formats);
-    myGameProperties.reset(PropType::Cart_Addresses);
+    myGameProperties.reset(PropType::Cart_Highscore);
   }
 }
 
