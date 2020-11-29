@@ -74,7 +74,7 @@ void PhysicalKeyboardHandler::loadSerializedMappings(const string& serializedMap
 
   try {
     mapping = json::parse(serializedMapping);
-  } catch (json::exception) {
+  } catch (const json::exception&) {
     Logger::info("converting legacy keyboard mappings");
 
     mapping = KeyMap::convertLegacyMapping(serializedMapping);
@@ -82,7 +82,7 @@ void PhysicalKeyboardHandler::loadSerializedMappings(const string& serializedMap
 
   try {
     myKeyMap.loadMapping(mapping, mode);
-  } catch (json::exception) {
+  } catch (const json::exception&) {
     Logger::error("ignoring bad keyboard mappings");
   }
 }

@@ -240,7 +240,7 @@ int JoyMap::loadMapping(const json& eventMappings, const EventMode mode)
       );
 
       i++;
-    } catch (json::exception) {
+    } catch (const json::exception&) {
       Logger::error("ignoring invalid joystick event");
     }
   }
