@@ -38,7 +38,7 @@ class PhosphorHandler
 
       @return  Averaged value of the two RGB colors
     */
-    static inline uInt32 getPixel(const uInt32 c, const uInt32 p)
+    static constexpr uInt32 getPixel(const uInt32 c, const uInt32 p)
     {
       // Mix current calculated frame with previous displayed frame
       const uInt8 rc = static_cast<uInt8>(c >> 16),
