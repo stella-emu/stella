@@ -473,7 +473,7 @@ void GameInfoDialog::addHighScoresTab()
   const int HBORDER = fontWidth * 1.25;
   const int VGAP = fontHeight / 4;
 
-  int xpos, ypos, lwidth, fwidth, pwidth, tabID;
+  int xpos, ypos, lwidth, pwidth, tabID;
   WidgetArray wid;
   VariantList items;
 
@@ -503,14 +503,13 @@ void GameInfoDialog::addHighScoresTab()
 
   ypos += lineHeight + VGAP;*/
 
-  pwidth = _font.getStringWidth("4");
+  pwidth = _font.getStringWidth("4"); // popup
 
-  int awidth = _font.getMaxCharWidth() * HSM::MAX_ADDR_CHARS + 4;
-  int vwidth = _font.getStringWidth("123") + 4;
+  int awidth = EditTextWidget::calcWidth(_font, HSM::MAX_ADDR_CHARS); // addresses
+  int vwidth = EditTextWidget::calcWidth(_font, 3); // values
+  int swidth = EditTextWidget::calcWidth(_font, HSM::MAX_SPECIAL_NAME); // special
+  int fwidth = EditTextWidget::calcWidth(_font, 3); // variants
 
-  fwidth = _font.getStringWidth("255") + 5;
-  vwidth = _font.getStringWidth("123") + 4;
-  int swidth = _font.getStringWidth("abcde") + 4;
   myVariationsLabel = new StaticTextWidget(myTab, _font, xpos, ypos + 1, lwidth, fontHeight,
                                            "Variations");
   myVariations = new EditTextWidget(myTab, _font, xpos + lwidth, ypos - 1, fwidth, lineHeight);
