@@ -21,7 +21,7 @@
 class OSystem;
 
 #include "Props.hxx"
-#include "json.hxx"
+#include "json_lib.hxx"
 
 using json = nlohmann::json;
 
