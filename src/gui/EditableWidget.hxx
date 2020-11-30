@@ -50,6 +50,7 @@ class EditableWidget : public Widget, public CommandSender
     ~EditableWidget() override = default;
 
     virtual void setText(const string& str, bool changed = false);
+    void setMaxLen(int len) { _maxLen = len; }
     const string& getText() const { return _editString; }
 
     bool isEditable() const	{ return _editable; }
@@ -68,7 +69,7 @@ class EditableWidget : public Widget, public CommandSender
     void receivedFocusWidget() override;
     void lostFocusWidget() override;
     void tick() override;
-    bool wantsToolTip() const override; 
+    bool wantsToolTip() const override;
 
     virtual void startEditMode() { setFlags(Widget::FLAG_WANTS_RAWDATA);   }
     virtual void endEditMode()   { clearFlags(Widget::FLAG_WANTS_RAWDATA); }
@@ -110,6 +111,7 @@ class EditableWidget : public Widget, public CommandSender
   private:
     bool   _editable{true};
     string _editString;
+    int _maxLen{0};
     unique_ptr<UndoHandler> myUndoHandler;
 
     int    _caretPos{0};

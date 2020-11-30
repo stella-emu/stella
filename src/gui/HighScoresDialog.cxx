@@ -178,6 +178,7 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
     myDeleteButtons[r] = new ButtonWidget(this, _font, xposDelete, ypos + 1, fontWidth * 2, fontHeight, "X",
                                           kDeleteSingle);
     myDeleteButtons[r]->setID(r);
+    myDeleteButtons[r]->setToolTip("Click to delete this high score.");
     wid.push_back(myDeleteButtons[r]);
 
     ypos += lineHeight + VGAP;
@@ -199,6 +200,7 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
                                           _w - HBORDER * 2, lineHeight);
 
   addDefaultsOKCancelBGroup(wid, _font, "Save", "Cancel", " Reset ");
+  _defaultWidget->setToolTip("Click to reset all high scores of this variation.");
   addToFocusList(wid);
 }
 
@@ -482,7 +484,6 @@ void HighScoresDialog::deleteRank(int rank)
     myHighScoreRank--;
     myEditRank--;
     myEditNameWidgets[myEditRank]->setText(myEditNameWidgets[myEditRank + 1]->getText());
-    setDirty();
   }
   myDirty = true;
 }

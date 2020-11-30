@@ -51,6 +51,8 @@ void EditableWidget::setText(const string& str, bool changed)
   for(char c: str)
     if(_filter(tolower(c)))
       _editString.push_back(c);
+  if(_maxLen)
+    _editString = _editString.substr(0, _maxLen);
 
   if(oldEditString != _editString)
     setDirty();
@@ -125,9 +127,12 @@ bool EditableWidget::tryInsertChar(char c, int pos)
   if(_filter(tolower(c)))
   {
     killSelectedText();
-    myUndoHandler->doChar(); // aggregate single chars
-    _editString.insert(pos, 1, c);
-    return true;
+    if(!_maxLen || _editString.length() < _maxLen)
+    {
+      myUndoHandler->doChar(); // aggregate single chars
+      _editString.insert(pos, 1, c);
+      return true;
+    }
   }
   return false;
 }
