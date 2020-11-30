@@ -41,6 +41,7 @@
         <li><a href="#Hotkeys">Hotkeys</a></li>
         <li><a href="#ControlMap">Controller Map</a></li>
         <li><a href="#TimeMachine">Stella's 'Time Machine'</a></li>
+        <li><a href="#HighScores">High Scores Saving</a></li>
       </ul>
     </li>
     <li><a href="#Advanced">Advanced Configuration</a><br>
@@ -303,6 +304,7 @@
       TIA sprites and collisions for each object separately</li>
     <li>Full system state save/load functionality</li>
     <li>Automatic save state creation ('Time Machine') which allows moving back and forth in the recorded timeline</li>
+    <li>High scores saving</li>
     <li>Cross-platform UI including a built-in ROM launcher frontend</li>
     <li>Built-in extensive debugger, including static analysis with the Distella disassembler
       and dynamic analysis at runtime by tracking code/graphics/data sections, and
@@ -593,7 +595,7 @@
   'listdelay' option; see <b>User Interface Settings</b> to change this setting.</p>
 
   <p>
-  <h3><b><u>Command Menu</u></b></h3>
+  <h3><a name ="CommandMenu"><b><u>Command Menu</u></b></a></h3>
 
   <p>While playing a game, normally one would use the keyboard shortcuts for controlling the
   'virtual' switches in Stella (ie, the commands associated with the
@@ -649,13 +651,13 @@
     </tr>
 
     <tr>
-      <td>Enter/exit options mode</td>
+      <td>Enter/exit <a href="#Options"><b>options</b></a> mode</td>
       <td>Tab/Escape</td>
       <td>Tab/Escape</td>
     </tr>
 
     <tr>
-      <td>Enter/exit command mode</td>
+      <td>Enter/exit <a href="#CommandMenu"><b>command</b></a> mode</td>
       <td>Backslash (\)</td>
       <td>Backslash (\)</td>
     </tr>
@@ -1809,7 +1811,11 @@
       <td>Shift-Control-Alt + s</td>
       <td>Shift-Control-Cmd + s</td>
     </tr>
-
+    <tr>
+      <td>Open the <a href="#HighScores"><b>High Scores</b></a> dialog.</td>
+      <td>Insert</td>
+      <td>Insert</td>
+    </tr>
     <tr>
       <td>Toggle 'Time Machine' mode</td>
       <td>Alt + t</td>
@@ -2270,6 +2276,58 @@
 
   <p>The 'Time Machine' mode can be configured by the user. For details see
   <a href="#Debugger"><b>Developer Options</b> - Time Machine</a></h2> tab.</p>
+  </blockquote></br>
+
+  <br>
+  <p><h2>
+  <a name="Highscores">High Scores</a></h2>
+  <blockquote>
+
+  <p>Stella allows saving high scores when the required definitions for a ROM
+  exist. For a number of popular games this has been done already. You are
+  welcome to help us with defining more games.</p>
+
+  <p><b>High Scores</b> dialog:</p>
+  <td><img src="graphics/highscores.png"></td>
+
+  <p>This dialog can be opened by pressing 'Insert' any time while a game is
+  played. It will read the current score from the game and allow the user
+  to add it as a new high score. Of course this makes most sense when a game
+  is over.
+
+  The dialog items are explained in the following two tables.</p>
+
+  <table border="1" cellpadding="4">
+    <tr><th>Item</th><th>Description</th></tr>
+    <tr><td>Top row</td><td>Displays the current game's name.</td></tr>
+    <tr><td>Variation</td><td>By default the current game's variation is
+            selected. By changing the variation, the high scores of other
+            variations can be reviewed.</td></tr>
+    <tr><td>High scores table</td><td>This table displays up to ten high scores
+            for the current game variation.
+        <ul>
+          <li>Besides 'Rank' and 'Score' an optional special value (e.g.
+          'Level', 'Wave' or 'Round') is displayed.</li>
+          <li>In the 'Name' column, the player's initials are displayed.
+          These can be entered when a new high score is added to the list.
+          </li>
+          <li>'Date' and 'Time' record the time when the high score was
+          added.</li>
+          <li>The buttons at the right allow deleting individual high
+          scores from the list.</li>
+        </ul>
+    </td></tr>
+    <tr><td>MD5</td><td>Displays the MD5 checksum of the current game. This can
+            be useful for comparing and verifying high scores.</td></tr>
+    <tr><td>Reset</td><td>Resets all high scores of the currently selected
+            variation.</td></tr>
+    <tr><td>Save</td><td>Saves the updated high scores and closes the dialog.
+    </td></tr>
+    <tr><td>Cancel</td><td>Closes the dialog without saving.</td></tr>
+  </table>
+
+  <p>For details how to configure high scores definintions for a game see
+  <a href="#HighScoreProps"><b>High Scores Properties</b></a></h2>.</p>
   </blockquote></br>
 
 <!-- /////////////////////////////////////////////////////////////////////////  -->
@@ -3277,7 +3335,7 @@
   <p>All settings can be changed within the integrated Options UI while Stella is
   running (unless otherwise noted; some settings require an application restart).
   The Options menu can be accessed from the ROM launcher by clicking the
-  <b>Options</b> button, or in-game by pressing the 'Tab' key.</p>
+  <b>Options...</b> button, or in-game by pressing the 'Tab' key.</p>
 
   <p><b>Options Menu</b> dialog:<br><br>
   <img src="graphics/options.png">
@@ -3748,6 +3806,8 @@
       </td>
     </tr>
   </table>
+    </li>
+    <br><li><b>High scores</b>: This option displays the <a href="#HighScores">High Scores</a> dialog for the selected ROM.</li>
     </li>
     <br><li><b>Reload listing</b>: Selecting this performs a reload of the
     current listing. It is an alternative to pressing the 'Control + r'
@@ -4646,6 +4706,42 @@ Ms Pac-Man (Stella extended codes):
       <td>Contains any special notes about playing the game.</td>
     </tr>
 
+  </table>
+
+  <h3><a name="HighScoreProps"><b>High Scores Properties</b></h3></a>
+  <p>
+    <img src="graphics/options_gameinfo_highscores.png">
+  </p>
+  <table CELLSPACING="10">
+    <tr>
+      <td VALIGN="TOP"><i>Cart.Highscore</i></td>
+      <td>Contains the high score definition data as JSON string.</br>
+      <p>It can be defined in the 'High Scores Properties' dialog as follows:</p>
+      <table cellpadding="2" border="1">
+        <tr><th>&nbsp;Item&nbsp;</th><th>Description</th></tr>
+        <tr><td>Enable High Scores</td><td>Check to enable high score definitions.</td></tr>
+        <tr><td>Variations</td><td>Defines the number of game variations.
+                                   If the number is set to 1, the following variation definitions are not required.</td></tr>
+        <tr><td>Address</td><td>Defines the address (in hex format) where the variation number is stored.</td></tr>
+        <tr><td>BCD</td><td>Defines whether the variation number is stored as decimal or BCD.</td></tr>
+        <tr><td>0-based</td><td>Defines whether the variation number is stored zero-based.</td></tr>
+        <tr><td>Digits</td><td>Select the number of score digits displayed.</td></tr>
+        <tr><td>0-digits</td><td>Select the number of trailing score digits which are fixed to 0.</td></tr>
+        <tr><td>BCD</td><td>Defines whether the score is stored as decimal or BCD.</td></tr>
+        <tr><td>Invert</td><td>Inverts the score ordering. Check if a lower score (e.g. a timer) is better.</td></tr>
+        <tr><td>Addresses</td><td>Defines the addresses (in hex format, highest byte first) where the score is stored.
+                The number of addresses required is defined by the number of digits and trailing, fixed 0-digits.</td></tr>
+        <tr><td>Special</td><td>Defines a short label (up to 5 chars) for the optional, game's special value (e.g. 'Level', 'Wave', 'Round'...).
+                                If no label is defined, the following special definitions are not required.</td></tr>
+        <tr><td>Address</td><td>Defines the address (in hex format) where the special number is stored.</td></tr>
+        <tr><td>BCD</td><td>Defines whether the special number is stored as decimal or BCD.</td></tr>
+        <tr><td>0-based</td><td>Defines whether the special number is stored is stored zero-based.</td></tr>
+        <tr><td>Note</td><td>Allows defining some free text which explains the high scores properties.</td></tr>
+      </table>
+      <p>To find the required definition values, you can use Stella's built-in <a href="debugger.html">debugger</a>.</p>
+      <p>Note: To verify the definitions, the current values of the addresses and the resulting score are displayed.</p>
+      </td>
+    </tr>
   </table>
 
   <p>The buttons at the bottom of the dialogs work as follows:

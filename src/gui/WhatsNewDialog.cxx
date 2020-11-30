@@ -47,6 +47,7 @@ WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent, const 
   add(ypos, "fixed navigation bug in Video & Audio settings dialog");
   add(ypos, "fixed autofire bug for trackball controllers");
 #else
+  add(ypos, "added high scores saving");
   add(ypos, "enhanced cut/copy/paste for text editing");
   add(ypos, "added undo and redo to text editing");
   add(ypos, "added wildcard support to launcher dialog filter");

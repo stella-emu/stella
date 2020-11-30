@@ -388,12 +388,19 @@ void FrameBuffer::update(UpdateMode mode)
 
     case EventHandlerState::HIGHSCORESMENU:
     {
+      myOSystem.highscoresMenu().tick();
       redraw |= myOSystem.highscoresMenu().needsRedraw();
       if(redraw)
       {
         clear();
         myTIASurface->render();
         myOSystem.highscoresMenu().draw(forceRedraw);
+      }
+      else if(rerender)
+      {
+        clear();
+        myTIASurface->render();
+        myOSystem.highscoresMenu().render();
       }
       break;  // EventHandlerState::HIGHSCORESMENU
     }
@@ -420,6 +427,12 @@ void FrameBuffer::update(UpdateMode mode)
         clear();
         myTIASurface->render();
         myOSystem.timeMachine().draw(forceRedraw);
+      }
+      else if(rerender)
+      {
+        clear();
+        myTIASurface->render();
+        myOSystem.timeMachine().render();
       }
       break;  // EventHandlerState::TIMEMACHINE
     }

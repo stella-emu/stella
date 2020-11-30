@@ -68,7 +68,7 @@ GameInfoDialog::GameInfoDialog(
   WidgetArray wid;
 
   // Set real dimensions
-  setSize(54 * fontWidth + HBORDER * 2,
+  setSize(56 * fontWidth + HBORDER * 2,
           _th + VGAP * 3 + lineHeight + 8 * (lineHeight + VGAP) + 1 * (infoLineHeight + VGAP) +
             ifont.getLineHeight() + VGAP + buttonHeight + VBORDER * 2,
           max_w, max_h);
@@ -496,7 +496,7 @@ void GameInfoDialog::addHighScoresTab()
   myHighScores = new CheckboxWidget(myTab, _font, xpos, ypos + 1, "Enable High Scores",
                                     kHiScoresChanged);
 
-  xpos += 20; ypos += lineHeight + VGAP;
+  xpos += CheckboxWidget::prefixSize(_font); ypos += lineHeight + VGAP * 2;
 
   /*myARMGame = new CheckboxWidget(myTab, _font, xpos, ypos + 1, "read ARM cartridge RAM",
                                  kHiScoresChanged);
@@ -505,7 +505,7 @@ void GameInfoDialog::addHighScoresTab()
 
   pwidth = _font.getStringWidth("4"); // popup
 
-  int awidth = EditTextWidget::calcWidth(_font, HSM::MAX_ADDR_CHARS); // addresses
+  int awidth = EditTextWidget::calcWidth(_font, 4); // addresses
   int vwidth = EditTextWidget::calcWidth(_font, 3); // values
   int swidth = EditTextWidget::calcWidth(_font, HSM::MAX_SPECIAL_NAME); // special
   int fwidth = EditTextWidget::calcWidth(_font, 3); // variants
@@ -514,33 +514,40 @@ void GameInfoDialog::addHighScoresTab()
                                            "Variations");
   myVariations = new EditTextWidget(myTab, _font, xpos + lwidth, ypos - 1, fwidth, lineHeight);
   myVariations->setTextFilter(fVars);
+  myVariations->setMaxLen(3);
+  myVariations->setToolTip("Define the number of game variations.");
   wid.push_back(myVariations);
 
-  myVarAddressLabel = new StaticTextWidget(myTab, _font, myVariations->getRight() + 16, ypos + 1,
-                                           "Address ");
+  myVarAddressLabel = new StaticTextWidget(myTab, _font, myVariations->getRight() + fontWidth * 2,
+                                           ypos + 1, "Address ");
   myVarAddress = new EditTextWidget(myTab, _font, myVarAddressLabel->getRight(), ypos - 1, awidth,
                                     lineHeight);
   myVarAddress->setTextFilter(fAddr);
+  myVarAddress->setMaxLen(4);
+  myVarAddress->setToolTip("Define the address (in hex format) where the variation number "
+                           "is stored.");
   wid.push_back(myVarAddress);
   myVarAddressVal = new EditTextWidget(myTab, _font, myVarAddress->getRight() + 2, ypos - 1,
                                        vwidth, lineHeight);
   myVarAddressVal->setEditable(false);
 
-  myVarsBCD = new CheckboxWidget(myTab, _font, myVarAddressVal->getRight() + 16, ypos + 1, "BCD",
-                                 kHiScoresChanged);
+  myVarsBCD = new CheckboxWidget(myTab, _font, myVarAddressVal->getRight() + fontWidth * 2,
+                                 ypos + 1, "BCD", kHiScoresChanged);
+  myVarsBCD->setToolTip("Check when the variation number is stored as BCD.");
   wid.push_back(myVarsBCD);
 
-  myVarsZeroBased = new CheckboxWidget(myTab, _font, myVarsBCD->getRight() + 16, ypos + 1,
-                                       "0-based", kHiScoresChanged);
+  myVarsZeroBased = new CheckboxWidget(myTab, _font, myVarsBCD->getRight() + fontWidth * 2,
+                                       ypos + 1, "0-based", kHiScoresChanged);
+  myVarsZeroBased->setToolTip("Check when the variation number is stored zero-based.");
   wid.push_back(myVarsZeroBased);
 
-  ypos += lineHeight + VGAP * 4;
+  ypos += lineHeight + VGAP * 3;
 
   myScoreLabel = new StaticTextWidget(myTab, _font, xpos, ypos + 1, "Score");
 
-  xpos += 20; ypos += lineHeight + VGAP;
+  xpos += fontWidth * 2; ypos += lineHeight + VGAP;
 
-  vwidth = _font.getStringWidth("AB") + 3;
+  vwidth = EditTextWidget::calcWidth(_font, 2); // address values
   items.clear();
   for (uInt32 i = 1; i <= HSM::MAX_SCORE_DIGITS; ++i)
     VarList::push_back(items, std::to_string(i), std::to_string(i));
@@ -548,6 +555,7 @@ void GameInfoDialog::addHighScoresTab()
   myScoreDigitsLabel = new StaticTextWidget(myTab, _font, xpos, ypos + 1, "Digits    ");
   myScoreDigits = new PopUpWidget(myTab, _font, myScoreDigitsLabel->getRight(), ypos, pwidth,
                                   lineHeight, items, "", 0, kHiScoresChanged);
+  myScoreDigits->setToolTip("Select the number of score digits displayed.");
   wid.push_back(myScoreDigits);
 
   items.clear();
@@ -560,14 +568,17 @@ void GameInfoDialog::addHighScoresTab()
   myTrailingZeroes = new PopUpWidget(myTab, _font, myTrailingZeroesLabel->getRight(), ypos,
                                      pwidth, lineHeight,
                                      items, "", 0, kHiScoresChanged);
+  myTrailingZeroes->setToolTip("Select the number of trailing score digits which are fixed to 0.");
   wid.push_back(myTrailingZeroes);
 
   myScoreBCD = new CheckboxWidget(myTab, _font, myVarsBCD->getLeft(), ypos + 1, "BCD",
                                   kHiScoresChanged);
+  myScoreBCD->setToolTip("Check when the score is stored as BCD.");
   wid.push_back(myScoreBCD);
 
-  myScoreInvert = new CheckboxWidget(myTab, _font, myScoreBCD->getRight() + 16, ypos + 1,
-                                     "Invert");
+  myScoreInvert = new CheckboxWidget(myTab, _font, myScoreBCD->getRight() + fontWidth * 2,
+                                     ypos + 1, "Invert");
+  myScoreInvert->setToolTip("Check when a lower score (e.g. a timer) is better.");
   wid.push_back(myScoreInvert);
 
   uInt32 s_xpos = xpos;
@@ -579,6 +590,9 @@ void GameInfoDialog::addHighScoresTab()
   {
     myScoreAddress[a] = new EditTextWidget(myTab, _font, s_xpos, ypos - 1, awidth, lineHeight);
     myScoreAddress[a]->setTextFilter(fAddr);
+    myScoreAddress[a]->setMaxLen(4);
+    myScoreAddress[a]->setToolTip("Define the addresses (in hex format, highest byte first) "
+                                  "where the score is stored.");
     wid.push_back(myScoreAddress[a]);
     s_xpos += myScoreAddress[a]->getWidth() + 2;
 
@@ -593,14 +607,18 @@ void GameInfoDialog::addHighScoresTab()
   myCurrentScoreLabel = new StaticTextWidget(myTab, _font, xpos, ypos + 1, "Current   ");
   myCurrentScore = new StaticTextWidget(myTab, _font, myCurrentScoreLabel->getRight(), ypos + 1,
                                         "12345678");
+  myCurrentScore->setToolTip("The score read using the current definitions.");
 
-  xpos -= 20; ypos += lineHeight + VGAP * 3;
+  xpos -= fontWidth * 2; ypos += lineHeight + VGAP * 3;
 
-  vwidth = _font.getStringWidth("123") + 4;
+  vwidth = EditTextWidget::calcWidth(_font, 3); // score values
   mySpecialLabel = new StaticTextWidget(myTab, _font, xpos, ypos + 1, "Special");
-  mySpecialName = new EditTextWidget(myTab, _font, mySpecialLabel->getRight() + 19, ypos - 1,
-                                     swidth, lineHeight);
+  mySpecialName = new EditTextWidget(myTab, _font, mySpecialLabel->getRight() + fontWidth,
+                                     ypos - 1, swidth, lineHeight);
   mySpecialName->setTextFilter(fText);
+  mySpecialName->setMaxLen(HSM::MAX_SPECIAL_NAME);
+  mySpecialName->setToolTip("Define a short label (up to 5 chars) for the optional,\ngame's "
+                            "special value (e.g. 'Level', 'Wave', 'Round'" + ELLIPSIS + ")");
   wid.push_back(mySpecialName);
 
   mySpecialAddressLabel = new StaticTextWidget(myTab, _font, myVarAddressLabel->getLeft(),
@@ -608,6 +626,9 @@ void GameInfoDialog::addHighScoresTab()
   mySpecialAddress = new EditTextWidget(myTab, _font, mySpecialAddressLabel->getRight(),
                                         ypos - 1, awidth, lineHeight);
   mySpecialAddress->setTextFilter(fAddr);
+  mySpecialAddress->setMaxLen(4);
+  mySpecialAddress->setToolTip("Define the address (in hex format) where the special "
+                               "number is stored.");
   wid.push_back(mySpecialAddress);
   mySpecialAddressVal = new EditTextWidget(myTab, _font, mySpecialAddress->getRight() + 2,
                                            ypos - 1, vwidth, lineHeight);
@@ -615,10 +636,12 @@ void GameInfoDialog::addHighScoresTab()
 
   mySpecialBCD = new CheckboxWidget(myTab, _font, myVarsBCD->getLeft(), ypos + 1, "BCD",
                                     kHiScoresChanged);
+  mySpecialBCD->setToolTip("Check when the special number is stored as BCD.");
   wid.push_back(mySpecialBCD);
 
-  mySpecialZeroBased = new CheckboxWidget(myTab, _font, mySpecialBCD->getRight() + 16, ypos + 1,
-                                          "0-based", kHiScoresChanged);
+  mySpecialZeroBased = new CheckboxWidget(myTab, _font, mySpecialBCD->getRight() + fontWidth * 2,
+                                          ypos + 1, "0-based", kHiScoresChanged);
+  mySpecialZeroBased->setToolTip("Check when the special number is stored zero-based.");
   wid.push_back(mySpecialZeroBased);
 
   ypos += lineHeight + VGAP * 3;
@@ -627,6 +650,7 @@ void GameInfoDialog::addHighScoresTab()
   myHighScoreNotes = new EditTextWidget(myTab, _font, mySpecialName->getLeft(), ypos - 1,
                                         _w - HBORDER - mySpecialName->getLeft() - 2 , lineHeight);
   myHighScoreNotes->setTextFilter(fText);
+  myHighScoreNotes->setToolTip("Define some free text which explains the high scores properties.");
   wid.push_back(myHighScoreNotes);
 
   // Add items for tab 4
