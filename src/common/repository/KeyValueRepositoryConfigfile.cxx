@@ -100,8 +100,8 @@ void KeyValueRepositoryConfigfile::save(const std::map<string, Variant>& values)
       << ";" << endl;
 
   // Write out each of the key and value pairs
-  for(const auto& pair: values)
-    out << pair.first << " = " << pair.second << endl;
+  for(const auto& [key, value]: values)
+    out << key << " = " << value << endl;
 
   try
   {

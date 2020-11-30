@@ -635,9 +635,9 @@ string DebuggerParser::saveScriptFile(string file)
 
   stringstream out;
   Debugger::FunctionDefMap funcs = debugger.getFunctionDefMap();
-  for(const auto& f: funcs)
-    if (!debugger.isBuiltinFunction(f.first))
-      out << "function " << f.first << " {" << f.second << "}" << endl;
+  for(const auto& [name, cmd]: funcs)
+    if (!debugger.isBuiltinFunction(name))
+      out << "function " << name << " {" << cmd << "}" << endl;
 
   for(const auto& w: myWatches)
     out << "watch " << w << endl;
@@ -1526,10 +1526,8 @@ void DebuggerParser::executeListfunctions()
   const Debugger::FunctionDefMap& functions = debugger.getFunctionDefMap();
 
   if(functions.size() > 0)
-  {
-    for(const auto& iter: functions)
-      commandResult << iter.first << " -> " << iter.second << endl;
-  }
+    for(const auto& [name, cmd]: functions)
+      commandResult << name << " -> " << cmd << endl;
   else
     commandResult << "no user-defined functions";
 }

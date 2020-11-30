@@ -147,27 +147,6 @@ bool HighScoresManager::get(const Properties& props, uInt32& numVariationsR,
 
   info.scoreAddr = getPropScoreAddr(jprops);
 
-  //if(jprops.contains(SCORE_ADDRESSES))
-  //{
-  //  const json addrProps = jprops.at(SCORE_ADDRESSES);
-
-  //  if(!addrProps.empty() && addrProps.is_array())
-  //  {
-  //    int a = 0;
-
-  //    for(const json& addresses : addrProps)
-  //    {
-  //      const string address = addresses.get<string>();
-
-  //      if(address.empty())
-  //        info.scoreAddr[a++] = DEFAULT_ADDRESS;
-  //      else
-  //        info.scoreAddr[a++] = fromHexStr(address);
-  //    }
-
-  //  }
-  //}
-
   return enabled();
 }
 
@@ -286,10 +265,7 @@ const string HighScoresManager::notes(const json& jprops) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*bool HighScoresManager::armRAM(const json& jprops) const
 {
-  //string armRAM = getPropIdx(jprops, PropType::Cart_Formats, IDX_ARM_RAM);
-
-  //return armRAM.empty() ? DEFAULT_ARM_RAM : armRAM != "0";
-  return false;
+  return getPropStr(jprops, ARM_RAM);
 }*/
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -320,9 +296,8 @@ uInt32 HighScoresManager::numAddrBytes(const json& jprops) const
 Int32 HighScoresManager::numVariations() const
 {
   json jprops;
-  uInt16 vars = numVariations(properties(jprops));
 
-  return vars;;
+  return numVariations(properties(jprops));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -584,7 +559,8 @@ Int32 HighScoresManager::fromBCD(uInt8 bcd) const
   return (bcd >> 4) * 10 + bcd % 16;
 }
 
-const string HighScoresManager::VARIATIONS_COUNT = "variations_number";
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const string HighScoresManager::VARIATIONS_COUNT = "variations_count";
 const string HighScoresManager::VARIATIONS_ADDRESS = "variations_address";
 const string HighScoresManager::VARIATIONS_BCD = "variations_bcd";
 const string HighScoresManager::VARIATIONS_ZERO_BASED = "variations_zero_based";

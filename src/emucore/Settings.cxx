@@ -253,7 +253,7 @@ void Settings::setRepository(shared_ptr<KeyValueRepository> repository)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Settings::load(const Options& options)
 {
-  Options fromFile =  myRespository->load();
+  Options fromFile = myRespository->load();
   for (const auto& opt: fromFile)
     setValue(opt.first, opt.second, false);
 
