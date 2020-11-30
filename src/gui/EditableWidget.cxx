@@ -127,7 +127,7 @@ bool EditableWidget::tryInsertChar(char c, int pos)
   if(_filter(tolower(c)))
   {
     killSelectedText();
-    if(!_maxLen || _editString.length() < _maxLen)
+    if(!_maxLen || static_cast<int>(_editString.length()) < _maxLen)
     {
       myUndoHandler->doChar(); // aggregate single chars
       _editString.insert(pos, 1, c);

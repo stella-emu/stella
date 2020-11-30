@@ -29,8 +29,8 @@
 
 #include "HighScoresDialog.hxx"
 
-static constexpr int BUTTON_GFX_W = 10, BUTTON_GFX_H = 10;
-static constexpr int BUTTON_GFX_W_LARGE = 16, BUTTON_GFX_H_LARGE = 16;
+static constexpr int BUTTON_GFX_H = 10;
+static constexpr int BUTTON_GFX_H_LARGE = 16;
 
 static constexpr std::array<uInt32, BUTTON_GFX_H> PREV_GFX = {
   0b0000110000,
