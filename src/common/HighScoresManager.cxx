@@ -470,18 +470,6 @@ Int32 HighScoresManager::convert(Int32 val, uInt32 maxVal, bool isBCD, bool zero
   return val;
 }
 
-#if 0
-void replaceAll(std::string& str, const std::string& from, const std::string& to) {
-  if(from.empty())
-    return;
-  size_t start_pos = 0;
-  while((start_pos = str.find(from, start_pos)) != std::string::npos) {
-    str.replace(start_pos, from.length(), to);
-    start_pos += to.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
-  }
-}
-#endif
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool HighScoresManager::getPropBool(const json& jprops, const string& key,
                                     bool defVal) const
