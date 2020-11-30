@@ -416,6 +416,7 @@ void HighScoresDialog::updateWidgets(bool init)
     }
   }
   _defaultWidget->setEnabled(myHighScores[0] > 0);
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -481,6 +482,7 @@ void HighScoresDialog::deleteRank(int rank)
     myHighScoreRank--;
     myEditRank--;
     myEditNameWidgets[myEditRank]->setText(myEditNameWidgets[myEditRank + 1]->getText());
+    setDirty();
   }
   myDirty = true;
 }

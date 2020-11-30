@@ -162,13 +162,13 @@ string JoyMap::getEventMappingDesc(int stick, const Event::Type event, const Eve
 {
   ostringstream buf;
 
-  for(auto item : myMap)
+  for (const auto& [_mapping, _event]: myMap)
   {
-    if(item.second == event && item.first.mode == mode)
+    if (_event == event && _mapping.mode == mode)
     {
       if(buf.str() != "")
         buf << ", ";
-      buf << "J" << stick << getDesc(event, item.first);
+      buf << "J" << stick << getDesc(event, _mapping);
     }
   }
   return buf.str();
@@ -179,9 +179,9 @@ JoyMap::JoyMappingArray JoyMap::getEventMapping(const Event::Type event, const E
 {
   JoyMappingArray map;
 
-  for(auto item : myMap)
-    if(item.second == event && item.first.mode == mode)
-      map.push_back(item.first);
+  for (const auto& [_mapping, _event]: myMap)
+    if (_event == event && _mapping.mode == mode)
+      map.push_back(_mapping);
 
   return map;
 }
@@ -191,23 +191,23 @@ json JoyMap::saveMapping(const EventMode mode) const
 {
   json eventMappings = json::array();
 
-  for(auto& item : myMap) {
-    if(item.first.mode != mode) continue;
+  for (const auto& [_mapping, _event]: myMap) {
+    if (_mapping.mode != mode) continue;
 
     json eventMapping = json::object();
 
-    eventMapping["event"] = item.second;
+    eventMapping["event"] = _event;
 
-    if(item.first.button != JOY_CTRL_NONE) eventMapping["button"] = item.first.button;
+    if (_mapping.button != JOY_CTRL_NONE) eventMapping["button"] = _mapping.button;
 
-    if(item.first.axis != JoyAxis::NONE) {
-      eventMapping["axis"] = item.first.axis;
-      eventMapping["axisDirection"] = item.first.adir;
+    if (_mapping.axis != JoyAxis::NONE) {
+      eventMapping["axis"] = _mapping.axis;
+      eventMapping["axisDirection"] = _mapping.adir;
     }
 
-    if(item.first.hat != -1) {
-      eventMapping["hat"] = item.first.hat;
-      eventMapping["hatDirection"] = item.first.hdir;
+    if (_mapping.hat != -1) {
+      eventMapping["hat"] = _mapping.hat;
+      eventMapping["hatDirection"] = _mapping.hdir;
     }
 
     eventMappings.push_back(eventMapping);
