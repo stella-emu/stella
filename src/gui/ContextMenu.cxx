@@ -347,7 +347,6 @@ void ContextMenu::drawCurrentSelection(int item)
   if(_selectedOffset != item)
   {
     _selectedOffset = item;
-    cerr << "ContextMenu" << endl;
     setDirty();
   }
 }
