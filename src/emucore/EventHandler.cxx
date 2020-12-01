@@ -1683,6 +1683,7 @@ bool EventHandler::changeStateByEvent(Event::Type type)
         handled = false;
       break;
 
+#ifdef GUI_SUPPORT
     case Event::HighScoresMenuMode:
       if (myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE
           || myState == EventHandlerState::TIMEMACHINE)
@@ -1697,6 +1698,7 @@ bool EventHandler::changeStateByEvent(Event::Type type)
       else
         handled = false;
       break;
+#endif
 
     case Event::TimeMachineMode:
       if(myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE
