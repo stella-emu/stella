@@ -605,7 +605,8 @@ void HighScoresDialog::loadHighScores(Int32 variation)
 
     if(getline(in, highscores) && highscores.length() != 0)
     {
-      json hsData = json::parse(highscores);
+      cerr << endl << highscores << endl;
+      const json hsData = json::parse(highscores);
 
       // First test if we have a valid header
       // If so, do a complete high scores load
@@ -620,7 +621,9 @@ void HighScoresDialog::loadHighScores(Int32 variation)
       }
     }
   }
-  catch(...) {
+  catch(const std::exception& ex)
+  {
+    //@CS: 'const json hsData = json::parse(highscores)' causes this
     buf << "Invalid data in high scores for variation " << variation << " file";
   }
   instance().frameBuffer().showTextMessage(buf.str());
@@ -641,7 +644,7 @@ bool HighScoresDialog::save(FilesystemNode& node, Int32 variation) const
 
     json jScores = json::array();
 
-    for(uInt32 r = 0; r < NUM_RANKS; ++r)
+    for(uInt32 r = 0; r < NUM_RANKS && myHighScores[r]; ++r)
     {
       json jScore = json::object();
 
@@ -654,10 +657,8 @@ bool HighScoresDialog::save(FilesystemNode& node, Int32 variation) const
     }
     jData[SCORES] = jScores;
 
-    //stringstream ss(jData.dump());
-    //node.write(ss);
-
-    node.write(stringstream(jData.dump()));
+    stringstream ss(jData.dump());
+    node.write(ss);
   }
   catch(...)
   {
