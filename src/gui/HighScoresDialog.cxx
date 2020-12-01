@@ -534,24 +534,6 @@ void HighScoresDialog::saveHighScores(Int32 variation) const
 
   buf << instance().stateDir() << cartName() << ".hs" << variation;
 
-  //// Make sure the file can be opened for writing
-  //Serializer out(buf.str());
-
-  //if(!out)
-  //{
-  //  buf.str("");
-  //  buf << "Can't open/save to high scores file for variation " << variation;
-  //  instance().frameBuffer().showTextMessage(buf.str());
-  //}
-
-  //// Do a complete high scores save
-  //if(!save(out, variation))
-  //{
-  //  buf.str("");
-  //  buf << "Error saving high scores for variation" << variation;
-  //  instance().frameBuffer().showTextMessage(buf.str());
-  //}
-
   // Make sure the file can be opened for writing
   FilesystemNode node(buf.str());
 
@@ -589,7 +571,6 @@ void HighScoresDialog::loadHighScores(Int32 variation)
   FilesystemNode node(buf.str());
   stringstream in;
 
-  buf.str("");
   // Make sure the file can be opened
   try {
     node.read(in);
@@ -600,12 +581,10 @@ void HighScoresDialog::loadHighScores(Int32 variation)
     string highscores;
 
     buf.str("");
-    // Make sure the file can be opened
-    node.read(in);
 
     if(getline(in, highscores) && highscores.length() != 0)
     {
-      cerr << endl << highscores << endl;
+      cerr << endl << highscores << endl << endl;
       const json hsData = json::parse(highscores);
 
       // First test if we have a valid header
@@ -621,9 +600,8 @@ void HighScoresDialog::loadHighScores(Int32 variation)
       }
     }
   }
-  catch(const std::exception& ex)
+  catch(...)
   {
-    //@CS: 'const json hsData = json::parse(highscores)' causes this
     buf << "Invalid data in high scores for variation " << variation << " file";
   }
   instance().frameBuffer().showTextMessage(buf.str());
