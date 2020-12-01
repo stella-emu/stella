@@ -164,7 +164,7 @@ class TIASurface
     /**
       This method should be called to draw the TIA image(s) to the screen.
     */
-    void render();
+    void render(bool shade = false);
 
     /**
       This method prepares the current frame for taking a snapshot.
@@ -208,7 +208,7 @@ class TIASurface
     FrameBuffer& myFB;
     TIA* myTIA{nullptr};
 
-    shared_ptr<FBSurface> myTiaSurface, mySLineSurface, myBaseTiaSurface;
+    shared_ptr<FBSurface> myTiaSurface, mySLineSurface, myBaseTiaSurface, myShadeSurface;
 
     // NTSC object to use in TIA rendering mode
     NTSCFilter myNTSCFilter;

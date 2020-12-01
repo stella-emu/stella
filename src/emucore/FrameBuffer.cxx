@@ -346,10 +346,10 @@ void FrameBuffer::update(UpdateMode mode)
       {
         myPausedCount = uInt32(7 * myOSystem.frameRate());
         showTextMessage("Paused", MessagePosition::MiddleCenter);
-        myTIASurface->render();
+        myTIASurface->render(true);
       }
       if(rerender)
-        myTIASurface->render();
+        myTIASurface->render(true);
       break;  // EventHandlerState::PAUSE
     }
 
@@ -361,13 +361,13 @@ void FrameBuffer::update(UpdateMode mode)
       if(redraw)
       {
         clear();
-        myTIASurface->render();
+        myTIASurface->render(true);
         myOSystem.menu().draw(forceRedraw);
       }
       else if(rerender)
       {
         clear();
-        myTIASurface->render();
+        myTIASurface->render(true);
         myOSystem.menu().render();
       }
       break;  // EventHandlerState::OPTIONSMENU
@@ -380,7 +380,7 @@ void FrameBuffer::update(UpdateMode mode)
       if(redraw)
       {
         clear();
-        myTIASurface->render();
+        myTIASurface->render(true);
         myOSystem.commandMenu().draw(forceRedraw);
       }
       break;  // EventHandlerState::CMDMENU
@@ -393,13 +393,13 @@ void FrameBuffer::update(UpdateMode mode)
       if(redraw)
       {
         clear();
-        myTIASurface->render();
+        myTIASurface->render(true);
         myOSystem.highscoresMenu().draw(forceRedraw);
       }
       else if(rerender)
       {
         clear();
-        myTIASurface->render();
+        myTIASurface->render(true);
         myOSystem.highscoresMenu().render();
       }
       break;  // EventHandlerState::HIGHSCORESMENU
@@ -412,7 +412,7 @@ void FrameBuffer::update(UpdateMode mode)
       if(redraw)
       {
         clear();
-        myTIASurface->render();
+        myTIASurface->render(true);
         myOSystem.messageMenu().draw(forceRedraw);
       }
       break;  // EventHandlerState::MESSAGEMENU
