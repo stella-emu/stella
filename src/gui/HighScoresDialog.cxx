@@ -534,10 +534,28 @@ void HighScoresDialog::saveHighScores(Int32 variation) const
 
   buf << instance().stateDir() << cartName() << ".hs" << variation;
 
-  // Make sure the file can be opened for writing
-  Serializer out(buf.str());
+  //// Make sure the file can be opened for writing
+  //Serializer out(buf.str());
 
-  if(!out)
+  //if(!out)
+  //{
+  //  buf.str("");
+  //  buf << "Can't open/save to high scores file for variation " << variation;
+  //  instance().frameBuffer().showTextMessage(buf.str());
+  //}
+
+  //// Do a complete high scores save
+  //if(!save(out, variation))
+  //{
+  //  buf.str("");
+  //  buf << "Error saving high scores for variation" << variation;
+  //  instance().frameBuffer().showTextMessage(buf.str());
+  //}
+
+  // Make sure the file can be opened for writing
+  FilesystemNode node(buf.str());
+
+  if(!node.isWritable())
   {
     buf.str("");
     buf << "Can't open/save to high scores file for variation " << variation;
@@ -545,13 +563,12 @@ void HighScoresDialog::saveHighScores(Int32 variation) const
   }
 
   // Do a complete high scores save
-  if(!save(out, variation))
+  if(!save(node, variation))
   {
     buf.str("");
     buf << "Error saving high scores for variation" << variation;
     instance().frameBuffer().showTextMessage(buf.str());
   }
-
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -569,53 +586,78 @@ void HighScoresDialog::loadHighScores(Int32 variation)
 
   buf << instance().stateDir() << cartName() << ".hs" << variation;
 
-  // Make sure the file can be opened in read-only mode
-  Serializer in(buf.str(), Serializer::Mode::ReadOnly);
+  FilesystemNode node(buf.str());
+  stringstream in;
 
-  if(!in)
-    return;
-
-  // First test if we have a valid header
-  // If so, do a complete high scores load
   buf.str("");
-  try
-  {
-    if (in.getString() != HIGHSCORE_HEADER)
-      buf << "Incompatible high scores for variation " << variation << " file";
-    else
+  // Make sure the file can be opened
+  try {
+    node.read(in);
+  }
+  catch(...) { return;  }
+
+  try {
+    string highscores;
+
+    buf.str("");
+    // Make sure the file can be opened
+    node.read(in);
+
+    if(getline(in, highscores) && highscores.length() != 0)
     {
-      if (load(in, variation))
-        return;
+      json hsData = json::parse(highscores);
+
+      // First test if we have a valid header
+      // If so, do a complete high scores load
+      if(!hsData.contains(VERSION) || hsData.at(VERSION) != HIGHSCORE_HEADER)
+        buf << "Incompatible high scores for variation " << variation << " file";
       else
-        buf << "Invalid data in high scores for variation " << variation << " file";
+      {
+        if(load(hsData, variation))
+          return;
+        else
+          buf << "Invalid data in high scores for variation " << variation << " file";
+      }
     }
   }
-  catch(...)
-  {
+  catch(...) {
     buf << "Invalid data in high scores for variation " << variation << " file";
   }
-
   instance().frameBuffer().showTextMessage(buf.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool HighScoresDialog::save(Serializer& out, Int32 variation) const
+bool HighScoresDialog::save(FilesystemNode& node, Int32 variation) const
 {
   try
   {
+    json jData = json::object();
+
     // Add header so that if the high score format changes in the future,
     // we'll know right away, without having to parse the rest of the file
-    out.putString(HIGHSCORE_HEADER);
+    jData[VERSION] = HIGHSCORE_HEADER;
+    jData[MD5] = myMD5;
+    jData[VARIATION] = variation;
 
-    out.putString(myMD5);
-    out.putInt(variation);
-    for (uInt32 r = 0; r < NUM_RANKS; ++r)
+    json jScores = json::array();
+
+    for(uInt32 r = 0; r < NUM_RANKS; ++r)
     {
-      out.putInt(myHighScores[r]);
-      out.putInt(mySpecials[r]);
-      out.putString(myNames[r]);
-      out.putString(myDates[r]);
+      json jScore = json::object();
+
+      jScore[SCORE] = myHighScores[r];
+      jScore[SPECIAL] = mySpecials[r];
+      jScore[NAME] = myNames[r];
+      jScore[DATE] = myDates[r];
+
+      jScores.push_back(jScore);
     }
+    jData[SCORES] = jScores;
+
+    //stringstream ss(jData.dump());
+    //node.write(ss);
+
+    node.write(stringstream(jData.dump()));
   }
   catch(...)
   {
@@ -626,27 +668,28 @@ bool HighScoresDialog::save(Serializer& out, Int32 variation) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool HighScoresDialog::load(Serializer& in, Int32 variation)
+bool HighScoresDialog::load(const json& hsData, Int32 variation)
 {
-  try
-  {
-    if (in.getString() != myMD5)
-      return false;
-    if (Int32(in.getInt()) != variation)
-      return false;
-
-    for (uInt32 r = 0; r < NUM_RANKS; ++r)
-    {
-      myHighScores[r] = in.getInt();
-      mySpecials[r] = in.getInt();
-      myNames[r] = in.getString();
-      myDates[r] = in.getString();
-    }
-  }
-  catch(...)
-  {
-    cerr << "ERROR: HighScoresDialog::load() exception\n";
+  if(!hsData.contains(MD5) || hsData.at(MD5) != myMD5
+    || !hsData.contains(VARIATION) || hsData.at(VARIATION) != variation
+    || !hsData.contains(SCORES))
     return false;
+
+  const json& jScores = hsData.at(SCORES);
+
+  if(!jScores.empty() && jScores.is_array())
+  {
+    uInt32 r = 0;
+    for(const json& jScore : jScores)
+    {
+      if(jScore.contains(SCORE)) myHighScores[r] = jScore.at(SCORE).get<Int32>();
+      if(jScore.contains(SPECIAL)) mySpecials[r] = jScore.at(SPECIAL).get<Int32>();
+      if(jScore.contains(NAME)) myNames[r] = jScore.at(NAME).get<string>();
+      if(jScore.contains(DATE)) myDates[r] = jScore.at(DATE).get<string>();
+
+      if(++r == NUM_RANKS)
+        break;
+    }
   }
   return true;
 }
@@ -666,3 +709,13 @@ string HighScoresDialog::now() const
 
   return ss.str();
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const string HighScoresDialog::VERSION = "version";
+const string HighScoresDialog::MD5 = "md5";
+const string HighScoresDialog::VARIATION = "variation";
+const string HighScoresDialog::SCORES = "scores";
+const string HighScoresDialog::SCORE = "score";
+const string HighScoresDialog::SPECIAL = "special";
+const string HighScoresDialog::NAME = "name";
+const string HighScoresDialog::DATE = "date";

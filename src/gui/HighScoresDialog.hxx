@@ -33,6 +33,11 @@ class Serializer;
 
 #include "Menu.hxx"
 #include "Dialog.hxx"
+#include "FSNode.hxx"
+#include "json_lib.hxx"
+
+using json = nlohmann::json;
+
 
 /**
   The dialog for displaying high scores in Stella.
@@ -66,20 +71,20 @@ class HighScoresDialog : public Dialog
     void loadHighScores(Int32 variation);
 
     /**
-      Saves the current high scores for this game and variation to the given Serializer.
+      Saves the current high scores for this game and variation to the given file system node.
 
-      @param out The serializer device to save to.
-      @return The result of the save.  True on success, false on failure.
+      @param node  The file system node to save to.
+      @return  The result of the save.  True on success, false on failure.
     */
-    bool save(Serializer& out, Int32 variation) const;
+    bool save(FilesystemNode& node, Int32 variation) const;
 
     /**
-      Loads the current high scores for this game and variation from the given Serializer.
+      Loads the current high scores for this game and variation from the given JSON object.
 
-      @param in The Serializer device to load from.
+      @param  hsData  The JSON to parse
       @return The result of the load.  True on success, false on failure.
     */
-    bool load(Serializer& in, Int32 variation);
+    bool load(const json& hsData, Int32 variation);
 
     string now() const;
 
@@ -91,6 +96,16 @@ class HighScoresDialog : public Dialog
       kConfirmSave      = 'CfSv',
       kCancelSave       = 'CcSv'
     };
+
+  private:
+    static const string VERSION;
+    static const string MD5;
+    static const string VARIATION;
+    static const string SCORES;
+    static const string SCORE;
+    static const string SPECIAL;
+    static const string NAME;
+    static const string DATE;
 
   private:
     bool myUserDefVar;      // allow the user to define the variation
