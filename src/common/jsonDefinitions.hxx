@@ -27,7 +27,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(JoyHatDir, {
   {JoyHatDir::LEFT, "left"},
   {JoyHatDir::RIGHT, "right"},
   {JoyHatDir::UP, "up"}
-});
+})
 
 NLOHMANN_JSON_SERIALIZE_ENUM(EventMode, {
   {EventMode::kEditMode, "kEditMode"},
@@ -39,7 +39,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EventMode, {
   {EventMode::kCompuMateMode, "kCompuMateMode"},
   {EventMode::kCommonMode, "kCommonMode"},
   {EventMode::kNumModes, "kNumModes"},
-});
+})
 
 NLOHMANN_JSON_SERIALIZE_ENUM(Event::Type, {
   {Event::NoType, "NoType"},
