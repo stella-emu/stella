@@ -2280,19 +2280,20 @@
 
   <br>
   <p><h2>
-  <a name="Highscores">High Scores</a></h2>
+  <a name="Highscores">High Scores Saving</a></h2>
   <blockquote>
 
-  <p>Stella allows saving high scores when the required definitions for a ROM
-  exist. For a number of popular games this has been done already. You are
-  welcome to help us with defining more games.</p>
+  <p>Stella allows the user to save high scores when the required definitions
+  for a ROM exist. For a number of popular classic and homebrew games (see <b>
+  <a href="#HighScoreGames">High Scores - supported games</a></b>) this has
+  been done already.</p>
 
   <p><b>High Scores</b> dialog:</p>
   <td><img src="graphics/highscores.png"></td>
 
   <p>This dialog can be opened by pressing 'Insert' any time while a game is
-  played. It will read the current score from the game and allow the user
-  to add it as a new high score. Of course this makes most sense when a game
+  played. It will provide the current variation and score and allow the user
+  to add this as a new high score. Of course this makes most sense when a game
   is over.
 
   The dialog items are explained in the following two tables.</p>
@@ -2309,10 +2310,8 @@
           <li>Besides 'Rank' and 'Score' an optional special value (e.g.
           'Level', 'Wave' or 'Round') is displayed.</li>
           <li>In the 'Name' column, the player's initials are displayed.
-          These can be entered when a new high score is added to the list.
-          </li>
-          <li>'Date' and 'Time' record the time when the high score was
-          added.</li>
+          These can be entered when a new high score is added to the list.</li>
+          <li>'Date' and 'Time' record when the high score was added.</li>
           <li>The buttons at the right allow deleting individual high
           scores from the list.</li>
         </ul>
@@ -4738,7 +4737,8 @@ Ms Pac-Man (Stella extended codes):
         <tr><td>0-based</td><td>Defines whether the special number is stored is stored zero-based.</td></tr>
         <tr><td>Note</td><td>Allows defining some free text which explains the high scores properties.</td></tr>
       </table>
-      <p>To find the required definition values, you can use Stella's built-in <a href="debugger.html">debugger</a>.</p>
+      <p>To find the required definition values, you can use Stella's built-in <a href="debugger.html">debugger</a>.
+      Please share your results, so that we can extend the list of supported games.</p>
       <p>Note: To verify the definitions, the current values of the addresses and the resulting score are displayed.</p>
       </td>
     </tr>
@@ -4843,6 +4843,60 @@ Ms Pac-Man (Stella extended codes):
   for changes to this file to take effect.</p>
   </blockquote>
 
+  </br><h2><b><a name="HighScoreGames">High Scores - supported games</a></b></h2>
+  <blockquote>
+  The following games (incl. TV system variations and many hacks, excluding
+  prototypes) are currently configured to save high scores.
+
+  <h3>Classic games</h3>
+  <ul>
+   <li>Asteroids (Atari)</li>
+   <li>Atlantis (Imagic)</li>
+   <li>Barnstorming (Activision)</li>
+   <li>Berzerk (Atari)</li>
+   <li>Breakout (Atari)</li>
+   <li>Centipede (Atari)</li>
+   <li>Chopper Comand (Activision)</li>
+   <li>Cosmic Ark (Imagic)</li>
+   <li>Decathlon (Activision)</li>
+   <li>Demon Attack (Imagic)</li>
+   <li>Dig Dug (Atari)</li>
+   <li>Donkey Kong (Coleco)</li>
+   <li>Dragster (Activision)</li>
+   <li>Enduro (Activision)</li>
+   <li>Frogger (Parker Bros)</li>
+   <li>Frostbite (Activision)</li>
+   <li>Galaxian (Atari)</li>
+   <li>Grand Prix (Activision)</li>
+   <li>H.E.R.O. (Activision)</li>
+   <li>Jungle Hunt (Atari)</li>
+   <li>Keystone Kapers (Activision)</li>
+   <li>MegaMania (Activision)</li>
+   <li>Missile Command (Atari)</li>
+   <li>Moon Patrol (Atari)</li>
+   <li>Ms. Pac-Man (Atari)</li>
+   <li>Phoenix (Atari)</li>
+   <li>Pitfall! (Activision)</li>
+   <li>Seaquest (Activision)</li>
+   <li>Sky Jinks (Activision)</li>
+   <li>Space Invaders (Atari)</li>
+   <li>StarMaster (Activision)</li>
+   <li>Vanguard (Atari)</li>
+   <li>Yars' Revenge (Atari)</li>
+  </ul>
+  <h3>Homebrews</h3>
+  <ul>
+   <li>Draconian (SpiceWare, Darrell Spice Jr.)</li>
+   <li>Lady Bug (ChampGames, John W. Champeau)</li>
+   <li>Oystron (Piero Cavina)</li>
+   <li>Seawolf (Manuel Rotschkar)</li>
+   <li>Stay Frosty 2 (SpiceWare, Darrell Spice Jr.)</li>
+   <li>SWOOPS! (Thomas Jentzsch)</li>
+   <li>Ultra SCSIcide (Joe Grand)</li>
+  </ul>
+  <p>Everyone is more than welcome to help us to fill the gaps by defining more
+  games.</p>
+  </blockquote>
 
 <!-- /////////////////////////////////////////////////////////////////////////  -->
   <br><br>

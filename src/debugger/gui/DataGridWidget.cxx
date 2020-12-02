@@ -62,6 +62,8 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
 
   // Set lower and upper bounds to sane values
   setRange(0, 1 << bits);
+  // Limit number of chars allowed
+  setMaxLen(colchars);
 
   // Add a scrollbar if necessary
   if(useScrollbar)
