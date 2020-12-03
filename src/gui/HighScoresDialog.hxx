@@ -18,9 +18,6 @@
 #ifndef HIGHSCORE_DIALOG_HXX
 #define HIGHSCORE_DIALOG_HXX
 
-#define HIGHSCORE_HEADER "06000000highscores"
-
-//class Properties;
 class CommandSender;
 class DialogContainer;
 class OSystem;
@@ -33,14 +30,14 @@ class Serializer;
 
 #include "Menu.hxx"
 #include "Dialog.hxx"
-#include "FSNode.hxx"
+#include "HighScoresManager.hxx"
 #include "json_lib.hxx"
 
 using json = nlohmann::json;
 
 
 /**
-  The dialog for displaying high scores in Stella.
+  The dialog for displaying high myScores in Stella.
 
   @author  Thomas Jentzsch
 */
@@ -67,25 +64,6 @@ class HighScoresDialog : public Dialog
     bool handleDirty();
 
     string cartName() const;
-    void saveHighScores(Int32 variation) const;
-    void loadHighScores(Int32 variation);
-
-    /**
-      Saves the current high scores for this game and variation to the given file system node.
-
-      @param node  The file system node to save to.
-      @return  The result of the save.  True on success, false on failure.
-    */
-    bool save(FilesystemNode& node, Int32 variation) const;
-
-    /**
-      Loads the current high scores for this game and variation from the given JSON object.
-
-      @param  hsData  The JSON to parse
-      @return The result of the load.  True on success, false on failure.
-    */
-    bool load(const json& hsData, Int32 variation);
-
     string now() const;
 
     enum {
@@ -98,16 +76,6 @@ class HighScoresDialog : public Dialog
     };
 
   private:
-    static const string VERSION;
-    static const string MD5;
-    static const string VARIATION;
-    static const string SCORES;
-    static const string SCORE;
-    static const string SPECIAL;
-    static const string NAME;
-    static const string DATE;
-
-  private:
     bool myUserDefVar;      // allow the user to define the variation
     bool myDirty;
     bool myHighScoreSaved;  // remember if current high score was already saved (avoids double HS)
@@ -115,18 +83,12 @@ class HighScoresDialog : public Dialog
     int _max_w;
     int _max_h;
 
-    Int32 myVariation;
-
     string myInitials;
     Int32 myEditRank;
     Int32 myHighScoreRank;
     string myNow;
 
-    Int32 myHighScores[NUM_RANKS];
-    Int32 mySpecials[NUM_RANKS];
-    string myNames[NUM_RANKS];
-    string myDates[NUM_RANKS];
-    string myMD5;
+    HSM::ScoresData myScores;
 
     StaticTextWidget* myGameNameWidget{nullptr};
 
@@ -146,6 +108,7 @@ class HighScoresDialog : public Dialog
 
     StaticTextWidget* myNotesWidget{nullptr};
     StaticTextWidget* myMD5Widget{nullptr};
+    StaticTextWidget* myCheckSumWidget{nullptr};
 
     Menu::AppMode myMode{Menu::AppMode::emulator};
 

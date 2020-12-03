@@ -470,6 +470,7 @@ void GameInfoDialog::addHighScoresTab()
     fontWidth = _font.getMaxCharWidth();
   const int VBORDER = fontHeight / 2;
   const int HBORDER = fontWidth * 1.25;
+  const int INDENT = fontWidth * 2;
   const int VGAP = fontHeight / 4;
 
   int xpos, ypos, lwidth, pwidth, tabID;
@@ -544,7 +545,7 @@ void GameInfoDialog::addHighScoresTab()
 
   myScoreLabel = new StaticTextWidget(myTab, _font, xpos, ypos + 1, "Score");
 
-  xpos += fontWidth * 2; ypos += lineHeight + VGAP;
+  xpos += INDENT; ypos += lineHeight + VGAP;
 
   vwidth = EditTextWidget::calcWidth(_font, 2); // address values
   items.clear();
@@ -608,7 +609,7 @@ void GameInfoDialog::addHighScoresTab()
                                         "12345678");
   myCurrentScore->setToolTip("The score read using the current definitions.");
 
-  xpos -= fontWidth * 2; ypos += lineHeight + VGAP * 3;
+  xpos -= INDENT; ypos += lineHeight + VGAP * 3;
 
   vwidth = EditTextWidget::calcWidth(_font, 3); // score values
   mySpecialLabel = new StaticTextWidget(myTab, _font, xpos, ypos + 1, "Special");
@@ -848,7 +849,7 @@ void GameInfoDialog::loadCartridgeProperties(const Properties& props)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::loadHighScoresProperties(const Properties& props)
 {
-  HSM::ScoresInfo info;
+  HSM::ScoresProps info;
   uInt32 numVariations;
   bool enable = instance().highScores().get(props, numVariations, info);
 
@@ -994,7 +995,7 @@ void GameInfoDialog::saveConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::saveHighScoresProperties()
 {
-  HSM::ScoresInfo info;
+  HSM::ScoresProps info;
 
   if (myHighScores->getState())
   {
@@ -1282,7 +1283,7 @@ void GameInfoDialog::updateHighScoresWidgets()
   setAddressVal(mySpecialAddress, mySpecialAddressVal, mySpecialBCD->getState(),
                 mySpecialZeroBased->getState());
 
-  // update score RAM values and resulting scores
+  // update score RAM values and resulting myScores
   HSM::ScoreAddresses scoreAddr;
 
   for(uInt32 a = 0; a < HSM::MAX_SCORE_ADDR; ++a)

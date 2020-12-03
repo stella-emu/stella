@@ -124,7 +124,7 @@ uInt32 HighScoresManager::numVariations(const json& jprops) const
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool HighScoresManager::get(const Properties& props, uInt32& numVariationsR,
-                            ScoresInfo& info) const
+                            ScoresProps& info) const
 {
   json jprops = properties(props);
 
@@ -152,7 +152,7 @@ bool HighScoresManager::get(const Properties& props, uInt32& numVariationsR,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void HighScoresManager::set(Properties& props, uInt32 numVariations,
-                            const ScoresInfo& info) const
+                            const ScoresProps& info) const
 {
   json jprops = json::object();
 
@@ -406,6 +406,66 @@ const string HighScoresManager::formattedScore(Int32 score, Int32 width) const
   return buf.str();
 }
 
+void HighScoresManager::addCheckByte(uInt32& sum, uInt16& r, uInt8 value) const
+{
+  constexpr uInt16 C1 = 52845, C2 = 22719;
+
+  uInt8 cipher = (value ^ (r >> 8));
+  r = (cipher + r) * C1 + C2;
+  sum += cipher;
+}
+
+void HighScoresManager::addCheckWord(uInt32& sum, uInt16& r, uInt16 value) const
+{
+  addCheckByte(sum, r, value >> 8);
+  addCheckByte(sum, r, value & 0xff);
+}
+
+string HighScoresManager::checkSumProps() const
+{
+  json jprops;
+  properties(jprops);
+
+  uInt32 sum = 0;
+  uInt16 r = 55665;
+
+  addCheckWord(sum, r, varAddress(jprops));
+  addCheckByte(sum, r, numVariations());
+  //addCheckByte(sum, r, variation());
+  addCheckByte(sum, r, varBCD(jprops));
+  addCheckByte(sum, r, varZeroBased(jprops));
+
+  uInt32 addrBytes = numAddrBytes(jprops);
+  HSM::ScoreAddresses addr = getPropScoreAddr(jprops);
+  for(uInt32 a = 0; a < addrBytes; ++a)
+    addCheckWord(sum, r, addr[a]);
+  addCheckByte(sum, r, numDigits(jprops));
+  addCheckByte(sum, r, trailingZeroes(jprops));
+  addCheckByte(sum, r, scoreBCD(jprops));
+  addCheckWord(sum, r, scoreInvert(jprops));
+
+  addCheckWord(sum, r, specialAddress(jprops));
+  addCheckByte(sum, r, specialBCD(jprops));
+  addCheckByte(sum, r, specialZeroBased(jprops));
+
+  ostringstream ss;
+  ss << Base::HEX4 << (sum & 0xffff ^ (sum >> 16) ^ r);
+  return ss.str();
+}
+
+string HighScoresManager::checkSumScores(const string& data) const
+{
+  uInt32 sum = 0;
+  uInt16 r = 55665;
+
+  for(auto& c : data)
+    addCheckByte(sum, r, c);
+
+  ostringstream ss;
+  ss << Base::HEX4 << (sum & 0xffff ^ (sum >> 16) ^ r);
+  return ss.str();
+}
+
 bool HighScoresManager::scoreInvert() const
 {
   json jprops;
@@ -550,6 +610,173 @@ Int32 HighScoresManager::fromBCD(uInt8 bcd) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void HighScoresManager::saveHighScores(const string& cartName, ScoresData& data) const
+{
+  ostringstream buf;
+
+  buf << myOSystem.stateDir() << cartName << ".hs" << data.variation;
+
+  // Make sure the file can be opened for writing
+  FilesystemNode node(buf.str());
+
+  if(!node.isWritable())
+  {
+    buf.str("");
+    buf << "Can't open/save to high scores file for variation " << data.variation;
+    myOSystem.frameBuffer().showTextMessage(buf.str());
+  }
+
+  // Do a complete high data save
+  if(!save(node, data))
+  {
+    buf.str("");
+    buf << "Error saving high scores for variation" << data.variation;
+    myOSystem.frameBuffer().showTextMessage(buf.str());
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void HighScoresManager::loadHighScores(const string& cartName, ScoresData& data)
+{
+  for(uInt32 r = 0; r < NUM_RANKS; ++r)
+  {
+    data.scores[r].score = 0;
+    data.scores[r].special = 0;
+    data.scores[r].name = "";
+    data.scores[r].date = "";
+  }
+
+  ostringstream buf;
+
+  buf << myOSystem.stateDir() << cartName << ".hs" << data.variation;
+
+  FilesystemNode node(buf.str());
+  stringstream in;
+
+  // Make sure the file can be opened
+  try {
+    node.read(in);
+  }
+  catch(...) { return; }
+
+  bool invalid = false;
+  try {
+    string highscores;
+
+    buf.str("");
+
+    if(getline(in, highscores) && highscores.length() != 0)
+    {
+      const json hsObject = json::parse(highscores);
+
+      if(hsObject.contains(DATA))
+      {
+        const json hsData = hsObject.at(DATA);
+
+        // First test if we have a valid header
+        // If so, do a complete high data load
+        if(!hsData.contains(VERSION) || hsData.at(VERSION) != HIGHSCORE_HEADER)
+          buf << "Error: Incompatible high scores file for variation "
+            << data.variation << ".";
+        else
+        {
+          if(load(hsData, data))
+            return;
+          invalid = true;
+        }
+        if(!hsData.contains(PROPCHECK)
+           || hsData.at(PROPCHECK) != checkSumProps()
+           || !hsObject.contains(CHECKSUM)
+           || hsObject.at(CHECKSUM) != checkSumScores(hsData.dump()))
+          invalid = true;
+      }
+      else
+        invalid = true;
+    }
+  }
+  catch(...) { invalid = true; }
+
+  if(invalid)
+    buf << "Error: Invalid data in high scores file for variation " << data.variation << ".";
+  myOSystem.frameBuffer().showTextMessage(buf.str());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool HighScoresManager::save(FilesystemNode& node, const ScoresData& data) const
+{
+  try
+  {
+    json hsObject = json::object();
+    json hsData = json::object();
+
+    // Add header so that if the high score format changes in the future,
+    // we'll know right away, without having to parse the rest of the file
+    hsData[VERSION] = HIGHSCORE_HEADER;
+    hsData[MD5] = data.md5;
+    hsData[VARIATION] = data.variation;
+
+    json jScores = json::array();
+
+    for(uInt32 r = 0; r < NUM_RANKS && data.scores[r].score; ++r)
+    {
+      json jScore = json::object();
+
+      jScore[SCORE] = data.scores[r].score;
+      jScore[SPECIAL] = data.scores[r].special;
+      jScore[NAME] = data.scores[r].name;
+      jScore[DATE] = data.scores[r].date;
+
+      jScores.push_back(jScore);
+    }
+    hsData[SCORES] = jScores;
+    hsData[PROPCHECK] = checkSumProps();
+
+    hsObject[DATA] = hsData;
+    hsObject[CHECKSUM] = checkSumScores(hsData.dump());
+
+    stringstream ss(hsObject.dump());
+    node.write(ss);
+  }
+  catch(...)
+  {
+    cerr << "ERROR: HighScoresManager::save() exception\n";
+    return false;
+  }
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool HighScoresManager::load(const json& hsData, ScoresData& data)
+{
+  if(!hsData.contains(MD5) || hsData.at(MD5) != data.md5
+     || !hsData.contains(VARIATION) || hsData.at(VARIATION) != data.variation
+     || !hsData.contains(SCORES))
+    return false;
+
+  const json& jScores = hsData.at(SCORES);
+
+  if(!jScores.empty() && jScores.is_array())
+  {
+    uInt32 r = 0;
+    for(const json& jScore : jScores)
+    {
+      if(jScore.contains(SCORE))
+        data.scores[r].score = jScore.at(SCORE).get<Int32>();
+      if(jScore.contains(SPECIAL))
+        data.scores[r].special = jScore.at(SPECIAL).get<Int32>();
+      if(jScore.contains(NAME))
+        data.scores[r].name = jScore.at(NAME).get<string>();
+      if(jScore.contains(DATE))
+        data.scores[r].date = jScore.at(DATE).get<string>();
+
+      if(++r == NUM_RANKS)
+        break;
+    }
+  }
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string HighScoresManager::VARIATIONS_COUNT = "variations_count";
 const string HighScoresManager::VARIATIONS_ADDRESS = "variations_address";
 const string HighScoresManager::VARIATIONS_BCD = "variations_bcd";
@@ -564,3 +791,15 @@ const string HighScoresManager::SPECIAL_ADDRESS = "special_address";
 const string HighScoresManager::SPECIAL_BCD = "special_bcd";
 const string HighScoresManager::SPECIAL_ZERO_BASED = "special_zero_based";
 const string HighScoresManager::NOTES = "notes";
+
+const string HighScoresManager::DATA = "data";
+const string HighScoresManager::VERSION = "version";
+const string HighScoresManager::MD5 = "md5";
+const string HighScoresManager::VARIATION = "variation";
+const string HighScoresManager::SCORES = "scores";
+const string HighScoresManager::SCORE = "score";
+const string HighScoresManager::SPECIAL = "special";
+const string HighScoresManager::NAME = "name";
+const string HighScoresManager::DATE = "date";
+const string HighScoresManager::PROPCHECK = "propcheck";
+const string HighScoresManager::CHECKSUM = "checksum";
