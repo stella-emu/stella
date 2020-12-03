@@ -18,15 +18,18 @@
 #ifndef HIGHSCORES_MANAGER_HXX
 #define HIGHSCORES_MANAGER_HXX
 
+#define HIGHSCORE_HEADER "06010000highscores"
+
 class OSystem;
 
 #include "Props.hxx"
 #include "json_lib.hxx"
+#include "FSNode.hxx"
 
 using json = nlohmann::json;
 
 /**
-  This class provides an interface to all things related to high scores.
+  This class provides an interface to all things related to high myScores.
 
   @author  Thomas Jentzsch
 */
@@ -45,7 +48,9 @@ namespace HSM {
 
   using ScoreAddresses = array<Int16, MAX_SCORE_ADDR>;
 
-  struct ScoresInfo {
+  static const uInt32 NUM_RANKS = 10;
+
+  struct ScoresProps {
     // Formats
     uInt32 numDigits;
     uInt32 trailingZeroes;
@@ -63,10 +68,23 @@ namespace HSM {
     uInt16 varsAddr;
     uInt16 specialAddr;
   };
+
+  struct ScoreEntry {
+    Int32 score;
+    Int32 special;
+    string name;
+    string date;
+  };
+
+  struct ScoresData {
+    Int32 variation;
+    string md5;
+    ScoreEntry scores[NUM_RANKS];
+  };
 } // namespace HSM
 
 /**
-  This class provides an interface to define, load and save scores. It is meant
+  This class provides an interface to define, load and save myScores. It is meant
   for games which do not support saving highscores.
 
   @author  Thomas Jentzsch
@@ -88,12 +106,12 @@ class HighScoresManager
       @return True if highscore data exists, else false
     */
     bool get(const Properties& props, uInt32& numVariations,
-             HSM::ScoresInfo& info) const;
+             HSM::ScoresProps& info) const;
     /**
       Set the highscore data of game's properties
     */
     void set(Properties& props, uInt32 numVariations,
-             const HSM::ScoresInfo& info) const;
+             const HSM::ScoresProps& info) const;
 
     /**
       Calculate the score from given parameters
@@ -127,8 +145,16 @@ class HighScoresManager
     Int32 special() const;
     const string notes() const;
 
+    // Get simple property definition checksum
+    string checkSumProps() const;
+    // Get simple highscores data checksum
+    string checkSumScores(const string& data) const;
+
     // Peek into memory
     Int16 peek(uInt16 addr) const;
+
+    void saveHighScores(const string& cartName, HSM::ScoresData& scores) const;
+    void loadHighScores(const string& cartName, HSM::ScoresData& scores);
 
   private:
     static const string VARIATIONS_COUNT;
@@ -158,6 +184,18 @@ class HighScoresManager
     static constexpr bool DEFAULT_VARS_ZERO_BASED = false;
     static constexpr bool DEFAULT_SPECIAL_BCD = true;
     static constexpr bool DEFAULT_SPECIAL_ZERO_BASED = false;
+
+    static const string DATA;
+    static const string VERSION;
+    static const string MD5;
+    static const string VARIATION;
+    static const string SCORES;
+    static const string SCORE;
+    static const string SPECIAL;
+    static const string NAME;
+    static const string DATE;
+    static const string PROPCHECK;
+    static const string CHECKSUM;
 
   private:
     // Retrieve current values from (using given parameters)
@@ -199,6 +237,30 @@ class HighScoresManager
 
     uInt16 fromHexStr(const string& addr) const;
     Int32 fromBCD(uInt8 bcd) const;
+
+    // Add new value to checksum
+    void addCheckByte(uInt32& sum, uInt16& r, uInt8 value) const;
+    void addCheckWord(uInt32& sum, uInt16& r, uInt16 value) const;
+
+    /**
+      Saves the current high myScores for this game and variation to the given file system node.
+
+      @param node  The file system node to save to.
+      @param scores  The saved high score data
+
+      @return  The result of the save.  True on success, false on failure.
+    */
+    bool save(FilesystemNode& node, const HSM::ScoresData& scores) const;
+
+    /**
+      Loads the current high myScores for this game and variation from the given JSON object.
+
+      @param hsData  The JSON to parse
+      @param scores  The loaded high score data
+
+      @return The result of the load.  True on success, false on failure.
+    */
+    bool load(const json& hsData, HSM::ScoresData& scores);
 
   private:
     // Reference to the osystem object

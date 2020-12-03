@@ -25,7 +25,6 @@
 #include "EditTextWidget.hxx"
 #include "PopUpWidget.hxx"
 #include "MessageBox.hxx"
-#include "HighScoresManager.hxx"
 
 #include "HighScoresDialog.hxx"
 
@@ -105,10 +104,11 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
     myHighScoreSaved(false),
     _max_w(max_w),
     _max_h(max_h),
-    myVariation(HSM::DEFAULT_VARIATION),
     myInitials(""),
     myMode(mode)
 {
+  myScores.variation = HSM::DEFAULT_VARIATION;
+
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
   const int lineHeight = _font.getLineHeight(),
     fontHeight = _font.getFontHeight(),
@@ -185,14 +185,19 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
   }
   ypos += VGAP;
 
-  _w = myDeleteButtons[0]->getRight() + HBORDER;
+  _w = std::max(myDeleteButtons[0]->getRight() + HBORDER,
+                HBORDER * 2 + ifont.getMaxCharWidth() * (5 + 32 + 2 + 11));
   myNotesWidget = new StaticTextWidget(this, ifont, xpos, ypos + 1, _w - HBORDER * 2,
                                        infoLineHeight, "Note: ");
 
   ypos += infoLineHeight + VGAP;
 
   myMD5Widget = new StaticTextWidget(this, ifont, xpos, ypos + 1,
-                                     "MD5:  12345678901234567890123456789012");
+                                     "MD5: 12345678901234567890123456789012");
+
+  myCheckSumWidget = new StaticTextWidget(this, ifont,
+                                          _w - HBORDER - ifont.getStringWidth("Props: 1234"),
+                                          ypos + 1, "Props: 1234");
 
   _h = myMD5Widget->getBottom() + VBORDER + buttonHeight + VBORDER;
 
@@ -245,7 +250,7 @@ void HighScoresDialog::loadConfig()
   else
   {
     // use last selected variation
-    myVariationPopup->setSelected(myVariation);
+    myVariationPopup->setSelected(myScores.variation);
     myUserDefVar = true;
   }
 
@@ -266,11 +271,12 @@ void HighScoresDialog::loadConfig()
     myNotesWidget->setLabel("");
 
   if (instance().hasConsole())
-    myMD5 = instance().console().properties().get(PropType::Cart_MD5);
+    myScores.md5 = instance().console().properties().get(PropType::Cart_MD5);
   else
-    myMD5 = instance().launcher().selectedRomMD5();
+    myScores.md5 = instance().launcher().selectedRomMD5();
 
-  myMD5Widget->setLabel("MD5:  " + myMD5);
+  myMD5Widget->setLabel("MD5: " + myScores.md5);
+  myCheckSumWidget->setLabel("Props: " + instance().highScores().checkSumProps());
 
   // requires the current MD5
   myGameNameWidget->setLabel(cartName());
@@ -288,13 +294,13 @@ void HighScoresDialog::saveConfig()
   if (myHighScoreRank != -1)
   {
     myInitials = myEditNameWidgets[myHighScoreRank]->getText();
-    myNames[myHighScoreRank] = myInitials;
+    myScores.scores[myHighScoreRank].name = myInitials;
     // remember initials for next session
     instance().settings().setValue("initials", myInitials);
   }
   // save selected variation
-  saveHighScores(myVariation);
-  if(myVariation == instance().highScores().variation() || myUserDefVar)
+  instance().highScores().saveHighScores(cartName(), myScores);
+  if(myScores.variation == instance().highScores().variation() || myUserDefVar)
     myHighScoreSaved = true;
 }
 
@@ -317,12 +323,12 @@ void HighScoresDialog::handleCommand(CommandSender* sender, int cmd, int data, i
       handleVariation();
       break;
     case kPrevVariation:
-      myVariationPopup->setSelected(myVariation - 1);
+      myVariationPopup->setSelected(myScores.variation - 1);
       handleVariation();
       break;
 
     case kNextVariation:
-      myVariationPopup->setSelected(myVariation + 1);
+      myVariationPopup->setSelected(myScores.variation + 1);
       handleVariation();
       break;
 
@@ -355,13 +361,13 @@ void HighScoresDialog::handleVariation(bool init)
 {
   if (handleDirty())
   {
-    myVariation = myVariationPopup->getSelectedTag().toInt();
+    myScores.variation = myVariationPopup->getSelectedTag().toInt();
 
-    loadHighScores(myVariation);
+    instance().highScores().loadHighScores(cartName(), myScores);
 
     myEditRank = -1;
 
-    if (myVariation == instance().highScores().variation() || myUserDefVar)
+    if (myScores.variation == instance().highScores().variation() || myUserDefVar)
       handlePlayedVariation();
 
     updateWidgets(init);
@@ -371,14 +377,14 @@ void HighScoresDialog::handleVariation(bool init)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void HighScoresDialog::updateWidgets(bool init)
 {
-  myPrevVarButton->setEnabled(myVariation > 1);
-  myNextVarButton->setEnabled(myVariation < instance().highScores().numVariations());
+  myPrevVarButton->setEnabled(myScores.variation > 1);
+  myNextVarButton->setEnabled(myScores.variation < instance().highScores().numVariations());
 
   for (uInt32 r = 0; r < NUM_RANKS; ++r)
   {
     ostringstream buf;
 
-    if (myHighScores[r] > 0)
+    if(myScores.scores[r].score > 0)
     {
       myRankWidgets[r]->clearFlags(Widget::FLAG_INVISIBLE);
       myDeleteButtons[r]->clearFlags(Widget::FLAG_INVISIBLE);
@@ -390,15 +396,16 @@ void HighScoresDialog::updateWidgets(bool init)
       myDeleteButtons[r]->setFlags(Widget::FLAG_INVISIBLE);
       myDeleteButtons[r]->setEnabled(false);
     }
-    myScoreWidgets[r]->setLabel(instance().highScores().formattedScore(myHighScores[r],
+    myScoreWidgets[r]->setLabel(instance().highScores().formattedScore(myScores.scores[r].score,
                                 HSM::MAX_SCORE_DIGITS));
 
-    if (mySpecials[r] > 0)
-      buf << std::setw(HSM::MAX_SPECIAL_DIGITS) << std::setfill(' ') << mySpecials[r];
+    if (myScores.scores[r].special > 0)
+      buf << std::setw(HSM::MAX_SPECIAL_DIGITS) << std::setfill(' ')
+      << myScores.scores[r].special;
     mySpecialWidgets[r]->setLabel(buf.str());
 
-    myNameWidgets[r]->setLabel(myNames[r]);
-    myDateWidgets[r]->setLabel(myDates[r]);
+    myNameWidgets[r]->setLabel(myScores.scores[r].name);
+    myDateWidgets[r]->setLabel(myScores.scores[r].date);
 
     if (static_cast<Int32>(r) == myEditRank)
     {
@@ -417,7 +424,7 @@ void HighScoresDialog::updateWidgets(bool init)
       myEditNameWidgets[r]->setEditable(false);
     }
   }
-  _defaultWidget->setEnabled(myHighScores[0] > 0);
+  _defaultWidget->setEnabled(myScores.scores[0].score > 0);
   setDirty();
 }
 
@@ -433,10 +440,13 @@ void HighScoresDialog::handlePlayedVariation()
 
     for (myHighScoreRank = 0; myHighScoreRank < static_cast<Int32>(NUM_RANKS); ++myHighScoreRank)
     {
-      if ((!scoreInvert && newScore > myHighScores[myHighScoreRank]) ||
-        ((scoreInvert && newScore < myHighScores[myHighScoreRank]) || myHighScores[myHighScoreRank] == 0))
+      Int32 highScore = myScores.scores[myHighScoreRank].score;
+
+      if ((!scoreInvert && newScore > highScore) ||
+        ((scoreInvert && newScore < highScore) ||
+          highScore == 0))
         break;
-      if (newScore == myHighScores[myHighScoreRank] && newSpecial > mySpecials[myHighScoreRank])
+      if (newScore == highScore && newSpecial > myScores.scores[myHighScoreRank].special)
         break;
     }
 
@@ -445,14 +455,14 @@ void HighScoresDialog::handlePlayedVariation()
       myEditRank = myHighScoreRank;
       for (uInt32 r = NUM_RANKS - 1; static_cast<Int32>(r) > myHighScoreRank; --r)
       {
-        myHighScores[r] = myHighScores[r - 1];
-        mySpecials[r] = mySpecials[r - 1];
-        myNames[r] = myNames[r - 1];
-        myDates[r] = myDates[r - 1];
+        myScores.scores[r].score = myScores.scores[r - 1].score;
+        myScores.scores[r].special = myScores.scores[r - 1].special;
+        myScores.scores[r].name = myScores.scores[r - 1].name;
+        myScores.scores[r].date = myScores.scores[r - 1].date;
       }
-      myHighScores[myHighScoreRank] = newScore;
-      mySpecials[myHighScoreRank] = newSpecial;
-      myDates[myHighScoreRank] = myNow;
+      myScores.scores[myHighScoreRank].score = newScore;
+      myScores.scores[myHighScoreRank].special = newSpecial;
+      myScores.scores[myHighScoreRank].date = myNow;
       myDirty |= !myUserDefVar; // only ask when the variation was read by defintion
     }
     else
@@ -465,15 +475,15 @@ void HighScoresDialog::deleteRank(int rank)
 {
   for (uInt32 r = rank; r < NUM_RANKS - 1; ++r)
   {
-    myHighScores[r] = myHighScores[r + 1];
-    mySpecials[r] = mySpecials[r + 1];
-    myNames[r] = myNames[r + 1];
-    myDates[r] = myDates[r + 1];
+    myScores.scores[r].score = myScores.scores[r + 1].score;
+    myScores.scores[r].special = myScores.scores[r + 1].special;
+    myScores.scores[r].name = myScores.scores[r + 1].name;
+    myScores.scores[r].date = myScores.scores[r + 1].date;
   }
-  myHighScores[NUM_RANKS - 1] = 0;
-  mySpecials[NUM_RANKS - 1] = 0;
-  myNames[NUM_RANKS - 1] = "";
-  myDates[NUM_RANKS - 1] = "";
+  myScores.scores[NUM_RANKS - 1].score = 0;
+  myScores.scores[NUM_RANKS - 1].special = 0;
+  myScores.scores[NUM_RANKS - 1].name = "";
+  myScores.scores[NUM_RANKS - 1].date = "";
 
   if (myEditRank == rank)
   {
@@ -519,158 +529,12 @@ string HighScoresDialog::cartName() const
   {
     Properties props;
 
-    instance().propSet().getMD5(myMD5, props);
+    instance().propSet().getMD5(myScores.md5, props);
     if(props.get(PropType::Cart_Name).empty())
       return instance().launcher().currentDir().getNameWithExt("");
     else
       return props.get(PropType::Cart_Name);
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void HighScoresDialog::saveHighScores(Int32 variation) const
-{
-  ostringstream buf;
-
-  buf << instance().stateDir() << cartName() << ".hs" << variation;
-
-  // Make sure the file can be opened for writing
-  FilesystemNode node(buf.str());
-
-  if(!node.isWritable())
-  {
-    buf.str("");
-    buf << "Can't open/save to high scores file for variation " << variation;
-    instance().frameBuffer().showTextMessage(buf.str());
-  }
-
-  // Do a complete high scores save
-  if(!save(node, variation))
-  {
-    buf.str("");
-    buf << "Error saving high scores for variation" << variation;
-    instance().frameBuffer().showTextMessage(buf.str());
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void HighScoresDialog::loadHighScores(Int32 variation)
-{
-  for (uInt32 r = 0; r < NUM_RANKS; ++r)
-  {
-    myHighScores[r] = 0;
-    mySpecials[r] = 0;
-    myNames[r] = "";
-    myDates[r] = "";
-  }
-
-  ostringstream buf;
-
-  buf << instance().stateDir() << cartName() << ".hs" << variation;
-
-  FilesystemNode node(buf.str());
-  stringstream in;
-
-  // Make sure the file can be opened
-  try {
-    node.read(in);
-  }
-  catch(...) { return;  }
-
-  try {
-    string highscores;
-
-    buf.str("");
-
-    if(getline(in, highscores) && highscores.length() != 0)
-    {
-      cerr << endl << highscores << endl << endl;
-      const json hsData = json::parse(highscores);
-
-      // First test if we have a valid header
-      // If so, do a complete high scores load
-      if(!hsData.contains(VERSION) || hsData.at(VERSION) != HIGHSCORE_HEADER)
-        buf << "Incompatible high scores for variation " << variation << " file";
-      else
-      {
-        if(load(hsData, variation))
-          return;
-        else
-          buf << "Invalid data in high scores for variation " << variation << " file";
-      }
-    }
-  }
-  catch(...)
-  {
-    buf << "Invalid data in high scores for variation " << variation << " file";
-  }
-  instance().frameBuffer().showTextMessage(buf.str());
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool HighScoresDialog::save(FilesystemNode& node, Int32 variation) const
-{
-  try
-  {
-    json jData = json::object();
-
-    // Add header so that if the high score format changes in the future,
-    // we'll know right away, without having to parse the rest of the file
-    jData[VERSION] = HIGHSCORE_HEADER;
-    jData[MD5] = myMD5;
-    jData[VARIATION] = variation;
-
-    json jScores = json::array();
-
-    for(uInt32 r = 0; r < NUM_RANKS && myHighScores[r]; ++r)
-    {
-      json jScore = json::object();
-
-      jScore[SCORE] = myHighScores[r];
-      jScore[SPECIAL] = mySpecials[r];
-      jScore[NAME] = myNames[r];
-      jScore[DATE] = myDates[r];
-
-      jScores.push_back(jScore);
-    }
-    jData[SCORES] = jScores;
-
-    stringstream ss(jData.dump());
-    node.write(ss);
-  }
-  catch(...)
-  {
-    cerr << "ERROR: HighScoresDialog::save() exception\n";
-    return false;
-  }
-  return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool HighScoresDialog::load(const json& hsData, Int32 variation)
-{
-  if(!hsData.contains(MD5) || hsData.at(MD5) != myMD5
-    || !hsData.contains(VARIATION) || hsData.at(VARIATION) != variation
-    || !hsData.contains(SCORES))
-    return false;
-
-  const json& jScores = hsData.at(SCORES);
-
-  if(!jScores.empty() && jScores.is_array())
-  {
-    uInt32 r = 0;
-    for(const json& jScore : jScores)
-    {
-      if(jScore.contains(SCORE)) myHighScores[r] = jScore.at(SCORE).get<Int32>();
-      if(jScore.contains(SPECIAL)) mySpecials[r] = jScore.at(SPECIAL).get<Int32>();
-      if(jScore.contains(NAME)) myNames[r] = jScore.at(NAME).get<string>();
-      if(jScore.contains(DATE)) myDates[r] = jScore.at(DATE).get<string>();
-
-      if(++r == NUM_RANKS)
-        break;
-    }
-  }
-  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -688,13 +552,3 @@ string HighScoresDialog::now() const
 
   return ss.str();
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string HighScoresDialog::VERSION = "version";
-const string HighScoresDialog::MD5 = "md5";
-const string HighScoresDialog::VARIATION = "variation";
-const string HighScoresDialog::SCORES = "scores";
-const string HighScoresDialog::SCORE = "score";
-const string HighScoresDialog::SPECIAL = "special";
-const string HighScoresDialog::NAME = "name";
-const string HighScoresDialog::DATE = "date";

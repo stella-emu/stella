@@ -482,6 +482,7 @@
 "Cart.Name" "Millipede (Atari Trak-Ball) v6.5 (Omegamatrix)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Display.Format" "PAL60"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "0651216c4a4a9c9ac5ada3013a317c72"
@@ -901,6 +902,7 @@
 "Cart.Name" "Super Breakout (1982 - 1981) (Atari) [a]"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.MouseAxis" "01 45"
+"Cart.Highscore" "{\"score_addresses\":[\"0xdc\",\"0xdd\"],\"variations_address\":\"0xc0\",\"variations_count\":9}"
 ""
 
 "Cart.MD5" "0adb21206de92e8aec5ef295805ebb90"
@@ -1019,6 +1021,7 @@
 "Cart.Manufacturer" "Bit Corporation"
 "Cart.ModelNo" "R320"
 "Cart.Name" "Circus Atari (32 in 1) (BitCorp) (Hack)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xab\"],\"variations_address\":\"0xa8\",\"variations_count\":8}"
 ""
 
 "Cart.MD5" "0c35806ff0019a270a7acae68de89d28"
@@ -1032,6 +1035,7 @@
 "Cart.Manufacturer" "Atari, Bill Aspromonte, Andrew Fuchs"
 "Cart.ModelNo" "CX26120"
 "Cart.Name" "Stargate (1984) (Atari)"
+"Cart.Highscore" "{\"score_addresses\":[\"0x8b\",\"0x8c\",\"0x8d\"],\"score_digits\":6,\"special_address\":\"0x89\",\"special_label\":\"Wave\",\"variations_count\":1}"
 ""
 
 "Cart.MD5" "0c54811cf3b1f1573c9164d5f19eca65"
@@ -2229,6 +2233,7 @@
 "Cart.Name" "Super Breakout Menu (2020) (PAL) (Hack)"
 "Cart.Note" "Hack of Super Breakout"
 "Controller.MouseAxis" "AUTO 55"
+"Cart.Highscore" "{\"score_addresses\":[\"0xdc\",\"0xdd\"],\"variations_address\":\"0xc0\",\"variations_count\":9}"
 ""
 
 "Cart.MD5" "1986f864e32e3e8d198b5becf3022257"
@@ -2610,6 +2615,7 @@
 "Cart.Manufacturer" "Parker Brothers, Dave Hampton, Tom Sloper"
 "Cart.ModelNo" "931517"
 "Cart.Name" "Q-bert (1983) (Parker Bros) (PAL) [a]"
+"Cart.Highscore" "{\"score_addresses\":[\"0xd9\",\"0xda\",\"0xdb\"],\"score_digits\":5,\"special_address\":\"0xe3\",\"special_label\":\"Round\",\"special_zero_based\":true,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "1ee2cfc7d0333b96bd11f7f3ec8ce8bc"
@@ -3161,6 +3167,7 @@
 "Cart.Manufacturer" "Atari - GCC, Ava-Robin Cohen"
 "Cart.ModelNo" "CX26123"
 "Cart.Name" "Jr. Pac-Man (1984) (Atari) [a]"
+"Cart.Highscore" "{\"score_addresses\":[\"0xfb\",\"0xfa\",\"0xf9\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "25472dfdeef6a42581a231d631d6b04d"
@@ -3566,6 +3573,7 @@
 "Cart.Manufacturer" "Atari - GCC, Ava-Robin Cohen"
 "Cart.ModelNo" "CX26123, CX26123P"
 "Cart.Name" "Jr. Pac-Man (1986) (Atari) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xfb\",\"0xfa\",\"0xf9\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "2982e655dffc89d218a0a3072cfc6811"
@@ -3579,6 +3587,7 @@
 "Cart.Note" "Hack of Kaboom!"
 "Cart.Rarity" "Hack"
 "Controller.MouseAxis" "01 50"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "29843f43b81f3736bf35c00b1bb88fb2"
@@ -3643,6 +3652,7 @@
 "Cart.Manufacturer" "Atari, Dan Hitchens"
 "Cart.ModelNo" "CX2697, CX2697P"
 "Cart.Name" "Mario Bros. (1983) (Atari) (PAL) [a]"
+"Cart.Highscore" "{\"score_addresses\":[\"0x89\",\"0x8a\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x80\",\"variations_count\":8,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "2aa5e56d36c2e58b6f2856109f2099a9"
@@ -4196,6 +4206,7 @@
 "Cart.Name" "Circus Atari (1980) (Atari) (PAL)"
 "Cart.Note" "Uses the Paddle Controllers"
 "Controller.MouseAxis" "01 55"
+"Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xab\"],\"variations_address\":\"0xa8\",\"variations_count\":8}"
 ""
 
 "Cart.MD5" "30f0b49661cfcfd4ec63395fab837dc3"
@@ -4713,6 +4724,7 @@
 "Cart.Manufacturer" "Atari - GCC, Ava-Robin Cohen"
 "Cart.ModelNo" "CX26123"
 "Cart.Name" "Jr. Pac-Man (1986) (Atari)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xfb\",\"0xfa\",\"0xf9\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "36c31bb5daeb103f488c66de67ac5075"
@@ -4967,6 +4979,7 @@
 "Cart.Name" "Pitfall 2 Plus (Hack)"
 "Cart.Note" "Hack of Pitfall 2"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"score_addresses\":[\"0xc7\",\"0xc8\",\"0xc9\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "39b94d41bd3b01c12b4054c1a8733783"
@@ -5052,6 +5065,7 @@
 "Cart.ModelNo" "CX26120"
 "Cart.Name" "Defender II (1987) (Atari)"
 "Cart.Note" "AKA Stargate"
+"Cart.Highscore" "{\"score_addresses\":[\"0x8b\",\"0x8c\",\"0x8d\"],\"score_digits\":6,\"special_address\":\"0x89\",\"special_label\":\"Wave\",\"variations_count\":1}"
 ""
 
 "Cart.MD5" "3aad0ef62885736a5b8c6ccac0dbe00c"
@@ -5200,6 +5214,7 @@
 "Cart.Manufacturer" "Atari, Jerome Domurat, Andrew Fuchs, Dave Staugas, Robert Vieira"
 "Cart.ModelNo" "CX26118"
 "Cart.Name" "Millipede (1984) (Atari)"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "3c72ddaf41158fdd66e4f1cb90d4fd29"
@@ -5287,6 +5302,7 @@
 
 "Cart.MD5" "3d2652cbea462a886a41791dd7c8d073"
 "Cart.Name" "Ritorno dei frattelli di Mario (Mario Bros Hack)"
+"Cart.Highscore" "{\"score_addresses\":[\"0x89\",\"0x8a\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x80\",\"variations_count\":8,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "3d48b8b586a09bdbf49f1a016bf4d29a"
@@ -5882,6 +5898,7 @@
 "Cart.ModelNo" "AB-035-04"
 "Cart.Name" "Pitfall II (1983) (Activision) [a2]"
 "Cart.Rarity" "Rare"
+"Cart.Highscore" "{\"score_addresses\":[\"0xc7\",\"0xc8\",\"0xc9\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "44e9c4a047c348dbeb7ace60f45484b4"
@@ -6077,6 +6094,7 @@
 "Cart.Manufacturer" "Omegamatrix"
 "Cart.Name" "Millipede (Atari Mouse) v6.5 (Omegamatrix)"
 "Cart.Note" "Uses Atari Mouse Controller"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "47464694e9cce07fdbfd096605bf39d4"
@@ -6189,6 +6207,7 @@
 "Cart.Manufacturer" "Atari"
 "Cart.ModelNo" "CX26150"
 "Cart.Name" "Q-bert (1987) (Atari)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xd9\",\"0xda\",\"0xdb\"],\"score_digits\":5,\"special_address\":\"0xe3\",\"special_label\":\"Round\",\"special_zero_based\":true,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "4857f8bb88bb63c640d3ea5aac7f5d6d"
@@ -6273,6 +6292,7 @@
 "Cart.Manufacturer" "Activision, Steve Cartwright, David Crane"
 "Cart.ModelNo" "AB-035-04"
 "Cart.Name" "Pitfall II (1983) (Activision) [a]"
+"Cart.Highscore" "{\"score_addresses\":[\"0xc7\",\"0xc8\",\"0xc9\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "49366f41aa7a54baf263426e99ce4312"
@@ -6290,6 +6310,7 @@
 "Cart.Manufacturer" "Atari, Bill Aspromonte, Andrew Fuchs"
 "Cart.ModelNo" "CX26120"
 "Cart.Name" "Stargate (1984) (Atari) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0x8b\",\"0x8c\",\"0x8d\"],\"score_digits\":6,\"special_address\":\"0x89\",\"special_label\":\"Wave\",\"variations_count\":1}"
 ""
 
 "Cart.MD5" "493e90602a4434b117c91c95e73828d1"
@@ -6516,6 +6537,7 @@
 "Cart.Name" "Millipede (Amiga Mouse) v6.5 (Omegamatrix)"
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Display.Format" "PAL60"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "4c030667d07d1438f0e5c458a90978d8"
@@ -7032,6 +7054,7 @@
 "Cart.Manufacturer" "Omegamatrix"
 "Cart.Name" "Millipede (Amiga Mouse) v6.5 (Omegamatrix)"
 "Cart.Note" "Uses Amiga Mouse Controller"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "522c9cf684ecd72db2f85053e6f6f720"
@@ -7256,6 +7279,7 @@
 "Cart.Name" "Kaboom! (1981) (Activision)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.MouseAxis" "01 50"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "542c6dd5f7280179b51917a4cba4faff"
@@ -7322,6 +7346,7 @@
 "Cart.Note" "Hack of Kaboom!"
 "Cart.Rarity" "Hack"
 "Controller.MouseAxis" "01 50"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "54f7efa6428f14b9f610ad0ca757e26c"
@@ -8061,6 +8086,7 @@
 "Cart.Name" "Return of Mario Bros (Philip R. Frey) (Hack)"
 "Cart.Note" "Hack of Mario Bros."
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"score_addresses\":[\"0x89\",\"0x8a\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x80\",\"variations_count\":8,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "5e201d6bfc520424a28f129ee5e56835"
@@ -8177,6 +8203,7 @@
 "Cart.ModelNo" "CX26120"
 "Cart.Name" "Defender II (1987) (Atari) (PAL)"
 "Cart.Note" "AKA Stargate"
+"Cart.Highscore" "{\"score_addresses\":[\"0x8b\",\"0x8c\",\"0x8d\"],\"score_digits\":6,\"special_address\":\"0x89\",\"special_label\":\"Wave\",\"variations_count\":1}"
 ""
 
 "Cart.MD5" "5f7ae9a7f8d79a3b37e8fc841f65643a"
@@ -8581,6 +8608,7 @@
 "Cart.Name" "Moby Blues (2002) (ATARITALIA) (Hack)"
 "Cart.Note" "Hack of Mario Bros"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"score_addresses\":[\"0x89\",\"0x8a\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x80\",\"variations_count\":8,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "640a08e9ca019172d612df22a9190afb"
@@ -9521,6 +9549,7 @@
 "Cart.Manufacturer" "Activision, Steve Cartwright, David Crane"
 "Cart.ModelNo" "AB-035-04"
 "Cart.Name" "Pitfall II (1984) (Activision)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xc7\",\"0xc8\",\"0xc9\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "6d8a04ee15951480cb7c466e5951eee0"
@@ -10523,6 +10552,7 @@
 "Cart.ModelNo" "AZ-037-04"
 "Cart.Name" "Beamrider (1984) (Activision)"
 "Cart.Rarity" "Rare"
+"Cart.Highscore" "{\"score_addresses\":[\"0x8b\",\"0x8a\",\"0x89\"],\"score_digits\":6,\"special_address\":\"0x80\",\"special_label\":\"Sect.\",\"variations_count\":1}"
 ""
 
 "Cart.MD5" "79b649fb812c50b4347d12e7ddbb8400"
@@ -10610,6 +10640,7 @@
 "Cart.Note" "Hack of Kaboom!"
 "Cart.Rarity" "Hack"
 "Controller.MouseAxis" "01 50"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "7ab210f448de518fa61a5924120ba872"
@@ -11250,6 +11281,7 @@
 "Cart.Note" "Hack of Kaboom!"
 "Cart.Rarity" "Hack"
 "Controller.MouseAxis" "01 50"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "8108162bc88b5a14adc3e031cf4175ad"
@@ -11824,6 +11856,7 @@
 "Cart.Name" "Super Breakout (1982 - 1981) (Atari)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.MouseAxis" "01 45"
+"Cart.Highscore" "{\"score_addresses\":[\"0xdc\",\"0xdd\"],\"variations_address\":\"0xc0\",\"variations_count\":9}"
 ""
 
 "Cart.MD5" "888debb162d7d1ae71025b4ab794257f"
@@ -12030,6 +12063,7 @@
 "Cart.Manufacturer" "Parker Brothers - Western Technologies, Dave Hampton, Tom Sloper"
 "Cart.ModelNo" "931517"
 "Cart.Name" "Q-bert (1983) (Parker Bros) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xd9\",\"0xda\",\"0xdb\"],\"score_digits\":5,\"special_address\":\"0xe3\",\"special_label\":\"Round\",\"special_zero_based\":true,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "8b504b417c8626167a7e02f44229f0e7"
@@ -12122,6 +12156,7 @@
 "Cart.Name" "Super Breakout Menu (2020) (PAL60) (Hack)"
 "Cart.Note" "Hack of Super Breakout"
 "Controller.MouseAxis" "AUTO 45"
+"Cart.Highscore" "{\"score_addresses\":[\"0xdc\",\"0xdd\"],\"variations_address\":\"0xc0\",\"variations_count\":9}"
 ""
 
 "Cart.MD5" "8c2fa33048f055f38358d51eefe417db"
@@ -13211,6 +13246,7 @@
 "Cart.MD5" "9a165c39af3f050fdee6583fdfcdc9be"
 "Cart.Manufacturer" "Zirok"
 "Cart.Name" "Mario Bros. (Zirok)"
+"Cart.Highscore" "{\"score_addresses\":[\"0x89\",\"0x8a\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x80\",\"variations_count\":8,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "9a21fba9ee9794e0fadd7c7eb6be4e12"
@@ -13575,6 +13611,7 @@
 "Cart.Name" "Super Breakout Menu (2020) (Hack)"
 "Cart.Note" "Hack of Super Breakout"
 "Controller.MouseAxis" "AUTO 45"
+"Cart.Highscore" "{\"score_addresses\":[\"0xdc\",\"0xdd\"],\"variations_address\":\"0xc0\",\"variations_count\":9}"
 ""
 
 "Cart.MD5" "9f9ee0f60c119c831e80694b6678ca1a"
@@ -13803,6 +13840,7 @@
 "Cart.MD5" "a29df35557f31dfea2e2ae4609c6ebb7"
 "Cart.Manufacturer" "Atari"
 "Cart.Name" "Circus Atari (1980) (Atari) (Joystick)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xab\"],\"variations_address\":\"0xa8\",\"variations_count\":8}"
 ""
 
 "Cart.MD5" "a29fc854838e08c247553a7d883dd65b"
@@ -13862,6 +13900,7 @@
 "Cart.Manufacturer" "Zellers"
 "Cart.Name" "Circus (Zellers)"
 "Cart.Note" "AKA Circus Atari"
+"Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xab\"],\"variations_address\":\"0xa8\",\"variations_count\":8}"
 ""
 
 "Cart.MD5" "a310494ad5ba2b5b221a30d7180a0336"
@@ -14171,6 +14210,7 @@
 "Cart.Manufacturer" "Atari, Jerome Domurat, Andrew Fuchs, Dave Staugas, Robert Vieira"
 "Cart.ModelNo" "CX26118, CX26118P"
 "Cart.Name" "Millipede (1984) (Atari) (PAL)"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "a779b9fa02c62d00d7c31ed51268f18a"
@@ -14201,6 +14241,7 @@
 "Cart.Name" "Circus Atari (1980) (Atari)"
 "Cart.Note" "Uses the Paddle Controllers"
 "Controller.MouseAxis" "01 55"
+"Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xab\"],\"variations_address\":\"0xa8\",\"variations_count\":8}"
 ""
 
 "Cart.MD5" "a7bf8353f77caca407ef85c2698fdff2"
@@ -14341,6 +14382,7 @@
 
 "Cart.MD5" "a91d0858a52de3a2e6468437212d93e8"
 "Cart.Name" "Q-bert (208 in 1) (Unknown) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xd9\",\"0xda\",\"0xdb\"],\"score_digits\":5,\"special_address\":\"0xe3\",\"special_label\":\"Round\",\"special_zero_based\":true,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "a936d80083e99d48752ad15c2b5f7c96"
@@ -14354,6 +14396,7 @@
 "Cart.Note" "Hack of Kaboom!"
 "Cart.Rarity" "Hack"
 "Controller.MouseAxis" "01 50"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "a94528ae05dd051894e945d4d2349b3b"
@@ -14822,6 +14865,7 @@
 "Cart.Name" "Kaboom! (1981) (Activision) (4K)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.MouseAxis" "01 50"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "af6f3e9718bccfcd8afb421f96561a34"
@@ -14936,6 +14980,7 @@
 "Cart.Name" "Kaboom! (1981) (Activision) (PAL) (4K)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.MouseAxis" "01 50"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "b0a9c6f6c8014c4023e0341ba11ca35e"
@@ -15049,6 +15094,7 @@
 "Cart.ModelNo" "C-1004"
 "Cart.Name" "Mario's Bros. (1983) (CCE)"
 "Cart.Note" "AKA Mario Bros."
+"Cart.Highscore" "{\"score_addresses\":[\"0x89\",\"0x8a\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x80\",\"variations_count\":8,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "b1e2d5dc1353af6d56cd2fe7cfe75254"
@@ -15865,6 +15911,7 @@
 "Cart.Name" "Nitemare at Sunshine Bowl-a-Rama (Atari Freak 1) (Hack)"
 "Cart.Note" "Hack of Pac-Man Jr."
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"score_addresses\":[\"0xfb\",\"0xfa\",\"0xf9\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "bdbaeff1f7132358ea64c7be9e46c1ac"
@@ -16114,6 +16161,7 @@
 "Cart.Manufacturer" "Omegamatrix"
 "Cart.Name" "Millipede (Atari Trak-Ball) v6.5 (Omegamatrix)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "c150c76cbde2c9b5a97eb5399d46c64f"
@@ -16421,6 +16469,7 @@
 "Cart.Manufacturer" "Atari, Dan Hitchens, Mimi Nyden"
 "Cart.ModelNo" "CX2697, CX2697P"
 "Cart.Name" "Mario Bros. (1983) (Atari) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0x89\",\"0x8a\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x80\",\"variations_count\":8,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "c4b73c35bc2f54b66cd786f55b668a82"
@@ -16470,6 +16519,7 @@
 "Cart.Note" "Hack of Kaboom!"
 "Cart.Rarity" "Hack"
 "Controller.MouseAxis" "01 50"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "c52d9bbdc5530e1ef8e8ba7be692b01e"
@@ -18502,6 +18552,7 @@
 "Cart.Name" "Kaboom! (CCE)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.MouseAxis" "01 50"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "dbdd21e1ee3d72119e8cd14d943c585b"
@@ -18660,6 +18711,7 @@
 "Cart.Name" "Nitemare at Sunshine Bowl-a-Rama (Atari Freak 1) (Hack) [a]"
 "Cart.Note" "Hack of Pac-Man Jr."
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"score_addresses\":[\"0xfb\",\"0xfa\",\"0xf9\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "ddd1efc1862cd3eb3baf4cba81ff5050"
@@ -19016,6 +19068,7 @@
 "Cart.Name" "Kaboom! (1981) (Activision) (16K)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.MouseAxis" "01 50"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "e14feddeb82f5160ed5cf9ca4078e58d"
@@ -19049,6 +19102,7 @@
 "Cart.Name" "Rumble 2600 (Grimlock) (Hack)"
 "Cart.Note" "Hack of Mario Bros."
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"score_addresses\":[\"0x89\",\"0x8a\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x80\",\"variations_count\":8,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "e1a51690792838c5c687da80cd764d78"
@@ -19215,6 +19269,7 @@
 "Cart.ModelNo" "EAB-035-04 - 711 035-721"
 "Cart.Name" "Pitfall II (1984) (Activision) (PAL)"
 "Cart.Note" "Lost Caverns"
+"Cart.Highscore" "{\"score_addresses\":[\"0xc7\",\"0xc8\",\"0xc9\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "e3533684a7ef930a7fbd0c4dd8ec4847"
@@ -19312,6 +19367,7 @@
 "Cart.Name" "Kaboom! (CCE) (4K)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.MouseAxis" "01 50"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "e4a0b28befaaa2915df1fa01238b1e29"
@@ -19591,6 +19647,7 @@
 "Cart.Note" "Hack of Kaboom!"
 "Cart.Rarity" "Hack"
 "Controller.MouseAxis" "01 50"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "e72eb8d4410152bdcb69e7fba327b420"
@@ -19725,6 +19782,7 @@
 "Cart.Manufacturer" "Atari, Dan Hitchens, Mimi Nyden"
 "Cart.ModelNo" "CX2697"
 "Cart.Name" "Mario Bros. (1983) (Atari)"
+"Cart.Highscore" "{\"score_addresses\":[\"0x89\",\"0x8a\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x80\",\"variations_count\":8,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "e91d2ecf8803ae52b55bbf105af04d4b"
@@ -19795,6 +19853,7 @@
 "Cart.Name" "Millipede (Atari Mouse) v6.5 (Omegamatrix)"
 "Cart.Note" "Uses Atari Mouse Controller"
 "Display.Format" "PAL60"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "e9e646f730b8400cd5da08c849ef3e3b"
@@ -19926,6 +19985,7 @@
 "Cart.Manufacturer" "Atari"
 "Cart.ModelNo" "CX26150P"
 "Cart.Name" "Q-bert (1987) (Atari) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xd9\",\"0xda\",\"0xdb\"],\"score_digits\":5,\"special_address\":\"0xe3\",\"special_label\":\"Round\",\"special_zero_based\":true,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "eb71743c6c7ccce5b108fad70a326ad9"
@@ -20098,6 +20158,7 @@
 "Cart.Name" "Kaboom! (1981) (Activision) (8K)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.MouseAxis" "01 50"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "eddef10fdc0029301064115ae0cd41d4"
@@ -20137,6 +20198,7 @@
 "Cart.Name" "Super Breakout (1982 - 1981) (Atari) (PAL)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.MouseAxis" "01 45"
+"Cart.Highscore" "{\"score_addresses\":[\"0xdc\",\"0xdd\"],\"variations_address\":\"0xc0\",\"variations_count\":9}"
 ""
 
 "Cart.MD5" "ee659ae50e9df886ac4f8d7ad10d046a"
@@ -20286,6 +20348,7 @@
 
 "Cart.MD5" "efffafc17b7cb01b9ca35324aa767364"
 "Cart.Name" "Circus Atari (Unknown)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xab\"],\"variations_address\":\"0xa8\",\"variations_count\":8}"
 ""
 
 "Cart.MD5" "f02ba8b5292bf3017d10553c9b7b2861"
@@ -20687,6 +20750,7 @@
 "Cart.Note" "AKA Circus Atari"
 "Controller.Left" "JOYSTICK"
 "Controller.Right" "JOYSTICK"
+"Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xab\"],\"variations_address\":\"0xa8\",\"variations_count\":8}"
 ""
 
 "Cart.MD5" "f3f5f72bfdd67f3d0e45d097e11b8091"
@@ -21290,6 +21354,7 @@
 "Cart.Name" "Kaboom! (1981) (Activision) (PAL)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.MouseAxis" "01 50"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "fa0570561aa80896f0ead05c46351389"
@@ -21721,6 +21786,7 @@
 "Cart.MD5" "feba8686fd0376015258d1152923958a"
 "Cart.Name" "Super Circus (Unknown) (PAL)"
 "Cart.Note" "AKA Circus Atari"
+"Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xab\"],\"variations_address\":\"0xa8\",\"variations_count\":8}"
 ""
 
 "Cart.MD5" "fec0c2e2ab0588ed20c750b58cf3baa3"
@@ -21728,6 +21794,7 @@
 "Cart.ModelNo" "EAZ-037-04, EAZ-037-04I"
 "Cart.Name" "Beamrider (1984) (Activision) (PAL)"
 "Cart.Rarity" "Rare"
+"Cart.Highscore" "{\"score_addresses\":[\"0x8b\",\"0x8a\",\"0x89\"],\"score_digits\":6,\"special_address\":\"0x80\",\"special_label\":\"Sect.\",\"variations_count\":1}"
 ""
 
 "Cart.MD5" "fece458a8023a809a5006867feca40e8"
