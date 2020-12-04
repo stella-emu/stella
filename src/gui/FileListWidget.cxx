@@ -99,7 +99,7 @@ void FileListWidget::setLocation(const FilesystemNode& node,
   // Now fill the list widget with the names from the file list,
   // even if cancelled
   StringList l;
-  size_t orgLen = node.getShortPath().length();
+  size_t orgLen = _node.getShortPath().length();
 
   _dirList.clear();
   for(const auto& file : _fileList)
