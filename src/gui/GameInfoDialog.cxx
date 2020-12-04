@@ -1283,7 +1283,7 @@ void GameInfoDialog::updateHighScoresWidgets()
   setAddressVal(mySpecialAddress, mySpecialAddressVal, mySpecialBCD->getState(),
                 mySpecialZeroBased->getState());
 
-  // update score RAM values and resulting myScores
+  // update score RAM values and resulting scores
   HSM::ScoreAddresses scoreAddr;
 
   for(uInt32 a = 0; a < HSM::MAX_SCORE_ADDR; ++a)

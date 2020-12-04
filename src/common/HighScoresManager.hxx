@@ -29,7 +29,7 @@ class OSystem;
 using json = nlohmann::json;
 
 /**
-  This class provides an interface to all things related to high myScores.
+  This class provides an interface to all things related to high scores.
 
   @author  Thomas Jentzsch
 */
@@ -62,7 +62,6 @@ namespace HSM {
     bool specialBCD;
     bool specialZeroBased;
     string notes;
-    //bool armRAM;
     // Addresses
     ScoreAddresses scoreAddr;
     uInt16 varsAddr;
@@ -84,7 +83,7 @@ namespace HSM {
 } // namespace HSM
 
 /**
-  This class provides an interface to define, load and save myScores. It is meant
+  This class provides an interface to define, load and save scores. It is meant
   for games which do not support saving highscores.
 
   @author  Thomas Jentzsch
@@ -145,10 +144,8 @@ class HighScoresManager
     Int32 special() const;
     const string notes() const;
 
-    // Get simple property definition checksum
-    string checkSumProps() const;
-    // Get simple highscores data checksum
-    string checkSumScores(const string& data) const;
+    // Get md5 property definition checksum
+    string md5Props() const;
 
     // Peek into memory
     Int16 peek(uInt16 addr) const;
@@ -175,7 +172,6 @@ class HighScoresManager
     static constexpr uInt32 MAX_VARIATIONS = 256;
 
     static constexpr uInt32 MAX_TRAILING = 3;
-    static constexpr bool DEFAULT_ARM_RAM = false;
     static constexpr uInt32 DEFAULT_DIGITS = 4;
     static constexpr uInt32 DEFAULT_TRAILING = 0;
     static constexpr bool DEFAULT_SCORE_BCD = true;
@@ -215,7 +211,6 @@ class HighScoresManager
     bool specialBCD(const json& jprops) const;
     bool specialZeroBased(const json& jprops) const;
     const string notes(const json& jprops) const;
-    //bool armRAM(const json& jprops) const;
 
     // Calculate the number of bytes for one player's score from property parameters
     uInt32 numAddrBytes(const json& jprops) const;
@@ -238,12 +233,8 @@ class HighScoresManager
     uInt16 fromHexStr(const string& addr) const;
     Int32 fromBCD(uInt8 bcd) const;
 
-    // Add new value to checksum
-    void addCheckByte(uInt32& sum, uInt16& r, uInt8 value) const;
-    void addCheckWord(uInt32& sum, uInt16& r, uInt16 value) const;
-
     /**
-      Saves the current high myScores for this game and variation to the given file system node.
+      Saves the current high scores for this game and variation to the given file system node.
 
       @param node  The file system node to save to.
       @param scores  The saved high score data
@@ -253,7 +244,7 @@ class HighScoresManager
     bool save(FilesystemNode& node, const HSM::ScoresData& scores) const;
 
     /**
-      Loads the current high myScores for this game and variation from the given JSON object.
+      Loads the current high scores for this game and variation from the given JSON object.
 
       @param hsData  The JSON to parse
       @param scores  The loaded high score data

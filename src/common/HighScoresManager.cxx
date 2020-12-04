@@ -49,6 +49,7 @@
 #include "Console.hxx"
 #include "Launcher.hxx"
 #include "Base.hxx"
+#include "MD5.hxx"
 
 #include "HighScoresManager.hxx"
 
@@ -130,7 +131,6 @@ bool HighScoresManager::get(const Properties& props, uInt32& numVariationsR,
 
   numVariationsR = numVariations(jprops);
 
-  //info.armRAM = armRAM(jprops);
   info.numDigits = numDigits(jprops);
   info.trailingZeroes = trailingZeroes(jprops);
   info.scoreBCD = scoreBCD(jprops);
@@ -196,9 +196,6 @@ void HighScoresManager::set(Properties& props, uInt32 numVariations,
   if(!info.notes.empty())
     jprops[NOTES] = info.notes;
 
-  //if(info.armRAM != DEFAULT_ARM_RAM)
-  //  jprops[""] = info.armRAM;
-
   props.set(PropType::Cart_Highscore, jprops.dump());
 }
 
@@ -261,12 +258,6 @@ const string HighScoresManager::notes(const json& jprops) const
 {
   return getPropStr(jprops, NOTES);
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-/*bool HighScoresManager::armRAM(const json& jprops) const
-{
-  return getPropStr(jprops, ARM_RAM);
-}*/
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 HighScoresManager::varAddress(const json& jprops) const
@@ -406,64 +397,26 @@ const string HighScoresManager::formattedScore(Int32 score, Int32 width) const
   return buf.str();
 }
 
-void HighScoresManager::addCheckByte(uInt32& sum, uInt16& r, uInt8 value) const
-{
-  constexpr uInt16 C1 = 52845, C2 = 22719;
-
-  uInt8 cipher = (value ^ (r >> 8));
-  r = (cipher + r) * C1 + C2;
-  sum += cipher;
-}
-
-void HighScoresManager::addCheckWord(uInt32& sum, uInt16& r, uInt16 value) const
-{
-  addCheckByte(sum, r, value >> 8);
-  addCheckByte(sum, r, value & 0xff);
-}
-
-string HighScoresManager::checkSumProps() const
+string HighScoresManager::md5Props() const
 {
   json jprops;
   properties(jprops);
+  ostringstream buf;
 
-  uInt32 sum = 0;
-  uInt16 r = 55665;
-
-  addCheckWord(sum, r, varAddress(jprops));
-  addCheckByte(sum, r, numVariations());
-  //addCheckByte(sum, r, variation());
-  addCheckByte(sum, r, varBCD(jprops));
-  addCheckByte(sum, r, varZeroBased(jprops));
+  buf << varAddress(jprops) << numVariations() << varBCD(jprops)
+    << varZeroBased(jprops);
 
   uInt32 addrBytes = numAddrBytes(jprops);
   HSM::ScoreAddresses addr = getPropScoreAddr(jprops);
   for(uInt32 a = 0; a < addrBytes; ++a)
-    addCheckWord(sum, r, addr[a]);
-  addCheckByte(sum, r, numDigits(jprops));
-  addCheckByte(sum, r, trailingZeroes(jprops));
-  addCheckByte(sum, r, scoreBCD(jprops));
-  addCheckWord(sum, r, scoreInvert(jprops));
+    buf << addr[a];
+  buf << numDigits(jprops) << trailingZeroes(jprops) << scoreBCD(jprops)
+    << scoreInvert(jprops) << specialAddress(jprops) << specialBCD(jprops)
+    << specialZeroBased(jprops);
 
-  addCheckWord(sum, r, specialAddress(jprops));
-  addCheckByte(sum, r, specialBCD(jprops));
-  addCheckByte(sum, r, specialZeroBased(jprops));
+  buf << specialAddress(jprops) << specialBCD(jprops) << specialZeroBased(jprops);
 
-  ostringstream ss;
-  ss << Base::HEX4 << (sum & 0xffff ^ (sum >> 16) ^ r);
-  return ss.str();
-}
-
-string HighScoresManager::checkSumScores(const string& data) const
-{
-  uInt32 sum = 0;
-  uInt16 r = 55665;
-
-  for(auto& c : data)
-    addCheckByte(sum, r, c);
-
-  ostringstream ss;
-  ss << Base::HEX4 << (sum & 0xffff ^ (sum >> 16) ^ r);
-  return ss.str();
+  return MD5::hash(buf.str());
 }
 
 bool HighScoresManager::scoreInvert() const
@@ -511,7 +464,8 @@ const string HighScoresManager::notes() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Int32 HighScoresManager::convert(Int32 val, uInt32 maxVal, bool isBCD, bool zeroBased) const
 {
-  maxVal += zeroBased ? 0 : 1;
+  //maxVal += zeroBased ? 0 : 1;
+  maxVal -= zeroBased ? 1 : 0;
   Int32 bits = isBCD
     ? ceil(log(maxVal) / log(10) * 4)
     : ceil(log(maxVal) / log(2));
@@ -680,15 +634,13 @@ void HighScoresManager::loadHighScores(const string& cartName, ScoresData& data)
             << data.variation << ".";
         else
         {
-          if(load(hsData, data))
+          if(!load(hsData, data)
+            || !hsData.contains(PROPCHECK) || hsData.at(PROPCHECK) != md5Props()
+            || !hsObject.contains(CHECKSUM) || hsObject.at(CHECKSUM) != MD5::hash(hsData.dump()))
+              invalid = true;
+          else
             return;
-          invalid = true;
         }
-        if(!hsData.contains(PROPCHECK)
-           || hsData.at(PROPCHECK) != checkSumProps()
-           || !hsObject.contains(CHECKSUM)
-           || hsObject.at(CHECKSUM) != checkSumScores(hsData.dump()))
-          invalid = true;
       }
       else
         invalid = true;
@@ -729,10 +681,10 @@ bool HighScoresManager::save(FilesystemNode& node, const ScoresData& data) const
       jScores.push_back(jScore);
     }
     hsData[SCORES] = jScores;
-    hsData[PROPCHECK] = checkSumProps();
+    hsData[PROPCHECK] = md5Props();
 
     hsObject[DATA] = hsData;
-    hsObject[CHECKSUM] = checkSumScores(hsData.dump());
+    hsObject[CHECKSUM] = MD5::hash(hsData.dump());
 
     stringstream ss(hsObject.dump());
     node.write(ss);

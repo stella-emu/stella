@@ -37,7 +37,7 @@ using json = nlohmann::json;
 
 
 /**
-  The dialog for displaying high myScores in Stella.
+  The dialog for displaying high scores in Stella.
 
   @author  Thomas Jentzsch
 */
