@@ -186,18 +186,19 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
   ypos += VGAP;
 
   _w = std::max(myDeleteButtons[0]->getRight() + HBORDER,
-                HBORDER * 2 + ifont.getMaxCharWidth() * (5 + 32 + 2 + 11));
+                HBORDER * 2 + ifont.getMaxCharWidth() * (5 + 17 + 2 + 7 + 17));
   myNotesWidget = new StaticTextWidget(this, ifont, xpos, ypos + 1, _w - HBORDER * 2,
                                        infoLineHeight, "Note: ");
 
   ypos += infoLineHeight + VGAP;
 
+  // Note: Only display the first 16 md5 chars + "..."
   myMD5Widget = new StaticTextWidget(this, ifont, xpos, ypos + 1,
-                                     "MD5: 12345678901234567890123456789012");
+                                     "MD5: 1234567890123456.");
 
   myCheckSumWidget = new StaticTextWidget(this, ifont,
-                                          _w - HBORDER - ifont.getStringWidth("Props: 1234"),
-                                          ypos + 1, "Props: 1234");
+                                          _w - HBORDER - ifont.getStringWidth("Props: 1234567890123456."),
+                                          ypos + 1, "Props: 1234567890123456.");
 
   _h = myMD5Widget->getBottom() + VBORDER + buttonHeight + VBORDER;
 
@@ -276,7 +277,7 @@ void HighScoresDialog::loadConfig()
     myScores.md5 = instance().launcher().selectedRomMD5();
 
   myMD5Widget->setLabel("MD5: " + myScores.md5);
-  myCheckSumWidget->setLabel("Props: " + instance().highScores().checkSumProps());
+  myCheckSumWidget->setLabel("Props: " + instance().highScores().md5Props());
 
   // requires the current MD5
   myGameNameWidget->setLabel(cartName());

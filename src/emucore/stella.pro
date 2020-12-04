@@ -909,6 +909,7 @@
 "Cart.Name" "Solaris (Genesis)"
 "Cart.Note" "Genesis controller (C switches to map mode)"
 "Cart.Rarity" "Hack of Solaris"
+"Cart.Highscore" "{\"score_addresses\":[\"0xde\",\"0xdd\",\"0xdc\"],\"score_digits\":6,\"score_trailing_zeroes\":1,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "0ae3497e731ca0bf6a77b23441d9d9f9"
@@ -1326,6 +1327,7 @@
 "Cart.Name" "Conquest Of Mars (2010) (NTSC)"
 "Cart.Note" "Rev 2 release"
 "Cart.Rarity" "Homebrew"
+"Cart.Highscore" "{\"score_addresses\":[\"0x92\",\"0x94\",\"0x96\"],\"score_digits\":6,\"special_address\":\"0x9a\",\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_address\":\"0x89\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "0f643c34e40e3f1daafd9c524d3ffe64"
@@ -4565,6 +4567,7 @@
 "Cart.Name" "Qb (2.15) (Retroactive) (Stella)"
 "Cart.Rarity" "New Release"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"score_addresses\":[\"0xe6\",\"0xe5\",\"0xe4\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "34f4b1d809aa705ace6e46b13253fd3b"
@@ -5254,6 +5257,7 @@
 "Cart.Manufacturer" "Parker Brothers, Rex Bradford, Sam Kjellman"
 "Cart.ModelNo" "PB5050"
 "Cart.Name" "Star Wars - The Empire Strikes Back (1982) (Parker Bros)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xe0\",\"0xe1\"],\"variations_address\":\"0xea\",\"variations_bcd\":false,\"variations_count\":32,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "3ca51b5c08f5a0ecfb17d0c1ec6d0942"
@@ -5480,6 +5484,7 @@
 "Cart.MD5" "3f01bd6d059396f495a4cde7de0ab180"
 "Cart.Name" "Qb (Special Edition) (NTSC) (Retroactive)"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"score_addresses\":[\"0xe6\",\"0xe5\",\"0xe4\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "3f039981255691d3859d04ef813a1264"
@@ -6872,6 +6877,7 @@
 "Cart.MD5" "4fae08027365d31c558e400b687adf21"
 "Cart.Name" "Qb (V2.17) (NTSC) (2001) (Retroactive)"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"score_addresses\":[\"0xe6\",\"0xe5\",\"0xe4\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "4faeb04b1b7fb0fa25db05753182a898"
@@ -10222,6 +10228,7 @@
 "Cart.Name" "Conquest Of Mars (2010) (PAL60)"
 "Cart.Note" "Rev 2 release"
 "Cart.Rarity" "Homebrew"
+"Cart.Highscore" "{\"score_addresses\":[\"0x92\",\"0x94\",\"0x96\"],\"score_digits\":6,\"special_address\":\"0x9a\",\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_address\":\"0x89\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "75a303fd46ad12457ed8e853016815a0"
@@ -11669,6 +11676,7 @@
 "Cart.ModelNo" "CG-02-P"
 "Cart.Name" "Conquest Of Mars (PAL60)"
 "Cart.Rarity" "Homebrew"
+"Cart.Highscore" "{\"score_addresses\":[\"0x92\",\"0x94\",\"0x96\"],\"score_digits\":6,\"special_address\":\"0x9a\",\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_address\":\"0x89\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "85e48d68c8d802e3ba9d494a47d6e016"
@@ -12603,6 +12611,7 @@
 "Cart.Name" "Qb (2.15) (Retroactive) (PAL)"
 "Cart.Rarity" "New Release"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"score_addresses\":[\"0xe6\",\"0xe5\",\"0xe4\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "9295570a141cdec18074c55dc7229d08"
@@ -14661,6 +14670,7 @@
 "Cart.Name" "Qb (2.15) (Retroactive) (NTSC)"
 "Cart.Rarity" "New Release"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"score_addresses\":[\"0xe6\",\"0xe5\",\"0xe4\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "ac5f78bae0638cf3f2a0c8d07eb4df69"
@@ -15823,6 +15833,7 @@
 "Cart.ModelNo" "CX26136"
 "Cart.Name" "Solaris (1986) (Atari) (PAL)"
 "Cart.Note" "AKA Universe, Star Raiders II, The Last Starfighter"
+"Cart.Highscore" "{\"score_addresses\":[\"0xde\",\"0xdd\",\"0xdc\"],\"score_digits\":6,\"score_trailing_zeroes\":1,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "bc526185ad324241782dc68ba5d0540b"
@@ -15941,6 +15952,7 @@
 "Cart.Manufacturer" "Parker Brothers, Rex Bradford, Sam Kjellman"
 "Cart.ModelNo" "931501"
 "Cart.Name" "Star Wars - The Empire Strikes Back (1982) (Parker Bros) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xe0\",\"0xe1\"],\"variations_address\":\"0xea\",\"variations_bcd\":false,\"variations_count\":32,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "be1922bd8e09d74da471287e1e968653"
@@ -16347,6 +16359,7 @@
 "Cart.ModelNo" "CG-02-N"
 "Cart.Name" "Conquest Of Mars (NTSC)"
 "Cart.Rarity" "Homebrew"
+"Cart.Highscore" "{\"score_addresses\":[\"0x92\",\"0x94\",\"0x96\"],\"score_digits\":6,\"special_address\":\"0x9a\",\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_address\":\"0x89\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "c31a17942d162b80962cb1f7571cd1d5"
@@ -18344,6 +18357,7 @@
 "Cart.Name" "Last Starfighter (1984) (Atari) (Prototype)"
 "Cart.Note" "Genesis controller (C switches to map mode)"
 "Cart.Rarity" "Hack of Last Starfighter (Solaris prototype)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xde\",\"0xdd\",\"0xdc\"],\"score_digits\":6,\"score_trailing_zeroes\":1,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "d9c9cece2e769c7985494b1403a25721"
@@ -19199,6 +19213,7 @@
 "Cart.Manufacturer" "Manuel Polik"
 "Cart.Name" "Star Fire (2003) (XYPE) (PAL)"
 "Cart.Rarity" "Homebrew"
+"Cart.Highscore" "{\"score_addresses\":[\"0x81\",\"0x82\",\"0x83\"],\"score_digits\":6,\"special_address\":\"0x84\",\"special_label\":\"Wave\",\"special_zero_based\":true,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "e28113d10c0c14cc3b5f430b0d142fcb"
@@ -19655,6 +19670,7 @@
 "Cart.ModelNo" "CX26136"
 "Cart.Name" "Solaris (1986) (Atari)"
 "Cart.Note" "AKA Universe, Star Raiders II, The Last Starfighter"
+"Cart.Highscore" "{\"score_addresses\":[\"0xde\",\"0xdd\",\"0xdc\"],\"score_digits\":6,\"score_trailing_zeroes\":1,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "e72ee2d6e501f07ec5e8a0efbe520bee"
@@ -20538,6 +20554,7 @@
 "Cart.Name" "Solaris Trainer (2002) (Chris Larkin) (Hack)"
 "Cart.Note" "Hack of Solaris"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"score_addresses\":[\"0xde\",\"0xdd\",\"0xdc\"],\"score_digits\":6,\"score_trailing_zeroes\":1,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "f1a0a23e6464d954e3a9579c4ccd01c8"
@@ -21523,6 +21540,7 @@
 "Cart.Manufacturer" "Manuel Polik"
 "Cart.Name" "Star Fire (2003) (XYPE)"
 "Cart.Rarity" "Homebrew"
+"Cart.Highscore" "{\"score_addresses\":[\"0x81\",\"0x82\",\"0x83\"],\"score_digits\":6,\"special_address\":\"0x84\",\"special_label\":\"Wave\",\"special_zero_based\":true,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "fb88c400d602fe759ae74ef1716ee84e"
