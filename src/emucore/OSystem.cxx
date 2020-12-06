@@ -839,7 +839,15 @@ void OSystem::mainLoop()
     if (myEventHandler->state() == EventHandlerState::EMULATION)
       // Dispatch emulation and render frame (if applicable)
       timesliceSeconds = dispatchEmulation(emulationWorker);
-    else {
+    else if(myEventHandler->state() == EventHandlerState::PLAYBACK)
+    {
+      // Playback at emulation speed
+      timesliceSeconds = static_cast<double>(myConsole->tia().scanlinesLastFrame() * 76) /
+        static_cast<double>(myConsole->emulationTiming().cyclesPerSecond());
+      myFrameBuffer->update();
+    }
+    else
+    {
       // Render the GUI with 60 Hz in all other modes
       timesliceSeconds = 1. / 60.;
       myFrameBuffer->update();

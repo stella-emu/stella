@@ -25,6 +25,7 @@
 #include "Settings.hxx"
 #include "TIA.hxx"
 #include "Sound.hxx"
+#include "AudioSettings.hxx"
 #include "MediaFactory.hxx"
 
 #include "FBSurface.hxx"
@@ -440,23 +441,24 @@ void FrameBuffer::update(UpdateMode mode)
     case EventHandlerState::PLAYBACK:
     {
       static Int32 frames = 0;
-      RewindManager& r = myOSystem.state().rewindManager();
       bool success = true;
-      Int64 frameCycles = 76 * std::max<Int32>(myOSystem.console().tia().scanlinesLastFrame(), 240);
 
       if(--frames <= 0)
       {
-        r.unwindStates(1);
-        // get time between current and next state
-        uInt64 startCycles = r.getCurrentCycles();
+        RewindManager& r = myOSystem.state().rewindManager();
+        uInt64 prevCycles = r.getCurrentCycles();
+
         success = r.unwindStates(1);
-        // display larger state gaps faster
-        frames = std::sqrt((myOSystem.console().tia().cycles() - startCycles) / frameCycles);
 
-        if(success)
-          r.rewindStates(1);
+        Int64 frameCycles = 76 * std::max<Int32>(myOSystem.console().tia().scanlinesLastFrame(), 240);
+
+        // Use time between previous and current state
+        //  to playback larger state gaps faster
+        frames = std::sqrt((r.getCurrentCycles() - prevCycles) / frameCycles);
+
+        // TODO: test and verify with CS
+        //myOSystem.sound().mute(uInt32(frames) > myOSystem.audioSettings().headroom() / 2 + 1);
       }
-
       redraw |= success;
       if(redraw)
         myTIASurface->render();

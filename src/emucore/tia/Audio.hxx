@@ -47,6 +47,7 @@ class Audio : public Serializable
 
   private:
     void phase1();
+    void addSample(uInt8 sample0, uInt8 sample1);
 
   private:
     shared_ptr<AudioQueue> myAudioQueue;
@@ -61,6 +62,9 @@ class Audio : public Serializable
 
     Int16* myCurrentFragment{nullptr};
     uInt32 mySampleIndex{0};
+  #ifdef GUI_SUPPORT
+    mutable ByteArray mySamples;
+  #endif
 
   private:
     Audio(const Audio&) = delete;

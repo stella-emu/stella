@@ -422,33 +422,28 @@ string HighScoresManager::md5Props() const
 bool HighScoresManager::scoreInvert() const
 {
   json jprops;
+
   return scoreInvert(properties(jprops));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Int32 HighScoresManager::special() const
 {
+  if(!myOSystem.hasConsole())
+    return NO_VALUE;
+
   json jprops;
   uInt16 addr = specialAddress(properties(jprops));
 
   if (addr == DEFAULT_ADDRESS)
     return NO_VALUE;
 
-  return special(addr, specialBCD(jprops), specialZeroBased(jprops));
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Int32 HighScoresManager::special(uInt16 addr, bool varBCD, bool zeroBased) const
-{
-  if (!myOSystem.hasConsole())
-    return NO_VALUE;
-
   Int32 var = peek(addr);
 
-  if (varBCD)
+  if(specialBCD(jprops))
     var = fromBCD(var);
 
-  var += zeroBased ? 1 : 0;
+  var += specialZeroBased(jprops) ? 1 : 0;
 
   return var;
 }
