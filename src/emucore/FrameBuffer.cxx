@@ -450,14 +450,17 @@ void FrameBuffer::update(UpdateMode mode)
 
         success = r.unwindStates(1);
 
+        // Determine playback speed, the faster the more the statess are apart
         Int64 frameCycles = 76 * std::max<Int32>(myOSystem.console().tia().scanlinesLastFrame(), 240);
+        Int32 intervalFrames = r.getInterval() / frameCycles;
+        Int32 stateFrames = (r.getCurrentCycles() - prevCycles) / frameCycles;
 
-        // Use time between previous and current state
-        //  to playback larger state gaps faster
-        frames = std::sqrt((r.getCurrentCycles() - prevCycles) / frameCycles);
+        //frames = intervalFrames + std::sqrt(std::max(stateFrames - intervalFrames, 0));
+        frames = std::round(std::sqrt(stateFrames));
 
-        // TODO: test and verify with CS
-        //myOSystem.sound().mute(uInt32(frames) > myOSystem.audioSettings().headroom() / 2 + 1);
+        // Mute sound if saved states were removed or states are too far apart
+        myOSystem.sound().mute(stateFrames > intervalFrames
+                               || frames > myOSystem.audioSettings().bufferSize() / 2 + 1);
       }
       redraw |= success;
       if(redraw)
@@ -468,6 +471,7 @@ void FrameBuffer::update(UpdateMode mode)
       if(!success)
       {
         frames = 0;
+        myOSystem.sound().mute(true);
         myOSystem.eventHandler().enterMenuMode(EventHandlerState::TIMEMACHINE);
       }
       break;  // EventHandlerState::PLAYBACK
