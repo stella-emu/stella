@@ -1828,8 +1828,8 @@
     </tr>
     <tr>
       <td>Playback the <a href="#TimeMachine"><b>Time Machine</b></a> from current state (without sound, from the TM dialog only)</td>
-      <td>Shift</td>
-      <td>Shift</td>
+      <td>Space</td>
+      <td>Space</td>
     </tr>
     <tr>
       <td>Start/Stop playback (exist/enters the <a href="#TimeMachine"><b>Time Machine</b></a> dialog)</td>
@@ -2259,10 +2259,10 @@
     <tr><td>Current time</td><td>Shows the time of the currently selected state,
       relative to the first one</td></tr>
     <tr><td>'Start/Stop' button</td><td>Starts or stops the Time Machine</td></tr>
-    <tr><td>'Exit' button</td><td>Exits the dialog and continues emulation, starting at current state</td></tr>
+    <tr><td>'Exit' button</td><td>Exits the dialog and continues emulation from the current state</td></tr>
     <tr><td>'Rewind All' button</td><td>Navigates back to the begin of the timeline</td></tr>
     <tr><td>'Rewind One' button</td><td>Navigates back by one state</td></tr>
-    <tr><td>'Playback' button</td><td>Starts playback, starting at the current state (with sound disabled)</td></tr>
+    <tr><td>'Playback' button</td><td>Starts playback from the current state</td></tr>
     <tr><td>'Unwind One' button</td><td>Navigates forward by one state</td></tr>
     <tr><td>'Unwind All' button</td><td>Navigates forward to the end of the timeline</td></tr>
     <tr><td>'Save All' button</td><td>Saves all Time Machine states to disk</td></tr>
@@ -2288,43 +2288,50 @@
   <a href="#HighScoreGames">High Scores - supported games</a></b>) this has
   been done already.</p>
 
+  <p>To save a score, the High Score dialog can be opened by pressing 'Insert'
+  any time while a game is played. It will provide the current variation and
+  score and allow the user to add this as a new high score. Of course this
+  makes most sense when a game is over. Note: In multiplayer games, only the
+  score of the first player can be saved.</p>
+
   <p><b>High Scores</b> dialog:</p>
-  <td><img src="graphics/highscores.png"></td>
+  <table border="5" cellpadding="2" frame="box" rules="none">
+    <tr>
+      <td><img src="graphics/highscores.png"></td>
+      <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+      <td valign="top">
+      <table border="1" cellpadding="4">
+        <tr><th>Item</th><th>Description</th></tr>
+        <tr><td>Top row</td><td>Displays the current game's name.</td></tr>
+        <tr><td>Variation</td><td>By default the current game's variation is
+                selected. By changing the variation, the high scores of other
+                variations can be reviewed.</td></tr>
+        <tr><td>High scores table</td><td>This table displays up to ten high scores
+                for the current game variation.
+            <ul>
+              <li>Besides 'Rank' and 'Score' an optional special value (e.g.
+              'Level', 'Wave' or 'Round') is displayed.</li>
+              <li>In the 'Name' column, the player's initials are displayed.
+              These can be entered when a new high score is added to the list.</li>
+              <li>'Date' and 'Time' record when the high score was added.</li>
+              <li>The buttons at the right allow deleting individual high
+              scores from the list.</li>
+            </ul>
+        </td></tr>
+        <tr><td>MD5/Props</td><td>Display the checksums of the current ROM and the
+                high score properties defined for it. This can be useful for
+                comparing and verifying high scores.</td></tr>
+        <tr><td>Reset</td><td>Resets all high scores of the currently selected
+                variation.</td></tr>
+        <tr><td>Save</td><td>Saves the updated high scores and closes the dialog.
+        </td></tr>
+        <tr><td>Cancel</td><td>Closes the dialog without saving.</td></tr>
+      </table>
 
-  <p>This dialog can be opened by pressing 'Insert' any time while a game is
-  played. It will provide the current variation and score and allow the user
-  to add this as a new high score. Of course this makes most sense when a game
-  is over. Note: In multiplayer games, only the score of the first player can be
-  saved.</p>
-  <p>The dialog items are explained in the following two tables.</p>
-
-  <table border="1" cellpadding="4">
-    <tr><th>Item</th><th>Description</th></tr>
-    <tr><td>Top row</td><td>Displays the current game's name.</td></tr>
-    <tr><td>Variation</td><td>By default the current game's variation is
-            selected. By changing the variation, the high scores of other
-            variations can be reviewed.</td></tr>
-    <tr><td>High scores table</td><td>This table displays up to ten high scores
-            for the current game variation.
-        <ul>
-          <li>Besides 'Rank' and 'Score' an optional special value (e.g.
-          'Level', 'Wave' or 'Round') is displayed.</li>
-          <li>In the 'Name' column, the player's initials are displayed.
-          These can be entered when a new high score is added to the list.</li>
-          <li>'Date' and 'Time' record when the high score was added.</li>
-          <li>The buttons at the right allow deleting individual high
-          scores from the list.</li>
-        </ul>
-    </td></tr>
-    <tr><td>MD5/Props</td><td>Display the checksums of the current ROM and the
-            high score properties defined for it. This can be useful for
-            comparing and verifying high scores.</td></tr>
-    <tr><td>Reset</td><td>Resets all high scores of the currently selected
-            variation.</td></tr>
-    <tr><td>Save</td><td>Saves the updated high scores and closes the dialog.
-    </td></tr>
-    <tr><td>Cancel</td><td>Closes the dialog without saving.</td></tr>
+      </td>
+    </tr>
   </table>
+
   <p>For details how to configure high scores definintions for a game see
   <a href="#HighScoreProps"><b>High Scores Properties</b></a></h2>.</p>
   </blockquote></br>
@@ -3511,7 +3518,7 @@
   <p><b>User Interface Settings</b> dialog (2 tabs):</p>
   <table border="5" cellpadding="2" frame="box" rules="none">
     <tr>
-      <td><img src="graphics/options_misc.png"><br><br></td>
+      <td><img src="graphics/options_misc.png"></td>
       <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
       <td valign="top">
         <table border="1" cellpadding="4">
@@ -3530,12 +3537,13 @@
       </td>
     </tr>
     <tr>
-      <td><img src="graphics/options_misc_classic.png"></td>
+      <td><img src="graphics/options_misc_dark.png"></td>
       <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-      <td><img src="graphics/options_misc_light.png"></td>
+      <td><img src="graphics/options_misc_classic.png"></td>
     </tr>
     <tr>
-      <td><img src="graphics/options_misc_dark.png"></td>
+      <td colspan="3"><center><img src="graphics/options_misc_light.png"></center></td>
+
     </tr>
   </table>
   <br>

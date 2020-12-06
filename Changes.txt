@@ -28,6 +28,8 @@
 
   * Added dynamic tooltips to most debugger items.
 
+  * Added sound to Time Machine playback.
+
   * Increased sample size for CDFJ+.
 
   * Fixed autofire bug for trackball controllers.

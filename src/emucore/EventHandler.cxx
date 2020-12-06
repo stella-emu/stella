@@ -2388,7 +2388,6 @@ void EventHandler::enterPlayBackMode()
 {
 #ifdef GUI_SUPPORT
   setState(EventHandlerState::PLAYBACK);
-  myOSystem.sound().mute(true); // sound does not work in playback mode
 #endif
 }
 

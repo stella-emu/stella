@@ -131,9 +131,6 @@ class HighScoresManager
     */
     uInt32 numAddrBytes(Int32 digits, Int32 trailing) const;
 
-
-    Int32 special(uInt16 addr, bool varBCD, bool zeroBased) const;
-
     // Retrieve current values (using game's properties)
     Int32 numVariations() const;
     const string specialLabel() const;
