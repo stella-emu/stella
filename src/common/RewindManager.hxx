@@ -158,6 +158,7 @@ class RewindManager
     uInt64 getFirstCycles() const;
     uInt64 getCurrentCycles() const;
     uInt64 getLastCycles() const;
+    uInt64 getInterval() const { return myInterval; }
 
     /**
       Get a collection of cycle timestamps, offset from the first one in
