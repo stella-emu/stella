@@ -459,8 +459,8 @@ void FrameBuffer::update(UpdateMode mode)
         frames = std::round(std::sqrt(stateFrames));
 
         // Mute sound if saved states were removed or states are too far apart
-        myOSystem.sound().mute(stateFrames > intervalFrames
-                               || frames > myOSystem.audioSettings().bufferSize() / 2 + 1);
+        myOSystem.sound().mute(stateFrames > intervalFrames ||
+            frames > static_cast<int>(myOSystem.audioSettings().bufferSize() / 2 + 1));
       }
       redraw |= success;
       if(redraw)
