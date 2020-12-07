@@ -44,6 +44,9 @@ class RomInfoWidget : public Widget
 
   private:
     void parseProperties(const FilesystemNode& node);
+  #ifdef PNG_SUPPORT
+    bool loadPng(const string& filename);
+  #endif
 
   private:
     // Surface pointer holding the PNG image

@@ -108,20 +108,13 @@ void RomInfoWidget::parseProperties(const FilesystemNode& node)
       myProperties.get(PropType::Cart_Name) + ".png";
 
   // Read the PNG file
-  try
-  {
-    instance().png().loadImage(filename, *mySurface);
+  mySurfaceIsValid = loadPng(filename);
 
-    // Scale surface to available image area
-    const Common::Rect& src = mySurface->srcRect();
-    float scale = std::min(float(myAvail.w) / src.w(), float(myAvail.h) / src.h()) *
-        instance().frameBuffer().hidpiScaleFactor();
-    mySurface->setDstSize(uInt32(src.w() * scale), uInt32(src.h() * scale));
-    mySurfaceIsValid = true;
-  }
-  catch(const runtime_error& e)
+  // Try to load a default image if not ROM image exists
+  if(!mySurfaceIsValid)
   {
-    mySurfaceErrorMsg = e.what();
+    mySurfaceIsValid = loadPng(instance().snapshotLoadDir().getPath() +
+                               "default_snapshot.png");
   }
 #else
   mySurfaceErrorMsg = "PNG image loading not supported";
@@ -175,6 +168,30 @@ void RomInfoWidget::parseProperties(const FilesystemNode& node)
 
   setDirty();
 }
+
+#ifdef PNG_SUPPORT
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool RomInfoWidget::loadPng(const string& filename)
+{
+  try
+  {
+    instance().png().loadImage(filename, *mySurface);
+
+    // Scale surface to available image area
+    const Common::Rect& src = mySurface->srcRect();
+    float scale = std::min(float(myAvail.w) / src.w(), float(myAvail.h) / src.h()) *
+      instance().frameBuffer().hidpiScaleFactor();
+    mySurface->setDstSize(uInt32(src.w() * scale), uInt32(src.h() * scale));
+
+    return true;
+  }
+  catch(const runtime_error& e)
+  {
+    mySurfaceErrorMsg = e.what();
+  }
+  return false;
+}
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomInfoWidget::drawWidget(bool hilite)
