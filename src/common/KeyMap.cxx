@@ -221,9 +221,26 @@ KeyMap::MappingArray KeyMap::getEventMapping(const Event::Type event, const Even
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 json KeyMap::saveMapping(const EventMode mode) const
 {
+  using MapType = std::pair<Mapping, Event::Type>;
+  std::vector<MapType> sortedMap(myMap.begin(), myMap.end());
+
+  std::sort(sortedMap.begin(), sortedMap.end(),
+            [](const MapType& a, const MapType& b)
+  {
+    // Event::Type first
+    if(a.second != b.second)
+      return a.second < b.second;
+
+    if(a.first.key != b.first.key)
+      return a.first.key < b.first.key;
+
+    return a.first.mod < b.first.mod;
+  }
+  );
+
   json mappings = json::array();
 
-  for (const auto& [_mapping, _event]: myMap) {
+  for (const auto& [_mapping, _event]: sortedMap) {
     if (_mapping.mode != mode) continue;
 
     json mapping = json::object();
