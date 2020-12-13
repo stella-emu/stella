@@ -21,7 +21,7 @@
 
 srcdir      ?= .
 
-DEFINES     := -DSDL_SUPPORT -D_GLIBCXX_USE_CXX11_ABI=1
+DEFINES     := -DSDL_SUPPORT -D_GLIBCXX_USE_CXX11_ABI=1 -DSQLITE_SUPPORT
 LDFLAGS     := -pthread
 INCLUDES    :=
 LIBS	    :=
@@ -40,48 +40,61 @@ include config.mak
 # CXXFLAGS+= -Werror
 
 ifdef CXXFLAGS
+	CFLAGS:= $(CXXFLAGS)
   CXXFLAGS:= $(CXXFLAGS) -x c++
 else
   CXXFLAGS:= -O2 -x c++
+	CFLAGS:= -O2
 endif
 
 CXXFLAGS+= -Wall -Wextra -Wno-unused-parameter
+CXLAGS+= -Wall -Wextra -Wno-unused-parameter
 
 ifdef HAVE_GCC
   CXXFLAGS+= -Wno-multichar -Wunused -Woverloaded-virtual -Wnon-virtual-dtor -std=c++17
+	CFLAGS+= -Wno-multichar -Wunused
 endif
 
 ifdef HAVE_CLANG
   CXXFLAGS+= -Wno-multichar -Wunused -Woverloaded-virtual -Wnon-virtual-dtor -std=c++17
+	CFLAGS+= -Wno-multichar -Wunused
 endif
 
 ifdef CLANG_WARNINGS
-  CXXFLAGS+= -Weverything -Wno-c++17-extensions  -Wno-c++98-compat-pedantic \
+  EXTRA_WARN=-Weverything -Wno-c++17-extensions  -Wno-c++98-compat-pedantic \
     -Wno-switch-enum -Wno-conversion -Wno-covered-switch-default \
     -Wno-inconsistent-missing-destructor-override -Wno-float-equal \
     -Wno-exit-time-destructors -Wno-global-constructors -Wno-weak-vtables \
     -Wno-four-char-constants -Wno-padded
+
+	CXXFLAGS+= $(EXTRA_WARN)
+	CFLAGS+= $(EXTRA_WARN)
 endif
 
 ifdef PROFILE
   PROF:= -pg -fprofile-arcs -ftest-coverage
   CXXFLAGS+= $(PROF)
+	CFLAGS+= $(PROF)
 endif
 
 ifdef DEBUG
   CXXFLAGS += -g
+	CFLAGS += -g
 else
   ifdef HAVE_GCC
     CXXFLAGS+= -fomit-frame-pointer
+		CFLAGS+= -fomit-frame-pointer
   endif
 
   ifdef HAVE_CLANG
     CXXFLAGS+= -fomit-frame-pointer
+		CFLAGS+= -fomit-frame-pointer
   endif
 endif
 
 ifdef RELEASE
   CXXFLAGS += -flto -fno-rtti
+	CFLAGS += -flto
   LDFLAGS += -flto -fno-rtti
 endif
 
@@ -107,6 +120,8 @@ PROFILE_STAMP = profile.stamp
 
 CXXFLAGS_PROFILE_GENERATE = $(CXXFLAGS)
 CXXFLAGS_PROFILE_USE = $(CXXFLAGS)
+CFLAGS_PROFILE_GENERATE = $(CFLAGS)
+CFLAGS_PROFILE_USE = $(CFLAGS)
 LDFLAGS_PROFILE_GENERATE = $(LDFLAGS)
 STELLA_PROFILE_GENERATE = $(BINARY_LOADER) ./$(EXECUTABLE_PROFILE_GENERATE) -profile \
 	$(PROFILE_DIR)/128.bin:10 \
@@ -115,6 +130,8 @@ STELLA_PROFILE_GENERATE = $(BINARY_LOADER) ./$(EXECUTABLE_PROFILE_GENERATE) -pro
 ifdef HAVE_CLANG
 	CXXFLAGS_PROFILE_GENERATE += -fprofile-generate=$(PROFILE_OUT)
 	CXXFLAGS_PROFILE_USE += -fprofile-use=$(PROFILE_OUT)
+	CFLAGS_PROFILE_GENERATE += -fprofile-generate=$(PROFILE_OUT)
+	CFLAGS_PROFILE_USE += -fprofile-use=$(PROFILE_OUT)
 	LDFLAGS_PROFILE_GENERATE += -fprofile-generate
 	STELLA_PROFILE_GENERATE := \
 		LLVM_PROFILE_FILE="$(PROFILE_OUT)/default.profraw" $(STELLA_PROFILE_GENERATE) && \
@@ -124,6 +141,8 @@ endif
 ifdef HAVE_GCC
 	CXXFLAGS_PROFILE_GENERATE += -fprofile-generate -fprofile-dir=$(PROFILE_OUT)
 	CXXFLAGS_PROFILE_USE += -fprofile-use -fprofile-dir=$(PROFILE_OUT)
+	CFLAGS_PROFILE_GENERATE += -fprofile-generate -fprofile-dir=$(PROFILE_OUT)
+	CFLAGS_PROFILE_USE += -fprofile-use -fprofile-dir=$(PROFILE_OUT)
 	LDFLAGS_PROFILE_GENERATE += -fprofile-generate
 	STELLA_PROFILE_GENERATE := $(STELLA_PROFILE_GENERATE) && \
 	  rm -fr $(PROFILE_OUT)/$(OBJECT_ROOT_PROFILE_USE) && \
@@ -155,7 +174,8 @@ MODULES += \
 	src/common/tv_filters \
 	src/emucore \
 	src/emucore/tia \
-	src/emucore/tia/frame-manager
+	src/emucore/tia/frame-manager \
+	src/common/repository/sqlite
 
 ######################################################################
 # The build rules follow - normally you should have no need to
@@ -223,7 +243,7 @@ $(OBJECT_ROOT)/%.o: %.cxx
 
 $(OBJECT_ROOT)/%.o: %.c
 	$(create_dir)
-	$(CC) $(CXX_UPDATE_DEP_FLAG) $(CXXFLAGS) $(CPPFLAGS) -c $(<) -o $@
+	$(CC) $(CXX_UPDATE_DEP_FLAG) $(CFLAGS) $(CPPFLAGS) -c $(<) -o $@
 	$(merge_dep)
 
 $(OBJECT_ROOT_PROFILE_GENERERATE)/%.pgen.o: %.cxx
@@ -231,9 +251,9 @@ $(OBJECT_ROOT_PROFILE_GENERERATE)/%.pgen.o: %.cxx
 	$(CXX) $(CXX_UPDATE_DEP_FLAG) $(CXXFLAGS_PROFILE_GENERATE) $(CPPFLAGS) -c $(<) -o $@
 	$(merge_dep)
 
-$(OBJECT_ROOT_PROFILE_GENERERATE)/%.pgen.o: %.cxx
+$(OBJECT_ROOT_PROFILE_GENERERATE)/%.pgen.o: %.c
 	$(create_dir)
-	$(CC) $(CXX_UPDATE_DEP_FLAG) $(CXXFLAGS_PROFILE_GENERATE) $(CPPFLAGS) -c $(<) -o $@
+	$(CC) $(CXX_UPDATE_DEP_FLAG) $(CFLAGS_PROFILE_GENERATE) $(CPPFLAGS) -c $(<) -o $@
 	$(merge_dep)
 
 $(OBJECT_ROOT_PROFILE_USE)/%.pgo.o: %.cxx $(PROFILE_STAMP)
@@ -241,9 +261,9 @@ $(OBJECT_ROOT_PROFILE_USE)/%.pgo.o: %.cxx $(PROFILE_STAMP)
 	$(CXX) $(CXX_UPDATE_DEP_FLAG) $(CXXFLAGS_PROFILE_USE) $(CPPFLAGS) -c $(<) -o $@
 	$(merge_dep)
 
-$(OBJECT_ROOT_PROFILE_USE)/%.pgo.o: %.cxx $(PROFILE_STAMP)
+$(OBJECT_ROOT_PROFILE_USE)/%.pgo.o: %.c $(PROFILE_STAMP)
 	$(create_dir)
-	$(CC) $(CXX_UPDATE_DEP_FLAG) $(CXXFLAGS_PROFILE_USE) $(CPPFLAGS) -c $(<) -o $@
+	$(CC) $(CXX_UPDATE_DEP_FLAG) $(CFLAGS_PROFILE_USE) $(CPPFLAGS) -c $(<) -o $@
 	$(merge_dep)
 
 else
@@ -257,7 +277,7 @@ $(OBJECT_ROOT)/%.o: %.cxx
 
 $(OBJECT_ROOT)/%.o: %.c
 	$(create_dir)
-	$(CC) $(CXX_UPDATE_DEP_FLAG) $(CXXFLAGS) $(CPPFLAGS) -c $(<) -o $@
+	$(CC) $(CXX_UPDATE_DEP_FLAG) $(CFLAGS) $(CPPFLAGS) -c $(<) -o $@
 
 $(OBJECT_ROOT_PROFILE_GENERERATE)/%.o: %.cxx
 	$(create_dir)
@@ -265,7 +285,7 @@ $(OBJECT_ROOT_PROFILE_GENERERATE)/%.o: %.cxx
 
 $(OBJECT_ROOT_PROFILE_GENERERATE)/%.o: %.c
 	$(create_dir)
-	$(CC) $(CXX_UPDATE_DEP_FLAG) $(CXXFLAGS_PROFILE_GENERATE) $(CPPFLAGS) -c $(<) -o $@
+	$(CC) $(CXX_UPDATE_DEP_FLAG) $(CFLAGS_PROFILE_GENERATE) $(CPPFLAGS) -c $(<) -o $@
 
 $(OBJECT_ROOT_PROFILE_USE)/%.o: %.cxx $(PROFILE_STAMP)
 	$(create_dir)
@@ -273,7 +293,7 @@ $(OBJECT_ROOT_PROFILE_USE)/%.o: %.cxx $(PROFILE_STAMP)
 
 $(OBJECT_ROOT_PROFILE_USE)/%.o: %.c $(PROFILE_STAMP)
 	$(create_dir)
-	$(CC) $(CXX_UPDATE_DEP_FLAG) $(CXXFLAGS_PROFILE_USE) $(CPPFLAGS) -c $(<) -o $@
+	$(CC) $(CXX_UPDATE_DEP_FLAG) $(CFLAGS_PROFILE_USE) $(CPPFLAGS) -c $(<) -o $@
 
 endif
 
