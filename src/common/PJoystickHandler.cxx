@@ -132,12 +132,13 @@ int PhysicalJoystickHandler::add(const PhysicalJoystickPtr& stick)
       name << stick->name << " #" << count+1;
       stick->name = name.str();
     }
-    stick->type = PhysicalJoystick::JT_REGULAR;
+    stick->type = PhysicalJoystick::Type::REGULAR;
   }
   // The stick *must* be inserted here, since it may be used below
   mySticks[stick->ID] = stick;
 
   // Map the stelladaptors we've found according to the specified ports
+  // The 'type' is also set there
   if(specialAdaptor)
     mapStelladaptors(myOSystem.settings().getString("saport"));
 
@@ -236,12 +237,12 @@ void PhysicalJoystickHandler::mapStelladaptors(const string& saport)
       if(saOrder[saCount] == 1)
       {
         _joyptr->name += " (emulates left joystick port)";
-        _joyptr->type = PhysicalJoystick::JT_STELLADAPTOR_LEFT;
+        _joyptr->type = PhysicalJoystick::Type::LEFT_STELLADAPTOR;
       }
       else if(saOrder[saCount] == 2)
       {
         _joyptr->name += " (emulates right joystick port)";
-        _joyptr->type = PhysicalJoystick::JT_STELLADAPTOR_RIGHT;
+        _joyptr->type = PhysicalJoystick::Type::RIGHT_STELLADAPTOR;
       }
       saCount++;
     }
@@ -250,12 +251,12 @@ void PhysicalJoystickHandler::mapStelladaptors(const string& saport)
       if(saOrder[saCount] == 1)
       {
         _joyptr->name += " (emulates left joystick port)";
-        _joyptr->type = PhysicalJoystick::JT_2600DAPTOR_LEFT;
+        _joyptr->type = PhysicalJoystick::Type::LEFT_2600DAPTOR;
       }
       else if(saOrder[saCount] == 2)
       {
         _joyptr->name += " (emulates right joystick port)";
-        _joyptr->type = PhysicalJoystick::JT_2600DAPTOR_RIGHT;
+        _joyptr->type = PhysicalJoystick::Type::RIGHT_2600DAPTOR;
       }
       saCount++;
     }
@@ -313,7 +314,15 @@ void PhysicalJoystickHandler::setStickDefaultMapping(int stick, Event::Type even
     switch (mode)
     {
       case EventMode::kEmulationMode:
-        if((stick % 2) == 0) // even sticks
+      {
+        // A regular joystick defaults to left or right based on the
+        // stick number being even or odd; 'daptor joysticks request a
+        // specific port
+        const bool useLeftMappings =
+            j->type == PhysicalJoystick::Type::REGULAR ? ((stick % 2) == 0) :
+            (j->type == PhysicalJoystick::Type::LEFT_STELLADAPTOR ||
+             j->type == PhysicalJoystick::Type::LEFT_2600DAPTOR);
+        if(useLeftMappings)
         {
           // put all controller events into their own mode's mappings
           for (const auto& item : DefaultLeftJoystickMapping)
@@ -323,7 +332,7 @@ void PhysicalJoystickHandler::setStickDefaultMapping(int stick, Event::Type even
           for (const auto& item : DefaultLeftKeypadMapping)
             setDefaultAction(stick, item, event, EventMode::kKeypadMode, updateDefaults);
         }
-        else // odd sticks
+        else
         {
           // put all controller events into their own mode's mappings
           for (const auto& item : DefaultRightJoystickMapping)
@@ -338,6 +347,7 @@ void PhysicalJoystickHandler::setStickDefaultMapping(int stick, Event::Type even
         // update running emulation mapping too
         enableEmulationMappings();
         break;
+      }
 
       case EventMode::kMenuMode:
         for (const auto& item : DefaultMenuMapping)
@@ -953,7 +963,8 @@ PhysicalJoystickHandler::EventMappingArray PhysicalJoystickHandler::DefaultRight
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PhysicalJoystickHandler::EventMappingArray PhysicalJoystickHandler::DefaultCommonMapping = {
+PhysicalJoystickHandler::EventMappingArray
+PhysicalJoystickHandler::DefaultCommonMapping = {
   // valid for all joysticks
 //#if defined(RETRON77)
   {Event::CmdMenuMode,        3}, // Note: buttons 0..2 are used by controllers!
@@ -966,7 +977,8 @@ PhysicalJoystickHandler::EventMappingArray PhysicalJoystickHandler::DefaultCommo
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PhysicalJoystickHandler::EventMappingArray PhysicalJoystickHandler::DefaultMenuMapping = {
+PhysicalJoystickHandler::EventMappingArray
+PhysicalJoystickHandler::DefaultMenuMapping = {
   // valid for all joysticks
   {Event::UISelect,           0},
   {Event::UIOK,               1},

@@ -34,6 +34,9 @@
 
   * Fixed autofire bug for trackball controllers.
 
+  * Fixed Stelladaptor/2600'daptor devices sometimes not being assigned
+    correct default mappings.
+
   * Codebase now uses C++17 features.
 
 -Have fun!
