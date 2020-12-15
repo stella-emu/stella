@@ -948,9 +948,6 @@
     <ClCompile Include="..\gui\MinUICommandDialog.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\repository\KeyValueRepositoryConfigfile.cxx">
-      <Filter>Source Files\repository</Filter>
-    </ClCompile>
     <ClCompile Include="..\common\Logger.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -2023,10 +2020,7 @@
     </ClInclude>
     <ClInclude Include="..\common\repository\KeyValueRepository.hxx">
       <Filter>Header Files\repository</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\repository\KeyValueRepositoryConfigfile.hxx">
-      <Filter>Header Files\repository</Filter>
-    </ClInclude>
+    </ClInclude>s
     <ClInclude Include="..\common\repository\KeyValueRepositoryNoop.hxx">
       <Filter>Header Files\repository</Filter>
     </ClInclude>
