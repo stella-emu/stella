@@ -692,8 +692,6 @@
 		E06508BF2272447200B341AC /* KeyValueRepository.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E06508B92272447200B341AC /* KeyValueRepository.hxx */; };
 		E06508C02272447200B341AC /* KeyValueRepositoryConfigfile.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E06508BA2272447200B341AC /* KeyValueRepositoryConfigfile.hxx */; };
 		E06508C12272447200B341AC /* KeyValueRepositoryConfigfile.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E06508BB2272447200B341AC /* KeyValueRepositoryConfigfile.cxx */; };
-		E06508CA2272493200B341AC /* SettingsRepositoryMACOS.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E06508C82272493200B341AC /* SettingsRepositoryMACOS.hxx */; };
-		E06508CB2272493200B341AC /* SettingsRepositoryMACOS.mm in Sources */ = {isa = PBXBuildFile; fileRef = E06508C92272493200B341AC /* SettingsRepositoryMACOS.mm */; };
 		E0893AF2211B9842008B170D /* HighPass.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0893AF0211B9841008B170D /* HighPass.cxx */; };
 		E0893AF3211B9842008B170D /* HighPass.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0893AF1211B9841008B170D /* HighPass.hxx */; };
 		E08B1C18231FF97B00EEF922 /* BreakpointMap.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E08B1C16231FF97B00EEF922 /* BreakpointMap.cxx */; };
@@ -713,6 +711,19 @@
 		E09F4142201E9050004A3391 /* Audio.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E09F413E201E904F004A3391 /* Audio.cxx */; };
 		E09F4143201E9050004A3391 /* AudioChannel.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E09F413F201E904F004A3391 /* AudioChannel.cxx */; };
 		E09F4144201E9050004A3391 /* AudioChannel.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E09F4140201E904F004A3391 /* AudioChannel.hxx */; };
+		E0A383FA2589732E0062AA93 /* sqlite3.c in Sources */ = {isa = PBXBuildFile; fileRef = E0A383F82589732E0062AA93 /* sqlite3.c */; };
+		E0A383FB2589732E0062AA93 /* sqlite3.h in Headers */ = {isa = PBXBuildFile; fileRef = E0A383F92589732E0062AA93 /* sqlite3.h */; };
+		E0A384142589741A0062AA93 /* KeyValueRepositorySqlite.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0A384022589741A0062AA93 /* KeyValueRepositorySqlite.cxx */; };
+		E0A384152589741A0062AA93 /* SqliteTransaction.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0A384032589741A0062AA93 /* SqliteTransaction.cxx */; };
+		E0A384162589741A0062AA93 /* SettingsDb.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0A384042589741A0062AA93 /* SettingsDb.cxx */; };
+		E0A384172589741A0062AA93 /* SqliteDatabase.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0A384052589741A0062AA93 /* SqliteDatabase.hxx */; };
+		E0A384182589741A0062AA93 /* SqliteStatement.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0A384062589741A0062AA93 /* SqliteStatement.hxx */; };
+		E0A384192589741A0062AA93 /* SqliteError.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0A384072589741A0062AA93 /* SqliteError.hxx */; };
+		E0A3841B2589741A0062AA93 /* SqliteDatabase.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0A384092589741A0062AA93 /* SqliteDatabase.cxx */; };
+		E0A3841C2589741A0062AA93 /* SqliteStatement.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0A3840A2589741A0062AA93 /* SqliteStatement.cxx */; };
+		E0A3841D2589741A0062AA93 /* KeyValueRepositorySqlite.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0A3840B2589741A0062AA93 /* KeyValueRepositorySqlite.hxx */; };
+		E0A3841E2589741A0062AA93 /* SqliteTransaction.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0A3840C2589741A0062AA93 /* SqliteTransaction.hxx */; };
+		E0A384242589741A0062AA93 /* SettingsDb.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0A384132589741A0062AA93 /* SettingsDb.hxx */; };
 		E0A755782244294600101889 /* CartCDFInfoWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0A755762244294600101889 /* CartCDFInfoWidget.hxx */; };
 		E0A755792244294600101889 /* CartCDFInfoWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0A755772244294600101889 /* CartCDFInfoWidget.cxx */; };
 		E0DCD3A720A64E96000B614E /* LanczosResampler.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0DCD3A320A64E95000B614E /* LanczosResampler.hxx */; };
@@ -1468,8 +1479,6 @@
 		E06508B92272447200B341AC /* KeyValueRepository.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = KeyValueRepository.hxx; sourceTree = "<group>"; };
 		E06508BA2272447200B341AC /* KeyValueRepositoryConfigfile.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = KeyValueRepositoryConfigfile.hxx; sourceTree = "<group>"; };
 		E06508BB2272447200B341AC /* KeyValueRepositoryConfigfile.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = KeyValueRepositoryConfigfile.cxx; sourceTree = "<group>"; };
-		E06508C82272493200B341AC /* SettingsRepositoryMACOS.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = SettingsRepositoryMACOS.hxx; sourceTree = "<group>"; };
-		E06508C92272493200B341AC /* SettingsRepositoryMACOS.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SettingsRepositoryMACOS.mm; sourceTree = "<group>"; };
 		E07C2326226393BD00B78631 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		E0893AF0211B9841008B170D /* HighPass.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = HighPass.cxx; path = audio/HighPass.cxx; sourceTree = "<group>"; };
 		E0893AF1211B9841008B170D /* HighPass.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = HighPass.hxx; path = audio/HighPass.hxx; sourceTree = "<group>"; };
@@ -1490,6 +1499,19 @@
 		E09F413E201E904F004A3391 /* Audio.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Audio.cxx; sourceTree = "<group>"; };
 		E09F413F201E904F004A3391 /* AudioChannel.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AudioChannel.cxx; sourceTree = "<group>"; };
 		E09F4140201E904F004A3391 /* AudioChannel.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = AudioChannel.hxx; sourceTree = "<group>"; };
+		E0A383F82589732E0062AA93 /* sqlite3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sqlite3.c; path = sqlite/sqlite3.c; sourceTree = "<group>"; };
+		E0A383F92589732E0062AA93 /* sqlite3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sqlite3.h; path = sqlite/sqlite3.h; sourceTree = "<group>"; };
+		E0A384022589741A0062AA93 /* KeyValueRepositorySqlite.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = KeyValueRepositorySqlite.cxx; sourceTree = "<group>"; };
+		E0A384032589741A0062AA93 /* SqliteTransaction.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SqliteTransaction.cxx; sourceTree = "<group>"; };
+		E0A384042589741A0062AA93 /* SettingsDb.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SettingsDb.cxx; sourceTree = "<group>"; };
+		E0A384052589741A0062AA93 /* SqliteDatabase.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SqliteDatabase.hxx; sourceTree = "<group>"; };
+		E0A384062589741A0062AA93 /* SqliteStatement.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SqliteStatement.hxx; sourceTree = "<group>"; };
+		E0A384072589741A0062AA93 /* SqliteError.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SqliteError.hxx; sourceTree = "<group>"; };
+		E0A384092589741A0062AA93 /* SqliteDatabase.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SqliteDatabase.cxx; sourceTree = "<group>"; };
+		E0A3840A2589741A0062AA93 /* SqliteStatement.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SqliteStatement.cxx; sourceTree = "<group>"; };
+		E0A3840B2589741A0062AA93 /* KeyValueRepositorySqlite.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = KeyValueRepositorySqlite.hxx; sourceTree = "<group>"; };
+		E0A3840C2589741A0062AA93 /* SqliteTransaction.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SqliteTransaction.hxx; sourceTree = "<group>"; };
+		E0A384132589741A0062AA93 /* SettingsDb.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SettingsDb.hxx; sourceTree = "<group>"; };
 		E0A755762244294600101889 /* CartCDFInfoWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartCDFInfoWidget.hxx; sourceTree = "<group>"; };
 		E0A755772244294600101889 /* CartCDFInfoWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartCDFInfoWidget.cxx; sourceTree = "<group>"; };
 		E0DCD3A320A64E95000B614E /* LanczosResampler.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = LanczosResampler.hxx; path = audio/LanczosResampler.hxx; sourceTree = "<group>"; };
@@ -1529,8 +1551,6 @@
 				2D1A6CD5085135F9007CDBA8 /* AboutBox.m */,
 				F5A47A9D01A0482F01D3D55B /* SDLMain.h */,
 				F5A47A9E01A0483001D3D55B /* SDLMain.m */,
-				E06508C82272493200B341AC /* SettingsRepositoryMACOS.hxx */,
-				E06508C92272493200B341AC /* SettingsRepositoryMACOS.mm */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -1572,6 +1592,7 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
+				E0A383F72589730A0062AA93 /* sqlite */,
 				DCCC0C9109C3541E0088BFF1 /* cheat */,
 				2D6050C5089876F300C6DE89 /* common */,
 				2D605130089879BA00C6DE89 /* debugger */,
@@ -2416,6 +2437,7 @@
 		E06508B72272447200B341AC /* repository */ = {
 			isa = PBXGroup;
 			children = (
+				E0A384012589741A0062AA93 /* sqlite */,
 				E06508B92272447200B341AC /* KeyValueRepository.hxx */,
 				E06508BB2272447200B341AC /* KeyValueRepositoryConfigfile.cxx */,
 				E06508BA2272447200B341AC /* KeyValueRepositoryConfigfile.hxx */,
@@ -2436,6 +2458,33 @@
 				E08FCD5123A037EB0051F59B /* QisBlitter.hxx */,
 			);
 			name = sdl_blitter;
+			sourceTree = "<group>";
+		};
+		E0A383F72589730A0062AA93 /* sqlite */ = {
+			isa = PBXGroup;
+			children = (
+				E0A383F82589732E0062AA93 /* sqlite3.c */,
+				E0A383F92589732E0062AA93 /* sqlite3.h */,
+			);
+			name = sqlite;
+			sourceTree = "<group>";
+		};
+		E0A384012589741A0062AA93 /* sqlite */ = {
+			isa = PBXGroup;
+			children = (
+				E0A384022589741A0062AA93 /* KeyValueRepositorySqlite.cxx */,
+				E0A384032589741A0062AA93 /* SqliteTransaction.cxx */,
+				E0A384042589741A0062AA93 /* SettingsDb.cxx */,
+				E0A384052589741A0062AA93 /* SqliteDatabase.hxx */,
+				E0A384062589741A0062AA93 /* SqliteStatement.hxx */,
+				E0A384072589741A0062AA93 /* SqliteError.hxx */,
+				E0A384092589741A0062AA93 /* SqliteDatabase.cxx */,
+				E0A3840A2589741A0062AA93 /* SqliteStatement.cxx */,
+				E0A3840B2589741A0062AA93 /* KeyValueRepositorySqlite.hxx */,
+				E0A3840C2589741A0062AA93 /* SqliteTransaction.hxx */,
+				E0A384132589741A0062AA93 /* SettingsDb.hxx */,
+			);
+			path = sqlite;
 			sourceTree = "<group>";
 		};
 		E0DFDD731F81A358000F3505 /* frame-manager */ = {
@@ -2479,6 +2528,7 @@
 				DC71EAA01FDA06D2008827CB /* CartMNetwork.hxx in Headers */,
 				2D9173D409BA90380026E9FF /* CartE0.hxx in Headers */,
 				DC5AAC281FCB24AB00C420A6 /* EventHandlerConstants.hxx in Headers */,
+				E0A3841E2589741A0062AA93 /* SqliteTransaction.hxx in Headers */,
 				DC73BD8A1915E5E3003FAFAD /* FBSurface.hxx in Headers */,
 				2D9173D509BA90380026E9FF /* CartE7.hxx in Headers */,
 				2D9173D609BA90380026E9FF /* CartF4.hxx in Headers */,
@@ -2508,10 +2558,10 @@
 				2D9173E809BA90380026E9FF /* MD5.hxx in Headers */,
 				2D9173EA09BA90380026E9FF /* Paddles.hxx in Headers */,
 				2D9173EB09BA90380026E9FF /* Props.hxx in Headers */,
-				E06508CA2272493200B341AC /* SettingsRepositoryMACOS.hxx in Headers */,
 				DC5ACB5C1FBFCE8E00A213FD /* DeveloperDialog.hxx in Headers */,
 				2D9173EC09BA90380026E9FF /* PropsSet.hxx in Headers */,
 				2D9173ED09BA90380026E9FF /* Random.hxx in Headers */,
+				E0A384172589741A0062AA93 /* SqliteDatabase.hxx in Headers */,
 				2D9173EE09BA90380026E9FF /* Serializer.hxx in Headers */,
 				2D9173EF09BA90380026E9FF /* Sound.hxx in Headers */,
 				2D9173F009BA90380026E9FF /* Switches.hxx in Headers */,
@@ -2612,6 +2662,7 @@
 				DCF3A6E81DFC75E3008A8AF3 /* Background.hxx in Headers */,
 				DC21E5C021CA903E007D0E1A /* OSystemMACOS.hxx in Headers */,
 				DCFB9FAC1ECA2609004FD69B /* DelayQueueIteratorImpl.hxx in Headers */,
+				E0A3841D2589741A0062AA93 /* KeyValueRepositorySqlite.hxx in Headers */,
 				E08FCD5823A037EB0051F59B /* QisBlitter.hxx in Headers */,
 				DCA078351F8C1B04008EFEE5 /* SDL_lib.hxx in Headers */,
 				DCDA03B11A2009BB00711920 /* CartWD.hxx in Headers */,
@@ -2663,6 +2714,7 @@
 				DC70065C241EC97900A459AB /* Stella12x24tFont.hxx in Headers */,
 				DCA00FF80DBABCAD00C3823D /* RiotDebug.hxx in Headers */,
 				DC4AC6F00DC8DACB00CD3AD2 /* RiotWidget.hxx in Headers */,
+				E0A384192589741A0062AA93 /* SqliteError.hxx in Headers */,
 				DCA233B123B583FE0032ABF3 /* PhosphorHandler.hxx in Headers */,
 				DC4AC6F40DC8DAEF00CD3AD2 /* SaveKey.hxx in Headers */,
 				DC173F770E2CAC1E00320F94 /* ContextMenu.hxx in Headers */,
@@ -2736,6 +2788,7 @@
 				DC8C1BB214B25DE7006440EE /* MindLink.hxx in Headers */,
 				DCCF47DE14B60DEE00814FAB /* ControllerWidget.hxx in Headers */,
 				DCCF47E014B60DEE00814FAB /* JoystickWidget.hxx in Headers */,
+				E0A384242589741A0062AA93 /* SettingsDb.hxx in Headers */,
 				DCCF49B814B7544A00814FAB /* PaddleWidget.hxx in Headers */,
 				DCCF4AD214B7E6C300814FAB /* BoosterWidget.hxx in Headers */,
 				DC30924D212F74930020DAD0 /* TimerManager.hxx in Headers */,
@@ -2762,6 +2815,7 @@
 				DCF7F129223D796000701A47 /* ProfilingRunner.hxx in Headers */,
 				DCAAE5D61715887B0080BB82 /* Cart3FWidget.hxx in Headers */,
 				DCB60ACA2535E30600A5C1D2 /* VideoModeHandler.hxx in Headers */,
+				E0A384182589741A0062AA93 /* SqliteStatement.hxx in Headers */,
 				DCAAE5D81715887B0080BB82 /* Cart4KWidget.hxx in Headers */,
 				DCAAE5DA1715887B0080BB82 /* Cart0840Widget.hxx in Headers */,
 				DCAAE5DC1715887B0080BB82 /* CartCVWidget.hxx in Headers */,
@@ -2777,6 +2831,7 @@
 				DCAAE5E51715887B0080BB82 /* CartF4SCWidget.hxx in Headers */,
 				DC816CF62572F92A00FBCCDA /* json.hxx in Headers */,
 				DCAAE5E71715887B0080BB82 /* CartF4Widget.hxx in Headers */,
+				E0A383FB2589732E0062AA93 /* sqlite3.h in Headers */,
 				DC5963142139FA14002736F2 /* Bankswitch.hxx in Headers */,
 				DCAAE5E91715887B0080BB82 /* CartF6SCWidget.hxx in Headers */,
 				DCAAE5EB1715887B0080BB82 /* CartF6Widget.hxx in Headers */,
@@ -3034,12 +3089,12 @@
 				2D9174C609BA90380026E9FF /* Debugger.cxx in Sources */,
 				2D9174C709BA90380026E9FF /* DebuggerParser.cxx in Sources */,
 				2D9174C809BA90380026E9FF /* EditableWidget.cxx in Sources */,
+				E0A384142589741A0062AA93 /* KeyValueRepositorySqlite.cxx in Sources */,
 				2D9174C909BA90380026E9FF /* EditTextWidget.cxx in Sources */,
 				2D9174CC09BA90380026E9FF /* TIADebug.cxx in Sources */,
 				2D9174CD09BA90380026E9FF /* YaccParser.cxx in Sources */,
 				DC6A18F819B3E65500DEB242 /* CartMDMWidget.cxx in Sources */,
 				DC62E6491960E87B007AEF05 /* SaveKeyWidget.cxx in Sources */,
-				E06508CB2272493200B341AC /* SettingsRepositoryMACOS.mm in Sources */,
 				2D9174CE09BA90380026E9FF /* Cart3E.cxx in Sources */,
 				2D9174CF09BA90380026E9FF /* CpuDebug.cxx in Sources */,
 				2D9174F109BA90380026E9FF /* InputTextDialog.cxx in Sources */,
@@ -3073,6 +3128,8 @@
 				2D91750109BA90380026E9FF /* TiaWidget.cxx in Sources */,
 				DC73BD891915E5E3003FAFAD /* FBSurface.cxx in Sources */,
 				2D91750209BA90380026E9FF /* ToggleBitWidget.cxx in Sources */,
+				E0A3841B2589741A0062AA93 /* SqliteDatabase.cxx in Sources */,
+				E0A383FA2589732E0062AA93 /* sqlite3.c in Sources */,
 				2D91750309BA90380026E9FF /* TogglePixelWidget.cxx in Sources */,
 				2D91750409BA90380026E9FF /* ToggleWidget.cxx in Sources */,
 				2D91750609BA90380026E9FF /* TiaZoomWidget.cxx in Sources */,
@@ -3103,6 +3160,7 @@
 				DC0984850D3985160073C852 /* CartSB.cxx in Sources */,
 				DC3EE8651E2C0E6D00905161 /* inflate.c in Sources */,
 				DC6D39871A3CE65000171E71 /* CartWDWidget.cxx in Sources */,
+				E0A384162589741A0062AA93 /* SettingsDb.cxx in Sources */,
 				DCA23AE90D75B22500F77B33 /* CartX07.cxx in Sources */,
 				DC3EE8691E2C0E6D00905161 /* trees.c in Sources */,
 				E08FCD5623A037EB0051F59B /* BilinearBlitter.cxx in Sources */,
@@ -3148,6 +3206,7 @@
 				DCBD31EA2299ADB400567357 /* KeyMap.cxx in Sources */,
 				DCE801E6236DC27500D43EDD /* CartFCWidget.cxx in Sources */,
 				DCF3A6E71DFC75E3008A8AF3 /* Background.cxx in Sources */,
+				E0A384152589741A0062AA93 /* SqliteTransaction.cxx in Sources */,
 				DCD6FC7411C281ED005DA767 /* pngget.c in Sources */,
 				DCD6FC7511C281ED005DA767 /* pngmem.c in Sources */,
 				DCF3A6F51DFC75E3008A8AF3 /* Missile.cxx in Sources */,
@@ -3200,6 +3259,7 @@
 				DC3EE8601E2C0E6D00905161 /* gzwrite.c in Sources */,
 				DCAAE5D71715887B0080BB82 /* Cart4KWidget.cxx in Sources */,
 				DCDA03B01A2009BB00711920 /* CartWD.cxx in Sources */,
+				E0A3841C2589741A0062AA93 /* SqliteStatement.cxx in Sources */,
 				DCC6A4B220A2622500863C59 /* SimpleResampler.cxx in Sources */,
 				DC21E5BF21CA903E007D0E1A /* OSystemMACOS.cxx in Sources */,
 				DC84397C247B294E00C6A4FC /* CartTVBoy.cxx in Sources */,

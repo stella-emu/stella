@@ -48,9 +48,7 @@ class AudioSettings;
 #ifdef PNG_SUPPORT
   class PNGLibrary;
 #endif
-#ifdef SQLITE_SUPPORT
   class SettingsDb;
-#endif
 
 #include <chrono>
 
@@ -568,9 +566,7 @@ class OSystem
     static string ourOverrideBaseDir;
     static bool ourOverrideBaseDirWithApp;
 
-  #ifdef SQLITE_SUPPORT
     shared_ptr<SettingsDb> mySettingsDb;
-  #endif
 
   private:
     /**

@@ -510,7 +510,6 @@
     <ClCompile Include="..\common\PhysicalJoystick.cxx" />
     <ClCompile Include="..\common\PJoystickHandler.cxx" />
     <ClCompile Include="..\common\PKeyboardHandler.cxx" />
-    <ClCompile Include="..\common\repository\KeyValueRepositoryConfigfile.cxx" />
     <ClCompile Include="..\common\RewindManager.cxx" />
     <ClCompile Include="..\common\sdl_blitter\BilinearBlitter.cxx" />
     <ClCompile Include="..\common\sdl_blitter\BlitterFactory.cxx" />
@@ -1533,7 +1532,6 @@
     <ClInclude Include="..\common\PKeyboardHandler.hxx" />
     <ClInclude Include="..\common\Rect.hxx" />
     <ClInclude Include="..\common\repository\KeyValueRepository.hxx" />
-    <ClInclude Include="..\common\repository\KeyValueRepositoryConfigfile.hxx" />
     <ClInclude Include="..\common\repository\KeyValueRepositoryNoop.hxx" />
     <ClInclude Include="..\common\RewindManager.hxx" />
     <ClInclude Include="..\common\sdl_blitter\BilinearBlitter.hxx" />

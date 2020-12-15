@@ -29,7 +29,6 @@ MODULE_OBJS := \
 	src/common/TimerManager.o \
 	src/common/VideoModeHandler.o \
 	src/common/ZipHandler.o \
-	src/common/repository/KeyValueRepositoryConfigfile.o \
 	src/common/sdl_blitter/BilinearBlitter.o \
 	src/common/sdl_blitter/QisBlitter.o \
 	src/common/sdl_blitter/BlitterFactory.o \

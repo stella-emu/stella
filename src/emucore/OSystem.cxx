@@ -39,10 +39,8 @@
   #include "TimeMachine.hxx"
   #include "Widget.hxx"
 #endif
-#ifdef SQLITE_SUPPORT
   #include "KeyValueRepositorySqlite.hxx"
   #include "SettingsDb.hxx"
-#endif
 
 #include "FSNode.hxx"
 #include "MD5.hxx"
@@ -69,7 +67,6 @@
 #include "EmulationWorker.hxx"
 #include "AudioSettings.hxx"
 #include "repository/KeyValueRepositoryNoop.hxx"
-#include "repository/KeyValueRepositoryConfigfile.hxx"
 #include "M6532.hxx"
 
 #include "OSystem.hxx"
@@ -236,11 +233,9 @@ void OSystem::loadConfig(const Settings::Options& options)
   if(!myDefaultLoadDir.isDirectory())
     myDefaultLoadDir.makeDir();
 
-#ifdef SQLITE_SUPPORT
   mySettingsDb = make_shared<SettingsDb>(myBaseDir.getPath(), "settings");
   if(!mySettingsDb->initialize())
     mySettingsDb.reset();
-#endif
 
   mySettings->setRepository(createSettingsRepository());
 
@@ -886,16 +881,9 @@ void OSystem::mainLoop()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 shared_ptr<KeyValueRepository> OSystem::createSettingsRepository()
 {
-  #ifdef SQLITE_SUPPORT
     return mySettingsDb
       ? shared_ptr<KeyValueRepository>(mySettingsDb, &mySettingsDb->settingsRepository())
       : make_shared<KeyValueRepositoryNoop>();
-  #else
-    if (myConfigFile.getPath() == EmptyString)
-      return make_shared<KeyValueRepositoryNoop>();
-
-    return make_shared<KeyValueRepositoryConfigfile>(myConfigFile);
-  #endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
