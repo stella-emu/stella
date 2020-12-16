@@ -66,7 +66,7 @@ void SqliteDatabase::initialize()
     }
 
     throw SqliteError("unable to initialize sqlite DB for unknown reason");
-  };
+  }
 
   exec("PRAGMA journal_mode=WAL");
 

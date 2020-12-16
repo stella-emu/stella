@@ -167,7 +167,7 @@ void R77HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
       return;
   }
 
-  while (i < lines)
+  while (i < lines) // NOLINT : i changes in lambda above
     ADD_BIND();
 }
 

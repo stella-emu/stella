@@ -45,11 +45,11 @@ using json = nlohmann::json;
 class HighScoresDialog : public Dialog
 {
   public:
-    static const uInt32 NUM_RANKS = 10;
+    static constexpr uInt32 NUM_RANKS = 10;
 
     HighScoresDialog(OSystem& osystem, DialogContainer& parent,
                      int max_w, int max_h, Menu::AppMode mode);
-    virtual ~HighScoresDialog();
+    ~HighScoresDialog() override;
 
   protected:
     void loadConfig() override;

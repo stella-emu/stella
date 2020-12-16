@@ -1288,6 +1288,8 @@ void FrameBuffer::setCursorState()
       showCursor(true);       // +UI, +Emulation
       myGrabMouse = false; // disable grab while cursor is shown in emulation
       break;
+    default:
+      break;
   }
 
   myBackend->grabMouse(emulation && (analog || alwaysUseMouse) && myGrabMouse);
