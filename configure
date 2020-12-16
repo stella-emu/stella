@@ -669,7 +669,7 @@ fi
 #
 echocheck "SQLite"
 _sqlite=no
-if test $_sqlite_builtin != yes ; then
+if test "$_sqlite_builtin" != yes ; then
 	cat > $TMPC << EOF
 #include <stdio.h>
 #include <sqlite3.h>
