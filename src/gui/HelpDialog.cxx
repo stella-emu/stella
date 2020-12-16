@@ -174,7 +174,7 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
       break;
   }
 
-  while(i < lines)
+  while(i < lines)  // NOLINT : i changes in lambda above
     ADD_LINE();
 }
 

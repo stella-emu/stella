@@ -184,10 +184,10 @@ void FBSurface::drawChar(const GUI::Font& font, uInt8 chr,
   }
   else
   {
-    bbw = desc.bbx[chr].w;
-    bbh = desc.bbx[chr].h;
-    bbx = desc.bbx[chr].x;
-    bby = desc.bbx[chr].y;
+    bbw = desc.bbx[chr].w;  // NOLINT
+    bbh = desc.bbx[chr].h;  // NOLINT
+    bbx = desc.bbx[chr].x;  // NOLINT
+    bby = desc.bbx[chr].y;  // NOLINT
   }
 
   uInt32 cx = tx + bbx;

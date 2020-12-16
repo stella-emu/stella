@@ -21,12 +21,16 @@
 #include <sqlite3.h>
 #include "bspf.hxx"
 
-struct SqliteError {
-  explicit SqliteError(const string& _message) : message(_message) {}
+class SqliteError : public std::exception
+{
+  public:
+    explicit SqliteError(const string& message) : myMessage(message) { }
+    explicit SqliteError(sqlite3* handle) : myMessage(sqlite3_errmsg(handle)) { }
 
-  explicit SqliteError(sqlite3* handle) : message(sqlite3_errmsg(handle)) {}
+    const char* what() const noexcept override { return myMessage.c_str(); }
 
-  const string message;
+  private:
+    const string myMessage;
 };
 
 #endif // SQLITE_ERROR_HXX

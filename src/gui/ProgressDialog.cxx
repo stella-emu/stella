@@ -138,15 +138,8 @@ void ProgressDialog::incProgress()
 void ProgressDialog::handleCommand(CommandSender* sender, int cmd,
                                    int data, int id)
 {
-  switch(cmd)
-  {
-    case Event::UICancel:
-      myIsCancelled = true;
-      break;
-
-    default:
-      Dialog::handleCommand(sender, cmd, data, 0);
-      break;
-  }
+  if(cmd == Event::UICancel)
+    myIsCancelled = true;
+  else
+    Dialog::handleCommand(sender, cmd, data, 0);
 }
-

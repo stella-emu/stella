@@ -25,7 +25,7 @@
 class SqliteStatement {
   public:
 
-    SqliteStatement(sqlite3* handle, string sql);
+    SqliteStatement(sqlite3* handle, const string& sql);
 
     ~SqliteStatement();
 

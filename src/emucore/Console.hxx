@@ -185,11 +185,6 @@ class Console : public Serializable, public ConsoleIO
      */
     EmulationTiming& emulationTiming() { return myEmulationTiming; }
 
-    /**
-      Retrieve the current game's refresh rate, or 0 if no game.
-    */
-    int refreshRate() const;
-
   public:
     /**
       Toggle between NTSC/PAL/SECAM (and variants) display format.

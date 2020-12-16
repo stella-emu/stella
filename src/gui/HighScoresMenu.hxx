@@ -35,7 +35,7 @@ class HighScoresMenu : public DialogContainer
       Create a new menu stack
     */
     explicit HighScoresMenu(OSystem& osystem);
-    virtual ~HighScoresMenu();
+    ~HighScoresMenu() override;
 
   private:
     Dialog* baseDialog() override;
