@@ -610,6 +610,9 @@ endif
 %.o: %.cxx
 	$(CXX) $(INCFLAGS) $(CPPFLAGS) $(CXXFLAGS) -c $(OBJOUT)$@ $<
 
+%.o: %.c
+	$(CC) $(INCFLAGS) -c $(OBJOUT)$@ $<
+
 clean:
 	rm -f $(OBJECTS) $(TARGET)
 endif
