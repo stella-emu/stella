@@ -40,24 +40,24 @@ include config.mak
 # CXXFLAGS+= -Werror
 
 ifdef CXXFLAGS
-	CFLAGS:= $(CXXFLAGS)
+  CFLAGS:= $(CXXFLAGS)
   CXXFLAGS:= $(CXXFLAGS) -x c++
 else
   CXXFLAGS:= -O2 -x c++
-	CFLAGS:= -O2
+  CFLAGS:= -O2
 endif
 
 CXXFLAGS+= -Wall -Wextra -Wno-unused-parameter
-CXLAGS+= -Wall -Wextra -Wno-unused-parameter
+CFLAGS+= -Wall -Wextra -Wno-unused-parameter
 
 ifdef HAVE_GCC
   CXXFLAGS+= -Wno-multichar -Wunused -Woverloaded-virtual -Wnon-virtual-dtor -std=c++17
-	CFLAGS+= -Wno-multichar -Wunused
+  CFLAGS+= -Wno-multichar -Wunused
 endif
 
 ifdef HAVE_CLANG
   CXXFLAGS+= -Wno-multichar -Wunused -Woverloaded-virtual -Wnon-virtual-dtor -std=c++17
-	CFLAGS+= -Wno-multichar -Wunused
+  CFLAGS+= -Wno-multichar -Wunused
 endif
 
 ifdef CLANG_WARNINGS
@@ -67,34 +67,34 @@ ifdef CLANG_WARNINGS
     -Wno-exit-time-destructors -Wno-global-constructors -Wno-weak-vtables \
     -Wno-four-char-constants -Wno-padded
 
-	CXXFLAGS+= $(EXTRA_WARN)
-	CFLAGS+= $(EXTRA_WARN)
+  CXXFLAGS+= $(EXTRA_WARN)
+  CFLAGS+= $(EXTRA_WARN)
 endif
 
 ifdef PROFILE
   PROF:= -pg -fprofile-arcs -ftest-coverage
   CXXFLAGS+= $(PROF)
-	CFLAGS+= $(PROF)
+  CFLAGS+= $(PROF)
 endif
 
 ifdef DEBUG
   CXXFLAGS += -g
-	CFLAGS += -g
+  CFLAGS += -g
 else
   ifdef HAVE_GCC
     CXXFLAGS+= -fomit-frame-pointer
-		CFLAGS+= -fomit-frame-pointer
+    CFLAGS+= -fomit-frame-pointer
   endif
 
   ifdef HAVE_CLANG
     CXXFLAGS+= -fomit-frame-pointer
-		CFLAGS+= -fomit-frame-pointer
+    CFLAGS+= -fomit-frame-pointer
   endif
 endif
 
 ifdef RELEASE
   CXXFLAGS += -flto -fno-rtti
-	CFLAGS += -flto
+  CFLAGS += -flto
   LDFLAGS += -flto -fno-rtti
 endif
 
