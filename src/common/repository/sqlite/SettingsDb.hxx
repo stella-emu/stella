@@ -32,6 +32,8 @@ class SettingsDb
 
     KeyValueRepository& settingsRepository() const { return *mySettingsRepository; }
 
+    const string& databaseFileName() const { return myDb->fileName(); }
+
   private:
 
     string myDatabaseDirectory;

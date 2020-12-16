@@ -161,10 +161,6 @@ bool OSystem::create()
   myStateManager = make_unique<StateManager>(*this);
   myTimerManager = make_unique<TimerManager>();
 
-#ifdef GUI_SUPPORT
-  myHighScoresManager = make_unique<HighScoresManager>(*this);
-#endif
-
   myAudioSettings = make_unique<AudioSettings>(*mySettings);
 
   // Create the sound object; the sound subsystem isn't actually
@@ -184,6 +180,7 @@ bool OSystem::create()
   // Create various subsystems (menu and launcher GUI objects, etc)
   myMenu = make_unique<Menu>(*this);
   myCommandMenu = make_unique<CommandMenu>(*this);
+  myHighScoresManager = make_unique<HighScoresManager>(*this);
   myHighScoresMenu = make_unique<HighScoresMenu>(*this);
   myMessageMenu = make_unique<MessageMenu>(*this);
   myTimeMachine = make_unique<TimeMachine>(*this);
@@ -214,16 +211,14 @@ void OSystem::loadConfig(const Settings::Options& options)
 {
   // Get base directory and config file from derived class
   // It will decide whether it can override its default location
-  string baseDir, cfgFile, defSaveDir, defLoadDir;
-  getBaseDirAndConfig(baseDir, cfgFile, defSaveDir, defLoadDir,
+  string baseDir, defSaveDir, defLoadDir;
+  getBaseDirAndConfig(baseDir, defSaveDir, defLoadDir,
                       ourOverrideBaseDirWithApp, ourOverrideBaseDir);
 
   // Get fully-qualified pathnames, and make directories when needed
   myBaseDir = FilesystemNode(baseDir);
   if(!myBaseDir.isDirectory())
     myBaseDir.makeDir();
-  if(!cfgFile.empty())
-    myConfigFile = FilesystemNode(cfgFile);
 
   myDefaultSaveDir = FilesystemNode(defSaveDir);
   if(!myDefaultSaveDir.isDirectory())
@@ -236,6 +231,7 @@ void OSystem::loadConfig(const Settings::Options& options)
   mySettingsDb = make_shared<SettingsDb>(myBaseDir.getPath(), "settings");
   if(!mySettingsDb->initialize())
     mySettingsDb.reset();
+  myConfigFile = FilesystemNode(mySettingsDb->databaseFileName());
 
   mySettings->setRepository(createSettingsRepository());
 

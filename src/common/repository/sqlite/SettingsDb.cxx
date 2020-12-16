@@ -25,7 +25,8 @@ SettingsDb::SettingsDb(
   const string& databaseName
 ) : myDatabaseDirectory(databaseDirectory),
     myDatabaseName(databaseName)
-{}
+{
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool SettingsDb::initialize()
@@ -38,7 +39,7 @@ bool SettingsDb::initialize()
     mySettingsRepository->initialize();
   }
   catch (const SqliteError& err) {
-    Logger::info("sqlite DB " + myDb->fileName() + " failed to initialize: " + err.message);
+    Logger::info("sqlite DB " + databaseFileName() + " failed to initialize: " + err.message);
 
     myDb.reset();
     mySettingsRepository.reset();

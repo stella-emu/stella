@@ -21,16 +21,10 @@
 #include "Logger.hxx"
 #include "SqliteError.hxx"
 
-#ifdef BSPF_WINDOWS
-  #define SEPARATOR "\""
-#else
-  #define SEPARATOR "/"
-#endif
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SqliteDatabase::SqliteDatabase(const string& databaseDirectory,
                                const string& databaseName)
-  : myDatabaseFile(databaseDirectory + SEPARATOR + databaseName + ".sqlite3")
+  : myDatabaseFile(databaseDirectory + databaseName + ".sqlite3")
 {
 }
 
@@ -73,8 +67,6 @@ void SqliteDatabase::initialize()
 
     throw SqliteError("unable to initialize sqlite DB for unknown reason");
   };
-
-  Logger::debug("successfully opened " + myDatabaseFile);
 
   exec("PRAGMA journal_mode=WAL");
 
