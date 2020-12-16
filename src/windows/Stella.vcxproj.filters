@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Source Files">
@@ -72,6 +71,24 @@
     </Filter>
     <Filter Include="Header Files\json">
       <UniqueIdentifier>{966c18c1-dae3-4dae-8e00-c621187898b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\repository\sqlite">
+      <UniqueIdentifier>{21af5583-5f53-4c1d-96d1-05ceaa2d6bae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\repository\sqlite">
+      <UniqueIdentifier>{47b68040-eac2-4f3c-82d1-eceb7a6e6b7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\sqlite">
+      <UniqueIdentifier>{1d446ef0-61e1-42e4-a025-8629bfdca1af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\sqlite\source">
+      <UniqueIdentifier>{438b21ed-1358-478c-af80-8ac809dd9709}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\sqlite">
+      <UniqueIdentifier>{667527a4-a1a4-43d8-8d36-21c75d317ea0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\sqlite\source">
+      <UniqueIdentifier>{ea737878-f4b5-4334-a356-353c6b68bdcd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1047,6 +1064,24 @@
     <ClCompile Include="..\debugger\gui\DataGridRamWidget.cxx">
       <Filter>Source Files\debugger</Filter>
     </ClCompile>
+    <ClCompile Include="..\common\repository\sqlite\KeyValueRepositorySqlite.cxx">
+      <Filter>Source Files\repository\sqlite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\repository\sqlite\SettingsDb.cxx">
+      <Filter>Source Files\repository\sqlite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\repository\sqlite\SqliteDatabase.cxx">
+      <Filter>Source Files\repository\sqlite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\repository\sqlite\SqliteStatement.cxx">
+      <Filter>Source Files\repository\sqlite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\repository\sqlite\SqliteTransaction.cxx">
+      <Filter>Source Files\repository\sqlite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sqlite\source\sqlite3.c">
+      <Filter>Source Files\sqlite\source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">
@@ -2020,7 +2055,7 @@
     </ClInclude>
     <ClInclude Include="..\common\repository\KeyValueRepository.hxx">
       <Filter>Header Files\repository</Filter>
-    </ClInclude>s
+    </ClInclude>
     <ClInclude Include="..\common\repository\KeyValueRepositoryNoop.hxx">
       <Filter>Header Files\repository</Filter>
     </ClInclude>
@@ -2155,6 +2190,30 @@
     </ClInclude>
     <ClInclude Include="..\json\json_lib.hxx">
       <Filter>Header Files\json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\repository\sqlite\KeyValueRepositorySqlite.hxx">
+      <Filter>Header Files\repository\sqlite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\repository\sqlite\SettingsDb.hxx">
+      <Filter>Header Files\repository\sqlite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\repository\sqlite\SqliteDatabase.hxx">
+      <Filter>Header Files\repository\sqlite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\repository\sqlite\SqliteError.hxx">
+      <Filter>Header Files\repository\sqlite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\repository\sqlite\SqliteStatement.hxx">
+      <Filter>Header Files\repository\sqlite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\repository\sqlite\SqliteTransaction.hxx">
+      <Filter>Header Files\repository\sqlite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sqlite\sqlite3.h">
+      <Filter>Header Files\sqlite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sqlite\source\sqlite3.h">
+      <Filter>Header Files\sqlite\source</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
