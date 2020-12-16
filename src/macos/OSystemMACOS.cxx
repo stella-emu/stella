@@ -19,7 +19,7 @@
 #include "OSystemMACOS.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystemMACOS::getBaseDirAndConfig(string& basedir, string& cfgfile,
+void OSystemMACOS::getBaseDirAndConfig(string& basedir,
         string& savedir, string& loaddir,
         bool useappdir, const string& usedir)
 {

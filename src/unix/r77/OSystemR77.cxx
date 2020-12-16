@@ -18,9 +18,8 @@
 #include "OSystemR77.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystemR77::getBaseDirAndConfig(string& basedir, string& cfgfile,
+void OSystemR77::getBaseDirAndConfig(string& basedir,
         string& savedir, string& loaddir, bool, const string&)
 {
   basedir = savedir = loaddir = "/mnt/stella";
-  cfgfile = "/mnt/stella/stellarc";
 }

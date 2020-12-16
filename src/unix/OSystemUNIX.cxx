@@ -22,7 +22,7 @@
 #include "OSystemUNIX.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystemUNIX::getBaseDirAndConfig(string& basedir, string& cfgfile,
+void OSystemUNIX::getBaseDirAndConfig(string& basedir,
         string& savedir, string& loaddir,
         bool useappdir, const string& usedir)
 {
@@ -40,16 +40,4 @@ void OSystemUNIX::getBaseDirAndConfig(string& basedir, string& cfgfile,
     basedir = FilesystemNode(usedir).getPath();
     savedir = loaddir = basedir;
   }
-
-  // (Currently) non-documented alternative for using version-specific
-  // config file
-  ostringstream buf;
-  buf << basedir << "/stellarc" << "-" << STELLA_VERSION;
-
-  // Use version-specific config file only if it already exists
-  FilesystemNode altConfigFile(buf.str());
-  if(altConfigFile.exists() && altConfigFile.isWritable())
-    cfgfile = altConfigFile.getPath();
-  else
-    cfgfile = basedir + "/stellarc";
 }

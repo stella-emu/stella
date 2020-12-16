@@ -22,7 +22,7 @@
 #include "OSystemWINDOWS.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystemWINDOWS::getBaseDirAndConfig(string& basedir, string& cfgfile,
+void OSystemWINDOWS::getBaseDirAndConfig(string& basedir,
         string& savedir, string& loaddir,
         bool useappdir, const string& usedir)
 {
@@ -50,6 +50,4 @@ void OSystemWINDOWS::getBaseDirAndConfig(string& basedir, string& cfgfile,
   }
   else if(usedir != "")
     savedir = loaddir = basedir = FilesystemNode(usedir).getPath();
-
-  cfgfile = basedir + "stella.ini";
 }

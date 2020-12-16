@@ -32,7 +32,7 @@ class SqliteDatabase
 
     void initialize();
 
-    const string fileName() const { return myDatabaseFile; }
+    const string& fileName() const { return myDatabaseFile; }
 
     operator sqlite3*() const { return myHandle; }
 
