@@ -1592,7 +1592,6 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
-				E0A383F72589730A0062AA93 /* sqlite */,
 				DCCC0C9109C3541E0088BFF1 /* cheat */,
 				2D6050C5089876F300C6DE89 /* common */,
 				2D605130089879BA00C6DE89 /* debugger */,
@@ -1601,6 +1600,7 @@
 				DC816CF32572F8B400FBCCDA /* json */,
 				DCD6FC5A11C281A1005DA767 /* libpng */,
 				2D6050C60898771C00C6DE89 /* macos */,
+				E0A383F72589730A0062AA93 /* sqlite */,
 				2D6050C90898774B00C6DE89 /* unix */,
 				2D60513708987A5400C6DE89 /* yacc */,
 				DC3EE83B1E2C0E4400905161 /* zlib */,
@@ -2437,11 +2437,11 @@
 		E06508B72272447200B341AC /* repository */ = {
 			isa = PBXGroup;
 			children = (
-				E0A384012589741A0062AA93 /* sqlite */,
 				E06508B92272447200B341AC /* KeyValueRepository.hxx */,
 				E06508BB2272447200B341AC /* KeyValueRepositoryConfigfile.cxx */,
 				E06508BA2272447200B341AC /* KeyValueRepositoryConfigfile.hxx */,
 				E06508B82272447200B341AC /* KeyValueRepositoryNoop.hxx */,
+				E0A384012589741A0062AA93 /* sqlite */,
 			);
 			path = repository;
 			sourceTree = "<group>";
@@ -2473,16 +2473,16 @@
 			isa = PBXGroup;
 			children = (
 				E0A384022589741A0062AA93 /* KeyValueRepositorySqlite.cxx */,
-				E0A384032589741A0062AA93 /* SqliteTransaction.cxx */,
-				E0A384042589741A0062AA93 /* SettingsDb.cxx */,
-				E0A384052589741A0062AA93 /* SqliteDatabase.hxx */,
-				E0A384062589741A0062AA93 /* SqliteStatement.hxx */,
-				E0A384072589741A0062AA93 /* SqliteError.hxx */,
-				E0A384092589741A0062AA93 /* SqliteDatabase.cxx */,
-				E0A3840A2589741A0062AA93 /* SqliteStatement.cxx */,
 				E0A3840B2589741A0062AA93 /* KeyValueRepositorySqlite.hxx */,
-				E0A3840C2589741A0062AA93 /* SqliteTransaction.hxx */,
+				E0A384042589741A0062AA93 /* SettingsDb.cxx */,
 				E0A384132589741A0062AA93 /* SettingsDb.hxx */,
+				E0A384092589741A0062AA93 /* SqliteDatabase.cxx */,
+				E0A384052589741A0062AA93 /* SqliteDatabase.hxx */,
+				E0A384072589741A0062AA93 /* SqliteError.hxx */,
+				E0A3840A2589741A0062AA93 /* SqliteStatement.cxx */,
+				E0A384062589741A0062AA93 /* SqliteStatement.hxx */,
+				E0A384032589741A0062AA93 /* SqliteTransaction.cxx */,
+				E0A3840C2589741A0062AA93 /* SqliteTransaction.hxx */,
 			);
 			path = sqlite;
 			sourceTree = "<group>";
