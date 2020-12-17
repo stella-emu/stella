@@ -109,6 +109,15 @@ class PhysicalJoystickHandler
     /** Returns a list of pairs consisting of joystick name and associated ID. */
     VariantList database() const;
 
+    void changeDeadzone(int direction = +1);
+    void changeAnalogPaddleSensitivity(int direction = +1);
+    void changePaddleDejitterAveraging(int direction = +1);
+    void changePaddleDejitterReaction(int direction = +1);
+    void changeDigitalPaddleSensitivity(int direction = +1);
+    void changeMousePaddleSensitivity(int direction = +1);
+    void changeMouseTrackballSensitivity(int direction = +1);
+    void changeDrivingSensitivity(int direction = +1);
+
   private:
     using StickDatabase = std::map<string,StickInfo>;
     using StickList = std::map<int, PhysicalJoystickPtr>;

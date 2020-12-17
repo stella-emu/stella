@@ -1521,6 +1521,7 @@
     <ClInclude Include="..\common\FSNodeZIP.hxx" />
     <ClInclude Include="..\common\HighScoresManager.hxx" />
     <ClInclude Include="..\common\JoyMap.hxx" />
+    <ClInclude Include="..\common\jsonDefinitions.hxx" />
     <ClInclude Include="..\common\KeyMap.hxx" />
     <ClInclude Include="..\common\LinkedObjectPool.hxx" />
     <ClInclude Include="..\common\Logger.hxx" />

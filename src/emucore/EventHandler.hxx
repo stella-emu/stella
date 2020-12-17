@@ -82,9 +82,14 @@ class EventHandler
     void mapStelladaptors(const string& saport);
 
     /**
+      Toggles if all four joystick directions are allowed at once
+    */
+    void toggleAllow4JoyDirections(bool toggle = true);
+
+    /**
       Swaps the ordering of Stelladaptor/2600-daptor(s) devices.
     */
-    void toggleSAPortOrder();
+    void toggleSAPortOrder(bool toggle = true);
 
     /**
       Toggle whether the console is in 2600 or 7800 mode.
@@ -141,6 +146,8 @@ class EventHandler
                      'always', 'analog', 'never'
     */
     void setMouseControllerMode(const string& enable);
+    void changeMouseControllerMode(int direction = +1);
+    void changeMouseCursor(int direction = +1);
 
     void enterMenuMode(EventHandlerState state);
     void leaveMenuMode();
@@ -353,7 +360,8 @@ class EventHandler
     /**
       Handle changing mouse modes.
     */
-    void handleMouseControl();
+    void changeMouseControl(int direction = +1);
+    bool hasMouseControl();
 
     void saveKeyMapping();
     void saveJoyMapping();
@@ -462,6 +470,34 @@ class EventHandler
       PHOSPHOR,
       SCANLINES,
       INTERPOLATION,
+      // *** Input group ***
+    #ifdef JOYSTICK_SUPPORT
+      DEADZONE,
+      ANALOG_SENSITIVITY,
+      DEJITTER_AVERAGING,
+      DEJITTER_REACTION,
+    #endif
+      DIGITAL_SENSITIVITY,
+      AUTO_FIRE,
+      FOUR_DIRECTIONS,
+      MOD_KEY_COMBOS,
+    #ifdef JOYSTICK_SUPPORT
+      SA_PORT_ORDER,
+    #endif
+      USE_MOUSE,
+      PADDLE_SENSITIVITY,
+      TRACKBALL_SENSITIVITY,
+      DRIVING_SENSITIVITY,
+      MOUSE_CURSOR,
+      GRAB_MOUSE,
+      LEFT_PORT,
+      RIGHT_PORT,
+      SWAP_PORTS,
+      SWAP_PADDLES,
+      PADDLE_CENTER_X,
+      PADDLE_CENTER_Y,
+      MOUSE_CONTROL,
+      MOUSE_RANGE,
       // *** Debug group ***
       STATS,
       P0_ENAM,
@@ -490,12 +526,15 @@ class EventHandler
       NUM_ADJ,
       START_AV_ADJ = VOLUME,
       END_AV_ADJ = INTERPOLATION,
+      START_INPUT_ADJ = DEADZONE,
+      END_INPUT_ADJ = MOUSE_RANGE,
       START_DEBUG_ADJ = STATS,
       END_DEBUG_ADJ = JITTER,
     };
     enum class AdjustGroup
     {
       AV,
+      INPUT,
       DEBUG,
       NUM_GROUPS
     };
@@ -509,6 +548,7 @@ class EventHandler
     static const Event::EventSet JoystickEvents;
     static const Event::EventSet PaddlesEvents;
     static const Event::EventSet KeyboardEvents;
+    static const Event::EventSet DevicesEvents;
     static const Event::EventSet ComboEvents;
     static const Event::EventSet DebugEvents;
     static const Event::EventSet EditEvents;
@@ -532,6 +572,13 @@ class EventHandler
     AdjustGroup getAdjustGroup();
     AdjustFunction cycleAdjustSetting(int direction);
     AdjustFunction getAdjustSetting(AdjustSetting setting);
+
+    PhysicalJoystickHandler& joyHandler() { return *myPJoyHandler; }
+    PhysicalKeyboardHandler& keyHandler() { return *myPKeyHandler; }
+
+    bool isJoystick(const Controller& controller) const;
+    bool isPaddle(const Controller& controller) const;
+    bool isTrackball(const Controller& controller) const;
 
   private:
     // Structure used for action menu items
@@ -596,7 +643,7 @@ class EventHandler
     #else
       REFRESH_SIZE         = 0,
     #endif
-      EMUL_ACTIONLIST_SIZE = 176 + PNG_SIZE + COMBO_SIZE + REFRESH_SIZE,
+      EMUL_ACTIONLIST_SIZE = 207 + PNG_SIZE + COMBO_SIZE + REFRESH_SIZE,
       MENU_ACTIONLIST_SIZE = 18
     ;
 

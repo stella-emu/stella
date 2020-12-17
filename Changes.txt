@@ -30,6 +30,8 @@
 
   * Added sound to Time Machine playback.
 
+  * Extended global hotkeys for input devices & ports settings.
+
   * Increased sample size for CDFJ+.
 
   * Fixed autofire bug for trackball controllers.

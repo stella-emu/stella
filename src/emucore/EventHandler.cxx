@@ -188,20 +188,42 @@ void EventHandler::mapStelladaptors(const string& saport)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::toggleSAPortOrder()
+void EventHandler::toggleAllow4JoyDirections(bool toggle)
+{
+  bool joyAllow4 = myOSystem.settings().getBool("joyallow4");
+
+  if(toggle)
+  {
+    joyAllow4 = !joyAllow4;
+    allowAllDirections(joyAllow4);
+    myOSystem.settings().setValue("joyallow4", joyAllow4);
+  }
+
+  ostringstream ss;
+  ss << "Allow all 4 joystick directions ";
+  ss << (joyAllow4 ? "enabled" : "disabled");
+  myOSystem.frameBuffer().showTextMessage(ss.str());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::toggleSAPortOrder(bool toggle)
 {
 #ifdef JOYSTICK_SUPPORT
-  const string& saport = myOSystem.settings().getString("saport");
+  string saport = myOSystem.settings().getString("saport");
+
+  if(toggle)
+  {
+    if(saport == "lr")
+      saport = "rl";
+    else
+      saport = "lr";
+    mapStelladaptors(saport);
+  }
+
   if(saport == "lr")
-  {
-    mapStelladaptors("rl");
-    myOSystem.frameBuffer().showTextMessage("Stelladaptor ports right/left");
-  }
-  else
-  {
-    mapStelladaptors("lr");
     myOSystem.frameBuffer().showTextMessage("Stelladaptor ports left/right");
-  }
+  else
+    myOSystem.frameBuffer().showTextMessage("Stelladaptor ports right/left");
 #endif
 }
 
@@ -215,10 +237,18 @@ void EventHandler::set7800Mode()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::handleMouseControl()
+void EventHandler::changeMouseControl(int direction)
 {
   if(myMouseControl)
-    myOSystem.frameBuffer().showTextMessage(myMouseControl->next());
+    myOSystem.frameBuffer().showTextMessage(myMouseControl->change(direction));
+  else
+    myOSystem.frameBuffer().showTextMessage("Mouse input is disabled");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool EventHandler::hasMouseControl()
+{
+  return myMouseControl && myMouseControl->hasMouseControl();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -355,18 +385,39 @@ EventHandler::AdjustGroup EventHandler::getAdjustGroup()
 {
   if (myAdjustSetting >= AdjustSetting::START_DEBUG_ADJ && myAdjustSetting <= AdjustSetting::END_DEBUG_ADJ)
     return AdjustGroup::DEBUG;
+  if(myAdjustSetting >= AdjustSetting::START_INPUT_ADJ && myAdjustSetting <= AdjustSetting::END_INPUT_ADJ)
+    return AdjustGroup::INPUT;
 
   return AdjustGroup::AV;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool EventHandler::isJoystick(const Controller& controller) const
+{
+  return controller.type() == Controller::Type::Joystick
+    || controller.type() == Controller::Type::BoosterGrip
+    || controller.type() == Controller::Type::Genesis;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool EventHandler::isPaddle(const Controller& controller) const
+{
+  return controller.type() == Controller::Type::Paddles
+    || controller.type() == Controller::Type::PaddlesIAxDr
+    || controller.type() == Controller::Type::PaddlesIAxis;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool EventHandler::isTrackball(const Controller& controller) const
+{
+  return controller.type() == Controller::Type::AmigaMouse
+    || controller.type() == Controller::Type::AtariMouse
+    || controller.type() == Controller::Type::TrakBall;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AdjustFunction EventHandler::cycleAdjustSetting(int direction)
 {
-  const bool isFullScreen = myOSystem.frameBuffer().fullScreen();
-  const bool isCustomPalette =
-    myOSystem.settings().getString("palette") == PaletteHandler::SETTING_CUSTOM;
-  const bool isCustomFilter =
-    myOSystem.settings().getInt("tv.filter") == int(NTSCFilter::Preset::CUSTOM);
   const bool isPAL = myOSystem.console().timing() == ConsoleTiming::pal;
   bool repeat = false;
 
@@ -375,6 +426,13 @@ AdjustFunction EventHandler::cycleAdjustSetting(int direction)
     switch (getAdjustGroup())
     {
       case AdjustGroup::AV:
+      {
+        const bool isFullScreen = myOSystem.frameBuffer().fullScreen();
+        const bool isCustomPalette =
+          myOSystem.settings().getString("palette") == PaletteHandler::SETTING_CUSTOM;
+        const bool isCustomFilter =
+          myOSystem.settings().getInt("tv.filter") == int(NTSCFilter::Preset::CUSTOM);
+
         myAdjustSetting =
           AdjustSetting(BSPF::clampw(int(myAdjustSetting) + direction,
                         int(AdjustSetting::START_AV_ADJ), int(AdjustSetting::END_AV_ADJ)));
@@ -390,11 +448,58 @@ AdjustFunction EventHandler::cycleAdjustSetting(int direction)
               && myAdjustSetting <= AdjustSetting::NTSC_BLEEDING
               && !isCustomFilter);
         break;
+      }
+
+      case AdjustGroup::INPUT:
+      {
+        const bool grabMouseAllowed = myOSystem.frameBuffer().grabMouseAllowed();
+        const bool analog = myOSystem.console().leftController().isAnalog()
+          || myOSystem.console().rightController().isAnalog();
+        const bool joystick = isJoystick(myOSystem.console().leftController())
+          || isJoystick(myOSystem.console().rightController());
+        const bool paddle = isPaddle(myOSystem.console().leftController())
+          || isPaddle(myOSystem.console().rightController());
+        const bool trackball = isTrackball(myOSystem.console().leftController())
+          || isTrackball(myOSystem.console().rightController());
+        const bool driving = myOSystem.console().leftController().type() == Controller::Type::Driving
+          || myOSystem.console().rightController().type() == Controller::Type::Driving;
+        const bool useMouse = myOSystem.settings().getString("usemouse") != "never";
+
+        myAdjustSetting =
+          AdjustSetting(BSPF::clampw(int(myAdjustSetting) + direction,
+                        int(AdjustSetting::START_INPUT_ADJ), int(AdjustSetting::END_INPUT_ADJ)));
+        // skip currently non-relevant adjustments
+        repeat = (!grabMouseAllowed && myAdjustSetting == AdjustSetting::GRAB_MOUSE)
+          || (!joystick
+              && (myAdjustSetting == AdjustSetting::DEADZONE
+              || myAdjustSetting == AdjustSetting::FOUR_DIRECTIONS)
+          || (!paddle
+              && (myAdjustSetting == AdjustSetting::ANALOG_SENSITIVITY
+              || myAdjustSetting == AdjustSetting::DEJITTER_AVERAGING
+              || myAdjustSetting == AdjustSetting::DEJITTER_REACTION
+              || myAdjustSetting == AdjustSetting::DIGITAL_SENSITIVITY
+              || myAdjustSetting == AdjustSetting::SWAP_PADDLES
+              || myAdjustSetting == AdjustSetting::PADDLE_CENTER_X
+              || myAdjustSetting == AdjustSetting::PADDLE_CENTER_Y))
+          || ((!paddle || !useMouse)
+              && myAdjustSetting == AdjustSetting::PADDLE_SENSITIVITY)
+          || ((!trackball || !useMouse)
+              && myAdjustSetting == AdjustSetting::TRACKBALL_SENSITIVITY)
+          || (!driving
+              && myAdjustSetting == AdjustSetting::DRIVING_SENSITIVITY) // also affects keyboard input sensitivity
+          || ((!hasMouseControl() || !useMouse)
+              && myAdjustSetting == AdjustSetting::MOUSE_CONTROL)
+          || ((!paddle || !useMouse)
+              && myAdjustSetting == AdjustSetting::MOUSE_RANGE)
+        );
+        break;
+      }
 
       case AdjustGroup::DEBUG:
         myAdjustSetting =
           AdjustSetting(BSPF::clampw(int(myAdjustSetting) + direction,
                         int(AdjustSetting::START_DEBUG_ADJ), int(AdjustSetting::END_DEBUG_ADJ)));
+        // skip currently non-relevant adjustments
         repeat = (myAdjustSetting == AdjustSetting::COLOR_LOSS && !isPAL);
         break;
 
@@ -417,7 +522,7 @@ AdjustFunction EventHandler::getAdjustSetting(AdjustSetting setting)
   // - This array MUST have the same order as AdjustSetting
   const AdjustFunction ADJUST_FUNCTIONS[int(AdjustSetting::NUM_ADJ)] =
   {
-    // Audio & Video settings
+    // *** Audio & Video settings ***
     std::bind(&Sound::adjustVolume, &myOSystem.sound(), _1),
     std::bind(&FrameBuffer::switchVideoMode, &myOSystem.frameBuffer(), _1),
     std::bind(&FrameBuffer::toggleFullscreen, &myOSystem.frameBuffer(), _1),
@@ -470,7 +575,38 @@ AdjustFunction EventHandler::getAdjustSetting(AdjustSetting setting)
     std::bind(&Console::changePhosphor, &myOSystem.console(), _1),
     std::bind(&TIASurface::setScanlineIntensity, &myOSystem.frameBuffer().tiaSurface(), _1),
     std::bind(&Console::toggleInter, &myOSystem.console(), _1),
-    // Debug settings
+
+    // *** Input settings ***
+  #ifdef JOYSTICK_SUPPORT
+    std::bind(&PhysicalJoystickHandler::changeDeadzone, &joyHandler(), _1),
+    std::bind(&PhysicalJoystickHandler::changeAnalogPaddleSensitivity, &joyHandler(), _1),
+    std::bind(&PhysicalJoystickHandler::changePaddleDejitterAveraging, &joyHandler(), _1),
+    std::bind(&PhysicalJoystickHandler::changePaddleDejitterReaction, &joyHandler(), _1),
+  #endif
+    std::bind(&PhysicalJoystickHandler::changeDigitalPaddleSensitivity, &joyHandler(), _1),
+    std::bind(&Console::changeAutoFireRate, &myOSystem.console(), _1),
+    std::bind(&EventHandler::toggleAllow4JoyDirections, this, _1),
+    std::bind(&PhysicalKeyboardHandler::toggleModKeys, &keyHandler(), _1),
+  #ifdef JOYSTICK_SUPPORT
+    std::bind(&EventHandler::toggleSAPortOrder, this, _1),
+  #endif
+    std::bind(&EventHandler::changeMouseControllerMode, this, _1),
+    std::bind(&PhysicalJoystickHandler::changeMousePaddleSensitivity, &joyHandler(), _1),
+    std::bind(&PhysicalJoystickHandler::changeMouseTrackballSensitivity, &joyHandler(), _1),
+    std::bind(&PhysicalJoystickHandler::changeDrivingSensitivity, &joyHandler(), _1),
+    std::bind(&EventHandler::changeMouseCursor, this, _1),
+    std::bind(&FrameBuffer::toggleGrabMouse, &myOSystem.frameBuffer(), _1),
+    // Game properties/Controllers
+    std::bind(&Console::changeLeftController, &myOSystem.console(), _1),
+    std::bind(&Console::changeRightController, &myOSystem.console(), _1),
+    std::bind(&Console::toggleSwapPorts, &myOSystem.console(), _1),
+    std::bind(&Console::toggleSwapPaddles, &myOSystem.console(), _1),
+    std::bind(&Console::changePaddleCenterX, &myOSystem.console(), _1),
+    std::bind(&Console::changePaddleCenterY, &myOSystem.console(), _1),
+    std::bind(&EventHandler::changeMouseControl, this, _1),
+    std::bind(&Console::changePaddleAxesRange, &myOSystem.console(), _1),
+
+    // *** Debug settings ***
     std::bind(&FrameBuffer::toggleFrameStats, &myOSystem.frameBuffer(), _1),
     std::bind(&Console::toggleP0Bit, &myOSystem.console(), _1),
     std::bind(&Console::toggleP1Bit, &myOSystem.console(), _1),
@@ -489,7 +625,8 @@ AdjustFunction EventHandler::getAdjustSetting(AdjustSetting setting)
     std::bind(&Console::toggleFixedColors, &myOSystem.console(), _1),
     std::bind(&Console::toggleColorLoss, &myOSystem.console(), _1),
     std::bind(&Console::toggleJitter, &myOSystem.console(), _1),
-    // Following functions are not used when cycling settings but for "direct only" hotkeys
+
+    // *** Following functions are not used when cycling settings but for "direct only" hotkeys ***
     std::bind(&StateManager::changeState, &myOSystem.state(), _1),
     std::bind(&PaletteHandler::changeCurrentAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(), _1),
     std::bind(&TIASurface::changeCurrentNTSCAdjustable, &myOSystem.frameBuffer().tiaSurface(), _1),
@@ -530,21 +667,25 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
   {
     ////////////////////////////////////////////////////////////////////////
     // Allow adjusting several (mostly repeated) settings using the same six hotkeys
-
     case Event::PreviousSettingGroup:
     case Event::NextSettingGroup:
-      if (pressed && !repeated)
+      if(pressed && !repeated)
       {
         const int direction = event == Event::PreviousSettingGroup ? -1 : +1;
         AdjustGroup adjustGroup = AdjustGroup(BSPF::clampw(int(getAdjustGroup()) + direction,
                                               0, int(AdjustGroup::NUM_GROUPS) - 1));
         string msg;
 
-        switch (adjustGroup)
+        switch(adjustGroup)
         {
           case AdjustGroup::AV:
             msg = "Audio & Video";
             myAdjustSetting = AdjustSetting::START_AV_ADJ;
+            break;
+
+          case AdjustGroup::INPUT:
+            msg = "Input Devices & Ports";
+            myAdjustSetting = AdjustSetting::START_INPUT_ADJ;
             break;
 
           case AdjustGroup::DEBUG:
@@ -560,7 +701,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       }
       break;
 
-    // Allow adjusting several (mostly repeated) settings using the same four hotkeys
+      // Allow adjusting several (mostly repeated) settings using the same four hotkeys
     case Event::PreviousSetting:
     case Event::NextSetting:
       if(pressed && !repeated)
@@ -729,7 +870,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::ToggleFullScreen:
-      if (pressed && !repeated)
+      if(pressed && !repeated)
       {
         myOSystem.frameBuffer().toggleFullscreen();
         myAdjustSetting = AdjustSetting::FULLSCREEN;
@@ -739,7 +880,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
 
     #ifdef ADAPTABLE_REFRESH_SUPPORT
     case Event::ToggleAdaptRefresh:
-      if (pressed && !repeated)
+      if(pressed && !repeated)
       {
         myOSystem.frameBuffer().toggleAdaptRefresh();
         myAdjustSetting = AdjustSetting::ADAPT_REFRESH;
@@ -749,7 +890,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     #endif
 
     case Event::OverscanDecrease:
-      if (pressed)
+      if(pressed)
       {
         myOSystem.frameBuffer().changeOverscan(-1);
         myAdjustSetting = AdjustSetting::OVERSCAN;
@@ -758,7 +899,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::OverscanIncrease:
-      if (pressed)
+      if(pressed)
       {
         myOSystem.frameBuffer().changeOverscan(+1);
         myAdjustSetting = AdjustSetting::OVERSCAN;
@@ -767,7 +908,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::FormatDecrease:
-      if (pressed && !repeated)
+      if(pressed && !repeated)
       {
         myOSystem.console().selectFormat(-1);
         myAdjustSetting = AdjustSetting::TVFORMAT;
@@ -776,7 +917,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::FormatIncrease:
-      if (pressed && !repeated)
+      if(pressed && !repeated)
       {
         myOSystem.console().selectFormat(+1);
         myAdjustSetting = AdjustSetting::TVFORMAT;
@@ -829,7 +970,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       break;
 
     case Event::PaletteDecrease:
-      if (pressed && !repeated)
+      if(pressed && !repeated)
       {
         myOSystem.frameBuffer().tiaSurface().paletteHandler().cyclePalette(-1);
         myAdjustSetting = AdjustSetting::PALETTE;
@@ -838,7 +979,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::PaletteIncrease:
-      if (pressed && !repeated)
+      if(pressed && !repeated)
       {
         myOSystem.frameBuffer().tiaSurface().paletteHandler().cyclePalette(+1);
         myAdjustSetting = AdjustSetting::PALETTE;
@@ -945,7 +1086,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::ScanlinesDecrease:
-      if (pressed)
+      if(pressed)
       {
         myOSystem.frameBuffer().tiaSurface().setScanlineIntensity(-1);
         myAdjustSetting = AdjustSetting::SCANLINES;
@@ -954,7 +1095,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::ScanlinesIncrease:
-      if (pressed)
+      if(pressed)
       {
         myOSystem.frameBuffer().tiaSurface().setScanlineIntensity(+1);
         myAdjustSetting = AdjustSetting::SCANLINES;
@@ -971,10 +1112,10 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       }
       return;
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Direct key Audio & Video events
+      ///////////////////////////////////////////////////////////////////////////
+      // Direct key Audio & Video events
     case Event::PreviousPaletteAttribute:
-      if (pressed)
+      if(pressed)
       {
         myOSystem.frameBuffer().tiaSurface().paletteHandler().cycleAdjustable(-1);
         myAdjustDirect = AdjustSetting::PALETTE_CHANGE_ATTRIBUTE;
@@ -982,7 +1123,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::NextPaletteAttribute:
-      if (pressed)
+      if(pressed)
       {
         myOSystem.frameBuffer().tiaSurface().paletteHandler().cycleAdjustable(+1);
         myAdjustDirect = AdjustSetting::PALETTE_CHANGE_ATTRIBUTE;
@@ -990,7 +1131,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::PaletteAttributeDecrease:
-      if (pressed)
+      if(pressed)
       {
         myOSystem.frameBuffer().tiaSurface().paletteHandler().changeCurrentAdjustable(-1);
         myAdjustDirect = AdjustSetting::PALETTE_CHANGE_ATTRIBUTE;
@@ -998,7 +1139,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::PaletteAttributeIncrease:
-      if (pressed)
+      if(pressed)
       {
         myOSystem.frameBuffer().tiaSurface().paletteHandler().changeCurrentAdjustable(+1);
         myAdjustDirect = AdjustSetting::PALETTE_CHANGE_ATTRIBUTE;
@@ -1006,7 +1147,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::PreviousAttribute:
-      if (pressed)
+      if(pressed)
       {
         myOSystem.frameBuffer().tiaSurface().setNTSCAdjustable(-1);
         myAdjustDirect = AdjustSetting::NTSC_CHANGE_ATTRIBUTE;
@@ -1014,7 +1155,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::NextAttribute:
-      if (pressed)
+      if(pressed)
       {
         myOSystem.frameBuffer().tiaSurface().setNTSCAdjustable(+1);
         myAdjustDirect = AdjustSetting::NTSC_CHANGE_ATTRIBUTE;
@@ -1022,7 +1163,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::DecreaseAttribute:
-      if (pressed)
+      if(pressed)
       {
         myOSystem.frameBuffer().tiaSurface().changeCurrentNTSCAdjustable(-1);
         myAdjustDirect = AdjustSetting::NTSC_CHANGE_ATTRIBUTE;
@@ -1030,7 +1171,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::IncreaseAttribute:
-      if (pressed)
+      if(pressed)
       {
         myOSystem.frameBuffer().tiaSurface().changeCurrentNTSCAdjustable(+1);
         myAdjustDirect = AdjustSetting::NTSC_CHANGE_ATTRIBUTE;
@@ -1039,9 +1180,8 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
 
     ///////////////////////////////////////////////////////////////////////////
     // Debug events (with global hotkeys)
-
     case Event::ToggleFrameStats:
-      if (pressed && !repeated)
+      if(pressed && !repeated)
       {
         myOSystem.frameBuffer().toggleFrameStats();
         myAdjustSetting = AdjustSetting::STATS;
@@ -1050,7 +1190,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::ToggleP0Collision:
-      if (pressed && !repeated)
+      if(pressed && !repeated)
       {
         myOSystem.console().toggleP0Collision();
         myAdjustSetting = AdjustSetting::P0_CX;
@@ -1059,7 +1199,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::ToggleP0Bit:
-      if (pressed && !repeated)
+      if(pressed && !repeated)
       {
         myOSystem.console().toggleP0Bit();
         myAdjustSetting = AdjustSetting::P0_ENAM;
@@ -1068,7 +1208,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::ToggleP1Collision:
-      if (pressed && !repeated)
+      if(pressed && !repeated)
       {
         myOSystem.console().toggleP1Collision();
         myAdjustSetting = AdjustSetting::P1_CX;
@@ -1077,7 +1217,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::ToggleP1Bit:
-      if (pressed && !repeated)
+      if(pressed && !repeated)
       {
         myOSystem.console().toggleP1Bit();
         myAdjustSetting = AdjustSetting::P1_ENAM;
@@ -1086,7 +1226,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::ToggleM0Collision:
-      if (pressed && !repeated)
+      if(pressed && !repeated)
       {
         myOSystem.console().toggleM0Collision();
         myAdjustSetting = AdjustSetting::M0_CX;
@@ -1095,7 +1235,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::ToggleM0Bit:
-      if (pressed && !repeated)
+      if(pressed && !repeated)
       {
         myOSystem.console().toggleM0Bit();
         myAdjustSetting = AdjustSetting::M0_ENAM;
@@ -1104,7 +1244,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::ToggleM1Collision:
-      if (pressed && !repeated)
+      if(pressed && !repeated)
       {
         myOSystem.console().toggleM1Collision();
         myAdjustSetting = AdjustSetting::M1_CX;
@@ -1113,7 +1253,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::ToggleM1Bit:
-      if (pressed && !repeated)
+      if(pressed && !repeated)
       {
         myOSystem.console().toggleM1Bit();
         myAdjustSetting = AdjustSetting::M1_ENAM;
@@ -1122,7 +1262,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::ToggleBLCollision:
-      if (pressed && !repeated)
+      if(pressed && !repeated)
       {
         myOSystem.console().toggleBLCollision();
         myAdjustSetting = AdjustSetting::BL_CX;
@@ -1131,7 +1271,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::ToggleBLBit:
-      if (pressed && !repeated)
+      if(pressed && !repeated)
       {
         myOSystem.console().toggleBLBit();
         myAdjustSetting = AdjustSetting::BL_ENAM;
@@ -1140,7 +1280,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::TogglePFCollision:
-      if (pressed && !repeated)
+      if(pressed && !repeated)
       {
         myOSystem.console().togglePFCollision();
         myAdjustSetting = AdjustSetting::PF_CX;
@@ -1149,7 +1289,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::TogglePFBit:
-      if (pressed && !repeated)
+      if(pressed && !repeated)
       {
         myOSystem.console().togglePFBit();
         myAdjustSetting = AdjustSetting::PF_ENAM;
@@ -1158,7 +1298,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::ToggleCollisions:
-      if (pressed && !repeated)
+      if(pressed && !repeated)
       {
         myOSystem.console().toggleCollisions();
         myAdjustSetting = AdjustSetting::ALL_CX;
@@ -1167,7 +1307,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::ToggleBits:
-      if (pressed && !repeated)
+      if(pressed && !repeated)
       {
         myOSystem.console().toggleBits();
         myAdjustSetting = AdjustSetting::ALL_ENAM;
@@ -1176,7 +1316,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::ToggleFixedColors:
-      if (pressed && !repeated)
+      if(pressed && !repeated)
       {
         myOSystem.console().toggleFixedColors();
         myAdjustSetting = AdjustSetting::FIXED_COL;
@@ -1185,7 +1325,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::ToggleColorLoss:
-      if (pressed && !repeated)
+      if(pressed && !repeated)
       {
         myOSystem.console().toggleColorLoss();
         myAdjustSetting = AdjustSetting::COLOR_LOSS;
@@ -1194,7 +1334,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::ToggleJitter:
-      if (pressed && !repeated)
+      if(pressed && !repeated)
       {
         myOSystem.console().toggleJitter();
         myAdjustSetting = AdjustSetting::JITTER;
@@ -1203,8 +1343,344 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     ///////////////////////////////////////////////////////////////////////////
-    // State events
+    // Input events
+    case Event::DecreaseDeadzone:
+      if(pressed)
+      {
+        myPJoyHandler->changeDeadzone(-1);
+        myAdjustSetting = AdjustSetting::DEADZONE;
+        myAdjustActive = true;
+      }
+      return;
 
+    case Event::IncreaseDeadzone:
+      if(pressed)
+      {
+        myPJoyHandler->changeDeadzone(+1);
+        myAdjustSetting = AdjustSetting::DEADZONE;
+        myAdjustActive = true;
+      }
+      return;
+
+    case Event::DecAnalogSense:
+      if(pressed)
+      {
+        myPJoyHandler->changeAnalogPaddleSensitivity(-1);
+        myAdjustSetting = AdjustSetting::PADDLE_SENSITIVITY;
+        myAdjustActive = true;
+      }
+      return;
+
+    case Event::IncAnalogSense:
+      if(pressed)
+      {
+        myPJoyHandler->changeAnalogPaddleSensitivity(+1);
+        myAdjustSetting = AdjustSetting::PADDLE_SENSITIVITY;
+        myAdjustActive = true;
+      }
+
+      return;
+
+    case Event::DecDejtterAveraging:
+      if(pressed)
+      {
+        myPJoyHandler->changePaddleDejitterAveraging(-1);
+        myAdjustSetting = AdjustSetting::DEJITTER_AVERAGING;
+        myAdjustActive = true;
+      }
+      return;
+
+    case Event::IncDejtterAveraging:
+      if(pressed)
+      {
+        myPJoyHandler->changePaddleDejitterAveraging(+1);
+        myAdjustSetting = AdjustSetting::DEJITTER_AVERAGING;
+        myAdjustActive = true;
+      }
+      return;
+
+    case Event::DecDejtterReaction:
+      if(pressed)
+      {
+        myPJoyHandler->changePaddleDejitterReaction(-1);
+        myAdjustSetting = AdjustSetting::DEJITTER_REACTION;
+        myAdjustActive = true;
+      }
+      return;
+
+    case Event::IncDejtterReaction:
+      if(pressed)
+      {
+        myPJoyHandler->changePaddleDejitterReaction(+1);
+        myAdjustSetting = AdjustSetting::DEJITTER_REACTION;
+        myAdjustActive = true;
+      }
+      return;
+
+    case Event::DecDigitalSense:
+      if(pressed)
+      {
+        myPJoyHandler->changeDigitalPaddleSensitivity(-1);
+        myAdjustSetting = AdjustSetting::DIGITAL_SENSITIVITY;
+        myAdjustActive = true;
+      }
+      return;
+
+    case Event::IncDigitalSense:
+      if(pressed)
+      {
+        myPJoyHandler->changeDigitalPaddleSensitivity(+1);
+        myAdjustSetting = AdjustSetting::DIGITAL_SENSITIVITY;
+        myAdjustActive = true;
+      }
+      return;
+
+    case Event::DecreaseAutoFire:
+      if(pressed)
+      {
+        myOSystem.console().changeAutoFireRate(-1);
+        myAdjustSetting = AdjustSetting::AUTO_FIRE;
+        myAdjustActive = true;
+      }
+      return;
+
+    case Event::IncreaseAutoFire:
+      if(pressed)
+      {
+        myOSystem.console().changeAutoFireRate(+1);
+        myAdjustSetting = AdjustSetting::AUTO_FIRE;
+        myAdjustActive = true;
+      }
+      return;
+
+    case Event::ToggleFourDirections:
+      if(pressed && !repeated)
+      {
+        toggleAllow4JoyDirections();
+        myAdjustSetting = AdjustSetting::FOUR_DIRECTIONS;
+        myAdjustActive = true;
+      }
+      return;
+
+    case Event::ToggleKeyCombos:
+      if(pressed && !repeated)
+      {
+        myPKeyHandler->toggleModKeys();
+        myAdjustSetting = AdjustSetting::MOD_KEY_COMBOS;
+        myAdjustActive = true;
+      }
+      return;
+
+    case Event::ToggleSAPortOrder:
+      if(pressed && !repeated)
+      {
+        toggleSAPortOrder();
+        myAdjustSetting = AdjustSetting::SA_PORT_ORDER;
+        myAdjustActive = true;
+      }
+      return;
+
+    case Event::PrevMouseAsController:
+      if(pressed && !repeated)
+      {
+        changeMouseControllerMode(-1);
+        myAdjustSetting = AdjustSetting::USE_MOUSE;
+        myAdjustActive = true;
+      }
+      return;
+
+    case Event::NextMouseAsController:
+      if(pressed && !repeated)
+      {
+        changeMouseControllerMode(+1);
+        myAdjustSetting = AdjustSetting::USE_MOUSE;
+        myAdjustActive = true;
+      }
+      return;
+
+    case Event::DecMousePaddleSense:
+      if(pressed)
+      {
+        myPJoyHandler->changeMousePaddleSensitivity(-1);
+        myAdjustSetting = AdjustSetting::PADDLE_SENSITIVITY;
+        myAdjustActive = true;
+      }
+      return;
+
+    case Event::IncMousePaddleSense:
+      if(pressed)
+      {
+        myPJoyHandler->changeMousePaddleSensitivity(+1);
+        myAdjustSetting = AdjustSetting::PADDLE_SENSITIVITY;
+        myAdjustActive = true;
+      }
+      return;
+
+    case Event::DecMouseTrackballSense:
+      if(pressed)
+      {
+        myPJoyHandler->changeMouseTrackballSensitivity(-1);
+        myAdjustSetting = AdjustSetting::TRACKBALL_SENSITIVITY;
+        myAdjustActive = true;
+      }
+      return;
+
+    case Event::IncMouseTrackballSense:
+      if(pressed)
+      {
+        myPJoyHandler->changeMouseTrackballSensitivity(+1);
+        myAdjustSetting = AdjustSetting::TRACKBALL_SENSITIVITY;
+        myAdjustActive = true;
+      }
+      return;
+
+    case Event::DecreaseDrivingSense:
+      if(pressed)
+      {
+        myPJoyHandler->changeDrivingSensitivity(-1);
+        myAdjustSetting = AdjustSetting::DRIVING_SENSITIVITY;
+        myAdjustActive = true;
+      }
+      return;
+
+    case Event::IncreaseDrivingSense:
+      if(pressed)
+      {
+        myPJoyHandler->changeDrivingSensitivity(+1);
+        myAdjustSetting = AdjustSetting::DRIVING_SENSITIVITY;
+        myAdjustActive = true;
+      }
+      return;
+
+    case Event::PreviousCursorVisbility:
+      if(pressed && !repeated)
+      {
+        changeMouseCursor(-1);
+        myAdjustSetting = AdjustSetting::MOUSE_CURSOR;
+        myAdjustActive = true;
+      }
+      return;
+
+    case Event::NextCursorVisbility:
+      if(pressed && !repeated)
+      {
+        changeMouseCursor(+1);
+        myAdjustSetting = AdjustSetting::MOUSE_CURSOR;
+        myAdjustActive = true;
+      }
+      return;
+
+    case Event::ToggleGrabMouse:
+      if(pressed && !repeated && !myOSystem.frameBuffer().fullScreen())
+      {
+        myOSystem.frameBuffer().toggleGrabMouse();
+        myAdjustSetting = AdjustSetting::GRAB_MOUSE;
+        myAdjustActive = true;
+      }
+      return;
+
+    case Event::PreviousLeftPort:
+      if(pressed && !repeated)
+      {
+        myOSystem.console().changeLeftController(-1);
+        myAdjustSetting = AdjustSetting::LEFT_PORT;
+        myAdjustActive = true;
+      }
+      return;
+
+    case Event::NextLeftPort:
+      if(pressed && !repeated)
+      {
+        myOSystem.console().changeLeftController(+1);
+        myAdjustSetting = AdjustSetting::LEFT_PORT;
+        myAdjustActive = true;
+      }
+
+      return;
+
+    case Event::PreviousRightPort:
+      if(pressed && !repeated)
+      {
+        myOSystem.console().changeRightController(-1);
+        myAdjustSetting = AdjustSetting::RIGHT_PORT;
+        myAdjustActive = true;
+      }
+      return;
+
+    case Event::NextRightPort:
+      if(pressed && !repeated)
+      {
+        myOSystem.console().changeRightController(+1);
+        myAdjustSetting = AdjustSetting::RIGHT_PORT;
+        myAdjustActive = true;
+      }
+      return;
+
+    case Event::ToggleSwapPorts:
+      if(pressed && !repeated)
+      {
+        myOSystem.console().toggleSwapPorts();
+        myAdjustSetting = AdjustSetting::SWAP_PORTS;
+        myAdjustActive = true;
+      }
+      return;
+
+    case Event::ToggleSwapPaddles:
+      if(pressed && !repeated)
+      {
+        myOSystem.console().toggleSwapPaddles();
+        myAdjustSetting = AdjustSetting::SWAP_PADDLES;
+        myAdjustActive = true;
+      }
+      return;
+
+    case Event::DecreasePaddleCenterX:
+      if(pressed)
+      {
+        myOSystem.console().changePaddleCenterX(-1);
+        myAdjustSetting = AdjustSetting::PADDLE_CENTER_X;
+        myAdjustActive = true;
+      }
+      return;
+
+    case Event::IncreasePaddleCenterX:
+      if(pressed)
+      {
+        myOSystem.console().changePaddleCenterX(+1);
+        myAdjustSetting = AdjustSetting::PADDLE_CENTER_X;
+        myAdjustActive = true;
+      }
+      return;
+
+    case Event::DecreasePaddleCenterY:
+      if(pressed)
+      {
+        myOSystem.console().changePaddleCenterY(-1);
+        myAdjustSetting = AdjustSetting::PADDLE_CENTER_Y;
+        myAdjustActive = true;
+      }
+      return;
+
+    case Event::IncreasePaddleCenterY:
+      if(pressed)
+      {
+        myOSystem.console().changePaddleCenterY(+1);
+        myAdjustSetting = AdjustSetting::PADDLE_CENTER_Y;
+        myAdjustActive = true;
+      }
+      return;
+
+    case Event::PreviousMouseControl:
+      if(pressed && !repeated) changeMouseControl(-1);
+      return;
+
+    case Event::NextMouseControl:
+      if(pressed && !repeated) changeMouseControl(+1);
+      return;
+
+
+    ///////////////////////////////////////////////////////////////////////////
+    // State events
     case Event::SaveState:
       if (pressed && !repeated)
       {
@@ -1289,7 +1765,6 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
 
     ///////////////////////////////////////////////////////////////////////////
     // Misc events
-
     case Event::DecreaseSpeed:
       if(pressed)
       {
@@ -1335,27 +1810,6 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if (pressed && !repeated) myOSystem.png().toggleContinuousSnapshots(true);
       return;
   #endif
-
-    case Event::DecreaseAutoFire:
-      if(pressed) myOSystem.console().changeAutoFireRate(-1);
-      return;
-
-    case Event::IncreaseAutoFire:
-      if(pressed) myOSystem.console().changeAutoFireRate(+1);
-      return;
-
-    case Event::HandleMouseControl:
-      if (pressed && !repeated) handleMouseControl();
-      return;
-
-    case Event::ToggleSAPortOrder:
-      if (pressed && !repeated) toggleSAPortOrder();
-      return;
-
-    case Event::ToggleGrabMouse:
-      if (pressed && !repeated && !myOSystem.frameBuffer().fullScreen())
-        myOSystem.frameBuffer().toggleGrabMouse();
-      return;
 
     case Event::TakeSnapshot:
       if(pressed && !repeated) myOSystem.frameBuffer().tiaSurface().saveSnapShot();
@@ -1599,7 +2053,6 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     ////////////////////////////////////////////////////////////////////////
-
     case Event::NoType:  // Ignore unmapped events
       return;
 
@@ -2028,6 +2481,9 @@ StringList EventHandler::getActionList(Event::Group group) const
     case Event::Group::Keyboard:
       return getActionList(KeyboardEvents);
 
+    case Event::Group::Devices:
+      return getActionList(DevicesEvents);
+
     case Event::Group::Debug:
       return getActionList(DebugEvents);
 
@@ -2197,6 +2653,9 @@ int EventHandler::getActionListIndex(int idx, Event::Group group) const
     case Event::Group::Keyboard:
       return getEmulActionListIndex(idx, KeyboardEvents);
 
+    case Event::Group::Devices:
+      return getEmulActionListIndex(idx, DevicesEvents);
+
     case Event::Group::Debug:
       return getEmulActionListIndex(idx, DebugEvents);
 
@@ -2291,8 +2750,51 @@ void EventHandler::setMouseControllerMode(const string& enable)
       myOSystem.console().properties().get(PropType::Controller_MouseAxis) : "none";
 
     myMouseControl = make_unique<MouseControl>(myOSystem.console(), control);
-    myMouseControl->next();  // set first available mode
+    myMouseControl->change(0);  // set first available mode
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::changeMouseControllerMode(int direction)
+{
+  const int NUM_MODES = 3;
+  const string MODES[NUM_MODES] = {"always", "analog", "never"};
+  const string MSG[NUM_MODES] = {"all", "analog", "no"};
+  string usemouse = myOSystem.settings().getString("usemouse");
+
+  int i = 0;
+  for(auto& mode : MODES)
+  {
+    if(mode == usemouse)
+    {
+      i = BSPF::clampw(i + direction, 0, NUM_MODES - 1);
+      usemouse = MODES[i];
+      break;
+    }
+    ++i;
+  }
+  myOSystem.settings().setValue("usemouse", usemouse);
+  setMouseControllerMode(usemouse);
+  myOSystem.frameBuffer().setCursorState(); // if necessary change grab mouse
+
+  ostringstream ss;
+  ss << "Mouse controls " << MSG[i] << " devices";
+  myOSystem.frameBuffer().showTextMessage(ss.str());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::changeMouseCursor(int direction)
+{
+  int cursor = BSPF::clampw(myOSystem.settings().getInt("cursor") + direction, 0, 3);
+
+  myOSystem.settings().setValue("cursor", cursor);
+  myOSystem.frameBuffer().setCursorState();
+
+  ostringstream ss;
+  ss << "Mouse cursor visibilility: "
+    << ((cursor & 2) ? "+" : "-") << "UI, "
+    << ((cursor & 1) ? "+" : "-") << "Emulation";
+  myOSystem.frameBuffer().showTextMessage(ss.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2692,11 +3194,43 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::VolumeDecrease,          "Decrease volume",                       "" },
   { Event::VolumeIncrease,          "Increase volume",                       "" },
 
+
+  { Event::DecreaseDeadzone,        "Decrease joystick deadzone",            "" },
+  { Event::IncreaseDeadzone,        "Increase joystick deadzone",            "" },
+  { Event::DecAnalogSense,          "Decrease analog paddle sensitivity",    "" },
+  { Event::IncAnalogSense,          "Increase analog paddle sensitivity",    "" },
+  { Event::DecDejtterAveraging,     "Decrease paddle dejitter averaging",    "" },
+  { Event::IncDejtterAveraging,     "Increase paddle dejitter averaging",    "" },
+  { Event::DecDejtterReaction,      "Decrease paddle dejitter reaction",     "" },
+  { Event::IncDejtterReaction,      "Increase paddle dejitter reaction",     "" },
+  { Event::DecDigitalSense,         "Decrease digital paddle sensitivity",   "" },
+  { Event::IncDigitalSense,         "Increase digital paddle sensitivity",   "" },
   { Event::DecreaseAutoFire,        "Decrease auto fire speed",              "" },
   { Event::IncreaseAutoFire,        "Increase auto fire speed",              "" },
-  { Event::HandleMouseControl,      "Switch mouse emulation modes",          "" },
-  { Event::ToggleGrabMouse,         "Toggle grab mouse",                     "" },
+  { Event::ToggleFourDirections,    "Toggle allow four joystick directions", "" },
+  { Event::ToggleKeyCombos,         "Toggle use of modifier key combos",     "" },
   { Event::ToggleSAPortOrder,       "Swap Stelladaptor port ordering",       "" },
+  { Event::PrevMouseAsController,   "Select previous mouse controls",        "" },
+  { Event::NextMouseAsController,   "Select next mouse controls",            "" },
+  { Event::DecMousePaddleSense,     "Decrease mouse paddle sensitivity",     "" },
+  { Event::IncMousePaddleSense,     "Increase mouse paddle sensitivity",     "" },
+  { Event::DecMouseTrackballSense,  "Decrease mouse trackball sensitivity",  "" },
+  { Event::IncMouseTrackballSense,  "Increase mouse trackball sensitivity",  "" },
+  { Event::DecreaseDrivingSense,    "Decrease driving sensitivity",          "" },
+  { Event::IncreaseDrivingSense,    "Increase driving sensitivity",          "" },
+  { Event::PreviousCursorVisbility, "Select prev. cursor visibility mode",   "" },
+  { Event::NextCursorVisbility,     "Select next cursor visibility mode"    ,"" },
+  { Event::ToggleGrabMouse,         "Toggle grab mouse",                     "" },
+  { Event::PreviousLeftPort,        "Select previous left controller",       "" },
+  { Event::NextLeftPort,            "Select next left controller",           "" },
+  { Event::PreviousRightPort,       "Select previous right controller",      "" },
+  { Event::NextRightPort,           "Select next right controller",          "" },
+  { Event::ToggleSwapPorts,         "Toggle swap ports",                     "" },
+  { Event::ToggleSwapPaddles,       "Toggle swap paddles",                   "" },
+  { Event::PreviousMouseControl,    "Select previous mouse emulation mode",  "" },
+  { Event::NextMouseControl,        "Select next mouse emulation mode",      "" },
+  { Event::DecreaseMouseAxesRange,  "Decrease mouse axes range",             "" },
+  { Event::IncreaseMouseAxesRange,  "Increase mouse axes range",             "" },
 
   { Event::ToggleTimeMachine,       "Toggle 'Time Machine' mode",            "" },
   { Event::TimeMachineMode,         "Toggle 'Time Machine' UI",              "" },
@@ -2763,10 +3297,8 @@ const Event::EventSet EventHandler::MiscEvents = {
   Event::TakeSnapshot, Event::ToggleContSnapshots, Event::ToggleContSnapshotsFrame,
   // Event::MouseAxisXMove, Event::MouseAxisYMove,
   // Event::MouseButtonLeftValue, Event::MouseButtonRightValue,
-  Event::DecreaseAutoFire, Event::IncreaseAutoFire,
-  Event::HandleMouseControl, Event::ToggleGrabMouse,
   Event::HighScoresMenuMode,
-  Event::ToggleSAPortOrder, Event::PreviousMultiCartRom,
+  Event::PreviousMultiCartRom,
   Event::PreviousSettingGroup, Event::NextSettingGroup,
   Event::PreviousSetting, Event::NextSetting,
   Event::SettingDecrease, Event::SettingIncrease,
@@ -2844,10 +3376,35 @@ const Event::EventSet EventHandler::KeyboardEvents = {
   Event::KeyboardOneStar, Event::KeyboardOne0, Event::KeyboardOnePound,
 };
 
+const Event::EventSet EventHandler::DevicesEvents = {
+  Event::DecreaseDeadzone, Event::IncreaseDeadzone,
+  Event::DecAnalogSense, Event::IncAnalogSense,
+  Event::DecDejtterAveraging, Event::IncDejtterAveraging,
+  Event::DecDejtterReaction, Event::IncDejtterReaction,
+  Event::DecDigitalSense, Event::IncDigitalSense,
+  Event::DecreaseAutoFire, Event::IncreaseAutoFire,
+  Event::ToggleFourDirections, Event::ToggleKeyCombos, Event::ToggleSAPortOrder,
+  Event::PrevMouseAsController, Event::NextMouseAsController,
+  Event::DecMousePaddleSense, Event::IncMousePaddleSense,
+  Event::DecMouseTrackballSense, Event::IncMouseTrackballSense,
+  Event::DecreaseDrivingSense, Event::IncreaseDrivingSense,
+  Event::PreviousCursorVisbility, Event::NextCursorVisbility,
+  Event::ToggleGrabMouse,
+  Event::PreviousLeftPort, Event::NextLeftPort,
+  Event::PreviousRightPort, Event::NextRightPort,
+  Event::ToggleSwapPorts, Event::ToggleSwapPaddles,
+  Event::DecreasePaddleCenterX, Event::IncreasePaddleCenterX,
+  Event::DecreasePaddleCenterY, Event::IncreasePaddleCenterY,
+  Event::PreviousMouseControl, Event::NextMouseControl,
+  Event::DecreaseMouseAxesRange, Event::IncreaseMouseAxesRange,
+};
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const Event::EventSet EventHandler::ComboEvents = {
-  Event::Combo1, Event::Combo2, Event::Combo3, Event::Combo4, Event::Combo5, Event::Combo6, Event::Combo7, Event::Combo8,
-  Event::Combo9, Event::Combo10, Event::Combo11, Event::Combo12, Event::Combo13, Event::Combo14, Event::Combo15, Event::Combo16,
+  Event::Combo1, Event::Combo2, Event::Combo3, Event::Combo4,
+  Event::Combo5, Event::Combo6, Event::Combo7, Event::Combo8,
+  Event::Combo9, Event::Combo10, Event::Combo11, Event::Combo12,
+  Event::Combo13, Event::Combo14, Event::Combo15, Event::Combo16,
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

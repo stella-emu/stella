@@ -42,6 +42,10 @@ class Driving : public Controller
     ~Driving() override = default;
 
   public:
+    static constexpr int MIN_SENSE = 1;
+    static constexpr int MAX_SENSE = 20;
+
+  public:
     /**
       Update the entire digital and analog pin state according to the
       events currently set.
