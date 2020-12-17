@@ -1254,21 +1254,18 @@ float FrameBuffer::maxWindowZoom(uInt32 baseWidth, uInt32 baseHeight) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::setCursorState()
 {
+  myGrabMouse = myOSystem.settings().getBool("grabmouse");
   // Always grab mouse in emulation (if enabled) and emulating a controller
   // that always uses the mouse
-  bool emulation =
+  const bool emulation =
       myOSystem.eventHandler().state() == EventHandlerState::EMULATION;
-  bool analog = myOSystem.hasConsole() ?
-      (myOSystem.console().leftController().isAnalog() ||
-       myOSystem.console().rightController().isAnalog()) : false;
-  bool usesLightgun = emulation && myOSystem.hasConsole() ?
+  const bool usesLightgun = emulation && myOSystem.hasConsole() ?
     myOSystem.console().leftController().type() == Controller::Type::Lightgun ||
     myOSystem.console().rightController().type() == Controller::Type::Lightgun : false;
-  bool alwaysUseMouse = BSPF::equalsIgnoreCase("always", myOSystem.settings().getString("usemouse"));
-
   // Show/hide cursor in UI/emulation mode based on 'cursor' setting
   int cursor = myOSystem.settings().getInt("cursor");
-  // always enable cursor in lightgun games
+
+  // Always enable cursor in lightgun games
   if (usesLightgun && !myGrabMouse)
     cursor |= 1;  // +Emulation
 
@@ -1278,19 +1275,39 @@ void FrameBuffer::setCursorState()
       showCursor(false);
       break;
     case 1:
-      showCursor(emulation);  //-UI, +Emulation
-      myGrabMouse = false; // disable grab while cursor is shown in emulation
+      showCursor(emulation);  // -UI, +Emulation
       break;
     case 2:                   // +UI, -Emulation
       showCursor(!emulation);
       break;
     case 3:
       showCursor(true);       // +UI, +Emulation
-      myGrabMouse = false; // disable grab while cursor is shown in emulation
       break;
   }
 
-  myBackend->grabMouse(emulation && (analog || alwaysUseMouse) && myGrabMouse);
+  myGrabMouse &= grabMouseAllowed();
+  myBackend->grabMouse(myGrabMouse);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FrameBuffer::grabMouseAllowed()
+{
+  // Allow grabbing mouse in emulation (if enabled) and emulating a controller
+  // that always uses the mouse
+  bool emulation =
+    myOSystem.eventHandler().state() == EventHandlerState::EMULATION;
+  bool analog = myOSystem.hasConsole() ?
+    (myOSystem.console().leftController().isAnalog() ||
+     myOSystem.console().rightController().isAnalog()) : false;
+  bool usesLightgun = emulation && myOSystem.hasConsole() ?
+    myOSystem.console().leftController().type() == Controller::Type::Lightgun ||
+    myOSystem.console().rightController().type() == Controller::Type::Lightgun : false;
+  bool alwaysUseMouse = BSPF::equalsIgnoreCase("always", myOSystem.settings().getString("usemouse"));
+
+  // Disable grab while cursor is shown in emulation
+  bool cursorHidden = !(myOSystem.settings().getInt("cursor") & 1);
+
+  return emulation && (analog || usesLightgun || alwaysUseMouse) && cursorHidden;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1301,16 +1318,25 @@ void FrameBuffer::enableGrabMouse(bool enable)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::toggleGrabMouse()
+void FrameBuffer::toggleGrabMouse(bool toggle)
 {
-  const bool oldState = myGrabMouse;
+  bool oldState = myGrabMouse = myOSystem.settings().getBool("grabmouse");
 
-  myGrabMouse = !myGrabMouse;
-  setCursorState();
-  myOSystem.settings().setValue("grabmouse", myGrabMouse);
+  if(toggle)
+  {
+    if(grabMouseAllowed())
+    {
+      myGrabMouse = !myGrabMouse;
+      myOSystem.settings().setValue("grabmouse", myGrabMouse);
+      setCursorState();
+    }
+  }
+  else
+    oldState = !myGrabMouse; // display current state
+
   myOSystem.frameBuffer().showTextMessage(oldState != myGrabMouse ? myGrabMouse
                                           ? "Grab mouse enabled" : "Grab mouse disabled"
-                                          : "Grab mouse not allowed while cursor shown");
+                                          : "Grab mouse not allowed");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -351,11 +351,11 @@ void Settings::validate()
     setValue("cursor", "2");
 
   i = getInt("psense");
-  if(i < 0|| i > Paddles::MAX_ANALOG_SENSE)
+  if(i < Paddles::MIN_ANALOG_SENSE || i > Paddles::MAX_ANALOG_SENSE)
     setValue("psense", "20");
 
   i = getInt("dsense");
-  if(i < 1 || i > 20)
+  if(i < Paddles::MIN_DIGITAL_SENSE || i > Paddles::MAX_DIGITAL_SENSE)
     setValue("dsense", "10");
 
   i = getInt("msense");

@@ -1,4 +1,5 @@
 //============================================================================
+//============================================================================
 //
 //   SSSS    tt          lll  lll
 //  SS  SS   tt           ll   ll
@@ -481,6 +482,24 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PhysicalKeyboardHandler::toggleModKeys(bool toggle)
+{
+  bool modCombo = myOSystem.settings().getBool("modcombo");
+
+  if(toggle)
+  {
+    modCombo = !modCombo;
+    myKeyMap.enableMod() = modCombo;
+    myOSystem.settings().setValue("modcombo", modCombo);
+  }
+
+  ostringstream ss;
+  ss << "Modifier key combos ";
+  ss << (modCombo ? "enabled" : "disabled");
+  myOSystem.frameBuffer().showTextMessage(ss.str());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PhysicalKeyboardHandler::EventMappingArray
 PhysicalKeyboardHandler::DefaultCommonMapping = {
   {Event::ConsoleSelect,            KBDK_F1},
@@ -554,7 +573,6 @@ PhysicalKeyboardHandler::DefaultCommonMapping = {
   {Event::ToggleColorLoss,          KBDK_L, KBDM_CTRL},
   {Event::PaletteDecrease,          KBDK_P, KBDM_SHIFT | KBDM_CTRL},
   {Event::PaletteIncrease,          KBDK_P, KBDM_CTRL},
-
 #ifndef BSPF_MACOS
   {Event::PreviousSetting,          KBDK_END},
   {Event::NextSetting,              KBDK_HOME},
@@ -589,11 +607,18 @@ PhysicalKeyboardHandler::DefaultCommonMapping = {
   {Event::ToggleContSnapshotsFrame, KBDK_S, KBDM_SHIFT | MOD3 | KBDM_CTRL},
 #endif
 
-  {Event::DecreaseAutoFire,         KBDK_A, KBDM_SHIFT | KBDM_CTRL},
-  {Event::IncreaseAutoFire,         KBDK_A, KBDM_CTRL },
-  {Event::HandleMouseControl,       KBDK_0, KBDM_CTRL},
-  {Event::ToggleGrabMouse,          KBDK_G, KBDM_CTRL},
+  {Event::DecreaseAutoFire,         KBDK_A, KBDM_CTRL | KBDM_SHIFT},
+  {Event::IncreaseAutoFire,         KBDK_A, KBDM_CTRL},
   {Event::ToggleSAPortOrder,        KBDK_1, KBDM_CTRL},
+  {Event::ToggleGrabMouse,          KBDK_G, KBDM_CTRL},
+
+  {Event::PreviousLeftPort,         KBDK_L, KBDM_CTRL | MOD3 | KBDM_SHIFT},
+  {Event::NextLeftPort,             KBDK_L, KBDM_CTRL | MOD3},
+  {Event::PreviousRightPort,        KBDK_R, KBDM_CTRL | MOD3 | KBDM_SHIFT},
+  {Event::NextRightPort,            KBDK_R, KBDM_CTRL | MOD3},
+  {Event::PreviousMouseControl,     KBDK_0, KBDM_CTRL | KBDM_SHIFT},
+  {Event::NextMouseControl,         KBDK_0, KBDM_CTRL},
+
   {Event::FormatDecrease,           KBDK_F, KBDM_SHIFT | KBDM_CTRL},
   {Event::FormatIncrease,           KBDK_F, KBDM_CTRL},
 

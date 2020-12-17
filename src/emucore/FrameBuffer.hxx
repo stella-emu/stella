@@ -253,6 +253,11 @@ class FrameBuffer
     void setCursorState();
 
     /**
+      Checks if mouse grabbing is allowed.
+    */
+    bool grabMouseAllowed();
+
+    /**
       Sets the use of grabmouse.
     */
     void enableGrabMouse(bool enable);
@@ -260,7 +265,7 @@ class FrameBuffer
     /**
       Toggles the use of grabmouse (only has effect in emulation mode).
     */
-    void toggleGrabMouse();
+    void toggleGrabMouse(bool toggle = true);
 
     /**
       Query whether grabmouse is enabled.

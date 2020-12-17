@@ -137,13 +137,17 @@ MouseControl::MouseControl(Console& console, const string& mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string& MouseControl::next()
+const string& MouseControl::change(int direction)
 {
+  myCurrentModeNum = BSPF::clampw(myCurrentModeNum + direction, 0, int(myModeList.size() - 1));
   const MouseMode& mode = myModeList[myCurrentModeNum];
-  myCurrentModeNum = (myCurrentModeNum + 1) % myModeList.size();
 
-  myLeftController.setMouseControl(mode.xtype, mode.xid, mode.ytype, mode.yid);
-  myRightController.setMouseControl(mode.xtype, mode.xid, mode.ytype, mode.yid);
+  bool leftControl =
+    myLeftController.setMouseControl(mode.xtype, mode.xid, mode.ytype, mode.yid);
+  bool rightControl =
+    myRightController.setMouseControl(mode.xtype, mode.xid, mode.ytype, mode.yid);
+
+  myHasMouseControl = leftControl || rightControl;
 
   return mode.message;
 }

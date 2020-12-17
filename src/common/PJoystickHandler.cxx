@@ -19,6 +19,9 @@
 #include "OSystem.hxx"
 #include "Console.hxx"
 #include "Joystick.hxx"
+#include "Paddles.hxx"
+#include "PointingDevice.hxx"
+#include "Driving.hxx"
 #include "Settings.hxx"
 #include "EventHandler.hxx"
 #include "PJoystickHandler.hxx"
@@ -848,6 +851,147 @@ ostream& operator<<(ostream& os, const PhysicalJoystickHandler& jh)
      << endl << endl << endl;
 
   return os;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PhysicalJoystickHandler::changeDeadzone(int direction)
+{
+  int deadzone = BSPF::clamp(myOSystem.settings().getInt("joydeadzone") + direction,
+                             Joystick::DEAD_ZONE_MIN, Joystick::DEAD_ZONE_MAX);
+  myOSystem.settings().setValue("joydeadzone", deadzone);
+
+  Joystick::setDeadZone(deadzone);
+
+  int value = Joystick::deadZoneValue(deadzone);
+
+  myOSystem.frameBuffer().showGaugeMessage("Joystick deadzone", std::to_string(value),
+                                           value, 3200, 32200);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PhysicalJoystickHandler::changeAnalogPaddleSensitivity(int direction)
+{
+  int sense = BSPF::clamp(myOSystem.settings().getInt("psense") + direction,
+                          Paddles::MIN_ANALOG_SENSE, Paddles::MAX_ANALOG_SENSE);
+  myOSystem.settings().setValue("psense", sense);
+
+  Paddles::setAnalogSensitivity(sense);
+
+  ostringstream ss;
+  ss << std::round(Paddles::analogSensitivityValue(sense) * 100.F) << "%";
+  myOSystem.frameBuffer().showGaugeMessage("Analog paddle sensitivity", ss.str(), sense,
+                                           Paddles::MIN_ANALOG_SENSE, Paddles::MAX_ANALOG_SENSE);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PhysicalJoystickHandler::changePaddleDejitterAveraging(int direction)
+{
+  int dejitter = BSPF::clamp(myOSystem.settings().getInt("dejitter.base") + direction,
+                             Paddles::MIN_DEJITTER, Paddles::MAX_DEJITTER);
+  myOSystem.settings().setValue("dejitter.base", dejitter);
+
+  Paddles::setDejitterBase(dejitter);
+
+  ostringstream ss;
+  if(dejitter)
+    ss << dejitter;
+  else
+    ss << "Off";
+
+  myOSystem.frameBuffer().showGaugeMessage("Analog paddle dejitter averaging",
+                                           ss.str(), dejitter,
+                                           Paddles::MIN_DEJITTER, Paddles::MAX_DEJITTER);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PhysicalJoystickHandler::changePaddleDejitterReaction(int direction)
+{
+  int dejitter = BSPF::clamp(myOSystem.settings().getInt("dejitter.diff") + direction,
+                             Paddles::MIN_DEJITTER, Paddles::MAX_DEJITTER);
+  myOSystem.settings().setValue("dejitter.diff", dejitter);
+
+  Paddles::setDejitterDiff(dejitter);
+
+  ostringstream ss;
+  if(dejitter)
+    ss << dejitter;
+  else
+    ss << "Off";
+
+  myOSystem.frameBuffer().showGaugeMessage("Analog paddle dejitter reaction",
+                                           ss.str(), dejitter,
+                                           Paddles::MIN_DEJITTER, Paddles::MAX_DEJITTER);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PhysicalJoystickHandler::changeDigitalPaddleSensitivity(int direction)
+{
+  int sense = BSPF::clamp(myOSystem.settings().getInt("dsense") + direction,
+                          Paddles::MIN_DIGITAL_SENSE, Paddles::MAX_DIGITAL_SENSE);
+  myOSystem.settings().setValue("dsense", sense);
+
+  Paddles::setDigitalSensitivity(sense);
+
+  ostringstream ss;
+  if(sense)
+    ss << sense * 10 << "%";
+  else
+    ss << "Off";
+
+  myOSystem.frameBuffer().showGaugeMessage("Digital sensitivity",
+                                           ss.str(), sense,
+                                           Paddles::MIN_DIGITAL_SENSE, Paddles::MAX_DIGITAL_SENSE);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PhysicalJoystickHandler::changeMousePaddleSensitivity(int direction)
+{
+  int sense = BSPF::clamp(myOSystem.settings().getInt("msense") + direction,
+                          Paddles::MIN_MOUSE_SENSE, Paddles::MAX_MOUSE_SENSE);
+  myOSystem.settings().setValue("msense", sense);
+
+  Paddles::setMouseSensitivity(sense);
+
+  ostringstream ss;
+  ss << sense * 10 << "%";
+
+  myOSystem.frameBuffer().showGaugeMessage("Mouse paddle sensitivity",
+                                           ss.str(), sense,
+                                           Paddles::MIN_MOUSE_SENSE, Paddles::MAX_MOUSE_SENSE);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PhysicalJoystickHandler::changeMouseTrackballSensitivity(int direction)
+{
+  int sense = BSPF::clamp(myOSystem.settings().getInt("tsense") + direction,
+                          PointingDevice::MIN_SENSE, PointingDevice::MAX_SENSE);
+  myOSystem.settings().setValue("tsense", sense);
+
+  PointingDevice::setSensitivity(sense);
+
+  ostringstream ss;
+  ss << sense * 10 << "%";
+
+  myOSystem.frameBuffer().showGaugeMessage("Mouse trackball sensitivity",
+                                           ss.str(), sense,
+                                           PointingDevice::MIN_SENSE, PointingDevice::MAX_SENSE);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PhysicalJoystickHandler::changeDrivingSensitivity(int direction)
+{
+  int sense = BSPF::clamp(myOSystem.settings().getInt("dcsense") + direction,
+                          Driving::MIN_SENSE, Driving::MAX_SENSE);
+  myOSystem.settings().setValue("dcsense", sense);
+
+  Driving::setSensitivity(sense);
+
+  ostringstream ss;
+  ss << sense * 10 << "%";
+
+  myOSystem.frameBuffer().showGaugeMessage("Mouse driving controller sensitivity",
+                                           ss.str(), sense,
+                                           Driving::MIN_SENSE, Driving::MAX_SENSE);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -394,6 +394,7 @@ void GameInfoDialog::addControllersTab()
                                   "Mouse axes range ", 0, 0, fontWidth * 4, "%");
   myMouseRange->setMinValue(1); myMouseRange->setMaxValue(100);
   myMouseRange->setTickmarkIntervals(4);
+  myMouseRange->setToolTip("Adjust paddle range emulated by the mouse.");
   wid.push_back(myMouseRange);
 
   // Add items for tab 2
@@ -989,6 +990,7 @@ void GameInfoDialog::saveConfig()
 
     Paddles::setAnalogXCenter(myPaddleXCenter->getValue());
     Paddles::setAnalogYCenter(myPaddleYCenter->getValue());
+    Paddles::setDigitalPaddleRange(myMouseRange->getValue());
   }
 }
 
@@ -1194,9 +1196,10 @@ void GameInfoDialog::updateControllerStates()
     BSPF::startsWithIgnoreCase(contrRight, "MindLink");
 
   myMouseControl->setEnabled(enableMouse);
-  myMouseX->setEnabled(enableMouse);
-  myMouseY->setEnabled(enableMouse);
-  myMouseRange->setEnabled(enableMouse);
+  myMouseX->setEnabled(enableMouse && myMouseControl->getState());
+  myMouseY->setEnabled(enableMouse && myMouseControl->getState());
+
+  myMouseRange->setEnabled(enablePaddles);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

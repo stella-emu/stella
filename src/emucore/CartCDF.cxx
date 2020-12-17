@@ -107,8 +107,8 @@ CartridgeCDF::CartridgeCDF(const ByteBuffer& image, size_t size,
     reinterpret_cast<uInt16*>(myRAM.data()),
     static_cast<uInt32>(512_KB),
     cBase, cStart, cStack,
-    devSettings ? settings.getBool("dev.thumb.trapfatal") : false, 
-    thumulatorConfiguration(myCDFSubtype), 
+    devSettings ? settings.getBool("dev.thumb.trapfatal") : false,
+    thumulatorConfiguration(myCDFSubtype),
     this);
 
   setInitialState();
@@ -277,7 +277,7 @@ uInt8 CartridgeCDF::peek(uInt16 address)
       if DIGITAL_AUDIO_ON
       {
         // retrieve packed sample (max size is 2K, or 4K of unpacked data)
-        
+
         uInt32 sampleaddress = getSample() + (myMusicCounters[0] >> (isCDFJplus() ? 13 : 21));
 
         // get sample value from ROM or RAM
@@ -365,7 +365,7 @@ bool CartridgeCDF::poke(uInt16 address, uInt8 value)
       pointer = getDatastreamPointer(COMMSTREAM);
       if (isCDFJplus()) {
         myDisplayImage[ pointer >> 16 ] = value;
-        pointer += 0x00010000;  // always increment by 1 when writing  
+        pointer += 0x00010000;  // always increment by 1 when writing
       } else {
         myDisplayImage[ pointer >> 20 ] = value;
         pointer += 0x00100000;  // always increment by 1 when writing
@@ -707,7 +707,7 @@ uInt8 CartridgeCDF::readFromDatastream(uInt8 index)
     pointer += (increment << 8);
   } else {
     value = myDisplayImage[ pointer >> 20 ];
-    pointer += (increment << 12);   
+    pointer += (increment << 12);
   }
 
   setDatastreamPointer(index, pointer);

@@ -2162,6 +2162,9 @@
     <ClInclude Include="..\json\json_lib.hxx">
       <Filter>Header Files\json</Filter>
     </ClInclude>
+    <ClInclude Include="..\common\jsonDefinitions.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="stella.ico">
