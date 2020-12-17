@@ -10,9 +10,7 @@ src/**/*.tlog
 out
 out.pgo
 out.pgen
-stella
-stella-pgo
-stella-pgo-generate
+stella*
 *.diff
 project.xcworkspace/
 xcuserdata/
@@ -33,11 +31,10 @@ src/**/*.vspx
 src/**/**.pdb
 Stella.xcscheme
 src/tools/fonts/*
-*.bin
-*.a26
 *.sym
 *.zip
 *.?xx
 *.sh
 *.out
 *.json
+*.sqlite3
