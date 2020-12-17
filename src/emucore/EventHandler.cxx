@@ -453,8 +453,6 @@ AdjustFunction EventHandler::cycleAdjustSetting(int direction)
       case AdjustGroup::INPUT:
       {
         const bool grabMouseAllowed = myOSystem.frameBuffer().grabMouseAllowed();
-        const bool analog = myOSystem.console().leftController().isAnalog()
-          || myOSystem.console().rightController().isAnalog();
         const bool joystick = isJoystick(myOSystem.console().leftController())
           || isJoystick(myOSystem.console().rightController());
         const bool paddle = isPaddle(myOSystem.console().leftController())
@@ -472,7 +470,7 @@ AdjustFunction EventHandler::cycleAdjustSetting(int direction)
         repeat = (!grabMouseAllowed && myAdjustSetting == AdjustSetting::GRAB_MOUSE)
           || (!joystick
               && (myAdjustSetting == AdjustSetting::DEADZONE
-              || myAdjustSetting == AdjustSetting::FOUR_DIRECTIONS)
+              || myAdjustSetting == AdjustSetting::FOUR_DIRECTIONS))
           || (!paddle
               && (myAdjustSetting == AdjustSetting::ANALOG_SENSITIVITY
               || myAdjustSetting == AdjustSetting::DEJITTER_AVERAGING
@@ -490,8 +488,7 @@ AdjustFunction EventHandler::cycleAdjustSetting(int direction)
           || ((!hasMouseControl() || !useMouse)
               && myAdjustSetting == AdjustSetting::MOUSE_CONTROL)
           || ((!paddle || !useMouse)
-              && myAdjustSetting == AdjustSetting::MOUSE_RANGE)
-        );
+              && myAdjustSetting == AdjustSetting::MOUSE_RANGE);
         break;
       }
 
