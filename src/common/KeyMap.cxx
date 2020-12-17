@@ -228,13 +228,13 @@ json KeyMap::saveMapping(const EventMode mode) const
             [](const MapType& a, const MapType& b)
   {
     // Event::Type first
-    if(a.second != b.second)
-      return a.second < b.second;
-
     if(a.first.key != b.first.key)
       return a.first.key < b.first.key;
 
-    return a.first.mod < b.first.mod;
+    if(a.first.mod != b.first.mod)
+      return a.first.mod < b.first.mod;
+
+    return a.second < b.second;
   }
   );
 
