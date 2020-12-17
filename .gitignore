@@ -33,4 +33,11 @@ src/**/*.vspx
 src/**/**.pdb
 Stella.xcscheme
 src/tools/fonts/*
-
+*.bin
+*.a26
+*.sym
+*.zip
+*.?xx
+*.sh
+*.out
+*.json
