@@ -1626,17 +1626,6 @@
     </tr>
 
     <tr>
-      <td><i>Decrease</i> digital and mouse driving controller sensitivity</td>
-      <td>Shift-Control + F6</td>
-      <td>Shift-Control + F6</td>
-    </tr>
-    <tr>
-      <td><i>Increase</i> digital and mouse driving controller sensitivity</td>
-      <td>Control + F6</td>
-      <td>Control + F6</td>
-    </tr>
-
-    <tr>
       <td><i>Decrease</i> autofire rate</td>
       <td>Shift-Control + a</td>
       <td>Shift-Control + a</td>
@@ -1650,14 +1639,14 @@
     <tr>
       <td>Toggle allowing all four directions on joystick</br>
         to be pressed simultaneously</td>
-      <td>Control + F7</td>
-      <td>Control + F7</td>
+      <td>Control + F6</td>
+      <td>Control + F6</td>
     </tr>
 
     <tr>
       <td>Toggle use of modifier key combos</td>
-      <td>Control + F8</td>
-      <td>Control + F8</td>
+      <td>Control + F7</td>
+      <td>Control + F7</td>
     </tr>
 
     <tr>
@@ -1669,34 +1658,45 @@
     <tr>
       <td>Select <i>previous</i> controllers emulated by the mouse
         </br>(all, analog, none)</td>
-      <td>Shift-Control + F9</td>
-      <td>Shift-Control + F9</td>
+      <td>Shift-Control + F8</td>
+      <td>Shift-Control + F8</td>
     </tr>
     <tr>
       <td>Select <i>next</i> controllers emulated by the mouse
         </br>(all, analog, none)</td>
-      <td>Control + F9</td>
-      <td>Control + F9</td>
+      <td>Control + F8</td>
+      <td>Control + F8</td>
     </tr>
 
     <tr>
       <td><i>Decrease</i> mouse paddle sensitivity</td>
+      <td>Shift-Control + F9</td>
+      <td>Shift-Control + F9</td>
+    </tr>
+    <tr>
+      <td><i>Increase</i> mouse paddle sensitivity</td>
+      <td>Control + F9</td>
+      <td>Control + F9</td>
+    </tr>
+
+    <tr>
+      <td><i>Decrease</i> mouse trackball sensitivity</td>
       <td>Shift-Control + F10</td>
       <td>Shift-Control + F10</td>
     </tr>
     <tr>
-      <td><i>Increase</i> mouse paddle sensitivity</td>
+      <td><i>Increase</i> mouse trackball sensitivity</td>
       <td>Control + F10</td>
       <td>Control + F10</td>
     </tr>
 
     <tr>
-      <td><i>Decrease</i> mouse trackball sensitivity</td>
+      <td><i>Decrease</i> digital and mouse driving controller sensitivity</td>
       <td>Shift-Control + F11</td>
       <td>Shift-Control + F11</td>
     </tr>
     <tr>
-      <td><i>Increase</i> mouse trackball sensitivity</td>
+      <td><i>Increase</i> digital and mouse driving controller sensitivity</td>
       <td>Control + F11</td>
       <td>Control + F11</td>
     </tr>
@@ -2909,7 +2909,7 @@
     <tr>
       <td><pre>-psense &lt;number&gt;</pre></td>
       <td>Sensitivity for emulation of paddles when using analog paddles.
-      Valid range of values is from 1 to 30, with larger numbers causing
+      Valid range of values is from 0 to 30, with larger numbers causing
       faster movement.</td>
     </tr>
 
@@ -2924,8 +2924,9 @@
     </tr>
 
     <tr>
-      <td><pre>-dcsense &lt;number&gt;</pre></td>
-      <td>Sensitivity for emulation of driving controllers when using a mouse.
+      <td><pre>-dsense &lt;number&gt;</pre></td>
+      <td>Sensitivity for emulation of paddles when using a digital device
+      (ie, joystick digital axis or button, keyboard key, etc.).
       Valid range of values is from 1 to 20, with larger numbers causing
       faster movement.</td>
     </tr>
@@ -2985,11 +2986,10 @@
     </tr>
 
     <tr>
-      <td><pre>-dsense &lt;number&gt;</pre></td>
-      <td>Sensitivity for emulation of paddles when using a digital device
-      (ie, joystick digital axis or button, keyboard key, etc.).
-      Valid range of values is from 1 to 20, with larger numbers causing
-      faster movement.</td>
+      <td><pre>-dcsense &lt;number&gt;</pre></td>
+      <td>Sensitivity for emulation of driving controllers when using a mouse
+      or a digital device. Valid range of values is from 1 to 20, with larger
+      numbers causing faster movement.</td>
     </tr>
 
     <tr>
@@ -3930,7 +3930,7 @@
           <tr><td>Use mouse as ...</td><td>Allow the mouse to emulate various controllers</td><td>-usemouse</td></tr>
           <tr><td>(Sensitivity) Paddle</td><td>Sensitivity used when emulating a paddle using a mouse</td><td>-msense</td></tr>
           <tr><td>(Sensitivity) Trackball</td><td>Sensitivity used when emulating a trackball device using a mouse</td><td>-tsense</td></tr>
-          <tr><td>(Sensitivity) Driving controller</td><td>Sensitivity used when emulating a driving controller device using a mouse</td><td>-dcsense</td></tr>
+          <tr><td>(Sensitivity) Driving controller</td><td>Sensitivity used when emulating a driving controller device using a mouse or a digital device</td><td>-dcsense</td></tr>
           <tr><td>Mouse cursor visibility</td><td>Show/hide cursor depending on current state</td><td>-cursor</td></tr>
           <tr><td>Grab mouse ...</td><td>Keep mouse in window in emulation mode<br/>(only when used as controller)<br/>
                   Note: The sensitivity may greatly vary when the mouse is not grabbed.</td><td>-grabmouse</td></tr>

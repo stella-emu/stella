@@ -295,6 +295,7 @@ void InputDialog::addMouseTab()
                                     lwidth, kDCSpeedChanged, 4 * fontWidth, "%");
   myDrivingSpeed->setMinValue(1); myDrivingSpeed->setMaxValue(20);
   myDrivingSpeed->setTickmarkIntervals(4);
+  myDrivingSpeed->setToolTip("Adjust driving controller sensitivity for digital and mouse input.");
   wid.push_back(myDrivingSpeed);
 
   // Mouse cursor state
@@ -788,10 +789,8 @@ void InputDialog::handleMouseControlState()
 {
   bool enable = myMouseControl->getSelected() != 2;
 
-  myMouseSensitivity->setEnabled(enable);
   myMPaddleSpeed->setEnabled(enable);
   myTrackBallSpeed->setEnabled(enable);
-  myDrivingSpeed->setEnabled(enable);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
