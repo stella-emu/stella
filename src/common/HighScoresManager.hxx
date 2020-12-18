@@ -92,7 +92,7 @@ namespace HSM {
 class HighScoresManager
 {
   public:
-    HighScoresManager(OSystem& osystem);
+    explicit HighScoresManager(OSystem& osystem);
     virtual ~HighScoresManager() = default;
 
 

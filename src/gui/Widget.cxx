@@ -138,11 +138,9 @@ void Widget::draw()
     // Now perform the actual widget draw
     drawWidget((_flags & Widget::FLAG_HILITED) ? true : false);
 
-    // Restore x/y
+    // Restore w/hy
     if(hasBorder())
     {
-      _x -= 4;
-      _y -= 4;
       _w += 8;
       _h += 8;
     }
@@ -284,13 +282,10 @@ bool Widget::isWidgetInChain(Widget* w, Widget* find)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Widget::isWidgetInChain(WidgetArray& list, Widget* find)
+bool Widget::isWidgetInChain(const WidgetArray& list, Widget* find)
 {
-  for(const auto& w: list)
-    if(w == find)
-      return true;
-
-  return false;
+  return std::any_of(list.cbegin(), list.cend(),
+    [&](Widget* w) { return w == find; });
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

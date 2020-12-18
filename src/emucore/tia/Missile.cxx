@@ -43,7 +43,6 @@ void Missile::reset()
   myColor = myObjectColor = myDebugColor = 0;
   myDebugEnabled = false;
   collision = myCollisionMaskDisabled;
-  myIsEnabled = false;
   myInvertedPhaseClock = false;
   myUseInvertedPhaseClock = false;
 }

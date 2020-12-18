@@ -19,15 +19,13 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBSurfaceLIBRETRO::FBSurfaceLIBRETRO(uInt32 width, uInt32 height)
+  : myWidth{width},
+    myHeight{height},
+    myPixelData{make_unique<uInt32[]>(myWidth * myHeight)}
 {
-  myWidth = width;
-  myHeight = height;
-
-  myPixelData = make_unique<uInt32[]>(width * height);
-
   ////////////////////////////////////////////////////
   // These *must* be set for the parent class
   myPixels = myPixelData.get();
-  myPitch = width;
+  myPitch = myWidth;
   ////////////////////////////////////////////////////
 }

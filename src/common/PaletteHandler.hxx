@@ -65,7 +65,7 @@ class PaletteHandler
     };
 
   public:
-    PaletteHandler(OSystem& system);
+    explicit PaletteHandler(OSystem& system);
 
     /**
       Cycle through available palettes.

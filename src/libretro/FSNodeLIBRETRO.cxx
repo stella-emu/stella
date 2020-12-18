@@ -27,15 +27,15 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FilesystemNodeLIBRETRO::FilesystemNodeLIBRETRO()
-  : _name("rom"),
-    _path("." + slash)
+  : _name{"rom"},
+    _path{"." + slash}
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FilesystemNodeLIBRETRO::FilesystemNodeLIBRETRO(const string& p)
-  : _name(p),
-    _path(p)
+  : _name{p},
+    _path{p}
 {
   // TODO: use retro_vfs_mkdir_t (file) or RETRO_MEMORY_SAVE_RAM (stream) or libretro save path
   if(p == "." + slash + "nvram")

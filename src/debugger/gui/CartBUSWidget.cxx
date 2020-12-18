@@ -75,7 +75,6 @@ CartridgeBUSWidget::CartridgeBUSWidget(
   ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
                        myFontHeight, "Datastream Pointers", TextAlign::Left);
-  xpos += lwidth;
 
   myDatastreamPointers = new DataGridWidget(boss, _nfont, DS_X, ypos+myLineHeight-2, 4, 4, 6, 32, Common::Base::Fmt::_16_3_2);
   myDatastreamPointers->setTarget(this);
