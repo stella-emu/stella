@@ -16,6 +16,7 @@ stella
 *.diff
 project.xcworkspace/
 xcuserdata/
+.DS_Store
 build/
 src/macosx/M6502.ins
 *.dSYM
