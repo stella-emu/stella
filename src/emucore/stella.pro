@@ -3371,6 +3371,7 @@
 "Cart.Name" "SWOOPS! (v0.96) (TJ)"
 "Cart.Note" "Uses the Joystick (L) and Paddle (R) Controllers"
 "Cart.Rarity" "Homebrew"
+"Controller.MouseAxis" "28"
 "Cart.Highscore" "{\"score_addresses\":[\"0xfd\",\"0xfe\",\"0xff\"],\"score_digits\":6,\"variations_address\":\"0xfc\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
@@ -6922,6 +6923,7 @@
 "Cart.Name" "SWOOPS! (v0.94) (TJ)"
 "Cart.Note" "Uses the Joystick (L) and Paddle (R) Controllers"
 "Cart.Rarity" "Homebrew"
+"Controller.MouseAxis" "28"
 "Cart.Highscore" "{\"score_addresses\":[\"0xfd\",\"0xfe\",\"0xff\"],\"score_digits\":6,\"variations_address\":\"0xfc\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
@@ -8011,6 +8013,7 @@
 "Cart.Name" "SWOOPS! (v0.96) (TJ) (PAL)"
 "Cart.Note" "Uses the Joystick (L) and Paddle (R) Controllers"
 "Cart.Rarity" "Homebrew"
+"Controller.MouseAxis" "28"
 "Cart.Highscore" "{\"score_addresses\":[\"0xfd\",\"0xfe\",\"0xff\"],\"score_digits\":6,\"variations_address\":\"0xfc\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
