@@ -574,19 +574,15 @@ AdjustFunction EventHandler::getAdjustSetting(AdjustSetting setting)
     std::bind(&Console::toggleInter, &myOSystem.console(), _1),
 
     // *** Input settings ***
-  #ifdef JOYSTICK_SUPPORT
     std::bind(&PhysicalJoystickHandler::changeDeadzone, &joyHandler(), _1),
     std::bind(&PhysicalJoystickHandler::changeAnalogPaddleSensitivity, &joyHandler(), _1),
     std::bind(&PhysicalJoystickHandler::changePaddleDejitterAveraging, &joyHandler(), _1),
     std::bind(&PhysicalJoystickHandler::changePaddleDejitterReaction, &joyHandler(), _1),
-  #endif
     std::bind(&PhysicalJoystickHandler::changeDigitalPaddleSensitivity, &joyHandler(), _1),
     std::bind(&Console::changeAutoFireRate, &myOSystem.console(), _1),
     std::bind(&EventHandler::toggleAllow4JoyDirections, this, _1),
     std::bind(&PhysicalKeyboardHandler::toggleModKeys, &keyHandler(), _1),
-  #ifdef JOYSTICK_SUPPORT
     std::bind(&EventHandler::toggleSAPortOrder, this, _1),
-  #endif
     std::bind(&EventHandler::changeMouseControllerMode, this, _1),
     std::bind(&PhysicalJoystickHandler::changeMousePaddleSensitivity, &joyHandler(), _1),
     std::bind(&PhysicalJoystickHandler::changeMouseTrackballSensitivity, &joyHandler(), _1),
