@@ -76,6 +76,7 @@ MODULE_OBJS := \
         src/emucore/MD5.o \
         src/emucore/OSystem.o \
         src/emucore/Paddles.o \
+        src/emucore/PlusROM.o \
         src/emucore/PointingDevice.o \
         src/emucore/ProfilingRunner.o \
         src/emucore/Props.o \
