@@ -471,19 +471,15 @@ class EventHandler
       SCANLINES,
       INTERPOLATION,
       // *** Input group ***
-    #ifdef JOYSTICK_SUPPORT
       DEADZONE,
       ANALOG_SENSITIVITY,
       DEJITTER_AVERAGING,
       DEJITTER_REACTION,
-    #endif
       DIGITAL_SENSITIVITY,
       AUTO_FIRE,
       FOUR_DIRECTIONS,
       MOD_KEY_COMBOS,
-    #ifdef JOYSTICK_SUPPORT
       SA_PORT_ORDER,
-    #endif
       USE_MOUSE,
       PADDLE_SENSITIVITY,
       TRACKBALL_SENSITIVITY,
