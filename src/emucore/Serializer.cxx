@@ -23,7 +23,6 @@ using std::ios_base;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Serializer::Serializer(const string& filename, Mode m)
-  : myStream(nullptr)
 {
   if(m == Mode::ReadOnly)
   {
@@ -66,10 +65,8 @@ Serializer::Serializer(const string& filename, Mode m)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Serializer::Serializer()
-  : myStream(nullptr)
+  : myStream{make_unique<stringstream>(ios::in | ios::out | ios::binary)}
 {
-  myStream = make_unique<stringstream>(ios::in | ios::out | ios::binary);
-
   // For some reason, Windows and possibly macOS needs to store something in
   // the stream before it is used for the first time
   if(myStream)

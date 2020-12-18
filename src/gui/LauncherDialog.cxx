@@ -139,7 +139,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
     lblSelect = "";
     int lwSelectShort = font.getStringWidth(lblSelect);
 
-    wTotal -= lwSelect - lwSelectShort;
+    // wTotal -= lwSelect - lwSelectShort; // dead code
     lwSelect = lwSelectShort;
     noSelect = true;
   }

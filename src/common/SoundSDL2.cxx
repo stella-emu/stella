@@ -273,7 +273,7 @@ void SoundSDL2::adjustVolume(int direction)
 
   if(percent > 0 && !enabled)
   {
-    setEnabled(!enabled);
+    setEnabled(true);
     myOSystem.console().initializeAudio();
   }
 

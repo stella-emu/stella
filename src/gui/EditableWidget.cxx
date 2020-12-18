@@ -30,16 +30,15 @@ EditableWidget::EditableWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, int w, int h, const string& str)
   : Widget(boss, font, x, y, w, h),
     CommandSender(boss),
-    _editString(str),
-    _filter([](char c) { return isprint(c) && c != '\"'; })
+    _editString{str},
+    myUndoHandler{make_unique<UndoHandler>()},
+    _filter{[](char c) { return isprint(c) && c != '\"'; }}
 {
   _bgcolor = kWidColor;
   _bgcolorhi = kWidColor;
   _bgcolorlo = kDlgColor;
   _textcolor = kTextColor;
   _textcolorhi = kTextColor;
-
-  myUndoHandler = make_unique<UndoHandler>();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -359,13 +358,10 @@ void EditableWidget::drawCaretSelection()
   {
     FBSurface& s = _boss->dialog().surface();
     const Common::Rect& editRect = getEditRect();
-    int x = editRect.x();
-    int y = editRect.y();
-
     string text = selectString();
 
-    x = editRect.x();
-    y = editRect.y();
+    int x = editRect.x();
+    int y = editRect.y();
     int w = editRect.w();
     int h = editRect.h();
     int wt = int(text.length()) * _font.getMaxCharWidth() + 1;

@@ -76,16 +76,17 @@ class HighScoresDialog : public Dialog
     };
 
   private:
-    bool myUserDefVar;      // allow the user to define the variation
-    bool myDirty;
-    bool myHighScoreSaved;  // remember if current high score was already saved (avoids double HS)
+    bool myUserDefVar{false}; // allow the user to define the variation
+    bool myDirty{false};
+    bool myHighScoreSaved{false};  // remember if current high score was already saved
+                                   // (avoids double HS)
     unique_ptr<GUI::MessageBox> myConfirmMsg;
-    int _max_w;
-    int _max_h;
+    int _max_w{0};
+    int _max_h{0};
 
     string myInitials;
-    Int32 myEditRank;
-    Int32 myHighScoreRank;
+    Int32 myEditRank{-1};
+    Int32 myHighScoreRank{-1};
     string myNow;
 
     HSM::ScoresData myScores;
@@ -120,4 +121,5 @@ class HighScoresDialog : public Dialog
     HighScoresDialog& operator=(const HighScoresDialog&) = delete;
     HighScoresDialog& operator=(HighScoresDialog&&) = delete;
 };
+
 #endif

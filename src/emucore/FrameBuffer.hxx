@@ -62,7 +62,7 @@ class FrameBuffer
     };
 
   public:
-    FrameBuffer(OSystem& osystem);
+    explicit FrameBuffer(OSystem& osystem);
     ~FrameBuffer();
 
     /**

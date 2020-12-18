@@ -1516,7 +1516,7 @@ CartDebug::AddrType CartDebug::addressType(uInt16 addr) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartDebug::getBankDirectives(ostream& buf, BankInfo& info) const
+void CartDebug::getBankDirectives(ostream& buf, const BankInfo& info) const
 {
   // Start with the offset for this bank
   buf << "ORG " << Base::HEX4 << info.offset << endl;

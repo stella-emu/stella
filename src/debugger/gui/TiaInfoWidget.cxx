@@ -42,7 +42,6 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
     + COLUMN_GAP + lfont.getStringWidth("Scanline262262")
     + EditTextWidget::calcWidth(lfont) * 3 <= max_w;
   const int lineHeight = lfont.getLineHeight();
-  int xpos = x, ypos = y + VBORDER;
   int lwidth = lfont.getStringWidth(longstr ? "Frame Cycls" : "F. Cycls");
   int lwidth8 = lwidth - lfont.getMaxCharWidth() * 3;
   int lwidthR = lfont.getStringWidth(longstr ? "Frame Cnt." : "Frame   ");
@@ -57,7 +56,7 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
 
   // Left column
   // Left: Frame Cycle
-  xpos = x;
+  int xpos = x, ypos = y + VBORDER;
   new StaticTextWidget(boss, lfont, xpos, ypos + 1, longstr ? "Frame Cycls" : "F. Cycls");
   myFrameCycles = new EditTextWidget(boss, nfont, xpos + lwidth, ypos - 1, fwidth, lineHeight);
   myFrameCycles->setToolTip("CPU cycles executed this frame.");

@@ -324,7 +324,7 @@ class CartDebug : public DebuggerSystem
 
     // Analyze of bank of ROM, generating a list of Distella directives
     // based on its disassembly
-    void getBankDirectives(ostream& buf, BankInfo& info) const;
+    void getBankDirectives(ostream& buf, const BankInfo& info) const;
 
     // Get access enum type from 'flags', taking precendence into account
     Device::AccessType accessTypeAbsolute(Device::AccessFlags flags) const;

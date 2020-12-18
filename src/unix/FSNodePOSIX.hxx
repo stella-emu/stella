@@ -58,7 +58,7 @@ class FilesystemNodePOSIX : public AbstractFSNode
      * @param verify  true if the isValid and isDirectory/isFile flags should
      *                be verified during the construction.
      */
-    FilesystemNodePOSIX(const string& path, bool verify = true);
+    explicit FilesystemNodePOSIX(const string& path, bool verify = true);
 
     bool exists() const override { return access(_path.c_str(), F_OK) == 0; }
     const string& getName() const override    { return _displayName; }

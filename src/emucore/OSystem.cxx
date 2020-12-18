@@ -746,7 +746,7 @@ double OSystem::dispatchEmulation(EmulationWorker& emulationWorker)
   if (!myConsole) return 0.;
 
   TIA& tia(myConsole->tia());
-  EmulationTiming& timing(myConsole->emulationTiming());
+  const EmulationTiming& timing = myConsole->emulationTiming();
   DispatchResult dispatchResult;
 
   // Check whether we have a frame pending for rendering...
@@ -758,8 +758,8 @@ double OSystem::dispatchEmulation(EmulationWorker& emulationWorker)
     tia.renderToFrameBuffer();
   }
 
-  // Start emulation on a dedicated thread. It will do its own scheduling to sync 6507 and real time
-  // and will run until we stop the worker.
+  // Start emulation on a dedicated thread. It will do its own scheduling to
+  // sync 6507 and real time and will run until we stop the worker.
   emulationWorker.start(
     timing.cyclesPerSecond(),
     timing.maxCyclesPerTimeslice(),
@@ -768,8 +768,8 @@ double OSystem::dispatchEmulation(EmulationWorker& emulationWorker)
     &tia
   );
 
-  // Render the frame. This may block, but emulation will continue to run on the worker, so the
-  // audio pipeline is kept fed :)
+  // Render the frame. This may block, but emulation will continue to run on
+  // the worker, so the audio pipeline is kept fed :)
   if (framePending) myFrameBuffer->updateInEmulationMode(myFpsMeter.fps());
 
   // Stop the worker and wait until it has finished
@@ -805,11 +805,13 @@ double OSystem::dispatchEmulation(EmulationWorker& emulationWorker)
   }
 
   // Handle frying
-  if (dispatchResult.getStatus() == DispatchResult::Status::ok && myEventHandler->frying())
+  if (dispatchResult.getStatus() == DispatchResult::Status::ok &&
+      myEventHandler->frying())
     myConsole->fry();
 
   // Return the 6507 time used in seconds
-  return static_cast<double>(totalCycles) / static_cast<double>(timing.cyclesPerSecond());
+  return static_cast<double>(totalCycles) /
+      static_cast<double>(timing.cyclesPerSecond());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

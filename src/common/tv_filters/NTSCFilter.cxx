@@ -192,7 +192,7 @@ void NTSCFilter::getAdjustables(Adjustable& adjustable, Preset preset) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void NTSCFilter::setCustomAdjustables(Adjustable& adjustable)
+void NTSCFilter::setCustomAdjustables(const Adjustable& adjustable)
 {
 #ifdef BLARGG_PALETTE
   //myCustomSetup.hue = scaleFrom100(adjustable.hue);
