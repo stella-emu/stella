@@ -71,6 +71,7 @@ class PhysicalJoystickHandler
     bool remove(int id);
     bool remove(const string& name);
     void mapStelladaptors(const string& saport);
+    bool hasStelladaptors() const;
     void setDefaultMapping(Event::Type type, EventMode mode);
 
     /** define mappings for current controllers */
