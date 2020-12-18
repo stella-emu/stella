@@ -361,7 +361,7 @@ class EventHandler
       Handle changing mouse modes.
     */
     void changeMouseControl(int direction = +1);
-    bool hasMouseControl();
+    bool hasMouseControl() const;
 
     void saveKeyMapping();
     void saveJoyMapping();
@@ -575,6 +575,11 @@ class EventHandler
     bool isJoystick(const Controller& controller) const;
     bool isPaddle(const Controller& controller) const;
     bool isTrackball(const Controller& controller) const;
+
+    // Check if a currently non-relevant adjustment can be skipped
+    bool skipAVSetting() const;
+    bool skipInputSetting() const;
+    bool skipDebugSetting() const;
 
   private:
     // Structure used for action menu items

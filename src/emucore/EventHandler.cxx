@@ -246,7 +246,7 @@ void EventHandler::changeMouseControl(int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool EventHandler::hasMouseControl()
+bool EventHandler::hasMouseControl() const
 {
   return myMouseControl && myMouseControl->hasMouseControl();
 }
@@ -416,97 +416,120 @@ bool EventHandler::isTrackball(const Controller& controller) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AdjustFunction EventHandler::cycleAdjustSetting(int direction)
+bool EventHandler::skipAVSetting() const
+{
+  const bool isFullScreen = myOSystem.frameBuffer().fullScreen();
+  const bool isCustomPalette =
+    myOSystem.settings().getString("palette") == PaletteHandler::SETTING_CUSTOM;
+  const bool isCustomFilter =
+    myOSystem.settings().getInt("tv.filter") == int(NTSCFilter::Preset::CUSTOM);
+
+  return (myAdjustSetting == AdjustSetting::OVERSCAN && !isFullScreen)
+  #ifdef ADAPTABLE_REFRESH_SUPPORT
+    || (myAdjustSetting == AdjustSetting::ADAPT_REFRESH && !isFullScreen)
+  #endif
+    || (myAdjustSetting >= AdjustSetting::PALETTE_PHASE
+        && myAdjustSetting <= AdjustSetting::PALETTE_BLUE_SHIFT
+        && !isCustomPalette)
+    || (myAdjustSetting >= AdjustSetting::NTSC_SHARPNESS
+        && myAdjustSetting <= AdjustSetting::NTSC_BLEEDING
+        && !isCustomFilter);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool EventHandler::skipInputSetting() const
+{
+  const bool grabMouseAllowed = myOSystem.frameBuffer().grabMouseAllowed();
+  const bool analog = myOSystem.console().leftController().isAnalog()
+    || myOSystem.console().rightController().isAnalog();
+  const bool joystick = isJoystick(myOSystem.console().leftController())
+    || isJoystick(myOSystem.console().rightController());
+  const bool paddle = isPaddle(myOSystem.console().leftController())
+    || isPaddle(myOSystem.console().rightController());
+  const bool trackball = isTrackball(myOSystem.console().leftController())
+    || isTrackball(myOSystem.console().rightController());
+  const bool driving =
+    myOSystem.console().leftController().type() == Controller::Type::Driving
+    || myOSystem.console().rightController().type() == Controller::Type::Driving;
+  const bool useMouse =
+    BSPF::equalsIgnoreCase("always", myOSystem.settings().getString("usemouse"))
+    || (BSPF::equalsIgnoreCase("analog", myOSystem.settings().getString("usemouse"))
+        && analog);
+  const bool stelladapter = myPJoyHandler->hasStelladaptors();
+
+  return (!grabMouseAllowed && myAdjustSetting == AdjustSetting::GRAB_MOUSE)
+    || (!joystick
+        && (myAdjustSetting == AdjustSetting::DEADZONE
+        || myAdjustSetting == AdjustSetting::FOUR_DIRECTIONS))
+    || (!paddle
+        && (myAdjustSetting == AdjustSetting::ANALOG_SENSITIVITY
+        || myAdjustSetting == AdjustSetting::DEJITTER_AVERAGING
+        || myAdjustSetting == AdjustSetting::DEJITTER_REACTION
+        || myAdjustSetting == AdjustSetting::DIGITAL_SENSITIVITY
+        || myAdjustSetting == AdjustSetting::SWAP_PADDLES
+        || myAdjustSetting == AdjustSetting::PADDLE_CENTER_X
+        || myAdjustSetting == AdjustSetting::PADDLE_CENTER_Y))
+    || ((!paddle || !useMouse)
+        && myAdjustSetting == AdjustSetting::PADDLE_SENSITIVITY)
+    || ((!trackball || !useMouse)
+        && myAdjustSetting == AdjustSetting::TRACKBALL_SENSITIVITY)
+    || (!driving
+        && myAdjustSetting == AdjustSetting::DRIVING_SENSITIVITY) // also affects digital device input sensitivity
+    || ((!hasMouseControl() || !useMouse)
+        && myAdjustSetting == AdjustSetting::MOUSE_CONTROL)
+    || ((!paddle || !useMouse)
+        && myAdjustSetting == AdjustSetting::MOUSE_RANGE)
+    || (!stelladapter
+        && myAdjustSetting == AdjustSetting::SA_PORT_ORDER);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool EventHandler::skipDebugSetting() const
 {
   const bool isPAL = myOSystem.console().timing() == ConsoleTiming::pal;
-  bool repeat = false;
 
+  return (myAdjustSetting == AdjustSetting::COLOR_LOSS && !isPAL);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+AdjustFunction EventHandler::cycleAdjustSetting(int direction)
+{
+  bool skip = false;
   do
   {
     switch (getAdjustGroup())
     {
       case AdjustGroup::AV:
-      {
-        const bool isFullScreen = myOSystem.frameBuffer().fullScreen();
-        const bool isCustomPalette =
-          myOSystem.settings().getString("palette") == PaletteHandler::SETTING_CUSTOM;
-        const bool isCustomFilter =
-          myOSystem.settings().getInt("tv.filter") == int(NTSCFilter::Preset::CUSTOM);
-
         myAdjustSetting =
           AdjustSetting(BSPF::clampw(int(myAdjustSetting) + direction,
                         int(AdjustSetting::START_AV_ADJ), int(AdjustSetting::END_AV_ADJ)));
         // skip currently non-relevant adjustments
-        repeat = (myAdjustSetting == AdjustSetting::OVERSCAN && !isFullScreen)
-        #ifdef ADAPTABLE_REFRESH_SUPPORT
-          || (myAdjustSetting == AdjustSetting::ADAPT_REFRESH && !isFullScreen)
-        #endif
-          || (myAdjustSetting >= AdjustSetting::PALETTE_PHASE
-              && myAdjustSetting <= AdjustSetting::PALETTE_BLUE_SHIFT
-              && !isCustomPalette)
-          || (myAdjustSetting >= AdjustSetting::NTSC_SHARPNESS
-              && myAdjustSetting <= AdjustSetting::NTSC_BLEEDING
-              && !isCustomFilter);
+        skip = skipAVSetting();
         break;
-      }
 
       case AdjustGroup::INPUT:
-      {
-        const bool grabMouseAllowed = myOSystem.frameBuffer().grabMouseAllowed();
-        const bool joystick = isJoystick(myOSystem.console().leftController())
-          || isJoystick(myOSystem.console().rightController());
-        const bool paddle = isPaddle(myOSystem.console().leftController())
-          || isPaddle(myOSystem.console().rightController());
-        const bool trackball = isTrackball(myOSystem.console().leftController())
-          || isTrackball(myOSystem.console().rightController());
-        const bool driving = myOSystem.console().leftController().type() == Controller::Type::Driving
-          || myOSystem.console().rightController().type() == Controller::Type::Driving;
-        const bool useMouse = myOSystem.settings().getString("usemouse") != "never";
-
         myAdjustSetting =
           AdjustSetting(BSPF::clampw(int(myAdjustSetting) + direction,
                         int(AdjustSetting::START_INPUT_ADJ), int(AdjustSetting::END_INPUT_ADJ)));
         // skip currently non-relevant adjustments
-        repeat = (!grabMouseAllowed && myAdjustSetting == AdjustSetting::GRAB_MOUSE)
-          || (!joystick
-              && (myAdjustSetting == AdjustSetting::DEADZONE
-              || myAdjustSetting == AdjustSetting::FOUR_DIRECTIONS))
-          || (!paddle
-              && (myAdjustSetting == AdjustSetting::ANALOG_SENSITIVITY
-              || myAdjustSetting == AdjustSetting::DEJITTER_AVERAGING
-              || myAdjustSetting == AdjustSetting::DEJITTER_REACTION
-              || myAdjustSetting == AdjustSetting::DIGITAL_SENSITIVITY
-              || myAdjustSetting == AdjustSetting::SWAP_PADDLES
-              || myAdjustSetting == AdjustSetting::PADDLE_CENTER_X
-              || myAdjustSetting == AdjustSetting::PADDLE_CENTER_Y))
-          || ((!paddle || !useMouse)
-              && myAdjustSetting == AdjustSetting::PADDLE_SENSITIVITY)
-          || ((!trackball || !useMouse)
-              && myAdjustSetting == AdjustSetting::TRACKBALL_SENSITIVITY)
-          || (!driving
-              && myAdjustSetting == AdjustSetting::DRIVING_SENSITIVITY) // also affects keyboard input sensitivity
-          || ((!hasMouseControl() || !useMouse)
-              && myAdjustSetting == AdjustSetting::MOUSE_CONTROL)
-          || ((!paddle || !useMouse)
-              && myAdjustSetting == AdjustSetting::MOUSE_RANGE);
+        skip = skipInputSetting();
         break;
-      }
 
       case AdjustGroup::DEBUG:
         myAdjustSetting =
           AdjustSetting(BSPF::clampw(int(myAdjustSetting) + direction,
                         int(AdjustSetting::START_DEBUG_ADJ), int(AdjustSetting::END_DEBUG_ADJ)));
         // skip currently non-relevant adjustments
-        repeat = (myAdjustSetting == AdjustSetting::COLOR_LOSS && !isPAL);
+        skip = skipDebugSetting();
         break;
 
       default:
         break;
     }
     // avoid endless loop
-    if(repeat && !direction)
+    if(skip && !direction)
       direction = 1;
-  } while(repeat);
+  } while(skip);
 
   return getAdjustSetting(myAdjustSetting);
 }

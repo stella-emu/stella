@@ -268,6 +268,24 @@ void PhysicalJoystickHandler::mapStelladaptors(const string& saport)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool PhysicalJoystickHandler::hasStelladaptors() const
+{
+  for(auto& [_id, _joyptr] : mySticks)
+  {
+    // remove previously added emulated ports
+    size_t pos = _joyptr->name.find(" (emulates ");
+
+    if(pos != std::string::npos)
+      _joyptr->name.erase(pos);
+
+    if(BSPF::startsWithIgnoreCase(_joyptr->name, "Stelladaptor")
+       || BSPF::startsWithIgnoreCase(_joyptr->name, "2600-daptor"))
+      return true;
+  }
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Depending on parameters, this method does the following:
 // 1. update all events with default (event == Event::NoType, updateDefault == true)
 // 2. reset all events to default    (event == Event::NoType, updateDefault == false)
@@ -989,7 +1007,7 @@ void PhysicalJoystickHandler::changeDrivingSensitivity(int direction)
   ostringstream ss;
   ss << sense * 10 << "%";
 
-  myOSystem.frameBuffer().showGaugeMessage("Mouse driving controller sensitivity",
+  myOSystem.frameBuffer().showGaugeMessage("Driving controller sensitivity",
                                            ss.str(), sense,
                                            Driving::MIN_SENSE, Driving::MAX_SENSE);
 }
