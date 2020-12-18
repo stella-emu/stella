@@ -384,14 +384,18 @@ bool Paddles::setMouseControl(
     // The following is somewhat complex, but we need to pre-process as much
     // as possible, so that ::update() can run quickly
     myMPaddleID = -1;
-    if(myJack == Jack::Left && xtype == Controller::Type::Paddles)
+    if(myJack == Jack::Left)
     {
-      myMPaddleIDX = (xid == 0 || xid == 1) ? xid & 0x01 : -1;
-      myMPaddleIDY = (yid == 0 || yid == 1) ? yid & 0x01 : -1;
+      if(xtype == Controller::Type::Paddles)
+        myMPaddleIDX = (xid == 0 || xid == 1) ? xid & 0x01 : -1;
+      if(ytype == Controller::Type::Paddles)
+        myMPaddleIDY = (yid == 0 || yid == 1) ? yid & 0x01 : -1;
     }
-    else if(myJack == Jack::Right && ytype == Controller::Type::Paddles)
+    else if(myJack == Jack::Right)
     {
-      myMPaddleIDX = (xid == 2 || xid == 3) ? xid & 0x01 : -1;
+      if(xtype == Controller::Type::Paddles)
+        myMPaddleIDX = (xid == 2 || xid == 3) ? xid & 0x01 : -1;
+      if(ytype == Controller::Type::Paddles)
       myMPaddleIDY = (yid == 2 || yid == 3) ? yid & 0x01 : -1;
     }
   }
