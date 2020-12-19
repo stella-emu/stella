@@ -56,10 +56,12 @@ CartridgeEnhanced::CartridgeEnhanced(const ByteBuffer& image, size_t size,
   // space will be filled with 0's from above
   std::copy_n(image.get(), std::min(mySize, size), myImage.get());
 
+#if 0
   // Determine whether we have a PlusROM cart
   // PlusROM needs to call peek() method, so disable direct peeks
   if(myPlusROM.initialize(myImage, mySize))
     myDirectPeek = false;
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -147,6 +149,7 @@ uInt8 CartridgeEnhanced::peek(uInt16 address)
 {
   const uInt16 peekAddress = address;
 
+#if 0
   // Is this a PlusROM?
   if(myPlusROM.isValid())
   {
@@ -154,6 +157,7 @@ uInt8 CartridgeEnhanced::peek(uInt16 address)
     if(myPlusROM.peekHotspot(address, value))
       return value;
   }
+#endif
 
   // hotspots in TIA range are reacting to pokes only
   if (hotspot() >= 0x80)
@@ -184,9 +188,11 @@ uInt8 CartridgeEnhanced::peek(uInt16 address)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeEnhanced::poke(uInt16 address, uInt8 value)
 {
+#if 0
   // Is this a PlusROM?
   if(myPlusROM.isValid() && myPlusROM.pokeHotspot(address, value))
     return true;
+#endif
 
   // Switch banks if necessary
   if (checkSwitchBank(address & ADDR_MASK, value))
@@ -380,8 +386,10 @@ bool CartridgeEnhanced::save(Serializer& out) const
     out.putIntArray(myCurrentSegOffset.get(), myBankSegs);
     if(myRamSize > 0)
       out.putByteArray(myRAM.get(), myRamSize);
-    if(myPlusROM.isValid())
-      if(!myPlusROM.save(out)) return false;
+#if 0
+    if(myPlusROM.isValid() && !myPlusROM.save(out))
+      return false;
+#endif
   }
   catch(...)
   {
@@ -400,8 +408,10 @@ bool CartridgeEnhanced::load(Serializer& in)
     in.getIntArray(myCurrentSegOffset.get(), myBankSegs);
     if(myRamSize > 0)
       in.getByteArray(myRAM.get(), myRamSize);
-    if(myPlusROM.isValid())
-      if(!myPlusROM.load(in)) return false;
+#if 0
+    if(myPlusROM.isValid() && !myPlusROM.load(in))
+      return false;
+#endif
   }
   catch(...)
   {

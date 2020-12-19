@@ -109,8 +109,15 @@ class PlusROM : public Serializable
     bool load(Serializer& in) override;
 
   private:
+    //////////////////////////////////////////////////////
+    // These probably belong in the networking library
+    bool isValidHost(const string& host) const;
+    bool isValidPath(const string& path) const;
+    //////////////////////////////////////////////////////
+
+  private:
     bool myIsPlusROM{false};
-    string myPath, myHost;
+    string myURL;
 
     std::array<uInt8, 256> myRxBuffer, myTxBuffer;
 

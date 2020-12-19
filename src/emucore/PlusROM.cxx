@@ -15,6 +15,9 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include <regex>
+
+#include "bspf.hxx"
 #include "PlusROM.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -25,36 +28,28 @@ bool PlusROM::initialize(const ByteBuffer& image, size_t size)
   if(i >= size)
     return myIsPlusROM = false;  // Invalid NMI
 
-  // Convenience functions to detect valid path and host characters
-  auto isValidPathChar = [](uInt8 c) {
-    return ((c > 44 && c < 58) || (c > 64 && c < 91) || (c > 96 && c < 122));
-  };
-  auto isValidHostChar = [](uInt8 c) {
-    return (c == 45 || c == 46 || (c > 47 && c < 58) ||
-           (c > 64 && c < 91) || (c > 96 && c < 122));
-  };
-
   // Path stored first, 0-terminated
-  while(i < size && isValidPathChar(image[i]))
-    myPath += static_cast<char>(image[i++]);
+  string path;
+  while(i < size && image[i] != 0)
+    path += static_cast<char>(image[i++]);
 
-  // Did we get a 0-terminated path?
-  if(i >= size || image[i] != 0)
-    return myIsPlusROM = false;  // Wrong delimiter
+  // Did we get a valid, 0-terminated path?
+  if(i >= size || image[i] != 0 || !isValidPath(path))
+    return myIsPlusROM = false;  // Invalid path
 
   i++;  // advance past 0 terminator
 
   // Host stored next, 0-terminated
-  while(i < size && isValidHostChar(image[i]))
-    myHost += static_cast<char>(image[i++]);
+  string host;
+  while(i < size && image[i] != 0)
+    host += static_cast<char>(image[i++]);
 
   // Did we get a valid, 0-terminated host?
-  if(i >= size || image[i] != 0 || myHost.size() < 3 || myHost.find(".") == string::npos)
-    return myIsPlusROM = false;  // Wrong delimiter or dotless IP
+  if(i >= size || image[i] != 0 || !isValidHost(host))
+    return myIsPlusROM = false;  // Invalid host
 
-  cerr << "Path: " << myPath << endl;
-  cerr << "Host: " << myHost << endl;
-
+  myURL = "http://" + host + "/" + path;
+  cerr << "URL: " << myURL << endl;
   return myIsPlusROM = true;
 }
 
@@ -117,6 +112,31 @@ bool PlusROM::load(Serializer& in)
     cerr << "ERROR: PlusROM::load" << endl;
     return false;
   }
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool PlusROM::isValidHost(const string& host) const
+{
+  // TODO: This isn't 100% either, as we're supposed to check for the length
+  //       of each part between '.' in the range 1 .. 63
+  //  Perhaps a better function will be included with whatever network
+  //  library we decide to use
+  static std::regex rgx(R"(^(([a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*([a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$)", std::regex_constants::icase);
+
+  return std::regex_match(host, rgx);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool PlusROM::isValidPath(const string& path) const
+{
+  // TODO: This isn't 100%
+  //  Perhaps a better function will be included with whatever network
+  //  library we decide to use
+  for(auto c: path)
+    if(!((c > 44 && c < 58) || (c > 64 && c < 91) || (c > 96 && c < 122)))
+      return false;
 
   return true;
 }
