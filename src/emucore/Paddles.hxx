@@ -62,7 +62,6 @@ class Paddles : public Controller
     static constexpr int MIN_MOUSE_RANGE = 1;
     static constexpr int MAX_MOUSE_RANGE = 100;
 
-
     /**
       Update the entire digital and analog pin state according to the
       events currently set.

@@ -435,6 +435,7 @@ void LauncherDialog::updateUI()
   loadRomInfo();
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 size_t LauncherDialog::matchWithJoker(const string& str, const string& pattern)
 {
   if(str.length() >= pattern.length())
@@ -460,6 +461,7 @@ size_t LauncherDialog::matchWithJoker(const string& str, const string& pattern)
   return string::npos;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool LauncherDialog::matchWithWildcards(const string& str, const string& pattern)
 {
   string pat = pattern;

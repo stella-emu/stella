@@ -66,7 +66,6 @@ class Cartridge3F : public CartridgeEnhanced
     */
     void install(System& system) override;
 
-
     /**
       Get a descriptor for the device name (used in error checking).
 

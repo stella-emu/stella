@@ -23,10 +23,10 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Controller::Controller(Jack jack, const Event& event, const System& system,
                        Type type)
-  : myJack(jack),
-    myEvent(event),
-    mySystem(system),
-    myType(type)
+  : myJack{jack},
+    myEvent{event},
+    mySystem{system},
+    myType{type}
 {
 }
 

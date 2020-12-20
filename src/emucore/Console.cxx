@@ -116,11 +116,11 @@ namespace {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
                  const Properties& props, AudioSettings& audioSettings)
-  : myOSystem(osystem),
-    myEvent(osystem.eventHandler().event()),
-    myProperties(props),
-    myCart(std::move(cart)),
-    myAudioSettings(audioSettings)
+  : myOSystem{osystem},
+    myEvent{osystem.eventHandler().event()},
+    myProperties{props},
+    myCart{std::move(cart)},
+    myAudioSettings{audioSettings}
 {
   // Create subsystems for the console
   my6502 = make_unique<M6502>(myOSystem.settings());

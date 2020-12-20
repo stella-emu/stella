@@ -27,8 +27,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 M6532::M6532(const ConsoleIO& console, const Settings& settings)
-  : myConsole(console),
-    mySettings(settings)
+  : myConsole{console},
+    mySettings{settings}
 {
 }
 

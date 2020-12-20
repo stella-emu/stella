@@ -45,9 +45,9 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 MT24LC256::MT24LC256(const FilesystemNode& eepromfile, const System& system,
                      const Controller::onMessageCallback& callback)
-  : mySystem(system),
-    myCallback(callback),
-    myDataFile(eepromfile)
+  : mySystem{system},
+    myCallback{callback},
+    myDataFile{eepromfile}
 {
   // Load the data from an external file (if it exists)
   bool fileValid = false;
