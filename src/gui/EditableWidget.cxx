@@ -130,7 +130,7 @@ int EditableWidget::toCaretPos(int x) const
   int i;
 
   x += caretOfs();
-  for(i = 0; i < _editString.size(); ++i)
+  for(i = 0; i < static_cast<int>(_editString.size()); ++i)
   {
     x -= _font.getCharWidth(_editString[i]);
     if(x <= 0)
