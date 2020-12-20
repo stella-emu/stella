@@ -31,6 +31,7 @@
 #include "FBSurface.hxx"
 #include "TIASurface.hxx"
 #include "FrameBuffer.hxx"
+#include "PaletteHandler.hxx"
 #include "StateManager.hxx"
 #include "RewindManager.hxx"
 
@@ -78,8 +79,7 @@ void FrameBuffer::initialize()
 {
   // First create the platform-specific backend; it is needed before anything
   // else can be used
-  try { myBackend = MediaFactory::createVideoBackend(myOSystem); }
-  catch(const runtime_error& e) { throw e; }
+  myBackend = MediaFactory::createVideoBackend(myOSystem);
 
   // Get desktop resolution and supported renderers
   vector<Common::Size> windowedDisplays;
@@ -952,7 +952,7 @@ void FrameBuffer::stateChanged(EventHandlerState state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string FrameBuffer::getDisplayKey()
+string FrameBuffer::getDisplayKey() const
 {
   // save current window's display and position
   switch(myBufferType)
@@ -974,7 +974,7 @@ string FrameBuffer::getDisplayKey()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string FrameBuffer::getPositionKey()
+string FrameBuffer::getPositionKey() const
 {
   // save current window's display and position
   switch(myBufferType)
@@ -996,13 +996,31 @@ string FrameBuffer::getPositionKey()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::saveCurrentWindowPosition()
+void FrameBuffer::saveCurrentWindowPosition() const
 {
-  myOSystem.settings().setValue(
-    getDisplayKey(), myBackend->getCurrentDisplayIndex());
-  if(myBackend->isCurrentWindowPositioned())
+  if(myBackend)
+  {
     myOSystem.settings().setValue(
-      getPositionKey(), myBackend->getCurrentWindowPos());
+      getDisplayKey(), myBackend->getCurrentDisplayIndex());
+    if(myBackend->isCurrentWindowPositioned())
+      myOSystem.settings().setValue(
+        getPositionKey(), myBackend->getCurrentWindowPos());
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::saveConfig(Settings& settings) const
+{
+  // Save the last windowed position and display on system shutdown
+  saveCurrentWindowPosition();
+
+  if(myTIASurface)
+  {
+    Logger::debug("Saving TV effects options ...");
+    tiaSurface().ntsc().saveConfig(settings);
+    Logger::debug("Saving palette settings...");
+    tiaSurface().paletteHandler().saveConfig(settings);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

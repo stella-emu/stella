@@ -39,9 +39,8 @@ FBBackendSDL2::FBBackendSDL2(OSystem& osystem)
   if(SDL_InitSubSystem(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0)
   {
     ostringstream buf;
-    buf << "ERROR: Couldn't initialize SDL: " << SDL_GetError() << endl;
-    Logger::error(buf.str());
-    throw runtime_error("FATAL ERROR");
+    buf << "ERROR: Couldn't initialize SDL: " << SDL_GetError();
+    throw runtime_error(buf.str());
   }
   Logger::debug("FBBackendSDL2::FBBackendSDL2 SDL_Init()");
 
