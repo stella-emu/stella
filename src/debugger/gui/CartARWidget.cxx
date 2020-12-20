@@ -27,7 +27,7 @@ CartridgeARWidget::CartridgeARWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, CartridgeAR& cart)
   : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
-    myCart(cart)
+    myCart{cart}
 {
   size_t size = myCart.mySize;
 

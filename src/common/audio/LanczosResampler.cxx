@@ -69,12 +69,12 @@ LanczosResampler::LanczosResampler(
   // formatFrom.sampleRate / formatTo.sampleRate = M / N
   //
   // -> we find N from fully reducing the fraction.
-  myPrecomputedKernelCount(reducedDenominator(formatFrom.sampleRate, formatTo.sampleRate)),
-  myKernelSize(2 * kernelParameter),
-  myKernelParameter(kernelParameter),
-  myHighPassL(HIGH_PASS_CUT_OFF, float(formatFrom.sampleRate)),
-  myHighPassR(HIGH_PASS_CUT_OFF, float(formatFrom.sampleRate)),
-  myHighPass(HIGH_PASS_CUT_OFF, float(formatFrom.sampleRate))
+  myPrecomputedKernelCount{reducedDenominator(formatFrom.sampleRate, formatTo.sampleRate)},
+  myKernelSize{2 * kernelParameter},
+  myKernelParameter{kernelParameter},
+  myHighPassL{HIGH_PASS_CUT_OFF, float(formatFrom.sampleRate)},
+  myHighPassR{HIGH_PASS_CUT_OFF, float(formatFrom.sampleRate)},
+  myHighPass{HIGH_PASS_CUT_OFF, float(formatFrom.sampleRate)}
 {
   myPrecomputedKernels = make_unique<float[]>(myPrecomputedKernelCount * myKernelSize);
 

@@ -24,7 +24,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PaletteHandler::PaletteHandler(OSystem& system)
-  : myOSystem(system)
+  : myOSystem{system}
 {
   // Load user-defined palette for this ROM
   loadUserPalette();

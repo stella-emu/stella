@@ -21,8 +21,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 BilinearBlitter::BilinearBlitter(FBBackendSDL2& fb, bool interpolate)
-  : myFB(fb),
-    myInterpolate(interpolate)
+  : myFB{fb},
+    myInterpolate{interpolate}
 {
 }
 

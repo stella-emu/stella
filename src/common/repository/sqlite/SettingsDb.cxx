@@ -20,12 +20,11 @@
 #include "SqliteError.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SettingsDb::SettingsDb(
-  const string& databaseDirectory,
-  const string& databaseName
-) : myDatabaseDirectory(databaseDirectory),
-    myDatabaseName(databaseName)
-{}
+SettingsDb::SettingsDb(const string& databaseDirectory, const string& databaseName)
+  : myDatabaseDirectory{databaseDirectory},
+    myDatabaseName{databaseName}
+{
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool SettingsDb::initialize()

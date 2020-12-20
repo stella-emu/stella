@@ -1,5 +1,4 @@
 //============================================================================
-//============================================================================
 //
 //   SSSS    tt          lll  lll
 //  SS  SS   tt           ll   ll
@@ -41,8 +40,8 @@ static constexpr int MOD3 = KBDM_ALT;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PhysicalKeyboardHandler::PhysicalKeyboardHandler(OSystem& system, EventHandler& handler)
-  : myOSystem(system),
-    myHandler(handler)
+  : myOSystem{system},
+    myHandler{handler}
 {
   Int32 version = myOSystem.settings().getInt("event_ver");
   bool updateDefaults = false;

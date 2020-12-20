@@ -51,12 +51,11 @@ class Resampler {
   public:
 
     Resampler(Format formatFrom, Format formatTo,
-              const NextFragmentCallback& nextFragmentCallback) :
-      myFormatFrom(formatFrom),
-      myFormatTo(formatTo),
-      myNextFragmentCallback(nextFragmentCallback),
-      myUnderrunLogger("audio buffer underrun", Logger::Level::INFO)
-    {}
+              const NextFragmentCallback& nextFragmentCallback)
+      : myFormatFrom{formatFrom},
+        myFormatTo{formatTo},
+        myNextFragmentCallback{nextFragmentCallback},
+        myUnderrunLogger{"audio buffer underrun", Logger::Level::INFO} { }
 
     virtual void fillFragment(float* fragment, uInt32 length) = 0;
 

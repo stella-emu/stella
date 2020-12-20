@@ -20,7 +20,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 HighPass::HighPass(float cutOffFrequency, float frequency)
-  : myAlpha(1.F / (1.F + 2.F*BSPF::PI_f*cutOffFrequency/frequency))
+  : myAlpha{1.F / (1.F + 2.F*BSPF::PI_f*cutOffFrequency/frequency)}
 {
 }
 
