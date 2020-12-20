@@ -168,7 +168,7 @@ class CartridgeWD : public CartridgeEnhanced
 
     // The arrangement of banks to use on each hotspot read
     struct BankOrg {
-      uInt8 zero, one, two, three;
+      uInt8 zero{0}, one{0}, two{0}, three{0};
     };
     static const std::array<BankOrg, 8> ourBankOrg;
 

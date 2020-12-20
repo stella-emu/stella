@@ -29,7 +29,7 @@ PointingDevice::PointingDevice(Jack jack, const Event& event,
                                const System& system, Controller::Type type,
                                float sensitivity)
   : Controller(jack, event, system, type),
-    mySensitivity(sensitivity)
+    mySensitivity{sensitivity}
 {
   // The code in ::read() is set up to always return IOPortA values in
   // the lower 4 bits data value

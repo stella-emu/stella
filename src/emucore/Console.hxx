@@ -74,14 +74,9 @@ class Console : public Serializable, public ConsoleIO
     */
     Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
             const Properties& props, AudioSettings& audioSettings);
-
-    /**
-      Destructor
-    */
     ~Console() override;
 
   public:
-
     /**
       Sets the left and right controllers for the console.
     */

@@ -33,7 +33,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Settings::Settings()
-  : myRespository(make_shared<KeyValueRepositoryNoop>())
+  : myRespository{make_shared<KeyValueRepositoryNoop>()}
 {
   // If no version is recorded with the persisted settings, we set it to zero
   setPermanent(SETTINGS_VERSION_KEY, 0);

@@ -86,7 +86,7 @@ class CompuMate
         CMControl(class CompuMate& handler, Controller::Jack jack, const Event& event,
                   const System& system)
           : Controller(jack, event, system, Controller::Type::CompuMate),
-            myHandler(handler) { }
+            myHandler{handler} { }
         ~CMControl() override = default;
 
       public:

@@ -24,7 +24,7 @@
 CartridgeAR::CartridgeAR(const ByteBuffer& image, size_t size,
                          const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
-    mySize(std::max<size_t>(size, 8448))
+    mySize{std::max<size_t>(size, 8448)}
 {
   // Create a load image buffer and copy the given image
   myLoadImages = make_unique<uInt8[]>(mySize);

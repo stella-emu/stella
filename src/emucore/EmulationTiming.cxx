@@ -29,9 +29,9 @@ namespace {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-EmulationTiming::EmulationTiming(FrameLayout frameLayout, ConsoleTiming consoleTiming) :
-  myFrameLayout(frameLayout),
-  myConsoleTiming(consoleTiming)
+EmulationTiming::EmulationTiming(FrameLayout frameLayout, ConsoleTiming consoleTiming)
+  : myFrameLayout{frameLayout},
+    myConsoleTiming{consoleTiming}
 {
   recalculate();
 }

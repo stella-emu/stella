@@ -66,7 +66,7 @@ namespace {
 CartridgeCDF::CartridgeCDF(const ByteBuffer& image, size_t size,
                            const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
-    myImage(make_unique<uInt8[]>(512_KB))
+    myImage{make_unique<uInt8[]>(512_KB)}
 {
   // Copy the ROM image into my buffer
   std::fill_n(myImage.get(), 512_KB, 0);
