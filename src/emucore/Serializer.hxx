@@ -49,7 +49,7 @@ class Serializer
       The valid() method must immediately be called to verify the stream
       was correctly initialized.
     */
-    Serializer(const string& filename, Mode m = Mode::ReadWrite);
+    explicit Serializer(const string& filename, Mode m = Mode::ReadWrite);
     Serializer();
 
   public:

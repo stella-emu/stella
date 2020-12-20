@@ -31,7 +31,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StateManager::StateManager(OSystem& osystem)
-  : myOSystem(osystem)
+  : myOSystem{osystem}
 {
   myRewindManager = make_unique<RewindManager>(myOSystem, *this);
   reset();

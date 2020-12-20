@@ -47,7 +47,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 M6502::M6502(const Settings& settings)
-  : mySettings(settings)
+  : mySettings{settings}
 {
 }
 

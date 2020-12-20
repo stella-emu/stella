@@ -219,6 +219,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   xpos = _w - HBORDER - font.getStringWidth("Follow Launcher path") - CheckboxWidget::prefixSize(font) - 1;
   ypos += lineHeight + VGAP * 2;
   myFollowLauncherWidget = new CheckboxWidget(myTab, font, xpos, ypos, "Follow Launcher path");
+  myFollowLauncherWidget->setToolTip("The ROM path is updated during Launcher navigation.");
   wid.push_back(myFollowLauncherWidget);
 
   xpos = HBORDER;
@@ -272,6 +273,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   bwidth = font.getStringWidth("Image path" + ELLIPSIS) + fontWidth * 2 + 1;
   myOpenBrowserButton = new ButtonWidget(myTab, font, xpos, ypos, bwidth, buttonHeight,
                                          "Image path" + ELLIPSIS, kChooseSnapLoadDirCmd);
+  myOpenBrowserButton->setToolTip("Select path for snapshot images used in Launcher.");
   wid.push_back(myOpenBrowserButton);
 
   mySnapLoadPath = new EditTextWidget(myTab, font, HBORDER + lwidth,

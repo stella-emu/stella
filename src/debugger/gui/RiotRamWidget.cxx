@@ -25,7 +25,7 @@
 RiotRamWidget::RiotRamWidget(GuiObject* boss, const GUI::Font& lfont,
         const GUI::Font& nfont, int x, int y, int w)
   : RamWidget(boss, lfont, nfont, x, y, w, 0, 128, 8, 128),
-    myDbg(instance().debugger().cartDebug())
+    myDbg{instance().debugger().cartDebug()}
 {
 }
 

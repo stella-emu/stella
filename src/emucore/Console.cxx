@@ -116,11 +116,11 @@ namespace {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
                  const Properties& props, AudioSettings& audioSettings)
-  : myOSystem(osystem),
-    myEvent(osystem.eventHandler().event()),
-    myProperties(props),
-    myCart(std::move(cart)),
-    myAudioSettings(audioSettings)
+  : myOSystem{osystem},
+    myEvent{osystem.eventHandler().event()},
+    myProperties{props},
+    myCart{std::move(cart)},
+    myAudioSettings{audioSettings}
 {
   // Create subsystems for the console
   my6502 = make_unique<M6502>(myOSystem.settings());
@@ -859,6 +859,40 @@ void Console::setControllers(const string& romMd5)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::changeLeftController(int direction)
+{
+  int type = int(Controller::getType(myProperties.get(PropType::Controller_Left)));
+  if(!type)
+    type = int(Controller::getType(leftController().name()));
+  type = BSPF::clampw(type + direction,
+                      1, int(Controller::Type::LastType) - 1);
+
+  myProperties.set(PropType::Controller_Left, Controller::getPropName(Controller::Type(type)));
+  setControllers(myProperties.get(PropType::Cart_MD5));
+
+  ostringstream msg;
+  msg << "Left controller " << Controller::getName(Controller::Type(type));
+  myOSystem.frameBuffer().showTextMessage(msg.str());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::changeRightController(int direction)
+{
+  int type = int(Controller::getType(myProperties.get(PropType::Controller_Right)));
+  if(!type)
+    type = int(Controller::getType(rightController().name()));
+  type = BSPF::clampw(type + direction,
+                      1, int(Controller::Type::LastType) - 1);
+
+  myProperties.set(PropType::Controller_Right, Controller::getPropName(Controller::Type(type)));
+  setControllers(myProperties.get(PropType::Cart_MD5));
+
+  ostringstream msg;
+  msg << "Right controller " << Controller::getName(Controller::Type(type));
+  myOSystem.frameBuffer().showTextMessage(msg.str());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 unique_ptr<Controller> Console::getControllerPort(const Controller::Type type,
                                                   const Controller::Jack port, const string& romMd5)
 {
@@ -965,6 +999,99 @@ unique_ptr<Controller> Console::getControllerPort(const Controller::Type type,
   }
 
   return controller;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::toggleSwapPorts(bool toggle)
+{
+  bool swapped = myProperties.get(PropType::Console_SwapPorts) == "YES";
+
+  if(toggle)
+  {
+    swapped = !swapped;
+    myProperties.set(PropType::Console_SwapPorts, (swapped ? "YES" : "NO"));
+    //myOSystem.propSet().insert(myProperties);
+    setControllers(myProperties.get(PropType::Cart_MD5));
+  }
+
+  ostringstream msg;
+  msg << "Swap ports " << (swapped ? "enabled" : "disabled");
+  myOSystem.frameBuffer().showTextMessage(msg.str());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::toggleSwapPaddles(bool toggle)
+{
+  bool swapped = myProperties.get(PropType::Controller_SwapPaddles) == "YES";
+
+  if(toggle)
+  {
+    swapped = !swapped;
+    myProperties.set(PropType::Controller_SwapPaddles, (swapped ? "YES" : "NO"));
+    //myOSystem.propSet().insert(myProperties);
+    setControllers(myProperties.get(PropType::Cart_MD5));
+  }
+
+  ostringstream msg;
+  msg << "Swap paddles " << (swapped ? "enabled" : "disabled");
+  myOSystem.frameBuffer().showTextMessage(msg.str());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::changePaddleCenterX(int direction)
+{
+  int center =
+    BSPF::clamp(BSPF::stringToInt(myProperties.get(PropType::Controller_PaddlesXCenter)) + direction,
+                Paddles::MIN_ANALOG_CENTER, Paddles::MAX_ANALOG_CENTER);
+  myProperties.set(PropType::Controller_PaddlesXCenter, std::to_string(center));
+  Paddles::setAnalogXCenter(center);
+
+  ostringstream val;
+  val << (center ? center > 0 ? "+" : "" : " ") << center * 5 << "px";
+  myOSystem.frameBuffer().showGaugeMessage("Paddles x-center ", val.str(), center,
+                                           Paddles::MIN_ANALOG_CENTER, Paddles::MAX_ANALOG_CENTER);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::changePaddleCenterY(int direction)
+{
+  int center =
+    BSPF::clamp(BSPF::stringToInt(myProperties.get(PropType::Controller_PaddlesYCenter)) + direction,
+                Paddles::MIN_ANALOG_CENTER, Paddles::MAX_ANALOG_CENTER);
+  myProperties.set(PropType::Controller_PaddlesYCenter, std::to_string(center));
+  Paddles::setAnalogYCenter(center);
+
+  ostringstream val;
+  val << (center ? center > 0 ? "+" : "" : " ") << center * 5 << "px";
+  myOSystem.frameBuffer().showGaugeMessage("Paddles y-center ", val.str(), center,
+                                           Paddles::MIN_ANALOG_CENTER, Paddles::MAX_ANALOG_CENTER);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::changePaddleAxesRange(int direction)
+{
+  istringstream m_axis(myProperties.get(PropType::Controller_MouseAxis));
+  string mode = "AUTO";
+  int range;
+
+  m_axis >> mode;
+  if(!(m_axis >> range))
+    range = Paddles::MAX_MOUSE_RANGE;
+
+  range = BSPF::clamp(range + direction,
+                      Paddles::MIN_MOUSE_RANGE, Paddles::MAX_MOUSE_RANGE);
+
+  ostringstream control;
+  control << mode;
+  if(range != 100)
+    control << " " << std::to_string(range);
+  myProperties.set(PropType::Controller_MouseAxis, control.str());
+
+  Paddles::setDigitalPaddleRange(range);
+
+  ostringstream val;
+  val << range << "%";
+  myOSystem.frameBuffer().showGaugeMessage("Mouse axes range", val.str(), range);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

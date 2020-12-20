@@ -90,7 +90,7 @@ class NTSCFilter
     // Set custom adjustables to given values
     // Values will be scaled to 0 - 100 range, independent of how
     // they're actually stored internally
-    void setCustomAdjustables(Adjustable& adjustable);
+    void setCustomAdjustables(const Adjustable& adjustable);
 
     // The following methods cycle through each custom adjustable
     // They are used in conjunction with the increase/decrease

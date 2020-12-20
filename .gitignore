@@ -11,11 +11,12 @@ out
 out.pgo
 out.pgen
 stella
-stella-pgo
-stella-pgo-generate
+￼stella-pgo
+￼stella-pgo-generate
 *.diff
 project.xcworkspace/
 xcuserdata/
+.DS_Store
 build/
 src/macosx/M6502.ins
 *.dSYM
@@ -33,4 +34,7 @@ src/**/*.vspx
 src/**/**.pdb
 Stella.xcscheme
 src/tools/fonts/*
-
+*.sym
+a.out
+*.json
+*.sqlite3

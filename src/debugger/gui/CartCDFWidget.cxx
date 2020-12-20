@@ -24,7 +24,7 @@ CartridgeCDFWidget::CartridgeCDFWidget(
     GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
     int x, int y, int w, int h, CartridgeCDF& cart)
   : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
-    myCart(cart)
+    myCart{cart}
 {
   const int VBORDER = 8;
   const int HBORDER = 2;

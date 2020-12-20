@@ -40,8 +40,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SoundSDL2::SoundSDL2(OSystem& osystem, AudioSettings& audioSettings)
-  : Sound(osystem),
-    myAudioSettings(audioSettings)
+  : Sound{osystem},
+    myAudioSettings{audioSettings}
 {
   ASSERT_MAIN_THREAD;
 
@@ -273,7 +273,7 @@ void SoundSDL2::adjustVolume(int direction)
 
   if(percent > 0 && !enabled)
   {
-    setEnabled(!enabled);
+    setEnabled(true);
     myOSystem.console().initializeAudio();
   }
 

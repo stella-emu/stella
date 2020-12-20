@@ -33,9 +33,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Settings::Settings()
+  : myRespository{make_shared<KeyValueRepositoryNoop>()}
 {
-  myRespository = make_shared<KeyValueRepositoryNoop>();
-
   // If no version is recorded with the persisted settings, we set it to zero
   setPermanent(SETTINGS_VERSION_KEY, 0);
   setPermanent("stella.version", "6.2.1");
@@ -351,11 +350,11 @@ void Settings::validate()
     setValue("cursor", "2");
 
   i = getInt("psense");
-  if(i < 0|| i > Paddles::MAX_ANALOG_SENSE)
+  if(i < Paddles::MIN_ANALOG_SENSE || i > Paddles::MAX_ANALOG_SENSE)
     setValue("psense", "20");
 
   i = getInt("dsense");
-  if(i < 1 || i > 20)
+  if(i < Paddles::MIN_DIGITAL_SENSE || i > Paddles::MAX_DIGITAL_SENSE)
     setValue("dsense", "10");
 
   i = getInt("msense");

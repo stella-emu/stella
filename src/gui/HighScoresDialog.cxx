@@ -100,12 +100,9 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
                                    int max_w, int max_h,
                                    Menu::AppMode mode)
   : Dialog(osystem, parent, osystem.frameBuffer().font(), "High Scores"),
-    myDirty(false),
-    myHighScoreSaved(false),
-    _max_w(max_w),
-    _max_h(max_h),
-    myInitials(""),
-    myMode(mode)
+    _max_w{max_w},
+    _max_h{max_h},
+    myMode{mode}
 {
   myScores.variation = HSM::DEFAULT_VARIATION;
 

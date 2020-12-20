@@ -60,7 +60,7 @@ using Common::Base;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 HighScoresManager::HighScoresManager(OSystem& osystem)
-  : myOSystem(osystem)
+  : myOSystem{osystem}
 {
 }
 

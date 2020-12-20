@@ -62,7 +62,12 @@ class MouseControl
 
       @return  A message explaining the current mouse mode
     */
-    const string& next();
+    const string& change(int direction = +1);
+
+    /**
+      Get whether any current controller supports mouse control
+    */
+    bool hasMouseControl() const { return myHasMouseControl; }
 
   private:
     void addLeftControllerModes(bool noswap);
@@ -101,6 +106,7 @@ class MouseControl
 
     int myCurrentModeNum{0};
     vector<MouseMode> myModeList;
+    bool myHasMouseControl{false};
 
   private:
     // Following constructors and assignment operators not supported

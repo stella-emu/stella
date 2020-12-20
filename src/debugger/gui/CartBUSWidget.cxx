@@ -25,7 +25,7 @@ CartridgeBUSWidget::CartridgeBUSWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, CartridgeBUS& cart)
   : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
-    myCart(cart)
+    myCart{cart}
 {
   uInt16 size = 8 * 4096;
 
@@ -75,7 +75,6 @@ CartridgeBUSWidget::CartridgeBUSWidget(
   ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
                        myFontHeight, "Datastream Pointers", TextAlign::Left);
-  xpos += lwidth;
 
   myDatastreamPointers = new DataGridWidget(boss, _nfont, DS_X, ypos+myLineHeight-2, 4, 4, 6, 32, Common::Base::Fmt::_16_3_2);
   myDatastreamPointers->setTarget(this);

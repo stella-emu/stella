@@ -31,9 +31,9 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StellaLIBRETRO::StellaLIBRETRO()
+  : rom_image{make_unique<uInt8[]>(getROMMax())},
+    audio_buffer{make_unique<Int16[]>(audio_buffer_max)}
 {
-  audio_buffer = make_unique<Int16[]>(audio_buffer_max);
-  rom_image = make_unique<uInt8[]>(getROMMax());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

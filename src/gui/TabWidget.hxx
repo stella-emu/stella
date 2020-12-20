@@ -81,7 +81,7 @@ class TabWidget : public Widget, public CommandSender
       bool enabled{true};
       int tabWidth{0};
 
-      Tab(const string& t, int tw = NO_WIDTH,
+      explicit Tab(const string& t, int tw = NO_WIDTH,
           Widget* first = nullptr, Widget* parent = nullptr, bool e = true)
         : title(t), firstWidget(first), parentWidget(parent), enabled(e), tabWidth(tw) { }
     };

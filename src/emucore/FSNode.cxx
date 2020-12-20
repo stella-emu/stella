@@ -20,7 +20,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FilesystemNode::FilesystemNode(const AbstractFSNodePtr& realNode)
-  : _realNode(realNode)
+  : _realNode{realNode}
 {
 }
 

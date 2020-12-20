@@ -50,7 +50,7 @@ class PhysicalJoystickHandler
     struct StickInfo
     {
       StickInfo(const nlohmann::json& map = nullptr, PhysicalJoystickPtr stick = nullptr)
-        : mapping(map), joy(std::move(stick)) {}
+        : mapping{map}, joy{std::move(stick)} { }
 
       nlohmann::json mapping;
       PhysicalJoystickPtr joy;
@@ -71,6 +71,7 @@ class PhysicalJoystickHandler
     bool remove(int id);
     bool remove(const string& name);
     void mapStelladaptors(const string& saport);
+    bool hasStelladaptors() const;
     void setDefaultMapping(Event::Type type, EventMode mode);
 
     /** define mappings for current controllers */
@@ -108,6 +109,15 @@ class PhysicalJoystickHandler
 
     /** Returns a list of pairs consisting of joystick name and associated ID. */
     VariantList database() const;
+
+    void changeDeadzone(int direction = +1);
+    void changeAnalogPaddleSensitivity(int direction = +1);
+    void changePaddleDejitterAveraging(int direction = +1);
+    void changePaddleDejitterReaction(int direction = +1);
+    void changeDigitalPaddleSensitivity(int direction = +1);
+    void changeMousePaddleSensitivity(int direction = +1);
+    void changeMouseTrackballSensitivity(int direction = +1);
+    void changeDrivingSensitivity(int direction = +1);
 
   private:
     using StickDatabase = std::map<string,StickInfo>;

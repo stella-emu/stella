@@ -17,6 +17,7 @@
 
 #include "Logger.hxx"
 #include "System.hxx"
+#include "PlusROM.hxx"
 #include "CartEnhanced.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -54,6 +55,13 @@ CartridgeEnhanced::CartridgeEnhanced(const ByteBuffer& image, size_t size,
   // Only copy up to the amount of data the ROM provides; extra unused
   // space will be filled with 0's from above
   std::copy_n(image.get(), std::min(mySize, size), myImage.get());
+
+#if 0
+  // Determine whether we have a PlusROM cart
+  // PlusROM needs to call peek() method, so disable direct peeks
+  if(myPlusROM.initialize(myImage, mySize))
+    myDirectPeek = false;
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -91,7 +99,7 @@ void CartridgeEnhanced::install(System& system)
     System::PageAccess access(this, System::PageAccessType::READ);
 
     // Set the page accessing method for the RAM writing pages
-    // Note: Writes are mapped to poke() (NOT using direcPokeBase) to check for read from write port (RWP)
+    // Note: Writes are mapped to poke() (NOT using directPokeBase) to check for read from write port (RWP)
     access.type = System::PageAccessType::WRITE;
     for(uInt16 addr = ROM_OFFSET + myWriteOffset; addr < ROM_OFFSET + myWriteOffset + myRamSize; addr += System::PAGE_SIZE)
     {
@@ -141,6 +149,16 @@ uInt8 CartridgeEnhanced::peek(uInt16 address)
 {
   const uInt16 peekAddress = address;
 
+#if 0
+  // Is this a PlusROM?
+  if(myPlusROM.isValid())
+  {
+    uInt8 value = 0;
+    if(myPlusROM.peekHotspot(address, value))
+      return value;
+  }
+#endif
+
   // hotspots in TIA range are reacting to pokes only
   if (hotspot() >= 0x80)
     checkSwitchBank(address & ADDR_MASK);
@@ -170,6 +188,12 @@ uInt8 CartridgeEnhanced::peek(uInt16 address)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeEnhanced::poke(uInt16 address, uInt8 value)
 {
+#if 0
+  // Is this a PlusROM?
+  if(myPlusROM.isValid() && myPlusROM.pokeHotspot(address, value))
+    return true;
+#endif
+
   // Switch banks if necessary
   if (checkSwitchBank(address & ADDR_MASK, value))
     return false;
@@ -260,7 +284,7 @@ bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment)
     myCurrentSegOffset[segment] = uInt32(mySize) + (ramBank << myBankShift);
 
     // Set the page accessing method for the RAM writing pages
-    // Note: Writes are mapped to poke() (NOT using direcPokeBase) to check for read from write port (RWP)
+    // Note: Writes are mapped to poke() (NOT using directPokeBase) to check for read from write port (RWP)
     uInt16 fromAddr = (ROM_OFFSET + segmentOffset + myWriteOffset) & ~System::PAGE_MASK;
     uInt16 toAddr   = (ROM_OFFSET + segmentOffset + myWriteOffset + (myBankSize >> 1)) & ~System::PAGE_MASK;
     System::PageAccess access(this, System::PageAccessType::WRITE);
@@ -362,6 +386,10 @@ bool CartridgeEnhanced::save(Serializer& out) const
     out.putIntArray(myCurrentSegOffset.get(), myBankSegs);
     if(myRamSize > 0)
       out.putByteArray(myRAM.get(), myRamSize);
+#if 0
+    if(myPlusROM.isValid() && !myPlusROM.save(out))
+      return false;
+#endif
   }
   catch(...)
   {
@@ -380,6 +408,10 @@ bool CartridgeEnhanced::load(Serializer& in)
     in.getIntArray(myCurrentSegOffset.get(), myBankSegs);
     if(myRamSize > 0)
       in.getByteArray(myRAM.get(), myRamSize);
+#if 0
+    if(myPlusROM.isValid() && !myPlusROM.load(in))
+      return false;
+#endif
   }
   catch(...)
   {

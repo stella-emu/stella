@@ -196,9 +196,6 @@ json JoyMap::saveMapping(const EventMode mode) const
             [](const MapType& a, const MapType& b)
   {
     // Event::Type first
-    if(a.second != b.second)
-      return a.second < b.second;
-
     if(a.first.button != b.first.button)
       return a.first.button < b.first.button;
 
@@ -211,7 +208,10 @@ json JoyMap::saveMapping(const EventMode mode) const
     if(a.first.hat != b.first.hat)
       return a.first.hat < b.first.hat;
 
+    if(a.first.hdir != b.first.hdir)
     return a.first.hdir < b.first.hdir;
+
+    return a.second < b.second;
   }
   );
 

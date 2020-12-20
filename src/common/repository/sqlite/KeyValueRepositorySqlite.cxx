@@ -22,10 +22,9 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 KeyValueRepositorySqlite::KeyValueRepositorySqlite(
-  SqliteDatabase& db,
-  const string& tableName
-) : myTableName(tableName),
-    myDb(db)
+  SqliteDatabase& db, const string& tableName)
+  : myTableName{tableName},
+    myDb{db}
 {
 }
 

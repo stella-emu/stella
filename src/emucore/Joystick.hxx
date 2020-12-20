@@ -30,6 +30,9 @@
 class Joystick : public Controller
 {
   public:
+    static constexpr int DEAD_ZONE_MIN = 0;
+    static constexpr int DEAD_ZONE_MAX = 29;
+
     /**
       Create a new joystick controller plugged into the specified jack
 
@@ -78,6 +81,11 @@ class Joystick : public Controller
       but it seemed like the best place to put it.
     */
     static void setDeadZone(int deadzone);
+
+    /**
+      Retrieves the effective deadzone value
+    */
+    static int deadZoneValue(int deadzone);
     inline static int deadzone() { return _DEAD_ZONE; }
 
   private:

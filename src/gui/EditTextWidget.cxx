@@ -27,7 +27,8 @@ EditTextWidget::EditTextWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, int w, int h, const string& text)
   : EditableWidget(boss, font, x, y, w, h + 2, text)
 {
-  _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG | Widget::FLAG_RETAIN_FOCUS;
+  _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG
+    | Widget::FLAG_RETAIN_FOCUS | Widget::FLAG_TRACK_MOUSE;
 
   EditableWidget::startEditMode();  // We're always in edit mode
 
@@ -56,24 +57,16 @@ void EditTextWidget::setText(const string& str, bool changed)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EditTextWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
-  if(!isEditable())
-    return;
-
-  resetSelection();
-  x += _editScrollOffset;
-
-  int width = 0;
-  uInt32 i;
-
-  for (i = 0; i < editString().size(); ++i)
+  if(b == MouseButton::LEFT)
   {
-    width += _font.getCharWidth(editString()[i]);
-    if (width >= x)
-      break;
-  }
+    if(!isEditable())
+      return;
 
-  if (setCaretPos(i))
-    setDirty();
+    resetSelection();
+    if(setCaretPos(toCaretPos(x)))
+      setDirty();
+  }
+  EditableWidget::handleMouseDown(x, y, b, clickCount);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

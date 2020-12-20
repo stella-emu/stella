@@ -24,7 +24,7 @@ CartridgeMDMWidget::CartridgeMDMWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, CartridgeMDM& cart)
   : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart),
-    myCartMDM(cart)
+    myCartMDM{cart}
 {
   initialize();
 }

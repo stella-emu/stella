@@ -126,7 +126,8 @@ void InputDialog::addDevicePortTab()
   // Add joystick deadzone setting
   myDeadzone = new SliderWidget(myTab, _font, HBORDER, ypos - 1, 13 * fontWidth, lineHeight,
                                 "Joystick deadzone size", lwidth, kDeadzoneChanged, 5 * fontWidth);
-  myDeadzone->setMinValue(0); myDeadzone->setMaxValue(29);
+  myDeadzone->setMinValue(Joystick::DEAD_ZONE_MIN);
+  myDeadzone->setMaxValue(Joystick::DEAD_ZONE_MAX);
   myDeadzone->setTickmarkIntervals(4);
   wid.push_back(myDeadzone);
 
@@ -152,6 +153,8 @@ void InputDialog::addDevicePortTab()
   myDejitterBase->setMinValue(Paddles::MIN_DEJITTER);
   myDejitterBase->setMaxValue(Paddles::MAX_DEJITTER);
   myDejitterBase->setTickmarkIntervals(5);
+  myDejitterBase->setToolTip("Adjust paddle input averaging.\n"
+                             "Note: Already implemented in 2600-daptor");
   //xpos += myDejitterBase->getWidth() + fontWidth - 4;
   wid.push_back(myDejitterBase);
 
@@ -162,6 +165,7 @@ void InputDialog::addDevicePortTab()
   myDejitterDiff->setMinValue(Paddles::MIN_DEJITTER);
   myDejitterDiff->setMaxValue(Paddles::MAX_DEJITTER);
   myDejitterDiff->setTickmarkIntervals(5);
+  myDejitterDiff->setToolTip("Adjust paddle reaction to fast movements.");
   wid.push_back(myDejitterDiff);
 
   // Add paddle speed (digital emulation)
@@ -291,6 +295,7 @@ void InputDialog::addMouseTab()
                                     lwidth, kDCSpeedChanged, 4 * fontWidth, "%");
   myDrivingSpeed->setMinValue(1); myDrivingSpeed->setMaxValue(20);
   myDrivingSpeed->setTickmarkIntervals(4);
+  myDrivingSpeed->setToolTip("Adjust driving controller sensitivity for digital and mouse input.");
   wid.push_back(myDrivingSpeed);
 
   // Mouse cursor state
@@ -403,14 +408,7 @@ void InputDialog::saveConfig()
 {
   Settings& settings = instance().settings();
 
-  // Left & right ports
-  instance().eventHandler().mapStelladaptors(mySAPort->getState() ? "rl": "lr");
-
-  // Use mouse as a controller
-  const string& usemouse = myMouseControl->getSelectedTag().toString();
-  settings.setValue("usemouse", usemouse);
-  instance().eventHandler().setMouseControllerMode(usemouse);
-
+  // *** Device & Ports ***
   // Joystick deadzone
   int deadzone = myDeadzone->getValue();
   settings.setValue("joydeadzone", deadzone);
@@ -433,6 +431,31 @@ void InputDialog::saveConfig()
   settings.setValue("dsense", sensitivity);
   Paddles::setDigitalSensitivity(sensitivity);
 
+  // Autofire rate
+  int rate = myAutoFireRate->getValue();
+  settings.setValue("autofirerate", rate);
+  Controller::setAutoFireRate(rate);
+
+  // Allow all 4 joystick directions
+  bool allowall4 = myAllowAll4->getState();
+  settings.setValue("joyallow4", allowall4);
+  instance().eventHandler().allowAllDirections(allowall4);
+
+  // Enable/disable modifier key-combos
+  settings.setValue("modcombo", myModCombo->getState());
+
+  // Left & right ports
+  instance().eventHandler().mapStelladaptors(mySAPort->getState() ? "rl" : "lr");
+
+  // AtariVox serial port
+  settings.setValue("avoxport", myAVoxPort->getText());
+
+  // *** Mouse ***
+  // Use mouse as a controller
+  const string& usemouse = myMouseControl->getSelectedTag().toString();
+  settings.setValue("usemouse", usemouse);
+  instance().eventHandler().setMouseControllerMode(usemouse);
+
   sensitivity = myMPaddleSpeed->getValue();
   settings.setValue("msense", sensitivity);
   Paddles::setMouseSensitivity(sensitivity);
@@ -447,31 +470,16 @@ void InputDialog::saveConfig()
   settings.setValue("dcsense", sensitivity);
   Driving::setSensitivity(sensitivity);
 
-  // Autofire rate
-  int rate = myAutoFireRate->getValue();
-  settings.setValue("autofirerate", rate);
-  Controller::setAutoFireRate(rate);
-
-  // AtariVox serial port
-  settings.setValue("avoxport", myAVoxPort->getText());
-
-  // Allow all 4 joystick directions
-  bool allowall4 = myAllowAll4->getState();
-  settings.setValue("joyallow4", allowall4);
-  instance().eventHandler().allowAllDirections(allowall4);
-
   // Grab mouse and hide cursor
   const string& cursor = myCursorState->getSelectedTag().toString();
   settings.setValue("cursor", cursor);
+
   // only allow grab mouse if cursor is hidden in emulation
   int state = myCursorState->getSelected();
   bool enableGrab = state != 1 && state != 3;
   bool grab = enableGrab ? myGrabMouse->getState() : false;
   settings.setValue("grabmouse", grab);
   instance().frameBuffer().enableGrabMouse(grab);
-
-  // Enable/disable modifier key-combos
-  settings.setValue("modcombo", myModCombo->getState());
 
   instance().eventHandler().saveKeyMapping();
   instance().eventHandler().saveJoyMapping();
@@ -668,7 +676,7 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kDeadzoneChanged:
-      myDeadzone->setValueLabel(3200 + 1000 * myDeadzone->getValue());
+      myDeadzone->setValueLabel(Joystick::deadZoneValue(myDeadzone->getValue()));
       break;
 
     case kPSpeedChanged:
@@ -781,10 +789,8 @@ void InputDialog::handleMouseControlState()
 {
   bool enable = myMouseControl->getSelected() != 2;
 
-  myMouseSensitivity->setEnabled(enable);
   myMPaddleSpeed->setEnabled(enable);
   myTrackBallSpeed->setEnabled(enable);
-  myDrivingSpeed->setEnabled(enable);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
