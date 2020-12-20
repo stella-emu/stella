@@ -24,8 +24,8 @@
 class SqliteError : public std::exception
 {
   public:
-    explicit SqliteError(const string& message) : myMessage(message) { }
-    explicit SqliteError(sqlite3* handle) : myMessage(sqlite3_errmsg(handle)) { }
+    explicit SqliteError(const string& message) : myMessage{message} { }
+    explicit SqliteError(sqlite3* handle) : myMessage{sqlite3_errmsg(handle)} { }
 
     const char* what() const noexcept override { return myMessage.c_str(); }
 
