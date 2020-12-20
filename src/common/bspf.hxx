@@ -303,6 +303,14 @@ namespace BSPF
     }
   }
 
+  // Trim leading and trailing whitespace from a string
+  inline string trim(const string& str)
+  {
+    string::size_type first = str.find_first_not_of(' ');
+    return (first == string::npos) ? EmptyString :
+            str.substr(first, str.find_last_not_of(' ')-first+1);
+  }
+
   // C++11 way to get local time
   // Equivalent to the C-style localtime() function, but is thread-safe
   inline std::tm localTime()
