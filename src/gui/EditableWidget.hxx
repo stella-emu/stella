@@ -70,7 +70,7 @@ class EditableWidget : public Widget, public CommandSender
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseMoved(int x, int y) override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id);
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
     virtual int caretOfs() const { return _editScrollOffset; }
     int toCaretPos(int x) const;
 
