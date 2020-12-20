@@ -22,6 +22,7 @@
 
 #include "Widget.hxx"
 #include "Rect.hxx"
+#include "ContextMenu.hxx"
 #include "UndoHandler.hxx"
 
 /**
@@ -66,6 +67,13 @@ class EditableWidget : public Widget, public CommandSender
     void setTextFilter(const TextFilter& filter) { _filter = filter; }
 
   protected:
+    void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
+    void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
+    void handleMouseMoved(int x, int y) override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id);
+    virtual int caretOfs() const { return _editScrollOffset; }
+    int toCaretPos(int x) const;
+
     void receivedFocusWidget() override;
     void lostFocusWidget() override;
     void tick() override;
@@ -95,6 +103,7 @@ class EditableWidget : public Widget, public CommandSender
     bool killLine(int direction);
     bool killWord(int direction);
     bool moveWord(int direction, bool select);
+    bool markWord();
 
     bool killSelectedText(bool addEdit = true);
     int selectStartPos();
@@ -109,9 +118,12 @@ class EditableWidget : public Widget, public CommandSender
     bool tryInsertChar(char c, int pos);
 
   private:
+    unique_ptr<ContextMenu> myMouseMenu;
+    bool    _isDragging{false};
+
     bool   _editable{true};
     string _editString;
-    int _maxLen{0};
+    int    _maxLen{0};
     unique_ptr<UndoHandler> myUndoHandler;
 
     int    _caretPos{0};

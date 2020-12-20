@@ -49,6 +49,7 @@ WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent, const 
 #else
   add(ypos, "added high scores saving");
   add(ypos, "enhanced cut/copy/paste and undo/redo for text editing");
+  add(ypos, "added mouse support for text editing");
   add(ypos, "added wildcard support to launcher dialog filter");
   add(ypos, "added option to search subdirectories in launcher");
   add(ypos, "added tooltips to many UI items");

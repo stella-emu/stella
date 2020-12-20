@@ -72,6 +72,7 @@ class PopUpWidget : public EditableWidget
     void handleMouseWheel(int x, int y, int direction) override;
     bool handleEvent(Event::Type e) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    int caretOfs() const override { return _editScrollOffset - _labelWidth; }
 
     void setArrow();
     void drawWidget(bool hilite) override;

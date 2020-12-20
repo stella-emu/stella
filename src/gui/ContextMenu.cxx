@@ -35,8 +35,8 @@ ContextMenu::ContextMenu(GuiObject* boss, const GUI::Font& font,
     _cmd(cmd),
     _maxWidth(width)
 {
-  addItems(items);
   setArrows();
+  addItems(items);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -48,10 +48,10 @@ void ContextMenu::addItems(const VariantList& items)
   // Resize to largest string
   int maxwidth = _maxWidth;
   for(const auto& e: _entries)
-    maxwidth = std::max(maxwidth, _font.getStringWidth(e.first));
+    maxwidth = std::max(maxwidth, _font.getStringWidth(e.first) + _textOfs * 2 + 2);
 
   _x = _y = 0;
-  _w = maxwidth + PopUpWidget::dropDownWidth(_font); // 23;
+  _w = maxwidth;
   _h = 1;  // recalculate this in ::recalc()
 
   _scrollUpColor = _firstEntry > 0 ? kScrollColor : kColor;

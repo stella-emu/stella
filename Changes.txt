@@ -16,9 +16,11 @@
 
   * Added high scores saving.
 
-  * Enhanced cut/copy/paste	for text editing. (TODO: PromptWidget)
+  * Enhanced cut/copy/paste	for text editing (except PromptWidget).
 
-  * Added undo and redo to text editing. (TODO: PromptWidget)
+  * Added undo and redo to text editing (except PromptWidget).
+
+  * Added mouse support for text editing (except PromptWidget).
 
   * Added wildcard support to launcher dialog filter.
 
