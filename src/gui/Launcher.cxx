@@ -27,9 +27,9 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Launcher::Launcher(OSystem& osystem)
-  : DialogContainer(osystem)
+  : DialogContainer(osystem),
+    mySize(myOSystem.settings().getSize("launcherres"))
 {
-  mySize = myOSystem.settings().getSize("launcherres");
   const Common::Size& d = myOSystem.frameBuffer().desktopSize();
   double overscan = 1 - myOSystem.settings().getInt("tia.fs_overscan") / 100.0;
 

@@ -24,7 +24,7 @@
 KidVid::KidVid(Jack jack, const Event& event, const System& system,
                const string& romMd5)
   : Controller(jack, event, system, Controller::Type::KidVid),
-    myEnabled(myJack == Jack::Right)
+    myEnabled{myJack == Jack::Right}
 {
   // Right now, there are only two games that use the KidVid
   if(romMd5 == "ee6665683ebdb539e89ba620981cb0f6")

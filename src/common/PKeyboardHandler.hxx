@@ -79,6 +79,8 @@ class PhysicalKeyboardHandler
     /** See comments on KeyMap.myModEnabled for more information. */
     bool& useModKeys() { return myKeyMap.enableMod(); }
 
+    void toggleModKeys(bool toggle = true);
+
   private:
 
     // Structure used for action menu items

@@ -16,9 +16,11 @@
 
   * Added high scores saving.
 
-  * Enhanced cut/copy/paste	for text editing. (TODO: PromptWidget)
+  * Enhanced cut/copy/paste	for text editing (except PromptWidget).
 
-  * Added undo and redo to text editing. (TODO: PromptWidget)
+  * Added undo and redo to text editing (except PromptWidget).
+
+  * Added mouse support for text editing (except PromptWidget).
 
   * Added wildcard support to launcher dialog filter.
 
@@ -30,9 +32,14 @@
 
   * Added sound to Time Machine playback.
 
+  * Extended global hotkeys for input devices & ports settings.
+
   * Increased sample size for CDFJ+.
 
   * Fixed autofire bug for trackball controllers.
+
+  * Fixed Stelladaptor/2600'daptor devices sometimes not being assigned
+    correct default mappings.
 
   * Codebase now uses C++17 features.
 

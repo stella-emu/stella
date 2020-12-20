@@ -28,9 +28,9 @@ ToggleWidget::ToggleWidget(GuiObject* boss, const GUI::Font& font,
                            int x, int y, int cols, int rows, int shiftBits)
   : Widget(boss, font, x, y, 16, 16),
     CommandSender(boss),
-    _rows(rows),
-    _cols(cols),
-    _shiftBits(shiftBits)
+    _rows{rows},
+    _cols{cols},
+    _shiftBits{shiftBits}
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG | Widget::FLAG_RETAIN_FOCUS |
            Widget::FLAG_WANTS_RAWDATA;

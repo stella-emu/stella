@@ -65,7 +65,7 @@ class PaletteHandler
     };
 
   public:
-    PaletteHandler(OSystem& system);
+    explicit PaletteHandler(OSystem& system);
 
     /**
       Cycle through available palettes.
@@ -139,7 +139,7 @@ class PaletteHandler
       float y{0.F};
 
       explicit vector2d(float _x = 0.F, float _y = 0.F)
-        : x(_x), y(_y) { }
+        : x{_x}, y{_y} { }
     };
 
     /**

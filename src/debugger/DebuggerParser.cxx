@@ -57,8 +57,8 @@ using std::right;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DebuggerParser::DebuggerParser(Debugger& d, Settings& s)
-  : debugger(d),
-    settings(s)
+  : debugger{d},
+    settings{s}
 {
 }
 

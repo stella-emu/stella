@@ -57,15 +57,15 @@ Thumbulator::Thumbulator(const uInt16* rom_ptr, uInt16* ram_ptr, uInt32 rom_size
                          const uInt32 c_base, const uInt32 c_start, const uInt32 c_stack,
                          bool traponfatal, Thumbulator::ConfigureFor configurefor,
                          Cartridge* cartridge)
-  : rom(rom_ptr),
-    romSize(rom_size),
-    cBase(c_base),
-    cStart(c_start),
-    cStack(c_stack),
-    decodedRom(make_unique<Op[]>(romSize / 2)),  // NOLINT
-    ram(ram_ptr),
-    configuration(configurefor),
-    myCartridge(cartridge)
+  : rom{rom_ptr},
+    romSize{rom_size},
+    cBase{c_base},
+    cStart{c_start},
+    cStack{c_stack},
+    decodedRom{make_unique<Op[]>(romSize / 2)},  // NOLINT
+    ram{ram_ptr},
+    configuration{configurefor},
+    myCartridge{cartridge}
 {
   for(uInt32 i = 0; i < romSize / 2; ++i)
     decodedRom[i] = decodeInstructionWord(CONV_RAMROM(rom[i]));

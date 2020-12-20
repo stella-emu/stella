@@ -139,7 +139,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
     lblSelect = "";
     int lwSelectShort = font.getStringWidth(lblSelect);
 
-    wTotal -= lwSelect - lwSelectShort;
+    // wTotal -= lwSelect - lwSelectShort; // dead code
     lwSelect = lwSelectShort;
     noSelect = true;
   }
@@ -435,6 +435,7 @@ void LauncherDialog::updateUI()
   loadRomInfo();
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 size_t LauncherDialog::matchWithJoker(const string& str, const string& pattern)
 {
   if(str.length() >= pattern.length())
@@ -460,6 +461,7 @@ size_t LauncherDialog::matchWithJoker(const string& str, const string& pattern)
   return string::npos;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool LauncherDialog::matchWithWildcards(const string& str, const string& pattern)
 {
   string pat = pattern;
@@ -634,9 +636,28 @@ void LauncherDialog::showOnlyROMs(bool state)
 void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
 {
   // Grab the key before passing it to the actual dialog and check for
-  // Control-R (reload ROM listing)
-  if(StellaModTest::isControl(mod) && key == KBDK_R)
-    reload();
+  // context menu keys
+  if(StellaModTest::isControl(mod))
+  {
+    switch(key)
+    {
+      case KBDK_P:
+        myGlobalProps->open();
+        break;
+
+      case KBDK_H:
+        if(instance().highScores().enabled())
+          openHighScores();
+        break;
+
+      case KBDK_R:
+        reload();
+        break;
+
+      default:
+        break;
+    }
+  }
   else
 #if defined(RETRON77)
     // handle keys used by R77
@@ -725,21 +746,22 @@ Event::Type LauncherDialog::getJoyAxisEvent(int stick, JoyAxis axis, JoyDir adir
 void LauncherDialog::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
   // Grab right mouse button for context menu, send left to base class
-  if(b == MouseButton::RIGHT)
+  if(b == MouseButton::RIGHT
+     && x + getAbsX() >= myList->getLeft() && x + getAbsX() <= myList->getRight()
+     && y + getAbsY() >= myList->getTop() && y + getAbsY() <= myList->getBottom())
   {
     // Dynamically create context menu for ROM list options
     VariantList items;
 
     if(!currentNode().isDirectory() && Bankswitch::isValidRomName(currentNode()))
-      VarList::push_back(items, "Power-on options" + ELLIPSIS, "override");
+      VarList::push_back(items, " Power-on options" + ELLIPSIS + "   Ctrl+P", "override");
     if(instance().highScores().enabled())
-      VarList::push_back(items, "High scores" + ELLIPSIS, "highscores");
-    VarList::push_back(items, "Reload listing", "reload");
+      VarList::push_back(items, " High scores" + ELLIPSIS + "        Ctrl+H", "highscores");
+    VarList::push_back(items, " Reload listing      Ctrl+R ", "reload");
     myMenu->addItems(items);
 
     // Add menu at current x,y mouse location
     myMenu->show(x + getAbsX(), y + getAbsY(), surface().dstRect());
-
   }
   else
     Dialog::handleMouseDown(x, y, b, clickCount);

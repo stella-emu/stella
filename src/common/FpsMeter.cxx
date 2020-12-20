@@ -21,7 +21,7 @@ using namespace std::chrono;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FpsMeter::FpsMeter(uInt32 queueSize)
-  : myQueue(queueSize)
+  : myQueue{queueSize}
 {
   reset();
 }

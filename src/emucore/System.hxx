@@ -293,7 +293,7 @@ class System : public Serializable
 
       // Constructors
       PageAccess() = default;
-      PageAccess(Device* dev, PageAccessType access) : device(dev), type(access) { }
+      PageAccess(Device* dev, PageAccessType access) : device{dev}, type{access} { }
     };
 
     /**

@@ -24,7 +24,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PaletteHandler::PaletteHandler(OSystem& system)
-  : myOSystem(system)
+  : myOSystem{system}
 {
   // Load user-defined palette for this ROM
   loadUserPalette();
@@ -442,7 +442,7 @@ void PaletteHandler::generateCustomPalette(ConsoleTiming timing)
   if(timing == ConsoleTiming::ntsc)
   {
     vector2d IQ[NUM_CHROMA];
-    // YIQ is YUV shifted by 33°
+    // YIQ is YUV shifted by 33 degrees
     constexpr float offset = 33 * BSPF::PI_f / 180;
     const float shift = myPhaseNTSC * BSPF::PI_f / 180;
 
@@ -542,7 +542,7 @@ void PaletteHandler::generateCustomPalette(ConsoleTiming timing)
 void PaletteHandler::adjustHueSaturation(int& R, int& G, int& B, float H, float S)
 {
   // Adapted from http://beesbuzz.biz/code/16-hsv-color-transforms
-  // (C) J. “Fluffy” Shagam
+  // (C) J. Fluffy Shagam
   // License: CC BY-SA 4.0
   const float su = S * cosf(-H * BSPF::PI_f);
   const float sw = S * sinf(-H * BSPF::PI_f);

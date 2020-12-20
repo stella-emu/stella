@@ -423,7 +423,7 @@ void retro_set_input_state(retro_input_state_t cb) { input_state_cb = cb; }
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void retro_get_system_info(struct retro_system_info *info)
 {
-  memset(info,0,sizeof(retro_system_info));
+  *info = retro_system_info{};  // reset to defaults
 
   info->library_name = stella.getCoreName();
 #ifndef GIT_VERSION
@@ -438,18 +438,20 @@ void retro_get_system_info(struct retro_system_info *info)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void retro_get_system_av_info(struct retro_system_av_info *info)
 {
-  memset(info,0,sizeof(retro_system_av_info));
+  *info = retro_system_av_info{};  // reset to defaults
 
   info->timing.fps            = stella.getVideoRate();
   info->timing.sample_rate    = stella.getAudioRate();
 
-  info->geometry.base_width   = stella.getRenderWidth() - crop_left * (stella.getVideoZoom() == 1 ? 2 : 1);
+  info->geometry.base_width   = stella.getRenderWidth() - crop_left *
+      (stella.getVideoZoom() == 1 ? 2 : 1);
   info->geometry.base_height  = stella.getRenderHeight();
 
   info->geometry.max_width    = stella.getVideoWidthMax();
   info->geometry.max_height   = stella.getVideoHeightMax();
 
-  info->geometry.aspect_ratio = stella.getVideoAspectPar() * (float) info->geometry.base_width / (float) info->geometry.base_height;
+  info->geometry.aspect_ratio = stella.getVideoAspectPar() *
+      (float) info->geometry.base_width / (float) info->geometry.base_height;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

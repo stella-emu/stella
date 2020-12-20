@@ -125,7 +125,7 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
       ADD_EVENT(Event::TogglePhosphor,      "Toggle 'phosphor' effect");
       ADD_LINE();
       ADD_EVENT(Event::ToggleGrabMouse,     "Grab mouse (keep in window)");
-      ADD_EVENT(Event::HandleMouseControl,  "Toggle controller for mouse");
+      ADD_EVENT(Event::NextMouseControl,    "Toggle controller for mouse");
       ADD_EVENT(Event::ToggleSAPortOrder,   "Toggle Stelladaptor left/right");
       ADD_LINE();
       ADD_EVENT(Event::VolumeIncrease,      "Increase volume by 2%");

@@ -23,7 +23,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandlerSDL2::EventHandlerSDL2(OSystem& osystem)
-  : EventHandler(osystem)
+  : EventHandler{osystem}
 {
   ASSERT_MAIN_THREAD;
 

@@ -115,6 +115,7 @@ SOURCES_CXX := \
 	$(CORE_DIR)/emucore/MT24LC256.cxx \
 	$(CORE_DIR)/emucore/OSystem.cxx \
 	$(CORE_DIR)/emucore/Paddles.cxx \
+	$(CORE_DIR)/emucore/PlusROM.cxx \
 	$(CORE_DIR)/emucore/PointingDevice.cxx \
 	$(CORE_DIR)/emucore/Props.cxx \
 	$(CORE_DIR)/emucore/PropsSet.cxx \

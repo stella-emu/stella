@@ -29,8 +29,8 @@
 CartridgeDPCPlus::CartridgeDPCPlus(const ByteBuffer& image, size_t size,
                                    const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
-    myImage(make_unique<uInt8[]>(32_KB)),
-    mySize(std::min(size, 32_KB))
+    myImage{make_unique<uInt8[]>(32_KB)},
+    mySize{std::min(size, 32_KB)}
 {
   // Image is always 32K, but in the case of ROM < 32K, the image is
   // copied to the end of the buffer

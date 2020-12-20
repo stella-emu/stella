@@ -48,7 +48,7 @@ using std::right;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
   : DebuggerSystem(dbg, console),
-    myOSystem(osystem)
+    myOSystem{osystem}
 {
   // Add case sensitive compare for user labels
   // TODO - should user labels be case insensitive too?
@@ -1516,7 +1516,7 @@ CartDebug::AddrType CartDebug::addressType(uInt16 addr) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartDebug::getBankDirectives(ostream& buf, BankInfo& info) const
+void CartDebug::getBankDirectives(ostream& buf, const BankInfo& info) const
 {
   // Start with the offset for this bank
   buf << "ORG " << Base::HEX4 << info.offset << endl;

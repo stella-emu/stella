@@ -46,8 +46,8 @@ namespace {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TIASurface::TIASurface(OSystem& system)
-  : myOSystem(system),
-    myFB(system.frameBuffer())
+  : myOSystem{system},
+    myFB{system.frameBuffer()}
 {
   // Load NTSC filter settings
   myNTSCFilter.loadConfig(myOSystem.settings());

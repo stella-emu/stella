@@ -304,6 +304,8 @@
 		DC47455D09C34BFA00EDDA3A /* CheetahCheat.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC47455209C34BFA00EDDA3A /* CheetahCheat.hxx */; };
 		DC47455E09C34BFA00EDDA3A /* RamCheat.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC47455309C34BFA00EDDA3A /* RamCheat.cxx */; };
 		DC47455F09C34BFA00EDDA3A /* RamCheat.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC47455409C34BFA00EDDA3A /* RamCheat.hxx */; };
+		DC479403258C56B800F52462 /* PlusROM.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC479401258C56B800F52462 /* PlusROM.cxx */; };
+		DC479404258C56B800F52462 /* PlusROM.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC479402258C56B800F52462 /* PlusROM.hxx */; };
 		DC487FB60DA5350900E12499 /* AtariVox.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC487FB40DA5350900E12499 /* AtariVox.cxx */; };
 		DC487FB70DA5350900E12499 /* AtariVox.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC487FB50DA5350900E12499 /* AtariVox.hxx */; };
 		DC4AC6EF0DC8DACB00CD3AD2 /* RiotWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC4AC6ED0DC8DACB00CD3AD2 /* RiotWidget.cxx */; };
@@ -1091,6 +1093,8 @@
 		DC47455209C34BFA00EDDA3A /* CheetahCheat.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = CheetahCheat.hxx; sourceTree = "<group>"; };
 		DC47455309C34BFA00EDDA3A /* RamCheat.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = RamCheat.cxx; sourceTree = "<group>"; };
 		DC47455409C34BFA00EDDA3A /* RamCheat.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = RamCheat.hxx; sourceTree = "<group>"; };
+		DC479401258C56B800F52462 /* PlusROM.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlusROM.cxx; sourceTree = "<group>"; };
+		DC479402258C56B800F52462 /* PlusROM.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = PlusROM.hxx; sourceTree = "<group>"; };
 		DC487FB40DA5350900E12499 /* AtariVox.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = AtariVox.cxx; sourceTree = "<group>"; };
 		DC487FB50DA5350900E12499 /* AtariVox.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = AtariVox.hxx; sourceTree = "<group>"; };
 		DC4AC6ED0DC8DACB00CD3AD2 /* RiotWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = RiotWidget.cxx; sourceTree = "<group>"; };
@@ -2071,6 +2075,8 @@
 				2DDBEB7508457B7D00812C11 /* OSystem.hxx */,
 				2DE2DF820627AE34006BEC99 /* Paddles.cxx */,
 				2DE2DF830627AE34006BEC99 /* Paddles.hxx */,
+				DC479401258C56B800F52462 /* PlusROM.cxx */,
+				DC479402258C56B800F52462 /* PlusROM.hxx */,
 				DC53B6AD1F3622DA00AA6BFB /* PointingDevice.cxx */,
 				DC3DAFAB1F2E233B00A64410 /* PointingDevice.hxx */,
 				DCF7F124223D795F00701A47 /* ProfilingRunner.cxx */,
@@ -2731,6 +2737,7 @@
 				DC932D440F278A5200FEFEFC /* DefProps.hxx in Headers */,
 				DC932D450F278A5200FEFEFC /* Serializable.hxx in Headers */,
 				DC932D460F278A5200FEFEFC /* SerialPort.hxx in Headers */,
+				DC479404258C56B800F52462 /* PlusROM.hxx in Headers */,
 				DC9EA8880F729A36000452B5 /* KidVid.hxx in Headers */,
 				DCF7F128223D796000701A47 /* ConsoleIO.hxx in Headers */,
 				DCF467B80F93993B00B25D7A /* SoundNull.hxx in Headers */,
@@ -3282,6 +3289,7 @@
 				DCAAE5EE1715887B0080BB82 /* CartF8Widget.cxx in Sources */,
 				DCAAE5F01715887B0080BB82 /* CartFAWidget.cxx in Sources */,
 				DCAAE5F21715887B0080BB82 /* CartUAWidget.cxx in Sources */,
+				DC479403258C56B800F52462 /* PlusROM.cxx in Sources */,
 				DC676A411729A0B000E4E73D /* Cart3EWidget.cxx in Sources */,
 				DCBA539A25557E2800087DD7 /* UndoHandler.cxx in Sources */,
 				DC676A431729A0B000E4E73D /* Cart4A50Widget.cxx in Sources */,

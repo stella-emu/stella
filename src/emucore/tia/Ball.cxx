@@ -20,7 +20,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Ball::Ball(uInt32 collisionMask)
-  : myCollisionMaskDisabled(collisionMask)
+  : myCollisionMaskDisabled{collisionMask}
 {
 }
 

@@ -300,7 +300,7 @@ void Dialog::addFocusWidget(Widget* w)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::addToFocusList(WidgetArray& list)
+void Dialog::addToFocusList(const WidgetArray& list)
 {
   // All focusable widgets should retain focus
   for(const auto& w: list)
@@ -314,7 +314,7 @@ void Dialog::addToFocusList(WidgetArray& list)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::addToFocusList(WidgetArray& list, TabWidget* w, int tabId)
+void Dialog::addToFocusList(const WidgetArray& list, TabWidget* w, int tabId)
 {
   // Only add the list if the tab actually exists
   if(!w || w->getID() >= _myTabList.size())

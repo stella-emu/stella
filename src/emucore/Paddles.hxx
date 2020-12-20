@@ -49,13 +49,18 @@ class Paddles : public Controller
 
   public:
     static constexpr float BASE_ANALOG_SENSE = 0.148643628F;
+    static constexpr int MIN_ANALOG_SENSE = 0;
     static constexpr int MAX_ANALOG_SENSE = 30;
     static constexpr int MIN_ANALOG_CENTER = -10;
     static constexpr int MAX_ANALOG_CENTER = 30;
+    static constexpr int MIN_DIGITAL_SENSE = 1;
     static constexpr int MAX_DIGITAL_SENSE = 20;
+    static constexpr int MIN_MOUSE_SENSE = 1;
     static constexpr int MAX_MOUSE_SENSE = 20;
     static constexpr int MIN_DEJITTER = 0;
     static constexpr int MAX_DEJITTER = 10;
+    static constexpr int MIN_MOUSE_RANGE = 1;
+    static constexpr int MAX_MOUSE_RANGE = 100;
 
     /**
       Update the entire digital and analog pin state according to the
@@ -113,6 +118,8 @@ class Paddles : public Controller
       @return  Resulting sensitivity
     */
     static float setAnalogSensitivity(int sensitivity);
+
+    static float analogSensitivityValue(int sensitivity);
 
     /**
       @param strength  Value from 0 to 10

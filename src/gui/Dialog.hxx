@@ -71,9 +71,9 @@ class Dialog : public GuiObject
     void tick() override;
 
     void addFocusWidget(Widget* w) override;
-    void addToFocusList(WidgetArray& list) override;
-    void addToFocusList(WidgetArray& list, TabWidget* w, int tabId);
-    void addBGroupToFocusList(WidgetArray& list) { _buttonGroup = list; }
+    void addToFocusList(const WidgetArray& list) override;
+    void addToFocusList(const WidgetArray& list, TabWidget* w, int tabId);
+    void addBGroupToFocusList(const WidgetArray& list) { _buttonGroup = list; }
     void addTabWidget(TabWidget* w);
     void addDefaultWidget(Widget* w) { _defaultWidget = w; }
     void addOKWidget(Widget* w)     { _okWidget = w;     }

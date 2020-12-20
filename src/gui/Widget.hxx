@@ -83,7 +83,7 @@ class Widget : public GuiObject
     void receivedFocus();
     void lostFocus();
     void addFocusWidget(Widget* w) override { _focusList.push_back(w); }
-    void addToFocusList(WidgetArray& list) override {
+    void addToFocusList(const WidgetArray& list) override {
       Vec::append(_focusList, list);
     }
 
@@ -157,7 +157,7 @@ class Widget : public GuiObject
     static bool isWidgetInChain(Widget* start, Widget* find);
 
     /** Determine if 'find' is in the widget array */
-    static bool isWidgetInChain(WidgetArray& list, Widget* find);
+    static bool isWidgetInChain(const WidgetArray& list, Widget* find);
 
     /** Select either previous, current, or next widget in chain to have
         focus, and deselects all others */

@@ -25,7 +25,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, CartridgeDPCPlus& cart)
   : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
-    myCart(cart)
+    myCart{cart}
 {
   size_t size = cart.mySize;
 

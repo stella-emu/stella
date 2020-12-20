@@ -24,7 +24,7 @@ CartridgeTVBoyWidget::CartridgeTVBoyWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, CartridgeTVBoy& cart)
   : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart),
-    myCartTVBoy(cart)
+    myCartTVBoy{cart}
 {
   initialize();
 }

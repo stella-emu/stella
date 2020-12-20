@@ -29,7 +29,7 @@ PointingDevice::PointingDevice(Jack jack, const Event& event,
                                const System& system, Controller::Type type,
                                float sensitivity)
   : Controller(jack, event, system, type),
-    mySensitivity(sensitivity)
+    mySensitivity{sensitivity}
 {
   // The code in ::read() is set up to always return IOPortA values in
   // the lower 4 bits data value
@@ -110,7 +110,7 @@ bool PointingDevice::setMouseControl(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PointingDevice::setSensitivity(int sensitivity)
 {
-  BSPF::clamp(sensitivity, 1, 20, 10);
+  BSPF::clamp(sensitivity, MIN_SENSE, MAX_SENSE, (MIN_SENSE + MAX_SENSE) / 2);
   TB_SENSITIVITY = sensitivity / 10.0F;
 }
 

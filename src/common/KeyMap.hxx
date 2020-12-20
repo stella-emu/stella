@@ -39,9 +39,9 @@ class KeyMap
       StellaMod mod{StellaMod(0)};
 
       explicit Mapping(EventMode c_mode, StellaKey c_key, StellaMod c_mod)
-        : mode(c_mode), key(c_key), mod(c_mod) { }
+        : mode{c_mode}, key{c_key}, mod{c_mod} { }
       explicit Mapping(EventMode c_mode, int c_key, int c_mod)
-        : mode(c_mode), key(StellaKey(c_key)), mod(StellaMod(c_mod)) { }
+        : mode{c_mode}, key{StellaKey(c_key)}, mod{StellaMod(c_mod)} { }
       Mapping(const Mapping&) = default;
       Mapping& operator=(const Mapping&) = default;
       Mapping(Mapping&&) = default;

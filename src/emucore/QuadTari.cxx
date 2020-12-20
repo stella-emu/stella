@@ -30,11 +30,12 @@
 #include "QuadTari.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-QuadTari::QuadTari(Jack jack, const OSystem& osystem, const System& system, const Properties& properties)
+QuadTari::QuadTari(Jack jack, const OSystem& osystem, const System& system,
+                   const Properties& properties)
   : Controller(jack, osystem.eventHandler().event(), system,
                Controller::Type::QuadTari),
-    myOSystem(osystem),
-    myProperties(properties)
+    myOSystem{osystem},
+    myProperties{properties}
 {
   Controller::Type firstType = Controller::Type::Joystick,
     secondType = Controller::Type::Joystick;

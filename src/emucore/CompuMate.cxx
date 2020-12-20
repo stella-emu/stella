@@ -23,8 +23,8 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CompuMate::CompuMate(const Console& console, const Event& event,
                      const System& system)
-  : myConsole(console),
-    myEvent(event)
+  : myConsole{console},
+    myEvent{event}
 {
   // These controller pointers will be retrieved by the Console, which will
   // also take ownership of them
