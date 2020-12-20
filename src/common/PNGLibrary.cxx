@@ -33,7 +33,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PNGLibrary::PNGLibrary(OSystem& osystem)
-  : myOSystem(osystem)
+  : myOSystem{osystem}
 {
 }
 

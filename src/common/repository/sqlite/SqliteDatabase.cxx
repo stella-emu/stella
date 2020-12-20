@@ -30,7 +30,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SqliteDatabase::SqliteDatabase(const string& databaseDirectory,
                                const string& databaseName)
-  : myDatabaseFile(databaseDirectory + SEPARATOR + databaseName + ".sqlite3")
+  : myDatabaseFile{databaseDirectory + SEPARATOR + databaseName + ".sqlite3"}
 {
 }
 

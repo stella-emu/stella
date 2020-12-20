@@ -28,7 +28,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CheatManager::CheatManager(OSystem& osystem)
-  : myOSystem(osystem)
+  : myOSystem{osystem}
 {
 }
 

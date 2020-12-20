@@ -29,7 +29,7 @@ namespace {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 KeyValueRepositoryConfigfile::KeyValueRepositoryConfigfile(const FilesystemNode& file)
-  : myFile(file)
+  : myFile{file}
 {
 }
 

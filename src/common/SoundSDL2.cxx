@@ -40,8 +40,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SoundSDL2::SoundSDL2(OSystem& osystem, AudioSettings& audioSettings)
-  : Sound(osystem),
-    myAudioSettings(audioSettings)
+  : Sound{osystem},
+    myAudioSettings{audioSettings}
 {
   ASSERT_MAIN_THREAD;
 

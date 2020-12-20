@@ -32,7 +32,7 @@ class Expression
 {
   public:
     Expression(Expression* lhs = nullptr, Expression* rhs = nullptr)
-      : myLHS(lhs), myRHS(rhs) { }
+      : myLHS{lhs}, myRHS{rhs} { }
     virtual ~Expression() = default;
 
     virtual Int32 evaluate() const { return 0; }

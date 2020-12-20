@@ -23,7 +23,7 @@ CartridgeWDWidget::CartridgeWDWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, CartridgeWD& cart)
   : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart),
-    myCartWD(cart)
+    myCartWD{cart}
 {
   initialize();
 }

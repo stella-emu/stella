@@ -37,8 +37,8 @@ namespace {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StaggeredLogger::StaggeredLogger(const string& message, Logger::Level level)
-  : myMessage(message),
-    myLevel(level)
+  : myMessage{message},
+    myLevel{level}
 {
 }
 

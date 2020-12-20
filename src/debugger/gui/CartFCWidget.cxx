@@ -20,8 +20,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeFCWidget::CartridgeFCWidget(
-  GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-  int x, int y, int w, int h, CartridgeFC& cart)
+      GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
+      int x, int y, int w, int h, CartridgeFC& cart)
   : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart)
 {
   initialize();

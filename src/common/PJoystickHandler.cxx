@@ -36,8 +36,8 @@ using json = nlohmann::json;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PhysicalJoystickHandler::PhysicalJoystickHandler(
       OSystem& system, EventHandler& handler)
-  : myOSystem(system),
-    myHandler(handler)
+  : myOSystem{system},
+    myHandler{handler}
 {
   if(myOSystem.settings().getInt("event_ver") != Event::VERSION) {
     Logger::info("event version mismatch; dropping previous joystick mappings");

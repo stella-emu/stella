@@ -43,7 +43,7 @@ namespace {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AudioSettings::AudioSettings(Settings& settings)
-  : mySettings(settings)
+  : mySettings{settings}
 {
   setPreset(normalizedPreset(mySettings.getInt(SETTING_PRESET)));
 }

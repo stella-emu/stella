@@ -33,14 +33,14 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
                      uInt32 ramsize, uInt32 numrows, uInt32 pagesize)
   : Widget(boss, lfont, x, y, w, h),
     CommandSender(boss),
-    _nfont(nfont),
-    myFontWidth(lfont.getMaxCharWidth()),
-    myFontHeight(lfont.getFontHeight()),
-    myLineHeight(lfont.getLineHeight()),
-    myButtonHeight(myLineHeight * 1.25),
-    myRamSize(ramsize),
-    myNumRows(numrows),
-    myPageSize(pagesize)
+    _nfont{nfont},
+    myFontWidth{lfont.getMaxCharWidth()},
+    myFontHeight{lfont.getFontHeight()},
+    myLineHeight{lfont.getLineHeight()},
+    myButtonHeight{static_cast<int>(myLineHeight * 1.25)},
+    myRamSize{ramsize},
+    myNumRows{numrows},
+    myPageSize{pagesize}
 {
   const int bwidth  = lfont.getStringWidth("Compare " + ELLIPSIS),
             bheight = myLineHeight + 2;

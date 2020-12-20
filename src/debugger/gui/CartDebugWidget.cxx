@@ -29,11 +29,11 @@ CartDebugWidget::CartDebugWidget(GuiObject* boss, const GUI::Font& lfont,
                                  int x, int y, int w, int h)
   : Widget(boss, lfont, x, y, w, h),
     CommandSender(boss),
-    _nfont(nfont),
-    myFontWidth(lfont.getMaxCharWidth()),
-    myFontHeight(lfont.getFontHeight()),
-    myLineHeight(lfont.getLineHeight()),
-    myButtonHeight(myLineHeight + 4)
+    _nfont{nfont},
+    myFontWidth{lfont.getMaxCharWidth()},
+    myFontHeight{lfont.getFontHeight()},
+    myLineHeight{lfont.getLineHeight()},
+    myButtonHeight{myLineHeight + 4}
 {
 }
 

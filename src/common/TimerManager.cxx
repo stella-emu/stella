@@ -20,7 +20,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TimerManager::TimerManager()
-  : nextId(no_timer + 1),
+  : nextId{no_timer + 1},
     queue()
 {
 }

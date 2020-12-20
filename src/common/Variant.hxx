@@ -44,8 +44,8 @@ class Variant
   public:
     Variant() { }  // NOLINT
 
-    Variant(const string& s) : data(s) { }
-    Variant(const char* s) : data(s) { }
+    Variant(const string& s) : data{s} { }
+    Variant(const char* s) : data{s} { }
 
     Variant(Int32 i)  { buf().str(""); buf() << i; data = buf().str(); }
     Variant(uInt32 i) { buf().str(""); buf() << i; data = buf().str(); }

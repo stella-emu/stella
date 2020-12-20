@@ -31,7 +31,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBBackendSDL2::FBBackendSDL2(OSystem& osystem)
-  : myOSystem(osystem)
+  : myOSystem{osystem}
 {
   ASSERT_MAIN_THREAD;
 

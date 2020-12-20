@@ -24,9 +24,9 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 MouseControl::MouseControl(Console& console, const string& mode)
-  : myProps(console.properties()),
-    myLeftController(console.leftController()),
-    myRightController(console.rightController())
+  : myProps{console.properties()},
+    myLeftController{console.leftController()},
+    myRightController{console.rightController()}
 {
   istringstream m_axis(mode);
   string m_mode;

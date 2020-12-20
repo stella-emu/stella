@@ -28,8 +28,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RewindManager::RewindManager(OSystem& system, StateManager& statemgr)
-  : myOSystem(system),
-    myStateManager(statemgr)
+  : myOSystem{system},
+    myStateManager{statemgr}
 {
   setup();
 }
