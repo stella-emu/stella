@@ -1987,23 +1987,18 @@
       <th>Key (macOS)</th>
     </tr>
     <tr>
-      <td>Load <i>previous</i> game in ROM (multicart ROM, TIA mode)</td>
+      <td>Load <i>previous</i> game in ROM (multicart ROM)</td>
       <td>Shift-Control + r</td>
       <td>Shift-Control + r</td>
     </tr>
     <tr>
-      <td>Reload current ROM (singlecart ROM, TIA mode)<br>
-        Load <i>next</i> game in ROM (multicart ROM, TIA mode)</td>
+      <td>Reload current ROM (singlecart ROM)<br>
+        Load <i>next</i> game in ROM (multicart ROM)</td>
       <td>Control + r</td>
       <td>Control + r</td>
     </tr>
     <tr>
-      <td>Reload ROM listing (ROM launcher mode)</td>
-      <td>Control + r</td>
-      <td>Control + r</td>
-    </tr>
-    <tr>
-      <td>Emulate 'frying' effect (TIA mode)</td>
+      <td>Emulate 'frying' effect</td>
       <td>Backspace</td>
       <td>Backspace</td>
     </tr>
@@ -4007,7 +4002,7 @@
   <h3><b><a name="ROMLauncherContextMenu">ROM Launcher Context Menu</a></b></h3>
 
   <p>The ROM launcher also contains a context menu, selected by clicking the
-  right mouse button anywhere in the current window. This context menu
+  right mouse button in the ROM list. This context menu
   contains the following items:</p>
 
   <p><ol>
@@ -4018,31 +4013,32 @@
     its functionality, and use ROM properties as defined by the ROM itself. The dialog is as
     follows (see <b>Advanced Configuration - <a href="#Properties">Game Properties</a></b>
     for more information concerning ROM properties):</p>
-  <table border="5" cellpadding="2" frame="box" rules="none">
-    <tr>
-      <td><img src="graphics/launcher_override.png"></td>
-      <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-      <td valign="top">
-        <table border="1" cellpadding="4">
-          <tr><th>Item</th><th>For more information,<br>see <a href="#CommandLine">Commandline</a></th></tr>
-          <tr><td>Bankswitch type</td><td>-bs</td></tr>
-          <tr><td>TV type</td><td>-tv</td></tr>
-          <tr><td>Left difficulty</td><td>-ld</td></tr>
-          <tr><td>Right difficulty</td><td>-rd</td></tr>
-          <tr><td>Startup mode</td><td>-debug</td></tr>
-          <tr><td>Left joy items</td><td>-holdjoy0</td></tr>
-          <tr><td>Right joy items</td><td>-holdjoy1</td></tr>
-          <tr><td>Console: Select</td><td>-holdselect</td></tr>
-          <tr><td>Console: Reset</td><td>-holdreset</td></tr>
-        </table>
-        <p></p>
-      </td>
-    </tr>
-  </table>
+    <table border="5" cellpadding="2" frame="box" rules="none">
+      <tr>
+        <td><img src="graphics/launcher_override.png"></td>
+        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        <td valign="top">
+          <table border="1" cellpadding="4">
+            <tr><th>Item</th><th>For more information,<br>see <a href="#CommandLine">Commandline</a></th></tr>
+            <tr><td>Bankswitch type</td><td>-bs</td></tr>
+            <tr><td>TV type</td><td>-tv</td></tr>
+            <tr><td>Left difficulty</td><td>-ld</td></tr>
+            <tr><td>Right difficulty</td><td>-rd</td></tr>
+            <tr><td>Startup mode</td><td>-debug</td></tr>
+            <tr><td>Left joy items</td><td>-holdjoy0</td></tr>
+            <tr><td>Right joy items</td><td>-holdjoy1</td></tr>
+            <tr><td>Console: Select</td><td>-holdselect</td></tr>
+            <tr><td>Console: Reset</td><td>-holdreset</td></tr>
+          </table>
+          <p></p>
+        </td>
+      </tr>
+    </table>
+    <p>This dialog can also be opened by pressing 'Control + p'.</p>
     </li>
-    <br><li><b>High scores</b>: This option displays the <a href="#HighScores">
+    <li><b>High scores</b>: This option displays the <a href="#HighScores">
     High Scores</a> dialog for the selected ROM. Only available if high score
-    properties have been setup for the ROM.</li>
+    properties have been setup for the ROM. Also available via 'Control + h' keys combo.</li>
     </li>
     <br><li><b>Reload listing</b>: Selecting this performs a reload of the
     current listing. It is an alternative to pressing the 'Control + r'
@@ -4355,7 +4351,7 @@
   <p><ul>
     <li>Developer key-combo shortcuts, used to change TIA state dynamically
     (ie, while the emulation is still running). See <b>Keyboard Layout -
-    <a href="#DeveloperKeys">Developer Keys in TIA mode</a></b> for more information.</li>
+    <a href="#DeveloperKeys">Developer Keys</a></b> for more information.</li>
 
     <li>Commandline options influencing emulation state. See <b>Using the Command Line -
     <a href="#DeveloperCommandLine">Developer Commands</a></b> for more information.</li>
