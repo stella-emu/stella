@@ -291,12 +291,12 @@ class FrameBuffer
     uInt32 hidpiScaleFactor() const { return myHiDPIEnabled ? 2 : 1; }
 
     /**
-      These methods are used to load/save position and display of the
-      current window.
+      This method should be called to save the current settings of all
+      its subsystems.  Note that the this may be called when the class
+      hasn't been fully initialized, so we first need to check if the
+      subsytems actually exist.
     */
-    string getPositionKey();
-    string getDisplayKey();
-    void saveCurrentWindowPosition();
+    void saveConfig(Settings& settings) const;
 
   #ifdef GUI_SUPPORT
     /**
@@ -376,6 +376,14 @@ class FrameBuffer
     int scaleY(int y) const { return myBackend->scaleY(y); }
 
   private:
+    /**
+      These methods are used to load/save position and display of the
+      current window.
+    */
+    string getPositionKey() const;
+    string getDisplayKey() const;
+    void saveCurrentWindowPosition() const;
+
     /**
       Calls 'free()' on all surfaces that the framebuffer knows about.
     */

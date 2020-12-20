@@ -50,7 +50,6 @@
 #include "CartCreator.hxx"
 #include "FrameBuffer.hxx"
 #include "TIASurface.hxx"
-#include "PaletteHandler.hxx"
 #include "TIAConstants.hxx"
 #include "Settings.hxx"
 #include "PropsSet.hxx"
@@ -152,8 +151,9 @@ bool OSystem::create()
     myFrameBuffer = make_unique<FrameBuffer>(*this);
     myFrameBuffer->initialize();
   }
-  catch(...)
+  catch(const runtime_error& e)
   {
+    Logger::error(e.what());
     return false;
   }
 
@@ -258,19 +258,14 @@ void OSystem::loadConfig(const Settings::Options& options)
 void OSystem::saveConfig()
 {
   // Ask all subsystems to save their settings
-  if(myFrameBuffer)
+  if(myFrameBuffer && mySettings)
+    myFrameBuffer->saveConfig(settings());
+
+  if(mySettings)
   {
-    // Save the last windowed position and display on system shutdown
-    myFrameBuffer->saveCurrentWindowPosition();
-
-    Logger::debug("Saving TV effects options ...");
-    myFrameBuffer->tiaSurface().ntsc().saveConfig(settings());
-    Logger::debug("Saving palette settings...");
-    myFrameBuffer->tiaSurface().paletteHandler().saveConfig(settings());
+    Logger::debug("Saving config options ...");
+    mySettings->save();
   }
-
-  Logger::debug("Saving config options ...");
-  mySettings->save();
 
   if(myPropSet && myPropSet->save(myPropertiesFile))
     Logger::debug("Saving properties set ...");
