@@ -49,8 +49,8 @@
 Dialog::Dialog(OSystem& instance, DialogContainer& parent, const GUI::Font& font,
                const string& title, int x, int y, int w, int h)
   : GuiObject(instance, parent, *this, x, y, w, h),
-    _font(font),
-    _title(title)
+    _font{font},
+    _title{title}
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_BORDER | Widget::FLAG_CLEARBG;
   setTitle(title);

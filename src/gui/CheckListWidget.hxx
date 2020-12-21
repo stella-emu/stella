@@ -39,8 +39,8 @@ class CheckListWidget : public ListWidget
     void setList(const StringList& list, const BoolArray& state);
     void setLine(int line, const string& str, const bool& state);
 
-    bool getState(int line);
-    bool getSelectedState() { return getState(_selectedItem); }
+    bool getState(int line) const;
+    bool getSelectedState() const { return getState(_selectedItem); }
 
   private:
     bool handleEvent(Event::Type e) override;

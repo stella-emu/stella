@@ -148,7 +148,7 @@ class DeveloperDialog : public Dialog
     CheckboxWidget*     myGhostReadsTrapWidget{nullptr};
 #endif
 
-    bool    mySettings;
+    bool    mySettings{false};
     // Emulator sets
     std::array<bool, 2>   myFrameStats;
     std::array<bool, 2>   myDetectedInfo;

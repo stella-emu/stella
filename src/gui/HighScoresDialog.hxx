@@ -35,7 +35,6 @@ class Serializer;
 
 using json = nlohmann::json;
 
-
 /**
   The dialog for displaying high scores in Stella.
 

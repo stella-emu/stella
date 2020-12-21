@@ -33,7 +33,7 @@ TimeLineWidget::TimeLineWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, int w, int h,
                                const string& label, uInt32 labelWidth, int cmd)
   : ButtonWidget(boss, font, x, y, w, h, label, cmd),
-    _labelWidth(labelWidth)
+    _labelWidth{labelWidth}
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_TRACK_MOUSE
     | Widget::FLAG_CLEARBG | Widget::FLAG_NOBG;
@@ -205,13 +205,13 @@ void TimeLineWidget::drawWidget(bool hilite)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 TimeLineWidget::valueToPos(uInt32 value)
+uInt32 TimeLineWidget::valueToPos(uInt32 value) const
 {
   return _stepValue[BSPF::clamp(value, _valueMin, _valueMax)];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 TimeLineWidget::posToValue(uInt32 pos)
+uInt32 TimeLineWidget::posToValue(uInt32 pos) const
 {
   // Find the interval in which 'pos' falls, and then the endpoint which
   // it is closest to

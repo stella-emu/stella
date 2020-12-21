@@ -33,8 +33,8 @@ MessageBox::MessageBox(GuiObject* boss, const GUI::Font& font,
                        bool focusOKButton)
   : Dialog(boss->instance(), boss->parent(), font, title, 0, 0, max_w, max_h),
     CommandSender(boss),
-    myOkCmd(okCmd),
-    myCancelCmd(cancelCmd)
+    myOkCmd{okCmd},
+    myCancelCmd{cancelCmd}
 {
   addText(font, text);
 

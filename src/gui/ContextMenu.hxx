@@ -130,7 +130,7 @@ class ContextMenu : public Dialog, public CommandSender
     int _id{-1};
 
     uInt32 _xorig{0}, _yorig{0};
-    uInt32 _maxWidth{0};
+    int _maxWidth{0};
 
     int _textOfs{0};
     int _arrowSize{0};

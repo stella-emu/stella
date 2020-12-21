@@ -64,7 +64,7 @@ class FBSurfaceLIBRETRO : public FBSurface
     void applyAttributes() override { }
 
   private:
-    uInt32 myWidth, myHeight;
+    uInt32 myWidth{0}, myHeight{0};
     unique_ptr<uInt32[]> myPixelData;
     Common::Rect mySrcGUIR, myDstGUIR;
 

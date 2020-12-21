@@ -41,8 +41,8 @@
 InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
                          const GUI::Font& font, int max_w, int max_h)
   : Dialog(osystem, parent, font, "Input settings"),
-    myMaxWidth(max_w),
-    myMaxHeight(max_h)
+    myMaxWidth{max_w},
+    myMaxHeight{max_h}
 {
   const int lineHeight   = _font.getLineHeight(),
             fontWidth    = _font.getMaxCharWidth(),

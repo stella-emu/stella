@@ -42,8 +42,8 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
                    const GUI::Font& font, GuiObject* boss, int max_w, int max_h)
   : Dialog(osystem, parent, font, "User interface settings"),
     CommandSender(boss),
-    myFont(font),
-    myIsGlobal(boss != nullptr)
+    myFont{font},
+    myIsGlobal{boss != nullptr}
 {
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
   const int lineHeight   = font.getLineHeight(),

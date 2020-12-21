@@ -28,7 +28,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DialogContainer::DialogContainer(OSystem& osystem)
-  : myOSystem(osystem)
+  : myOSystem{osystem}
 {
   _DOUBLE_CLICK_DELAY = osystem.settings().getInt("mdouble");
   _REPEAT_INITIAL_DELAY = osystem.settings().getInt("ctrldelay");
