@@ -143,8 +143,6 @@ void TimeLineWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
 
-  //cerr << "TimeLineWidget::drawWidget " << typeid(s).name() << endl;
-
   // Draw the label, if any
   if(_labelWidth > 0)
     s.drawString(_font, _label, _x, _y + 2, _labelWidth,

@@ -244,7 +244,9 @@ void Dialog::redraw(bool force)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::render()
 {
+#ifdef DEBUG_BUILD
   //cerr << "  render " << typeid(*this).name() << endl;
+#endif
 
   // Update dialog surface; also render any extra surfaces
   // Extra surfaces must be rendered afterwards, so they are drawn on top
@@ -263,8 +265,6 @@ void Dialog::render()
 
   if(!onTop)
   {
-    //cerr << "    shade " << typeid(*this).name() << endl;
-
     _shadeSurface->setDstRect(_surface->dstRect());
     _shadeSurface->render();
   }
@@ -433,8 +433,10 @@ void Dialog::drawDialog()
 
   if(isDirty())
   {
-    cerr << endl << "d";
+  #ifdef DEBUG_BUILD
     //cerr << "*** draw dialog " << typeid(*this).name() << " ***" << endl;
+    cerr << endl << "d";
+  #endif
 
     if(clearsBackground())
     {
@@ -453,7 +455,9 @@ void Dialog::drawDialog()
     }
     else {
       s.invalidate();
+    #ifdef DEBUG_BUILD
       //cerr << "invalidate " << typeid(*this).name() << endl;
+    #endif
     }
     if(hasBorder()) // currently only used by Dialog itself
       s.frameRect(_x, _y, _w, _h, kColor);
@@ -463,8 +467,10 @@ void Dialog::drawDialog()
 
     clearDirty();
   }
+#ifdef DEBUG_BUILD
   else
     cerr << endl;
+#endif
 
   // Draw all children
   drawChain();

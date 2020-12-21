@@ -247,7 +247,6 @@ void PopUpWidget::setArrow()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PopUpWidget::drawWidget(bool hilite)
 {
-//cerr << "PopUpWidget::drawWidget\n";
   FBSurface& s = dialog().surface();
 
   int x = _x + _labelWidth;

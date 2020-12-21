@@ -99,8 +99,10 @@ void Widget::draw()
 
   if(isDirty())
   {
+  #ifdef DEBUG_BUILD
     //cerr << "  *** draw widget " << typeid(*this).name() << " ***" << endl;
     cerr << "w";
+  #endif
 
     FBSurface& s = _boss->dialog().surface();
     int oldX = _x, oldY = _y;
@@ -383,7 +385,9 @@ void Widget::setDirtyInChain(Widget* start)
 {
   while(start)
   {
+  #ifdef DEBUG_BUILD
     //cerr << "setDirtyInChain " << typeid(*start).name() << endl;
+  #endif
     start->setDirty();
     start = start->_next;
   }
