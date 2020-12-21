@@ -29,8 +29,8 @@ PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
                          int x, int y, int w, int h, const VariantList& list,
                          const string& label, int labelWidth, int cmd)
   : EditableWidget(boss, font, x, y - 1, w, h + 2),
-    _label(label),
-    _labelWidth(labelWidth)
+    _label{label},
+    _labelWidth{labelWidth}
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_RETAIN_FOCUS
     | Widget::FLAG_TRACK_MOUSE;

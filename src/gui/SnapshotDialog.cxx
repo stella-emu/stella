@@ -29,7 +29,7 @@
 SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
                                const GUI::Font& font, int max_w, int max_h)
   : Dialog(osystem, parent, font, "Snapshot settings"),
-    myFont(font)
+    myFont{font}
 {
   const int lineHeight   = font.getLineHeight(),
             fontHeight   = _font.getFontHeight(),

@@ -37,7 +37,7 @@ RomInfoWidget::RomInfoWidget(GuiObject* boss, const GUI::Font& font,
                              int x, int y, int w, int h,
                              const Common::Size& imgSize)
   : Widget(boss, font, x, y, w, h),
-    myAvail(imgSize)
+    myAvail{imgSize}
 {
   _flags = Widget::FLAG_ENABLED;
   _bgcolor = kDlgColor;

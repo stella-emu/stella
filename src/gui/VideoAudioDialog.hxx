@@ -66,7 +66,7 @@ class VideoAudioDialog : public Dialog
     void updateSettingsWithPreset(AudioSettings&);
 
   private:
-    TabWidget* myTab;
+    TabWidget* myTab{nullptr};
 
     // General options
     PopUpWidget*      myRenderer{nullptr};

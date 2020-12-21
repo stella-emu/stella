@@ -213,7 +213,7 @@ class Dialog : public GuiObject
       Widget* widget{nullptr};
       WidgetArray list;
 
-      explicit Focus(Widget* w = nullptr) : widget(w) { }
+      explicit Focus(Widget* w = nullptr) : widget{w} { }
     };
     using FocusList = vector<Focus>;
 
@@ -222,7 +222,7 @@ class Dialog : public GuiObject
       FocusList focus;
       uInt32 currentTab{0};
 
-      explicit TabFocus(TabWidget* w = nullptr) : widget(w) { }
+      explicit TabFocus(TabWidget* w = nullptr) : widget{w} { }
 
       void appendFocusList(WidgetArray& list);
       void saveCurrentFocus(Widget* w);

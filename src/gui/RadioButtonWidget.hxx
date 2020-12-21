@@ -40,7 +40,7 @@ class RadioButtonWidget : public CheckboxWidget
   protected:
     void setFill(FillType type);
     void drawWidget(bool hilite) override;
-    static int buttonSize(const GUI::Font& font)
+    static uInt32 buttonSize(const GUI::Font& font)
     {
       return font.getFontHeight() < 24 ? 14 : 22; // box is square
     }

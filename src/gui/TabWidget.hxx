@@ -83,7 +83,7 @@ class TabWidget : public Widget, public CommandSender
 
       explicit Tab(const string& t, int tw = NO_WIDTH,
           Widget* first = nullptr, Widget* parent = nullptr, bool e = true)
-        : title(t), firstWidget(first), parentWidget(parent), enabled(e), tabWidth(tw) { }
+        : title{t}, firstWidget{first}, parentWidget{parent}, enabled{e}, tabWidth{tw} { }
     };
     using TabList = vector<Tab>;
 
