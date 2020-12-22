@@ -76,13 +76,12 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   bits->setTarget(this);                                                 \
   bits->setID(bitsID);                                                   \
   if(editable) addFocusWidget(bits); else bits->setEditable(false);      \
-  xpos += bits->getWidth() + 5;                                          \
   bits->setList(off, on);
 
   // SWCHA bits in 'poke' mode
   labels.clear();
   CREATE_IO_REGS("SWCHA(W)", mySWCHAWriteBits, kSWCHABitsID, true)
-  col = xpos + 20;  // remember this for adding widgets to the second column
+  col = xpos + mySWCHAWriteBits->getWidth() + 25;  // remember this for adding widgets to the second column
 
   // SWACNT bits
   xpos = 10;  ypos += lineHeight + 5;

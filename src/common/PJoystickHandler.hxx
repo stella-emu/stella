@@ -49,7 +49,7 @@ class PhysicalJoystickHandler
   private:
     struct StickInfo
     {
-      StickInfo(nlohmann::json map, PhysicalJoystickPtr stick = nullptr)
+      explicit StickInfo(nlohmann::json map, PhysicalJoystickPtr stick = nullptr)
         : mapping(map), joy{std::move(stick)} {}
 
       nlohmann::json mapping;
