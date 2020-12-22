@@ -1341,6 +1341,7 @@ void GameInfoDialog::setAddressVal(EditTextWidget* addressWidget, EditTextWidget
     valWidget->setText("");
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::exportCurrentPropertiesToDisk()
 {
   saveProperties();
