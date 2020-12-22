@@ -175,7 +175,7 @@ FilesystemNodeWINDOWS::FilesystemNodeWINDOWS()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FilesystemNodeWINDOWS::FilesystemNodeWINDOWS(const string& p)
-  : _path(p.length() > 0 ? p : "~")  // Default to home directory
+  : _path{p.length() > 0 ? p : "~"}  // Default to home directory
 {
   // Expand '~' to the users 'home' directory
   if(_path[0] == '~')

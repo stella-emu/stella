@@ -40,7 +40,7 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
                                        EventMode mode)
   : Widget(boss, font, x, y, w, h),
     CommandSender(boss),
-    myEventMode(mode)
+    myEventMode{mode}
 {
   const int fontHeight   = font.getFontHeight(),
             lineHeight   = font.getLineHeight(),

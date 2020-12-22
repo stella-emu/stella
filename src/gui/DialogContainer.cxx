@@ -28,7 +28,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DialogContainer::DialogContainer(OSystem& osystem)
-  : myOSystem(osystem)
+  : myOSystem{osystem}
 {
   _DOUBLE_CLICK_DELAY = osystem.settings().getInt("mdouble");
   _REPEAT_INITIAL_DELAY = osystem.settings().getInt("ctrldelay");
@@ -94,8 +94,9 @@ void DialogContainer::draw(bool full)
 {
   if(myDialogStack.empty())
     return;
-
+#ifdef DEBUG_BUILD
   //cerr << "draw " << full << " " << typeid(*this).name() << endl;
+#endif
 
   // Draw and render all dirty dialogs
   myDialogStack.applyAll([&](Dialog*& d) {
@@ -118,8 +119,9 @@ void DialogContainer::render()
 {
   if(myDialogStack.empty())
     return;
-
+#ifdef DEBUG_BUILD
   //cerr << "full re-render " << typeid(*this).name() << endl;
+#endif
 
   // Make sure we start in a clean state (with zero'ed buffers)
   if(!myOSystem.eventHandler().inTIAMode())
@@ -171,7 +173,9 @@ void DialogContainer::removeDialog()
 {
   if(!myDialogStack.empty())
   {
+  #ifdef DEBUG_BUILD
     //cerr << "remove dialog " << typeid(*myDialogStack.top()).name() << endl;
+  #endif
     myDialogStack.pop();
 
     // Inform the frame buffer that it has to render all surfaces

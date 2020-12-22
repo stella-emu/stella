@@ -37,9 +37,9 @@
 RomAuditDialog::RomAuditDialog(OSystem& osystem, DialogContainer& parent,
                                const GUI::Font& font, int max_w, int max_h)
   : Dialog(osystem, parent, font, "Audit ROMs"),
-    myFont(font),
-    myMaxWidth(max_w),
-    myMaxHeight(max_h)
+    myFont{font},
+    myMaxWidth{max_w},
+    myMaxHeight{max_h}
 {
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),

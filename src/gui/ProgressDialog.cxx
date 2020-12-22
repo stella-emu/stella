@@ -30,7 +30,7 @@
 ProgressDialog::ProgressDialog(GuiObject* boss, const GUI::Font& font,
                                const string& message)
   : Dialog(boss->instance(), boss->parent()),
-    myFont(font)
+    myFont{font}
 {
   const int fontWidth  = font.getMaxCharWidth(),
             fontHeight = font.getFontHeight(),
