@@ -19,7 +19,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 UndoHandler::UndoHandler(size_t size)
-  : mySize(size)
+  : mySize{size}
 {
   reset();
 }

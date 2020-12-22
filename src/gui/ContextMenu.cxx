@@ -31,9 +31,9 @@ ContextMenu::ContextMenu(GuiObject* boss, const GUI::Font& font,
                          const VariantList& items, int cmd, int width)
   : Dialog(boss->instance(), boss->parent(), font),
     CommandSender(boss),
-    _rowHeight(font.getLineHeight()),
-    _cmd(cmd),
-    _maxWidth(width)
+    _rowHeight{font.getLineHeight()},
+    _cmd{cmd},
+    _maxWidth{width}
 {
   setArrows();
   addItems(items);

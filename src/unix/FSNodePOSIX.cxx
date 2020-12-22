@@ -25,8 +25,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FilesystemNodePOSIX::FilesystemNodePOSIX()
-  : _path(ROOT_DIR),
-    _displayName(_path)
+  : _path{ROOT_DIR},
+    _displayName{_path}
 {
 }
 

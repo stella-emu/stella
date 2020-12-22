@@ -27,7 +27,7 @@ StringListWidget::StringListWidget(GuiObject* boss, const GUI::Font& font,
                                    int x, int y, int w, int h, bool hilite,
                                    bool useScrollbar)
   : ListWidget(boss, font, x, y, w, h, useScrollbar),
-    _hilite(hilite)
+    _hilite{hilite}
 {
   _bgcolorlo = kDlgColor;
 

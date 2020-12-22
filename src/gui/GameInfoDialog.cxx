@@ -92,7 +92,7 @@ GameInfoDialog::GameInfoDialog(
   myTab->setActiveTab(0);
 
   // Add Defaults, OK and Cancel buttons
-  addDefaultsOKCancelBGroup(wid, font);
+  addDefaultsExtraOKCancelBGroup(wid, font, "Save", kSavePressed);
   addBGroupToFocusList(wid);
 }
 
