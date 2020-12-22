@@ -93,6 +93,8 @@ GameInfoDialog::GameInfoDialog(
 
   // Add Defaults, OK and Cancel buttons
   addDefaultsExtraOKCancelBGroup(wid, font, "Save", kSavePressed);
+  _extraWidget->setToolTip("Save the current ROM's properties in a\n"
+                           "separate file in the default directory.");
   addBGroupToFocusList(wid);
 }
 

@@ -971,10 +971,10 @@ void Dialog::addDefaultsExtraOKCancelBGroup(
                    buttonWidth, buttonHeight, defaultsText, GuiObject::kDefaultsCmd));
   wid.push_back(_defaultWidget);
 
-  wid.push_back(new ButtonWidget(this, font, HBORDER + buttonWidth + BUTTON_GAP,
-                      _h - buttonHeight - VBORDER, buttonWidth, buttonHeight,
-                      extraText, extraCmd)
-  );
+  addExtraWidget(new ButtonWidget(this, font, HBORDER + buttonWidth + BUTTON_GAP,
+                 _h - buttonHeight - VBORDER, buttonWidth, buttonHeight,
+                 extraText, extraCmd));
+  wid.push_back(_extraWidget);
 
   addOKCancelBGroup(wid, font, okText, cancelText, focusOKButton, buttonWidth);
 }

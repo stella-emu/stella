@@ -76,6 +76,7 @@ class Dialog : public GuiObject
     void addBGroupToFocusList(const WidgetArray& list) { _buttonGroup = list; }
     void addTabWidget(TabWidget* w);
     void addDefaultWidget(Widget* w) { _defaultWidget = w; }
+    void addExtraWidget(Widget* w) { _extraWidget = w; }
     void addOKWidget(Widget* w)     { _okWidget = w;     }
     void addCancelWidget(Widget* w) { _cancelWidget = w; }
     void setFocus(Widget* w);
@@ -196,6 +197,7 @@ class Dialog : public GuiObject
     Widget* _focusedWidget{nullptr};
     Widget* _dragWidget{nullptr};
     Widget* _defaultWidget{nullptr};
+    Widget* _extraWidget{nullptr};
     Widget* _okWidget{nullptr};
     Widget* _cancelWidget{nullptr};
 
