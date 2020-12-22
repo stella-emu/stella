@@ -47,6 +47,7 @@ using uInt64 = uint64_t;
 #include <iomanip>
 #include <memory>
 #include <string>
+#include <string_view>
 #include <sstream>
 #include <cstring>
 #include <cctype>
@@ -60,6 +61,7 @@ using std::cout;
 using std::cerr;
 using std::endl;
 using std::string;
+using std::string_view;
 using std::istream;
 using std::ostream;
 using std::fstream;
@@ -200,68 +202,53 @@ namespace BSPF
     catch(...) { return defaultValue; }
   }
 
-  // Compare two strings, ignoring case
-  inline int compareIgnoreCase(const string& s1, const string& s2)
+  // Compare two strings (case insensitive)
+  // Return negative, zero, positive result for <,==,> respectively
+  static constexpr int compareIgnoreCase(string_view s1, string_view s2)
   {
-  #if (defined BSPF_WINDOWS || defined __WIN32__) && !defined __GNUG__
-    return _stricmp(s1.c_str(), s2.c_str());
-  #else
-    return strcasecmp(s1.c_str(), s2.c_str());
-  #endif
-  }
-  inline int compareIgnoreCase(const char* s1, const char* s2)
-  {
-  #if (defined BSPF_WINDOWS || defined __WIN32__) && !defined __GNUG__
-    return _stricmp(s1, s2);
-  #else
-    return strcasecmp(s1, s2);
-  #endif
-  }
+    // Only compare up to the length of the shorter string
+    const auto maxsize = std::min(s1.size(), s2.size());
+    for(size_t i = 0; i < maxsize; ++i)
+      if(toupper(s1[i]) != toupper(s2[i]))
+        return toupper(s1[i]) - toupper(s2[i]);
 
-  // Test whether the first string starts with the second one (case insensitive)
-  inline bool startsWithIgnoreCase(const string& s1, const string& s2)
-  {
-  #if (defined BSPF_WINDOWS || defined __WIN32__) && !defined __GNUG__
-    return _strnicmp(s1.c_str(), s2.c_str(), s2.length()) == 0;
-  #else
-    return strncasecmp(s1.c_str(), s2.c_str(), s2.length()) == 0;
-  #endif
-  }
-  inline bool startsWithIgnoreCase(const char* s1, const char* s2)
-  {
-  #if (defined BSPF_WINDOWS || defined __WIN32__) && !defined __GNUG__
-    return _strnicmp(s1, s2, strlen(s2)) == 0;
-  #else
-    return strncasecmp(s1, s2, strlen(s2)) == 0;
-  #endif
+    // Otherwise the length of the string takes priority
+    return static_cast<int>(s1.size() - s2.size());
   }
 
   // Test whether two strings are equal (case insensitive)
-  inline bool equalsIgnoreCase(const string& s1, const string& s2)
+  inline constexpr bool equalsIgnoreCase(string_view s1, string_view s2)
   {
-    return compareIgnoreCase(s1, s2) == 0;
+    return s1.size() == s2.size() ? (compareIgnoreCase(s1, s2) == 0) : false;
+  }
+
+  // Test whether the first string starts with the second one (case insensitive)
+  inline constexpr bool startsWithIgnoreCase(string_view s1, string_view s2)
+  {
+    if(s1.size() >= s2.size())
+      return compareIgnoreCase(s1.substr(0, s2.size()), s2) == 0;
+
+    return false;
+  }
+
+  // Test whether the first string ends with the second one (case insensitive)
+  inline constexpr bool endsWithIgnoreCase(string_view s1, string_view s2)
+  {
+    if(s1.size() >= s2.size())
+      return compareIgnoreCase(s1.substr(s1.size() - s2.size()), s2) == 0;
+
+    return false;
   }
 
   // Find location (if any) of the second string within the first,
   // starting from 'startpos' in the first string
-  inline size_t findIgnoreCase(const string& s1, const string& s2, size_t startpos = 0)
+  static size_t findIgnoreCase(const string& s1, const string& s2, size_t startpos = 0)
   {
     auto pos = std::search(s1.cbegin()+startpos, s1.cend(),
       s2.cbegin(), s2.cend(), [](char ch1, char ch2) {
         return toupper(uInt8(ch1)) == toupper(uInt8(ch2));
       });
     return pos == s1.cend() ? string::npos : pos - (s1.cbegin()+startpos);
-  }
-
-  // Test whether the first string ends with the second one (case insensitive)
-  inline bool endsWithIgnoreCase(const string& s1, const string& s2)
-  {
-    if(s1.length() >= s2.length())
-    {
-      const char* end = s1.c_str() + s1.length() - s2.length();
-      return compareIgnoreCase(end, s2.c_str()) == 0;
-    }
-    return false;
   }
 
   // Test whether the first string contains the second one (case insensitive)
@@ -275,12 +262,12 @@ namespace BSPF
   // - the following characters must appear in the order of the first string
   inline bool matches(const string& s1, const string& s2)
   {
-    if(BSPF::startsWithIgnoreCase(s1, s2.substr(0, 1)))
+    if(startsWithIgnoreCase(s1, s2.substr(0, 1)))
     {
       size_t pos = 1;
       for(uInt32 j = 1; j < s2.size(); ++j)
       {
-        size_t found = BSPF::findIgnoreCase(s1, s2.substr(j, 1), pos);
+        size_t found = findIgnoreCase(s1, s2.substr(j, 1), pos);
         if(found == string::npos)
           return false;
         pos += found + 1;
