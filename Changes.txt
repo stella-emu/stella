@@ -16,15 +16,15 @@
 
   * Added high scores saving.
 
-  * Enhanced cut/copy/paste	for text editing (except PromptWidget).
+  * Improved text editing functionality (except PromptWidget):
+    - Enhanced selection and cut/copy/paste from keyboard.
+    - Added undo and redo support.
+    - Added mouse support (selection, cut/copy/paste).
+    - All actions have keyboard shortcuts.
 
-  * Added undo and redo to text editing (except PromptWidget).
-
-  * Added mouse support for text editing (except PromptWidget).
-
-  * Added wildcard support to launcher dialog filter.
-
-  * Added option to search subdirectories in launcher.
+  * Various improvements to the ROM launcher:
+    - Added wildcard support to the dialog filter
+    - Added option to search subdirectories
 
   * Added static tooltips to some UI items.
 
@@ -41,7 +41,8 @@
   * Fixed Stelladaptor/2600'daptor devices sometimes not being assigned
     correct default mappings.
 
-  * Codebase now uses C++17 features.
+  * Codebase now uses C++17 features, which means a minimum of gcc7
+    or clang5 for Linux/Mac, and Visual Studio 2019 for Windows.
 
 -Have fun!
 
