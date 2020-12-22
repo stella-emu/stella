@@ -180,7 +180,7 @@ class GameInfoDialog : public Dialog, public CommandSender
       kHiScoresChanged = 'HSch',
       kPXCenterChanged = 'Pxch',
       kPYCenterChanged = 'Pych',
-      kSavePressed     = 'GIsp'
+      kExportPressed     = 'GIsp'
     };
 
     // Game properties for currently loaded ROM

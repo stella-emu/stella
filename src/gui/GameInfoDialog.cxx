@@ -92,9 +92,9 @@ GameInfoDialog::GameInfoDialog(
   myTab->setActiveTab(0);
 
   // Add Defaults, OK and Cancel buttons
-  addDefaultsExtraOKCancelBGroup(wid, font, "Save", kSavePressed);
-  _extraWidget->setToolTip("Save the current ROM's properties in a\n"
-                           "separate file in the default directory.");
+  addDefaultsExtraOKCancelBGroup(wid, font, "Export", kExportPressed);
+  _extraWidget->setToolTip("Export the current ROM's properties\n"
+                           "into the default directory.");
   addBGroupToFocusList(wid);
 }
 
@@ -1341,7 +1341,7 @@ void GameInfoDialog::setAddressVal(EditTextWidget* addressWidget, EditTextWidget
     valWidget->setText("");
 }
 
-void GameInfoDialog::saveCurrentPropertiesToDisk()
+void GameInfoDialog::exportCurrentPropertiesToDisk()
 {
   saveProperties();
   stringstream out;
@@ -1353,12 +1353,12 @@ void GameInfoDialog::saveCurrentPropertiesToDisk()
     propfile /= myGameFile.getNameWithExt(".pro");
 
     propfile.write(out);
-    instance().frameBuffer().showTextMessage("Properties saved to " +
+    instance().frameBuffer().showTextMessage("Properties exported to " +
                                              propfile.getShortPath());
   }
   catch(...)
   {
-    instance().frameBuffer().showTextMessage("Error saving properties");
+    instance().frameBuffer().showTextMessage("Error exporting properties");
   }
 }
 
@@ -1377,8 +1377,8 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
       setDefaults();
       break;
 
-    case kSavePressed:
-      saveCurrentPropertiesToDisk();
+    case kExportPressed:
+      exportCurrentPropertiesToDisk();
       break;
 
     case TabWidget::kTabChangedCmd:
