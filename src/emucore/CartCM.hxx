@@ -232,7 +232,7 @@ class CartridgeCM : public Cartridge
     /**
       Inform the cartridge about the parent CompuMate controller
     */
-    void setCompuMate(shared_ptr<CompuMate>& cmate) { myCompuMate = cmate; }
+    void setCompuMate(const shared_ptr<CompuMate>& cmate) { myCompuMate = cmate; }
 
     /**
       Get the current keyboard column
