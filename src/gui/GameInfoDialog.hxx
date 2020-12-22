@@ -77,7 +77,7 @@ class GameInfoDialog : public Dialog, public CommandSender
     // set formatted memory value for given address field
     void setAddressVal(EditTextWidget* address, EditTextWidget* val,
                        bool isBCD = true, bool zeroBased = false, uInt8 maxVal = 255);
-    void saveCurrentPropertiesToDisk();
+    void exportCurrentPropertiesToDisk();
 
   private:
     TabWidget* myTab{nullptr};
