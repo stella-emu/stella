@@ -29,8 +29,8 @@ CheckListWidget::CheckListWidget(GuiObject* boss, const GUI::Font& font,
 
   // rowheight is determined by largest item on a line,
   // possibly meaning that number of rows will change
-  _fontHeight = std::max(_fontHeight, CheckboxWidget::boxSize(_font));
-  _rows = h / _fontHeight;
+  _lineHeight = std::max(_lineHeight, CheckboxWidget::boxSize(_font));
+  _rows = h / _lineHeight;
 
   // Create a CheckboxWidget for each row in the list
   for(int i = 0; i < _rows; ++i)
@@ -40,24 +40,10 @@ CheckListWidget::CheckListWidget(GuiObject* boss, const GUI::Font& font,
     t->setTextColor(kTextColor);
     t->setTarget(this);
     t->setID(i);
-    ypos += _fontHeight;
+    ypos += _lineHeight;
 
     _checkList.push_back(t);
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CheckListWidget::handleMouseEntered()
-{
-  setFlags(Widget::FLAG_HILITED);
-  setDirty();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CheckListWidget::handleMouseLeft()
-{
-  clearFlags(Widget::FLAG_HILITED);
-  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -95,7 +81,6 @@ void CheckListWidget::drawWidget(bool hilite)
 {
 //cerr << "CheckListWidget::drawWidget\n";
   FBSurface& s = _boss->dialog().surface();
-  bool onTop = _boss->dialog().isOnTop();
   int i, pos, len = int(_list.size());
 
   // Draw a thin frame around the list and to separate columns
@@ -110,7 +95,7 @@ void CheckListWidget::drawWidget(bool hilite)
     _checkList[i]->setDirty();
     _checkList[i]->draw();
 
-    const int y = _y + 2 + _fontHeight * i + 2;
+    const int y = _y + 2 + _lineHeight * i + 2;
     ColorId textColor = kTextColor;
 
     Common::Rect r(getEditRect());
@@ -120,40 +105,41 @@ void CheckListWidget::drawWidget(bool hilite)
     {
       if(_hasFocus && !_editMode)
       {
-        s.fillRect(_x + r.x() - 3, _y + 1 + _fontHeight * i,
-                   _w - r.x(), _fontHeight, kTextColorHi);
+        s.fillRect(_x + r.x() - 3, _y + 1 + _lineHeight * i,
+                   _w - r.x(), _lineHeight, kTextColorHi);
         textColor = kTextColorInv;
       }
       else
-        s.frameRect(_x + r.x() - 3, _y + 1 + _fontHeight * i,
-                    _w - r.x(), _fontHeight, onTop ? kTextColorHi : kColor);
+        s.frameRect(_x + r.x() - 3, _y + 1 + _lineHeight * i,
+                    _w - r.x(), _lineHeight, kTextColorHi);
     }
 
     if (_selectedItem == pos && _editMode)
     {
       adjustOffset();
-      s.drawString(_font, editString(), _x + r.x(), y, r.w(), onTop ? kTextColor : kColor,
+      s.drawString(_font, editString(), _x + r.x(), y, r.w(), kTextColor,
                    TextAlign::Left, -_editScrollOffset, false);
     }
     else
-      s.drawString(_font, _list[pos], _x + r.x(), y, r.w(),
-                   onTop ? textColor : kColor);
+      s.drawString(_font, _list[pos], _x + r.x(), y, r.w(), textColor);
   }
 
   // Only draw the caret while editing, and if it's in the current viewport
-  if(_editMode && (_selectedItem >= _scrollBar->_currentPos) &&
-    (_selectedItem < _scrollBar->_currentPos + _rows))
-    drawCaret();
+  if(_editMode &&
+     (!_useScrollbar ||
+     ((_selectedItem >= _scrollBar->_currentPos) &&
+      (_selectedItem < _scrollBar->_currentPos + _rows))))
+    drawCaretSelection();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Common::Rect CheckListWidget::getEditRect() const
 {
-  const int yoffset = (_selectedItem - _currentPos) * _fontHeight,
+  const int yoffset = (_selectedItem - _currentPos) * _lineHeight,
             xoffset = CheckboxWidget::boxSize(_font) + 10;
 
   return Common::Rect(2 + xoffset, 1 + yoffset,
-                      _w - (xoffset - 15), _fontHeight + yoffset);
+                      _w - (xoffset - 15), _lineHeight + yoffset);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

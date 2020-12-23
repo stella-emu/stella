@@ -68,10 +68,11 @@ class PromptWidget : public Widget, public CommandSender
     void nextLine();
     void killChar(int direction);
     void killLine(int direction);
-    void killLastWord();
+    void killWord();
 
     // Clipboard
     void textSelectAll();
+    string getLine();
     void textCut();
     void textCopy();
     void textPaste();

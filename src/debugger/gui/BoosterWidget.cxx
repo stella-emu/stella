@@ -73,6 +73,14 @@ BoosterWidget::BoosterWidget(GuiObject* boss, const GUI::Font& font,
                                          CheckboxWidget::kCheckActionCmd);
   myPins[kJTrigger]->setID(kJTrigger);
   myPins[kJTrigger]->setTarget(this);
+
+  addFocusWidget(myPins[kJUp]);
+  addFocusWidget(myPins[kJLeft]);
+  addFocusWidget(myPins[kJRight]);
+  addFocusWidget(myPins[kJDown]);
+  addFocusWidget(myPins[kJFire]);
+  addFocusWidget(myPins[kJBooster]);
+  addFocusWidget(myPins[kJTrigger]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

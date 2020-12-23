@@ -19,6 +19,7 @@
 #include "Font.hxx"
 #include "OSystem.hxx"
 #include "Debugger.hxx"
+#include "RiotDebug.hxx"
 #include "TIADebug.hxx"
 #include "TIA.hxx"
 #include "Widget.hxx"
@@ -34,87 +35,110 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
   : Widget(boss, lfont, x, y, 16, 16),
     CommandSender(boss)
 {
-  bool longstr = 11 + 32 * lfont.getMaxCharWidth() + 9
+  const int VGAP = lfont.getLineHeight() / 4;
+  const int VBORDER = 5 + 1;
+  const int COLUMN_GAP = _fontWidth * 1.25;
+  bool longstr = lfont.getStringWidth("Frame Cycls12345") + _fontWidth * 0.5
+    + COLUMN_GAP + lfont.getStringWidth("Scanline262262")
     + EditTextWidget::calcWidth(lfont) * 3 <= max_w;
-  const int VGAP = 5;
-
-  x += 11;
   const int lineHeight = lfont.getLineHeight();
-  int xpos = x, ypos = y + 10;
-  int lwidth = lfont.getStringWidth(longstr ? "Frame Cycle " : "F. Cycle ");
+  int xpos = x, ypos = y + VBORDER;
+  int lwidth = lfont.getStringWidth(longstr ? "Frame Cycls" : "F. Cycls");
+  int lwidth8 = lwidth - lfont.getMaxCharWidth() * 3;
+  int lwidthR = lfont.getStringWidth(longstr ? "Frame Cnt." : "Frame   ");
   int fwidth = EditTextWidget::calcWidth(lfont, 5);
-  int twidth = EditTextWidget::calcWidth(lfont, 8);
+  const int twidth = EditTextWidget::calcWidth(lfont, 8);
+  const int LGAP = (max_w - lwidth - EditTextWidget::calcWidth(lfont, 5)
+    - lwidthR - EditTextWidget::calcWidth(lfont, 5)) / 4;
 
-  // Add frame info
-  // 1st column
-  new StaticTextWidget(boss, lfont, xpos, ypos, lwidth, lineHeight,
-                       longstr ? "Frame Count " : "Frame ",
-                       TextAlign::Left);
-  xpos += lwidth;
-  myFrameCount = new EditTextWidget(boss, nfont, xpos, ypos-1, fwidth, lineHeight, "");
-  myFrameCount->setEditable(false, true);
+  lwidth += LGAP;
+  lwidth8 += LGAP;
+  lwidthR += LGAP;
 
-  xpos = x;  ypos += lineHeight + VGAP;
-  new StaticTextWidget(boss, lfont, xpos, ypos, lwidth, lineHeight,
-                       longstr ? "Frame Cycle " : "F. Cycle ",
-                       TextAlign::Left);
-  xpos += lwidth;
-  myFrameCycles = new EditTextWidget(boss, nfont, xpos, ypos-1, fwidth, lineHeight, "");
+  // Left column
+  // Left: Frame Cycle
+  xpos = x;
+  new StaticTextWidget(boss, lfont, xpos, ypos + 1, longstr ? "Frame Cycls" : "F. Cycls");
+  myFrameCycles = new EditTextWidget(boss, nfont, xpos + lwidth, ypos - 1, fwidth, lineHeight);
+  myFrameCycles->setToolTip("CPU cycles executed this frame.");
   myFrameCycles->setEditable(false, true);
 
-  xpos = x;  ypos += lineHeight + VGAP;
-  new StaticTextWidget(boss, lfont, xpos, ypos, lwidth, lineHeight,
-                       "Total ", TextAlign::Left);
-  xpos += lfont.getStringWidth("Total ");
-  myTotalCycles = new EditTextWidget(boss, nfont, xpos, ypos - 1, twidth, lineHeight, "");
+  // Left: WSync Cycles
+  ypos += lineHeight + VGAP;
+  new StaticTextWidget(boss, lfont, xpos, ypos + 1, longstr ? "WSync Cycls" : "WSync C.");
+  myWSyncCylces = new EditTextWidget(boss, nfont, xpos + lwidth, ypos - 1, fwidth, lineHeight);
+  myWSyncCylces->setToolTip("CPU cycles used for WSYNC this frame.");
+  myWSyncCylces->setEditable(false, true);
+
+  // Left: Timer Cycles
+  ypos += lineHeight + VGAP;
+  new StaticTextWidget(boss, lfont, xpos, ypos + 1, longstr ? "Timer Cycls" : "Timer C.");
+  myTimerCylces = new EditTextWidget(boss, nfont, xpos + lwidth, ypos - 1, fwidth, lineHeight);
+  myTimerCylces->setToolTip("CPU cycles roughly used for INTIM reads this frame.");
+  myTimerCylces->setEditable(false, true);
+
+  // Left: Total Cycles
+  ypos += lineHeight + VGAP;
+  new StaticTextWidget(boss, lfont, xpos, ypos + 1, "Total");
+  myTotalCycles = new EditTextWidget(boss, nfont, xpos + lwidth8, ypos - 1, twidth, lineHeight);
   myTotalCycles->setEditable(false, true);
 
-  xpos = x;  ypos += lineHeight + VGAP;
-  new StaticTextWidget(boss, lfont, xpos, ypos, lwidth, lineHeight,
-                       "Delta ", TextAlign::Left);
-  xpos = x + lfont.getStringWidth("Delta ");
-  myDeltaCycles = new EditTextWidget(boss, nfont, xpos, ypos - 1, twidth, lineHeight, "");
+  // Left: Delta Cycles
+  ypos += lineHeight + VGAP;
+  new StaticTextWidget(boss, lfont, xpos, ypos + 1, "Delta");
+  myDeltaCycles = new EditTextWidget(boss, nfont, xpos + lwidth8, ypos - 1, twidth, lineHeight);
+  myDeltaCycles->setToolTip("CPU cycles executed since last debug break.");
   myDeltaCycles->setEditable(false, true);
 
-  // 2nd column
-  xpos = x + lwidth + myFrameCycles->getWidth() + 9;  ypos = y + 10;
-  lwidth = lfont.getStringWidth(longstr ? "Color Clock " : "Pixel Pos ");
+  // Right column
+  xpos = x + max_w - lwidthR - EditTextWidget::calcWidth(lfont, 5); ypos = y + VBORDER;
+  //xpos = myDeltaCycles->getRight() + LGAP * 2; ypos = y + VBORDER;
+
+  // Right: Frame Count
+  new StaticTextWidget(boss, lfont, xpos, ypos + 1, longstr ? "Frame Cnt." : "Frame");
+  myFrameCount = new EditTextWidget(boss, nfont, xpos + lwidthR, ypos - 1, fwidth, lineHeight);
+  myFrameCount->setToolTip("Total number of frames executed this session.");
+  myFrameCount->setEditable(false, true);
+
+  lwidth = lfont.getStringWidth(longstr ? "Color Clock " : "Pixel Pos ") + LGAP;
   fwidth = EditTextWidget::calcWidth(lfont, 3);
 
-  new StaticTextWidget(boss, lfont, xpos, ypos, longstr ? "Scanline" : "Scn Ln");
-  myScanlineCountLast = new EditTextWidget(boss, nfont, xpos+lwidth, ypos-1, fwidth,
-                                       lineHeight, "");
+  // Right: Scanline
+  ypos += lineHeight + VGAP;
+  new StaticTextWidget(boss, lfont, xpos, ypos + 1, longstr ? "Scanline" : "Scn Ln");
+  myScanlineCountLast = new EditTextWidget(boss, nfont, xpos + lwidth, ypos - 1, fwidth, lineHeight);
+  myScanlineCountLast->setToolTip("Number of scanlines of last frame.");
   myScanlineCountLast->setEditable(false, true);
   myScanlineCount = new EditTextWidget(boss, nfont,
-        xpos+lwidth - myScanlineCountLast->getWidth() - 2, ypos-1, fwidth,
-        lineHeight, "");
+                                       xpos + lwidth - myScanlineCountLast->getWidth() - 2, ypos - 1,
+                                       fwidth, lineHeight);
+  myScanlineCount->setToolTip("Current scanline of this frame.");
   myScanlineCount->setEditable(false, true);
 
+  // Right: Scan Cycle
   ypos += lineHeight + VGAP;
-  new StaticTextWidget(boss, lfont, xpos, ypos, lwidth, lineHeight,
-                       longstr ? "Scan Cycle " : "Scn Cycle", TextAlign::Left);
-  myScanlineCycles = new EditTextWidget(boss, nfont, xpos+lwidth, ypos-1, fwidth,
-                                        lineHeight, "");
+  new StaticTextWidget(boss, lfont, xpos, ypos + 1, longstr ? "Scan Cycle" : "Scn Cycle");
+  myScanlineCycles = new EditTextWidget(boss, nfont, xpos + lwidth, ypos - 1, fwidth, lineHeight);
+  myScanlineCycles->setToolTip("CPU cycles in current scanline.");
   myScanlineCycles->setEditable(false, true);
 
+  // Right: Pixel Pos
   ypos += lineHeight + VGAP;
-  new StaticTextWidget(boss, lfont, xpos, ypos, lwidth, lineHeight,
-                       "Pixel Pos ", TextAlign::Left);
-  myPixelPosition = new EditTextWidget(boss, nfont, xpos+lwidth, ypos-1, fwidth,
-                                       lineHeight, "");
+  new StaticTextWidget(boss, lfont, xpos, ypos + 1, "Pixel Pos");
+  myPixelPosition = new EditTextWidget(boss, nfont, xpos + lwidth, ypos - 1, fwidth, lineHeight);
+  myPixelPosition->setToolTip("Pixel position in current scanline.");
   myPixelPosition->setEditable(false, true);
 
+  // Right: Color Clock
   ypos += lineHeight + VGAP;
-  new StaticTextWidget(boss, lfont, xpos, ypos, lwidth, lineHeight,
-                       longstr ? "Color Clock " : "Color Clk ", TextAlign::Left);
-
-  myColorClocks = new EditTextWidget(boss, nfont, xpos+lwidth, ypos-1, fwidth,
-                                     lineHeight, "");
+  new StaticTextWidget(boss, lfont, xpos, ypos + 1, longstr ? "Color Clock" : "Color Clk");
+  myColorClocks = new EditTextWidget(boss, nfont, xpos + lwidth, ypos - 1, fwidth, lineHeight);
+  myColorClocks->setToolTip("Color clocks in current scanline.");
   myColorClocks->setEditable(false, true);
 
   // Calculate actual dimensions
-  _w = myColorClocks->getAbsX() + myColorClocks->getWidth() - x;
-  _h = ypos + lineHeight;
+  _w = myColorClocks->getRight() - x;
+  _h = myColorClocks->getBottom();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -134,6 +158,8 @@ void TiaInfoWidget::loadConfig()
   Debugger& dbg = instance().debugger();
   TIADebug& tia = dbg.tiaDebug();
   const TiaState& oldTia = static_cast<const TiaState&>(tia.getOldState());
+  RiotDebug& riot = dbg.riotDebug();
+  const RiotState& oldRiot = static_cast<const RiotState&>(riot.getOldState());
 
   myFrameCount->setText(Common::Base::toString(tia.frameCount(), Common::Base::Fmt::_10_5),
                         tia.frameCount() != oldTia.info[0]);
@@ -143,7 +169,10 @@ void TiaInfoWidget::loadConfig()
   uInt64 total = tia.cyclesLo() + (uInt64(tia.cyclesHi()) << 32);
   uInt64 totalOld = oldTia.info[2] + (uInt64(oldTia.info[3]) << 32);
   myTotalCycles->setText(Common::Base::toString(uInt32(total) / 1000000, Common::Base::Fmt::_10_6) + "e6",
-                         total != totalOld);
+                         total / 1000000 != totalOld / 1000000);
+  myTotalCycles->setToolTip("Total CPU cycles (E notation) executed for this session ("
+                            + std::to_string(total) + ").");
+
   uInt64 delta = total - totalOld;
   myDeltaCycles->setText(Common::Base::toString(uInt32(delta), Common::Base::Fmt::_10_8)); // no coloring
 
@@ -159,4 +188,10 @@ void TiaInfoWidget::loadConfig()
                            clk != oldTia.info[6]);
   myColorClocks->setText(Common::Base::toString(clk, Common::Base::Fmt::_10),
                          clk != oldTia.info[6]);
+
+  myWSyncCylces->setText(Common::Base::toString(tia.frameWsyncCycles(), Common::Base::Fmt::_10_5),
+                         tia.frameWsyncCycles() != oldTia.info[7]);
+
+  myTimerCylces->setText(Common::Base::toString(riot.timReadCycles(), Common::Base::Fmt::_10_5),
+                         riot.timReadCycles() != oldRiot.timReadCycles);
 }

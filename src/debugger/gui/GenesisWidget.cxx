@@ -67,6 +67,13 @@ GenesisWidget::GenesisWidget(GuiObject* boss, const GUI::Font& font,
                                       CheckboxWidget::kCheckActionCmd);
   myPins[kJCbtn]->setID(kJCbtn);
   myPins[kJCbtn]->setTarget(this);
+
+  addFocusWidget(myPins[kJUp]);
+  addFocusWidget(myPins[kJLeft]);
+  addFocusWidget(myPins[kJRight]);
+  addFocusWidget(myPins[kJDown]);
+  addFocusWidget(myPins[kJBbtn]);
+  addFocusWidget(myPins[kJCbtn]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

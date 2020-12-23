@@ -18,6 +18,8 @@
 #include "bspf.hxx"
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
+#include "EventHandler.hxx"
+#include "TimerManager.hxx"
 #include "Widget.hxx"
 #include "Dialog.hxx"
 #include "Font.hxx"
@@ -27,38 +29,64 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ProgressDialog::ProgressDialog(GuiObject* boss, const GUI::Font& font,
                                const string& message)
-  : Dialog(boss->instance(), boss->parent())
+  : Dialog(boss->instance(), boss->parent()),
+    myFont(font)
 {
   const int fontWidth  = font.getMaxCharWidth(),
             fontHeight = font.getFontHeight(),
             lineHeight = font.getLineHeight(),
             VBORDER = fontHeight / 2,
             HBORDER = fontWidth * 1.25,
-            VGAP = fontHeight / 4;
-  int xpos, ypos, lwidth;
+            VGAP = fontHeight / 4,
+            buttonHeight = font.getLineHeight() * 1.25,
+            BTN_BORDER = fontWidth * 2.5,
+            buttonWidth = font.getStringWidth("Cancel") + BTN_BORDER,
+            lwidth = font.getStringWidth(message);
+
+  int xpos, ypos;
+  WidgetArray wid;
 
   // Calculate real dimensions
-  lwidth = font.getStringWidth(message);
-  _w = HBORDER * 2 + lwidth;
-  _h = VBORDER * 2 + lineHeight * 2 + VGAP * 2;
+  _w = HBORDER * 2 + std::max(lwidth, buttonWidth);
+  _h = VBORDER * 2 + lineHeight * 2 + buttonHeight + VGAP * 6;
 
   xpos = HBORDER; ypos = VBORDER;
   myMessage = new StaticTextWidget(this, font, xpos, ypos, lwidth, fontHeight,
                                    message, TextAlign::Center);
   myMessage->setTextColor(kTextColorEm);
 
-  xpos = HBORDER; ypos += lineHeight + VGAP * 2;
-  mySlider = new SliderWidget(this, font, xpos, ypos, lwidth, lineHeight, "", 0, 0);
+  ypos += lineHeight + VGAP * 2;
+  mySlider = new SliderWidget(this, font, xpos, ypos, lwidth, lineHeight,
+                              "", 0, 0);
   mySlider->setMinValue(1);
   mySlider->setMaxValue(100);
 
-  open();
+  ypos += lineHeight + VGAP * 4;
+  ButtonWidget* b = new ButtonWidget(this, font, (_w - buttonWidth) / 2, ypos,
+                                     buttonWidth, buttonHeight, "Cancel",
+                                     Event::UICancel);
+  wid.push_back(b);
+  addCancelWidget(b);
+  addToFocusList(wid);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ProgressDialog::setMessage(const string& message)
 {
+  const int fontWidth = myFont.getMaxCharWidth(),
+    HBORDER = fontWidth * 1.25,
+    lwidth = myFont.getStringWidth(message),
+    BTN_BORDER = fontWidth * 2.5,
+    buttonWidth = myFont.getStringWidth("Cancel") + BTN_BORDER;
+
+  // Recalculate real dimensions
+  _w = HBORDER * 2 + std::max(lwidth, buttonWidth);
+
+  myMessage->setWidth(lwidth);
   myMessage->setLabel(message);
+  mySlider->setWidth(lwidth);
+
+  _cancelWidget->setPosX((_w - buttonWidth) / 2);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -68,23 +96,57 @@ void ProgressDialog::setRange(int start, int finish, int step)
   myFinish = finish;
   myStep = int((step / 100.0) * (myFinish - myStart + 1));
 
-  mySlider->setMinValue(myStart);
+  mySlider->setMinValue(myStart + myStep);
   mySlider->setMaxValue(myFinish);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ProgressDialog::resetProgress()
+{
+  myProgress = myStepProgress = 0;
+  mySlider->setValue(0);
+  myIsCancelled = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ProgressDialog::setProgress(int progress)
 {
   // Only increase the progress bar if we have arrived at a new step
-  if(progress - mySlider->getValue() > myStep)
+  if(progress - myStepProgress >= myStep)
   {
-    mySlider->setValue(progress);
+    myStepProgress = progress;
+    mySlider->setValue(progress % (myFinish - myStart + 1));
 
     // Since this dialog is usually called in a tight loop that doesn't
-    // yield, we need to manually tell the framebuffer that a redraw is
-    // necessary
+    // yield, we need to manually:
+    // - tell the framebuffer that a redraw is necessary
+    // - poll the events
     // This isn't really an ideal solution, since all redrawing and
     // event handling is suspended until the dialog is closed
     instance().frameBuffer().update();
+    instance().eventHandler().poll(TimerManager::getTicks());
   }
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ProgressDialog::incProgress()
+{
+  setProgress(++myProgress);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ProgressDialog::handleCommand(CommandSender* sender, int cmd,
+                                   int data, int id)
+{
+  switch(cmd)
+  {
+    case Event::UICancel:
+      myIsCancelled = true;
+      break;
+
+    default:
+      Dialog::handleCommand(sender, cmd, data, 0);
+      break;
+  }
+}
+

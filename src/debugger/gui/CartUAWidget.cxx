@@ -47,7 +47,7 @@ string CartridgeUAWidget::hotspotStr(int bank, int, bool prefix)
   uInt16 hotspot = myCart.hotspot() + (bank ^ (mySwappedHotspots ? 1 : 0)) * myHotspotDelta;
 
   info << "(" << (prefix ? "hotspot " : "");
-  info << "$" << Common::Base::HEX1 << hotspot << ", $" << (hotspot | 0x80);
+  info << "$" << Common::Base::HEX1 << hotspot << ", $" << (hotspot | 0x80) << ", $" << (hotspot | 0xf80);
   info << ")";
 
   return info.str();

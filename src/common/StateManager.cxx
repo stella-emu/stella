@@ -132,9 +132,9 @@ void StateManager::toggleTimeMachine()
 
   myActiveMode = myActiveMode == Mode::TimeMachine ? Mode::Off : Mode::TimeMachine;
   if(myActiveMode == Mode::TimeMachine)
-    myOSystem.frameBuffer().showMessage("Time Machine enabled");
+    myOSystem.frameBuffer().showTextMessage("Time Machine enabled");
   else
-    myOSystem.frameBuffer().showMessage("Time Machine disabled");
+    myOSystem.frameBuffer().showTextMessage("Time Machine disabled");
   myOSystem.settings().setValue(devSettings ? "dev.timemachine" : "plr.timemachine", myActiveMode == Mode::TimeMachine);
 }
 
@@ -215,7 +215,7 @@ void StateManager::loadState(int slot)
     {
       buf.str("");
       buf << "Can't open/load from state file " << slot;
-      myOSystem.frameBuffer().showMessage(buf.str());
+      myOSystem.frameBuffer().showTextMessage(buf.str());
       return;
     }
 
@@ -239,7 +239,7 @@ void StateManager::loadState(int slot)
       buf << "Invalid data in state " << slot << " file";
     }
 
-    myOSystem.frameBuffer().showMessage(buf.str());
+    myOSystem.frameBuffer().showTextMessage(buf.str());
   }
 }
 
@@ -261,7 +261,7 @@ void StateManager::saveState(int slot)
     {
       buf.str("");
       buf << "Can't open/save to state file " << slot;
-      myOSystem.frameBuffer().showMessage(buf.str());
+      myOSystem.frameBuffer().showTextMessage(buf.str());
       return;
     }
 
@@ -274,7 +274,7 @@ void StateManager::saveState(int slot)
     catch(...)
     {
       buf << "Error saving state " << slot;
-      myOSystem.frameBuffer().showMessage(buf.str());
+      myOSystem.frameBuffer().showTextMessage(buf.str());
       return;
     }
 
@@ -292,7 +292,7 @@ void StateManager::saveState(int slot)
     else
       buf << "Error saving state " << slot;
 
-    myOSystem.frameBuffer().showMessage(buf.str());
+    myOSystem.frameBuffer().showTextMessage(buf.str());
   }
 }
 
@@ -307,7 +307,7 @@ void StateManager::changeState(int direction)
     buf << "Changed to state slot " << myCurrentSlot;
   else
     buf << "State slot " << myCurrentSlot;
-  myOSystem.frameBuffer().showMessage(buf.str());
+  myOSystem.frameBuffer().showTextMessage(buf.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -318,7 +318,7 @@ void StateManager::toggleAutoSlot()
   // Print appropriate message
   ostringstream buf;
   buf << "Automatic slot change " << (autoSlot ? "enabled" : "disabled");
-  myOSystem.frameBuffer().showMessage(buf.str());
+  myOSystem.frameBuffer().showTextMessage(buf.str());
 
   myOSystem.settings().setValue("autoslot", autoSlot);
 }

@@ -31,11 +31,13 @@ void DispatchResult::setOk(uInt64 cycles)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DispatchResult::setDebugger(uInt64 cycles, const string& message, int address, bool wasReadTrap)
+void DispatchResult::setDebugger(uInt64 cycles, const string& message,
+                                 const string& tooltip, int address, bool wasReadTrap)
 {
   myStatus = Status::debugger;
   myCycles = cycles;
   myMessage = message;
+  myToolTip = tooltip;
   myAddress = address;
   myWasReadTrap = wasReadTrap;
 }

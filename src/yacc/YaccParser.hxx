@@ -21,6 +21,7 @@
 #include "Expression.hxx"
 #include "CartDebug.hxx"
 #include "CpuDebug.hxx"
+#include "RiotDebug.hxx"
 #include "TIADebug.hxx"
 
 #include "bspf.hxx"
@@ -37,6 +38,7 @@ namespace YaccParser
 
   CartMethod getCartSpecial(char* ch);
   CpuMethod getCpuSpecial(char* ch);
+  RiotMethod getRiotSpecial(char* ch);
   TiaMethod getTiaSpecial(char* ch);
 }
 

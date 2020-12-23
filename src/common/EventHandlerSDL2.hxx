@@ -45,6 +45,12 @@ class EventHandlerSDL2 : public EventHandler
     void enableTextEvents(bool enable) override;
 
     /**
+      Clipboard methods.
+    */
+    void copyText(const string& text) const override;
+    string pasteText(string& text) const override;
+
+    /**
       Collects and dispatches any pending SDL2 events.
     */
     void pollEvent() override;

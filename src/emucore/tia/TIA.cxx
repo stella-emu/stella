@@ -17,6 +17,7 @@
 
 #include "TIA.hxx"
 #include "M6502.hxx"
+#include "M6532.hxx"
 #include "Control.hxx"
 #include "Paddles.hxx"
 #include "DelayQueueIteratorImpl.hxx"
@@ -162,7 +163,10 @@ void TIA::initialize()
 
   myDelayQueue.reset();
 
+#ifdef DEBUGGER_SUPPORT
   myCyclesAtFrameStart = 0;
+  myFrameWsyncCycles = 0;
+#endif
 
   if (myFrameManager)
     myFrameManager->reset();
@@ -278,7 +282,10 @@ bool TIA::save(Serializer& out) const
 
     out.putByteArray(myShadowRegisters.data(), myShadowRegisters.size());
 
+  #ifdef DEBUGGER_SUPPORT
     out.putLong(myCyclesAtFrameStart);
+    out.putLong(myFrameWsyncCycles);
+  #endif
 
     out.putInt(myFrameBufferScanlines);
     out.putInt(myFrontBufferScanlines);
@@ -350,7 +357,10 @@ bool TIA::load(Serializer& in)
 
     in.getByteArray(myShadowRegisters.data(), myShadowRegisters.size());
 
+  #ifdef DEBUGGER_SUPPORT
     myCyclesAtFrameStart = in.getLong();
+    myFrameWsyncCycles = in.getLong();
+  #endif
 
     myFrameBufferScanlines = in.getInt();
     myFrontBufferScanlines = in.getInt();
@@ -523,6 +533,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
 
       for (PaddleReader& paddleReader : myPaddleReaders)
         paddleReader.vblank(value, myTimestamp);
+      updateDumpPorts(value);
 
       myDelayQueue.push(VBLANK, value, Delay::vblank);
 
@@ -1303,6 +1314,10 @@ void TIA::updateEmulation()
 void TIA::onFrameStart()
 {
   myXAtRenderingStart = 0;
+#ifdef DEBUGGER_SUPPORT
+  myFrameWsyncCycles = 0;
+  mySystem->m6532().resetTimReadCylces();
+#endif
 
   // Check for colour-loss emulation
   if (myColorLossEnabled)
@@ -1328,7 +1343,9 @@ void TIA::onFrameStart()
 void TIA::onFrameComplete()
 {
   mySystem->m6502().stop();
+#ifdef DEBUGGER_SUPPORT
   myCyclesAtFrameStart = mySystem->cycles();
+#endif
 
   if (myXAtRenderingStart > 0)
     std::fill_n(myBackBuffer.begin(), myXAtRenderingStart, 0);
@@ -1350,6 +1367,9 @@ void TIA::onHalt()
 {
   mySubClock += (TIAConstants::H_CLOCKS - myHctr) % TIAConstants::H_CLOCKS;
   mySystem->incrementCycles(mySubClock / TIAConstants::CYCLE_CLOCKS);
+#ifdef DEBUGGER_SUPPORT
+  myFrameWsyncCycles += 3 + mySubClock / TIAConstants::CYCLE_CLOCKS;
+#endif
   mySubClock %= TIAConstants::CYCLE_CLOCKS;
 }
 
@@ -1979,6 +1999,24 @@ void TIA::toggleCollM1BL()
 void TIA::toggleCollBLPF()
 {
   myCollisionMask ^= (CollisionMask::ball & CollisionMask::playfield);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::updateDumpPorts(uInt8 value)
+{
+  bool newIsDumped = value & 0x80;
+
+  if(myArePortsDumped != newIsDumped)
+  {
+    myArePortsDumped = newIsDumped;
+    myDumpPortsTimestamp = myTimestamp;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Int64 TIA::dumpPortsCycles()
+{
+  return (myTimestamp - myDumpPortsTimestamp) / 3;
 }
 
 #ifdef DEBUGGER_SUPPORT

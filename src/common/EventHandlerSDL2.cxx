@@ -27,6 +27,15 @@ EventHandlerSDL2::EventHandlerSDL2(OSystem& osystem)
 {
   ASSERT_MAIN_THREAD;
 
+#ifdef GUI_SUPPORT
+  {
+    ostringstream buf;
+    myQwertz = int('y') == int(SDL_GetKeyFromScancode(SDL_Scancode(KBDK_Z)));
+    buf << "Keyboard: " << (myQwertz ? "QWERTZ" : "QWERTY");
+    Logger::debug(buf.str());
+  }
+#endif
+
 #ifdef JOYSTICK_SUPPORT
   if(SDL_InitSubSystem(SDL_INIT_JOYSTICK) < 0)
   {
@@ -36,6 +45,8 @@ EventHandlerSDL2::EventHandlerSDL2(OSystem& osystem)
   }
   Logger::debug("EventHandlerSDL2::EventHandlerSDL2 SDL_INIT_JOYSTICK");
 #endif
+
+  SDL_SetHint(SDL_HINT_MOUSE_FOCUS_CLICKTHROUGH, "1");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -57,6 +68,23 @@ void EventHandlerSDL2::enableTextEvents(bool enable)
   else
     SDL_StopTextInput();
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandlerSDL2::copyText(const string& text) const
+{
+  SDL_SetClipboardText(text.c_str());
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string EventHandlerSDL2::pasteText(string& text) const
+{
+  if(SDL_HasClipboardText())
+    text = SDL_GetClipboardText();
+  else
+    text = "";
+
+  return text;
+};
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandlerSDL2::pollEvent()

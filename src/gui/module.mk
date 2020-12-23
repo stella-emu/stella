@@ -36,6 +36,7 @@ MODULE_OBJS := \
 	src/gui/OptionsDialog.o \
 	src/gui/PopUpWidget.o \
 	src/gui/ProgressDialog.o \
+	src/gui/QuadTariDialog.o \
 	src/gui/R77HelpDialog.o \
 	src/gui/RadioButtonWidget.o \
 	src/gui/RomAuditDialog.o \
@@ -48,6 +49,8 @@ MODULE_OBJS := \
 	src/gui/TimeLineWidget.o \
 	src/gui/TimeMachineDialog.o \
 	src/gui/TimeMachine.o \
+	src/gui/ToolTip.o \
+	src/gui/UndoHandler.o \
 	src/gui/UIDialog.o \
 	src/gui/VideoAudioDialog.o \
 	src/gui/WhatsNewDialog.o \

@@ -18,6 +18,7 @@
 #include "Cart.hxx"
 #include "Widget.hxx"
 #include "Dialog.hxx"
+#include "ToolTip.hxx"
 #include "Settings.hxx"
 #include "StellaKeys.hxx"
 #include "EventHandler.hxx"
@@ -94,6 +95,7 @@ void DebuggerDialog::loadConfig()
   myRomTab->loadConfig();
 
   myMessageBox->setText("");
+  myMessageBox->setToolTip("");
 }
 
 void DebuggerDialog::saveConfig()
@@ -308,84 +310,72 @@ void DebuggerDialog::handleCommand(CommandSender* sender, int cmd,
 void DebuggerDialog::doStep()
 {
   instance().debugger().parser().run("step");
-  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::doTrace()
 {
   instance().debugger().parser().run("trace");
-  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::doAdvance()
 {
   instance().debugger().parser().run("frame #1");
-  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::doScanlineAdvance()
 {
   instance().debugger().parser().run("scanline #1");
-  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::doRewind()
 {
   instance().debugger().parser().run("rewind");
-  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::doUnwind()
 {
   instance().debugger().parser().run("unwind");
-  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::doRewind10()
 {
   instance().debugger().parser().run("rewind #10");
-  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::doUnwind10()
 {
   instance().debugger().parser().run("unwind #10");
-  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::doRewindAll()
 {
   instance().debugger().parser().run("rewind #1000");
-  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::doUnwindAll()
 {
   instance().debugger().parser().run("unwind #1000");
-  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::doExitDebugger()
 {
   instance().debugger().parser().run("run");
-  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::doExitRom()
 {
   instance().debugger().parser().run("exitrom");
-  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -444,6 +434,7 @@ void DebuggerDialog::createFont()
         break;
     }
   }
+  tooltip().setFont(*myNFont);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -624,20 +615,21 @@ void DebuggerDialog::addStatusArea()
 {
   const int lineHeight = myLFont->getLineHeight();
   const Common::Rect& r = getStatusBounds();
+  const int HBORDER = 10;
+  const int VGAP = lineHeight / 3;
   int xpos, ypos;
 
-  xpos = r.x();  ypos = r.y();
-  myTiaInfo = new TiaInfoWidget(this, *myLFont, *myNFont, xpos, ypos, r.w());
+  xpos = r.x() + HBORDER;  ypos = r.y();
+  myTiaInfo = new TiaInfoWidget(this, *myLFont, *myNFont, xpos, ypos, r.w() - HBORDER);
 
-  ypos += myTiaInfo->getHeight() + 8;
-  myTiaZoom = new TiaZoomWidget(this, *myNFont, xpos + 10, ypos,
-                                r.w() - 10, r.h() - lineHeight - ypos - 3);
+  ypos = myTiaInfo->getBottom() + VGAP;
+  myTiaZoom = new TiaZoomWidget(this, *myNFont, xpos, ypos,
+                                r.w() - HBORDER, r.h() - ypos - VGAP - lineHeight + 3);
   addToFocusList(myTiaZoom->getFocusList());
 
-  xpos += 10;  ypos += myTiaZoom->getHeight() + 6;
-  myMessageBox = new EditTextWidget(this, *myLFont,
-                                    xpos, ypos, myTiaZoom->getWidth(),
-                                    myLFont->getLineHeight(), "");
+  ypos = myTiaZoom->getBottom() + VGAP;
+  myMessageBox = new EditTextWidget(this, *myLFont, xpos, ypos,
+                                    myTiaZoom->getWidth(), lineHeight);
   myMessageBox->setEditable(false, false);
   myMessageBox->clearFlags(Widget::FLAG_RETAIN_FOCUS);
   myMessageBox->setTextColor(kTextColorEm);
@@ -735,7 +727,7 @@ void DebuggerDialog::addRomArea()
   DataGridOpsWidget* ops = new DataGridOpsWidget(this, *myLFont, xpos, ypos);
 
   int max_w = xpos - r.x() - 10;
-  xpos = r.x() + 10;  ypos = 10;
+  xpos = r.x() + 10;  ypos = 5;
   myCpu = new CpuWidget(this, *myLFont, *myNFont, xpos, ypos, max_w);
   addToFocusList(myCpu->getFocusList());
 

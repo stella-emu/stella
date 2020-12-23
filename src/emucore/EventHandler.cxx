@@ -69,16 +69,6 @@ using namespace std::placeholders;
 EventHandler::EventHandler(OSystem& osystem)
   : myOSystem(osystem)
 {
-  // Create keyboard handler (to handle all physical keyboard functionality)
-  myPKeyHandler = make_unique<PhysicalKeyboardHandler>(osystem, *this);
-
-  // Create joystick handler (to handle all physical joystick functionality)
-  myPJoyHandler = make_unique<PhysicalJoystickHandler>(osystem, *this);
-
-  // Erase the 'combo' array
-  for(int i = 0; i < COMBO_SIZE; ++i)
-    for(int j = 0; j < EVENTS_PER_COMBO; ++j)
-      myComboTable[i][j] = Event::NoType;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -89,6 +79,17 @@ EventHandler::~EventHandler()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::initialize()
 {
+  // Create keyboard handler (to handle all physical keyboard functionality)
+  myPKeyHandler = make_unique<PhysicalKeyboardHandler>(myOSystem, *this);
+
+  // Create joystick handler (to handle all physical joystick functionality)
+  myPJoyHandler = make_unique<PhysicalJoystickHandler>(myOSystem, *this);
+
+  // Erase the 'combo' array
+  for(int i = 0; i < COMBO_SIZE; ++i)
+    for(int j = 0; j < EVENTS_PER_COMBO; ++j)
+      myComboTable[i][j] = Event::NoType;
+
   // Make sure the event/action mappings are correctly set,
   // and fill the ActionList structure with valid values
   setComboMap();
@@ -190,12 +191,12 @@ void EventHandler::toggleSAPortOrder()
   if(saport == "lr")
   {
     mapStelladaptors("rl");
-    myOSystem.frameBuffer().showMessage("Stelladaptor ports right/left");
+    myOSystem.frameBuffer().showTextMessage("Stelladaptor ports right/left");
   }
   else
   {
     mapStelladaptors("lr");
-    myOSystem.frameBuffer().showMessage("Stelladaptor ports left/right");
+    myOSystem.frameBuffer().showTextMessage("Stelladaptor ports left/right");
   }
 #endif
 }
@@ -213,7 +214,7 @@ void EventHandler::set7800Mode()
 void EventHandler::handleMouseControl()
 {
   if(myMouseControl)
-    myOSystem.frameBuffer().showMessage(myMouseControl->next());
+    myOSystem.frameBuffer().showTextMessage(myMouseControl->next());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -322,7 +323,8 @@ void EventHandler::handleSystemEvent(SystemEvent e, int, int)
   {
     case SystemEvent::WINDOW_EXPOSED:
     case SystemEvent::WINDOW_RESIZED:
-      myOSystem.frameBuffer().update(true); // force full update
+      // Force full render update
+      myOSystem.frameBuffer().update(FrameBuffer::UpdateMode::RERENDER);
       break;
 #ifdef BSPF_UNIX
     case SystemEvent::WINDOW_FOCUS_GAINED:
@@ -377,7 +379,9 @@ AdjustFunction EventHandler::cycleAdjustSetting(int direction)
         #ifdef ADAPTABLE_REFRESH_SUPPORT
           || (myAdjustSetting == AdjustSetting::ADAPT_REFRESH && !isFullScreen)
         #endif
-          || (myAdjustSetting == AdjustSetting::PALETTE_PHASE && !isCustomPalette)
+          || (myAdjustSetting >= AdjustSetting::PALETTE_PHASE
+              && myAdjustSetting <= AdjustSetting::PALETTE_BLUE_SHIFT
+              && !isCustomPalette)
           || (myAdjustSetting >= AdjustSetting::NTSC_SHARPNESS
               && myAdjustSetting <= AdjustSetting::NTSC_BLEEDING
               && !isCustomFilter);
@@ -411,7 +415,7 @@ AdjustFunction EventHandler::getAdjustSetting(AdjustSetting setting)
   {
     // Audio & Video settings
     std::bind(&Sound::adjustVolume, &myOSystem.sound(), _1),
-    std::bind(&FrameBuffer::selectVidMode, &myOSystem.frameBuffer(), _1),
+    std::bind(&FrameBuffer::switchVideoMode, &myOSystem.frameBuffer(), _1),
     std::bind(&FrameBuffer::toggleFullscreen, &myOSystem.frameBuffer(), _1),
   #ifdef ADAPTABLE_REFRESH_SUPPORT
     std::bind(&FrameBuffer::toggleAdaptRefresh, &myOSystem.frameBuffer(), _1),
@@ -419,11 +423,24 @@ AdjustFunction EventHandler::getAdjustSetting(AdjustSetting setting)
     std::bind(&FrameBuffer::changeOverscan, &myOSystem.frameBuffer(), _1),
     std::bind(&Console::selectFormat, &myOSystem.console(), _1),
     std::bind(&Console::changeVerticalCenter, &myOSystem.console(), _1),
+    std::bind(&Console::toggleCorrectAspectRatio, &myOSystem.console(), _1),
     std::bind(&Console::changeVSizeAdjust, &myOSystem.console(), _1),
     // Palette adjustables
     std::bind(&PaletteHandler::cyclePalette, &myOSystem.frameBuffer().tiaSurface().paletteHandler(), _1),
     std::bind(&PaletteHandler::changeAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(),
       PaletteHandler::PHASE_SHIFT, _1),
+    std::bind(&PaletteHandler::changeAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(),
+      PaletteHandler::RED_SCALE, _1),
+    std::bind(&PaletteHandler::changeAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(),
+      PaletteHandler::RED_SHIFT, _1),
+    std::bind(&PaletteHandler::changeAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(),
+      PaletteHandler::GREEN_SCALE, _1),
+    std::bind(&PaletteHandler::changeAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(),
+      PaletteHandler::GREEN_SHIFT, _1),
+    std::bind(&PaletteHandler::changeAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(),
+      PaletteHandler::BLUE_SCALE, _1),
+    std::bind(&PaletteHandler::changeAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(),
+      PaletteHandler::BLUE_SHIFT, _1),
     std::bind(&PaletteHandler::changeAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(),
       PaletteHandler::HUE, _1),
     std::bind(&PaletteHandler::changeAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(),
@@ -534,7 +551,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
           default:
             break;
         }
-        myOSystem.frameBuffer().showMessage(msg + " settings");
+        myOSystem.frameBuffer().showTextMessage(msg + " settings");
         myAdjustActive = false;
       }
       break;
@@ -620,6 +637,46 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
         myEvent.set(Event::JoystickOneLeft, 0);
       break;
 
+    case Event::JoystickTwoUp:
+      if(!myAllowAllDirectionsFlag && pressed)
+        myEvent.set(Event::JoystickTwoDown, 0);
+      break;
+
+    case Event::JoystickTwoDown:
+      if(!myAllowAllDirectionsFlag && pressed)
+        myEvent.set(Event::JoystickTwoUp, 0);
+      break;
+
+    case Event::JoystickTwoLeft:
+      if(!myAllowAllDirectionsFlag && pressed)
+        myEvent.set(Event::JoystickTwoRight, 0);
+      break;
+
+    case Event::JoystickTwoRight:
+      if(!myAllowAllDirectionsFlag && pressed)
+        myEvent.set(Event::JoystickTwoLeft, 0);
+      break;
+
+    case Event::JoystickThreeUp:
+      if(!myAllowAllDirectionsFlag && pressed)
+        myEvent.set(Event::JoystickThreeDown, 0);
+      break;
+
+    case Event::JoystickThreeDown:
+      if(!myAllowAllDirectionsFlag && pressed)
+        myEvent.set(Event::JoystickThreeUp, 0);
+      break;
+
+    case Event::JoystickThreeLeft:
+      if(!myAllowAllDirectionsFlag && pressed)
+        myEvent.set(Event::JoystickThreeRight, 0);
+      break;
+
+    case Event::JoystickThreeRight:
+      if(!myAllowAllDirectionsFlag && pressed)
+        myEvent.set(Event::JoystickThreeLeft, 0);
+      break;
+
     ///////////////////////////////////////////////////////////////////////////
     // Audio & Video events (with global hotkeys)
     case Event::VolumeDecrease:
@@ -652,7 +709,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::VidmodeDecrease:
       if(pressed)
       {
-        myOSystem.frameBuffer().selectVidMode(-1);
+        myOSystem.frameBuffer().switchVideoMode(-1);
         myAdjustSetting = AdjustSetting::ZOOM;
         myAdjustActive = true;
       }
@@ -661,7 +718,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::VidmodeIncrease:
       if(pressed)
       {
-        myOSystem.frameBuffer().selectVidMode(+1);
+        myOSystem.frameBuffer().switchVideoMode(+1);
         myAdjustSetting = AdjustSetting::ZOOM;
         myAdjustActive = true;
       }
@@ -740,7 +797,6 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
         myAdjustActive = true;
       }
       return;
-
     case Event::VSizeAdjustDecrease:
       if(pressed)
       {
@@ -758,6 +814,15 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
         myAdjustActive = true;
       }
       return;
+
+    case Event::ToggleCorrectAspectRatio:
+      if(pressed && !repeated)
+      {
+        myOSystem.console().toggleCorrectAspectRatio();
+        myAdjustSetting = AdjustSetting::ASPECT_RATIO;
+        myAdjustActive = true;
+      }
+      break;
 
     case Event::PaletteDecrease:
       if (pressed && !repeated)
@@ -1146,7 +1211,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
 
     case Event::SaveAllStates:
       if (pressed && !repeated)
-        myOSystem.frameBuffer().showMessage(myOSystem.state().rewindManager().saveAllStates());
+        myOSystem.frameBuffer().showTextMessage(myOSystem.state().rewindManager().saveAllStates());
       return;
 
     case Event::PreviousState:
@@ -1179,7 +1244,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
 
     case Event::LoadAllStates:
       if (pressed && !repeated)
-        myOSystem.frameBuffer().showMessage(myOSystem.state().rewindManager().loadAllStates());
+        myOSystem.frameBuffer().showTextMessage(myOSystem.state().rewindManager().loadAllStates());
       return;
 
     case Event::RewindPause:
@@ -1412,7 +1477,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       {
         myEvent.set(Event::ConsoleBlackWhite, 0);
         myEvent.set(Event::ConsoleColor, 1);
-        myOSystem.frameBuffer().showMessage(myIs7800 ? "Pause released" : "Color Mode");
+        myOSystem.frameBuffer().showTextMessage(myIs7800 ? "Pause released" : "Color Mode");
         myOSystem.console().switches().update();
       }
       return;
@@ -1421,7 +1486,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       {
         myEvent.set(Event::ConsoleBlackWhite, 1);
         myEvent.set(Event::ConsoleColor, 0);
-        myOSystem.frameBuffer().showMessage(myIs7800 ? "Pause pushed" : "B/W Mode");
+        myOSystem.frameBuffer().showTextMessage(myIs7800 ? "Pause pushed" : "B/W Mode");
         myOSystem.console().switches().update();
       }
       return;
@@ -1432,13 +1497,13 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
         {
           myEvent.set(Event::ConsoleBlackWhite, 1);
           myEvent.set(Event::ConsoleColor, 0);
-          myOSystem.frameBuffer().showMessage(myIs7800 ? "Pause pushed" : "B/W Mode");
+          myOSystem.frameBuffer().showTextMessage(myIs7800 ? "Pause pushed" : "B/W Mode");
         }
         else
         {
           myEvent.set(Event::ConsoleBlackWhite, 0);
           myEvent.set(Event::ConsoleColor, 1);
-          myOSystem.frameBuffer().showMessage(myIs7800 ? "Pause released" : "Color Mode");
+          myOSystem.frameBuffer().showTextMessage(myIs7800 ? "Pause released" : "Color Mode");
         }
         myOSystem.console().switches().update();
       }
@@ -1450,7 +1515,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
         myEvent.set(Event::ConsoleBlackWhite, 0);
         myEvent.set(Event::ConsoleColor, 0);
         if (myIs7800)
-          myOSystem.frameBuffer().showMessage("Pause pressed");
+          myOSystem.frameBuffer().showTextMessage("Pause pressed");
         myOSystem.console().switches().update();
       }
       return;
@@ -1460,7 +1525,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       {
         myEvent.set(Event::ConsoleLeftDiffA, 1);
         myEvent.set(Event::ConsoleLeftDiffB, 0);
-        myOSystem.frameBuffer().showMessage(GUI::LEFT_DIFFICULTY + " A");
+        myOSystem.frameBuffer().showTextMessage(GUI::LEFT_DIFFICULTY + " A");
         myOSystem.console().switches().update();
       }
       return;
@@ -1469,7 +1534,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       {
         myEvent.set(Event::ConsoleLeftDiffA, 0);
         myEvent.set(Event::ConsoleLeftDiffB, 1);
-        myOSystem.frameBuffer().showMessage(GUI::LEFT_DIFFICULTY + " B");
+        myOSystem.frameBuffer().showTextMessage(GUI::LEFT_DIFFICULTY + " B");
         myOSystem.console().switches().update();
       }
       return;
@@ -1480,13 +1545,13 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
         {
           myEvent.set(Event::ConsoleLeftDiffA, 0);
           myEvent.set(Event::ConsoleLeftDiffB, 1);
-          myOSystem.frameBuffer().showMessage(GUI::LEFT_DIFFICULTY + " B");
+          myOSystem.frameBuffer().showTextMessage(GUI::LEFT_DIFFICULTY + " B");
         }
         else
         {
           myEvent.set(Event::ConsoleLeftDiffA, 1);
           myEvent.set(Event::ConsoleLeftDiffB, 0);
-          myOSystem.frameBuffer().showMessage(GUI::LEFT_DIFFICULTY + " A");
+          myOSystem.frameBuffer().showTextMessage(GUI::LEFT_DIFFICULTY + " A");
         }
         myOSystem.console().switches().update();
       }
@@ -1497,7 +1562,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       {
         myEvent.set(Event::ConsoleRightDiffA, 1);
         myEvent.set(Event::ConsoleRightDiffB, 0);
-        myOSystem.frameBuffer().showMessage(GUI::RIGHT_DIFFICULTY + " A");
+        myOSystem.frameBuffer().showTextMessage(GUI::RIGHT_DIFFICULTY + " A");
         myOSystem.console().switches().update();
       }
       return;
@@ -1506,7 +1571,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       {
         myEvent.set(Event::ConsoleRightDiffA, 0);
         myEvent.set(Event::ConsoleRightDiffB, 1);
-        myOSystem.frameBuffer().showMessage(GUI::RIGHT_DIFFICULTY + " B");
+        myOSystem.frameBuffer().showTextMessage(GUI::RIGHT_DIFFICULTY + " B");
         myOSystem.console().switches().update();
       }
       return;
@@ -1517,13 +1582,13 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
         {
           myEvent.set(Event::ConsoleRightDiffA, 0);
           myEvent.set(Event::ConsoleRightDiffB, 1);
-          myOSystem.frameBuffer().showMessage(GUI::RIGHT_DIFFICULTY + " B");
+          myOSystem.frameBuffer().showTextMessage(GUI::RIGHT_DIFFICULTY + " B");
         }
         else
         {
           myEvent.set(Event::ConsoleRightDiffA, 1);
           myEvent.set(Event::ConsoleRightDiffB, 0);
-          myOSystem.frameBuffer().showMessage(GUI::RIGHT_DIFFICULTY + " A");
+          myOSystem.frameBuffer().showTextMessage(GUI::RIGHT_DIFFICULTY + " A");
         }
         myOSystem.console().switches().update();
       }
@@ -2223,6 +2288,7 @@ void EventHandler::enterMenuMode(EventHandlerState state)
 void EventHandler::leaveMenuMode()
 {
 #ifdef GUI_SUPPORT
+  myOverlay->removeDialog(); // remove the base dialog from dialog stack
   setState(EventHandlerState::EMULATION);
   myOSystem.sound().mute(false);
 #endif
@@ -2248,15 +2314,16 @@ bool EventHandler::enterDebugMode()
     myOSystem.debugger().setQuitState();
     setState(EventHandlerState::EMULATION);
     if(fbstatus == FBInitStatus::FailTooLarge)
-      myOSystem.frameBuffer().showMessage("Debugger window too large for screen",
-                                          MessagePosition::BottomCenter, true);
+      myOSystem.frameBuffer().showTextMessage("Debugger window too large for screen",
+                                              MessagePosition::BottomCenter, true);
     return false;
   }
   myOverlay->reStack();
   myOSystem.sound().mute(true);
+
 #else
-  myOSystem.frameBuffer().showMessage("Debugger support not included",
-                                      MessagePosition::BottomCenter, true);
+  myOSystem.frameBuffer().showTextMessage("Debugger support not included",
+                                          MessagePosition::BottomCenter, true);
 #endif
 
   return true;
@@ -2467,6 +2534,18 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::JoystickOneFire5,        "P1 Booster Top Booster Button",         "" },
   { Event::JoystickOneFire9,        "P1 Booster Handle Grip Trigger",        "" },
 
+  { Event::JoystickTwoUp,           "P2 Joystick Up",                        "" },
+  { Event::JoystickTwoDown,         "P2 Joystick Down",                      "" },
+  { Event::JoystickTwoLeft,         "P2 Joystick Left",                      "" },
+  { Event::JoystickTwoRight,        "P2 Joystick Right",                     "" },
+  { Event::JoystickTwoFire,         "P2 Joystick Fire",                      "" },
+
+  { Event::JoystickThreeUp,         "P3 Joystick Up",                        "" },
+  { Event::JoystickThreeDown,       "P3 Joystick Down",                      "" },
+  { Event::JoystickThreeLeft,       "P3 Joystick Left",                      "" },
+  { Event::JoystickThreeRight,      "P3 Joystick Right",                     "" },
+  { Event::JoystickThreeFire,       "P3 Joystick Fire",                      "" },
+
   { Event::PaddleZeroAnalog,        "Paddle 0 Analog",                       "" },
   { Event::PaddleZeroIncrease,      "Paddle 0 Turn Left",                    "" },
   { Event::PaddleZeroDecrease,      "Paddle 0 Turn Right",                   "" },
@@ -2521,6 +2600,7 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::OverscanIncrease,        "Increase overscan in fullscreen mode",  "" },
   { Event::VidmodeDecrease,         "Previous zoom level",                   "" },
   { Event::VidmodeIncrease,         "Next zoom level",                       "" },
+  { Event::ToggleCorrectAspectRatio,"Toggle aspect ratio correct scaling",   "" },
   { Event::VSizeAdjustDecrease,     "Decrease vertical display size",        "" },
   { Event::VSizeAdjustIncrease,     "Increase vertical display size",        "" },
   { Event::VCenterDecrease,         "Move display up",                       "" },
@@ -2673,7 +2753,7 @@ const Event::EventSet EventHandler::AudioVideoEvents = {
   Event::OverscanDecrease, Event::OverscanIncrease,
   Event::FormatDecrease, Event::FormatIncrease,
   Event::VCenterDecrease, Event::VCenterIncrease,
-  Event::VSizeAdjustDecrease, Event::VSizeAdjustIncrease,
+  Event::VSizeAdjustDecrease, Event::VSizeAdjustIncrease, Event::ToggleCorrectAspectRatio,
   Event::PaletteDecrease, Event::PaletteIncrease,
   Event::PreviousPaletteAttribute, Event::NextPaletteAttribute,
   Event::PaletteAttributeDecrease, Event::PaletteAttributeIncrease,
@@ -2711,6 +2791,10 @@ const Event::EventSet EventHandler::JoystickEvents = {
   Event::JoystickZeroFire, Event::JoystickZeroFire5, Event::JoystickZeroFire9,
   Event::JoystickOneUp, Event::JoystickOneDown, Event::JoystickOneLeft, Event::JoystickOneRight,
   Event::JoystickOneFire, Event::JoystickOneFire5, Event::JoystickOneFire9,
+  Event::JoystickTwoUp, Event::JoystickTwoDown, Event::JoystickTwoLeft, Event::JoystickTwoRight,
+  Event::JoystickTwoFire,
+  Event::JoystickThreeUp, Event::JoystickThreeDown, Event::JoystickThreeLeft, Event::JoystickThreeRight,
+  Event::JoystickThreeFire,
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2749,4 +2833,9 @@ const Event::EventSet EventHandler::DebugEvents = {
   Event::ToggleCollisions, Event::ToggleBits, Event::ToggleFixedColors,
   Event::ToggleColorLoss,
   Event::ToggleJitter,
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const Event::EventSet EventHandler::EditEvents = {
+
 };

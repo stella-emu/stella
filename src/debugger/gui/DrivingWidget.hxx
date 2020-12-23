@@ -29,7 +29,7 @@ class DrivingWidget : public ControllerWidget
 {
   public:
     DrivingWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
-                  Controller& controller);
+                  Controller& controller, bool embedded = false);
     ~DrivingWidget() override = default;
 
   private:

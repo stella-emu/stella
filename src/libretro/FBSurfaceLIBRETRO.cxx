@@ -18,15 +18,7 @@
 #include "FBSurfaceLIBRETRO.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FBSurfaceLIBRETRO::FBSurfaceLIBRETRO(FrameBufferLIBRETRO&,
-                                     uInt32 width, uInt32 height, const uInt32* data)
-{
-  createSurface(width, height, data);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceLIBRETRO::createSurface(uInt32 width, uInt32 height,
-                                      const uInt32* data)
+FBSurfaceLIBRETRO::FBSurfaceLIBRETRO(uInt32 width, uInt32 height)
 {
   myWidth = width;
   myHeight = height;
@@ -38,10 +30,4 @@ void FBSurfaceLIBRETRO::createSurface(uInt32 width, uInt32 height,
   myPixels = myPixelData.get();
   myPitch = width;
   ////////////////////////////////////////////////////
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FBSurfaceLIBRETRO::render()
-{
-  return true;
 }

@@ -18,6 +18,7 @@
 #include "OSystem.hxx"
 #include "FBSurface.hxx"
 #include "Dialog.hxx"
+#include "ToolTip.hxx"
 #include "Font.hxx"
 #include "EditTextWidget.hxx"
 
@@ -45,21 +46,11 @@ void EditTextWidget::setText(const string& str, bool changed)
 {
   EditableWidget::setText(str, changed);
   _backupString = str;
-  _changed = changed;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EditTextWidget::handleMouseEntered()
-{
-  setFlags(Widget::FLAG_HILITED);
-  setDirty();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EditTextWidget::handleMouseLeft()
-{
-  clearFlags(Widget::FLAG_HILITED);
-  setDirty();
+  if(_changed != changed)
+  {
+    _changed = changed;
+    setDirty();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -68,6 +59,7 @@ void EditTextWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount
   if(!isEditable())
     return;
 
+  resetSelection();
   x += _editScrollOffset;
 
   int width = 0;
@@ -88,13 +80,12 @@ void EditTextWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount
 void EditTextWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
-  bool onTop = _boss->dialog().isOnTop();
 
   // Highlight changes
-  if(_changed && onTop)
+  if(_changed)
     s.fillRect(_x, _y, _w, _h, kDbgChangedColor);
   else if(!isEditable() || !isEnabled())
-    s.fillRect(_x, _y, _w, _h, onTop ? kDlgColor : kBGColorLo);
+    s.fillRect(_x, _y, _w, _h, kDlgColor);
 
   // Draw a thin frame around us.
   s.frameRect(_x, _y, _w, _h, hilite && isEditable() && isEnabled() ? kWidColorHi : kColor);
@@ -102,13 +93,13 @@ void EditTextWidget::drawWidget(bool hilite)
   // Draw the text
   adjustOffset();
   s.drawString(_font, editString(), _x + _textOfs, _y + 2, getEditRect().w(), getEditRect().h(),
-               _changed && onTop && isEnabled()
+               _changed && isEnabled()
                ? kDbgChangedTextColor
-               : onTop && isEnabled() ? _textcolor : kColor,
-               TextAlign::Left, isEditable() ? -_editScrollOffset : 0, !isEditable());
+               : isEnabled() ? _textcolor : kColor,
+               TextAlign::Left, scrollOffset(), !isEditable());
 
-  // Draw the caret
-  drawCaret();
+  // Draw the caret and selection
+  drawCaretSelection();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -120,6 +111,7 @@ Common::Rect EditTextWidget::getEditRect() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EditTextWidget::lostFocusWidget()
 {
+  EditableWidget::lostFocusWidget();
   // If we loose focus, 'commit' the user changes
   _backupString = editString();
 }

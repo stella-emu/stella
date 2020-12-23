@@ -149,6 +149,7 @@ const DebuggerState& TIADebug::getState()
   myState.info.push_back(scanlines());
   myState.info.push_back(scanlinesLastFrame());
   myState.info.push_back(clocksThisLine());
+  myState.info.push_back(frameWsyncCycles());
 
   return myState;
 }
@@ -258,6 +259,7 @@ void TIADebug::saveOldState()
   myOldState.info.push_back(scanlines());
   myOldState.info.push_back(scanlinesLastFrame());
   myOldState.info.push_back(clocksThisLine());
+  myOldState.info.push_back(frameWsyncCycles());
 }
 
 /* the set methods now use mySystem.poke(). This will save us the
@@ -907,6 +909,12 @@ int TIADebug::frameCount() const
 int TIADebug::frameCycles() const
 {
   return myTIA.frameCycles();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int TIADebug::frameWsyncCycles() const
+{
+  return myTIA.frameWSyncCycles();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

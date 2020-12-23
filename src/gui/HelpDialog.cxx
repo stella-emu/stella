@@ -134,16 +134,16 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
 
     case 3:
       title = "TV effects";
-      ADD_EVENT(Event::VidmodeStd,          "Disable TV effects");
-      ADD_EVENT(Event::VidmodeRGB,          "Enable 'RGB' mode");
-      ADD_EVENT(Event::VidmodeSVideo,       "Enable 'S-Video' mode");
-      ADD_EVENT(Event::VidModeComposite,    "Enable 'Composite' mode");
-      ADD_EVENT(Event::VidModeBad,          "Enable 'Badly adjusted' mode");
-      ADD_EVENT(Event::VidModeCustom,       "Enable 'Custom' mode");
-      ADD_EVENT(Event::NextAttribute,       "Select 'Custom' attribute");
-      ADD_EVENT(Event::IncreaseAttribute,   "Modify 'Custom' attribute");
-      ADD_EVENT(Event::PhosphorIncrease,    "Adjust phosphor blend");
-      ADD_EVENT(Event::ScanlinesIncrease,   "Adjust scanline intensity");
+      ADD_EVENT(Event::NextVideoMode,       "Select next TV effect mode");
+      ADD_EVENT(Event::PreviousVideoMode,   "Select previous TV effect mode");
+      ADD_EVENT(Event::NextAttribute,       "Select next 'Custom' attribute");
+      ADD_EVENT(Event::PreviousAttribute,   "Select previous 'Custom' attr.");
+      ADD_EVENT(Event::IncreaseAttribute,   "Increase 'Custom' attribute");
+      ADD_EVENT(Event::DecreaseAttribute,   "Decrease 'Custom' attribute");
+      ADD_EVENT(Event::PhosphorIncrease,    "Increase phosphor blend");
+      ADD_EVENT(Event::PhosphorDecrease,    "Decrease phosphor blend");
+      ADD_EVENT(Event::ScanlinesIncrease,   "Increase scanline intensity");
+      ADD_EVENT(Event::ScanlinesDecrease,   "Decrease scanline intensity");
       break;
 
     case 4:

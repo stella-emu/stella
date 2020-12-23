@@ -145,6 +145,10 @@ void M6532::updateEmulation()
   }
 
   myLastCycle = mySystem->cycles();
+
+#ifdef DEBUGGER_SUPPORT
+  myTimWrappedOnRead = myTimWrappedOnWrite = false;
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -220,7 +224,10 @@ uInt8 M6532::peek(uInt16 addr)
     {
       // Timer Flag is always cleared when accessing INTIM
       if (!myWrappedThisCycle) myInterruptFlag &= ~TimerBit;
-
+  #ifdef DEBUGGER_SUPPORT
+      myTimWrappedOnRead = myWrappedThisCycle;
+      myTimReadCycles += 7;
+  #endif
       return myTimer;
     }
 
@@ -230,6 +237,9 @@ uInt8 M6532::peek(uInt16 addr)
       // PA7 Flag is always cleared after accessing TIMINT
       uInt8 result = myInterruptFlag;
       myInterruptFlag &= ~PA7Bit;
+    #ifdef DEBUGGER_SUPPORT
+      myTimReadCycles += 7;
+    #endif
       return result;
     }
 
@@ -316,6 +326,9 @@ void M6532::setTimerRegister(uInt8 value, uInt8 interval)
 
   // Interrupt timer flag is cleared (and invalid) when writing to the timer
   if (!myWrappedThisCycle) myInterruptFlag &= ~TimerBit;
+#ifdef DEBUGGER_SUPPORT
+  myTimWrappedOnWrite = myWrappedThisCycle;
+#endif
 
   mySetTimerCycle = mySystem->cycles();
 }
@@ -367,6 +380,9 @@ bool M6532::save(Serializer& out) const
     out.putBool(myWrappedThisCycle);
     out.putLong(myLastCycle);
     out.putLong(mySetTimerCycle);
+  #ifdef DEBUGGER_SUPPORT
+    out.putInt(myTimReadCycles);
+  #endif
 
     out.putByte(myDDRA);
     out.putByte(myDDRB);
@@ -399,6 +415,9 @@ bool M6532::load(Serializer& in)
     myWrappedThisCycle = in.getBool();
     myLastCycle = in.getLong();
     mySetTimerCycle = in.getLong();
+  #ifdef DEBUGGER_SUPPORT
+    myTimReadCycles = in.getInt();
+  #endif
 
     myDDRA = in.getByte();
     myDDRB = in.getByte();

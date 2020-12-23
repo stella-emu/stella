@@ -18,8 +18,7 @@
 #ifndef SERIALPORT_WINDOWS_HXX
 #define SERIALPORT_WINDOWS_HXX
 
-#include <windows.h>
-
+#include "Windows.hxx"
 #include "SerialPort.hxx"
 
 /**
@@ -63,9 +62,16 @@ class SerialPortWINDOWS : public SerialPort
     */
     bool isCTS() override;
 
+    /**
+      Get all valid serial ports detected on this system.
+
+      @return  The (possibly empty) list of detected serial ports
+    */
+    StringList portNames() override;
+
   private:
     // Handle to serial port
-    HANDLE myHandle{0};
+    HANDLE myHandle{INVALID_HANDLE_VALUE};
 
   private:
     // Following constructors and assignment operators not supported

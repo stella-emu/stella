@@ -37,7 +37,6 @@ RewindManager::RewindManager(OSystem& system, StateManager& statemgr)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RewindManager::setup()
 {
-  myStateSize = 0;
   myLastTimeMachineAdd = false;
 
   const string& prefix = myOSystem.settings().getBool("dev.settings") ? "dev." : "plr.";
@@ -138,7 +137,6 @@ bool RewindManager::addState(const string& message, bool timeMachine)
   s.rewind();  // rewind Serializer internal buffers
   if(myStateManager.saveState(s) && myOSystem.console().tia().saveDisplay(s))
   {
-    myStateSize = std::max(myStateSize, uInt32(s.size()));
     state.message = message;
     state.cycles = myOSystem.console().tia().cycles();
     myLastTimeMachineAdd = timeMachine;
@@ -183,7 +181,7 @@ uInt32 RewindManager::rewindStates(uInt32 numStates)
 
   if(myOSystem.eventHandler().state() != EventHandlerState::TIMEMACHINE
      && myOSystem.eventHandler().state() != EventHandlerState::PLAYBACK)
-    myOSystem.frameBuffer().showMessage(message);
+    myOSystem.frameBuffer().showTextMessage(message);
   return i;
 }
 
@@ -218,7 +216,7 @@ uInt32 RewindManager::unwindStates(uInt32 numStates)
 
   if(myOSystem.eventHandler().state() != EventHandlerState::TIMEMACHINE
      && myOSystem.eventHandler().state() != EventHandlerState::PLAYBACK)
-    myOSystem.frameBuffer().showMessage(message);
+    myOSystem.frameBuffer().showTextMessage(message);
   return i;
 }
 
@@ -256,18 +254,22 @@ string RewindManager::saveAllStates()
     buf.str("");
     out.putString(STATE_HEADER);
     out.putShort(numStates);
-    out.putInt(myStateSize);
 
-    unique_ptr<uInt8[]> buffer = make_unique<uInt8[]>(myStateSize);
     for (uInt32 i = 0; i < numStates; ++i)
     {
       RewindState& state = myStateList.current();
       Serializer& s = state.data;
+      uInt32 stateSize = uInt32(s.size());
+      unique_ptr<uInt8[]> buffer = make_unique<uInt8[]>(stateSize);
+
+      out.putInt(stateSize);
+
       // Rewind Serializer internal buffers
       s.rewind();
+
       // Save state
-      s.getByteArray(buffer.get(), myStateSize);
-      out.putByteArray(buffer.get(), myStateSize);
+      s.getByteArray(buffer.get(), stateSize);
+      out.putByteArray(buffer.get(), stateSize);
       out.putString(state.message);
       out.putLong(state.cycles);
 
@@ -310,25 +312,27 @@ string RewindManager::loadAllStates()
     if (in.getString() != STATE_HEADER)
       return "Incompatible all states file";
     numStates = in.getShort();
-    myStateSize = in.getInt();
 
-    unique_ptr<uInt8[]> buffer = make_unique<uInt8[]>(myStateSize);
     for (uInt32 i = 0; i < numStates; ++i)
     {
       if (myStateList.full())
         compressStates();
+
+      uInt32 stateSize = in.getInt();
+      unique_ptr<uInt8[]> buffer = make_unique<uInt8[]>(stateSize);
 
       // Add new state at the end of the list (queue adds at end)
       // This updates the 'current' iterator inside the list
       myStateList.addLast();
       RewindState& state = myStateList.current();
       Serializer& s = state.data;
+
       // Rewind Serializer internal buffers
       s.rewind();
 
       // Fill new state with saved values
-      in.getByteArray(buffer.get(), myStateSize);
-      s.putByteArray(buffer.get(), myStateSize);
+      in.getByteArray(buffer.get(), stateSize);
+      s.putByteArray(buffer.get(), stateSize);
       state.message = in.getString();
       state.cycles = in.getLong();
     }

@@ -22,6 +22,7 @@ class Properties;
 class OSystem;
 class FilesystemNode;
 
+#include "Rect.hxx"
 #include "FrameBufferConstants.hxx"
 #include "DialogContainer.hxx"
 
@@ -72,9 +73,8 @@ class Launcher : public DialogContainer
   private:
     Dialog* myBaseDialog{nullptr};
 
-    // The width and height of this dialog
-    uInt32 myWidth{0};
-    uInt32 myHeight{0};
+    // The dimensions of this dialog
+    Common::Size mySize;
 
   private:
     // Following constructors and assignment operators not supported

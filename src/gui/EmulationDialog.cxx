@@ -99,6 +99,7 @@ EmulationDialog::EmulationDialog(OSystem& osystem, DialogContainer& parent,
 
   // Use sync to vblank
   myUseVSync = new CheckboxWidget(this, _font, xpos, ypos + 1, "VSync");
+  myUseVSync->setToolTip("Check to enable vertical synced display updates.");
   wid.push_back(myUseVSync);
   ypos += lineHeight + VGAP;
 

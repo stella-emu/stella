@@ -228,6 +228,12 @@
 		DC21E5C021CA903E007D0E1A /* OSystemMACOS.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC21E5BA21CA903E007D0E1A /* OSystemMACOS.hxx */; };
 		DC21E5C121CA903E007D0E1A /* SerialPortMACOS.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC21E5BB21CA903E007D0E1A /* SerialPortMACOS.cxx */; };
 		DC21E5C221CA903E007D0E1A /* SerialPortMACOS.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC21E5BC21CA903E007D0E1A /* SerialPortMACOS.hxx */; };
+		DC22F12D2507D20800AB43E9 /* QuadTari.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC22F12B2507D20800AB43E9 /* QuadTari.hxx */; };
+		DC22F12E2507D20800AB43E9 /* QuadTari.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC22F12C2507D20800AB43E9 /* QuadTari.cxx */; };
+		DC22F1312507D22500AB43E9 /* QuadTariWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC22F12F2507D22500AB43E9 /* QuadTariWidget.hxx */; };
+		DC22F1322507D22500AB43E9 /* QuadTariWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC22F1302507D22500AB43E9 /* QuadTariWidget.cxx */; };
+		DC22F1352507D24E00AB43E9 /* QuadTariDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC22F1332507D24D00AB43E9 /* QuadTariDialog.hxx */; };
+		DC22F1362507D24E00AB43E9 /* QuadTariDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC22F1342507D24E00AB43E9 /* QuadTariDialog.cxx */; };
 		DC2410E32274BDA8007A4CBF /* MinUICommandDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2410E12274BDA7007A4CBF /* MinUICommandDialog.hxx */; };
 		DC2410E42274BDA8007A4CBF /* MinUICommandDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC2410E22274BDA8007A4CBF /* MinUICommandDialog.cxx */; };
 		DC2874071F8F2278004BF21A /* TrapArray.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2874061F8F2278004BF21A /* TrapArray.hxx */; };
@@ -240,8 +246,6 @@
 		DC2C5EDB1F8F2403007D2A09 /* smartmod.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2C5EDA1F8F2403007D2A09 /* smartmod.hxx */; };
 		DC30924C212F74930020DAD0 /* TimerManager.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC30924A212F74930020DAD0 /* TimerManager.cxx */; };
 		DC30924D212F74930020DAD0 /* TimerManager.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC30924B212F74930020DAD0 /* TimerManager.hxx */; };
-		DC368F5618A2FB710084199C /* FrameBufferSDL2.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC368F5018A2FB710084199C /* FrameBufferSDL2.cxx */; };
-		DC368F5718A2FB710084199C /* FrameBufferSDL2.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC368F5118A2FB710084199C /* FrameBufferSDL2.hxx */; };
 		DC368F5818A2FB710084199C /* SoundSDL2.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC368F5218A2FB710084199C /* SoundSDL2.cxx */; };
 		DC368F5918A2FB710084199C /* SoundSDL2.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC368F5318A2FB710084199C /* SoundSDL2.hxx */; };
 		DC36D2C814CAFAB0007DC821 /* CartFA2.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC36D2C614CAFAB0007DC821 /* CartFA2.cxx */; };
@@ -511,7 +515,15 @@
 		DCB20EC71A0C506C0048F595 /* main.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCB20EC61A0C506C0048F595 /* main.cxx */; };
 		DCB2ECAF1F0AECA3009738A6 /* CartDetector.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCB2ECAC1F0AECA3009738A6 /* CartDetector.cxx */; };
 		DCB2ECB01F0AECA3009738A6 /* CartDetector.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB2ECAD1F0AECA3009738A6 /* CartDetector.hxx */; };
+		DCB60AC92535E30600A5C1D2 /* VideoModeHandler.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCB60AC72535E30500A5C1D2 /* VideoModeHandler.cxx */; };
+		DCB60ACA2535E30600A5C1D2 /* VideoModeHandler.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB60AC82535E30600A5C1D2 /* VideoModeHandler.hxx */; };
+		DCB60ACC25430FC600A5C1D2 /* FBBackend.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB60ACB25430FC600A5C1D2 /* FBBackend.hxx */; };
+		DCB60AD02543100900A5C1D2 /* FBBackendSDL2.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCB60ACD2543100900A5C1D2 /* FBBackendSDL2.cxx */; };
+		DCB60AD12543100900A5C1D2 /* FBBackendSDL2.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB60ACE2543100900A5C1D2 /* FBBackendSDL2.hxx */; };
+		DCB60AD22543100900A5C1D2 /* audio in Resources */ = {isa = PBXBuildFile; fileRef = DCB60ACF2543100900A5C1D2 /* audio */; };
 		DCB87E581A104C1E00BF2A3B /* MediaFactory.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB87E571A104C1E00BF2A3B /* MediaFactory.hxx */; };
+		DCBA539925557E2800087DD7 /* UndoHandler.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCBA539725557E2700087DD7 /* UndoHandler.hxx */; };
+		DCBA539A25557E2800087DD7 /* UndoHandler.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCBA539825557E2800087DD7 /* UndoHandler.cxx */; };
 		DCBD31E82299ADB400567357 /* KeyMap.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCBD31E52299ADB400567357 /* KeyMap.hxx */; };
 		DCBD31E92299ADB400567357 /* Rect.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCBD31E62299ADB400567357 /* Rect.hxx */; };
 		DCBD31EA2299ADB400567357 /* KeyMap.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCBD31E72299ADB400567357 /* KeyMap.cxx */; };
@@ -519,6 +531,10 @@
 		DCBDDE9B1D6A5F0E009DF1E9 /* Cart3EPlusWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCBDDE991D6A5F0E009DF1E9 /* Cart3EPlusWidget.hxx */; };
 		DCBDDE9E1D6A5F2F009DF1E9 /* Cart3EPlus.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCBDDE9C1D6A5F2F009DF1E9 /* Cart3EPlus.cxx */; };
 		DCBDDE9F1D6A5F2F009DF1E9 /* Cart3EPlus.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCBDDE9D1D6A5F2F009DF1E9 /* Cart3EPlus.hxx */; };
+		DCC2FDF5255EB82500FA5E81 /* ToolTip.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCC2FDF3255EB82500FA5E81 /* ToolTip.hxx */; };
+		DCC2FDF6255EB82500FA5E81 /* ToolTip.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCC2FDF4255EB82500FA5E81 /* ToolTip.cxx */; };
+		DCC2FDF92566AD8800FA5E81 /* DataGridRamWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCC2FDF72566AD8800FA5E81 /* DataGridRamWidget.cxx */; };
+		DCC2FDFA2566AD8800FA5E81 /* DataGridRamWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCC2FDF82566AD8800FA5E81 /* DataGridRamWidget.hxx */; };
 		DCC527D110B9DA19005E1287 /* Device.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCC527C910B9DA19005E1287 /* Device.hxx */; };
 		DCC527D210B9DA19005E1287 /* M6502.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCC527CA10B9DA19005E1287 /* M6502.cxx */; };
 		DCC527D310B9DA19005E1287 /* M6502.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCC527CB10B9DA19005E1287 /* M6502.hxx */; };
@@ -981,6 +997,12 @@
 		DC21E5BA21CA903E007D0E1A /* OSystemMACOS.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = OSystemMACOS.hxx; sourceTree = SOURCE_ROOT; };
 		DC21E5BB21CA903E007D0E1A /* SerialPortMACOS.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SerialPortMACOS.cxx; sourceTree = SOURCE_ROOT; };
 		DC21E5BC21CA903E007D0E1A /* SerialPortMACOS.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SerialPortMACOS.hxx; sourceTree = SOURCE_ROOT; };
+		DC22F12B2507D20800AB43E9 /* QuadTari.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = QuadTari.hxx; sourceTree = "<group>"; };
+		DC22F12C2507D20800AB43E9 /* QuadTari.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = QuadTari.cxx; sourceTree = "<group>"; };
+		DC22F12F2507D22500AB43E9 /* QuadTariWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = QuadTariWidget.hxx; sourceTree = "<group>"; };
+		DC22F1302507D22500AB43E9 /* QuadTariWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = QuadTariWidget.cxx; sourceTree = "<group>"; };
+		DC22F1332507D24D00AB43E9 /* QuadTariDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = QuadTariDialog.hxx; sourceTree = "<group>"; };
+		DC22F1342507D24E00AB43E9 /* QuadTariDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = QuadTariDialog.cxx; sourceTree = "<group>"; };
 		DC2410E12274BDA7007A4CBF /* MinUICommandDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = MinUICommandDialog.hxx; sourceTree = "<group>"; };
 		DC2410E22274BDA8007A4CBF /* MinUICommandDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MinUICommandDialog.cxx; sourceTree = "<group>"; };
 		DC2874061F8F2278004BF21A /* TrapArray.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TrapArray.hxx; sourceTree = "<group>"; };
@@ -993,8 +1015,6 @@
 		DC2C5EDA1F8F2403007D2A09 /* smartmod.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = smartmod.hxx; sourceTree = "<group>"; };
 		DC30924A212F74930020DAD0 /* TimerManager.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TimerManager.cxx; sourceTree = "<group>"; };
 		DC30924B212F74930020DAD0 /* TimerManager.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TimerManager.hxx; sourceTree = "<group>"; };
-		DC368F5018A2FB710084199C /* FrameBufferSDL2.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FrameBufferSDL2.cxx; sourceTree = "<group>"; };
-		DC368F5118A2FB710084199C /* FrameBufferSDL2.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FrameBufferSDL2.hxx; sourceTree = "<group>"; };
 		DC368F5218A2FB710084199C /* SoundSDL2.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SoundSDL2.cxx; sourceTree = "<group>"; };
 		DC368F5318A2FB710084199C /* SoundSDL2.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SoundSDL2.hxx; sourceTree = "<group>"; };
 		DC36D2C614CAFAB0007DC821 /* CartFA2.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartFA2.cxx; sourceTree = "<group>"; };
@@ -1265,7 +1285,15 @@
 		DCB20EC61A0C506C0048F595 /* main.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cxx; sourceTree = "<group>"; };
 		DCB2ECAC1F0AECA3009738A6 /* CartDetector.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartDetector.cxx; sourceTree = "<group>"; };
 		DCB2ECAD1F0AECA3009738A6 /* CartDetector.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartDetector.hxx; sourceTree = "<group>"; };
+		DCB60AC72535E30500A5C1D2 /* VideoModeHandler.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VideoModeHandler.cxx; sourceTree = "<group>"; };
+		DCB60AC82535E30600A5C1D2 /* VideoModeHandler.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = VideoModeHandler.hxx; sourceTree = "<group>"; };
+		DCB60ACB25430FC600A5C1D2 /* FBBackend.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FBBackend.hxx; sourceTree = "<group>"; };
+		DCB60ACD2543100900A5C1D2 /* FBBackendSDL2.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FBBackendSDL2.cxx; sourceTree = "<group>"; };
+		DCB60ACE2543100900A5C1D2 /* FBBackendSDL2.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FBBackendSDL2.hxx; sourceTree = "<group>"; };
+		DCB60ACF2543100900A5C1D2 /* audio */ = {isa = PBXFileReference; lastKnownFileType = folder; path = audio; sourceTree = "<group>"; };
 		DCB87E571A104C1E00BF2A3B /* MediaFactory.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = MediaFactory.hxx; sourceTree = "<group>"; };
+		DCBA539725557E2700087DD7 /* UndoHandler.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = UndoHandler.hxx; sourceTree = "<group>"; };
+		DCBA539825557E2800087DD7 /* UndoHandler.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UndoHandler.cxx; sourceTree = "<group>"; };
 		DCBA710010DED62E0077193B /* Stella.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Stella.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCBD31E52299ADB400567357 /* KeyMap.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = KeyMap.hxx; sourceTree = "<group>"; };
 		DCBD31E62299ADB400567357 /* Rect.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Rect.hxx; sourceTree = "<group>"; };
@@ -1274,6 +1302,10 @@
 		DCBDDE991D6A5F0E009DF1E9 /* Cart3EPlusWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Cart3EPlusWidget.hxx; sourceTree = "<group>"; };
 		DCBDDE9C1D6A5F2F009DF1E9 /* Cart3EPlus.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Cart3EPlus.cxx; sourceTree = "<group>"; };
 		DCBDDE9D1D6A5F2F009DF1E9 /* Cart3EPlus.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Cart3EPlus.hxx; sourceTree = "<group>"; };
+		DCC2FDF3255EB82500FA5E81 /* ToolTip.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ToolTip.hxx; sourceTree = "<group>"; };
+		DCC2FDF4255EB82500FA5E81 /* ToolTip.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ToolTip.cxx; sourceTree = "<group>"; };
+		DCC2FDF72566AD8800FA5E81 /* DataGridRamWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DataGridRamWidget.cxx; sourceTree = "<group>"; };
+		DCC2FDF82566AD8800FA5E81 /* DataGridRamWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = DataGridRamWidget.hxx; sourceTree = "<group>"; };
 		DCC527C910B9DA19005E1287 /* Device.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Device.hxx; sourceTree = "<group>"; };
 		DCC527CA10B9DA19005E1287 /* M6502.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = M6502.cxx; sourceTree = "<group>"; };
 		DCC527CB10B9DA19005E1287 /* M6502.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = M6502.hxx; sourceTree = "<group>"; };
@@ -1678,6 +1710,8 @@
 				2D20F9E708C603EC00A73076 /* CpuWidget.hxx */,
 				2D20F9E808C603EC00A73076 /* DataGridOpsWidget.cxx */,
 				2D20F9E908C603EC00A73076 /* DataGridOpsWidget.hxx */,
+				DCC2FDF72566AD8800FA5E81 /* DataGridRamWidget.cxx */,
+				DCC2FDF82566AD8800FA5E81 /* DataGridRamWidget.hxx */,
 				2D20F9EA08C603EC00A73076 /* DataGridWidget.cxx */,
 				2D20F9EB08C603EC00A73076 /* DataGridWidget.hxx */,
 				2D20F9EC08C603EC00A73076 /* DebuggerDialog.cxx */,
@@ -1701,6 +1735,8 @@
 				DC9616291F817830008A2206 /* PointingDeviceWidget.hxx */,
 				2D20F9EE08C603EC00A73076 /* PromptWidget.cxx */,
 				2D20F9EF08C603EC00A73076 /* PromptWidget.hxx */,
+				DC22F1302507D22500AB43E9 /* QuadTariWidget.cxx */,
+				DC22F12F2507D22500AB43E9 /* QuadTariWidget.hxx */,
 				2D20F9F008C603EC00A73076 /* RamWidget.cxx */,
 				2D20F9F108C603EC00A73076 /* RamWidget.hxx */,
 				DCE5CDE11BA10024005CD08A /* RiotRamWidget.cxx */,
@@ -1737,6 +1773,7 @@
 			isa = PBXGroup;
 			children = (
 				DCC6A4AD20A2620D00863C59 /* audio */,
+				DCB60ACF2543100900A5C1D2 /* audio */,
 				E09F413A201E901D004A3391 /* AudioQueue.cxx */,
 				E09F4139201E901C004A3391 /* AudioQueue.hxx */,
 				E0FABEEA20E9948100EB8E28 /* AudioSettings.cxx */,
@@ -1746,12 +1783,12 @@
 				DCC527D810B9DA6A005E1287 /* bspf.hxx */,
 				DCFF14CB18B0260300A20364 /* EventHandlerSDL2.cxx */,
 				DCFF14CC18B0260300A20364 /* EventHandlerSDL2.hxx */,
+				DCB60ACD2543100900A5C1D2 /* FBBackendSDL2.cxx */,
+				DCB60ACE2543100900A5C1D2 /* FBBackendSDL2.hxx */,
 				DC73BD831915E5B1003FAFAD /* FBSurfaceSDL2.cxx */,
 				DC73BD841915E5B1003FAFAD /* FBSurfaceSDL2.hxx */,
 				E007231D210FBF5D002CF343 /* FpsMeter.cxx */,
 				E007231C210FBF5C002CF343 /* FpsMeter.hxx */,
-				DC368F5018A2FB710084199C /* FrameBufferSDL2.cxx */,
-				DC368F5118A2FB710084199C /* FrameBufferSDL2.hxx */,
 				DCE395EA16CB0B5F008DB1E5 /* FSNodeFactory.hxx */,
 				DCE395EB16CB0B5F008DB1E5 /* FSNodeZIP.cxx */,
 				DCE395EC16CB0B5F008DB1E5 /* FSNodeZIP.hxx */,
@@ -1803,6 +1840,8 @@
 				DC7A24D4173B1CF600B20FE9 /* Variant.hxx */,
 				DCF490791A0ECE5B00A67AA9 /* Vec.hxx */,
 				DCF467BC0F9399F500B25D7A /* Version.hxx */,
+				DCB60AC72535E30500A5C1D2 /* VideoModeHandler.cxx */,
+				DCB60AC82535E30600A5C1D2 /* VideoModeHandler.hxx */,
 				DCE395ED16CB0B5F008DB1E5 /* ZipHandler.cxx */,
 				DCE395EE16CB0B5F008DB1E5 /* ZipHandler.hxx */,
 			);
@@ -1962,6 +2001,7 @@
 				2D733D6F062895B2006265D9 /* EventHandler.hxx */,
 				DC5AAC261FCB24AB00C420A6 /* EventHandlerConstants.hxx */,
 				DC6F394621B897AD00897AD8 /* exception */,
+				DCB60ACB25430FC600A5C1D2 /* FBBackend.hxx */,
 				DC73BD871915E5E3003FAFAD /* FBSurface.cxx */,
 				DC73BD881915E5E3003FAFAD /* FBSurface.hxx */,
 				2D733D70062895B2006265D9 /* FrameBuffer.cxx */,
@@ -2002,6 +2042,8 @@
 				2DE2DF850627AE34006BEC99 /* Props.hxx */,
 				2DE2DF860627AE34006BEC99 /* PropsSet.cxx */,
 				2DE2DF870627AE34006BEC99 /* PropsSet.hxx */,
+				DC22F12C2507D20800AB43E9 /* QuadTari.cxx */,
+				DC22F12B2507D20800AB43E9 /* QuadTari.hxx */,
 				2DE2DF890627AE34006BEC99 /* Random.hxx */,
 				DC4AC6F10DC8DAEF00CD3AD2 /* SaveKey.cxx */,
 				DC4AC6F20DC8DAEF00CD3AD2 /* SaveKey.hxx */,
@@ -2105,6 +2147,8 @@
 				2DDBEAC7084578BF00812C11 /* PopUpWidget.hxx */,
 				2DDBEAC8084578BF00812C11 /* ProgressDialog.cxx */,
 				2DDBEAC9084578BF00812C11 /* ProgressDialog.hxx */,
+				DC22F1342507D24E00AB43E9 /* QuadTariDialog.cxx */,
+				DC22F1332507D24D00AB43E9 /* QuadTariDialog.hxx */,
 				DC5AAC2A1FCB24DF00C420A6 /* RadioButtonWidget.cxx */,
 				DC5AAC2B1FCB24DF00C420A6 /* RadioButtonWidget.hxx */,
 				DC4613650D92C03600D8DAB9 /* RomAuditDialog.cxx */,
@@ -2133,8 +2177,12 @@
 				DCA82C6E1FEB4E780059340F /* TimeMachine.hxx */,
 				DCA82C6F1FEB4E780059340F /* TimeMachineDialog.cxx */,
 				DCA82C701FEB4E780059340F /* TimeMachineDialog.hxx */,
+				DCC2FDF4255EB82500FA5E81 /* ToolTip.cxx */,
+				DCC2FDF3255EB82500FA5E81 /* ToolTip.hxx */,
 				DC8078E60B4BD697005E9305 /* UIDialog.cxx */,
 				DC8078E70B4BD697005E9305 /* UIDialog.hxx */,
+				DCBA539825557E2800087DD7 /* UndoHandler.cxx */,
+				DCBA539725557E2700087DD7 /* UndoHandler.hxx */,
 				DC3C9BC72469C93D00CF2D47 /* VideoAudioDialog.cxx */,
 				DC3C9BC92469C93D00CF2D47 /* VideoAudioDialog.hxx */,
 				DC1E474C24D34F3A0047E61A /* WhatsNewDialog.cxx */,
@@ -2467,6 +2515,7 @@
 				DCE801E3236DC25600D43EDD /* CartFC.hxx in Headers */,
 				DC2AADB5194F390F0026C7A4 /* CartRamWidget.hxx in Headers */,
 				2D91740E09BA90380026E9FF /* ListWidget.hxx in Headers */,
+				DC22F1312507D22500AB43E9 /* QuadTariWidget.hxx in Headers */,
 				2D91740F09BA90380026E9FF /* Menu.hxx in Headers */,
 				2D91741009BA90380026E9FF /* OptionsDialog.hxx in Headers */,
 				DCEC58591E945125002F0246 /* DelayQueueWidget.hxx in Headers */,
@@ -2475,12 +2524,14 @@
 				2D91741209BA90380026E9FF /* ProgressDialog.hxx in Headers */,
 				2D91741309BA90380026E9FF /* ScrollBarWidget.hxx in Headers */,
 				2D91741609BA90380026E9FF /* TabWidget.hxx in Headers */,
+				DCB60ACC25430FC600A5C1D2 /* FBBackend.hxx in Headers */,
 				DCB2ECB01F0AECA3009738A6 /* CartDetector.hxx in Headers */,
 				2D91741809BA90380026E9FF /* Widget.hxx in Headers */,
 				2D91741909BA90380026E9FF /* CartUA.hxx in Headers */,
 				DCE8B1871E7E03B300189864 /* FrameLayout.hxx in Headers */,
 				DCA233B523BAB1300032ABF3 /* Lightgun.hxx in Headers */,
 				DCBD31E92299ADB400567357 /* Rect.hxx in Headers */,
+				DCBA539925557E2800087DD7 /* UndoHandler.hxx in Headers */,
 				2D91741A09BA90380026E9FF /* FSNode.hxx in Headers */,
 				2D91741B09BA90380026E9FF /* OSystem.hxx in Headers */,
 				DC6A18F919B3E65500DEB242 /* CartMDMWidget.hxx in Headers */,
@@ -2513,6 +2564,7 @@
 				2D91745109BA90380026E9FF /* StringListWidget.hxx in Headers */,
 				DC62E64A1960E87B007AEF05 /* SaveKeyWidget.hxx in Headers */,
 				2D91745209BA90380026E9FF /* CommandDialog.hxx in Headers */,
+				DC22F1352507D24E00AB43E9 /* QuadTariDialog.hxx in Headers */,
 				2D91745309BA90380026E9FF /* CommandMenu.hxx in Headers */,
 				E0306E111F93E916003DDD52 /* JitterEmulation.hxx in Headers */,
 				DC1E474F24D34F3B0047E61A /* WhatsNewDialog.hxx in Headers */,
@@ -2532,6 +2584,7 @@
 				E08FCD5823A037EB0051F59B /* QisBlitter.hxx in Headers */,
 				DCA078351F8C1B04008EFEE5 /* SDL_lib.hxx in Headers */,
 				DCDA03B11A2009BB00711920 /* CartWD.hxx in Headers */,
+				DCC2FDFA2566AD8800FA5E81 /* DataGridRamWidget.hxx in Headers */,
 				2D91745909BA90380026E9FF /* PromptWidget.hxx in Headers */,
 				DC3C9BC62469C8F700CF2D47 /* PaletteHandler.hxx in Headers */,
 				2D91745A09BA90380026E9FF /* RamWidget.hxx in Headers */,
@@ -2584,9 +2637,11 @@
 				DC173F770E2CAC1E00320F94 /* ContextMenu.hxx in Headers */,
 				DC0DF86A0F0DAAF500B0F1F3 /* GlobalPropsDialog.hxx in Headers */,
 				E0DCD3A920A64E96000B614E /* ConvolutionBuffer.hxx in Headers */,
+				DC22F12D2507D20800AB43E9 /* QuadTari.hxx in Headers */,
 				DC71EAA81FDA070D008827CB /* CartMNetworkWidget.hxx in Headers */,
 				DC5D2C530F117CFD004D1660 /* StellaFont.hxx in Headers */,
 				DC5D2C540F117CFD004D1660 /* StellaLargeFont.hxx in Headers */,
+				DCB60AD12543100900A5C1D2 /* FBBackendSDL2.hxx in Headers */,
 				DC5D2C550F117CFD004D1660 /* StellaMediumFont.hxx in Headers */,
 				DC3EE8681E2C0E6D00905161 /* inftrees.h in Headers */,
 				DC932D440F278A5200FEFEFC /* DefProps.hxx in Headers */,
@@ -2609,6 +2664,7 @@
 				DC5D1AA7102C6FC900E59AC1 /* Stack.hxx in Headers */,
 				DCF7B0DE10A762FC007A2870 /* CartF0.hxx in Headers */,
 				DCF7B0E010A762FC007A2870 /* CartFA.hxx in Headers */,
+				DCC2FDF5255EB82500FA5E81 /* ToolTip.hxx in Headers */,
 				DCC527D110B9DA19005E1287 /* Device.hxx in Headers */,
 				DC6F394E21B897F300897AD8 /* ThreadDebugging.hxx in Headers */,
 				DCC527D310B9DA19005E1287 /* M6502.hxx in Headers */,
@@ -2673,6 +2729,7 @@
 				DCAAE5D41715887B0080BB82 /* Cart2KWidget.hxx in Headers */,
 				DCF7F129223D796000701A47 /* ProfilingRunner.hxx in Headers */,
 				DCAAE5D61715887B0080BB82 /* Cart3FWidget.hxx in Headers */,
+				DCB60ACA2535E30600A5C1D2 /* VideoModeHandler.hxx in Headers */,
 				DCAAE5D81715887B0080BB82 /* Cart4KWidget.hxx in Headers */,
 				DCAAE5DA1715887B0080BB82 /* Cart0840Widget.hxx in Headers */,
 				DCAAE5DC1715887B0080BB82 /* CartCVWidget.hxx in Headers */,
@@ -2741,7 +2798,6 @@
 				DC96162D1F817830008A2206 /* AmigaMouseWidget.hxx in Headers */,
 				DCAACB17188D636F00A4D282 /* CartDFWidget.hxx in Headers */,
 				DCF3A6FF1DFC75E3008A8AF3 /* TIA.hxx in Headers */,
-				DC368F5718A2FB710084199C /* FrameBufferSDL2.hxx in Headers */,
 				DC368F5918A2FB710084199C /* SoundSDL2.hxx in Headers */,
 				DCF3A6F91DFC75E3008A8AF3 /* PaddleReader.hxx in Headers */,
 				DCFF14CE18B0260300A20364 /* EventHandlerSDL2.hxx in Headers */,
@@ -2820,6 +2876,7 @@
 				2D91747109BA90380026E9FF /* docs in Resources */,
 				2D91747209BA90380026E9FF /* AboutBox.nib in Resources */,
 				2DEFB40C09C3386F00754289 /* Cart.icns in Resources */,
+				DCB60AD22543100900A5C1D2 /* audio in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2889,6 +2946,7 @@
 				2D91748C09BA90380026E9FF /* Driving.cxx in Sources */,
 				E0306E101F93E916003DDD52 /* FrameLayoutDetector.cxx in Sources */,
 				2D91748E09BA90380026E9FF /* Joystick.cxx in Sources */,
+				DCB60AC92535E30600A5C1D2 /* VideoModeHandler.cxx in Sources */,
 				2D91748F09BA90380026E9FF /* Keyboard.cxx in Sources */,
 				2D91749009BA90380026E9FF /* M6532.cxx in Sources */,
 				2D91749109BA90380026E9FF /* MD5.cxx in Sources */,
@@ -2972,6 +3030,7 @@
 				DC21E5C121CA903E007D0E1A /* SerialPortMACOS.cxx in Sources */,
 				E007231F210FBF5E002CF343 /* FpsMeter.cxx in Sources */,
 				2D9174FD09BA90380026E9FF /* RomListWidget.cxx in Sources */,
+				DC22F1362507D24E00AB43E9 /* QuadTariDialog.cxx in Sources */,
 				DCF3A6F81DFC75E3008A8AF3 /* PaddleReader.cxx in Sources */,
 				2D9174FE09BA90380026E9FF /* RomWidget.cxx in Sources */,
 				DCA82C731FEB4E780059340F /* TimeMachineDialog.cxx in Sources */,
@@ -3034,6 +3093,7 @@
 				DCF7B0DD10A762FC007A2870 /* CartF0.cxx in Sources */,
 				DCF7B0DF10A762FC007A2870 /* CartFA.cxx in Sources */,
 				DCC527D210B9DA19005E1287 /* M6502.cxx in Sources */,
+				DC22F12E2507D20800AB43E9 /* QuadTari.cxx in Sources */,
 				DC3EE86B1E2C0E6D00905161 /* uncompr.c in Sources */,
 				DCC527D610B9DA19005E1287 /* System.cxx in Sources */,
 				DC6B2BA411037FF200F199A7 /* CartDebug.cxx in Sources */,
@@ -3066,6 +3126,7 @@
 				DCD6FC7E11C281ED005DA767 /* pngtrans.c in Sources */,
 				DC6F394D21B897F300897AD8 /* ThreadDebugging.cxx in Sources */,
 				DCD6FC7F11C281ED005DA767 /* pngwio.c in Sources */,
+				DC22F1322507D22500AB43E9 /* QuadTariWidget.cxx in Sources */,
 				DCD6FC8011C281ED005DA767 /* pngwrite.c in Sources */,
 				DC3EE8621E2C0E6D00905161 /* inffast.c in Sources */,
 				DCD6FC8111C281ED005DA767 /* pngwtran.c in Sources */,
@@ -3126,6 +3187,7 @@
 				DCAAE5F01715887B0080BB82 /* CartFAWidget.cxx in Sources */,
 				DCAAE5F21715887B0080BB82 /* CartUAWidget.cxx in Sources */,
 				DC676A411729A0B000E4E73D /* Cart3EWidget.cxx in Sources */,
+				DCBA539A25557E2800087DD7 /* UndoHandler.cxx in Sources */,
 				DC676A431729A0B000E4E73D /* Cart4A50Widget.cxx in Sources */,
 				DC3EE85A1E2C0E6D00905161 /* deflate.c in Sources */,
 				DC676A451729A0B000E4E73D /* CartARWidget.cxx in Sources */,
@@ -3143,6 +3205,7 @@
 				DC676A591729A0B000E4E73D /* CartSBWidget.cxx in Sources */,
 				DC3C9BCC2469C93D00CF2D47 /* EmulationDialog.cxx in Sources */,
 				DC676A5B1729A0B000E4E73D /* CartX07Widget.cxx in Sources */,
+				DCC2FDF92566AD8800FA5E81 /* DataGridRamWidget.cxx in Sources */,
 				DC7A24DF173B1DBC00B20FE9 /* FileListWidget.cxx in Sources */,
 				DC13B53F176FF2F500B8B4BB /* RomListSettings.cxx in Sources */,
 				DC3EE8581E2C0E6D00905161 /* crc32.c in Sources */,
@@ -3155,11 +3218,12 @@
 				DCAACAFC188D631500A4D282 /* CartDF.cxx in Sources */,
 				DCAACAFE188D631500A4D282 /* CartDFSC.cxx in Sources */,
 				DCAACB0E188D636F00A4D282 /* Cart4KSCWidget.cxx in Sources */,
+				DCB60AD02543100900A5C1D2 /* FBBackendSDL2.cxx in Sources */,
 				DCAACB10188D636F00A4D282 /* CartBFSCWidget.cxx in Sources */,
+				DCC2FDF6255EB82500FA5E81 /* ToolTip.cxx in Sources */,
 				DCAACB12188D636F00A4D282 /* CartBFWidget.cxx in Sources */,
 				DCAACB14188D636F00A4D282 /* CartDFSCWidget.cxx in Sources */,
 				DCAACB16188D636F00A4D282 /* CartDFWidget.cxx in Sources */,
-				DC368F5618A2FB710084199C /* FrameBufferSDL2.cxx in Sources */,
 				DC368F5818A2FB710084199C /* SoundSDL2.cxx in Sources */,
 				DCFF14CD18B0260300A20364 /* EventHandlerSDL2.cxx in Sources */,
 				DC3EE8561E2C0E6D00905161 /* adler32.c in Sources */,
@@ -3341,7 +3405,7 @@
 					.,
 					"$(HOME)/Library/Frameworks",
 				);
-				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_VERSION = "";
@@ -3416,7 +3480,7 @@
 					.,
 					"$(HOME)/Library/Frameworks",
 				);
-				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_VERSION = "";
