@@ -26,7 +26,7 @@ CartridgeMNetworkWidget::CartridgeMNetworkWidget(
     int x, int y, int w, int h,
     CartridgeMNetwork& cart)
   : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
-    myCart(cart)
+    myCart{cart}
 {
 }
 

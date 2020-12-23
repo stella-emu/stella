@@ -27,7 +27,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CpuDebug::CpuDebug(Debugger& dbg, Console& console)
   : DebuggerSystem(dbg, console),
-    my6502(mySystem.m6502())
+    my6502{mySystem.m6502()}
 {
 }
 

@@ -49,8 +49,8 @@
 Dialog::Dialog(OSystem& instance, DialogContainer& parent, const GUI::Font& font,
                const string& title, int x, int y, int w, int h)
   : GuiObject(instance, parent, *this, x, y, w, h),
-    _font(font),
-    _title(title)
+    _font{font},
+    _title{title}
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_BORDER | Widget::FLAG_CLEARBG;
   setTitle(title);
@@ -244,7 +244,9 @@ void Dialog::redraw(bool force)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::render()
 {
+#ifdef DEBUG_BUILD
   //cerr << "  render " << typeid(*this).name() << endl;
+#endif
 
   // Update dialog surface; also render any extra surfaces
   // Extra surfaces must be rendered afterwards, so they are drawn on top
@@ -263,8 +265,6 @@ void Dialog::render()
 
   if(!onTop)
   {
-    //cerr << "    shade " << typeid(*this).name() << endl;
-
     _shadeSurface->setDstRect(_surface->dstRect());
     _shadeSurface->render();
   }
@@ -300,7 +300,7 @@ void Dialog::addFocusWidget(Widget* w)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::addToFocusList(WidgetArray& list)
+void Dialog::addToFocusList(const WidgetArray& list)
 {
   // All focusable widgets should retain focus
   for(const auto& w: list)
@@ -314,7 +314,7 @@ void Dialog::addToFocusList(WidgetArray& list)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::addToFocusList(WidgetArray& list, TabWidget* w, int tabId)
+void Dialog::addToFocusList(const WidgetArray& list, TabWidget* w, int tabId)
 {
   // Only add the list if the tab actually exists
   if(!w || w->getID() >= _myTabList.size())
@@ -433,8 +433,10 @@ void Dialog::drawDialog()
 
   if(isDirty())
   {
-    cerr << endl << "d";
+  #ifdef DEBUG_BUILD
     //cerr << "*** draw dialog " << typeid(*this).name() << " ***" << endl;
+    cerr << endl << "d";
+  #endif
 
     if(clearsBackground())
     {
@@ -453,7 +455,9 @@ void Dialog::drawDialog()
     }
     else {
       s.invalidate();
+    #ifdef DEBUG_BUILD
       //cerr << "invalidate " << typeid(*this).name() << endl;
+    #endif
     }
     if(hasBorder()) // currently only used by Dialog itself
       s.frameRect(_x, _y, _w, _h, kColor);
@@ -463,8 +467,10 @@ void Dialog::drawDialog()
 
     clearDirty();
   }
+#ifdef DEBUG_BUILD
   else
     cerr << endl;
+#endif
 
   // Draw all children
   drawChain();
@@ -772,7 +778,7 @@ bool Dialog::handleNavEvent(Event::Type e, bool repeated)
       if(_okWidget && _okWidget->isEnabled() && !repeated)
       {
         // Receiving 'OK' is the same as getting the 'Select' event
-        //_okWidget->handleEvent(Event::UISelect);
+        _okWidget->handleEvent(Event::UISelect);
         return true;
       }
       break;
@@ -781,7 +787,7 @@ bool Dialog::handleNavEvent(Event::Type e, bool repeated)
       if(_cancelWidget && _cancelWidget->isEnabled() && !repeated)
       {
         // Receiving 'Cancel' is the same as getting the 'Select' event
-        //_cancelWidget->handleEvent(Event::UISelect);
+        _cancelWidget->handleEvent(Event::UISelect);
         return true;
       }
       else if(_processCancel)
@@ -965,10 +971,10 @@ void Dialog::addDefaultsExtraOKCancelBGroup(
                    buttonWidth, buttonHeight, defaultsText, GuiObject::kDefaultsCmd));
   wid.push_back(_defaultWidget);
 
-  wid.push_back(new ButtonWidget(this, font, HBORDER + buttonWidth + BUTTON_GAP,
-                      _h - buttonHeight - VBORDER, buttonWidth, buttonHeight,
-                      extraText, extraCmd)
-  );
+  addExtraWidget(new ButtonWidget(this, font, HBORDER + buttonWidth + BUTTON_GAP,
+                 _h - buttonHeight - VBORDER, buttonWidth, buttonHeight,
+                 extraText, extraCmd));
+  wid.push_back(_extraWidget);
 
   addOKCancelBGroup(wid, font, okText, cancelText, focusOKButton, buttonWidth);
 }

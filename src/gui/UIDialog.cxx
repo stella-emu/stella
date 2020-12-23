@@ -42,8 +42,8 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
                    const GUI::Font& font, GuiObject* boss, int max_w, int max_h)
   : Dialog(osystem, parent, font, "User interface settings"),
     CommandSender(boss),
-    myFont(font),
-    myIsGlobal(boss != nullptr)
+    myFont{font},
+    myIsGlobal{boss != nullptr}
 {
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
   const int lineHeight   = font.getLineHeight(),
@@ -219,6 +219,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   xpos = _w - HBORDER - font.getStringWidth("Follow Launcher path") - CheckboxWidget::prefixSize(font) - 1;
   ypos += lineHeight + VGAP * 2;
   myFollowLauncherWidget = new CheckboxWidget(myTab, font, xpos, ypos, "Follow Launcher path");
+  myFollowLauncherWidget->setToolTip("The ROM path is updated during Launcher navigation.");
   wid.push_back(myFollowLauncherWidget);
 
   xpos = HBORDER;
@@ -272,6 +273,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   bwidth = font.getStringWidth("Image path" + ELLIPSIS) + fontWidth * 2 + 1;
   myOpenBrowserButton = new ButtonWidget(myTab, font, xpos, ypos, bwidth, buttonHeight,
                                          "Image path" + ELLIPSIS, kChooseSnapLoadDirCmd);
+  myOpenBrowserButton->setToolTip("Select path for snapshot images used in Launcher.");
   wid.push_back(myOpenBrowserButton);
 
   mySnapLoadPath = new EditTextWidget(myTab, font, HBORDER + lwidth,

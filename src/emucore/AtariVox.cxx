@@ -24,9 +24,9 @@
 AtariVox::AtariVox(Jack jack, const Event& event, const System& system,
                    const string& portname, const FilesystemNode& eepromfile,
                    const onMessageCallback& callback)
-  : SaveKey(jack, event, system, eepromfile, callback, Controller::Type::AtariVox)
+  : SaveKey(jack, event, system, eepromfile, callback, Controller::Type::AtariVox),
+    mySerialPort{MediaFactory::createSerialPort()}
 {
-  mySerialPort = MediaFactory::createSerialPort();
   if(mySerialPort->openPort(portname))
   {
     myCTSFlip = !mySerialPort->isCTS();

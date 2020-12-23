@@ -22,6 +22,7 @@
 
 #include "Widget.hxx"
 #include "Rect.hxx"
+#include "ContextMenu.hxx"
 #include "UndoHandler.hxx"
 
 /**
@@ -50,6 +51,7 @@ class EditableWidget : public Widget, public CommandSender
     ~EditableWidget() override = default;
 
     virtual void setText(const string& str, bool changed = false);
+    void setMaxLen(int len) { _maxLen = len; }
     const string& getText() const { return _editString; }
 
     bool isEditable() const	{ return _editable; }
@@ -65,10 +67,17 @@ class EditableWidget : public Widget, public CommandSender
     void setTextFilter(const TextFilter& filter) { _filter = filter; }
 
   protected:
+    void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
+    void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
+    void handleMouseMoved(int x, int y) override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    virtual int caretOfs() const { return _editScrollOffset; }
+    int toCaretPos(int x) const;
+
     void receivedFocusWidget() override;
     void lostFocusWidget() override;
     void tick() override;
-    bool wantsToolTip() const override; 
+    bool wantsToolTip() const override;
 
     virtual void startEditMode() { setFlags(Widget::FLAG_WANTS_RAWDATA);   }
     virtual void endEditMode()   { clearFlags(Widget::FLAG_WANTS_RAWDATA); }
@@ -94,6 +103,7 @@ class EditableWidget : public Widget, public CommandSender
     bool killLine(int direction);
     bool killWord(int direction);
     bool moveWord(int direction, bool select);
+    bool markWord();
 
     bool killSelectedText(bool addEdit = true);
     int selectStartPos();
@@ -108,8 +118,12 @@ class EditableWidget : public Widget, public CommandSender
     bool tryInsertChar(char c, int pos);
 
   private:
+    unique_ptr<ContextMenu> myMouseMenu;
+    bool    _isDragging{false};
+
     bool   _editable{true};
     string _editString;
+    int    _maxLen{0};
     unique_ptr<UndoHandler> myUndoHandler;
 
     int    _caretPos{0};

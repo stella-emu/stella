@@ -47,11 +47,13 @@ WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent, const 
   add(ypos, "fixed navigation bug in Video & Audio settings dialog");
   add(ypos, "fixed autofire bug for trackball controllers");
 #else
-  add(ypos, "enhanced cut/copy/paste for text editing");
-  add(ypos, "added undo and redo to text editing");
+  add(ypos, "added high scores saving");
+  add(ypos, "enhanced cut/copy/paste and undo/redo for text editing");
+  add(ypos, "added mouse support for text editing");
   add(ypos, "added wildcard support to launcher dialog filter");
   add(ypos, "added option to search subdirectories in launcher");
   add(ypos, "added tooltips to many UI items");
+  add(ypos, "added sound to Time Machine playback");
   add(ypos, "increased sample size for CDFJ+");
   add(ypos, ELLIPSIS + " (for a complete list see 'docs/Changes.txt')");
 #endif

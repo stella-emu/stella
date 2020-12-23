@@ -27,7 +27,7 @@ CartridgeCTYWidget::CartridgeCTYWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, CartridgeCTY& cart)
   : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
-    myCart(cart)
+    myCart{cart}
 {
   uInt16 size = 8 * 4096;
 

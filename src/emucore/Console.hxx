@@ -74,18 +74,13 @@ class Console : public Serializable, public ConsoleIO
     */
     Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
             const Properties& props, AudioSettings& audioSettings);
-
-    /**
-      Destructor
-    */
     ~Console() override;
 
   public:
-
     /**
       Sets the left and right controllers for the console.
     */
-    void setControllers(const string& roMd5);
+    void setControllers(const string& romMd5);
 
     /**
       Get the controller plugged into the specified jack
@@ -94,6 +89,12 @@ class Console : public Serializable, public ConsoleIO
     */
     Controller& leftController() const override { return *myLeftControl;  }
     Controller& rightController() const override { return *myRightControl; }
+
+    /**
+      Change to next or previous controller type
+    */
+    void changeLeftController(int direction = +1);
+    void changeRightController(int direction = +1);
 
     /**
       Get the TIA for this console
@@ -189,6 +190,31 @@ class Console : public Serializable, public ConsoleIO
       Retrieve the current game's refresh rate, or 0 if no game.
     */
     int refreshRate() const;
+
+    /**
+      Toggle left and right controller ports swapping
+    */
+    void toggleSwapPorts(bool toggle = true);
+
+    /**
+      Toggle paddle controllers swapping
+    */
+    void toggleSwapPaddles(bool toggle = true);
+
+    /**
+      Change x-center of paddles
+    */
+    void changePaddleCenterX(int direction = +1);
+
+    /**
+      Change y-center of paddles
+    */
+    void changePaddleCenterY(int direction = +1);
+
+    /**
+      Change paddle range for digital/mouse emulation
+    */
+    void changePaddleAxesRange(int direction = +1);
 
   public:
     /**

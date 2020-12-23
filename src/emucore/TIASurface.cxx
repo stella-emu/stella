@@ -46,8 +46,8 @@ namespace {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TIASurface::TIASurface(OSystem& system)
-  : myOSystem(system),
-    myFB(system.frameBuffer())
+  : myOSystem{system},
+    myFB{system.frameBuffer()}
 {
   // Load NTSC filter settings
   myNTSCFilter.loadConfig(myOSystem.settings());
@@ -74,6 +74,17 @@ TIASurface::TIASurface(OSystem& system)
   // Base TIA surface for use in taking snapshots in 1x mode
   myBaseTiaSurface = myFB.allocateSurface(TIAConstants::frameBufferWidth*2,
                                           TIAConstants::frameBufferHeight);
+
+  // Create shading surface
+  uInt32 data = 0xff000000;
+
+  myShadeSurface = myFB.allocateSurface(1, 1, ScalingInterpolation::sharp, &data);
+
+  FBSurface::Attributes& attr = myShadeSurface->attributes();
+
+  attr.blending = true;
+  attr.blendalpha = 35; // darken stopped emulation by 35%
+  myShadeSurface->applyAttributes();
 
   myRGBFramebuffer.fill(0);
 
@@ -361,7 +372,7 @@ inline uInt32 TIASurface::averageBuffers(uInt32 bufOfs)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIASurface::render()
+void TIASurface::render(bool shade)
 {
   uInt32 width = myTIA->width(), height = myTIA->height();
 
@@ -437,6 +448,12 @@ void TIASurface::render()
   // Draw overlaying scanlines
   if(myScanlinesEnabled)
     mySLineSurface->render();
+
+  if(shade)
+  {
+    myShadeSurface->setDstRect(myTiaSurface->dstRect());
+    myShadeSurface->render();
+  }
 
   if(mySaveSnapFlag)
   {

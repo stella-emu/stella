@@ -14,23 +14,35 @@
 
 6.4 to 6.5 (December XX, 2020)
 
-  * Enhanced cut/copy/paste	for text editing. (TODO: PromptWidget)
+  * Added high scores saving.
 
-  * Added undo and redo to text editing. (TODO: PromptWidget)
+  * Improved text editing functionality (except PromptWidget):
+    - Enhanced selection and cut/copy/paste from keyboard.
+    - Added undo and redo support.
+    - Added mouse support (selection, cut/copy/paste).
+    - All actions have keyboard shortcuts.
 
-  * Added wildcard support to launcher dialog filter.
-
-  * Added option to search subdirectories in launcher.
+  * Various improvements to the ROM launcher:
+    - Added wildcard support to the dialog filter
+    - Added option to search subdirectories
 
   * Added static tooltips to some UI items.
 
   * Added dynamic tooltips to most debugger items.
 
+  * Added sound to Time Machine playback.
+
+  * Extended global hotkeys for input devices & ports settings.
+
   * Increased sample size for CDFJ+.
 
   * Fixed autofire bug for trackball controllers.
 
-  * Codebase now uses C++17 features.
+  * Fixed Stelladaptor/2600'daptor devices sometimes not being assigned
+    correct default mappings.
+
+  * Codebase now uses C++17 features, which means a minimum of gcc7
+    or clang5 for Linux/Mac, and Visual Studio 2019 for Windows.
 
 -Have fun!
 

@@ -62,8 +62,8 @@ Debugger* Debugger::myStaticDebugger = nullptr;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Debugger::Debugger(OSystem& osystem, Console& console)
   : DialogContainer(osystem),
-    myConsole(console),
-    mySystem(console.system())
+    myConsole{console},
+    mySystem{console.system()}
 {
   // Init parser
   myParser = make_unique<DebuggerParser>(*this, osystem.settings());
@@ -716,10 +716,8 @@ bool Debugger::addFunction(const string& name, const string& definition,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Debugger::isBuiltinFunction(const string& name)
 {
-  for(const auto& func: ourBuiltinFunctions)
-    if(name == func.name)
-      return true;
-  return false;
+  return std::any_of(ourBuiltinFunctions.cbegin(), ourBuiltinFunctions.cend(),
+      [&](const auto& func) { return name == func.name; });
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

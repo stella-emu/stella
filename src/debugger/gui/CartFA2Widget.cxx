@@ -23,7 +23,7 @@ CartridgeFA2Widget::CartridgeFA2Widget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, CartridgeFA2& cart)
   : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart),
-    myCartFA2(cart)
+    myCartFA2{cart}
 {
   int xpos = 2,
     ypos = initialize();

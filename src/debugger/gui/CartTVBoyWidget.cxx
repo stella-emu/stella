@@ -24,7 +24,7 @@ CartridgeTVBoyWidget::CartridgeTVBoyWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, CartridgeTVBoy& cart)
   : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart),
-    myCartTVBoy(cart)
+    myCartTVBoy{cart}
 {
   initialize();
 }
@@ -46,22 +46,27 @@ string CartridgeTVBoyWidget::description()
 void CartridgeTVBoyWidget::bankSelect(int& ypos)
 {
   CartridgeEnhancedWidget::bankSelect(ypos);
-  int xpos = myBankWidgets[0]->getRight() + _font.getMaxCharWidth() * 4;
-  ypos = myBankWidgets[0]->getTop();
+  if(myCart.romBankCount() > 1)
+  {
+    int xpos = myBankWidgets[0]->getRight() + _font.getMaxCharWidth() * 4;
+    ypos = myBankWidgets[0]->getTop();
 
-  myBankLocked = new CheckboxWidget(_boss, _font, xpos, ypos + 1,
+    myBankLocked = new CheckboxWidget(_boss, _font, xpos, ypos + 1,
                                       "Bankswitching is locked",
                                       kBankLocked);
-  myBankLocked->setTarget(this);
-  addFocusWidget(myBankLocked);
+    myBankLocked->setTarget(this);
+    addFocusWidget(myBankLocked);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeTVBoyWidget::loadConfig()
 {
-  myBankWidgets[0]->setEnabled(!myCartTVBoy.myBankingDisabled);
-  myBankLocked->setState(myCartTVBoy.myBankingDisabled);
-
+  if(myBankWidgets != nullptr)
+  {
+    myBankWidgets[0]->setEnabled(!myCartTVBoy.myBankingDisabled);
+    myBankLocked->setState(myCartTVBoy.myBankingDisabled);
+  }
   CartridgeEnhancedWidget::loadConfig();
 }
 

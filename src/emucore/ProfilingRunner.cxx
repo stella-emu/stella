@@ -56,7 +56,7 @@ namespace {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ProfilingRunner::ProfilingRunner(int argc, char* argv[])
-  : profilingRuns(std::max(argc - 2, 0))
+  : profilingRuns{std::max<size_t>(argc - 2, 0)}
 {
   for (int i = 2; i < argc; i++) {
     ProfilingRun& run(profilingRuns[i-2]);

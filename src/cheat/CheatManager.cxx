@@ -28,7 +28,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CheatManager::CheatManager(OSystem& osystem)
-  : myOSystem(osystem)
+  : myOSystem{osystem}
 {
 }
 
@@ -253,8 +253,8 @@ void CheatManager::saveCheatDatabase()
     return;
 
   stringstream out;
-  for(const auto& iter: myCheatMap)
-    out << "\"" << iter.first << "\" " << "\"" << iter.second << "\"" << endl;
+  for(const auto& [md5, cheat]: myCheatMap)
+    out << "\"" << md5 << "\" " << "\"" << cheat << "\"" << endl;
 
   try         { myOSystem.cheatFile().write(out); }
   catch(...)  { return; }

@@ -20,7 +20,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FilesystemNode::FilesystemNode(const AbstractFSNodePtr& realNode)
-  : _realNode(realNode)
+  : _realNode{realNode}
 {
 }
 
@@ -49,14 +49,6 @@ void FilesystemNode::setPath(const string& path)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FilesystemNode& FilesystemNode::operator/=(const string& path)
 {
-  // This part could probably be put in a virtual function, but it seems like
-  // a waste since almost every system uses the same separator, except Windows
-#ifdef BSPF_WINDOWS
-  #define PATH_SEPARATOR '\\'
-#else
-  #define PATH_SEPARATOR '/'
-#endif
-
   if (path != EmptyString)
   {
     string newPath = getPath();

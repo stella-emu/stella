@@ -43,9 +43,9 @@ class Event
       ConsoleSelect, ConsoleReset,
 
       JoystickZeroUp, JoystickZeroDown, JoystickZeroLeft, JoystickZeroRight,
-        JoystickZeroFire, JoystickZeroFire5, JoystickZeroFire9,
+      JoystickZeroFire, JoystickZeroFire5, JoystickZeroFire9,
       JoystickOneUp, JoystickOneDown, JoystickOneLeft, JoystickOneRight,
-        JoystickOneFire, JoystickOneFire5, JoystickOneFire9,
+      JoystickOneFire, JoystickOneFire5, JoystickOneFire9,
 
       PaddleZeroDecrease, PaddleZeroIncrease, PaddleZeroAnalog, PaddleZeroFire,
       PaddleOneDecrease, PaddleOneIncrease, PaddleOneAnalog, PaddleOneFire,
@@ -83,7 +83,7 @@ class Event
       UISelect, UINavPrev, UINavNext, UIOK, UICancel, UIPrevDir,
       UITabPrev, UITabNext,
 
-      HandleMouseControl, ToggleGrabMouse,
+      NextMouseControl, ToggleGrabMouse,
       MouseAxisXMove, MouseAxisYMove, MouseAxisXValue, MouseAxisYValue,
       MouseButtonLeftValue, MouseButtonRightValue,
 
@@ -144,6 +144,27 @@ class Event
       Cut, Copy, Paste, Undo, Redo,
       AbortEdit, EndEdit,
 
+      HighScoresMenuMode,
+      // Input settings
+      DecreaseDeadzone, IncreaseDeadzone,
+      DecAnalogSense, IncAnalogSense,
+      DecDejtterAveraging, IncDejtterAveraging,
+      DecDejtterReaction, IncDejtterReaction,
+      DecDigitalSense, IncDigitalSense,
+      ToggleFourDirections, ToggleKeyCombos,
+      PrevMouseAsController, NextMouseAsController,
+      DecMousePaddleSense, IncMousePaddleSense,
+      DecMouseTrackballSense, IncMouseTrackballSense,
+      DecreaseDrivingSense, IncreaseDrivingSense,
+      PreviousCursorVisbility, NextCursorVisbility,
+      // GameInfoDialog/Controllers
+      PreviousLeftPort, NextLeftPort,
+      PreviousRightPort, NextRightPort,
+      ToggleSwapPorts, ToggleSwapPaddles,
+      DecreasePaddleCenterX, IncreasePaddleCenterX,
+      DecreasePaddleCenterY, IncreasePaddleCenterY,
+      PreviousMouseControl,
+      DecreaseMouseAxesRange, IncreaseMouseAxesRange,
       LastType
     };
 
@@ -152,6 +173,7 @@ class Event
     {
       Menu, Emulation,
       Misc, AudioVideo, States, Console, Joystick, Paddles, Keyboard,
+      Devices,
       Debug, Combo,
       LastGroup
     };

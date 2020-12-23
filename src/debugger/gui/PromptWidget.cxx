@@ -41,12 +41,12 @@ PromptWidget::PromptWidget(GuiObject* boss, const GUI::Font& font,
                            int x, int y, int w, int h)
   : Widget(boss, font, x, y, w - ScrollBarWidget::scrollBarWidth(font), h),
     CommandSender(boss),
-    _historySize(0),
-    _historyIndex(0),
-    _historyLine(0),
-    _makeDirty(false),
-    _firstTime(true),
-    _exitedEarly(false)
+    _historySize{0},
+    _historyIndex{0},
+    _historyLine{0},
+    _makeDirty{false},
+    _firstTime{true},
+    _exitedEarly{false}
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG | Widget::FLAG_RETAIN_FOCUS |
            Widget::FLAG_WANTS_TAB | Widget::FLAG_WANTS_RAWDATA;

@@ -32,7 +32,7 @@
 StellaSettingsDialog::StellaSettingsDialog(OSystem& osystem, DialogContainer& parent,
   int max_w, int max_h, Menu::AppMode mode)
   : Dialog(osystem, parent, osystem.frameBuffer().font(), "Basic settings"),
-    myMode(mode)
+    myMode{mode}
 {
   const int buttonHeight = _font.getLineHeight() + _font.getLineHeight() / 5,
     lineHeight = _font.getLineHeight(),

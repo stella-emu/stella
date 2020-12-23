@@ -24,6 +24,7 @@ class ContextMenu;
 class DialogContainer;
 class BrowserDialog;
 class OptionsDialog;
+class HighScoresDialog;
 class GlobalPropsDialog;
 class StellaSettingsDialog;
 class WhatsNewDialog;
@@ -158,10 +159,12 @@ class LauncherDialog : public Dialog
     void showOnlyROMs(bool state);
     void setDefaultDir();
     void openSettings();
+    void openHighScores();
     void openWhatsNew();
 
   private:
     unique_ptr<OptionsDialog> myOptionsDialog;
+    unique_ptr<HighScoresDialog> myHighScoresDialog;
     unique_ptr<StellaSettingsDialog> myStellaSettingsDialog;
     unique_ptr<ContextMenu> myMenu;
     unique_ptr<GlobalPropsDialog> myGlobalProps;

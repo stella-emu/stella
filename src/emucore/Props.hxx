@@ -48,6 +48,7 @@ enum class PropType : uInt8 {
   Display_VCenter,
   Display_Phosphor,
   Display_PPBlend,
+  Cart_Highscore,
   NumTypes
 };
 
@@ -125,6 +126,13 @@ class Properties
       Resets all properties to their defaults
     */
     void setDefaults();
+
+    /**
+      Resets the property of the given key to its default
+
+      @param key      The key of the property to set
+    */
+    void reset(PropType key);
 
     /**
       Overloaded equality operator(s)

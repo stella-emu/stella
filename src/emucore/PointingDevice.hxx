@@ -40,6 +40,10 @@ class PointingDevice : public Controller
     ~PointingDevice() override = default;
 
   public:
+    static constexpr int MIN_SENSE = 1;
+    static constexpr int MAX_SENSE = 20;
+
+  public:
     using Controller::read;
 
     /**

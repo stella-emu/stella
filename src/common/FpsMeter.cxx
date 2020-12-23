@@ -19,12 +19,14 @@
 
 using namespace std::chrono;
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FpsMeter::FpsMeter(uInt32 queueSize)
-  : myQueue(queueSize)
+  : myQueue{queueSize}
 {
   reset();
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FpsMeter::reset(uInt32 garbageFrameLimit)
 {
   myQueue.clear();
@@ -35,6 +37,7 @@ void FpsMeter::reset(uInt32 garbageFrameLimit)
   myGarbageFrameLimit = garbageFrameLimit;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FpsMeter::render(uInt32 frameCount)
 {
   if (myGarbageFrameCounter < myGarbageFrameLimit) {
@@ -67,6 +70,7 @@ void FpsMeter::render(uInt32 frameCount)
   if (myTimeInterval > 0) myFps = (myFrameCount - first.frames) / myTimeInterval;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 float FpsMeter::fps() const
 {
   return myFps;

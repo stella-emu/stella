@@ -87,7 +87,7 @@ bool PhysicalJoystick::setMap(const json& map)
 
     try {
       joyMap.loadMapping(entry.value(), eventModeFromJsonName(entry.key()));
-    } catch (json::exception) {
+    } catch (const json::exception&) {
       Logger::error("ignoring invalid json mapping for " + entry.key());
     }
 

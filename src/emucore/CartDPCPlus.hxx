@@ -45,7 +45,7 @@ class System;
 class CartridgeDPCPlus : public Cartridge
 {
   friend class CartridgeDPCPlusWidget;
-	friend class CartridgeRamDPCPlusWidget;
+  friend class CartridgeRamDPCPlusWidget;
 
   public:
     /**
@@ -144,6 +144,21 @@ class CartridgeDPCPlus : public Cartridge
       @return The name of the object
     */
     string name() const override { return "CartridgeDPC+"; }
+
+    /**
+      Query the internal RAM size of the cart.
+
+      @return The internal RAM size
+    */
+    uInt32 internalRamSize() const override { return uInt32(myDPCRAM.size()); }
+
+    /**
+      Read a byte from cart internal RAM.
+
+      @return The value of the interal RAM byte
+    */
+    uInt8 internalRamGetValue(uInt16 addr) const override;
+
 
   #ifdef DEBUGGER_SUPPORT
     /**

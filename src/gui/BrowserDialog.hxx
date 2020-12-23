@@ -45,7 +45,7 @@ class BrowserDialog : public Dialog, public CommandSender
 
     /** Place the browser window onscreen, using the given attributes */
     void show(const string& startpath,
-              BrowserDialog::ListMode mode, int cmd, const string& ext = "");
+              BrowserDialog::ListMode mode, int cmd, int cancelCmd = 0, const string& ext = "");
 
     /** Get resulting file node (called after receiving kChooseCmd) */
     const FilesystemNode& getResult() const;
@@ -62,6 +62,7 @@ class BrowserDialog : public Dialog, public CommandSender
     };
 
     int	_cmd{0};
+    int	_cancelCmd{0};
 
     FileListWidget*   _fileList{nullptr};
     EditTextWidget*   _currentPath{nullptr};

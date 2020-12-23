@@ -19,7 +19,7 @@
 #include "Console.hxx"
 #include "EventHandler.hxx"
 #include "PKeyboardHandler.hxx"
-#include "json.hxx"
+#include "json_lib.hxx"
 
 using json = nlohmann::json;
 
@@ -40,8 +40,8 @@ static constexpr int MOD3 = KBDM_ALT;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PhysicalKeyboardHandler::PhysicalKeyboardHandler(OSystem& system, EventHandler& handler)
-  : myOSystem(system),
-    myHandler(handler)
+  : myOSystem{system},
+    myHandler{handler}
 {
   Int32 version = myOSystem.settings().getInt("event_ver");
   bool updateDefaults = false;
@@ -74,7 +74,7 @@ void PhysicalKeyboardHandler::loadSerializedMappings(const string& serializedMap
 
   try {
     mapping = json::parse(serializedMapping);
-  } catch (json::exception) {
+  } catch (const json::exception&) {
     Logger::info("converting legacy keyboard mappings");
 
     mapping = KeyMap::convertLegacyMapping(serializedMapping);
@@ -82,7 +82,7 @@ void PhysicalKeyboardHandler::loadSerializedMappings(const string& serializedMap
 
   try {
     myKeyMap.loadMapping(mapping, mode);
-  } catch (json::exception) {
+  } catch (const json::exception&) {
     Logger::error("ignoring bad keyboard mappings");
   }
 }
@@ -481,159 +481,214 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PhysicalKeyboardHandler::toggleModKeys(bool toggle)
+{
+  bool modCombo = myOSystem.settings().getBool("modcombo");
+
+  if(toggle)
+  {
+    modCombo = !modCombo;
+    myKeyMap.enableMod() = modCombo;
+    myOSystem.settings().setValue("modcombo", modCombo);
+  }
+
+  ostringstream ss;
+  ss << "Modifier key combos ";
+  ss << (modCombo ? "enabled" : "disabled");
+  myOSystem.frameBuffer().showTextMessage(ss.str());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PhysicalKeyboardHandler::EventMappingArray
 PhysicalKeyboardHandler::DefaultCommonMapping = {
-  {Event::ConsoleSelect,            KBDK_F1},
-  {Event::ConsoleReset,             KBDK_F2},
-  {Event::ConsoleColor,             KBDK_F3},
-  {Event::Console7800Pause,         KBDK_F3, MOD3},
-  {Event::ConsoleLeftDiffA,         KBDK_F5},
-  {Event::ConsoleRightDiffA,        KBDK_F7},
-  {Event::SaveState,                KBDK_F9},
-  {Event::SaveAllStates,            KBDK_F9, MOD3},
-  {Event::PreviousState,            KBDK_F10, KBDM_SHIFT},
-  {Event::NextState,                KBDK_F10},
-  {Event::ToggleAutoSlot,           KBDK_F10, MOD3},
-  {Event::LoadState,                KBDK_F11},
-  {Event::LoadAllStates,            KBDK_F11, MOD3},
-  {Event::TakeSnapshot,             KBDK_F12},
-#ifdef BSPF_MACOS
-  {Event::TogglePauseMode,          KBDK_P, KBDM_SHIFT | MOD3},
-#else
-  {Event::TogglePauseMode,          KBDK_PAUSE},
-#endif
-  {Event::OptionsMenuMode,          KBDK_TAB},
-  {Event::CmdMenuMode,              KBDK_BACKSLASH},
-  {Event::TimeMachineMode,          KBDK_T, KBDM_SHIFT},
-  {Event::DebuggerMode,             KBDK_GRAVE},
-  {Event::ExitMode,                 KBDK_ESCAPE},
-#ifdef BSPF_MACOS
-  {Event::Quit,                     KBDK_Q, MOD3},
-#else
-  {Event::Quit,                     KBDK_Q, KBDM_CTRL},
-#endif
-  {Event::ReloadConsole,            KBDK_R, KBDM_CTRL},
-  {Event::PreviousMultiCartRom,     KBDK_R, KBDM_SHIFT | KBDM_CTRL},
+  { Event::ConsoleSelect,            KBDK_F1 },
+  { Event::ConsoleReset,             KBDK_F2 },
+  { Event::ConsoleColor,             KBDK_F3 },
+  { Event::Console7800Pause,         KBDK_F3, MOD3 },
+  { Event::ConsoleLeftDiffA,         KBDK_F5 },
+  { Event::ConsoleRightDiffA,        KBDK_F7 },
+  { Event::SaveState,                KBDK_F9 },
+  { Event::SaveAllStates,            KBDK_F9, MOD3 },
+  { Event::PreviousState,            KBDK_F10, KBDM_SHIFT },
+  { Event::NextState,                KBDK_F10 },
+  { Event::ToggleAutoSlot,           KBDK_F10, MOD3 },
+  { Event::LoadState,                KBDK_F11 },
+  { Event::LoadAllStates,            KBDK_F11, MOD3 },
+  { Event::TakeSnapshot,             KBDK_F12 },
+  #ifdef BSPF_MACOS
+  { Event::TogglePauseMode,          KBDK_P, KBDM_SHIFT | MOD3 },
+  #else
+  { Event::TogglePauseMode,          KBDK_PAUSE },
+  #endif
+  { Event::OptionsMenuMode,          KBDK_TAB },
+  { Event::CmdMenuMode,              KBDK_BACKSLASH },
+  { Event::TimeMachineMode,          KBDK_T, KBDM_SHIFT },
+  { Event::DebuggerMode,             KBDK_GRAVE },
+  { Event::ExitMode,                 KBDK_ESCAPE },
+  #ifdef BSPF_MACOS
+  { Event::Quit,                     KBDK_Q, MOD3 },
+  #else
+  { Event::Quit,                     KBDK_Q, KBDM_CTRL },
+  #endif
+  { Event::ReloadConsole,            KBDK_R, KBDM_CTRL },
+  { Event::PreviousMultiCartRom,     KBDK_R, KBDM_SHIFT | KBDM_CTRL },
 
-  {Event::VidmodeDecrease,          KBDK_MINUS, MOD3},
-  {Event::VidmodeIncrease,          KBDK_EQUALS, MOD3},
-  {Event::VCenterDecrease,          KBDK_PAGEUP, MOD3},
-  {Event::VCenterIncrease,          KBDK_PAGEDOWN, MOD3},
-  {Event::VSizeAdjustDecrease,      KBDK_PAGEDOWN, KBDM_SHIFT | MOD3},
-  {Event::VSizeAdjustIncrease,      KBDK_PAGEUP, KBDM_SHIFT | MOD3},
-  {Event::ToggleCorrectAspectRatio, KBDK_C, KBDM_CTRL},
-  {Event::VolumeDecrease,           KBDK_LEFTBRACKET, MOD3},
-  {Event::VolumeIncrease,           KBDK_RIGHTBRACKET, MOD3},
-  {Event::SoundToggle,              KBDK_RIGHTBRACKET, KBDM_CTRL},
+  { Event::VidmodeDecrease,          KBDK_MINUS, MOD3 },
+  { Event::VidmodeIncrease,          KBDK_EQUALS, MOD3 },
+  { Event::VCenterDecrease,          KBDK_PAGEUP, MOD3 },
+  { Event::VCenterIncrease,          KBDK_PAGEDOWN, MOD3 },
+  { Event::VSizeAdjustDecrease,      KBDK_PAGEDOWN, KBDM_SHIFT | MOD3 },
+  { Event::VSizeAdjustIncrease,      KBDK_PAGEUP, KBDM_SHIFT | MOD3 },
+  { Event::ToggleCorrectAspectRatio, KBDK_C, KBDM_CTRL },
+  { Event::VolumeDecrease,           KBDK_LEFTBRACKET, MOD3 },
+  { Event::VolumeIncrease,           KBDK_RIGHTBRACKET, MOD3 },
+  { Event::SoundToggle,              KBDK_RIGHTBRACKET, KBDM_CTRL },
 
-  {Event::ToggleFullScreen,         KBDK_RETURN, MOD3},
-  {Event::ToggleAdaptRefresh,       KBDK_R, MOD3},
-  {Event::OverscanDecrease,         KBDK_PAGEDOWN, KBDM_SHIFT},
-  {Event::OverscanIncrease,         KBDK_PAGEUP, KBDM_SHIFT},
-  //{Event::VidmodeStd,               KBDK_1, MOD3},
-  //{Event::VidmodeRGB,               KBDK_2, MOD3},
-  //{Event::VidmodeSVideo,            KBDK_3, MOD3},
-  //{Event::VidModeComposite,         KBDK_4, MOD3},
-  //{Event::VidModeBad,               KBDK_5, MOD3},
-  //{Event::VidModeCustom,            KBDK_6, MOD3},
-  {Event::PreviousVideoMode,        KBDK_1, KBDM_SHIFT | MOD3},
-  {Event::NextVideoMode,            KBDK_1, MOD3},
-  {Event::PreviousAttribute,        KBDK_2, KBDM_SHIFT | MOD3},
-  {Event::NextAttribute,            KBDK_2, MOD3},
-  {Event::DecreaseAttribute,        KBDK_3, KBDM_SHIFT | MOD3},
-  {Event::IncreaseAttribute,        KBDK_3, MOD3},
-  {Event::PhosphorDecrease,         KBDK_4, KBDM_SHIFT | MOD3},
-  {Event::PhosphorIncrease,         KBDK_4, MOD3},
-  {Event::TogglePhosphor,           KBDK_P, MOD3},
-  {Event::ScanlinesDecrease,        KBDK_5, KBDM_SHIFT | MOD3},
-  {Event::ScanlinesIncrease,        KBDK_5, MOD3},
-  {Event::PreviousPaletteAttribute, KBDK_9, KBDM_SHIFT | MOD3},
-  {Event::NextPaletteAttribute,     KBDK_9, MOD3},
-  {Event::PaletteAttributeDecrease, KBDK_0, KBDM_SHIFT | MOD3},
-  {Event::PaletteAttributeIncrease, KBDK_0, MOD3},
-  {Event::ToggleColorLoss,          KBDK_L, KBDM_CTRL},
-  {Event::PaletteDecrease,          KBDK_P, KBDM_SHIFT | KBDM_CTRL},
-  {Event::PaletteIncrease,          KBDK_P, KBDM_CTRL},
+  { Event::ToggleFullScreen,         KBDK_RETURN, MOD3 },
+  { Event::ToggleAdaptRefresh,       KBDK_R, MOD3 },
+  { Event::OverscanDecrease,         KBDK_PAGEDOWN, KBDM_SHIFT },
+  { Event::OverscanIncrease,         KBDK_PAGEUP, KBDM_SHIFT },
+    //{Event::VidmodeStd,               KBDK_1, MOD3},
+    //{Event::VidmodeRGB,               KBDK_2, MOD3},
+    //{Event::VidmodeSVideo,            KBDK_3, MOD3},
+    //{Event::VidModeComposite,         KBDK_4, MOD3},
+    //{Event::VidModeBad,               KBDK_5, MOD3},
+    //{Event::VidModeCustom,            KBDK_6, MOD3},
+  { Event::PreviousVideoMode, KBDK_1, KBDM_SHIFT | MOD3 },
+  { Event::NextVideoMode,            KBDK_1, MOD3 },
+  { Event::PreviousAttribute,        KBDK_2, KBDM_SHIFT | MOD3 },
+  { Event::NextAttribute,            KBDK_2, MOD3 },
+  { Event::DecreaseAttribute,        KBDK_3, KBDM_SHIFT | MOD3 },
+  { Event::IncreaseAttribute,        KBDK_3, MOD3 },
+  { Event::PhosphorDecrease,         KBDK_4, KBDM_SHIFT | MOD3 },
+  { Event::PhosphorIncrease,         KBDK_4, MOD3 },
+  { Event::TogglePhosphor,           KBDK_P, MOD3 },
+  { Event::ScanlinesDecrease,        KBDK_5, KBDM_SHIFT | MOD3 },
+  { Event::ScanlinesIncrease,        KBDK_5, MOD3 },
+  { Event::PreviousPaletteAttribute, KBDK_9, KBDM_SHIFT | MOD3 },
+  { Event::NextPaletteAttribute,     KBDK_9, MOD3 },
+  { Event::PaletteAttributeDecrease, KBDK_0, KBDM_SHIFT | MOD3 },
+  { Event::PaletteAttributeIncrease, KBDK_0, MOD3 },
+  { Event::ToggleColorLoss,          KBDK_L, KBDM_CTRL },
+  { Event::PaletteDecrease,          KBDK_P, KBDM_SHIFT | KBDM_CTRL },
+  { Event::PaletteIncrease,          KBDK_P, KBDM_CTRL },
+  { Event::FormatDecrease,           KBDK_F, KBDM_SHIFT | KBDM_CTRL },
+  { Event::FormatIncrease,           KBDK_F, KBDM_CTRL },
+  #ifndef BSPF_MACOS
+  { Event::PreviousSetting,          KBDK_END },
+  { Event::NextSetting,              KBDK_HOME },
+  { Event::PreviousSettingGroup,     KBDK_END, KBDM_CTRL },
+  { Event::NextSettingGroup,         KBDK_HOME, KBDM_CTRL },
+  #else
+    // HOME & END keys are swapped on Mac keyboards
+  { Event::PreviousSetting,          KBDK_HOME },
+  { Event::NextSetting,              KBDK_END },
+  { Event::PreviousSettingGroup,     KBDK_HOME, KBDM_CTRL },
+  { Event::NextSettingGroup,         KBDK_END, KBDM_CTRL },
+  #endif
+  { Event::PreviousSetting,          KBDK_KP_1 },
+  { Event::NextSetting,              KBDK_KP_7 },
+  { Event::PreviousSettingGroup,     KBDK_KP_1, KBDM_CTRL },
+  { Event::NextSettingGroup,         KBDK_KP_7, KBDM_CTRL },
+  { Event::SettingDecrease,          KBDK_PAGEDOWN },
+  { Event::SettingDecrease,          KBDK_KP_3, KBDM_CTRL },
+  { Event::SettingIncrease,          KBDK_PAGEUP },
+  { Event::SettingIncrease,          KBDK_KP_9, KBDM_CTRL },
 
-#ifndef BSPF_MACOS
-  {Event::PreviousSetting,          KBDK_END},
-  {Event::NextSetting,              KBDK_HOME},
-  {Event::PreviousSettingGroup,     KBDK_END, KBDM_CTRL},
-  {Event::NextSettingGroup,         KBDK_HOME, KBDM_CTRL},
-#else
-  // HOME & END keys are swapped on Mac keyboards
-  {Event::PreviousSetting,          KBDK_HOME},
-  {Event::NextSetting,              KBDK_END},
-  {Event::PreviousSettingGroup,     KBDK_HOME, KBDM_CTRL},
-  {Event::NextSettingGroup,         KBDK_END, KBDM_CTRL},
-#endif
-  {Event::PreviousSetting,          KBDK_KP_1},
-  {Event::NextSetting,              KBDK_KP_7},
-  {Event::PreviousSettingGroup,     KBDK_KP_1, KBDM_CTRL},
-  {Event::NextSettingGroup,         KBDK_KP_7, KBDM_CTRL},
-  {Event::SettingDecrease,          KBDK_PAGEDOWN},
-  {Event::SettingDecrease,          KBDK_KP_3, KBDM_CTRL},
-  {Event::SettingIncrease,          KBDK_PAGEUP},
-  {Event::SettingIncrease,          KBDK_KP_9, KBDM_CTRL},
+  { Event::ToggleInter,              KBDK_I, KBDM_CTRL },
+  { Event::DecreaseSpeed,            KBDK_S, KBDM_SHIFT | KBDM_CTRL },
+  { Event::IncreaseSpeed,            KBDK_S, KBDM_CTRL },
+  { Event::ToggleTurbo,              KBDK_T, KBDM_CTRL },
+  { Event::ToggleJitter,             KBDK_J, MOD3 },
+  { Event::ToggleFrameStats,         KBDK_L, MOD3 },
+  { Event::ToggleTimeMachine,        KBDK_T, MOD3 },
 
-  {Event::ToggleInter,              KBDK_I, KBDM_CTRL},
-  {Event::DecreaseSpeed,            KBDK_S, KBDM_SHIFT | KBDM_CTRL},
-  {Event::IncreaseSpeed,            KBDK_S, KBDM_CTRL },
-  {Event::ToggleTurbo,              KBDK_T, KBDM_CTRL},
-  {Event::ToggleJitter,             KBDK_J, MOD3},
-  {Event::ToggleFrameStats,         KBDK_L, MOD3},
-  {Event::ToggleTimeMachine,        KBDK_T, MOD3},
+  #ifdef PNG_SUPPORT
+  { Event::ToggleContSnapshots,      KBDK_S, MOD3 | KBDM_CTRL },
+  { Event::ToggleContSnapshotsFrame, KBDK_S, KBDM_SHIFT | MOD3 | KBDM_CTRL },
+  #endif
 
-#ifdef PNG_SUPPORT
-  {Event::ToggleContSnapshots,      KBDK_S, MOD3 | KBDM_CTRL},
-  {Event::ToggleContSnapshotsFrame, KBDK_S, KBDM_SHIFT | MOD3 | KBDM_CTRL},
-#endif
+  { Event::DecreaseDeadzone,         KBDK_F1, KBDM_CTRL | KBDM_SHIFT },
+  { Event::IncreaseDeadzone,         KBDK_F1, KBDM_CTRL },
+  { Event::DecAnalogSense,           KBDK_F2, KBDM_CTRL | KBDM_SHIFT },
+  { Event::IncAnalogSense,           KBDK_F2, KBDM_CTRL },
+  { Event::DecDejtterAveraging,      KBDK_F3, KBDM_CTRL | KBDM_SHIFT },
+  { Event::IncDejtterAveraging,      KBDK_F3, KBDM_CTRL },
+  { Event::DecDejtterReaction,       KBDK_F4, KBDM_CTRL | KBDM_SHIFT },
+  { Event::IncDejtterReaction,       KBDK_F4, KBDM_CTRL },
+  { Event::DecDigitalSense,          KBDK_F5, KBDM_CTRL | KBDM_SHIFT },
+  { Event::IncDigitalSense,          KBDK_F5, KBDM_CTRL },
+  { Event::DecreaseAutoFire,         KBDK_A, KBDM_CTRL | KBDM_SHIFT },
+  { Event::IncreaseAutoFire,         KBDK_A, KBDM_CTRL },
+  { Event::ToggleFourDirections,     KBDK_F6, KBDM_CTRL },
+  { Event::ToggleKeyCombos,          KBDK_F7, KBDM_CTRL },
+  { Event::ToggleSAPortOrder,        KBDK_1, KBDM_CTRL },
 
-  {Event::DecreaseAutoFire,         KBDK_A, KBDM_SHIFT | KBDM_CTRL},
-  {Event::IncreaseAutoFire,         KBDK_A, KBDM_CTRL },
-  {Event::HandleMouseControl,       KBDK_0, KBDM_CTRL},
-  {Event::ToggleGrabMouse,          KBDK_G, KBDM_CTRL},
-  {Event::ToggleSAPortOrder,        KBDK_1, KBDM_CTRL},
-  {Event::FormatDecrease,           KBDK_F, KBDM_SHIFT | KBDM_CTRL},
-  {Event::FormatIncrease,           KBDK_F, KBDM_CTRL},
+  { Event::PrevMouseAsController,    KBDK_F8, KBDM_CTRL | KBDM_SHIFT },
+  { Event::NextMouseAsController,    KBDK_F8, KBDM_CTRL },
+  { Event::DecMousePaddleSense,      KBDK_F9, KBDM_CTRL | KBDM_SHIFT },
+  { Event::IncMousePaddleSense,      KBDK_F9, KBDM_CTRL },
+  { Event::DecMouseTrackballSense,   KBDK_F10, KBDM_CTRL | KBDM_SHIFT },
+  { Event::IncMouseTrackballSense,   KBDK_F10, KBDM_CTRL },
+  { Event::DecreaseDrivingSense,     KBDK_F11, KBDM_CTRL | KBDM_SHIFT },
+  { Event::IncreaseDrivingSense,     KBDK_F11, KBDM_CTRL },
+  { Event::PreviousCursorVisbility,  KBDK_F12, KBDM_CTRL | KBDM_SHIFT },
+  { Event::NextCursorVisbility,      KBDK_F12, KBDM_CTRL },
+  { Event::ToggleGrabMouse,          KBDK_G, KBDM_CTRL },
 
-  {Event::ToggleP0Collision,        KBDK_Z, KBDM_SHIFT | MOD3},
-  {Event::ToggleP0Bit,              KBDK_Z, MOD3},
-  {Event::ToggleP1Collision,        KBDK_X, KBDM_SHIFT | MOD3},
-  {Event::ToggleP1Bit,              KBDK_X, MOD3},
-  {Event::ToggleM0Collision,        KBDK_C, KBDM_SHIFT | MOD3},
-  {Event::ToggleM0Bit,              KBDK_C, MOD3},
-  {Event::ToggleM1Collision,        KBDK_V, KBDM_SHIFT | MOD3},
-  {Event::ToggleM1Bit,              KBDK_V, MOD3},
-  {Event::ToggleBLCollision,        KBDK_B, KBDM_SHIFT | MOD3},
-  {Event::ToggleBLBit,              KBDK_B, MOD3},
-  {Event::TogglePFCollision,        KBDK_N, KBDM_SHIFT | MOD3},
-  {Event::TogglePFBit,              KBDK_N, MOD3},
-  {Event::ToggleCollisions,         KBDK_COMMA, KBDM_SHIFT | MOD3},
-  {Event::ToggleBits,               KBDK_COMMA, MOD3},
-  {Event::ToggleFixedColors,        KBDK_PERIOD, MOD3},
+  { Event::PreviousLeftPort,         KBDK_2, KBDM_CTRL | KBDM_SHIFT },
+  { Event::NextLeftPort,             KBDK_2, KBDM_CTRL },
+  { Event::PreviousRightPort,        KBDK_3, KBDM_CTRL | KBDM_SHIFT },
+  { Event::NextRightPort,            KBDK_3, KBDM_CTRL },
+  { Event::ToggleSwapPorts,          KBDK_4, KBDM_CTRL },
+  { Event::ToggleSwapPaddles,        KBDK_5, KBDM_CTRL },
+  { Event::DecreasePaddleCenterX,    KBDK_6, KBDM_CTRL | KBDM_SHIFT },
+  { Event::IncreasePaddleCenterX,    KBDK_6, KBDM_CTRL },
+  { Event::DecreasePaddleCenterY,    KBDK_7, KBDM_CTRL | KBDM_SHIFT },
+  { Event::IncreasePaddleCenterY,    KBDK_7, KBDM_CTRL },
+  { Event::PreviousMouseControl,     KBDK_0, KBDM_CTRL | KBDM_SHIFT },
+  { Event::NextMouseControl,         KBDK_0, KBDM_CTRL },
+  { Event::DecreaseMouseAxesRange,   KBDK_8, KBDM_CTRL | KBDM_SHIFT },
+  { Event::IncreaseMouseAxesRange,   KBDK_8, KBDM_CTRL },
 
-  {Event::RewindPause,              KBDK_LEFT, KBDM_SHIFT},
-  {Event::Rewind1Menu,              KBDK_LEFT, MOD3},
-  {Event::Rewind10Menu,             KBDK_LEFT, KBDM_SHIFT | MOD3},
-  {Event::RewindAllMenu,            KBDK_DOWN, MOD3},
-  {Event::UnwindPause,              KBDK_LEFT, KBDM_SHIFT},
-  {Event::Unwind1Menu,              KBDK_RIGHT, MOD3},
-  {Event::Unwind10Menu,             KBDK_RIGHT, KBDM_SHIFT | MOD3},
-  {Event::UnwindAllMenu,            KBDK_UP, MOD3},
-  {Event::TogglePlayBackMode,       KBDK_SPACE, KBDM_SHIFT},
+  { Event::ToggleP0Collision,        KBDK_Z, KBDM_SHIFT | MOD3 },
+  { Event::ToggleP0Bit,              KBDK_Z, MOD3 },
+  { Event::ToggleP1Collision,        KBDK_X, KBDM_SHIFT | MOD3 },
+  { Event::ToggleP1Bit,              KBDK_X, MOD3 },
+  { Event::ToggleM0Collision,        KBDK_C, KBDM_SHIFT | MOD3 },
+  { Event::ToggleM0Bit,              KBDK_C, MOD3 },
+  { Event::ToggleM1Collision,        KBDK_V, KBDM_SHIFT | MOD3 },
+  { Event::ToggleM1Bit,              KBDK_V, MOD3 },
+  { Event::ToggleBLCollision,        KBDK_B, KBDM_SHIFT | MOD3 },
+  { Event::ToggleBLBit,              KBDK_B, MOD3 },
+  { Event::TogglePFCollision,        KBDK_N, KBDM_SHIFT | MOD3 },
+  { Event::TogglePFBit,              KBDK_N, MOD3 },
+  { Event::ToggleCollisions,         KBDK_COMMA, KBDM_SHIFT | MOD3 },
+  { Event::ToggleBits,               KBDK_COMMA, MOD3 },
+  { Event::ToggleFixedColors,        KBDK_PERIOD, MOD3 },
 
-#if defined(RETRON77)
-  {Event::ConsoleColorToggle,       KBDK_F4},         // back ("COLOR","B/W")
-  {Event::ConsoleLeftDiffToggle,    KBDK_F6},         // front ("SKILL P1")
-  {Event::ConsoleRightDiffToggle,   KBDK_F8},         // front ("SKILL P2")
-  {Event::CmdMenuMode,              KBDK_F13},        // back ("4:3","16:9")
-  {Event::ExitMode,                 KBDK_BACKSPACE},  // back ("FRY")
-#else // defining duplicate keys must be avoided!
-  {Event::ConsoleBlackWhite,        KBDK_F4},
-  {Event::ConsoleLeftDiffB,         KBDK_F6},
-  {Event::ConsoleRightDiffB,        KBDK_F8},
-  {Event::Fry,                      KBDK_BACKSPACE},
+  { Event::RewindPause,              KBDK_LEFT, KBDM_SHIFT },
+  { Event::Rewind1Menu,              KBDK_LEFT, MOD3 },
+  { Event::Rewind10Menu,             KBDK_LEFT, KBDM_SHIFT | MOD3 },
+  { Event::RewindAllMenu,            KBDK_DOWN, MOD3 },
+  { Event::UnwindPause,              KBDK_LEFT, KBDM_SHIFT },
+  { Event::Unwind1Menu,              KBDK_RIGHT, MOD3 },
+  { Event::Unwind10Menu,             KBDK_RIGHT, KBDM_SHIFT | MOD3 },
+  { Event::UnwindAllMenu,            KBDK_UP, MOD3 },
+  { Event::HighScoresMenuMode,       KBDK_INSERT },
+  { Event::TogglePlayBackMode,       KBDK_SPACE, KBDM_SHIFT },
+
+  #if defined(RETRON77)
+  { Event::ConsoleColorToggle,       KBDK_F4 },         // back ("COLOR","B/W")
+  { Event::ConsoleLeftDiffToggle,    KBDK_F6 },         // front ("SKILL P1")
+  { Event::ConsoleRightDiffToggle,   KBDK_F8 },         // front ("SKILL P2")
+  { Event::CmdMenuMode,              KBDK_F13 },        // back ("4:3","16:9")
+  { Event::ExitMode,                 KBDK_BACKSPACE },  // back ("FRY")
+  #else // defining duplicate keys must be avoided!
+  { Event::ConsoleBlackWhite,        KBDK_F4 },
+  { Event::ConsoleLeftDiffB,         KBDK_F6 },
+  { Event::ConsoleRightDiffB,        KBDK_F8 },
+  { Event::Fry,                      KBDK_BACKSPACE },
 #endif
 };
 

@@ -26,8 +26,8 @@
 class TabWidget : public Widget, public CommandSender
 {
   public:
-    static const int NO_WIDTH = 0;
-    static const int AUTO_WIDTH = -1;
+    static constexpr int NO_WIDTH = 0;
+    static constexpr int AUTO_WIDTH = -1;
 
     enum {
       kTabChangedCmd = 'TBCH'
@@ -81,9 +81,9 @@ class TabWidget : public Widget, public CommandSender
       bool enabled{true};
       int tabWidth{0};
 
-      Tab(const string& t, int tw = NO_WIDTH,
+      explicit Tab(const string& t, int tw = NO_WIDTH,
           Widget* first = nullptr, Widget* parent = nullptr, bool e = true)
-        : title(t), firstWidget(first), parentWidget(parent), enabled(e), tabWidth(tw) { }
+        : title{t}, firstWidget{first}, parentWidget{parent}, enabled{e}, tabWidth{tw} { }
     };
     using TabList = vector<Tab>;
 

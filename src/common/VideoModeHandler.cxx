@@ -105,14 +105,12 @@ VideoModeHandler::Mode::Mode(uInt32 iw, uInt32 ih, Stretch smode,
 VideoModeHandler::Mode::Mode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
                              Stretch smode, Int32 fsindex, const string& desc,
                              float zoomLevel, float overscan)
-  : stretch(smode),
+  : screenS(sw, sh),
+    stretch(smode),
     description(desc),
     zoom(zoomLevel),
     fsIndex(fsindex)
 {
-  // First set default size and positioning
-  screenS = Common::Size(sw, sh);
-
   // Now resize based on windowed/fullscreen mode and stretch factor
   if(fsIndex != -1)  // fullscreen mode
   {

@@ -66,15 +66,15 @@ static constexpr uInt8 resxLateHblankThreshold = TIAConstants::H_CYCLES - 3;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TIA::TIA(ConsoleIO& console, const ConsoleTimingProvider& timingProvider,
          Settings& settings)
-  : myConsole(console),
-    myTimingProvider(timingProvider),
-    mySettings(settings),
-    myPlayfield(~CollisionMask::playfield & 0x7FFF),
-    myMissile0(~CollisionMask::missile0 & 0x7FFF),
-    myMissile1(~CollisionMask::missile1 & 0x7FFF),
-    myPlayer0(~CollisionMask::player0 & 0x7FFF),
-    myPlayer1(~CollisionMask::player1 & 0x7FFF),
-    myBall(~CollisionMask::ball & 0x7FFF)
+  : myConsole{console},
+    myTimingProvider{timingProvider},
+    mySettings{settings},
+    myPlayfield{~CollisionMask::playfield & 0x7FFF},
+    myMissile0{~CollisionMask::missile0 & 0x7FFF},
+    myMissile1{~CollisionMask::missile1 & 0x7FFF},
+    myPlayer0{~CollisionMask::player0 & 0x7FFF},
+    myPlayer1{~CollisionMask::player1 & 0x7FFF},
+    myBall{~CollisionMask::ball & 0x7FFF}
 {
   myBackground.setTIA(this);
   myPlayfield.setTIA(this);

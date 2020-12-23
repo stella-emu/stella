@@ -29,7 +29,7 @@
 QuadTariDialog::QuadTariDialog(GuiObject* boss, const GUI::Font& font, int max_w, int max_h,
                                Properties& properties)
   : Dialog(boss->instance(), boss->parent(), font, "QuadTari controllers", 0, 0, max_w, max_h),
-    myGameProperties(properties)
+    myGameProperties{properties}
 {
   const int lineHeight = font.getLineHeight(),
     fontHeight = font.getFontHeight(),

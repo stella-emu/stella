@@ -33,7 +33,7 @@ class TimeMachineDialog : public Dialog
 
     /** set/get number of winds when entering the dialog */
     void setEnterWinds(Int32 numWinds) { _enterWinds = numWinds; }
-    Int32 getEnterWinds() { return _enterWinds; }
+    Int32 getEnterWinds() const { return _enterWinds; }
 
   private:
     void loadConfig() override;
@@ -48,7 +48,7 @@ class TimeMachineDialog : public Dialog
     void setPosition() override;
 
     /** convert cycles into time */
-    string getTimeString(uInt64 cycles);
+    string getTimeString(uInt64 cycles) const;
     /** re/unwind and update display */
     void handleWinds(Int32 numWinds = 0);
     /** toggle Time Machine mode */

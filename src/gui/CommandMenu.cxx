@@ -26,10 +26,6 @@
 CommandMenu::CommandMenu(OSystem& osystem)
   : DialogContainer(osystem)
 {
-  if (osystem.settings().getBool("minimal_ui"))
-    myBaseDialog = new MinUICommandDialog(myOSystem, *this);
-  else
-    myBaseDialog = new CommandDialog(myOSystem, *this);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -41,5 +37,12 @@ CommandMenu::~CommandMenu()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Dialog* CommandMenu::baseDialog()
 {
+  if (myBaseDialog == nullptr) {
+    if (myOSystem.settings().getBool("minimal_ui"))
+      myBaseDialog = new MinUICommandDialog(myOSystem, *this);
+    else
+      myBaseDialog = new CommandDialog(myOSystem, *this);
+  }
+
   return myBaseDialog;
 }

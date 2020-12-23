@@ -19,6 +19,7 @@
 #include "StellaKeys.hxx"
 #include "FBSurface.hxx"
 #include "Font.hxx"
+#include "ContextMenu.hxx"
 #include "OSystem.hxx"
 #include "EventHandler.hxx"
 #include "UndoHandler.hxx"
@@ -30,8 +31,9 @@ EditableWidget::EditableWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, int w, int h, const string& str)
   : Widget(boss, font, x, y, w, h),
     CommandSender(boss),
-    _editString(str),
-    _filter([](char c) { return isprint(c) && c != '\"'; })
+    _editString{str},
+    myUndoHandler{make_unique<UndoHandler>()},
+    _filter{[](char c) { return isprint(c) && c != '\"'; }}
 {
   _bgcolor = kWidColor;
   _bgcolorhi = kWidColor;
@@ -39,7 +41,8 @@ EditableWidget::EditableWidget(GuiObject* boss, const GUI::Font& font,
   _textcolor = kTextColor;
   _textcolorhi = kTextColor;
 
-  myUndoHandler = make_unique<UndoHandler>();
+  // add mouse context menu
+  myMouseMenu = make_unique<ContextMenu>(this, font, EmptyVarList);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -51,6 +54,8 @@ void EditableWidget::setText(const string& str, bool changed)
   for(char c: str)
     if(_filter(tolower(c)))
       _editString.push_back(c);
+  if(_maxLen)
+    _editString = _editString.substr(0, _maxLen);
 
   if(oldEditString != _editString)
     setDirty();
@@ -120,14 +125,126 @@ void EditableWidget::lostFocusWidget()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int EditableWidget::toCaretPos(int x) const
+{
+  int i;
+
+  x += caretOfs();
+  for(i = 0; i < static_cast<int>(_editString.size()); ++i)
+  {
+    x -= _font.getCharWidth(_editString[i]);
+    if(x <= 0)
+      break;
+  }
+  return i;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EditableWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
+{
+  // Grab right mouse button for context menu, send left to base class
+  if(b == MouseButton::RIGHT && isEnabled() && !myMouseMenu->isVisible())
+  {
+    VariantList items;
+  #ifndef BSPF_MACOS
+    if(isEditable())
+      VarList::push_back(items, " Cut     Ctrl+X ", "cut");
+    VarList::push_back(items, " Copy    Ctrl+C ", "copy");
+    if(isEditable())
+      VarList::push_back(items, " Paste   Ctrl+V ", "paste");
+  #else
+    if(isEditable())
+      VarList::push_back(items, " Cut      Cmd+X ", "cut");
+    VarList::push_back(items, " Copy     Cmd+C ", "copy");
+    if(isEditable())
+      VarList::push_back(items, " Paste    Cmd+V ", "paste");
+  #endif
+    myMouseMenu->addItems(items);
+
+    // Add menu at current x,y mouse location
+    myMouseMenu->show(x + getAbsX(), y + getAbsY(), dialog().surface().dstRect());
+    return;
+  }
+  else if(b == MouseButton::LEFT && isEnabled())
+  {
+    _isDragging = true;
+
+    if(clickCount == 2)
+    {
+      // If left mouse button is double clicked, mark word under cursor
+      markWord();
+      return;
+    }
+  }
+  Widget::handleMouseDown(x, y, b, clickCount);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EditableWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
+{
+  _isDragging = false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EditableWidget::handleMouseMoved(int x, int y)
+{
+  if(isEditable() && _isDragging)
+  {
+    int deltaPos = toCaretPos(x) - _caretPos;
+
+    if(deltaPos)
+    {
+      moveCaretPos(deltaPos);
+      setDirty();
+    }
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EditableWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
+{
+  if(cmd == ContextMenu::kItemSelectedCmd)
+  {
+    const string& rmb = myMouseMenu->getSelectedTag().toString();
+
+    if(rmb == "cut")
+    {
+      if(cutSelectedText())
+        sendCommand(EditableWidget::kChangedCmd, 0, _id);
+    }
+    else if(rmb == "copy")
+    {
+      if(!isEditable())
+      {
+        // Copy everything if widget is not editable
+        _caretPos = 0;
+        _selectSize = int(_editString.length());
+      }
+      copySelectedText();
+    }
+    else if(rmb == "paste")
+    {
+      if(pasteSelectedText())
+        sendCommand(EditableWidget::kChangedCmd, 0, _id);
+    }
+    setDirty();
+  }
+  else
+    Widget::handleCommand(sender, cmd, data, id);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool EditableWidget::tryInsertChar(char c, int pos)
 {
   if(_filter(tolower(c)))
   {
     killSelectedText();
-    myUndoHandler->doChar(); // aggregate single chars
-    _editString.insert(pos, 1, c);
-    return true;
+    if(!_maxLen || static_cast<int>(_editString.length()) < _maxLen)
+    {
+      myUndoHandler->doChar(); // aggregate single chars
+      _editString.insert(pos, 1, c);
+      return true;
+    }
   }
   return false;
 }
@@ -354,13 +471,10 @@ void EditableWidget::drawCaretSelection()
   {
     FBSurface& s = _boss->dialog().surface();
     const Common::Rect& editRect = getEditRect();
-    int x = editRect.x();
-    int y = editRect.y();
-
     string text = selectString();
 
-    x = editRect.x();
-    y = editRect.y();
+    int x = editRect.x();
+    int y = editRect.y();
     int w = editRect.w();
     int h = editRect.h();
     int wt = int(text.length()) * _font.getMaxCharWidth() + 1;
@@ -631,6 +745,28 @@ bool EditableWidget::moveWord(int direction, bool select)
   }
 
   return handled;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool EditableWidget::markWord()
+{
+  _selectSize = 0;
+
+  while(_caretPos + _selectSize < int(_editString.size()))
+  {
+    if(_editString[_caretPos + _selectSize] == ' ')
+      break;
+    _selectSize++;
+  }
+
+  while(_caretPos > 0)
+  {
+    if(_editString[_caretPos - 1] == ' ')
+      break;
+    _caretPos--;
+    _selectSize++;
+  }
+  return _selectSize > 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -27,6 +27,7 @@ class Random;
 class Sound;
 class StateManager;
 class TimerManager;
+class HighScoresManager;
 class EmulationWorker;
 class AudioSettings;
 #ifdef CHEATCODE_SUPPORT
@@ -37,6 +38,7 @@ class AudioSettings;
 #endif
 #ifdef GUI_SUPPORT
   class CommandMenu;
+  class HighScoresMenu;
   class Launcher;
   class Menu;
   class MessageMenu;
@@ -148,6 +150,15 @@ class OSystem
     */
     AudioSettings& audioSettings() { return *myAudioSettings; }
 
+  #ifdef GUI_SUPPORT
+    /**
+      Get the high score manager of the system.
+
+      @return The highscore manager object
+    */
+    HighScoresManager& highScores() const { return *myHighScoresManager; }
+  #endif
+
     /**
       Get the state manager of the system.
 
@@ -208,6 +219,13 @@ class OSystem
       @return The command menu object
     */
     CommandMenu& commandMenu() const { return *myCommandMenu; }
+
+      /**
+      Get the highscores menu of the system.
+
+      @return The highscores menu object
+      */
+    HighScoresMenu& highscoresMenu() const { return *myHighScoresMenu; }
 
     /**
       Get the message menu of the system.
@@ -497,11 +515,14 @@ class OSystem
     // Pointer to the CommandMenu object
     unique_ptr<CommandMenu> myCommandMenu;
 
-    // Pointer to the CommandMenu object
-    unique_ptr<MessageMenu> myMessageMenu;
+    // Pointer to the HighScoresMenu object
+    unique_ptr<HighScoresMenu> myHighScoresMenu;
 
     // Pointer to the Launcher object
     unique_ptr<Launcher> myLauncher;
+
+    // Pointer to the MessageMenu object
+    unique_ptr<MessageMenu> myMessageMenu;
 
     // Pointer to the TimeMachine object
     unique_ptr<TimeMachine> myTimeMachine;
@@ -517,6 +538,11 @@ class OSystem
 
     // Pointer to the TimerManager object
     unique_ptr<TimerManager> myTimerManager;
+
+  #ifdef GUI_SUPPORT
+    // Pointer to the HighScoresManager object
+    unique_ptr<HighScoresManager> myHighScoresManager;
+  #endif
 
     // Indicates whether ROM launcher was ever opened during this run
     bool myLauncherUsed{false};

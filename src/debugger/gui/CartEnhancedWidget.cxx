@@ -28,7 +28,7 @@ CartridgeEnhancedWidget::CartridgeEnhancedWidget(GuiObject* boss, const GUI::Fon
                                        int x, int y, int w, int h,
                                        CartridgeEnhanced& cart)
   : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
-    myCart(cart)
+    myCart{cart}
 {
 }
 

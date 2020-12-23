@@ -23,7 +23,7 @@ CartridgeUAWidget::CartridgeUAWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, CartridgeUA& cart, bool swapHotspots)
   : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart),
-    mySwappedHotspots(swapHotspots)
+    mySwappedHotspots{swapHotspots}
 {
   myHotspotDelta = 0x20;
   initialize();

@@ -109,16 +109,12 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void BrowserDialog::show(const string& startpath,
-                         BrowserDialog::ListMode mode, int cmd,
+                         BrowserDialog::ListMode mode, int cmd, int cancelCmd,
                          const string& ext)
 {
-#ifdef BSPF_WINDOWS
-  #define PATH_SEPARATOR '\\'
-#else
-  #define PATH_SEPARATOR '/'
-#endif
-  _cmd = cmd;
   _mode = mode;
+  _cmd = cmd;
+  _cancelCmd = cancelCmd;
   string fileName;
 
   // Set start path
@@ -267,6 +263,13 @@ void BrowserDialog::handleCommand(CommandSender* sender, int cmd,
       // Send a signal to the calling class that a selection has been made
       // Since we aren't derived from a widget, we don't have a 'data' or 'id'
       if(_cmd) sendCommand(_cmd, -1, -1);
+      close();
+      break;
+
+    case kCloseCmd:
+      // Send a signal to the calling class that the dialog was closed without selection
+      // Since we aren't derived from a widget, we don't have a 'data' or 'id'
+      if(_cancelCmd) sendCommand(_cancelCmd, -1, -1);
       close();
       break;
 

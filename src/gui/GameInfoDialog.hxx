@@ -31,6 +31,7 @@ class QuadTariDialog;
 #include "Dialog.hxx"
 #include "Command.hxx"
 #include "Props.hxx"
+#include "HighScoresManager.hxx"
 
 class GameInfoDialog : public Dialog, public CommandSender
 {
@@ -46,6 +47,12 @@ class GameInfoDialog : public Dialog, public CommandSender
 
     void setDefaults() override;
 
+    void addEmulationTab();
+    void addConsoleTab();
+    void addControllersTab();
+    void addCartridgeTab();
+    void addHighScoresTab();
+
     // load the properties for the 'Emulation' tab
     void loadEmulationProperties(const Properties& props);
     // load the properties for the 'Console' tab
@@ -54,12 +61,23 @@ class GameInfoDialog : public Dialog, public CommandSender
     void loadControllerProperties(const Properties& props);
     // load the properties for the 'Cartridge' tab
     void loadCartridgeProperties(const Properties& props);
+    // load the properties for the 'High Scores' tab
+    void loadHighScoresProperties(const Properties& props);
+    // load the properties of the 'High Scores' tab
+    void saveHighScoresProperties();
     // save properties from all tabs into the local properties object
     void saveProperties();
 
+    // update 'Controller' tab widgets
     void updateControllerStates();
+    // erase SaveKey/AtariVox pages for current game
     void eraseEEPROM();
-    void saveCurrentPropertiesToDisk();
+    // update 'High Scores' tab widgets
+    void updateHighScoresWidgets();
+    // set formatted memory value for given address field
+    void setAddressVal(EditTextWidget* address, EditTextWidget* val,
+                       bool isBCD = true, bool zeroBased = false, uInt8 maxVal = 255);
+    void exportCurrentPropertiesToDisk();
 
   private:
     TabWidget* myTab{nullptr};
@@ -113,6 +131,43 @@ class GameInfoDialog : public Dialog, public CommandSender
     EditTextWidget*   myRarity{nullptr};
     EditTextWidget*   myNote{nullptr};
 
+    // High Scores properties
+    CheckboxWidget*   myHighScores{nullptr};
+    //CheckboxWidget*   myARMGame{nullptr};
+
+    StaticTextWidget* myVariationsLabel{nullptr};
+    EditTextWidget*   myVariations{nullptr};
+    StaticTextWidget* myVarAddressLabel{nullptr};
+    EditTextWidget*   myVarAddress{nullptr};
+    EditTextWidget*   myVarAddressVal{nullptr};
+    CheckboxWidget*   myVarsBCD{nullptr};
+    CheckboxWidget*   myVarsZeroBased{nullptr};
+
+    StaticTextWidget* myScoreLabel{nullptr};
+    StaticTextWidget* myScoreDigitsLabel{nullptr};
+    PopUpWidget*      myScoreDigits{nullptr};
+    StaticTextWidget* myTrailingZeroesLabel{nullptr};
+    PopUpWidget*      myTrailingZeroes{nullptr};
+    CheckboxWidget*   myScoreBCD{nullptr};
+    CheckboxWidget*   myScoreInvert{nullptr};
+
+    StaticTextWidget* myScoreAddressesLabel{nullptr};
+    EditTextWidget*   myScoreAddress[HSM::MAX_SCORE_ADDR]{nullptr};
+    EditTextWidget*   myScoreAddressVal[HSM::MAX_SCORE_ADDR]{nullptr};
+    StaticTextWidget* myCurrentScoreLabel{nullptr};
+    StaticTextWidget* myCurrentScore{nullptr};
+
+    StaticTextWidget* mySpecialLabel{nullptr};
+    EditTextWidget*   mySpecialName{nullptr};
+    StaticTextWidget* mySpecialAddressLabel{nullptr};
+    EditTextWidget*   mySpecialAddress{nullptr};
+    EditTextWidget*   mySpecialAddressVal{nullptr};
+    CheckboxWidget*   mySpecialBCD{nullptr};
+    CheckboxWidget*   mySpecialZeroBased{nullptr};
+
+    StaticTextWidget* myHighScoreNotesLabel{nullptr};
+    EditTextWidget*   myHighScoreNotes{nullptr};
+
     enum {
       kVCenterChanged  = 'Vcch',
       kPhosphorChanged = 'PPch',
@@ -122,9 +177,10 @@ class GameInfoDialog : public Dialog, public CommandSender
       kQuadTariPressed = 'QTpr',
       kMCtrlChanged    = 'MCch',
       kEEButtonPressed = 'EEgb',
+      kHiScoresChanged = 'HSch',
       kPXCenterChanged = 'Pxch',
       kPYCenterChanged = 'Pych',
-      kSavePressed     = 'GIsp'
+      kExportPressed     = 'GIsp'
     };
 
     // Game properties for currently loaded ROM

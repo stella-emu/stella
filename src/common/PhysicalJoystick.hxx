@@ -21,7 +21,7 @@
 #include "Event.hxx"
 #include "EventHandlerConstants.hxx"
 #include "JoyMap.hxx"
-#include "json.hxx"
+#include "json_lib.hxx"
 
 /**
   An abstraction of a physical (real) joystick in Stella.
@@ -59,17 +59,13 @@ class PhysicalJoystick
                     int axes, int buttons, int hats, int balls);
 
   private:
-    // TODO: these are not required anymore, delete or keep for future usage?
-    enum JoyType {
-      JT_NONE               = 0,
-      JT_REGULAR            = 1,
-      JT_STELLADAPTOR_LEFT  = 2,
-      JT_STELLADAPTOR_RIGHT = 3,
-      JT_2600DAPTOR_LEFT    = 4,
-      JT_2600DAPTOR_RIGHT   = 5
+    enum class Type {
+      REGULAR,
+      LEFT_STELLADAPTOR, RIGHT_STELLADAPTOR,
+      LEFT_2600DAPTOR, RIGHT_2600DAPTOR
     };
 
-    JoyType type{JT_NONE};
+    Type type{Type::REGULAR};
     int ID{-1};
     string name{"None"};
     int numAxes{0}, numButtons{0}, numHats{0};

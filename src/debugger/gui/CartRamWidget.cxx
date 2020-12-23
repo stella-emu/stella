@@ -33,11 +33,11 @@ CartRamWidget::CartRamWidget(
       int x, int y, int w, int h, CartDebugWidget& cartDebug)
   : Widget(boss, lfont, x, y, w, h),
     CommandSender(boss),
-    _nfont(nfont),
-    myFontWidth(lfont.getMaxCharWidth()),
-    myFontHeight(lfont.getFontHeight()),
-    myLineHeight(lfont.getLineHeight()),
-    myButtonHeight(myLineHeight + 4)
+    _nfont{nfont},
+    myFontWidth{lfont.getMaxCharWidth()},
+    myFontHeight{lfont.getFontHeight()},
+    myLineHeight{lfont.getLineHeight()},
+    myButtonHeight{myLineHeight + 4}
 {
   int lwidth = lfont.getStringWidth("Description "),
             fwidth = w - lwidth - 20;

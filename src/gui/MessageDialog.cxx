@@ -82,6 +82,7 @@ void MessageDialog::setMessage(const string& title, const string& text, bool yes
   setMessage(title, StringParser(text).stringList(), yesNo);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string MessageDialog::myTitle = "";
 StringList MessageDialog::myText;
 bool MessageDialog::myYesNo = false;

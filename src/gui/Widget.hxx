@@ -83,7 +83,7 @@ class Widget : public GuiObject
     void receivedFocus();
     void lostFocus();
     void addFocusWidget(Widget* w) override { _focusList.push_back(w); }
-    void addToFocusList(WidgetArray& list) override {
+    void addToFocusList(const WidgetArray& list) override {
       Vec::append(_focusList, list);
     }
 
@@ -157,7 +157,7 @@ class Widget : public GuiObject
     static bool isWidgetInChain(Widget* start, Widget* find);
 
     /** Determine if 'find' is in the widget array */
-    static bool isWidgetInChain(WidgetArray& list, Widget* find);
+    static bool isWidgetInChain(const WidgetArray& list, Widget* find);
 
     /** Select either previous, current, or next widget in chain to have
         focus, and deselects all others */
@@ -236,6 +236,8 @@ class ButtonWidget : public StaticTextWidget, public CommandSender
                  int cmd = 0, bool repeat = false);
     ~ButtonWidget() override = default;
 
+    bool handleEvent(Event::Type event) override;
+
     void setCmd(int cmd)  { _cmd = cmd; }
     int getCmd() const    { return _cmd; }
     /* Sets/changes the button's bitmap **/
@@ -247,7 +249,6 @@ class ButtonWidget : public StaticTextWidget, public CommandSender
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseEntered() override;
     void handleMouseLeft() override;
-    bool handleEvent(Event::Type event) override;
 
     void drawWidget(bool hilite) override;
 

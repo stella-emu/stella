@@ -43,7 +43,7 @@ class StellaLIBRETRO
     StellaLIBRETRO();
 
   public:
-    OSystemLIBRETRO& osystem() { return *myOSystem; }
+    OSystemLIBRETRO& osystem() const { return *myOSystem; }
 
     bool create(bool logging);
     void destroy();

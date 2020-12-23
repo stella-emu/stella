@@ -24,7 +24,7 @@
 CartridgeCM::CartridgeCM(const ByteBuffer& image, size_t size,
                          const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
-    myImage(make_unique<uInt8[]>(16_KB))
+    myImage{make_unique<uInt8[]>(16_KB)}
 {
   // Copy the ROM image into my buffer
   std::copy_n(image.get(), std::min(16_KB, size), myImage.get());

@@ -44,7 +44,7 @@
 CartridgeBUS::CartridgeBUS(const ByteBuffer& image, size_t size,
                            const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
-    myImage(make_unique<uInt8[]>(32_KB))
+    myImage{make_unique<uInt8[]>(32_KB)}
 {
   // Copy the ROM image into my buffer
   std::copy_n(image.get(), std::min(32_KB, size), myImage.get());
@@ -71,8 +71,8 @@ CartridgeBUS::CartridgeBUS(const ByteBuffer& image, size_t size,
     0x00000800,
     0x00000808,
     0x40001FDC,
-    devSettings ? settings.getBool("dev.thumb.trapfatal") : false, 
-    Thumbulator::ConfigureFor::BUS, 
+    devSettings ? settings.getBool("dev.thumb.trapfatal") : false,
+    Thumbulator::ConfigureFor::BUS,
     this);
 
   setInitialState();
@@ -546,6 +546,15 @@ uInt32 CartridgeBUS::thumbCallback(uInt8 function, uInt32 value1, uInt32 value2)
   }
 
   return 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 CartridgeBUS::internalRamGetValue(uInt16 addr) const
+{
+  if(addr < internalRamSize())
+    return myRAM[addr];
+  else
+    return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

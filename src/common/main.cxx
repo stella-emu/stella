@@ -123,11 +123,11 @@ void parseCommandLine(int ac, char* av[],
 
 #if 0
   cout << "Global opts:" << endl;
-  for(const auto& x: globalOpts)
-    cout << " -> " << x.first << ": " << x.second << endl;
+  for(const auto& [key, value]: globalOpts)
+    cout << " -> " << key << ": " << value << endl;
   cout << "Local opts:" << endl;
-  for(const auto& x: localOpts)
-    cout << " -> " << x.first << ": " << x.second << endl;
+  for(const auto& [key, value]: localOpts)
+    cout << " -> " << key << ": " << value << endl;
 #endif
 }
 

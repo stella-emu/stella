@@ -255,10 +255,12 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   // Add buttons
   myToggleWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
                                     STOP.data(), BUTTON_W, BUTTON_H, kToggle);
+  myToggleWidget->setToolTip("Toogle Time Machine mode.");
   xpos += buttonWidth + BUTTON_GAP;
 
   myExitWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
                                   EXIT.data(), BUTTON_W, BUTTON_H, kExit);
+  myExitWidget->setToolTip("Exit Time Machine dialog.");
   xpos += buttonWidth + BUTTON_GAP * 4;
 
   myRewindAllWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
@@ -271,6 +273,7 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
 
   myPlayBackWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
                                       PLAYBACK.data(), BUTTON_W, BUTTON_H, kPlayBack);
+  myPlayBackWidget->setToolTip("Start playback of Time Machine states.");
   xpos += buttonWidth + BUTTON_GAP;
 
   myUnwind1Widget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
@@ -283,15 +286,21 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
 
   mySaveAllWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
                                      SAVE_ALL.data(), BUTTON_W, BUTTON_H, kSaveAll);
+  mySaveAllWidget->setToolTip("Save all Time Machine states.");
   xpos = mySaveAllWidget->getRight() + BUTTON_GAP;
 
   myLoadAllWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
                                      LOAD_ALL.data(), BUTTON_W, BUTTON_H, kLoadAll);
+  myLoadAllWidget->setToolTip("Load all Time Machine states.");
   xpos = myLoadAllWidget->getRight() + BUTTON_GAP * 4;
 
   // Add message
+  int mWidth = (myLastTimeWidget->getLeft() - xpos) / font.getMaxCharWidth();
+  const string blanks = "                                             ";
+
   myMessageWidget = new StaticTextWidget(this, font, xpos, ypos_s,
-      "                                             ", TextAlign::Left, kBGColor);
+                                         blanks.substr(0, mWidth),
+                                         TextAlign::Left, kBGColor);
   myMessageWidget->setFlags(Widget::FLAG_CLEARBG | Widget::FLAG_NOBG);
   myMessageWidget->setTextColor(kColorInfo);
 }
@@ -328,6 +337,10 @@ void TimeMachineDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeate
 
   switch (event)
   {
+    case Event::ExitMode:
+      handleCommand(nullptr, kExit, 0, 0);
+      break;
+
     case Event::Rewind1Menu:
       handleCommand(nullptr, kRewind1, 0, 0);
       break;
@@ -352,13 +365,19 @@ void TimeMachineDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeate
       handleCommand(nullptr, kUnwindAll, 0, 0);
       break;
 
-    case Event::TakeSnapshot:
-      if (!repeated)
-        handleCommand(nullptr, kSnapShot, 0, 0);
+    case Event::LoadAllStates:
+      if(!repeated)
+        handleCommand(nullptr, kLoadAll, 0, 0);
       break;
 
-    case Event::ExitMode:
-      handleCommand(nullptr, kExit, 0, 0);
+    case Event::SaveAllStates:
+      if(!repeated)
+        handleCommand(nullptr, kSaveAll, 0, 0);
+      break;
+
+    case Event::TakeSnapshot:
+      if(!repeated)
+        handleCommand(nullptr, kSnapShot, 0, 0);
       break;
 
     default:
@@ -476,7 +495,7 @@ void TimeMachineDialog::initBar()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string TimeMachineDialog::getTimeString(uInt64 cycles)
+string TimeMachineDialog::getTimeString(uInt64 cycles) const
 {
   const Int32 scanlines = std::max<Int32>(instance().console().tia().scanlinesLastFrame(), 240);
   const bool isNTSC = scanlines <= 287;

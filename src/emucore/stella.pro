@@ -3,6 +3,7 @@
 "Cart.Name" "Jungle Jane (2003) (Greg Zumwalt) (Hack)"
 "Cart.Note" "Hack of Pitfall!"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "0060a89b4c956b9c703a59b181cb3018"
@@ -43,6 +44,7 @@
 "Cart.ModelNo" "PGP214"
 "Cart.Name" "Cosmic Avenger (4 Game in One) (1983) (BitCorp) (PAL)"
 "Cart.Note" "AKA StarMaster"
+"Cart.Highscore" "{\"notes\":\"Score only calculated when game is over\",\"score_addresses\":[\"0xc1\",\"0xc2\"],\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "00dc28b881989c39a6cf87a892bd3c6b"
@@ -58,6 +60,7 @@
 
 "Cart.MD5" "00e55b27fe2e96354cd21b8b698d1e31"
 "Cart.Name" "Phoenix (Unknown)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xc9\",\"0xc8\",\"0xc7\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "00eaee22034aff602f899b684c107d77"
@@ -78,6 +81,7 @@
 "Cart.Name" "Better Space Invaders (1999) (Rob Kudla) (Hack) [a]"
 "Cart.Note" "Hack of Space Invaders"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"notes\":\"Only player 1 supported\",\"score_addresses\":[\"0xe6\",\"0xe8\"],\"variations_address\":\"0xdc\",\"variations_bcd\":false,\"variations_bcd_A\":false,\"variations_count\":112,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "01293bd90a4579abb7aed2f7d440681f"
@@ -172,6 +176,7 @@
 "Cart.Manufacturer" "Activision, Steve Cartwright"
 "Cart.ModelNo" "AX-022"
 "Cart.Name" "Seaquest (1983) (Activision) (8K)"
+"Cart.Highscore" "{\"notes\":\"High score is from current player\",\"score_addresses\":[\"0xb8\",\"0xb9\",\"0xba\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "0277c449fae63f6f1c8f94dedfcf0058"
@@ -210,6 +215,7 @@
 "Cart.Manufacturer" "Parker Brothers, Ed English, David Lamkins"
 "Cart.ModelNo" "931502"
 "Cart.Name" "Frogger (1982) (Parker Bros) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xcc\",\"0xce\"],\"variations_address\":\"0xdd\",\"variations_count\":6}"
 ""
 
 "Cart.MD5" "02cee0b140d2f1a1efcfb1d482a5c392"
@@ -335,6 +341,7 @@
 
 "Cart.MD5" "049626cbfb1a5f7a5dc885a0c4bb758e"
 "Cart.Name" "MegaMania (Unknown) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xdb\",\"0xdc\",\"0xdd\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "04b488d4eef622d022a0021375e7e339"
@@ -401,12 +408,14 @@
 
 "Cart.MD5" "05aedf04803c43eb5e09dfd098d3fd01"
 "Cart.Name" "Keystone Kapers (Unknown) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0x9a\",\"0x9b\",\"0x9c\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "05aff8f626ef870432ae3b3d9d5aa301"
 "Cart.Manufacturer" "Activision, Bob Whitehead"
 "Cart.ModelNo" "AG-019"
 "Cart.Name" "Sky Jinks (1982) (Activision) (16K)"
+"Cart.Highscore" "{\"score_addresses\":[\"0x9e\",\"0xa6\",\"0xa2\"],\"score_digits\":6,\"score_inverted\":true,\"variations_address\":\"0x99\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "05b45ba09c05befa75ac70476829eda0"
@@ -473,6 +482,7 @@
 "Cart.Name" "Millipede (Atari Trak-Ball) v6.5 (Omegamatrix)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Display.Format" "PAL60"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "0651216c4a4a9c9ac5ada3013a317c72"
@@ -539,6 +549,7 @@
 "Cart.ModelNo" "SS-019"
 "Cart.Name" "Curtiss (1983) (Rainbow Vision) (PAL)"
 "Cart.Note" "AKA Atlantis"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa2\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x8d\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "072a6ea2181ca0df88ac0dedc67b239d"
@@ -607,6 +618,7 @@
 "Cart.MD5" "07f84db31e97ef8d08dc9fa8a5250755"
 "Cart.Manufacturer" "Supergame"
 "Cart.Name" "Enduro (1984) (Supergame)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xa9\",\"0xa8\"],\"score_digits\":6,\"special_address\":\"0xad\",\"special_label\":\"Day\",\"variations_count\":1}"
 ""
 
 "Cart.MD5" "07f91e33e76f53bb9d2731fd5d8a35a5"
@@ -614,6 +626,7 @@
 "Cart.ModelNo" "CX2632"
 "Cart.Name" "Space Invaders (1978) (Atari) [t1]"
 "Cart.Rarity" "Common"
+"Cart.Highscore" "{\"notes\":\"Only player 1 supported\",\"score_addresses\":[\"0xe6\",\"0xe8\"],\"variations_address\":\"0xdc\",\"variations_bcd\":false,\"variations_bcd_A\":false,\"variations_count\":112,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "0805366f1b165a64b6d4df20d2c39d25"
@@ -621,6 +634,7 @@
 "Cart.ModelNo" "CX2650"
 "Cart.Name" "Berzerk (1982) (Atari) (PAL)"
 "Cart.Rarity" "Common"
+"Cart.Highscore" "{\"score_addresses\":[\"0xdd\",\"0xde\",\"0xdf\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":12}"
 ""
 
 "Cart.MD5" "08188785e2b8300983529946dbeff4d2"
@@ -637,6 +651,7 @@
 "Cart.Manufacturer" "Parker Brothers, Ed English, David Lamkins"
 "Cart.ModelNo" "PB5300"
 "Cart.Name" "Frogger (1982) (Parker Bros)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xcc\",\"0xce\"],\"variations_address\":\"0xdd\",\"variations_count\":6}"
 ""
 
 "Cart.MD5" "082fdc8bd47fef01482ce5883c4ffdb8"
@@ -678,12 +693,14 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Centipede - Atari Trak-Ball Hack v1.4 (PAL60) (Half-Speed) (TJ)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "0894aa7be77521f9df562be8d9555fe6"
 "Cart.Manufacturer" "CBS Electronics, Dan Kitchen, Garry Kitchen"
 "Cart.ModelNo" "4L1700, 4L1701, 4L1702, 4L1802, 4L2274"
 "Cart.Name" "Donkey Kong (1982) (CBS Electronics) (PAL) [a2]"
+"Cart.Highscore" "{\"score_addresses\":[\"0x87\",\"0x88\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "08989fa4ff537f5dbd611aff4019521a"
@@ -787,6 +804,7 @@
 "Cart.Name" "Space Invaders 2 (Hack) [o1]"
 "Cart.Note" "Hack of Space Invaders"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"notes\":\"Only player 1 supported\",\"score_addresses\":[\"0xe6\",\"0xe8\"],\"variations_address\":\"0xdc\",\"variations_bcd\":false,\"variations_bcd_A\":false,\"variations_count\":112,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "096649575e451508006b17e0353259a5"
@@ -795,6 +813,7 @@
 "Cart.Note" "Hack of Yars' Revenge"
 "Cart.Rarity" "Hack"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"notes\":\"Variations are larger by 1\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":8,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "097074f24cde141fe6a0f26a10333265"
@@ -883,12 +902,14 @@
 "Cart.Name" "Super Breakout (1982 - 1981) (Atari) [a]"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.MouseAxis" "01 45"
+"Cart.Highscore" "{\"score_addresses\":[\"0xdc\",\"0xdd\"],\"variations_address\":\"0xc0\",\"variations_count\":9}"
 ""
 
 "Cart.MD5" "0adb21206de92e8aec5ef295805ebb90"
 "Cart.Name" "Solaris (Genesis)"
 "Cart.Note" "Genesis controller (C switches to map mode)"
 "Cart.Rarity" "Hack of Solaris"
+"Cart.Highscore" "{\"score_addresses\":[\"0xde\",\"0xdd\",\"0xdc\"],\"score_digits\":6,\"score_trailing_zeroes\":1,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "0ae3497e731ca0bf6a77b23441d9d9f9"
@@ -900,12 +921,14 @@
 "Cart.Name" "Face Invaders Deluxe (Barry Laws Jr.) (Hack)"
 "Cart.Note" "Hack of Space Invaders"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"notes\":\"Only player 1 supported\",\"score_addresses\":[\"0xe6\",\"0xe8\"],\"variations_address\":\"0xdc\",\"variations_bcd\":false,\"variations_bcd_A\":false,\"variations_count\":112,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "0afe6ae18966795b89314c3797dd2b1e"
 "Cart.Manufacturer" "Atari - GCC, Mark Ackerman, Noellie Alito"
 "Cart.ModelNo" "CX2692, CX2692P"
 "Cart.Name" "Moon Patrol (1983) (Atari) (PAL) [a]"
+"Cart.Highscore" "{\"score_addresses\":[\"0xea\",\"0xeb\",\"0xec\"],\"score_digits\":6,\"variations_address\":\"0xf9\",\"variations_count\":6,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "0b01909ba84512fdaf224d3c3fd0cf8d"
@@ -933,12 +956,14 @@
 "Cart.Manufacturer" "CCE"
 "Cart.ModelNo" "C-815"
 "Cart.Name" "Seaquest (1983) (CCE)"
+"Cart.Highscore" "{\"notes\":\"High score is from current player\",\"score_addresses\":[\"0xb8\",\"0xb9\",\"0xba\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "0b33252b680b65001e91a411e56e72e9"
 "Cart.Manufacturer" "CCE"
 "Cart.ModelNo" "C-832"
 "Cart.Name" "Atlantis (1983) (CCE) [a]"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa2\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x8d\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "0b4e793c9425175498f5a65a3e960086"
@@ -997,6 +1022,7 @@
 "Cart.Manufacturer" "Bit Corporation"
 "Cart.ModelNo" "R320"
 "Cart.Name" "Circus Atari (32 in 1) (BitCorp) (Hack)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xab\"],\"variations_address\":\"0xa8\",\"variations_count\":8}"
 ""
 
 "Cart.MD5" "0c35806ff0019a270a7acae68de89d28"
@@ -1010,6 +1036,7 @@
 "Cart.Manufacturer" "Atari, Bill Aspromonte, Andrew Fuchs"
 "Cart.ModelNo" "CX26120"
 "Cart.Name" "Stargate (1984) (Atari)"
+"Cart.Highscore" "{\"score_addresses\":[\"0x8b\",\"0x8c\",\"0x8d\"],\"score_digits\":6,\"special_address\":\"0x89\",\"special_label\":\"Wave\",\"variations_count\":1}"
 ""
 
 "Cart.MD5" "0c54811cf3b1f1573c9164d5f19eca65"
@@ -1017,6 +1044,7 @@
 "Cart.ModelNo" "EAG-001, PAG-001, EAG-001-04B, EAG-001-04I - 711 001-715"
 "Cart.Name" "Dragster (1980) (Activision) (PAL)"
 "Cart.Note" "AKA Dragster Rennen, Drag Strip"
+"Cart.Highscore" "{\"score_addresses\":[\"0xb3\",\"0xb5\"],\"score_inverted\":true,\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "0c72cc3a6658c1abd4b735ef55fa72e4"
@@ -1170,6 +1198,7 @@
 "Cart.Name" "Candi (Hack) [a]"
 "Cart.Note" "Hack of Space Invaders"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"notes\":\"Only player 1 supported\",\"score_addresses\":[\"0xe6\",\"0xe8\"],\"variations_address\":\"0xdc\",\"variations_bcd\":false,\"variations_bcd_A\":false,\"variations_count\":112,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "0e08cd2c5bcf11c6a7e5a009a7715b6a"
@@ -1189,6 +1218,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Centipede - Amiga Mouse Hack v1.4 (PAL60) (Half-Speed) (TJ)"
 "Cart.Note" "Uses Amiga Mouse Controller"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "0e4b2b6e014a93ef8be896823da0d4ec"
@@ -1297,6 +1327,7 @@
 "Cart.Name" "Conquest Of Mars (2010) (NTSC)"
 "Cart.Note" "Rev 2 release"
 "Cart.Rarity" "Homebrew"
+"Cart.Highscore" "{\"score_addresses\":[\"0x92\",\"0x94\",\"0x96\"],\"score_digits\":6,\"special_address\":\"0x9a\",\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_address\":\"0x89\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "0f643c34e40e3f1daafd9c524d3ffe64"
@@ -1312,6 +1343,7 @@
 "Cart.MD5" "0f738dc44437557624eb277ed7ad91c9"
 "Cart.Name" "Grand Prix (Unknown) (PAL)"
 "Cart.Note" "AKA Grand Prix"
+"Cart.Highscore" "{\"notes\":\"Time/score shows extra digit\",\"score_addresses\":[\"0xeb\",\"0xec\",\"0xed\"],\"score_digits\":5,\"score_inverted\":true,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "0f8043715d66a4bbed394ef801d99862"
@@ -1355,6 +1387,7 @@
 "Cart.Manufacturer" "Imagic, Rob Fulop"
 "Cart.ModelNo" "720104-2A, IA3204P, EIX-008-04I"
 "Cart.Name" "Cosmic Ark (1982) (Imagic) (PAL) [selectable starfield]"
+"Cart.Highscore" "{\"score_addresses\":[\"0xae\",\"0xb0\",\"0xb2\"],\"score_digits\":6,\"variations_address\":\"0xbc\",\"variations_count\":6}"
 ""
 
 "Cart.MD5" "0fee596b974c9d3e70b367a3671599b6"
@@ -1424,6 +1457,7 @@
 "Cart.Name" "Centipede 2k (2000) (PD) (Hack)"
 "Cart.Note" "Hack of Centipede"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "10a3cd14e5dcfdde6ff216a14ce7b7dd"
@@ -1435,6 +1469,7 @@
 "Cart.MD5" "10af8728f975aa35a99d0965de8f714c"
 "Cart.Manufacturer" "Dinatronic"
 "Cart.Name" "Seaquest (Dinatronic)"
+"Cart.Highscore" "{\"notes\":\"High score is from current player\",\"score_addresses\":[\"0xb8\",\"0xb9\",\"0xba\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "10c47acca2ecd212b900ad3cf6942dbb"
@@ -1449,6 +1484,7 @@
 "Cart.Manufacturer" "Canal 3 - Intellivision"
 "Cart.ModelNo" "C 3016"
 "Cart.Name" "Demon Attack (Canal 3)"
+"Cart.Highscore" "{\"score_addresses\":[\"0x81\",\"0x83\",\"0x85\"],\"score_digits\":6,\"special_address\":\"0x80\",\"special_label\":\"Wave\",\"special_zero_based\":true,\"variations_address\":\"0xea\",\"variations_count\":10}"
 ""
 
 "Cart.MD5" "10eae73a07b3da044b72473d8d366267"
@@ -1472,6 +1508,7 @@
 
 "Cart.MD5" "110ac8ecaf1b69f41bc94c59dfcb8b2d"
 "Cart.Name" "Demon Attack (Unknown)"
+"Cart.Highscore" "{\"score_addresses\":[\"0x81\",\"0x83\",\"0x85\"],\"score_digits\":6,\"special_address\":\"0x80\",\"special_label\":\"Wave\",\"special_zero_based\":true,\"variations_address\":\"0xea\",\"variations_count\":10}"
 ""
 
 "Cart.MD5" "111029770226b319524134193886a10e"
@@ -1495,6 +1532,7 @@
 "Cart.Manufacturer" "Activision, Bob Whitehead - Ariola"
 "Cart.ModelNo" "EAX-015, EAX-015-04I - 711 015-725"
 "Cart.Name" "Chopper Command (1982) (Activision) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xec\",\"0xee\",\"0xf0\"],\"score_digits\":6,\"variations_address\":\"0xe0\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "11bcf5c752088b5aaf86d6c7a6a11e8d"
@@ -1575,6 +1613,7 @@
 "Cart.MD5" "12937db3d4a80da5c4452b752891252d"
 "Cart.Manufacturer" "Digitel"
 "Cart.Name" "Megamania (1983) (Digitel)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xdb\",\"0xdc\",\"0xdd\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "12bca8305d5ab8ea51fe1cfd95d7ab0e"
@@ -1596,6 +1635,7 @@
 "Cart.MD5" "1323c45d660f5a5b6d5ea45c6c4cbe4a"
 "Cart.Manufacturer" "Canal 3 - Intellivision"
 "Cart.Name" "Enduro (Canal 3)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xa9\",\"0xa8\"],\"score_digits\":6,\"special_address\":\"0xad\",\"special_label\":\"Day\",\"variations_count\":1}"
 ""
 
 "Cart.MD5" "133456269a03e3fdae6cddd65754c50d"
@@ -1639,6 +1679,7 @@
 "Cart.MD5" "1351c67b42770c1bd758c3e42f553fea"
 "Cart.Manufacturer" "Digivision"
 "Cart.Name" "Keystone Kapers (Digivision)"
+"Cart.Highscore" "{\"score_addresses\":[\"0x9a\",\"0x9b\",\"0x9c\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "135708b9a7dd20576c1b66ab2a41860d"
@@ -1665,6 +1706,14 @@
 "Cart.ModelNo" "CX2650 - 49-75168"
 "Cart.Name" "Berzerk (1982) (Atari)"
 "Cart.Rarity" "Common"
+"Cart.Highscore" "{\"score_addresses\":[\"0xdd\",\"0xde\",\"0xdf\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":12}"
+""
+
+"Cart.MD5" "137373599e9b7bf2cf162a102eb5927f"
+"Cart.Manufacturer" "AtariAge, Joe Grand"
+"Cart.Name" "Ultra SCSIcide (SCSIcide 2.0)"
+"Controller.Left" "PADDLES"
+"Cart.Highscore" "{\"score_addresses\":[\"0xdc\",\"0xdd\",\"0xde\"],\"score_bcd\":false,\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "13895ef15610af0d0f89d588f376b3fe"
@@ -1677,6 +1726,7 @@
 "Cart.Manufacturer" "Atari - GCC, Mark Ackerman, Tom Calderwood, Glenn Parker"
 "Cart.ModelNo" "CX2684, CX2684P"
 "Cart.Name" "Galaxian (1983) (Atari) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xac\",\"0xad\",\"0xae\"],\"score_digits\":6,\"special_address\":\"0xaf\",\"special_label\":\"Wave\",\"variations_address\":\"0xb3\",\"variations_count\":9}"
 ""
 
 "Cart.MD5" "13a991bc9c2ff03753aeb322d3e3e2e5"
@@ -1836,6 +1886,7 @@
 "Cart.Note" "Hack of Yars' Revenge"
 "Cart.Rarity" "Hack"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"notes\":\"Variations are larger by 1\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":8,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "15a0d59304dece2c7d0580f3ea3527f0"
@@ -1855,6 +1906,7 @@
 "Cart.Manufacturer" "Bit Corporation"
 "Cart.ModelNo" "R320"
 "Cart.Name" "Space Invaders (32 in 1) (BitCorp) (Hack)"
+"Cart.Highscore" "{\"notes\":\"Only player 1 supported\",\"score_addresses\":[\"0xe6\",\"0xe8\"],\"variations_address\":\"0xdc\",\"variations_bcd\":false,\"variations_bcd_A\":false,\"variations_count\":112,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "15bcd74f2f1f2a63e1aa93e90d2c0555"
@@ -2011,6 +2063,7 @@
 "Cart.Manufacturer" "HCC Software"
 "Cart.Name" "Pitfall! (Steroids Hack)"
 "Cart.Note" "Hack of Pitfall! (Activision)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "1782929e1c214b70fb6884f77c207a55"
@@ -2035,6 +2088,7 @@
 "Cart.Manufacturer" "Dismac"
 "Cart.Name" "Pega Ladrao (Dismac)"
 "Cart.Note" "AKA Keystone Kapers"
+"Cart.Highscore" "{\"score_addresses\":[\"0x9a\",\"0x9b\",\"0x9c\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "17c0a63f9a680e7a61beba81692d9297"
@@ -2049,6 +2103,7 @@
 "Cart.Manufacturer" "Atari - GCC"
 "Cart.ModelNo" "CX2676"
 "Cart.Name" "Centipede (1983) (Atari) (PAL)"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "17ee158d15e4a34f57a837bc1ce2b0ce"
@@ -2081,6 +2136,7 @@
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Rarity" "Homebrew"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
 ""
 
 "Cart.MD5" "1862fca4f98e66f363308b859b5863af"
@@ -2104,6 +2160,7 @@
 "Cart.Manufacturer" "Bit Corporation"
 "Cart.ModelNo" "R320"
 "Cart.Name" "Atlantis (32 in 1) (BitCorp) (Hack)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa2\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x8d\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "18be8981b8201638f3ed8ae92bb4c215"
@@ -2124,6 +2181,7 @@
 "Cart.Manufacturer" "Atari - GCC, Mark Ackerman, Glenn Parker"
 "Cart.ModelNo" "CX2684, CX2684P"
 "Cart.Name" "Galaxian (1983) (Atari) (PAL) [a1]"
+"Cart.Highscore" "{\"score_addresses\":[\"0xac\",\"0xad\",\"0xae\"],\"score_digits\":6,\"special_address\":\"0xaf\",\"special_label\":\"Wave\",\"variations_address\":\"0xb3\",\"variations_count\":9}"
 ""
 
 "Cart.MD5" "18ed63e3ce5bc3dd2d8bd188b807f1a2"
@@ -2177,6 +2235,7 @@
 "Cart.Name" "Super Breakout Menu (2020) (PAL) (Hack)"
 "Cart.Note" "Hack of Super Breakout"
 "Controller.MouseAxis" "AUTO 55"
+"Cart.Highscore" "{\"score_addresses\":[\"0xdc\",\"0xdd\"],\"variations_address\":\"0xc0\",\"variations_count\":9}"
 ""
 
 "Cart.MD5" "1986f864e32e3e8d198b5becf3022257"
@@ -2206,6 +2265,7 @@
 "Cart.ModelNo" "CX2649, CX2649P"
 "Cart.Name" "Asteroids (1981) (Atari) (PAL) [a2]"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
 ""
 
 "Cart.MD5" "19b3b807507653516985ba95da92499d"
@@ -2253,6 +2313,7 @@
 "Cart.ModelNo" "SS-007"
 "Cart.Name" "Space Raid (1983) (Rainbow Vision) (PAL) [a]"
 "Cart.Note" "AKA MegaMania"
+"Cart.Highscore" "{\"score_addresses\":[\"0xdb\",\"0xdc\",\"0xdd\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "1a8204a2bcd793f539168773d9ad6230"
@@ -2260,6 +2321,7 @@
 "Cart.ModelNo" "CX2638 - 49-75166"
 "Cart.Name" "Missile Command (1981) (Atari) [no initials]"
 "Cart.Rarity" "Prototype"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "1aa7344b563c597eecfbfcf8e7093c27"
@@ -2283,6 +2345,7 @@
 "Cart.MD5" "1b22a3d79ddd79335b69c94dd9b3e44e"
 "Cart.Manufacturer" "Tron"
 "Cart.Name" "Moon Patrol (Tron)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xea\",\"0xeb\",\"0xec\"],\"score_digits\":6,\"variations_address\":\"0xf9\",\"variations_count\":6,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "1b4b06c2a14ed3ee73b7d0fd61b6aaf5"
@@ -2353,6 +2416,7 @@
 "Cart.ModelNo" "SS-012"
 "Cart.Name" "Hey! Stop! (1983) (Rainbow Vision) (PAL)"
 "Cart.Note" "AKA Keystone Kapers"
+"Cart.Highscore" "{\"score_addresses\":[\"0x9a\",\"0x9b\",\"0x9c\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "1c666ba5aac19b81671357e76062989b"
@@ -2384,6 +2448,7 @@
 "Cart.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
 "Cart.Name" "Chopper Command (Jone Yuan)"
 "Cart.Note" "2600 Screen Search Console"
+"Cart.Highscore" "{\"score_addresses\":[\"0xec\",\"0xee\",\"0xf0\"],\"score_digits\":6,\"variations_address\":\"0xe0\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "1cafa9f3f9a2fce4af6e4b85a2bbd254"
@@ -2421,6 +2486,7 @@
 "Cart.MD5" "1d284d6a3f850bafb25635a12b316f3d"
 "Cart.Manufacturer" "CCE"
 "Cart.Name" "H.E.R.O. (CCE)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xb7\",\"0xb8\",\"0xb9\"],\"score_digits\":6,\"special_address\":\"0xf5\",\"special_bcd\":false,\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_address\":\"0x80\",\"variations_count\":5,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "1d2a28eb8c95da0d6d6b18294211839f"
@@ -2448,6 +2514,7 @@
 "Cart.Manufacturer" "Atari, Omegamatrix"
 "Cart.Name" "Space Invaders Menu (2020) (Hack)"
 "Cart.Note" "Hack of Space Invaders"
+"Cart.Highscore" "{\"notes\":\"Only player 1 supported\",\"score_addresses\":[\"0xe6\",\"0xe8\"],\"variations_address\":\"0xdc\",\"variations_bcd\":false,\"variations_bcd_A\":false,\"variations_count\":112,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "1da2da7974d2ca73a823523f82f517b3"
@@ -2550,6 +2617,7 @@
 "Cart.Manufacturer" "Parker Brothers, Dave Hampton, Tom Sloper"
 "Cart.ModelNo" "931517"
 "Cart.Name" "Q-bert (1983) (Parker Bros) (PAL) [a]"
+"Cart.Highscore" "{\"score_addresses\":[\"0xd9\",\"0xda\",\"0xdb\"],\"score_digits\":5,\"special_address\":\"0xe3\",\"special_label\":\"Round\",\"special_zero_based\":true,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "1ee2cfc7d0333b96bd11f7f3ec8ce8bc"
@@ -2562,6 +2630,7 @@
 "Cart.Manufacturer" "Atari - GCC, Mark Ackerman, Glenn Parker"
 "Cart.ModelNo" "CX2675, CX2675P"
 "Cart.Name" "Ms. Pac-Man (1983) (Atari) (PAL)"
+"Cart.Highscore" "{\"notes\":\"Vars valid at game over; cherries = var #4\",\"score_addresses\":[\"0xfa\",\"0xf9\",\"0xf8\"],\"score_digits\":6,\"special_bcd\":false,\"special_zero_based\":true,\"variations_address\":\"0xf7\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "1ef04e7e508296a8d9eb61cc7dae2e5d"
@@ -2665,6 +2734,7 @@
 "Cart.Name" "Doomzerk (PD) (Hack)"
 "Cart.Note" "Hack of Berzerk"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"score_addresses\":[\"0xdd\",\"0xde\",\"0xdf\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":12}"
 ""
 
 "Cart.MD5" "2016726db38ad6a68b4c48ba6fe51557"
@@ -2740,6 +2810,7 @@
 "Cart.Manufacturer" "Atari - GCC, Mark Ackerman, Tom Calderwood, Glenn Parker"
 "Cart.ModelNo" "CX2684"
 "Cart.Name" "Galaxian (1983) (Atari)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xac\",\"0xad\",\"0xae\"],\"score_digits\":6,\"special_address\":\"0xaf\",\"special_label\":\"Wave\",\"variations_address\":\"0xb3\",\"variations_count\":9}"
 ""
 
 "Cart.MD5" "211f76dff0b7dad3f6fcac9d938ee61a"
@@ -2794,12 +2865,14 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Centipede - Atari Trak-Ball Hack v1.4 (NTSC) (Full-Speed) (TJ)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "218b76f5a4142dc2ea9051a768583d70"
 "Cart.Manufacturer" "Atari - GCC, Mark Ackerman, Glenn Parker"
 "Cart.ModelNo" "CX2684, CX2684P"
 "Cart.Name" "Galaxian (1983) (Atari) (PAL) [a2]"
+"Cart.Highscore" "{\"score_addresses\":[\"0xac\",\"0xad\",\"0xae\"],\"score_digits\":6,\"special_address\":\"0xaf\",\"special_label\":\"Wave\",\"variations_address\":\"0xb3\",\"variations_count\":9}"
 ""
 
 "Cart.MD5" "218c0fe53dfaaa37f3c823f66eafd3fc"
@@ -2824,6 +2897,7 @@
 "Cart.Manufacturer" "Atari - GCC, Doug Macrae"
 "Cart.ModelNo" "CX2677, CX2677P"
 "Cart.Name" "Dig Dug (1983) (Atari) (PAL) [a]"
+"Cart.Highscore" "{\"notes\":\"Variation 1 is easy; 2 is normal\",\"score_addresses\":[\"0xff\",\"0xff\"],\"variations_address\":\"0x80\",\"variations_count\":2,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "21d7334e406c2407e69dbddd7cec3583"
@@ -2908,6 +2982,7 @@
 "Cart.Name" "Beast Invaders (Double Shot) (Hack)"
 "Cart.Note" "Hack of Space Invaders"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"notes\":\"Only player 1 supported\",\"score_addresses\":[\"0xe6\",\"0xe8\"],\"variations_address\":\"0xdc\",\"variations_bcd\":false,\"variations_bcd_A\":false,\"variations_count\":112,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "2365e1534d67f94d8670394ab99150ce"
@@ -2918,6 +2993,7 @@
 "Controller.Left" "ATARIMOUSE"
 "Controller.Right" "ATARIMOUSE"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
 ""
 
 "Cart.MD5" "23d445ea19a18fb78d5035878d9fb649"
@@ -2946,6 +3022,7 @@
 "Cart.Manufacturer" "Activision, Steve Cartwright"
 "Cart.ModelNo" "AX-022"
 "Cart.Name" "Seaquest (1983) (Activision)"
+"Cart.Highscore" "{\"notes\":\"High score is from current player\",\"score_addresses\":[\"0xb8\",\"0xb9\",\"0xba\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "2432f33fd278dea5fe6ae94073627fcc"
@@ -3024,6 +3101,7 @@
 "Cart.Manufacturer" "CCE"
 "Cart.ModelNo" "C-1007"
 "Cart.Name" "Jungle Hunt (1983) (CCE) [a]"
+"Cart.Highscore" "{\"score_addresses\":[\"0x85\",\"0x84\",\"0x83\"],\"score_digits\":6,\"variations_address\":\"0x8b\",\"variations_count\":2,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "24ad538291eb5f5cac4b9998f3b851c3"
@@ -3091,6 +3169,7 @@
 "Cart.Manufacturer" "Atari - GCC, Ava-Robin Cohen"
 "Cart.ModelNo" "CX26123"
 "Cart.Name" "Jr. Pac-Man (1984) (Atari) [a]"
+"Cart.Highscore" "{\"score_addresses\":[\"0xfb\",\"0xfa\",\"0xf9\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "25472dfdeef6a42581a231d631d6b04d"
@@ -3115,6 +3194,7 @@
 "Cart.ModelNo" "685.640 5"
 "Cart.Name" "Der kleine Baer (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Frostbite"
+"Cart.Highscore" "{\"score_addresses\":[\"0xc8\",\"0xc9\",\"0xca\"],\"score_digits\":6,\"special_address\":\"0xcb\",\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "25b52bf8dd215bcbd59c9abdb55c44f8"
@@ -3139,6 +3219,7 @@
 "Cart.Manufacturer" "Activision, Bob Whitehead"
 "Cart.ModelNo" "AX-015, AX-015-04"
 "Cart.Name" "Chopper Command (1982) (Activision) (16K)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xec\",\"0xee\",\"0xf0\"],\"score_digits\":6,\"variations_address\":\"0xe0\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "25e73efb9a6edf119114718bd2f646ba"
@@ -3158,6 +3239,7 @@
 "Cart.Manufacturer" "Activision, Garry Kitchen"
 "Cart.ModelNo" "EAX-025"
 "Cart.Name" "Keystone Kapers (1983) (Activision) (SECAM)"
+"Cart.Highscore" "{\"score_addresses\":[\"0x9a\",\"0x9b\",\"0x9c\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "25f9cf703575c5d63048c222f5463758"
@@ -3186,6 +3268,7 @@
 "Cart.Manufacturer" "Activision, Larry Miller"
 "Cart.ModelNo" "AX-026, AX-026-04"
 "Cart.Name" "Enduro (1983) (Activision) (8K)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xa9\",\"0xa8\"],\"score_digits\":6,\"special_address\":\"0xad\",\"special_label\":\"Day\",\"variations_count\":1}"
 ""
 
 "Cart.MD5" "2683d29a282dd059535ac3bb250f540d"
@@ -3197,6 +3280,7 @@
 "Cart.Name" "Pitfall Unlimited (Atarius Maximus) (Hack)"
 "Cart.Note" "Hack of Pitfall"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "26bc2bdf447a17376aea7ef187ff6e44"
@@ -3206,12 +3290,14 @@
 "Cart.MD5" "26f4f8b098609164effef7809e0121e1"
 "Cart.Name" "Oystron (V2.7) (Piero Cavina) (PD)"
 "Cart.Rarity" "New Release"
+"Cart.Highscore" "{\"score_addresses\":[\"0xd4\",\"0xd3\"],\"score_digits\":5,\"score_trailing_zeroes\":1,\"variations_address\":\"0xe5\",\"variations_count\":3,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "270229c6d5578446e6a588492e4e5910"
 "Cart.Name" "Space Invaders 2 (Hack)"
 "Cart.Note" "Hack of Space Invaders"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"notes\":\"Only player 1 supported\",\"score_addresses\":[\"0xe6\",\"0xe8\"],\"variations_address\":\"0xdc\",\"variations_bcd\":false,\"variations_bcd_A\":false,\"variations_count\":112,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "2712e91f6f1dc55e90e2b14b27c042ac"
@@ -3285,6 +3371,8 @@
 "Cart.Name" "SWOOPS! (v0.96) (TJ)"
 "Cart.Note" "Uses the Joystick (L) and Paddle (R) Controllers"
 "Cart.Rarity" "Homebrew"
+"Controller.MouseAxis" "28"
+"Cart.Highscore" "{\"score_addresses\":[\"0xfd\",\"0xfe\",\"0xff\"],\"score_digits\":6,\"variations_address\":\"0xfc\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "27a5d2d0c74c8e4b2c05b94c9f098eea"
@@ -3356,12 +3444,14 @@
 "Cart.ModelNo" "311388"
 "Cart.Name" "Black Hole (1983) (Otto Versand) (PAL)"
 "Cart.Note" "AKA Cosmic Ark (Double-Game Package)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xae\",\"0xb0\",\"0xb2\"],\"score_digits\":6,\"variations_address\":\"0xbc\",\"variations_count\":6}"
 ""
 
 "Cart.MD5" "283cb03ee031c842beabdad1aa4e7dbc"
 "Cart.Manufacturer" "Bit Corporation"
 "Cart.ModelNo" "R320"
 "Cart.Name" "Demon Attack (32 in 1) (BitCorp) (Hack)"
+"Cart.Highscore" "{\"score_addresses\":[\"0x81\",\"0x83\",\"0x85\"],\"score_digits\":6,\"special_address\":\"0x80\",\"special_label\":\"Wave\",\"special_zero_based\":true,\"variations_address\":\"0xea\",\"variations_count\":10}"
 ""
 
 "Cart.MD5" "283dee88f295834c4c077d788f151125"
@@ -3382,6 +3472,7 @@
 "Cart.Manufacturer" "Canal 3 - Intellivision"
 "Cart.ModelNo" "C 3004"
 "Cart.Name" "Moon Patrol (Canal 3)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xea\",\"0xeb\",\"0xec\"],\"score_digits\":6,\"variations_address\":\"0xf9\",\"variations_count\":6,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "2880c6b59bd54b153174676e465167c7"
@@ -3395,6 +3486,7 @@
 "Cart.Name" "Mega Mania Raid (1999) (Thiago Paiva) (Hack)"
 "Cart.Note" "Hack of Megamania"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"score_addresses\":[\"0xdb\",\"0xdc\",\"0xdd\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "28a4cd87fb9de4ee91693a38611cb53c"
@@ -3413,6 +3505,7 @@
 "Cart.Manufacturer" "Activision, David Crane"
 "Cart.ModelNo" "AX-014, AX-014-04"
 "Cart.Name" "Grand Prix (1982) (Activision)"
+"Cart.Highscore" "{\"notes\":\"Time/score shows extra digit\",\"score_addresses\":[\"0xeb\",\"0xec\",\"0xed\"],\"score_digits\":5,\"score_inverted\":true,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "291bcdb05f2b37cdf9452d2bf08e0321"
@@ -3458,6 +3551,7 @@
 "Cart.Name" "T.F. Space Invaders (Hack)"
 "Cart.Note" "Hack of Space Invaders"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"notes\":\"Only player 1 supported\",\"score_addresses\":[\"0xe6\",\"0xe8\"],\"variations_address\":\"0xdc\",\"variations_bcd\":false,\"variations_bcd_A\":false,\"variations_count\":112,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "295f3679bdf91ca5e37da3f787b29997"
@@ -3482,6 +3576,7 @@
 "Cart.Manufacturer" "Atari - GCC, Ava-Robin Cohen"
 "Cart.ModelNo" "CX26123, CX26123P"
 "Cart.Name" "Jr. Pac-Man (1986) (Atari) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xfb\",\"0xfa\",\"0xf9\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "2982e655dffc89d218a0a3072cfc6811"
@@ -3495,6 +3590,7 @@
 "Cart.Note" "Hack of Kaboom!"
 "Cart.Rarity" "Hack"
 "Controller.MouseAxis" "01 50"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "29843f43b81f3736bf35c00b1bb88fb2"
@@ -3519,6 +3615,7 @@
 "Cart.Manufacturer" "Activision, Bob Whitehead"
 "Cart.ModelNo" "AG-019"
 "Cart.Name" "Sky Jinks (1982) (Activision)"
+"Cart.Highscore" "{\"score_addresses\":[\"0x9e\",\"0xa6\",\"0xa2\"],\"score_digits\":6,\"score_inverted\":true,\"variations_address\":\"0x99\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "2a10053fd08664c7cfbbb104386ed77f"
@@ -3551,12 +3648,14 @@
 "Cart.ModelNo" "PGP213"
 "Cart.Name" "Spy Vs. Spy (4 Game in One) (1983) (BitCorp) (PAL)"
 "Cart.Note" "AKA Chopper Command"
+"Cart.Highscore" "{\"score_addresses\":[\"0xec\",\"0xee\",\"0xf0\"],\"score_digits\":6,\"variations_address\":\"0xe0\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "2a9f9001540c55a302befd8e9d54b47b"
 "Cart.Manufacturer" "Atari, Dan Hitchens"
 "Cart.ModelNo" "CX2697, CX2697P"
 "Cart.Name" "Mario Bros. (1983) (Atari) (PAL) [a]"
+"Cart.Highscore" "{\"score_addresses\":[\"0x89\",\"0x8a\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x80\",\"variations_count\":8,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "2aa5e56d36c2e58b6f2856109f2099a9"
@@ -3612,6 +3711,7 @@
 "Cart.ModelNo" "402.272 9"
 "Cart.Name" "Super-Ferrari (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Enduro"
+"Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xa9\",\"0xa8\"],\"score_digits\":6,\"special_address\":\"0xad\",\"special_label\":\"Day\",\"variations_count\":1}"
 ""
 
 "Cart.MD5" "2b42da79a682ed6e2d735facbf70107e"
@@ -3643,12 +3743,14 @@
 "Cart.MD5" "2bb0a1f1dee5226de648eb5f1c97f067"
 "Cart.Manufacturer" "Robby"
 "Cart.Name" "Enduro (Robby)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xa9\",\"0xa8\"],\"score_digits\":6,\"special_address\":\"0xad\",\"special_label\":\"Day\",\"variations_count\":1}"
 ""
 
 "Cart.MD5" "2bb9f4686f7e08c5fcc69ec1a1c66fe7"
 "Cart.Manufacturer" "Atari - GCC, John Allred, Mike Feinstein"
 "Cart.ModelNo" "CX2688"
 "Cart.Name" "Jungle Hunt (1983) (Atari)"
+"Cart.Highscore" "{\"score_addresses\":[\"0x85\",\"0x84\",\"0x83\"],\"score_digits\":6,\"variations_address\":\"0x8b\",\"variations_count\":2,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "2bc26619e31710a9884c110d8430c1da"
@@ -3813,6 +3915,7 @@
 "Cart.Manufacturer" "Genus"
 "Cart.Name" "Pitfall (Genus)"
 "Cart.Note" "AKA Pitfall!"
+"Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "2d6388a8389f1d59108fd169c3356d79"
@@ -3874,12 +3977,14 @@
 "Controller.Right" "DRIVING"
 "Controller.MouseAxis" "58"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
 ""
 
 "Cart.MD5" "2dcf9ce486393cd36ca0928cd53b96cb"
 "Cart.Manufacturer" "Atari - GCC, Mike Feinstein, John Allred"
 "Cart.ModelNo" "CX2688, CX2688P"
 "Cart.Name" "Jungle Hunt (1983) (Atari) (PAL) [a2]"
+"Cart.Highscore" "{\"score_addresses\":[\"0x85\",\"0x84\",\"0x83\"],\"score_digits\":6,\"variations_address\":\"0x8b\",\"variations_count\":2,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "2de41a11c6767e54a5ee9ebaffec72af"
@@ -3965,6 +4070,7 @@
 "Cart.MD5" "2ef36341d1bf42e02c7ea2f71e024982"
 "Cart.Name" "Space Invaders (Explosion Hack)"
 "Cart.Note" "Hack of Space Invaders (Atari)"
+"Cart.Highscore" "{\"notes\":\"Only player 1 supported\",\"score_addresses\":[\"0xe6\",\"0xe8\"],\"variations_address\":\"0xdc\",\"variations_bcd\":false,\"variations_bcd_A\":false,\"variations_count\":112,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "2f0546c4d238551c7d64d884b618100c"
@@ -4009,6 +4115,7 @@
 "Cart.Note" "Genesis controller (C is zorlon cannon)"
 "Cart.Rarity" "Hack of Yars' Revenge"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"notes\":\"Variations are larger by 1\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":8,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "2f77f015fc880b05f28e84156f989a0c"
@@ -4102,6 +4209,7 @@
 "Cart.Name" "Circus Atari (1980) (Atari) (PAL)"
 "Cart.Note" "Uses the Paddle Controllers"
 "Controller.MouseAxis" "01 55"
+"Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xab\"],\"variations_address\":\"0xa8\",\"variations_count\":8}"
 ""
 
 "Cart.MD5" "30f0b49661cfcfd4ec63395fab837dc3"
@@ -4163,6 +4271,7 @@
 "Cart.Manufacturer" "Activision, Steve Cartwright"
 "Cart.ModelNo" "AX-017, AX-017-04"
 "Cart.Name" "MegaMania (1982) (Activision)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xdb\",\"0xdc\",\"0xdd\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "319a142aab6260842ab616382848c204"
@@ -4179,6 +4288,7 @@
 "Cart.MD5" "31c5fd55a39db5ff30a0da065f86c140"
 "Cart.Manufacturer" "Dactari - Milmar"
 "Cart.Name" "Enduro (Dactari)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xa9\",\"0xa8\"],\"score_digits\":6,\"special_address\":\"0xad\",\"special_label\":\"Day\",\"variations_count\":1}"
 ""
 
 "Cart.MD5" "31d08cb465965f80d3541a57ec82c625"
@@ -4258,6 +4368,7 @@
 "Cart.Note" "Hack of Asteroids"
 "Cart.Rarity" "Hack"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
 ""
 
 "Cart.MD5" "3276c777cbe97cdd2b4a63ffc16b7151"
@@ -4270,6 +4381,7 @@
 "Cart.MD5" "3278158e5c1f7eb5c5d28ccfd7285250"
 "Cart.Manufacturer" "Dactari - Milmar"
 "Cart.Name" "Megamania (Dactari)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xdb\",\"0xdc\",\"0xdd\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "327fe8cf94f3a45c35a840a453df1235"
@@ -4415,6 +4527,7 @@
 "Cart.ModelNo" "SS-007"
 "Cart.Name" "Space Raid (1983) (Rainbow Vision) (PAL)"
 "Cart.Note" "AKA MegaMania"
+"Cart.Highscore" "{\"score_addresses\":[\"0xdb\",\"0xdc\",\"0xdd\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "346555779a2d51b48833463b5433472f"
@@ -4428,6 +4541,7 @@
 "Cart.ModelNo" "EAX-016, PAX-016 - 711 016-725"
 "Cart.Name" "StarMaster (1982) (Activision) (PAL) [fixed]"
 "Cart.Note" "Use Color/BW switch to change between galactic chart and front views"
+"Cart.Highscore" "{\"notes\":\"Score only calculated when game is over\",\"score_addresses\":[\"0xc1\",\"0xc2\"],\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "34b269387fa1aa5a396636f5ecdd63dd"
@@ -4454,6 +4568,7 @@
 "Cart.Name" "Qb (2.15) (Retroactive) (Stella)"
 "Cart.Rarity" "New Release"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"score_addresses\":[\"0xe6\",\"0xe5\",\"0xe4\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "34f4b1d809aa705ace6e46b13253fd3b"
@@ -4461,6 +4576,7 @@
 "Cart.Name" "Nothern Alliance (Aaron Bergstrom) (Hack)"
 "Cart.Note" "Hack of Space Invaders"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"notes\":\"Only player 1 supported\",\"score_addresses\":[\"0xe6\",\"0xe8\"],\"variations_address\":\"0xdc\",\"variations_bcd\":false,\"variations_bcd_A\":false,\"variations_count\":112,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "34fd4fcb40ff5babce67f8b806d5969c"
@@ -4549,6 +4665,7 @@
 "Cart.MD5" "360c0dcb11506e73bd0b77207c81bc62"
 "Cart.Manufacturer" "Digitel"
 "Cart.Name" "Enduro (1983) (Digitel)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xa9\",\"0xa8\"],\"score_digits\":6,\"special_address\":\"0xad\",\"special_label\":\"Day\",\"variations_count\":1}"
 ""
 
 "Cart.MD5" "3619786f6a32efc1e4a262d5aca8a070"
@@ -4585,6 +4702,7 @@
 "Cart.Name" "PezZerk - PezMan in Ghost Manor (Hack)"
 "Cart.Note" "Hack of Berzerk"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"score_addresses\":[\"0xdd\",\"0xde\",\"0xdf\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":12}"
 ""
 
 "Cart.MD5" "368d88a6c071caba60b4f778615aae94"
@@ -4603,12 +4721,14 @@
 "Cart.Manufacturer" "Coleco - Woodside Design Associates - Imaginative Systems Software, Garry Kitchen"
 "Cart.ModelNo" "2451"
 "Cart.Name" "Donkey Kong (1982) (Coleco)"
+"Cart.Highscore" "{\"score_addresses\":[\"0x87\",\"0x88\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "36c29ceee2c151b23a1ad7aa04bd529d"
 "Cart.Manufacturer" "Atari - GCC, Ava-Robin Cohen"
 "Cart.ModelNo" "CX26123"
 "Cart.Name" "Jr. Pac-Man (1986) (Atari)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xfb\",\"0xfa\",\"0xf9\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "36c31bb5daeb103f488c66de67ac5075"
@@ -4661,6 +4781,7 @@
 "Cart.Manufacturer" "Dismac"
 "Cart.Name" "Ases do Ar (Dismac)"
 "Cart.Note" "AKA Sky Jinks"
+"Cart.Highscore" "{\"score_addresses\":[\"0x9e\",\"0xa6\",\"0xa2\"],\"score_digits\":6,\"score_inverted\":true,\"variations_address\":\"0x99\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "37527966823ee9243d34c7da8302774f"
@@ -4722,6 +4843,7 @@
 "Cart.ModelNo" "SS-004"
 "Cart.Name" "Pyramid War (1983) (Rainbow Vision) (PAL) [a2]"
 "Cart.Note" "AKA Chopper Command"
+"Cart.Highscore" "{\"score_addresses\":[\"0xec\",\"0xee\",\"0xf0\"],\"score_digits\":6,\"variations_address\":\"0xe0\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "384db97670817103dd8c0bbdef132445"
@@ -4787,6 +4909,7 @@
 "Cart.Name" "WacMan (2003) (Greg Zumwalt) (Hack)"
 "Cart.Note" "Hack of Ms. Pac-Man"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"notes\":\"Vars valid at game over; cherries = var #4\",\"score_addresses\":[\"0xfa\",\"0xf9\",\"0xf8\"],\"score_digits\":6,\"special_bcd\":false,\"special_zero_based\":true,\"variations_address\":\"0xf7\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "38de7b68379770b9bd3f7bf000136eb0"
@@ -4799,6 +4922,7 @@
 "Cart.Manufacturer" "Video Game Program"
 "Cart.Name" "Miss Pack Man (Video Game Program) (PAL)"
 "Cart.Note" "AKA Ms. Pac-Man"
+"Cart.Highscore" "{\"notes\":\"Vars valid at game over; cherries = var #4\",\"score_addresses\":[\"0xfa\",\"0xf9\",\"0xf8\"],\"score_digits\":6,\"special_bcd\":false,\"special_zero_based\":true,\"variations_address\":\"0xf7\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "392d34c0498075dd58df0ce7cd491ea2"
@@ -4859,6 +4983,7 @@
 "Cart.Name" "Pitfall 2 Plus (Hack)"
 "Cart.Note" "Hack of Pitfall 2"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"score_addresses\":[\"0xc7\",\"0xc8\",\"0xc9\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "39b94d41bd3b01c12b4054c1a8733783"
@@ -4887,6 +5012,7 @@
 "Cart.Name" "Ventrra Invaders 2002 (Charles Morgan) (Hack)"
 "Cart.Note" "Hack of Megamania"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"score_addresses\":[\"0xdb\",\"0xdc\",\"0xdd\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "39fe316952134b1277b6a81af8e05776"
@@ -4907,6 +5033,7 @@
 "Cart.ModelNo" "CX2638 - 49-75166"
 "Cart.Name" "Missile Command (1981) (Atari)"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
 ""
 
 "Cart.MD5" "3a35d7f1dc2a33565c8dca52baa86bc4"
@@ -4923,12 +5050,14 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Centipede - Atari Mouse Hack v1.4 (NTSC) (Full-Speed) (TJ)"
 "Cart.Note" "Uses Atari Mouse Controller"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "3a526e6a1f9fe918af0f2ce997dfea73"
 "Cart.Manufacturer" "CBS Electronics, Dan Kitchen, Garry Kitchen"
 "Cart.ModelNo" "4L1700, 4L1701, 4L1702, 4L1802, 4L2274"
 "Cart.Name" "Donkey Kong (1982) (CBS Electronics) (PAL) [a1]"
+"Cart.Highscore" "{\"score_addresses\":[\"0x87\",\"0x88\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "3a53963f053b22599db6ac9686f7722f"
@@ -4940,11 +5069,13 @@
 "Cart.ModelNo" "CX26120"
 "Cart.Name" "Defender II (1987) (Atari)"
 "Cart.Note" "AKA Stargate"
+"Cart.Highscore" "{\"score_addresses\":[\"0x8b\",\"0x8c\",\"0x8d\"],\"score_digits\":6,\"special_address\":\"0x89\",\"special_label\":\"Wave\",\"variations_count\":1}"
 ""
 
 "Cart.MD5" "3aad0ef62885736a5b8c6ccac0dbe00c"
 "Cart.Manufacturer" "Dynacom"
 "Cart.Name" "Atlantis (1983) (Dynacom)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa2\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x8d\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "3ab5d138e26d88c8190e7cc629a89493"
@@ -5059,6 +5190,7 @@
 "Cart.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
 "Cart.Name" "Dragster (Jone Yuan) (4K)"
 "Cart.Note" "2600 Screen Search Console"
+"Cart.Highscore" "{\"score_addresses\":[\"0xb3\",\"0xb5\"],\"score_inverted\":true,\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "3c21a89bc38d8cd0b010a2916bcff5c2"
@@ -5086,12 +5218,14 @@
 "Cart.Manufacturer" "Atari, Jerome Domurat, Andrew Fuchs, Dave Staugas, Robert Vieira"
 "Cart.ModelNo" "CX26118"
 "Cart.Name" "Millipede (1984) (Atari)"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "3c72ddaf41158fdd66e4f1cb90d4fd29"
 "Cart.Manufacturer" "Dismac"
 "Cart.Name" "Comando Suicida (Dismac)"
 "Cart.Note" "AKA Chopper Command"
+"Cart.Highscore" "{\"score_addresses\":[\"0xec\",\"0xee\",\"0xf0\"],\"score_digits\":6,\"variations_address\":\"0xe0\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "3c7a7b3a0a7e6319b2fa0f923ef6c9af"
@@ -5124,6 +5258,7 @@
 "Cart.Manufacturer" "Parker Brothers, Rex Bradford, Sam Kjellman"
 "Cart.ModelNo" "PB5050"
 "Cart.Name" "Star Wars - The Empire Strikes Back (1982) (Parker Bros)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xe0\",\"0xe1\"],\"variations_address\":\"0xea\",\"variations_bcd\":false,\"variations_count\":32,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "3ca51b5c08f5a0ecfb17d0c1ec6d0942"
@@ -5138,6 +5273,7 @@
 "Cart.Manufacturer" "Atari - GCC, Dave Payne"
 "Cart.ModelNo" "CX2669, CX2669P"
 "Cart.Name" "Vanguard (1983) (Atari) (PAL)"
+"Cart.Highscore" "{\"notes\":\"Score is for current player\",\"score_addresses\":[\"0x99\",\"0x98\",\"0x97\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "3cbdf71bb9fd261fbc433717f547d738"
@@ -5166,10 +5302,12 @@
 "Cart.Name" "Atlantis (1982) (Imagic) (PAL)"
 "Cart.Note" "AKA Lost City of Atlantis"
 "Cart.Rarity" "Uncommon"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa2\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x8d\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "3d2652cbea462a886a41791dd7c8d073"
 "Cart.Name" "Ritorno dei frattelli di Mario (Mario Bros Hack)"
+"Cart.Highscore" "{\"score_addresses\":[\"0x89\",\"0x8a\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x80\",\"variations_count\":8,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "3d48b8b586a09bdbf49f1a016bf4d29a"
@@ -5211,6 +5349,7 @@
 "Cart.Manufacturer" "Activision, Steve Cartwright - Ariola"
 "Cart.ModelNo" "EAX-017, EAX-017-04I - 711 017-720"
 "Cart.Name" "MegaMania (1982) (Activision) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xdb\",\"0xdc\",\"0xdd\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "3d9c2fccf8b11630762ff00811c19277"
@@ -5265,6 +5404,7 @@
 "Cart.Note" "Genesis controller (C is hyperspace)"
 "Cart.Rarity" "Hack of Asteroids"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
 ""
 
 "Cart.MD5" "3e5ca1afaa27c5da3c54c9942fec528b"
@@ -5302,6 +5442,7 @@
 "Cart.ModelNo" "AX-018, AX-018-04"
 "Cart.Name" "Pitfall! (1982) (Activision)"
 "Cart.Note" "Pitfall Harry's Jungle Adventure (Jungle Runner)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "3eae062a9b722bda1255d474a87eca5c"
@@ -5344,6 +5485,7 @@
 "Cart.MD5" "3f01bd6d059396f495a4cde7de0ab180"
 "Cart.Name" "Qb (Special Edition) (NTSC) (Retroactive)"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"score_addresses\":[\"0xe6\",\"0xe5\",\"0xe4\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "3f039981255691d3859d04ef813a1264"
@@ -5561,6 +5703,7 @@
 "Cart.Manufacturer" "CCE"
 "Cart.ModelNo" "C-832"
 "Cart.Name" "Atlantis (1983) (CCE)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa2\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x8d\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "4189adfc1b30c121248876e3a1a3ac7e"
@@ -5586,6 +5729,7 @@
 "Cart.Manufacturer" "CCE"
 "Cart.ModelNo" "C-826"
 "Cart.Name" "Grand Prix (1983) (CCE)"
+"Cart.Highscore" "{\"notes\":\"Time/score shows extra digit\",\"score_addresses\":[\"0xeb\",\"0xec\",\"0xed\"],\"score_digits\":5,\"score_inverted\":true,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "41f252a66c6301f1e8ab3612c19bc5d4"
@@ -5627,6 +5771,7 @@
 
 "Cart.MD5" "4279485e922b34f127a88904b31ce9fa"
 "Cart.Name" "Enduro (Unknown)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xa9\",\"0xa8\"],\"score_digits\":6,\"special_address\":\"0xad\",\"special_label\":\"Day\",\"variations_count\":1}"
 ""
 
 "Cart.MD5" "428b2d36f5d716765460701f7016ac91"
@@ -5719,6 +5864,7 @@
 
 "Cart.MD5" "442602713cb45b9321ee93c6ea28a5d0"
 "Cart.Name" "Demon Attack (Unknown) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0x81\",\"0x83\",\"0x85\"],\"score_digits\":6,\"special_address\":\"0x80\",\"special_label\":\"Wave\",\"special_zero_based\":true,\"variations_address\":\"0xea\",\"variations_count\":10}"
 ""
 
 "Cart.MD5" "4427f06085bb4c22ff047027f7acecc2"
@@ -5758,12 +5904,14 @@
 "Cart.ModelNo" "AB-035-04"
 "Cart.Name" "Pitfall II (1983) (Activision) [a2]"
 "Cart.Rarity" "Rare"
+"Cart.Highscore" "{\"score_addresses\":[\"0xc7\",\"0xc8\",\"0xc9\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "44e9c4a047c348dbeb7ace60f45484b4"
 "Cart.Name" "Moon Patrol Arcade (Genesis)"
 "Cart.Note" "Genesis controller (C is jump)"
 "Cart.Rarity" "Hack of Moon Patrol"
+"Cart.Highscore" "{\"score_addresses\":[\"0xea\",\"0xeb\",\"0xec\"],\"score_digits\":6,\"variations_address\":\"0xf9\",\"variations_count\":6,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "44f71e70b89dcc7cf39dfd622cfb9a27"
@@ -5884,11 +6032,13 @@
 "Cart.Manufacturer" "Activision, John Van Ryzin - Ariola"
 "Cart.ModelNo" "EAZ-036-04, EAZ-036-04B, EAZ-036-04I - 711 036-720"
 "Cart.Name" "H.E.R.O. (1984) (Activision) (PAL) [a1]"
+"Cart.Highscore" "{\"score_addresses\":[\"0xb7\",\"0xb8\",\"0xb9\"],\"score_digits\":6,\"special_address\":\"0xf5\",\"special_bcd\":false,\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_address\":\"0x80\",\"variations_count\":5,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "4689081b7363721858756fe781cc7713"
 "Cart.Name" "Oystron (V2.6) (Piero Cavina) (PD)"
 "Cart.Rarity" "New Release"
+"Cart.Highscore" "{\"score_addresses\":[\"0xd4\",\"0xd3\"],\"score_digits\":5,\"score_trailing_zeroes\":1,\"variations_address\":\"0xe5\",\"variations_count\":3,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "468f2dec984f3d4114ea84f05edf82b6"
@@ -5950,6 +6100,7 @@
 "Cart.Manufacturer" "Omegamatrix"
 "Cart.Name" "Millipede (Atari Mouse) v6.5 (Omegamatrix)"
 "Cart.Note" "Uses Atari Mouse Controller"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "47464694e9cce07fdbfd096605bf39d4"
@@ -6016,6 +6167,7 @@
 "Cart.Note" "Hack of Asteroids"
 "Cart.Rarity" "Hack"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
 ""
 
 "Cart.MD5" "47cd61f83457a0890de381e478f5cf5f"
@@ -6061,6 +6213,7 @@
 "Cart.Manufacturer" "Atari"
 "Cart.ModelNo" "CX26150"
 "Cart.Name" "Q-bert (1987) (Atari)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xd9\",\"0xda\",\"0xdb\"],\"score_digits\":5,\"special_address\":\"0xe3\",\"special_label\":\"Round\",\"special_zero_based\":true,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "4857f8bb88bb63c640d3ea5aac7f5d6d"
@@ -6103,6 +6256,7 @@
 "Cart.Manufacturer" "Activision, John Van Ryzin - Ariola"
 "Cart.ModelNo" "EAZ-036-04, EAZ-036-04B, EAZ-036-04I - 711 036-720"
 "Cart.Name" "H.E.R.O. (1984) (Activision) (PAL) (16K)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xb7\",\"0xb8\",\"0xb9\"],\"score_digits\":6,\"special_address\":\"0xf5\",\"special_bcd\":false,\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_address\":\"0x80\",\"variations_count\":5,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "48e5c4ae4f2d3b62b35a87bca18dc9f5"
@@ -6125,6 +6279,7 @@
 "Cart.ModelNo" "720101-2B, IA3200P, EIX-006-04I"
 "Cart.Name" "Demon Attack (1982) (Imagic) (PAL)"
 "Cart.Note" "AKA Death from Above"
+"Cart.Highscore" "{\"score_addresses\":[\"0x81\",\"0x83\",\"0x85\"],\"score_digits\":6,\"special_address\":\"0x80\",\"special_label\":\"Wave\",\"special_zero_based\":true,\"variations_address\":\"0xea\",\"variations_count\":10}"
 ""
 
 "Cart.MD5" "4904a2550759b9b4570e886374f9d092"
@@ -6136,12 +6291,14 @@
 
 "Cart.MD5" "490e3cc59d82f85fae817cdf767ea7a0"
 "Cart.Name" "Berzerk (Unknown) (PAL) [a]"
+"Cart.Highscore" "{\"score_addresses\":[\"0xdd\",\"0xde\",\"0xdf\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":12}"
 ""
 
 "Cart.MD5" "490eed07d4691b27f473953fbea6541a"
 "Cart.Manufacturer" "Activision, Steve Cartwright, David Crane"
 "Cart.ModelNo" "AB-035-04"
 "Cart.Name" "Pitfall II (1983) (Activision) [a]"
+"Cart.Highscore" "{\"score_addresses\":[\"0xc7\",\"0xc8\",\"0xc9\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "49366f41aa7a54baf263426e99ce4312"
@@ -6159,6 +6316,7 @@
 "Cart.Manufacturer" "Atari, Bill Aspromonte, Andrew Fuchs"
 "Cart.ModelNo" "CX26120"
 "Cart.Name" "Stargate (1984) (Atari) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0x8b\",\"0x8c\",\"0x8d\"],\"score_digits\":6,\"special_address\":\"0x89\",\"special_label\":\"Wave\",\"variations_count\":1}"
 ""
 
 "Cart.MD5" "493e90602a4434b117c91c95e73828d1"
@@ -6319,6 +6477,7 @@
 
 "Cart.MD5" "4b205ef73a5779acc5759bde3f6d33ed"
 "Cart.Name" "Berzerk (Unknown) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xdd\",\"0xde\",\"0xdf\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":12}"
 ""
 
 "Cart.MD5" "4b27f5397c442d25f0c418ccdacf1926"
@@ -6384,6 +6543,7 @@
 "Cart.Name" "Millipede (Amiga Mouse) v6.5 (Omegamatrix)"
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Display.Format" "PAL60"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "4c030667d07d1438f0e5c458a90978d8"
@@ -6458,6 +6618,7 @@
 "Cart.Manufacturer" "Activision, Steve Cartwright"
 "Cart.ModelNo" "AX-031"
 "Cart.Name" "Frostbite (1983) (Activision)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xc8\",\"0xc9\",\"0xca\"],\"score_digits\":6,\"special_address\":\"0xcb\",\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "4ca90ba45eced6f5ad560ea8938641b2"
@@ -6470,6 +6631,7 @@
 "Cart.Manufacturer" "Funvision - Fund. International Co."
 "Cart.Name" "Ocean City (Funvision)"
 "Cart.Note" "AKA Atlantis"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa2\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x8d\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "4cd796b5911ed3f1062e805a3df33d98"
@@ -6488,6 +6650,7 @@
 "Cart.Name" "Beast Invaders (Hack)"
 "Cart.Note" "Hack of Space Invaders"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"notes\":\"Only player 1 supported\",\"score_addresses\":[\"0xe6\",\"0xe8\"],\"variations_address\":\"0xdc\",\"variations_bcd\":false,\"variations_bcd_A\":false,\"variations_count\":112,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "4d2cef8f19cafeec72d142e34a1bbc03"
@@ -6566,6 +6729,7 @@
 "Cart.Name" "Breakout (1978) (Atari) [a]"
 "Cart.Note" "Uses the Paddle Controllers"
 "Controller.MouseAxis" "01 60"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xce\",\"0xcd\"],\"score_digits\":3,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "4df9d7352a56a458abb7961bf10aba4e"
@@ -6714,6 +6878,7 @@
 "Cart.MD5" "4fae08027365d31c558e400b687adf21"
 "Cart.Name" "Qb (V2.17) (NTSC) (2001) (Retroactive)"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"score_addresses\":[\"0xe6\",\"0xe5\",\"0xe4\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "4faeb04b1b7fb0fa25db05753182a898"
@@ -6725,6 +6890,7 @@
 "Cart.ModelNo" "C-816"
 "Cart.Name" "Keystone Kappers (1983) (CCE)"
 "Cart.Note" "AKA Keystone Kapers"
+"Cart.Highscore" "{\"score_addresses\":[\"0x9a\",\"0x9b\",\"0x9c\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "4fc1b85b8074b4b9436d097900e34f29"
@@ -6749,6 +6915,7 @@
 "Cart.Manufacturer" "Activision, Bob Whitehead - Ariola"
 "Cart.ModelNo" "EAG-019, EAG-019-04I - 711 019-715"
 "Cart.Name" "Sky Jinks (1982) (Activision) (PAL) (4K)"
+"Cart.Highscore" "{\"score_addresses\":[\"0x9e\",\"0xa6\",\"0xa2\"],\"score_digits\":6,\"score_inverted\":true,\"variations_address\":\"0x99\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "504688d49a41bf03d8a955512609f3f2"
@@ -6756,6 +6923,8 @@
 "Cart.Name" "SWOOPS! (v0.94) (TJ)"
 "Cart.Note" "Uses the Joystick (L) and Paddle (R) Controllers"
 "Cart.Rarity" "Homebrew"
+"Controller.MouseAxis" "28"
+"Cart.Highscore" "{\"score_addresses\":[\"0xfd\",\"0xfe\",\"0xff\"],\"score_digits\":6,\"variations_address\":\"0xfc\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "50568c80ac61cab789d9923c9b05b68e"
@@ -6783,6 +6952,7 @@
 "Cart.Manufacturer" "Activision, Bob Whitehead - Ariola"
 "Cart.ModelNo" "EAG-019, EAG-019-04I - 711 019-715"
 "Cart.Name" "Sky Jinks (1982) (Activision) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0x9e\",\"0xa6\",\"0xa2\"],\"score_digits\":6,\"score_inverted\":true,\"variations_address\":\"0x99\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "50c7edc9f9dc0369abcdab3b4efeb5e9"
@@ -6817,6 +6987,7 @@
 "Cart.Manufacturer" "Atari - GCC, Mark Ackerman, Noellie Alito"
 "Cart.ModelNo" "CX2692"
 "Cart.Name" "Moon Patrol (1983) (Atari)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xea\",\"0xeb\",\"0xec\"],\"score_digits\":6,\"variations_address\":\"0xf9\",\"variations_count\":6,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "516ffd008057a1d78d007c851e6eff37"
@@ -6867,6 +7038,7 @@
 "Cart.Manufacturer" "Video Game Program"
 "Cart.Name" "Fire Bird (Video Game Program) (PAL)"
 "Cart.Note" "AKA Phoenix"
+"Cart.Highscore" "{\"score_addresses\":[\"0xc9\",\"0xc8\",\"0xc7\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "51f15b39d9f502c2361b6ba6a73464d4"
@@ -6877,6 +7049,7 @@
 "Cart.Manufacturer" "Activision, Bob Whitehead"
 "Cart.ModelNo" "AX-015, AX-015-04"
 "Cart.Name" "Chopper Command (1982) (Activision) (8K)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xec\",\"0xee\",\"0xf0\"],\"score_digits\":6,\"variations_address\":\"0xe0\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "521f4dd1eb84a09b2b19959a41839aad"
@@ -6889,6 +7062,7 @@
 "Cart.Manufacturer" "Omegamatrix"
 "Cart.Name" "Millipede (Amiga Mouse) v6.5 (Omegamatrix)"
 "Cart.Note" "Uses Amiga Mouse Controller"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "522c9cf684ecd72db2f85053e6f6f720"
@@ -6936,6 +7110,7 @@
 "Cart.Manufacturer" "Activision, David Crane"
 "Cart.ModelNo" "AG-930-04, AZ-030"
 "Cart.Name" "Decathlon (1983) (Activision) [fixed]"
+"Cart.Highscore" "{\"notes\":\"Decathlon & 100m dash share variation 1\",\"score_addresses\":[\"0x95\",\"0x96\"],\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":10,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "52615ae358a68de6e76467e95eb404c7"
@@ -6985,6 +7160,7 @@
 "Cart.ModelNo" "IA3203, IX-010-04"
 "Cart.Name" "Atlantis (1982) (Imagic) (8K)"
 "Cart.Note" "AKA Lost City of Atlantis"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa2\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x8d\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "533661e9bccd8a9f80ce3765f282c92f"
@@ -7017,6 +7193,7 @@
 "Cart.MD5" "5360693f1eb90856176bd1c0a7b17432"
 "Cart.Name" "Oystron (V2.85) (Piero Cavina) (PD)"
 "Cart.Rarity" "New Release"
+"Cart.Highscore" "{\"score_addresses\":[\"0xd4\",\"0xd3\"],\"score_digits\":5,\"score_trailing_zeroes\":1,\"variations_address\":\"0xe5\",\"variations_count\":3,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "536bf56baa70acb17113884ac41f2820"
@@ -7073,6 +7250,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Centipede - Atari Trak-Ball Hack v1.4 (PAL) (Half-Speed) (TJ)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "53f147b9746fdc997c62f3dd67888ee5"
@@ -7100,6 +7278,7 @@
 "Cart.Rarity" "Homebrew"
 "Controller.Left" "JOYSTICK"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"score_addresses\":[\"0x1cf7\",\"0x1cf6\",\"0x1cf5\",\"0x1cf4\"],\"score_digits\":8,\"special_address\":\"0x18ac\",\"special_bcd\":false,\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "5428cdfada281c569c74c7308c7f2c26"
@@ -7108,6 +7287,7 @@
 "Cart.Name" "Kaboom! (1981) (Activision)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.MouseAxis" "01 50"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "542c6dd5f7280179b51917a4cba4faff"
@@ -7174,6 +7354,7 @@
 "Cart.Note" "Hack of Kaboom!"
 "Cart.Rarity" "Hack"
 "Controller.MouseAxis" "01 50"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "54f7efa6428f14b9f610ad0ca757e26c"
@@ -7239,6 +7420,7 @@
 
 "Cart.MD5" "55ef6ab2321ca0c3d369e63d59c059c8"
 "Cart.Name" "Pitfall! (Unknown) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "55ef7b65066428367844342ed59f956c"
@@ -7271,6 +7453,7 @@
 "Cart.Name" "Moon Patrol (Genesis)"
 "Cart.Note" "Genesis controller (C is jump)"
 "Cart.Rarity" "Hack of Moon Patrol"
+"Cart.Highscore" "{\"score_addresses\":[\"0xea\",\"0xeb\",\"0xec\"],\"score_digits\":6,\"variations_address\":\"0xf9\",\"variations_count\":6,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "5678ebaa09ca3b699516dba4671643ed"
@@ -7301,6 +7484,7 @@
 "Cart.Manufacturer" "Funvision - Fund. International Co."
 "Cart.Name" "Busy Police (Funvision)"
 "Cart.Note" "AKA Keystone Kapers"
+"Cart.Highscore" "{\"score_addresses\":[\"0x9a\",\"0x9b\",\"0x9c\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "575c0fb61e66a31d982c95c9dea6865c"
@@ -7320,6 +7504,7 @@
 "Cart.Name" "Galaxian Enhanced Graphics (Jess Ragan) (Hack)"
 "Cart.Note" "Hack of Galaxian"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"score_addresses\":[\"0xac\",\"0xad\",\"0xae\"],\"score_digits\":6,\"special_address\":\"0xaf\",\"special_label\":\"Wave\",\"variations_address\":\"0xb3\",\"variations_count\":9}"
 ""
 
 "Cart.MD5" "57a66b6db7efc5df17b0b0f2f2c2f078"
@@ -7506,6 +7691,7 @@
 "Cart.Manufacturer" "Star Game"
 "Cart.Name" "Pitfall (Star Game)"
 "Cart.Note" "AKA Pitfall!"
+"Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "5a2f2dcd775207536d9299e768bcd2df"
@@ -7519,6 +7705,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Centipede - Amiga Mouse Hack v1.4 (PAL) (Full-Speed) (TJ)"
 "Cart.Note" "Uses Amiga Mouse Controller"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "5a5390f91437af9951a5f8455b61cd43"
@@ -7562,6 +7749,7 @@
 "Cart.Manufacturer" "Activision, Steve Cartwright - Ariola"
 "Cart.ModelNo" "EAX-031, EAX-031-04B - 711 031-717"
 "Cart.Name" "Frostbite (1983) (Activision) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xc8\",\"0xc9\",\"0xca\"],\"score_digits\":6,\"special_address\":\"0xcb\",\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "5a9685c4d51a6c1d6a9544946d9e8dc3"
@@ -7584,6 +7772,7 @@
 "Cart.MD5" "5ae73916fa1da8d38ceff674fa25a78a"
 "Cart.Manufacturer" "CCE"
 "Cart.Name" "Barnstorming (CCE)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xb5\",\"0xb6\",\"0xb7\"],\"score_digits\":6,\"score_inverted\":true,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "5aea9974b975a6a844e6df10d2b861c4"
@@ -7623,6 +7812,7 @@
 
 "Cart.MD5" "5b6f5bcbbde42fc77d0bdb3146693565"
 "Cart.Name" "Seaquest (Unknown) (PAL)"
+"Cart.Highscore" "{\"notes\":\"High score is from current player\",\"score_addresses\":[\"0xb8\",\"0xb9\",\"0xba\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "5b7ea6aa6b35dc947c65ce665fde624b"
@@ -7669,6 +7859,7 @@
 
 "Cart.MD5" "5bbab3f3e4b47e3e23f9820765dbb45c"
 "Cart.Name" "Pitfall! (says 1985) [h1]"
+"Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "5bbb75b49b2bccef9c91ff84bb249c80"
@@ -7683,6 +7874,7 @@
 "Cart.Note" "Hack of Asteroids"
 "Cart.Rarity" "Hack"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
 ""
 
 "Cart.MD5" "5bcc83677d68f7ef74c1b4a0697ba2a8"
@@ -7710,6 +7902,7 @@
 "Cart.Name" "Battle for Naboo (Josh) (Hack)"
 "Cart.Note" "Hack of Atlantis"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa2\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x8d\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "5c0520c00163915a4336e481ca4e7ef4"
@@ -7717,11 +7910,13 @@
 "Cart.ModelNo" "SS-004"
 "Cart.Name" "Pyramid War (1983) (Rainbow Vision) (PAL) [a1]"
 "Cart.Note" "AKA Chopper Command"
+"Cart.Highscore" "{\"score_addresses\":[\"0xec\",\"0xee\",\"0xf0\"],\"score_digits\":6,\"variations_address\":\"0xe0\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "5c19f6da638c4c7c1f98d09e63df43e4"
 "Cart.Manufacturer" "Canal 3 - Intellivision"
 "Cart.Name" "Cosmic Ark (Canal 3)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xae\",\"0xb0\",\"0xb2\"],\"score_digits\":6,\"variations_address\":\"0xbc\",\"variations_count\":6}"
 ""
 
 "Cart.MD5" "5c1b1aa78b7609d43c5144c3b3b60adf"
@@ -7767,6 +7962,8 @@
 "Cart.Manufacturer" "CCE"
 "Cart.ModelNo" "C-828"
 "Cart.Name" "Missile Command (1983) (CCE)"
+"Display.Phosphor" "YES"
+"Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
 ""
 
 "Cart.MD5" "5d0e8a25cbd23e76f843c75a86b7e15b"
@@ -7816,6 +8013,8 @@
 "Cart.Name" "SWOOPS! (v0.96) (TJ) (PAL)"
 "Cart.Note" "Uses the Joystick (L) and Paddle (R) Controllers"
 "Cart.Rarity" "Homebrew"
+"Controller.MouseAxis" "28"
+"Cart.Highscore" "{\"score_addresses\":[\"0xfd\",\"0xfe\",\"0xff\"],\"score_digits\":6,\"variations_address\":\"0xfc\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "5d8fb14860c2f198472b233874f6b0c9"
@@ -7869,6 +8068,7 @@
 "Cart.MD5" "5df559a36347d8572f9a6e8075a31322"
 "Cart.Manufacturer" "Digivision"
 "Cart.Name" "Enduro (Digivision)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xa9\",\"0xa8\"],\"score_digits\":6,\"special_address\":\"0xad\",\"special_label\":\"Day\",\"variations_count\":1}"
 ""
 
 "Cart.MD5" "5e0c37f534ab5ccc4661768e2ddf0162"
@@ -7887,6 +8087,7 @@
 "Cart.Manufacturer" "Activision, David Crane"
 "Cart.ModelNo" "AX-014, AX-014-04"
 "Cart.Name" "Grand Prix (1982) (Activision) (8K)"
+"Cart.Highscore" "{\"notes\":\"Time/score shows extra digit\",\"score_addresses\":[\"0xeb\",\"0xec\",\"0xed\"],\"score_digits\":5,\"score_inverted\":true,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "5e1cd11a6d41fc15cf4792257400a31e"
@@ -7894,6 +8095,7 @@
 "Cart.Name" "Return of Mario Bros (Philip R. Frey) (Hack)"
 "Cart.Note" "Hack of Mario Bros."
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"score_addresses\":[\"0x89\",\"0x8a\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x80\",\"variations_count\":8,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "5e201d6bfc520424a28f129ee5e56835"
@@ -7974,6 +8176,7 @@
 "Cart.Manufacturer" "Bit Corporation"
 "Cart.ModelNo" "R320"
 "Cart.Name" "Donkey Kong (32 in 1) (BitCorp) (Hack)"
+"Cart.Highscore" "{\"score_addresses\":[\"0x87\",\"0x88\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "5f560837396387455c9dcb05cdd4b053"
@@ -7988,6 +8191,7 @@
 "Cart.ModelNo" "CX2655 - 49-75167"
 "Cart.Name" "Yars' Revenge (1982) (Atari) [a]"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"notes\":\"Variations are larger by 1\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":8,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "5f708ca39627697e859d1c53f8d8d7d2"
@@ -8008,6 +8212,7 @@
 "Cart.ModelNo" "CX26120"
 "Cart.Name" "Defender II (1987) (Atari) (PAL)"
 "Cart.Note" "AKA Stargate"
+"Cart.Highscore" "{\"score_addresses\":[\"0x8b\",\"0x8c\",\"0x8d\"],\"score_digits\":6,\"special_address\":\"0x89\",\"special_label\":\"Wave\",\"variations_count\":1}"
 ""
 
 "Cart.MD5" "5f7ae9a7f8d79a3b37e8fc841f65643a"
@@ -8062,6 +8267,7 @@
 "Cart.Name" "Cyber Goth Galaxian (Manuel Polik) (Hack)"
 "Cart.Note" "Hack of Galaxian"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"score_addresses\":[\"0xac\",\"0xad\",\"0xae\"],\"score_digits\":6,\"special_address\":\"0xaf\",\"special_label\":\"Wave\",\"variations_address\":\"0xb3\",\"variations_count\":9}"
 ""
 
 "Cart.MD5" "603c7a0d12c935df5810f400f3971b67"
@@ -8154,6 +8360,7 @@
 "Cart.ModelNo" "SS-017"
 "Cart.Name" "Mariana (1983) (Rainbow Vision) (PAL)"
 "Cart.Note" "AKA Seaquest"
+"Cart.Highscore" "{\"notes\":\"High score is from current player\",\"score_addresses\":[\"0xb8\",\"0xb9\",\"0xba\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "61426cee013306e7f7367534ab124747"
@@ -8178,6 +8385,7 @@
 
 "Cart.MD5" "61719a8bdafbd8dab3ca9ce7b171b9e2"
 "Cart.Name" "Enduro (Unknown) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xa9\",\"0xa8\"],\"score_digits\":6,\"special_address\":\"0xad\",\"special_label\":\"Day\",\"variations_count\":1}"
 ""
 
 "Cart.MD5" "61728c6cfb052e62a9ed088c5bf407ba"
@@ -8199,6 +8407,7 @@
 "Cart.Manufacturer" "CCE"
 "Cart.ModelNo" "C-820"
 "Cart.Name" "Space Invaders (1983) (CCE)"
+"Cart.Highscore" "{\"notes\":\"Only player 1 supported\",\"score_addresses\":[\"0xe6\",\"0xe8\"],\"variations_address\":\"0xdc\",\"variations_bcd\":false,\"variations_bcd_A\":false,\"variations_count\":112,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "61e0f5e1cc207e98704d0758c68df317"
@@ -8355,12 +8564,14 @@
 "Cart.ModelNo" "SS-011"
 "Cart.Name" "Super Ferrari (1983) (Rainbow Vision) (PAL)"
 "Cart.Note" "AKA Enduro"
+"Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xa9\",\"0xa8\"],\"score_digits\":6,\"special_address\":\"0xad\",\"special_label\":\"Day\",\"variations_count\":1}"
 ""
 
 "Cart.MD5" "63a6eda1da30446569ac76211d0f861c"
 "Cart.Manufacturer" "Activision, David Crane"
 "Cart.ModelNo" "AG-001"
 "Cart.Name" "Dragster (1980) (Activision) (4K)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xb3\",\"0xb5\"],\"score_inverted\":true,\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "63a7445b1d3046d3cdcdbd488dca38d9"
@@ -8368,6 +8579,7 @@
 "Cart.Name" "Better Space Invaders (1999) (Rob Kudla) (Hack)"
 "Cart.Note" "Hack of Space Invaders"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"notes\":\"Only player 1 supported\",\"score_addresses\":[\"0xe6\",\"0xe8\"],\"variations_address\":\"0xdc\",\"variations_bcd\":false,\"variations_bcd_A\":false,\"variations_count\":112,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "63c5fef3208bb1424d26cf1ab984b40c"
@@ -8405,6 +8617,7 @@
 "Cart.Name" "Moby Blues (2002) (ATARITALIA) (Hack)"
 "Cart.Note" "Hack of Mario Bros"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"score_addresses\":[\"0x89\",\"0x8a\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x80\",\"variations_count\":8,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "640a08e9ca019172d612df22a9190afb"
@@ -8504,6 +8717,7 @@
 "Cart.Manufacturer" "Atari - GCC, Mark Ackerman, Noellie Alito"
 "Cart.ModelNo" "CX2692, CX2692P"
 "Cart.Name" "Moon Patrol (1983) (Atari) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xea\",\"0xeb\",\"0xec\"],\"score_digits\":6,\"variations_address\":\"0xf9\",\"variations_count\":6,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "65562f686b267b21b81c4dddc129d724"
@@ -8579,6 +8793,7 @@
 
 "Cart.MD5" "6604f72a966ca6b2df6a94ee4a68eb82"
 "Cart.Name" "MegaMania (208 in 1) (Unknown) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xdb\",\"0xdc\",\"0xdd\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "662eca7e3d89175ba0802e8e3425dedb"
@@ -8669,6 +8884,7 @@
 "Cart.Manufacturer" "Activision, John Van Ryzin - Ariola"
 "Cart.ModelNo" "EAZ-036-04, EAZ-036-04B, EAZ-036-04I - 711 036-720"
 "Cart.Name" "H.E.R.O. (1984) (Activision) (PAL) [a2]"
+"Cart.Highscore" "{\"score_addresses\":[\"0xb7\",\"0xb8\",\"0xb9\"],\"score_digits\":6,\"special_address\":\"0xf5\",\"special_bcd\":false,\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_address\":\"0x80\",\"variations_count\":5,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "66bc1bef269ea59033928bac2d1d81e6"
@@ -8814,6 +9030,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Centipede - Atari Mouse Hack v1.4 (PAL60) (Full-Speed) (TJ)"
 "Cart.Note" "Uses Atari Mouse Controller"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "683bb0d0f0c5df58557fba9dffc32c40"
@@ -8943,6 +9160,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Centipede - Atari Trak-Ball Hack v1.4 (NTSC) (Half-Speed) (TJ)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "6979f30204149be3e227558cffe21c1d"
@@ -8970,6 +9188,7 @@
 "Cart.Name" "Demons! (2003) (SpkLeader) (Hack)"
 "Cart.Note" "Hack of Phoenix"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"score_addresses\":[\"0xc9\",\"0xc8\",\"0xc7\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "69974dd5d6420b90898cde50aec5ef39"
@@ -8982,6 +9201,7 @@
 "Cart.Manufacturer" "CCE"
 "Cart.ModelNo" "C-831"
 "Cart.Name" "Cosmic Ark (1983) (CCE) [a]"
+"Cart.Highscore" "{\"score_addresses\":[\"0xae\",\"0xb0\",\"0xb2\"],\"score_digits\":6,\"variations_address\":\"0xbc\",\"variations_count\":6}"
 ""
 
 "Cart.MD5" "69e79b1352b9ee1754bbe63b4a7062c3"
@@ -8989,6 +9209,7 @@
 "Cart.Name" "Pink Floyd - The Wall (2003) (Barry Laws Jr.) (Hack)"
 "Cart.Note" "Hack of Berzerk"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"score_addresses\":[\"0xdd\",\"0xde\",\"0xdf\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":12}"
 ""
 
 "Cart.MD5" "69ebf910ab9b63e5b8345f016095003b"
@@ -8999,6 +9220,8 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Missile Command Atari Trak-Ball Hack v1.3 (PAL) (TJ)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
+"Display.Phosphor" "YES"
+"Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
 ""
 
 "Cart.MD5" "69fac82cd2312dd9ce5d90e22e2f070a"
@@ -9053,6 +9276,7 @@
 "Cart.Manufacturer" "Activision, Larry Miller - Ariola"
 "Cart.ModelNo" "EAX-026, EAX-026-04B, EAX-026-04I - 711 026-725"
 "Cart.Name" "Enduro (1983) (Activision) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xa9\",\"0xa8\"],\"score_digits\":6,\"special_address\":\"0xad\",\"special_label\":\"Day\",\"variations_count\":1}"
 ""
 
 "Cart.MD5" "6a882fb1413912d2ce5cf5fa62cf3875"
@@ -9070,6 +9294,7 @@
 
 "Cart.MD5" "6a9b30ca46b0dba9e719f4cbd340e01c"
 "Cart.Name" "Frostbite (Unknown) (PAL) (Hack)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xc8\",\"0xc9\",\"0xca\"],\"score_digits\":6,\"special_address\":\"0xcb\",\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "6a9e0c72fab92df70084eccd9061fdbd"
@@ -9089,6 +9314,7 @@
 "Cart.Name" "PC Invaders (Matthias Jaap) (Hack)"
 "Cart.Note" "Hack of Space Invaders"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"notes\":\"Only player 1 supported\",\"score_addresses\":[\"0xe6\",\"0xe8\"],\"variations_address\":\"0xdc\",\"variations_bcd\":false,\"variations_bcd_A\":false,\"variations_count\":112,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "6aca52e11b597ab84b33d5252e1cd9d1"
@@ -9109,6 +9335,7 @@
 "Cart.Name" "Aphex Invaders (Hack)"
 "Cart.Note" "Hack of Space Invaders"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"notes\":\"Only player 1 supported\",\"score_addresses\":[\"0xe6\",\"0xe8\"],\"variations_address\":\"0xdc\",\"variations_bcd\":false,\"variations_bcd_A\":false,\"variations_count\":112,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "6b1fc959e28bd71aed7b89014574bdc2"
@@ -9139,6 +9366,7 @@
 
 "Cart.MD5" "6b71f20c857574b732e7a8e840bd3cb2"
 "Cart.Name" "Frostbite (Unknown) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xc8\",\"0xc9\",\"0xca\"],\"score_digits\":6,\"special_address\":\"0xcb\",\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "6b72b691ea86f61438ed0d84c4d711de"
@@ -9181,6 +9409,7 @@
 "Cart.MD5" "6bb22efa892b89b69b9bf5ea547e62b8"
 "Cart.Manufacturer" "Dynacom"
 "Cart.Name" "Megamania (1982) (Dynacom)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xdb\",\"0xdc\",\"0xdd\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "6bde3f6ac31aceef447ce57d4d2c2ec0"
@@ -9209,6 +9438,7 @@
 "Cart.Manufacturer" "Activision, Garry Kitchen - Ariola"
 "Cart.ModelNo" "EAX-025, EAX-025-04I - 711 025-725"
 "Cart.Name" "Keystone Kapers (1983) (Activision) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0x9a\",\"0x9b\",\"0x9c\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "6c25f58fd184632ca76020f589bb3767"
@@ -9234,6 +9464,7 @@
 "Cart.Name" "Breakout (1978) (Atari) (PAL)"
 "Cart.Note" "Uses the Paddle Controllers"
 "Controller.MouseAxis" "01 60"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xce\",\"0xcd\"],\"score_digits\":3,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "6c85098518d3f94f7622c42fd1d819ac"
@@ -9291,6 +9522,7 @@
 "Cart.MD5" "6cea35ded079863a846159c3a1101cc7"
 "Cart.Name" "Atlantis (208 in 1) (Unknown) (PAL) (Hack)"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa2\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x8d\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "6ceb7d6a54e9a5e62d26874d1cc88dbc"
@@ -9326,6 +9558,7 @@
 "Cart.Manufacturer" "Activision, Steve Cartwright, David Crane"
 "Cart.ModelNo" "AB-035-04"
 "Cart.Name" "Pitfall II (1984) (Activision)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xc7\",\"0xc8\",\"0xc9\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "6d8a04ee15951480cb7c466e5951eee0"
@@ -9342,12 +9575,14 @@
 "Cart.Manufacturer" "Atari - GCC, Douglas B. Macrae"
 "Cart.ModelNo" "CX2677"
 "Cart.Name" "Dig Dug (1983) (Atari)"
+"Cart.Highscore" "{\"notes\":\"Variation 1 is easy; 2 is normal\",\"score_addresses\":[\"0xff\",\"0xff\"],\"variations_address\":\"0x80\",\"variations_count\":2,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "6de924c2297c8733524952448d54a33c"
 "Cart.Manufacturer" "CCE"
 "Cart.ModelNo" "C-1006"
 "Cart.Name" "Moon Patrol (1983) (CCE)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xea\",\"0xeb\",\"0xec\"],\"score_digits\":6,\"variations_address\":\"0xf9\",\"variations_count\":6,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "6dfad2dd2c7c16ac0fa257b6ce0be2f0"
@@ -9476,6 +9711,7 @@
 "Cart.ModelNo" "SS-004"
 "Cart.Name" "Pyramid War (1983) (Rainbow Vision) (PAL)"
 "Cart.Note" "AKA Chopper Command"
+"Cart.Highscore" "{\"score_addresses\":[\"0xec\",\"0xee\",\"0xf0\"],\"score_digits\":6,\"variations_address\":\"0xe0\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "6fc27a9233fc69d28d3f190b4ff80f03"
@@ -9495,6 +9731,7 @@
 "Cart.Manufacturer" "Activision, David Crane"
 "Cart.ModelNo" "AX-018, AX-018-04"
 "Cart.Name" "Pitfall! (1982) (Activision) (16K)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "6fe67f525c39200a798985e419431805"
@@ -9580,11 +9817,13 @@
 "Cart.Manufacturer" "Activision, Steve Cartwright - Ariola"
 "Cart.ModelNo" "EAX-031, EAX-031-04B - 711 031-717"
 "Cart.Name" "Frostbite (1983) (Activision) (PAL) (16K)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xc8\",\"0xc9\",\"0xca\"],\"score_digits\":6,\"special_address\":\"0xcb\",\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "70d14c66c319683b4c19abbe0e3db57c"
 "Cart.Name" "Oystron (V2.82) (Piero Cavina) (PD)"
 "Cart.Rarity" "New Release"
+"Cart.Highscore" "{\"score_addresses\":[\"0xd4\",\"0xd3\"],\"score_digits\":5,\"score_trailing_zeroes\":1,\"variations_address\":\"0xe5\",\"variations_count\":3,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "710497df2caab69cdcc45e919c69e13f"
@@ -9629,6 +9868,7 @@
 "Cart.Manufacturer" "Zirok"
 "Cart.Name" "Keystone Keypers (1983) (Zirok)"
 "Cart.Note" "AKA Keystone Kapers"
+"Cart.Highscore" "{\"score_addresses\":[\"0x9a\",\"0x9b\",\"0x9c\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "718ae62c70af4e5fd8e932fee216948a"
@@ -9655,6 +9895,7 @@
 "Cart.MD5" "71b193f46c88fb234329855452dfac5b"
 "Cart.Manufacturer" "Digitel"
 "Cart.Name" "Atlantis (1983) (Digitel)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa2\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x8d\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "71d005b60cf6e608d04efb99a37362c3"
@@ -9697,6 +9938,7 @@
 "Cart.MD5" "724613effaf7743cbcd695fab469c2a8"
 "Cart.Name" "Super-Ferrari (Unknown)"
 "Cart.Note" "AKA Enduro"
+"Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xa9\",\"0xa8\"],\"score_digits\":6,\"special_address\":\"0xad\",\"special_label\":\"Day\",\"variations_count\":1}"
 ""
 
 "Cart.MD5" "728152f5ae6fdd0d3a9b88709bee6c7a"
@@ -9733,10 +9975,12 @@
 "Cart.Name" "Atlantis (TJ) (Hack)"
 "Cart.Note" "Hack of Atlantis"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa2\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x8d\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "72d0acb5de0db662de0360a6fc59334d"
 "Cart.Name" "Cosmic Ark (Unknown) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xae\",\"0xb0\",\"0xb2\"],\"score_digits\":6,\"variations_address\":\"0xbc\",\"variations_count\":6}"
 ""
 
 "Cart.MD5" "72db1194b1cc7d45b242f25eb1c148d3"
@@ -9755,6 +9999,7 @@
 "Cart.Manufacturer" "Atari, Richard Maurer - Sears"
 "Cart.ModelNo" "CX2632 - 49-75153"
 "Cart.Name" "Space Invaders (1980) (Atari)"
+"Cart.Highscore" "{\"notes\":\"Only player 1 supported\",\"score_addresses\":[\"0xe6\",\"0xe8\"],\"variations_address\":\"0xdc\",\"variations_bcd\":false,\"variations_bcd_A\":false,\"variations_count\":112,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "73158ea51d77bf521e1369311d26c27b"
@@ -9801,6 +10046,7 @@
 "Cart.ModelNo" "EAX-016, PAX-016 - 711 016-725"
 "Cart.Name" "StarMaster (1982) (Activision) (PAL)"
 "Cart.Note" "Use Color/BW switch to change between galactic chart and front views"
+"Cart.Highscore" "{\"notes\":\"Score only calculated when game is over\",\"score_addresses\":[\"0xc1\",\"0xc2\"],\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "73cb1f1666f3fd30b52b4f3d760c928f"
@@ -9911,6 +10157,7 @@
 
 "Cart.MD5" "7511c34518a9a124ea773f5b0b5c9a48"
 "Cart.Name" "Donkey Kong (208 in 1) (Unknown) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0x87\",\"0x88\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "75169c08b56e4e6c36681e599c4d8cc5"
@@ -9975,6 +10222,7 @@
 "Cart.Manufacturer" "Activision, David Crane - Ariola"
 "Cart.ModelNo" "EAX-014, PAX-014, EAX-014-04B, EAX-014-04I - 711 014-720"
 "Cart.Name" "Grand Prix (1982) (Activision) (PAL)"
+"Cart.Highscore" "{\"notes\":\"Time/score shows extra digit\",\"score_addresses\":[\"0xeb\",\"0xec\",\"0xed\"],\"score_digits\":5,\"score_inverted\":true,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "75893a9dc5de4b91cc426959b82a1da0"
@@ -9983,6 +10231,7 @@
 "Cart.Name" "Conquest Of Mars (2010) (PAL60)"
 "Cart.Note" "Rev 2 release"
 "Cart.Rarity" "Homebrew"
+"Cart.Highscore" "{\"score_addresses\":[\"0x92\",\"0x94\",\"0x96\"],\"score_digits\":6,\"special_address\":\"0x9a\",\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_address\":\"0x89\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "75a303fd46ad12457ed8e853016815a0"
@@ -10023,6 +10272,7 @@
 "Cart.Name" "Yars' Revenge (1982) (Atari) (PAL) [a]"
 "Cart.Note" "ROM must be started in bank 0"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"notes\":\"Variations are larger by 1\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":8,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "75ee371ccfc4f43e7d9b8f24e1266b55"
@@ -10079,6 +10329,7 @@
 "Cart.Name" "H.E.R.O. (Genesis)"
 "Cart.Note" "Genesis controller (B is laser, C is dynamite)"
 "Cart.Rarity" "Hack of H.E.R.0."
+"Cart.Highscore" "{\"score_addresses\":[\"0xb7\",\"0xb8\",\"0xb9\"],\"score_digits\":6,\"special_address\":\"0xf5\",\"special_bcd\":false,\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_address\":\"0x80\",\"variations_count\":5,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "76a9bf05a6de8418a3ebc7fc254b71b4"
@@ -10097,6 +10348,7 @@
 "Cart.Name" "Indiana Pitfall (Hack)"
 "Cart.Note" "Hack of Pitfall!"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "76ee917d817ef9a654bc4783e0273ac4"
@@ -10124,6 +10376,7 @@
 "Cart.ModelNo" "AG-001"
 "Cart.Name" "Dragster (1980) (Activision)"
 "Cart.Note" "AKA Drag Strip"
+"Cart.Highscore" "{\"score_addresses\":[\"0xb3\",\"0xb5\"],\"score_inverted\":true,\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "7732e4e4cc2644f163d6650ddcc9d9df"
@@ -10247,6 +10500,7 @@
 "Cart.ModelNo" "EAX-018, EAX-018-04B, EAX-018-04I - 711 018-725"
 "Cart.Name" "Pitfall! (1982) (Activision) (PAL)"
 "Cart.Note" "Abenteuer im Urwald (Jungle Runner)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "791c88eca9836af8c34bf32b07cb58a7"
@@ -10257,6 +10511,7 @@
 "Cart.Rarity" "Homebrew"
 "Controller.Left" "JOYSTICK"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"score_addresses\":[\"0x1cf7\",\"0x1cf6\",\"0x1cf5\",\"0x1cf4\"],\"score_digits\":8,\"special_address\":\"0x18ac\",\"special_bcd\":false,\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "7926083ad423ed685de3b3a04a914315"
@@ -10307,6 +10562,7 @@
 "Cart.ModelNo" "AZ-037-04"
 "Cart.Name" "Beamrider (1984) (Activision)"
 "Cart.Rarity" "Rare"
+"Cart.Highscore" "{\"score_addresses\":[\"0x8b\",\"0x8a\",\"0x89\"],\"score_digits\":6,\"special_address\":\"0x80\",\"special_label\":\"Sect.\",\"variations_count\":1}"
 ""
 
 "Cart.MD5" "79b649fb812c50b4347d12e7ddbb8400"
@@ -10318,6 +10574,7 @@
 "Cart.Manufacturer" "CCE"
 "Cart.ModelNo" "C-815"
 "Cart.Name" "Seaquest (1983) (CCE) [a]"
+"Cart.Highscore" "{\"notes\":\"High score is from current player\",\"score_addresses\":[\"0xb8\",\"0xb9\",\"0xba\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "79d4af56036ec28f298cad964a2e2494"
@@ -10340,6 +10597,7 @@
 "Cart.Manufacturer" "Atari - GCC, Mike Feinstein, John Mracek"
 "Cart.ModelNo" "CX2673, CX2673P"
 "Cart.Name" "Phoenix (1983) (Atari) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xc9\",\"0xc8\",\"0xc7\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "7a09299f473105ae1ef3ad6f9f2cd807"
@@ -10392,6 +10650,7 @@
 "Cart.Note" "Hack of Kaboom!"
 "Cart.Rarity" "Hack"
 "Controller.MouseAxis" "01 50"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "7ab210f448de518fa61a5924120ba872"
@@ -10490,6 +10749,7 @@
 "Cart.Name" "Pitfall Cupcake (Hack)"
 "Cart.Note" "Hack of Pitfall"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "7b7b4ac05232490c28f9b680c72998f9"
@@ -10569,6 +10829,7 @@
 "Cart.Manufacturer" "Atari, Richard Maurer"
 "Cart.ModelNo" "CX2632, CX2632P"
 "Cart.Name" "Space Invaders (1980) (Atari) (PAL) [fixed]"
+"Cart.Highscore" "{\"notes\":\"Only player 1 supported\",\"score_addresses\":[\"0xe6\",\"0xe8\"],\"variations_address\":\"0xdc\",\"variations_bcd\":false,\"variations_bcd_A\":false,\"variations_count\":112,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "7ccf350354ee15cd9b85564a2014b08c"
@@ -10596,12 +10857,14 @@
 "Cart.ModelNo" "CX2638 - 49-75166"
 "Cart.Name" "Missile Command (1981) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "7cf3a9267cdb95aba91abc5838d61cc5"
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Centipede - Atari Mouse Hack v1.4 (PAL60) (Half-Speed) (TJ)"
 "Cart.Note" "Uses Atari Mouse Controller"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "7d0b49ea4fe3a5f1e119a6d14843db17"
@@ -10648,6 +10911,7 @@
 "Cart.Manufacturer" "Imagic, Rob Fulop"
 "Cart.ModelNo" "720104-1A, 720104-1B, IA3204"
 "Cart.Name" "Cosmic Ark (Reaction) (1982) (Imagic) [selectable starfield]"
+"Cart.Highscore" "{\"score_addresses\":[\"0xae\",\"0xb0\",\"0xb2\"],\"score_digits\":6,\"variations_address\":\"0xbc\",\"variations_count\":6}"
 ""
 
 "Cart.MD5" "7d93071b3e3616093a6b5a98b0315751"
@@ -10742,6 +11006,7 @@
 "Cart.Manufacturer" "Atari - GCC, Mike Feinstein, John Mracek"
 "Cart.ModelNo" "CX2673"
 "Cart.Name" "Phoenix (1983) (Atari)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xc9\",\"0xc8\",\"0xc7\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "7e7c4c59d55494e66eef5e04ec1c6157"
@@ -10829,6 +11094,7 @@
 "Cart.MD5" "7ef74879d7cb9fa0ef161b91ad55b3bb"
 "Cart.Manufacturer" "CCE"
 "Cart.Name" "Vanguard (CCE)"
+"Cart.Highscore" "{\"notes\":\"Score is for current player\",\"score_addresses\":[\"0x99\",\"0x98\",\"0x97\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "7f0209cfcc3d181715463f4d6451cecf"
@@ -10981,6 +11247,7 @@
 "Cart.Name" "Invaders from Space by David Marli (Space Invaders Hack)"
 "Cart.Note" "Hack of Space Invaders (Atari)"
 "Cart.Rarity" "New Release (Hack)"
+"Cart.Highscore" "{\"notes\":\"Only player 1 supported\",\"score_addresses\":[\"0xe6\",\"0xe8\"],\"variations_address\":\"0xdc\",\"variations_bcd\":false,\"variations_bcd_A\":false,\"variations_count\":112,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "80dcbe1b55f12be731a224a53ee4ad5f"
@@ -11024,6 +11291,7 @@
 "Cart.Note" "Hack of Kaboom!"
 "Cart.Rarity" "Hack"
 "Controller.MouseAxis" "01 50"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "8108162bc88b5a14adc3e031cf4175ad"
@@ -11042,6 +11310,7 @@
 "Cart.Manufacturer" "Tiger Vision - Eram"
 "Cart.Name" "Keystone (Tiger Vision)"
 "Cart.Note" "AKA Keystone Kapers"
+"Cart.Highscore" "{\"score_addresses\":[\"0x9a\",\"0x9b\",\"0x9c\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "81254ebce88fa46c4ff5a2f4d2bad538"
@@ -11128,6 +11397,7 @@
 "Cart.Manufacturer" "Imagic, Dennis Koble"
 "Cart.ModelNo" "720103-1A, IA3203"
 "Cart.Name" "Atlantis II (1982) (Imagic)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa2\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x8d\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "827a22b9dffee24e93ed0df09ff8414a"
@@ -11339,6 +11609,7 @@
 "Cart.Name" "Candi (Hack)"
 "Cart.Note" "Hack of Space Invaders"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"notes\":\"Only player 1 supported\",\"score_addresses\":[\"0xe6\",\"0xe8\"],\"variations_address\":\"0xdc\",\"variations_bcd\":false,\"variations_bcd_A\":false,\"variations_count\":112,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "854b68b93e7123a3be42b5a2a41f75d7"
@@ -11351,6 +11622,7 @@
 "Cart.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
 "Cart.Name" "Super-Ferrari (Jone Yuan)"
 "Cart.Note" "AKA Enduro"
+"Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xa9\",\"0xa8\"],\"score_digits\":6,\"special_address\":\"0xad\",\"special_label\":\"Day\",\"variations_count\":1}"
 ""
 
 "Cart.MD5" "85564dd0665aa0a1359037aef1a48d58"
@@ -11389,6 +11661,7 @@
 "Cart.Manufacturer" "CCE"
 "Cart.ModelNo" "C-827"
 "Cart.Name" "Chopper Command (1983) (CCE)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xec\",\"0xee\",\"0xf0\"],\"score_digits\":6,\"variations_address\":\"0xe0\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "85b1bca93e69f13905107cc802a02470"
@@ -11406,6 +11679,7 @@
 "Cart.ModelNo" "CG-02-P"
 "Cart.Name" "Conquest Of Mars (PAL60)"
 "Cart.Rarity" "Homebrew"
+"Cart.Highscore" "{\"score_addresses\":[\"0x92\",\"0x94\",\"0x96\"],\"score_digits\":6,\"special_address\":\"0x9a\",\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_address\":\"0x89\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "85e48d68c8d802e3ba9d494a47d6e016"
@@ -11483,6 +11757,7 @@
 "Cart.Manufacturer" "Atari, Richard Maurer"
 "Cart.ModelNo" "CX2632, CX2632P"
 "Cart.Name" "Space Invaders (1980) (Atari) (PAL) [different speed and colors]"
+"Cart.Highscore" "{\"notes\":\"Only player 1 supported\",\"score_addresses\":[\"0xe6\",\"0xe8\"],\"variations_address\":\"0xdc\",\"variations_bcd\":false,\"variations_bcd_A\":false,\"variations_count\":112,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "8749a0d088df25218c149dc325abc7ca"
@@ -11500,6 +11775,7 @@
 "Cart.MD5" "8764462d7d19a33b0717af22b99fc88f"
 "Cart.Manufacturer" "CCE"
 "Cart.Name" "Sky Jinks (CCE) (4K)"
+"Cart.Highscore" "{\"score_addresses\":[\"0x9e\",\"0xa6\",\"0xa2\"],\"score_digits\":6,\"score_inverted\":true,\"variations_address\":\"0x99\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "87662815bc4f3c3c86071dc994e3f30e"
@@ -11562,6 +11838,7 @@
 "Cart.Manufacturer" "Atari - GCC, Mark Ackerman, Glenn Parker"
 "Cart.ModelNo" "CX2675"
 "Cart.Name" "Ms. Pac-Man (1983) (Atari)"
+"Cart.Highscore" "{\"notes\":\"Vars valid at game over; cherries = var #4\",\"score_addresses\":[\"0xfa\",\"0xf9\",\"0xf8\"],\"score_digits\":6,\"special_bcd\":false,\"special_zero_based\":true,\"variations_address\":\"0xf7\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "87f020daa98d0132e98e43db7d8fea7e"
@@ -11575,6 +11852,7 @@
 "Cart.ModelNo" "EAZ-030, EAZ-030-04B, EAZ-030-04I - 711 030-725"
 "Cart.Name" "Decathlon (1983) (Activision) (PAL)"
 "Cart.Rarity" "Rare"
+"Cart.Highscore" "{\"notes\":\"Decathlon & 100m dash share variation 1\",\"score_addresses\":[\"0x95\",\"0x96\"],\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":10,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "8874b68751fd2ba6d3306a263ae57a7d"
@@ -11589,6 +11867,7 @@
 "Cart.Name" "Super Breakout (1982 - 1981) (Atari)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.MouseAxis" "01 45"
+"Cart.Highscore" "{\"score_addresses\":[\"0xdc\",\"0xdd\"],\"variations_address\":\"0xc0\",\"variations_count\":9}"
 ""
 
 "Cart.MD5" "888debb162d7d1ae71025b4ab794257f"
@@ -11599,6 +11878,7 @@
 "Cart.Manufacturer" "CCE"
 "Cart.ModelNo" "C-1007"
 "Cart.Name" "Jungle Hunt (1983) (CCE)"
+"Cart.Highscore" "{\"score_addresses\":[\"0x85\",\"0x84\",\"0x83\"],\"score_digits\":6,\"variations_address\":\"0x8b\",\"variations_count\":2,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "88d300a38bdd7cab9edad271c18cd02b"
@@ -11794,6 +12074,7 @@
 "Cart.Manufacturer" "Parker Brothers - Western Technologies, Dave Hampton, Tom Sloper"
 "Cart.ModelNo" "931517"
 "Cart.Name" "Q-bert (1983) (Parker Bros) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xd9\",\"0xda\",\"0xdb\"],\"score_digits\":5,\"special_address\":\"0xe3\",\"special_label\":\"Round\",\"special_zero_based\":true,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "8b504b417c8626167a7e02f44229f0e7"
@@ -11812,6 +12093,7 @@
 "Cart.Manufacturer" "CBS Electronics - Woodside Design Associates - Imaginative Systems Software, Garry Kitchen"
 "Cart.ModelNo" "4L1700, 4L1701, 4L1702, 4L1802, 4L2274"
 "Cart.Name" "Donkey Kong (1983) (CBS Electronics) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0x87\",\"0x88\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "8b7ca29a55432f886cee3d452fb00481"
@@ -11849,6 +12131,7 @@
 "Cart.Manufacturer" "Activision, Bob Whitehead"
 "Cart.ModelNo" "AG-019"
 "Cart.Name" "Sky Jinks (1982) (Activision) (4K)"
+"Cart.Highscore" "{\"score_addresses\":[\"0x9e\",\"0xa6\",\"0xa2\"],\"score_digits\":6,\"score_inverted\":true,\"variations_address\":\"0x99\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "8bebac614571135933116045204f0f00"
@@ -11859,6 +12142,7 @@
 "Controller.Left" "TRAKBALL"
 "Controller.Right" "TRAKBALL"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
 ""
 
 "Cart.MD5" "8c103a79b007a2fd5af602334937b4e1"
@@ -11883,6 +12167,7 @@
 "Cart.Name" "Super Breakout Menu (2020) (PAL60) (Hack)"
 "Cart.Note" "Hack of Super Breakout"
 "Controller.MouseAxis" "AUTO 45"
+"Cart.Highscore" "{\"score_addresses\":[\"0xdc\",\"0xdd\"],\"variations_address\":\"0xc0\",\"variations_count\":9}"
 ""
 
 "Cart.MD5" "8c2fa33048f055f38358d51eefe417db"
@@ -11932,6 +12217,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Centipede - Amiga Mouse Hack v1.4 (NTSC) (Full-Speed) (TJ)"
 "Cart.Note" "Uses Amiga Mouse Controller"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "8cd26dcf249456fe4aeb8db42d49df74"
@@ -11948,6 +12234,7 @@
 "Controller.Left" "TRAKBALL"
 "Controller.Right" "TRAKBALL"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
 ""
 
 "Cart.MD5" "8cf0d333bbe85b9549b1e6b1e2390b8d"
@@ -11956,6 +12243,7 @@
 "Cart.Name" "Asteroids (1981) (Atari) (PAL)"
 "Cart.Rarity" "Common"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
 ""
 
 "Cart.MD5" "8d00a38f4c8f8800f1c237215ac243fc"
@@ -11968,6 +12256,7 @@
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Rarity" "Homebrew"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
 ""
 
 "Cart.MD5" "8d8b7d7b983f75debbdaac651e814768"
@@ -11987,6 +12276,7 @@
 
 "Cart.MD5" "8db152458abaef3cfa7a4e420ddbda59"
 "Cart.Name" "Keystone Kapers (Unknown)"
+"Cart.Highscore" "{\"score_addresses\":[\"0x9a\",\"0x9b\",\"0x9c\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "8df4be9ddc54ac363b13dc57ceaf161a"
@@ -11995,6 +12285,7 @@
 "Cart.Note" "Hack of Asteroids"
 "Cart.Rarity" "Hack"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
 ""
 
 "Cart.MD5" "8e0ab801b1705a740b476b7f588c6d16"
@@ -12258,6 +12549,7 @@
 "Cart.Manufacturer" "Activision, Garry Kitchen - Ariola"
 "Cart.ModelNo" "EAX-025, EAX-025-04I - 711 025-725"
 "Cart.Name" "Keystone Kapers (1983) (Activision) (PAL) (8K)"
+"Cart.Highscore" "{\"score_addresses\":[\"0x9a\",\"0x9b\",\"0x9c\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "9193b6fff6897d43274741d4f9855b6d"
@@ -12280,6 +12572,7 @@
 "Cart.Manufacturer" "Atari - GCC"
 "Cart.ModelNo" "CX2676"
 "Cart.Name" "Centipede (1983) (Atari)"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "91d1c82ceaf8af2add3973a3c34bc0cb"
@@ -12289,6 +12582,7 @@
 "Cart.MD5" "91f0a708eeb93c133e9672ad2c8e0429"
 "Cart.Name" "Oystron (V2.9) (Piero Cavina) (PD)"
 "Cart.Rarity" "New Release"
+"Cart.Highscore" "{\"score_addresses\":[\"0xd4\",\"0xd3\"],\"score_digits\":5,\"score_trailing_zeroes\":1,\"variations_address\":\"0xe5\",\"variations_count\":3,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "91fdb6541f70c40b16aabf8308123be8"
@@ -12320,6 +12614,7 @@
 "Cart.Name" "Qb (2.15) (Retroactive) (PAL)"
 "Cart.Rarity" "New Release"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"score_addresses\":[\"0xe6\",\"0xe5\",\"0xe4\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "9295570a141cdec18074c55dc7229d08"
@@ -12383,6 +12678,7 @@
 "Cart.ModelNo" "CX2638"
 "Cart.Name" "Missile Command (1981) (Atari) (PAL)"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
 ""
 
 "Cart.MD5" "936ef1d6f8a57b9ff575dc195ee36b80"
@@ -12441,6 +12737,7 @@
 "Cart.MD5" "93c8d9d24f9c5f1f570694848d087df7"
 "Cart.Manufacturer" "Digivision"
 "Cart.Name" "Galaxian (Digivision)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xac\",\"0xad\",\"0xae\"],\"score_digits\":6,\"special_address\":\"0xaf\",\"special_label\":\"Wave\",\"variations_address\":\"0xb3\",\"variations_count\":9}"
 ""
 
 "Cart.MD5" "93c9f9239a4e5c956663dd7affa70da2"
@@ -12460,6 +12757,7 @@
 "Cart.MD5" "93dc15d15e77a7b23162467f95a5f22d"
 "Cart.Manufacturer" "CCE"
 "Cart.Name" "Sky Jinks (CCE)"
+"Cart.Highscore" "{\"score_addresses\":[\"0x9e\",\"0xa6\",\"0xa2\"],\"score_digits\":6,\"score_inverted\":true,\"variations_address\":\"0x99\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "93e276172b521c4491097f8b1393eea7"
@@ -12514,6 +12812,7 @@
 "Cart.MD5" "9469d18238345d87768e8965f9f4a6b2"
 "Cart.Manufacturer" "CCE"
 "Cart.Name" "Ms. Pac-Man (CCE)"
+"Cart.Highscore" "{\"notes\":\"Vars valid at game over; cherries = var #4\",\"score_addresses\":[\"0xfa\",\"0xf9\",\"0xf8\"],\"score_digits\":6,\"special_bcd\":false,\"special_zero_based\":true,\"variations_address\":\"0xf7\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "947317a89af38a49c4864d6bdd6a91fb"
@@ -12526,11 +12825,13 @@
 "Cart.Manufacturer" "Activision, Larry Miller"
 "Cart.ModelNo" "AX-026, AX-026-04"
 "Cart.Name" "Enduro (1983) (Activision)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xa9\",\"0xa8\"],\"score_digits\":6,\"special_address\":\"0xad\",\"special_label\":\"Day\",\"variations_count\":1}"
 ""
 
 "Cart.MD5" "94d90f63678e086f6b6d5e1bc6c4c8c2"
 "Cart.Manufacturer" "Digivision"
 "Cart.Name" "Seaquest (Digivision)"
+"Cart.Highscore" "{\"notes\":\"High score is from current player\",\"score_addresses\":[\"0xb8\",\"0xb9\",\"0xba\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "94e3fbc19107a169909e274187247a9d"
@@ -12548,6 +12849,8 @@
 "Cart.MD5" "94e7cc6342d11e508e7e8b2ddf53c255"
 "Cart.Name" "Missile Command (208 in 1) (Unknown) (PAL) (Hack)"
 "Cart.Rarity" "Hack"
+"Display.Phosphor" "YES"
+"Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
 ""
 
 "Cart.MD5" "94ff6b7489ed401dcaaf952fece10f67"
@@ -12645,6 +12948,7 @@
 "Cart.Name" "Boring Pitfall (Hack)"
 "Cart.Note" "Hack of Pitfall!"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "966b11d3c147d894dd9e4ebb971ea309"
@@ -12655,6 +12959,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Centipede - Atari Mouse Hack v1.4 (PAL) (Full-Speed) (TJ)"
 "Cart.Note" "Uses Atari Mouse Controller"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "9671b658286e276cc4a3d02aa25931d2"
@@ -12698,6 +13003,7 @@
 "Controller.Left" "ATARIMOUSE"
 "Controller.Right" "ATARIMOUSE"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
 ""
 
 "Cart.MD5" "96f806fc62005205d851e758d050dfca"
@@ -12714,6 +13020,7 @@
 "Cart.MD5" "9718b85ac5a55cbc7348963c63ffa35a"
 "Cart.Manufacturer" "Robby"
 "Cart.Name" "Demon Attack (Robby)"
+"Cart.Highscore" "{\"score_addresses\":[\"0x81\",\"0x83\",\"0x85\"],\"score_digits\":6,\"special_address\":\"0x80\",\"special_label\":\"Wave\",\"special_zero_based\":true,\"variations_address\":\"0xea\",\"variations_count\":10}"
 ""
 
 "Cart.MD5" "972486110933623039a3581db308fda6"
@@ -12730,6 +13037,7 @@
 "Cart.Manufacturer" "Atari - GCC, Douglas B. Macrae"
 "Cart.ModelNo" "CX2677, CX2677P"
 "Cart.Name" "Dig Dug (1983) (Atari) (PAL)"
+"Cart.Highscore" "{\"notes\":\"Variation 1 is easy; 2 is normal\",\"score_addresses\":[\"0xff\",\"0xff\"],\"variations_address\":\"0x80\",\"variations_count\":2,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "9784290f422e7aeeab4d542318bd9a1f"
@@ -12790,6 +13098,7 @@
 "Cart.Name" "Draconian"
 "Cart.Rarity" "Homebrew"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"notes\":\"Variations are difficulty level\",\"score_addresses\":[\"0x177b\",\"0x177a\",\"0x1779\",\"0x1778\"],\"score_digits\":8,\"special_address\":\"0x1780\",\"special_bcd\":false,\"special_label\":\"Sect.\",\"special_zero_based\":true,\"variations_address\":\"0x0811\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "9813b9e4b8a6fd919c86a40c6bda8c93"
@@ -12802,6 +13111,7 @@
 "Cart.Manufacturer" "Activision, Steve Cartwright - Ariola"
 "Cart.ModelNo" "EAX-031, EAX-031-04B - 711 031-717"
 "Cart.Name" "Frostbite (1983) (Activision) (PAL) (8K)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xc8\",\"0xc9\",\"0xca\"],\"score_digits\":6,\"special_address\":\"0xcb\",\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "9848b5ef7a0c02fe808b920a2ac566d2"
@@ -12824,6 +13134,7 @@
 "Cart.Name" "Gorilla Kong (Hack)"
 "Cart.Note" "Hack of Donkey Kong"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"score_addresses\":[\"0x87\",\"0x88\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "98ccd15345b1aee6caf51e05955f0261"
@@ -12855,12 +13166,14 @@
 "Cart.Manufacturer" "Activision, David Crane"
 "Cart.ModelNo" "AX-018, AX-018-04"
 "Cart.Name" "Pitfall! (1982) (Activision) (8K)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "98ef1593624b409b9fb83a1c272a0aa7"
 "Cart.Manufacturer" "CCE"
 "Cart.ModelNo" "C-831"
 "Cart.Name" "Cosmic Ark (1983) (CCE)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xae\",\"0xb0\",\"0xb2\"],\"score_digits\":6,\"variations_address\":\"0xbc\",\"variations_count\":6}"
 ""
 
 "Cart.MD5" "98f63949e656ff309cefa672146dc1b8"
@@ -12945,6 +13258,7 @@
 "Cart.MD5" "9a165c39af3f050fdee6583fdfcdc9be"
 "Cart.Manufacturer" "Zirok"
 "Cart.Name" "Mario Bros. (Zirok)"
+"Cart.Highscore" "{\"score_addresses\":[\"0x89\",\"0x8a\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x80\",\"variations_count\":8,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "9a21fba9ee9794e0fadd7c7eb6be4e12"
@@ -12959,6 +13273,7 @@
 "Cart.Name" "Breakout (1978) (Atari) (4K)"
 "Cart.Note" "Uses the Paddle Controllers"
 "Controller.MouseAxis" "01 60"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xce\",\"0xcd\"],\"score_digits\":3,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "9a4274409216ff09ecde799f2a56ac73"
@@ -12976,6 +13291,7 @@
 "Cart.MD5" "9ad362179c2eea4ea115c7640b4b003e"
 "Cart.Name" "Barnstorming (Unknown) (PAL)"
 "Display.Format" "NTSC50"
+"Cart.Highscore" "{\"score_addresses\":[\"0xb5\",\"0xb6\",\"0xb7\"],\"score_digits\":6,\"score_inverted\":true,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "9ad36e699ef6f45d9eb6c4cf90475c9f"
@@ -12984,12 +13300,14 @@
 "Cart.Name" "Atlantis (1982) (Imagic)"
 "Cart.Note" "AKA Lost City of Atlantis"
 "Cart.Rarity" "Uncommon"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa2\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x8d\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "9aeb5206c5bf974892a9cc59f1478db3"
 "Cart.Manufacturer" "Activision, Steve Cartwright"
 "Cart.ModelNo" "AX-013"
 "Cart.Name" "Barnstorming (1982) (Activision) (8K)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xb5\",\"0xb6\",\"0xb7\"],\"score_digits\":6,\"score_inverted\":true,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "9af615951e9719df2244bc77fc50cb95"
@@ -13089,12 +13407,14 @@
 "Cart.Manufacturer" "Atari - GCC, Dave Payne"
 "Cart.ModelNo" "CX2669"
 "Cart.Name" "Vanguard (1982) (Atari) (PAL) [a]"
+"Cart.Highscore" "{\"notes\":\"Score is for current player\",\"score_addresses\":[\"0x99\",\"0x98\",\"0x97\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "9d1556ae5890398be7e3d57449774b40"
 "Cart.Manufacturer" "Activision, David Crane"
 "Cart.ModelNo" "AG-001"
 "Cart.Name" "Dragster (1980) (Activision) (8K)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xb3\",\"0xb5\"],\"score_inverted\":true,\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "9d2938eb2b17bb73e9a79bbc06053506"
@@ -13185,6 +13505,7 @@
 "Cart.Manufacturer" "Funvision - Fund. International Co."
 "Cart.Name" "Grand Prize (Funvision)"
 "Cart.Note" "AKA Enduro"
+"Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xa9\",\"0xa8\"],\"score_digits\":6,\"special_address\":\"0xad\",\"special_label\":\"Day\",\"variations_count\":1}"
 ""
 
 "Cart.MD5" "9e5007131695621d06902ab3c960622a"
@@ -13302,6 +13623,7 @@
 "Cart.Name" "Super Breakout Menu (2020) (Hack)"
 "Cart.Note" "Hack of Super Breakout"
 "Controller.MouseAxis" "AUTO 45"
+"Cart.Highscore" "{\"score_addresses\":[\"0xdc\",\"0xdd\"],\"variations_address\":\"0xc0\",\"variations_count\":9}"
 ""
 
 "Cart.MD5" "9f9ee0f60c119c831e80694b6678ca1a"
@@ -13320,6 +13642,7 @@
 "Cart.Manufacturer" "Atari - GCC, John Allred, Mike Feinstein"
 "Cart.ModelNo" "CX2688, CX2688P"
 "Cart.Name" "Jungle Hunt (1983) (Atari) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0x85\",\"0x84\",\"0x83\"],\"score_digits\":6,\"variations_address\":\"0x8b\",\"variations_count\":2,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "E68E28752D3C54EDD3CCDA42C27E320C"
@@ -13340,6 +13663,7 @@
 "Cart.Manufacturer" "CCE"
 "Cart.ModelNo" "C-1012"
 "Cart.Name" "Phoenix (1983) (CCE)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xc9\",\"0xc8\",\"0xc7\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "a00ee0aed5c8979add4c170f5322c706"
@@ -13409,6 +13733,7 @@
 "Cart.MD5" "a1403fef01641dcd3980cac9f24d63f9"
 "Cart.Manufacturer" "Dactari - Milmar"
 "Cart.Name" "Atlantis (Dactari - Milmar)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa2\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x8d\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "a14d8a388083c60283e00592b18d4c6c"
@@ -13433,6 +13758,7 @@
 "Cart.Manufacturer" "Digitel"
 "Cart.Name" "Kaystone Kapers (1983) (Digitel)"
 "Cart.Note" "AKA Keystone Kapers"
+"Cart.Highscore" "{\"score_addresses\":[\"0x9a\",\"0x9b\",\"0x9c\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "a184846d8904396830951217b47d13d9"
@@ -13526,6 +13852,7 @@
 "Cart.MD5" "a29df35557f31dfea2e2ae4609c6ebb7"
 "Cart.Manufacturer" "Atari"
 "Cart.Name" "Circus Atari (1980) (Atari) (Joystick)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xab\"],\"variations_address\":\"0xa8\",\"variations_count\":8}"
 ""
 
 "Cart.MD5" "a29fc854838e08c247553a7d883dd65b"
@@ -13533,6 +13860,7 @@
 "Cart.ModelNo" "AX-013"
 "Cart.Name" "Barnstorming (1982) (Activision) (16K)"
 "Cart.Rarity" "Uncommon"
+"Cart.Highscore" "{\"score_addresses\":[\"0xb5\",\"0xb6\",\"0xb7\"],\"score_digits\":6,\"score_inverted\":true,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "a2a384d3a16d5be50afd12906f146827"
@@ -13584,6 +13912,7 @@
 "Cart.Manufacturer" "Zellers"
 "Cart.Name" "Circus (Zellers)"
 "Cart.Note" "AKA Circus Atari"
+"Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xab\"],\"variations_address\":\"0xa8\",\"variations_count\":8}"
 ""
 
 "Cart.MD5" "a310494ad5ba2b5b221a30d7180a0336"
@@ -13613,6 +13942,7 @@
 "Cart.Manufacturer" "Activision, Steve Cartwright"
 "Cart.ModelNo" "AX-017, AX-017-04"
 "Cart.Name" "MegaMania (1982) (Activision) (16K)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xdb\",\"0xdc\",\"0xdd\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "a3873d7c544af459f40d58dfcfb78887"
@@ -13692,6 +14022,7 @@
 "Cart.Manufacturer" "Activision, Bob Whitehead"
 "Cart.ModelNo" "AG-019"
 "Cart.Name" "Sky Jinks (1982) (Activision) (8K)"
+"Cart.Highscore" "{\"score_addresses\":[\"0x9e\",\"0xa6\",\"0xa2\"],\"score_digits\":6,\"score_inverted\":true,\"variations_address\":\"0x99\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "a47e26096de6f6487bf5dd2d1cced294"
@@ -13717,6 +14048,7 @@
 "Cart.Name" "Atari 2600 Invaders (Hack)"
 "Cart.Note" "Hack of Space Invaders"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"notes\":\"Only player 1 supported\",\"score_addresses\":[\"0xe6\",\"0xe8\"],\"variations_address\":\"0xdc\",\"variations_bcd\":false,\"variations_bcd_A\":false,\"variations_count\":112,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "a4ab331e8768eafdc20ce8b0411ff77a"
@@ -13890,6 +14222,7 @@
 "Cart.Manufacturer" "Atari, Jerome Domurat, Andrew Fuchs, Dave Staugas, Robert Vieira"
 "Cart.ModelNo" "CX26118, CX26118P"
 "Cart.Name" "Millipede (1984) (Atari) (PAL)"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "a779b9fa02c62d00d7c31ed51268f18a"
@@ -13920,6 +14253,7 @@
 "Cart.Name" "Circus Atari (1980) (Atari)"
 "Cart.Note" "Uses the Paddle Controllers"
 "Controller.MouseAxis" "01 55"
+"Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xab\"],\"variations_address\":\"0xa8\",\"variations_count\":8}"
 ""
 
 "Cart.MD5" "a7bf8353f77caca407ef85c2698fdff2"
@@ -13987,12 +14321,14 @@
 "Cart.MD5" "a8633050a686270fcf6c0cc4dcbad630"
 "Cart.Manufacturer" "Zirok"
 "Cart.Name" "Phoenix (Zirok)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xc9\",\"0xc8\",\"0xc7\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "a867b76098786c4091dba2fcee5084c3"
 "Cart.Name" "Dragrace (Hack)"
 "Cart.Note" "Hack of Dragster"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"score_addresses\":[\"0xb3\",\"0xb5\"],\"score_inverted\":true,\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "a875f0a919129b4f1b5103ddd200d2fe"
@@ -14020,6 +14356,7 @@
 "Cart.Name" "Spice Invaders (Franklin Cruz) (Hack)"
 "Cart.Note" "Hack of Space Invaders"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"notes\":\"Only player 1 supported\",\"score_addresses\":[\"0xe6\",\"0xe8\"],\"variations_address\":\"0xdc\",\"variations_bcd\":false,\"variations_bcd_A\":false,\"variations_count\":112,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "a8b3ea6836b99bea77c8f603cf1ea187"
@@ -14052,10 +14389,12 @@
 "Cart.Name" "Enduro (Genesis)"
 "Cart.Note" "Genesis controller (B is acceleration, C is brakes)"
 "Cart.Rarity" "Hack of Enduro"
+"Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xa9\",\"0xa8\"],\"score_digits\":6,\"special_address\":\"0xad\",\"special_label\":\"Day\",\"variations_count\":1}"
 ""
 
 "Cart.MD5" "a91d0858a52de3a2e6468437212d93e8"
 "Cart.Name" "Q-bert (208 in 1) (Unknown) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xd9\",\"0xda\",\"0xdb\"],\"score_digits\":5,\"special_address\":\"0xe3\",\"special_label\":\"Round\",\"special_zero_based\":true,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "a936d80083e99d48752ad15c2b5f7c96"
@@ -14069,6 +14408,7 @@
 "Cart.Note" "Hack of Kaboom!"
 "Cart.Rarity" "Hack"
 "Controller.MouseAxis" "01 50"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "a94528ae05dd051894e945d4d2349b3b"
@@ -14093,6 +14433,7 @@
 "Cart.ModelNo" "CX2649, CX2649P"
 "Cart.Name" "Asteroids (1981) (Atari) (PAL) [a1]"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
 ""
 
 "Cart.MD5" "a97733b0852ee3096300102cb0689175"
@@ -14149,6 +14490,7 @@
 "Cart.MD5" "aa2c4b32656bde9a75042a4d158583e1"
 "Cart.Name" "Oystron X (Piero Cavina) (PD)"
 "Cart.Rarity" "New Release"
+"Cart.Highscore" "{\"score_addresses\":[\"0xd4\",\"0xd3\"],\"score_digits\":5,\"score_trailing_zeroes\":1,\"variations_address\":\"0xe5\",\"variations_count\":3,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "aa5cfe3b20395aba1d479135943ad85c"
@@ -14265,6 +14607,7 @@
 "Cart.Manufacturer" "Imagic, Rob Fulop"
 "Cart.ModelNo" "720104-1A, 720104-1B, IA3204"
 "Cart.Name" "Cosmic Ark (1982) (Imagic)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xae\",\"0xb0\",\"0xb2\"],\"score_digits\":6,\"variations_address\":\"0xbc\",\"variations_count\":6}"
 ""
 
 "Cart.MD5" "ab60ea7b707c58d356cad858eb18db43"
@@ -14311,6 +14654,7 @@
 "Cart.Name" "Atlantis FH (2003) (TJ) (Hack)"
 "Cart.Note" "Hack of Atlantis"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa2\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x8d\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "ac26d7d37248d1d8eac5eccacdbef8db"
@@ -14329,6 +14673,7 @@
 "Cart.Name" "Qb (2.15) (Retroactive) (NTSC)"
 "Cart.Rarity" "New Release"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"score_addresses\":[\"0xe6\",\"0xe5\",\"0xe4\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "ac5f78bae0638cf3f2a0c8d07eb4df69"
@@ -14340,6 +14685,7 @@
 "Cart.ModelNo" "AG-930-04, AZ-030"
 "Cart.Name" "Decathlon (1983) (Activision)"
 "Cart.Rarity" "Rare"
+"Cart.Highscore" "{\"notes\":\"Decathlon & 100m dash share variation 1\",\"score_addresses\":[\"0x95\",\"0x96\"],\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":10,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "ac9adbd6de786a242e19d4bec527982b"
@@ -14377,6 +14723,7 @@
 "Cart.Name" "Atlantis (1982) (Imagic) (16K)"
 "Cart.Note" "AKA Lost City of Atlantis"
 "Cart.Rarity" "Uncommon"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa2\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x8d\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "ace319dc4f76548659876741a6690d57"
@@ -14419,6 +14766,7 @@
 "Cart.MD5" "adb79f9ac1a633cdd44954e2eac14774"
 "Cart.Manufacturer" "Digivision"
 "Cart.Name" "Frostbite (Digivision)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xc8\",\"0xc9\",\"0xca\"],\"score_digits\":6,\"special_address\":\"0xcb\",\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "adf1afac3bdd7b36d2eda5949f1a0fa3"
@@ -14435,6 +14783,7 @@
 "Cart.Rarity" "Homebrew"
 "Console.RightDiff" "A"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"score_addresses\":[\"0x8e\",\"0x8d\",\"0x8c\"],\"score_digits\":6,\"special_address\":\"0x89\",\"special_bcd\":false,\"special_label\":\"Part\",\"special_zero_based\":true,\"variations_address\":\"0x8a\",\"variations_count\":3,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "ae047e9468bda961d8e9e9d8ff52980f"
@@ -14453,6 +14802,7 @@
 "Cart.Name" "Planet Invaders (Charles Morgan) (Hack)"
 "Cart.Note" "Hack of Space Invaders"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"notes\":\"Only player 1 supported\",\"score_addresses\":[\"0xe6\",\"0xe8\"],\"variations_address\":\"0xdc\",\"variations_bcd\":false,\"variations_bcd_A\":false,\"variations_count\":112,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "ae18c11e4d7ed2437f0bf5d167c0e96c"
@@ -14499,6 +14849,7 @@
 "Cart.Name" "Ms. Pac-Man (1999) (Hack)"
 "Cart.Note" "Hack of Ms. Pac-Man"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"notes\":\"Vars valid at game over; cherries = var #4\",\"score_addresses\":[\"0xfa\",\"0xf9\",\"0xf8\"],\"score_digits\":6,\"special_bcd\":false,\"special_zero_based\":true,\"variations_address\":\"0xf7\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "aec9b885d0e8b24e871925630884095c"
@@ -14527,6 +14878,7 @@
 "Cart.Name" "Kaboom! (1981) (Activision) (4K)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.MouseAxis" "01 50"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "af6f3e9718bccfcd8afb421f96561a34"
@@ -14641,6 +14993,7 @@
 "Cart.Name" "Kaboom! (1981) (Activision) (PAL) (4K)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.MouseAxis" "01 50"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "b0a9c6f6c8014c4023e0341ba11ca35e"
@@ -14693,6 +15046,7 @@
 "Cart.ModelNo" "720000-200, 720101-1B, 720101-1C, IA3200, IA3200C, IX-006-04"
 "Cart.Name" "Demon Attack (1982) (Imagic) [fixed]"
 "Cart.Note" "AKA Death from Above"
+"Cart.Highscore" "{\"score_addresses\":[\"0x81\",\"0x83\",\"0x85\"],\"score_digits\":6,\"special_address\":\"0x80\",\"special_label\":\"Wave\",\"special_zero_based\":true,\"variations_address\":\"0xea\",\"variations_count\":10}"
 ""
 
 "Cart.MD5" "b1339c56a9ea63122232fe4328373ac5"
@@ -14753,6 +15107,7 @@
 "Cart.ModelNo" "C-1004"
 "Cart.Name" "Mario's Bros. (1983) (CCE)"
 "Cart.Note" "AKA Mario Bros."
+"Cart.Highscore" "{\"score_addresses\":[\"0x89\",\"0x8a\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x80\",\"variations_count\":8,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "b1e2d5dc1353af6d56cd2fe7cfe75254"
@@ -14772,6 +15127,7 @@
 "Cart.Name" "Asteroids (1981) (Atari) [a1]"
 "Cart.Rarity" "Common"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
 ""
 
 "Cart.MD5" "b23ebf427713dd0198b7ef47dbd07ef4"
@@ -14785,6 +15141,7 @@
 "Cart.Manufacturer" "CCE"
 "Cart.ModelNo" "C-823"
 "Cart.Name" "Demon Attack (1983) (CCE)"
+"Cart.Highscore" "{\"score_addresses\":[\"0x81\",\"0x83\",\"0x85\"],\"score_digits\":6,\"special_address\":\"0x80\",\"special_label\":\"Wave\",\"special_zero_based\":true,\"variations_address\":\"0xea\",\"variations_count\":10}"
 ""
 
 "Cart.MD5" "b25841173f058380b1771aacd5e7cdf3"
@@ -14992,6 +15349,7 @@
 "Cart.ModelNo" "PGP232"
 "Cart.Name" "Autorennen (Ariola) (PAL)"
 "Cart.Note" "AKA Grand Prix"
+"Cart.Highscore" "{\"notes\":\"Time/score shows extra digit\",\"score_addresses\":[\"0xeb\",\"0xec\",\"0xed\"],\"score_digits\":5,\"score_inverted\":true,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "b50ae55aac93fbed258bc5a873edd2cb"
@@ -15023,6 +15381,7 @@
 "Cart.MD5" "b59417d083b0be2d49a7d93769880a4b"
 "Cart.Manufacturer" "Pet Boat"
 "Cart.Name" "Donkey Kong (1983) (Pet Boat) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0x87\",\"0x88\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "b59fd465abf76f64c85652ff29d5952d"
@@ -15123,6 +15482,7 @@
 "Cart.Name" "DUP Space Invaders (Ron Corcoran) (Hack)"
 "Cart.Note" "Hack of Space Invaders"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"notes\":\"Only player 1 supported\",\"score_addresses\":[\"0xe6\",\"0xe8\"],\"variations_address\":\"0xdc\",\"variations_bcd\":false,\"variations_bcd_A\":false,\"variations_count\":112,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "b731d35e4ac6b3b47eba5dd0991f452f"
@@ -15241,6 +15601,7 @@
 "Cart.Manufacturer" "Funvision - Fund. International Co."
 "Cart.Name" "Treasure Hunting (Funvision)"
 "Cart.Note" "AKA Pitfall!"
+"Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "b879e13fd99382e09bcaf1d87ad84add"
@@ -15293,6 +15654,7 @@
 "Cart.Manufacturer" "Atari, Omegamatrix"
 "Cart.Name" "Space Invaders Menu (2020) (PAL60) (Hack)"
 "Cart.Note" "Hack of Space Invaders"
+"Cart.Highscore" "{\"notes\":\"Only player 1 supported\",\"score_addresses\":[\"0xe6\",\"0xe8\"],\"variations_address\":\"0xdc\",\"variations_bcd\":false,\"variations_bcd_A\":false,\"variations_count\":112,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "b958d5fd9574c5cf9ece4b9421c28ecd"
@@ -15342,6 +15704,7 @@
 "Cart.Manufacturer" "SuperVision"
 "Cart.ModelNo" "405, 427, 806, 808, 813, 816"
 "Cart.Name" "Chopper Command (SuperVision) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xec\",\"0xee\",\"0xf0\"],\"score_digits\":6,\"variations_address\":\"0xe0\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "ba257438f8a78862a9e014d831143690"
@@ -15376,12 +15739,14 @@
 "Cart.MD5" "bac28d06dfc03d3d2f4a7c13383e84ee"
 "Cart.Manufacturer" "Supergame"
 "Cart.Name" "Demon Attack (Supergame)"
+"Cart.Highscore" "{\"score_addresses\":[\"0x81\",\"0x83\",\"0x85\"],\"score_digits\":6,\"special_address\":\"0x80\",\"special_label\":\"Wave\",\"special_zero_based\":true,\"variations_address\":\"0xea\",\"variations_count\":10}"
 ""
 
 "Cart.MD5" "bae1a23f9b6acdadf465cfb330ba0acb"
 "Cart.Manufacturer" "Atari - GCC, Doug Macrae"
 "Cart.ModelNo" "CX2677"
 "Cart.Name" "Dig Dug (1983) (Atari) [a]"
+"Cart.Highscore" "{\"notes\":\"Variation 1 is easy; 2 is normal\",\"score_addresses\":[\"0xff\",\"0xff\"],\"variations_address\":\"0x80\",\"variations_count\":2,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "bae66907c3200bc63592efe5a9a69dbb"
@@ -15401,6 +15766,7 @@
 "Cart.ModelNo" "EAG-001, PAG-001, EAG-001-04B, EAG-001-04I - 711 001-715"
 "Cart.Name" "Dragster (1980) (Activision) (PAL) (4K)"
 "Cart.Note" "AKA Dragster Rennen"
+"Cart.Highscore" "{\"score_addresses\":[\"0xb3\",\"0xb5\"],\"score_inverted\":true,\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "bb2b83fff97604f74ada565e0b5bae94"
@@ -15414,6 +15780,7 @@
 "Cart.ModelNo" "CX2649, CX2649P"
 "Cart.Name" "Asteroids (1981) (Atari) (PAL) [no copyright]"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
 ""
 
 "Cart.MD5" "bb579404924c40ca378b4aff6ccf302d"
@@ -15461,6 +15828,7 @@
 "Cart.MD5" "bc33c685e6ffced83abe7a43f30df7f9"
 "Cart.Manufacturer" "Dynacom"
 "Cart.Name" "Seaquest (1983) (Dynacom)"
+"Cart.Highscore" "{\"notes\":\"High score is from current player\",\"score_addresses\":[\"0xb8\",\"0xb9\",\"0xba\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "bc4cf38a4bee45752dc466c98ed7ad09"
@@ -15468,6 +15836,7 @@
 "Cart.ModelNo" "CX26136"
 "Cart.Name" "Solaris (1986) (Atari) (PAL)"
 "Cart.Note" "AKA Universe, Star Raiders II, The Last Starfighter"
+"Cart.Highscore" "{\"score_addresses\":[\"0xde\",\"0xdd\",\"0xdc\"],\"score_digits\":6,\"score_trailing_zeroes\":1,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "bc526185ad324241782dc68ba5d0540b"
@@ -15556,6 +15925,7 @@
 "Cart.Name" "Nitemare at Sunshine Bowl-a-Rama (Atari Freak 1) (Hack)"
 "Cart.Note" "Hack of Pac-Man Jr."
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"score_addresses\":[\"0xfb\",\"0xfa\",\"0xf9\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "bdbaeff1f7132358ea64c7be9e46c1ac"
@@ -15578,12 +15948,14 @@
 "Cart.MD5" "bdf1996e2dd64baf8eff5511811ca6ca"
 "Cart.Manufacturer" "Tron"
 "Cart.Name" "H.E.R.O. (Tron)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xb7\",\"0xb8\",\"0xb9\"],\"score_digits\":6,\"special_address\":\"0xf5\",\"special_bcd\":false,\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_address\":\"0x80\",\"variations_count\":5,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "be060a704803446c02e6f039ab12eb91"
 "Cart.Manufacturer" "Parker Brothers, Rex Bradford, Sam Kjellman"
 "Cart.ModelNo" "931501"
 "Cart.Name" "Star Wars - The Empire Strikes Back (1982) (Parker Bros) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xe0\",\"0xe1\"],\"variations_address\":\"0xea\",\"variations_bcd\":false,\"variations_count\":32,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "be1922bd8e09d74da471287e1e968653"
@@ -15614,6 +15986,7 @@
 "Cart.Name" "Berzerk (Voice Enhanced) (Hack)"
 "Cart.Note" "Hack of Berzerk"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"score_addresses\":[\"0xdd\",\"0xde\",\"0xdf\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":12}"
 ""
 
 "Cart.MD5" "be561b286b6432cac71bccbae68002f7"
@@ -15624,6 +15997,7 @@
 "Cart.Manufacturer" "Activision, Garry Kitchen"
 "Cart.ModelNo" "AX-025, AX-025-04"
 "Cart.Name" "Keystone Kapers (1983) (Activision)"
+"Cart.Highscore" "{\"score_addresses\":[\"0x9a\",\"0x9b\",\"0x9c\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "becd908f9d7bb361982c3dc02d6475c6"
@@ -15637,6 +16011,7 @@
 "Cart.Manufacturer" "Activision, Garry Kitchen - Ariola"
 "Cart.ModelNo" "EAX-025, EAX-025-04I - 711 025-725"
 "Cart.Name" "Keystone Kapers (1983) (Activision) (PAL) (16K)"
+"Cart.Highscore" "{\"score_addresses\":[\"0x9a\",\"0x9b\",\"0x9c\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "befce0de2012b24fd6cb8b53c17c8271"
@@ -15654,6 +16029,7 @@
 "Cart.ModelNo" "AG-930-04, AZ-030"
 "Cart.Name" "Decathlon (HES) (PAL) (16K)"
 "Cart.Note" "AKA Activision Decathlon"
+"Cart.Highscore" "{\"notes\":\"Decathlon & 100m dash share variation 1\",\"score_addresses\":[\"0x95\",\"0x96\"],\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":10,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "bf84f528de44225dd733c0e6a8e400a0"
@@ -15793,12 +16169,14 @@
 "Cart.Name" "Space Invaders (2002) (Ron Corcoran) (Hack)"
 "Cart.Note" "Hack of Space Invaders"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"notes\":\"Only player 1 supported\",\"score_addresses\":[\"0xe6\",\"0xe8\"],\"variations_address\":\"0xdc\",\"variations_bcd\":false,\"variations_bcd_A\":false,\"variations_count\":112,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "c15042e54c7408498f051d782aaa8945"
 "Cart.Manufacturer" "Omegamatrix"
 "Cart.Name" "Millipede (Atari Trak-Ball) v6.5 (Omegamatrix)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "c150c76cbde2c9b5a97eb5399d46c64f"
@@ -15848,6 +16226,7 @@
 "Cart.Manufacturer" "Activision, Bob Whitehead"
 "Cart.ModelNo" "AX-015, AX-015-04"
 "Cart.Name" "Chopper Command (1982) (Activision)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xec\",\"0xee\",\"0xf0\"],\"score_digits\":6,\"variations_address\":\"0xe0\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "c1e6e4e7ef5f146388a090f1c469a2fa"
@@ -15886,6 +16265,7 @@
 "Cart.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
 "Cart.Name" "Dragster (Jone Yuan)"
 "Cart.Note" "2600 Screen Search Console"
+"Cart.Highscore" "{\"score_addresses\":[\"0xb3\",\"0xb5\"],\"score_inverted\":true,\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "c221607529cabc93450ef25dbac6e8d2"
@@ -15898,6 +16278,7 @@
 "Cart.MD5" "c225379e7c4fb6f886ef9c8c522275b4"
 "Cart.Manufacturer" "Video Mania"
 "Cart.Name" "Frostbite (1983) (Video Mania)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xc8\",\"0xc9\",\"0xca\"],\"score_digits\":6,\"special_address\":\"0xcb\",\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "c225abfb584960efe1f359fc94b73379"
@@ -15959,6 +16340,7 @@
 "Cart.MD5" "c2c7a11717e255593e54d0acaf653ee5"
 "Cart.Name" "Chopper Command (208 in 1) (Unknown) (PAL) (Hack)"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"score_addresses\":[\"0xec\",\"0xee\",\"0xf0\"],\"score_digits\":6,\"variations_address\":\"0xe0\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "c2c8eb642765137bb82b83a65232961f"
@@ -15971,6 +16353,8 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Missile Command Atari Trak-Ball Hack v1.3 (NTSC) (TJ)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
+"Display.Phosphor" "YES"
+"Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
 ""
 
 "Cart.MD5" "c2fbef02b6eea37d8df3e91107f89950"
@@ -15978,6 +16362,7 @@
 "Cart.ModelNo" "CG-02-N"
 "Cart.Name" "Conquest Of Mars (NTSC)"
 "Cart.Rarity" "Homebrew"
+"Cart.Highscore" "{\"score_addresses\":[\"0x92\",\"0x94\",\"0x96\"],\"score_digits\":6,\"special_address\":\"0x9a\",\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_address\":\"0x89\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "c31a17942d162b80962cb1f7571cd1d5"
@@ -16081,6 +16466,7 @@
 "Cart.Manufacturer" "Atari - GCC, Mike Feinstein, John Allred"
 "Cart.ModelNo" "CX2688, CX2688P"
 "Cart.Name" "Jungle Hunt (1983) (Atari) (PAL) [a1]"
+"Cart.Highscore" "{\"score_addresses\":[\"0x85\",\"0x84\",\"0x83\"],\"score_digits\":6,\"variations_address\":\"0x8b\",\"variations_count\":2,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "c47b7389e76974fd0de3f088fea35576"
@@ -16099,6 +16485,7 @@
 "Cart.Manufacturer" "Atari, Dan Hitchens, Mimi Nyden"
 "Cart.ModelNo" "CX2697, CX2697P"
 "Cart.Name" "Mario Bros. (1983) (Atari) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0x89\",\"0x8a\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x80\",\"variations_count\":8,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "c4b73c35bc2f54b66cd786f55b668a82"
@@ -16110,6 +16497,7 @@
 "Cart.MD5" "c4bbbb0c8fe203cbd3be2e318e55bcc0"
 "Cart.Name" "Atlantis (Unknown) (PAL) (Hack)"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa2\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x8d\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "c4bc8c2e130d76346ebf8eb544991b46"
@@ -16133,6 +16521,7 @@
 "Cart.Manufacturer" "Imagic, Rob Fulop"
 "Cart.ModelNo" "720104-2A, IA3204P, EIX-008-04I"
 "Cart.Name" "Cosmic Ark (1982) (Imagic) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xae\",\"0xb0\",\"0xb2\"],\"score_digits\":6,\"variations_address\":\"0xbc\",\"variations_count\":6}"
 ""
 
 "Cart.MD5" "c517144e3d3ac5c06f2f682ebf212dd7"
@@ -16146,6 +16535,7 @@
 "Cart.Note" "Hack of Kaboom!"
 "Cart.Rarity" "Hack"
 "Controller.MouseAxis" "01 50"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "c52d9bbdc5530e1ef8e8ba7be692b01e"
@@ -16212,6 +16602,7 @@
 "Cart.Name" "NOIZ Invaders (SPIKE) (2002) (Hack)"
 "Cart.Note" "Hack of Space Invaders"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"notes\":\"Only player 1 supported\",\"score_addresses\":[\"0xe6\",\"0xe8\"],\"variations_address\":\"0xdc\",\"variations_bcd\":false,\"variations_bcd_A\":false,\"variations_count\":112,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "c5930d0e8cdae3e037349bfa08e871be"
@@ -16219,6 +16610,7 @@
 "Cart.ModelNo" "CX2655 - 49-75167"
 "Cart.Name" "Yars' Revenge (1982) (Atari)"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"notes\":\"Variations are larger by 1\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":8,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "c59633dbebd926c150fb6d30b0576405"
@@ -16234,6 +16626,7 @@
 "Cart.Name" "Zero Patrol (Charles Morgan) (Hack)"
 "Cart.Note" "Hack of Moon Patrol"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"score_addresses\":[\"0xea\",\"0xeb\",\"0xec\"],\"score_digits\":6,\"variations_address\":\"0xf9\",\"variations_count\":6,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "c5bab953ac13dbb2cba03cd0684fb125"
@@ -16277,6 +16670,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Centipede - Atari Trak-Ball Hack v1.4 (PAL) (Full-Speed) (TJ)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "c5fe45f2734afd47e27ca3b04a90213c"
@@ -16285,6 +16679,7 @@
 "Cart.Name" "Breakout (1978) (Atari) (PAL) (4K)"
 "Cart.Note" "Uses the Paddle Controllers"
 "Controller.MouseAxis" "01"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xce\",\"0xcd\"],\"score_digits\":3,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "c63a98ca404aa5ee9fcff1de488c3f43"
@@ -16298,6 +16693,7 @@
 "Cart.Manufacturer" "Atari - GCC, Dave Payne"
 "Cart.ModelNo" "CX2669"
 "Cart.Name" "Vanguard (1983) (Atari)"
+"Cart.Highscore" "{\"notes\":\"Score is for current player\",\"score_addresses\":[\"0x99\",\"0x98\",\"0x97\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "c6688781f4ab844852f4e3352772289b"
@@ -16316,6 +16712,7 @@
 "Cart.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
 "Cart.Name" "Space Raid (Jone Yuan)"
 "Cart.Note" "AKA MegaMania"
+"Cart.Highscore" "{\"score_addresses\":[\"0xdb\",\"0xdc\",\"0xdd\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "c68a6bafb667bad2f6d020f879be1d11"
@@ -16328,6 +16725,7 @@
 "Cart.MD5" "c6ae21caceaad734987cb24243793bd5"
 "Cart.Manufacturer" "CCE"
 "Cart.Name" "Frostbite (CCE)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xc8\",\"0xc9\",\"0xca\"],\"score_digits\":6,\"special_address\":\"0xcb\",\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "c6c63da3bc2e47291f63280e057061d0"
@@ -16362,6 +16760,7 @@
 "Cart.Name" "Breakout (1978) (Atari) (16K)"
 "Cart.Note" "Uses the Paddle Controllers"
 "Controller.MouseAxis" "01 60"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xce\",\"0xcd\"],\"score_digits\":3,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "c73ae5ba5a0a3f3ac77f0a9e14770e73"
@@ -16467,6 +16866,7 @@
 "Cart.Manufacturer" "Atari, Omegamatrix"
 "Cart.Name" "Space Invaders Menu (2020) (PAL) (Hack)"
 "Cart.Note" "Hack of Space Invaders"
+"Cart.Highscore" "{\"notes\":\"Only player 1 supported\",\"score_addresses\":[\"0xe6\",\"0xe8\"],\"variations_address\":\"0xdc\",\"variations_bcd\":false,\"variations_bcd_A\":false,\"variations_count\":112,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "c8c7da12f087e8d16d3e6a21b371a5d3"
@@ -16791,6 +17191,7 @@
 "Cart.Name" "Asteroids (1981) (Atari) [no copyright]"
 "Cart.Rarity" "Common"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
 ""
 
 "Cart.MD5" "cccfe9e9a11b1dad04beba46eefb7351"
@@ -16903,6 +17304,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Centipede - Amiga Mouse Hack v1.4 (PAL60) (Full-Speed) (TJ)"
 "Cart.Note" "Uses Amiga Mouse Controller"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "cdb81bf33d830ee4ee0606ee99e84dba"
@@ -17122,6 +17524,7 @@
 "Cart.Manufacturer" "Activision, Larry Miller"
 "Cart.ModelNo" "AX-026, AX-026-04"
 "Cart.Name" "Enduro (1983) (Activision) (16K)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xa9\",\"0xa8\"],\"score_digits\":6,\"special_address\":\"0xad\",\"special_label\":\"Day\",\"variations_count\":1}"
 ""
 
 "Cart.MD5" "cfee10bd7119f10b136921ced2ee8972"
@@ -17152,6 +17555,7 @@
 "Cart.Note" "Hack of Berzerk"
 "Cart.Rarity" "Hack"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"score_addresses\":[\"0xdd\",\"0xde\",\"0xdf\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":12}"
 ""
 
 "Cart.MD5" "cfffc4b97d01cc3e7b9f47575f7b11ec"
@@ -17245,6 +17649,7 @@
 "Cart.Name" "Atari Invaders (Ataripoll) (Hack)"
 "Cart.Note" "Hack of Space Invaders"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"notes\":\"Only player 1 supported\",\"score_addresses\":[\"0xe6\",\"0xe8\"],\"variations_address\":\"0xdc\",\"variations_bcd\":false,\"variations_bcd_A\":false,\"variations_count\":112,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "d0af33865512e9b6900714c26db5fa23"
@@ -17289,6 +17694,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Centipede - Atari Mouse Hack v1.4 (PAL) (Half-Speed) (TJ)"
 "Cart.Note" "Uses Atari Mouse Controller"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "d0e15a3ce322c5af60f07343594392af"
@@ -17312,6 +17718,7 @@
 "Cart.MD5" "d15655fe355fa57dd541487dc5725145"
 "Cart.Manufacturer" "Rentacom"
 "Cart.Name" "Vanguard (Rentacom)"
+"Cart.Highscore" "{\"notes\":\"Score is for current player\",\"score_addresses\":[\"0x99\",\"0x98\",\"0x97\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "d170317ae4c7d997a989c7d6567c2840"
@@ -17366,6 +17773,8 @@
 "Cart.Manufacturer" "Bit Corporation"
 "Cart.ModelNo" "R320"
 "Cart.Name" "Missile Command (32 in 1) (BitCorp) (Hack)"
+"Display.Phosphor" "YES"
+"Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
 ""
 
 "Cart.MD5" "d1d704a7146e95709b57b6d4cac3f788"
@@ -17379,6 +17788,7 @@
 "Cart.ModelNo" "32"
 "Cart.Name" "Pitfall (1984) (Supergame)"
 "Cart.Note" "AKA Pitfall!"
+"Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "d214c7a734e133a5c18e93229435b57a"
@@ -17414,6 +17824,7 @@
 "Cart.Name" "Fish Revenge (2003) (Greg Zumwalt) (Hack)"
 "Cart.Note" "Hack of Space Invaders"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"notes\":\"Only player 1 supported\",\"score_addresses\":[\"0xe6\",\"0xe8\"],\"variations_address\":\"0xdc\",\"variations_bcd\":false,\"variations_bcd_A\":false,\"variations_count\":112,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "d2c4f8a4a98a905a9deef3ba7380ed64"
@@ -17449,6 +17860,7 @@
 "Cart.MD5" "d2f713c78a9ebba9da6d10aeefc6f20f"
 "Cart.Manufacturer" "Digivision"
 "Cart.Name" "Enduro (Digivision) [a]"
+"Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xa9\",\"0xa8\"],\"score_digits\":6,\"special_address\":\"0xad\",\"special_label\":\"Day\",\"variations_count\":1}"
 ""
 
 "Cart.MD5" "d3171407c3a8bb401a3a62eb578f48fb"
@@ -17524,6 +17936,7 @@
 "Cart.Manufacturer" "Activision, Steve Cartwright"
 "Cart.ModelNo" "AX-017, AX-017-04"
 "Cart.Name" "MegaMania (1982) (Activision) (8K)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xdb\",\"0xdc\",\"0xdd\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "d45ebf130ed9070ea8ebd56176e48a38"
@@ -17561,6 +17974,7 @@
 "Cart.Manufacturer" "Atari - GCC, Mark Ackerman, Glenn Parker"
 "Cart.ModelNo" "CX2675, CX2675P"
 "Cart.Name" "Ms. Pac-Man (1982) (Atari) (PAL) [a]"
+"Cart.Highscore" "{\"notes\":\"Vars valid at game over; cherries = var #4\",\"score_addresses\":[\"0xfa\",\"0xf9\",\"0xf8\"],\"score_digits\":6,\"special_bcd\":false,\"special_zero_based\":true,\"variations_address\":\"0xf7\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "d49aff83f77a1b9041ad7185df3c2277"
@@ -17594,6 +18008,7 @@
 "Cart.Manufacturer" "CCE"
 "Cart.ModelNo" "C-829"
 "Cart.Name" "Megamania (1983) (CCE)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xdb\",\"0xdc\",\"0xdd\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "d563ba38151b8204c9f5c9f58e781455"
@@ -17601,6 +18016,7 @@
 "Cart.ModelNo" "CX2649, 49-75163"
 "Cart.Name" "Asteroids (1981) (Atari) [a2]"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
 ""
 
 "Cart.MD5" "d573089534ca596e64efef474be7b6bc"
@@ -17639,6 +18055,7 @@
 "Cart.MD5" "d5d2d44fb73785996ccc24ae3a0f5cef"
 "Cart.Manufacturer" "Robby"
 "Cart.Name" "Grand Prix (Robby)"
+"Cart.Highscore" "{\"notes\":\"Time/score shows extra digit\",\"score_addresses\":[\"0xeb\",\"0xec\",\"0xed\"],\"score_digits\":5,\"score_inverted\":true,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "d5e17022d1ecc20fd9b53dc464c302f1"
@@ -17685,6 +18102,7 @@
 "Cart.MD5" "d62d7d1a974c31c5803f96a8c1552510"
 "Cart.Name" "StarMaster (Unknown) (PAL)"
 "Cart.Note" "Use Color/BW switch to change between galactic chart and front views"
+"Cart.Highscore" "{\"notes\":\"Score only calculated when game is over\",\"score_addresses\":[\"0xc1\",\"0xc2\"],\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "d632b74fea533d593af82cf16e7c5e4a"
@@ -17695,6 +18113,7 @@
 "Cart.MD5" "d65028524761ef52fbbdebab46f79d0f"
 "Cart.Manufacturer" "CCE"
 "Cart.Name" "Galaxian (CCE)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xac\",\"0xad\",\"0xae\"],\"score_digits\":6,\"special_address\":\"0xaf\",\"special_label\":\"Wave\",\"variations_address\":\"0xb3\",\"variations_count\":9}"
 ""
 
 "Cart.MD5" "d65900fefa7dc18ac3ad99c213e2fa4e"
@@ -17707,6 +18126,7 @@
 "Cart.ModelNo" "AX-016"
 "Cart.Name" "StarMaster (1982) (Activision)"
 "Cart.Note" "Use Color/BW switch to change between galactic chart and front views"
+"Cart.Highscore" "{\"notes\":\"Score only calculated when game is over\",\"score_addresses\":[\"0xc1\",\"0xc2\"],\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "d6a44277c3eb4f9d039185e0ecf7bfa6"
@@ -17760,6 +18180,7 @@
 "Cart.Manufacturer" "Activision, David Crane"
 "Cart.ModelNo" "AG-001"
 "Cart.Name" "Dragster (1980) (Activision) (16K)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xb3\",\"0xb5\"],\"score_inverted\":true,\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "d7759fa91902edd93f1568a37dc70cdb"
@@ -17904,6 +18325,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Centipede - Amiga Mouse Hack v1.4 (PAL) (Half-Speed) (TJ)"
 "Cart.Note" "Uses Amiga Mouse Controller"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "d97e3d0b4575ce0b9a6132e19cfeac6e"
@@ -17929,6 +18351,7 @@
 "Cart.Manufacturer" "Activision, John Van Ryzin - Ariola"
 "Cart.ModelNo" "EAZ-036-04, EAZ-036-04B, EAZ-036-04I - 711 036-720"
 "Cart.Name" "H.E.R.O. (1984) (Activision) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xb7\",\"0xb8\",\"0xb9\"],\"score_digits\":6,\"special_address\":\"0xf5\",\"special_bcd\":false,\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_address\":\"0x80\",\"variations_count\":5,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "d9bd343533b61389b270c0787210943b"
@@ -17937,6 +18360,7 @@
 "Cart.Name" "Last Starfighter (1984) (Atari) (Prototype)"
 "Cart.Note" "Genesis controller (C switches to map mode)"
 "Cart.Rarity" "Hack of Last Starfighter (Solaris prototype)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xde\",\"0xdd\",\"0xdc\"],\"score_digits\":6,\"score_trailing_zeroes\":1,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "d9c9cece2e769c7985494b1403a25721"
@@ -17988,6 +18412,7 @@
 "Cart.MD5" "da66d75e4b47fab99733529743f86f4f"
 "Cart.Manufacturer" "Digitel"
 "Cart.Name" "Chopper Command (1983) (Digitel)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xec\",\"0xee\",\"0xf0\"],\"score_digits\":6,\"variations_address\":\"0xe0\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "da732c57697ad7d7af414998fa527e75"
@@ -18144,6 +18569,7 @@
 "Cart.Name" "Kaboom! (CCE)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.MouseAxis" "01 50"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "dbdd21e1ee3d72119e8cd14d943c585b"
@@ -18283,6 +18709,7 @@
 "Cart.ModelNo" "CX2649, 49-75163"
 "Cart.Name" "Asteroids (1981) (Atari)"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
 ""
 
 "Cart.MD5" "dd8a2124d4eda200df715c698a6ea887"
@@ -18301,11 +18728,19 @@
 "Cart.Name" "Nitemare at Sunshine Bowl-a-Rama (Atari Freak 1) (Hack) [a]"
 "Cart.Note" "Hack of Pac-Man Jr."
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"score_addresses\":[\"0xfb\",\"0xfa\",\"0xf9\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "ddd1efc1862cd3eb3baf4cba81ff5050"
 "Cart.Name" "Max3 (2001) (Maxime Beauvais) (PD)"
 ""
+
+"Cart.MD5" "dde55d9868911407fe8b3fefef396f00"
+"Cart.Manufacturer" "Manuel Rotschkar (Xype)"
+"Cart.Name" "Seawolf (2004)"
+"Cart.Highscore" "{\"notes\":\"User defined variation based on switches\",\"score_addresses\":[\"0x90\",\"0x91\",\"0x92\"],\"score_digits\":6,\"variations_address\":\"0x00\",\"variations_count\":4}"
+""
+
 
 "Cart.MD5" "de0173ed6be9de6fd049803811e5f1a8"
 "Cart.Manufacturer" "Xonox - K-Tel Software - Product Guild, Anthony R. Henderson"
@@ -18350,6 +18785,7 @@
 "Cart.Manufacturer" "Activision, David Crane"
 "Cart.ModelNo" "AX-014, AX-014-04"
 "Cart.Name" "Grand Prix (1982) (Activision) (16K)"
+"Cart.Highscore" "{\"notes\":\"Time/score shows extra digit\",\"score_addresses\":[\"0xeb\",\"0xec\",\"0xed\"],\"score_digits\":5,\"score_inverted\":true,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "de5aab22e5aba5edcb29a3e7491ff319"
@@ -18364,12 +18800,14 @@
 "Cart.ModelNo" "SS-005"
 "Cart.Name" "Tom Boy (1983) (Rainbow Vision) (PAL)"
 "Cart.Note" "AKA Pitfall!"
+"Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "de62f8a30298e2325249fe112ecb5c10"
 "Cart.Manufacturer" "CCE"
 "Cart.ModelNo" "C-810"
 "Cart.Name" "Enduro (1983) (CCE)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xa9\",\"0xa8\"],\"score_digits\":6,\"special_address\":\"0xad\",\"special_label\":\"Day\",\"variations_count\":1}"
 ""
 
 "Cart.MD5" "de78b3a064d374390ac0710f95edde92"
@@ -18439,6 +18877,7 @@
 "Cart.Note" "Hack of Asteroids"
 "Cart.Rarity" "Hack"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
 ""
 
 "Cart.MD5" "df5cc5cccdc140eb7107f5b8adfacda1"
@@ -18596,6 +19035,7 @@
 "Cart.Name" "Space Invaders (1978) (Atari) [h1]"
 "Cart.Note" "Hack of Space Invaders (Atari)"
 "Cart.Rarity" "New Release (Hack)"
+"Cart.Highscore" "{\"notes\":\"Only player 1 supported\",\"score_addresses\":[\"0xe6\",\"0xe8\"],\"variations_address\":\"0xdc\",\"variations_bcd\":false,\"variations_bcd_A\":false,\"variations_count\":112,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "e10d2c785aadb42c06390fae0d92f282"
@@ -18645,6 +19085,7 @@
 "Cart.Name" "Kaboom! (1981) (Activision) (16K)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.MouseAxis" "01 50"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "e14feddeb82f5160ed5cf9ca4078e58d"
@@ -18678,6 +19119,7 @@
 "Cart.Name" "Rumble 2600 (Grimlock) (Hack)"
 "Cart.Note" "Hack of Mario Bros."
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"score_addresses\":[\"0x89\",\"0x8a\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x80\",\"variations_count\":8,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "e1a51690792838c5c687da80cd764d78"
@@ -18689,6 +19131,7 @@
 "Cart.MD5" "e1b90f1e01b1a316d7bbf141525cc00e"
 "Cart.Name" "Sky Jinks (Unknown) (PAL) (4K) (Hack)"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"score_addresses\":[\"0x9e\",\"0xa6\",\"0xa2\"],\"score_digits\":6,\"score_inverted\":true,\"variations_address\":\"0x99\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "e1d5c8213e82820128fa9c4775f1e166"
@@ -18696,6 +19139,7 @@
 "Cart.Name" "Jungle King (2003) (Jess Ragan) (Hack)"
 "Cart.Note" "Hack of Jungle Hunt"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"score_addresses\":[\"0x85\",\"0x84\",\"0x83\"],\"score_digits\":6,\"variations_address\":\"0x8b\",\"variations_count\":2,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "e1d79e4e7c150f3861256c541ec715a1"
@@ -18713,6 +19157,7 @@
 "Cart.MD5" "e1efe2ef7664bb6758b1a22ff8ea16a1"
 "Cart.Manufacturer" "Dynacom"
 "Cart.Name" "Enduro (1983) (Dynacom)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xa9\",\"0xa8\"],\"score_digits\":6,\"special_address\":\"0xad\",\"special_label\":\"Day\",\"variations_count\":1}"
 ""
 
 "Cart.MD5" "e1f88da6da8a7d521ca1dcbf2bc6978b"
@@ -18771,6 +19216,7 @@
 "Cart.Manufacturer" "Manuel Polik"
 "Cart.Name" "Star Fire (2003) (XYPE) (PAL)"
 "Cart.Rarity" "Homebrew"
+"Cart.Highscore" "{\"score_addresses\":[\"0x81\",\"0x82\",\"0x83\"],\"score_digits\":6,\"special_address\":\"0x84\",\"special_label\":\"Wave\",\"special_zero_based\":true,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "e28113d10c0c14cc3b5f430b0d142fcb"
@@ -18778,6 +19224,7 @@
 "Cart.ModelNo" "C-816"
 "Cart.Name" "Keystone Kappers (1983) (CCE) [a]"
 "Cart.Note" "AKA Keystone Kapers"
+"Cart.Highscore" "{\"score_addresses\":[\"0x9a\",\"0x9b\",\"0x9c\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "e2846af3e4d172b251ab77cbdd01761e"
@@ -18840,6 +19287,7 @@
 "Cart.ModelNo" "EAB-035-04 - 711 035-721"
 "Cart.Name" "Pitfall II (1984) (Activision) (PAL)"
 "Cart.Note" "Lost Caverns"
+"Cart.Highscore" "{\"score_addresses\":[\"0xc7\",\"0xc8\",\"0xc9\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "e3533684a7ef930a7fbd0c4dd8ec4847"
@@ -18884,6 +19332,7 @@
 "Cart.Name" "Joshua Invaders (Hack)"
 "Cart.Note" "Hack of Space Invaders"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"notes\":\"Only player 1 supported\",\"score_addresses\":[\"0xe6\",\"0xe8\"],\"variations_address\":\"0xdc\",\"variations_bcd\":false,\"variations_bcd_A\":false,\"variations_count\":112,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "e39a13b13dc82c5fdbfbbfd55ba1230e"
@@ -18914,6 +19363,7 @@
 
 "Cart.MD5" "e42b937c30c617241ca9e01e4510c3f6"
 "Cart.Name" "Pitfall! (No Walls Hack)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "e434c0e161dd3c3fb435eb6bad2e182c"
@@ -18927,6 +19377,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Centipede - Atari Trak-Ball Hack v1.4 (PAL60) (Full-Speed) (TJ)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "e49ac0ec879a0d7820bc2598fc2cfcd4"
@@ -18934,6 +19385,7 @@
 "Cart.Name" "Kaboom! (CCE) (4K)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.MouseAxis" "01 50"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "e4a0b28befaaa2915df1fa01238b1e29"
@@ -19042,6 +19494,7 @@
 "Cart.MD5" "e558be88eef569f33716e8e330d2f5bc"
 "Cart.Manufacturer" "Shock Vision"
 "Cart.Name" "Keystone Kapers (Shock Vision)"
+"Cart.Highscore" "{\"score_addresses\":[\"0x9a\",\"0x9b\",\"0x9c\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "e56da674188ba2f02c7a0a343a01236f"
@@ -19063,6 +19516,7 @@
 "Cart.Name" "Starmaster (Genesis)"
 "Cart.Note" "Genesis controller (C switches to map mode)"
 "Cart.Rarity" "Hack of Starmaster"
+"Cart.Highscore" "{\"notes\":\"Score only calculated when game is over\",\"score_addresses\":[\"0xc1\",\"0xc2\"],\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "e5d5085123a98c1e61818caa2971e999"
@@ -19103,6 +19557,7 @@
 "Cart.Manufacturer" "CCE"
 "Cart.ModelNo" "C-826"
 "Cart.Name" "Grand Prix (1983) (CCE) [a]"
+"Cart.Highscore" "{\"notes\":\"Time/score shows extra digit\",\"score_addresses\":[\"0xeb\",\"0xec\",\"0xed\"],\"score_digits\":5,\"score_inverted\":true,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "e5fcc62e1d73706be7b895e887e90f84"
@@ -19162,6 +19617,7 @@
 "Cart.MD5" "e6508b878145187b87b9cded097293e7"
 "Cart.Name" "Oystron (V2.8) (Piero Cavina) (PD)"
 "Cart.Rarity" "New Release"
+"Cart.Highscore" "{\"score_addresses\":[\"0xd4\",\"0xd3\"],\"score_digits\":5,\"score_trailing_zeroes\":1,\"variations_address\":\"0xe5\",\"variations_count\":3,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "e66e5af5dea661d58420088368e4ef0d"
@@ -19209,6 +19665,7 @@
 "Cart.Note" "Hack of Kaboom!"
 "Cart.Rarity" "Hack"
 "Controller.MouseAxis" "01 50"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "e72eb8d4410152bdcb69e7fba327b420"
@@ -19216,6 +19673,7 @@
 "Cart.ModelNo" "CX26136"
 "Cart.Name" "Solaris (1986) (Atari)"
 "Cart.Note" "AKA Universe, Star Raiders II, The Last Starfighter"
+"Cart.Highscore" "{\"score_addresses\":[\"0xde\",\"0xdd\",\"0xdc\"],\"score_digits\":6,\"score_trailing_zeroes\":1,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "e72ee2d6e501f07ec5e8a0efbe520bee"
@@ -19245,6 +19703,7 @@
 "Cart.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
 "Cart.Name" "Hey! Stop! (Jone Yuan)"
 "Cart.Note" "AKA Keystone Kapers"
+"Cart.Highscore" "{\"score_addresses\":[\"0x9a\",\"0x9b\",\"0x9c\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "e784a9d26707cfcd170a4c1c60422a72"
@@ -19269,6 +19728,7 @@
 "Cart.ModelNo" "EAX-013, PAX-013, 711 013-720"
 "Cart.Name" "Barnstorming (1982) (Activision) (PAL)"
 "Cart.Note" "AKA Die tollkeuhnen Flieger"
+"Cart.Highscore" "{\"score_addresses\":[\"0xb5\",\"0xb6\",\"0xb7\"],\"score_digits\":6,\"score_inverted\":true,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "e7f005ddb6902c648de098511f6ae2e5"
@@ -19341,6 +19801,7 @@
 "Cart.Manufacturer" "Atari, Dan Hitchens, Mimi Nyden"
 "Cart.ModelNo" "CX2697"
 "Cart.Name" "Mario Bros. (1983) (Atari)"
+"Cart.Highscore" "{\"score_addresses\":[\"0x89\",\"0x8a\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x80\",\"variations_count\":8,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "e91d2ecf8803ae52b55bbf105af04d4b"
@@ -19348,6 +19809,7 @@
 "Cart.ModelNo" "CX2655, CX2655P"
 "Cart.Name" "Yars' Revenge (1982) (Atari) (PAL)"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"notes\":\"Variations are larger by 1\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":8,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "e923001015bedd7901569f035d9c592c"
@@ -19410,11 +19872,13 @@
 "Cart.Name" "Millipede (Atari Mouse) v6.5 (Omegamatrix)"
 "Cart.Note" "Uses Atari Mouse Controller"
 "Display.Format" "PAL60"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "e9e646f730b8400cd5da08c849ef3e3b"
 "Cart.Manufacturer" "Tron"
 "Cart.Name" "Enduro (Tron)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xa9\",\"0xa8\"],\"score_digits\":6,\"special_address\":\"0xad\",\"special_label\":\"Day\",\"variations_count\":1}"
 ""
 
 "Cart.MD5" "e9e6ad30549a6e2cd89fe93b7691d447"
@@ -19540,6 +20004,7 @@
 "Cart.Manufacturer" "Atari"
 "Cart.ModelNo" "CX26150P"
 "Cart.Name" "Q-bert (1987) (Atari) (PAL)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xd9\",\"0xda\",\"0xdb\"],\"score_digits\":5,\"special_address\":\"0xe3\",\"special_label\":\"Round\",\"special_zero_based\":true,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "eb71743c6c7ccce5b108fad70a326ad9"
@@ -19550,6 +20015,7 @@
 "Cart.Manufacturer" "Activision, John Van Ryzin"
 "Cart.ModelNo" "EAZ-036-04"
 "Cart.Name" "H.E.R.O. (1984) (Activision) (SECAM)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xb7\",\"0xb8\",\"0xb9\"],\"score_digits\":6,\"special_address\":\"0xf5\",\"special_bcd\":false,\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_address\":\"0x80\",\"variations_count\":5,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "eb92193f06b645df0b2a15d077ce435f"
@@ -19580,6 +20046,7 @@
 "Cart.Manufacturer" "Activision, Steve Cartwright"
 "Cart.ModelNo" "AX-022"
 "Cart.Name" "Seaquest (1983) (Activision) (16K)"
+"Cart.Highscore" "{\"notes\":\"High score is from current player\",\"score_addresses\":[\"0xb8\",\"0xb9\",\"0xba\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "ebd2488dcace40474c1a78fa53ebfadf"
@@ -19594,6 +20061,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Centipede - Amiga Mouse Hack v1.4 (NTSC) (Half-Speed) (TJ)"
 "Cart.Note" "Uses Amiga Mouse Controller"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "ebf2dff78a08733251bf3838f02f7938"
@@ -19638,6 +20106,7 @@
 "Cart.MD5" "ece908d77ab944f7bac84322b9973549"
 "Cart.Name" "Tom Boy (Unknown) (PAL60)"
 "Cart.Note" "AKA Pitfall!"
+"Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "ecf51385384b468834611d44a8429c03"
@@ -19708,6 +20177,7 @@
 "Cart.Name" "Kaboom! (1981) (Activision) (8K)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.MouseAxis" "01 50"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "eddef10fdc0029301064115ae0cd41d4"
@@ -19719,6 +20189,7 @@
 "Cart.Manufacturer" "Activision, David Crane"
 "Cart.ModelNo" "EAZ-030"
 "Cart.Name" "Decathlon (1983) (Activision) (SECAM)"
+"Cart.Highscore" "{\"notes\":\"Decathlon & 100m dash share variation 1\",\"score_addresses\":[\"0x95\",\"0x96\"],\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":10,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "ede7e8bf865b0afb4744f86d13624f9a"
@@ -19746,6 +20217,7 @@
 "Cart.Name" "Super Breakout (1982 - 1981) (Atari) (PAL)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.MouseAxis" "01 45"
+"Cart.Highscore" "{\"score_addresses\":[\"0xdc\",\"0xdd\"],\"variations_address\":\"0xc0\",\"variations_count\":9}"
 ""
 
 "Cart.MD5" "ee659ae50e9df886ac4f8d7ad10d046a"
@@ -19783,6 +20255,7 @@
 "Cart.Manufacturer" "Canal 3 - Intellivision"
 "Cart.Name" "Yars' Revenge (Canal 3)"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"notes\":\"Variations are larger by 1\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":8,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "ee84bdc5dae268e227e407c7b5e6b6b7"
@@ -19889,10 +20362,12 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Centipede - Atari Mouse Hack v1.4 (NTSC) (Half-Speed) (TJ)"
 "Cart.Note" "Uses Atari Mouse Controller"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "efffafc17b7cb01b9ca35324aa767364"
 "Cart.Name" "Circus Atari (Unknown)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xab\"],\"variations_address\":\"0xa8\",\"variations_count\":8}"
 ""
 
 "Cart.MD5" "f02ba8b5292bf3017d10553c9b7b2861"
@@ -19971,6 +20446,7 @@
 "Cart.Name" "Boring Donkey Kong (Hack)"
 "Cart.Note" "Hack of Donkey Kong"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"score_addresses\":[\"0x87\",\"0x88\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "f0d393dbf4164a688b2346770c9bbd12"
@@ -19994,6 +20470,7 @@
 "Cart.ModelNo" "720000-200, 720101-1B, 720101-1C, IA3200, IA3200C, IX-006-04"
 "Cart.Name" "Demon Attack (1982) (Imagic)"
 "Cart.Note" "AKA Death from Above"
+"Cart.Highscore" "{\"score_addresses\":[\"0x81\",\"0x83\",\"0x85\"],\"score_digits\":6,\"special_address\":\"0x80\",\"special_label\":\"Wave\",\"special_zero_based\":true,\"variations_address\":\"0xea\",\"variations_count\":10}"
 ""
 
 "Cart.MD5" "f0ef9a1e5d4027a157636d7f19952bb5"
@@ -20040,6 +20517,7 @@
 "Cart.Rarity" "Homebrew"
 "Console.RightDiff" "A"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"score_addresses\":[\"0x8e\",\"0x8d\",\"0x8c\"],\"score_digits\":6,\"special_address\":\"0x89\",\"special_bcd\":false,\"special_label\":\"Part\",\"special_zero_based\":true,\"variations_address\":\"0x8a\",\"variations_count\":3,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "f14d5e96ec3380aef57a4b70132c6677"
@@ -20079,6 +20557,7 @@
 "Cart.Name" "Solaris Trainer (2002) (Chris Larkin) (Hack)"
 "Cart.Note" "Hack of Solaris"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"score_addresses\":[\"0xde\",\"0xdd\",\"0xdc\"],\"score_digits\":6,\"score_trailing_zeroes\":1,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "f1a0a23e6464d954e3a9579c4ccd01c8"
@@ -20104,6 +20583,7 @@
 "Cart.Manufacturer" "Atari, Richard Maurer"
 "Cart.ModelNo" "CX2632, CX2632P"
 "Cart.Name" "Space Invaders (1980) (Atari) (PAL)"
+"Cart.Highscore" "{\"notes\":\"Only player 1 supported\",\"score_addresses\":[\"0xe6\",\"0xe8\"],\"variations_address\":\"0xdc\",\"variations_bcd\":false,\"variations_bcd_A\":false,\"variations_count\":112,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "f1beca5a198cf08190487e5c27b8e540"
@@ -20156,6 +20636,7 @@
 "Cart.ModelNo" "463.860 7"
 "Cart.Name" "Strahlen der Teufelsvoegel (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Atlantis"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa2\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x8d\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "f280976d69d6e27a48506bd6bad11dcd"
@@ -20181,6 +20662,7 @@
 "Cart.Manufacturer" "Canal 3 - Intellivision"
 "Cart.ModelNo" "C 3014"
 "Cart.Name" "Keystone Kapers (Canal 3)"
+"Cart.Highscore" "{\"score_addresses\":[\"0x9a\",\"0x9b\",\"0x9c\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "f2d40c70cf3e1d03bc112796315888d9"
@@ -20248,6 +20730,7 @@
 "Cart.Name" "Breakout (1978) (Atari)"
 "Cart.Note" "Uses the Paddle Controllers"
 "Controller.MouseAxis" "01 60"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xce\",\"0xcd\"],\"score_digits\":3,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "f367e58667a30e7482175809e3cec4d4"
@@ -20287,6 +20770,7 @@
 "Cart.Note" "AKA Circus Atari"
 "Controller.Left" "JOYSTICK"
 "Controller.Right" "JOYSTICK"
+"Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xab\"],\"variations_address\":\"0xa8\",\"variations_count\":8}"
 ""
 
 "Cart.MD5" "f3f5f72bfdd67f3d0e45d097e11b8091"
@@ -20316,6 +20800,7 @@
 "Cart.MD5" "f4469178cd8998cb437fa110a228eaca"
 "Cart.Manufacturer" "Digitel"
 "Cart.Name" "Frostbite (1983) (Digitel)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xc8\",\"0xc9\",\"0xca\"],\"score_digits\":6,\"special_address\":\"0xcb\",\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "f45644ff82b533a781a1ee50f2e95f3c"
@@ -20333,6 +20818,7 @@
 "Cart.Name" "Donkey Claus (Philip R. Frey) (Hack)"
 "Cart.Note" "Hack of Donkey Kong"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"score_addresses\":[\"0x87\",\"0x88\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "f48022230bb774a7f22184b48a3385af"
@@ -20433,6 +20919,7 @@
 "Cart.MD5" "f5a3e051730d45fea518f2e8b926565b"
 "Cart.Manufacturer" "Robby"
 "Cart.Name" "Keystone Kapers (Robby)"
+"Cart.Highscore" "{\"score_addresses\":[\"0x9a\",\"0x9b\",\"0x9c\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "f5aa6bd10f662199c42e43863a30106c"
@@ -20501,6 +20988,7 @@
 "Cart.MD5" "f6a9ea814d15b85bffe980c927df606b"
 "Cart.Name" "Missile Command (Unknown) (PAL)"
 "Display.Phosphor" "YES"
+"Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
 ""
 
 "Cart.MD5" "f6b5ebb65cbb2981af4d546c470629d7"
@@ -20570,6 +21058,7 @@
 "Cart.Manufacturer" "CCE"
 "Cart.ModelNo" "C-813"
 "Cart.Name" "Pitfall (1983) (CCE)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "f7424985bac41067502b4a05b64cb75a"
@@ -20696,6 +21185,7 @@
 "Cart.ModelNo" "AX-013"
 "Cart.Name" "Barnstorming (1982) (Activision)"
 "Cart.Rarity" "Uncommon"
+"Cart.Highscore" "{\"score_addresses\":[\"0xb5\",\"0xb6\",\"0xb7\"],\"score_digits\":6,\"score_inverted\":true,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "f825c538481f9a7a46d1e9bc06200aaf"
@@ -20732,6 +21222,7 @@
 "Cart.Name" "Chopper Command (Jone Yuan) (Hack)"
 "Cart.Note" "2600 Screen Search Console"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"score_addresses\":[\"0xec\",\"0xee\",\"0xf0\"],\"score_digits\":6,\"variations_address\":\"0xe0\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "f8b2a6a4d73ebff10d805a9b59041986"
@@ -20812,6 +21303,7 @@
 "Cart.MD5" "f9660ebed66fee8bdfdf07b4faa22941"
 "Cart.Manufacturer" "VGS"
 "Cart.Name" "Vanguard (VGS)"
+"Cart.Highscore" "{\"notes\":\"Score is for current player\",\"score_addresses\":[\"0x99\",\"0x98\",\"0x97\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "f9677b2ec8728a703eb710274474613d"
@@ -20845,6 +21337,7 @@
 "Cart.MD5" "f992a39b46aa48188fab12ad3809ae4a"
 "Cart.Name" "Sky Jinks (Unknown) (PAL) (Hack)"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"score_addresses\":[\"0x9e\",\"0xa6\",\"0xa2\"],\"score_digits\":6,\"score_inverted\":true,\"variations_address\":\"0x99\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "f9967369943209b4788d4e92cefc0795"
@@ -20881,6 +21374,7 @@
 "Cart.Name" "Kaboom! (1981) (Activision) (PAL)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.MouseAxis" "01 50"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "fa0570561aa80896f0ead05c46351389"
@@ -20939,6 +21433,7 @@
 "Cart.Name" "Mystery Science Theater 2600 (1999) (Tim Snider) (Hack)"
 "Cart.Note" "Hack of Megamania"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"score_addresses\":[\"0xdb\",\"0xdc\",\"0xdd\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "fa98d48cd609c9babc819e0a1bd8d598"
@@ -20964,6 +21459,7 @@
 "Cart.MD5" "fac28963307b6e85082ccd77c88325e7"
 "Cart.Manufacturer" "CCE"
 "Cart.Name" "Berzerk (CCE)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xdd\",\"0xde\",\"0xdf\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":12}"
 ""
 
 "Cart.MD5" "fadb89f9b23beb4d43a7895c532757e2"
@@ -21047,6 +21543,7 @@
 "Cart.Manufacturer" "Manuel Polik"
 "Cart.Name" "Star Fire (2003) (XYPE)"
 "Cart.Rarity" "Homebrew"
+"Cart.Highscore" "{\"score_addresses\":[\"0x81\",\"0x82\",\"0x83\"],\"score_digits\":6,\"special_address\":\"0x84\",\"special_label\":\"Wave\",\"special_zero_based\":true,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "fb88c400d602fe759ae74ef1716ee84e"
@@ -21150,6 +21647,7 @@
 "Cart.Manufacturer" "Activision, John Van Ryzin"
 "Cart.ModelNo" "AZ-036-04"
 "Cart.Name" "H.E.R.O. (1984) (Activision)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xb7\",\"0xb8\",\"0xb9\"],\"score_digits\":6,\"special_address\":\"0xf5\",\"special_bcd\":false,\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_address\":\"0x80\",\"variations_count\":5,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "fcbbd0a407d3ff7bf857b8a399280ea1"
@@ -21182,6 +21680,7 @@
 "Cart.Manufacturer" "Activision, Steve Cartwright - Ariola"
 "Cart.ModelNo" "EAX-022, EAX-022-04I - 711 022-720"
 "Cart.Name" "Seaquest (1983) (Activision) (PAL)"
+"Cart.Highscore" "{\"notes\":\"High score is from current player\",\"score_addresses\":[\"0xb8\",\"0xb9\",\"0xba\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "fd10915633aea4f9cd8b518a25d62b55"
@@ -21226,6 +21725,7 @@
 "Cart.Manufacturer" "Atari - GCC, Mike Feinstein, John Mracek"
 "Cart.ModelNo" "CX2673, CX2673P"
 "Cart.Name" "Phoenix (1982) (Atari) (PAL) [a]"
+"Cart.Highscore" "{\"score_addresses\":[\"0xc9\",\"0xc8\",\"0xc7\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "fd9b321cee5fbb32c39ba3ca5d9ec7cf"
@@ -21307,6 +21807,7 @@
 "Cart.MD5" "feba8686fd0376015258d1152923958a"
 "Cart.Name" "Super Circus (Unknown) (PAL)"
 "Cart.Note" "AKA Circus Atari"
+"Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xab\"],\"variations_address\":\"0xa8\",\"variations_count\":8}"
 ""
 
 "Cart.MD5" "fec0c2e2ab0588ed20c750b58cf3baa3"
@@ -21314,6 +21815,7 @@
 "Cart.ModelNo" "EAZ-037-04, EAZ-037-04I"
 "Cart.Name" "Beamrider (1984) (Activision) (PAL)"
 "Cart.Rarity" "Rare"
+"Cart.Highscore" "{\"score_addresses\":[\"0x8b\",\"0x8a\",\"0x89\"],\"score_digits\":6,\"special_address\":\"0x80\",\"special_label\":\"Sect.\",\"variations_count\":1}"
 ""
 
 "Cart.MD5" "fece458a8023a809a5006867feca40e8"
@@ -21395,6 +21897,7 @@
 "Cart.Manufacturer" "CCE"
 "Cart.ModelNo" "C-827"
 "Cart.Name" "Chopper Command (1983) (CCE) [a]"
+"Cart.Highscore" "{\"score_addresses\":[\"0xec\",\"0xee\",\"0xf0\"],\"score_digits\":6,\"variations_address\":\"0xe0\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "ffe51989ba6da2c6ae5a12d277862e16"

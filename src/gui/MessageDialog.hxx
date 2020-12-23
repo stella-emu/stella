@@ -18,7 +18,6 @@
 #ifndef MESSAGE_DIALOG_HXX
 #define MESSAGE_DIALOG_HXX
 
-class Properties;
 class CommandSender;
 class DialogContainer;
 class OSystem;
@@ -27,36 +26,36 @@ class OSystem;
 
 class MessageDialog : public Dialog
 {
-public:
-  MessageDialog(OSystem& osystem, DialogContainer& parent,
-                const GUI::Font& font, int max_w, int max_h);
-  ~MessageDialog() override;
+  public:
+    MessageDialog(OSystem& osystem, DialogContainer& parent,
+                  const GUI::Font& font, int max_w, int max_h);
+    ~MessageDialog() override;
 
-  // Define the message displayed
-  void setMessage(const string& title, const string& text, bool yesNo = false);
-  void setMessage(const string& title, const StringList& text, bool yesNo = false);
-  bool confirmed() { return myConfirmed; }
+    // Define the message displayed
+    void setMessage(const string& title, const string& text, bool yesNo = false);
+    void setMessage(const string& title, const StringList& text, bool yesNo = false);
+    bool confirmed() { return myConfirmed; }
 
-protected:
-  void loadConfig() override;
-  void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+  protected:
+    void loadConfig() override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
-private:
-  static string myTitle;
-  static StringList myText;
-  static bool myYesNo;
-  static bool myConfirmed;
+  private:
+    static string myTitle;
+    static StringList myText;
+    static bool myYesNo;
+    static bool myConfirmed;
 
-  // Show a message
-  GUI::MessageBox* myMsg{nullptr};
+    // Show a message
+    GUI::MessageBox* myMsg{nullptr};
 
-private:
-  // Following constructors and assignment operators not supported
-  MessageDialog() = delete;
-  MessageDialog(const MessageDialog&) = delete;
-  MessageDialog(MessageDialog&&) = delete;
-  MessageDialog& operator=(const MessageDialog&) = delete;
-  MessageDialog& operator=(MessageDialog&&) = delete;
+  private:
+    // Following constructors and assignment operators not supported
+    MessageDialog() = delete;
+    MessageDialog(const MessageDialog&) = delete;
+    MessageDialog(MessageDialog&&) = delete;
+    MessageDialog& operator=(const MessageDialog&) = delete;
+    MessageDialog& operator=(MessageDialog&&) = delete;
 };
 
 #endif

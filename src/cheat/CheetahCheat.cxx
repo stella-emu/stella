@@ -23,9 +23,9 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CheetahCheat::CheetahCheat(OSystem& os, const string& name, const string& code)
   : Cheat(os, name, code),
-    address(0xf000 + unhex(code.substr(0, 3))),
-    value(uInt8(unhex(code.substr(3, 2)))),
-    count(uInt8(unhex(code.substr(5, 1)) + 1))
+    address{uInt16(0xf000 + unhex(code.substr(0, 3)))},
+    value{uInt8(unhex(code.substr(3, 2)))},
+    count{uInt8(unhex(code.substr(5, 1)) + 1)}
 {
   // Back up original data; we need this if the cheat is ever disabled
   for(int i = 0; i < count; ++i)

@@ -65,8 +65,7 @@ R77HelpDialog::R77HelpDialog(OSystem& osystem, DialogContainer& parent,
   myTitle = new StaticTextWidget(this, font, xpos, ypos, _w - HBORDER * 2, fontHeight,
     "", TextAlign::Center);
 
-  int jwidth = 11 * fontWidth;
-  int bwidth = 11 * fontWidth;
+  const int jwidth = 11 * fontWidth, bwidth = jwidth;
   xpos = HBORDER;  ypos += lineHeight + 4;
   for (uInt8 i = 0; i < LINES_PER_PAGE; ++i)
   {

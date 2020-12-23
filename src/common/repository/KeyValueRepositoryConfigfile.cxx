@@ -18,18 +18,9 @@
 #include "KeyValueRepositoryConfigfile.hxx"
 #include "Logger.hxx"
 
-namespace {
-  string trim(const string& str)
-  {
-    string::size_type first = str.find_first_not_of(' ');
-    return (first == string::npos) ? EmptyString :
-            str.substr(first, str.find_last_not_of(' ')-first+1);
-  }
-}
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 KeyValueRepositoryConfigfile::KeyValueRepositoryConfigfile(const FilesystemNode& file)
-  : myFile(file)
+  : myFile{file}
 {
 }
 
@@ -67,8 +58,8 @@ std::map<string, Variant> KeyValueRepositoryConfigfile::load()
       continue;
 
     // Split the line into key/value pairs and trim any whitespace
-    key   = trim(line.substr(0, equalPos));
-    value = trim(line.substr(equalPos + 1, line.length() - key.length() - 1));
+    key   = BSPF::trim(line.substr(0, equalPos));
+    value = BSPF::trim(line.substr(equalPos + 1, line.length() - key.length() - 1));
 
     // Skip absent key
     if(key.length() == 0)
@@ -100,8 +91,8 @@ void KeyValueRepositoryConfigfile::save(const std::map<string, Variant>& values)
       << ";" << endl;
 
   // Write out each of the key and value pairs
-  for(const auto& pair: values)
-    out << pair.first << " = " << pair.second << endl;
+  for(const auto& [key, value]: values)
+    out << key << " = " << value << endl;
 
   try
   {

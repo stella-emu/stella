@@ -27,12 +27,12 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
                    CartDebug::AddrTypeArray& labels,
                    CartDebug::AddrTypeArray& directives,
                    CartDebug::ReservedEquates& reserved)
-  : myDbg(dbg),
-    myList(list),
-    mySettings(s),
-    myReserved(reserved),
-    myLabels(labels),
-    myDirectives(directives)
+  : myDbg{dbg},
+    myList{list},
+    mySettings{s},
+    myReserved{reserved},
+    myLabels{labels},
+    myDirectives{directives}
 {
   bool resolve_code = mySettings.resolveCode;
   CartDebug::AddressList& debuggerAddresses = info.addressList;

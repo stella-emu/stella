@@ -29,22 +29,22 @@ my %prop_type = (
   "Display.Format"            => 23,
   "Display.VCenter"           => 24,
   "Display.Phosphor"          => 25,
-  "Display.PPBlend"           => 26
+  "Display.PPBlend"           => 26,
+  "Cart.Highscore"	      => 27
 );
 my @prop_type_as_string = (
-  "Cart.MD5",
-  "Cart.Manufacturer",
-  "Cart.ModelNo",
-  "Cart.Name",
-  "Cart.Note",
-  "Cart.Rarity",
-  "Cart.Sound",
-  "Cart.StartBank",
-  "Cart.Type",
-  "Console.LeftDiff",
-  "Console.RightDiff",
-  "Console.TVType",
-  "Console.SwapPorts",
+  "Cart.MD5",			
+  "Cart.Manufacturer",		
+  "Cart.ModelNo",		
+  "Cart.Name",			
+  "Cart.Note",			
+  "Cart.Rarity",		
+  "Cart.Sound",			   
+  "Cart.StartBank",		   
+  "Cart.Type",			   
+  "Console.LeftDiff",		
+  "Console.RightDiff",		
+  "Console.TVType",		    
   "Controller.Left",
   "Controller.Left1",
   "Controller.Left2",
@@ -58,37 +58,42 @@ my @prop_type_as_string = (
   "Display.Format",
   "Display.VCenter",
   "Display.Phosphor",
-  "Display.PPBlend"
-);
+  "Display.PPBlend",
+  "Cart_Highscore"
+);				
 
 my @prop_defaults = (
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "MONO",
-  "AUTO",
-  "AUTO",
-  "B",
-  "B",
-  "COLOR",
-  "NO",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "NO",
-  "0",
-  "0",
-  "AUTO",
-  "AUTO",
-  "0",
-  "NO",
-  "0"
+  "",		# Cart.MD5                 			
+  "",		# Cart.Manufacturer        
+  "",		# Cart.ModelNo             
+  "",		# Cart.Name                
+  "",		# Cart.Note                
+  "",		# Cart.Rarity              
+  "MONO",	# Cart.Sound               
+  "AUTO",	# Cart.StartBank           
+  "AUTO",	# Cart.Type                
+  "B",		# Console.LeftDiff         
+  "B",		# Console.RightDiff        
+  "COLOR",	# Console.TVType           
+  "NO",		# Console.SwapPorts        
+  "",		# Controller.Left          
+  "",		# Controller.Left1         
+  "",		# Controller.Left2         
+  "",		# Controller.Right         
+  "",		# Controller.Right1        
+  "",		# Controller.Right2        
+  "NO",		# Controller.SwapPaddles   
+  "0",		# Controller.PaddlesXCenter
+  "0",		# Controller.PaddlesYCenter
+  "AUTO",	# Controller.MouseAxis     
+  "AUTO",	# Display.Format           
+  "0",		# Display.VCenter          
+  "NO",		# Display.Phosphor         
+  "0",		# Display.PPBlend          
+  "1",		# Cart.Variations          
+  "",		# Cart.Formats             
+  "",		# Cart.Addresses           
+  ""	        # Cart.Highscore
 );
 
 # Load and parse a properties file into an hash table of property

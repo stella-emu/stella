@@ -306,6 +306,13 @@ static void Decode(uInt32* output, const uInt8* input, uInt32 len)
     ((uInt32(input[j+2])) << 16) | ((uInt32(input[j+3])) << 24);
 }
 
+string hash(const string& buffer)
+{
+  std::vector<uint8_t> vec(buffer.begin(), buffer.end());
+
+  return hash(vec.data(), vec.size());
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string hash(const ByteBuffer& buffer, size_t length)
 {

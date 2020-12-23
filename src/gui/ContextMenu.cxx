@@ -31,12 +31,12 @@ ContextMenu::ContextMenu(GuiObject* boss, const GUI::Font& font,
                          const VariantList& items, int cmd, int width)
   : Dialog(boss->instance(), boss->parent(), font),
     CommandSender(boss),
-    _rowHeight(font.getLineHeight()),
-    _cmd(cmd),
-    _maxWidth(width)
+    _rowHeight{font.getLineHeight()},
+    _cmd{cmd},
+    _maxWidth{width}
 {
-  addItems(items);
   setArrows();
+  addItems(items);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -48,10 +48,10 @@ void ContextMenu::addItems(const VariantList& items)
   // Resize to largest string
   int maxwidth = _maxWidth;
   for(const auto& e: _entries)
-    maxwidth = std::max(maxwidth, _font.getStringWidth(e.first));
+    maxwidth = std::max(maxwidth, _font.getStringWidth(e.first) + _textOfs * 2 + 2);
 
   _x = _y = 0;
-  _w = maxwidth + PopUpWidget::dropDownWidth(_font); // 23;
+  _w = maxwidth;
   _h = 1;  // recalculate this in ::recalc()
 
   _scrollUpColor = _firstEntry > 0 ? kScrollColor : kColor;
@@ -123,27 +123,25 @@ void ContextMenu::setSelectedIndex(int idx)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::setSelected(const Variant& tag, const Variant& defaultTag)
 {
-  if(tag != "")  // indicates that the defaultTag should be used instead
+  auto SEARCH_AND_SELECT = [&](const Variant& t)
   {
     for(uInt32 item = 0; item < _entries.size(); ++item)
     {
-      if(BSPF::equalsIgnoreCase(_entries[item].second.toString(), tag.toString()))
+      if(BSPF::equalsIgnoreCase(_entries[item].second.toString(), t.toString()))
       {
         setSelectedIndex(item);
-        return;
+        return true;
       }
     }
-  }
+    return false;
+  };
 
-  // If we get this far, the value wasn't found; use the default value
-  for(uInt32 item = 0; item < _entries.size(); ++item)
-  {
-    if(BSPF::equalsIgnoreCase(_entries[item].second.toString(), defaultTag.toString()))
-    {
-      setSelectedIndex(item);
-      return;
-    }
-  }
+  // First try searching for a valid tag
+  bool tagSelected = tag != "" && SEARCH_AND_SELECT(tag);
+
+  // Otherwise use the default tag
+  if(!tagSelected)
+    SEARCH_AND_SELECT(defaultTag);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -349,7 +347,6 @@ void ContextMenu::drawCurrentSelection(int item)
   if(_selectedOffset != item)
   {
     _selectedOffset = item;
-    cerr << "ContextMenu" << endl;
     setDirty();
   }
 }

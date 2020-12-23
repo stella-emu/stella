@@ -26,7 +26,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TIADebug::TIADebug(Debugger& dbg, Console& console)
   : DebuggerSystem(dbg, console),
-    myTIA(console.tia())
+    myTIA{console.tia()}
 {
 }
 
