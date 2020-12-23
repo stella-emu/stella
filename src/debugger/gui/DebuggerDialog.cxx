@@ -489,6 +489,8 @@ void DebuggerDialog::createBrowser(const string& title)
 {
   uInt32 w = 0, h = 0;
   getDynamicBounds(w, h);
+  if(w > uInt32(_font.getMaxCharWidth() * 80))
+    w = _font.getMaxCharWidth() * 80;
 
   // Create file browser dialog
   if(!myBrowser || uInt32(myBrowser->getWidth()) != w ||

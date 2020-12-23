@@ -59,7 +59,6 @@ FilesystemNode& FilesystemNode::operator/=(const string& path)
   }
 
   return *this;
-#undef PATH_SEPARATOR
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
