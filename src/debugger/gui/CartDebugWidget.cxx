@@ -69,11 +69,16 @@ int CartDebugWidget::addBaseInformation(size_t bytes, const string& manufacturer
   const StringList& sl = bs.stringList();
   uInt32 lines = uInt32(sl.size());
   if(lines < 3) lines = 3;
-  if(lines > maxlines) lines = maxlines;
+  bool useScrollbar = false;
+  if(lines > maxlines)
+  {
+    lines = maxlines;
+    useScrollbar = true;
+  }
 
   new StaticTextWidget(_boss, _font, x, y + 1, "Description ");
   myDesc = new StringListWidget(_boss, _nfont, x+lwidth, y - 1,
-                                fwidth, lines * myLineHeight, false);
+                                fwidth, lines * myLineHeight, false, useScrollbar);
   myDesc->setEditable(false);
   myDesc->setEnabled(false);
   myDesc->setList(sl);

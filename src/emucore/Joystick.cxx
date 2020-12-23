@@ -19,26 +19,48 @@
 #include "Joystick.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Joystick::Joystick(Jack jack, const Event& event, const System& system)
+Joystick::Joystick(Jack jack, const Event& event, const System& system, bool altmap)
   : Controller(jack, event, system, Controller::Type::Joystick)
 {
   if(myJack == Jack::Left)
   {
-    myUpEvent    = Event::JoystickZeroUp;
-    myDownEvent  = Event::JoystickZeroDown;
-    myLeftEvent  = Event::JoystickZeroLeft;
-    myRightEvent = Event::JoystickZeroRight;
-    myFireEvent  = Event::JoystickZeroFire;
+    if(!altmap)
+    {
+      myUpEvent    = Event::JoystickZeroUp;
+      myDownEvent  = Event::JoystickZeroDown;
+      myLeftEvent  = Event::JoystickZeroLeft;
+      myRightEvent = Event::JoystickZeroRight;
+      myFireEvent  = Event::JoystickZeroFire;
+    }
+    else
+    {
+      myUpEvent    = Event::JoystickTwoUp;
+      myDownEvent  = Event::JoystickTwoDown;
+      myLeftEvent  = Event::JoystickTwoLeft;
+      myRightEvent = Event::JoystickTwoRight;
+      myFireEvent  = Event::JoystickTwoFire;
+    }
     myXAxisValue = Event::PaddleZeroAnalog;
     myYAxisValue = Event::PaddleOneAnalog;
   }
   else
   {
-    myUpEvent    = Event::JoystickOneUp;
-    myDownEvent  = Event::JoystickOneDown;
-    myLeftEvent  = Event::JoystickOneLeft;
-    myRightEvent = Event::JoystickOneRight;
-    myFireEvent  = Event::JoystickOneFire;
+    if(!altmap)
+    {
+      myUpEvent    = Event::JoystickOneUp;
+      myDownEvent  = Event::JoystickOneDown;
+      myLeftEvent  = Event::JoystickOneLeft;
+      myRightEvent = Event::JoystickOneRight;
+      myFireEvent  = Event::JoystickOneFire;
+    }
+    else
+    {
+      myUpEvent    = Event::JoystickThreeUp;
+      myDownEvent  = Event::JoystickThreeDown;
+      myLeftEvent  = Event::JoystickThreeLeft;
+      myRightEvent = Event::JoystickThreeRight;
+      myFireEvent  = Event::JoystickThreeFire;
+    }
     myXAxisValue = Event::PaddleTwoAnalog;
     myYAxisValue = Event::PaddleThreeAnalog;
   }

@@ -24,7 +24,7 @@ class ContextMenu;
 #include "bspf.hxx"
 #include "Variant.hxx"
 #include "Command.hxx"
-#include "Widget.hxx"
+#include "EditableWidget.hxx"
 
 /**
  * Popup or dropdown widget which, when clicked, "pop up" a list of items and
@@ -33,12 +33,12 @@ class ContextMenu;
  * Implementation wise, when the user selects an item, then a kPopUpItemSelectedCmd
  * is broadcast, with data being equal to the tag value of the selected entry.
  */
-class PopUpWidget : public Widget, public CommandSender
+class PopUpWidget : public EditableWidget
 {
   public:
     PopUpWidget(GuiObject* boss, const GUI::Font& font,
                 int x, int y, int w, int h, const VariantList& items,
-                const string& label, int labelWidth = 0, int cmd = 0);
+                const string& label = "", int labelWidth = 0, int cmd = 0);
     ~PopUpWidget() override = default;
 
     void setID(uInt32 id);
@@ -70,13 +70,16 @@ class PopUpWidget : public Widget, public CommandSender
   protected:
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseWheel(int x, int y, int direction) override;
-    void handleMouseEntered() override;
-    void handleMouseLeft() override;
     bool handleEvent(Event::Type e) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
     void setArrow();
     void drawWidget(bool hilite) override;
+
+    void endEditMode() override;
+    void abortEditMode() override;
+
+    Common::Rect getEditRect() const override;
 
   private:
     unique_ptr<ContextMenu> myMenu;

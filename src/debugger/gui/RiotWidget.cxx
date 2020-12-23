@@ -39,6 +39,7 @@
 #include "AmigaMouseWidget.hxx"
 #include "AtariMouseWidget.hxx"
 #include "TrakBallWidget.hxx"
+#include "QuadTariWidget.hxx"
 
 #include "RiotWidget.hxx"
 
@@ -65,11 +66,13 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
     on.push_back("1");
   }
 
+  StringList labels;
+
 #define CREATE_IO_REGS(desc, bits, bitsID, editable)                     \
   t = new StaticTextWidget(boss, lfont, xpos, ypos+2, lwidth, fontHeight,\
-                           desc, TextAlign::Left);                        \
+                           desc);                                        \
   xpos += t->getWidth() + 5;                                             \
-  bits = new ToggleBitWidget(boss, nfont, xpos, ypos, 8, 1);             \
+  bits = new ToggleBitWidget(boss, nfont, xpos, ypos, 8, 1, 1, labels);  \
   bits->setTarget(this);                                                 \
   bits->setID(bitsID);                                                   \
   if(editable) addFocusWidget(bits); else bits->setEditable(false);      \
@@ -77,6 +80,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   bits->setList(off, on);
 
   // SWCHA bits in 'poke' mode
+  labels.clear();
   CREATE_IO_REGS("SWCHA(W)", mySWCHAWriteBits, kSWCHABitsID, true)
   col = xpos + 20;  // remember this for adding widgets to the second column
 
@@ -86,10 +90,20 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
 
   // SWCHA bits in 'peek' mode
   xpos = 10;  ypos += lineHeight + 5;
+  labels.clear();
+  labels.push_back("P0 right");
+  labels.push_back("P0 left");
+  labels.push_back("P0 down");
+  labels.push_back("P0 up");
+  labels.push_back("P1 right");
+  labels.push_back("P1 left");
+  labels.push_back("P1 down");
+  labels.push_back("P1 up");
   CREATE_IO_REGS("SWCHA(R)", mySWCHAReadBits, kSWCHARBitsID, true)
 
   // SWCHB bits in 'poke' mode
   xpos = 10;  ypos += 2 * lineHeight;
+  labels.clear();
   CREATE_IO_REGS("SWCHB(W)", mySWCHBWriteBits, kSWCHBBitsID, true)
 
   // SWBCNT bits
@@ -98,7 +112,16 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
 
   // SWCHB bits in 'peek' mode
   xpos = 10;  ypos += lineHeight + 5;
-  CREATE_IO_REGS("SWCHB(R)", mySWCHBReadBits, 0, false)
+  labels.clear();
+  labels.push_back("P1 difficulty");
+  labels.push_back("P0 difficulty");
+  labels.push_back("");
+  labels.push_back("");
+  labels.push_back("Color/B+W");
+  labels.push_back("");
+  labels.push_back("Select");
+  labels.push_back("Reset");
+  CREATE_IO_REGS("SWCHB(R)", mySWCHBReadBits, kSWCHBRBitsID, true)
 
   // Timer registers (R/W)
   static constexpr std::array<const char*, 4> writeNames = {
@@ -118,21 +141,21 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
 
   // Timer registers (RO)
   static constexpr std::array<const char*, 5> readNames = {
-    "INTIM", "TIMINT", "Total Clks", "INTIM Clks", "Divider"
+    "INTIM", "TIMINT", "Total Clks", "INTIM Clks", "Divider  #"
   };
   xpos = 10;  ypos += myTimWrite->getHeight() + lineHeight / 2;
   for(int row = 0; row < 5; ++row)
   {
-    t = new StaticTextWidget(boss, lfont, xpos, ypos + row*lineHeight + 2,
-                             10*fontWidth, fontHeight, readNames[row], TextAlign::Left);
+    t = new StaticTextWidget(boss, lfont, xpos, ypos + row * lineHeight + 2,
+                             readNames[row]);
   }
   xpos += t->getWidth() + 5;
-  myTimRead = new DataGridWidget(boss, nfont, xpos, ypos, 1, 4, 8, 32, Common::Base::Fmt::_16);
+  myTimRead = new DataGridWidget(boss, nfont, xpos, ypos, 1, 4, 4, 30, Common::Base::Fmt::_16);
   myTimRead->setTarget(this);
   myTimRead->setEditable(false);
 
   ypos += myTimRead->getHeight() - 1;
-  myTimDivider = new DataGridWidget(boss, nfont, xpos, ypos, 1, 1, 4, 32, Common::Base::Fmt::_10_4);
+  myTimDivider = new DataGridWidget(boss, nfont, xpos, ypos, 1, 1, 4, 12, Common::Base::Fmt::_10_4);
   myTimDivider->setTarget(this);
   myTimDivider->setEditable(false);
 
@@ -140,9 +163,11 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   xpos = col;  ypos = 10;
   myLeftControl = addControlWidget(boss, lfont, xpos, ypos,
       instance().console().leftController());
+  addToFocusList(myLeftControl->getFocusList());
   xpos += myLeftControl->getWidth() + 15;
   myRightControl = addControlWidget(boss, lfont, xpos, ypos,
       instance().console().rightController());
+  addToFocusList(myRightControl->getFocusList());
 
   // TIA INPTx registers (R), left port
   static constexpr std::array<const char*, 3> contLeftReadNames = {
@@ -417,6 +442,17 @@ void RiotWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
           rport.setPin(Controller::DigitalPin::Four,  value & 0b00001000);
           break;
         }
+        case kSWCHBRBitsID:
+        {
+          value = Debugger::get_bits(mySWCHBReadBits->getState());
+
+          riot.reset( value & 0b00000001);
+          riot.select(value & 0b00000010);
+          riot.tvType(value & 0b00001000);
+          riot.diffP0(value & 0b01000000);
+          riot.diffP1(value & 0b10000000);
+          break;
+        }
         default:
           break;
       }
@@ -480,12 +516,15 @@ ControllerWidget* RiotWidget::addControlWidget(GuiObject* boss, const GUI::Font&
       return new KeyboardWidget(boss, font, x, y, controller);
 //    case Controller::Type::KidVid:      // TODO - implement this
 //    case Controller::Type::MindLink:    // TODO - implement this
+//    case Controller::Type::Lightgun:    // TODO - implement this
     case Controller::Type::Paddles:
       return new PaddleWidget(boss, font, x, y, controller);
     case Controller::Type::SaveKey:
       return new SaveKeyWidget(boss, font, x, y, controller);
     case Controller::Type::TrakBall:
       return new TrakBallWidget(boss, font, x, y, controller);
+    case Controller::Type::QuadTari:
+      return new QuadTariWidget(boss, font, x, y, controller);
     default:
       return new NullControlWidget(boss, font, x, y, controller);
   }

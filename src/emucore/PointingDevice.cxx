@@ -81,6 +81,7 @@ void PointingDevice::update()
     return;
 
   // Update horizontal direction
+  //cerr << myEvent.get(Event::MouseAxisXMove) << ", " << myHCounterRemainder << endl;
   updateDirection( myEvent.get(Event::MouseAxisXMove), myHCounterRemainder,
       myTrackBallLeft, myTrackBallLinesH, myScanCountH, myFirstScanOffsetH);
 
@@ -89,7 +90,7 @@ void PointingDevice::update()
       myTrackBallDown, myTrackBallLinesV, myScanCountV, myFirstScanOffsetV);
 
   // We allow left and right mouse buttons for fire button
-  setPin(DigitalPin::Six, !getAutoFireState(myEvent.get(Event::JoystickZeroFire) == 0 ||
+  setPin(DigitalPin::Six, !getAutoFireState(myEvent.get(Event::JoystickZeroFire) ||
     myEvent.get(Event::MouseButtonLeftValue) || myEvent.get(Event::MouseButtonRightValue)));
 }
 

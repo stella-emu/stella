@@ -169,6 +169,8 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
       type = Bankswitch::Type::_3E;
     else if(isProbably3F(image, size))
       type = Bankswitch::Type::_3F;
+    else if (isProbablyCDF(image, size))
+      type = Bankswitch::Type::_CDF;
     else if(isProbably4A50(image, size))
       type = Bankswitch::Type::_4A50;
     else if(isProbablyEF(image, size, type))
@@ -188,6 +190,8 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
       ; // type has been set directly in the function
     else if(isProbably3F(image, size))
       type = Bankswitch::Type::_3F;
+    else if (isProbablyCDF(image, size))
+      type = Bankswitch::Type::_CDF;
     else if(isProbably4A50(image, size))
       type = Bankswitch::Type::_4A50;
     else /*if(isProbablySB(image, size))*/
@@ -203,6 +207,8 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
       ; // type has been set directly in the function
     else if(isProbably3F(image, size))
       type = Bankswitch::Type::_3F;
+    else if (isProbablyCDF(image, size))
+      type = Bankswitch::Type::_CDF;
     else /*if(isProbablySB(image, size))*/
       type = Bankswitch::Type::_SB;
   }
@@ -216,6 +222,8 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
       type = Bankswitch::Type::_3E;
     else if(isProbably3F(image, size))
       type = Bankswitch::Type::_3F;
+    else if (isProbablyCDF(image, size))
+      type = Bankswitch::Type::_CDF;
   }
   else  // what else can we do?
   {
@@ -444,7 +452,9 @@ bool CartDetector::isProbablyCDF(const ByteBuffer& image, size_t size)
   // Note: all Harmony/Melody custom drivers also contain the value
   // 0x10adab1e (LOADABLE) if needed for future improvement
   uInt8 cdf[] = { 'C', 'D', 'F' };
-  return searchForBytes(image, size, cdf, 3, 3);
+  uInt8 cdfjplus[] = { 'P', 'L', 'U', 'S', 'C', 'D', 'F', 'J' };
+  return (searchForBytes(image, size, cdf, 3, 3) || 
+          searchForBytes(image, size, cdfjplus, 8, 1));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -708,15 +718,18 @@ bool CartDetector::isProbablyUA(const ByteBuffer& image, size_t size)
   // using 'STA $240' or 'LDA $240'
   // Similar Brazilian (Digivison) cart bankswitching switches to bank 1 by accessing address 0x2C0
   // using 'BIT $2C0', 'STA $2C0' or 'LDA $2C0'
-  uInt8 signature[6][3] = {
+  // Other Brazilian (Atari Mania) ROM's bankswitching switches to bank 1 by accessing address 0xFC0
+  // using 'BIT $FA0', 'BIT $FC0' or 'STA $FA0'
+  uInt8 signature[7][3] = {
     { 0x8D, 0x40, 0x02 },  // STA $240 (Funky Fish, Pleiades)
     { 0xAD, 0x40, 0x02 },  // LDA $240 (???)
     { 0xBD, 0x1F, 0x02 },  // LDA $21F,X (Gingerbread Man)
     { 0x2C, 0xC0, 0x02 },  // BIT $2C0 (Time Pilot)
     { 0x8D, 0xC0, 0x02 },  // STA $2C0 (Fathom, Vanguard)
-    { 0xAD, 0xC0, 0x02 }   // LDA $2C0 (Mickey)
+    { 0xAD, 0xC0, 0x02 },  // LDA $2C0 (Mickey)
+    { 0x2C, 0xC0, 0x0F }   // BIT $FC0 (H.E.R.O., Kung-Fu Master)
   };
-  for(uInt32 i = 0; i < 6; ++i)
+  for(uInt32 i = 0; i < 7; ++i)
     if(searchForBytes(image, size, signature[i], 3))
       return true;
 

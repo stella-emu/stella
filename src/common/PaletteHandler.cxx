@@ -69,35 +69,69 @@ void PaletteHandler::cyclePalette(int direction)
   const string palette = toPaletteName(PaletteType(type));
   const string message = MESSAGES[type] + " palette";
 
-  myOSystem.frameBuffer().showMessage(message);
+  myOSystem.frameBuffer().showTextMessage(message);
 
   setPalette(palette);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool PaletteHandler::isCustomAdjustable() const
+{
+  return myCurrentAdjustable >= CUSTOM_START
+    && myCurrentAdjustable <= CUSTOM_END;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool PaletteHandler::isPhaseShift() const
+{
+  return myCurrentAdjustable == PHASE_SHIFT;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool PaletteHandler::isRGBScale() const
+{
+  return myCurrentAdjustable >= RED_SCALE && myCurrentAdjustable <= BLUE_SCALE;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool PaletteHandler::isRGBShift() const
+{
+  return myCurrentAdjustable >= RED_SHIFT && myCurrentAdjustable <= BLUE_SHIFT;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PaletteHandler::showAdjustableMessage()
 {
-  const bool isPhaseShift = myAdjustables[myCurrentAdjustable].value == nullptr;
   ostringstream msg, buf;
 
   msg << "Palette " << myAdjustables[myCurrentAdjustable].name;
-  if(isPhaseShift)
+  if(isPhaseShift())
   {
     const ConsoleTiming timing = myOSystem.console().timing();
     const bool isNTSC = timing == ConsoleTiming::ntsc;
     const float value =
         myOSystem.console().timing() == ConsoleTiming::pal ? myPhasePAL : myPhaseNTSC;
     buf << std::fixed << std::setprecision(1) << value << DEGREE;
-    myOSystem.frameBuffer().showMessage(
+    myOSystem.frameBuffer().showGaugeMessage(
         "Palette phase shift", buf.str(), value,
-        (isNTSC ? DEF_NTSC_SHIFT : DEF_PAL_SHIFT) - MAX_SHIFT,
-        (isNTSC ? DEF_NTSC_SHIFT : DEF_PAL_SHIFT) + MAX_SHIFT);
+        (isNTSC ? DEF_NTSC_SHIFT : DEF_PAL_SHIFT) - MAX_PHASE_SHIFT,
+        (isNTSC ? DEF_NTSC_SHIFT : DEF_PAL_SHIFT) + MAX_PHASE_SHIFT);
+  }
+  else if(isRGBShift())
+  {
+    const float value = *myAdjustables[myCurrentAdjustable].value;
+
+    buf << std::fixed << std::setprecision(1) << value << DEGREE;
+    myOSystem.frameBuffer().showGaugeMessage(
+      msg.str(), buf.str(), value, -MAX_RGB_SHIFT, +MAX_RGB_SHIFT);
   }
   else
   {
-    const int value = scaleTo100(*myAdjustables[myCurrentAdjustable].value);
+    const int value = isRGBScale()
+      ? scaleRGBTo100(*myAdjustables[myCurrentAdjustable].value)
+      : scaleTo100(*myAdjustables[myCurrentAdjustable].value);
     buf << value << "%";
-    myOSystem.frameBuffer().showMessage(
+    myOSystem.frameBuffer().showGaugeMessage(
       msg.str(), buf.str(), value);
   }
 }
@@ -106,15 +140,15 @@ void PaletteHandler::showAdjustableMessage()
 void PaletteHandler::cycleAdjustable(int direction)
 {
   const bool isCustomPalette = SETTING_CUSTOM == myOSystem.settings().getString("palette");
-  bool isPhaseShift;
+  bool isCustomAdj;
 
   do {
     myCurrentAdjustable = BSPF::clampw(int(myCurrentAdjustable + direction), 0, NUM_ADJUSTABLES - 1);
-    isPhaseShift = myAdjustables[myCurrentAdjustable].value == nullptr;
+    isCustomAdj = isCustomAdjustable();
     // skip phase shift when 'Custom' palette is not selected
-    if(!direction && isPhaseShift && !isCustomPalette)
+    if(!direction && isCustomAdj && !isCustomPalette)
       myCurrentAdjustable++;
-  } while(isPhaseShift && !isCustomPalette);
+  } while(isCustomAdj && !isCustomPalette);
 
   showAdjustableMessage();
 }
@@ -122,29 +156,38 @@ void PaletteHandler::cycleAdjustable(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PaletteHandler::changeAdjustable(int adjustable, int direction)
 {
-  const bool isCustomPalette = SETTING_CUSTOM == myOSystem.settings().getString("palette");
-  const bool isPhaseShift = myAdjustables[adjustable].value == nullptr;
-
   myCurrentAdjustable = adjustable;
-  if(isPhaseShift && !isCustomPalette)
-    myCurrentAdjustable++;
-
   changeCurrentAdjustable(direction);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PaletteHandler::changeCurrentAdjustable(int direction)
 {
-  if(myAdjustables[myCurrentAdjustable].value == nullptr)
+  if(isPhaseShift())
     changeColorPhaseShift(direction);
   else
   {
-    int newVal = scaleTo100(*myAdjustables[myCurrentAdjustable].value);
+    if(isRGBScale())
+    {
+      int newVal = scaleRGBTo100(*myAdjustables[myCurrentAdjustable].value);
 
-    newVal = BSPF::clamp(newVal + direction * 1, 0, 100);
+      newVal = BSPF::clamp(newVal + direction * 1, 0, 100);
+      *myAdjustables[myCurrentAdjustable].value = scaleRGBFrom100(newVal);
+    }
+    else if(isRGBShift())
+    {
+      float newShift = *myAdjustables[myCurrentAdjustable].value;
 
-    *myAdjustables[myCurrentAdjustable].value = scaleFrom100(newVal);
+      newShift = BSPF::clamp(newShift + direction * 0.5F, -MAX_RGB_SHIFT, MAX_RGB_SHIFT);
+      *myAdjustables[myCurrentAdjustable].value = newShift;
+    }
+    else
+    {
+      int newVal = scaleTo100(*myAdjustables[myCurrentAdjustable].value);
 
+      newVal = BSPF::clamp(newVal + direction * 1, 0, 100);
+      *myAdjustables[myCurrentAdjustable].value = scaleFrom100(newVal);
+    }
     showAdjustableMessage();
     setPalette();
   }
@@ -162,7 +205,7 @@ void PaletteHandler::changeColorPhaseShift(int direction)
     const float shift = isNTSC ? DEF_NTSC_SHIFT : DEF_PAL_SHIFT;
     float newPhase = isNTSC ? myPhaseNTSC : myPhasePAL;
 
-    newPhase = BSPF::clamp(newPhase + direction * 0.3F, shift - MAX_SHIFT, shift + MAX_SHIFT);
+    newPhase = BSPF::clamp(newPhase + direction * 0.3F, shift - MAX_PHASE_SHIFT, shift + MAX_PHASE_SHIFT);
 
     if(isNTSC)
       myPhaseNTSC = newPhase;
@@ -181,15 +224,21 @@ void PaletteHandler::loadConfig(const Settings& settings)
 {
   // Load adjustables
   myPhaseNTSC   = BSPF::clamp(settings.getFloat("pal.phase_ntsc"),
-                              DEF_NTSC_SHIFT - MAX_SHIFT, DEF_NTSC_SHIFT + MAX_SHIFT);
+                              DEF_NTSC_SHIFT - MAX_PHASE_SHIFT, DEF_NTSC_SHIFT + MAX_PHASE_SHIFT);
   myPhasePAL    = BSPF::clamp(settings.getFloat("pal.phase_pal"),
-                              DEF_PAL_SHIFT - MAX_SHIFT, DEF_PAL_SHIFT + MAX_SHIFT);
+                              DEF_PAL_SHIFT - MAX_PHASE_SHIFT, DEF_PAL_SHIFT + MAX_PHASE_SHIFT);
+  myRedScale    = BSPF::clamp(settings.getFloat("pal.red_scale"),   -1.0F, 1.0F) + 1.F;
+  myGreenScale  = BSPF::clamp(settings.getFloat("pal.green_scale"), -1.0F, 1.0F) + 1.F;
+  myBlueScale   = BSPF::clamp(settings.getFloat("pal.blue_scale"),  -1.0F, 1.0F) + 1.F;
+  myRedShift    = BSPF::clamp(settings.getFloat("pal.red_shift"),   -MAX_RGB_SHIFT, MAX_RGB_SHIFT);
+  myGreenShift  = BSPF::clamp(settings.getFloat("pal.green_shift"), -MAX_RGB_SHIFT, MAX_RGB_SHIFT);
+  myBlueShift   = BSPF::clamp(settings.getFloat("pal.blue_shift"),  -MAX_RGB_SHIFT, MAX_RGB_SHIFT);
 
-  myHue         = BSPF::clamp(settings.getFloat("pal.hue"), -1.0F, 1.0F);
-  mySaturation  = BSPF::clamp(settings.getFloat("pal.saturation"), -1.0F, 1.0F);
-  myContrast    = BSPF::clamp(settings.getFloat("pal.contrast"), -1.0F, 1.0F);
-  myBrightness  = BSPF::clamp(settings.getFloat("pal.brightness"), -1.0F, 1.0F);
-  myGamma       = BSPF::clamp(settings.getFloat("pal.gamma"), -1.0F, 1.0F);
+  myHue         = BSPF::clamp(settings.getFloat("pal.hue"),         -1.0F, 1.0F);
+  mySaturation  = BSPF::clamp(settings.getFloat("pal.saturation"),  -1.0F, 1.0F);
+  myContrast    = BSPF::clamp(settings.getFloat("pal.contrast"),    -1.0F, 1.0F);
+  myBrightness  = BSPF::clamp(settings.getFloat("pal.brightness"),  -1.0F, 1.0F);
+  myGamma       = BSPF::clamp(settings.getFloat("pal.gamma"),       -1.0F, 1.0F);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -198,6 +247,12 @@ void PaletteHandler::saveConfig(Settings& settings) const
   // Save adjustables
   settings.setValue("pal.phase_ntsc", myPhaseNTSC);
   settings.setValue("pal.phase_pal", myPhasePAL);
+  settings.setValue("pal.red_scale", myRedScale - 1.F);
+  settings.setValue("pal.green_scale", myGreenScale - 1.F);
+  settings.setValue("pal.blue_scale", myBlueScale - 1.F);
+  settings.setValue("pal.red_shift", myRedShift);
+  settings.setValue("pal.green_shift", myGreenShift);
+  settings.setValue("pal.blue_shift", myBlueShift);
 
   settings.setValue("pal.hue", myHue);
   settings.setValue("pal.saturation", mySaturation);
@@ -209,8 +264,14 @@ void PaletteHandler::saveConfig(Settings& settings) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PaletteHandler::setAdjustables(const Adjustable& adjustable)
 {
-  myPhaseNTSC   = adjustable.phaseNtsc / 10.F;
-  myPhasePAL    = adjustable.phasePal / 10.F;
+  myPhaseNTSC   = scaleFromAngles(adjustable.phaseNtsc);
+  myPhasePAL    = scaleFromAngles(adjustable.phasePal);
+  myRedScale    = scaleRGBFrom100(adjustable.redScale);
+  myGreenScale  = scaleRGBFrom100(adjustable.greenScale);
+  myBlueScale   = scaleRGBFrom100(adjustable.blueScale);
+  myRedShift    = scaleFromAngles(adjustable.redShift);
+  myGreenShift  = scaleFromAngles(adjustable.greenShift);
+  myBlueShift   = scaleFromAngles(adjustable.blueShift);
 
   myHue         = scaleFrom100(adjustable.hue);
   mySaturation  = scaleFrom100(adjustable.saturation);
@@ -222,8 +283,14 @@ void PaletteHandler::setAdjustables(const Adjustable& adjustable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PaletteHandler::getAdjustables(Adjustable& adjustable) const
 {
-  adjustable.phaseNtsc   = myPhaseNTSC * 10.F;
-  adjustable.phasePal    = myPhasePAL * 10.F;
+  adjustable.phaseNtsc   = scaleToAngles(myPhaseNTSC);
+  adjustable.phasePal    = scaleToAngles(myPhasePAL);
+  adjustable.redScale    = scaleRGBTo100(myRedScale);
+  adjustable.greenScale  = scaleRGBTo100(myGreenScale);
+  adjustable.blueScale   = scaleRGBTo100(myBlueScale);
+  adjustable.redShift    = scaleToAngles(myRedShift);
+  adjustable.greenShift  = scaleToAngles(myGreenShift);
+  adjustable.blueShift   = scaleToAngles(myBlueShift);
 
   adjustable.hue         = scaleTo100(myHue);
   adjustable.saturation  = scaleTo100(mySaturation);
@@ -371,10 +438,9 @@ void PaletteHandler::generateCustomPalette(ConsoleTiming timing)
   constexpr int NUM_LUMA = 8;
   constexpr float SATURATION = 0.25F; // default saturation
 
-  float color[NUM_CHROMA][2] = {{0.0F}};
-
   if(timing == ConsoleTiming::ntsc)
   {
+    vector2d IQ[NUM_CHROMA];
     // YIQ is YUV shifted by 33°
     constexpr float offset = 33 * BSPF::PI_f / 180;
     const float shift = myPhaseNTSC * BSPF::PI_f / 180;
@@ -382,22 +448,23 @@ void PaletteHandler::generateCustomPalette(ConsoleTiming timing)
     // color 0 is grayscale
     for(int chroma = 1; chroma < NUM_CHROMA; chroma++)
     {
-      color[chroma][0] = SATURATION * sinf(offset + shift * (chroma - 1));
-      color[chroma][1] = SATURATION * cosf(offset + shift * (chroma - 1) - BSPF::PI_f);
+      IQ[chroma] = vector2d(SATURATION * sinf(offset + shift * (chroma - 1)),
+                            SATURATION * cosf(offset + shift * (chroma - 1) - BSPF::PI_f));
     }
+    const vector2d IQR = scale(rotate(vector2d(+0.956F, +0.621F), myRedShift),   myRedScale);
+    const vector2d IQG = scale(rotate(vector2d(-0.272F, -0.647F), myGreenShift), myGreenScale);
+    const vector2d IQB = scale(rotate(vector2d(-1.106F, +1.703F), myBlueShift),  myBlueScale);
 
     for(int chroma = 0; chroma < NUM_CHROMA; chroma++)
     {
-      const float I = color[chroma][0];
-      const float Q = color[chroma][1];
-
       for(int luma = 0; luma < NUM_LUMA; luma++)
       {
         const float Y = 0.05F + luma / 8.24F; // 0.05..~0.90
 
-        float R = Y + 0.956F * I + 0.621F * Q;
-        float G = Y - 0.272F * I - 0.647F * Q;
-        float B = Y - 1.106F * I + 1.703F * Q;
+        float R = Y + dotProduct(IQ[chroma], IQR);
+        float G = Y + dotProduct(IQ[chroma], IQG);
+        float B = Y + dotProduct(IQ[chroma], IQB);
+
 
         if(R < 0) R = 0;
         if(G < 0) G = 0;
@@ -420,35 +487,37 @@ void PaletteHandler::generateCustomPalette(ConsoleTiming timing)
     constexpr float offset = BSPF::PI_f;
     const float shift = myPhasePAL * BSPF::PI_f / 180;
     constexpr float fixedShift = 22.5F * BSPF::PI_f / 180;
+    vector2d UV[NUM_CHROMA];
 
     // colors 0, 1, 14 and 15 are grayscale
     for(int chroma = 2; chroma < NUM_CHROMA - 2; chroma++)
     {
       int idx = NUM_CHROMA - 1 - chroma;
-      color[idx][0] = SATURATION * sinf(offset - fixedShift * chroma);
+
+      UV[idx].x = SATURATION * sinf(offset - fixedShift * chroma);
       if ((idx & 1) == 0)
-        color[idx][1] = SATURATION * sinf(offset - shift * (chroma - 3.5F) / 2.F);
+        UV[idx].y = SATURATION * sinf(offset - shift * (chroma - 3.5F) / 2.F);
       else
-        color[idx][1] = SATURATION * -sinf(offset - shift * chroma / 2.F);
+        UV[idx].y = SATURATION * -sinf(offset - shift * chroma / 2.F);
     }
+    // Most sources
+    const vector2d UVR = scale(rotate(vector2d( 0.000F, +1.403F), myRedShift),   myRedScale);
+    const vector2d UVG = scale(rotate(vector2d(-0.344F, -0.714F), myGreenShift), myGreenScale);
+    const vector2d UVB = scale(rotate(vector2d(+0.714F,  0.000F), myBlueShift),  myBlueScale);
+    // German Wikipedia, huh???
+    //float R = Y + 1 / 0.877 * V;
+    //float B = Y + 1 / 0.493 * U;
+    //float G = 1.704 * Y - 0.590 * R - 0.194 * B;
 
     for(int chroma = 0; chroma < NUM_CHROMA; chroma++)
     {
-      const float U = color[chroma][0];
-      const float V = color[chroma][1];
-
       for(int luma = 0; luma < NUM_LUMA; luma++)
       {
         const float Y = 0.05F + luma / 8.24F; // 0.05..~0.90
 
-        // Most sources
-        float R = Y + 1.403F * V;
-        float G = Y - 0.344F * U - 0.714F * V;
-        float B = Y + 1.770F * U;
-        // German Wikipedia, huh???
-        //float B = Y + 1 / 0.493 * U;
-        //float R = Y + 1 / 0.877 * V;
-        //float G = 1.704 * Y - 0.590 * R - 0.194 * B;
+        float R = Y + dotProduct(UV[chroma], UVR);
+        float G = Y + dotProduct(UV[chroma], UVG);
+        float B = Y + dotProduct(UV[chroma], UVB);
 
         if(R < 0) R = 0.0;
         if(G < 0) G = 0.0;
@@ -489,6 +558,28 @@ void PaletteHandler::adjustHueSaturation(int& R, int& G, int& B, float H, float 
   R = BSPF::clamp(r, 0.F, 255.F);
   G = BSPF::clamp(g, 0.F, 255.F);
   B = BSPF::clamp(b, 0.F, 255.F);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+PaletteHandler::vector2d PaletteHandler::rotate(const PaletteHandler::vector2d& vec, float angle) const
+{
+  const float r = angle * BSPF::PI_f / 180;
+
+  return PaletteHandler::vector2d(vec.x * cosf(r) - vec.y * sinf(r),
+                                  vec.x * sinf(r) + vec.y * cosf(r));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+PaletteHandler::vector2d PaletteHandler::scale(const PaletteHandler::vector2d& vec, float factor) const
+{
+  return PaletteHandler::vector2d(vec.x * factor, vec.y * factor);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+float PaletteHandler::dotProduct(const PaletteHandler::vector2d& vec1,
+                                 const PaletteHandler::vector2d& vec2) const
+{
+  return vec1.x * vec2.x + vec1.y * vec2.y;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

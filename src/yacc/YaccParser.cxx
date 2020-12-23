@@ -229,6 +229,20 @@ CpuMethod getCpuSpecial(char* ch)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// special methods that get RIOT internal state
+RiotMethod getRiotSpecial(char* ch)
+{
+  if(BSPF::equalsIgnoreCase(ch, "_timwrapread"))
+    return &RiotDebug::timWrappedOnRead;
+  else if(BSPF::equalsIgnoreCase(ch, "_timwrapwrite"))
+    return &RiotDebug::timWrappedOnWrite;
+  else if(BSPF::equalsIgnoreCase(ch, "_ftimreadcycles"))
+    return &RiotDebug::timReadCycles;
+  else
+    return nullptr;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // special methods that get TIA internal state
 TiaMethod getTiaSpecial(char* ch)
 {
@@ -242,6 +256,8 @@ TiaMethod getTiaSpecial(char* ch)
     return &TIADebug::frameCount;
   else if(BSPF::equalsIgnoreCase(ch, "_fcycles"))
     return &TIADebug::frameCycles;
+  else if(BSPF::equalsIgnoreCase(ch, "_fwsynccycles"))
+    return &TIADebug::frameWsyncCycles;
   else if(BSPF::equalsIgnoreCase(ch, "_cyclesLo"))
     return &TIADebug::cyclesLo;
   else if(BSPF::equalsIgnoreCase(ch, "_cyclesHi"))
@@ -281,6 +297,7 @@ int yylex() {
         {
           CartMethod cartMeth;
           CpuMethod  cpuMeth;
+          RiotMethod riotMeth;
           TiaMethod  tiaMeth;
 
           char *bufp = idbuf;
@@ -309,6 +326,9 @@ int yylex() {
           } else if( (cartMeth = getCartSpecial(idbuf)) ) {
             yylval.cartMethod = cartMeth;
             return CART_METHOD;
+          } else if( (riotMeth = getRiotSpecial(idbuf)) ) {
+            yylval.riotMethod = riotMeth;
+            return RIOT_METHOD;
           } else if( (tiaMeth = getTiaSpecial(idbuf)) ) {
             yylval.tiaMethod = tiaMeth;
             return TIA_METHOD;

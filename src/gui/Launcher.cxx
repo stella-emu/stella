@@ -29,24 +29,20 @@
 Launcher::Launcher(OSystem& osystem)
   : DialogContainer(osystem)
 {
-  const Common::Size& s = myOSystem.settings().getSize("launcherres");
+  mySize = myOSystem.settings().getSize("launcherres");
   const Common::Size& d = myOSystem.frameBuffer().desktopSize();
   double overscan = 1 - myOSystem.settings().getInt("tia.fs_overscan") / 100.0;
-  myWidth = s.w;  myHeight = s.h;
 
   // The launcher dialog is resizable, within certain bounds
   // We check those bounds now
-  myWidth  = std::max(myWidth,  FBMinimum::Width);
-  myHeight = std::max(myHeight, FBMinimum::Height);
-  myWidth  = std::min(myWidth,  d.w);
-  myHeight = std::min(myHeight, d.h);
-  // do not include overscan when launcher saving size
-  myOSystem.settings().setValue("launcherres", Common::Size(myWidth, myHeight));
-  // now make overscan effective
-  myWidth  = std::min(myWidth,  uInt32(d.w * overscan));
-  myHeight = std::min(myHeight, uInt32(d.h * overscan));
+  mySize.clamp(FBMinimum::Width, d.w, FBMinimum::Height, d.h);
+  // Do not include overscan when launcher saving size
+  myOSystem.settings().setValue("launcherres", mySize);
+  // Now make overscan effective
+  mySize.w = std::min(mySize.w, uInt32(d.w * overscan));
+  mySize.h = std::min(mySize.h, uInt32(d.h * overscan));
 
-  myBaseDialog = new LauncherDialog(myOSystem, *this, 0, 0, myWidth, myHeight);
+  myBaseDialog = new LauncherDialog(myOSystem, *this, 0, 0, mySize.w, mySize.h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -59,8 +55,9 @@ Launcher::~Launcher()
 FBInitStatus Launcher::initializeVideo()
 {
   string title = string("Stella ") + STELLA_VERSION;
-  return myOSystem.frameBuffer().createDisplay(title, FrameBuffer::BufferType::Launcher,
-                                               myWidth, myHeight);
+  return myOSystem.frameBuffer().createDisplay(
+      title, BufferType::Launcher, mySize
+  );
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

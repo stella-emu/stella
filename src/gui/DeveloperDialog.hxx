@@ -184,8 +184,6 @@ class DeveloperDialog : public Dialog
     std::array<string, 2> myStateInterval;
     std::array<string, 2> myStateHorizon;
 
-    static const std::array<string, 5> ourCPUregs;
-
   private:
     void addEmulationTab(const GUI::Font& font);
     void addTimeMachineTab(const GUI::Font& font);

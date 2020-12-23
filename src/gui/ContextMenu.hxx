@@ -45,6 +45,8 @@ class ContextMenu : public Dialog, public CommandSender
                 const VariantList& items, int cmd = 0, int width = 0);
     ~ContextMenu() override = default;
 
+    bool isShading() const override { return false; }
+
     /** Set the parent widget's ID */
     void setID(uInt32 id) { _id = id; }
 
@@ -71,8 +73,8 @@ class ContextMenu : public Dialog, public CommandSender
     const string& getSelectedName() const;
     const Variant& getSelectedTag() const;
 
-    /** This dialog uses its own positioning, so we override Dialog::center() */
-    void center() override;
+    /** This dialog uses its own positioning, so we override Dialog::setPosition() */
+    void setPosition() override;
 
     /** The following methods are used when we want to select *and*
         send a command for the new selection.  They are only to be used

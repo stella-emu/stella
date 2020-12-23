@@ -44,8 +44,8 @@ struct Point
     if(c != 'x')
       x = y = 0;
   }
-  bool operator==(const Point & p) const { return x == p.x && y == p.y; }
-  bool operator!=(const Point & p) const { return x != p.x || y != p.y; }
+  bool operator==(const Point& p) const { return x == p.x && y == p.y; }
+  bool operator!=(const Point& p) const { return !(*this == p);        }
 
   friend ostream& operator<<(ostream& os, const Point& p) {
     os << p.x << "x" << p.y;
@@ -69,12 +69,17 @@ struct Size
   }
   bool valid() const { return w > 0 && h > 0; }
 
+  void clamp(uInt32 lower_w, uInt32 upper_w, uInt32 lower_h, uInt32 upper_h) {
+    w = BSPF::clamp(w, lower_w, upper_w);
+    h = BSPF::clamp(h, lower_h, upper_h);
+  }
+
   bool operator==(const Size& s) const { return w == s.w && h == s.h; }
-  bool operator!=(const Size& s) const { return w != s.w || h != s.h; }
-  bool operator<(const Size& s)  const { return w < s.w && h < s.h;   }
-  bool operator<=(const Size& s) const { return w <= s.w && h <= s.h; }
-  bool operator>(const Size& s)  const { return w > s.w && h > s.h;   }
-  bool operator>=(const Size& s) const { return w >= s.w && h >= s.h; }
+  bool operator< (const Size& s) const { return w <  s.w && h <  s.h; }
+  bool operator> (const Size& s) const { return w >  s.w || h >  s.h; }
+  bool operator!=(const Size& s) const { return !(*this == s); }
+  bool operator<=(const Size& s) const { return !(*this >  s); }
+  bool operator>=(const Size& s) const { return !(*this <  s); }
 
   friend ostream& operator<<(ostream& os, const Size& s) {
     os << s.w << "x" << s.h;
@@ -169,6 +174,11 @@ struct Rect
 
       return r.left != x || r.top != y;
     }
+
+    bool operator==(const Rect& r) const {
+      return top == r.top && left == r.left && bottom == r.bottom && right == r.right;
+    }
+    bool operator!=(const Rect& r) const { return !(*this == r); }
 
     friend ostream& operator<<(ostream& os, const Rect& r) {
       os << r.point() << "," << r.size();

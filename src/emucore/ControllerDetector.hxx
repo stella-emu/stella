@@ -121,6 +121,9 @@ class ControllerDetector
     static bool isProbablyLightGun(const ByteBuffer& image, size_t size,
                                    Controller::Jack port);
 
+    // Returns true if a QuadTari code pattern is found.
+    static bool isProbablyQuadTari(const ByteBuffer& image, size_t size,
+                                   Controller::Jack port);
 
   private:
     // Following constructors and assignment operators not supported

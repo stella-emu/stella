@@ -241,24 +241,19 @@ void ScrollBarWidget::checkBounds(int old_pos)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ScrollBarWidget::handleMouseEntered()
-{
-  setFlags(Widget::FLAG_HILITED);
-  setDirty();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ScrollBarWidget::handleMouseLeft()
 {
   _part = Part::None;
-  clearFlags(Widget::FLAG_HILITED);
-  setDirty();
+  Widget::handleMouseLeft();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ScrollBarWidget::recalc()
 {
 //cerr << "ScrollBarWidget::recalc()\n";
+  int oldSliderHeight = _sliderHeight,
+    oldSliderPos = _sliderPos;
+
   if(_numEntries > _entriesPerPage)
   {
     _sliderHeight = (_h - 2 * _upDownBoxHeight) * _entriesPerPage / _numEntries;
@@ -276,15 +271,14 @@ void ScrollBarWidget::recalc()
     _sliderPos = _upDownBoxHeight;
   }
 
-  setDirty();
+  if(oldSliderHeight != _sliderHeight || oldSliderPos != _sliderPos)
+    setDirty(); // only set dirty when something changed
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ScrollBarWidget::drawWidget(bool hilite)
 {
-//cerr << "ScrollBarWidget::drawWidget\n";
   FBSurface& s = _boss->dialog().surface();
-  bool onTop = _boss->dialog().isOnTop();
   int bottomY = _y + _h;
   bool isSinglePage = (_numEntries <= _entriesPerPage);
 
@@ -298,23 +292,26 @@ void ScrollBarWidget::drawWidget(bool hilite)
     s.fillRect(_x + 1, _y + 1, _w - 2, _upDownBoxHeight - 2, kScrollColor);
   s.drawBitmap(_upImg, _x + (_scrollBarWidth - _upDownWidth) / 2,
                _y + (_upDownBoxHeight - _upDownHeight) / 2,
-               onTop ? isSinglePage ? kColor : (hilite && _part == Part::UpArrow) ? kWidColor
-               : kTextColor : kColor, _upDownWidth, _upDownHeight);
+               isSinglePage ? kColor
+                            : (hilite && _part == Part::UpArrow) ? kWidColor : kTextColor,
+               _upDownWidth, _upDownHeight);
 
   // Down arrow
   if(hilite && _part == Part::DownArrow)
     s.fillRect(_x + 1, bottomY - _upDownBoxHeight + 1, _w - 2, _upDownBoxHeight - 2, kScrollColor);
   s.drawBitmap(_downImg, _x + (_scrollBarWidth - _upDownWidth) / 2,
                bottomY - _upDownBoxHeight + (_upDownBoxHeight - _upDownHeight) / 2,
-               onTop ? isSinglePage ? kColor : (hilite && _part == Part::DownArrow) ?
-               kWidColor : kTextColor : kColor, _upDownWidth, _upDownHeight);
+               isSinglePage ? kColor
+                            : (hilite && _part == Part::DownArrow) ? kWidColor : kTextColor,
+               _upDownWidth, _upDownHeight);
 
   // Slider
   if(!isSinglePage)
   {
     s.fillRect(_x + 1, _y + _sliderPos - 1, _w - 2, _sliderHeight + 2,
-              onTop ? (hilite && _part == Part::Slider) ? kScrollColorHi : kScrollColor : kColor);
+              (hilite && _part == Part::Slider) ? kScrollColorHi : kScrollColor);
   }
+  clearDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

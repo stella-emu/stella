@@ -65,6 +65,13 @@ class SerialPort
     */
     virtual bool isCTS() { return true; }
 
+    /**
+      Get all valid serial ports detected on this system.
+
+      @return  The (possibly empty) list of detected serial ports
+    */
+    virtual StringList portNames() { return StringList{}; }
+
   private:
     // Following constructors and assignment operators not supported
     SerialPort(const SerialPort&) = delete;

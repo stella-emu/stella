@@ -15,12 +15,12 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "FrameBufferSDL2.hxx"
+#include "FBBackendSDL2.hxx"
 #include "ThreadDebugging.hxx"
 #include "QisBlitter.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-QisBlitter::QisBlitter(FrameBufferSDL2& fb)
+QisBlitter::QisBlitter(FBBackendSDL2& fb)
   : myFB(fb)
 {
 }
@@ -32,7 +32,7 @@ QisBlitter::~QisBlitter()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool QisBlitter::isSupported(FrameBufferSDL2 &fb)
+bool QisBlitter::isSupported(FBBackendSDL2& fb)
 {
   if (!fb.isInitialized()) throw runtime_error("framebuffer not initialized");
 

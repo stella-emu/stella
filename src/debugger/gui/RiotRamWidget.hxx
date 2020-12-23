@@ -36,10 +36,11 @@ class RiotRamWidget : public RamWidget
                   int x, int y, int w);
     ~RiotRamWidget() override = default;
 
+    string getLabel(int addr) const override;
+
   private:
     uInt8 getValue(int addr) const override;
     void setValue(int addr, uInt8 value) override;
-    string getLabel(int addr) const override;
 
     void fillList(uInt32 start, uInt32 size, IntArray& alist,
                   IntArray& vlist, BoolArray& changed) const override;

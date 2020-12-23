@@ -385,7 +385,7 @@ else
 	fi
 
 	for compiler in $compilers; do
-		if test_compiler "$compiler -std=c++14"; then
+		if test_compiler "$compiler -std=c++17"; then
 			CXX=$compiler
 			echo $CXX
 			break
@@ -580,6 +580,10 @@ else
 		darwin*)
 			DEFINES="$DEFINES -DUNIX -DDARWIN"
 			_host_os=darwin
+			if test "$have_clang" = yes; then
+				CXXFLAGS="$CXXFLAGS -Wno-documentation-unknown-command -Wno-documentation-pedantic -Wno-poison-system-directories"
+				CXXFLAGS="$CXXFLAGS -Wno-unknown-warning-option"
+			fi
 			;;
 		irix*)
 			DEFINES="$DEFINES -DUNIX"
@@ -821,8 +825,9 @@ CHEAT="$SRC/cheat"
 LIBPNG="$SRC/libpng"
 ZLIB="$SRC/zlib"
 SQLITE="$SRC/common/repository/sqlite"
+JSON="$SRC/json"
 
-INCLUDES="-I$CORE -I$COMMON -I$TV -I$TIA -I$TIA_FRAME_MANAGER"
+INCLUDES="-I$CORE -I$COMMON -I$TV -I$TIA -I$TIA_FRAME_MANAGER -I$JSON"
 
 INCLUDES="$INCLUDES `$_sdlconfig --cflags`"
 if test "$_build_static" = yes ; then

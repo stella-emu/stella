@@ -26,22 +26,38 @@ class NullControlWidget : public ControllerWidget
 {
   public:
     NullControlWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
-                      Controller& controller)
+                      Controller& controller, bool embedded = false)
       : ControllerWidget(boss, font, x, y, controller)
     {
-      ostringstream buf;
-      buf << getHeader();
       const int fontHeight = font.getFontHeight(),
-                lineHeight = font.getLineHeight(),
-                lwidth = std::max(font.getStringWidth(buf.str()),
-                font.getStringWidth("Controller input"));
-      new StaticTextWidget(boss, font, x, y+2, lwidth,
-                           fontHeight, buf.str(), TextAlign::Left);
-      new StaticTextWidget(boss, font, x, y+2+2*lineHeight, lwidth,
-                           fontHeight, "Controller input", TextAlign::Center);
-      new StaticTextWidget(boss, font, x, y+2+3*lineHeight, lwidth,
-                           fontHeight, "not available",
-                           TextAlign::Center);
+        lineHeight = font.getLineHeight();
+
+      if(embedded)
+      {
+        const int lwidth = font.getStringWidth("avail.");
+
+        y += fontHeight;
+        new StaticTextWidget(boss, font, x, y, lwidth, fontHeight,
+                             "not", TextAlign::Center);
+        y += lineHeight;
+        new StaticTextWidget(boss, font, x, y, lwidth, fontHeight,
+                             "avail.", TextAlign::Center);
+      }
+      else
+      {
+        ostringstream buf;
+        buf << getHeader();
+        const int lwidth = std::max(font.getStringWidth(buf.str()),
+                                    font.getStringWidth("Controller input"));
+
+        new StaticTextWidget(boss, font, x, y + 2, lwidth, fontHeight, buf.str());
+        y += 2 + lineHeight * 2;
+        new StaticTextWidget(boss, font, x, y, lwidth,
+                             fontHeight, "Controller input", TextAlign::Center);
+        new StaticTextWidget(boss, font, x, y+lineHeight, lwidth,
+                             fontHeight, "not available",
+                             TextAlign::Center);
+      }
     }
 
     ~NullControlWidget() override = default;

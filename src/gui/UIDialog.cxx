@@ -109,6 +109,8 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   xpos = myDialogFontPopup->getRight() + fontWidth * 5;
   myHidpiWidget = new CheckboxWidget(myTab, font, xpos,
                                      ypos + 1, "HiDPI mode (*)");
+  myHidpiWidget->setToolTip("Scale the UI by a factor of two when enabled.");
+
   wid.push_back(myHidpiWidget);
 
   // Dialog position
@@ -126,6 +128,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   // Center window (in windowed mode)
   xpos = myHidpiWidget->getLeft();
   myCenter = new CheckboxWidget(myTab, _font, xpos, ypos + 1, "Center windows");
+  myCenter->setToolTip("Check to center all windows, else remember last position.");
   wid.push_back(myCenter);
 
   // Delay between quick-selecting characters in ListWidget
@@ -138,6 +141,8 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   myListDelaySlider->setMaxValue(1000);
   myListDelaySlider->setStepValue(50);
   myListDelaySlider->setTickmarkIntervals(5);
+  myListDelaySlider->setToolTip("Set delay between key presses in file lists"
+                                " before a search string resets.");
   wid.push_back(myListDelaySlider);
   ypos += lineHeight + VGAP;
 
@@ -441,6 +446,7 @@ void UIDialog::saveConfig()
   settings.setValue("uipalette",
     myPalettePopup->getSelectedTag().toString());
   instance().frameBuffer().setUIPalette();
+  instance().frameBuffer().update(FrameBuffer::UpdateMode::REDRAW);
 
   // Dialog font
   settings.setValue("dialogfont",

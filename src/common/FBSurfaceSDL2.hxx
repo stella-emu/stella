@@ -20,7 +20,7 @@
 
 #include "bspf.hxx"
 #include "FBSurface.hxx"
-#include "FrameBufferSDL2.hxx"
+#include "FBBackendSDL2.hxx"
 #include "sdl_blitter/Blitter.hxx"
 
 /**
@@ -32,9 +32,8 @@
 class FBSurfaceSDL2 : public FBSurface
 {
   public:
-    FBSurfaceSDL2(FrameBufferSDL2& buffer, uInt32 width, uInt32 height,
-                  FrameBuffer::ScalingInterpolation interpolation,
-                  const uInt32* staticData);
+    FBSurfaceSDL2(FBBackendSDL2& backend, uInt32 width, uInt32 height,
+                  ScalingInterpolation inter, const uInt32* staticData);
     ~FBSurfaceSDL2() override;
 
     // Most of the surface drawing primitives are implemented in FBSurface;
@@ -49,38 +48,63 @@ class FBSurfaceSDL2 : public FBSurface
     const Common::Rect& dstRect() const override;
     void setSrcPos(uInt32 x, uInt32 y) override;
     void setSrcSize(uInt32 w, uInt32 h) override;
+    void setSrcRect(const Common::Rect& r) override;
     void setDstPos(uInt32 x, uInt32 y) override;
     void setDstSize(uInt32 w, uInt32 h) override;
+    void setDstRect(const Common::Rect& r) override;
+
     void setVisible(bool visible) override;
 
     void translateCoords(Int32& x, Int32& y) const override;
     bool render() override;
     void invalidate() override;
+    void invalidateRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h) override;
+
     void free() override;
     void reload() override;
     void resize(uInt32 width, uInt32 height) override;
 
-    void setScalingInterpolation(FrameBuffer::ScalingInterpolation) override;
+    void setScalingInterpolation(ScalingInterpolation) override;
 
   protected:
     void applyAttributes() override;
 
   private:
-    inline void setSrcPosInternal(uInt32 x, uInt32 y) {
-      mySrcR.x = x;  mySrcR.y = y;
-      mySrcGUIR.moveTo(x, y);
+    inline bool setSrcPosInternal(uInt32 x, uInt32 y) {
+      if(x != static_cast<uInt32>(mySrcR.x) || y != static_cast<uInt32>(mySrcR.y))
+      {
+        mySrcR.x = x;  mySrcR.y = y;
+        mySrcGUIR.moveTo(x, y);
+        return true;
+      }
+      return false;
     }
-    inline void setSrcSizeInternal(uInt32 w, uInt32 h) {
-      mySrcR.w = w;  mySrcR.h = h;
-      mySrcGUIR.setWidth(w);  mySrcGUIR.setHeight(h);
+    inline bool setSrcSizeInternal(uInt32 w, uInt32 h) {
+      if(w != static_cast<uInt32>(mySrcR.w) || h != static_cast<uInt32>(mySrcR.h))
+      {
+        mySrcR.w = w;  mySrcR.h = h;
+        mySrcGUIR.setWidth(w);  mySrcGUIR.setHeight(h);
+        return true;
+      }
+      return false;
     }
-    inline void setDstPosInternal(uInt32 x, uInt32 y) {
-      myDstR.x = x;  myDstR.y = y;
-      myDstGUIR.moveTo(x, y);
+    inline bool setDstPosInternal(uInt32 x, uInt32 y) {
+      if(x != static_cast<uInt32>(myDstR.x) || y != static_cast<uInt32>(myDstR.y))
+      {
+        myDstR.x = x;  myDstR.y = y;
+        myDstGUIR.moveTo(x, y);
+        return true;
+      }
+      return false;
     }
-    inline void setDstSizeInternal(uInt32 w, uInt32 h) {
-      myDstR.w = w;  myDstR.h = h;
-      myDstGUIR.setWidth(w);  myDstGUIR.setHeight(h);
+    inline bool setDstSizeInternal(uInt32 w, uInt32 h) {
+      if(w != static_cast<uInt32>(myDstR.w) || h != static_cast<uInt32>(myDstR.h))
+      {
+        myDstR.w = w;  myDstR.h = h;
+        myDstGUIR.setWidth(w);  myDstGUIR.setHeight(h);
+        return true;
+      }
+      return false;
     }
 
     void createSurface(uInt32 width, uInt32 height, const uInt32* data);
@@ -95,14 +119,14 @@ class FBSurfaceSDL2 : public FBSurface
     FBSurfaceSDL2& operator=(FBSurfaceSDL2&&) = delete;
 
   private:
-    FrameBufferSDL2& myFB;
+    FBBackendSDL2& myBackend;
 
     unique_ptr<Blitter> myBlitter;
-    FrameBuffer::ScalingInterpolation myInterpolationMode
-        {FrameBuffer::ScalingInterpolation::none};
+    ScalingInterpolation myInterpolationMode
+        {ScalingInterpolation::none};
 
     SDL_Surface* mySurface{nullptr};
-    SDL_Rect mySrcR{0, 0, 0, 0}, myDstR{0, 0, 0, 0};
+    SDL_Rect mySrcR{-1, -1, -1, -1}, myDstR{-1, -1, -1, -1};
 
     bool myIsVisible{true};
     bool myIsStatic{false};

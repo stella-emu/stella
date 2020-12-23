@@ -94,7 +94,7 @@ class Controller : public Serializable
       AmigaMouse, AtariMouse, AtariVox, BoosterGrip, CompuMate,
       Driving, Genesis, Joystick, Keyboard, KidVid, MindLink,
       Paddles, PaddlesIAxis, PaddlesIAxDr, SaveKey, TrakBall,
-      Lightgun,
+      Lightgun, QuadTari,
       LastType
     };
 
@@ -178,12 +178,12 @@ class Controller : public Serializable
       Update the entire digital and analog pin state according to the
       events currently set.
     */
-    virtual void update() = 0;
+    virtual void update() { }
 
     /**
       Returns the name of this controller.
     */
-    virtual string name() const = 0;
+    virtual string name() const { return ""; }
 
     /**
       Answers whether the controller is intrinsically an analog controller.

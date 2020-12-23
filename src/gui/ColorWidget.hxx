@@ -42,7 +42,7 @@ class ColorWidget : public Widget, public CommandSender
     void setColor(ColorId color);
     ColorId getColor() const { return _color;  }
 
-    void setCrossed(bool enable) { _crossGrid = enable; }
+    void setCrossed(bool enable);
 
   protected:
     void drawWidget(bool hilite) override;

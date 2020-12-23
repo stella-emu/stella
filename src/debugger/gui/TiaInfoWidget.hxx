@@ -38,12 +38,14 @@ class TiaInfoWidget : public Widget, public CommandSender
   private:
     EditTextWidget* myFrameCount{nullptr};
     EditTextWidget* myFrameCycles{nullptr};
-    EditTextWidget* myTotalCycles{ nullptr };
+    EditTextWidget* myTotalCycles{nullptr};
+    EditTextWidget* myDeltaCycles{nullptr};
+    EditTextWidget* myWSyncCylces{nullptr};
+    EditTextWidget* myTimerCylces{nullptr};
 
     EditTextWidget* myScanlineCount{nullptr};
     EditTextWidget* myScanlineCountLast{nullptr};
     EditTextWidget* myScanlineCycles{nullptr};
-    EditTextWidget* myDeltaCycles{ nullptr };
     EditTextWidget* myPixelPosition{nullptr};
     EditTextWidget* myColorClocks{nullptr};
 

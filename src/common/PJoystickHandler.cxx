@@ -22,12 +22,13 @@
 #include "Settings.hxx"
 #include "EventHandler.hxx"
 #include "PJoystickHandler.hxx"
+#include "Logger.hxx"
 
 #ifdef GUI_SUPPORT
   #include "DialogContainer.hxx"
 #endif
 
-static constexpr char CTRL_DELIM = '^';
+using json = nlohmann::json;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PhysicalJoystickHandler::PhysicalJoystickHandler(
@@ -35,25 +36,54 @@ PhysicalJoystickHandler::PhysicalJoystickHandler(
   : myOSystem(system),
     myHandler(handler)
 {
-  Int32 version = myOSystem.settings().getInt("event_ver");
-  // Load previously saved joystick mapping (if any) from settings
-  istringstream buf(myOSystem.settings().getString("joymap"));
+  if(myOSystem.settings().getInt("event_ver") != Event::VERSION) {
+    Logger::info("event version mismatch; dropping previous joystick mappings");
+
+    return;
+  }
+
+  json mappings;
+  const string& serializedMapping = myOSystem.settings().getString("joymap");
+
+  try {
+    mappings = json::parse(serializedMapping);
+  } catch (json::exception) {
+    Logger::info("converting legacy joystick mappings");
+
+    mappings = convertLegacyMapping(serializedMapping);
+  }
+
+  for (const json& mapping: mappings) {
+    if (!mapping.contains("name")) {
+      Logger::error("ignoring bad joystick mapping");
+      continue;
+    }
+
+    myDatabase.emplace(mapping.at("name").get<string>(), StickInfo(mapping));
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+json PhysicalJoystickHandler::convertLegacyMapping(const string& mapping)
+{
+  constexpr char CTRL_DELIM = '^';
+
+  istringstream buf(mapping);
   string joymap, joyname;
 
-  // First compare if event list version has changed, and disregard the entire
-  // mapping if true
   getline(buf, joymap, CTRL_DELIM); // event list size, ignore
-  if(version == Event::VERSION)
+
+  json convertedMapping = json::array();
+
+  while(getline(buf, joymap, CTRL_DELIM))
   {
-    // Otherwise, put each joystick mapping entry into the database
-    while(getline(buf, joymap, CTRL_DELIM))
-    {
-      istringstream namebuf(joymap);
-      getline(namebuf, joyname, PhysicalJoystick::MODE_DELIM);
-      if(joyname.length() != 0)
-        myDatabase.emplace(joyname, StickInfo(joymap));
-    }
+    istringstream namebuf(joymap);
+    getline(namebuf, joyname, PhysicalJoystick::MODE_DELIM);
+
+    convertedMapping.push_back(PhysicalJoystick::convertLegacyMapping(joymap, joyname));
   }
+
+  return convertedMapping;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -526,15 +556,16 @@ void PhysicalJoystickHandler::saveMapping()
 {
   // Save the joystick mapping hash table, making sure to update it with
   // any changes that have been made during the program run
-  ostringstream joybuf;
+  json mapping = json::array();
 
   for(const auto& i: myDatabase)
   {
-    const string& map = i.second.joy ? i.second.joy->getMap() : i.second.mapping;
-    if(map != "")
-      joybuf << CTRL_DELIM << map;
+    json map = i.second.joy ? i.second.joy->getMap() : i.second.mapping;
+
+    if (!map.is_null()) mapping.emplace_back(map);
   }
-  myOSystem.settings().setValue("joymap", joybuf.str());
+
+  myOSystem.settings().setValue("joymap", mapping.dump());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

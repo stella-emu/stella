@@ -22,6 +22,7 @@
 
 #include "Event.hxx"
 #include "EventHandlerConstants.hxx"
+#include "json.hxx"
 
 /**
   This class handles controller mappings in Stella.
@@ -110,8 +111,10 @@ class JoyMap
 
     JoyMappingArray getEventMapping(const Event::Type event, const EventMode mode) const;
 
-    string saveMapping(const EventMode mode) const;
-    int loadMapping(string& list, const EventMode mode);
+    nlohmann::json saveMapping(const EventMode mode) const;
+    int loadMapping(const nlohmann::json& eventMappings, const EventMode mode);
+
+    static nlohmann::json convertLegacyMapping(string list);
 
     /** Erase all mappings for given mode */
     void eraseMode(const EventMode mode);

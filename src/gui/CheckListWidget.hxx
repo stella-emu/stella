@@ -42,10 +42,6 @@ class CheckListWidget : public ListWidget
     bool getState(int line);
     bool getSelectedState() { return getState(_selectedItem); }
 
-  protected:
-    void handleMouseEntered() override;
-    void handleMouseLeft() override;
-
   private:
     bool handleEvent(Event::Type e) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;

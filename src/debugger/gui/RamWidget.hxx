@@ -22,6 +22,7 @@ class GuiObject;
 class ButtonWidget;
 class DataGridWidget;
 class DataGridOpsWidget;
+class DataGridRamWidget;
 class EditTextWidget;
 class StaticTextWidget;
 class InputTextDialog;
@@ -41,11 +42,12 @@ class RamWidget : public Widget, public CommandSender
     void setOpsWidget(DataGridOpsWidget* w);
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
+    virtual string getLabel(int addr) const = 0;
+
   private:
     // To be implemented by derived classes
     virtual uInt8 getValue(int addr) const = 0;
     virtual void setValue(int addr, uInt8 value) = 0;
-    virtual string getLabel(int addr) const = 0;
 
     virtual void fillList(uInt32 start, uInt32 size,
                           IntArray& alist, IntArray& vlist,
@@ -79,8 +81,10 @@ class RamWidget : public Widget, public CommandSender
       kRestartCmd  = 'RWrs',
       kSValEntered = 'RWsv',
       kCValEntered = 'RWcv',
+      kRamGridID,
       kRamHexID,
       kRamDecID,
+      kRamSignID,
       kRamBinID
     };
 
@@ -95,7 +99,8 @@ class RamWidget : public Widget, public CommandSender
     StaticTextWidget* myRamStart{nullptr};
     std::array<StaticTextWidget*, 16> myRamLabels{nullptr};
 
-    DataGridWidget* myRamGrid{nullptr};
+    DataGridRamWidget* myRamGrid{nullptr};
+    DataGridWidget* myHexValue{nullptr};
     DataGridWidget* myDecValue{nullptr};
     DataGridWidget* myBinValue{nullptr};
     EditTextWidget* myLabel{nullptr};

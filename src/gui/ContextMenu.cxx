@@ -77,7 +77,7 @@ void ContextMenu::show(uInt32 x, uInt32 y, const Common::Rect& bossRect, int ite
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ContextMenu::center()
+void ContextMenu::setPosition()
 {
   // First set position according to original coordinates
   surface().setDstPos(_xorig, _yorig);
@@ -346,8 +346,12 @@ int ContextMenu::findItem(int x, int y) const
 void ContextMenu::drawCurrentSelection(int item)
 {
   // Change selection
-  _selectedOffset = item;
-  setDirty();
+  if(_selectedOffset != item)
+  {
+    _selectedOffset = item;
+    cerr << "ContextMenu" << endl;
+    setDirty();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -621,5 +625,5 @@ void ContextMenu::drawDialog()
     s.drawBitmap(_downImg, ((_w-_x)>>1)-4, (_rowHeight>>1)+y-4, _scrollDnColor, _arrowSize);
   }
 
-  setDirty();
+  clearDirty();
 }

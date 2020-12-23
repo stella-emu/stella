@@ -15,8 +15,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <windows.h>
-
+#include "Windows.hxx"
 #include "SerialPortWINDOWS.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -28,22 +27,22 @@ SerialPortWINDOWS::SerialPortWINDOWS()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SerialPortWINDOWS::~SerialPortWINDOWS()
 {
-  if(myHandle)
+  if(myHandle != INVALID_HANDLE_VALUE)
   {
     CloseHandle(myHandle);
-    myHandle = 0;
+    myHandle = INVALID_HANDLE_VALUE;
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool SerialPortWINDOWS::openPort(const string& device)
 {
-  if(!myHandle)
+  if(myHandle == INVALID_HANDLE_VALUE)
   {
     myHandle = CreateFile(device.c_str(), GENERIC_READ|GENERIC_WRITE, 0,
                           NULL, OPEN_EXISTING, 0, NULL);
 
-    if(myHandle)
+    if(myHandle != INVALID_HANDLE_VALUE)
     {
       DCB dcb;
 
@@ -52,7 +51,7 @@ bool SerialPortWINDOWS::openPort(const string& device)
       if(!BuildCommDCB("19200,n,8,1", &dcb))
       {
         CloseHandle(myHandle);
-        myHandle = 0;
+        myHandle = INVALID_HANDLE_VALUE;
         return false;
       }
 
@@ -80,7 +79,7 @@ bool SerialPortWINDOWS::openPort(const string& device)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool SerialPortWINDOWS::readByte(uInt8& data)
 {
-  if(myHandle)
+  if(myHandle != INVALID_HANDLE_VALUE)
   {
     DWORD read;
     ReadFile(myHandle, &data, 1, &read, NULL);
@@ -92,7 +91,7 @@ bool SerialPortWINDOWS::readByte(uInt8& data)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool SerialPortWINDOWS::writeByte(uInt8 data)
 {
-  if(myHandle)
+  if(myHandle != INVALID_HANDLE_VALUE)
   {
     DWORD written;
     WriteFile(myHandle, &data, 1, &written, NULL);
@@ -104,11 +103,47 @@ bool SerialPortWINDOWS::writeByte(uInt8 data)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool SerialPortWINDOWS::isCTS()
 {
-  if(myHandle)
+  if(myHandle != INVALID_HANDLE_VALUE)
   {
     DWORD modemStat;
     GetCommModemStatus(myHandle, &modemStat);
     return modemStat & MS_CTS_ON;
   }
   return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+StringList SerialPortWINDOWS::portNames()
+{
+  StringList ports;
+
+  HKEY hKey = NULL;
+  LSTATUS result = RegOpenKeyExW(HKEY_LOCAL_MACHINE,
+    L"HARDWARE\\DEVICEMAP\\SERIALCOMM", 0, KEY_READ, &hKey);
+  if (result == ERROR_SUCCESS)
+  {
+    TCHAR deviceName[2048], friendlyName[32];
+    DWORD numValues = 0;
+
+    result = RegQueryInfoKey(hKey, NULL, NULL, NULL, NULL, NULL, NULL,
+      &numValues, NULL, NULL, NULL, NULL);
+    if (result == ERROR_SUCCESS)
+    {
+      DWORD type = 0;
+      DWORD deviceNameLen = 2047;
+      DWORD friendlyNameLen = 31;
+
+      for (DWORD i = 0; i < numValues; ++i)
+      {
+        result = RegEnumValue(hKey, i, deviceName, &deviceNameLen,
+          NULL, &type, (LPBYTE)friendlyName, &friendlyNameLen);
+
+        if (result == ERROR_SUCCESS && type == REG_SZ)
+          ports.emplace_back(friendlyName);
+      }
+    }
+  }
+  RegCloseKey(hKey);
+
+  return ports;
 }

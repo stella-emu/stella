@@ -30,6 +30,7 @@ void yyerror(const char *e) {
 	char* Equate;
 	CartMethod cartMethod;
 	CpuMethod cpuMethod;
+	RiotMethod riotMethod;
 	TiaMethod tiaMethod;
 	Expression* exp;
 	char* DefinedFunction;
@@ -41,6 +42,7 @@ void yyerror(const char *e) {
 %token <Equate> EQUATE
 %token <cartMethod> CART_METHOD
 %token <cpuMethod>  CPU_METHOD
+%token <riotMethod> RIOT_METHOD
 %token <tiaMethod>  TIA_METHOD
 %token <DefinedFunction> FUNCTION
 
@@ -97,6 +99,7 @@ expression:	expression '+' expression { if(DEBUG_EXP) fprintf(stderr, " +"); $$ 
 	|	EQUATE { if(DEBUG_EXP) fprintf(stderr, "equate %s", $1); $$ = new EquateExpression($1); lastExp = $$; }
 	|	CPU_METHOD { if(DEBUG_EXP) fprintf(stderr, " (CpuMethod)"); $$ = new CpuMethodExpression($1); lastExp = $$; }
 	|	CART_METHOD { if(DEBUG_EXP) fprintf(stderr, " (CartMethod)"); $$ = new CartMethodExpression($1); lastExp = $$; }
+	|	RIOT_METHOD { if(DEBUG_EXP) fprintf(stderr, " (RiotMethod)"); $$ = new RiotMethodExpression($1); lastExp = $$; }
 	|	TIA_METHOD { if(DEBUG_EXP) fprintf(stderr, " (TiaMethod)"); $$ = new TiaMethodExpression($1); lastExp = $$; }
 	|	FUNCTION { if(DEBUG_EXP) fprintf(stderr, " (DefinedFunction)"); $$ = new FunctionExpression($1); lastExp = $$; }
 	|  ERR { if(DEBUG_EXP) fprintf(stderr, " ERR: "); yyerror((const char*)"Invalid label or constant"); return 1; }

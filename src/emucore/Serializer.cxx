@@ -91,6 +91,8 @@ void Serializer::rewind()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 size_t Serializer::size() const
 {
+  myStream->seekp(0, std::ios::end);
+
   return myStream->tellp();
 }
 

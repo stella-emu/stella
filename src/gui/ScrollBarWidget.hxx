@@ -49,7 +49,6 @@ class ScrollBarWidget : public Widget, public CommandSender
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseMoved(int x, int y) override;
     bool handleMouseClicks(int x, int y, MouseButton b) override;
-    void handleMouseEntered() override;
     void handleMouseLeft() override;
     void setArrows();
 

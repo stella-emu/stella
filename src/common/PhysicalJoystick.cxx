@@ -22,6 +22,24 @@
 #include "Vec.hxx"
 #include "bspf.hxx"
 #include "PhysicalJoystick.hxx"
+#include "jsonDefinitions.hxx"
+#include "Logger.hxx"
+
+using json = nlohmann::json;
+
+namespace {
+  string jsonName(EventMode eventMode) {
+    return json(eventMode).get<string>();
+  }
+
+  EventMode eventModeFromJsonName(const string& name) {
+    EventMode result;
+
+    from_json(json(name), result);
+
+    return result;
+  }
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalJoystick::initialize(int index, const string& desc,
@@ -45,29 +63,55 @@ void PhysicalJoystick::initialize(int index, const string& desc,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string PhysicalJoystick::getMap() const
+json PhysicalJoystick::getMap() const
 {
-  // The mapping structure (for remappable devices) is defined as follows:
-  // <NAME>'>'<MODE>['|'(<EVENT>':'<BUTTON>','<AXIS>','<VALUE>)|(<EVENT>':'<BUTTON>','<HAT>','<HATDIR>)]
+  json mapping = json::object();
 
-  ostringstream joybuf;
+  mapping["name"] = name;
 
-  joybuf << name;
-  joybuf << MODE_DELIM << int(EventMode::kMenuMode) << "|" << joyMap.saveMapping(EventMode::kMenuMode);
-  joybuf << MODE_DELIM << int(EventMode::kJoystickMode) << "|" << joyMap.saveMapping(EventMode::kJoystickMode);
-  joybuf << MODE_DELIM << int(EventMode::kPaddlesMode) << "|" << joyMap.saveMapping(EventMode::kPaddlesMode);
-  joybuf << MODE_DELIM << int(EventMode::kKeypadMode) << "|" << joyMap.saveMapping(EventMode::kKeypadMode);
-  joybuf << MODE_DELIM << int(EventMode::kCommonMode) << "|" << joyMap.saveMapping(EventMode::kCommonMode);
+  for (auto& mode: {
+    EventMode::kMenuMode, EventMode::kJoystickMode, EventMode::kPaddlesMode, EventMode::kKeypadMode, EventMode::kCommonMode
+  })
+    mapping[jsonName(mode)] = joyMap.saveMapping(mode);
 
-  return joybuf.str();
+  return mapping;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PhysicalJoystick::setMap(const string& mapString)
+bool PhysicalJoystick::setMap(const json& map)
 {
-  istringstream buf(mapString);
-  string map;
   int i = 0;
+
+  for (auto& entry: map.items()) {
+    if (entry.key() == "name") continue;
+
+    try {
+      joyMap.loadMapping(entry.value(), eventModeFromJsonName(entry.key()));
+    } catch (json::exception) {
+      Logger::error("ignoring invalid json mapping for " + entry.key());
+    }
+
+    i++;
+  }
+
+  if(i != 5)
+  {
+    Logger::error("invalid controller mappings found for " +
+      ((map.contains("name") && map.at("name").is_string()) ? ("stick " + map["name"].get<string>()) : "unknown stick")
+    );
+
+    return false;
+  }
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+json PhysicalJoystick::convertLegacyMapping(const string& mapping, const string& name)
+{
+  istringstream buf(mapping);
+  json convertedMapping = json::object();
+  string map;
 
   // Skip joystick name
   getline(buf, map, MODE_DELIM);
@@ -84,17 +128,14 @@ bool PhysicalJoystick::setMap(const string& mapString)
     // Remove leading "<mode>|" string
     map.erase(0, 2);
 
-    joyMap.loadMapping(map, EventMode(mode));
-    i++;
-  }
-  // Brief error checking
-  if(i != 5)
-  {
-    cerr << "ERROR: Invalid controller mappings found" << endl;
-    return false;
+    json mappingForMode = JoyMap::convertLegacyMapping(map);
+
+    convertedMapping[jsonName(EventMode(mode))] = mappingForMode;
   }
 
-  return true;
+  convertedMapping["name"] = name;
+
+  return convertedMapping;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -26,6 +26,7 @@ class OSystem;
 class DialogContainer;
 class TabWidget;
 class CommandSender;
+class ToolTip;
 
 #include "Stack.hxx"
 #include "Widget.hxx"
@@ -54,19 +55,20 @@ class Dialog : public GuiObject
     void close();
 
     bool isVisible() const override { return _visible; }
-    bool isOnTop() const { return _onTop;  }
 
-    virtual void center();
+    virtual void setPosition();
     virtual void drawDialog();
     virtual void loadConfig()  { }
     virtual void saveConfig()  { }
     virtual void setDefaults() { }
 
-    // A dialog being dirty indicates that its underlying surface needs to be
-    // redrawn and then re-rendered; this is taken care of in ::render()
-    void setDirty() override { _dirty = true; }
-    bool isDirty() const { return _dirty; }
-    bool render();
+    void setDirty() override;
+    void setDirtyChain() override;
+    void redraw(bool force = false);
+    void drawChain() override;
+    void render();
+
+    void tick() override;
 
     void addFocusWidget(Widget* w) override;
     void addToFocusList(WidgetArray& list) override;
@@ -89,12 +91,10 @@ class Dialog : public GuiObject
     */
     void addSurface(const shared_ptr<FBSurface>& surface);
 
-    void setFlags(int flags) { _flags |= flags;  setDirty(); }
-    void clearFlags(int flags) { _flags &= ~flags; setDirty(); }
-    int  getFlags() const { return _flags; }
-
     void setTitle(const string& title);
     bool hasTitle() { return !_title.empty(); }
+
+    virtual bool isShading() const { return true; }
 
     /**
       Determine the maximum width/height of a dialog based on the minimum
@@ -123,6 +123,8 @@ class Dialog : public GuiObject
       @return  True if the dialog should be resized
     */
     bool shouldResize(uInt32& w, uInt32& h) const;
+
+    ToolTip& tooltip() { return *_toolTip; }
 
   protected:
     void draw() override { }
@@ -197,11 +199,11 @@ class Dialog : public GuiObject
     ButtonWidget* _cancelWidget{nullptr};
 
     bool    _visible{false};
-    bool    _onTop{true};
     bool    _processCancel{false};
     string  _title;
     int     _th{0};
     int     _layer{0};
+    unique_ptr<ToolTip> _toolTip;
 
     Common::FixedStack<shared_ptr<FBSurface>> mySurfaceStack;
 
@@ -232,10 +234,9 @@ class Dialog : public GuiObject
 
     WidgetArray _buttonGroup;
     shared_ptr<FBSurface> _surface;
+    shared_ptr<FBSurface> _shadeSurface;
 
     int _tabID{0};
-    int _flags{0};
-    bool _dirty{false};
     uInt32 _max_w{0}; // maximum wanted width
     uInt32 _max_h{0}; // maximum wanted height
 

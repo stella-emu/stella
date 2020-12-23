@@ -25,15 +25,24 @@ class StringListWidget : public ListWidget
 {
   public:
     StringListWidget(GuiObject* boss, const GUI::Font& font,
-                     int x, int y, int w, int h, bool hilite = true);
+                     int x, int y, int w, int h, bool hilite = true,
+                     bool useScrollbar = true);
     ~StringListWidget() override = default;
 
     void setList(const StringList& list);
     bool wantsFocus() const override { return true; }
 
+    string getToolTip(const Common::Point& pos) const override;
+    bool changedToolTip(const Common::Point& oldPos, const Common::Point& newPos) const override;
+
   protected:
-    void handleMouseEntered() override;
-    void handleMouseLeft() override;
+    // display depends on _hasFocus so we have to redraw when focus changes
+    void receivedFocusWidget() override { setDirty(); }
+    void lostFocusWidget() override { setDirty(); }
+
+    bool hasToolTip() const override { return true; }
+    int getToolTipIndex(const Common::Point& pos) const;
+
     void drawWidget(bool hilite) override;
     Common::Rect getEditRect() const override;
 

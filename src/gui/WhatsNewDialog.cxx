@@ -38,25 +38,21 @@ WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent, const 
   const int HBORDER = fontWidth * 1.25;
   int ypos = _th + VBORDER;
 
-
   // Set preliminary dimensions
   setSize(MAX_CHARS * fontWidth + HBORDER * 2, max_h,
           max_w, max_h);
 
 #if defined(RETRON77)
-  add(ypos, "added adjustable autofire (see 'Advanced Settings')");
-  add(ypos, "added new UI theme 'Dark' (see 'Advanced Settings')");
+  add(ypos, "increased sample size for CDFJ+");
+  add(ypos, "fixed navigation bug in Video & Audio settings dialog");
+  add(ypos, "fixed autofire bug for trackball controllers");
 #else
-  add(ypos, "added adjustable autofire");
-  add(ypos, "added 'Dark' UI theme");
-  //add(ypos, "extended global hotkeys for debug options");
-  add(ypos, "added option to playback a game using the Time Machine");
-  //add(ypos, "allow taking snapshots from within the Time Machine dialog");
-  add(ypos, "added the ability to access most files that Stella uses from within a ZIP file");
-  add(ypos, "added option to select the audio device");
-  //add(ypos, "added option to display detected settings info when a ROM is loaded");
-  //add(ypos, "replaced 'Re-disassemble' with 'Disassemble @ current line' in debugger");
-  //add(ypos, "fixed bug when taking fullscreen snapshots; the dimensions were sometimes cut");
+  add(ypos, "enhanced cut/copy/paste for text editing");
+  add(ypos, "added undo and redo to text editing");
+  add(ypos, "added wildcard support to launcher dialog filter");
+  add(ypos, "added option to search subdirectories in launcher");
+  add(ypos, "added tooltips to many UI items");
+  add(ypos, "increased sample size for CDFJ+");
   add(ypos, ELLIPSIS + " (for a complete list see 'docs/Changes.txt')");
 #endif
 

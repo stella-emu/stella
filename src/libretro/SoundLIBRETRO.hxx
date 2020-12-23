@@ -45,60 +45,17 @@ class SoundLIBRETRO : public Sound
 
   public:
     /**
-      Enables/disables the sound subsystem.
-
-      @param enable  Either true or false, to enable or disable the sound system
-    */
-    void setEnabled(bool enable) override { }
-
-    /**
       Initializes the sound device.  This must be called before any
       calls are made to derived methods.
     */
-    void open(shared_ptr<AudioQueue> audioQueue, EmulationTiming* emulationTiming) override;
+    void open(shared_ptr<AudioQueue> audioQueue,
+              EmulationTiming* emulationTiming) override;
 
     /**
       Should be called to close the sound device.  Once called the sound
       device can be started again using the open method.
     */
     void close() override;
-
-    /**
-      Set the mute state of the sound object.  While muted no sound is played.
-
-      @param state Mutes sound if true, unmute if false
-
-      @return  The previous (old) mute state
-    */
-    bool mute(bool state) override { return !myIsInitializedFlag; }
-
-    /**
-      Toggles the sound mute state.  While muted no sound is played.
-
-      @return  The previous (old) mute state
-    */
-    bool toggleMute() override { return !myIsInitializedFlag; }
-
-    /**
-      Sets the volume of the sound device to the specified level.  The
-      volume is given as a percentage from 0 to 100.  Values outside
-      this range indicate that the volume shouldn't be changed at all.
-
-      @param percent  The new volume percentage level for the sound device
-    */
-    void setVolume(uInt32 percent) override { }
-
-    /**
-      Adjusts the volume of the sound device based on the given direction.
-
-      @param direction  +1 indicates increase, -1 indicates decrease.
-    */
-    void adjustVolume(int direction = +1) override { }
-
-    /**
-      This method is called to provide information about the sound device.
-    */
-    string about() const override { return ""; }
 
     /**
       Empties the playback buffer.
@@ -109,23 +66,29 @@ class SoundLIBRETRO : public Sound
     void dequeue(Int16* stream, uInt32* samples);
 
   protected:
-    /**
-      This method is called to query the audio devices.
+    //////////////////////////////////////////////////////////////////////
+    // Most methods here aren't used at all.  See Sound class for
+    // description, if needed.
+    //////////////////////////////////////////////////////////////////////
 
-      @param devices  List of device names
-    */
-    void queryHardware(VariantList& devices) override;
+    void setEnabled(bool enable) override { }
+    void queryHardware(VariantList& devices) override { }
+    void setVolume(uInt32 percent) override { }
+    void adjustVolume(int direction = +1) override { }
+    bool mute(bool state) override { return !myIsInitializedFlag; }
+    bool toggleMute() override { return !myIsInitializedFlag; }
+    string about() const override { return ""; }
 
   private:
     // Indicates if the sound device was successfully initialized
-    bool myIsInitializedFlag;
+    bool myIsInitializedFlag{false};
 
     shared_ptr<AudioQueue> myAudioQueue;
 
-    EmulationTiming* myEmulationTiming;
+    EmulationTiming* myEmulationTiming{nullptr};
 
-    Int16* myCurrentFragment;
-    bool myUnderrun;
+    Int16* myCurrentFragment{nullptr};
+    bool myUnderrun{false};
 
     AudioSettings& myAudioSettings;
 
