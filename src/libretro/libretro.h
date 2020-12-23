@@ -2100,16 +2100,16 @@ struct retro_system_info
    /* All pointers are owned by libretro implementation, and pointers must
     * remain valid until retro_deinit() is called. */
 
-   const char *library_name;      /* Descriptive name of library. Should not
-                                   * contain any version numbers, etc. */
-   const char *library_version;   /* Descriptive version of core. */
+   const char *library_name{nullptr};      /* Descriptive name of library. Should not
+                                            * contain any version numbers, etc. */
+   const char *library_version{nullptr};   /* Descriptive version of core. */
 
-   const char *valid_extensions;  /* A string listing probably content
-                                   * extensions the core will be able to
-                                   * load, separated with pipe.
-                                   * I.e. "bin|rom|iso".
-                                   * Typically used for a GUI to filter
-                                   * out extensions. */
+   const char *valid_extensions{nullptr};  /* A string listing probably content
+                                            * extensions the core will be able to
+                                            * load, separated with pipe.
+                                            * I.e. "bin|rom|iso".
+                                            * Typically used for a GUI to filter
+                                            * out extensions. */
 
    /* If true, retro_load_game() is guaranteed to provide a valid pathname
     * in retro_game_info::path.
@@ -2122,33 +2122,33 @@ struct retro_system_info
     * load from file.
     * Implementations should strive for setting this to false, as it allows
     * the frontend to perform patching, etc. */
-   bool        need_fullpath;
+   bool        need_fullpath{false};
 
    /* If true, the frontend is not allowed to extract any archives before
     * loading the real content.
     * Necessary for certain libretro implementations that load games
     * from zipped archives. */
-   bool        block_extract;
+   bool        block_extract{false};
 };
 
 struct retro_game_geometry
 {
-   unsigned base_width;    /* Nominal video width of game. */
-   unsigned base_height;   /* Nominal video height of game. */
-   unsigned max_width;     /* Maximum possible width of game. */
-   unsigned max_height;    /* Maximum possible height of game. */
+   unsigned base_width{0};    /* Nominal video width of game. */
+   unsigned base_height{0};   /* Nominal video height of game. */
+   unsigned max_width{0};     /* Maximum possible width of game. */
+   unsigned max_height{0};    /* Maximum possible height of game. */
 
-   float    aspect_ratio;  /* Nominal aspect ratio of game. If
-                            * aspect_ratio is <= 0.0, an aspect ratio
-                            * of base_width / base_height is assumed.
-                            * A frontend could override this setting,
-                            * if desired. */
+   float    aspect_ratio{0.F};  /* Nominal aspect ratio of game. If
+                                 * aspect_ratio is <= 0.0, an aspect ratio
+                                 * of base_width / base_height is assumed.
+                                 * A frontend could override this setting,
+                                 * if desired. */
 };
 
 struct retro_system_timing
 {
-   double fps;             /* FPS of video content. */
-   double sample_rate;     /* Sampling rate of audio. */
+   double fps{0.F};             /* FPS of video content. */
+   double sample_rate{0.F};     /* Sampling rate of audio. */
 };
 
 struct retro_system_av_info

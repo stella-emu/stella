@@ -29,10 +29,11 @@ PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
                          int x, int y, int w, int h, const VariantList& list,
                          const string& label, int labelWidth, int cmd)
   : EditableWidget(boss, font, x, y - 1, w, h + 2),
-    _label(label),
-    _labelWidth(labelWidth)
+    _label{label},
+    _labelWidth{labelWidth}
 {
-  _flags = Widget::FLAG_ENABLED | Widget::FLAG_RETAIN_FOCUS;
+  _flags = Widget::FLAG_ENABLED | Widget::FLAG_RETAIN_FOCUS
+    | Widget::FLAG_TRACK_MOUSE;
   _bgcolor = kDlgColor;
   _bgcolorhi = kDlgColor;     // do not highlight the background
   _textcolor = kTextColor;
@@ -51,7 +52,7 @@ PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
   myTextY   = (_h - _font.getFontHeight()) / 2;
   myArrowsY = (_h - _arrowHeight) / 2;
 
-  myMenu = make_unique<ContextMenu>(this, font, list, cmd, w);
+  myMenu = make_unique<ContextMenu>(this, font, list, cmd, w + dropDownWidth(font));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -127,33 +128,25 @@ const Variant& PopUpWidget::getSelectedTag() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PopUpWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
-  resetSelection();
-  if(!isEditable() || x > _w - dropDownWidth(_font))
+  if(b == MouseButton::LEFT)
   {
-    if(isEnabled() && !myMenu->isVisible())
+    resetSelection();
+    if(!isEditable() || x > _w - dropDownWidth(_font))
     {
-      // Add menu just underneath parent widget
-      myMenu->show(getAbsX() + _labelWidth, getAbsY() + getHeight(),
-                   dialog().surface().dstRect(), myMenu->getSelected());
+      if(isEnabled() && !myMenu->isVisible())
+      {
+        // Add menu just underneath parent widget
+        myMenu->show(getAbsX() + _labelWidth, getAbsY() + getHeight(),
+                     dialog().surface().dstRect(), myMenu->getSelected());
+      }
+    }
+    else
+    {
+      if(setCaretPos(toCaretPos(x)))
+        setDirty();
     }
   }
-  else
-  {
-    x += _editScrollOffset - _labelWidth;
-
-    int width = 0;
-    uInt32 i;
-
-    for(i = 0; i < editString().size(); ++i)
-    {
-      width += _font.getCharWidth(editString()[i]);
-      if(width >= x)
-        break;
-    }
-
-    if(setCaretPos(i))
-      setDirty();
-  }
+  EditableWidget::handleMouseDown(x, y, b, clickCount);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -254,7 +247,6 @@ void PopUpWidget::setArrow()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PopUpWidget::drawWidget(bool hilite)
 {
-//cerr << "PopUpWidget::drawWidget\n";
   FBSurface& s = dialog().surface();
 
   int x = _x + _labelWidth;

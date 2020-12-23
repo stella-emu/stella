@@ -236,13 +236,13 @@ class CartDebug : public DebuggerSystem
     /**
       Save disassembly and ROM file
     */
-    string saveDisassembly();
-    string saveRom();
+    string saveDisassembly(string path);
+    string saveRom(string path);
 
     /**
       Save access counters file
     */
-    string saveAccessFile();
+    string saveAccessFile(string path);
 
     /**
       Show Distella directives (both set by the user and determined by Distella)
@@ -324,7 +324,7 @@ class CartDebug : public DebuggerSystem
 
     // Analyze of bank of ROM, generating a list of Distella directives
     // based on its disassembly
-    void getBankDirectives(ostream& buf, BankInfo& info) const;
+    void getBankDirectives(ostream& buf, const BankInfo& info) const;
 
     // Get access enum type from 'flags', taking precendence into account
     Device::AccessType accessTypeAbsolute(Device::AccessFlags flags) const;

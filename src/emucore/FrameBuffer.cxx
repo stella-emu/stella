@@ -25,11 +25,13 @@
 #include "Settings.hxx"
 #include "TIA.hxx"
 #include "Sound.hxx"
+#include "AudioSettings.hxx"
 #include "MediaFactory.hxx"
 
 #include "FBSurface.hxx"
 #include "TIASurface.hxx"
 #include "FrameBuffer.hxx"
+#include "PaletteHandler.hxx"
 #include "StateManager.hxx"
 #include "RewindManager.hxx"
 
@@ -51,13 +53,14 @@
   #include "Launcher.hxx"
   #include "Menu.hxx"
   #include "CommandMenu.hxx"
+  #include "HighScoresMenu.hxx"
   #include "MessageMenu.hxx"
   #include "TimeMachine.hxx"
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBuffer::FrameBuffer(OSystem& osystem)
-  : myOSystem(osystem)
+  : myOSystem{osystem}
 {
 }
 
@@ -76,8 +79,7 @@ void FrameBuffer::initialize()
 {
   // First create the platform-specific backend; it is needed before anything
   // else can be used
-  try { myBackend = MediaFactory::createVideoBackend(myOSystem); }
-  catch(const runtime_error& e) { throw e; }
+  myBackend = MediaFactory::createVideoBackend(myOSystem);
 
   // Get desktop resolution and supported renderers
   vector<Common::Size> windowedDisplays;
@@ -345,10 +347,10 @@ void FrameBuffer::update(UpdateMode mode)
       {
         myPausedCount = uInt32(7 * myOSystem.frameRate());
         showTextMessage("Paused", MessagePosition::MiddleCenter);
-        myTIASurface->render();
+        myTIASurface->render(true);
       }
       if(rerender)
-        myTIASurface->render();
+        myTIASurface->render(true);
       break;  // EventHandlerState::PAUSE
     }
 
@@ -360,13 +362,13 @@ void FrameBuffer::update(UpdateMode mode)
       if(redraw)
       {
         clear();
-        myTIASurface->render();
+        myTIASurface->render(true);
         myOSystem.menu().draw(forceRedraw);
       }
       else if(rerender)
       {
         clear();
-        myTIASurface->render();
+        myTIASurface->render(true);
         myOSystem.menu().render();
       }
       break;  // EventHandlerState::OPTIONSMENU
@@ -379,10 +381,29 @@ void FrameBuffer::update(UpdateMode mode)
       if(redraw)
       {
         clear();
-        myTIASurface->render();
+        myTIASurface->render(true);
         myOSystem.commandMenu().draw(forceRedraw);
       }
       break;  // EventHandlerState::CMDMENU
+    }
+
+    case EventHandlerState::HIGHSCORESMENU:
+    {
+      myOSystem.highscoresMenu().tick();
+      redraw |= myOSystem.highscoresMenu().needsRedraw();
+      if(redraw)
+      {
+        clear();
+        myTIASurface->render(true);
+        myOSystem.highscoresMenu().draw(forceRedraw);
+      }
+      else if(rerender)
+      {
+        clear();
+        myTIASurface->render(true);
+        myOSystem.highscoresMenu().render();
+      }
+      break;  // EventHandlerState::HIGHSCORESMENU
     }
 
     case EventHandlerState::MESSAGEMENU:
@@ -392,7 +413,7 @@ void FrameBuffer::update(UpdateMode mode)
       if(redraw)
       {
         clear();
-        myTIASurface->render();
+        myTIASurface->render(true);
         myOSystem.messageMenu().draw(forceRedraw);
       }
       break;  // EventHandlerState::MESSAGEMENU
@@ -408,29 +429,39 @@ void FrameBuffer::update(UpdateMode mode)
         myTIASurface->render();
         myOSystem.timeMachine().draw(forceRedraw);
       }
+      else if(rerender)
+      {
+        clear();
+        myTIASurface->render();
+        myOSystem.timeMachine().render();
+      }
       break;  // EventHandlerState::TIMEMACHINE
     }
 
     case EventHandlerState::PLAYBACK:
     {
       static Int32 frames = 0;
-      RewindManager& r = myOSystem.state().rewindManager();
       bool success = true;
-      Int64 frameCycles = 76 * std::max<Int32>(myOSystem.console().tia().scanlinesLastFrame(), 240);
 
       if(--frames <= 0)
       {
-        r.unwindStates(1);
-        // get time between current and next state
-        uInt64 startCycles = r.getCurrentCycles();
+        RewindManager& r = myOSystem.state().rewindManager();
+        uInt64 prevCycles = r.getCurrentCycles();
+
         success = r.unwindStates(1);
-        // display larger state gaps faster
-        frames = std::sqrt((myOSystem.console().tia().cycles() - startCycles) / frameCycles);
 
-        if(success)
-          r.rewindStates(1);
+        // Determine playback speed, the faster the more the states are apart
+        Int64 frameCycles = 76 * std::max<Int32>(myOSystem.console().tia().scanlinesLastFrame(), 240);
+        Int64 intervalFrames = r.getInterval() / frameCycles;
+        Int64 stateFrames = (r.getCurrentCycles() - prevCycles) / frameCycles;
+
+        //frames = intervalFrames + std::sqrt(std::max(stateFrames - intervalFrames, 0));
+        frames = std::round(std::sqrt(stateFrames));
+
+        // Mute sound if saved states were removed or states are too far apart
+        myOSystem.sound().mute(stateFrames > intervalFrames ||
+            frames > static_cast<Int32>(myOSystem.audioSettings().bufferSize() / 2 + 1));
       }
-
       redraw |= success;
       if(redraw)
         myTIASurface->render();
@@ -440,6 +471,7 @@ void FrameBuffer::update(UpdateMode mode)
       if(!success)
       {
         frames = 0;
+        myOSystem.sound().mute(true);
         myOSystem.eventHandler().enterMenuMode(EventHandlerState::TIMEMACHINE);
       }
       break;  // EventHandlerState::PLAYBACK
@@ -707,8 +739,10 @@ inline bool FrameBuffer::drawMessage()
 
   if(myMsg.dirty)
   {
+  #ifdef DEBUG_BUILD
     cerr << "m";
     //cerr << "--- draw message ---" << endl;
+  #endif
 
     // Draw the bounded box and text
     const Common::Rect& dst = myMsg.surface->dstRect();
@@ -920,7 +954,7 @@ void FrameBuffer::stateChanged(EventHandlerState state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string FrameBuffer::getDisplayKey()
+string FrameBuffer::getDisplayKey() const
 {
   // save current window's display and position
   switch(myBufferType)
@@ -942,7 +976,7 @@ string FrameBuffer::getDisplayKey()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string FrameBuffer::getPositionKey()
+string FrameBuffer::getPositionKey() const
 {
   // save current window's display and position
   switch(myBufferType)
@@ -964,13 +998,31 @@ string FrameBuffer::getPositionKey()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::saveCurrentWindowPosition()
+void FrameBuffer::saveCurrentWindowPosition() const
 {
-  myOSystem.settings().setValue(
-    getDisplayKey(), myBackend->getCurrentDisplayIndex());
-  if(myBackend->isCurrentWindowPositioned())
+  if(myBackend)
+  {
     myOSystem.settings().setValue(
-      getPositionKey(), myBackend->getCurrentWindowPos());
+      getDisplayKey(), myBackend->getCurrentDisplayIndex());
+    if(myBackend->isCurrentWindowPositioned())
+      myOSystem.settings().setValue(
+        getPositionKey(), myBackend->getCurrentWindowPos());
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::saveConfig(Settings& settings) const
+{
+  // Save the last windowed position and display on system shutdown
+  saveCurrentWindowPosition();
+
+  if(myTIASurface)
+  {
+    Logger::debug("Saving TV effects options ...");
+    tiaSurface().ntsc().saveConfig(settings);
+    Logger::debug("Saving palette settings...");
+    tiaSurface().paletteHandler().saveConfig(settings);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1222,21 +1274,18 @@ float FrameBuffer::maxWindowZoom(uInt32 baseWidth, uInt32 baseHeight) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::setCursorState()
 {
+  myGrabMouse = myOSystem.settings().getBool("grabmouse");
   // Always grab mouse in emulation (if enabled) and emulating a controller
   // that always uses the mouse
-  bool emulation =
+  const bool emulation =
       myOSystem.eventHandler().state() == EventHandlerState::EMULATION;
-  bool analog = myOSystem.hasConsole() ?
-      (myOSystem.console().leftController().isAnalog() ||
-       myOSystem.console().rightController().isAnalog()) : false;
-  bool usesLightgun = emulation && myOSystem.hasConsole() ?
+  const bool usesLightgun = emulation && myOSystem.hasConsole() ?
     myOSystem.console().leftController().type() == Controller::Type::Lightgun ||
     myOSystem.console().rightController().type() == Controller::Type::Lightgun : false;
-  bool alwaysUseMouse = BSPF::equalsIgnoreCase("always", myOSystem.settings().getString("usemouse"));
-
   // Show/hide cursor in UI/emulation mode based on 'cursor' setting
   int cursor = myOSystem.settings().getInt("cursor");
-  // always enable cursor in lightgun games
+
+  // Always enable cursor in lightgun games
   if (usesLightgun && !myGrabMouse)
     cursor |= 1;  // +Emulation
 
@@ -1246,19 +1295,39 @@ void FrameBuffer::setCursorState()
       showCursor(false);
       break;
     case 1:
-      showCursor(emulation);  //-UI, +Emulation
-      myGrabMouse = false; // disable grab while cursor is shown in emulation
+      showCursor(emulation);  // -UI, +Emulation
       break;
     case 2:                   // +UI, -Emulation
       showCursor(!emulation);
       break;
     case 3:
       showCursor(true);       // +UI, +Emulation
-      myGrabMouse = false; // disable grab while cursor is shown in emulation
       break;
   }
 
-  myBackend->grabMouse(emulation && (analog || alwaysUseMouse) && myGrabMouse);
+  myGrabMouse &= grabMouseAllowed();
+  myBackend->grabMouse(myGrabMouse);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FrameBuffer::grabMouseAllowed()
+{
+  // Allow grabbing mouse in emulation (if enabled) and emulating a controller
+  // that always uses the mouse
+  bool emulation =
+    myOSystem.eventHandler().state() == EventHandlerState::EMULATION;
+  bool analog = myOSystem.hasConsole() ?
+    (myOSystem.console().leftController().isAnalog() ||
+     myOSystem.console().rightController().isAnalog()) : false;
+  bool usesLightgun = emulation && myOSystem.hasConsole() ?
+    myOSystem.console().leftController().type() == Controller::Type::Lightgun ||
+    myOSystem.console().rightController().type() == Controller::Type::Lightgun : false;
+  bool alwaysUseMouse = BSPF::equalsIgnoreCase("always", myOSystem.settings().getString("usemouse"));
+
+  // Disable grab while cursor is shown in emulation
+  bool cursorHidden = !(myOSystem.settings().getInt("cursor") & 1);
+
+  return emulation && (analog || usesLightgun || alwaysUseMouse) && cursorHidden;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1269,16 +1338,25 @@ void FrameBuffer::enableGrabMouse(bool enable)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::toggleGrabMouse()
+void FrameBuffer::toggleGrabMouse(bool toggle)
 {
-  const bool oldState = myGrabMouse;
+  bool oldState = myGrabMouse = myOSystem.settings().getBool("grabmouse");
 
-  myGrabMouse = !myGrabMouse;
-  setCursorState();
-  myOSystem.settings().setValue("grabmouse", myGrabMouse);
+  if(toggle)
+  {
+    if(grabMouseAllowed())
+    {
+      myGrabMouse = !myGrabMouse;
+      myOSystem.settings().setValue("grabmouse", myGrabMouse);
+      setCursorState();
+    }
+  }
+  else
+    oldState = !myGrabMouse; // display current state
+
   myOSystem.frameBuffer().showTextMessage(oldState != myGrabMouse ? myGrabMouse
                                           ? "Grab mouse enabled" : "Grab mouse disabled"
-                                          : "Grab mouse not allowed while cursor shown");
+                                          : "Grab mouse not allowed");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

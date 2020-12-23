@@ -55,7 +55,7 @@ class AudioQueue
     /**
       Size getter.
      */
-    uInt32 size();
+    uInt32 size() const;
 
     /**
       Stereo / mono getter.
@@ -120,7 +120,7 @@ class AudioQueue
     uInt32 myNextFragment{0};
 
     // We need a mutex for thread safety.
-    std::mutex myMutex;
+    mutable std::mutex myMutex;
 
     // The first (empty) enqueue call returns this fragment.
     Int16* myFirstFragmentForEnqueue{nullptr};

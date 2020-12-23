@@ -94,8 +94,8 @@ FilesystemNodeZIP::FilesystemNodeZIP(const string& p)
 FilesystemNodeZIP::FilesystemNodeZIP(
     const string& zipfile, const string& virtualpath,
     const AbstractFSNodePtr& realnode, bool isdir)
-  : _isDirectory(isdir),
-    _isFile(!isdir)
+  : _isDirectory{isdir},
+    _isFile{!isdir}
 {
   setFlags(zipfile, virtualpath, realnode);
 }

@@ -70,10 +70,10 @@ class GuiObject : public CommandReceiver
   public:
     GuiObject(OSystem& osystem, DialogContainer& parent, Dialog& dialog,
               int x, int y, int w, int h)
-      : myOSystem(osystem),
-        myParent(parent),
-        myDialog(dialog),
-        _x(x), _y(y), _w(w), _h(h) { }
+      : myOSystem{osystem},
+        myParent{parent},
+        myDialog{dialog},
+        _x{x}, _y{y}, _w{w}, _h{h} { }
 
     ~GuiObject() override = default;
 
@@ -130,7 +130,7 @@ class GuiObject : public CommandReceiver
 
     /** Add given widget(s) to the focus list */
     virtual void addFocusWidget(Widget* w) = 0;
-    virtual void addToFocusList(WidgetArray& list) = 0;
+    virtual void addToFocusList(const WidgetArray& list) = 0;
 
     /** Return focus list for this object */
     WidgetArray& getFocusList() { return _focusList; }

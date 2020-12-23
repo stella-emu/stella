@@ -27,7 +27,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ToolTip::ToolTip(Dialog& dialog, const GUI::Font& font)
-  : myDialog(dialog)
+  : myDialog{dialog}
 {
   myScale = myDialog.instance().frameBuffer().hidpiScaleFactor();
 
@@ -179,5 +179,5 @@ void ToolTip::show(const string& tip)
 void ToolTip::render()
 {
   if(myTipShown)
-    mySurface->render(); // , cerr << "    render tooltip" << endl;
+    mySurface->render();
 }

@@ -27,6 +27,7 @@ enum class EventHandlerState {
   LAUNCHER,
   OPTIONSMENU,
   CMDMENU,
+  HIGHSCORESMENU,
   MESSAGEMENU,
   DEBUGGER,
   NONE
@@ -74,17 +75,15 @@ enum JoyHatMask {
   EVENT_HATCENTER_M = 1<<4
 };
 
-static const int NUM_PORTS = 2;
-
 enum class EventMode {
   kEmulationMode, // active mapping used for emulation
   kMenuMode,      // mapping used for dialogs
-  kEditMode,      // mapping used in editable widgets
   kJoystickMode,  // 4 extra modes for mapping controller keys separately for emulation mode
   kPaddlesMode,
   kKeypadMode,
   kCompuMateMode, // cannot be remapped
   kCommonMode,    // mapping common between controllers
+  kEditMode,      // mapping used in editable widgets
   kNumModes
 };
 

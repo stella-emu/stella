@@ -39,13 +39,11 @@ class SimpleResampler : public Resampler
     bool myIsUnderrun{true};
 
   private:
-
     SimpleResampler() = delete;
     SimpleResampler(const SimpleResampler&) = delete;
     SimpleResampler(SimpleResampler&&) = delete;
     SimpleResampler& operator=(const SimpleResampler&) = delete;
     SimpleResampler& operator=(const SimpleResampler&&) = delete;
-
 };
 
 #endif // SIMPLE_RESAMPLER_HXX

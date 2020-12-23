@@ -29,11 +29,11 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 System::System(Random& random, M6502& m6502, M6532& m6532,
                TIA& mTIA, Cartridge& mCart)
-  : myRandom(random),
-    myM6502(m6502),
-    myM6532(m6532),
-    myTIA(mTIA),
-    myCart(mCart)
+  : myRandom{random},
+    myM6502{m6502},
+    myM6532{m6532},
+    myTIA{mTIA},
+    myCart{mCart}
 {
   // Initialize page access table
   PageAccess access(&myNullDevice, System::PageAccessType::READ);

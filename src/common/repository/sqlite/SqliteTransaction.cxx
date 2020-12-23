@@ -20,7 +20,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SqliteTransaction::SqliteTransaction(SqliteDatabase& db)
-  : myDb(db)
+  : myDb{db}
 {
   myDb.exec("BEGIN TRANSACTION");
 }

@@ -19,6 +19,9 @@
 #include "OSystem.hxx"
 #include "Console.hxx"
 #include "Joystick.hxx"
+#include "Paddles.hxx"
+#include "PointingDevice.hxx"
+#include "Driving.hxx"
 #include "Settings.hxx"
 #include "EventHandler.hxx"
 #include "PJoystickHandler.hxx"
@@ -33,8 +36,8 @@ using json = nlohmann::json;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PhysicalJoystickHandler::PhysicalJoystickHandler(
       OSystem& system, EventHandler& handler)
-  : myOSystem(system),
-    myHandler(handler)
+  : myOSystem{system},
+    myHandler{handler}
 {
   if(myOSystem.settings().getInt("event_ver") != Event::VERSION) {
     Logger::info("event version mismatch; dropping previous joystick mappings");
@@ -47,7 +50,7 @@ PhysicalJoystickHandler::PhysicalJoystickHandler(
 
   try {
     mappings = json::parse(serializedMapping);
-  } catch (json::exception) {
+  } catch (const json::exception&) {
     Logger::info("converting legacy joystick mappings");
 
     mappings = convertLegacyMapping(serializedMapping);
@@ -122,8 +125,8 @@ int PhysicalJoystickHandler::add(const PhysicalJoystickPtr& stick)
     // For non-unique names that already have a database entry,
     // we append ' #x', where 'x' increases consecutively
     int count = 0;
-    for(const auto& i: myDatabase)
-      if(BSPF::startsWithIgnoreCase(i.first, stick->name) && i.second.joy)
+    for(const auto& [_name, _info]: myDatabase)
+      if(BSPF::startsWithIgnoreCase(_name, stick->name) && _info.joy)
         ++count;
 
     if(count > 0)
@@ -132,12 +135,13 @@ int PhysicalJoystickHandler::add(const PhysicalJoystickPtr& stick)
       name << stick->name << " #" << count+1;
       stick->name = name.str();
     }
-    stick->type = PhysicalJoystick::JT_REGULAR;
+    stick->type = PhysicalJoystick::Type::REGULAR;
   }
   // The stick *must* be inserted here, since it may be used below
   mySticks[stick->ID] = stick;
 
   // Map the stelladaptors we've found according to the specified ports
+  // The 'type' is also set there
   if(specialAdaptor)
     mapStelladaptors(myOSystem.settings().getString("saport"));
 
@@ -217,50 +221,68 @@ void PhysicalJoystickHandler::mapStelladaptors(const string& saport)
   // We know there will be only two such devices (at most), since the logic
   // in setupJoysticks take care of that
   int saCount = 0;
-  int saOrder[NUM_PORTS] = { 1, 2 };
+  int saOrder[] = { 1, 2 };
   if(BSPF::equalsIgnoreCase(saport, "rl"))
   {
     saOrder[0] = 2; saOrder[1] = 1;
   }
 
-  for(auto& stick: mySticks)
+  for(auto& [_id, _joyptr]: mySticks)
   {
     // remove previously added emulated ports
-    size_t pos = stick.second->name.find(" (emulates ");
+    size_t pos = _joyptr->name.find(" (emulates ");
 
     if(pos != std::string::npos)
-      stick.second->name.erase(pos);
+      _joyptr->name.erase(pos);
 
-    if(BSPF::startsWithIgnoreCase(stick.second->name, "Stelladaptor"))
+    if(BSPF::startsWithIgnoreCase(_joyptr->name, "Stelladaptor"))
     {
       if(saOrder[saCount] == 1)
       {
-        stick.second->name += " (emulates left joystick port)";
-        stick.second->type = PhysicalJoystick::JT_STELLADAPTOR_LEFT;
+        _joyptr->name += " (emulates left joystick port)";
+        _joyptr->type = PhysicalJoystick::Type::LEFT_STELLADAPTOR;
       }
       else if(saOrder[saCount] == 2)
       {
-        stick.second->name += " (emulates right joystick port)";
-        stick.second->type = PhysicalJoystick::JT_STELLADAPTOR_RIGHT;
+        _joyptr->name += " (emulates right joystick port)";
+        _joyptr->type = PhysicalJoystick::Type::RIGHT_STELLADAPTOR;
       }
       saCount++;
     }
-    else if(BSPF::startsWithIgnoreCase(stick.second->name, "2600-daptor"))
+    else if(BSPF::startsWithIgnoreCase(_joyptr->name, "2600-daptor"))
     {
       if(saOrder[saCount] == 1)
       {
-        stick.second->name += " (emulates left joystick port)";
-        stick.second->type = PhysicalJoystick::JT_2600DAPTOR_LEFT;
+        _joyptr->name += " (emulates left joystick port)";
+        _joyptr->type = PhysicalJoystick::Type::LEFT_2600DAPTOR;
       }
       else if(saOrder[saCount] == 2)
       {
-        stick.second->name += " (emulates right joystick port)";
-        stick.second->type = PhysicalJoystick::JT_2600DAPTOR_RIGHT;
+        _joyptr->name += " (emulates right joystick port)";
+        _joyptr->type = PhysicalJoystick::Type::RIGHT_2600DAPTOR;
       }
       saCount++;
     }
   }
   myOSystem.settings().setValue("saport", saport);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool PhysicalJoystickHandler::hasStelladaptors() const
+{
+  for(auto& [_id, _joyptr] : mySticks)
+  {
+    // remove previously added emulated ports
+    size_t pos = _joyptr->name.find(" (emulates ");
+
+    if(pos != std::string::npos)
+      _joyptr->name.erase(pos);
+
+    if(BSPF::startsWithIgnoreCase(_joyptr->name, "Stelladaptor")
+       || BSPF::startsWithIgnoreCase(_joyptr->name, "2600-daptor"))
+      return true;
+  }
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -313,7 +335,15 @@ void PhysicalJoystickHandler::setStickDefaultMapping(int stick, Event::Type even
     switch (mode)
     {
       case EventMode::kEmulationMode:
-        if((stick % 2) == 0) // even sticks
+      {
+        // A regular joystick defaults to left or right based on the
+        // stick number being even or odd; 'daptor joysticks request a
+        // specific port
+        const bool useLeftMappings =
+            j->type == PhysicalJoystick::Type::REGULAR ? ((stick % 2) == 0) :
+            (j->type == PhysicalJoystick::Type::LEFT_STELLADAPTOR ||
+             j->type == PhysicalJoystick::Type::LEFT_2600DAPTOR);
+        if(useLeftMappings)
         {
           // put all controller events into their own mode's mappings
           for (const auto& item : DefaultLeftJoystickMapping)
@@ -323,7 +353,7 @@ void PhysicalJoystickHandler::setStickDefaultMapping(int stick, Event::Type even
           for (const auto& item : DefaultLeftKeypadMapping)
             setDefaultAction(stick, item, event, EventMode::kKeypadMode, updateDefaults);
         }
-        else // odd sticks
+        else
         {
           // put all controller events into their own mode's mappings
           for (const auto& item : DefaultRightJoystickMapping)
@@ -338,6 +368,7 @@ void PhysicalJoystickHandler::setStickDefaultMapping(int stick, Event::Type even
         // update running emulation mapping too
         enableEmulationMappings();
         break;
+      }
 
       case EventMode::kMenuMode:
         for (const auto& item : DefaultMenuMapping)
@@ -354,8 +385,8 @@ void PhysicalJoystickHandler::setStickDefaultMapping(int stick, Event::Type even
 void PhysicalJoystickHandler::setDefaultMapping(Event::Type event, EventMode mode)
 {
   eraseMapping(event, mode);
-  for (auto& i : mySticks)
-    setStickDefaultMapping(i.first, event, mode);
+  for (const auto& [_id, _joyptr]: mySticks)
+    setStickDefaultMapping(_id, event, mode);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -529,24 +560,24 @@ void PhysicalJoystickHandler::eraseMapping(Event::Type event, EventMode mode)
   // Otherwise, only reset the given event
   if(event == Event::NoType)
   {
-    for (auto& stick : mySticks)
+    for (auto& [_id, _joyptr]: mySticks)
     {
-      stick.second->eraseMap(mode);          // erase all events
+      _joyptr->eraseMap(mode);          // erase all events
       if(mode == EventMode::kEmulationMode)
       {
-        stick.second->eraseMap(EventMode::kCommonMode);
-        stick.second->eraseMap(EventMode::kJoystickMode);
-        stick.second->eraseMap(EventMode::kPaddlesMode);
-        stick.second->eraseMap(EventMode::kKeypadMode);
+        _joyptr->eraseMap(EventMode::kCommonMode);
+        _joyptr->eraseMap(EventMode::kJoystickMode);
+        _joyptr->eraseMap(EventMode::kPaddlesMode);
+        _joyptr->eraseMap(EventMode::kKeypadMode);
       }
     }
   }
   else
   {
-    for (auto& stick : mySticks)
+    for (auto& [_id, _joyptr]: mySticks)
     {
-      stick.second->eraseEvent(event, mode); // only reset the specific event
-      stick.second->eraseEvent(event, getEventMode(event, mode));
+      _joyptr->eraseEvent(event, mode); // only reset the specific event
+      _joyptr->eraseEvent(event, getEventMode(event, mode));
     }
   }
 }
@@ -558,9 +589,9 @@ void PhysicalJoystickHandler::saveMapping()
   // any changes that have been made during the program run
   json mapping = json::array();
 
-  for(const auto& i: myDatabase)
+  for(const auto& [_name, _info]: myDatabase)
   {
-    json map = i.second.joy ? i.second.joy->getMap() : i.second.mapping;
+    json map = _info.joy ? _info.joy->getMap() : _info.mapping;
 
     if (!map.is_null()) mapping.emplace_back(map);
   }
@@ -574,19 +605,16 @@ string PhysicalJoystickHandler::getMappingDesc(Event::Type event, EventMode mode
   ostringstream buf;
   EventMode evMode = getEventMode(event, mode);
 
-  for(const auto& s: mySticks)
+  for(const auto& [_id, _joyptr]: mySticks)
   {
-    uInt32 stick = s.first;
-    const PhysicalJoystickPtr j = s.second;
-
-    if(j)
+    if(_joyptr)
     {
       //Joystick mapping / labeling
-      if(j->joyMap.getEventMapping(event, evMode).size())
+      if(_joyptr->joyMap.getEventMapping(event, evMode).size())
       {
         if(buf.str() != "")
           buf << ", ";
-        buf << j->joyMap.getEventMappingDesc(stick, event, evMode);
+        buf << _joyptr->joyMap.getEventMappingDesc(_id, event, evMode);
       }
     }
   }
@@ -819,8 +847,8 @@ void PhysicalJoystickHandler::handleHatEvent(int stick, int hat, int value)
 VariantList PhysicalJoystickHandler::database() const
 {
   VariantList db;
-  for(const auto& i: myDatabase)
-    VarList::push_back(db, i.first, i.second.joy ? i.second.joy->ID : -1);
+  for(const auto& [_name, _info]: myDatabase)
+    VarList::push_back(db, _name, _info.joy ? _info.joy->ID : -1);
 
   return db;
 }
@@ -830,17 +858,158 @@ ostream& operator<<(ostream& os, const PhysicalJoystickHandler& jh)
 {
   os << "---------------------------------------------------------" << endl
      << "joy database:"  << endl;
-  for(const auto& i: jh.myDatabase)
-    os << i.first << endl << i.second << endl << endl;
+  for(const auto& [_name, _info]: jh.myDatabase)
+    os << _name << endl << _info << endl << endl;
 
   os << "---------------------" << endl
      << "joy active:"  << endl;
-  for(const auto& i: jh.mySticks)
-    os << i.first << ": " << *i.second << endl;
+  for(const auto& [_id, _joyptr]: jh.mySticks)
+    os << _id << ": " << *_joyptr << endl;
   os << "---------------------------------------------------------"
      << endl << endl << endl;
 
   return os;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PhysicalJoystickHandler::changeDeadzone(int direction)
+{
+  int deadzone = BSPF::clamp(myOSystem.settings().getInt("joydeadzone") + direction,
+                             Joystick::DEAD_ZONE_MIN, Joystick::DEAD_ZONE_MAX);
+  myOSystem.settings().setValue("joydeadzone", deadzone);
+
+  Joystick::setDeadZone(deadzone);
+
+  int value = Joystick::deadZoneValue(deadzone);
+
+  myOSystem.frameBuffer().showGaugeMessage("Joystick deadzone", std::to_string(value),
+                                           value, 3200, 32200);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PhysicalJoystickHandler::changeAnalogPaddleSensitivity(int direction)
+{
+  int sense = BSPF::clamp(myOSystem.settings().getInt("psense") + direction,
+                          Paddles::MIN_ANALOG_SENSE, Paddles::MAX_ANALOG_SENSE);
+  myOSystem.settings().setValue("psense", sense);
+
+  Paddles::setAnalogSensitivity(sense);
+
+  ostringstream ss;
+  ss << std::round(Paddles::analogSensitivityValue(sense) * 100.F) << "%";
+  myOSystem.frameBuffer().showGaugeMessage("Analog paddle sensitivity", ss.str(), sense,
+                                           Paddles::MIN_ANALOG_SENSE, Paddles::MAX_ANALOG_SENSE);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PhysicalJoystickHandler::changePaddleDejitterAveraging(int direction)
+{
+  int dejitter = BSPF::clamp(myOSystem.settings().getInt("dejitter.base") + direction,
+                             Paddles::MIN_DEJITTER, Paddles::MAX_DEJITTER);
+  myOSystem.settings().setValue("dejitter.base", dejitter);
+
+  Paddles::setDejitterBase(dejitter);
+
+  ostringstream ss;
+  if(dejitter)
+    ss << dejitter;
+  else
+    ss << "Off";
+
+  myOSystem.frameBuffer().showGaugeMessage("Analog paddle dejitter averaging",
+                                           ss.str(), dejitter,
+                                           Paddles::MIN_DEJITTER, Paddles::MAX_DEJITTER);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PhysicalJoystickHandler::changePaddleDejitterReaction(int direction)
+{
+  int dejitter = BSPF::clamp(myOSystem.settings().getInt("dejitter.diff") + direction,
+                             Paddles::MIN_DEJITTER, Paddles::MAX_DEJITTER);
+  myOSystem.settings().setValue("dejitter.diff", dejitter);
+
+  Paddles::setDejitterDiff(dejitter);
+
+  ostringstream ss;
+  if(dejitter)
+    ss << dejitter;
+  else
+    ss << "Off";
+
+  myOSystem.frameBuffer().showGaugeMessage("Analog paddle dejitter reaction",
+                                           ss.str(), dejitter,
+                                           Paddles::MIN_DEJITTER, Paddles::MAX_DEJITTER);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PhysicalJoystickHandler::changeDigitalPaddleSensitivity(int direction)
+{
+  int sense = BSPF::clamp(myOSystem.settings().getInt("dsense") + direction,
+                          Paddles::MIN_DIGITAL_SENSE, Paddles::MAX_DIGITAL_SENSE);
+  myOSystem.settings().setValue("dsense", sense);
+
+  Paddles::setDigitalSensitivity(sense);
+
+  ostringstream ss;
+  if(sense)
+    ss << sense * 10 << "%";
+  else
+    ss << "Off";
+
+  myOSystem.frameBuffer().showGaugeMessage("Digital sensitivity",
+                                           ss.str(), sense,
+                                           Paddles::MIN_DIGITAL_SENSE, Paddles::MAX_DIGITAL_SENSE);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PhysicalJoystickHandler::changeMousePaddleSensitivity(int direction)
+{
+  int sense = BSPF::clamp(myOSystem.settings().getInt("msense") + direction,
+                          Paddles::MIN_MOUSE_SENSE, Paddles::MAX_MOUSE_SENSE);
+  myOSystem.settings().setValue("msense", sense);
+
+  Paddles::setMouseSensitivity(sense);
+
+  ostringstream ss;
+  ss << sense * 10 << "%";
+
+  myOSystem.frameBuffer().showGaugeMessage("Mouse paddle sensitivity",
+                                           ss.str(), sense,
+                                           Paddles::MIN_MOUSE_SENSE, Paddles::MAX_MOUSE_SENSE);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PhysicalJoystickHandler::changeMouseTrackballSensitivity(int direction)
+{
+  int sense = BSPF::clamp(myOSystem.settings().getInt("tsense") + direction,
+                          PointingDevice::MIN_SENSE, PointingDevice::MAX_SENSE);
+  myOSystem.settings().setValue("tsense", sense);
+
+  PointingDevice::setSensitivity(sense);
+
+  ostringstream ss;
+  ss << sense * 10 << "%";
+
+  myOSystem.frameBuffer().showGaugeMessage("Mouse trackball sensitivity",
+                                           ss.str(), sense,
+                                           PointingDevice::MIN_SENSE, PointingDevice::MAX_SENSE);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PhysicalJoystickHandler::changeDrivingSensitivity(int direction)
+{
+  int sense = BSPF::clamp(myOSystem.settings().getInt("dcsense") + direction,
+                          Driving::MIN_SENSE, Driving::MAX_SENSE);
+  myOSystem.settings().setValue("dcsense", sense);
+
+  Driving::setSensitivity(sense);
+
+  ostringstream ss;
+  ss << sense * 10 << "%";
+
+  myOSystem.frameBuffer().showGaugeMessage("Driving controller sensitivity",
+                                           ss.str(), sense,
+                                           Driving::MIN_SENSE, Driving::MAX_SENSE);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -956,7 +1125,8 @@ PhysicalJoystickHandler::EventMappingArray PhysicalJoystickHandler::DefaultRight
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PhysicalJoystickHandler::EventMappingArray PhysicalJoystickHandler::DefaultCommonMapping = {
+PhysicalJoystickHandler::EventMappingArray
+PhysicalJoystickHandler::DefaultCommonMapping = {
   // valid for all joysticks
 //#if defined(RETRON77)
   {Event::CmdMenuMode,        3}, // Note: buttons 0..2 are used by controllers!
@@ -969,7 +1139,8 @@ PhysicalJoystickHandler::EventMappingArray PhysicalJoystickHandler::DefaultCommo
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PhysicalJoystickHandler::EventMappingArray PhysicalJoystickHandler::DefaultMenuMapping = {
+PhysicalJoystickHandler::EventMappingArray
+PhysicalJoystickHandler::DefaultMenuMapping = {
   // valid for all joysticks
   {Event::UISelect,           0},
   {Event::UIOK,               1},

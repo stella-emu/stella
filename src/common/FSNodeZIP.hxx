@@ -116,7 +116,7 @@ class FilesystemNodeZIP : public AbstractFSNode
       const char* start = str.c_str();
       const char* cur = start + str.size() - 2;
 
-      while (cur >= start && !(*cur == '/' || *cur == '\\'))
+      while (cur >= start && *cur != FilesystemNode::PATH_SEPARATOR)
         --cur;
 
       return cur + 1;

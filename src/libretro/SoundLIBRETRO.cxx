@@ -35,7 +35,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SoundLIBRETRO::SoundLIBRETRO(OSystem& osystem, AudioSettings& audioSettings)
   : Sound(osystem),
-    myAudioSettings(audioSettings)
+    myAudioSettings{audioSettings}
 {
   Logger::debug("SoundLIBRETRO::SoundLIBRETRO started ...");
   Logger::debug("SoundLIBRETRO::SoundLIBRETRO initialized");

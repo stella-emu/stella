@@ -34,6 +34,8 @@ class RomListSettings : public Dialog, public CommandSender
     RomListSettings(GuiObject* boss, const GUI::Font& font);
     ~RomListSettings() override = default;
 
+    bool isShading() const override { return false; }
+
     /** Show dialog onscreen at the specified coordinates
         ('data' will be the currently selected line number in RomListWidget) */
     void show(uInt32 x, uInt32 y, const Common::Rect& bossRect, int data = -1);

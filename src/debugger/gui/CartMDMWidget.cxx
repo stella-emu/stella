@@ -24,7 +24,7 @@ CartridgeMDMWidget::CartridgeMDMWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, CartridgeMDM& cart)
   : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart),
-    myCartMDM(cart)
+    myCartMDM{cart}
 {
   initialize();
 }
@@ -46,22 +46,27 @@ string CartridgeMDMWidget::description()
 void CartridgeMDMWidget::bankSelect(int& ypos)
 {
   CartridgeEnhancedWidget::bankSelect(ypos);
-  int xpos = myBankWidgets[0]->getRight() + 20;
-  ypos = myBankWidgets[0]->getTop();
+  if(myCart.romBankCount() > 1)
+  {
+    int xpos = myBankWidgets[0]->getRight() + 20;
+    ypos = myBankWidgets[0]->getTop();
 
-  myBankDisabled = new CheckboxWidget(_boss, _font, xpos, ypos + 1,
-                                      "Bankswitching is locked/disabled",
-                                      kBankDisabled);
-  myBankDisabled->setTarget(this);
-  addFocusWidget(myBankDisabled);
+    myBankDisabled = new CheckboxWidget(_boss, _font, xpos, ypos + 1,
+                                        "Bankswitching is locked/disabled",
+                                        kBankDisabled);
+    myBankDisabled->setTarget(this);
+    addFocusWidget(myBankDisabled);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeMDMWidget::loadConfig()
 {
-  myBankWidgets[0]->setEnabled(!myCartMDM.myBankingDisabled);
-  myBankDisabled->setState(myCartMDM.myBankingDisabled);
-
+  if(myBankWidgets != nullptr)
+  {
+    myBankWidgets[0]->setEnabled(!myCartMDM.myBankingDisabled);
+    myBankDisabled->setState(myCartMDM.myBankingDisabled);
+  }
   CartridgeEnhancedWidget::loadConfig();
 }
 

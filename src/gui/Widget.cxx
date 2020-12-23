@@ -32,8 +32,8 @@
 Widget::Widget(GuiObject* boss, const GUI::Font& font,
                int x, int y, int w, int h)
   : GuiObject(boss->instance(), boss->parent(), boss->dialog(), x, y, w, h),
-    _boss(boss),
-    _font(font)
+    _boss{boss},
+    _font{font}
 {
   // Insert into the widget list of the boss
   _next = _boss->_firstWidget;
@@ -99,8 +99,10 @@ void Widget::draw()
 
   if(isDirty())
   {
+  #ifdef DEBUG_BUILD
     //cerr << "  *** draw widget " << typeid(*this).name() << " ***" << endl;
     cerr << "w";
+  #endif
 
     FBSurface& s = _boss->dialog().surface();
     int oldX = _x, oldY = _y;
@@ -138,11 +140,9 @@ void Widget::draw()
     // Now perform the actual widget draw
     drawWidget((_flags & Widget::FLAG_HILITED) ? true : false);
 
-    // Restore x/y
+    // Restore w/hy
     if(hasBorder())
     {
-      _x -= 4;
-      _y -= 4;
       _w += 8;
       _h += 8;
     }
@@ -284,13 +284,10 @@ bool Widget::isWidgetInChain(Widget* w, Widget* find)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Widget::isWidgetInChain(WidgetArray& list, Widget* find)
+bool Widget::isWidgetInChain(const WidgetArray& list, Widget* find)
 {
-  for(const auto& w: list)
-    if(w == find)
-      return true;
-
-  return false;
+  return std::any_of(list.cbegin(), list.cend(),
+    [&](Widget* w) { return w == find; });
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -388,7 +385,9 @@ void Widget::setDirtyInChain(Widget* start)
 {
   while(start)
   {
+  #ifdef DEBUG_BUILD
     //cerr << "setDirtyInChain " << typeid(*start).name() << endl;
+  #endif
     start->setDirty();
     start = start->_next;
   }
@@ -400,8 +399,8 @@ StaticTextWidget::StaticTextWidget(GuiObject* boss, const GUI::Font& font,
                                    const string& text, TextAlign align,
                                    ColorId shadowColor)
   : Widget(boss, font, x, y, w, h),
-    _label(text),
-    _align(align)
+    _label{text},
+    _align{align}
 {
   _flags = Widget::FLAG_ENABLED | FLAG_CLEARBG;
 
@@ -469,8 +468,8 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
                            const string& label, int cmd, bool repeat)
   : StaticTextWidget(boss, font, x, y, w, h, label, TextAlign::Center),
     CommandSender(boss),
-    _cmd(cmd),
-    _repeat(repeat)
+    _cmd{cmd},
+    _repeat{repeat}
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG;
   _bgcolor = kBtnColor;
@@ -744,11 +743,11 @@ SliderWidget::SliderWidget(GuiObject* boss, const GUI::Font& font,
                            int valueLabelWidth, const string& valueUnit, int valueLabelGap,
                            bool forceLabelSign)
   : ButtonWidget(boss, font, x, y, w, h, label, cmd),
-    _labelWidth(labelWidth),
-    _valueUnit(valueUnit),
-    _valueLabelGap(valueLabelGap),
-    _valueLabelWidth(valueLabelWidth),
-    _forceLabelSign(forceLabelSign)
+    _labelWidth{labelWidth},
+    _valueUnit{valueUnit},
+    _valueLabelGap{valueLabelGap},
+    _valueLabelWidth{valueLabelWidth},
+    _forceLabelSign{forceLabelSign}
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_TRACK_MOUSE | Widget::FLAG_CLEARBG;
   _bgcolor = kDlgColor;

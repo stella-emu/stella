@@ -725,21 +725,21 @@ void DeveloperDialog::saveSettings(SettingsSet set)
   instance().settings().setValue(prefix + "bankrandom", myRandomBank[set]);
   instance().settings().setValue(prefix + "ramrandom", myRandomizeRAM[set]);
   instance().settings().setValue(prefix + "cpurandom", myRandomizeCPU[set]);
-  // Undriven TIA pins
+
   if(devSettings)
-    instance().settings().setValue("dev.tiadriven", myUndrivenPins[set]);
-#ifdef DEBUGGER_SUPPORT
-  if (devSettings)
   {
+    // Undriven TIA pins
+    instance().settings().setValue("dev.tiadriven", myUndrivenPins[set]);
+  #ifdef DEBUGGER_SUPPORT
     // Read from write ports break
     instance().settings().setValue("dev.rwportbreak", myRWPortBreak[set]);
     // Write to read ports break
     instance().settings().setValue("dev.wrportbreak", myWRPortBreak[set]);
-  }
-#endif
-  if(devSettings)
+  #endif
     // Thumb ARM emulation exception
     instance().settings().setValue("dev.thumb.trapfatal", myThumbException[set]);
+  }
+
   // AtariVox/SaveKey EEPROM access
   instance().settings().setValue(prefix + "eepromaccess", myEEPROMAccess[set]);
 

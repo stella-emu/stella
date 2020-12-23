@@ -21,7 +21,8 @@
 #include "BilinearBlitter.hxx"
 #include "QisBlitter.hxx"
 
-unique_ptr<Blitter> BlitterFactory::createBlitter(FBBackendSDL2& fb, ScalingAlgorithm scaling)
+unique_ptr<Blitter>
+BlitterFactory::createBlitter(FBBackendSDL2& fb, ScalingAlgorithm scaling)
 {
   if (!fb.isInitialized()) {
     throw runtime_error("BlitterFactory requires an initialized framebuffer!");

@@ -21,7 +21,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 QisBlitter::QisBlitter(FBBackendSDL2& fb)
-  : myFB(fb)
+  : myFB{fb}
 {
 }
 

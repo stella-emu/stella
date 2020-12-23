@@ -27,7 +27,7 @@ DataGridRamWidget::DataGridRamWidget(GuiObject* boss, const RamWidget& ram,
                                      bool useScrollbar)
   : DataGridWidget(boss, font, x, y, cols, rows, colchars,
                    bits, base, useScrollbar),
-    _ram(ram)
+    _ram{ram}
 {
 }
 

@@ -91,7 +91,7 @@ class ByteDerefOffsetExpression : public Expression
 class ConstExpression : public Expression
 {
   public:
-    ConstExpression(const int value) : Expression(), myValue(value) { }
+    ConstExpression(const int value) : Expression(), myValue{value} { }
     Int32 evaluate() const override
       { return myValue; }
 
@@ -103,7 +103,7 @@ class ConstExpression : public Expression
 class CpuMethodExpression : public Expression
 {
   public:
-    CpuMethodExpression(CpuMethod method) : Expression(), myMethod(std::mem_fn(method)) { }
+    CpuMethodExpression(CpuMethod method) : Expression(), myMethod{std::mem_fn(method)} { }
     Int32 evaluate() const override
       { return myMethod(Debugger::debugger().cpuDebug()); }
 
@@ -134,7 +134,7 @@ class EqualsExpression : public Expression
 class EquateExpression : public Expression
 {
   public:
-    EquateExpression(const string& label) : Expression(), myLabel(label) { }
+    EquateExpression(const string& label) : Expression(), myLabel{label} { }
     Int32 evaluate() const override
       { return Debugger::debugger().cartDebug().getAddress(myLabel); }
 
@@ -146,7 +146,7 @@ class EquateExpression : public Expression
 class FunctionExpression : public Expression
 {
   public:
-    FunctionExpression(const string& label) : Expression(), myLabel(label) { }
+    FunctionExpression(const string& label) : Expression(), myLabel{label} { }
     Int32 evaluate() const override
       { return Debugger::debugger().getFunction(myLabel).evaluate(); }
 
@@ -285,7 +285,7 @@ class PlusExpression : public Expression
 class CartMethodExpression : public Expression
 {
   public:
-    CartMethodExpression(CartMethod method) : Expression(), myMethod(std::mem_fn(method)) { }
+    CartMethodExpression(CartMethod method) : Expression(), myMethod{std::mem_fn(method)} { }
     Int32 evaluate() const override
       { return myMethod(Debugger::debugger().cartDebug()); }
 
@@ -315,7 +315,7 @@ class ShiftRightExpression : public Expression
 class RiotMethodExpression : public Expression
 {
   public:
-    RiotMethodExpression(RiotMethod method) : Expression(), myMethod(std::mem_fn(method)) { }
+    RiotMethodExpression(RiotMethod method) : Expression(), myMethod{std::mem_fn(method)} { }
     Int32 evaluate() const override
       { return myMethod(Debugger::debugger().riotDebug()); }
 
@@ -327,7 +327,7 @@ class RiotMethodExpression : public Expression
 class TiaMethodExpression : public Expression
 {
   public:
-    TiaMethodExpression(TiaMethod method) : Expression(), myMethod(std::mem_fn(method)) { }
+    TiaMethodExpression(TiaMethod method) : Expression(), myMethod{std::mem_fn(method)} { }
     Int32 evaluate() const override
       { return myMethod(Debugger::debugger().tiaDebug()); }
 

@@ -21,6 +21,8 @@ MODULE_OBJS := \
 	src/gui/GameInfoDialog.o \
 	src/gui/GlobalPropsDialog.o \
 	src/gui/HelpDialog.o \
+	src/gui/HighScoresDialog.o \
+	src/gui/HighScoresMenu.o \
 	src/gui/InputDialog.o \
 	src/gui/InputTextDialog.o \
 	src/gui/JoystickDialog.o \

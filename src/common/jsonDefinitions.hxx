@@ -1,9 +1,26 @@
+//============================================================================
+//
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
+//   SSSS    tt   ee  ee  ll   ll      aa
+//      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
+//  SS  SS   tt   ee      ll   ll  aa  aa
+//   SSSS     ttt  eeeee llll llll  aaaaa
+//
+// Copyright (c) 1995-2020 by Bradford W. Mott, Stephen Anthony
+// and the Stella Team
+//
+// See the file "License.txt" for information on usage and redistribution of
+// this file, and for a DISCLAIMER OF ALL WARRANTIES.
+//============================================================================
+
 #ifndef JSON_DEFINITIONS_HXX
 #define JSON_DEFINITIONS_HXX
 
 #include "EventHandlerConstants.hxx"
 #include "Event.hxx"
-#include "json.hxx"
+#include "json_lib.hxx"
 #include "StellaKeys.hxx"
 
 NLOHMANN_JSON_SERIALIZE_ENUM(JoyAxis, {
@@ -27,7 +44,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(JoyHatDir, {
   {JoyHatDir::LEFT, "left"},
   {JoyHatDir::RIGHT, "right"},
   {JoyHatDir::UP, "up"}
-});
+})
 
 NLOHMANN_JSON_SERIALIZE_ENUM(EventMode, {
   {EventMode::kEditMode, "kEditMode"},
@@ -39,7 +56,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EventMode, {
   {EventMode::kCompuMateMode, "kCompuMateMode"},
   {EventMode::kCommonMode, "kCommonMode"},
   {EventMode::kNumModes, "kNumModes"},
-});
+})
 
 NLOHMANN_JSON_SERIALIZE_ENUM(Event::Type, {
   {Event::NoType, "NoType"},
@@ -69,6 +86,16 @@ NLOHMANN_JSON_SERIALIZE_ENUM(Event::Type, {
   {Event::JoystickOneFire, "JoystickOneFire"},
   {Event::JoystickOneFire5, "JoystickOneFire5"},
   {Event::JoystickOneFire9, "JoystickOneFire9"},
+  {Event::JoystickTwoUp, "JoystickTwoUp"},
+  {Event::JoystickTwoDown, "JoystickTwoDown"},
+  {Event::JoystickTwoLeft, "JoystickTwoLeft"},
+  {Event::JoystickTwoRight, "JoystickTwoRight"},
+  {Event::JoystickTwoFire, "JoystickTwoFire"},
+  {Event::JoystickThreeUp, "JoystickThreeUp"},
+  {Event::JoystickThreeDown, "JoystickThreeDown"},
+  {Event::JoystickThreeLeft, "JoystickThreeLeft"},
+  {Event::JoystickThreeRight, "JoystickThreeRight"},
+  {Event::JoystickThreeFire, "JoystickThreeFire"},
   {Event::PaddleZeroDecrease, "PaddleZeroDecrease"},
   {Event::PaddleZeroIncrease, "PaddleZeroIncrease"},
   {Event::PaddleZeroAnalog, "PaddleZeroAnalog"},
@@ -160,6 +187,50 @@ NLOHMANN_JSON_SERIALIZE_ENUM(Event::Type, {
   {Event::CompuMateEquals, "CompuMateEquals"},
   {Event::CompuMatePlus, "CompuMatePlus"},
   {Event::CompuMateSlash, "CompuMateSlash"},
+
+  {Event::DecreaseDeadzone, "DecreaseDeadzone"},
+  {Event::IncreaseDeadzone, "IncreaseDeadzone"},
+  {Event::DecAnalogSense, "DecAnalogSense"},
+  {Event::IncAnalogSense, "IncAnalogSense"},
+  {Event::DecDejtterAveraging, "DecDejtterAveraging"},
+  {Event::IncDejtterAveraging, "IncDejtterAveraging"},
+  {Event::DecDejtterReaction, "DecDejtterReaction"},
+  {Event::IncDejtterReaction, "IncDejtterReaction"},
+  {Event::DecDigitalSense, "DecDigitalSense"},
+  {Event::IncDigitalSense, "IncDigitalSense"},
+  {Event::DecreaseAutoFire, "DecreaseAutoFire"},
+  {Event::IncreaseAutoFire, "IncreaseAutoFire"},
+  {Event::ToggleFourDirections, "ToggleFourDirections"},
+  {Event::ToggleKeyCombos, "ToggleKeyCombos"},
+  {Event::ToggleSAPortOrder, "ToggleSAPortOrder"},
+
+  {Event::PrevMouseAsController, "PrevMouseAsController"},
+  {Event::NextMouseAsController, "NextMouseAsController"},
+  {Event::DecMousePaddleSense, "DecMousePaddleSense"},
+  {Event::IncMousePaddleSense, "IncMousePaddleSense"},
+  {Event::DecMouseTrackballSense, "DecMouseTrackballSense"},
+  {Event::IncMouseTrackballSense, "IncMouseTrackballSense"},
+  {Event::DecreaseDrivingSense, "DecreaseDrivingSense"},
+  {Event::IncreaseDrivingSense, "IncreaseDrivingSense"},
+  {Event::PreviousCursorVisbility, "PreviousCursorVisbility"},
+  {Event::NextCursorVisbility, "NextCursorVisbility"},
+  {Event::ToggleGrabMouse, "ToggleGrabMouse"},
+
+  {Event::PreviousLeftPort, "PreviousLeftPort"},
+  {Event::NextLeftPort, "NextLeftPort"},
+  {Event::PreviousRightPort, "PreviousRightPort"},
+  {Event::NextRightPort, "NextRightPort"},
+  {Event::ToggleSwapPorts, "ToggleSwapPorts"},
+  {Event::ToggleSwapPaddles,"ToggleSwapPaddles"},
+  {Event::DecreasePaddleCenterX, "DecreasePaddleCenterX"},
+  {Event::IncreasePaddleCenterX, "IncreasePaddleCenterX"},
+  {Event::DecreasePaddleCenterY, "DecreasePaddleCenterY"},
+  {Event::IncreasePaddleCenterY, "IncreasePaddleCenterY"},
+  {Event::PreviousMouseControl, "PreviousMouseControl"},
+  {Event::NextMouseControl, "NextMouseControl"},
+  {Event::DecreaseMouseAxesRange, "DecreaseMouseAxesRange"},
+  {Event::IncreaseMouseAxesRange, "IncreaseMouseAxesRange"},
+
   {Event::Combo1, "Combo1"},
   {Event::Combo2, "Combo2"},
   {Event::Combo3, "Combo3"},
@@ -192,8 +263,6 @@ NLOHMANN_JSON_SERIALIZE_ENUM(Event::Type, {
   {Event::UIPrevDir, "UIPrevDir"},
   {Event::UITabPrev, "UITabPrev"},
   {Event::UITabNext, "UITabNext"},
-  {Event::HandleMouseControl, "HandleMouseControl"},
-  {Event::ToggleGrabMouse, "ToggleGrabMouse"},
   {Event::MouseAxisXMove, "MouseAxisXMove"},
   {Event::MouseAxisYMove, "MouseAxisYMove"},
   {Event::MouseAxisXValue, "MouseAxisXValue"},
@@ -207,6 +276,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(Event::Type, {
   {Event::StartPauseMode, "StartPauseMode"},
   {Event::OptionsMenuMode, "OptionsMenuMode"},
   {Event::CmdMenuMode, "CmdMenuMode"},
+  {Event::HighScoresMenuMode, "HighScoresMenuMode"},
   {Event::DebuggerMode, "DebuggerMode"},
   {Event::ExitMode, "ExitMode"},
   {Event::TakeSnapshot, "TakeSnapshot"},
@@ -286,7 +356,6 @@ NLOHMANN_JSON_SERIALIZE_ENUM(Event::Type, {
   {Event::ToggleBits, "ToggleBits"},
   {Event::ToggleFixedColors, "ToggleFixedColors"},
   {Event::ToggleFrameStats, "ToggleFrameStats"},
-  {Event::ToggleSAPortOrder, "ToggleSAPortOrder"},
   {Event::ExitGame, "ExitGame"},
   {Event::SettingDecrease, "SettingDecrease"},
   {Event::SettingIncrease, "SettingIncrease"},
@@ -301,16 +370,6 @@ NLOHMANN_JSON_SERIALIZE_ENUM(Event::Type, {
   {Event::IncreaseAutoFire, "IncreaseAutoFire"},
   {Event::DecreaseSpeed, "DecreaseSpeed"},
   {Event::IncreaseSpeed, "IncreaseSpeed"},
-  {Event::JoystickTwoUp, "JoystickTwoUp"},
-  {Event::JoystickTwoDown, "JoystickTwoDown"},
-  {Event::JoystickTwoLeft, "JoystickTwoLeft"},
-  {Event::JoystickTwoRight, "JoystickTwoRight"},
-  {Event::JoystickTwoFire, "JoystickTwoFire"},
-  {Event::JoystickThreeUp, "JoystickThreeUp"},
-  {Event::JoystickThreeDown, "JoystickThreeDown"},
-  {Event::JoystickThreeLeft, "JoystickThreeLeft"},
-  {Event::JoystickThreeRight, "JoystickThreeRight"},
-  {Event::JoystickThreeFire, "JoystickThreeFire"},
   {Event::ToggleCorrectAspectRatio, "ToggleCorrectAspectRatio"},
   {Event::MoveLeftChar, "MoveLeftChar"},
   {Event::MoveRightChar, "MoveRightChar"},

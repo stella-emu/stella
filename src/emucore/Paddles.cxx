@@ -384,14 +384,18 @@ bool Paddles::setMouseControl(
     // The following is somewhat complex, but we need to pre-process as much
     // as possible, so that ::update() can run quickly
     myMPaddleID = -1;
-    if(myJack == Jack::Left && xtype == Controller::Type::Paddles)
+    if(myJack == Jack::Left)
     {
-      myMPaddleIDX = (xid == 0 || xid == 1) ? xid & 0x01 : -1;
-      myMPaddleIDY = (yid == 0 || yid == 1) ? yid & 0x01 : -1;
+      if(xtype == Controller::Type::Paddles)
+        myMPaddleIDX = (xid == 0 || xid == 1) ? xid & 0x01 : -1;
+      if(ytype == Controller::Type::Paddles)
+        myMPaddleIDY = (yid == 0 || yid == 1) ? yid & 0x01 : -1;
     }
-    else if(myJack == Jack::Right && ytype == Controller::Type::Paddles)
+    else if(myJack == Jack::Right)
     {
-      myMPaddleIDX = (xid == 2 || xid == 3) ? xid & 0x01 : -1;
+      if(xtype == Controller::Type::Paddles)
+        myMPaddleIDX = (xid == 2 || xid == 3) ? xid & 0x01 : -1;
+      if(ytype == Controller::Type::Paddles)
       myMPaddleIDY = (yid == 2 || yid == 3) ? yid & 0x01 : -1;
     }
   }
@@ -416,11 +420,15 @@ void Paddles::setAnalogYCenter(int ycenter)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 float Paddles::setAnalogSensitivity(int sensitivity)
 {
-  // BASE_ANALOG_SENSE * (1.1 ^ 20) = 1.0
-  SENSITIVITY = BASE_ANALOG_SENSE * std::pow(1.1F,
-    static_cast<float>(BSPF::clamp(sensitivity, 0, MAX_ANALOG_SENSE)));
+  return SENSITIVITY = analogSensitivityValue(sensitivity);
+}
 
-  return SENSITIVITY;
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+float Paddles::analogSensitivityValue(int sensitivity)
+{
+  // BASE_ANALOG_SENSE * (1.1 ^ 20) = 1.0
+  return BASE_ANALOG_SENSE * std::pow(1.1F,
+    static_cast<float>(BSPF::clamp(sensitivity, MIN_ANALOG_SENSE, MAX_ANALOG_SENSE)));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -438,20 +446,20 @@ void Paddles::setDejitterDiff(int strength)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Paddles::setDigitalSensitivity(int sensitivity)
 {
-  DIGITAL_SENSITIVITY = BSPF::clamp(sensitivity, 1, MAX_DIGITAL_SENSE);
+  DIGITAL_SENSITIVITY = BSPF::clamp(sensitivity, MIN_DIGITAL_SENSE, MAX_DIGITAL_SENSE);
   DIGITAL_DISTANCE = 20 + (DIGITAL_SENSITIVITY << 3);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Paddles::setMouseSensitivity(int sensitivity)
 {
-  MOUSE_SENSITIVITY = BSPF::clamp(sensitivity, 1, MAX_MOUSE_SENSE);
+  MOUSE_SENSITIVITY = BSPF::clamp(sensitivity, MIN_MOUSE_SENSE, MAX_MOUSE_SENSE);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Paddles::setDigitalPaddleRange(int range)
 {
-  range = BSPF::clamp(range, 1, 100);
+  range = BSPF::clamp(range, MIN_MOUSE_RANGE, MAX_MOUSE_RANGE);
   TRIGRANGE = int(TRIGMAX * (range / 100.0));
 }
 

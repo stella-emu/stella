@@ -28,7 +28,7 @@
 FileListWidget::FileListWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, int w, int h)
   : StringListWidget(boss, font, x, y, w, h),
-    _filter([](const FilesystemNode& node) { return true; })
+    _filter{[](const FilesystemNode& node) { return true; }}
 {
   // This widget is special, in that it catches signals and redirects them
   setTarget(this);
@@ -54,7 +54,7 @@ void FileListWidget::setDirectory(const FilesystemNode& node,
   while(tmp.hasParent() && !_history.full())
   {
     string name = tmp.getName();
-    if(name.back() == '/' || name.back() == '\\')
+    if(name.back() == FilesystemNode::PATH_SEPARATOR)
       name.pop_back();
     if(!BSPF::startsWithIgnoreCase(name, " ["))
       name = " [" + name.append("]");
@@ -99,7 +99,7 @@ void FileListWidget::setLocation(const FilesystemNode& node,
   // Now fill the list widget with the names from the file list,
   // even if cancelled
   StringList l;
-  size_t orgLen = node.getShortPath().length();
+  size_t orgLen = _node.getShortPath().length();
 
   _dirList.clear();
   for(const auto& file : _fileList)

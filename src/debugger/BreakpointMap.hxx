@@ -30,12 +30,12 @@
 class BreakpointMap
 {
   private:
-    static const uInt16 ADDRESS_MASK = 0x1fff;  // either 0x1fff or 0xffff (not needed then)
+    static constexpr uInt16 ADDRESS_MASK = 0x1fff;  // either 0x1fff or 0xffff (not needed then)
 
   public:
     // breakpoint flags
-    static const uInt32 ONE_SHOT = 1 << 0;      // used for 'trace' command
-    static const uInt8 ANY_BANK = 255;          // breakpoint valid in any bank
+    static constexpr uInt32 ONE_SHOT = 1 << 0;      // used for 'trace' command
+    static constexpr uInt8 ANY_BANK = 255;          // breakpoint valid in any bank
 
     struct Breakpoint
     {

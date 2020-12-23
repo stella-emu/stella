@@ -25,7 +25,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, CartridgeDPC& cart)
   : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
-    myCart(cart)
+    myCart{cart}
 {
   const int V_GAP = 4;
   size_t size = cart.mySize;
@@ -68,11 +68,10 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   ypos += myLineHeight + V_GAP * 3;
 
   // Data fetchers
-  int lwidth = _font.getStringWidth("Data fetchers ");
   new StaticTextWidget(boss, _font, xpos, ypos, "Data fetchers ");
 
   // Top registers
-  lwidth = _font.getStringWidth("Counter registers ");
+  int lwidth = _font.getStringWidth("Counter registers ");
   xpos = 2 + _font.getMaxCharWidth() * 2; ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, "Top registers ");
   xpos += lwidth;

@@ -49,6 +49,13 @@ class FSList : public vector<FilesystemNode> { };
 class FilesystemNode
 {
   public:
+  #ifdef BSPF_WINDOWS
+    static constexpr char PATH_SEPARATOR = '\\';
+  #else
+    static constexpr char PATH_SEPARATOR = '/';
+  #endif
+
+  public:
     /**
      * Flag to tell listDir() which kind of files to list.
      */

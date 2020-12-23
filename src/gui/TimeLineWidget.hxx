@@ -49,8 +49,8 @@ class TimeLineWidget : public ButtonWidget
 
     void drawWidget(bool hilite) override;
 
-    uInt32 valueToPos(uInt32 value);
-    uInt32 posToValue(uInt32 pos);
+    uInt32 valueToPos(uInt32 value) const;
+    uInt32 posToValue(uInt32 pos) const;
 
   protected:
     uInt32  _value{0};

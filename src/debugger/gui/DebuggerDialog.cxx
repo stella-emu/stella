@@ -259,41 +259,28 @@ void DebuggerDialog::handleCommand(CommandSender* sender, int cmd,
       loadConfig();
       break;
 
-    case kSvScriptCmd:
-      execSave("save");
-      break;
-
-    case kSvSessionCmd:
-      execSave("saveses");
-      break;
-
-    case kSvConfigCmd:
-      execSave("saveconfig");
+    case kSvAccessCmd:
+      runCommand("saveaccess");
       break;
 
     case kSvDisCmd:
-      execSave("savedis");
-      break;
-
-    case kSvAccessCmd:
-      execSave("saveaccess");
+      runCommand("savedis");
       break;
 
     case kSvRomCmd:
-      execSave("saverom");
+      runCommand("saverom");
       break;
 
-    case kSvStateCmd:
-      execSave("savestate");
+    case kSvScriptCmd:
+      runCommand("save");
       break;
 
-
-    case kSvAllStatesCmd:
-      execSave("saveallstates");
+    case kSvSessionCmd:
+      runCommand("saveses");
       break;
 
-    case kSvSnapCmd:
-      execSave("savesnap"); // TODO: param
+    case kBdCancelCmd:
+      runCommand();
       break;
 
     case RomWidget::kInvalidateListing:
@@ -438,68 +425,36 @@ void DebuggerDialog::createFont()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DebuggerDialog::showBrowser(BrowserType type)
+void DebuggerDialog::showBrowser(BrowserType type, const string& defaultName)
 {
   int cmd;
   string title;
-  string key;
-  string defaultPath;
 
   switch(type)
   {
-    case BrowserType::svScript:
-      cmd = kSvScriptCmd;
-      title = "workbench";
-      key = "dbg.savepath";
-      defaultPath = instance().defaultSaveDir().getPath() + "commands.script";
-      break;
-
-    case BrowserType::svSession:
-      cmd = kSvSessionCmd;
-      title = "session";
-      key = "dbg.savesessionpath";
-      break;
-
-    case BrowserType::svConfig:
-      cmd = kSvConfigCmd;
-      title = "DiStella config";
-      key = "dbg.saveconfigpath";
+    case BrowserType::svAccess:
+      cmd = kSvAccessCmd;
+      title = "access counters";
       break;
 
     case BrowserType::svDis:
       cmd = kSvDisCmd;
       title = "disassembly";
-      key = "dbg.savedispath";
-      break;
-
-    case BrowserType::svAccess:
-      cmd = kSvAccessCmd;
-      title = "access counters";
-      key = "dbg.saveaccesspath";
       break;
 
     case BrowserType::svRom:
       cmd = kSvRomCmd;
       title = "ROM";
-      key = "dbg.saverompath";
       break;
 
-    case BrowserType::svState:
-      cmd = kSvStateCmd;
-      title = "state";
-      key = "dbg.savestatepath";
+    case BrowserType::svScript:
+      cmd = kSvScriptCmd;
+      title = "workbench";
       break;
 
-    case BrowserType::svAllStates:
-      cmd = kSvAllStatesCmd;
-      title = "all states";
-      key = "dbg.savestatepath";
-      break;
-
-    case BrowserType::svSnap:
-      cmd = kSvSnapCmd;
-      title = "snapshot";
-      key = "snapsavedir";
+    case BrowserType::svSession:
+      cmd = kSvSessionCmd;
+      title = "session";
       break;
 
     default:
@@ -509,26 +464,24 @@ void DebuggerDialog::showBrowser(BrowserType type)
 
   if(cmd)
   {
-    //TODO: default path (path and filename)
-    string path = instance().settings().getString(key);
-
     createBrowser("Save " + title + " as");
 
-    if(path.empty())
-      path = defaultPath;
-
-    //myBrowser->show(instance().defaultSaveDir().getPath(),
-    //                BrowserDialog::FileSave, cmd);
-    myBrowser->show(path, BrowserDialog::FileSave, cmd);
+    const string path = instance().defaultSaveDir().getPath() + defaultName;
+    myBrowser->show(path, BrowserDialog::FileSave, cmd, kBdCancelCmd);
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DebuggerDialog::execSave(const string& command)
+void DebuggerDialog::runCommand(const string& command)
 {
-  FilesystemNode dir(myBrowser->getResult());
+  if(command != EmptyString)
+  {
+    FilesystemNode dir(myBrowser->getResult());
 
-  instance().debugger().parser().run(command + " " + dir.getShortPath());
+    string result = instance().debugger().parser().run(command + " {" + dir.getShortPath() + "}");
+    prompt().print(result + '\n');
+  }
+  prompt().printPrompt();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

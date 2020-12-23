@@ -33,9 +33,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Settings::Settings()
+  : myRespository{make_shared<KeyValueRepositoryNoop>()}
 {
-  myRespository = make_shared<KeyValueRepositoryNoop>();
-
   // If no version is recorded with the persisted settings, we set it to zero
   setPermanent(SETTINGS_VERSION_KEY, 0);
   setPermanent("stella.version", "6.2.1");
@@ -177,6 +176,7 @@ Settings::Settings()
   setPermanent("threads", "false");
   setTemporary("romloadcount", "0");
   setTemporary("maxres", "");
+  setPermanent("initials", "");
   setTemporary("turbo", "0");
 
 #ifdef DEBUGGER_SUPPORT
@@ -252,7 +252,7 @@ void Settings::setRepository(shared_ptr<KeyValueRepository> repository)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Settings::load(const Options& options)
 {
-  Options fromFile =  myRespository->load();
+  Options fromFile = myRespository->load();
   for (const auto& opt: fromFile)
     setValue(opt.first, opt.second, false);
 
@@ -350,11 +350,11 @@ void Settings::validate()
     setValue("cursor", "2");
 
   i = getInt("psense");
-  if(i < 0|| i > Paddles::MAX_ANALOG_SENSE)
+  if(i < Paddles::MIN_ANALOG_SENSE || i > Paddles::MAX_ANALOG_SENSE)
     setValue("psense", "20");
 
   i = getInt("dsense");
-  if(i < 1 || i > 20)
+  if(i < Paddles::MIN_DIGITAL_SENSE || i > Paddles::MAX_DIGITAL_SENSE)
     setValue("dsense", "10");
 
   i = getInt("msense");

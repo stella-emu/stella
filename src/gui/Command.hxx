@@ -48,7 +48,7 @@ class CommandSender
   // and add methods addTarget/removeTarget.
   public:
     explicit CommandSender(CommandReceiver* target)
-        : _target(target) { }
+        : _target{target} { }
 
     virtual ~CommandSender() = default;
 

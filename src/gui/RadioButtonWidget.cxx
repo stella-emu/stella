@@ -221,13 +221,13 @@ RadioButtonWidget::RadioButtonWidget(GuiObject* boss, const GUI::Font& font,
                                      int x, int y, const string& label,
                                      RadioButtonGroup* group, int cmd)
   : CheckboxWidget(boss, font, x, y, label, cmd),
-    myGroup(group)
+    myGroup{group},
+    _buttonSize{buttonSize(font)} // 14 | 22
 {
   _flags = Widget::FLAG_ENABLED;
   _bgcolor = _bgcolorhi = kWidColor;
 
   _editable = true;
-  _buttonSize = buttonSize(font); // 14 | 22
 
   if(_buttonSize == 14)
   {

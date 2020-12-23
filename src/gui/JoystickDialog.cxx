@@ -80,10 +80,10 @@ void JoystickDialog::loadConfig()
   myJoyIDs.clear();
 
   StringList sticks;
-  for(const auto& i: instance().eventHandler().physicalJoystickDatabase())
+  for(const auto& [_name, _id]: instance().eventHandler().physicalJoystickDatabase())
   {
-    sticks.push_back(i.first);
-    myJoyIDs.push_back(i.second.toInt());
+    sticks.push_back(_name);
+    myJoyIDs.push_back(_id.toInt());
   }
   myJoyList->setList(sticks);
   myJoyList->setSelected(0);

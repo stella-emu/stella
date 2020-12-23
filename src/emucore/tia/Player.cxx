@@ -21,7 +21,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Player::Player(uInt32 collisionMask)
-  : myCollisionMaskDisabled(collisionMask)
+  : myCollisionMaskDisabled{collisionMask}
 {
 }
 

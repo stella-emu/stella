@@ -56,15 +56,11 @@ class DebuggerDialog : public Dialog
       kLargeFontMinW  = 1160, kLargeFontMinH  = 870
     };
     enum BrowserType {
-      svScript,     // save
-      svSession,    // saveses
-      svConfig,     // saveconfig
-      svDis,        // savedis
       svAccess,     // saveaccess
+      svDis,        // savedis
       svRom,        // saverom
-      svState,      // savestate
-      svAllStates,  // saveallstates
-      svSnap        // savesnap
+      svScript,     // save
+      svSession     // saveses
     };
 
     DebuggerDialog(OSystem& osystem, DialogContainer& parent,
@@ -86,7 +82,7 @@ class DebuggerDialog : public Dialog
 
     void showFatalMessage(const string& msg);
     void saveConfig() override;
-    void showBrowser(BrowserType type);
+    void showBrowser(BrowserType type, const string& defaultName);
 
   private:
     void setPosition() override { positionAt(0); }
@@ -129,18 +125,15 @@ class DebuggerDialog : public Dialog
       kDDRunCmd       = 'DDex',
       kDDExitFatalCmd = 'DDer',
       kDDOptionsCmd   = 'DDop',
+      kSvAccessCmd    = 'SvAc',
+      kSvDisCmd       = 'SvDs',
+      kSvRomCmd       = 'SvRm',
       kSvScriptCmd    = 'SvSc',
       kSvSessionCmd   = 'SvSs',
-      kSvConfigCmd    = 'SvCn',
-      kSvDisCmd       = 'SvDs',
-      kSvAccessCmd    = 'SvAc',
-      kSvRomCmd       = 'SvRm',
-      kSvStateCmd     = 'SvSt',
-      kSvAllStatesCmd = 'SvAs',
-      kSvSnapCmd      = 'SvSn'
+      kBdCancelCmd    = 'SvCn'
     };
 
-    void execSave(const string& command);
+    void runCommand(const string& command = EmptyString);
     void createBrowser(const string& title);
 
     TabWidget *myTab{nullptr}, *myRomTab{nullptr};

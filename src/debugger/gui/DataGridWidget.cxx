@@ -38,12 +38,12 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
   : EditableWidget(boss, font, x, y,
                    cols*(colchars * font.getMaxCharWidth() + 8) + 1,
                    font.getLineHeight()*rows + 1),
-    _rows(rows),
-    _cols(cols),
-    _rowHeight(font.getLineHeight()),
-    _colWidth(colchars * font.getMaxCharWidth() + 8),
-    _bits(bits),
-    _base(base)
+    _rows{rows},
+    _cols{cols},
+    _rowHeight{font.getLineHeight()},
+    _colWidth{colchars * font.getMaxCharWidth() + 8},
+    _bits{bits},
+    _base{base}
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_RETAIN_FOCUS | Widget::FLAG_WANTS_RAWDATA;
   _editMode = false;
@@ -62,6 +62,8 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
 
   // Set lower and upper bounds to sane values
   setRange(0, 1 << bits);
+  // Limit number of chars allowed
+  setMaxLen(colchars);
 
   // Add a scrollbar if necessary
   if(useScrollbar)

@@ -71,13 +71,14 @@ class Dialog : public GuiObject
     void tick() override;
 
     void addFocusWidget(Widget* w) override;
-    void addToFocusList(WidgetArray& list) override;
-    void addToFocusList(WidgetArray& list, TabWidget* w, int tabId);
-    void addBGroupToFocusList(WidgetArray& list) { _buttonGroup = list; }
+    void addToFocusList(const WidgetArray& list) override;
+    void addToFocusList(const WidgetArray& list, TabWidget* w, int tabId);
+    void addBGroupToFocusList(const WidgetArray& list) { _buttonGroup = list; }
     void addTabWidget(TabWidget* w);
     void addDefaultWidget(ButtonWidget* w) { _defaultWidget = w; }
-    void addOKWidget(ButtonWidget* w)      { _okWidget = w;     }
-    void addCancelWidget(ButtonWidget* w)  { _cancelWidget = w; }
+    void addExtraWidget(ButtonWidget* w)   { _extraWidget = w;   }
+    void addOKWidget(ButtonWidget* w)      { _okWidget = w;      }
+    void addCancelWidget(ButtonWidget* w)  { _cancelWidget = w;  }
     void setFocus(Widget* w);
 
     /** Returns the base surface associated with this dialog. */
@@ -163,6 +164,7 @@ class Dialog : public GuiObject
                                    const string& cancelText = "Cancel",
                                    const string& defaultsText = "Defaults",
                                    bool focusOKButton = true);
+    int buttonHeight(const GUI::Font& font) const;
 
     // NOTE: This method, and the three above it, are due to be refactored at some
     //       point, since the parameter list is kind of getting ridiculous
@@ -195,6 +197,7 @@ class Dialog : public GuiObject
     Widget* _focusedWidget{nullptr};
     Widget* _dragWidget{nullptr};
     ButtonWidget* _defaultWidget{nullptr};
+    ButtonWidget* _extraWidget{nullptr};
     ButtonWidget* _okWidget{nullptr};
     ButtonWidget* _cancelWidget{nullptr};
 
@@ -212,7 +215,7 @@ class Dialog : public GuiObject
       Widget* widget{nullptr};
       WidgetArray list;
 
-      explicit Focus(Widget* w = nullptr) : widget(w) { }
+      explicit Focus(Widget* w = nullptr) : widget{w} { }
     };
     using FocusList = vector<Focus>;
 
@@ -221,7 +224,7 @@ class Dialog : public GuiObject
       FocusList focus;
       uInt32 currentTab{0};
 
-      explicit TabFocus(TabWidget* w = nullptr) : widget(w) { }
+      explicit TabFocus(TabWidget* w = nullptr) : widget{w} { }
 
       void appendFocusList(WidgetArray& list);
       void saveCurrentFocus(Widget* w);

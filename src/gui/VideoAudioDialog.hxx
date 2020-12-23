@@ -59,14 +59,14 @@ class VideoAudioDialog : public Dialog
     void handleOverscanChange();
     void handlePhosphorChange();
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-    void addPalette(int x, int y, int h, int w);
+    void addPalette(int x, int y, int w, int h);
     void colorPalette();
     void updatePreset();
     void updateEnabledState();
     void updateSettingsWithPreset(AudioSettings&);
 
   private:
-    TabWidget* myTab;
+    TabWidget* myTab{nullptr};
 
     // General options
     PopUpWidget*      myRenderer{nullptr};

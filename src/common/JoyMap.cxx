@@ -66,7 +66,7 @@ void JoyMap::erase(const EventMode mode, const int button,
 Event::Type JoyMap::get(const JoyMapping& mapping) const
 {
   auto find = myMap.find(mapping);
-  if (find != myMap.end())
+  if(find != myMap.end())
     return find->second;
 
   // try without button as modifier
@@ -75,7 +75,7 @@ Event::Type JoyMap::get(const JoyMapping& mapping) const
   m.button = JOY_CTRL_NONE;
 
   find = myMap.find(m);
-  if (find != myMap.end())
+  if(find != myMap.end())
     return find->second;
 
   return Event::Type::NoType;
@@ -96,7 +96,7 @@ Event::Type JoyMap::get(const EventMode mode, const int button,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool JoyMap::check(const JoyMapping & mapping) const
+bool JoyMap::check(const JoyMapping& mapping) const
 {
   auto find = myMap.find(mapping);
 
@@ -117,14 +117,14 @@ string JoyMap::getDesc(const Event::Type event, const JoyMapping& mapping) const
   ostringstream buf;
 
   // button description
-  if (mapping.button != JOY_CTRL_NONE)
+  if(mapping.button != JOY_CTRL_NONE)
     buf << "/B" << mapping.button;
 
   // axis description
-  if (mapping.axis != JoyAxis::NONE)
+  if(mapping.axis != JoyAxis::NONE)
   {
     buf << "/A";
-    switch (mapping.axis)
+    switch(mapping.axis)
     {
       case JoyAxis::X: buf << "X"; break;
       case JoyAxis::Y: buf << "Y"; break;
@@ -132,19 +132,19 @@ string JoyMap::getDesc(const Event::Type event, const JoyMapping& mapping) const
       default:         buf << int(mapping.axis); break;
     }
 
-    if (Event::isAnalog(event))
+    if(Event::isAnalog(event))
       buf << "+|-";
-    else if (mapping.adir == JoyDir::NEG)
+    else if(mapping.adir == JoyDir::NEG)
       buf << "-";
     else
       buf << "+";
   }
 
   // hat description
-  if (mapping.hat != JOY_CTRL_NONE)
+  if(mapping.hat != JOY_CTRL_NONE)
   {
     buf << "/H" << mapping.hat;
-    switch (mapping.hdir)
+    switch(mapping.hdir)
     {
       case JoyHatDir::UP:    buf << "Y+"; break;
       case JoyHatDir::DOWN:  buf << "Y-"; break;
@@ -162,13 +162,13 @@ string JoyMap::getEventMappingDesc(int stick, const Event::Type event, const Eve
 {
   ostringstream buf;
 
-  for (auto item : myMap)
+  for (const auto& [_mapping, _event]: myMap)
   {
-    if (item.second == event && item.first.mode == mode)
+    if (_event == event && _mapping.mode == mode)
     {
-      if (buf.str() != "")
+      if(buf.str() != "")
         buf << ", ";
-      buf << "J" << stick << getDesc(event, item.first);
+      buf << "J" << stick << getDesc(event, _mapping);
     }
   }
   return buf.str();
@@ -179,9 +179,9 @@ JoyMap::JoyMappingArray JoyMap::getEventMapping(const Event::Type event, const E
 {
   JoyMappingArray map;
 
-  for (auto item : myMap)
-    if (item.second == event && item.first.mode == mode)
-      map.push_back(item.first);
+  for (const auto& [_mapping, _event]: myMap)
+    if (_event == event && _mapping.mode == mode)
+      map.push_back(_mapping);
 
   return map;
 }
@@ -189,25 +189,51 @@ JoyMap::JoyMappingArray JoyMap::getEventMapping(const Event::Type event, const E
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 json JoyMap::saveMapping(const EventMode mode) const
 {
+  using MapType = std::pair<JoyMapping, Event::Type>;
+  std::vector<MapType> sortedMap(myMap.begin(), myMap.end());
+
+  std::sort(sortedMap.begin(), sortedMap.end(),
+            [](const MapType& a, const MapType& b)
+  {
+    // Event::Type first
+    if(a.first.button != b.first.button)
+      return a.first.button < b.first.button;
+
+    if(a.first.axis != b.first.axis)
+      return a.first.axis < b.first.axis;
+
+    if(a.first.adir != b.first.adir)
+      return a.first.adir < b.first.adir;
+
+    if(a.first.hat != b.first.hat)
+      return a.first.hat < b.first.hat;
+
+    if(a.first.hdir != b.first.hdir)
+    return a.first.hdir < b.first.hdir;
+
+    return a.second < b.second;
+  }
+  );
+
   json eventMappings = json::array();
 
-  for (auto& item: myMap) {
-    if (item.first.mode != mode) continue;
+  for (const auto& [_mapping, _event]: sortedMap) {
+    if (_mapping.mode != mode) continue;
 
     json eventMapping = json::object();
 
-    eventMapping["event"] = item.second;
+    eventMapping["event"] = _event;
 
-    if (item.first.button != JOY_CTRL_NONE) eventMapping["button"] = item.first.button;
+    if (_mapping.button != JOY_CTRL_NONE) eventMapping["button"] = _mapping.button;
 
-    if (item.first.axis != JoyAxis::NONE) {
-      eventMapping["axis"] = item.first.axis;
-      eventMapping["axisDirection"] = item.first.adir;
+    if (_mapping.axis != JoyAxis::NONE) {
+      eventMapping["axis"] = _mapping.axis;
+      eventMapping["axisDirection"] = _mapping.adir;
     }
 
-    if (item.first.hat != -1) {
-      eventMapping["hat"] = item.first.hat;
-      eventMapping["hatDirection"] = item.first.hdir;
+    if (_mapping.hat != -1) {
+      eventMapping["hat"] = _mapping.hat;
+      eventMapping["hatDirection"] = _mapping.hdir;
     }
 
     eventMappings.push_back(eventMapping);
@@ -221,7 +247,7 @@ int JoyMap::loadMapping(const json& eventMappings, const EventMode mode)
 {
   int i = 0;
 
-  for (const json& eventMapping: eventMappings) {
+  for(const json& eventMapping : eventMappings) {
     int button = eventMapping.contains("button") ? eventMapping.at("button").get<int>() : JOY_CTRL_NONE;
     JoyAxis axis = eventMapping.contains("axis") ? eventMapping.at("axis").get<JoyAxis>() : JoyAxis::NONE;
     JoyDir axisDirection = eventMapping.contains("axis") ? eventMapping.at("axisDirection").get<JoyDir>() : JoyDir::NONE;
@@ -240,7 +266,7 @@ int JoyMap::loadMapping(const json& eventMappings, const EventMode mode)
       );
 
       i++;
-    } catch (json::exception) {
+    } catch (const json::exception&) {
       Logger::error("ignoring invalid joystick event");
     }
   }
@@ -262,22 +288,22 @@ json JoyMap::convertLegacyMapping(string list)
   istringstream buf(list);
   int event, button, axis, adir, hat, hdir;
 
-  while (buf >> event && buf >> button
-         && buf >> axis && buf >> adir
-         && buf >> hat && buf >> hdir)
+  while(buf >> event && buf >> button
+        && buf >> axis && buf >> adir
+        && buf >> hat && buf >> hdir)
   {
     json eventMapping = json::object();
 
     eventMapping["event"] = Event::Type(event);
 
-    if (button != JOY_CTRL_NONE) eventMapping["button"] = button;
+    if(button != JOY_CTRL_NONE) eventMapping["button"] = button;
 
-    if (JoyAxis(axis) != JoyAxis::NONE) {
+    if(JoyAxis(axis) != JoyAxis::NONE) {
       eventMapping["axis"] = JoyAxis(axis);
       eventMapping["axisDirection"] = JoyDir(adir);
     }
 
-    if (hat != -1) {
+    if(hat != -1) {
       eventMapping["hat"] = hat;
       eventMapping["hatDirection"] = JoyHatDir(hdir);
     }
@@ -291,8 +317,8 @@ json JoyMap::convertLegacyMapping(string list)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void JoyMap::eraseMode(const EventMode mode)
 {
-  for (auto item = myMap.begin(); item != myMap.end();)
-    if (item->first.mode == mode) {
+  for(auto item = myMap.begin(); item != myMap.end();)
+    if(item->first.mode == mode) {
       auto _item = item++;
       erase(_item->first);
     }
@@ -302,8 +328,8 @@ void JoyMap::eraseMode(const EventMode mode)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void JoyMap::eraseEvent(const Event::Type event, const EventMode mode)
 {
-  for (auto item = myMap.begin(); item != myMap.end();)
-    if (item->second == event && item->first.mode == mode) {
+  for(auto item = myMap.begin(); item != myMap.end();)
+    if(item->second == event && item->first.mode == mode) {
       auto _item = item++;
       erase(_item->first);
     }

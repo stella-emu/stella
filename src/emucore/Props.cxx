@@ -265,8 +265,17 @@ void Properties::print() const
        << get(PropType::Display_Format)         << "|"
        << get(PropType::Display_VCenter)        << "|"
        << get(PropType::Display_Phosphor)       << "|"
-       << get(PropType::Display_PPBlend)
+       << get(PropType::Display_PPBlend)        << "|"
+       << get(PropType::Cart_Highscore)
        << endl;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Properties::reset(PropType key)
+{
+  size_t pos = static_cast<size_t>(key);
+
+  myProperties[pos] = ourDefaultProperties[pos];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -316,7 +325,8 @@ void Properties::printHeader()
        << "Display_Format|"
        << "Display_VCenter|"
        << "Display_Phosphor|"
-       << "Display_PPBlend"
+       << "Display_PPBlend|"
+       << "Cart_Highscore"
        << endl;
 }
 
@@ -349,7 +359,8 @@ std::array<string, Properties::NUM_PROPS> Properties::ourDefaultProperties =
   "AUTO",   // Display.Format
   "0",      // Display.VCenter
   "NO",     // Display.Phosphor
-  "0"       // Display.PPBlend
+  "0",      // Display.PPBlend
+  ""        // Cart.Highscore
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -381,5 +392,6 @@ std::array<string, Properties::NUM_PROPS> Properties::ourPropertyNames =
   "Display.Format",
   "Display.VCenter",
   "Display.Phosphor",
-  "Display.PPBlend"
+  "Display.PPBlend",
+  "Cart.Highscore"
 };

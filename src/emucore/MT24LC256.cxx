@@ -45,9 +45,9 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 MT24LC256::MT24LC256(const FilesystemNode& eepromfile, const System& system,
                      const Controller::onMessageCallback& callback)
-  : mySystem(system),
-    myCallback(callback),
-    myDataFile(eepromfile)
+  : mySystem{system},
+    myCallback{callback},
+    myDataFile{eepromfile}
 {
   // Load the data from an external file (if it exists)
   bool fileValid = false;
@@ -64,11 +64,8 @@ MT24LC256::MT24LC256(const FilesystemNode& eepromfile, const System& system,
 
   if(!fileValid)
   {
-    // Work around a bug in XCode 11.2 with -O0 and -O1
-    const uInt8 initialValue = INITIAL_VALUE;
-
     myData = make_unique<uInt8[]>(FLASH_SIZE);
-    std::fill_n(myData.get(), FLASH_SIZE, initialValue);
+    std::fill_n(myData.get(), FLASH_SIZE, INITIAL_VALUE);
     myDataChanged = true;
    }
 
@@ -142,24 +139,18 @@ void MT24LC256::systemReset()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MT24LC256::eraseAll()
 {
-  // Work around a bug in XCode 11.2 with -O0 and -O1
-  const uInt8 initialValue = INITIAL_VALUE;
-
-  std::fill_n(myData.get(), FLASH_SIZE, initialValue);
+  std::fill_n(myData.get(), FLASH_SIZE, INITIAL_VALUE);
   myDataChanged = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MT24LC256::eraseCurrent()
 {
-  // Work around a bug in XCode 11.2 with -O0 and -O1
-  const uInt8 initialValue = INITIAL_VALUE;
-
   for(uInt32 page = 0; page < PAGE_NUM; ++page)
   {
     if(myPageHit[page])
     {
-      std::fill_n(myData.get() + page * PAGE_SIZE, PAGE_SIZE, initialValue);
+      std::fill_n(myData.get() + page * PAGE_SIZE, PAGE_SIZE, INITIAL_VALUE);
       myDataChanged = true;
     }
   }

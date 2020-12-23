@@ -70,6 +70,9 @@
     <Filter Include="Source Files\repository">
       <UniqueIdentifier>{1aab46fa-ee39-415d-9e41-d5ad3ee14ce7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\json">
+      <UniqueIdentifier>{966c18c1-dae3-4dae-8e00-c621187898b1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common\FBBackendSDL2.cxx">
@@ -987,6 +990,15 @@
     <ClCompile Include="..\gui\MessageDialog.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
+    <ClCompile Include="..\common\HighScoresManager.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gui\HighScoresMenu.cxx">
+      <Filter>Source Files\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gui\HighScoresDialog.cxx">
+      <Filter>Source Files\gui</Filter>
+    </ClCompile>
     <ClCompile Include="..\emucore\CartEnhanced.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
@@ -1037,6 +1049,9 @@
     </ClCompile>
     <ClCompile Include="..\debugger\gui\DataGridRamWidget.cxx">
       <Filter>Source Files\debugger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\emucore\PlusROM.cxx">
+      <Filter>Source Files\emucore</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2066,6 +2081,15 @@
     <ClInclude Include="..\gui\MessageDialog.hxx">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
+    <ClInclude Include="..\common\HighScoresManager.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gui\HighScoresMenu.hxx">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gui\HighScoresDialog.hxx">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
     <ClInclude Include="..\gui\Stella12x24tFont.hxx">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
@@ -2134,6 +2158,18 @@
     </ClInclude>
     <ClInclude Include="..\debugger\gui\DataGridRamWidget.hxx">
       <Filter>Header Files\debugger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\json\json.hxx">
+      <Filter>Header Files\json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\json\json_lib.hxx">
+      <Filter>Header Files\json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\jsonDefinitions.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\PlusROM.hxx">
+      <Filter>Header Files\emucore</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

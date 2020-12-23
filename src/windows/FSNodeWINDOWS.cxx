@@ -58,7 +58,7 @@ const char* lastPathComponent(const string& str)
   const char* start = str.c_str();
   const char* cur = start + str.size() - 2;
 
-  while(cur >= start && *cur != '\\')
+  while(cur >= start && *cur != FilesystemNode::PATH_SEPARATOR)
     --cur;
 
   return cur + 1;
@@ -175,10 +175,8 @@ FilesystemNodeWINDOWS::FilesystemNodeWINDOWS()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FilesystemNodeWINDOWS::FilesystemNodeWINDOWS(const string& p)
+  : _path{p.length() > 0 ? p : "~"}  // Default to home directory
 {
-  // Default to home directory
-  _path = p.length() > 0 ? p : "~";
-
   // Expand '~' to the users 'home' directory
   if(_path[0] == '~')
     _path.replace(0, 1, myHomeFinder.getHomePath());

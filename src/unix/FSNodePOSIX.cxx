@@ -25,17 +25,15 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FilesystemNodePOSIX::FilesystemNodePOSIX()
-  : _path(ROOT_DIR),
-    _displayName(_path)
+  : _path{ROOT_DIR},
+    _displayName{_path}
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FilesystemNodePOSIX::FilesystemNodePOSIX(const string& path, bool verify)
+  : _path{path.length() > 0 ? path : "~"}  // Default to home directory
 {
-  // Default to home directory
-  _path = path.length() > 0 ? path : "~";
-
   // Expand '~' to the HOME environment variable
   if(_path[0] == '~')
   {

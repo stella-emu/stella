@@ -48,7 +48,7 @@ using std::right;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
   : DebuggerSystem(dbg, console),
-    myOSystem(osystem)
+    myOSystem{osystem}
 {
   // Add case sensitive compare for user labels
   // TODO - should user labels be case insensitive too?
@@ -1041,7 +1041,7 @@ string CartDebug::saveConfigFile()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartDebug::saveDisassembly()
+string CartDebug::saveDisassembly(string path)
 {
   string NTSC_COLOR[16] = {
     "BLACK", "YELLOW", "BROWN", "ORANGE",
@@ -1350,9 +1350,16 @@ string CartDebug::saveDisassembly()
   // And finally, output the disassembly
   out << buf.str();
 
-  const string& propsname =
-    myConsole.properties().get(PropType::Cart_Name) + ".asm";
-  FilesystemNode node(myOSystem.defaultSaveDir().getPath() + propsname);
+
+  if(path.empty())
+    path = myOSystem.defaultSaveDir().getPath()
+      + myConsole.properties().get(PropType::Cart_Name) + ".asm";
+  else
+    // Append default extension when missing
+    if(path.find_last_of('.') == string::npos)
+      path += ".asm";
+
+  FilesystemNode node(path);
   stringstream retVal;
   try
   {
@@ -1370,11 +1377,18 @@ string CartDebug::saveDisassembly()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartDebug::saveRom()
+string CartDebug::saveRom(string path)
 {
-  const string& rom = myConsole.properties().get(PropType::Cart_Name) + ".a26";
+  if(path.empty())
+    path = myOSystem.defaultSaveDir().getPath()
+      + myConsole.properties().get(PropType::Cart_Name) + ".a26";
+  else
+    // Append default extension when missing
+    if(path.find_last_of('.') == string::npos)
+      path += ".a26";
 
-  FilesystemNode node(myOSystem.defaultSaveDir().getPath() + rom);
+  FilesystemNode node(path);
+
   if(myConsole.cartridge().saveROM(node))
     return "saved ROM as " + node.getShortPath();
   else
@@ -1382,7 +1396,7 @@ string CartDebug::saveRom()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartDebug::saveAccessFile()
+string CartDebug::saveAccessFile(string path)
 {
   stringstream out;
   out << myConsole.tia().getAccessCounters();
@@ -1391,8 +1405,15 @@ string CartDebug::saveAccessFile()
 
   try
   {
-    const string& rom = myConsole.properties().get(PropType::Cart_Name) + ".csv";
-    FilesystemNode node(myOSystem.defaultSaveDir().getPath() + rom);
+    if(path.empty())
+      path = myOSystem.defaultSaveDir().getPath()
+        + myConsole.properties().get(PropType::Cart_Name) + ".csv";
+    else
+      // Append default extension when missing
+      if(path.find_last_of('.') == string::npos)
+        path += ".csv";
+
+    FilesystemNode node(path);
 
     node.write(out);
     return "saved access counters as " + node.getShortPath();
@@ -1516,7 +1537,7 @@ CartDebug::AddrType CartDebug::addressType(uInt16 addr) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartDebug::getBankDirectives(ostream& buf, BankInfo& info) const
+void CartDebug::getBankDirectives(ostream& buf, const BankInfo& info) const
 {
   // Start with the offset for this bank
   buf << "ORG " << Base::HEX4 << info.offset << endl;

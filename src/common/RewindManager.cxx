@@ -28,8 +28,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RewindManager::RewindManager(OSystem& system, StateManager& statemgr)
-  : myOSystem(system),
-    myStateManager(statemgr)
+  : myOSystem{system},
+    myStateManager{statemgr}
 {
   setup();
 }
@@ -41,18 +41,15 @@ void RewindManager::setup()
 
   const string& prefix = myOSystem.settings().getBool("dev.settings") ? "dev." : "plr.";
 
-  // Work around a bug in XCode 11.2 with -O0 and -O1
-  const uInt32 maxBufSize = MAX_BUF_SIZE;
-
   // TODO - Add proper bounds checking (define constexpr variables for this)
   //        Use those bounds in DeveloperDialog too
   mySize = std::min<uInt32>(
-      myOSystem.settings().getInt(prefix + "tm.size"), maxBufSize);
+      myOSystem.settings().getInt(prefix + "tm.size"), MAX_BUF_SIZE);
   if(mySize != myStateList.capacity())
     resize(mySize);
 
   myUncompressed = std::min<uInt32>(
-      myOSystem.settings().getInt(prefix + "tm.uncompressed"), maxBufSize);
+      myOSystem.settings().getInt(prefix + "tm.uncompressed"), MAX_BUF_SIZE);
 
   myInterval = INTERVAL_CYCLES[0];
   for(int i = 0; i < NUM_INTERVALS; ++i)

@@ -143,7 +143,7 @@ Common::Rect CheckListWidget::getEditRect() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CheckListWidget::getState(int line)
+bool CheckListWidget::getState(int line) const
 {
   if(line >= 0 && line < int(_stateList.size()))
     return _stateList[line];
