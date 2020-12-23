@@ -59,12 +59,7 @@ class NTSCFilter
     /* Normally used in conjunction with custom mode, contains all
        aspects currently adjustable in NTSC TV emulation. */
     struct Adjustable {
-    #ifdef BLARGG_PALETTE
-      uInt32 hue, saturation, contrast, brightness, gamma,
-             sharpness, resolution, artifacts, fringing, bleed;
-    #else
-      uInt32 sharpness, resolution, artifacts, fringing, bleed;
-    #endif
+      uInt32 sharpness{0}, resolution{0}, artifacts{0}, fringing{0}, bleed{0};
     };
 
   public:
@@ -153,11 +148,7 @@ class NTSCFilter
       float* value{nullptr};
     };
     uInt32 myCurrentAdjustable{0};
-  #ifdef BLARGG_PALETTE
-    static const std::array<AdjustableTag, 10> ourCustomAdjustables;
-  #else
     static const std::array<AdjustableTag, 5> ourCustomAdjustables;
-  #endif
 
   private:
     // Following constructors and assignment operators not supported
