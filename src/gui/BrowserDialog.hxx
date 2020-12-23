@@ -58,7 +58,8 @@ class BrowserDialog : public Dialog, public CommandSender
     enum {
       kChooseCmd  = 'CHOS',
       kGoUpCmd    = 'GOUP',
-      kBaseDirCmd = 'BADR'
+      kBaseDirCmd = 'BADR',
+      kHomeDirCmd = 'HODR'
     };
 
     int	_cmd{0};
@@ -69,7 +70,6 @@ class BrowserDialog : public Dialog, public CommandSender
     StaticTextWidget* _type{nullptr};
     EditTextWidget*   _selected{nullptr};
     ButtonWidget*     _goUpButton{nullptr};
-    ButtonWidget*     _basedirButton{nullptr};
 
     BrowserDialog::ListMode _mode{Directories};
 
