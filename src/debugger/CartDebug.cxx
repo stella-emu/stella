@@ -1352,7 +1352,7 @@ string CartDebug::saveDisassembly(string path)
 
 
   if(path.empty())
-    path = myOSystem.userSaveDir().getPath()
+    path = myOSystem.userDir().getPath()
       + myConsole.properties().get(PropType::Cart_Name) + ".asm";
   else
     // Append default extension when missing
@@ -1380,7 +1380,7 @@ string CartDebug::saveDisassembly(string path)
 string CartDebug::saveRom(string path)
 {
   if(path.empty())
-    path = myOSystem.userSaveDir().getPath()
+    path = myOSystem.userDir().getPath()
       + myConsole.properties().get(PropType::Cart_Name) + ".a26";
   else
     // Append default extension when missing
@@ -1406,7 +1406,7 @@ string CartDebug::saveAccessFile(string path)
   try
   {
     if(path.empty())
-      path = myOSystem.userSaveDir().getPath()
+      path = myOSystem.userDir().getPath()
         + myConsole.properties().get(PropType::Cart_Name) + ".csv";
     else
       // Append default extension when missing
