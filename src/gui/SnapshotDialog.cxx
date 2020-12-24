@@ -131,7 +131,7 @@ void SnapshotDialog::saveConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SnapshotDialog::setDefaults()
 {
-  mySnapSavePath->setText(instance().userSaveDir().getShortPath());
+  mySnapSavePath->setText(instance().userDir().getShortPath());
   mySnapInterval->setValue(2);
   mySnapName->setState(false);
   mySnapSingle->setState(false);

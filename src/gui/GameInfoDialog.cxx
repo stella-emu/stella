@@ -1397,7 +1397,7 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
       // to re-create it as necessary
       createBrowser("Export properties as");
 
-      myBrowser->show(instance().userSaveDir().getPath() + myGameFile.getNameWithExt(".pro"),
+      myBrowser->show(instance().userDir().getPath() + myGameFile.getNameWithExt(".pro"),
         BrowserDialog::FileSave, kExportChosen);
       break;
 

@@ -466,7 +466,7 @@ void DebuggerDialog::showBrowser(BrowserType type, const string& defaultName)
   {
     createBrowser("Save " + title + " as");
 
-    const string path = instance().userSaveDir().getPath() + defaultName;
+    const string path = instance().userDir().getPath() + defaultName;
     myBrowser->show(path, BrowserDialog::FileSave, cmd, kBdCancelCmd);
   }
 }

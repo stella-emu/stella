@@ -271,7 +271,7 @@ void BrowserDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kHomeDirCmd:
-      _fileList->setDirectory(FilesystemNode(instance().defaultSaveDir()));
+      _fileList->setDirectory(FilesystemNode(instance().homeDir()));
       break;
 
     case EditableWidget::kChangedCmd:

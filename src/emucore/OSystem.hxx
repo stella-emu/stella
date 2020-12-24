@@ -318,12 +318,11 @@ class OSystem
     const FilesystemNode& romFile() const { return myRomFile; }
 
     /**
-      The default locations for saving and loading various files that
-      don't already have a specific location.
+      The default and user defined locations for saving and loading various
+      files that don't already have a specific location.
     */
-    const FilesystemNode& defaultSaveDir() const { return myDefaultSaveDir; }
-    const FilesystemNode& defaultLoadDir() const { return myDefaultLoadDir; }
-    const FilesystemNode& userSaveDir() const { return myUserSaveDir; }
+    const FilesystemNode& homeDir() const { return myHomeDir; }
+    const FilesystemNode& userDir() const { return myUserDir; }
 
     /**
       Open the given ROM and return an array containing its contents.
@@ -556,8 +555,8 @@ class OSystem
 
   private:
     FilesystemNode myBaseDir, myStateDir, mySnapshotSaveDir, mySnapshotLoadDir,
-                   myNVRamDir, myCfgDir, myDefaultSaveDir, myDefaultLoadDir,
-                   myUserSaveDir;
+                   myNVRamDir, myCfgDir, myHomeDir,
+                   myUserDir;
     FilesystemNode myCheatFile, myConfigFile, myPaletteFile,  myPropertiesFile;
     FilesystemNode myRomFile;  string myRomMD5;
 
