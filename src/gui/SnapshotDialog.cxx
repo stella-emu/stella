@@ -156,7 +156,7 @@ void SnapshotDialog::handleCommand(CommandSender* sender, int cmd,
     case kChooseSnapSaveDirCmd:
       // This dialog is resizable under certain conditions, so we need
       // to re-create it as necessary
-      createBrowser("Select snapshot save directory");
+      createBrowser("Select Snapshot Save Directory");
       myBrowser->show(mySnapSavePath->getText(),
                       BrowserDialog::Directories, kSnapSaveDirChosenCmd);
       break;

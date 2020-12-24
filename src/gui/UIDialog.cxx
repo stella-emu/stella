@@ -586,7 +586,7 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
     case kChooseRomDirCmd:
       // This dialog is resizable under certain conditions, so we need
       // to re-create it as necessary
-      createBrowser("Select ROM directory");
+      createBrowser("Select ROM Directory");
       myBrowser->show(myRomPath->getText(),
                       BrowserDialog::Directories, LauncherDialog::kRomDirChosenCmd);
       break;
@@ -602,7 +602,7 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
     case kChooseSnapLoadDirCmd:
       // This dialog is resizable under certain conditions, so we need
       // to re-create it as necessary
-      createBrowser("Select snapshot load directory");
+      createBrowser("Select ROM Info Viewer Image Directory");
       myBrowser->show(mySnapLoadPath->getText(),
                       BrowserDialog::Directories, kSnapLoadDirChosenCmd);
       break;

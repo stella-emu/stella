@@ -198,7 +198,7 @@ void RomAuditDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kChooseAuditDirCmd:
-      createBrowser("Select ROM directory to audit");
+      createBrowser("Select ROM Directory to Audit");
       myBrowser->show(myRomPath->getText(),
                       BrowserDialog::Directories, kAuditDirChosenCmd);
       break;
