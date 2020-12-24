@@ -67,9 +67,10 @@ class BrowserDialog : public Dialog, public CommandSender
 
     FileListWidget*   _fileList{nullptr};
     EditTextWidget*   _currentPath{nullptr};
-    StaticTextWidget* _type{nullptr};
+    StaticTextWidget* _name{nullptr};
     EditTextWidget*   _selected{nullptr};
     ButtonWidget*     _goUpButton{nullptr};
+    CheckboxWidget*   _savePathBox{nullptr};
 
     BrowserDialog::ListMode _mode{Directories};
 

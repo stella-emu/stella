@@ -246,6 +246,14 @@ void OSystem::loadConfig(const Settings::Options& options)
 
   mySettings->load(options);
 
+  // TODO: check if affected by '-baseDir'and 'basedirinapp' params
+  string userDir = mySettings->getString("userdir");
+  if(userDir.empty())
+    userDir = defSaveDir;
+  myUserSaveDir = FilesystemNode(userDir);
+  if(!myUserSaveDir.isDirectory())
+    myUserSaveDir.makeDir();
+
   Logger::instance().setLogParameters(mySettings->getInt("loglevel"),
                                       mySettings->getBool("logtoconsole"));
   Logger::debug("Loading config options ...");
@@ -331,6 +339,14 @@ void OSystem::setConfigPaths()
   dbgPath("pro file  ", myPropertiesFile);
   dbgPath("INI file  ", myConfigFile);
 #endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OSystem::setUserDir(const string& path)
+{
+  mySettings->setValue("userdir", path);
+
+  myUserSaveDir = FilesystemNode(path);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

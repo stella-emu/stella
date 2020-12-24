@@ -683,7 +683,7 @@ string DebuggerParser::saveScriptFile(string file)
 
   // Use default path if no path is provided
   if(file.find_first_of(FilesystemNode::PATH_SEPARATOR) == string::npos)
-    file = debugger.myOSystem.defaultSaveDir().getPath() + file;
+    file = debugger.myOSystem.userSaveDir().getPath() + file;
 
   FilesystemNode node(file);
 
@@ -1144,7 +1144,7 @@ void DebuggerParser::executeDump()
   else
   {
     ostringstream file;
-    file << debugger.myOSystem.defaultSaveDir()
+    file << debugger.myOSystem.userSaveDir()
          << debugger.myOSystem.console().properties().get(PropType::Cart_Name) << "_dbg_";
     if(execDepth > 0)
     {
@@ -1240,7 +1240,7 @@ void DebuggerParser::executeExec()
     file += ".script";
   FilesystemNode node(file);
   if (!node.exists())
-    node = FilesystemNode(debugger.myOSystem.defaultSaveDir().getPath() + file);
+    node = FilesystemNode(debugger.myOSystem.userSaveDir().getPath() + file);
 
   if (argCount == 2) {
     execPrefix = argStrings[1];
@@ -1910,7 +1910,7 @@ void DebuggerParser::executeSaveses()
 {
   ostringstream filename;
   auto timeinfo = BSPF::localTime();
-  filename << debugger.myOSystem.defaultSaveDir()
+  filename << debugger.myOSystem.userSaveDir()
     << std::put_time(&timeinfo, "session_%F_%H-%M-%S.txt");
 
   if(argCount && argStrings[0] == "?")

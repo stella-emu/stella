@@ -204,6 +204,36 @@ void Widget::setPos(const Common::Point& pos)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Widget::setWidth(int w)
+{
+  setSize(w, _h);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Widget::setHeight(int h)
+{
+  setSize(_w, h);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Widget::setSize(int w, int h)
+{
+  setSize(Common::Point(w, h));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Widget::setSize(const Common::Point& pos)
+{
+  if(pos != Common::Point(_w, _h))
+  {
+    _w = pos.x;
+    _h = pos.y;
+    // we have to redraw the whole dialog!
+    dialog().setDirty();
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Widget::handleMouseEntered()
 {
   if(isEnabled())
