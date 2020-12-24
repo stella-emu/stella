@@ -478,6 +478,26 @@ class AbstractFSNode
      *          a try-catch block.
      */
     virtual size_t write(const stringstream& buffer) const { return 0; }
+
+    /**
+     * Returns the last component of a given path.
+     *
+     * @param str  String containing the path.
+     * @return  Pointer to the first char of the last component inside str.
+     */
+    static const char* lastPathComponent(const string& str)
+    {
+      if(str.empty())
+        return "";
+
+      const char* start = str.c_str();
+      const char* cur = start + str.size() - 2;
+
+      while (cur >= start && *cur != FilesystemNode::PATH_SEPARATOR)
+        --cur;
+
+      return cur + 1;
+    }
 };
 
 #endif

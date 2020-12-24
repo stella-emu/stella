@@ -39,31 +39,6 @@
 #include "Windows.hxx"
 #include "FSNodeWINDOWS.hxx"
 
-/**
- * Returns the last component of a given path.
- *
- * Examples:
- *			c:\foo\bar.txt would return "\bar.txt"
- *			c:\foo\bar\    would return "\bar\"
- *
- * @param str Path to obtain the last component from.
- * @return Pointer to the first char of the last component inside str.
- */
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* lastPathComponent(const string& str)
-{
-  if(str.empty())
-    return "";
-
-  const char* start = str.c_str();
-  const char* cur = start + str.size() - 2;
-
-  while(cur >= start && *cur != FilesystemNode::PATH_SEPARATOR)
-    --cur;
-
-  return cur + 1;
-}
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FilesystemNodeWINDOWS::exists() const
 {
