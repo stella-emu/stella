@@ -1144,8 +1144,7 @@ void DebuggerParser::executeDump()
   else
   {
     ostringstream file;
-    file << debugger.myOSystem.userDir()
-         << debugger.myOSystem.console().properties().get(PropType::Cart_Name) << "_dbg_";
+    file << debugger.myOSystem.userDir() << cartName() << "_dbg_";
     if(execDepth > 0)
     {
       file << execPrefix;
@@ -1910,8 +1909,7 @@ void DebuggerParser::executeSaveses()
 {
   ostringstream filename;
   auto timeinfo = BSPF::localTime();
-  filename << debugger.myOSystem.userDir()
-    << std::put_time(&timeinfo, "session_%F_%H-%M-%S.txt");
+  filename << std::put_time(&timeinfo, "session_%F_%H-%M-%S.txt");
 
   if(argCount && argStrings[0] == "?")
   {
@@ -1920,7 +1918,12 @@ void DebuggerParser::executeSaveses()
   }
   else
   {
-    FilesystemNode file(filename.str());
+    ostringstream path;
+    if(argCount)
+      path << argStrings[0];
+    else
+      path << debugger.myOSystem.userDir() << filename.str();
+    FilesystemNode file(path.str());
 
     if(debugger.prompt().saveBuffer(file))
       commandResult << "saved " + file.getShortPath() + " OK";

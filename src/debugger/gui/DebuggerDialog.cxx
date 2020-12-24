@@ -434,12 +434,12 @@ void DebuggerDialog::showBrowser(BrowserType type, const string& defaultName)
   {
     case BrowserType::svAccess:
       cmd = kSvAccessCmd;
-      title = "access counters";
+      title = "Access Counters";
       break;
 
     case BrowserType::svDis:
       cmd = kSvDisCmd;
-      title = "disassembly";
+      title = "Disassembly";
       break;
 
     case BrowserType::svRom:
@@ -449,12 +449,12 @@ void DebuggerDialog::showBrowser(BrowserType type, const string& defaultName)
 
     case BrowserType::svScript:
       cmd = kSvScriptCmd;
-      title = "workbench";
+      title = "Workbench";
       break;
 
     case BrowserType::svSession:
       cmd = kSvSessionCmd;
-      title = "session";
+      title = "Session";
       break;
 
     default:

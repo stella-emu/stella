@@ -1395,7 +1395,7 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
     case kExportPressed:
       // This dialog is resizable under certain conditions, so we need
       // to re-create it as necessary
-      createBrowser("Export properties as");
+      createBrowser("Export Properties as");
 
       myBrowser->show(instance().userDir().getPath() + myGameFile.getNameWithExt(".pro"),
         BrowserDialog::FileSave, kExportChosen);
