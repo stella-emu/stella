@@ -135,6 +135,8 @@ Settings::Settings()
 
   // Config files and paths
   setPermanent("romdir", "");
+  setPermanent("userdir", "");
+  setPermanent("saveuserdir", "false");
 
   // ROM browser options
   setPermanent("exitlauncher", "false");
@@ -572,6 +574,8 @@ void Settings::usage() const
     << "  -basic_settings <0|1>        Display only a basic settings dialog\n"
     << "  -romdir       <dir>          Set the directory where the ROM launcher will\n"
     << "                                start\n"
+    << "  -userdir      <dir>          The directory to save user files to\n"
+    << "  -saveuserdir  <1|0>          Update user directory when navigating in browser\n"
     << "  -avoxport     <name>         The name of the serial port where an AtariVox is\n"
     << "                                connected\n"
     << "  -holdreset                   Start the emulator with the Game Reset switch\n"

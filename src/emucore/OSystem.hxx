@@ -323,6 +323,7 @@ class OSystem
     */
     const FilesystemNode& defaultSaveDir() const { return myDefaultSaveDir; }
     const FilesystemNode& defaultLoadDir() const { return myDefaultLoadDir; }
+    const FilesystemNode& userSaveDir() const { return myUserSaveDir; }
 
     /**
       Open the given ROM and return an array containing its contents.
@@ -426,6 +427,9 @@ class OSystem
     */
     static void overrideBaseDir(const string& path) { ourOverrideBaseDir = path; }
     static void overrideBaseDirWithApp() { ourOverrideBaseDirWithApp = true; }
+
+    // Update the path of the user directory
+    void setUserDir(const string& path);
 
   public:
     //////////////////////////////////////////////////////////////////////
@@ -552,7 +556,8 @@ class OSystem
 
   private:
     FilesystemNode myBaseDir, myStateDir, mySnapshotSaveDir, mySnapshotLoadDir,
-                   myNVRamDir, myCfgDir, myDefaultSaveDir, myDefaultLoadDir;
+                   myNVRamDir, myCfgDir, myDefaultSaveDir, myDefaultLoadDir,
+                   myUserSaveDir;
     FilesystemNode myCheatFile, myConfigFile, myPaletteFile,  myPropertiesFile;
     FilesystemNode myRomFile;  string myRomMD5;
 

@@ -61,8 +61,13 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
   _currentPath = new EditTextWidget(this, font, xpos + t->getWidth(), ypos,
                                     _w - t->getWidth() - 2 * xpos, lineHeight);
   _currentPath->setEditable(false);
+
+  xpos = _w - (HBORDER + _font.getStringWidth("Save") + CheckboxWidget::prefixSize(_font));
+  _savePathBox = new CheckboxWidget(this, font, xpos, ypos + 2, "Save");
+  _savePathBox->setToolTip("Check to save current path as default.");
+
   // Add file list
-  ypos += lineHeight + VGAP * 2;
+  xpos = HBORDER; ypos += lineHeight + VGAP * 2;
   _fileList = new FileListWidget(this, font, xpos, ypos, _w - 2 * xpos,
                                  _h - selectHeight - buttonHeight - ypos - VBORDER * 2);
   _fileList->setEditable(false);
@@ -71,9 +76,9 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
   // Add currently selected item
   ypos += _fileList->getHeight() + VGAP * 2;
 
-  _type = new StaticTextWidget(this, font, xpos, ypos + 2, "Name ");
-  _selected = new EditTextWidget(this, font, xpos + _type->getWidth(), ypos,
-                                 _w - _type->getWidth() - 2 * xpos, lineHeight, "");
+  _name = new StaticTextWidget(this, font, xpos, ypos + 2, "Name ");
+  _selected = new EditTextWidget(this, font, xpos + _name->getWidth(), ypos,
+                                 _w - _name->getWidth() - 2 * xpos, lineHeight, "");
   addFocusWidget(_selected);
 
   // Buttons
@@ -110,6 +115,9 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
   addFocusWidget(b);
   addOKWidget(b);
 #endif
+
+  // add last to avoid focus problems
+  addFocusWidget(_savePathBox);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -117,6 +125,11 @@ void BrowserDialog::show(const string& startpath,
                          BrowserDialog::ListMode mode, int cmd, int cancelCmd,
                          const string& ext)
 {
+  const int fontWidth = _font.getMaxCharWidth(),
+    //fontHeight = _font.getFontHeight(),
+    HBORDER = fontWidth * 1.25;
+    //VGAP = fontHeight / 4;
+
   _mode = mode;
   _cmd = cmd;
   _cancelCmd = cancelCmd;
@@ -140,10 +153,17 @@ void BrowserDialog::show(const string& startpath,
       _fileList->setNameFilter([ext](const FilesystemNode& node) {
         return BSPF::endsWithIgnoreCase(node.getName(), ext);
       });
+      //_fileList->setHeight(_selected->getTop() - VGAP * 2 - _fileList->getTop());
+
+      _currentPath->setWidth(_savePathBox->getLeft() - _currentPath->getLeft() - fontWidth);
+      _savePathBox->setEnabled(true);
+      _savePathBox->clearFlags(Widget::FLAG_INVISIBLE);
+      _savePathBox->setState(instance().settings().getBool("saveuserdir"));
+
+      _name->clearFlags(Widget::FLAG_INVISIBLE);
+      _selected->clearFlags(Widget::FLAG_INVISIBLE);
       _selected->setEditable(false);
       _selected->setEnabled(false);
-      _selected->clearFlags(Widget::FLAG_INVISIBLE);
-      _type->clearFlags(Widget::FLAG_INVISIBLE);
       _okWidget->setLabel("Load");
       break;
 
@@ -152,22 +172,36 @@ void BrowserDialog::show(const string& startpath,
       _fileList->setNameFilter([ext](const FilesystemNode& node) {
         return BSPF::endsWithIgnoreCase(node.getName(), ext);
       });
+      //_fileList->setHeight(_selected->getTop() - VGAP * 2 - _fileList->getTop());
+
+      _currentPath->setWidth(_savePathBox->getLeft() - _currentPath->getLeft() - fontWidth);
+      _savePathBox->setEnabled(true);
+      _savePathBox->clearFlags(Widget::FLAG_INVISIBLE);
+      _savePathBox->setState(instance().settings().getBool("saveuserdir"));
+
+      _name->clearFlags(Widget::FLAG_INVISIBLE);
+      _selected->clearFlags(Widget::FLAG_INVISIBLE);
       _selected->setEditable(true);
       _selected->setEnabled(true);
-      _selected->clearFlags(Widget::FLAG_INVISIBLE);
-      _type->clearFlags(Widget::FLAG_INVISIBLE);
-      _okWidget->setLabel("Save");
       _selected->setText(fileName);
+      _okWidget->setLabel("Save");
       fileSelected = false;
       break;
 
     case Directories:
       _fileList->setListMode(FilesystemNode::ListMode::DirectoriesOnly);
       _fileList->setNameFilter([](const FilesystemNode&) { return true; });
+      // TODO: scrollbar affected too!
+      //_fileList->setHeight(_selected->getBottom() - _fileList->getTop());
+
+      _currentPath->setWidth(_savePathBox->getRight() - _currentPath->getLeft());
+      _savePathBox->setEnabled(false);
+      _savePathBox->setFlags(Widget::FLAG_INVISIBLE);
+
+      _name->setFlags(Widget::FLAG_INVISIBLE);
+      _selected->setFlags(Widget::FLAG_INVISIBLE);
       _selected->setEditable(false);
       _selected->setEnabled(false);
-      _selected->setFlags(Widget::FLAG_INVISIBLE);
-      _type->setFlags(Widget::FLAG_INVISIBLE);
       _okWidget->setLabel("OK");
       break;
   }
@@ -177,6 +211,7 @@ void BrowserDialog::show(const string& startpath,
     _fileList->setDirectory(FilesystemNode(directory), fileName);
   else
     _fileList->setDirectory(FilesystemNode(startpath));
+
   updateUI(fileSelected);
 
   // Finally, open the dialog after it has been fully updated
@@ -207,6 +242,15 @@ void BrowserDialog::handleCommand(CommandSender* sender, int cmd,
     case FileListWidget::ItemActivated:
       // Send a signal to the calling class that a selection has been made
       // Since we aren't derived from a widget, we don't have a 'data' or 'id'
+      if(_mode != Directories)
+      {
+        // TODO: check if affected by '-baseDir'and 'basedirinapp' params
+        bool savePath = _savePathBox->getState();
+
+        instance().settings().setValue("saveuserdir", savePath);
+        if(savePath)
+          instance().setUserDir(_fileList->currentDir().getShortPath());
+      }
       if(_cmd) sendCommand(_cmd, -1, -1);
       close();
       break;
