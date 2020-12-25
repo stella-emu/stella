@@ -217,8 +217,8 @@ void OSystem::loadConfig(const Settings::Options& options)
 {
   // Get base directory and config file from derived class
   // It will decide whether it can override its default location
-  string baseDir, cfgFile, homeDir, unused;
-  getBaseDirAndConfig(baseDir, cfgFile, homeDir, unused,
+  string baseDir, cfgFile, homeDir;
+  getBaseDirAndConfig(baseDir, cfgFile, homeDir,
                       ourOverrideBaseDirWithApp, ourOverrideBaseDir);
 
   // Get fully-qualified pathnames, and make directories when needed
@@ -239,10 +239,9 @@ void OSystem::loadConfig(const Settings::Options& options)
 #endif
 
   mySettings->setRepository(createSettingsRepository());
-
   mySettings->load(options);
 
-  // TODO: check if affected by '-baseDir'and 'basedirinapp' params
+  // userDir is NOT affected by '-baseDir'and '-basedirinapp' params
   string userDir = mySettings->getString("userdir");
   if(userDir.empty())
     userDir = homeDir;

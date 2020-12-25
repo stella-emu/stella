@@ -23,11 +23,12 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystemWINDOWS::getBaseDirAndConfig(string& basedir, string& cfgfile,
-        string& savedir, string& loaddir,
-        bool useappdir, const string& usedir)
+                                         string& homedir,
+                                         bool useappdir, const string& usedir)
 {
   HomeFinder homefinder;
   FilesystemNode appdata(homefinder.getAppDataPath());
+
   if(appdata.isDirectory())
   {
     basedir = appdata.getShortPath();
@@ -35,8 +36,9 @@ void OSystemWINDOWS::getBaseDirAndConfig(string& basedir, string& cfgfile,
       basedir += '\\';
     basedir += "Stella\\";
   }
-  FilesystemNode defaultLoadSaveDir(homefinder.getDesktopPath());
-  savedir = loaddir = defaultLoadSaveDir.getShortPath();
+
+  FilesystemNode defaultHomeDir(homefinder.getDesktopPath());
+  homedir = defaultHomeDir.getShortPath();
 
   // Check to see if basedir overrides are active
   if(useappdir)
@@ -44,12 +46,13 @@ void OSystemWINDOWS::getBaseDirAndConfig(string& basedir, string& cfgfile,
     char filename[MAX_PATH];
     GetModuleFileNameA(NULL, filename, sizeof(filename));
     FilesystemNode appdir(filename);
+
     appdir = appdir.getParent();
     if(appdir.isDirectory())
-      savedir = loaddir = basedir = appdir.getPath();
+      basedir = appdir.getPath();
   }
   else if(usedir != "")
-    savedir = loaddir = basedir = FilesystemNode(usedir).getPath();
+    basedir = FilesystemNode(usedir).getPath();
 
   cfgfile = basedir + "stella.ini";
 }

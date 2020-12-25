@@ -21,8 +21,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystemMACOS::getBaseDirAndConfig(string& basedir, string& cfgfile,
-        string& savedir, string& loaddir,
-        bool useappdir, const string& usedir)
+                                       string& homedir,
+                                       bool useappdir, const string& usedir)
 {
   basedir = "~/Library/Application Support/Stella/";
 
@@ -31,14 +31,11 @@ void OSystemMACOS::getBaseDirAndConfig(string& basedir, string& cfgfile,
   if(useappdir)
     cout << "ERROR: base dir in app folder not supported" << endl;
   else if(usedir != "")
-  {
     basedir = FilesystemNode(usedir).getPath();
-    savedir = loaddir = basedir;
-  }
 #endif
 
   FilesystemNode desktop("~/Desktop/");
-  savedir = loaddir = desktop.isDirectory() ? desktop.getShortPath() : "~/";
+  homedir = desktop.isDirectory() ? desktop.getShortPath() : "~/";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

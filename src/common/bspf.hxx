@@ -336,6 +336,17 @@ namespace BSPF
     }
   #endif
   }
+
+  inline bool isWhiteSpace(const char s)
+  {
+    const string WHITESPACES = " ,.;:+-*&/\\'";
+
+    for(size_t i = 0; i < WHITESPACES.length(); ++i)
+      if(s == WHITESPACES[i])
+        return true;
+
+    return false;
+  }
 } // namespace BSPF
 
 #endif

@@ -26,8 +26,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystemLIBRETRO::getBaseDirAndConfig(string& basedir, string& cfgfile,
-        string& savedir, string& loaddir,
-        bool useappdir, const string& usedir)
+                                          string& homedir,
+                                          bool useappdir, const string& usedir)
 {
-  loaddir = savedir = cfgfile = basedir = "." + slash;
+  basedir = cfgfile = homedir = "." + slash;
 }

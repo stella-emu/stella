@@ -41,8 +41,7 @@ class OSystemLIBRETRO : public OSystem
       @param basedir  The base directory for all configuration files
       @param cfgfile  The fully qualified pathname of the config file
                       (including the base directory)
-      @param savedir  The default directory to save various other files
-      @param loaddir  The default directory to load various other files
+      @param homedir  The default directory to store various other files
       @param useappdir  A hint that the base dir should be set to the
                         app directory; not all ports can do this, so
                         they are free to ignore it
@@ -51,8 +50,8 @@ class OSystemLIBRETRO : public OSystem
                         they are free to ignore it
     */
     void getBaseDirAndConfig(string& basedir, string& cfgfile,
-              string& savedir, string& loaddir,
-              bool useappdir, const string& usedir) override;
+                             string& homedir,
+                             bool useappdir, const string& usedir) override;
 };
 
 #endif
