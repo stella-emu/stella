@@ -236,13 +236,13 @@ class CartDebug : public DebuggerSystem
     /**
       Save disassembly and ROM file
     */
-    string saveDisassembly();
-    string saveRom();
+    string saveDisassembly(string path);
+    string saveRom(string path);
 
     /**
       Save access counters file
     */
-    string saveAccessFile();
+    string saveAccessFile(string path);
 
     /**
       Show Distella directives (both set by the user and determined by Distella)

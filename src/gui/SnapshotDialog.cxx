@@ -131,7 +131,7 @@ void SnapshotDialog::saveConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SnapshotDialog::setDefaults()
 {
-  mySnapSavePath->setText(instance().defaultSaveDir().getShortPath());
+  mySnapSavePath->setText(instance().userDir().getShortPath());
   mySnapInterval->setValue(2);
   mySnapName->setState(false);
   mySnapSingle->setState(false);
@@ -156,7 +156,7 @@ void SnapshotDialog::handleCommand(CommandSender* sender, int cmd,
     case kChooseSnapSaveDirCmd:
       // This dialog is resizable under certain conditions, so we need
       // to re-create it as necessary
-      createBrowser("Select snapshot save directory");
+      createBrowser("Select Snapshot Save Directory");
       myBrowser->show(mySnapSavePath->getText(),
                       BrowserDialog::Directories, kSnapSaveDirChosenCmd);
       break;
@@ -183,6 +183,8 @@ void SnapshotDialog::createBrowser(const string& title)
 {
   uInt32 w = 0, h = 0;
   getDynamicBounds(w, h);
+  if(w > uInt32(_font.getMaxCharWidth() * 80))
+    w = _font.getMaxCharWidth() * 80;
 
   // Create file browser dialog
   if(!myBrowser || uInt32(myBrowser->getWidth()) != w ||

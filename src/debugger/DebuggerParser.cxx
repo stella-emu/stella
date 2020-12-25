@@ -35,6 +35,7 @@
 #include "PromptWidget.hxx"
 #include "RomWidget.hxx"
 #include "ProgressDialog.hxx"
+#include "BrowserDialog.hxx"
 #include "TimerManager.hxx"
 #include "Vec.hxx"
 
@@ -565,6 +566,12 @@ string DebuggerParser::eval()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const string& DebuggerParser::cartName() const
+{
+  return debugger.myOSystem.console().properties().get(PropType::Cart_Name);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerParser::listTraps(bool listCond)
 {
   StringList names = debugger.m6502().getCondTrapNames();
@@ -629,10 +636,6 @@ string DebuggerParser::trapStatus(const Trap& trap)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string DebuggerParser::saveScriptFile(string file)
 {
-  // Append 'script' extension when necessary
-  if(file.find_last_of('.') == string::npos)
-    file += ".script";
-
   stringstream out;
   Debugger::FunctionDefMap funcs = debugger.getFunctionDefMap();
   for(const auto& [name, cmd]: funcs)
@@ -674,7 +677,16 @@ string DebuggerParser::saveScriptFile(string file)
     out << endl;
   }
 
-  FilesystemNode node(debugger.myOSystem.defaultSaveDir().getPath() + file);
+  // Append 'script' extension when necessary
+  if(file.find_last_of('.') == string::npos)
+    file += ".script";
+
+  // Use user dir if no path is provided
+  if(file.find_first_of(FilesystemNode::PATH_SEPARATOR) == string::npos)
+    file = debugger.myOSystem.userDir().getPath() + file;
+
+  FilesystemNode node(file);
+
   try
   {
     node.write(out);
@@ -1132,8 +1144,7 @@ void DebuggerParser::executeDump()
   else
   {
     ostringstream file;
-    file << debugger.myOSystem.defaultSaveDir()
-         << debugger.myOSystem.console().properties().get(PropType::Cart_Name) << "_dbg_";
+    file << debugger.myOSystem.userDir() << cartName() << "_dbg_";
     if(execDepth > 0)
     {
       file << execPrefix;
@@ -1228,7 +1239,7 @@ void DebuggerParser::executeExec()
     file += ".script";
   FilesystemNode node(file);
   if (!node.exists())
-    node = FilesystemNode(debugger.myOSystem.defaultSaveDir().getPath() + file);
+    node = FilesystemNode(debugger.myOSystem.userDir().getPath() + file);
 
   if (argCount == 2) {
     execPrefix = argStrings[1];
@@ -1833,14 +1844,28 @@ void DebuggerParser::executeS()
 // "save"
 void DebuggerParser::executeSave()
 {
-  commandResult << saveScriptFile(argStrings[0]);
+  if(argCount && argStrings[0] == "?")
+  {
+    debugger.myDialog->showBrowser(DebuggerDialog::svScript, cartName() + ".script");
+    // avoid printing a new prompt
+    commandResult << "_EXIT_DEBUGGER";
+  }
+  else
+    commandResult << saveScriptFile(argStrings[0]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "saveaccess"
 void DebuggerParser::executeSaveAccess()
 {
-  commandResult << debugger.cartDebug().saveAccessFile();
+  if(argCount && argStrings[0] == "?")
+  {
+    debugger.myDialog->showBrowser(DebuggerDialog::svAccess, cartName() + ".csv");
+    // avoid printing a new prompt
+    commandResult << "_EXIT_DEBUGGER";
+  }
+  else
+    commandResult << debugger.cartDebug().saveAccessFile(argCount ? argStrings[0] : EmptyString);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1854,14 +1879,28 @@ void DebuggerParser::executeSaveconfig()
 // "savedis"
 void DebuggerParser::executeSavedisassembly()
 {
-  commandResult << debugger.cartDebug().saveDisassembly();
+  if(argCount && argStrings[0] == "?")
+  {
+    debugger.myDialog->showBrowser(DebuggerDialog::svDis, cartName() + ".asm");
+    // avoid printing a new prompt
+    commandResult << "_EXIT_DEBUGGER";
+  }
+  else
+    commandResult << debugger.cartDebug().saveDisassembly(argCount ? argStrings[0] : EmptyString);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "saverom"
 void DebuggerParser::executeSaverom()
 {
-  commandResult << debugger.cartDebug().saveRom();
+  if(argCount && argStrings[0] == "?")
+  {
+    debugger.myDialog->showBrowser(DebuggerDialog::svRom, cartName() + ".a26");
+    // avoid printing a new prompt
+    commandResult << "_EXIT_DEBUGGER";
+  }
+  else
+    commandResult << debugger.cartDebug().saveRom(argCount ? argStrings[0] : EmptyString);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1870,13 +1909,27 @@ void DebuggerParser::executeSaveses()
 {
   ostringstream filename;
   auto timeinfo = BSPF::localTime();
-  filename << debugger.myOSystem.defaultSaveDir()
-           << std::put_time(&timeinfo, "session_%F_%H-%M-%S.txt");
-  FilesystemNode file(filename.str());
-  if(debugger.prompt().saveBuffer(file))
-    commandResult << "saved " + file.getShortPath() + " OK";
+  filename << std::put_time(&timeinfo, "session_%F_%H-%M-%S.txt");
+
+  if(argCount && argStrings[0] == "?")
+  {
+    debugger.myDialog->showBrowser(DebuggerDialog::svSession, filename.str());
+    commandResult << "_EXIT_DEBUGGER";
+  }
   else
-    commandResult << "unable to save session";
+  {
+    ostringstream path;
+    if(argCount)
+      path << argStrings[0];
+    else
+      path << debugger.myOSystem.userDir() << filename.str();
+    FilesystemNode file(path.str());
+
+    if(debugger.prompt().saveBuffer(file))
+      commandResult << "saved " + file.getShortPath() + " OK";
+    else
+      commandResult << "unable to save session";
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2616,9 +2669,10 @@ std::array<DebuggerParser::Command, 100> DebuggerParser::commands = { {
     "dump",
     "Dump data at address <xx> [to yy] [1: memory; 2: CPU state; 4: input regs]",
     "Example:\n"
-    "  dump f000 - dumps 128 bytes @ f000\n"
+    "  dump f000 - dumps 128 bytes from f000\n"
     "  dump f000 f0ff - dumps all bytes from f000 to f0ff\n"
-    "  dump f000 f0ff 7 - dumps all bytes from f000 to f0ff, CPU state and input registers into a file",
+    "  dump f000 f0ff 7 - dumps all bytes from f000 to f0ff,\n"
+    "    CPU state and input registers into a file in user dir",
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
@@ -3042,7 +3096,8 @@ std::array<DebuggerParser::Command, 100> DebuggerParser::commands = { {
   {
     "save",
     "Save breaks, watches, traps and functions to file xx",
-    "Example: save commands.script",
+    "Example: save commands.script, save ?\n"
+    "NOTE: saves to user dir by default",
     true,
     false,
     { Parameters::ARG_FILE, Parameters::ARG_END_ARGS },
@@ -3052,10 +3107,11 @@ std::array<DebuggerParser::Command, 100> DebuggerParser::commands = { {
   {
     "saveaccess",
     "Save the access counters to CSV file",
-    "Example: saveaccess (no parameters)",
+    "Example: saveaccess, saveaccess ?\n"
+    "NOTE: saves to user dir by default",
       false,
       false,
-    { Parameters::ARG_END_ARGS },
+    { Parameters::ARG_FILE, Parameters::ARG_END_ARGS },
       std::mem_fn(&DebuggerParser::executeSaveAccess)
   },
 
@@ -3071,34 +3127,34 @@ std::array<DebuggerParser::Command, 100> DebuggerParser::commands = { {
 
   {
     "savedis",
-    "Save Distella disassembly (with default name)",
-    "Example: savedis\n"
-    "NOTE: saves to default save location",
+    "Save Distella disassembly",
+    "Example: savedis, savedis ?\n"
+    "NOTE: saves to user dir by default",
     false,
     false,
-    { Parameters::ARG_END_ARGS },
+    { Parameters::ARG_FILE, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeSavedisassembly)
   },
 
   {
     "saverom",
-    "Save (possibly patched) ROM (with default name)",
-    "Example: saverom\n"
-    "NOTE: saves to default save location",
+    "Save (possibly patched) ROM",
+    "Example: saverom, saverom ?\n"
+    "NOTE: saves to user dir by default",
     false,
     false,
-    { Parameters::ARG_END_ARGS },
+    { Parameters::ARG_FILE, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeSaverom)
   },
 
   {
     "saveses",
-    "Save console session (with default name)",
-    "Example: saveses\n"
-    "NOTE: saves to default save location",
+    "Save console session",
+    "Example: saveses, saveses ?\n"
+    "NOTE: saves to user dir by default",
     false,
     false,
-    { Parameters::ARG_END_ARGS },
+    { Parameters::ARG_FILE, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeSaveses)
   },
 

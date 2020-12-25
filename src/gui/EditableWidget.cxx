@@ -657,7 +657,7 @@ bool EditableWidget::killWord(int direction)
   {
     while(currentPos > 0)
     {
-      if(_editString[currentPos - 1] == ' ')
+      if(BSPF::isWhiteSpace(_editString[currentPos - 1]))
       {
         if(!space)
           break;
@@ -673,7 +673,7 @@ bool EditableWidget::killWord(int direction)
   {
     while(currentPos < int(_editString.size()))
     {
-      if(currentPos && _editString[currentPos - 1] == ' ')
+      if(currentPos && BSPF::isWhiteSpace(_editString[currentPos - 1]))
       {
         if(!space)
           break;
@@ -709,7 +709,7 @@ bool EditableWidget::moveWord(int direction, bool select)
   {
     while (currentPos > 0)
     {
-      if (_editString[currentPos - 1] == ' ')
+      if (BSPF::isWhiteSpace(_editString[currentPos - 1]))
       {
         if (!space)
           break;
@@ -728,7 +728,7 @@ bool EditableWidget::moveWord(int direction, bool select)
   {
     while (currentPos < int(_editString.size()))
     {
-      if (currentPos && _editString[currentPos - 1] == ' ')
+      if (currentPos && BSPF::isWhiteSpace(_editString[currentPos - 1]))
       {
         if (!space)
           break;
@@ -754,14 +754,14 @@ bool EditableWidget::markWord()
 
   while(_caretPos + _selectSize < int(_editString.size()))
   {
-    if(_editString[_caretPos + _selectSize] == ' ')
+    if(BSPF::isWhiteSpace(_editString[_caretPos + _selectSize]))
       break;
     _selectSize++;
   }
 
   while(_caretPos > 0)
   {
-    if(_editString[_caretPos - 1] == ' ')
+    if(BSPF::isWhiteSpace(_editString[_caretPos - 1]))
       break;
     _caretPos--;
     _selectSize++;

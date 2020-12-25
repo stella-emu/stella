@@ -515,7 +515,7 @@ void UIDialog::setDefaults()
       myLauncherHeightSlider->setValue(h);
       myLauncherFontPopup->setSelected("medium", "");
       myRomViewerSize->setValue(35);
-      mySnapLoadPath->setText(instance().defaultLoadDir().getShortPath());
+      mySnapLoadPath->setText(instance().userDir().getShortPath());
       myLauncherExitWidget->setState(false);
       break;
     }
@@ -586,7 +586,7 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
     case kChooseRomDirCmd:
       // This dialog is resizable under certain conditions, so we need
       // to re-create it as necessary
-      createBrowser("Select ROM directory");
+      createBrowser("Select ROM Directory");
       myBrowser->show(myRomPath->getText(),
                       BrowserDialog::Directories, LauncherDialog::kRomDirChosenCmd);
       break;
@@ -602,7 +602,7 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
     case kChooseSnapLoadDirCmd:
       // This dialog is resizable under certain conditions, so we need
       // to re-create it as necessary
-      createBrowser("Select snapshot load directory");
+      createBrowser("Select ROM Info Viewer Image Directory");
       myBrowser->show(mySnapLoadPath->getText(),
                       BrowserDialog::Directories, kSnapLoadDirChosenCmd);
       break;
@@ -706,6 +706,8 @@ void UIDialog::createBrowser(const string& title)
 {
   uInt32 w = 0, h = 0;
   getDynamicBounds(w, h);
+  if(w > uInt32(_font.getMaxCharWidth() * 80))
+    w = _font.getMaxCharWidth() * 80;
 
   // Create file browser dialog
   if(!myBrowser || uInt32(myBrowser->getWidth()) != w ||

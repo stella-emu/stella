@@ -34,7 +34,7 @@ DataGridOpsWidget::DataGridOpsWidget(GuiObject* boss, const GUI::Font& font,
   _zeroButton = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
                                  "0", kDGZeroCmd);
   _zeroButton->setToolTip("Zero currently selected value");
-  
+
   ypos += bheight + space;
   _invButton = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
                                 "Inv", kDGInvertCmd);

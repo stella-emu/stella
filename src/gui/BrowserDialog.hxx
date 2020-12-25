@@ -45,30 +45,32 @@ class BrowserDialog : public Dialog, public CommandSender
 
     /** Place the browser window onscreen, using the given attributes */
     void show(const string& startpath,
-              BrowserDialog::ListMode mode, int cmd, const string& ext = "");
+              BrowserDialog::ListMode mode, int cmd, int cancelCmd = 0, const string& ext = "");
 
     /** Get resulting file node (called after receiving kChooseCmd) */
     const FilesystemNode& getResult() const;
 
   private:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-    void updateUI();
+    void updateUI(bool fileSelected);
 
   private:
     enum {
       kChooseCmd  = 'CHOS',
       kGoUpCmd    = 'GOUP',
-      kBaseDirCmd = 'BADR'
+      kBaseDirCmd = 'BADR',
+      kHomeDirCmd = 'HODR'
     };
 
     int	_cmd{0};
+    int	_cancelCmd{0};
 
     FileListWidget*   _fileList{nullptr};
     EditTextWidget*   _currentPath{nullptr};
-    StaticTextWidget* _type{nullptr};
+    StaticTextWidget* _name{nullptr};
     EditTextWidget*   _selected{nullptr};
     ButtonWidget*     _goUpButton{nullptr};
-    ButtonWidget*     _basedirButton{nullptr};
+    CheckboxWidget*   _savePathBox{nullptr};
 
     BrowserDialog::ListMode _mode{Directories};
 

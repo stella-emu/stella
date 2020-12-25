@@ -19,8 +19,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystemR77::getBaseDirAndConfig(string& basedir, string& cfgfile,
-        string& savedir, string& loaddir, bool, const string&)
+                                     string& homeDir, bool, const string&)
 {
-  basedir = savedir = loaddir = "/mnt/stella";
+  basedir = homeDir = "/mnt/stella";
   cfgfile = "/mnt/stella/stellarc";
 }

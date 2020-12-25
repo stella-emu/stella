@@ -61,8 +61,13 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
   _currentPath = new EditTextWidget(this, font, xpos + t->getWidth(), ypos,
                                     _w - t->getWidth() - 2 * xpos, lineHeight);
   _currentPath->setEditable(false);
+
+  xpos = _w - (HBORDER + _font.getStringWidth("Save") + CheckboxWidget::prefixSize(_font));
+  _savePathBox = new CheckboxWidget(this, font, xpos, ypos + 2, "Save");
+  _savePathBox->setToolTip("Check to save current path as default.");
+
   // Add file list
-  ypos += lineHeight + VGAP * 2;
+  xpos = HBORDER; ypos += lineHeight + VGAP * 2;
   _fileList = new FileListWidget(this, font, xpos, ypos, _w - 2 * xpos,
                                  _h - selectHeight - buttonHeight - ypos - VBORDER * 2);
   _fileList->setEditable(false);
@@ -71,24 +76,29 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
   // Add currently selected item
   ypos += _fileList->getHeight() + VGAP * 2;
 
-  _type = new StaticTextWidget(this, font, xpos, ypos + 2, "Name ");
-  _selected = new EditTextWidget(this, font, xpos + _type->getWidth(), ypos,
-                                 _w - _type->getWidth() - 2 * xpos, lineHeight, "");
-  _selected->setEditable(false);
+  _name = new StaticTextWidget(this, font, xpos, ypos + 2, "Name ");
+  _selected = new EditTextWidget(this, font, xpos + _name->getWidth(), ypos,
+                                 _w - _name->getWidth() - 2 * xpos, lineHeight, "");
+  addFocusWidget(_selected);
 
   // Buttons
   _goUpButton = new ButtonWidget(this, font, xpos, _h - buttonHeight - VBORDER,
                                  buttonWidth, buttonHeight, "Go up", kGoUpCmd);
   addFocusWidget(_goUpButton);
 
-  _basedirButton =
-    new ButtonWidget(this, font, _goUpButton->getRight() + BUTTON_GAP, _h - buttonHeight - VBORDER,
-                     buttonWidth, buttonHeight, "Base Dir", kBaseDirCmd);
-  addFocusWidget(_basedirButton);
+  b = new ButtonWidget(this, font, _goUpButton->getRight() + BUTTON_GAP, _h - buttonHeight - VBORDER,
+                       buttonWidth, buttonHeight, "Base Dir", kBaseDirCmd);
+  b->setToolTip("Go to Stella's base directory.");
+  addFocusWidget(b);
+
+  b = new ButtonWidget(this, font, b->getRight() + BUTTON_GAP, _h - buttonHeight - VBORDER,
+                       buttonWidth, buttonHeight, "Home Dir", kHomeDirCmd);
+  b->setToolTip("Go to user's home directory.");
+  addFocusWidget(b);
 
 #ifndef BSPF_MACOS
   b = new ButtonWidget(this, font, _w - (2 * buttonWidth + BUTTON_GAP + HBORDER), _h - buttonHeight - VBORDER,
-                       buttonWidth, buttonHeight, "Choose", kChooseCmd);
+                       buttonWidth, buttonHeight, "OK", kChooseCmd);
   addFocusWidget(b);
   addOKWidget(b);
   b = new ButtonWidget(this, font, _w - (buttonWidth + HBORDER), _h - buttonHeight - VBORDER,
@@ -101,55 +111,108 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
   addFocusWidget(b);
   addCancelWidget(b);
   b = new ButtonWidget(this, font, _w - (buttonWidth + HBORDER), _h - buttonHeight - VBORDER,
-                       buttonWidth, buttonHeight, "Choose", kChooseCmd);
+                       buttonWidth, buttonHeight, "OK", kChooseCmd);
   addFocusWidget(b);
   addOKWidget(b);
 #endif
+
+  // add last to avoid focus problems
+  addFocusWidget(_savePathBox);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void BrowserDialog::show(const string& startpath,
-                         BrowserDialog::ListMode mode, int cmd,
+                         BrowserDialog::ListMode mode, int cmd, int cancelCmd,
                          const string& ext)
 {
-  _cmd = cmd;
+  const int fontWidth = _font.getMaxCharWidth(),
+    fontHeight = _font.getFontHeight(),
+    HBORDER = fontWidth * 1.25,
+    VGAP = fontHeight / 4;
+
   _mode = mode;
+  _cmd = cmd;
+  _cancelCmd = cancelCmd;
+  string directory;// = EmptyString;
+  string fileName;// = EmptyString;
+  bool fileSelected = true;
+
+  // Set start path
+  if(_mode != Directories)
+  {
+    // split startpath into path and filename
+    FilesystemNode fs = FilesystemNode(startpath);
+    fileName = fs.getName();
+    directory = fs.isDirectory() ? "" : fs.getParent().getPath();
+  }
 
   switch(_mode)
   {
     case FileLoad:
       _fileList->setListMode(FilesystemNode::ListMode::All);
-      _fileList->setNameFilter([&ext](const FilesystemNode& node) {
+      _fileList->setNameFilter([ext](const FilesystemNode& node) {
         return BSPF::endsWithIgnoreCase(node.getName(), ext);
       });
-      _selected->setEditable(false);
+      _fileList->setHeight(_selected->getTop() - VGAP * 2 - _fileList->getTop());
+
+      _currentPath->setWidth(_savePathBox->getLeft() - _currentPath->getLeft() - fontWidth);
+      _savePathBox->setEnabled(true);
+      _savePathBox->clearFlags(Widget::FLAG_INVISIBLE);
+      _savePathBox->setState(instance().settings().getBool("saveuserdir"));
+
+      _name->clearFlags(Widget::FLAG_INVISIBLE);
       _selected->clearFlags(Widget::FLAG_INVISIBLE);
-      _type->clearFlags(Widget::FLAG_INVISIBLE);
+      _selected->setEditable(false);
+      _selected->setEnabled(false);
+      _okWidget->setLabel("Load");
       break;
 
     case FileSave:
       _fileList->setListMode(FilesystemNode::ListMode::All);
-      _fileList->setNameFilter([&ext](const FilesystemNode& node) {
+      _fileList->setNameFilter([ext](const FilesystemNode& node) {
         return BSPF::endsWithIgnoreCase(node.getName(), ext);
       });
-      _selected->setEditable(false);  // FIXME - disable user input for now
+      _fileList->setHeight(_selected->getTop() - VGAP * 2 - _fileList->getTop());
+
+      _currentPath->setWidth(_savePathBox->getLeft() - _currentPath->getLeft() - fontWidth);
+      _savePathBox->setEnabled(true);
+      _savePathBox->clearFlags(Widget::FLAG_INVISIBLE);
+      _savePathBox->setState(instance().settings().getBool("saveuserdir"));
+
+      _name->clearFlags(Widget::FLAG_INVISIBLE);
       _selected->clearFlags(Widget::FLAG_INVISIBLE);
-      _type->clearFlags(Widget::FLAG_INVISIBLE);
+      _selected->setEditable(true);
+      _selected->setEnabled(true);
+      _selected->setText(fileName);
+      _okWidget->setLabel("Save");
+      fileSelected = false;
       break;
 
     case Directories:
       _fileList->setListMode(FilesystemNode::ListMode::DirectoriesOnly);
       _fileList->setNameFilter([](const FilesystemNode&) { return true; });
-      _selected->setEditable(false);
+      // TODO: scrollbar affected too!
+      _fileList->setHeight(_selected->getBottom() - _fileList->getTop());
+
+      _currentPath->setWidth(_savePathBox->getRight() - _currentPath->getLeft());
+      _savePathBox->setEnabled(false);
+      _savePathBox->setFlags(Widget::FLAG_INVISIBLE);
+
+      _name->setFlags(Widget::FLAG_INVISIBLE);
       _selected->setFlags(Widget::FLAG_INVISIBLE);
-      _type->setFlags(Widget::FLAG_INVISIBLE);
+      _selected->setEditable(false);
+      _selected->setEnabled(false);
+      _okWidget->setLabel("OK");
       break;
   }
 
   // Set start path
-  _fileList->setDirectory(FilesystemNode(startpath));
+  if(_mode != Directories)
+    _fileList->setDirectory(FilesystemNode(directory), fileName);
+  else
+    _fileList->setDirectory(FilesystemNode(startpath));
 
-  updateUI();
+  updateUI(fileSelected);
 
   // Finally, open the dialog after it has been fully updated
   open();
@@ -159,28 +222,14 @@ void BrowserDialog::show(const string& startpath,
 const FilesystemNode& BrowserDialog::getResult() const
 {
   if(_mode == FileLoad || _mode == FileSave)
-    return _fileList->selected();
+  {
+    static FilesystemNode node;
+
+    return node
+      = FilesystemNode(_fileList->currentDir().getShortPath() + _selected->getText());
+  }
   else
     return _fileList->currentDir();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void BrowserDialog::updateUI()
-{
-  // Only hilite the 'up' button if there's a parent directory
-  _goUpButton->setEnabled(_fileList->currentDir().hasParent());
-
-  // Update the path display
-  _currentPath->setText(_fileList->currentDir().getShortPath());
-
-  // Enable/disable OK button based on current mode
-  bool enable = _mode == Directories || !_fileList->selected().isDirectory();
-  _okWidget->setEnabled(enable);
-
-  if(!_fileList->selected().isDirectory())
-    _selected->setText(_fileList->getSelectedString());
-  else
-    _selected->setText("");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -193,7 +242,23 @@ void BrowserDialog::handleCommand(CommandSender* sender, int cmd,
     case FileListWidget::ItemActivated:
       // Send a signal to the calling class that a selection has been made
       // Since we aren't derived from a widget, we don't have a 'data' or 'id'
+      if(_mode != Directories)
+      {
+        // TODO: check if affected by '-baseDir'and 'basedirinapp' params
+        bool savePath = _savePathBox->getState();
+
+        instance().settings().setValue("saveuserdir", savePath);
+        if(savePath)
+          instance().setUserDir(_fileList->currentDir().getShortPath());
+      }
       if(_cmd) sendCommand(_cmd, -1, -1);
+      close();
+      break;
+
+    case kCloseCmd:
+      // Send a signal to the calling class that the dialog was closed without selection
+      // Since we aren't derived from a widget, we don't have a 'data' or 'id'
+      if(_cancelCmd) sendCommand(_cancelCmd, -1, -1);
       close();
       break;
 
@@ -205,12 +270,41 @@ void BrowserDialog::handleCommand(CommandSender* sender, int cmd,
       _fileList->setDirectory(FilesystemNode(instance().baseDir()));
       break;
 
+    case kHomeDirCmd:
+      _fileList->setDirectory(FilesystemNode(instance().homeDir()));
+      break;
+
+    case EditableWidget::kChangedCmd:
+      Dialog::handleCommand(sender, cmd, data, 0);
+      updateUI(false);
+      break;
+
     case FileListWidget::ItemChanged:
-      updateUI();
+      updateUI(true);
       break;
 
     default:
       Dialog::handleCommand(sender, cmd, data, 0);
       break;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void BrowserDialog::updateUI(bool fileSelected)
+{
+  // Only hilite the 'up' button if there's a parent directory
+  _goUpButton->setEnabled(_fileList->currentDir().hasParent());
+
+  // Update the path display
+  _currentPath->setText(_fileList->currentDir().getShortPath());
+
+  // Enable/disable OK button based on current mode and status
+  bool enable = true;
+
+  if(_mode != Directories)
+    enable = !_selected->getText().empty();
+  _okWidget->setEnabled(enable);
+
+  if(fileSelected && !_fileList->selected().isDirectory())
+    _selected->setText(_fileList->getSelectedString());
 }

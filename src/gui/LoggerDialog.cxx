@@ -116,7 +116,7 @@ void LoggerDialog::saveConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LoggerDialog::saveLogFile()
 {
-  FilesystemNode node = instance().defaultSaveDir();
+  FilesystemNode node = instance().userDir();
   node /= "stella.log";
 
   try

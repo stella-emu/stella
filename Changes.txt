@@ -32,6 +32,8 @@
 
   * Added sound to Time Machine playback.
 
+  * Added browser dialogs for user saved files.
+
   * Extended global hotkeys for input devices & ports settings.
 
   * Increased sample size for CDFJ+.
