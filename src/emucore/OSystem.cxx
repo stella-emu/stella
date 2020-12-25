@@ -217,8 +217,8 @@ void OSystem::loadConfig(const Settings::Options& options)
 {
   // Get base directory and config file from derived class
   // It will decide whether it can override its default location
-  string baseDir, cfgFile, defSaveDir, defLoadDir;
-  getBaseDirAndConfig(baseDir, cfgFile, defSaveDir, defLoadDir,
+  string baseDir, cfgFile, homeDir;
+  getBaseDirAndConfig(baseDir, cfgFile, homeDir,
                       ourOverrideBaseDirWithApp, ourOverrideBaseDir);
 
   // Get fully-qualified pathnames, and make directories when needed
@@ -228,13 +228,9 @@ void OSystem::loadConfig(const Settings::Options& options)
   if(!cfgFile.empty())
     myConfigFile = FilesystemNode(cfgFile);
 
-  myDefaultSaveDir = FilesystemNode(defSaveDir);
-  if(!myDefaultSaveDir.isDirectory())
-    myDefaultSaveDir.makeDir();
-
-  myDefaultLoadDir = FilesystemNode(defLoadDir);
-  if(!myDefaultLoadDir.isDirectory())
-    myDefaultLoadDir.makeDir();
+  myHomeDir = FilesystemNode(homeDir);
+  if(!myHomeDir.isDirectory())
+    myHomeDir.makeDir();
 
 #ifdef SQLITE_SUPPORT
   mySettingsDb = make_shared<SettingsDb>(myBaseDir.getPath(), "settings");
@@ -243,8 +239,15 @@ void OSystem::loadConfig(const Settings::Options& options)
 #endif
 
   mySettings->setRepository(createSettingsRepository());
-
   mySettings->load(options);
+
+  // userDir is NOT affected by '-baseDir'and '-basedirinapp' params
+  string userDir = mySettings->getString("userdir");
+  if(userDir.empty())
+    userDir = homeDir;
+  myUserDir = FilesystemNode(userDir);
+  if(!myUserDir.isDirectory())
+    myUserDir.makeDir();
 
   Logger::instance().setLogParameters(mySettings->getInt("loglevel"),
                                       mySettings->getBool("logtoconsole"));
@@ -295,7 +298,7 @@ void OSystem::setConfigPaths()
 #ifdef PNG_SUPPORT
   const string& ssSaveDir = mySettings->getString("snapsavedir");
   if(ssSaveDir == EmptyString)
-    mySnapshotSaveDir = defaultSaveDir();
+    mySnapshotSaveDir = userDir();
   else
     mySnapshotSaveDir = FilesystemNode(ssSaveDir);
   if(!mySnapshotSaveDir.isDirectory())
@@ -303,7 +306,7 @@ void OSystem::setConfigPaths()
 
   const string& ssLoadDir = mySettings->getString("snaploaddir");
   if(ssLoadDir == EmptyString)
-    mySnapshotLoadDir = defaultLoadDir();
+    mySnapshotLoadDir = userDir();
   else
     mySnapshotLoadDir = FilesystemNode(ssLoadDir);
   if(!mySnapshotLoadDir.isDirectory())
@@ -331,6 +334,14 @@ void OSystem::setConfigPaths()
   dbgPath("pro file  ", myPropertiesFile);
   dbgPath("INI file  ", myConfigFile);
 #endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OSystem::setUserDir(const string& path)
+{
+  mySettings->setValue("userdir", path);
+
+  myUserDir = FilesystemNode(path);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

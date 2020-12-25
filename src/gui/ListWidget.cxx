@@ -57,6 +57,17 @@ ListWidget::ListWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ListWidget::setHeight(int h)
+{
+  Widget::setHeight(h);
+  if(_useScrollbar)
+    _scrollBar->setHeight(h);
+
+  _rows = (h - 2) / _lineHeight;
+  recalc();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::setSelected(int item)
 {
   setDirty();

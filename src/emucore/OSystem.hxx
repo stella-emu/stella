@@ -318,11 +318,11 @@ class OSystem
     const FilesystemNode& romFile() const { return myRomFile; }
 
     /**
-      The default locations for saving and loading various files that
-      don't already have a specific location.
+      The default and user defined locations for saving and loading various
+      files that don't already have a specific location.
     */
-    const FilesystemNode& defaultSaveDir() const { return myDefaultSaveDir; }
-    const FilesystemNode& defaultLoadDir() const { return myDefaultLoadDir; }
+    const FilesystemNode& homeDir() const { return myHomeDir; }
+    const FilesystemNode& userDir() const { return myUserDir; }
 
     /**
       Open the given ROM and return an array containing its contents.
@@ -427,6 +427,9 @@ class OSystem
     static void overrideBaseDir(const string& path) { ourOverrideBaseDir = path; }
     static void overrideBaseDirWithApp() { ourOverrideBaseDirWithApp = true; }
 
+    // Update the path of the user directory
+    void setUserDir(const string& path);
+
   public:
     //////////////////////////////////////////////////////////////////////
     // The following methods are system-specific and can be overrided in
@@ -460,8 +463,7 @@ class OSystem
       @param basedir  The base directory for all configuration files
       @param cfgfile  The fully qualified pathname of the config file
                       (including the base directory)
-      @param savedir  The default directory to save various other files
-      @param loaddir  The default directory to load various other files
+      @param homedir  The default directory to store various other files
       @param useappdir  A hint that the base dir should be set to the
                         app directory; not all ports can do this, so
                         they are free to ignore it
@@ -470,8 +472,8 @@ class OSystem
                         they are free to ignore it
     */
     virtual void getBaseDirAndConfig(string& basedir, string& cfgfile,
-                    string& savedir, string& loaddir,
-                    bool useappdir, const string& usedir) = 0;
+                                     string& homedir,
+                                     bool useappdir, const string& usedir) = 0;
 
   protected:
     // Pointer to the EventHandler object
@@ -552,7 +554,8 @@ class OSystem
 
   private:
     FilesystemNode myBaseDir, myStateDir, mySnapshotSaveDir, mySnapshotLoadDir,
-                   myNVRamDir, myCfgDir, myDefaultSaveDir, myDefaultLoadDir;
+                   myNVRamDir, myCfgDir, myHomeDir,
+                   myUserDir;
     FilesystemNode myCheatFile, myConfigFile, myPaletteFile,  myPropertiesFile;
     FilesystemNode myRomFile;  string myRomMD5;
 

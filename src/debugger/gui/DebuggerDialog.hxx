@@ -34,6 +34,7 @@ class TiaZoomWidget;
 class CartDebugWidget;
 class CartRamWidget;
 class OptionsDialog;
+class BrowserDialog;
 
 namespace GUI {
   class MessageBox;
@@ -53,6 +54,13 @@ class DebuggerDialog : public Dialog
       kSmallFontMinW  = 1090, kSmallFontMinH  = 720,
       kMediumFontMinW = 1160, kMediumFontMinH = 770,
       kLargeFontMinW  = 1160, kLargeFontMinH  = 870
+    };
+    enum BrowserType {
+      svAccess,     // saveaccess
+      svDis,        // savedis
+      svRom,        // saverom
+      svScript,     // save
+      svSession     // saveses
     };
 
     DebuggerDialog(OSystem& osystem, DialogContainer& parent,
@@ -74,6 +82,7 @@ class DebuggerDialog : public Dialog
 
     void showFatalMessage(const string& msg);
     void saveConfig() override;
+    void showBrowser(BrowserType type, const string& defaultName);
 
   private:
     void setPosition() override { positionAt(0); }
@@ -113,10 +122,19 @@ class DebuggerDialog : public Dialog
       kDDSAdvCmd      = 'DDsv',
       kDDRewindCmd    = 'DDrw',
       kDDUnwindCmd    = 'DDuw',
-      kDDRunCmd      = 'DDex',
+      kDDRunCmd       = 'DDex',
       kDDExitFatalCmd = 'DDer',
-      kDDOptionsCmd   = 'DDop'
+      kDDOptionsCmd   = 'DDop',
+      kSvAccessCmd    = 'SvAc',
+      kSvDisCmd       = 'SvDs',
+      kSvRomCmd       = 'SvRm',
+      kSvScriptCmd    = 'SvSc',
+      kSvSessionCmd   = 'SvSs',
+      kBdCancelCmd    = 'SvCn'
     };
+
+    void runCommand(const string& command = EmptyString);
+    void createBrowser(const string& title);
 
     TabWidget *myTab{nullptr}, *myRomTab{nullptr};
 
@@ -135,7 +153,8 @@ class DebuggerDialog : public Dialog
     ButtonWidget*    myUnwindButton{nullptr};
 
     unique_ptr<GUI::MessageBox> myFatalError;
-    unique_ptr<OptionsDialog> myOptions;
+    unique_ptr<OptionsDialog>   myOptions;
+    unique_ptr<BrowserDialog>   myBrowser;
 
     unique_ptr<GUI::Font> myLFont;  // used for labels
     unique_ptr<GUI::Font> myNFont;  // used for normal text

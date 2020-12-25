@@ -29,6 +29,7 @@
 #include "Paddles.hxx"
 #include "PopUpWidget.hxx"
 #include "PropsSet.hxx"
+#include "BrowserDialog.hxx"
 #include "QuadTariDialog.hxx"
 #include "TabWidget.hxx"
 #include "TIAConstants.hxx"
@@ -92,7 +93,7 @@ GameInfoDialog::GameInfoDialog(
   myTab->setActiveTab(0);
 
   // Add Defaults, OK and Cancel buttons
-  addDefaultsExtraOKCancelBGroup(wid, font, "Export", kExportPressed);
+  addDefaultsExtraOKCancelBGroup(wid, font, "Export" + ELLIPSIS, kExportPressed);
   _extraWidget->setToolTip("Export the current ROM's properties\n"
                            "into the default directory.");
   addBGroupToFocusList(wid);
@@ -660,10 +661,25 @@ void GameInfoDialog::addHighScoresTab()
   addToFocusList(wid, myTab, tabID);
 }
 
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 GameInfoDialog::~GameInfoDialog()
 {
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void GameInfoDialog::createBrowser(const string& title)
+{
+  uInt32 w = 0, h = 0;
+  getDynamicBounds(w, h);
+  if(w > uInt32(_font.getMaxCharWidth() * 80))
+    w = _font.getMaxCharWidth() * 80;
+
+  // Create file browser dialog
+  if(!myBrowser || uInt32(myBrowser->getWidth()) != w ||
+     uInt32(myBrowser->getHeight()) != h)
+    myBrowser = make_unique<BrowserDialog>(this, _font, w, h, title);
+  else
+    myBrowser->setTitle(title);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1350,16 +1366,14 @@ void GameInfoDialog::exportCurrentPropertiesToDisk()
 
   try
   {
-    FilesystemNode propfile = instance().defaultSaveDir();
-    propfile /= myGameFile.getNameWithExt(".pro");
+    FilesystemNode propfile(myBrowser->getResult().getShortPath());
 
     propfile.write(out);
-    instance().frameBuffer().showTextMessage("Properties exported to " +
-                                             propfile.getShortPath());
+    instance().frameBuffer().showTextMessage("ROM properties exported");
   }
   catch(...)
   {
-    instance().frameBuffer().showTextMessage("Error exporting properties");
+    instance().frameBuffer().showTextMessage("Error exporting ROM properties");
   }
 }
 
@@ -1379,6 +1393,15 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kExportPressed:
+      // This dialog is resizable under certain conditions, so we need
+      // to re-create it as necessary
+      createBrowser("Export Properties as");
+
+      myBrowser->show(instance().userDir().getPath() + myGameFile.getNameWithExt(".pro"),
+        BrowserDialog::FileSave, kExportChosen);
+      break;
+
+    case kExportChosen:
       exportCurrentPropertiesToDisk();
       break;
 
