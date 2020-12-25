@@ -126,9 +126,9 @@ void BrowserDialog::show(const string& startpath,
                          const string& ext)
 {
   const int fontWidth = _font.getMaxCharWidth(),
-    //fontHeight = _font.getFontHeight(),
-    HBORDER = fontWidth * 1.25;
-    //VGAP = fontHeight / 4;
+    fontHeight = _font.getFontHeight(),
+    HBORDER = fontWidth * 1.25,
+    VGAP = fontHeight / 4;
 
   _mode = mode;
   _cmd = cmd;
@@ -153,7 +153,7 @@ void BrowserDialog::show(const string& startpath,
       _fileList->setNameFilter([ext](const FilesystemNode& node) {
         return BSPF::endsWithIgnoreCase(node.getName(), ext);
       });
-      //_fileList->setHeight(_selected->getTop() - VGAP * 2 - _fileList->getTop());
+      _fileList->setHeight(_selected->getTop() - VGAP * 2 - _fileList->getTop());
 
       _currentPath->setWidth(_savePathBox->getLeft() - _currentPath->getLeft() - fontWidth);
       _savePathBox->setEnabled(true);
@@ -172,7 +172,7 @@ void BrowserDialog::show(const string& startpath,
       _fileList->setNameFilter([ext](const FilesystemNode& node) {
         return BSPF::endsWithIgnoreCase(node.getName(), ext);
       });
-      //_fileList->setHeight(_selected->getTop() - VGAP * 2 - _fileList->getTop());
+      _fileList->setHeight(_selected->getTop() - VGAP * 2 - _fileList->getTop());
 
       _currentPath->setWidth(_savePathBox->getLeft() - _currentPath->getLeft() - fontWidth);
       _savePathBox->setEnabled(true);
@@ -192,7 +192,7 @@ void BrowserDialog::show(const string& startpath,
       _fileList->setListMode(FilesystemNode::ListMode::DirectoriesOnly);
       _fileList->setNameFilter([](const FilesystemNode&) { return true; });
       // TODO: scrollbar affected too!
-      //_fileList->setHeight(_selected->getBottom() - _fileList->getTop());
+      _fileList->setHeight(_selected->getBottom() - _fileList->getTop());
 
       _currentPath->setWidth(_savePathBox->getRight() - _currentPath->getLeft());
       _savePathBox->setEnabled(false);

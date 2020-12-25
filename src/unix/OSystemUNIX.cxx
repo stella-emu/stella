@@ -23,23 +23,21 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystemUNIX::getBaseDirAndConfig(string& basedir, string& cfgfile,
-        string& savedir, string& loaddir,
-        bool useappdir, const string& usedir)
+                                      string& homedir,
+                                      bool useappdir, const string& usedir)
 {
   // Use XDG_CONFIG_HOME if defined, otherwise use the default
   string configDir = BSPF::getenv("XDG_CONFIG_HOME");
+
   if(configDir == EmptyString)  configDir = "~/.config";
   basedir = configDir + "/stella";
-  savedir = loaddir = "~/";
+  homedir = "~/";
 
   // Check to see if basedir overrides are active
   if(useappdir)
     cout << "ERROR: base dir in app folder not supported" << endl;
   else if(usedir != "")
-  {
     basedir = FilesystemNode(usedir).getPath();
-    savedir = loaddir = basedir;
-  }
 
   // (Currently) non-documented alternative for using version-specific
   // config file
