@@ -681,7 +681,7 @@ string DebuggerParser::saveScriptFile(string file)
   if(file.find_last_of('.') == string::npos)
     file += ".script";
 
-  // Use default path if no path is provided
+  // Use user dir if no path is provided
   if(file.find_first_of(FilesystemNode::PATH_SEPARATOR) == string::npos)
     file = debugger.myOSystem.userDir().getPath() + file;
 
@@ -2669,9 +2669,10 @@ std::array<DebuggerParser::Command, 100> DebuggerParser::commands = { {
     "dump",
     "Dump data at address <xx> [to yy] [1: memory; 2: CPU state; 4: input regs]",
     "Example:\n"
-    "  dump f000 - dumps 128 bytes @ f000\n"
+    "  dump f000 - dumps 128 bytes from f000\n"
     "  dump f000 f0ff - dumps all bytes from f000 to f0ff\n"
-    "  dump f000 f0ff 7 - dumps all bytes from f000 to f0ff, CPU state and input registers into a file",
+    "  dump f000 f0ff 7 - dumps all bytes from f000 to f0ff,\n"
+    "    CPU state and input registers into a file in user dir",
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
@@ -3095,7 +3096,8 @@ std::array<DebuggerParser::Command, 100> DebuggerParser::commands = { {
   {
     "save",
     "Save breaks, watches, traps and functions to file xx",
-    "Example: save commands.script, save ?",
+    "Example: save commands.script, save ?\n"
+    "NOTE: saves to user dir by default",
     true,
     false,
     { Parameters::ARG_FILE, Parameters::ARG_END_ARGS },
@@ -3106,7 +3108,7 @@ std::array<DebuggerParser::Command, 100> DebuggerParser::commands = { {
     "saveaccess",
     "Save the access counters to CSV file",
     "Example: saveaccess, saveaccess ?\n"
-    "NOTE: saves to default save location without ? parameter",
+    "NOTE: saves to user dir by default",
       false,
       false,
     { Parameters::ARG_FILE, Parameters::ARG_END_ARGS },
@@ -3127,7 +3129,7 @@ std::array<DebuggerParser::Command, 100> DebuggerParser::commands = { {
     "savedis",
     "Save Distella disassembly",
     "Example: savedis, savedis ?\n"
-    "NOTE: saves to default save location without ? parameter",
+    "NOTE: saves to user dir by default",
     false,
     false,
     { Parameters::ARG_FILE, Parameters::ARG_END_ARGS },
@@ -3138,7 +3140,7 @@ std::array<DebuggerParser::Command, 100> DebuggerParser::commands = { {
     "saverom",
     "Save (possibly patched) ROM",
     "Example: saverom, saverom ?\n"
-    "NOTE: saves to default save location without ? parameter",
+    "NOTE: saves to user dir by default",
     false,
     false,
     { Parameters::ARG_FILE, Parameters::ARG_END_ARGS },
@@ -3149,7 +3151,7 @@ std::array<DebuggerParser::Command, 100> DebuggerParser::commands = { {
     "saveses",
     "Save console session",
     "Example: saveses, saveses ?\n"
-    "NOTE: saves to default save location without ? parameter",
+    "NOTE: saves to user dir by default",
     false,
     false,
     { Parameters::ARG_FILE, Parameters::ARG_END_ARGS },
