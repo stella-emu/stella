@@ -1375,10 +1375,9 @@
     </tr>
     <tr>
       <td>Toggle adapting display refresh rate to game frame rate
-      </br>
-      Note: Not available for macOS.</td>
+      </br>Note: Not available for macOS</td>
       <td>Alt + R</td>
-      <td>Cmd + R</td>
+      <td>-</td>
     </tr>
     <tr>
       <td><i>Decrease</i> overscan in fullscreen mode</td>
@@ -2813,8 +2812,8 @@
     <tr>
       <td><pre>-tia.fs_refresh &lt;1|0&gt;</pre></td>
       <td>While in fullscreen mode, adapt the display's refresh rate to the game's frame rate
-        to minimize judder.</br>
-        Note: Not available for macOS.</td>
+        to minimize judder.
+        </br>Note: Not available for macOS</td>
     </tr>
 
     <tr>
@@ -2897,7 +2896,8 @@
 
     <tr>
       <td><pre>-tv.scanlines &lt;0 - 100&gt;</pre></td>
-      <td>Set TV effects scanline intensity, where 0 means completely off. Note: No scanlines in 1x mode snapshots.</td>
+      <td>Set TV effects scanline intensity, where 0 means completely off.
+      </br>Note: No scanlines in 1x mode snapshots</td>
     </tr>
 
     <tr>
@@ -3073,7 +3073,8 @@
 
     <tr>
       <td><pre>-ssinterval &lt;number&gt;</pre></td>
-      <td>Set the interval in seconds between taking snapshots in continuous snapshot mode (currently 1 - 10).</td>
+      <td>Set the interval in seconds between taking snapshots in continuous
+      snapshot mode (currently 1 - 10).</td>
     </tr>
 
     <tr>
@@ -3123,8 +3124,8 @@
     <tr>
       <td><pre>-romviewer &lt;float&gt;</pre></td>
       <td>Hide ROM Info Viewer in ROM launcher mode (0) or use the
-        given zoom level.</br>
-        Note: The zoom level is converted into a percentage in the UI.</td>
+        given zoom level.
+        </br>Note: The zoom level is converted into a percentage in the UI.</td>
     </tr>
 
     <tr>
@@ -3207,17 +3208,20 @@
 
     <tr>
       <td><pre>-basedir &lt;dir&gt;</pre></td>
-      <td>Override the base directory for all config files.</td>
+      <td>Override the base directory for all config files.
+      <br>Note: Not available for macOS</td>
     </tr>
 
     <tr>
       <td><pre>-baseinappdir</pre></td>
-      <td>Override the base directory for all config files by attempting to use the application directory.  For now this is only supported in Windows.</td>
+      <td>Override the base directory for all config files by attempting to use
+      the application directory.
+      <br>Note: Only available for Windows</td>
     </tr>
 
     <tr>
       <td><pre>-help</pre></td>
-      <td>Prints a help message describing these options, and then
+      <td>Print a help message describing these options, and then
         exit Stella.</td>
     </tr>
   </table>
@@ -3612,7 +3616,7 @@
                   This depends on the OS and renderer used.</td><td>-fullscreen</td></tr>
           <tr><td>Stretch</td><td>In fullscreen mode, completely fill screen with the TIA image.</td><td>-tia.fs_stretch</td></tr>
           <tr><td>Adapt display...</td><td>In fullscreen mode, adapt the display's refresh rate to the game's frame rate to minimize judder.
-                  </br>Note: Not available for macOS.</td><td>-tia.fs_refresh</td></tr>
+                  </br>Note: Not available for macOS</td><td>-tia.fs_refresh</td></tr>
           <tr><td>Overscan</td><td>In fullscreen mode, add overscan to the TIA image.</td><td>-tia.fs_overscan</td></tr>
           <tr><td>Correct aspect ratio</td><td>Enable aspect ratio correct scaling.
                   </br>Note: Creates a cleaner looking TIA image when disabled (like z26 and old versions of Stella) vs. a correctly emulated aspect ratio when enabled.</td><td>-tia.correct_aspect</td></tr>
@@ -3662,7 +3666,7 @@
           <tr><td>Blend (phosphor)</td><td>Blend level to use in phosphor mode for all ROMs
                 (needs to be manually adjusted for your particular hardware)</td><td>-tv.phosblend</td></tr>
           <tr><td>Scanline intensity</td><td>Sets scanline black-level intensity.</br>
-                  Note: No scanlines in 1x mode snapshots.</td><td>-tv.scanlines</td></tr>
+                  Note: No scanlines in 1x mode snapshots</td><td>-tv.scanlines</td></tr>
           <tr><td>Clone RGB</td><td>Copy 'RGB' attributes to 'Custom' TV mode sliders</td><td>&nbsp;</td></tr>
           <tr><td>Clone S-Video</td><td>Copy 'S-Video' attributes to 'Custom' TV mode sliders</td><td>&nbsp;</td></tr>
           <tr><td>Clone Composite</td><td>Copy 'Composite' attributes to 'Custom' TV mode sliders</td><td>&nbsp;</td></tr>
