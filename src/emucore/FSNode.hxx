@@ -493,7 +493,7 @@ class AbstractFSNode
       const char* start = str.c_str();
       const char* cur = start + str.size() - 2;
 
-      while (cur >= start && *cur != FilesystemNode::PATH_SEPARATOR)
+      while (cur >= start && !(*cur == '/' || *cur == '\\'))
         --cur;
 
       return cur + 1;
