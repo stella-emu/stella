@@ -127,7 +127,6 @@ void BrowserDialog::show(const string& startpath,
 {
   const int fontWidth = _font.getMaxCharWidth(),
     fontHeight = _font.getFontHeight(),
-    HBORDER = fontWidth * 1.25,
     VGAP = fontHeight / 4;
 
   _mode = mode;
