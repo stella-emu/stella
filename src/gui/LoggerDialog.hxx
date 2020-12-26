@@ -33,7 +33,7 @@ class LoggerDialog : public Dialog
     LoggerDialog(OSystem& osystem, DialogContainer& parent,
                  const GUI::Font& font, int max_w, int max_h,
                  bool useLargeFont = true);
-    ~LoggerDialog() override = default;
+    ~LoggerDialog() override;
 
   private:
     void createBrowser(const string& title);

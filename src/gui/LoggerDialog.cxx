@@ -90,6 +90,11 @@ LoggerDialog::LoggerDialog(OSystem& osystem, DialogContainer& parent,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+LoggerDialog::~LoggerDialog()
+{
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LoggerDialog::createBrowser(const string& title)
 {
   uInt32 w = 0, h = 0;
