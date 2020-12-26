@@ -24,6 +24,7 @@
 #include "Settings.hxx"
 #include "PopUpWidget.hxx"
 #include "StringListWidget.hxx"
+#include "BrowserDialog.hxx"
 #include "StringParser.hxx"
 #include "Widget.hxx"
 #include "Font.hxx"
@@ -39,7 +40,7 @@ LoggerDialog::LoggerDialog(OSystem& osystem, DialogContainer& parent,
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
             fontHeight   = font.getFontHeight(),
-            buttonWidth  = font.getStringWidth("Save log to disk") + fontWidth * 2.5,
+            buttonWidth  = font.getStringWidth("Save log to disk" + ELLIPSIS) + fontWidth * 2.5,
             buttonHeight = font.getLineHeight() * 1.25;
   const int VBORDER = fontHeight / 2;
   const int HBORDER = fontWidth * 1.25;
@@ -80,12 +81,28 @@ LoggerDialog::LoggerDialog(OSystem& osystem, DialogContainer& parent,
   // Add Save, OK and Cancel buttons
   ButtonWidget* b;
   b = new ButtonWidget(this, font, HBORDER, _h - buttonHeight - VBORDER,
-                       buttonWidth, buttonHeight, "Save log to disk",
+                       buttonWidth, buttonHeight, "Save log to disk" + ELLIPSIS,
                        GuiObject::kDefaultsCmd);
   wid.push_back(b);
   addOKCancelBGroup(wid, font);
 
   addToFocusList(wid);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LoggerDialog::createBrowser(const string& title)
+{
+  uInt32 w = 0, h = 0;
+  getDynamicBounds(w, h);
+  if(w > uInt32(_font.getMaxCharWidth() * 80))
+    w = _font.getMaxCharWidth() * 80;
+
+  // Create file browser dialog
+  if(!myBrowser || uInt32(myBrowser->getWidth()) != w ||
+     uInt32(myBrowser->getHeight()) != h)
+    myBrowser = make_unique<BrowserDialog>(this, _font, w, h, title);
+  else
+    myBrowser->setTitle(title);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -116,19 +133,18 @@ void LoggerDialog::saveConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LoggerDialog::saveLogFile()
 {
-  FilesystemNode node = instance().userDir();
-  node /= "stella.log";
+  FilesystemNode node(myBrowser->getResult().getShortPath());
 
   try
   {
     stringstream out;
     out << Logger::instance().logMessages();
-    instance().frameBuffer().showTextMessage("Saving log file to " + node.getShortPath());
     node.write(out);
+    instance().frameBuffer().showTextMessage("System log saved");
   }
   catch(...)
   {
-    instance().frameBuffer().showTextMessage("Error saving log file to " + node.getShortPath());
+    instance().frameBuffer().showTextMessage("Error saving system log");
   }
 }
 
@@ -144,6 +160,15 @@ void LoggerDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case GuiObject::kDefaultsCmd:
+      // This dialog is resizable under certain conditions, so we need
+      // to re-create it as necessary
+      createBrowser("Save Log as");
+
+      myBrowser->show(instance().userDir().getPath() + "stella.log",
+                      BrowserDialog::FileSave, kSaveCmd);
+      break;
+
+    case kSaveCmd:
       saveLogFile();
       break;
 
