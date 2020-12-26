@@ -236,6 +236,7 @@ void ScrollBarWidget::checkBounds(int old_pos)
   if (old_pos != _currentPos)
   {
     recalc();
+    setDirty();
     sendCommand(GuiObject::kSetPositionCmd, _currentPos, _id);
   }
 }
@@ -308,7 +309,13 @@ void ScrollBarWidget::drawWidget(bool hilite)
   // Slider
   if(!isSinglePage)
   {
-    s.fillRect(_x + 1, _y + _sliderPos - 1, _w - 2, _sliderHeight + 2,
+    // align slider to scroll intervals
+    int alignedPos = _upDownBoxHeight + (_h - 2 * _upDownBoxHeight - _sliderHeight) *
+      _currentPos / (_numEntries - _entriesPerPage);
+    if(alignedPos < 0)
+      alignedPos = 0;
+
+    s.fillRect(_x + 1, _y + alignedPos - 1, _w - 2, _sliderHeight + 2,
               (hilite && _part == Part::Slider) ? kScrollColorHi : kScrollColor);
   }
   clearDirty();
@@ -316,4 +323,3 @@ void ScrollBarWidget::drawWidget(bool hilite)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int ScrollBarWidget::_WHEEL_LINES = 4;
-
