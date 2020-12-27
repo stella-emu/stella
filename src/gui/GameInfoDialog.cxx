@@ -56,16 +56,13 @@ GameInfoDialog::GameInfoDialog(
     CommandSender(boss)
 {
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
-
-  const int lineHeight = font.getLineHeight(),
-            fontHeight = font.getFontHeight(),
-            fontWidth = font.getMaxCharWidth(),
-            buttonHeight = font.getLineHeight() * 1.25,
-            infoLineHeight = ifont.getLineHeight();
-  const int VBORDER = fontHeight / 2;
-  const int HBORDER = fontWidth * 1.25;
-  const int VGAP = fontHeight / 4;
-
+  const int infoLineHeight = ifont.getLineHeight();
+  const int lineHeight   = Dialog::lineHeight(),
+            fontWidth    = Dialog::fontWidth(),
+            buttonHeight = Dialog::buttonHeight(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder(),
+            VGAP         = Dialog::vGap();
   WidgetArray wid;
 
   // Set real dimensions
@@ -103,13 +100,12 @@ GameInfoDialog::GameInfoDialog(
 void GameInfoDialog::addEmulationTab()
 {
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
-  const int lineHeight = _font.getLineHeight(),
-    fontHeight = _font.getFontHeight(),
-    fontWidth = _font.getMaxCharWidth();
-  const int VBORDER = fontHeight / 2;
-  const int HBORDER = fontWidth * 1.25;
-  const int VGAP = fontHeight / 4;
-
+  const int lineHeight = Dialog::lineHeight(),
+            fontHeight = Dialog::fontHeight(),
+            fontWidth  = Dialog::fontWidth(),
+            VBORDER    = Dialog::vBorder(),
+            HBORDER    = Dialog::hBorder(),
+            VGAP       = Dialog::vGap();
   int ypos, pwidth, tabID;
   WidgetArray wid;
   VariantList items;
@@ -200,13 +196,10 @@ void GameInfoDialog::addEmulationTab()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::addConsoleTab()
 {
-  const int lineHeight = _font.getLineHeight(),
-    fontHeight = _font.getFontHeight(),
-    fontWidth = _font.getMaxCharWidth();
-  const int VBORDER = fontHeight / 2;
-  const int HBORDER = fontWidth * 1.25;
-  const int VGAP = fontHeight / 4;
-
+  const int lineHeight = Dialog::lineHeight(),
+            VBORDER    = Dialog::vBorder(),
+            HBORDER    = Dialog::hBorder(),
+            VGAP       = Dialog::vGap();
   int xpos, ypos, lwidth, tabID;
   WidgetArray wid;
 
@@ -256,15 +249,13 @@ void GameInfoDialog::addConsoleTab()
 void GameInfoDialog::addControllersTab()
 {
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
-  const int lineHeight = _font.getLineHeight(),
-    fontHeight = _font.getFontHeight(),
-    fontWidth = _font.getMaxCharWidth(),
-    buttonHeight = _font.getLineHeight() * 1.25;
-  const int VBORDER = fontHeight / 2;
-  const int HBORDER = fontWidth * 1.25;
-  const int INDENT = fontWidth * 2;
-  const int VGAP = fontHeight / 4;
-
+  const int lineHeight   = Dialog::lineHeight(),
+            fontWidth    = Dialog::fontWidth(),
+            buttonHeight = Dialog::buttonHeight(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder(),
+            VGAP         = Dialog::vGap(),
+            INDENT       = Dialog::indent();
   int xpos, ypos, pwidth, tabID;
   VariantList items, ctrls;
   WidgetArray wid;
@@ -408,13 +399,11 @@ void GameInfoDialog::addControllersTab()
 void GameInfoDialog::addCartridgeTab()
 {
   // 4) Cartridge properties
-  const int lineHeight = _font.getLineHeight(),
-    fontHeight = _font.getFontHeight(),
-    fontWidth = _font.getMaxCharWidth();
-  const int VBORDER = fontHeight / 2;
-  const int HBORDER = fontWidth * 1.25;
-  const int VGAP = fontHeight / 4;
-
+  const int lineHeight = Dialog::lineHeight(),
+            fontHeight = Dialog::fontHeight(),
+            VBORDER    = Dialog::vBorder(),
+            HBORDER    = Dialog::hBorder(),
+            VGAP       = Dialog::vGap();
   int xpos, ypos, lwidth, fwidth, tabID;
   WidgetArray wid;
   VariantList items;
@@ -469,14 +458,13 @@ void GameInfoDialog::addCartridgeTab()
 void GameInfoDialog::addHighScoresTab()
 {
   // 4) High Scores properties
-  const int lineHeight = _font.getLineHeight(),
-    fontHeight = _font.getFontHeight(),
-    fontWidth = _font.getMaxCharWidth();
-  const int VBORDER = fontHeight / 2;
-  const int HBORDER = fontWidth * 1.25;
-  const int INDENT = fontWidth * 2;
-  const int VGAP = fontHeight / 4;
-
+  const int lineHeight = Dialog::lineHeight(),
+            fontHeight = Dialog::fontHeight(),
+            fontWidth  = Dialog::fontWidth(),
+            VBORDER    = Dialog::vBorder(),
+            HBORDER    = Dialog::hBorder(),
+            VGAP       = Dialog::vGap(),
+            INDENT     = Dialog::indent();
   int xpos, ypos, lwidth, pwidth, tabID;
   WidgetArray wid;
   VariantList items;

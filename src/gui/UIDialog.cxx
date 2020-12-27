@@ -45,14 +45,14 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
     myIsGlobal{boss != nullptr}
 {
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
-  const int lineHeight   = font.getLineHeight(),
-            fontWidth    = font.getMaxCharWidth(),
-            fontHeight   = font.getFontHeight(),
-            buttonHeight = font.getLineHeight() * 1.25;
-  const int VBORDER = fontHeight / 2;
-  const int HBORDER = fontWidth * 1.25;
-  const int INDENT = fontWidth * 2;
-  const int VGAP = fontHeight / 4;
+  const int lineHeight   = Dialog::lineHeight(),
+            fontHeight   = Dialog::fontHeight(),
+            fontWidth    = Dialog::fontWidth(),
+            buttonHeight = Dialog::buttonHeight(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder(),
+            VGAP         = Dialog::vGap(),
+            INDENT       = Dialog::indent();
   int xpos, ypos, tabID;
   int lwidth, pwidth, bwidth;
   WidgetArray wid;

@@ -44,13 +44,12 @@ InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
     myMaxWidth{max_w},
     myMaxHeight{max_h}
 {
-  const int lineHeight   = _font.getLineHeight(),
-            fontWidth    = _font.getMaxCharWidth(),
-            fontHeight   = _font.getFontHeight(),
-            buttonHeight = _font.getLineHeight() * 1.25;
-  const int VBORDER = fontHeight / 2;
-  const int VGAP = fontHeight / 4;
-  const int HBORDER = fontWidth * 1.25;
+  const int lineHeight   = Dialog::lineHeight(),
+            fontWidth    = Dialog::fontWidth(),
+            buttonHeight = Dialog::buttonHeight(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder(),
+            VGAP         = Dialog::vGap();
   int xpos, ypos, tabID;
 
   // Set real dimensions
@@ -107,13 +106,12 @@ InputDialog::~InputDialog()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputDialog::addDevicePortTab()
 {
-  const int lineHeight = _font.getLineHeight(),
-            fontWidth  = _font.getMaxCharWidth(),
-            fontHeight = _font.getFontHeight(),
-            buttonHeight = _font.getLineHeight() * 1.25;
-  const int VGAP = fontHeight / 4;
-  const int VBORDER = fontHeight / 2;
-  const int HBORDER = fontWidth * 1.25;
+  const int lineHeight   = Dialog::lineHeight(),
+            fontWidth    = Dialog::fontWidth(),
+            buttonHeight = Dialog::buttonHeight(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder(),
+            VGAP         = Dialog::vGap();
   int xpos, ypos, lwidth, tabID;
   WidgetArray wid;
 
@@ -213,7 +211,7 @@ void InputDialog::addDevicePortTab()
 
   // Show joystick database
   ypos += lineHeight;
-  lwidth = _font.getStringWidth("Joystick Database" + ELLIPSIS) + fontWidth * 2.5;
+  lwidth = Dialog::buttonWidth("Joystick Database" + ELLIPSIS);
   myJoyDlgButton = new ButtonWidget(myTab, _font, HBORDER, ypos, lwidth, buttonHeight,
                                     "Joystick Database" + ELLIPSIS, kDBButtonPressed);
   wid.push_back(myJoyDlgButton);
@@ -240,13 +238,12 @@ void InputDialog::addDevicePortTab()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputDialog::addMouseTab()
 {
-  const int lineHeight = _font.getLineHeight(),
-            fontWidth  = _font.getMaxCharWidth(),
-            fontHeight = _font.getFontHeight();
-  const int VGAP = fontHeight / 4;
-  const int VBORDER = fontHeight / 2;
-  const int HBORDER = fontWidth * 1.25;
-  const int INDENT = fontWidth * 2;
+  const int lineHeight = Dialog::lineHeight(),
+            fontWidth  = Dialog::fontWidth(),
+            VBORDER    = Dialog::vBorder(),
+            HBORDER    = Dialog::hBorder(),
+            VGAP       = Dialog::vGap(),
+            INDENT     = Dialog::indent();
   int xpos = HBORDER, ypos, lwidth, pwidth, tabID;
   WidgetArray wid;
   VariantList items;
@@ -713,7 +710,7 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
       {
         const GUI::Font& font = instance().frameBuffer().font();
         myJoyDialog = make_unique<JoystickDialog>
-          (this, font, font.getMaxCharWidth() * 56 + 20, font.getFontHeight() * 18 + 20);
+          (this, font, fontWidth() * 56 + 20, fontHeight() * 18 + 20);
       }
       myJoyDialog->show();
       break;

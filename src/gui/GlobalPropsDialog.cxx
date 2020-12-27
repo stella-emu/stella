@@ -33,14 +33,12 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
   : Dialog(boss->instance(), boss->parent(), font, "Power-on options"),
     CommandSender(boss)
 {
-  const int lineHeight   = font.getLineHeight(),
-            fontWidth    = font.getMaxCharWidth(),
-            fontHeight   = font.getFontHeight(),
-            buttonHeight = lineHeight * 1.25;
-  const int VBORDER = fontHeight / 2;
-  const int HBORDER = fontWidth * 1.25;
-  const int VGAP = fontHeight / 4;
-
+  const int lineHeight   = Dialog::lineHeight(),
+            fontWidth    = Dialog::fontWidth(),
+            buttonHeight = Dialog::buttonHeight(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder(),
+            VGAP         = Dialog::vGap();
   int xpos, ypos;
   int lwidth = font.getStringWidth("Right difficulty "),
       pwidth = font.getStringWidth("CM (SpectraVideo CompuMate)");
@@ -138,10 +136,9 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
 int GlobalPropsDialog::addHoldWidgets(const GUI::Font& font, int x, int y,
                                       WidgetArray& wid)
 {
-  const int fontWidth    = font.getMaxCharWidth(),
-            fontHeight   = font.getFontHeight();
-  const int VGAP = fontHeight / 4;
-
+  const int fontHeight = Dialog::fontHeight(),
+            fontWidth  = Dialog::fontWidth(),
+            VGAP       = Dialog::vGap();
   int xpos = x, ypos = y, xdiff = CheckboxWidget::boxSize(font) - 9;
 
   // Left joystick

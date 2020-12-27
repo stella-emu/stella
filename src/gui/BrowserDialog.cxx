@@ -34,16 +34,15 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
   // Set real dimensions
   _w = max_w;
   _h = max_h;
-
-  const int lineHeight   = font.getLineHeight(),
-            fontWidth    = font.getMaxCharWidth(),
-            fontHeight   = font.getFontHeight(),
-            buttonHeight = font.getLineHeight() * 1.25,
-            buttonWidth  = font.getStringWidth("Base Dir") + fontWidth * 2.5;
-  const int VBORDER = fontHeight / 2;
-  const int HBORDER = fontWidth * 1.25;
-  const int VGAP = fontHeight / 4;
-  const int BUTTON_GAP = fontWidth;
+  const int lineHeight   = Dialog::lineHeight(),
+            fontHeight   = Dialog::fontHeight(),
+            fontWidth    = Dialog::fontWidth(),
+            buttonHeight = Dialog::buttonHeight(),
+            buttonWidth  = Dialog::buttonWidth("Base Dir"),
+            BUTTON_GAP   = Dialog::buttonGap(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder(),
+            VGAP         = Dialog::vGap();
   const int selectHeight = lineHeight + VGAP * 3;
   int xpos, ypos;
   ButtonWidget* b;
@@ -138,10 +137,8 @@ void BrowserDialog::show(const string& startpath,
                          const Command& command,
                          const FilesystemNode::NameFilter& namefilter)
 {
-  const int fontWidth = _font.getMaxCharWidth(),
-    fontHeight = _font.getFontHeight(),
-    VGAP = fontHeight / 4;
-
+  const int fontWidth = Dialog::fontWidth(),
+            VGAP      = Dialog::vGap();
   _mode = mode;
   _command = command;
   string directory;

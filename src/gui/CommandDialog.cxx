@@ -34,16 +34,14 @@
 CommandDialog::CommandDialog(OSystem& osystem, DialogContainer& parent)
   : Dialog(osystem, parent, osystem.frameBuffer().font(), "Commands")
 {
-  const int fontHeight   = _font.getFontHeight(),
-            fontWidth    = _font.getMaxCharWidth(),
-            buttonHeight = _font.getLineHeight() * 1.25,
-            buttonWidth  = _font.getStringWidth("Time Machine On") + fontWidth * 2;
-  const int VBORDER = fontHeight / 2;
-  const int HBORDER = fontWidth * 1.25;
-  const int VGAP = fontHeight / 4;
-  const int HGAP = fontWidth;
-  const int rowHeight = buttonHeight + VGAP;
-
+  const int buttonHeight = Dialog::buttonHeight(),
+            buttonWidth  = _font.getStringWidth("Time Machine On") + Dialog::fontWidth() * 2,
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder(),
+            VGAP         = Dialog::vGap(),
+            INDENT       = Dialog::indent();
+  const int HGAP      = Dialog::buttonGap(),
+            rowHeight = buttonHeight + VGAP;
   // Set real dimensions
   _w = 3 * (buttonWidth + HGAP) - HGAP + HBORDER * 2;
   _h = 6 * rowHeight - VGAP + VBORDER * 2 + _th;

@@ -57,13 +57,12 @@ VideoAudioDialog::VideoAudioDialog(OSystem& osystem, DialogContainer& parent,
                          const GUI::Font& font, int max_w, int max_h)
   : Dialog(osystem, parent, font, "Video & Audio settings")
 {
-  const int lineHeight   = _font.getLineHeight(),
-            fontHeight   = _font.getFontHeight(),
-            fontWidth    = _font.getMaxCharWidth(),
-            buttonHeight = _font.getLineHeight() * 1.25;
-  const int VGAP = fontHeight / 4;
-  const int VBORDER = fontHeight / 2;
-  const int HBORDER = fontWidth * 1.25;
+  const int lineHeight   = Dialog::lineHeight(),
+            fontWidth    = Dialog::fontWidth(),
+            buttonHeight = Dialog::buttonHeight(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder(),
+            VGAP         = Dialog::vGap();
   int xpos, ypos;
 
   // Set real dimensions
@@ -103,12 +102,12 @@ VideoAudioDialog::VideoAudioDialog(OSystem& osystem, DialogContainer& parent,
 void VideoAudioDialog::addDisplayTab()
 {
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
-  const int lineHeight   = _font.getLineHeight(),
-            fontHeight   = _font.getFontHeight(),
-            fontWidth    = _font.getMaxCharWidth();
-  const int VGAP = fontHeight / 4;
-  const int VBORDER = fontHeight / 2;
-  const int HBORDER = fontWidth * 1.25;
+  const int lineHeight = Dialog::lineHeight(),
+            fontHeight = Dialog::fontHeight(),
+            fontWidth  = Dialog::fontWidth(),
+            VBORDER    = Dialog::vBorder(),
+            HBORDER    = Dialog::hBorder(),
+            VGAP       = Dialog::vGap();
   const int INDENT = CheckboxWidget::prefixSize(_font);
   const int lwidth = _font.getStringWidth("V-Size adjust "),
             pwidth = _font.getStringWidth("OpenGLES2");
@@ -199,13 +198,12 @@ void VideoAudioDialog::addDisplayTab()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoAudioDialog::addPaletteTab()
 {
-  const int lineHeight = _font.getLineHeight(),
-            fontHeight = _font.getFontHeight(),
-            fontWidth = _font.getMaxCharWidth();
-  const int VBORDER = fontHeight / 2;
-  const int HBORDER = fontWidth * 1.25;
-  const int INDENT = fontWidth * 2;
-  const int VGAP = fontHeight / 4;
+  const int lineHeight = Dialog::lineHeight(),
+            fontWidth  = Dialog::fontWidth(),
+            VBORDER    = Dialog::vBorder(),
+            HBORDER    = Dialog::hBorder(),
+            VGAP       = Dialog::vGap(),
+            INDENT     = Dialog::indent();
   const int lwidth = _font.getStringWidth("  NTSC phase ");
   const int pwidth = _font.getStringWidth("Standard");
   int xpos = HBORDER,
@@ -331,14 +329,14 @@ void VideoAudioDialog::addPaletteTab()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoAudioDialog::addTVEffectsTab()
 {
-  const int lineHeight = _font.getLineHeight(),
-            fontHeight = _font.getFontHeight(),
-            fontWidth = _font.getMaxCharWidth(),
-            buttonHeight = _font.getLineHeight() * 1.25;
-  const int VBORDER = fontHeight / 2;
-  const int HBORDER = fontWidth * 1.25;
+  const int lineHeight   = Dialog::lineHeight(),
+            fontWidth    = Dialog::fontWidth(),
+            buttonHeight = Dialog::buttonHeight(),
+            buttonWidth  = Dialog::buttonWidth("Clone Bad Adjust"),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder(),
+            VGAP         = Dialog::vGap();
   const int INDENT = CheckboxWidget::prefixSize(_font);// fontWidth * 2;
-  const int VGAP = fontHeight / 4;
   int xpos = HBORDER,
       ypos = VBORDER;
   const int lwidth = _font.getStringWidth("Saturation ");
@@ -392,14 +390,13 @@ void VideoAudioDialog::addTVEffectsTab()
   CREATE_CUSTOM_SLIDERS(ScanIntense, "Intensity", kScanlinesChanged)
 
   // Create buttons in 2nd column
-  int cloneWidth = _font.getStringWidth("Clone Bad Adjust") + fontWidth * 2.5;
-  xpos = _w - HBORDER - 2 * 2 - cloneWidth;
+  xpos = _w - HBORDER - 2 * 2 - buttonWidth;
   ypos = VBORDER - VGAP / 2;
 
   // Adjustable presets
 #define CREATE_CLONE_BUTTON(obj, desc)                                 \
   myClone ## obj =                                                     \
-    new ButtonWidget(myTab, _font, xpos, ypos, cloneWidth, buttonHeight,\
+    new ButtonWidget(myTab, _font, xpos, ypos, buttonWidth, buttonHeight,\
                      desc, kClone ## obj ##Cmd);                       \
   wid.push_back(myClone ## obj);                                       \
   ypos += buttonHeight + VGAP;
@@ -418,14 +415,12 @@ void VideoAudioDialog::addTVEffectsTab()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoAudioDialog::addAudioTab()
 {
-  const int lineHeight   = _font.getLineHeight(),
-            fontHeight   = _font.getFontHeight(),
-            fontWidth    = _font.getMaxCharWidth();
-  const int VBORDER = fontHeight / 2;
-  const int HBORDER = fontWidth * 1.25;
+  const int lineHeight = Dialog::lineHeight(),
+            fontWidth  = Dialog::fontWidth(),
+            VBORDER    = Dialog::vBorder(),
+            HBORDER    = Dialog::hBorder(),
+            VGAP       = Dialog::vGap();
   const int INDENT = CheckboxWidget::prefixSize(_font);
-  const int VGAP = fontHeight / 4;
-
   int xpos, ypos;
   int lwidth = _font.getStringWidth("Volume "),
     pwidth;

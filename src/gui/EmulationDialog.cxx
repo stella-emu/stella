@@ -66,15 +66,13 @@ EmulationDialog::EmulationDialog(OSystem& osystem, DialogContainer& parent,
                                  const GUI::Font& font, int max_w, int max_h)
   : Dialog(osystem, parent, font, "Emulation settings")
 {
-  const int lineHeight   = font.getLineHeight(),
-            fontHeight   = font.getFontHeight(),
-            fontWidth    = font.getMaxCharWidth(),
-            buttonHeight = font.getLineHeight() * 1.25;
-  const int VBORDER = fontHeight / 2;
-  const int HBORDER = fontWidth * 1.25;
-  const int INDENT = fontWidth * 2;
-  const int VGAP = fontHeight / 4;
-
+  const int lineHeight   = Dialog::lineHeight(),
+            fontWidth    = Dialog::fontWidth(),
+            buttonHeight = Dialog::buttonHeight(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder(),
+            VGAP         = Dialog::vGap(),
+            INDENT       = Dialog::indent();
   int xpos, ypos;
   int lwidth = font.getStringWidth("Emulation speed ");
   WidgetArray wid;
