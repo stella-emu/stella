@@ -61,20 +61,20 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
                                int x, int y, int w, int h)
-  : Dialog(osystem, parent, x, y, w, h)
+  : Dialog(osystem, parent, osystem.frameBuffer().launcherFont(), "",
+           x, y, w, h)
 {
   myUseMinimalUI = instance().settings().getBool("minimal_ui");
-
-  const GUI::Font& font = instance().frameBuffer().launcherFont();
-  const int fontWidth = font.getMaxCharWidth(),
-            fontHeight = font.getFontHeight(),
-            lineHeight = font.getLineHeight(),
-            HBORDER = fontWidth * 1.25,
-            VBORDER = fontHeight / 2,
-            BUTTON_GAP = fontWidth,
-            LBL_GAP = fontWidth,
-            VGAP = fontHeight / 4,
-            buttonHeight = myUseMinimalUI ? lineHeight - VGAP * 2: lineHeight * 1.25,
+  const int lineHeight   = Dialog::lineHeight(),
+            fontHeight   = Dialog::fontHeight(),
+            fontWidth    = Dialog::fontWidth(),
+            BUTTON_GAP   = Dialog::buttonGap(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder(),
+            VGAP         = Dialog::vGap(),
+            INDENT       = Dialog::indent();
+  const int LBL_GAP      = fontWidth,
+            buttonHeight = myUseMinimalUI ? lineHeight - VGAP * 2: Dialog::buttonHeight(),
             buttonWidth  = (_w - 2 * HBORDER - BUTTON_GAP * (4 - 1));
 
   int xpos = HBORDER, ypos = VBORDER;
@@ -85,22 +85,22 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   string lblSubDirs = "Incl. subdirectories";
   string lblFound = "12345 items found";
 
-  tooltip().setFont(font);
+  tooltip().setFont(_font);
 
-  int lwSelect = font.getStringWidth(lblSelect);
-  int cwAllFiles = font.getStringWidth(lblAllFiles) + CheckboxWidget::prefixSize(font);
-  int cwSubDirs = font.getStringWidth(lblSubDirs) + CheckboxWidget::prefixSize(font);
-  int lwFilter = font.getStringWidth(lblFilter);
-  int lwFound = font.getStringWidth(lblFound);
+  int lwSelect = _font.getStringWidth(lblSelect);
+  int cwAllFiles = _font.getStringWidth(lblAllFiles) + CheckboxWidget::prefixSize(_font);
+  int cwSubDirs = _font.getStringWidth(lblSubDirs) + CheckboxWidget::prefixSize(_font);
+  int lwFilter = _font.getStringWidth(lblFilter);
+  int lwFound = _font.getStringWidth(lblFound);
   int wTotal = HBORDER * 2 + lwSelect + cwAllFiles + cwSubDirs + lwFilter + lwFound
-    + EditTextWidget::calcWidth(font, "123456") + LBL_GAP * 7;
+    + EditTextWidget::calcWidth(_font, "123456") + LBL_GAP * 7;
   bool noSelect = false;
 
   if(w < wTotal)
   {
     // make sure there is space for at least 6 characters in the filter field
     lblSelect = "Select a ROM" + ELLIPSIS;
-    int lwSelectShort = font.getStringWidth(lblSelect);
+    int lwSelectShort = _font.getStringWidth(lblSelect);
 
     wTotal -= lwSelect - lwSelectShort;
     lwSelect = lwSelectShort;
@@ -109,7 +109,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   {
     // make sure there is space for at least 6 characters in the filter field
     lblSubDirs = "Subdir.";
-    int cwSubDirsShort = font.getStringWidth(lblSubDirs) + CheckboxWidget::prefixSize(font);
+    int cwSubDirsShort = _font.getStringWidth(lblSubDirs) + CheckboxWidget::prefixSize(_font);
 
     wTotal -= cwSubDirs - cwSubDirsShort;
     cwSubDirs = cwSubDirsShort;
@@ -118,7 +118,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   {
     // make sure there is space for at least 6 characters in the filter field
     lblAllFiles = "All files";
-    int cwAllFilesShort = font.getStringWidth(lblAllFiles) + CheckboxWidget::prefixSize(font);
+    int cwAllFilesShort = _font.getStringWidth(lblAllFiles) + CheckboxWidget::prefixSize(_font);
 
     wTotal -= cwAllFiles - cwAllFilesShort;
     cwAllFiles = cwAllFilesShort;
@@ -127,7 +127,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   {
     // make sure there is space for at least 6 characters in the filter field
     lblFound = "12345 found";
-    int lwFoundShort = font.getStringWidth(lblFound);
+    int lwFoundShort = _font.getStringWidth(lblFound);
 
     wTotal -= lwFound - lwFoundShort;
     lwFound = lwFoundShort;
@@ -137,7 +137,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   {
     // make sure there is space for at least 6 characters in the filter field
     lblSelect = "";
-    int lwSelectShort = font.getStringWidth(lblSelect);
+    int lwSelectShort = _font.getStringWidth(lblSelect);
 
     // wTotal -= lwSelect - lwSelectShort; // dead code
     lwSelect = lwSelectShort;
@@ -152,16 +152,16 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   #if defined(RETRON77)
     ver << " for RetroN 77";
   #endif
-    new StaticTextWidget(this, font, 0, ypos, _w, fontHeight,
+    new StaticTextWidget(this, _font, 0, ypos, _w, fontHeight,
                          ver.str(), TextAlign::Center);
     ypos += lineHeight;
   }
 
   // Show the header
-  new StaticTextWidget(this, font, xpos, ypos, lblSelect);
+  new StaticTextWidget(this, _font, xpos, ypos, lblSelect);
   // Shop the files counter
   xpos = _w - HBORDER - lwFound;
-  myRomCount = new StaticTextWidget(this, font, xpos, ypos,
+  myRomCount = new StaticTextWidget(this, _font, xpos, ypos,
                                     lwFound, fontHeight,
                                     "", TextAlign::Right);
 
@@ -169,23 +169,23 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   // It has to fit between both labels
   if(!myUseMinimalUI && w >= 640)
   {
-    int fwFilter = std::min(EditTextWidget::calcWidth(font, "123456789012345"),
+    int fwFilter = std::min(EditTextWidget::calcWidth(_font, "123456789012345"),
                             xpos - cwSubDirs - lwFilter - cwAllFiles
                             - lwSelect - HBORDER - LBL_GAP * (noSelect ? 5 : 7));
 
     // Show the filter input field
     xpos -= fwFilter + LBL_GAP;
-    myPattern = new EditTextWidget(this, font, xpos, ypos - 2, fwFilter, lineHeight, "");
+    myPattern = new EditTextWidget(this, _font, xpos, ypos - 2, fwFilter, lineHeight, "");
     myPattern->setToolTip("Enter filter text to reduce file list.\n"
                           "Use '*' and '?' as wildcards.");
 
     // Show the "Filter" label
     xpos -= lwFilter + LBL_GAP;
-    new StaticTextWidget(this, font, xpos, ypos, lblFilter);
+    new StaticTextWidget(this, _font, xpos, ypos, lblFilter);
 
     // Show the subdirectories checkbox
     xpos -= cwSubDirs + LBL_GAP * 2;
-    mySubDirs = new CheckboxWidget(this, font, xpos, ypos, lblSubDirs, kSubDirsCmd);
+    mySubDirs = new CheckboxWidget(this, _font, xpos, ypos, lblSubDirs, kSubDirsCmd);
     ostringstream tip;
     tip << "Search files in subdirectories too.";
     mySubDirs->setToolTip(tip.str());
@@ -195,7 +195,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
       xpos = HBORDER;
     else
       xpos -= cwAllFiles + LBL_GAP;
-    myAllFiles = new CheckboxWidget(this, font, xpos, ypos, lblAllFiles, kAllfilesCmd);
+    myAllFiles = new CheckboxWidget(this, _font, xpos, ypos, lblAllFiles, kAllfilesCmd);
     myAllFiles->setToolTip("Uncheck to show ROM files only.");
 
     wid.push_back(myAllFiles);
@@ -211,7 +211,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   if(romWidth > 0) romWidth += HBORDER;
   int listWidth = _w - (romWidth > 0 ? romWidth + fontWidth : 0) - HBORDER * 2;
   xpos = HBORDER;  ypos += lineHeight + VGAP;
-  myList = new FileListWidget(this, font, xpos, ypos, listWidth, listHeight);
+  myList = new FileListWidget(this, _font, xpos, ypos, listWidth, listHeight);
   myList->setEditable(false);
   myList->setListMode(FilesystemNode::ListMode::All);
   wid.push_back(myList);
@@ -236,11 +236,11 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   // Add textfield to show current directory
   xpos = HBORDER;
   ypos += myList->getHeight() + VGAP;
-  lwSelect = font.getStringWidth("Path") + LBL_GAP;
-  myDirLabel = new StaticTextWidget(this, font, xpos, ypos+2, lwSelect, fontHeight,
+  lwSelect = _font.getStringWidth("Path") + LBL_GAP;
+  myDirLabel = new StaticTextWidget(this, _font, xpos, ypos+2, lwSelect, fontHeight,
                                     "Path", TextAlign::Left);
   xpos += lwSelect;
-  myDir = new EditTextWidget(this, font, xpos, ypos, _w - xpos - HBORDER, lineHeight, "");
+  myDir = new EditTextWidget(this, _font, xpos, ypos, _w - xpos - HBORDER, lineHeight, "");
   myDir->setEditable(false, true);
   myDir->clearFlags(Widget::FLAG_RETAIN_FOCUS);
 
@@ -249,41 +249,41 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
     // Add four buttons at the bottom
     xpos = HBORDER;  ypos = _h - VBORDER - buttonHeight;
   #ifndef BSPF_MACOS
-    myStartButton = new ButtonWidget(this, font, xpos, ypos, (buttonWidth + 0) / 4, buttonHeight,
+    myStartButton = new ButtonWidget(this, _font, xpos, ypos, (buttonWidth + 0) / 4, buttonHeight,
                                      "Select", kLoadROMCmd);
     wid.push_back(myStartButton);
 
     xpos += (buttonWidth + 0) / 4 + BUTTON_GAP;
-    myPrevDirButton = new ButtonWidget(this, font, xpos, ypos, (buttonWidth + 1) / 4, buttonHeight,
+    myPrevDirButton = new ButtonWidget(this, _font, xpos, ypos, (buttonWidth + 1) / 4, buttonHeight,
                                        "Go Up", kPrevDirCmd);
     wid.push_back(myPrevDirButton);
 
     xpos += (buttonWidth + 1) / 4 + BUTTON_GAP;
-    myOptionsButton = new ButtonWidget(this, font, xpos, ypos, (buttonWidth + 3) / 4, buttonHeight,
+    myOptionsButton = new ButtonWidget(this, _font, xpos, ypos, (buttonWidth + 3) / 4, buttonHeight,
                                        "Options" + ELLIPSIS, kOptionsCmd);
     wid.push_back(myOptionsButton);
 
     xpos += (buttonWidth + 2) / 4 + BUTTON_GAP;
-    myQuitButton = new ButtonWidget(this, font, xpos, ypos, (buttonWidth + 4) / 4, buttonHeight,
+    myQuitButton = new ButtonWidget(this, _font, xpos, ypos, (buttonWidth + 4) / 4, buttonHeight,
                                     "Quit", kQuitCmd);
     wid.push_back(myQuitButton);
   #else
-    myQuitButton = new ButtonWidget(this, font, xpos, ypos, (buttonWidth + 0) / 4, buttonHeight,
+    myQuitButton = new ButtonWidget(this, _font, xpos, ypos, (buttonWidth + 0) / 4, buttonHeight,
                                     "Quit", kQuitCmd);
     wid.push_back(myQuitButton);
 
     xpos += (buttonWidth + 0) / 4 + BUTTON_GAP;
-    myOptionsButton = new ButtonWidget(this, font, xpos, ypos, (buttonWidth + 1) / 4, buttonHeight,
+    myOptionsButton = new ButtonWidget(this, _font, xpos, ypos, (buttonWidth + 1) / 4, buttonHeight,
                                        "Options" + ELLIPSIS, kOptionsCmd);
     wid.push_back(myOptionsButton);
 
     xpos += (buttonWidth + 1) / 4 + BUTTON_GAP;
-    myPrevDirButton = new ButtonWidget(this, font, xpos, ypos, (buttonWidth + 2) / 4, buttonHeight,
+    myPrevDirButton = new ButtonWidget(this, _font, xpos, ypos, (buttonWidth + 2) / 4, buttonHeight,
                                        "Go Up", kPrevDirCmd);
     wid.push_back(myPrevDirButton);
 
     xpos += (buttonWidth + 2) / 4 + BUTTON_GAP;
-    myStartButton = new ButtonWidget(this, font, xpos, ypos, (buttonWidth + 3) / 4, buttonHeight,
+    myStartButton = new ButtonWidget(this, _font, xpos, ypos, (buttonWidth + 3) / 4, buttonHeight,
                                      "Select", kLoadROMCmd);
     wid.push_back(myStartButton);
   #endif
@@ -297,12 +297,12 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   addToFocusList(wid);
 
   // Create (empty) context menu for ROM list options
-  myMenu = make_unique<ContextMenu>(this, osystem.frameBuffer().launcherFont(), EmptyVarList);
+  myMenu = make_unique<ContextMenu>(this, _font, EmptyVarList);
 
   // Create global props dialog, which is used to temporarily override
   // ROM properties
   myGlobalProps = make_unique<GlobalPropsDialog>(this,
-    myUseMinimalUI ? osystem.frameBuffer().launcherFont() : osystem.frameBuffer().font());
+    myUseMinimalUI ? _font : osystem.frameBuffer().font());
 
   // since we cannot know how many files there are, use are really high value here
   myList->progress().setRange(0, 50000, 5);
@@ -536,16 +536,15 @@ float LauncherDialog::getRomInfoZoom(int listHeight) const
 
   if(zoom > 0.F)
   {
-    const GUI::Font& font = instance().frameBuffer().launcherFont();
     const GUI::Font& smallFont = instance().frameBuffer().smallFont();
-    const int fontWidth = font.getMaxCharWidth(),
-              HBORDER = fontWidth * 1.25;
+    const int fontWidth = Dialog::fontWidth(),
+              HBORDER   = Dialog::hBorder();
 
     // upper zoom limit - at least 24 launchers chars/line and 7 + 4 ROM info lines
     if((_w - (HBORDER * 2 + fontWidth + 30) - zoom * TIAConstants::viewableWidth)
-       / font.getMaxCharWidth() < MIN_LAUNCHER_CHARS)
+       / fontWidth < MIN_LAUNCHER_CHARS)
     {
-      zoom = float(_w - (HBORDER * 2 + fontWidth + 30) - MIN_LAUNCHER_CHARS * font.getMaxCharWidth())
+      zoom = float(_w - (HBORDER * 2 + fontWidth + 30) - MIN_LAUNCHER_CHARS * fontWidth)
         / TIAConstants::viewableWidth;
     }
     if((listHeight - 12 - zoom * TIAConstants::viewableHeight) <
@@ -584,7 +583,7 @@ void LauncherDialog::setRomInfoFont(const Common::Size& area)
   for(size_t i = 0; i < sizeof(FONTS) / sizeof(FontDesc); ++i)
   {
     // only use fonts <= launcher fonts
-    if(instance().frameBuffer().launcherFont().getFontHeight() >= FONTS[i].height)
+    if(Dialog::fontHeight() >= FONTS[i].height)
     {
       if(area.h >= uInt32(MIN_ROMINFO_ROWS * FONTS[i].height + 2
          + MIN_ROMINFO_LINES * FONTS[i].height)
@@ -916,7 +915,7 @@ void LauncherDialog::openHighScores()
 void LauncherDialog::openWhatsNew()
 {
   if(myWhatsNewDialog == nullptr)
-    myWhatsNewDialog = make_unique<WhatsNewDialog>(instance(), parent(), _font, _w, _h);
+    myWhatsNewDialog = make_unique<WhatsNewDialog>(instance(), parent(), _w, _h);
   myWhatsNewDialog->open();
 
 }

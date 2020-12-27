@@ -32,17 +32,14 @@ ProgressDialog::ProgressDialog(GuiObject* boss, const GUI::Font& font,
   : Dialog(boss->instance(), boss->parent()),
     myFont{font}
 {
-  const int fontWidth  = font.getMaxCharWidth(),
-            fontHeight = font.getFontHeight(),
-            lineHeight = font.getLineHeight(),
-            VBORDER = fontHeight / 2,
-            HBORDER = fontWidth * 1.25,
-            VGAP = fontHeight / 4,
-            buttonHeight = font.getLineHeight() * 1.25,
-            BTN_BORDER = fontWidth * 2.5,
-            buttonWidth = font.getStringWidth("Cancel") + BTN_BORDER,
-            lwidth = font.getStringWidth(message);
-
+  const int lineHeight   = Dialog::lineHeight(),
+            fontHeight   = Dialog::fontHeight(),
+            buttonHeight = Dialog::buttonHeight(),
+            buttonWidth  = Dialog::buttonWidth("Cancel"),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder(),
+            VGAP         = Dialog::vGap();
+  const int lwidth = font.getStringWidth(message);
   int xpos, ypos;
   WidgetArray wid;
 
@@ -73,12 +70,9 @@ ProgressDialog::ProgressDialog(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ProgressDialog::setMessage(const string& message)
 {
-  const int fontWidth = myFont.getMaxCharWidth(),
-    HBORDER = fontWidth * 1.25,
-    lwidth = myFont.getStringWidth(message),
-    BTN_BORDER = fontWidth * 2.5,
-    buttonWidth = myFont.getStringWidth("Cancel") + BTN_BORDER;
-
+  const int buttonWidth  = Dialog::buttonWidth("Cancel"),
+            HBORDER      = Dialog::hBorder();
+  const int lwidth = myFont.getStringWidth(message);
   // Recalculate real dimensions
   _w = HBORDER * 2 + std::max(lwidth, buttonWidth);
 

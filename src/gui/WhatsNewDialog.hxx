@@ -23,7 +23,7 @@
 class WhatsNewDialog : public Dialog
 {
   public:
-    WhatsNewDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font,
+    WhatsNewDialog(OSystem& osystem, DialogContainer& parent,
                    int max_w, int max_h);
     ~WhatsNewDialog() override = default;
 

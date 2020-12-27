@@ -30,16 +30,14 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
                                const GUI::Font& font, int max_w, int max_h)
   : Dialog(osystem, parent, font, "Snapshot settings")
 {
-  const int lineHeight   = font.getLineHeight(),
-            fontHeight   = _font.getFontHeight(),
-            fontWidth    = font.getMaxCharWidth(),
-            buttonWidth  = font.getStringWidth("Save path" + ELLIPSIS) + fontWidth * 2.5,
-            buttonHeight = font.getLineHeight() * 1.25;
-  const int HBORDER = fontWidth * 1.25;
-  const int VBORDER = fontHeight / 4;
-  const int INDENT = fontWidth * 2;
-  const int VGAP = fontHeight / 4;
-
+  const int lineHeight   = Dialog::lineHeight(),
+            fontWidth    = Dialog::fontWidth(),
+            buttonHeight = Dialog::buttonHeight(),
+            buttonWidth  = Dialog::buttonWidth("Save path" + ELLIPSIS),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder(),
+            VGAP         = Dialog::vGap(),
+            INDENT       = Dialog::indent();
   int xpos, ypos, fwidth;
   WidgetArray wid;
   ButtonWidget* b;

@@ -50,14 +50,13 @@ InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& lfont,
 void InputTextDialog::initialize(const GUI::Font& lfont, const GUI::Font& nfont,
                                  const StringList& labels)
 {
-  const int lineHeight   = lfont.getLineHeight(),
-            fontWidth    = lfont.getMaxCharWidth(),
-            fontHeight   = lfont.getFontHeight(),
-            buttonHeight = lfont.getLineHeight() * 1.25;
-  const int VBORDER = fontHeight / 2;
-  const int HBORDER = fontWidth * 1.25;
-  const int VGAP = fontHeight / 4;
-
+  const int lineHeight   = Dialog::lineHeight(),
+            fontHeight   = Dialog::fontHeight(),
+            fontWidth    = Dialog::fontWidth(),
+            buttonHeight = Dialog::buttonHeight(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder(),
+            VGAP         = Dialog::vGap();
   uInt32 xpos, ypos, i, lwidth = 0, maxIdx = 0;
   WidgetArray wid;
 

@@ -127,6 +127,19 @@ class Dialog : public GuiObject
 
     ToolTip& tooltip() { return *_toolTip; }
 
+    int lineHeight() const { return _font.getLineHeight(); }
+    int fontHeight() const { return _font.getFontHeight(); }
+    int fontWidth() const { return _font.getMaxCharWidth(); }
+    int buttonHeight() const { return lineHeight() * 1.25; }
+    int buttonWidth(const string& label) const {
+      return _font.getStringWidth(label) + fontWidth() * 2.5;
+    }
+    int buttonGap() const { return fontWidth(); }
+    int hBorder() const { return fontWidth() * 1.25; };
+    int vBorder() const { return fontHeight() / 2; };
+    int vGap() const { return fontHeight() / 4; };
+    int indent() const { return fontWidth() * 2; };
+
   protected:
     void draw() override { }
     void releaseFocus() override;
@@ -164,7 +177,6 @@ class Dialog : public GuiObject
                                    const string& cancelText = "Cancel",
                                    const string& defaultsText = "Defaults",
                                    bool focusOKButton = true);
-    int buttonHeight(const GUI::Font& font) const;
 
     // NOTE: This method, and the three above it, are due to be refactored at some
     //       point, since the parameter list is kind of getting ridiculous

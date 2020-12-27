@@ -477,13 +477,13 @@ void EditableWidget::drawCaretSelection()
     int y = editRect.y();
     int w = editRect.w();
     int h = editRect.h();
-    int wt = int(text.length()) * _font.getMaxCharWidth() + 1;
-    int dx = selectStartPos() * _font.getMaxCharWidth() - _editScrollOffset;
+    int wt = int(text.length()) * _boss->dialog().fontWidth() + 1;
+    int dx = selectStartPos() * _boss->dialog().fontWidth() - _editScrollOffset;
 
     if(dx < 0)
     {
       // selected text starts left of displayed rect
-      text = text.substr(-(dx - 1) / _font.getMaxCharWidth());
+      text = text.substr(-(dx - 1) / _boss->dialog().fontWidth());
       wt += dx;
       dx = 0;
     }
