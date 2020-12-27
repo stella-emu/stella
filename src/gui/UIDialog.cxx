@@ -591,7 +591,7 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
 
     case kChooseSnapLoadDirCmd:
       BrowserDialog::show(this, _font, "Select ROM Info Viewer Image Directory",
-                          myRomPath->getText(),
+                          mySnapLoadPath->getText(),
                           BrowserDialog::Mode::Directories,
                           [this](bool OK, const FilesystemNode& node) {
                             if(OK) mySnapLoadPath->setText(node.getShortPath());
