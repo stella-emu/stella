@@ -37,7 +37,6 @@
 RomAuditDialog::RomAuditDialog(OSystem& osystem, DialogContainer& parent,
                                const GUI::Font& font, int max_w, int max_h)
   : Dialog(osystem, parent, font, "Audit ROMs"),
-    myFont{font},
     myMaxWidth{max_w},
     myMaxHeight{max_h}
 {
@@ -186,7 +185,7 @@ void RomAuditDialog::handleCommand(CommandSender* sender, int cmd,
         msg.push_back("If you're sure you want to proceed with the");
         msg.push_back("audit, click 'OK', otherwise click 'Cancel'.");
         myConfirmMsg = make_unique<GUI::MessageBox>
-          (this, myFont, msg, myMaxWidth, myMaxHeight, kConfirmAuditCmd,
+          (this, _font, msg, myMaxWidth, myMaxHeight, kConfirmAuditCmd,
           "OK", "Cancel", "ROM Audit", false);
       }
       myConfirmMsg->show();
@@ -229,7 +228,7 @@ void RomAuditDialog::createBrowser(const string& title)
   // Create file browser dialog
   if(!myBrowser || uInt32(myBrowser->getWidth()) != w ||
      uInt32(myBrowser->getHeight()) != h)
-    myBrowser = make_unique<BrowserDialog>(this, myFont, w, h, title);
+    myBrowser = make_unique<BrowserDialog>(this, _font, w, h, title);
   else
     myBrowser->setTitle(title);
 }

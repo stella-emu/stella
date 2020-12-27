@@ -54,7 +54,6 @@ class RomAuditDialog : public Dialog
 
     // Select a new ROM audit path
     unique_ptr<BrowserDialog> myBrowser;
-    const GUI::Font& myFont;
 
     // ROM audit path
     EditTextWidget* myRomPath{nullptr};

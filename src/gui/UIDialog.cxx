@@ -42,7 +42,6 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
                    const GUI::Font& font, GuiObject* boss, int max_w, int max_h)
   : Dialog(osystem, parent, font, "User interface settings"),
     CommandSender(boss),
-    myFont{font},
     myIsGlobal{boss != nullptr}
 {
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
@@ -712,7 +711,7 @@ void UIDialog::createBrowser(const string& title)
   // Create file browser dialog
   if(!myBrowser || uInt32(myBrowser->getWidth()) != w ||
      uInt32(myBrowser->getHeight()) != h)
-    myBrowser = make_unique<BrowserDialog>(this, myFont, w, h, title);
+    myBrowser = make_unique<BrowserDialog>(this, _font, w, h, title);
   else
     myBrowser->setTitle(title);
 }
