@@ -15,6 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include "OSystem.hxx"
+#include "FrameBuffer.hxx"
 #include "Version.hxx"
 
 #include "WhatsNewDialog.hxx"
@@ -22,20 +24,21 @@
 constexpr int MAX_CHARS = 64; // maximum number of chars per line
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font,
+WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent,
                                int max_w, int max_h)
 #if defined(RETRON77)
-  : Dialog(osystem, parent, font, "What's New in Stella " + string(STELLA_VERSION) + " for RetroN 77?")
+  : Dialog(osystem, parent, osystem.frameBuffer().font(),
+           "What's New in Stella " + string(STELLA_VERSION) + " for RetroN 77?")
 #else
-  : Dialog(osystem, parent, font, "What's New in Stella " + string(STELLA_VERSION) + "?")
+  : Dialog(osystem, parent, osystem.frameBuffer().font(),
+           "What's New in Stella " + string(STELLA_VERSION) + "?")
 #endif
 {
-  const int fontHeight = _font.getFontHeight(),
-    fontWidth = _font.getMaxCharWidth(),
-    buttonHeight = _font.getLineHeight() * 1.25;
-  const int VGAP = fontHeight / 4;
-  const int VBORDER = fontHeight / 2;
-  const int HBORDER = fontWidth * 1.25;
+  const int fontWidth    = Dialog::fontWidth(),
+            buttonHeight = Dialog::buttonHeight(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder(),
+            VGAP         = Dialog::vGap();
   int ypos = _th + VBORDER;
 
   // Set preliminary dimensions
@@ -75,10 +78,9 @@ WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent, const 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void WhatsNewDialog::add(int& ypos, const string& text)
 {
-  const int lineHeight = _font.getLineHeight(),
-    fontHeight = _font.getFontHeight(),
-    fontWidth = _font.getMaxCharWidth(),
-    HBORDER = fontWidth * 1.25;
+  const int lineHeight = Dialog::lineHeight(),
+            fontHeight = Dialog::fontHeight(),
+            HBORDER    = Dialog::hBorder();
   const string DOT = "\x1f";
   string txt = DOT + " " + text;
 

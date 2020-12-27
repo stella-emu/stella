@@ -24,6 +24,7 @@
 #include "Settings.hxx"
 #include "PopUpWidget.hxx"
 #include "StringListWidget.hxx"
+#include "BrowserDialog.hxx"
 #include "StringParser.hxx"
 #include "Widget.hxx"
 #include "Font.hxx"
@@ -36,15 +37,13 @@ LoggerDialog::LoggerDialog(OSystem& osystem, DialogContainer& parent,
                            bool uselargefont)
   : Dialog(osystem, parent, font, "System logs")
 {
-  const int lineHeight   = font.getLineHeight(),
-            fontWidth    = font.getMaxCharWidth(),
-            fontHeight   = font.getFontHeight(),
-            buttonWidth  = font.getStringWidth("Save log to disk") + fontWidth * 2.5,
-            buttonHeight = font.getLineHeight() * 1.25;
-  const int VBORDER = fontHeight / 2;
-  const int HBORDER = fontWidth * 1.25;
-  const int VGAP = fontHeight / 4;
-
+  const int lineHeight   = Dialog::lineHeight(),
+            fontWidth    = Dialog::fontWidth(),
+            buttonHeight = Dialog::buttonHeight(),
+            buttonWidth  = Dialog::buttonWidth("Save log to disk" + ELLIPSIS),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder(),
+            VGAP         = Dialog::vGap();
   int xpos, ypos;
   WidgetArray wid;
 
@@ -80,7 +79,7 @@ LoggerDialog::LoggerDialog(OSystem& osystem, DialogContainer& parent,
   // Add Save, OK and Cancel buttons
   ButtonWidget* b;
   b = new ButtonWidget(this, font, HBORDER, _h - buttonHeight - VBORDER,
-                       buttonWidth, buttonHeight, "Save log to disk",
+                       buttonWidth, buttonHeight, "Save log to disk" + ELLIPSIS,
                        GuiObject::kDefaultsCmd);
   wid.push_back(b);
   addOKCancelBGroup(wid, font);
@@ -114,21 +113,18 @@ void LoggerDialog::saveConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LoggerDialog::saveLogFile()
+void LoggerDialog::saveLogFile(const FilesystemNode& node)
 {
-  FilesystemNode node = instance().defaultSaveDir();
-  node /= "stella.log";
-
   try
   {
     stringstream out;
     out << Logger::instance().logMessages();
-    instance().frameBuffer().showTextMessage("Saving log file to " + node.getShortPath());
     node.write(out);
+    instance().frameBuffer().showTextMessage("System log saved");
   }
   catch(...)
   {
-    instance().frameBuffer().showTextMessage("Error saving log file to " + node.getShortPath());
+    instance().frameBuffer().showTextMessage("Error saving system log");
   }
 }
 
@@ -144,7 +140,12 @@ void LoggerDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case GuiObject::kDefaultsCmd:
-      saveLogFile();
+      BrowserDialog::show(this, _font, "Save Log as",
+                          instance().userDir().getPath() + "stella.log",
+                          BrowserDialog::Mode::FileSave,
+                          [this](bool OK, const FilesystemNode& node) {
+                            if(OK) saveLogFile(node);
+                          });
       break;
 
     default:

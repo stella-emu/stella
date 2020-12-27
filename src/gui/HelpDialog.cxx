@@ -28,15 +28,14 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
                        const GUI::Font& font)
   : Dialog(osystem, parent, font, "Help")
 {
-  const int lineHeight   = font.getLineHeight(),
-            fontWidth    = font.getMaxCharWidth(),
-            fontHeight   = font.getFontHeight(),
-            buttonWidth  = font.getStringWidth("Previous") + fontWidth * 2.5,
-            buttonHeight = font.getLineHeight() * 1.25;
-  const int VBORDER = fontHeight / 2;
-  const int HBORDER = fontWidth * 1.25;
-  const int VGAP = fontHeight / 4;
-
+  const int lineHeight   = Dialog::lineHeight(),
+            fontHeight   = Dialog::fontHeight(),
+            fontWidth    = Dialog::fontWidth(),
+            buttonHeight = Dialog::buttonHeight(),
+            buttonWidth  = Dialog::buttonWidth("Previous"),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder(),
+            VGAP         = Dialog::vGap();
   int xpos, ypos;
   WidgetArray wid;
 
@@ -76,10 +75,10 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
   {
     myKey[i] =
       new StaticTextWidget(this, font, xpos, ypos, lwidth,
-                           fontHeight, "", TextAlign::Left);
+                           fontHeight);
     myDesc[i] =
       new StaticTextWidget(this, font, xpos+lwidth, ypos, _w - xpos - lwidth - HBORDER,
-                           fontHeight, "", TextAlign::Left);
+                           fontHeight);
     ypos += fontHeight;
   }
 

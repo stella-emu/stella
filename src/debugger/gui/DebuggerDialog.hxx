@@ -21,6 +21,7 @@
 class Debugger;
 class OSystem;
 class DialogContainer;
+class FilesystemNode;
 class ButtonWidget;
 class CpuWidget;
 class PromptWidget;
@@ -54,6 +55,13 @@ class DebuggerDialog : public Dialog
       kMediumFontMinW = 1160, kMediumFontMinH = 770,
       kLargeFontMinW  = 1160, kLargeFontMinH  = 870
     };
+    enum BrowserType {
+      svAccess,     // saveaccess
+      svDis,        // savedis
+      svRom,        // saverom
+      svScript,     // save
+      svSession     // saveses
+    };
 
     DebuggerDialog(OSystem& osystem, DialogContainer& parent,
                    int x, int y, int w, int h);
@@ -74,6 +82,7 @@ class DebuggerDialog : public Dialog
 
     void showFatalMessage(const string& msg);
     void saveConfig() override;
+    void showBrowser(BrowserType type, const string& defaultName);
 
   private:
     void setPosition() override { positionAt(0); }
@@ -113,10 +122,13 @@ class DebuggerDialog : public Dialog
       kDDSAdvCmd      = 'DDsv',
       kDDRewindCmd    = 'DDrw',
       kDDUnwindCmd    = 'DDuw',
-      kDDRunCmd      = 'DDex',
+      kDDRunCmd       = 'DDex',
       kDDExitFatalCmd = 'DDer',
       kDDOptionsCmd   = 'DDop'
     };
+
+    void runCommand(const FilesystemNode& node,
+                    const string& command = EmptyString);
 
     TabWidget *myTab{nullptr}, *myRomTab{nullptr};
 
@@ -135,7 +147,7 @@ class DebuggerDialog : public Dialog
     ButtonWidget*    myUnwindButton{nullptr};
 
     unique_ptr<GUI::MessageBox> myFatalError;
-    unique_ptr<OptionsDialog> myOptions;
+    unique_ptr<OptionsDialog>   myOptions;
 
     unique_ptr<GUI::Font> myLFont;  // used for labels
     unique_ptr<GUI::Font> myNFont;  // used for normal text

@@ -316,13 +316,13 @@ string Console::formatFromFilename() const
     { R"([ _\-(\[<]+NTSC[ _-]?50)",     "NTSC50"  },
     { R"([ _\-(\[<]+PAL[ _-]?60)",      "PAL60"   },
     { R"([ _\-(\[<]+SECAM[ _-]?60)",    "SECAM60" },
-    { R"([ _\-(\[<]+NTSC[ _\-)\]>]?)",  "NTSC"    },
-    { R"([ _\-(\[<]+PAL[ _\-)\]>]?)",   "PAL"     },
-    { R"([ _\-(\[<]+SECAM[ _\-)\]>]?)", "SECAM"   }
+    { R"([ _\-(\[<]+NTSC[ _\-)\]>.])",  "NTSC"    },
+    { R"([ _\-(\[<]+PAL[ _\-)\]>.])",   "PAL"     },
+    { R"([ _\-(\[<]+SECAM[ _\-)\]>.])", "SECAM"   }
   }};
 
-  // Get filename *without* extension, and search using regex's above
-  const string& filename = myOSystem.romFile().getNameWithExt("");
+  // Get filename, and search using regex's above
+  const string& filename = myOSystem.romFile().getName();
   for(size_t i = 0; i < Pattern.size(); ++i)
   {
     try

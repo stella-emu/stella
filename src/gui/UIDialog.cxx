@@ -42,18 +42,17 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
                    const GUI::Font& font, GuiObject* boss, int max_w, int max_h)
   : Dialog(osystem, parent, font, "User interface settings"),
     CommandSender(boss),
-    myFont{font},
     myIsGlobal{boss != nullptr}
 {
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
-  const int lineHeight   = font.getLineHeight(),
-            fontWidth    = font.getMaxCharWidth(),
-            fontHeight   = font.getFontHeight(),
-            buttonHeight = font.getLineHeight() * 1.25;
-  const int VBORDER = fontHeight / 2;
-  const int HBORDER = fontWidth * 1.25;
-  const int INDENT = fontWidth * 2;
-  const int VGAP = fontHeight / 4;
+  const int lineHeight   = Dialog::lineHeight(),
+            fontHeight   = Dialog::fontHeight(),
+            fontWidth    = Dialog::fontWidth(),
+            buttonHeight = Dialog::buttonHeight(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder(),
+            VGAP         = Dialog::vGap(),
+            INDENT       = Dialog::indent();
   int xpos, ypos, tabID;
   int lwidth, pwidth, bwidth;
   WidgetArray wid;
@@ -90,7 +89,6 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
                                    items, "Theme      ", lwidth);
   wid.push_back(myPalettePopup);
   ypos += lineHeight + VGAP;
-
 
   // Dialog font
   items.clear();
@@ -319,11 +317,6 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-UIDialog::~UIDialog()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void UIDialog::loadConfig()
 {
   const Settings& settings = instance().settings();
@@ -515,7 +508,7 @@ void UIDialog::setDefaults()
       myLauncherHeightSlider->setValue(h);
       myLauncherFontPopup->setSelected("medium", "");
       myRomViewerSize->setValue(35);
-      mySnapLoadPath->setText(instance().defaultLoadDir().getShortPath());
+      mySnapLoadPath->setText(instance().userDir().getShortPath());
       myLauncherExitWidget->setState(false);
       break;
     }
@@ -584,15 +577,12 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
       break;
 
     case kChooseRomDirCmd:
-      // This dialog is resizable under certain conditions, so we need
-      // to re-create it as necessary
-      createBrowser("Select ROM directory");
-      myBrowser->show(myRomPath->getText(),
-                      BrowserDialog::Directories, LauncherDialog::kRomDirChosenCmd);
-      break;
-
-    case LauncherDialog::kRomDirChosenCmd:
-      myRomPath->setText(myBrowser->getResult().getShortPath());
+      BrowserDialog::show(this, _font, "Select ROM Directory",
+                          myRomPath->getText(),
+                          BrowserDialog::Mode::Directories,
+                          [this](bool OK, const FilesystemNode& node) {
+                            if(OK) myRomPath->setText(node.getShortPath());
+                          });
       break;
 
     case kRomViewer:
@@ -600,15 +590,12 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
       break;
 
     case kChooseSnapLoadDirCmd:
-      // This dialog is resizable under certain conditions, so we need
-      // to re-create it as necessary
-      createBrowser("Select snapshot load directory");
-      myBrowser->show(mySnapLoadPath->getText(),
-                      BrowserDialog::Directories, kSnapLoadDirChosenCmd);
-      break;
-
-    case kSnapLoadDirChosenCmd:
-      mySnapLoadPath->setText(myBrowser->getResult().getShortPath());
+      BrowserDialog::show(this, _font, "Select ROM Info Viewer Image Directory",
+                          mySnapLoadPath->getText(),
+                          BrowserDialog::Mode::Directories,
+                          [this](bool OK, const FilesystemNode& node) {
+                            if(OK) mySnapLoadPath->setText(node.getShortPath());
+                          });
       break;
 
     default:
@@ -699,18 +686,4 @@ void UIDialog::handleRomViewer()
   }
   myOpenBrowserButton->setEnabled(enable);
   mySnapLoadPath->setEnabled(enable);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void UIDialog::createBrowser(const string& title)
-{
-  uInt32 w = 0, h = 0;
-  getDynamicBounds(w, h);
-
-  // Create file browser dialog
-  if(!myBrowser || uInt32(myBrowser->getWidth()) != w ||
-     uInt32(myBrowser->getHeight()) != h)
-    myBrowser = make_unique<BrowserDialog>(this, myFont, w, h, title);
-  else
-    myBrowser->setTitle(title);
 }

@@ -79,11 +79,10 @@ MessageBox::MessageBox(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MessageBox::addText(const GUI::Font& font, const StringList& text)
 {
-  const int fontWidth    = font.getMaxCharWidth(),
-            fontHeight   = font.getFontHeight();
-  const int VBORDER = fontHeight / 2;
-  const int HBORDER = fontWidth * 1.25;
-
+  const int fontWidth  = Dialog::fontWidth(),
+            fontHeight = Dialog::fontHeight(),
+            VBORDER    = Dialog::vBorder(),
+            HBORDER    = Dialog::hBorder();
   int xpos, ypos;
   // Set real dimensions
   int str_w = 0;

@@ -77,7 +77,7 @@ class GameInfoDialog : public Dialog, public CommandSender
     // set formatted memory value for given address field
     void setAddressVal(EditTextWidget* address, EditTextWidget* val,
                        bool isBCD = true, bool zeroBased = false, uInt8 maxVal = 255);
-    void saveCurrentPropertiesToDisk();
+    void exportCurrentPropertiesToDisk(const FilesystemNode& node);
 
   private:
     TabWidget* myTab{nullptr};
@@ -180,7 +180,7 @@ class GameInfoDialog : public Dialog, public CommandSender
       kHiScoresChanged = 'HSch',
       kPXCenterChanged = 'Pxch',
       kPYCenterChanged = 'Pych',
-      kSavePressed     = 'GIsp'
+      kExportPressed   = 'Expr'
     };
 
     // Game properties for currently loaded ROM

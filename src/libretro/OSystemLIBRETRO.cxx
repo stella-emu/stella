@@ -25,9 +25,8 @@
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystemLIBRETRO::getBaseDirAndConfig(string& basedir,
-        string& savedir, string& loaddir,
-        bool useappdir, const string& usedir)
+void OSystemLIBRETRO::getBaseDirAndConfig(string& basedir, string& homedir,
+                                          bool useappdir, const string& usedir)
 {
-  loaddir = savedir = basedir = "." + slash;
+  basedir = homedir = "." + slash;
 }

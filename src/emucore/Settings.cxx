@@ -135,6 +135,8 @@ Settings::Settings()
 
   // Config files and paths
   setPermanent("romdir", "");
+  setPermanent("userdir", "");
+  setPermanent("saveuserdir", "false");
 
   // ROM browser options
   setPermanent("exitlauncher", "false");
@@ -526,14 +528,14 @@ void Settings::usage() const
     << endl
     << "  -saveonexit   <none|current| Automatically save state(s) when exiting\n"
     << "                 all>           emulation\n"
-    << "  -autoslot     <1|0>          Automatically change to next save slot when\n"
+    << "  -autoslot     <0|1>          Automatically change to next save slot when\n"
     << "                                state saving\n"
     << endl
     << "  -rominfo      <rom>          Display detailed information for the given ROM\n"
     << "  -listrominfo                 Display contents of stella.pro, one line per ROM\n"
     << "                                entry\n"
     << endl
-    << "  -exitlauncher <1|0>          On exiting a ROM, go back to the ROM launcher\n"
+    << "  -exitlauncher <0|1>          On exiting a ROM, go back to the ROM launcher\n"
     << "  -launcherpos  <XxY>          Sets the window position in windowed EOM launcher mode\n"
     << "  -launcherdisplay <number>    Sets the display for the ROM launcher\n"
     << "  -launcherres  <WxH>          The resolution to use in ROM launcher mode\n"
@@ -542,11 +544,14 @@ void Settings::usage() const
     << "                 medium|large|\n"
     << "                 large12|large14|\n"
     << "                 large16>\n"
-    << "  -launcherroms <1|0>          Show only ROMs in the launcher (vs. all files)\n"
-    << "  -launchersubdirs <1|0>       Show files from subdirectories too\n"
     << "  -romviewer    <float>        Show ROM info viewer at given zoom level in ROM\n"
     << "                                launcher (use 0 for off)\n"
-    << "  -followlauncher <0|1>        Default ROM path follows launcher navigation\n"
+    << "  -launcherroms    <1|0>       Show only ROMs in the launcher (vs. all files)\n"
+    << "  -launchersubdirs <0|1>       Show files from subdirectories too\n"
+    << "  -romdir          <dir>       Set the path where the ROM launcher will start\n"
+    << "  -followlauncher  <0|1>       Default ROM path follows launcher navigation\n"
+    << "  -userdir         <dir>       Set the path to save user files to\n"
+    << "  -saveuserdir     <0|1>       Update user path when navigating in browser\n"
     << "  -lastrom      <name>         Last played ROM, automatically selected in\n"
     << "                                launcher\n"
     << "  -romloadcount <number>       Number of ROM to load next from multicard\n"
@@ -570,8 +575,6 @@ void Settings::usage() const
     << "  -ctrlrate     <rate>         Rate per second of repeated controller input in\n"
     << "                                UI\n"
     << "  -basic_settings <0|1>        Display only a basic settings dialog\n"
-    << "  -romdir       <dir>          Set the directory where the ROM launcher will\n"
-    << "                                start\n"
     << "  -avoxport     <name>         The name of the serial port where an AtariVox is\n"
     << "                                connected\n"
     << "  -holdreset                   Start the emulator with the Game Reset switch\n"

@@ -54,7 +54,7 @@ void FileListWidget::setDirectory(const FilesystemNode& node,
   while(tmp.hasParent() && !_history.full())
   {
     string name = tmp.getName();
-    if(name.back() == '/' || name.back() == '\\')
+    if(name.back() == FilesystemNode::PATH_SEPARATOR)
       name.pop_back();
     if(!BSPF::startsWithIgnoreCase(name, " ["))
       name = " [" + name.append("]");

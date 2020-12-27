@@ -28,19 +28,16 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
                                const GUI::Font& font, int max_w, int max_h)
-  : Dialog(osystem, parent, font, "Snapshot settings"),
-    myFont{font}
+  : Dialog(osystem, parent, font, "Snapshot settings")
 {
-  const int lineHeight   = font.getLineHeight(),
-            fontHeight   = _font.getFontHeight(),
-            fontWidth    = font.getMaxCharWidth(),
-            buttonWidth  = font.getStringWidth("Save path" + ELLIPSIS) + fontWidth * 2.5,
-            buttonHeight = font.getLineHeight() * 1.25;
-  const int HBORDER = fontWidth * 1.25;
-  const int VBORDER = fontHeight / 4;
-  const int INDENT = fontWidth * 2;
-  const int VGAP = fontHeight / 4;
-
+  const int lineHeight   = Dialog::lineHeight(),
+            fontWidth    = Dialog::fontWidth(),
+            buttonHeight = Dialog::buttonHeight(),
+            buttonWidth  = Dialog::buttonWidth("Save path" + ELLIPSIS),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder(),
+            VGAP         = Dialog::vGap(),
+            INDENT       = Dialog::indent();
   int xpos, ypos, fwidth;
   WidgetArray wid;
   ButtonWidget* b;
@@ -99,11 +96,6 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SnapshotDialog::~SnapshotDialog()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SnapshotDialog::loadConfig()
 {
   const Settings& settings = instance().settings();
@@ -131,7 +123,7 @@ void SnapshotDialog::saveConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SnapshotDialog::setDefaults()
 {
-  mySnapSavePath->setText(instance().defaultSaveDir().getShortPath());
+  mySnapSavePath->setText(instance().userDir().getShortPath());
   mySnapInterval->setValue(2);
   mySnapName->setState(false);
   mySnapSingle->setState(false);
@@ -154,15 +146,12 @@ void SnapshotDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kChooseSnapSaveDirCmd:
-      // This dialog is resizable under certain conditions, so we need
-      // to re-create it as necessary
-      createBrowser("Select snapshot save directory");
-      myBrowser->show(mySnapSavePath->getText(),
-                      BrowserDialog::Directories, kSnapSaveDirChosenCmd);
-      break;
-
-    case kSnapSaveDirChosenCmd:
-      mySnapSavePath->setText(myBrowser->getResult().getShortPath());
+      BrowserDialog::show(this, _font, "Select Snapshot Save Directory",
+                          mySnapSavePath->getText(),
+                          BrowserDialog::Mode::Directories,
+                          [this](bool OK, const FilesystemNode& node) {
+                            if(OK) mySnapSavePath->setText(node.getShortPath());
+                          });
       break;
 
     case kSnapshotInterval:
@@ -176,18 +165,4 @@ void SnapshotDialog::handleCommand(CommandSender* sender, int cmd,
       Dialog::handleCommand(sender, cmd, data, 0);
       break;
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SnapshotDialog::createBrowser(const string& title)
-{
-  uInt32 w = 0, h = 0;
-  getDynamicBounds(w, h);
-
-  // Create file browser dialog
-  if(!myBrowser || uInt32(myBrowser->getWidth()) != w ||
-     uInt32(myBrowser->getHeight()) != h)
-    myBrowser = make_unique<BrowserDialog>(this, myFont, w, h, title);
-  else
-    myBrowser->setTitle(title);
 }

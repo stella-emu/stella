@@ -29,6 +29,7 @@
 #include "Paddles.hxx"
 #include "PopUpWidget.hxx"
 #include "PropsSet.hxx"
+#include "BrowserDialog.hxx"
 #include "QuadTariDialog.hxx"
 #include "TabWidget.hxx"
 #include "TIAConstants.hxx"
@@ -55,16 +56,13 @@ GameInfoDialog::GameInfoDialog(
     CommandSender(boss)
 {
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
-
-  const int lineHeight = font.getLineHeight(),
-            fontHeight = font.getFontHeight(),
-            fontWidth = font.getMaxCharWidth(),
-            buttonHeight = font.getLineHeight() * 1.25,
-            infoLineHeight = ifont.getLineHeight();
-  const int VBORDER = fontHeight / 2;
-  const int HBORDER = fontWidth * 1.25;
-  const int VGAP = fontHeight / 4;
-
+  const int infoLineHeight = ifont.getLineHeight();
+  const int lineHeight   = Dialog::lineHeight(),
+            fontWidth    = Dialog::fontWidth(),
+            buttonHeight = Dialog::buttonHeight(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder(),
+            VGAP         = Dialog::vGap();
   WidgetArray wid;
 
   // Set real dimensions
@@ -92,7 +90,9 @@ GameInfoDialog::GameInfoDialog(
   myTab->setActiveTab(0);
 
   // Add Defaults, OK and Cancel buttons
-  addDefaultsExtraOKCancelBGroup(wid, font, "Save", kSavePressed);
+  addDefaultsExtraOKCancelBGroup(wid, font, "Export" + ELLIPSIS, kExportPressed);
+  _extraWidget->setToolTip("Export the current ROM's properties\n"
+                           "into the default directory.");
   addBGroupToFocusList(wid);
 }
 
@@ -100,13 +100,12 @@ GameInfoDialog::GameInfoDialog(
 void GameInfoDialog::addEmulationTab()
 {
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
-  const int lineHeight = _font.getLineHeight(),
-    fontHeight = _font.getFontHeight(),
-    fontWidth = _font.getMaxCharWidth();
-  const int VBORDER = fontHeight / 2;
-  const int HBORDER = fontWidth * 1.25;
-  const int VGAP = fontHeight / 4;
-
+  const int lineHeight = Dialog::lineHeight(),
+            fontHeight = Dialog::fontHeight(),
+            fontWidth  = Dialog::fontWidth(),
+            VBORDER    = Dialog::vBorder(),
+            HBORDER    = Dialog::hBorder(),
+            VGAP       = Dialog::vGap();
   int ypos, pwidth, tabID;
   WidgetArray wid;
   VariantList items;
@@ -197,13 +196,10 @@ void GameInfoDialog::addEmulationTab()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::addConsoleTab()
 {
-  const int lineHeight = _font.getLineHeight(),
-    fontHeight = _font.getFontHeight(),
-    fontWidth = _font.getMaxCharWidth();
-  const int VBORDER = fontHeight / 2;
-  const int HBORDER = fontWidth * 1.25;
-  const int VGAP = fontHeight / 4;
-
+  const int lineHeight = Dialog::lineHeight(),
+            VBORDER    = Dialog::vBorder(),
+            HBORDER    = Dialog::hBorder(),
+            VGAP       = Dialog::vGap();
   int xpos, ypos, lwidth, tabID;
   WidgetArray wid;
 
@@ -253,15 +249,13 @@ void GameInfoDialog::addConsoleTab()
 void GameInfoDialog::addControllersTab()
 {
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
-  const int lineHeight = _font.getLineHeight(),
-    fontHeight = _font.getFontHeight(),
-    fontWidth = _font.getMaxCharWidth(),
-    buttonHeight = _font.getLineHeight() * 1.25;
-  const int VBORDER = fontHeight / 2;
-  const int HBORDER = fontWidth * 1.25;
-  const int INDENT = fontWidth * 2;
-  const int VGAP = fontHeight / 4;
-
+  const int lineHeight   = Dialog::lineHeight(),
+            fontWidth    = Dialog::fontWidth(),
+            buttonHeight = Dialog::buttonHeight(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder(),
+            VGAP         = Dialog::vGap(),
+            INDENT       = Dialog::indent();
   int xpos, ypos, pwidth, tabID;
   VariantList items, ctrls;
   WidgetArray wid;
@@ -405,13 +399,11 @@ void GameInfoDialog::addControllersTab()
 void GameInfoDialog::addCartridgeTab()
 {
   // 4) Cartridge properties
-  const int lineHeight = _font.getLineHeight(),
-    fontHeight = _font.getFontHeight(),
-    fontWidth = _font.getMaxCharWidth();
-  const int VBORDER = fontHeight / 2;
-  const int HBORDER = fontWidth * 1.25;
-  const int VGAP = fontHeight / 4;
-
+  const int lineHeight = Dialog::lineHeight(),
+            fontHeight = Dialog::fontHeight(),
+            VBORDER    = Dialog::vBorder(),
+            HBORDER    = Dialog::hBorder(),
+            VGAP       = Dialog::vGap();
   int xpos, ypos, lwidth, fwidth, tabID;
   WidgetArray wid;
   VariantList items;
@@ -466,14 +458,13 @@ void GameInfoDialog::addCartridgeTab()
 void GameInfoDialog::addHighScoresTab()
 {
   // 4) High Scores properties
-  const int lineHeight = _font.getLineHeight(),
-    fontHeight = _font.getFontHeight(),
-    fontWidth = _font.getMaxCharWidth();
-  const int VBORDER = fontHeight / 2;
-  const int HBORDER = fontWidth * 1.25;
-  const int INDENT = fontWidth * 2;
-  const int VGAP = fontHeight / 4;
-
+  const int lineHeight = Dialog::lineHeight(),
+            fontHeight = Dialog::fontHeight(),
+            fontWidth  = Dialog::fontWidth(),
+            VBORDER    = Dialog::vBorder(),
+            HBORDER    = Dialog::hBorder(),
+            VGAP       = Dialog::vGap(),
+            INDENT     = Dialog::indent();
   int xpos, ypos, lwidth, pwidth, tabID;
   WidgetArray wid;
   VariantList items;
@@ -657,7 +648,6 @@ void GameInfoDialog::addHighScoresTab()
   // Add items for tab 4
   addToFocusList(wid, myTab, tabID);
 }
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 GameInfoDialog::~GameInfoDialog()
@@ -1339,7 +1329,8 @@ void GameInfoDialog::setAddressVal(EditTextWidget* addressWidget, EditTextWidget
     valWidget->setText("");
 }
 
-void GameInfoDialog::saveCurrentPropertiesToDisk()
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void GameInfoDialog::exportCurrentPropertiesToDisk(const FilesystemNode& node)
 {
   saveProperties();
   stringstream out;
@@ -1347,16 +1338,12 @@ void GameInfoDialog::saveCurrentPropertiesToDisk()
 
   try
   {
-    FilesystemNode propfile = instance().defaultSaveDir();
-    propfile /= myGameFile.getNameWithExt(".pro");
-
-    propfile.write(out);
-    instance().frameBuffer().showTextMessage("Properties saved to " +
-                                             propfile.getShortPath());
+    node.write(out);
+    instance().frameBuffer().showTextMessage("ROM properties exported");
   }
   catch(...)
   {
-    instance().frameBuffer().showTextMessage("Error saving properties");
+    instance().frameBuffer().showTextMessage("Error exporting ROM properties");
   }
 }
 
@@ -1375,8 +1362,14 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
       setDefaults();
       break;
 
-    case kSavePressed:
-      saveCurrentPropertiesToDisk();
+    case kExportPressed:
+      BrowserDialog::show(this, _font, "Export Properties as",
+                          instance().userDir().getPath() +
+                            myGameFile.getNameWithExt(".pro"),
+                          BrowserDialog::Mode::FileSave,
+                          [this](bool OK, const FilesystemNode& node) {
+                            if(OK) exportCurrentPropertiesToDisk(node);
+                          });
       break;
 
     case TabWidget::kTabChangedCmd:

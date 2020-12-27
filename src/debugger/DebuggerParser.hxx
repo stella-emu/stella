@@ -65,6 +65,7 @@ class DebuggerParser
     bool validateArgs(int cmd);
     string eval();
     string saveScriptFile(string file);
+    const string& cartName() const;
 
   private:
     // Constants for argument processing

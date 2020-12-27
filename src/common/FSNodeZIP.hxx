@@ -106,21 +106,6 @@ class FilesystemNodeZIP : public AbstractFSNode
 
     // ZipHandler static reference variable responsible for accessing ZIP files
     static unique_ptr<ZipHandler> myZipHandler;
-
-    // Get last component of path
-    static const char* lastPathComponent(const string& str)
-    {
-      if(str.empty())
-        return "";
-
-      const char* start = str.c_str();
-      const char* cur = start + str.size() - 2;
-
-      while (cur >= start && !(*cur == '/' || *cur == '\\'))
-        --cur;
-
-      return cur + 1;
-    }
 };
 
 #endif

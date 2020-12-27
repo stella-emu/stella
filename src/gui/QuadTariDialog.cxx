@@ -31,13 +31,10 @@ QuadTariDialog::QuadTariDialog(GuiObject* boss, const GUI::Font& font, int max_w
   : Dialog(boss->instance(), boss->parent(), font, "QuadTari controllers", 0, 0, max_w, max_h),
     myGameProperties{properties}
 {
-  const int lineHeight = font.getLineHeight(),
-    fontHeight = font.getFontHeight(),
-    fontWidth = font.getMaxCharWidth();
-  const int VBORDER = fontHeight / 2;
-  const int HBORDER = fontWidth * 1.25;
-  const int VGAP = fontHeight / 4;
-
+  const int lineHeight = Dialog::lineHeight(),
+            VBORDER    = Dialog::vBorder(),
+            HBORDER    = Dialog::hBorder(),
+            VGAP       = Dialog::vGap();
   int xpos, ypos;
   WidgetArray wid;
   VariantList ctrls;

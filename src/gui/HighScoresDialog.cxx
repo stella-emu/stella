@@ -107,23 +107,22 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
   myScores.variation = HSM::DEFAULT_VARIATION;
 
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
-  const int lineHeight = _font.getLineHeight(),
-    fontHeight = _font.getFontHeight(),
-    fontWidth = _font.getMaxCharWidth(),
-    infoLineHeight = ifont.getLineHeight(),
-    buttonHeight = _font.getLineHeight() * 1.25;
-  const int VBORDER = fontHeight / 2;
-  const int HBORDER = fontWidth * 1.25;
-  const int VGAP = fontHeight / 4;
-  const int BUTTON_GAP = fontWidth;
-
+  const int infoLineHeight = ifont.getLineHeight();
+  const int lineHeight   = Dialog::lineHeight(),
+            fontHeight   = Dialog::fontHeight(),
+            fontWidth    = Dialog::fontWidth(),
+            buttonHeight = Dialog::buttonHeight(),
+            BUTTON_GAP   = Dialog::buttonGap(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder(),
+            VGAP         = Dialog::vGap();
   int xposRank = HBORDER;
   int xposScore = xposRank + _font.getStringWidth("Rank");
   int xposSpecial = xposScore + _font.getStringWidth("   Score  ");
   int xposName = xposSpecial + _font.getStringWidth("Round  ");
   int xposDate = xposName + _font.getStringWidth("Name  ");
   int xposDelete = xposDate + _font.getStringWidth("YY-MM-DD HH:MM  ");
-  int nWidth = _font.getStringWidth("ABC") + _font.getMaxCharWidth() * 0.75;
+  int nWidth = _font.getStringWidth("ABC") + fontWidth * 0.75;
   bool smallFont = _font.getFontHeight() < 24;
   int buttonSize = smallFont ? BUTTON_GFX_H : BUTTON_GFX_H_LARGE;
   int xpos, ypos;

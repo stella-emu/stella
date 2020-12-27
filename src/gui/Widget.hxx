@@ -57,6 +57,10 @@ class Widget : public GuiObject
     virtual void setPosY(int y);
     virtual void setPos(int x, int y);
     virtual void setPos(const Common::Point& pos);
+    void setWidth(int w) override;
+    void setHeight(int h) override;
+    virtual void setSize(int w, int h);
+    virtual void setSize(const Common::Point& pos);
 
     virtual bool handleText(char text)                        { return false; }
     virtual bool handleKeyDown(StellaKey key, StellaMod mod)  { return false; }
@@ -236,6 +240,8 @@ class ButtonWidget : public StaticTextWidget, public CommandSender
                  int cmd = 0, bool repeat = false);
     ~ButtonWidget() override = default;
 
+    bool handleEvent(Event::Type event) override;
+
     void setCmd(int cmd)  { _cmd = cmd; }
     int getCmd() const    { return _cmd; }
     /* Sets/changes the button's bitmap **/
@@ -247,7 +253,6 @@ class ButtonWidget : public StaticTextWidget, public CommandSender
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseEntered() override;
     void handleMouseLeft() override;
-    bool handleEvent(Event::Type event) override;
 
     void drawWidget(bool hilite) override;
 

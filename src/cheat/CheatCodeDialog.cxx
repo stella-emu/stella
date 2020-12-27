@@ -35,15 +35,14 @@ CheatCodeDialog::CheatCodeDialog(OSystem& osystem, DialogContainer& parent,
                                  const GUI::Font& font)
   : Dialog(osystem, parent, font, "Cheat codes")
 {
-  const int lineHeight = font.getLineHeight(),
-    fontHeight = font.getFontHeight(),
-    fontWidth = font.getMaxCharWidth(),
-    buttonWidth  = font.getStringWidth("One shot ") + fontWidth * 2.5,
-    buttonHeight = font.getLineHeight() * 1.25;
-  const int VBORDER = fontHeight / 2;
-  const int HBORDER = fontWidth * 1.25;
-  const int VGAP = fontHeight / 4;
-
+  const int lineHeight   = Dialog::lineHeight(),
+            //fontHeight   = Dialog::fontHeight(),
+            fontWidth    = Dialog::fontWidth(),
+            buttonHeight = Dialog::buttonHeight(),
+            buttonWidth  = Dialog::buttonWidth("One shot "),
+            VGAP         = Dialog::vGap(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder();
   int xpos, ypos;
   WidgetArray wid;
   ButtonWidget* b;

@@ -449,7 +449,7 @@ void Dialog::drawDialog()
       if(_th)
       {
         s.fillRect(_x, _y, _w, _th, kColorTitleBar);
-        s.drawString(_font, _title, _x + _font.getMaxCharWidth() * 1.25, _y + _font.getFontHeight() / 6,
+        s.drawString(_font, _title, _x + hBorder(), _y + _font.getFontHeight() / 6,
                      _font.getStringWidth(_title), kColorTitleText);
       }
     }
@@ -865,17 +865,14 @@ Widget* Dialog::findWidget(int x, int y) const
 void Dialog::addOKBGroup(WidgetArray& wid, const GUI::Font& font,
                          const string& okText, int buttonWidth)
 {
-  const int fontWidth = font.getMaxCharWidth(),
-    fontHeight = font.getFontHeight(),
-    buttonHeight = font.getLineHeight() * 1.25;
-  const int VBORDER = fontHeight / 2;
-  const int HBORDER = fontWidth * 1.25;
-  const int BTN_BORDER = fontWidth * 2.5;
-  const int BUTTON_GAP = fontWidth;
+  const int buttonHeight = Dialog::buttonHeight(),
+            BUTTON_GAP   = Dialog::buttonGap(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder();
 
-  buttonWidth = fontWidth * 6 + BTN_BORDER;
-  buttonWidth = std::max(buttonWidth, font.getStringWidth(okText) + BTN_BORDER);
-
+  buttonWidth = std::max(buttonWidth,
+                         std::max(Dialog::buttonWidth(okText),
+                         Dialog::buttonWidth("Cancel")));
   _w = std::max(HBORDER * 2 + buttonWidth * 2 + BUTTON_GAP, _w);
 
   addOKWidget(new ButtonWidget(this, font, (_w - buttonWidth) / 2,
@@ -888,17 +885,15 @@ void Dialog::addOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
                                const string& okText, const string& cancelText,
                                bool focusOKButton, int buttonWidth)
 {
-  const int fontWidth    = font.getMaxCharWidth(),
-            fontHeight   = font.getFontHeight(),
-            buttonHeight = font.getLineHeight() * 1.25;
-  const int VBORDER = fontHeight / 2;
-  const int HBORDER = fontWidth * 1.25;
-  const int BTN_BORDER = fontWidth * 2.5;
-  const int BUTTON_GAP = fontWidth;
+  const int buttonHeight = Dialog::buttonHeight(),
+            BUTTON_GAP   = Dialog::buttonGap(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder();
+
   buttonWidth = std::max(buttonWidth,
-                         std::max(font.getStringWidth("Defaults"),
-                         std::max(font.getStringWidth(okText),
-                         font.getStringWidth(cancelText))) + BTN_BORDER);
+                         std::max(Dialog::buttonWidth("Defaults"),
+                         std::max(Dialog::buttonWidth(okText),
+                         Dialog::buttonWidth(cancelText))));
 
   _w = std::max(HBORDER * 2 + buttonWidth * 2 + BUTTON_GAP, _w);
 
@@ -936,13 +931,10 @@ void Dialog::addDefaultsOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
                                        const string& defaultsText,
                                        bool focusOKButton)
 {
-  const int fontWidth    = font.getMaxCharWidth(),
-            fontHeight   = font.getFontHeight(),
-            buttonHeight = font.getLineHeight() * 1.25;
-  const int VBORDER = fontHeight / 2;
-  const int HBORDER = fontWidth * 1.25;
-  const int BTN_BORDER = fontWidth * 2.5;
-  const int buttonWidth = font.getStringWidth(defaultsText) + BTN_BORDER;
+  const int buttonHeight = Dialog::buttonHeight(),
+            buttonWidth  = Dialog::buttonWidth(defaultsText),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder();
 
   addDefaultWidget(new ButtonWidget(this, font, HBORDER, _h - buttonHeight - VBORDER,
                    buttonWidth, buttonHeight, defaultsText, GuiObject::kDefaultsCmd));
@@ -958,23 +950,21 @@ void Dialog::addDefaultsExtraOKCancelBGroup(
       const string& okText, const string& cancelText, const string& defaultsText,
       bool focusOKButton)
 {
-  const int fontWidth    = font.getMaxCharWidth(),
-            fontHeight   = font.getFontHeight(),
-            buttonHeight = font.getLineHeight() * 1.25;
-  const int VBORDER = fontHeight / 2;
-  const int HBORDER = fontWidth * 1.25;
-  const int BTN_BORDER = fontWidth * 2.5;
-  const int BUTTON_GAP = fontWidth;
-  const int buttonWidth = font.getStringWidth(defaultsText) + BTN_BORDER;
+  const int buttonHeight = Dialog::buttonHeight(),
+            buttonWidth  = std::max(Dialog::buttonWidth(defaultsText),
+                                    Dialog::buttonWidth(extraText)),
+            BUTTON_GAP   = Dialog::buttonGap(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder();
 
   addDefaultWidget(new ButtonWidget(this, font, HBORDER, _h - buttonHeight - VBORDER,
                    buttonWidth, buttonHeight, defaultsText, GuiObject::kDefaultsCmd));
   wid.push_back(_defaultWidget);
 
-  wid.push_back(new ButtonWidget(this, font, HBORDER + buttonWidth + BUTTON_GAP,
-                      _h - buttonHeight - VBORDER, buttonWidth, buttonHeight,
-                      extraText, extraCmd)
-  );
+  addExtraWidget(new ButtonWidget(this, font, HBORDER + buttonWidth + BUTTON_GAP,
+                 _h - buttonHeight - VBORDER,
+                 buttonWidth, buttonHeight, extraText, extraCmd));
+  wid.push_back(_extraWidget);
 
   addOKCancelBGroup(wid, font, okText, cancelText, focusOKButton, buttonWidth);
 }

@@ -95,6 +95,11 @@ static AboutBox *sharedInstance = nil;
                     withRTF:[creditsString RTFFromRange:
                     NSMakeRange( 0, [creditsString length] )
                     documentAttributes:@{NSDocumentTypeDocumentAttribute: NSRTFTextDocumentType}]];
+    if (@available(macOS 10.14, *)) {
+      creditsField.usesAdaptiveColorMappingForDarkAppearance = true;
+    } else {
+      // Fallback on earlier versions
+    }
 
     // Prepare some scroll info
     creditsBounds = [creditsField bounds];
