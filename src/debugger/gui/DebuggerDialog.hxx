@@ -21,6 +21,7 @@
 class Debugger;
 class OSystem;
 class DialogContainer;
+class FilesystemNode;
 class ButtonWidget;
 class CpuWidget;
 class PromptWidget;
@@ -34,7 +35,6 @@ class TiaZoomWidget;
 class CartDebugWidget;
 class CartRamWidget;
 class OptionsDialog;
-class BrowserDialog;
 
 namespace GUI {
   class MessageBox;
@@ -124,17 +124,11 @@ class DebuggerDialog : public Dialog
       kDDUnwindCmd    = 'DDuw',
       kDDRunCmd       = 'DDex',
       kDDExitFatalCmd = 'DDer',
-      kDDOptionsCmd   = 'DDop',
-      kSvAccessCmd    = 'SvAc',
-      kSvDisCmd       = 'SvDs',
-      kSvRomCmd       = 'SvRm',
-      kSvScriptCmd    = 'SvSc',
-      kSvSessionCmd   = 'SvSs',
-      kBdCancelCmd    = 'SvCn'
+      kDDOptionsCmd   = 'DDop'
     };
 
-    void runCommand(const string& command = EmptyString);
-    void createBrowser(const string& title);
+    void runCommand(const FilesystemNode& node,
+                    const string& command = EmptyString);
 
     TabWidget *myTab{nullptr}, *myRomTab{nullptr};
 
@@ -154,7 +148,6 @@ class DebuggerDialog : public Dialog
 
     unique_ptr<GUI::MessageBox> myFatalError;
     unique_ptr<OptionsDialog>   myOptions;
-    unique_ptr<BrowserDialog>   myBrowser;
 
     unique_ptr<GUI::Font> myLFont;  // used for labels
     unique_ptr<GUI::Font> myNFont;  // used for normal text

@@ -42,7 +42,6 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
                    const GUI::Font& font, GuiObject* boss, int max_w, int max_h)
   : Dialog(osystem, parent, font, "User interface settings"),
     CommandSender(boss),
-    myFont{font},
     myIsGlobal{boss != nullptr}
 {
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
@@ -90,7 +89,6 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
                                    items, "Theme      ", lwidth);
   wid.push_back(myPalettePopup);
   ypos += lineHeight + VGAP;
-
 
   // Dialog font
   items.clear();
@@ -316,11 +314,6 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
 #ifndef WINDOWED_SUPPORT
   myCenter->clearFlags(Widget::FLAG_ENABLED);
 #endif
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-UIDialog::~UIDialog()
-{
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -584,15 +577,12 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
       break;
 
     case kChooseRomDirCmd:
-      // This dialog is resizable under certain conditions, so we need
-      // to re-create it as necessary
-      createBrowser("Select ROM Directory");
-      myBrowser->show(myRomPath->getText(),
-                      BrowserDialog::Directories, LauncherDialog::kRomDirChosenCmd);
-      break;
-
-    case LauncherDialog::kRomDirChosenCmd:
-      myRomPath->setText(myBrowser->getResult().getShortPath());
+      BrowserDialog::show(this, _font, "Select ROM Directory",
+                          myRomPath->getText(),
+                          BrowserDialog::Mode::Directories,
+                          [this](bool OK, const FilesystemNode& node) {
+                            if(OK) myRomPath->setText(node.getShortPath());
+                          });
       break;
 
     case kRomViewer:
@@ -600,15 +590,12 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
       break;
 
     case kChooseSnapLoadDirCmd:
-      // This dialog is resizable under certain conditions, so we need
-      // to re-create it as necessary
-      createBrowser("Select ROM Info Viewer Image Directory");
-      myBrowser->show(mySnapLoadPath->getText(),
-                      BrowserDialog::Directories, kSnapLoadDirChosenCmd);
-      break;
-
-    case kSnapLoadDirChosenCmd:
-      mySnapLoadPath->setText(myBrowser->getResult().getShortPath());
+      BrowserDialog::show(this, _font, "Select ROM Info Viewer Image Directory",
+                          myRomPath->getText(),
+                          BrowserDialog::Mode::Directories,
+                          [this](bool OK, const FilesystemNode& node) {
+                            if(OK) mySnapLoadPath->setText(node.getShortPath());
+                          });
       break;
 
     default:
@@ -699,20 +686,4 @@ void UIDialog::handleRomViewer()
   }
   myOpenBrowserButton->setEnabled(enable);
   mySnapLoadPath->setEnabled(enable);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void UIDialog::createBrowser(const string& title)
-{
-  uInt32 w = 0, h = 0;
-  getDynamicBounds(w, h);
-  if(w > uInt32(_font.getMaxCharWidth() * 80))
-    w = _font.getMaxCharWidth() * 80;
-
-  // Create file browser dialog
-  if(!myBrowser || uInt32(myBrowser->getWidth()) != w ||
-     uInt32(myBrowser->getHeight()) != h)
-    myBrowser = make_unique<BrowserDialog>(this, myFont, w, h, title);
-  else
-    myBrowser->setTitle(title);
 }

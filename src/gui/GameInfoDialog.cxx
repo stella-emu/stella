@@ -667,22 +667,6 @@ GameInfoDialog::~GameInfoDialog()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void GameInfoDialog::createBrowser(const string& title)
-{
-  uInt32 w = 0, h = 0;
-  getDynamicBounds(w, h);
-  if(w > uInt32(_font.getMaxCharWidth() * 80))
-    w = _font.getMaxCharWidth() * 80;
-
-  // Create file browser dialog
-  if(!myBrowser || uInt32(myBrowser->getWidth()) != w ||
-     uInt32(myBrowser->getHeight()) != h)
-    myBrowser = make_unique<BrowserDialog>(this, _font, w, h, title);
-  else
-    myBrowser->setTitle(title);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::loadConfig()
 {
   if(instance().hasConsole())
@@ -1358,7 +1342,7 @@ void GameInfoDialog::setAddressVal(EditTextWidget* addressWidget, EditTextWidget
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void GameInfoDialog::exportCurrentPropertiesToDisk()
+void GameInfoDialog::exportCurrentPropertiesToDisk(const FilesystemNode& node)
 {
   saveProperties();
   stringstream out;
@@ -1366,9 +1350,7 @@ void GameInfoDialog::exportCurrentPropertiesToDisk()
 
   try
   {
-    FilesystemNode propfile(myBrowser->getResult().getShortPath());
-
-    propfile.write(out);
+    node.write(out);
     instance().frameBuffer().showTextMessage("ROM properties exported");
   }
   catch(...)
@@ -1393,16 +1375,13 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kExportPressed:
-      // This dialog is resizable under certain conditions, so we need
-      // to re-create it as necessary
-      createBrowser("Export Properties as");
-
-      myBrowser->show(instance().userDir().getPath() + myGameFile.getNameWithExt(".pro"),
-        BrowserDialog::FileSave, kExportChosen);
-      break;
-
-    case kExportChosen:
-      exportCurrentPropertiesToDisk();
+      BrowserDialog::show(this, _font, "Export Properties as",
+                          instance().userDir().getPath() +
+                            myGameFile.getNameWithExt(".pro"),
+                          BrowserDialog::Mode::FileSave,
+                          [this](bool OK, const FilesystemNode& node) {
+                            if(OK) exportCurrentPropertiesToDisk(node);
+                          });
       break;
 
     case TabWidget::kTabChangedCmd:

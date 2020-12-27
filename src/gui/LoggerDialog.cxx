@@ -90,27 +90,6 @@ LoggerDialog::LoggerDialog(OSystem& osystem, DialogContainer& parent,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-LoggerDialog::~LoggerDialog()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LoggerDialog::createBrowser(const string& title)
-{
-  uInt32 w = 0, h = 0;
-  getDynamicBounds(w, h);
-  if(w > uInt32(_font.getMaxCharWidth() * 80))
-    w = _font.getMaxCharWidth() * 80;
-
-  // Create file browser dialog
-  if(!myBrowser || uInt32(myBrowser->getWidth()) != w ||
-     uInt32(myBrowser->getHeight()) != h)
-    myBrowser = make_unique<BrowserDialog>(this, _font, w, h, title);
-  else
-    myBrowser->setTitle(title);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LoggerDialog::loadConfig()
 {
   StringParser parser(Logger::instance().logMessages());
@@ -136,10 +115,8 @@ void LoggerDialog::saveConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LoggerDialog::saveLogFile()
+void LoggerDialog::saveLogFile(const FilesystemNode& node)
 {
-  FilesystemNode node(myBrowser->getResult().getShortPath());
-
   try
   {
     stringstream out;
@@ -165,16 +142,12 @@ void LoggerDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case GuiObject::kDefaultsCmd:
-      // This dialog is resizable under certain conditions, so we need
-      // to re-create it as necessary
-      createBrowser("Save Log as");
-
-      myBrowser->show(instance().userDir().getPath() + "stella.log",
-                      BrowserDialog::FileSave, kSaveCmd);
-      break;
-
-    case kSaveCmd:
-      saveLogFile();
+      BrowserDialog::show(this, _font, "Save Log as",
+                          instance().userDir().getPath() + "stella.log",
+                          BrowserDialog::Mode::FileSave,
+                          [this](bool OK, const FilesystemNode& node) {
+                            if(OK) saveLogFile(node);
+                          });
       break;
 
     default:
