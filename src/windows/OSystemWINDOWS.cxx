@@ -22,12 +22,12 @@
 #include "OSystemWINDOWS.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystemWINDOWS::getBaseDirAndConfig(string& basedir,
-        string& savedir, string& loaddir,
-        bool useappdir, const string& usedir)
+void OSystemWINDOWS::getBaseDirAndConfig(string& basedir, string& homedir,
+                                         bool useappdir, const string& usedir)
 {
   HomeFinder homefinder;
   FilesystemNode appdata(homefinder.getAppDataPath());
+
   if(appdata.isDirectory())
   {
     basedir = appdata.getShortPath();
@@ -35,8 +35,9 @@ void OSystemWINDOWS::getBaseDirAndConfig(string& basedir,
       basedir += '\\';
     basedir += "Stella\\";
   }
-  FilesystemNode defaultLoadSaveDir(homefinder.getDesktopPath());
-  savedir = loaddir = defaultLoadSaveDir.getShortPath();
+
+  FilesystemNode defaultHomeDir(homefinder.getDesktopPath());
+  homedir = defaultHomeDir.getShortPath();
 
   // Check to see if basedir overrides are active
   if(useappdir)
@@ -44,10 +45,11 @@ void OSystemWINDOWS::getBaseDirAndConfig(string& basedir,
     char filename[MAX_PATH];
     GetModuleFileNameA(NULL, filename, sizeof(filename));
     FilesystemNode appdir(filename);
+
     appdir = appdir.getParent();
     if(appdir.isDirectory())
-      savedir = loaddir = basedir = appdir.getPath();
+      basedir = appdir.getPath();
   }
   else if(usedir != "")
-    savedir = loaddir = basedir = FilesystemNode(usedir).getPath();
+    basedir = FilesystemNode(usedir).getPath();
 }

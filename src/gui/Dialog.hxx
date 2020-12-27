@@ -75,9 +75,10 @@ class Dialog : public GuiObject
     void addToFocusList(const WidgetArray& list, TabWidget* w, int tabId);
     void addBGroupToFocusList(const WidgetArray& list) { _buttonGroup = list; }
     void addTabWidget(TabWidget* w);
-    void addDefaultWidget(Widget* w) { _defaultWidget = w; }
-    void addOKWidget(Widget* w)     { _okWidget = w;     }
-    void addCancelWidget(Widget* w) { _cancelWidget = w; }
+    void addDefaultWidget(ButtonWidget* w) { _defaultWidget = w; }
+    void addExtraWidget(ButtonWidget* w)   { _extraWidget = w;   }
+    void addOKWidget(ButtonWidget* w)      { _okWidget = w;      }
+    void addCancelWidget(ButtonWidget* w)  { _cancelWidget = w;  }
     void setFocus(Widget* w);
 
     /** Returns the base surface associated with this dialog. */
@@ -126,6 +127,19 @@ class Dialog : public GuiObject
 
     ToolTip& tooltip() { return *_toolTip; }
 
+    int lineHeight() const { return _font.getLineHeight(); }
+    int fontHeight() const { return _font.getFontHeight(); }
+    int fontWidth() const { return _font.getMaxCharWidth(); }
+    int buttonHeight() const { return lineHeight() * 1.25; }
+    int buttonWidth(const string& label) const {
+      return _font.getStringWidth(label) + fontWidth() * 2.5;
+    }
+    int buttonGap() const { return fontWidth(); }
+    int hBorder() const { return fontWidth() * 1.25; }
+    int vBorder() const { return fontHeight() / 2; }
+    int vGap() const { return fontHeight() / 4; }
+    int indent() const { return fontWidth() * 2; }
+
   protected:
     void draw() override { }
     void releaseFocus() override;
@@ -163,7 +177,6 @@ class Dialog : public GuiObject
                                    const string& cancelText = "Cancel",
                                    const string& defaultsText = "Defaults",
                                    bool focusOKButton = true);
-    int buttonHeight(const GUI::Font& font) const;
 
     // NOTE: This method, and the three above it, are due to be refactored at some
     //       point, since the parameter list is kind of getting ridiculous
@@ -195,9 +208,10 @@ class Dialog : public GuiObject
     Widget* _mouseWidget{nullptr};
     Widget* _focusedWidget{nullptr};
     Widget* _dragWidget{nullptr};
-    Widget* _defaultWidget{nullptr};
-    Widget* _okWidget{nullptr};
-    Widget* _cancelWidget{nullptr};
+    ButtonWidget* _defaultWidget{nullptr};
+    ButtonWidget* _extraWidget{nullptr};
+    ButtonWidget* _okWidget{nullptr};
+    ButtonWidget* _cancelWidget{nullptr};
 
     bool    _visible{false};
     bool    _processCancel{false};

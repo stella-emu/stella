@@ -27,28 +27,30 @@ R77HelpDialog::R77HelpDialog(OSystem& osystem, DialogContainer& parent,
                              const GUI::Font& font)
   : Dialog(osystem, parent, font, "RetroN 77 help")
 {
-  const int lineHeight = font.getLineHeight(),
-    fontWidth = font.getMaxCharWidth(),
-    fontHeight = font.getFontHeight(),
-    buttonWidth = font.getStringWidth("Previous") + 20,
-    buttonHeight = font.getLineHeight() + 4;
-  const int HBORDER = 10;
+  const int lineHeight   = Dialog::lineHeight(),
+            fontHeight   = Dialog::fontHeight(),
+            fontWidth    = Dialog::fontWidth(),
+            buttonHeight = Dialog::buttonHeight(),
+            buttonWidth  = Dialog::buttonWidth("Previous"),
+            BUTTON_GAP = Dialog::buttonGap(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder();
   int xpos, ypos;
   WidgetArray wid;
 
   // Set real dimensions
   _w = 47 * fontWidth + HBORDER * 2;
-  _h = (LINES_PER_PAGE + 2) * lineHeight + 12 + _th;
+  _h = (LINES_PER_PAGE + 2) * lineHeight + VBORDER * 2 + _th;
 
   // Add Previous, Next and Close buttons
-  xpos = HBORDER;  ypos = _h - buttonHeight - 10;
+  xpos = HBORDER;  ypos = _h - buttonHeight - VBORDER;
   myPrevButton =
     new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
       "Previous", GuiObject::kPrevCmd);
   myPrevButton->clearFlags(Widget::FLAG_ENABLED);
   wid.push_back(myPrevButton);
 
-  xpos += buttonWidth + 8;
+  xpos += buttonWidth + BUTTON_GAP;
   myNextButton =
     new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
       "Next", GuiObject::kNextCmd);
@@ -61,7 +63,7 @@ R77HelpDialog::R77HelpDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(b);
   addCancelWidget(b);
 
-  xpos = HBORDER;  ypos = 5 + _th;
+  xpos = HBORDER;  ypos = VBORDER + _th;
   myTitle = new StaticTextWidget(this, font, xpos, ypos, _w - HBORDER * 2, fontHeight,
     "", TextAlign::Center);
 

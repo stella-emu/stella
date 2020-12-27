@@ -18,14 +18,15 @@
 #ifndef UI_DIALOG_HXX
 #define UI_DIALOG_HXX
 
-class BrowserDialog;
+#include "Dialog.hxx"
+#include "bspf.hxx"
 
 class UIDialog : public Dialog, public CommandSender
 {
   public:
     UIDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font,
              GuiObject* boss, int max_w, int max_h);
-    ~UIDialog() override;
+    ~UIDialog() override = default;
 
   private:
     void loadConfig() override;
@@ -35,7 +36,6 @@ class UIDialog : public Dialog, public CommandSender
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
     void handleLauncherSize();
     void handleRomViewer();
-    void createBrowser(const string& title);
 
   private:
     enum
@@ -46,11 +46,9 @@ class UIDialog : public Dialog, public CommandSender
       kControllerDelay = 'UIcd',
       kChooseRomDirCmd = 'LOrm', // rom select
       kRomViewer = 'UIRv',
-      kChooseSnapLoadDirCmd = 'UIsl', // snapshot dir (load files)
-      kSnapLoadDirChosenCmd = 'UIsc' // snap chosen (load files)
+      kChooseSnapLoadDirCmd = 'UIsl' // snapshot dir (load files)
     };
 
-    const GUI::Font& myFont;
     TabWidget* myTab{nullptr};
 
     // Launcher options
@@ -75,8 +73,6 @@ class UIDialog : public Dialog, public CommandSender
     SliderWidget*     myControllerRateSlider{nullptr};
     SliderWidget*     myControllerDelaySlider{nullptr};
     SliderWidget*     myDoubleClickSlider{nullptr};
-
-    unique_ptr<BrowserDialog> myBrowser;
 
     // Indicates if this dialog is used for global (vs. in-game) settings
     bool myIsGlobal{false};

@@ -48,14 +48,12 @@ DeveloperDialog::DeveloperDialog(OSystem& osystem, DialogContainer& parent,
                                  const GUI::Font& font, int max_w, int max_h)
   : Dialog(osystem, parent, font, "Developer settings")
 {
-  const int lineHeight = font.getLineHeight(),
-            fontHeight = font.getFontHeight(),
-            fontWidth = font.getMaxCharWidth(),
-            buttonHeight = font.getLineHeight() * 1.25;
-  const int VBORDER = fontHeight / 2;
-  const int HBORDER = fontWidth * 1.25;
-  const int VGAP = fontHeight / 4;
-
+  const int lineHeight   = Dialog::lineHeight(),
+            fontWidth    = Dialog::fontWidth(),
+            buttonHeight = Dialog::buttonHeight(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder(),
+            VGAP         = Dialog::vGap();
   int xpos, ypos;
 
   // Set real dimensions
@@ -87,14 +85,12 @@ DeveloperDialog::DeveloperDialog(OSystem& osystem, DialogContainer& parent,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::addEmulationTab(const GUI::Font& font)
 {
-  const int lineHeight = font.getLineHeight(),
-            fontHeight = font.getFontHeight(),
-            fontWidth = font.getMaxCharWidth();
-  const int VBORDER = fontHeight / 2;
-  const int HBORDER = fontWidth * 1.25;
-  const int INDENT = fontWidth * 2;
-  const int VGAP = fontHeight / 4;
-
+  const int lineHeight = Dialog::lineHeight(),
+            fontWidth  = Dialog::fontWidth(),
+            VBORDER    = Dialog::vBorder(),
+            HBORDER    = Dialog::hBorder(),
+            VGAP       = Dialog::vGap(),
+            INDENT     = Dialog::indent();
   int ypos = VBORDER;
   WidgetArray wid;
   VariantList items;
@@ -216,14 +212,11 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::addTiaTab(const GUI::Font& font)
 {
-  const int lineHeight = font.getLineHeight(),
-            fontHeight = font.getFontHeight(),
-            fontWidth = font.getMaxCharWidth();
-  const int VBORDER = fontHeight / 2;
-  const int HBORDER = fontWidth * 1.25;
-  const int INDENT = fontWidth * 2;
-  const int VGAP = fontHeight / 4;
-
+  const int lineHeight = Dialog::lineHeight(),
+            VBORDER    = Dialog::vBorder(),
+            HBORDER    = Dialog::hBorder(),
+            VGAP       = Dialog::vGap(),
+            INDENT     = Dialog::indent();
   int ypos = VBORDER;
   int pwidth = font.getStringWidth("Faulty Cosmic Ark stars");
   WidgetArray wid;
@@ -323,17 +316,16 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::addVideoTab(const GUI::Font& font)
 {
-  const int lineHeight = font.getLineHeight(),
-            fontHeight = font.getFontHeight(),
-            fontWidth = font.getMaxCharWidth();
-  const int VBORDER = fontHeight / 2;
-  const int HBORDER = fontWidth * 1.25;
-  const int INDENT = fontWidth * 2;
-  const int VGAP = fontHeight / 4;
-
+  const int lineHeight = Dialog::lineHeight(),
+            fontHeight = Dialog::fontHeight(),
+            fontWidth  = Dialog::fontWidth(),
+            VBORDER    = Dialog::vBorder(),
+            HBORDER    = Dialog::hBorder(),
+            VGAP       = Dialog::vGap(),
+            INDENT     = Dialog::indent();
   int ypos = VBORDER;
   int lwidth = font.getStringWidth("Intensity ");
-  int pwidth = font.getMaxCharWidth() * 6;
+  int pwidth = fontWidth * 6;
   WidgetArray wid;
   VariantList items;
   int tabID = myTab->addTab(" Video ", TabWidget::AUTO_WIDTH);
@@ -366,7 +358,7 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
   myTVJitterRecLabelWidget = new StaticTextWidget(myTab, font,
                                                   myTVJitterRecWidget->getRight() + 4,
                                                   myTVJitterRecWidget->getTop() + 2,
-                                                  5 * fontWidth, fontHeight, "");
+                                                  5 * fontWidth, fontHeight);
   ypos += lineHeight + VGAP;
 
   myColorLossWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1,
@@ -467,14 +459,13 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
     "30m",
     "60m"
   };
-  const int lineHeight = font.getLineHeight(),
-            fontHeight = font.getFontHeight(),
-            fontWidth = font.getMaxCharWidth();
-  const int VBORDER = fontHeight / 2;
-  const int HBORDER = fontWidth * 1.25;
-  const int INDENT = fontWidth * 2;
-  const int VGAP = fontHeight / 4;
-
+  const int lineHeight = Dialog::lineHeight(),
+            fontHeight = Dialog::fontHeight(),
+            fontWidth  = Dialog::fontWidth(),
+            VBORDER    = Dialog::vBorder(),
+            HBORDER    = Dialog::hBorder(),
+            VGAP       = Dialog::vGap(),
+            INDENT     = Dialog::indent();
   int xpos = HBORDER,
       ypos = VBORDER,
       lwidth = fontWidth * 11;
@@ -568,13 +559,12 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   WidgetArray wid;
 
 #ifdef DEBUGGER_SUPPORT
-  const int lineHeight = font.getLineHeight(),
-            fontHeight = font.getFontHeight(),
-            fontWidth = font.getMaxCharWidth();
-  const int VBORDER = fontHeight / 2;
-  const int HBORDER = fontWidth * 1.25;
-  const int VGAP = fontHeight / 4;
-
+  const int lineHeight = Dialog::lineHeight(),
+            fontHeight = Dialog::fontHeight(),
+            fontWidth  = Dialog::fontWidth(),
+            VBORDER    = Dialog::vBorder(),
+            HBORDER    = Dialog::hBorder(),
+            VGAP       = Dialog::vGap();
   VariantList items;
   int xpos, ypos, pwidth;
   const Common::Size& ds = instance().frameBuffer().desktopSize();
@@ -725,21 +715,21 @@ void DeveloperDialog::saveSettings(SettingsSet set)
   instance().settings().setValue(prefix + "bankrandom", myRandomBank[set]);
   instance().settings().setValue(prefix + "ramrandom", myRandomizeRAM[set]);
   instance().settings().setValue(prefix + "cpurandom", myRandomizeCPU[set]);
-  // Undriven TIA pins
+
   if(devSettings)
-    instance().settings().setValue("dev.tiadriven", myUndrivenPins[set]);
-#ifdef DEBUGGER_SUPPORT
-  if (devSettings)
   {
+    // Undriven TIA pins
+    instance().settings().setValue("dev.tiadriven", myUndrivenPins[set]);
+  #ifdef DEBUGGER_SUPPORT
     // Read from write ports break
     instance().settings().setValue("dev.rwportbreak", myRWPortBreak[set]);
     // Write to read ports break
     instance().settings().setValue("dev.wrportbreak", myWRPortBreak[set]);
-  }
-#endif
-  if(devSettings)
+  #endif
     // Thumb ARM emulation exception
     instance().settings().setValue("dev.thumb.trapfatal", myThumbException[set]);
+  }
+
   // AtariVox/SaveKey EEPROM access
   instance().settings().setValue(prefix + "eepromaccess", myEEPROMAccess[set]);
 

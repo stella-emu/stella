@@ -54,17 +54,13 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
 {
   // do not show basic settings options in debugger
   bool minSettings = osystem.settings().getBool("minimal_ui") && mode != Menu::AppMode::debugger;
-  const int
-    fontWidth    = _font.getMaxCharWidth(),
-    fontHeight   = _font.getFontHeight(),
-    buttonHeight = _font.getLineHeight() * 1.25,
-    VGAP = fontHeight / 4,
-    HGAP = fontWidth,
-    rowHeight = buttonHeight + VGAP;
-  const int VBORDER = fontHeight / 2;
-  const int HBORDER = fontWidth * 1.25;
-  int buttonWidth = _font.getStringWidth("Game Properties" + ELLIPSIS) + fontWidth * 2.5;
-
+  const int buttonHeight = Dialog::buttonHeight(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder(),
+            VGAP         = Dialog::vGap();
+  const int HGAP      = Dialog::buttonGap(),
+            rowHeight = buttonHeight + VGAP;
+  int buttonWidth = Dialog::buttonWidth("Game Properties" + ELLIPSIS);
   _w = 2 * buttonWidth + HBORDER * 2 + HGAP;
   _h = 7 * rowHeight + VBORDER * 2 - VGAP + _th;
 
@@ -133,7 +129,7 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   b = ADD_OD_BUTTON("About" + ELLIPSIS, kAboutCmd);
   wid.push_back(b);
 
-  buttonWidth = _font.getStringWidth("   Close   ") + fontWidth * 2.5;
+  buttonWidth = Dialog::buttonWidth("   Close   ");
   xoffset -= (buttonWidth + HGAP) / 2;
   b = ADD_OD_BUTTON("Close", kExitCmd);
   wid.push_back(b);

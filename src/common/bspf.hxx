@@ -242,7 +242,7 @@ namespace BSPF
 
   // Find location (if any) of the second string within the first,
   // starting from 'startpos' in the first string
-  static size_t findIgnoreCase(const string& s1, const string& s2, size_t startpos = 0)
+  static size_t findIgnoreCase(string_view s1, string_view s2, size_t startpos = 0)
   {
     auto pos = std::search(s1.cbegin()+startpos, s1.cend(),
       s2.cbegin(), s2.cend(), [](char ch1, char ch2) {
@@ -252,7 +252,7 @@ namespace BSPF
   }
 
   // Test whether the first string contains the second one (case insensitive)
-  inline bool containsIgnoreCase(const string& s1, const string& s2)
+  inline bool containsIgnoreCase(string_view s1, string_view s2)
   {
     return findIgnoreCase(s1, s2) != string::npos;
   }
@@ -260,7 +260,7 @@ namespace BSPF
   // Test whether the first string matches the second one (case insensitive)
   // - the first character must match
   // - the following characters must appear in the order of the first string
-  inline bool matches(const string& s1, const string& s2)
+  inline bool matches(string_view s1, string_view s2)
   {
     if(startsWithIgnoreCase(s1, s2.substr(0, 1)))
     {
@@ -335,6 +335,17 @@ namespace BSPF
       return EmptyString;
     }
   #endif
+  }
+
+  inline bool isWhiteSpace(const char s)
+  {
+    const string WHITESPACES = " ,.;:+-*&/\\'";
+
+    for(size_t i = 0; i < WHITESPACES.length(); ++i)
+      if(s == WHITESPACES[i])
+        return true;
+
+    return false;
   }
 } // namespace BSPF
 

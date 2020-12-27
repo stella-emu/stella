@@ -32,11 +32,16 @@
 
   * Added sound to Time Machine playback.
 
+  * Added browser dialogs for user saved files.
+
   * Extended global hotkeys for input devices & ports settings.
 
   * Increased sample size for CDFJ+.
 
   * Fixed autofire bug for trackball controllers.
+
+  * Fixed bug in TV autodetection in filenames; a filename containing
+    'PAL' would sometimes misdetect as a PAL ROM.
 
   * Fixed Stelladaptor/2600'daptor devices sometimes not being assigned
     correct default mappings.

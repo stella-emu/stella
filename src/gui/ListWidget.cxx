@@ -57,6 +57,17 @@ ListWidget::ListWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ListWidget::setHeight(int h)
+{
+  Widget::setHeight(h);
+  if(_useScrollbar)
+    _scrollBar->setHeight(h);
+
+  _rows = (h - 2) / _lineHeight;
+  recalc();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::setSelected(int item)
 {
   setDirty();
@@ -161,7 +172,7 @@ void ListWidget::recalc()
 {
   int size = int(_list.size());
 
-  if(_currentPos >= size)
+  if(_currentPos >= size - _rows)
   {
     if(size <= _rows)
       _currentPos = 0;
@@ -171,7 +182,9 @@ void ListWidget::recalc()
   if (_currentPos < 0)
     _currentPos = 0;
 
-  if(_selectedItem < 0 || _selectedItem >= size)
+  if(_selectedItem >= size)
+    _selectedItem = size - 1;
+  if(_selectedItem < 0)
     _selectedItem = 0;
 
   _editMode = false;

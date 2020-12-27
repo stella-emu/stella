@@ -29,15 +29,14 @@ AboutDialog::AboutDialog(OSystem& osystem, DialogContainer& parent,
                          const GUI::Font& font)
   : Dialog(osystem, parent, font, "About Stella")
 {
-  const int lineHeight   = font.getLineHeight(),
-        fontWidth    = font.getMaxCharWidth(),
-        fontHeight   = font.getFontHeight(),
-        buttonWidth  = font.getStringWidth("Previous") + fontWidth * 2.5,
-        buttonHeight = font.getLineHeight() * 1.25;
-  const int VBORDER = fontHeight / 2;
-  const int HBORDER = fontWidth * 1.25;
-  const int VGAP = fontHeight / 4;
-
+  const int lineHeight   = Dialog::lineHeight(),
+            fontHeight   = Dialog::fontHeight(),
+            fontWidth    = Dialog::fontWidth(),
+            buttonHeight = Dialog::buttonHeight(),
+            buttonWidth  = Dialog::buttonWidth("Previous"),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder(),
+            VGAP         = Dialog::vGap();
   int xpos, ypos;
   WidgetArray wid;
 
@@ -274,7 +273,7 @@ void AboutDialog::handleCommand(CommandSender* sender, int cmd, int data, int id
 
     case kWhatsNew:
       if(myWhatsNewDialog == nullptr)
-        myWhatsNewDialog = make_unique<WhatsNewDialog>(instance(), parent(), _font,
+        myWhatsNewDialog = make_unique<WhatsNewDialog>(instance(), parent(),
                                                        640 * 0.95, 480 * 0.95);
       myWhatsNewDialog->open();
       break;

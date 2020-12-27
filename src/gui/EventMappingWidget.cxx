@@ -42,14 +42,13 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
     CommandSender(boss),
     myEventMode{mode}
 {
-  const int fontHeight   = font.getFontHeight(),
-            lineHeight   = font.getLineHeight(),
-            fontWidth    = font.getMaxCharWidth(),
-            buttonWidth  = font.getStringWidth("Defaults") + fontWidth * 1.25,
-            buttonHeight = font.getLineHeight() * 1.25;
-  const int VBORDER = fontHeight / 2;
-  const int HBORDER = fontWidth * 1.25;
-  const int VGAP = fontHeight / 4;
+  const int lineHeight   = boss->dialog().lineHeight(),
+            fontWidth    = boss->dialog().fontWidth(),
+            buttonHeight = boss->dialog().buttonHeight(),
+            buttonWidth  = boss->dialog().buttonWidth("Defaults"),
+            VBORDER      = boss->dialog().vBorder(),
+            HBORDER      = boss->dialog().hBorder(),
+            VGAP         = boss->dialog().vGap();
   const int ACTION_LINES = 2;
   int xpos = HBORDER, ypos = VBORDER;
   const int listWidth = _w - buttonWidth - HBORDER * 2 - fontWidth;
@@ -136,8 +135,7 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
   xpos = HBORDER;
   ypos = myActionsList->getBottom() + VGAP * 2;
   StaticTextWidget* t;
-  t = new StaticTextWidget(boss, font, xpos, ypos+2, font.getStringWidth("Action"),
-                           fontHeight, "Action", TextAlign::Left);
+  t = new StaticTextWidget(boss, font, xpos, ypos+2, "Action");
 
   myKeyMapping = new EditTextWidget(boss, font, xpos + t->getWidth() + fontWidth, ypos,
                                     _w - xpos - t->getWidth() - fontWidth - HBORDER + 2,
