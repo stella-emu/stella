@@ -136,8 +136,8 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
 int GlobalPropsDialog::addHoldWidgets(const GUI::Font& font, int x, int y,
                                       WidgetArray& wid)
 {
-  const int fontHeight = Dialog::fontHeight(),
-            fontWidth  = Dialog::fontWidth(),
+  const int fontWidth  = Dialog::fontWidth(),
+            //fontHeight = Dialog::fontHeight(),
             VGAP       = Dialog::vGap();
   int xpos = x, ypos = y, xdiff = CheckboxWidget::boxSize(font) - 9;
 

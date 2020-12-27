@@ -71,8 +71,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
             BUTTON_GAP   = Dialog::buttonGap(),
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder(),
-            VGAP         = Dialog::vGap(),
-            INDENT       = Dialog::indent();
+            VGAP         = Dialog::vGap();
   const int LBL_GAP      = fontWidth,
             buttonHeight = myUseMinimalUI ? lineHeight - VGAP * 2: Dialog::buttonHeight(),
             buttonWidth  = (_w - 2 * HBORDER - BUTTON_GAP * (4 - 1));
