@@ -22,7 +22,6 @@ class GuiObject;
 class CheckboxWidget;
 class PopUpWidget;
 class StringListWidget;
-class BrowserDialog;
 
 #include "Dialog.hxx"
 #include "bspf.hxx"
@@ -33,14 +32,12 @@ class LoggerDialog : public Dialog
     LoggerDialog(OSystem& osystem, DialogContainer& parent,
                  const GUI::Font& font, int max_w, int max_h,
                  bool useLargeFont = true);
-    ~LoggerDialog() override;
+    ~LoggerDialog() override = default;
 
   private:
-    void createBrowser(const string& title);
-
     void loadConfig() override;
     void saveConfig() override;
-    void saveLogFile();
+    void saveLogFile(const FilesystemNode& node);
 
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
@@ -48,13 +45,6 @@ class LoggerDialog : public Dialog
     StringListWidget* myLogInfo{nullptr};
     PopUpWidget*      myLogLevel{nullptr};
     CheckboxWidget*   myLogToConsole{nullptr};
-
-    unique_ptr<BrowserDialog> myBrowser;
-
-    enum {
-      kSaveCmd = 'SvLg'
-    };
-
 
   private:
     // Following constructors and assignment operators not supported

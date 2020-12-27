@@ -23,7 +23,6 @@ class GuiObject;
 class DialogContainer;
 class EditTextWidget;
 class StaticTextWidget;
-class BrowserDialog;
 namespace GUI {
   class MessageBox;
 }
@@ -42,19 +41,13 @@ class RomAuditDialog : public Dialog
   private:
     void loadConfig() override;
     void auditRoms();
-    void createBrowser(const string& title);
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
     enum {
       kChooseAuditDirCmd = 'RAsl', // audit dir select
-      kAuditDirChosenCmd = 'RAch', // audit dir changed
       kConfirmAuditCmd   = 'RAcf'  // confirm rom audit
     };
-
-    // Select a new ROM audit path
-    unique_ptr<BrowserDialog> myBrowser;
-    const GUI::Font& myFont;
 
     // ROM audit path
     EditTextWidget* myRomPath{nullptr};

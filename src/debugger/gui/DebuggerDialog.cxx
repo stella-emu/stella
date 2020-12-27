@@ -259,30 +259,6 @@ void DebuggerDialog::handleCommand(CommandSender* sender, int cmd,
       loadConfig();
       break;
 
-    case kSvAccessCmd:
-      runCommand("saveaccess");
-      break;
-
-    case kSvDisCmd:
-      runCommand("savedis");
-      break;
-
-    case kSvRomCmd:
-      runCommand("saverom");
-      break;
-
-    case kSvScriptCmd:
-      runCommand("save");
-      break;
-
-    case kSvSessionCmd:
-      runCommand("saveses");
-      break;
-
-    case kBdCancelCmd:
-      runCommand();
-      break;
-
     case RomWidget::kInvalidateListing:
       // Only do a full redraw if the disassembly tab is actually showing
       myRom->invalidate(myRomTab->getActiveTab() == 0);
@@ -427,77 +403,61 @@ void DebuggerDialog::createFont()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::showBrowser(BrowserType type, const string& defaultName)
 {
-  int cmd;
-  string title;
+  string title, command;
 
   switch(type)
   {
     case BrowserType::svAccess:
-      cmd = kSvAccessCmd;
       title = "Access Counters";
+      command = "saveaccess";
       break;
 
     case BrowserType::svDis:
-      cmd = kSvDisCmd;
       title = "Disassembly";
+      command = "savedis";
       break;
 
     case BrowserType::svRom:
-      cmd = kSvRomCmd;
       title = "ROM";
+      command = "saverom";
       break;
 
     case BrowserType::svScript:
-      cmd = kSvScriptCmd;
       title = "Workbench";
+      command = "save";
       break;
 
     case BrowserType::svSession:
-      cmd = kSvSessionCmd;
       title = "Session";
+      command = "saveses";
       break;
 
     default:
-      cmd = 0;
       break;
   }
 
-  if(cmd)
+  if(command != EmptyString)
   {
-    createBrowser("Save " + title + " as");
-
-    const string path = instance().userDir().getPath() + defaultName;
-    myBrowser->show(path, BrowserDialog::FileSave, cmd, kBdCancelCmd);
+    BrowserDialog::show(this, instance().frameBuffer().font(), "Save " + title + " as",
+                        instance().userDir().getPath() + defaultName,
+                        BrowserDialog::Mode::FileSave,
+                        [this, command](bool OK, const FilesystemNode& node) {
+                          if(OK) runCommand(node, command);
+                          else   runCommand(node);
+                        });
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DebuggerDialog::runCommand(const string& command)
+void DebuggerDialog::runCommand(const FilesystemNode& node, const string& command)
 {
   if(command != EmptyString)
   {
-    FilesystemNode dir(myBrowser->getResult());
-
-    string result = instance().debugger().parser().run(command + " {" + dir.getShortPath() + "}");
+    string result = instance().debugger().parser().run(command + " {" +
+    node.getPath() + "}");
     prompt().print(result + '\n');
   }
   prompt().printPrompt();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DebuggerDialog::createBrowser(const string& title)
-{
-  uInt32 w = 0, h = 0;
-  getDynamicBounds(w, h);
-  if(w > uInt32(_font.getMaxCharWidth() * 80))
-    w = _font.getMaxCharWidth() * 80;
-
-  // Create file browser dialog
-  if(!myBrowser || uInt32(myBrowser->getWidth()) != w ||
-     uInt32(myBrowser->getHeight()) != h)
-    myBrowser = make_unique<BrowserDialog>(this, instance().frameBuffer().font(), w, h, title);
-  else
-    myBrowser->setTitle(title);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

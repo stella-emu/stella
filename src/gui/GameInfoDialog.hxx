@@ -27,7 +27,6 @@ class RadioButtonGroup;
 class TabWidget;
 class SliderWidget;
 class QuadTariDialog;
-class BrowserDialog;
 
 #include "Dialog.hxx"
 #include "Command.hxx"
@@ -78,8 +77,7 @@ class GameInfoDialog : public Dialog, public CommandSender
     // set formatted memory value for given address field
     void setAddressVal(EditTextWidget* address, EditTextWidget* val,
                        bool isBCD = true, bool zeroBased = false, uInt8 maxVal = 255);
-    void exportCurrentPropertiesToDisk();
-    void createBrowser(const string& title);
+    void exportCurrentPropertiesToDisk(const FilesystemNode& node);
 
   private:
     TabWidget* myTab{nullptr};
@@ -170,8 +168,6 @@ class GameInfoDialog : public Dialog, public CommandSender
     StaticTextWidget* myHighScoreNotesLabel{nullptr};
     EditTextWidget*   myHighScoreNotes{nullptr};
 
-    unique_ptr<BrowserDialog> myBrowser;
-
     enum {
       kVCenterChanged  = 'Vcch',
       kPhosphorChanged = 'PPch',
@@ -184,8 +180,7 @@ class GameInfoDialog : public Dialog, public CommandSender
       kHiScoresChanged = 'HSch',
       kPXCenterChanged = 'Pxch',
       kPYCenterChanged = 'Pych',
-      kExportPressed   = 'Expr',
-      kExportChosen    = 'Exch'
+      kExportPressed   = 'Expr'
     };
 
     // Game properties for currently loaded ROM

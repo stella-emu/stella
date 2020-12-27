@@ -26,16 +26,10 @@
 #include "Font.hxx"
 #include "BrowserDialog.hxx"
 
-/* We want to use this as a general directory selector at some point... possible uses
- * - to select the data dir for a game
- * - to select the place where save games are stored
- * - others???
- */
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
                              int max_w, int max_h, const string& title)
-  : Dialog(boss->instance(), boss->parent(), font, title),
-    CommandSender(boss)
+  : Dialog(boss->instance(), boss->parent(), font, title)
 {
   // Set real dimensions
   _w = max_w;
@@ -121,23 +115,41 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void BrowserDialog::show(GuiObject* parent, const GUI::Font& font,
+                         const string& title, const string& startpath,
+                         BrowserDialog::Mode mode,
+                         const Command& command,
+                         const FilesystemNode::NameFilter& namefilter)
+{
+  uInt32 w = 0, h = 0;
+  static_cast<Dialog*>(parent)->getDynamicBounds(w, h);
+  if(w > uInt32(font.getMaxCharWidth() * 80))
+    w = font.getMaxCharWidth() * 80;
+
+  static unique_ptr<BrowserDialog> ourBrowser =
+      make_unique<BrowserDialog>(parent, font, w, h, title);
+
+  ourBrowser->show(startpath, mode, command, namefilter);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void BrowserDialog::show(const string& startpath,
-                         BrowserDialog::ListMode mode, int cmd, int cancelCmd,
-                         const string& ext)
+                         BrowserDialog::Mode mode,
+                         const Command& command,
+                         const FilesystemNode::NameFilter& namefilter)
 {
   const int fontWidth = _font.getMaxCharWidth(),
     fontHeight = _font.getFontHeight(),
     VGAP = fontHeight / 4;
 
   _mode = mode;
-  _cmd = cmd;
-  _cancelCmd = cancelCmd;
-  string directory;// = EmptyString;
-  string fileName;// = EmptyString;
+  _command = command;
+  string directory;
+  string fileName;
   bool fileSelected = true;
 
   // Set start path
-  if(_mode != Directories)
+  if(_mode != Mode::Directories)
   {
     // split startpath into path and filename
     FilesystemNode fs = FilesystemNode(startpath);
@@ -147,11 +159,9 @@ void BrowserDialog::show(const string& startpath,
 
   switch(_mode)
   {
-    case FileLoad:
+    case Mode::FileLoad:
       _fileList->setListMode(FilesystemNode::ListMode::All);
-      _fileList->setNameFilter([ext](const FilesystemNode& node) {
-        return BSPF::endsWithIgnoreCase(node.getName(), ext);
-      });
+      _fileList->setNameFilter(namefilter);
       _fileList->setHeight(_selected->getTop() - VGAP * 2 - _fileList->getTop());
 
       _currentPath->setWidth(_savePathBox->getLeft() - _currentPath->getLeft() - fontWidth);
@@ -166,11 +176,9 @@ void BrowserDialog::show(const string& startpath,
       _okWidget->setLabel("Load");
       break;
 
-    case FileSave:
+    case Mode::FileSave:
       _fileList->setListMode(FilesystemNode::ListMode::All);
-      _fileList->setNameFilter([ext](const FilesystemNode& node) {
-        return BSPF::endsWithIgnoreCase(node.getName(), ext);
-      });
+      _fileList->setNameFilter(namefilter);
       _fileList->setHeight(_selected->getTop() - VGAP * 2 - _fileList->getTop());
 
       _currentPath->setWidth(_savePathBox->getLeft() - _currentPath->getLeft() - fontWidth);
@@ -187,7 +195,7 @@ void BrowserDialog::show(const string& startpath,
       fileSelected = false;
       break;
 
-    case Directories:
+    case Mode::Directories:
       _fileList->setListMode(FilesystemNode::ListMode::DirectoriesOnly);
       _fileList->setNameFilter([](const FilesystemNode&) { return true; });
       // TODO: scrollbar affected too!
@@ -206,7 +214,7 @@ void BrowserDialog::show(const string& startpath,
   }
 
   // Set start path
-  if(_mode != Directories)
+  if(_mode != Mode::Directories)
     _fileList->setDirectory(FilesystemNode(directory), fileName);
   else
     _fileList->setDirectory(FilesystemNode(startpath));
@@ -220,12 +228,12 @@ void BrowserDialog::show(const string& startpath,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const FilesystemNode& BrowserDialog::getResult() const
 {
-  if(_mode == FileLoad || _mode == FileSave)
+  if(_mode == Mode::FileLoad || _mode == Mode::FileSave)
   {
     static FilesystemNode node;
 
     return node
-      = FilesystemNode(_fileList->currentDir().getShortPath() + _selected->getText());
+      = FilesystemNode(_fileList->currentDir().getPath() + _selected->getText());
   }
   else
     return _fileList->currentDir();
@@ -240,8 +248,7 @@ void BrowserDialog::handleCommand(CommandSender* sender, int cmd,
     case kChooseCmd:
     case FileListWidget::ItemActivated:
       // Send a signal to the calling class that a selection has been made
-      // Since we aren't derived from a widget, we don't have a 'data' or 'id'
-      if(_mode != Directories)
+      if(_mode != Mode::Directories)
       {
         // TODO: check if affected by '-baseDir'and 'basedirinapp' params
         bool savePath = _savePathBox->getState();
@@ -250,14 +257,13 @@ void BrowserDialog::handleCommand(CommandSender* sender, int cmd,
         if(savePath)
           instance().setUserDir(_fileList->currentDir().getShortPath());
       }
-      if(_cmd) sendCommand(_cmd, -1, -1);
+      _command(true, getResult());
       close();
       break;
 
     case kCloseCmd:
       // Send a signal to the calling class that the dialog was closed without selection
-      // Since we aren't derived from a widget, we don't have a 'data' or 'id'
-      if(_cancelCmd) sendCommand(_cancelCmd, -1, -1);
+      _command(false, getResult());
       close();
       break;
 
@@ -300,7 +306,7 @@ void BrowserDialog::updateUI(bool fileSelected)
   // Enable/disable OK button based on current mode and status
   bool enable = true;
 
-  if(_mode != Directories)
+  if(_mode != Mode::Directories)
     enable = !_selected->getText().empty();
   _okWidget->setEnabled(enable);
 

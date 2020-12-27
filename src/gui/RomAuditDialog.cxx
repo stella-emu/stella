@@ -37,7 +37,6 @@
 RomAuditDialog::RomAuditDialog(OSystem& osystem, DialogContainer& parent,
                                const GUI::Font& font, int max_w, int max_h)
   : Dialog(osystem, parent, font, "Audit ROMs"),
-    myFont{font},
     myMaxWidth{max_w},
     myMaxHeight{max_h}
 {
@@ -186,7 +185,7 @@ void RomAuditDialog::handleCommand(CommandSender* sender, int cmd,
         msg.push_back("If you're sure you want to proceed with the");
         msg.push_back("audit, click 'OK', otherwise click 'Cancel'.");
         myConfirmMsg = make_unique<GUI::MessageBox>
-          (this, myFont, msg, myMaxWidth, myMaxHeight, kConfirmAuditCmd,
+          (this, _font, msg, myMaxWidth, myMaxHeight, kConfirmAuditCmd,
           "OK", "Cancel", "ROM Audit", false);
       }
       myConfirmMsg->show();
@@ -198,38 +197,20 @@ void RomAuditDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kChooseAuditDirCmd:
-      createBrowser("Select ROM Directory to Audit");
-      myBrowser->show(myRomPath->getText(),
-                      BrowserDialog::Directories, kAuditDirChosenCmd);
+      BrowserDialog::show(this, _font, "Select ROM Directory to Audit",
+                          myRomPath->getText(),
+                          BrowserDialog::Mode::Directories,
+                          [this](bool OK, const FilesystemNode& node) {
+                            if(OK) {
+                              myRomPath->setText(node.getShortPath());
+                              myResults1->setText("");
+                              myResults2->setText("");
+                            }
+                          });
       break;
-
-    case kAuditDirChosenCmd:
-    {
-      FilesystemNode dir(myBrowser->getResult());
-      myRomPath->setText(dir.getShortPath());
-      myResults1->setText("");
-      myResults2->setText("");
-      break;
-    }
 
     default:
       Dialog::handleCommand(sender, cmd, data, 0);
       break;
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomAuditDialog::createBrowser(const string& title)
-{
-  uInt32 w = 0, h = 0;
-  getDynamicBounds(w, h);
-  if(w > uInt32(_font.getMaxCharWidth() * 80))
-    w = _font.getMaxCharWidth() * 80;
-
-  // Create file browser dialog
-  if(!myBrowser || uInt32(myBrowser->getWidth()) != w ||
-     uInt32(myBrowser->getHeight()) != h)
-    myBrowser = make_unique<BrowserDialog>(this, myFont, w, h, title);
-  else
-    myBrowser->setTitle(title);
 }

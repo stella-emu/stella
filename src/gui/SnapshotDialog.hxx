@@ -25,7 +25,6 @@ class CheckboxWidget;
 class EditTextWidget;
 class SliderWidget;
 class StaticTextWidget;
-class BrowserDialog;
 
 #include "Dialog.hxx"
 #include "Command.hxx"
@@ -35,7 +34,7 @@ class SnapshotDialog : public Dialog
   public:
     SnapshotDialog(OSystem& osystem, DialogContainer& parent,
                    const GUI::Font& font, int max_w, int max_h);
-    ~SnapshotDialog() override;
+    ~SnapshotDialog() override = default;
 
   private:
     void loadConfig() override;
@@ -43,16 +42,12 @@ class SnapshotDialog : public Dialog
     void setDefaults() override;
 
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-    void createBrowser(const string& title);
 
   private:
     enum {
       kChooseSnapSaveDirCmd = 'LOss', // snapshot dir (save files)
-      kSnapSaveDirChosenCmd = 'snsc', // snap chosen (save files)
       kSnapshotInterval     = 'SnIn'  // snap chosen (load files)
     };
-
-    const GUI::Font& myFont;
 
     // Config paths
     EditTextWidget* mySnapSavePath{nullptr};
@@ -62,8 +57,6 @@ class SnapshotDialog : public Dialog
 
     CheckboxWidget* mySnapSingle{nullptr};
     CheckboxWidget* mySnap1x{nullptr};
-
-    unique_ptr<BrowserDialog> myBrowser;
 
   private:
     // Following constructors and assignment operators not supported
