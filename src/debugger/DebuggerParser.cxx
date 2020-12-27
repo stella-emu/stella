@@ -35,7 +35,6 @@
 #include "PromptWidget.hxx"
 #include "RomWidget.hxx"
 #include "ProgressDialog.hxx"
-#include "BrowserDialog.hxx"
 #include "TimerManager.hxx"
 #include "Vec.hxx"
 

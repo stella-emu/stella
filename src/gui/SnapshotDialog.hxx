@@ -52,8 +52,6 @@ class SnapshotDialog : public Dialog
       kSnapshotInterval     = 'SnIn'  // snap chosen (load files)
     };
 
-    const GUI::Font& myFont;
-
     // Config paths
     EditTextWidget* mySnapSavePath{nullptr};
 

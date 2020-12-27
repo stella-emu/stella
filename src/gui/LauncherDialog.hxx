@@ -22,7 +22,6 @@ class ButtonWidget;
 class CommandSender;
 class ContextMenu;
 class DialogContainer;
-class BrowserDialog;
 class OptionsDialog;
 class HighScoresDialog;
 class GlobalPropsDialog;
@@ -168,7 +167,6 @@ class LauncherDialog : public Dialog
     unique_ptr<StellaSettingsDialog> myStellaSettingsDialog;
     unique_ptr<ContextMenu> myMenu;
     unique_ptr<GlobalPropsDialog> myGlobalProps;
-    unique_ptr<BrowserDialog> myRomDir;
     unique_ptr<WhatsNewDialog> myWhatsNewDialog;
 
     // automatically sized font for ROM info viewer

@@ -17,7 +17,6 @@
 
 #include "bspf.hxx"
 #include "Bankswitch.hxx"
-#include "BrowserDialog.hxx"
 #include "ContextMenu.hxx"
 #include "DialogContainer.hxx"
 #include "Dialog.hxx"
