@@ -50,6 +50,7 @@ class UIDialog : public Dialog, public CommandSender
       kSnapLoadDirChosenCmd = 'UIsc' // snap chosen (load files)
     };
 
+    const GUI::Font& myFont;
     TabWidget* myTab{nullptr};
 
     // Launcher options
