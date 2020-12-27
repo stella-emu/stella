@@ -35,8 +35,8 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
   _w = max_w;
   _h = max_h;
   const int lineHeight   = Dialog::lineHeight(),
-            fontHeight   = Dialog::fontHeight(),
-            fontWidth    = Dialog::fontWidth(),
+            //fontHeight   = Dialog::fontHeight(),
+            //fontWidth    = Dialog::fontWidth(),
             buttonHeight = Dialog::buttonHeight(),
             buttonWidth  = Dialog::buttonWidth("Base Dir"),
             BUTTON_GAP   = Dialog::buttonGap(),

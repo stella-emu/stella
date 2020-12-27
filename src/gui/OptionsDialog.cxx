@@ -54,12 +54,10 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
 {
   // do not show basic settings options in debugger
   bool minSettings = osystem.settings().getBool("minimal_ui") && mode != Menu::AppMode::debugger;
-  const int lineHeight   = Dialog::lineHeight(),
-            buttonHeight = Dialog::buttonHeight(),
+  const int buttonHeight = Dialog::buttonHeight(),
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder(),
-            VGAP         = Dialog::vGap(),
-            INDENT       = Dialog::indent();
+            VGAP         = Dialog::vGap();
   const int HGAP      = Dialog::buttonGap(),
             rowHeight = buttonHeight + VGAP;
   int buttonWidth = Dialog::buttonWidth("Game Properties" + ELLIPSIS);

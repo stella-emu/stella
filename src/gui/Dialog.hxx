@@ -135,10 +135,10 @@ class Dialog : public GuiObject
       return _font.getStringWidth(label) + fontWidth() * 2.5;
     }
     int buttonGap() const { return fontWidth(); }
-    int hBorder() const { return fontWidth() * 1.25; };
-    int vBorder() const { return fontHeight() / 2; };
-    int vGap() const { return fontHeight() / 4; };
-    int indent() const { return fontWidth() * 2; };
+    int hBorder() const { return fontWidth() * 1.25; }
+    int vBorder() const { return fontHeight() / 2; }
+    int vGap() const { return fontHeight() / 4; }
+    int indent() const { return fontWidth() * 2; }
 
   protected:
     void draw() override { }

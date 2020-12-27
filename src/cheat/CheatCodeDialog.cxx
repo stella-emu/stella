@@ -36,7 +36,7 @@ CheatCodeDialog::CheatCodeDialog(OSystem& osystem, DialogContainer& parent,
   : Dialog(osystem, parent, font, "Cheat codes")
 {
   const int lineHeight   = Dialog::lineHeight(),
-            fontHeight   = Dialog::fontHeight(),
+            //fontHeight   = Dialog::fontHeight(),
             fontWidth    = Dialog::fontWidth(),
             buttonHeight = Dialog::buttonHeight(),
             buttonWidth  = Dialog::buttonWidth("One shot "),
