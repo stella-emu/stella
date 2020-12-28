@@ -36,6 +36,7 @@
 #include "RomWidget.hxx"
 #include "ProgressDialog.hxx"
 #include "BrowserDialog.hxx"
+#include "FrameBuffer.hxx"
 #include "TimerManager.hxx"
 #include "Vec.hxx"
 
@@ -700,6 +701,21 @@ string DebuggerParser::saveScriptFile(string file)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerParser::saveDump(const FilesystemNode& node, const ostringstream& out,
+                              ostringstream& result)
+{
+  // cout << "dump " << args[0] << "-" << args[1] << " to " << path.str() << endl;
+  std::ofstream ofs(node.getPath(), std::ofstream::out);
+
+  if(!ofs.is_open())
+    result.str(red("Unable to append dump to file " + node.getShortPath()));
+  else
+  {
+    ofs << out.str();
+    result << " to file " << node.getShortPath();
+  }
+}
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerParser::executeDirective(Device::AccessType type)
 {
   if(argCount != 2)
@@ -1126,7 +1142,7 @@ void DebuggerParser::executeDump()
   };
 
   // Error checking
-  if( argCount == 0 || argCount > 3)
+  if(argCount == 0 || argCount > 4)
   {
     outputCommandError("wrong number of arguments", myCommand);
     return;
@@ -1143,32 +1159,33 @@ void DebuggerParser::executeDump()
     dump(commandResult, args[0], args[1]);
   else
   {
-    ostringstream file;
-    file << debugger.myOSystem.userDir() << cartName() << "_dbg_";
-    if(execDepth > 0)
+    if((args[2] & 0x07) == 0)
     {
-      file << execPrefix;
-    }
-    else
-    {
-      file << std::hex << std::setw(8) << std::setfill('0')
-           << uInt32(TimerManager::getTicks() / 1000);
-    }
-    file << ".dump";
-    FilesystemNode node(file.str());
-    // cout << "dump " << args[0] << "-" << args[1] << " to " << file.str() << endl;
-    std::ofstream ofs(node.getPath(), std::ofstream::out | std::ofstream::app);
-    if(!ofs.is_open())
-    {
-      outputCommandError("Unable to append dump to file " + node.getShortPath(), myCommand);
+      commandResult << red("dump flags must be 1..7");
       return;
     }
-    if((args[2] & 0x07) != 0)
-      commandResult << "dumped ";
+    if(argCount == 4 && argStrings[3] != "?")
+    {
+      commandResult << red("browser dialog parameter must be '?'");
+      return;
+    }
+
+    ostringstream path;
+    path << debugger.myOSystem.userDir() << cartName() << "_dbg_";
+    if(execDepth > 0)
+      path << execPrefix;
+    else
+      path << std::hex << std::setw(8) << std::setfill('0')
+           << uInt32(TimerManager::getTicks() / 1000);
+    path << ".dump";
+
+    commandResult << "dumped ";
+
+    ostringstream out;
     if((args[2] & 0x01) != 0)
     {
       // dump memory
-      dump(ofs, args[0], args[1]);
+      dump(out, args[0], args[1]);
       commandResult << "bytes from $" << hex << args[0] << " to $" << hex << args[1];
       if((args[2] & 0x06) != 0)
         commandResult << ", ";
@@ -1177,8 +1194,8 @@ void DebuggerParser::executeDump()
     {
       // dump CPU state
       CpuDebug& cpu = debugger.cpuDebug();
-      ofs << "   <PC>PC SP  A  X  Y  -  -    N  V  B  D  I  Z  C  -\n";
-      ofs << "XC: "
+      out << "   <PC>PC SP  A  X  Y  -  -    N  V  B  D  I  Z  C  -\n";
+      out << "XC: "
         << Base::toString(cpu.pc() & 0xff) << " "    // PC lsb
         << Base::toString(cpu.pc() >> 8) << " "    // PC msb
         << Base::toString(cpu.sp()) << " "    // SP
@@ -1203,8 +1220,8 @@ void DebuggerParser::executeDump()
     if((args[2] & 0x04) != 0)
     {
       // dump SWCHx/INPTx state
-      ofs << "   SWA - SWB  - IT  -  -  -   I0 I1 I2 I3 I4 I5 -  -\n";
-      ofs << "XS: "
+      out << "   SWA - SWB  - IT  -  -  -   I0 I1 I2 I3 I4 I5 -  -\n";
+      out << "XS: "
         << Base::toString(debugger.peek(0x280)) << " "    // SWCHA
         << Base::toString(0) << " "    // unused
         << Base::toString(debugger.peek(0x282)) << " "    // SWCHB
@@ -1224,8 +1241,34 @@ void DebuggerParser::executeDump()
         << endl;
       commandResult << "switches and fire buttons";
     }
-    if((args[2] & 0x07) != 0)
-      commandResult << " to file " << node.getShortPath();
+
+    if(argCount == 4)
+    {
+      string outStr = out.str();                // ugly, why can't we transfer directly?
+      string resultStr = commandResult.str();   // same
+      BrowserDialog::show(debugger.myDialog, "Save Dump as", path.str(),
+                          BrowserDialog::Mode::FileSave,
+                          [this, outStr, resultStr](bool OK, const FilesystemNode& node)
+      {
+        DebuggerDialog* dlg = debugger.myDialog;
+
+        if(OK)
+        {
+          ostringstream out, result;
+
+          out << outStr; // ...and ugly back
+          result << resultStr;
+
+          saveDump(node, out, result);
+          dlg->prompt().print(result.str() + '\n');
+        }
+        dlg->prompt().printPrompt();
+      });
+      // avoid printing a new prompt
+      commandResult.str("_EXIT_DEBUGGER");
+    }
+    else
+      saveDump(FilesystemNode(path.str()), out, commandResult);
   }
 }
 
@@ -1846,9 +1889,21 @@ void DebuggerParser::executeSave()
 {
   if(argCount && argStrings[0] == "?")
   {
-    debugger.myDialog->showBrowser(DebuggerDialog::svScript, cartName() + ".script");
+    DebuggerDialog* dlg = debugger.myDialog;
+
+    BrowserDialog::show(dlg, "Save Workbench as",
+                        dlg->instance().userDir().getPath() + cartName() + ".script",
+                        BrowserDialog::Mode::FileSave,
+                        [this](bool OK, const FilesystemNode& node)
+    {
+      DebuggerDialog* dlg = debugger.myDialog;
+
+      if(OK)
+        dlg->prompt().print(saveScriptFile(node.getPath()) + '\n');
+      dlg->prompt().printPrompt();
+    });
     // avoid printing a new prompt
-    commandResult << "_EXIT_DEBUGGER";
+    commandResult.str("_EXIT_DEBUGGER");
   }
   else
     commandResult << saveScriptFile(argStrings[0]);
@@ -1860,12 +1915,24 @@ void DebuggerParser::executeSaveAccess()
 {
   if(argCount && argStrings[0] == "?")
   {
-    debugger.myDialog->showBrowser(DebuggerDialog::svAccess, cartName() + ".csv");
+    DebuggerDialog* dlg = debugger.myDialog;
+
+    BrowserDialog::show(dlg, "Save Access Counters as",
+                        dlg->instance().userDir().getPath() + cartName() + ".csv",
+                        BrowserDialog::Mode::FileSave,
+                        [this](bool OK, const FilesystemNode& node)
+    {
+      DebuggerDialog* dlg = debugger.myDialog;
+
+      if(OK)
+        dlg->prompt().print(debugger.cartDebug().saveAccessFile(node.getPath()) + '\n');
+      dlg->prompt().printPrompt();
+    });
     // avoid printing a new prompt
-    commandResult << "_EXIT_DEBUGGER";
+    commandResult.str("_EXIT_DEBUGGER");
   }
   else
-    commandResult << debugger.cartDebug().saveAccessFile(argCount ? argStrings[0] : EmptyString);
+    commandResult << debugger.cartDebug().saveAccessFile();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1881,12 +1948,24 @@ void DebuggerParser::executeSavedisassembly()
 {
   if(argCount && argStrings[0] == "?")
   {
-    debugger.myDialog->showBrowser(DebuggerDialog::svDis, cartName() + ".asm");
+    DebuggerDialog* dlg = debugger.myDialog;
+
+    BrowserDialog::show(dlg, "Save Disassembly as",
+                        dlg->instance().userDir().getPath() + cartName() + ".asm",
+                        BrowserDialog::Mode::FileSave,
+                        [this](bool OK, const FilesystemNode& node)
+    {
+      DebuggerDialog* dlg = debugger.myDialog;
+
+      if(OK)
+        dlg->prompt().print(debugger.cartDebug().saveDisassembly(node.getPath()) + '\n');
+      dlg->prompt().printPrompt();
+    });
     // avoid printing a new prompt
-    commandResult << "_EXIT_DEBUGGER";
+    commandResult.str("_EXIT_DEBUGGER");
   }
   else
-    commandResult << debugger.cartDebug().saveDisassembly(argCount ? argStrings[0] : EmptyString);
+    commandResult << debugger.cartDebug().saveDisassembly();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1895,12 +1974,24 @@ void DebuggerParser::executeSaverom()
 {
   if(argCount && argStrings[0] == "?")
   {
-    debugger.myDialog->showBrowser(DebuggerDialog::svRom, cartName() + ".a26");
+    DebuggerDialog* dlg = debugger.myDialog;
+
+    BrowserDialog::show(dlg, "Save ROM as",
+                        dlg->instance().userDir().getPath() + cartName() + ".a26",
+                        BrowserDialog::Mode::FileSave,
+                        [this](bool OK, const FilesystemNode& node)
+    {
+      DebuggerDialog* dlg = debugger.myDialog;
+
+      if(OK)
+        dlg->prompt().print(debugger.cartDebug().saveRom(node.getPath()) + '\n');
+      dlg->prompt().printPrompt();
+    });
     // avoid printing a new prompt
-    commandResult << "_EXIT_DEBUGGER";
+    commandResult.str("_EXIT_DEBUGGER");
   }
   else
-    commandResult << debugger.cartDebug().saveRom(argCount ? argStrings[0] : EmptyString);
+    commandResult << debugger.cartDebug().saveRom();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1913,22 +2004,32 @@ void DebuggerParser::executeSaveses()
 
   if(argCount && argStrings[0] == "?")
   {
-    debugger.myDialog->showBrowser(DebuggerDialog::svSession, filename.str());
-    commandResult << "_EXIT_DEBUGGER";
+    DebuggerDialog* dlg = debugger.myDialog;
+
+    BrowserDialog::show(dlg, "Save Session as",
+                        dlg->instance().userDir().getPath() + filename.str(),
+                        BrowserDialog::Mode::FileSave,
+                        [this](bool OK, const FilesystemNode& node)
+    {
+      DebuggerDialog* dlg = debugger.myDialog;
+
+      if(OK)
+        dlg->prompt().print(debugger.prompt().saveBuffer(node) + '\n');
+      dlg->prompt().printPrompt();
+    });
+    // avoid printing a new prompt
+    commandResult.str("_EXIT_DEBUGGER");
   }
   else
   {
     ostringstream path;
+
     if(argCount)
       path << argStrings[0];
     else
       path << debugger.myOSystem.userDir() << filename.str();
-    FilesystemNode file(path.str());
 
-    if(debugger.prompt().saveBuffer(file))
-      commandResult << "saved " + file.getShortPath() + " OK";
-    else
-      commandResult << "unable to save session";
+    commandResult << debugger.prompt().saveBuffer(FilesystemNode(path.str()));
   }
 }
 
@@ -2667,15 +2768,16 @@ std::array<DebuggerParser::Command, 100> DebuggerParser::commands = { {
 
   {
     "dump",
-    "Dump data at address <xx> [to yy] [1: memory; 2: CPU state; 4: input regs]",
+    "Dump data at address <xx> [to yy] [1: memory; 2: CPU state; 4: input regs] [?]",
     "Example:\n"
     "  dump f000 - dumps 128 bytes from f000\n"
     "  dump f000 f0ff - dumps all bytes from f000 to f0ff\n"
     "  dump f000 f0ff 7 - dumps all bytes from f000 to f0ff,\n"
-    "    CPU state and input registers into a file in user dir",
+    "    CPU state and input registers into a file in user dir,\n"
+    "  dump f000 f0ff 7 ? - same, but with a browser dialog\n",
     true,
     false,
-    { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
+    { Parameters::ARG_WORD, Parameters::ARG_WORD, Parameters::ARG_BYTE, Parameters::ARG_LABEL },
     std::mem_fn(&DebuggerParser::executeDump)
   },
 
@@ -3095,7 +3197,7 @@ std::array<DebuggerParser::Command, 100> DebuggerParser::commands = { {
 
   {
     "save",
-    "Save breaks, watches, traps and functions to file xx",
+    "Save breaks, watches, traps and functions to file <xx or ?>",
     "Example: save commands.script, save ?\n"
     "NOTE: saves to user dir by default",
     true,
@@ -3106,12 +3208,12 @@ std::array<DebuggerParser::Command, 100> DebuggerParser::commands = { {
 
   {
     "saveaccess",
-    "Save the access counters to CSV file",
+    "Save the access counters to CSV file [?]",
     "Example: saveaccess, saveaccess ?\n"
     "NOTE: saves to user dir by default",
       false,
       false,
-    { Parameters::ARG_FILE, Parameters::ARG_END_ARGS },
+    { Parameters::ARG_LABEL, Parameters::ARG_END_ARGS },
       std::mem_fn(&DebuggerParser::executeSaveAccess)
   },
 
@@ -3127,34 +3229,34 @@ std::array<DebuggerParser::Command, 100> DebuggerParser::commands = { {
 
   {
     "savedis",
-    "Save Distella disassembly",
+    "Save Distella disassembly to file [?]",
     "Example: savedis, savedis ?\n"
     "NOTE: saves to user dir by default",
     false,
     false,
-    { Parameters::ARG_FILE, Parameters::ARG_END_ARGS },
+    { Parameters::ARG_LABEL, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeSavedisassembly)
   },
 
   {
     "saverom",
-    "Save (possibly patched) ROM",
+    "Save (possibly patched) ROM to file [?]",
     "Example: saverom, saverom ?\n"
     "NOTE: saves to user dir by default",
     false,
     false,
-    { Parameters::ARG_FILE, Parameters::ARG_END_ARGS },
+    { Parameters::ARG_LABEL, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeSaverom)
   },
 
   {
     "saveses",
-    "Save console session",
+    "Save console session to file [?]",
     "Example: saveses, saveses ?\n"
     "NOTE: saves to user dir by default",
     false,
     false,
-    { Parameters::ARG_FILE, Parameters::ARG_END_ARGS },
+    { Parameters::ARG_LABEL, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeSaveses)
   },
 

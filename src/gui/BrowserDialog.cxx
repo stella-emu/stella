@@ -20,6 +20,7 @@
 #include "FSNode.hxx"
 #include "GuiObject.hxx"
 #include "OSystem.hxx"
+#include "FrameBuffer.hxx"
 #include "EditTextWidget.hxx"
 #include "FileListWidget.hxx"
 #include "Widget.hxx"
@@ -129,6 +130,17 @@ void BrowserDialog::show(GuiObject* parent, const GUI::Font& font,
       make_unique<BrowserDialog>(parent, font, w, h, title);
 
   ourBrowser->show(startpath, mode, command, namefilter);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void BrowserDialog::show(GuiObject* parent,
+                         const string& title, const string& startpath,
+                         BrowserDialog::Mode mode,
+                         const Command& command,
+                         const FilesystemNode::NameFilter& namefilter)
+{
+  show(parent, parent->instance().frameBuffer().font(), title, startpath,
+       mode, command, namefilter);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -247,7 +259,6 @@ void BrowserDialog::handleCommand(CommandSender* sender, int cmd,
       // Send a signal to the calling class that a selection has been made
       if(_mode != Mode::Directories)
       {
-        // TODO: check if affected by '-baseDir'and 'basedirinapp' params
         bool savePath = _savePathBox->getState();
 
         instance().settings().setValue("saveuserdir", savePath);

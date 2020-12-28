@@ -46,7 +46,7 @@ class PromptWidget : public Widget, public CommandSender
     ATTRIBUTE_FMT_PRINTF int vprintf(const char* format, va_list argptr);
     void print(const string& str);
     void printPrompt();
-    bool saveBuffer(const FilesystemNode& file);
+    string saveBuffer(const FilesystemNode& file);
 
     // Clear screen and erase all history
     void clearScreen();

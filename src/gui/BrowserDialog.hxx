@@ -69,6 +69,23 @@ class BrowserDialog : public Dialog
                      const FilesystemNode::NameFilter& namefilter = {
                       [](const FilesystemNode&) { return true; }});
 
+    /**
+      Place the browser window onscreen, using the given attributes.
+
+      @param parent     The parent object of the browser (cannot be nullptr)
+      @param title      The title of the browser window
+      @param startpath  The initial path to select in the browser
+      @param mode       The functionality to use (load/save/display)
+      @param command    The command to run when 'OK' or 'Cancel' is clicked
+      @param namefilter Filter files/directories in browser display
+    */
+    static void show(GuiObject* parent,
+                     const string& title, const string& startpath,
+                     BrowserDialog::Mode mode,
+                     const Command& command,
+                     const FilesystemNode::NameFilter& namefilter = {
+                      [](const FilesystemNode&) { return true; } });
+
   private:
     /** Place the browser window onscreen, using the given attributes */
     void show(const string& startpath,

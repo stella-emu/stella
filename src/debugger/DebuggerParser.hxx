@@ -65,6 +65,8 @@ class DebuggerParser
     bool validateArgs(int cmd);
     string eval();
     string saveScriptFile(string file);
+    void saveDump(const FilesystemNode& node, const ostringstream& out,
+                  ostringstream& result);
     const string& cartName() const;
 
   private:
