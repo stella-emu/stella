@@ -32,7 +32,6 @@ namespace Common {
 */
 struct Point
 {
-  // FIXME : make this uInt32
   Int32 x{0};  //!< The horizontal part of the point
   Int32 y{0};  //!< The vertical part of the point
 
