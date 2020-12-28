@@ -1244,20 +1244,19 @@ void DebuggerParser::executeDump()
 
     if(argCount == 4)
     {
-      string outStr = out.str();                // ugly, why can't we transfer directly?
-      string resultStr = commandResult.str();   // same
-      BrowserDialog::show(debugger.myDialog, "Save Dump as", path.str(),
+      DebuggerDialog* dlg = debugger.myDialog;
+      const string outStr = out.str();                // ugly, why can't we capture directly?
+      const string resultStr = commandResult.str();   // same
+      BrowserDialog::show(dlg, "Save Dump as", path.str(),
                           BrowserDialog::Mode::FileSave,
-                          [this, outStr, resultStr](bool OK, const FilesystemNode& node)
+                          [=](bool OK, const FilesystemNode& node)
       {
-        DebuggerDialog* dlg = debugger.myDialog;
-
         if(OK)
         {
           ostringstream out, result;
 
-          out << outStr; // ...and ugly back
-          result << resultStr;
+          out.str(outStr);        // ...and ugly back
+          result.str(resultStr);
 
           saveDump(node, out, result);
           dlg->prompt().print(result.str() + '\n');
@@ -1265,7 +1264,7 @@ void DebuggerParser::executeDump()
         dlg->prompt().printPrompt();
       });
       // avoid printing a new prompt
-      commandResult.str("_EXIT_DEBUGGER");
+      commandResult.str("_NO_PROMPT");
     }
     else
       saveDump(FilesystemNode(path.str()), out, commandResult);
@@ -1894,16 +1893,14 @@ void DebuggerParser::executeSave()
     BrowserDialog::show(dlg, "Save Workbench as",
                         dlg->instance().userDir().getPath() + cartName() + ".script",
                         BrowserDialog::Mode::FileSave,
-                        [this](bool OK, const FilesystemNode& node)
+                        [=](bool OK, const FilesystemNode& node)
     {
-      DebuggerDialog* dlg = debugger.myDialog;
-
       if(OK)
         dlg->prompt().print(saveScriptFile(node.getPath()) + '\n');
       dlg->prompt().printPrompt();
     });
     // avoid printing a new prompt
-    commandResult.str("_EXIT_DEBUGGER");
+    commandResult.str("_NO_PROMPT");
   }
   else
     commandResult << saveScriptFile(argStrings[0]);
@@ -1920,16 +1917,14 @@ void DebuggerParser::executeSaveAccess()
     BrowserDialog::show(dlg, "Save Access Counters as",
                         dlg->instance().userDir().getPath() + cartName() + ".csv",
                         BrowserDialog::Mode::FileSave,
-                        [this](bool OK, const FilesystemNode& node)
+                        [=](bool OK, const FilesystemNode& node)
     {
-      DebuggerDialog* dlg = debugger.myDialog;
-
       if(OK)
         dlg->prompt().print(debugger.cartDebug().saveAccessFile(node.getPath()) + '\n');
       dlg->prompt().printPrompt();
     });
     // avoid printing a new prompt
-    commandResult.str("_EXIT_DEBUGGER");
+    commandResult.str("_NO_PROMPT");
   }
   else
     commandResult << debugger.cartDebug().saveAccessFile();
@@ -1953,16 +1948,14 @@ void DebuggerParser::executeSavedisassembly()
     BrowserDialog::show(dlg, "Save Disassembly as",
                         dlg->instance().userDir().getPath() + cartName() + ".asm",
                         BrowserDialog::Mode::FileSave,
-                        [this](bool OK, const FilesystemNode& node)
+                        [=](bool OK, const FilesystemNode& node)
     {
-      DebuggerDialog* dlg = debugger.myDialog;
-
       if(OK)
         dlg->prompt().print(debugger.cartDebug().saveDisassembly(node.getPath()) + '\n');
       dlg->prompt().printPrompt();
     });
     // avoid printing a new prompt
-    commandResult.str("_EXIT_DEBUGGER");
+    commandResult.str("_NO_PROMPT");
   }
   else
     commandResult << debugger.cartDebug().saveDisassembly();
@@ -1979,16 +1972,14 @@ void DebuggerParser::executeSaverom()
     BrowserDialog::show(dlg, "Save ROM as",
                         dlg->instance().userDir().getPath() + cartName() + ".a26",
                         BrowserDialog::Mode::FileSave,
-                        [this](bool OK, const FilesystemNode& node)
+                        [=](bool OK, const FilesystemNode& node)
     {
-      DebuggerDialog* dlg = debugger.myDialog;
-
       if(OK)
         dlg->prompt().print(debugger.cartDebug().saveRom(node.getPath()) + '\n');
       dlg->prompt().printPrompt();
     });
     // avoid printing a new prompt
-    commandResult.str("_EXIT_DEBUGGER");
+    commandResult.str("_NO_PROMPT");
   }
   else
     commandResult << debugger.cartDebug().saveRom();
@@ -2009,16 +2000,14 @@ void DebuggerParser::executeSaveses()
     BrowserDialog::show(dlg, "Save Session as",
                         dlg->instance().userDir().getPath() + filename.str(),
                         BrowserDialog::Mode::FileSave,
-                        [this](bool OK, const FilesystemNode& node)
+                        [=](bool OK, const FilesystemNode& node)
     {
-      DebuggerDialog* dlg = debugger.myDialog;
-
       if(OK)
         dlg->prompt().print(debugger.prompt().saveBuffer(node) + '\n');
       dlg->prompt().printPrompt();
     });
     // avoid printing a new prompt
-    commandResult.str("_EXIT_DEBUGGER");
+    commandResult.str("_NO_PROMPT");
   }
   else
   {

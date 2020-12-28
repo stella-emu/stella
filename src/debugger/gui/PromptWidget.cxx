@@ -191,6 +191,8 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
           _exitedEarly = true;
           return true;
         }
+        else if(result == "_NO_PROMPT")
+          return true;
         else if(result != "")
           print(result + "\n");
       }
