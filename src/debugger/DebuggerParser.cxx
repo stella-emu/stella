@@ -701,20 +701,20 @@ string DebuggerParser::saveScriptFile(string file)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DebuggerParser::saveDump(const FilesystemNode& node, const ostringstream& out,
+void DebuggerParser::saveDump(const FilesystemNode& node, const stringstream& out,
                               ostringstream& result)
 {
-  // cout << "dump " << args[0] << "-" << args[1] << " to " << path.str() << endl;
-  std::ofstream ofs(node.getPath(), std::ofstream::out);
-
-  if(!ofs.is_open())
-    result.str(red("Unable to append dump to file " + node.getShortPath()));
-  else
+  try
   {
-    ofs << out.str();
+    node.write(out);
     result << " to file " << node.getShortPath();
   }
+  catch(...)
+  {
+    result.str(red("Unable to append dump to file " + node.getShortPath()));
+  }
 }
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerParser::executeDirective(Device::AccessType type)
 {
@@ -1181,7 +1181,7 @@ void DebuggerParser::executeDump()
 
     commandResult << "dumped ";
 
-    ostringstream out;
+    stringstream out;
     if((args[2] & 0x01) != 0)
     {
       // dump memory
@@ -1244,22 +1244,26 @@ void DebuggerParser::executeDump()
 
     if(argCount == 4)
     {
+      // FIXME: C++ doesn't currently allow capture of stringstreams
+      //        So we pass a copy of its contents, then re-create the
+      //        stream inside the lambda
+      //        Maybe this will change in a future version
+      const string outStr = out.str();
+      const string resultStr = commandResult.str();
+
       DebuggerDialog* dlg = debugger.myDialog;
-      const string outStr = out.str();                // ugly, why can't we capture directly?
-      const string resultStr = commandResult.str();   // same
       BrowserDialog::show(dlg, "Save Dump as", path.str(),
                           BrowserDialog::Mode::FileSave,
-                          [=](bool OK, const FilesystemNode& node)
+                          [this, dlg, outStr, resultStr]
+                          (bool OK, const FilesystemNode& node)
       {
         if(OK)
         {
-          ostringstream out, result;
+          stringstream  localOut(outStr);
+          ostringstream localResult(resultStr, std::ios_base::app);
 
-          out.str(outStr);        // ...and ugly back
-          result.str(resultStr);
-
-          saveDump(node, out, result);
-          dlg->prompt().print(result.str() + '\n');
+          saveDump(node, localOut, localResult);
+          dlg->prompt().print(localResult.str() + '\n');
         }
         dlg->prompt().printPrompt();
       });
@@ -1893,7 +1897,7 @@ void DebuggerParser::executeSave()
     BrowserDialog::show(dlg, "Save Workbench as",
                         dlg->instance().userDir().getPath() + cartName() + ".script",
                         BrowserDialog::Mode::FileSave,
-                        [=](bool OK, const FilesystemNode& node)
+                        [this, dlg](bool OK, const FilesystemNode& node)
     {
       if(OK)
         dlg->prompt().print(saveScriptFile(node.getPath()) + '\n');
@@ -1917,7 +1921,7 @@ void DebuggerParser::executeSaveAccess()
     BrowserDialog::show(dlg, "Save Access Counters as",
                         dlg->instance().userDir().getPath() + cartName() + ".csv",
                         BrowserDialog::Mode::FileSave,
-                        [=](bool OK, const FilesystemNode& node)
+                        [this, dlg](bool OK, const FilesystemNode& node)
     {
       if(OK)
         dlg->prompt().print(debugger.cartDebug().saveAccessFile(node.getPath()) + '\n');
@@ -1948,7 +1952,7 @@ void DebuggerParser::executeSavedisassembly()
     BrowserDialog::show(dlg, "Save Disassembly as",
                         dlg->instance().userDir().getPath() + cartName() + ".asm",
                         BrowserDialog::Mode::FileSave,
-                        [=](bool OK, const FilesystemNode& node)
+                        [this, dlg](bool OK, const FilesystemNode& node)
     {
       if(OK)
         dlg->prompt().print(debugger.cartDebug().saveDisassembly(node.getPath()) + '\n');
@@ -1972,7 +1976,7 @@ void DebuggerParser::executeSaverom()
     BrowserDialog::show(dlg, "Save ROM as",
                         dlg->instance().userDir().getPath() + cartName() + ".a26",
                         BrowserDialog::Mode::FileSave,
-                        [=](bool OK, const FilesystemNode& node)
+                        [this, dlg](bool OK, const FilesystemNode& node)
     {
       if(OK)
         dlg->prompt().print(debugger.cartDebug().saveRom(node.getPath()) + '\n');
@@ -2000,7 +2004,7 @@ void DebuggerParser::executeSaveses()
     BrowserDialog::show(dlg, "Save Session as",
                         dlg->instance().userDir().getPath() + filename.str(),
                         BrowserDialog::Mode::FileSave,
-                        [=](bool OK, const FilesystemNode& node)
+                        [this, dlg](bool OK, const FilesystemNode& node)
     {
       if(OK)
         dlg->prompt().print(debugger.prompt().saveBuffer(node) + '\n');
