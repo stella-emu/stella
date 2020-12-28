@@ -401,66 +401,6 @@ void DebuggerDialog::createFont()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DebuggerDialog::showBrowser(BrowserType type, const string& defaultName)
-{
-  string title, command;
-
-  switch(type)
-  {
-    case BrowserType::svAccess:
-      title = "Access Counters";
-      command = "saveaccess";
-      break;
-
-    case BrowserType::svDis:
-      title = "Disassembly";
-      command = "savedis";
-      break;
-
-    case BrowserType::svRom:
-      title = "ROM";
-      command = "saverom";
-      break;
-
-    case BrowserType::svScript:
-      title = "Workbench";
-      command = "save";
-      break;
-
-    case BrowserType::svSession:
-      title = "Session";
-      command = "saveses";
-      break;
-
-    default:
-      break;
-  }
-
-  if(command != EmptyString)
-  {
-    BrowserDialog::show(this, instance().frameBuffer().font(), "Save " + title + " as",
-                        instance().userDir().getPath() + defaultName,
-                        BrowserDialog::Mode::FileSave,
-                        [this, command](bool OK, const FilesystemNode& node) {
-                          if(OK) runCommand(node, command);
-                          else   runCommand(node);
-                        });
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DebuggerDialog::runCommand(const FilesystemNode& node, const string& command)
-{
-  if(command != EmptyString)
-  {
-    string result = instance().debugger().parser().run(command + " {" +
-    node.getPath() + "}");
-    prompt().print(result + '\n');
-  }
-  prompt().printPrompt();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::showFatalMessage(const string& msg)
 {
   myFatalError = make_unique<GUI::MessageBox>(this, *myLFont, msg, _w-20, _h-20,
