@@ -966,9 +966,6 @@
     <ClCompile Include="..\gui\MinUICommandDialog.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\repository\KeyValueRepositoryConfigfile.cxx">
-      <Filter>Source Files\repository</Filter>
-    </ClCompile>
     <ClCompile Include="..\common\Logger.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1088,6 +1085,12 @@
     </ClCompile>
     <ClCompile Include="..\sqlite\source\sqlite3.c">
       <Filter>Source Files\sqlite\source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\repository\sqlite\AbstractKeyValueRepositorySqlite.cxx">
+      <Filter>Source Files\repository\sqlite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\repository\sqlite\CompositeKeyValueRepositorySqlite.cxx">
+      <Filter>Source Files\repository\sqlite</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2063,9 +2066,6 @@
     <ClInclude Include="..\common\repository\KeyValueRepository.hxx">
       <Filter>Header Files\repository</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\repository\KeyValueRepositoryConfigfile.hxx">
-      <Filter>Header Files\repository</Filter>
-    </ClInclude>
     <ClInclude Include="..\common\repository\KeyValueRepositoryNoop.hxx">
       <Filter>Header Files\repository</Filter>
     </ClInclude>
@@ -2230,6 +2230,15 @@
     </ClInclude>
     <ClInclude Include="..\sqlite\source\sqlite3.h">
       <Filter>Header Files\sqlite\source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\repository\CompositeKeyValueRepository.hxx">
+      <Filter>Header Files\repository</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\repository\sqlite\AbstractKeyValueRepositorySqlite.hxx">
+      <Filter>Header Files\repository\sqlite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\repository\sqlite\CompositeKeyValueRepositorySqlite.hxx">
+      <Filter>Header Files\repository\sqlite</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
