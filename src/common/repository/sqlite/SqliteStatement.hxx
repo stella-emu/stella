@@ -39,6 +39,8 @@ class SqliteStatement {
 
     string columnText(int index) const;
 
+    Int32 columnInt(int index) const;
+
   private:
 
     sqlite3_stmt* myStmt{nullptr};

@@ -19,23 +19,23 @@
 #define KEY_VALUE_REPOSITORY_SQLITE_HXX
 
 #include "bspf.hxx"
-#include "repository/KeyValueRepository.hxx"
+#include "AbstractKeyValueRepositorySqlite.hxx"
 #include "SqliteDatabase.hxx"
 #include "SqliteStatement.hxx"
 
-class KeyValueRepositorySqlite : public KeyValueRepository
+class KeyValueRepositorySqlite : public AbstractKeyValueRepositorySqlite
 {
   public:
 
     KeyValueRepositorySqlite(SqliteDatabase& db, const string& tableName);
 
-    std::map<string, Variant> load() override;
-
-    void save(const std::map<string, Variant>& values) override;
-
-    void save(const string& key, const Variant& value) override;
-
     void initialize();
+
+  protected:
+
+    SqliteStatement& stmtInsert(const string& key, const string& value) override;
+    SqliteStatement& stmtSelect() override;
+    SqliteDatabase& database() override;
 
   private:
 
@@ -50,7 +50,7 @@ class KeyValueRepositorySqlite : public KeyValueRepository
     KeyValueRepositorySqlite(const KeyValueRepositorySqlite&) = delete;
     KeyValueRepositorySqlite(KeyValueRepositorySqlite&&) = delete;
     KeyValueRepositorySqlite& operator=(const KeyValueRepositorySqlite&) = delete;
-    KeyValueRepositorySqlite operator=(KeyValueRepositorySqlite&&) = delete;
+    KeyValueRepositorySqlite& operator=(KeyValueRepositorySqlite&&) = delete;
 };
 
 #endif // KEY_VALUE_REPOSITORY_SQLITE_HXX

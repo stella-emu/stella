@@ -17,8 +17,6 @@
 
 #include "KeyValueRepositorySqlite.hxx"
 #include "Logger.hxx"
-#include "SqliteError.hxx"
-#include "SqliteTransaction.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 KeyValueRepositorySqlite::KeyValueRepositorySqlite(
@@ -29,65 +27,27 @@ KeyValueRepositorySqlite::KeyValueRepositorySqlite(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-std::map<string, Variant> KeyValueRepositorySqlite::load()
+SqliteStatement& KeyValueRepositorySqlite::stmtInsert(const string& key, const string& value)
 {
-  std::map<string, Variant> values;
+  myStmtInsert->reset();
 
-  try {
-    myStmtSelect->reset();
-
-    while (myStmtSelect->step())
-      values[myStmtSelect->columnText(0)] = myStmtSelect->columnText(1);
-
-    myStmtSelect->reset();
-  }
-  catch (const SqliteError& err) {
-    Logger::info(err.what());
-  }
-
-  return values;
+  return (*myStmtInsert)
+    .bind(1, key.c_str())
+    .bind(2, value.c_str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void KeyValueRepositorySqlite::save(const std::map<string, Variant>& values)
+SqliteStatement& KeyValueRepositorySqlite::stmtSelect()
 {
-  try {
-    SqliteTransaction tx(myDb);
+  myStmtInsert->reset();
 
-    myStmtInsert->reset();
-
-    for (const auto& pair: values) {
-      (*myStmtInsert)
-        .bind(1, pair.first.c_str())
-        .bind(2, pair.second.toCString())
-        .step();
-
-      myStmtInsert->reset();
-    }
-
-    tx.commit();
-  }
-  catch (const SqliteError& err) {
-    Logger::info(err.what());
-  }
+  return *myStmtSelect;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void KeyValueRepositorySqlite::save(const string& key, const Variant& value)
+SqliteDatabase& KeyValueRepositorySqlite::database()
 {
-  try {
-    myStmtInsert->reset();
-
-    (*myStmtInsert)
-      .bind(1, key.c_str())
-      .bind(2, value.toCString())
-      .step();
-
-    myStmtInsert->reset();
-  }
-  catch (const SqliteError& err) {
-    Logger::info(err.what());
-  }
+  return myDb;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
