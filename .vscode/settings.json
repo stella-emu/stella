@@ -98,6 +98,7 @@
         "forward_list": "cpp",
         "regex": "cpp",
         "valarray": "cpp",
-        "ranges": "cpp"
+        "ranges": "cpp",
+        "stop_token": "cpp"
     }
 }

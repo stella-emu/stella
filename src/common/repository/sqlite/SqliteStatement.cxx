@@ -61,3 +61,10 @@ string SqliteStatement::columnText(int index) const
 {
   return reinterpret_cast<const char*>(sqlite3_column_text(myStmt, index));
 }
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int SqliteStatement::columnInt(int index) const
+{
+  return sqlite3_column_int(myStmt, index);
+}
