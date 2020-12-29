@@ -241,6 +241,11 @@
 		DC2AADB1194F389C0026C7A4 /* TIASurface.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2AADAD194F389C0026C7A4 /* TIASurface.hxx */; };
 		DC2AADB4194F390F0026C7A4 /* CartRamWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC2AADB2194F390F0026C7A4 /* CartRamWidget.cxx */; };
 		DC2AADB5194F390F0026C7A4 /* CartRamWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2AADB3194F390F0026C7A4 /* CartRamWidget.hxx */; };
+		DC2ABA5C259BD544007E57D3 /* CompositeKeyValueRepository.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2ABA5B259BD544007E57D3 /* CompositeKeyValueRepository.hxx */; };
+		DC2ABA61259BD56F007E57D3 /* CompositeKeyValueRepositorySqlite.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC2ABA5D259BD56F007E57D3 /* CompositeKeyValueRepositorySqlite.cxx */; };
+		DC2ABA62259BD56F007E57D3 /* AbstractKeyValueRepositorySqlite.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC2ABA5E259BD56F007E57D3 /* AbstractKeyValueRepositorySqlite.cxx */; };
+		DC2ABA63259BD56F007E57D3 /* CompositeKeyValueRepositorySqlite.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2ABA5F259BD56F007E57D3 /* CompositeKeyValueRepositorySqlite.hxx */; };
+		DC2ABA64259BD56F007E57D3 /* AbstractKeyValueRepositorySqlite.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2ABA60259BD56F007E57D3 /* AbstractKeyValueRepositorySqlite.hxx */; };
 		DC2B85E71EF5EF2300379EB9 /* AtariNTSC.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC2B85E51EF5EF2300379EB9 /* AtariNTSC.cxx */; };
 		DC2B85E81EF5EF2300379EB9 /* AtariNTSC.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2B85E61EF5EF2300379EB9 /* AtariNTSC.hxx */; };
 		DC2C5EDB1F8F2403007D2A09 /* smartmod.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2C5EDA1F8F2403007D2A09 /* smartmod.hxx */; };
@@ -1030,6 +1035,11 @@
 		DC2AADAD194F389C0026C7A4 /* TIASurface.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TIASurface.hxx; sourceTree = "<group>"; };
 		DC2AADB2194F390F0026C7A4 /* CartRamWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartRamWidget.cxx; sourceTree = "<group>"; };
 		DC2AADB3194F390F0026C7A4 /* CartRamWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartRamWidget.hxx; sourceTree = "<group>"; };
+		DC2ABA5B259BD544007E57D3 /* CompositeKeyValueRepository.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CompositeKeyValueRepository.hxx; sourceTree = "<group>"; };
+		DC2ABA5D259BD56F007E57D3 /* CompositeKeyValueRepositorySqlite.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CompositeKeyValueRepositorySqlite.cxx; sourceTree = "<group>"; };
+		DC2ABA5E259BD56F007E57D3 /* AbstractKeyValueRepositorySqlite.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AbstractKeyValueRepositorySqlite.cxx; sourceTree = "<group>"; };
+		DC2ABA5F259BD56F007E57D3 /* CompositeKeyValueRepositorySqlite.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CompositeKeyValueRepositorySqlite.hxx; sourceTree = "<group>"; };
+		DC2ABA60259BD56F007E57D3 /* AbstractKeyValueRepositorySqlite.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = AbstractKeyValueRepositorySqlite.hxx; sourceTree = "<group>"; };
 		DC2B85E51EF5EF2300379EB9 /* AtariNTSC.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AtariNTSC.cxx; sourceTree = "<group>"; };
 		DC2B85E61EF5EF2300379EB9 /* AtariNTSC.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = AtariNTSC.hxx; sourceTree = "<group>"; };
 		DC2C5EDA1F8F2403007D2A09 /* smartmod.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = smartmod.hxx; sourceTree = "<group>"; };
@@ -2443,6 +2453,7 @@
 		E06508B72272447200B341AC /* repository */ = {
 			isa = PBXGroup;
 			children = (
+				DC2ABA5B259BD544007E57D3 /* CompositeKeyValueRepository.hxx */,
 				E06508B92272447200B341AC /* KeyValueRepository.hxx */,
 				E06508BB2272447200B341AC /* KeyValueRepositoryConfigfile.cxx */,
 				E06508BA2272447200B341AC /* KeyValueRepositoryConfigfile.hxx */,
@@ -2478,6 +2489,10 @@
 		E0A384012589741A0062AA93 /* sqlite */ = {
 			isa = PBXGroup;
 			children = (
+				DC2ABA5E259BD56F007E57D3 /* AbstractKeyValueRepositorySqlite.cxx */,
+				DC2ABA60259BD56F007E57D3 /* AbstractKeyValueRepositorySqlite.hxx */,
+				DC2ABA5D259BD56F007E57D3 /* CompositeKeyValueRepositorySqlite.cxx */,
+				DC2ABA5F259BD56F007E57D3 /* CompositeKeyValueRepositorySqlite.hxx */,
 				E0A384022589741A0062AA93 /* KeyValueRepositorySqlite.cxx */,
 				E0A3840B2589741A0062AA93 /* KeyValueRepositorySqlite.hxx */,
 				E0A384042589741A0062AA93 /* SettingsDb.cxx */,
@@ -2577,6 +2592,7 @@
 				E08FCD5923A037EB0051F59B /* BlitterFactory.hxx in Headers */,
 				2D9173FB09BA90380026E9FF /* Settings.hxx in Headers */,
 				2D91740009BA90380026E9FF /* AboutDialog.hxx in Headers */,
+				DC2ABA64259BD56F007E57D3 /* AbstractKeyValueRepositorySqlite.hxx in Headers */,
 				DCF3A6EE1DFC75E3008A8AF3 /* DelayQueueMember.hxx in Headers */,
 				DC96162F1F817830008A2206 /* AtariMouseWidget.hxx in Headers */,
 				DCF4907A1A0ECE5B00A67AA9 /* Vec.hxx in Headers */,
@@ -2619,6 +2635,7 @@
 				DCBD31E92299ADB400567357 /* Rect.hxx in Headers */,
 				DCBA539925557E2800087DD7 /* UndoHandler.hxx in Headers */,
 				2D91741A09BA90380026E9FF /* FSNode.hxx in Headers */,
+				DC2ABA5C259BD544007E57D3 /* CompositeKeyValueRepository.hxx in Headers */,
 				DC816CF72572F92A00FBCCDA /* json_lib.hxx in Headers */,
 				2D91741B09BA90380026E9FF /* OSystem.hxx in Headers */,
 				DC6A18F919B3E65500DEB242 /* CartMDMWidget.hxx in Headers */,
@@ -2871,6 +2888,7 @@
 				DC13B540176FF2F500B8B4BB /* RomListSettings.hxx in Headers */,
 				DC3EE85D1E2C0E6D00905161 /* gzguts.h in Headers */,
 				DCDE17FD17724E5D00EB1AC6 /* SnapshotDialog.hxx in Headers */,
+				DC2ABA63259BD56F007E57D3 /* CompositeKeyValueRepositorySqlite.hxx in Headers */,
 				DC79F81317A88D9E00288B91 /* Base.hxx in Headers */,
 				DC816D0525757DC300FBCCDA /* HighScoresMenu.hxx in Headers */,
 				DC2AADB1194F389C0026C7A4 /* TIASurface.hxx in Headers */,
@@ -3164,6 +3182,7 @@
 				DCEECE560B5E5E540021D754 /* Cart0840.cxx in Sources */,
 				DC3EE8571E2C0E6D00905161 /* compress.c in Sources */,
 				DCE3BBF90C95CEDC00A671DF /* RomInfoWidget.cxx in Sources */,
+				DC2ABA62259BD56F007E57D3 /* AbstractKeyValueRepositorySqlite.cxx in Sources */,
 				DC0984850D3985160073C852 /* CartSB.cxx in Sources */,
 				DC3EE8651E2C0E6D00905161 /* inflate.c in Sources */,
 				DC6D39871A3CE65000171E71 /* CartWDWidget.cxx in Sources */,
@@ -3175,6 +3194,7 @@
 				DC487FB60DA5350900E12499 /* AtariVox.cxx in Sources */,
 				DC11F78D0DB36933003B505E /* MT24LC256.cxx in Sources */,
 				DCA00FF70DBABCAD00C3823D /* RiotDebug.cxx in Sources */,
+				DC2ABA61259BD56F007E57D3 /* CompositeKeyValueRepositorySqlite.cxx in Sources */,
 				DCE801E2236DC25600D43EDD /* CartFC.cxx in Sources */,
 				DC71C39A221623D9005DE92F /* ControllerDetector.cxx in Sources */,
 				DC047FEE1A4A6F3600348F0F /* JoystickDialog.cxx in Sources */,
