@@ -26,10 +26,9 @@ class Cheat
 {
   public:
     Cheat(OSystem& osystem, const string& name, const string& code)
-      : myOSystem(osystem),
-        myName(name == "" ? code : name),
-        myCode(code)
-    { }
+      : myOSystem{osystem},
+        myName{name == "" ? code : name},
+        myCode{code} { }
     virtual ~Cheat() = default;
 
     bool enabled() const { return myEnabled; }

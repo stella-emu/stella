@@ -58,19 +58,24 @@ RomListSettings::RomListSettings(GuiObject* boss, const GUI::Font& font)
   // Settings for Distella
   xpos += 4;  ypos += buttonHeight + 8;
   myShowTentative = new CheckboxWidget(this, font, xpos, ypos,
-                        "Show tentative code", RomListWidget::kTentativeCodeCmd);
+                                       "Show tentative code", RomListWidget::kTentativeCodeCmd);
+  myShowTentative->setToolTip("Check to differentiate between tentative code\n"
+                              "vs. data sections via static code analysis.");
   wid.push_back(myShowTentative);
   ypos += buttonHeight + 4;
   myShowAddresses = new CheckboxWidget(this, font, xpos, ypos,
-                        "Show PC addresses", RomListWidget::kPCAddressesCmd);
+                                       "Show PC addresses", RomListWidget::kPCAddressesCmd);
+  myShowAddresses->setToolTip("Check to show program counter addresses as labels.");
   wid.push_back(myShowAddresses);
   ypos += buttonHeight + 4;
   myShowGFXBinary = new CheckboxWidget(this, font, xpos, ypos,
-                        "Show GFX as binary", RomListWidget::kGfxAsBinaryCmd);
+                                       "Show GFX as binary", RomListWidget::kGfxAsBinaryCmd);
+  myShowGFXBinary->setToolTip("Check to allow editing GFX sections in binary format.");
   wid.push_back(myShowGFXBinary);
   ypos += buttonHeight + 4;
   myUseRelocation = new CheckboxWidget(this, font, xpos, ypos,
-                        "Use address relocation", RomListWidget::kAddrRelocationCmd);
+                                       "Use address relocation", RomListWidget::kAddrRelocationCmd);
+  myUseRelocation->setToolTip("Check to relocate calls out of address range.");
   wid.push_back(myUseRelocation);
 
   // Set real dimensions

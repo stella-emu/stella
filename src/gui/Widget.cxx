@@ -316,8 +316,7 @@ bool Widget::isWidgetInChain(Widget* w, Widget* find)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Widget::isWidgetInChain(const WidgetArray& list, Widget* find)
 {
-  return std::any_of(list.cbegin(), list.cend(),
-    [&](Widget* w) { return w == find; });
+  return BSPF::contains(list, find);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
