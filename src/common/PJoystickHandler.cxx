@@ -596,7 +596,7 @@ void PhysicalJoystickHandler::saveMapping()
     if (!map.is_null()) mapping.emplace_back(map);
   }
 
-  myOSystem.settings().setValue("joymap", mapping.dump());
+  myOSystem.settings().setValue("joymap", mapping.dump(2));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
