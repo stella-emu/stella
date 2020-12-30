@@ -21,6 +21,7 @@
 #include "bspf.hxx"
 #include "SqliteDatabase.hxx"
 #include "KeyValueRepositorySqlite.hxx"
+#include "CompositeKeyValueRepositorySqlite.hxx"
 
 class SettingsDb
 {
@@ -32,6 +33,8 @@ class SettingsDb
 
     KeyValueRepository& settingsRepository() const { return *mySettingsRepository; }
 
+    CompositeKeyValueRepository& propertyRepository() const { return *myPropertyRepository; }
+
     const string& databaseFileName() const { return myDb->fileName(); }
 
   private:
@@ -41,6 +44,7 @@ class SettingsDb
 
     unique_ptr<SqliteDatabase> myDb;
     unique_ptr<KeyValueRepositorySqlite> mySettingsRepository;
+    unique_ptr<CompositeKeyValueRepositorySqlite> myPropertyRepository;
 };
 
 #endif // SETTINGS_DB_HXX
