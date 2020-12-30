@@ -1092,6 +1092,9 @@
     <ClCompile Include="..\common\repository\sqlite\CompositeKeyValueRepositorySqlite.cxx">
       <Filter>Source Files\repository\sqlite</Filter>
     </ClCompile>
+    <ClCompile Include="..\common\repository\KeyValueRepositoryPropertyFile.cxx">
+      <Filter>Source Files\repository</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">
@@ -2239,6 +2242,9 @@
     </ClInclude>
     <ClInclude Include="..\common\repository\sqlite\CompositeKeyValueRepositorySqlite.hxx">
       <Filter>Header Files\repository\sqlite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\repository\KeyValueRepositoryPropertyFile.hxx">
+      <Filter>Header Files\repository</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

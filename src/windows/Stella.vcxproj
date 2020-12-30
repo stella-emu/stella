@@ -510,6 +510,7 @@
     <ClCompile Include="..\common\PhysicalJoystick.cxx" />
     <ClCompile Include="..\common\PJoystickHandler.cxx" />
     <ClCompile Include="..\common\PKeyboardHandler.cxx" />
+    <ClCompile Include="..\common\repository\KeyValueRepositoryPropertyFile.cxx" />
     <ClCompile Include="..\common\repository\sqlite\AbstractKeyValueRepositorySqlite.cxx" />
     <ClCompile Include="..\common\repository\sqlite\CompositeKeyValueRepositorySqlite.cxx" />
     <ClCompile Include="..\common\repository\sqlite\KeyValueRepositorySqlite.cxx" />
@@ -1553,6 +1554,7 @@
     <ClInclude Include="..\common\repository\CompositeKeyValueRepository.hxx" />
     <ClInclude Include="..\common\repository\KeyValueRepository.hxx" />
     <ClInclude Include="..\common\repository\KeyValueRepositoryNoop.hxx" />
+    <ClInclude Include="..\common\repository\KeyValueRepositoryPropertyFile.hxx" />
     <ClInclude Include="..\common\repository\sqlite\AbstractKeyValueRepositorySqlite.hxx" />
     <ClInclude Include="..\common\repository\sqlite\CompositeKeyValueRepositorySqlite.hxx" />
     <ClInclude Include="..\common\repository\sqlite\KeyValueRepositorySqlite.hxx" />
