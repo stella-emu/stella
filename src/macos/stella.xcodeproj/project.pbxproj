@@ -246,6 +246,9 @@
 		DC2ABA62259BD56F007E57D3 /* AbstractKeyValueRepositorySqlite.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC2ABA5E259BD56F007E57D3 /* AbstractKeyValueRepositorySqlite.cxx */; };
 		DC2ABA63259BD56F007E57D3 /* CompositeKeyValueRepositorySqlite.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2ABA5F259BD56F007E57D3 /* CompositeKeyValueRepositorySqlite.hxx */; };
 		DC2ABA64259BD56F007E57D3 /* AbstractKeyValueRepositorySqlite.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2ABA60259BD56F007E57D3 /* AbstractKeyValueRepositorySqlite.hxx */; };
+		DC2ABA68259D466C007E57D3 /* KeyValueRepositoryPropertyFile.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC2ABA65259D466C007E57D3 /* KeyValueRepositoryPropertyFile.cxx */; };
+		DC2ABA69259D466C007E57D3 /* CompositeKeyValueRepositoryNoop.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2ABA66259D466C007E57D3 /* CompositeKeyValueRepositoryNoop.hxx */; };
+		DC2ABA6A259D466C007E57D3 /* KeyValueRepositoryPropertyFile.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2ABA67259D466C007E57D3 /* KeyValueRepositoryPropertyFile.hxx */; };
 		DC2B85E71EF5EF2300379EB9 /* AtariNTSC.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC2B85E51EF5EF2300379EB9 /* AtariNTSC.cxx */; };
 		DC2B85E81EF5EF2300379EB9 /* AtariNTSC.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2B85E61EF5EF2300379EB9 /* AtariNTSC.hxx */; };
 		DC2C5EDB1F8F2403007D2A09 /* smartmod.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2C5EDA1F8F2403007D2A09 /* smartmod.hxx */; };
@@ -1040,6 +1043,9 @@
 		DC2ABA5E259BD56F007E57D3 /* AbstractKeyValueRepositorySqlite.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AbstractKeyValueRepositorySqlite.cxx; sourceTree = "<group>"; };
 		DC2ABA5F259BD56F007E57D3 /* CompositeKeyValueRepositorySqlite.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CompositeKeyValueRepositorySqlite.hxx; sourceTree = "<group>"; };
 		DC2ABA60259BD56F007E57D3 /* AbstractKeyValueRepositorySqlite.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = AbstractKeyValueRepositorySqlite.hxx; sourceTree = "<group>"; };
+		DC2ABA65259D466C007E57D3 /* KeyValueRepositoryPropertyFile.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = KeyValueRepositoryPropertyFile.cxx; sourceTree = "<group>"; };
+		DC2ABA66259D466C007E57D3 /* CompositeKeyValueRepositoryNoop.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CompositeKeyValueRepositoryNoop.hxx; sourceTree = "<group>"; };
+		DC2ABA67259D466C007E57D3 /* KeyValueRepositoryPropertyFile.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = KeyValueRepositoryPropertyFile.hxx; sourceTree = "<group>"; };
 		DC2B85E51EF5EF2300379EB9 /* AtariNTSC.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AtariNTSC.cxx; sourceTree = "<group>"; };
 		DC2B85E61EF5EF2300379EB9 /* AtariNTSC.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = AtariNTSC.hxx; sourceTree = "<group>"; };
 		DC2C5EDA1F8F2403007D2A09 /* smartmod.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = smartmod.hxx; sourceTree = "<group>"; };
@@ -2454,10 +2460,13 @@
 			isa = PBXGroup;
 			children = (
 				DC2ABA5B259BD544007E57D3 /* CompositeKeyValueRepository.hxx */,
+				DC2ABA66259D466C007E57D3 /* CompositeKeyValueRepositoryNoop.hxx */,
 				E06508B92272447200B341AC /* KeyValueRepository.hxx */,
 				E06508BB2272447200B341AC /* KeyValueRepositoryConfigfile.cxx */,
 				E06508BA2272447200B341AC /* KeyValueRepositoryConfigfile.hxx */,
 				E06508B82272447200B341AC /* KeyValueRepositoryNoop.hxx */,
+				DC2ABA65259D466C007E57D3 /* KeyValueRepositoryPropertyFile.cxx */,
+				DC2ABA67259D466C007E57D3 /* KeyValueRepositoryPropertyFile.hxx */,
 				E0A384012589741A0062AA93 /* sqlite */,
 			);
 			path = repository;
@@ -2680,6 +2689,7 @@
 				DCA078341F8C1B04008EFEE5 /* LinkedObjectPool.hxx in Headers */,
 				2D91745809BA90380026E9FF /* DebuggerDialog.hxx in Headers */,
 				DC2C5EDB1F8F2403007D2A09 /* smartmod.hxx in Headers */,
+				DC2ABA69259D466C007E57D3 /* CompositeKeyValueRepositoryNoop.hxx in Headers */,
 				DCE5CDE41BA10024005CD08A /* RiotRamWidget.hxx in Headers */,
 				DCBD31E82299ADB400567357 /* KeyMap.hxx in Headers */,
 				DCF3A6E81DFC75E3008A8AF3 /* Background.hxx in Headers */,
@@ -2704,6 +2714,7 @@
 				2D91746409BA90380026E9FF /* TiaZoomWidget.hxx in Headers */,
 				DC3C9BD52469C9A200CF2D47 /* CartEnhanced.hxx in Headers */,
 				DC1BC6672066B4390076F74A /* PKeyboardHandler.hxx in Headers */,
+				DC2ABA6A259D466C007E57D3 /* KeyValueRepositoryPropertyFile.hxx in Headers */,
 				2D91746609BA90380026E9FF /* AudioWidget.hxx in Headers */,
 				DC70065E241EC97900A459AB /* Stella14x28tFont.hxx in Headers */,
 				2D91746909BA90380026E9FF /* EventMappingWidget.hxx in Headers */,
@@ -3022,6 +3033,7 @@
 				2D91747409BA90380026E9FF /* SDLMain.m in Sources */,
 				DC3C9BC52469C8F700CF2D47 /* PaletteHandler.cxx in Sources */,
 				2D91747509BA90380026E9FF /* Booster.cxx in Sources */,
+				DC2ABA68259D466C007E57D3 /* KeyValueRepositoryPropertyFile.cxx in Sources */,
 				DC3C9BD62469C9A200CF2D47 /* Cart3EX.cxx in Sources */,
 				DC3EE8671E2C0E6D00905161 /* inftrees.c in Sources */,
 				2D91747609BA90380026E9FF /* Cart.cxx in Sources */,
