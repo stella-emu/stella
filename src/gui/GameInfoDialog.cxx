@@ -1333,6 +1333,9 @@ void GameInfoDialog::setAddressVal(EditTextWidget* addressWidget, EditTextWidget
 void GameInfoDialog::exportCurrentPropertiesToDisk(const FilesystemNode& node)
 {
   saveProperties();
+
+  // CSTODO
+  #if 0
   stringstream out;
   out << myGameProperties;
 
@@ -1345,6 +1348,8 @@ void GameInfoDialog::exportCurrentPropertiesToDisk(const FilesystemNode& node)
   {
     instance().frameBuffer().showTextMessage("Error exporting ROM properties");
   }
+
+  #endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

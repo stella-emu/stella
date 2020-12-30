@@ -66,6 +66,7 @@
 #include "EmulationWorker.hxx"
 #include "AudioSettings.hxx"
 #include "repository/KeyValueRepositoryNoop.hxx"
+#include "repository/CompositeKeyValueRepositoryNoop.hxx"
 #include "M6532.hxx"
 
 #include "OSystem.hxx"
@@ -192,8 +193,6 @@ bool OSystem::create()
   myPNGLib = make_unique<PNGLibrary>(*this);
 #endif
 
-  myPropSet->load(myPropertiesFile);
-
   // Detect serial port for AtariVox-USB
   // If a previously set port is defined, use it;
   // otherwise use the first one found (if any)
@@ -230,6 +229,7 @@ void OSystem::loadConfig(const Settings::Options& options)
   myConfigFile = FilesystemNode(mySettingsDb->databaseFileName());
 
   mySettings->setRepository(createSettingsRepository());
+  myPropSet->setRepository(createPropertyRepository());
   mySettings->load(options);
 
   // userDir is NOT affected by '-baseDir'and '-basedirinapp' params
@@ -260,9 +260,6 @@ void OSystem::saveConfig()
     Logger::debug("Saving config options ...");
     mySettings->save();
   }
-
-  if(myPropSet && myPropSet->save(myPropertiesFile))
-    Logger::debug("Saving properties set ...");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -889,6 +886,14 @@ shared_ptr<KeyValueRepository> OSystem::createSettingsRepository()
       ? shared_ptr<KeyValueRepository>(mySettingsDb, &mySettingsDb->settingsRepository())
       : make_shared<KeyValueRepositoryNoop>();
 }
+
+shared_ptr<CompositeKeyValueRepository> OSystem::createPropertyRepository()
+{
+  return mySettingsDb
+    ? shared_ptr<CompositeKeyValueRepository>(mySettingsDb, &mySettingsDb->propertyRepository())
+    : make_shared<CompositeKeyValueRepositoryNoop>();
+}
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string OSystem::ourOverrideBaseDir = "";

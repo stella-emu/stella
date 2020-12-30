@@ -16,10 +16,13 @@ class AbstractKeyValueRepositorySqlite : public KeyValueRepository
 
     void save(const string& key, const Variant& value) override;
 
+    void remove(const string& key) override;
+
   protected:
 
     virtual SqliteStatement& stmtInsert(const string& key, const string& value) = 0;
     virtual SqliteStatement& stmtSelect() = 0;
+    virtual SqliteStatement& stmtDelete(const string& key) = 0;
     virtual SqliteDatabase& database() = 0;
 };
 

@@ -33,6 +33,8 @@ class KeyValueRepositoryConfigfile : public KeyValueRepository
 
     void save(const string& key, const Variant& value) override {}
 
+    void remove(const string& key) override {}
+
   private:
 
     FilesystemNode myFile;

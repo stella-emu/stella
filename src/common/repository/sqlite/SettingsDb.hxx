@@ -42,7 +42,7 @@ class SettingsDb
     string myDatabaseDirectory;
     string myDatabaseName;
 
-    unique_ptr<SqliteDatabase> myDb;
+    shared_ptr<SqliteDatabase> myDb;
     unique_ptr<KeyValueRepositorySqlite> mySettingsRepository;
     unique_ptr<CompositeKeyValueRepositorySqlite> myPropertyRepository;
 };

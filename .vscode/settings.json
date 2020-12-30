@@ -99,6 +99,8 @@
         "regex": "cpp",
         "valarray": "cpp",
         "ranges": "cpp",
-        "stop_token": "cpp"
+        "stop_token": "cpp",
+        "version": "cpp",
+        "shared_mutex": "cpp"
     }
 }
