@@ -25,6 +25,7 @@ class OSystem;
 
 #include "bspf.hxx"
 #include "Props.hxx"
+#include "repository/CompositeKeyValueRepository.hxx"
 
 /**
   This class maintains an ordered collection of properties, maintained
@@ -39,32 +40,10 @@ class OSystem;
 class PropertiesSet
 {
   public:
-    /**
-      Trivial constructor.
-    */
-    PropertiesSet() = default;
 
-    /**
-      Load properties from the specified file, and create an internal
-      searchable list.
+    PropertiesSet();
 
-      @param file  The node representing the input file to use
-      @param save  Indicates whether the properties should be saved
-                   when the program exits
-    */
-    void load(const FilesystemNode& file, bool save = true);
-
-    /**
-      Save properties to the specified file.
-
-      @param file  The node representing the output file to use
-
-      @return  True on success, false on failure or save not needed
-               Failure occurs if file couldn't be opened for writing,
-               or if the file doesn't exist and a zero-byte file
-               would be created
-    */
-    bool save(const FilesystemNode& file) const;
+    void setRepository(shared_ptr<CompositeKeyValueRepository> repository);
 
     /**
       Get the property from the set with the given MD5.
@@ -119,6 +98,8 @@ class PropertiesSet
     // The properties temporarily inserted by the program, which should
     // be discarded when the program ends
     PropsList myTempProps;
+
+    shared_ptr<CompositeKeyValueRepository> myRepository;
 
   private:
     // Following constructors and assignment operators not supported

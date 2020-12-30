@@ -15,25 +15,22 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef COMPOSITE_KEY_VALUE_REPOSITORY_HXX
-#define COMPOSITE_KEY_VALUE_REPOSITORY_HXX
+#ifndef COMPOSITE_KEY_VALUE_REPOSITORY_NOOP_HXX
+#define COMPOSITE_KEY_VALUE_REPOSITORY_NOOP_HXX
 
-#include <vector>
-
-#include "KeyValueRepository.hxx"
+#include "repository/CompositeKeyValueRepository.hxx"
+#include "repository/KeyValueRepositoryNoop.hxx"
 #include "bspf.hxx"
 
-class CompositeKeyValueRepository
+class CompositeKeyValueRepositoryNoop : public CompositeKeyValueRepository
 {
   public:
 
-    virtual ~CompositeKeyValueRepository() = default;
+    shared_ptr<KeyValueRepository> get(const string& key) { return make_shared<KeyValueRepositoryNoop>(); }
 
-    virtual shared_ptr<KeyValueRepository> get(const string& key) = 0;
+    bool has(const string& key) { return false; }
 
-    virtual bool has(const string& key) = 0;
-
-    virtual void remove(const string& key) = 0;
+    void remove(const string& key) {}
 };
 
-#endif // COMPOSITE_KEY_VALUE_REPOSITORY_HXX
+#endif // COMPOSITE_KEY_VALUE_REPOSITORY_NOOP_HXX

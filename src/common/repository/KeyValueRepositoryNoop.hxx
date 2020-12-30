@@ -31,6 +31,8 @@ class KeyValueRepositoryNoop : public KeyValueRepository
     void save(const std::map<string, Variant>& values) override {}
 
     void save(const string& key, const Variant& value) override {}
+
+    void remove(const string& key) override {}
 };
 
 #endif // KEY_VALUE_REPOSITORY_NOOP_HXX

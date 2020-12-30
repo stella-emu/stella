@@ -23,51 +23,15 @@
 #include "DefProps.hxx"
 #include "Props.hxx"
 #include "PropsSet.hxx"
+#include "repository/CompositeKeyValueRepositoryNoop.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PropertiesSet::load(const FilesystemNode& file, bool save)
-{
-  try
-  {
-    stringstream in;
-    if(file.exists() && file.read(in) > 0)
-    {
-      Properties prop;
-      while(in >> prop)
-        insert(prop, save);
-    }
-  }
-  catch(...)
-  {
-  }
-}
+PropertiesSet::PropertiesSet() : myRepository{make_shared<CompositeKeyValueRepositoryNoop>()} {}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PropertiesSet::save(const FilesystemNode& file) const
+void PropertiesSet::setRepository(shared_ptr<CompositeKeyValueRepository> repository)
 {
-  try
-  {
-    // Only save properties when it won't create an empty file
-    if(!file.exists() && myExternalProps.size() == 0)
-      return false;
-
-    // Only save those entries in the external list
-    stringstream out;
-    for(const auto& i: myExternalProps)
-      out << i.second;
-
-    file.write(out);
-    return true;
-  }
-  catch(const runtime_error& e)
-  {
-    Logger::error(e.what());
-  }
-  catch(...)
-  {
-  }
-
-  return false;
+  myRepository = repository;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -88,11 +52,9 @@ bool PropertiesSet::getMD5(const string& md5, Properties& properties,
   // First check properties from external file
   if(!useDefaults)
   {
-    // Check external list
-    auto ext = myExternalProps.find(md5);
-    if(ext != myExternalProps.end())
-    {
-      properties = ext->second;
+    if (myRepository->has(md5)) {
+      properties.load(*myRepository->get(md5));
+
       found = true;
     }
     else  // Search temp list
@@ -138,6 +100,7 @@ bool PropertiesSet::getMD5(const string& md5, Properties& properties,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PropertiesSet::insert(const Properties& properties, bool save)
 {
+  // TODO
   // Note that the following code is optimized for insertion when an item
   // doesn't already exist, and when the external properties file is
   // relatively small (which is the case with current versions of Stella,
@@ -158,19 +121,21 @@ void PropertiesSet::insert(const Properties& properties, bool save)
     return;
   else if(getMD5(md5, defaultProps, true) && defaultProps == properties)
   {
-    myExternalProps.erase(md5);
+    cerr << "DELETE" << endl << std::flush;
+    myRepository->remove(md5);
     return;
   }
 
-  // The status of 'save' determines which list to save to
-  PropsList& list = save ? myExternalProps : myTempProps;
-
-  auto ret = list.emplace(md5, properties);
-  if(ret.second == false)
-  {
-    // Remove old item and insert again
-    list.erase(ret.first);
-    list.emplace(md5, properties);
+  if (save) {
+    properties.save(*myRepository->get(md5));
+  } else {
+    auto ret = myTempProps.emplace(md5, properties);
+    if(ret.second == false)
+    {
+      // Remove old item and insert again
+      myTempProps.erase(ret.first);
+      myTempProps.emplace(md5, properties);
+    }
   }
 }
 
@@ -184,8 +149,11 @@ void PropertiesSet::loadPerROM(const FilesystemNode& rom, const string& md5)
   // First, does this ROM have a per-ROM properties entry?
   // If so, load it into the database
   FilesystemNode propsNode(rom.getPathWithExt(".pro"));
-  if(propsNode.exists())
-    load(propsNode, false);
+  // CSTODO
+  #if 0
+    if(propsNode.exists())
+      load(propsNode, false);
+  #endif
 
   // Next, make sure we have a valid md5 and name
   Properties props;

@@ -60,6 +60,7 @@ class AudioSettings;
 #include "Logger.hxx"
 #include "bspf.hxx"
 #include "repository/KeyValueRepository.hxx"
+#include "repository/CompositeKeyValueRepository.hxx"
 
 /**
   This class provides an interface for accessing operating system specific
@@ -449,6 +450,8 @@ class OSystem
   protected:
 
     virtual shared_ptr<KeyValueRepository> createSettingsRepository();
+
+    virtual shared_ptr<CompositeKeyValueRepository> createPropertyRepository();
 
     //////////////////////////////////////////////////////////////////////
     // The following methods are system-specific and *must* be

@@ -35,6 +35,7 @@ class KeyValueRepositorySqlite : public AbstractKeyValueRepositorySqlite
 
     SqliteStatement& stmtInsert(const string& key, const string& value) override;
     SqliteStatement& stmtSelect() override;
+    SqliteStatement& stmtDelete(const string& key) override;
     SqliteDatabase& database() override;
 
   private:
@@ -44,6 +45,7 @@ class KeyValueRepositorySqlite : public AbstractKeyValueRepositorySqlite
 
     unique_ptr<SqliteStatement> myStmtInsert;
     unique_ptr<SqliteStatement> myStmtSelect;
+    unique_ptr<SqliteStatement> myStmtDelete;
 
   private:
 

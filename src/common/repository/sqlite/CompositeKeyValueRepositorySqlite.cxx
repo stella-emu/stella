@@ -54,6 +54,22 @@ bool CompositeKeyValueRepositorySqlite::has(const string& key)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CompositeKeyValueRepositorySqlite::remove(const string& key)
+{
+  try {
+    myStmtDeleteSet->reset();
+
+    (*myStmtDeleteSet)
+      .bind(1, key.c_str())
+      .step();
+  }
+  catch (const SqliteError& err) {
+    Logger::info(err.what());
+  }
+}
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CompositeKeyValueRepositorySqlite::initialize()
 {
   myDb.exec(
@@ -63,6 +79,8 @@ void CompositeKeyValueRepositorySqlite::initialize()
   myStmtInsert = make_unique<SqliteStatement>(myDb, "INSERT OR REPLACE INTO `" + myTableName + "` VALUES (?, ?, ?)");
   myStmtSelect = make_unique<SqliteStatement>(myDb, "SELECT `key2`, `VALUE` FROM `" + myTableName + "` WHERE `key1` = ?");
   myStmtCount = make_unique<SqliteStatement>(myDb, "SELECT COUNT(*) FROM `" + myTableName + "` WHERE `key1` = ?");
+  myStmtDelete = make_unique<SqliteStatement>(myDb, "DELETE FROM `" + myTableName + "` WHERE `key1` = ? AND `key2` = ?");
+  myStmtDeleteSet = make_unique<SqliteStatement>(myDb, "DELETE FROM `" + myTableName + "` WHERE `key1` = ?");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -92,6 +110,17 @@ SqliteStatement& CompositeKeyValueRepositorySqlite::ProxyRepository::stmtSelect(
   return (*myRepo.myStmtSelect)
     .bind(1, myKey.c_str());
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+SqliteStatement& CompositeKeyValueRepositorySqlite::ProxyRepository::stmtDelete(const string& key)
+{
+  myRepo.myStmtDelete->reset();
+
+  return (*myRepo.myStmtDelete)
+    .bind(1, myKey.c_str())
+    .bind(2, key.c_str());
+}
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SqliteDatabase& CompositeKeyValueRepositorySqlite::ProxyRepository::database()

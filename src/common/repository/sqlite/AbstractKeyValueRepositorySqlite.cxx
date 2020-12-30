@@ -66,11 +66,7 @@ void AbstractKeyValueRepositorySqlite::save(const string& key, const Variant& va
   try {
     SqliteStatement& stmt{stmtInsert(key, value.toString())};
 
-    stmt
-      .bind(1, key.c_str())
-      .bind(2, value.toCString())
-      .step();
-
+    stmt.step();
     stmt.reset();
   }
   catch (const SqliteError& err) {
@@ -78,3 +74,16 @@ void AbstractKeyValueRepositorySqlite::save(const string& key, const Variant& va
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void AbstractKeyValueRepositorySqlite::remove(const string& key)
+{
+  try {
+    SqliteStatement& stmt{stmtDelete(key)};
+
+    stmt.step();
+    stmt.reset();
+  }
+  catch (const SqliteError& err) {
+    Logger::info(err.what());
+  }
+}

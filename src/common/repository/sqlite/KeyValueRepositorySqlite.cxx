@@ -45,6 +45,15 @@ SqliteStatement& KeyValueRepositorySqlite::stmtSelect()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+SqliteStatement& KeyValueRepositorySqlite::stmtDelete(const string& key)
+{
+  myStmtDelete->reset();
+
+  return (*myStmtDelete)
+    .bind(1, key.c_str());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SqliteDatabase& KeyValueRepositorySqlite::database()
 {
   return myDb;
@@ -59,4 +68,5 @@ void KeyValueRepositorySqlite::initialize()
 
   myStmtInsert = make_unique<SqliteStatement>(myDb, "INSERT OR REPLACE INTO `" + myTableName + "` VALUES (?, ?)");
   myStmtSelect = make_unique<SqliteStatement>(myDb, "SELECT `key`, `VALUE` FROM `" + myTableName + "`");
+  myStmtDelete = make_unique<SqliteStatement>(myDb, "DELETE FROM `" + myTableName + "` WHERE `key` = ?");
 }
