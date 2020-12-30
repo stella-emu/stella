@@ -191,6 +191,8 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
           _exitedEarly = true;
           return true;
         }
+        else if(result == "_NO_PROMPT")
+          return true;
         else if(result != "")
           print(result + "\n");
       }
@@ -968,7 +970,7 @@ void PromptWidget::scrollToCurrent()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PromptWidget::saveBuffer(const FilesystemNode& file)
+string PromptWidget::saveBuffer(const FilesystemNode& file)
 {
   stringstream out;
   for(int start = 0; start < _promptStartPos; start += _lineWidth)
@@ -988,8 +990,13 @@ bool PromptWidget::saveBuffer(const FilesystemNode& file)
     out << endl;
   }
 
-  try { return file.write(out) > 0; }
-  catch(...) { return false; }
+  try {
+    if(file.write(out) > 0)
+      return "saved " + file.getShortPath() + " OK";
+  }
+  catch(...) { }
+
+  return "unable to save session";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

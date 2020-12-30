@@ -170,10 +170,10 @@ namespace BSPF
     return (val < lower) ? upper : (val > upper) ? lower : val;
   }
 
-  // Test whether the vector contains the given value
-  template<typename T>
-  bool contains(const std::vector<T>& v, const T& elem) {
-    return !(v.empty() || std::find(v.begin(), v.end(), elem) == v.end());
+  // Test whether a container contains the given value
+  template<typename Container>
+  bool contains(const Container& c, typename Container::const_reference elem) {
+    return std::find(c.cbegin(), c.cend(), elem) != c.end();
   }
 
   // Convert string to given case

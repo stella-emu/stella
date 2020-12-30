@@ -55,13 +55,6 @@ class DebuggerDialog : public Dialog
       kMediumFontMinW = 1160, kMediumFontMinH = 770,
       kLargeFontMinW  = 1160, kLargeFontMinH  = 870
     };
-    enum BrowserType {
-      svAccess,     // saveaccess
-      svDis,        // savedis
-      svRom,        // saverom
-      svScript,     // save
-      svSession     // saveses
-    };
 
     DebuggerDialog(OSystem& osystem, DialogContainer& parent,
                    int x, int y, int w, int h);
@@ -82,7 +75,6 @@ class DebuggerDialog : public Dialog
 
     void showFatalMessage(const string& msg);
     void saveConfig() override;
-    void showBrowser(BrowserType type, const string& defaultName);
 
   private:
     void setPosition() override { positionAt(0); }
@@ -126,9 +118,6 @@ class DebuggerDialog : public Dialog
       kDDExitFatalCmd = 'DDer',
       kDDOptionsCmd   = 'DDop'
     };
-
-    void runCommand(const FilesystemNode& node,
-                    const string& command = EmptyString);
 
     TabWidget *myTab{nullptr}, *myRomTab{nullptr};
 
