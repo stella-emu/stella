@@ -35,12 +35,16 @@ bool SettingsDb::initialize()
 
     mySettingsRepository = make_unique<KeyValueRepositorySqlite>(*myDb, "settings");
     mySettingsRepository->initialize();
+
+    myPropertyRepository = make_unique<CompositeKeyValueRepositorySqlite>(*myDb, "properties");
+    myPropertyRepository->initialize();
   }
   catch (const SqliteError& err) {
     Logger::info("sqlite DB " + databaseFileName() + " failed to initialize: " + err.what());
 
     myDb.reset();
     mySettingsRepository.reset();
+    myPropertyRepository.reset();
 
     return false;
   }
