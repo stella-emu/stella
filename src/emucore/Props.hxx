@@ -84,7 +84,7 @@ class Properties
   public:
     void load(KeyValueRepository& repo);
 
-    void save(KeyValueRepository& repo) const;
+    bool save(KeyValueRepository& repo) const;
 
     /**
       Get the value assigned to the specified key.  If the key does

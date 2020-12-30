@@ -45,7 +45,7 @@ void Properties::load(KeyValueRepository& repo)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Properties::save(KeyValueRepository& repo) const
+bool Properties::save(KeyValueRepository& repo) const
 {
   std::map<string, Variant> props;
 
@@ -56,7 +56,7 @@ void Properties::save(KeyValueRepository& repo) const
       props[ourPropertyNames[i]] = myProperties[i];
   }
 
-  repo.save(props);
+  return repo.save(props);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

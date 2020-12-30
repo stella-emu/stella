@@ -31,9 +31,9 @@ class KeyValueRepository
 
     virtual std::map<string, Variant> load() = 0;
 
-    virtual void save(const std::map<string, Variant>& values) = 0;
+    virtual bool save(const std::map<string, Variant>& values) = 0;
 
-    virtual void save(const string& key, const Variant& value) = 0;
+    virtual bool save(const string& key, const Variant& value) = 0;
 
     virtual void remove(const string& key) = 0;
 };

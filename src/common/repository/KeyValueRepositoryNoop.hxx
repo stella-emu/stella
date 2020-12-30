@@ -28,9 +28,9 @@ class KeyValueRepositoryNoop : public KeyValueRepository
       return std::map<string, Variant>();
     }
 
-    void save(const std::map<string, Variant>& values) override {}
+    bool save(const std::map<string, Variant>& values) override { return false; }
 
-    void save(const string& key, const Variant& value) override {}
+    bool save(const string& key, const Variant& value) override { return false; }
 
     void remove(const string& key) override {}
 };

@@ -12,9 +12,9 @@ class AbstractKeyValueRepositorySqlite : public KeyValueRepository
 
     std::map<string, Variant> load() override;
 
-    void save(const std::map<string, Variant>& values) override;
+    bool save(const std::map<string, Variant>& values) override;
 
-    void save(const string& key, const Variant& value) override;
+    bool save(const string& key, const Variant& value) override;
 
     void remove(const string& key) override;
 

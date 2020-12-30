@@ -40,7 +40,7 @@ bool SettingsDb::initialize()
     myPropertyRepository->initialize();
   }
   catch (const SqliteError& err) {
-    Logger::info("sqlite DB " + databaseFileName() + " failed to initialize: " + err.what());
+    Logger::error("sqlite DB " + databaseFileName() + " failed to initialize: " + err.what());
 
     myDb.reset();
     mySettingsRepository.reset();

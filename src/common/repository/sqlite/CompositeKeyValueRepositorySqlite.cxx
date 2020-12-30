@@ -47,7 +47,7 @@ bool CompositeKeyValueRepositorySqlite::has(const string& key)
 
     return rowCount > 0;
   } catch (const SqliteError& err) {
-    Logger::info(err.what());
+    Logger::error(err.what());
 
     return false;
   }
@@ -64,7 +64,7 @@ void CompositeKeyValueRepositorySqlite::remove(const string& key)
       .step();
   }
   catch (const SqliteError& err) {
-    Logger::info(err.what());
+    Logger::error(err.what());
   }
 }
 
