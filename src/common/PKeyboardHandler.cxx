@@ -377,11 +377,11 @@ void PhysicalKeyboardHandler::eraseMapping(Event::Type event, EventMode mode)
 void PhysicalKeyboardHandler::saveMapping()
 {
   myOSystem.settings().setValue("event_ver", Event::VERSION);
-  myOSystem.settings().setValue("keymap_emu", myKeyMap.saveMapping(EventMode::kCommonMode).dump());
-  myOSystem.settings().setValue("keymap_joy", myKeyMap.saveMapping(EventMode::kJoystickMode).dump());
-  myOSystem.settings().setValue("keymap_pad", myKeyMap.saveMapping(EventMode::kPaddlesMode).dump());
-  myOSystem.settings().setValue("keymap_key", myKeyMap.saveMapping(EventMode::kKeypadMode).dump());
-  myOSystem.settings().setValue("keymap_ui", myKeyMap.saveMapping(EventMode::kMenuMode).dump());
+  myOSystem.settings().setValue("keymap_emu", myKeyMap.saveMapping(EventMode::kCommonMode).dump(2));
+  myOSystem.settings().setValue("keymap_joy", myKeyMap.saveMapping(EventMode::kJoystickMode).dump(2));
+  myOSystem.settings().setValue("keymap_pad", myKeyMap.saveMapping(EventMode::kPaddlesMode).dump(2));
+  myOSystem.settings().setValue("keymap_key", myKeyMap.saveMapping(EventMode::kKeypadMode).dump(2));
+  myOSystem.settings().setValue("keymap_ui", myKeyMap.saveMapping(EventMode::kMenuMode).dump(2));
   enableEmulationMappings();
 }
 
