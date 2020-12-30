@@ -72,7 +72,7 @@ std::map<string, Variant> KeyValueRepositoryConfigfile::load()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void KeyValueRepositoryConfigfile::save(const std::map<string, Variant>& values)
+bool KeyValueRepositoryConfigfile::save(const std::map<string, Variant>& values)
 {
   stringstream out;
   out << ";  Stella configuration file" << endl
@@ -97,9 +97,13 @@ void KeyValueRepositoryConfigfile::save(const std::map<string, Variant>& values)
   try
   {
     myFile.write(out);
+
+    return true;
   }
   catch(...)
   {
     Logger::error("ERROR: Couldn't save to settings file " + myFile.getShortPath());
+
+    return false;
   }
 }

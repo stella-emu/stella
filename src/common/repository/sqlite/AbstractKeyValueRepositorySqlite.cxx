@@ -34,14 +34,14 @@ std::map<string, Variant> AbstractKeyValueRepositorySqlite::load()
     stmt.reset();
   }
   catch (const SqliteError& err) {
-    Logger::info(err.what());
+    Logger::error(err.what());
   }
 
   return values;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void AbstractKeyValueRepositorySqlite::save(const std::map<string, Variant>& values)
+bool AbstractKeyValueRepositorySqlite::save(const std::map<string, Variant>& values)
 {
   try {
     SqliteTransaction tx{database()};
@@ -54,23 +54,31 @@ void AbstractKeyValueRepositorySqlite::save(const std::map<string, Variant>& val
     }
 
     tx.commit();
+
+    return true;
   }
   catch (const SqliteError& err) {
-    Logger::info(err.what());
+    Logger::error(err.what());
+
+    return false;
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void AbstractKeyValueRepositorySqlite::save(const string& key, const Variant& value)
+bool AbstractKeyValueRepositorySqlite::save(const string& key, const Variant& value)
 {
   try {
     SqliteStatement& stmt{stmtInsert(key, value.toString())};
 
     stmt.step();
     stmt.reset();
+
+    return true;
   }
   catch (const SqliteError& err) {
-    Logger::info(err.what());
+    Logger::error(err.what());
+
+    return false;
   }
 }
 
@@ -84,6 +92,6 @@ void AbstractKeyValueRepositorySqlite::remove(const string& key)
     stmt.reset();
   }
   catch (const SqliteError& err) {
-    Logger::info(err.what());
+    Logger::error(err.what());
   }
 }

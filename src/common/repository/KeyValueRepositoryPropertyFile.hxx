@@ -15,17 +15,16 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef KEY_VALUE_REPOSITORY_CONFIGFILE_HXX
-#define KEY_VALUE_REPOSITORY_CONFIGFILE_HXX
+#ifndef KEY_VALUE_REPOSITORY_PROPERTY_FILE_HXX
+#define KEY_VALUE_REPOSITORY_PROPERTY_FILE_HXX
 
+#include "repository/KeyValueRepository.hxx"
 #include "FSNode.hxx"
-#include "KeyValueRepository.hxx"
+#include "bspf.hxx"
 
-class KeyValueRepositoryConfigfile : public KeyValueRepository
-{
+class KeyValueRepositoryPropertyFile : public KeyValueRepository {
   public:
-
-    explicit KeyValueRepositoryConfigfile(const FilesystemNode& file);
+    KeyValueRepositoryPropertyFile(const FilesystemNode& node);
 
     std::map<string, Variant> load() override;
 
@@ -37,7 +36,7 @@ class KeyValueRepositoryConfigfile : public KeyValueRepository
 
   private:
 
-    FilesystemNode myFile;
+    const FilesystemNode& myNode;
 };
 
-#endif // KEY_VALUE_REPOSITORY_CONFIGFILE_HXX
+#endif

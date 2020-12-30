@@ -24,6 +24,7 @@
 #include "Props.hxx"
 #include "PropsSet.hxx"
 #include "repository/CompositeKeyValueRepositoryNoop.hxx"
+#include "repository/KeyValueRepositoryPropertyFile.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PropertiesSet::PropertiesSet() : myRepository{make_shared<CompositeKeyValueRepositoryNoop>()} {}
@@ -142,6 +143,8 @@ void PropertiesSet::insert(const Properties& properties, bool save)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PropertiesSet::loadPerROM(const FilesystemNode& rom, const string& md5)
 {
+  Properties props;
+
   // Handle ROM properties, do some error checking
   // Only add to the database when necessary
   bool toInsert = false;
@@ -149,14 +152,14 @@ void PropertiesSet::loadPerROM(const FilesystemNode& rom, const string& md5)
   // First, does this ROM have a per-ROM properties entry?
   // If so, load it into the database
   FilesystemNode propsNode(rom.getPathWithExt(".pro"));
-  // CSTODO
-  #if 0
-    if(propsNode.exists())
-      load(propsNode, false);
-  #endif
+  if (propsNode.exists()) {
+    KeyValueRepositoryPropertyFile repo(propsNode);
+    props.load(repo);
+
+    insert(props, false);
+  }
 
   // Next, make sure we have a valid md5 and name
-  Properties props;
   if(!getMD5(md5, props))
   {
     props.set(PropType::Cart_MD5, md5);

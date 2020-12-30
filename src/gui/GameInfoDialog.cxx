@@ -36,6 +36,7 @@
 #include "Widget.hxx"
 #include "Font.hxx"
 
+#include "repository/KeyValueRepositoryPropertyFile.hxx"
 #include "FrameBuffer.hxx"
 #include "TIASurface.hxx"
 #include "TIA.hxx"
@@ -1334,22 +1335,12 @@ void GameInfoDialog::exportCurrentPropertiesToDisk(const FilesystemNode& node)
 {
   saveProperties();
 
-  // CSTODO
-  #if 0
-  stringstream out;
-  out << myGameProperties;
+  KeyValueRepositoryPropertyFile repo(node);
 
-  try
-  {
-    node.write(out);
+  if (myGameProperties.save(repo))
     instance().frameBuffer().showTextMessage("ROM properties exported");
-  }
-  catch(...)
-  {
+  else
     instance().frameBuffer().showTextMessage("Error exporting ROM properties");
-  }
-
-  #endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

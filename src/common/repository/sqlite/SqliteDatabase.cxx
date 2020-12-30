@@ -75,11 +75,11 @@ void SqliteDatabase::initialize()
       break;
 
     case SQLITE_MISUSE:
-      Logger::info("failed to checkpoint WAL on " + myDatabaseFile + " - WAL probably unavailable");
+      Logger::error("failed to checkpoint WAL on " + myDatabaseFile + " - WAL probably unavailable");
       break;
 
     default:
-      Logger::info("failed to checkpoint WAL on " + myDatabaseFile + " : " + sqlite3_errmsg(myHandle));
+      Logger::error("failed to checkpoint WAL on " + myDatabaseFile + " : " + sqlite3_errmsg(myHandle));
       break;
   }
 }
