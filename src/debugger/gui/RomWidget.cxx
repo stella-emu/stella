@@ -75,6 +75,27 @@ void RomWidget::loadConfig()
 
   // Update romlist to point to current PC (if it has changed)
   int pcline = cart.addressToLine(dbg.cpuDebug().pc());
+
+  if(pcline < 0)
+  {
+    // If tentative code detection is disabled, the code where PC points to is
+    //  not disassembled the first time it is executed. Therefore the rom list
+    //  highlight would never be updated!
+    // The following code tries to fix that and moves the highlight to the
+    //  line following the last know dissassembled code.
+    const CpuState& oldCpuState = static_cast<const CpuState&>(dbg.cpuDebug().getOldState());
+    int oldPc = oldCpuState.PC;
+
+    if(dbg.cpuDebug().pc() > oldPc && dbg.cpuDebug().pc() - oldPc <= 3)
+      // we assume the code moved forward by one instruction
+      pcline = cart.addressToLine(oldPc);
+    else
+      // code jumped, try to find previous line
+      for(int i = 1; i <= 3 && pcline < 0; ++i)
+        pcline = cart.addressToLine(dbg.cpuDebug().pc() - i);
+    if(pcline >= 0)
+      pcline++;
+  }
   if(pcline >= 0 && pcline != myRomList->getHighlighted())
     myRomList->setHighlighted(pcline);
 
