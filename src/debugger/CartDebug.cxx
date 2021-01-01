@@ -302,12 +302,15 @@ bool CartDebug::disassemble(int bank, uInt16 PC, bool force)
       AddressList::const_iterator i;
       for(i = addresses.cbegin(); i != addresses.cend(); ++i)
       {
-        if (PC == *i)  // already present
+        if(PC == *i)  // already present
           break;
       }
       // Otherwise, add the item at the end
-      if (i == addresses.end())
+      if(i == addresses.end())
+      {
         addresses.push_back(PC);
+        addDirective(Device::AccessType::CODE, PC, PC, bank);
+      }
     }
 
     // Always attempt to resolve code sections unless it's been
@@ -347,8 +350,8 @@ bool CartDebug::fillDisassemblyList(BankInfo& info, uInt16 search)
     const DisassemblyTag& tag = myDisassembly.list[i];
     const uInt16 address = tag.address & 0xFFF;
 
-    // Exclude 'Device::ROW'; they don't have a valid address
-    if(tag.type != Device::ROW)
+    // Exclude 'Device::ROW|NONE'; they don't have a valid address
+    if(tag.type != Device::ROW && tag.type != Device::NONE)
     {
       // Create a mapping from addresses to line numbers
       myAddrToLineList.emplace(address, i);
