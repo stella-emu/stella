@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef KEY_VALUE_REPOSITORY_PROPERTY_FILE_HXX
-#define KEY_VALUE_REPOSITORY_PROPERTY_FILE_HXX
+#ifndef KEY_VALUE_REPOSITORY_JSON_FILE_HXX
+#define KEY_VALUE_REPOSITORY_JSON_FILE_HXX
 
 #include <istream>
 #include <ostream>
@@ -24,13 +24,13 @@
 #include "repository/KeyValueRepositoryFile.hxx"
 #include "bspf.hxx"
 
-class KeyValueRepositoryPropertyFile : public KeyValueRepositoryFile<KeyValueRepositoryPropertyFile> {
+class KeyValueRepositoryJsonFile : public KeyValueRepositoryFile<KeyValueRepositoryJsonFile> {
   public:
-    KeyValueRepositoryPropertyFile(const FilesystemNode& node);
+    KeyValueRepositoryJsonFile(const FilesystemNode& node);
 
     static std::map<string, Variant> load(istream& in);
 
     static bool save(ostream& out, const std::map<string, Variant>& values);
 };
 
-#endif // KEY_VALUE_REPOSITORY_PROPERTY_FILE_HXX
+#endif // KEY_VALUE_REPOSITORY_JSON_FILE_HXX

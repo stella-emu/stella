@@ -717,7 +717,7 @@ void Settings::setValue(const string& key, const Variant& value, bool persist)
 {
   auto it = myPermanentSettings.find(key);
   if(it != myPermanentSettings.end()) {
-    if (persist && it->second != value) myRespository->save(key, value);
+    if (persist && it->second != value && myRespository->atomic()) myRespository->atomic()->save(key, value);
     it->second = value;
   }
   else
@@ -760,5 +760,6 @@ void Settings::migrate()
 {
   while (getInt(SETTINGS_VERSION_KEY) < SETTINGS_VERSION) migrateOne();
 
-  myRespository->save(SETTINGS_VERSION_KEY, SETTINGS_VERSION);
+  if (myRespository->atomic())
+    myRespository->atomic()->save(SETTINGS_VERSION_KEY, SETTINGS_VERSION);
 }

@@ -8,20 +8,14 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2020 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2021 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <istream>
-#include <ostream>
-#include <sstream>
-#include <map>
-
 #include "repository/KeyValueRepositoryPropertyFile.hxx"
-#include "Logger.hxx"
 
 namespace {
 
@@ -77,29 +71,13 @@ namespace {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 KeyValueRepositoryPropertyFile::KeyValueRepositoryPropertyFile(const FilesystemNode& node)
-  : myNode(node)
+  : KeyValueRepositoryFile<KeyValueRepositoryPropertyFile>(node)
 {}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-std::map<string, Variant> KeyValueRepositoryPropertyFile::load()
+std::map<string, Variant> KeyValueRepositoryPropertyFile::load(istream& in)
 {
   std::map<string, Variant> map;
-
-  if (!myNode.exists()) return map;
-
-  stringstream in;
-
-  try {
-    myNode.read(in);
-  }
-  catch (const runtime_error& err) {
-    Logger::error(err.what());
-
-    return map;
-  }
-  catch (...) {
-    return map;
-  }
 
   // Loop reading properties
   string key, value;
@@ -129,12 +107,8 @@ std::map<string, Variant> KeyValueRepositoryPropertyFile::load()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool KeyValueRepositoryPropertyFile::save(const std::map<string, Variant>& values)
+bool KeyValueRepositoryPropertyFile::save(ostream& out, const std::map<string, Variant>& values)
 {
-  if (values.size() == 0) return true;
-
-  stringstream out;
-
   for (auto& [key, value]: values) {
     writeQuotedString(out, key);
     out.put(' ');
@@ -142,22 +116,5 @@ bool KeyValueRepositoryPropertyFile::save(const std::map<string, Variant>& value
     out.put('\n');
   }
 
-  writeQuotedString(out, "");
-  out.put('\n');
-  out.put('\n');
-
-  try {
-    myNode.write(out);
-
-    return true;
-  }
-  catch (const runtime_error& err) {
-    Logger::error(err.what());
-
-    return false;
-  }
-  catch (...)
-  {
-    return false;
-  }
+  return true;
 }

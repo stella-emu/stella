@@ -50,10 +50,11 @@ bool Properties::save(KeyValueRepository& repo) const
   std::map<string, Variant> props;
 
   for (size_t i = 0; i < static_cast<size_t>(PropType::NumTypes); i++) {
-    if (myProperties[i] == ourDefaultProperties[i])
-      repo.remove(ourPropertyNames[i]);
-    else
+    if (myProperties[i] == ourDefaultProperties[i]) {
+      if (repo.atomic()) repo.atomic()->remove(ourPropertyNames[i]);
+    } else {
       props[ourPropertyNames[i]] = myProperties[i];
+    }
   }
 
   return repo.save(props);

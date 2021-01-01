@@ -20,13 +20,17 @@
 
 #include "KeyValueRepository.hxx"
 
-class KeyValueRepositoryNoop : public KeyValueRepository
+class KeyValueRepositoryNoop : public KeyValueRepositoryAtomic
 {
   public:
 
     virtual std::map<string, Variant> load() override {
       return std::map<string, Variant>();
     }
+
+    bool has(const string& key) override { return false; }
+
+    bool get(const string& key, string& value) override { return false; }
 
     bool save(const std::map<string, Variant>& values) override { return false; }
 
