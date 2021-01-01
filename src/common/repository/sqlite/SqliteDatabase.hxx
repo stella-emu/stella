@@ -59,8 +59,10 @@ class SqliteDatabase
 // IMPLEMENTATION
 ///////////////////////////////////////////////////////////////////////////////
 
+#ifdef __clang__
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wformat-nonliteral"
+#endif
 
 template <class T, class ...Ts>
 void SqliteDatabase::exec(const string& sql, T arg1, Ts... args) const
@@ -73,6 +75,8 @@ void SqliteDatabase::exec(const string& sql, T arg1, Ts... args) const
   exec(buffer);
 }
 
+#ifdef __clang__
 #pragma clang diagnostic pop
+#endif
 
 #endif // SQLITE_DATABASE_HXX
