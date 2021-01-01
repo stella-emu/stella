@@ -38,6 +38,9 @@ class SqliteDatabase
 
     void exec(const string &sql) const;
 
+    template<class T, class ...Ts>
+    void exec(const string& sql, T arg1, Ts... args) const;
+
   private:
 
     string myDatabaseFile;
@@ -51,5 +54,25 @@ class SqliteDatabase
     SqliteDatabase& operator=(const SqliteDatabase&) = delete;
     SqliteDatabase& operator=(SqliteDatabase&&) = delete;
 };
+
+///////////////////////////////////////////////////////////////////////////////
+// IMPLEMENTATION
+///////////////////////////////////////////////////////////////////////////////
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wformat-nonliteral"
+
+template <class T, class ...Ts>
+void SqliteDatabase::exec(const string& sql, T arg1, Ts... args) const
+{
+  char buffer[512];
+
+  if (snprintf(buffer, 512, sql.c_str(), arg1, args...) >= 512)
+    throw new runtime_error("SQL statement too long");
+
+  exec(buffer);
+}
+
+#pragma clang diagnostic pop
 
 #endif // SQLITE_DATABASE_HXX

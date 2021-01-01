@@ -27,6 +27,9 @@ class SqliteStatement {
 
     SqliteStatement(sqlite3* handle, const string& sql);
 
+    template<class T, class ...Ts>
+    SqliteStatement(sqlite3* handle, const string& sql, T arg1, Ts... args);
+
     ~SqliteStatement();
 
     operator sqlite3_stmt*() const { return myStmt; }
@@ -43,6 +46,10 @@ class SqliteStatement {
 
   private:
 
+    void initialize(const string& sql);
+
+  private:
+
     sqlite3_stmt* myStmt{nullptr};
 
     sqlite3* myHandle{nullptr};
@@ -52,8 +59,29 @@ class SqliteStatement {
     SqliteStatement() = delete;
     SqliteStatement(const SqliteStatement&) = delete;
     SqliteStatement(SqliteStatement&&) = delete;
-    SqliteStatement& operator=(const SqliteStatement&) = delete;
     SqliteStatement& operator=(SqliteStatement&&) = delete;
+    SqliteStatement& operator=(const SqliteStatement&) = delete;
 };
+
+///////////////////////////////////////////////////////////////////////////////
+// IMPLEMENTATION
+///////////////////////////////////////////////////////////////////////////////
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wformat-nonliteral"
+
+template<class T, class ...Ts>
+SqliteStatement::SqliteStatement(sqlite3* handle, const string& sql, T arg1, Ts... args)
+  : myHandle{handle}
+{
+  char buffer[512];
+
+  if (snprintf(buffer, 512, sql.c_str(), arg1, args...) >= 512)
+    throw runtime_error("SQL statement too long");
+
+  initialize(buffer);
+}
+
+#pragma clang diagnostic pop
 
 #endif // SQLITE_STATEMENT_HXX

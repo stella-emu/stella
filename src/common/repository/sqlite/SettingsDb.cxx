@@ -33,10 +33,10 @@ bool SettingsDb::initialize()
     myDb = make_unique<SqliteDatabase>(myDatabaseDirectory, myDatabaseName);
     myDb->initialize();
 
-    mySettingsRepository = make_unique<KeyValueRepositorySqlite>(*myDb, "settings");
+    mySettingsRepository = make_unique<KeyValueRepositorySqlite>(*myDb, "settings", "setting", "value");
     mySettingsRepository->initialize();
 
-    myPropertyRepositoryHost = make_unique<KeyValueRepositorySqlite>(*myDb, "properties");
+    myPropertyRepositoryHost = make_unique<KeyValueRepositorySqlite>(*myDb, "properties", "md5", "properties");
     myPropertyRepositoryHost->initialize();
 
     myPropertyRepository = make_unique<CompositeKVRJsonAdapter>(*myPropertyRepositoryHost);
