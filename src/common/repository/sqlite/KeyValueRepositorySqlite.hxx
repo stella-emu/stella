@@ -27,7 +27,7 @@ class KeyValueRepositorySqlite : public AbstractKeyValueRepositorySqlite
 {
   public:
 
-    KeyValueRepositorySqlite(SqliteDatabase& db, const string& tableName);
+    KeyValueRepositorySqlite(SqliteDatabase& db, const string& tableName, const string& colKey, const string& colValue);
 
     void initialize();
 
@@ -42,8 +42,10 @@ class KeyValueRepositorySqlite : public AbstractKeyValueRepositorySqlite
 
   private:
 
-    string myTableName;
     SqliteDatabase& myDb;
+    string myTableName;
+    string myColKey;
+    string myColValue;
 
     unique_ptr<SqliteStatement> myStmtInsert;
     unique_ptr<SqliteStatement> myStmtSelect;

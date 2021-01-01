@@ -21,8 +21,14 @@
 #include "bspf.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CompositeKeyValueRepositorySqlite::CompositeKeyValueRepositorySqlite(SqliteDatabase& db, const string& tableName)
-  : myTableName{tableName}, myDb{db}
+CompositeKeyValueRepositorySqlite::CompositeKeyValueRepositorySqlite(
+  SqliteDatabase& db,
+  const string& tableName,
+  const string& colKey1,
+  const string& colKey2,
+  const string& colValue
+)
+  : myDb{db}, myTableName{tableName}, myColKey1(colKey1), myColKey2(colKey2), myColValue(colValue)
 {}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -73,16 +79,61 @@ void CompositeKeyValueRepositorySqlite::remove(const string& key)
 void CompositeKeyValueRepositorySqlite::initialize()
 {
   myDb.exec(
-    "CREATE TABLE IF NOT EXISTS `" + myTableName + "` (`key1` TEXT, `key2` TEXT, `value` TEXT, PRIMARY KEY (`key1`, `key2`)) WITHOUT ROWID"
+    "CREATE TABLE IF NOT EXISTS `%s` (`%s` TEXT, `%s` TEXT, `%s` TEXT, PRIMARY KEY (`%s`, `%s`)) WITHOUT ROWID",
+    myTableName.c_str(),
+    myColKey1.c_str(),
+    myColKey2.c_str(),
+    myColValue.c_str(),
+    myColKey1.c_str(),
+    myColKey2.c_str()
   );
 
-  myStmtInsert = make_unique<SqliteStatement>(myDb, "INSERT OR REPLACE INTO `" + myTableName + "` VALUES (?, ?, ?)");
-  myStmtSelect = make_unique<SqliteStatement>(myDb, "SELECT `key2`, `VALUE` FROM `" + myTableName + "` WHERE `key1` = ?");
-  myStmtCountSet = make_unique<SqliteStatement>(myDb, "SELECT COUNT(*) FROM `" + myTableName + "` WHERE `key1` = ?");
-  myStmtDelete = make_unique<SqliteStatement>(myDb, "DELETE FROM `" + myTableName + "` WHERE `key1` = ? AND `key2` = ?");
-  myStmtDeleteSet = make_unique<SqliteStatement>(myDb, "DELETE FROM `" + myTableName + "` WHERE `key1` = ?");
-  myStmtSelectOne = make_unique<SqliteStatement>(myDb, "SELECT `value` FROM `" + myTableName + "` WHERE `key1` = ? AND `key2` = ?");
-  myStmtCount = make_unique<SqliteStatement>(myDb, "SELECT COUNT(`key1`) FROM `" + myTableName + "` WHERE `key1` = ? AND `key2` = ?");
+  myStmtInsert = make_unique<SqliteStatement>(myDb,
+    "INSERT OR REPLACE INTO `%s` VALUES (?, ?, ?)",
+    myTableName.c_str()
+  );
+
+  myStmtSelect = make_unique<SqliteStatement>(myDb,
+    "SELECT `%s`, `%s` FROM `%s` WHERE `%s` = ?",
+    myColKey2.c_str(),
+    myColValue.c_str(),
+    myTableName.c_str(),
+    myColKey1.c_str()
+  );
+
+  myStmtCountSet = make_unique<SqliteStatement>(myDb,
+    "SELECT COUNT(*) FROM `%s` WHERE `%s` = ?",
+    myTableName.c_str(),
+    myColKey1.c_str()
+  );
+
+  myStmtDelete = make_unique<SqliteStatement>(myDb,
+    "DELETE FROM `%s` WHERE `%s` = ? AND `%s` = ?",
+    myTableName.c_str(),
+    myColKey1.c_str(),
+    myColKey2.c_str()
+  );
+
+  myStmtDeleteSet = make_unique<SqliteStatement>(myDb,
+    "DELETE FROM `%s` WHERE `%s` = ?",
+    myTableName.c_str(),
+    myColKey1.c_str()
+  );
+
+  myStmtSelectOne = make_unique<SqliteStatement>(myDb,
+    "SELECT `%s` FROM `%s` WHERE `%s` = ? AND `%s` = ?",
+    myColValue.c_str(),
+    myTableName.c_str(),
+    myColKey1.c_str(),
+    myColKey2.c_str()
+  );
+
+  myStmtCount = make_unique<SqliteStatement>(myDb,
+    "SELECT COUNT(*) FROM `%s` WHERE `%s` = ? AND `%s` = ?",
+    myTableName.c_str(),
+    myColKey1.c_str(),
+    myColKey2.c_str()
+  );
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

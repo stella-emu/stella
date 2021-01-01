@@ -20,9 +20,12 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 KeyValueRepositorySqlite::KeyValueRepositorySqlite(
-  SqliteDatabase& db, const string& tableName)
-  : myTableName{tableName},
-    myDb{db}
+  SqliteDatabase& db, const string& tableName, const string& colKey, const string& colValue
+)
+  : myDb{db},
+    myTableName{tableName},
+    myColKey{colKey},
+    myColValue{colValue}
 {
 }
 
@@ -81,12 +84,42 @@ SqliteDatabase& KeyValueRepositorySqlite::database()
 void KeyValueRepositorySqlite::initialize()
 {
   myDb.exec(
-    "CREATE TABLE IF NOT EXISTS `" + myTableName + "` (`key` TEXT PRIMARY KEY, `value` TEXT) WITHOUT ROWID"
+    "CREATE TABLE IF NOT EXISTS `%s` (`%s` TEXT PRIMARY KEY, `%s` TEXT) WITHOUT ROWID",
+    myTableName.c_str(),
+    myColKey.c_str(),
+    myColValue.c_str()
   );
 
-  myStmtInsert = make_unique<SqliteStatement>(myDb, "INSERT OR REPLACE INTO `" + myTableName + "` VALUES (?, ?)");
-  myStmtSelect = make_unique<SqliteStatement>(myDb, "SELECT `key`, `value` FROM `" + myTableName + "`");
-  myStmtDelete = make_unique<SqliteStatement>(myDb, "DELETE FROM `" + myTableName + "` WHERE `key` = ?");
-  myStmtSelectOne = make_unique<SqliteStatement>(myDb, "SELECT `value` FROM `" + myTableName + "` WHERE `key` = ?");
-  myStmtCount = make_unique<SqliteStatement>(myDb, "SELECT COUNT(`key`) FROM `" + myTableName + "` WHERE `key` = ?");
+  myStmtInsert = make_unique<SqliteStatement>(myDb,
+    "INSERT OR REPLACE INTO `%s` VALUES (?, ?)",
+    myTableName.c_str()
+  );
+
+  myStmtSelect = make_unique<SqliteStatement>(myDb,
+    "SELECT `%s`, `%s` FROM `%s`",
+    myColKey.c_str(),
+    myColValue.c_str(),
+    myTableName.c_str()
+  );
+
+  myStmtDelete = make_unique<SqliteStatement>(myDb,
+    "DELETE FROM `%s` WHERE `%s` = ?",
+    myTableName.c_str(),
+    myColKey.c_str()
+  );
+
+  myStmtSelectOne = make_unique<SqliteStatement>(myDb,
+    "SELECT `%s` FROM `%s` WHERE `%s` = ?",
+    myColValue.c_str(),
+    myTableName.c_str(),
+    myColKey.c_str()
+  );
+
+  myStmtCount = make_unique<SqliteStatement>(
+    myDb,
+    "SELECT COUNT(`%s`) FROM `%s` WHERE `%s` = ?",
+    myColKey.c_str(),
+    myTableName.c_str(),
+    myColKey.c_str()
+  );
 }

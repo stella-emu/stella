@@ -27,7 +27,13 @@
 class CompositeKeyValueRepositorySqlite : public CompositeKeyValueRepository {
   public:
 
-    CompositeKeyValueRepositorySqlite(SqliteDatabase& db, const string& tableName);
+    CompositeKeyValueRepositorySqlite(
+      SqliteDatabase& db,
+      const string& tableName,
+      const string& colKey1,
+      const string& colKey2,
+      const string& colValue
+    );
 
     shared_ptr<KeyValueRepository> get(const string& key) override;
 
@@ -68,8 +74,11 @@ class CompositeKeyValueRepositorySqlite : public CompositeKeyValueRepository {
 
   private:
 
-    string myTableName;
     SqliteDatabase& myDb;
+    string myTableName;
+    string myColKey1;
+    string myColKey2;
+    string myColValue;
 
     unique_ptr<SqliteStatement> myStmtInsert;
     unique_ptr<SqliteStatement> myStmtSelect;

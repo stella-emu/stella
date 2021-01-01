@@ -21,8 +21,14 @@
 SqliteStatement::SqliteStatement(sqlite3* handle, const string& sql)
   : myHandle{handle}
 {
-  if (sqlite3_prepare_v2(handle, sql.c_str(), -1, &myStmt, nullptr) != SQLITE_OK)
-    throw SqliteError(handle);
+  initialize(sql);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SqliteStatement::initialize(const string& sql)
+{
+  if (sqlite3_prepare_v2(myHandle, sql.c_str(), -1, &myStmt, nullptr) != SQLITE_OK)
+    throw SqliteError(myHandle);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
