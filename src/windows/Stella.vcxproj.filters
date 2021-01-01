@@ -1095,6 +1095,15 @@
     <ClCompile Include="..\common\repository\KeyValueRepositoryPropertyFile.cxx">
       <Filter>Source Files\repository</Filter>
     </ClCompile>
+    <ClCompile Include="..\common\repository\CompositeKVRJsonAdapter.cxx">
+      <Filter>Source Files\repository</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\repository\KeyValueRepositoryConfigfile.cxx">
+      <Filter>Source Files\repository</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\repository\KeyValueRepositoryJsonFile.cxx">
+      <Filter>Source Files\repository</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">
@@ -2244,6 +2253,18 @@
       <Filter>Header Files\repository\sqlite</Filter>
     </ClInclude>
     <ClInclude Include="..\common\repository\KeyValueRepositoryPropertyFile.hxx">
+      <Filter>Header Files\repository</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\repository\CompositeKVRJsonAdapter.hxx">
+      <Filter>Header Files\repository</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\repository\KeyValueRepositoryConfigfile.hxx">
+      <Filter>Header Files\repository</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\repository\KeyValueRepositoryFile.hxx">
+      <Filter>Header Files\repository</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\repository\KeyValueRepositoryJsonFile.hxx">
       <Filter>Header Files\repository</Filter>
     </ClInclude>
   </ItemGroup>
