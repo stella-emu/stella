@@ -21,7 +21,7 @@
 #include "bspf.hxx"
 #include "SqliteDatabase.hxx"
 #include "KeyValueRepositorySqlite.hxx"
-#include "CompositeKeyValueRepositorySqlite.hxx"
+#include "repository/CompositeKVRJsonAdapter.hxx"
 
 class SettingsDb
 {
@@ -44,7 +44,8 @@ class SettingsDb
 
     shared_ptr<SqliteDatabase> myDb;
     unique_ptr<KeyValueRepositorySqlite> mySettingsRepository;
-    unique_ptr<CompositeKeyValueRepositorySqlite> myPropertyRepository;
+    unique_ptr<KeyValueRepositorySqlite> myPropertyRepositoryHost;
+    unique_ptr<CompositeKVRJsonAdapter> myPropertyRepository;
 };
 
 #endif // SETTINGS_DB_HXX

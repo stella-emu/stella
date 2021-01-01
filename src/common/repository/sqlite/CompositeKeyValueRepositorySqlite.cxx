@@ -35,15 +35,15 @@ shared_ptr<KeyValueRepository> CompositeKeyValueRepositorySqlite::get(const stri
 bool CompositeKeyValueRepositorySqlite::has(const string& key)
 {
   try {
-    myStmtCount->reset();
-    myStmtCount->bind(1, key.c_str());
+    myStmtCountSet->reset();
+    myStmtCountSet->bind(1, key.c_str());
 
-    if (!myStmtCount->step())
+    if (!myStmtCountSet->step())
       throw new SqliteError("count failed");
 
-    Int32 rowCount = myStmtCount->columnInt(0);
+    Int32 rowCount = myStmtCountSet->columnInt(0);
 
-    myStmtCount->reset();
+    myStmtCountSet->reset();
 
     return rowCount > 0;
   } catch (const SqliteError& err) {
@@ -78,9 +78,11 @@ void CompositeKeyValueRepositorySqlite::initialize()
 
   myStmtInsert = make_unique<SqliteStatement>(myDb, "INSERT OR REPLACE INTO `" + myTableName + "` VALUES (?, ?, ?)");
   myStmtSelect = make_unique<SqliteStatement>(myDb, "SELECT `key2`, `VALUE` FROM `" + myTableName + "` WHERE `key1` = ?");
-  myStmtCount = make_unique<SqliteStatement>(myDb, "SELECT COUNT(*) FROM `" + myTableName + "` WHERE `key1` = ?");
+  myStmtCountSet = make_unique<SqliteStatement>(myDb, "SELECT COUNT(*) FROM `" + myTableName + "` WHERE `key1` = ?");
   myStmtDelete = make_unique<SqliteStatement>(myDb, "DELETE FROM `" + myTableName + "` WHERE `key1` = ? AND `key2` = ?");
   myStmtDeleteSet = make_unique<SqliteStatement>(myDb, "DELETE FROM `" + myTableName + "` WHERE `key1` = ?");
+  myStmtSelectOne = make_unique<SqliteStatement>(myDb, "SELECT `value` FROM `" + myTableName + "` WHERE `key1` = ? AND `key2` = ?");
+  myStmtCount = make_unique<SqliteStatement>(myDb, "SELECT COUNT(`key1`) FROM `" + myTableName + "` WHERE `key1` = ? AND `key2` = ?");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -121,6 +123,25 @@ SqliteStatement& CompositeKeyValueRepositorySqlite::ProxyRepository::stmtDelete(
     .bind(2, key.c_str());
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+SqliteStatement& CompositeKeyValueRepositorySqlite::ProxyRepository::stmtSelectOne(const string& key)
+{
+  myRepo.myStmtSelectOne->reset();
+
+  return (*myRepo.myStmtSelectOne)
+    .bind(1, myKey.c_str())
+    .bind(2, key.c_str());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+SqliteStatement& CompositeKeyValueRepositorySqlite::ProxyRepository::stmtCount(const string& key)
+{
+  myRepo.myStmtCount->reset();
+
+  return (*myRepo.myStmtCount)
+    .bind(1, myKey.c_str())
+    .bind(2, key.c_str());
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SqliteDatabase& CompositeKeyValueRepositorySqlite::ProxyRepository::database()

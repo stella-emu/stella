@@ -33,6 +33,8 @@ MODULE_OBJS := \
 	src/common/sdl_blitter/QisBlitter.o \
 	src/common/sdl_blitter/BlitterFactory.o \
 	src/common/repository/KeyValueRepositoryPropertyFile.o \
+	src/common/repository/KeyValueRepositoryJsonFile.o \
+	src/common/repository/CompositeKVRJsonAdapter.o
 
 MODULE_DIRS += \
 	src/common

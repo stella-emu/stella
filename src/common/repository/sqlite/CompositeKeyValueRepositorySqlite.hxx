@@ -49,6 +49,8 @@ class CompositeKeyValueRepositorySqlite : public CompositeKeyValueRepository {
         SqliteStatement& stmtInsert(const string& key, const string& value) override;
         SqliteStatement& stmtSelect() override;
         SqliteStatement& stmtDelete(const string& key) override;
+        SqliteStatement& stmtCount(const string& key) override;
+        SqliteStatement& stmtSelectOne(const string& key) override;
         SqliteDatabase& database() override;
 
       private:
@@ -71,9 +73,11 @@ class CompositeKeyValueRepositorySqlite : public CompositeKeyValueRepository {
 
     unique_ptr<SqliteStatement> myStmtInsert;
     unique_ptr<SqliteStatement> myStmtSelect;
-    unique_ptr<SqliteStatement> myStmtCount;
+    unique_ptr<SqliteStatement> myStmtCountSet;
     unique_ptr<SqliteStatement> myStmtDelete;
     unique_ptr<SqliteStatement> myStmtDeleteSet;
+    unique_ptr<SqliteStatement> myStmtSelectOne;
+    unique_ptr<SqliteStatement> myStmtCount;
 
    private:
 

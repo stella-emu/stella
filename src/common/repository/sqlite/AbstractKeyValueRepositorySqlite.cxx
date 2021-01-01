@@ -41,6 +41,47 @@ std::map<string, Variant> AbstractKeyValueRepositorySqlite::load()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool AbstractKeyValueRepositorySqlite::has(const string& key)
+{
+  try {
+    SqliteStatement& stmt{stmtCount(key)};
+
+    if (!stmt.step()) throw new SqliteError("count failed");
+
+    const bool result = stmt.columnInt(0) != 0;
+    stmt.reset();
+
+    return result;
+  }
+  catch (const SqliteError& err) {
+    Logger::error(err.what());
+
+    return false;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool AbstractKeyValueRepositorySqlite::get(const string& key, string& value)
+{
+  try {
+    SqliteStatement& stmt{stmtSelectOne(key)};
+
+    if (!stmt.step()) return false;
+    value = stmt.columnText(0);
+
+    stmt.reset();
+
+    return true;
+  }
+  catch (const SqliteError& err) {
+    Logger::error(err.what());
+
+    return false;
+  }
+}
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool AbstractKeyValueRepositorySqlite::save(const std::map<string, Variant>& values)
 {
   try {

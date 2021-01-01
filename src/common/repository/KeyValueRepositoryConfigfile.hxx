@@ -21,7 +21,7 @@
 #include "FSNode.hxx"
 #include "KeyValueRepository.hxx"
 
-class KeyValueRepositoryConfigfile : public KeyValueRepository
+class KeyValueRepositoryConfigfile : public KeyValueRepositoryAtomic
 {
   public:
 
@@ -30,10 +30,6 @@ class KeyValueRepositoryConfigfile : public KeyValueRepository
     std::map<string, Variant> load() override;
 
     bool save(const std::map<string, Variant>& values) override;
-
-    bool save(const string& key, const Variant& value) override { return false; }
-
-    void remove(const string& key) override {}
 
   private:
 

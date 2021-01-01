@@ -37,6 +37,8 @@ class KeyValueRepositorySqlite : public AbstractKeyValueRepositorySqlite
     SqliteStatement& stmtSelect() override;
     SqliteStatement& stmtDelete(const string& key) override;
     SqliteDatabase& database() override;
+    SqliteStatement& stmtCount(const string& key) override;
+    SqliteStatement& stmtSelectOne(const string& key) override;
 
   private:
 
@@ -46,6 +48,8 @@ class KeyValueRepositorySqlite : public AbstractKeyValueRepositorySqlite
     unique_ptr<SqliteStatement> myStmtInsert;
     unique_ptr<SqliteStatement> myStmtSelect;
     unique_ptr<SqliteStatement> myStmtDelete;
+    unique_ptr<SqliteStatement> myStmtSelectOne;
+    unique_ptr<SqliteStatement> myStmtCount;
 
   private:
 

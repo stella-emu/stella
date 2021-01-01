@@ -6,9 +6,13 @@
 #include "SqliteDatabase.hxx"
 #include "SqliteStatement.hxx"
 
-class AbstractKeyValueRepositorySqlite : public KeyValueRepository
+class AbstractKeyValueRepositorySqlite : public KeyValueRepositoryAtomic
 {
   public:
+
+    bool has(const string& key) override;
+
+    bool get(const string& key, string& value) override;
 
     std::map<string, Variant> load() override;
 
@@ -23,6 +27,8 @@ class AbstractKeyValueRepositorySqlite : public KeyValueRepository
     virtual SqliteStatement& stmtInsert(const string& key, const string& value) = 0;
     virtual SqliteStatement& stmtSelect() = 0;
     virtual SqliteStatement& stmtDelete(const string& key) = 0;
+    virtual SqliteStatement& stmtCount(const string& key) = 0;
+    virtual SqliteStatement& stmtSelectOne(const string& key) = 0;
     virtual SqliteDatabase& database() = 0;
 };
 

@@ -54,6 +54,24 @@ SqliteStatement& KeyValueRepositorySqlite::stmtDelete(const string& key)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+SqliteStatement& KeyValueRepositorySqlite::stmtCount(const string& key)
+{
+  myStmtCount->reset();
+
+  return (*myStmtCount)
+    .bind(1, key.c_str());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+SqliteStatement& KeyValueRepositorySqlite::stmtSelectOne(const string& key)
+{
+  myStmtSelectOne->reset();
+
+  return (*myStmtSelectOne)
+    .bind(1, key.c_str());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SqliteDatabase& KeyValueRepositorySqlite::database()
 {
   return myDb;
@@ -67,6 +85,8 @@ void KeyValueRepositorySqlite::initialize()
   );
 
   myStmtInsert = make_unique<SqliteStatement>(myDb, "INSERT OR REPLACE INTO `" + myTableName + "` VALUES (?, ?)");
-  myStmtSelect = make_unique<SqliteStatement>(myDb, "SELECT `key`, `VALUE` FROM `" + myTableName + "`");
+  myStmtSelect = make_unique<SqliteStatement>(myDb, "SELECT `key`, `value` FROM `" + myTableName + "`");
   myStmtDelete = make_unique<SqliteStatement>(myDb, "DELETE FROM `" + myTableName + "` WHERE `key` = ?");
+  myStmtSelectOne = make_unique<SqliteStatement>(myDb, "SELECT `value` FROM `" + myTableName + "` WHERE `key` = ?");
+  myStmtCount = make_unique<SqliteStatement>(myDb, "SELECT COUNT(`key`) FROM `" + myTableName + "` WHERE `key` = ?");
 }

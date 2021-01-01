@@ -15,22 +15,27 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef KEY_VALUE_REPOSITORY_PROPERTY_FILE_HXX
-#define KEY_VALUE_REPOSITORY_PROPERTY_FILE_HXX
+#ifndef COMPOSITE_KVR_JSON_ADAPTER_HXX
+#define COMPOSITE_KVR_JSON_ADAPTER_HXX
 
-#include <istream>
-#include <ostream>
-
-#include "repository/KeyValueRepositoryFile.hxx"
+#include "repository/CompositeKeyValueRepository.hxx"
+#include "repository/KeyValueRepository.hxx"
 #include "bspf.hxx"
 
-class KeyValueRepositoryPropertyFile : public KeyValueRepositoryFile<KeyValueRepositoryPropertyFile> {
+class CompositeKVRJsonAdapter : public CompositeKeyValueRepository {
   public:
-    KeyValueRepositoryPropertyFile(const FilesystemNode& node);
 
-    static std::map<string, Variant> load(istream& in);
+    CompositeKVRJsonAdapter(KeyValueRepositoryAtomic& kvr);
 
-    static bool save(ostream& out, const std::map<string, Variant>& values);
+    shared_ptr<KeyValueRepository> get(const string& key) override;
+
+    bool has(const string& key) override;
+
+    void remove(const string& key) override;
+
+  private:
+
+    KeyValueRepositoryAtomic& myKvr;
 };
 
-#endif // KEY_VALUE_REPOSITORY_PROPERTY_FILE_HXX
+#endif // COMPOSITE_KVR_JSON_ADAPTER_HXX

@@ -23,6 +23,11 @@
 #include "Variant.hxx"
 #include "bspf.hxx"
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Woverloaded-virtual"
+
+class KeyValueRepositoryAtomic;
+
 class KeyValueRepository
 {
   public:
@@ -33,9 +38,22 @@ class KeyValueRepository
 
     virtual bool save(const std::map<string, Variant>& values) = 0;
 
+    virtual KeyValueRepositoryAtomic* atomic() { return nullptr; }
+};
+
+class KeyValueRepositoryAtomic : public KeyValueRepository {
+  public:
+    virtual bool has(const string& key) = 0;
+
+    virtual bool get(const string& key, string& value) = 0;
+
     virtual bool save(const string& key, const Variant& value) = 0;
 
     virtual void remove(const string& key) = 0;
+
+    KeyValueRepositoryAtomic* atomic() override { return this; }
 };
+
+#pragma clang diagnostic pop
 
 #endif // KEY_VALUE_REPOSITORY_HXX
