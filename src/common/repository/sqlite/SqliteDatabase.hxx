@@ -41,6 +41,9 @@ class SqliteDatabase
     template<class T, class ...Ts>
     void exec(const string& sql, T arg1, Ts... args) const;
 
+    Int32 getUserVersion() const;
+    void setUserVersion(Int32 version) const;
+
   private:
 
     string myDatabaseFile;

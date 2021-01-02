@@ -26,6 +26,9 @@
 
 class KeyValueRepositoryPropertyFile : public KeyValueRepositoryFile<KeyValueRepositoryPropertyFile> {
   public:
+    using KeyValueRepositoryFile<KeyValueRepositoryPropertyFile>::load;
+    using KeyValueRepositoryFile<KeyValueRepositoryPropertyFile>::save;
+
     KeyValueRepositoryPropertyFile(const FilesystemNode& node);
 
     static std::map<string, Variant> load(istream& in);
