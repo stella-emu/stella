@@ -1922,12 +1922,12 @@
 		2D6050C60898771C00C6DE89 /* macos */ = {
 			isa = PBXGroup;
 			children = (
-				E0D4153A25A120340031A8D6 /* SettingsRepositoryMACOS.hxx */,
-				E0D4153B25A120340031A8D6 /* SettingsRepositoryMACOS.mm */,
 				DC21E5B921CA903E007D0E1A /* OSystemMACOS.cxx */,
 				DC21E5BA21CA903E007D0E1A /* OSystemMACOS.hxx */,
 				DC21E5BB21CA903E007D0E1A /* SerialPortMACOS.cxx */,
 				DC21E5BC21CA903E007D0E1A /* SerialPortMACOS.hxx */,
+				E0D4153A25A120340031A8D6 /* SettingsRepositoryMACOS.hxx */,
+				E0D4153B25A120340031A8D6 /* SettingsRepositoryMACOS.mm */,
 			);
 			path = macos;
 			sourceTree = "<group>";

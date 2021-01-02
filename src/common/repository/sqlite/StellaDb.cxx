@@ -35,12 +35,6 @@
 
 namespace {
   constexpr Int32 CURRENT_VERSION = 1;
-
-  #ifdef BSPF_WINDOWS
-    constexpr char LEGACY_SETTINGS_FILE[] = "stella.ini";
-  #else
-    constexpr char LEGACY_SETTINGS_FILE[] = "stellarc";
-  #endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -112,6 +106,12 @@ void StellaDb::importOldSettings()
   
     mySettingsRepository->save(SettingsRepositoryMACOS().load());
   #else
+    #if defined(BSPF_WINDOWS)
+      constexpr char LEGACY_SETTINGS_FILE[] = "stella.ini";
+    #else
+      constexpr char LEGACY_SETTINGS_FILE[] = "stellarc";
+    #endif
+
     FilesystemNode legacyConfigFile{myDatabaseDirectory};
     legacyConfigFile /= LEGACY_SETTINGS_FILE;
 
