@@ -81,12 +81,7 @@ void SettingsDb::initializeDb() {
   FilesystemNode legacyConfigDatabase{myDatabaseDirectory};
   legacyConfigDatabase /= "settings.sqlite3";
 
-  if (legacyConfigFile.exists() && legacyConfigFile.isFile()) {
-    Logger::info("importing old settings from " + legacyConfigFile.getPath());
-
-    mySettingsRepository->save(KeyValueRepositoryConfigfile{legacyConfigFile}.load());
-  }
-  else if (legacyConfigDatabase.exists() && legacyConfigDatabase.isFile()) {
+  if (legacyConfigDatabase.exists() && legacyConfigDatabase.isFile()) {
     Logger::info("importing old settings from " + legacyConfigDatabase.getPath());
 
     try {
@@ -103,6 +98,11 @@ void SettingsDb::initializeDb() {
     catch (const SqliteError& err) {
       Logger::error(err.what());
     }
+  }
+  else if (legacyConfigFile.exists() && legacyConfigFile.isFile()) {
+    Logger::info("importing old settings from " + legacyConfigFile.getPath());
+
+    mySettingsRepository->save(KeyValueRepositoryConfigfile(legacyConfigFile).load());
   }
 
   myDb->setUserVersion(CURRENT_VERSION);
