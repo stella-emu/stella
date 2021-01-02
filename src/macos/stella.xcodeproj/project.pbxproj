@@ -741,6 +741,8 @@
 		E0A3841E2589741A0062AA93 /* SqliteTransaction.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0A3840C2589741A0062AA93 /* SqliteTransaction.hxx */; };
 		E0A755782244294600101889 /* CartCDFInfoWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0A755762244294600101889 /* CartCDFInfoWidget.hxx */; };
 		E0A755792244294600101889 /* CartCDFInfoWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0A755772244294600101889 /* CartCDFInfoWidget.cxx */; };
+		E0D4153C25A120340031A8D6 /* SettingsRepositoryMACOS.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0D4153A25A120340031A8D6 /* SettingsRepositoryMACOS.hxx */; };
+		E0D4153D25A120340031A8D6 /* SettingsRepositoryMACOS.mm in Sources */ = {isa = PBXBuildFile; fileRef = E0D4153B25A120340031A8D6 /* SettingsRepositoryMACOS.mm */; };
 		E0DCD3A720A64E96000B614E /* LanczosResampler.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0DCD3A320A64E95000B614E /* LanczosResampler.hxx */; };
 		E0DCD3A820A64E96000B614E /* LanczosResampler.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0DCD3A420A64E95000B614E /* LanczosResampler.cxx */; };
 		E0DCD3A920A64E96000B614E /* ConvolutionBuffer.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0DCD3A520A64E96000B614E /* ConvolutionBuffer.hxx */; };
@@ -1544,6 +1546,8 @@
 		E0A3840C2589741A0062AA93 /* SqliteTransaction.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SqliteTransaction.hxx; sourceTree = "<group>"; };
 		E0A755762244294600101889 /* CartCDFInfoWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartCDFInfoWidget.hxx; sourceTree = "<group>"; };
 		E0A755772244294600101889 /* CartCDFInfoWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartCDFInfoWidget.cxx; sourceTree = "<group>"; };
+		E0D4153A25A120340031A8D6 /* SettingsRepositoryMACOS.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SettingsRepositoryMACOS.hxx; sourceTree = "<group>"; };
+		E0D4153B25A120340031A8D6 /* SettingsRepositoryMACOS.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SettingsRepositoryMACOS.mm; sourceTree = "<group>"; };
 		E0DCD3A320A64E95000B614E /* LanczosResampler.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = LanczosResampler.hxx; path = audio/LanczosResampler.hxx; sourceTree = "<group>"; };
 		E0DCD3A420A64E95000B614E /* LanczosResampler.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LanczosResampler.cxx; path = audio/LanczosResampler.cxx; sourceTree = "<group>"; };
 		E0DCD3A520A64E96000B614E /* ConvolutionBuffer.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = ConvolutionBuffer.hxx; path = audio/ConvolutionBuffer.hxx; sourceTree = "<group>"; };
@@ -1918,6 +1922,8 @@
 		2D6050C60898771C00C6DE89 /* macos */ = {
 			isa = PBXGroup;
 			children = (
+				E0D4153A25A120340031A8D6 /* SettingsRepositoryMACOS.hxx */,
+				E0D4153B25A120340031A8D6 /* SettingsRepositoryMACOS.mm */,
 				DC21E5B921CA903E007D0E1A /* OSystemMACOS.cxx */,
 				DC21E5BA21CA903E007D0E1A /* OSystemMACOS.hxx */,
 				DC21E5BB21CA903E007D0E1A /* SerialPortMACOS.cxx */,
@@ -2807,6 +2813,7 @@
 				DCC527D310B9DA19005E1287 /* M6502.hxx in Headers */,
 				DC3EE8661E2C0E6D00905161 /* inflate.h in Headers */,
 				DC21E5C221CA903E007D0E1A /* SerialPortMACOS.hxx in Headers */,
+				E0D4153C25A120340031A8D6 /* SettingsRepositoryMACOS.hxx in Headers */,
 				DCC527D510B9DA19005E1287 /* NullDev.hxx in Headers */,
 				DCC527D710B9DA19005E1287 /* System.hxx in Headers */,
 				CFE3F6161E84A9CE00A8204E /* CartCDF.hxx in Headers */,
@@ -3380,6 +3387,7 @@
 				DCAACB12188D636F00A4D282 /* CartBFWidget.cxx in Sources */,
 				DCAACB14188D636F00A4D282 /* CartDFSCWidget.cxx in Sources */,
 				DCAACB16188D636F00A4D282 /* CartDFWidget.cxx in Sources */,
+				E0D4153D25A120340031A8D6 /* SettingsRepositoryMACOS.mm in Sources */,
 				DC368F5818A2FB710084199C /* SoundSDL2.cxx in Sources */,
 				DCFF14CD18B0260300A20364 /* EventHandlerSDL2.cxx in Sources */,
 				DC3EE8561E2C0E6D00905161 /* adler32.c in Sources */,
