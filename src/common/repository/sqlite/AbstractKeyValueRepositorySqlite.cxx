@@ -46,7 +46,7 @@ bool AbstractKeyValueRepositorySqlite::has(const string& key)
   try {
     SqliteStatement& stmt{stmtCount(key)};
 
-    if (!stmt.step()) throw new SqliteError("count failed");
+    if (!stmt.step()) throw SqliteError("count failed");
 
     const bool result = stmt.columnInt(0) != 0;
     stmt.reset();

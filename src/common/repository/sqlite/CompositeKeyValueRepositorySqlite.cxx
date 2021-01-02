@@ -28,8 +28,10 @@ CompositeKeyValueRepositorySqlite::CompositeKeyValueRepositorySqlite(
   const string& colKey2,
   const string& colValue
 )
-  : myDb{db}, myTableName{tableName}, myColKey1(colKey1), myColKey2(colKey2), myColValue(colValue)
-{}
+  : myDb{db}, myTableName{tableName},
+    myColKey1{colKey1}, myColKey2{colKey2}, myColValue{colValue}
+{
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 shared_ptr<KeyValueRepository> CompositeKeyValueRepositorySqlite::get(const string& key)
@@ -46,7 +48,7 @@ bool CompositeKeyValueRepositorySqlite::has(const string& key)
       .bind(1, key.c_str());
 
     if (!myStmtCountSet->step())
-      throw new SqliteError("count failed");
+      throw SqliteError("count failed");
 
     Int32 rowCount = myStmtCountSet->columnInt(0);
 
