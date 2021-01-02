@@ -553,7 +553,7 @@ class OSystem
   private:
     FilesystemNode myBaseDir, myStateDir, mySnapshotSaveDir, mySnapshotLoadDir,
                    myNVRamDir, myCfgDir, myHomeDir, myUserDir;
-    FilesystemNode myCheatFile, myConfigFile, myPaletteFile,  myPropertiesFile;
+    FilesystemNode myCheatFile, myPaletteFile;
     FilesystemNode myRomFile;  string myRomMD5;
 
     string myFeatures;

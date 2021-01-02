@@ -36,7 +36,7 @@ class StellaDb
 
     CompositeKeyValueRepository& propertyRepository() const { return *myPropertyRepository; }
 
-    const string& databaseFileName() const { return myDatabaseName; }
+    const string databaseFileName() const;
 
   private:
 

@@ -126,14 +126,9 @@ bool OSystem::create()
       << "State directory:    '"
       << myStateDir.getShortPath() << "'" << endl
       << "NVRam directory:    '"
-      << myNVRamDir.getShortPath() << "'" << endl;
-
-  if(myConfigFile.getPath() != EmptyString)
-    buf << "Configuration file: '"
-        << myConfigFile.getShortPath() << "'" << endl;
-
-  buf << "Game properties:    '"
-      << myPropertiesFile.getShortPath() << "'" << endl
+      << myNVRamDir.getShortPath() << "'" << endl
+      << "Database file:      '"
+      << myStellaDb->databaseFileName() << "'" << endl
       << "Cheat file:         '"
       << myCheatFile.getShortPath() << "'" << endl
       << "Palette file:       '"
@@ -225,7 +220,6 @@ void OSystem::loadConfig(const Settings::Options& options)
 
   myStellaDb = make_shared<StellaDb>(myBaseDir.getPath(), "stella");
   myStellaDb->initialize();
-  myConfigFile = FilesystemNode(myStellaDb->databaseFileName());
 
   mySettings->setRepository(getSettingsRepository());
   myPropSet->setRepository(getPropertyRepository());
@@ -302,7 +296,6 @@ void OSystem::setConfigPaths()
 
   myCheatFile = myBaseDir;  myCheatFile /= "stella.cht";
   myPaletteFile = myBaseDir;  myPaletteFile /= "stella.pal";
-  myPropertiesFile = myBaseDir;  myPropertiesFile /= "stella.pro";
 
 #if 0
   // Debug code
@@ -318,8 +311,6 @@ void OSystem::setConfigPaths()
   dbgPath("sload dir ", mySnapshotLoadDir);
   dbgPath("cheat file", myCheatFile);
   dbgPath("pal file  ", myPaletteFile);
-  dbgPath("pro file  ", myPropertiesFile);
-  dbgPath("INI file  ", myConfigFile);
 #endif
 }
 
