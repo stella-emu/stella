@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef SETTINGS_DB_HXX
-#define SETTINGS_DB_HXX
+#ifndef STELLA_DB_HXX
+#define STELLA_DB_HXX
 
 #include "bspf.hxx"
 #include "SqliteDatabase.hxx"
@@ -24,11 +24,11 @@
 #include "repository/CompositeKeyValueRepository.hxx"
 #include "FSNode.hxx"
 
-class SettingsDb
+class StellaDb
 {
   public:
 
-    SettingsDb(const string& databaseDirectory, const string& databaseName);
+    StellaDb(const string& databaseDirectory, const string& databaseName);
 
     void initialize();
 
@@ -42,7 +42,7 @@ class SettingsDb
 
     void initializeDb() const;
     void importStellarc(const FilesystemNode& node) const;
-    void importOldSettingsDB(const FilesystemNode& node) const;
+    void importOldStellaDb(const FilesystemNode& node) const;
     void importOldPropset(const FilesystemNode& node) const;
 
     void migrate() const;
@@ -58,4 +58,4 @@ class SettingsDb
     unique_ptr<CompositeKeyValueRepository> myPropertyRepository;
 };
 
-#endif // SETTINGS_DB_HXX
+#endif // STELLA_DB_HXX

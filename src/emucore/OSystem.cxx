@@ -40,7 +40,7 @@
   #include "Widget.hxx"
 #endif
   #include "KeyValueRepositorySqlite.hxx"
-  #include "SettingsDb.hxx"
+  #include "StellaDb.hxx"
 
 #include "FSNode.hxx"
 #include "MD5.hxx"
@@ -223,9 +223,9 @@ void OSystem::loadConfig(const Settings::Options& options)
   if(!myHomeDir.isDirectory())
     myHomeDir.makeDir();
 
-  mySettingsDb = make_shared<SettingsDb>(myBaseDir.getPath(), "stella");
-  mySettingsDb->initialize();
-  myConfigFile = FilesystemNode(mySettingsDb->databaseFileName());
+  myStellaDb = make_shared<StellaDb>(myBaseDir.getPath(), "stella");
+  myStellaDb->initialize();
+  myConfigFile = FilesystemNode(myStellaDb->databaseFileName());
 
   mySettings->setRepository(getSettingsRepository());
   myPropSet->setRepository(getPropertyRepository());
@@ -881,12 +881,12 @@ void OSystem::mainLoop()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 shared_ptr<KeyValueRepository> OSystem::getSettingsRepository()
 {
-    return shared_ptr<KeyValueRepository>(mySettingsDb, &mySettingsDb->settingsRepository());
+    return shared_ptr<KeyValueRepository>(myStellaDb, &myStellaDb->settingsRepository());
 }
 
 shared_ptr<CompositeKeyValueRepository> OSystem::getPropertyRepository()
 {
-  return shared_ptr<CompositeKeyValueRepository>(mySettingsDb, &mySettingsDb->propertyRepository());
+  return shared_ptr<CompositeKeyValueRepository>(myStellaDb, &myStellaDb->propertyRepository());
 }
 
 

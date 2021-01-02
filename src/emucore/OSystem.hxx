@@ -48,7 +48,7 @@ class AudioSettings;
 #ifdef PNG_SUPPORT
   class PNGLibrary;
 #endif
-  class SettingsDb;
+  class StellaDb;
 
 #include <chrono>
 
@@ -568,7 +568,7 @@ class OSystem
     static string ourOverrideBaseDir;
     static bool ourOverrideBaseDirWithApp;
 
-    shared_ptr<SettingsDb> mySettingsDb;
+    shared_ptr<StellaDb> myStellaDb;
 
   private:
     /**
