@@ -75,6 +75,12 @@ void StellaDb::initialize()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const string StellaDb::databaseFileName() const
+{
+  return myDb ? FilesystemNode(myDb->fileName()).getShortPath() : "[failed]";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StellaDb::initializeDb() const
 {
   FilesystemNode legacyConfigFile{myDatabaseDirectory};
