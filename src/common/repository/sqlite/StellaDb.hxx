@@ -40,12 +40,13 @@ class StellaDb
 
   private:
 
-    void initializeDb() const;
-    void importStellarc(const FilesystemNode& node) const;
-    void importOldStellaDb(const FilesystemNode& node) const;
-    void importOldPropset(const FilesystemNode& node) const;
+    void initializeDb();
+    void importOldSettings();
+    void importStellarc(const FilesystemNode& node);
+    void importOldStellaDb(const FilesystemNode& node);
+    void importOldPropset(const FilesystemNode& node);
 
-    void migrate() const;
+    void migrate();
 
   private:
 
