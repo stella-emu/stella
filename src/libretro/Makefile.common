@@ -35,6 +35,8 @@ SOURCES_CXX := \
 	$(CORE_DIR)/common/VideoModeHandler.cxx \
 	$(CORE_DIR)/common/tv_filters/AtariNTSC.cxx \
 	$(CORE_DIR)/common/tv_filters/NTSCFilter.cxx \
+	$(CORE_DIR)/common/repository/CompositeKVRJsonAdapter.cxx \
+	$(CORE_DIR)/common/repository/KeyValueRepositoryJsonFile.cxx \
 	$(CORE_DIR)/common/repository/KeyValueRepositoryPropertyFile.cxx \
 	$(CORE_DIR)/common/repository/sqlite/AbstractKeyValueRepositorySqlite.cxx \
 	$(CORE_DIR)/common/repository/sqlite/CompositeKeyValueRepositorySqlite.cxx \
