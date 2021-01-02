@@ -48,7 +48,6 @@ class AudioSettings;
 #ifdef PNG_SUPPORT
   class PNGLibrary;
 #endif
-  class StellaDb;
 
 #include <chrono>
 
@@ -80,7 +79,7 @@ class OSystem
     /**
       Create all child objects which belong to this OSystem
     */
-    virtual bool create();
+    virtual bool initialize(const Settings::Options& options);
 
     /**
       Creates the various framebuffers/renderers available in this system.
@@ -171,13 +170,6 @@ class OSystem
       @return The timermanager object
     */
     TimerManager& timer() const { return *myTimerManager; }
-
-    /**
-      This method should be called to initiate the process of loading settings
-      from the config file.  It takes care of loading settings, applying
-      commandline overrides, and finally validating all settings.
-    */
-    void loadConfig(const Settings::Options& options);
 
     /**
       This method should be called to save the current settings. It first asks
@@ -447,9 +439,9 @@ class OSystem
     */
     virtual void stateChanged(EventHandlerState state) { }
 
-    virtual shared_ptr<KeyValueRepository> getSettingsRepository();
+    virtual shared_ptr<KeyValueRepository> getSettingsRepository() = 0;
 
-    virtual shared_ptr<CompositeKeyValueRepository> getPropertyRepository();
+    virtual shared_ptr<CompositeKeyValueRepository> getPropertyRepository() = 0;
 
   protected:
 
@@ -472,6 +464,10 @@ class OSystem
     */
     virtual void getBaseDirAndConfig(string& basedir, string& homedir,
                                      bool useappdir, const string& usedir) = 0;
+
+    virtual void initPersistence(FilesystemNode& basedir) = 0;
+
+    virtual string describePresistence() = 0;
 
   protected:
     // Pointer to the EventHandler object
@@ -568,9 +564,15 @@ class OSystem
     static string ourOverrideBaseDir;
     static bool ourOverrideBaseDirWithApp;
 
-    shared_ptr<StellaDb> myStellaDb;
-
   private:
+
+    /**
+      This method should be called to initiate the process of loading settings
+      from the config file.  It takes care of loading settings, applying
+      commandline overrides, and finally validating all settings.
+    */
+    void loadConfig(const Settings::Options& options);
+
     /**
       Creates the various sound devices available in this system
     */

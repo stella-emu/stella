@@ -8,49 +8,37 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2020 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2021 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "FSNode.hxx"
-#include "OSystemLIBRETRO.hxx"
-#include "repository/KeyValueRepositoryNoop.hxx"
-#include "repository/CompositeKeyValueRepositoryNoop.hxx"
-
-#ifdef _WIN32
-  const string slash = "\\";
-#else
-  const string slash = "/";
-#endif
+#include "OSystemStandalone.hxx"
+#include "StellaDb.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystemLIBRETRO::getBaseDirAndConfig(string& basedir, string& homedir,
-                                          bool useappdir, const string& usedir)
+void OSystemStandalone::initPersistence(FilesystemNode& basedir)
 {
-  basedir = homedir = "." + slash;
+  myStellaDb = make_shared<StellaDb>(basedir.getPath(), "stella");
+  myStellaDb->initialize();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystemLIBRETRO::initPersistence(FilesystemNode& basedir)
-{}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string OSystemLIBRETRO::describePresistence()
+string OSystemStandalone::describePresistence()
 {
-  return "none";
+  return (myStellaDb && myStellaDb->isValid()) ? myStellaDb->databaseFileName() : "none";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-shared_ptr<KeyValueRepository> OSystemLIBRETRO::getSettingsRepository()
+shared_ptr<KeyValueRepository> OSystemStandalone::getSettingsRepository()
 {
-    return make_shared<KeyValueRepositoryNoop>();
+    return shared_ptr<KeyValueRepository>(myStellaDb, &myStellaDb->settingsRepository());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-shared_ptr<CompositeKeyValueRepository> OSystemLIBRETRO::getPropertyRepository()
+shared_ptr<CompositeKeyValueRepository> OSystemStandalone::getPropertyRepository()
 {
-  return make_shared<CompositeKeyValueRepositoryNoop>();
+  return shared_ptr<CompositeKeyValueRepository>(myStellaDb, &myStellaDb->propertyRepository());
 }

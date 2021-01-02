@@ -75,6 +75,7 @@ MODULE_OBJS := \
         src/emucore/MT24LC256.o \
         src/emucore/MD5.o \
         src/emucore/OSystem.o \
+        src/emucore/OSystemStandalone.o \
         src/emucore/Paddles.o \
         src/emucore/PlusROM.o \
         src/emucore/PointingDevice.o \

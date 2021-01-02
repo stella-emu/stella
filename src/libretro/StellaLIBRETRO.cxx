@@ -47,9 +47,7 @@ bool StellaLIBRETRO::create(bool logging)
   myOSystem = make_unique<OSystemLIBRETRO>();
 
   Settings::Options options;
-  myOSystem->loadConfig(options);
-
-  myOSystem->create();
+  myOSystem->initialize(options);
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

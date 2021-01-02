@@ -85,13 +85,19 @@ const string StellaDb::databaseFileName() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool StellaDb::isValid() const
+{
+  return myDb.operator bool();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StellaDb::initializeDb()
 {
   importOldSettings();
-  
+
   FilesystemNode legacyPropertyFile{myDatabaseDirectory};
   legacyPropertyFile /= "stella.pro";
-  
+
   if (legacyPropertyFile.exists() && legacyPropertyFile.isFile())
     importOldPropset(legacyPropertyFile);
 
@@ -103,7 +109,7 @@ void StellaDb::importOldSettings()
 {
   #ifdef BSPF_MACOS
     Logger::info("importing old settings");
-  
+
     mySettingsRepository->save(SettingsRepositoryMACOS().load());
   #else
     #if defined(BSPF_WINDOWS)

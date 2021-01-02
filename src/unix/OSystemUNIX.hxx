@@ -18,7 +18,7 @@
 #ifndef OSYSTEM_UNIX_HXX
 #define OSYSTEM_UNIX_HXX
 
-#include "OSystem.hxx"
+#include "OSystemStandalone.hxx"
 
 /**
   This class defines an OSystem object for UNIX-like OS's (Linux).
@@ -27,7 +27,7 @@
 
   @author  Stephen Anthony
 */
-class OSystemUNIX : public OSystem
+class OSystemUNIX : public OSystemStandalone
 {
   public:
     OSystemUNIX() = default;

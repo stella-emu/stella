@@ -48,6 +48,16 @@ class OSystemLIBRETRO : public OSystem
     */
     void getBaseDirAndConfig(string& basedir, string& homedir,
                              bool useappdir, const string& usedir) override;
+
+    shared_ptr<KeyValueRepository> getSettingsRepository() override;
+
+    shared_ptr<CompositeKeyValueRepository> getPropertyRepository() override;
+
+  protected:
+
+    void initPersistence(FilesystemNode& basedir) override;
+
+    string describePresistence() override;
 };
 
 #endif

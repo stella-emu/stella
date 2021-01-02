@@ -39,13 +39,6 @@ SOURCES_CXX := \
 	$(CORE_DIR)/common/repository/KeyValueRepositoryConfigfile.cxx \
 	$(CORE_DIR)/common/repository/KeyValueRepositoryJsonFile.cxx \
 	$(CORE_DIR)/common/repository/KeyValueRepositoryPropertyFile.cxx \
-	$(CORE_DIR)/common/repository/sqlite/AbstractKeyValueRepositorySqlite.cxx \
-	$(CORE_DIR)/common/repository/sqlite/CompositeKeyValueRepositorySqlite.cxx \
-	$(CORE_DIR)/common/repository/sqlite/KeyValueRepositorySqlite.cxx \
-	$(CORE_DIR)/common/repository/sqlite/StellaDb.cxx \
-	$(CORE_DIR)/common/repository/sqlite/SqliteDatabase.cxx \
-	$(CORE_DIR)/common/repository/sqlite/SqliteStatement.cxx \
-	$(CORE_DIR)/common/repository/sqlite/SqliteTransaction.cxx \
 	$(CORE_DIR)/emucore/AtariVox.cxx \
 	$(CORE_DIR)/emucore/Bankswitch.cxx \
 	$(CORE_DIR)/emucore/Booster.cxx \
@@ -149,5 +142,4 @@ SOURCES_CXX := \
 	$(CORE_DIR)/emucore/TIASurface.cxx \
 	$(CORE_DIR)/emucore/tia/TIA.cxx
 
-SOURCES_C := \
-	$(CORE_DIR)/sqlite/sqlite3.c
+SOURCES_C :=
