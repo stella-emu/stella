@@ -17,6 +17,10 @@
 #include "SqliteStatement.hxx"
 #include "SqliteError.hxx"
 
+#ifdef __clang__
+#pragma clang diagnostic ignored "-Wold-style-cast"
+#endif
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SqliteStatement::SqliteStatement(sqlite3* handle, const string& sql)
   : myHandle{handle}
