@@ -19,8 +19,8 @@
 #include "OSystemMACOS.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystemMACOS::getBaseDirAndConfig(string& basedir, string& homedir,
-                                       bool useappdir, const string& usedir)
+void OSystemMACOS::getBaseDirectories(string& basedir, string& homedir,
+                                      bool useappdir, const string& usedir)
 {
   basedir = "~/Library/Application Support/Stella/";
 

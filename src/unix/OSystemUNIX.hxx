@@ -22,7 +22,7 @@
 
 /**
   This class defines an OSystem object for UNIX-like OS's (Linux).
-  It is responsible for completely implementing getBaseDirAndConfig(),
+  It is responsible for completely implementing getBaseDirectories(),
   to set the base directory and various other save/load locations.
 
   @author  Stephen Anthony
@@ -34,8 +34,8 @@ class OSystemUNIX : public OSystemStandalone
     ~OSystemUNIX() override = default;
 
     /**
-      Determine the base directory and main configuration file from the
-      derived class.  It can also use hints, as described below.
+      Determine the base directory and home directory from the derived
+      class.  It can also use hints, as described below.
 
       @param basedir  The base directory for all configuration files
       @param homedir  The default directory to store various other files
@@ -46,8 +46,8 @@ class OSystemUNIX : public OSystemStandalone
                         parameter; not all ports can do this, so
                         they are free to ignore it
     */
-    void getBaseDirAndConfig(string& basedir, string& homedir,
-                             bool useappdir, const string& usedir) override;
+    void getBaseDirectories(string& basedir, string& homedir,
+                            bool useappdir, const string& usedir) override;
 
   private:
     // Following constructors and assignment operators not supported

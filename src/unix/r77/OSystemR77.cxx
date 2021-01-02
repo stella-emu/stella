@@ -18,8 +18,8 @@
 #include "OSystemR77.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystemR77::getBaseDirAndConfig(string& basedir, string& homeDir,
-                                     bool, const string&)
+void OSystemR77::getBaseDirectories(string& basedir, string& homeDir,
+                                    bool, const string&)
 {
   basedir = homeDir = "/mnt/stella";
 }
