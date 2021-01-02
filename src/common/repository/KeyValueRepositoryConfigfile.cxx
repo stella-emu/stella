@@ -80,4 +80,6 @@ bool KeyValueRepositoryConfigfile::save(ostream& out, const std::map<string, Var
   // Write out each of the key and value pairs
   for(const auto& [key, value]: values)
     out << key << " = " << value << endl;
+
+  return true;
 }

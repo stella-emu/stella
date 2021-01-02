@@ -2267,6 +2267,12 @@
     <ClInclude Include="..\common\repository\KeyValueRepositoryJsonFile.hxx">
       <Filter>Header Files\repository</Filter>
     </ClInclude>
+    <ClInclude Include="..\common\repository\CompositeKeyValueRepositoryNoop.hxx">
+      <Filter>Header Files\repository</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sqlite\sqlite_options.h">
+      <Filter>Header Files\sqlite</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="stella.ico">

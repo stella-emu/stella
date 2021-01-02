@@ -1555,6 +1555,7 @@
     <ClInclude Include="..\common\PKeyboardHandler.hxx" />
     <ClInclude Include="..\common\Rect.hxx" />
     <ClInclude Include="..\common\repository\CompositeKeyValueRepository.hxx" />
+    <ClInclude Include="..\common\repository\CompositeKeyValueRepositoryNoop.hxx" />
     <ClInclude Include="..\common\repository\CompositeKVRJsonAdapter.hxx" />
     <ClInclude Include="..\common\repository\KeyValueRepository.hxx" />
     <ClInclude Include="..\common\repository\KeyValueRepositoryConfigfile.hxx" />
@@ -1894,6 +1895,7 @@
     <ClInclude Include="..\libpng\pngstruct.h" />
     <ClInclude Include="..\sqlite\source\sqlite3.h" />
     <ClInclude Include="..\sqlite\sqlite3.h" />
+    <ClInclude Include="..\sqlite\sqlite_options.h" />
     <ClInclude Include="FSNodeWINDOWS.hxx" />
     <ClInclude Include="HomeFinder.hxx" />
     <ClInclude Include="OSystemWINDOWS.hxx" />
