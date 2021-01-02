@@ -254,6 +254,8 @@
 		DC2ABA7225A0C9B2007E57D3 /* CompositeKVRJsonAdapter.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2ABA6D25A0C9B1007E57D3 /* CompositeKVRJsonAdapter.hxx */; };
 		DC2ABA7325A0C9B2007E57D3 /* KeyValueRepositoryJsonFile.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC2ABA6E25A0C9B1007E57D3 /* KeyValueRepositoryJsonFile.cxx */; };
 		DC2ABA7425A0C9B2007E57D3 /* KeyValueRepositoryJsonFile.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2ABA6F25A0C9B1007E57D3 /* KeyValueRepositoryJsonFile.hxx */; };
+		DC2ABA7725A0E178007E57D3 /* StellaDb.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2ABA7525A0E178007E57D3 /* StellaDb.hxx */; };
+		DC2ABA7825A0E178007E57D3 /* StellaDb.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC2ABA7625A0E178007E57D3 /* StellaDb.cxx */; };
 		DC2B85E71EF5EF2300379EB9 /* AtariNTSC.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC2B85E51EF5EF2300379EB9 /* AtariNTSC.cxx */; };
 		DC2B85E81EF5EF2300379EB9 /* AtariNTSC.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2B85E61EF5EF2300379EB9 /* AtariNTSC.hxx */; };
 		DC2C5EDB1F8F2403007D2A09 /* smartmod.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2C5EDA1F8F2403007D2A09 /* smartmod.hxx */; };
@@ -730,7 +732,6 @@
 		E0A383FB2589732E0062AA93 /* sqlite3.h in Headers */ = {isa = PBXBuildFile; fileRef = E0A383F92589732E0062AA93 /* sqlite3.h */; };
 		E0A384142589741A0062AA93 /* KeyValueRepositorySqlite.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0A384022589741A0062AA93 /* KeyValueRepositorySqlite.cxx */; };
 		E0A384152589741A0062AA93 /* SqliteTransaction.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0A384032589741A0062AA93 /* SqliteTransaction.cxx */; };
-		E0A384162589741A0062AA93 /* SettingsDb.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0A384042589741A0062AA93 /* SettingsDb.cxx */; };
 		E0A384172589741A0062AA93 /* SqliteDatabase.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0A384052589741A0062AA93 /* SqliteDatabase.hxx */; };
 		E0A384182589741A0062AA93 /* SqliteStatement.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0A384062589741A0062AA93 /* SqliteStatement.hxx */; };
 		E0A384192589741A0062AA93 /* SqliteError.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0A384072589741A0062AA93 /* SqliteError.hxx */; };
@@ -738,7 +739,6 @@
 		E0A3841C2589741A0062AA93 /* SqliteStatement.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0A3840A2589741A0062AA93 /* SqliteStatement.cxx */; };
 		E0A3841D2589741A0062AA93 /* KeyValueRepositorySqlite.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0A3840B2589741A0062AA93 /* KeyValueRepositorySqlite.hxx */; };
 		E0A3841E2589741A0062AA93 /* SqliteTransaction.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0A3840C2589741A0062AA93 /* SqliteTransaction.hxx */; };
-		E0A384242589741A0062AA93 /* SettingsDb.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0A384132589741A0062AA93 /* SettingsDb.hxx */; };
 		E0A755782244294600101889 /* CartCDFInfoWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0A755762244294600101889 /* CartCDFInfoWidget.hxx */; };
 		E0A755792244294600101889 /* CartCDFInfoWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0A755772244294600101889 /* CartCDFInfoWidget.cxx */; };
 		E0DCD3A720A64E96000B614E /* LanczosResampler.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0DCD3A320A64E95000B614E /* LanczosResampler.hxx */; };
@@ -1056,6 +1056,8 @@
 		DC2ABA6D25A0C9B1007E57D3 /* CompositeKVRJsonAdapter.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CompositeKVRJsonAdapter.hxx; sourceTree = "<group>"; };
 		DC2ABA6E25A0C9B1007E57D3 /* KeyValueRepositoryJsonFile.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = KeyValueRepositoryJsonFile.cxx; sourceTree = "<group>"; };
 		DC2ABA6F25A0C9B1007E57D3 /* KeyValueRepositoryJsonFile.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = KeyValueRepositoryJsonFile.hxx; sourceTree = "<group>"; };
+		DC2ABA7525A0E178007E57D3 /* StellaDb.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = StellaDb.hxx; sourceTree = "<group>"; };
+		DC2ABA7625A0E178007E57D3 /* StellaDb.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StellaDb.cxx; sourceTree = "<group>"; };
 		DC2B85E51EF5EF2300379EB9 /* AtariNTSC.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AtariNTSC.cxx; sourceTree = "<group>"; };
 		DC2B85E61EF5EF2300379EB9 /* AtariNTSC.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = AtariNTSC.hxx; sourceTree = "<group>"; };
 		DC2C5EDA1F8F2403007D2A09 /* smartmod.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = smartmod.hxx; sourceTree = "<group>"; };
@@ -1533,7 +1535,6 @@
 		E0A383F92589732E0062AA93 /* sqlite3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sqlite3.h; path = sqlite/sqlite3.h; sourceTree = "<group>"; };
 		E0A384022589741A0062AA93 /* KeyValueRepositorySqlite.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = KeyValueRepositorySqlite.cxx; sourceTree = "<group>"; };
 		E0A384032589741A0062AA93 /* SqliteTransaction.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SqliteTransaction.cxx; sourceTree = "<group>"; };
-		E0A384042589741A0062AA93 /* SettingsDb.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SettingsDb.cxx; sourceTree = "<group>"; };
 		E0A384052589741A0062AA93 /* SqliteDatabase.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SqliteDatabase.hxx; sourceTree = "<group>"; };
 		E0A384062589741A0062AA93 /* SqliteStatement.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SqliteStatement.hxx; sourceTree = "<group>"; };
 		E0A384072589741A0062AA93 /* SqliteError.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SqliteError.hxx; sourceTree = "<group>"; };
@@ -1541,7 +1542,6 @@
 		E0A3840A2589741A0062AA93 /* SqliteStatement.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SqliteStatement.cxx; sourceTree = "<group>"; };
 		E0A3840B2589741A0062AA93 /* KeyValueRepositorySqlite.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = KeyValueRepositorySqlite.hxx; sourceTree = "<group>"; };
 		E0A3840C2589741A0062AA93 /* SqliteTransaction.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SqliteTransaction.hxx; sourceTree = "<group>"; };
-		E0A384132589741A0062AA93 /* SettingsDb.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SettingsDb.hxx; sourceTree = "<group>"; };
 		E0A755762244294600101889 /* CartCDFInfoWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartCDFInfoWidget.hxx; sourceTree = "<group>"; };
 		E0A755772244294600101889 /* CartCDFInfoWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartCDFInfoWidget.cxx; sourceTree = "<group>"; };
 		E0DCD3A320A64E95000B614E /* LanczosResampler.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = LanczosResampler.hxx; path = audio/LanczosResampler.hxx; sourceTree = "<group>"; };
@@ -2519,8 +2519,6 @@
 				DC2ABA5F259BD56F007E57D3 /* CompositeKeyValueRepositorySqlite.hxx */,
 				E0A384022589741A0062AA93 /* KeyValueRepositorySqlite.cxx */,
 				E0A3840B2589741A0062AA93 /* KeyValueRepositorySqlite.hxx */,
-				E0A384042589741A0062AA93 /* SettingsDb.cxx */,
-				E0A384132589741A0062AA93 /* SettingsDb.hxx */,
 				E0A384092589741A0062AA93 /* SqliteDatabase.cxx */,
 				E0A384052589741A0062AA93 /* SqliteDatabase.hxx */,
 				E0A384072589741A0062AA93 /* SqliteError.hxx */,
@@ -2528,6 +2526,8 @@
 				E0A384062589741A0062AA93 /* SqliteStatement.hxx */,
 				E0A384032589741A0062AA93 /* SqliteTransaction.cxx */,
 				E0A3840C2589741A0062AA93 /* SqliteTransaction.hxx */,
+				DC2ABA7625A0E178007E57D3 /* StellaDb.cxx */,
+				DC2ABA7525A0E178007E57D3 /* StellaDb.hxx */,
 			);
 			path = sqlite;
 			sourceTree = "<group>";
@@ -2656,6 +2656,7 @@
 				2D91741909BA90380026E9FF /* CartUA.hxx in Headers */,
 				DCE8B1871E7E03B300189864 /* FrameLayout.hxx in Headers */,
 				DCA233B523BAB1300032ABF3 /* Lightgun.hxx in Headers */,
+				DC2ABA7725A0E178007E57D3 /* StellaDb.hxx in Headers */,
 				DCBD31E92299ADB400567357 /* Rect.hxx in Headers */,
 				DCBA539925557E2800087DD7 /* UndoHandler.hxx in Headers */,
 				2D91741A09BA90380026E9FF /* FSNode.hxx in Headers */,
@@ -2840,7 +2841,6 @@
 				DC8C1BB214B25DE7006440EE /* MindLink.hxx in Headers */,
 				DCCF47DE14B60DEE00814FAB /* ControllerWidget.hxx in Headers */,
 				DCCF47E014B60DEE00814FAB /* JoystickWidget.hxx in Headers */,
-				E0A384242589741A0062AA93 /* SettingsDb.hxx in Headers */,
 				DCCF49B814B7544A00814FAB /* PaddleWidget.hxx in Headers */,
 				DCCF4AD214B7E6C300814FAB /* BoosterWidget.hxx in Headers */,
 				DC30924D212F74930020DAD0 /* TimerManager.hxx in Headers */,
@@ -3127,6 +3127,7 @@
 				2D9174B909BA90380026E9FF /* ProgressDialog.cxx in Sources */,
 				2D9174BA09BA90380026E9FF /* ScrollBarWidget.cxx in Sources */,
 				2D9174BB09BA90380026E9FF /* TabWidget.cxx in Sources */,
+				DC2ABA7825A0E178007E57D3 /* StellaDb.cxx in Sources */,
 				DC6A18FC19B3E67A00DEB242 /* CartMDM.cxx in Sources */,
 				2D9174BD09BA90380026E9FF /* Widget.cxx in Sources */,
 				2D9174BE09BA90380026E9FF /* CartUA.cxx in Sources */,
@@ -3218,7 +3219,6 @@
 				DC0984850D3985160073C852 /* CartSB.cxx in Sources */,
 				DC3EE8651E2C0E6D00905161 /* inflate.c in Sources */,
 				DC6D39871A3CE65000171E71 /* CartWDWidget.cxx in Sources */,
-				E0A384162589741A0062AA93 /* SettingsDb.cxx in Sources */,
 				DCA23AE90D75B22500F77B33 /* CartX07.cxx in Sources */,
 				DC3EE8691E2C0E6D00905161 /* trees.c in Sources */,
 				E08FCD5623A037EB0051F59B /* BilinearBlitter.cxx in Sources */,
