@@ -450,8 +450,8 @@ class OSystem
     // implemented in derived classes.
     //////////////////////////////////////////////////////////////////////
     /**
-      Determine the base directory and various other directories from the
-      derived class.  It can also use hints, as described below.
+      Determine the base directory and home directory from the derived
+      class.  It can also use hints, as described below.
 
       @param basedir  The base directory for all configuration files
       @param homedir  The default directory to store various other files
@@ -462,8 +462,8 @@ class OSystem
                         parameter; not all ports can do this, so
                         they are free to ignore it
     */
-    virtual void getBaseDirAndConfig(string& basedir, string& homedir,
-                                     bool useappdir, const string& usedir) = 0;
+    virtual void getBaseDirectories(string& basedir, string& homedir,
+                                    bool useappdir, const string& usedir) = 0;
 
     virtual void initPersistence(FilesystemNode& basedir) = 0;
 

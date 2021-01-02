@@ -22,8 +22,8 @@
 #include "OSystemUNIX.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystemUNIX::getBaseDirAndConfig(string& basedir, string& homedir,
-                                      bool useappdir, const string& usedir)
+void OSystemUNIX::getBaseDirectories(string& basedir, string& homedir,
+                                     bool useappdir, const string& usedir)
 {
   // Use XDG_CONFIG_HOME if defined, otherwise use the default
   string configDir = BSPF::getenv("XDG_CONFIG_HOME");

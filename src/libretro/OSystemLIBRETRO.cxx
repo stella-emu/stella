@@ -27,15 +27,16 @@
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystemLIBRETRO::getBaseDirAndConfig(string& basedir, string& homedir,
-                                          bool useappdir, const string& usedir)
+void OSystemLIBRETRO::getBaseDirectories(string& basedir, string& homedir,
+                                         bool useappdir, const string& usedir)
 {
   basedir = homedir = "." + slash;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystemLIBRETRO::initPersistence(FilesystemNode& basedir)
-{}
+{
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string OSystemLIBRETRO::describePresistence()
@@ -46,7 +47,7 @@ string OSystemLIBRETRO::describePresistence()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 shared_ptr<KeyValueRepository> OSystemLIBRETRO::getSettingsRepository()
 {
-    return make_shared<KeyValueRepositoryNoop>();
+  return make_shared<KeyValueRepositoryNoop>();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

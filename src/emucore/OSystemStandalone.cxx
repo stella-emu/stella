@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "OSystemStandalone.hxx"
 #include "StellaDb.hxx"
+#include "OSystemStandalone.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystemStandalone::initPersistence(FilesystemNode& basedir)
@@ -34,7 +34,7 @@ string OSystemStandalone::describePresistence()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 shared_ptr<KeyValueRepository> OSystemStandalone::getSettingsRepository()
 {
-    return shared_ptr<KeyValueRepository>(myStellaDb, &myStellaDb->settingsRepository());
+  return shared_ptr<KeyValueRepository>(myStellaDb, &myStellaDb->settingsRepository());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

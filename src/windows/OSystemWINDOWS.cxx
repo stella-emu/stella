@@ -22,8 +22,8 @@
 #include "OSystemWINDOWS.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystemWINDOWS::getBaseDirAndConfig(string& basedir, string& homedir,
-                                         bool useappdir, const string& usedir)
+void OSystemWINDOWS::getBaseDirectories(string& basedir, string& homedir,
+                                        bool useappdir, const string& usedir)
 {
   HomeFinder homefinder;
   FilesystemNode appdata(homefinder.getAppDataPath());

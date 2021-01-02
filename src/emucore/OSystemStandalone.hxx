@@ -22,7 +22,8 @@
 
 class StellaDb;
 
-class OSystemStandalone : public OSystem {
+class OSystemStandalone : public OSystem
+{
   public:
 
     OSystemStandalone() = default;

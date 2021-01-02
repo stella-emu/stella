@@ -206,8 +206,8 @@ void OSystem::loadConfig(const Settings::Options& options)
   // Get base directory and config file from derived class
   // It will decide whether it can override its default location
   string baseDir, homeDir;
-  getBaseDirAndConfig(baseDir, homeDir,
-                      ourOverrideBaseDirWithApp, ourOverrideBaseDir);
+  getBaseDirectories(baseDir, homeDir,
+                     ourOverrideBaseDirWithApp, ourOverrideBaseDir);
 
   // Get fully-qualified pathnames, and make directories when needed
   myBaseDir = FilesystemNode(baseDir);
