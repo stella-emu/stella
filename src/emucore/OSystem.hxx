@@ -447,11 +447,11 @@ class OSystem
     */
     virtual void stateChanged(EventHandlerState state) { }
 
+    virtual shared_ptr<KeyValueRepository> getSettingsRepository();
+
+    virtual shared_ptr<CompositeKeyValueRepository> getPropertyRepository();
+
   protected:
-
-    virtual shared_ptr<KeyValueRepository> createSettingsRepository();
-
-    virtual shared_ptr<CompositeKeyValueRepository> createPropertyRepository();
 
     //////////////////////////////////////////////////////////////////////
     // The following methods are system-specific and *must* be

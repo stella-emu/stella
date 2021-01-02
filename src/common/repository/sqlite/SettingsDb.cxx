@@ -18,6 +18,10 @@
 #include "SettingsDb.hxx"
 #include "Logger.hxx"
 #include "SqliteError.hxx"
+#include "repository/KeyValueRepositoryNoop.hxx"
+#include "repository/CompositeKeyValueRepositoryNoop.hxx"
+#include "repository/CompositeKVRJsonAdapter.hxx"
+#include "KeyValueRepositorySqlite.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SettingsDb::SettingsDb(const string& databaseDirectory, const string& databaseName)
@@ -27,17 +31,19 @@ SettingsDb::SettingsDb(const string& databaseDirectory, const string& databaseNa
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool SettingsDb::initialize()
+void SettingsDb::initialize()
 {
   try {
     myDb = make_unique<SqliteDatabase>(myDatabaseDirectory, myDatabaseName);
     myDb->initialize();
 
-    mySettingsRepository = make_unique<KeyValueRepositorySqlite>(*myDb, "settings", "setting", "value");
-    mySettingsRepository->initialize();
+    auto settingsRepository = make_unique<KeyValueRepositorySqlite>(*myDb, "settings", "setting", "value");
+    settingsRepository->initialize();
+    mySettingsRepository = std::move(settingsRepository);
 
-    myPropertyRepositoryHost = make_unique<KeyValueRepositorySqlite>(*myDb, "properties", "md5", "properties");
-    myPropertyRepositoryHost->initialize();
+    auto propertyRepositoryHost = make_unique<KeyValueRepositorySqlite>(*myDb, "properties", "md5", "properties");
+    propertyRepositoryHost->initialize();
+    myPropertyRepositoryHost = std::move(propertyRepositoryHost);
 
     myPropertyRepository = make_unique<CompositeKVRJsonAdapter>(*myPropertyRepositoryHost);
   }
@@ -45,11 +51,9 @@ bool SettingsDb::initialize()
     Logger::error("sqlite DB " + databaseFileName() + " failed to initialize: " + err.what());
 
     myDb.reset();
-    mySettingsRepository.reset();
-    myPropertyRepository.reset();
+    myPropertyRepositoryHost.reset();
 
-    return false;
+    mySettingsRepository = make_unique<KeyValueRepositoryNoop>();
+    myPropertyRepository = make_unique<CompositeKeyValueRepositoryNoop>();
   }
-
-  return true;
 }

@@ -20,8 +20,8 @@
 
 #include "bspf.hxx"
 #include "SqliteDatabase.hxx"
-#include "KeyValueRepositorySqlite.hxx"
-#include "repository/CompositeKVRJsonAdapter.hxx"
+#include "repository/KeyValueRepository.hxx"
+#include "repository/CompositeKeyValueRepository.hxx"
 
 class SettingsDb
 {
@@ -29,13 +29,13 @@ class SettingsDb
 
     SettingsDb(const string& databaseDirectory, const string& databaseName);
 
-    bool initialize();
+    void initialize();
 
     KeyValueRepository& settingsRepository() const { return *mySettingsRepository; }
 
     CompositeKeyValueRepository& propertyRepository() const { return *myPropertyRepository; }
 
-    const string& databaseFileName() const { return myDb->fileName(); }
+    const string& databaseFileName() const { return myDatabaseName; }
 
   private:
 
@@ -43,9 +43,9 @@ class SettingsDb
     string myDatabaseName;
 
     shared_ptr<SqliteDatabase> myDb;
-    unique_ptr<KeyValueRepositorySqlite> mySettingsRepository;
-    unique_ptr<KeyValueRepositorySqlite> myPropertyRepositoryHost;
-    unique_ptr<CompositeKVRJsonAdapter> myPropertyRepository;
+    unique_ptr<KeyValueRepositoryAtomic> mySettingsRepository;
+    unique_ptr<KeyValueRepositoryAtomic> myPropertyRepositoryHost;
+    unique_ptr<CompositeKeyValueRepository> myPropertyRepository;
 };
 
 #endif // SETTINGS_DB_HXX
