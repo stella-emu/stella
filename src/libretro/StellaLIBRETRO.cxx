@@ -45,10 +45,11 @@ bool StellaLIBRETRO::create(bool logging)
   destroy();
 
   myOSystem = make_unique<OSystemLIBRETRO>();
-  myOSystem->create();
 
   Settings::Options options;
   myOSystem->loadConfig(options);
+
+  myOSystem->create();
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
