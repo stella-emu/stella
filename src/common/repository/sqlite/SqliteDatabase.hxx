@@ -36,13 +36,13 @@ class SqliteDatabase
 
     operator sqlite3*() const { return myHandle; }
 
-    void exec(const string &sql) const;
+    void exec(const string &sql);
 
     template<class T, class ...Ts>
-    void exec(const string& sql, T arg1, Ts... args) const;
+    void exec(const string& sql, T arg1, Ts... args);
 
     Int32 getUserVersion() const;
-    void setUserVersion(Int32 version) const;
+    void setUserVersion(Int32 version);
 
   private:
 
@@ -68,7 +68,7 @@ class SqliteDatabase
 #endif
 
 template <class T, class ...Ts>
-void SqliteDatabase::exec(const string& sql, T arg1, Ts... args) const
+void SqliteDatabase::exec(const string& sql, T arg1, Ts... args)
 {
   char buffer[512];
 

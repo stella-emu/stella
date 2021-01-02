@@ -60,7 +60,7 @@ SqliteStatement& SqliteStatement::bind(int index, Int32 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool SqliteStatement::step() const
+bool SqliteStatement::step()
 {
   int result = sqlite3_step(myStmt);
 
@@ -70,9 +70,11 @@ bool SqliteStatement::step() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SqliteStatement::reset() const
+SqliteStatement& SqliteStatement::reset()
 {
   if (sqlite3_reset(myStmt) != SQLITE_OK) throw SqliteError(myHandle);
+
+  return *this;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
