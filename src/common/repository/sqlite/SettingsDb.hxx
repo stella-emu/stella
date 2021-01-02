@@ -22,6 +22,7 @@
 #include "SqliteDatabase.hxx"
 #include "repository/KeyValueRepository.hxx"
 #include "repository/CompositeKeyValueRepository.hxx"
+#include "FSNode.hxx"
 
 class SettingsDb
 {
@@ -39,9 +40,12 @@ class SettingsDb
 
   private:
 
-    void initializeDb();
+    void initializeDb() const;
+    void importStellarc(const FilesystemNode& node) const;
+    void importOldSettingsDB(const FilesystemNode& node) const;
+    void importOldPropset(const FilesystemNode& node) const;
 
-    void migrate();
+    void migrate() const;
 
   private:
 

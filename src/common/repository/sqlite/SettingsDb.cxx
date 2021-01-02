@@ -24,6 +24,7 @@
 #include "repository/CompositeKeyValueRepositoryNoop.hxx"
 #include "repository/CompositeKVRJsonAdapter.hxx"
 #include "repository/KeyValueRepositoryConfigfile.hxx"
+#include "repository/KeyValueRepositoryPropertyFile.hxx"
 #include "KeyValueRepositorySqlite.hxx"
 #include "SqliteStatement.hxx"
 #include "FSNode.hxx"
@@ -74,42 +75,90 @@ void SettingsDb::initialize()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SettingsDb::initializeDb() {
+void SettingsDb::initializeDb() const
+{
   FilesystemNode legacyConfigFile{myDatabaseDirectory};
   legacyConfigFile /= "stellarc";
 
   FilesystemNode legacyConfigDatabase{myDatabaseDirectory};
   legacyConfigDatabase /= "settings.sqlite3";
 
-  if (legacyConfigDatabase.exists() && legacyConfigDatabase.isFile()) {
-    Logger::info("importing old settings from " + legacyConfigDatabase.getPath());
+  FilesystemNode legacyPropertyFile{myDatabaseDirectory};
+  legacyPropertyFile /= "stella.pro";
 
-    try {
-      SqliteStatement(
-        *myDb,
-        "ATTACH DATABASE ? AS old_db"
-      )
-        .bind(1, legacyConfigDatabase.getPath())
-        .step();
+  if (legacyConfigDatabase.exists() && legacyConfigDatabase.isFile())
+    importOldSettingsDB(legacyConfigDatabase);
+  else if (legacyConfigFile.exists() && legacyConfigFile.isFile())
+    importStellarc(legacyConfigFile);
 
-      myDb->exec("INSERT INTO `settings` SELECT * FROM `old_db`.`settings`");
-      myDb->exec("DETACH DATABASE `old_db`");
-    }
-    catch (const SqliteError& err) {
-      Logger::error(err.what());
-    }
-  }
-  else if (legacyConfigFile.exists() && legacyConfigFile.isFile()) {
-    Logger::info("importing old settings from " + legacyConfigFile.getPath());
-
-    mySettingsRepository->save(KeyValueRepositoryConfigfile(legacyConfigFile).load());
-  }
+  if (legacyPropertyFile.exists() && legacyPropertyFile.isFile())
+    importOldPropset(legacyPropertyFile);
 
   myDb->setUserVersion(CURRENT_VERSION);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SettingsDb::migrate() {
+void SettingsDb::importStellarc(const FilesystemNode& node) const
+{
+  Logger::info("importing old settings from " + node.getPath());
+
+    mySettingsRepository->save(KeyValueRepositoryConfigfile(node).load());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SettingsDb::importOldSettingsDB(const FilesystemNode& node) const {
+  Logger::info("importing old settings from " + node.getPath());
+
+  try {
+    SqliteStatement(
+      *myDb,
+      "ATTACH DATABASE ? AS old_db"
+    )
+      .bind(1, node.getPath())
+      .step();
+
+    myDb->exec("INSERT INTO `settings` SELECT * FROM `old_db`.`settings`");
+    myDb->exec("DETACH DATABASE `old_db`");
+  }
+  catch (const SqliteError& err) {
+    Logger::error(err.what());
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SettingsDb::importOldPropset(const FilesystemNode& node) const
+{
+  Logger::info("importing old game properties from " + node.getPath());
+
+  stringstream in;
+
+  try {
+    node.read(in);
+  }
+  catch (const runtime_error& err) {
+    Logger::error(err.what());
+
+    return;
+  }
+  catch (...) {
+    Logger::error("import failed");
+
+    return;
+  }
+
+  while (true) {
+    auto props = KeyValueRepositoryPropertyFile::load(in);
+
+    if (props.size() == 0) break;
+    if ((props.find("Cart.MD5") == props.end()) || props["Cart.MD5"].toString() == "") continue;
+
+    myPropertyRepository->get(props["Cart.MD5"].toString())->save(props);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SettingsDb::migrate() const
+{
   Int32 version = myDb->getUserVersion();
   switch (version) {
     case 1:
