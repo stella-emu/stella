@@ -309,7 +309,8 @@ bool CartDebug::disassemble(int bank, uInt16 PC, bool force)
       if(i == addresses.end())
       {
         addresses.push_back(PC);
-        addDirective(Device::AccessType::CODE, PC, PC, bank);
+        if(!DiStella::settings.resolveCode)
+          addDirective(Device::AccessType::CODE, PC, PC, bank);
       }
     }
 
