@@ -17,7 +17,7 @@
 
 #include <sstream>
 
-#include "SettingsDb.hxx"
+#include "StellaDb.hxx"
 #include "Logger.hxx"
 #include "SqliteError.hxx"
 #include "repository/KeyValueRepositoryNoop.hxx"
@@ -34,14 +34,14 @@ namespace {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SettingsDb::SettingsDb(const string& databaseDirectory, const string& databaseName)
+StellaDb::StellaDb(const string& databaseDirectory, const string& databaseName)
   : myDatabaseDirectory{databaseDirectory},
     myDatabaseName{databaseName}
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SettingsDb::initialize()
+void StellaDb::initialize()
 {
   try {
     myDb = make_unique<SqliteDatabase>(myDatabaseDirectory, myDatabaseName);
@@ -75,7 +75,7 @@ void SettingsDb::initialize()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SettingsDb::initializeDb() const
+void StellaDb::initializeDb() const
 {
   FilesystemNode legacyConfigFile{myDatabaseDirectory};
   legacyConfigFile /= "stellarc";
@@ -87,7 +87,7 @@ void SettingsDb::initializeDb() const
   legacyPropertyFile /= "stella.pro";
 
   if (legacyConfigDatabase.exists() && legacyConfigDatabase.isFile())
-    importOldSettingsDB(legacyConfigDatabase);
+    importOldStellaDb(legacyConfigDatabase);
   else if (legacyConfigFile.exists() && legacyConfigFile.isFile())
     importStellarc(legacyConfigFile);
 
@@ -98,7 +98,7 @@ void SettingsDb::initializeDb() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SettingsDb::importStellarc(const FilesystemNode& node) const
+void StellaDb::importStellarc(const FilesystemNode& node) const
 {
   Logger::info("importing old settings from " + node.getPath());
 
@@ -106,7 +106,7 @@ void SettingsDb::importStellarc(const FilesystemNode& node) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SettingsDb::importOldSettingsDB(const FilesystemNode& node) const {
+void StellaDb::importOldStellaDb(const FilesystemNode& node) const {
   Logger::info("importing old settings from " + node.getPath());
 
   try {
@@ -126,7 +126,7 @@ void SettingsDb::importOldSettingsDB(const FilesystemNode& node) const {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SettingsDb::importOldPropset(const FilesystemNode& node) const
+void StellaDb::importOldPropset(const FilesystemNode& node) const
 {
   Logger::info("importing old game properties from " + node.getPath());
 
@@ -157,7 +157,7 @@ void SettingsDb::importOldPropset(const FilesystemNode& node) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SettingsDb::migrate() const
+void StellaDb::migrate() const
 {
   Int32 version = myDb->getUserVersion();
   switch (version) {
