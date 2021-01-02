@@ -73,7 +73,7 @@ void SqliteDatabase::exec(const string& sql, T arg1, Ts... args)
   char buffer[512];
 
   if (snprintf(buffer, 512, sql.c_str(), arg1, args...) >= 512)
-    throw new runtime_error("SQL statement too long");
+    throw runtime_error("SQL statement too long");
 
   exec(buffer);
 }

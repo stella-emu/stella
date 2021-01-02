@@ -197,7 +197,7 @@ void StellaDb::migrate()
       stringstream ss;
       ss << "invalid database version " << version;
 
-      throw new SqliteError(ss.str());
+      throw SqliteError(ss.str());
     }
   }
 }
