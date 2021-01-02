@@ -1071,9 +1071,6 @@
     <ClCompile Include="..\common\repository\sqlite\KeyValueRepositorySqlite.cxx">
       <Filter>Source Files\repository\sqlite</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\repository\sqlite\SettingsDb.cxx">
-      <Filter>Source Files\repository\sqlite</Filter>
-    </ClCompile>
     <ClCompile Include="..\common\repository\sqlite\SqliteDatabase.cxx">
       <Filter>Source Files\repository\sqlite</Filter>
     </ClCompile>
@@ -1103,6 +1100,9 @@
     </ClCompile>
     <ClCompile Include="..\common\repository\KeyValueRepositoryJsonFile.cxx">
       <Filter>Source Files\repository</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\repository\sqlite\StellaDb.cxx">
+      <Filter>Source Files\repository\sqlite</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2222,9 +2222,6 @@
     <ClInclude Include="..\common\repository\sqlite\KeyValueRepositorySqlite.hxx">
       <Filter>Header Files\repository\sqlite</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\repository\sqlite\SettingsDb.hxx">
-      <Filter>Header Files\repository\sqlite</Filter>
-    </ClInclude>
     <ClInclude Include="..\common\repository\sqlite\SqliteDatabase.hxx">
       <Filter>Header Files\repository\sqlite</Filter>
     </ClInclude>
@@ -2272,6 +2269,9 @@
     </ClInclude>
     <ClInclude Include="..\sqlite\sqlite_options.h">
       <Filter>Header Files\sqlite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\repository\sqlite\StellaDb.hxx">
+      <Filter>Header Files\repository\sqlite</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

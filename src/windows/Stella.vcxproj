@@ -517,10 +517,10 @@
     <ClCompile Include="..\common\repository\sqlite\AbstractKeyValueRepositorySqlite.cxx" />
     <ClCompile Include="..\common\repository\sqlite\CompositeKeyValueRepositorySqlite.cxx" />
     <ClCompile Include="..\common\repository\sqlite\KeyValueRepositorySqlite.cxx" />
-    <ClCompile Include="..\common\repository\sqlite\SettingsDb.cxx" />
     <ClCompile Include="..\common\repository\sqlite\SqliteDatabase.cxx" />
     <ClCompile Include="..\common\repository\sqlite\SqliteStatement.cxx" />
     <ClCompile Include="..\common\repository\sqlite\SqliteTransaction.cxx" />
+    <ClCompile Include="..\common\repository\sqlite\StellaDb.cxx" />
     <ClCompile Include="..\common\RewindManager.cxx" />
     <ClCompile Include="..\common\sdl_blitter\BilinearBlitter.cxx" />
     <ClCompile Include="..\common\sdl_blitter\BlitterFactory.cxx" />
@@ -1566,11 +1566,11 @@
     <ClInclude Include="..\common\repository\sqlite\AbstractKeyValueRepositorySqlite.hxx" />
     <ClInclude Include="..\common\repository\sqlite\CompositeKeyValueRepositorySqlite.hxx" />
     <ClInclude Include="..\common\repository\sqlite\KeyValueRepositorySqlite.hxx" />
-    <ClInclude Include="..\common\repository\sqlite\SettingsDb.hxx" />
     <ClInclude Include="..\common\repository\sqlite\SqliteDatabase.hxx" />
     <ClInclude Include="..\common\repository\sqlite\SqliteError.hxx" />
     <ClInclude Include="..\common\repository\sqlite\SqliteStatement.hxx" />
     <ClInclude Include="..\common\repository\sqlite\SqliteTransaction.hxx" />
+    <ClInclude Include="..\common\repository\sqlite\StellaDb.hxx" />
     <ClInclude Include="..\common\RewindManager.hxx" />
     <ClInclude Include="..\common\sdl_blitter\BilinearBlitter.hxx" />
     <ClInclude Include="..\common\sdl_blitter\Blitter.hxx" />
