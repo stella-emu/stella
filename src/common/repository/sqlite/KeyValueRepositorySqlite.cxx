@@ -32,9 +32,8 @@ KeyValueRepositorySqlite::KeyValueRepositorySqlite(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SqliteStatement& KeyValueRepositorySqlite::stmtInsert(const string& key, const string& value)
 {
-  myStmtInsert->reset();
-
   return (*myStmtInsert)
+    .reset()
     .bind(1, key.c_str())
     .bind(2, value.c_str());
 }
@@ -42,35 +41,31 @@ SqliteStatement& KeyValueRepositorySqlite::stmtInsert(const string& key, const s
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SqliteStatement& KeyValueRepositorySqlite::stmtSelect()
 {
-  myStmtInsert->reset();
-
-  return *myStmtSelect;
+  return (*myStmtSelect)
+    .reset();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SqliteStatement& KeyValueRepositorySqlite::stmtDelete(const string& key)
 {
-  myStmtDelete->reset();
-
   return (*myStmtDelete)
+    .reset()
     .bind(1, key.c_str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SqliteStatement& KeyValueRepositorySqlite::stmtCount(const string& key)
 {
-  myStmtCount->reset();
-
   return (*myStmtCount)
+    .reset()
     .bind(1, key.c_str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SqliteStatement& KeyValueRepositorySqlite::stmtSelectOne(const string& key)
 {
-  myStmtSelectOne->reset();
-
   return (*myStmtSelectOne)
+    .reset()
     .bind(1, key.c_str());
 }
 

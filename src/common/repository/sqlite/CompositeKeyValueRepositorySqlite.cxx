@@ -41,8 +41,9 @@ shared_ptr<KeyValueRepository> CompositeKeyValueRepositorySqlite::get(const stri
 bool CompositeKeyValueRepositorySqlite::has(const string& key)
 {
   try {
-    myStmtCountSet->reset();
-    myStmtCountSet->bind(1, key.c_str());
+    (*myStmtCountSet)
+      .reset()
+      .bind(1, key.c_str());
 
     if (!myStmtCountSet->step())
       throw new SqliteError("count failed");
@@ -63,11 +64,12 @@ bool CompositeKeyValueRepositorySqlite::has(const string& key)
 void CompositeKeyValueRepositorySqlite::remove(const string& key)
 {
   try {
-    myStmtDeleteSet->reset();
-
     (*myStmtDeleteSet)
+      .reset()
       .bind(1, key.c_str())
       .step();
+
+    myStmtDelete->reset();
   }
   catch (const SqliteError& err) {
     Logger::error(err.what());
@@ -147,9 +149,8 @@ CompositeKeyValueRepositorySqlite::ProxyRepository::ProxyRepository(
 SqliteStatement& CompositeKeyValueRepositorySqlite::ProxyRepository::stmtInsert(
   const string& key, const string& value
 ) {
-  myRepo.myStmtInsert->reset();
-
   return (*myRepo.myStmtInsert)
+    .reset()
     .bind(1, myKey.c_str())
     .bind(2, key.c_str())
     .bind(3, value.c_str());
@@ -158,9 +159,8 @@ SqliteStatement& CompositeKeyValueRepositorySqlite::ProxyRepository::stmtInsert(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SqliteStatement& CompositeKeyValueRepositorySqlite::ProxyRepository::stmtSelect()
 {
-  myRepo.myStmtSelect->reset();
-
   return (*myRepo.myStmtSelect)
+    .reset()
     .bind(1, myKey.c_str());
 }
 
@@ -177,9 +177,8 @@ SqliteStatement& CompositeKeyValueRepositorySqlite::ProxyRepository::stmtDelete(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SqliteStatement& CompositeKeyValueRepositorySqlite::ProxyRepository::stmtSelectOne(const string& key)
 {
-  myRepo.myStmtSelectOne->reset();
-
   return (*myRepo.myStmtSelectOne)
+    .reset()
     .bind(1, myKey.c_str())
     .bind(2, key.c_str());
 }
@@ -187,9 +186,8 @@ SqliteStatement& CompositeKeyValueRepositorySqlite::ProxyRepository::stmtSelectO
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SqliteStatement& CompositeKeyValueRepositorySqlite::ProxyRepository::stmtCount(const string& key)
 {
-  myRepo.myStmtCount->reset();
-
   return (*myRepo.myStmtCount)
+    .reset()
     .bind(1, myKey.c_str())
     .bind(2, key.c_str());
 }

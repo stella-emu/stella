@@ -87,7 +87,7 @@ void SqliteDatabase::initialize()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SqliteDatabase::exec(const string& sql) const
+void SqliteDatabase::exec(const string& sql)
 {
   if (sqlite3_exec(myHandle, sql.c_str(), nullptr, nullptr, nullptr) != SQLITE_OK)
     throw SqliteError(myHandle);
@@ -105,7 +105,7 @@ Int32 SqliteDatabase::getUserVersion() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SqliteDatabase::setUserVersion(Int32 version) const
+void SqliteDatabase::setUserVersion(Int32 version)
 {
   SqliteStatement(*this, "PRAGMA user_version = %i", static_cast<int>(version))
     .step();

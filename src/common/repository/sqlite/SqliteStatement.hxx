@@ -37,9 +37,9 @@ class SqliteStatement {
     SqliteStatement& bind(int index, const string& value);
     SqliteStatement& bind(int index, Int32 value);
 
-    bool step() const;
+    bool step();
 
-    void reset() const;
+    SqliteStatement& reset();
 
     string columnText(int index) const;
 
