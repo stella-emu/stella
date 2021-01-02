@@ -249,6 +249,11 @@
 		DC2ABA68259D466C007E57D3 /* KeyValueRepositoryPropertyFile.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC2ABA65259D466C007E57D3 /* KeyValueRepositoryPropertyFile.cxx */; };
 		DC2ABA69259D466C007E57D3 /* CompositeKeyValueRepositoryNoop.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2ABA66259D466C007E57D3 /* CompositeKeyValueRepositoryNoop.hxx */; };
 		DC2ABA6A259D466C007E57D3 /* KeyValueRepositoryPropertyFile.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2ABA67259D466C007E57D3 /* KeyValueRepositoryPropertyFile.hxx */; };
+		DC2ABA7025A0C9B2007E57D3 /* CompositeKVRJsonAdapter.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC2ABA6B25A0C9B1007E57D3 /* CompositeKVRJsonAdapter.cxx */; };
+		DC2ABA7125A0C9B2007E57D3 /* KeyValueRepositoryFile.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2ABA6C25A0C9B1007E57D3 /* KeyValueRepositoryFile.hxx */; };
+		DC2ABA7225A0C9B2007E57D3 /* CompositeKVRJsonAdapter.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2ABA6D25A0C9B1007E57D3 /* CompositeKVRJsonAdapter.hxx */; };
+		DC2ABA7325A0C9B2007E57D3 /* KeyValueRepositoryJsonFile.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC2ABA6E25A0C9B1007E57D3 /* KeyValueRepositoryJsonFile.cxx */; };
+		DC2ABA7425A0C9B2007E57D3 /* KeyValueRepositoryJsonFile.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2ABA6F25A0C9B1007E57D3 /* KeyValueRepositoryJsonFile.hxx */; };
 		DC2B85E71EF5EF2300379EB9 /* AtariNTSC.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC2B85E51EF5EF2300379EB9 /* AtariNTSC.cxx */; };
 		DC2B85E81EF5EF2300379EB9 /* AtariNTSC.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2B85E61EF5EF2300379EB9 /* AtariNTSC.hxx */; };
 		DC2C5EDB1F8F2403007D2A09 /* smartmod.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2C5EDA1F8F2403007D2A09 /* smartmod.hxx */; };
@@ -1046,6 +1051,11 @@
 		DC2ABA65259D466C007E57D3 /* KeyValueRepositoryPropertyFile.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = KeyValueRepositoryPropertyFile.cxx; sourceTree = "<group>"; };
 		DC2ABA66259D466C007E57D3 /* CompositeKeyValueRepositoryNoop.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CompositeKeyValueRepositoryNoop.hxx; sourceTree = "<group>"; };
 		DC2ABA67259D466C007E57D3 /* KeyValueRepositoryPropertyFile.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = KeyValueRepositoryPropertyFile.hxx; sourceTree = "<group>"; };
+		DC2ABA6B25A0C9B1007E57D3 /* CompositeKVRJsonAdapter.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CompositeKVRJsonAdapter.cxx; sourceTree = "<group>"; };
+		DC2ABA6C25A0C9B1007E57D3 /* KeyValueRepositoryFile.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = KeyValueRepositoryFile.hxx; sourceTree = "<group>"; };
+		DC2ABA6D25A0C9B1007E57D3 /* CompositeKVRJsonAdapter.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CompositeKVRJsonAdapter.hxx; sourceTree = "<group>"; };
+		DC2ABA6E25A0C9B1007E57D3 /* KeyValueRepositoryJsonFile.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = KeyValueRepositoryJsonFile.cxx; sourceTree = "<group>"; };
+		DC2ABA6F25A0C9B1007E57D3 /* KeyValueRepositoryJsonFile.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = KeyValueRepositoryJsonFile.hxx; sourceTree = "<group>"; };
 		DC2B85E51EF5EF2300379EB9 /* AtariNTSC.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AtariNTSC.cxx; sourceTree = "<group>"; };
 		DC2B85E61EF5EF2300379EB9 /* AtariNTSC.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = AtariNTSC.hxx; sourceTree = "<group>"; };
 		DC2C5EDA1F8F2403007D2A09 /* smartmod.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = smartmod.hxx; sourceTree = "<group>"; };
@@ -2461,9 +2471,14 @@
 			children = (
 				DC2ABA5B259BD544007E57D3 /* CompositeKeyValueRepository.hxx */,
 				DC2ABA66259D466C007E57D3 /* CompositeKeyValueRepositoryNoop.hxx */,
+				DC2ABA6B25A0C9B1007E57D3 /* CompositeKVRJsonAdapter.cxx */,
+				DC2ABA6D25A0C9B1007E57D3 /* CompositeKVRJsonAdapter.hxx */,
 				E06508B92272447200B341AC /* KeyValueRepository.hxx */,
 				E06508BB2272447200B341AC /* KeyValueRepositoryConfigfile.cxx */,
 				E06508BA2272447200B341AC /* KeyValueRepositoryConfigfile.hxx */,
+				DC2ABA6C25A0C9B1007E57D3 /* KeyValueRepositoryFile.hxx */,
+				DC2ABA6E25A0C9B1007E57D3 /* KeyValueRepositoryJsonFile.cxx */,
+				DC2ABA6F25A0C9B1007E57D3 /* KeyValueRepositoryJsonFile.hxx */,
 				E06508B82272447200B341AC /* KeyValueRepositoryNoop.hxx */,
 				DC2ABA65259D466C007E57D3 /* KeyValueRepositoryPropertyFile.cxx */,
 				DC2ABA67259D466C007E57D3 /* KeyValueRepositoryPropertyFile.hxx */,
@@ -2686,6 +2701,7 @@
 				2D91745709BA90380026E9FF /* DataGridWidget.hxx in Headers */,
 				DCC6A4B120A2622500863C59 /* Resampler.hxx in Headers */,
 				DCF3A6EC1DFC75E3008A8AF3 /* DelayQueue.hxx in Headers */,
+				DC2ABA7125A0C9B2007E57D3 /* KeyValueRepositoryFile.hxx in Headers */,
 				DCA078341F8C1B04008EFEE5 /* LinkedObjectPool.hxx in Headers */,
 				2D91745809BA90380026E9FF /* DebuggerDialog.hxx in Headers */,
 				DC2C5EDB1F8F2403007D2A09 /* smartmod.hxx in Headers */,
@@ -2748,6 +2764,7 @@
 				DC70065C241EC97900A459AB /* Stella12x24tFont.hxx in Headers */,
 				DCA00FF80DBABCAD00C3823D /* RiotDebug.hxx in Headers */,
 				DC4AC6F00DC8DACB00CD3AD2 /* RiotWidget.hxx in Headers */,
+				DC2ABA7225A0C9B2007E57D3 /* CompositeKVRJsonAdapter.hxx in Headers */,
 				E0A384192589741A0062AA93 /* SqliteError.hxx in Headers */,
 				DCA233B123B583FE0032ABF3 /* PhosphorHandler.hxx in Headers */,
 				DC4AC6F40DC8DAEF00CD3AD2 /* SaveKey.hxx in Headers */,
@@ -2918,6 +2935,7 @@
 				DC6A18FD19B3E67A00DEB242 /* CartMDM.hxx in Headers */,
 				DCDDEAC51F5DBF0400C67366 /* RewindManager.hxx in Headers */,
 				DCAACB13188D636F00A4D282 /* CartBFWidget.hxx in Headers */,
+				DC2ABA7425A0C9B2007E57D3 /* KeyValueRepositoryJsonFile.hxx in Headers */,
 				DCAACB15188D636F00A4D282 /* CartDFSCWidget.hxx in Headers */,
 				DC44019F1F1A5D01008C08F6 /* ColorWidget.hxx in Headers */,
 				DC96162D1F817830008A2206 /* AmigaMouseWidget.hxx in Headers */,
@@ -3091,6 +3109,7 @@
 				2D9174AC09BA90380026E9FF /* BrowserDialog.cxx in Sources */,
 				2D9174AD09BA90380026E9FF /* Dialog.cxx in Sources */,
 				2D9174AE09BA90380026E9FF /* DialogContainer.cxx in Sources */,
+				DC2ABA7025A0C9B2007E57D3 /* CompositeKVRJsonAdapter.cxx in Sources */,
 				2D9174AF09BA90380026E9FF /* GameInfoDialog.cxx in Sources */,
 				2D9174B109BA90380026E9FF /* HelpDialog.cxx in Sources */,
 				2D9174B209BA90380026E9FF /* Launcher.cxx in Sources */,
@@ -3147,6 +3166,7 @@
 				2D9174F809BA90380026E9FF /* DataGridOpsWidget.cxx in Sources */,
 				E08FCD5423A037EB0051F59B /* BlitterFactory.cxx in Sources */,
 				2D9174F909BA90380026E9FF /* DataGridWidget.cxx in Sources */,
+				DC2ABA7325A0C9B2007E57D3 /* KeyValueRepositoryJsonFile.cxx in Sources */,
 				2D9174FA09BA90380026E9FF /* DebuggerDialog.cxx in Sources */,
 				DCF3A6E91DFC75E3008A8AF3 /* Ball.cxx in Sources */,
 				2D9174FB09BA90380026E9FF /* PromptWidget.cxx in Sources */,
