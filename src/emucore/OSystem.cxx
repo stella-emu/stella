@@ -223,7 +223,7 @@ void OSystem::loadConfig(const Settings::Options& options)
   if(!myHomeDir.isDirectory())
     myHomeDir.makeDir();
 
-  mySettingsDb = make_shared<SettingsDb>(myBaseDir.getPath(), "settings");
+  mySettingsDb = make_shared<SettingsDb>(myBaseDir.getPath(), "stella");
   mySettingsDb->initialize();
   myConfigFile = FilesystemNode(mySettingsDb->databaseFileName());
 

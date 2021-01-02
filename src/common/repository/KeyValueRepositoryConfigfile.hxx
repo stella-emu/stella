@@ -19,21 +19,19 @@
 #define KEY_VALUE_REPOSITORY_CONFIGFILE_HXX
 
 #include "FSNode.hxx"
-#include "KeyValueRepository.hxx"
+#include "repository/KeyValueRepositoryFile.hxx"
 
-class KeyValueRepositoryConfigfile : public KeyValueRepositoryAtomic
+class KeyValueRepositoryConfigfile : public KeyValueRepositoryFile<KeyValueRepositoryConfigfile>
 {
   public:
+    using KeyValueRepositoryFile<KeyValueRepositoryConfigfile>::load;
+    using KeyValueRepositoryFile<KeyValueRepositoryConfigfile>::save;
 
-    explicit KeyValueRepositoryConfigfile(const FilesystemNode& file);
+    KeyValueRepositoryConfigfile(const FilesystemNode& node);
 
-    std::map<string, Variant> load() override;
+    static std::map<string, Variant> load(istream& in);
 
-    bool save(const std::map<string, Variant>& values) override;
-
-  private:
-
-    FilesystemNode myFile;
+    static bool save(ostream& out, const std::map<string, Variant>& values);
 };
 
 #endif // KEY_VALUE_REPOSITORY_CONFIGFILE_HXX

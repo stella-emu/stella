@@ -51,6 +51,15 @@ SqliteStatement& SqliteStatement::bind(int index, const string& value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+SqliteStatement& SqliteStatement::bind(int index, Int32 value)
+{
+  if (sqlite3_bind_int(myStmt, index, value) != SQLITE_OK)
+    throw SqliteError(myHandle);
+
+  return *this;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool SqliteStatement::step() const
 {
   int result = sqlite3_step(myStmt);

@@ -20,6 +20,7 @@
 #include "SqliteDatabase.hxx"
 #include "Logger.hxx"
 #include "SqliteError.hxx"
+#include "SqliteStatement.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SqliteDatabase::SqliteDatabase(const string& databaseDirectory,
@@ -90,4 +91,25 @@ void SqliteDatabase::exec(const string& sql) const
 {
   if (sqlite3_exec(myHandle, sql.c_str(), nullptr, nullptr, nullptr) != SQLITE_OK)
     throw SqliteError(myHandle);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Int32 SqliteDatabase::getUserVersion() const
+{
+  SqliteStatement stmt(*this, "PRAGMA user_version");
+  stmt.reset();
+
+  if (!stmt.step())
+    throw SqliteError("failed to get user_version");
+
+  return stmt.columnInt(0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SqliteDatabase::setUserVersion(Int32 version) const
+{
+  SqliteStatement stmt(*this, "PRAGMA user_version = %i", static_cast<int>(version));
+  stmt.reset();
+
+  stmt.step();
 }

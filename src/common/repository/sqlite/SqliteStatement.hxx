@@ -35,6 +35,7 @@ class SqliteStatement {
     operator sqlite3_stmt*() const { return myStmt; }
 
     SqliteStatement& bind(int index, const string& value);
+    SqliteStatement& bind(int index, Int32 value);
 
     bool step() const;
 

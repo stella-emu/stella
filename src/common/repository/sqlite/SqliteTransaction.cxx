@@ -22,6 +22,11 @@
 SqliteTransaction::SqliteTransaction(SqliteDatabase& db)
   : myDb{db}
 {
+  if (sqlite3_get_autocommit(db)) {
+    myTransactionClosed = true;
+    return;
+  }
+
   myDb.exec("BEGIN TRANSACTION");
 }
 

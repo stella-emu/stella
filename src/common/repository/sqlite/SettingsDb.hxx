@@ -31,11 +31,17 @@ class SettingsDb
 
     void initialize();
 
-    KeyValueRepository& settingsRepository() const { return *mySettingsRepository; }
+    KeyValueRepositoryAtomic& settingsRepository() const { return *mySettingsRepository; }
 
     CompositeKeyValueRepository& propertyRepository() const { return *myPropertyRepository; }
 
     const string& databaseFileName() const { return myDatabaseName; }
+
+  private:
+
+    void initializeDb();
+
+    void migrate();
 
   private:
 
