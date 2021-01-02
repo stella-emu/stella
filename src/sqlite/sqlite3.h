@@ -18,6 +18,8 @@
 #ifndef SQLITE_LIB_HXX
 #define SQLITE_LIB_HXX
 
+#include "sqlite_options.h"
+
 /*
  * We can't control the quality of code from outside projects, so for now
  * just disable warnings for it.

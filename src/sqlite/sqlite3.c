@@ -15,11 +15,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef SQLITE_LIB_CXX
-#define SQLITE_LIB_CXX
-
-// Linux and libretro doesn't build unless this is enabled
-#define SQLITE_OMIT_LOAD_EXTENSION 1
+#include "sqlite_options.h"
 
 /*
  * We can't control the quality of code from outside projects, so for now
@@ -33,5 +29,3 @@
 #else
   #include "source/sqlite3.c"
 #endif
-
-#endif  // SQLITE_LIB_CXX
