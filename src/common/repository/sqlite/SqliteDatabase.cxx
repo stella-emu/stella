@@ -97,7 +97,6 @@ void SqliteDatabase::exec(const string& sql) const
 Int32 SqliteDatabase::getUserVersion() const
 {
   SqliteStatement stmt(*this, "PRAGMA user_version");
-  stmt.reset();
 
   if (!stmt.step())
     throw SqliteError("failed to get user_version");
@@ -108,8 +107,6 @@ Int32 SqliteDatabase::getUserVersion() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SqliteDatabase::setUserVersion(Int32 version) const
 {
-  SqliteStatement stmt(*this, "PRAGMA user_version = %i", static_cast<int>(version));
-  stmt.reset();
-
-  stmt.step();
+  SqliteStatement(*this, "PRAGMA user_version = %i", static_cast<int>(version))
+    .step();
 }

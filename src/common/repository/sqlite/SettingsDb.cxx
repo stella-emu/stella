@@ -25,7 +25,7 @@
 #include "repository/CompositeKVRJsonAdapter.hxx"
 #include "repository/KeyValueRepositoryConfigfile.hxx"
 #include "KeyValueRepositorySqlite.hxx"
-#include "SqliteTransaction.hxx"
+#include "SqliteStatement.hxx"
 #include "FSNode.hxx"
 
 namespace {
@@ -75,8 +75,6 @@ void SettingsDb::initialize()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SettingsDb::initializeDb() {
-  SqliteTransaction tx{*myDb};
-
   FilesystemNode legacyConfigFile{myDatabaseDirectory};
   legacyConfigFile /= "stellarc";
 
@@ -88,10 +86,26 @@ void SettingsDb::initializeDb() {
 
     mySettingsRepository->save(KeyValueRepositoryConfigfile{legacyConfigFile}.load());
   }
+  else if (legacyConfigDatabase.exists() && legacyConfigDatabase.isFile()) {
+    Logger::info("importing old settings from " + legacyConfigDatabase.getPath());
+
+    try {
+      SqliteStatement(
+        *myDb,
+        "ATTACH DATABASE ? AS old_db"
+      )
+        .bind(1, legacyConfigDatabase.getPath())
+        .step();
+
+      myDb->exec("INSERT INTO `settings` SELECT * FROM `old_db`.`settings`");
+      myDb->exec("DETACH DATABASE `old_db`");
+    }
+    catch (const SqliteError& err) {
+      Logger::error(err.what());
+    }
+  }
 
   myDb->setUserVersion(CURRENT_VERSION);
-
-  tx.commit();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
