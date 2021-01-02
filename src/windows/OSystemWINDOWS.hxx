@@ -18,7 +18,7 @@
 #ifndef OSYSTEM_WINDOWS_HXX
 #define OSYSTEM_WINDOWS_HXX
 
-#include "OSystem.hxx"
+#include "OSystemStandalone.hxx"
 
 /**
   This class defines an OSystem object for Windows OS's.
@@ -27,7 +27,7 @@
 
   @author  Stephen Anthony
 */
-class OSystemWINDOWS : public OSystem
+class OSystemWINDOWS : public OSystemStandalone
 {
   public:
     OSystemWINDOWS() = default;

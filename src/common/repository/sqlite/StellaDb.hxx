@@ -38,6 +38,8 @@ class StellaDb
 
     const string databaseFileName() const;
 
+    bool isValid() const;
+
   private:
 
     void initializeDb();

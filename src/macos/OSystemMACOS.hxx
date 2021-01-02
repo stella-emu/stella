@@ -18,7 +18,7 @@
 #ifndef OSYSTEM_MACOS_HXX
 #define OSYSTEM_MACOS_HXX
 
-#include "OSystem.hxx"
+#include "OSystemStandalone.hxx"
 
 /**
   This class defines an OSystem object for UNIX-like OS's (macOS).
@@ -27,7 +27,7 @@
 
   @author  Stephen Anthony
 */
-class OSystemMACOS : public OSystem
+class OSystemMACOS : public OSystemStandalone
 {
   public:
     OSystemMACOS() = default;

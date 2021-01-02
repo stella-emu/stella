@@ -18,7 +18,7 @@
 #ifndef OSYSTEM_R77_HXX
 #define OSYSTEM_R77_HXX
 
-#include "OSystem.hxx"
+#include "OSystemStandalone.hxx"
 
 /**
   This class defines an OSystem object for the Retron77 system.
@@ -29,7 +29,7 @@
 
   @author  Stephen Anthony
 */
-class OSystemR77 : public OSystem
+class OSystemR77 : public OSystemStandalone
 {
   public:
     OSystemR77() = default;

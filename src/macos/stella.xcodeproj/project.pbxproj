@@ -705,6 +705,8 @@
 		E034A5EF209FB25D00C89E9E /* EmulationTiming.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E034A5ED209FB25C00C89E9E /* EmulationTiming.hxx */; };
 		E0406FB61F81A85400A82AE0 /* AbstractFrameManager.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0DFDD781F81A358000F3505 /* AbstractFrameManager.cxx */; };
 		E0406FB81F81A85400A82AE0 /* FrameManager.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0DFDD7B1F81A358000F3505 /* FrameManager.cxx */; };
+		E050876E25A1337400E4B62A /* OSystemStandalone.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E050876C25A1337400E4B62A /* OSystemStandalone.cxx */; };
+		E050876F25A1337400E4B62A /* OSystemStandalone.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E050876D25A1337400E4B62A /* OSystemStandalone.hxx */; };
 		E06508BE2272447200B341AC /* KeyValueRepositoryNoop.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E06508B82272447200B341AC /* KeyValueRepositoryNoop.hxx */; };
 		E06508BF2272447200B341AC /* KeyValueRepository.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E06508B92272447200B341AC /* KeyValueRepository.hxx */; };
 		E06508C02272447200B341AC /* KeyValueRepositoryConfigfile.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E06508BA2272447200B341AC /* KeyValueRepositoryConfigfile.hxx */; };
@@ -1509,6 +1511,8 @@
 		E0306E0B1F93E916003DDD52 /* JitterEmulation.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JitterEmulation.hxx; sourceTree = "<group>"; };
 		E034A5EC209FB25C00C89E9E /* EmulationTiming.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EmulationTiming.cxx; sourceTree = "<group>"; };
 		E034A5ED209FB25C00C89E9E /* EmulationTiming.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = EmulationTiming.hxx; sourceTree = "<group>"; };
+		E050876C25A1337400E4B62A /* OSystemStandalone.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OSystemStandalone.cxx; sourceTree = "<group>"; };
+		E050876D25A1337400E4B62A /* OSystemStandalone.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = OSystemStandalone.hxx; sourceTree = "<group>"; };
 		E06508B82272447200B341AC /* KeyValueRepositoryNoop.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = KeyValueRepositoryNoop.hxx; sourceTree = "<group>"; };
 		E06508B92272447200B341AC /* KeyValueRepository.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = KeyValueRepository.hxx; sourceTree = "<group>"; };
 		E06508BA2272447200B341AC /* KeyValueRepositoryConfigfile.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = KeyValueRepositoryConfigfile.hxx; sourceTree = "<group>"; };
@@ -1944,6 +1948,8 @@
 		2D6050CC0898776500C6DE89 /* emucore */ = {
 			isa = PBXGroup;
 			children = (
+				E050876C25A1337400E4B62A /* OSystemStandalone.cxx */,
+				E050876D25A1337400E4B62A /* OSystemStandalone.hxx */,
 				DC1B2EBE1E50036100F62837 /* AmigaMouse.hxx */,
 				DC1B2EC01E50036100F62837 /* AtariMouse.hxx */,
 				DC487FB40DA5350900E12499 /* AtariVox.cxx */,
@@ -2858,6 +2864,7 @@
 				DCBDDE9B1D6A5F0E009DF1E9 /* Cart3EPlusWidget.hxx in Headers */,
 				DCCF4B0314BA27EB00814FAB /* DrivingWidget.hxx in Headers */,
 				DCCF4B0514BA27EB00814FAB /* KeyboardWidget.hxx in Headers */,
+				E050876F25A1337400E4B62A /* OSystemStandalone.hxx in Headers */,
 				DC5C768F14C26F7C0031EBC7 /* StellaKeys.hxx in Headers */,
 				DC36D2C914CAFAB0007DC821 /* CartFA2.hxx in Headers */,
 				DC56FCDF14CCCC4900A31CC3 /* MouseControl.hxx in Headers */,
@@ -3195,6 +3202,7 @@
 				2D91750209BA90380026E9FF /* ToggleBitWidget.cxx in Sources */,
 				E0A3841B2589741A0062AA93 /* SqliteDatabase.cxx in Sources */,
 				E0A383FA2589732E0062AA93 /* sqlite3.c in Sources */,
+				E050876E25A1337400E4B62A /* OSystemStandalone.cxx in Sources */,
 				2D91750309BA90380026E9FF /* TogglePixelWidget.cxx in Sources */,
 				2D91750409BA90380026E9FF /* ToggleWidget.cxx in Sources */,
 				2D91750609BA90380026E9FF /* TiaZoomWidget.cxx in Sources */,

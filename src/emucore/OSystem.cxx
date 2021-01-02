@@ -39,8 +39,6 @@
   #include "TimeMachine.hxx"
   #include "Widget.hxx"
 #endif
-  #include "KeyValueRepositorySqlite.hxx"
-  #include "StellaDb.hxx"
 
 #include "FSNode.hxx"
 #include "MD5.hxx"
@@ -115,8 +113,10 @@ OSystem::~OSystem()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool OSystem::create()
+bool OSystem::initialize(const Settings::Options& options)
 {
+  loadConfig(options);
+
   ostringstream buf;
   buf << "Stella " << STELLA_VERSION << endl
       << "  Features: " << myFeatures << endl
@@ -127,8 +127,8 @@ bool OSystem::create()
       << myStateDir.getShortPath() << "'" << endl
       << "NVRam directory:    '"
       << myNVRamDir.getShortPath() << "'" << endl
-      << "Database file:      '"
-      << myStellaDb->databaseFileName() << "'" << endl
+      << "Persistence:        '"
+      << describePresistence() << "'" << endl
       << "Cheat file:         '"
       << myCheatFile.getShortPath() << "'" << endl
       << "Palette file:       '"
@@ -218,8 +218,7 @@ void OSystem::loadConfig(const Settings::Options& options)
   if(!myHomeDir.isDirectory())
     myHomeDir.makeDir();
 
-  myStellaDb = make_shared<StellaDb>(myBaseDir.getPath(), "stella");
-  myStellaDb->initialize();
+  initPersistence(myBaseDir);
 
   mySettings->setRepository(getSettingsRepository());
   myPropSet->setRepository(getPropertyRepository());
@@ -868,18 +867,6 @@ void OSystem::mainLoop()
   myCheatManager->saveCheatDatabase();
 #endif
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-shared_ptr<KeyValueRepository> OSystem::getSettingsRepository()
-{
-    return shared_ptr<KeyValueRepository>(myStellaDb, &myStellaDb->settingsRepository());
-}
-
-shared_ptr<CompositeKeyValueRepository> OSystem::getPropertyRepository()
-{
-  return shared_ptr<CompositeKeyValueRepository>(myStellaDb, &myStellaDb->propertyRepository());
-}
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string OSystem::ourOverrideBaseDir = "";
