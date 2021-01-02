@@ -31,6 +31,12 @@
 
 namespace {
   constexpr Int32 CURRENT_VERSION = 1;
+
+  #ifdef BSPF_WINDOWS
+    constexpr char LEGACY_SETTINGS_FILE[] = "stella.ini";
+  #else
+    constexpr char LEGACY_SETTINGS_FILE[] = "stellarc";
+  #endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -84,7 +90,7 @@ const string StellaDb::databaseFileName() const
 void StellaDb::initializeDb() const
 {
   FilesystemNode legacyConfigFile{myDatabaseDirectory};
-  legacyConfigFile /= "stellarc";
+  legacyConfigFile /= LEGACY_SETTINGS_FILE;
 
   FilesystemNode legacyConfigDatabase{myDatabaseDirectory};
   legacyConfigDatabase /= "settings.sqlite3";
