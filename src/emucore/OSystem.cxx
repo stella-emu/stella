@@ -224,12 +224,11 @@ void OSystem::loadConfig(const Settings::Options& options)
     myHomeDir.makeDir();
 
   mySettingsDb = make_shared<SettingsDb>(myBaseDir.getPath(), "settings");
-  if(!mySettingsDb->initialize())
-    mySettingsDb.reset();
+  mySettingsDb->initialize();
   myConfigFile = FilesystemNode(mySettingsDb->databaseFileName());
 
-  mySettings->setRepository(createSettingsRepository());
-  myPropSet->setRepository(createPropertyRepository());
+  mySettings->setRepository(getSettingsRepository());
+  myPropSet->setRepository(getPropertyRepository());
   mySettings->load(options);
 
   // userDir is NOT affected by '-baseDir'and '-basedirinapp' params
@@ -880,18 +879,14 @@ void OSystem::mainLoop()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-shared_ptr<KeyValueRepository> OSystem::createSettingsRepository()
+shared_ptr<KeyValueRepository> OSystem::getSettingsRepository()
 {
-    return mySettingsDb
-      ? shared_ptr<KeyValueRepository>(mySettingsDb, &mySettingsDb->settingsRepository())
-      : make_shared<KeyValueRepositoryNoop>();
+    return shared_ptr<KeyValueRepository>(mySettingsDb, &mySettingsDb->settingsRepository());
 }
 
-shared_ptr<CompositeKeyValueRepository> OSystem::createPropertyRepository()
+shared_ptr<CompositeKeyValueRepository> OSystem::getPropertyRepository()
 {
-  return mySettingsDb
-    ? shared_ptr<CompositeKeyValueRepository>(mySettingsDb, &mySettingsDb->propertyRepository())
-    : make_shared<CompositeKeyValueRepositoryNoop>();
+  return shared_ptr<CompositeKeyValueRepository>(mySettingsDb, &mySettingsDb->propertyRepository());
 }
 
 

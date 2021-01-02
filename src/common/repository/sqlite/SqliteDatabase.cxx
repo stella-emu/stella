@@ -69,9 +69,11 @@ void SqliteDatabase::initialize()
   }
 
   exec("PRAGMA journal_mode=WAL");
+  exec("PRAGMA synchronous=1");
 
   switch (sqlite3_wal_checkpoint_v2(myHandle, nullptr, SQLITE_CHECKPOINT_TRUNCATE, nullptr, nullptr)) {
     case SQLITE_OK:
+    case SQLITE_BUSY:
       break;
 
     case SQLITE_MISUSE:
