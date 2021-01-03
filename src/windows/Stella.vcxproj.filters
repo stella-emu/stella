@@ -1107,6 +1107,9 @@
     <ClCompile Include="..\emucore\OSystemStandalone.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
+    <ClCompile Include="..\common\repository\CompositeKeyValueRepository.cxx">
+      <Filter>Source Files\repository</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">
