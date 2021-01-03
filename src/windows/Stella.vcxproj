@@ -510,6 +510,7 @@
     <ClCompile Include="..\common\PhysicalJoystick.cxx" />
     <ClCompile Include="..\common\PJoystickHandler.cxx" />
     <ClCompile Include="..\common\PKeyboardHandler.cxx" />
+    <ClCompile Include="..\common\repository\CompositeKeyValueRepository.cxx" />
     <ClCompile Include="..\common\repository\CompositeKVRJsonAdapter.cxx" />
     <ClCompile Include="..\common\repository\KeyValueRepositoryConfigfile.cxx" />
     <ClCompile Include="..\common\repository\KeyValueRepositoryJsonFile.cxx" />
