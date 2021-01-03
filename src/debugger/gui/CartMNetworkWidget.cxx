@@ -37,7 +37,7 @@ void CartridgeMNetworkWidget::initialize(GuiObject* boss,
   uInt32 size = cart.romBankCount() * cart.BANK_SIZE;
 
   int xpos = 2,
-    ypos = addBaseInformation(size, "M-Network", info.str(), 15) +
+    ypos = addBaseInformation(size, "M Network", info.str(), 15) +
     myLineHeight;
 
   VariantList items0, items1;
