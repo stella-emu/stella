@@ -61,7 +61,7 @@
         <li><a href="#Adaptor">Stelladaptor/2600-daptor Support</a></li>
         <li><a href="#AtariVox">AtariVox/SaveKey Support</a></li>
         <li><a href="#Debugger">Developer Options/Integrated Debugger</a></li>
-        <li><a href="#Settings">Settings File</a></li>
+        <li><a href="#UserData">User Data</a></li>
         <li><a href="#Cheats">Cheatcode Manager</a></li>
         <li><a href="#Logs">Viewing the System Log</a></li>
         <li><a href="#Properties">Game Properties</a></li>
@@ -277,22 +277,22 @@
     <li>Emulates CX22/CX80 style Trackballs, Amiga/Atari Mouse, Mindlink controller and the Light Gun using your
       computer's mouse</li>
     <li>Emulates the Atari 2600 Keyboard controllers using your computer's keyboard</li>
-    <li>Emulates <a href="http://en.wikipedia.org/wiki/CompuMate">Spectravideo CompuMate</a> system using your computer's keyboard,
+    <li>Emulates <a href="https://en.wikipedia.org/wiki/CompuMate">Spectravideo CompuMate</a> system using your computer's keyboard,
       including mapping of CompuMate 'Backspace', 'Space' and 'Enter' functionality to
       to the actual keys on your keyboard</li>
     <li>Supports autodetection for most common controller types</li>
     <li>Support for real Atari 2600 controllers using the
-      <a href="http://www.grandideastudio.com/portfolio/stelladaptor-2600">Stelladaptor</a> and
+      <a href="http://www.grandideastudio.com/stelladaptor-2600">Stelladaptor</a> and
       <a href="http://2600-daptor.com">2600-daptor/2600-daptor II</a></li>
     <li>Support for the speech portion of a real
-      <a href="http://atariage.com/store/index.php?l=product_list&c=98">
+      <a href="https://atariage.com/store/index.php?l=product_detail&p=1045">
       AtariVox</a> device connected to your PC using a USB adaptor</li>
-    <li>Supports EEPROM emulation for <a href="http://atariage.com/store/index.php?l=product_list&c=98">
-      AtariVox</a> and <a href="http://www.vectrex.biz/MemCard.htm">SaveKey</a> controllers,
+    <li>Supports EEPROM emulation for <a href="https://atariage.com/store/index.php?l=product_detail&p=1045">
+      AtariVox</a> and <a href="https://www.vectrex.biz/MemCard.htm">SaveKey</a> controllers,
       as well as FLASH support in various cartridge schemes</li>
     <li>Supports all known bankswitching schemes (let us know if there's one we missed)</li>
-    <li>Supports DPC+/CDF(J)(+) bankswitching schemes from the <a href="http://harmony.atariage.com">Harmony Cart</a>,
-      including <a href="http://thumbulator.blogspot.ca">partial emulation of the ARM processor</a></li>
+    <li>Supports DPC+/CDF(J)(+) bankswitching schemes from the <a href="https://harmony.atariage.com">Harmony Cart</a>,
+      including <a href="https://thumbulator.blogspot.ca">partial emulation of the ARM processor</a></li>
     <li>Supports cartridge autodetection for almost all bankswitching schemes</li>
     <li>Supports using ROM filename extensions to force specific bankswitching schemes</li>
     <li>Supports using ROM filename to force specific display formats</li>
@@ -312,7 +312,7 @@
     <li>Built-in extensive debugger, including static analysis with the Distella disassembler
       and dynamic analysis at runtime by tracking code/graphics/data sections, and
       generation of DASM-compatible disassembly files</li>
-    <li>Emulation of CRT TV systems using <a href="http://slack.net/~ant/libs/ntsc.html">
+    <li>Emulation of CRT TV systems using <a href="https://slack.net/~ant/libs/ntsc.html">
       Blargg filtering</a>, including presets for several common TV outputs
       (Composite, S-Video, RGB, etc.), and ability to fully customize
       many attributes (contrast, brightness, saturation, gamma, etc.).</li>
@@ -341,9 +341,9 @@
     <li>15/16 bit color minimum; 24/32 bit color graphics card highly recommended</li>
     <li>Enough RAM for the OS + 256MB RAM for the emulation; 512MB+ highly recommended</li>
     <li>Joysticks or gamepads are highly recommended</li>
-    <li>Mouse or <a href="http://www.grandideastudio.com/portfolio/stelladaptor-2600">Stelladaptor</a>/<a href="http://2600-daptor.com">2600-daptor</a>
+    <li>Mouse or <a href="http://www.grandideastudio.com/stelladaptor-2600">Stelladaptor</a>/<a href="http://2600-daptor.com">2600-daptor</a>
     with real paddles required for paddle emulation</li>
-    <li>Some ROM images (see <a href="http://www.atariage.com">AtariAge</a> for more information)</li>
+    <li>Some ROM images (see <a href="https://www.atariage.com">AtariAge</a> for more information)</li>
   </ul>
 
   <p>
@@ -484,7 +484,7 @@
 
   <p><ul>
     <li>Search around the internet and find ROM images to download (websites such
-      as <a href="http://atariage.com">AtariAge</a> and
+      as <a href="https://atariage.com">AtariAge</a> and
       <a href="http://www.atarimania.com/rom_collection_archive_atari_2600_roms.html">
       AtariMania/RomHunter</a> may be useful). Many homebrewers make their ROMs available too.</li>
 
@@ -3055,7 +3055,7 @@
 
     <tr>
       <td><pre>-snapname &lt;int|rom&gt;</pre></td>
-      <td>When saving snapshots, use either the internal database name or
+      <td>When saving snapshots, use either the internal ROM database name or
           the actual ROM filename.</td>
     </tr>
 
@@ -3825,7 +3825,7 @@
           <tr><td>Save path</td><td>Specifies where to save snapshots</td><td>-snapsavedir</td></tr>
         <!--<tr><td>Load path</td><td>Specifies where to load snapshots</td><td>-snaploaddir</td></tr>  -->
           <tr><td>Continuous snapshot interval</td><td>Interval (in seconds) between snapshots</td><td>-ssinterval</td></tr>
-          <tr><td>Use actual ROM name</td><td>Use the actual ROM filename instead of the internal database name</td><td>-snapname</td></tr>
+          <tr><td>Use actual ROM name</td><td>Use the actual ROM filename instead of the internal ROM database name</td><td>-snapname</td></tr>
           <tr><td>Overwrite existing files</td><td>Whether to overwrite old snapshots</td><td>-sssingle</td></tr>
           <tr><td>Create pixel-exact image (no zoom/post-processing)</td><td>Save snapshot using the exact pixels from the TIA image, without zoom or any post-processing effects</td><td>-ss1x</td></tr>
         </table>
@@ -4090,7 +4090,7 @@
   <blockquote>
 
   <p>Stella has the ability to rename all your ROMs according to the name
-  specified in the properties database. This is useful if you've downloaded
+  specified in the ROM properties database. This is useful if you've downloaded
   ROMs in DOS 8.3 naming format, and wish the filenames to be more descriptive,
   or the current filenames are too large to see in the launcher.</p>
 
@@ -4124,7 +4124,7 @@
 
   <p>Stella supports real Atari 2600 joysticks, paddles, driving controllers
   and trackballs (CX22/CX80 'Trak-Ball', Atari and Amiga mouse) using the
-  <a href="http://www.grandideastudio.com/portfolio/stelladaptor-2600">Stelladaptor</a> and
+  <a href="http://www.grandideastudio.com/stelladaptor-2600">Stelladaptor</a> and
   <a href="http://2600-daptor.com">2600-daptor</a> devices.</p>
 
   <p>Stella can use up to <b>two</b> adaptors; any extra ones are ignored.
@@ -4425,66 +4425,74 @@
   <a href="debugger.html">this page</a> for integrated debugger documentation.</p>
   </blockquote></br>
 
-  <h2><b><a name="Settings">Settings File</a></b></h2>
+  <h2><b><a name="UserData">User Data</a></b></h2>
   <blockquote>
 
-  <p>Stella will remember when you change a setting either at the command line
-  or while the emulation is running, and use the settings the next time
-  you start the emulator. The settings are saved in a text file which can
-  be edited outside of Stella. This file can contain your default options,
-  and eliminates the need to specify them on the command line. Any
-  options specified on the command line will override those in the settings file.</p>
+  <p>Stella will remember when you change a setting or game property or save a
+  new high score. It will use saved data the next time you start the emulator.
+  The data is stored in a SQLite database which can be edited outside of
+  Stella (e.g. with
+  <a href="https://sqlitebrowser.org">DB Browser for SQLite</a>).</p>
 
-  <p>The syntax for the settings file is very straightforward. Any line starting with
-  a ';' character is considered a comment and is ignored. Other lines must be of
-  the form: <b>command = value</b>, where <i>command</i> is the same as that
-  specified on the command line (without the '-' character), and <i>value</i>
-  is dependent on the command.</p>
+  <p>Settings can be changed either at the command line or while the emulation
+  is running. The database can contain your default options and eliminates the
+  need to specify them on the command line. Any options specified on the
+  command line will override those in the user database.</p>
 
-  <p>For example, the following table illustrates how command line and settings entries
-  are similar:</p>
+  <p>To manually edit the settings, browse the data in the table of the same
+  name. The table has two columns. The first column contains the <i>setting</i>
+  command, which is the same as the one specified on the
+  <a href="#CommandLine"><b>Command Line</b></a> (without the '-' character).
+  The second column holds the <i>value</i>, which is dependent on the command.</p>
+
+  <p>For example, the following table illustrates how command line and settings
+  entries are similar:</p>
 
   <table BORDER=2>
     <tr>
       <th>Command Line</th>
-      <th>Settings File</th>
+      <th>Column <i>setting</i></th>
+      <th>Column <i>value</i></th>
     </tr>
 
     <tr>
       <td>-video opengl</td>
-      <td>video = opengl</td>
+      <td>video</td>
+      <td>opengl</td>
     </tr>
 
     <tr>
       <td>-volume 75</td>
-      <td>volume = 75</td>
+      <td>volume</td>
+      <td>75</td>
     </tr>
 
     <tr>
       <td>-center 1</td>
-      <td>center = 1 (or center = true)</td>
+      <td>center</td>
+      <td>1 (or true)</td>
     </tr>
   </table>
 
-  <p>The settings file has a special name/location depending on which version of Stella
-  you use, which is not configurable:</p>
+  <p>The database file is named <i>'stella.sqlite3'</i> and has a special,
+  non-configurable location depending on which version of Stella you use:</p>
 
   <p><table cellpadding="4" border="1">
     <tr>
       <td><b>Linux/Unix</b></td>
-      <td><i>$HOME/.config/stella/stellarc</i></td>
+      <td><i>$HOME/.config/stella/</i></td>
     </tr>
     <tr>
       <td><b>Macintosh</b></td>
-      <td>Not applicable; settings are saved in <i>$HOME/Library/Preferences/Stella-emu.plist</i></td>
+      <td><i>$HOME/Library/Application Support/Stella/</i></td>
     </tr>
     <tr>
       <td><b>Windows</b></td>
-      <td><i>%APPDATA%\Stella\stella.ini</i></td>
+      <td><i>%APPDATA%\Stella\</i></td>
     </tr>
     <tr>
       <td><b>If using 'basedir'<br>or 'baseinappdir'</b></td>
-      <td><i>_BASEDIR_/stellarc (or stella.ini)</i></td>
+      <td><i>_BASEDIR_/</i></td>
     </tr>
   </table>
   </blockquote></br>
@@ -4512,7 +4520,7 @@
     </li>
 
     <li>Cheetah codes, which are explained in detail on
-      <a href="http://members.cox.net/rcolbert/">Bob Colbert's web page</a>,
+      <a href="https://web.archive.org/web/20071231164738/http://members.cox.net/rcolbert/">Bob Colbert's web page</a>,
       along with a list of codes for various games. Cheetah codes
       don't support bankswitched ROMs, so they only work for 2K or 4K ROMs.
       Format as follows:
@@ -4619,47 +4627,35 @@ Ms Pac-Man (Stella extended codes):
   <blockquote>
 
   <p>Stella uses game properties to specify the "best" emulator settings for a
-  game. As of version 2.2 of Stella, a default database of properties are
-  built-in, but you may modify these through the use of a <b>stella.pro</b> file
-  or within the corresponding Game Properties dialogs.
-  This file will contain all properties modified by the user. So this
+  game. As of version 2.2 of Stella, a default ROM database of properties are
+  built-in, but you may modify these through the <i>properties</i> table in the
+  user database or within the corresponding Game Properties dialogs.
+  This user database will contain all properties modified by the user. So this
   means that when you upgrade Stella, your personal properties settings are
   preserved.</p>
 
   <p>
   <h2><b>Property File</b></h2>
 
-  <p>A property file consists of some number of blocks. Each block in the file
-  contains the properties for a single game. For example the general format of
-  a property file is:</p>
+  <p>Besides storing the properties in the <a href="#UserDB">User Database</a>,
+  you can create a property file per game using the `Export...` button in the
+  Game Properties dialog.
 
-  <p>
-  <pre>
-   ; Comments
-   "Cart.MD5"  "Value"
-   "Property"  "Value"
-   ""
+  This property file consists of the properties for a single game. For example
+  the general format of a property file is:</p>
 
-   ; Comments
-   "Cart.MD5"  "Value"
-   "Property"  "Value"
-   ""
-
-   . . .
-
-   ; Comments
-   "Cart.MD5"  "Value"
-   "Property"  "Value"
-   ""</pre>
-
-  <p>Every block in the property file must have a unique value for the
-  <i>Cart.MD5</i> property.</p>
+  <p><pre>
+    ; Comments
+    "Cart.MD5"    "Value"
+    "Property#1"  "Value"
+    "Property#2"  "Value"
+    ...</pre>
+  The <i>Cart.MD5</i> property must be defined, all other properties are optional.</p>
 
   <p>
   <h2><b>Properties</b></h2>
 
-  <p>Each block in a property file consists of a set of properties for a single
-  game. Stella supports the properties described below:</p>
+  <p>Stella supports the properties described below:</p>
 
   <h3><a name="Emulation"><b>Emulation Properties</b></a></h3>
   <p>
@@ -4839,7 +4835,7 @@ Ms Pac-Man (Stella extended codes):
         <tr><td>AmigaMouse</td><td>Commodore Amiga computer mouse.</td></tr>
         <tr><td>AtariMouse</td><td>Atari ST computer mouse.</td></tr>
         <tr><td>Trakball</td><td>Standard Atari 2600 CX22/CX80 'Trak-Ball' controller.</td></tr>
-        <tr><td><a href="http://atariage.com/store/index.php?l=product_list&c=98">AtariVox &#185</a></td><td>A SpeakJet based unlimited-vocabulary speech/sound synthesizer with 32K EEPROM.</td></tr>
+        <tr><td><a href="https://atariage.com/store/index.php?l=product_detail&p=1045">AtariVox &#185</a></td><td>A SpeakJet based unlimited-vocabulary speech/sound synthesizer with 32K EEPROM.</td></tr>
         <tr><td>SaveKey</td><td>A 32K EEPROM for saving high scores, etc. (the EEPROM portion of an AtariVox).</td></tr>
         <tr><td>Genesis </td><td>Sega Genesis controller, which can be used similar to a BoosterGrip, giving an extra button.</td></tr>
         <tr><td>CompuMate &#185</td><td>Spectravideo CompuMate (if either left or right is set, CompuMate is used for both).</td></tr>
@@ -4927,7 +4923,7 @@ Ms Pac-Man (Stella extended codes):
         <tr><td>Joystick</td><td>Atari's famous black joystick that was originally included with the system.</td></tr>
         <tr><td>Paddles </td><td>Standard paddle controllers, only (up to 8) fire buttons supported for QuadTari.</td></tr>
         <tr><td>Driving</td><td>Looks like a paddle, but allows 360° movement. Only one unit per connector, unlike paddles which were sold in pairs.</td></tr>
-        <tr><td><a href="http://atariage.com/store/index.php?l=product_list&c=98">AtariVox</a></td><td>A SpeakJet based unlimited-vocabulary speech/sound synthesizer with 32K EEPROM.</td></tr>
+        <tr><td><a href="https://atariage.com/store/index.php?l=product_detail&p=1045">AtariVox</a></td><td>A SpeakJet based unlimited-vocabulary speech/sound synthesizer with 32K EEPROM.</td></tr>
         <tr><td>SaveKey</td><td>A 32K EEPROM for saving high scores, etc. (the EEPROM portion of an AtariVox).</td></tr>
       </table></td>
     </tr>
@@ -5020,7 +5016,7 @@ Ms Pac-Man (Stella extended codes):
   <ul>
   <li><b>Defaults</b>: Reset the properties to those built into Stella.</li>
   <li><b>Export</b>: Export the properties for the <i>currently selected ROM only</i>
-  to a properties file in the user's default save directory.</li>
+  to a properties file in the user's default storage directory.</li>
   <li><b>OK</b>: Merge/commit any changes into the ROM properties database, which
   contains info of all ROMs.</li>
   <li><b>Cancel</b>: Revert any changes in the dialog and cancel the operation.</li>

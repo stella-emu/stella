@@ -77,11 +77,12 @@ void CartridgeEnhanced::install(System& system)
   //  or the ROM is < 4K (-> 1 segment)
   myBankSegs = std::min(1 << (MAX_BANK_SHIFT - myBankShift),
                         int(mySize) / myBankSize);  // e.g. = 1
+  // ROM has an offset if RAM inside a bank (e.g. for F8SC)
   myRomOffset = myRamBankCount > 0U ? 0U : static_cast<uInt16>(myRamSize * 2);
   myRamMask = ramSize - 1;                          // e.g. = 0xFFFF (doesn't matter for RAM size 0)
   myWriteOffset = myRamWpHigh ? ramSize : 0;        // e.g. = 0x0000
   myReadOffset  = myRamWpHigh ? 0 : ramSize;        // e.g. = 0x0080
-
+  // Allocate more space only if RAM has its own bank(s)
   createRomAccessArrays(mySize + (myRomOffset > 0 ? 0 : myRamSize));
 
   // Allocate array for the segment's current bank offset
