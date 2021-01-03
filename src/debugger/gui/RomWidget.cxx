@@ -75,6 +75,7 @@ void RomWidget::loadConfig()
 
   // Update romlist to point to current PC (if it has changed)
   int pcline = cart.addressToLine(dbg.cpuDebug().pc());
+
   if(pcline >= 0 && pcline != myRomList->getHighlighted())
     myRomList->setHighlighted(pcline);
 
