@@ -1948,8 +1948,6 @@
 		2D6050CC0898776500C6DE89 /* emucore */ = {
 			isa = PBXGroup;
 			children = (
-				E050876C25A1337400E4B62A /* OSystemStandalone.cxx */,
-				E050876D25A1337400E4B62A /* OSystemStandalone.hxx */,
 				DC1B2EBE1E50036100F62837 /* AmigaMouse.hxx */,
 				DC1B2EC01E50036100F62837 /* AtariMouse.hxx */,
 				DC487FB40DA5350900E12499 /* AtariVox.cxx */,
@@ -2111,6 +2109,8 @@
 				DCC527CD10B9DA19005E1287 /* NullDev.hxx */,
 				2DDBEB7408457B7D00812C11 /* OSystem.cxx */,
 				2DDBEB7508457B7D00812C11 /* OSystem.hxx */,
+				E050876C25A1337400E4B62A /* OSystemStandalone.cxx */,
+				E050876D25A1337400E4B62A /* OSystemStandalone.hxx */,
 				2DE2DF820627AE34006BEC99 /* Paddles.cxx */,
 				2DE2DF830627AE34006BEC99 /* Paddles.hxx */,
 				DC479401258C56B800F52462 /* PlusROM.cxx */,
