@@ -443,6 +443,8 @@ class OSystem
 
     virtual shared_ptr<CompositeKeyValueRepository> getPropertyRepository() = 0;
 
+    virtual shared_ptr<CompositeKeyValueRepositoryAtomic> getHighscoreRepository() = 0;
+
   protected:
 
     //////////////////////////////////////////////////////////////////////

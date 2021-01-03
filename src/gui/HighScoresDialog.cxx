@@ -296,7 +296,7 @@ void HighScoresDialog::saveConfig()
     instance().settings().setValue("initials", myInitials);
   }
   // save selected variation
-  instance().highScores().saveHighScores(cartName(), myScores);
+  instance().highScores().saveHighScores(myScores);
   if(myScores.variation == instance().highScores().variation() || myUserDefVar)
     myHighScoreSaved = true;
 }
@@ -360,7 +360,7 @@ void HighScoresDialog::handleVariation(bool init)
   {
     myScores.variation = myVariationPopup->getSelectedTag().toInt();
 
-    instance().highScores().loadHighScores(cartName(), myScores);
+    instance().highScores().loadHighScores(myScores);
 
     myEditRank = -1;
 

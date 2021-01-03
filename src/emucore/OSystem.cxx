@@ -181,6 +181,8 @@ bool OSystem::initialize(const Settings::Options& options)
   myMessageMenu = make_unique<MessageMenu>(*this);
   myTimeMachine = make_unique<TimeMachine>(*this);
   myLauncher = make_unique<Launcher>(*this);
+
+  myHighScoresManager->setRepository(getHighscoreRepository());
 #endif
 
 #ifdef PNG_SUPPORT
@@ -222,6 +224,7 @@ void OSystem::loadConfig(const Settings::Options& options)
 
   mySettings->setRepository(getSettingsRepository());
   myPropSet->setRepository(getPropertyRepository());
+
   mySettings->load(options);
 
   // userDir is NOT affected by '-baseDir'and '-basedirinapp' params

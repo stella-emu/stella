@@ -30,7 +30,7 @@ class KeyValueRepositoryNoop : public KeyValueRepositoryAtomic
 
     bool has(const string& key) override { return false; }
 
-    bool get(const string& key, string& value) override { return false; }
+    bool get(const string& key, Variant& value) override { return false; }
 
     bool save(const std::map<string, Variant>& values) override { return false; }
 

@@ -30,10 +30,10 @@ namespace {
         std::map<string, Variant> load() override {
           if (!myKvr.has(myKey)) return std::map<string, Variant>();
 
-          string serialized;
+          Variant serialized;
           myKvr.get(myKey, serialized);
 
-          stringstream in{serialized};
+          stringstream in{serialized.toString()};
 
           return KeyValueRepositoryJsonFile::load(in);
         }

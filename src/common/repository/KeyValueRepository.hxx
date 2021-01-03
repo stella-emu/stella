@@ -44,7 +44,7 @@ class KeyValueRepositoryAtomic : public KeyValueRepository {
 
     virtual bool has(const string& key) = 0;
 
-    virtual bool get(const string& key, string& value) = 0;
+    virtual bool get(const string& key, Variant& value) = 0;
 
     virtual bool save(const string& key, const Variant& value) = 0;
 

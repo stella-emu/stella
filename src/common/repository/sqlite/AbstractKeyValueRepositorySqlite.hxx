@@ -12,7 +12,7 @@ class AbstractKeyValueRepositorySqlite : public KeyValueRepositoryAtomic
 
     bool has(const string& key) override;
 
-    bool get(const string& key, string& value) override;
+    bool get(const string& key, Variant& value) override;
 
     std::map<string, Variant> load() override;
 

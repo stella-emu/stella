@@ -24,8 +24,11 @@
 #include "SqliteStatement.hxx"
 #include "AbstractKeyValueRepositorySqlite.hxx"
 
-class CompositeKeyValueRepositorySqlite : public CompositeKeyValueRepository {
+class CompositeKeyValueRepositorySqlite : public CompositeKeyValueRepositoryAtomic {
   public:
+    using CompositeKeyValueRepositoryAtomic::has;
+    using CompositeKeyValueRepositoryAtomic::remove;
+    using CompositeKeyValueRepositoryAtomic::get;
 
     CompositeKeyValueRepositorySqlite(
       SqliteDatabase& db,
