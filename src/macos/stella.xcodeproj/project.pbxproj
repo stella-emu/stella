@@ -745,6 +745,7 @@
 		E0A755792244294600101889 /* CartCDFInfoWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0A755772244294600101889 /* CartCDFInfoWidget.cxx */; };
 		E0D4153C25A120340031A8D6 /* SettingsRepositoryMACOS.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0D4153A25A120340031A8D6 /* SettingsRepositoryMACOS.hxx */; };
 		E0D4153D25A120340031A8D6 /* SettingsRepositoryMACOS.mm in Sources */ = {isa = PBXBuildFile; fileRef = E0D4153B25A120340031A8D6 /* SettingsRepositoryMACOS.mm */; };
+		E0D7E6F425A271A0006991C7 /* CompositeKeyValueRepository.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0D7E6F325A271A0006991C7 /* CompositeKeyValueRepository.cxx */; };
 		E0DCD3A720A64E96000B614E /* LanczosResampler.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0DCD3A320A64E95000B614E /* LanczosResampler.hxx */; };
 		E0DCD3A820A64E96000B614E /* LanczosResampler.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0DCD3A420A64E95000B614E /* LanczosResampler.cxx */; };
 		E0DCD3A920A64E96000B614E /* ConvolutionBuffer.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0DCD3A520A64E96000B614E /* ConvolutionBuffer.hxx */; };
@@ -1552,6 +1553,7 @@
 		E0A755772244294600101889 /* CartCDFInfoWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartCDFInfoWidget.cxx; sourceTree = "<group>"; };
 		E0D4153A25A120340031A8D6 /* SettingsRepositoryMACOS.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SettingsRepositoryMACOS.hxx; sourceTree = "<group>"; };
 		E0D4153B25A120340031A8D6 /* SettingsRepositoryMACOS.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SettingsRepositoryMACOS.mm; sourceTree = "<group>"; };
+		E0D7E6F325A271A0006991C7 /* CompositeKeyValueRepository.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CompositeKeyValueRepository.cxx; sourceTree = "<group>"; };
 		E0DCD3A320A64E95000B614E /* LanczosResampler.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = LanczosResampler.hxx; path = audio/LanczosResampler.hxx; sourceTree = "<group>"; };
 		E0DCD3A420A64E95000B614E /* LanczosResampler.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LanczosResampler.cxx; path = audio/LanczosResampler.cxx; sourceTree = "<group>"; };
 		E0DCD3A520A64E96000B614E /* ConvolutionBuffer.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = ConvolutionBuffer.hxx; path = audio/ConvolutionBuffer.hxx; sourceTree = "<group>"; };
@@ -2481,6 +2483,7 @@
 		E06508B72272447200B341AC /* repository */ = {
 			isa = PBXGroup;
 			children = (
+				E0D7E6F325A271A0006991C7 /* CompositeKeyValueRepository.cxx */,
 				DC2ABA5B259BD544007E57D3 /* CompositeKeyValueRepository.hxx */,
 				DC2ABA66259D466C007E57D3 /* CompositeKeyValueRepositoryNoop.hxx */,
 				DC2ABA6B25A0C9B1007E57D3 /* CompositeKVRJsonAdapter.cxx */,
@@ -3070,6 +3073,7 @@
 				DC3EE8671E2C0E6D00905161 /* inftrees.c in Sources */,
 				2D91747609BA90380026E9FF /* Cart.cxx in Sources */,
 				2D91747709BA90380026E9FF /* Cart2K.cxx in Sources */,
+				E0D7E6F425A271A0006991C7 /* CompositeKeyValueRepository.cxx in Sources */,
 				E034A5EE209FB25D00C89E9E /* EmulationTiming.cxx in Sources */,
 				2D91747809BA90380026E9FF /* Cart3F.cxx in Sources */,
 				2D91747909BA90380026E9FF /* Cart4K.cxx in Sources */,

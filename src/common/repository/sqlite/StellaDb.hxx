@@ -33,8 +33,8 @@ class StellaDb
     void initialize();
 
     KeyValueRepositoryAtomic& settingsRepository() const { return *mySettingsRepository; }
-
     CompositeKeyValueRepository& propertyRepository() const { return *myPropertyRepository; }
+    CompositeKeyValueRepositoryAtomic& highscoreRepository() const { return *myHighscoreRepository; }
 
     const string databaseFileName() const;
 
@@ -59,6 +59,7 @@ class StellaDb
     unique_ptr<KeyValueRepositoryAtomic> mySettingsRepository;
     unique_ptr<KeyValueRepositoryAtomic> myPropertyRepositoryHost;
     unique_ptr<CompositeKeyValueRepository> myPropertyRepository;
+    unique_ptr<CompositeKeyValueRepositoryAtomic> myHighscoreRepository;
 };
 
 #endif // STELLA_DB_HXX

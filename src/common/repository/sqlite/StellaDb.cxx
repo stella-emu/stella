@@ -26,6 +26,7 @@
 #include "repository/KeyValueRepositoryConfigfile.hxx"
 #include "repository/KeyValueRepositoryPropertyFile.hxx"
 #include "KeyValueRepositorySqlite.hxx"
+#include "CompositeKeyValueRepositorySqlite.hxx"
 #include "SqliteStatement.hxx"
 #include "FSNode.hxx"
 
@@ -58,6 +59,10 @@ void StellaDb::initialize()
     auto propertyRepositoryHost = make_unique<KeyValueRepositorySqlite>(*myDb, "properties", "md5", "properties");
     propertyRepositoryHost->initialize();
     myPropertyRepositoryHost = std::move(propertyRepositoryHost);
+
+    auto highscoreRepository = make_unique<CompositeKeyValueRepositorySqlite>(*myDb, "highscores", "md5", "variation", "highscore_data");
+    highscoreRepository->initialize();
+    myHighscoreRepository = std::move(highscoreRepository);
 
     myPropertyRepository = make_unique<CompositeKVRJsonAdapter>(*myPropertyRepositoryHost);
 

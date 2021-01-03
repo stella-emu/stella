@@ -15,36 +15,37 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "StellaDb.hxx"
-#include "OSystemStandalone.hxx"
+#include "repository/CompositeKeyValueRepository.hxx"
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystemStandalone::initPersistence(FilesystemNode& basedir)
+bool CompositeKeyValueRepositoryAtomic::get(const string& key1, const string& key2, Variant& value)
 {
-  myStellaDb = make_shared<StellaDb>(basedir.getPath(), "stella");
-  myStellaDb->initialize();
+  return getAtomic(key1)->get(key2, value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string OSystemStandalone::describePresistence()
+shared_ptr<KeyValueRepositoryAtomic> CompositeKeyValueRepositoryAtomic::getAtomic(const string& key)
 {
-  return (myStellaDb && myStellaDb->isValid()) ? myStellaDb->databaseFileName() : "none";
+  auto repo = get(key);
+
+  return shared_ptr<KeyValueRepositoryAtomic>(repo, repo->atomic());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-shared_ptr<KeyValueRepository> OSystemStandalone::getSettingsRepository()
+bool CompositeKeyValueRepositoryAtomic::save(const string& key1, const string& key2, const Variant& value)
 {
-  return shared_ptr<KeyValueRepository>(myStellaDb, &myStellaDb->settingsRepository());
+  return getAtomic(key1)->save(key2, value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-shared_ptr<CompositeKeyValueRepository> OSystemStandalone::getPropertyRepository()
+bool CompositeKeyValueRepositoryAtomic::has(const string& key1, const string& key2)
 {
-  return shared_ptr<CompositeKeyValueRepository>(myStellaDb, &myStellaDb->propertyRepository());
+  return getAtomic(key1)->has(key2);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-shared_ptr<CompositeKeyValueRepositoryAtomic> OSystemStandalone::getHighscoreRepository()
+void CompositeKeyValueRepositoryAtomic::remove(const string& key1, const string key2)
 {
-  return shared_ptr<CompositeKeyValueRepositoryAtomic>(myStellaDb, &myStellaDb->highscoreRepository());
+  getAtomic(key1)->remove(key2);
 }

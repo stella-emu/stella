@@ -22,9 +22,12 @@
 #include "repository/KeyValueRepositoryNoop.hxx"
 #include "bspf.hxx"
 
-class CompositeKeyValueRepositoryNoop : public CompositeKeyValueRepository
+class CompositeKeyValueRepositoryNoop : public CompositeKeyValueRepositoryAtomic
 {
   public:
+    using CompositeKeyValueRepositoryAtomic::has;
+    using CompositeKeyValueRepositoryAtomic::remove;
+    using CompositeKeyValueRepositoryAtomic::get;
 
     shared_ptr<KeyValueRepository> get(const string& key) { return make_shared<KeyValueRepositoryNoop>(); }
 

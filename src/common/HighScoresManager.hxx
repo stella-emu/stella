@@ -25,6 +25,8 @@ class OSystem;
 #include "Props.hxx"
 #include "json_lib.hxx"
 #include "FSNode.hxx"
+#include "repository/CompositeKeyValueRepository.hxx"
+#include "repository/CompositeKeyValueRepositoryNoop.hxx"
 
 using json = nlohmann::json;
 
@@ -95,6 +97,7 @@ class HighScoresManager
     explicit HighScoresManager(OSystem& osystem);
     virtual ~HighScoresManager() = default;
 
+    void setRepository(shared_ptr<CompositeKeyValueRepositoryAtomic> repo);
 
     // check if high score data has been defined
     bool enabled() const;
@@ -147,8 +150,8 @@ class HighScoresManager
     // Peek into memory
     Int16 peek(uInt16 addr) const;
 
-    void saveHighScores(const string& cartName, HSM::ScoresData& scores) const;
-    void loadHighScores(const string& cartName, HSM::ScoresData& scores);
+    void loadHighScores(HSM::ScoresData& scores);
+    void saveHighScores(HSM::ScoresData& scores) const;
 
   private:
     static const string VARIATIONS_COUNT;
@@ -231,16 +234,6 @@ class HighScoresManager
     Int32 fromBCD(uInt8 bcd) const;
 
     /**
-      Saves the current high scores for this game and variation to the given file system node.
-
-      @param node  The file system node to save to.
-      @param scores  The saved high score data
-
-      @return  The result of the save.  True on success, false on failure.
-    */
-    bool save(FilesystemNode& node, const HSM::ScoresData& scores) const;
-
-    /**
       Loads the current high scores for this game and variation from the given JSON object.
 
       @param hsData  The JSON to parse
@@ -253,6 +246,9 @@ class HighScoresManager
   private:
     // Reference to the osystem object
     OSystem& myOSystem;
+
+    shared_ptr<CompositeKeyValueRepositoryAtomic> myHighscoreRepository
+      = make_shared<CompositeKeyValueRepositoryNoop>();
 
   private:
     // Following constructors and assignment operators not supported

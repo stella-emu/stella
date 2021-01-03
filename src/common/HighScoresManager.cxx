@@ -65,6 +65,12 @@ HighScoresManager::HighScoresManager(OSystem& osystem)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void HighScoresManager::setRepository(shared_ptr<CompositeKeyValueRepositoryAtomic> repo)
+{
+  myHighscoreRepository = repo;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Int16 HighScoresManager::peek(uInt16 addr) const
 {
   if (myOSystem.hasConsole())
@@ -559,97 +565,7 @@ Int32 HighScoresManager::fromBCD(uInt8 bcd) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void HighScoresManager::saveHighScores(const string& cartName, ScoresData& data) const
-{
-  ostringstream buf;
-
-  buf << myOSystem.stateDir() << cartName << ".hs" << data.variation;
-
-  // Make sure the file can be opened for writing
-  FilesystemNode node(buf.str());
-
-  if(!node.isWritable())
-  {
-    buf.str("");
-    buf << "Can't open/save to high scores file for variation " << data.variation;
-    myOSystem.frameBuffer().showTextMessage(buf.str());
-  }
-
-  // Do a complete high data save
-  if(!save(node, data))
-  {
-    buf.str("");
-    buf << "Error saving high scores for variation" << data.variation;
-    myOSystem.frameBuffer().showTextMessage(buf.str());
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void HighScoresManager::loadHighScores(const string& cartName, ScoresData& data)
-{
-  for(uInt32 r = 0; r < NUM_RANKS; ++r)
-  {
-    data.scores[r].score = 0;
-    data.scores[r].special = 0;
-    data.scores[r].name = "";
-    data.scores[r].date = "";
-  }
-
-  ostringstream buf;
-
-  buf << myOSystem.stateDir() << cartName << ".hs" << data.variation;
-
-  FilesystemNode node(buf.str());
-  stringstream in;
-
-  // Make sure the file can be opened
-  try {
-    node.read(in);
-  }
-  catch(...) { return; }
-
-  bool invalid = false;
-  try {
-    string highscores;
-
-    buf.str("");
-
-    if(getline(in, highscores) && highscores.length() != 0)
-    {
-      const json hsObject = json::parse(highscores);
-
-      if(hsObject.contains(DATA))
-      {
-        const json hsData = hsObject.at(DATA);
-
-        // First test if we have a valid header
-        // If so, do a complete high data load
-        if(!hsData.contains(VERSION) || hsData.at(VERSION) != HIGHSCORE_HEADER)
-          buf << "Error: Incompatible high scores file for variation "
-            << data.variation << ".";
-        else
-        {
-          if(!load(hsData, data)
-            || !hsData.contains(PROPCHECK) || hsData.at(PROPCHECK) != md5Props()
-            || !hsObject.contains(CHECKSUM) || hsObject.at(CHECKSUM) != MD5::hash(hsData.dump()))
-              invalid = true;
-          else
-            return;
-        }
-      }
-      else
-        invalid = true;
-    }
-  }
-  catch(...) { invalid = true; }
-
-  if(invalid)
-    buf << "Error: Invalid data in high scores file for variation " << data.variation << ".";
-  myOSystem.frameBuffer().showTextMessage(buf.str());
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool HighScoresManager::save(FilesystemNode& node, const ScoresData& data) const
+void HighScoresManager::saveHighScores(ScoresData& data) const
 {
   try
   {
@@ -681,15 +597,64 @@ bool HighScoresManager::save(FilesystemNode& node, const ScoresData& data) const
     hsObject[DATA] = hsData;
     hsObject[CHECKSUM] = MD5::hash(hsData.dump());
 
-    stringstream ss(hsObject.dump());
-    node.write(ss);
+    myHighscoreRepository->save(data.md5, to_string(data.variation), hsObject.dump(2));
   }
   catch(...)
   {
     cerr << "ERROR: HighScoresManager::save() exception\n";
-    return false;
   }
-  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void HighScoresManager::loadHighScores(ScoresData& data)
+{
+  for(uInt32 r = 0; r < NUM_RANKS; ++r)
+  {
+    data.scores[r].score = 0;
+    data.scores[r].special = 0;
+    data.scores[r].name = "";
+    data.scores[r].date = "";
+  }
+
+  ostringstream buf;
+
+  bool invalid = false;
+  try {
+    Variant serializedHighscore;
+
+    if(myHighscoreRepository->get(data.md5, to_string(data.variation), serializedHighscore))
+    {
+      const json hsObject = json::parse(serializedHighscore.toString());
+
+      if(hsObject.contains(DATA))
+      {
+        const json hsData = hsObject.at(DATA);
+
+        // First test if we have a valid header
+        // If so, do a complete high data load
+        if(!hsData.contains(VERSION) || hsData.at(VERSION) != HIGHSCORE_HEADER)
+          buf << "Error: Incompatible high scores file for variation "
+            << data.variation << ".";
+        else
+        {
+          if(!load(hsData, data)
+            || !hsData.contains(PROPCHECK) || hsData.at(PROPCHECK) != md5Props()
+            || !hsObject.contains(CHECKSUM) || hsObject.at(CHECKSUM) != MD5::hash(hsData.dump()))
+              invalid = true;
+          else
+            return;
+        }
+      }
+      else
+        invalid = true;
+    }
+  }
+  catch(...) { invalid = true; }
+
+  if (invalid)
+    buf << "Error: Invalid data in high scores file for variation " << data.variation << ".";
+
+  myOSystem.frameBuffer().showTextMessage(buf.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

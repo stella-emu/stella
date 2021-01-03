@@ -61,7 +61,7 @@ bool AbstractKeyValueRepositorySqlite::has(const string& key)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool AbstractKeyValueRepositorySqlite::get(const string& key, string& value)
+bool AbstractKeyValueRepositorySqlite::get(const string& key, Variant& value)
 {
   try {
     SqliteStatement& stmt{stmtSelectOne(key)};

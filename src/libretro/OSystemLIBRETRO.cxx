@@ -55,3 +55,9 @@ shared_ptr<CompositeKeyValueRepository> OSystemLIBRETRO::getPropertyRepository()
 {
   return make_shared<CompositeKeyValueRepositoryNoop>();
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+shared_ptr<CompositeKeyValueRepositoryAtomic> OSystemLIBRETRO::getHighscoreRepository()
+{
+  return make_shared<CompositeKeyValueRepositoryNoop>();
+}

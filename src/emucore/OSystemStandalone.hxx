@@ -32,6 +32,8 @@ class OSystemStandalone : public OSystem
 
     shared_ptr<CompositeKeyValueRepository> getPropertyRepository() override;
 
+    shared_ptr<CompositeKeyValueRepositoryAtomic> getHighscoreRepository() override;
+
   protected:
 
     void initPersistence(FilesystemNode& basedir) override;

@@ -23,6 +23,8 @@
 #include "KeyValueRepository.hxx"
 #include "bspf.hxx"
 
+class CompositeKeyValueRepositoryAtomic;
+
 class CompositeKeyValueRepository
 {
   public:
@@ -34,6 +36,28 @@ class CompositeKeyValueRepository
     virtual bool has(const string& key) = 0;
 
     virtual void remove(const string& key) = 0;
+
+    virtual CompositeKeyValueRepositoryAtomic* atomic() { return nullptr; }
+};
+
+class CompositeKeyValueRepositoryAtomic : public CompositeKeyValueRepository
+{
+  public:
+    using CompositeKeyValueRepository::get;
+    using CompositeKeyValueRepository::remove;
+    using CompositeKeyValueRepository::has;
+
+    virtual bool get(const string& key1, const string& key2, Variant& value);
+
+    virtual shared_ptr<KeyValueRepositoryAtomic> getAtomic(const string& key);
+
+    virtual bool save(const string& key1, const string& key2, const Variant& value);
+
+    virtual bool has(const string& key1, const string& key2);
+
+    virtual void remove(const string& key1, const string key2);
+
+    CompositeKeyValueRepositoryAtomic* atomic() override { return this; }
 };
 
 #endif // COMPOSITE_KEY_VALUE_REPOSITORY_HXX

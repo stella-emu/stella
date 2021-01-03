@@ -35,7 +35,8 @@ MODULE_OBJS := \
 	src/common/repository/KeyValueRepositoryPropertyFile.o \
 	src/common/repository/KeyValueRepositoryJsonFile.o \
 	src/common/repository/KeyValueRepositoryConfigfile.o \
-	src/common/repository/CompositeKVRJsonAdapter.o
+	src/common/repository/CompositeKVRJsonAdapter.o \
+	src/common/repository/CompositeKeyValueRepository.o
 
 MODULE_DIRS += \
 	src/common
