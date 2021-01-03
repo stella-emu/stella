@@ -573,7 +573,7 @@ void HighScoresManager::saveHighScores(ScoresData& data) const
     json hsData = json::object();
 
     // Add header so that if the high score format changes in the future,
-    // we'll know right away, without having to parse the rest of the file
+    // we'll know right away, without having to parse the rest of the data
     hsData[VERSION] = HIGHSCORE_HEADER;
     hsData[MD5] = data.md5;
     hsData[VARIATION] = data.variation;
@@ -608,15 +608,9 @@ void HighScoresManager::saveHighScores(ScoresData& data) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void HighScoresManager::loadHighScores(ScoresData& data)
 {
-  for(uInt32 r = 0; r < NUM_RANKS; ++r)
-  {
-    data.scores[r].score = 0;
-    data.scores[r].special = 0;
-    data.scores[r].name = "";
-    data.scores[r].date = "";
-  }
-
   ostringstream buf;
+
+  clearHighScores(data);
 
   bool invalid = false;
   try {
@@ -631,10 +625,9 @@ void HighScoresManager::loadHighScores(ScoresData& data)
         const json hsData = hsObject.at(DATA);
 
         // First test if we have a valid header
-        // If so, do a complete high data load
+        // If so, do a complete high score data load
         if(!hsData.contains(VERSION) || hsData.at(VERSION) != HIGHSCORE_HEADER)
-          buf << "Error: Incompatible high scores file for variation "
-            << data.variation << ".";
+          buf << "Error: Incompatible high scores data for variation " << data.variation << ".";
         else
         {
           if(!load(hsData, data)
@@ -651,9 +644,11 @@ void HighScoresManager::loadHighScores(ScoresData& data)
   }
   catch(...) { invalid = true; }
 
-  if (invalid)
-    buf << "Error: Invalid data in high scores file for variation " << data.variation << ".";
-
+  if(invalid)
+  {
+    clearHighScores(data);
+    buf << "Error: Invalid high scores data for variation " << data.variation << ".";
+  }
   myOSystem.frameBuffer().showTextMessage(buf.str());
 }
 
@@ -686,6 +681,18 @@ bool HighScoresManager::load(const json& hsData, ScoresData& data)
     }
   }
   return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void HighScoresManager::clearHighScores(ScoresData& data)
+{
+  for(uInt32 r = 0; r < NUM_RANKS; ++r)
+  {
+    data.scores[r].score = 0;
+    data.scores[r].special = 0;
+    data.scores[r].name = "";
+    data.scores[r].date = "";
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
