@@ -243,6 +243,8 @@ class HighScoresManager
     */
     bool load(const json& hsData, HSM::ScoresData& scores);
 
+    void clearHighScores(HSM::ScoresData& data);
+
   private:
     // Reference to the osystem object
     OSystem& myOSystem;
