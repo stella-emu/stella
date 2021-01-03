@@ -152,7 +152,7 @@ void StellaDb::importOldStellaDb(const FilesystemNode& node)
   try {
     SqliteStatement(
       *myDb,
-      "ATTACH DATABASE ? AS old_db"
+      "ATTACH DATABASE ? AS `old_db`"
     )
       .bind(1, node.getPath())
       .step();
