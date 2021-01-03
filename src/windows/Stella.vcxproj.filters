@@ -1104,6 +1104,9 @@
     <ClCompile Include="..\common\repository\sqlite\StellaDb.cxx">
       <Filter>Source Files\repository\sqlite</Filter>
     </ClCompile>
+    <ClCompile Include="..\emucore\OSystemStandalone.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">
@@ -2272,6 +2275,9 @@
     </ClInclude>
     <ClInclude Include="..\common\repository\sqlite\StellaDb.hxx">
       <Filter>Header Files\repository\sqlite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\OSystemStandalone.hxx">
+      <Filter>Header Files\emucore</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
