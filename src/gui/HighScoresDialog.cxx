@@ -204,6 +204,8 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
   addDefaultsOKCancelBGroup(wid, _font, "Save", "Cancel", " Reset ");
   _defaultWidget->setToolTip("Click to reset all high scores of this variation.");
   addToFocusList(wid);
+
+  _focusedWidget = _okWidget; // start with focus on 'Save' button
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
