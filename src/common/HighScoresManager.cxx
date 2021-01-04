@@ -565,20 +565,37 @@ Int32 HighScoresManager::fromBCD(uInt8 bcd) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string HighScoresManager::hash(ScoresData& data) const
+{
+  ostringstream buf;
+
+  buf << HIGHSCORE_HEADER << data.md5 << md5Props() << data.variation;
+
+  for(uInt32 r = 0; r < NUM_RANKS && data.scores[r].score; ++r)
+  {
+    buf << data.scores[r].score
+      << data.scores[r].special
+      << data.scores[r].name
+      << data.scores[r].date;
+  }
+
+  return MD5::hash(buf.str());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void HighScoresManager::saveHighScores(ScoresData& data) const
 {
   try
   {
     json hsObject = json::object();
     json hsData = json::object();
+    json jScores = json::array();
 
     // Add header so that if the high score format changes in the future,
     // we'll know right away, without having to parse the rest of the data
-    hsData[VERSION] = HIGHSCORE_HEADER;
-    hsData[MD5] = data.md5;
-    hsData[VARIATION] = data.variation;
-
-    json jScores = json::array();
+    hsObject[VERSION] = HIGHSCORE_HEADER;
+    hsObject[MD5] = data.md5;
+    hsObject[PROPCHECK] = md5Props();
 
     for(uInt32 r = 0; r < NUM_RANKS && data.scores[r].score; ++r)
     {
@@ -592,10 +609,10 @@ void HighScoresManager::saveHighScores(ScoresData& data) const
       jScores.push_back(jScore);
     }
     hsData[SCORES] = jScores;
-    hsData[PROPCHECK] = md5Props();
+    hsData[VARIATION] = data.variation;
 
     hsObject[DATA] = hsData;
-    hsObject[CHECKSUM] = MD5::hash(hsData.dump());
+    hsObject[CHECKSUM] = hash(data);
 
     myHighscoreRepository->save(data.md5, to_string(data.variation), hsObject.dump(2));
   }
@@ -608,11 +625,11 @@ void HighScoresManager::saveHighScores(ScoresData& data) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void HighScoresManager::loadHighScores(ScoresData& data)
 {
+  bool invalid = false;
   ostringstream buf;
 
   clearHighScores(data);
 
-  bool invalid = false;
   try {
     Variant serializedHighscore;
 
@@ -620,27 +637,27 @@ void HighScoresManager::loadHighScores(ScoresData& data)
     {
       const json hsObject = json::parse(serializedHighscore.toString());
 
-      if(hsObject.contains(DATA))
+      // First test if we have a valid header
+      // If so, do a complete high score data load
+      if(!hsObject.contains(VERSION) || hsObject.at(VERSION) != HIGHSCORE_HEADER)
+        buf << "Error: Incompatible high scores data for variation " << data.variation << ".";
+      else if(hsObject.contains(DATA))
       {
         const json hsData = hsObject.at(DATA);
 
-        // First test if we have a valid header
-        // If so, do a complete high score data load
-        if(!hsData.contains(VERSION) || hsData.at(VERSION) != HIGHSCORE_HEADER)
-          buf << "Error: Incompatible high scores data for variation " << data.variation << ".";
+        if(!load(hsData, data)
+          || !hsObject.contains(MD5) || hsObject.at(MD5) != data.md5
+          || !hsObject.contains(PROPCHECK) || hsObject.at(PROPCHECK) != md5Props()
+          || !hsObject.contains(CHECKSUM) || hsObject.at(CHECKSUM) != hash(data))
+            invalid = true;
         else
-        {
-          if(!load(hsData, data)
-            || !hsData.contains(PROPCHECK) || hsData.at(PROPCHECK) != md5Props()
-            || !hsObject.contains(CHECKSUM) || hsObject.at(CHECKSUM) != MD5::hash(hsData.dump()))
-              invalid = true;
-          else
-            return;
-        }
+          return; // scores loaded OK
       }
       else
         invalid = true;
     }
+    else
+      return; // no scores for variation found
   }
   catch(...) { invalid = true; }
 
@@ -655,8 +672,7 @@ void HighScoresManager::loadHighScores(ScoresData& data)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool HighScoresManager::load(const json& hsData, ScoresData& data)
 {
-  if(!hsData.contains(MD5) || hsData.at(MD5) != data.md5
-     || !hsData.contains(VARIATION) || hsData.at(VARIATION) != data.variation
+  if(!hsData.contains(VARIATION) || hsData.at(VARIATION) != data.variation
      || !hsData.contains(SCORES))
     return false;
 

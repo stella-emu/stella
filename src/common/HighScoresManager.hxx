@@ -18,7 +18,7 @@
 #ifndef HIGHSCORES_MANAGER_HXX
 #define HIGHSCORES_MANAGER_HXX
 
-#define HIGHSCORE_HEADER "06010000highscores"
+#define HIGHSCORE_HEADER "06050000highscores"
 
 class OSystem;
 
@@ -232,6 +232,7 @@ class HighScoresManager
 
     uInt16 fromHexStr(const string& addr) const;
     Int32 fromBCD(uInt8 bcd) const;
+    string hash(HSM::ScoresData& data) const;
 
     /**
       Loads the current high scores for this game and variation from the given JSON object.
