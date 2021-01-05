@@ -93,12 +93,7 @@ void FilesystemNodeWINDOWS::addFile(AbstractFSList& list, ListMode mode,
 {
   FilesystemNodeWINDOWS entry;
   char* asciiName = toAscii(find_data->cFileName);
-  // Use short 8.3 name for the path to handle special chars
-  char* shortAsciiName = toAscii(find_data->cAlternateFileName);
   bool isDirectory, isFile;
-
-  if(!strlen(shortAsciiName))
-    shortAsciiName = asciiName;
 
   // Skip local directory (.) and parent (..)
   if(!strncmp(asciiName, ".", 1) || !strncmp(asciiName, "..", 2))
@@ -115,7 +110,7 @@ void FilesystemNodeWINDOWS::addFile(AbstractFSList& list, ListMode mode,
   entry._isFile = isFile;
   entry._displayName = asciiName;
   entry._path = base;
-  entry._path += shortAsciiName;
+  entry._path += asciiName;
   if(entry._isDirectory)
     entry._path += "\\";
   entry._isValid = true;
