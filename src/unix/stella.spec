@@ -1,5 +1,5 @@
 %define name    stella
-%define version 6.4
+%define version 6.5
 %define rel     1
 
 %define enable_sound 1
@@ -100,6 +100,9 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}
 %_datadir/icons/large/%{name}.png
 
 %changelog
+* Sat Jan 9 2021 Stephen Anthony <sa666666@gmail.com> 6.5-1
+- Version 6.5 release
+
 * Mon Nov 2 2020 Stephen Anthony <sa666666@gmail.com> 6.4-1
 - Version 6.4 release
 
