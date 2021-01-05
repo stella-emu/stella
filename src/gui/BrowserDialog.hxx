@@ -47,8 +47,7 @@ class BrowserDialog : public Dialog
   public:
     // NOTE: Do not call this c'tor directly!  Use the static show method below
     //       There is no point in doing so, since the result can't be returned
-    BrowserDialog(GuiObject* boss, const GUI::Font& font, int max_w, int max_h,
-                  const string& title);
+    BrowserDialog(GuiObject* boss, const GUI::Font& font, int max_w, int max_h);
     ~BrowserDialog() override = default;
 
     /**

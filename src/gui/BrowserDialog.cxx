@@ -29,8 +29,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
-                             int max_w, int max_h, const string& title)
-  : Dialog(boss->instance(), boss->parent(), font, title)
+                             int max_w, int max_h)
+  : Dialog(boss->instance(), boss->parent(), font, "Title") // dummy title value!
 {
   // Set real dimensions
   _w = max_w;
@@ -122,13 +122,18 @@ void BrowserDialog::show(GuiObject* parent, const GUI::Font& font,
                          const FilesystemNode::NameFilter& namefilter)
 {
   uInt32 w = 0, h = 0;
+
   static_cast<Dialog*>(parent)->getDynamicBounds(w, h);
   if(w > uInt32(font.getMaxCharWidth() * 80))
     w = font.getMaxCharWidth() * 80;
 
-  static unique_ptr<BrowserDialog> ourBrowser =
-      make_unique<BrowserDialog>(parent, font, w, h, title);
+  static unique_ptr<BrowserDialog> ourBrowser{nullptr};
 
+  if(ourBrowser == nullptr
+     || ourBrowser->getWidth() != int(w) || ourBrowser->getHeight() != int(h))
+    ourBrowser = make_unique<BrowserDialog>(parent, font, w, h);
+
+  ourBrowser->setTitle(title); // has to be always updated!
   ourBrowser->show(startpath, mode, command, namefilter);
 }
 
