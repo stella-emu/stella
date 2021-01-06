@@ -27,7 +27,7 @@ class KeyValueRepositoryConfigfile : public KeyValueRepositoryFile<KeyValueRepos
     using KeyValueRepositoryFile<KeyValueRepositoryConfigfile>::load;
     using KeyValueRepositoryFile<KeyValueRepositoryConfigfile>::save;
 
-    KeyValueRepositoryConfigfile(const FilesystemNode& node);
+    explicit KeyValueRepositoryConfigfile(const FilesystemNode& node);
 
     static std::map<string, Variant> load(istream& in);
 

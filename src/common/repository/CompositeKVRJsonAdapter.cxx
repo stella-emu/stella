@@ -24,7 +24,7 @@ namespace {
   class ProxyRepository : public KeyValueRepository {
       public:
         ProxyRepository(KeyValueRepositoryAtomic& kvr, const string& key)
-          : myKvr(kvr), myKey(key)
+          : myKvr{kvr}, myKey{key}
         {}
 
         std::map<string, Variant> load() override {
@@ -55,7 +55,7 @@ namespace {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CompositeKVRJsonAdapter::CompositeKVRJsonAdapter(KeyValueRepositoryAtomic& kvr)
-  : myKvr(kvr)
+  : myKvr{kvr}
 {}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

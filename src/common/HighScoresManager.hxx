@@ -54,31 +54,31 @@ namespace HSM {
 
   struct ScoresProps {
     // Formats
-    uInt32 numDigits;
-    uInt32 trailingZeroes;
-    bool scoreBCD;
-    bool scoreInvert;
-    bool varsBCD;
-    bool varsZeroBased;
+    uInt32 numDigits{0};
+    uInt32 trailingZeroes{0};
+    bool scoreBCD{false};
+    bool scoreInvert{false};
+    bool varsBCD{false};
+    bool varsZeroBased{false};
     string special;
-    bool specialBCD;
-    bool specialZeroBased;
+    bool specialBCD{false};
+    bool specialZeroBased{false};
     string notes;
     // Addresses
     ScoreAddresses scoreAddr;
-    uInt16 varsAddr;
-    uInt16 specialAddr;
+    uInt16 varsAddr{0};
+    uInt16 specialAddr{0};
   };
 
   struct ScoreEntry {
-    Int32 score;
-    Int32 special;
+    Int32 score{0};
+    Int32 special{0};
     string name;
     string date;
   };
 
   struct ScoresData {
-    Int32 variation;
+    Int32 variation{0};
     string md5;
     ScoreEntry scores[NUM_RANKS];
   };
@@ -232,7 +232,7 @@ class HighScoresManager
 
     uInt16 fromHexStr(const string& addr) const;
     Int32 fromBCD(uInt8 bcd) const;
-    string hash(HSM::ScoresData& data) const;
+    string hash(const HSM::ScoresData& data) const;
 
     /**
       Loads the current high scores for this game and variation from the given JSON object.

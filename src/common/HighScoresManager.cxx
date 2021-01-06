@@ -565,7 +565,7 @@ Int32 HighScoresManager::fromBCD(uInt8 bcd) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string HighScoresManager::hash(ScoresData& data) const
+string HighScoresManager::hash(const ScoresData& data) const
 {
   ostringstream buf;
 

@@ -25,7 +25,7 @@
 class CompositeKVRJsonAdapter : public CompositeKeyValueRepository {
   public:
 
-    CompositeKVRJsonAdapter(KeyValueRepositoryAtomic& kvr);
+    explicit CompositeKVRJsonAdapter(KeyValueRepositoryAtomic& kvr);
 
     shared_ptr<KeyValueRepository> get(const string& key) override;
 
