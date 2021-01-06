@@ -46,7 +46,7 @@ class KeyValueRepositoryFile : public KeyValueRepository {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 template<class T>
 KeyValueRepositoryFile<T>::KeyValueRepositoryFile(const FilesystemNode& node)
-  : myNode(node)
+  : myNode{node}
 {}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -22,7 +22,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 HighScoresMenu::HighScoresMenu(OSystem& osystem)
-  : DialogContainer(osystem)
+  : DialogContainer{osystem}
 {
 }
 
