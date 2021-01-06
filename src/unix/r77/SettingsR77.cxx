@@ -76,9 +76,11 @@ SettingsR77::SettingsR77()
   setPermanent("dejitter.base", "2");
   setPermanent("dejitter.diff", "6");
 
+  /*
   setPermanent("joymap",
     string() +
     "128^i2c_controller|4 17 18 15 16 31 31 35 35 121 122 112 113 0 0 0 0|8 19 20 100 99 103 0 0 0 120 123 127 126 0 124 0 0|" +
     "0^i2c_controller #2|4 24 25 22 23 39 39 43 43 121 122 112 113 0 0 0 0|8 26 27 100 99 103 110 0 0 120 123 127 126 0 124 0 0|0"
   );
+  */
 }
