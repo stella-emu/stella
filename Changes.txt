@@ -36,6 +36,9 @@
 
   * Extended global hotkeys for input devices & ports settings.
 
+  * Moved to using an SQLite database for storing user settings, properties
+    and highscores.  More work will follow in future releases.
+
   * Increased sample size for CDFJ+.
 
   * Fixed autofire bug for trackball controllers.
