@@ -332,10 +332,9 @@ void TimeMachineDialog::loadConfig()
 void TimeMachineDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
 {
   // The following shortcuts duplicate the shortcuts in EventHandler
-
   Event::Type event = instance().eventHandler().eventForKey(EventMode::kEmulationMode, key, mod);
 
-  switch (event)
+  switch(event)
   {
     case Event::ExitMode:
       handleCommand(nullptr, kExit, 0, 0);
@@ -375,9 +374,14 @@ void TimeMachineDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeate
         handleCommand(nullptr, kSaveAll, 0, 0);
       break;
 
+    // Hotkey only commands (no button available)
+    case Event::SaveState:
+    case Event::PreviousState:
+    case Event::NextState:
+    case Event::LoadState:
     case Event::TakeSnapshot:
       if(!repeated)
-        handleCommand(nullptr, kSnapShot, 0, 0);
+        handleCommand(nullptr, event, 0, 0);
       break;
 
     default:
@@ -451,16 +455,25 @@ void TimeMachineDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kSaveAll:
-      instance().frameBuffer().showTextMessage(instance().state().rewindManager().saveAllStates());
+      instance().eventHandler().handleEvent(Event::SaveAllStates);
       break;
 
     case kLoadAll:
-      instance().frameBuffer().showTextMessage(instance().state().rewindManager().loadAllStates());
+      instance().eventHandler().handleEvent(Event::LoadAllStates);
       initBar();
       break;
 
-    case kSnapShot:
-      instance().frameBuffer().tiaSurface().saveSnapShot();
+    // Hotkey only commands (no button available)
+    case Event::SaveState:
+    case Event::PreviousState:
+    case Event::NextState:
+    case Event::LoadState:
+      instance().eventHandler().handleEvent(Event::Type(cmd));
+      break;
+
+    case Event::TakeSnapshot:
+      instance().eventHandler().handleEvent(Event::TakeSnapshot);
+      instance().frameBuffer().setPendingRender();
       break;
 
     default:

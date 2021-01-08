@@ -69,7 +69,6 @@ class TimeMachineDialog : public Dialog
       kUnwind1   = 'TMun',
       kSaveAll   = 'TMsv',
       kLoadAll   = 'TMld',
-      kSnapShot  = 'TMsn',
     };
 
     TimeLineWidget* myTimeline{nullptr};
