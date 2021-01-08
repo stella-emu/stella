@@ -77,6 +77,7 @@ void StellaDb::initialize()
 
     mySettingsRepository = make_unique<KeyValueRepositoryNoop>();
     myPropertyRepository = make_unique<CompositeKeyValueRepositoryNoop>();
+    myHighscoreRepository = make_unique<CompositeKeyValueRepositoryNoop>();
 
     myDb.reset();
     myPropertyRepositoryHost.reset();
