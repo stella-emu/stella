@@ -21,5 +21,5 @@
 void OSystemR77::getBaseDirectories(string& basedir, string& homeDir,
                                     bool, const string&)
 {
-  basedir = homeDir = "/mnt/stella";
+  basedir = homeDir = "/mnt/stella/";
 }

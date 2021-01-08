@@ -410,7 +410,8 @@ void LauncherDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::saveConfig()
 {
-  instance().settings().setValue("launchersubdirs", mySubDirs->getState());
+  if (mySubDirs)
+    instance().settings().setValue("launchersubdirs", mySubDirs->getState());
   if(instance().settings().getBool("followlauncher"))
     instance().settings().setValue("romdir", myList->currentDir().getShortPath());
 }
