@@ -57,7 +57,7 @@ WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent,
   add(ypos, "added option to search subdirectories in launcher");
   add(ypos, "added tooltips to many UI items");
   add(ypos, "added sound to Time Machine playback");
-  add(ypos, "increased sample size for CDFJ+");
+  add(ypos, "moved settings, properties etc. to an SQLite database");
   add(ypos, ELLIPSIS + " (for a complete list see 'docs/Changes.txt')");
 #endif
 
