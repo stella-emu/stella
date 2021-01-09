@@ -23,6 +23,8 @@
 #include "EventHandler.hxx"
 #include "StateManager.hxx"
 #include "RewindManager.hxx"
+#include "HighScoresManager.hxx"
+#include "HighScoresDialog.hxx"
 #include "OSystem.hxx"
 #include "Widget.hxx"
 #include "StellaSettingsDialog.hxx"
@@ -39,6 +41,7 @@ MinUICommandDialog::MinUICommandDialog(OSystem& osystem, DialogContainer& parent
   const int VBORDER = 10;
   const int HGAP = 8;
   const int VGAP = 5;
+
   const int buttonWidth = _font.getStringWidth(" Load State 0") + 20,
     buttonHeight = _font.getLineHeight() + 8,
     rowHeight = buttonHeight + VGAP;
@@ -69,6 +72,8 @@ MinUICommandDialog::MinUICommandDialog(OSystem& osystem, DialogContainer& parent
   wid.push_back(myLeftDiffButton);
   myRightDiffButton = ADD_CD_BUTTON("", kRightDiffCmd);
   wid.push_back(myRightDiffButton);
+  myHighScoresButton = ADD_CD_BUTTON("Highscores" + ELLIPSIS, kHighScoresCmd);
+  wid.push_back(myHighScoresButton);
 
   // Column 2
   xoffset += buttonWidth + HGAP;
@@ -84,6 +89,8 @@ MinUICommandDialog::MinUICommandDialog(OSystem& osystem, DialogContainer& parent
   wid.push_back(myRewindButton);
   myUnwindButton = ADD_CD_BUTTON("Unwind", kUnwindCmd);
   wid.push_back(myUnwindButton);
+  bw = ADD_CD_BUTTON("Exit Game", kExitGameCmd);
+  wid.push_back(bw);
 
   // Column 3
   xoffset += buttonWidth + HGAP;
@@ -99,15 +106,17 @@ MinUICommandDialog::MinUICommandDialog(OSystem& osystem, DialogContainer& parent
   wid.push_back(bw);
   bw = ADD_CD_BUTTON("Settings" + ELLIPSIS, kSettings);
   wid.push_back(bw);
-
-  //  Bottom row
-  xoffset = HBORDER + (buttonWidth + HGAP) / 2;
-  bw = ADD_CD_BUTTON("Exit Game", kExitGameCmd);
-  wid.push_back(bw);
-  xoffset += buttonWidth + HGAP;
-  yoffset -= buttonHeight + VGAP;
   bw = ADD_CD_BUTTON("Close", GuiObject::kCloseCmd);
   wid.push_back(bw);
+
+  ////  Bottom row
+  //xoffset = HBORDER + (buttonWidth + HGAP) / 2;
+  //bw = ADD_CD_BUTTON("Exit Game", kExitGameCmd);
+  //wid.push_back(bw);
+  //xoffset += buttonWidth + HGAP;
+  //yoffset -= buttonHeight + VGAP;
+  //bw = ADD_CD_BUTTON("Close", GuiObject::kCloseCmd);
+  //wid.push_back(bw);
 
   addToFocusList(wid);
 
@@ -123,6 +132,8 @@ void MinUICommandDialog::loadConfig()
   myColorButton->setLabel(instance().console().switches().tvColor() ? "Color Mode" : "B/W Mode");
   myLeftDiffButton->setLabel(GUI::LEFT_DIFF + (instance().console().switches().leftDifficultyA() ? " A" : " B"));
   myRightDiffButton->setLabel(GUI::RIGHT_DIFF + (instance().console().switches().rightDifficultyA() ? " A" : " B"));
+  myHighScoresButton->setEnabled(instance().highScores().enabled());
+
   // Column 2
   updateSlot(instance().state().currentSlot());
   updateWinds();
@@ -183,6 +194,10 @@ void MinUICommandDialog::handleCommand(CommandSender* sender, int cmd,
       consoleCmd = true;
       break;
 
+    case kHighScoresCmd:
+      openHighscores();
+      break;
+
     // Column 2
     case kSaveStateCmd:
       event = Event::SaveState;
@@ -207,11 +222,11 @@ void MinUICommandDialog::handleCommand(CommandSender* sender, int cmd,
       // rewind 5s
       instance().state().rewindStates(5);
       updateWinds();
-	    break;
+      break;
 
     case kUnwindCmd:
       // unwind 5s
-		  instance().state().unwindStates(5);
+      instance().state().unwindStates(5);
       updateWinds();
       break;
 
@@ -319,3 +334,11 @@ void MinUICommandDialog::openSettings()
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void MinUICommandDialog::openHighscores()
+{
+  if(myHighScoresDialog == nullptr)
+    myHighScoresDialog = make_unique<HighScoresDialog>(instance(), parent(),
+                                                       1280, 720, Menu::AppMode::emulator);
+  myHighScoresDialog->open();
+}

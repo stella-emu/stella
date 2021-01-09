@@ -24,6 +24,7 @@ class DialogContainer;
 class OSystem;
 class StellaSettingsDialog;
 class OptionsDialog;
+class HighScoresDialog;
 
 #include "Dialog.hxx"
 
@@ -41,12 +42,14 @@ class MinUICommandDialog : public Dialog
     void updateWinds();
     void updateTVFormat();
     void openSettings();
+    void openHighscores();
     void processCancel() override;
 
     // column 0
     ButtonWidget* myColorButton{nullptr};
     ButtonWidget* myLeftDiffButton{nullptr};
     ButtonWidget* myRightDiffButton{nullptr};
+    ButtonWidget* myHighScoresButton{nullptr};
     // column 1
     ButtonWidget* mySaveStateButton{nullptr};
     ButtonWidget* myStateSlotButton{nullptr};
@@ -60,26 +63,28 @@ class MinUICommandDialog : public Dialog
 
     unique_ptr<StellaSettingsDialog>  myStellaSettingsDialog;
     unique_ptr<OptionsDialog>  myOptionsDialog;
+    unique_ptr<HighScoresDialog>  myHighScoresDialog;
 
     enum
     {
-      kSelectCmd = 'Csel',
-      kResetCmd = 'Cres',
-      kColorCmd = 'Ccol',
-      kLeftDiffCmd = 'Cldf',
-      kRightDiffCmd = 'Crdf',
-      kSaveStateCmd = 'Csst',
-      kStateSlotCmd = 'Ccst',
-      kLoadStateCmd = 'Clst',
-      kSnapshotCmd = 'Csnp',
-      kRewindCmd = 'Crew',
-      kUnwindCmd = 'Cunw',
-      kFormatCmd = 'Cfmt',
-      kStretchCmd = 'Cstr',
-      kPhosphorCmd = 'Cpho',
-      kSettings = 'Cscn',
-      kFry = 'Cfry',
-      kExitGameCmd = 'Cext',
+      kSelectCmd     = 'Csel',
+      kResetCmd      = 'Cres',
+      kColorCmd      = 'Ccol',
+      kLeftDiffCmd   = 'Cldf',
+      kRightDiffCmd  = 'Crdf',
+      kHighScoresCmd = 'Chsc',
+      kSaveStateCmd  = 'Csst',
+      kStateSlotCmd  = 'Ccst',
+      kLoadStateCmd  = 'Clst',
+      kSnapshotCmd   = 'Csnp',
+      kRewindCmd     = 'Crew',
+      kUnwindCmd     = 'Cunw',
+      kFormatCmd     = 'Cfmt',
+      kStretchCmd    = 'Cstr',
+      kPhosphorCmd   = 'Cpho',
+      kSettings      = 'Cscn',
+      kFry           = 'Cfry',
+      kExitGameCmd   = 'Cext'
     };
 
   private:
