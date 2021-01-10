@@ -1128,14 +1128,14 @@ PhysicalJoystickHandler::EventMappingArray PhysicalJoystickHandler::DefaultRight
 PhysicalJoystickHandler::EventMappingArray
 PhysicalJoystickHandler::DefaultCommonMapping = {
   // valid for all joysticks
-//#if defined(RETRON77)
+#if defined(RETRON77)
   {Event::CmdMenuMode,        3}, // Note: buttons 0..2 are used by controllers!
   {Event::ExitMode,           4},
   {Event::OptionsMenuMode,    5},
   {Event::RewindPause,        6},
   {Event::ConsoleSelect,      7},
   {Event::ConsoleReset,       8},
-//#endif
+#endif
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
