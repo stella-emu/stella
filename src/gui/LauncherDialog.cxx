@@ -298,11 +298,6 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   // Create (empty) context menu for ROM list options
   myMenu = make_unique<ContextMenu>(this, _font, EmptyVarList);
 
-  // Create global props dialog, which is used to temporarily override
-  // ROM properties
-  myGlobalProps = make_unique<GlobalPropsDialog>(this,
-    myUseMinimalUI ? _font : osystem.frameBuffer().font());
-
   // since we cannot know how many files there are, use are really high value here
   myList->progress().setRange(0, 50000, 5);
   myList->progress().setMessage("        Filtering files" + ELLIPSIS + "        ");
@@ -616,7 +611,7 @@ void LauncherDialog::handleContextMenu()
   const string& cmd = myMenu->getSelectedTag().toString();
 
   if(cmd == "override")
-    myGlobalProps->open();
+    openGlobalProps();
   else if(cmd == "reload")
     reload();
   else if(cmd == "highscores")
@@ -641,7 +636,7 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
     switch(key)
     {
       case KBDK_P:
-        myGlobalProps->open();
+        openGlobalProps();
         break;
 
       case KBDK_H:
@@ -664,7 +659,7 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
     {
       case KBDK_F8: // front  ("Skill P2")
         if (!currentNode().isDirectory() && Bankswitch::isValidRomName(currentNode()))
-          myGlobalProps->open();
+          openGlobalProps();
         break;
       case KBDK_F4: // back ("COLOR", "B/W")
         openSettings();
@@ -705,7 +700,7 @@ void LauncherDialog::handleJoyUp(int stick, int button)
 
   if (button == 1 && (e == Event::UIOK || e == Event::NoType) &&
       !currentNode().isDirectory() && Bankswitch::isValidRomName(currentNode()))
-    myGlobalProps->open();
+    openGlobalProps();
   if (button == 3 && (e == Event::Event::UITabPrev || e == Event::NoType))
     openSettings();
   else if (!myEventHandled)
@@ -802,7 +797,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
 
     case ListWidget::kLongButtonPressCmd:
       if (!currentNode().isDirectory() && Bankswitch::isValidRomName(currentNode()))
-        myGlobalProps->open();
+        openGlobalProps();
       myEventHandled = true;
       break;
 
@@ -879,43 +874,43 @@ void LauncherDialog::setDefaultDir()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::openGlobalProps()
+{
+  // Create global props dialog, which is used to temporarily override
+  // ROM properties
+  myDialog = make_unique<GlobalPropsDialog>(this, myUseMinimalUI
+                                            ? _font
+                                            : instance().frameBuffer().font());
+  myDialog->open();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::openSettings()
 {
   saveConfig();
 
   // Create an options dialog, similar to the in-game one
   if (instance().settings().getBool("basic_settings"))
-  {
-    if (myStellaSettingsDialog == nullptr)
-      myStellaSettingsDialog = make_unique<StellaSettingsDialog>(instance(), parent(),
-        _w, _h, Menu::AppMode::launcher);
-    myStellaSettingsDialog->open();
-  }
+    myDialog = make_unique<StellaSettingsDialog>(instance(), parent(),
+                                                 _w, _h, Menu::AppMode::launcher);
   else
-  {
-    if (myOptionsDialog == nullptr)
-      myOptionsDialog = make_unique<OptionsDialog>(instance(), parent(), this, _w, _h,
-        Menu::AppMode::launcher);
-    myOptionsDialog->open();
-  }
+    myDialog = make_unique<OptionsDialog>(instance(), parent(), this, _w, _h,
+                                          Menu::AppMode::launcher);
+  myDialog->open();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::openHighScores()
 {
-  // Create an options dialog, similar to the in-game one
-  if(myHighScoresDialog == nullptr)
-    myHighScoresDialog = make_unique<HighScoresDialog>(instance(), parent(), _w, _h,
-                                                       Menu::AppMode::launcher);
-
-  myHighScoresDialog->open();
+  // Create an high scores dialog, similar to the in-game one
+  myDialog = make_unique<HighScoresDialog>(instance(), parent(), _w, _h,
+                                           Menu::AppMode::launcher);
+  myDialog->open();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::openWhatsNew()
 {
-  if(myWhatsNewDialog == nullptr)
-    myWhatsNewDialog = make_unique<WhatsNewDialog>(instance(), parent(), _w, _h);
-  myWhatsNewDialog->open();
-
+  myDialog = make_unique<WhatsNewDialog>(instance(), parent(), _w, _h);
+  myDialog->open();
 }

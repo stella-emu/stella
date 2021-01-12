@@ -22,11 +22,6 @@ class ButtonWidget;
 class CommandSender;
 class ContextMenu;
 class DialogContainer;
-class OptionsDialog;
-class HighScoresDialog;
-class GlobalPropsDialog;
-class StellaSettingsDialog;
-class WhatsNewDialog;
 class OSystem;
 class Properties;
 class EditTextWidget;
@@ -157,17 +152,14 @@ class LauncherDialog : public Dialog
     void handleContextMenu();
     void showOnlyROMs(bool state);
     void setDefaultDir();
+    void openGlobalProps();
     void openSettings();
     void openHighScores();
     void openWhatsNew();
 
   private:
-    unique_ptr<OptionsDialog> myOptionsDialog;
-    unique_ptr<HighScoresDialog> myHighScoresDialog;
-    unique_ptr<StellaSettingsDialog> myStellaSettingsDialog;
+    unique_ptr<Dialog> myDialog;
     unique_ptr<ContextMenu> myMenu;
-    unique_ptr<GlobalPropsDialog> myGlobalProps;
-    unique_ptr<WhatsNewDialog> myWhatsNewDialog;
 
     // automatically sized font for ROM info viewer
     unique_ptr<GUI::Font> myROMInfoFont;
