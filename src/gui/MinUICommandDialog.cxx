@@ -320,25 +320,23 @@ void MinUICommandDialog::openSettings()
   // Create an options dialog, similar to the in-game one
   if (instance().settings().getBool("basic_settings"))
   {
-    if (myStellaSettingsDialog == nullptr)
-      myStellaSettingsDialog = make_unique<StellaSettingsDialog>(instance(), parent(),
-        1280, 720, Menu::AppMode::launcher);
-    myStellaSettingsDialog->open();
+    myDialog = make_unique<StellaSettingsDialog>(instance(), parent(),
+                                                 1280, 720, Menu::AppMode::launcher);
+    myDialog->open();
   }
   else
   {
-    if (myOptionsDialog == nullptr)
-      myOptionsDialog = make_unique<OptionsDialog>(instance(), parent(), this,
-        FBMinimum::Width, FBMinimum::Height, Menu::AppMode::launcher);
-    myOptionsDialog->open();
+    myDialog = make_unique<OptionsDialog>(instance(), parent(), this,
+                                          FBMinimum::Width, FBMinimum::Height,
+                                          Menu::AppMode::launcher);
+    myDialog->open();
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MinUICommandDialog::openHighscores()
 {
-  if(myHighScoresDialog == nullptr)
-    myHighScoresDialog = make_unique<HighScoresDialog>(instance(), parent(),
-                                                       1280, 720, Menu::AppMode::emulator);
-  myHighScoresDialog->open();
+  myDialog = make_unique<HighScoresDialog>(instance(), parent(),
+                                           1280, 720, Menu::AppMode::emulator);
+  myDialog->open();
 }

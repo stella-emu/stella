@@ -135,21 +135,6 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(b);
   addCancelWidget(b);
 
-  // Now create all the dialogs attached to each menu button
-  myVideoDialog    = make_unique<VideoAudioDialog>(osystem, parent, _font, max_w, max_h);
-  myEmulationDialog= make_unique<EmulationDialog>(osystem, parent, _font, max_w, max_h);
-  myInputDialog    = make_unique<InputDialog>(osystem, parent, _font, max_w, max_h);
-  myUIDialog       = make_unique<UIDialog>(osystem, parent, _font, boss, max_w, max_h);
-  mySnapshotDialog = make_unique<SnapshotDialog>(osystem, parent, _font, max_w, max_h);
-  myDeveloperDialog = make_unique<DeveloperDialog>(osystem, parent, _font, max_w, max_h);
-  myGameInfoDialog = make_unique<GameInfoDialog>(osystem, parent, _font, this, max_w, max_h);
-#ifdef CHEATCODE_SUPPORT
-  myCheatCodeDialog = make_unique<CheatCodeDialog>(osystem, parent, _font);
-#endif
-  myRomAuditDialog = make_unique<RomAuditDialog>(osystem, parent, _font, max_w, max_h);
-  myHelpDialog      = make_unique<HelpDialog>(osystem, parent, _font);
-  myAboutDialog     = make_unique<AboutDialog>(osystem, parent, _font);
-
   addToFocusList(wid);
 
   // Certain buttons are disabled depending on mode
@@ -205,133 +190,108 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
         instance().eventHandler().leaveMenuMode();
       break;
 
-    case kEmuCmd:
-      myEmulationDialog->open();
-      break;
-
     case kVidCmd:
     {
-      // This dialog is resizable under certain conditions, so we need
-      // to re-create it as necessary
       uInt32 w = 0, h = 0;
 
-      if(myVideoDialog == nullptr || myVideoDialog->shouldResize(w, h))
-      {
-        myVideoDialog = make_unique<VideoAudioDialog>(instance(), parent(),
-                                                 instance().frameBuffer().font(), w, h);
-      }
-      myVideoDialog->open();
+      getDynamicBounds(w, h);
+      myDialog = make_unique<VideoAudioDialog>(instance(), parent(), _font, w, h);
+      myDialog->open();
+      break;
+    }
+    case kEmuCmd:
+    {
+      uInt32 w = 0, h = 0;
+
+      getDynamicBounds(w, h);
+      myDialog = make_unique<EmulationDialog>(instance(), parent(), _font, w, h);
+      myDialog->open();
       break;
     }
     case kInptCmd:
     {
-      // This dialog is resizable under certain conditions, so we need
-      // to re-create it as necessary
       uInt32 w = 0, h = 0;
 
-      if(myInputDialog == nullptr || myInputDialog->shouldResize(w, h))
-      {
-        myInputDialog = make_unique<InputDialog>(instance(), parent(),
-                                                 instance().frameBuffer().font(), w, h);
-      }
-
-      myInputDialog->open();
+      getDynamicBounds(w, h);
+      myDialog = make_unique<InputDialog>(instance(), parent(), _font, w, h);
+      myDialog->open();
       break;
     }
 
     case kUsrIfaceCmd:
     {
-      // This dialog is resizable under certain conditions, so we need
-      // to re-create it as necessary
       uInt32 w = 0, h = 0;
 
-      if(myUIDialog == nullptr || myUIDialog->shouldResize(w, h))
-      {
-        myUIDialog = make_unique<UIDialog>(instance(), parent(),
-                                           instance().frameBuffer().font(), myBoss, w, h);
-      }
-
-      myUIDialog->open();
+      getDynamicBounds(w, h);
+      myDialog = make_unique<UIDialog>(instance(), parent(), _font, myBoss, w, h);
+      myDialog->open();
       break;
     }
 
     case kSnapCmd:
     {
-      // This dialog is resizable under certain conditions, so we need
-      // to re-create it as necessary
       uInt32 w = 0, h = 0;
 
-      if(mySnapshotDialog == nullptr || mySnapshotDialog->shouldResize(w, h))
-      {
-        mySnapshotDialog = make_unique<SnapshotDialog>(instance(), parent(),
-                                                       instance().frameBuffer().font(), w, h);
-      }
-      mySnapshotDialog->open();
+      getDynamicBounds(w, h);
+      myDialog = make_unique<SnapshotDialog>(instance(), parent(), _font, w, h);
+      myDialog->open();
       break;
     }
 
     case kDevelopCmd:
     {
-      // This dialog is resizable under certain conditions, so we need
-      // to re-create it as necessary
       uInt32 w = 0, h = 0;
 
-      if(myDeveloperDialog == nullptr || myDeveloperDialog->shouldResize(w, h))
-      {
-        myDeveloperDialog = make_unique<DeveloperDialog>(instance(), parent(),
-                                                         instance().frameBuffer().font(), w, h);
-      }
-      myDeveloperDialog->open();
+      getDynamicBounds(w, h);
+      myDialog = make_unique<DeveloperDialog>(instance(), parent(), _font, w, h);
+      myDialog->open();
       break;
     }
 
     case kInfoCmd:
     {
-      // This dialog is resizable under certain conditions, so we need
-      // to re-create it as necessary
       uInt32 w = 0, h = 0;
 
-      if(myGameInfoDialog == nullptr || myGameInfoDialog->shouldResize(w, h))
-      {
-        myGameInfoDialog = make_unique<GameInfoDialog>(instance(), parent(),
-                                                       instance().frameBuffer().font(), this, w, h);
-      }
-      myGameInfoDialog->open();
+      getDynamicBounds(w, h);
+      myDialog = make_unique<GameInfoDialog>(instance(), parent(), _font, this, w, h);
+      myDialog->open();
       break;
     }
 
 #ifdef CHEATCODE_SUPPORT
     case kCheatCmd:
-      myCheatCodeDialog->open();
+      myDialog = make_unique<CheatCodeDialog>(instance(), parent(), _font);
+      myDialog->open();
       break;
 #endif
 
     case kAuditCmd:
-      myRomAuditDialog->open();
-      break;
+    {
+      uInt32 w = 0, h = 0;
 
+      getDynamicBounds(w, h);
+      myDialog = make_unique<RomAuditDialog>(instance(), parent(), _font, w, h);
+      myDialog->open();
+      break;
+    }
     case kLoggerCmd:
     {
-      // This dialog is resizable under certain conditions, so we need
-      // to re-create it as necessary
       uInt32 w = 0, h = 0;
       bool uselargefont = getDynamicBounds(w, h);
 
-      if(myLoggerDialog == nullptr || myLoggerDialog->shouldResize(w, h))
-      {
-        myLoggerDialog = make_unique<LoggerDialog>(instance(), parent(),
-            instance().frameBuffer().font(), w, h, uselargefont);
-      }
-      myLoggerDialog->open();
+      myDialog = make_unique<LoggerDialog>(instance(), parent(), _font, w, h, uselargefont);
+      myDialog->open();
       break;
     }
 
     case kHelpCmd:
-      myHelpDialog->open();
+      myDialog = make_unique<HelpDialog>(instance(), parent(), _font);
+      myDialog->open();
       break;
 
     case kAboutCmd:
-      myAboutDialog->open();
+      myDialog = make_unique<AboutDialog>(instance(), parent(), _font);
+      myDialog->open();
       break;
 
     case kExitCmd:

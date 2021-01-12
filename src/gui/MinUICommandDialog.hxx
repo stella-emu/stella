@@ -22,9 +22,6 @@ class Properties;
 class CommandSender;
 class DialogContainer;
 class OSystem;
-class StellaSettingsDialog;
-class OptionsDialog;
-class HighScoresDialog;
 
 #include "Dialog.hxx"
 
@@ -61,9 +58,7 @@ class MinUICommandDialog : public Dialog
     ButtonWidget* myStretchButton{nullptr};
     ButtonWidget* myPhosphorButton{nullptr};
 
-    unique_ptr<StellaSettingsDialog>  myStellaSettingsDialog;
-    unique_ptr<OptionsDialog>  myOptionsDialog;
-    unique_ptr<HighScoresDialog>  myHighScoresDialog;
+    unique_ptr<Dialog> myDialog;
 
     enum
     {

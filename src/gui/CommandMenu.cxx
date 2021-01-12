@@ -38,7 +38,7 @@ CommandMenu::~CommandMenu()
 Dialog* CommandMenu::baseDialog()
 {
   if (myBaseDialog == nullptr) {
-    if (myOSystem.settings().getBool("minimal_ui"))
+    if(myOSystem.settings().getBool("minimal_ui"))
       myBaseDialog = new MinUICommandDialog(myOSystem, *this);
     else
       myBaseDialog = new CommandDialog(myOSystem, *this);

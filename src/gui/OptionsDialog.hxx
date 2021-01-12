@@ -22,20 +22,6 @@ class CommandSender;
 class DialogContainer;
 class GuiObject;
 class OSystem;
-class EmulationDialog;
-class VideoAudioDialog;
-class InputDialog;
-class UIDialog;
-class SnapshotDialog;
-class GameInfoDialog;
-class RomAuditDialog;
-#ifdef CHEATCODE_SUPPORT
-  class CheatCodeDialog;
-#endif
-class HelpDialog;
-class AboutDialog;
-class LoggerDialog;
-class DeveloperDialog;
 
 #include "Menu.hxx"
 #include "Dialog.hxx"
@@ -52,20 +38,7 @@ class OptionsDialog : public Dialog
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
-    unique_ptr<VideoAudioDialog> myVideoDialog;
-    unique_ptr<EmulationDialog>  myEmulationDialog;
-    unique_ptr<InputDialog>      myInputDialog;
-    unique_ptr<UIDialog>         myUIDialog;
-    unique_ptr<SnapshotDialog>   mySnapshotDialog;
-    unique_ptr<DeveloperDialog>  myDeveloperDialog;
-    unique_ptr<GameInfoDialog>   myGameInfoDialog;
-  #ifdef CHEATCODE_SUPPORT
-    unique_ptr<CheatCodeDialog>  myCheatCodeDialog;
-  #endif
-    unique_ptr<RomAuditDialog>   myRomAuditDialog;
-    unique_ptr<LoggerDialog>     myLoggerDialog;
-    unique_ptr<HelpDialog>       myHelpDialog;
-    unique_ptr<AboutDialog>      myAboutDialog;
+    unique_ptr<Dialog>           myDialog;
 
     ButtonWidget* myRomAuditButton{nullptr};
     ButtonWidget* myGameInfoButton{nullptr};
