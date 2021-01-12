@@ -84,7 +84,6 @@ Debugger::Debugger(OSystem& osystem, Console& console)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Debugger::~Debugger()
 {
-  delete myDialog;  myDialog = nullptr;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -99,11 +98,6 @@ void Debugger::initialize()
                uInt32(DebuggerDialog::kSmallFontMinH), d.h);
 
   myOSystem.settings().setValue("dbg.res", mySize);
-
-  delete myDialog;  myDialog = nullptr;
-  myDialog = new DebuggerDialog(myOSystem, *this, 0, 0, mySize.w, mySize.h);
-
-  myCartDebug->setDebugWidget(&(myDialog->cartDebug()));
 
   saveOldState();
 }
@@ -129,8 +123,8 @@ bool Debugger::start(const string& message, int address, bool read,
     buf << message;
     if(address > -1)
       buf << cartDebug().getLabel(address, read, 4);
-    myDialog->message().setText(buf.str());
-    myDialog->message().setToolTip(toolTip);
+    dialog().message().setText(buf.str());
+    dialog().message().setToolTip(toolTip);
     return true;
   }
   return false;
@@ -143,7 +137,7 @@ bool Debugger::startWithFatalError(const string& message)
   {
     // This must be done *after* we enter debug mode,
     // so the dialog is properly shown
-    myDialog->showFatalMessage(message);
+    dialog().showFatalMessage(message);
     return true;
   }
   return false;
@@ -580,8 +574,8 @@ void Debugger::nextFrame(int frames)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::updateRewindbuttons(const RewindManager& r)
 {
-  myDialog->rewindButton().setEnabled(!r.atFirst());
-  myDialog->unwindButton().setEnabled(!r.atLast());
+  dialog().rewindButton().setEnabled(!r.atFirst());
+  dialog().unwindButton().setEnabled(!r.atLast());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -685,13 +679,13 @@ void Debugger::setStartState()
     updateRewindbuttons(r);
 
   // Set the 're-disassemble' flag, but don't do it until the next scheduled time
-  myDialog->rom().invalidate(false);
+  dialog().rom().invalidate(false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::setQuitState()
 {
-  myDialog->saveConfig();
+  dialog().saveConfig();
   saveOldState();
 
   // Bus must be unlocked for normal operation when leaving debugger mode
@@ -844,6 +838,18 @@ void Debugger::unlockSystem()
 bool Debugger::canExit() const
 {
   return baseDialogIsActive();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+DebuggerDialog& Debugger::dialog()
+{
+  if(myDialog == nullptr)
+  {
+    myDialog = make_unique<DebuggerDialog>(myOSystem, *this, 0, 0, mySize.w, mySize.h);
+    myCartDebug->setDebugWidget(&(myDialog->cartDebug()));
+  }
+
+  return *myDialog;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
