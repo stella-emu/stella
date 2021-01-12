@@ -384,6 +384,12 @@ void FrameBuffer::update(UpdateMode mode)
         myTIASurface->render(true);
         myOSystem.commandMenu().draw(forceRedraw);
       }
+      else if(rerender)
+      {
+        clear();
+        myTIASurface->render(true);
+        myOSystem.commandMenu().render();
+      }
       break;  // EventHandlerState::CMDMENU
     }
 
