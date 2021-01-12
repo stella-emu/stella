@@ -67,9 +67,6 @@ DebuggerDialog::DebuggerDialog(OSystem& osystem, DialogContainer& parent,
 
   // Inform the TIA output widget about its associated zoom widget
   myTiaOutput->setZoomWidget(myTiaZoom);
-
-  myOptions = make_unique<OptionsDialog>(osystem, parent, this, w, h,
-                                         Menu::AppMode::debugger);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -255,7 +252,17 @@ void DebuggerDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kDDOptionsCmd:
       saveConfig();
+
+      if(myOptions == nullptr)
+      {
+        uInt32 w = 0, h = 0;
+
+        getDynamicBounds(w, h);
+        myOptions = make_unique<OptionsDialog>(instance(), parent(), this, w, h,
+                                               Menu::AppMode::debugger);
+      }
       myOptions->open();
+
       loadConfig();
       break;
 

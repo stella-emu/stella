@@ -279,7 +279,7 @@ class Debugger : public DialogContainer
     /**
       Return (and possibly create) the bottom-most dialog of this container.
     */
-    Dialog* baseDialog() override { return myDialog; }
+    Dialog* baseDialog() override { return &dialog(); }
 
   private:
     /**
@@ -332,11 +332,16 @@ class Debugger : public DialogContainer
     void loadState(int state);
     void loadAllStates();
 
+    /**
+      Return (and possibly create) the debugger dialog.
+    */
+    DebuggerDialog& dialog();
+
   private:
     Console& myConsole;
     System&  mySystem;
 
-    DebuggerDialog* myDialog{nullptr};
+    unique_ptr<DebuggerDialog> myDialog;
     unique_ptr<DebuggerParser> myParser;
     unique_ptr<CartDebug>      myCartDebug;
     unique_ptr<CpuDebug>       myCpuDebug;
