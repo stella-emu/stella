@@ -71,7 +71,7 @@ FrameBuffer::~FrameBuffer()
   // Most platforms are fine with doing this in either order, but it seems
   // that OpenBSD in particular crashes when attempting to destroy textures
   // *after* the renderer is already destroyed
-  freeSurfaces();
+cerr << "~FrameBuffer()" << endl << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -551,6 +551,7 @@ void FrameBuffer::updateInEmulationMode(float framesPerSecond)
 }
 
 #ifdef GUI_SUPPORT
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::createMessage(const string& message, MessagePosition position, bool force)
 {
   // Only show messages if they've been enabled
@@ -864,42 +865,61 @@ void FrameBuffer::setPauseDelay()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-shared_ptr<FBSurface> FrameBuffer::allocateSurface(
-    int w, int h, ScalingInterpolation inter, const uInt32* data
-)
+unique_ptr<FBSurface> FrameBuffer::allocateSurface(
+    int w, int h, ScalingInterpolation inter, const uInt32* data)
 {
-  // Add new surface to the list
-  mySurfaceList.push_back(myBackend->createSurface(w, h, inter, data));
-
-  // And return a pointer to it (pointer should be treated read-only)
-  return mySurfaceList.at(mySurfaceList.size() - 1);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::freeSurfaces()
-{
-  for(auto& s: mySurfaceList)
-    s->free();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::reloadSurfaces()
-{
-  for(auto& s: mySurfaceList)
-    s->reload();
+  return myBackend->createSurface(w, h, inter, data);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::resetSurfaces()
 {
-  // Free all resources for each surface, then reload them
-  // Due to possible timing and/or synchronization issues, all free()'s
-  // are done first, then all reload()'s
-  // Any derived FrameBuffer classes that call this method should be
-  // aware of these restrictions, and act accordingly
+  switch(myOSystem.eventHandler().state())
+  {
+    case EventHandlerState::NONE:
+    case EventHandlerState::EMULATION:
+    case EventHandlerState::PAUSE:
+    case EventHandlerState::PLAYBACK:
+      myMsg.surface->reload();
+      myStatsMsg.surface->reload();
+      myTIASurface->resetSurfaces();
+      break;
 
-  freeSurfaces();
-  reloadSurfaces();
+  #ifdef GUI_SUPPORT
+    case EventHandlerState::OPTIONSMENU:
+      myOSystem.menu().resetSurfaces();
+      break;
+
+    case EventHandlerState::CMDMENU:
+      myOSystem.commandMenu().resetSurfaces();
+      break;
+
+    case EventHandlerState::HIGHSCORESMENU:
+      myOSystem.highscoresMenu().resetSurfaces();
+      break;
+
+    case EventHandlerState::MESSAGEMENU:
+      myOSystem.messageMenu().resetSurfaces();
+      break;
+
+    case EventHandlerState::TIMEMACHINE:
+      myOSystem.timeMachine().resetSurfaces();
+      break;
+
+    case EventHandlerState::LAUNCHER:
+      myOSystem.launcher().resetSurfaces();
+      break;
+  #endif
+
+  #ifdef DEBUGGER_SUPPORT
+    case EventHandlerState::DEBUGGER:
+      myOSystem.debugger().resetSurfaces();
+      break;
+  #endif
+
+    default:
+      break;
+  }
 
   update(UpdateMode::REDRAW); // force full update
 }

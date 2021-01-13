@@ -50,7 +50,7 @@ class RomInfoWidget : public Widget
 
   private:
     // Surface pointer holding the PNG image
-    shared_ptr<FBSurface> mySurface;
+    unique_ptr<FBSurface> mySurface;
 
     // Whether the surface should be redrawn by drawWidget()
     bool mySurfaceIsValid{false};

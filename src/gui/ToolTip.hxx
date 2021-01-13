@@ -76,7 +76,7 @@ class ToolTip
     /**
       Allocate surface if required and return it
     */
-    shared_ptr<FBSurface> surface();
+    const unique_ptr<FBSurface>& surface();
 
     void show(const string& tip);
 
@@ -100,7 +100,7 @@ class ToolTip
     uInt32 myTextYOfs{0};
     bool myTipShown{false};
     uInt32 myScale{1};
-    shared_ptr<FBSurface> mySurface;
+    unique_ptr<FBSurface> mySurface;
 };
 
 #endif

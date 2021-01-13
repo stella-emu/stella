@@ -583,7 +583,6 @@ void ContextMenu::setArrows()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::drawDialog()
 {
-
   // Normally we add widgets and let Dialog::draw() take care of this
   // logic.  But for some reason, this Dialog was written differently
   // by the ScummVM guys, so I'm not going to mess with it.
