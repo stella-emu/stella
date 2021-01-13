@@ -73,6 +73,11 @@ class ToolTip
     void render();
 
   private:
+    /**
+      Allocate surface if required and return it
+    */
+    shared_ptr<FBSurface> surface();
+
     void show(const string& tip);
 
   private:
