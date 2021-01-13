@@ -40,6 +40,8 @@ namespace {
   }
 }
 
+static int REF_COUNT = 0;
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBSurfaceSDL2::FBSurfaceSDL2(FBBackendSDL2& backend,
                              uInt32 width, uInt32 height,
@@ -48,6 +50,7 @@ FBSurfaceSDL2::FBSurfaceSDL2(FBBackendSDL2& backend,
   : myBackend{backend},
     myInterpolationMode{inter}
 {
+REF_COUNT++;
   createSurface(width, height, staticData);
 }
 
@@ -58,6 +61,8 @@ FBSurfaceSDL2::~FBSurfaceSDL2()
 
   if(mySurface)
   {
+REF_COUNT--;
+cerr << "  ~FBSurfaceSDL2(): " << this << "  " << REF_COUNT << endl;
     SDL_FreeSurface(mySurface);
     mySurface = nullptr;
   }
@@ -201,16 +206,9 @@ void FBSurfaceSDL2::invalidateRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSDL2::free()
-{
-  myBlitter.reset();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL2::reload()
 {
-  free();
-  reinitializeBlitter();
+  reinitializeBlitter(true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -220,8 +218,6 @@ void FBSurfaceSDL2::resize(uInt32 width, uInt32 height)
 
   if(mySurface)
     SDL_FreeSurface(mySurface);
-
-  free();
 
   // NOTE: Currently, a resize changes a 'static' surface to 'streaming'
   //       No code currently does this, but we should at least check for it
@@ -260,12 +256,15 @@ void FBSurfaceSDL2::createSurface(uInt32 width, uInt32 height,
   if(myIsStatic)
     SDL_memcpy(mySurface->pixels, data, mySurface->w * mySurface->h * 4);
 
-  reinitializeBlitter();
+  reload();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSDL2::reinitializeBlitter()
+void FBSurfaceSDL2::reinitializeBlitter(bool force)
 {
+  if (force)
+    myBlitter.reset();
+
   if (!myBlitter && myBackend.isInitialized())
     myBlitter = BlitterFactory::createBlitter(
         myBackend, scalingAlgorithm(myInterpolationMode));

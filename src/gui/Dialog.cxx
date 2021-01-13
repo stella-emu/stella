@@ -87,6 +87,8 @@ Dialog::~Dialog()
   _firstWidget = nullptr;
 
   _buttonGroup.clear();
+
+cerr << "\n~Dialog(): " << this << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -252,7 +254,7 @@ void Dialog::render()
   // Extra surfaces must be rendered afterwards, so they are drawn on top
   if(_surface->render())
   {
-    mySurfaceStack.applyAll([](shared_ptr<FBSurface>& surface) {
+    mySurfaceStack.applyAll([](unique_ptr<FBSurface>& surface) {
       surface->render();
     });
   }
@@ -418,9 +420,10 @@ void Dialog::buildCurrentFocusList(int tabID)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::addSurface(const shared_ptr<FBSurface>& surface)
+void Dialog::addSurface(const unique_ptr<FBSurface>& surface)
 {
-  mySurfaceStack.push(surface);
+// FIXME : add this to the stack somehow
+//  mySurfaceStack.push(surface);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
