@@ -343,7 +343,7 @@ void FrameBuffer::update(UpdateMode mode)
     case EventHandlerState::PAUSE:
     {
       // Show a pause message immediately and then every 7 seconds
-      bool shade = myOSystem.settings().getBool("pauseshade");
+      bool shade = myOSystem.settings().getBool("pausedim");
 
       if(myPausedCount-- <= 0)
       {

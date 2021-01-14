@@ -47,7 +47,7 @@ Settings::Settings()
   setPermanent("windowedpos", Common::Point(50, 50));
   setPermanent("display", 0);
   setPermanent("uimessages", "true");
-  setPermanent("pauseshade", "true");
+  setPermanent("pausedim", "true");
   // TIA specific options
   setPermanent("tia.inter", "false");
   setPermanent("tia.zoom", "3");
@@ -447,7 +447,7 @@ void Settings::usage() const
     << "  -speed        <number>       Run emulation at the given speed\n"
     << "  -turbo        <1|0>          Enable 'Turbo' mode for maximum emulation speed\n"
     << "  -uimessages   <1|0>          Show onscreen UI messages for different events\n"
-    << "  -pauseshade   <1|0>          Enable emulation shading in pause mode\n"
+    << "  -pausedim     <1|0>          Enable emulation dimming in pause mode\n"
     << endl
   #ifdef SOUND_SUPPORT
     << "  -audio.enabled            <1|0>      Enable audio\n"
