@@ -343,14 +343,16 @@ void FrameBuffer::update(UpdateMode mode)
     case EventHandlerState::PAUSE:
     {
       // Show a pause message immediately and then every 7 seconds
+      bool shade = myOSystem.settings().getBool("pauseshade");
+
       if(myPausedCount-- <= 0)
       {
         myPausedCount = uInt32(7 * myOSystem.frameRate());
         showTextMessage("Paused", MessagePosition::MiddleCenter);
-        myTIASurface->render(true);
+        myTIASurface->render(shade);
       }
       if(rerender)
-        myTIASurface->render(true);
+        myTIASurface->render(shade);
       break;  // EventHandlerState::PAUSE
     }
 
