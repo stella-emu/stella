@@ -295,9 +295,6 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
 
   addToFocusList(wid);
 
-  // Create (empty) context menu for ROM list options
-  myMenu = make_unique<ContextMenu>(this, _font, EmptyVarList);
-
   // since we cannot know how many files there are, use are really high value here
   myList->progress().setRange(0, 50000, 5);
   myList->progress().setMessage("        Filtering files" + ELLIPSIS + "        ");
@@ -608,7 +605,7 @@ void LauncherDialog::loadRomInfo()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::handleContextMenu()
 {
-  const string& cmd = myMenu->getSelectedTag().toString();
+  const string& cmd = menu().getSelectedTag().toString();
 
   if(cmd == "override")
     openGlobalProps();
@@ -616,6 +613,17 @@ void LauncherDialog::handleContextMenu()
     reload();
   else if(cmd == "highscores")
     openHighScores();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ContextMenu& LauncherDialog::menu()
+{
+  if(myMenu == nullptr)
+    // Create (empty) context menu for ROM list options
+    myMenu = make_unique<ContextMenu>(this, _font, EmptyVarList);
+
+
+  return *myMenu;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -752,10 +760,10 @@ void LauncherDialog::handleMouseDown(int x, int y, MouseButton b, int clickCount
     if(instance().highScores().enabled())
       VarList::push_back(items, " High scores" + ELLIPSIS + "        Ctrl+H", "highscores");
     VarList::push_back(items, " Reload listing      Ctrl+R ", "reload");
-    myMenu->addItems(items);
+    menu().addItems(items);
 
     // Add menu at current x,y mouse location
-    myMenu->show(x + getAbsX(), y + getAbsY(), surface().dstRect());
+    menu().show(x + getAbsX(), y + getAbsY(), surface().dstRect());
   }
   else
     Dialog::handleMouseDown(x, y, b, clickCount);

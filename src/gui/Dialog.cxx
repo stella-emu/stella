@@ -55,18 +55,6 @@ Dialog::Dialog(OSystem& instance, DialogContainer& parent, const GUI::Font& font
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_BORDER | Widget::FLAG_CLEARBG;
   setTitle(title);
 
-  // Create shading surface
-  uInt32 data = 0xff000000;
-
-  _shadeSurface = instance.frameBuffer().allocateSurface(
-      1, 1, ScalingInterpolation::sharp, &data);
-
-  FBSurface::Attributes& attr = _shadeSurface->attributes();
-
-  attr.blending = true;
-  attr.blendalpha = 25; // darken background dialogs by 25%
-  _shadeSurface->applyAttributes();
-
   _toolTip = make_unique<ToolTip>(*this, font);
 }
 
@@ -267,6 +255,20 @@ void Dialog::render()
 
   if(!onTop)
   {
+    if(_shadeSurface == nullptr)
+    {
+      // Create shading surface
+      uInt32 data = 0xff000000;
+
+      _shadeSurface = instance().frameBuffer().allocateSurface(
+        1, 1, ScalingInterpolation::sharp, &data);
+
+      FBSurface::Attributes& attr = _shadeSurface->attributes();
+
+      attr.blending = true;
+      attr.blendalpha = 25; // darken background dialogs by 25%
+      _shadeSurface->applyAttributes();
+    }
     _shadeSurface->setDstRect(_surface->dstRect());
     _shadeSurface->render();
   }

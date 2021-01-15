@@ -157,6 +157,8 @@ class LauncherDialog : public Dialog
     void openHighScores();
     void openWhatsNew();
 
+    ContextMenu& menu();
+
   private:
     unique_ptr<Dialog> myDialog;
     unique_ptr<ContextMenu> myMenu;
