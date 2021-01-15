@@ -117,6 +117,8 @@ class EditableWidget : public Widget, public CommandSender
     // internal buffer
     bool tryInsertChar(char c, int pos);
 
+    ContextMenu& mouseMenu();
+
   private:
     unique_ptr<ContextMenu> myMouseMenu;
     bool    _isDragging{false};
