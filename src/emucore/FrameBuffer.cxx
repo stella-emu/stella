@@ -67,10 +67,6 @@ FrameBuffer::FrameBuffer(OSystem& osystem)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBuffer::~FrameBuffer()
 {
-  // Make sure to free surfaces/textures before destroying the backend itself
-  // Most platforms are fine with doing this in either order, but it seems
-  // that OpenBSD in particular crashes when attempting to destroy textures
-  // *after* the renderer is already destroyed
 cerr << "~FrameBuffer()" << endl << endl;
 }
 
@@ -256,21 +252,7 @@ FBInitStatus FrameBuffer::createDisplay(const string& title, BufferType type,
     return FBInitStatus::FailTooLarge;
 #endif
 
-  // Initialize video mode handler, so it can know what video modes are
-  // appropriate for the requested image size
-  myVidModeHandler.setImageSize(size);
-
-  // Always save, maybe only the mode of the window has changed
-  saveCurrentWindowPosition();
-  myBufferType = type;
-
-  // Initialize video subsystem
-  string pre_about = myBackend->about();
-  FBInitStatus status = applyVideoMode();
-  if(status != FBInitStatus::Success)
-    return status;
-
-#ifdef GUI_SUPPORT
+#ifdef GUI_SUPPORT  // TODO: put message stuff in its own class
   // Erase any messages from a previous run
   myMsg.enabled = false;
 
@@ -296,6 +278,20 @@ FBInitStatus FrameBuffer::createDisplay(const string& title, BufferType type,
                                     font().getFontHeight() * 1.5);
   }
 #endif
+
+  // Initialize video mode handler, so it can know what video modes are
+  // appropriate for the requested image size
+  myVidModeHandler.setImageSize(size);
+
+  // Always save, maybe only the mode of the window has changed
+  saveCurrentWindowPosition();
+  myBufferType = type;
+
+  // Initialize video subsystem
+  string pre_about = myBackend->about();
+  FBInitStatus status = applyVideoMode();
+  if(status != FBInitStatus::Success)
+    return status;
 
   // Print initial usage message, but only print it later if the status has changed
   if(myInitializedCount == 1)
