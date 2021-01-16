@@ -240,21 +240,21 @@ class System : public Serializable
     */
     struct PageAccess
     {
-      /**
-        Pointer to a block of memory or the null pointer.  The null pointer
-        indicates that the device's peek method should be invoked for reads
-        to this page, while other values are the base address of an array
-        to directly access for reads to this page.
-      */
-      uInt8* directPeekBase{nullptr};
+      ///**
+      //  Pointer to a block of memory or the null pointer.  The null pointer
+      //  indicates that the device's peek method should be invoked for reads
+      //  to this page, while other values are the base address of an array
+      //  to directly access for reads to this page.
+      //*/
+      //uInt8* directPeekBase{nullptr};
 
-      /**
-        Pointer to a block of memory or the null pointer.  The null pointer
-        indicates that the device's poke method should be invoked for writes
-        to this page, while other values are the base address of an array
-        to directly access for pokes to this page.
-      */
-      uInt8* directPokeBase{nullptr};
+      ///**
+      //  Pointer to a block of memory or the null pointer.  The null pointer
+      //  indicates that the device's poke method should be invoked for writes
+      //  to this page, while other values are the base address of an array
+      //  to directly access for pokes to this page.
+      //*/
+      //uInt8* directPokeBase{nullptr};
 
       /**
         Pointer to a lookup table for marking an address as CODE, DATA, GFX,

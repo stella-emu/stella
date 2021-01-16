@@ -121,9 +121,9 @@ uInt8 System::peek(uInt16 addr, Device::AccessFlags flags)
 
   // See if this page uses direct accessing or not
   uInt8 result;
-  if(access.directPeekBase)
-    result = *(access.directPeekBase + (addr & PAGE_MASK));
-  else
+  //if(access.directPeekBase)
+  //  result = *(access.directPeekBase + (addr & PAGE_MASK));
+  //else
     result = access.device->peek(addr);
 
 #ifdef DEBUGGER_SUPPORT
@@ -157,17 +157,17 @@ void System::poke(uInt16 addr, uInt8 value, Device::AccessFlags flags)
 #endif
 
   // See if this page uses direct accessing or not
-  if(access.directPokeBase)
-  {
-    // Since we have direct access to this poke, we can dirty its page
-    *(access.directPokeBase + (addr & PAGE_MASK)) = value;
-    myPageIsDirtyTable[page] = true;
-  }
-  else
-  {
+  //if(access.directPokeBase)
+  //{
+  //  // Since we have direct access to this poke, we can dirty its page
+  //  *(access.directPokeBase + (addr & PAGE_MASK)) = value;
+  //  myPageIsDirtyTable[page] = true;
+  //}
+  //else
+  //{
     // The specific device informs us if the poke succeeded
     myPageIsDirtyTable[page] = access.device->poke(addr, value);
-  }
+  //}
 
 #ifdef DEBUGGER_SUPPORT
   if(!myDataBusLocked)

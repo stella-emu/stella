@@ -66,10 +66,10 @@ void CartridgeMNetwork::setAccess(uInt16 addrFrom, uInt16 size,
 
   for(uInt16 addr = addrFrom; addr < addrFrom + size; addr += System::PAGE_SIZE)
   {
-    if(type == System::PageAccessType::READ)
-      access.directPeekBase = &directData[directOffset + (addr & addrMask)];
-    else if(type == System::PageAccessType::WRITE)  // all RAM writes mapped to ::poke()
-      access.directPokeBase = nullptr;
+    //if(type == System::PageAccessType::READ)
+    //  access.directPeekBase = &directData[directOffset + (addr & addrMask)];
+    //else if(type == System::PageAccessType::WRITE)  // all RAM writes mapped to ::poke()
+    //  access.directPokeBase = nullptr;
     access.romAccessBase = &myRomAccessBase[codeOffset + (addr & addrMask)];
     access.romPeekCounter = &myRomAccessCounter[codeOffset + (addr & addrMask)];
     access.romPokeCounter = &myRomAccessCounter[codeOffset + (addr & addrMask) + myAccessSize];
