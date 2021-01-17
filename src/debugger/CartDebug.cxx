@@ -711,7 +711,14 @@ bool CartDebug::getLabel(ostream& buf, uInt16 addr, bool isRead,
         const auto& iter = myUserLabels.find(addr);
         if(iter != myUserLabels.end())
         {
-          buf << iter->second;
+          // TODO: detect and add SUBROUTINE in saved disassembly
+          string::size_type pos = iter->second.find_first_of('.', 0);
+
+          // Remove local prefix in debugger
+          if(pos != string::npos)
+            buf << iter->second.substr(pos);
+          else
+            buf << iter->second;
           return true;
         }
       }
@@ -860,16 +867,25 @@ string CartDebug::loadSymbolFile()
       //const auto& iter = myUserCLabels.find(value);
       //if(iter == myUserCLabels.end() || !BSPF::equalsIgnoreCase(label, iter->second))
       const auto& iter = myUserLabels.find(value);
-      if (iter == myUserLabels.end() || !BSPF::equalsIgnoreCase(label, iter->second))
+      if(iter == myUserLabels.end() || !BSPF::equalsIgnoreCase(label, iter->second))
       {
         // Check for period, and strip leading number
         string::size_type pos = label.find_first_of('.', 0);
         if(pos != string::npos)
-          addLabel(label.substr(pos), value);
+        {
+          const string shortLabel = label.substr(pos);
+          const auto& iterA = myUserAddresses.find(shortLabel);
+
+          if(iterA != myUserAddresses.end())
+            addLabel(label, value); // add long local label name if short label already exists
+          else
+            addLabel(shortLabel, value);
+        }
         else
         {
+          // skip local macro labels
           pos = label.find_last_of('$');
-          if (pos == string::npos || pos != label.length() - 1)
+          if(pos == string::npos || pos != label.length() - 1)
             addLabel(label, value);
         }
       }
@@ -1149,10 +1165,6 @@ string CartDebug::saveDisassembly(string path)
             buf << "\n;---------------------------------------";
           break;
 
-        case Device::ROW:
-          buf << ".byte   " << ALIGN(32) << tag.disasm.substr(6, 8*4-1) << "; $" << Base::HEX4 << tag.address << " (*)";
-          break;
-
         case Device::GFX:
           buf << ".byte   " << (settings.gfxFormat == Base::Fmt::_2 ? "%" : "$")
               << tag.bytes << " ; |";
@@ -1170,23 +1182,21 @@ string CartDebug::saveDisassembly(string path)
           break;
 
         case Device::COL:
-          buf << ".byte   " << ALIGN(32) << tag.disasm.substr(6, 15) << "; $" << Base::HEX4 << tag.address << " (C)";
-          break;
-
         case Device::PCOL:
-          buf << ".byte   " << ALIGN(32) << tag.disasm.substr(6, 15) << "; $" << Base::HEX4 << tag.address << " (CP)";
-          break;
-
         case Device::BCOL:
-          buf << ".byte   " << ALIGN(32) << tag.disasm.substr(6, 15) << "; $" << Base::HEX4 << tag.address << " (CB)";
+          buf << ".byte   " << ALIGN(32) << tag.disasm.substr(6, 15)
+            << "; $" << Base::HEX4 << tag.address
+            << " (" << (tag.type == Device::COL ? "C" :
+                        tag.type == Device::PCOL ? "CP" : "CB") << ")";
           break;
 
         case Device::AUD:
-          buf << ".byte   " << ALIGN(32) << tag.disasm.substr(6, 8 * 4 - 1) << "; $" << Base::HEX4 << tag.address << " (A)";
-          break;
-
         case Device::DATA:
-          buf << ".byte   " << ALIGN(32) << tag.disasm.substr(6, 8 * 4 - 1) << "; $" << Base::HEX4 << tag.address << " (D)";
+        case Device::ROW:
+          buf << ".byte   " << ALIGN(32) << tag.disasm.substr(6, 8 * 4 - 1)
+            << "; $" << Base::HEX4 << tag.address
+            << " (" << (tag.type == Device::AUD ? "A" :
+                        tag.type == Device::DATA ? "D" : "*") << ")";
           break;
 
         case Device::NONE:
@@ -1308,13 +1318,13 @@ string CartDebug::saveDisassembly(string path)
           out << "\n";
         out << ALIGN(16) << ourZPMnemonic[addr - 0x80] << "= $"
           << Base::HEX2 << right << (addr)
-          << ((stackUsed|codeUsed) ? "; (" : "")
+          << ((stackUsed || codeUsed) ? "; (" : "")
           << (codeUsed ? "c" : "")
           << (stackUsed ? "s" : "")
-          << ((stackUsed | codeUsed) ? ")" : "")
+          << ((stackUsed || codeUsed) ? ")" : "")
           << "\n";
         addLine = false;
-      } else if (ramUsed|codeUsed|stackUsed) {
+      } else if (ramUsed || codeUsed || stackUsed) {
         if (addLine)
           out << "\n";
         out << ALIGN(18) << ";" << "$"
