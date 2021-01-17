@@ -119,7 +119,7 @@ bool CartridgeCM::bank(uInt16 bank, uInt16)
   // Lower 2K (always ROM)
   for(uInt16 addr = 0x1000; addr < 0x1800; addr += System::PAGE_SIZE)
   {
-    //access.directPeekBase = &myImage[myBankOffset + (addr & 0x0FFF)];
+    access.directPeekBase = &myImage[myBankOffset + (addr & 0x0FFF)];
     access.romAccessBase = &myRomAccessBase[myBankOffset + (addr & 0x0FFF)];
     access.romPeekCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF)];
     access.romPokeCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF) + myAccessSize];
@@ -133,23 +133,23 @@ bool CartridgeCM::bank(uInt16 bank, uInt16)
 
     if(mySWCHA & 0x10)
     {
-      //access.directPeekBase = &myImage[myBankOffset + (addr & 0x0FFF)];
+      access.directPeekBase = &myImage[myBankOffset + (addr & 0x0FFF)];
       access.romAccessBase = &myRomAccessBase[myBankOffset + (addr & 0x0FFF)];
       access.romPeekCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF)];
       access.romPokeCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF) + myAccessSize];
     }
     else
     {
-      //access.directPeekBase = &myRAM[addr & 0x7FF];
+      access.directPeekBase = &myRAM[addr & 0x7FF];
       access.romAccessBase = &myRomAccessBase[myBankOffset + (addr & 0x07FF)];
       access.romPeekCounter = &myRomAccessCounter[myBankOffset + (addr & 0x07FF)];
       access.romPokeCounter = &myRomAccessCounter[myBankOffset + (addr & 0x07FF) + myAccessSize];
     }
 
-    //if((mySWCHA & 0x30) == 0x20)
-    //  access.directPokeBase = &myRAM[addr & 0x7FF];
-    //else
-    //  access.directPokeBase = nullptr;
+    if((mySWCHA & 0x30) == 0x20)
+      access.directPokeBase = &myRAM[addr & 0x7FF];
+    else
+      access.directPokeBase = nullptr;
 
     mySystem->setPageAccess(addr, access);
   }

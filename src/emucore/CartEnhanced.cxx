@@ -118,7 +118,7 @@ void CartridgeEnhanced::install(System& system)
     {
       const uInt16 offset = addr & myRamMask;
 
-      //access.directPeekBase = &myRAM[offset];
+      access.directPeekBase = &myRAM[offset];
       access.romAccessBase = &myRomAccessBase[myReadOffset + offset];
       access.romPeekCounter = &myRomAccessCounter[myReadOffset + offset];
       access.romPokeCounter = &myRomAccessCounter[myReadOffset + offset + myAccessSize];
@@ -264,10 +264,10 @@ bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment)
     {
       const uInt32 offset = bankOffset + (addr & myBankMask);
 
-      //if(myDirectPeek && addr != hotSpotAddr)
-      //  access.directPeekBase = &myImage[offset];
-      //else
-      //  access.directPeekBase = nullptr;
+      if(myDirectPeek && addr != hotSpotAddr)
+        access.directPeekBase = &myImage[offset];
+      else
+        access.directPeekBase = nullptr;
       access.romAccessBase = &myRomAccessBase[offset];
       access.romPeekCounter = &myRomAccessCounter[offset];
       access.romPokeCounter = &myRomAccessCounter[offset + myAccessSize];
@@ -309,7 +309,7 @@ bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment)
     {
       const uInt32 offset = bankOffset + (addr & myRamMask);
 
-      //access.directPeekBase = &myRAM[offset - mySize];
+      access.directPeekBase = &myRAM[offset - mySize];
       access.romAccessBase = &myRomAccessBase[offset];
       access.romPeekCounter = &myRomAccessCounter[offset];
       access.romPokeCounter = &myRomAccessCounter[offset + myAccessSize];
