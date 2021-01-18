@@ -712,13 +712,7 @@ bool CartDebug::getLabel(ostream& buf, uInt16 addr, bool isRead,
         if(iter != myUserLabels.end())
         {
           // TODO: detect and add SUBROUTINE in saved disassembly
-          string::size_type pos = iter->second.find_first_of('.', 0);
-
-          // Remove local prefix in debugger
-          if(pos != string::npos)
-            buf << iter->second.substr(pos);
-          else
-            buf << iter->second;
+          buf << iter->second;
           return true;
         }
       }
@@ -877,7 +871,8 @@ string CartDebug::loadSymbolFile()
           const auto& iterA = myUserAddresses.find(shortLabel);
 
           if(iterA != myUserAddresses.end())
-            addLabel(label, value); // add long local label name if short label already exists
+            // if short label already exists, move prefix to suffix and add long local label name
+            addLabel(shortLabel + "." + label.substr(0, pos), value);
           else
             addLabel(shortLabel, value);
         }
