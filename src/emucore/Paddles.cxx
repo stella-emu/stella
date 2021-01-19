@@ -47,113 +47,50 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
   // Consider whether this is the left or right port
   if(myJack == Jack::Left)
   {
-    if(!swappaddle)  // First paddle is 0, second is 1
-    {
-      // These aren't affected by changes in axis orientation
-      myP0AxisValue  = Event::PaddleZeroAnalog;
-      myP1AxisValue  = Event::PaddleOneAnalog;
-      myP0FireEvent = Event::PaddleZeroFire;
-      myP1FireEvent = Event::PaddleOneFire;
+    // First paddle is 0, second is 1
+    myP0AxisValue = Event::PaddleZeroAnalog;
+    myP1AxisValue = Event::PaddleOneAnalog;
+    myP0FireEvent = Event::PaddleZeroFire;
+    myP1FireEvent = Event::PaddleOneFire;
 
-      // Direction of movement is swapped
-      // That is, moving in a certain direction on an axis can
-      // result in either increasing or decreasing paddle movement
-      if(!swapdir)
-      {
-        myP0DecEvent = Event::PaddleZeroDecrease;
-        myP0IncEvent = Event::PaddleZeroIncrease;
-        myP1DecEvent = Event::PaddleOneDecrease;
-        myP1IncEvent = Event::PaddleOneIncrease;
-      }
-      else
-      {
-        myP0DecEvent = Event::PaddleZeroIncrease;
-        myP0IncEvent = Event::PaddleZeroDecrease;
-        myP1DecEvent = Event::PaddleOneIncrease;
-        myP1IncEvent = Event::PaddleOneDecrease;
-      }
-    }
-    else           // First paddle is 1, second is 0
-    {
-      // These aren't affected by changes in axis orientation
-      myP0AxisValue  = Event::PaddleOneAnalog;
-      myP1AxisValue  = Event::PaddleZeroAnalog;
-      myP0FireEvent = Event::PaddleOneFire;
-      myP1FireEvent = Event::PaddleZeroFire;
-
-      // Direction of movement is swapped
-      // That is, moving in a certain direction on an axis can
-      // result in either increasing or decreasing paddle movement
-      if(!swapdir)
-      {
-        myP0DecEvent = Event::PaddleOneDecrease;
-        myP0IncEvent = Event::PaddleOneIncrease;
-        myP1DecEvent = Event::PaddleZeroDecrease;
-        myP1IncEvent = Event::PaddleZeroIncrease;
-      }
-      else
-      {
-        myP0DecEvent = Event::PaddleOneIncrease;
-        myP0IncEvent = Event::PaddleOneDecrease;
-        myP1DecEvent = Event::PaddleZeroIncrease;
-        myP1IncEvent = Event::PaddleZeroDecrease;
-      }
-    }
+    // These can be affected by changes in axis orientation
+    myP0DecEvent = Event::PaddleZeroDecrease;
+    myP0IncEvent = Event::PaddleZeroIncrease;
+    myP1DecEvent = Event::PaddleOneDecrease;
+    myP1IncEvent = Event::PaddleOneIncrease;
   }
   else    // Jack is right port
   {
-    if(!swappaddle)  // First paddle is 2, second is 3
-    {
-      // These aren't affected by changes in axis orientation
-      myP0AxisValue  = Event::PaddleTwoAnalog;
-      myP1AxisValue  = Event::PaddleThreeAnalog;
-      myP0FireEvent = Event::PaddleTwoFire;
-      myP1FireEvent = Event::PaddleThreeFire;
+    // First paddle is 2, second is 3
+    myP0AxisValue = Event::PaddleTwoAnalog;
+    myP1AxisValue = Event::PaddleThreeAnalog;
+    myP0FireEvent = Event::PaddleTwoFire;
+    myP1FireEvent = Event::PaddleThreeFire;
 
-      // Direction of movement is swapped
-      // That is, moving in a certain direction on an axis can
-      // result in either increasing or decreasing paddle movement
-      if(!swapdir)
-      {
-        myP0DecEvent = Event::PaddleTwoDecrease;
-        myP0IncEvent = Event::PaddleTwoIncrease;
-        myP1DecEvent = Event::PaddleThreeDecrease;
-        myP1IncEvent = Event::PaddleThreeIncrease;
-      }
-      else
-      {
-        myP0DecEvent = Event::PaddleTwoIncrease;
-        myP0IncEvent = Event::PaddleTwoDecrease;
-        myP1DecEvent = Event::PaddleThreeIncrease;
-        myP1IncEvent = Event::PaddleThreeDecrease;
-      }
-    }
-    else           // First paddle is 3, second is 2
-    {
-      // These aren't affected by changes in axis orientation
-      myP0AxisValue  = Event::PaddleThreeAnalog;
-      myP1AxisValue  = Event::PaddleTwoAnalog;
-      myP0FireEvent = Event::PaddleThreeFire;
-      myP1FireEvent = Event::PaddleTwoFire;
+    // These can be affected by changes in axis orientation
+    myP0DecEvent = Event::PaddleTwoDecrease;
+    myP0IncEvent = Event::PaddleTwoIncrease;
+    myP1DecEvent = Event::PaddleThreeDecrease;
+    myP1IncEvent = Event::PaddleThreeIncrease;
+  }
 
-      // Direction of movement is swapped
-      // That is, moving in a certain direction on an axis can
-      // result in either increasing or decreasing paddle movement
-      if(!swapdir)
-      {
-        myP0DecEvent = Event::PaddleThreeDecrease;
-        myP0IncEvent = Event::PaddleThreeIncrease;
-        myP1DecEvent = Event::PaddleTwoDecrease;
-        myP1IncEvent = Event::PaddleTwoIncrease;
-      }
-      else
-      {
-        myP0DecEvent = Event::PaddleThreeIncrease;
-        myP0IncEvent = Event::PaddleThreeDecrease;
-        myP1DecEvent = Event::PaddleTwoIncrease;
-        myP1IncEvent = Event::PaddleTwoDecrease;
-      }
-    }
+  // Some games swap the paddles
+  if(swappaddle)
+  {
+    // First paddle is 1|3, second is 0|2
+    swapEvents(myP0AxisValue, myP1AxisValue);
+    swapEvents(myP0FireEvent, myP1FireEvent);
+    swapEvents(myP0DecEvent, myP1DecEvent);
+    swapEvents(myP0IncEvent, myP1IncEvent);
+  }
+
+  // Direction of movement can be swapped
+  // That is, moving in a certain direction on an axis can
+  // result in either increasing or decreasing paddle movement
+  if(swapdir)
+  {
+    swapEvents(myP0DecEvent, myP0IncEvent);
+    swapEvents(myP1DecEvent, myP1IncEvent);
   }
 
   // The following are independent of whether or not the port
@@ -180,6 +117,16 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Paddles::swapEvents(Event::Type& event1, Event::Type& event2)
+{
+  Event::Type swappedEvent;
+
+  swappedEvent = event1;
+  event1 = event2;
+  event2 = swappedEvent;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Paddles::update()
 {
   setPin(DigitalPin::Three, true);
@@ -200,6 +147,31 @@ void Paddles::update()
   // And to top it all off, we don't want one devices input to conflict
   // with the others ...
 
+  if(!updateAnalogAxes())
+  {
+    updateMouse(firePressedP0, firePressedP1);
+    updateDigitalAxes();
+
+    // Only change state if the charge has actually changed
+    if(myCharge[1] != myLastCharge[1])
+    {
+      setPin(AnalogPin::Five, Int32(MAX_RESISTANCE * (myCharge[1] / double(TRIGMAX))));
+      myLastCharge[1] = myCharge[1];
+    }
+    if(myCharge[0] != myLastCharge[0])
+    {
+      setPin(AnalogPin::Nine, Int32(MAX_RESISTANCE * (myCharge[0] / double(TRIGMAX))));
+      myLastCharge[0] = myCharge[0];
+    }
+  }
+
+  setPin(DigitalPin::Four, !getAutoFireState(firePressedP0));
+  setPin(DigitalPin::Three, !getAutoFireStateP1(firePressedP1));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Paddles::updateAnalogAxes()
+{
   // Analog axis events from Stelladaptor-like devices
   // These devices generate data in the range -32768 to 32767,
   // so we have to scale appropriately
@@ -207,10 +179,6 @@ void Paddles::update()
   // we only process the first one we see (when it differs from
   // previous values by a pre-defined amount)
   // Otherwise, it would always override input from digital and mouse
-  bool sa_changed = false;
-  int sa_xaxis = myEvent.get(myP0AxisValue);
-  int sa_yaxis = myEvent.get(myP1AxisValue);
-  int new_val;
 
   static constexpr std::array<double, MAX_DEJITTER - MIN_DEJITTER + 1> bFac = {
     // higher values mean more dejitter strength
@@ -221,24 +189,28 @@ void Paddles::update()
   static constexpr std::array<double, MAX_DEJITTER - MIN_DEJITTER + 1> dFac = {
     // lower values mean more dejitter strength
     1, // off
-    1.0 /  181, 1.0 /  256, 1.0 /  362, 1.0 /  512, 1.0 /  724,
+    1.0 / 181, 1.0 / 256, 1.0 / 362, 1.0 / 512, 1.0 / 724,
     1.0 / 1024, 1.0 / 1448, 1.0 / 2048, 1.0 / 2896, 1.0 / 4096
   };
   const double baseFactor = bFac[DEJITTER_BASE];
   const double diffFactor = dFac[DEJITTER_DIFF];
 
+  int sa_xaxis = myEvent.get(myP0AxisValue);
+  int sa_yaxis = myEvent.get(myP1AxisValue);
+  bool sa_changed = false;
+
   if(abs(myLastAxisX - sa_xaxis) > 10)
   {
     // dejitter, suppress small changes only
     double dejitter = std::pow(baseFactor, abs(sa_xaxis - myLastAxisX) * diffFactor);
-    new_val = sa_xaxis * (1 - dejitter) + myLastAxisX * dejitter;
+    int new_val = sa_xaxis * (1 - dejitter) + myLastAxisX * dejitter;
 
     // only use new dejittered value for larger differences
     if(abs(new_val - sa_xaxis) > 10)
       sa_xaxis = new_val;
 
     setPin(AnalogPin::Nine, Int32(MAX_RESISTANCE *
-      (BSPF::clamp(32768 - Int32(Int32(sa_xaxis) * SENSITIVITY + XCENTER), 0, 65536) / 65536.0)));
+           (BSPF::clamp(32768 - Int32(Int32(sa_xaxis) * SENSITIVITY + XCENTER), 0, 65536) / 65536.0)));
     sa_changed = true;
   }
 
@@ -246,29 +218,33 @@ void Paddles::update()
   {
     // dejitter, suppress small changes only
     double dejitter = std::pow(baseFactor, abs(sa_yaxis - myLastAxisY) * diffFactor);
-    new_val = sa_yaxis * (1 - dejitter) + myLastAxisY * dejitter;
+    int new_val = sa_yaxis * (1 - dejitter) + myLastAxisY * dejitter;
 
     // only use new dejittered value for larger differences
-    if (abs(new_val - sa_yaxis) > 10)
+    if(abs(new_val - sa_yaxis) > 10)
       sa_yaxis = new_val;
 
     setPin(AnalogPin::Five, Int32(MAX_RESISTANCE *
-      (BSPF::clamp(32768 - Int32(Int32(sa_yaxis) * SENSITIVITY + YCENTER), 0, 65536) / 65536.0)));
+           (BSPF::clamp(32768 - Int32(Int32(sa_yaxis) * SENSITIVITY + YCENTER), 0, 65536) / 65536.0)));
     sa_changed = true;
   }
   myLastAxisX = sa_xaxis;
   myLastAxisY = sa_yaxis;
-  if(sa_changed)
-    return;
 
+  return sa_changed;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Paddles::updateMouse(bool& firePressedP0, bool& firePressedP1)
+{
   // Mouse motion events give relative movement
   // That is, they're only relevant if they're non-zero
   if(myMPaddleID > -1)
   {
     // We're in auto mode, where a single axis is used for one paddle only
     myCharge[myMPaddleID] = BSPF::clamp(myCharge[myMPaddleID] -
-        (myEvent.get(myAxisMouseMotion) * MOUSE_SENSITIVITY),
-        TRIGMIN, TRIGRANGE);
+                                        (myEvent.get(myAxisMouseMotion) * MOUSE_SENSITIVITY),
+                                        TRIGMIN, TRIGRANGE);
     if(myMPaddleID == 0)
       firePressedP0 = firePressedP0
         || myEvent.get(Event::MouseButtonLeftValue)
@@ -285,9 +261,8 @@ void Paddles::update()
     if(myMPaddleIDX > -1)
     {
       myCharge[myMPaddleIDX] = BSPF::clamp(myCharge[myMPaddleIDX] -
-          (myEvent.get(Event::MouseAxisXMove) * MOUSE_SENSITIVITY),
-          TRIGMIN, TRIGRANGE);
-
+                                           (myEvent.get(Event::MouseAxisXMove) * MOUSE_SENSITIVITY),
+                                           TRIGMIN, TRIGRANGE);
       if(myMPaddleIDX == 0)
         firePressedP0 = firePressedP0
           || myEvent.get(Event::MouseButtonLeftValue);
@@ -298,9 +273,8 @@ void Paddles::update()
     if(myMPaddleIDY > -1)
     {
       myCharge[myMPaddleIDY] = BSPF::clamp(myCharge[myMPaddleIDY] -
-          (myEvent.get(Event::MouseAxisYMove) * MOUSE_SENSITIVITY),
-          TRIGMIN, TRIGRANGE);
-
+                                           (myEvent.get(Event::MouseAxisYMove) * MOUSE_SENSITIVITY),
+                                           TRIGMIN, TRIGRANGE);
       if(myMPaddleIDY == 0)
         firePressedP0 = firePressedP0
           || myEvent.get(Event::MouseButtonRightValue);
@@ -309,9 +283,11 @@ void Paddles::update()
           || myEvent.get(Event::MouseButtonRightValue);
     }
   }
-  setPin(DigitalPin::Four, !getAutoFireState(firePressedP0));
-  setPin(DigitalPin::Three, !getAutoFireStateP1(firePressedP1));
+}
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Paddles::updateDigitalAxes()
+{
   // Finally, consider digital input, where movement happens
   // until a digital event is released
   if(myKeyRepeat0)
@@ -354,15 +330,6 @@ void Paddles::update()
     if((myCharge[myAxisDigitalOne] + myPaddleRepeat1) < TRIGRANGE)
       myCharge[myAxisDigitalOne] += myPaddleRepeat1;
   }
-
-  // Only change state if the charge has actually changed
-  if(myCharge[1] != myLastCharge[1])
-    setPin(AnalogPin::Five, Int32(MAX_RESISTANCE * (myCharge[1] / double(TRIGMAX))));
-  if(myCharge[0] != myLastCharge[0])
-    setPin(AnalogPin::Nine, Int32(MAX_RESISTANCE * (myCharge[0] / double(TRIGMAX))));
-
-  myLastCharge[1] = myCharge[1];
-  myLastCharge[0] = myCharge[0];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
