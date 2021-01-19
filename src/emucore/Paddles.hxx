@@ -197,6 +197,26 @@ class Paddles : public Controller
     static int DEJITTER_BASE, DEJITTER_DIFF;
     static int MOUSE_SENSITIVITY;
 
+    /**
+      Swap two events.
+    */
+    void swapEvents(Event::Type& event1, Event::Type& event2);
+
+    /**
+      Update the axes pin state according to the events currently set.
+    */
+    bool updateAnalogAxes();
+
+    /**
+      Update the entire state according to mouse events currently set.
+    */
+    void updateMouse(bool& firePressedP0, bool& firePressedP1);
+
+    /**
+      Update the axes pin state according to the keyboard events currently set.
+    */
+    void updateDigitalAxes();
+
   private:
     // Following constructors and assignment operators not supported
     Paddles() = delete;
