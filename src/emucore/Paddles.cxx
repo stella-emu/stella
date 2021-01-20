@@ -363,7 +363,7 @@ bool Paddles::setMouseControl(
       if(xtype == Controller::Type::Paddles)
         myMPaddleIDX = (xid == 2 || xid == 3) ? xid & 0x01 : -1;
       if(ytype == Controller::Type::Paddles)
-      myMPaddleIDY = (yid == 2 || yid == 3) ? yid & 0x01 : -1;
+        myMPaddleIDY = (yid == 2 || yid == 3) ? yid & 0x01 : -1;
     }
   }
 

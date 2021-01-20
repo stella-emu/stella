@@ -12,6 +12,13 @@
                               Release History
 ===========================================================================
 
+6.5 to 6.5.1 (January X, 2021)
+
+  * Fixed paddle button bug for jittering controllers
+
+-Have fun!
+
+
 6.4 to 6.5 (January 9, 2021)
 
   * Added high scores saving.
@@ -51,8 +58,6 @@
 
   * Codebase now uses C++17 features, which means a minimum of gcc7
     or clang5 for Linux/Mac, and Visual Studio 2019 for Windows.
-
--Have fun!
 
 
 6.3 to 6.4 (November 2, 2020)
