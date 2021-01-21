@@ -136,7 +136,7 @@ class EquateExpression : public Expression
   public:
     EquateExpression(const string& label) : Expression(), myLabel{label} { }
     Int32 evaluate() const override
-      { return Debugger::debugger().cartDebug().getAddress(myLabel); }
+      { return Debugger::debugger().cartDebug().getAddress(myLabel).addr; }
 
   private:
     string myLabel;

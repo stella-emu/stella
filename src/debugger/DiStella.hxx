@@ -65,12 +65,14 @@ class DiStella
       @param labels      Array storing label info determined by Distella
       @param directives  Array storing directive info determined by Distella
       @param reserved    The TIA/RIOT addresses referenced in the disassembled code
+      @param numBank     The total number of ROM banks
     */
     DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
              CartDebug::BankInfo& info, const DiStella::Settings& settings,
              CartDebug::AddrTypeArray& labels,
              CartDebug::AddrTypeArray& directives,
-             CartDebug::ReservedEquates& reserved);
+             CartDebug::ReservedEquates& reserved,
+             int numBanks);
 
   private:
     /**
@@ -86,6 +88,8 @@ class DiStella
       ZP_RAM
     };
 
+    static const string NO_LABEL;
+    static const string EMPTY_LINE;
 
   private:
     // Indicate that a new line of disassembly has been completed
@@ -111,12 +115,29 @@ class DiStella
     void outputBytes(Device::AccessType type);
 
     // Convenience methods to generate appropriate labels
-    inline void labelA12High(stringstream& buf, uInt8 op, uInt16 addr, AddressType labfound)
+    inline void lineLabelHigh(stringstream& buf, uInt16 addr)
     {
-      if(!myDbg.getLabel(buf, addr, true))
-        buf << "L" << Common::Base::HEX4 << addr;
+      stringstream buf8;
+
+      buf8 << "'L";
+      if(myNumBanks > 1)
+        buf8 << Common::Base::HEX1 << myBank << "_";
+      buf8 << Common::Base::HEX4 << addr;
+      buf << std::left << std::setw(9) << std::setfill(' ') << buf8.str() << "'";
     }
-    inline void labelA12Low(stringstream& buf, uInt8 op, uInt16 addr, AddressType labfound)
+
+    inline void labelHigh(stringstream& buf, uInt16 addr)
+    {
+      if(!myDbg.getLabel(buf, myBank, addr, true))
+      {
+        buf << "L";
+        if(myNumBanks > 1)
+          buf << Common::Base::HEX1 << myBank << "_";
+        buf << Common::Base::HEX4 << addr;
+      }
+    }
+
+    inline void labelLow(stringstream& buf, uInt8 op, uInt16 addr, AddressType labfound)
     {
       myDbg.getLabel(buf, addr, ourLookup[op].rw_mode == RWMode::READ, 2);
       if (labfound == AddressType::TIA)
@@ -139,6 +160,8 @@ class DiStella
     CartDebug::ReservedEquates& myReserved;
     stringstream myDisasmBuf;
     std::queue<uInt16> myAddressQueue;
+    Int16 myBank{-1};
+    Int16 myNumBanks{1};
     uInt16 myOffset{0}, myPC{0}, myPCEnd{0};
     uInt16 mySegType{0};
 

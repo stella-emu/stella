@@ -61,6 +61,15 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
   };
   mySystemAddresses = LabelToAddr(sysCmp);
 
+  // Add compare for system addresses (incl. banks)
+  const auto lblCmp = [](const BankAddress& a, const BankAddress& b)
+  {
+    if(a.bank == b.bank)
+      return a.addr < b.addr;
+    return a.bank < b.bank;
+  };
+  myUserLabels = AddrToLabel(lblCmp);
+
   // Add Zero-page RAM addresses
   for(uInt16 i = 0x80; i <= 0xFF; ++i)
   {
@@ -80,18 +89,27 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
   BankInfo info;
   info.size = std::min<size_t>(romSize, 4_KB);
   for(uInt32 i = 0; i < myConsole.cartridge().romBankCount(); ++i)
+  {
+    info.bank = i;
     myBankInfo.push_back(info);
+  }
 
   for(uInt32 i = 0; i < myConsole.cartridge().ramBankCount(); ++i)
+  {
+    info.bank = i;
     myBankInfo.push_back(info);
+  }
 
+  info.bank = 0;
   info.size = 128;  // ZP RAM
   myBankInfo.push_back(info);
 
   // We know the address for the startup bank right now
   myBankInfo[myConsole.cartridge().startBank()].addressList.push_front(
     myDebugger.dpeek(0xfffc));
-  addLabel("Start", myDebugger.dpeek(0xfffc, Device::DATA)); // TOOD: ::CODE???
+  addLabel("Start",
+           BankAddress(myConsole.cartridge().startBank(),
+           myDebugger.dpeek(0xfffc, Device::DATA))); // TOOD: ::CODE???
 
   // Add system equates
   for(uInt16 addr = 0x00; addr <= 0x0F; ++addr)
@@ -339,7 +357,8 @@ bool CartDebug::fillDisassemblyList(BankInfo& info, uInt16 search)
   myDisassembly.list.clear();
   myDisassembly.fieldwidth = 24 + myLabelLength;
   DiStella distella(*this, myDisassembly.list, info, DiStella::settings,
-                    myDisLabels, myDisDirectives, myReserved);
+                    myDisLabels, myDisDirectives, myReserved,
+                    myConsole.cartridge().romBankCount());
 
   // Parts of the disassembly will be accessed later in different ways
   // We place those parts in separate maps, to speed up access
@@ -569,20 +588,20 @@ int CartDebug::romBankCount() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDebug::addLabel(const string& label, uInt16 address)
+bool CartDebug::addLabel(const string& label, BankAddress bankAddr)
 {
   // Only user-defined labels can be added or redefined
-  switch(addressType(address))
+  switch(addressType(bankAddr.addr))
   {
     case AddrType::TIA:
     case AddrType::IO:
       return false;
     default:
       removeLabel(label);
-      myUserAddresses.emplace(label, address);
-      myUserLabels.emplace(address, label);
+      myUserAddresses.emplace(label, bankAddr);
+      myUserLabels.emplace(bankAddr, label);
       myLabelLength = std::max(myLabelLength, uInt16(label.size()));
-      mySystem.setDirtyPage(address);
+      mySystem.setDirtyPage(bankAddr.addr);
       return true;
   }
 }
@@ -600,7 +619,7 @@ bool CartDebug::removeLabel(const string& label)
       myUserLabels.erase(iter2);
 
     // Erase the label itself
-    mySystem.setDirtyPage(iter->second);
+    mySystem.setDirtyPage(iter->second.addr);
     myUserAddresses.erase(iter);
 
     return true;
@@ -609,16 +628,16 @@ bool CartDebug::removeLabel(const string& label)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDebug::getLabel(ostream& buf, uInt16 addr, bool isRead,
+bool CartDebug::getLabel(ostream& buf, BankAddress bankAddr, bool isRead,
                          int places, bool isRam) const
 {
-  switch(addressType(addr))
+  switch(addressType(bankAddr.addr))
   {
     case AddrType::TIA:
     {
       if(isRead)
       {
-        uInt16 a = addr & 0x0F, offset = addr & 0xFFF0;
+        uInt16 a = bankAddr.addr & 0x0F, offset = bankAddr.addr & 0xFFF0;
         if(ourTIAMnemonicR[a])
         {
           buf << ourTIAMnemonicR[a];
@@ -626,11 +645,11 @@ bool CartDebug::getLabel(ostream& buf, uInt16 addr, bool isRead,
             buf << "|$" << Base::HEX2 << offset;
         }
         else
-          buf << "$" << Base::HEX2 << addr;
+          buf << "$" << Base::HEX2 << bankAddr.addr;
       }
       else
       {
-        uInt16 a = addr & 0x3F, offset = addr & 0xFFC0;
+        uInt16 a = bankAddr.addr & 0x3F, offset = bankAddr.addr & 0xFFC0;
         if(ourTIAMnemonicW[a])
         {
           buf << ourTIAMnemonicW[a];
@@ -638,14 +657,14 @@ bool CartDebug::getLabel(ostream& buf, uInt16 addr, bool isRead,
             buf << "|$" << Base::HEX2 << offset;
         }
         else
-          buf << "$" << Base::HEX2 << addr;
+          buf << "$" << Base::HEX2 << bankAddr.addr;
       }
       return true;
     }
 
     case AddrType::IO:
     {
-      uInt16 a = addr & 0xFF, offset = addr & 0xFD00;
+      uInt16 a = bankAddr.addr & 0xFF, offset = bankAddr.addr & 0xFD00;
       if(a <= 0x97)
       {
         if(ourIOMnemonic[a - 0x80])
@@ -655,10 +674,10 @@ bool CartDebug::getLabel(ostream& buf, uInt16 addr, bool isRead,
               buf << "|$" << Base::HEX2 << offset;
         }
         else
-          buf << "$" << Base::HEX2 << addr;
+          buf << "$" << Base::HEX2 << bankAddr.addr;
       }
       else
-        buf << "$" << Base::HEX2 << addr;
+        buf << "$" << Base::HEX2 << bankAddr.addr;
 
       return true;
     }
@@ -668,12 +687,12 @@ bool CartDebug::getLabel(ostream& buf, uInt16 addr, bool isRead,
       // RAM can use user-defined labels; otherwise we default to
       // standard mnemonics
       AddrToLabel::const_iterator iter;
-      uInt16 a = addr & 0xFF, offset = addr & 0xFF00;
+      uInt16 a = bankAddr.addr & 0xFF, offset = bankAddr.addr & 0xFF00;
       bool found = false;
 
       // Search for nearest label
       for(uInt16 i = a; i >= 0x80; --i)
-        if((iter = myUserLabels.find(i)) != myUserLabels.end())
+        if((iter = myUserLabels.find(BankAddress(i))) != myUserLabels.end())
         {
           buf << iter->second;
           if(a != i)
@@ -697,18 +716,18 @@ bool CartDebug::getLabel(ostream& buf, uInt16 addr, bool isRead,
         AddrToLabel::const_iterator iter;
 
         // Search for nearest label
-        for(uInt16 i = addr; i >= (addr & 0xf000); --i)
-          if((iter = myUserLabels.find(i)) != myUserLabels.end())
+        for(uInt16 i = bankAddr.addr; i >= (bankAddr.addr & 0xf000); --i)
+          if((iter = myUserLabels.find(BankAddress(bankAddr.bank, i))) != myUserLabels.end())
           {
             buf << iter->second;
-            if(addr != i)
-              buf << "+$" << Base::HEX1 << (addr - i);
+            if(bankAddr.addr != i)
+              buf << "+$" << Base::HEX1 << (bankAddr.addr - i);
             return true;
           }
       }
       else
       {
-        const auto& iter = myUserLabels.find(addr);
+        const auto& iter = myUserLabels.find(bankAddr);
         if(iter != myUserLabels.end())
         {
           // TODO: detect and add SUBROUTINE in saved disassembly
@@ -723,13 +742,13 @@ bool CartDebug::getLabel(ostream& buf, uInt16 addr, bool isRead,
   switch(places)
   {
     case 2:
-      buf << "$" << Base::HEX2 << addr;
+      buf << "$" << Base::HEX2 << bankAddr.addr;
       return true;
     case 4:
-      buf << "$" << Base::HEX4 << addr;
+      buf << "$" << Base::HEX4 << bankAddr.addr;
       return true;
     case 8:
-      buf << "$" << Base::HEX8 << addr;
+      buf << "$" << Base::HEX8 << bankAddr.addr;
       return true;
     default:
       break;
@@ -739,15 +758,41 @@ bool CartDebug::getLabel(ostream& buf, uInt16 addr, bool isRead,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartDebug::getLabel(uInt16 addr, bool isRead, int places, bool isRam) const
+bool CartDebug::getLabel(ostream& buf, int bank, int addr, bool isRead,
+                         int places, bool isRam) const
+{
+  return getLabel(buf, BankAddress(bank, addr), isRead, places, isRam);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartDebug::getLabel(ostream& buf, int addr, bool isRead,
+                         int places, bool isRam) const
+{
+  return getLabel(buf, BankAddress(addr), isRead, places, isRam);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CartDebug::getLabel(BankAddress bankAddr, bool isRead, int places, bool isRam) const
 {
   ostringstream buf;
-  getLabel(buf, addr, isRead, places, isRam);
+  getLabel(buf, bankAddr, isRead, places, isRam);
   return buf.str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartDebug::getAddress(const string& label) const
+string CartDebug::getLabel(int bank, int addr, bool isRead, int places, bool isRam) const
+{
+  return getLabel(BankAddress(bank, addr), isRead, places, isRam);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CartDebug::getLabel(int addr, bool isRead, int places, bool isRam) const
+{
+  return getLabel(BankAddress(addr), isRead, places, isRam);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+CartDebug::BankAddress CartDebug::getAddress(const string& label) const
 {
   LabelToAddr::const_iterator iter;
 
@@ -756,7 +801,7 @@ int CartDebug::getAddress(const string& label) const
   else if((iter = myUserAddresses.find(label)) != myUserAddresses.end())
     return iter->second;
   else
-    return -1;
+    return BankAddress(-1, 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -811,7 +856,7 @@ string CartDebug::loadListFile()
         buf >> hex >> xx >> hex >> yy >> line >> eq;
         if(xx >= 0 && yy >= 0 && eq == '=')
           //myUserCLabels.emplace(xx*256+yy, line);
-          addLabel(line, xx * 256 + yy);
+          addLabel(line, BankAddress(xx * 256 + yy));
       }
     }
   }
@@ -860,7 +905,7 @@ string CartDebug::loadSymbolFile()
       // For now, we simply ignore constants completely
       //const auto& iter = myUserCLabels.find(value);
       //if(iter == myUserCLabels.end() || !BSPF::equalsIgnoreCase(label, iter->second))
-      const auto& iter = myUserLabels.find(value);
+      const auto& iter = myUserLabels.find(BankAddress(value));
       if(iter == myUserLabels.end() || !BSPF::equalsIgnoreCase(label, iter->second))
       {
         // Check for period, and strip leading number
@@ -872,16 +917,16 @@ string CartDebug::loadSymbolFile()
 
           if(iterA != myUserAddresses.end())
             // if short label already exists, move prefix to suffix and add long local label name
-            addLabel(shortLabel + "." + label.substr(0, pos), value);
+            addLabel(shortLabel + "." + label.substr(0, pos), BankAddress(value));
           else
-            addLabel(shortLabel, value);
+            addLabel(shortLabel, BankAddress(value));
         }
         else
         {
           // skip local macro labels
           pos = label.find_last_of('$');
           if(pos == string::npos || pos != label.length() - 1)
-            addLabel(label, value);
+            addLabel(label, BankAddress(value));
         }
       }
     }
@@ -1128,10 +1173,11 @@ string CartDebug::saveDisassembly(string path)
     // Disassemble bank
     disasm.list.clear();
     DiStella distella(*this, disasm.list, info, settings,
-                      myDisLabels, myDisDirectives, myReserved);
+                      myDisLabels, myDisDirectives, myReserved,
+                      myConsole.cartridge().romBankCount());
 
     if (myReserved.breakFound)
-      addLabel("Break", myDebugger.dpeek(0xfffe));
+      addLabel("Break", BankAddress(bank, myDebugger.dpeek(0xfffe)));
 
     buf << "    SEG     CODE\n";
 
@@ -1308,7 +1354,7 @@ string CartDebug::saveDisassembly(string path)
       bool stackUsed = (mySystem.getAccessFlags(addr|0x100) & (Device::DATA | Device::WRITE));
 
       if (myReserved.ZPRAM[addr - 0x80] &&
-          myUserLabels.find(addr) == myUserLabels.end()) {
+          myUserLabels.find(BankAddress(addr)) == myUserLabels.end()) {
         if (addLine)
           out << "\n";
         out << ALIGN(16) << ourZPMnemonic[addr - 0x80] << "= $"
@@ -1341,7 +1387,7 @@ string CartDebug::saveDisassembly(string path)
         << ";      Non Locatable Labels\n"
         << ";-----------------------------------------------------------\n\n";
     for(const auto& iter: myReserved.Label)
-        out << ALIGN(16) << iter.second << "= $" << iter.first << "\n";
+        out << ALIGN(16) << iter.second << "= $" << iter.first.addr << "\n";
   }
 
   if(myUserLabels.size() > 0)
@@ -1353,7 +1399,7 @@ string CartDebug::saveDisassembly(string path)
     for(const auto& iter: myUserLabels)
       max_len = std::max(max_len, int(iter.second.size()));
     for(const auto& iter: myUserLabels)
-      out << ALIGN(max_len) << iter.second << "= $" << iter.first << "\n";
+      out << ALIGN(max_len) << iter.second << "= $" << iter.first.addr << "\n";
   }
 
   // And finally, output the disassembly

@@ -122,7 +122,7 @@ bool Debugger::start(const string& message, int address, bool read,
     ostringstream buf;
     buf << message;
     if(address > -1)
-      buf << cartDebug().getLabel(address, read, 4);
+      buf << cartDebug().getLabel(CartDebug::BankAddress(address), read, 4);
     dialog().message().setText(buf.str());
     dialog().message().setToolTip(toolTip);
     return true;

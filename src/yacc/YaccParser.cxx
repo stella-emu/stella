@@ -317,7 +317,9 @@ int yylex() {
           // happen if the user defines a label that matches one of
           // the specials. Who would do that, though?
 
-          if(Debugger::debugger().cartDebug().getAddress(idbuf) > -1) {
+          CartDebug::BankAddress bankAddr = Debugger::debugger().cartDebug().getAddress(idbuf);
+
+          if(bankAddr.bank > -1) {
             yylval.Equate = idbuf;
             return EQUATE;
           } else if( (cpuMeth = getCpuSpecial(idbuf)) ) {
