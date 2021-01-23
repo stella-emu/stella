@@ -71,8 +71,6 @@ FBBackendSDL2::~FBBackendSDL2()
     myWindow = nullptr;
   }
   SDL_QuitSubSystem(SDL_INIT_VIDEO | SDL_INIT_TIMER);
-
-cerr << "~FBBackendSDL2()" << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

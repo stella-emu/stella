@@ -39,6 +39,8 @@ class RomInfoWidget : public Widget
     void clearProperties();
     void reloadProperties(const FilesystemNode& node);
 
+    void resetSurfaces();
+
   protected:
     void drawWidget(bool hilite) override;
 

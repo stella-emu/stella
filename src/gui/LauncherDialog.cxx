@@ -351,6 +351,15 @@ void LauncherDialog::reload()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::resetSurfaces()
+{
+  if(myRomInfoWidget)
+    myRomInfoWidget->resetSurfaces();
+
+  Dialog::resetSurfaces();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::tick()
 {
   if(myPendingReload && myReloadTime < TimerManager::getTicks() / 1000)

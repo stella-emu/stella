@@ -50,7 +50,8 @@ Dialog::Dialog(OSystem& instance, DialogContainer& parent, const GUI::Font& font
                const string& title, int x, int y, int w, int h)
   : GuiObject(instance, parent, *this, x, y, w, h),
     _font{font},
-    _title{title}
+    _title{title},
+    _renderCallback{[]() { return; }}
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_BORDER | Widget::FLAG_CLEARBG;
   setTitle(title);
@@ -75,8 +76,6 @@ Dialog::~Dialog()
   _firstWidget = nullptr;
 
   _buttonGroup.clear();
-
-cerr << "\n~Dialog(): " << this << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -164,6 +163,12 @@ void Dialog::setDirtyChain()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::resetSurfaces()
+{
+  _surface->reload();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::tick()
 {
   // Recursively tick dialog and all child dialogs and widgets
@@ -241,11 +246,7 @@ void Dialog::render()
   // Update dialog surface; also render any extra surfaces
   // Extra surfaces must be rendered afterwards, so they are drawn on top
   if(_surface->render())
-  {
-    mySurfaceStack.applyAll([](unique_ptr<FBSurface>& surface) {
-      surface->render();
-    });
-  }
+    _renderCallback();
 
   // A dialog is still on top if a non-shading dialog (e.g. ContextMenu)
   // is opended above it.
@@ -422,10 +423,9 @@ void Dialog::buildCurrentFocusList(int tabID)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::addSurface(const unique_ptr<FBSurface>& surface)
+void Dialog::addRenderCallback(const std::function<void()>& callback)
 {
-// FIXME : add this to the stack somehow
-//  mySurfaceStack.push(surface);
+  _renderCallback = callback;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

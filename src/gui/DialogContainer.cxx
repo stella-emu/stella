@@ -203,7 +203,7 @@ void DialogContainer::reStack()
 void DialogContainer::resetSurfaces()
 {
   myDialogStack.applyAll([&](Dialog*& d) {
-    d->surface().reload();
+    d->resetSurfaces();
   });
 }
 
