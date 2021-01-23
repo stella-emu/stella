@@ -60,7 +60,6 @@ class FBSurfaceSDL2 : public FBSurface
     void invalidate() override;
     void invalidateRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h) override;
 
-    void free() override;
     void reload() override;
     void resize(uInt32 width, uInt32 height) override;
 
@@ -109,7 +108,7 @@ class FBSurfaceSDL2 : public FBSurface
 
     void createSurface(uInt32 width, uInt32 height, const uInt32* data);
 
-    void reinitializeBlitter();
+    void reinitializeBlitter(bool force = false);
 
     // Following constructors and assignment operators not supported
     FBSurfaceSDL2() = delete;

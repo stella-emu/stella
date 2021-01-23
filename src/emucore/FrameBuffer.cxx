@@ -67,11 +67,6 @@ FrameBuffer::FrameBuffer(OSystem& osystem)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBuffer::~FrameBuffer()
 {
-  // Make sure to free surfaces/textures before destroying the backend itself
-  // Most platforms are fine with doing this in either order, but it seems
-  // that OpenBSD in particular crashes when attempting to destroy textures
-  // *after* the renderer is already destroyed
-  freeSurfaces();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -256,21 +251,7 @@ FBInitStatus FrameBuffer::createDisplay(const string& title, BufferType type,
     return FBInitStatus::FailTooLarge;
 #endif
 
-  // Initialize video mode handler, so it can know what video modes are
-  // appropriate for the requested image size
-  myVidModeHandler.setImageSize(size);
-
-  // Always save, maybe only the mode of the window has changed
-  saveCurrentWindowPosition();
-  myBufferType = type;
-
-  // Initialize video subsystem
-  string pre_about = myBackend->about();
-  FBInitStatus status = applyVideoMode();
-  if(status != FBInitStatus::Success)
-    return status;
-
-#ifdef GUI_SUPPORT
+#ifdef GUI_SUPPORT  // TODO: put message stuff in its own class
   // Erase any messages from a previous run
   myMsg.enabled = false;
 
@@ -296,6 +277,20 @@ FBInitStatus FrameBuffer::createDisplay(const string& title, BufferType type,
                                     font().getFontHeight() * 1.5);
   }
 #endif
+
+  // Initialize video mode handler, so it can know what video modes are
+  // appropriate for the requested image size
+  myVidModeHandler.setImageSize(size);
+
+  // Always save, maybe only the mode of the window has changed
+  saveCurrentWindowPosition();
+  myBufferType = type;
+
+  // Initialize video subsystem
+  string pre_about = myBackend->about();
+  FBInitStatus status = applyVideoMode();
+  if(status != FBInitStatus::Success)
+    return status;
 
   // Print initial usage message, but only print it later if the status has changed
   if(myInitializedCount == 1)
@@ -553,6 +548,7 @@ void FrameBuffer::updateInEmulationMode(float framesPerSecond)
 }
 
 #ifdef GUI_SUPPORT
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::createMessage(const string& message, MessagePosition position, bool force)
 {
   // Only show messages if they've been enabled
@@ -866,42 +862,63 @@ void FrameBuffer::setPauseDelay()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-shared_ptr<FBSurface> FrameBuffer::allocateSurface(
-    int w, int h, ScalingInterpolation inter, const uInt32* data
-)
+unique_ptr<FBSurface> FrameBuffer::allocateSurface(
+    int w, int h, ScalingInterpolation inter, const uInt32* data)
 {
-  // Add new surface to the list
-  mySurfaceList.push_back(myBackend->createSurface(w, h, inter, data));
-
-  // And return a pointer to it (pointer should be treated read-only)
-  return mySurfaceList.at(mySurfaceList.size() - 1);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::freeSurfaces()
-{
-  for(auto& s: mySurfaceList)
-    s->free();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::reloadSurfaces()
-{
-  for(auto& s: mySurfaceList)
-    s->reload();
+  return myBackend->createSurface(w, h, inter, data);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::resetSurfaces()
 {
-  // Free all resources for each surface, then reload them
-  // Due to possible timing and/or synchronization issues, all free()'s
-  // are done first, then all reload()'s
-  // Any derived FrameBuffer classes that call this method should be
-  // aware of these restrictions, and act accordingly
+  switch(myOSystem.eventHandler().state())
+  {
+    case EventHandlerState::NONE:
+    case EventHandlerState::EMULATION:
+    case EventHandlerState::PAUSE:
+    case EventHandlerState::PLAYBACK:
+    #ifdef GUI_SUPPORT
+      myMsg.surface->reload();
+      myStatsMsg.surface->reload();
+    #endif
+      myTIASurface->resetSurfaces();
+      break;
 
-  freeSurfaces();
-  reloadSurfaces();
+  #ifdef GUI_SUPPORT
+    case EventHandlerState::OPTIONSMENU:
+      myOSystem.menu().resetSurfaces();
+      break;
+
+    case EventHandlerState::CMDMENU:
+      myOSystem.commandMenu().resetSurfaces();
+      break;
+
+    case EventHandlerState::HIGHSCORESMENU:
+      myOSystem.highscoresMenu().resetSurfaces();
+      break;
+
+    case EventHandlerState::MESSAGEMENU:
+      myOSystem.messageMenu().resetSurfaces();
+      break;
+
+    case EventHandlerState::TIMEMACHINE:
+      myOSystem.timeMachine().resetSurfaces();
+      break;
+
+    case EventHandlerState::LAUNCHER:
+      myOSystem.launcher().resetSurfaces();
+      break;
+  #endif
+
+  #ifdef DEBUGGER_SUPPORT
+    case EventHandlerState::DEBUGGER:
+      myOSystem.debugger().resetSurfaces();
+      break;
+  #endif
+
+    default:
+      break;
+  }
 
   update(UpdateMode::REDRAW); // force full update
 }

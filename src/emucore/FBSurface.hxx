@@ -350,16 +350,8 @@ class FBSurface
     */
     virtual void invalidateRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h) = 0;
 
-
-    /**
-      This method should be called to free any resources being used by
-      the surface.
-    */
-    virtual void free() = 0;
-
     /**
       This method should be called to reload the surface data/state.
-      It will normally be called after free().
     */
     virtual void reload() = 0;
 

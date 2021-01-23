@@ -90,7 +90,7 @@ class EventMappingWidget : public Widget, public CommandSender
     StringListWidget* myActionsList{nullptr};
     EditTextWidget*   myKeyMapping{nullptr};
 
-    ComboDialog* myComboDialog{nullptr};
+    unique_ptr<ComboDialog> myComboDialog;
 
     // Since this widget can be used for different collections of events,
     // we need to specify exactly which group of events we are remapping

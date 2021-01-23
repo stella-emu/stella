@@ -55,7 +55,6 @@ class FBSurfaceLIBRETRO : public FBSurface
     bool render() override { return true; }
     void invalidate() override { }
     void invalidateRect(uInt32, uInt32, uInt32, uInt32) override { }
-    void free() override { }
     void reload() override { }
     void resize(uInt32 width, uInt32 height) override { }
     void setScalingInterpolation(ScalingInterpolation) override { }

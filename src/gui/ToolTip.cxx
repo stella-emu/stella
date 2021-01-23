@@ -47,15 +47,13 @@ void ToolTip::setFont(const GUI::Font& font)
   myWidth = fontWidth * MAX_COLUMNS + myTextXOfs * 2;
   myHeight = fontHeight * MAX_ROWS + myTextYOfs * 2;
 
+  // unallocate
   if(mySurface != nullptr)
-  {
-    // TODO: unallocate
-    mySurface = nullptr;
-  }
+    mySurface.reset();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-shared_ptr<FBSurface> ToolTip::surface()
+const unique_ptr<FBSurface>& ToolTip::surface()
 {
   if(mySurface == nullptr)
     mySurface = myDialog.instance().frameBuffer().allocateSurface(myWidth, myHeight);

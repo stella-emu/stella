@@ -28,7 +28,6 @@ class TabWidget;
 class CommandSender;
 class ToolTip;
 
-#include "Stack.hxx"
 #include "Widget.hxx"
 #include "GuiObject.hxx"
 #include "StellaKeys.hxx"
@@ -45,6 +44,8 @@ class Dialog : public GuiObject
   friend class DialogContainer;
 
   public:
+    using RenderCallback = std::function<void()>;
+
     Dialog(OSystem& instance, DialogContainer& parent,
            int x = 0, int y = 0, int w = 0, int h = 0);
     Dialog(OSystem& instance, DialogContainer& parent, const GUI::Font& font,
@@ -61,6 +62,8 @@ class Dialog : public GuiObject
     virtual void loadConfig()  { }
     virtual void saveConfig()  { }
     virtual void setDefaults() { }
+
+    virtual void resetSurfaces();
 
     void setDirty() override;
     void setDirtyChain() override;
@@ -85,12 +88,11 @@ class Dialog : public GuiObject
     FBSurface& surface() const { return *_surface; }
 
     /**
-      Adds a surface to this dialog, which is rendered on top of the
-      base surface whenever the base surface is re-rendered.  Since
-      the surface render() call will always occur in such a case, the
-      surface should call setVisible() to enable/disable its output.
+      This method is called each time the main Dialog::render is called.
+      It is called *after* the dialog has been rendered, so it can be
+      used to render another surface on top of it, among other things.
     */
-    void addSurface(const shared_ptr<FBSurface>& surface);
+    void addRenderCallback(const RenderCallback& callback);
 
     void setTitle(const string& title);
     bool hasTitle() { return !_title.empty(); }
@@ -220,8 +222,6 @@ class Dialog : public GuiObject
     int     _layer{0};
     unique_ptr<ToolTip> _toolTip;
 
-    Common::FixedStack<shared_ptr<FBSurface>> mySurfaceStack;
-
   private:
     struct Focus {
       Widget* widget{nullptr};
@@ -248,12 +248,14 @@ class Dialog : public GuiObject
     TabFocusList _myTabList;  // focus for each tab (if any)
 
     WidgetArray _buttonGroup;
-    shared_ptr<FBSurface> _surface;
-    shared_ptr<FBSurface> _shadeSurface;
+    unique_ptr<FBSurface> _surface;
+    unique_ptr<FBSurface> _shadeSurface;
 
     int _tabID{0};
     uInt32 _max_w{0}; // maximum wanted width
     uInt32 _max_h{0}; // maximum wanted height
+
+    RenderCallback _renderCallback;
 
   private:
     // Following constructors and assignment operators not supported

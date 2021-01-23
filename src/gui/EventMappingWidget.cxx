@@ -128,7 +128,7 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
     addFocusWidget(myComboButton);
 
     VariantList combolist = instance().eventHandler().getComboList(mode);
-    myComboDialog = new ComboDialog(boss, font, combolist);
+    myComboDialog = make_unique<ComboDialog>(boss, font, combolist);
   }
 
   // Show message for currently selected event

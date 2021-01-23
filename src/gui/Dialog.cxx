@@ -50,22 +50,11 @@ Dialog::Dialog(OSystem& instance, DialogContainer& parent, const GUI::Font& font
                const string& title, int x, int y, int w, int h)
   : GuiObject(instance, parent, *this, x, y, w, h),
     _font{font},
-    _title{title}
+    _title{title},
+    _renderCallback{[]() { return; }}
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_BORDER | Widget::FLAG_CLEARBG;
   setTitle(title);
-
-  // Create shading surface
-  uInt32 data = 0xff000000;
-
-  _shadeSurface = instance.frameBuffer().allocateSurface(
-      1, 1, ScalingInterpolation::sharp, &data);
-
-  FBSurface::Attributes& attr = _shadeSurface->attributes();
-
-  attr.blending = true;
-  attr.blendalpha = 25; // darken background dialogs by 25%
-  _shadeSurface->applyAttributes();
 
   _toolTip = make_unique<ToolTip>(*this, font);
 }
@@ -174,6 +163,12 @@ void Dialog::setDirtyChain()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::resetSurfaces()
+{
+  _surface->reload();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::tick()
 {
   // Recursively tick dialog and all child dialogs and widgets
@@ -251,11 +246,7 @@ void Dialog::render()
   // Update dialog surface; also render any extra surfaces
   // Extra surfaces must be rendered afterwards, so they are drawn on top
   if(_surface->render())
-  {
-    mySurfaceStack.applyAll([](shared_ptr<FBSurface>& surface) {
-      surface->render();
-    });
-  }
+    _renderCallback();
 
   // A dialog is still on top if a non-shading dialog (e.g. ContextMenu)
   // is opended above it.
@@ -265,6 +256,20 @@ void Dialog::render()
 
   if(!onTop)
   {
+    if(_shadeSurface == nullptr)
+    {
+      // Create shading surface
+      uInt32 data = 0xff000000;
+
+      _shadeSurface = instance().frameBuffer().allocateSurface(
+        1, 1, ScalingInterpolation::sharp, &data);
+
+      FBSurface::Attributes& attr = _shadeSurface->attributes();
+
+      attr.blending = true;
+      attr.blendalpha = 25; // darken background dialogs by 25%
+      _shadeSurface->applyAttributes();
+    }
     _shadeSurface->setDstRect(_surface->dstRect());
     _shadeSurface->render();
   }
@@ -418,9 +423,9 @@ void Dialog::buildCurrentFocusList(int tabID)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::addSurface(const shared_ptr<FBSurface>& surface)
+void Dialog::addRenderCallback(const std::function<void()>& callback)
 {
-  mySurfaceStack.push(surface);
+  _renderCallback = callback;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
