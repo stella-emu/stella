@@ -877,8 +877,10 @@ void FrameBuffer::resetSurfaces()
     case EventHandlerState::EMULATION:
     case EventHandlerState::PAUSE:
     case EventHandlerState::PLAYBACK:
+    #ifdef GUI_SUPPORT
       myMsg.surface->reload();
       myStatsMsg.surface->reload();
+    #endif
       myTIASurface->resetSurfaces();
       break;
 
