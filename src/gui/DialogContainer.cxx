@@ -163,6 +163,7 @@ int DialogContainer::addDialog(Dialog* d)
       myDialogStack.top()->tooltip().hide();
 
     d->setDirty();
+    d->resetSurfaces();
     myDialogStack.push(d);
   }
   return myDialogStack.size();
