@@ -183,6 +183,11 @@ class TIASurface
      */
     void updateSurfaceSettings();
 
+    /**
+      Issue a 'reload' to each surface.
+    */
+    void resetSurfaces();
+
   private:
     /**
       Average current calculated buffer's pixel with previous calculated buffer's pixel (50:50).
@@ -208,7 +213,7 @@ class TIASurface
     FrameBuffer& myFB;
     TIA* myTIA{nullptr};
 
-    shared_ptr<FBSurface> myTiaSurface, mySLineSurface, myBaseTiaSurface, myShadeSurface;
+    unique_ptr<FBSurface> myTiaSurface, mySLineSurface, myBaseTiaSurface, myShadeSurface;
 
     // NTSC object to use in TIA rendering mode
     NTSCFilter myNTSCFilter;

@@ -200,6 +200,14 @@ void DialogContainer::reStack()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DialogContainer::resetSurfaces()
+{
+  myDialogStack.applyAll([&](Dialog*& d) {
+    d->resetSurfaces();
+  });
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DialogContainer::handleTextEvent(char text)
 {
   if(myDialogStack.empty())

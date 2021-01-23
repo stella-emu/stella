@@ -40,9 +40,6 @@ EditableWidget::EditableWidget(GuiObject* boss, const GUI::Font& font,
   _bgcolorlo = kDlgColor;
   _textcolor = kTextColor;
   _textcolorhi = kTextColor;
-
-  // add mouse context menu
-  myMouseMenu = make_unique<ContextMenu>(this, font, EmptyVarList);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -143,7 +140,7 @@ int EditableWidget::toCaretPos(int x) const
 void EditableWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
   // Grab right mouse button for context menu, send left to base class
-  if(b == MouseButton::RIGHT && isEnabled() && !myMouseMenu->isVisible())
+  if(b == MouseButton::RIGHT && isEnabled() && !mouseMenu().isVisible())
   {
     VariantList items;
   #ifndef BSPF_MACOS
@@ -159,10 +156,10 @@ void EditableWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount
     if(isEditable())
       VarList::push_back(items, " Paste    Cmd+V ", "paste");
   #endif
-    myMouseMenu->addItems(items);
+    mouseMenu().addItems(items);
 
     // Add menu at current x,y mouse location
-    myMouseMenu->show(x + getAbsX(), y + getAbsY(), dialog().surface().dstRect());
+    mouseMenu().show(x + getAbsX(), y + getAbsY(), dialog().surface().dstRect());
     return;
   }
   else if(b == MouseButton::LEFT && isEnabled())
@@ -177,6 +174,16 @@ void EditableWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount
     }
   }
   Widget::handleMouseDown(x, y, b, clickCount);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ContextMenu& EditableWidget::mouseMenu()
+{
+  // add mouse context menu
+  if(myMouseMenu == nullptr)
+    myMouseMenu = make_unique<ContextMenu>(this, _font, EmptyVarList);
+
+  return *myMouseMenu;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -205,7 +212,7 @@ void EditableWidget::handleCommand(CommandSender* sender, int cmd, int data, int
 {
   if(cmd == ContextMenu::kItemSelectedCmd)
   {
-    const string& rmb = myMouseMenu->getSelectedTag().toString();
+    const string& rmb = mouseMenu().getSelectedTag().toString();
 
     if(rmb == "cut")
     {

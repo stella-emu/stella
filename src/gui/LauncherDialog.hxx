@@ -108,6 +108,7 @@ class LauncherDialog : public Dialog
 
     void loadConfig() override;
     void saveConfig() override;
+    void resetSurfaces() override;
     void updateUI();
 
     /**
@@ -156,6 +157,8 @@ class LauncherDialog : public Dialog
     void openSettings();
     void openHighScores();
     void openWhatsNew();
+
+    ContextMenu& menu();
 
   private:
     unique_ptr<Dialog> myDialog;

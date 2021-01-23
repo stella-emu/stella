@@ -201,16 +201,9 @@ void FBSurfaceSDL2::invalidateRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSDL2::free()
-{
-  myBlitter.reset();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL2::reload()
 {
-  free();
-  reinitializeBlitter();
+  reinitializeBlitter(true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -220,8 +213,6 @@ void FBSurfaceSDL2::resize(uInt32 width, uInt32 height)
 
   if(mySurface)
     SDL_FreeSurface(mySurface);
-
-  free();
 
   // NOTE: Currently, a resize changes a 'static' surface to 'streaming'
   //       No code currently does this, but we should at least check for it
@@ -260,12 +251,15 @@ void FBSurfaceSDL2::createSurface(uInt32 width, uInt32 height,
   if(myIsStatic)
     SDL_memcpy(mySurface->pixels, data, mySurface->w * mySurface->h * 4);
 
-  reinitializeBlitter();
+  reload();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSDL2::reinitializeBlitter()
+void FBSurfaceSDL2::reinitializeBlitter(bool force)
 {
+  if (force)
+    myBlitter.reset();
+
   if (!myBlitter && myBackend.isInitialized())
     myBlitter = BlitterFactory::createBlitter(
         myBackend, scalingAlgorithm(myInterpolationMode));

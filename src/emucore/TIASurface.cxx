@@ -541,3 +541,12 @@ bool TIASurface::correctAspect() const
 {
   return myOSystem.settings().getBool("tia.correct_aspect");
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIASurface::resetSurfaces()
+{
+  myTiaSurface->reload();
+  mySLineSurface->reload();
+  myBaseTiaSurface->reload();
+  myShadeSurface->reload();
+}

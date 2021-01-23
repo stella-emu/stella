@@ -158,7 +158,7 @@ class FrameBuffer
 
       @return  A pointer to a valid surface object, or nullptr
     */
-    shared_ptr<FBSurface> allocateSurface(
+    unique_ptr<FBSurface> allocateSurface(
       int w,
       int h,
       ScalingInterpolation inter = ScalingInterpolation::none,
@@ -385,16 +385,6 @@ class FrameBuffer
     void saveCurrentWindowPosition() const;
 
     /**
-      Calls 'free()' on all surfaces that the framebuffer knows about.
-    */
-    void freeSurfaces();
-
-    /**
-      Calls 'reload()' on all surfaces that the framebuffer knows about.
-    */
-    void reloadSurfaces();
-
-    /**
       Frees and reloads all surfaces that the framebuffer knows about.
     */
     void resetSurfaces();
@@ -520,7 +510,7 @@ class FrameBuffer
       int x{0}, y{0}, w{0}, h{0};
       MessagePosition position{MessagePosition::BottomCenter};
       ColorId color{kNone};
-      shared_ptr<FBSurface> surface;
+      unique_ptr<FBSurface> surface;
       bool enabled{false};
       bool dirty{false};
       bool showGauge{false};
@@ -540,9 +530,6 @@ class FrameBuffer
     float myTIAMinZoom{2.F};
     // Maximum TIA zoom level that can be used for this framebuffer
     float myTIAMaxZoom{1.F};
-
-    // Holds a reference to all the surfaces that have been created
-    vector<shared_ptr<FBSurface>> mySurfaceList;
 
     // Maximum message width [chars]
     static constexpr int MESSAGE_WIDTH = 56;

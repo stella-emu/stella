@@ -94,7 +94,11 @@ void RomInfoWidget::parseProperties(const FilesystemNode& node)
         myAvail.w, myAvail.h, ScalingInterpolation::blur);
     mySurface->applyAttributes();
 
-    dialog().addSurface(mySurface);
+    dialog().addRenderCallback([this]() {
+      if(mySurfaceIsValid)
+        mySurface->render();
+      }
+    );
   }
 
   // Initialize to empty properties entry
@@ -167,6 +171,13 @@ void RomInfoWidget::parseProperties(const FilesystemNode& node)
     myRomInfo.push_back("Type: " + Bankswitch::typeToDesc(Bankswitch::nameToType(bsDetected)));
 
   setDirty();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RomInfoWidget::resetSurfaces()
+{
+  if(mySurface)
+    mySurface->reload();
 }
 
 #ifdef PNG_SUPPORT
