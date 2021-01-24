@@ -117,13 +117,13 @@ class DiStella
     // Convenience methods to generate appropriate labels
     inline void lineLabelHigh(stringstream& buf, uInt16 addr)
     {
-      stringstream buf8;
+      stringstream buf10; // must be formatted as '8x'
 
-      buf8 << "'L";
+      buf10 << "'L";
       if(myNumBanks > 1)
-        buf8 << Common::Base::HEX1 << myBank << "_";
-      buf8 << Common::Base::HEX4 << addr;
-      buf << std::left << std::setw(9) << std::setfill(' ') << buf8.str() << "'";
+        buf10 << Common::Base::HEX1 << myBank << "_";
+      buf10 << Common::Base::HEX4 << addr;
+      buf << std::left << std::setw(9) << std::setfill(' ') << buf10.str() << "'";
     }
 
     inline void labelHigh(stringstream& buf, uInt16 addr)

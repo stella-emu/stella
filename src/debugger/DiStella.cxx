@@ -86,7 +86,8 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
       if (myDbg.addressType(k + myOffset) == CartDebug::AddrType::ROM) {
         reservedLabel.str("");
         labelHigh(reservedLabel, k + myOffset);
-        myReserved.Label.emplace(k + myOffset, reservedLabel.str());
+        myReserved.Label.emplace(CartDebug::BankAddress(myBank, k + myOffset),
+                                 reservedLabel.str());
       }
     }
   }
@@ -538,15 +539,28 @@ void DiStella::disasm(uInt32 distart, int pass)
           d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
           ad = ((myPC + Int8(d1)) & 0xfff) + myOffset;
 
-          labelFound = mark(ad, Device::REFERENCED);
+          // Detect cross-bank branches
+          bool crossBank = Int32(myPC) + Int8(d1) < myAppData.start
+            || Int32(myPC) + Int8(d1) > myAppData.end;
+
+          if(!crossBank)
+            labelFound = mark(ad, Device::REFERENCED);
+          else
+          {
+            labelFound = AddressType::INVALID;
+            cerr << myBank << "_" << myPC << ": " << Base::HEX2 << std::to_string(Int8(d1)) << endl;
+          }
+
           if(pass == 3) {
             if(labelFound == AddressType::ROM) {
               nextLine << "     ";
               LABEL_HIGH(ad);
             }
-            else
+            else if(!crossBank)
               nextLine << "     $" << Base::HEX4 << ad;
-
+            else
+              nextLine << "     . " << (Int8(d1) > 0 ? "+" : "-")
+                << " $" << Base::HEX2 << std::to_string(abs(Int8(d1)));
             nextLineBytes << Base::HEX2 << int(d1);
           }
           break;
