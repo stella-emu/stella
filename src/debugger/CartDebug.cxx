@@ -69,6 +69,7 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
     return a.bank < b.bank;
   };
   myUserLabels = AddrToLabel(lblCmp);
+  myReserved.Label = AddrToLabel(lblCmp);
 
   // Add Zero-page RAM addresses
   for(uInt16 i = 0x80; i <= 0xFF; ++i)
@@ -1158,6 +1159,7 @@ string CartDebug::saveDisassembly(string path)
 
     BankInfo& info = myBankInfo[bank];
 
+    //TJ, TODO: Why two disassemblies here?
     disassembleBank(bank);
 
     // An empty address list means that DiStella can't do a disassembly
