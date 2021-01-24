@@ -513,7 +513,7 @@ void Settings::usage() const
     << "  -autofirerate <0-30>         Set fire button's autofire rate (0 means off)\n"
     << "  -saport       <lr|rl>        How to assign virtual ports to multiple\n"
     << "                                Stelladaptor/2600-daptors\n"
-    << "  -modcombo     <1|0>          Enable modifer key combos\n"
+    << "  -modcombo     <1|0>          Enable modifier key combos\n"
     << "                                (Control-Q for quit may not work when disabled!)\n"
     << "  -fastscbios   <1|0>          Disable Supercharger BIOS progress loading bars\n"
     << "  -threads      <1|0>          Whether to using multi-threading during\n"
