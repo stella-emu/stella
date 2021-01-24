@@ -1251,7 +1251,7 @@ void DebuggerParser::executeDump()
       const string outStr = out.str();
       const string resultStr = commandResult.str();
 
-      DebuggerDialog* dlg = &debugger.dialog();
+      DebuggerDialog* dlg = debugger.myDialog;
       BrowserDialog::show(dlg, "Save Dump as", path.str(),
                           BrowserDialog::Mode::FileSave,
                           [this, dlg, outStr, resultStr]
@@ -1892,7 +1892,7 @@ void DebuggerParser::executeSave()
 {
   if(argCount && argStrings[0] == "?")
   {
-    DebuggerDialog* dlg = &debugger.dialog();
+    DebuggerDialog* dlg = debugger.myDialog;
 
     BrowserDialog::show(dlg, "Save Workbench as",
                         dlg->instance().userDir().getPath() + cartName() + ".script",
@@ -1916,7 +1916,7 @@ void DebuggerParser::executeSaveAccess()
 {
   if(argCount && argStrings[0] == "?")
   {
-    DebuggerDialog* dlg = &debugger.dialog();
+    DebuggerDialog* dlg = debugger.myDialog;
 
     BrowserDialog::show(dlg, "Save Access Counters as",
                         dlg->instance().userDir().getPath() + cartName() + ".csv",
@@ -1947,7 +1947,7 @@ void DebuggerParser::executeSavedisassembly()
 {
   if(argCount && argStrings[0] == "?")
   {
-    DebuggerDialog* dlg = &debugger.dialog();
+    DebuggerDialog* dlg = debugger.myDialog;
 
     BrowserDialog::show(dlg, "Save Disassembly as",
                         dlg->instance().userDir().getPath() + cartName() + ".asm",
@@ -1971,7 +1971,7 @@ void DebuggerParser::executeSaverom()
 {
   if(argCount && argStrings[0] == "?")
   {
-    DebuggerDialog* dlg = &debugger.dialog();
+    DebuggerDialog* dlg = debugger.myDialog;
 
     BrowserDialog::show(dlg, "Save ROM as",
                         dlg->instance().userDir().getPath() + cartName() + ".a26",
@@ -1999,7 +1999,7 @@ void DebuggerParser::executeSaveses()
 
   if(argCount && argStrings[0] == "?")
   {
-    DebuggerDialog* dlg = &debugger.dialog();
+    DebuggerDialog* dlg = debugger.myDialog;
 
     BrowserDialog::show(dlg, "Save Session as",
                         dlg->instance().userDir().getPath() + filename.str(),
