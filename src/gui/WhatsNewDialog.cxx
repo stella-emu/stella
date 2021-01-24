@@ -50,6 +50,7 @@ WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent,
   add(ypos, "fixed navigation bug in Video & Audio settings dialog");
   add(ypos, "fixed autofire bug for trackball controllers");
   add(ypos, "fixed paddle button bug for jittering controllers");
+  add(ypos, "improved switching between joysticks and paddles");
   add(ypos, "improved memory usage in UI mode");
 #else
   const string& version = instance().settings().getString("stella.version");
