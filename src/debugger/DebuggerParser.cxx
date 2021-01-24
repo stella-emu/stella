@@ -244,10 +244,9 @@ int DebuggerParser::decipher_arg(const string& str)
   else if(arg == "pc" || arg == ".") result = state.PC;
   else { // Not a special, must be a regular arg: check for label first
     const char* a = arg.c_str();
-    CartDebug::BankAddress bankAddr = debugger.cartDebug().getAddress(arg);
-    result = bankAddr.addr;
+    result = debugger.cartDebug().getAddress(arg);
 
-    if(bankAddr.bank < 0) { // if not label, must be a number
+    if(result < 0) { // if not label, must be a number
       if(bin) { // treat as binary
         result = 0;
         while(*a != '\0') {
@@ -596,11 +595,9 @@ void DebuggerParser::listTraps(bool listCond)
 
       if(hasCond)
         commandResult << " " << names[i];
-      commandResult << " "
-        << debugger.cartDebug().getLabel(myTraps[i]->begin, true, 4);
+      commandResult << " " << debugger.cartDebug().getLabel(myTraps[i]->begin, true, 4);
       if(myTraps[i]->begin != myTraps[i]->end)
-        commandResult << " "
-          << debugger.cartDebug().getLabel(myTraps[i]->end, true, 4);
+        commandResult << " " << debugger.cartDebug().getLabel(myTraps[i]->end, true, 4);
       commandResult << trapStatus(*myTraps[i]);
       commandResult << " + mirrors";
       if(i != (names.size() - 1)) commandResult << endl;
@@ -1037,7 +1034,7 @@ void DebuggerParser::executeDebugColors()
 void DebuggerParser::executeDefine()
 {
   // TODO: check if label already defined?
-  debugger.cartDebug().addLabel(argStrings[0], CartDebug::BankAddress(args[1]));
+  debugger.cartDebug().addLabel(argStrings[0], args[1]);
   debugger.rom().invalidate();
 }
 
@@ -1254,7 +1251,7 @@ void DebuggerParser::executeDump()
       const string outStr = out.str();
       const string resultStr = commandResult.str();
 
-      DebuggerDialog* dlg = &debugger.dialog();
+      DebuggerDialog* dlg = debugger.myDialog;
       BrowserDialog::show(dlg, "Save Dump as", path.str(),
                           BrowserDialog::Mode::FileSave,
                           [this, dlg, outStr, resultStr]
@@ -1533,14 +1530,14 @@ void DebuggerParser::executeListbreaks()
   {
     if(romBankCount == 1)
     {
-      buf << debugger.cartDebug().getLabel(bp.bank, bp.addr, true, 4) << " ";
+      buf << debugger.cartDebug().getLabel(bp.addr, true, 4) << " ";
       if(!(++count % 8)) buf << endl;
     }
     else
     {
       if(count % 6)
         buf << ", ";
-      buf << debugger.cartDebug().getLabel(bp.bank, bp.addr, true, 4);
+      buf << debugger.cartDebug().getLabel(bp.addr, true, 4);
       if(bp.bank != 255)
         buf << " #" << int(bp.bank);
       else
@@ -1895,7 +1892,7 @@ void DebuggerParser::executeSave()
 {
   if(argCount && argStrings[0] == "?")
   {
-    DebuggerDialog* dlg = &debugger.dialog();
+    DebuggerDialog* dlg = debugger.myDialog;
 
     BrowserDialog::show(dlg, "Save Workbench as",
                         dlg->instance().userDir().getPath() + cartName() + ".script",
@@ -1919,7 +1916,7 @@ void DebuggerParser::executeSaveAccess()
 {
   if(argCount && argStrings[0] == "?")
   {
-    DebuggerDialog* dlg = &debugger.dialog();
+    DebuggerDialog* dlg = debugger.myDialog;
 
     BrowserDialog::show(dlg, "Save Access Counters as",
                         dlg->instance().userDir().getPath() + cartName() + ".csv",
@@ -1950,7 +1947,7 @@ void DebuggerParser::executeSavedisassembly()
 {
   if(argCount && argStrings[0] == "?")
   {
-    DebuggerDialog* dlg = &debugger.dialog();
+    DebuggerDialog* dlg = debugger.myDialog;
 
     BrowserDialog::show(dlg, "Save Disassembly as",
                         dlg->instance().userDir().getPath() + cartName() + ".asm",
@@ -1974,7 +1971,7 @@ void DebuggerParser::executeSaverom()
 {
   if(argCount && argStrings[0] == "?")
   {
-    DebuggerDialog* dlg = &debugger.dialog();
+    DebuggerDialog* dlg = debugger.myDialog;
 
     BrowserDialog::show(dlg, "Save ROM as",
                         dlg->instance().userDir().getPath() + cartName() + ".a26",
@@ -2002,7 +1999,7 @@ void DebuggerParser::executeSaveses()
 
   if(argCount && argStrings[0] == "?")
   {
-    DebuggerDialog* dlg = &debugger.dialog();
+    DebuggerDialog* dlg = debugger.myDialog;
 
     BrowserDialog::show(dlg, "Save Session as",
                         dlg->instance().userDir().getPath() + filename.str(),
