@@ -244,9 +244,10 @@ int DebuggerParser::decipher_arg(const string& str)
   else if(arg == "pc" || arg == ".") result = state.PC;
   else { // Not a special, must be a regular arg: check for label first
     const char* a = arg.c_str();
-    result = debugger.cartDebug().getAddress(arg);
+    CartDebug::BankAddress bankAddr = debugger.cartDebug().getAddress(arg);
+    result = bankAddr.addr;
 
-    if(result < 0) { // if not label, must be a number
+    if(bankAddr.bank < 0) { // if not label, must be a number
       if(bin) { // treat as binary
         result = 0;
         while(*a != '\0') {
@@ -595,9 +596,11 @@ void DebuggerParser::listTraps(bool listCond)
 
       if(hasCond)
         commandResult << " " << names[i];
-      commandResult << " " << debugger.cartDebug().getLabel(myTraps[i]->begin, true, 4);
+      commandResult << " "
+        << debugger.cartDebug().getLabel(myTraps[i]->begin, true, 4);
       if(myTraps[i]->begin != myTraps[i]->end)
-        commandResult << " " << debugger.cartDebug().getLabel(myTraps[i]->end, true, 4);
+        commandResult << " "
+          << debugger.cartDebug().getLabel(myTraps[i]->end, true, 4);
       commandResult << trapStatus(*myTraps[i]);
       commandResult << " + mirrors";
       if(i != (names.size() - 1)) commandResult << endl;
@@ -1034,7 +1037,7 @@ void DebuggerParser::executeDebugColors()
 void DebuggerParser::executeDefine()
 {
   // TODO: check if label already defined?
-  debugger.cartDebug().addLabel(argStrings[0], args[1]);
+  debugger.cartDebug().addLabel(argStrings[0], CartDebug::BankAddress(args[1]));
   debugger.rom().invalidate();
 }
 
@@ -1530,14 +1533,14 @@ void DebuggerParser::executeListbreaks()
   {
     if(romBankCount == 1)
     {
-      buf << debugger.cartDebug().getLabel(bp.addr, true, 4) << " ";
+      buf << debugger.cartDebug().getLabel(bp.bank, bp.addr, true, 4) << " ";
       if(!(++count % 8)) buf << endl;
     }
     else
     {
       if(count % 6)
         buf << ", ";
-      buf << debugger.cartDebug().getLabel(bp.addr, true, 4);
+      buf << debugger.cartDebug().getLabel(bp.bank, bp.addr, true, 4);
       if(bp.bank != 255)
         buf << " #" << int(bp.bank);
       else
