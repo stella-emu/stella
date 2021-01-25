@@ -65,18 +65,18 @@ namespace {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeCDF::CartridgeCDF(const ByteBuffer& image, size_t size,
                            const string& md5, const Settings& settings)
-  : Cartridge(settings, md5),
-    myImage{make_unique<uInt8[]>(512_KB)}
+  : Cartridge(settings, md5)
 {
   // Copy the ROM image into my buffer
-  std::fill_n(myImage.get(), 512_KB, 0);
-  std::copy_n(image.get(), std::min(512_KB, size), myImage.get());
+  mySize = std::min(size, 512_KB);
+  myImage = make_unique<uInt8[]>(mySize);
+  std::copy_n(image.get(), mySize, myImage.get());
 
   // Detect cart version
   setupVersion();
 
   // The lowest 2K is not accessible to the debugger
-  createRomAccessArrays(isCDFJplus() ? 510_KB : 28_KB);
+  createRomAccessArrays(isCDFJplus() ? mySize - 2_KB : 28_KB);
 
   // Pointer to the program ROM
   // which starts after the 2K driver (and 2K C Code for CDF)
@@ -105,7 +105,7 @@ CartridgeCDF::CartridgeCDF(const ByteBuffer& image, size_t size,
   myThumbEmulator = make_unique<Thumbulator>(
     reinterpret_cast<uInt16*>(myImage.get()),
     reinterpret_cast<uInt16*>(myRAM.data()),
-    static_cast<uInt32>(512_KB),
+    static_cast<uInt32>(mySize),
     cBase, cStart, cStack,
     devSettings ? settings.getBool("dev.thumb.trapfatal") : false,
     thumulatorConfiguration(myCDFSubtype),
@@ -485,7 +485,7 @@ bool CartridgeCDF::patch(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const ByteBuffer& CartridgeCDF::getImage(size_t& size) const
 {
-  size = 512_KB;
+  size = mySize;
   return myImage;
 }
 
@@ -810,7 +810,7 @@ uInt32 CartridgeCDF::ramSize() const
 
 uInt32 CartridgeCDF::romSize() const
 {
-  return uInt32(isCDFJplus() ? 512_KB : 32_KB);
+  return uInt32(isCDFJplus() ? mySize : 32_KB);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

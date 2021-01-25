@@ -266,7 +266,10 @@ class CartridgeCDF : public Cartridge
 
   private:
     // The ROM image of the cartridge
-    ByteBuffer myImage;
+    ByteBuffer myImage{nullptr};
+
+    // The size of the ROM image
+    size_t mySize{0};
 
     // Pointer to the program ROM image of the cartridge
     uInt8* myProgramImage{nullptr};
