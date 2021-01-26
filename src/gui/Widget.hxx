@@ -373,7 +373,7 @@ class SliderWidget : public ButtonWidget
     int posToValue(int pos) const;
 
   protected:
-    int    _value{-1}, _stepValue{1};
+    int    _value{-INT_MAX}, _stepValue{1};
     int    _valueMin{0}, _valueMax{100};
     bool   _isDragging{false};
     int    _labelWidth{0};
