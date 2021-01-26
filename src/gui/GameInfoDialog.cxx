@@ -283,7 +283,7 @@ void GameInfoDialog::addControllersTab()
   VarList::push_back(items, "KidVid", "KIDVID");
   VarList::push_back(items, "Lightgun", "LIGHTGUN");
   VarList::push_back(items, "MindLink", "MINDLINK");
-  VarList::push_back(ctrls, "QuadTari", "QUADTARI");
+  VarList::push_back(items, "QuadTari", "QUADTARI");
 
   xpos = HBORDER; ypos = VBORDER;
   pwidth = _font.getStringWidth("Paddles_IAxis");
