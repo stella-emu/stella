@@ -18,8 +18,8 @@
 #ifndef JOYSTICK_HXX
 #define JOYSTICK_HXX
 
-#include "Event.hxx"
 #include "Control.hxx"
+#include "Event.hxx"
 
 /**
   The standard Atari 2600 joystick controller.
@@ -118,8 +118,8 @@ class Joystick : public Controller
   private:
     // Pre-compute the events we care about based on given port
     // This will eliminate test for left or right port in update()
-    Event::Type myUpEvent, myDownEvent, myLeftEvent, myRightEvent,
-                myXAxisValue, myYAxisValue;
+    Event::Type myUpEvent, myDownEvent, myLeftEvent, myRightEvent;
+                //myXAxisValue, myYAxisValue;
 
     // Controller to emulate in normal mouse axis mode
     int myControlID{-1};
@@ -133,10 +133,11 @@ class Joystick : public Controller
     */
     void updateDigitalAxes();
 
-    /**
-      Update the axes pin states according to the axes value events currently set.
-    */
-    void updateAnalogAxes();
+    ///**
+    //  Update the axes pin states according to the Stelladaptor axes value
+    //  events currently set.
+    //*/
+    //void updateStelladaptorAxes();
 
     /**
       Update the axes pin states according to mouse events currently set.

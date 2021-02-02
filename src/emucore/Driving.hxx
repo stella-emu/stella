@@ -117,6 +117,35 @@ class Driving : public Controller
     static float SENSITIVITY;
 
   private:
+    /**
+      Update the button pin states.
+    */
+    void updateButtons();
+
+    /**
+      Update the button states from the mouse button events currently set.
+    */
+    void updateMouseButtons(bool& firePressed);
+
+    /**
+      Update the axes pin states according to the keyboard
+      or joystick hats & buttons events currently set.
+    */
+    void updateDigitalAxes();
+
+    /**
+      Update the axes pin states according to the Stelladaptor axes value
+      events currently set.
+    */
+    void updateStelladaptorAxes();
+
+    /**
+      Update the axes pin states according to mouse events currently set.
+    */
+    void updateMouseAxes();
+
+
+  private:
     // Following constructors and assignment operators not supported
     Driving() = delete;
     Driving(const Driving&) = delete;

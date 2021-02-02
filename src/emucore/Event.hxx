@@ -165,6 +165,7 @@ class Event
       DecreasePaddleCenterY, IncreasePaddleCenterY,
       PreviousMouseControl,
       DecreaseMouseAxesRange, IncreaseMouseAxesRange,
+      SALeftAxis0Value, SALeftAxis1Value, SARightAxis0Value, SARightAxis1Value,
       LastType
     };
 
