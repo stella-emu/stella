@@ -62,7 +62,7 @@ class PhysicalJoystickHandler
     };
 
   public:
-    PhysicalJoystickHandler(OSystem& system, EventHandler& handler);
+    PhysicalJoystickHandler(OSystem& system, EventHandler& handler, Event& event);
 
     static nlohmann::json convertLegacyMapping(const string& mapping);
 
@@ -125,6 +125,7 @@ class PhysicalJoystickHandler
 
     OSystem& myOSystem;
     EventHandler& myHandler;
+    Event& myEvent;
 
     // Contains all joysticks that Stella knows about, indexed by name
     StickDatabase myDatabase;
@@ -148,6 +149,10 @@ class PhysicalJoystickHandler
     JoyDir convertAxisValue(int value) const {
       return value == int(JoyDir::NONE) ? JoyDir::NONE : value > 0 ? JoyDir::POS : JoyDir::NEG;
     }
+
+    // Handle regular axis events (besides special Stelladaptor handling)
+    void handleRegularAxisEvent(const PhysicalJoystickPtr j,
+                                int stick, int axis, int value);
 
     // Structures used for action menu items
     struct EventMapping {
@@ -192,6 +197,10 @@ class PhysicalJoystickHandler
     static EventMappingArray DefaultRightPaddlesMapping;
     static EventMappingArray DefaultLeftKeypadMapping;
     static EventMappingArray DefaultRightKeypadMapping;
+
+    static constexpr int NUM_PORTS = 2;
+    static constexpr int NUM_SA_AXIS = 2;
+    static const Event::Type SA_Axis[NUM_PORTS][NUM_SA_AXIS];
 };
 
 #endif

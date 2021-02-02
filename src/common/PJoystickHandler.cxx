@@ -35,9 +35,10 @@ using json = nlohmann::json;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PhysicalJoystickHandler::PhysicalJoystickHandler(
-      OSystem& system, EventHandler& handler)
+      OSystem& system, EventHandler& handler, Event& event)
   : myOSystem{system},
-    myHandler{handler}
+    myHandler{handler},
+    myEvent(event)
 {
   if(myOSystem.settings().getInt("event_ver") != Event::VERSION) {
     Logger::info("event version mismatch; dropping previous joystick mappings");
@@ -161,6 +162,15 @@ int PhysicalJoystickHandler::add(const PhysicalJoystickPtr& stick)
     setStickDefaultMapping(stick->ID, Event::NoType, EventMode::kMenuMode);
   }
 
+  // We're potentially swapping out an input device behind the back of
+  // the Event system, so we make sure all Stelladaptor-generated events
+  // are reset
+  for(int port = 0; port < NUM_PORTS; ++port)
+  {
+    for(int axis = 0; axis < NUM_SA_AXIS; ++axis)
+      myEvent.set(SA_Axis[port][axis], 0);
+  }
+
   return stick->ID;
 }
 
@@ -222,6 +232,7 @@ void PhysicalJoystickHandler::mapStelladaptors(const string& saport)
   // in setupJoysticks take care of that
   int saCount = 0;
   int saOrder[] = { 1, 2 };
+
   if(BSPF::equalsIgnoreCase(saport, "rl"))
   {
     saOrder[0] = 2; saOrder[1] = 1;
@@ -229,6 +240,7 @@ void PhysicalJoystickHandler::mapStelladaptors(const string& saport)
 
   for(auto& [_id, _joyptr]: mySticks)
   {
+    bool found = false;
     // remove previously added emulated ports
     size_t pos = _joyptr->name.find(" (emulates ");
 
@@ -238,30 +250,29 @@ void PhysicalJoystickHandler::mapStelladaptors(const string& saport)
     if(BSPF::startsWithIgnoreCase(_joyptr->name, "Stelladaptor"))
     {
       if(saOrder[saCount] == 1)
-      {
-        _joyptr->name += " (emulates left joystick port)";
         _joyptr->type = PhysicalJoystick::Type::LEFT_STELLADAPTOR;
-      }
       else if(saOrder[saCount] == 2)
-      {
-        _joyptr->name += " (emulates right joystick port)";
         _joyptr->type = PhysicalJoystick::Type::RIGHT_STELLADAPTOR;
-      }
-      saCount++;
+      found = true;
     }
     else if(BSPF::startsWithIgnoreCase(_joyptr->name, "2600-daptor"))
     {
       if(saOrder[saCount] == 1)
-      {
-        _joyptr->name += " (emulates left joystick port)";
         _joyptr->type = PhysicalJoystick::Type::LEFT_2600DAPTOR;
-      }
       else if(saOrder[saCount] == 2)
-      {
-        _joyptr->name += " (emulates right joystick port)";
         _joyptr->type = PhysicalJoystick::Type::RIGHT_2600DAPTOR;
-      }
+      found = true;
+    }
+    if(found)
+    {
+      if(saOrder[saCount] == 1)
+        _joyptr->name += " (emulates left joystick port)";
+      else if(saOrder[saCount] == 2)
+        _joyptr->name += " (emulates right joystick port)";
+
       saCount++;
+      // always map Stelladaptor/2600-daptor to emulation mode defaults
+      setStickDefaultMapping(_joyptr->ID, Event::NoType, EventMode::kEmulationMode);
     }
   }
   myOSystem.settings().setValue("saport", saport);
@@ -704,75 +715,185 @@ void PhysicalJoystickHandler::handleAxisEvent(int stick, int axis, int value)
 
   if(j)
   {
-    int button = j->buttonLast[stick];
+    //int button = j->buttonLast[stick];
 
-    if(myHandler.state() == EventHandlerState::EMULATION)
+    switch(j->type)
     {
-      Event::Type eventAxisAnalog;
+      // Since the various controller classes deal with Stelladaptor
+      // devices differently, we send the raw X and Y axis data directly,
+      // and let the controller handle it
+      // These events don't have to pass through handleEvent, since
+      // they can never be remapped
+      case PhysicalJoystick::Type::LEFT_STELLADAPTOR:
+      case PhysicalJoystick::Type::LEFT_2600DAPTOR:
+        if(myOSystem.hasConsole()
+           && myOSystem.console().leftController().type() == Controller::Type::Driving)
+        {
+          if(axis < NUM_SA_AXIS)
+            myEvent.set(SA_Axis[0][axis], value);
+        }
+        else
+          handleRegularAxisEvent(j, stick, axis, value);
+        break;  // axis on left controller (0)
 
-      // Check for analog events, which are handled differently
-      // A value change lower than ~90% indicates analog input
-      if((abs(j->axisLastValue[axis] - value) < 30000)
-         && (eventAxisAnalog = j->joyMap.get(EventMode::kEmulationMode, button, JoyAxis(axis), JoyDir::ANALOG)) != Event::Type::NoType)
-      {
-        myHandler.handleEvent(eventAxisAnalog, value);
-      }
+      case PhysicalJoystick::Type::RIGHT_STELLADAPTOR:
+      case PhysicalJoystick::Type::RIGHT_2600DAPTOR:
+        if(myOSystem.hasConsole()
+           && myOSystem.console().rightController().type() == Controller::Type::Driving)
+        {
+          if(axis < NUM_SA_AXIS)
+            myEvent.set(SA_Axis[1][axis], value);
+        }
+        else
+          handleRegularAxisEvent(j, stick, axis, value);
+        break;  // axis on right controller (1)
+
+      default: // PhysicalJoystick::Type::REGULAR
+        handleRegularAxisEvent(j, stick, axis, value);
+      #if 0
+    //    if(myHandler.state() == EventHandlerState::EMULATION)
+    //    {
+    //      Event::Type eventAxisAnalog;
+
+    //      // Check for analog events, which are handled differently
+    //      // A value change lower than ~90% indicates analog input
+    //      if((abs(j->axisLastValue[axis] - value) < 30000)
+    //         && (eventAxisAnalog = j->joyMap.get(EventMode::kEmulationMode, button, JoyAxis(axis), JoyDir::ANALOG)) != Event::Type::NoType)
+    //      {
+    //        myHandler.handleEvent(eventAxisAnalog, value);
+    //      }
+    //      else
+    //      {
+    //        // Otherwise, we assume the event is digital
+    //        // Every axis event has two associated values, negative and positive
+    //        Event::Type eventAxisNeg = j->joyMap.get(EventMode::kEmulationMode, button, JoyAxis(axis), JoyDir::NEG);
+    //        Event::Type eventAxisPos = j->joyMap.get(EventMode::kEmulationMode, button, JoyAxis(axis), JoyDir::POS);
+
+    //        if(value > Joystick::deadzone())
+    //          myHandler.handleEvent(eventAxisPos);
+    //        else if(value < -Joystick::deadzone())
+    //          myHandler.handleEvent(eventAxisNeg);
+    //        else
+    //        {
+    //          // Treat any deadzone value as zero
+    //          value = 0;
+
+    //          // Now filter out consecutive, similar values
+    //          // (only pass on the event if the state has changed)
+    //          if(j->axisLastValue[axis] != value)
+    //          {
+    //            // Turn off both events, since we don't know exactly which one
+    //            // was previously activated.
+    //            myHandler.handleEvent(eventAxisNeg, false);
+    //            myHandler.handleEvent(eventAxisPos, false);
+    //          }
+    //        }
+    //      }
+    //      j->axisLastValue[axis] = value;
+    //    }
+    //  #ifdef GUI_SUPPORT
+    //    else if(myHandler.hasOverlay())
+    //    {
+    //      // A value change lower than Joystick::deadzone indicates analog input which is ignored
+    //      if((abs(j->axisLastValue[axis] - value) > Joystick::deadzone()))
+    //      {
+    //        // First, clamp the values to simulate digital input
+    //        // (the only thing that the underlying code understands)
+    //        if(value > Joystick::deadzone())
+    //          value = 32000;
+    //        else if(value < -Joystick::deadzone())
+    //          value = -32000;
+    //        else
+    //          value = 0;
+
+    //        // Now filter out consecutive, similar values
+    //        // (only pass on the event if the state has changed)
+    //        if(value != j->axisLastValue[axis])
+    //        {
+    //          myHandler.overlay().handleJoyAxisEvent(stick, JoyAxis(axis), convertAxisValue(value), button);
+
+    //        }
+    //      }
+    //      j->axisLastValue[axis] = value;
+    //    }
+    //  #endif
+      #endif
+    }
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PhysicalJoystickHandler::handleRegularAxisEvent(const PhysicalJoystickPtr j,
+                                                     int stick, int axis, int value)
+{
+  int button = j->buttonLast[stick];
+
+  if(myHandler.state() == EventHandlerState::EMULATION)
+  {
+    Event::Type eventAxisAnalog;
+
+    // Check for analog events, which are handled differently
+    // A value change lower than ~90% indicates analog input
+    if((abs(j->axisLastValue[axis] - value) < 30000)
+       && (eventAxisAnalog = j->joyMap.get(EventMode::kEmulationMode, button, JoyAxis(axis), JoyDir::ANALOG)) != Event::Type::NoType)
+    {
+      myHandler.handleEvent(eventAxisAnalog, value);
+    }
+    else
+    {
+      // Otherwise, we assume the event is digital
+      // Every axis event has two associated values, negative and positive
+      Event::Type eventAxisNeg = j->joyMap.get(EventMode::kEmulationMode, button, JoyAxis(axis), JoyDir::NEG);
+      Event::Type eventAxisPos = j->joyMap.get(EventMode::kEmulationMode, button, JoyAxis(axis), JoyDir::POS);
+
+      if(value > Joystick::deadzone())
+        myHandler.handleEvent(eventAxisPos);
+      else if(value < -Joystick::deadzone())
+        myHandler.handleEvent(eventAxisNeg);
       else
       {
-        // Otherwise, we assume the event is digital
-        // Every axis event has two associated values, negative and positive
-        Event::Type eventAxisNeg = j->joyMap.get(EventMode::kEmulationMode, button, JoyAxis(axis), JoyDir::NEG);
-        Event::Type eventAxisPos = j->joyMap.get(EventMode::kEmulationMode, button, JoyAxis(axis), JoyDir::POS);
-
-        if(value > Joystick::deadzone())
-          myHandler.handleEvent(eventAxisPos);
-        else if(value < -Joystick::deadzone())
-          myHandler.handleEvent(eventAxisNeg);
-        else
-        {
-          // Treat any deadzone value as zero
-          value = 0;
-
-          // Now filter out consecutive, similar values
-          // (only pass on the event if the state has changed)
-          if(j->axisLastValue[axis] != value)
-          {
-            // Turn off both events, since we don't know exactly which one
-            // was previously activated.
-            myHandler.handleEvent(eventAxisNeg, false);
-            myHandler.handleEvent(eventAxisPos, false);
-          }
-        }
-      }
-      j->axisLastValue[axis] = value;
-    }
-  #ifdef GUI_SUPPORT
-    else if(myHandler.hasOverlay())
-    {
-      // A value change lower than Joystick::deadzone indicates analog input which is ignored
-      if((abs(j->axisLastValue[axis] - value) > Joystick::deadzone()))
-      {
-        // First, clamp the values to simulate digital input
-        // (the only thing that the underlying code understands)
-        if(value > Joystick::deadzone())
-          value = 32000;
-        else if(value < -Joystick::deadzone())
-          value = -32000;
-        else
-          value = 0;
+        // Treat any deadzone value as zero
+        value = 0;
 
         // Now filter out consecutive, similar values
         // (only pass on the event if the state has changed)
-        if(value != j->axisLastValue[axis])
+        if(j->axisLastValue[axis] != value)
         {
-          myHandler.overlay().handleJoyAxisEvent(stick, JoyAxis(axis), convertAxisValue(value), button);
-
+          // Turn off both events, since we don't know exactly which one
+          // was previously activated.
+          myHandler.handleEvent(eventAxisNeg, false);
+          myHandler.handleEvent(eventAxisPos, false);
         }
       }
-      j->axisLastValue[axis] = value;
     }
-  #endif
+    j->axisLastValue[axis] = value;
   }
+#ifdef GUI_SUPPORT
+  else if(myHandler.hasOverlay())
+  {
+    // A value change lower than Joystick::deadzone indicates analog input which is ignored
+    if((abs(j->axisLastValue[axis] - value) > Joystick::deadzone()))
+    {
+      // First, clamp the values to simulate digital input
+      // (the only thing that the underlying code understands)
+      if(value > Joystick::deadzone())
+        value = 32000;
+      else if(value < -Joystick::deadzone())
+        value = -32000;
+      else
+        value = 0;
+
+      // Now filter out consecutive, similar values
+      // (only pass on the event if the state has changed)
+      if(value != j->axisLastValue[axis])
+      {
+        myHandler.overlay().handleJoyAxisEvent(stick, JoyAxis(axis), convertAxisValue(value), button);
+
+      }
+    }
+    j->axisLastValue[axis] = value;
+  }
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1159,4 +1280,11 @@ PhysicalJoystickHandler::DefaultMenuMapping = {
   {Event::UINavNext,          JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::RIGHT},
   {Event::UIUp,               JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::UP},
   {Event::UIDown,             JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::DOWN},
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Used by the Stelladaptor to send absolute axis values
+const Event::Type PhysicalJoystickHandler::SA_Axis[NUM_PORTS][NUM_SA_AXIS] = {
+  { Event::SALeftAxis0Value,  Event::SALeftAxis1Value  },
+  { Event::SARightAxis0Value, Event::SARightAxis1Value }
 };
