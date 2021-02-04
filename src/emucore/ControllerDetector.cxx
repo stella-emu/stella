@@ -699,22 +699,32 @@ bool ControllerDetector::isProbablyLightGun(const ByteBuffer& image, size_t size
 bool ControllerDetector::isProbablyQuadTari(const ByteBuffer& image, size_t size,
                                             Controller::Jack port)
 {
-  uInt8 signatureBoth[] = { 0x1B, 0x1F, 0x0B, 0x0E, 0x1E, 0x0B, 0x1C, 0x13 }; // "QUADTARI"
+  {
+    const int NUM_SIGS = 2;
+    const int SIG_SIZE = 8;
+    uInt8 signatureBoth[NUM_SIGS][SIG_SIZE] = {
+      { 0x1B, 0x1F, 0x0B, 0x0E, 0x1E, 0x0B, 0x1C, 0x13 },
+      { 'Q', 'U', 'A', 'D', 'T', 'A', 'R', 'I' }
+    }; // "QUADTARI"
 
-  if(searchForBytes(image, size, signatureBoth, 8))
-    return true;
+    for(uInt32 i = 0; i < NUM_SIGS; ++i)
+      if(searchForBytes(image, size, signatureBoth[i], SIG_SIZE))
+        return true;
+  }
 
   if(port == Controller::Jack::Left)
   {
-    uInt8 signature[] = { 'Q', 'U', 'A', 'D', 'L' };
+    const int SIG_SIZE = 5;
+    uInt8 signature[SIG_SIZE] = { 'Q', 'U', 'A', 'D', 'L' };
 
-    return searchForBytes(image, size, signature, 5);
+    return searchForBytes(image, size, signature, SIG_SIZE);
   }
   else if(port == Controller::Jack::Right)
   {
-    uInt8 signature[] = { 'Q', 'U', 'A', 'D', 'R' };
+    const int SIG_SIZE = 5;
+    uInt8 signature[SIG_SIZE] = { 'Q', 'U', 'A', 'D', 'R' };
 
-    return searchForBytes(image, size, signature, 5);
+    return searchForBytes(image, size, signature, SIG_SIZE);
   }
   return false;
 }
