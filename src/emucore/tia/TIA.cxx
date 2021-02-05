@@ -1688,6 +1688,7 @@ void TIA::delayedWrite(uInt8 address, uInt8 value)
     case VBLANK:
       flushLineCache();
       myFrameManager->setVblank(value & 0x02);
+      //updateDumpPorts(value);
       break;
 
     case HMOVE:
@@ -2010,6 +2011,7 @@ void TIA::updateDumpPorts(uInt8 value)
   {
     myArePortsDumped = newIsDumped;
     myDumpPortsTimestamp = myTimestamp;
+    //myDumpPortsTimestamp = mySystem->cycles();
   }
 }
 
@@ -2017,6 +2019,7 @@ void TIA::updateDumpPorts(uInt8 value)
 Int64 TIA::dumpPortsCycles()
 {
   return (myTimestamp - myDumpPortsTimestamp) / 3;
+  //return mySystem->cycles() - myDumpPortsTimestamp;
 }
 
 #ifdef DEBUGGER_SUPPORT

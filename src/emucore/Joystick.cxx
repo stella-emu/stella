@@ -99,7 +99,7 @@ void Joystick::updateMouseButtons(bool& pressedLeft, bool& pressedRight)
   if(myControlID > -1)
   {
     pressedLeft |= (myEvent.get(Event::MouseButtonLeftValue) != 0);
-    pressedRight |= (pressedRight || myEvent.get(Event::MouseButtonRightValue) != 0);
+    pressedRight |= (myEvent.get(Event::MouseButtonRightValue) != 0);
   }
 }
 
@@ -110,8 +110,7 @@ void Joystick::updateDigitalAxes()
   setPin(DigitalPin::One, myEvent.get(myUpEvent) == 0);
   setPin(DigitalPin::Two, myEvent.get(myDownEvent) == 0);
   setPin(DigitalPin::Three, myEvent.get(myLeftEvent) == 0);
-  setPin(DigitalPin::Four, myEvent.get(myRightEvent) != 1);
-  cerr << myEvent.get(myRightEvent) << endl;
+  setPin(DigitalPin::Four, myEvent.get(myRightEvent) == 0);
 }
 
 //// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

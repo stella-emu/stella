@@ -68,6 +68,10 @@ void Driving::update()
 
   updateDigitalAxes();
   updateMouseAxes();
+
+  // Only consider the lower-most bits (corresponding to pins 1 & 2)
+  myGrayIndex = Int32(myCounter * SENSITIVITY / 4.0F) & 0b11;
+
   updateStelladaptorAxes();
 
   // Gray codes for rotation
@@ -117,9 +121,6 @@ void Driving::updateDigitalAxes()
     --myCounter;
   else if(myEvent.get(myCWEvent) != 0 || d_axis > 16384)
     ++myCounter;
-
-  // Only consider the lower-most bits (corresponding to pins 1 & 2)
-  myGrayIndex = Int32(myCounter * SENSITIVITY / 4.0F) & 0b11;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
