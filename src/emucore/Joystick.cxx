@@ -110,8 +110,7 @@ void Joystick::updateDigitalAxes()
   setPin(DigitalPin::One, myEvent.get(myUpEvent) == 0);
   setPin(DigitalPin::Two, myEvent.get(myDownEvent) == 0);
   setPin(DigitalPin::Three, myEvent.get(myLeftEvent) == 0);
-  setPin(DigitalPin::Four, myEvent.get(myRightEvent) != 1);
-  cerr << myEvent.get(myRightEvent) << endl;
+  setPin(DigitalPin::Four, myEvent.get(myRightEvent) == 0);
 }
 
 //// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

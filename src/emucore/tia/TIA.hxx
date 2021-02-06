@@ -920,7 +920,7 @@ class TIA : public Device
     /**
      * The number of CPU clocks since the last dump ports state change.
      */
-    uInt64 myDumpPortsTimestamp{0};
+    uInt64 myDumpPortsCycles{0};
 
     /**
      * The current dump ports state.
