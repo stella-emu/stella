@@ -122,6 +122,7 @@ bool QuadTari::read(DigitalPin pin)
   else
     // If bit 7 of VBlank is not set, read first, else second controller
     readFirst = !(mySystem.tia().registerValue(VBLANK) & 0x80);
+
   cerr << mySystem.tia().dumpPortsCycles() << " ";
 
   if(readFirst)

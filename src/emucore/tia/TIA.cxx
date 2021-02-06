@@ -533,7 +533,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
 
       for (PaddleReader& paddleReader : myPaddleReaders)
         paddleReader.vblank(value, myTimestamp);
-      updateDumpPorts(value);
+      //updateDumpPorts(value);
 
       myDelayQueue.push(VBLANK, value, Delay::vblank);
 
@@ -1688,7 +1688,7 @@ void TIA::delayedWrite(uInt8 address, uInt8 value)
     case VBLANK:
       flushLineCache();
       myFrameManager->setVblank(value & 0x02);
-      //updateDumpPorts(value);
+      updateDumpPorts(value);
       break;
 
     case HMOVE:
@@ -2010,16 +2010,14 @@ void TIA::updateDumpPorts(uInt8 value)
   if(myArePortsDumped != newIsDumped)
   {
     myArePortsDumped = newIsDumped;
-    myDumpPortsTimestamp = myTimestamp;
-    //myDumpPortsTimestamp = mySystem->cycles();
+    myDumpPortsTimestamp = mySystem->cycles();
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Int64 TIA::dumpPortsCycles()
 {
-  return (myTimestamp - myDumpPortsTimestamp) / 3;
-  //return mySystem->cycles() - myDumpPortsTimestamp;
+  return mySystem->cycles() - myDumpPortsTimestamp;
 }
 
 #ifdef DEBUGGER_SUPPORT
