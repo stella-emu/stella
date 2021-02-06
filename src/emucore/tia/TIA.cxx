@@ -2009,14 +2009,14 @@ void TIA::updateDumpPorts(uInt8 value)
   if(myArePortsDumped != newIsDumped)
   {
     myArePortsDumped = newIsDumped;
-    myDumpPortsTimestamp = myTimestamp;
+    myDumpPortsCycles = mySystem->cycles() + Delay::vblank;
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Int64 TIA::dumpPortsCycles()
 {
-  return (myTimestamp - myDumpPortsTimestamp) / 3;
+  return mySystem->cycles() - myDumpPortsCycles;
 }
 
 #ifdef DEBUGGER_SUPPORT
