@@ -54,10 +54,11 @@ ifneq ($(GIT_VERSION)," unknown")
    CXXFLAGS += -DGIT_VERSION=\"$(GIT_VERSION)\"
 endif
 
+GET_STATIC_ARG=$(if $(filter $(shell $(CXX) -print-file-name=$1.a),$1.a),,-static-$1)
 # Unix
 ifneq (,$(findstring unix,$(platform)))
    CXXFLAGS += $(LTO)
-   LDFLAGS += $(LTO) $(PTHREAD_FLAGS) -static-libgcc -static-libstdc++
+   LDFLAGS += $(LTO) $(PTHREAD_FLAGS) $(call GET_STATIC_ARG,libgcc) $(call GET_STATIC_ARG,libstdc++)
    TARGET := $(TARGET_NAME)_libretro.so
    fpic := -fPIC
    ifneq ($(findstring SunOS,$(shell uname -a)),)
