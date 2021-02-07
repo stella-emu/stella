@@ -28,6 +28,7 @@ static retro_input_state_t input_state_cb;
 static retro_environment_t environ_cb;
 static retro_audio_sample_t audio_cb;
 static retro_audio_sample_batch_t audio_batch_cb;
+static bool libretro_supports_bitmasks;
 
 // libretro UI settings
 static int setting_ntsc, setting_pal;
@@ -63,109 +64,122 @@ static void update_input()
   input_poll_cb();
 
 
-#define EVENT stella.setInputEvent
+int32_t input_bitmask[4];
+#define GET_BITMASK(pad) if (libretro_supports_bitmasks) \
+      input_bitmask[(pad)] = input_state_cb((pad), RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_MASK); \
+    else \
+    { \
+        input_bitmask[(pad)] = 0; \
+        for (int i = 0; i <= RETRO_DEVICE_ID_JOYPAD_R3; i++) \
+          input_bitmask[(pad)] |= input_state_cb((pad), RETRO_DEVICE_JOYPAD, 0, i) ? (1 << i) : 0; \
+    }
+#define EVENT(evt, pad, id) stella.setInputEvent((evt), (input_bitmask[(pad)] & (1 << id)) ? 1 : 0)
 
   int pad = 0;
+  GET_BITMASK(pad)
   switch(input_type[0])
   {
     case Controller::Type::Joystick:
-      EVENT(Event::JoystickZeroLeft, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT));
-      EVENT(Event::JoystickZeroRight, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT));
-      EVENT(Event::JoystickZeroUp, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_UP));
-      EVENT(Event::JoystickZeroDown, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_DOWN));
-      EVENT(Event::JoystickZeroFire, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B));
+      EVENT(Event::JoystickZeroLeft, pad, RETRO_DEVICE_ID_JOYPAD_LEFT);
+      EVENT(Event::JoystickZeroRight, pad, RETRO_DEVICE_ID_JOYPAD_RIGHT);
+      EVENT(Event::JoystickZeroUp, pad, RETRO_DEVICE_ID_JOYPAD_UP);
+      EVENT(Event::JoystickZeroDown, pad, RETRO_DEVICE_ID_JOYPAD_DOWN);
+      EVENT(Event::JoystickZeroFire, pad, RETRO_DEVICE_ID_JOYPAD_B);
       break;
 
     case Controller::Type::Paddles:
-      EVENT(Event::PaddleZeroIncrease, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT));
-      EVENT(Event::PaddleZeroDecrease, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT));
-      EVENT(Event::PaddleZeroFire, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B));
-      //EVENT(Event::PaddleZeroAnalog, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B));
+      EVENT(Event::PaddleZeroIncrease, pad, RETRO_DEVICE_ID_JOYPAD_LEFT);
+      EVENT(Event::PaddleZeroDecrease, pad, RETRO_DEVICE_ID_JOYPAD_RIGHT);
+      EVENT(Event::PaddleZeroFire, pad, RETRO_DEVICE_ID_JOYPAD_B);
+      //EVENT(Event::PaddleZeroAnalog, pad, RETRO_DEVICE_ID_JOYPAD_B);
       pad++;
 
-      EVENT(Event::PaddleOneIncrease, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT));
-      EVENT(Event::PaddleOneDecrease, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT));
-      EVENT(Event::PaddleOneFire, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B));
-      //EVENT(Event::PaddleOneAnalog, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B));
+      GET_BITMASK(pad)
+      EVENT(Event::PaddleOneIncrease, pad, RETRO_DEVICE_ID_JOYPAD_LEFT);
+      EVENT(Event::PaddleOneDecrease, pad, RETRO_DEVICE_ID_JOYPAD_RIGHT);
+      EVENT(Event::PaddleOneFire, pad, RETRO_DEVICE_ID_JOYPAD_B);
+      //EVENT(Event::PaddleOneAnalog, pad, RETRO_DEVICE_ID_JOYPAD_B);
       break;
 
     case Controller::Type::Driving:
-      EVENT(Event::JoystickZeroLeft, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT));
-      EVENT(Event::JoystickZeroRight, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT));
-      EVENT(Event::JoystickZeroFire, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B));
+      EVENT(Event::JoystickZeroLeft, pad, RETRO_DEVICE_ID_JOYPAD_LEFT);
+      EVENT(Event::JoystickZeroRight, pad, RETRO_DEVICE_ID_JOYPAD_RIGHT);
+      EVENT(Event::JoystickZeroFire, pad, RETRO_DEVICE_ID_JOYPAD_B);
       break;
 
     case Controller::Type::Genesis:
-      EVENT(Event::JoystickZeroLeft, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT));
-      EVENT(Event::JoystickZeroRight, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT));
-      EVENT(Event::JoystickZeroUp, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_UP));
-      EVENT(Event::JoystickZeroDown, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_DOWN));
-      EVENT(Event::JoystickZeroFire, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B));
-      EVENT(Event::JoystickZeroFire5, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_A));
+      EVENT(Event::JoystickZeroLeft, pad, RETRO_DEVICE_ID_JOYPAD_LEFT);
+      EVENT(Event::JoystickZeroRight, pad, RETRO_DEVICE_ID_JOYPAD_RIGHT);
+      EVENT(Event::JoystickZeroUp, pad, RETRO_DEVICE_ID_JOYPAD_UP);
+      EVENT(Event::JoystickZeroDown, pad, RETRO_DEVICE_ID_JOYPAD_DOWN);
+      EVENT(Event::JoystickZeroFire, pad, RETRO_DEVICE_ID_JOYPAD_B);
+      EVENT(Event::JoystickZeroFire5, pad, RETRO_DEVICE_ID_JOYPAD_A);
       break;
 
     case Controller::Type::BoosterGrip:
-      EVENT(Event::JoystickZeroLeft, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT));
-      EVENT(Event::JoystickZeroRight, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT));
-      EVENT(Event::JoystickZeroUp, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_UP));
-      EVENT(Event::JoystickZeroDown, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_DOWN));
-      EVENT(Event::JoystickZeroFire, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B));
-      EVENT(Event::JoystickZeroFire5, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_A));
-      EVENT(Event::JoystickZeroFire9, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_Y));
+      EVENT(Event::JoystickZeroLeft, pad, RETRO_DEVICE_ID_JOYPAD_LEFT);
+      EVENT(Event::JoystickZeroRight, pad, RETRO_DEVICE_ID_JOYPAD_RIGHT);
+      EVENT(Event::JoystickZeroUp, pad, RETRO_DEVICE_ID_JOYPAD_UP);
+      EVENT(Event::JoystickZeroDown, pad, RETRO_DEVICE_ID_JOYPAD_DOWN);
+      EVENT(Event::JoystickZeroFire, pad, RETRO_DEVICE_ID_JOYPAD_B);
+      EVENT(Event::JoystickZeroFire5, pad, RETRO_DEVICE_ID_JOYPAD_A);
+      EVENT(Event::JoystickZeroFire9, pad, RETRO_DEVICE_ID_JOYPAD_Y);
       break;
 
     default:
       break;
   }
   pad++;
+  GET_BITMASK(pad)
 
 
   switch(input_type[1])
   {
     case Controller::Type::Joystick:
-      EVENT(Event::JoystickOneLeft, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT));
-      EVENT(Event::JoystickOneRight, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT));
-      EVENT(Event::JoystickOneUp, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_UP));
-      EVENT(Event::JoystickOneDown, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_DOWN));
-      EVENT(Event::JoystickOneFire, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B));
+      EVENT(Event::JoystickOneLeft, pad, RETRO_DEVICE_ID_JOYPAD_LEFT);
+      EVENT(Event::JoystickOneRight, pad, RETRO_DEVICE_ID_JOYPAD_RIGHT);
+      EVENT(Event::JoystickOneUp, pad, RETRO_DEVICE_ID_JOYPAD_UP);
+      EVENT(Event::JoystickOneDown, pad, RETRO_DEVICE_ID_JOYPAD_DOWN);
+      EVENT(Event::JoystickOneFire, pad, RETRO_DEVICE_ID_JOYPAD_B);
       break;
 
     case Controller::Type::Paddles:
-      EVENT(Event::PaddleTwoIncrease, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT));
-      EVENT(Event::PaddleTwoDecrease, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT));
-      EVENT(Event::PaddleTwoFire, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B));
-      //EVENT(Event::PaddleTwoAnalog, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B));
+      EVENT(Event::PaddleTwoIncrease, pad, RETRO_DEVICE_ID_JOYPAD_LEFT);
+      EVENT(Event::PaddleTwoDecrease, pad, RETRO_DEVICE_ID_JOYPAD_RIGHT);
+      EVENT(Event::PaddleTwoFire, pad, RETRO_DEVICE_ID_JOYPAD_B);
+      //EVENT(Event::PaddleTwoAnalog, pad, RETRO_DEVICE_ID_JOYPAD_B);
       pad++;
 
-      EVENT(Event::PaddleThreeIncrease, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT));
-      EVENT(Event::PaddleThreeDecrease, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT));
-      EVENT(Event::PaddleThreeFire, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B));
-      //EVENT(Event::PaddleThreeAnalog, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B));
+      GET_BITMASK(pad)
+      EVENT(Event::PaddleThreeIncrease, pad, RETRO_DEVICE_ID_JOYPAD_LEFT);
+      EVENT(Event::PaddleThreeDecrease, pad, RETRO_DEVICE_ID_JOYPAD_RIGHT);
+      EVENT(Event::PaddleThreeFire, pad, RETRO_DEVICE_JOYPAD);
+      //EVENT(Event::PaddleThreeAnalog, pad, RETRO_DEVICE_ID_JOYPAD_B);
       break;
 
     case Controller::Type::Driving:
-      EVENT(Event::JoystickOneLeft, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT));
-      EVENT(Event::JoystickOneRight, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT));
-      EVENT(Event::JoystickOneFire, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B));
+      EVENT(Event::JoystickOneLeft, pad, RETRO_DEVICE_ID_JOYPAD_LEFT);
+      EVENT(Event::JoystickOneRight, pad, RETRO_DEVICE_ID_JOYPAD_RIGHT);
+      EVENT(Event::JoystickOneFire, pad, RETRO_DEVICE_ID_JOYPAD_B);
       break;
 
     case Controller::Type::Genesis:
-      EVENT(Event::JoystickOneLeft, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT));
-      EVENT(Event::JoystickOneRight, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT));
-      EVENT(Event::JoystickOneUp, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_UP));
-      EVENT(Event::JoystickOneDown, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_DOWN));
-      EVENT(Event::JoystickOneFire, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B));
-      EVENT(Event::JoystickOneFire5, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_A));
+      EVENT(Event::JoystickOneLeft, pad, RETRO_DEVICE_ID_JOYPAD_LEFT);
+      EVENT(Event::JoystickOneRight, pad, RETRO_DEVICE_ID_JOYPAD_RIGHT);
+      EVENT(Event::JoystickOneUp, pad, RETRO_DEVICE_ID_JOYPAD_UP);
+      EVENT(Event::JoystickOneDown, pad, RETRO_DEVICE_ID_JOYPAD_DOWN);
+      EVENT(Event::JoystickOneFire, pad, RETRO_DEVICE_ID_JOYPAD_B);
+      EVENT(Event::JoystickOneFire5, pad, RETRO_DEVICE_ID_JOYPAD_A);
       break;
 
     case Controller::Type::BoosterGrip:
-      EVENT(Event::JoystickOneLeft, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT));
-      EVENT(Event::JoystickOneRight, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT));
-      EVENT(Event::JoystickOneUp, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_UP));
-      EVENT(Event::JoystickOneDown, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_DOWN));
-      EVENT(Event::JoystickOneFire, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B));
-      EVENT(Event::JoystickOneFire5, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_A));
-      EVENT(Event::JoystickOneFire9, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_Y));
+      EVENT(Event::JoystickOneLeft, pad, RETRO_DEVICE_ID_JOYPAD_LEFT);
+      EVENT(Event::JoystickOneRight, pad, RETRO_DEVICE_ID_JOYPAD_RIGHT);
+      EVENT(Event::JoystickOneUp, pad, RETRO_DEVICE_ID_JOYPAD_UP);
+      EVENT(Event::JoystickOneDown, pad, RETRO_DEVICE_ID_JOYPAD_DOWN);
+      EVENT(Event::JoystickOneFire, pad, RETRO_DEVICE_ID_JOYPAD_B);
+      EVENT(Event::JoystickOneFire5, pad, RETRO_DEVICE_ID_JOYPAD_A);
+      EVENT(Event::JoystickOneFire9, pad, RETRO_DEVICE_ID_JOYPAD_Y);
       break;
 
     default:
@@ -173,16 +187,17 @@ static void update_input()
   }
 
 
-  EVENT(Event::ConsoleLeftDiffA, input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_L));
-  EVENT(Event::ConsoleLeftDiffB, input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_L2));
-  EVENT(Event::ConsoleColor, input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_L3));
-  EVENT(Event::ConsoleRightDiffA, input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_R));
-  EVENT(Event::ConsoleRightDiffB, input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_R2));
-  EVENT(Event::ConsoleBlackWhite, input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_R3));
-  EVENT(Event::ConsoleSelect, input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_SELECT));
-  EVENT(Event::ConsoleReset, input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_START));
+  EVENT(Event::ConsoleLeftDiffA, 0, RETRO_DEVICE_ID_JOYPAD_L);
+  EVENT(Event::ConsoleLeftDiffB, 0, RETRO_DEVICE_ID_JOYPAD_L2);
+  EVENT(Event::ConsoleColor, 0, RETRO_DEVICE_ID_JOYPAD_L3);
+  EVENT(Event::ConsoleRightDiffA, 0, RETRO_DEVICE_ID_JOYPAD_R);
+  EVENT(Event::ConsoleRightDiffB, 0, RETRO_DEVICE_ID_JOYPAD_R2);
+  EVENT(Event::ConsoleBlackWhite, 0, RETRO_DEVICE_ID_JOYPAD_R3);
+  EVENT(Event::ConsoleSelect, 0, RETRO_DEVICE_ID_JOYPAD_SELECT);
+  EVENT(Event::ConsoleReset, 0, RETRO_DEVICE_ID_JOYPAD_START);
 
 #undef EVENT
+#undef GET_BITMASK
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -517,6 +532,7 @@ void retro_init()
   if(environ_cb(RETRO_ENVIRONMENT_GET_LOG_INTERFACE, &log)) log_cb = log.log;
 
   environ_cb(RETRO_ENVIRONMENT_SET_PERFORMANCE_LEVEL, &level);
+  libretro_supports_bitmasks = environ_cb(RETRO_ENVIRONMENT_GET_INPUT_BITMASKS, NULL);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
