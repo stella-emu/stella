@@ -2009,7 +2009,7 @@ void TIA::updateDumpPorts(uInt8 value)
   if(myArePortsDumped != newIsDumped)
   {
     myArePortsDumped = newIsDumped;
-    myDumpPortsCycles = mySystem->cycles() + Delay::vblank;
+    myDumpPortsCycles = mySystem->cycles();
   }
 }
 
