@@ -199,6 +199,7 @@ extern "C" {
 #define RETRO_DEVICE_ID_JOYPAD_R2      13
 #define RETRO_DEVICE_ID_JOYPAD_L3      14
 #define RETRO_DEVICE_ID_JOYPAD_R3      15
+#define RETRO_DEVICE_ID_JOYPAD_MASK   256 
 
 /* Index / Id values for ANALOG device. */
 #define RETRO_DEVICE_INDEX_ANALOG_LEFT       0
@@ -1008,6 +1009,7 @@ enum retro_mod
 											*   never need an accurate audio state in the future.
 											* * State will never be saved when using Hard Disable Audio.
 											*/
+#define RETRO_ENVIRONMENT_GET_INPUT_BITMASKS 51
 
 /* VFS functionality */
 
