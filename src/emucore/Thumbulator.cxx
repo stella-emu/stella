@@ -158,11 +158,13 @@ inline int Thumbulator::fatalError(const char* opcode, uInt32 v1, uInt32 v2,
 void Thumbulator::dump_counters()
 {
   cout << endl << endl
-       << "instructions " << instructions << endl
-       << "fetches      " << fetches << endl
-       << "reads        " << reads << endl
-       << "writes       " << writes << endl
-       << "memcycles    " << (fetches+reads+writes) << endl;
+       << "instructions " << instructions << endl;
+#ifndef NO_THUMB_STATS
+  cout << "fetches      " << _stats.fetches << endl
+       << "reads        " << _stats.reads << endl
+       << "writes       " << _stats.writes << endl
+       << "memcycles    " << (_stats.fetches + _stats.reads + _stats.writes) << endl;
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -186,7 +188,7 @@ void Thumbulator::dump_regs()
 uInt32 Thumbulator::fetch16(uInt32 addr)
 {
 #ifndef NO_THUMB_STATS
-  ++fetches;
+  ++_stats.fetches;
 #endif
 
 #ifndef UNSAFE_OPTIMIZATIONS
@@ -230,7 +232,7 @@ void Thumbulator::write16(uInt32 addr, uInt32 data)
     fatalError("write16", addr, "abort - misaligned");
 #endif
 #ifndef NO_THUMB_STATS
-  ++writes;
+  ++_stats.writes;
 #endif
 
   DO_DBUG(statusMsg << "write16(" << Base::HEX8 << addr << "," << Base::HEX8 << data << ")" << endl);
@@ -404,7 +406,7 @@ uInt32 Thumbulator::read16(uInt32 addr)
     fatalError("read16", addr, "abort - misaligned");
 #endif
 #ifndef NO_THUMB_STATS
-  ++reads;
+  ++_stats.reads;
 #endif
 
   switch(addr & 0xF0000000)
@@ -2546,7 +2548,7 @@ int Thumbulator::reset()
   statusMsg.str("");
 #endif
 #ifndef NO_THUMB_STATS
-  fetches = reads = writes = 0;
+  _stats.fetches = _stats.reads = _stats.writes = 0;
 #endif
 
   return 0;

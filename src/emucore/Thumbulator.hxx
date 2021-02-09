@@ -60,6 +60,12 @@ class Thumbulator
       DPCplus   // cartridges of type DPC+
     };
 
+    struct Stats {
+    #ifndef NO_THUMB_STATS
+      uInt32 fetches{0}, reads{0}, writes{0};
+    #endif
+    };
+
     Thumbulator(const uInt16* rom_ptr, uInt16* ram_ptr, uInt32 rom_size,
                 const uInt32 c_base, const uInt32 c_start, const uInt32 c_stack,
                 bool traponfatal, Thumbulator::ConfigureFor configurefor,
@@ -75,6 +81,7 @@ class Thumbulator
     */
     string run();
     string run(uInt32 cycles);
+    const Stats& stats() const { return _stats; }
 
 #ifndef UNSAFE_OPTIMIZATIONS
     /**
@@ -198,12 +205,10 @@ class Thumbulator
     uInt32 cpsr{0}, mamcr{0};
     bool handler_mode{false};
     uInt32 systick_ctrl{0}, systick_reload{0}, systick_count{0}, systick_calibrate{0};
-#ifndef UNSAFE_OPTIMIZATIONS
-    uInt64 instructions{0};
-#endif
-#ifndef NO_THUMB_STATS
-    uInt64 fetches{0}, reads{0}, writes{0};
-#endif
+  #ifndef UNSAFE_OPTIMIZATIONS
+    uInt32 instructions{0};
+  #endif
+    Stats _stats;
 
     // For emulation of LPC2103's timer 1, used for NTSC/PAL/SECAM detection.
     // Register names from documentation:
