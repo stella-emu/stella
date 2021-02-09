@@ -265,7 +265,7 @@ class CartridgeCDF : public Cartridge
     void setupVersion();
 
     // Get number of instructions of last ARM run.
-    const Thumbulator::Stats& CartridgeCDF::stats() const;
+    const Thumbulator::Stats& stats() const;
 
   private:
     // The ROM image of the cartridge
