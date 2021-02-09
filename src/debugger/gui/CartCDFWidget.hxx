@@ -22,6 +22,7 @@ class PopUpWidget;
 class CheckboxWidget;
 class DataGridWidget;
 class StaticTextWidget;
+class EditTextWidget;
 
 #include "CartCDF.hxx"
 #include "CartDebugWidget.hxx"
@@ -69,6 +70,11 @@ class CartridgeCDFWidget : public CartDebugWidget
 
     CheckboxWidget* myFastFetch{nullptr};
     CheckboxWidget* myDigitalSample{nullptr};
+    EditTextWidget* myThumbMemCycles{nullptr};
+    EditTextWidget* myThumbFetches{nullptr};
+    EditTextWidget* myThumbReads{nullptr};
+    EditTextWidget* myThumbWrites{nullptr};
+
     CartState myOldState;
 
     enum { kBankChanged = 'bkCH' };

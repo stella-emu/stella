@@ -19,9 +19,9 @@
 #define CARTRIDGE_CDF_HXX
 
 class System;
-class Thumbulator;
 
 #include "bspf.hxx"
+#include "Thumbulator.hxx"
 #include "Cart.hxx"
 
 /**
@@ -263,6 +263,9 @@ class CartridgeCDF : public Cartridge
     uInt32 getWaveformSize(uInt8 index) const;
     uInt32 getSample();
     void setupVersion();
+
+    // Get number of instructions of last ARM run.
+    const Thumbulator::Stats& CartridgeCDF::stats() const;
 
   private:
     // The ROM image of the cartridge
