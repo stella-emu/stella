@@ -22,6 +22,7 @@ class CartridgeBUS;
 class PopUpWidget;
 class CheckboxWidget;
 class DataGridWidget;
+class EditTextWidget;
 
 #include "CartDebugWidget.hxx"
 
@@ -65,6 +66,10 @@ class CartridgeBUSWidget : public CartDebugWidget
     DataGridWidget* mySamplePointer{nullptr};
     CheckboxWidget* myBusOverdrive{nullptr};
     CheckboxWidget* myDigitalSample{nullptr};
+    EditTextWidget* myThumbMemCycles{nullptr};
+    EditTextWidget* myThumbFetches{nullptr};
+    EditTextWidget* myThumbReads{nullptr};
+    EditTextWidget* myThumbWrites{nullptr};
     std::array<StaticTextWidget*, 6> myDatastreamLabels{nullptr};
     CartState myOldState;
 
