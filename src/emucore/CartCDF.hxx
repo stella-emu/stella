@@ -264,8 +264,8 @@ class CartridgeCDF : public Cartridge
     uInt32 getSample();
     void setupVersion();
 
-    // Get number of instructions of last ARM run.
-    const Thumbulator::Stats& stats() const;
+    // Get number of memory accesses of last ARM run.
+    const Thumbulator::Stats& stats() const { return myThumbEmulator->stats(); }
 
   private:
     // The ROM image of the cartridge

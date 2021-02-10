@@ -827,9 +827,3 @@ uInt32 CartridgeCDF::romSize() const
     return new CartridgeCDFInfoWidget(boss, lfont, nfont, x, y, w, h, *this);
   }
 #endif
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const Thumbulator::Stats& CartridgeCDF::stats() const
-{
-  return myThumbEmulator->stats();
-}

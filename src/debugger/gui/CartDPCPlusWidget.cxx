@@ -18,6 +18,7 @@
 #include "CartDPCPlus.hxx"
 #include "DataGridWidget.hxx"
 #include "PopUpWidget.hxx"
+#include "EditTextWidget.hxx"
 #include "CartDPCPlusWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -178,6 +179,35 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   myIMLDA = new CheckboxWidget(boss, _font, xpos, ypos, "Immediate mode LDA");
   myIMLDA->setTarget(this);
   myIMLDA->setEditable(false);
+
+  xpos = 2;  ypos += myLineHeight + 4 * 1;
+  new StaticTextWidget(boss, _font, xpos, ypos + 1, "Last ARM run stats:");
+  xpos = 2 + _font.getMaxCharWidth() * 2; ypos += myLineHeight + 4;
+  StaticTextWidget* s = new StaticTextWidget(boss, _font, xpos, ypos + 1, "Mem. cycles ");
+  myThumbMemCycles = new EditTextWidget(boss, _font, s->getRight(), ypos - 1,
+                                        EditTextWidget::calcWidth(_font, 6), myLineHeight, "");
+  myThumbMemCycles->setEditable(false);
+  myThumbMemCycles->setToolTip("Number of memory cycles of last ARM run.");
+
+  s = new StaticTextWidget(boss, _font, myThumbMemCycles->getRight() + _fontWidth * 2, ypos + 1, "Fetches ");
+  myThumbFetches = new EditTextWidget(boss, _font, s->getRight(), ypos - 1,
+                                      EditTextWidget::calcWidth(_font, 6), myLineHeight, "");
+  myThumbFetches->setEditable(false);
+  myThumbFetches->setToolTip("Number of fetches/instructions of last ARM run.");
+
+  ypos += myLineHeight + 4;
+  s = new StaticTextWidget(boss, _font, xpos, ypos + 1, "Reads ");
+  myThumbReads = new EditTextWidget(boss, _font, myThumbMemCycles->getLeft(), ypos - 1,
+                                    EditTextWidget::calcWidth(_font, 6), myLineHeight, "");
+  myThumbReads->setEditable(false);
+  myThumbReads->setToolTip("Number of reads of last ARM run.");
+
+  s = new StaticTextWidget(boss, _font, myThumbReads->getRight() + _fontWidth * 2, ypos + 1, "Writes ");
+  myThumbWrites = new EditTextWidget(boss, _font, myThumbFetches->getLeft(), ypos - 1,
+                                     EditTextWidget::calcWidth(_font, 6), myLineHeight, "");
+  myThumbWrites->setEditable(false);
+  myThumbWrites->setToolTip("Number of write of last ARM run.");
+
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -305,6 +335,16 @@ void CartridgeDPCPlusWidget::loadConfig()
 
   myFastFetch->setState(myCart.myFastFetch);
   myIMLDA->setState(myCart.myLDAimmediate);
+
+  myThumbMemCycles->setText(Common::Base::toString(myCart.stats().fetches
+                            + myCart.stats().reads + myCart.stats().writes,
+                            Common::Base::Fmt::_10_6));
+  myThumbFetches->setText(Common::Base::toString(myCart.stats().fetches,
+                          Common::Base::Fmt::_10_6));
+  myThumbReads->setText(Common::Base::toString(myCart.stats().reads,
+                        Common::Base::Fmt::_10_6));
+  myThumbWrites->setText(Common::Base::toString(myCart.stats().writes,
+                         Common::Base::Fmt::_10_6));
 
   CartDebugWidget::loadConfig();
 }

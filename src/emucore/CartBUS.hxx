@@ -25,6 +25,7 @@ class Thumbulator;
 #endif
 
 #include "bspf.hxx"
+#include "Thumbulator.hxx"
 #include "Cart.hxx"
 
 /**
@@ -232,6 +233,9 @@ class CartridgeBUS : public Cartridge
     uInt32 getWaveform(uInt8 index) const;
     uInt32 getWaveformSize(uInt8 index) const;
     uInt32 getSample();
+
+    // Get number of memory accesses of last ARM run.
+    const Thumbulator::Stats& stats() const { return myThumbEmulator->stats(); }
 
   private:
     // The 32K ROM image of the cartridge
