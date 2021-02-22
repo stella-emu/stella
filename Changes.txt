@@ -12,16 +12,16 @@
                               Release History
 ===========================================================================
 
-6.5.1 to 6.5.2 (February XX, 2021)
+6.5.1 to 6.5.2 (February 25, 2021)
 
-  - Fixed broken Driving Controller support for Stelladaptor/2600-daptor
+  * Fixed broken Driving Controller support for Stelladaptor/2600-daptor
     devices.
 
-  - Fixed missing QuadTari option in UI.
+  * Fixed missing QuadTari option in UI.
 
-  - Improved QuadTari timing.
+  * Improved QuadTari timing.
 
-  - Added CPU usage stats to ARM cart classes debug widgets.
+  * Added CPU usage stats to ARM cart classes debug widgets.
 
 -Have fun!
 
