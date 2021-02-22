@@ -34,27 +34,32 @@ WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent,
            "What's New in Stella " + string(STELLA_VERSION) + "?")
 #endif
 {
-  const int fontWidth    = Dialog::fontWidth(),
-            buttonHeight = Dialog::buttonHeight(),
-            VBORDER      = Dialog::vBorder(),
-            HBORDER      = Dialog::hBorder(),
-            VGAP         = Dialog::vGap();
+  const int fontWidth = Dialog::fontWidth(),
+    buttonHeight = Dialog::buttonHeight(),
+    VBORDER = Dialog::vBorder(),
+    HBORDER = Dialog::hBorder(),
+    VGAP = Dialog::vGap();
   int ypos = _th + VBORDER;
 
   // Set preliminary dimensions
   setSize(MAX_CHARS * fontWidth + HBORDER * 2, max_h,
           max_w, max_h);
 
-#if defined(RETRON77)
-  add(ypos, "increased sample size for CDFJ+");
-  add(ypos, "fixed navigation bug in Video & Audio settings dialog");
-  add(ypos, "fixed autofire bug for trackball controllers");
-  add(ypos, "fixed paddle button bug for jittering controllers");
-  add(ypos, "improved switching between joysticks and paddles");
-  add(ypos, "improved memory usage in UI mode");
-#else
   const string& version = instance().settings().getString("stella.version");
-  if(version != "6.5")
+#if defined(RETRON77)
+  if(version < "6.5")
+  {
+    add(ypos, "increased sample size for CDFJ+");
+    add(ypos, "fixed navigation bug in Video & Audio settings dialog");
+    add(ypos, "fixed autofire bug for trackball controllers");
+    add(ypos, "fixed paddle button bug for jittering controllers");
+    add(ypos, "improved switching between joysticks and paddles");
+    add(ypos, "improved memory usage in UI mode");
+  }
+  add(ypos, "fixed broken Driving Controller support for Stelladaptor/2600-daptor devices");
+  add(ypos, "fixed missing QuadTari option in UI");
+#else
+  if(version < "6.5")
   {
     add(ypos, "added high scores saving");
     add(ypos, "enhanced cut/copy/paste and undo/redo for text editing");
@@ -64,8 +69,10 @@ WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent,
     add(ypos, "added tooltips to many UI items");
     add(ypos, "added sound to Time Machine playback");
     add(ypos, "moved settings, properties etc. to an SQLite database");
+    add(ypos, "fixed paddle button bug for jittering controllers");
   }
-  add(ypos, "fixed paddle button bug for jittering controllers");
+  add(ypos, "fixed broken Driving Controller support for Stelladaptor/2600-daptor devices");
+  add(ypos, "fixed missing QuadTari option in UI");
   add(ypos, ELLIPSIS + " (for a complete list see 'docs/Changes.txt')");
 #endif
 

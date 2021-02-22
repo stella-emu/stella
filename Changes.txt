@@ -12,15 +12,27 @@
                               Release History
 ===========================================================================
 
+6.5.1 to 6.5.2 (February XX, 2021)
+
+  - Fixed broken Driving Controller support for Stelladaptor/2600-daptor
+    devices.
+
+  - Fixed missing QuadTari option in UI.
+
+  - Improved QuadTari timing.
+
+  - Added CPU usage stats to ARM cart classes debug widgets.
+
+-Have fun!
+
+
 6.5 to 6.5.1 (January 24, 2021)
 
   * Fixed paddle button bug for jittering controllers.
 
-  * Improve switching between joysticks and paddles on Retron77 port.
+  * Improved switching between joysticks and paddles on Retron77 port.
 
-  * Improve memory usage on Retron77 port.
-
--Have fun!
+  * Improved memory usage on Retron77 port.
 
 
 6.4 to 6.5 (January 9, 2021)
