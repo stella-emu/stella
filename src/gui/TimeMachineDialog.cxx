@@ -255,7 +255,7 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   // Add buttons
   myToggleWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
                                     STOP.data(), BUTTON_W, BUTTON_H, kToggle);
-  myToggleWidget->setToolTip("Toogle Time Machine mode.");
+  myToggleWidget->setToolTip("Toggle Time Machine mode.");
   xpos += buttonWidth + BUTTON_GAP;
 
   myExitWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
