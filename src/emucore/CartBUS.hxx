@@ -223,7 +223,6 @@ class CartridgeBUS : public Cartridge
     void setDatastreamPointer(uInt8 index, uInt32 value);
 
     uInt32 getDatastreamIncrement(uInt8 index) const;
-    void setDatastreamIncrement(uInt8 index, uInt32 value);
 
     uInt32 getAddressMap(uInt8 index) const;
     void setAddressMap(uInt8 index, uInt32 value);
