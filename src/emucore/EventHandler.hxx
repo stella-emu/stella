@@ -218,8 +218,8 @@ class EventHandler
       Enable controller specific keyboard event mappings.
     */
     void defineKeyControllerMappings(const Controller::Type type, Controller::Jack port,
-                                     const string& md5) {
-      myPKeyHandler->defineControllerMappings(type, port, md5);
+                                     const Properties& properties) {
+      myPKeyHandler->defineControllerMappings(type, port, properties);
     }
 
     /**
