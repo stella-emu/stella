@@ -17,6 +17,7 @@
 
 #include "OSystem.hxx"
 #include "Console.hxx"
+#include "PropsSet.hxx"
 #include "EventHandler.hxx"
 #include "PKeyboardHandler.hxx"
 #include "json_lib.hxx"
@@ -202,38 +203,72 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalKeyboardHandler::defineControllerMappings(
-    const Controller::Type type, Controller::Jack port)
+    const Controller::Type type, Controller::Jack port, const string& md5)
 {
   // determine controller events to use
   switch(type)
   {
+    case Controller::Type::QuadTari:
+      if(port == Controller::Jack::Left)
+      {
+        myLeftMode = getMode(md5, PropType::Controller_Left1);
+        myLeft2ndMode = getMode(md5, PropType::Controller_Left2);
+      }
+      else
+      {
+        myRightMode = getMode(md5, PropType::Controller_Right1);
+        myRight2ndMode = getMode(md5, PropType::Controller_Right2);
+      }
+      break;
+
+    default:
+    {
+      EventMode mode = getMode(type);
+
+      if(port == Controller::Jack::Left)
+        myLeftMode = mode;
+      else
+        myRightMode = mode;
+      break;
+    }
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+EventMode PhysicalKeyboardHandler::getMode(const string& md5, const PropType propType)
+{
+  Properties properties;
+
+  if(myOSystem.propSet().getMD5(md5, properties))
+  {
+    const string& propName = properties.get(propType);
+
+    if(!propName.empty())
+      return getMode(Controller::getType(propName));
+  }
+  return getMode(Controller::Type::Joystick);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+EventMode PhysicalKeyboardHandler::getMode(const Controller::Type type)
+{
+  switch(type)
+  {
     case Controller::Type::Keyboard:
     case Controller::Type::KidVid:
-      if(port == Controller::Jack::Left)
-        myLeftMode = EventMode::kKeypadMode;
-      else
-        myRightMode = EventMode::kKeypadMode;
-      break;
+      return EventMode::kKeypadMode;
 
     case Controller::Type::Paddles:
     case Controller::Type::PaddlesIAxDr:
     case Controller::Type::PaddlesIAxis:
-      if(port == Controller::Jack::Left)
-        myLeftMode = EventMode::kPaddlesMode;
-      else
-        myRightMode = EventMode::kPaddlesMode;
-      break;
+      return EventMode::kPaddlesMode;
 
     case Controller::Type::CompuMate:
-      myLeftMode = myRightMode = EventMode::kCompuMateMode;
-      break;
+      return EventMode::kCompuMateMode;
 
     default:
       // let's use joystick then
-      if(port == Controller::Jack::Left)
-        myLeftMode = EventMode::kJoystickMode;
-      else
-        myRightMode = EventMode::kJoystickMode;
+      return EventMode::kJoystickMode;
   }
 }
 
@@ -244,9 +279,31 @@ void PhysicalKeyboardHandler::enableEmulationMappings()
   myKeyMap.eraseMode(EventMode::kEmulationMode);
   enableCommonMappings();
 
-  // enable right mode first, so that in case of mapping clashes the left
-  // controller has preference
-  switch (myRightMode)
+  // Process in increasing priority order, so that in case of mapping clashes
+  //  the higher priority controller has preference
+  switch(myRight2ndMode)
+  {
+    case EventMode::kPaddlesMode:
+      enableMappings(Right2PaddlesEvents, EventMode::kPaddlesMode);
+      break;
+
+    default:
+      enableMappings(Right2JoystickEvents, EventMode::kJoystickMode);
+      break;
+  }
+
+  switch(myLeft2ndMode)
+  {
+    case EventMode::kPaddlesMode:
+      enableMappings(Left2PaddlesEvents, EventMode::kPaddlesMode);
+      break;
+
+    default:
+      enableMappings(Left2JoystickEvents, EventMode::kJoystickMode);
+      break;
+  }
+
+  switch(myRightMode)
   {
     case EventMode::kPaddlesMode:
       enableMappings(RightPaddlesEvents, EventMode::kPaddlesMode);
@@ -265,7 +322,7 @@ void PhysicalKeyboardHandler::enableEmulationMappings()
       break;
   }
 
-  switch (myLeftMode)
+  switch(myLeftMode)
   {
     case EventMode::kPaddlesMode:
       enableMappings(LeftPaddlesEvents, EventMode::kPaddlesMode);
@@ -276,7 +333,7 @@ void PhysicalKeyboardHandler::enableEmulationMappings()
       break;
 
     case EventMode::kCompuMateMode:
-      for (const auto& item : CompuMateMapping)
+      for(const auto& item : CompuMateMapping)
         enableMapping(item.event, EventMode::kCompuMateMode);
       break;
 
@@ -343,14 +400,18 @@ EventMode PhysicalKeyboardHandler::getEventMode(const Event::Type event,
 bool PhysicalKeyboardHandler::isJoystickEvent(const Event::Type event) const
 {
   return LeftJoystickEvents.find(event) != LeftJoystickEvents.end()
-    || RightJoystickEvents.find(event) != RightJoystickEvents.end();
+    || Left2JoystickEvents.find(event) != Left2JoystickEvents.end()
+    || RightJoystickEvents.find(event) != RightJoystickEvents.end()
+    || Right2JoystickEvents.find(event) != Right2JoystickEvents.end();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PhysicalKeyboardHandler::isPaddleEvent(const Event::Type event) const
 {
   return LeftPaddlesEvents.find(event) != LeftPaddlesEvents.end()
-    || RightPaddlesEvents.find(event) != RightPaddlesEvents.end();
+    || Left2PaddlesEvents.find(event) != Left2PaddlesEvents.end()
+    || RightPaddlesEvents.find(event) != RightPaddlesEvents.end()
+    || Right2PaddlesEvents.find(event) != Right2PaddlesEvents.end();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -412,7 +473,8 @@ bool PhysicalKeyboardHandler::addMapping(Event::Type event, EventMode mode,
     }
 
     myKeyMap.add(event, evMode, key, mod);
-    if (evMode == myLeftMode || evMode == myRightMode)
+    if (evMode == myLeftMode || evMode == myRightMode ||
+        evMode == myLeft2ndMode || evMode == myRight2ndMode)
       myKeyMap.add(event, mode, key, mod);
   }
 
@@ -858,6 +920,7 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultJoyst
   {Event::JoystickOneFire5,         KBDK_6},
   {Event::JoystickOneFire9,         KBDK_7},
 
+  // Same as Joysticks Zero & One + SHIFT
   {Event::JoystickTwoUp,            KBDK_UP, KBDM_SHIFT},
   {Event::JoystickTwoDown,          KBDK_DOWN, KBDM_SHIFT},
   {Event::JoystickTwoLeft,          KBDK_LEFT, KBDM_SHIFT},
@@ -896,6 +959,12 @@ PhysicalKeyboardHandler::DefaultPaddleMapping = {
   {Event::PaddleThreeDecrease,      KBDK_H},
   {Event::PaddleThreeIncrease,      KBDK_Y},
   {Event::PaddleThreeFire,          KBDK_6},
+
+  // Same as Paddles Zero..Three Fire + SHIFT
+  {Event::PaddleFourFire,           KBDK_SPACE, KBDM_SHIFT},
+  {Event::PaddleFiveFire,           KBDK_4, KBDM_SHIFT},
+  {Event::PaddleSixFire,            KBDK_F, KBDM_SHIFT},
+  {Event::PaddleSevenFire,          KBDK_6, KBDM_SHIFT},
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

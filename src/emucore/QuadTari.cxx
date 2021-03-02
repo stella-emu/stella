@@ -82,7 +82,8 @@ unique_ptr<Controller> QuadTari::addController(const Controller::Type type, bool
       // Check if we should swap the paddles plugged into a jack
       bool swapPaddles = myProperties.get(PropType::Controller_SwapPaddles) == "YES";
 
-      return make_unique<Paddles>(myJack, myEvent, mySystem, swapPaddles, false, false);
+      return make_unique<Paddles>(myJack, myEvent, mySystem, swapPaddles,
+                                  false, false, second);
     }
     case Controller::Type::Driving:
       return make_unique<Driving>(myJack, myEvent, mySystem, second);

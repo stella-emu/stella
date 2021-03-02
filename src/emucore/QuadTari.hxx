@@ -24,6 +24,13 @@ class Event;
 /**
   The QuadTari controller.
 
+  Supported controllers:
+  - Joystick
+  - Driving
+  - Paddles (buttons only)
+  - AtariVox
+  - SaveKey
+
   @author  Thomas Jentzsch
 */
 class QuadTari : public Controller
