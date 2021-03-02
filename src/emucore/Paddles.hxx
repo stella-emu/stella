@@ -44,7 +44,7 @@ class Paddles : public Controller
                         resistance to decrease instead of increase)
     */
     Paddles(Jack jack, const Event& event, const System& system,
-            bool swappaddle, bool swapaxis, bool swapdir);
+            bool swappaddle, bool swapaxis, bool swapdir, bool altmap = false);
     ~Paddles() override = default;
 
   public:

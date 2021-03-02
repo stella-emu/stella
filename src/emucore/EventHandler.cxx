@@ -3110,6 +3110,11 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::PaddleThreeDecrease,     "Paddle 3 Turn Right",                   "" },
   { Event::PaddleThreeFire,         "Paddle 3 Fire",                         "" },
 
+  { Event::PaddleFourFire,          "Paddle 4 Fire",                         "" },
+  { Event::PaddleFiveFire,          "Paddle 5 Fire",                         "" },
+  { Event::PaddleSixFire,           "Paddle 6 Fire",                         "" },
+  { Event::PaddleSevenFire,         "Paddle 7 Fire",                         "" },
+
   { Event::KeyboardZero1,           "P0 Keyboard 1",                         "" },
   { Event::KeyboardZero2,           "P0 Keyboard 2",                         "" },
   { Event::KeyboardZero3,           "P0 Keyboard 3",                         "" },
@@ -3378,6 +3383,7 @@ const Event::EventSet EventHandler::PaddlesEvents = {
   Event::PaddleOneDecrease, Event::PaddleOneIncrease, Event::PaddleOneAnalog, Event::PaddleOneFire,
   Event::PaddleTwoDecrease, Event::PaddleTwoIncrease, Event::PaddleTwoAnalog, Event::PaddleTwoFire,
   Event::PaddleThreeDecrease, Event::PaddleThreeIncrease, Event::PaddleThreeAnalog, Event::PaddleThreeFire,
+  Event::PaddleFourFire, Event::PaddleFiveFire,Event::PaddleSixFire,Event::PaddleSevenFire,
 };
 
 const Event::EventSet EventHandler::KeyboardEvents = {

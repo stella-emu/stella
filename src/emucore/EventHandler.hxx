@@ -217,8 +217,9 @@ class EventHandler
     /**
       Enable controller specific keyboard event mappings.
     */
-    void defineKeyControllerMappings(const Controller::Type type, Controller::Jack port) {
-      myPKeyHandler->defineControllerMappings(type, port);
+    void defineKeyControllerMappings(const Controller::Type type, Controller::Jack port,
+                                     const string& md5) {
+      myPKeyHandler->defineControllerMappings(type, port, md5);
     }
 
     /**
@@ -644,7 +645,7 @@ class EventHandler
     #else
       REFRESH_SIZE         = 0,
     #endif
-      EMUL_ACTIONLIST_SIZE = 207 + PNG_SIZE + COMBO_SIZE + REFRESH_SIZE,
+      EMUL_ACTIONLIST_SIZE = 211 + PNG_SIZE + COMBO_SIZE + REFRESH_SIZE,
       MENU_ACTIONLIST_SIZE = 18
     ;
 

@@ -165,7 +165,9 @@ class Event
       DecreasePaddleCenterY, IncreasePaddleCenterY,
       PreviousMouseControl,
       DecreaseMouseAxesRange, IncreaseMouseAxesRange,
+
       SALeftAxis0Value, SALeftAxis1Value, SARightAxis0Value, SARightAxis1Value,
+      PaddleFourFire, PaddleFiveFire, PaddleSixFire, PaddleSevenFire,
       LastType
     };
 
@@ -255,13 +257,20 @@ class Event
 static const Event::EventSet LeftJoystickEvents = {
   Event::JoystickZeroUp, Event::JoystickZeroDown, Event::JoystickZeroLeft, Event::JoystickZeroRight,
   Event::JoystickZeroFire, Event::JoystickZeroFire5, Event::JoystickZeroFire9,
+};
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+static const Event::EventSet Left2JoystickEvents = {
   Event::JoystickTwoUp, Event::JoystickTwoDown, Event::JoystickTwoLeft, Event::JoystickTwoRight,
   Event::JoystickTwoFire
 };
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 static const Event::EventSet RightJoystickEvents = {
   Event::JoystickOneUp, Event::JoystickOneDown, Event::JoystickOneLeft, Event::JoystickOneRight,
   Event::JoystickOneFire, Event::JoystickOneFire5, Event::JoystickOneFire9,
+};
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+static const Event::EventSet Right2JoystickEvents = {
   Event::JoystickThreeUp, Event::JoystickThreeDown, Event::JoystickThreeLeft, Event::JoystickThreeRight,
   Event::JoystickThreeFire
 };
@@ -271,11 +280,21 @@ static const Event::EventSet LeftPaddlesEvents = {
   Event::PaddleZeroDecrease, Event::PaddleZeroIncrease, Event::PaddleZeroAnalog, Event::PaddleZeroFire,
   Event::PaddleOneDecrease, Event::PaddleOneIncrease, Event::PaddleOneAnalog, Event::PaddleOneFire,
 };
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+static const Event::EventSet Left2PaddlesEvents = {
+  // Only fire buttons supported by QuadTari
+  Event::PaddleFourFire, Event::PaddleFiveFire
+};
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 static const Event::EventSet RightPaddlesEvents = {
   Event::PaddleTwoDecrease, Event::PaddleTwoIncrease, Event::PaddleTwoAnalog, Event::PaddleTwoFire,
   Event::PaddleThreeDecrease, Event::PaddleThreeIncrease, Event::PaddleThreeAnalog, Event::PaddleThreeFire,
+};
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+static const Event::EventSet Right2PaddlesEvents = {
+  // Only fire buttons supported by QuadTari
+  Event::PaddleSixFire, Event::PaddleSevenFire
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

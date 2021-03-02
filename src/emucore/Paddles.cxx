@@ -22,7 +22,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Paddles::Paddles(Jack jack, const Event& event, const System& system,
-                 bool swappaddle, bool swapaxis, bool swapdir)
+                 bool swappaddle, bool swapaxis, bool swapdir, bool altmap)
   : Controller(jack, event, system, Controller::Type::Paddles)
 {
   // We must start with minimum resistance; see commit
@@ -47,31 +47,57 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
   // Consider whether this is the left or right port
   if(myJack == Jack::Left)
   {
-    // First paddle is 0, second is 1
-    myP0AxisValue = Event::PaddleZeroAnalog;
-    myP1AxisValue = Event::PaddleOneAnalog;
-    myP0FireEvent = Event::PaddleZeroFire;
-    myP1FireEvent = Event::PaddleOneFire;
+    if(!altmap)
+    {
+      // First paddle is 0, second is 1
+      myP0AxisValue = Event::PaddleZeroAnalog;
+      myP1AxisValue = Event::PaddleOneAnalog;
+      myP0FireEvent = Event::PaddleZeroFire;
+      myP1FireEvent = Event::PaddleOneFire;
 
-    // These can be affected by changes in axis orientation
-    myP0DecEvent = Event::PaddleZeroDecrease;
-    myP0IncEvent = Event::PaddleZeroIncrease;
-    myP1DecEvent = Event::PaddleOneDecrease;
-    myP1IncEvent = Event::PaddleOneIncrease;
+      // These can be affected by changes in axis orientation
+      myP0DecEvent = Event::PaddleZeroDecrease;
+      myP0IncEvent = Event::PaddleZeroIncrease;
+      myP1DecEvent = Event::PaddleOneDecrease;
+      myP1IncEvent = Event::PaddleOneIncrease;
+    }
+    else
+    {
+      // First paddle is 4, second is 5 (fire buttons only)
+      myP0FireEvent = Event::PaddleFourFire;
+      myP1FireEvent = Event::PaddleFiveFire;
+
+      myP0AxisValue = myP1AxisValue =
+        myP0DecEvent = myP0IncEvent =
+        myP1DecEvent = myP1IncEvent = Event::NoType;
+    }
   }
   else    // Jack is right port
   {
-    // First paddle is 2, second is 3
-    myP0AxisValue = Event::PaddleTwoAnalog;
-    myP1AxisValue = Event::PaddleThreeAnalog;
-    myP0FireEvent = Event::PaddleTwoFire;
-    myP1FireEvent = Event::PaddleThreeFire;
+    if(!altmap)
+    {
+      // First paddle is 2, second is 3
+      myP0AxisValue = Event::PaddleTwoAnalog;
+      myP1AxisValue = Event::PaddleThreeAnalog;
+      myP0FireEvent = Event::PaddleTwoFire;
+      myP1FireEvent = Event::PaddleThreeFire;
 
-    // These can be affected by changes in axis orientation
-    myP0DecEvent = Event::PaddleTwoDecrease;
-    myP0IncEvent = Event::PaddleTwoIncrease;
-    myP1DecEvent = Event::PaddleThreeDecrease;
-    myP1IncEvent = Event::PaddleThreeIncrease;
+      // These can be affected by changes in axis orientation
+      myP0DecEvent = Event::PaddleTwoDecrease;
+      myP0IncEvent = Event::PaddleTwoIncrease;
+      myP1DecEvent = Event::PaddleThreeDecrease;
+      myP1IncEvent = Event::PaddleThreeIncrease;
+    }
+    else
+    {
+      // First paddle is 6, second is 7 (fire buttons only)
+      myP0FireEvent = Event::PaddleSixFire;
+      myP1FireEvent = Event::PaddleSevenFire;
+
+      myP0AxisValue = myP1AxisValue =
+        myP0DecEvent = myP0IncEvent =
+        myP1DecEvent = myP1IncEvent = Event::NoType;
+    }
   }
 
   // Some games swap the paddles

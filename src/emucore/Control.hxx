@@ -73,7 +73,7 @@ class Controller : public Serializable
     /**
       Enumeration of the controller jacks
     */
-    enum class Jack { Left = 0, Right = 1 };
+    enum class Jack { Left = 0, Right = 1, Left2 = 2, Right2 = 3 };
 
     /**
       Enumeration of the digital pins of a controller port

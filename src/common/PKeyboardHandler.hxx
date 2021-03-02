@@ -26,6 +26,7 @@ class EventHandler;
 #include "bspf.hxx"
 #include "Event.hxx"
 #include "EventHandlerConstants.hxx"
+#include "Props.hxx"
 #include "KeyMap.hxx"
 
 /**
@@ -50,7 +51,8 @@ class PhysicalKeyboardHandler
     void setDefaultMapping(Event::Type type, EventMode mode, bool updateDefaults = false);
 
     /** define mappings for current controllers */
-    void defineControllerMappings(const Controller::Type type, Controller::Jack port);
+    void defineControllerMappings(const Controller::Type type, Controller::Jack port,
+                                  const string& md5);
     /** enable mappings for emulation mode */
     void enableEmulationMappings();
 
@@ -110,6 +112,11 @@ class PhysicalKeyboardHandler
     void enableMappings(const Event::EventSet& events, EventMode mode);
     void enableMapping(const Event::Type event, EventMode mode);
 
+    /** return event mode for given property */
+    EventMode getMode(const string& md5, const PropType propType);
+    /** return event mode for given controller type */
+    EventMode getMode(const Controller::Type type);
+
   private:
     OSystem& myOSystem;
     EventHandler& myHandler;
@@ -119,6 +126,9 @@ class PhysicalKeyboardHandler
 
     EventMode myLeftMode{EventMode::kEmulationMode};
     EventMode myRightMode{EventMode::kEmulationMode};
+    // Additional modes for QuadTari controller
+    EventMode myLeft2ndMode{EventMode::kEmulationMode};
+    EventMode myRight2ndMode{EventMode::kEmulationMode};
 
   #ifdef BSPF_UNIX
     // Sometimes key combos with the Alt key become 'stuck' after the

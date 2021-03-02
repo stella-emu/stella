@@ -35,7 +35,7 @@ class Thumbulator;
   IN A FUTURE RELEASE.
 
   There are seven 4K program banks, a 4K Display Data RAM,
-  1K C Varaible and Stack, and the BUS chip.
+  1K C Variable and Stack, and the BUS chip.
   BUS chip access is mapped to $1000 - $103F.
 
   @authors: Darrell Spice Jr, Chris Walton, Fred Quimby,
