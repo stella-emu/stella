@@ -203,21 +203,23 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalKeyboardHandler::defineControllerMappings(
-    const Controller::Type type, Controller::Jack port, const string& md5)
+    const Controller::Type type, Controller::Jack port, const Properties& properties)
 {
+
+  //const string& test = myOSystem.settings().getString("aq");
   // determine controller events to use
   switch(type)
   {
     case Controller::Type::QuadTari:
       if(port == Controller::Jack::Left)
       {
-        myLeftMode = getMode(md5, PropType::Controller_Left1);
-        myLeft2ndMode = getMode(md5, PropType::Controller_Left2);
+        myLeftMode = getMode(properties, PropType::Controller_Left1);
+        myLeft2ndMode = getMode(properties, PropType::Controller_Left2);
       }
       else
       {
-        myRightMode = getMode(md5, PropType::Controller_Right1);
-        myRight2ndMode = getMode(md5, PropType::Controller_Right2);
+        myRightMode = getMode(properties, PropType::Controller_Right1);
+        myRight2ndMode = getMode(properties, PropType::Controller_Right2);
       }
       break;
 
@@ -235,17 +237,13 @@ void PhysicalKeyboardHandler::defineControllerMappings(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-EventMode PhysicalKeyboardHandler::getMode(const string& md5, const PropType propType)
+EventMode PhysicalKeyboardHandler::getMode(const Properties& properties, const PropType propType)
 {
-  Properties properties;
+  const string& propName = properties.get(propType);
 
-  if(myOSystem.propSet().getMD5(md5, properties))
-  {
-    const string& propName = properties.get(propType);
+  if(!propName.empty())
+    return getMode(Controller::getType(propName));
 
-    if(!propName.empty())
-      return getMode(Controller::getType(propName));
-  }
   return getMode(Controller::Type::Joystick);
 }
 

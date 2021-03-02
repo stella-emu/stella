@@ -806,7 +806,7 @@ void Console::setControllers(const string& romMd5)
     myLeftControl  = std::move(myCMHandler->leftController());
     myRightControl = std::move(myCMHandler->rightController());
     myOSystem.eventHandler().defineKeyControllerMappings(
-        Controller::Type::CompuMate, Controller::Jack::Left, romMd5);
+        Controller::Type::CompuMate, Controller::Jack::Left, myProperties);
     myOSystem.eventHandler().defineJoyControllerMappings(
         Controller::Type::CompuMate, Controller::Jack::Left);
   }
@@ -898,7 +898,7 @@ unique_ptr<Controller> Console::getControllerPort(const Controller::Type type,
 {
   unique_ptr<Controller> controller;
 
-  myOSystem.eventHandler().defineKeyControllerMappings(type, port, romMd5);
+  myOSystem.eventHandler().defineKeyControllerMappings(type, port, myProperties);
   myOSystem.eventHandler().defineJoyControllerMappings(type, port);
 
   switch(type)

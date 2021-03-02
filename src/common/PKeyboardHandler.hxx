@@ -52,7 +52,7 @@ class PhysicalKeyboardHandler
 
     /** define mappings for current controllers */
     void defineControllerMappings(const Controller::Type type, Controller::Jack port,
-                                  const string& md5);
+                                  const Properties& properties);
     /** enable mappings for emulation mode */
     void enableEmulationMappings();
 
@@ -113,7 +113,7 @@ class PhysicalKeyboardHandler
     void enableMapping(const Event::Type event, EventMode mode);
 
     /** return event mode for given property */
-    EventMode getMode(const string& md5, const PropType propType);
+    EventMode getMode(const Properties& properties, const PropType propType);
     /** return event mode for given controller type */
     EventMode getMode(const Controller::Type type);
 
