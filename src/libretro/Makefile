@@ -81,7 +81,7 @@ ifneq (,$(findstring unix,$(platform)))
 
 # OS X
 else ifeq ($(platform), osx)
-   CXXFLAGS += $(LTO) $(PTHREAD_FLAGS) -stdlib=libc++
+   CXXFLAGS += $(LTO) -stdlib=libc++
    LDFLAGS += $(LTO) $(PTHREAD_FLAGS) -stdlib=libc++
    TARGET := $(TARGET_NAME)_libretro.dylib
    fpic := -fPIC
@@ -104,7 +104,7 @@ else ifeq ($(platform), osx)
 
 # iOS
 else ifneq (,$(findstring ios,$(platform)))
-   CXXFLAGS += $(LTO) $(PTHREAD_FLAGS) -stdlib=libc++
+   CXXFLAGS += $(LTO) -stdlib=libc++
    LDFLAGS += $(LTO) $(PTHREAD_FLAGS) -stdlib=libc++
    TARGET := $(TARGET_NAME)_libretro_ios.dylib
    fpic := -fPIC
@@ -120,7 +120,7 @@ else ifneq (,$(findstring ios,$(platform)))
       CC  = cc -arch armv7 -isysroot $(IOSSDK)
       CXX = c++ -arch armv7 -isysroot $(IOSSDK)
    endif
-   CXXFLAGS += -DIOS -DARM
+   CXXFLAGS += -DIOS -DARM -fno-aligned-allocation
    ifeq ($(platform),$(filter $(platform),ios9 ios-arm64))
       MINVERSION = -miphoneos-version-min=8.0
    else
@@ -568,7 +568,7 @@ else ifneq (,$(findstring msvc,$(platform)))
    CODE_DEFINES =
 else
    WARNINGS_DEFINES = -Wall -W -Wno-unused-parameter
-   CODE_DEFINES = -fomit-frame-pointer
+   CODE_DEFINES = 
 endif
 
 CXXFLAGS += $(CODE_DEFINES) $(WARNINGS_DEFINES) $(fpic)
