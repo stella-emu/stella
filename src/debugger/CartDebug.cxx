@@ -253,7 +253,7 @@ bool CartDebug::disassembleAddr(uInt16 address, bool force)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartDebug::disassemblePC(bool force)
 {
-  return (disassembleAddr(myDebugger.cpuDebug().pc()));
+  return (disassembleAddr(myDebugger.cpuDebug().pc(), force));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
