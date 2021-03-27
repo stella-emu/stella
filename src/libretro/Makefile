@@ -102,6 +102,18 @@ else ifeq ($(platform), osx)
    endif
    fpic += $(MINVERSION)
 
+   ifeq ($(CROSS_COMPILE),1)
+		TARGET_RULE   = -target $(LIBRETRO_APPLE_PLATFORM) -isysroot $(LIBRETRO_APPLE_ISYSROOT)
+		CFLAGS   += $(TARGET_RULE)
+		CPPFLAGS += $(TARGET_RULE)
+		CXXFLAGS += $(TARGET_RULE)
+		LDFLAGS  += $(TARGET_RULE)
+   endif
+
+   CFLAGS    += $(ARCHFLAGS)
+   CXXFLAGS  += $(ARCHFLAGS)
+   LDFLAGS   += $(ARCHFLAGS)
+
 # iOS
 else ifneq (,$(findstring ios,$(platform)))
    CXXFLAGS += $(LTO) -stdlib=libc++
