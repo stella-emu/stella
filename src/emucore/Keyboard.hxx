@@ -63,6 +63,16 @@ class Keyboard : public Controller
     string name() const override { return "Keyboard"; }
 
   private:
+    enum class ColumnState {
+      vcc, gnd, notConneccted
+    };
+
+  private:
+    ColumnState processColumn(const Event::Type buttons[]);
+
+    Int32 columnStateToAnalogSignal(ColumnState state) const;
+
+  private:
     // Pre-compute the events we care about based on given port
     // This will eliminate test for left or right port in update()
     Event::Type myOneEvent, myTwoEvent, myThreeEvent,
@@ -70,7 +80,7 @@ class Keyboard : public Controller
                 mySevenEvent, myEightEvent, myNineEvent,
                 myStarEvent, myZeroEvent, myPoundEvent;
 
-    static constexpr Int32 MIN_RESISTANCE = 5600;
+    static constexpr Int32 INTERNAL_RESISTANCE = 4700;
 
   private:
     // Following constructors and assignment operators not supported

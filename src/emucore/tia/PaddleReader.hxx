@@ -65,7 +65,7 @@ class PaddleReader : public Serializable
     bool myIsDumped{false};
 
     static constexpr double
-      R0 = 1.5e3,
+      R0 = 1.8e3,
       C = 68e-9,
       RPOT = 1e6,
       USUPP = 5;
