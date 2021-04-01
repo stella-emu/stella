@@ -40,16 +40,17 @@ void PaddleReader::reset(uInt64 timestamp)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PaddleReader::vblank(uInt8 value, uInt64 timestamp)
 {
+  updateCharge(timestamp);
+
   bool oldIsDumped = myIsDumped;
 
   if (value & 0x80) {
     myIsDumped = true;
-    myU = 0;
-    myTimestamp = timestamp;
   } else if (oldIsDumped) {
     myIsDumped = false;
-    myTimestamp = timestamp;
   }
+
+  myTimestamp = timestamp;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -72,15 +73,7 @@ void PaddleReader::update(double value, uInt64 timestamp, ConsoleTiming consoleT
   if (value != myValue) {
     myValue = value;
 
-    if (myValue < 0) {
-      // value < 0 signifies either maximum resistance OR analog input connected to
-      // ground (keyboard controllers). As we have no way to tell these apart we just
-      // assume ground and discharge.
-      myU = 0;
-      myTimestamp = timestamp;
-    } else {
-      updateCharge(timestamp);
-    }
+    updateCharge(timestamp);
   }
 }
 
@@ -96,11 +89,11 @@ void PaddleReader::setConsoleTiming(ConsoleTiming consoleTiming)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PaddleReader::updateCharge(uInt64 timestamp)
 {
-  if (myIsDumped) return;
-
-  if (myValue >= 0)
+  if (myValue >= 0 && !myIsDumped)
     myU = USUPP * (1 - (1 - myU / USUPP) *
       exp(-static_cast<double>(timestamp - myTimestamp) / (myValue * RPOT + R0) / C / myClockFreq));
+  else
+    myU *= exp(-static_cast<double>(timestamp - myTimestamp) / R0 / C / myClockFreq);
 
   myTimestamp = timestamp;
 }
