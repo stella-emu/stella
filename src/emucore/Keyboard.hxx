@@ -64,7 +64,7 @@ class Keyboard : public Controller
 
   private:
     enum class ColumnState {
-      vcc, gnd, notConneccted
+      vcc, gnd, notConnected
     };
 
   private:

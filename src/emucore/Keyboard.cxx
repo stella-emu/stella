@@ -64,7 +64,7 @@ Keyboard::ColumnState Keyboard::processColumn(const Event::Type buttons[]) {
   for (uInt8 i = 0; i < 4; i++)
     if (myEvent.get(buttons[i]) && getPin(signals[i])) return ColumnState::vcc;
 
-  return ColumnState::notConneccted;
+  return ColumnState::notConnected;
 }
 
 Int32 Keyboard::columnStateToAnalogSignal(ColumnState state) const {
@@ -75,7 +75,7 @@ Int32 Keyboard::columnStateToAnalogSignal(ColumnState state) const {
     case ColumnState::vcc:
        return 0;
 
-    case ColumnState::notConneccted:
+    case ColumnState::notConnected:
       return INTERNAL_RESISTANCE;
 
     default:
