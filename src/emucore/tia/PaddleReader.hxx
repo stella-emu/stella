@@ -67,8 +67,9 @@ class PaddleReader : public Serializable
     static constexpr double
       R0 = 1.8e3,
       C = 68e-9,
-      RPOT = 1e6,
-      USUPP = 5;
+      R_POT = 1e6,
+      R_DUMP = 50,
+      U_SUPP = 5;
 
     static constexpr double TRIPPOINT_LINES = 379;
 
