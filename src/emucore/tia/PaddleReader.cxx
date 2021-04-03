@@ -83,17 +83,17 @@ void PaddleReader::setConsoleTiming(ConsoleTiming consoleTiming)
   myConsoleTiming = consoleTiming;
 
   myClockFreq = myConsoleTiming == ConsoleTiming::ntsc ? 60 * 228 * 262 : 50 * 228 * 312;
-  myUThresh = USUPP * (1. - exp(-TRIPPOINT_LINES * 228 / myClockFreq  / (RPOT + R0) / C));
+  myUThresh = U_SUPP * (1. - exp(-TRIPPOINT_LINES * 228 / myClockFreq  / (R_POT + R0) / C));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PaddleReader::updateCharge(uInt64 timestamp)
 {
   if (myValue >= 0 && !myIsDumped)
-    myU = USUPP * (1 - (1 - myU / USUPP) *
-      exp(-static_cast<double>(timestamp - myTimestamp) / (myValue * RPOT + R0) / C / myClockFreq));
+    myU = U_SUPP * (1 - (1 - myU / U_SUPP) *
+      exp(-static_cast<double>(timestamp - myTimestamp) / (myValue * R_POT + R0) / C / myClockFreq));
   else
-    myU *= exp(-static_cast<double>(timestamp - myTimestamp) / R0 / C / myClockFreq);
+    myU *= exp(-static_cast<double>(timestamp - myTimestamp) / (myIsDumped ? R_DUMP : R0) / C / myClockFreq);
 
   myTimestamp = timestamp;
 }
