@@ -1110,6 +1110,15 @@
     <ClCompile Include="..\common\repository\CompositeKeyValueRepository.cxx">
       <Filter>Source Files\repository</Filter>
     </ClCompile>
+    <ClCompile Include="..\emucore\CartMVC.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\emucore\MovieCart\MovieCart.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\emucore\MovieCart\StreamReader.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">
@@ -2280,6 +2289,21 @@
       <Filter>Header Files\repository\sqlite</Filter>
     </ClInclude>
     <ClInclude Include="..\emucore\OSystemStandalone.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\CartMVC.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\MovieCart\KernelData.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\MovieCart\MovieCart.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\MovieCart\StreamReader.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\MovieCart\MovieInputs.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
   </ItemGroup>

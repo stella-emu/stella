@@ -240,6 +240,8 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
     type = Bankswitch::Type::_3EP;
   else if(isProbablyMDM(image, size))
     type = Bankswitch::Type::_MDM;
+  else if(isProbablyMVC(image, size))
+    type = Bankswitch::Type::_MVC;
 
   // If we get here and autodetection failed, then we force '4K'
   if(type == Bankswitch::Type::_AUTO)
@@ -688,6 +690,15 @@ bool CartDetector::isProbablyMDM(const ByteBuffer& image, size_t size)
   uInt8 mdmc[] = { 'M', 'D', 'M', 'C' };
   return searchForBytes(image, std::min<size_t>(size, 8_KB), mdmc, 4);
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartDetector::isProbablyMVC(const ByteBuffer& image, size_t size)
+{
+  // MVC version 0, frame 0
+  uInt8 sig[] = { 'M', 'V', 'C', 0 };
+  return searchForBytes(image, std::min<size_t>(size, 5), sig, 4);
+}
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartDetector::isProbablySB(const ByteBuffer& image, size_t size)

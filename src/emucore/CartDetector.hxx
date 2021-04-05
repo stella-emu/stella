@@ -190,6 +190,11 @@ class CartDetector
     static bool isProbablyMDM(const ByteBuffer& image, size_t size);
 
     /**
+      Returns true if the image is probably an MVC movie cartridge
+    */
+    static bool isProbablyMVC(const ByteBuffer& image, size_t size);
+
+    /**
       Returns true if the image is probably a SB bankswitching cartridge
     */
     static bool isProbablySB(const ByteBuffer& image, size_t size);

@@ -753,6 +753,7 @@
     <ClCompile Include="..\emucore\CartMDM.cxx" />
     <ClCompile Include="..\emucore\CartMNetwork.cxx" />
     <ClCompile Include="..\emucore\CartE78K.cxx" />
+    <ClCompile Include="..\emucore\CartMVC.cxx" />
     <ClCompile Include="..\emucore\CartTVBoy.cxx" />
     <ClCompile Include="..\emucore\CartWD.cxx" />
     <ClCompile Include="..\emucore\CompuMate.cxx" />
@@ -763,6 +764,8 @@
     <ClCompile Include="..\emucore\FBSurface.cxx" />
     <ClCompile Include="..\emucore\Lightgun.cxx" />
     <ClCompile Include="..\emucore\MindLink.cxx" />
+    <ClCompile Include="..\emucore\MovieCart\MovieCart.cxx" />
+    <ClCompile Include="..\emucore\MovieCart\StreamReader.cxx" />
     <ClCompile Include="..\emucore\OSystemStandalone.cxx" />
     <ClCompile Include="..\emucore\PlusROM.cxx" />
     <ClCompile Include="..\emucore\PointingDevice.cxx" />
@@ -1817,6 +1820,7 @@
     <ClInclude Include="..\emucore\CartMDM.hxx" />
     <ClInclude Include="..\emucore\CartMNetwork.hxx" />
     <ClInclude Include="..\emucore\CartE78K.hxx" />
+    <ClInclude Include="..\emucore\CartMVC.hxx" />
     <ClInclude Include="..\emucore\CartTVBoy.hxx" />
     <ClInclude Include="..\emucore\CartWD.hxx" />
     <ClInclude Include="..\emucore\CompuMate.hxx" />
@@ -1833,6 +1837,10 @@
     <ClInclude Include="..\emucore\FrameBufferConstants.hxx" />
     <ClInclude Include="..\emucore\Lightgun.hxx" />
     <ClInclude Include="..\emucore\MindLink.hxx" />
+    <ClInclude Include="..\emucore\MovieCart\KernelData.hxx" />
+    <ClInclude Include="..\emucore\MovieCart\MovieCart.hxx" />
+    <ClInclude Include="..\emucore\MovieCart\MovieInputs.hxx" />
+    <ClInclude Include="..\emucore\MovieCart\StreamReader.hxx" />
     <ClInclude Include="..\emucore\OSystemStandalone.hxx" />
     <ClInclude Include="..\emucore\PlusROM.hxx" />
     <ClInclude Include="..\emucore\PointingDevice.hxx" />
