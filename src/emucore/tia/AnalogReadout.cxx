@@ -17,16 +17,16 @@
 
 #include <cmath>
 
-#include "PaddleReader.hxx"
+#include "AnalogReadout.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PaddleReader::PaddleReader()
+AnalogReadout::AnalogReadout()
 {
   setConsoleTiming(ConsoleTiming::ntsc);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PaddleReader::reset(uInt64 timestamp)
+void AnalogReadout::reset(uInt64 timestamp)
 {
   myU = 0;
   myIsDumped = false;
@@ -38,7 +38,7 @@ void PaddleReader::reset(uInt64 timestamp)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PaddleReader::vblank(uInt8 value, uInt64 timestamp)
+void AnalogReadout::vblank(uInt8 value, uInt64 timestamp)
 {
   updateCharge(timestamp);
 
@@ -54,7 +54,7 @@ void PaddleReader::vblank(uInt8 value, uInt64 timestamp)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 PaddleReader::inpt(uInt64 timestamp)
+uInt8 AnalogReadout::inpt(uInt64 timestamp)
 {
   updateCharge(timestamp);
 
@@ -64,7 +64,7 @@ uInt8 PaddleReader::inpt(uInt64 timestamp)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PaddleReader::update(double value, uInt64 timestamp, ConsoleTiming consoleTiming)
+void AnalogReadout::update(double value, uInt64 timestamp, ConsoleTiming consoleTiming)
 {
   if (consoleTiming != myConsoleTiming) {
     setConsoleTiming(consoleTiming);
@@ -78,7 +78,7 @@ void PaddleReader::update(double value, uInt64 timestamp, ConsoleTiming consoleT
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PaddleReader::setConsoleTiming(ConsoleTiming consoleTiming)
+void AnalogReadout::setConsoleTiming(ConsoleTiming consoleTiming)
 {
   myConsoleTiming = consoleTiming;
 
@@ -87,7 +87,7 @@ void PaddleReader::setConsoleTiming(ConsoleTiming consoleTiming)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PaddleReader::updateCharge(uInt64 timestamp)
+void AnalogReadout::updateCharge(uInt64 timestamp)
 {
   if (myValue >= 0 && !myIsDumped)
     myU = U_SUPP * (1 - (1 - myU / U_SUPP) *
@@ -99,7 +99,7 @@ void PaddleReader::updateCharge(uInt64 timestamp)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PaddleReader::save(Serializer& out) const
+bool AnalogReadout::save(Serializer& out) const
 {
   try
   {
@@ -116,7 +116,7 @@ bool PaddleReader::save(Serializer& out) const
   }
   catch(...)
   {
-    cerr << "ERROR: TIA_PaddleReader::save" << endl;
+    cerr << "ERROR: TIA_AnalogReadout::save" << endl;
     return false;
   }
 
@@ -124,7 +124,7 @@ bool PaddleReader::save(Serializer& out) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PaddleReader::load(Serializer& in)
+bool AnalogReadout::load(Serializer& in)
 {
   try
   {
@@ -141,7 +141,7 @@ bool PaddleReader::load(Serializer& in)
   }
   catch(...)
   {
-    cerr << "ERROR: TIA_PaddleReader::load" << endl;
+    cerr << "ERROR: TIA_AnalogReadout::load" << endl;
     return false;
   }
 

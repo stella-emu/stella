@@ -158,8 +158,8 @@ void TIA::initialize()
   myAudio.reset();
 
   myTimestamp = 0;
-  for (PaddleReader& paddleReader : myPaddleReaders)
-    paddleReader.reset(myTimestamp);
+  for (AnalogReadout& analogReadout : myAnalogReadouts)
+    analogReadout.reset(myTimestamp);
 
   myDelayQueue.reset();
 
@@ -246,8 +246,8 @@ bool TIA::save(Serializer& out) const
     if(!myBall.save(out))       return false;
     if(!myAudio.save(out))      return false;
 
-    for (const PaddleReader& paddleReader : myPaddleReaders)
-      if(!paddleReader.save(out)) return false;
+    for (const AnalogReadout& analogReadout : myAnalogReadouts)
+      if(!analogReadout.save(out)) return false;
 
     if(!myInput0.save(out)) return false;
     if(!myInput1.save(out)) return false;
@@ -321,8 +321,8 @@ bool TIA::load(Serializer& in)
     if(!myBall.load(in))       return false;
     if(!myAudio.load(in))       return false;
 
-    for (PaddleReader& paddleReader : myPaddleReaders)
-      if(!paddleReader.load(in)) return false;
+    for (AnalogReadout& analogReadout : myAnalogReadouts)
+      if(!analogReadout.load(in)) return false;
 
     if(!myInput0.load(in)) return false;
     if(!myInput1.load(in)) return false;
@@ -465,22 +465,22 @@ uInt8 TIA::peek(uInt16 address)
 
     case INPT0:
       updatePaddle(0);
-      result = myPaddleReaders[0].inpt(myTimestamp) & 0b10000000;
+      result = myAnalogReadouts[0].inpt(myTimestamp) & 0b10000000;
       break;
 
     case INPT1:
       updatePaddle(1);
-      result = myPaddleReaders[1].inpt(myTimestamp) & 0b10000000;
+      result = myAnalogReadouts[1].inpt(myTimestamp) & 0b10000000;
       break;
 
     case INPT2:
       updatePaddle(2);
-      result = myPaddleReaders[2].inpt(myTimestamp) & 0b10000000;
+      result = myAnalogReadouts[2].inpt(myTimestamp) & 0b10000000;
       break;
 
     case INPT3:
       updatePaddle(3);
-      result = myPaddleReaders[3].inpt(myTimestamp) & 0b10000000;
+      result = myAnalogReadouts[3].inpt(myTimestamp) & 0b10000000;
       break;
 
     case INPT4:
@@ -531,8 +531,8 @@ bool TIA::poke(uInt16 address, uInt8 value)
       myInput0.vblank(value);
       myInput1.vblank(value);
 
-      for (PaddleReader& paddleReader : myPaddleReaders)
-        paddleReader.vblank(value, myTimestamp);
+      for (AnalogReadout& analogReadout : myAnalogReadouts)
+        analogReadout.vblank(value, myTimestamp);
       updateDumpPorts(value);
 
       myDelayQueue.push(VBLANK, value, Delay::vblank);
@@ -1828,7 +1828,7 @@ void TIA::updatePaddle(uInt8 idx)
       throw runtime_error("invalid paddle index");
   }
 
-  myPaddleReaders[idx].update(
+  myAnalogReadouts[idx].update(
     (resistance == Controller::MAX_RESISTANCE) ? -1 : (double(resistance) / Paddles::MAX_RESISTANCE),
     myTimestamp,
     myTimingProvider()

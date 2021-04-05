@@ -209,7 +209,7 @@
     <ClCompile Include="..\emucore\tia\frame-manager\JitterEmulation.cxx" />
     <ClCompile Include="..\emucore\tia\LatchedInput.cxx" />
     <ClCompile Include="..\emucore\tia\Missile.cxx" />
-    <ClCompile Include="..\emucore\tia\PaddleReader.cxx" />
+    <ClCompile Include="..\emucore\tia\AnalogReadout.cxx" />
     <ClCompile Include="..\emucore\tia\Player.cxx" />
     <ClCompile Include="..\emucore\tia\Playfield.cxx" />
     <ClCompile Include="..\emucore\tia\TIA.cxx" />
@@ -352,7 +352,7 @@
     <ClInclude Include="..\emucore\tia\FrameLayout.hxx" />
     <ClInclude Include="..\emucore\tia\LatchedInput.hxx" />
     <ClInclude Include="..\emucore\tia\Missile.hxx" />
-    <ClInclude Include="..\emucore\tia\PaddleReader.hxx" />
+    <ClInclude Include="..\emucore\tia\AnalogReadout.hxx" />
     <ClInclude Include="..\emucore\tia\Player.hxx" />
     <ClInclude Include="..\emucore\tia\Playfield.hxx" />
     <ClInclude Include="..\emucore\tia\TIA.hxx" />

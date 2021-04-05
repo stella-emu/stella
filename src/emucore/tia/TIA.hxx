@@ -38,7 +38,7 @@
 #include "Player.hxx"
 #include "Ball.hxx"
 #include "LatchedInput.hxx"
-#include "PaddleReader.hxx"
+#include "AnalogReadout.hxx"
 #include "DelayQueueIterator.hxx"
 #include "Control.hxx"
 #include "System.hxx"
@@ -796,7 +796,7 @@ class TIA : public Device
     /**
      * The paddle readout circuits.
      */
-    std::array<PaddleReader, 4> myPaddleReaders;
+    std::array<AnalogReadout, 4> myAnalogReadouts;
 
     /**
      * Circuits for the "latched inputs".

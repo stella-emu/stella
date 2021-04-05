@@ -663,8 +663,8 @@
 		DCF3A6F41DFC75E3008A8AF3 /* LatchedInput.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF3A6DA1DFC75E3008A8AF3 /* LatchedInput.hxx */; };
 		DCF3A6F51DFC75E3008A8AF3 /* Missile.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF3A6DB1DFC75E3008A8AF3 /* Missile.cxx */; };
 		DCF3A6F61DFC75E3008A8AF3 /* Missile.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF3A6DC1DFC75E3008A8AF3 /* Missile.hxx */; };
-		DCF3A6F81DFC75E3008A8AF3 /* PaddleReader.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF3A6DE1DFC75E3008A8AF3 /* PaddleReader.cxx */; };
-		DCF3A6F91DFC75E3008A8AF3 /* PaddleReader.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF3A6DF1DFC75E3008A8AF3 /* PaddleReader.hxx */; };
+		DCF3A6F81DFC75E3008A8AF3 /* AnalogReadout.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF3A6DE1DFC75E3008A8AF3 /* AnalogReadout.cxx */; };
+		DCF3A6F91DFC75E3008A8AF3 /* AnalogReadout.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF3A6DF1DFC75E3008A8AF3 /* AnalogReadout.hxx */; };
 		DCF3A6FA1DFC75E3008A8AF3 /* Player.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF3A6E01DFC75E3008A8AF3 /* Player.cxx */; };
 		DCF3A6FB1DFC75E3008A8AF3 /* Player.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF3A6E11DFC75E3008A8AF3 /* Player.hxx */; };
 		DCF3A6FC1DFC75E3008A8AF3 /* Playfield.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF3A6E21DFC75E3008A8AF3 /* Playfield.cxx */; };
@@ -1472,8 +1472,8 @@
 		DCF3A6DA1DFC75E3008A8AF3 /* LatchedInput.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = LatchedInput.hxx; sourceTree = "<group>"; };
 		DCF3A6DB1DFC75E3008A8AF3 /* Missile.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Missile.cxx; sourceTree = "<group>"; };
 		DCF3A6DC1DFC75E3008A8AF3 /* Missile.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Missile.hxx; sourceTree = "<group>"; };
-		DCF3A6DE1DFC75E3008A8AF3 /* PaddleReader.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PaddleReader.cxx; sourceTree = "<group>"; };
-		DCF3A6DF1DFC75E3008A8AF3 /* PaddleReader.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = PaddleReader.hxx; sourceTree = "<group>"; };
+		DCF3A6DE1DFC75E3008A8AF3 /* AnalogReadout.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AnalogReadout.cxx; sourceTree = "<group>"; };
+		DCF3A6DF1DFC75E3008A8AF3 /* AnalogReadout.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = AnalogReadout.hxx; sourceTree = "<group>"; };
 		DCF3A6E01DFC75E3008A8AF3 /* Player.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Player.cxx; sourceTree = "<group>"; };
 		DCF3A6E11DFC75E3008A8AF3 /* Player.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Player.hxx; sourceTree = "<group>"; };
 		DCF3A6E21DFC75E3008A8AF3 /* Playfield.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Playfield.cxx; sourceTree = "<group>"; };
@@ -2467,8 +2467,8 @@
 				DCF3A6DA1DFC75E3008A8AF3 /* LatchedInput.hxx */,
 				DCF3A6DB1DFC75E3008A8AF3 /* Missile.cxx */,
 				DCF3A6DC1DFC75E3008A8AF3 /* Missile.hxx */,
-				DCF3A6DE1DFC75E3008A8AF3 /* PaddleReader.cxx */,
-				DCF3A6DF1DFC75E3008A8AF3 /* PaddleReader.hxx */,
+				DCF3A6DE1DFC75E3008A8AF3 /* AnalogReadout.cxx */,
+				DCF3A6DF1DFC75E3008A8AF3 /* AnalogReadout.hxx */,
 				DCF3A6E01DFC75E3008A8AF3 /* Player.cxx */,
 				DCF3A6E11DFC75E3008A8AF3 /* Player.hxx */,
 				DCF3A6E21DFC75E3008A8AF3 /* Playfield.cxx */,
@@ -2959,7 +2959,7 @@
 				DCAACB17188D636F00A4D282 /* CartDFWidget.hxx in Headers */,
 				DCF3A6FF1DFC75E3008A8AF3 /* TIA.hxx in Headers */,
 				DC368F5918A2FB710084199C /* SoundSDL2.hxx in Headers */,
-				DCF3A6F91DFC75E3008A8AF3 /* PaddleReader.hxx in Headers */,
+				DCF3A6F91DFC75E3008A8AF3 /* AnalogReadout.hxx in Headers */,
 				DCFF14CE18B0260300A20364 /* EventHandlerSDL2.hxx in Headers */,
 				DC047FEF1A4A6F3600348F0F /* JoystickDialog.hxx in Headers */,
 				CFE3F60E1E84A9A200A8204E /* CartCDFWidget.hxx in Headers */,
@@ -3196,7 +3196,7 @@
 				E007231F210FBF5E002CF343 /* FpsMeter.cxx in Sources */,
 				2D9174FD09BA90380026E9FF /* RomListWidget.cxx in Sources */,
 				DC22F1362507D24E00AB43E9 /* QuadTariDialog.cxx in Sources */,
-				DCF3A6F81DFC75E3008A8AF3 /* PaddleReader.cxx in Sources */,
+				DCF3A6F81DFC75E3008A8AF3 /* AnalogReadout.cxx in Sources */,
 				2D9174FE09BA90380026E9FF /* RomWidget.cxx in Sources */,
 				DCA82C731FEB4E780059340F /* TimeMachineDialog.cxx in Sources */,
 				2D9174FF09BA90380026E9FF /* TiaInfoWidget.cxx in Sources */,

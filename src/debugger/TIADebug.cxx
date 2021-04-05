@@ -1102,7 +1102,7 @@ string TIADebug::toString()
       << booleanWithLabel("inpt3", myTIA.peek(0x0b) & 0x80) << " "
       << booleanWithLabel("inpt4", myTIA.peek(0x0c) & 0x80) << " "
       << booleanWithLabel("inpt5", myTIA.peek(0x0d) & 0x80) << " "
-      << booleanWithLabel("dump_gnd_0123", myTIA.myPaddleReaders[0].vblankDumped())
+      << booleanWithLabel("dump_gnd_0123", myTIA.myAnalogReadouts[0].vblankDumped())
       << endl
       << "COLUxx: "
       << "P0=$" << Common::Base::HEX2 << state.coluRegs[0] << "/"
