@@ -61,7 +61,7 @@ ifdef HAVE_CLANG
 endif
 
 ifdef CLANG_WARNINGS
-  EXTRA_WARN=-Weverything -Wno-c++17-extensions  -Wno-c++98-compat-pedantic \
+  EXTRA_WARN=-Weverything -Wno-c++98-compat-pedantic \
     -Wno-switch-enum -Wno-conversion -Wno-covered-switch-default \
     -Wno-inconsistent-missing-destructor-override -Wno-float-equal \
     -Wno-exit-time-destructors -Wno-global-constructors -Wno-weak-vtables \
