@@ -44,10 +44,10 @@ class ControllerLowLevel
     inline bool getPin(Controller::DigitalPin pin) const {
       return myController.getPin(pin);
     }
-    inline void setPin(Controller::AnalogPin pin, Int32 value) {
+    inline void setPin(Controller::AnalogPin pin, AnalogReadout::Connection value) {
       myController.setPin(pin, value);
     }
-    inline Int32 getPin(Controller::AnalogPin pin) const {
+    inline AnalogReadout::Connection getPin(Controller::AnalogPin pin) const {
       return myController.getPin(pin);
     }
     inline void resetDigitalPins() {

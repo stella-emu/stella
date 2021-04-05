@@ -31,7 +31,7 @@ void AnalogReadout::reset(uInt64 timestamp)
   myU = 0;
   myIsDumped = false;
 
-  myValue = 0;
+  myConnection = disconnect();
   myTimestamp = timestamp;
 
   setConsoleTiming(ConsoleTiming::ntsc);
@@ -64,14 +64,14 @@ uInt8 AnalogReadout::inpt(uInt64 timestamp)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void AnalogReadout::update(double value, uInt64 timestamp, ConsoleTiming consoleTiming)
+void AnalogReadout::update(Connection connection, uInt64 timestamp, ConsoleTiming consoleTiming)
 {
   if (consoleTiming != myConsoleTiming) {
     setConsoleTiming(consoleTiming);
   }
 
-  if (value != myValue) {
-    myValue = value;
+  if (connection != myConnection) {
+    myConnection = connection;
 
     updateCharge(timestamp);
   }
@@ -89,11 +89,28 @@ void AnalogReadout::setConsoleTiming(ConsoleTiming consoleTiming)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AnalogReadout::updateCharge(uInt64 timestamp)
 {
-  if (myValue >= 0 && !myIsDumped)
-    myU = U_SUPP * (1 - (1 - myU / U_SUPP) *
-      exp(-static_cast<double>(timestamp - myTimestamp) / (myValue * R_POT + R0) / C / myClockFreq));
-  else
-    myU *= exp(-static_cast<double>(timestamp - myTimestamp) / (myIsDumped ? R_DUMP : R0) / C / myClockFreq);
+  if (myIsDumped) {
+    myU *= exp(-static_cast<double>(timestamp - myTimestamp) / R_DUMP / C / myClockFreq);
+  } else {
+    switch (myConnection.type) {
+      case ConnectionType::vcc:
+        myU = U_SUPP * (1 - (1 - myU / U_SUPP) *
+          exp(-static_cast<double>(timestamp - myTimestamp) / (myConnection.resistance + R0) / C / myClockFreq));
+
+        break;
+
+      case ConnectionType::ground:
+        myU *= exp(-static_cast<double>(timestamp - myTimestamp) / (myConnection.resistance + R0) / C / myClockFreq);
+
+        break;
+
+      case ConnectionType::disconnected:
+        break;
+
+      default:
+        throw runtime_error("unreachable");
+    }
+  }
 
   myTimestamp = timestamp;
 }
@@ -106,7 +123,7 @@ bool AnalogReadout::save(Serializer& out) const
     out.putDouble(myUThresh);
     out.putDouble(myU);
 
-    out.putDouble(myValue);
+    myConnection.save(out);
     out.putLong(myTimestamp);
 
     out.putInt(int(myConsoleTiming));
@@ -131,7 +148,7 @@ bool AnalogReadout::load(Serializer& in)
     myUThresh = in.getDouble();
     myU = in.getDouble();
 
-    myValue = in.getDouble();
+    myConnection.load(in);
     myTimestamp = in.getLong();
 
     myConsoleTiming = ConsoleTiming(in.getInt());
@@ -146,4 +163,64 @@ bool AnalogReadout::load(Serializer& in)
   }
 
   return true;
+}
+
+AnalogReadout::Connection AnalogReadout::connectToGround(uInt32 resistance)
+{
+  return Connection{ConnectionType::ground, resistance};
+}
+
+AnalogReadout::Connection AnalogReadout::connectToVcc(uInt32 resistance)
+{
+  return Connection{ConnectionType::vcc, resistance};
+}
+
+AnalogReadout::Connection AnalogReadout::disconnect()
+{
+  return Connection{ConnectionType::disconnected, 0};
+}
+
+bool AnalogReadout::Connection::save(Serializer& out) const
+{
+  try
+  {
+    out.putInt(static_cast<uInt8>(type));
+    out.putInt(resistance);
+  }
+  catch(...)
+  {
+    cerr << "ERROR: AnalogReadout::Connection::save" << endl;
+    return false;
+  }
+
+  return true;
+}
+
+bool AnalogReadout::Connection::load(Serializer& in)
+{
+  try
+  {
+    type = ConnectionType(in.getInt());
+    resistance = in.getInt();
+  }
+  catch(...)
+  {
+    cerr << "ERROR: AnalogReadout::Connection::load" << endl;
+    return false;
+  }
+
+  return true;
+}
+
+bool operator==(const AnalogReadout::Connection& c1, const AnalogReadout::Connection& c2)
+{
+  if (c1.type == AnalogReadout::ConnectionType::disconnected)
+    return c2.type == AnalogReadout::ConnectionType::disconnected;
+
+  return c1.type == c2.type && c1.resistance == c2.resistance;
+}
+
+bool operator!=(const AnalogReadout::Connection& c1, const AnalogReadout::Connection& c2)
+{
+  return !(c1 == c2);
 }

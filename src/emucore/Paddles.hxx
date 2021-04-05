@@ -162,7 +162,8 @@ class Paddles : public Controller
     */
     static void setDigitalPaddleRange(int range);
 
-    static constexpr double MAX_RESISTANCE = 1000000.0;
+    // The maximum value of the paddle pot = 1MOhm
+    static constexpr uInt32 MAX_RESISTANCE = 1000000;
 
   private:
     // Range of values over which digital and mouse movement is scaled

@@ -86,7 +86,7 @@ void GenesisWidget::loadConfig()
   myPins[kJBbtn]->setState(!getPin(ourPinNo[kJBbtn]));
 
   myPins[kJCbtn]->setState(
-    getPin(Controller::AnalogPin::Five) == Controller::MAX_RESISTANCE);
+    getPin(Controller::AnalogPin::Five) == AnalogReadout::disconnect());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -106,8 +106,8 @@ void GenesisWidget::handleCommand(
         break;
       case kJCbtn:
         setPin(Controller::AnalogPin::Five,
-          myPins[id]->getState() ? Controller::MAX_RESISTANCE :
-                                   Controller::MIN_RESISTANCE);
+          myPins[id]->getState() ? AnalogReadout::disconnect() :
+                                   AnalogReadout::connectToVcc());
         break;
       default:
         break;

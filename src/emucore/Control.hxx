@@ -27,6 +27,7 @@ class System;
 
 #include "bspf.hxx"
 #include "Serializable.hxx"
+#include "AnalogReadout.hxx"
 
 /**
   A controller is a device that plugs into either the left or right
@@ -154,7 +155,7 @@ class Controller : public Serializable
       @param pin The pin of the controller jack to read
       @return The resistance at the specified pin
     */
-    virtual Int32 read(AnalogPin pin);
+    virtual AnalogReadout::Connection read(AnalogPin pin);
 
     /**
       Write the given value to the specified digital pin for this
@@ -280,13 +281,6 @@ class Controller : public Serializable
     */
     static void setAutoFireRate(int rate, bool isNTSC = true);
 
-  public:
-    /// Constant which represents maximum resistance for analog pins
-    static constexpr Int32 MAX_RESISTANCE = 0x7FFFFFFF;
-
-    /// Constant which represents minimum resistance for analog pins
-    static constexpr Int32 MIN_RESISTANCE = 0x00000000;
-
   protected:
     /**
       Derived classes *must* use these accessor/mutator methods.
@@ -298,12 +292,12 @@ class Controller : public Serializable
     inline bool getPin(DigitalPin pin) const {
       return myDigitalPinState[static_cast<int>(pin)];
     }
-    inline void setPin(AnalogPin pin, Int32 value) {
+    inline void setPin(AnalogPin pin, AnalogReadout::Connection value) {
       myAnalogPinValue[static_cast<int>(pin)] = value;
       if(myOnAnalogPinUpdateCallback)
         myOnAnalogPinUpdateCallback(pin);
     }
-    inline Int32 getPin(AnalogPin pin) const {
+    inline AnalogReadout::Connection getPin(AnalogPin pin) const {
       return myAnalogPinValue[static_cast<int>(pin)];
     }
     inline void resetDigitalPins() {
@@ -314,8 +308,8 @@ class Controller : public Serializable
       setPin(DigitalPin::Six,   true);
     }
     inline void resetAnalogPins() {
-      setPin(AnalogPin::Five, MAX_RESISTANCE);
-      setPin(AnalogPin::Nine, MAX_RESISTANCE);
+      setPin(AnalogPin::Five, AnalogReadout::disconnect());
+      setPin(AnalogPin::Nine, AnalogReadout::disconnect());
     }
 
     /**
@@ -384,7 +378,8 @@ class Controller : public Serializable
     std::array<bool, 5> myDigitalPinState{true, true, true, true, true};
 
     /// The analog value on each analog pin
-    std::array<Int32, 2> myAnalogPinValue{MAX_RESISTANCE, MAX_RESISTANCE};
+    std::array<AnalogReadout::Connection, 2>
+      myAnalogPinValue{AnalogReadout::disconnect(), AnalogReadout::disconnect()};
 
   private:
     // Following constructors and assignment operators not supported

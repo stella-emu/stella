@@ -26,9 +26,23 @@ class AnalogReadout : public Serializable
 {
   public:
 
-    AnalogReadout();
+    enum class ConnectionType : uInt8 {
+      ground = 0, vcc = 1, disconnected = 2
+    };
+
+    struct Connection {
+      ConnectionType type;
+      uInt32 resistance;
+
+      bool save(Serializer& out) const;
+      bool load(Serializer& in);
+
+      friend bool operator==(const AnalogReadout::Connection& c1, const AnalogReadout::Connection& c2);
+    };
 
   public:
+
+    AnalogReadout();
 
     void reset(uInt64 timestamp);
 
@@ -37,13 +51,21 @@ class AnalogReadout : public Serializable
 
     uInt8 inpt(uInt64 timestamp);
 
-    void update(double value, uInt64 timestamp, ConsoleTiming consoleTiming);
+    void update(Connection connection, uInt64 timestamp, ConsoleTiming consoleTiming);
 
     /**
       Serializable methods (see that class for more information).
     */
     bool save(Serializer& out) const override;
     bool load(Serializer& in) override;
+
+  public:
+
+    static Connection connectToGround(uInt32 resistance = 0);
+
+    static Connection connectToVcc(uInt32 resistance = 0);
+
+    static Connection disconnect();
 
   private:
 
@@ -56,7 +78,7 @@ class AnalogReadout : public Serializable
     double myUThresh{0.0};
     double myU{0.0};
 
-    double myValue{0.0};
+    Connection myConnection{ConnectionType::disconnected, 0};
     uInt64 myTimestamp{0};
 
     ConsoleTiming myConsoleTiming;
@@ -79,5 +101,8 @@ class AnalogReadout : public Serializable
     AnalogReadout& operator=(const AnalogReadout&) = delete;
     AnalogReadout& operator=(AnalogReadout&&) = delete;
 };
+
+bool operator==(const AnalogReadout::Connection& c1, const AnalogReadout::Connection& c2);
+bool operator!=(const AnalogReadout::Connection& c1, const AnalogReadout::Connection& c2);
 
 #endif // TIA_ANALOG_READOUT

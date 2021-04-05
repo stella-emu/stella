@@ -663,9 +663,9 @@ class TIA : public Device
     void delayedWrite(uInt8 address, uInt8 value);
 
     /**
-     * Update all paddle readout circuits to the current controller state.
+     * Update analog readout circuit to the current controller state.
      */
-    void updatePaddle(uInt8 idx);
+    void updateAnalogReadout(uInt8 idx);
 
     /**
      * Get the target counter value during a RESx. This essentially depends on

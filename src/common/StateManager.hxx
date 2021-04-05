@@ -18,7 +18,7 @@
 #ifndef STATE_MANAGER_HXX
 #define STATE_MANAGER_HXX
 
-#define STATE_HEADER "06020100state"
+#define STATE_HEADER "06050300state"
 
 class OSystem;
 class RewindManager;
