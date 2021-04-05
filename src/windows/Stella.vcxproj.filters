@@ -789,7 +789,7 @@
     <ClCompile Include="..\emucore\tia\Missile.cxx">
       <Filter>Source Files\emucore\tia</Filter>
     </ClCompile>
-    <ClCompile Include="..\emucore\tia\PaddleReader.cxx">
+    <ClCompile Include="..\emucore\tia\AnalogReadout.cxx">
       <Filter>Source Files\emucore\tia</Filter>
     </ClCompile>
     <ClCompile Include="..\emucore\tia\Player.cxx">
@@ -1865,7 +1865,7 @@
     <ClInclude Include="..\emucore\tia\Missile.hxx">
       <Filter>Header Files\emucore\tia</Filter>
     </ClInclude>
-    <ClInclude Include="..\emucore\tia\PaddleReader.hxx">
+    <ClInclude Include="..\emucore\tia\AnalogReadout.hxx">
       <Filter>Header Files\emucore\tia</Filter>
     </ClInclude>
     <ClInclude Include="..\emucore\tia\Player.hxx">
