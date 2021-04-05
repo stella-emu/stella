@@ -15,18 +15,18 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef TIA_PADDLE_READER
-#define TIA_PADDLE_READER
+#ifndef TIA_ANALOG_READOUT
+#define TIA_ANALOG_READOUT
 
 #include "bspf.hxx"
 #include "Serializable.hxx"
 #include "ConsoleTiming.hxx"
 
-class PaddleReader : public Serializable
+class AnalogReadout : public Serializable
 {
   public:
 
-    PaddleReader();
+    AnalogReadout();
 
   public:
 
@@ -74,10 +74,10 @@ class PaddleReader : public Serializable
     static constexpr double TRIPPOINT_LINES = 379;
 
   private:
-    PaddleReader(const PaddleReader&) = delete;
-    PaddleReader(PaddleReader&&) = delete;
-    PaddleReader& operator=(const PaddleReader&) = delete;
-    PaddleReader& operator=(PaddleReader&&) = delete;
+    AnalogReadout(const AnalogReadout&) = delete;
+    AnalogReadout(AnalogReadout&&) = delete;
+    AnalogReadout& operator=(const AnalogReadout&) = delete;
+    AnalogReadout& operator=(AnalogReadout&&) = delete;
 };
 
-#endif // TIA_PADDLE_READER
+#endif // TIA_ANALOG_READOUT

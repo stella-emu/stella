@@ -137,7 +137,7 @@ SOURCES_CXX := \
 	$(CORE_DIR)/emucore/tia/frame-manager/JitterEmulation.cxx \
 	$(CORE_DIR)/emucore/tia/LatchedInput.cxx \
 	$(CORE_DIR)/emucore/tia/Missile.cxx \
-	$(CORE_DIR)/emucore/tia/PaddleReader.cxx \
+	$(CORE_DIR)/emucore/tia/AnalogReadout.cxx \
 	$(CORE_DIR)/emucore/tia/Player.cxx \
 	$(CORE_DIR)/emucore/tia/Playfield.cxx \
 	$(CORE_DIR)/emucore/TIASurface.cxx \

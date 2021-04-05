@@ -168,7 +168,7 @@ bool RiotDebug::vblank(int bit)
   if(bit == 6)       // latches
     return myConsole.tia().myInput0.vblankLatched();
   else if(bit == 7)  // dump to ground
-    return myConsole.tia().myPaddleReaders[0].vblankDumped();
+    return myConsole.tia().myAnalogReadouts[0].vblankDumped();
   else
     return true;
 }
