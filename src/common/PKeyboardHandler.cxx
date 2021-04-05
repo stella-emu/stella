@@ -748,7 +748,7 @@ PhysicalKeyboardHandler::DefaultCommonMapping = {
   { Event::ConsoleBlackWhite,        KBDK_F4 },
   { Event::ConsoleLeftDiffB,         KBDK_F6 },
   { Event::ConsoleRightDiffB,        KBDK_F8 },
-  { Event::Fry,                      KBDK_BACKSPACE },
+  { Event::Fry,                      KBDK_BACKSPACE, KBDM_SHIFT },
 #endif
 };
 
@@ -1049,7 +1049,9 @@ PhysicalKeyboardHandler::CompuMateMapping = {
   {Event::CompuMateRightBracket,  KBDK_RIGHTBRACKET},
   {Event::CompuMateMinus,         KBDK_MINUS},
   {Event::CompuMateQuote,         KBDK_APOSTROPHE, KBDM_SHIFT},
-  {Event::CompuMateBackspace,     KBDK_BACKSPACE, KBDM_SHIFT},
+#ifndef RETRON77
+  {Event::CompuMateBackspace,     KBDK_BACKSPACE},
+#endif
   {Event::CompuMateEquals,        KBDK_EQUALS},
   {Event::CompuMatePlus,          KBDK_EQUALS, KBDM_SHIFT},
   {Event::CompuMateSlash,         KBDK_SLASH}
