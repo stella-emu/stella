@@ -19,6 +19,7 @@
 #include "Logger.hxx"
 
 #include "CartDetector.hxx"
+#include "MovieCart/StreamReader.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t size)
@@ -694,11 +695,34 @@ bool CartDetector::isProbablyMDM(const ByteBuffer& image, size_t size)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartDetector::isProbablyMVC(const ByteBuffer& image, size_t size)
 {
-  // MVC version 0, frame 0
+  // MVC version 0
   uInt8 sig[] = { 'M', 'V', 'C', 0 };
-  return searchForBytes(image, std::min<size_t>(size, 5), sig, 4);
+  int	sigSize = sizeof(sig);
+  return searchForBytes(image, std::min<size_t>(size, sigSize+1), sig, sigSize);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+size_t CartDetector::isProbablyMVC(std::istream &in, size_t maxSize)
+{
+  const size_t	frameSize = 2 * MVC_FIELD_PAD_SIZE;
+  bool			found = false;
+
+  // Returns size of field if stream is probably an MVC movie cartridge
+  
+  if (maxSize >= frameSize)
+  {
+	auto	pos = in.tellg();
+
+	ByteBuffer	image = make_unique<uInt8[]>(frameSize);
+	in.read(reinterpret_cast<char*>(image.get()), frameSize);
+
+	in.seekg(pos);
+
+	found = isProbablyMVC(image, frameSize);
+  }
+
+  return found ? frameSize : 0;
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartDetector::isProbablySB(const ByteBuffer& image, size_t size)
