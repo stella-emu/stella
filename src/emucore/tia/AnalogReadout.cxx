@@ -71,9 +71,9 @@ void AnalogReadout::update(Connection connection, uInt64 timestamp, ConsoleTimin
   }
 
   if (connection != myConnection) {
-    myConnection = connection;
-
     updateCharge(timestamp);
+
+    myConnection = connection;
   }
 }
 
