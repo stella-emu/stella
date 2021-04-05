@@ -26,7 +26,7 @@ Genesis::Genesis(Jack jack, const Event& event, const System& system)
   else
     myButtonCEvent   = Event::JoystickOneFire5;
 
-  setPin(AnalogPin::Five, MIN_RESISTANCE);
+  setPin(AnalogPin::Five, AnalogReadout::connectToVcc());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -41,5 +41,5 @@ void Genesis::updateButtons()
   updateMouseButtons(firePressed, buttonCPressed);
 
   setPin(DigitalPin::Six, !getAutoFireState(firePressed));
-  setPin(AnalogPin::Five, buttonCPressed ? MAX_RESISTANCE : MIN_RESISTANCE);
+  setPin(AnalogPin::Five, buttonCPressed ? AnalogReadout::disconnect() : AnalogReadout::connectToVcc());
 }

@@ -31,10 +31,10 @@ CompuMate::CompuMate(const Console& console, const Event& event,
   myLeftController  = make_unique<CMControl>(*this, Controller::Jack::Left, event, system);
   myRightController = make_unique<CMControl>(*this, Controller::Jack::Right, event, system);
 
-  myLeftController->setPin(Controller::AnalogPin::Nine, Controller::MAX_RESISTANCE);
-  myLeftController->setPin(Controller::AnalogPin::Five, Controller::MIN_RESISTANCE);
-  myRightController->setPin(Controller::AnalogPin::Nine, Controller::MIN_RESISTANCE);
-  myRightController->setPin(Controller::AnalogPin::Five, Controller::MAX_RESISTANCE);
+  myLeftController->setPin(Controller::AnalogPin::Nine, AnalogReadout::connectToGround());
+  myLeftController->setPin(Controller::AnalogPin::Five, AnalogReadout::connectToVcc());
+  myRightController->setPin(Controller::AnalogPin::Nine, AnalogReadout::connectToVcc());
+  myRightController->setPin(Controller::AnalogPin::Five, AnalogReadout::connectToGround());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -44,17 +44,17 @@ void CompuMate::update()
   Controller& lp = myConsole.leftController();
   Controller& rp = myConsole.rightController();
 
-  lp.setPin(Controller::AnalogPin::Nine, Controller::MAX_RESISTANCE);
-  lp.setPin(Controller::AnalogPin::Five, Controller::MIN_RESISTANCE);
+  lp.setPin(Controller::AnalogPin::Nine, AnalogReadout::connectToGround());
+  lp.setPin(Controller::AnalogPin::Five, AnalogReadout::connectToVcc());
   lp.setPin(Controller::DigitalPin::Six, true);
-  rp.setPin(Controller::AnalogPin::Nine, Controller::MIN_RESISTANCE);
-  rp.setPin(Controller::AnalogPin::Five, Controller::MAX_RESISTANCE);
+  rp.setPin(Controller::AnalogPin::Nine, AnalogReadout::connectToVcc());
+  rp.setPin(Controller::AnalogPin::Five, AnalogReadout::connectToGround());
   rp.setPin(Controller::DigitalPin::Six, true);
 
   if (myEvent.get(Event::CompuMateShift))
-    rp.setPin(Controller::AnalogPin::Five, Controller::MIN_RESISTANCE);
+    rp.setPin(Controller::AnalogPin::Five, AnalogReadout::connectToVcc());
   if (myEvent.get(Event::CompuMateFunc))
-    lp.setPin(Controller::AnalogPin::Nine, Controller::MIN_RESISTANCE);
+    lp.setPin(Controller::AnalogPin::Nine, AnalogReadout::connectToVcc());
 
   rp.setPin(Controller::DigitalPin::Three, true);
   rp.setPin(Controller::DigitalPin::Four, true);
@@ -72,7 +72,7 @@ void CompuMate::update()
       // Emulate the '?' character (Shift-6) with the actual question key
       if (myEvent.get(Event::CompuMateQuestion))
       {
-        rp.setPin(Controller::AnalogPin::Five, Controller::MIN_RESISTANCE);
+        rp.setPin(Controller::AnalogPin::Five, AnalogReadout::connectToVcc());
         lp.setPin(Controller::DigitalPin::Six, false);
       }
       if (myEvent.get(Event::CompuMateY)) rp.setPin(Controller::DigitalPin::Three, false);
@@ -84,7 +84,7 @@ void CompuMate::update()
       // Emulate the '[' character (Shift-8) with the actual key
       if (myEvent.get(Event::CompuMateLeftBracket))
       {
-        rp.setPin(Controller::AnalogPin::Five, Controller::MIN_RESISTANCE);
+        rp.setPin(Controller::AnalogPin::Five, AnalogReadout::connectToVcc());
         lp.setPin(Controller::DigitalPin::Six, false);
       }
       if (myEvent.get(Event::CompuMateI)) rp.setPin(Controller::DigitalPin::Three, false);
@@ -96,7 +96,7 @@ void CompuMate::update()
       // Emulate the '-' character (Shift-2) with the actual minus key
       if (myEvent.get(Event::CompuMateMinus))
       {
-        rp.setPin(Controller::AnalogPin::Five, Controller::MIN_RESISTANCE);
+        rp.setPin(Controller::AnalogPin::Five, AnalogReadout::connectToVcc());
         lp.setPin(Controller::DigitalPin::Six, false);
       }
       if (myEvent.get(Event::CompuMateW)) rp.setPin(Controller::DigitalPin::Three, false);
@@ -114,7 +114,7 @@ void CompuMate::update()
       // Emulate the quote character (Shift-0) with the actual quote key
       if (myEvent.get(Event::CompuMateQuote))
       {
-        rp.setPin(Controller::AnalogPin::Five, Controller::MIN_RESISTANCE);
+        rp.setPin(Controller::AnalogPin::Five, AnalogReadout::connectToVcc());
         lp.setPin(Controller::DigitalPin::Six, false);
       }
       if (myEvent.get(Event::CompuMateP)) rp.setPin(Controller::DigitalPin::Three, false);
@@ -123,7 +123,7 @@ void CompuMate::update()
       // Emulate Ctrl-space (aka backspace) with the actual Backspace key
       if (myEvent.get(Event::CompuMateBackspace))
       {
-        lp.setPin(Controller::AnalogPin::Nine, Controller::MIN_RESISTANCE);
+        lp.setPin(Controller::AnalogPin::Nine, AnalogReadout::connectToVcc());
         rp.setPin(Controller::DigitalPin::Four, false);
       }
       break;
@@ -132,7 +132,7 @@ void CompuMate::update()
       // Emulate the ']' character (Shift-9) with the actual key
       if (myEvent.get(Event::CompuMateRightBracket))
       {
-        rp.setPin(Controller::AnalogPin::Five, Controller::MIN_RESISTANCE);
+        rp.setPin(Controller::AnalogPin::Five, AnalogReadout::connectToVcc());
         lp.setPin(Controller::DigitalPin::Six, false);
       }
       if (myEvent.get(Event::CompuMateO)) rp.setPin(Controller::DigitalPin::Three, false);
@@ -144,7 +144,7 @@ void CompuMate::update()
       // Emulate the '=' character (Shift-5) with the actual equals key
       if (myEvent.get(Event::CompuMateEquals))
       {
-        rp.setPin(Controller::AnalogPin::Five, Controller::MIN_RESISTANCE);
+        rp.setPin(Controller::AnalogPin::Five, AnalogReadout::connectToVcc());
         lp.setPin(Controller::DigitalPin::Six, false);
       }
       if (myEvent.get(Event::CompuMateT)) rp.setPin(Controller::DigitalPin::Three, false);
@@ -156,7 +156,7 @@ void CompuMate::update()
       // Emulate the '+' character (Shift-1) with the actual plus key (Shift-=)
       if (myEvent.get(Event::CompuMatePlus))
       {
-        rp.setPin(Controller::AnalogPin::Five, Controller::MIN_RESISTANCE);
+        rp.setPin(Controller::AnalogPin::Five, AnalogReadout::connectToVcc());
         lp.setPin(Controller::DigitalPin::Six, false);
       }
       if (myEvent.get(Event::CompuMateQ)) rp.setPin(Controller::DigitalPin::Three, false);
@@ -168,7 +168,7 @@ void CompuMate::update()
       // Emulate the '/' character (Shift-4) with the actual slash key
       if (myEvent.get(Event::CompuMateSlash))
       {
-        rp.setPin(Controller::AnalogPin::Five, Controller::MIN_RESISTANCE);
+        rp.setPin(Controller::AnalogPin::Five, AnalogReadout::connectToVcc());
         lp.setPin(Controller::DigitalPin::Six, false);
       }
       if (myEvent.get(Event::CompuMateR)) rp.setPin(Controller::DigitalPin::Three, false);

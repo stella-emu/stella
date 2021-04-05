@@ -32,8 +32,8 @@ BoosterGrip::BoosterGrip(Jack jack, const Event& event, const System& system)
     myBoosterEvent = Event::JoystickOneFire9;
   }
 
-  setPin(AnalogPin::Five, MAX_RESISTANCE);
-  setPin(AnalogPin::Nine, MAX_RESISTANCE);
+  setPin(AnalogPin::Five, AnalogReadout::disconnect());
+  setPin(AnalogPin::Nine, AnalogReadout::disconnect());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -48,6 +48,7 @@ void BoosterGrip::updateButtons()
   updateMouseButtons(firePressed, boosterPressed);
 
   setPin(DigitalPin::Six, !getAutoFireState(firePressed));
-  setPin(AnalogPin::Five, triggerPressed ? MIN_RESISTANCE : MAX_RESISTANCE);
-  setPin(AnalogPin::Nine, boosterPressed ? MIN_RESISTANCE : MAX_RESISTANCE);
+  setPin(AnalogPin::Five, triggerPressed ? AnalogReadout::connectToVcc() : AnalogReadout::disconnect());
+  setPin(AnalogPin::Nine, boosterPressed ? AnalogReadout::connectToVcc() : AnalogReadout::disconnect());
 }
+

@@ -27,8 +27,8 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
 {
   // We must start with minimum resistance; see commit
   // 38b452e1a047a0dca38c5bcce7c271d40f76736e for more information
-  setPin(AnalogPin::Five, MIN_RESISTANCE);
-  setPin(AnalogPin::Nine, MIN_RESISTANCE);
+  setPin(AnalogPin::Five, AnalogReadout::connectToVcc());
+  setPin(AnalogPin::Nine, AnalogReadout::connectToVcc());
 
   // The following logic reflects that mapping paddles to different
   // devices can be extremely complex
@@ -181,12 +181,12 @@ void Paddles::update()
     // Only change state if the charge has actually changed
     if(myCharge[1] != myLastCharge[1])
     {
-      setPin(AnalogPin::Five, Int32(MAX_RESISTANCE * (myCharge[1] / double(TRIGMAX))));
+      setPin(AnalogPin::Five, AnalogReadout::connectToVcc(MAX_RESISTANCE * (myCharge[1] / double(TRIGMAX))));
       myLastCharge[1] = myCharge[1];
     }
     if(myCharge[0] != myLastCharge[0])
     {
-      setPin(AnalogPin::Nine, Int32(MAX_RESISTANCE * (myCharge[0] / double(TRIGMAX))));
+      setPin(AnalogPin::Nine, AnalogReadout::connectToVcc(MAX_RESISTANCE * (myCharge[0] / double(TRIGMAX))));
       myLastCharge[0] = myCharge[0];
     }
   }
@@ -235,7 +235,7 @@ bool Paddles::updateAnalogAxes()
     if(abs(new_val - sa_xaxis) > 10)
       sa_xaxis = new_val;
 
-    setPin(AnalogPin::Nine, Int32(MAX_RESISTANCE *
+    setPin(AnalogPin::Nine, AnalogReadout::connectToVcc(MAX_RESISTANCE *
            (BSPF::clamp(32768 - Int32(Int32(sa_xaxis) * SENSITIVITY + XCENTER), 0, 65536) / 65536.0)));
     sa_changed = true;
   }
@@ -250,7 +250,7 @@ bool Paddles::updateAnalogAxes()
     if(abs(new_val - sa_yaxis) > 10)
       sa_yaxis = new_val;
 
-    setPin(AnalogPin::Five, Int32(MAX_RESISTANCE *
+    setPin(AnalogPin::Five, AnalogReadout::connectToVcc(MAX_RESISTANCE *
            (BSPF::clamp(32768 - Int32(Int32(sa_yaxis) * SENSITIVITY + YCENTER), 0, 65536) / 65536.0)));
     sa_changed = true;
   }

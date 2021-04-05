@@ -48,7 +48,7 @@ bool Controller::read(DigitalPin pin)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Int32 Controller::read(AnalogPin pin)
+AnalogReadout::Connection Controller::read(AnalogPin pin)
 {
   return getPin(pin);
 }
@@ -66,8 +66,8 @@ bool Controller::save(Serializer& out) const
     out.putBool(getPin(DigitalPin::Six));
 
     // Output the analog pins
-    out.putInt(getPin(AnalogPin::Five));
-    out.putInt(getPin(AnalogPin::Nine));
+    getPin(AnalogPin::Five).save(out);
+    getPin(AnalogPin::Nine).save(out);
   }
   catch(...)
   {
@@ -90,8 +90,8 @@ bool Controller::load(Serializer& in)
     setPin(DigitalPin::Six,   in.getBool());
 
     // Input the analog pins
-    setPin(AnalogPin::Five, in.getInt());
-    setPin(AnalogPin::Nine, in.getInt());
+    getPin(AnalogPin::Five).load(in);
+    getPin(AnalogPin::Nine).load(in);
   }
   catch(...)
   {

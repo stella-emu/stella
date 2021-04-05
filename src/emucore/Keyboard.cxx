@@ -67,16 +67,16 @@ Keyboard::ColumnState Keyboard::processColumn(const Event::Type buttons[]) {
   return ColumnState::notConnected;
 }
 
-Int32 Keyboard::columnStateToAnalogSignal(ColumnState state) const {
+AnalogReadout::Connection Keyboard::columnStateToAnalogSignal(ColumnState state) const {
   switch (state) {
     case ColumnState::gnd:
-      return MAX_RESISTANCE;
+      return AnalogReadout::connectToGround();
 
     case ColumnState::vcc:
-       return 0;
+       return AnalogReadout::connectToVcc();
 
     case ColumnState::notConnected:
-      return INTERNAL_RESISTANCE;
+      return AnalogReadout::connectToVcc(INTERNAL_RESISTANCE);
 
     default:
       throw runtime_error("unreachable");

@@ -391,11 +391,11 @@ void TIA::bindToControllers()
 
       switch (pin) {
         case Controller::AnalogPin::Five:
-          updatePaddle(1);
+          updateAnalogReadout(1);
           break;
 
         case Controller::AnalogPin::Nine:
-          updatePaddle(0);
+          updateAnalogReadout(0);
           break;
       }
     }
@@ -407,18 +407,18 @@ void TIA::bindToControllers()
 
       switch (pin) {
         case Controller::AnalogPin::Five:
-          updatePaddle(3);
+          updateAnalogReadout(3);
           break;
 
         case Controller::AnalogPin::Nine:
-          updatePaddle(2);
+          updateAnalogReadout(2);
           break;
       }
     }
   );
 
   for (uInt8 i = 0; i < 4; ++i)
-    updatePaddle(i);
+    updateAnalogReadout(i);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -464,22 +464,22 @@ uInt8 TIA::peek(uInt16 address)
       break;
 
     case INPT0:
-      updatePaddle(0);
+      updateAnalogReadout(0);
       result = myAnalogReadouts[0].inpt(myTimestamp) & 0b10000000;
       break;
 
     case INPT1:
-      updatePaddle(1);
+      updateAnalogReadout(1);
       result = myAnalogReadouts[1].inpt(myTimestamp) & 0b10000000;
       break;
 
     case INPT2:
-      updatePaddle(2);
+      updateAnalogReadout(2);
       result = myAnalogReadouts[2].inpt(myTimestamp) & 0b10000000;
       break;
 
     case INPT3:
-      updatePaddle(3);
+      updateAnalogReadout(3);
       result = myAnalogReadouts[3].inpt(myTimestamp) & 0b10000000;
       break;
 
@@ -1804,32 +1804,32 @@ void TIA::delayedWrite(uInt8 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::updatePaddle(uInt8 idx)
+void TIA::updateAnalogReadout(uInt8 idx)
 {
-  Int32 resistance;
+  AnalogReadout::Connection connection;
   switch (idx) {
     case 0:
-      resistance = myConsole.leftController().read(Controller::AnalogPin::Nine);
+      connection = myConsole.leftController().read(Controller::AnalogPin::Nine);
       break;
 
     case 1:
-      resistance = myConsole.leftController().read(Controller::AnalogPin::Five);
+      connection = myConsole.leftController().read(Controller::AnalogPin::Five);
       break;
 
     case 2:
-      resistance = myConsole.rightController().read(Controller::AnalogPin::Nine);
+      connection = myConsole.rightController().read(Controller::AnalogPin::Nine);
       break;
 
     case 3:
-      resistance = myConsole.rightController().read(Controller::AnalogPin::Five);
+      connection = myConsole.rightController().read(Controller::AnalogPin::Five);
       break;
 
     default:
-      throw runtime_error("invalid paddle index");
+      throw runtime_error("invalid analog input");
   }
 
   myAnalogReadouts[idx].update(
-    (resistance == Controller::MAX_RESISTANCE) ? -1 : (double(resistance) / Paddles::MAX_RESISTANCE),
+    connection,
     myTimestamp,
     myTimingProvider()
   );

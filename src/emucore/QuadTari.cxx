@@ -61,8 +61,8 @@ QuadTari::QuadTari(Jack jack, const OSystem& osystem, const System& system,
   mySecondController = addController(secondType, true);
 
   // QuadTari auto detection setting
-  setPin(AnalogPin::Five, MIN_RESISTANCE);
-  setPin(AnalogPin::Nine, MAX_RESISTANCE);
+  setPin(AnalogPin::Five, AnalogReadout::connectToVcc());
+  setPin(AnalogPin::Nine, AnalogReadout::connectToGround());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

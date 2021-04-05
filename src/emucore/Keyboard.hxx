@@ -70,7 +70,7 @@ class Keyboard : public Controller
   private:
     ColumnState processColumn(const Event::Type buttons[]);
 
-    Int32 columnStateToAnalogSignal(ColumnState state) const;
+    AnalogReadout::Connection columnStateToAnalogSignal(ColumnState state) const;
 
   private:
     // Pre-compute the events we care about based on given port
