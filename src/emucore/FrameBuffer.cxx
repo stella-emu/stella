@@ -98,16 +98,16 @@ void FrameBuffer::initialize()
     myAbsDesktopSize.push_back(size);
 
     // Check for HiDPI mode (is it activated, and can we use it?)
-    myHiDPIAllowed.push_back(((myAbsDesktopSize[display].w / 2) >= FBMinimum::Width) &&
-                             ((myAbsDesktopSize[display].h / 2) >= FBMinimum::Height));
+    myHiDPIAllowed.push_back(((size.w / 2) >= FBMinimum::Width) &&
+                             ((size.h / 2) >= FBMinimum::Height));
     myHiDPIEnabled.push_back(myHiDPIAllowed.back() && myOSystem.settings().getBool("hidpi"));
 
     // In HiDPI mode, the desktop resolution is essentially halved
     // Later, the output is scaled and rendered in 2x mode
     if(myHiDPIEnabled.back())
     {
-      size.w = myAbsDesktopSize[display].w / hidpiScaleFactor();
-      size.h = myAbsDesktopSize[display].h / hidpiScaleFactor();
+      size.w /= hidpiScaleFactor();
+      size.h /= hidpiScaleFactor();
     }
     myDesktopSize.push_back(size);
   }
@@ -133,7 +133,8 @@ const int FrameBuffer::displayId(BufferType bufferType) const
   if(bufferType == myBufferType)
     display = myBackend->getCurrentDisplayIndex();
   else
-    display = myOSystem.settings().getInt(getDisplayKey(bufferType));
+    display = myOSystem.settings().getInt(getDisplayKey(bufferType != BufferType::None
+                                          ? bufferType : myBufferType));
 
   return std::min(std::max(0, display), maxDisplay);
 }

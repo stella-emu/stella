@@ -534,8 +534,8 @@ class FrameBuffer
     uInt32 myLastScanlines{0};
 
     bool myGrabMouse{false};
-    vector<bool> myHiDPIAllowed{false};
-    vector<bool> myHiDPIEnabled{false};
+    vector<bool> myHiDPIAllowed;
+    vector<bool> myHiDPIEnabled;
 
     // Minimum TIA zoom level that can be used for this framebuffer
     float myTIAMinZoom{2.F};
