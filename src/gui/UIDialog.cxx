@@ -57,7 +57,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   int lwidth, pwidth, bwidth;
   WidgetArray wid;
   VariantList items;
-  const Common::Size& ds = instance().frameBuffer().desktopSize();
+  const Common::Size& ds = instance().frameBuffer().desktopSize(BufferType::Launcher);
 
   // Set real dimensions
   setSize(64 * fontWidth + HBORDER * 2,
@@ -326,12 +326,13 @@ void UIDialog::loadConfig()
 
   // Launcher size
   const Common::Size& ls = settings.getSize("launcherres");
+  const Common::Size& ds = instance().frameBuffer().desktopSize(BufferType::Launcher);
   uInt32 w = ls.w, h = ls.h;
 
   w = std::max(w, FBMinimum::Width);
   h = std::max(h, FBMinimum::Height);
-  w = std::min(w, instance().frameBuffer().desktopSize().w);
-  h = std::min(h, instance().frameBuffer().desktopSize().h);
+  w = std::min(w, ds.w);
+  h = std::min(h, ds.h);
 
   myLauncherWidthSlider->setValue(w);
   myLauncherHeightSlider->setValue(h);
@@ -501,9 +502,11 @@ void UIDialog::setDefaults()
     case 1:  // Launcher options
     {
       FilesystemNode node("~");
+      const Common::Size& size = instance().frameBuffer().desktopSize(BufferType::Launcher);
+
       myRomPath->setText(node.getShortPath());
-      uInt32 w = std::min<uInt32>(instance().frameBuffer().desktopSize().w, 900);
-      uInt32 h = std::min<uInt32>(instance().frameBuffer().desktopSize().h, 600);
+      uInt32 w = std::min<uInt32>(size.w, 900);
+      uInt32 h = std::min<uInt32>(size.h, 600);
       myLauncherWidthSlider->setValue(w);
       myLauncherHeightSlider->setValue(h);
       myLauncherFontPopup->setSelected("medium", "");
@@ -612,7 +615,7 @@ void UIDialog::handleLauncherSize()
   FontDesc fd = instance().frameBuffer().getFontDesc(myDialogFontPopup->getSelectedTag().toString());
   int w = std::max(FBMinimum::Width, FBMinimum::Width * fd.maxwidth / GUI::stellaMediumDesc.maxwidth);
   int h = std::max(FBMinimum::Height, FBMinimum::Height * fd.height / GUI::stellaMediumDesc.height);
-  const Common::Size& ds = instance().frameBuffer().desktopSize();
+  const Common::Size& ds = instance().frameBuffer().desktopSize(BufferType::Launcher);
 
   myLauncherWidthSlider->setMinValue(w);
   if(myLauncherWidthSlider->getValue() < myLauncherWidthSlider->getMinValue())

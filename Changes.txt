@@ -12,6 +12,19 @@
                               Release History
 ===========================================================================
 
+6.5.2 to 6.5.3 (XXX, 2021)
+
+  * Improved support of multiple monitors with different resolutions.
+
+  * Improved analog input reading (Paddles, Keyboards...).
+
+  * Fixed QuadTari handling for controller types other than Joysticks.
+
+  * Fixed immediate disassembling when switching options in debugger.
+
+-Have fun!
+
+
 6.5.1 to 6.5.2 (February 25, 2021)
 
   * Fixed broken Driving Controller support for Stelladaptor/2600-daptor
@@ -22,8 +35,6 @@
   * Improved QuadTari timing.
 
   * Added CPU usage stats to ARM cart classes debug widgets.
-
--Have fun!
 
 
 6.5 to 6.5.1 (January 24, 2021)

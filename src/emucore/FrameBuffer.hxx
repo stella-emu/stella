@@ -194,9 +194,11 @@ class FrameBuffer
     const Common::Rect& screenRect() const { return myActiveVidMode.screenR; }
 
     /**
-      Returns the current dimensions of the users' desktop.
+      Returns the dimensions of the mode specific users' desktop.
     */
-    const Common::Size& desktopSize() const { return myDesktopSize; }
+    const Common::Size& desktopSize(BufferType bufferType) const {
+      return myDesktopSize[displayId(bufferType)];
+    }
 
     /**
       Get the supported renderers for the video hardware.
@@ -210,7 +212,7 @@ class FrameBuffer
       for the framebuffer.
     */
     float supportedTIAMinZoom() const { return myTIAMinZoom * hidpiScaleFactor(); }
-    float supportedTIAMaxZoom() const { return myTIAMaxZoom; }
+    float supportedTIAMaxZoom() const { return maxWindowZoom(); }
 
     /**
       Get the TIA surface associated with the framebuffer.
@@ -281,14 +283,14 @@ class FrameBuffer
       Answer whether hidpi mode is allowed.  In this mode, all FBSurfaces
       are scaled to 2x normal size.
     */
-    bool hidpiAllowed() const { return myHiDPIAllowed; }
+    bool hidpiAllowed() const { return myHiDPIAllowed[displayId()]; }
 
     /**
       Answer whether hidpi mode is enabled.  In this mode, all FBSurfaces
       are scaled to 2x normal size.
     */
-    bool hidpiEnabled() const { return myHiDPIEnabled; }
-    uInt32 hidpiScaleFactor() const { return myHiDPIEnabled ? 2 : 1; }
+    bool hidpiEnabled() const { return myHiDPIEnabled[displayId()]; }
+    uInt32 hidpiScaleFactor() const { return myHiDPIEnabled[displayId()] ? 2 : 1; }
 
     /**
       This method should be called to save the current settings of all
@@ -381,7 +383,7 @@ class FrameBuffer
       current window.
     */
     string getPositionKey() const;
-    string getDisplayKey() const;
+    string getDisplayKey(BufferType bufferType = BufferType::None) const;
     void saveCurrentWindowPosition() const;
 
     /**
@@ -418,6 +420,12 @@ class FrameBuffer
     */
     void drawFrameStats(float framesPerSecond);
 
+
+    /**
+      Get the display used for the current mode.
+    */
+    const int displayId(BufferType bufferType = BufferType::None) const;
+
     /**
       Build an applicable video mode based on the current settings in
       effect, whether TIA mode is active, etc.  Then tell the backend
@@ -431,7 +439,7 @@ class FrameBuffer
       Calculate the maximum level by which the base window can be zoomed and
       still fit in the desktop screen.
     */
-    float maxWindowZoom(uInt32 baseWidth, uInt32 baseHeight) const;
+    float maxWindowZoom() const;
 
     /**
       Enables/disables fullscreen mode.
@@ -461,15 +469,18 @@ class FrameBuffer
     // Maximum dimensions of the desktop area
     // Note that this takes 'hidpi' mode into account, so in some cases
     // it will be less than the absolute desktop size
-    Common::Size myDesktopSize;
+    vector<Common::Size> myDesktopSize;
 
     // Maximum absolute dimensions of the desktop area
-    Common::Size myAbsDesktopSize;
+    vector<Common::Size> myAbsDesktopSize;
 
     // The resolution of the attached displays in fullscreen mode
     // The primary display is typically the first in the array
     // Windowed modes use myDesktopSize directly
     vector<Common::Size> myFullscreenDisplays;
+
+    // The resolution of the attached displays in windowed mode
+    vector<Common::Size> myWindowedDisplays;
 
     // Supported renderers
     VariantList myRenderers;
@@ -523,13 +534,11 @@ class FrameBuffer
     uInt32 myLastScanlines{0};
 
     bool myGrabMouse{false};
-    bool myHiDPIAllowed{false};
-    bool myHiDPIEnabled{false};
+    vector<bool> myHiDPIAllowed{false};
+    vector<bool> myHiDPIEnabled{false};
 
     // Minimum TIA zoom level that can be used for this framebuffer
     float myTIAMinZoom{2.F};
-    // Maximum TIA zoom level that can be used for this framebuffer
-    float myTIAMaxZoom{1.F};
 
     // Maximum message width [chars]
     static constexpr int MESSAGE_WIDTH = 56;
