@@ -19,10 +19,10 @@
 #define CARTRIDGEMVC_HXX
 
 class System;
+class MovieCart;
 
 #include "bspf.hxx"
 #include "Cart.hxx"
-#include "MovieCart/MovieCart.hxx"
 
 /**
   Implementation of MovieCart.
@@ -33,6 +33,10 @@ class System;
 
   @author  Rob Bairos
 */
+
+#define MVC_FIELD_SIZE       2560 // round field to nearest 512 byte boundary
+#define MVC_FIELD_PAD_SIZE   4096 // round to nearest 4K
+
 class CartridgeMVC : public Cartridge
 {
 
@@ -173,8 +177,8 @@ class CartridgeMVC : public Cartridge
 
   private:
 
-	MovieCart		myMovie;
-	string			myPath;
+	unique_ptr<MovieCart>	myMovie;
+	string					myPath;
   
 };
 

@@ -19,7 +19,7 @@
 #include "Logger.hxx"
 
 #include "CartDetector.hxx"
-#include "MovieCart/StreamReader.hxx"
+#include "CartMVC.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t size)
