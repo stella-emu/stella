@@ -125,7 +125,7 @@ void FrameBuffer::initialize()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const int FrameBuffer::displayId(BufferType bufferType) const
+int FrameBuffer::displayId(BufferType bufferType) const
 {
   const int maxDisplay = int(myWindowedDisplays.size()) - 1;
   int display;
