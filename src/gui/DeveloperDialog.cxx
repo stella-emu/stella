@@ -567,7 +567,7 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
             VGAP       = Dialog::vGap();
   VariantList items;
   int xpos, ypos, pwidth;
-  const Common::Size& ds = instance().frameBuffer().desktopSize();
+  const Common::Size& ds = instance().frameBuffer().desktopSize(BufferType::Debugger);
 
   xpos = HBORDER;
   ypos = VBORDER;
@@ -1071,8 +1071,10 @@ void DeveloperDialog::setDefaults()
     case 4: // Debugger options
     {
 #ifdef DEBUGGER_SUPPORT
-      uInt32 w = std::min(instance().frameBuffer().desktopSize().w, uInt32(DebuggerDialog::kMediumFontMinW));
-      uInt32 h = std::min(instance().frameBuffer().desktopSize().h, uInt32(DebuggerDialog::kMediumFontMinH));
+      const Common::Size& size = instance().frameBuffer().desktopSize(BufferType::Debugger);
+
+      uInt32 w = std::min(size.w, uInt32(DebuggerDialog::kMediumFontMinW));
+      uInt32 h = std::min(size.h, uInt32(DebuggerDialog::kMediumFontMinH));
       myDebuggerWidthSlider->setValue(w);
       myDebuggerHeightSlider->setValue(h);
       myDebuggerFontSize->setSelected("medium");
@@ -1548,8 +1550,9 @@ void DeveloperDialog::handleFontSize()
     minW = DebuggerDialog::kLargeFontMinW;
     minH = DebuggerDialog::kLargeFontMinH;
   }
-  minW = std::min(instance().frameBuffer().desktopSize().w, minW);
-  minH = std::min(instance().frameBuffer().desktopSize().h, minH);
+  const Common::Size& size = instance().frameBuffer().desktopSize(BufferType::Debugger);
+  minW = std::min(size.w, minW);
+  minH = std::min(size.h, minH);
 
   myDebuggerWidthSlider->setMinValue(minW);
   if(minW > uInt32(myDebuggerWidthSlider->getValue()))

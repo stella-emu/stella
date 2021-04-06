@@ -30,7 +30,7 @@ Launcher::Launcher(OSystem& osystem)
   : DialogContainer(osystem),
     mySize{myOSystem.settings().getSize("launcherres")}
 {
-  const Common::Size& d = myOSystem.frameBuffer().desktopSize();
+  const Common::Size& d = myOSystem.frameBuffer().desktopSize(BufferType::Launcher);
   double overscan = 1 - myOSystem.settings().getInt("tia.fs_overscan") / 100.0;
 
   // The launcher dialog is resizable, within certain bounds

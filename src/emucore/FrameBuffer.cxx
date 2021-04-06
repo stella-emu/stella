@@ -77,46 +77,44 @@ void FrameBuffer::initialize()
   myBackend = MediaFactory::createVideoBackend(myOSystem);
 
   // Get desktop resolution and supported renderers
-  vector<Common::Size> windowedDisplays;
-  myBackend->queryHardware(myFullscreenDisplays, windowedDisplays, myRenderers);
-  uInt32 query_w = windowedDisplays[0].w, query_h = windowedDisplays[0].h;
+  myBackend->queryHardware(myFullscreenDisplays, myWindowedDisplays, myRenderers);
 
-  // Check the 'maxres' setting, which is an undocumented developer feature
-  // that specifies the desktop size (not normally set)
-  const Common::Size& s = myOSystem.settings().getSize("maxres");
-  if(s.valid())
+  int numDisplays = int(myWindowedDisplays.size());
+
+  for(int display = 0; display < numDisplays; ++display)
   {
-    query_w = s.w;
-    query_h = s.h;
-  }
-  // Various parts of the codebase assume a minimum screen size
-  myAbsDesktopSize.w = std::max(query_w, FBMinimum::Width);
-  myAbsDesktopSize.h = std::max(query_h, FBMinimum::Height);
-  myDesktopSize = myAbsDesktopSize;
+    uInt32 query_w = myWindowedDisplays[display].w, query_h = myWindowedDisplays[display].h;
 
-  // Check for HiDPI mode (is it activated, and can we use it?)
-  myHiDPIAllowed = ((myAbsDesktopSize.w / 2) >= FBMinimum::Width) &&
-    ((myAbsDesktopSize.h / 2) >= FBMinimum::Height);
-  myHiDPIEnabled = myHiDPIAllowed && myOSystem.settings().getBool("hidpi");
+    // Check the 'maxres' setting, which is an undocumented developer feature
+    // that specifies the desktop size (not normally set)
+    const Common::Size& s = myOSystem.settings().getSize("maxres");
+    if(s.valid())
+    {
+      query_w = s.w;
+      query_h = s.h;
+    }
+    // Various parts of the codebase assume a minimum screen size
+    Common::Size size(std::max(query_w, FBMinimum::Width), std::max(query_h, FBMinimum::Height));
+    myAbsDesktopSize.push_back(size);
 
-  // In HiDPI mode, the desktop resolution is essentially halved
-  // Later, the output is scaled and rendered in 2x mode
-  if(hidpiEnabled())
-  {
-    myDesktopSize.w = myAbsDesktopSize.w / hidpiScaleFactor();
-    myDesktopSize.h = myAbsDesktopSize.h / hidpiScaleFactor();
+    // Check for HiDPI mode (is it activated, and can we use it?)
+    myHiDPIAllowed.push_back(((myAbsDesktopSize[display].w / 2) >= FBMinimum::Width) &&
+                             ((myAbsDesktopSize[display].h / 2) >= FBMinimum::Height));
+    myHiDPIEnabled.push_back(myHiDPIAllowed.back() && myOSystem.settings().getBool("hidpi"));
+
+    // In HiDPI mode, the desktop resolution is essentially halved
+    // Later, the output is scaled and rendered in 2x mode
+    if(myHiDPIEnabled.back())
+    {
+      size.w = myAbsDesktopSize[display].w / hidpiScaleFactor();
+      size.h = myAbsDesktopSize[display].h / hidpiScaleFactor();
+    }
+    myDesktopSize.push_back(size);
   }
 
 #ifdef GUI_SUPPORT
   setupFonts();
 #endif
-
-  // Determine possible TIA windowed zoom levels
-  myTIAMaxZoom = maxWindowZoom(TIAConstants::viewableWidth,
-                               TIAConstants::viewableHeight);
-  float currentTIAZoom = myOSystem.settings().getFloat("tia.zoom");
-  myOSystem.settings().setValue("tia.zoom",
-      BSPF::clampw(currentTIAZoom, supportedTIAMinZoom(), myTIAMaxZoom));
 
   setUIPalette();
 
@@ -124,6 +122,20 @@ void FrameBuffer::initialize()
 
   // Create a TIA surface; we need it for rendering TIA images
   myTIASurface = make_unique<TIASurface>(myOSystem);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const int FrameBuffer::displayId(BufferType bufferType) const
+{
+  const int maxDisplay = int(myWindowedDisplays.size()) - 1;
+  int display;
+
+  if(bufferType == myBufferType)
+    display = myBackend->getCurrentDisplayIndex();
+  else
+    display = myOSystem.settings().getInt(getDisplayKey(bufferType));
+
+  return std::min(std::max(0, display), maxDisplay);
 }
 
 #ifdef GUI_SUPPORT
@@ -218,6 +230,10 @@ FBInitStatus FrameBuffer::createDisplay(const string& title, BufferType type,
   ++myInitializedCount;
   myBackend->setTitle(title);
 
+  // Always save, maybe only the mode of the window has changed
+  saveCurrentWindowPosition();
+  myBufferType = type;
+
   // In HiDPI mode, all created displays must be scaled appropriately
   if(honourHiDPI && hidpiEnabled())
   {
@@ -235,21 +251,31 @@ FBInitStatus FrameBuffer::createDisplay(const string& title, BufferType type,
   // If the WINDOWED_SUPPORT macro is defined, we treat the system as the
   // former type; if not, as the latter type
 
+  int display = displayId();
 #ifdef WINDOWED_SUPPORT
   // We assume that a desktop of at least minimum acceptable size means that
   // we're running on a 'large' system, and the window size requirements
   // can be relaxed
   // Otherwise, we treat the system as if WINDOWED_SUPPORT is not defined
-  if(myDesktopSize.w < FBMinimum::Width && myDesktopSize.h < FBMinimum::Height &&
-     size > myDesktopSize)
+  if(myDesktopSize[display].w < FBMinimum::Width &&
+     myDesktopSize[display].h < FBMinimum::Height &&
+     size > myDesktopSize[display])
     return FBInitStatus::FailTooLarge;
 #else
   // Make sure this mode is even possible
   // We only really need to worry about it in non-windowed environments,
   // where requesting a window that's too large will probably cause a crash
-  if(size > myDesktopSize)
+  if(size > myDesktopSize[display])
     return FBInitStatus::FailTooLarge;
 #endif
+
+  if(myBufferType == BufferType::Emulator)
+  {
+    // Determine possible TIA windowed zoom levels
+    float currentTIAZoom = myOSystem.settings().getFloat("tia.zoom");
+    myOSystem.settings().setValue("tia.zoom",
+                                  BSPF::clampw(currentTIAZoom, supportedTIAMinZoom(), supportedTIAMaxZoom()));
+  }
 
 #ifdef GUI_SUPPORT  // TODO: put message stuff in its own class
   // Erase any messages from a previous run
@@ -281,10 +307,6 @@ FBInitStatus FrameBuffer::createDisplay(const string& title, BufferType type,
   // Initialize video mode handler, so it can know what video modes are
   // appropriate for the requested image size
   myVidModeHandler.setImageSize(size);
-
-  // Always save, maybe only the mode of the window has changed
-  saveCurrentWindowPosition();
-  myBufferType = type;
 
   // Initialize video subsystem
   string pre_about = myBackend->about();
@@ -979,10 +1001,13 @@ void FrameBuffer::stateChanged(EventHandlerState state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string FrameBuffer::getDisplayKey() const
+string FrameBuffer::getDisplayKey(BufferType bufferType) const
 {
+  if(bufferType == BufferType::None)
+    bufferType = myBufferType;
+
   // save current window's display and position
-  switch(myBufferType)
+  switch(bufferType)
   {
     case BufferType::Launcher:
       return "launcherdisplay";
@@ -1192,7 +1217,7 @@ void FrameBuffer::switchVideoMode(int direction)
     else if(direction == -1)  zoom -= ZOOM_STEPS;
 
     // Make sure the level is within the allowable desktop size
-    zoom = BSPF::clampw(zoom, supportedTIAMinZoom(), myTIAMaxZoom);
+    zoom = BSPF::clampw(zoom, supportedTIAMinZoom(), supportedTIAMaxZoom());
     myOSystem.settings().setValue("tia.zoom", zoom);
   }
   else
@@ -1213,7 +1238,7 @@ void FrameBuffer::switchVideoMode(int direction)
       showTextMessage(myActiveVidMode.description);
     else
       showGaugeMessage("Zoom", myActiveVidMode.description, myActiveVidMode.zoom,
-                  supportedTIAMinZoom(), myTIAMaxZoom);
+                  supportedTIAMinZoom(), supportedTIAMaxZoom());
   }
 }
 
@@ -1222,13 +1247,12 @@ FBInitStatus FrameBuffer::applyVideoMode()
 {
   // Update display size, in case windowed/fullscreen mode has changed
   const Settings& s = myOSystem.settings();
+  int display = displayId();
+
   if(s.getBool("fullscreen"))
-  {
-    Int32 fsIndex = std::max(myBackend->getCurrentDisplayIndex(), 0);
-    myVidModeHandler.setDisplaySize(myFullscreenDisplays[fsIndex], fsIndex);
-  }
+    myVidModeHandler.setDisplaySize(myFullscreenDisplays[display], display);
   else
-    myVidModeHandler.setDisplaySize(myAbsDesktopSize);
+    myVidModeHandler.setDisplaySize(myAbsDesktopSize[display]);
 
   const bool inTIAMode = myOSystem.eventHandler().inTIAMode();
 
@@ -1279,16 +1303,18 @@ FBInitStatus FrameBuffer::applyVideoMode()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-float FrameBuffer::maxWindowZoom(uInt32 baseWidth, uInt32 baseHeight) const
+float FrameBuffer::maxWindowZoom() const
 {
+  int display = displayId(BufferType::Emulator);
   float multiplier = 1;
+
   for(;;)
   {
     // Figure out the zoomed size of the window
-    uInt32 width  = baseWidth * multiplier;
-    uInt32 height = baseHeight * multiplier;
+    uInt32 width  = TIAConstants::viewableWidth * multiplier;
+    uInt32 height = TIAConstants::viewableHeight * multiplier;
 
-    if((width > myAbsDesktopSize.w) || (height > myAbsDesktopSize.h))
+    if((width > myAbsDesktopSize[display].w) || (height > myAbsDesktopSize[display].h))
       break;
 
     multiplier += ZOOM_STEPS;

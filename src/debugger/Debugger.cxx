@@ -91,7 +91,7 @@ Debugger::~Debugger()
 void Debugger::initialize()
 {
   mySize = myOSystem.settings().getSize("dbg.res");
-  const Common::Size& d = myOSystem.frameBuffer().desktopSize();
+  const Common::Size& d = myOSystem.frameBuffer().desktopSize(BufferType::Debugger);
 
   // The debugger dialog is resizable, within certain bounds
   // We check those bounds now
