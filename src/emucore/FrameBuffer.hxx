@@ -424,7 +424,7 @@ class FrameBuffer
     /**
       Get the display used for the current mode.
     */
-    const int displayId(BufferType bufferType = BufferType::None) const;
+    int displayId(BufferType bufferType = BufferType::None) const;
 
     /**
       Build an applicable video mode based on the current settings in
