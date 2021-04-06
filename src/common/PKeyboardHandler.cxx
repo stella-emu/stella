@@ -285,6 +285,9 @@ void PhysicalKeyboardHandler::enableEmulationMappings()
       enableMappings(Right2PaddlesEvents, EventMode::kPaddlesMode);
       break;
 
+    case EventMode::kEmulationMode: // no QuadTari
+      break;
+
     default:
       enableMappings(Right2JoystickEvents, EventMode::kJoystickMode);
       break;
@@ -294,6 +297,9 @@ void PhysicalKeyboardHandler::enableEmulationMappings()
   {
     case EventMode::kPaddlesMode:
       enableMappings(Left2PaddlesEvents, EventMode::kPaddlesMode);
+      break;
+
+    case EventMode::kEmulationMode: // no QuadTari
       break;
 
     default:
