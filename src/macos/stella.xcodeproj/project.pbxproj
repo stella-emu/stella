@@ -2447,6 +2447,8 @@
 		DCE903E31DF5DCD10080A7F3 /* tia */ = {
 			isa = PBXGroup;
 			children = (
+				DCF3A6DE1DFC75E3008A8AF3 /* AnalogReadout.cxx */,
+				DCF3A6DF1DFC75E3008A8AF3 /* AnalogReadout.hxx */,
 				E09F413E201E904F004A3391 /* Audio.cxx */,
 				E09F413D201E904F004A3391 /* Audio.hxx */,
 				E09F413F201E904F004A3391 /* AudioChannel.cxx */,
@@ -2467,8 +2469,6 @@
 				DCF3A6DA1DFC75E3008A8AF3 /* LatchedInput.hxx */,
 				DCF3A6DB1DFC75E3008A8AF3 /* Missile.cxx */,
 				DCF3A6DC1DFC75E3008A8AF3 /* Missile.hxx */,
-				DCF3A6DE1DFC75E3008A8AF3 /* AnalogReadout.cxx */,
-				DCF3A6DF1DFC75E3008A8AF3 /* AnalogReadout.hxx */,
 				DCF3A6E01DFC75E3008A8AF3 /* Player.cxx */,
 				DCF3A6E11DFC75E3008A8AF3 /* Player.hxx */,
 				DCF3A6E21DFC75E3008A8AF3 /* Playfield.cxx */,
