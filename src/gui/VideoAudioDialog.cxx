@@ -544,12 +544,14 @@ void VideoAudioDialog::addAudioTab()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoAudioDialog::loadConfig()
 {
+  Settings& settings = instance().settings();
+
   // Display tab
   // Renderer settings
-  myRenderer->setSelected(instance().settings().getString("video"), "default");
+  myRenderer->setSelected(settings.getString("video"), "default");
 
   // TIA interpolation
-  myTIAInterpolate->setState(instance().settings().getBool("tia.inter"));
+  myTIAInterpolate->setState(settings.getBool("tia.inter"));
 
   // TIA zoom levels
   // These are dynamically loaded, since they depend on the size of
@@ -560,30 +562,30 @@ void VideoAudioDialog::loadConfig()
   myTIAZoom->setMinValue(minZoom * 100);
   myTIAZoom->setMaxValue(maxZoom * 100);
   myTIAZoom->setTickmarkIntervals((maxZoom - minZoom) * 2); // every ~50%
-  myTIAZoom->setValue(instance().settings().getFloat("tia.zoom") * 100);
+  myTIAZoom->setValue(settings.getFloat("tia.zoom") * 100);
 
   // Fullscreen
-  myFullscreen->setState(instance().settings().getBool("fullscreen"));
+  myFullscreen->setState(settings.getBool("fullscreen"));
   // Fullscreen stretch setting
-  myUseStretch->setState(instance().settings().getBool("tia.fs_stretch"));
+  myUseStretch->setState(settings.getBool("tia.fs_stretch"));
 #ifdef ADAPTABLE_REFRESH_SUPPORT
   // Adapt refresh rate
-  myRefreshAdapt->setState(instance().settings().getBool("tia.fs_refresh"));
+  myRefreshAdapt->setState(settings.getBool("tia.fs_refresh"));
 #endif
   // Fullscreen overscan setting
-  myTVOverscan->setValue(instance().settings().getInt("tia.fs_overscan"));
+  myTVOverscan->setValue(settings.getInt("tia.fs_overscan"));
   handleFullScreenChange();
 
   // Aspect ratio correction
-  myCorrectAspect->setState(instance().settings().getBool("tia.correct_aspect"));
+  myCorrectAspect->setState(settings.getBool("tia.correct_aspect"));
 
   // Aspect ratio setting (NTSC and PAL)
-  myVSizeAdjust->setValue(instance().settings().getInt("tia.vsizeadjust"));
+  myVSizeAdjust->setValue(settings.getInt("tia.vsizeadjust"));
 
   /////////////////////////////////////////////////////////////////////////////
   // Palettes tab
   // TIA Palette
-  myPalette = instance().settings().getString("palette");
+  myPalette = settings.getString("palette");
   myTIAPalette->setSelected(myPalette, PaletteHandler::SETTING_STANDARD);
 
   // Palette adjustables
@@ -608,22 +610,22 @@ void VideoAudioDialog::loadConfig()
   // TV Effects tab
   // TV Mode
   myTVMode->setSelected(
-    instance().settings().getString("tv.filter"), "0");
-  int preset = instance().settings().getInt("tv.filter");
+    settings.getString("tv.filter"), "0");
+  int preset = settings.getInt("tv.filter");
   handleTVModeChange(NTSCFilter::Preset(preset));
 
   // TV Custom adjustables
   loadTVAdjustables(NTSCFilter::Preset::CUSTOM);
 
   // TV phosphor mode
-  myTVPhosphor->setState(instance().settings().getString("tv.phosphor") == "always");
+  myTVPhosphor->setState(settings.getString("tv.phosphor") == "always");
 
   // TV phosphor blend
-  myTVPhosLevel->setValue(instance().settings().getInt("tv.phosblend"));
+  myTVPhosLevel->setValue(settings.getInt("tv.phosblend"));
   handlePhosphorChange();
 
   // TV scanline intensity and interpolation
-  myTVScanIntense->setValue(instance().settings().getInt("tv.scanlines"));
+  myTVScanIntense->setValue(settings.getInt("tv.scanlines"));
 
   /////////////////////////////////////////////////////////////////////////////
   // Audio tab
