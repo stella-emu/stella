@@ -1066,14 +1066,6 @@ void FrameBuffer::saveConfig(Settings& settings) const
 {
   // Save the last windowed position and display on system shutdown
   saveCurrentWindowPosition();
-
-  if(myTIASurface)
-  {
-    Logger::debug("Saving TV effects options ...");
-    tiaSurface().ntsc().saveConfig(settings);
-    Logger::debug("Saving palette settings...");
-    tiaSurface().paletteHandler().saveConfig(settings);
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
