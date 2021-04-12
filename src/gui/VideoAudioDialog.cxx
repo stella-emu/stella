@@ -682,46 +682,47 @@ void VideoAudioDialog::updateSettingsWithPreset(AudioSettings& audioSettings)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoAudioDialog::saveConfig()
 {
+  Settings& settings = instance().settings();
+
   /////////////////////////////////////////////////////////////////////////////
   // Display tab
   // Renderer setting
-  instance().settings().setValue("video",
-                                 myRenderer->getSelectedTag().toString());
+  settings.setValue("video", myRenderer->getSelectedTag().toString());
 
   // TIA interpolation
-  instance().settings().setValue("tia.inter", myTIAInterpolate->getState());
+  settings.setValue("tia.inter", myTIAInterpolate->getState());
 
   // Fullscreen
-  instance().settings().setValue("fullscreen", myFullscreen->getState());
+  settings.setValue("fullscreen", myFullscreen->getState());
   // Fullscreen stretch setting
-  instance().settings().setValue("tia.fs_stretch", myUseStretch->getState());
+  settings.setValue("tia.fs_stretch", myUseStretch->getState());
 #ifdef ADAPTABLE_REFRESH_SUPPORT
   // Adapt refresh rate
-  instance().settings().setValue("tia.fs_refresh", myRefreshAdapt->getState());
+  settings.setValue("tia.fs_refresh", myRefreshAdapt->getState());
 #endif
   // Fullscreen overscan
-  instance().settings().setValue("tia.fs_overscan", myTVOverscan->getValueLabel());
+  settings.setValue("tia.fs_overscan", myTVOverscan->getValueLabel());
 
   // TIA zoom levels
-  instance().settings().setValue("tia.zoom", myTIAZoom->getValue() / 100.0);
+  settings.setValue("tia.zoom", myTIAZoom->getValue() / 100.0);
 
   // Aspect ratio correction
-  instance().settings().setValue("tia.correct_aspect", myCorrectAspect->getState());
+  settings.setValue("tia.correct_aspect", myCorrectAspect->getState());
 
   // Aspect ratio setting (NTSC and PAL)
-  const int oldAdjust = instance().settings().getInt("tia.vsizeadjust");
+  const int oldAdjust = settings.getInt("tia.vsizeadjust");
   const int newAdjust = myVSizeAdjust->getValue();
   const bool vsizeChanged = oldAdjust != newAdjust;
 
-  instance().settings().setValue("tia.vsizeadjust", newAdjust);
+  settings.setValue("tia.vsizeadjust", newAdjust);
 
-
-  // Note: Palette values are saved directly when changed!
+  Logger::debug("Saving palette settings...");
+  instance().frameBuffer().tiaSurface().paletteHandler().saveConfig(settings);
 
   /////////////////////////////////////////////////////////////////////////////
   // TV Effects tab
   // TV Mode
-  instance().settings().setValue("tv.filter",
+  settings.setValue("tv.filter",
                                  myTVMode->getSelectedTag().toString());
   // TV Custom adjustables
   NTSCFilter::Adjustable ntscAdj;
@@ -732,15 +733,19 @@ void VideoAudioDialog::saveConfig()
   ntscAdj.bleed = myTVBleed->getValue();
   instance().frameBuffer().tiaSurface().ntsc().setCustomAdjustables(ntscAdj);
 
+  Logger::debug("Saving TV effects options ...");
+  instance().frameBuffer().tiaSurface().ntsc().saveConfig(settings);
+
+
   // TV phosphor mode
-  instance().settings().setValue("tv.phosphor",
+  settings.setValue("tv.phosphor",
                                  myTVPhosphor->getState() ? "always" : "byrom");
   // TV phosphor blend
-  instance().settings().setValue("tv.phosblend", myTVPhosLevel->getValueLabel() == "Off"
+  settings.setValue("tv.phosblend", myTVPhosLevel->getValueLabel() == "Off"
                                  ? "0" : myTVPhosLevel->getValueLabel());
 
   // TV scanline intensity
-  instance().settings().setValue("tv.scanlines", myTVScanIntense->getValueLabel());
+  settings.setValue("tv.scanlines", myTVScanIntense->getValueLabel());
 
   if(instance().hasConsole())
   {
