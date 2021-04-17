@@ -84,7 +84,7 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
 
   addToFocusList(wid);
 
-  setHelpAnchor(" ");
+  setHelpAnchor("Hotkeys");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

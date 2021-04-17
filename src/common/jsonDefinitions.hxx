@@ -267,6 +267,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(Event::Type, {
   {Event::UIPrevDir, "UIPrevDir"},
   {Event::UITabPrev, "UITabPrev"},
   {Event::UITabNext, "UITabNext"},
+  {Event::UIHelp, "UIHelp"},
   {Event::MouseAxisXMove, "MouseAxisXMove"},
   {Event::MouseAxisYMove, "MouseAxisYMove"},
   {Event::MouseAxisXValue, "MouseAxisXValue"},

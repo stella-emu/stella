@@ -235,8 +235,6 @@ void InputDialog::addDevicePortTab()
 
   // Add items for virtual device ports
   addToFocusList(wid, myTab, tabID);
-
-  setHelpAnchor("Input");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
