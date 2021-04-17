@@ -12,9 +12,9 @@
                               Release History
 ===========================================================================
 
-6.5.2 to 6.5.3 (XXX, 2021)
+6.5.2 to 6.5.3 (April 20, 2021)
 
-  * Added context-sensitive help
+  * Added context-sensitive help.
 
   * Improved support of multiple monitors with different resolutions.
 
