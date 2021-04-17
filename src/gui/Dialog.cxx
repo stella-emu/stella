@@ -152,19 +152,22 @@ void Dialog::setHelpAnchor(const string& helpAnchor, bool debugger)
   _helpAnchor = helpAnchor;
   _debuggerHelp = debugger;
 
-  if(_helpWidget == nullptr)
+  if(hasTitle())
   {
-    _helpWidget = new ButtonWidget(this, _font, _w - _font.getMaxCharWidth() * 3.5, 0,
-                                   _font.getMaxCharWidth() * 3.5 + 0.5, buttonHeight(), "?",
-                                   kHelpCmd);
-    _helpWidget->setBGColor(kColorTitleBar);
-    _helpWidget->setTextColor(kColorTitleText);
-  }
+    if(_helpWidget == nullptr)
+    {
+      _helpWidget = new ButtonWidget(this, _font, _w - _font.getMaxCharWidth() * 3.5, 0,
+                                     _font.getMaxCharWidth() * 3.5 + 0.5, buttonHeight(), "?",
+                                     kHelpCmd);
+      _helpWidget->setBGColor(kColorTitleBar);
+      _helpWidget->setTextColor(kColorTitleText);
+    }
 
-  if(hasTitle() && hasHelp())
-    _helpWidget->clearFlags(Widget::FLAG_INVISIBLE);
-  else
-    _helpWidget->setFlags(Widget::FLAG_INVISIBLE);
+    if(hasHelp())
+      _helpWidget->clearFlags(Widget::FLAG_INVISIBLE);
+    else
+      _helpWidget->setFlags(Widget::FLAG_INVISIBLE);
+  }
 #endif
 }
 
