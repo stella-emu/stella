@@ -9097,6 +9097,13 @@
 "Cart.Note" "AKA Snail Against Squirrel"
 ""
 
+"Cart.MD5" "689f49e31cac68db8a2cf8f44fa7a01a"
+"Cart.Manufacturer" "Óscar Toledo G., Thomas Jentzsch, Nathan Strum"
+"Cart.Name" "Aardvark (2019) (PAL60)"
+"Cart.Rarity" "Homebrew"
+"Display.Phosphor" "YES"
+""
+
 "Cart.MD5" "68ac69b8e1ba83af8792f693f5ae7783"
 "Cart.Manufacturer" "Digivision"
 "Cart.Name" "Fathon (Digivision)"
@@ -11436,6 +11443,13 @@
 
 "Cart.MD5" "82e7aab602c378cffdd8186a099e807e"
 "Cart.Name" "Space Robot (Unknown)"
+""
+
+"Cart.MD5" "82ee056af81203af58092ff2e6cf079d"
+"Cart.Manufacturer" "Óscar Toledo G., Thomas Jentzsch, Nathan Strum"
+"Cart.Name" "Aardvark (2019) (NTSC)"
+"Cart.Rarity" "Homebrew"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "82efe7984783e23a7c55266a5125c68e"
