@@ -3307,7 +3307,7 @@ EventHandler::MenuActionList EventHandler::ourMenuActionList = { {
   { Event::UIPrevDir,         "Parent directory",     "" },
   { Event::ToggleFullScreen,  "Toggle fullscreen",    "" },
   { Event::Quit,              "Quit",                 "" },
-  { Event::UIHelp,       "Help"                  "" }
+  { Event::UIHelp,            "Help",                 "" }
 
 } };
 
