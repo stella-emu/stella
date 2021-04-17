@@ -146,6 +146,8 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   {
     myRomAuditButton->clearFlags(Widget::FLAG_ENABLED);
   }
+
+  setHelpAnchor("Options");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

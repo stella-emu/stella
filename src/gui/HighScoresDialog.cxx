@@ -206,6 +206,8 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
   addToFocusList(wid);
 
   _focusedWidget = _okWidget; // start with focus on 'Save' button
+
+  setHelpAnchor("Highscores");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

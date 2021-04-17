@@ -90,6 +90,8 @@ VideoAudioDialog::VideoAudioDialog(OSystem& osystem, DialogContainer& parent,
   // Activate the first tab
   myTab->setActiveTab(0);
 
+  setHelpAnchor("VideoAudio");
+
   // Disable certain functions when we know they aren't present
 #ifndef WINDOWED_SUPPORT
   myFullscreen->clearFlags(Widget::FLAG_ENABLED);

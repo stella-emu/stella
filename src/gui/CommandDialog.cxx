@@ -106,6 +106,8 @@ CommandDialog::CommandDialog(OSystem& osystem, DialogContainer& parent)
   // We don't have a close/cancel button, but we still want the cancel
   // event to be processed
   processCancelWithoutWidget(true);
+
+  setHelpAnchor("CommandMenu");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -223,7 +225,7 @@ void CommandDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     default:
-      return;
+      Dialog::handleCommand(sender, cmd, data, 0);
   }
 
   // Console commands should be performed right away, after leaving the menu

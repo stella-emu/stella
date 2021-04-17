@@ -311,6 +311,8 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   addDefaultsOKCancelBGroup(wid, font);
   addBGroupToFocusList(wid);
 
+  setHelpAnchor("UserInterface");
+
 #ifndef WINDOWED_SUPPORT
   myCenter->clearFlags(Widget::FLAG_ENABLED);
 #endif

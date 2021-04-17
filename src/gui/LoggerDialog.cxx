@@ -85,6 +85,8 @@ LoggerDialog::LoggerDialog(OSystem& osystem, DialogContainer& parent,
   addOKCancelBGroup(wid, font);
 
   addToFocusList(wid);
+
+  setHelpAnchor("Logs");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

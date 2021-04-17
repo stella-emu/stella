@@ -80,6 +80,8 @@ DeveloperDialog::DeveloperDialog(OSystem& osystem, DialogContainer& parent,
 
   // Activate the first tab
   myTab->setActiveTab(0);
+
+  setHelpAnchor("Debugger");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

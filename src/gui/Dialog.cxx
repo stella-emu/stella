@@ -145,6 +145,34 @@ void Dialog::setTitle(const string& title)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::setHelpAnchor(const string& helpAnchor, bool debugger)
+{
+#ifndef RETRON77
+  _helpAnchor = helpAnchor;
+  _debuggerHelp = debugger;
+
+  if(_helpWidget == nullptr)
+    _helpWidget = new ButtonWidget(this, _font, _w - _font.getMaxCharWidth() * 3.5, 0,
+                                   _font.getMaxCharWidth() * 3.5, buttonHeight(), "?",
+                                   kHelpCmd);
+
+  if(hasTitle() && hasHelp())
+    _helpWidget->clearFlags(Widget::FLAG_INVISIBLE);
+  else
+    _helpWidget->setFlags(Widget::FLAG_INVISIBLE);
+#endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const string Dialog::getHelpURL()
+{
+  if(_debuggerHelp)
+    return "https://stella-emu.github.io/docs/debugger.html#" + _helpAnchor;
+  else
+    return "https://stella-emu.github.io/docs/index.html#" + _helpAnchor;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::setPosition()
 {
   positionAt(instance().settings().getInt("dialogpos"));
@@ -851,6 +879,15 @@ void Dialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
       close();
       break;
 
+    case kHelpCmd:
+      if(hasHelp())
+      {
+        if(SDL_OpenURL(getHelpURL().c_str()))
+        {
+          cerr << "error opening URL " << getHelpURL() << endl;
+        }
+      break;
+    }
     default:
       break;
   }
