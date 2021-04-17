@@ -73,6 +73,8 @@ ComboDialog::ComboDialog(GuiObject* boss, const GUI::Font& font,
   addDefaultsOKCancelBGroup(wid, font);
 
   addToFocusList(wid);
+
+  setHelpAnchor("Combo");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
