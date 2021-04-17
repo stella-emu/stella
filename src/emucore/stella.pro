@@ -9098,7 +9098,7 @@
 ""
 
 "Cart.MD5" "689f49e31cac68db8a2cf8f44fa7a01a"
-"Cart.Manufacturer" "Óscar Toledo G., Thomas Jentzsch, Nathan Strum"
+"Cart.Manufacturer" "Oscar Toledo G., Thomas Jentzsch, Nathan Strum"
 "Cart.Name" "Aardvark (2019) (PAL60)"
 "Cart.Rarity" "Homebrew"
 "Display.Phosphor" "YES"
@@ -11446,7 +11446,7 @@
 ""
 
 "Cart.MD5" "82ee056af81203af58092ff2e6cf079d"
-"Cart.Manufacturer" "Óscar Toledo G., Thomas Jentzsch, Nathan Strum"
+"Cart.Manufacturer" "Oscar Toledo G., Thomas Jentzsch, Nathan Strum"
 "Cart.Name" "Aardvark (2019) (NTSC)"
 "Cart.Rarity" "Homebrew"
 "Display.Phosphor" "YES"
