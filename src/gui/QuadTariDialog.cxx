@@ -91,6 +91,8 @@ QuadTariDialog::QuadTariDialog(GuiObject* boss, const GUI::Font& font, int max_w
 
   addDefaultsOKCancelBGroup(wid, _font);
   addBGroupToFocusList(wid);
+
+  setHelpAnchor("Quadtari");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
