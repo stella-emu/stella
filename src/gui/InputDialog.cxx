@@ -97,7 +97,7 @@ InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
   addDefaultsOKCancelBGroup(wid, _font);
   addBGroupToFocusList(wid);
 
-  setHelpAnchor("Input");
+  setHelpAnchor("Remapping");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
