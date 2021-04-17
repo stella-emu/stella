@@ -304,6 +304,8 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   showOnlyROMs(onlyROMs);
   if(myAllFiles)
     myAllFiles->setState(!onlyROMs);
+
+  setHelpAnchor("ROMInfo");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
