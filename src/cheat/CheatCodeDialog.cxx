@@ -107,6 +107,8 @@ CheatCodeDialog::CheatCodeDialog(OSystem& osystem, DialogContainer& parent,
   wid.clear();
   addOKCancelBGroup(wid, font);
   addBGroupToFocusList(wid);
+
+  setHelpAnchor("Cheats");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -96,6 +96,8 @@ InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
   WidgetArray wid;
   addDefaultsOKCancelBGroup(wid, _font);
   addBGroupToFocusList(wid);
+
+  setHelpAnchor("Input");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -233,6 +235,8 @@ void InputDialog::addDevicePortTab()
 
   // Add items for virtual device ports
   addToFocusList(wid, myTab, tabID);
+
+  setHelpAnchor("Input");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

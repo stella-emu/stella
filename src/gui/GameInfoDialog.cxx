@@ -95,6 +95,8 @@ GameInfoDialog::GameInfoDialog(
   _extraWidget->setToolTip("Export the current ROM's properties\n"
                            "into the default directory.");
   addBGroupToFocusList(wid);
+
+  setHelpAnchor("Properties");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

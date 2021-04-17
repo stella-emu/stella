@@ -93,6 +93,8 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
   addDefaultsOKCancelBGroup(wid, font);
 
   addToFocusList(wid);
+
+  setHelpAnchor("Snapshots");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

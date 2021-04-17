@@ -97,6 +97,9 @@ class Dialog : public GuiObject
     void setTitle(const string& title);
     bool hasTitle() { return !_title.empty(); }
 
+    void setHelpAnchor(const string& helpAnchor, bool debugger = false);
+    const string getHelpURL();
+
     virtual bool isShading() const { return true; }
 
     /**
@@ -198,7 +201,13 @@ class Dialog : public GuiObject
 
     virtual bool repeatEnabled() { return true; }
 
+    bool hasHelp() { return !getHelpURL().empty(); }
+
   private:
+    enum {
+      kHelpCmd = 'DlHp'
+    };
+
     void buildCurrentFocusList(int tabID = -1);
     bool handleNavEvent(Event::Type e, bool repeated = false);
     void getTabIdForWidget(Widget* w);
@@ -221,6 +230,9 @@ class Dialog : public GuiObject
     int     _th{0};
     int     _layer{0};
     unique_ptr<ToolTip> _toolTip;
+    string  _helpAnchor;
+    bool    _debuggerHelp{false};
+    ButtonWidget* _helpWidget{nullptr};
 
   private:
     struct Focus {
