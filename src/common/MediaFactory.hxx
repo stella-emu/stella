@@ -181,6 +181,15 @@ class MediaFactory
     #endif
     }
 
+    static bool openURL(const string& url)
+    {
+    #if defined(SDL_SUPPORT)
+      return SDLOpenURL(url);
+    #else
+      return false;
+    #endif
+    }
+
   private:
     // Following constructors and assignment operators not supported
     MediaFactory() = delete;

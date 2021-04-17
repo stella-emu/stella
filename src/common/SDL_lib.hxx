@@ -54,4 +54,13 @@ static inline string SDLVersion()
   return buf.str();
 }
 
+static inline bool SDLOpenURL(const string& url)
+{
+#if SDL_VERSION_ATLEAST(2,0,14)
+  return SDL_OpenURL(url.c_str()) == 0;
+#else
+  return false;
+#endif
+}
+
 #endif  // SDL_LIB_HXX

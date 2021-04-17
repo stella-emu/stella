@@ -36,6 +36,7 @@
 
 #include "Vec.hxx"
 #include "TIA.hxx"
+#include "MediaFactory.hxx"
 
 /*
  * TODO list
@@ -183,13 +184,8 @@ const string Dialog::getHelpURL()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::openHelp()
 {
-  if(hasHelp())
-  {
-    if(SDL_OpenURL(getHelpURL().c_str()))
-    {
-      cerr << "error opening URL " << getHelpURL() << endl;
-    }
-  }
+  if(hasHelp() && !MediaFactory::openURL(getHelpURL()))
+    cerr << "error opening URL " << getHelpURL() << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
