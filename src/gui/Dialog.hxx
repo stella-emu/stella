@@ -98,7 +98,6 @@ class Dialog : public GuiObject
     bool hasTitle() { return !_title.empty(); }
 
     void setHelpAnchor(const string& helpAnchor, bool debugger = false);
-    const string getHelpURL();
 
     virtual bool isShading() const { return true; }
 
@@ -201,8 +200,6 @@ class Dialog : public GuiObject
 
     virtual bool repeatEnabled() { return true; }
 
-    bool hasHelp() { return !getHelpURL().empty(); }
-
   private:
     enum {
       kHelpCmd = 'DlHp'
@@ -212,6 +209,9 @@ class Dialog : public GuiObject
     bool handleNavEvent(Event::Type e, bool repeated = false);
     void getTabIdForWidget(Widget* w);
     bool cycleTab(int direction);
+    const string getHelpURL();
+    bool hasHelp() { return !getHelpURL().empty(); }
+    void openHelp();
 
   protected:
     const GUI::Font& _font;

@@ -83,6 +83,8 @@ RomAuditDialog::RomAuditDialog(OSystem& osystem, DialogContainer& parent,
   // Add OK and Cancel buttons
   addOKCancelBGroup(wid, font, "Audit", "Close");
   addBGroupToFocusList(wid);
+
+  setHelpAnchor("ROMAudit");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -152,9 +152,13 @@ void Dialog::setHelpAnchor(const string& helpAnchor, bool debugger)
   _debuggerHelp = debugger;
 
   if(_helpWidget == nullptr)
+  {
     _helpWidget = new ButtonWidget(this, _font, _w - _font.getMaxCharWidth() * 3.5, 0,
-                                   _font.getMaxCharWidth() * 3.5, buttonHeight(), "?",
+                                   _font.getMaxCharWidth() * 3.5 + 0.5, buttonHeight(), "?",
                                    kHelpCmd);
+    _helpWidget->setBGColor(kColorTitleBar);
+    _helpWidget->setTextColor(kColorTitleText);
+  }
 
   if(hasTitle() && hasHelp())
     _helpWidget->clearFlags(Widget::FLAG_INVISIBLE);
@@ -166,10 +170,26 @@ void Dialog::setHelpAnchor(const string& helpAnchor, bool debugger)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string Dialog::getHelpURL()
 {
-  if(_debuggerHelp)
-    return "https://stella-emu.github.io/docs/debugger.html#" + _helpAnchor;
-  else
-    return "https://stella-emu.github.io/docs/index.html#" + _helpAnchor;
+  if(!_helpAnchor.empty())
+  {
+    if(_debuggerHelp)
+      return "https://stella-emu.github.io/docs/debugger.html#" + _helpAnchor;
+    else
+      return "https://stella-emu.github.io/docs/index.html#" + _helpAnchor;
+  }
+  return EmptyString;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::openHelp()
+{
+  if(hasHelp())
+  {
+    if(SDL_OpenURL(getHelpURL().c_str()))
+    {
+      cerr << "error opening URL " << getHelpURL() << endl;
+    }
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -831,6 +851,9 @@ bool Dialog::handleNavEvent(Event::Type e, bool repeated)
         return true;
       }
       break;
+    case Event::UIHelp:
+      openHelp();
+      return true;
 
     default:
       return false;
@@ -880,14 +903,9 @@ void Dialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
       break;
 
     case kHelpCmd:
-      if(hasHelp())
-      {
-        if(SDL_OpenURL(getHelpURL().c_str()))
-        {
-          cerr << "error opening URL " << getHelpURL() << endl;
-        }
+      openHelp();
       break;
-    }
+
     default:
       break;
   }

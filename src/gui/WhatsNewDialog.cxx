@@ -55,9 +55,12 @@ WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent,
     add(ypos, "fixed paddle button bug for jittering controllers");
     add(ypos, "improved switching between joysticks and paddles");
     add(ypos, "improved memory usage in UI mode");
+    add(ypos, "fixed broken Driving Controller support for Stelladaptor/2600-daptor devices");
+    add(ypos, "fixed missing QuadTari option in UI");
   }
-  add(ypos, "fixed broken Driving Controller support for Stelladaptor/2600-daptor devices");
-  add(ypos, "fixed missing QuadTari option in UI");
+  add(ypos, "improved analog input reading");
+  add(ypos, "fixed QuadTari support for some controller types");
+  add(ypos, "fixed palette and TV effects saving");
 #else
   if(version < "6.5")
   {
@@ -70,9 +73,13 @@ WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent,
     add(ypos, "added sound to Time Machine playback");
     add(ypos, "moved settings, properties etc. to an SQLite database");
     add(ypos, "fixed paddle button bug for jittering controllers");
+    add(ypos, "fixed broken Driving Controller support for Stelladaptor/2600-daptor devices");
+    add(ypos, "fixed missing QuadTari option in UI");
   }
-  add(ypos, "fixed broken Driving Controller support for Stelladaptor/2600-daptor devices");
-  add(ypos, "fixed missing QuadTari option in UI");
+  add(ypos, "added context-sensitive help");
+  add(ypos, "improved analog input reading");
+  add(ypos, "improved multi-monitor support");
+  add(ypos, "fixed QuadTari support for some controller types");
   add(ypos, ELLIPSIS + " (for a complete list see 'docs/Changes.txt')");
 #endif
 

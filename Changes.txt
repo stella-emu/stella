@@ -14,11 +14,13 @@
 
 6.5.2 to 6.5.3 (XXX, 2021)
 
+  * Added context-sensitive help (TODO: doc)
+
   * Improved support of multiple monitors with different resolutions.
 
   * Improved analog input reading (Paddles, Keyboards...).
 
-  * Fixed QuadTari handling for controller types other than Joysticks.
+  * Fixed QuadTari support for controller types other than Joysticks.
 
   * Fixed palette and TV effects saving for Retron77.
 

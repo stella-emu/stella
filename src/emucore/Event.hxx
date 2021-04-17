@@ -168,6 +168,7 @@ class Event
 
       SALeftAxis0Value, SALeftAxis1Value, SARightAxis0Value, SARightAxis1Value,
       PaddleFourFire, PaddleFiveFire, PaddleSixFire, PaddleSevenFire,
+      UIHelp,
       LastType
     };
 
