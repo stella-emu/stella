@@ -1780,12 +1780,12 @@
     </tr>
 
     <tr>
-      <td>Switch mouse to <i>previous</i> controller emulation mode</br>(see <b><a href="#Controller">Controller Properties</a></b>)</td>
+      <td>Switch mouse to <i>previous</i> controller emulation mode</br>(see <b><a href="#ControllerProps">Controller Properties</a></b>)</td>
       <td>Shift-Control + 0</td>
       <td>Shift-Control + 0</td>
     </tr>
     <tr>
-      <td>Switch mouse to <i>next</i> controller emulation modes</br>(see <b><a href="#Controller">Controller Properties</a></b>)</td>
+      <td>Switch mouse to <i>next</i> controller emulation modes</br>(see <b><a href="#ControllerProps">Controller Properties</a></b>)</td>
       <td>Control + 0</td>
       <td>Control + 0</td>
     </tr>
@@ -2584,7 +2584,7 @@
     </tr>
   </table>
 
-  <p>For details how to configure high scores definintions for a game see
+  <p>For details how to configure high scores definitions for a game see
   <a href="#HighScoreProps"><b>High Scores Properties</b></a></h2>.</p>
   </blockquote></br>
 
@@ -3353,7 +3353,7 @@
 
     <tr>
       <td><pre>-bs &lt;type&gt;</pre></td>
-      <td>Set "Cart.Type" property. See the <a href="#Emulation"><b>Emulation Properties</b></a> section
+      <td>Set "Cart.Type" property. See the <a href="#EmulationProps"><b>Emulation Properties</b></a> section
         for valid types.</td>
     </tr>
 
@@ -3394,7 +3394,7 @@
 
     <tr>
       <td><pre>-lc &lt;type&gt;</pre></td>
-      <td>Set "Controller.Left" property. See the <a href="#Controller"><b>Controller Properties</b></a>
+      <td>Set "Controller.Left" property. See the <a href="#ControllerProps"><b>Controller Properties</b></a>
         section for valid types.</td>
     </tr>
 
@@ -3412,7 +3412,7 @@
 
     <tr>
       <td><pre>-rc &lt;type&gt;</pre></td>
-      <td>Set "Controller.Right" property. See the <a href="#Controller"><b>Controller Properties</b></a>
+      <td>Set "Controller.Right" property. See the <a href="#ControllerProps"><b>Controller Properties</b></a>
         section for valid types.</td>
     </tr>
 
@@ -3432,7 +3432,7 @@
     <tr>
       <td><pre>-bc &lt;type&gt;</pre></td>
       <td>Set both "Controller.Left" and "Controller.Right" properties.
-        See the <a href="#Controller"><b>Controller Properties</b></a> section for valid types.</td>
+        See the <a href="#ControllerProps"><b>Controller Properties</b></a> section for valid types.</td>
     </tr>
 
     <tr>
@@ -3459,12 +3459,12 @@
     <tr>
       <td><pre>-ma &lt;Auto|XY&gt;</pre></td>
       <td>Set "Controller.MouseAxis" property.
-        See the <a href="#Controller"><b>Controller Properties</b></a> section for valid types.</td>
+        See the <a href="#ControllerProps"><b>Controller Properties</b></a> section for valid types.</td>
     </tr>
 
     <tr>
       <td><pre>-format &lt;format&gt;</pre></td>
-      <td>Set "Display.Format" property. See the <a href="#Emulation"><b>Emulation Properties</b></a> section
+      <td>Set "Display.Format" property. See the <a href="#EmulationProps"><b>Emulation Properties</b></a> section
         for valid formats.</td></td>
     </tr>
 
@@ -3619,7 +3619,7 @@
   <p><b>Options Menu</b> dialog:<br><br>
   <img src="graphics/options.png">
   <br><br>
-  <p><b><a name="VideoAudio">Video & Audio Settings</a></b> dialog (Display):</p>
+  <p><b><a name="VideoAudio">Video & Audio Settings</a></b> dialog <a name="VideoAudioDisplay">(Display):</a></p>
   <table border="5" cellpadding="2" frame="box" rules="none">
     <tr>
       <td><img src="graphics/options_video.png"></td>
@@ -3645,7 +3645,7 @@
   </table>
   <br>
 
-  <p><b>Video & Audio Settings</b> dialog (Palettes):</p>
+  <p><b>Video & Audio Settings</b> dialog <a name="VideoAudioPalettes">(Palettes):</a></p>
   <table border="5" cellpadding="2" frame="box" rules="none">
     <tr>
       <td><img src="graphics/options_video_palettes.png"></td>
@@ -3670,7 +3670,7 @@
   </table>
   <br>
 
-  <p><b>Video & Audio Settings</b> dialog (TV Effects):</p>
+  <p><b>Video & Audio Settings</b> dialog <a name="VideoAudioEffects">(TV Effects)</a>:</p>
   <table border="5" cellpadding="2" frame="box" rules="none">
     <tr>
       <td><img src="graphics/options_video_tv.png"></td>
@@ -3696,7 +3696,7 @@
   </table>
   <br>
 
-  <p><b>Video & Audio Settings</b> dialog (Audio):</p>
+  <p><b>Video & Audio Settings</b> dialog <a name="VideoAudioAudio">(Audio)</a>:</p>
   <table border="5" cellpadding="2" frame="box" rules="none">
     <tr>
       <td><img src="graphics/options_audio.png"></td>
@@ -3942,7 +3942,7 @@
 
   </p></br>
 
-  <p><b>Device and port</b> settings can be configured under the 'Devices & Ports' tab, shown below:</p>
+  <p><b><a name="DevicesPorts">Device and port</a></b> settings can be configured under the 'Devices & Ports' tab, shown below:</p>
   <table border="5" cellpadding="2" frame="box" rules="none">
     <tr>
       <td><img src="graphics/eventmapping_devsports.png"></td>
@@ -3969,7 +3969,7 @@
     </tr>
   </table>
 
-  <p><b>Mouse</b> settings can be configured under the 'Mouse' tab, shown below:</p>
+  <p><b><a name="Mouse">Mouse</a></b> settings can be configured under the 'Mouse' tab, shown below:</p>
   <table border="5" cellpadding="2" frame="box" rules="none">
     <tr>
       <td><img src="graphics/eventmapping_mouse.png"></td>
@@ -4233,7 +4233,7 @@
   Two sets ('Player settings', 'Developer settings') allow easy adjustment of all settings
   for different use cases (playing or developing games) at once.</p>
 
-  <p><b>Developer Settings</b> dialog (Emulator)</p>
+  <p><b>Developer Settings</b> dialog <a name="DeveloperEmulator">(Emulator)</a></p>
   <table border="5" cellpadding="2" frame="box" rules="none">
     <tr>
       <td><img src="graphics/options_developer_emulation.png"></td>
@@ -4270,7 +4270,7 @@
     </tr>
   </table>
 
-  <p><b>Developer Settings</b> dialog (TIA):</p>
+  <p><b>Developer Settings</b> dialog <a name="DeveloperTIA">(TIA):</a></p>
   <table border="5" cellpadding="2" frame="box" rules="none">
     <tr>
       <td><img src="graphics/options_developer_tia.png"></td>
@@ -4300,7 +4300,7 @@
     </tr>
   </table>
 
-  <p><b>Developer Settings</b> dialog (Video):</p>
+  <p><b>Developer Settings</b> dialog <a name="DeveloperVideo">(Video)</a>:</p>
   <table border="5" cellpadding="2" frame="box" rules="none">
     <tr>
       <td><img src="graphics/options_developer_video.png"></td>
@@ -4327,7 +4327,7 @@
     </tr>
   </table>
 
-  <p><b>Developer Settings</b> dialog (Time Machine)</p>
+  <p><b>Developer Settings</b> dialog <a name="DeveloperTimeMachine">(Time Machine)</a></p>
   <table border="5" cellpadding="2" frame="box" rules="none">
     <tr>
       <td><img src="graphics/options_developer_timemachine.png"></td>
@@ -4382,7 +4382,7 @@
     </tr>
   </table>
 
-  <p><b>Developer Settings</b> dialog (Debugger)</p>
+  <p><b>Developer Settings</b> dialog <a name="DeveloperDebugger">(Debugger)</a></p>
   <table border="5" cellpadding="2" frame="box" rules="none">
     <tr>
       <td><img src="graphics/options_developer_debugger.png"></td>
@@ -4677,7 +4677,7 @@ Ms Pac-Man (Stella extended codes):
 
   <p>Stella supports the properties described below:</p>
 
-  <h3><a name="Emulation"><b>Emulation Properties</b></a></h3>
+  <h3><a name="EmulationProps"><b>Emulation Properties</b></a></h3>
   <p>
     <img src="graphics/options_gameinfo_emulation.png">
   </p>
@@ -4804,7 +4804,7 @@ Ms Pac-Man (Stella extended codes):
   <p><b>Note:</b> Items marked as '*' are deprecated, and will probably be
   removed in a future release.</p>
 -->
-  <h3><a name="Consoler"><b>Console Properties</b></a></h3>
+  <h3><a name="ConsoleProps"><b>Console Properties</b></a></h3>
   <p>
     <img src="graphics/options_gameinfo_console.png">
   </p>
@@ -4830,7 +4830,7 @@ Ms Pac-Man (Stella extended codes):
   </table>
   </br>
 
-  <h3><a name="Controller"><b>Controller Properties</b></a></h3>
+  <h3><a name="ControllerProps"><b>Controller Properties</b></a></h3>
   <p>
     <img src="graphics/options_gameinfo_controller.png">
   </p>
@@ -4950,7 +4950,7 @@ Ms Pac-Man (Stella extended codes):
   </table>
   </br>
 
-  <h3><a name="Cartridge"><b>Cartridge Properties</b></h3></a>
+  <h3><a name="CartridgeProps"><b>Cartridge Properties</b></h3></a>
   <p>
     <img src="graphics/options_gameinfo_cartridge.png">
   </p>
@@ -5026,7 +5026,7 @@ Ms Pac-Man (Stella extended codes):
         <tr><td>Note</td><td>Allows defining some free text which explains the high scores properties.</td></tr>
       </table>
       <p>To find the required definition values, you can use Stella's built-in <a href="debugger.html">debugger</a>.
-      Please share your results, so that we can extend the list of supported games.</p>
+      Please share your results, so that we can extend the <b><a href="#HighScoreGames">list</a></b> of supported games.</p>
       <p>Note: To verify the definitions, the current values of the addresses and the resulting score are displayed.</p>
       </td>
     </tr>

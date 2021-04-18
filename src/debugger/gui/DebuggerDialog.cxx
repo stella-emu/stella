@@ -600,6 +600,7 @@ void DebuggerDialog::addRomArea()
 
   xpos = r.x() + 10;  ypos += myCpu->getHeight() + 10;
   myRam = new RiotRamWidget(this, *myLFont, *myNFont, xpos, ypos, r.w() - 10);
+  //myRam->setHelpAnchor("M6532", true); // TODO: doesn't work
   addToFocusList(myRam->getFocusList());
 
   // Add the DataGridOpsWidget to any widgets which contain a
@@ -626,6 +627,7 @@ void DebuggerDialog::addRomArea()
   tabID = myRomTab->addTab("  Disassembly  ", TabWidget::AUTO_WIDTH);
   myRom = new RomWidget(myRomTab, *myLFont, *myNFont, 2, 2, tabWidth - 1,
                         tabHeight - myRomTab->getTabHeight() - 2);
+  myRom->setHelpAnchor("Disassembly", true);
   myRomTab->setParentWidget(tabID, myRom);
   addToFocusList(myRom->getFocusList(), myRomTab, tabID);
 
@@ -637,6 +639,7 @@ void DebuggerDialog::addRomArea()
     tabHeight - myRomTab->getTabHeight() - 2);
   if(myCartInfo != nullptr)
   {
+    //myCartInfo->setHelpAnchor("BankswitchInformation", true); // TODO: doesn't work
     myRomTab->setParentWidget(tabID, myCartInfo);
     addToFocusList(myCartInfo->getFocusList(), myRomTab, tabID);
     tabID = myRomTab->addTab("    States    ", TabWidget::AUTO_WIDTH);
@@ -648,6 +651,7 @@ void DebuggerDialog::addRomArea()
         tabHeight - myRomTab->getTabHeight() - 2);
   if(myCartDebug)  // TODO - make this always non-null
   {
+    //myRomTab->setHelpAnchor("BankswitchInformation", true); // TODO: doesn't work
     myRomTab->setParentWidget(tabID, myCartDebug);
     addToFocusList(myCartDebug->getFocusList(), myRomTab, tabID);
 
@@ -660,6 +664,7 @@ void DebuggerDialog::addRomArea()
                 tabHeight - myRomTab->getTabHeight() - 2, *myCartDebug);
       if(myCartRam)  // TODO - make this always non-null
       {
+        myCartRam->setHelpAnchor("CartridgeRAMInformation", true);
         myRomTab->setParentWidget(tabID, myCartRam);
         addToFocusList(myCartRam->getFocusList(), myRomTab, tabID);
         myCartRam->setOpsWidget(ops);

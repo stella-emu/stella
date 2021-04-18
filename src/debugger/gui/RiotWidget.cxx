@@ -265,6 +265,8 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   myPause->setID(kPauseID);
   myPause->setTarget(this);
   addFocusWidget(myPause);
+
+  setHelpAnchor("IOTab", true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

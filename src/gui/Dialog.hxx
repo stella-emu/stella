@@ -97,6 +97,7 @@ class Dialog : public GuiObject
     void setTitle(const string& title);
     bool hasTitle() { return !_title.empty(); }
 
+    void initHelp();
     void setHelpAnchor(const string& helpAnchor, bool debugger = false);
     void setHelpURL(const string& helpURL);
 
@@ -210,9 +211,8 @@ class Dialog : public GuiObject
     bool handleNavEvent(Event::Type e, bool repeated = false);
     void getTabIdForWidget(Widget* w);
     bool cycleTab(int direction);
-    void initHelp();
-    const string getHelpURL();
-    bool hasHelp() { return !getHelpURL().empty(); }
+    const string getHelpURL() const override;
+    bool hasHelp() const override { return !getHelpURL().empty(); }
     void openHelp();
 
   protected:

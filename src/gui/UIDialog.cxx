@@ -196,6 +196,8 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   // Add items for tab 0
   addToFocusList(wid, myTab, tabID);
 
+  myTab->parentWidget(tabID)->setHelpAnchor("UserInterface");
+
   //////////////////////////////////////////////////////////
   // 2) Launcher options
   wid.clear();
@@ -296,6 +298,9 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   // Add items for tab 1
   addToFocusList(wid, myTab, tabID);
 
+  myTab->parentWidget(tabID)->setHelpAnchor("ROMInfo");
+
+  //////////////////////////////////////////////////////////
   // All ROM settings are disabled while in game mode
   if(!myIsGlobal)
   {
@@ -312,6 +317,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   addBGroupToFocusList(wid);
 
   setHelpAnchor("UserInterface");
+
 
 #ifndef WINDOWED_SUPPORT
   myCenter->clearFlags(Widget::FLAG_ENABLED);

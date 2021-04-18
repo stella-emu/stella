@@ -54,6 +54,7 @@ class TabWidget : public Widget, public CommandSender
 // setActiveTab changes the value of _firstWidget. This means Widgets added afterwards
 // will be added to the active tab.
     void setParentWidget(int tabID, Widget* parent);
+    Widget* parentWidget(int tabID);
 
     int getTabWidth()  { return _tabWidth;  }
     int getTabHeight() { return _tabHeight; }

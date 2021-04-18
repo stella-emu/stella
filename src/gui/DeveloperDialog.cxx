@@ -209,6 +209,8 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
 
   // Add items for tab 0
   addToFocusList(wid, myTab, tabID);
+
+  myTab->parentWidget(tabID)->setHelpAnchor("DeveloperEmulator");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -313,6 +315,8 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
 
   // Add items for tab 2
   addToFocusList(wid, myTab, tabID);
+
+  myTab->parentWidget(tabID)->setHelpAnchor("DeveloperTIA");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -418,6 +422,8 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
 
   // Add items for tab 2
   addToFocusList(wid, myTab, tabID);
+
+  myTab->parentWidget(tabID)->setHelpAnchor("DeveloperVideo");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -552,6 +558,8 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
                        "(*) Any size change clears the buffer");
 
   addToFocusList(wid, myTab, tabID);
+
+  myTab->parentWidget(tabID)->setHelpAnchor("DeveloperTimeMachine");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -646,6 +654,8 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
 #endif
 
   addToFocusList(wid, myTab, tabID);
+
+  myTab->parentWidget(tabID)->setHelpAnchor("DeveloperDebugger");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -285,6 +285,40 @@ void Widget::setToolTip(const string& text)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Widget::setHelpAnchor(const string& helpAnchor, bool debugger)
+{
+  _helpAnchor = helpAnchor;
+  _debuggerHelp = debugger;
+
+  dialog().initHelp();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Widget::setHelpURL(const string& helpURL)
+{
+  _helpURL = helpURL;
+
+  dialog().initHelp();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const string Widget::getHelpURL() const
+{
+  if(!_helpURL.empty())
+    return _helpURL;
+
+  if(!_helpAnchor.empty())
+  {
+    if(_debuggerHelp)
+      return "https://stella-emu.github.io/docs/debugger.html#" + _helpAnchor;
+    else
+      return "https://stella-emu.github.io/docs/index.html#" + _helpAnchor;
+  }
+  return EmptyString;
+}
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Widget* Widget::findWidgetInChain(Widget* w, int x, int y)
 {
   while(w)
