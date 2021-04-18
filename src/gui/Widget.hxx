@@ -118,6 +118,9 @@ class Widget : public GuiObject
     virtual bool changedToolTip(const Common::Point& oldPos,
                                 const Common::Point& newPos) const { return false; }
 
+    void setHelpAnchor(const string& helpAnchor, bool debugger = false);
+    void setHelpURL(const string& helpURL);
+
     virtual void loadConfig() { }
 
   protected:
@@ -137,6 +140,9 @@ class Widget : public GuiObject
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override
          { assert(_boss); _boss->handleCommand(sender, cmd, data, id); }
 
+    const string getHelpURL() const override;
+    bool hasHelp() const override { return !getHelpURL().empty(); }
+
   protected:
     GuiObject* _boss{nullptr};
     const GUI::Font& _font;
@@ -153,6 +159,9 @@ class Widget : public GuiObject
     ColorId    _textcolorlo{kBGColorLo};
     ColorId    _shadowcolor{kShadowColor};
     string     _toolTipText;
+    string     _helpAnchor;
+    string     _helpURL;
+    bool       _debuggerHelp{false};
 
   public:
     static Widget* findWidgetInChain(Widget* start, int x, int y);

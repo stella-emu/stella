@@ -47,7 +47,7 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   new StaticTextWidget(boss, lfont, xpos, ypos + 2, lwidth-2, fontHeight,
                        "PC ", TextAlign::Left);
   myPCGrid =
-    new DataGridWidget(boss, nfont, xpos + lwidth, ypos, 1, 1, 4, 16, Common::Base::Fmt::_16);
+    new DataGridWidget(this, nfont, xpos + lwidth, ypos, 1, 1, 4, 16, Common::Base::Fmt::_16);
   myPCGrid->setTarget(this);
   myPCGrid->setID(kPCRegID);
   addFocusWidget(myPCGrid);
@@ -62,6 +62,7 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   xpos = x + lwidth;  ypos = myPCGrid->getBottom() + VGAP;
   myCpuGrid =
     new DataGridWidget(boss, nfont, xpos, ypos, 1, 4, 2, 8, Common::Base::Fmt::_16);
+  myCpuGrid->setHelpAnchor("CPURegisters", true);
   myCpuGrid->setTarget(this);
   myCpuGrid->setID(kCpuRegID);
   addFocusWidget(myCpuGrid);
@@ -70,6 +71,7 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   xpos = myPCGrid->getRight() + 10;
   myCpuGridDecValue =
     new DataGridWidget(boss, nfont, xpos, ypos, 1, 4, 3, 8, Common::Base::Fmt::_10);
+  myCpuGridDecValue->setHelpAnchor("CPURegisters", true);
   myCpuGridDecValue->setTarget(this);
   myCpuGridDecValue->setID(kCpuRegDecID);
   addFocusWidget(myCpuGridDecValue);
@@ -142,6 +144,8 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   myCpuDataDest = new EditTextWidget(boss, nfont, xpos, ypos, src_w, fontHeight + 1);
   myCpuDataDest->setToolTip("Destination label of last write.");
   myCpuDataDest->setEditable(false, true);
+
+  setHelpAnchor("DataOpButtons", true);
 
   _h = ypos + myPSRegister->getHeight() - y;
 }

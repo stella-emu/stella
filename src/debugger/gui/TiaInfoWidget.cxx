@@ -138,6 +138,8 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
   // Calculate actual dimensions
   _w = myColorClocks->getRight() - x;
   _h = myColorClocks->getBottom();
+
+  //setHelpAnchor("TIAInfo", true); // TODO: does not work due to missing focus
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -189,8 +189,29 @@ void Dialog::setHelpURL(const string& helpURL)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string Dialog::getHelpURL()
+const string Dialog::getHelpURL() const
 {
+  // 1. check individual widget
+  if(_focusedWidget && _focusedWidget->hasHelp())
+    return _focusedWidget->getHelpURL();
+
+  if(_tabID < int(_myTabList.size()))
+  {
+    TabWidget* activeTabGroup = _myTabList[_tabID].widget;
+
+    // 2. check active tab
+    int activeTab = activeTabGroup->getActiveTab();
+    const Widget* parentTab = activeTabGroup->parentWidget(activeTab);
+
+    if(parentTab->hasHelp())
+      return parentTab->getHelpURL();
+
+    // 3. check active tab group
+    if(activeTabGroup && activeTabGroup->hasHelp())
+      return activeTabGroup->getHelpURL();
+  }
+
+  // 4. check dialog
   if(!_helpURL.empty())
     return _helpURL;
 
@@ -201,6 +222,7 @@ const string Dialog::getHelpURL()
     else
       return "https://stella-emu.github.io/docs/index.html#" + _helpAnchor;
   }
+  // no help found
   return EmptyString;
 }
 

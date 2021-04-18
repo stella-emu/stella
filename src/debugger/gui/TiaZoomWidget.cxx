@@ -65,6 +65,8 @@ TiaZoomWidget::TiaZoomWidget(GuiObject* boss, const GUI::Font& font,
   VarList::push_back(l, "4x zoom", "4");
   VarList::push_back(l, "8x zoom", "8");
   myMenu = make_unique<ContextMenu>(this, font, l);
+
+  setHelpAnchor("TIAZoom", true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

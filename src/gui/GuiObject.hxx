@@ -147,6 +147,9 @@ class GuiObject : public CommandReceiver
     virtual void draw() = 0;
     virtual void drawChain() = 0;
 
+    virtual const string getHelpURL() const = 0;
+    virtual bool hasHelp() const = 0;
+
   private:
     OSystem&         myOSystem;
     DialogContainer& myParent;

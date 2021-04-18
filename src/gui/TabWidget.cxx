@@ -187,6 +187,21 @@ void TabWidget::setParentWidget(int tabID, Widget* parent)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Widget* TabWidget::parentWidget(int tabID)
+{
+  assert(0 <= tabID && tabID < int(_tabs.size()));
+
+  if(!_tabs[tabID].parentWidget)
+  {
+    // create dummy widget if not existing
+    Widget* w = new Widget(_boss, _font, 0, 0, 0, 0);
+
+    setParentWidget(tabID, w);
+  }
+  return _tabs[tabID].parentWidget;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TabWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
   assert(y < _tabHeight);

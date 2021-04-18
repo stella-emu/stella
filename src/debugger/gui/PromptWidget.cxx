@@ -74,6 +74,7 @@ PromptWidget::PromptWidget(GuiObject* boss, const GUI::Font& font,
   clearScreen();
 
   addFocusWidget(this);
+  setHelpAnchor("PromptTab", true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -194,6 +194,7 @@ void GameInfoDialog::addEmulationTab()
   // Add items for tab 0
   addToFocusList(wid, myTab, tabID);
 
+  myTab->parentWidget(tabID)->setHelpAnchor("EmulationProps");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -246,6 +247,8 @@ void GameInfoDialog::addConsoleTab()
 
   // Add items for tab 1
   addToFocusList(wid, myTab, tabID);
+
+  myTab->parentWidget(tabID)->setHelpAnchor("ConsoleProps");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -396,6 +399,8 @@ void GameInfoDialog::addControllersTab()
 
   // Add items for tab 2
   addToFocusList(wid, myTab, tabID);
+
+  myTab->parentWidget(tabID)->setHelpAnchor("ControllerProps");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -455,6 +460,8 @@ void GameInfoDialog::addCartridgeTab()
 
   // Add items for tab 3
   addToFocusList(wid, myTab, tabID);
+
+  myTab->parentWidget(tabID)->setHelpAnchor("CartridgeProps");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -650,6 +657,8 @@ void GameInfoDialog::addHighScoresTab()
 
   // Add items for tab 4
   addToFocusList(wid, myTab, tabID);
+
+  myTab->parentWidget(tabID)->setHelpAnchor("HighScoreProps");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

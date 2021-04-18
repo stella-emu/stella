@@ -82,6 +82,8 @@ AudioWidget::AudioWidget(GuiObject* boss, const GUI::Font& lfont,
 
   myAudEffV = new StaticTextWidget(boss, lfont, myAudV->getRight() + fontWidth, myAudV->getTop() + 2,
                                    "100% (eff. volume)");
+
+  setHelpAnchor("AudioTab", true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

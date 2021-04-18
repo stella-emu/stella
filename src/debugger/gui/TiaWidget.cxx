@@ -667,6 +667,8 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
                        "HMCLR", kHmclrCmd);
   b->setTarget(this);
   addFocusWidget(b);
+
+  setHelpAnchor("TIATab", true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

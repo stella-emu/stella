@@ -72,6 +72,7 @@ InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
                                              EventMode::kEmulationMode);
   myTab->setParentWidget(tabID, myEmulEventMapper);
   addToFocusList(myEmulEventMapper->getFocusList(), myTab, tabID);
+  myTab->parentWidget(tabID)->setHelpAnchor("Remapping");
 
   // 2) Event mapper for UI actions
   tabID = myTab->addTab(" UI Events ", TabWidget::AUTO_WIDTH);
@@ -81,6 +82,7 @@ InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
                                              EventMode::kMenuMode);
   myTab->setParentWidget(tabID, myMenuEventMapper);
   addToFocusList(myMenuEventMapper->getFocusList(), myTab, tabID);
+  myTab->parentWidget(tabID)->setHelpAnchor("Remapping");
 
   // 3) Devices & ports
   addDevicePortTab();
@@ -235,6 +237,8 @@ void InputDialog::addDevicePortTab()
 
   // Add items for virtual device ports
   addToFocusList(wid, myTab, tabID);
+
+  myTab->parentWidget(tabID)->setHelpAnchor("DevicesPorts");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -323,6 +327,8 @@ void InputDialog::addMouseTab()
 
   // Add items for mouse
   addToFocusList(wid, myTab, tabID);
+
+  myTab->parentWidget(tabID)->setHelpAnchor("Mouse");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

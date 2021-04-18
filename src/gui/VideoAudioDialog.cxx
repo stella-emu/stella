@@ -195,6 +195,8 @@ void VideoAudioDialog::addDisplayTab()
 
   // Add items for tab 0
   addToFocusList(wid, myTab, tabID);
+
+  myTab->parentWidget(tabID)->setHelpAnchor("VideoAudioDisplay");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -326,6 +328,8 @@ void VideoAudioDialog::addPaletteTab()
 
   // Add items for tab 2
   addToFocusList(wid, myTab, tabID);
+
+  myTab->parentWidget(tabID)->setHelpAnchor("VideoAudioPalettes");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -412,6 +416,8 @@ void VideoAudioDialog::addTVEffectsTab()
 
   // Add items for tab 3
   addToFocusList(wid, myTab, tabID);
+
+  myTab->parentWidget(tabID)->setHelpAnchor("VideoAudioEffects");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -541,6 +547,8 @@ void VideoAudioDialog::addAudioTab()
 
   // Add items for tab 4
   addToFocusList(wid, myTab, tabID);
+
+  myTab->parentWidget(tabID)->setHelpAnchor("VideoAudioAudio");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

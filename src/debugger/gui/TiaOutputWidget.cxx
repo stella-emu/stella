@@ -51,6 +51,8 @@ TiaOutputWidget::TiaOutputWidget(GuiObject* boss, const GUI::Font& font,
   VarList::push_back(l, "Save snapshot", "snap");
 #endif
   myMenu = make_unique<ContextMenu>(this, font, l);
+
+  //setHelpAnchor("TIADisplay", true); // TODO: does not work due to missing focus
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
