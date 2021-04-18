@@ -98,6 +98,7 @@ class Dialog : public GuiObject
     bool hasTitle() { return !_title.empty(); }
 
     void setHelpAnchor(const string& helpAnchor, bool debugger = false);
+    void setHelpURL(const string& helpURL);
 
     virtual bool isShading() const { return true; }
 
@@ -209,6 +210,7 @@ class Dialog : public GuiObject
     bool handleNavEvent(Event::Type e, bool repeated = false);
     void getTabIdForWidget(Widget* w);
     bool cycleTab(int direction);
+    void initHelp();
     const string getHelpURL();
     bool hasHelp() { return !getHelpURL().empty(); }
     void openHelp();
@@ -231,6 +233,7 @@ class Dialog : public GuiObject
     int     _layer{0};
     unique_ptr<ToolTip> _toolTip;
     string  _helpAnchor;
+    string  _helpURL;
     bool    _debuggerHelp{false};
     ButtonWidget* _helpWidget{nullptr};
 
