@@ -490,7 +490,7 @@ void Dialog::buildCurrentFocusList(int tabID)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::addRenderCallback(const std::function<void()>& callback)
+void Dialog::addRenderCallback(const RenderCallback& callback)
 {
   _renderCallback = callback;
 }
