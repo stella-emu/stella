@@ -87,6 +87,8 @@ AboutDialog::AboutDialog(OSystem& osystem, DialogContainer& parent,
   }
 
   addToFocusList(wid);
+
+  setHelpURL("https://stella-emu.github.io/index.html");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
