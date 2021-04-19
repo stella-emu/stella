@@ -540,22 +540,27 @@ void DebuggerDialog::addRomArea()
 
   b = new ButtonWidget(this, *myLFont, buttonX, buttonY,
                        bwidth, bheight, "Step", kDDStepCmd, true);
+  b->setHelpAnchor("GlobalButtons", true);
   wid2.push_back(b);
   buttonY += bheight + 4;
   b = new ButtonWidget(this, *myLFont, buttonX, buttonY,
                        bwidth, bheight, "Trace", kDDTraceCmd, true);
+  b->setHelpAnchor("GlobalButtons", true);
   wid2.push_back(b);
   buttonY += bheight + 4;
   b = new ButtonWidget(this, *myLFont, buttonX, buttonY,
                        bwidth, bheight, "Scan +1", kDDSAdvCmd, true);
+  b->setHelpAnchor("GlobalButtons", true);
   wid2.push_back(b);
   buttonY += bheight + 4;
   b = new ButtonWidget(this, *myLFont, buttonX, buttonY,
                        bwidth, bheight, "Frame +1", kDDAdvCmd, true);
+  b->setHelpAnchor("GlobalButtons", true);
   wid2.push_back(b);
   buttonY += bheight + 4;
   b = new ButtonWidget(this, *myLFont, buttonX, buttonY,
                        bwidth, bheight, "Run", kDDRunCmd);
+  b->setHelpAnchor("GlobalButtons", true);
   wid2.push_back(b);
   addCancelWidget(b);
 
@@ -567,6 +572,7 @@ void DebuggerDialog::addRomArea()
   myRewindButton =
     new ButtonWidget(this, *myLFont, buttonX, buttonY,
                      bwidth, bheight, LEFT_ARROW.data(), 7, 11, kDDRewindCmd, true);
+  myRewindButton->setHelpAnchor("GlobalButtons", true);
   myRewindButton->clearFlags(Widget::FLAG_ENABLED);
 
   buttonY += bheight + 4;
@@ -575,6 +581,7 @@ void DebuggerDialog::addRomArea()
   myUnwindButton =
     new ButtonWidget(this, *myLFont, buttonX, buttonY,
                      bwidth, bheight, RIGHT_ARROW.data(), 7, 11, kDDUnwindCmd, true);
+  myUnwindButton->setHelpAnchor("GlobalButtons", true);
   myUnwindButton->clearFlags(Widget::FLAG_ENABLED);
 
   int xpos = buttonX - 8*myLFont->getMaxCharWidth() - 20, ypos = 30;
@@ -632,8 +639,7 @@ void DebuggerDialog::addRomArea()
   addToFocusList(myRom->getFocusList(), myRomTab, tabID);
 
   // The 'cart-specific' information tab (optional)
-
-    tabID = myRomTab->addTab(" " + instance().console().cartridge().name() + " ", TabWidget::AUTO_WIDTH);
+  tabID = myRomTab->addTab(" " + instance().console().cartridge().name() + " ", TabWidget::AUTO_WIDTH);
   myCartInfo = instance().console().cartridge().infoWidget(
     myRomTab, *myLFont, *myNFont, 2, 2, tabWidth - 1,
     tabHeight - myRomTab->getTabHeight() - 2);

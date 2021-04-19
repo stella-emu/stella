@@ -35,7 +35,8 @@ class RamWidget : public Widget, public CommandSender
   public:
     RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
               int x, int y, int w, int h,
-              uInt32 ramsize, uInt32 numrows, uInt32 pagesize);
+              uInt32 ramsize, uInt32 numrows, uInt32 pagesize,
+              const string& helpAnchor);
     ~RamWidget() override;
 
     void loadConfig() override;
