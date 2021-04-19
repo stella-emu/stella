@@ -48,6 +48,7 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
                        "PC ", TextAlign::Left);
   myPCGrid =
     new DataGridWidget(boss, nfont, xpos + lwidth, ypos, 1, 1, 4, 16, Common::Base::Fmt::_16);
+  myPCGrid->setHelpAnchor("CPURegisters", true);
   myPCGrid->setTarget(this);
   myPCGrid->setID(kPCRegID);
   addFocusWidget(myPCGrid);
@@ -79,6 +80,7 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   xpos = myCpuGridDecValue->getRight() + fontWidth * 2;
   myCpuGridBinValue =
     new DataGridWidget(boss, nfont, xpos, ypos, 1, 4, 8, 8, Common::Base::Fmt::_2);
+  myCpuGridBinValue->setHelpAnchor("CPURegisters", true);
   myCpuGridBinValue->setTarget(this);
   myCpuGridBinValue->setID(kCpuRegBinID);
   addFocusWidget(myCpuGridBinValue);
@@ -123,6 +125,7 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   new StaticTextWidget(boss, lfont, xpos, ypos + 2, lwidth-2, fontHeight,
                        "PS ", TextAlign::Left);
   myPSRegister = new ToggleBitWidget(boss, nfont, xpos+lwidth, ypos, 8, 1);
+  myPSRegister->setHelpAnchor("CPURegisters", true);
   myPSRegister->setTarget(this);
   addFocusWidget(myPSRegister);
 

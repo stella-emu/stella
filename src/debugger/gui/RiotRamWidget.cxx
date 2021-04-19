@@ -24,9 +24,10 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RiotRamWidget::RiotRamWidget(GuiObject* boss, const GUI::Font& lfont,
         const GUI::Font& nfont, int x, int y, int w)
-  : RamWidget(boss, lfont, nfont, x, y, w, 0, 128, 8, 128),
+  : RamWidget(boss, lfont, nfont, x, y, w, 0, 128, 8, 128, "M6532"),
     myDbg{instance().debugger().cartDebug()}
 {
+  // setHelpAnchor("M6532"); TODO: does not work due to use of "boss" insted of "this"
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

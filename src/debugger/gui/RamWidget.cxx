@@ -30,7 +30,8 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
                      int x, int y, int w, int h,
-                     uInt32 ramsize, uInt32 numrows, uInt32 pagesize)
+                     uInt32 ramsize, uInt32 numrows, uInt32 pagesize,
+                     const string& helpAnchor)
   : Widget(boss, lfont, x, y, w, h),
     CommandSender(boss),
     _nfont{nfont},
@@ -56,6 +57,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   bool useScrollbar = ramsize / numrows > 16;
   myRamGrid = new DataGridRamWidget(_boss, *this, _nfont, xpos, ypos,
                                     16, myNumRows, 2, 8, Common::Base::Fmt::_16, useScrollbar);
+  myRamGrid->setHelpAnchor(helpAnchor, true);
   myRamGrid->setTarget(this);
   myRamGrid->setID(kRamGridID);
   addFocusWidget(myRamGrid);
@@ -66,18 +68,21 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
 
   myUndoButton = new ButtonWidget(boss, lfont, bx, by, bwidth, bheight,
                                   "Undo", kUndoCmd);
+  myUndoButton->setHelpAnchor("M6532Search", true);
   wid.push_back(myUndoButton);
   myUndoButton->setTarget(this);
 
   by += bheight + VGAP;
   myRevertButton = new ButtonWidget(boss, lfont, bx, by, bwidth, bheight,
                                     "Revert", kRevertCmd);
+  myRevertButton->setHelpAnchor("M6532Search", true);
   wid.push_back(myRevertButton);
   myRevertButton->setTarget(this);
 
   by += bheight + VGAP * 6;
   mySearchButton = new ButtonWidget(boss, lfont, bx, by, bwidth, bheight,
                                     "Search" + ELLIPSIS, kSearchCmd);
+  mySearchButton->setHelpAnchor("M6532Search", true);
   mySearchButton->setToolTip("Search and highlight found values.");
   wid.push_back(mySearchButton);
   mySearchButton->setTarget(this);
@@ -85,6 +90,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   by += bheight + VGAP;
   myCompareButton = new ButtonWidget(boss, lfont, bx, by, bwidth, bheight,
                                      "Compare" + ELLIPSIS, kCmpCmd);
+  myCompareButton->setHelpAnchor("M6532Search", true);
   myCompareButton->setToolTip("Compare highlighted values.");
   wid.push_back(myCompareButton);
   myCompareButton->setTarget(this);
@@ -92,6 +98,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   by += bheight + VGAP;
   myRestartButton = new ButtonWidget(boss, lfont, bx, by, bwidth, bheight,
                                      "Reset", kRestartCmd);
+  myRestartButton->setHelpAnchor("M6532Search", true);
   myRestartButton->setToolTip("Reset search/compare mode.");
   wid.push_back(myRestartButton);
   myRestartButton->setTarget(this);
@@ -135,6 +142,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   s = new StaticTextWidget(boss, lfont, xpos, ypos, "%");
   myBinValue = new DataGridWidget(boss, nfont, s->getRight() + myFontWidth * 0.1, ypos-2,
                                   1, 1, 8, 8, Common::Base::Fmt::_2);
+  myBinValue->setHelpAnchor(helpAnchor, true);
   myBinValue->setTarget(this);
   myBinValue->setID(kRamBinID);
 
@@ -143,6 +151,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   s = new StaticTextWidget(boss, lfont, xpos, ypos, "#");
   myDecValue = new DataGridWidget(boss, nfont, s->getRight(), ypos-2,
                                   1, 1, 3, 8, Common::Base::Fmt::_10);
+  myDecValue->setHelpAnchor(helpAnchor, true);
   myDecValue->setTarget(this);
   myDecValue->setID(kRamDecID);
 
@@ -150,6 +159,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   xpos -= 4.5 * myFontWidth;
   myHexValue = new DataGridWidget(boss, nfont, xpos, ypos - 2,
                                   1, 1, 2, 8, Common::Base::Fmt::_16);
+  myHexValue->setHelpAnchor(helpAnchor, true);
   myHexValue->setTarget(this);
   myHexValue->setID(kRamHexID);
 
