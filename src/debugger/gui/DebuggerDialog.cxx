@@ -657,7 +657,7 @@ void DebuggerDialog::addRomArea()
         tabHeight - myRomTab->getTabHeight() - 2);
   if(myCartDebug)  // TODO - make this always non-null
   {
-    //myRomTab->setHelpAnchor("BankswitchInformation", true); // TODO: doesn't work
+    myRomTab->setHelpAnchor("BankswitchInformation", true);
     myRomTab->setParentWidget(tabID, myCartDebug);
     addToFocusList(myCartDebug->getFocusList(), myRomTab, tabID);
 
