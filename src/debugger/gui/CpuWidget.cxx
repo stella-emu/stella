@@ -47,7 +47,7 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   new StaticTextWidget(boss, lfont, xpos, ypos + 2, lwidth-2, fontHeight,
                        "PC ", TextAlign::Left);
   myPCGrid =
-    new DataGridWidget(this, nfont, xpos + lwidth, ypos, 1, 1, 4, 16, Common::Base::Fmt::_16);
+    new DataGridWidget(boss, nfont, xpos + lwidth, ypos, 1, 1, 4, 16, Common::Base::Fmt::_16);
   myPCGrid->setTarget(this);
   myPCGrid->setID(kPCRegID);
   addFocusWidget(myPCGrid);
