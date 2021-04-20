@@ -811,7 +811,11 @@ PhysicalKeyboardHandler::DefaultMenuMapping = {
   {Event::UITabNext,                KBDK_BACKSPACE},  // back (FRY)
 #else // defining duplicate keys must be avoided!
   {Event::UIPrevDir,                KBDK_BACKSPACE},
+#ifdef BSPF_MACOS
+  {Event::UIHelp,                   KBDK_SLASH, KBDM_SHIFT | CMD},
+#else
   {Event::UIHelp,                   KBDK_F1},
+#endif
 #endif
 };
 
