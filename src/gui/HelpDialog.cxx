@@ -98,6 +98,8 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
   auto ADD_EVENT = [&](const Event::Type e, const string & d)
   {
     string desc = instance().eventHandler().getMappingDesc(e, EventMode::kEmulationMode);
+    if(!desc.length())
+      desc = instance().eventHandler().getMappingDesc(e, EventMode::kMenuMode);
     ADD_BIND(desc.length() ? desc : "None", d);
   };
   auto ADD_TEXT = [&](const string& d) { ADD_BIND("", d); };
@@ -107,6 +109,8 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
   {
     case 1:
       title = "Common commands";
+      ADD_EVENT(Event::UIHelp,              "Open context-sensitive help");
+      ADD_LINE();
       ADD_EVENT(Event::Quit,                "Quit emulation");
       ADD_EVENT(Event::ExitMode,            "Exit current mode/menu");
       ADD_EVENT(Event::OptionsMenuMode,     "Enter Options menu");
@@ -115,8 +119,6 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
       ADD_EVENT(Event::VidmodeDecrease,     "Decrease window size");
       ADD_EVENT(Event::ToggleFullScreen,    "Toggle fullscreen /");
       ADD_BIND("",                          "  windowed mode");
-      ADD_EVENT(Event::OverscanIncrease,    "Increase overscan in FS mode");
-      ADD_EVENT(Event::OverscanDecrease,    "Decrease overscan in FS mode");
       break;
 
     case 2:
@@ -163,7 +165,6 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
 
     case 5:
       title = "All other commands";
-      ADD_LINE();
       ADD_BIND("Remapped Events", "");
       ADD_TEXT("Most other commands can be");
       ADD_TEXT("remapped. Please consult the");
