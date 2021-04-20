@@ -3285,29 +3285,30 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandler::MenuActionList EventHandler::ourMenuActionList = { {
-  { Event::UIUp,              "Move Up",              "" },
-  { Event::UIDown,            "Move Down",            "" },
-  { Event::UILeft,            "Move Left",            "" },
-  { Event::UIRight,           "Move Right",           "" },
+  { Event::UIHelp,            "Open context-sensitive help",  "" },
 
-  { Event::UIHome,            "Home",                 "" },
-  { Event::UIEnd,             "End",                  "" },
-  { Event::UIPgUp,            "Page Up",              "" },
-  { Event::UIPgDown,          "Page Down",            "" },
+  { Event::UIUp,              "Move Up",                      "" },
+  { Event::UIDown,            "Move Down",                    "" },
+  { Event::UILeft,            "Move Left",                    "" },
+  { Event::UIRight,           "Move Right",                   "" },
 
-  { Event::UIOK,              "OK",                   "" },
-  { Event::UICancel,          "Cancel",               "" },
-  { Event::UISelect,          "Select item",          "" },
+  { Event::UIHome,            "Home",                         "" },
+  { Event::UIEnd,             "End",                          "" },
+  { Event::UIPgUp,            "Page Up",                      "" },
+  { Event::UIPgDown,          "Page Down",                    "" },
 
-  { Event::UINavPrev,         "Previous object",      "" },
-  { Event::UINavNext,         "Next object",          "" },
-  { Event::UITabPrev,         "Previous tab",         "" },
-  { Event::UITabNext,         "Next tab",             "" },
+  { Event::UIOK,              "OK",                           "" },
+  { Event::UICancel,          "Cancel",                       "" },
+  { Event::UISelect,          "Select item",                  "" },
 
-  { Event::UIPrevDir,         "Parent directory",     "" },
-  { Event::ToggleFullScreen,  "Toggle fullscreen",    "" },
-  { Event::UIHelp,            "Help",                 "" },
-  { Event::Quit,              "Quit",                 "" }
+  { Event::UINavPrev,         "Previous object",              "" },
+  { Event::UINavNext,         "Next object",                  "" },
+  { Event::UITabPrev,         "Previous tab",                 "" },
+  { Event::UITabNext,         "Next tab",                     "" },
+
+  { Event::UIPrevDir,         "Parent directory",             "" },
+  { Event::ToggleFullScreen,  "Toggle fullscreen",            "" },
+  { Event::Quit,              "Quit",                         "" }
 } };
 
 // Event groups
