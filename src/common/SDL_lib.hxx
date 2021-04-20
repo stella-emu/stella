@@ -59,6 +59,7 @@ static inline bool SDLOpenURL(const string& url)
 #if SDL_VERSION_ATLEAST(2,0,14)
   return SDL_OpenURL(url.c_str()) == 0;
 #else
+  cerr << "OpenURL requires at least SDL 2.0.14\n";
   return false;
 #endif
 }
