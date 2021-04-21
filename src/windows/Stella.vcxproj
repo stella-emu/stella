@@ -753,6 +753,7 @@
     <ClCompile Include="..\emucore\CartMDM.cxx" />
     <ClCompile Include="..\emucore\CartMNetwork.cxx" />
     <ClCompile Include="..\emucore\CartE78K.cxx" />
+    <ClCompile Include="..\emucore\CartMVC.cxx" />
     <ClCompile Include="..\emucore\CartTVBoy.cxx" />
     <ClCompile Include="..\emucore\CartWD.cxx" />
     <ClCompile Include="..\emucore\CompuMate.cxx" />
@@ -1817,6 +1818,7 @@
     <ClInclude Include="..\emucore\CartMDM.hxx" />
     <ClInclude Include="..\emucore\CartMNetwork.hxx" />
     <ClInclude Include="..\emucore\CartE78K.hxx" />
+    <ClInclude Include="..\emucore\CartMVC.hxx" />
     <ClInclude Include="..\emucore\CartTVBoy.hxx" />
     <ClInclude Include="..\emucore\CartWD.hxx" />
     <ClInclude Include="..\emucore\CompuMate.hxx" />
