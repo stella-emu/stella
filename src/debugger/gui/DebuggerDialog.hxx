@@ -80,6 +80,7 @@ class DebuggerDialog : public Dialog
     void setPosition() override { positionAt(0); }
     void loadConfig() override;
     void handleKeyDown(StellaKey key, StellaMod mod, bool repeated) override;
+    void handleKeyUp(StellaKey key, StellaMod mod) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
     void doStep();
@@ -141,7 +142,7 @@ class DebuggerDialog : public Dialog
     unique_ptr<GUI::Font> myLFont;  // used for labels
     unique_ptr<GUI::Font> myNFont;  // used for normal text
     Widget* myFocusedWidget{nullptr};
-
+    bool myExitPressed{false};
 
   private:
     // Following constructors and assignment operators not supported

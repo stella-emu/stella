@@ -2187,15 +2187,6 @@ bool EventHandler::changeStateByEvent(Event::Type type)
         handled = false;
       break;
 
-    case Event::ExitMode:
-      // special handling for ESC key in debugger
-      if(myState != EventHandlerState::DEBUGGER)
-      {
-        handled = false;
-        break;
-      }
-      [[fallthrough]];
-
     case Event::DebuggerMode:
   #ifdef DEBUGGER_SUPPORT
       if(myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE
