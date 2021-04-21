@@ -19,6 +19,7 @@
 #include "Logger.hxx"
 
 #include "CartDetector.hxx"
+#include "CartMVC.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t size)
@@ -240,6 +241,8 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
     type = Bankswitch::Type::_3EP;
   else if(isProbablyMDM(image, size))
     type = Bankswitch::Type::_MDM;
+  else if(isProbablyMVC(image, size))
+    type = Bankswitch::Type::_MVC;
 
   // If we get here and autodetection failed, then we force '4K'
   if(type == Bankswitch::Type::_AUTO)
@@ -687,6 +690,38 @@ bool CartDetector::isProbablyMDM(const ByteBuffer& image, size_t size)
   // MDM cart is identified key 'MDMC' in the first 8K of ROM
   uInt8 mdmc[] = { 'M', 'D', 'M', 'C' };
   return searchForBytes(image, std::min<size_t>(size, 8_KB), mdmc, 4);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartDetector::isProbablyMVC(const ByteBuffer& image, size_t size)
+{
+  // MVC version 0
+  uInt8 sig[] = { 'M', 'V', 'C', 0 };
+  int	sigSize = sizeof(sig);
+  return searchForBytes(image, std::min<size_t>(size, sigSize+1), sig, sigSize);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+size_t CartDetector::isProbablyMVC(std::istream &in, size_t maxSize)
+{
+  const size_t	frameSize = 2 * MVC_FIELD_PAD_SIZE;
+  bool			found = false;
+
+  // Returns size of field if stream is probably an MVC movie cartridge
+  
+  if (maxSize >= frameSize)
+  {
+	auto	pos = in.tellg();
+
+	ByteBuffer	image = make_unique<uInt8[]>(frameSize);
+	in.read(reinterpret_cast<char*>(image.get()), frameSize);
+
+	in.seekg(pos);
+
+	found = isProbablyMVC(image, frameSize);
+  }
+
+  return found ? frameSize : 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

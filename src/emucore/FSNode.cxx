@@ -17,6 +17,7 @@
 
 #include "FSNodeFactory.hxx"
 #include "FSNode.hxx"
+#include "CartDetector.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FilesystemNode::FilesystemNode(const AbstractFSNodePtr& realNode)
@@ -354,6 +355,12 @@ size_t FilesystemNode::read(ByteBuffer& buffer) const
 
     if (sizeRead == 0)
       throw runtime_error("Zero-byte file");
+
+	// In the case of MVC (MovieCart) files, contents are streaming data
+	// of arbitrary length, so just read first frame.
+	size_t subSize = CartDetector::isProbablyMVC(in, sizeRead);
+	if (subSize > 0)
+		sizeRead = subSize;
 
     buffer = make_unique<uInt8[]>(sizeRead);
     in.read(reinterpret_cast<char*>(buffer.get()), sizeRead);

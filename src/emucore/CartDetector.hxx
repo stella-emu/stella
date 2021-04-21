@@ -40,6 +40,13 @@ class CartDetector
     */
     static Bankswitch::Type autodetectType(const ByteBuffer& image, size_t size);
 
+
+    /**
+	  MVC cartridges are of arbitary large length
+      Returns size of frame if stream is probably an MVC movie cartridge
+    */
+    static size_t isProbablyMVC(std::istream &in, size_t size);
+
   private:
     /**
       Search the image for the specified byte signature
@@ -188,6 +195,11 @@ class CartDetector
       Returns true if the image is probably a MDM bankswitching cartridge
     */
     static bool isProbablyMDM(const ByteBuffer& image, size_t size);
+
+    /**
+      Returns true if the image is probably an MVC movie cartridge
+    */
+    static bool isProbablyMVC(const ByteBuffer& image, size_t size);
 
     /**
       Returns true if the image is probably a SB bankswitching cartridge
