@@ -2637,8 +2637,8 @@
 "Cart.Manufacturer" "SOLID Corp. (D. Scott Williamson)"
 "Cart.ModelNo" "CX2655-069"
 "Cart.Name" "Star Castle 2600 (SolidCorp) [069]"
-"Cart.Note" "http://starcastle2600.blogspot.com/p/star-castle-2600-story.html"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "http://starcastle2600.blogspot.com/p/star-castle-2600-story.html"
 "Display.Phosphor" "YES"
 ""
 
@@ -3693,8 +3693,8 @@
 "Cart.Manufacturer" "SOLID Corp. (D. Scott Williamson)"
 "Cart.ModelNo" "CX2655-025"
 "Cart.Name" "Star Castle 2600 (SolidCorp) [025]"
-"Cart.Note" "http://starcastle2600.blogspot.com/p/star-castle-2600-story.html"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "http://starcastle2600.blogspot.com/p/star-castle-2600-story.html"
 "Display.Phosphor" "YES"
 ""
 
@@ -4990,8 +4990,8 @@
 "Cart.Manufacturer" "SOLID Corp. (D. Scott Williamson)"
 "Cart.ModelNo" "CX2655-016"
 "Cart.Name" "Star Castle 2600 (SolidCorp) [016]"
-"Cart.Note" "http://starcastle2600.blogspot.com/p/star-castle-2600-story.html"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "http://starcastle2600.blogspot.com/p/star-castle-2600-story.html"
 "Display.Phosphor" "YES"
 ""
 
@@ -7344,8 +7344,8 @@
 "Cart.Manufacturer" "SOLID Corp. (D. Scott Williamson)"
 "Cart.ModelNo" "CX2655*"
 "Cart.Name" "Star Castle 2600 (SolidCorp) (PAL)"
-"Cart.Note" "http://starcastle2600.blogspot.com/p/star-castle-2600-story.html"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "http://starcastle2600.blogspot.com/p/star-castle-2600-story.html"
 "Display.Phosphor" "YES"
 ""
 
@@ -16119,8 +16119,8 @@
 "Cart.Manufacturer" "SOLID Corp. (D. Scott Williamson)"
 "Cart.ModelNo" "CX2655-014"
 "Cart.Name" "Star Castle 2600 (SolidCorp) [014]"
-"Cart.Note" "http://starcastle2600.blogspot.com/p/star-castle-2600-story.html"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "http://starcastle2600.blogspot.com/p/star-castle-2600-story.html"
 "Display.Phosphor" "YES"
 ""
 
@@ -17398,8 +17398,8 @@
 "Cart.Manufacturer" "SOLID Corp. (D. Scott Williamson)"
 "Cart.ModelNo" "CX2655-015"
 "Cart.Name" "Star Castle 2600 (SolidCorp) (PAL) [015]"
-"Cart.Note" "http://starcastle2600.blogspot.com/p/star-castle-2600-story.html"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "http://starcastle2600.blogspot.com/p/star-castle-2600-story.html"
 "Display.Phosphor" "YES"
 ""
 
@@ -18381,8 +18381,8 @@
 "Cart.Manufacturer" "SOLID Corp. (D. Scott Williamson)"
 "Cart.ModelNo" "CX2655*"
 "Cart.Name" "Star Castle 2600 (SolidCorp)"
-"Cart.Note" "http://starcastle2600.blogspot.com/p/star-castle-2600-story.html"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "http://starcastle2600.blogspot.com/p/star-castle-2600-story.html"
 "Display.Phosphor" "YES"
 ""
 
@@ -18670,8 +18670,8 @@
 "Cart.Manufacturer" "SOLID Corp. (D. Scott Williamson)"
 "Cart.ModelNo" "CX2655-013"
 "Cart.Name" "Star Castle 2600 (SolidCorp) [013]"
-"Cart.Note" "http://starcastle2600.blogspot.com/p/star-castle-2600-story.html"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "http://starcastle2600.blogspot.com/p/star-castle-2600-story.html"
 "Display.Phosphor" "YES"
 ""
 

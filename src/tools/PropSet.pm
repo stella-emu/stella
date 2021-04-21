@@ -30,7 +30,8 @@ my %prop_type = (
   "Display.VCenter"           => 24,
   "Display.Phosphor"          => 25,
   "Display.PPBlend"           => 26,
-  "Cart.Highscore"	      => 27
+  "Cart.Highscore"	      => 27,
+  "Cart.Url"         	      => 28
 );
 my @prop_type_as_string = (
   "Cart.MD5",			
@@ -59,7 +60,8 @@ my @prop_type_as_string = (
   "Display.VCenter",
   "Display.Phosphor",
   "Display.PPBlend",
-  "Cart_Highscore"
+  "Cart_Highscore",
+  "Cart_Url"
 );				
 
 my @prop_defaults = (
@@ -93,7 +95,8 @@ my @prop_defaults = (
   "1",		# Cart.Variations          
   "",		# Cart.Formats             
   "",		# Cart.Addresses           
-  ""	        # Cart.Highscore
+  "",        # Cart.Highscore
+  ""	        # Cart.Url
 );
 
 # Load and parse a properties file into an hash table of property

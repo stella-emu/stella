@@ -180,7 +180,8 @@ void Properties::print() const
        << get(PropType::Display_VCenter)        << "|"
        << get(PropType::Display_Phosphor)       << "|"
        << get(PropType::Display_PPBlend)        << "|"
-       << get(PropType::Cart_Highscore)
+       << get(PropType::Cart_Highscore)         << "|"
+       << get(PropType::Cart_Url)
        << endl;
 }
 
@@ -240,7 +241,8 @@ void Properties::printHeader()
        << "Display_VCenter|"
        << "Display_Phosphor|"
        << "Display_PPBlend|"
-       << "Cart_Highscore"
+       << "Cart_Highscore|"
+       << "Cart_Url"
        << endl;
 }
 
@@ -274,7 +276,8 @@ std::array<string, Properties::NUM_PROPS> Properties::ourDefaultProperties =
   "0",      // Display.VCenter
   "NO",     // Display.Phosphor
   "0",      // Display.PPBlend
-  ""        // Cart.Highscore
+  "",       // Cart.Highscore
+  ""        // Cart.Url
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -307,5 +310,6 @@ std::array<string, Properties::NUM_PROPS> Properties::ourPropertyNames =
   "Display.VCenter",
   "Display.Phosphor",
   "Display.PPBlend",
-  "Cart.Highscore"
+  "Cart.Highscore",
+  "Cart.Url"
 };
