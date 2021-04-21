@@ -43,6 +43,7 @@
 #include "Switches.hxx"
 #include "AudioSettings.hxx"
 #include "bspf.hxx"
+#include "MediaFactory.hxx"
 
 #include "GameInfoDialog.hxx"
 
@@ -411,7 +412,8 @@ void GameInfoDialog::addCartridgeTab()
             fontHeight = Dialog::fontHeight(),
             VBORDER    = Dialog::vBorder(),
             HBORDER    = Dialog::hBorder(),
-            VGAP       = Dialog::vGap();
+            VGAP       = Dialog::vGap(),
+            HGAP       = Dialog::fontWidth() / 4;
   int xpos, ypos, lwidth, fwidth, tabID;
   WidgetArray wid;
   VariantList items;
@@ -457,6 +459,15 @@ void GameInfoDialog::addCartridgeTab()
   myNote = new EditTextWidget(myTab, _font, xpos + lwidth, ypos - 1,
                               fwidth, lineHeight, "");
   wid.push_back(myNote);
+
+  ypos += lineHeight + VGAP;
+  new StaticTextWidget(myTab, _font, xpos, ypos + 1, lwidth, fontHeight, "Link");
+  myUrl = new EditTextWidget(myTab, _font, xpos + lwidth, ypos - 1,
+                             fwidth - buttonWidth(">>") - HGAP, lineHeight, "");
+  myUrl->setID(kLinkId);
+  myUrlButton = new ButtonWidget(myTab, _font, _w - HBORDER - 2 - buttonWidth(">>"), ypos - 1,
+                                 buttonWidth(">>"), myUrl->getHeight(), ">>", kLinkPressed);
+  wid.push_back(myUrl);
 
   // Add items for tab 3
   addToFocusList(wid, myTab, tabID);
@@ -847,6 +858,9 @@ void GameInfoDialog::loadCartridgeProperties(const Properties& props)
   myModelNo->setText(props.get(PropType::Cart_ModelNo));
   myRarity->setText(props.get(PropType::Cart_Rarity));
   myNote->setText(props.get(PropType::Cart_Note));
+  myUrl->setText(props.get(PropType::Cart_Url));
+
+  updateLink();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -958,6 +972,7 @@ void GameInfoDialog::saveProperties()
   myGameProperties.set(PropType::Cart_ModelNo, myModelNo->getText());
   myGameProperties.set(PropType::Cart_Rarity, myRarity->getText());
   myGameProperties.set(PropType::Cart_Note, myNote->getText());
+  myGameProperties.set(PropType::Cart_Note, myUrl->getText());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1226,6 +1241,12 @@ void GameInfoDialog::eraseEEPROM()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void GameInfoDialog::updateLink()
+{
+  myUrlButton->setEnabled(myUrl->getText() != EmptyString);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::updateHighScoresWidgets()
 {
   bool enable = myHighScores->getState();
@@ -1455,7 +1476,17 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
       break;
     }
 
+    case kLinkPressed:
+      MediaFactory::openURL(myUrl->getText());
+      break;
+
     case EditTextWidget::kChangedCmd:
+      if(id == kLinkId)
+      {
+        updateLink();
+        break;
+      }
+      [[fallthrough]];
     case kHiScoresChanged:
       updateHighScoresWidgets();
       break;

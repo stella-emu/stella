@@ -72,6 +72,8 @@ class GameInfoDialog : public Dialog, public CommandSender
     void updateControllerStates();
     // erase SaveKey/AtariVox pages for current game
     void eraseEEPROM();
+    // update link button
+    void updateLink();
     // update 'High Scores' tab widgets
     void updateHighScoresWidgets();
     // set formatted memory value for given address field
@@ -130,6 +132,8 @@ class GameInfoDialog : public Dialog, public CommandSender
     EditTextWidget*   myModelNo{nullptr};
     EditTextWidget*   myRarity{nullptr};
     EditTextWidget*   myNote{nullptr};
+    ButtonWidget*     myUrlButton{nullptr};
+    EditTextWidget*   myUrl{nullptr};
 
     // High Scores properties
     CheckboxWidget*   myHighScores{nullptr};
@@ -180,8 +184,11 @@ class GameInfoDialog : public Dialog, public CommandSender
       kHiScoresChanged = 'HSch',
       kPXCenterChanged = 'Pxch',
       kPYCenterChanged = 'Pych',
-      kExportPressed   = 'Expr'
+      kExportPressed   = 'Expr',
+      kLinkPressed     = 'Lkpr'
     };
+
+    enum { kLinkId };
 
     // Game properties for currently loaded ROM
     Properties myGameProperties;

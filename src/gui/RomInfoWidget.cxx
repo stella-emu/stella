@@ -128,10 +128,17 @@ void RomInfoWidget::parseProperties(const FilesystemNode& node)
 
   // Now add some info for the message box below the image
   myRomInfo.push_back("Name: " + myProperties.get(PropType::Cart_Name));
-  myRomInfo.push_back("Manufacturer: " + myProperties.get(PropType::Cart_Manufacturer));
-  myRomInfo.push_back("Model: " + myProperties.get(PropType::Cart_ModelNo));
-  myRomInfo.push_back("Rarity: " + myProperties.get(PropType::Cart_Rarity));
-  myRomInfo.push_back("Note: " + myProperties.get(PropType::Cart_Note));
+
+  string value;
+
+  if((value = myProperties.get(PropType::Cart_Manufacturer)) != EmptyString)
+    myRomInfo.push_back("Manufacturer: " + value);
+  if((value = myProperties.get(PropType::Cart_ModelNo)) != EmptyString)
+    myRomInfo.push_back("Model: " + value);
+  if((value = myProperties.get(PropType::Cart_Rarity)) != EmptyString)
+    myRomInfo.push_back("Rarity: " + value);
+  if((value = myProperties.get(PropType::Cart_Note)) != EmptyString)
+    myRomInfo.push_back("Note: " + value);
   bool swappedPorts = myProperties.get(PropType::Console_SwapPorts) == "YES";
 
   // Load the image for controller and bankswitch type auto detection
@@ -167,8 +174,11 @@ void RomInfoWidget::parseProperties(const FilesystemNode& node)
   }
   if(left != "" && right != "")
     myRomInfo.push_back("Controllers: " + (left + " (left), " + right + " (right)"));
+
   if (bsDetected != "")
     myRomInfo.push_back("Type: " + Bankswitch::typeToDesc(Bankswitch::nameToType(bsDetected)));
+  if((value = myProperties.get(PropType::Cart_Url)) != EmptyString)
+    myRomInfo.push_back("Link: " + value);
 
   setDirty();
 }
