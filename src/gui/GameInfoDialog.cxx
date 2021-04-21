@@ -1243,7 +1243,12 @@ void GameInfoDialog::eraseEEPROM()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::updateLink()
 {
-  myUrlButton->setEnabled(myUrl->getText() != EmptyString);
+  string link = myUrl->getText();
+  bool enable = startsWithIgnoreCase(link, "http://")
+    || startsWithIgnoreCase(link, "https://")
+    || startsWithIgnoreCase(link, "www.");
+
+  myUrlButton->setEnabled(enable);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
