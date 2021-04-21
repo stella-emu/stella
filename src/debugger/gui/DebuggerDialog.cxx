@@ -137,6 +137,12 @@ void DebuggerDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
   Event::Type event = instance().eventHandler().eventForKey(EventMode::kEmulationMode, key, mod);
   switch (event)
   {
+    case Event::ExitMode:
+      // make consistent, exit debugger on key UP
+      if(!repeated)
+        myExitPressed = true;
+      return;
+
     // events which can be handled 1:1
     case Event::ToggleP0Collision:
     case Event::ToggleP0Bit:
@@ -173,12 +179,14 @@ void DebuggerDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
     case Event::ConsoleRightDiffA:
     case Event::ConsoleRightDiffB:
     case Event::ConsoleRightDiffToggle:
-      instance().eventHandler().handleEvent(event);
+      if(!repeated)
+        instance().eventHandler().handleEvent(event);
       return;
 
     // events which need special handling in debugger
     case Event::TakeSnapshot:
-      instance().debugger().parser().run("savesnap");
+      if(!repeated)
+        instance().debugger().parser().run("savesnap");
       return;
 
     case Event::Rewind1Menu:
@@ -210,6 +218,18 @@ void DebuggerDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
   }
 
   Dialog::handleKeyDown(key, mod);
+}
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerDialog::handleKeyUp(StellaKey key, StellaMod mod)
+{
+  if(myExitPressed
+     && Event::ExitMode == instance().eventHandler().eventForKey(EventMode::kEmulationMode, key, mod))
+  {
+    myExitPressed = false;
+    instance().debugger().parser().run("run");
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
