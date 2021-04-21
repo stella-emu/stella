@@ -153,7 +153,7 @@ bool Debugger::startWithFatalError(const string& message)
 void Debugger::quit(bool exitrom)
 {
   if(exitrom)
-    myOSystem.eventHandler().handleEvent(Event::ExitMode);
+    myOSystem.eventHandler().handleEvent(Event::ExitGame);
   else
   {
     myOSystem.eventHandler().leaveDebugMode();

@@ -562,7 +562,6 @@ void DebuggerDialog::addRomArea()
                        bwidth, bheight, "Run", kDDRunCmd);
   b->setHelpAnchor("GlobalButtons", true);
   wid2.push_back(b);
-  addCancelWidget(b);
 
   bwidth = bheight; // 7 + 12;
   bheight = bheight * 3 + 4 * 2;

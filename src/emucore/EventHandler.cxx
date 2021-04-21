@@ -1852,37 +1852,31 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
           if (pressed && !repeated) changeStateByEvent(Event::TogglePlayBackMode);
           return;
 
-        // this event is called when exiting a ROM from the debugger, so it acts like pressing ESC in emulation
         case EventHandlerState::EMULATION:
-        case EventHandlerState::DEBUGGER:
           if (pressed && !repeated)
           {
-            if (myState == EventHandlerState::EMULATION)
-            {
 #ifdef GUI_SUPPORT
-              if (myOSystem.settings().getBool("confirmexit"))
+            if (myOSystem.settings().getBool("confirmexit"))
+            {
+              StringList msg;
+              const string saveOnExit = myOSystem.settings().getString("saveonexit");
+              bool activeTM = myOSystem.settings().getBool(
+                myOSystem.settings().getBool("dev.settings") ? "dev.timemachine" : "plr.timemachine");
+
+
+              msg.push_back("Do you really want to exit emulation?");
+              if (saveOnExit != "all" || !activeTM)
               {
-                StringList msg;
-                const string saveOnExit = myOSystem.settings().getString("saveonexit");
-                bool activeTM = myOSystem.settings().getBool(
-                  myOSystem.settings().getBool("dev.settings") ? "dev.timemachine" : "plr.timemachine");
-
-
-                msg.push_back("Do you really want to exit emulation?");
-                if (saveOnExit != "all" || !activeTM)
-                {
-                  msg.push_back("");
-                  msg.push_back("You will lose all your progress.");
-                }
-                myOSystem.messageMenu().setMessage("Exit Emulation", msg, true);
-                enterMenuMode(EventHandlerState::MESSAGEMENU);
+                msg.push_back("");
+                msg.push_back("You will lose all your progress.");
               }
-              else
-#endif
-                exitEmulation(true);
+              myOSystem.messageMenu().setMessage("Exit Emulation", msg, true);
+              enterMenuMode(EventHandlerState::MESSAGEMENU);
             }
             else
+#endif
               exitEmulation(true);
+
           }
           return;
 
@@ -2192,6 +2186,15 @@ bool EventHandler::changeStateByEvent(Event::Type type)
       else
         handled = false;
       break;
+
+    case Event::ExitMode:
+      // special handling for ESC key in debugger
+      if(myState != EventHandlerState::DEBUGGER)
+      {
+        handled = false;
+        break;
+      }
+      [[fallthrough]];
 
     case Event::DebuggerMode:
   #ifdef DEBUGGER_SUPPORT
