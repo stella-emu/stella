@@ -286,7 +286,7 @@ void AboutDialog::handleCommand(CommandSender* sender, int cmd, int data, int id
 
     case StaticTextWidget::kOpenUrlCmd:
     {
-      const string url = myDesc[id]->getUrl(); //  getUrl(myDescStr[id]);
+      const string url = myDesc[id]->getUrl();
 
       if(url != EmptyString)
         MediaFactory::openURL(url);

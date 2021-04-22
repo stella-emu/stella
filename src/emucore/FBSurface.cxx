@@ -347,9 +347,10 @@ bool FBSurface::isWhiteSpace(const char s) const
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int FBSurface::drawString(const GUI::Font& font, const string& s,
-  int x, int y, int w, int h,
-  ColorId color, TextAlign align,
-  int deltax, bool useEllipsis, ColorId shadowColor)
+                          int x, int y, int w, int h,
+                          ColorId color, TextAlign align,
+                          int deltax, bool useEllipsis, ColorId shadowColor,
+                          size_t linkStart, int linkLen, bool underline)
 {
   int lines = 0;
 
@@ -357,14 +358,17 @@ int FBSurface::drawString(const GUI::Font& font, const string& s,
   string inStr = s;
 
   // draw multiline string
-  //while (font.getStringWidth(inStr) > w && h >= font.getFontHeight() * 2)
   while(inStr.length() && h >= font.getFontHeight() * 2)
   {
     // String is too wide.
     string leftStr, rightStr;
 
     splitString(font, inStr, w, leftStr, rightStr);
-    drawString(font, leftStr, x, y, w, color, align, deltax, false, shadowColor);
+    drawString(font, leftStr, x, y, w, color, align, deltax, false, shadowColor,
+               linkStart, linkLen, underline);
+    if(linkStart != string::npos)
+      linkStart = std::max(0, int(linkStart - leftStr.length()));
+
     h -= font.getFontHeight();
     y += font.getFontHeight();
     inStr = rightStr;
@@ -372,7 +376,8 @@ int FBSurface::drawString(const GUI::Font& font, const string& s,
   }
   if(inStr.length())
   {
-    drawString(font, inStr, x, y, w, color, align, deltax, useEllipsis, shadowColor);
+    drawString(font, inStr, x, y, w, color, align, deltax, useEllipsis, shadowColor,
+               linkStart, linkLen, underline);
     lines++;
   }
 #endif
@@ -426,7 +431,7 @@ void FBSurface::drawString(const GUI::Font& font, const string& s,
 
   x += deltax;
 
-  int x0 = 0, x1 = 0;
+  int x0 = x, x1 = 0;
 
   for(i = 0; i < str.size(); ++i)
   {

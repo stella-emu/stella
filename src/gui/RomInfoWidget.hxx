@@ -27,8 +27,13 @@ namespace Common {
 #include "Widget.hxx"
 #include "bspf.hxx"
 
-class RomInfoWidget : public Widget
+class RomInfoWidget : public Widget, public CommandSender
 {
+  public:
+    enum {
+      kClickedCmd = 'RIcl'
+    };
+
   public:
     RomInfoWidget(GuiObject *boss, const GUI::Font& font,
                   int x, int y, int w, int h,
@@ -41,8 +46,11 @@ class RomInfoWidget : public Widget
 
     void resetSurfaces();
 
+    const string& getUrl() const { return myProperties.get(PropType::Cart_Url); }
+
   protected:
     void drawWidget(bool hilite) override;
+    void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
 
   private:
     void parseProperties(const FilesystemNode& node);
