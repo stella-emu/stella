@@ -634,123 +634,100 @@ static constexpr uInt8 levelBarsOddData[] = {
 class MovieCart
 {
   public:
+    MovieCart() = default;
+    ~MovieCart() = default;
 
-  MovieCart();
-  ~MovieCart();
+    bool init(const string& path);
+    bool process(uInt16 address);
 
-  bool  init(const std::string& path);
-  bool  process(uint16_t address);
+    uInt8 readROM(uInt16 address) const {
+      return myROM[address & 1023];
+    }
 
-  uInt8
-  readROM(uint16_t address)
-  {
-    return myROM[address & 1023];
-  }
+    void writeROM(uInt16 address, uInt8 data) {
+      myROM[address & 1023] = data;
+    }
 
-  void
-  writeROM(uint16_t address, uInt8 data)
-  {
-    myROM[address & 1023] = data;
-  }
+  private:
+    enum Mode
+    {
+      Volume,
+      Bright,
+      Time,
+      Last = Time
+    };
 
-private:
+    enum class TitleState
+    {
+      Display,
+      Exiting,
+      Stream
+    };
 
-  enum Mode
-  {
-    Volume,
-    Bright,
-    Time,
-    Last = Time
-  };
+    void stopTitleScreen();
 
-  enum TitleState
-  {
-    Display,
-    Exiting,
-    Stream
-  };
+    void writeColor(uInt16 address, uInt8 val);
+    void writeAudioData(uInt16 address, uInt8 val);
+    void writeAudio(uInt16 address);
+    void writeGraph(uInt16 address);
 
+    void runStateMachine();
 
-  void  stopTitleScreen();
+    void fill_addr_right_line();
+    void fill_addr_left_line(bool again);
+    void fill_addr_end_lines();
+    void fill_addr_blank_lines();
 
-  void  writeColor(uint16_t address, uint8_t val);
-  void  writeAudioData(uint16_t address, uInt8 val);
-  void  writeAudio(uint16_t address);
-  void  writeGraph(uint16_t address);
+    void updateTransport();
 
-  void  runStateMachine();
+    StreamReader myStream;
 
-  void  fill_addr_right_line();
-  void  fill_addr_left_line(bool again);
-  void  fill_addr_end_lines();
-  void  fill_addr_blank_lines();
+    // data
+    uInt8 myROM[1024];
 
-  void  updateTransport();
+    // full line of color
+    uInt8 myColor[10];
 
+    // title screen state
+    int        myTitleCycles{0};
+    TitleState myTitleState{TitleState::Display};
 
-  StreamReader  myStream;
+    // address info
+    bool  myA7{false};
+    bool  myA10{false};
+    uInt8 myA10_Count{0};
 
-  // data
+    // state machine info
+    uInt8 myState{3};
+    bool  myPlaying{true};
+    bool  myOdd{true};
+    bool  myBufferIndex{false};
 
-  uInt8     myROM[1024];
+    uInt8 myLines{0};
+    Int32 myFrameNumber{1};  // signed
 
-  // full line of color
-  uint8_t     myColor[10];
+    uInt8 myMode{Mode::Volume};
+    uInt8 myBright{DEFAULT_LEVEL};
+    uInt8 myForceColor{0};
 
-  // title screen state
-  int       myTitleCycles;
-  uInt8     myTitleState;
+    // expressed in frames
+    uInt8 myDrawLevelBars{0};
+    uInt8 myDrawTimeCode{0};
 
+    MovieInputs myInputs;
+    MovieInputs myLastInputs;
 
-  // address info
-  bool      myA7;
-  bool      myA10;
-  uInt8     myA10_Count;
+    Int8  mySpeed{1};  // signed
+    uInt8 myJoyRepeat{0};
+    uInt8 myDirectionValue{0};
+    uInt8 myButtonsValue{0};
 
-  // state machine info
-
-  uInt8     myState;
-  bool      myPlaying;
-  bool      myOdd;
-  bool      myBufferIndex;
-
-
-  uInt8     myLines;
-  int32_t     myFrameNumber;  // signed
-
-  uInt8     myMode;
-  uInt8     myBright;
-  uInt8     myForceColor;
-
-  // expressed in frames
-  uInt8     myDrawLevelBars;
-  uInt8     myDrawTimeCode;
-
-  MovieInputs   myInputs;
-  MovieInputs   myLastInputs;
-
-  int8_t      mySpeed;  // signed
-  uInt8     myJoyRepeat;
-  uInt8     myDirectionValue;
-  uInt8     myButtonsValue;
-
-  uInt8     myVolume;
-  const uInt8*  myVolumeScale;
-  uInt8     myFirstAudioVal;
-
+    uInt8        myVolume{DEFAULT_LEVEL};
+    const uInt8* myVolumeScale{scales[DEFAULT_LEVEL]};
+    uInt8        myFirstAudioVal{0};
 };
 
-
-MovieCart::MovieCart()
-{
-}
-
-MovieCart::~MovieCart()
-{
-}
-
-bool
-MovieCart::init(const std::string& path)
+bool MovieCart::init(const string& path)
 {
   memcpy(myROM, kernelROM, 1024);
 
@@ -782,10 +759,10 @@ MovieCart::init(const std::string& path)
 
   myMode = Mode::Volume;
   myVolume = DEFAULT_LEVEL;
-    myVolumeScale = scales[DEFAULT_LEVEL];
+  myVolumeScale = scales[DEFAULT_LEVEL];
   myBright = DEFAULT_LEVEL;
 
-  if (!myStream.open(path))
+  if(!myStream.open(path))
     return false;
 
   myStream.swapField(true);
@@ -793,15 +770,13 @@ MovieCart::init(const std::string& path)
   return true;
 }
 
-void
-MovieCart::stopTitleScreen()
+void MovieCart::stopTitleScreen()
 {
-  writeROM(addr_title_loop + 0, 0x18);  // clear carry, one bit difference from 0x38 sec
+  // clear carry, one bit difference from 0x38 sec
+  writeROM(addr_title_loop + 0, 0x18);
 }
 
-
-void
-MovieCart::writeColor(uint16_t address, uint8_t v)
+void MovieCart::writeColor(uInt16 address, uInt8 v)
 {
   v = (v & 0xf0) | shiftBright[(v & 0x0f) + myBright];
 
@@ -813,59 +788,50 @@ MovieCart::writeColor(uint16_t address, uint8_t v)
   writeROM(address, v);
 }
 
-void
-MovieCart::writeAudioData(uint16_t address, uInt8 val)
+void MovieCart::writeAudioData(uInt16 address, uInt8 val)
 {
-  uInt8 v;
-  v = myVolumeScale[val];
-  writeROM(address, v);
+  writeROM(address, myVolumeScale[val]);
 }
 
-void
-MovieCart::writeAudio(uint16_t address)
+void MovieCart::writeAudio(uInt16 address)
 {
-  uInt8 v = myStream.readAudio();
-  writeAudioData(address, v);
+  writeAudioData(address, myStream.readAudio());
 }
 
-void
-MovieCart::writeGraph(uint16_t address)
+void MovieCart::writeGraph(uInt16 address)
 {
-  uInt8 v = myStream.readGraph();
-  writeROM(address, v);
+  writeROM(address, myStream.readGraph());
 }
 
-void
-MovieCart::updateTransport()
+void MovieCart::updateTransport()
 {
   myStream.overrideGraph(nullptr);
 
-
-    // have to cut rate in half, to remove glitches...todo..
+  // have to cut rate in half, to remove glitches...todo..
+  {
+    if(myBufferIndex)
     {
-        if (myBufferIndex == true)
-        {
       uInt8 temp = ~(myA10_Count & 0x1e) & 0x1e;
 
-            if (temp == myDirectionValue)
+      if (temp == myDirectionValue)
         myInputs.updateDirection(temp);
 
-      myDirectionValue = temp;
-        }
-        else
-        {
+        myDirectionValue = temp;
+    }
+    else
+    {
       uInt8 temp = ~(myA10_Count & 0x17) & 0x17;
 
-            if (temp == myButtonsValue)
+      if(temp == myButtonsValue)
         myInputs.updateTransport(temp);
 
-            myButtonsValue = temp;
-        }
-
-    myA10_Count = 0;
+      myButtonsValue = temp;
     }
 
-  if (myInputs.reset)
+    myA10_Count = 0;
+  }
+
+  if(myInputs.reset)
   {
     myFrameNumber = 1;
     myPlaying = true;
@@ -878,14 +844,14 @@ MovieCart::updateTransport()
 
   uInt8 lastMainMode = myMode;
 
-  if (myInputs.up && !myLastInputs.up)
+  if(myInputs.up && !myLastInputs.up)
   {
-    if (myMode == 0)
+    if(myMode == 0)
       myMode = Mode::Last;
     else
       myMode--;
   }
-  else if (myInputs.down && !myLastInputs.down)
+  else if(myInputs.down && !myLastInputs.down)
   {
     if (myMode == Mode::Last)
       myMode = 0;
@@ -893,7 +859,7 @@ MovieCart::updateTransport()
       myMode++;
   }
 
-  if (myInputs.left || myInputs.right)
+  if(myInputs.left || myInputs.right)
   {
     myJoyRepeat++;
   }
@@ -903,24 +869,23 @@ MovieCart::updateTransport()
     mySpeed = 1;
   }
 
-
-  if (myJoyRepeat & 16)
+  if(myJoyRepeat & 16)
   {
     myJoyRepeat = 0;
 
-    if (myInputs.left || myInputs.right)
+    if(myInputs.left || myInputs.right)
     {
-      if (myMode == Mode::Time)
+      if(myMode == Mode::Time)
       {
         myDrawTimeCode = OSD_FRAMES;
         mySpeed += 4;
         if (mySpeed < 0)
           mySpeed -= 4;
       }
-      else if (myMode == Mode::Volume)
+      else if(myMode == Mode::Volume)
       {
         myDrawLevelBars = OSD_FRAMES;
-        if (myInputs.left)
+        if(myInputs.left)
         {
           if (myVolume)
             myVolume--;
@@ -928,30 +893,29 @@ MovieCart::updateTransport()
         else
         {
           myVolume++;
-          if (myVolume >= MAX_LEVEL)
+          if(myVolume >= MAX_LEVEL)
             myVolume--;
         }
       }
-      else if (myMode == Mode::Bright)
+      else if(myMode == Mode::Bright)
       {
         myDrawLevelBars = OSD_FRAMES;
-        if (myInputs.left)
+        if(myInputs.left)
         {
-          if (myBright)
+          if(myBright)
             myBright--;
         }
         else
         {
           myBright++;
-          if (myBright >= MAX_LEVEL)
+          if(myBright >= MAX_LEVEL)
             myBright--;
         }
       }
     }
   }
 
-
-  if (myInputs.select && !myLastInputs.select)
+  if(myInputs.select && !myLastInputs.select)
   {
     myDrawTimeCode = OSD_FRAMES;
     myFrameNumber -= 60 * BACK_SECONDS + 1;
@@ -960,46 +924,45 @@ MovieCart::updateTransport()
     return;
   }
 
-  if (myInputs.fire && !myLastInputs.fire)
+  if(myInputs.fire && !myLastInputs.fire)
     myPlaying = !myPlaying;
 
-  switch (myMode)
+  switch(myMode)
   {
     case Mode::Time:
-      if (lastMainMode != myMode)
+      if(lastMainMode != myMode)
         myDrawTimeCode = OSD_FRAMES;
       break;
 
     case Mode::Bright:
     case Mode::Volume:
     default:
-      if (lastMainMode != myMode)
+      if(lastMainMode != myMode)
         myDrawLevelBars = OSD_FRAMES;
       break;
   }
 
   // just draw one
-  if (myDrawLevelBars > myDrawTimeCode)
+  if(myDrawLevelBars > myDrawTimeCode)
     myDrawTimeCode = 0;
   else
     myDrawLevelBars = 0;
 
-  if (myPlaying)
+  if(myPlaying)
     myVolumeScale = scales[myVolume];
   else
     myVolumeScale = scales[0];
 
   // update frame
+  Int8 step = 1;
 
-  int8_t        step = 1;
-
-  if (!myPlaying)  // step while paused
+  if(!myPlaying)  // step while paused
   {
-    if (myMode == Mode::Time)
+    if(myMode == Mode::Time)
     {
-      if (myInputs.right && !myLastInputs.right)
+      if(myInputs.right && !myLastInputs.right)
         step = 3;
-      else if (myInputs.left && !myLastInputs.left)
+      else if(myInputs.left && !myLastInputs.left)
         step = -3;
       else
         step = (myFrameNumber & 1) ? -1 : 1;
@@ -1011,9 +974,9 @@ MovieCart::updateTransport()
   }
   else
   {
-    if (myMode == Mode::Time)
+    if(myMode == Mode::Time)
     {
-      if (myInputs.right)
+      if(myInputs.right)
         step = mySpeed;
       else if (myInputs.left)
         step = -mySpeed;
@@ -1025,7 +988,7 @@ MovieCart::updateTransport()
   }
 
   myFrameNumber += step;
-  if (myFrameNumber < 1)
+  if(myFrameNumber < 1)
   {
     myFrameNumber = 1;
     mySpeed = 1;
@@ -1034,8 +997,7 @@ MovieCart::updateTransport()
   myLastInputs = myInputs;
 }
 
-void
-MovieCart::fill_addr_right_line()
+void MovieCart::fill_addr_right_line()
 {
   writeAudio(addr_set_aud_right + 1);
 
@@ -1053,8 +1015,7 @@ MovieCart::fill_addr_right_line()
 
 }
 
-void
-MovieCart::fill_addr_left_line(bool again)
+void MovieCart::fill_addr_left_line(bool again)
 {
   writeAudio(addr_set_aud_left + 1);
 
@@ -1064,7 +1025,7 @@ MovieCart::fill_addr_left_line(bool again)
   writeGraph(addr_set_gdata3 + 1);
   writeGraph(addr_set_gdata4 + 1);
 
-  for (int i=0; i<10; i++)
+  for(int i = 0; i < 10; ++i)
     myColor[i] = myStream.readColor();
 
   writeColor(addr_set_gcol0 + 1, myColor[3]); // col 0/9
@@ -1076,7 +1037,7 @@ MovieCart::fill_addr_left_line(bool again)
   // addr_pick_line_end
   //    jmp right_line
   //    jmp end_lines
-  if (again)
+  if(again)
   {
     writeROM(addr_pick_continue + 1, LO_JUMP_BYTE(addr_right_line));
     writeROM(addr_pick_continue + 2, HI_JUMP_BYTE(addr_right_line));
@@ -1088,18 +1049,16 @@ MovieCart::fill_addr_left_line(bool again)
   }
 }
 
-
-void
-MovieCart::fill_addr_end_lines()
+void MovieCart::fill_addr_end_lines()
 {
   writeAudio(addr_set_aud_endlines + 1);
 
-  if (!myOdd)
+  if(!myOdd)
     myFirstAudioVal = myStream.readAudio();
 
   // normally overscan=30, vblank=37
   // todo: clicky noise..
-  if (myOdd)
+  if(myOdd)
   {
     writeROM(addr_set_overscan_size + 1, 29);
     writeROM(addr_set_vblank_size + 1, 36);
@@ -1110,7 +1069,7 @@ MovieCart::fill_addr_end_lines()
     writeROM(addr_set_vblank_size + 1, 37);
   }
 
-  if (myBufferIndex == false)
+  if(!myBufferIndex)
   {
     writeROM(addr_pick_transport + 1, LO_JUMP_BYTE(addr_transport_direction));
     writeROM(addr_pick_transport + 2, HI_JUMP_BYTE(addr_transport_direction));
@@ -1123,12 +1082,8 @@ MovieCart::fill_addr_end_lines()
 
 }
 
-void
-MovieCart::fill_addr_blank_lines()
+void MovieCart::fill_addr_blank_lines()
 {
-  uint8_t i;
-  uint8_t v;
-
   // version number
   myStream.readVersion();
   myStream.readVersion();
@@ -1138,7 +1093,7 @@ MovieCart::fill_addr_blank_lines()
   // frame number
   myStream.readFrame();
   myStream.readFrame();
-  v = myStream.readFrame();
+  uInt8 v = myStream.readFrame();
 
   // make sure we're in sync with frame data
   myOdd = (v & 1);
@@ -1147,30 +1102,29 @@ MovieCart::fill_addr_blank_lines()
   // 3 vsync
   // 37 vblank
 
-  if (myOdd)
+  if(myOdd)
   {
     writeAudioData(addr_audio_bank + 0, myFirstAudioVal);
-    for (i = 1; i < (BLANK_LINE_SIZE + 1); i++)
+    for(uInt8 i = 1; i < (BLANK_LINE_SIZE + 1); i++)
       writeAudio(addr_audio_bank + i);
   }
   else
   {
-    for (i = 0; i < (BLANK_LINE_SIZE -1); i++)
+    for(uInt8 i = 0; i < (BLANK_LINE_SIZE -1); i++)
       writeAudio(addr_audio_bank + i);
   }
 }
 
-void
-MovieCart::runStateMachine()
+void MovieCart::runStateMachine()
 {
   switch(myState)
   {
     case 1:
-      if (myA7)
+      if(myA7)
       {
-        if (myLines == (TIMECODE_HEIGHT-1))
+        if(myLines == (TIMECODE_HEIGHT-1))
         {
-          if (myDrawTimeCode)
+          if(myDrawTimeCode)
           {
             myDrawTimeCode--;
             myForceColor = COLOR_BLUE;
@@ -1179,21 +1133,21 @@ MovieCart::runStateMachine()
         }
 
         // label = 12, bars = 7
-        if (myLines == 21)
+        if(myLines == 21)
         {
-          if (myDrawLevelBars)
+          if(myDrawLevelBars)
           {
             myDrawLevelBars--;
             myForceColor = COLOR_BLUE;
 
-            switch (myMode)
+            switch(myMode)
             {
               case Mode::Time:
                 myStream.overrideGraph(nullptr);
                 break;
 
               case Mode::Bright:
-                if (myOdd)
+                if(myOdd)
                   myStream.overrideGraph(brightLabelOdd);
                 else
                   myStream.overrideGraph(brightLabelEven);
@@ -1201,7 +1155,7 @@ MovieCart::runStateMachine()
 
               case Mode::Volume:
               default:
-                if (myOdd)
+                if(myOdd)
                   myStream.overrideGraph(volumeLabelOdd);
                 else
                   myStream.overrideGraph(volumeLabelEven);
@@ -1210,13 +1164,13 @@ MovieCart::runStateMachine()
           }
         }
 
-        if (myLines == 7)
+        if(myLines == 7)
         {
-          if (myDrawLevelBars)
+          if(myDrawLevelBars)
           {
-            uInt8 levelValue;
+            uInt8 levelValue = 0;
 
-            switch (myMode)
+            switch(myMode)
             {
               case Mode::Time:
                 levelValue = 0;
@@ -1232,7 +1186,7 @@ MovieCart::runStateMachine()
                 break;
             }
 
-            if (myOdd)
+            if(myOdd)
               myStream.overrideGraph(&levelBarsOddData[levelValue * 40]);
             else
               myStream.overrideGraph(&levelBarsEvenData[levelValue * 40]);
@@ -1246,11 +1200,10 @@ MovieCart::runStateMachine()
       }
       break;
 
-
     case 2:
-      if (!myA7)
+      if(!myA7)
       {
-        if (myLines >= 1)
+        if(myLines >= 1)
         {
           fill_addr_left_line(1);
 
@@ -1274,10 +1227,11 @@ MovieCart::runStateMachine()
       break;
 
     case 3:
-      if (myA7)
+      if(myA7)
       {
         // hit end? rewind just before end
-        while (myFrameNumber >= 2 && !myStream.readField(myFrameNumber, myBufferIndex))
+        while (myFrameNumber >= 2 &&
+            !myStream.readField(myFrameNumber, myBufferIndex))
         {
           myFrameNumber -= 2;
           myJoyRepeat = 0;
@@ -1294,28 +1248,26 @@ MovieCart::runStateMachine()
   }
 }
 
-bool
-MovieCart::process(uint16_t address)
+bool MovieCart::process(uInt16 address)
 {
-
   bool a12 = (address & (1 << 12)) ? 1:0;
   bool a11 = (address & (1 << 11)) ? 1:0;
 
   // count a10 pulses
   bool a10i = (address & (1 << 10));
-  if (a10i && !myA10)
+  if(a10i && !myA10)
     myA10_Count++;
   myA10 = a10i;
 
   // latch a7 state
-  if (a11)  // a12
+  if(a11)  // a12
     myA7 = (address & (1 << 7));    // each 128
 
   switch(myTitleState)
   {
     case TitleState::Display:
       myTitleCycles++;
-      if (myTitleCycles == TITLE_CYCLES)
+      if(myTitleCycles == TITLE_CYCLES)
       {
         stopTitleScreen();
         myTitleState = TitleState::Exiting;
@@ -1324,7 +1276,7 @@ MovieCart::process(uint16_t address)
       break;
 
     case TitleState::Exiting:
-      if (myA7)
+      if(myA7)
         myTitleState = TitleState::Stream;
       break;
 
@@ -1362,10 +1314,6 @@ void CartridgeMVC::install(System& system)
 
   // Map all of the accesses to call peek and poke
   System::PageAccess access(this, System::PageAccessType::READWRITE);
-
-  access.directPeekBase = nullptr;
-  access.directPokeBase = nullptr;
-
   for(uInt16 addr = 0x1000; addr < 0x2000; addr += System::PAGE_SIZE)
     mySystem->setPageAccess(addr, access);
 }
