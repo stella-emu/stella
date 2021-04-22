@@ -105,9 +105,7 @@ class StreamReader
       return myGraphOverride ? *myGraphOverride++ : *myGraph++;
     }
 
-    void overrideGraph(const uInt8* p) {
-      myGraphOverride = p;
-    }
+    void overrideGraph(const uInt8* p) { myGraphOverride = p; }
 
     uInt8 readAudio() { return *myAudio++; }
 
@@ -635,7 +633,6 @@ class MovieCart
 {
   public:
     MovieCart() = default;
-    ~MovieCart() = default;
 
     bool init(const string& path);
     bool process(uInt16 address);
@@ -664,12 +661,21 @@ class MovieCart
       Stream
     };
 
-    void stopTitleScreen();
+    void stopTitleScreen() {
+      // clear carry, one bit difference from 0x38 sec
+      writeROM(addr_title_loop + 0, 0x18);
+    }
 
     void writeColor(uInt16 address, uInt8 val);
-    void writeAudioData(uInt16 address, uInt8 val);
-    void writeAudio(uInt16 address);
-    void writeGraph(uInt16 address);
+    void writeAudioData(uInt16 address, uInt8 val) {
+      writeROM(address, myVolumeScale[val]);
+    }
+    void writeAudio(uInt16 address) {
+      writeAudioData(address, myStream.readAudio());
+    }
+    void writeGraph(uInt16 address) {
+      writeROM(address, myStream.readGraph());
+    }
 
     void runStateMachine();
 
@@ -727,6 +733,7 @@ class MovieCart
     uInt8        myFirstAudioVal{0};
 };
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool MovieCart::init(const string& path)
 {
   memcpy(myROM, kernelROM, 1024);
@@ -770,39 +777,20 @@ bool MovieCart::init(const string& path)
   return true;
 }
 
-void MovieCart::stopTitleScreen()
-{
-  // clear carry, one bit difference from 0x38 sec
-  writeROM(addr_title_loop + 0, 0x18);
-}
-
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MovieCart::writeColor(uInt16 address, uInt8 v)
 {
   v = (v & 0xf0) | shiftBright[(v & 0x0f) + myBright];
 
-  if (myForceColor)
+  if(myForceColor)
     v = myForceColor;
-  if (myInputs.bw)
+  if(myInputs.bw)
     v &= 0x0f;
 
   writeROM(address, v);
 }
 
-void MovieCart::writeAudioData(uInt16 address, uInt8 val)
-{
-  writeROM(address, myVolumeScale[val]);
-}
-
-void MovieCart::writeAudio(uInt16 address)
-{
-  writeAudioData(address, myStream.readAudio());
-}
-
-void MovieCart::writeGraph(uInt16 address)
-{
-  writeROM(address, myStream.readGraph());
-}
-
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MovieCart::updateTransport()
 {
   myStream.overrideGraph(nullptr);
@@ -997,6 +985,7 @@ void MovieCart::updateTransport()
   myLastInputs = myInputs;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MovieCart::fill_addr_right_line()
 {
   writeAudio(addr_set_aud_right + 1);
@@ -1015,6 +1004,7 @@ void MovieCart::fill_addr_right_line()
 
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MovieCart::fill_addr_left_line(bool again)
 {
   writeAudio(addr_set_aud_left + 1);
@@ -1049,6 +1039,7 @@ void MovieCart::fill_addr_left_line(bool again)
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MovieCart::fill_addr_end_lines()
 {
   writeAudio(addr_set_aud_endlines + 1);
@@ -1079,9 +1070,9 @@ void MovieCart::fill_addr_end_lines()
     writeROM(addr_pick_transport + 1, LO_JUMP_BYTE(addr_transport_buttons));
     writeROM(addr_pick_transport + 2, HI_JUMP_BYTE(addr_transport_buttons));
   }
-
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MovieCart::fill_addr_blank_lines()
 {
   // version number
@@ -1115,6 +1106,7 @@ void MovieCart::fill_addr_blank_lines()
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MovieCart::runStateMachine()
 {
   switch(myState)
@@ -1248,6 +1240,7 @@ void MovieCart::runStateMachine()
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool MovieCart::process(uInt16 address)
 {
   bool a12 = (address & (1 << 12)) ? 1:0;
@@ -1293,9 +1286,9 @@ CartridgeMVC::CartridgeMVC(const string& path, size_t size,
                            const string& md5, const Settings& settings,
                            size_t bsSize)
   : Cartridge(settings, md5),
-    mySize{bsSize}
+    mySize{bsSize},
+    myPath{path}
 {
-  myPath = path;
   myMovie = make_unique<MovieCart>();
 
   // not used
@@ -1328,7 +1321,7 @@ void CartridgeMVC::reset()
 const ByteBuffer& CartridgeMVC::getImage(size_t& size) const
 {
   // not used
-  size = mySize;
+  size = 0;
   return myImage;
 }
 
