@@ -302,9 +302,9 @@ void AboutDialog::handleCommand(CommandSender* sender, int cmd, int data, int id
 const string AboutDialog::getUrl(const string& str) const
 {
   bool isUrl = false;
-  int start = 0, len = 0;
+  size_t start = 0, len = 0;
 
-  for(int i = 0; i < str.size(); ++i)
+  for(size_t i = 0; i < str.size(); ++i)
   {
     string remainder = str.substr(i);
     char ch = str[i];
