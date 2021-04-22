@@ -518,17 +518,15 @@ void StaticTextWidget::setLink(size_t start, int len, bool underline)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool StaticTextWidget::setUrl(const string& url, const string& label)
 {
-  size_t start = string::npos;
-  int len = 0;
-  const string text = label != EmptyString ? label : url;
-
+  size_t start = string::npos, len = 0;
+  const string& text = label != EmptyString ? label : url;
 
   if(text != EmptyString)
   {
     // determine position of label
     if((start = BSPF::findIgnoreCase(_label, text)) != string::npos)
     {
-      len = int(text.size());
+      len = text.size();
       _url = url;
     }
   }
@@ -546,20 +544,20 @@ bool StaticTextWidget::setUrl(const string& url, const string& label)
     if(start != string::npos)
     {
       // find end of URL
-      for(int i = int(start); i < _label.size(); ++i)
+      for(size_t i = start; i < _label.size(); ++i)
       {
         char ch = _label[i];
 
         if(ch == ' ' || ch == ')' || ch == '>')
         {
-          len = i - int(start);
+          len = i - start;
           _url = _label.substr(start, len);
           break;
         }
       }
       if(!len)
       {
-        len = int(_label.size() - start);
+        len = _label.size() - start;
         _url = _label.substr(start);
       }
     }
@@ -567,7 +565,7 @@ bool StaticTextWidget::setUrl(const string& url, const string& label)
 
   if(len)
   {
-    setLink(start, len, true);
+    setLink(start, int(len), true);
     setCmd(kOpenUrlCmd);
     return true;
   }
@@ -619,9 +617,9 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
                            int x, int y, int w, int h,
                            const string& label, int cmd, bool repeat)
   : StaticTextWidget(boss, font, x, y, w, h, label, TextAlign::Center),
-    _cmd{cmd},
     _repeat{repeat}
 {
+  _cmd = cmd;
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG;
   _bgcolor = kBtnColor;
   _bgcolorhi = kBtnColorHi;

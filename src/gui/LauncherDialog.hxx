@@ -182,7 +182,7 @@ class LauncherDialog : public Dialog
     ButtonWidget*     myOptionsButton{nullptr};
     ButtonWidget*     myQuitButton{nullptr};
 
-    StaticTextWidget* myRomLink{nullptr};
+// FIXME - NOT USED    StaticTextWidget* myRomLink{nullptr};
     RomInfoWidget*    myRomInfoWidget{nullptr};
     std::unordered_map<string,string> myMD5List;
 

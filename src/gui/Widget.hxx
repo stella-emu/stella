@@ -220,7 +220,7 @@ class StaticTextWidget : public Widget, public CommandSender
 
     void setLink(size_t start = string::npos, int len = 0, bool underline = false);
     bool setUrl(const string& url = EmptyString, const string& label = EmptyString);
-    const string& getUrl() const { return _url; };
+    const string& getUrl() const { return _url; }
 
   protected:
     void handleMouseEntered() override;
@@ -284,7 +284,6 @@ class ButtonWidget : public StaticTextWidget
     void drawWidget(bool hilite) override;
 
   protected:
-    int  _cmd{0};
     bool _repeat{false}; // button repeats
     bool _useBitmap{false};
     const uInt32* _bitmap{nullptr};
