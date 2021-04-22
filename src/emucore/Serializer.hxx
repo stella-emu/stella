@@ -60,6 +60,11 @@ class Serializer
     explicit operator bool() const { return myStream != nullptr; }
 
     /**
+      Sets the read/write location to the given offset in the stream.
+    */
+    void setPosition(size_t pos);
+
+    /**
       Resets the read/write location to the beginning of the stream.
     */
     void rewind();
@@ -220,13 +225,6 @@ class Serializer
     unique_ptr<iostream> myStream;
 
     static constexpr uInt8 TruePattern = 0xfe, FalsePattern = 0x01;
-
-  private:
-    // Following constructors and assignment operators not supported
-    Serializer(const Serializer&) = delete;
-    Serializer(Serializer&&) = delete;
-    Serializer& operator=(const Serializer&) = delete;
-    Serializer& operator=(Serializer&&) = delete;
 };
 
 #endif
