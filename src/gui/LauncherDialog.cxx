@@ -56,6 +56,7 @@
 #include "Stella14x28tFont.hxx"
 #include "Stella16x32tFont.hxx"
 #include "Version.hxx"
+#include "MediaFactory.hxx"
 #include "LauncherDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -864,6 +865,15 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
     case ContextMenu::kItemSelectedCmd:
       handleContextMenu();
       break;
+
+    case RomInfoWidget::kClickedCmd:
+    {
+      const string url = myRomInfoWidget->getUrl();
+
+      if(url != EmptyString)
+        MediaFactory::openURL(url);
+      break;
+    }
 
     default:
       Dialog::handleCommand(sender, cmd, data, 0);

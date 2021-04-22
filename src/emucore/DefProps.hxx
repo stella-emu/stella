@@ -25,7 +25,7 @@
   regenerated and the application recompiled.
 */
 
-static constexpr uInt32 DEF_PROPS_SIZE = 3522;
+static constexpr uInt32 DEF_PROPS_SIZE = 3524;
 
 static const BSPF::array2D<const char*, DEF_PROPS_SIZE, 29> DefProps = {{
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}", "" },
@@ -1482,7 +1482,7 @@ static const BSPF::array2D<const char*, DEF_PROPS_SIZE, 29> DefProps = {{
   { "68760b82fc5dcf3fedf84376a4944bf9", "CCE", "C-860", "Laser Gate (1983) (CCE)", "AKA Innerspace", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "687c23224e26f81c56e431c24faea36d", "", "", "Qb (Simple Background Animation) (2001) (AD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "", "", "" },
   { "68878250e106eb6c7754bc2519d780a0", "CCE", "C-809", "Squirrel (1983) (CCE)", "AKA Snail Against Squirrel", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
-  { "689f49e31cac68db8a2cf8f44fa7a01a", "Oscar Toledo G., Thomas Jentzsch, Nathan Strum", "", "Aardvark (2019) (PAL60)", "", "Homebrew", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "", "", "" },
+  { "689f49e31cac68db8a2cf8f44fa7a01a", "Oscar Toledo G., Thomas Jentzsch, Nathan Strum", "", "Aardvark (2019) (PAL60)", "", "Homebrew", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "", "", "https://atariage.com/store/index.php?l=product_detail&p=1212" },
   { "68ac69b8e1ba83af8792f693f5ae7783", "Digivision", "", "Fathon (Digivision)", "AKA Fathom", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "68c80e7e1d30df98a0cf67ecbf39cc67", "Hozer Video Games", "", "Gunfight 2600 - One Step Forward & Two Steps Back (2001) (MP)", "", "New Release", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "68c938a2a2b45c37db50509f1037fe6e", "Omegamatrix", "", "Star Wars Arcade (Atari Mouse) v4 (Omegamatrix)", "Uses Atari Mouse Controller", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -1618,6 +1618,7 @@ static const BSPF::array2D<const char*, DEF_PROPS_SIZE, 29> DefProps = {{
   { "721a5567f76856f6b50a6707aa8f8316", "Activision, David Crane, Dan Kitchen", "EAG-108-04, EAZ-108-04B", "Ghostbusters (1985) (Activision) (PAL) [a]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "72305c997f2cec414fe6f8c946172f83", "Arcadia Corporation, Dennis Caswell", "AR-4000, AR-4100", "Phaser Patrol (1982) (Arcadia) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "", "", "" },
   { "724613effaf7743cbcd695fab469c2a8", "", "", "Super-Ferrari (Unknown)", "AKA Enduro", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "{\"score_addresses\":[\"0xaa\",\"0xa9\",\"0xa8\"],\"score_digits\":6,\"special_address\":\"0xad\",\"special_label\":\"Day\",\"variations_count\":1}", "" },
+  { "726af33d9acfc8616a8df05de4f560af", "Thomas Jentzsch", "", "Robot City RC8 (PAL-60)", "", "Homebrew", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "", "", "https://atariage.com/store/index.php?l=product_detail&p=1233" },
   { "728152f5ae6fdd0d3a9b88709bee6c7a", "Spectravideo, Mark Turmell", "SA-217", "Gas Hog (1983) (Spectravideo)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "72876fd7c7435f41d571f1101fc456ea", "Quelle", "688.383 9", "Die Ente und der Wolf (1983) (Quelle) (PAL)", "AKA Pooyan", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "72a46e0c21f825518b7261c267ab886e", "Xonox - K-Tel Software - Computer Magic", "99005, 6220, 6250", "Robin Hood (1983) (Xonox)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -1859,7 +1860,7 @@ static const BSPF::array2D<const char*, DEF_PROPS_SIZE, 29> DefProps = {{
   { "82c25d1c35e6ac6f893d1d7c2fc2f9c8", "Atari, Larry Kaplan", "CX2628, CX2628P", "Bowling (1979) (Atari) (PAL) (4K)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "82de957d155fc041fc6afb8315a28550", "Coleco, Joseph Biel", "2457", "Venture (1982) (Coleco) (Prototype)", "2K", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "82e7aab602c378cffdd8186a099e807e", "", "", "Space Robot (Unknown)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
-  { "82ee056af81203af58092ff2e6cf079d", "Oscar Toledo G., Thomas Jentzsch, Nathan Strum", "", "Aardvark (2019) (NTSC)", "", "Homebrew", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "", "", "" },
+  { "82ee056af81203af58092ff2e6cf079d", "Oscar Toledo G., Thomas Jentzsch, Nathan Strum", "", "Aardvark (2019) (NTSC)", "", "Homebrew", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "", "", "https://atariage.com/store/index.php?l=product_detail&p=1212" },
   { "82efe7984783e23a7c55266a5125c68e", "CCE", "C-837", "Pizza Chef (1983) (CCE)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "834a2273e97aec3181ee127917b4b269", "Quelle", "043.151 0, 874.382 5", "Die hungrigen Froesche (1983) (Quelle) (PAL)", "AKA Frogs and Flies", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "835759ff95c2cdc2324d7c1e7c5fa237", "20th Century Fox Video Games, Frank Cohen, Douglas 'Dallas North' Neubauer", "11011", "M.A.S.H (1983) (20th Century Fox)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -3256,6 +3257,7 @@ static const BSPF::array2D<const char*, DEF_PROPS_SIZE, 29> DefProps = {{
   { "ebf9038e927e6a0db3e0d170c59911e6", "", "", "Pac-2600 (PD)", "", "New Release", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "ec3beb6d8b5689e867bafb5d5f507491", "U.S. Games Corporation - Vidtec - JWDA, Todd Marshall, Henry Will IV", "VC1003", "Word Zapper (1982) (U.S. Games)", "AKA Word Grabber", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "ec407a206b718a0a9f69b03e920a0185", "Quelle", "876.482 1", "Landung in der Normandie (1983) (Quelle) (PAL)", "AKA Commando Raid", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "ec44dcf2ddb4319962fc43b725a902e8", "Thomas Jentzsch", "", "Robot City RC8 (NTSC)", "", "Homebrew", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "https://atariage.com/store/index.php?l=product_detail&p=1233" },
   { "ec5c861b487a5075876ab01155e74c6c", "Apollo - Games by Apollo, Ed Salvo, Byron Parks", "AP-2001", "Spacechase (1982) (Apollo)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "ece463abde92e8b89bcd867ec71751b8", "Puzzy - Bit Corporation", "PG205", "Dancing Plate (1982) (Puzzy) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "", "", "" },
   { "ece908d77ab944f7bac84322b9973549", "", "", "Tom Boy (Unknown) (PAL60)", "AKA Pitfall!", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}", "" },

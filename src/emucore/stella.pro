@@ -9101,6 +9101,7 @@
 "Cart.Manufacturer" "Oscar Toledo G., Thomas Jentzsch, Nathan Strum"
 "Cart.Name" "Aardvark (2019) (PAL60)"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1212"
 "Display.Phosphor" "YES"
 ""
 
@@ -9946,6 +9947,14 @@
 "Cart.Name" "Super-Ferrari (Unknown)"
 "Cart.Note" "AKA Enduro"
 "Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xa9\",\"0xa8\"],\"score_digits\":6,\"special_address\":\"0xad\",\"special_label\":\"Day\",\"variations_count\":1}"
+""
+
+"Cart.MD5" "726af33d9acfc8616a8df05de4f560af"
+"Cart.Manufacturer" "Thomas Jentzsch"
+"Cart.Name" "Robot City RC8 (PAL-60)"
+"Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1233"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "728152f5ae6fdd0d3a9b88709bee6c7a"
@@ -11449,6 +11458,7 @@
 "Cart.Manufacturer" "Oscar Toledo G., Thomas Jentzsch, Nathan Strum"
 "Cart.Name" "Aardvark (2019) (NTSC)"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1212"
 "Display.Phosphor" "YES"
 ""
 
@@ -20102,6 +20112,14 @@
 "Cart.ModelNo" "876.482 1"
 "Cart.Name" "Landung in der Normandie (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Commando Raid"
+""
+
+"Cart.MD5" "ec44dcf2ddb4319962fc43b725a902e8"
+"Cart.Manufacturer" "Thomas Jentzsch"
+"Cart.Name" "Robot City RC8 (NTSC)"
+"Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1233"
+"Display.Phosphor" "YES
 ""
 
 "Cart.MD5" "ec5c861b487a5075876ab01155e74c6c"

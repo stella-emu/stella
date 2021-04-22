@@ -37,6 +37,7 @@ RomInfoWidget::RomInfoWidget(GuiObject* boss, const GUI::Font& font,
                              int x, int y, int w, int h,
                              const Common::Size& imgSize)
   : Widget(boss, font, x, y, w, h),
+    CommandSender(boss),
     myAvail{imgSize}
 {
   _flags = Widget::FLAG_ENABLED;
@@ -215,6 +216,16 @@ bool RomInfoWidget::loadPng(const string& filename)
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RomInfoWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
+{
+  if(isEnabled() && x >= 0 && x < _w && y >= 0 && y < _h)
+  {
+    clearFlags(Widget::FLAG_HILITED);
+    sendCommand(kClickedCmd, 0, _id);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomInfoWidget::drawWidget(bool hilite)
 {
   FBSurface& s = dialog().surface();
@@ -261,8 +272,17 @@ void RomInfoWidget::drawWidget(bool hilite)
       if(ypos + _font.getLineHeight() + _font.getFontHeight() > _h + _y )
         break;
     }
-    int lines = s.drawString(_font, info, xpos, ypos, _w - 16, _font.getFontHeight() * 3,
-                             _textcolor);
+
+    int lines;
+    if(BSPF::startsWithIgnoreCase(info, "Link: "))
+    {
+      lines = s.drawString(_font, info, xpos, ypos, _w - 16, _font.getFontHeight() * 3,
+                           _textcolor, TextAlign::Left, 0, true, kNone,
+                           6, 2000, hilite);
+    }
+    else
+      lines = s.drawString(_font, info, xpos, ypos, _w - 16, _font.getFontHeight() * 3,
+                           _textcolor);
     ypos += _font.getLineHeight() + (lines - 1) * _font.getFontHeight();
   }
   clearDirty();

@@ -972,7 +972,7 @@ void GameInfoDialog::saveProperties()
   myGameProperties.set(PropType::Cart_ModelNo, myModelNo->getText());
   myGameProperties.set(PropType::Cart_Rarity, myRarity->getText());
   myGameProperties.set(PropType::Cart_Note, myNote->getText());
-  myGameProperties.set(PropType::Cart_Note, myUrl->getText());
+  myGameProperties.set(PropType::Cart_Url, myUrl->getText());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
