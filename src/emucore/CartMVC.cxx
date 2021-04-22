@@ -198,26 +198,49 @@ class MovieInputs
 #define TIMECODE_HEIGHT     12
 #define MAX_LEVEL           11
 #define DEFAULT_LEVEL       6
-#define BLANK_LINE_SIZE   (28+3+37) // 68
+#define BLANK_LINE_SIZE   (30+3+37-1) // 70-1
 
 // #define addr_kernel_48 0x800
-#define addr_transport_buttons 0x880
-#define addr_transport_direction 0x897
-#define addr_right_line 0x94c
-#define addr_left_line 0x980
-#define addr_pick_continue 0x9c2
+#define addr_right_line 0x946
+#define addr_set_aud_right 0x94a
+#define addr_set_gdata9 0x94c
+#define addr_set_gcol9 0x950
+#define addr_set_gdata6 0x952
+#define addr_set_gcol6 0x956
+#define addr_set_gdata5 0x95a
+#define addr_set_gcol5 0x95e
+#define addr_set_gdata8 0x962
+#define addr_set_gcol7 0x966
+#define addr_set_gdata7 0x96a
+#define addr_set_gcol8 0x96e
+// #define addr_left_line 0x980
+#define addr_set_gdata1 0x982
+#define addr_set_aud_left 0x986
+#define addr_set_gdata4 0x98a
+#define addr_set_gcol4 0x98c
+#define addr_set_gcol1 0x98e
+#define addr_set_gdata0 0x992
+#define addr_set_gcol0 0x996
+#define addr_set_gdata3 0x99a
+#define addr_set_gcol2 0x99e
+#define addr_set_gdata2 0x9a2
+#define addr_set_gcol3 0x9a6
+#define addr_pick_continue 0x9b4
 // #define addr_main_start 0xa00
 // #define addr_aud_bank_setup 0xa0c
 // #define addr_tg0 0xa24
 // #define addr_title_again 0xa3b
+// #define addr_wait_cnt 0xa77
 #define addr_end_lines 0xa80
-#define addr_end_lines_audio 0xaa1
-#define addr_set_overscan_size 0xaad
-#define addr_set_vblank_size 0xac3
-#define addr_pick_transport 0xacc
-#define addr_last_audio 0xacf
-// #define addr_wait_lines 0xad4
-// #define addr_transport_done1 0xae7
+#define addr_set_aud_endlines 0xa8c
+#define addr_set_overscan_size 0xa90
+#define addr_set_vblank_size 0xaa6
+#define addr_pick_transport 0xaaf
+#define addr_transport_direction 0xab2
+#define addr_transport_buttons 0xabb
+// #define addr_transport_done 0xac4
+// #define addr_wait_lines 0xac9
+// #define addr_transport_done1 0xada
 // #define addr_draw_title 0xb00
 #define addr_title_loop 0xb50
 // #define addr_black_bar 0xb52
@@ -282,9 +305,6 @@ static constexpr unsigned char kernelROM[] = {
   192, 97, 99, 102, 102, 198, 198, 198, 248, 198, 248, 0, 193, 32, 48, 24,
   24, 25, 24, 24, 24, 24, 126, 0, 249, 97, 97, 97, 97, 249, 0, 0,
   0, 0, 0, 0, 248, 128, 128, 224, 128, 248, 255, 255, 255, 255, 255, 255,
-  165, 12, 10, 173, 130, 2, 42, 41, 23, 133, 129, 133, 128, 133, 128, 133,
-  128, 133, 128, 133, 128, 234, 96, 173, 128, 2, 74, 74, 74, 133, 129, 133,
-  128, 133, 128, 133, 128, 133, 128, 133, 128, 133, 128, 234, 96, 255, 255, 255,
   255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
   255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
   255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -294,15 +314,18 @@ static constexpr unsigned char kernelROM[] = {
   255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
   255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
   255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 133, 25, 133, 128,
-  134, 32, 134, 33, 169, 243, 133, 27, 169, 207, 133, 28, 169, 251, 133, 27,
-  169, 239, 162, 191, 160, 66, 133, 28, 169, 54, 133, 6, 134, 27, 169, 238,
-  133, 7, 132, 6, 132, 28, 169, 182, 133, 6, 169, 114, 133, 7, 133, 42,
-  162, 0, 162, 0, 169, 0, 162, 128, 133, 25, 134, 32, 134, 33, 169, 231,
-  133, 27, 169, 159, 133, 28, 169, 253, 133, 27, 169, 247, 162, 223, 160, 242,
-  133, 28, 169, 248, 133, 6, 134, 27, 169, 172, 133, 7, 132, 6, 132, 28,
-  169, 216, 133, 6, 169, 98, 133, 7, 169, 0, 162, 0, 162, 0, 162, 0,
-  133, 42, 76, 76, 249, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+  255, 255, 255, 255, 255, 255, 133, 2, 133, 42, 169, 0, 162, 223, 133, 25,
+  160, 98, 169, 159, 133, 28, 169, 248, 133, 7, 169, 231, 133, 27, 169, 242,
+  133, 6, 169, 247, 133, 28, 169, 172, 133, 6, 169, 253, 133, 27, 169, 216,
+  133, 7, 134, 27, 132, 6, 133, 43, 133, 128, 133, 128, 133, 128, 133, 42,
+  133, 2, 169, 207, 133, 28, 169, 0, 133, 25, 162, 191, 160, 114, 169, 54,
+  133, 7, 169, 243, 133, 27, 169, 66, 133, 6, 169, 239, 133, 28, 169, 238,
+  133, 6, 169, 251, 133, 27, 169, 182, 133, 7, 134, 27, 132, 6, 169, 128,
+  133, 32, 133, 33, 76, 70, 249, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
   255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
   255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
   255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -311,16 +334,16 @@ static constexpr unsigned char kernelROM[] = {
   133, 2, 162, 4, 133, 128, 202, 208, 251, 133, 128, 133, 16, 133, 17, 169,
   208, 133, 32, 169, 224, 133, 33, 133, 2, 133, 42, 165, 132, 106, 106, 133,
   6, 133, 7, 169, 85, 133, 137, 32, 0, 251, 176, 239, 169, 0, 133, 9,
-  141, 129, 2, 141, 131, 2, 169, 6, 133, 4, 169, 2, 133, 5, 169, 0,
-  133, 2, 133, 128, 76, 128, 250, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+  133, 37, 133, 27, 133, 16, 234, 133, 17, 133, 28, 133, 27, 133, 28, 169,
+  6, 133, 4, 169, 2, 133, 5, 169, 1, 133, 38, 169, 0, 133, 32, 169,
+  240, 133, 33, 133, 42, 162, 5, 202, 208, 253, 133, 43, 76, 128, 250, 255,
+  160, 0, 132, 27, 132, 28, 132, 27, 169, 0, 169, 0, 169, 0, 133, 25,
+  162, 29, 32, 201, 250, 169, 2, 133, 0, 162, 3, 32, 201, 250, 169, 0,
+  133, 0, 169, 2, 133, 1, 162, 37, 32, 201, 250, 162, 0, 134, 1, 76,
+  187, 250, 173, 128, 2, 74, 74, 74, 76, 196, 250, 165, 12, 10, 173, 130,
+  2, 42, 41, 23, 133, 129, 76, 70, 249, 133, 2, 169, 0, 177, 130, 133,
+  25, 165, 129, 240, 5, 198, 129, 173, 128, 20, 200, 202, 208, 235, 96, 255,
   255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-  133, 25, 169, 0, 133, 27, 133, 28, 133, 27, 133, 28, 133, 128, 133, 128,
-  133, 128, 169, 0, 133, 16, 234, 133, 17, 169, 208, 133, 32, 169, 192, 133,
-  33, 169, 0, 133, 2, 133, 42, 133, 128, 133, 25, 160, 0, 162, 28, 32,
-  212, 250, 169, 2, 133, 0, 162, 3, 32, 212, 250, 169, 0, 133, 0, 169,
-  2, 133, 1, 162, 37, 32, 212, 250, 162, 0, 134, 1, 32, 128, 248, 169,
-  0, 76, 76, 249, 177, 130, 133, 2, 133, 128, 133, 128, 133, 25, 165, 129,
-  240, 5, 198, 129, 173, 128, 20, 200, 202, 208, 233, 96, 255, 255, 255, 255,
   255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
   162, 30, 32, 82, 251, 169, 2, 133, 0, 162, 3, 32, 82, 251, 169, 0,
   133, 0, 169, 2, 133, 1, 162, 37, 32, 82, 251, 169, 0, 133, 1, 198,
@@ -650,7 +673,7 @@ private:
 
   void  stopTitleScreen();
 
-  void  writeColor(uint16_t address);
+  void  writeColor(uint16_t address, uint8_t val);
   void  writeAudioData(uint16_t address, uInt8 val);
   void  writeAudio(uint16_t address);
   void  writeGraph(uint16_t address);
@@ -671,6 +694,8 @@ private:
 
   uInt8     myROM[1024];
 
+  // full line of color
+  uint8_t     myColor[10];
 
   // title screen state
   int       myTitleCycles;
@@ -776,9 +801,8 @@ MovieCart::stopTitleScreen()
 
 
 void
-MovieCart::writeColor(uint16_t address)
+MovieCart::writeColor(uint16_t address, uint8_t v)
 {
-  uInt8 v = myStream.readColor();
   v = (v & 0xf0) | shiftBright[(v & 0x0f) + myBright];
 
   if (myForceColor)
@@ -1013,39 +1037,43 @@ MovieCart::updateTransport()
 void
 MovieCart::fill_addr_right_line()
 {
-  writeGraph(addr_right_line +  9); // #GDATA0
-  writeGraph(addr_right_line + 13); // #GDATA1
-  writeGraph(addr_right_line + 17); // #GDATA2
-  writeGraph(addr_right_line + 21); // #GDATA3
-  writeGraph(addr_right_line + 23); // #GDATA4
+  writeAudio(addr_set_aud_right + 1);
 
-  writeColor(addr_right_line + 25); // #GCOL0
-  writeColor(addr_right_line + 29); // #GCOL1
-  writeColor(addr_right_line + 35); // #GCOL2
-  writeColor(addr_right_line + 43); // #GCOL3
-  writeColor(addr_right_line + 47); // #GCOL4
+  writeGraph(addr_set_gdata5 + 1);
+  writeGraph(addr_set_gdata6 + 1);
+  writeGraph(addr_set_gdata7 + 1);
+  writeGraph(addr_set_gdata8 + 1);
+  writeGraph(addr_set_gdata9 + 1);
+
+  writeColor(addr_set_gcol5 + 1, myColor[8]); // col 1/9
+  writeColor(addr_set_gcol6 + 1, myColor[9]); // col 3/9
+  writeColor(addr_set_gcol7 + 1, myColor[1]); // col 5/9
+  writeColor(addr_set_gcol8 + 1, myColor[2]); // col 7/9
+  writeColor(addr_set_gcol9 + 1, myColor[0]); // col 9/9
+
 }
 
 void
 MovieCart::fill_addr_left_line(bool again)
 {
-  writeAudio(addr_left_line + 5); // #AUD_DATA
+  writeAudio(addr_set_aud_left + 1);
 
-  writeGraph(addr_left_line + 15); // #GDATA5
-  writeGraph(addr_left_line + 19); // #GDATA6
-  writeGraph(addr_left_line + 23); // #GDATA7
-  writeGraph(addr_left_line + 27); // #GDATA8
-  writeGraph(addr_left_line + 29); // #GDATA9
+  writeGraph(addr_set_gdata0 + 1);
+  writeGraph(addr_set_gdata1 + 1);
+  writeGraph(addr_set_gdata2 + 1);
+  writeGraph(addr_set_gdata3 + 1);
+  writeGraph(addr_set_gdata4 + 1);
 
-  writeColor(addr_left_line + 31); // #GCOL5
-  writeColor(addr_left_line + 35); // #GCOL6
-  writeColor(addr_left_line + 41); // #GCOL7
-  writeColor(addr_left_line + 49); // #GCOL8
-  writeColor(addr_left_line + 53); // #GCOL9
+  for (int i=0; i<10; i++)
+    myColor[i] = myStream.readColor();
 
-  writeAudio(addr_left_line + 57); // #AUD_DATA
+  writeColor(addr_set_gcol0 + 1, myColor[3]); // col 0/9
+  writeColor(addr_set_gcol1 + 1, myColor[4]); // col 2/9
+  writeColor(addr_set_gcol2 + 1, myColor[6]);  // col 4/9
+  writeColor(addr_set_gcol3 + 1, myColor[7]);  // col 6/9
+  writeColor(addr_set_gcol4 + 1, myColor[5]); // col 8/9
 
-  // addr_pick_line_end = 0x0ee;
+  // addr_pick_line_end
   //    jmp right_line
   //    jmp end_lines
   if (again)
@@ -1064,19 +1092,21 @@ MovieCart::fill_addr_left_line(bool again)
 void
 MovieCart::fill_addr_end_lines()
 {
-  writeAudio(addr_end_lines_audio + 1);
-  myFirstAudioVal = myStream.peekAudio();
+  writeAudio(addr_set_aud_endlines + 1);
 
-  // normally overscan=28, vblank=37
+  if (!myOdd)
+    myFirstAudioVal = myStream.readAudio();
+
+  // normally overscan=30, vblank=37
   // todo: clicky noise..
   if (myOdd)
   {
-    writeROM(addr_set_overscan_size + 1, 28);
+    writeROM(addr_set_overscan_size + 1, 29);
     writeROM(addr_set_vblank_size + 1, 36);
   }
   else
   {
-    writeROM(addr_set_overscan_size + 1, 29);
+    writeROM(addr_set_overscan_size + 1, 30);
     writeROM(addr_set_vblank_size + 1, 37);
   }
 
@@ -1096,8 +1126,8 @@ MovieCart::fill_addr_end_lines()
 void
 MovieCart::fill_addr_blank_lines()
 {
-  uInt8 i;
-  uInt8 v;
+  uint8_t i;
+  uint8_t v;
 
   // version number
   myStream.readVersion();
@@ -1113,7 +1143,7 @@ MovieCart::fill_addr_blank_lines()
   // make sure we're in sync with frame data
   myOdd = (v & 1);
 
-  // 28 overscan
+  // 30 overscan
   // 3 vsync
   // 37 vblank
 
@@ -1128,8 +1158,6 @@ MovieCart::fill_addr_blank_lines()
     for (i = 0; i < (BLANK_LINE_SIZE -1); i++)
       writeAudio(addr_audio_bank + i);
   }
-
-  writeAudio(addr_last_audio + 1);
 }
 
 void
