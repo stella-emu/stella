@@ -456,7 +456,7 @@ bool CartDetector::isProbablyCDF(const ByteBuffer& image, size_t size)
   // 0x10adab1e (LOADABLE) if needed for future improvement
   uInt8 cdf[] = { 'C', 'D', 'F' };
   uInt8 cdfjplus[] = { 'P', 'L', 'U', 'S', 'C', 'D', 'F', 'J' };
-  return (searchForBytes(image, size, cdf, 3, 3) || 
+  return (searchForBytes(image, size, cdf, 3, 3) ||
           searchForBytes(image, size, cdfjplus, 8, 1));
 }
 
@@ -704,11 +704,11 @@ bool CartDetector::isProbablyMVC(const ByteBuffer& image, size_t size)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 size_t CartDetector::isProbablyMVC(std::istream &in, size_t maxSize)
 {
-  const size_t	frameSize = 2 * MVC_FIELD_PAD_SIZE;
+  const size_t	frameSize = 2 * CartridgeMVC::MVC_FIELD_PAD_SIZE;
   bool			found = false;
 
   // Returns size of field if stream is probably an MVC movie cartridge
-  
+
   if (maxSize >= frameSize)
   {
 	auto	pos = in.tellg();

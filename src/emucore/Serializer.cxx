@@ -78,6 +78,14 @@ Serializer::Serializer()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Serializer::setPosition(size_t pos)
+{
+  myStream->clear();
+  myStream->seekg(pos);
+  myStream->seekp(pos);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Serializer::rewind()
 {
   myStream->clear();

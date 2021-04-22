@@ -33,26 +33,26 @@ class MovieCart;
 
   @author  Rob Bairos
 */
-
-#define MVC_FIELD_SIZE       2560 // round field to nearest 512 byte boundary
-#define MVC_FIELD_PAD_SIZE   4096 // round to nearest 4K
-
 class CartridgeMVC : public Cartridge
 {
+  public:
+    static constexpr uInt32
+      MVC_FIELD_SIZE     = 2560,  // round field to nearest 512 byte boundary
+      MVC_FIELD_PAD_SIZE = 4096;  // round to nearest 4K
 
   public:
     /**
       Create a new cartridge using the specified image
 
-      @param image     Pointer to the ROM image
+      @param path      Path to the ROM image file
       @param size      The size of the ROM image (<= 2048 bytes)
       @param md5       The md5sum of the ROM image
       @param settings  A reference to the various settings (read-only)
       @param bsSize    The size specified by the bankswitching scheme
     */
     CartridgeMVC(const string& path, size_t size, const string& md5,
-                const Settings& settings, size_t bsSize = 2_KB);
-    ~CartridgeMVC() override = default;
+                 const Settings& settings, size_t bsSize = 1_KB);
+    ~CartridgeMVC() override;
 
     /**
       Reset device to its power-on state
@@ -73,7 +73,7 @@ class CartridgeMVC : public Cartridge
       @param size  Set to the size of the internal ROM image data
       @return  A reference to the internal ROM image data
     */
-    virtual const ByteBuffer& getImage(size_t& size) const;
+    const ByteBuffer& getImage(size_t& size) const override;
 
     /**
       Patch the cartridge ROM.
@@ -82,7 +82,7 @@ class CartridgeMVC : public Cartridge
       @param value    The value to place into the address
       @return    Success or failure of the patch operation
     */
-    virtual bool patch(uInt16 address, uInt8 value);
+    bool patch(uInt16 address, uInt8 value) override;
 
     /**
       Get the byte at the specified address.
@@ -113,10 +113,7 @@ class CartridgeMVC : public Cartridge
       @param out  The Serializer object to use
       @return  False on any errors, else true
     */
-    bool save(Serializer& out) const override
-	{
-	  return false;
-    }
+    bool save(Serializer& out) const override { return false; }
 
     /**
       Load the current state of this cart from the given Serializer.
@@ -124,48 +121,16 @@ class CartridgeMVC : public Cartridge
       @param in  The Serializer object to use
       @return  False on any errors, else true
     */
-    bool load(Serializer& in) override
-	{
-	  return false;
-    }
-
-    /**
-      Install pages for the specified bank in the system.
-
-      @param bank     The bank that should be installed in the system
-      @param segment  The segment the bank should be using
-
-      @return  true, if bank has changed
-    */
-    bool bank(uInt16 bank, uInt16 segment = 0) override
-	{
-	  return false;
-	}
-
-    /**
-      Get the current bank.
-
-      @param address The address to use when querying the bank
-    */
-    uInt16 getBank(uInt16 address = 0) const override
-	{
-	  return 0;
-	}
-
-    /**
-      Query the number of banks supported by the cartridge.
-    */
-    uInt16 romBankCount() const override
-	{
-	  return 1;
-	}
+    bool load(Serializer& in) override { return false; }
 
   private:
-
-	// Currently not used:
+    // Currently not used:
     // Pointer to a dynamically allocated ROM image of the cartridge
     ByteBuffer myImage{nullptr};
     size_t mySize{0};
+
+    unique_ptr<MovieCart> myMovie;
+    string myPath;
 
   private:
     // Following constructors and assignment operators not supported
@@ -174,12 +139,6 @@ class CartridgeMVC : public Cartridge
     CartridgeMVC(CartridgeMVC&&) = delete;
     CartridgeMVC& operator=(const CartridgeMVC&) = delete;
     CartridgeMVC& operator=(CartridgeMVC&&) = delete;
-
-  private:
-
-	unique_ptr<MovieCart>	myMovie;
-	string					myPath;
-  
 };
 
 #endif
