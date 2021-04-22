@@ -245,7 +245,8 @@ class FBSurface
     virtual void drawString(
         const GUI::Font& font, const string& s, int x, int y, int w,
         ColorId color, TextAlign align = TextAlign::Left,
-        int deltax = 0, bool useEllipsis = true, ColorId shadowColor = kNone);
+        int deltax = 0, bool useEllipsis = true, ColorId shadowColor = kNone,
+        size_t linkStart = string::npos, int linkLen = 0, bool underline = false);
 
     /**
       Splits a given string to a given width considering whitespaces.

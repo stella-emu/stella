@@ -21,6 +21,7 @@
 #include "Widget.hxx"
 #include "Font.hxx"
 #include "WhatsNewDialog.hxx"
+#include "MediaFactory.hxx"
 
 #include "AboutDialog.hxx"
 
@@ -80,8 +81,10 @@ AboutDialog::AboutDialog(OSystem& osystem, DialogContainer& parent,
   xpos = HBORDER * 2;  ypos += lineHeight + VGAP * 2;
   for(int i = 0; i < myLinesPerPage; i++)
   {
-    myDesc.push_back(new StaticTextWidget(this, font, xpos, ypos, _w - xpos * 2,
-                                          fontHeight, "", TextAlign::Left));
+    StaticTextWidget* s = new StaticTextWidget(this, font, xpos, ypos, _w - xpos * 2,
+                                               fontHeight, "", TextAlign::Left, kNone);
+    s->setID(i);
+    myDesc.push_back(s);
     myDescStr.emplace_back("");
     ypos += fontHeight;
   }
@@ -162,7 +165,7 @@ void AboutDialog::updateStrings(int page, int lines, string& title)
       title = "Cast of thousands";
       ADD_ATEXT("\\L\\c0""Special thanks to AtariAge for introducing the");
       ADD_ATEXT("\\L\\c0""Atari 2600 to a whole new generation.");
-      ADD_ATEXT("\\L\\c2""  http://www.atariage.com");
+      ADD_ATEXT("\\L  http://www.atariage.com");
       ADD_ALINE();
       ADD_ATEXT("\\L\\c0""Finally, a huge thanks to the original Atari 2600");
       ADD_ATEXT("\\L\\c0""VCS team for giving us the magic, and to the");
@@ -242,6 +245,7 @@ void AboutDialog::displayInfo()
     myDesc[i]->setAlign(align);
     myDesc[i]->setTextColor(color);
     myDesc[i]->setLabel(str);
+    myDesc[i]->setUrl(); // extract URL from label
   }
 
   // Redraw entire dialog
@@ -280,7 +284,52 @@ void AboutDialog::handleCommand(CommandSender* sender, int cmd, int data, int id
       myWhatsNewDialog->open();
       break;
 
+    case StaticTextWidget::kOpenUrlCmd:
+    {
+      const string url = myDesc[id]->getUrl(); //  getUrl(myDescStr[id]);
+
+      if(url != EmptyString)
+        MediaFactory::openURL(url);
+      break;
+    }
+
     default:
       Dialog::handleCommand(sender, cmd, data, 0);
   }
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const string AboutDialog::getUrl(const string& str) const
+{
+  bool isUrl = false;
+  int start = 0, len = 0;
+
+  for(int i = 0; i < str.size(); ++i)
+  {
+    string remainder = str.substr(i);
+    char ch = str[i];
+
+    if(!isUrl
+       && (BSPF::startsWithIgnoreCase(remainder, "http://")
+       || BSPF::startsWithIgnoreCase(remainder, "https://")
+       || BSPF::startsWithIgnoreCase(remainder, "www.")))
+    {
+      isUrl = true;
+      start = i;
+    }
+
+    // hack, change mode without changing string length
+    if(isUrl)
+    {
+      if((ch == ' ' || ch == ')' || ch == '>'))
+        isUrl = false;
+      else
+        len++;
+    }
+  }
+  if(len)
+    return str.substr(start, len);
+  else
+    return EmptyString;
+}
+

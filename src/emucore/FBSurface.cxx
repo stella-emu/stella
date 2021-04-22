@@ -383,7 +383,8 @@ int FBSurface::drawString(const GUI::Font& font, const string& s,
 void FBSurface::drawString(const GUI::Font& font, const string& s,
                            int x, int y, int w,
                            ColorId color, TextAlign align,
-                           int deltax, bool useEllipsis, ColorId shadowColor)
+                           int deltax, bool useEllipsis, ColorId shadowColor,
+                           size_t linkStart, int linkLen, bool underline)
 {
 #ifdef GUI_SUPPORT
   const string ELLIPSIS = "\x1d"; // "..."
@@ -424,16 +425,30 @@ void FBSurface::drawString(const GUI::Font& font, const string& s,
     x = x + w - width;
 
   x += deltax;
+
+  int x0 = 0, x1 = 0;
+
   for(i = 0; i < str.size(); ++i)
   {
     w = font.getCharWidth(str[i]);
-    if(x+w > rightX)
+    if(x + w > rightX)
       break;
     if(x >= leftX)
-      drawChar(font, str[i], x, y, color, shadowColor);
+    {
+      if(i == linkStart)
+        x0 = x;
+      else if(i < linkStart + linkLen)
+        x1 = x + w;
 
+      drawChar(font, str[i], x, y,
+               (i >= linkStart && i < linkStart + linkLen) ? kTextColorEm : color,
+               shadowColor);
+    }
     x += w;
   }
+  if(underline && x1 > 0)
+    hLine(x0, y + font.getFontHeight() - 1, x1, kTextColorEm);
+
 #endif
 }
 
