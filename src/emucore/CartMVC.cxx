@@ -1321,7 +1321,7 @@ void CartridgeMVC::reset()
 const ByteBuffer& CartridgeMVC::getImage(size_t& size) const
 {
   // not used
-  size = 0;
+  size = mySize;
   return myImage;
 }
 
