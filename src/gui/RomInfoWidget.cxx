@@ -127,6 +127,8 @@ void RomInfoWidget::parseProperties(const FilesystemNode& node)
   if(mySurface)
     mySurface->setVisible(mySurfaceIsValid);
 
+  myUrl = myProperties.get(PropType::Cart_Url);
+
   // Now add some info for the message box below the image
   myRomInfo.push_back("Name: " + myProperties.get(PropType::Cart_Name));
 
@@ -178,8 +180,6 @@ void RomInfoWidget::parseProperties(const FilesystemNode& node)
 
   if (bsDetected != "")
     myRomInfo.push_back("Type: " + Bankswitch::typeToDesc(Bankswitch::nameToType(bsDetected)));
-  if((value = myProperties.get(PropType::Cart_Url)) != EmptyString)
-    myRomInfo.push_back("Link: " + value);
 
   setDirty();
 }
@@ -235,7 +235,11 @@ void RomInfoWidget::drawWidget(bool hilite)
   s.frameRect(_x, _y, _w, _h, kColor);
   s.frameRect(_x, _y+yoff, _w, _h-yoff, kColor);
 
-  if(!myHaveProperties) return;
+  if(!myHaveProperties)
+  {
+    clearDirty();
+    return;
+  }
 
   if(mySurfaceIsValid)
   {
@@ -274,11 +278,12 @@ void RomInfoWidget::drawWidget(bool hilite)
     }
 
     int lines;
-    if(BSPF::startsWithIgnoreCase(info, "Link: "))
+
+    if(BSPF::startsWithIgnoreCase(info, "Name: ") && myUrl != EmptyString)
     {
       lines = s.drawString(_font, info, xpos, ypos, _w - 16, _font.getFontHeight() * 3,
                            _textcolor, TextAlign::Left, 0, true, kNone,
-                           6, 2000, hilite);
+                           6, info.length() - 6, hilite);
     }
     else
       lines = s.drawString(_font, info, xpos, ypos, _w - 16, _font.getFontHeight() * 3,

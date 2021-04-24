@@ -1419,6 +1419,7 @@ void FrameBuffer::toggleGrabMouse(bool toggle)
     kTextColorHi      Highlighted text color
     kTextColorEm      Emphasized text color
     kTextColorInv     Color for selected text
+    kTextColorLink    Color for links
     *** UI elements (dialog and widgets) ***
     kDlgColor         Dialog background
     kWidColor         Widget background
@@ -1454,7 +1455,7 @@ void FrameBuffer::toggleGrabMouse(bool toggle)
 */
 UIPaletteArray FrameBuffer::ourStandardUIPalette = {
   { 0x686868, 0x000000, 0xa38c61, 0xdccfa5, 0x404040,           // base
-    0x000000, 0xac3410, 0x9f0000, 0xf0f0cf,                     // text
+    0x000000, 0xac3410, 0x9f0000, 0xf0f0cf, 0xac3410,           // text
     0xc9af7c, 0xf0f0cf, 0xd55941, 0xc80000,                     // UI elements
     0xac3410, 0xd55941, 0x686868, 0xdccfa5, 0xf0f0cf, 0xf0f0cf, // buttons
     0xac3410,                                                   // checkbox
@@ -1467,7 +1468,7 @@ UIPaletteArray FrameBuffer::ourStandardUIPalette = {
 
 UIPaletteArray FrameBuffer::ourClassicUIPalette = {
   { 0x686868, 0x000000, 0x404040, 0x404040, 0x404040,           // base
-    0x20a020, 0x00ff00, 0xc80000, 0x000000,                     // text
+    0x20a020, 0x00ff00, 0xc80000, 0x000000, 0x00ff00,           // text
     0x000000, 0x000000, 0x00ff00, 0xc80000,                     // UI elements
     0x000000, 0x000000, 0x686868, 0x00ff00, 0x20a020, 0x00ff00, // buttons
     0x20a020,                                                   // checkbox
@@ -1480,7 +1481,7 @@ UIPaletteArray FrameBuffer::ourClassicUIPalette = {
 
 UIPaletteArray FrameBuffer::ourLightUIPalette = {
   { 0x808080, 0x000000, 0xc0c0c0, 0xe1e1e1, 0x333333,           // base
-    0x000000, 0xBDDEF9, 0x0078d7, 0x000000,                     // text
+    0x000000, 0xBDDEF9, 0x0078d7, 0x000000, 0x005aa1,           // text
     0xf0f0f0, 0xffffff, 0x0078d7, 0x0f0f0f,                     // UI elements
     0xe1e1e1, 0xe5f1fb, 0x808080, 0x0078d7, 0x000000, 0x000000, // buttons
     0x333333,                                                   // checkbox
@@ -1493,7 +1494,7 @@ UIPaletteArray FrameBuffer::ourLightUIPalette = {
 
 UIPaletteArray FrameBuffer::ourDarkUIPalette = {
   { 0x646464, 0xc0c0c0, 0x3c3c3c, 0x282828, 0x989898,           // base
-    0xc0c0c0, 0x1567a5, 0x0059a3, 0xc0c0c0,                     // text
+    0xc0c0c0, 0x1567a5, 0x0059a3, 0xc0c0c0, 0x1567a5,           // text
     0x202020, 0x000000, 0x0059a3, 0xb0b0b0,                     // UI elements
     0x282828, 0x00467f, 0x646464, 0x0059a3, 0xc0c0c0, 0xc0c0c0, // buttons
     0x989898,                                                   // checkbox
