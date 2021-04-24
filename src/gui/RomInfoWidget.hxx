@@ -46,7 +46,7 @@ class RomInfoWidget : public Widget, public CommandSender
 
     void resetSurfaces();
 
-    const string& getUrl() const { return myProperties.get(PropType::Cart_Url); }
+    const string& getUrl() const { return myUrl; }
 
   protected:
     void drawWidget(bool hilite) override;
@@ -73,6 +73,9 @@ class RomInfoWidget : public Widget, public CommandSender
 
     // Indicates if the current properties should actually be used
     bool myHaveProperties{false};
+
+    // Optional cart link URL
+    string myUrl;
 
     // Indicates if an error occurred in creating/displaying the surface
     string mySurfaceErrorMsg;

@@ -163,9 +163,8 @@ void AboutDialog::updateStrings(int page, int lines, string& title)
 
     case 4:
       title = "Cast of thousands";
-      ADD_ATEXT("\\L\\c0""Special thanks to AtariAge for introducing the");
+      ADD_ATEXT("\\L\\c0""Special thanks to <AtariAge> for introducing the");
       ADD_ATEXT("\\L\\c0""Atari 2600 to a whole new generation.");
-      ADD_ATEXT("\\L  http://www.atariage.com");
       ADD_ALINE();
       ADD_ATEXT("\\L\\c0""Finally, a huge thanks to the original Atari 2600");
       ADD_ATEXT("\\L\\c0""VCS team for giving us the magic, and to the");
@@ -245,7 +244,24 @@ void AboutDialog::displayInfo()
     myDesc[i]->setAlign(align);
     myDesc[i]->setTextColor(color);
     myDesc[i]->setLabel(str);
-    myDesc[i]->setUrl(); // extract URL from label
+    // add some labeled links
+    if(BSPF::containsIgnoreCase(str, "see manual"))
+      myDesc[i]->setUrl("https://stella-emu.github.io/docs/index.html#License", "manual");
+    else if(BSPF::containsIgnoreCase(str, "Stephen Anthony"))
+      myDesc[i]->setUrl("http://minbar.org", "Stephen Anthony");
+    else if(BSPF::containsIgnoreCase(str, "Bradford W. Mott"))
+      myDesc[i]->setUrl("www.intellimedia.ncsu.edu/people/bwmott", "Bradford W. Mott");
+    else if(BSPF::containsIgnoreCase(str, "ScummVM project"))
+      myDesc[i]->setUrl("www.scummvm.org", "ScummVM");
+    else if(BSPF::containsIgnoreCase(str, "Ian Bogost"))
+      myDesc[i]->setUrl("http://bogost.com", "Ian Bogost");
+    else if(BSPF::containsIgnoreCase(str, "CRT Simulation"))
+      myDesc[i]->setUrl("http://blargg.8bitalley.com/libs/ntsc.html", "CRT Simulation effects");
+    else if(BSPF::containsIgnoreCase(str, "<AtariAge>"))
+      myDesc[i]->setUrl("www.atariage.com", "AtariAge", "<AtariAge>");
+    else
+      // extract URL from label
+      myDesc[i]->setUrl();
   }
 
   // Redraw entire dialog

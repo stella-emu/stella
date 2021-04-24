@@ -516,14 +516,19 @@ void StaticTextWidget::setLink(size_t start, int len, bool underline)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool StaticTextWidget::setUrl(const string& url, const string& label)
+bool StaticTextWidget::setUrl(const string& url, const string& label,
+                              const string& placeHolder)
 {
+#ifndef RETRON77
   size_t start = string::npos, len = 0;
   const string& text = label != EmptyString ? label : url;
 
   if(text != EmptyString)
   {
-    // determine position of label
+    if(placeHolder != EmptyString)
+      BSPF::replaceAll(_label, placeHolder, text);
+
+    // determine position of link
     if((start = BSPF::findIgnoreCase(_label, text)) != string::npos)
     {
       len = text.size();
@@ -575,6 +580,9 @@ bool StaticTextWidget::setUrl(const string& url, const string& label)
     _url = EmptyString;
     return false;
   }
+#else
+  return false;
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
