@@ -1494,7 +1494,7 @@ UIPaletteArray FrameBuffer::ourLightUIPalette = {
 
 UIPaletteArray FrameBuffer::ourDarkUIPalette = {
   { 0x646464, 0xc0c0c0, 0x3c3c3c, 0x282828, 0x989898,           // base
-    0xc0c0c0, 0x1567a5, 0x0059a3, 0xc0c0c0, 0x1567a5,           // text
+    0xc0c0c0, 0x1567a5, 0x0064b7, 0xc0c0c0, 0x1d92e0,           // text
     0x202020, 0x000000, 0x0059a3, 0xb0b0b0,                     // UI elements
     0x282828, 0x00467f, 0x646464, 0x0059a3, 0xc0c0c0, 0xc0c0c0, // buttons
     0x989898,                                                   // checkbox
