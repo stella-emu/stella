@@ -104,8 +104,7 @@ class VideoAudioDialog : public Dialog
 
     // Palettes
     PopUpWidget*      myTIAPalette{nullptr};
-    SliderWidget*     myPhaseShiftNtsc{nullptr};
-    SliderWidget*     myPhaseShiftPal{nullptr};
+    SliderWidget*     myPhaseShift{nullptr};
     SliderWidget*     myTVRedScale{nullptr};
     SliderWidget*     myTVRedShift{nullptr};
     SliderWidget*     myTVGreenScale{nullptr};
@@ -143,8 +142,7 @@ class VideoAudioDialog : public Dialog
       kOverscanChanged    = 'VDOv',
 
       kPaletteChanged     = 'VDpl',
-      kNtscShiftChanged   = 'VDns',
-      kPalShiftChanged    = 'VDps',
+      kPhaseShiftChanged  = 'VDps',
       kRedShiftChanged    = 'VDrs',
       kGreenShiftChanged  = 'VDgs',
       kBlueShiftChanged   = 'VDbs',
