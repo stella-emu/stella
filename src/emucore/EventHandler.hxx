@@ -175,7 +175,7 @@ class EventHandler
     bool frying() const { return myFryingFlag; }
 
     StringList getActionList(Event::Group group) const;
-    VariantList getComboList(EventMode mode) const;
+    VariantList getComboList() const;
 
     /** Used to access the list of events assigned to a specific combo event. */
     StringList getComboListForEvent(Event::Type event) const;
@@ -548,7 +548,6 @@ class EventHandler
     static const Event::EventSet DevicesEvents;
     static const Event::EventSet ComboEvents;
     static const Event::EventSet DebugEvents;
-    static const Event::EventSet EditEvents;
 
     /**
       The following methods take care of assigning action mappings.

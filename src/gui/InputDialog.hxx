@@ -89,8 +89,8 @@ class InputDialog : public Dialog
 
     TabWidget* myTab{nullptr};
 
-    EventMappingWidget* myEmulEventMapper{nullptr};
-    EventMappingWidget* myMenuEventMapper{nullptr};
+    EventMappingWidget* myEventMapper{nullptr};
+//    EventMappingWidget* myMenuEventMapper{nullptr};
 
     CheckboxWidget*   mySAPort{nullptr};
 

@@ -64,30 +64,19 @@ InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
                         _h -_th - VGAP - buttonHeight - VBORDER * 2);
   addTabWidget(myTab);
 
-  // 1) Event mapper for emulation actions
-  tabID = myTab->addTab(" Emul. Events ", TabWidget::AUTO_WIDTH);
-  myEmulEventMapper = new EventMappingWidget(myTab, _font, 2, 2,
+  // 1) Event mapper
+  tabID = myTab->addTab(" Event Mappings ", TabWidget::AUTO_WIDTH);
+  myEventMapper = new EventMappingWidget(myTab, _font, 2, 2,
                                              myTab->getWidth(),
-                                             myTab->getHeight() - VGAP,
-                                             EventMode::kEmulationMode);
-  myTab->setParentWidget(tabID, myEmulEventMapper);
-  addToFocusList(myEmulEventMapper->getFocusList(), myTab, tabID);
+                                             myTab->getHeight() - VGAP);
+  myTab->setParentWidget(tabID, myEventMapper);
+  addToFocusList(myEventMapper->getFocusList(), myTab, tabID);
   myTab->parentWidget(tabID)->setHelpAnchor("Remapping");
 
-  // 2) Event mapper for UI actions
-  tabID = myTab->addTab(" UI Events ", TabWidget::AUTO_WIDTH);
-  myMenuEventMapper = new EventMappingWidget(myTab, _font, 2, 2,
-                                             myTab->getWidth(),
-                                             myTab->getHeight() - VGAP,
-                                             EventMode::kMenuMode);
-  myTab->setParentWidget(tabID, myMenuEventMapper);
-  addToFocusList(myMenuEventMapper->getFocusList(), myTab, tabID);
-  myTab->parentWidget(tabID)->setHelpAnchor("Remapping");
-
-  // 3) Devices & ports
+  // 2) Devices & ports
   addDevicePortTab();
 
-  // 4) Mouse
+  // 3) Mouse
   addMouseTab();
 
   // Finalize the tabs, and activate the first tab
@@ -120,7 +109,7 @@ void InputDialog::addDevicePortTab()
   WidgetArray wid;
 
   // Devices/ports
-  tabID = myTab->addTab("Devices & Ports", TabWidget::AUTO_WIDTH);
+  tabID = myTab->addTab(" Devices & Ports ", TabWidget::AUTO_WIDTH);
 
   ypos = VBORDER;
   lwidth = _font.getStringWidth("Digital paddle sensitivity ");
@@ -255,7 +244,7 @@ void InputDialog::addMouseTab()
   VariantList items;
 
   // Mouse
-  tabID = myTab->addTab(" Mouse ", TabWidget::AUTO_WIDTH);
+  tabID = myTab->addTab("  Mouse  ", TabWidget::AUTO_WIDTH);
 
   ypos = VBORDER;
   lwidth = _font.getStringWidth("Use mouse as a controller ");
@@ -497,14 +486,10 @@ void InputDialog::setDefaults()
   switch(myTab->getActiveTab())
   {
     case 0:  // Emulation events
-      myEmulEventMapper->setDefaults();
+      myEventMapper->setDefaults();
       break;
 
-    case 1:  // UI events
-      myMenuEventMapper->setDefaults();
-      break;
-
-    case 2:  // Devices & Ports
+    case 1:  // Devices & Ports
       // Joystick deadzone
       myDeadzone->setValue(0);
 
@@ -537,7 +522,7 @@ void InputDialog::setDefaults()
       myAVoxPort->setSelectedIndex(0);
       break;
 
-    case 3:  // Mouse
+    case 2:  // Mouse
       // Use mouse as a controller
       myMouseControl->setSelected("analog");
 
@@ -564,17 +549,15 @@ void InputDialog::setDefaults()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool InputDialog::repeatEnabled()
 {
-  return !myEmulEventMapper->isRemapping() && !myMenuEventMapper->isRemapping();
+  return !myEventMapper->isRemapping();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
 {
   // Remap key events in remap mode, otherwise pass to parent dialog
-  if (myEmulEventMapper->remapMode())
-    myEmulEventMapper->handleKeyDown(key, mod);
-  else if (myMenuEventMapper->remapMode())
-    myMenuEventMapper->handleKeyDown(key, mod);
+  if (myEventMapper->remapMode())
+    myEventMapper->handleKeyDown(key, mod);
   else
     Dialog::handleKeyDown(key, mod);
 }
@@ -583,10 +566,8 @@ void InputDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
 void InputDialog::handleKeyUp(StellaKey key, StellaMod mod)
 {
   // Remap key events in remap mode, otherwise pass to parent dialog
-  if (myEmulEventMapper->remapMode())
-    myEmulEventMapper->handleKeyUp(key, mod);
-  else if (myMenuEventMapper->remapMode())
-    myMenuEventMapper->handleKeyUp(key, mod);
+  if (myEventMapper->remapMode())
+    myEventMapper->handleKeyUp(key, mod);
   else
     Dialog::handleKeyUp(key, mod);
 }
@@ -595,10 +576,8 @@ void InputDialog::handleKeyUp(StellaKey key, StellaMod mod)
 void InputDialog::handleJoyDown(int stick, int button, bool longPress)
 {
   // Remap joystick buttons in remap mode, otherwise pass to parent dialog
-  if(myEmulEventMapper->remapMode())
-    myEmulEventMapper->handleJoyDown(stick, button);
-  else if(myMenuEventMapper->remapMode())
-    myMenuEventMapper->handleJoyDown(stick, button);
+  if(myEventMapper->remapMode())
+    myEventMapper->handleJoyDown(stick, button);
   else
     Dialog::handleJoyDown(stick, button);
 }
@@ -607,10 +586,8 @@ void InputDialog::handleJoyDown(int stick, int button, bool longPress)
 void InputDialog::handleJoyUp(int stick, int button)
 {
   // Remap joystick buttons in remap mode, otherwise pass to parent dialog
-  if (myEmulEventMapper->remapMode())
-    myEmulEventMapper->handleJoyUp(stick, button);
-  else if (myMenuEventMapper->remapMode())
-    myMenuEventMapper->handleJoyUp(stick, button);
+  if (myEventMapper->remapMode())
+    myEventMapper->handleJoyUp(stick, button);
   else
     Dialog::handleJoyUp(stick, button);
 }
@@ -619,10 +596,8 @@ void InputDialog::handleJoyUp(int stick, int button)
 void InputDialog::handleJoyAxis(int stick, JoyAxis axis, JoyDir adir, int button)
 {
   // Remap joystick axis in remap mode, otherwise pass to parent dialog
-  if(myEmulEventMapper->remapMode())
-    myEmulEventMapper->handleJoyAxis(stick, axis, adir, button);
-  else if(myMenuEventMapper->remapMode())
-    myMenuEventMapper->handleJoyAxis(stick, axis, adir, button);
+  if(myEventMapper->remapMode())
+    myEventMapper->handleJoyAxis(stick, axis, adir, button);
   else
     Dialog::handleJoyAxis(stick, axis, adir, button);
 }
@@ -631,10 +606,8 @@ void InputDialog::handleJoyAxis(int stick, JoyAxis axis, JoyDir adir, int button
 bool InputDialog::handleJoyHat(int stick, int hat, JoyHatDir hdir, int button)
 {
   // Remap joystick hat in remap mode, otherwise pass to parent dialog
-  if(myEmulEventMapper->remapMode())
-    return myEmulEventMapper->handleJoyHat(stick, hat, hdir, button);
-  else if(myMenuEventMapper->remapMode())
-    return myMenuEventMapper->handleJoyHat(stick, hat, hdir, button);
+  if(myEventMapper->remapMode())
+    return myEventMapper->handleJoyHat(stick, hat, hdir, button);
   else
     return Dialog::handleJoyHat(stick, hat, hdir, button);
 }
