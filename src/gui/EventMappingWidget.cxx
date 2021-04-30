@@ -164,8 +164,8 @@ void EventMappingWidget::updateActions()
 {
   myEventGroup = Event::Group(myFilterPopup->getSelectedTag().toInt());
   myEventMode = myEventGroup == Event::Group::Menu
-    ? myEventMode = EventMode::kMenuMode
-    : myEventMode = EventMode::kEmulationMode;
+    ? EventMode::kMenuMode
+    : EventMode::kEmulationMode;
 
   StringList actions = instance().eventHandler().getActionList(myEventGroup);
 
