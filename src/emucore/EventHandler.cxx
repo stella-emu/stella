@@ -2535,7 +2535,7 @@ StringList EventHandler::getActionList(const Event::EventSet& events, EventMode 
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-VariantList EventHandler::getComboList(EventMode /**/) const
+VariantList EventHandler::getComboList() const
 {
   // For now, this only works in emulation mode
   VariantList l;
@@ -3435,9 +3435,4 @@ const Event::EventSet EventHandler::DebugEvents = {
   Event::ToggleCollisions, Event::ToggleBits, Event::ToggleFixedColors,
   Event::ToggleColorLoss,
   Event::ToggleJitter,
-};
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const Event::EventSet EventHandler::EditEvents = {
-
 };
