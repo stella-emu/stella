@@ -218,7 +218,7 @@ json JoyMap::saveMapping(const EventMode mode) const
   json eventMappings = json::array();
 
   for (const auto& [_mapping, _event]: sortedMap) {
-    if (_mapping.mode != mode) continue;
+    if(_mapping.mode != mode || _event == Event::NoType) continue;
 
     json eventMapping = json::object();
 
@@ -255,6 +255,10 @@ int JoyMap::loadMapping(const json& eventMappings, const EventMode mode)
     JoyHatDir hatDirection = eventMapping.contains("hat") ? eventMapping.at("hatDirection").get<JoyHatDir>() : JoyHatDir::CENTER;
 
     try {
+      // avoid blocking mappings for NoType events
+      if(eventMapping.at("event").get<Event::Type>() == Event::NoType)
+        continue;
+
       add(
         eventMapping.at("event").get<Event::Type>(),
         mode,
