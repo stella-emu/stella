@@ -55,6 +55,7 @@ class EditableWidget : public Widget, public CommandSender
     const string& getText() const { return _editString; }
 
     bool isEditable() const	{ return _editable; }
+    bool isChanged() { return editString() != backupString(); }
     virtual void setEditable(bool editable, bool hiliteBG = false);
 
     bool handleText(char text) override;
@@ -80,8 +81,17 @@ class EditableWidget : public Widget, public CommandSender
     bool wantsToolTip() const override;
 
     virtual void startEditMode() { setFlags(Widget::FLAG_WANTS_RAWDATA);   }
-    virtual void endEditMode()   { clearFlags(Widget::FLAG_WANTS_RAWDATA); }
-    virtual void abortEditMode() { clearFlags(Widget::FLAG_WANTS_RAWDATA); }
+    virtual void endEditMode()   {
+      clearFlags(Widget::FLAG_WANTS_RAWDATA);
+      commit();
+    }
+    virtual void abortEditMode()
+    {
+      clearFlags(Widget::FLAG_WANTS_RAWDATA);
+      abort();
+    }
+    void commit() { _backupString = _editString; }
+    void abort()  { setText(_backupString); }
 
     virtual Common::Rect getEditRect() const = 0;
     virtual int getCaretOffset() const;
@@ -93,6 +103,7 @@ class EditableWidget : public Widget, public CommandSender
     // This method is used internally by child classes wanting to
     // access/edit the internal buffer
     string& editString() { return _editString; }
+    string& backupString() { return _backupString; }
     const string selectString() const;
     void resetSelection() { _selectSize = 0; }
     int scrollOffset();
@@ -125,6 +136,7 @@ class EditableWidget : public Widget, public CommandSender
 
     bool   _editable{true};
     string _editString;
+    string _backupString;
     int    _maxLen{0};
     unique_ptr<UndoHandler> myUndoHandler;
 

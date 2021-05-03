@@ -46,7 +46,7 @@ EditTextWidget::EditTextWidget(GuiObject* boss, const GUI::Font& font,
 void EditTextWidget::setText(const string& str, bool changed)
 {
   EditableWidget::setText(str, changed);
-  _backupString = str;
+
   if(_changed != changed)
   {
     _changed = changed;
@@ -106,7 +106,7 @@ void EditTextWidget::lostFocusWidget()
 {
   EditableWidget::lostFocusWidget();
   // If we loose focus, 'commit' the user changes
-  _backupString = editString();
+  commit();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -125,5 +125,5 @@ void EditTextWidget::endEditMode()
 void EditTextWidget::abortEditMode()
 {
   // Editing is always enabled
-  setText(_backupString);
+  abort();
 }

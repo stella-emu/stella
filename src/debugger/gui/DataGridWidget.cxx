@@ -737,6 +737,7 @@ void DataGridWidget::startEditMode()
     dialog().tooltip().hide();
     enableEditMode(true);
     setText("", true);  // Erase current entry when starting editing
+    backupString() = "@@"; // dummy value to process Escape correctly key when nothing is entered
   }
 }
 
@@ -782,6 +783,7 @@ void DataGridWidget::endEditMode()
   }
 
   setSelectedValue(value);
+  commit();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -789,6 +791,7 @@ void DataGridWidget::abortEditMode()
 {
   if(_editMode)
   {
+    abort();
     // Undo any changes made
     assert(_selectedItem >= 0);
     enableEditMode(false);
