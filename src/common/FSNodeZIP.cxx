@@ -180,7 +180,7 @@ bool FilesystemNodeZIP::getChildren(AbstractFSList& myList, ListMode mode) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-size_t FilesystemNodeZIP::read(ByteBuffer& image) const
+size_t FilesystemNodeZIP::read(ByteBuffer& image, size_t) const
 {
   switch(_error)
   {
@@ -205,7 +205,7 @@ size_t FilesystemNodeZIP::read(stringstream& image) const
   // For now, we just read into a buffer and store in the stream
   // TODO: maybe there's a more efficient way to do this?
   ByteBuffer buffer;
-  size_t size = read(buffer);
+  size_t size = read(buffer, 0);
   if(size > 0)
     image.write(reinterpret_cast<char*>(buffer.get()), size);
 

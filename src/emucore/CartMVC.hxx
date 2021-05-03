@@ -51,7 +51,7 @@ class CartridgeMVC : public Cartridge
       @param bsSize    The size specified by the bankswitching scheme
     */
     CartridgeMVC(const string& path, size_t size, const string& md5,
-                 const Settings& settings, size_t bsSize = 1_KB);
+                 const Settings& settings, size_t bsSize = 8_KB);
     ~CartridgeMVC() override;
 
     /**
@@ -113,7 +113,7 @@ class CartridgeMVC : public Cartridge
       @param out  The Serializer object to use
       @return  False on any errors, else true
     */
-    bool save(Serializer& out) const override { return false; }
+    bool save(Serializer& out) const override;
 
     /**
       Load the current state of this cart from the given Serializer.
@@ -121,7 +121,7 @@ class CartridgeMVC : public Cartridge
       @param in  The Serializer object to use
       @return  False on any errors, else true
     */
-    bool load(Serializer& in) override { return false; }
+    bool load(Serializer& in) override;
 
   private:
     // Currently not used:

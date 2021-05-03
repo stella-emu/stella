@@ -697,31 +697,31 @@ bool CartDetector::isProbablyMVC(const ByteBuffer& image, size_t size)
 {
   // MVC version 0
   uInt8 sig[] = { 'M', 'V', 'C', 0 };
-  int	sigSize = sizeof(sig);
+  int sigSize = sizeof(sig);
   return searchForBytes(image, std::min<size_t>(size, sigSize+1), sig, sigSize);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-size_t CartDetector::isProbablyMVC(std::istream &in, size_t maxSize)
+size_t CartDetector::isProbablyMVC(const FilesystemNode& rom)
 {
-  const size_t	frameSize = 2 * CartridgeMVC::MVC_FIELD_PAD_SIZE;
-  bool			found = false;
+  constexpr size_t frameSize = 2 * CartridgeMVC::MVC_FIELD_PAD_SIZE;
 
-  // Returns size of field if stream is probably an MVC movie cartridge
+  if(Bankswitch::typeFromExtension(rom) == Bankswitch::Type::_MVC)
+    return frameSize;
 
-  if (maxSize >= frameSize)
+  Serializer s(rom.getPath(), Serializer::Mode::ReadOnly);
+  if(s)
   {
-	auto	pos = in.tellg();
+    if(s.size() < frameSize)
+      return 0;
 
-	ByteBuffer	image = make_unique<uInt8[]>(frameSize);
-	in.read(reinterpret_cast<char*>(image.get()), frameSize);
+    uInt8 image[frameSize];
+    s.getByteArray(image, frameSize);
 
-	in.seekg(pos);
-
-	found = isProbablyMVC(image, frameSize);
+    uInt8 sig[] = { 'M', 'V', 'C', 0 };  // MVC version 0
+    return searchForBytes(image, frameSize, sig, 4) ? frameSize : 0;
   }
-
-  return found ? frameSize : 0;
+  return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

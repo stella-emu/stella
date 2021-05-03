@@ -62,8 +62,8 @@ class FilesystemNodeZIP : public AbstractFSNode
     bool getChildren(AbstractFSList& list, ListMode mode) const override;
     AbstractFSNodePtr getParent() const override;
 
-    size_t read(ByteBuffer& image) const override;
-    size_t read(stringstream& image) const override;
+    size_t read(ByteBuffer& buffer, size_t size) const override;
+    size_t read(stringstream& buffer) const override;
     size_t write(const ByteBuffer& buffer, size_t size) const override;
     size_t write(const stringstream& buffer) const override;
 

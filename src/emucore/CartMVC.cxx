@@ -1340,3 +1340,15 @@ bool CartridgeMVC::poke(uInt16 address, uInt8 value)
 {
   return myMovie->process(address);
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeMVC::save(Serializer& out) const
+{
+  return false;  // TODO: implement this
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeMVC::load(Serializer& in)
+{
+  return false;  // TODO: implement this
+}
