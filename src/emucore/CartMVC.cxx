@@ -803,7 +803,7 @@ void MovieCart::updateTransport()
       if (temp == myDirectionValue)
         myInputs.updateDirection(temp);
 
-        myDirectionValue = temp;
+      myDirectionValue = temp;
     }
     else
     {
