@@ -19,6 +19,7 @@
 #define CARTRIDGE_DETECTOR_HXX
 
 #include "Bankswitch.hxx"
+#include "FSNode.hxx"
 #include "bspf.hxx"
 
 /**
@@ -40,12 +41,11 @@ class CartDetector
     */
     static Bankswitch::Type autodetectType(const ByteBuffer& image, size_t size);
 
-
     /**
-	  MVC cartridges are of arbitary large length
+      MVC cartridges are of arbitary large length
       Returns size of frame if stream is probably an MVC movie cartridge
     */
-    static size_t isProbablyMVC(std::istream &in, size_t size);
+    static size_t isProbablyMVC(const FilesystemNode& rom);
 
   private:
     /**

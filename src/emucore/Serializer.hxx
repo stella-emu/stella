@@ -70,9 +70,9 @@ class Serializer
     void rewind();
 
     /**
-      Returns the current write pointer location.
+      Returns the current total size of the stream.
     */
-    size_t size() const;
+    size_t size();
 
     /**
       Reads a byte value (unsigned 8-bit) from the current input stream.
