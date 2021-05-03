@@ -111,6 +111,10 @@ void DebuggerDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
     instance().eventHandler().enableTextEvents(false);
   }
 
+  // Process widget keys first
+  if(_focusedWidget && _focusedWidget->handleKeyDown(key, mod))
+    return;
+
   // special debugger keys first (cannot be remapped)
   if (StellaModTest::isControl(mod))
   {

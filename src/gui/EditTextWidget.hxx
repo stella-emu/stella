@@ -56,7 +56,6 @@ class EditTextWidget : public EditableWidget
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
 
   protected:
-    string _backupString;
     bool   _changed{false};
     int    _textOfs{0};
 
