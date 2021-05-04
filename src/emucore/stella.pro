@@ -517,6 +517,7 @@
 "Cart.MD5" "069c17beb1e8e0557adb8539fdcf6cba"
 "Cart.Name" "Phantom II & Pirate (PAL60)"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=843"
 ""
 
 "Cart.MD5" "06b0194ce992584c365278e0d7323279"
@@ -832,6 +833,7 @@
 
 "Cart.MD5" "097074f24cde141fe6a0f26a10333265"
 "Cart.Name" "Marble Craze (V0.90) (Paul Slocum)"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=99"
 ""
 
 "Cart.MD5" "097936b07e0e0117b9026ae6835eb168"
@@ -902,6 +904,7 @@
 "Cart.MD5" "0acaf71e60b89f6b6eab63db6ab84510"
 "Cart.Name" "This Planet Sucks (Greg Troutman) [a2]"
 "Cart.Rarity" "New Release"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=102"
 ""
 
 "Cart.MD5" "0aceb7c3bd13fe048b77a1928ed4267d"
@@ -1735,6 +1738,7 @@
 "Cart.MD5" "137373599e9b7bf2cf162a102eb5927f"
 "Cart.Manufacturer" "AtariAge, Joe Grand"
 "Cart.Name" "Ultra SCSIcide (SCSIcide 2.0)"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=296"
 "Controller.Left" "PADDLES"
 "Cart.Highscore" "{\"score_addresses\":[\"0xdc\",\"0xdd\",\"0xde\"],\"score_bcd\":false,\"score_digits\":6,\"variations_count\":1}"
 ""
@@ -2198,6 +2202,7 @@
 
 "Cart.MD5" "18bebbbd41c234f82b1717b1905e6027"
 "Cart.Name" "Space Instigators (Public Release) (02-01-2003) (CT)"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=114"
 ""
 
 "Cart.MD5" "18d26111cef66dff0c8af8cf0e117843"
@@ -2952,6 +2957,7 @@
 "Cart.MD5" "225522777dc7155627808bde0c1d0ef0"
 "Cart.Name" "This Planet Sucks Demo 1 (Greg Troutman) (PD)"
 "Cart.Rarity" "New Release"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=102"
 ""
 
 "Cart.MD5" "22675cacd9b71dea21800cbf8597f000"
@@ -3837,6 +3843,7 @@
 "Cart.Name" "Synthcart (2002) (Paul Slocum)"
 "Cart.Note" "Uses Keypad Controllers"
 "Display.Phosphor" "YES"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=101"
 ""
 
 "Cart.MD5" "2c3b2843295c9d6b16996971180a3fe9"
@@ -6471,6 +6478,7 @@
 "Cart.Manufacturer" "Hozer Video Games"
 "Cart.Name" "Crazy Valet (Hozer Video Games)"
 "Cart.Rarity" "New Release"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=112"
 ""
 
 "Cart.MD5" "4a8c743396b8ad69d97e6fd3dd3e3132"
@@ -6944,6 +6952,7 @@
 
 "Cart.MD5" "4fae08027365d31c558e400b687adf21"
 "Cart.Name" "Qb (V2.17) (NTSC) (2001) (Retroactive)"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=926"
 "Display.Phosphor" "YES"
 "Cart.Highscore" "{\"score_addresses\":[\"0xe6\",\"0xe5\",\"0xe4\"],\"score_digits\":6,\"variations_count\":1}"
 ""
@@ -6990,6 +6999,7 @@
 "Cart.Name" "SWOOPS! (v0.94) (TJ)"
 "Cart.Note" "Uses the Joystick (L) and Paddle (R) Controllers"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=329"
 "Controller.MouseAxis" "28"
 "Cart.Highscore" "{\"score_addresses\":[\"0xfd\",\"0xfe\",\"0xff\"],\"score_digits\":6,\"variations_address\":\"0xfc\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
@@ -6997,6 +7007,7 @@
 "Cart.MD5" "50568c80ac61cab789d9923c9b05b68e"
 "Cart.Manufacturer" "Ebivision"
 "Cart.Name" "Merlin's Walls - Standard Edition (1999) (Ebivision)"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=302"
 "Cart.Note" "Image rotated 90 degrees CW"
 ""
 
@@ -8192,6 +8203,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch, Paul Slocum"
 "Cart.Name" "Thrust+ Platinum (v1.27)"
 "Cart.Rarity" "New Release, supports BoosterGrip"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=37"
 "Controller.Left" "BOOSTERGRIP"
 "Controller.Right" "DRIVING"
 ""
@@ -8327,6 +8339,7 @@
 
 "Cart.MD5" "5fb71cc60e293fe10a5023f11c734e55"
 "Cart.Name" "This Planet Sucks (Fix) (27-12-2002) (Greg Troutman)"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=102"
 ""
 
 "Cart.MD5" "600d48eef5c0ec27db554b7328b3251c"
@@ -10497,6 +10510,7 @@
 "Cart.ModelNo" "RetroN 77 edition"
 "Cart.Name" "Amoeba Jump (R77) (DionoiD)"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1211"
 ""
 
 "Cart.MD5" "7778ac65d775a079f537e97cbdad541c"
@@ -10574,6 +10588,7 @@
 "Cart.MD5" "787ebc2609a31eb5c57c4a18837d1aee"
 "Cart.Manufacturer" "Prescott"
 "Cart.Name" "Vault Assault (19xx) (Prescott)"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=113"
 ""
 
 "Cart.MD5" "78821ef76ebc3934850d1bc1b9e4f4b0"
@@ -11077,6 +11092,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch, Paul Slocum"
 "Cart.Name" "Thrust+ Platinum (v1.26)"
 "Cart.Rarity" "New Release, supports BoosterGrip"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=37"
 "Controller.Left" "BOOSTERGRIP"
 "Controller.Right" "DRIVING"
 ""
@@ -11252,6 +11268,7 @@
 "Cart.MD5" "7f790939f7eaa8c47a246c4283981f84"
 "Cart.Name" "This Planet Sucks Demo 3 (Greg Troutman) (PD)"
 "Cart.Rarity" "New Release"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=102"
 "Display.Phosphor" "YES"
 ""
 
@@ -11340,7 +11357,7 @@
 "Cart.Name" "Strat-O-Gems Deluxe (2005) (J. Payson)"
 "Cart.Note" "Uses the AtariVox controller"
 "Cart.Rarity" "Homebrew"
-"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1045"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=337"
 "Controller.Right" "ATARIVOX"
 ""
 
@@ -11397,6 +11414,7 @@
 "Cart.MD5" "8101efafcf0af32fedda4579c941e6f4"
 "Cart.Name" "Okie Dokie (4K) (PD)"
 "Cart.Rarity" "New Release"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=40"
 ""
 
 "Cart.MD5" "81073d0377a2badef8d5e74fc44fc323"
@@ -11718,6 +11736,7 @@
 "Cart.MD5" "8530caaaf40acbdcd118c282b5f8a37a"
 "Cart.Name" "This Planet Sucks Demo 2 (Greg Troutman) (PD)"
 "Cart.Rarity" "New Release"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=102"
 ""
 
 "Cart.MD5" "8538c5e3ee83267774480649f83fa8d6"
@@ -12218,6 +12237,7 @@
 "Cart.MD5" "8b556c3d9ca8e5e6e665bd759b93ffae"
 "Cart.Name" "Synthcart (2002) (Paul Slocum) (PAL) [!]"
 "Cart.Note" "Uses Keypad Controllers"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=101"
 "Display.Phosphor" "YES"
 ""
 
@@ -12271,7 +12291,6 @@
 "Cart.Name" "Missile Command (Trakball) (2002) (TJ) (PAL)"
 "Cart.Note" "Uses the Trakball Controller"
 "Cart.Rarity" "Homebrew"
-"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1183"
 "Controller.Left" "TRAKBALL"
 "Controller.Right" "TRAKBALL"
 "Display.Phosphor" "YES"
@@ -12754,6 +12773,7 @@
 "Cart.Manufacturer" "Retroactive"
 "Cart.Name" "Qb (2.15) (Retroactive) (PAL)"
 "Cart.Rarity" "New Release"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=926"
 "Display.Phosphor" "YES"
 "Cart.Highscore" "{\"score_addresses\":[\"0xe6\",\"0xe5\",\"0xe4\"],\"score_digits\":6,\"variations_count\":1}"
 ""
@@ -13679,6 +13699,7 @@
 "Cart.Manufacturer" "Eric Mooney, Piero Cavina"
 "Cart.Name" "INV+"
 "Cart.Rarity" "New Release"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=283"
 ""
 
 "Cart.MD5" "9ec1b259a1bcffa63042a3c2b3b90f0a"
@@ -14606,6 +14627,7 @@
 "Cart.MD5" "a98b649912b6ca19eaf5c2d2faf38562"
 "Cart.Name" "This Planet Sucks (Greg Troutman) (PAL) [!]"
 "Cart.Rarity" "New Release"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=102"
 ""
 
 "Cart.MD5" "a995b6cbdb1f0433abc74050808590e6"
@@ -14831,6 +14853,7 @@
 "Cart.Manufacturer" "Retroactive"
 "Cart.Name" "Qb (2.15) (Retroactive) (NTSC)"
 "Cart.Rarity" "New Release"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=926"
 "Display.Phosphor" "YES"
 "Cart.Highscore" "{\"score_addresses\":[\"0xe6\",\"0xe5\",\"0xe4\"],\"score_digits\":6,\"variations_count\":1}"
 ""
@@ -15708,6 +15731,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Three.s (v1.02)"
 "Cart.Rarity" "New Release"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1042"
 ""
 
 "Cart.MD5" "b7d7c76e37f372f4e4979b380ed95a58"
@@ -17344,6 +17368,7 @@
 "Cart.MD5" "cca33ae30a58f39e3fc5d80f94dc0362"
 "Cart.Name" "Okie Dokie (PD)"
 "Cart.Rarity" "New Release"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=40"
 ""
 
 "Cart.MD5" "ccb56107ff0492232065b85493daa635"
@@ -17860,6 +17885,7 @@
 "Cart.Name" "Synthcart (14-01-2002) (Paul Slocum)"
 "Cart.Note" "Uses Keypad Controllers"
 "Display.Phosphor" "YES"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=101"
 ""
 
 "Cart.MD5" "d0cb28e1b7bd6c7f683a0917b59f707e"
@@ -18169,6 +18195,7 @@
 
 "Cart.MD5" "d4aa89e96d2902692f5c45f36903d336"
 "Cart.Name" "Euchre (NTSC) (Erik Eid) (PD)"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=126"
 ""
 
 "Cart.MD5" "d4c590ccfb611a73b3331359700c01a3"
@@ -19148,6 +19175,7 @@
 "Cart.MD5" "dfe6aa7443bb813cefa35a4cf4887422"
 "Cart.Name" "This Planet Sucks (Greg Troutman) [a1]"
 "Cart.Rarity" "New Release"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=102"
 ""
 
 "Cart.MD5" "dff33523ccd2fdc8912e84cab8e0d982"
@@ -19692,6 +19720,7 @@
 "Cart.MD5" "e56da674188ba2f02c7a0a343a01236f"
 "Cart.Name" "This Planet Sucks Demo 4 (Greg Troutman) (PD)"
 "Cart.Rarity" "New Release"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=102"
 ""
 
 "Cart.MD5" "e59d022d524d05acc19515598c831e4d"
@@ -19713,6 +19742,7 @@
 
 "Cart.MD5" "e5d5085123a98c1e61818caa2971e999"
 "Cart.Name" "Euchre (PAL) (Erik Eid) (PD)"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=126"
 ""
 
 "Cart.MD5" "e5d72ff8bab4450be57785cc9e83f3c0"
@@ -20632,6 +20662,7 @@
 "Cart.Manufacturer" "Paul Slocum"
 "Cart.Name" "Test Cart (2002) (Paul Slocum)"
 "Display.Phosphor" "YES"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=102"
 ""
 
 "Cart.MD5" "f066bea7ab0a37b83c83c924a87c5b67"
@@ -20910,6 +20941,7 @@
 "Cart.Manufacturer" "AtariAge - Fred Quimby"
 "Cart.Name" "Gingerbread Man (Fred Quimby)"
 "Cart.Rarity" "New Release"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=867"
 ""
 
 "Cart.MD5" "f3213a8a702b0646d2eaf9ee0722b51c"
