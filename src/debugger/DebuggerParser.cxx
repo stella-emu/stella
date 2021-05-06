@@ -31,6 +31,8 @@
 #include "Expression.hxx"
 #include "FSNode.hxx"
 #include "OSystem.hxx"
+#include "System.hxx"
+#include "M6502.hxx"
 #include "Settings.hxx"
 #include "PromptWidget.hxx"
 #include "RomWidget.hxx"
@@ -1665,6 +1667,16 @@ void DebuggerParser::executeLoadstate()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerParser::executeLogBreaks()
+{
+  bool enable = !debugger.mySystem.m6502().getLogBreaks();
+
+  debugger.mySystem.m6502().setLogBreaks(enable);
+  settings.setValue("dbg.logbreaks", enable);
+  commandResult << "logbreaks " << (enable ? "enabled" : "disabled");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "n"
 void DebuggerParser::executeN()
 {
@@ -2475,7 +2487,7 @@ void DebuggerParser::executeZ()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // List of all commands available to the parser
-std::array<DebuggerParser::Command, 100> DebuggerParser::commands = { {
+DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "a",
     "Set Accumulator to <value>",
@@ -3023,6 +3035,16 @@ std::array<DebuggerParser::Command, 100> DebuggerParser::commands = { {
     true,
     { Parameters::ARG_BYTE, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeLoadstate)
+  },
+
+  {
+    "logbreaks",
+    "Toggle logging of breaks/traps and continue emulation",
+    "Example: logbreaks (no parameters)",
+    false,
+    true,
+    { Parameters::ARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executeLogBreaks)
   },
 
   {

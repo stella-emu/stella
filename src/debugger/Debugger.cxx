@@ -123,6 +123,7 @@ bool Debugger::start(const string& message, int address, bool read,
 {
   if(myOSystem.eventHandler().enterDebugMode())
   {
+    myFirstLog = true;
     // This must be done *after* we enter debug mode,
     // so the message isn't erased
     ostringstream buf;
@@ -440,6 +441,80 @@ bool Debugger::readTrap(uInt16 t)
 bool Debugger::writeTrap(uInt16 t)
 {
   return writeTraps().isInitialized() && writeTraps().isSet(t);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::log(const string& triggerMsg)
+{
+  const CartDebug::Disassembly& disasm = myCartDebug->disassembly();
+  int pc = myCpuDebug->pc();
+
+  if(myFirstLog)
+  {
+    ostringstream msg;
+
+    msg << "Trigger:  Frame Scn Cy Pxl | PS       A  X  Y  SP | ";
+    if(myCartDebug->romBankCount() > 1)
+      if(myCartDebug->romBankCount() > 9)
+        msg << "Bk/";
+      else
+        msg << "B/";
+    msg << "Addr Code     Disam";
+    Logger::log(msg.str());
+    myFirstLog = false;
+  }
+
+  // First find the lines in the range, and determine the longest string
+  uInt16 start = pc & 0xFFF;
+  uInt32 list_size = uInt32(disasm.list.size());
+  uInt32 pos;
+
+  for(pos = 0; pos < list_size; ++pos)
+  {
+    const CartDebug::DisassemblyTag& tag = disasm.list[pos];
+
+    if((tag.address & 0xfff) >= start)
+      break;
+  }
+
+  const CartDebug::DisassemblyTag& tag = disasm.list[pos];
+  ostringstream msg;
+
+  msg << std::left << std::setw(10) << std::setfill(' ') << triggerMsg;
+  msg << Base::toString(myTiaDebug->frameCount(), Base::Fmt::_10_5) << " "
+    << Base::toString(myTiaDebug->scanlines(), Base::Fmt::_10_3) << " "
+    << Base::toString(myTiaDebug->clocksThisLine() / 3, Base::Fmt::_10_02) << " "
+    << Base::toString(myTiaDebug->clocksThisLine() - 68, Base::Fmt::_10_3) << " | ";
+  msg << (myCpuDebug->n() ? "N" : "n")
+    << (myCpuDebug->v() ? "V" : "v") << "-"
+    << (myCpuDebug->b() ? "B" : "b")
+    << (myCpuDebug->d() ? "D" : "d")
+    << (myCpuDebug->i() ? "I" : "i")
+    << (myCpuDebug->z() ? "Z" : "z")
+    << (myCpuDebug->c() ? "C" : "c") << " "
+    << Base::HEX2 << myCpuDebug->a() << " "
+    << Base::HEX2 << myCpuDebug->x() << " "
+    << Base::HEX2 << myCpuDebug->y() << " "
+    << Base::HEX2 << myCpuDebug->sp() << " |";
+
+  if(myCartDebug->romBankCount() > 1)
+  {
+    if(myCartDebug->romBankCount() > 9)
+      msg << Base::toString(myCartDebug->getBank(pc), Base::Fmt::_10) << "/";
+    else
+      msg << " " << myCartDebug->getBank(pc) << "/";
+  }
+  else
+    msg << " ";
+
+  msg << Base::HEX4 << pc << " "
+    << std::left << std::setw(8) << std::setfill(' ') << tag.bytes << " "
+    << tag.disasm.substr(0, 7);
+
+  if(tag.disasm.length() > 8)
+    msg << tag.disasm.substr(8);
+
+  Logger::log(msg.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -30,15 +30,16 @@ class Logger {
       ERR = 0, // cannot use ERROR???
       INFO = 1,
       DEBUG = 2,
+      ALWAYS = 3,
       MIN = ERR,
-      MAX = DEBUG
+      MAX = ALWAYS
     };
 
   public:
 
     static Logger& instance();
 
-    static void log(const string& message, Level level);
+    static void log(const string& message, Level level = Level::ALWAYS);
 
     static void error(const string& message);
 

@@ -321,6 +321,7 @@ class Debugger : public DialogContainer
     bool readTrap(uInt16 t);
     bool writeTrap(uInt16 t);
     void clearAllTraps();
+    void log(const string& triggerMsg);
 
     // Set a bunch of RAM locations at once
     string setRAM(IntArray& args);
@@ -363,6 +364,7 @@ class Debugger : public DialogContainer
     static std::array<PseudoRegister, 16> ourPseudoRegisters;
 
     static constexpr Int8 ANY_BANK = -1;
+    bool myFirstLog{true};
 
   private:
     // rewind/unwind n states

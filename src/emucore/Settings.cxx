@@ -188,6 +188,7 @@ Settings::Settings()
   setPermanent("dbg.fontstyle", "0");
   setPermanent("dbg.uhex", "false");
   setPermanent("dbg.ghostreadstrap", "true");
+  setPermanent("dbg.logbreaks", "false");
   setPermanent("dis.resolve", "true");
   setPermanent("dis.gfxformat", "2");
   setPermanent("dis.showaddr", "true");
@@ -614,6 +615,7 @@ void Settings::usage() const
     << "                                  normal)\n"
     << "   -dbg.ghostreadstrap <1|0>     Debugger traps on 'ghost' reads\n"
     << "   -dbg.uhex      <0|1>          lower-/uppercase HEX display\n"
+    << "   -dbg.logbreaks <0|1>          log breaks and traps and continue emulation\n"
     << "   -break         <address>      Set a breakpoint at 'address'\n"
     << "   -debug                        Start in debugger mode\n"
     << endl

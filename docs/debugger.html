@@ -609,7 +609,7 @@ command that takes arguments.</p>
 <h4><a name="Breakpoints">Breakpoints</a></h4>
 
 <p>A breakpoint is a "hotspot" in your program that causes the emulator
-to stop emulating and jump into the debugger. You can set as many
+to stop emulating and jump into the debugger &#185;. You can set as many
 breakpoints as you like. The command is "break xx yy" where xx is any
 expression and yy a bank number.  Both arguments are optional. If you have
 created a symbol file, you can use labels for the expression.</p>
@@ -632,6 +632,9 @@ breakpoint on &amp; off, like a light switch.</p>
 
 <p>You could also use "clearbreaks" to remove all the breakpoints. Also,
 there is a "listbreaks" command that will list them all.</p>
+
+<p>&#185; By enabling "logbreaks" you can log the current state into
+the System Log and continue emulation instead.</p>
 
 <h4><a name="ConditionalBreaks">Conditional Breaks</a></h4>
 
@@ -973,6 +976,7 @@ clearsavestateifs - Clear all savestate points
        loadconfig - Load DiStella config file
     loadallstates - Load all emulator states
         loadstate - Load emulator state xx (0-9)
+        logbreaks - Logs breaks and traps and continues emulation
                 n - Negative Flag: set (0 or 1), or toggle (no arg)
           palette - Show current TIA palette
                pc - Set Program Counter to address xx
