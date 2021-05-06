@@ -32,7 +32,7 @@ class Logger {
       DEBUG = 2,
       ALWAYS = 3,
       MIN = ERR,
-      MAX = ALWAYS
+      MAX = DEBUG
     };
 
   public:
