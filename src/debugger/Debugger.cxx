@@ -455,10 +455,12 @@ void Debugger::log(const string& triggerMsg)
 
     msg << "Trigger:  Frame Scn Cy Pxl | PS       A  X  Y  SP | ";
     if(myCartDebug->romBankCount() > 1)
+    {
       if(myCartDebug->romBankCount() > 9)
         msg << "Bk/";
       else
         msg << "B/";
+    }
     msg << "Addr Code     Disam";
     Logger::log(msg.str());
     myFirstLog = false;
