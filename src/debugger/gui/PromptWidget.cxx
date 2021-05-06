@@ -557,6 +557,8 @@ void PromptWidget::loadConfig()
     print(instance().debugger().cartDebug().loadConfigFile() + "\n");
     print(instance().debugger().cartDebug().loadListFile() + "\n");
     print(instance().debugger().cartDebug().loadSymbolFile() + "\n");
+    if(instance().settings().getBool("dbg.logbreaks"))
+      print(DebuggerParser::inverse(" logbreaks enabled \n"));
     print(PROMPT);
 
     _promptStartPos = _promptEndPos = _currentPos;

@@ -12,6 +12,15 @@
                               Release History
 ===========================================================================
 
+6.5.3 to 6.6 (??? ??, 202?)
+
+  * Added web links for many games
+
+  * Added optional logging of breaks and traps
+
+-Have fun!
+
+
 6.5.2 to 6.5.3 (April 20, 2021)
 
   * Added context-sensitive help.
@@ -25,8 +34,6 @@
   * Fixed palette and TV effects saving for Retron77.
 
   * Fixed immediate disassembling when switching options in debugger.
-
--Have fun!
 
 
 6.5.1 to 6.5.2 (February 25, 2021)
