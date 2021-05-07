@@ -260,7 +260,7 @@ namespace BSPF
   // Test whether the first string matches the second one (case insensitive)
   // - the first character must match
   // - the following characters must appear in the order of the first string
-  inline bool matches(string_view s1, string_view s2)
+  inline bool matchesIgnoreCase(string_view s1, string_view s2)
   {
     if(startsWithIgnoreCase(s1, s2.substr(0, 1)))
     {
@@ -271,6 +271,48 @@ namespace BSPF
         if(found == string::npos)
           return false;
         pos += found + 1;
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Test whether the first string matches the second one
+  //  (case sensitive for upper case characters in second string, except first one)
+  // - the first character must match
+  // - the following characters must appear in the order of the first string
+  inline bool matches(const string_view s1, const string_view s2)
+  {
+    if(startsWithIgnoreCase(s1, s2.substr(0, 1)))
+    {
+      size_t pos = 1;
+      size_t lastUpper = 0;
+
+      for(uInt32 j = 1; j < s2.size(); ++j)
+      {
+        if(std::isupper(s2[j]))
+        {
+          size_t found = s1.find_first_of(s2[j], pos);
+
+          if(found == string::npos)
+            return false;
+          // make sure no upper case characters are skipped
+          for(size_t k = lastUpper + 1; k < found; ++k)
+            if(isupper(s1[k]))
+              return false;
+
+          pos = found + 1;
+          lastUpper = found;
+        }
+        else
+        {
+          size_t found = findIgnoreCase(s1, s2.substr(j, 1), pos);
+
+          if(found == string::npos)
+            return false;
+
+          pos += found + 1;
+        }
       }
       return true;
     }

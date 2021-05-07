@@ -137,7 +137,7 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
         lines += instance().console().tia().scanlinesLastFrame();
       if(lines > 0)
       {
-        command << "scanline #" << lines;
+        command << "scanLine #" << lines;
         string message = instance().debugger().parser().run(command.str());
         instance().frameBuffer().showTextMessage(message);
       }
@@ -146,7 +146,7 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
     {
       ostringstream command;
       int scanline = myClickY + startLine;
-      command << "breakif _scan==#" << scanline;
+      command << "breakIf _scan==#" << scanline;
       string message = instance().debugger().parser().run(command.str());
       instance().frameBuffer().showTextMessage(message);
     }
@@ -157,7 +157,7 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
     }
     else if(rmb == "snap")
     {
-      instance().debugger().parser().run("savesnap");
+      instance().debugger().parser().run("saveSnap");
     }
   }
 }

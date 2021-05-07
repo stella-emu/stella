@@ -1493,16 +1493,16 @@ void CartDebug::getCompletions(const char* in, StringList& completions) const
 {
   // First scan system equates
   for(uInt16 addr = 0x00; addr <= 0x0F; ++addr)
-    if(ourTIAMnemonicR[addr] && BSPF::matches(ourTIAMnemonicR[addr], in))
+    if(ourTIAMnemonicR[addr] && BSPF::matchesIgnoreCase(ourTIAMnemonicR[addr], in))
       completions.push_back(ourTIAMnemonicR[addr]);
   for(uInt16 addr = 0x00; addr <= 0x3F; ++addr)
-    if(ourTIAMnemonicW[addr] && BSPF::matches(ourTIAMnemonicW[addr], in))
+    if(ourTIAMnemonicW[addr] && BSPF::matchesIgnoreCase(ourTIAMnemonicW[addr], in))
       completions.push_back(ourTIAMnemonicW[addr]);
   for(uInt16 addr = 0; addr <= 0x297-0x280; ++addr)
-    if(ourIOMnemonic[addr] && BSPF::matches(ourIOMnemonic[addr], in))
+    if(ourIOMnemonic[addr] && BSPF::matchesIgnoreCase(ourIOMnemonic[addr], in))
       completions.push_back(ourIOMnemonic[addr]);
   for(uInt16 addr = 0; addr <= 0x7F; ++addr)
-    if(ourZPMnemonic[addr] && BSPF::matches(ourZPMnemonic[addr], in))
+    if(ourZPMnemonic[addr] && BSPF::matchesIgnoreCase(ourZPMnemonic[addr], in))
       completions.push_back(ourZPMnemonic[addr]);
 
   // Now scan user-defined labels

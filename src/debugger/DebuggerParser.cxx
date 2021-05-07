@@ -653,11 +653,11 @@ string DebuggerParser::saveScriptFile(string file)
 
   StringList conds = debugger.m6502().getCondBreakNames();
   for(const auto& cond : conds)
-    out << "breakif {" << cond << "}" << endl;
+    out << "breakIf {" << cond << "}" << endl;
 
   conds = debugger.m6502().getCondSaveStateNames();
   for(const auto& cond : conds)
-    out << "savestateif {" << cond << "}" << endl;
+    out << "saveStateIf {" << cond << "}" << endl;
 
   StringList names = debugger.m6502().getCondTrapNames();
   for(uInt32 i = 0; i < myTraps.size(); ++i)
@@ -669,9 +669,9 @@ string DebuggerParser::saveScriptFile(string file)
     if(read && write)
       out << "trap";
     else if(read)
-      out << "trapread";
+      out << "trapRead";
     else if(write)
-      out << "trapwrite";
+      out << "trapWrite";
     if(hasCond)
       out << "if {" << names[i] << "}";
     out << " " << Base::toString(myTraps[i]->begin);
@@ -790,7 +790,7 @@ void DebuggerParser::executeBase()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "bcol"
+// "bCol"
 void DebuggerParser::executeBCol()
 {
   executeDirective(Device::BCOL);
@@ -855,8 +855,8 @@ void DebuggerParser::executeBreak()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "breakif"
-void DebuggerParser::executeBreakif()
+// "breakIf"
+void DebuggerParser::executeBreakIf()
 {
   int res = YaccParser::parse(argStrings[0].c_str());
   if(res == 0)
@@ -867,21 +867,21 @@ void DebuggerParser::executeBreakif()
       if(condition == debugger.m6502().getCondBreakNames()[i])
       {
         args[0] = i;
-        executeDelbreakif();
+        executeDelBreakIf();
         return;
       }
     }
     uInt32 ret = debugger.m6502().addCondBreak(
                  YaccParser::getResult(), argStrings[0]);
-    commandResult << "added breakif " << Base::toString(ret);
+    commandResult << "added breakIf " << Base::toString(ret);
   }
   else
     commandResult << red("invalid expression");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "breaklabel"
-void DebuggerParser::executeBreaklabel()
+// "breakLabel"
+void DebuggerParser::executeBreakLabel()
 {
   uInt16 addr;
 
@@ -932,8 +932,8 @@ void DebuggerParser::executeCheat()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "clearbreaks"
-void DebuggerParser::executeClearbreaks()
+// "clearBreaks"
+void DebuggerParser::executeClearBreaks()
 {
   debugger.clearAllBreakPoints();
   debugger.m6502().clearCondBreaks();
@@ -941,8 +941,8 @@ void DebuggerParser::executeClearbreaks()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "clearconfig"
-void DebuggerParser::executeClearconfig()
+// "clearConfig"
+void DebuggerParser::executeClearConfig()
 {
   if(argCount == 1)
     commandResult << debugger.cartDebug().clearConfig(args[0]);
@@ -951,16 +951,16 @@ void DebuggerParser::executeClearconfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "clearbreaks"
-void DebuggerParser::executeClearsavestateifs()
+// "clearBreaks"
+void DebuggerParser::executeClearSaveStateIfs()
 {
   debugger.m6502().clearCondSaveStates();
-  commandResult << "all savestate points cleared";
+  commandResult << "all saveState points cleared";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "cleartraps"
-void DebuggerParser::executeCleartraps()
+// "clearTraps"
+void DebuggerParser::executeClearTraps()
 {
   debugger.clearAllTraps();
   debugger.m6502().clearCondTraps();
@@ -969,8 +969,8 @@ void DebuggerParser::executeCleartraps()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "clearwatches"
-void DebuggerParser::executeClearwatches()
+// "clearWatches"
+void DebuggerParser::executeClearWatches()
 {
   myWatches.clear();
   commandResult << "all watches cleared";
@@ -999,8 +999,8 @@ void DebuggerParser::executeCol()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "colortest"
-void DebuggerParser::executeColortest()
+// "colorTest"
+void DebuggerParser::executeColorTest()
 {
   commandResult << "test color: "
                 << char((args[0]>>1) | 0x80)
@@ -1025,7 +1025,7 @@ void DebuggerParser::executeData()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "debugcolors"
+// "debugColors"
 void DebuggerParser::executeDebugColors()
 {
   commandResult << debugger.tiaDebug().debugColors();
@@ -1041,18 +1041,18 @@ void DebuggerParser::executeDefine()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "delbreakif"
-void DebuggerParser::executeDelbreakif()
+// "delBreakIf"
+void DebuggerParser::executeDelBreakIf()
 {
   if (debugger.m6502().delCondBreak(args[0]))
-    commandResult << "removed breakif " << Base::toString(args[0]);
+    commandResult << "removed breakIf " << Base::toString(args[0]);
   else
-    commandResult << red("no such breakif");
+    commandResult << red("no such breakIf");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "delfunction"
-void DebuggerParser::executeDelfunction()
+// "delFunction"
+void DebuggerParser::executeDelFunction()
 {
   if(debugger.delFunction(argStrings[0]))
     commandResult << "removed function " << argStrings[0];
@@ -1061,18 +1061,18 @@ void DebuggerParser::executeDelfunction()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "delsavestateif"
-void DebuggerParser::executeDelsavestateif()
+// "delSaveStateIf"
+void DebuggerParser::executeDelSaveStateIf()
 {
   if(debugger.m6502().delCondSaveState(args[0]))
-    commandResult << "removed savestateif " << Base::toString(args[0]);
+    commandResult << "removed saveStateIf " << Base::toString(args[0]);
   else
-    commandResult << red("no such savestateif");
+    commandResult << red("no such saveStateIf");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "deltrap"
-void DebuggerParser::executeDeltrap()
+// "delTrap"
+void DebuggerParser::executeDelTrap()
 {
   int index = args[0];
 
@@ -1089,8 +1089,8 @@ void DebuggerParser::executeDeltrap()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "delwatch"
-void DebuggerParser::executeDelwatch()
+// "delWatch"
+void DebuggerParser::executeDelWatch()
 {
   int which = args[0] - 1;
   if(which >= 0 && which < int(myWatches.size()))
@@ -1103,8 +1103,8 @@ void DebuggerParser::executeDelwatch()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "disasm"
-void DebuggerParser::executeDisasm()
+// "disAsm"
+void DebuggerParser::executeDisAsm()
 {
   int start, lines = 20;
 
@@ -1311,7 +1311,7 @@ void DebuggerParser::executeExec()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "exitrom"
+// "exitRom"
 void DebuggerParser::executeExitRom()
 {
   debugger.quit(true);
@@ -1389,7 +1389,7 @@ void DebuggerParser::executeHelp()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "joy0up"
+// "joy0Up"
 void DebuggerParser::executeJoy0Up()
 {
   ControllerLowLevel lport(debugger.myOSystem.console().leftController());
@@ -1400,7 +1400,7 @@ void DebuggerParser::executeJoy0Up()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "joy0down"
+// "joy0Down"
 void DebuggerParser::executeJoy0Down()
 {
   ControllerLowLevel lport(debugger.myOSystem.console().leftController());
@@ -1411,7 +1411,7 @@ void DebuggerParser::executeJoy0Down()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "joy0left"
+// "joy0Left"
 void DebuggerParser::executeJoy0Left()
 {
   ControllerLowLevel lport(debugger.myOSystem.console().leftController());
@@ -1422,7 +1422,7 @@ void DebuggerParser::executeJoy0Left()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "joy0right"
+// "joy0Right"
 void DebuggerParser::executeJoy0Right()
 {
   ControllerLowLevel lport(debugger.myOSystem.console().leftController());
@@ -1433,7 +1433,7 @@ void DebuggerParser::executeJoy0Right()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "joy0fire"
+// "joy0Fire"
 void DebuggerParser::executeJoy0Fire()
 {
   ControllerLowLevel lport(debugger.myOSystem.console().leftController());
@@ -1444,7 +1444,7 @@ void DebuggerParser::executeJoy0Fire()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "joy1up"
+// "joy1Up"
 void DebuggerParser::executeJoy1Up()
 {
   ControllerLowLevel rport(debugger.myOSystem.console().rightController());
@@ -1455,7 +1455,7 @@ void DebuggerParser::executeJoy1Up()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "joy1down"
+// "joy1Down"
 void DebuggerParser::executeJoy1Down()
 {
   ControllerLowLevel rport(debugger.myOSystem.console().rightController());
@@ -1466,7 +1466,7 @@ void DebuggerParser::executeJoy1Down()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "joy1left"
+// "joy1Left"
 void DebuggerParser::executeJoy1Left()
 {
   ControllerLowLevel rport(debugger.myOSystem.console().rightController());
@@ -1477,7 +1477,7 @@ void DebuggerParser::executeJoy1Left()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "joy1right"
+// "joy1Right"
 void DebuggerParser::executeJoy1Right()
 {
   ControllerLowLevel rport(debugger.myOSystem.console().rightController());
@@ -1488,7 +1488,7 @@ void DebuggerParser::executeJoy1Right()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "joy1fire"
+// "joy1Fire"
 void DebuggerParser::executeJoy1Fire()
 {
   ControllerLowLevel rport(debugger.myOSystem.console().rightController());
@@ -1521,8 +1521,8 @@ void DebuggerParser::executeJump()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "listbreaks"
-void DebuggerParser::executeListbreaks()
+// "listBreaks"
+void DebuggerParser::executeListBreaks()
 {
   stringstream buf;
   int count = 0;
@@ -1556,7 +1556,7 @@ void DebuggerParser::executeListbreaks()
   {
     if(count)
       commandResult << endl;
-    commandResult << "breakifs:" << endl;
+    commandResult << "BreakIfs:" << endl;
     for(uInt32 i = 0; i < conds.size(); ++i)
     {
       commandResult << Base::toString(i) << ": " << conds[i];
@@ -1569,8 +1569,8 @@ void DebuggerParser::executeListbreaks()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "listconfig"
-void DebuggerParser::executeListconfig()
+// "listConfig"
+void DebuggerParser::executeListConfig()
 {
   if(argCount == 1)
     commandResult << debugger.cartDebug().listConfig(args[0]);
@@ -1579,8 +1579,8 @@ void DebuggerParser::executeListconfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "listfunctions"
-void DebuggerParser::executeListfunctions()
+// "listFunctions"
+void DebuggerParser::executeListFunctions()
 {
   const Debugger::FunctionDefMap& functions = debugger.getFunctionDefMap();
 
@@ -1592,15 +1592,15 @@ void DebuggerParser::executeListfunctions()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "listsavestateifs"
-void DebuggerParser::executeListsavestateifs()
+// "listSaveStateIfs"
+void DebuggerParser::executeListSaveStateIfs()
 {
   ostringstream buf;
 
   StringList conds = debugger.m6502().getCondSaveStateNames();
   if(conds.size() > 0)
   {
-    commandResult << "savestateif:" << endl;
+    commandResult << "saveStateIf:" << endl;
     for(uInt32 i = 0; i < conds.size(); ++i)
     {
       commandResult << Base::toString(i) << ": " << conds[i];
@@ -1613,8 +1613,8 @@ void DebuggerParser::executeListsavestateifs()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "listtraps"
-void DebuggerParser::executeListtraps()
+// "listTraps"
+void DebuggerParser::executeListTraps()
 {
   StringList names = debugger.m6502().getCondTrapNames();
 
@@ -1643,22 +1643,22 @@ void DebuggerParser::executeListtraps()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "loadallstates"
-void DebuggerParser::executeLoadallstates()
+// "loadAllStates"
+void DebuggerParser::executeLoadAllStates()
 {
   debugger.loadAllStates();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "loadconfig"
-void DebuggerParser::executeLoadconfig()
+// "loadConfig"
+void DebuggerParser::executeLoadConfig()
 {
   commandResult << debugger.cartDebug().loadConfigFile();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "loadstate"
-void DebuggerParser::executeLoadstate()
+// "loadState"
+void DebuggerParser::executeLoadState()
 {
   if(args[0] >= 0 && args[0] <= 9)
     debugger.loadState(args[0]);
@@ -1672,8 +1672,8 @@ void DebuggerParser::executeLogBreaks()
   bool enable = !debugger.mySystem.m6502().getLogBreaks();
 
   debugger.mySystem.m6502().setLogBreaks(enable);
-  settings.setValue("dbg.logbreaks", enable);
-  commandResult << "logbreaks " << (enable ? "enabled" : "disabled");
+  settings.setValue("dbg.logBreaks", enable);
+  commandResult << "logBreaks " << (enable ? "enabled" : "disabled");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1701,14 +1701,14 @@ void DebuggerParser::executePc()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "pcol"
+// "pCol"
 void DebuggerParser::executePCol()
 {
   executeDirective(Device::PCOL);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "pgfx"
+// "pGfx"
 void DebuggerParser::executePGfx()
 {
   executeDirective(Device::PGFX);
@@ -1801,7 +1801,7 @@ void DebuggerParser::executeRun()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "runto"
+// "runTo"
 void DebuggerParser::executeRunTo()
 {
   const CartDebug& cartdbg = debugger.cartDebug();
@@ -1816,7 +1816,7 @@ void DebuggerParser::executeRunTo()
   ostringstream buf;
   ProgressDialog progress(debugger.baseDialog(), debugger.lfont());
 
-  buf << "RunTo searching through " << max_iterations << " disassembled instructions"
+  buf << "runTo searching through " << max_iterations << " disassembled instructions"
     << progress.ELLIPSIS;
   progress.setMessage(buf.str());
   progress.setRange(0, max_iterations, 5);
@@ -1850,7 +1850,7 @@ void DebuggerParser::executeRunTo()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "runtopc"
+// "runToPc"
 void DebuggerParser::executeRunToPc()
 {
   const CartDebug& cartdbg = debugger.cartDebug();
@@ -1865,7 +1865,7 @@ void DebuggerParser::executeRunToPc()
   ostringstream buf;
   ProgressDialog progress(debugger.baseDialog(), debugger.lfont());
 
-  buf << "        RunTo PC running" << progress.ELLIPSIS << "        ";
+  buf << "        runTo PC running" << progress.ELLIPSIS << "        ";
   progress.setMessage(buf.str());
   progress.setRange(0, 100000, 5);
   progress.open();
@@ -1923,7 +1923,7 @@ void DebuggerParser::executeSave()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "saveaccess"
+// "saveAccess"
 void DebuggerParser::executeSaveAccess()
 {
   if(argCount && argStrings[0] == "?")
@@ -1947,15 +1947,15 @@ void DebuggerParser::executeSaveAccess()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "saveconfig"
-void DebuggerParser::executeSaveconfig()
+// "saveConfig"
+void DebuggerParser::executeSaveConfig()
 {
   commandResult << debugger.cartDebug().saveConfigFile();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "savedis"
-void DebuggerParser::executeSavedisassembly()
+// "saveDis"
+void DebuggerParser::executeSaveDisassembly()
 {
   if(argCount && argStrings[0] == "?")
   {
@@ -1978,8 +1978,8 @@ void DebuggerParser::executeSavedisassembly()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "saverom"
-void DebuggerParser::executeSaverom()
+// "saveRom"
+void DebuggerParser::executeSaveRom()
 {
   if(argCount && argStrings[0] == "?")
   {
@@ -2002,8 +2002,8 @@ void DebuggerParser::executeSaverom()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "saveses"
-void DebuggerParser::executeSaveses()
+// "saveSes"
+void DebuggerParser::executeSaveSes()
 {
   ostringstream filename;
   auto timeinfo = BSPF::localTime();
@@ -2039,22 +2039,22 @@ void DebuggerParser::executeSaveses()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "savesnap"
-void DebuggerParser::executeSavesnap()
+// "saveSnap"
+void DebuggerParser::executeSaveSnap()
 {
   debugger.tiaOutput().saveSnapshot(execDepth, execPrefix);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "saveallstates"
-void DebuggerParser::executeSaveallstates()
+// "saveAllStates"
+void DebuggerParser::executeSaveAllStates()
 {
   debugger.saveAllStates();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "savestate"
-void DebuggerParser::executeSavestate()
+// "saveState"
+void DebuggerParser::executeSaveState()
 {
   if(args[0] >= 0 && args[0] <= 9)
     debugger.saveState(args[0]);
@@ -2063,8 +2063,8 @@ void DebuggerParser::executeSavestate()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "savestateif"
-void DebuggerParser::executeSavestateif()
+// "saveStateIf"
+void DebuggerParser::executeSaveStateIf()
 {
   int res = YaccParser::parse(argStrings[0].c_str());
   if(res == 0)
@@ -2075,26 +2075,26 @@ void DebuggerParser::executeSavestateif()
       if(condition == debugger.m6502().getCondSaveStateNames()[i])
       {
         args[0] = i;
-        executeDelsavestateif();
+        executeDelSaveStateIf();
         return;
       }
     }
     uInt32 ret = debugger.m6502().addCondSaveState(
       YaccParser::getResult(), argStrings[0]);
-    commandResult << "added savestateif " << Base::toString(ret);
+    commandResult << "added saveStateIf " << Base::toString(ret);
   }
   else
     commandResult << red("invalid expression");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "scanline"
-void DebuggerParser::executeScanline()
+// "scanLine"
+void DebuggerParser::executeScanLine()
 {
   int count = 1;
   if(argCount != 0) count = args[0];
   debugger.nextScanline(count);
-  commandResult << "advanced " << dec << count << " scanline(s)";
+  commandResult << "advanced " << dec << count << " scanLine(s)";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2106,8 +2106,8 @@ void DebuggerParser::executeStep()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "stepwhile"
-void DebuggerParser::executeStepwhile()
+// "stepWhile"
+void DebuggerParser::executeStepWhile()
 {
   int res = YaccParser::parse(argStrings[0].c_str());
   if(res != 0) {
@@ -2123,7 +2123,7 @@ void DebuggerParser::executeStepwhile()
   ostringstream buf;
   ProgressDialog progress(debugger.baseDialog(), debugger.lfont());
 
-  buf << "stepwhile running through disassembled instructions"
+  buf << "stepWhile running through disassembled instructions"
     << progress.ELLIPSIS;
   progress.setMessage(buf.str());
   progress.setRange(0, 100000, 5);
@@ -2162,38 +2162,38 @@ void DebuggerParser::executeTrap()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "trapif"
-void DebuggerParser::executeTrapif()
+// "trapIf"
+void DebuggerParser::executeTrapIf()
 {
-  executeTraps(true, true, "trapif", true);
+  executeTraps(true, true, "trapIf", true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "trapread"
-void DebuggerParser::executeTrapread()
+// "trapRead"
+void DebuggerParser::executeTrapRead()
 {
-  executeTraps(true, false, "trapread");
+  executeTraps(true, false, "trapRead");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "trapreadif"
-void DebuggerParser::executeTrapreadif()
+// "trapReadIf"
+void DebuggerParser::executeTrapReadIf()
 {
-  executeTraps(true, false, "trapreadif", true);
+  executeTraps(true, false, "trapReadIf", true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "trapwrite"
-void DebuggerParser::executeTrapwrite()
+// "trapWrite"
+void DebuggerParser::executeTrapWrite()
 {
-  executeTraps(false, true, "trapwrite");
+  executeTraps(false, true, "trapWrite");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "trapwriteif"
-void DebuggerParser::executeTrapwriteif()
+// "trapWriteIf"
+void DebuggerParser::executeTrapWriteIf()
 {
-  executeTraps(false, true, "trapwriteif", true);
+  executeTraps(false, true, "trapWriteIf", true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2241,18 +2241,18 @@ void DebuggerParser::executeTraps(bool read, bool write, const string& command,
   if(read)
   {
     if(beginRead != endRead)
-      conditionBuf << "__lastbaseread>=" << Base::toString(beginRead) << "&&__lastbaseread<=" << Base::toString(endRead);
+      conditionBuf << "__lastBaseRead>=" << Base::toString(beginRead) << "&&__lastBaseRead<=" << Base::toString(endRead);
     else
-      conditionBuf << "__lastbaseread==" << Base::toString(beginRead);
+      conditionBuf << "__lastBaseRead==" << Base::toString(beginRead);
   }
   if(read && write)
     conditionBuf << "||";
   if(write)
   {
     if(beginWrite != endWrite)
-      conditionBuf << "__lastbasewrite>=" << Base::toString(beginWrite) << "&&__lastbasewrite<=" << Base::toString(endWrite);
+      conditionBuf << "__lastBaseWrite>=" << Base::toString(beginWrite) << "&&__lastBaseWrite<=" << Base::toString(endWrite);
     else
-      conditionBuf << "__lastbasewrite==" << Base::toString(beginWrite);
+      conditionBuf << "__lastBaseWrite==" << Base::toString(beginWrite);
   }
   // parenthesize provided condition (end)
   if(hasCond)
@@ -2302,7 +2302,7 @@ void DebuggerParser::executeTraps(bool read, bool write, const string& command,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// wrapper function for trap(if)/trapread(if)/trapwrite(if) commands
+// wrapper function for trap(if)/trapRead(if)/trapWrite(if) commands
 void DebuggerParser::executeTrapRW(uInt32 addr, bool read, bool write, bool add)
 {
   switch(debugger.cartDebug().addressType(addr))
@@ -2313,7 +2313,7 @@ void DebuggerParser::executeTrapRW(uInt32 addr, bool read, bool write, bool add)
       {
         if((i & 0x1080) == 0x0000)
         {
-          // @sa666666: This seems wrong. E.g. trapread 40 4f will never trigger
+          // @sa666666: This seems wrong. E.g. trapRead 40 4f will never trigger
           if(read && (i & 0x000F) == (addr & 0x000F))
             add ? debugger.addReadTrap(i) : debugger.removeReadTrap(i);
           if(write && (i & 0x003F) == (addr & 0x003F))
@@ -2387,13 +2387,13 @@ void DebuggerParser::executeType()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "uhex"
+// "uHex"
 void DebuggerParser::executeUHex()
 {
   bool enable = !Base::hexUppercase();
   Base::setHexUppercase(enable);
 
-  settings.setValue("dbg.uhex", enable);
+  settings.setValue("dbg.uHex", enable);
   debugger.rom().invalidate();
 
   commandResult << "uppercase HEX " << (enable ? "enabled" : "disabled");
@@ -2519,9 +2519,9 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   },
 
   {
-    "bcol",
-    "Mark 'BCOL' range in disassembly",
-    "Start and end of range required\nExample: bcol f000 f010",
+    "bCol",
+    "Mark 'bCol' range in disassembly",
+    "Start and end of range required\nExample: bCol f000 f010",
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
@@ -2541,23 +2541,23 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   },
 
   {
-    "breakif",
+    "breakIf",
     "Set/clear breakpoint on <condition>",
-    "Condition can include multiple items, see documentation\nExample: breakif _scan>100",
+    "Condition can include multiple items, see documentation\nExample: breakIf _scan>100",
     true,
     true,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeBreakif)
+    std::mem_fn(&DebuggerParser::executeBreakIf)
   },
 
   {
-    "breaklabel",
+    "breakLabel",
     "Set/clear breakpoint on <address> (no mirrors, all banks)",
-    "Example: breaklabel, breaklabel MainLoop",
+    "Example: breakLabel, breakLabel MainLoop",
     false,
     true,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeBreaklabel)
+    std::mem_fn(&DebuggerParser::executeBreakLabel)
   },
 
   {
@@ -2581,53 +2581,53 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   },
 
   {
-    "clearbreaks",
+    "clearBreaks",
     "Clear all breakpoints",
-    "Example: clearbreaks (no parameters)",
+    "Example: clearBreaks (no parameters)",
     false,
     true,
     { Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeClearbreaks)
+    std::mem_fn(&DebuggerParser::executeClearBreaks)
   },
 
   {
-    "clearconfig",
+    "clearConfig",
     "Clear Distella config directives [bank xx]",
-    "Example: clearconfig 0, clearconfig 1",
+    "Example: clearConfig 0, clearConfig 1",
     false,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
-    std::mem_fn(&DebuggerParser::executeClearconfig)
+    std::mem_fn(&DebuggerParser::executeClearConfig)
   },
 
   {
-    "clearsavestateifs",
-    "Clear all savestate points",
-    "Example: clearsavestateifss (no parameters)",
+    "clearSaveStateIfs",
+    "Clear all saveState points",
+    "Example: ClearSaveStateIfss (no parameters)",
     false,
     true,
     { Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeClearsavestateifs)
+    std::mem_fn(&DebuggerParser::executeClearSaveStateIfs)
   },
 
   {
-    "cleartraps",
+    "clearTraps",
     "Clear all traps",
-    "All traps cleared, including any mirrored ones\nExample: cleartraps (no parameters)",
+    "All traps cleared, including any mirrored ones\nExample: clearTraps (no parameters)",
     false,
     false,
     { Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeCleartraps)
+    std::mem_fn(&DebuggerParser::executeClearTraps)
   },
 
   {
-    "clearwatches",
+    "clearWatches",
     "Clear all watches",
-    "Example: clearwatches (no parameters)",
+    "Example: clearWatches (no parameters)",
     false,
     false,
     { Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeClearwatches)
+    std::mem_fn(&DebuggerParser::executeClearWatches)
   },
 
   {
@@ -2661,13 +2661,13 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   },
 
   {
-    "colortest",
+    "colorTest",
     "Show value xx as TIA color",
-    "Shows a color swatch for the given value\nExample: colortest 1f",
+    "Shows a color swatch for the given value\nExample: colorTest 1f",
     true,
     false,
     { Parameters::ARG_BYTE, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeColortest)
+    std::mem_fn(&DebuggerParser::executeColorTest)
   },
 
   {
@@ -2691,9 +2691,9 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   },
 
   {
-    "debugcolors",
+    "debugColors",
     "Show Fixed Debug Colors information",
-    "Example: debugcolors (no parameters)",
+    "Example: debugColors (no parameters)",
     false,
     false,
     { Parameters::ARG_END_ARGS },
@@ -2711,64 +2711,64 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   },
 
   {
-    "delbreakif",
-    "Delete conditional breakif <xx>",
-    "Example: delbreakif 0",
+    "delBreakIf",
+    "Delete conditional breakIf <xx>",
+    "Example: delBreakIf 0",
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeDelbreakif)
+    std::mem_fn(&DebuggerParser::executeDelBreakIf)
   },
 
   {
-    "delfunction",
+    "delFunction",
     "Delete function with label xx",
-    "Example: delfunction FUNC1",
+    "Example: delFunction FUNC1",
     true,
     false,
     { Parameters::ARG_LABEL, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeDelfunction)
+    std::mem_fn(&DebuggerParser::executeDelFunction)
   },
 
   {
-    "delsavestateif",
-    "Delete conditional savestate point <xx>",
-    "Example: delsavestateif 0",
+    "delSaveStateIf",
+    "Delete conditional saveState point <xx>",
+    "Example: delSaveStateIf 0",
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeDelsavestateif)
+    std::mem_fn(&DebuggerParser::executeDelSaveStateIf)
   },
 
   {
-    "deltrap",
+    "delTrap",
     "Delete trap <xx>",
-    "Example: deltrap 0",
+    "Example: delTrap 0",
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeDeltrap)
+    std::mem_fn(&DebuggerParser::executeDelTrap)
   },
 
   {
-    "delwatch",
+    "delWatch",
     "Delete watch <xx>",
-    "Example: delwatch 0",
+    "Example: delWatch 0",
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeDelwatch)
+    std::mem_fn(&DebuggerParser::executeDelWatch)
   },
 
   {
-    "disasm",
+    "disAsm",
     "Disassemble address xx [yy lines] (default=PC)",
     "Disassembles from starting address <xx> (default=PC) for <yy> lines\n"
-    "Example: disasm, disasm f000 100",
+    "Example: disAsm, disAsm f000 100",
     false,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
-    std::mem_fn(&DebuggerParser::executeDisasm)
+    std::mem_fn(&DebuggerParser::executeDisAsm)
   },
 
   {
@@ -2797,7 +2797,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   },
 
   {
-    "exitrom",
+    "exitRom",
     "Exit emulator, return to ROM launcher",
     "Self-explanatory",
     false,
@@ -2848,9 +2848,9 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   },
 
   {
-    "joy0up",
+    "joy0Up",
     "Set joystick 0 up direction to value <x> (0 or 1), or toggle (no arg)",
-    "Example: joy0up 0",
+    "Example: joy0Up 0",
     false,
     true,
     { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
@@ -2858,9 +2858,9 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   },
 
   {
-    "joy0down",
+    "joy0Down",
     "Set joystick 0 down direction to value <x> (0 or 1), or toggle (no arg)",
-    "Example: joy0down 0",
+    "Example: joy0Down 0",
     false,
     true,
     { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
@@ -2868,9 +2868,9 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   },
 
   {
-    "joy0left",
+    "joy0Left",
     "Set joystick 0 left direction to value <x> (0 or 1), or toggle (no arg)",
-    "Example: joy0left 0",
+    "Example: joy0Left 0",
     false,
     true,
     { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
@@ -2878,9 +2878,9 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   },
 
   {
-    "joy0right",
+    "joy0Right",
     "Set joystick 0 right direction to value <x> (0 or 1), or toggle (no arg)",
-    "Example: joy0left 0",
+    "Example: joy0Left 0",
     false,
     true,
     { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
@@ -2888,9 +2888,9 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   },
 
   {
-    "joy0fire",
+    "joy0Fire",
     "Set joystick 0 fire button to value <x> (0 or 1), or toggle (no arg)",
-    "Example: joy0fire 0",
+    "Example: joy0Fire 0",
     false,
     true,
     { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
@@ -2898,9 +2898,9 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   },
 
   {
-    "joy1up",
+    "joy1Up",
     "Set joystick 1 up direction to value <x> (0 or 1), or toggle (no arg)",
-    "Example: joy1up 0",
+    "Example: joy1Up 0",
     false,
     true,
     { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
@@ -2908,9 +2908,9 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   },
 
   {
-    "joy1down",
+    "joy1Down",
     "Set joystick 1 down direction to value <x> (0 or 1), or toggle (no arg)",
-    "Example: joy1down 0",
+    "Example: joy1Down 0",
     false,
     true,
     { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
@@ -2918,9 +2918,9 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   },
 
   {
-    "joy1left",
+    "joy1Left",
     "Set joystick 1 left direction to value <x> (0 or 1), or toggle (no arg)",
-    "Example: joy1left 0",
+    "Example: joy1Left 0",
     false,
     true,
     { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
@@ -2928,9 +2928,9 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   },
 
   {
-    "joy1right",
+    "joy1Right",
     "Set joystick 1 right direction to value <x> (0 or 1), or toggle (no arg)",
-    "Example: joy1left 0",
+    "Example: joy1Left 0",
     false,
     true,
     { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
@@ -2938,9 +2938,9 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   },
 
   {
-    "joy1fire",
+    "joy1Fire",
     "Set joystick 1 fire button to value <x> (0 or 1), or toggle (no arg)",
-    "Example: joy1fire 0",
+    "Example: joy1Fire 0",
     false,
     true,
     { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
@@ -2958,89 +2958,89 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   },
 
   {
-    "listbreaks",
+    "listBreaks",
     "List breakpoints",
-    "Example: listbreaks (no parameters)",
+    "Example: listBreaks (no parameters)",
     false,
     false,
     { Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeListbreaks)
+    std::mem_fn(&DebuggerParser::executeListBreaks)
   },
 
   {
-    "listconfig",
+    "listConfig",
     "List Distella config directives [bank xx]",
-    "Example: listconfig 0, listconfig 1",
+    "Example: listConfig 0, listConfig 1",
     false,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
-    std::mem_fn(&DebuggerParser::executeListconfig)
+    std::mem_fn(&DebuggerParser::executeListConfig)
   },
 
   {
-    "listfunctions",
+    "listFunctions",
     "List user-defined functions",
-    "Example: listfunctions (no parameters)",
+    "Example: listFunctions (no parameters)",
     false,
     false,
     { Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeListfunctions)
+    std::mem_fn(&DebuggerParser::executeListFunctions)
   },
 
   {
-    "listsavestateifs",
-    "List savestate points",
-    "Example: listsavestateifs (no parameters)",
+    "listSaveStateIfs",
+    "List saveState points",
+    "Example: listSaveStateIfs (no parameters)",
     false,
     false,
     { Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeListsavestateifs)
+    std::mem_fn(&DebuggerParser::executeListSaveStateIfs)
   },
 
   {
-    "listtraps",
+    "listTraps",
     "List traps",
-    "Lists all traps (read and/or write)\nExample: listtraps (no parameters)",
+    "Lists all traps (read and/or write)\nExample: listTraps (no parameters)",
     false,
     false,
     { Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeListtraps)
+    std::mem_fn(&DebuggerParser::executeListTraps)
   },
 
   {
-    "loadconfig",
+    "loadConfig",
     "Load Distella config file",
-    "Example: loadconfig",
+    "Example: loadConfig",
     false,
     true,
     { Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeLoadconfig)
+    std::mem_fn(&DebuggerParser::executeLoadConfig)
   },
 
   {
-    "loadallstates",
+    "loadAllStates",
     "Load all emulator states",
-    "Example: loadallstates (no parameters)",
+    "Example: loadAllStates (no parameters)",
     false,
     true,
     { Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeLoadallstates)
+    std::mem_fn(&DebuggerParser::executeLoadAllStates)
   },
 
   {
-    "loadstate",
+    "loadState",
     "Load emulator state xx (0-9)",
-    "Example: loadstate 0, loadstate 9",
+    "Example: loadState 0, loadState 9",
     true,
     true,
     { Parameters::ARG_BYTE, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeLoadstate)
+    std::mem_fn(&DebuggerParser::executeLoadState)
   },
 
   {
-    "logbreaks",
+    "logBreaks",
     "Toggle logging of breaks/traps and continue emulation",
-    "Example: logbreaks (no parameters)",
+    "Example: logBreaks (no parameters)",
     false,
     true,
     { Parameters::ARG_END_ARGS },
@@ -3078,8 +3078,8 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   },
 
   {
-    "pcol",
-    "Mark 'PCOL' range in disassembly",
+    "pCol",
+    "Mark 'pCol' range in disassembly",
     "Start and end of range required\nExample: col f000 f010",
     true,
     false,
@@ -3088,9 +3088,9 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   },
 
   {
-    "pgfx",
-    "Mark 'PGFX' range in disassembly",
-    "Start and end of range required\nExample: pgfx f000 f010",
+    "pGfx",
+    "Mark 'pGfx' range in disassembly",
+    "Start and end of range required\nExample: pGfx f000 f010",
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
@@ -3180,10 +3180,10 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   },
 
   {
-    "runto",
+    "runTo",
     "Run until string xx in disassembly",
     "Advance until the given string is detected in the disassembly\n"
-    "Example: runto lda",
+    "Example: runTo lda",
     true,
     true,
     { Parameters::ARG_LABEL, Parameters::ARG_END_ARGS },
@@ -3191,9 +3191,9 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   },
 
   {
-    "runtopc",
+    "runToPc",
     "Run until PC is set to value xx",
-    "Example: runtopc f200",
+    "Example: runToPc f200",
     true,
     true,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
@@ -3222,9 +3222,9 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   },
 
   {
-    "saveaccess",
+    "saveAccess",
     "Save the access counters to CSV file [?]",
-    "Example: saveaccess, saveaccess ?\n"
+    "Example: saveAccess, saveAccess ?\n"
     "NOTE: saves to user dir by default",
       false,
       false,
@@ -3233,97 +3233,97 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   },
 
   {
-    "saveconfig",
+    "saveConfig",
     "Save Distella config file (with default name)",
-    "Example: saveconfig",
+    "Example: saveConfig",
     false,
     false,
     { Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeSaveconfig)
+    std::mem_fn(&DebuggerParser::executeSaveConfig)
   },
 
   {
-    "savedis",
+    "saveDis",
     "Save Distella disassembly to file [?]",
-    "Example: savedis, savedis ?\n"
+    "Example: saveDis, saveDis ?\n"
     "NOTE: saves to user dir by default",
     false,
     false,
     { Parameters::ARG_LABEL, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeSavedisassembly)
+    std::mem_fn(&DebuggerParser::executeSaveDisassembly)
   },
 
   {
-    "saverom",
+    "saveRom",
     "Save (possibly patched) ROM to file [?]",
-    "Example: saverom, saverom ?\n"
+    "Example: saveRom, saveRom ?\n"
     "NOTE: saves to user dir by default",
     false,
     false,
     { Parameters::ARG_LABEL, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeSaverom)
+    std::mem_fn(&DebuggerParser::executeSaveRom)
   },
 
   {
-    "saveses",
+    "saveSes",
     "Save console session to file [?]",
-    "Example: saveses, saveses ?\n"
+    "Example: saveSes, saveSes ?\n"
     "NOTE: saves to user dir by default",
     false,
     false,
     { Parameters::ARG_LABEL, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeSaveses)
+    std::mem_fn(&DebuggerParser::executeSaveSes)
   },
 
   {
-    "savesnap",
+    "saveSnap",
     "Save current TIA image to PNG file",
     "Save snapshot to current snapshot save directory\n"
-    "Example: savesnap (no parameters)",
+    "Example: saveSnap (no parameters)",
     false,
     false,
     { Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeSavesnap)
+    std::mem_fn(&DebuggerParser::executeSaveSnap)
   },
 
   {
-    "saveallstates",
+    "saveAllStates",
     "Save all emulator states",
-    "Example: saveallstates (no parameters)",
+    "Example: saveAllStates (no parameters)",
     false,
     false,
     { Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeSaveallstates)
+    std::mem_fn(&DebuggerParser::executeSaveAllStates)
   },
 
   {
-    "savestate",
+    "saveState",
     "Save emulator state xx (valid args 0-9)",
-    "Example: savestate 0, savestate 9",
+    "Example: saveState 0, saveState 9",
     true,
     false,
     { Parameters::ARG_BYTE, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeSavestate)
+    std::mem_fn(&DebuggerParser::executeSaveState)
   },
 
   {
-    "savestateif",
-    "Create savestate on <condition>",
-    "Condition can include multiple items, see documentation\nExample: savestateif pc==f000",
+    "saveStateIf",
+    "Create saveState on <condition>",
+    "Condition can include multiple items, see documentation\nExample: saveStateIf pc==f000",
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeSavestateif)
+    std::mem_fn(&DebuggerParser::executeSaveStateIf)
   },
 
   {
-    "scanline",
+    "scanLine",
     "Advance emulation by <xx> scanlines (default=1)",
-    "Example: scanline, scanline 100",
+    "Example: scanLine, scanLine 100",
     false,
     true,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeScanline)
+    std::mem_fn(&DebuggerParser::executeScanLine)
   },
 
   {
@@ -3337,13 +3337,13 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   },
 
   {
-    "stepwhile",
+    "stepWhile",
     "Single step CPU while <condition> is true",
-    "Example: stepwhile pc!=$f2a9",
+    "Example: stepWhile pc!=$f2a9",
     true,
     true,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
-    std::mem_fn(&DebuggerParser::executeStepwhile)
+    std::mem_fn(&DebuggerParser::executeStepWhile)
   },
 
   {
@@ -3378,58 +3378,58 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   },
 
   {
-    "trapif",
+    "trapIf",
     "On <condition> trap R/W access to address(es) xx [yy]",
     "Set/clear a conditional R/W trap on the given address(es) and all mirrors\nCondition can include multiple items.\n"
-    "Example: trapif _scan>#100 GRP0, trapif _bank==1 f000 f100",
+    "Example: trapIf _scan>#100 GRP0, trapIf _bank==1 f000 f100",
       true,
       false,
       { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
-      std::mem_fn(&DebuggerParser::executeTrapif)
+      std::mem_fn(&DebuggerParser::executeTrapIf)
   },
 
   {
-    "trapread",
+    "trapRead",
     "Trap read access to address(es) xx [yy]",
     "Set/clear a read trap on the given address(es) and all mirrors\n"
-    "Example: trapread f000, trapread f000 f100",
+    "Example: trapRead f000, trapRead f000 f100",
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
-    std::mem_fn(&DebuggerParser::executeTrapread)
+    std::mem_fn(&DebuggerParser::executeTrapRead)
   },
 
   {
-    "trapreadif",
+    "trapReadIf",
     "On <condition> trap read access to address(es) xx [yy]",
     "Set/clear a conditional read trap on the given address(es) and all mirrors\nCondition can include multiple items.\n"
-    "Example: trapreadif _scan>#100 GRP0, trapreadif _bank==1 f000 f100",
+    "Example: trapReadIf _scan>#100 GRP0, trapReadIf _bank==1 f000 f100",
       true,
       false,
       { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
-      std::mem_fn(&DebuggerParser::executeTrapreadif)
+      std::mem_fn(&DebuggerParser::executeTrapReadIf)
   },
 
   {
-    "trapwrite",
+    "trapWrite",
     "Trap write access to address(es) xx [yy]",
     "Set/clear a write trap on the given address(es) and all mirrors\n"
-    "Example: trapwrite f000, trapwrite f000 f100",
+    "Example: trapWrite f000, trapWrite f000 f100",
     true,
     false,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
-    std::mem_fn(&DebuggerParser::executeTrapwrite)
+    std::mem_fn(&DebuggerParser::executeTrapWrite)
   },
 
   {
-    "trapwriteif",
+    "trapWriteIf",
     "On <condition> trap write access to address(es) xx [yy]",
     "Set/clear a conditional write trap on the given address(es) and all mirrors\nCondition can include multiple items.\n"
-    "Example: trapwriteif _scan>#100 GRP0, trapwriteif _bank==1 f000 f100",
+    "Example: trapWriteIf _scan>#100 GRP0, trapWriteIf _bank==1 f000 f100",
       true,
       false,
       { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
-      std::mem_fn(&DebuggerParser::executeTrapwriteif)
+      std::mem_fn(&DebuggerParser::executeTrapWriteIf)
   },
 
   {
@@ -3443,10 +3443,10 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   },
 
   {
-    "uhex",
+    "uHex",
     "Toggle upper/lowercase HEX display",
     "Note: not all hex output can be changed\n"
-    "Example: uhex (no parameters)",
+    "Example: uHex (no parameters)",
     false,
     true,
     { Parameters::ARG_END_ARGS },
