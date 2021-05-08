@@ -893,12 +893,12 @@ void Debugger::getCompletions(const char* in, StringList& list) const
     for(const auto& iter : myFunctions)
     {
       const char* l = iter.first.c_str();
-      if(BSPF::matches(l, in))
+      if(BSPF::matchesCamelCase(l, in))
         list.push_back(l);
     }
 
     for(const auto& reg: ourPseudoRegisters)
-      if(BSPF::matches(reg.name, in))
+      if(BSPF::matchesCamelCase(reg.name, in))
         list.push_back(reg.name);
   }
 }

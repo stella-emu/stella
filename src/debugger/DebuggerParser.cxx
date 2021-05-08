@@ -180,7 +180,7 @@ void DebuggerParser::getCompletions(const char* in, StringList& completions) con
   // cerr << "Attempting to complete \"" << in << "\"" << endl;
   for(const auto& c: commands)
   {
-    if(BSPF::matches(c.cmdString, in))
+    if(BSPF::matchesCamelCase(c.cmdString, in))
       completions.push_back(c.cmdString);
   }
 }

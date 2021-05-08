@@ -281,18 +281,20 @@ namespace BSPF
   //  (case sensitive for upper case characters in second string, except first one)
   // - the first character must match
   // - the following characters must appear in the order of the first string
-  inline bool matches(const string_view s1, const string_view s2)
+  inline bool matchesCamelCase(const string_view s1, const string_view s2)
   {
-    if(startsWithIgnoreCase(s1, s2.substr(0, 1)))
-    {
-      size_t pos = 1;
-      size_t lastUpper = 0;
+    // skip leading '_' for matching
+    uInt32 ofs = (s1[0] == '_' && s2[0] == '_') ? 1 : 0;
 
-      for(uInt32 j = 1; j < s2.size(); ++j)
+    if(startsWithIgnoreCase(s1.substr(ofs), s2.substr(ofs, 1)))
+    {
+      size_t lastUpper = ofs, pos = 1;
+
+      for(uInt32 j = 1 + ofs; j < s2.size(); ++j)
       {
         if(std::isupper(s2[j]))
         {
-          size_t found = s1.find_first_of(s2[j], pos);
+          size_t found = s1.find_first_of(s2[j], pos + ofs);
 
           if(found == string::npos)
             return false;
@@ -306,7 +308,7 @@ namespace BSPF
         }
         else
         {
-          size_t found = findIgnoreCase(s1, s2.substr(j, 1), pos);
+          size_t found = findIgnoreCase(s1, s2.substr(j, 1), pos + ofs);
 
           if(found == string::npos)
             return false;
