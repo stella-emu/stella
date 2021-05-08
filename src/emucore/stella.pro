@@ -158,6 +158,14 @@
 "Cart.Name" "Demo Image Series #3 - Baboon (19-02-2003) (AD)"
 ""
 
+"Cart.MD5" "021dbeb7417cac4e5f8e867393e742d6"
+"Cart.Manufacturer" "Simone Serra - AtariAge"
+"Cart.ModelNo" "RC 09.09.2008"
+"Cart.Name" "Lead "
+"Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=932"
+""
+
 "Cart.MD5" "024365007a87f213cbe8ef5f2e8e1333"
 "Cart.Manufacturer" "Atari, Frank Hausman, Mimi Nyden, Steve Woita"
 "Cart.ModelNo" "CX2686"
@@ -16267,6 +16275,14 @@
 "Cart.Manufacturer" "Atari, Tod Frye"
 "Cart.ModelNo" "CX2671"
 "Cart.Name" "SwordQuest - WaterWorld (1983) (Atari)"
+""
+
+"Cart.MD5" "bc593f2284c67b7d8716d110f541953f"
+"Cart.Manufacturer" "Simone Serra - AtariAge"
+"Cart.ModelNo" "30.11.2011"
+"Cart.Name" "Omicron"
+"Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1037"
 ""
 
 "Cart.MD5" "bc703ea6afb20bc089f04d8c9d79a2bd"
