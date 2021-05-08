@@ -1509,7 +1509,7 @@ void CartDebug::getCompletions(const char* in, StringList& completions) const
   for(const auto& iter: myUserAddresses)
   {
     const char* l = iter.first.c_str();
-    if(BSPF::matches(l, in))
+    if(BSPF::matchesCamelCase(l, in))
       completions.push_back(l);
   }
 }
