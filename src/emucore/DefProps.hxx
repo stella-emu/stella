@@ -25,7 +25,7 @@
   regenerated and the application recompiled.
 */
 
-static constexpr uInt32 DEF_PROPS_SIZE = 3527;
+static constexpr uInt32 DEF_PROPS_SIZE = 3529;
 
 static const BSPF::array2D<const char*, DEF_PROPS_SIZE, 29> DefProps = {{
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}", "" },
@@ -53,6 +53,7 @@ static const BSPF::array2D<const char*, DEF_PROPS_SIZE, 29> DefProps = {{
   { "01e60a109a6a67c70d3c0528381d0187", "ITT Family Games, Perry Rhodan-Serie", "554-33 383", "Fire Birds (1983) (ITT Family Games) (PAL)", "AKA Sky Alien", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "01f584bf67b0e464014a8c8b5ea470e3", "Arcadia Corporation, Dennis Caswell", "5 AR-4200", "Labyrinth (Escape from the Mindmaster Beta) (1982) (Arcadia)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "02066b17f29082412c6754c1a2d6302e", "", "", "Demo Image Series #3 - Baboon (19-02-2003) (AD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "021dbeb7417cac4e5f8e867393e742d6", "Simone Serra - AtariAge", "RC 09.09.2008", "Lead ", "", "Homebrew", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "https://atariage.com/store/index.php?l=product_detail&p=932" },
   { "024365007a87f213cbe8ef5f2e8e1333", "Atari, Frank Hausman, Mimi Nyden, Steve Woita", "CX2686", "Quadrun (1983) (Atari)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "025668e36a788e8af8ac4f1be7e72043", "Atari, Jerome Domurat, Howard Scott Warshaw", "CX2659", "Raiders of the Lost Ark (06-14-82) (Atari) (Prototype)", "Console ports are swapped", "Prototype", "", "", "", "", "", "", "YES", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "http://www.atariprotos.com/2600/software/rotla/rotla.htm" },
   { "026180bf641ff17d8577c33facf0edea", "Activision, Steve Cartwright", "AX-022", "Seaquest (1983) (Activision) (8K)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "{\"notes\":\"High score is from current player\",\"score_addresses\":[\"0xb8\",\"0xb9\",\"0xba\"],\"score_digits\":6,\"variations_count\":1}", "" },
@@ -2576,6 +2577,7 @@ static const BSPF::array2D<const char*, DEF_PROPS_SIZE, 29> DefProps = {{
   { "bc4cf38a4bee45752dc466c98ed7ad09", "Atari, Douglas Neubauer, Mimi Nyden", "CX26136", "Solaris (1986) (Atari) (PAL)", "AKA Universe, Star Raiders II, The Last Starfighter", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "{\"score_addresses\":[\"0xde\",\"0xdd\",\"0xdc\"],\"score_digits\":6,\"score_trailing_zeroes\":1,\"variations_count\":1}", "" },
   { "bc526185ad324241782dc68ba5d0540b", "", "", "Dodge Demo 1 (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "bc5389839857612cfabeb810ba7effdc", "Atari, Tod Frye", "CX2671", "SwordQuest - WaterWorld (1983) (Atari)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "bc593f2284c67b7d8716d110f541953f", "Simone Serra - AtariAge", "30.11.2011", "Omicron", "", "Homebrew", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "https://atariage.com/store/index.php?l=product_detail&p=1037" },
   { "bc703ea6afb20bc089f04d8c9d79a2bd", "", "", "Gunfight 2600 - Not mergeable with Colbert wizardry... (2001) (MP)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "bc97d544f1d4834cc72bcc92a37b8c1b", "", "", "Sky Demo (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "bcb31f22856b0028c00d12f0e4c0a952", "Canal 3 - Intellivision", "", "Thunderground (Canal 3)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
