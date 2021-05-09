@@ -160,6 +160,9 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
   bool handled = true;
   bool dirty = false;
 
+  if(key != KBDK_TAB && !StellaModTest::isShift(mod))
+    _tabCount = -1;
+
   switch(key)
   {
     case KBDK_RETURN:
@@ -209,121 +212,87 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
       // both at once.
 
       if(_currentPos <= _promptStartPos)
-        break;
+        break; // no input
 
       scrollToCurrent();
+
       int len = _promptEndPos - _promptStartPos;
-      if(len > 255) len = 255;
+
+      if(_tabCount != -1)
+        len = int(strlen(_inputStr));
+      if(len > 255)
+        len = 255;
 
       int lastDelimPos = -1;
       char delimiter = '\0';
 
-      char inputStr[256];  // NOLINT  (will be rewritten soon)
-      for (int i = 0; i < len; i++)
+      for(int i = 0; i < len; i++)
       {
-        inputStr[i] = buffer(_promptStartPos + i) & 0x7f;
+        // copy the input at first tab press only
+        if(_tabCount == -1)
+          _inputStr[i] = buffer(_promptStartPos + i) & 0x7f;
         // whitespace characters
-        if(strchr("{*@<> =[]()+-/&|!^~%", inputStr[i]))
+        if(strchr("{*@<> =[]()+-/&|!^~%", _inputStr[i]))
         {
           lastDelimPos = i;
-          delimiter = inputStr[i];
+          delimiter = _inputStr[i];
         }
       }
-      inputStr[len] = '\0';
-      size_t strLen = len - lastDelimPos - 1;
+      if(_tabCount == -1)
+        _inputStr[len] = '\0';
 
       StringList list;
-      string completionList;
-      string prefix;
 
-      if(lastDelimPos < 0)
-      {
+      if(lastDelimPos == -1)
         // no delimiters, do only command completion:
-        const DebuggerParser& parser = instance().debugger().parser();
-        parser.getCompletions(inputStr, list);
-
-        if(list.size() < 1)
-          break;
-
-        sort(list.begin(), list.end());
-        completionList = list[0];
-        for(uInt32 i = 1; i < list.size(); ++i)
-          completionList += " " + list[i];
-        prefix = getCompletionPrefix(list);
-      }
+        instance().debugger().parser().getCompletions(_inputStr, list);
       else
       {
-        // Special case for 'help' command
-        if(BSPF::startsWithIgnoreCase(inputStr, "help"))
+        size_t strLen = len - lastDelimPos - 1;
+        // do not show ALL commands/labels without any filter as it makes no sense
+        if(strLen > 0)
         {
-          instance().debugger().parser().getCompletions(inputStr + lastDelimPos + 1, list);
-        }
-        else
-        {
-          // do not show ALL labels without any filter as it makes no sense
-          if(strLen > 0)
+          // Special case for 'help' command
+          if(BSPF::startsWithIgnoreCase(_inputStr, "help"))
+            instance().debugger().parser().getCompletions(_inputStr + lastDelimPos + 1, list);
+          else
           {
             // we got a delimiter, so this must be a label or a function
             const Debugger& dbg = instance().debugger();
 
-            dbg.cartDebug().getCompletions(inputStr + lastDelimPos + 1, list);
-            dbg.getCompletions(inputStr + lastDelimPos + 1, list);
+            dbg.cartDebug().getCompletions(_inputStr + lastDelimPos + 1, list);
+            dbg.getCompletions(_inputStr + lastDelimPos + 1, list);
           }
         }
 
-        if(list.size() < 1)
-          break;
-
-        sort(list.begin(), list.end());
-        completionList = list[0];
-        for(uInt32 i = 1; i < list.size(); ++i)
-          completionList += " " + list[i];
-        prefix = getCompletionPrefix(list);
       }
+      if(list.size() < 1)
+        break;
+      sort(list.begin(), list.end());
 
-      // TODO: tab through list
-
-      if(list.size() == 1)
+      if(StellaModTest::isShift(mod))
       {
-        // add to buffer as though user typed it (plus a space)
-        _currentPos = _promptStartPos + lastDelimPos + 1;
-        const char* clptr = completionList.c_str();
-        while(*clptr != '\0')
-          putcharIntern(*clptr++);
-
-        putcharIntern(' ');
-        _promptEndPos = _currentPos;
+        if(--_tabCount < 0)
+          _tabCount = int(list.size()) - 1;
       }
       else
-      {
-        nextLine();
-        // add to buffer as-is, then add PROMPT plus whatever we have so far
-        _currentPos = _promptStartPos + lastDelimPos + 1;
+        _tabCount = (++_tabCount) % list.size();
 
-        print("\n");
-        print(completionList);
-        print("\n");
-        print(PROMPT);
+      nextLine();
+      _currentPos = _promptStartPos;
+      killLine(1);  // kill whole line
 
-        _promptStartPos = _currentPos;
+      // start with-autocompleted, fixed string...
+      for(int i = 0; i < lastDelimPos; i++)
+        putcharIntern(_inputStr[i]);
+      if(lastDelimPos > 0)
+        putcharIntern(delimiter);
 
-        if(prefix.length() < strLen)
-        {
-          for(int i = 0; i < len; i++)
-            putcharIntern(inputStr[i]);
-        }
-        else
-        {
-          for(int i = 0; i < lastDelimPos; i++)
-            putcharIntern(inputStr[i]);
+      // ...and add current autocompletion string
+      print(list[_tabCount]);
+      putcharIntern(' ');
+      _promptEndPos = _currentPos;
 
-          if(lastDelimPos > 0)
-            putcharIntern(delimiter);
-
-          print(prefix);
-        }
-        _promptEndPos = _currentPos;
-      }
       dirty = true;
       break;
     }
