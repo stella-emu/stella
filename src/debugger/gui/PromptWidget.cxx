@@ -44,7 +44,6 @@ PromptWidget::PromptWidget(GuiObject* boss, const GUI::Font& font,
     _historySize{0},
     _historyIndex{0},
     _historyLine{0},
-    _makeDirty{false},
     _firstTime{true},
     _exitedEarly{false}
 {
@@ -317,20 +316,6 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
   if(dirty)
     setDirty();
 
-  // There are times when we want the prompt and scrollbar to be marked
-  // as dirty *after* they've been drawn above.  One such occurrence is
-  // when we issue a command that indirectly redraws the entire parent
-  // dialog (such as 'scanline' or 'frame').
-  // In those cases, the return code of the command must be shown, but the
-  // entire dialog contents are redrawn at a later time.  So the prompt and
-  // scrollbar won't be redrawn unless they're dirty again.
-  if(_makeDirty)
-  {
-    setDirty();
-    _scrollBar->setDirty();
-    _makeDirty = false;
-  }
-
   return handled;
 }
 
@@ -368,9 +353,6 @@ void PromptWidget::handleCommand(CommandSender* sender, int cmd,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::loadConfig()
 {
-  // See logic at the end of handleKeyDown for an explanation of this
-  _makeDirty = true;
-
   // Show the prompt the first time we draw this widget
   if(_firstTime)
   {
@@ -555,6 +537,7 @@ void PromptWidget::textPaste()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::addToHistory(const char* str)
 {
+  // TOOD: do not add duplicates, remove oldest
 #if defined(BSPF_WINDOWS)
   strncpy_s(_history[_historyIndex], kLineBufferSize, str, kLineBufferSize - 1);
 #else

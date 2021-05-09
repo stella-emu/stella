@@ -126,7 +126,6 @@ class PromptWidget : public Widget, public CommandSender
     int _kConsoleCharWidth, _kConsoleCharHeight, _kConsoleLineHeight;
 
     bool _inverse;
-    bool _makeDirty;
     bool _firstTime;
     bool _exitedEarly;
 
