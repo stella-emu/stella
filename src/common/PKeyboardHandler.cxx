@@ -65,7 +65,10 @@ PhysicalKeyboardHandler::PhysicalKeyboardHandler(OSystem& system, EventHandler& 
   setDefaultMapping(Event::NoType, EventMode::kMenuMode, updateDefaults);
 #ifdef GUI_SUPPORT
   setDefaultMapping(Event::NoType, EventMode::kEditMode, updateDefaults);
-#endif // DEBUG
+#endif
+#ifdef DEBUGGER_SUPPORT
+  setDefaultMapping(Event::NoType, EventMode::kPromptMode, updateDefaults);
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -193,6 +196,13 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
       // Edit mode events are always set because they are not saved
       for(const auto& item: FixedEditMapping)
         setDefaultKey(item, event, EventMode::kEditMode);
+      break;
+  #endif
+  #ifdef DEBUGGER_SUPPORT
+    case EventMode::kPromptMode:
+      // Edit mode events are always set because they are not saved
+      for(const auto& item : FixedPromptMapping)
+        setDefaultKey(item, event, EventMode::kPromptMode);
       break;
   #endif
 
@@ -470,7 +480,9 @@ bool PhysicalKeyboardHandler::addMapping(Event::Type event, EventMode mode,
       myKeyMap.erase(EventMode::kKeypadMode, key, mod);
       myKeyMap.erase(EventMode::kCompuMateMode, key, mod);
     }
-    else if(evMode != EventMode::kMenuMode && evMode != EventMode::kEditMode)
+    else if(evMode != EventMode::kMenuMode
+            && evMode != EventMode::kEditMode
+            && evMode != EventMode::kPromptMode)
     {
       // erase identical mapping for kCommonMode
       myKeyMap.erase(EventMode::kCommonMode, key, mod);
@@ -899,7 +911,28 @@ PhysicalKeyboardHandler::FixedEditMapping = {
   {Event::EndEdit,                  KBDK_KP_ENTER},
   {Event::AbortEdit,                KBDK_ESCAPE},
 };
-#endif
+#endif  // GUI_SUPPORT
+
+#ifdef DEBUGGER_SUPPORT
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+PhysicalKeyboardHandler::EventMappingArray
+PhysicalKeyboardHandler::FixedPromptMapping = {
+  {Event::UINavNext,                KBDK_TAB},
+  {Event::UINavPrev,                KBDK_TAB, KBDM_SHIFT},
+  {Event::UIPgUp,                   KBDK_PAGEUP},
+  {Event::UIPgUp,                   KBDK_PAGEUP, KBDM_SHIFT},
+  {Event::UIPgDown,                 KBDK_PAGEDOWN},
+  {Event::UIPgDown,                 KBDK_PAGEDOWN, KBDM_SHIFT},
+  {Event::UIHome,                   KBDK_HOME, KBDM_SHIFT},
+  {Event::UIEnd,                    KBDK_END, KBDM_SHIFT},
+  {Event::UIUp,                     KBDK_UP, KBDM_SHIFT},
+  {Event::UIDown,                   KBDK_DOWN, KBDM_SHIFT},
+  {Event::UILeft,                   KBDK_DOWN},
+  {Event::UIRight,                  KBDK_UP},
+
+};
+#endif // DEBUGGER_SUPPORT
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultJoystickMapping = {
