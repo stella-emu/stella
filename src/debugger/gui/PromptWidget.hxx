@@ -122,6 +122,8 @@ class PromptWidget : public Widget, public CommandSender
     int _historySize;
     int _historyIndex;
     int _historyLine;
+    int _tabCount{-1};
+    char _inputStr[256];
 
     int _kConsoleCharWidth, _kConsoleCharHeight, _kConsoleLineHeight;
 
