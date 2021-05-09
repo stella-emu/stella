@@ -48,6 +48,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(JoyHatDir, {
 
 NLOHMANN_JSON_SERIALIZE_ENUM(EventMode, {
   {EventMode::kEditMode, "kEditMode"},
+  {EventMode::kPromptMode, "kPromptMode"},
   {EventMode::kMenuMode, "kMenuMode"},
   {EventMode::kEmulationMode, "kEmulationMode"},
   {EventMode::kJoystickMode, "kJoystickMode"},

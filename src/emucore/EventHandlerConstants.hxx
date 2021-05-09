@@ -84,6 +84,7 @@ enum class EventMode {
   kCompuMateMode, // cannot be remapped
   kCommonMode,    // mapping common between controllers
   kEditMode,      // mapping used in editable widgets
+  kPromptMode,    // extra mappings used in debugger's prompt widget
   kNumModes
 };
 

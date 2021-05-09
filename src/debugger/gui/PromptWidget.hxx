@@ -64,7 +64,6 @@ class PromptWidget : public Widget, public CommandSender
     void scrollToCurrent();
 
     // Line editing
-    void specialKeys(StellaKey key);
     void nextLine();
     void killChar(int direction);
     void killLine(int direction);
@@ -80,6 +79,9 @@ class PromptWidget : public Widget, public CommandSender
     // History
     void historyScroll(int direction);
 
+    bool execute();
+    bool autoComplete(int direction);
+
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseWheel(int x, int y, int direction) override;
     bool handleText(char text) override;
@@ -91,10 +93,6 @@ class PromptWidget : public Widget, public CommandSender
 
     bool wantsFocus() const override { return true; }
     void loadConfig() override;
-
-  private:
-    // Get the longest prefix (initially 's') that is in every string in the list
-    string getCompletionPrefix(const StringList& completions);
 
   private:
     enum {

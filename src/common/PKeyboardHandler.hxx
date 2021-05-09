@@ -150,6 +150,9 @@ class PhysicalKeyboardHandler
   #ifdef GUI_SUPPORT
     static EventMappingArray FixedEditMapping;
   #endif
+  #ifdef DEBUGGER_SUPPORT
+    static EventMappingArray FixedPromptMapping;
+  #endif
     static EventMappingArray DefaultCommonMapping;
     // Controller specific mappings
     static EventMappingArray DefaultJoystickMapping;
