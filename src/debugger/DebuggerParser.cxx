@@ -951,6 +951,14 @@ void DebuggerParser::executeClearConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "clearHistory"
+void DebuggerParser::executeClearHistory()
+{
+  debugger.prompt().clearHistory();
+  commandResult << "";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "clearBreaks"
 void DebuggerParser::executeClearSaveStateIfs()
 {
@@ -2598,6 +2606,16 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
     std::mem_fn(&DebuggerParser::executeClearConfig)
+  },
+
+  {
+    "clearHistory",
+    "Clear the prompt history",
+    "Example: clearhisotry (no parameters)",
+    false,
+    true,
+    { Parameters::ARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executeClearHistory)
   },
 
   {

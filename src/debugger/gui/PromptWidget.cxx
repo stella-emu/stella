@@ -967,6 +967,13 @@ void PromptWidget::clearScreen()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PromptWidget::clearHistory()
+{
+  _history.clear();
+  _historyIndex = 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::resetFunctions()
 {
   // reset special functions
