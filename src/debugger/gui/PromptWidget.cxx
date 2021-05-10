@@ -40,12 +40,7 @@
 PromptWidget::PromptWidget(GuiObject* boss, const GUI::Font& font,
                            int x, int y, int w, int h)
   : Widget(boss, font, x, y, w - ScrollBarWidget::scrollBarWidth(font), h),
-    CommandSender(boss),
-    _historySize{0},
-    _historyIndex{0},
-    _historyLine{0},
-    _firstTime{true},
-    _exitedEarly{false}
+    CommandSender(boss)
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG | Widget::FLAG_RETAIN_FOCUS |
            Widget::FLAG_WANTS_TAB | Widget::FLAG_WANTS_RAWDATA;
@@ -66,9 +61,6 @@ PromptWidget::PromptWidget(GuiObject* boss, const GUI::Font& font,
   _scrollBar = new ScrollBarWidget(boss, font, _x + _w, _y,
                                    ScrollBarWidget::scrollBarWidth(_font), _h);
   _scrollBar->setTarget(this);
-
-  // Init colors
-  _inverse = false;
 
   clearScreen();
 
@@ -136,6 +128,8 @@ void PromptWidget::printPrompt()
 
   print(PROMPT);
   _promptStartPos = _promptEndPos = _currentPos;
+
+  resetFunctions();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -149,6 +143,8 @@ bool PromptWidget::handleText(char text)
     _promptEndPos++;
     putcharIntern(text);
     scrollToCurrent();
+
+    resetFunctions();
   }
   return true;
 }
@@ -156,11 +152,11 @@ bool PromptWidget::handleText(char text)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
 {
-  bool handled = true;
-  bool dirty = true;
-
-  if(key != KBDK_TAB && !StellaModTest::isShift(mod))
-    _tabCount = -1;
+  bool handled = true,
+    dirty = true,
+    changeInput = false,
+    resetAutoComplete = true,
+    resetHistoryScroll = true;
 
   // Uses normal edit events + special prompt events
   Event::Type event = instance().eventHandler().eventForKey(EventMode::kEditMode, key, mod);
@@ -178,33 +174,72 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
       break;
     }
 
+    // special events (auto complete & history scrolling)
     case Event::UINavNext:
-      dirty = autoComplete(+1);
+      dirty = changeInput = autoComplete(+1);
+      resetAutoComplete = false;
       break;
 
     case Event::UINavPrev:
-      dirty = autoComplete(-1);
+      dirty = changeInput = autoComplete(-1);
+      resetAutoComplete = false;
       break;
 
-    case Event::UILeft:
-      historyScroll(-1);
+    case Event::UILeft: // mapped to KBDK_DOWN by default
+      dirty = changeInput = historyScroll(-1);
+      resetHistoryScroll = false;
       break;
 
-    case Event::UIRight:
-      historyScroll(+1);
+    case Event::UIRight: // mapped to KBDK_UP by default
+      dirty = changeInput = historyScroll(+1);
+      resetHistoryScroll = false;
       break;
 
+    // input modifying events
     case Event::Backspace:
       if(_currentPos > _promptStartPos)
+      {
         killChar(-1);
-
+        changeInput = true;
+      }
       scrollToCurrent();
       break;
 
     case Event::Delete:
       killChar(+1);
+      changeInput = true;
       break;
 
+    case Event::DeleteEnd:
+      killLine(+1);
+      changeInput = true;
+      break;
+
+    case Event::DeleteHome:
+      killLine(-1);
+      changeInput = true;
+      break;
+
+    case Event::DeleteLeftWord:
+      killWord();
+      changeInput = true;
+      break;
+
+    case Event::Cut:
+      textCut();
+      changeInput = true;
+      break;
+
+    case Event::Copy:
+      textCopy();
+      break;
+
+    case Event::Paste:
+      textPaste();
+      changeInput = true;
+      break;
+
+    // cursor events
     case Event::MoveHome:
       _currentPos = _promptStartPos;
       break;
@@ -223,22 +258,7 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
         _currentPos--;
       break;
 
-    case Event::DeleteRightWord:
-      killChar(+1);
-      break;
-
-    case Event::DeleteEnd:
-      killLine(+1);
-      break;
-
-    case Event::DeleteHome:
-      killLine(-1);
-      break;
-
-    case Event::DeleteLeftWord:
-      killWord();
-      break;
-
+    // scrolling events
     case Event::UIUp:
       if(_scrollLine <= _firstLineInBuffer + _linesPerPage - 1)
         break;
@@ -290,22 +310,6 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
       updateScrollBuffer();
       break;
 
-    //case Event::SelectAll:
-    //  textSelectAll();
-    //  break;
-
-    case Event::Cut:
-      textCut();
-      break;
-
-    case Event::Copy:
-      textCopy();
-      break;
-
-    case Event::Paste:
-      textPaste();
-      break;
-
     default:
       handled = false;
       dirty = false;
@@ -315,6 +319,13 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
   // Take care of changes made above
   if(dirty)
     setDirty();
+
+  // Reset special event handling if input has changed
+  // We assume that non-handled events will modify the input too
+  if(!handled || (resetAutoComplete && changeInput))
+    _tabCount = -1;
+  if(!handled || (resetHistoryScroll && changeInput))
+    _historyLine = 0;
 
   return handled;
 }
@@ -473,11 +484,6 @@ void PromptWidget::killWord()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PromptWidget::textSelectAll()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string PromptWidget::getLine()
 {
 #if defined(PSEUDO_CUT_COPY_PASTE)
@@ -497,14 +503,14 @@ string PromptWidget::getLine()
 void PromptWidget::textCut()
 {
 #if defined(PSEUDO_CUT_COPY_PASTE)
-  string text = getLine();
-
-  instance().eventHandler().copyText(text);
+  textCopy();
 
   // Remove the current line
   _currentPos = _promptStartPos;
   killLine(1);  // to end of line
   _promptEndPos = _currentPos;
+
+  resetFunctions();
 #endif
 }
 
@@ -531,65 +537,101 @@ void PromptWidget::textPaste()
   instance().eventHandler().pasteText(text);
   print(text);
   _promptEndPos = _currentPos;
+
+  resetFunctions();
 #endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::addToHistory(const char* str)
 {
-  // TOOD: do not add duplicates, remove oldest
+  // Do not add duplicates, remove old duplicate
+  if(_historySize)
+  {
+    int i = _historyIndex;
+    int historyEnd = _historyIndex % _historySize;
+
+    do
+    {
+      if(--i < 0)
+        i =_historySize - 1;
+
+      if(!BSPF::compareIgnoreCase(_history[i], str))
+      {
+        int j = i, prevJ;
+
+        do
+        {
+          prevJ = j;
+          j = (j + 1) % (_historySize);
+
+        #if defined(BSPF_WINDOWS)
+          strncpy_s(_history[prevJ], kLineBufferSize, _history[j], kLineBufferSize - 1);
+        #else
+          strncpy(_history[prevJ], _history[j], kLineBufferSize - 1);
+        #endif
+        } while(j != historyEnd);
+
+        if(--_historyIndex < 0)
+          _historyIndex = _historySize - 1;
+        _historySize--;
+        break;
+      }
+    } while(i != historyEnd);
+  }
+
 #if defined(BSPF_WINDOWS)
   strncpy_s(_history[_historyIndex], kLineBufferSize, str, kLineBufferSize - 1);
 #else
   strncpy(_history[_historyIndex], str, kLineBufferSize - 1);
 #endif
   _historyIndex = (_historyIndex + 1) % kHistorySize;
-  _historyLine = 0;
+  _historyLine = 0; // reset history scroll
 
   if (_historySize < kHistorySize)
     _historySize++;
 }
 
-#if 0 // FIXME
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int PromptWidget::compareHistory(const char *histLine)
+bool PromptWidget::historyScroll(int direction)
 {
-  return 1;
-}
-#endif
+  if(_historySize == 0)
+    return false;
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PromptWidget::historyScroll(int direction)
-{
-  if (_historySize == 0)
-    return;
-
-  if (_historyLine == 0 && direction > 0)
+  if(_historyLine == 0)
   {
     int i;
-    for (i = 0; i < _promptEndPos - _promptStartPos; i++)
+
+    for(i = 0; i < _promptEndPos - _promptStartPos; i++)
       _history[_historyIndex][i] = buffer(_promptStartPos + i); //FIXME: int to char??
 
     _history[_historyIndex][i] = '\0';
   }
 
   // Advance to the next line in the history
+  int histSize = _historySize + (_historySize < kHistorySize ? 1 : 0);
   int line = _historyLine + direction;
+
   if(line < 0)
-    line += _historySize + 1;
-  line %= (_historySize + 1);
+    line += histSize;
+  line %= histSize;
 
-  // If they press arrow-up with anything in the buffer, search backwards
-  // in the history.
-  /*
-  if(direction < 0 && _currentPos > _promptStartPos) {
-    for(;line > 0; line--) {
-      if(compareHistory(_history[line]) == 0)
+  // If anything in the buffer, search the history.
+  if(_currentPos > _promptStartPos) {
+    do
+    {
+      int idx = line ? (_historyIndex - line + _historySize) % _historySize
+                     : _historyIndex;
+
+      if(BSPF::startsWithIgnoreCase(_history[idx], _history[_historyIndex]))
         break;
-    }
-  }
-  */
 
+      line += direction;
+      if(line < 0)
+        line += histSize;
+      line %= histSize;
+    } while(line); // if line == 0, nothing was found
+  }
   _historyLine = line;
 
   // Remove the current user text
@@ -600,21 +642,17 @@ void PromptWidget::historyScroll(int direction)
   scrollToCurrent();
 
   // Print the text from the history
-  int idx;
-  if (_historyLine > 0)
-    idx = (_historyIndex - _historyLine + _historySize) % _historySize;
-  else
-    idx = _historyIndex;
+  int idx = _historyLine ? (_historyIndex - _historyLine + _historySize) % _historySize
+                         : _historyIndex;
 
-  for (int i = 0; i < kLineBufferSize && _history[idx][i] != '\0'; i++)
+  for(int i = 0; i < kLineBufferSize && _history[idx][i] != '\0'; i++)
     putcharIntern(_history[idx][i]);
-
   _promptEndPos = _currentPos;
 
   // Ensure once more the caret is visible (in case of very long history entries)
   scrollToCurrent();
 
-  setDirty();
+  return line;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -670,8 +708,8 @@ bool PromptWidget::autoComplete(int direction)
 
   if(_tabCount != -1)
     len = int(strlen(_inputStr));
-  if(len > 255)
-    len = 255;
+  if(len > kLineBufferSize - 1)
+    len = kLineBufferSize - 1;
 
   int lastDelimPos = -1;
   char delimiter = '\0';
@@ -910,7 +948,6 @@ string PromptWidget::saveBuffer(const FilesystemNode& file)
   return "unable to save session";
 }
 
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::clearScreen()
 {
@@ -923,4 +960,14 @@ void PromptWidget::clearScreen()
 
   if(!_firstTime)
     updateScrollBuffer();
+
+  resetFunctions();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PromptWidget::resetFunctions()
+{
+  // reset special functions
+  _tabCount = -1;
+  _historyLine = 0;
 }
