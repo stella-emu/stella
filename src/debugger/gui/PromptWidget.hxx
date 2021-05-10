@@ -70,14 +70,13 @@ class PromptWidget : public Widget, public CommandSender
     void killWord();
 
     // Clipboard
-    void textSelectAll();
     string getLine();
     void textCut();
     void textCopy();
     void textPaste();
 
     // History
-    void historyScroll(int direction);
+    bool historyScroll(int direction);
 
     bool execute();
     bool autoComplete(int direction);
@@ -94,11 +93,13 @@ class PromptWidget : public Widget, public CommandSender
     bool wantsFocus() const override { return true; }
     void loadConfig() override;
 
+    void resetFunctions();
+
   private:
     enum {
-      kBufferSize     = 32768,
+      kBufferSize = 32768,
       kLineBufferSize = 256,
-      kHistorySize    = 20
+      kHistorySize = 50
     };
 
     int  _buffer[kBufferSize];  // NOLINT  (will be rewritten soon)
@@ -117,19 +118,17 @@ class PromptWidget : public Widget, public CommandSender
     ScrollBarWidget* _scrollBar;
 
     char _history[kHistorySize][kLineBufferSize];  // NOLINT  (will be rewritten soon)
-    int _historySize;
-    int _historyIndex;
-    int _historyLine;
+    int _historySize{0};
+    int _historyIndex{0};
+    int _historyLine{0};
     int _tabCount{-1};
-    char _inputStr[256];
+    char _inputStr[kLineBufferSize];
 
     int _kConsoleCharWidth, _kConsoleCharHeight, _kConsoleLineHeight;
 
-    bool _inverse;
-    bool _firstTime;
-    bool _exitedEarly;
-
-//    int compareHistory(const char *histLine);
+    bool _inverse{false};
+    bool _firstTime{true};
+    bool _exitedEarly{false};
 
   private:
     // Following constructors and assignment operators not supported
