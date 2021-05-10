@@ -46,8 +46,10 @@ class PromptWidget : public Widget, public CommandSender
     void printPrompt();
     string saveBuffer(const FilesystemNode& file);
 
-    // Clear screen and erase all history
+    // Clear screen 
     void clearScreen();
+    // Erase all history
+    void clearHistory();
 
     void addToHistory(const char *str);
 
