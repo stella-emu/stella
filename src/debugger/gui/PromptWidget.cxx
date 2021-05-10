@@ -559,7 +559,7 @@ int PromptWidget::historyDir(int& index, int direction, bool promptSpace)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::historyAdd(const string& entry)
 {
-  if(_historyIndex >= _history.size())
+  if(_historyIndex >= int(_history.size()))
     _history.push_back(entry);
   else
     _history[_historyIndex] = entry;
@@ -766,7 +766,7 @@ bool PromptWidget::autoComplete(int direction)
       _tabCount = int(list.size()) - 1;
   }
   else
-    _tabCount = (++_tabCount) % list.size();
+    _tabCount = (_tabCount + 1) % list.size();
 
   nextLine();
   _currentPos = _promptStartPos;
