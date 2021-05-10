@@ -42,8 +42,6 @@ class PromptWidget : public Widget, public CommandSender
     ~PromptWidget() override = default;
 
   public:
-    ATTRIBUTE_FMT_PRINTF int printf(const char* format, ...);
-    ATTRIBUTE_FMT_PRINTF int vprintf(const char* format, va_list argptr);
     void print(const string& str);
     void printPrompt();
     string saveBuffer(const FilesystemNode& file);
@@ -54,6 +52,8 @@ class PromptWidget : public Widget, public CommandSender
     void addToHistory(const char *str);
 
   protected:
+    ATTRIBUTE_FMT_PRINTF int printf(const char* format, ...);
+    ATTRIBUTE_FMT_PRINTF int vprintf(const char* format, va_list argptr);
     int& buffer(int idx) { return _buffer[idx % kBufferSize]; }
 
     void drawWidget(bool hilite) override;
@@ -99,7 +99,7 @@ class PromptWidget : public Widget, public CommandSender
     enum {
       kBufferSize = 32768,
       kLineBufferSize = 256,
-      kHistorySize = 50
+      kHistorySize = 1000
     };
 
     int  _buffer[kBufferSize];  // NOLINT  (will be rewritten soon)
@@ -117,8 +117,7 @@ class PromptWidget : public Widget, public CommandSender
 
     ScrollBarWidget* _scrollBar;
 
-    char _history[kHistorySize][kLineBufferSize];  // NOLINT  (will be rewritten soon)
-    int _historySize{0};
+    std::vector<string> _history;
     int _historyIndex{0};
     int _historyLine{0};
     int _tabCount{-1};
@@ -129,6 +128,9 @@ class PromptWidget : public Widget, public CommandSender
     bool _inverse{false};
     bool _firstTime{true};
     bool _exitedEarly{false};
+
+    int historyDir(int& index, int direction, bool promptSpace = false);
+    void historyAdd(const string& entry);
 
   private:
     // Following constructors and assignment operators not supported
