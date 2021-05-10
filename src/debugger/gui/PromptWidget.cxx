@@ -543,18 +543,40 @@ void PromptWidget::textPaste()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int PromptWidget::historyDir(int& index, int direction, bool promptSpace)
+{
+  int historySize = int(_history.size()) + (promptSpace ? 1 : 0);
+
+  index += direction;
+  if(index < 0)
+    index += historySize;
+  else
+    index %= historySize;
+
+  return index;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PromptWidget::historyAdd(const string& entry)
+{
+  if(_historyIndex >= _history.size())
+    _history.push_back(entry);
+  else
+    _history[_historyIndex] = entry;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::addToHistory(const char* str)
 {
   // Do not add duplicates, remove old duplicate
-  if(_historySize)
+  if(_history.size())
   {
     int i = _historyIndex;
-    int historyEnd = _historyIndex % _historySize;
+    int historyEnd = _historyIndex % _history.size();
 
     do
     {
-      if(--i < 0)
-        i =_historySize - 1;
+      historyDir(i, -1);
 
       if(!BSPF::compareIgnoreCase(_history[i], str))
       {
@@ -563,76 +585,55 @@ void PromptWidget::addToHistory(const char* str)
         do
         {
           prevJ = j;
-          j = (j + 1) % (_historySize);
+          historyDir(j, +1);
+          _history[prevJ] = _history[j];
+        }
+        while(j != historyEnd);
 
-        #if defined(BSPF_WINDOWS)
-          strncpy_s(_history[prevJ], kLineBufferSize, _history[j], kLineBufferSize - 1);
-        #else
-          strncpy(_history[prevJ], _history[j], kLineBufferSize - 1);
-        #endif
-        } while(j != historyEnd);
-
-        if(--_historyIndex < 0)
-          _historyIndex = _historySize - 1;
-        _historySize--;
+        historyDir(_historyIndex, -1);
         break;
       }
-    } while(i != historyEnd);
+    }
+    while(i != historyEnd);
   }
-
-#if defined(BSPF_WINDOWS)
-  strncpy_s(_history[_historyIndex], kLineBufferSize, str, kLineBufferSize - 1);
-#else
-  strncpy(_history[_historyIndex], str, kLineBufferSize - 1);
-#endif
-  _historyIndex = (_historyIndex + 1) % kHistorySize;
+  historyAdd(str);
   _historyLine = 0; // reset history scroll
-
-  if (_historySize < kHistorySize)
-    _historySize++;
+  _historyIndex = (_historyIndex + 1) % kHistorySize;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PromptWidget::historyScroll(int direction)
 {
-  if(_historySize == 0)
+  if(_history.size() == 0)
     return false;
 
   if(_historyLine == 0)
   {
-    int i;
+    string input;
 
-    for(i = 0; i < _promptEndPos - _promptStartPos; i++)
-      _history[_historyIndex][i] = buffer(_promptStartPos + i); //FIXME: int to char??
+    for(int i = _promptStartPos; i < _promptEndPos; i++)
+      input += buffer(i) & 0x7f;
 
-    _history[_historyIndex][i] = '\0';
+    historyAdd(input);
   }
 
-  // Advance to the next line in the history
-  int histSize = _historySize + (_historySize < kHistorySize ? 1 : 0);
-  int line = _historyLine + direction;
+  // Advance to the next/prev line in the history
+  historyDir(_historyLine, direction, _history.size() < kHistorySize);
 
-  if(line < 0)
-    line += histSize;
-  line %= histSize;
+  // Search the history using the original input
+  do
+  {
+    int idx = _historyLine
+      ? (_historyIndex - _historyLine + _history.size()) % int(_history.size())
+      : _historyIndex;
 
-  // If anything in the buffer, search the history.
-  if(_currentPos > _promptStartPos) {
-    do
-    {
-      int idx = line ? (_historyIndex - line + _historySize) % _historySize
-                     : _historyIndex;
+    if(BSPF::startsWithIgnoreCase(_history[idx], _history[_historyIndex]))
+      break;
 
-      if(BSPF::startsWithIgnoreCase(_history[idx], _history[_historyIndex]))
-        break;
-
-      line += direction;
-      if(line < 0)
-        line += histSize;
-      line %= histSize;
-    } while(line); // if line == 0, nothing was found
+    // Advance to the next/prev line in the history
+    historyDir(_historyLine, direction, _history.size() < kHistorySize);
   }
-  _historyLine = line;
+  while(_historyLine); // If _historyLine == 0, nothing was found
 
   // Remove the current user text
   _currentPos = _promptStartPos;
@@ -642,8 +643,9 @@ bool PromptWidget::historyScroll(int direction)
   scrollToCurrent();
 
   // Print the text from the history
-  int idx = _historyLine ? (_historyIndex - _historyLine + _historySize) % _historySize
-                         : _historyIndex;
+  int idx = _historyLine
+    ? (_historyIndex - _historyLine + _history.size()) % int(_history.size())
+    : _historyIndex;
 
   for(int i = 0; i < kLineBufferSize && _history[idx][i] != '\0'; i++)
     putcharIntern(_history[idx][i]);
@@ -652,7 +654,7 @@ bool PromptWidget::historyScroll(int direction)
   // Ensure once more the caret is visible (in case of very long history entries)
   scrollToCurrent();
 
-  return line;
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
