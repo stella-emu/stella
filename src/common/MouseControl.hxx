@@ -43,8 +43,8 @@ class MouseControl
     */
     enum class Type
     {
-      Paddle0 = 0, Paddle1, Paddle2, Paddle3,
-      Driving0, Driving1, MindLink0, MindLink1,
+      PaddleLeftA = 0, PaddleLeftB, PaddleRightA, PaddleRightB,
+      DrivingLeft, DrivingRight, MindLinkLeft, MindLinkRight,
       NoControl
     };
 

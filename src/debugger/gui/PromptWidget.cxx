@@ -488,12 +488,11 @@ string PromptWidget::getLine()
 {
 #if defined(PSEUDO_CUT_COPY_PASTE)
   assert(_promptEndPos >= _promptStartPos);
-  int len = _promptEndPos - _promptStartPos;
   string text;
 
   // Copy current line to text
-  for(int i = 0; i < len; i++)
-    text += buffer(_promptStartPos + i) & 0x7f;
+  for(int i = _promptStartPos; i < _promptEndPos; i++)
+    text += buffer(i) & 0x7f;
 
   return text;
 #endif
@@ -609,12 +608,7 @@ bool PromptWidget::historyScroll(int direction)
 
   if(_historyLine == 0)
   {
-    string input;
-
-    for(int i = _promptStartPos; i < _promptEndPos; i++)
-      input += buffer(i) & 0x7f;
-
-    historyAdd(input);
+    historyAdd(getLine());
   }
 
   // Advance to the next/prev line in the history
@@ -668,9 +662,7 @@ bool PromptWidget::execute()
   if(len > 0)
   {
     // Copy the user input to command
-    string command;
-    for(int i = 0; i < len; i++)
-      command += buffer(_promptStartPos + i) & 0x7f;
+    string command = getLine();
 
     // Add the input to the history
     addToHistory(command.c_str());

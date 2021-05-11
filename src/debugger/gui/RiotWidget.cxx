@@ -90,14 +90,14 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   // SWCHA bits in 'peek' mode
   xpos = 10;  ypos += lineHeight + 5;
   labels.clear();
-  labels.push_back("P0 right");
-  labels.push_back("P0 left");
-  labels.push_back("P0 down");
-  labels.push_back("P0 up");
-  labels.push_back("P1 right");
-  labels.push_back("P1 left");
-  labels.push_back("P1 down");
-  labels.push_back("P1 up");
+  labels.push_back("Left right");
+  labels.push_back("Left left");
+  labels.push_back("Left down");
+  labels.push_back("Left up");
+  labels.push_back("Right right");
+  labels.push_back("Right left");
+  labels.push_back("Right down");
+  labels.push_back("Right up");
   CREATE_IO_REGS("SWCHA(R)", mySWCHAReadBits, kSWCHARBitsID, true)
 
   // SWCHB bits in 'poke' mode
@@ -112,8 +112,8 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   // SWCHB bits in 'peek' mode
   xpos = 10;  ypos += lineHeight + 5;
   labels.clear();
-  labels.push_back("P1 difficulty");
-  labels.push_back("P0 difficulty");
+  labels.push_back("Right difficulty");
+  labels.push_back("Left difficulty");
   labels.push_back("");
   labels.push_back("");
   labels.push_back("Color/B+W");
@@ -210,19 +210,19 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
 
   // PO & P1 difficulty switches
   int pwidth = lfont.getStringWidth("B/easy");
-  lwidth = lfont.getStringWidth("P0 Diff ");
+  lwidth = lfont.getStringWidth("Right Diff ");
   xpos = col;  ypos += 2 * lineHeight;
   int col2_ypos = ypos;
   items.clear();
   VarList::push_back(items, "B/easy", "b");
   VarList::push_back(items, "A/hard", "a");
   myP0Diff = new PopUpWidget(boss, lfont, xpos, ypos, pwidth, lineHeight, items,
-                             "P0 Diff ", lwidth, kP0DiffChanged);
+                             "Left Diff ", lwidth, kP0DiffChanged);
   myP0Diff->setTarget(this);
   addFocusWidget(myP0Diff);
   ypos += myP0Diff->getHeight() + 5;
   myP1Diff = new PopUpWidget(boss, lfont, xpos, ypos, pwidth, lineHeight, items,
-                             "P1 Diff ", lwidth, kP1DiffChanged);
+                             "Right Diff ", lwidth, kP1DiffChanged);
   myP1Diff->setTarget(this);
   addFocusWidget(myP1Diff);
 
