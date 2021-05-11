@@ -23,13 +23,13 @@ BoosterGrip::BoosterGrip(Jack jack, const Event& event, const System& system)
 {
   if(myJack == Jack::Left)
   {
-    myTriggerEvent = Event::JoystickZeroFire5;
-    myBoosterEvent = Event::JoystickZeroFire9;
+    myTriggerEvent = Event::JoystickLeftFire5;
+    myBoosterEvent = Event::JoystickLeftFire9;
   }
   else
   {
-    myTriggerEvent = Event::JoystickOneFire5;
-    myBoosterEvent = Event::JoystickOneFire9;
+    myTriggerEvent = Event::JoystickRightFire5;
+    myBoosterEvent = Event::JoystickRightFire9;
   }
 
   setPin(AnalogPin::Five, AnalogReadout::disconnect());

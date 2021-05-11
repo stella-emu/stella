@@ -54,45 +54,45 @@ MouseControl::MouseControl(Console& console, const string& mode)
         case MouseControl::Type::NoControl:
           msg << "not used";
           break;
-        case MouseControl::Type::Paddle0:
+        case MouseControl::Type::PaddleLeftA:
           type = Controller::Type::Paddles;
           id = 0;
-          msg << "Paddle 0";
+          msg << "Left Paddle A";
           break;
-        case MouseControl::Type::Paddle1:
+        case MouseControl::Type::PaddleLeftB:
           type = Controller::Type::Paddles;
           id = 1;
-          msg << "Paddle 1";
+          msg << "Left Paddle B";
           break;
-        case MouseControl::Type::Paddle2:
+        case MouseControl::Type::PaddleRightA:
           type = Controller::Type::Paddles;
           id = 2;
-          msg << "Paddle 2";
+          msg << "Right Paddle A";
           break;
-        case MouseControl::Type::Paddle3:
+        case MouseControl::Type::PaddleRightB:
           type = Controller::Type::Paddles;
           id = 3;
-          msg << "Paddle 3";
+          msg << "Right Paddle B";
           break;
-        case MouseControl::Type::Driving0:
+        case MouseControl::Type::DrivingLeft:
           type = Controller::Type::Driving;
           id = 0;
-          msg << "Driving 0";
+          msg << "Left Driving";
           break;
-        case MouseControl::Type::Driving1:
+        case MouseControl::Type::DrivingRight:
           type = Controller::Type::Driving;
           id = 1;
-          msg << "Driving 1";
+          msg << "Right Driving";
           break;
-        case MouseControl::Type::MindLink0:
+        case MouseControl::Type::MindLinkLeft:
           type = Controller::Type::MindLink;
           id = 0;
-          msg << "MindLink 0";
+          msg << "Left MindLink";
           break;
-        case MouseControl::Type::MindLink1:
+        case MouseControl::Type::MindLinkRight:
           type = Controller::Type::MindLink;
           id = 1;
-          msg << "MindLink 1";
+          msg << "Right MindLink";
           break;
       }
     };

@@ -292,28 +292,28 @@ void PhysicalKeyboardHandler::enableEmulationMappings()
   switch(myRight2ndMode)
   {
     case EventMode::kPaddlesMode:
-      enableMappings(Right2PaddlesEvents, EventMode::kPaddlesMode);
+      enableMappings(QTPaddles4Events, EventMode::kPaddlesMode);
       break;
 
     case EventMode::kEmulationMode: // no QuadTari
       break;
 
     default:
-      enableMappings(Right2JoystickEvents, EventMode::kJoystickMode);
+      enableMappings(QTJoystick4Events, EventMode::kJoystickMode);
       break;
   }
 
   switch(myLeft2ndMode)
   {
     case EventMode::kPaddlesMode:
-      enableMappings(Left2PaddlesEvents, EventMode::kPaddlesMode);
+      enableMappings(QTPaddles3Events, EventMode::kPaddlesMode);
       break;
 
     case EventMode::kEmulationMode: // no QuadTari
       break;
 
     default:
-      enableMappings(Left2JoystickEvents, EventMode::kJoystickMode);
+      enableMappings(QTJoystick3Events, EventMode::kJoystickMode);
       break;
   }
 
@@ -414,18 +414,18 @@ EventMode PhysicalKeyboardHandler::getEventMode(const Event::Type event,
 bool PhysicalKeyboardHandler::isJoystickEvent(const Event::Type event) const
 {
   return LeftJoystickEvents.find(event) != LeftJoystickEvents.end()
-    || Left2JoystickEvents.find(event) != Left2JoystickEvents.end()
+    || QTJoystick3Events.find(event) != QTJoystick3Events.end()
     || RightJoystickEvents.find(event) != RightJoystickEvents.end()
-    || Right2JoystickEvents.find(event) != Right2JoystickEvents.end();
+    || QTJoystick4Events.find(event) != QTJoystick4Events.end();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PhysicalKeyboardHandler::isPaddleEvent(const Event::Type event) const
 {
   return LeftPaddlesEvents.find(event) != LeftPaddlesEvents.end()
-    || Left2PaddlesEvents.find(event) != Left2PaddlesEvents.end()
+    || QTPaddles3Events.find(event) != QTPaddles3Events.end()
     || RightPaddlesEvents.find(event) != RightPaddlesEvents.end()
-    || Right2PaddlesEvents.find(event) != Right2PaddlesEvents.end();
+    || QTPaddles4Events.find(event) != QTPaddles4Events.end();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -936,107 +936,107 @@ PhysicalKeyboardHandler::FixedPromptMapping = {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultJoystickMapping = {
-  {Event::JoystickZeroUp,           KBDK_UP},
-  {Event::JoystickZeroDown,         KBDK_DOWN},
-  {Event::JoystickZeroLeft,         KBDK_LEFT},
-  {Event::JoystickZeroRight,        KBDK_RIGHT},
-  {Event::JoystickZeroUp,           KBDK_KP_8},
-  {Event::JoystickZeroDown,         KBDK_KP_2},
-  {Event::JoystickZeroLeft,         KBDK_KP_4},
-  {Event::JoystickZeroRight,        KBDK_KP_6},
-  {Event::JoystickZeroFire,         KBDK_SPACE},
-  {Event::JoystickZeroFire,         KBDK_LCTRL},
-  {Event::JoystickZeroFire,         KBDK_KP_5},
-  {Event::JoystickZeroFire5,        KBDK_4},
-  {Event::JoystickZeroFire5,        KBDK_RSHIFT},
-  {Event::JoystickZeroFire5,        KBDK_KP_9},
-  {Event::JoystickZeroFire9,        KBDK_5},
-  {Event::JoystickZeroFire9,        KBDK_RCTRL},
-  {Event::JoystickZeroFire9,        KBDK_KP_3},
+  {Event::JoystickLeftUp,           KBDK_UP},
+  {Event::JoystickLeftDown,         KBDK_DOWN},
+  {Event::JoystickLeftLeft,         KBDK_LEFT},
+  {Event::JoystickLeftRight,        KBDK_RIGHT},
+  {Event::JoystickLeftUp,           KBDK_KP_8},
+  {Event::JoystickLeftDown,         KBDK_KP_2},
+  {Event::JoystickLeftLeft,         KBDK_KP_4},
+  {Event::JoystickLeftRight,        KBDK_KP_6},
+  {Event::JoystickLeftFire,         KBDK_SPACE},
+  {Event::JoystickLeftFire,         KBDK_LCTRL},
+  {Event::JoystickLeftFire,         KBDK_KP_5},
+  {Event::JoystickLeftFire5,        KBDK_4},
+  {Event::JoystickLeftFire5,        KBDK_RSHIFT},
+  {Event::JoystickLeftFire5,        KBDK_KP_9},
+  {Event::JoystickLeftFire9,        KBDK_5},
+  {Event::JoystickLeftFire9,        KBDK_RCTRL},
+  {Event::JoystickLeftFire9,        KBDK_KP_3},
 
-  {Event::JoystickOneUp,            KBDK_Y},
-  {Event::JoystickOneDown,          KBDK_H},
-  {Event::JoystickOneLeft,          KBDK_G},
-  {Event::JoystickOneRight,         KBDK_J},
-  {Event::JoystickOneFire,          KBDK_F},
-  {Event::JoystickOneFire5,         KBDK_6},
-  {Event::JoystickOneFire9,         KBDK_7},
+  {Event::JoystickRightUp,          KBDK_Y},
+  {Event::JoystickRightDown,        KBDK_H},
+  {Event::JoystickRightLeft,        KBDK_G},
+  {Event::JoystickRightRight,       KBDK_J},
+  {Event::JoystickRightFire,        KBDK_F},
+  {Event::JoystickRightFire5,       KBDK_6},
+  {Event::JoystickRightFire9,       KBDK_7},
 
   // Same as Joysticks Zero & One + SHIFT
-  {Event::JoystickTwoUp,            KBDK_UP, KBDM_SHIFT},
-  {Event::JoystickTwoDown,          KBDK_DOWN, KBDM_SHIFT},
-  {Event::JoystickTwoLeft,          KBDK_LEFT, KBDM_SHIFT},
-  {Event::JoystickTwoRight,         KBDK_RIGHT, KBDM_SHIFT},
-  {Event::JoystickTwoUp,            KBDK_KP_8, KBDM_SHIFT},
-  {Event::JoystickTwoDown,          KBDK_KP_2, KBDM_SHIFT},
-  {Event::JoystickTwoLeft,          KBDK_KP_4, KBDM_SHIFT},
-  {Event::JoystickTwoRight,         KBDK_KP_6, KBDM_SHIFT},
-  {Event::JoystickTwoFire,          KBDK_SPACE, KBDM_SHIFT},
+  {Event::QTJoystickThreeUp,        KBDK_UP, KBDM_SHIFT},
+  {Event::QTJoystickThreeDown,      KBDK_DOWN, KBDM_SHIFT},
+  {Event::QTJoystickThreeLeft,      KBDK_LEFT, KBDM_SHIFT},
+  {Event::QTJoystickThreeRight,     KBDK_RIGHT, KBDM_SHIFT},
+  {Event::QTJoystickThreeUp,        KBDK_KP_8, KBDM_SHIFT},
+  {Event::QTJoystickThreeDown,      KBDK_KP_2, KBDM_SHIFT},
+  {Event::QTJoystickThreeLeft,      KBDK_KP_4, KBDM_SHIFT},
+  {Event::QTJoystickThreeRight,     KBDK_KP_6, KBDM_SHIFT},
+  {Event::QTJoystickThreeFire,      KBDK_SPACE, KBDM_SHIFT},
 
-  {Event::JoystickThreeUp,          KBDK_Y, KBDM_SHIFT},
-  {Event::JoystickThreeDown,        KBDK_H, KBDM_SHIFT},
-  {Event::JoystickThreeLeft,        KBDK_G, KBDM_SHIFT},
-  {Event::JoystickThreeRight,       KBDK_J, KBDM_SHIFT},
-  {Event::JoystickThreeFire,        KBDK_F, KBDM_SHIFT},
+  {Event::QTJoystickFourUp,         KBDK_Y, KBDM_SHIFT},
+  {Event::QTJoystickFourDown,       KBDK_H, KBDM_SHIFT},
+  {Event::QTJoystickFourLeft,       KBDK_G, KBDM_SHIFT},
+  {Event::QTJoystickFourRight,      KBDK_J, KBDM_SHIFT},
+  {Event::QTJoystickFourFire,       KBDK_F, KBDM_SHIFT},
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PhysicalKeyboardHandler::EventMappingArray
 PhysicalKeyboardHandler::DefaultPaddleMapping = {
-  {Event::PaddleZeroDecrease,       KBDK_RIGHT},
-  {Event::PaddleZeroIncrease,       KBDK_LEFT},
-  {Event::PaddleZeroFire,           KBDK_SPACE},
-  {Event::PaddleZeroFire,           KBDK_LCTRL},
-  {Event::PaddleZeroFire,           KBDK_KP_5},
+  {Event::PaddleLeftADecrease,      KBDK_RIGHT},
+  {Event::PaddleLeftAIncrease,      KBDK_LEFT},
+  {Event::PaddleLeftAFire,          KBDK_SPACE},
+  {Event::PaddleLeftAFire,          KBDK_LCTRL},
+  {Event::PaddleLeftAFire,          KBDK_KP_5},
 
-  {Event::PaddleOneDecrease,        KBDK_DOWN},
-  {Event::PaddleOneIncrease,        KBDK_UP},
-  {Event::PaddleOneFire,            KBDK_4},
-  {Event::PaddleOneFire,            KBDK_RCTRL},
+  {Event::PaddleLeftBDecrease,      KBDK_DOWN},
+  {Event::PaddleLeftBIncrease,      KBDK_UP},
+  {Event::PaddleLeftBFire,          KBDK_4},
+  {Event::PaddleLeftBFire,          KBDK_RCTRL},
 
-  {Event::PaddleTwoDecrease,        KBDK_J},
-  {Event::PaddleTwoIncrease,        KBDK_G},
-  {Event::PaddleTwoFire,            KBDK_F},
+  {Event::PaddleRightADecrease,     KBDK_J},
+  {Event::PaddleRightAIncrease,     KBDK_G},
+  {Event::PaddleRightAFire,         KBDK_F},
 
-  {Event::PaddleThreeDecrease,      KBDK_H},
-  {Event::PaddleThreeIncrease,      KBDK_Y},
-  {Event::PaddleThreeFire,          KBDK_6},
+  {Event::PaddleRightBDecrease,     KBDK_H},
+  {Event::PaddleRightBIncrease,     KBDK_Y},
+  {Event::PaddleRightBFire,         KBDK_6},
 
   // Same as Paddles Zero..Three Fire + SHIFT
-  {Event::PaddleFourFire,           KBDK_SPACE, KBDM_SHIFT},
-  {Event::PaddleFiveFire,           KBDK_4, KBDM_SHIFT},
-  {Event::PaddleSixFire,            KBDK_F, KBDM_SHIFT},
-  {Event::PaddleSevenFire,          KBDK_6, KBDM_SHIFT},
+  {Event::QTPaddle3AFire,           KBDK_SPACE, KBDM_SHIFT},
+  {Event::QTPaddle3BFire,           KBDK_4, KBDM_SHIFT},
+  {Event::QTPaddle4AFire,           KBDK_F, KBDM_SHIFT},
+  {Event::QTPaddle4BFire,           KBDK_6, KBDM_SHIFT},
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PhysicalKeyboardHandler::EventMappingArray
 PhysicalKeyboardHandler::DefaultKeypadMapping = {
-  {Event::KeyboardZero1,            KBDK_1},
-  {Event::KeyboardZero2,            KBDK_2},
-  {Event::KeyboardZero3,            KBDK_3},
-  {Event::KeyboardZero4,            KBDK_Q},
-  {Event::KeyboardZero5,            KBDK_W},
-  {Event::KeyboardZero6,            KBDK_E},
-  {Event::KeyboardZero7,            KBDK_A},
-  {Event::KeyboardZero8,            KBDK_S},
-  {Event::KeyboardZero9,            KBDK_D},
-  {Event::KeyboardZeroStar,         KBDK_Z},
-  {Event::KeyboardZero0,            KBDK_X},
-  {Event::KeyboardZeroPound,        KBDK_C},
+  {Event::LeftKeyboard1,            KBDK_1},
+  {Event::LeftKeyboard2,            KBDK_2},
+  {Event::LeftKeyboard3,            KBDK_3},
+  {Event::LeftKeyboard4,            KBDK_Q},
+  {Event::LeftKeyboard5,            KBDK_W},
+  {Event::LeftKeyboard6,            KBDK_E},
+  {Event::LeftKeyboard7,            KBDK_A},
+  {Event::LeftKeyboard8,            KBDK_S},
+  {Event::LeftKeyboard9,            KBDK_D},
+  {Event::LeftKeyboardStar,         KBDK_Z},
+  {Event::LeftKeyboard0,            KBDK_X},
+  {Event::LeftKeyboardPound,        KBDK_C},
 
-  {Event::KeyboardOne1,             KBDK_8},
-  {Event::KeyboardOne2,             KBDK_9},
-  {Event::KeyboardOne3,             KBDK_0},
-  {Event::KeyboardOne4,             KBDK_I},
-  {Event::KeyboardOne5,             KBDK_O},
-  {Event::KeyboardOne6,             KBDK_P},
-  {Event::KeyboardOne7,             KBDK_K},
-  {Event::KeyboardOne8,             KBDK_L},
-  {Event::KeyboardOne9,             KBDK_SEMICOLON},
-  {Event::KeyboardOneStar,          KBDK_COMMA},
-  {Event::KeyboardOne0,             KBDK_PERIOD},
-  {Event::KeyboardOnePound,         KBDK_SLASH},
+  {Event::RightKeyboard1,           KBDK_8},
+  {Event::RightKeyboard2,           KBDK_9},
+  {Event::RightKeyboard3,           KBDK_0},
+  {Event::RightKeyboard4,           KBDK_I},
+  {Event::RightKeyboard5,           KBDK_O},
+  {Event::RightKeyboard6,           KBDK_P},
+  {Event::RightKeyboard7,           KBDK_K},
+  {Event::RightKeyboard8,           KBDK_L},
+  {Event::RightKeyboard9,           KBDK_SEMICOLON},
+  {Event::RightKeyboardStar,        KBDK_COMMA},
+  {Event::RightKeyboard0,           KBDK_PERIOD},
+  {Event::RightKeyboardPound,       KBDK_SLASH},
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

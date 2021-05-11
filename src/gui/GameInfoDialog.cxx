@@ -367,17 +367,17 @@ void GameInfoDialog::addControllersTab()
   wid.push_back(myMouseControl);
 
   // Mouse controller specific axis
-  pwidth = _font.getStringWidth("MindLink 0");
+  pwidth = _font.getStringWidth("Right MindLink");
   ctrls.clear();
   VarList::push_back(ctrls, "None",       static_cast<uInt32>(MouseControl::Type::NoControl));
-  VarList::push_back(ctrls, "Paddle 0",   static_cast<uInt32>(MouseControl::Type::Paddle0));
-  VarList::push_back(ctrls, "Paddle 1",   static_cast<uInt32>(MouseControl::Type::Paddle1));
-  VarList::push_back(ctrls, "Paddle 2",   static_cast<uInt32>(MouseControl::Type::Paddle2));
-  VarList::push_back(ctrls, "Paddle 3",   static_cast<uInt32>(MouseControl::Type::Paddle3));
-  VarList::push_back(ctrls, "Driving 0",  static_cast<uInt32>(MouseControl::Type::Driving0));
-  VarList::push_back(ctrls, "Driving 1",  static_cast<uInt32>(MouseControl::Type::Driving1));
-  VarList::push_back(ctrls, "MindLink 0", static_cast<uInt32>(MouseControl::Type::MindLink0));
-  VarList::push_back(ctrls, "MindLink 1", static_cast<uInt32>(MouseControl::Type::MindLink1));
+  VarList::push_back(ctrls, "Left Paddle A",   static_cast<uInt32>(MouseControl::Type::PaddleLeftA));
+  VarList::push_back(ctrls, "Left Paddle B",   static_cast<uInt32>(MouseControl::Type::PaddleLeftB));
+  VarList::push_back(ctrls, "Right Paddle A",   static_cast<uInt32>(MouseControl::Type::PaddleRightA));
+  VarList::push_back(ctrls, "Right Paddle B",   static_cast<uInt32>(MouseControl::Type::PaddleRightB));
+  VarList::push_back(ctrls, "Left Driving",  static_cast<uInt32>(MouseControl::Type::DrivingLeft));
+  VarList::push_back(ctrls, "Right Driving",  static_cast<uInt32>(MouseControl::Type::DrivingRight));
+  VarList::push_back(ctrls, "Left MindLink", static_cast<uInt32>(MouseControl::Type::MindLinkLeft));
+  VarList::push_back(ctrls, "Right MindLink", static_cast<uInt32>(MouseControl::Type::MindLinkRight));
 
   xpos += CheckboxWidget::prefixSize(_font);
   ypos += lineHeight + VGAP;
