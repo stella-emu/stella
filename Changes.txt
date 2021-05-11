@@ -16,7 +16,9 @@
 
   * Added web links for many games
 
-  * Added optional logging of breaks and traps
+  * Debugger: added optional logging of breaks and traps
+
+  * Debugger: enhanced prompt's auto complete and history
 
 -Have fun!
 
