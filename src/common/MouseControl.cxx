@@ -54,42 +54,42 @@ MouseControl::MouseControl(Console& console, const string& mode)
         case MouseControl::Type::NoControl:
           msg << "not used";
           break;
-        case MouseControl::Type::PaddleLeftA:
+        case MouseControl::Type::LeftPaddleA:
           type = Controller::Type::Paddles;
           id = 0;
           msg << "Left Paddle A";
           break;
-        case MouseControl::Type::PaddleLeftB:
+        case MouseControl::Type::LeftPaddleB:
           type = Controller::Type::Paddles;
           id = 1;
           msg << "Left Paddle B";
           break;
-        case MouseControl::Type::PaddleRightA:
+        case MouseControl::Type::RightPaddleA:
           type = Controller::Type::Paddles;
           id = 2;
           msg << "Right Paddle A";
           break;
-        case MouseControl::Type::PaddleRightB:
+        case MouseControl::Type::RightPaddleB:
           type = Controller::Type::Paddles;
           id = 3;
           msg << "Right Paddle B";
           break;
-        case MouseControl::Type::DrivingLeft:
+        case MouseControl::Type::LeftDriving:
           type = Controller::Type::Driving;
           id = 0;
           msg << "Left Driving";
           break;
-        case MouseControl::Type::DrivingRight:
+        case MouseControl::Type::RightDriving:
           type = Controller::Type::Driving;
           id = 1;
           msg << "Right Driving";
           break;
-        case MouseControl::Type::MindLinkLeft:
+        case MouseControl::Type::LeftMindLink:
           type = Controller::Type::MindLink;
           id = 0;
           msg << "Left MindLink";
           break;
-        case MouseControl::Type::MindLinkRight:
+        case MouseControl::Type::RightMindLink:
           type = Controller::Type::MindLink;
           id = 1;
           msg << "Right MindLink";

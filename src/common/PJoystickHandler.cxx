@@ -1068,81 +1068,81 @@ void PhysicalJoystickHandler::changeDrivingSensitivity(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PhysicalJoystickHandler::EventMappingArray PhysicalJoystickHandler::DefaultLeftJoystickMapping = {
   // Left joystick (assume buttons zero..two)
-  {Event::JoystickLeftFire,   0},
-  {Event::JoystickLeftFire5,  1},
-  {Event::JoystickLeftFire9,  2},
+  {Event::LeftJoystickFire,   0},
+  {Event::LeftJoystickFire5,  1},
+  {Event::LeftJoystickFire9,  2},
   // Left joystick left/right directions
-  {Event::JoystickLeftLeft,   JOY_CTRL_NONE, JoyAxis::X, JoyDir::NEG},
-  {Event::JoystickLeftRight,  JOY_CTRL_NONE, JoyAxis::X, JoyDir::POS},
+  {Event::LeftJoystickLeft,   JOY_CTRL_NONE, JoyAxis::X, JoyDir::NEG},
+  {Event::LeftJoystickRight,  JOY_CTRL_NONE, JoyAxis::X, JoyDir::POS},
   // Left joystick up/down directions
-  {Event::JoystickLeftUp,     JOY_CTRL_NONE, JoyAxis::Y, JoyDir::NEG},
-  {Event::JoystickLeftDown,   JOY_CTRL_NONE, JoyAxis::Y, JoyDir::POS},
+  {Event::LeftJoystickUp,     JOY_CTRL_NONE, JoyAxis::Y, JoyDir::NEG},
+  {Event::LeftJoystickDown,   JOY_CTRL_NONE, JoyAxis::Y, JoyDir::POS},
   // Left joystick left/right directions (assume hat 0)
-  {Event::JoystickLeftLeft,   JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::LEFT},
-  {Event::JoystickLeftRight,  JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::RIGHT},
+  {Event::LeftJoystickLeft,   JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::LEFT},
+  {Event::LeftJoystickRight,  JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::RIGHT},
   // Left joystick up/down directions (assume hat 0)
-  {Event::JoystickLeftUp,     JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::UP},
-  {Event::JoystickLeftDown,   JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::DOWN},
+  {Event::LeftJoystickUp,     JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::UP},
+  {Event::LeftJoystickDown,   JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::DOWN},
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PhysicalJoystickHandler::EventMappingArray PhysicalJoystickHandler::DefaultRightJoystickMapping = {
   // Right joystick (assume buttons zero..two)
-  {Event::JoystickRightFire,    0},
-  {Event::JoystickRightFire5,   1},
-  {Event::JoystickRightFire9,   2},
+  {Event::RightJoystickFire,    0},
+  {Event::RightJoystickFire5,   1},
+  {Event::RightJoystickFire9,   2},
   // Right joystick left/right directions
-  {Event::JoystickRightLeft,    JOY_CTRL_NONE, JoyAxis::X, JoyDir::NEG},
-  {Event::JoystickRightRight,   JOY_CTRL_NONE, JoyAxis::X, JoyDir::POS},
+  {Event::RightJoystickLeft,    JOY_CTRL_NONE, JoyAxis::X, JoyDir::NEG},
+  {Event::RightJoystickRight,   JOY_CTRL_NONE, JoyAxis::X, JoyDir::POS},
   // Right joystick up/down directions
-  {Event::JoystickRightUp,      JOY_CTRL_NONE, JoyAxis::Y, JoyDir::NEG},
-  {Event::JoystickRightDown,    JOY_CTRL_NONE, JoyAxis::Y, JoyDir::POS},
+  {Event::RightJoystickUp,      JOY_CTRL_NONE, JoyAxis::Y, JoyDir::NEG},
+  {Event::RightJoystickDown,    JOY_CTRL_NONE, JoyAxis::Y, JoyDir::POS},
   // Right joystick left/right directions (assume hat 0)
-  {Event::JoystickRightLeft,    JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::LEFT},
-  {Event::JoystickRightRight,   JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::RIGHT},
+  {Event::RightJoystickLeft,    JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::LEFT},
+  {Event::RightJoystickRight,   JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::RIGHT},
   // Right joystick up/down directions (assume hat 0)
-  {Event::JoystickRightUp,      JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::UP},
-  {Event::JoystickRightDown,    JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::DOWN},
+  {Event::RightJoystickUp,      JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::UP},
+  {Event::RightJoystickDown,    JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::DOWN},
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PhysicalJoystickHandler::EventMappingArray PhysicalJoystickHandler::DefaultLeftPaddlesMapping = {
-  {Event::PaddleLeftAAnalog,   JOY_CTRL_NONE, JoyAxis::X, JoyDir::ANALOG},
+  {Event::LeftPaddleAAnalog,   JOY_CTRL_NONE, JoyAxis::X, JoyDir::ANALOG},
 #if defined(RETRON77)
-  {Event::PaddleLeftAAnalog,   JOY_CTRL_NONE, JoyAxis::Z, JoyDir::ANALOG},
+  {Event::LeftPaddleAAnalog,   JOY_CTRL_NONE, JoyAxis::Z, JoyDir::ANALOG},
 #endif
   // Current code does NOT allow digital and anlog events on the same axis at the same time
-  //{Event::PaddleLeftADecrease, JOY_CTRL_NONE, JoyAxis::X, JoyDir::POS},
-  //{Event::PaddleLeftAIncrease, JOY_CTRL_NONE, JoyAxis::X, JoyDir::NEG},
-  {Event::PaddleLeftAFire,     0},
-  {Event::PaddleLeftBAnalog,    JOY_CTRL_NONE, JoyAxis::Y, JoyDir::ANALOG},
+  //{Event::LeftPaddleADecrease, JOY_CTRL_NONE, JoyAxis::X, JoyDir::POS},
+  //{Event::LeftPaddleAIncrease, JOY_CTRL_NONE, JoyAxis::X, JoyDir::NEG},
+  {Event::LeftPaddleAFire,     0},
+  {Event::LeftPaddleBAnalog,    JOY_CTRL_NONE, JoyAxis::Y, JoyDir::ANALOG},
 #if defined(RETRON77)
-  {Event::PaddleLeftBAnalog,    JOY_CTRL_NONE, JoyAxis::A3, JoyDir::ANALOG},
+  {Event::LeftPaddleBAnalog,    JOY_CTRL_NONE, JoyAxis::A3, JoyDir::ANALOG},
 #endif
   // Current code does NOT allow digital and anlog events on the same axis at the same
-  //{Event::PaddleLeftBDecrease,  JOY_CTRL_NONE, JoyAxis::Y, JoyDir::POS},
-  //{Event::PaddleLeftBIncrease,  JOY_CTRL_NONE, JoyAxis::Y, JoyDir::NEG},
-  {Event::PaddleLeftBFire,      1},
+  //{Event::LeftPaddleBDecrease,  JOY_CTRL_NONE, JoyAxis::Y, JoyDir::POS},
+  //{Event::LeftPaddleBIncrease,  JOY_CTRL_NONE, JoyAxis::Y, JoyDir::NEG},
+  {Event::LeftPaddleBFire,      1},
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PhysicalJoystickHandler::EventMappingArray PhysicalJoystickHandler::DefaultRightPaddlesMapping = {
-  {Event::PaddleRightAAnalog,    JOY_CTRL_NONE, JoyAxis::X, JoyDir::ANALOG},
+  {Event::RightPaddleAAnalog,    JOY_CTRL_NONE, JoyAxis::X, JoyDir::ANALOG},
 #if defined(RETRON77)
-  {Event::PaddleRightAAnalog,    JOY_CTRL_NONE, JoyAxis::Z, JoyDir::ANALOG},
+  {Event::RightPaddleAAnalog,    JOY_CTRL_NONE, JoyAxis::Z, JoyDir::ANALOG},
 #endif
   // Current code does NOT allow digital and anlog events on the same axis at the same
-  //{Event::PaddleRightADecrease,  JOY_CTRL_NONE, JoyAxis::X, JoyDir::POS},
-  //{Event::PaddleRightAIncrease,  JOY_CTRL_NONE, JoyAxis::X, JoyDir::NEG},
-  {Event::PaddleRightAFire,      0},
-  {Event::PaddleRightBAnalog,  JOY_CTRL_NONE, JoyAxis::Y, JoyDir::ANALOG},
+  //{Event::RightPaddleADecrease,  JOY_CTRL_NONE, JoyAxis::X, JoyDir::POS},
+  //{Event::RightPaddleAIncrease,  JOY_CTRL_NONE, JoyAxis::X, JoyDir::NEG},
+  {Event::RightPaddleAFire,      0},
+  {Event::RightPaddleBAnalog,  JOY_CTRL_NONE, JoyAxis::Y, JoyDir::ANALOG},
 #if defined(RETRON77)
-  {Event::PaddleRightBAnalog,  JOY_CTRL_NONE, JoyAxis::A3, JoyDir::ANALOG},
+  {Event::RightPaddleBAnalog,  JOY_CTRL_NONE, JoyAxis::A3, JoyDir::ANALOG},
 #endif
   // Current code does NOT allow digital and anlog events on the same axis at the same
-  //{Event::PaddleRightBDecrease,JOY_CTRL_NONE, JoyAxis::Y, JoyDir::POS},
-  //{Event::PaddleRightBIncrease,JOY_CTRL_NONE, JoyAxis::Y, JoyDir::NEG},
-  {Event::PaddleRightBFire,    1},
+  //{Event::RightPaddleBDecrease,JOY_CTRL_NONE, JoyAxis::Y, JoyDir::POS},
+  //{Event::RightPaddleBIncrease,JOY_CTRL_NONE, JoyAxis::Y, JoyDir::NEG},
+  {Event::RightPaddleBFire,    1},
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

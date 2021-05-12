@@ -758,44 +758,44 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
 
     ////////////////////////////////////////////////////////////////////////
     // If enabled, make sure 'impossible' joystick directions aren't allowed
-    case Event::JoystickLeftUp:
+    case Event::LeftJoystickUp:
       if(!myAllowAllDirectionsFlag && pressed)
-        myEvent.set(Event::JoystickLeftDown, 0);
+        myEvent.set(Event::LeftJoystickDown, 0);
       break;
 
-    case Event::JoystickLeftDown:
+    case Event::LeftJoystickDown:
       if(!myAllowAllDirectionsFlag && pressed)
-        myEvent.set(Event::JoystickLeftUp, 0);
+        myEvent.set(Event::LeftJoystickUp, 0);
       break;
 
-    case Event::JoystickLeftLeft:
+    case Event::LeftJoystickLeft:
       if(!myAllowAllDirectionsFlag && pressed)
-        myEvent.set(Event::JoystickLeftRight, 0);
+        myEvent.set(Event::LeftJoystickRight, 0);
       break;
 
-    case Event::JoystickLeftRight:
+    case Event::LeftJoystickRight:
       if(!myAllowAllDirectionsFlag && pressed)
-        myEvent.set(Event::JoystickLeftLeft, 0);
+        myEvent.set(Event::LeftJoystickLeft, 0);
       break;
 
-    case Event::JoystickRightUp:
+    case Event::RightJoystickUp:
       if(!myAllowAllDirectionsFlag && pressed)
-        myEvent.set(Event::JoystickRightDown, 0);
+        myEvent.set(Event::RightJoystickDown, 0);
       break;
 
-    case Event::JoystickRightDown:
+    case Event::RightJoystickDown:
       if(!myAllowAllDirectionsFlag && pressed)
-        myEvent.set(Event::JoystickRightUp, 0);
+        myEvent.set(Event::RightJoystickUp, 0);
       break;
 
-    case Event::JoystickRightLeft:
+    case Event::RightJoystickLeft:
       if(!myAllowAllDirectionsFlag && pressed)
-        myEvent.set(Event::JoystickRightRight, 0);
+        myEvent.set(Event::RightJoystickRight, 0);
       break;
 
-    case Event::JoystickRightRight:
+    case Event::RightJoystickRight:
       if(!myAllowAllDirectionsFlag && pressed)
-        myEvent.set(Event::JoystickRightLeft, 0);
+        myEvent.set(Event::RightJoystickLeft, 0);
       break;
 
     case Event::QTJoystickThreeUp:
@@ -2087,27 +2087,27 @@ void EventHandler::handleConsoleStartupEvents()
   const string& holdjoy0 = myOSystem.settings().getString("holdjoy0");
 
   if(BSPF::containsIgnoreCase(holdjoy0, "U"))
-    handleEvent(Event::JoystickLeftUp);
+    handleEvent(Event::LeftJoystickUp);
   if(BSPF::containsIgnoreCase(holdjoy0, "D"))
-    handleEvent(Event::JoystickLeftDown);
+    handleEvent(Event::LeftJoystickDown);
   if(BSPF::containsIgnoreCase(holdjoy0, "L"))
-    handleEvent(Event::JoystickLeftLeft);
+    handleEvent(Event::LeftJoystickLeft);
   if(BSPF::containsIgnoreCase(holdjoy0, "R"))
-    handleEvent(Event::JoystickLeftRight);
+    handleEvent(Event::LeftJoystickRight);
   if(BSPF::containsIgnoreCase(holdjoy0, "F"))
-    handleEvent(Event::JoystickLeftFire);
+    handleEvent(Event::LeftJoystickFire);
 
   const string& holdjoy1 = myOSystem.settings().getString("holdjoy1");
   if(BSPF::containsIgnoreCase(holdjoy1, "U"))
-    handleEvent(Event::JoystickRightUp);
+    handleEvent(Event::RightJoystickUp);
   if(BSPF::containsIgnoreCase(holdjoy1, "D"))
-    handleEvent(Event::JoystickRightDown);
+    handleEvent(Event::RightJoystickDown);
   if(BSPF::containsIgnoreCase(holdjoy1, "L"))
-    handleEvent(Event::JoystickRightLeft);
+    handleEvent(Event::RightJoystickLeft);
   if(BSPF::containsIgnoreCase(holdjoy1, "R"))
-    handleEvent(Event::JoystickRightRight);
+    handleEvent(Event::RightJoystickRight);
   if(BSPF::containsIgnoreCase(holdjoy1, "F"))
-    handleEvent(Event::JoystickRightFire);
+    handleEvent(Event::RightJoystickFire);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -3056,21 +3056,21 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::ToggleContSnapshotsFrame,"Save continuous snapsh. (every frame)", "" },
 #endif
 
-  { Event::JoystickLeftUp,          "Left Joystick Up",                      "" },
-  { Event::JoystickLeftDown,        "Left Joystick Down",                    "" },
-  { Event::JoystickLeftLeft,        "Left Joystick Left",                    "" },
-  { Event::JoystickLeftRight,       "Left Joystick Right",                   "" },
-  { Event::JoystickLeftFire,        "Left Joystick Fire",                    "" },
-  { Event::JoystickLeftFire5,       "Left Booster Top Booster Button",       "" },
-  { Event::JoystickLeftFire9,       "Left Booster Handle Grip Trigger",      "" },
+  { Event::LeftJoystickUp,          "Left Joystick Up",                      "" },
+  { Event::LeftJoystickDown,        "Left Joystick Down",                    "" },
+  { Event::LeftJoystickLeft,        "Left Joystick Left",                    "" },
+  { Event::LeftJoystickRight,       "Left Joystick Right",                   "" },
+  { Event::LeftJoystickFire,        "Left Joystick Fire",                    "" },
+  { Event::LeftJoystickFire5,       "Left Booster Top Booster Button",       "" },
+  { Event::LeftJoystickFire9,       "Left Booster Handle Grip Trigger",      "" },
 
-  { Event::JoystickRightUp,         "Right Joystick Up",                     "" },
-  { Event::JoystickRightDown,       "Right Joystick Down",                   "" },
-  { Event::JoystickRightLeft,       "Right Joystick Left",                   "" },
-  { Event::JoystickRightRight,      "Right Joystick Right",                  "" },
-  { Event::JoystickRightFire,       "Right Joystick Fire",                   "" },
-  { Event::JoystickRightFire5,      "Right Booster Top Booster Button",      "" },
-  { Event::JoystickRightFire9,      "Right Booster Handle Grip Trigger",     "" },
+  { Event::RightJoystickUp,         "Right Joystick Up",                     "" },
+  { Event::RightJoystickDown,       "Right Joystick Down",                   "" },
+  { Event::RightJoystickLeft,       "Right Joystick Left",                   "" },
+  { Event::RightJoystickRight,      "Right Joystick Right",                  "" },
+  { Event::RightJoystickFire,       "Right Joystick Fire",                   "" },
+  { Event::RightJoystickFire5,      "Right Booster Top Booster Button",      "" },
+  { Event::RightJoystickFire9,      "Right Booster Handle Grip Trigger",     "" },
 
   { Event::QTJoystickThreeUp,       "QuadTari Joystick 3 Up",                "" },
   { Event::QTJoystickThreeDown,     "QuadTari Joystick 3 Down",              "" },
@@ -3084,25 +3084,25 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::QTJoystickFourRight,     "QuadTari Joystick 4 Right",             "" },
   { Event::QTJoystickFourFire,      "QuadTari Joystick 4 Fire",              "" },
 
-  { Event::PaddleLeftAAnalog,       "Left Paddle A Analog",                  "" },
-  { Event::PaddleLeftAIncrease,     "Left Paddle A Turn Left",               "" },
-  { Event::PaddleLeftADecrease,     "Left Paddle A Turn Right",              "" },
-  { Event::PaddleLeftAFire,         "Left Paddle A Fire",                    "" },
+  { Event::LeftPaddleAAnalog,       "Left Paddle A Analog",                  "" },
+  { Event::LeftPaddleAIncrease,     "Left Paddle A Turn Left",               "" },
+  { Event::LeftPaddleADecrease,     "Left Paddle A Turn Right",              "" },
+  { Event::LeftPaddleAFire,         "Left Paddle A Fire",                    "" },
 
-  { Event::PaddleLeftBAnalog,       "Left Paddle B Analog",                  "" },
-  { Event::PaddleLeftBIncrease,     "Left Paddle B Turn Left",               "" },
-  { Event::PaddleLeftBDecrease,     "Left Paddle B Turn Right",              "" },
-  { Event::PaddleLeftBFire,         "Left Paddle B Fire",                    "" },
+  { Event::LeftPaddleBAnalog,       "Left Paddle B Analog",                  "" },
+  { Event::LeftPaddleBIncrease,     "Left Paddle B Turn Left",               "" },
+  { Event::LeftPaddleBDecrease,     "Left Paddle B Turn Right",              "" },
+  { Event::LeftPaddleBFire,         "Left Paddle B Fire",                    "" },
 
-  { Event::PaddleRightAAnalog,      "Right Paddle A Analog",                 "" },
-  { Event::PaddleRightAIncrease,    "Right Paddle A Turn Left",              "" },
-  { Event::PaddleRightADecrease,    "Right Paddle A Turn Right",             "" },
-  { Event::PaddleRightAFire,        "Right Paddle A Fire",                   "" },
+  { Event::RightPaddleAAnalog,      "Right Paddle A Analog",                 "" },
+  { Event::RightPaddleAIncrease,    "Right Paddle A Turn Left",              "" },
+  { Event::RightPaddleADecrease,    "Right Paddle A Turn Right",             "" },
+  { Event::RightPaddleAFire,        "Right Paddle A Fire",                   "" },
 
-  { Event::PaddleRightBAnalog,      "Right Paddle B Analog",                 "" },
-  { Event::PaddleRightBIncrease,    "Right Paddle B Turn Left",              "" },
-  { Event::PaddleRightBDecrease,    "Right Paddle B Turn Right",             "" },
-  { Event::PaddleRightBFire,        "Right Paddle B Fire",                   "" },
+  { Event::RightPaddleBAnalog,      "Right Paddle B Analog",                 "" },
+  { Event::RightPaddleBIncrease,    "Right Paddle B Turn Left",              "" },
+  { Event::RightPaddleBDecrease,    "Right Paddle B Turn Right",             "" },
+  { Event::RightPaddleBFire,        "Right Paddle B Fire",                   "" },
 
   { Event::QTPaddle3AFire,          "QuadTari Paddle 3A Fire",               "" },
   { Event::QTPaddle3BFire,          "QuadTari Paddle 3B Fire",               "" },
@@ -3363,10 +3363,10 @@ const Event::EventSet EventHandler::ConsoleEvents = {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const Event::EventSet EventHandler::JoystickEvents = {
-  Event::JoystickLeftUp, Event::JoystickLeftDown, Event::JoystickLeftLeft, Event::JoystickLeftRight,
-  Event::JoystickLeftFire, Event::JoystickLeftFire5, Event::JoystickLeftFire9,
-  Event::JoystickRightUp, Event::JoystickRightDown, Event::JoystickRightLeft, Event::JoystickRightRight,
-  Event::JoystickRightFire, Event::JoystickRightFire5, Event::JoystickRightFire9,
+  Event::LeftJoystickUp, Event::LeftJoystickDown, Event::LeftJoystickLeft, Event::LeftJoystickRight,
+  Event::LeftJoystickFire, Event::LeftJoystickFire5, Event::LeftJoystickFire9,
+  Event::RightJoystickUp, Event::RightJoystickDown, Event::RightJoystickLeft, Event::RightJoystickRight,
+  Event::RightJoystickFire, Event::RightJoystickFire5, Event::RightJoystickFire9,
   Event::QTJoystickThreeUp, Event::QTJoystickThreeDown, Event::QTJoystickThreeLeft, Event::QTJoystickThreeRight,
   Event::QTJoystickThreeFire,
   Event::QTJoystickFourUp, Event::QTJoystickFourDown, Event::QTJoystickFourLeft, Event::QTJoystickFourRight,
@@ -3375,10 +3375,10 @@ const Event::EventSet EventHandler::JoystickEvents = {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const Event::EventSet EventHandler::PaddlesEvents = {
-  Event::PaddleLeftADecrease, Event::PaddleLeftAIncrease, Event::PaddleLeftAAnalog, Event::PaddleLeftAFire,
-  Event::PaddleLeftBDecrease, Event::PaddleLeftBIncrease, Event::PaddleLeftBAnalog, Event::PaddleLeftBFire,
-  Event::PaddleRightADecrease, Event::PaddleRightAIncrease, Event::PaddleRightAAnalog, Event::PaddleRightAFire,
-  Event::PaddleRightBDecrease, Event::PaddleRightBIncrease, Event::PaddleRightBAnalog, Event::PaddleRightBFire,
+  Event::LeftPaddleADecrease, Event::LeftPaddleAIncrease, Event::LeftPaddleAAnalog, Event::LeftPaddleAFire,
+  Event::LeftPaddleBDecrease, Event::LeftPaddleBIncrease, Event::LeftPaddleBAnalog, Event::LeftPaddleBFire,
+  Event::RightPaddleADecrease, Event::RightPaddleAIncrease, Event::RightPaddleAAnalog, Event::RightPaddleAFire,
+  Event::RightPaddleBDecrease, Event::RightPaddleBIncrease, Event::RightPaddleBAnalog, Event::RightPaddleBFire,
   Event::QTPaddle3AFire, Event::QTPaddle3BFire,Event::QTPaddle4AFire,Event::QTPaddle4BFire,
 };
 

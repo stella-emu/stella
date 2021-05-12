@@ -32,11 +32,11 @@ Joystick::Joystick(Jack jack, const Event& event, const System& system,
   {
     if(!altmap)
     {
-      myUpEvent = Event::JoystickLeftUp;
-      myDownEvent = Event::JoystickLeftDown;
-      myLeftEvent = Event::JoystickLeftLeft;
-      myRightEvent = Event::JoystickLeftRight;
-      myFireEvent = Event::JoystickLeftFire;
+      myUpEvent = Event::LeftJoystickUp;
+      myDownEvent = Event::LeftJoystickDown;
+      myLeftEvent = Event::LeftJoystickLeft;
+      myRightEvent = Event::LeftJoystickRight;
+      myFireEvent = Event::LeftJoystickFire;
     }
     else
     {
@@ -51,11 +51,11 @@ Joystick::Joystick(Jack jack, const Event& event, const System& system,
   {
     if(!altmap)
     {
-      myUpEvent = Event::JoystickRightUp;
-      myDownEvent = Event::JoystickRightDown;
-      myLeftEvent = Event::JoystickRightLeft;
-      myRightEvent = Event::JoystickRightRight;
-      myFireEvent = Event::JoystickRightFire;
+      myUpEvent = Event::RightJoystickUp;
+      myDownEvent = Event::RightJoystickDown;
+      myLeftEvent = Event::RightJoystickLeft;
+      myRightEvent = Event::RightJoystickRight;
+      myFireEvent = Event::RightJoystickFire;
     }
     else
     {

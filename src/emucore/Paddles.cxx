@@ -50,16 +50,16 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
     if(!altmap)
     {
       // First paddle is left A, second is left B
-      myAAxisValue = Event::PaddleLeftAAnalog;
-      myBAxisValue = Event::PaddleLeftBAnalog;
-      myLeftAFireEvent = Event::PaddleLeftAFire;
-      myLeftBFireEvent = Event::PaddleLeftBFire;
+      myAAxisValue = Event::LeftPaddleAAnalog;
+      myBAxisValue = Event::LeftPaddleBAnalog;
+      myLeftAFireEvent = Event::LeftPaddleAFire;
+      myLeftBFireEvent = Event::LeftPaddleBFire;
 
       // These can be affected by changes in axis orientation
-      myLeftADecEvent = Event::PaddleLeftADecrease;
-      myLeftAIncEvent = Event::PaddleLeftAIncrease;
-      myLeftBDecEvent = Event::PaddleLeftBDecrease;
-      myLeftBIncEvent = Event::PaddleLeftBIncrease;
+      myLeftADecEvent = Event::LeftPaddleADecrease;
+      myLeftAIncEvent = Event::LeftPaddleAIncrease;
+      myLeftBDecEvent = Event::LeftPaddleBDecrease;
+      myLeftBIncEvent = Event::LeftPaddleBIncrease;
     }
     else
     {
@@ -77,16 +77,16 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
     if(!altmap)
     {
       // First paddle is right A, second is right B
-      myAAxisValue = Event::PaddleRightAAnalog;
-      myBAxisValue = Event::PaddleRightBAnalog;
-      myLeftAFireEvent = Event::PaddleRightAFire;
-      myLeftBFireEvent = Event::PaddleRightBFire;
+      myAAxisValue = Event::RightPaddleAAnalog;
+      myBAxisValue = Event::RightPaddleBAnalog;
+      myLeftAFireEvent = Event::RightPaddleAFire;
+      myLeftBFireEvent = Event::RightPaddleBFire;
 
       // These can be affected by changes in axis orientation
-      myLeftADecEvent = Event::PaddleRightADecrease;
-      myLeftAIncEvent = Event::PaddleRightAIncrease;
-      myLeftBDecEvent = Event::PaddleRightBDecrease;
-      myLeftBIncEvent = Event::PaddleRightBIncrease;
+      myLeftADecEvent = Event::RightPaddleADecrease;
+      myLeftAIncEvent = Event::RightPaddleAIncrease;
+      myLeftBDecEvent = Event::RightPaddleBDecrease;
+      myLeftBIncEvent = Event::RightPaddleBIncrease;
     }
     else
     {

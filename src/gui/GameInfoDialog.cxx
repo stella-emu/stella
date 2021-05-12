@@ -369,15 +369,15 @@ void GameInfoDialog::addControllersTab()
   // Mouse controller specific axis
   pwidth = _font.getStringWidth("Right MindLink");
   ctrls.clear();
-  VarList::push_back(ctrls, "None",       static_cast<uInt32>(MouseControl::Type::NoControl));
-  VarList::push_back(ctrls, "Left Paddle A",   static_cast<uInt32>(MouseControl::Type::PaddleLeftA));
-  VarList::push_back(ctrls, "Left Paddle B",   static_cast<uInt32>(MouseControl::Type::PaddleLeftB));
-  VarList::push_back(ctrls, "Right Paddle A",   static_cast<uInt32>(MouseControl::Type::PaddleRightA));
-  VarList::push_back(ctrls, "Right Paddle B",   static_cast<uInt32>(MouseControl::Type::PaddleRightB));
-  VarList::push_back(ctrls, "Left Driving",  static_cast<uInt32>(MouseControl::Type::DrivingLeft));
-  VarList::push_back(ctrls, "Right Driving",  static_cast<uInt32>(MouseControl::Type::DrivingRight));
-  VarList::push_back(ctrls, "Left MindLink", static_cast<uInt32>(MouseControl::Type::MindLinkLeft));
-  VarList::push_back(ctrls, "Right MindLink", static_cast<uInt32>(MouseControl::Type::MindLinkRight));
+  VarList::push_back(ctrls, "None",           static_cast<uInt32>(MouseControl::Type::NoControl));
+  VarList::push_back(ctrls, "Left Paddle A",  static_cast<uInt32>(MouseControl::Type::LeftPaddleA));
+  VarList::push_back(ctrls, "Left Paddle B",  static_cast<uInt32>(MouseControl::Type::LeftPaddleB));
+  VarList::push_back(ctrls, "Right Paddle A", static_cast<uInt32>(MouseControl::Type::RightPaddleA));
+  VarList::push_back(ctrls, "Right Paddle B", static_cast<uInt32>(MouseControl::Type::RightPaddleB));
+  VarList::push_back(ctrls, "Left Driving",   static_cast<uInt32>(MouseControl::Type::LeftDriving));
+  VarList::push_back(ctrls, "Right Driving",  static_cast<uInt32>(MouseControl::Type::RightDriving));
+  VarList::push_back(ctrls, "Left MindLink",  static_cast<uInt32>(MouseControl::Type::LeftMindLink));
+  VarList::push_back(ctrls, "Right MindLink", static_cast<uInt32>(MouseControl::Type::RightMindLink));
 
   xpos += CheckboxWidget::prefixSize(_font);
   ypos += lineHeight + VGAP;
