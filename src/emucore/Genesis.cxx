@@ -22,9 +22,9 @@ Genesis::Genesis(Jack jack, const Event& event, const System& system)
   : Joystick(jack, event, system, Controller::Type::Genesis)
 {
   if(myJack == Jack::Left)
-    myButtonCEvent   = Event::JoystickLeftFire5;
+    myButtonCEvent   = Event::LeftJoystickFire5;
   else
-    myButtonCEvent   = Event::JoystickRightFire5;
+    myButtonCEvent   = Event::RightJoystickFire5;
 
   setPin(AnalogPin::Five, AnalogReadout::connectToVcc());
 }

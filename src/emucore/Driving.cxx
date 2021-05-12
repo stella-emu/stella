@@ -25,9 +25,9 @@ Driving::Driving(Jack jack, const Event& event, const System& system, bool altma
   {
     if(!altmap)
     {
-      myCCWEvent  = Event::JoystickLeftLeft;
-      myCWEvent   = Event::JoystickLeftRight;
-      myFireEvent = Event::JoystickLeftFire;
+      myCCWEvent  = Event::LeftJoystickLeft;
+      myCWEvent   = Event::LeftJoystickRight;
+      myFireEvent = Event::LeftJoystickFire;
     }
     else
     {
@@ -42,9 +42,9 @@ Driving::Driving(Jack jack, const Event& event, const System& system, bool altma
   {
     if(!altmap)
     {
-      myCCWEvent  = Event::JoystickRightLeft;
-      myCWEvent   = Event::JoystickRightRight;
-      myFireEvent = Event::JoystickRightFire;
+      myCCWEvent  = Event::RightJoystickLeft;
+      myCWEvent   = Event::RightJoystickRight;
+      myFireEvent = Event::RightJoystickFire;
     }
     else
     {

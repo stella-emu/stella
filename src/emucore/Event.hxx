@@ -42,15 +42,15 @@ class Event
       ConsoleRightDiffA, ConsoleRightDiffB, ConsoleRightDiffToggle,
       ConsoleSelect, ConsoleReset,
 
-      JoystickLeftUp, JoystickLeftDown, JoystickLeftLeft, JoystickLeftRight,
-      JoystickLeftFire, JoystickLeftFire5, JoystickLeftFire9,
-      JoystickRightUp, JoystickRightDown, JoystickRightLeft, JoystickRightRight,
-      JoystickRightFire, JoystickRightFire5, JoystickRightFire9,
+      LeftJoystickUp, LeftJoystickDown, LeftJoystickLeft, LeftJoystickRight,
+      LeftJoystickFire, LeftJoystickFire5, LeftJoystickFire9,
+      RightJoystickUp, RightJoystickDown, RightJoystickLeft, RightJoystickRight,
+      RightJoystickFire, RightJoystickFire5, RightJoystickFire9,
 
-      PaddleLeftADecrease, PaddleLeftAIncrease, PaddleLeftAAnalog, PaddleLeftAFire,
-      PaddleLeftBDecrease, PaddleLeftBIncrease, PaddleLeftBAnalog, PaddleLeftBFire,
-      PaddleRightADecrease, PaddleRightAIncrease, PaddleRightAAnalog, PaddleRightAFire,
-      PaddleRightBDecrease, PaddleRightBIncrease, PaddleRightBAnalog, PaddleRightBFire,
+      LeftPaddleADecrease, LeftPaddleAIncrease, LeftPaddleAAnalog, LeftPaddleAFire,
+      LeftPaddleBDecrease, LeftPaddleBIncrease, LeftPaddleBAnalog, LeftPaddleBFire,
+      RightPaddleADecrease, RightPaddleAIncrease, RightPaddleAAnalog, RightPaddleAFire,
+      RightPaddleBDecrease, RightPaddleBIncrease, RightPaddleBAnalog, RightPaddleBFire,
 
       LeftKeyboard1, LeftKeyboard2, LeftKeyboard3,
       LeftKeyboard4, LeftKeyboard5, LeftKeyboard6,
@@ -229,10 +229,10 @@ class Event
     {
       switch(type)
       {
-        case Event::PaddleLeftAAnalog:
-        case Event::PaddleLeftBAnalog:
-        case Event::PaddleRightAAnalog:
-        case Event::PaddleRightBAnalog:
+        case Event::LeftPaddleAAnalog:
+        case Event::LeftPaddleBAnalog:
+        case Event::RightPaddleAAnalog:
+        case Event::RightPaddleBAnalog:
           return true;
         default:
           return false;
@@ -256,8 +256,8 @@ class Event
 // Hold controller related events
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 static const Event::EventSet LeftJoystickEvents = {
-  Event::JoystickLeftUp, Event::JoystickLeftDown, Event::JoystickLeftLeft, Event::JoystickLeftRight,
-  Event::JoystickLeftFire, Event::JoystickLeftFire5, Event::JoystickLeftFire9,
+  Event::LeftJoystickUp, Event::LeftJoystickDown, Event::LeftJoystickLeft, Event::LeftJoystickRight,
+  Event::LeftJoystickFire, Event::LeftJoystickFire5, Event::LeftJoystickFire9,
 };
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 static const Event::EventSet QTJoystick3Events = {
@@ -267,8 +267,8 @@ static const Event::EventSet QTJoystick3Events = {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 static const Event::EventSet RightJoystickEvents = {
-  Event::JoystickRightUp, Event::JoystickRightDown, Event::JoystickRightLeft, Event::JoystickRightRight,
-  Event::JoystickRightFire, Event::JoystickRightFire5, Event::JoystickRightFire9,
+  Event::RightJoystickUp, Event::RightJoystickDown, Event::RightJoystickLeft, Event::RightJoystickRight,
+  Event::RightJoystickFire, Event::RightJoystickFire5, Event::RightJoystickFire9,
 };
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 static const Event::EventSet QTJoystick4Events = {
@@ -278,8 +278,8 @@ static const Event::EventSet QTJoystick4Events = {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 static const Event::EventSet LeftPaddlesEvents = {
-  Event::PaddleLeftADecrease, Event::PaddleLeftAIncrease, Event::PaddleLeftAAnalog, Event::PaddleLeftAFire,
-  Event::PaddleLeftBDecrease, Event::PaddleLeftBIncrease, Event::PaddleLeftBAnalog, Event::PaddleLeftBFire,
+  Event::LeftPaddleADecrease, Event::LeftPaddleAIncrease, Event::LeftPaddleAAnalog, Event::LeftPaddleAFire,
+  Event::LeftPaddleBDecrease, Event::LeftPaddleBIncrease, Event::LeftPaddleBAnalog, Event::LeftPaddleBFire,
 };
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 static const Event::EventSet QTPaddles3Events = {
@@ -289,8 +289,8 @@ static const Event::EventSet QTPaddles3Events = {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 static const Event::EventSet RightPaddlesEvents = {
-  Event::PaddleRightADecrease, Event::PaddleRightAIncrease, Event::PaddleRightAAnalog, Event::PaddleRightAFire,
-  Event::PaddleRightBDecrease, Event::PaddleRightBIncrease, Event::PaddleRightBAnalog, Event::PaddleRightBFire,
+  Event::RightPaddleADecrease, Event::RightPaddleAIncrease, Event::RightPaddleAAnalog, Event::RightPaddleAFire,
+  Event::RightPaddleBDecrease, Event::RightPaddleBIncrease, Event::RightPaddleBAnalog, Event::RightPaddleBFire,
 };
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 static const Event::EventSet QTPaddles4Events = {
