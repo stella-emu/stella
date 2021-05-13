@@ -54,6 +54,7 @@
 #endif
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
+  #include "DebuggerParser.hxx"
 #endif
 #ifdef GUI_SUPPORT
   #include "Menu.hxx"
@@ -2996,11 +2997,14 @@ void EventHandler::exitEmulation(bool checkLauncher)
   const bool activeTM = myOSystem.settings().getBool(
     myOSystem.settings().getBool("dev.settings") ? "dev.timemachine" : "plr.timemachine");
 
-
   if (saveOnExit == "all" && activeTM)
     handleEvent(Event::SaveAllStates);
   else if (saveOnExit == "current")
     handleEvent(Event::SaveState);
+
+#if DEBUGGER_SUPPORT
+  myOSystem.debugger().quit();
+#endif
 
   if (checkLauncher)
   {

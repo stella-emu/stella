@@ -46,12 +46,14 @@ class PromptWidget : public Widget, public CommandSender
     void printPrompt();
     string saveBuffer(const FilesystemNode& file);
 
-    // Clear screen 
+    // Clear screen
     void clearScreen();
     // Erase all history
     void clearHistory();
 
     void addToHistory(const char *str);
+
+    bool isLoaded() const { return !_firstTime; }
 
   protected:
     ATTRIBUTE_FMT_PRINTF int printf(const char* format, ...);

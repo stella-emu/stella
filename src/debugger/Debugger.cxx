@@ -26,6 +26,7 @@
 #include "FSNode.hxx"
 #include "Settings.hxx"
 #include "DebuggerDialog.hxx"
+#include "PromptWidget.hxx"
 #include "DebuggerParser.hxx"
 #include "StateManager.hxx"
 #include "RewindManager.hxx"
@@ -151,11 +152,16 @@ bool Debugger::startWithFatalError(const string& message)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::quit(bool exitrom)
+void Debugger::quit()
 {
-  if(myOSystem.settings().getBool("dbg.autosave"))
+  if(myOSystem.settings().getBool("dbg.autosave")
+     && myDialog->prompt().isLoaded())
     myParser->run("save");
+}
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::exit(bool exitrom)
+{
   if(exitrom)
     myOSystem.eventHandler().handleEvent(Event::ExitGame);
   else
