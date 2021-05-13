@@ -102,7 +102,12 @@ class Debugger : public DialogContainer
       Wrapper method for EventHandler::leaveDebugMode() for those classes
       that don't have access to EventHandler.
     */
-    void quit(bool exitrom);
+    void exit(bool exitrom);
+
+    /**
+      Executed when debugger is quit.
+    */
+    void quit();
 
     bool addFunction(const string& name, const string& def,
                      Expression* exp, bool builtin = false);

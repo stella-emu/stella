@@ -153,7 +153,7 @@ string DebuggerParser::exec(const FilesystemNode& file, StringList* history)
         history->push_back(command);
       count++;
     }
-    buf << "\nExecuted " << count << " commands from \""
+    buf << "\nExecuted " << count << " command" << (count != 1 ? "s" : "") << " from \""
         << file.getShortPath() << "\"";
 
     return buf.str();
@@ -1332,7 +1332,7 @@ void DebuggerParser::executeExec()
 // "exitRom"
 void DebuggerParser::executeExitRom()
 {
-  debugger.quit(true);
+  debugger.exit(true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1690,7 +1690,7 @@ void DebuggerParser::executeLogBreaks()
   bool enable = !debugger.mySystem.m6502().getLogBreaks();
 
   debugger.mySystem.m6502().setLogBreaks(enable);
-  settings.setValue("dbg.logBreaks", enable);
+  settings.setValue("dbg.logbreaks", enable);
   commandResult << "logBreaks " << (enable ? "enabled" : "disabled");
 }
 
@@ -1814,7 +1814,7 @@ void DebuggerParser::executeRow()
 void DebuggerParser::executeRun()
 {
   debugger.saveOldState();
-  debugger.quit(false);
+  debugger.exit(false);
   commandResult << "_EXIT_DEBUGGER";  // See PromptWidget for more info
 }
 
