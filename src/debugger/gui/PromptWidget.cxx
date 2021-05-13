@@ -386,8 +386,22 @@ void PromptWidget::loadConfig()
     print(instance().debugger().cartDebug().loadConfigFile() + "\n");
     print(instance().debugger().cartDebug().loadListFile() + "\n");
     print(instance().debugger().cartDebug().loadSymbolFile() + "\n");
+
+    bool extra = false;
+    if(instance().settings().getBool("dbg.autosave"))
+    {
+      print(DebuggerParser::inverse(" autoSave enabled "));
+      print("\177 "); // must switch inverse here!
+      extra = true;
+    }
     if(instance().settings().getBool("dbg.logbreaks"))
-      print(DebuggerParser::inverse(" logBreaks enabled \n"));
+    {
+      print(DebuggerParser::inverse(" logBreaks enabled "));
+      extra = true;
+    }
+    if(extra)
+      print("\n");
+
     print(PROMPT);
 
     _promptStartPos = _promptEndPos = _currentPos;
