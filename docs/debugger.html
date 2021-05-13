@@ -862,13 +862,16 @@ later re-use.</p>
 
 <ul>
   <li>
-    <b><a name="savecmd">save</a></b>: If you've defined a lot of complex functions, you probably will
-    want to re-use them in future runs of the debugger. You can save all
-    your functions, breakpoints, conditional breaks, traps and watches with the
-    "save" command. If you name your saved file the same as the ROM filename
-    and place it in the ROM directory, it will be auto-loaded next time you
-    load the same ROM in Stella. The saved file is just a plain text file
-    called "&lt;rom_filename&gt;.script", so you can edit it and add new functions, etc.
+    <b><a name="savecmd">save</a></b>: If you've defined a lot of complex
+    functions, you probably will want to re-use them in future runs of the
+    debugger. You can save all your functions, breakpoints, conditional breaks,
+    traps and watches with the "save" command. By default it is saved in the
+    user directory with the same as the ROM filename. In this case it will be
+    auto-loaded next time you load the same ROM in Stella. The saved file is
+    just a plain text file called "&lt;rom_filename&gt;.script", so you can
+    edit it and add more functions, etc.
+    <p>Use "autoSave" to automatically execute the "save" command when
+    exiting the debugger.</p>
     <p>Note: While "save" is ROM specific, you can also create a file called
     "autoexec.script" which will be loaded when the debugger starts, no matter
     what ROM you have loaded.<p>
@@ -927,6 +930,7 @@ Type "help 'cmd'" to see extended information about the given command.</p>
 <pre>
                 a - Set Accumulator to &lt;value&gt;
               aud - Mark 'AUD' range in disassembly
+         autoSave - Automatically execute "save" when exiting the debugger
              base - Set default number base to &lt;base&gt; (bin, dec, hex)
              bCol - Mark 'BCOL' range in disassembly
             break - Set/clear breakpoint at &lt;address&gt; and &lt;bank&gt;
@@ -997,7 +1001,7 @@ clearSaveStateIfs - Clear all saveState points
             runTo - Run until string xx in disassembly
           runToPc - Run until PC is set to value xx
                 s - Set Stack Pointer to value xx
-             save - Save breaks, watches, traps and functions to file <xx or ?>
+             save - Save breaks, watches, traps and functions to file [xx or ?]
        saveAccess - Save access counters to CSV file [?]
        saveConfig - Save DiStella config file (with default name)
           saveDis - Save DiStella disassembly to file [?]

@@ -759,6 +759,16 @@ void DebuggerParser::executeAud()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "autoSave"
+void DebuggerParser::executeAutoSave()
+{
+  bool enable = !settings.getBool("dbg.autosave");
+
+  settings.setValue("dbg.autosave", enable);
+  commandResult << "autoSave " << (enable ? "enabled" : "disabled");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "base"
 void DebuggerParser::executeBase()
 {
@@ -1910,24 +1920,29 @@ void DebuggerParser::executeS()
 // "save"
 void DebuggerParser::executeSave()
 {
-  if(argCount && argStrings[0] == "?")
-  {
-    DebuggerDialog* dlg = debugger.myDialog;
+  DebuggerDialog* dlg = debugger.myDialog;
+  const string fileName = dlg->instance().userDir().getPath() + cartName() + ".script";
 
-    BrowserDialog::show(dlg, "Save Workbench as",
-                        dlg->instance().userDir().getPath() + cartName() + ".script",
-                        BrowserDialog::Mode::FileSave,
-                        [this, dlg](bool OK, const FilesystemNode& node)
+  if(argCount)
+  {
+    if(argStrings[0] == "?")
     {
-      if(OK)
-        dlg->prompt().print(saveScriptFile(node.getPath()) + '\n');
-      dlg->prompt().printPrompt();
-    });
-    // avoid printing a new prompt
-    commandResult.str("_NO_PROMPT");
+      BrowserDialog::show(dlg, "Save Workbench as", fileName,
+                          BrowserDialog::Mode::FileSave,
+                          [this, dlg](bool OK, const FilesystemNode& node)
+      {
+        if(OK)
+          dlg->prompt().print(saveScriptFile(node.getPath()) + '\n');
+        dlg->prompt().printPrompt();
+      });
+      // avoid printing a new prompt
+      commandResult.str("_NO_PROMPT");
+    }
+    else
+      commandResult << saveScriptFile(argStrings[0]);
   }
   else
-    commandResult << saveScriptFile(argStrings[0]);
+    commandResult << saveScriptFile(fileName);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2514,6 +2529,16 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
     std::mem_fn(&DebuggerParser::executeAud)
+  },
+
+  {
+    "autoSave",
+    "Toggle automatic saving of commands (see 'save')",
+    "Example: autoSave (no parameters)",
+    false,
+    true,
+    { Parameters::ARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executeAutoSave)
   },
 
   {
@@ -3230,10 +3255,10 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
 
   {
     "save",
-    "Save breaks, watches, traps and functions to file <xx or ?>",
-    "Example: save commands.script, save ?\n"
+    "Save breaks, watches, traps and functions to file [xx or ?]",
+    "Example: save, save commands.script, save ?\n"
     "NOTE: saves to user dir by default",
-    true,
+    false,
     false,
     { Parameters::ARG_FILE, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeSave)

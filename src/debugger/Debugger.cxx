@@ -153,6 +153,9 @@ bool Debugger::startWithFatalError(const string& message)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::quit(bool exitrom)
 {
+  if(myOSystem.settings().getBool("dbg.autosave"))
+    myParser->run("save");
+
   if(exitrom)
     myOSystem.eventHandler().handleEvent(Event::ExitGame);
   else
@@ -173,7 +176,8 @@ string Debugger::autoExec(StringList* history)
       << myParser->exec(autoexec, history) << endl;
 
   // Also, "romname.script" if present
-  FilesystemNode romname(myOSystem.romFile().getPathWithExt(".script"));
+  const string path = myOSystem.userDir().getPath() + myOSystem.romFile().getNameWithExt(".script");
+  FilesystemNode romname(path);
   buf << myParser->exec(romname, history) << endl;
 
   // Init builtins
