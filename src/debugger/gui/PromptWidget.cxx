@@ -556,15 +556,13 @@ void PromptWidget::textPaste()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int PromptWidget::historyDir(int& index, int direction, bool promptSpace)
+int PromptWidget::historyDir(int& index, int direction)
 {
-  int historySize = int(_history.size()) + (promptSpace ? 1 : 0);
-
   index += direction;
   if(index < 0)
-    index += historySize;
+    index += int(_history.size());
   else
-    index %= historySize;
+    index %= int(_history.size());
 
   return index;
 }
@@ -620,13 +618,12 @@ bool PromptWidget::historyScroll(int direction)
   if(_history.size() == 0)
     return false;
 
+  // add current input temporarily to history
   if(_historyLine == 0)
-  {
     historyAdd(getLine());
-  }
 
   // Advance to the next/prev line in the history
-  historyDir(_historyLine, direction, _history.size() < kHistorySize);
+  historyDir(_historyLine, direction);
 
   // Search the history using the original input
   do
@@ -639,7 +636,7 @@ bool PromptWidget::historyScroll(int direction)
       break;
 
     // Advance to the next/prev line in the history
-    historyDir(_historyLine, direction, _history.size() < kHistorySize);
+    historyDir(_historyLine, direction);
   }
   while(_historyLine); // If _historyLine == 0, nothing was found
 

@@ -133,7 +133,7 @@ class PromptWidget : public Widget, public CommandSender
     bool _firstTime{true};
     bool _exitedEarly{false};
 
-    int historyDir(int& index, int direction, bool promptSpace = false);
+    int historyDir(int& index, int direction);
     void historyAdd(const string& entry);
 
   private:
