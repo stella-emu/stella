@@ -90,11 +90,6 @@ void EventHandler::initialize()
   // Create joystick handler (to handle all physical joystick functionality)
   myPJoyHandler = make_unique<PhysicalJoystickHandler>(myOSystem, *this, myEvent);
 
-  // Erase the 'combo' array
-  for(int i = 0; i < COMBO_SIZE; ++i)
-    for(int j = 0; j < EVENTS_PER_COMBO; ++j)
-      myComboTable[i][j] = Event::NoType;
-
   // Make sure the event/action mappings are correctly set,
   // and fill the ActionList structure with valid values
   setComboMap();
@@ -2264,12 +2259,19 @@ void EventHandler::setActionMappings(EventMode mode)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setComboMap()
 {
-  // Since istringstream swallows whitespace, we have to make the
-  // delimiters be spaces
-  string list = myOSystem.settings().getString("combomap");
-  replace(list.begin(), list.end(), ':', ' ');
-  istringstream buf(list);
   const Int32 version = myOSystem.settings().getInt("event_ver");
+  const string serializedMapping = myOSystem.settings().getString("combomap");
+  json mapping;
+
+  try
+  {
+    mapping = json::parse(serializedMapping);
+  }
+  catch(const json::exception&)
+  {
+    Logger::info("converting legacy combo mapping");
+    mapping = convertLegacyComboMapping(serializedMapping);
+  }
 
   // Erase the 'combo' array
   auto ERASE_ALL = [&]() {
@@ -2278,46 +2280,82 @@ void EventHandler::setComboMap()
         myComboTable[i][j] = Event::NoType;
   };
 
+  ERASE_ALL();
+
   // Compare if event list version has changed so that combo maps became invalid
-  if(version != Event::VERSION || !buf.good())
-    ERASE_ALL();
-  else
+  if(version == Event::VERSION)
   {
-    // Get combo count, which should be the first int in the list
-    // If it isn't, then we treat the entire list as invalid
     try
     {
-      string key;
-      buf >> key;
-      if(BSPF::stringToInt(key) == COMBO_SIZE)
+      for(const json& combo : mapping)
       {
-        // Fill the combomap table with events for as long as they exist
-        int combocount = 0;
-        while(buf >> key && combocount < COMBO_SIZE)
-        {
-          // Each event in a comboevent is separated by a comma
-          replace(key.begin(), key.end(), ',', ' ');
-          istringstream buf2(key);
+        int i = combo.at("combo").get<Event::Type>() - Event::Combo1,
+          j = 0;
+        json events = combo.at("events");
 
-          int eventcount = 0;
-          while(buf2 >> key && eventcount < EVENTS_PER_COMBO)
-          {
-            myComboTable[combocount][eventcount] = Event::Type(BSPF::stringToInt(key));
-            ++eventcount;
-          }
-          ++combocount;
-        }
+        for(const json& event : events)
+          myComboTable[i][j++] = event;
       }
-      else
-        ERASE_ALL();
     }
-    catch(...)
+    catch(const json::exception&)
     {
+      Logger::error("ignoring bad combo mapping");
       ERASE_ALL();
     }
   }
-
   saveComboMapping();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+json EventHandler::convertLegacyComboMapping(string list)
+{
+  json convertedMapping = json::array();
+
+  // Since istringstream swallows whitespace, we have to make the
+  // delimiters be spaces
+  std::replace(list.begin(), list.end(), ':', ' ');
+  std::replace(list.begin(), list.end(), ',', ' ');
+  istringstream buf(list);
+
+  try
+  {
+    int numCombos;
+    // Get combo count, which should be the first int in the list
+    // If it isn't, then we treat the entire list as invalid
+    buf >> numCombos;
+
+    if(numCombos == COMBO_SIZE)
+    {
+      for(int i = 0; i < COMBO_SIZE; ++i)
+      {
+        json events = json::array();
+
+        for(int j = 0; j < EVENTS_PER_COMBO; ++j)
+        {
+          int event;
+
+          buf >> event;
+          // skip all NoType events
+          if(event != Event::NoType)
+            events.push_back(Event::Type(event));
+        }
+        // only store if there are any NoType events
+        if(events.size())
+        {
+          json combo;
+
+          combo["combo"] = Event::Type(Event::Combo1 + i);
+          combo["events"] = events;
+          convertedMapping.push_back(combo);
+        }
+      }
+    }
+  }
+  catch(...)
+  {
+    Logger::error("Legacy combo map conversion failed!");
+  }
+  return convertedMapping;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2424,18 +2462,32 @@ void EventHandler::saveJoyMapping()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::saveComboMapping()
 {
-  // Iterate through the combomap table and create a colon-separated list
-  // For each combo event, create a comma-separated list of its events
-  // Prepend the event count, so we can check it on next load
-  ostringstream buf;
-  buf << COMBO_SIZE;
+  json mapping = json::array();
+
+  // Iterate through the combomap table and convert into json format
   for(int i = 0; i < COMBO_SIZE; ++i)
   {
-    buf << ":" << myComboTable[i][0];
-    for(int j = 1; j < EVENTS_PER_COMBO; ++j)
-      buf << "," << myComboTable[i][j];
+    json events = json::array();
+
+    for(int j = 0; j < EVENTS_PER_COMBO; ++j)
+    {
+      int event = myComboTable[i][j];
+
+      // skip all NoType events
+      if(event != Event::NoType)
+        events.push_back(Event::Type(event));
+    }
+    // only store if there are any NoType events
+    if(events.size())
+    {
+      json combo;
+
+      combo["combo"] = Event::Type(Event::Combo1 + i);
+      combo["events"] = events;
+      mapping.push_back(combo);
+    }
   }
-  myOSystem.settings().setValue("combomap", buf.str());
+  myOSystem.settings().setValue("combomap", mapping.dump(2));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2590,9 +2642,9 @@ void EventHandler::setComboListForEvent(Event::Type event, const StringList& eve
 {
   if(event >= Event::Combo1 && event <= Event::Combo16)
   {
-    assert(events.size() == 8);
+    assert(events.size() == EVENTS_PER_COMBO);
     const int combo = event - Event::Combo1;
-    for(uInt32 i = 0; i < 8; ++i)
+    for(uInt32 i = 0; i < EVENTS_PER_COMBO; ++i)
     {
       uInt32 idx = BSPF::stringToInt(events[i]);
       if(idx < ourEmulActionList.size())

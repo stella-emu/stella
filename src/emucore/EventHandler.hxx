@@ -297,11 +297,6 @@ class EventHandler
     void setDefaultMapping(Event::Type event, EventMode mode);
 
     /**
-      Sets the combo event mappings to those in the 'combomap' setting
-    */
-    void setComboMap();
-
-    /**
       Joystick emulates 'impossible' directions (ie, left & right
       at the same time).
 
@@ -377,6 +372,11 @@ class EventHandler
     // Keyboard layout
     bool myQwertz{false};
   #endif
+
+    /**
+      Sets the combo event mappings to those in the 'combomap' setting
+    */
+    void setComboMap();
 
     /**
       Methods which are called by derived classes to handle specific types
@@ -555,6 +555,7 @@ class EventHandler
     void setActionMappings(EventMode mode);
     void setDefaultKeymap(Event::Type, EventMode mode);
     void setDefaultJoymap(Event::Type, EventMode mode);
+    static nlohmann::json convertLegacyComboMapping(string list);
     void saveComboMapping();
 
     StringList getActionList(EventMode mode) const;
