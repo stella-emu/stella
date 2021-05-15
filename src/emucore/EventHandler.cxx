@@ -69,6 +69,7 @@
 #endif
 
 using namespace std::placeholders;
+using json = nlohmann::json;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandler::EventHandler(OSystem& osystem)
