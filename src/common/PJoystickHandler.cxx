@@ -24,8 +24,9 @@
 #include "Driving.hxx"
 #include "Settings.hxx"
 #include "EventHandler.hxx"
-#include "PJoystickHandler.hxx"
 #include "Logger.hxx"
+#include "MD5.hxx"
+#include "PJoystickHandler.hxx"
 
 #ifdef GUI_SUPPORT
   #include "DialogContainer.hxx"
@@ -138,6 +139,7 @@ int PhysicalJoystickHandler::add(const PhysicalJoystickPtr& stick)
     }
     stick->type = PhysicalJoystick::Type::REGULAR;
   }
+  stick->name.append(" (" + MD5::hash(stick->guid).substr(0, 4) + ")");
   // The stick *must* be inserted here, since it may be used below
   mySticks[stick->ID] = stick;
 
@@ -294,9 +296,9 @@ void PhysicalJoystickHandler::mapStelladaptors(const string& saport)
     if(found)
     {
       if(saOrder[saCount] == 1)
-        _stick->name += " (emulates left joystick port)";
+        _stick->name += " (emulates left controller port)";
       else if(saOrder[saCount] == 2)
-        _stick->name += " (emulates right joystick port)";
+        _stick->name += " (emulates right controller port)";
 
       saCount++;
       // always map Stelladaptor/2600-daptor to emulation mode defaults

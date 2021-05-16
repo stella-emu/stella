@@ -42,11 +42,13 @@ namespace {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalJoystick::initialize(int index, const string& desc,
-            int axes, int buttons, int hats, int /*balls*/)
+void PhysicalJoystick::initialize(int index,
+                                  const string& desc, const string& uid,
+                                  int axes, int buttons, int hats, int /*balls*/)
 {
   ID = index;
   name = desc;
+  guid = uid;
 
   numAxes    = axes;
   numButtons = buttons;
