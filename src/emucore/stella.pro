@@ -11113,6 +11113,7 @@
 "Cart.Manufacturer" "Tim Snider"
 "Cart.Name" "Venture II (2001) (Tim Snider)"
 "Cart.Rarity" "New Release"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=38"
 "Display.Phosphor" "YES"
 ""
 
@@ -16424,6 +16425,7 @@
 "Cart.Note" "Hack of Berzerk"
 "Cart.Rarity" "Hack"
 "Cart.Highscore" "{\"score_addresses\":[\"0xdd\",\"0xde\",\"0xdf\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":12}"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=29"
 ""
 
 "Cart.MD5" "be561b286b6432cac71bccbae68002f7"
@@ -19744,6 +19746,7 @@
 "Cart.Name" "Adventure Plus (2003) (Steve Engelhardt) (Hack)"
 "Cart.Note" "Hack of Adventure"
 "Cart.Rarity" "Hack"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=145"
 ""
 
 "Cart.MD5" "e2904748da63dfefc8816652b924b642"

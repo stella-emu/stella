@@ -27,7 +27,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 JoystickDialog::JoystickDialog(GuiObject* boss, const GUI::Font& font,
                                int max_w, int max_h)
-  : Dialog(boss->instance(), boss->parent(), font, "Joystick database", 0, 0, max_w, max_h)
+  : Dialog(boss->instance(), boss->parent(), font, "Controller database", 0, 0, max_w, max_h)
 {
   int xpos, ypos;
   WidgetArray wid;
@@ -48,7 +48,7 @@ JoystickDialog::JoystickDialog(GuiObject* boss, const GUI::Font& font,
 
   // Joystick ID
   ypos = _h - VBORDER - (buttonHeight + lineHeight) / 2;
-  StaticTextWidget* t = new StaticTextWidget(this, font, xpos, ypos+2, "Joystick ID ");
+  StaticTextWidget* t = new StaticTextWidget(this, font, xpos, ypos+2, "Controller ID ");
   xpos += t->getWidth();
   myJoyText = new EditTextWidget(this, font, xpos, ypos,
       font.getStringWidth("Unplugged "), font.getLineHeight(), "");
