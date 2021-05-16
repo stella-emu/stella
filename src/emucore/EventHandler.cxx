@@ -160,11 +160,6 @@ void EventHandler::addPhysicalJoystick(const PhysicalJoystickPtr& joy)
 
   setActionMappings(EventMode::kEmulationMode);
   setActionMappings(EventMode::kMenuMode);
-
-  ostringstream buf;
-  buf << "Added joystick " << ID << ":" << endl
-      << "  " << joy->about() << endl;
-  Logger::info(buf.str());
 #endif
 }
 

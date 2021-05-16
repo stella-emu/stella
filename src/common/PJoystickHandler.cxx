@@ -98,11 +98,11 @@ int PhysicalJoystickHandler::add(const PhysicalJoystickPtr& stick)
     return -1;
 
   // Figure out what type of joystick this is
-  bool specialAdaptor = false;
+  bool isAdaptor = false;
 
   if(BSPF::containsIgnoreCase(stick->name, "2600-daptor"))
   {
-    specialAdaptor = true;
+    isAdaptor = true;
     if(stick->numAxes == 4)
     {
       // TODO - detect controller type based on z-axis
@@ -118,7 +118,7 @@ int PhysicalJoystickHandler::add(const PhysicalJoystickPtr& stick)
   else if(BSPF::containsIgnoreCase(stick->name, "Stelladaptor"))
   {
     stick->name = "Stelladaptor";
-    specialAdaptor = true;
+    isAdaptor = true;
   }
   else
   {
@@ -141,11 +141,38 @@ int PhysicalJoystickHandler::add(const PhysicalJoystickPtr& stick)
   // The stick *must* be inserted here, since it may be used below
   mySticks[stick->ID] = stick;
 
-  // Map the stelladaptors we've found according to the specified ports
-  // The 'type' is also set there
-  if(specialAdaptor)
+  if(isAdaptor)
+  {
+    // Map the Stelladaptors we've found according to the specified ports
+    // The 'type' is also set there
     mapStelladaptors(myOSystem.settings().getString("saport"));
 
+    // We have to add all Stelladaptors again, because they might have changed
+    // name due to being reordered when mapping them
+    for(auto& [_id, _stick] : mySticks)
+    {
+      if(_stick->name.find(" (emulates ") != std::string::npos)
+        addToDatabase(_stick);
+    }
+  }
+  else
+    addToDatabase(stick);
+
+  // We're potentially swapping out an input device behind the back of
+  // the Event system, so we make sure all Stelladaptor-generated events
+  // are reset
+  for(int port = 0; port < NUM_PORTS; ++port)
+  {
+    for(int axis = 0; axis < NUM_SA_AXIS; ++axis)
+      myEvent.set(SA_Axis[port][axis], 0);
+  }
+
+  return stick->ID;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PhysicalJoystickHandler::addToDatabase(const PhysicalJoystickPtr& stick)
+{
   // Add stick to database
   auto it = myDatabase.find(stick->name);
   if(it != myDatabase.end()) // already present
@@ -162,16 +189,10 @@ int PhysicalJoystickHandler::add(const PhysicalJoystickPtr& stick)
     setStickDefaultMapping(stick->ID, Event::NoType, EventMode::kMenuMode);
   }
 
-  // We're potentially swapping out an input device behind the back of
-  // the Event system, so we make sure all Stelladaptor-generated events
-  // are reset
-  for(int port = 0; port < NUM_PORTS; ++port)
-  {
-    for(int axis = 0; axis < NUM_SA_AXIS; ++axis)
-      myEvent.set(SA_Axis[port][axis], 0);
-  }
-
-  return stick->ID;
+  ostringstream buf;
+  buf << "Added joystick " << stick->ID << ":" << endl
+    << "  " << stick->about() << endl;
+  Logger::info(buf.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -238,41 +259,48 @@ void PhysicalJoystickHandler::mapStelladaptors(const string& saport)
     saOrder[0] = 2; saOrder[1] = 1;
   }
 
-  for(auto& [_id, _joyptr]: mySticks)
+  for(auto& [_id, _stick]: mySticks)
   {
     bool found = false;
     // remove previously added emulated ports
-    size_t pos = _joyptr->name.find(" (emulates ");
+    size_t pos = _stick->name.find(" (emulates ");
 
     if(pos != std::string::npos)
-      _joyptr->name.erase(pos);
+    {
+      ostringstream buf;
+      buf << "Erased joystick " << _stick->ID << ":" << endl
+        << "  " << _stick->about() << endl;
+      Logger::info(buf.str());
 
-    if(BSPF::startsWithIgnoreCase(_joyptr->name, "Stelladaptor"))
+      _stick->name.erase(pos);
+    }
+
+    if(BSPF::startsWithIgnoreCase(_stick->name, "Stelladaptor"))
     {
       if(saOrder[saCount] == 1)
-        _joyptr->type = PhysicalJoystick::Type::LEFT_STELLADAPTOR;
+        _stick->type = PhysicalJoystick::Type::LEFT_STELLADAPTOR;
       else if(saOrder[saCount] == 2)
-        _joyptr->type = PhysicalJoystick::Type::RIGHT_STELLADAPTOR;
+        _stick->type = PhysicalJoystick::Type::RIGHT_STELLADAPTOR;
       found = true;
     }
-    else if(BSPF::startsWithIgnoreCase(_joyptr->name, "2600-daptor"))
+    else if(BSPF::startsWithIgnoreCase(_stick->name, "2600-daptor"))
     {
       if(saOrder[saCount] == 1)
-        _joyptr->type = PhysicalJoystick::Type::LEFT_2600DAPTOR;
+        _stick->type = PhysicalJoystick::Type::LEFT_2600DAPTOR;
       else if(saOrder[saCount] == 2)
-        _joyptr->type = PhysicalJoystick::Type::RIGHT_2600DAPTOR;
+        _stick->type = PhysicalJoystick::Type::RIGHT_2600DAPTOR;
       found = true;
     }
     if(found)
     {
       if(saOrder[saCount] == 1)
-        _joyptr->name += " (emulates left joystick port)";
+        _stick->name += " (emulates left joystick port)";
       else if(saOrder[saCount] == 2)
-        _joyptr->name += " (emulates right joystick port)";
+        _stick->name += " (emulates right joystick port)";
 
       saCount++;
       // always map Stelladaptor/2600-daptor to emulation mode defaults
-      setStickDefaultMapping(_joyptr->ID, Event::NoType, EventMode::kEmulationMode);
+      setStickDefaultMapping(_stick->ID, Event::NoType, EventMode::kEmulationMode);
     }
   }
   myOSystem.settings().setValue("saport", saport);
