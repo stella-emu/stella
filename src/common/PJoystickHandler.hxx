@@ -140,6 +140,9 @@ class PhysicalJoystickHandler
       return i != mySticks.cend() ? i->second : nullptr;
     }
 
+    // Add stick to stick database
+    void addToDatabase(const PhysicalJoystickPtr& stick);
+
     // Set default mapping for given joystick when no mappings already exist
     void setStickDefaultMapping(int stick, Event::Type type, EventMode mode,
                                 bool updateDefaults = false);
