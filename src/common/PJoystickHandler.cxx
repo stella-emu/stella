@@ -141,20 +141,22 @@ int PhysicalJoystickHandler::add(const PhysicalJoystickPtr& stick)
   // The stick *must* be inserted here, since it may be used below
   mySticks[stick->ID] = stick;
 
+  bool erased = false;
   if(isAdaptor)
   {
     // Map the Stelladaptors we've found according to the specified ports
     // The 'type' is also set there
-    mapStelladaptors(myOSystem.settings().getString("saport"));
+    erased = mapStelladaptors(myOSystem.settings().getString("saport"), stick->ID);
 
-    // We have to add all Stelladaptors again, because they might have changed
+  }
+  if(erased)
+    // We have to add all Stelladaptors again, because they have changed
     // name due to being reordered when mapping them
     for(auto& [_id, _stick] : mySticks)
     {
       if(_stick->name.find(" (emulates ") != std::string::npos)
         addToDatabase(_stick);
     }
-  }
   else
     addToDatabase(stick);
 
@@ -244,8 +246,9 @@ bool PhysicalJoystickHandler::remove(const string& name)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalJoystickHandler::mapStelladaptors(const string& saport)
+bool PhysicalJoystickHandler::mapStelladaptors(const string& saport, int ID)
 {
+  bool erased = false;
   // saport will have two values:
   //   'lr' means treat first valid adaptor as left port, second as right port
   //   'rl' means treat first valid adaptor as right port, second as left port
@@ -262,17 +265,18 @@ void PhysicalJoystickHandler::mapStelladaptors(const string& saport)
   for(auto& [_id, _stick]: mySticks)
   {
     bool found = false;
-    // remove previously added emulated ports
     size_t pos = _stick->name.find(" (emulates ");
 
-    if(pos != std::string::npos)
+    if(pos != std::string::npos && ID != -1 && ID < _stick->ID)
     {
+      // Erase a previously added Stelladapter with a higher ID
       ostringstream buf;
       buf << "Erased joystick " << _stick->ID << ":" << endl
         << "  " << _stick->about() << endl;
       Logger::info(buf.str());
 
       _stick->name.erase(pos);
+      erased = true;
     }
 
     if(BSPF::startsWithIgnoreCase(_stick->name, "Stelladaptor"))
@@ -304,6 +308,7 @@ void PhysicalJoystickHandler::mapStelladaptors(const string& saport)
     }
   }
   myOSystem.settings().setValue("saport", saport);
+  return erased;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

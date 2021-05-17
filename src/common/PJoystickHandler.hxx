@@ -70,7 +70,7 @@ class PhysicalJoystickHandler
     int add(const PhysicalJoystickPtr& stick);
     bool remove(int id);
     bool remove(const string& name);
-    void mapStelladaptors(const string& saport);
+    bool mapStelladaptors(const string& saport, int ID = -1);
     bool hasStelladaptors() const;
     void setDefaultMapping(Event::Type type, EventMode mode);
 
