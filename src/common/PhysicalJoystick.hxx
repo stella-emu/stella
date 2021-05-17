@@ -55,7 +55,7 @@ class PhysicalJoystick
     string about() const;
 
   protected:
-    void initialize(int index, const string& desc, const string& uid,
+    void initialize(int index, const string& desc,
                     int axes, int buttons, int hats, int balls);
 
   private:
@@ -68,7 +68,6 @@ class PhysicalJoystick
     Type type{Type::REGULAR};
     int ID{-1};
     string name{"None"};
-    string guid{"None"};
     int numAxes{0}, numButtons{0}, numHats{0};
     IntArray axisLastValue;
     IntArray buttonLast;

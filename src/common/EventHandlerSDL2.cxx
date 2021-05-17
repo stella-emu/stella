@@ -262,12 +262,8 @@ EventHandlerSDL2::JoystickSDL2::JoystickSDL2(int idx)
     const char* sdlname = SDL_JoystickName(myStick);
     const string& desc = BSPF::startsWithIgnoreCase(sdlname, "XInput Controller")
                          ? "XInput Controller" : sdlname;
-    const SDL_JoystickGUID sdlguid = SDL_JoystickGetDeviceGUID(idx);
-    char chGuid[33];
 
-    SDL_JoystickGetGUIDString(sdlguid, chGuid, sizeof(chGuid));
-
-    initialize(SDL_JoystickInstanceID(myStick), desc, chGuid,
+    initialize(SDL_JoystickInstanceID(myStick), desc,
         SDL_JoystickNumAxes(myStick), SDL_JoystickNumButtons(myStick),
         SDL_JoystickNumHats(myStick), SDL_JoystickNumBalls(myStick));
   }
