@@ -689,7 +689,7 @@ bool PhysicalJoystickHandler::addJoyMapping(Event::Type event, EventMode mode, i
       // erase identical mappings for all controller modes
       j->joyMap.erase(EventMode::kJoystickMode, button, axis, adir);
       j->joyMap.erase(EventMode::kPaddlesMode, button, axis, adir);
-      j->joyMap.erase(EventMode::kKeypadMode, button, axis, adir);
+      //j->joyMap.erase(EventMode::kKeypadMode, button, axis, adir); // no common buttons in keypad mode!
       j->joyMap.erase(EventMode::kCompuMateMode, button, axis, adir);
     }
     else if (evMode != EventMode::kMenuMode)
