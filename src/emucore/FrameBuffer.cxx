@@ -67,6 +67,7 @@ FrameBuffer::FrameBuffer(OSystem& osystem)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBuffer::~FrameBuffer()
 {
+cerr << "~FrameBuffer()\n";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -885,63 +886,28 @@ void FrameBuffer::setPauseDelay()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-unique_ptr<FBSurface> FrameBuffer::allocateSurface(
+shared_ptr<FBSurface> FrameBuffer::allocateSurface(
     int w, int h, ScalingInterpolation inter, const uInt32* data)
 {
-  return myBackend->createSurface(w, h, inter, data);
+  mySurfaceList.push_back(myBackend->createSurface(w, h, inter, data));
+  return mySurfaceList.back();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::deallocateSurface(shared_ptr<FBSurface> surface)
+{
+  if(surface)
+  {
+    cerr << "deallocateSurface: " << surface << endl;
+    mySurfaceList.remove(surface);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::resetSurfaces()
 {
-  switch(myOSystem.eventHandler().state())
-  {
-    case EventHandlerState::NONE:
-    case EventHandlerState::EMULATION:
-    case EventHandlerState::PAUSE:
-    case EventHandlerState::PLAYBACK:
-    #ifdef GUI_SUPPORT
-      myMsg.surface->reload();
-      myStatsMsg.surface->reload();
-    #endif
-      myTIASurface->resetSurfaces();
-      break;
-
-  #ifdef GUI_SUPPORT
-    case EventHandlerState::OPTIONSMENU:
-      myOSystem.menu().resetSurfaces();
-      break;
-
-    case EventHandlerState::CMDMENU:
-      myOSystem.commandMenu().resetSurfaces();
-      break;
-
-    case EventHandlerState::HIGHSCORESMENU:
-      myOSystem.highscoresMenu().resetSurfaces();
-      break;
-
-    case EventHandlerState::MESSAGEMENU:
-      myOSystem.messageMenu().resetSurfaces();
-      break;
-
-    case EventHandlerState::TIMEMACHINE:
-      myOSystem.timeMachine().resetSurfaces();
-      break;
-
-    case EventHandlerState::LAUNCHER:
-      myOSystem.launcher().resetSurfaces();
-      break;
-  #endif
-
-  #ifdef DEBUGGER_SUPPORT
-    case EventHandlerState::DEBUGGER:
-      myOSystem.debugger().resetSurfaces();
-      break;
-  #endif
-
-    default:
-      break;
-  }
+  for(auto& surface: mySurfaceList)
+    surface->reload();
 
   update(UpdateMode::REDRAW); // force full update
 }

@@ -184,13 +184,6 @@ void RomInfoWidget::parseProperties(const FilesystemNode& node)
   setDirty();
 }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomInfoWidget::resetSurfaces()
-{
-  if(mySurface)
-    mySurface->reload();
-}
-
 #ifdef PNG_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool RomInfoWidget::loadPng(const string& filename)

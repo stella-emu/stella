@@ -18,7 +18,7 @@
 #ifndef FRAMEBUFFER_HXX
 #define FRAMEBUFFER_HXX
 
-#include <map>
+#include <list>
 
 class OSystem;
 class Console;
@@ -158,12 +158,20 @@ class FrameBuffer
 
       @return  A pointer to a valid surface object, or nullptr
     */
-    unique_ptr<FBSurface> allocateSurface(
+    shared_ptr<FBSurface> allocateSurface(
       int w,
       int h,
       ScalingInterpolation inter = ScalingInterpolation::none,
       const uInt32* data = nullptr
     );
+
+    /**
+      Deallocate a previously allocated surface.  If no such surface exists,
+      this method does nothing.
+
+      @param surface  The surface to remove/deallocate
+    */
+    void deallocateSurface(shared_ptr<FBSurface> surface);
 
     /**
       Set up the TIA/emulation palette.  Due to the way the palette is stored,
@@ -521,7 +529,7 @@ class FrameBuffer
       int x{0}, y{0}, w{0}, h{0};
       MessagePosition position{MessagePosition::BottomCenter};
       ColorId color{kNone};
-      unique_ptr<FBSurface> surface;
+      shared_ptr<FBSurface> surface;
       bool enabled{false};
       bool dirty{false};
       bool showGauge{false};
@@ -539,6 +547,9 @@ class FrameBuffer
 
     // Minimum TIA zoom level that can be used for this framebuffer
     float myTIAMinZoom{2.F};
+
+    // Holds a reference to all the surfaces that have been created
+    std::list<shared_ptr<FBSurface>> mySurfaceList;
 
     // Maximum message width [chars]
     static constexpr int MESSAGE_WIDTH = 56;

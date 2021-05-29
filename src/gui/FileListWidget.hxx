@@ -94,9 +94,6 @@ class FileListWidget : public StringListWidget
     ProgressDialog& progress();
     void incProgress();
 
-  protected:
-    static unique_ptr<ProgressDialog> myProgressDialog;
-
   private:
     /** Very similar to setDirectory(), but also updates the history */
     void setLocation(const FilesystemNode& node, const string& select);
@@ -123,6 +120,8 @@ class FileListWidget : public StringListWidget
     string _quickSelectStr;
     uInt64 _quickSelectTime{0};
     static uInt64 _QUICK_SELECT_DELAY;
+
+    unique_ptr<ProgressDialog> myProgressDialog;
 
   private:
     // Following constructors and assignment operators not supported

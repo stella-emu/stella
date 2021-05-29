@@ -35,6 +35,12 @@ ToolTip::ToolTip(Dialog& dialog, const GUI::Font& font)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ToolTip::~ToolTip()
+{
+  myDialog.instance().frameBuffer().deallocateSurface(mySurface);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ToolTip::setFont(const GUI::Font& font)
 {
   myFont = &font;
@@ -48,12 +54,12 @@ void ToolTip::setFont(const GUI::Font& font)
   myHeight = fontHeight * MAX_ROWS + myTextYOfs * 2;
 
   // unallocate
-  if(mySurface != nullptr)
-    mySurface.reset();
+  myDialog.instance().frameBuffer().deallocateSurface(mySurface);
+  mySurface = nullptr;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const unique_ptr<FBSurface>& ToolTip::surface()
+const shared_ptr<FBSurface>& ToolTip::surface()
 {
   if(mySurface == nullptr)
     mySurface = myDialog.instance().frameBuffer().allocateSurface(myWidth, myHeight);
