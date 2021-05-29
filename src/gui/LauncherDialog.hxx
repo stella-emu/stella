@@ -108,7 +108,6 @@ class LauncherDialog : public Dialog
 
     void loadConfig() override;
     void saveConfig() override;
-    void resetSurfaces() override;
     void updateUI();
 
     /**

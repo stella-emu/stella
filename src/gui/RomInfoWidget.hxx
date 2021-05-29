@@ -44,8 +44,6 @@ class RomInfoWidget : public Widget, public CommandSender
     void clearProperties();
     void reloadProperties(const FilesystemNode& node);
 
-    void resetSurfaces();
-
     const string& getUrl() const { return myUrl; }
 
   protected:
@@ -60,7 +58,7 @@ class RomInfoWidget : public Widget, public CommandSender
 
   private:
     // Surface pointer holding the PNG image
-    unique_ptr<FBSurface> mySurface;
+    shared_ptr<FBSurface> mySurface;
 
     // Whether the surface should be redrawn by drawWidget()
     bool mySurfaceIsValid{false};

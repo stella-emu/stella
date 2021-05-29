@@ -49,7 +49,7 @@ class TIASurface
       Creates a new TIASurface object
     */
     explicit TIASurface(OSystem& system);
-    virtual ~TIASurface();
+    ~TIASurface();
 
     /**
       Set the TIA object, which is needed for actually rendering the TIA image.
@@ -183,11 +183,6 @@ class TIASurface
      */
     void updateSurfaceSettings();
 
-    /**
-      Issue a 'reload' to each surface.
-    */
-    void resetSurfaces();
-
   private:
     /**
       Average current calculated buffer's pixel with previous calculated buffer's pixel (50:50).
@@ -213,7 +208,8 @@ class TIASurface
     FrameBuffer& myFB;
     TIA* myTIA{nullptr};
 
-    unique_ptr<FBSurface> myTiaSurface, mySLineSurface, myBaseTiaSurface, myShadeSurface;
+    shared_ptr<FBSurface> myTiaSurface, mySLineSurface,
+                          myBaseTiaSurface, myShadeSurface;
 
     // NTSC object to use in TIA rendering mode
     NTSCFilter myNTSCFilter;

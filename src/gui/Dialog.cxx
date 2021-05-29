@@ -70,6 +70,14 @@ Dialog::Dialog(OSystem& instance, DialogContainer& parent,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Dialog::~Dialog()
 {
+  if(instance().hasFrameBuffer())
+  {
+    instance().frameBuffer().deallocateSurface(_surface);
+    instance().frameBuffer().deallocateSurface(_shadeSurface);
+  }
+  else
+    cerr << "!!! framebuffer not available\n";
+
   _myFocus.list.clear();
   _myTabList.clear();
 
@@ -249,12 +257,6 @@ void Dialog::setDirty()
 void Dialog::setDirtyChain()
 {
   _dirtyChain = true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::resetSurfaces()
-{
-  _surface->reload();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
