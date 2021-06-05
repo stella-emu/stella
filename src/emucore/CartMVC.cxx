@@ -57,6 +57,28 @@ class StreamReader
       return bool(myFile);
     }
 
+	void blankPartialLines(bool index) {
+        constexpr int colorSize = 192 * 5;
+		if (index)
+		{
+            // top line
+			myColor[0] = 0;
+			myColor[1] = 0;
+			myColor[2] = 0;
+			myColor[3] = 0;
+			myColor[4] = 0;
+		}
+        else
+        {
+            // bottom line
+            myColor[colorSize - 5] = 0;
+            myColor[colorSize - 4] = 0;
+            myColor[colorSize - 3] = 0;
+            myColor[colorSize - 2] = 0;
+            myColor[colorSize - 1] = 0;
+        }
+	}
+
     void swapField(bool index) {
       if(index)
       {
@@ -129,9 +151,9 @@ class StreamReader
     const uInt8*  myGraphOverride{nullptr};
 
     const uInt8*  myTimecode{nullptr};
-    const uInt8*  myColor{nullptr};
+    	  uInt8*  myColor{nullptr};
     const uInt8*  myVersion{nullptr};
-    const uInt8*  myFrame{nullptr};
+	const uInt8*  myFrame{nullptr};
 
     uInt8 myBuffer1[CartridgeMVC::MVC_FIELD_SIZE];
     uInt8 myBuffer2[CartridgeMVC::MVC_FIELD_SIZE];
@@ -1204,6 +1226,8 @@ void MovieCart::runStateMachine()
           fill_addr_end_lines();
 
           myStream.swapField(myBufferIndex);
+		  myStream.blankPartialLines(myOdd);
+
           myBufferIndex = !myBufferIndex;
           updateTransport();
 
