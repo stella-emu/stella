@@ -16,6 +16,7 @@
 //============================================================================
 
 #include "Serializer.hxx"
+#include "Serializable.hxx"
 #include "System.hxx"
 #include "CartMVC.hxx"
 
@@ -44,7 +45,7 @@
 /**
   Simulate retrieval 512 byte chunks from a serial source
 */
-class StreamReader
+class StreamReader : public Serializable
 {
   public:
     StreamReader() = default;
@@ -57,47 +58,37 @@ class StreamReader
       return bool(myFile);
     }
 
-	void blankPartialLines(bool index) {
-        constexpr int colorSize = 192 * 5;
-		if (index)
-		{
-            // top line
-			myColor[0] = 0;
-			myColor[1] = 0;
-			myColor[2] = 0;
-			myColor[3] = 0;
-			myColor[4] = 0;
-		}
-        else
-        {
-            // bottom line
-            myColor[colorSize - 5] = 0;
-            myColor[colorSize - 4] = 0;
-            myColor[colorSize - 3] = 0;
-            myColor[colorSize - 2] = 0;
-            myColor[colorSize - 1] = 0;
-        }
-	}
-
-    void swapField(bool index) {
-      if(index)
+    void blankPartialLines(bool index) {
+      constexpr int colorSize = 192 * 5;
+      if (index)
       {
-        myVersion  = myBuffer1 + VERSION_DATA_OFFSET;
-        myFrame  = myBuffer1 + FRAME_DATA_OFFSET;
-        myAudio = myBuffer1 + AUDIO_DATA_OFFSET;
-        myGraph = myBuffer1 + GRAPH_DATA_OFFSET;
-        myTimecode= myBuffer1 + TIMECODE_DATA_OFFSET;
-        myColor = myBuffer1 + COLOR_DATA_OFFSET;
+        // top line
+        myColor[0] = 0;
+        myColor[1] = 0;
+        myColor[2] = 0;
+        myColor[3] = 0;
+        myColor[4] = 0;
       }
       else
       {
-        myVersion  = myBuffer2 + VERSION_DATA_OFFSET;
-        myFrame  = myBuffer2 + FRAME_DATA_OFFSET;
-        myAudio = myBuffer2 + AUDIO_DATA_OFFSET;
-        myGraph = myBuffer2 + GRAPH_DATA_OFFSET;
-        myTimecode = myBuffer2 + TIMECODE_DATA_OFFSET;
-        myColor = myBuffer2 + COLOR_DATA_OFFSET;
+        // bottom line
+        myColor[colorSize - 5] = 0;
+        myColor[colorSize - 4] = 0;
+        myColor[colorSize - 3] = 0;
+        myColor[colorSize - 2] = 0;
+        myColor[colorSize - 1] = 0;
       }
+    }
+
+    void swapField(bool index) {
+      uInt8* offset = index ? myBuffer1 : myBuffer2;
+
+      myVersion  = offset + VERSION_DATA_OFFSET;
+      myFrame    = offset + FRAME_DATA_OFFSET;
+      myAudio    = offset + AUDIO_DATA_OFFSET;
+      myGraph    = offset + GRAPH_DATA_OFFSET;
+      myTimecode = offset + TIMECODE_DATA_OFFSET;
+      myColor    = offset + COLOR_DATA_OFFSET;
     }
 
     bool readField(uInt32 fnum, bool index) {
@@ -135,6 +126,54 @@ class StreamReader
 
     void startTimeCode() { myGraph = myTimecode; }
 
+    bool save(Serializer& out) const override {
+      try
+      {
+        out.putByteArray(myBuffer1, CartridgeMVC::MVC_FIELD_SIZE);
+        out.putByteArray(myBuffer2, CartridgeMVC::MVC_FIELD_SIZE);
+
+        // FIXME - complete this
+      #if 0
+        const uInt8*  myAudio
+        const uInt8*  myGraph
+        const uInt8*  myGraphOverride
+        const uInt8*  myTimecode
+        const uInt8*  myColor
+        const uInt8*  myVersion
+        const uInt8*  myFrame
+      #endif
+      }
+      catch(...)
+      {
+        return false;
+      }
+      return true;
+    }
+
+    bool load(Serializer& in) override {
+      try
+      {
+        in.getByteArray(myBuffer1, CartridgeMVC::MVC_FIELD_SIZE);
+        in.getByteArray(myBuffer2, CartridgeMVC::MVC_FIELD_SIZE);
+
+        // FIXME - complete this
+      #if 0
+        const uInt8*  myAudio
+        const uInt8*  myGraph
+        const uInt8*  myGraphOverride
+        const uInt8*  myTimecode
+        const uInt8*  myColor
+        const uInt8*  myVersion
+        const uInt8*  myFrame
+      #endif
+      }
+      catch(...)
+      {
+        return false;
+      }
+      return true;
+    }
+
   private:
     static constexpr int
         VERSION_DATA_OFFSET = 0,
@@ -151,9 +190,9 @@ class StreamReader
     const uInt8*  myGraphOverride{nullptr};
 
     const uInt8*  myTimecode{nullptr};
-    	  uInt8*  myColor{nullptr};
+    uInt8*        myColor{nullptr};
     const uInt8*  myVersion{nullptr};
-	const uInt8*  myFrame{nullptr};
+    const uInt8*  myFrame{nullptr};
 
     uInt8 myBuffer1[CartridgeMVC::MVC_FIELD_SIZE];
     uInt8 myBuffer2[CartridgeMVC::MVC_FIELD_SIZE];
@@ -166,7 +205,7 @@ class StreamReader
 /**
   State of current switches and joystick positions to control MovieCart
 */
-class MovieInputs
+class MovieInputs : public Serializable
 {
   public:
     MovieInputs() = default;
@@ -191,6 +230,36 @@ class MovieInputs
       fire   = val & TRANSPORT_BUTTON;
       select = val & TRANSPORT_SELECT;
       reset  = val & TRANSPORT_RESET;
+    }
+
+    bool save(Serializer& out) const override {
+      try
+      {
+        out.putBool(bw);      out.putBool(fire);
+        out.putBool(select);  out.putBool(reset);
+        out.putBool(right);   out.putBool(left);
+        out.putBool(up);      out.putBool(down);
+      }
+      catch(...)
+      {
+        return false;
+      }
+      return true;
+    }
+
+    bool load(Serializer& in) override {
+      try
+      {
+        bw = in.getBool();      fire = in.getBool();
+        select = in.getBool();  reset = in.getBool();
+        right = in.getBool();   left = in.getBool();
+        up = in.getBool();      down = in.getBool();
+      }
+      catch(...)
+      {
+        return false;
+      }
+      return true;
     }
 
   private:
@@ -651,13 +720,16 @@ static constexpr uInt8 levelBarsOddData[] = {
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-class MovieCart
+class MovieCart : public Serializable
 {
   public:
     MovieCart() = default;
 
     bool init(const string& path);
     bool process(uInt16 address);
+
+    bool save(Serializer& out) const override;
+    bool load(Serializer& in) override;
 
     uInt8 readROM(uInt16 address) const {
       return myROM[address & 1023];
@@ -668,7 +740,7 @@ class MovieCart
     }
 
   private:
-    enum Mode
+    enum Mode : uInt8
     {
       Volume,
       Bright,
@@ -708,8 +780,6 @@ class MovieCart
 
     void updateTransport();
 
-    StreamReader myStream;
-
     // data
     uInt8 myROM[1024];
 
@@ -739,6 +809,7 @@ class MovieCart
     uInt8 myDrawLevelBars{0};
     uInt8 myDrawTimeCode{0};
 
+    StreamReader myStream;
     MovieInputs myInputs;
     MovieInputs myLastInputs;
 
@@ -1022,7 +1093,6 @@ void MovieCart::fill_addr_right_line()
   writeColor(addr_set_gcol7 + 1);
   writeColor(addr_set_gcol8 + 1);
   writeColor(addr_set_gcol9 + 1);
-
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1226,7 +1296,7 @@ void MovieCart::runStateMachine()
           fill_addr_end_lines();
 
           myStream.swapField(myBufferIndex);
-		  myStream.blankPartialLines(myOdd);
+          myStream.blankPartialLines(myOdd);
 
           myBufferIndex = !myBufferIndex;
           updateTransport();
@@ -1302,6 +1372,112 @@ bool MovieCart::process(uInt16 address)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool MovieCart::save(Serializer& out) const
+{
+  try
+  {
+    out.putByteArray(myROM, 1024);
+
+    // title screen state
+    out.putInt(myTitleCycles);
+    out.putInt(static_cast<int>(myTitleState));
+
+    // address info
+    out.putBool(myA7);
+    out.putBool(myA10);
+    out.putByte(myA10_Count);
+
+    // state machine info
+    out.putByte(myState);
+    out.putBool(myPlaying);
+    out.putBool(myOdd);
+    out.putBool(myBufferIndex);
+
+    out.putByte(myLines);
+    out.putInt(myFrameNumber);
+
+    out.putByte(myMode);
+    out.putByte(myBright);
+    out.putByte(myForceColor);
+
+    // expressed in frames
+    out.putByte(myDrawLevelBars);
+    out.putByte(myDrawTimeCode);
+
+    if(!myStream.save(out)) throw;
+    if(!myInputs.save(out)) throw;
+    if(!myLastInputs.save(out)) throw;
+
+    out.putByte(mySpeed);
+    out.putByte(myJoyRepeat);
+    out.putByte(myDirectionValue);
+    out.putByte(myButtonsValue);
+
+    out.putByte(myVolume);
+// FIXME     const uInt8* myVolumeScale{scales[DEFAULT_LEVEL]};
+    out.putByte(myFirstAudioVal);
+  }
+  catch(...)
+  {
+    return false;
+  }
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool MovieCart::load(Serializer& in)
+{
+  try
+  {
+    in.getByteArray(myROM, 1024);
+
+    // title screen state
+    myTitleCycles = in.getInt();
+    myTitleState = static_cast<TitleState>(in.getInt());
+
+    // address info
+    myA7 = in.getBool();
+    myA10 = in.getBool();
+    myA10_Count = in.getByte();
+
+    // state machine info
+    myState = in.getByte();
+    myPlaying = in.getBool();
+    myOdd = in.getBool();
+    myBufferIndex = in.getBool();
+
+    myLines = in.getByte();
+    myFrameNumber = in.getInt();
+
+    myMode = in.getByte();
+    myBright = in.getByte();
+    myForceColor = in.getByte();
+
+    // expressed in frames
+    myDrawLevelBars = in.getByte();
+    myDrawTimeCode = in.getByte();
+
+    if(!myStream.load(in)) throw;
+    if(!myInputs.load(in)) throw;
+    if(!myLastInputs.load(in)) throw;
+
+    mySpeed = in.getByte();
+    myJoyRepeat = in.getByte();
+    myDirectionValue = in.getByte();
+    myButtonsValue = in.getByte();
+
+    myVolume = in.getByte();
+// FIXME    const uInt8* myVolumeScale{scales[DEFAULT_LEVEL]};
+    myFirstAudioVal = in.getByte();
+  }
+  catch(...)
+  {
+    return false;
+  }
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeMVC::CartridgeMVC(const string& path, size_t size,
                            const string& md5, const Settings& settings,
                            size_t bsSize)
@@ -1368,11 +1544,29 @@ bool CartridgeMVC::poke(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeMVC::save(Serializer& out) const
 {
-  return false;  // TODO: implement this
+  try
+  {
+    if(!myMovie->save(out)) throw;
+  }
+  catch(...)
+  {
+    return false;
+  }
+
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeMVC::load(Serializer& in)
 {
-  return false;  // TODO: implement this
+  try
+  {
+    if(!myMovie->load(in)) throw;
+  }
+  catch(...)
+  {
+    return false;
+  }
+
+  return true;
 }
