@@ -47,6 +47,8 @@ class CartridgeBUSWidget : public CartDebugWidget
       IntArray mwaves;
       IntArray mwavesizes;
       IntArray samplepointer;
+      uIntArray armStats;
+      uIntArray armPrevStats;
       uInt32 random{0};
       ByteArray internalram;
     };
