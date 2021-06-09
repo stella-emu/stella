@@ -246,6 +246,8 @@ void CartridgeDPCPlusWidget::saveOldState()
   myOldState.mfreqs.clear();
   myOldState.mwaves.clear();
   myOldState.internalram.clear();
+  myOldState.armStats.clear();
+  myOldState.armPrevStats.clear();
 
   for(uInt32 i = 0; i < 8; ++i)
   {
@@ -269,6 +271,18 @@ void CartridgeDPCPlusWidget::saveOldState()
     myOldState.internalram.push_back(myCart.myDisplayImage[i]);
 
   myOldState.bank = myCart.getBank();
+
+  myOldState.armStats.push_back(myCart.stats().fetches
+                                + myCart.stats().reads + myCart.stats().writes);
+  myOldState.armStats.push_back(myCart.stats().fetches);
+  myOldState.armStats.push_back(myCart.stats().reads);
+  myOldState.armStats.push_back(myCart.stats().writes);
+
+  myOldState.armPrevStats.push_back(myCart.prevStats().fetches
+                                    + myCart.prevStats().reads + myCart.prevStats().writes);
+  myOldState.armPrevStats.push_back(myCart.prevStats().fetches);
+  myOldState.armPrevStats.push_back(myCart.prevStats().reads);
+  myOldState.armPrevStats.push_back(myCart.prevStats().writes);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -359,25 +373,37 @@ void CartridgeDPCPlusWidget::loadConfig()
   myFastFetch->setState(myCart.myFastFetch);
   myIMLDA->setState(myCart.myLDAimmediate);
 
+  bool isChanged;
+
+  isChanged = myCart.prevStats().fetches + myCart.prevStats().reads + myCart.prevStats().writes
+    != myOldState.armPrevStats[0];
   myPrevThumbMemCycles->setText(Common::Base::toString(myCart.prevStats().fetches
                                 + myCart.prevStats().reads + myCart.prevStats().writes,
-                                Common::Base::Fmt::_10_6));
+                                Common::Base::Fmt::_10_6), isChanged);
+  isChanged = myCart.prevStats().fetches != myOldState.armPrevStats[1];
   myPrevThumbFetches->setText(Common::Base::toString(myCart.prevStats().fetches,
-                              Common::Base::Fmt::_10_6));
+                              Common::Base::Fmt::_10_6), isChanged);
+  isChanged = myCart.prevStats().reads != myOldState.armPrevStats[2];
   myPrevThumbReads->setText(Common::Base::toString(myCart.prevStats().reads,
-                            Common::Base::Fmt::_10_6));
+                            Common::Base::Fmt::_10_6), isChanged);
+  isChanged = myCart.prevStats().writes != myOldState.armPrevStats[3];
   myPrevThumbWrites->setText(Common::Base::toString(myCart.prevStats().writes,
-                             Common::Base::Fmt::_10_6));
+                             Common::Base::Fmt::_10_6), isChanged);
 
+  isChanged = myCart.stats().fetches + myCart.stats().reads + myCart.stats().writes
+    != myOldState.armStats[0];
   myThumbMemCycles->setText(Common::Base::toString(myCart.stats().fetches
                             + myCart.stats().reads + myCart.stats().writes,
-                            Common::Base::Fmt::_10_6));
+                            Common::Base::Fmt::_10_6), isChanged);
+  isChanged = myCart.stats().fetches != myOldState.armStats[1];
   myThumbFetches->setText(Common::Base::toString(myCart.stats().fetches,
-                          Common::Base::Fmt::_10_6));
+                          Common::Base::Fmt::_10_6), isChanged);
+  isChanged = myCart.stats().reads != myOldState.armStats[2];
   myThumbReads->setText(Common::Base::toString(myCart.stats().reads,
-                        Common::Base::Fmt::_10_6));
+                        Common::Base::Fmt::_10_6), isChanged);
+  isChanged = myCart.stats().writes != myOldState.armStats[3];
   myThumbWrites->setText(Common::Base::toString(myCart.stats().writes,
-                         Common::Base::Fmt::_10_6));
+                         Common::Base::Fmt::_10_6), isChanged);
 
   CartDebugWidget::loadConfig();
 }

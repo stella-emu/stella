@@ -46,6 +46,8 @@ class CartridgeDPCPlusWidget : public CartDebugWidget
       IntArray mcounters;
       IntArray mfreqs;
       IntArray mwaves;
+      uIntArray armStats;
+      uIntArray armPrevStats;
       uInt32 random{0};
       ByteArray internalram;
       uInt16 bank{0};
