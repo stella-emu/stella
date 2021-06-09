@@ -66,6 +66,10 @@ class CartridgeDPCPlusWidget : public CartDebugWidget
     CheckboxWidget* myFastFetch{nullptr};
     CheckboxWidget* myIMLDA{nullptr};
     DataGridWidget* myRandom{nullptr};
+    EditTextWidget* myPrevThumbMemCycles{nullptr};
+    EditTextWidget* myPrevThumbFetches{nullptr};
+    EditTextWidget* myPrevThumbReads{nullptr};
+    EditTextWidget* myPrevThumbWrites{nullptr};
     EditTextWidget* myThumbMemCycles{nullptr};
     EditTextWidget* myThumbFetches{nullptr};
     EditTextWidget* myThumbReads{nullptr};

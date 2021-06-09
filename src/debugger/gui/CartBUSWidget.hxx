@@ -66,6 +66,10 @@ class CartridgeBUSWidget : public CartDebugWidget
     DataGridWidget* mySamplePointer{nullptr};
     CheckboxWidget* myBusOverdrive{nullptr};
     CheckboxWidget* myDigitalSample{nullptr};
+    EditTextWidget* myPrevThumbMemCycles{nullptr};
+    EditTextWidget* myPrevThumbFetches{nullptr};
+    EditTextWidget* myPrevThumbReads{nullptr};
+    EditTextWidget* myPrevThumbWrites{nullptr};
     EditTextWidget* myThumbMemCycles{nullptr};
     EditTextWidget* myThumbFetches{nullptr};
     EditTextWidget* myThumbReads{nullptr};

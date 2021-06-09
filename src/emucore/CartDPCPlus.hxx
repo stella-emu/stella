@@ -223,8 +223,9 @@ class CartridgeDPCPlus : public Cartridge
     */
     void callFunction(uInt8 value);
 
-    // Get number of memory accesses of last ARM run.
+    // Get number of memory accesses of last and last but one ARM runs.
     const Thumbulator::Stats& stats() const { return myThumbEmulator->stats(); }
+    const Thumbulator::Stats& prevStats() const { return myThumbEmulator->prevStats(); }
 
   private:
     // The ROM image and size

@@ -204,29 +204,52 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   new StaticTextWidget(boss, _font, xpos, ypos + 1, "Last ARM run stats:");
   xpos = HBORDER + INDENT; ypos += myLineHeight + VGAP;
   StaticTextWidget* s = new StaticTextWidget(boss, _font, xpos, ypos + 1, "Mem. cycles ");
-  myThumbMemCycles = new EditTextWidget(boss, _font, s->getRight(), ypos - 1,
-                                           EditTextWidget::calcWidth(_font, 6), myLineHeight, "");
+
+  myPrevThumbMemCycles = new EditTextWidget(boss, _font, s->getRight(), ypos - 1,
+                                            EditTextWidget::calcWidth(_font, 6), myLineHeight, "");
+  myPrevThumbMemCycles->setEditable(false);
+  myPrevThumbMemCycles->setToolTip("Number of memory cycles of last but one ARM run.");
+
+  myThumbMemCycles = new EditTextWidget(boss, _font, myPrevThumbMemCycles->getRight() + _fontWidth / 2, ypos - 1,
+                                        EditTextWidget::calcWidth(_font, 6), myLineHeight, "");
   myThumbMemCycles->setEditable(false);
   myThumbMemCycles->setToolTip("Number of memory cycles of last ARM run.");
 
   s = new StaticTextWidget(boss, _font, myThumbMemCycles->getRight() + _fontWidth * 2, ypos + 1, "Fetches ");
-  myThumbFetches = new EditTextWidget(boss, _font, s->getRight(), ypos - 1,
-                                           EditTextWidget::calcWidth(_font, 6), myLineHeight, "");
+  myPrevThumbFetches = new EditTextWidget(boss, _font, s->getRight(), ypos - 1,
+                                          EditTextWidget::calcWidth(_font, 6), myLineHeight, "");
+  myPrevThumbFetches->setEditable(false);
+  myPrevThumbFetches->setToolTip("Number of fetches/instructions of last but one ARM run.");
+
+  myThumbFetches = new EditTextWidget(boss, _font, myPrevThumbFetches->getRight() + _fontWidth / 2, ypos - 1,
+                                      EditTextWidget::calcWidth(_font, 6), myLineHeight, "");
   myThumbFetches->setEditable(false);
   myThumbFetches->setToolTip("Number of fetches/instructions of last ARM run.");
 
   ypos += myLineHeight + VGAP;
   s = new StaticTextWidget(boss, _font, xpos, ypos + 1, "Reads ");
+
+  myPrevThumbReads = new EditTextWidget(boss, _font, myPrevThumbMemCycles->getLeft(), ypos - 1,
+                                    EditTextWidget::calcWidth(_font, 6), myLineHeight, "");
+  myPrevThumbReads->setEditable(false);
+  myPrevThumbReads->setToolTip("Number of reads of last but one ARM run.");
+
   myThumbReads = new EditTextWidget(boss, _font, myThumbMemCycles->getLeft(), ypos - 1,
                                     EditTextWidget::calcWidth(_font, 6), myLineHeight, "");
   myThumbReads->setEditable(false);
   myThumbReads->setToolTip("Number of reads of last ARM run.");
 
   s = new StaticTextWidget(boss, _font, myThumbReads->getRight() + _fontWidth * 2, ypos + 1, "Writes ");
+
+  myPrevThumbWrites = new EditTextWidget(boss, _font, myPrevThumbFetches->getLeft(), ypos - 1,
+                                     EditTextWidget::calcWidth(_font, 6), myLineHeight, "");
+  myPrevThumbWrites->setEditable(false);
+  myPrevThumbWrites->setToolTip("Number of writes of last but one ARM run.");
+
   myThumbWrites = new EditTextWidget(boss, _font, myThumbFetches->getLeft(), ypos - 1,
                                     EditTextWidget::calcWidth(_font, 6), myLineHeight, "");
   myThumbWrites->setEditable(false);
-  myThumbWrites->setToolTip("Number of write of last ARM run.");
+  myThumbWrites->setToolTip("Number of writes of last ARM run.");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -404,6 +427,16 @@ void CartridgeCDFWidget::loadConfig()
     myMusicWaveformSizes->setCrossed(false);
     mySamplePointer->setCrossed(true);
   }
+
+  myPrevThumbMemCycles->setText(Common::Base::toString(myCart.prevStats().fetches
+                                + myCart.prevStats().reads + myCart.prevStats().writes,
+                                Common::Base::Fmt::_10_6));
+  myPrevThumbFetches->setText(Common::Base::toString(myCart.prevStats().fetches,
+                              Common::Base::Fmt::_10_6));
+  myPrevThumbReads->setText(Common::Base::toString(myCart.prevStats().reads,
+                            Common::Base::Fmt::_10_6));
+  myPrevThumbWrites->setText(Common::Base::toString(myCart.prevStats().writes,
+                             Common::Base::Fmt::_10_6));
 
   myThumbMemCycles->setText(Common::Base::toString(myCart.stats().fetches
                             + myCart.stats().reads + myCart.stats().writes,
