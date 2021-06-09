@@ -82,6 +82,7 @@ class Thumbulator
     string run();
     string run(uInt32 cycles);
     const Stats& stats() const { return _stats; }
+    const Stats& prevStats() const { return _prevStats; }
 
 #ifndef UNSAFE_OPTIMIZATIONS
     /**
@@ -209,6 +210,7 @@ class Thumbulator
     uInt32 instructions{0};
   #endif
     Stats _stats;
+    Stats _prevStats;
 
     // For emulation of LPC2103's timer 1, used for NTSC/PAL/SECAM detection.
     // Register names from documentation:

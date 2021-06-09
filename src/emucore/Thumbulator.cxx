@@ -2548,6 +2548,9 @@ int Thumbulator::reset()
   statusMsg.str("");
 #endif
 #ifndef NO_THUMB_STATS
+  _prevStats.fetches = _stats.fetches;
+  _prevStats.reads = _stats.reads;
+  _prevStats.writes = _stats.writes;
   _stats.fetches = _stats.reads = _stats.writes = 0;
 #endif
 

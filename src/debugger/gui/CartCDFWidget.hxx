@@ -70,6 +70,10 @@ class CartridgeCDFWidget : public CartDebugWidget
 
     CheckboxWidget* myFastFetch{nullptr};
     CheckboxWidget* myDigitalSample{nullptr};
+    EditTextWidget* myPrevThumbMemCycles{nullptr};
+    EditTextWidget* myPrevThumbFetches{nullptr};
+    EditTextWidget* myPrevThumbReads{nullptr};
+    EditTextWidget* myPrevThumbWrites{nullptr};
     EditTextWidget* myThumbMemCycles{nullptr};
     EditTextWidget* myThumbFetches{nullptr};
     EditTextWidget* myThumbReads{nullptr};

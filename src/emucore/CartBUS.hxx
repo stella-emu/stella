@@ -233,8 +233,9 @@ class CartridgeBUS : public Cartridge
     uInt32 getWaveformSize(uInt8 index) const;
     uInt32 getSample();
 
-    // Get number of memory accesses of last ARM run.
+    // Get number of memory accesses of last and last but one ARM runs.
     const Thumbulator::Stats& stats() const { return myThumbEmulator->stats(); }
+    const Thumbulator::Stats& prevStats() const { return myThumbEmulator->prevStats(); }
 
   private:
     // The 32K ROM image of the cartridge
