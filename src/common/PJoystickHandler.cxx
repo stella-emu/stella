@@ -100,24 +100,9 @@ int PhysicalJoystickHandler::add(const PhysicalJoystickPtr& stick)
   // Figure out what type of joystick this is
   bool isAdaptor = false;
 
-  if(BSPF::containsIgnoreCase(stick->name, "2600-daptor"))
+  if(BSPF::containsIgnoreCase(stick->name, "Stelladaptor")
+     || BSPF::containsIgnoreCase(stick->name, "2600-daptor"))
   {
-    isAdaptor = true;
-    if(stick->numAxes == 4)
-    {
-      // TODO - detect controller type based on z-axis
-      stick->name = "2600-daptor D9";
-    }
-    else if(stick->numAxes == 3)
-    {
-      stick->name = "2600-daptor II";
-    }
-    else
-      stick->name = "2600-daptor";
-  }
-  else if(BSPF::containsIgnoreCase(stick->name, "Stelladaptor"))
-  {
-    stick->name = "Stelladaptor";
     isAdaptor = true;
   }
   else
@@ -279,7 +264,8 @@ bool PhysicalJoystickHandler::mapStelladaptors(const string& saport, int ID)
       erased = true;
     }
 
-    if(BSPF::startsWithIgnoreCase(_stick->name, "Stelladaptor"))
+    //if(BSPF::startsWithIgnoreCase(_stick->name, "Stelladaptor"))
+    if(BSPF::containsIgnoreCase(_stick->name, "Stelladaptor"))
     {
       if(saOrder[saCount] == 1)
         _stick->type = PhysicalJoystick::Type::LEFT_STELLADAPTOR;
@@ -287,7 +273,8 @@ bool PhysicalJoystickHandler::mapStelladaptors(const string& saport, int ID)
         _stick->type = PhysicalJoystick::Type::RIGHT_STELLADAPTOR;
       found = true;
     }
-    else if(BSPF::startsWithIgnoreCase(_stick->name, "2600-daptor"))
+    else //if(BSPF::startsWithIgnoreCase(_stick->name, "2600-daptor"))
+      if(BSPF::containsIgnoreCase(_stick->name, "2600-daptor"))
     {
       if(saOrder[saCount] == 1)
         _stick->type = PhysicalJoystick::Type::LEFT_2600DAPTOR;
