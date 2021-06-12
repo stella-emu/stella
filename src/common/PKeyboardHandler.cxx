@@ -53,7 +53,7 @@ PhysicalKeyboardHandler::PhysicalKeyboardHandler(OSystem& system, EventHandler& 
     loadSerializedMappings(myOSystem.settings().getString("keymap_emu"), EventMode::kCommonMode);
     loadSerializedMappings(myOSystem.settings().getString("keymap_joy"), EventMode::kJoystickMode);
     loadSerializedMappings(myOSystem.settings().getString("keymap_pad"), EventMode::kPaddlesMode);
-    loadSerializedMappings(myOSystem.settings().getString("keymap_key"), EventMode::kKeypadMode);
+    loadSerializedMappings(myOSystem.settings().getString("keymap_key"), EventMode::kKeyboardMode);
     loadSerializedMappings(myOSystem.settings().getString("keymap_ui"), EventMode::kMenuMode);
 
     updateDefaults = true;
@@ -112,7 +112,7 @@ bool PhysicalKeyboardHandler::isMappingUsed(EventMode mode, const EventMapping& 
   return myKeyMap.check(EventMode::kCommonMode, map.key, map.mod)
     || myKeyMap.check(EventMode::kJoystickMode, map.key, map.mod)
     || myKeyMap.check(EventMode::kPaddlesMode, map.key, map.mod)
-    || myKeyMap.check(EventMode::kKeypadMode, map.key, map.mod)
+    || myKeyMap.check(EventMode::kKeyboardMode, map.key, map.mod)
     || myKeyMap.check(EventMode::kCompuMateMode, map.key, map.mod);
 }
 
@@ -180,8 +180,8 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
         setDefaultKey(item, event, EventMode::kJoystickMode, updateDefaults);
       for (const auto& item: DefaultPaddleMapping)
         setDefaultKey(item, event, EventMode::kPaddlesMode, updateDefaults);
-      for (const auto& item: DefaultKeypadMapping)
-        setDefaultKey(item, event, EventMode::kKeypadMode, updateDefaults);
+      for (const auto& item: DefaultKeyboardMapping)
+        setDefaultKey(item, event, EventMode::kKeyboardMode, updateDefaults);
       for (const auto& item : CompuMateMapping)
         setDefaultKey(item, event, EventMode::kCompuMateMode, updateDefaults);
       break;
@@ -264,7 +264,7 @@ EventMode PhysicalKeyboardHandler::getMode(const Controller::Type type)
   {
     case Controller::Type::Keyboard:
     case Controller::Type::KidVid:
-      return EventMode::kKeypadMode;
+      return EventMode::kKeyboardMode;
 
     case Controller::Type::Paddles:
     case Controller::Type::PaddlesIAxDr:
@@ -323,8 +323,8 @@ void PhysicalKeyboardHandler::enableEmulationMappings()
       enableMappings(RightPaddlesEvents, EventMode::kPaddlesMode);
       break;
 
-    case EventMode::kKeypadMode:
-      enableMappings(RightKeypadEvents, EventMode::kKeypadMode);
+    case EventMode::kKeyboardMode:
+      enableMappings(RightKeyboardEvents, EventMode::kKeyboardMode);
       break;
 
     case EventMode::kCompuMateMode:
@@ -342,8 +342,8 @@ void PhysicalKeyboardHandler::enableEmulationMappings()
       enableMappings(LeftPaddlesEvents, EventMode::kPaddlesMode);
       break;
 
-    case EventMode::kKeypadMode:
-      enableMappings(LeftKeypadEvents, EventMode::kKeypadMode);
+    case EventMode::kKeyboardMode:
+      enableMappings(LeftKeyboardEvents, EventMode::kKeyboardMode);
       break;
 
     case EventMode::kCompuMateMode:
@@ -400,8 +400,8 @@ EventMode PhysicalKeyboardHandler::getEventMode(const Event::Type event,
     if (isPaddleEvent(event))
       return EventMode::kPaddlesMode;
 
-    if (isKeypadEvent(event))
-      return EventMode::kKeypadMode;
+    if (isKeyboardEvent(event))
+      return EventMode::kKeyboardMode;
 
     if (isCommonEvent(event))
       return EventMode::kCommonMode;
@@ -429,16 +429,16 @@ bool PhysicalKeyboardHandler::isPaddleEvent(const Event::Type event) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PhysicalKeyboardHandler::isKeypadEvent(const Event::Type event) const
+bool PhysicalKeyboardHandler::isKeyboardEvent(const Event::Type event) const
 {
-  return LeftKeypadEvents.find(event) != LeftKeypadEvents.end()
-    || RightKeypadEvents.find(event) != RightKeypadEvents.end();
+  return LeftKeyboardEvents.find(event) != LeftKeyboardEvents.end()
+    || RightKeyboardEvents.find(event) != RightKeyboardEvents.end();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PhysicalKeyboardHandler::isCommonEvent(const Event::Type event) const
 {
-  return !(isJoystickEvent(event) || isPaddleEvent(event) || isKeypadEvent(event));
+  return !(isJoystickEvent(event) || isPaddleEvent(event) || isKeyboardEvent(event));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -455,7 +455,7 @@ void PhysicalKeyboardHandler::saveMapping()
   myOSystem.settings().setValue("keymap_emu", myKeyMap.saveMapping(EventMode::kCommonMode).dump(2));
   myOSystem.settings().setValue("keymap_joy", myKeyMap.saveMapping(EventMode::kJoystickMode).dump(2));
   myOSystem.settings().setValue("keymap_pad", myKeyMap.saveMapping(EventMode::kPaddlesMode).dump(2));
-  myOSystem.settings().setValue("keymap_key", myKeyMap.saveMapping(EventMode::kKeypadMode).dump(2));
+  myOSystem.settings().setValue("keymap_key", myKeyMap.saveMapping(EventMode::kKeyboardMode).dump(2));
   myOSystem.settings().setValue("keymap_ui", myKeyMap.saveMapping(EventMode::kMenuMode).dump(2));
   enableEmulationMappings();
 }
@@ -477,7 +477,7 @@ bool PhysicalKeyboardHandler::addMapping(Event::Type event, EventMode mode,
       // erase identical mappings for all controller modes
       myKeyMap.erase(EventMode::kJoystickMode, key, mod);
       myKeyMap.erase(EventMode::kPaddlesMode, key, mod);
-      myKeyMap.erase(EventMode::kKeypadMode, key, mod);
+      myKeyMap.erase(EventMode::kKeyboardMode, key, mod);
       myKeyMap.erase(EventMode::kCompuMateMode, key, mod);
     }
     else if(evMode != EventMode::kMenuMode
@@ -1011,7 +1011,7 @@ PhysicalKeyboardHandler::DefaultPaddleMapping = {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PhysicalKeyboardHandler::EventMappingArray
-PhysicalKeyboardHandler::DefaultKeypadMapping = {
+PhysicalKeyboardHandler::DefaultKeyboardMapping = {
   {Event::LeftKeyboard1,            KBDK_1},
   {Event::LeftKeyboard2,            KBDK_2},
   {Event::LeftKeyboard3,            KBDK_3},

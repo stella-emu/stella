@@ -178,7 +178,7 @@ class PhysicalJoystickHandler
     /** Checks event type. */
     bool isJoystickEvent(const Event::Type event) const;
     bool isPaddleEvent(const Event::Type event) const;
-    bool isKeypadEvent(const Event::Type event) const;
+    bool isKeyboardEvent(const Event::Type event) const;
     bool isCommonEvent(const Event::Type event) const;
 
     void enableCommonMappings();
@@ -198,8 +198,8 @@ class PhysicalJoystickHandler
     static EventMappingArray DefaultRightJoystickMapping;
     static EventMappingArray DefaultLeftPaddlesMapping;
     static EventMappingArray DefaultRightPaddlesMapping;
-    static EventMappingArray DefaultLeftKeypadMapping;
-    static EventMappingArray DefaultRightKeypadMapping;
+    static EventMappingArray DefaultLeftKeyboardMapping;
+    static EventMappingArray DefaultRightKeyboardMapping;
 
     static constexpr int NUM_PORTS = 2;
     static constexpr int NUM_SA_AXIS = 2;

@@ -299,7 +299,7 @@ static const Event::EventSet QTPaddles4Events = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-static const Event::EventSet LeftKeypadEvents = {
+static const Event::EventSet LeftKeyboardEvents = {
   Event::LeftKeyboard1, Event::LeftKeyboard2, Event::LeftKeyboard3,
   Event::LeftKeyboard4, Event::LeftKeyboard5, Event::LeftKeyboard6,
   Event::LeftKeyboard7, Event::LeftKeyboard8, Event::LeftKeyboard9,
@@ -307,7 +307,7 @@ static const Event::EventSet LeftKeypadEvents = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-static const Event::EventSet RightKeypadEvents = {
+static const Event::EventSet RightKeyboardEvents = {
   Event::RightKeyboard1, Event::RightKeyboard2, Event::RightKeyboard3,
   Event::RightKeyboard4, Event::RightKeyboard5, Event::RightKeyboard6,
   Event::RightKeyboard7, Event::RightKeyboard8, Event::RightKeyboard9,
