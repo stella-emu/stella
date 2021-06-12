@@ -53,7 +53,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EventMode, {
   {EventMode::kEmulationMode, "kEmulationMode"},
   {EventMode::kJoystickMode, "kJoystickMode"},
   {EventMode::kPaddlesMode, "kPaddlesMode"},
-  {EventMode::kKeypadMode, "kKeypadMode"},
+  {EventMode::kKeyboardMode, "kKeyboardMode"},
   {EventMode::kCompuMateMode, "kCompuMateMode"},
   {EventMode::kCommonMode, "kCommonMode"},
   {EventMode::kNumModes, "kNumModes"},
