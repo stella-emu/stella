@@ -108,8 +108,11 @@ CartridgeCDF::CartridgeCDF(const ByteBuffer& image, size_t size,
     static_cast<uInt32>(mySize),
     cBase, cStart, cStack,
     devSettings ? settings.getBool("dev.thumb.trapfatal") : false,
+    devSettings ? settings.getFloat("dev.thumb.cyclefactor") : 1.0,
     thumulatorConfiguration(myCDFSubtype),
     this);
+
+  myIncCycles = devSettings ? settings.getBool("dev.thumb.inccycles") : false,
 
   setInitialState();
 }
@@ -195,10 +198,12 @@ inline void CartridgeCDF::callFunction(uInt8 value)
               // time for Stella as ARM code "runs in zero 6507 cycles".
     case 255: // call without IRQ driven audio
       try {
-        Int32 cycles = Int32(mySystem->cycles() - myARMCycles);
-        myARMCycles = mySystem->cycles();
+        uInt32 cycles = uInt32(mySystem->cycles() - myARMCycles);
 
+        myARMCycles = mySystem->cycles();
         myThumbEmulator->run(cycles);
+        if(myIncCycles)
+          mySystem->incrementCycles(cycles); // * ~1.79 is the limit for ZEVIOUZ title screen
       }
       catch(const runtime_error& e) {
         if(!mySystem->autodetectMode())

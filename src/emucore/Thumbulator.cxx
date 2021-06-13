@@ -52,10 +52,13 @@ using Common::Base;
   #define CONV_RAMROM(d) (d)
 #endif
 
+#define CYCLE_FACTOR 1.25 // coarse ARM cycle multiplier
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Thumbulator::Thumbulator(const uInt16* rom_ptr, uInt16* ram_ptr, uInt32 rom_size,
                          const uInt32 c_base, const uInt32 c_start, const uInt32 c_stack,
-                         bool traponfatal, Thumbulator::ConfigureFor configurefor,
+                         bool traponfatal, double cyclefactor,
+                         Thumbulator::ConfigureFor configurefor,
                          Cartridge* cartridge)
   : rom{rom_ptr},
     romSize{rom_size},
@@ -74,11 +77,14 @@ Thumbulator::Thumbulator(const uInt16* rom_ptr, uInt16* ram_ptr, uInt32 rom_size
 #ifndef UNSAFE_OPTIMIZATIONS
   trapFatalErrors(traponfatal);
 #endif
+#ifndef NO_THUMB_STATS
+  cycleFactor(cyclefactor);
+#endif
   reset();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string Thumbulator::run()
+string Thumbulator::doRun(uInt32& cycles)
 {
   reset();
   for(;;)
@@ -89,6 +95,11 @@ string Thumbulator::run()
       throw runtime_error("instructions > 500000");
 #endif
   }
+#ifndef NO_THUMB_STATS
+  cycles = uInt32((_stats.fetches + _stats.reads + _stats.writes) * arm_cycle_factor / timing_factor);
+#else
+  cycles = 0;
+#endif
 #if defined(THUMB_DISS) || defined(THUMB_DBUG)
   dump_counters();
   cout << statusMsg.str() << endl;
@@ -119,15 +130,19 @@ void Thumbulator::setConsoleTiming(ConsoleTiming timing)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Thumbulator::updateTimer(uInt32 cycles)
 {
+#ifdef TIMER_0
+  if(T0TCR & 1) // bit 0 controls timer on/off
+    T0TC += uInt32(cycles * timing_factor);
+#endif
   if (T1TCR & 1) // bit 0 controls timer on/off
     T1TC += uInt32(cycles * timing_factor);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string Thumbulator::run(uInt32 cycles)
+string Thumbulator::run(uInt32& cycles)
 {
   updateTimer(cycles);
-  return run();
+  return doRun(cycles);
 }
 
 #ifndef UNSAFE_OPTIMIZATIONS
@@ -289,7 +304,15 @@ void Thumbulator::write32(uInt32 addr, uInt32 data)
           DO_DISS(statusMsg << "uart: [" << char(data&0xFF) << "]" << endl);
           break;
 #endif
+#ifdef TIMER_0
+        case 0xE0004004:  // T0TCR - Timer 0 Control Register
+          T0TCR = data;
+          break;
 
+        case 0xE0004008:  // T0TC - Timer 0 Counter
+          T0TC = data;
+          break;
+#endif
         case 0xE0008004:  // T1TCR - Timer 1 Control Register
           T1TCR = data;
           break;
@@ -467,6 +490,15 @@ uInt32 Thumbulator::read32(uInt32 addr)
     {
       switch(addr)
       {
+      #ifdef TIMER_0
+        case 0xE0004004:  // T0TCR - Timer 0 Control Register
+          data = T0TCR;
+          return data;
+
+        case 0xE0004008:  // T0TC - Timer 0 Counter
+          data = T0TC;
+          break;
+      #endif
         case 0xE0008004:  // T1TCR - Timer 1 Control Register
           data = T1TCR;
           return data;
@@ -2560,4 +2592,5 @@ int Thumbulator::reset()
 #ifndef UNSAFE_OPTIMIZATIONS
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Thumbulator::trapOnFatal = true;
+double Thumbulator::arm_cycle_factor = 1.25;
 #endif

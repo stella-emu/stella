@@ -242,10 +242,12 @@ Settings::Settings()
   setPermanent("dev.tm.uncompressed", 600);
   setPermanent("dev.tm.interval", "1f"); // = 1 frame
   setPermanent("dev.tm.horizon", "30s"); // = ~30 seconds
-  // Thumb ARM emulation options
-  setPermanent("dev.thumb.trapfatal", "true");
   setPermanent("dev.detectedinfo", "true");
   setPermanent("dev.eepromaccess", "true");
+  // Thumb ARM emulation options
+  setPermanent("dev.thumb.trapfatal", "true");
+  setPermanent("dev.thumb.inccycles", "true");
+  setPermanent("dev.thumb.cyclefactor", "1.25");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -683,6 +685,8 @@ void Settings::usage() const
 #endif
     << "  -dev.thumb.trapfatal  <1|0>      Determines whether errors in ARM emulation\n"
     << "                                    throw an exception\n"
+    << "  -dev.thumb.inccycles  <1|0>      Determines whether ARM emulation cycles\n"
+    << "                                    increase system cycles\n"
     << "  -dev.eepromaccess     <1|0>      Enable messages for AtariVox/SaveKey access\n"
     << "                                    messages\n"
     << "  -dev.tia.type <standard|custom|  Selects a TIA type\n"
