@@ -58,6 +58,7 @@ CartridgeDPCPlus::CartridgeDPCPlus(const ByteBuffer& image, size_t size,
       0x00000C08,
       0x40001FDC,
        devSettings ? settings.getBool("dev.thumb.trapfatal") : false,
+       devSettings ? settings.getFloat("dev.thumb.cyclefactor") : 1.0,
        Thumbulator::ConfigureFor::DPCplus,
        this);
 
@@ -76,6 +77,8 @@ CartridgeDPCPlus::CartridgeDPCPlus(const ByteBuffer& image, size_t size,
   if(myDriverMD5 == "5f80b5a5adbe483addc3f6e6f1b472f8" ||
      myDriverMD5 == "8dd73b44fd11c488326ce507cbeb19d1" )
     myFractionalLowMask = 0x0F0000;
+
+  myIncCycles = devSettings ? settings.getBool("dev.thumb.inccycles") : false,
 
   setInitialState();
 }
@@ -200,10 +203,12 @@ inline void CartridgeDPCPlus::callFunction(uInt8 value)
               // time for Stella as ARM code "runs in zero 6507 cycles".
     case 255: // call without IRQ driven audio
       try {
-        Int32 cycles = Int32(mySystem->cycles() - myARMCycles);
-        myARMCycles = mySystem->cycles();
+        uInt32 cycles = uInt32(mySystem->cycles() - myARMCycles);
 
+        myARMCycles = mySystem->cycles();
         myThumbEmulator->run(cycles);
+        if(myIncCycles)
+          mySystem->incrementCycles(cycles);
       }
       catch(const runtime_error& e) {
         if(!mySystem->autodetectMode())

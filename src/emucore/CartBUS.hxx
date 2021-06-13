@@ -299,6 +299,9 @@ class CartridgeBUS : public Cartridge
 
     uInt8 myFastJumpActive{false};
 
+    // ARM code increases 6507 cycles
+    bool myIncCycles{false};
+
   private:
     // Following constructors and assignment operators not supported
     CartridgeBUS() = delete;

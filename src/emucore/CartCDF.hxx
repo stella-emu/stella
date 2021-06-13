@@ -369,6 +369,9 @@ class CartridgeCDF : public Cartridge
     // CDF subtype
     CDFSubtype myCDFSubtype{CDFSubtype::CDF0};
 
+    // ARM code increases 6507 cycles
+    bool myIncCycles{false};
+
   private:
     // Following constructors and assignment operators not supported
     CartridgeCDF() = delete;

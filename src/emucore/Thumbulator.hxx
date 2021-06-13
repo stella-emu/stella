@@ -46,6 +46,8 @@ class Cartridge;
 #define CPSR_C (1u<<29)
 #define CPSR_V (1u<<28)
 
+//#define TIMER_0   // enable timer 0 support
+
 class Thumbulator
 {
   public:
@@ -68,7 +70,8 @@ class Thumbulator
 
     Thumbulator(const uInt16* rom_ptr, uInt16* ram_ptr, uInt32 rom_size,
                 const uInt32 c_base, const uInt32 c_start, const uInt32 c_stack,
-                bool traponfatal, Thumbulator::ConfigureFor configurefor,
+                bool traponfatal, double cyclefactor,
+                Thumbulator::ConfigureFor configurefor,
                 Cartridge* cartridge);
 
     /**
@@ -79,8 +82,8 @@ class Thumbulator
       @return  The results of any debugging output (if enabled),
                otherwise an empty string
     */
-    string run();
-    string run(uInt32 cycles);
+    string doRun(uInt32& cycles);
+    string run(uInt32& cycles);
     const Stats& stats() const { return _stats; }
     const Stats& prevStats() const { return _prevStats; }
 
@@ -98,6 +101,9 @@ class Thumbulator
       @param enable  Enable (the default) or disable exceptions on fatal errors
     */
     static void trapFatalErrors(bool enable) { trapOnFatal = enable; }
+#endif
+#ifndef NO_THUMB_STATS
+    static void cycleFactor(double factor) { arm_cycle_factor = factor; }
 #endif
 
     /**
@@ -215,6 +221,10 @@ class Thumbulator
     // For emulation of LPC2103's timer 1, used for NTSC/PAL/SECAM detection.
     // Register names from documentation:
     // http://www.nxp.com/documents/user_manual/UM10161.pdf
+  #ifdef TIMER_0
+    uInt32 T0TCR{0};  // Timer 0 Timer Control Register
+    uInt32 T0TC{0};   // Timer 0 Timer Counter
+  #endif
     uInt32 T1TCR{0};  // Timer 1 Timer Control Register
     uInt32 T1TC{0};   // Timer 1 Timer Counter
     double timing_factor{0.0};
@@ -223,6 +233,9 @@ class Thumbulator
     ostringstream statusMsg;
 
     static bool trapOnFatal;
+#endif
+#ifndef NO_THUMB_STATS
+    static double arm_cycle_factor;
 #endif
 
     ConfigureFor configuration;

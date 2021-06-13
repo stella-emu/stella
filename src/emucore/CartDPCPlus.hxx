@@ -312,6 +312,9 @@ class CartridgeDPCPlus : public Cartridge
     // For current versions, this is 0x0F00FF; older versions need 0x0F0000
     uInt32 myFractionalLowMask{0x0F00FF};
 
+    // ARM code increases 6507 cycles
+    bool myIncCycles{false};
+
   private:
     // Following constructors and assignment operators not supported
     CartridgeDPCPlus() = delete;
