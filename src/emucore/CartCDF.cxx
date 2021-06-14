@@ -24,7 +24,6 @@
 #endif
 
 #include "System.hxx"
-#include "Thumbulator.hxx"
 #include "CartCDF.hxx"
 #include "TIA.hxx"
 #include "exception/FatalEmulationError.hxx"
@@ -65,7 +64,7 @@ namespace {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeCDF::CartridgeCDF(const ByteBuffer& image, size_t size,
                            const string& md5, const Settings& settings)
-  : Cartridge(settings, md5)
+  : CartridgeARM(md5, settings)
 {
   // Copy the ROM image into my buffer
   mySize = std::min(size, 512_KB);
@@ -111,8 +110,6 @@ CartridgeCDF::CartridgeCDF(const ByteBuffer& image, size_t size,
     devSettings ? settings.getFloat("dev.thumb.cyclefactor") : 1.0,
     thumulatorConfiguration(myCDFSubtype),
     this);
-
-  myIncCycles = devSettings ? settings.getBool("dev.thumb.inccycles") : false,
 
   setInitialState();
 }
@@ -202,8 +199,7 @@ inline void CartridgeCDF::callFunction(uInt8 value)
 
         myARMCycles = mySystem->cycles();
         myThumbEmulator->run(cycles);
-        if(myIncCycles)
-          mySystem->incrementCycles(cycles); // * ~1.79 is the limit for ZEVIOUZ title screen
+        updateCycles(cycles);
       }
       catch(const runtime_error& e) {
         if(!mySystem->autodetectMode())
@@ -565,6 +561,8 @@ bool CartridgeCDF::save(Serializer& out) const
     out.putLong(myAudioCycles);
     out.putDouble(myFractionalClocks);
     out.putLong(myARMCycles);
+
+    CartridgeARM::save(out);
   }
   catch(...)
   {
@@ -605,6 +603,8 @@ bool CartridgeCDF::load(Serializer& in)
     myAudioCycles = in.getLong();
     myFractionalClocks = in.getDouble();
     myARMCycles = in.getLong();
+
+    CartridgeARM::load(in);
   }
   catch(...)
   {

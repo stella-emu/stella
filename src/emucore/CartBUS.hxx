@@ -19,14 +19,13 @@
 #define CARTRIDGE_BUS_HXX
 
 class System;
-class Thumbulator;
+
 #ifdef DEBUGGER_SUPPORT
   #include "CartBUSWidget.hxx"
 #endif
 
 #include "bspf.hxx"
-#include "Thumbulator.hxx"
-#include "Cart.hxx"
+#include "CartARM.hxx"
 
 /**
   Cartridge class used for BUS.
@@ -41,7 +40,7 @@ class Thumbulator;
   @authors: Darrell Spice Jr, Chris Walton, Fred Quimby,
             Stephen Anthony, Bradford W. Mott
 */
-class CartridgeBUS : public Cartridge
+class CartridgeBUS : public CartridgeARM
 {
   friend class CartridgeBUSWidget;
   friend class CartridgeRamBUSWidget;
@@ -233,10 +232,6 @@ class CartridgeBUS : public Cartridge
     uInt32 getWaveformSize(uInt8 index) const;
     uInt32 getSample();
 
-    // Get number of memory accesses of last and last but one ARM runs.
-    const Thumbulator::Stats& stats() const { return myThumbEmulator->stats(); }
-    const Thumbulator::Stats& prevStats() const { return myThumbEmulator->prevStats(); }
-
   private:
     // The 32K ROM image of the cartridge
     ByteBuffer myImage;
@@ -255,9 +250,6 @@ class CartridgeBUS : public Cartridge
     //   $0800 - 4K Display Data
     //   $1800 - 2K C Variable & Stack
     std::array<uInt8, 8_KB> myRAM;
-
-    // Pointer to the Thumb ARM emulator object
-    unique_ptr<Thumbulator> myThumbEmulator;
 
     // Indicates the offset into the ROM image (aligns to current bank)
     uInt16 myBankOffset{0};
@@ -298,9 +290,6 @@ class CartridgeBUS : public Cartridge
     uInt8 myMode{0};
 
     uInt8 myFastJumpActive{false};
-
-    // ARM code increases 6507 cycles
-    bool myIncCycles{false};
 
   private:
     // Following constructors and assignment operators not supported
