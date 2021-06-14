@@ -20,7 +20,6 @@
 #endif
 #include "MD5.hxx"
 #include "System.hxx"
-#include "Thumbulator.hxx"
 #include "CartDPCPlus.hxx"
 #include "TIA.hxx"
 #include "exception/FatalEmulationError.hxx"
@@ -28,7 +27,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeDPCPlus::CartridgeDPCPlus(const ByteBuffer& image, size_t size,
                                    const string& md5, const Settings& settings)
-  : Cartridge(settings, md5),
+  : CartridgeARM(md5, settings),
     myImage{make_unique<uInt8[]>(32_KB)},
     mySize{std::min(size, 32_KB)}
 {
@@ -77,8 +76,6 @@ CartridgeDPCPlus::CartridgeDPCPlus(const ByteBuffer& image, size_t size,
   if(myDriverMD5 == "5f80b5a5adbe483addc3f6e6f1b472f8" ||
      myDriverMD5 == "8dd73b44fd11c488326ce507cbeb19d1" )
     myFractionalLowMask = 0x0F0000;
-
-  myIncCycles = devSettings ? settings.getBool("dev.thumb.inccycles") : false,
 
   setInitialState();
 }
@@ -207,8 +204,7 @@ inline void CartridgeDPCPlus::callFunction(uInt8 value)
 
         myARMCycles = mySystem->cycles();
         myThumbEmulator->run(cycles);
-        if(myIncCycles)
-          mySystem->incrementCycles(cycles);
+        updateCycles(cycles);
       }
       catch(const runtime_error& e) {
         if(!mySystem->autodetectMode())
@@ -715,6 +711,8 @@ bool CartridgeDPCPlus::save(Serializer& out) const
 
     // Clock info for Thumbulator
     out.putLong(myARMCycles);
+
+    CartridgeARM::save(out);
   }
   catch(...)
   {
@@ -776,6 +774,8 @@ bool CartridgeDPCPlus::load(Serializer& in)
 
     // Clock info for Thumbulator
     myARMCycles = in.getLong();
+
+    CartridgeARM::load(in);
   }
   catch(...)
   {

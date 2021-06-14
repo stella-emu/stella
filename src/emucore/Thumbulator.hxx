@@ -104,6 +104,10 @@ class Thumbulator
 #endif
 #ifndef NO_THUMB_STATS
     static void cycleFactor(double factor) { arm_cycle_factor = factor; }
+    double cycleFactor() const { return arm_cycle_factor; }
+#else
+    static void cycleFactor(double) { }
+    double cycleFactor() const { return 1.0; }
 #endif
 
     /**

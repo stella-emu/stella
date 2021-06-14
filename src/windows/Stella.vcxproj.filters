@@ -1110,6 +1110,12 @@
     <ClCompile Include="..\common\repository\CompositeKeyValueRepository.cxx">
       <Filter>Source Files\repository</Filter>
     </ClCompile>
+    <ClCompile Include="..\emucore\CartARM.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartARMWidget.cxx">
+      <Filter>Source Files\debugger</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">
@@ -2281,6 +2287,12 @@
     </ClInclude>
     <ClInclude Include="..\emucore\OSystemStandalone.hxx">
       <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\CartARM.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartARMWidget.hxx">
+      <Filter>Header Files\debugger</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

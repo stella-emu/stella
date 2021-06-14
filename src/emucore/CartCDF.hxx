@@ -21,8 +21,7 @@
 class System;
 
 #include "bspf.hxx"
-#include "Thumbulator.hxx"
-#include "Cart.hxx"
+#include "CartARM.hxx"
 
 /**
   Cartridge class used for CDF/CDFJ/CDFJ+.
@@ -52,7 +51,7 @@ class System;
   @authors: Darrell Spice Jr, Chris Walton, Fred Quimby, John Champeau
             Thomas Jentzsch, Stephen Anthony, Bradford W. Mott
 */
-class CartridgeCDF : public Cartridge
+class CartridgeCDF : public CartridgeARM
 {
   friend class CartridgeCDFWidget;
   friend class CartridgeCDFInfoWidget;
@@ -263,10 +262,6 @@ class CartridgeCDF : public Cartridge
     uInt32 getSample();
     void setupVersion();
 
-    // Get number of memory accesses of last and last but one ARM runs.
-    const Thumbulator::Stats& stats() const { return myThumbEmulator->stats(); }
-    const Thumbulator::Stats& prevStats() const { return myThumbEmulator->prevStats(); }
-
   private:
     // The ROM image of the cartridge
     ByteBuffer myImage{nullptr};
@@ -291,9 +286,6 @@ class CartridgeCDF : public Cartridge
     //   $0000 - 2K Driver
     //   $0800 - Display Data, C Variables & Stack
     std::array<uInt8, 32_KB> myRAM;
-
-    // Pointer to the Thumb ARM emulator object
-    unique_ptr<Thumbulator> myThumbEmulator;
 
     // Indicates the offset into the ROM image (aligns to current bank)
     uInt16 myBankOffset{0};
@@ -368,9 +360,6 @@ class CartridgeCDF : public Cartridge
 
     // CDF subtype
     CDFSubtype myCDFSubtype{CDFSubtype::CDF0};
-
-    // ARM code increases 6507 cycles
-    bool myIncCycles{false};
 
   private:
     // Following constructors and assignment operators not supported

@@ -20,13 +20,12 @@
 
 class System;
 
-#include "Thumbulator.hxx"
 #ifdef DEBUGGER_SUPPORT
   #include "CartDPCPlusWidget.hxx"
 #endif
 
 #include "bspf.hxx"
-#include "Cart.hxx"
+#include "CartARM.hxx"
 
 /**
   Cartridge class used for DPC+, derived from Pitfall II.  There are six 4K
@@ -42,7 +41,7 @@ class System;
 
   @authors  Darrell Spice Jr, Fred Quimby, Stephen Anthony, Bradford W. Mott
 */
-class CartridgeDPCPlus : public Cartridge
+class CartridgeDPCPlus : public CartridgeARM
 {
   friend class CartridgeDPCPlusWidget;
   friend class CartridgeRamDPCPlusWidget;
@@ -223,10 +222,6 @@ class CartridgeDPCPlus : public Cartridge
     */
     void callFunction(uInt8 value);
 
-    // Get number of memory accesses of last and last but one ARM runs.
-    const Thumbulator::Stats& stats() const { return myThumbEmulator->stats(); }
-    const Thumbulator::Stats& prevStats() const { return myThumbEmulator->prevStats(); }
-
   private:
     // The ROM image and size
     ByteBuffer myImage;
@@ -243,9 +238,6 @@ class CartridgeDPCPlus : public Cartridge
     //   4K Display Data
     //   1K Frequency Data
     std::array<uInt8, 8_KB> myDPCRAM;
-
-    // Pointer to the Thumb ARM emulator object
-    unique_ptr<Thumbulator> myThumbEmulator;
 
     // Pointer to the 1K frequency table
     uInt8* myFrequencyImage{nullptr};
@@ -311,9 +303,6 @@ class CartridgeDPCPlus : public Cartridge
     // result in 'jittering' in the playfield display
     // For current versions, this is 0x0F00FF; older versions need 0x0F0000
     uInt32 myFractionalLowMask{0x0F00FF};
-
-    // ARM code increases 6507 cycles
-    bool myIncCycles{false};
 
   private:
     // Following constructors and assignment operators not supported

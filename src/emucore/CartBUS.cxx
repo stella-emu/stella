@@ -23,7 +23,6 @@
 #include "System.hxx"
 #include "M6532.hxx"
 #include "TIA.hxx"
-#include "Thumbulator.hxx"
 #include "CartBUS.hxx"
 #include "exception/FatalEmulationError.hxx"
 
@@ -43,7 +42,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeBUS::CartridgeBUS(const ByteBuffer& image, size_t size,
                            const string& md5, const Settings& settings)
-  : Cartridge(settings, md5),
+  : CartridgeARM(md5, settings),
     myImage{make_unique<uInt8[]>(32_KB)}
 {
   // Copy the ROM image into my buffer
@@ -75,8 +74,6 @@ CartridgeBUS::CartridgeBUS(const ByteBuffer& image, size_t size,
     devSettings ? settings.getFloat("dev.thumb.cyclefactor") : 1.0,
     Thumbulator::ConfigureFor::BUS,
     this);
-
-  myIncCycles = devSettings ? settings.getBool("dev.thumb.inccycles") : false,
 
   setInitialState();
 }
@@ -174,8 +171,7 @@ inline void CartridgeBUS::callFunction(uInt8 value)
 
         myARMCycles = mySystem->cycles();
         myThumbEmulator->run(cycles);
-        if(myIncCycles)
-          mySystem->incrementCycles(cycles);
+        updateCycles(cycles);
       }
       catch(const runtime_error& e) {
         if(!mySystem->autodetectMode())
@@ -593,6 +589,8 @@ bool CartridgeBUS::save(Serializer& out) const
 
     // Indicates if in the middle of a fast jump
     out.putByte(myFastJumpActive);
+
+    CartridgeARM::save(out);
   }
   catch(...)
   {
@@ -634,6 +632,8 @@ bool CartridgeBUS::load(Serializer& in)
 
     // Indicates if in the middle of a fast jump
     myFastJumpActive = in.getByte();
+
+    CartridgeARM::load(in);
   }
   catch(...)
   {

@@ -251,11 +251,15 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
     case Event::MoveRightChar:
       if(_currentPos < _promptEndPos)
         _currentPos++;
+      else
+        handled = false;
       break;
 
     case Event::MoveLeftChar:
       if(_currentPos > _promptStartPos)
         _currentPos--;
+      else
+        handled = false;
       break;
 
     // scrolling events
