@@ -96,7 +96,7 @@ string Thumbulator::doRun(uInt32& cycles)
 #endif
   }
 #ifndef NO_THUMB_STATS
-  cycles = uInt32((_stats.fetches + _stats.reads + _stats.writes) * arm_cycle_factor / timing_factor);
+  cycles = _stats.cycles * arm_cycle_factor / timing_factor;
 #else
   cycles = 0;
 #endif
@@ -204,6 +204,7 @@ uInt32 Thumbulator::fetch16(uInt32 addr)
 {
 #ifndef NO_THUMB_STATS
   ++_stats.fetches;
+  ++_stats.cycles;
 #endif
 
 #ifndef UNSAFE_OPTIMIZATIONS
@@ -562,7 +563,13 @@ void Thumbulator::write_register(uInt32 reg, uInt32 data)
 
   DO_DBUG(statusMsg << "write_register(" << dec << reg << "," << Base::HEX8 << data << ")" << endl);
 //#ifndef UNSAFE_OPTIMIZATIONS // this fails when combined with read_register UNSAFE_OPTIMIZATIONS
-  if(reg == 15) data &= ~1;
+  if(reg == 15)
+  {
+    data &= ~1;
+  #ifndef NO_THUMB_STATS
+    ++_stats.cycles;
+  #endif
+  }
 //#endif
   reg_norm[reg] = data;
 }
@@ -622,7 +629,7 @@ void Thumbulator::do_vflag_bit(uInt32 x)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Thumbulator::Op Thumbulator::decodeInstructionWord(uint16_t inst) {
-  //ADC
+  //ADC add with carry
   if((inst & 0xFFC0) == 0x4140) return Op::adc;
 
   //ADD(1) small immediate two registers
@@ -838,7 +845,7 @@ Thumbulator::Op Thumbulator::decodeInstructionWord(uint16_t inst) {
   //UXTB
   if((inst & 0xFFC0) == 0xB2C0) return Op::uxtb;
 
-  //UXTH
+  //UXTH Zero extend Halfword
   if((inst & 0xFFC0) == 0xB280) return Op::uxth;
 
   return Op::invalid;
@@ -872,6 +879,9 @@ int Thumbulator::execute()
   decodedOp = decodedRom[(instructionPtr & ROMADDMASK) >> 1];
 #endif
 
+#ifdef COUNT_OPS
+  ++opCount[int(decodedOp)];
+#endif
   switch (decodedOp) {
     //ADC
     case Op::adc: {
@@ -1028,6 +1038,9 @@ int Thumbulator::execute()
 
     //ASR(1) two register immediate
     case Op::asr1: {
+    #ifndef NO_THUMB_STATS
+      ++_stats.cycles;
+    #endif
       rd = (inst >> 0) & 0x07;
       rm = (inst >> 3) & 0x07;
       rb = (inst >> 6) & 0x1F;
@@ -1062,6 +1075,9 @@ int Thumbulator::execute()
 
     //ASR(2) two register
     case Op::asr2: {
+    #ifndef NO_THUMB_STATS
+      ++_stats.cycles;
+    #endif
       rd = (inst >> 0) & 0x07;
       rs = (inst >> 3) & 0x07;
       DO_DISS(statusMsg << "asrs r" << dec << rd << ",r" << dec << rs << endl);
@@ -1102,6 +1118,9 @@ int Thumbulator::execute()
 
     //B(1) conditional branch
     case Op::b1: {
+    #ifndef NO_THUMB_STATS
+      ++_stats.cycles;
+    #endif
       rb = (inst >> 0) & 0xFF;
       if(rb & 0x80)
         rb |= (~0U) << 8;
@@ -1219,6 +1238,9 @@ int Thumbulator::execute()
 
     //B(2) unconditional branch
     case Op::b2: {
+    #ifndef NO_THUMB_STATS
+      ++_stats.cycles;
+    #endif
       rb = (inst >> 0) & 0x7FF;
       if(rb & (1 << 10))
         rb |= (~0U) << 11;
@@ -1255,6 +1277,9 @@ int Thumbulator::execute()
 
     //BL/BLX(1)
     case Op::blx1: {
+    #ifndef NO_THUMB_STATS
+      ++_stats.cycles;
+    #endif
       if((inst & 0x1800) == 0x1000) //H=b10
       {
         DO_DISS(statusMsg << endl);
@@ -1295,6 +1320,9 @@ int Thumbulator::execute()
 
     //BLX(2)
     case Op::blx2: {
+    #ifndef NO_THUMB_STATS
+      ++_stats.cycles;
+    #endif
       rm = (inst >> 3) & 0xF;
       DO_DISS(statusMsg << "blx r" << dec << rm << endl);
       rc = read_register(rm);
@@ -1317,6 +1345,9 @@ int Thumbulator::execute()
 
     //BX
     case Op::bx: {
+    #ifndef NO_THUMB_STATS
+      ++_stats.cycles;
+    #endif
       rm = (inst >> 3) & 0xF;
       DO_DISS(statusMsg << "bx r" << dec << rm << endl);
       rc = read_register(rm);
@@ -1648,6 +1679,9 @@ int Thumbulator::execute()
 
     //LDMIA
     case Op::ldmia: {
+    #ifndef NO_THUMB_STATS
+      ++_stats.cycles;
+    #endif
       rn = (inst >> 8) & 0x7;
     #if defined(THUMB_DISS)
       statusMsg << "ldmia r" << dec << rn << "!,{";
@@ -1667,6 +1701,9 @@ int Thumbulator::execute()
       {
         if(inst & rb)
         {
+        #ifndef NO_THUMB_STATS
+          ++_stats.cycles;
+        #endif
           write_register(ra, read32(sp));
           sp += 4;
         }
@@ -1680,6 +1717,9 @@ int Thumbulator::execute()
 
     //LDR(1) two register immediate
     case Op::ldr1: {
+    #ifndef NO_THUMB_STATS
+      _stats.cycles += 2;
+    #endif
       rd = (inst >> 0) & 0x07;
       rn = (inst >> 3) & 0x07;
       rb = (inst >> 6) & 0x1F;
@@ -1693,6 +1733,9 @@ int Thumbulator::execute()
 
     //LDR(2) three register
     case Op::ldr2: {
+    #ifndef NO_THUMB_STATS
+      _stats.cycles += 2;
+    #endif
       rd = (inst >> 0) & 0x7;
       rn = (inst >> 3) & 0x7;
       rm = (inst >> 6) & 0x7;
@@ -1705,6 +1748,9 @@ int Thumbulator::execute()
 
     //LDR(3)
     case Op::ldr3: {
+    #ifndef NO_THUMB_STATS
+      _stats.cycles += 2;
+    #endif
       rb = (inst >> 0) & 0xFF;
       rd = (inst >> 8) & 0x07;
       rb <<= 2;
@@ -1720,6 +1766,9 @@ int Thumbulator::execute()
 
     //LDR(4)
     case Op::ldr4: {
+    #ifndef NO_THUMB_STATS
+      _stats.cycles += 2;
+    #endif
       rb = (inst >> 0) & 0xFF;
       rd = (inst >> 8) & 0x07;
       rb <<= 2;
@@ -1734,6 +1783,9 @@ int Thumbulator::execute()
 
     //LDRB(1)
     case Op::ldrb1: {
+    #ifndef NO_THUMB_STATS
+      _stats.cycles += 2;
+    #endif
       rd = (inst >> 0) & 0x07;
       rn = (inst >> 3) & 0x07;
       rb = (inst >> 6) & 0x1F;
@@ -1757,6 +1809,9 @@ int Thumbulator::execute()
 
     //LDRB(2)
     case Op::ldrb2: {
+    #ifndef NO_THUMB_STATS
+      _stats.cycles += 2;
+    #endif
       rd = (inst >> 0) & 0x7;
       rn = (inst >> 3) & 0x7;
       rm = (inst >> 6) & 0x7;
@@ -1777,6 +1832,9 @@ int Thumbulator::execute()
 
     //LDRH(1)
     case Op::ldrh1: {
+    #ifndef NO_THUMB_STATS
+      _stats.cycles += 2;
+    #endif
       rd = (inst >> 0) & 0x07;
       rn = (inst >> 3) & 0x07;
       rb = (inst >> 6) & 0x1F;
@@ -1790,6 +1848,9 @@ int Thumbulator::execute()
 
     //LDRH(2)
     case Op::ldrh2: {
+    #ifndef NO_THUMB_STATS
+      _stats.cycles += 2;
+    #endif
       rd = (inst >> 0) & 0x7;
       rn = (inst >> 3) & 0x7;
       rm = (inst >> 6) & 0x7;
@@ -1802,6 +1863,9 @@ int Thumbulator::execute()
 
     //LDRSB
     case Op::ldrsb: {
+    #ifndef NO_THUMB_STATS
+      _stats.cycles += 2;
+    #endif
       rd = (inst >> 0) & 0x7;
       rn = (inst >> 3) & 0x7;
       rm = (inst >> 6) & 0x7;
@@ -1825,6 +1889,9 @@ int Thumbulator::execute()
 
     //LDRSH
     case Op::ldrsh: {
+    #ifndef NO_THUMB_STATS
+      _stats.cycles += 2;
+    #endif
       rd = (inst >> 0) & 0x7;
       rn = (inst >> 3) & 0x7;
       rm = (inst >> 6) & 0x7;
@@ -1840,6 +1907,9 @@ int Thumbulator::execute()
 
     //LSL(1)
     case Op::lsl1: {
+    #ifndef NO_THUMB_STATS
+      ++_stats.cycles;
+    #endif
       rd = (inst >> 0) & 0x07;
       rm = (inst >> 3) & 0x07;
       rb = (inst >> 6) & 0x1F;
@@ -1865,6 +1935,9 @@ int Thumbulator::execute()
 
     //LSL(2) two register
     case Op::lsl2: {
+    #ifndef NO_THUMB_STATS
+      ++_stats.cycles;
+    #endif
       rd = (inst >> 0) & 0x07;
       rs = (inst >> 3) & 0x07;
       DO_DISS(statusMsg << "lsls r" << dec << rd << ",r" << dec << rs << endl);
@@ -1897,6 +1970,9 @@ int Thumbulator::execute()
 
     //LSR(1) two register immediate
     case Op::lsr1: {
+    #ifndef NO_THUMB_STATS
+      ++_stats.cycles;
+    #endif
       rd = (inst >> 0) & 0x07;
       rm = (inst >> 3) & 0x07;
       rb = (inst >> 6) & 0x1F;
@@ -1920,6 +1996,9 @@ int Thumbulator::execute()
 
     //LSR(2) two register
     case Op::lsr2: {
+    #ifndef NO_THUMB_STATS
+      ++_stats.cycles;
+    #endif
       rd = (inst >> 0) & 0x07;
       rs = (inst >> 3) & 0x07;
       DO_DISS(statusMsg << "lsrs r" << dec << rd << ",r" << dec << rs << endl);
@@ -1999,6 +2078,9 @@ int Thumbulator::execute()
 
     //MUL
     case Op::mul: {
+    #ifndef NO_THUMB_STATS
+      _stats.cycles += 2; // asuming 16 bits TODO: check bits set
+    #endif
       rd = (inst >> 0) & 0x7;
       rm = (inst >> 3) & 0x7;
       DO_DISS(statusMsg << "muls r" << dec << rd << ",r" << dec << rm << endl);
@@ -2193,6 +2275,9 @@ int Thumbulator::execute()
 
     //ROR
     case Op::ror: {
+    #ifndef NO_THUMB_STATS
+      ++_stats.cycles;
+    #endif
       rd = (inst >> 0) & 0x7;
       rs = (inst >> 3) & 0x7;
       DO_DISS(statusMsg << "rors r" << dec << rd << ",r" << dec << rs << endl);
@@ -2278,6 +2363,9 @@ int Thumbulator::execute()
       {
         if(inst & rb)
         {
+        #ifndef NO_THUMB_STATS
+          ++_stats.cycles;
+        #endif
           write32(sp, read_register(ra));
           sp += 4;
         }
@@ -2288,6 +2376,9 @@ int Thumbulator::execute()
 
     //STR(1)
     case Op::str1: {
+    #ifndef NO_THUMB_STATS
+      ++_stats.cycles;
+    #endif
       rd = (inst >> 0) & 0x07;
       rn = (inst >> 3) & 0x07;
       rb = (inst >> 6) & 0x1F;
@@ -2301,6 +2392,9 @@ int Thumbulator::execute()
 
     //STR(2)
     case Op::str2: {
+    #ifndef NO_THUMB_STATS
+      ++_stats.cycles;
+    #endif
       rd = (inst >> 0) & 0x7;
       rn = (inst >> 3) & 0x7;
       rm = (inst >> 6) & 0x7;
@@ -2313,6 +2407,9 @@ int Thumbulator::execute()
 
     //STR(3)
     case Op::str3: {
+    #ifndef NO_THUMB_STATS
+      ++_stats.cycles;
+    #endif
       rb = (inst >> 0) & 0xFF;
       rd = (inst >> 8) & 0x07;
       rb <<= 2;
@@ -2326,6 +2423,9 @@ int Thumbulator::execute()
 
     //STRB(1)
     case Op::strb1: {
+    #ifndef NO_THUMB_STATS
+      ++_stats.cycles;
+    #endif
       rd = (inst >> 0) & 0x07;
       rn = (inst >> 3) & 0x07;
       rb = (inst >> 6) & 0x1F;
@@ -2353,6 +2453,9 @@ int Thumbulator::execute()
 
     //STRB(2)
     case Op::strb2: {
+    #ifndef NO_THUMB_STATS
+      ++_stats.cycles;
+    #endif
       rd = (inst >> 0) & 0x7;
       rn = (inst >> 3) & 0x7;
       rm = (inst >> 6) & 0x7;
@@ -2380,6 +2483,9 @@ int Thumbulator::execute()
 
     //STRH(1)
     case Op::strh1: {
+    #ifndef NO_THUMB_STATS
+      ++_stats.cycles;
+    #endif
       rd = (inst >> 0) & 0x07;
       rn = (inst >> 3) & 0x07;
       rb = (inst >> 6) & 0x1F;
@@ -2393,6 +2499,9 @@ int Thumbulator::execute()
 
     //STRH(2)
     case Op::strh2: {
+    #ifndef NO_THUMB_STATS
+      ++_stats.cycles;
+    #endif
       rd = (inst >> 0) & 0x7;
       rn = (inst >> 3) & 0x7;
       rm = (inst >> 6) & 0x7;
@@ -2583,9 +2692,12 @@ int Thumbulator::reset()
   _prevStats.fetches = _stats.fetches;
   _prevStats.reads = _stats.reads;
   _prevStats.writes = _stats.writes;
-  _stats.fetches = _stats.reads = _stats.writes = 0;
+  _prevStats.cycles = _stats.cycles;
+  _stats.fetches = _stats.reads = _stats.writes = _stats.cycles = 0;
 #endif
-
+#ifdef COUNT_OPS
+  //memset(opCount, 0, sizeof(opCount));
+#endif
   return 0;
 }
 

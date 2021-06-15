@@ -53,19 +53,19 @@ void CartridgeARMWidget::addCycleWidgets(int xpos, int ypos)
   addFocusWidget(myCycleFactor);
 
   ypos += myLineHeight + VGAP;
-  StaticTextWidget* s = new StaticTextWidget(_boss, _font, xpos, ypos + 1, "Mem. cycles ");
+  StaticTextWidget* s = new StaticTextWidget(_boss, _font, xpos, ypos + 1, "Cycles ");
 
-  myPrevThumbMemCycles = new EditTextWidget(_boss, _font, s->getRight(), ypos - 1,
+  myPrevThumbCycles = new EditTextWidget(_boss, _font, s->getRight(), ypos - 1,
                                             EditTextWidget::calcWidth(_font, 6), myLineHeight, "");
-  myPrevThumbMemCycles->setEditable(false);
-  myPrevThumbMemCycles->setToolTip("Number of memory cycles of last but one ARM run.");
+  myPrevThumbCycles->setEditable(false);
+  myPrevThumbCycles->setToolTip("Number of approximated CPU cycles of last but one ARM run.");
 
-  myThumbMemCycles = new EditTextWidget(_boss, _font, myPrevThumbMemCycles->getRight() + _fontWidth / 2, ypos - 1,
+  myThumbCycles = new EditTextWidget(_boss, _font, myPrevThumbCycles->getRight() + _fontWidth / 2, ypos - 1,
                                         EditTextWidget::calcWidth(_font, 6), myLineHeight, "");
-  myThumbMemCycles->setEditable(false);
-  myThumbMemCycles->setToolTip("Number of memory cycles of last ARM run.");
+  myThumbCycles->setEditable(false);
+  myThumbCycles->setToolTip("Number of approximated CPU cycles of last ARM run.");
 
-  s = new StaticTextWidget(_boss, _font, myThumbMemCycles->getRight() + _fontWidth * 2, ypos + 1, "Fetches ");
+  s = new StaticTextWidget(_boss, _font, myThumbCycles->getRight() + _fontWidth * 2, ypos + 1, "Fetches ");
   myPrevThumbFetches = new EditTextWidget(_boss, _font, s->getRight(), ypos - 1,
                                           EditTextWidget::calcWidth(_font, 6), myLineHeight, "");
   myPrevThumbFetches->setEditable(false);
@@ -79,12 +79,12 @@ void CartridgeARMWidget::addCycleWidgets(int xpos, int ypos)
   ypos += myLineHeight + VGAP;
   s = new StaticTextWidget(_boss, _font, xpos, ypos + 1, "Reads ");
 
-  myPrevThumbReads = new EditTextWidget(_boss, _font, myPrevThumbMemCycles->getLeft(), ypos - 1,
+  myPrevThumbReads = new EditTextWidget(_boss, _font, myPrevThumbCycles->getLeft(), ypos - 1,
                                         EditTextWidget::calcWidth(_font, 6), myLineHeight, "");
   myPrevThumbReads->setEditable(false);
   myPrevThumbReads->setToolTip("Number of reads of last but one ARM run.");
 
-  myThumbReads = new EditTextWidget(_boss, _font, myThumbMemCycles->getLeft(), ypos - 1,
+  myThumbReads = new EditTextWidget(_boss, _font, myThumbCycles->getLeft(), ypos - 1,
                                     EditTextWidget::calcWidth(_font, 6), myLineHeight, "");
   myThumbReads->setEditable(false);
   myThumbReads->setToolTip("Number of reads of last ARM run.");
@@ -105,20 +105,18 @@ void CartridgeARMWidget::addCycleWidgets(int xpos, int ypos)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeARMWidget::saveOldState()
 {
-  myOldState.armStats.clear();
   myOldState.armPrevStats.clear();
+  myOldState.armStats.clear();
 
-  myOldState.armStats.push_back(myCart.stats().fetches
-                                + myCart.stats().reads + myCart.stats().writes);
-  myOldState.armStats.push_back(myCart.stats().fetches);
-  myOldState.armStats.push_back(myCart.stats().reads);
-  myOldState.armStats.push_back(myCart.stats().writes);
-
-  myOldState.armPrevStats.push_back(myCart.prevStats().fetches
-                                    + myCart.prevStats().reads + myCart.prevStats().writes);
+  myOldState.armPrevStats.push_back(myCart.prevStats().cycles);
   myOldState.armPrevStats.push_back(myCart.prevStats().fetches);
   myOldState.armPrevStats.push_back(myCart.prevStats().reads);
   myOldState.armPrevStats.push_back(myCart.prevStats().writes);
+
+  myOldState.armStats.push_back(myCart.stats().cycles);
+  myOldState.armStats.push_back(myCart.stats().fetches);
+  myOldState.armStats.push_back(myCart.stats().reads);
+  myOldState.armStats.push_back(myCart.stats().writes);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -131,10 +129,8 @@ void CartridgeARMWidget::loadConfig()
 
   bool isChanged;
 
-  isChanged = myCart.prevStats().fetches + myCart.prevStats().reads + myCart.prevStats().writes
-    != myOldState.armPrevStats[0];
-  myPrevThumbMemCycles->setText(Common::Base::toString(myCart.prevStats().fetches
-                                + myCart.prevStats().reads + myCart.prevStats().writes,
+  isChanged = myCart.prevStats().cycles != myOldState.armPrevStats[0];
+  myPrevThumbCycles->setText(Common::Base::toString(myCart.prevStats().cycles,
                                 Common::Base::Fmt::_10_6), isChanged);
   isChanged = myCart.prevStats().fetches != myOldState.armPrevStats[1];
   myPrevThumbFetches->setText(Common::Base::toString(myCart.prevStats().fetches,
@@ -146,10 +142,8 @@ void CartridgeARMWidget::loadConfig()
   myPrevThumbWrites->setText(Common::Base::toString(myCart.prevStats().writes,
                              Common::Base::Fmt::_10_6), isChanged);
 
-  isChanged = myCart.stats().fetches + myCart.stats().reads + myCart.stats().writes
-    != myOldState.armStats[0];
-  myThumbMemCycles->setText(Common::Base::toString(myCart.stats().fetches
-                            + myCart.stats().reads + myCart.stats().writes,
+  isChanged = myCart.stats().cycles != myOldState.armStats[0];
+  myThumbCycles->setText(Common::Base::toString(myCart.stats().cycles,
                             Common::Base::Fmt::_10_6), isChanged);
   isChanged = myCart.stats().fetches != myOldState.armStats[1];
   myThumbFetches->setText(Common::Base::toString(myCart.stats().fetches,

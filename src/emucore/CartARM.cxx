@@ -31,10 +31,7 @@ CartridgeARM::CartridgeARM(const string& md5, const Settings& settings)
 void CartridgeARM::updateCycles(int cycles)
 {
   if(myIncCycles)
-  {
-    mySystem->incrementCycles(cycles); // * ~1.79 is the limit for ZEVIOUZ title screen (~88,000 cycles)
-    cerr << cycles << " ";
-  }
+    mySystem->incrementCycles(cycles); // * ~1.11 is the limit for ZEVIOUZ title screen (~142,000 cycles)
   myStats = myThumbEmulator->stats();
   myPrevStats = myThumbEmulator->prevStats();
 }
