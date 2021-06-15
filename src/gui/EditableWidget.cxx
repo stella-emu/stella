@@ -277,7 +277,7 @@ bool EditableWidget::handleText(char text)
 bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
 {
   if(!_editable)
-    return true;
+    return false;
 
   bool handled = true;
   Event::Type event = instance().eventHandler().eventForKey(EventMode::kEditMode, key, mod);

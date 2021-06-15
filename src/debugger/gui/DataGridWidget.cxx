@@ -337,7 +337,7 @@ bool DataGridWidget::handleKeyDown(StellaKey key, StellaMod mod)
 {
   // Ignore all mod keys
   if(StellaModTest::isControl(mod) || StellaModTest::isAlt(mod))
-    return true;
+    return false;
 
   bool handled = true;
   bool dirty = false;
