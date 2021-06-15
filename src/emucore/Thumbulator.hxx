@@ -46,7 +46,7 @@ class Cartridge;
 #define CPSR_C (1u<<29)
 #define CPSR_V (1u<<28)
 
-//#define TIMER_0   // enable timer 0 support
+#define TIMER_0   // enable timer 0 support
 //#define COUNT_OPS
 
 class Thumbulator
@@ -233,9 +233,11 @@ class Thumbulator
   #ifdef TIMER_0
     uInt32 T0TCR{0};  // Timer 0 Timer Control Register
     uInt32 T0TC{0};   // Timer 0 Timer Counter
+    uInt32 tim0Cycles{0};
   #endif
     uInt32 T1TCR{0};  // Timer 1 Timer Control Register
     uInt32 T1TC{0};   // Timer 1 Timer Counter
+    uInt32 tim1Cycles{0};
     double timing_factor{0.0};
 
 #ifndef UNSAFE_OPTIMIZATIONS
