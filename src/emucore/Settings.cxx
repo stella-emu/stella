@@ -247,7 +247,7 @@ Settings::Settings()
   // Thumb ARM emulation options
   setPermanent("dev.thumb.trapfatal", "true");
   setPermanent("dev.thumb.inccycles", "true");
-  setPermanent("dev.thumb.cyclefactor", "1.25");
+  setPermanent("dev.thumb.cyclefactor", "1.05");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -132,10 +132,16 @@ void Thumbulator::updateTimer(uInt32 cycles)
 {
 #ifdef TIMER_0
   if(T0TCR & 1) // bit 0 controls timer on/off
+  {
     T0TC += uInt32(cycles * timing_factor);
+    tim0Cycles = 0;
+  }
 #endif
-  if (T1TCR & 1) // bit 0 controls timer on/off
+  if(T1TCR & 1) // bit 0 controls timer on/off
+  {
     T1TC += uInt32(cycles * timing_factor);
+    tim1Cycles = 0;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -312,6 +318,7 @@ void Thumbulator::write32(uInt32 addr, uInt32 data)
 
         case 0xE0004008:  // T0TC - Timer 0 Counter
           T0TC = data;
+          tim1Cycles = _stats.cycles;
           break;
 #endif
         case 0xE0008004:  // T1TCR - Timer 1 Control Register
@@ -320,6 +327,7 @@ void Thumbulator::write32(uInt32 addr, uInt32 data)
 
         case 0xE0008008:  // T1TC - Timer 1 Counter
           T1TC = data;
+          tim1Cycles = _stats.cycles;
           break;
 
         case 0xE000E010:
@@ -497,7 +505,7 @@ uInt32 Thumbulator::read32(uInt32 addr)
           return data;
 
         case 0xE0004008:  // T0TC - Timer 0 Counter
-          data = T0TC;
+          data = T0TC + _stats.cycles - tim0Cycles;
           break;
       #endif
         case 0xE0008004:  // T1TCR - Timer 1 Control Register
@@ -505,7 +513,7 @@ uInt32 Thumbulator::read32(uInt32 addr)
           return data;
 
         case 0xE0008008:  // T1TC - Timer 1 Counter
-          data = T1TC;
+          data = T1TC + _stats.cycles - tim1Cycles;
           return data;
 
         case 0xE000E010:
@@ -2078,14 +2086,21 @@ int Thumbulator::execute()
 
     //MUL
     case Op::mul: {
-    #ifndef NO_THUMB_STATS
-      _stats.cycles += 2; // asuming 16 bits TODO: check bits set
-    #endif
       rd = (inst >> 0) & 0x7;
       rm = (inst >> 3) & 0x7;
       DO_DISS(statusMsg << "muls r" << dec << rd << ",r" << dec << rm << endl);
       ra = read_register(rd);
       rb = read_register(rm);
+    #ifndef NO_THUMB_STATS
+      if((rb & 0xffffff00) == 0 || (rb & 0xffffff00) == 0xffffff00)       // -2^8 <= rb < 2^8
+        ++_stats.cycles;
+      else if((rb & 0xffff0000) == 0 || (rb & 0xffff0000) == 0xffff0000)  // -2^16 <= rb < 2^16
+        _stats.cycles += 2;
+      else if((rb & 0xff000000) == 0 || (rb & 0xff000000) == 0xff000000)  // -2^24 <= rb < 2^24
+        _stats.cycles += 3;
+      else
+        _stats.cycles += 4;
+    #endif
       rc = ra * rb;
       write_register(rd, rc);
       do_nflag(rc);
@@ -2704,5 +2719,5 @@ int Thumbulator::reset()
 #ifndef UNSAFE_OPTIMIZATIONS
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Thumbulator::trapOnFatal = true;
-double Thumbulator::arm_cycle_factor = 1.25;
+double Thumbulator::arm_cycle_factor = 1.05;
 #endif
