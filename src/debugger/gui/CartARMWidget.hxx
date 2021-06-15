@@ -60,11 +60,11 @@ class CartridgeARMWidget : public CartDebugWidget
 
     CheckboxWidget* myIncCycles{nullptr};
     SliderWidget*   myCycleFactor{nullptr};
-    EditTextWidget* myPrevThumbMemCycles{nullptr};
+    EditTextWidget* myPrevThumbCycles{nullptr};
     EditTextWidget* myPrevThumbFetches{nullptr};
     EditTextWidget* myPrevThumbReads{nullptr};
     EditTextWidget* myPrevThumbWrites{nullptr};
-    EditTextWidget* myThumbMemCycles{nullptr};
+    EditTextWidget* myThumbCycles{nullptr};
     EditTextWidget* myThumbFetches{nullptr};
     EditTextWidget* myThumbReads{nullptr};
     EditTextWidget* myThumbWrites{nullptr};

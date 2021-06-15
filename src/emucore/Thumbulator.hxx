@@ -47,6 +47,7 @@ class Cartridge;
 #define CPSR_V (1u<<28)
 
 //#define TIMER_0   // enable timer 0 support
+//#define COUNT_OPS
 
 class Thumbulator
 {
@@ -65,6 +66,7 @@ class Thumbulator
     struct Stats {
     #ifndef NO_THUMB_STATS
       uInt32 fetches{0}, reads{0}, writes{0};
+      uInt32 cycles{0};
     #endif
     };
 
@@ -166,7 +168,8 @@ class Thumbulator
       sxth,
       tst,
       uxtb,
-      uxth
+      uxth,
+      numOps
     };
 
   private:
@@ -219,8 +222,10 @@ class Thumbulator
   #ifndef UNSAFE_OPTIMIZATIONS
     uInt32 instructions{0};
   #endif
+  #ifndef NO_THUMB_STATS
     Stats _stats;
     Stats _prevStats;
+  #endif
 
     // For emulation of LPC2103's timer 1, used for NTSC/PAL/SECAM detection.
     // Register names from documentation:
@@ -240,6 +245,9 @@ class Thumbulator
 #endif
 #ifndef NO_THUMB_STATS
     static double arm_cycle_factor;
+#endif
+#ifdef COUNT_OPS
+    uInt32 opCount[size_t(Op::numOps)]{0};
 #endif
 
     ConfigureFor configuration;
