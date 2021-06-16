@@ -287,7 +287,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
                                      "Select", kLoadROMCmd);
     wid.push_back(myStartButton);
   #endif
-    myStartButton->setToolTip("Start emulation of selected ROM.");
+    myStartButton->setToolTip("Start emulation of selected ROM\nor switch to selected directory.");
   }
   if(myUseMinimalUI) // Highlight 'Rom Listing'
     mySelectedItem = 0;
@@ -789,6 +789,15 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kLoadROMCmd:
+      if(myList->selected().isDirectory())
+      {
+        if(myList->selected().getName() == " [..]")
+          myList->selectParent();
+        else
+          myList->selectDirectory();
+        break;
+      }
+      [[fallthrough]];
     case FileListWidget::ItemActivated:
       saveConfig();
       loadRom();
