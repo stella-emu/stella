@@ -210,7 +210,6 @@ uInt32 Thumbulator::fetch16(uInt32 addr)
 {
 #ifndef NO_THUMB_STATS
   ++_stats.fetches;
-  ++_stats.cycles;
 #endif
 
 #ifndef UNSAFE_OPTIMIZATIONS
