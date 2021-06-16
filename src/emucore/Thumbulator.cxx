@@ -1126,9 +1126,6 @@ int Thumbulator::execute()
 
     //B(1) conditional branch
     case Op::b1: {
-    #ifndef NO_THUMB_STATS
-      ++_stats.cycles;
-    #endif
       rb = (inst >> 0) & 0xFF;
       if(rb & 0x80)
         rb |= (~0U) << 8;
@@ -1141,75 +1138,133 @@ int Thumbulator::execute()
         case 0x0: //b eq  z set
           DO_DISS(statusMsg << "beq 0x" << Base::HEX8 << (rb-3) << endl);
           if(cpsr & CPSR_Z)
+          {
+          #ifndef NO_THUMB_STATS
+            ++_stats.cycles;
+          #endif
             write_register(15, rb);
+          }
           return 0;
 
         case 0x1: //b ne  z clear
           DO_DISS(statusMsg << "bne 0x" << Base::HEX8 << (rb-3) << endl);
           if(!(cpsr & CPSR_Z))
+          {
+          #ifndef NO_THUMB_STATS
+            ++_stats.cycles;
+          #endif
             write_register(15, rb);
+          }
           return 0;
 
         case 0x2: //b cs c set
           DO_DISS(statusMsg << "bcs 0x" << Base::HEX8 << (rb-3) << endl);
           if(cpsr & CPSR_C)
+          {
+          #ifndef NO_THUMB_STATS
+            ++_stats.cycles;
+          #endif
             write_register(15, rb);
+          }
           return 0;
 
         case 0x3: //b cc c clear
           DO_DISS(statusMsg << "bcc 0x" << Base::HEX8 << (rb-3) << endl);
           if(!(cpsr & CPSR_C))
+          {
+          #ifndef NO_THUMB_STATS
+            ++_stats.cycles;
+          #endif
             write_register(15, rb);
+          }
+
           return 0;
 
         case 0x4: //b mi n set
           DO_DISS(statusMsg << "bmi 0x" << Base::HEX8 << (rb-3) << endl);
           if(cpsr & CPSR_N)
+          {
+          #ifndef NO_THUMB_STATS
+            ++_stats.cycles;
+          #endif
             write_register(15, rb);
+          }
           return 0;
 
         case 0x5: //b pl n clear
           DO_DISS(statusMsg << "bpl 0x" << Base::HEX8 << (rb-3) << endl);
           if(!(cpsr & CPSR_N))
+          {
+          #ifndef NO_THUMB_STATS
+            ++_stats.cycles;
+          #endif
             write_register(15, rb);
+          }
           return 0;
 
         case 0x6: //b vs v set
           DO_DISS(statusMsg << "bvs 0x" << Base::HEX8 << (rb-3) << endl);
           if(cpsr & CPSR_V)
-            write_register(15,rb);
+          {
+          #ifndef NO_THUMB_STATS
+            ++_stats.cycles;
+          #endif
+            write_register(15, rb);
+          }
           return 0;
 
         case 0x7: //b vc v clear
           DO_DISS(statusMsg << "bvc 0x" << Base::HEX8 << (rb-3) << endl);
           if(!(cpsr & CPSR_V))
+          {
             write_register(15, rb);
+          }
           return 0;
 
         case 0x8: //b hi c set z clear
           DO_DISS(statusMsg << "bhi 0x" << Base::HEX8 << (rb-3) << endl);
           if((cpsr & CPSR_C) && (!(cpsr & CPSR_Z)))
+          {
+          #ifndef NO_THUMB_STATS
+            ++_stats.cycles;
+          #endif
             write_register(15, rb);
+          }
           return 0;
 
         case 0x9: //b ls c clear or z set
           DO_DISS(statusMsg << "bls 0x" << Base::HEX8 << (rb-3) << endl);
           if((cpsr & CPSR_Z) || (!(cpsr & CPSR_C)))
+          {
+          #ifndef NO_THUMB_STATS
+            ++_stats.cycles;
+          #endif
             write_register(15, rb);
+          }
           return 0;
 
         case 0xA: //b ge N == V
           DO_DISS(statusMsg << "bge 0x" << Base::HEX8 << (rb-3) << endl);
           if(((cpsr & CPSR_N) && (cpsr & CPSR_V)) ||
              ((!(cpsr & CPSR_N)) && (!(cpsr & CPSR_V))))
+          {
+          #ifndef NO_THUMB_STATS
+            ++_stats.cycles;
+          #endif
             write_register(15, rb);
+          }
           return 0;
 
         case 0xB: //b lt N != V
           DO_DISS(statusMsg << "blt 0x" << Base::HEX8 << (rb-3) << endl);
           if((!(cpsr & CPSR_N) && (cpsr & CPSR_V)) ||
             (((cpsr & CPSR_N)) && !(cpsr & CPSR_V)))
+          {
+          #ifndef NO_THUMB_STATS
+            ++_stats.cycles;
+          #endif
             write_register(15, rb);
+          }
           return 0;
 
         case 0xC: //b gt Z==0 and N == V
@@ -1218,7 +1273,12 @@ int Thumbulator::execute()
           {
             if(((cpsr & CPSR_N) && (cpsr & CPSR_V)) ||
                ((!(cpsr & CPSR_N)) && (!(cpsr & CPSR_V))))
+            {
+            #ifndef NO_THUMB_STATS
+              ++_stats.cycles;
+            #endif
               write_register(15, rb);
+            }
           }
           return 0;
 
@@ -1227,7 +1287,12 @@ int Thumbulator::execute()
           if((cpsr & CPSR_Z) ||
             (!(cpsr & CPSR_N) && (cpsr & CPSR_V)) ||
             (((cpsr & CPSR_N)) && !(cpsr & CPSR_V)))
-              write_register(15, rb);
+          {
+          #ifndef NO_THUMB_STATS
+            ++_stats.cycles;
+          #endif
+            write_register(15, rb);
+          }
           return 0;
 
         case 0xE:
