@@ -53,9 +53,11 @@ bool CartridgeARM::save(Serializer& out) const
 {
   try
   {
+    out.putInt(myPrevStats.cycles);
     out.putInt(myPrevStats.fetches);
     out.putInt(myPrevStats.reads);
     out.putInt(myPrevStats.writes);
+    out.putInt(myStats.cycles);
     out.putInt(myStats.fetches);
     out.putInt(myStats.reads);
     out.putInt(myStats.writes);
@@ -73,9 +75,11 @@ bool CartridgeARM::load(Serializer& in)
 {
   try
   {
+    myPrevStats.cycles = in.getInt();
     myPrevStats.fetches = in.getInt();
     myPrevStats.reads = in.getInt();
     myPrevStats.writes = in.getInt();
+    myStats.cycles = in.getInt();
     myStats.fetches = in.getInt();
     myStats.reads = in.getInt();
     myStats.writes = in.getInt();
