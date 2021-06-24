@@ -205,7 +205,7 @@ class CartridgeBUS : public CartridgeARM
     /**
       Sets the initial state of the DPC pointers and RAM
     */
-    void setInitialState();
+    void setInitialState() override;
 
     /**
       Updates any data fetchers in music mode based on the number of

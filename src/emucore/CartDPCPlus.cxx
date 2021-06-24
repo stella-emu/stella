@@ -118,6 +118,8 @@ void CartridgeDPCPlus::setInitialState()
   myFastFetch = myLDAimmediate = false;
   myAudioCycles = myARMCycles = 0;
   myFractionalClocks = 0.0;
+
+  CartridgeARM::setInitialState();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

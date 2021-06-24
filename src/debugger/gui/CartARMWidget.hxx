@@ -23,7 +23,8 @@
 
 class CheckboxWidget;
 class SliderWidget;
-class EditTextWidget;
+class PopUpWidget;
+class DataGridWidget;
 
 /**
   Abstract base class for ARM cart widgets.
@@ -48,30 +49,37 @@ class CartridgeARMWidget : public CartDebugWidget
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
+    void handleChipType();
+    void handleMamLock();
+    void handleMamMode();
     void handleArmCycles();
 
   private:
     struct CartState {
-      uIntArray armStats;
-      uIntArray armPrevStats;
+      uInt32 mamMode{0};
+      uIntArray armRun;
+      uIntArray armPrevRun;
     };
 
     CartridgeARM& myCart;
 
-    CheckboxWidget* myIncCycles{nullptr};
-    SliderWidget*   myCycleFactor{nullptr};
-    EditTextWidget* myPrevThumbCycles{nullptr};
-    EditTextWidget* myPrevThumbFetches{nullptr};
-    EditTextWidget* myPrevThumbReads{nullptr};
-    EditTextWidget* myPrevThumbWrites{nullptr};
-    EditTextWidget* myThumbCycles{nullptr};
-    EditTextWidget* myThumbFetches{nullptr};
-    EditTextWidget* myThumbReads{nullptr};
-    EditTextWidget* myThumbWrites{nullptr};
+    CheckboxWidget*   myIncCycles{nullptr};
+    SliderWidget*     myCycleFactor{nullptr};
+    PopUpWidget*      myChipType{nullptr};
+    CheckboxWidget*   myLockMamMode{nullptr};
+    PopUpWidget*      myMamMode{nullptr};
+    StaticTextWidget* myCyclesLabel{nullptr};
+    DataGridWidget*   myPrevThumbCycles{nullptr};
+    DataGridWidget*   myPrevThumbInstructions{nullptr};
+    DataGridWidget*   myThumbCycles{nullptr};
+    DataGridWidget*   myThumbInstructions{nullptr};
 
     CartState myOldState;
 
     enum {
+      kChipChanged      = 'chCh',
+      kMamLockChanged   = 'mlCh',
+      kMamModeChanged   = 'mmCh',
       kIncCyclesChanged = 'inCH',
       kFactorChanged    = 'fcCH'
     };

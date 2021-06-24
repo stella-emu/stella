@@ -3543,14 +3543,23 @@
         compared to real hardware.</td>
     </tr><tr>
       <td><pre>-dev.thumb.incycles &lt;1|0&gt;</pre></td>
-      <td>When enabled, ARM emulation cycles are added to system cycles. This
-      allows detecting timer overruns, but will also distort IRQ driven audio.</br>
+      <td>When enabled, ARM emulation cycles are added to 6507 system cycles. This
+      allows detecting timer overruns, but will also distort audio.</br>
         Note: The ARM emulation cycles are only a coarse approximation.
       </td>
     </tr><tr>
       <td><pre>-dev.thumb.cyclefactor &lt;float&gt;</pre></td>
-      <td>Adjust ARM emulation cycles by a factor (1.25 = default).
-      </td>
+      <td>Defines the ARM cycle count correction factor (default = 0.95).</td>
+    </tr><tr>
+      <td><pre>-dev.thumb.chiptype &lt;0|1&gt;</pre></td>
+      <td>Selects the emulated chip type (0 = LPC2103, 1 = LPC2104 family). This
+        setting affects the CPU clock, the Flash memory access clock cycles and
+        the number of Flash banks.</td>
+    </tr><tr>
+      <td><pre>-dev.thumb.mammode &lt;0..3&gt;</pre></td>
+      <td>Selects the Memory Accelerator Module (MAM) mode.</br>
+        Note: Mode X (3) is for testing only. It reduces Flash memory access
+        clock cycles to always 1.</td>
     </tr><tr>
       <td><pre>-&lt;plr.|dev.&gt;eepromaccess &lt;1|0&gt;</pre></td>
       <td>When enabled, each read or write access to the AtariVox/SaveKey EEPROM is

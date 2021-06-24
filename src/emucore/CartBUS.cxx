@@ -112,6 +112,8 @@ void CartridgeBUS::setInitialState()
     mySTYZeroPageAddress = myJMPoperandAddress = 0;
 
   myFastJumpActive = 0;
+
+  CartridgeARM::setInitialState();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

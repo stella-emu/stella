@@ -23,17 +23,37 @@
 CartridgeARM::CartridgeARM(const string& md5, const Settings& settings)
   : Cartridge(settings, md5)
 {
-  myIncCycles = settings.getBool("dev.settings")
-    && settings.getBool("dev.thumb.inccycles");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeARM::setInitialState()
+{
+  bool devSettings = mySettings.getBool("dev.settings");
+
+  if(devSettings)
+  {
+    myIncCycles = mySettings.getBool("dev.thumb.inccycles");
+    myThumbEmulator->setChipType(static_cast<Thumbulator::ChipType>(mySettings.getInt("dev.thumb.chiptype")));
+    myThumbEmulator->setMamMode(static_cast<Thumbulator::MamModeType>(mySettings.getInt("dev.thumb.mammode")));
+  }
+  else
+  {
+    myIncCycles = false;
+  }
+  enableCycleCount(devSettings);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeARM::updateCycles(int cycles)
 {
   if(myIncCycles)
-    mySystem->incrementCycles(cycles); // * ~1.11 is the limit for ZEVIOUZ title screen (~142,000 cycles)
+    mySystem->incrementCycles(cycles);
+#ifdef DEBUGGER_SUPPORT
+  myPrevStats = myStats;
   myStats = myThumbEmulator->stats();
-  myPrevStats = myThumbEmulator->prevStats();
+  myPrevCycles = myCycles;
+  myCycles = myThumbEmulator->cycles();
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -51,43 +71,39 @@ void CartridgeARM::cycleFactor(double factor)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeARM::save(Serializer& out) const
 {
+#ifdef DEBUGGER_SUPPORT
   try
   {
-    out.putInt(myPrevStats.cycles);
-    out.putInt(myPrevStats.fetches);
-    out.putInt(myPrevStats.reads);
-    out.putInt(myPrevStats.writes);
-    out.putInt(myStats.cycles);
-    out.putInt(myStats.fetches);
-    out.putInt(myStats.reads);
-    out.putInt(myStats.writes);
+    out.putInt(myPrevCycles);
+    out.putInt(myPrevStats.instructions);
+    out.putInt(myCycles);
+    out.putInt(myStats.instructions);
   }
   catch(...)
   {
     cerr << "ERROR: CartridgeARM::save" << endl;
     return false;
   }
+#endif
   return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeARM::load(Serializer& in)
 {
+#ifdef DEBUGGER_SUPPORT
   try
   {
-    myPrevStats.cycles = in.getInt();
-    myPrevStats.fetches = in.getInt();
-    myPrevStats.reads = in.getInt();
-    myPrevStats.writes = in.getInt();
-    myStats.cycles = in.getInt();
-    myStats.fetches = in.getInt();
-    myStats.reads = in.getInt();
-    myStats.writes = in.getInt();
+    myPrevCycles = in.getInt();
+    myPrevStats.instructions = in.getInt();
+    myCycles = in.getInt();
+    myStats.instructions = in.getInt();
   }
   catch(...)
   {
     cerr << "ERROR: CartridgeARM::load" << endl;
     return false;
   }
+#endif
   return true;
 }

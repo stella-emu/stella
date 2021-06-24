@@ -18,7 +18,9 @@
 #include <cmath>
 
 #include "OSystem.hxx"
-#include "EditTextWidget.hxx"
+//#include "EditTextWidget.hxx"
+#include "PopUpWidget.hxx"
+#include "DataGridWidget.hxx"
 #include "CartARMWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -35,125 +37,147 @@ void CartridgeARMWidget::addCycleWidgets(int xpos, int ypos)
 {
   const int INDENT = 20;
   const int VGAP = 4;
+  VariantList items;
 
   new StaticTextWidget(_boss, _font, xpos, ypos + 1, "ARM emulation cycles:");
   xpos += INDENT; ypos += myLineHeight + VGAP;
-  myIncCycles = new CheckboxWidget(_boss, _font, xpos, ypos + 1, "Increase 6507 cycles", kIncCyclesChanged);
+  myIncCycles = new CheckboxWidget(_boss, _font, xpos, ypos + 1, "Increase 6507 cycles",
+                                   kIncCyclesChanged);
   myIncCycles->setToolTip("Increase 6507 cycles with approximated ARM cycles.");
   myIncCycles->setTarget(this);
-  addFocusWidget(myIncCycles);
 
   myCycleFactor = new SliderWidget(_boss, _font, myIncCycles->getRight() + _fontWidth * 2, ypos - 1,
-                                   _fontWidth * 10, _lineHeight, "Factor ", _fontWidth * 7,
+                                   _fontWidth * 10, _lineHeight, "Cycle factor", _fontWidth * 14,
                                    kFactorChanged, _fontWidth * 4, "%");
-  myCycleFactor->setMinValue(90); myCycleFactor->setMaxValue(110);
+  myCycleFactor->setMinValue(80); myCycleFactor->setMaxValue(100);
   myCycleFactor->setTickmarkIntervals(4);
-  myCycleFactor->setToolTip("Multiply approximated ARM cycles by factor.");
+  myCycleFactor->setToolTip("Correct approximated ARM cycles by factor.");
   myCycleFactor->setTarget(this);
-  addFocusWidget(myCycleFactor);
 
-  ypos += myLineHeight + VGAP;
-  StaticTextWidget* s = new StaticTextWidget(_boss, _font, xpos, ypos + 1, "Cycles ");
+  ypos += (myLineHeight + VGAP) * 2;
+  myCyclesLabel = new StaticTextWidget(_boss, _font, xpos, ypos + 1, "Cycles #");
 
-  myPrevThumbCycles = new EditTextWidget(_boss, _font, s->getRight(), ypos - 1,
-                                            EditTextWidget::calcWidth(_font, 6), myLineHeight, "");
+  myPrevThumbCycles = new DataGridWidget(_boss, _font, myCyclesLabel->getRight(), ypos - 1,
+                                         1, 1, 6, 32, Common::Base::Fmt::_10_6);
   myPrevThumbCycles->setEditable(false);
-  myPrevThumbCycles->setToolTip("Number of approximated CPU cycles of last but one ARM run.");
+  myPrevThumbCycles->setToolTip("Approximated CPU cycles of last but one ARM run.\n");
 
-  myThumbCycles = new EditTextWidget(_boss, _font, myPrevThumbCycles->getRight() + _fontWidth / 2, ypos - 1,
-                                        EditTextWidget::calcWidth(_font, 6), myLineHeight, "");
+  myThumbCycles = new DataGridWidget(_boss, _font,
+                                     myPrevThumbCycles->getRight() + _fontWidth / 2, ypos - 1,
+                                     1, 1, 6, 32, Common::Base::Fmt::_10_6);
+
   myThumbCycles->setEditable(false);
-  myThumbCycles->setToolTip("Number of approximated CPU cycles of last ARM run.");
+  myThumbCycles->setToolTip("Approximated CPU cycles of last ARM run.\n");
 
-  s = new StaticTextWidget(_boss, _font, myThumbCycles->getRight() + _fontWidth * 2, ypos + 1, "Fetches ");
-  myPrevThumbFetches = new EditTextWidget(_boss, _font, s->getRight(), ypos - 1,
-                                          EditTextWidget::calcWidth(_font, 6), myLineHeight, "");
-  myPrevThumbFetches->setEditable(false);
-  myPrevThumbFetches->setToolTip("Number of fetches/instructions of last but one ARM run.");
+  StaticTextWidget* s = new StaticTextWidget(_boss, _font, myCycleFactor->getLeft(), ypos + 1,
+                                             "Instructions #");
 
-  myThumbFetches = new EditTextWidget(_boss, _font, myPrevThumbFetches->getRight() + _fontWidth / 2, ypos - 1,
-                                      EditTextWidget::calcWidth(_font, 6), myLineHeight, "");
-  myThumbFetches->setEditable(false);
-  myThumbFetches->setToolTip("Number of fetches/instructions of last ARM run.");
+  myPrevThumbInstructions = new DataGridWidget(_boss, _font, s->getRight(), ypos - 1,
+                                               1, 1, 6, 32, Common::Base::Fmt::_10_6);
+  myPrevThumbInstructions->setEditable(false);
+  myPrevThumbInstructions->setToolTip("Instructions of last but one ARM run.\n");
 
-  ypos += myLineHeight + VGAP;
-  s = new StaticTextWidget(_boss, _font, xpos, ypos + 1, "Reads ");
+  myThumbInstructions = new DataGridWidget(_boss, _font,
+                                           myPrevThumbInstructions->getRight() + _fontWidth / 2, ypos - 1,
+                                           1, 1, 6, 32, Common::Base::Fmt::_10_6);
+  myThumbInstructions->setEditable(false);
+  myThumbInstructions->setToolTip("Instructions of last ARM run.\n");
 
-  myPrevThumbReads = new EditTextWidget(_boss, _font, myPrevThumbCycles->getLeft(), ypos - 1,
-                                        EditTextWidget::calcWidth(_font, 6), myLineHeight, "");
-  myPrevThumbReads->setEditable(false);
-  myPrevThumbReads->setToolTip("Number of reads of last but one ARM run.");
+  // add later to allow aligning
+  ypos -= myLineHeight + VGAP;
+  int pwidth = myThumbCycles->getRight() - myPrevThumbCycles->getLeft()
+    - PopUpWidget::dropDownWidth(_font);
 
-  myThumbReads = new EditTextWidget(_boss, _font, myThumbCycles->getLeft(), ypos - 1,
-                                    EditTextWidget::calcWidth(_font, 6), myLineHeight, "");
-  myThumbReads->setEditable(false);
-  myThumbReads->setToolTip("Number of reads of last ARM run.");
+  items.clear();
+  VarList::push_back(items, "LPC2101/2/3", static_cast<uInt32>(Thumbulator::ChipType::LPC2103));
+  VarList::push_back(items, "LPC2104/5/6", static_cast<uInt32>(Thumbulator::ChipType::LPC2104));
+  myChipType = new PopUpWidget(_boss, _font, xpos, ypos, pwidth, myLineHeight, items,
+                               "Chip    ", 0, kChipChanged);
+  myChipType->setToolTip("Select emulated ARM chip.");
+  myChipType->setTarget(this);
 
-  s = new StaticTextWidget(_boss, _font, myThumbReads->getRight() + _fontWidth * 2, ypos + 1, "Writes ");
+  myLockMamMode = new CheckboxWidget(_boss, _font, myCycleFactor->getLeft(), ypos + 1, "MAM Mode",
+                                     kMamLockChanged);
+  myLockMamMode->setToolTip("Check to lock Memory Accelerator Module (MAM) mode.");
+  myLockMamMode->setTarget(this);
 
-  myPrevThumbWrites = new EditTextWidget(_boss, _font, myPrevThumbFetches->getLeft(), ypos - 1,
-                                         EditTextWidget::calcWidth(_font, 6), myLineHeight, "");
-  myPrevThumbWrites->setEditable(false);
-  myPrevThumbWrites->setToolTip("Number of writes of last but one ARM run.");
+  pwidth = myThumbInstructions->getRight() - myPrevThumbInstructions->getLeft()
+    - PopUpWidget::dropDownWidth(_font);
+  items.clear();
+  VarList::push_back(items, "Off (0)", static_cast<uInt32>(Thumbulator::MamModeType::mode0));
+  VarList::push_back(items, "Partial (1)", static_cast<uInt32>(Thumbulator::MamModeType::mode1));
+  VarList::push_back(items, "Full (2)", static_cast<uInt32>(Thumbulator::MamModeType::mode2));
+  VarList::push_back(items, "1 Cycle (X)", static_cast<uInt32>(Thumbulator::MamModeType::modeX));
+  myMamMode = new PopUpWidget(_boss, _font, myPrevThumbInstructions->getLeft(), ypos,
+                              pwidth, myLineHeight, items, "", 0, kMamModeChanged);
+  myMamMode->setToolTip("Select emulated Memory Accelerator Module (MAM) mode.");
+  myMamMode->setTarget(this);
 
-  myThumbWrites = new EditTextWidget(_boss, _font, myThumbFetches->getLeft(), ypos - 1,
-                                     EditTextWidget::calcWidth(_font, 6), myLineHeight, "");
-  myThumbWrites->setEditable(false);
-  myThumbWrites->setToolTip("Number of writes of last ARM run.");
+  // define the tab order
+  addFocusWidget(myIncCycles);
+  addFocusWidget(myCycleFactor);
+  addFocusWidget(myChipType);
+  addFocusWidget(myLockMamMode);
+  addFocusWidget(myMamMode);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeARMWidget::saveOldState()
 {
-  myOldState.armPrevStats.clear();
-  myOldState.armStats.clear();
+  myOldState.armPrevRun.clear();
+  myOldState.armRun.clear();
 
-  myOldState.armPrevStats.push_back(myCart.prevStats().cycles);
-  myOldState.armPrevStats.push_back(myCart.prevStats().fetches);
-  myOldState.armPrevStats.push_back(myCart.prevStats().reads);
-  myOldState.armPrevStats.push_back(myCart.prevStats().writes);
+  myOldState.mamMode = static_cast<uInt32>(myCart.mamMode());
 
-  myOldState.armStats.push_back(myCart.stats().cycles);
-  myOldState.armStats.push_back(myCart.stats().fetches);
-  myOldState.armStats.push_back(myCart.stats().reads);
-  myOldState.armStats.push_back(myCart.stats().writes);
+  myOldState.armPrevRun.push_back(myCart.prevCycles());
+  myOldState.armPrevRun.push_back(myCart.prevStats().instructions);
+
+  myOldState.armRun.push_back(myCart.cycles());
+  myOldState.armRun.push_back(myCart.stats().instructions);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeARMWidget::loadConfig()
 {
+  bool isChanged;
+  bool devSettings = instance().settings().getBool("dev.settings");
+  IntArray alist;
+  IntArray vlist;
+  BoolArray changed;
+
+  myChipType->setSelectedIndex(static_cast<uInt32>(instance().settings().getInt("dev.thumb.chiptype")));
+  handleChipType();
+
+  isChanged = static_cast<uInt32>(myCart.mamMode()) != myOldState.mamMode;
+  myMamMode->setSelectedIndex(static_cast<uInt32>(myCart.mamMode()), isChanged);
+  myMamMode->setEnabled(devSettings && myLockMamMode->getState());
+  myLockMamMode->setEnabled(devSettings);
+
   // ARM cycles
   myIncCycles->setState(instance().settings().getBool("dev.thumb.inccycles"));
   myCycleFactor->setValue(std::round(instance().settings().getFloat("dev.thumb.cyclefactor") * 100.F));
   handleArmCycles();
 
-  bool isChanged;
+  alist.clear();  vlist.clear();  changed.clear();
+  alist.push_back(0);  vlist.push_back(myCart.prevCycles());
+  changed.push_back(myCart.prevCycles() != uInt32(myOldState.armPrevRun[0]));
+  myPrevThumbCycles->setList(alist, vlist, changed);
 
-  isChanged = myCart.prevStats().cycles != myOldState.armPrevStats[0];
-  myPrevThumbCycles->setText(Common::Base::toString(myCart.prevStats().cycles,
-                                Common::Base::Fmt::_10_6), isChanged);
-  isChanged = myCart.prevStats().fetches != myOldState.armPrevStats[1];
-  myPrevThumbFetches->setText(Common::Base::toString(myCart.prevStats().fetches,
-                              Common::Base::Fmt::_10_6), isChanged);
-  isChanged = myCart.prevStats().reads != myOldState.armPrevStats[2];
-  myPrevThumbReads->setText(Common::Base::toString(myCart.prevStats().reads,
-                            Common::Base::Fmt::_10_6), isChanged);
-  isChanged = myCart.prevStats().writes != myOldState.armPrevStats[3];
-  myPrevThumbWrites->setText(Common::Base::toString(myCart.prevStats().writes,
-                             Common::Base::Fmt::_10_6), isChanged);
+  alist.clear();  vlist.clear();  changed.clear();
+  alist.push_back(0);  vlist.push_back(myCart.prevStats().instructions);
+  changed.push_back(myCart.prevStats().instructions != uInt32(myOldState.armPrevRun[1]));
+  myPrevThumbInstructions->setList(alist, vlist, changed);
 
-  isChanged = myCart.stats().cycles != myOldState.armStats[0];
-  myThumbCycles->setText(Common::Base::toString(myCart.stats().cycles,
-                            Common::Base::Fmt::_10_6), isChanged);
-  isChanged = myCart.stats().fetches != myOldState.armStats[1];
-  myThumbFetches->setText(Common::Base::toString(myCart.stats().fetches,
-                          Common::Base::Fmt::_10_6), isChanged);
-  isChanged = myCart.stats().reads != myOldState.armStats[2];
-  myThumbReads->setText(Common::Base::toString(myCart.stats().reads,
-                        Common::Base::Fmt::_10_6), isChanged);
-  isChanged = myCart.stats().writes != myOldState.armStats[3];
-  myThumbWrites->setText(Common::Base::toString(myCart.stats().writes,
-                         Common::Base::Fmt::_10_6), isChanged);
+  alist.clear();  vlist.clear();  changed.clear();
+  alist.push_back(0);  vlist.push_back(myCart.cycles());
+  changed.push_back(myCart.cycles() != uInt32(myOldState.armRun[0]));
+  myThumbCycles->setList(alist, vlist, changed);
+
+
+  alist.clear();  vlist.clear();  changed.clear();
+  alist.push_back(0);  vlist.push_back(myCart.stats().instructions);
+  changed.push_back(myCart.stats().instructions != uInt32(myOldState.armRun[1]));
+  myThumbInstructions->setList(alist, vlist, changed);
 
   CartDebugWidget::loadConfig();
 }
@@ -164,6 +188,18 @@ void CartridgeARMWidget::handleCommand(CommandSender* sender,
 {
   switch(cmd)
   {
+    case kChipChanged:
+      handleChipType();
+      break;
+
+    case kMamLockChanged:
+      handleMamLock();
+      break;
+
+    case kMamModeChanged:
+      handleMamMode();
+      break;
+
     case kIncCyclesChanged:
     case kFactorChanged:
       handleArmCycles();
@@ -172,6 +208,40 @@ void CartridgeARMWidget::handleCommand(CommandSender* sender,
     default:
       break;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeARMWidget::handleChipType()
+{
+  bool devSettings = instance().settings().getBool("dev.settings");
+
+  if(devSettings)
+  {
+    instance().settings().setValue("dev.thumb.chiptype", myChipType->getSelectedTag().toInt());
+  }
+
+  myChipType->setEnabled(devSettings);
+
+  myCart.setChipType(static_cast<Thumbulator::ChipType>(myChipType->getSelectedTag().toInt()));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeARMWidget::handleMamLock()
+{
+  bool checked = myLockMamMode->getState();
+
+  myMamMode->setEnabled(checked);
+  myCart.lockMamMode(checked);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeARMWidget::handleMamMode()
+{
+  // override MAM mode set by ROM
+  Int32 mode = myMamMode->getSelectedTag().toInt();
+
+  instance().settings().setValue("dev.thumb.mammode", mode);
+  myCart.setMamMode(static_cast<Thumbulator::MamModeType>(mode));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -188,8 +258,12 @@ void CartridgeARMWidget::handleArmCycles()
   }
 
   myIncCycles->setEnabled(devSettings);
-  enable &= devSettings;
-  myCart.incCycles(enable);
-  myCycleFactor->setEnabled(enable);
+  myCycleFactor->setEnabled(devSettings);
+  myCyclesLabel->setEnabled(devSettings);
+  myThumbCycles->setEnabled(devSettings);
+  myPrevThumbCycles->setEnabled(devSettings);
+
+  myCart.incCycles(devSettings && enable);
   myCart.cycleFactor(factor);
+  myCart.enableCycleCount(devSettings);
 }
