@@ -246,8 +246,12 @@ Settings::Settings()
   setPermanent("dev.eepromaccess", "true");
   // Thumb ARM emulation options
   setPermanent("dev.thumb.trapfatal", "true");
+#ifdef DEBUGGER_SUPPORT
   setPermanent("dev.thumb.inccycles", "true");
-  setPermanent("dev.thumb.cyclefactor", "1.05");
+  setPermanent("dev.thumb.cyclefactor", "0.95");
+  setPermanent("dev.thumb.chiptype", "0"); // = LPC2103
+  setPermanent("dev.thumb.mammode", "2");
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -680,14 +684,19 @@ void Settings::usage() const
     << "  -dev.tiadriven    <1|0>          Drive unused TIA pins randomly on a\n"
     << "                                    read/peek\n"
 #ifdef DEBUGGER_SUPPORT
-    << "  -dev.rwportbreak      <1|0>      Debugger breaks on reads from write ports\n"
-    << "  -dev.wrportbreak      <1|0>      Debugger breaks on writes to read ports\n"
+    << "  -dev.rwportbreak       <1|0>     Debugger breaks on reads from write ports\n"
+    << "  -dev.wrportbreak       <1|0>     Debugger breaks on writes to read ports\n"
 #endif
-    << "  -dev.thumb.trapfatal  <1|0>      Determines whether errors in ARM emulation\n"
+    << "  -dev.thumb.trapfatal   <1|0>     Determines whether errors in ARM emulation\n"
     << "                                    throw an exception\n"
-    << "  -dev.thumb.inccycles  <1|0>      Determines whether ARM emulation cycles\n"
+#ifdef DEBUGGER_SUPPORT
+    << "  -dev.thumb.inccycles   <1|0>     Determines whether ARM emulation cycles\n"
     << "                                    increase system cycles\n"
-    << "  -dev.eepromaccess     <1|0>      Enable messages for AtariVox/SaveKey access\n"
+    << "  -dev.thumb.cyclefactor <float>   Sets the ARM cycles correction multiplier\n"
+    << "  -dev.thumb.chiptype    <0|1>     Selects the ARM chip type\n"
+    << "  -dev.thumb.mammode     <0-3>     Selects the LPC's MAM mode\n"
+#endif
+    << "  -dev.eepromaccess      <1|0>     Enable messages for AtariVox/SaveKey access\n"
     << "                                    messages\n"
     << "  -dev.tia.type <standard|custom|  Selects a TIA type\n"
     << "                 koolaidman|\n"

@@ -51,15 +51,26 @@ class CartridgeARM : public Cartridge
     */
     bool load(Serializer& in) override;
 
+    /**
+      Sets the initial state of the MAM mode
+    */
+    virtual void setInitialState();
+
+    void enableCycleCount(bool enable) const { myThumbEmulator->enableCycleCount(enable); }
     // Get number of memory accesses of last and last but one ARM runs.
     void updateCycles(int cycles);
     const Thumbulator::Stats& stats() const { return myStats; }
     const Thumbulator::Stats& prevStats() const { return myPrevStats; }
+    const uInt32 cycles() const { return myCycles; }
+    const uInt32 prevCycles() const { return myPrevCycles; }
 
     void incCycles(bool enable);
     void cycleFactor(double factor);
     double cycleFactor() const { return myThumbEmulator->cycleFactor(); }
-
+    void setChipType(Thumbulator::ChipType armType) { myThumbEmulator->setChipType(armType); }
+    void lockMamMode(bool lock) { myThumbEmulator->lockMamMode(lock); }
+    void setMamMode(Thumbulator::MamModeType mamMode) { myThumbEmulator->setMamMode(mamMode); }
+    Thumbulator::MamModeType mamMode() const { return myThumbEmulator->mamMode(); }
 
   protected:
     // Pointer to the Thumb ARM emulator object
@@ -67,9 +78,12 @@ class CartridgeARM : public Cartridge
 
     // ARM code increases 6507 cycles
     bool myIncCycles{false};
-
+  #ifdef DEBUGGER_SUPPORT
     Thumbulator::Stats myStats{0};
     Thumbulator::Stats myPrevStats{0};
+    uInt32 myCycles{0};
+    uInt32 myPrevCycles{0};
+  #endif
 
   private:
     // Following constructors and assignment operators not supported

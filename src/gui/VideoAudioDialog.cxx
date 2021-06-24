@@ -740,8 +740,7 @@ void VideoAudioDialog::saveConfig()
   /////////////////////////////////////////////////////////////////////////////
   // TV Effects tab
   // TV Mode
-  settings.setValue("tv.filter",
-                                 myTVMode->getSelectedTag().toString());
+  settings.setValue("tv.filter", myTVMode->getSelectedTag().toString());
   // TV Custom adjustables
   NTSCFilter::Adjustable ntscAdj;
   ntscAdj.sharpness = myTVSharp->getValue();
