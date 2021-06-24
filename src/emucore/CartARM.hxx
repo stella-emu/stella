@@ -59,10 +59,12 @@ class CartridgeARM : public Cartridge
     void enableCycleCount(bool enable) const { myThumbEmulator->enableCycleCount(enable); }
     // Get number of memory accesses of last and last but one ARM runs.
     void updateCycles(int cycles);
+  #ifdef DEBUGGER_SUPPORT
     const Thumbulator::Stats& stats() const { return myStats; }
     const Thumbulator::Stats& prevStats() const { return myPrevStats; }
     const uInt32 cycles() const { return myCycles; }
     const uInt32 prevCycles() const { return myPrevCycles; }
+  #endif
 
     void incCycles(bool enable);
     void cycleFactor(double factor);
