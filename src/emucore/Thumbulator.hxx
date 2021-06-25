@@ -104,8 +104,7 @@ class Thumbulator
       @return  The results of any debugging output (if enabled),
                otherwise an empty string
     */
-    string doRun(uInt32& cycles);
-    string run(uInt32& cycles);
+    string run(uInt32& cycles, bool irqDrivenAudio);
     void enableCycleCount(bool enable) { _countCycles = enable; }
     const Stats& stats() const { return _stats; }
     const uInt32 cycles() const { return _totalCycles; }
@@ -207,6 +206,7 @@ class Thumbulator
   #endif
 
   private:
+    string doRun(uInt32& cycles, bool irqDrivenAudio);
     uInt32 read_register(uInt32 reg);
     void write_register(uInt32 reg, uInt32 data, bool isFlowBreak = true);
     uInt32 fetch16(uInt32 addr);
@@ -268,6 +268,7 @@ class Thumbulator
     uInt32 _flashCycles{4};
     uInt32 _flashBanks{1};
     Stats _stats{0};
+    bool _irqDrivenAudio{false};
     uInt32 _totalCycles{0};
 
     // For emulation of LPC2103's timer 1, used for NTSC/PAL/SECAM detection.

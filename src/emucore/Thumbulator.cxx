@@ -105,8 +105,9 @@ Thumbulator::Thumbulator(const uInt16* rom_ptr, uInt16* ram_ptr, uInt32 rom_size
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string Thumbulator::doRun(uInt32& cycles)
+string Thumbulator::doRun(uInt32& cycles, bool irqDrivenAudio)
 {
+  _irqDrivenAudio = irqDrivenAudio;
   reset();
   for(;;)
   {
@@ -118,6 +119,12 @@ string Thumbulator::doRun(uInt32& cycles)
   }
 #ifdef THUMB_CYCLE_COUNT
   _totalCycles *= _armCyclesFactor;
+
+  // assuming 10% per scanline is spend for audio updates
+  // (equals 5 cycles 6507 code + ~130-155 cycles ARM code)
+  if(_irqDrivenAudio)
+    _totalCycles *= 1.10;
+
   //_totalCycles = 127148; // VB during Turbo start sequence
   cycles = _totalCycles / timing_factor;
 #else
@@ -137,9 +144,9 @@ void Thumbulator::setConsoleTiming(ConsoleTiming timing)
 {
   // this sets how many ticks of the Harmony/Melody clock
   // will occur per tick of the 6507 clock
-  constexpr double NTSC   = 1.193182;  // NTSC  6507 clock rate
-  constexpr double PAL    = 1.182298;  // PAL   6507 clock rate
-  constexpr double SECAM  = 1.187500;  // SECAM 6507 clock rate
+  constexpr double NTSC   = 1.19318166666667;  // NTSC  6507 clock rate
+  constexpr double PAL    = 1.182298;          // PAL   6507 clock rate
+  constexpr double SECAM  = 1.187500;          // SECAM 6507 clock rate
 
   _consoleTiming = timing;
   switch(timing)
@@ -169,10 +176,10 @@ void Thumbulator::updateTimer(uInt32 cycles)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string Thumbulator::run(uInt32& cycles)
+string Thumbulator::run(uInt32& cycles, bool irqDrivenAudio)
 {
   updateTimer(cycles);
-  return doRun(cycles);
+  return doRun(cycles, irqDrivenAudio);
 }
 
 #ifndef UNSAFE_OPTIMIZATIONS
@@ -1595,6 +1602,7 @@ int Thumbulator::execute()
           rc += 2;
           //rc &= ~1;
           write_register(15, rc);
+          //_totalCycles += 100; // just a wild guess
           return 0;
         }
         return 1;

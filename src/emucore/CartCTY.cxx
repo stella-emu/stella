@@ -65,6 +65,22 @@ void CartridgeCTY::reset()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeCTY::consoleChanged(ConsoleTiming timing)
+{
+  constexpr double NTSC  = 1193191.66666667;  // NTSC  6507 clock rate
+  constexpr double PAL   = 1182298.0;         // PAL   6507 clock rate
+  constexpr double SECAM = 1187500.0;         // SECAM 6507 clock rate
+
+  switch(timing)
+  {
+    case ConsoleTiming::ntsc:   myClockRate = NTSC;   break;
+    case ConsoleTiming::pal:    myClockRate = PAL;    break;
+    case ConsoleTiming::secam:  myClockRate = SECAM;  break;
+    default:  break;  // satisfy compiler
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCTY::install(System& system)
 {
   mySystem = &system;
@@ -573,7 +589,7 @@ inline void CartridgeCTY::updateMusicModeDataFetchers()
   myAudioCycles = mySystem->cycles();
 
   // Calculate the number of CTY OSC clocks since the last update
-  double clocks = ((20000.0 * cycles) / 1193191.66666667) + myFractionalClocks;
+  double clocks = ((20000.0 * cycles) / myClockRate) + myFractionalClocks;
   uInt32 wholeClocks = uInt32(clocks);
   myFractionalClocks = clocks - double(wholeClocks);
 
