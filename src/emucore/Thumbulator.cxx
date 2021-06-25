@@ -243,9 +243,13 @@ uInt32 Thumbulator::fetch16(uInt32 addr)
 
 #ifdef THUMB_CYCLE_COUNT
   if(_fetchCycleType == CycleType::S)
+  {
     INC_S_CYCLES(addr, AccessType::prefetch);
+  }
   else
+  {
     INC_N_CYCLES(addr, AccessType::prefetch);
+  }
   _fetchCycleType = CycleType::S;
 #endif
 
@@ -2688,6 +2692,10 @@ int Thumbulator::execute()
       write_register(rd, rc);
       return 0;
     }
+
+    // Silence compiler
+    case Op::numOps:
+      break;
 
 #ifndef UNSAFE_OPTIMIZATIONS
     case Op::invalid:

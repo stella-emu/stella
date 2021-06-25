@@ -107,7 +107,7 @@ class Thumbulator
     string run(uInt32& cycles, bool irqDrivenAudio);
     void enableCycleCount(bool enable) { _countCycles = enable; }
     const Stats& stats() const { return _stats; }
-    const uInt32 cycles() const { return _totalCycles; }
+    uInt32 cycles() const { return _totalCycles; }
     void setChipType(ChipType type);
     void setMamMode(MamModeType mode) { mamcr = mode; }
     void lockMamMode(bool lock) { _lockMamcr = lock; }
