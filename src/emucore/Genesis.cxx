@@ -27,6 +27,7 @@ Genesis::Genesis(Jack jack, const Event& event, const System& system)
     myButtonCEvent   = Event::RightJoystickFire5;
 
   setPin(AnalogPin::Five, AnalogReadout::connectToVcc());
+  setPin(AnalogPin::Nine, AnalogReadout::connectToVcc());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
