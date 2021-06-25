@@ -44,6 +44,24 @@ void CartridgeARM::setInitialState()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeARM::consoleChanged(ConsoleTiming timing)
+{
+  myThumbEmulator->setConsoleTiming(timing);
+
+  constexpr double NTSC  = 1193191.66666667;  // NTSC  6507 clock rate
+  constexpr double PAL   = 1182298;           // PAL   6507 clock rate
+  constexpr double SECAM = 1187500;           // SECAM 6507 clock rate
+
+  switch(timing)
+  {
+    case ConsoleTiming::ntsc:   myClockRate = NTSC;   break;
+    case ConsoleTiming::pal:    myClockRate = PAL;    break;
+    case ConsoleTiming::secam:  myClockRate = SECAM;  break;
+    default:  break;  // satisfy compiler
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeARM::updateCycles(int cycles)
 {
   if(myIncCycles)

@@ -36,6 +36,15 @@ class CartridgeARM : public Cartridge
 
   protected:
     /**
+      Notification method invoked by the system when the console type
+      has changed.  We need this to inform the Thumbulator that the
+      timing has changed.
+
+      @param timing  Enum representing the new console type
+    */
+    void consoleChanged(ConsoleTiming timing) override;
+
+    /**
       Save the current state of this cart to the given Serializer.
 
       @param out  The Serializer object to use
@@ -69,7 +78,7 @@ class CartridgeARM : public Cartridge
     void incCycles(bool enable);
     void cycleFactor(double factor);
     double cycleFactor() const { return myThumbEmulator->cycleFactor(); }
-    void setChipType(Thumbulator::ChipType armType) { myThumbEmulator->setChipType(armType); }
+    void setChipType(Thumbulator::ChipType chipType) { myThumbEmulator->setChipType(chipType); }
     void lockMamMode(bool lock) { myThumbEmulator->lockMamMode(lock); }
     void setMamMode(Thumbulator::MamModeType mamMode) { myThumbEmulator->setMamMode(mamMode); }
     Thumbulator::MamModeType mamMode() const { return myThumbEmulator->mamMode(); }
@@ -80,6 +89,9 @@ class CartridgeARM : public Cartridge
 
     // ARM code increases 6507 cycles
     bool myIncCycles{false};
+
+    // Console clock rate
+    double myClockRate{1193191.66666667};
   #ifdef DEBUGGER_SUPPORT
     Thumbulator::Stats myStats{0};
     Thumbulator::Stats myPrevStats{0};

@@ -150,12 +150,6 @@ void CartridgeCDF::setInitialState()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeCDF::consoleChanged(ConsoleTiming timing)
-{
-  myThumbEmulator->setConsoleTiming(timing);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCDF::install(System& system)
 {
   mySystem = &system;
@@ -177,7 +171,7 @@ inline void CartridgeCDF::updateMusicModeDataFetchers()
   myAudioCycles = mySystem->cycles();
 
   // Calculate the number of CDF OSC clocks since the last update
-  double clocks = ((20000.0 * cycles) / 1193191.66666667) + myFractionalClocks;
+  double clocks = ((20000.0 * cycles) / myClockRate) + myFractionalClocks;
   uInt32 wholeClocks = uInt32(clocks);
   myFractionalClocks = clocks - double(wholeClocks);
 
@@ -200,7 +194,7 @@ inline void CartridgeCDF::callFunction(uInt8 value)
         uInt32 cycles = uInt32(mySystem->cycles() - myARMCycles);
 
         myARMCycles = mySystem->cycles();
-        myThumbEmulator->run(cycles);
+        myThumbEmulator->run(cycles, value == 254);
         updateCycles(cycles);
       }
       catch(const runtime_error& e) {

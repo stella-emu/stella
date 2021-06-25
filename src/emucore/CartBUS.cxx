@@ -117,12 +117,6 @@ void CartridgeBUS::setInitialState()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeBUS::consoleChanged(ConsoleTiming timing)
-{
-  myThumbEmulator->setConsoleTiming(timing);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeBUS::install(System& system)
 {
   mySystem = &system;
@@ -149,7 +143,7 @@ inline void CartridgeBUS::updateMusicModeDataFetchers()
   myAudioCycles = mySystem->cycles();
 
   // Calculate the number of BUS OSC clocks since the last update
-  double clocks = ((20000.0 * cycles) / 1193191.66666667) + myFractionalClocks;
+  double clocks = ((20000.0 * cycles) / myClockRate) + myFractionalClocks;
   uInt32 wholeClocks = uInt32(clocks);
   myFractionalClocks = clocks - double(wholeClocks);
 
@@ -172,7 +166,7 @@ inline void CartridgeBUS::callFunction(uInt8 value)
         uInt32 cycles = uInt32(mySystem->cycles() - myARMCycles);
 
         myARMCycles = mySystem->cycles();
-        myThumbEmulator->run(cycles);
+        myThumbEmulator->run(cycles, value == 254);
         updateCycles(cycles);
       }
       catch(const runtime_error& e) {

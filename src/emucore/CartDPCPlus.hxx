@@ -66,15 +66,6 @@ class CartridgeDPCPlus : public CartridgeARM
     void reset() override;
 
     /**
-      Notification method invoked by the system when the console type
-      has changed.  We need this to inform the Thumbulator that the
-      timing has changed.
-
-      @param timing  Enum representing the new console type
-    */
-    void consoleChanged(ConsoleTiming timing) override;
-
-    /**
       Install cartridge in the specified system.  Invoked by the system
       when the cartridge is attached to it.
 
