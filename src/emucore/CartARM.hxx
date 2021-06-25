@@ -71,8 +71,8 @@ class CartridgeARM : public Cartridge
   #ifdef DEBUGGER_SUPPORT
     const Thumbulator::Stats& stats() const { return myStats; }
     const Thumbulator::Stats& prevStats() const { return myPrevStats; }
-    const uInt32 cycles() const { return myCycles; }
-    const uInt32 prevCycles() const { return myPrevCycles; }
+    uInt32 cycles() const { return myCycles; }
+    uInt32 prevCycles() const { return myPrevCycles; }
   #endif
 
     void incCycles(bool enable);
