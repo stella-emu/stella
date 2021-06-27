@@ -65,13 +65,16 @@ using Common::Base;
   #define INC_I_CYCLES_M(m)              \
     if(_countCycles)                     \
       incICycles(m)
-#define FETCH_TYPE_N \
-  _fetchCycleType = CycleType::N
+  #define INC_CYCLES(m)                  \
+    _totalCycles += m
+  #define FETCH_TYPE_N                   \
+    _fetchCycleType = CycleType::N
 #else
   #define INC_S_CYCLES(addr, accessType)
   #define INC_N_CYCLES(addr, accessType)
   #define INC_I_CYCLES
   #define INC_I_CYCLES_M(m)
+  #define INC_CYCLES(m)
   #define FETCH_TYPE_N
 #endif
 
@@ -1516,7 +1519,7 @@ int Thumbulator::execute()
             }
             else if (pc == 0x0000083a)
             {
-              // exiting Custom ARM code, returning to BUS Driver control
+              // exiting Custom ARM code, returning to CDF Driver control
             }
             else
             {
@@ -1560,26 +1563,42 @@ int Thumbulator::execute()
             if      (pc == CDF1_SetNote)
             {
               myCartridge->thumbCallback(0, read_register(2), read_register(3));
+              // approximated cycles
+              INC_CYCLES(_flashCycles + 1);     // this instruction
+              INC_CYCLES(6);                    // ARM code NoteStore
+              INC_CYCLES(2 + _flashCycles + 2); // ARM code ReturnC
               handled = true;
             }
             else if (pc == CDF1_ResetWave)
             {
               myCartridge->thumbCallback(1, read_register(2), 0);
+              // approximated cycles
+              INC_CYCLES(_flashCycles + 1);     // this instruction
+              INC_CYCLES(6 + _flashCycles + 2); // ARM code ResetWaveStore
+              INC_CYCLES(2 + _flashCycles + 2); // ARM code ReturnC
               handled = true;
             }
             else if (pc == CDF1_GetWavePtr)
             {
               write_register(2, myCartridge->thumbCallback(2, read_register(2), 0));
+              // approximated cycles
+              INC_CYCLES(_flashCycles + 1);     // this instruction
+              INC_CYCLES(6 + _flashCycles + 2); // ARM code WavePtrFetch
+              INC_CYCLES(2 + _flashCycles + 2); // ARM code ReturnC
               handled = true;
             }
             else if (pc == CDF1_SetWaveSize)
             {
               myCartridge->thumbCallback(3, read_register(2), read_register(3));
+              // approximated cycles
+              INC_CYCLES(_flashCycles + 1);           // this instruction
+              INC_CYCLES(18 + _flashCycles * 3 + 2);  // ARM code WaveSizeStore
+              INC_CYCLES(2 + _flashCycles + 2);       // ARM code ReturnC
               handled = true;
             }
             else if (pc == 0x0000083a)
             {
-              // exiting Custom ARM code, returning to BUS Driver control
+              // exiting Custom ARM code, returning to CDFJ Driver control
             }
             else
             {
@@ -2195,6 +2214,7 @@ int Thumbulator::execute()
       }
       statusMsg << "}" << endl;
     #endif
+      bool first = true;
 
       sp = read_register(13);
       for(ra = 0, rb = 0x01; rb; rb = (rb << 1) & 0xFF, ++ra)
@@ -2202,19 +2222,29 @@ int Thumbulator::execute()
         if(inst & rb)
         {
           write_register(ra, read32(sp));
-          //INC_S_CYCLES(sp, AccessType::data); // TODO
+          if(first)
+          {
+            INC_N_CYCLES(sp, AccessType::data);
+            first = false;
+          }
+          else
+            INC_S_CYCLES(sp, AccessType::data);
           sp += 4;
         }
       }
       if(inst & 0x100)
       {
         rc = read32(sp);
+        if(first)
+          INC_N_CYCLES(sp, AccessType::data);
+        else
+          INC_S_CYCLES(sp, AccessType::data);
         rc += 2;
         write_register(15, rc);
-        //INC_S_CYCLES(sp, AccessType::data); // TODO
         sp += 4;
       }
       write_register(13, sp);
+      INC_I_CYCLES; // ??? (copied from stmia)
       return 0;
     }
 
@@ -2251,13 +2281,21 @@ int Thumbulator::execute()
       if(inst & 0x100) ++rc;
       rc <<= 2;
       sp -= rc;
+      bool first = true;
+
       rd = sp;
       for(ra = 0, rb = 0x01; rb; rb = (rb << 1) & 0xFF, ++ra)
       {
         if(inst & rb)
         {
           write32(rd, read_register(ra));
-          //INC_S_CYCLES(rd, AccessType::data); // TODO
+          if(first)
+          {
+            INC_N_CYCLES(rd, AccessType::data);
+            first = false;
+          }
+          else
+            INC_S_CYCLES(rd, AccessType::data);
           rd += 4;
         }
       }
@@ -2265,13 +2303,18 @@ int Thumbulator::execute()
       {
         rc = read_register(14);
         write32(rd, rc);
-        //INC_S_CYCLES(rd, AccessType::data); // TODO
+        if(first)
+          INC_N_CYCLES(rd, AccessType::data);
+        else
+          INC_S_CYCLES(rd, AccessType::data);
         if((rc & 1) == 0)
         {
           // FIXME fprintf(stderr,"push {lr} with an ARM address pc 0x%08X popped 0x%08X\n",pc,rc);
         }
       }
       write_register(13, sp);
+      INC_I_CYCLES; // ??? (copied from ldmia)
+      FETCH_TYPE_N; // ??? (copied from ldmia)
       return 0;
     }
 
@@ -2409,11 +2452,11 @@ int Thumbulator::execute()
           write32(sp, read_register(ra));
           if(first)
           {
-            INC_N_CYCLES(rb, AccessType::data);
+            INC_N_CYCLES(sp, AccessType::data);
             first = false;
           }
           else
-            INC_S_CYCLES(rb, AccessType::data);
+            INC_S_CYCLES(sp, AccessType::data);
           sp += 4;
         }
       }
@@ -2750,16 +2793,20 @@ int Thumbulator::reset()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Thumbulator::setChipType(ChipType type)
+Thumbulator::ChipPropsType Thumbulator::setChipType(ChipType type)
 {
+  ChipPropsType props = ChipProps[static_cast<uInt32>(type)];
+
   _chipType = type;
-  _MHz = ChipProps[static_cast<uInt32>(_chipType)].MHz;
+  _MHz = props.MHz;
 #ifdef THUMB_CYCLE_COUNT
-  _flashCycles = ChipProps[static_cast<uInt32>(_chipType)].flashCycles;
-  _flashBanks = ChipProps[static_cast<uInt32>(_chipType)].flashBanks;
+  _flashCycles = props.flashCycles;
+  _flashBanks = props.flashBanks;
 #endif
 
   setConsoleTiming(_consoleTiming);
+
+  return props;
 }
 
 #ifdef THUMB_CYCLE_COUNT
@@ -2866,12 +2913,11 @@ void Thumbulator::incCycles(AccessType accessType, uInt32 cycles)
 {
 #ifdef EMULATE_PIPELINE
   // simulate the pipeline effects
-
-  if(_memory0Pipeline)
-  {
-    --_memory0Pipeline; // == 0
-    ++_fetchPipeline;
-  }
+  //if(_memory0Pipeline)
+  //{
+  //  --_memory0Pipeline; // == 0
+  //  ++_fetchPipeline;
+  //}
   if(_memory1Pipeline)
   {
     --_memory1Pipeline;
@@ -2896,20 +2942,26 @@ void Thumbulator::incCycles(AccessType accessType, uInt32 cycles)
       // Reduce cycles by pipelined cycles
       // Cart (Turbo start sequence): 1F0AC
       // None:      1FF2E @ 90% (22989 @ 100%)
-    #if 0
-      // Version 1: 1ECFC @ 90% (223C3 @ 100%)
-      uInt32 newCycles = std::max(1, Int32(cycles - _fetchPipeline));
-
-      _fetchPipeline -= (cycles - newCycles);
-      cycles = newCycles;
-    #endif
     #if 1
+      // Version 1: 1ECFC @ 90% (223C3 @ 100%)
+      if(cycles == _flashCycles)
+      {
+        if(!_memory1Pipeline) // there must be no pending memory access
+        {
+          uInt32 newCycles = std::max(1, Int32(cycles - _fetchPipeline));
+
+          _fetchPipeline -= (cycles - newCycles);
+          cycles = newCycles;
+        }
+      }
+    #endif
+    #if 0
       // Version 2: 1ED23 @ 90% (223EF @ 100%)
       //   considers that partial fetches are not allowed
       if(cycles == _flashCycles)
       {
-        _memory0Pipeline = _memory1Pipeline = 0;
-        if(_fetchPipeline >= _flashCycles)
+        //_memory0Pipeline = _memory1Pipeline = 0;
+        if(!_memory1Pipeline && _fetchPipeline >= _flashCycles)
         {
           _fetchPipeline -= (_flashCycles - 1);
           cycles = 1;
@@ -2935,7 +2987,7 @@ void Thumbulator::incSCycles(uInt32 addr, AccessType accessType)
   else // Flash
   {
     if(mamcr == MamModeType::mode0)
-      cycles = _flashCycles; // 4
+      cycles = _flashCycles; // 3|4
     else
     {
       if(isMamBuffered(addr, accessType) || mamcr == MamModeType::modeX)
@@ -2957,7 +3009,7 @@ void Thumbulator::incNCycles(uInt32 addr, AccessType accessType)
   else // Flash
   {
     if(mamcr < MamModeType::mode2)
-      cycles = _flashCycles; // 4
+      cycles = _flashCycles; // 3|4
     else
       if(isMamBuffered(addr, accessType) || mamcr == MamModeType::modeX)
         cycles = 1;
@@ -2972,11 +3024,13 @@ void Thumbulator::incICycles(uInt32 m)
 {
  #ifdef EMULATE_PIPELINE
   _fetchPipeline += m;
-  if(_memory0Pipeline)
-  {
-    --_memory0Pipeline; // == 0
-    ++_fetchPipeline;
-  }
+  //if(_memory0Pipeline)
+  //{
+  //  --_memory0Pipeline; // == 0
+  //  ++_fetchPipeline;
+  //}
+
+  // TODO: m!
   if(_memory1Pipeline)
   {
     --_memory1Pipeline;
