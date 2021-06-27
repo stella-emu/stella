@@ -629,8 +629,8 @@ void Thumbulator::write_register(uInt32 reg, uInt32 data, bool isFlowBreak)
     if(isFlowBreak)
     {
       // dummy fetch + fill the pipeline
-      INC_N_CYCLES(reg_norm[15] + 4, AccessType::data);
-      INC_S_CYCLES(data, AccessType::branch);
+      INC_N_CYCLES(reg_norm[15] - 2, AccessType::prefetch);
+      INC_S_CYCLES(data - 2, AccessType::branch);
     }
   }
 //#endif
@@ -1176,13 +1176,14 @@ int Thumbulator::execute()
 
     //B(1) conditional branch
     case Op::b1: {
-      rb = (inst >> 0) & 0xFF;
+      rb = inst & 0xFF;
       if(rb & 0x80)
         rb |= (~0U) << 8;
-      op=(inst >> 8) & 0xF;
       rb <<= 1;
       rb += pc;
       rb += 2;
+
+      op = (inst >> 8) & 0xF;
       switch(op)
       {
         case 0x0: //b eq  z set

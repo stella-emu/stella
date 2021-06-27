@@ -248,7 +248,7 @@ Settings::Settings()
   setPermanent("dev.thumb.trapfatal", "true");
 #ifdef DEBUGGER_SUPPORT
   setPermanent("dev.thumb.inccycles", "true");
-  setPermanent("dev.thumb.cyclefactor", "0.95");
+  setPermanent("dev.thumb.cyclefactor", "1.05");
   setPermanent("dev.thumb.chiptype", "0"); // = LPC2103
   setPermanent("dev.thumb.mammode", "2");
 #endif
