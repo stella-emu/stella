@@ -52,7 +52,7 @@ class Cartridge;
 #endif
 
 #ifdef THUMB_CYCLE_COUNT
-  //#define EMULATE_PIPELINE  // enable coarse ARM pipeline emulation
+  //#define EMULATE_PIPELINE  // enable coarse ARM pipeline emulation (TODO)
   #define TIMER_0           // enable timer 0 support (e.g. for measuring cycle count)
 #endif
 
@@ -70,9 +70,10 @@ class Thumbulator
       DPCplus   // cartridges of type DPC+
     };
     enum class ChipType {
-      LPC2103, // Harmony
-      LPC2104, // Encore (includes LPC2105)
-      LPC2132, // future use
+      LPC2101,    // Harmony (includes LPC2103)
+      LPC2104_OC, // Dev cart overclocked (includes LPC2105)
+      LPC2104,    // Dev cart (includes LPC2105)
+      LPC213x,    // future use (includes LPC2132)
       numTypes
     };
     enum class MamModeType {
@@ -108,7 +109,7 @@ class Thumbulator
     void enableCycleCount(bool enable) { _countCycles = enable; }
     const Stats& stats() const { return _stats; }
     uInt32 cycles() const { return _totalCycles; }
-    void setChipType(ChipType type);
+    ChipPropsType setChipType(ChipType type);
     void setMamMode(MamModeType mode) { mamcr = mode; }
     void lockMamMode(bool lock) { _lockMamcr = lock; }
     MamModeType mamMode() const { return static_cast<MamModeType>(mamcr); }
@@ -204,6 +205,13 @@ class Thumbulator
       prefetch, branch, data
     };
   #endif
+    const std::array<ChipPropsType, uInt32(ChipType::numTypes)> ChipProps =
+    {{
+      { 70.0, 4, 1 }, // LPC2101_02_03
+      { 70.0, 4, 2 }, // LPC2104_05_06 Overclocked
+      { 60.0, 3, 2 }, // LPC2104_05_06
+      { 60.0, 3, 1 }, // LPC2132..
+    }};
 
   private:
     string doRun(uInt32& cycles, bool irqDrivenAudio);
@@ -262,7 +270,7 @@ class Thumbulator
     MamModeType mamcr{MamModeType::mode0};
     bool handler_mode{false};
     uInt32 systick_ctrl{0}, systick_reload{0}, systick_count{0}, systick_calibrate{0};
-    ChipType _chipType{ChipType::LPC2103};
+    ChipType _chipType{ChipType::LPC2101};
     ConsoleTiming _consoleTiming{ConsoleTiming::ntsc};
     double _MHz{70.0};
     uInt32 _flashCycles{4};
@@ -288,13 +296,6 @@ class Thumbulator
     ostringstream statusMsg;
     bool trapOnFatal{true};
   #endif
-    const std::array<ChipPropsType, uInt32(ChipType::numTypes)> ChipProps =
-    {{
-      { 70.0, 4, 1 }, // LPC2101_02_03
-      { 60.0, 3, 2 }, // LPC2104_05_06
-      { 60.0, 3, 1 }, // LPC2132..
-    }};
-
     bool _countCycles{false};
     bool _lockMamcr{false};
 

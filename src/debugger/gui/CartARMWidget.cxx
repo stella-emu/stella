@@ -89,8 +89,10 @@ void CartridgeARMWidget::addCycleWidgets(int xpos, int ypos)
     - PopUpWidget::dropDownWidth(_font);
 
   items.clear();
-  VarList::push_back(items, "LPC2101/2/3", static_cast<uInt32>(Thumbulator::ChipType::LPC2103));
-  VarList::push_back(items, "LPC2104/5/6", static_cast<uInt32>(Thumbulator::ChipType::LPC2104));
+  VarList::push_back(items, "LPC2101" + ELLIPSIS + "3",    static_cast<uInt32>(Thumbulator::ChipType::LPC2101));
+  VarList::push_back(items, "LPC2104" + ELLIPSIS + "6 OC", static_cast<uInt32>(Thumbulator::ChipType::LPC2104_OC));
+  VarList::push_back(items, "LPC2104" + ELLIPSIS + "6",    static_cast<uInt32>(Thumbulator::ChipType::LPC2104));
+  VarList::push_back(items, "LPC213x",                     static_cast<uInt32>(Thumbulator::ChipType::LPC213x));
   myChipType = new PopUpWidget(_boss, _font, xpos, ypos, pwidth, myLineHeight, items,
                                "Chip    ", 0, kChipChanged);
   myChipType->setToolTip("Select emulated ARM chip.");
@@ -221,8 +223,19 @@ void CartridgeARMWidget::handleChipType()
   }
 
   myChipType->setEnabled(devSettings);
+  Thumbulator::ChipPropsType chipProps = myCart.setChipType(static_cast<Thumbulator::ChipType>(myChipType->getSelectedTag().toInt()));
 
-  myCart.setChipType(static_cast<Thumbulator::ChipType>(myChipType->getSelectedTag().toInt()));
+  // update tooltip with currently selecte chip's properties
+  string tip = myChipType->getToolTip(Common::Point(0, 0));
+  ostringstream buf;
+  tip = tip.substr(0, 25);
+
+  buf << tip << "\nCurrent:\n"
+    << chipProps.MHz << " MHz, "
+    << chipProps.flashBanks << " flash bank"
+    << (chipProps.flashBanks > 1 ? "s" : "") << ", "
+    << chipProps.flashCycles - 1 << " wait states";
+  myChipType->setToolTip(buf.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

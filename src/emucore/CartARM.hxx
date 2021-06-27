@@ -78,7 +78,9 @@ class CartridgeARM : public Cartridge
     void incCycles(bool enable);
     void cycleFactor(double factor);
     double cycleFactor() const { return myThumbEmulator->cycleFactor(); }
-    void setChipType(Thumbulator::ChipType chipType) { myThumbEmulator->setChipType(chipType); }
+    Thumbulator::ChipPropsType setChipType(Thumbulator::ChipType chipType) {
+      return myThumbEmulator->setChipType(chipType);
+    }
     void lockMamMode(bool lock) { myThumbEmulator->lockMamMode(lock); }
     void setMamMode(Thumbulator::MamModeType mamMode) { myThumbEmulator->setMamMode(mamMode); }
     Thumbulator::MamModeType mamMode() const { return myThumbEmulator->mamMode(); }
