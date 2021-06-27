@@ -2237,9 +2237,13 @@ int Thumbulator::execute()
       {
         rc = read32(sp);
         if(first)
+        {
           INC_N_CYCLES(sp, AccessType::data);
+        }
         else
+        {
           INC_S_CYCLES(sp, AccessType::data);
+        }
         rc += 2;
         write_register(15, rc);
         sp += 4;
@@ -2305,9 +2309,13 @@ int Thumbulator::execute()
         rc = read_register(14);
         write32(rd, rc);
         if(first)
+        {
           INC_N_CYCLES(rd, AccessType::data);
+        }
         else
+        {
           INC_S_CYCLES(rd, AccessType::data);
+        }
         if((rc & 1) == 0)
         {
           // FIXME fprintf(stderr,"push {lr} with an ARM address pc 0x%08X popped 0x%08X\n",pc,rc);

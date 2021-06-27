@@ -40,7 +40,7 @@ PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
   _textcolorhi = kTextColor;  // do not highlight the label
 
   setTextFilter([](char c) {
-    return isprint(c) && c != '\"' || c == '\x1c' || c == '\x1d'; // DEGREE || ELLIPSIS
+    return (isprint(c) && c != '\"') || c == '\x1c' || c == '\x1d'; // DEGREE || ELLIPSIS
   });
   setEditable(false);
 
