@@ -49,7 +49,7 @@ void CartridgeARMWidget::addCycleWidgets(int xpos, int ypos)
   myCycleFactor = new SliderWidget(_boss, _font, myIncCycles->getRight() + _fontWidth * 2, ypos - 1,
                                    _fontWidth * 10, _lineHeight, "Cycle factor", _fontWidth * 14,
                                    kFactorChanged, _fontWidth * 4, "%");
-  myCycleFactor->setMinValue(80); myCycleFactor->setMaxValue(100);
+  myCycleFactor->setMinValue(90); myCycleFactor->setMaxValue(110);
   myCycleFactor->setTickmarkIntervals(4);
   myCycleFactor->setToolTip("Correct approximated ARM cycles by factor.");
   myCycleFactor->setTarget(this);
