@@ -2991,7 +2991,7 @@ void Thumbulator::incSCycles(uInt32 addr, AccessType accessType)
 {
   uInt32 cycles;
 
-  if((addr & 0xF0000000) == 0x40000000) // RAM
+  if(addr & 0xC0000000) // RAM, peripherals
     cycles = 1;
   else // Flash
   {
@@ -3013,7 +3013,7 @@ void Thumbulator::incNCycles(uInt32 addr, AccessType accessType)
 {
   uInt32 cycles;
 
-  if((addr & 0xF0000000) == 0x40000000) // RAM
+  if(addr & 0xC0000000) // RAM, peripherals
     cycles = 1;
   else // Flash
   {
