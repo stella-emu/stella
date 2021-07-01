@@ -283,13 +283,15 @@ class Thumbulator
     // Register names from documentation:
     // http://www.nxp.com/documents/user_manual/UM10161.pdf
   #ifdef TIMER_0
-    uInt32 T0TCR{0};  // Timer 0 Timer Control Register
-    uInt32 T0TC{0};   // Timer 0 Timer Counter
-    uInt32 tim0Cycles{0};
+    uInt32 T0TCR{0};      // Timer 0 Timer Control Register
+    uInt32 T0TC{0};       // Timer 0 Timer Counter
+    uInt32 tim0Start{0};  // _totalCycles when Timer 0 got started last time
+    uInt32 tim0Total{0};  // total cycles of Timer 0
   #endif
-    uInt32 T1TCR{0};  // Timer 1 Timer Control Register
-    uInt32 T1TC{0};   // Timer 1 Timer Counter
-    uInt32 tim1Cycles{0};
+    uInt32 T1TCR{0};      // Timer 1 Timer Control Register
+    uInt32 T1TC{0};       // Timer 1 Timer Counter
+    uInt32 tim1Start{0};  // _totalCycles when Timer 1 got started last time
+    uInt32 tim1Total{0};  // total cycles of Timer 1
     double timing_factor{0.0};
 
   #ifndef UNSAFE_OPTIMIZATIONS
@@ -301,7 +303,8 @@ class Thumbulator
 
   #ifdef THUMB_CYCLE_COUNT
     double _armCyclesFactor{1.05};
-    CycleType _fetchCycleType{CycleType::S};
+    CycleType _prefetchCycleType{CycleType::S};
+    CycleType _lastCycleType[2]{CycleType::S};
    #ifdef EMULATE_PIPELINE
     uInt32 _fetchPipeline{0}; // reserve fetch cycles resulting from pipelining (execution stage)
     uInt32 _memory0Pipeline{0}, _memory1Pipeline{0};
