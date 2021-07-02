@@ -304,7 +304,7 @@ class Thumbulator
   #ifdef THUMB_CYCLE_COUNT
     double _armCyclesFactor{1.05};
     CycleType _prefetchCycleType{CycleType::S};
-    CycleType _lastCycleType[2]{CycleType::S};
+    CycleType _lastCycleType[3]{CycleType::S};
    #ifdef EMULATE_PIPELINE
     uInt32 _fetchPipeline{0}; // reserve fetch cycles resulting from pipelining (execution stage)
     uInt32 _memory0Pipeline{0}, _memory1Pipeline{0};

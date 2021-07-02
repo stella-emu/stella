@@ -316,8 +316,18 @@ void Thumbulator::write16(uInt32 addr, uInt32 data)
       ram[addr] = CONV_DATA(data);
       return;
 
+#ifndef UNSAFE_OPTIMIZATIONS
+    case 0xE0000000: //MAMCR
+#else
     default:
-      break;
+#endif
+      if(addr == 0xE01FC000)
+      {
+        DO_DBUG(statusMsg << "write16(" << Base::HEX8 << "MAMCR" << "," << Base::HEX8 << data << ") *" << endl);
+        if(!_lockMamcr)
+          mamcr = static_cast<MamModeType>(data);
+        return;
+      }
   }
 #ifndef UNSAFE_OPTIMIZATIONS
   fatalError("write16", addr, data, "abort");
@@ -536,7 +546,17 @@ uInt32 Thumbulator::read16(uInt32 addr)
       DO_DBUG(statusMsg << "read16(" << Base::HEX8 << addr << ")=" << Base::HEX4 << data << endl);
       return data;
 
-    default:  break;
+    case 0xe0000000: //peripherals
+    #ifdef THUMB_CYCLE_COUNT
+      if(addr == 0xE01FC000) //MAMCR
+    #else
+    default:
+    #endif
+      {
+        DO_DBUG(statusMsg << "read32(" << "MAMCR" << addr << ")=" << mamcr << " *");
+        data = static_cast<uInt32>(mamcr);
+        return data;
+      }
   }
 #ifndef UNSAFE_OPTIMIZATIONS
   return fatalError("read16", addr, "abort");
@@ -3024,6 +3044,13 @@ void Thumbulator::incCycles(AccessType accessType, uInt32 cycles)
     }
   };
 #endif
+
+//#ifdef MERGE_I_S
+//   TODO
+//  if(accessType == AccessType::branch)
+//    _lastCycleType[2] = _lastCycleType[1] = _lastCycleType[0] = CycleType::S;
+//#endif
+
   _totalCycles += cycles;
 }
 
@@ -3048,15 +3075,22 @@ void Thumbulator::incSCycles(uInt32 addr, AccessType accessType)
   }
 
 #ifdef MERGE_I_S
-  if(_lastCycleType[1] == CycleType::I)
+  if(accessType != AccessType::prefetch)
+  {
+    if(_lastCycleType[0] == CycleType::I)
+    {
+      _lastCycleType[0] = CycleType::S; // merge cannot be used twice!
+      --cycles;
+    }
+  }
+  else if(_lastCycleType[2] == CycleType::I)
     --cycles;
-#endif
 
-  incCycles(accessType, cycles);
-#ifdef MERGE_I_S
+  _lastCycleType[2] = _lastCycleType[1];
   _lastCycleType[1] = _lastCycleType[0];
   _lastCycleType[0] = CycleType::S;
 #endif
+  incCycles(accessType, cycles);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -3076,11 +3110,12 @@ void Thumbulator::incNCycles(uInt32 addr, AccessType accessType)
       else
         cycles = _flashCycles;
   }
-  incCycles(accessType, cycles);
 #ifdef MERGE_I_S
+  _lastCycleType[2] = _lastCycleType[1];
   _lastCycleType[1] = _lastCycleType[0];
   _lastCycleType[0] = CycleType::N;
 #endif
+  incCycles(accessType, cycles);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -3101,11 +3136,12 @@ void Thumbulator::incICycles(uInt32 m)
     ++_memory0Pipeline; // == 1
   }
  #endif
-  _totalCycles += m;
 #ifdef MERGE_I_S
+  _lastCycleType[2] = _lastCycleType[1];
   _lastCycleType[1] = _lastCycleType[0];
   _lastCycleType[0] = CycleType::I;
 #endif
+  _totalCycles += m;
 }
 
 #endif // THUMB_CYCLE_COUNT
