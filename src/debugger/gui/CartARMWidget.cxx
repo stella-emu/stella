@@ -251,7 +251,11 @@ void CartridgeARMWidget::handleMamLock()
 void CartridgeARMWidget::handleMamMode()
 {
   // override MAM mode set by ROM
-  Int32 mode = myMamMode->getSelectedTag().toInt();
+  Int32 mode = myMamMode->getSelected();
+
+  string name = myMamMode->getSelectedName();
+  myMamMode->setSelectedName(name + "XXX");
+
 
   instance().settings().setValue("dev.thumb.mammode", mode);
   myCart.setMamMode(static_cast<Thumbulator::MamModeType>(mode));
