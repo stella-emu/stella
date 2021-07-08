@@ -66,17 +66,50 @@ using Common::Base;
   #define INC_I_CYCLES_M(m)              \
     if(_countCycles)                     \
       incICycles(m)
-  #define INC_CYCLES(m)                  \
+
+  #define INC_SHIFT_CYCLES               \
+    INC_I_CYCLES;                        \
+    //FETCH_TYPE(CycleType::S, AccessType::data)
+
+  #define INC_LDR_CYCLES                 \
+    INC_N_CYCLES(rb, AccessType::data);  \
+    INC_I_CYCLES; \
+    //FETCH_TYPE(CycleType::N, AccessType::data); \
+    //FETCH_TYPE_N;
+  #define INC_LDRB_CYCLES                       \
+    INC_N_CYCLES(rb & (~1U), AccessType::data); \
+    INC_I_CYCLES; \
+    //FETCH_TYPE(CycleType::N, AccessType::data); \
+    //FETCH_TYPE_N;
+
+  #define INC_STR_CYCLES                 \
+    INC_N_CYCLES(rb, AccessType::data);  \
+    FETCH_TYPE_N; \
+    //INC_N_CYCLES(rb, AccessType::data);
+  #define INC_STRB_CYCLES                       \
+    INC_N_CYCLES(rb & (~1U), AccessType::data); \
+    FETCH_TYPE_N; \
+    //INC_N_CYCLES(rb & (~1U), AccessType::data);
+
+  #define FETCH_TYPE(cycleType, accessType) \
+    _prefetchCycleType[_pipeIdx] = cycleType; \
+    _prefetchAccessType[_pipeIdx] = accessType
+  #define FETCH_TYPE_N                          \
+    _prefetchCycleType[_pipeIdx] = CycleType::N
+
+  // ARM cycles
+  #define INC_ARM_CYCLES(m) \
     _totalCycles += m
-  #define FETCH_TYPE_N                   \
-    _prefetchCycleType = CycleType::N
 #else
   #define INC_S_CYCLES(addr, accessType)
   #define INC_N_CYCLES(addr, accessType)
   #define INC_I_CYCLES
   #define INC_I_CYCLES_M(m)
-  #define INC_CYCLES(m)
+  #define INC_LDR_CYCLES
+  #define INC_LDRB_CYCLES
   #define FETCH_TYPE_N
+  // ARM cycles
+  #define INC_ARM_CYCLES(m)
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -246,22 +279,35 @@ uInt32 Thumbulator::fetch16(uInt32 addr)
   uInt32 data;
 
 #ifdef THUMB_CYCLE_COUNT
-  if(_prefetchCycleType == CycleType::S)
+  _pipeIdx = (++_pipeIdx) % 3;
+
+#ifdef MERGE_I_S
+  if(_lastCycleType[2] == CycleType::I)
+  //if(_lastCycleType[_pipeIdx] == CycleType::I)
+    --_totalCycles;
+#endif
+
+  if(_prefetchCycleType[_pipeIdx] == CycleType::S)
   {
-  #ifdef MERGE_I_S
-    //if(_countCycles && _lastCycleType == CycleType::I)
-    //{
-    //  --_totalCycles;
-    //  _lastCycleType == CycleType::S;
-    //}
-  #endif
-    INC_S_CYCLES(addr, AccessType::prefetch);
+  //#ifdef MERGE_I_S
+  //  //if(_lastCycleType[2] == CycleType::I)
+  //  if(_lastCycleType[_pipeIdx] == CycleType::I)
+  //  {
+  //    --_totalCycles;
+  //    INC_S_CYCLES(addr, AccessType::prefetch); // N?
+  //  }
+  //  else
+  //#endif
+      INC_S_CYCLES(addr, AccessType::prefetch);
+      //INC_S_CYCLES(addr, _prefetchAccessType[_pipeIdx]);
   }
   else
   {
-    INC_N_CYCLES(addr, AccessType::prefetch);
-    _prefetchCycleType = CycleType::S; // default
+    INC_N_CYCLES(addr, AccessType::prefetch); // or ::data ?
+    //INC_N_CYCLES(addr, _prefetchAccessType[_pipeIdx]);
   }
+  _prefetchCycleType[_pipeIdx] = CycleType::S; // default
+  //_prefetchAccessType[_pipeIdx] = AccessType::prefetch; // default
 #endif
 
   switch(addr & 0xF0000000)
@@ -691,9 +737,14 @@ void Thumbulator::write_register(uInt32 reg, uInt32 data, bool isFlowBreak)
     data &= ~1;
     if(isFlowBreak)
     {
+    #ifdef THUMB_STATS
+      ++_stats.taken;
+    #endif
       // dummy fetch + fill the pipeline
-      INC_N_CYCLES(reg_norm[15] - 2, AccessType::prefetch);
-      INC_S_CYCLES(data - 2, AccessType::branch);
+      //INC_N_CYCLES(reg_norm[15] - 2, AccessType::prefetch);
+      //INC_S_CYCLES(data - 2, AccessType::branch);
+      INC_N_CYCLES(reg_norm[15] + 4, AccessType::prefetch);
+      INC_S_CYCLES(data, AccessType::branch);
     }
   }
 //#endif
@@ -1192,7 +1243,7 @@ int Thumbulator::execute()
       write_register(rd, rc);
       do_nflag(rc);
       do_zflag(rc);
-      INC_I_CYCLES;
+      INC_SHIFT_CYCLES;
       return 0;
     }
 
@@ -1233,12 +1284,15 @@ int Thumbulator::execute()
       write_register(rd, rc);
       do_nflag(rc);
       do_zflag(rc);
-      INC_I_CYCLES;
+      INC_SHIFT_CYCLES;
       return 0;
     }
 
     //B(1) conditional branch
     case Op::b1: {
+    #ifdef THUMB_STATS
+      ++_stats.branches;
+    #endif
       rb = inst & 0xFF;
       if(rb & 0x80)
         rb |= (~0U) << 8;
@@ -1357,6 +1411,9 @@ int Thumbulator::execute()
 
     //B(2) unconditional branch
     case Op::b2: {
+    #ifdef THUMB_STATS
+      ++_stats.branches;
+    #endif
       rb = (inst >> 0) & 0x7FF;
       if(rb & (1 << 10))
         rb |= (~0U) << 11;
@@ -1628,36 +1685,36 @@ int Thumbulator::execute()
             {
               myCartridge->thumbCallback(0, read_register(2), read_register(3));
               // approximated cycles
-              INC_CYCLES(_flashCycles + 1);     // this instruction
-              INC_CYCLES(6);                    // ARM code NoteStore
-              INC_CYCLES(2 + _flashCycles + 2); // ARM code ReturnC
+              INC_ARM_CYCLES(_flashCycles + 1);     // this instruction
+              INC_ARM_CYCLES(6);                    // ARM code NoteStore
+              INC_ARM_CYCLES(2 + _flashCycles + 2); // ARM code ReturnC
               handled = true;
             }
             else if (pc == CDF1_ResetWave)
             {
               myCartridge->thumbCallback(1, read_register(2), 0);
               // approximated cycles
-              INC_CYCLES(_flashCycles + 1);     // this instruction
-              INC_CYCLES(6 + _flashCycles + 2); // ARM code ResetWaveStore
-              INC_CYCLES(2 + _flashCycles + 2); // ARM code ReturnC
+              INC_ARM_CYCLES(_flashCycles + 1);     // this instruction
+              INC_ARM_CYCLES(6 + _flashCycles + 2); // ARM code ResetWaveStore
+              INC_ARM_CYCLES(2 + _flashCycles + 2); // ARM code ReturnC
               handled = true;
             }
             else if (pc == CDF1_GetWavePtr)
             {
               write_register(2, myCartridge->thumbCallback(2, read_register(2), 0));
               // approximated cycles
-              INC_CYCLES(_flashCycles + 1);     // this instruction
-              INC_CYCLES(6 + _flashCycles + 2); // ARM code WavePtrFetch
-              INC_CYCLES(2 + _flashCycles + 2); // ARM code ReturnC
+              INC_ARM_CYCLES(_flashCycles + 1);     // this instruction
+              INC_ARM_CYCLES(6 + _flashCycles + 2); // ARM code WavePtrFetch
+              INC_ARM_CYCLES(2 + _flashCycles + 2); // ARM code ReturnC
               handled = true;
             }
             else if (pc == CDF1_SetWaveSize)
             {
               myCartridge->thumbCallback(3, read_register(2), read_register(3));
               // approximated cycles
-              INC_CYCLES(_flashCycles + 1);           // this instruction
-              INC_CYCLES(18 + _flashCycles * 3 + 2);  // ARM code WaveSizeStore
-              INC_CYCLES(2 + _flashCycles + 2);       // ARM code ReturnC
+              INC_ARM_CYCLES(_flashCycles + 1);           // this instruction
+              INC_ARM_CYCLES(18 + _flashCycles * 3 + 2);  // ARM code WaveSizeStore
+              INC_ARM_CYCLES(2 + _flashCycles + 2);       // ARM code ReturnC
               handled = true;
             }
             else if (pc == 0x0000083a)
@@ -1850,9 +1907,8 @@ int Thumbulator::execute()
       DO_DISS(statusMsg << "ldr r" << dec << rd << ",[r" << dec << rn << ",#0x" << Base::HEX2 << rb << "]" << endl);
       rb = read_register(rn) + rb;
       rc = read32(rb);
-      INC_N_CYCLES(rb, AccessType::data);
-      INC_I_CYCLES;
       write_register(rd, rc);
+      INC_LDR_CYCLES;
       return 0;
     }
 
@@ -1864,9 +1920,8 @@ int Thumbulator::execute()
       DO_DISS(statusMsg << "ldr r" << dec << rd << ",[r" << dec << rn << ",r" << dec << "]" << endl);
       rb = read_register(rn) + read_register(rm);
       rc = read32(rb);
-      INC_N_CYCLES(rb, AccessType::data);
-      INC_I_CYCLES;
       write_register(rd, rc);
+      INC_LDR_CYCLES;
       return 0;
     }
 
@@ -1881,9 +1936,8 @@ int Thumbulator::execute()
       rb += ra;
       DO_DISS(statusMsg << ";@ 0x" << Base::HEX2 << rb << endl);
       rc = read32(rb);
-      INC_N_CYCLES(rb, AccessType::data);
-      INC_I_CYCLES;
       write_register(rd, rc);
+      INC_LDR_CYCLES;
       return 0;
     }
 
@@ -1897,9 +1951,8 @@ int Thumbulator::execute()
       //ra&=~3;
       rb += ra;
       rc = read32(rb);
-      INC_N_CYCLES(rb, AccessType::data);
-      INC_I_CYCLES;
       write_register(rd, rc);
+      INC_LDR_CYCLES;
       return 0;
     }
 
@@ -1922,9 +1975,8 @@ int Thumbulator::execute()
       else
       {
       }
-      INC_N_CYCLES(rb & (~1U), AccessType::data);
-      INC_I_CYCLES;
       write_register(rd, rc & 0xFF);
+      INC_LDRB_CYCLES;
       return 0;
     }
 
@@ -1944,9 +1996,8 @@ int Thumbulator::execute()
       {
         rc >>= 8;
       }
-      INC_N_CYCLES(rb & (~1U), AccessType::data);
-      INC_I_CYCLES;
       write_register(rd, rc & 0xFF);
+      INC_LDRB_CYCLES;
       return 0;
     }
 
@@ -1959,9 +2010,8 @@ int Thumbulator::execute()
       DO_DISS(statusMsg << "ldrh r" << dec << rd << ",[r" << dec << rn << ",#0x" << Base::HEX2 << rb << "]" << endl);
       rb = read_register(rn) + rb;
       rc = read16(rb);
-      INC_N_CYCLES(rb, AccessType::data);
-      INC_I_CYCLES;
       write_register(rd, rc & 0xFFFF);
+      INC_LDR_CYCLES;
       return 0;
     }
 
@@ -1974,8 +2024,7 @@ int Thumbulator::execute()
       rb = read_register(rn) + read_register(rm);
       rc = read16(rb);
       write_register(rd, rc & 0xFFFF);
-      INC_N_CYCLES(rb, AccessType::data);
-      INC_I_CYCLES;
+      INC_LDR_CYCLES;
       return 0;
     }
 
@@ -1998,9 +2047,8 @@ int Thumbulator::execute()
       rc &= 0xFF;
       if(rc & 0x80)
         rc |= ((~0U) << 8);
-      INC_N_CYCLES(rb & (~1U), AccessType::data);
-      INC_I_CYCLES;
       write_register(rd, rc);
+      INC_LDRB_CYCLES;
       return 0;
     }
 
@@ -2015,9 +2063,8 @@ int Thumbulator::execute()
       rc &= 0xFFFF;
       if(rc & 0x8000)
         rc |= ((~0U) << 16);
-      INC_N_CYCLES(rb, AccessType::data);
-      INC_I_CYCLES;
       write_register(rd, rc);
+      INC_LDR_CYCLES;
       return 0;
     }
 
@@ -2043,7 +2090,7 @@ int Thumbulator::execute()
       write_register(rd, rc);
       do_nflag(rc);
       do_zflag(rc);
-      INC_I_CYCLES;
+      INC_SHIFT_CYCLES;
       return 0;
     }
 
@@ -2076,7 +2123,7 @@ int Thumbulator::execute()
       write_register(rd, rc);
       do_nflag(rc);
       do_zflag(rc);
-      INC_I_CYCLES;
+      INC_SHIFT_CYCLES;
       return 0;
     }
 
@@ -2100,7 +2147,7 @@ int Thumbulator::execute()
       write_register(rd, rc);
       do_nflag(rc);
       do_zflag(rc);
-      INC_I_CYCLES;
+      INC_SHIFT_CYCLES;
       return 0;
     }
 
@@ -2133,7 +2180,7 @@ int Thumbulator::execute()
       write_register(rd, rc);
       do_nflag(rc);
       do_zflag(rc);
-      INC_I_CYCLES;
+      INC_SHIFT_CYCLES;
       return 0;
     }
 
@@ -2460,7 +2507,7 @@ int Thumbulator::execute()
       write_register(rd, rc);
       do_nflag(rc);
       do_zflag(rc);
-      INC_I_CYCLES;
+      INC_SHIFT_CYCLES;
       return 0;
     }
 
@@ -2546,8 +2593,7 @@ int Thumbulator::execute()
       rb = read_register(rn) + rb;
       rc = read_register(rd);
       write32(rb, rc);
-      INC_N_CYCLES(rb, AccessType::data);
-      FETCH_TYPE_N;
+      INC_STR_CYCLES;
       return 0;
     }
 
@@ -2560,8 +2606,7 @@ int Thumbulator::execute()
       rb = read_register(rn) + read_register(rm);
       rc = read_register(rd);
       write32(rb, rc);
-      INC_N_CYCLES(rb, AccessType::data);
-      FETCH_TYPE_N;
+      INC_STR_CYCLES;
       return 0;
     }
 
@@ -2575,8 +2620,7 @@ int Thumbulator::execute()
       //fprintf(stderr,"0x%08X\n",rb);
       rc = read_register(rd);
       write32(rb, rc);
-      INC_N_CYCLES(rb, AccessType::data);
-      FETCH_TYPE_N;
+      INC_STR_CYCLES;
       return 0;
     }
 
@@ -2604,8 +2648,7 @@ int Thumbulator::execute()
         ra |= rc & 0x00FF;
       }
       write16(rb & (~1U), ra & 0xFFFF);
-      INC_N_CYCLES(rb, AccessType::data);
-      FETCH_TYPE_N;
+      INC_STRB_CYCLES;
       return 0;
     }
 
@@ -2633,8 +2676,7 @@ int Thumbulator::execute()
         ra |= rc & 0x00FF;
       }
       write16(rb & (~1U), ra & 0xFFFF);
-      INC_N_CYCLES(rb, AccessType::data);
-      FETCH_TYPE_N;
+      INC_STRB_CYCLES;
       return 0;
     }
 
@@ -2648,8 +2690,7 @@ int Thumbulator::execute()
       rb = read_register(rn) + rb;
       rc=  read_register(rd);
       write16(rb, rc & 0xFFFF);
-      INC_N_CYCLES(rb, AccessType::data);
-      FETCH_TYPE_N;
+      INC_STR_CYCLES;
       return 0;
     }
 
@@ -2662,8 +2703,7 @@ int Thumbulator::execute()
       rb = read_register(rn) + read_register(rm);
       rc = read_register(rd);
       write16(rb, rc & 0xFFFF);
-      INC_N_CYCLES(rb, AccessType::data);
-      FETCH_TYPE_N;
+      INC_STR_CYCLES;
       return 0;
     }
 
@@ -2848,7 +2888,12 @@ int Thumbulator::reset()
   statusMsg.str("");
 #endif
 #ifdef THUMB_STATS
-  _stats.reads = _stats.writes = 0;
+  _stats.reads = _stats.writes
+    = _stats.nCylces = _stats.sCylces = _stats.iCylces
+    = _stats.branches = _stats.taken
+    = _stats.mamPrefetchHits = _stats.mamPrefetchMisses
+    = _stats.mamBranchHits = _stats.mamBranchMisses
+    = _stats.mamDataHits = _stats.mamDataMisses = 0;
 #endif
 #ifdef THUMB_CYCLE_COUNT
   _totalCycles = 0;
@@ -2899,7 +2944,7 @@ Thumbulator::ChipPropsType Thumbulator::setChipType(ChipType type)
   - If a branch target cannot be found in the two buffers a new line of 128 bits is read from
     memory and put into the branch trail buffer. This causes wait states.
 
-  Data access in only checking and updating the data buffer.
+  Data access is only checking and updating the data buffer.
 
   The function returns true in case of a buffer hit.
 */
@@ -2915,25 +2960,44 @@ bool Thumbulator::isMamBuffered(uInt32 addr, AccessType accessType)
       case AccessType::prefetch:
         if(addr != _prefetchBufferAddr[0] && addr != _branchBufferAddr[0])
         {
+        #ifdef THUMB_STATS
+          ++_stats.mamPrefetchMisses;
+        #endif
           _prefetchBufferAddr[0] = addr;
           return false;
         }
+      #ifdef THUMB_STATS
+        ++_stats.mamPrefetchHits;
+      #endif
         break;
 
       case AccessType::branch:
         if(addr != _prefetchBufferAddr[0] && addr != _branchBufferAddr[0])
         {
+        #ifdef THUMB_STATS
+          ++_stats.mamBranchMisses;
+        #endif
           _branchBufferAddr[0] = addr;
           return false;
         }
+      #ifdef THUMB_STATS
+        ++_stats.mamBranchHits;
+      #endif
+
         break;
 
       default: // AccessType::data
         if(addr != _dataBufferAddr)
         {
+        #ifdef THUMB_STATS
+          ++_stats.mamDataMisses;
+        #endif
           _dataBufferAddr = addr;
           return false;
         }
+      #ifdef THUMB_STATS
+        ++_stats.mamDataHits;
+      #endif
         break;
     };
   }
@@ -2951,27 +3015,45 @@ bool Thumbulator::isMamBuffered(uInt32 addr, AccessType accessType)
         _prefetchBufferAddr[bank ^ 1] = addr + 0x80;
         if(addr != _prefetchBufferAddr[bank] && addr != _branchBufferAddr[bank])
         {
+        #ifdef THUMB_STATS
+          ++_stats.mamPrefetchMisses;
+        #endif
           _prefetchBufferAddr[bank] = addr;
           return false;
         }
+      #ifdef THUMB_STATS
+        ++_stats.mamPrefetchHits;
+      #endif
         break;
 
       case AccessType::branch:
         if(addr != _prefetchBufferAddr[bank] && addr != _branchBufferAddr[bank])
         {
+        #ifdef THUMB_STATS
+          ++_stats.mamBranchMisses;
+        #endif
           // load both branch trail buffers at once
           _branchBufferAddr[bank] = addr;
           _branchBufferAddr[bank ^ 1] = addr + 0x80;
           return false;
         }
+      #ifdef THUMB_STATS
+        ++_stats.mamBranchHits;
+      #endif
         break;
 
       default: // AccessType::data
         if(addr != _dataBufferAddr)
         {
+        #ifdef THUMB_STATS
+          ++_stats.mamDataMisses;
+        #endif
           _dataBufferAddr = addr;
           return false;
         }
+      #ifdef THUMB_STATS
+        ++_stats.mamDataHits;
+      #endif
         break;
     };
   }
@@ -3057,14 +3139,22 @@ void Thumbulator::incCycles(AccessType accessType, uInt32 cycles)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Thumbulator::incSCycles(uInt32 addr, AccessType accessType)
 {
+#ifdef THUMB_STATS
+  ++_stats.sCylces;
+#endif
+
   uInt32 cycles;
+
 
   if(addr & 0xC0000000) // RAM, peripherals
     cycles = 1;
   else // Flash
   {
-    if(mamcr == MamModeType::mode0)
+    if(mamcr == MamModeType::mode0 ||
+       (mamcr == MamModeType::mode1 && accessType == AccessType::data))
+    {
       cycles = _flashCycles; // 3|4
+    }
     else
     {
       if(isMamBuffered(addr, accessType) || mamcr == MamModeType::modeX)
@@ -3075,27 +3165,48 @@ void Thumbulator::incSCycles(uInt32 addr, AccessType accessType)
   }
 
 #ifdef MERGE_I_S
-  if(accessType != AccessType::prefetch)
-  {
-    if(_lastCycleType[0] == CycleType::I)
-    {
-      _lastCycleType[0] = CycleType::S; // merge cannot be used twice!
-      --cycles;
-    }
-  }
-  else if(_lastCycleType[2] == CycleType::I)
-    --cycles;
+  //if(accessType != AccessType::prefetch)
+  //{
+  //  if(_lastCycleType[0] == CycleType::I)
+  //  {
+  //    _lastCycleType[0] = CycleType::S; // merge cannot be used twice!
+  //    --cycles;
+  //  }
+  //}
+  //else if(_lastCycleType[2] == CycleType::I)
+  //  --cycles;
+
+  //if(accessType == AccessType::prefetch &&
+  //  _lastCycleType[_pipeIdx] == CycleType::I)
+  //  --cycles;
+
 
   _lastCycleType[2] = _lastCycleType[1];
   _lastCycleType[1] = _lastCycleType[0];
   _lastCycleType[0] = CycleType::S;
+  //_lastCycleType[_pipeIdx] = CycleType::S;
 #endif
   incCycles(accessType, cycles);
+
+
+#ifdef MERGE_I_S
+  if(accessType == AccessType::branch)
+  {
+    if(_lastCycleType[1] == CycleType::I || _lastCycleType[2] == CycleType::I)
+    _lastCycleType[1] = _lastCycleType[2] = CycleType::S;
+    //if(_lastCycleType[_pipeIdx ^ 1] == CycleType::I || _lastCycleType[_pipeIdx ^ 2] == CycleType::I)
+    //  _lastCycleType[_pipeIdx ^ 1] = _lastCycleType[_pipeIdx ^ 2] = CycleType::S;
+  }
+#endif // MERGE_I_S
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Thumbulator::incNCycles(uInt32 addr, AccessType accessType)
 {
+#ifdef THUMB_STATS
+  ++_stats.nCylces;
+#endif
+
   uInt32 cycles;
 
   if(addr & 0xC0000000) // RAM, peripherals
@@ -3114,6 +3225,7 @@ void Thumbulator::incNCycles(uInt32 addr, AccessType accessType)
   _lastCycleType[2] = _lastCycleType[1];
   _lastCycleType[1] = _lastCycleType[0];
   _lastCycleType[0] = CycleType::N;
+  //_lastCycleType[_pipeIdx] = CycleType::N;
 #endif
   incCycles(accessType, cycles);
 }
@@ -3121,6 +3233,10 @@ void Thumbulator::incNCycles(uInt32 addr, AccessType accessType)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Thumbulator::incICycles(uInt32 m)
 {
+#ifdef THUMB_STATS
+  ++_stats.iCylces;
+#endif
+
  #ifdef EMULATE_PIPELINE
   _fetchPipeline += m;
   //if(_memory0Pipeline)
@@ -3140,6 +3256,7 @@ void Thumbulator::incICycles(uInt32 m)
   _lastCycleType[2] = _lastCycleType[1];
   _lastCycleType[1] = _lastCycleType[0];
   _lastCycleType[0] = CycleType::I;
+  //_lastCycleType[_pipeIdx] = CycleType::I;
 #endif
   _totalCycles += m;
 }

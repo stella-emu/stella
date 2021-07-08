@@ -48,7 +48,7 @@ class Cartridge;
 #ifdef DEBUGGER_SUPPORT
   #define THUMB_CYCLE_COUNT
   //#define COUNT_OPS
-  //#define THUMB_STATS
+  #define THUMB_STATS
 #endif
 
 #ifdef THUMB_CYCLE_COUNT
@@ -88,6 +88,11 @@ class Thumbulator
       uInt32 instructions{0};
     #ifdef THUMB_STATS
       uInt32 reads{0}, writes{0};
+      uInt32 nCylces{0}, sCylces{0}, iCylces{0};
+      uInt32 branches{0}, taken{0};
+      uInt32 mamPrefetchHits{0}, mamPrefetchMisses{0};
+      uInt32 mamBranchHits{0}, mamBranchMisses{0};
+      uInt32 mamDataHits{0}, mamDataMisses{0};
     #endif
     };
 
@@ -303,8 +308,10 @@ class Thumbulator
 
   #ifdef THUMB_CYCLE_COUNT
     double _armCyclesFactor{1.05};
-    CycleType _prefetchCycleType{CycleType::S};
+    uInt32 _pipeIdx{0};
+    CycleType _prefetchCycleType[3]{CycleType::S};
     CycleType _lastCycleType[3]{CycleType::S};
+    AccessType _prefetchAccessType[3]{AccessType::data};
    #ifdef EMULATE_PIPELINE
     uInt32 _fetchPipeline{0}; // reserve fetch cycles resulting from pipelining (execution stage)
     uInt32 _memory0Pipeline{0}, _memory1Pipeline{0};
