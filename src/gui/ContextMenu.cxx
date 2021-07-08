@@ -169,6 +169,13 @@ const string& ContextMenu::getSelectedName() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ContextMenu::setSelectedName(const string& name)
+{
+  if(_selectedItem >= 0)
+    _entries[_selectedItem].first = name;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const Variant& ContextMenu::getSelectedTag() const
 {
   return (_selectedItem >= 0) ? _entries[_selectedItem].second : EmptyVariant;

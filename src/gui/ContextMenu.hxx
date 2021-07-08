@@ -71,6 +71,7 @@ class ContextMenu : public Dialog, public CommandSender
     /** Accessor methods for the currently selected item. */
     int getSelected() const;
     const string& getSelectedName() const;
+    void setSelectedName(const string& name);
     const Variant& getSelectedTag() const;
 
     /** This dialog uses its own positioning, so we override Dialog::setPosition() */
