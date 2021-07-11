@@ -105,9 +105,18 @@ using Common::Base;
   #define INC_N_CYCLES(addr, accessType)
   #define INC_I_CYCLES
   #define INC_I_CYCLES_M(m)
+
+  #define INC_SHIFT_CYCLES
+
   #define INC_LDR_CYCLES
   #define INC_LDRB_CYCLES
+
+  #define INC_STR_CYCLES
+  #define INC_STRB_CYCLES
+
+  #define FETCH_TYPE(cycleType, accessType)
   #define FETCH_TYPE_N
+
   // ARM cycles
   #define INC_ARM_CYCLES(m)
 #endif
