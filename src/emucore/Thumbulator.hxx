@@ -210,6 +210,10 @@ class Thumbulator
       prefetch, branch, data
     };
   #endif
+    struct Pipeline {
+      uInt32 inst;
+      Op op;
+    };
     const std::array<ChipPropsType, uInt32(ChipType::numTypes)> ChipProps =
     {{
       { 70.0, 4, 1 }, // LPC2101_02_03
@@ -222,7 +226,6 @@ class Thumbulator
     string doRun(uInt32& cycles, bool irqDrivenAudio);
     uInt32 read_register(uInt32 reg);
     void write_register(uInt32 reg, uInt32 data, bool isFlowBreak = true);
-    uInt32 fetch16(uInt32 addr);
     uInt32 read16(uInt32 addr);
     uInt32 read32(uInt32 addr);
   #ifndef UNSAFE_OPTIMIZATIONS
@@ -251,7 +254,12 @@ class Thumbulator
     void dump_counters();
     void dump_regs();
   #endif
+    void next();
+    int step();
+    void fetch();
+    void decode();
     int execute();
+
     int reset();
 
   #ifdef THUMB_CYCLE_COUNT
@@ -309,6 +317,7 @@ class Thumbulator
   #ifdef THUMB_CYCLE_COUNT
     double _armCyclesFactor{1.05};
     uInt32 _pipeIdx{0};
+    Pipeline _pipe[3];
     CycleType _prefetchCycleType[3]{CycleType::S};
     CycleType _lastCycleType[3]{CycleType::S};
     AccessType _prefetchAccessType[3]{AccessType::data};

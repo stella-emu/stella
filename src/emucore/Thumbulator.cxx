@@ -18,7 +18,7 @@
 //============================================================================
 // This class provides Thumb emulation code ("Thumbulator")
 //    by David Welch (dwelch@dwelch.com)
-// Modified by Fred Quimby
+// Modified by Fred Quimby & Thomas Jentzsch
 // Code is public domain and used with the author's consent
 //============================================================================
 
@@ -121,6 +121,9 @@ using Common::Base;
   #define INC_ARM_CYCLES(m)
 #endif
 
+constexpr float PC_REG = 15;
+#define PIPED
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Thumbulator::Thumbulator(const uInt16* rom_ptr, uInt16* ram_ptr, uInt32 rom_size,
                          const uInt32 c_base, const uInt32 c_start, const uInt32 c_stack,
@@ -155,9 +158,16 @@ string Thumbulator::doRun(uInt32& cycles, bool irqDrivenAudio)
 {
   _irqDrivenAudio = irqDrivenAudio;
   reset();
+#ifdef PIPED
+  fetch();  // pipeline[n-2]       // 0
+  next();                          // 0 -> 1
+  fetch();  // pipeline[n-1]       // 1
+  decode(); // pipeline[n-2]       // 1
+#endif
   for(;;)
   {
-    if(execute()) break;
+    //if(execute()) break;
+    if(step()) break;
 #ifndef UNSAFE_OPTIMIZATIONS
     if(_stats.instructions > 500000) // way more than would otherwise be possible
       throw runtime_error("instructions > 500000");
@@ -276,19 +286,43 @@ void Thumbulator::dump_regs()
   statusMsg << endl
             << "SP = " << Base::HEX8 << reg_norm[13] << "  "
             << "LR = " << Base::HEX8 << reg_norm[14] << "  "
-            << "PC = " << Base::HEX8 << reg_norm[15] << "  "
+            << "PC = " << Base::HEX8 << reg_norm[PC_REG] << "  "
             << endl;
 }
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 Thumbulator::fetch16(uInt32 addr)
+void Thumbulator::next()
 {
+  _pipeIdx = (++_pipeIdx) % 3;
+  uInt32 pc = read_register(PC_REG);
+  write_register(PC_REG, pc + 2, false);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int Thumbulator::step()
+{
+  next();                 // n++
+
+  int result = execute(); // pipeline[n-2];
+  decode();               // pipeline[n-1]
+  fetch();                // pipeline[n]
+
+  return result;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Thumbulator::fetch()
+{
+#ifdef PIPED
+  uInt32 pc = read_register(PC_REG);
+#else
+  uInt32 pc = read_register(PC_REG) - 4;
+#endif
 #ifndef UNSAFE_OPTIMIZATIONS
-  uInt32 data;
+  uInt32 inst;
 
 #ifdef THUMB_CYCLE_COUNT
-  _pipeIdx = (++_pipeIdx) % 3;
 
 #ifdef MERGE_I_S
   if(_lastCycleType[2] == CycleType::I)
@@ -307,41 +341,71 @@ uInt32 Thumbulator::fetch16(uInt32 addr)
   //  }
   //  else
   //#endif
-      INC_S_CYCLES(addr, AccessType::prefetch);
+      INC_S_CYCLES(pc, AccessType::prefetch);
       //INC_S_CYCLES(addr, _prefetchAccessType[_pipeIdx]);
   }
   else
   {
-    INC_N_CYCLES(addr, AccessType::prefetch); // or ::data ?
+    INC_N_CYCLES(pc, AccessType::prefetch); // or ::data ?
     //INC_N_CYCLES(addr, _prefetchAccessType[_pipeIdx]);
   }
   _prefetchCycleType[_pipeIdx] = CycleType::S; // default
   //_prefetchAccessType[_pipeIdx] = AccessType::prefetch; // default
 #endif
 
-  switch(addr & 0xF0000000)
+  switch(pc & 0xF0000000)
   {
     case 0x00000000: //ROM
-      addr &= ROMADDMASK;
-      if(addr < 0x50)
-        fatalError("fetch16", addr, "abort");
-      addr >>= 1;
-      data = CONV_RAMROM(rom[addr]);
-      DO_DBUG(statusMsg << "fetch16(" << Base::HEX8 << addr << ")=" << Base::HEX4 << data << endl);
-      return data;
+      pc &= ROMADDMASK;
+      if(pc < 0x50)
+        fatalError("fetch", pc, "abort");
+      pc >>= 1;
+      inst = CONV_RAMROM(rom[pc]);
+      DO_DBUG(statusMsg << "fetch(" << Base::HEX8 << pc << ")=" << Base::HEX4 << inst << endl);
+      break;
 
     case 0x40000000: //RAM
-      addr &= RAMADDMASK;
-      addr >>= 1;
-      data = CONV_RAMROM(ram[addr]);
-      DO_DBUG(statusMsg << "fetch16(" << Base::HEX8 << addr << ")=" << Base::HEX4 << data << endl);
-      return data;
+      pc &= RAMADDMASK;
+      pc >>= 1;
+      inst = CONV_RAMROM(ram[pc]);
+      DO_DBUG(statusMsg << "fetch(" << Base::HEX8 << pc << ")=" << Base::HEX4 << inst << endl);
+      break;
+
+    default:
+      inst = 0;
+      fatalError("fetch", pc, "abort");
   }
-  return fatalError("fetch16", addr, "abort");
 #else
-  addr &= ROMADDMASK;
-  addr >>= 1;
-  return CONV_RAMROM(rom[addr]);
+  pc &= ROMADDMASK;
+  pc >>= 1;
+  inst = CONV_RAMROM(rom[pc]);
+#endif
+  _pipe[_pipeIdx].inst = inst;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Thumbulator::decode()
+{
+#ifdef PIPED
+  uInt32 pipeIdx = (_pipeIdx + 2) % 3;
+  uInt32 pc = read_register(PC_REG) - 2; // wie fetch!
+#else
+  uInt32 pipeIdx = _pipeIdx;
+  uInt32 pc = read_register(PC_REG) - 4; // wie fetch!
+#endif
+  Op decodedOp;
+
+#ifndef UNSAFE_OPTIMIZATIONS
+  if((pc & 0xF0000000) == 0 && pc < romSize)
+    decodedOp = decodedRom[pc >> 1];
+  else
+    decodedOp = decodeInstructionWord(_pipe[pipeIdx].inst);
+#else
+  decodedOp = decodedRom[(pc & ROMADDMASK) >> 1];
+#endif
+  _pipe[pipeIdx].op = decodedOp;
+#ifdef COUNT_OPS
+  ++opCount[int(decodedOp)];
 #endif
 }
 
@@ -722,7 +786,7 @@ uInt32 Thumbulator::read_register(uInt32 reg)
   uInt32 data = reg_norm[reg];
   DO_DBUG(statusMsg << "read_register(" << dec << reg << ")=" << Base::HEX8 << data << endl);
 #ifndef UNSAFE_OPTIMIZATIONS
-  if(reg == 15)
+  if(reg == PC_REG)
   {
     if(data & 1)
     {
@@ -741,7 +805,7 @@ void Thumbulator::write_register(uInt32 reg, uInt32 data, bool isFlowBreak)
 
   DO_DBUG(statusMsg << "write_register(" << dec << reg << "," << Base::HEX8 << data << ")" << endl);
 //#ifndef UNSAFE_OPTIMIZATIONS // this fails when combined with read_register UNSAFE_OPTIMIZATIONS
-  if(reg == 15)
+  if(reg == PC_REG)
   {
     data &= ~1;
     if(isFlowBreak)
@@ -750,10 +814,20 @@ void Thumbulator::write_register(uInt32 reg, uInt32 data, bool isFlowBreak)
       ++_stats.taken;
     #endif
       // dummy fetch + fill the pipeline
-      //INC_N_CYCLES(reg_norm[15] - 2, AccessType::prefetch);
+      //INC_N_CYCLES(reg_norm[PC_REG] - 2, AccessType::prefetch);
       //INC_S_CYCLES(data - 2, AccessType::branch);
-      INC_N_CYCLES(reg_norm[15] + 4, AccessType::prefetch);
+      INC_N_CYCLES(reg_norm[PC_REG] + 4, AccessType::prefetch);
       INC_S_CYCLES(data, AccessType::branch);
+
+      fetch(); // dummy
+      reg_norm[PC_REG] = data;
+      fetch();  // pipeline[n-2]
+#ifdef PIPED
+      next();
+#endif
+      fetch();  // pipeline[n-1]
+      decode(); // pipeline[n-2]
+      return;
     }
   }
 //#endif
@@ -1040,34 +1114,39 @@ Thumbulator::Op Thumbulator::decodeInstructionWord(uint16_t inst) {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Thumbulator::execute()
 {
-  uInt32 pc, sp, inst, ra, rb, rc, rm, rd, rn, rs, op;
+#ifdef PIPED
+  uInt32 pipeIdx = (_pipeIdx + 1) % 3;
+#else
+  uInt32 pipeIdx = _pipeIdx;
+#endif
 
-  pc = read_register(15);
+  uInt32 sp, ra, rb, rc, rm, rd, rn, rs, op;
+  uInt32 pc = read_register(PC_REG);
+  uInt32 inst = _pipe[pipeIdx].inst;
+  Op decodedOp = _pipe[pipeIdx].op;
 
-  uInt32 instructionPtr = pc - 2;
-  inst = fetch16(instructionPtr);
+  //uInt32 instructionPtr = pc - 2;
+  ////inst = fetch(instructionPtr);
+  //inst = fetch();
 
-  pc += 2;
-  write_register(15, pc, false);
+  //pc += 2;
+  //write_register(PC_REG, pc, false);
   DO_DISS(statusMsg << Base::HEX8 << (pc-5) << ": " << Base::HEX4 << inst << " ");
 
 #ifndef UNSAFE_OPTIMIZATIONS
   ++_stats.instructions;
 #endif
 
-  Op decodedOp;
-#ifndef UNSAFE_OPTIMIZATIONS
-  if ((instructionPtr & 0xF0000000) == 0 && instructionPtr < romSize)
-    decodedOp = decodedRom[instructionPtr >> 1];
-  else
-    decodedOp = decodeInstructionWord(inst);
-#else
-  decodedOp = decodedRom[(instructionPtr & ROMADDMASK) >> 1];
-#endif
+//  Op decodedOp;
+//#ifndef UNSAFE_OPTIMIZATIONS
+//  if ((instructionPtr & 0xF0000000) == 0 && instructionPtr < romSize)
+//    decodedOp = decodedRom[instructionPtr >> 1];
+//  else
+//    decodedOp = decodeInstructionWord(inst);
+//#else
+//  decodedOp = decodedRom[(instructionPtr & ROMADDMASK) >> 1];
+//#endif
 
-#ifdef COUNT_OPS
-  ++opCount[int(decodedOp)];
-#endif
   switch (decodedOp) {
     //ADC
     case Op::adc: {
@@ -1158,14 +1237,16 @@ int Thumbulator::execute()
       ra = read_register(rd);
       rb = read_register(rm);
       rc = ra + rb;
-      if(rd == 15)
+      if(rd == PC_REG)
       {
 #ifndef UNSAFE_OPTIMIZATIONS
         if((rc & 1) == 0)
           fatalError("add pc", pc, rc, " produced an arm address");
 #endif
         //rc &= ~1; //write_register may do this as well
+#ifndef PIPED
         rc += 2;  //The program counter is special
+#endif
       }
       //fprintf(stderr,"0x%08X = 0x%08X + 0x%08X\n",rc,ra,rb);
       write_register(rd, rc);
@@ -1178,7 +1259,7 @@ int Thumbulator::execute()
       rd = (inst >> 8) & 0x7;
       rb <<= 2;
       DO_DISS(statusMsg << "add r" << dec << rd << ",PC,#0x" << Base::HEX2 << rb << endl);
-      ra = read_register(15);
+      ra = read_register(PC_REG);
       rc = (ra & (~3U)) + rb;
       write_register(rd, rc);
       return 0;
@@ -1307,83 +1388,84 @@ int Thumbulator::execute()
         rb |= (~0U) << 8;
       rb <<= 1;
       rb += pc;
+#ifndef PIPED
       rb += 2;
-
+#endif
       op = (inst >> 8) & 0xF;
       switch(op)
       {
         case 0x0: //b eq  z set
           DO_DISS(statusMsg << "beq 0x" << Base::HEX8 << (rb-3) << endl);
           if(cpsr & CPSR_Z)
-            write_register(15, rb);
+            write_register(PC_REG, rb);
           return 0;
 
         case 0x1: //b ne  z clear
           DO_DISS(statusMsg << "bne 0x" << Base::HEX8 << (rb-3) << endl);
           if(!(cpsr & CPSR_Z))
-            write_register(15, rb);
+            write_register(PC_REG, rb);
           return 0;
 
         case 0x2: //b cs c set
           DO_DISS(statusMsg << "bcs 0x" << Base::HEX8 << (rb-3) << endl);
           if(cpsr & CPSR_C)
-            write_register(15, rb);
+            write_register(PC_REG, rb);
           return 0;
 
         case 0x3: //b cc c clear
           DO_DISS(statusMsg << "bcc 0x" << Base::HEX8 << (rb-3) << endl);
           if(!(cpsr & CPSR_C))
-            write_register(15, rb);
+            write_register(PC_REG, rb);
           return 0;
 
         case 0x4: //b mi n set
           DO_DISS(statusMsg << "bmi 0x" << Base::HEX8 << (rb-3) << endl);
           if(cpsr & CPSR_N)
-            write_register(15, rb);
+            write_register(PC_REG, rb);
           return 0;
 
         case 0x5: //b pl n clear
           DO_DISS(statusMsg << "bpl 0x" << Base::HEX8 << (rb-3) << endl);
           if(!(cpsr & CPSR_N))
-            write_register(15, rb);
+            write_register(PC_REG, rb);
           return 0;
 
         case 0x6: //b vs v set
           DO_DISS(statusMsg << "bvs 0x" << Base::HEX8 << (rb-3) << endl);
           if(cpsr & CPSR_V)
-            write_register(15, rb);
+            write_register(PC_REG, rb);
           return 0;
 
         case 0x7: //b vc v clear
           DO_DISS(statusMsg << "bvc 0x" << Base::HEX8 << (rb-3) << endl);
           if(!(cpsr & CPSR_V))
-            write_register(15, rb);
+            write_register(PC_REG, rb);
           return 0;
 
         case 0x8: //b hi c set z clear
           DO_DISS(statusMsg << "bhi 0x" << Base::HEX8 << (rb-3) << endl);
           if((cpsr & CPSR_C) && (!(cpsr & CPSR_Z)))
-            write_register(15, rb);
+            write_register(PC_REG, rb);
           return 0;
 
         case 0x9: //b ls c clear or z set
           DO_DISS(statusMsg << "bls 0x" << Base::HEX8 << (rb-3) << endl);
           if((cpsr & CPSR_Z) || (!(cpsr & CPSR_C)))
-            write_register(15, rb);
+            write_register(PC_REG, rb);
           return 0;
 
         case 0xA: //b ge N == V
           DO_DISS(statusMsg << "bge 0x" << Base::HEX8 << (rb-3) << endl);
           if(((cpsr & CPSR_N) && (cpsr & CPSR_V)) ||
              ((!(cpsr & CPSR_N)) && (!(cpsr & CPSR_V))))
-            write_register(15, rb);
+            write_register(PC_REG, rb);
           return 0;
 
         case 0xB: //b lt N != V
           DO_DISS(statusMsg << "blt 0x" << Base::HEX8 << (rb-3) << endl);
           if((!(cpsr & CPSR_N) && (cpsr & CPSR_V)) ||
             (((cpsr & CPSR_N)) && !(cpsr & CPSR_V)))
-            write_register(15, rb);
+            write_register(PC_REG, rb);
           return 0;
 
         case 0xC: //b gt Z==0 and N == V
@@ -1392,7 +1474,7 @@ int Thumbulator::execute()
           {
             if(((cpsr & CPSR_N) && (cpsr & CPSR_V)) ||
                ((!(cpsr & CPSR_N)) && (!(cpsr & CPSR_V))))
-              write_register(15, rb);
+              write_register(PC_REG, rb);
           }
           return 0;
 
@@ -1401,7 +1483,7 @@ int Thumbulator::execute()
           if((cpsr & CPSR_Z) ||
             (!(cpsr & CPSR_N) && (cpsr & CPSR_V)) ||
             (((cpsr & CPSR_N)) && !(cpsr & CPSR_V)))
-            write_register(15, rb);
+            write_register(PC_REG, rb);
           return 0;
 
         case 0xE:
@@ -1428,9 +1510,11 @@ int Thumbulator::execute()
         rb |= (~0U) << 11;
       rb <<= 1;
       rb += pc;
+#ifndef PIPED
       rb += 2;
+#endif
       DO_DISS(statusMsg << "B 0x" << Base::HEX8 << (rb-3) << endl);
-      write_register(15, rb);
+      write_register(PC_REG, rb);
       return 0;
     }
 
@@ -1474,10 +1558,12 @@ int Thumbulator::execute()
         //branch to thumb
         rb = read_register(14);
         rb += (inst & ((1 << 11) - 1)) << 1;
+#ifndef PIPED
         rb += 2;
+#endif
         DO_DISS(statusMsg << "bl 0x" << Base::HEX8 << (rb-3) << endl);
         write_register(14, (pc-2) | 1);
-        write_register(15, rb);
+        write_register(PC_REG, rb);
         return 0;
       }
       else if((inst & 0x1800) == 0x0800) //H=b01
@@ -1488,10 +1574,12 @@ int Thumbulator::execute()
         rb = read_register(14);
         rb += (inst & ((1 << 11) - 1)) << 1;
         rb &= 0xFFFFFFFC;
+#ifndef PIPED
         rb += 2;
+#endif
         DO_DISS(statusMsg << "bl 0x" << Base::HEX8 << (rb-3) << endl);
         write_register(14, (pc-2) | 1);
-        write_register(15, rb);
+        write_register(PC_REG, rb);
         return 0;
       }
       break;
@@ -1503,12 +1591,14 @@ int Thumbulator::execute()
       DO_DISS(statusMsg << "blx r" << dec << rm << endl);
       rc = read_register(rm);
       //fprintf(stderr,"blx r%u 0x%X 0x%X\n",rm,rc,pc);
+#ifndef PIPED
       rc += 2;
+#endif
       if(rc & 1)
       {
         write_register(14, (pc-2) | 1);
         //rc &= ~1;
-        write_register(15, rc);
+        write_register(PC_REG, rc);
         return 0;
       }
       else
@@ -1524,13 +1614,15 @@ int Thumbulator::execute()
       rm = (inst >> 3) & 0xF;
       DO_DISS(statusMsg << "bx r" << dec << rm << endl);
       rc = read_register(rm);
+#ifndef PIPED
       rc += 2;
+#endif
       //fprintf(stderr,"bx r%u 0x%X 0x%X\n",rm,rc,pc);
       if(rc & 1)
       {
         // branch to odd address denotes 16 bit ARM code
         //rc &= ~1;
-        write_register(15, rc);
+        write_register(PC_REG, rc);
         return 0;
       }
       else
@@ -1752,9 +1844,11 @@ int Thumbulator::execute()
         if (handled)
         {
           rc = read_register(14); // lr
+#ifndef PIPED
           rc += 2;
+#endif
           //rc &= ~1;
-          write_register(15, rc);
+          write_register(PC_REG, rc);
           //_totalCycles += 100; // just a wild guess
           return 0;
         }
@@ -1900,7 +1994,7 @@ int Thumbulator::execute()
           sp += 4;
         }
       }
-      INC_I_CYCLES; // Note: destination PC not possible, see pop instead
+      INC_I_CYCLES; // Note: destination PC_REG not possible, see pop instead
       //there is a write back exception.
       if((inst & (1 << rn)) == 0)
         write_register(rn, sp);
@@ -1940,7 +2034,7 @@ int Thumbulator::execute()
       rd = (inst >> 8) & 0x07;
       rb <<= 2;
       DO_DISS(statusMsg << "ldr r" << dec << rd << ",[PC+#0x" << Base::HEX2 << rb << "] ");
-      ra = read_register(15);
+      ra = read_register(PC_REG);
       ra &= ~3;
       rb += ra;
       DO_DISS(statusMsg << ";@ 0x" << Base::HEX2 << rb << endl);
@@ -2226,16 +2320,18 @@ int Thumbulator::execute()
       rm  = (inst >> 3) & 0xF;
       DO_DISS(statusMsg << "mov r" << dec << rd << ",r" << dec << rm << endl);
       rc = read_register(rm);
-      if((rd == 14) && (rm == 15))
+      if((rd == 14) && (rm == PC_REG))
       {
         //printf("mov lr,pc warning 0x%08X\n",pc-2);
         //rc|=1;
       }
-      if(rd == 15)
+#ifndef PIPED
+      if(rd == PC_REG)
       {
         //rc &= ~1; //write_register may do this as well
         rc += 2;  //The program counter is special
       }
+#endif
       write_register(rd, rc);
       return 0;
     }
@@ -2364,8 +2460,10 @@ int Thumbulator::execute()
         {
           INC_S_CYCLES(sp, AccessType::data);
         }
+#ifndef PIPED
         rc += 2;
-        write_register(15, rc);
+#endif
+        write_register(PC_REG, rc);
         sp += 4;
       }
       write_register(13, sp);
@@ -2879,9 +2977,13 @@ int Thumbulator::reset()
 {
   reg_norm.fill(0);
 
-  reg_norm[13] = cStack;              // SP
-  reg_norm[14] = cBase;               // LR
-  reg_norm[15] = (cStart + 2) | 1;    // PC (+2 for pipeline, lower bit for THUMB)
+  reg_norm[13] = cStack;      // SP
+  reg_norm[14] = cBase;       // LR
+#ifdef PIPED
+  reg_norm[PC_REG] = cStart | 1;  // PC_REG (lower bit for THUMB)
+#else
+  reg_norm[PC_REG] = (cStart + 2) | 1;  // PC_REG (lower bit for THUMB)
+#endif
 
   cpsr = 0;
   handler_mode = false;
