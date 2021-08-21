@@ -55,8 +55,11 @@ namespace {
       case CartridgeCDF::CDFSubtype::CDFJplus:
         return Thumbulator::ConfigureFor::CDFJplus;
 
+      case CartridgeCDF::CDFSubtype::CDFJmax:
+        return Thumbulator::ConfigureFor::CDFJmax;
+
       default:
-        throw runtime_error("unreachable");
+        throw runtime_error("thumulatorConfiguration:unreachable");
     }
   }
 }
@@ -139,8 +142,7 @@ void CartridgeCDF::setInitialState()
 
   myMusicWaveformSize.fill(27);
 
-  // Assuming mode starts out with Fast Fetch off and 3-Voice music,
-  // need to confirm with Chris
+  // Assuming mode starts out with Fast Fetch off and 3-Voice music
   myMode = 0xFF;
 
   myBankOffset = myLDAimmediateOperandAddress = myJMPoperandAddress = 0;
@@ -176,9 +178,11 @@ inline void CartridgeCDF::updateMusicModeDataFetchers()
   myFractionalClocks = clocks - double(wholeClocks);
 
   // Let's update counters and flags of the music mode data fetchers
-  if(wholeClocks > 0)
-    for(int x = 0; x <= 2; ++x)
-      myMusicCounters[x] += myMusicFrequencies[x] * wholeClocks;
+  if(wholeClocks > 0) 
+  {
+    for(int x = 0; x < 4; ++x)
+      myMusicCounters[x] += getFrequency(x) * wholeClocks;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -187,8 +191,13 @@ inline void CartridgeCDF::callFunction(uInt8 value)
   switch (value)
   {
     // Call user written ARM code (will most likely be C compiled for ARM)
+    case 0:   // call with bus floating during ARM execution to enable Atari stall 
+              // added for CDFJ+, no special handling needed for Stella
+      if (!isCDFJplus()) break;
+      [[fallthrough]];    
     case 254: // call with IRQ driven audio, no special handling needed at this
               // time for Stella as ARM code "runs in zero 6507 cycles".
+      [[fallthrough]];
     case 255: // call without IRQ driven audio
       try {
         uInt32 cycles = uInt32(mySystem->cycles() - myARMCycles);
@@ -267,6 +276,31 @@ uInt8 CartridgeCDF::peek(uInt16 address)
      && peekvalue <= myAmplitudeStream)
   {
     myLDAimmediateOperandAddress = 0;
+    
+    // CDFJ+MAX audio
+    if (myCDFSubtype == CDFSubtype::CDFJmax)
+    {
+      if (peekvalue == (myAmplitudeStream-1))   // AUDV0 (left)
+      {
+        updateMusicModeDataFetchers();
+        peekvalue = getSampleValue(getSample(0) + (myMusicCounters[0] >> 13)) 
+                  + getSampleValue(getSample(1) + (myMusicCounters[1] >> 13));
+        peekvalue >>= 1;  // Average
+        return peekvalue & 0x0f;
+      }
+
+      if (peekvalue == myAmplitudeStream)  // AUDV1 (right)
+      {
+        updateMusicModeDataFetchers();
+        peekvalue = getSampleValue(getSample(2) + (myMusicCounters[2] >> 13)) 
+                  + getSampleValue(getSample(3) + (myMusicCounters[3] >> 13));
+        peekvalue >>= 1;  // Average
+        return peekvalue & 0x0f;
+      }
+
+      return readFromDatastream(peekvalue);
+    } 
+    
     if (peekvalue == myAmplitudeStream)
     {
       updateMusicModeDataFetchers();
@@ -274,21 +308,12 @@ uInt8 CartridgeCDF::peek(uInt16 address)
       if DIGITAL_AUDIO_ON
       {
         // retrieve packed sample (max size is 2K, or 4K of unpacked data)
-
-        uInt32 sampleaddress = getSample() + (myMusicCounters[0] >> (isCDFJplus() ? 13 : 21));
-
-        // get sample value from ROM or RAM
-        if (sampleaddress < 0x00080000)
-          peekvalue = myImage[sampleaddress];
-        else if (sampleaddress >= 0x40000000 && sampleaddress < 0x40008000) // check for RAM
-          peekvalue = myRAM[sampleaddress - 0x40000000];
-        else
-          peekvalue = 0;
+        uInt32 sampleaddress = getSample(0) + (myMusicCounters[0] >> (isCDFJplus() ? 13 : 21));
+        peekvalue = getSampleValue(sampleaddress);
 
         // make sure current volume value is in the lower nybble
-        if ((myMusicCounters[0] & (1<<(isCDFJplus() ? 12 : 20))) == 0)
+        if ((myMusicCounters[0] & (1<<(isCDFJplus() ? 12 : 20))) == 0) 
           peekvalue >>= 4;
-        peekvalue &= 0x0f;
       }
       else
       {
@@ -296,14 +321,14 @@ uInt8 CartridgeCDF::peek(uInt16 address)
                   + myDisplayImage[getWaveform(1) + (myMusicCounters[1] >> myMusicWaveformSize[1])]
                   + myDisplayImage[getWaveform(2) + (myMusicCounters[2] >> myMusicWaveformSize[2])];
       }
-      return peekvalue;
+
+      return peekvalue & 0x0f;
     }
-    else
-    {
-      return readFromDatastream(peekvalue);
-    }
+
+    return readFromDatastream(peekvalue);
   }
   myLDAimmediateOperandAddress = 0;
+
 
   // Switch banks if necessary
   switch(address)
@@ -511,6 +536,12 @@ uInt32 CartridgeCDF::thumbCallback(uInt8 function, uInt32 value1, uInt32 value2)
       myMusicWaveformSize[value1] = value2;
       break;
 
+    // _SetWaveCounter - set wave counter value (CDFJ+MAX only)
+    // used instead of _ResetWave
+    case 4:
+      myMusicCounters[value1] = value2;
+      break;
+
     default:
       break;
   }
@@ -668,16 +699,39 @@ uInt32 CartridgeCDF::getWaveform(uInt8 index) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 CartridgeCDF::getSample()
+uInt32 CartridgeCDF::getFrequency(uInt8 index) const
 {
-  uInt16 address = myWaveformBase;
+  if (myCDFSubtype == CDFSubtype::CDFJmax)
+  {
+    uInt16 address = myFrequencyBase + index * 4;
+    return myRAM[address + 0]        +  // low byte
+          (myRAM[address + 1] << 8)  +
+          (myRAM[address + 2] << 16) +
+          (myRAM[address + 3] << 24);   // high byte
+  }
 
-  uInt32 result = myRAM[address + 0]        +  // low byte
-                 (myRAM[address + 1] << 8)  +
-                 (myRAM[address + 2] << 16) +
-                 (myRAM[address + 3] << 24);   // high byte
+  return myMusicFrequencies[index];
+}
 
-  return result;
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 CartridgeCDF::getSample(uInt8 index) const
+{
+  uInt16 address = myWaveformBase + index * 4;
+
+  return myRAM[address + 0]        +  // low byte
+        (myRAM[address + 1] << 8)  +
+        (myRAM[address + 2] << 16) +
+        (myRAM[address + 3] << 24);   // high byte
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 CartridgeCDF::getSampleValue(uInt32 sampleaddress) const
+{
+  if (sampleaddress < 0x00080000) // check for ROM
+    return myImage[sampleaddress];
+  if (sampleaddress >= 0x40000000 && sampleaddress < 0x40008000) // check for RAM
+    return myRAM[sampleaddress - 0x40000000];
+  return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -729,6 +783,20 @@ void CartridgeCDF::setupVersion()
     myDatastreamBase = 0x0098;
     myDatastreamIncrementBase = 0x0124;
     myWaveformBase = 0x01b0;
+    return;
+  }
+
+  // CDFJ+MAX detection
+  if (getUInt32(myImage.get(), 0x174) == 0x4a464443 &&    // CDFJ
+      getUInt32(myImage.get(), 0x178) == 0x3058414d) {    // MAX0
+
+    myCDFSubtype = CDFSubtype::CDFJmax;
+    myAmplitudeStream = 0x24;
+    myFastjumpStreamIndexMask = 0xfe;
+    myDatastreamBase = 0x0088;
+    myDatastreamIncrementBase = 0x0114;
+    myWaveformBase = 0x01a0;
+    myFrequencyBase = 0x01b0;
     return;
   }
 
@@ -793,6 +861,8 @@ string CartridgeCDF::name() const
       return "CartridgeCDFJ";
     case CDFSubtype::CDFJplus:
       return "CartridgeCDFJ+";
+    case CDFSubtype::CDFJmax:
+      return "CartridgeCDFJ+MAX";
     default:
       return "Cart unknown";
   }
@@ -801,7 +871,7 @@ string CartridgeCDF::name() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeCDF::isCDFJplus() const
 {
-  return (myCDFSubtype == CDFSubtype::CDFJplus);
+  return (myCDFSubtype == CDFSubtype::CDFJplus || myCDFSubtype == CDFSubtype::CDFJmax);
 }
 
 uInt32 CartridgeCDF::ramSize() const

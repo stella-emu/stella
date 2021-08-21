@@ -67,6 +67,7 @@ class Thumbulator
       CDF1,     // cartridges of type CDF version 1
       CDFJ,     // cartridges of type CDFJ
       CDFJplus, // cartridges of type CDFJ+
+      CDFJmax,  // cartridges of type CDFJ+MAX
       DPCplus   // cartridges of type DPC+
     };
     enum class ChipType {

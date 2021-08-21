@@ -455,8 +455,10 @@ bool CartDetector::isProbablyCDF(const ByteBuffer& image, size_t size)
   // 0x10adab1e (LOADABLE) if needed for future improvement
   uInt8 cdf[] = { 'C', 'D', 'F' };
   uInt8 cdfjplus[] = { 'P', 'L', 'U', 'S', 'C', 'D', 'F', 'J' };
+  uInt8 cdfjmax[] = {'C', 'D', 'F', 'J', 'M', 'A', 'X'};
   return (searchForBytes(image, size, cdf, 3, 3) || 
-          searchForBytes(image, size, cdfjplus, 8, 1));
+          searchForBytes(image, size, cdfjplus, 8, 1) ||
+          searchForBytes(image, size, cdfjmax, 7, 1));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

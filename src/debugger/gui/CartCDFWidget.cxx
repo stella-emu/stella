@@ -236,20 +236,19 @@ void CartridgeCDFWidget::saveOldState()
     myOldState.datastreamincrements.push_back(myCart.getDatastreamIncrement(i));
   }
 
-  for(uInt32 i = 0; i < 3; ++i)
+  for(uInt32 i = 0; i < 4; ++i)
     myOldState.mcounters.push_back(myCart.myMusicCounters[i]);
 
-  for(uInt32 i = 0; i < 3; ++i)
+  for(uInt32 i = 0; i < 4; ++i)
   {
     myOldState.mfreqs.push_back(myCart.myMusicFrequencies[i]);
     myOldState.mwaves.push_back(myCart.getWaveform(i) >> 5);
     myOldState.mwavesizes.push_back(myCart.getWaveformSize((i)));
+    myOldState.samplepointer.push_back(myCart.getSample(i));
   }
 
   for(uInt32 i = 0; i < internalRamSize(); ++i)
     myOldState.internalram.push_back(myCart.myRAM[i]);
-
-  myOldState.samplepointer.push_back(myCart.getSample());
 
   CartridgeARMWidget::saveOldState();
 }
@@ -331,7 +330,7 @@ void CartridgeCDFWidget::loadConfig()
   myJumpStreamIncrements->setList(alist, vlist, changed);
 
   alist.clear();  vlist.clear();  changed.clear();
-  for(int i = 0; i < 3; ++i)
+  for(int i = 0; i < 4; ++i)
   {
     alist.push_back(0);  vlist.push_back(myCart.myMusicCounters[i]);
     changed.push_back(myCart.myMusicCounters[i] != uInt32(myOldState.mcounters[i]));
@@ -339,7 +338,7 @@ void CartridgeCDFWidget::loadConfig()
   myMusicCounters->setList(alist, vlist, changed);
 
   alist.clear();  vlist.clear();  changed.clear();
-  for(int i = 0; i < 3; ++i)
+  for(int i = 0; i < 4; ++i)
   {
     alist.push_back(0);  vlist.push_back(myCart.myMusicFrequencies[i]);
     changed.push_back(myCart.myMusicFrequencies[i] != uInt32(myOldState.mfreqs[i]));
@@ -347,7 +346,7 @@ void CartridgeCDFWidget::loadConfig()
   myMusicFrequencies->setList(alist, vlist, changed);
 
   alist.clear();  vlist.clear();  changed.clear();
-  for(int i = 0; i < 3; ++i)
+  for(int i = 0; i < 4; ++i)
   {
     alist.push_back(0);  vlist.push_back(myCart.getWaveform(i) >> 5);
     changed.push_back((myCart.getWaveform(i) >> 5) != uInt32(myOldState.mwaves[i]));
@@ -355,7 +354,7 @@ void CartridgeCDFWidget::loadConfig()
   myMusicWaveforms->setList(alist, vlist, changed);
 
   alist.clear();  vlist.clear();  changed.clear();
-  for(int i = 0; i < 3; ++i)
+  for(int i = 0; i < 4; ++i)
   {
     alist.push_back(0);  vlist.push_back(myCart.getWaveformSize(i));
     changed.push_back((myCart.getWaveformSize(i)) != uInt32(myOldState.mwavesizes[i]));
@@ -363,8 +362,11 @@ void CartridgeCDFWidget::loadConfig()
   myMusicWaveformSizes->setList(alist, vlist, changed);
 
   alist.clear();  vlist.clear();  changed.clear();
-  alist.push_back(0);  vlist.push_back(myCart.getSample());
-  changed.push_back((myCart.getSample()) != uInt32(myOldState.samplepointer[0]));
+  for(int i = 0; i < 4; ++i) 
+  {
+    alist.push_back(0);  vlist.push_back(myCart.getSample(i));
+    changed.push_back((myCart.getSample(i)) != uInt32(myOldState.samplepointer[i]));
+  }
   mySamplePointer->setList(alist, vlist, changed);
 
   myFastFetch->setState((myCart.myMode & 0x0f) == 0);
@@ -434,7 +436,7 @@ string CartridgeCDFWidget::internalRamDescription()
 {
   ostringstream desc;
   if (isCDFJplus()) {
-    desc << "$0000 - $07FF - CDFJ+ driver\n"
+    desc << "$0000 - $07FF - CDFJ+/CDFJ+MAX driver\n"
     << "                not accessible to 6507\n"
     << "$0800 - $7FFF - 30K Data Stream storage\n"
     << "                indirectly accessible to 6507\n"
@@ -499,8 +501,11 @@ string CartridgeCDFWidget::describeCDFVersion(CartridgeCDF::CDFSubtype subtype)
     case CartridgeCDF::CDFSubtype::CDFJplus:
       return "CDFJ+";
 
+    case CartridgeCDF::CDFSubtype::CDFJmax:
+      return "CDFJ+MAX";
+
     default:
-      throw runtime_error("unreachable");
+      throw runtime_error("describeCDFVersion:unreachable");
   }
 }
 

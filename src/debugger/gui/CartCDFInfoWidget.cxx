@@ -64,7 +64,10 @@ string CartridgeCDFInfoWidget::describeCDFVersion(CartridgeCDF::CDFSubtype subty
     case CartridgeCDF::CDFSubtype::CDFJplus:
       return "CDFJ+";
 
+    case CartridgeCDF::CDFSubtype::CDFJmax:
+      return "CDFJ+MAX";
+
     default:
-      throw runtime_error("unreachable");
+      throw runtime_error("describeCDFVersion:unreachable");
   }
 }

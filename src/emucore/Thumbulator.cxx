@@ -561,6 +561,9 @@ bool Thumbulator::isProtected(uInt32 addr)
     case ConfigureFor::CDFJplus:
       return  (addr < 0x0800) && (addr > 0x0028) && !((addr >= 0x0098) && (addr < (0x0098 + 292)));
 
+    case ConfigureFor::CDFJmax:
+      return  (addr < 0x0800) && (addr > 0x0028) && !((addr >= 0x0088) && (addr < (0x0088 + 312)));
+
     case ConfigureFor::BUS:
       return  (addr < 0x06d8) && (addr > 0x0028);
   }
@@ -1739,6 +1742,37 @@ int Thumbulator::execute()
               uInt32 r3 = read_register(3);
               uInt32 r4 = read_register(4);
   #endif
+              myCartridge->thumbCallback(255, 0, 0);
+            }
+
+            break;
+
+          case ConfigureFor::CDFJmax:
+
+            // address to test for is + 4 due to pipelining
+  #define CDFJMAX_SetWaveCounter  (0x00000772 + 4)
+  #define CDFJMAX_GetWaveCounter  (0x00000776 + 4)       
+
+            if (pc == CDFJMAX_SetWaveCounter)
+            {
+              myCartridge->thumbCallback(4, read_register(2), read_register(3));
+              // approximated cycles
+              INC_ARM_CYCLES(_flashCycles + 1);     // this instruction
+              INC_ARM_CYCLES(6 + _flashCycles + 2); // ARM code WaveCounterStore
+              INC_ARM_CYCLES(2 + _flashCycles + 2); // ARM code ReturnC
+              handled = true;
+            }
+            else if (pc == CDFJMAX_GetWaveCounter) 
+            {
+              write_register(3, myCartridge->thumbCallback(2, read_register(2), 0));
+              // approximated cycles
+              INC_ARM_CYCLES(_flashCycles + 1);     // this instruction
+              INC_ARM_CYCLES(6 + _flashCycles + 2); // ARM code WaveCounterFetch 
+              INC_ARM_CYCLES(2 + _flashCycles + 2); // ARM code ReturnC
+              handled = true;
+            }
+            else
+            {
               myCartridge->thumbCallback(255, 0, 0);
             }
 

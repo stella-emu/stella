@@ -24,27 +24,27 @@ class System;
 #include "CartARM.hxx"
 
 /**
-  Cartridge class used for CDF/CDFJ/CDFJ+.
+  Cartridge class used for CDF/CDFJ/CDFJ+/CDFJ+MAX.
 
   CDFJ bankswitching for Atari games using ARM/C code.
   There are two variants supported:
   1) CDF/CDFJ - initial scheme with 32K ROM and 8K RAM
-  2) CDFJ+ - support for larger ROM sizes (64/128/256/512K) and RAM sizes (16/32K)
+  2) CDFJ+/CDFJ+MAX - support for larger ROM sizes (64/128/256/512K) and RAM sizes (16/32K)
 
   Features:
   32 fast fetchers
   2 fast jump queues
   1 parameter queue
-  3 channel digital audio/1 channel sampled sound
+  3 channel digital audio/1 channel sampled sound (4 channel sampled audio for CDFJ+MAX)
   7 banks (4K) of atari code
   4K display data (16K and 32K available with CDFJ+)
 
-  Note that for CDFJ+, the same driver is used for all RAM/RAM combinations.
+  Note that for CDFJ+ and CDFJ+MAX, the same driver is used for all RAM/RAM combinations.
   It is left to the programmer to ensure that only the available RAM/ROM on the target device is used.
 
   Bankswitching Note:
   CDF/CDFJ uses $FFF5 through $FFFB (initial bank 6)
-  CDFJ+ uses $FFF4 through $FFFA (initial bank 0)
+  CDFJ+/CDFJ+MAX uses $FFF4 through $FFFA (initial bank 0)
 
   The letters CDFJ stand for Chris, Darrell, Fred, and John.
 
@@ -63,7 +63,8 @@ class CartridgeCDF : public CartridgeARM
       CDF0,
       CDF1,
       CDFJ,
-      CDFJplus
+      CDFJplus,
+      CDFJmax
     };
 
   public:
@@ -175,7 +176,7 @@ class CartridgeCDF : public CartridgeARM
     uInt8 internalRamGetValue(uInt16 addr) const override;
 
     /**
-      Set if we are using CDFJ+ bankswitching
+      Set if we are using CDFJ+ and CDFJ+MAX bankswitching
      */
     bool isCDFJplus() const;
 
@@ -249,8 +250,11 @@ class CartridgeCDF : public CartridgeARM
     uInt8 readFromDatastream(uInt8 index);
 
     uInt32 getWaveform(uInt8 index) const;
+    uInt32 getFrequency(uInt8 index) const;
     uInt32 getWaveformSize(uInt8 index) const;
-    uInt32 getSample();
+    uInt32 getSample(uInt8 index) const;
+    uInt32 getSampleValue(uInt32 sampleaddress) const;
+
     void setupVersion();
 
   private:
@@ -273,7 +277,7 @@ class CartridgeCDF : public CartridgeARM
     //   $0000 - 2K Driver
     //   $0800 - 4K Display Data
     //   $1800 - 2K C Variable & Stack
-    // For CDFJ+, used as:
+    // For CDFJ+ & CDFJ+MAX, used as:
     //   $0000 - 2K Driver
     //   $0800 - Display Data, C Variables & Stack
     std::array<uInt8, 32_KB> myRAM;
@@ -294,7 +298,7 @@ class CartridgeCDF : public CartridgeARM
     // Thumbulator will trap these calls and pass the appropriate information to
     // the Cartridge Class via callFunction() so it can emulate the 32 bit audio routines.
 
-    /* Register usage for audio:
+    /* Register usage for audio (DPC+/CDF/CDFJ+):
       r8  = channel0 accumulator
       r9  = channel1 accumulator
       r10 = channel2 accumulator
@@ -304,13 +308,13 @@ class CartridgeCDF : public CartridgeARM
       r14 = timer base  */
 
     // The music counters, ARM FIQ shadow registers r8, r9, r10
-    std::array<uInt32, 3> myMusicCounters{0};
+    std::array<uInt32, 4> myMusicCounters{0};
 
     // The music frequency, ARM FIQ shadow registers r11, r12, r13
-    std::array<uInt32, 3> myMusicFrequencies{0};
+    std::array<uInt32, 4> myMusicFrequencies{0};
 
     // The music waveform sizes
-    std::array<uInt8, 3> myMusicWaveformSize{0};
+    std::array<uInt8, 4> myMusicWaveformSize{0};
 
     // Fractional CDF music, OSC clocks unused during the last update
     double myFractionalClocks{0.0};
@@ -339,6 +343,9 @@ class CartridgeCDF : public CartridgeARM
 
     // Pointer to the beginning of the waveform data block
     uInt16 myWaveformBase{0};
+
+    // Pointer to the beginning of the frequency data block (CDFJ+MAX)
+    uInt16 myFrequencyBase{0};
 
     // Amplitude stream index
     uInt8 myAmplitudeStream{0};
