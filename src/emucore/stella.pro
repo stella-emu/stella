@@ -4783,8 +4783,9 @@
 
 "Cart.MD5" "35be55426c1fec32dfb503b4f0651572"
 "Cart.Manufacturer" "Men-A-Vision"
-"Cart.Name" "Air Raid (Men-A-Vision) (PAL)"
+"Cart.Name" "Air Raid (Men-A-Vision) (NTSC)"
 "Cart.Rarity" "Extremely Rare"
+"Display.Format" "NTSC50"
 "Display.Phosphor" "YES"
 ""
 
