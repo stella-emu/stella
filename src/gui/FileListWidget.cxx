@@ -157,8 +157,7 @@ ProgressDialog& FileListWidget::progress()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FileListWidget::incProgress()
 {
-  if(_includeSubDirs)
-    progress().incProgress();
+  progress().incProgress();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
