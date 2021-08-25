@@ -247,7 +247,7 @@ inline int Thumbulator::fatalError(const char* opcode, uInt32 v1, uInt32 v2,
   statusMsg << "Thumb ARM emulation fatal error: " << endl
             << opcode << "(" << Base::HEX8 << v1 << "," << v2 << "), " << msg << endl;
   dump_regs();
-    if(trapOnFatal)
+  if(trapOnFatal)
     throw runtime_error(statusMsg.str());
   return 0;
 }
@@ -269,15 +269,17 @@ void Thumbulator::dump_regs()
 {
   for (int cnt = 0; cnt <= 12; cnt++)
   {
-    statusMsg << "R" << cnt << " = " << Base::HEX8 << reg_norm[cnt] << "  ";
+    statusMsg << "R" << std::dec << std::setfill(' ') << std::setw(2) << std::left << cnt
+      << "= " << Base::HEX8 << reg_norm[cnt];
     if((cnt + 1) % 4 == 0)
       statusMsg << endl;
+    else
+      statusMsg << "  ";
   }
   statusMsg << endl
             << "SP = " << Base::HEX8 << reg_norm[13] << "  "
             << "LR = " << Base::HEX8 << reg_norm[14] << "  "
-            << "PC = " << Base::HEX8 << reg_norm[15] << "  "
-            << endl;
+            << "PC = " << Base::HEX8 << reg_norm[15] << endl;
 }
 #endif
 
