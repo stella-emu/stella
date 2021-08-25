@@ -33,7 +33,8 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
             fontHeight   = Dialog::fontHeight(),
             fontWidth    = Dialog::fontWidth(),
             buttonHeight = Dialog::buttonHeight(),
-            buttonWidth  = Dialog::buttonWidth("Previous"),
+            buttonWidth  = Dialog::buttonWidth(" << "),
+            closeButtonWidth = Dialog::buttonWidth("Close"),
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap();
@@ -48,19 +49,27 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
   xpos = HBORDER;  ypos = _h - buttonHeight - VBORDER;
   myPrevButton =
     new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                     "Previous", GuiObject::kPrevCmd);
+                     "<<", GuiObject::kPrevCmd);
   myPrevButton->clearFlags(Widget::FLAG_ENABLED);
   wid.push_back(myPrevButton);
 
   xpos += buttonWidth + fontWidth;
   myNextButton =
     new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                     "Next", GuiObject::kNextCmd);
+                     ">>", GuiObject::kNextCmd);
   wid.push_back(myNextButton);
 
-  xpos = _w - buttonWidth - HBORDER;
+  xpos += buttonWidth + fontWidth;
+
+  int updButtonWidth = Dialog::buttonWidth("Check for Update" + ELLIPSIS);
+  myUpdateButton =
+    new ButtonWidget(this, font, xpos, ypos, updButtonWidth, buttonHeight,
+                     "Check for Update" + ELLIPSIS, kUpdateCmd);
+  wid.push_back(myUpdateButton);
+
+  xpos = _w - closeButtonWidth - HBORDER;
   ButtonWidget* b =
-    new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
+    new ButtonWidget(this, font, xpos, ypos, closeButtonWidth, buttonHeight,
                      "Close", GuiObject::kCloseCmd);
   wid.push_back(b);
   addCancelWidget(b);
@@ -227,6 +236,11 @@ void HelpDialog::handleCommand(CommandSender* sender, int cmd,
         myPrevButton->clearFlags(Widget::FLAG_ENABLED);
 
       displayInfo();
+      break;
+
+    case kUpdateCmd:
+      MediaFactory::openURL("https://stella-emu.github.io/downloads.html?version="
+                            + instance().settings().getString("stella.version"));
       break;
 
     case StaticTextWidget::kOpenUrlCmd:

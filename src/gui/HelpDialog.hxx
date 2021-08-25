@@ -43,6 +43,7 @@ class HelpDialog : public Dialog
     static constexpr uInt32 LINES_PER_PAGE = 10;
     ButtonWidget* myNextButton{nullptr};
     ButtonWidget* myPrevButton{nullptr};
+    ButtonWidget* myUpdateButton{nullptr};
 
     StaticTextWidget* myTitle;
     std::array<StaticTextWidget*, LINES_PER_PAGE> myKey{nullptr};
@@ -52,6 +53,11 @@ class HelpDialog : public Dialog
 
     uInt8 myPage{1};
     uInt8 myNumPages{5};
+
+    enum {
+      kUpdateCmd = 'upCm'
+    };
+
 
   private:
     // Following constructors and assignment operators not supported
