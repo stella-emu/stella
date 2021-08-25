@@ -422,8 +422,9 @@ void LauncherDialog::updateUI()
   myDir->setText(myList->currentDir().getShortPath());
 
   // Indicate how many files were found
+  bool hasParent = *myList->getList().begin() == " [..]";
   ostringstream buf;
-  buf << (myList->getList().size() - 1) << (myShortCount ? " found" : " items found");
+  buf << (myList->getList().size() - (hasParent ? 1 : 0)) << (myShortCount ? " found" : " items found");
   myRomCount->setLabel(buf.str());
 
   // Update ROM info UI item

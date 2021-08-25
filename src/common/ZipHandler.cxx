@@ -284,7 +284,7 @@ void ZipHandler::ZipFile::readEcd()
 
     // Find the ECD signature
     Int32 offset;
-		for(offset = Int32(buflen - EcdReader::minimumLength()); offset >= 0; --offset)
+    for(offset = Int32(buflen - EcdReader::minimumLength()); offset >= 0; --offset)
     {
       EcdReader reader(buffer.get() + offset);
       if(reader.signatureCorrect() && ((reader.totalLength() + offset) <= buflen))
@@ -445,13 +445,13 @@ void ZipHandler::ZipFile::decompressDataType8(
   uInt64 input_remaining = myHeader.compressedLength;
 
   // Reset the stream
-	z_stream stream;
-	stream.zalloc = Z_NULL;
-	stream.zfree = Z_NULL;
-	stream.opaque = Z_NULL;
-	stream.avail_in = 0;
-	stream.next_out = reinterpret_cast<Bytef *>(out.get());
-	stream.avail_out = uInt32(length); // TODO - use zip64
+  z_stream stream;
+  stream.zalloc = Z_NULL;
+  stream.zfree = Z_NULL;
+  stream.opaque = Z_NULL;
+  stream.avail_in = 0;
+  stream.next_out = reinterpret_cast<Bytef *>(out.get());
+  stream.avail_out = uInt32(length); // TODO - use zip64
 
   // Initialize the decompressor
   int zerr = inflateInit2(&stream, -MAX_WBITS);
