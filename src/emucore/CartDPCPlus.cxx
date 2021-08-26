@@ -57,7 +57,8 @@ CartridgeDPCPlus::CartridgeDPCPlus(const ByteBuffer& image, size_t size,
       0x00000C08,
       0x40001FDC,
        devSettings ? settings.getBool("dev.thumb.trapfatal") : false,
-       devSettings ? settings.getFloat("dev.thumb.cyclefactor") : 1.0,
+       devSettings ? static_cast<double>(
+          settings.getFloat("dev.thumb.cyclefactor")) : 1.0,
        Thumbulator::ConfigureFor::DPCplus,
        this);
 

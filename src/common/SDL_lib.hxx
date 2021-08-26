@@ -30,6 +30,7 @@
   #pragma clang diagnostic ignored "-Wdocumentation-unknown-command"
   #pragma clang diagnostic ignored "-Wimplicit-fallthrough"
   #pragma clang diagnostic ignored "-Wreserved-id-macro"
+  #pragma clang diagnostic ignored "-Wold-style-cast"
   #include <SDL.h>
   #pragma clang diagnostic pop
 #else
