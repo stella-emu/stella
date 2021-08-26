@@ -182,13 +182,13 @@ CartMethod getCartSpecial(char* ch)
   if(BSPF::equalsIgnoreCase(ch, "_bank"))
     return &CartDebug::getPCBank;
 
-  else if(BSPF::equalsIgnoreCase(ch, "__lastbaseread"))
+  else if(BSPF::equalsIgnoreCase(ch, "__lastBaseRead"))
     return &CartDebug::lastReadBaseAddress;
-  else if(BSPF::equalsIgnoreCase(ch, "__lastbasewrite"))
+  else if(BSPF::equalsIgnoreCase(ch, "__lastBaseWrite"))
     return &CartDebug::lastWriteBaseAddress;
-  else if(BSPF::equalsIgnoreCase(ch, "__lastread"))
+  else if(BSPF::equalsIgnoreCase(ch, "__lastRead"))
     return &CartDebug::lastReadAddress;
-  else if(BSPF::equalsIgnoreCase(ch, "__lastwrite"))
+  else if(BSPF::equalsIgnoreCase(ch, "__lastWrite"))
     return &CartDebug::lastWriteAddress;
   else
     return nullptr;
@@ -222,7 +222,7 @@ CpuMethod getCpuSpecial(char* ch)
     return &CpuDebug::i;
   else if(BSPF::equalsIgnoreCase(ch, "b"))
     return &CpuDebug::b;
-  else if(BSPF::equalsIgnoreCase(ch, "_icycles"))
+  else if(BSPF::equalsIgnoreCase(ch, "_iCycles"))
     return &CpuDebug::icycles;
   else
     return nullptr;
@@ -232,11 +232,11 @@ CpuMethod getCpuSpecial(char* ch)
 // special methods that get RIOT internal state
 RiotMethod getRiotSpecial(char* ch)
 {
-  if(BSPF::equalsIgnoreCase(ch, "_timwrapread"))
+  if(BSPF::equalsIgnoreCase(ch, "_timWrapRead"))
     return &RiotDebug::timWrappedOnRead;
-  else if(BSPF::equalsIgnoreCase(ch, "_timwrapwrite"))
+  else if(BSPF::equalsIgnoreCase(ch, "_timWrapWrite"))
     return &RiotDebug::timWrappedOnWrite;
-  else if(BSPF::equalsIgnoreCase(ch, "_ftimreadcycles"))
+  else if(BSPF::equalsIgnoreCase(ch, "_fTimReadCycles"))
     return &RiotDebug::timReadCycles;
   else
     return nullptr;
@@ -248,25 +248,25 @@ TiaMethod getTiaSpecial(char* ch)
 {
   if(BSPF::equalsIgnoreCase(ch, "_scan"))
     return &TIADebug::scanlines;
-  else if(BSPF::equalsIgnoreCase(ch, "_scanend"))
+  else if(BSPF::equalsIgnoreCase(ch, "_scanEnd"))
     return &TIADebug::scanlinesLastFrame;
-  else if(BSPF::equalsIgnoreCase(ch, "_scycles"))
+  else if(BSPF::equalsIgnoreCase(ch, "_sCycles"))
     return &TIADebug::cyclesThisLine;
-  else if(BSPF::equalsIgnoreCase(ch, "_fcount"))
+  else if(BSPF::equalsIgnoreCase(ch, "_fCount"))
     return &TIADebug::frameCount;
-  else if(BSPF::equalsIgnoreCase(ch, "_fcycles"))
+  else if(BSPF::equalsIgnoreCase(ch, "_fCycles"))
     return &TIADebug::frameCycles;
-  else if(BSPF::equalsIgnoreCase(ch, "_fwsynccycles"))
+  else if(BSPF::equalsIgnoreCase(ch, "_fWsyncCycles"))
     return &TIADebug::frameWsyncCycles;
   else if(BSPF::equalsIgnoreCase(ch, "_cyclesLo"))
     return &TIADebug::cyclesLo;
   else if(BSPF::equalsIgnoreCase(ch, "_cyclesHi"))
     return &TIADebug::cyclesHi;
-  else if(BSPF::equalsIgnoreCase(ch, "_cclocks"))
+  else if(BSPF::equalsIgnoreCase(ch, "_cClocks"))
     return &TIADebug::clocksThisLine;
-  else if(BSPF::equalsIgnoreCase(ch, "_vsync"))
+  else if(BSPF::equalsIgnoreCase(ch, "_vSync"))
     return &TIADebug::vsyncAsInt;
-  else if(BSPF::equalsIgnoreCase(ch, "_vblank"))
+  else if(BSPF::equalsIgnoreCase(ch, "_vBlank"))
     return &TIADebug::vblankAsInt;
   else
     return nullptr;

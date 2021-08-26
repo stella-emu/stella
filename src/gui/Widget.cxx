@@ -462,6 +462,7 @@ StaticTextWidget::StaticTextWidget(GuiObject* boss, const GUI::Font& font,
                                    const string& text, TextAlign align,
                                    ColorId shadowColor)
   : Widget(boss, font, x, y, w, h),
+    CommandSender(boss),
     _label{text},
     _align{align}
 {
@@ -472,6 +473,7 @@ StaticTextWidget::StaticTextWidget(GuiObject* boss, const GUI::Font& font,
   _textcolor = kTextColor;
   _textcolorhi = kTextColor;
   _shadowcolor = shadowColor;
+  _cmd = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -501,20 +503,112 @@ void StaticTextWidget::setLabel(const string& label)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void StaticTextWidget::setLink(size_t start, int len, bool underline)
+{
+  if(_linkStart != start || _linkLen != len || _linkUnderline != underline)
+  {
+    _linkStart = start;
+    _linkLen = len;
+    _linkUnderline = underline;
+    setCmd(len ? kClickedCmd : 0);
+    setDirty();
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool StaticTextWidget::setUrl(const string& url, const string& label,
+                              const string& placeHolder)
+{
+#ifndef RETRON77
+  size_t start = string::npos, len = 0;
+  const string& text = label != EmptyString ? label : url;
+
+  if(text != EmptyString)
+  {
+    if(placeHolder != EmptyString)
+      BSPF::replaceAll(_label, placeHolder, text);
+
+    // determine position of link
+    if((start = BSPF::findIgnoreCase(_label, text)) != string::npos)
+    {
+      len = text.size();
+      _url = url;
+    }
+  }
+  else
+  {
+    // extract URL from _label
+    start = BSPF::findIgnoreCase(_label, "http://");
+
+    if(start == string::npos)
+      start = BSPF::findIgnoreCase(_label, "https://");
+    if(start == string::npos)
+      start = BSPF::findIgnoreCase(_label, "www.");
+
+
+    if(start != string::npos)
+    {
+      // find end of URL
+      for(size_t i = start; i < _label.size(); ++i)
+      {
+        char ch = _label[i];
+
+        if(ch == ' ' || ch == ')' || ch == '>')
+        {
+          len = i - start;
+          _url = _label.substr(start, len);
+          break;
+        }
+      }
+      if(!len)
+      {
+        len = _label.size() - start;
+        _url = _label.substr(start);
+      }
+    }
+  }
+
+  if(len)
+  {
+    setLink(start, int(len), true);
+    setCmd(kOpenUrlCmd);
+    return true;
+  }
+  else
+  {
+    setLink(); // clear link
+    _url = EmptyString;
+    return false;
+  }
+#else
+  return false;
+#endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StaticTextWidget::handleMouseEntered()
 {
   if(isEnabled())
-    // Mouse focus for tooltips must not change dirty status
-    setFlags(Widget::FLAG_MOUSE_FOCUS, false);
+    setFlags(Widget::FLAG_HILITED | Widget::FLAG_MOUSE_FOCUS, _linkLen);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StaticTextWidget::handleMouseLeft()
 {
   if(isEnabled())
-    // Mouse focus for tooltips must not change dirty status
-    clearFlags(Widget::FLAG_MOUSE_FOCUS, false);
+    clearFlags(Widget::FLAG_HILITED | Widget::FLAG_MOUSE_FOCUS, _linkLen);
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void StaticTextWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
+{
+  if(_cmd && isEnabled() && x >= 0 && x < _w && y >= 0 && y < _h)
+  {
+    clearFlags(Widget::FLAG_HILITED);
+    sendCommand(_cmd, 0, _id);
+  }
+}
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StaticTextWidget::drawWidget(bool hilite)
@@ -522,7 +616,8 @@ void StaticTextWidget::drawWidget(bool hilite)
   FBSurface& s = _boss->dialog().surface();
 
   s.drawString(_font, _label, _x, _y, _w,
-               isEnabled() ? _textcolor : kColor, _align, 0, true, _shadowcolor);
+                isEnabled() ? _textcolor : kColor, _align, 0, true,
+                _shadowcolor, _linkStart, _linkLen, _linkUnderline && hilite);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -530,10 +625,9 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
                            int x, int y, int w, int h,
                            const string& label, int cmd, bool repeat)
   : StaticTextWidget(boss, font, x, y, w, h, label, TextAlign::Center),
-    CommandSender(boss),
-    _cmd{cmd},
     _repeat{repeat}
 {
+  _cmd = cmd;
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG;
   _bgcolor = kBtnColor;
   _bgcolorhi = kBtnColorHi;

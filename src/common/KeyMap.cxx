@@ -241,7 +241,7 @@ json KeyMap::saveMapping(const EventMode mode) const
   json mappings = json::array();
 
   for (const auto& [_mapping, _event]: sortedMap) {
-    if (_mapping.mode != mode) continue;
+    if (_mapping.mode != mode || _event == Event::NoType) continue;
 
     json mapping = json::object();
 
@@ -264,6 +264,10 @@ int KeyMap::loadMapping(const json& mappings, const EventMode mode) {
   for(const json& mapping : mappings)
   {
     try {
+      // avoid blocking mappings for NoType events
+      if(mapping.at("event").get<Event::Type>() == Event::NoType)
+        continue;
+
       add(
         mapping.at("event").get<Event::Type>(),
         mode,

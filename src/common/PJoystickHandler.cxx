@@ -98,27 +98,12 @@ int PhysicalJoystickHandler::add(const PhysicalJoystickPtr& stick)
     return -1;
 
   // Figure out what type of joystick this is
-  bool specialAdaptor = false;
+  bool isAdaptor = false;
 
-  if(BSPF::containsIgnoreCase(stick->name, "2600-daptor"))
+  if(BSPF::containsIgnoreCase(stick->name, "Stelladaptor")
+     || BSPF::containsIgnoreCase(stick->name, "2600-daptor"))
   {
-    specialAdaptor = true;
-    if(stick->numAxes == 4)
-    {
-      // TODO - detect controller type based on z-axis
-      stick->name = "2600-daptor D9";
-    }
-    else if(stick->numAxes == 3)
-    {
-      stick->name = "2600-daptor II";
-    }
-    else
-      stick->name = "2600-daptor";
-  }
-  else if(BSPF::containsIgnoreCase(stick->name, "Stelladaptor"))
-  {
-    stick->name = "Stelladaptor";
-    specialAdaptor = true;
+    isAdaptor = true;
   }
   else
   {
@@ -141,11 +126,40 @@ int PhysicalJoystickHandler::add(const PhysicalJoystickPtr& stick)
   // The stick *must* be inserted here, since it may be used below
   mySticks[stick->ID] = stick;
 
-  // Map the stelladaptors we've found according to the specified ports
-  // The 'type' is also set there
-  if(specialAdaptor)
-    mapStelladaptors(myOSystem.settings().getString("saport"));
+  bool erased = false;
+  if(isAdaptor)
+  {
+    // Map the Stelladaptors we've found according to the specified ports
+    // The 'type' is also set there
+    erased = mapStelladaptors(myOSystem.settings().getString("saport"), stick->ID);
 
+  }
+  if(erased)
+    // We have to add all Stelladaptors again, because they have changed
+    // name due to being reordered when mapping them
+    for(auto& [_id, _stick] : mySticks)
+    {
+      if(_stick->name.find(" (emulates ") != std::string::npos)
+        addToDatabase(_stick);
+    }
+  else
+    addToDatabase(stick);
+
+  // We're potentially swapping out an input device behind the back of
+  // the Event system, so we make sure all Stelladaptor-generated events
+  // are reset
+  for(int port = 0; port < NUM_PORTS; ++port)
+  {
+    for(int axis = 0; axis < NUM_SA_AXIS; ++axis)
+      myEvent.set(SA_Axis[port][axis], 0);
+  }
+
+  return stick->ID;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PhysicalJoystickHandler::addToDatabase(const PhysicalJoystickPtr& stick)
+{
   // Add stick to database
   auto it = myDatabase.find(stick->name);
   if(it != myDatabase.end()) // already present
@@ -162,16 +176,10 @@ int PhysicalJoystickHandler::add(const PhysicalJoystickPtr& stick)
     setStickDefaultMapping(stick->ID, Event::NoType, EventMode::kMenuMode);
   }
 
-  // We're potentially swapping out an input device behind the back of
-  // the Event system, so we make sure all Stelladaptor-generated events
-  // are reset
-  for(int port = 0; port < NUM_PORTS; ++port)
-  {
-    for(int axis = 0; axis < NUM_SA_AXIS; ++axis)
-      myEvent.set(SA_Axis[port][axis], 0);
-  }
-
-  return stick->ID;
+  ostringstream buf;
+  buf << "Added joystick " << stick->ID << ":" << endl
+    << "  " << stick->about() << endl;
+  Logger::info(buf.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -223,8 +231,9 @@ bool PhysicalJoystickHandler::remove(const string& name)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalJoystickHandler::mapStelladaptors(const string& saport)
+bool PhysicalJoystickHandler::mapStelladaptors(const string& saport, int ID)
 {
+  bool erased = false;
   // saport will have two values:
   //   'lr' means treat first valid adaptor as left port, second as right port
   //   'rl' means treat first valid adaptor as right port, second as left port
@@ -238,44 +247,55 @@ void PhysicalJoystickHandler::mapStelladaptors(const string& saport)
     saOrder[0] = 2; saOrder[1] = 1;
   }
 
-  for(auto& [_id, _joyptr]: mySticks)
+  for(auto& [_id, _stick]: mySticks)
   {
     bool found = false;
-    // remove previously added emulated ports
-    size_t pos = _joyptr->name.find(" (emulates ");
+    size_t pos = _stick->name.find(" (emulates ");
 
-    if(pos != std::string::npos)
-      _joyptr->name.erase(pos);
+    if(pos != std::string::npos && ID != -1 && ID < _stick->ID)
+    {
+      // Erase a previously added Stelladapter with a higher ID
+      ostringstream buf;
+      buf << "Erased joystick " << _stick->ID << ":" << endl
+        << "  " << _stick->about() << endl;
+      Logger::info(buf.str());
 
-    if(BSPF::startsWithIgnoreCase(_joyptr->name, "Stelladaptor"))
+      _stick->name.erase(pos);
+      erased = true;
+    }
+
+    //if(BSPF::startsWithIgnoreCase(_stick->name, "Stelladaptor"))
+    if(BSPF::containsIgnoreCase(_stick->name, "Stelladaptor"))
     {
       if(saOrder[saCount] == 1)
-        _joyptr->type = PhysicalJoystick::Type::LEFT_STELLADAPTOR;
+        _stick->type = PhysicalJoystick::Type::LEFT_STELLADAPTOR;
       else if(saOrder[saCount] == 2)
-        _joyptr->type = PhysicalJoystick::Type::RIGHT_STELLADAPTOR;
+        _stick->type = PhysicalJoystick::Type::RIGHT_STELLADAPTOR;
       found = true;
     }
-    else if(BSPF::startsWithIgnoreCase(_joyptr->name, "2600-daptor"))
+    else //if(BSPF::startsWithIgnoreCase(_stick->name, "2600-daptor"))
+      if(BSPF::containsIgnoreCase(_stick->name, "2600-daptor"))
     {
       if(saOrder[saCount] == 1)
-        _joyptr->type = PhysicalJoystick::Type::LEFT_2600DAPTOR;
+        _stick->type = PhysicalJoystick::Type::LEFT_2600DAPTOR;
       else if(saOrder[saCount] == 2)
-        _joyptr->type = PhysicalJoystick::Type::RIGHT_2600DAPTOR;
+        _stick->type = PhysicalJoystick::Type::RIGHT_2600DAPTOR;
       found = true;
     }
     if(found)
     {
       if(saOrder[saCount] == 1)
-        _joyptr->name += " (emulates left joystick port)";
+        _stick->name += " (emulates left joystick port)";
       else if(saOrder[saCount] == 2)
-        _joyptr->name += " (emulates right joystick port)";
+        _stick->name += " (emulates right joystick port)";
 
       saCount++;
       // always map Stelladaptor/2600-daptor to emulation mode defaults
-      setStickDefaultMapping(_joyptr->ID, Event::NoType, EventMode::kEmulationMode);
+      setStickDefaultMapping(_stick->ID, Event::NoType, EventMode::kEmulationMode);
     }
   }
   myOSystem.settings().setValue("saport", saport);
+  return erased;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -361,8 +381,8 @@ void PhysicalJoystickHandler::setStickDefaultMapping(int stick, Event::Type even
             setDefaultAction(stick, item, event, EventMode::kJoystickMode, updateDefaults);
           for (const auto& item : DefaultLeftPaddlesMapping)
             setDefaultAction(stick, item, event, EventMode::kPaddlesMode, updateDefaults);
-          for (const auto& item : DefaultLeftKeypadMapping)
-            setDefaultAction(stick, item, event, EventMode::kKeypadMode, updateDefaults);
+          for (const auto& item : DefaultLeftKeyboardMapping)
+            setDefaultAction(stick, item, event, EventMode::kKeyboardMode, updateDefaults);
         }
         else
         {
@@ -371,8 +391,8 @@ void PhysicalJoystickHandler::setStickDefaultMapping(int stick, Event::Type even
             setDefaultAction(stick, item, event, EventMode::kJoystickMode, updateDefaults);
           for (const auto& item : DefaultRightPaddlesMapping)
             setDefaultAction(stick, item, event, EventMode::kPaddlesMode, updateDefaults);
-          for (const auto& item : DefaultRightKeypadMapping)
-            setDefaultAction(stick, item, event, EventMode::kKeypadMode, updateDefaults);
+          for (const auto& item : DefaultRightKeyboardMapping)
+            setDefaultAction(stick, item, event, EventMode::kKeyboardMode, updateDefaults);
         }
         for(const auto& item : DefaultCommonMapping)
           setDefaultAction(stick, item, event, EventMode::kCommonMode, updateDefaults);
@@ -409,9 +429,9 @@ void PhysicalJoystickHandler::defineControllerMappings(const Controller::Type ty
     case Controller::Type::Keyboard:
     case Controller::Type::KidVid:
       if(port == Controller::Jack::Left)
-        myLeftMode = EventMode::kKeypadMode;
+        myLeftMode = EventMode::kKeyboardMode;
       else
-        myRightMode = EventMode::kKeypadMode;
+        myRightMode = EventMode::kKeyboardMode;
       break;
 
     case Controller::Type::Paddles:
@@ -456,8 +476,8 @@ void PhysicalJoystickHandler::enableEmulationMappings()
       enableMappings(RightPaddlesEvents, EventMode::kPaddlesMode);
       break;
 
-    case EventMode::kKeypadMode:
-      enableMappings(RightKeypadEvents, EventMode::kKeypadMode);
+    case EventMode::kKeyboardMode:
+      enableMappings(RightKeyboardEvents, EventMode::kKeyboardMode);
       break;
 
     default:
@@ -471,8 +491,8 @@ void PhysicalJoystickHandler::enableEmulationMappings()
       enableMappings(LeftPaddlesEvents, EventMode::kPaddlesMode);
       break;
 
-    case EventMode::kKeypadMode:
-      enableMappings(LeftKeypadEvents, EventMode::kKeypadMode);
+    case EventMode::kKeyboardMode:
+      enableMappings(LeftKeyboardEvents, EventMode::kKeyboardMode);
       break;
 
     default:
@@ -527,8 +547,8 @@ EventMode PhysicalJoystickHandler::getEventMode(const Event::Type event, const E
     if(isPaddleEvent(event))
       return EventMode::kPaddlesMode;
 
-    if(isKeypadEvent(event))
-      return EventMode::kKeypadMode;
+    if(isKeyboardEvent(event))
+      return EventMode::kKeyboardMode;
 
     if(isCommonEvent(event))
       return EventMode::kCommonMode;
@@ -552,16 +572,16 @@ bool PhysicalJoystickHandler::isPaddleEvent(const Event::Type event) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PhysicalJoystickHandler::isKeypadEvent(const Event::Type event) const
+bool PhysicalJoystickHandler::isKeyboardEvent(const Event::Type event) const
 {
-  return LeftKeypadEvents.find(event) != LeftKeypadEvents.end()
-    || RightKeypadEvents.find(event) != RightKeypadEvents.end();
+  return LeftKeyboardEvents.find(event) != LeftKeyboardEvents.end()
+    || RightKeyboardEvents.find(event) != RightKeyboardEvents.end();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PhysicalJoystickHandler::isCommonEvent(const Event::Type event) const
 {
-  return !(isJoystickEvent(event) || isPaddleEvent(event) || isKeypadEvent(event));
+  return !(isJoystickEvent(event) || isPaddleEvent(event) || isKeyboardEvent(event));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -579,7 +599,7 @@ void PhysicalJoystickHandler::eraseMapping(Event::Type event, EventMode mode)
         _joyptr->eraseMap(EventMode::kCommonMode);
         _joyptr->eraseMap(EventMode::kJoystickMode);
         _joyptr->eraseMap(EventMode::kPaddlesMode);
-        _joyptr->eraseMap(EventMode::kKeypadMode);
+        _joyptr->eraseMap(EventMode::kKeyboardMode);
       }
     }
   }
@@ -656,7 +676,7 @@ bool PhysicalJoystickHandler::addJoyMapping(Event::Type event, EventMode mode, i
       // erase identical mappings for all controller modes
       j->joyMap.erase(EventMode::kJoystickMode, button, axis, adir);
       j->joyMap.erase(EventMode::kPaddlesMode, button, axis, adir);
-      j->joyMap.erase(EventMode::kKeypadMode, button, axis, adir);
+      //j->joyMap.erase(EventMode::kKeyboardMode, button, axis, adir); // no common buttons in keyboard mode!
       j->joyMap.erase(EventMode::kCompuMateMode, button, axis, adir);
     }
     else if (evMode != EventMode::kMenuMode)
@@ -691,7 +711,7 @@ bool PhysicalJoystickHandler::addJoyHatMapping(Event::Type event, EventMode mode
       // erase identical mappings for all controller modes
       j->joyMap.erase(EventMode::kJoystickMode, button, hat, hdir);
       j->joyMap.erase(EventMode::kPaddlesMode, button, hat, hdir);
-      j->joyMap.erase(EventMode::kKeypadMode, button, hat, hdir);
+      j->joyMap.erase(EventMode::kKeyboardMode, button, hat, hdir);
       j->joyMap.erase(EventMode::kCompuMateMode, button, hat, hdir);
     }
     else if (evMode != EventMode::kMenuMode)
@@ -1068,113 +1088,113 @@ void PhysicalJoystickHandler::changeDrivingSensitivity(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PhysicalJoystickHandler::EventMappingArray PhysicalJoystickHandler::DefaultLeftJoystickMapping = {
   // Left joystick (assume buttons zero..two)
-  {Event::JoystickZeroFire,   0},
-  {Event::JoystickZeroFire5,  1},
-  {Event::JoystickZeroFire9,  2},
+  {Event::LeftJoystickFire,   0},
+  {Event::LeftJoystickFire5,  1},
+  {Event::LeftJoystickFire9,  2},
   // Left joystick left/right directions
-  {Event::JoystickZeroLeft,   JOY_CTRL_NONE, JoyAxis::X, JoyDir::NEG},
-  {Event::JoystickZeroRight,  JOY_CTRL_NONE, JoyAxis::X, JoyDir::POS},
+  {Event::LeftJoystickLeft,   JOY_CTRL_NONE, JoyAxis::X, JoyDir::NEG},
+  {Event::LeftJoystickRight,  JOY_CTRL_NONE, JoyAxis::X, JoyDir::POS},
   // Left joystick up/down directions
-  {Event::JoystickZeroUp,     JOY_CTRL_NONE, JoyAxis::Y, JoyDir::NEG},
-  {Event::JoystickZeroDown,   JOY_CTRL_NONE, JoyAxis::Y, JoyDir::POS},
+  {Event::LeftJoystickUp,     JOY_CTRL_NONE, JoyAxis::Y, JoyDir::NEG},
+  {Event::LeftJoystickDown,   JOY_CTRL_NONE, JoyAxis::Y, JoyDir::POS},
   // Left joystick left/right directions (assume hat 0)
-  {Event::JoystickZeroLeft,   JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::LEFT},
-  {Event::JoystickZeroRight,  JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::RIGHT},
+  {Event::LeftJoystickLeft,   JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::LEFT},
+  {Event::LeftJoystickRight,  JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::RIGHT},
   // Left joystick up/down directions (assume hat 0)
-  {Event::JoystickZeroUp,     JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::UP},
-  {Event::JoystickZeroDown,   JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::DOWN},
+  {Event::LeftJoystickUp,     JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::UP},
+  {Event::LeftJoystickDown,   JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::DOWN},
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PhysicalJoystickHandler::EventMappingArray PhysicalJoystickHandler::DefaultRightJoystickMapping = {
   // Right joystick (assume buttons zero..two)
-  {Event::JoystickOneFire,    0},
-  {Event::JoystickOneFire5,   1},
-  {Event::JoystickOneFire9,   2},
+  {Event::RightJoystickFire,    0},
+  {Event::RightJoystickFire5,   1},
+  {Event::RightJoystickFire9,   2},
   // Right joystick left/right directions
-  {Event::JoystickOneLeft,    JOY_CTRL_NONE, JoyAxis::X, JoyDir::NEG},
-  {Event::JoystickOneRight,   JOY_CTRL_NONE, JoyAxis::X, JoyDir::POS},
+  {Event::RightJoystickLeft,    JOY_CTRL_NONE, JoyAxis::X, JoyDir::NEG},
+  {Event::RightJoystickRight,   JOY_CTRL_NONE, JoyAxis::X, JoyDir::POS},
   // Right joystick up/down directions
-  {Event::JoystickOneUp,      JOY_CTRL_NONE, JoyAxis::Y, JoyDir::NEG},
-  {Event::JoystickOneDown,    JOY_CTRL_NONE, JoyAxis::Y, JoyDir::POS},
+  {Event::RightJoystickUp,      JOY_CTRL_NONE, JoyAxis::Y, JoyDir::NEG},
+  {Event::RightJoystickDown,    JOY_CTRL_NONE, JoyAxis::Y, JoyDir::POS},
   // Right joystick left/right directions (assume hat 0)
-  {Event::JoystickOneLeft,    JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::LEFT},
-  {Event::JoystickOneRight,   JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::RIGHT},
+  {Event::RightJoystickLeft,    JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::LEFT},
+  {Event::RightJoystickRight,   JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::RIGHT},
   // Right joystick up/down directions (assume hat 0)
-  {Event::JoystickOneUp,      JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::UP},
-  {Event::JoystickOneDown,    JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::DOWN},
+  {Event::RightJoystickUp,      JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::UP},
+  {Event::RightJoystickDown,    JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::DOWN},
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PhysicalJoystickHandler::EventMappingArray PhysicalJoystickHandler::DefaultLeftPaddlesMapping = {
-  {Event::PaddleZeroAnalog,   JOY_CTRL_NONE, JoyAxis::X, JoyDir::ANALOG},
+  {Event::LeftPaddleAAnalog,   JOY_CTRL_NONE, JoyAxis::X, JoyDir::ANALOG},
 #if defined(RETRON77)
-  {Event::PaddleZeroAnalog,   JOY_CTRL_NONE, JoyAxis::Z, JoyDir::ANALOG},
+  {Event::LeftPaddleAAnalog,   JOY_CTRL_NONE, JoyAxis::Z, JoyDir::ANALOG},
 #endif
   // Current code does NOT allow digital and anlog events on the same axis at the same time
-  //{Event::PaddleZeroDecrease, JOY_CTRL_NONE, JoyAxis::X, JoyDir::POS},
-  //{Event::PaddleZeroIncrease, JOY_CTRL_NONE, JoyAxis::X, JoyDir::NEG},
-  {Event::PaddleZeroFire,     0},
-  {Event::PaddleOneAnalog,    JOY_CTRL_NONE, JoyAxis::Y, JoyDir::ANALOG},
+  //{Event::LeftPaddleADecrease, JOY_CTRL_NONE, JoyAxis::X, JoyDir::POS},
+  //{Event::LeftPaddleAIncrease, JOY_CTRL_NONE, JoyAxis::X, JoyDir::NEG},
+  {Event::LeftPaddleAFire,     0},
+  {Event::LeftPaddleBAnalog,    JOY_CTRL_NONE, JoyAxis::Y, JoyDir::ANALOG},
 #if defined(RETRON77)
-  {Event::PaddleOneAnalog,    JOY_CTRL_NONE, JoyAxis::A3, JoyDir::ANALOG},
+  {Event::LeftPaddleBAnalog,    JOY_CTRL_NONE, JoyAxis::A3, JoyDir::ANALOG},
 #endif
   // Current code does NOT allow digital and anlog events on the same axis at the same
-  //{Event::PaddleOneDecrease,  JOY_CTRL_NONE, JoyAxis::Y, JoyDir::POS},
-  //{Event::PaddleOneIncrease,  JOY_CTRL_NONE, JoyAxis::Y, JoyDir::NEG},
-  {Event::PaddleOneFire,      1},
+  //{Event::LeftPaddleBDecrease,  JOY_CTRL_NONE, JoyAxis::Y, JoyDir::POS},
+  //{Event::LeftPaddleBIncrease,  JOY_CTRL_NONE, JoyAxis::Y, JoyDir::NEG},
+  {Event::LeftPaddleBFire,      1},
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PhysicalJoystickHandler::EventMappingArray PhysicalJoystickHandler::DefaultRightPaddlesMapping = {
-  {Event::PaddleTwoAnalog,    JOY_CTRL_NONE, JoyAxis::X, JoyDir::ANALOG},
+  {Event::RightPaddleAAnalog,    JOY_CTRL_NONE, JoyAxis::X, JoyDir::ANALOG},
 #if defined(RETRON77)
-  {Event::PaddleTwoAnalog,    JOY_CTRL_NONE, JoyAxis::Z, JoyDir::ANALOG},
+  {Event::RightPaddleAAnalog,    JOY_CTRL_NONE, JoyAxis::Z, JoyDir::ANALOG},
 #endif
   // Current code does NOT allow digital and anlog events on the same axis at the same
-  //{Event::PaddleTwoDecrease,  JOY_CTRL_NONE, JoyAxis::X, JoyDir::POS},
-  //{Event::PaddleTwoIncrease,  JOY_CTRL_NONE, JoyAxis::X, JoyDir::NEG},
-  {Event::PaddleTwoFire,      0},
-  {Event::PaddleThreeAnalog,  JOY_CTRL_NONE, JoyAxis::Y, JoyDir::ANALOG},
+  //{Event::RightPaddleADecrease,  JOY_CTRL_NONE, JoyAxis::X, JoyDir::POS},
+  //{Event::RightPaddleAIncrease,  JOY_CTRL_NONE, JoyAxis::X, JoyDir::NEG},
+  {Event::RightPaddleAFire,      0},
+  {Event::RightPaddleBAnalog,  JOY_CTRL_NONE, JoyAxis::Y, JoyDir::ANALOG},
 #if defined(RETRON77)
-  {Event::PaddleThreeAnalog,  JOY_CTRL_NONE, JoyAxis::A3, JoyDir::ANALOG},
+  {Event::RightPaddleBAnalog,  JOY_CTRL_NONE, JoyAxis::A3, JoyDir::ANALOG},
 #endif
   // Current code does NOT allow digital and anlog events on the same axis at the same
-  //{Event::PaddleThreeDecrease,JOY_CTRL_NONE, JoyAxis::Y, JoyDir::POS},
-  //{Event::PaddleThreeIncrease,JOY_CTRL_NONE, JoyAxis::Y, JoyDir::NEG},
-  {Event::PaddleThreeFire,    1},
+  //{Event::RightPaddleBDecrease,JOY_CTRL_NONE, JoyAxis::Y, JoyDir::POS},
+  //{Event::RightPaddleBIncrease,JOY_CTRL_NONE, JoyAxis::Y, JoyDir::NEG},
+  {Event::RightPaddleBFire,    1},
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PhysicalJoystickHandler::EventMappingArray PhysicalJoystickHandler::DefaultLeftKeypadMapping = {
-  {Event::KeyboardZero1,      0},
-  {Event::KeyboardZero2,      1},
-  {Event::KeyboardZero3,      2},
-  {Event::KeyboardZero4,      3},
-  {Event::KeyboardZero5,      4},
-  {Event::KeyboardZero6,      5},
-  {Event::KeyboardZero7,      6},
-  {Event::KeyboardZero8,      7},
-  {Event::KeyboardZero9,      8},
-  {Event::KeyboardZeroStar,   9},
-  {Event::KeyboardZero0,      10},
-  {Event::KeyboardZeroPound,  11},
+PhysicalJoystickHandler::EventMappingArray PhysicalJoystickHandler::DefaultLeftKeyboardMapping = {
+  {Event::LeftKeyboard1,      0},
+  {Event::LeftKeyboard2,      1},
+  {Event::LeftKeyboard3,      2},
+  {Event::LeftKeyboard4,      3},
+  {Event::LeftKeyboard5,      4},
+  {Event::LeftKeyboard6,      5},
+  {Event::LeftKeyboard7,      6},
+  {Event::LeftKeyboard8,      7},
+  {Event::LeftKeyboard9,      8},
+  {Event::LeftKeyboardStar,   9},
+  {Event::LeftKeyboard0,      10},
+  {Event::LeftKeyboardPound,  11},
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PhysicalJoystickHandler::EventMappingArray PhysicalJoystickHandler::DefaultRightKeypadMapping = {
-  {Event::KeyboardOne1,       0},
-  {Event::KeyboardOne2,       1},
-  {Event::KeyboardOne3,       2},
-  {Event::KeyboardOne4,       3},
-  {Event::KeyboardOne5,       4},
-  {Event::KeyboardOne6,       5},
-  {Event::KeyboardOne7,       6},
-  {Event::KeyboardOne8,       7},
-  {Event::KeyboardOne9,       8},
-  {Event::KeyboardOneStar,    9},
-  {Event::KeyboardOne0,       10},
-  {Event::KeyboardOnePound,   11},
+PhysicalJoystickHandler::EventMappingArray PhysicalJoystickHandler::DefaultRightKeyboardMapping = {
+  {Event::RightKeyboard1,       0},
+  {Event::RightKeyboard2,       1},
+  {Event::RightKeyboard3,       2},
+  {Event::RightKeyboard4,       3},
+  {Event::RightKeyboard5,       4},
+  {Event::RightKeyboard6,       5},
+  {Event::RightKeyboard7,       6},
+  {Event::RightKeyboard8,       7},
+  {Event::RightKeyboard9,       8},
+  {Event::RightKeyboardStar,    9},
+  {Event::RightKeyboard0,       10},
+  {Event::RightKeyboardPound,   11},
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

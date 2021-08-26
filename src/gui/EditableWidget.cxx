@@ -46,6 +46,7 @@ EditableWidget::EditableWidget(GuiObject* boss, const GUI::Font& font,
 void EditableWidget::setText(const string& str, bool changed)
 {
   const string oldEditString = _editString;
+  _backupString = str;
   // Filter input string
   _editString = "";
   for(char c: str)
@@ -276,7 +277,7 @@ bool EditableWidget::handleText(char text)
 bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
 {
   if(!_editable)
-    return true;
+    return false;
 
   bool handled = true;
   Event::Type event = instance().eventHandler().eventForKey(EventMode::kEditMode, key, mod);
@@ -436,6 +437,7 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
       break;
 
     case Event::AbortEdit:
+      handled = isChanged();
       abortEditMode();
       sendCommand(EditableWidget::kCancelCmd, 0, _id);
       break;

@@ -24,9 +24,9 @@ class CheckboxWidget;
 class DataGridWidget;
 class EditTextWidget;
 
-#include "CartDebugWidget.hxx"
+#include "CartARMWidget.hxx"
 
-class CartridgeBUSWidget : public CartDebugWidget
+class CartridgeBUSWidget : public CartridgeARMWidget
 {
   public:
     CartridgeBUSWidget(GuiObject* boss, const GUI::Font& lfont,
@@ -66,10 +66,6 @@ class CartridgeBUSWidget : public CartDebugWidget
     DataGridWidget* mySamplePointer{nullptr};
     CheckboxWidget* myBusOverdrive{nullptr};
     CheckboxWidget* myDigitalSample{nullptr};
-    EditTextWidget* myThumbMemCycles{nullptr};
-    EditTextWidget* myThumbFetches{nullptr};
-    EditTextWidget* myThumbReads{nullptr};
-    EditTextWidget* myThumbWrites{nullptr};
     std::array<StaticTextWidget*, 6> myDatastreamLabels{nullptr};
     CartState myOldState;
 

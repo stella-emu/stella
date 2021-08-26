@@ -57,6 +57,7 @@ SOURCES_CXX := \
 	$(CORE_DIR)/emucore/Cart4K.cxx \
 	$(CORE_DIR)/emucore/Cart4KSC.cxx \
 	$(CORE_DIR)/emucore/CartAR.cxx \
+	$(CORE_DIR)/emucore/CartARM.cxx \
 	$(CORE_DIR)/emucore/CartBF.cxx \
 	$(CORE_DIR)/emucore/CartBFSC.cxx \
 	$(CORE_DIR)/emucore/CartBUS.cxx \

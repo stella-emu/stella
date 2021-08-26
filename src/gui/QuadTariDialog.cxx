@@ -72,7 +72,7 @@ QuadTariDialog::QuadTariDialog(GuiObject* boss, const GUI::Font& font, int max_w
 
   ypos += lineHeight + VGAP * 2;
   myLeft2Port = new PopUpWidget(this, font, xpos, ypos,
-                               pwidth, lineHeight, ctrls, "P2 ");
+                               pwidth, lineHeight, ctrls, "P3 ");
   wid.push_back(myLeft2Port);
 
   xpos = _w - HBORDER - myLeft1Port->getWidth(); // aligned right
@@ -81,7 +81,7 @@ QuadTariDialog::QuadTariDialog(GuiObject* boss, const GUI::Font& font, int max_w
 
   ypos += lineHeight + VGAP * 2;
   myRight1Port = new PopUpWidget(this, font, xpos, ypos,
-                                pwidth, lineHeight, ctrls, "P3 ");
+                                pwidth, lineHeight, ctrls, "P2 ");
   wid.push_back(myRight1Port);
 
   ypos += lineHeight + VGAP * 2;

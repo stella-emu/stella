@@ -26,6 +26,7 @@
 #include "FSNode.hxx"
 #include "Settings.hxx"
 #include "DebuggerDialog.hxx"
+#include "PromptWidget.hxx"
 #include "DebuggerParser.hxx"
 #include "StateManager.hxx"
 #include "RewindManager.hxx"
@@ -123,6 +124,7 @@ bool Debugger::start(const string& message, int address, bool read,
 {
   if(myOSystem.eventHandler().enterDebugMode())
   {
+    myFirstLog = true;
     // This must be done *after* we enter debug mode,
     // so the message isn't erased
     ostringstream buf;
@@ -150,7 +152,15 @@ bool Debugger::startWithFatalError(const string& message)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::quit(bool exitrom)
+void Debugger::quit()
+{
+  if(myOSystem.settings().getBool("dbg.autosave")
+     && myDialog->prompt().isLoaded())
+    myParser->run("save");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::exit(bool exitrom)
 {
   if(exitrom)
     myOSystem.eventHandler().handleEvent(Event::ExitGame);
@@ -172,7 +182,8 @@ string Debugger::autoExec(StringList* history)
       << myParser->exec(autoexec, history) << endl;
 
   // Also, "romname.script" if present
-  FilesystemNode romname(myOSystem.romFile().getPathWithExt(".script"));
+  const string path = myOSystem.userDir().getPath() + myOSystem.romFile().getNameWithExt(".script");
+  FilesystemNode romname(path);
   buf << myParser->exec(romname, history) << endl;
 
   // Init builtins
@@ -440,6 +451,82 @@ bool Debugger::readTrap(uInt16 t)
 bool Debugger::writeTrap(uInt16 t)
 {
   return writeTraps().isInitialized() && writeTraps().isSet(t);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::log(const string& triggerMsg)
+{
+  const CartDebug::Disassembly& disasm = myCartDebug->disassembly();
+  int pc = myCpuDebug->pc();
+
+  if(myFirstLog)
+  {
+    ostringstream msg;
+
+    msg << "Trigger:  Frame Scn Cy Pxl | PS       A  X  Y  SP | ";
+    if(myCartDebug->romBankCount() > 1)
+    {
+      if(myCartDebug->romBankCount() > 9)
+        msg << "Bk/";
+      else
+        msg << "B/";
+    }
+    msg << "Addr Code     Disam";
+    Logger::log(msg.str());
+    myFirstLog = false;
+  }
+
+  // First find the lines in the range, and determine the longest string
+  uInt16 start = pc & 0xFFF;
+  uInt32 list_size = uInt32(disasm.list.size());
+  uInt32 pos;
+
+  for(pos = 0; pos < list_size; ++pos)
+  {
+    const CartDebug::DisassemblyTag& tag = disasm.list[pos];
+
+    if((tag.address & 0xfff) >= start)
+      break;
+  }
+
+  const CartDebug::DisassemblyTag& tag = disasm.list[pos];
+  ostringstream msg;
+
+  msg << std::left << std::setw(10) << std::setfill(' ') << triggerMsg;
+  msg << Base::toString(myTiaDebug->frameCount(), Base::Fmt::_10_5) << " "
+    << Base::toString(myTiaDebug->scanlines(), Base::Fmt::_10_3) << " "
+    << Base::toString(myTiaDebug->clocksThisLine() / 3, Base::Fmt::_10_02) << " "
+    << Base::toString(myTiaDebug->clocksThisLine() - 68, Base::Fmt::_10_3) << " | ";
+  msg << (myCpuDebug->n() ? "N" : "n")
+    << (myCpuDebug->v() ? "V" : "v") << "-"
+    << (myCpuDebug->b() ? "B" : "b")
+    << (myCpuDebug->d() ? "D" : "d")
+    << (myCpuDebug->i() ? "I" : "i")
+    << (myCpuDebug->z() ? "Z" : "z")
+    << (myCpuDebug->c() ? "C" : "c") << " "
+    << Base::HEX2 << myCpuDebug->a() << " "
+    << Base::HEX2 << myCpuDebug->x() << " "
+    << Base::HEX2 << myCpuDebug->y() << " "
+    << Base::HEX2 << myCpuDebug->sp() << " |";
+
+  if(myCartDebug->romBankCount() > 1)
+  {
+    if(myCartDebug->romBankCount() > 9)
+      msg << Base::toString(myCartDebug->getBank(pc), Base::Fmt::_10) << "/";
+    else
+      msg << " " << myCartDebug->getBank(pc) << "/";
+  }
+  else
+    msg << " ";
+
+  msg << Base::HEX4 << pc << " "
+    << std::left << std::setw(8) << std::setfill(' ') << tag.bytes << " "
+    << tag.disasm.substr(0, 7);
+
+  if(tag.disasm.length() > 8)
+    msg << tag.disasm.substr(8);
+
+  Logger::log(msg.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -816,12 +903,12 @@ void Debugger::getCompletions(const char* in, StringList& list) const
     for(const auto& iter : myFunctions)
     {
       const char* l = iter.first.c_str();
-      if(BSPF::matches(l, in))
+      if(BSPF::matchesCamelCase(l, in))
         list.push_back(l);
     }
 
     for(const auto& reg: ourPseudoRegisters)
-      if(BSPF::matches(reg.name, in))
+      if(BSPF::matchesCamelCase(reg.name, in))
         list.push_back(reg.name);
   }
 }
@@ -849,28 +936,28 @@ bool Debugger::canExit() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 std::array<Debugger::BuiltinFunction, 18> Debugger::ourBuiltinFunctions = { {
   // left joystick:
-  { "_joy0left",    "!(*SWCHA & $40)", "Left joystick moved left" },
-  { "_joy0right",   "!(*SWCHA & $80)", "Left joystick moved right" },
-  { "_joy0up",      "!(*SWCHA & $10)", "Left joystick moved up" },
-  { "_joy0down",    "!(*SWCHA & $20)", "Left joystick moved down" },
-  { "_joy0button",  "!(*INPT4 & $80)", "Left joystick button pressed" },
+  { "_joy0Left",    "!(*SWCHA & $40)", "Left joystick moved left" },
+  { "_joy0Right",   "!(*SWCHA & $80)", "Left joystick moved right" },
+  { "_joy0Up",      "!(*SWCHA & $10)", "Left joystick moved up" },
+  { "_joy0Down",    "!(*SWCHA & $20)", "Left joystick moved down" },
+  { "_joy0Fire",    "!(*INPT4 & $80)", "Left joystick fire button pressed" },
 
   // right joystick:
-  { "_joy1left",    "!(*SWCHA & $04)", "Right joystick moved left" },
-  { "_joy1right",   "!(*SWCHA & $08)", "Right joystick moved right" },
-  { "_joy1up",      "!(*SWCHA & $01)", "Right joystick moved up" },
-  { "_joy1down",    "!(*SWCHA & $02)", "Right joystick moved down" },
-  { "_joy1button",  "!(*INPT5 & $80)", "Right joystick button pressed" },
+  { "_joy1Left",    "!(*SWCHA & $04)", "Right joystick moved left" },
+  { "_joy1Right",   "!(*SWCHA & $08)", "Right joystick moved right" },
+  { "_joy1Up",      "!(*SWCHA & $01)", "Right joystick moved up" },
+  { "_joy1Down",    "!(*SWCHA & $02)", "Right joystick moved down" },
+  { "_joy1Fire",    "!(*INPT5 & $80)", "Right joystick fire button pressed" },
 
   // console switches:
   { "_select",    "!(*SWCHB & $02)",  "Game Select pressed" },
   { "_reset",     "!(*SWCHB & $01)",  "Game Reset pressed" },
   { "_color",     "*SWCHB & $08",     "Color/BW set to Color" },
   { "_bw",        "!(*SWCHB & $08)",  "Color/BW set to BW" },
-  { "_diff0b",    "!(*SWCHB & $40)",  "Left diff. set to B (easy)" },
-  { "_diff0a",    "*SWCHB & $40",     "Left diff. set to A (hard)" },
-  { "_diff1b",    "!(*SWCHB & $80)",  "Right diff. set to B (easy)" },
-  { "_diff1a",    "*SWCHB & $80",     "Right diff. set to A (hard)" }
+  { "_diff0B",    "!(*SWCHB & $40)",  "Left diff. set to B (easy)" },
+  { "_diff0A",    "*SWCHB & $40",     "Left diff. set to A (hard)" },
+  { "_diff1B",    "!(*SWCHB & $80)",  "Right diff. set to B (easy)" },
+  { "_diff1A",    "*SWCHB & $80",     "Right diff. set to A (hard)" }
 } };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -878,25 +965,25 @@ std::array<Debugger::BuiltinFunction, 18> Debugger::ourBuiltinFunctions = { {
 std::array<Debugger::PseudoRegister, 16> Debugger::ourPseudoRegisters = { {
 // Debugger::PseudoRegister Debugger::ourPseudoRegisters[NUM_PSEUDO_REGS] = {
   { "_bank",          "Currently selected bank" },
-  { "_cclocks",       "Color clocks on current scanline" },
-  { "_cycleshi",      "Higher 32 bits of number of cycles since emulation started" },
-  { "_cycleslo",      "Lower 32 bits of number of cycles since emulation started" },
-  { "_fcount",        "Number of frames since emulation started" },
-  { "_fcycles",       "Number of cycles since frame started" },
-  { "_ftimreadcycles","Number of cycles used by timer reads since frame started" },
-  { "_fwsynccycles",  "Number of cycles skipped by WSYNC since frame started" },
-  { "_icycles",       "Number of cycles of last instruction" },
+  { "_cClocks",       "Color clocks on current scanline" },
+  { "_cyclesHi",      "Higher 32 bits of number of cycles since emulation started" },
+  { "_cyclesLo",      "Lower 32 bits of number of cycles since emulation started" },
+  { "_fCount",        "Number of frames since emulation started" },
+  { "_fCycles",       "Number of cycles since frame started" },
+  { "_fTimReadCycles","Number of cycles used by timer reads since frame started" },
+  { "_fWsyncCycles",  "Number of cycles skipped by WSYNC since frame started" },
+  { "_iCycles",       "Number of cycles of last instruction" },
   { "_scan",          "Current scanline count" },
-  { "_scanend",       "Scanline count at end of last frame" },
-  { "_scycles",       "Number of cycles in current scanline" },
-  { "_timwrapread",   "Timer read wrapped on this cycle" },
-  { "_timwrapwrite",  "Timer write wrapped on this cycle" },
-  { "_vblank",        "Whether vertical blank is enabled (1 or 0)" },
-  { "_vsync",         "Whether vertical sync is enabled (1 or 0)" }
+  { "_scanEnd",       "Scanline count at end of last frame" },
+  { "_sCycles",       "Number of cycles in current scanline" },
+  { "_timWrapRead",   "Timer read wrapped on this cycle" },
+  { "_timWrapWrite",  "Timer write wrapped on this cycle" },
+  { "_vBlank",        "Whether vertical blank is enabled (1 or 0)" },
+  { "_vSync",         "Whether vertical sync is enabled (1 or 0)" }
   // CPU address access functions:
-  /*{ "_lastread", "last CPU read address" },
-  { "_lastwrite", "last CPU write address" },
-  { "__lastbaseread", "last CPU read base address" },
-  { "__lastbasewrite", "last CPU write base address" }*/
+  /*{ "_lastRead", "last CPU read address" },
+  { "_lastWrite", "last CPU write address" },
+  { "__lastBaseRead", "last CPU read base address" },
+  { "__lastBaseWrite", "last CPU write base address" }*/
 } };
 //

@@ -36,11 +36,9 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
-                                       int x, int y, int w, int h,
-                                       EventMode mode)
+                                       int x, int y, int w, int h)
   : Widget(boss, font, x, y, w, h),
-    CommandSender(boss),
-    myEventMode{mode}
+    CommandSender(boss)
 {
   const int lineHeight   = boss->dialog().lineHeight(),
             fontWidth    = boss->dialog().fontWidth(),
@@ -54,31 +52,29 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
   const int listWidth = _w - buttonWidth - HBORDER * 2 - fontWidth;
   int listHeight = _h - (2 + ACTION_LINES) * lineHeight - VBORDER + 2;
 
-  if(mode == EventMode::kEmulationMode)
-  {
-    VariantList items;
+  VariantList items;
 
-    items.clear();
-    VarList::push_back(items, "All", Event::Group::Emulation);
-    VarList::push_back(items, "Miscellaneous", Event::Group::Misc);
-    VarList::push_back(items, "Video & Audio", Event::Group::AudioVideo);
-    VarList::push_back(items, "States", Event::Group::States);
-    VarList::push_back(items, "Console", Event::Group::Console);
-    VarList::push_back(items, "Joystick", Event::Group::Joystick);
-    VarList::push_back(items, "Paddles", Event::Group::Paddles);
-    VarList::push_back(items, "Keyboard", Event::Group::Keyboard);
-    VarList::push_back(items, "Input Devices & Ports", Event::Group::Devices);
-    VarList::push_back(items, "Combo", Event::Group::Combo);
-    VarList::push_back(items, "Debug", Event::Group::Debug);
+  items.clear();
+  VarList::push_back(items, "Emulation", Event::Group::Emulation);
+  VarList::push_back(items, " Miscellaneous", Event::Group::Misc);
+  VarList::push_back(items, " Video & Audio", Event::Group::AudioVideo);
+  VarList::push_back(items, " States", Event::Group::States);
+  VarList::push_back(items, " Console", Event::Group::Console);
+  VarList::push_back(items, " Joystick", Event::Group::Joystick);
+  VarList::push_back(items, " Paddles", Event::Group::Paddles);
+  VarList::push_back(items, " Keyboard", Event::Group::Keyboard);
+  VarList::push_back(items, " Input Devices & Ports", Event::Group::Devices);
+  VarList::push_back(items, " Combo", Event::Group::Combo);
+  VarList::push_back(items, " Debug", Event::Group::Debug);
+  VarList::push_back(items, "User Interface", Event::Group::Menu);
 
-    myFilterPopup = new PopUpWidget(boss, font, xpos, ypos,
-                                    listWidth - font.getStringWidth("Events ") - PopUpWidget::dropDownWidth(font),
-                                    lineHeight, items, "Events ", 0, kFilterCmd);
-    myFilterPopup->setTarget(this);
-    addFocusWidget(myFilterPopup);
-    ypos += lineHeight * 1.5;
-    listHeight -= lineHeight * 1.5;
-  }
+  myFilterPopup = new PopUpWidget(boss, font, xpos, ypos,
+                                  listWidth - font.getStringWidth("Events ") - PopUpWidget::dropDownWidth(font),
+                                  lineHeight, items, "Events ", 0, kFilterCmd);
+  myFilterPopup->setTarget(this);
+  addFocusWidget(myFilterPopup);
+  ypos += lineHeight * 1.5;
+  listHeight -= lineHeight * 1.5;
 
   myActionsList = new StringListWidget(boss, font, xpos, ypos, listWidth, listHeight);
   myActionsList->setTarget(this);
@@ -118,18 +114,15 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
   myResetButton->setTarget(this);
   addFocusWidget(myResetButton);
 
-  if(mode == EventMode::kEmulationMode)
-  {
-    ypos += buttonHeight + VGAP * 2;
-    myComboButton = new ButtonWidget(boss, font, xpos, ypos,
-                                     buttonWidth, buttonHeight,
-                                     "Combo" + ELLIPSIS, kComboCmd);
-    myComboButton->setTarget(this);
-    addFocusWidget(myComboButton);
+  ypos += buttonHeight + VGAP * 2;
+  myComboButton = new ButtonWidget(boss, font, xpos, ypos,
+                                    buttonWidth, buttonHeight,
+                                    "Combo" + ELLIPSIS, kComboCmd);
+  myComboButton->setTarget(this);
+  addFocusWidget(myComboButton);
 
-    VariantList combolist = instance().eventHandler().getComboList(mode);
-    myComboDialog = make_unique<ComboDialog>(boss, font, combolist);
-  }
+  VariantList combolist = instance().eventHandler().getComboList();
+  myComboDialog = make_unique<ComboDialog>(boss, font, combolist);
 
   // Show message for currently selected event
   xpos = HBORDER;
@@ -149,9 +142,7 @@ void EventMappingWidget::loadConfig()
 {
   if(myFirstTime)
   {
-    if(myFilterPopup)
-      myFilterPopup->setSelectedIndex(0);
-
+    myFilterPopup->setSelectedIndex(0);
     myFirstTime = false;
   }
 
@@ -171,10 +162,11 @@ void EventMappingWidget::saveConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventMappingWidget::updateActions()
 {
-  if(myFilterPopup)
-    myEventGroup = Event::Group(myFilterPopup->getSelectedTag().toInt());
-  else
-    myEventGroup = Event::Group::Menu;
+  myEventGroup = Event::Group(myFilterPopup->getSelectedTag().toInt());
+  myEventMode = myEventGroup == Event::Group::Menu
+    ? EventMode::kMenuMode
+    : EventMode::kEmulationMode;
+
   StringList actions = instance().eventHandler().getActionList(myEventGroup);
 
   myActionsList->setList(actions);
@@ -294,13 +286,11 @@ void EventMappingWidget::enableButtons(bool state)
   myCancelMapButton->setEnabled(!state);
   myEraseButton->setEnabled(state);
   myResetButton->setEnabled(state);
-  if(myComboButton)
-  {
-    Event::Type e =
-      instance().eventHandler().eventAtIndex(myActionSelected, myEventGroup);
 
-    myComboButton->setEnabled(state && e >= Event::Combo1 && e <= Event::Combo16);
-  }
+  Event::Type e =
+    instance().eventHandler().eventAtIndex(myActionSelected, myEventGroup);
+
+  myComboButton->setEnabled(state && e >= Event::Combo1 && e <= Event::Combo16);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

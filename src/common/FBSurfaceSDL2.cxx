@@ -40,6 +40,8 @@ namespace {
   }
 }
 
+static int REF_COUNT = 0;
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBSurfaceSDL2::FBSurfaceSDL2(FBBackendSDL2& backend,
                              uInt32 width, uInt32 height,
@@ -48,6 +50,7 @@ FBSurfaceSDL2::FBSurfaceSDL2(FBBackendSDL2& backend,
   : myBackend{backend},
     myInterpolationMode{inter}
 {
+REF_COUNT++;
   createSurface(width, height, staticData);
 }
 
@@ -58,6 +61,8 @@ FBSurfaceSDL2::~FBSurfaceSDL2()
 
   if(mySurface)
   {
+REF_COUNT--;
+cerr << "  ~FBSurfaceSDL2(): " << this << "  " << REF_COUNT << endl;
     SDL_FreeSurface(mySurface);
     mySurface = nullptr;
   }

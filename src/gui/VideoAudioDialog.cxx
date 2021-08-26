@@ -233,24 +233,10 @@ void VideoAudioDialog::addPaletteTab()
   const int pswidth = swidth - INDENT + lwidth - plWidth;
   xpos += INDENT;
 
-  myPhaseShiftNtsc =
+  myPhaseShift =
     new SliderWidget(myTab, _font, xpos, ypos - 1, pswidth, lineHeight,
-                     "NTSC phase", plWidth, kNtscShiftChanged, fontWidth * 5);
-  myPhaseShiftNtsc->setMinValue((PaletteHandler::DEF_NTSC_SHIFT - PaletteHandler::MAX_PHASE_SHIFT) * 10);
-  myPhaseShiftNtsc->setMaxValue((PaletteHandler::DEF_NTSC_SHIFT + PaletteHandler::MAX_PHASE_SHIFT) * 10);
-  myPhaseShiftNtsc->setTickmarkIntervals(4);
-  myPhaseShiftNtsc->setToolTip("Adjust NTSC phase shift of 'Custom' palette.");
-  wid.push_back(myPhaseShiftNtsc);
-  ypos += lineHeight + VGAP;
-
-  myPhaseShiftPal =
-    new SliderWidget(myTab, _font, xpos, ypos - 1, pswidth, lineHeight,
-                     "PAL phase", plWidth, kPalShiftChanged, fontWidth * 5);
-  myPhaseShiftPal->setMinValue((PaletteHandler::DEF_PAL_SHIFT - PaletteHandler::MAX_PHASE_SHIFT) * 10);
-  myPhaseShiftPal->setMaxValue((PaletteHandler::DEF_PAL_SHIFT + PaletteHandler::MAX_PHASE_SHIFT) * 10);
-  myPhaseShiftPal->setTickmarkIntervals(4);
-  myPhaseShiftPal->setToolTip("Adjust PAL phase shift of 'Custom' palette.");
-  wid.push_back(myPhaseShiftPal);
+                     "NTSC phase", plWidth, kPhaseShiftChanged, fontWidth * 5);
+  wid.push_back(myPhaseShift);
   ypos += lineHeight + VGAP;
 
   const int rgblWidth = _font.getStringWidth("R ");
@@ -312,7 +298,7 @@ void VideoAudioDialog::addPaletteTab()
   myTVBlueShift->setTickmarkIntervals(2);
   myTVBlueShift->setToolTip("Adjust blue shift of 'Custom' palette.");
   wid.push_back(myTVBlueShift);
-  ypos += lineHeight + VGAP;
+  ypos += lineHeight + VGAP * 2;
   xpos -= INDENT;
 
   CREATE_CUSTOM_SLIDERS(Hue, "Hue ", kPaletteUpdated)
@@ -322,7 +308,7 @@ void VideoAudioDialog::addPaletteTab()
   CREATE_CUSTOM_SLIDERS(Gamma, "Gamma ", kPaletteUpdated)
 
   // The resulting palette
-  xpos = myPhaseShiftNtsc->getRight() + fontWidth * 2;
+  xpos = myPhaseShift->getRight() + fontWidth * 2;
   addPalette(xpos, VBORDER, _w - 2 * 2 - HBORDER - xpos,
              myTVGamma->getBottom() -  myTIAPalette->getTop());
 
@@ -599,9 +585,29 @@ void VideoAudioDialog::loadConfig()
   myTIAPalette->setSelected(myPalette, PaletteHandler::SETTING_STANDARD);
 
   // Palette adjustables
+  bool isPAL = instance().hasConsole()
+    && instance().console().timing() == ConsoleTiming::pal;
+
   instance().frameBuffer().tiaSurface().paletteHandler().getAdjustables(myPaletteAdj);
-  myPhaseShiftNtsc->setValue(myPaletteAdj.phaseNtsc);
-  myPhaseShiftPal->setValue(myPaletteAdj.phasePal);
+  if(isPAL)
+  {
+    myPhaseShift->setLabel("PAL phase");
+    myPhaseShift->setMinValue((PaletteHandler::DEF_PAL_SHIFT - PaletteHandler::MAX_PHASE_SHIFT) * 10);
+    myPhaseShift->setMaxValue((PaletteHandler::DEF_PAL_SHIFT + PaletteHandler::MAX_PHASE_SHIFT) * 10);
+    myPhaseShift->setTickmarkIntervals(4);
+    myPhaseShift->setToolTip("Adjust PAL phase shift of 'Custom' palette.");
+    myPhaseShift->setValue(myPaletteAdj.phasePal);
+
+  }
+  else
+  {
+    myPhaseShift->setLabel("NTSC phase");
+    myPhaseShift->setMinValue((PaletteHandler::DEF_NTSC_SHIFT - PaletteHandler::MAX_PHASE_SHIFT) * 10);
+    myPhaseShift->setMaxValue((PaletteHandler::DEF_NTSC_SHIFT + PaletteHandler::MAX_PHASE_SHIFT) * 10);
+    myPhaseShift->setTickmarkIntervals(4);
+    myPhaseShift->setToolTip("Adjust NTSC phase shift of 'Custom' palette.");
+    myPhaseShift->setValue(myPaletteAdj.phaseNtsc);
+  }
   myTVRedScale->setValue(myPaletteAdj.redScale);
   myTVRedShift->setValue(myPaletteAdj.redShift);
   myTVGreenScale->setValue(myPaletteAdj.greenScale);
@@ -734,8 +740,7 @@ void VideoAudioDialog::saveConfig()
   /////////////////////////////////////////////////////////////////////////////
   // TV Effects tab
   // TV Mode
-  settings.setValue("tv.filter",
-                                 myTVMode->getSelectedTag().toString());
+  settings.setValue("tv.filter", myTVMode->getSelectedTag().toString());
   // TV Custom adjustables
   NTSCFilter::Adjustable ntscAdj;
   ntscAdj.sharpness = myTVSharp->getValue();
@@ -846,9 +851,14 @@ void VideoAudioDialog::setDefaults()
     }
 
     case 1:  // Palettes
+    {
+      bool isPAL = instance().hasConsole()
+        && instance().console().timing() == ConsoleTiming::pal;
+
       myTIAPalette->setSelected(PaletteHandler::SETTING_STANDARD);
-      myPhaseShiftNtsc->setValue(PaletteHandler::DEF_NTSC_SHIFT * 10);
-      myPhaseShiftPal->setValue(PaletteHandler::DEF_PAL_SHIFT * 10);
+      myPhaseShift->setValue(isPAL
+                             ? PaletteHandler::DEF_PAL_SHIFT * 10
+                             : PaletteHandler::DEF_NTSC_SHIFT * 10);
       myTVRedScale->setValue(50);
       myTVRedShift->setValue(PaletteHandler::DEF_RGB_SHIFT);
       myTVGreenScale->setValue(50);
@@ -863,6 +873,7 @@ void VideoAudioDialog::setDefaults()
       handlePaletteChange();
       handlePaletteUpdate();
       break;
+    }
 
     case 2:  // TV effects
     {
@@ -940,8 +951,7 @@ void VideoAudioDialog::handlePaletteChange()
 {
   bool enable = myTIAPalette->getSelectedTag().toString() == "custom";
 
-  myPhaseShiftNtsc->setEnabled(enable);
-  myPhaseShiftPal->setEnabled(enable);
+  myPhaseShift->setEnabled(enable);
   myTVRedScale->setEnabled(enable);
   myTVRedShift->setEnabled(enable);
   myTVGreenScale->setEnabled(enable);
@@ -969,8 +979,19 @@ void VideoAudioDialog::handlePaletteUpdate()
                                   myTIAPalette->getSelectedTag().toString());
   // Palette adjustables
   PaletteHandler::Adjustable paletteAdj;
-  paletteAdj.phaseNtsc  = myPhaseShiftNtsc->getValue();
-  paletteAdj.phasePal   = myPhaseShiftPal->getValue();
+  bool isPAL = instance().hasConsole()
+    && instance().console().timing() == ConsoleTiming::pal;
+
+  if(isPAL)
+  {
+    paletteAdj.phaseNtsc = myPaletteAdj.phaseNtsc; // unchanged
+    paletteAdj.phasePal = myPhaseShift->getValue();
+  }
+  else
+  {
+    paletteAdj.phaseNtsc = myPhaseShift->getValue();
+    paletteAdj.phasePal = myPaletteAdj.phasePal; // unchanged
+  }
   paletteAdj.redScale   = myTVRedScale->getValue();
   paletteAdj.redShift   = myTVRedShift->getValue();
   paletteAdj.greenScale = myTVGreenScale->getValue();
@@ -1057,12 +1078,8 @@ void VideoAudioDialog::handleCommand(CommandSender* sender, int cmd,
       handlePaletteUpdate();
       break;
 
-    case kNtscShiftChanged:
-      handleShiftChanged(myPhaseShiftNtsc);
-      break;
-
-    case kPalShiftChanged:
-      handleShiftChanged(myPhaseShiftPal);
+    case kPhaseShiftChanged:
+      handleShiftChanged(myPhaseShift);
       break;
 
     case kRedShiftChanged:
@@ -1185,6 +1202,7 @@ void VideoAudioDialog::addPalette(int x, int y, int w, int h)
     {
       myColor[idx][lum] = new ColorWidget(myTab, _font, x + lwidth + lum * COLW, y + idx * COLH,
                                           COLW + 1, COLH + 1, 0, false);
+      myColor[idx][lum]->clearFlags(FLAG_CLEARBG | FLAG_RETAIN_FOCUS | FLAG_MOUSE_FOCUS | FLAG_BORDER);
     }
   }
 }

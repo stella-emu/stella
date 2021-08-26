@@ -42,18 +42,22 @@ class PromptWidget : public Widget, public CommandSender
     ~PromptWidget() override = default;
 
   public:
-    ATTRIBUTE_FMT_PRINTF int printf(const char* format, ...);
-    ATTRIBUTE_FMT_PRINTF int vprintf(const char* format, va_list argptr);
     void print(const string& str);
     void printPrompt();
     string saveBuffer(const FilesystemNode& file);
 
-    // Clear screen and erase all history
+    // Clear screen
     void clearScreen();
+    // Erase all history
+    void clearHistory();
 
     void addToHistory(const char *str);
 
+    bool isLoaded() const { return !_firstTime; }
+
   protected:
+    ATTRIBUTE_FMT_PRINTF int printf(const char* format, ...);
+    ATTRIBUTE_FMT_PRINTF int vprintf(const char* format, va_list argptr);
     int& buffer(int idx) { return _buffer[idx % kBufferSize]; }
 
     void drawWidget(bool hilite) override;
@@ -64,21 +68,22 @@ class PromptWidget : public Widget, public CommandSender
     void scrollToCurrent();
 
     // Line editing
-    void specialKeys(StellaKey key);
     void nextLine();
     void killChar(int direction);
     void killLine(int direction);
     void killWord();
 
     // Clipboard
-    void textSelectAll();
     string getLine();
     void textCut();
     void textCopy();
     void textPaste();
 
     // History
-    void historyScroll(int direction);
+    bool historyScroll(int direction);
+
+    bool execute();
+    bool autoComplete(int direction);
 
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseWheel(int x, int y, int direction) override;
@@ -92,15 +97,13 @@ class PromptWidget : public Widget, public CommandSender
     bool wantsFocus() const override { return true; }
     void loadConfig() override;
 
-  private:
-    // Get the longest prefix (initially 's') that is in every string in the list
-    string getCompletionPrefix(const StringList& completions);
+    void resetFunctions();
 
   private:
     enum {
-      kBufferSize     = 32768,
+      kBufferSize = 32768,
       kLineBufferSize = 256,
-      kHistorySize    = 20
+      kHistorySize = 1000
     };
 
     int  _buffer[kBufferSize];  // NOLINT  (will be rewritten soon)
@@ -118,19 +121,20 @@ class PromptWidget : public Widget, public CommandSender
 
     ScrollBarWidget* _scrollBar;
 
-    char _history[kHistorySize][kLineBufferSize];  // NOLINT  (will be rewritten soon)
-    int _historySize;
-    int _historyIndex;
-    int _historyLine;
+    std::vector<string> _history;
+    int _historyIndex{0};
+    int _historyLine{0};
+    int _tabCount{-1};
+    char _inputStr[kLineBufferSize];
 
     int _kConsoleCharWidth, _kConsoleCharHeight, _kConsoleLineHeight;
 
-    bool _inverse;
-    bool _makeDirty;
-    bool _firstTime;
-    bool _exitedEarly;
+    bool _inverse{false};
+    bool _firstTime{true};
+    bool _exitedEarly{false};
 
-//    int compareHistory(const char *histLine);
+    int historyDir(int& index, int direction);
+    void historyAdd(const string& entry);
 
   private:
     // Following constructors and assignment operators not supported

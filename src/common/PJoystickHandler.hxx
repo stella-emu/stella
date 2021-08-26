@@ -70,7 +70,7 @@ class PhysicalJoystickHandler
     int add(const PhysicalJoystickPtr& stick);
     bool remove(int id);
     bool remove(const string& name);
-    void mapStelladaptors(const string& saport);
+    bool mapStelladaptors(const string& saport, int ID = -1);
     bool hasStelladaptors() const;
     void setDefaultMapping(Event::Type type, EventMode mode);
 
@@ -140,6 +140,9 @@ class PhysicalJoystickHandler
       return i != mySticks.cend() ? i->second : nullptr;
     }
 
+    // Add stick to stick database
+    void addToDatabase(const PhysicalJoystickPtr& stick);
+
     // Set default mapping for given joystick when no mappings already exist
     void setStickDefaultMapping(int stick, Event::Type type, EventMode mode,
                                 bool updateDefaults = false);
@@ -175,7 +178,7 @@ class PhysicalJoystickHandler
     /** Checks event type. */
     bool isJoystickEvent(const Event::Type event) const;
     bool isPaddleEvent(const Event::Type event) const;
-    bool isKeypadEvent(const Event::Type event) const;
+    bool isKeyboardEvent(const Event::Type event) const;
     bool isCommonEvent(const Event::Type event) const;
 
     void enableCommonMappings();
@@ -195,8 +198,8 @@ class PhysicalJoystickHandler
     static EventMappingArray DefaultRightJoystickMapping;
     static EventMappingArray DefaultLeftPaddlesMapping;
     static EventMappingArray DefaultRightPaddlesMapping;
-    static EventMappingArray DefaultLeftKeypadMapping;
-    static EventMappingArray DefaultRightKeypadMapping;
+    static EventMappingArray DefaultLeftKeyboardMapping;
+    static EventMappingArray DefaultRightKeyboardMapping;
 
     static constexpr int NUM_PORTS = 2;
     static constexpr int NUM_SA_AXIS = 2;

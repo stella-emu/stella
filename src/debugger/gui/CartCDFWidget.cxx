@@ -15,6 +15,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include "OSystem.hxx"
 #include "DataGridWidget.hxx"
 #include "PopUpWidget.hxx"
 #include "EditTextWidget.hxx"
@@ -24,7 +25,7 @@
 CartridgeCDFWidget::CartridgeCDFWidget(
     GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
     int x, int y, int w, int h, CartridgeCDF& cart)
-  : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
+  : CartridgeARMWidget(boss, lfont, nfont, x, y, w, h, cart),
     myCart{cart}
 {
   const int VBORDER = 8;
@@ -56,7 +57,7 @@ CartridgeCDFWidget::CartridgeCDFWidget(
                            myLineHeight, items,
                            "Set bank ", 0, kBankChanged);
   myBank->setTarget(this);
-  //addFocusWidget(myBank);
+  addFocusWidget(myBank);
 
   // Fast Fetch flag
   myFastFetch = new CheckboxWidget(boss, _font, myBank->getRight() + 24, ypos + 1,
@@ -69,7 +70,7 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   // Datastream Pointers
 #define DS_X (HBORDER + _font.getStringWidth("xx "))
   xpos = DS_X;
-  ypos += myLineHeight + VGAP * 3;
+  ypos += myLineHeight + VGAP * 2;
   new StaticTextWidget(boss, _font, xpos, ypos, "Datastream Pointers");
 
   myDatastreamPointers = new DataGridWidget(boss, _nfont, DS_X,
@@ -136,7 +137,7 @@ CartridgeCDFWidget::CartridgeCDFWidget(
                                               Common::Base::Fmt::_16_2_2);
   myJumpStreamIncrements->setTarget(this);
   myJumpStreamIncrements->setEditable(false);
-  xpos = HBORDER;  ypos += myLineHeight * 11 + VGAP * 3;
+  xpos = HBORDER;  ypos += myLineHeight * 11 + VGAP * 2;
 
   lwidth = _font.getStringWidth("Waveform Sizes ");
 
@@ -201,32 +202,7 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   mySamplePointer->setEditable(false);
 
   xpos = HBORDER;  ypos += myLineHeight + VGAP * 2;
-  new StaticTextWidget(boss, _font, xpos, ypos + 1, "Last ARM run stats:");
-  xpos = HBORDER + INDENT; ypos += myLineHeight + VGAP;
-  StaticTextWidget* s = new StaticTextWidget(boss, _font, xpos, ypos + 1, "Mem. cycles ");
-  myThumbMemCycles = new EditTextWidget(boss, _font, s->getRight(), ypos - 1,
-                                           EditTextWidget::calcWidth(_font, 6), myLineHeight, "");
-  myThumbMemCycles->setEditable(false);
-  myThumbMemCycles->setToolTip("Number of memory cycles of last ARM run.");
-
-  s = new StaticTextWidget(boss, _font, myThumbMemCycles->getRight() + _fontWidth * 2, ypos + 1, "Fetches ");
-  myThumbFetches = new EditTextWidget(boss, _font, s->getRight(), ypos - 1,
-                                           EditTextWidget::calcWidth(_font, 6), myLineHeight, "");
-  myThumbFetches->setEditable(false);
-  myThumbFetches->setToolTip("Number of fetches/instructions of last ARM run.");
-
-  ypos += myLineHeight + VGAP;
-  s = new StaticTextWidget(boss, _font, xpos, ypos + 1, "Reads ");
-  myThumbReads = new EditTextWidget(boss, _font, myThumbMemCycles->getLeft(), ypos - 1,
-                                    EditTextWidget::calcWidth(_font, 6), myLineHeight, "");
-  myThumbReads->setEditable(false);
-  myThumbReads->setToolTip("Number of reads of last ARM run.");
-
-  s = new StaticTextWidget(boss, _font, myThumbReads->getRight() + _fontWidth * 2, ypos + 1, "Writes ");
-  myThumbWrites = new EditTextWidget(boss, _font, myThumbFetches->getLeft(), ypos - 1,
-                                    EditTextWidget::calcWidth(_font, 6), myLineHeight, "");
-  myThumbWrites->setEditable(false);
-  myThumbWrites->setToolTip("Number of write of last ARM run.");
+  addCycleWidgets(xpos, ypos);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -274,6 +250,8 @@ void CartridgeCDFWidget::saveOldState()
     myOldState.internalram.push_back(myCart.myRAM[i]);
 
   myOldState.samplepointer.push_back(myCart.getSample());
+
+  CartridgeARMWidget::saveOldState();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -405,17 +383,8 @@ void CartridgeCDFWidget::loadConfig()
     mySamplePointer->setCrossed(true);
   }
 
-  myThumbMemCycles->setText(Common::Base::toString(myCart.stats().fetches
-                            + myCart.stats().reads + myCart.stats().writes,
-                            Common::Base::Fmt::_10_6));
-  myThumbFetches->setText(Common::Base::toString(myCart.stats().fetches,
-                          Common::Base::Fmt::_10_6));
-  myThumbReads->setText(Common::Base::toString(myCart.stats().reads,
-                        Common::Base::Fmt::_10_6));
-  myThumbWrites->setText(Common::Base::toString(myCart.stats().writes,
-                         Common::Base::Fmt::_10_6));
-
-  CartDebugWidget::loadConfig();
+  // ARM cycles
+  CartridgeARMWidget::loadConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -429,6 +398,8 @@ void CartridgeCDFWidget::handleCommand(CommandSender* sender,
     myCart.lockBank();
     invalidate();
   }
+  else
+    CartridgeARMWidget::handleCommand(sender, cmd, data, id);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

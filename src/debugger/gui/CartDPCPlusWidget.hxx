@@ -24,9 +24,9 @@ class CheckboxWidget;
 class DataGridWidget;
 class EditTextWidget;
 
-#include "CartDebugWidget.hxx"
+#include "CartARMWidget.hxx"
 
-class CartridgeDPCPlusWidget : public CartDebugWidget
+class CartridgeDPCPlusWidget : public CartridgeARMWidget
 {
   public:
     CartridgeDPCPlusWidget(GuiObject* boss, const GUI::Font& lfont,
@@ -66,10 +66,6 @@ class CartridgeDPCPlusWidget : public CartDebugWidget
     CheckboxWidget* myFastFetch{nullptr};
     CheckboxWidget* myIMLDA{nullptr};
     DataGridWidget* myRandom{nullptr};
-    EditTextWidget* myThumbMemCycles{nullptr};
-    EditTextWidget* myThumbFetches{nullptr};
-    EditTextWidget* myThumbReads{nullptr};
-    EditTextWidget* myThumbWrites{nullptr};
 
     CartState myOldState;
 

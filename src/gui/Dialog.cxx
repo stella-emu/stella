@@ -70,6 +70,14 @@ Dialog::Dialog(OSystem& instance, DialogContainer& parent,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Dialog::~Dialog()
 {
+  if(instance().hasFrameBuffer())
+  {
+    instance().frameBuffer().deallocateSurface(_surface);
+    instance().frameBuffer().deallocateSurface(_shadeSurface);
+  }
+  else
+    cerr << "!!! framebuffer not available\n";
+
   _myFocus.list.clear();
   _myTabList.clear();
 
@@ -249,12 +257,6 @@ void Dialog::setDirty()
 void Dialog::setDirtyChain()
 {
   _dirtyChain = true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::resetSurfaces()
-{
-  _surface->reload();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -627,15 +629,20 @@ void Dialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
   if(e == Event::NoType)
     e = instance().eventHandler().eventForKey(EventMode::kMenuMode, key, mod);
 
-  // Unless a widget has claimed all responsibility for data, we assume
-  // that if an event exists for the given data, it should have priority.
-  if(!handleNavEvent(e, repeated) && _focusedWidget)
+  // Widget events are handled *before* the dialog events
+  bool handled = false;
+
+  if(_focusedWidget)
   {
+    // Unless a widget has claimed all responsibility for data, we assume
+    // that if an event exists for the given data, it should have priority.
     if(_focusedWidget->wantsRaw() || e == Event::NoType)
-      _focusedWidget->handleKeyDown(key, mod);
+      handled = _focusedWidget->handleKeyDown(key, mod);
     else
-      _focusedWidget->handleEvent(e);
+      handled = _focusedWidget->handleEvent(e);
   }
+  if(!handled)
+    handleNavEvent(e, repeated);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

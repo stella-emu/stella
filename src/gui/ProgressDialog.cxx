@@ -97,7 +97,8 @@ void ProgressDialog::setRange(int start, int finish, int step)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ProgressDialog::resetProgress()
 {
-  myProgress = myStepProgress = 0;
+  myLastTick = TimerManager::getTicks();
+  myProgress = 0;
   mySlider->setValue(0);
   myIsCancelled = false;
 }
@@ -105,10 +106,10 @@ void ProgressDialog::resetProgress()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ProgressDialog::setProgress(int progress)
 {
-  // Only increase the progress bar if we have arrived at a new step
-  if(progress - myStepProgress >= myStep)
+  // Only increase the progress bar if some time has passed
+  if(TimerManager::getTicks() - myLastTick > 100000) // update every 1/10th second
   {
-    myStepProgress = progress;
+    myLastTick = TimerManager::getTicks();
     mySlider->setValue(progress % (myFinish - myStart + 1));
 
     // Since this dialog is usually called in a tight loop that doesn't

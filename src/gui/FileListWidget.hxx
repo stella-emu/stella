@@ -77,6 +77,8 @@ class FileListWidget : public StringListWidget
 
     /** Select parent directory (if applicable) */
     void selectParent();
+    /** Descend into currently selected directory */
+    void selectDirectory();
 
     /** Reload current location (file or directory) */
     void reload();
@@ -94,15 +96,9 @@ class FileListWidget : public StringListWidget
     ProgressDialog& progress();
     void incProgress();
 
-  protected:
-    static unique_ptr<ProgressDialog> myProgressDialog;
-
   private:
     /** Very similar to setDirectory(), but also updates the history */
     void setLocation(const FilesystemNode& node, const string& select);
-
-    /** Descend into currently selected directory */
-    void selectDirectory();
 
     bool handleText(char text) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
@@ -123,6 +119,8 @@ class FileListWidget : public StringListWidget
     string _quickSelectStr;
     uInt64 _quickSelectTime{0};
     static uInt64 _QUICK_SELECT_DELAY;
+
+    unique_ptr<ProgressDialog> myProgressDialog;
 
   private:
     // Following constructors and assignment operators not supported

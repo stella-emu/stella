@@ -39,6 +39,9 @@ PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
   _textcolor = kTextColor;
   _textcolorhi = kTextColor;  // do not highlight the label
 
+  setTextFilter([](char c) {
+    return (isprint(c) && c != '\"') || c == '\x1c' || c == '\x1d'; // DEGREE || ELLIPSIS
+  });
   setEditable(false);
 
   if(!_label.empty() && _labelWidth == 0)
@@ -117,6 +120,12 @@ int PopUpWidget::getSelected() const
 const string& PopUpWidget::getSelectedName() const
 {
   return myMenu->getSelectedName();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PopUpWidget::setSelectedName(const string& name)
+{
+  myMenu->setSelectedName(name);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

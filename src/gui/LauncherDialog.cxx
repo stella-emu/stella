@@ -56,6 +56,7 @@
 #include "Stella14x28tFont.hxx"
 #include "Stella16x32tFont.hxx"
 #include "Version.hxx"
+#include "MediaFactory.hxx"
 #include "LauncherDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -286,7 +287,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
                                      "Select", kLoadROMCmd);
     wid.push_back(myStartButton);
   #endif
-    myStartButton->setToolTip("Start emulation of selected ROM.");
+    myStartButton->setToolTip("Start emulation of selected ROM\nor switch to selected directory.");
   }
   if(myUseMinimalUI) // Highlight 'Rom Listing'
     mySelectedItem = 0;
@@ -350,15 +351,6 @@ void LauncherDialog::reload()
   myMD5List.clear();
   myList->reload();
   myPendingReload = false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::resetSurfaces()
-{
-  if(myRomInfoWidget)
-    myRomInfoWidget->resetSurfaces();
-
-  Dialog::resetSurfaces();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -431,7 +423,8 @@ void LauncherDialog::updateUI()
 
   // Indicate how many files were found
   ostringstream buf;
-  buf << (myList->getList().size() - 1) << (myShortCount ? " found" : " items found");
+  buf << (myList->getList().size() - (currentDir().hasParent() ? 1 : 0))
+    << (myShortCount ? " found" : " items found");
   myRomCount->setLabel(buf.str());
 
   // Update ROM info UI item
@@ -797,6 +790,15 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kLoadROMCmd:
+      if(myList->selected().isDirectory())
+      {
+        if(myList->selected().getName() == " [..]")
+          myList->selectParent();
+        else
+          myList->selectDirectory();
+        break;
+      }
+      [[fallthrough]];
     case FileListWidget::ItemActivated:
       saveConfig();
       loadRom();
@@ -864,6 +866,15 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
     case ContextMenu::kItemSelectedCmd:
       handleContextMenu();
       break;
+
+    case RomInfoWidget::kClickedCmd:
+    {
+      const string url = myRomInfoWidget->getUrl();
+
+      if(url != EmptyString)
+        MediaFactory::openURL(url);
+      break;
+    }
 
     default:
       Dialog::handleCommand(sender, cmd, data, 0);

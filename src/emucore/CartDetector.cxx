@@ -134,6 +134,10 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
   {
     if (isProbablyCTY(image, size))
       type = Bankswitch::Type::_CTY;
+    else if(isProbablyCDF(image, size))
+      type = Bankswitch::Type::_CDF;
+    else if(isProbablyDPCplus(image, size))
+      type = Bankswitch::Type::_DPCP;
     else if(isProbablySC(image, size))
       type = Bankswitch::Type::_F4SC;
     else if(isProbably3EX(image, size))
@@ -144,10 +148,6 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
       type = Bankswitch::Type::_3F;
     else if (isProbablyBUS(image, size))
       type = Bankswitch::Type::_BUS;
-    else if (isProbablyCDF(image, size))
-      type = Bankswitch::Type::_CDF;
-    else if(isProbablyDPCplus(image, size))
-      type = Bankswitch::Type::_DPCP;
     else if(isProbablyFA2(image, size))
       type = Bankswitch::Type::_FA2;
     else if (isProbablyFC(image, size))
@@ -166,12 +166,12 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
   {
     if(isProbably3EX(image, size))
       type = Bankswitch::Type::_3EX;
+    else if (isProbablyCDF(image, size))
+      type = Bankswitch::Type::_CDF;
     else if(isProbably3E(image, size))
       type = Bankswitch::Type::_3E;
     else if(isProbably3F(image, size))
       type = Bankswitch::Type::_3F;
-    else if (isProbablyCDF(image, size))
-      type = Bankswitch::Type::_CDF;
     else if(isProbably4A50(image, size))
       type = Bankswitch::Type::_4A50;
     else if(isProbablyEF(image, size, type))
@@ -195,6 +195,8 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
       type = Bankswitch::Type::_CDF;
     else if(isProbably4A50(image, size))
       type = Bankswitch::Type::_4A50;
+    else if(isProbablyCDF(image, size))
+      type = Bankswitch::Type::_CDF;
     else /*if(isProbablySB(image, size))*/
       type = Bankswitch::Type::_SB;
   }

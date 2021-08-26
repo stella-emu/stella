@@ -206,7 +206,7 @@ int main(int ac, char* av[])
 
   // Create the full OSystem after the settings, since settings are
   // probably needed for defaults
-  Logger::debug("Creating the OSystem ...");
+  Logger::log("Creating the OSystem ...");
   if(!theOSystem->initialize(globalOpts))
   {
     Logger::error("ERROR: Couldn't create OSystem");

@@ -108,7 +108,6 @@ class LauncherDialog : public Dialog
 
     void loadConfig() override;
     void saveConfig() override;
-    void resetSurfaces() override;
     void updateUI();
 
     /**
@@ -182,6 +181,7 @@ class LauncherDialog : public Dialog
     ButtonWidget*     myOptionsButton{nullptr};
     ButtonWidget*     myQuitButton{nullptr};
 
+// FIXME - NOT USED    StaticTextWidget* myRomLink{nullptr};
     RomInfoWidget*    myRomInfoWidget{nullptr};
     std::unordered_map<string,string> myMD5List;
 

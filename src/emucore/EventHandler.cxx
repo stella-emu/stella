@@ -54,6 +54,7 @@
 #endif
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
+  #include "DebuggerParser.hxx"
 #endif
 #ifdef GUI_SUPPORT
   #include "Menu.hxx"
@@ -68,6 +69,7 @@
 #endif
 
 using namespace std::placeholders;
+using json = nlohmann::json;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandler::EventHandler(OSystem& osystem)
@@ -88,11 +90,6 @@ void EventHandler::initialize()
 
   // Create joystick handler (to handle all physical joystick functionality)
   myPJoyHandler = make_unique<PhysicalJoystickHandler>(myOSystem, *this, myEvent);
-
-  // Erase the 'combo' array
-  for(int i = 0; i < COMBO_SIZE; ++i)
-    for(int j = 0; j < EVENTS_PER_COMBO; ++j)
-      myComboTable[i][j] = Event::NoType;
 
   // Make sure the event/action mappings are correctly set,
   // and fill the ActionList structure with valid values
@@ -163,11 +160,6 @@ void EventHandler::addPhysicalJoystick(const PhysicalJoystickPtr& joy)
 
   setActionMappings(EventMode::kEmulationMode);
   setActionMappings(EventMode::kMenuMode);
-
-  ostringstream buf;
-  buf << "Added joystick " << ID << ":" << endl
-      << "  " << joy->about() << endl;
-  Logger::info(buf.str());
 #endif
 }
 
@@ -758,84 +750,84 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
 
     ////////////////////////////////////////////////////////////////////////
     // If enabled, make sure 'impossible' joystick directions aren't allowed
-    case Event::JoystickZeroUp:
+    case Event::LeftJoystickUp:
       if(!myAllowAllDirectionsFlag && pressed)
-        myEvent.set(Event::JoystickZeroDown, 0);
+        myEvent.set(Event::LeftJoystickDown, 0);
       break;
 
-    case Event::JoystickZeroDown:
+    case Event::LeftJoystickDown:
       if(!myAllowAllDirectionsFlag && pressed)
-        myEvent.set(Event::JoystickZeroUp, 0);
+        myEvent.set(Event::LeftJoystickUp, 0);
       break;
 
-    case Event::JoystickZeroLeft:
+    case Event::LeftJoystickLeft:
       if(!myAllowAllDirectionsFlag && pressed)
-        myEvent.set(Event::JoystickZeroRight, 0);
+        myEvent.set(Event::LeftJoystickRight, 0);
       break;
 
-    case Event::JoystickZeroRight:
+    case Event::LeftJoystickRight:
       if(!myAllowAllDirectionsFlag && pressed)
-        myEvent.set(Event::JoystickZeroLeft, 0);
+        myEvent.set(Event::LeftJoystickLeft, 0);
       break;
 
-    case Event::JoystickOneUp:
+    case Event::RightJoystickUp:
       if(!myAllowAllDirectionsFlag && pressed)
-        myEvent.set(Event::JoystickOneDown, 0);
+        myEvent.set(Event::RightJoystickDown, 0);
       break;
 
-    case Event::JoystickOneDown:
+    case Event::RightJoystickDown:
       if(!myAllowAllDirectionsFlag && pressed)
-        myEvent.set(Event::JoystickOneUp, 0);
+        myEvent.set(Event::RightJoystickUp, 0);
       break;
 
-    case Event::JoystickOneLeft:
+    case Event::RightJoystickLeft:
       if(!myAllowAllDirectionsFlag && pressed)
-        myEvent.set(Event::JoystickOneRight, 0);
+        myEvent.set(Event::RightJoystickRight, 0);
       break;
 
-    case Event::JoystickOneRight:
+    case Event::RightJoystickRight:
       if(!myAllowAllDirectionsFlag && pressed)
-        myEvent.set(Event::JoystickOneLeft, 0);
+        myEvent.set(Event::RightJoystickLeft, 0);
       break;
 
-    case Event::JoystickTwoUp:
+    case Event::QTJoystickThreeUp:
       if(!myAllowAllDirectionsFlag && pressed)
-        myEvent.set(Event::JoystickTwoDown, 0);
+        myEvent.set(Event::QTJoystickThreeDown, 0);
       break;
 
-    case Event::JoystickTwoDown:
+    case Event::QTJoystickThreeDown:
       if(!myAllowAllDirectionsFlag && pressed)
-        myEvent.set(Event::JoystickTwoUp, 0);
+        myEvent.set(Event::QTJoystickThreeUp, 0);
       break;
 
-    case Event::JoystickTwoLeft:
+    case Event::QTJoystickThreeLeft:
       if(!myAllowAllDirectionsFlag && pressed)
-        myEvent.set(Event::JoystickTwoRight, 0);
+        myEvent.set(Event::QTJoystickThreeRight, 0);
       break;
 
-    case Event::JoystickTwoRight:
+    case Event::QTJoystickThreeRight:
       if(!myAllowAllDirectionsFlag && pressed)
-        myEvent.set(Event::JoystickTwoLeft, 0);
+        myEvent.set(Event::QTJoystickThreeLeft, 0);
       break;
 
-    case Event::JoystickThreeUp:
+    case Event::QTJoystickFourUp:
       if(!myAllowAllDirectionsFlag && pressed)
-        myEvent.set(Event::JoystickThreeDown, 0);
+        myEvent.set(Event::QTJoystickFourDown, 0);
       break;
 
-    case Event::JoystickThreeDown:
+    case Event::QTJoystickFourDown:
       if(!myAllowAllDirectionsFlag && pressed)
-        myEvent.set(Event::JoystickThreeUp, 0);
+        myEvent.set(Event::QTJoystickFourUp, 0);
       break;
 
-    case Event::JoystickThreeLeft:
+    case Event::QTJoystickFourLeft:
       if(!myAllowAllDirectionsFlag && pressed)
-        myEvent.set(Event::JoystickThreeRight, 0);
+        myEvent.set(Event::QTJoystickFourRight, 0);
       break;
 
-    case Event::JoystickThreeRight:
+    case Event::QTJoystickFourRight:
       if(!myAllowAllDirectionsFlag && pressed)
-        myEvent.set(Event::JoystickThreeLeft, 0);
+        myEvent.set(Event::QTJoystickFourLeft, 0);
       break;
 
     ///////////////////////////////////////////////////////////////////////////
@@ -2087,27 +2079,27 @@ void EventHandler::handleConsoleStartupEvents()
   const string& holdjoy0 = myOSystem.settings().getString("holdjoy0");
 
   if(BSPF::containsIgnoreCase(holdjoy0, "U"))
-    handleEvent(Event::JoystickZeroUp);
+    handleEvent(Event::LeftJoystickUp);
   if(BSPF::containsIgnoreCase(holdjoy0, "D"))
-    handleEvent(Event::JoystickZeroDown);
+    handleEvent(Event::LeftJoystickDown);
   if(BSPF::containsIgnoreCase(holdjoy0, "L"))
-    handleEvent(Event::JoystickZeroLeft);
+    handleEvent(Event::LeftJoystickLeft);
   if(BSPF::containsIgnoreCase(holdjoy0, "R"))
-    handleEvent(Event::JoystickZeroRight);
+    handleEvent(Event::LeftJoystickRight);
   if(BSPF::containsIgnoreCase(holdjoy0, "F"))
-    handleEvent(Event::JoystickZeroFire);
+    handleEvent(Event::LeftJoystickFire);
 
   const string& holdjoy1 = myOSystem.settings().getString("holdjoy1");
   if(BSPF::containsIgnoreCase(holdjoy1, "U"))
-    handleEvent(Event::JoystickOneUp);
+    handleEvent(Event::RightJoystickUp);
   if(BSPF::containsIgnoreCase(holdjoy1, "D"))
-    handleEvent(Event::JoystickOneDown);
+    handleEvent(Event::RightJoystickDown);
   if(BSPF::containsIgnoreCase(holdjoy1, "L"))
-    handleEvent(Event::JoystickOneLeft);
+    handleEvent(Event::RightJoystickLeft);
   if(BSPF::containsIgnoreCase(holdjoy1, "R"))
-    handleEvent(Event::JoystickOneRight);
+    handleEvent(Event::RightJoystickRight);
   if(BSPF::containsIgnoreCase(holdjoy1, "F"))
-    handleEvent(Event::JoystickOneFire);
+    handleEvent(Event::RightJoystickFire);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2263,12 +2255,19 @@ void EventHandler::setActionMappings(EventMode mode)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setComboMap()
 {
-  // Since istringstream swallows whitespace, we have to make the
-  // delimiters be spaces
-  string list = myOSystem.settings().getString("combomap");
-  replace(list.begin(), list.end(), ':', ' ');
-  istringstream buf(list);
   const Int32 version = myOSystem.settings().getInt("event_ver");
+  const string serializedMapping = myOSystem.settings().getString("combomap");
+  json mapping;
+
+  try
+  {
+    mapping = json::parse(serializedMapping);
+  }
+  catch(const json::exception&)
+  {
+    Logger::info("converting legacy combo mapping");
+    mapping = convertLegacyComboMapping(serializedMapping);
+  }
 
   // Erase the 'combo' array
   auto ERASE_ALL = [&]() {
@@ -2277,46 +2276,82 @@ void EventHandler::setComboMap()
         myComboTable[i][j] = Event::NoType;
   };
 
+  ERASE_ALL();
+
   // Compare if event list version has changed so that combo maps became invalid
-  if(version != Event::VERSION || !buf.good())
-    ERASE_ALL();
-  else
+  if(version == Event::VERSION)
   {
-    // Get combo count, which should be the first int in the list
-    // If it isn't, then we treat the entire list as invalid
     try
     {
-      string key;
-      buf >> key;
-      if(BSPF::stringToInt(key) == COMBO_SIZE)
+      for(const json& combo : mapping)
       {
-        // Fill the combomap table with events for as long as they exist
-        int combocount = 0;
-        while(buf >> key && combocount < COMBO_SIZE)
-        {
-          // Each event in a comboevent is separated by a comma
-          replace(key.begin(), key.end(), ',', ' ');
-          istringstream buf2(key);
+        int i = combo.at("combo").get<Event::Type>() - Event::Combo1,
+          j = 0;
+        json events = combo.at("events");
 
-          int eventcount = 0;
-          while(buf2 >> key && eventcount < EVENTS_PER_COMBO)
-          {
-            myComboTable[combocount][eventcount] = Event::Type(BSPF::stringToInt(key));
-            ++eventcount;
-          }
-          ++combocount;
-        }
+        for(const json& event : events)
+          myComboTable[i][j++] = event;
       }
-      else
-        ERASE_ALL();
     }
-    catch(...)
+    catch(const json::exception&)
     {
+      Logger::error("ignoring bad combo mapping");
       ERASE_ALL();
     }
   }
-
   saveComboMapping();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+json EventHandler::convertLegacyComboMapping(string list)
+{
+  json convertedMapping = json::array();
+
+  // Since istringstream swallows whitespace, we have to make the
+  // delimiters be spaces
+  std::replace(list.begin(), list.end(), ':', ' ');
+  std::replace(list.begin(), list.end(), ',', ' ');
+  istringstream buf(list);
+
+  try
+  {
+    int numCombos;
+    // Get combo count, which should be the first int in the list
+    // If it isn't, then we treat the entire list as invalid
+    buf >> numCombos;
+
+    if(numCombos == COMBO_SIZE)
+    {
+      for(int i = 0; i < COMBO_SIZE; ++i)
+      {
+        json events = json::array();
+
+        for(int j = 0; j < EVENTS_PER_COMBO; ++j)
+        {
+          int event;
+
+          buf >> event;
+          // skip all NoType events
+          if(event != Event::NoType)
+            events.push_back(Event::Type(event));
+        }
+        // only store if there are any NoType events
+        if(events.size())
+        {
+          json combo;
+
+          combo["combo"] = Event::Type(Event::Combo1 + i);
+          combo["events"] = events;
+          convertedMapping.push_back(combo);
+        }
+      }
+    }
+  }
+  catch(...)
+  {
+    Logger::error("Legacy combo map conversion failed!");
+  }
+  return convertedMapping;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2423,18 +2458,32 @@ void EventHandler::saveJoyMapping()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::saveComboMapping()
 {
-  // Iterate through the combomap table and create a colon-separated list
-  // For each combo event, create a comma-separated list of its events
-  // Prepend the event count, so we can check it on next load
-  ostringstream buf;
-  buf << COMBO_SIZE;
+  json mapping = json::array();
+
+  // Iterate through the combomap table and convert into json format
   for(int i = 0; i < COMBO_SIZE; ++i)
   {
-    buf << ":" << myComboTable[i][0];
-    for(int j = 1; j < EVENTS_PER_COMBO; ++j)
-      buf << "," << myComboTable[i][j];
+    json events = json::array();
+
+    for(int j = 0; j < EVENTS_PER_COMBO; ++j)
+    {
+      int event = myComboTable[i][j];
+
+      // skip all NoType events
+      if(event != Event::NoType)
+        events.push_back(Event::Type(event));
+    }
+    // only store if there are any NoType events
+    if(events.size())
+    {
+      json combo;
+
+      combo["combo"] = Event::Type(Event::Combo1 + i);
+      combo["events"] = events;
+      mapping.push_back(combo);
+    }
   }
-  myOSystem.settings().setValue("combomap", buf.str());
+  myOSystem.settings().setValue("combomap", mapping.dump(2));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2535,7 +2584,7 @@ StringList EventHandler::getActionList(const Event::EventSet& events, EventMode 
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-VariantList EventHandler::getComboList(EventMode /**/) const
+VariantList EventHandler::getComboList() const
 {
   // For now, this only works in emulation mode
   VariantList l;
@@ -2589,9 +2638,9 @@ void EventHandler::setComboListForEvent(Event::Type event, const StringList& eve
 {
   if(event >= Event::Combo1 && event <= Event::Combo16)
   {
-    assert(events.size() == 8);
+    assert(events.size() == EVENTS_PER_COMBO);
     const int combo = event - Event::Combo1;
-    for(uInt32 i = 0; i < 8; ++i)
+    for(uInt32 i = 0; i < EVENTS_PER_COMBO; ++i)
     {
       uInt32 idx = BSPF::stringToInt(events[i]);
       if(idx < ourEmulActionList.size())
@@ -2996,11 +3045,14 @@ void EventHandler::exitEmulation(bool checkLauncher)
   const bool activeTM = myOSystem.settings().getBool(
     myOSystem.settings().getBool("dev.settings") ? "dev.timemachine" : "plr.timemachine");
 
-
   if (saveOnExit == "all" && activeTM)
     handleEvent(Event::SaveAllStates);
   else if (saveOnExit == "current")
     handleEvent(Event::SaveState);
+
+#if DEBUGGER_SUPPORT
+  myOSystem.debugger().quit();
+#endif
 
   if (checkLauncher)
   {
@@ -3036,12 +3088,12 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::ConsoleBlackWhite,       "Black & White TV",                      "" },
   { Event::ConsoleColorToggle,      "Toggle Color / B&W TV",                 "" },
   { Event::Console7800Pause,        "7800 Pause Key",                        "" },
-  { Event::ConsoleLeftDiffA,        "P0 Difficulty A",                       "" },
-  { Event::ConsoleLeftDiffB,        "P0 Difficulty B",                       "" },
-  { Event::ConsoleLeftDiffToggle,   "P0 Toggle Difficulty",                  "" },
-  { Event::ConsoleRightDiffA,       "P1 Difficulty A",                       "" },
-  { Event::ConsoleRightDiffB,       "P1 Difficulty B",                       "" },
-  { Event::ConsoleRightDiffToggle,  "P1 Toggle Difficulty",                  "" },
+  { Event::ConsoleLeftDiffA,        "Left Difficulty A",                     "" },
+  { Event::ConsoleLeftDiffB,        "Left Difficulty B",                     "" },
+  { Event::ConsoleLeftDiffToggle,   "Toggle Left Difficulty",                "" },
+  { Event::ConsoleRightDiffA,       "Right Difficulty A",                    "" },
+  { Event::ConsoleRightDiffB,       "Right Difficulty B",                    "" },
+  { Event::ConsoleRightDiffToggle,  "Toggle Right Difficulty",               "" },
   { Event::SaveState,               "Save state",                            "" },
   { Event::SaveAllStates,           "Save all TM states of current game",    "" },
   { Event::PreviousState,           "Change to previous state slot",         "" },
@@ -3056,84 +3108,84 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::ToggleContSnapshotsFrame,"Save continuous snapsh. (every frame)", "" },
 #endif
 
-  { Event::JoystickZeroUp,          "P0 Joystick Up",                        "" },
-  { Event::JoystickZeroDown,        "P0 Joystick Down",                      "" },
-  { Event::JoystickZeroLeft,        "P0 Joystick Left",                      "" },
-  { Event::JoystickZeroRight,       "P0 Joystick Right",                     "" },
-  { Event::JoystickZeroFire,        "P0 Joystick Fire",                      "" },
-  { Event::JoystickZeroFire5,       "P0 Booster Top Booster Button",         "" },
-  { Event::JoystickZeroFire9,       "P0 Booster Handle Grip Trigger",        "" },
+  { Event::LeftJoystickUp,          "Left Joystick Up",                      "" },
+  { Event::LeftJoystickDown,        "Left Joystick Down",                    "" },
+  { Event::LeftJoystickLeft,        "Left Joystick Left",                    "" },
+  { Event::LeftJoystickRight,       "Left Joystick Right",                   "" },
+  { Event::LeftJoystickFire,        "Left Joystick Fire",                    "" },
+  { Event::LeftJoystickFire5,       "Left Booster Top Booster Button",       "" },
+  { Event::LeftJoystickFire9,       "Left Booster Handle Grip Trigger",      "" },
 
-  { Event::JoystickOneUp,           "P1 Joystick Up",                        "" },
-  { Event::JoystickOneDown,         "P1 Joystick Down",                      "" },
-  { Event::JoystickOneLeft,         "P1 Joystick Left",                      "" },
-  { Event::JoystickOneRight,        "P1 Joystick Right",                     "" },
-  { Event::JoystickOneFire,         "P1 Joystick Fire",                      "" },
-  { Event::JoystickOneFire5,        "P1 Booster Top Booster Button",         "" },
-  { Event::JoystickOneFire9,        "P1 Booster Handle Grip Trigger",        "" },
+  { Event::RightJoystickUp,         "Right Joystick Up",                     "" },
+  { Event::RightJoystickDown,       "Right Joystick Down",                   "" },
+  { Event::RightJoystickLeft,       "Right Joystick Left",                   "" },
+  { Event::RightJoystickRight,      "Right Joystick Right",                  "" },
+  { Event::RightJoystickFire,       "Right Joystick Fire",                   "" },
+  { Event::RightJoystickFire5,      "Right Booster Top Booster Button",      "" },
+  { Event::RightJoystickFire9,      "Right Booster Handle Grip Trigger",     "" },
 
-  { Event::JoystickTwoUp,           "P2 Joystick Up",                        "" },
-  { Event::JoystickTwoDown,         "P2 Joystick Down",                      "" },
-  { Event::JoystickTwoLeft,         "P2 Joystick Left",                      "" },
-  { Event::JoystickTwoRight,        "P2 Joystick Right",                     "" },
-  { Event::JoystickTwoFire,         "P2 Joystick Fire",                      "" },
+  { Event::QTJoystickThreeUp,       "QuadTari Joystick 3 Up",                "" },
+  { Event::QTJoystickThreeDown,     "QuadTari Joystick 3 Down",              "" },
+  { Event::QTJoystickThreeLeft,     "QuadTari Joystick 3 Left",              "" },
+  { Event::QTJoystickThreeRight,    "QuadTari Joystick 3 Right",             "" },
+  { Event::QTJoystickThreeFire,     "QuadTari Joystick 3 Fire",              "" },
 
-  { Event::JoystickThreeUp,         "P3 Joystick Up",                        "" },
-  { Event::JoystickThreeDown,       "P3 Joystick Down",                      "" },
-  { Event::JoystickThreeLeft,       "P3 Joystick Left",                      "" },
-  { Event::JoystickThreeRight,      "P3 Joystick Right",                     "" },
-  { Event::JoystickThreeFire,       "P3 Joystick Fire",                      "" },
+  { Event::QTJoystickFourUp,        "QuadTari Joystick 4 Up",                "" },
+  { Event::QTJoystickFourDown,      "QuadTari Joystick 4 Down",              "" },
+  { Event::QTJoystickFourLeft,      "QuadTari Joystick 4 Left",              "" },
+  { Event::QTJoystickFourRight,     "QuadTari Joystick 4 Right",             "" },
+  { Event::QTJoystickFourFire,      "QuadTari Joystick 4 Fire",              "" },
 
-  { Event::PaddleZeroAnalog,        "Paddle 0 Analog",                       "" },
-  { Event::PaddleZeroIncrease,      "Paddle 0 Turn Left",                    "" },
-  { Event::PaddleZeroDecrease,      "Paddle 0 Turn Right",                   "" },
-  { Event::PaddleZeroFire,          "Paddle 0 Fire",                         "" },
+  { Event::LeftPaddleAAnalog,       "Left Paddle A Analog",                  "" },
+  { Event::LeftPaddleAIncrease,     "Left Paddle A Turn Left",               "" },
+  { Event::LeftPaddleADecrease,     "Left Paddle A Turn Right",              "" },
+  { Event::LeftPaddleAFire,         "Left Paddle A Fire",                    "" },
 
-  { Event::PaddleOneAnalog,         "Paddle 1 Analog",                       "" },
-  { Event::PaddleOneIncrease,       "Paddle 1 Turn Left",                    "" },
-  { Event::PaddleOneDecrease,       "Paddle 1 Turn Right",                   "" },
-  { Event::PaddleOneFire,           "Paddle 1 Fire",                         "" },
+  { Event::LeftPaddleBAnalog,       "Left Paddle B Analog",                  "" },
+  { Event::LeftPaddleBIncrease,     "Left Paddle B Turn Left",               "" },
+  { Event::LeftPaddleBDecrease,     "Left Paddle B Turn Right",              "" },
+  { Event::LeftPaddleBFire,         "Left Paddle B Fire",                    "" },
 
-  { Event::PaddleTwoAnalog,         "Paddle 2 Analog",                       "" },
-  { Event::PaddleTwoIncrease,       "Paddle 2 Turn Left",                    "" },
-  { Event::PaddleTwoDecrease,       "Paddle 2 Turn Right",                   "" },
-  { Event::PaddleTwoFire,           "Paddle 2 Fire",                         "" },
+  { Event::RightPaddleAAnalog,      "Right Paddle A Analog",                 "" },
+  { Event::RightPaddleAIncrease,    "Right Paddle A Turn Left",              "" },
+  { Event::RightPaddleADecrease,    "Right Paddle A Turn Right",             "" },
+  { Event::RightPaddleAFire,        "Right Paddle A Fire",                   "" },
 
-  { Event::PaddleThreeAnalog,       "Paddle 3 Analog",                       "" },
-  { Event::PaddleThreeIncrease,     "Paddle 3 Turn Left",                    "" },
-  { Event::PaddleThreeDecrease,     "Paddle 3 Turn Right",                   "" },
-  { Event::PaddleThreeFire,         "Paddle 3 Fire",                         "" },
+  { Event::RightPaddleBAnalog,      "Right Paddle B Analog",                 "" },
+  { Event::RightPaddleBIncrease,    "Right Paddle B Turn Left",              "" },
+  { Event::RightPaddleBDecrease,    "Right Paddle B Turn Right",             "" },
+  { Event::RightPaddleBFire,        "Right Paddle B Fire",                   "" },
 
-  { Event::PaddleFourFire,          "Paddle 4 Fire",                         "" },
-  { Event::PaddleFiveFire,          "Paddle 5 Fire",                         "" },
-  { Event::PaddleSixFire,           "Paddle 6 Fire",                         "" },
-  { Event::PaddleSevenFire,         "Paddle 7 Fire",                         "" },
+  { Event::QTPaddle3AFire,          "QuadTari Paddle 3A Fire",               "" },
+  { Event::QTPaddle3BFire,          "QuadTari Paddle 3B Fire",               "" },
+  { Event::QTPaddle4AFire,          "QuadTari Paddle 4A Fire",               "" },
+  { Event::QTPaddle4BFire,          "QuadTari Paddle 4B Fire",               "" },
 
-  { Event::KeyboardZero1,           "P0 Keyboard 1",                         "" },
-  { Event::KeyboardZero2,           "P0 Keyboard 2",                         "" },
-  { Event::KeyboardZero3,           "P0 Keyboard 3",                         "" },
-  { Event::KeyboardZero4,           "P0 Keyboard 4",                         "" },
-  { Event::KeyboardZero5,           "P0 Keyboard 5",                         "" },
-  { Event::KeyboardZero6,           "P0 Keyboard 6",                         "" },
-  { Event::KeyboardZero7,           "P0 Keyboard 7",                         "" },
-  { Event::KeyboardZero8,           "P0 Keyboard 8",                         "" },
-  { Event::KeyboardZero9,           "P0 Keyboard 9",                         "" },
-  { Event::KeyboardZeroStar,        "P0 Keyboard *",                         "" },
-  { Event::KeyboardZero0,           "P0 Keyboard 0",                         "" },
-  { Event::KeyboardZeroPound,       "P0 Keyboard #",                         "" },
+  { Event::LeftKeyboard1,           "Left Keyboard 1",                       "" },
+  { Event::LeftKeyboard2,           "Left Keyboard 2",                       "" },
+  { Event::LeftKeyboard3,           "Left Keyboard 3",                       "" },
+  { Event::LeftKeyboard4,           "Left Keyboard 4",                       "" },
+  { Event::LeftKeyboard5,           "Left Keyboard 5",                       "" },
+  { Event::LeftKeyboard6,           "Left Keyboard 6",                       "" },
+  { Event::LeftKeyboard7,           "Left Keyboard 7",                       "" },
+  { Event::LeftKeyboard8,           "Left Keyboard 8",                       "" },
+  { Event::LeftKeyboard9,           "Left Keyboard 9",                       "" },
+  { Event::LeftKeyboardStar,        "Left Keyboard *",                       "" },
+  { Event::LeftKeyboard0,           "Left Keyboard 0",                       "" },
+  { Event::LeftKeyboardPound,       "Left Keyboard #",                       "" },
 
-  { Event::KeyboardOne1,            "P1 Keyboard 1",                         "" },
-  { Event::KeyboardOne2,            "P1 Keyboard 2",                         "" },
-  { Event::KeyboardOne3,            "P1 Keyboard 3",                         "" },
-  { Event::KeyboardOne4,            "P1 Keyboard 4",                         "" },
-  { Event::KeyboardOne5,            "P1 Keyboard 5",                         "" },
-  { Event::KeyboardOne6,            "P1 Keyboard 6",                         "" },
-  { Event::KeyboardOne7,            "P1 Keyboard 7",                         "" },
-  { Event::KeyboardOne8,            "P1 Keyboard 8",                         "" },
-  { Event::KeyboardOne9,            "P1 Keyboard 9",                         "" },
-  { Event::KeyboardOneStar,         "P1 Keyboard *",                         "" },
-  { Event::KeyboardOne0,            "P1 Keyboard 0",                         "" },
-  { Event::KeyboardOnePound,        "P1 Keyboard #",                         "" },
+  { Event::RightKeyboard1,          "Right Keyboard 1",                      "" },
+  { Event::RightKeyboard2,          "Right Keyboard 2",                      "" },
+  { Event::RightKeyboard3,          "Right Keyboard 3",                      "" },
+  { Event::RightKeyboard4,          "Right Keyboard 4",                      "" },
+  { Event::RightKeyboard5,          "Right Keyboard 5",                      "" },
+  { Event::RightKeyboard6,          "Right Keyboard 6",                      "" },
+  { Event::RightKeyboard7,          "Right Keyboard 7",                      "" },
+  { Event::RightKeyboard8,          "Right Keyboard 8",                      "" },
+  { Event::RightKeyboard9,          "Right Keyboard 9",                      "" },
+  { Event::RightKeyboardStar,       "Right Keyboard *",                      "" },
+  { Event::RightKeyboard0,          "Right Keyboard 0",                      "" },
+  { Event::RightKeyboardPound,      "Right Keyboard #",                      "" },
   // Video
   { Event::ToggleFullScreen,        "Toggle fullscreen",                     "" },
 #ifdef ADAPTABLE_REFRESH_SUPPORT
@@ -3234,7 +3286,7 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::DecreaseDrivingSense,    "Decrease driving sensitivity",          "" },
   { Event::IncreaseDrivingSense,    "Increase driving sensitivity",          "" },
   { Event::PreviousCursorVisbility, "Select prev. cursor visibility mode",   "" },
-  { Event::NextCursorVisbility,     "Select next cursor visibility mode"    ,"" },
+  { Event::NextCursorVisbility,     "Select next cursor visibility mode",    "" },
   { Event::ToggleGrabMouse,         "Toggle grab mouse",                     "" },
   { Event::PreviousLeftPort,        "Select previous left controller",       "" },
   { Event::NextLeftPort,            "Select next left controller",           "" },
@@ -3363,35 +3415,35 @@ const Event::EventSet EventHandler::ConsoleEvents = {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const Event::EventSet EventHandler::JoystickEvents = {
-  Event::JoystickZeroUp, Event::JoystickZeroDown, Event::JoystickZeroLeft, Event::JoystickZeroRight,
-  Event::JoystickZeroFire, Event::JoystickZeroFire5, Event::JoystickZeroFire9,
-  Event::JoystickOneUp, Event::JoystickOneDown, Event::JoystickOneLeft, Event::JoystickOneRight,
-  Event::JoystickOneFire, Event::JoystickOneFire5, Event::JoystickOneFire9,
-  Event::JoystickTwoUp, Event::JoystickTwoDown, Event::JoystickTwoLeft, Event::JoystickTwoRight,
-  Event::JoystickTwoFire,
-  Event::JoystickThreeUp, Event::JoystickThreeDown, Event::JoystickThreeLeft, Event::JoystickThreeRight,
-  Event::JoystickThreeFire,
+  Event::LeftJoystickUp, Event::LeftJoystickDown, Event::LeftJoystickLeft, Event::LeftJoystickRight,
+  Event::LeftJoystickFire, Event::LeftJoystickFire5, Event::LeftJoystickFire9,
+  Event::RightJoystickUp, Event::RightJoystickDown, Event::RightJoystickLeft, Event::RightJoystickRight,
+  Event::RightJoystickFire, Event::RightJoystickFire5, Event::RightJoystickFire9,
+  Event::QTJoystickThreeUp, Event::QTJoystickThreeDown, Event::QTJoystickThreeLeft, Event::QTJoystickThreeRight,
+  Event::QTJoystickThreeFire,
+  Event::QTJoystickFourUp, Event::QTJoystickFourDown, Event::QTJoystickFourLeft, Event::QTJoystickFourRight,
+  Event::QTJoystickFourFire,
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const Event::EventSet EventHandler::PaddlesEvents = {
-  Event::PaddleZeroDecrease, Event::PaddleZeroIncrease, Event::PaddleZeroAnalog, Event::PaddleZeroFire,
-  Event::PaddleOneDecrease, Event::PaddleOneIncrease, Event::PaddleOneAnalog, Event::PaddleOneFire,
-  Event::PaddleTwoDecrease, Event::PaddleTwoIncrease, Event::PaddleTwoAnalog, Event::PaddleTwoFire,
-  Event::PaddleThreeDecrease, Event::PaddleThreeIncrease, Event::PaddleThreeAnalog, Event::PaddleThreeFire,
-  Event::PaddleFourFire, Event::PaddleFiveFire,Event::PaddleSixFire,Event::PaddleSevenFire,
+  Event::LeftPaddleADecrease, Event::LeftPaddleAIncrease, Event::LeftPaddleAAnalog, Event::LeftPaddleAFire,
+  Event::LeftPaddleBDecrease, Event::LeftPaddleBIncrease, Event::LeftPaddleBAnalog, Event::LeftPaddleBFire,
+  Event::RightPaddleADecrease, Event::RightPaddleAIncrease, Event::RightPaddleAAnalog, Event::RightPaddleAFire,
+  Event::RightPaddleBDecrease, Event::RightPaddleBIncrease, Event::RightPaddleBAnalog, Event::RightPaddleBFire,
+  Event::QTPaddle3AFire, Event::QTPaddle3BFire,Event::QTPaddle4AFire,Event::QTPaddle4BFire,
 };
 
 const Event::EventSet EventHandler::KeyboardEvents = {
-  Event::KeyboardZero1, Event::KeyboardZero2, Event::KeyboardZero3,
-  Event::KeyboardZero4, Event::KeyboardZero5, Event::KeyboardZero6,
-  Event::KeyboardZero7, Event::KeyboardZero8, Event::KeyboardZero9,
-  Event::KeyboardZeroStar, Event::KeyboardZero0, Event::KeyboardZeroPound,
+  Event::LeftKeyboard1, Event::LeftKeyboard2, Event::LeftKeyboard3,
+  Event::LeftKeyboard4, Event::LeftKeyboard5, Event::LeftKeyboard6,
+  Event::LeftKeyboard7, Event::LeftKeyboard8, Event::LeftKeyboard9,
+  Event::LeftKeyboardStar, Event::LeftKeyboard0, Event::LeftKeyboardPound,
 
-  Event::KeyboardOne1, Event::KeyboardOne2, Event::KeyboardOne3,
-  Event::KeyboardOne4, Event::KeyboardOne5, Event::KeyboardOne6,
-  Event::KeyboardOne7, Event::KeyboardOne8, Event::KeyboardOne9,
-  Event::KeyboardOneStar, Event::KeyboardOne0, Event::KeyboardOnePound,
+  Event::RightKeyboard1, Event::RightKeyboard2, Event::RightKeyboard3,
+  Event::RightKeyboard4, Event::RightKeyboard5, Event::RightKeyboard6,
+  Event::RightKeyboard7, Event::RightKeyboard8, Event::RightKeyboard9,
+  Event::RightKeyboardStar, Event::RightKeyboard0, Event::RightKeyboardPound,
 };
 
 const Event::EventSet EventHandler::DevicesEvents = {
@@ -3435,9 +3487,4 @@ const Event::EventSet EventHandler::DebugEvents = {
   Event::ToggleCollisions, Event::ToggleBits, Event::ToggleFixedColors,
   Event::ToggleColorLoss,
   Event::ToggleJitter,
-};
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const Event::EventSet EventHandler::EditEvents = {
-
 };

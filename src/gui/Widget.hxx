@@ -191,8 +191,14 @@ class Widget : public GuiObject
 };
 
 /* StaticTextWidget */
-class StaticTextWidget : public Widget
+class StaticTextWidget : public Widget, public CommandSender
 {
+  public:
+    enum {
+      kClickedCmd = 'STcl',
+      kOpenUrlCmd = 'STou'
+    };
+
   public:
     StaticTextWidget(GuiObject* boss, const GUI::Font& font,
                      int x, int y, int w, int h,
@@ -204,8 +210,7 @@ class StaticTextWidget : public Widget
                      ColorId shadowColor = kNone);
     ~StaticTextWidget() override = default;
 
-    void handleMouseEntered() override;
-    void handleMouseLeft() override;
+    void setCmd(int cmd) { _cmd = cmd; }
 
     void setValue(int value);
     void setLabel(const string& label);
@@ -213,13 +218,27 @@ class StaticTextWidget : public Widget
     const string& getLabel() const { return _label; }
     bool isEditable() const { return _editable; }
 
+    void setLink(size_t start = string::npos, int len = 0, bool underline = false);
+    bool setUrl(const string& url = EmptyString, const string& label = EmptyString,
+                const string& placeHolder = EmptyString);
+    const string& getUrl() const { return _url; }
+
   protected:
+    void handleMouseEntered() override;
+    void handleMouseLeft() override;
+    void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
+
     void drawWidget(bool hilite) override;
 
   protected:
     string    _label;
     bool      _editable{false};
     TextAlign _align{TextAlign::Left};
+    int       _cmd{0};
+    size_t    _linkStart{string::npos};
+    int       _linkLen{0};
+    bool      _linkUnderline{false};
+    string    _url;
 
   private:
     // Following constructors and assignment operators not supported
@@ -231,7 +250,7 @@ class StaticTextWidget : public Widget
 };
 
 /* ButtonWidget */
-class ButtonWidget : public StaticTextWidget, public CommandSender
+class ButtonWidget : public StaticTextWidget
 {
   public:
     ButtonWidget(GuiObject* boss, const GUI::Font& font,
@@ -266,7 +285,6 @@ class ButtonWidget : public StaticTextWidget, public CommandSender
     void drawWidget(bool hilite) override;
 
   protected:
-    int  _cmd{0};
     bool _repeat{false}; // button repeats
     bool _useBitmap{false};
     const uInt32* _bitmap{nullptr};

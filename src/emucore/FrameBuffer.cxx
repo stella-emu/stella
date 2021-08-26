@@ -67,6 +67,7 @@ FrameBuffer::FrameBuffer(OSystem& osystem)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBuffer::~FrameBuffer()
 {
+cerr << "~FrameBuffer()\n";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -885,63 +886,28 @@ void FrameBuffer::setPauseDelay()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-unique_ptr<FBSurface> FrameBuffer::allocateSurface(
+shared_ptr<FBSurface> FrameBuffer::allocateSurface(
     int w, int h, ScalingInterpolation inter, const uInt32* data)
 {
-  return myBackend->createSurface(w, h, inter, data);
+  mySurfaceList.push_back(myBackend->createSurface(w, h, inter, data));
+  return mySurfaceList.back();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::deallocateSurface(shared_ptr<FBSurface> surface)
+{
+  if(surface)
+  {
+    cerr << "deallocateSurface: " << surface << endl;
+    mySurfaceList.remove(surface);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::resetSurfaces()
 {
-  switch(myOSystem.eventHandler().state())
-  {
-    case EventHandlerState::NONE:
-    case EventHandlerState::EMULATION:
-    case EventHandlerState::PAUSE:
-    case EventHandlerState::PLAYBACK:
-    #ifdef GUI_SUPPORT
-      myMsg.surface->reload();
-      myStatsMsg.surface->reload();
-    #endif
-      myTIASurface->resetSurfaces();
-      break;
-
-  #ifdef GUI_SUPPORT
-    case EventHandlerState::OPTIONSMENU:
-      myOSystem.menu().resetSurfaces();
-      break;
-
-    case EventHandlerState::CMDMENU:
-      myOSystem.commandMenu().resetSurfaces();
-      break;
-
-    case EventHandlerState::HIGHSCORESMENU:
-      myOSystem.highscoresMenu().resetSurfaces();
-      break;
-
-    case EventHandlerState::MESSAGEMENU:
-      myOSystem.messageMenu().resetSurfaces();
-      break;
-
-    case EventHandlerState::TIMEMACHINE:
-      myOSystem.timeMachine().resetSurfaces();
-      break;
-
-    case EventHandlerState::LAUNCHER:
-      myOSystem.launcher().resetSurfaces();
-      break;
-  #endif
-
-  #ifdef DEBUGGER_SUPPORT
-    case EventHandlerState::DEBUGGER:
-      myOSystem.debugger().resetSurfaces();
-      break;
-  #endif
-
-    default:
-      break;
-  }
+  for(auto& surface: mySurfaceList)
+    surface->reload();
 
   update(UpdateMode::REDRAW); // force full update
 }
@@ -1419,6 +1385,7 @@ void FrameBuffer::toggleGrabMouse(bool toggle)
     kTextColorHi      Highlighted text color
     kTextColorEm      Emphasized text color
     kTextColorInv     Color for selected text
+    kTextColorLink    Color for links
     *** UI elements (dialog and widgets) ***
     kDlgColor         Dialog background
     kWidColor         Widget background
@@ -1454,7 +1421,7 @@ void FrameBuffer::toggleGrabMouse(bool toggle)
 */
 UIPaletteArray FrameBuffer::ourStandardUIPalette = {
   { 0x686868, 0x000000, 0xa38c61, 0xdccfa5, 0x404040,           // base
-    0x000000, 0xac3410, 0x9f0000, 0xf0f0cf,                     // text
+    0x000000, 0xac3410, 0x9f0000, 0xf0f0cf, 0xac3410,           // text
     0xc9af7c, 0xf0f0cf, 0xd55941, 0xc80000,                     // UI elements
     0xac3410, 0xd55941, 0x686868, 0xdccfa5, 0xf0f0cf, 0xf0f0cf, // buttons
     0xac3410,                                                   // checkbox
@@ -1467,7 +1434,7 @@ UIPaletteArray FrameBuffer::ourStandardUIPalette = {
 
 UIPaletteArray FrameBuffer::ourClassicUIPalette = {
   { 0x686868, 0x000000, 0x404040, 0x404040, 0x404040,           // base
-    0x20a020, 0x00ff00, 0xc80000, 0x000000,                     // text
+    0x20a020, 0x00ff00, 0xc80000, 0x000000, 0x00ff00,           // text
     0x000000, 0x000000, 0x00ff00, 0xc80000,                     // UI elements
     0x000000, 0x000000, 0x686868, 0x00ff00, 0x20a020, 0x00ff00, // buttons
     0x20a020,                                                   // checkbox
@@ -1480,7 +1447,7 @@ UIPaletteArray FrameBuffer::ourClassicUIPalette = {
 
 UIPaletteArray FrameBuffer::ourLightUIPalette = {
   { 0x808080, 0x000000, 0xc0c0c0, 0xe1e1e1, 0x333333,           // base
-    0x000000, 0xBDDEF9, 0x0078d7, 0x000000,                     // text
+    0x000000, 0xBDDEF9, 0x0078d7, 0x000000, 0x005aa1,           // text
     0xf0f0f0, 0xffffff, 0x0078d7, 0x0f0f0f,                     // UI elements
     0xe1e1e1, 0xe5f1fb, 0x808080, 0x0078d7, 0x000000, 0x000000, // buttons
     0x333333,                                                   // checkbox
@@ -1493,7 +1460,7 @@ UIPaletteArray FrameBuffer::ourLightUIPalette = {
 
 UIPaletteArray FrameBuffer::ourDarkUIPalette = {
   { 0x646464, 0xc0c0c0, 0x3c3c3c, 0x282828, 0x989898,           // base
-    0xc0c0c0, 0x1567a5, 0x0059a3, 0xc0c0c0,                     // text
+    0xc0c0c0, 0x1567a5, 0x0064b7, 0xc0c0c0, 0x1d92e0,           // text
     0x202020, 0x000000, 0x0059a3, 0xb0b0b0,                     // UI elements
     0x282828, 0x00467f, 0x646464, 0x0059a3, 0xc0c0c0, 0xc0c0c0, // buttons
     0x989898,                                                   // checkbox
