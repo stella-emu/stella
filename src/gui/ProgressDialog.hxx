@@ -47,7 +47,7 @@ class ProgressDialog : public Dialog
 
     int myStart{0}, myFinish{0}, myStep{0};
     int myProgress{0};
-    int myStepProgress{0};
+    uInt64 myLastTick{0};
     bool myIsCancelled{false};
 
   private:

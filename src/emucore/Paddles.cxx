@@ -49,65 +49,65 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
   {
     if(!altmap)
     {
-      // First paddle is 0, second is 1
-      myP0AxisValue = Event::PaddleZeroAnalog;
-      myP1AxisValue = Event::PaddleOneAnalog;
-      myP0FireEvent = Event::PaddleZeroFire;
-      myP1FireEvent = Event::PaddleOneFire;
+      // First paddle is left A, second is left B
+      myAAxisValue = Event::LeftPaddleAAnalog;
+      myBAxisValue = Event::LeftPaddleBAnalog;
+      myLeftAFireEvent = Event::LeftPaddleAFire;
+      myLeftBFireEvent = Event::LeftPaddleBFire;
 
       // These can be affected by changes in axis orientation
-      myP0DecEvent = Event::PaddleZeroDecrease;
-      myP0IncEvent = Event::PaddleZeroIncrease;
-      myP1DecEvent = Event::PaddleOneDecrease;
-      myP1IncEvent = Event::PaddleOneIncrease;
+      myLeftADecEvent = Event::LeftPaddleADecrease;
+      myLeftAIncEvent = Event::LeftPaddleAIncrease;
+      myLeftBDecEvent = Event::LeftPaddleBDecrease;
+      myLeftBIncEvent = Event::LeftPaddleBIncrease;
     }
     else
     {
-      // First paddle is 4, second is 5 (fire buttons only)
-      myP0FireEvent = Event::PaddleFourFire;
-      myP1FireEvent = Event::PaddleFiveFire;
+      // First paddle is QT 3A, second is QT 3B (fire buttons only)
+      myLeftAFireEvent = Event::QTPaddle3AFire;
+      myLeftBFireEvent = Event::QTPaddle3BFire;
 
-      myP0AxisValue = myP1AxisValue =
-        myP0DecEvent = myP0IncEvent =
-        myP1DecEvent = myP1IncEvent = Event::NoType;
+      myAAxisValue = myBAxisValue =
+        myLeftADecEvent = myLeftAIncEvent =
+        myLeftBDecEvent = myLeftBIncEvent = Event::NoType;
     }
   }
   else    // Jack is right port
   {
     if(!altmap)
     {
-      // First paddle is 2, second is 3
-      myP0AxisValue = Event::PaddleTwoAnalog;
-      myP1AxisValue = Event::PaddleThreeAnalog;
-      myP0FireEvent = Event::PaddleTwoFire;
-      myP1FireEvent = Event::PaddleThreeFire;
+      // First paddle is right A, second is right B
+      myAAxisValue = Event::RightPaddleAAnalog;
+      myBAxisValue = Event::RightPaddleBAnalog;
+      myLeftAFireEvent = Event::RightPaddleAFire;
+      myLeftBFireEvent = Event::RightPaddleBFire;
 
       // These can be affected by changes in axis orientation
-      myP0DecEvent = Event::PaddleTwoDecrease;
-      myP0IncEvent = Event::PaddleTwoIncrease;
-      myP1DecEvent = Event::PaddleThreeDecrease;
-      myP1IncEvent = Event::PaddleThreeIncrease;
+      myLeftADecEvent = Event::RightPaddleADecrease;
+      myLeftAIncEvent = Event::RightPaddleAIncrease;
+      myLeftBDecEvent = Event::RightPaddleBDecrease;
+      myLeftBIncEvent = Event::RightPaddleBIncrease;
     }
     else
     {
-      // First paddle is 6, second is 7 (fire buttons only)
-      myP0FireEvent = Event::PaddleSixFire;
-      myP1FireEvent = Event::PaddleSevenFire;
+      // First paddle is QT 4A, second is QT 4B (fire buttons only)
+      myLeftAFireEvent = Event::QTPaddle4AFire;
+      myLeftBFireEvent = Event::QTPaddle4BFire;
 
-      myP0AxisValue = myP1AxisValue =
-        myP0DecEvent = myP0IncEvent =
-        myP1DecEvent = myP1IncEvent = Event::NoType;
+      myAAxisValue = myBAxisValue =
+        myLeftADecEvent = myLeftAIncEvent =
+        myLeftBDecEvent = myLeftBIncEvent = Event::NoType;
     }
   }
 
   // Some games swap the paddles
   if(swappaddle)
   {
-    // First paddle is 1|3, second is 0|2
-    swapEvents(myP0AxisValue, myP1AxisValue);
-    swapEvents(myP0FireEvent, myP1FireEvent);
-    swapEvents(myP0DecEvent, myP1DecEvent);
-    swapEvents(myP0IncEvent, myP1IncEvent);
+    // First paddle is right A|B, second is left A|B
+    swapEvents(myAAxisValue, myBAxisValue);
+    swapEvents(myLeftAFireEvent, myLeftBFireEvent);
+    swapEvents(myLeftADecEvent, myLeftBDecEvent);
+    swapEvents(myLeftAIncEvent, myLeftBIncEvent);
   }
 
   // Direction of movement can be swapped
@@ -115,8 +115,8 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
   // result in either increasing or decreasing paddle movement
   if(swapdir)
   {
-    swapEvents(myP0DecEvent, myP0IncEvent);
-    swapEvents(myP1DecEvent, myP1IncEvent);
+    swapEvents(myLeftADecEvent, myLeftAIncEvent);
+    swapEvents(myLeftBDecEvent, myLeftBIncEvent);
   }
 
   // The following are independent of whether or not the port
@@ -159,8 +159,8 @@ void Paddles::update()
   setPin(DigitalPin::Four, true);
 
   // Digital events (from keyboard or joystick hats & buttons)
-  bool firePressedP0 = myEvent.get(myP0FireEvent) != 0;
-  bool firePressedP1 = myEvent.get(myP1FireEvent) != 0;
+  bool firePressedA = myEvent.get(myLeftAFireEvent) != 0;
+  bool firePressedB = myEvent.get(myLeftBFireEvent) != 0;
 
   // Paddle movement is a very difficult thing to accurately emulate,
   // since it originally came from an analog device that had very
@@ -175,7 +175,7 @@ void Paddles::update()
 
   if(!updateAnalogAxes())
   {
-    updateMouse(firePressedP0, firePressedP1);
+    updateMouse(firePressedA, firePressedB);
     updateDigitalAxes();
 
     // Only change state if the charge has actually changed
@@ -191,8 +191,8 @@ void Paddles::update()
     }
   }
 
-  setPin(DigitalPin::Four, !getAutoFireState(firePressedP0));
-  setPin(DigitalPin::Three, !getAutoFireStateP1(firePressedP1));
+  setPin(DigitalPin::Four, !getAutoFireState(firePressedA));
+  setPin(DigitalPin::Three, !getAutoFireStateP1(firePressedB));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -221,8 +221,8 @@ bool Paddles::updateAnalogAxes()
   const double baseFactor = bFac[DEJITTER_BASE];
   const double diffFactor = dFac[DEJITTER_DIFF];
 
-  int sa_xaxis = myEvent.get(myP0AxisValue);
-  int sa_yaxis = myEvent.get(myP1AxisValue);
+  int sa_xaxis = myEvent.get(myAAxisValue);
+  int sa_yaxis = myEvent.get(myBAxisValue);
   bool sa_changed = false;
 
   if(abs(myLastAxisX - sa_xaxis) > 10)
@@ -261,7 +261,7 @@ bool Paddles::updateAnalogAxes()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Paddles::updateMouse(bool& firePressedP0, bool& firePressedP1)
+void Paddles::updateMouse(bool& firePressedA, bool& firePressedB)
 {
   // Mouse motion events give relative movement
   // That is, they're only relevant if they're non-zero
@@ -272,11 +272,11 @@ void Paddles::updateMouse(bool& firePressedP0, bool& firePressedP1)
                                         (myEvent.get(myAxisMouseMotion) * MOUSE_SENSITIVITY),
                                         TRIGMIN, TRIGRANGE);
     if(myMPaddleID == 0)
-      firePressedP0 = firePressedP0
+      firePressedA = firePressedA
         || myEvent.get(Event::MouseButtonLeftValue)
         || myEvent.get(Event::MouseButtonRightValue);
     else
-      firePressedP1 = firePressedP1
+      firePressedB = firePressedB
         || myEvent.get(Event::MouseButtonLeftValue)
         || myEvent.get(Event::MouseButtonRightValue);
   }
@@ -290,10 +290,10 @@ void Paddles::updateMouse(bool& firePressedP0, bool& firePressedP1)
                                            (myEvent.get(Event::MouseAxisXMove) * MOUSE_SENSITIVITY),
                                            TRIGMIN, TRIGRANGE);
       if(myMPaddleIDX == 0)
-        firePressedP0 = firePressedP0
+        firePressedA = firePressedA
           || myEvent.get(Event::MouseButtonLeftValue);
       else
-        firePressedP1 = firePressedP1
+        firePressedB = firePressedB
           || myEvent.get(Event::MouseButtonLeftValue);
     }
     if(myMPaddleIDY > -1)
@@ -302,10 +302,10 @@ void Paddles::updateMouse(bool& firePressedP0, bool& firePressedP1)
                                            (myEvent.get(Event::MouseAxisYMove) * MOUSE_SENSITIVITY),
                                            TRIGMIN, TRIGRANGE);
       if(myMPaddleIDY == 0)
-        firePressedP0 = firePressedP0
+        firePressedA = firePressedA
           || myEvent.get(Event::MouseButtonRightValue);
       else
-        firePressedP1 = firePressedP1
+        firePressedB = firePressedB
           || myEvent.get(Event::MouseButtonRightValue);
     }
   }
@@ -316,45 +316,45 @@ void Paddles::updateDigitalAxes()
 {
   // Finally, consider digital input, where movement happens
   // until a digital event is released
-  if(myKeyRepeat0)
+  if(myKeyRepeatA)
   {
-    myPaddleRepeat0++;
-    if(myPaddleRepeat0 > DIGITAL_SENSITIVITY)
-      myPaddleRepeat0 = DIGITAL_DISTANCE;
+    myPaddleRepeatA++;
+    if(myPaddleRepeatA > DIGITAL_SENSITIVITY)
+      myPaddleRepeatA = DIGITAL_DISTANCE;
   }
-  if(myKeyRepeat1)
+  if(myKeyRepeatB)
   {
-    myPaddleRepeat1++;
-    if(myPaddleRepeat1 > DIGITAL_SENSITIVITY)
-      myPaddleRepeat1 = DIGITAL_DISTANCE;
+    myPaddleRepeatB++;
+    if(myPaddleRepeatB > DIGITAL_SENSITIVITY)
+      myPaddleRepeatB = DIGITAL_DISTANCE;
   }
 
-  myKeyRepeat0 = false;
-  myKeyRepeat1 = false;
+  myKeyRepeatA = false;
+  myKeyRepeatB = false;
 
-  if(myEvent.get(myP0DecEvent))
+  if(myEvent.get(myLeftADecEvent))
   {
-    myKeyRepeat0 = true;
-    if(myCharge[myAxisDigitalZero] > myPaddleRepeat0)
-      myCharge[myAxisDigitalZero] -= myPaddleRepeat0;
+    myKeyRepeatA = true;
+    if(myCharge[myAxisDigitalZero] > myPaddleRepeatA)
+      myCharge[myAxisDigitalZero] -= myPaddleRepeatA;
   }
-  if(myEvent.get(myP0IncEvent))
+  if(myEvent.get(myLeftAIncEvent))
   {
-    myKeyRepeat0 = true;
-    if((myCharge[myAxisDigitalZero] + myPaddleRepeat0) < TRIGRANGE)
-      myCharge[myAxisDigitalZero] += myPaddleRepeat0;
+    myKeyRepeatA = true;
+    if((myCharge[myAxisDigitalZero] + myPaddleRepeatA) < TRIGRANGE)
+      myCharge[myAxisDigitalZero] += myPaddleRepeatA;
   }
-  if(myEvent.get(myP1DecEvent))
+  if(myEvent.get(myLeftBDecEvent))
   {
-    myKeyRepeat1 = true;
-    if(myCharge[myAxisDigitalOne] > myPaddleRepeat1)
-      myCharge[myAxisDigitalOne] -= myPaddleRepeat1;
+    myKeyRepeatB = true;
+    if(myCharge[myAxisDigitalOne] > myPaddleRepeatB)
+      myCharge[myAxisDigitalOne] -= myPaddleRepeatB;
   }
-  if(myEvent.get(myP1IncEvent))
+  if(myEvent.get(myLeftBIncEvent))
   {
-    myKeyRepeat1 = true;
-    if((myCharge[myAxisDigitalOne] + myPaddleRepeat1) < TRIGRANGE)
-      myCharge[myAxisDigitalOne] += myPaddleRepeat1;
+    myKeyRepeatB = true;
+    if((myCharge[myAxisDigitalOne] + myPaddleRepeatB) < TRIGRANGE)
+      myCharge[myAxisDigitalOne] += myPaddleRepeatB;
   }
 }
 

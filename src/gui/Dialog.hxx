@@ -63,8 +63,6 @@ class Dialog : public GuiObject
     virtual void saveConfig()  { }
     virtual void setDefaults() { }
 
-    virtual void resetSurfaces();
-
     void setDirty() override;
     void setDirtyChain() override;
     void redraw(bool force = false);
@@ -263,8 +261,8 @@ class Dialog : public GuiObject
     TabFocusList _myTabList;  // focus for each tab (if any)
 
     WidgetArray _buttonGroup;
-    unique_ptr<FBSurface> _surface;
-    unique_ptr<FBSurface> _shadeSurface;
+    shared_ptr<FBSurface> _surface;
+    shared_ptr<FBSurface> _shadeSurface;
 
     int _tabID{0};
     uInt32 _max_w{0}; // maximum wanted width

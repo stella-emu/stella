@@ -75,7 +75,7 @@ void FileListWidget::setLocation(const FilesystemNode& node,
 {
   progress().resetProgress();
   progress().open();
-  FilesystemNode::CancelCheck isCancelled = []() {
+  FilesystemNode::CancelCheck isCancelled = [this]() {
     return myProgressDialog->isCancelled();
   };
 
@@ -154,10 +154,10 @@ ProgressDialog& FileListWidget::progress()
   return *myProgressDialog;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FileListWidget::incProgress()
 {
-  if(_includeSubDirs)
-    progress().incProgress();
+  progress().incProgress();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -269,5 +269,3 @@ string FileListWidget::getToolTip(const Common::Point& pos) const
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt64 FileListWidget::_QUICK_SELECT_DELAY = 300;
-
-unique_ptr<ProgressDialog> FileListWidget::myProgressDialog{nullptr};

@@ -26,8 +26,6 @@
 PaletteHandler::PaletteHandler(OSystem& system)
   : myOSystem{system}
 {
-  // Load user-defined palette for this ROM
-  loadUserPalette();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -314,6 +312,10 @@ void PaletteHandler::setPalette()
   if(myOSystem.hasConsole())
   {
     const string& name = myOSystem.settings().getString("palette");
+
+    // Load user-defined palette for this ROM
+    if(name == SETTING_USER)
+      loadUserPalette();
 
     // Look at all the palettes, since we don't know which one is
     // currently active

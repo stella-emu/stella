@@ -56,7 +56,8 @@ void Logger::logMessage(const string& message, Level level)
     cout << message << endl << std::flush;
     myLogMessages += message + "\n";
   }
-  else if(static_cast<int>(level) <= myLogLevel)
+  else if(static_cast<int>(level) <= myLogLevel ||
+          level == Logger::Level::ALWAYS)
   {
     if(myLogToConsole)
       cout << message << endl << std::flush;

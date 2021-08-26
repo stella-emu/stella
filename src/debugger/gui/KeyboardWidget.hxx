@@ -33,16 +33,16 @@ class KeyboardWidget : public ControllerWidget
     const Event::Type* myEvent{nullptr};
 
     static constexpr std::array<Event::Type, 12> ourLeftEvents = {{
-      Event::KeyboardZero1,    Event::KeyboardZero2,  Event::KeyboardZero3,
-      Event::KeyboardZero4,    Event::KeyboardZero5,  Event::KeyboardZero6,
-      Event::KeyboardZero7,    Event::KeyboardZero8,  Event::KeyboardZero9,
-      Event::KeyboardZeroStar, Event::KeyboardZero0,  Event::KeyboardZeroPound
+      Event::LeftKeyboard1,    Event::LeftKeyboard2,  Event::LeftKeyboard3,
+      Event::LeftKeyboard4,    Event::LeftKeyboard5,  Event::LeftKeyboard6,
+      Event::LeftKeyboard7,    Event::LeftKeyboard8,  Event::LeftKeyboard9,
+      Event::LeftKeyboardStar, Event::LeftKeyboard0,  Event::LeftKeyboardPound
     }};
     static constexpr std::array<Event::Type, 12> ourRightEvents = {{
-      Event::KeyboardOne1,    Event::KeyboardOne2,  Event::KeyboardOne3,
-      Event::KeyboardOne4,    Event::KeyboardOne5,  Event::KeyboardOne6,
-      Event::KeyboardOne7,    Event::KeyboardOne8,  Event::KeyboardOne9,
-      Event::KeyboardOneStar, Event::KeyboardOne0,  Event::KeyboardOnePound
+      Event::RightKeyboard1,    Event::RightKeyboard2,  Event::RightKeyboard3,
+      Event::RightKeyboard4,    Event::RightKeyboard5,  Event::RightKeyboard6,
+      Event::RightKeyboard7,    Event::RightKeyboard8,  Event::RightKeyboard9,
+      Event::RightKeyboardStar, Event::RightKeyboard0,  Event::RightKeyboardPound
     }};
 
   private:

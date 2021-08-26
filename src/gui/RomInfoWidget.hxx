@@ -27,8 +27,13 @@ namespace Common {
 #include "Widget.hxx"
 #include "bspf.hxx"
 
-class RomInfoWidget : public Widget
+class RomInfoWidget : public Widget, public CommandSender
 {
+  public:
+    enum {
+      kClickedCmd = 'RIcl'
+    };
+
   public:
     RomInfoWidget(GuiObject *boss, const GUI::Font& font,
                   int x, int y, int w, int h,
@@ -39,10 +44,11 @@ class RomInfoWidget : public Widget
     void clearProperties();
     void reloadProperties(const FilesystemNode& node);
 
-    void resetSurfaces();
+    const string& getUrl() const { return myUrl; }
 
   protected:
     void drawWidget(bool hilite) override;
+    void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
 
   private:
     void parseProperties(const FilesystemNode& node);
@@ -52,7 +58,7 @@ class RomInfoWidget : public Widget
 
   private:
     // Surface pointer holding the PNG image
-    unique_ptr<FBSurface> mySurface;
+    shared_ptr<FBSurface> mySurface;
 
     // Whether the surface should be redrawn by drawWidget()
     bool mySurfaceIsValid{false};
@@ -65,6 +71,9 @@ class RomInfoWidget : public Widget
 
     // Indicates if the current properties should actually be used
     bool myHaveProperties{false};
+
+    // Optional cart link URL
+    string myUrl;
 
     // Indicates if an error occurred in creating/displaying the surface
     string mySurfaceErrorMsg;

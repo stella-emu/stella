@@ -23,11 +23,12 @@ class CheckboxWidget;
 class DataGridWidget;
 class StaticTextWidget;
 class EditTextWidget;
+class SliderWidget;
 
 #include "CartCDF.hxx"
-#include "CartDebugWidget.hxx"
+#include "CartARMWidget.hxx"
 
-class CartridgeCDFWidget : public CartDebugWidget
+class CartridgeCDFWidget : public CartridgeARMWidget
 {
   public:
     CartridgeCDFWidget(GuiObject* boss, const GUI::Font& lfont,
@@ -70,10 +71,6 @@ class CartridgeCDFWidget : public CartDebugWidget
 
     CheckboxWidget* myFastFetch{nullptr};
     CheckboxWidget* myDigitalSample{nullptr};
-    EditTextWidget* myThumbMemCycles{nullptr};
-    EditTextWidget* myThumbFetches{nullptr};
-    EditTextWidget* myThumbReads{nullptr};
-    EditTextWidget* myThumbWrites{nullptr};
 
     CartState myOldState;
 
@@ -86,8 +83,8 @@ class CartridgeCDFWidget : public CartDebugWidget
     static string describeCDFVersion(CartridgeCDF::CDFSubtype subtype);
 
     void saveOldState() override;
-
     void loadConfig() override;
+
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
     string bankState() override;

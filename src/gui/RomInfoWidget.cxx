@@ -37,6 +37,7 @@ RomInfoWidget::RomInfoWidget(GuiObject* boss, const GUI::Font& font,
                              int x, int y, int w, int h,
                              const Common::Size& imgSize)
   : Widget(boss, font, x, y, w, h),
+    CommandSender(boss),
     myAvail{imgSize}
 {
   _flags = Widget::FLAG_ENABLED;
@@ -126,6 +127,8 @@ void RomInfoWidget::parseProperties(const FilesystemNode& node)
   if(mySurface)
     mySurface->setVisible(mySurfaceIsValid);
 
+  myUrl = myProperties.get(PropType::Cart_Url);
+
   // Now add some info for the message box below the image
   myRomInfo.push_back("Name: " + myProperties.get(PropType::Cart_Name));
 
@@ -177,17 +180,8 @@ void RomInfoWidget::parseProperties(const FilesystemNode& node)
 
   if (bsDetected != "")
     myRomInfo.push_back("Type: " + Bankswitch::typeToDesc(Bankswitch::nameToType(bsDetected)));
-  if((value = myProperties.get(PropType::Cart_Url)) != EmptyString)
-    myRomInfo.push_back("Link: " + value);
 
   setDirty();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomInfoWidget::resetSurfaces()
-{
-  if(mySurface)
-    mySurface->reload();
 }
 
 #ifdef PNG_SUPPORT
@@ -215,6 +209,16 @@ bool RomInfoWidget::loadPng(const string& filename)
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RomInfoWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
+{
+  if(isEnabled() && x >= 0 && x < _w && y >= 0 && y < _h)
+  {
+    clearFlags(Widget::FLAG_HILITED);
+    sendCommand(kClickedCmd, 0, _id);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomInfoWidget::drawWidget(bool hilite)
 {
   FBSurface& s = dialog().surface();
@@ -224,7 +228,11 @@ void RomInfoWidget::drawWidget(bool hilite)
   s.frameRect(_x, _y, _w, _h, kColor);
   s.frameRect(_x, _y+yoff, _w, _h-yoff, kColor);
 
-  if(!myHaveProperties) return;
+  if(!myHaveProperties)
+  {
+    clearDirty();
+    return;
+  }
 
   if(mySurfaceIsValid)
   {
@@ -261,8 +269,18 @@ void RomInfoWidget::drawWidget(bool hilite)
       if(ypos + _font.getLineHeight() + _font.getFontHeight() > _h + _y )
         break;
     }
-    int lines = s.drawString(_font, info, xpos, ypos, _w - 16, _font.getFontHeight() * 3,
-                             _textcolor);
+
+    int lines;
+
+    if(BSPF::startsWithIgnoreCase(info, "Name: ") && myUrl != EmptyString)
+    {
+      lines = s.drawString(_font, info, xpos, ypos, _w - 16, _font.getFontHeight() * 3,
+                           _textcolor, TextAlign::Left, 0, true, kNone,
+                           6, info.length() - 6, hilite);
+    }
+    else
+      lines = s.drawString(_font, info, xpos, ypos, _w - 16, _font.getFontHeight() * 3,
+                           _textcolor);
     ypos += _font.getLineHeight() + (lines - 1) * _font.getFontHeight();
   }
   clearDirty();

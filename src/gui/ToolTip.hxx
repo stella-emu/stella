@@ -42,7 +42,7 @@ class ToolTip
     static constexpr uInt32 MAX_LEN = MAX_COLUMNS * MAX_ROWS;
 
     ToolTip(Dialog& dialog, const GUI::Font& font);
-    ~ToolTip() = default;
+    ~ToolTip();
 
     void setFont(const GUI::Font& font);
 
@@ -76,7 +76,7 @@ class ToolTip
     /**
       Allocate surface if required and return it
     */
-    const unique_ptr<FBSurface>& surface();
+    const shared_ptr<FBSurface>& surface();
 
     void show(const string& tip);
 
@@ -100,7 +100,7 @@ class ToolTip
     uInt32 myTextYOfs{0};
     bool myTipShown{false};
     uInt32 myScale{1};
-    unique_ptr<FBSurface> mySurface;
+    shared_ptr<FBSurface> mySurface;
 };
 
 #endif

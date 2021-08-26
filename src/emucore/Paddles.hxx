@@ -174,18 +174,18 @@ class Paddles : public Controller
 
     // Pre-compute the events we care about based on given port
     // This will eliminate test for left or right port in update()
-    Event::Type myP0AxisValue, myP1AxisValue,
-                myP0DecEvent, myP0IncEvent,
-                myP1DecEvent, myP1IncEvent,
-                myP0FireEvent, myP1FireEvent,
+    Event::Type myAAxisValue, myBAxisValue,
+                myLeftADecEvent, myLeftAIncEvent,
+                myLeftBDecEvent, myLeftBIncEvent,
+                myLeftAFireEvent, myLeftBFireEvent,
                 myAxisMouseMotion;
 
     // The following are used for the various mouse-axis modes
     int myMPaddleID{-1};                    // paddle to emulate in 'automatic' mode
     int myMPaddleIDX{-1}, myMPaddleIDY{-1}; // paddles to emulate in 'specific axis' mode
 
-    bool myKeyRepeat0{false}, myKeyRepeat1{false};
-    int myPaddleRepeat0{0}, myPaddleRepeat1{0};
+    bool myKeyRepeatA{false}, myKeyRepeatB{false};
+    int myPaddleRepeatA{0}, myPaddleRepeatB{0};
     std::array<int, 2> myCharge{TRIGRANGE/2, TRIGRANGE/2}, myLastCharge{0};
     int myLastAxisX{0}, myLastAxisY{0};
     int myAxisDigitalZero{0}, myAxisDigitalOne{0};
@@ -211,7 +211,7 @@ class Paddles : public Controller
     /**
       Update the entire state according to mouse events currently set.
     */
-    void updateMouse(bool& firePressedP0, bool& firePressedP1);
+    void updateMouse(bool& firePressedA, bool& firePressedB);
 
     /**
       Update the axes pin state according to the keyboard events currently set.

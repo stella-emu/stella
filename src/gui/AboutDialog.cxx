@@ -21,6 +21,7 @@
 #include "Widget.hxx"
 #include "Font.hxx"
 #include "WhatsNewDialog.hxx"
+#include "MediaFactory.hxx"
 
 #include "AboutDialog.hxx"
 
@@ -80,8 +81,10 @@ AboutDialog::AboutDialog(OSystem& osystem, DialogContainer& parent,
   xpos = HBORDER * 2;  ypos += lineHeight + VGAP * 2;
   for(int i = 0; i < myLinesPerPage; i++)
   {
-    myDesc.push_back(new StaticTextWidget(this, font, xpos, ypos, _w - xpos * 2,
-                                          fontHeight, "", TextAlign::Left));
+    StaticTextWidget* s = new StaticTextWidget(this, font, xpos, ypos, _w - xpos * 2,
+                                               fontHeight, "", TextAlign::Left, kNone);
+    s->setID(i);
+    myDesc.push_back(s);
     myDescStr.emplace_back("");
     ypos += fontHeight;
   }
@@ -160,9 +163,8 @@ void AboutDialog::updateStrings(int page, int lines, string& title)
 
     case 4:
       title = "Cast of thousands";
-      ADD_ATEXT("\\L\\c0""Special thanks to AtariAge for introducing the");
+      ADD_ATEXT("\\L\\c0""Special thanks to <AtariAge> for introducing the");
       ADD_ATEXT("\\L\\c0""Atari 2600 to a whole new generation.");
-      ADD_ATEXT("\\L\\c2""  http://www.atariage.com");
       ADD_ALINE();
       ADD_ATEXT("\\L\\c0""Finally, a huge thanks to the original Atari 2600");
       ADD_ATEXT("\\L\\c0""VCS team for giving us the magic, and to the");
@@ -242,6 +244,24 @@ void AboutDialog::displayInfo()
     myDesc[i]->setAlign(align);
     myDesc[i]->setTextColor(color);
     myDesc[i]->setLabel(str);
+    // add some labeled links
+    if(BSPF::containsIgnoreCase(str, "see manual"))
+      myDesc[i]->setUrl("https://stella-emu.github.io/docs/index.html#License", "manual");
+    else if(BSPF::containsIgnoreCase(str, "Stephen Anthony"))
+      myDesc[i]->setUrl("http://minbar.org", "Stephen Anthony");
+    else if(BSPF::containsIgnoreCase(str, "Bradford W. Mott"))
+      myDesc[i]->setUrl("www.intellimedia.ncsu.edu/people/bwmott", "Bradford W. Mott");
+    else if(BSPF::containsIgnoreCase(str, "ScummVM project"))
+      myDesc[i]->setUrl("www.scummvm.org", "ScummVM");
+    else if(BSPF::containsIgnoreCase(str, "Ian Bogost"))
+      myDesc[i]->setUrl("http://bogost.com", "Ian Bogost");
+    else if(BSPF::containsIgnoreCase(str, "CRT Simulation"))
+      myDesc[i]->setUrl("http://blargg.8bitalley.com/libs/ntsc.html", "CRT Simulation effects");
+    else if(BSPF::containsIgnoreCase(str, "<AtariAge>"))
+      myDesc[i]->setUrl("www.atariage.com", "AtariAge", "<AtariAge>");
+    else
+      // extract URL from label
+      myDesc[i]->setUrl();
   }
 
   // Redraw entire dialog
@@ -280,7 +300,52 @@ void AboutDialog::handleCommand(CommandSender* sender, int cmd, int data, int id
       myWhatsNewDialog->open();
       break;
 
+    case StaticTextWidget::kOpenUrlCmd:
+    {
+      const string url = myDesc[id]->getUrl();
+
+      if(url != EmptyString)
+        MediaFactory::openURL(url);
+      break;
+    }
+
     default:
       Dialog::handleCommand(sender, cmd, data, 0);
   }
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const string AboutDialog::getUrl(const string& str) const
+{
+  bool isUrl = false;
+  size_t start = 0, len = 0;
+
+  for(size_t i = 0; i < str.size(); ++i)
+  {
+    string remainder = str.substr(i);
+    char ch = str[i];
+
+    if(!isUrl
+       && (BSPF::startsWithIgnoreCase(remainder, "http://")
+       || BSPF::startsWithIgnoreCase(remainder, "https://")
+       || BSPF::startsWithIgnoreCase(remainder, "www.")))
+    {
+      isUrl = true;
+      start = i;
+    }
+
+    // hack, change mode without changing string length
+    if(isUrl)
+    {
+      if((ch == ' ' || ch == ')' || ch == '>'))
+        isUrl = false;
+      else
+        len++;
+    }
+  }
+  if(len)
+    return str.substr(start, len);
+  else
+    return EmptyString;
+}
+

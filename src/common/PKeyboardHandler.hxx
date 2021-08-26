@@ -104,7 +104,7 @@ class PhysicalKeyboardHandler
     /** Checks event type. */
     bool isJoystickEvent(const Event::Type event) const;
     bool isPaddleEvent(const Event::Type event) const;
-    bool isKeypadEvent(const Event::Type event) const;
+    bool isKeyboardEvent(const Event::Type event) const;
     bool isCommonEvent(const Event::Type event) const;
 
     void enableCommonMappings();
@@ -150,11 +150,14 @@ class PhysicalKeyboardHandler
   #ifdef GUI_SUPPORT
     static EventMappingArray FixedEditMapping;
   #endif
+  #ifdef DEBUGGER_SUPPORT
+    static EventMappingArray FixedPromptMapping;
+  #endif
     static EventMappingArray DefaultCommonMapping;
     // Controller specific mappings
     static EventMappingArray DefaultJoystickMapping;
     static EventMappingArray DefaultPaddleMapping;
-    static EventMappingArray DefaultKeypadMapping;
+    static EventMappingArray DefaultKeyboardMapping;
     static EventMappingArray CompuMateMapping;
 };
 

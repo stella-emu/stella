@@ -111,6 +111,10 @@ void DebuggerDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
     instance().eventHandler().enableTextEvents(false);
   }
 
+  // Process widget keys first
+  if(_focusedWidget && _focusedWidget->handleKeyDown(key, mod))
+    return;
+
   // special debugger keys first (cannot be remapped)
   if (StellaModTest::isControl(mod))
   {
@@ -186,7 +190,7 @@ void DebuggerDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
     // events which need special handling in debugger
     case Event::TakeSnapshot:
       if(!repeated)
-        instance().debugger().parser().run("savesnap");
+        instance().debugger().parser().run("saveSnap");
       return;
 
     case Event::Rewind1Menu:
@@ -319,7 +323,7 @@ void DebuggerDialog::doAdvance()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::doScanlineAdvance()
 {
-  instance().debugger().parser().run("scanline #1");
+  instance().debugger().parser().run("scanLine #1");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -367,7 +371,7 @@ void DebuggerDialog::doExitDebugger()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::doExitRom()
 {
-  instance().debugger().parser().run("exitrom");
+  instance().debugger().parser().run("exitRom");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

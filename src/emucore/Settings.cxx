@@ -188,6 +188,8 @@ Settings::Settings()
   setPermanent("dbg.fontstyle", "0");
   setPermanent("dbg.uhex", "false");
   setPermanent("dbg.ghostreadstrap", "true");
+  setPermanent("dbg.logbreaks", "false");
+  setPermanent("dbg.autosave", "false");
   setPermanent("dis.resolve", "true");
   setPermanent("dis.gfxformat", "2");
   setPermanent("dis.showaddr", "true");
@@ -240,10 +242,16 @@ Settings::Settings()
   setPermanent("dev.tm.uncompressed", 600);
   setPermanent("dev.tm.interval", "1f"); // = 1 frame
   setPermanent("dev.tm.horizon", "30s"); // = ~30 seconds
-  // Thumb ARM emulation options
-  setPermanent("dev.thumb.trapfatal", "true");
   setPermanent("dev.detectedinfo", "true");
   setPermanent("dev.eepromaccess", "true");
+  // Thumb ARM emulation options
+  setPermanent("dev.thumb.trapfatal", "true");
+#ifdef DEBUGGER_SUPPORT
+  setPermanent("dev.thumb.inccycles", "true");
+  setPermanent("dev.thumb.cyclefactor", "1.05");
+  setPermanent("dev.thumb.chiptype", "0"); // = LPC2103
+  setPermanent("dev.thumb.mammode", "2");
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -613,7 +621,9 @@ void Settings::usage() const
     << "   -dbg.fontstyle <0-3>          Font style to use in debugger window (bold vs.\n"
     << "                                  normal)\n"
     << "   -dbg.ghostreadstrap <1|0>     Debugger traps on 'ghost' reads\n"
-    << "   -dbg.uhex      <0|1>          lower-/uppercase HEX display\n"
+    << "   -dbg.uhex      <0|1>          Lower-/uppercase HEX display\n"
+    << "   -dbg.logbreaks <0|1>          Log breaks and traps and continue emulation\n"
+    << "   -dbg.autosave  <0|1>          Automatically save breaks, traps etc.\n"
     << "   -break         <address>      Set a breakpoint at 'address'\n"
     << "   -debug                        Start in debugger mode\n"
     << endl
@@ -674,12 +684,19 @@ void Settings::usage() const
     << "  -dev.tiadriven    <1|0>          Drive unused TIA pins randomly on a\n"
     << "                                    read/peek\n"
 #ifdef DEBUGGER_SUPPORT
-    << "  -dev.rwportbreak      <1|0>      Debugger breaks on reads from write ports\n"
-    << "  -dev.wrportbreak      <1|0>      Debugger breaks on writes to read ports\n"
+    << "  -dev.rwportbreak       <1|0>     Debugger breaks on reads from write ports\n"
+    << "  -dev.wrportbreak       <1|0>     Debugger breaks on writes to read ports\n"
 #endif
-    << "  -dev.thumb.trapfatal  <1|0>      Determines whether errors in ARM emulation\n"
+    << "  -dev.thumb.trapfatal   <1|0>     Determines whether errors in ARM emulation\n"
     << "                                    throw an exception\n"
-    << "  -dev.eepromaccess     <1|0>      Enable messages for AtariVox/SaveKey access\n"
+#ifdef DEBUGGER_SUPPORT
+    << "  -dev.thumb.inccycles   <1|0>     Determines whether ARM emulation cycles\n"
+    << "                                    increase system cycles\n"
+    << "  -dev.thumb.cyclefactor <float>   Sets the ARM cycles correction multiplier\n"
+    << "  -dev.thumb.chiptype    <0|1>     Selects the ARM chip type\n"
+    << "  -dev.thumb.mammode     <0-3>     Selects the LPC's MAM mode\n"
+#endif
+    << "  -dev.eepromaccess      <1|0>     Enable messages for AtariVox/SaveKey access\n"
     << "                                    messages\n"
     << "  -dev.tia.type <standard|custom|  Selects a TIA type\n"
     << "                 koolaidman|\n"

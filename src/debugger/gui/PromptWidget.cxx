@@ -40,13 +40,7 @@
 PromptWidget::PromptWidget(GuiObject* boss, const GUI::Font& font,
                            int x, int y, int w, int h)
   : Widget(boss, font, x, y, w - ScrollBarWidget::scrollBarWidth(font), h),
-    CommandSender(boss),
-    _historySize{0},
-    _historyIndex{0},
-    _historyLine{0},
-    _makeDirty{false},
-    _firstTime{true},
-    _exitedEarly{false}
+    CommandSender(boss)
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG | Widget::FLAG_RETAIN_FOCUS |
            Widget::FLAG_WANTS_TAB | Widget::FLAG_WANTS_RAWDATA;
@@ -67,9 +61,6 @@ PromptWidget::PromptWidget(GuiObject* boss, const GUI::Font& font,
   _scrollBar = new ScrollBarWidget(boss, font, _x + _w, _y,
                                    ScrollBarWidget::scrollBarWidth(_font), _h);
   _scrollBar->setTarget(this);
-
-  // Init colors
-  _inverse = false;
 
   clearScreen();
 
@@ -137,6 +128,8 @@ void PromptWidget::printPrompt()
 
   print(PROMPT);
   _promptStartPos = _promptEndPos = _currentPos;
+
+  resetFunctions();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -150,6 +143,8 @@ bool PromptWidget::handleText(char text)
     _promptEndPos++;
     putcharIntern(text);
     scrollToCurrent();
+
+    resetFunctions();
   }
   return true;
 }
@@ -157,323 +152,171 @@ bool PromptWidget::handleText(char text)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
 {
-  bool handled = true;
-  bool dirty = false;
+  bool handled = true,
+    dirty = true,
+    changeInput = false,
+    resetAutoComplete = true,
+    resetHistoryScroll = true;
 
-  switch(key)
+  // Uses normal edit events + special prompt events
+  Event::Type event = instance().eventHandler().eventForKey(EventMode::kEditMode, key, mod);
+  if(event == Event::NoType)
+    event = instance().eventHandler().eventForKey(EventMode::kPromptMode, key, mod);
+
+  switch(event)
   {
-    case KBDK_RETURN:
-    case KBDK_KP_ENTER:
+    case Event::EndEdit:
     {
-      nextLine();
-
-      assert(_promptEndPos >= _promptStartPos);
-      int len = _promptEndPos - _promptStartPos;
-
-      if (len > 0)
-      {
-        // Copy the user input to command
-        string command;
-        for (int i = 0; i < len; i++)
-          command += buffer(_promptStartPos + i) & 0x7f;
-
-        // Add the input to the history
-        addToHistory(command.c_str());
-
-        // Pass the command to the debugger, and print the result
-        string result = instance().debugger().run(command);
-
-        // This is a bit of a hack
-        // Certain commands remove the debugger dialog from underneath us,
-        // so we shouldn't print any messages
-        // Those commands will return '_EXIT_DEBUGGER' as their result
-        if(result == "_EXIT_DEBUGGER")
-        {
-          _exitedEarly = true;
-          return true;
-        }
-        else if(result == "_NO_PROMPT")
-          return true;
-        else if(result != "")
-          print(result + "\n");
-      }
+      if(execute())
+        return true;
 
       printPrompt();
-      dirty = true;
       break;
     }
 
-    case KBDK_TAB:
-    {
-      // Tab completion: we complete either commands or labels, but not
-      // both at once.
-
-      if(_currentPos <= _promptStartPos)
-        break;
-
-      scrollToCurrent();
-      int len = _promptEndPos - _promptStartPos;
-      if(len > 255) len = 255;
-
-      int lastDelimPos = -1;
-      char delimiter = '\0';
-
-      char inputStr[256];  // NOLINT  (will be rewritten soon)
-      for (int i = 0; i < len; i++)
-      {
-        inputStr[i] = buffer(_promptStartPos + i) & 0x7f;
-        // whitespace characters
-        if(strchr("{*@<> =[]()+-/&|!^~%", inputStr[i]))
-        {
-          lastDelimPos = i;
-          delimiter = inputStr[i];
-        }
-      }
-      inputStr[len] = '\0';
-      size_t strLen = len - lastDelimPos - 1;
-
-      StringList list;
-      string completionList;
-      string prefix;
-
-      if(lastDelimPos < 0)
-      {
-        // no delimiters, do only command completion:
-        const DebuggerParser& parser = instance().debugger().parser();
-        parser.getCompletions(inputStr, list);
-
-        if(list.size() < 1)
-          break;
-
-        sort(list.begin(), list.end());
-        completionList = list[0];
-        for(uInt32 i = 1; i < list.size(); ++i)
-          completionList += " " + list[i];
-        prefix = getCompletionPrefix(list);
-      }
-      else
-      {
-        // Special case for 'help' command
-        if(BSPF::startsWithIgnoreCase(inputStr, "help"))
-        {
-          instance().debugger().parser().getCompletions(inputStr + lastDelimPos + 1, list);
-        }
-        else
-        {
-          // do not show ALL labels without any filter as it makes no sense
-          if(strLen > 0)
-          {
-            // we got a delimiter, so this must be a label or a function
-            const Debugger& dbg = instance().debugger();
-
-            dbg.cartDebug().getCompletions(inputStr + lastDelimPos + 1, list);
-            dbg.getCompletions(inputStr + lastDelimPos + 1, list);
-          }
-        }
-
-        if(list.size() < 1)
-          break;
-
-        sort(list.begin(), list.end());
-        completionList = list[0];
-        for(uInt32 i = 1; i < list.size(); ++i)
-          completionList += " " + list[i];
-        prefix = getCompletionPrefix(list);
-      }
-
-      // TODO: tab through list
-
-      if(list.size() == 1)
-      {
-        // add to buffer as though user typed it (plus a space)
-        _currentPos = _promptStartPos + lastDelimPos + 1;
-        const char* clptr = completionList.c_str();
-        while(*clptr != '\0')
-          putcharIntern(*clptr++);
-
-        putcharIntern(' ');
-        _promptEndPos = _currentPos;
-      }
-      else
-      {
-        nextLine();
-        // add to buffer as-is, then add PROMPT plus whatever we have so far
-        _currentPos = _promptStartPos + lastDelimPos + 1;
-
-        print("\n");
-        print(completionList);
-        print("\n");
-        print(PROMPT);
-
-        _promptStartPos = _currentPos;
-
-        if(prefix.length() < strLen)
-        {
-          for(int i = 0; i < len; i++)
-            putcharIntern(inputStr[i]);
-        }
-        else
-        {
-          for(int i = 0; i < lastDelimPos; i++)
-            putcharIntern(inputStr[i]);
-
-          if(lastDelimPos > 0)
-            putcharIntern(delimiter);
-
-          print(prefix);
-        }
-        _promptEndPos = _currentPos;
-      }
-      dirty = true;
+    // special events (auto complete & history scrolling)
+    case Event::UINavNext:
+      dirty = changeInput = autoComplete(+1);
+      resetAutoComplete = false;
       break;
-    }
 
-    case KBDK_BACKSPACE:
-      if (_currentPos > _promptStartPos)
+    case Event::UINavPrev:
+      dirty = changeInput = autoComplete(-1);
+      resetAutoComplete = false;
+      break;
+
+    case Event::UILeft: // mapped to KBDK_DOWN by default
+      dirty = changeInput = historyScroll(-1);
+      resetHistoryScroll = false;
+      break;
+
+    case Event::UIRight: // mapped to KBDK_UP by default
+      dirty = changeInput = historyScroll(+1);
+      resetHistoryScroll = false;
+      break;
+
+    // input modifying events
+    case Event::Backspace:
+      if(_currentPos > _promptStartPos)
+      {
         killChar(-1);
-
+        changeInput = true;
+      }
       scrollToCurrent();
-      dirty = true;
       break;
 
-    case KBDK_DELETE:
-    case KBDK_KP_PERIOD: // actually the num delete
-      if(StellaModTest::isShift(mod))
-        textCut();
-      else
-        killChar(+1);
-      dirty = true;
+    case Event::Delete:
+      killChar(+1);
+      changeInput = true;
       break;
 
-    case KBDK_PAGEUP:
-      if (StellaModTest::isShift(mod))
-      {
-        // Don't scroll up when at top of buffer
-        if(_scrollLine < _linesPerPage)
-          break;
-
-        _scrollLine -= _linesPerPage - 1;
-        if (_scrollLine < _firstLineInBuffer + _linesPerPage - 1)
-          _scrollLine = _firstLineInBuffer + _linesPerPage - 1;
-        updateScrollBuffer();
-
-        dirty = true;
-      }
+    case Event::DeleteEnd:
+      killLine(+1);
+      changeInput = true;
       break;
 
-    case KBDK_PAGEDOWN:
-      if (StellaModTest::isShift(mod))
-      {
-        // Don't scroll down when at bottom of buffer
-        if(_scrollLine >= _promptEndPos / _lineWidth)
-          break;
-
-        _scrollLine += _linesPerPage - 1;
-        if (_scrollLine > _promptEndPos / _lineWidth)
-          _scrollLine = _promptEndPos / _lineWidth;
-        updateScrollBuffer();
-
-        dirty = true;
-      }
+    case Event::DeleteHome:
+      killLine(-1);
+      changeInput = true;
       break;
 
-    case KBDK_HOME:
-      if (StellaModTest::isShift(mod))
-      {
-        _scrollLine = _firstLineInBuffer + _linesPerPage - 1;
-        updateScrollBuffer();
-      }
-      else
-        _currentPos = _promptStartPos;
-
-      dirty = true;
+    case Event::DeleteLeftWord:
+      killWord();
+      changeInput = true;
       break;
 
-    case KBDK_END:
-      if (StellaModTest::isShift(mod))
-      {
-        _scrollLine = _promptEndPos / _lineWidth;
-        if (_scrollLine < _linesPerPage - 1)
-          _scrollLine = _linesPerPage - 1;
-        updateScrollBuffer();
-      }
-      else
-        _currentPos = _promptEndPos;
-
-      dirty = true;
+    case Event::Cut:
+      textCut();
+      changeInput = true;
       break;
 
-    case KBDK_UP:
-      if (StellaModTest::isShift(mod))
-      {
-        if(_scrollLine <= _firstLineInBuffer + _linesPerPage - 1)
-          break;
-
-        _scrollLine -= 1;
-        updateScrollBuffer();
-
-        dirty = true;
-      }
-      else
-        historyScroll(+1);
+    case Event::Copy:
+      textCopy();
       break;
 
-    case KBDK_DOWN:
-      if (StellaModTest::isShift(mod))
-      {
-        // Don't scroll down when at bottom of buffer
-        if(_scrollLine >= _promptEndPos / _lineWidth)
-          break;
-
-        _scrollLine += 1;
-        updateScrollBuffer();
-
-        dirty = true;
-      }
-      else
-        historyScroll(-1);
+    case Event::Paste:
+      textPaste();
+      changeInput = true;
       break;
 
-    case KBDK_RIGHT:
-      if (_currentPos < _promptEndPos)
+    // cursor events
+    case Event::MoveHome:
+      _currentPos = _promptStartPos;
+      break;
+
+    case Event::MoveEnd:
+      _currentPos = _promptEndPos;
+      break;
+
+    case Event::MoveRightChar:
+      if(_currentPos < _promptEndPos)
         _currentPos++;
-
-      dirty = true;
-      break;
-
-    case KBDK_LEFT:
-      if (_currentPos > _promptStartPos)
-        _currentPos--;
-
-      dirty = true;
-      break;
-
-    case KBDK_INSERT:
-      if(StellaModTest::isShift(mod))
-      {
-        textPaste();
-        dirty = true;
-      }
-      else if(StellaModTest::isControl(mod))
-      {
-        textCopy();
-        dirty = true;
-      }
       else
         handled = false;
+      break;
+
+    case Event::MoveLeftChar:
+      if(_currentPos > _promptStartPos)
+        _currentPos--;
+      else
+        handled = false;
+      break;
+
+    // scrolling events
+    case Event::UIUp:
+      if(_scrollLine <= _firstLineInBuffer + _linesPerPage - 1)
+        break;
+
+      _scrollLine -= 1;
+      updateScrollBuffer();
+      break;
+
+    case Event::UIDown:
+      // Don't scroll down when at bottom of buffer
+      if(_scrollLine >= _promptEndPos / _lineWidth)
+        break;
+
+      _scrollLine += 1;
+      updateScrollBuffer();
+      break;
+
+    case Event::UIPgUp:
+      // Don't scroll up when at top of buffer
+      if(_scrollLine < _linesPerPage)
+        break;
+
+      _scrollLine -= _linesPerPage - 1;
+      if(_scrollLine < _firstLineInBuffer + _linesPerPage - 1)
+        _scrollLine = _firstLineInBuffer + _linesPerPage - 1;
+      updateScrollBuffer();
+      break;
+
+    case Event::UIPgDown:
+      // Don't scroll down when at bottom of buffer
+      if(_scrollLine >= _promptEndPos / _lineWidth)
+        break;
+
+      _scrollLine += _linesPerPage - 1;
+      if(_scrollLine > _promptEndPos / _lineWidth)
+        _scrollLine = _promptEndPos / _lineWidth;
+      updateScrollBuffer();
+      break;
+
+    case Event::UIHome:
+      _scrollLine = _firstLineInBuffer + _linesPerPage - 1;
+      updateScrollBuffer();
+      break;
+
+    case Event::UIEnd:
+      _scrollLine = _promptEndPos / _lineWidth;
+      if(_scrollLine < _linesPerPage - 1)
+        _scrollLine = _linesPerPage - 1;
+      updateScrollBuffer();
       break;
 
     default:
-      if (StellaModTest::isControl(mod))
-      {
-        specialKeys(key);
-      }
-      else if (StellaModTest::isAlt(mod))
-      {
-        // Placeholder only - this will never be reached
-      }
-      else
-        handled = false;
+      handled = false;
+      dirty = false;
       break;
   }
 
@@ -481,19 +324,12 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
   if(dirty)
     setDirty();
 
-  // There are times when we want the prompt and scrollbar to be marked
-  // as dirty *after* they've been drawn above.  One such occurrence is
-  // when we issue a command that indirectly redraws the entire parent
-  // dialog (such as 'scanline' or 'frame').
-  // In those cases, the return code of the command must be shown, but the
-  // entire dialog contents are redrawn at a later time.  So the prompt and
-  // scrollbar won't be redrawn unless they're dirty again.
-  if(_makeDirty)
-  {
-    setDirty();
-    _scrollBar->setDirty();
-    _makeDirty = false;
-  }
+  // Reset special event handling if input has changed
+  // We assume that non-handled events will modify the input too
+  if(!handled || (resetAutoComplete && changeInput))
+    _tabCount = -1;
+  if(!handled || (resetHistoryScroll && changeInput))
+    _historyLine = 0;
 
   return handled;
 }
@@ -532,9 +368,6 @@ void PromptWidget::handleCommand(CommandSender* sender, int cmd,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::loadConfig()
 {
-  // See logic at the end of handleKeyDown for an explanation of this
-  _makeDirty = true;
-
   // Show the prompt the first time we draw this widget
   if(_firstTime)
   {
@@ -557,6 +390,22 @@ void PromptWidget::loadConfig()
     print(instance().debugger().cartDebug().loadConfigFile() + "\n");
     print(instance().debugger().cartDebug().loadListFile() + "\n");
     print(instance().debugger().cartDebug().loadSymbolFile() + "\n");
+
+    bool extra = false;
+    if(instance().settings().getBool("dbg.autosave"))
+    {
+      print(DebuggerParser::inverse(" autoSave enabled "));
+      print("\177 "); // must switch inverse here!
+      extra = true;
+    }
+    if(instance().settings().getBool("dbg.logbreaks"))
+    {
+      print(DebuggerParser::inverse(" logBreaks enabled "));
+      extra = true;
+    }
+    if(extra)
+      print("\n");
+
     print(PROMPT);
 
     _promptStartPos = _promptEndPos = _currentPos;
@@ -573,46 +422,6 @@ void PromptWidget::loadConfig()
 int PromptWidget::getWidth() const
 {
   return _w + ScrollBarWidget::scrollBarWidth(_font);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PromptWidget::specialKeys(StellaKey key)
-{
-  bool handled = true;
-
-  switch(key)
-  {
-    case KBDK_D:
-      killChar(+1);
-      break;
-    case KBDK_K:
-      killLine(+1);
-      break;
-    case KBDK_U:
-      killLine(-1);
-      break;
-    case KBDK_W:
-      killWord();
-      break;
-    case KBDK_A:
-      textSelectAll();
-      break;
-    case KBDK_X:
-      textCut();
-      break;
-    case KBDK_C:
-      textCopy();
-      break;
-    case KBDK_V:
-      textPaste();
-      break;
-    default:
-      handled = false;
-      break;
-  }
-
-  if(handled)
-    setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -693,21 +502,15 @@ void PromptWidget::killWord()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PromptWidget::textSelectAll()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string PromptWidget::getLine()
 {
 #if defined(PSEUDO_CUT_COPY_PASTE)
   assert(_promptEndPos >= _promptStartPos);
-  int len = _promptEndPos - _promptStartPos;
   string text;
 
   // Copy current line to text
-  for(int i = 0; i < len; i++)
-    text += buffer(_promptStartPos + i) & 0x7f;
+  for(int i = _promptStartPos; i < _promptEndPos; i++)
+    text += buffer(i) & 0x7f;
 
   return text;
 #endif
@@ -717,14 +520,14 @@ string PromptWidget::getLine()
 void PromptWidget::textCut()
 {
 #if defined(PSEUDO_CUT_COPY_PASTE)
-  string text = getLine();
-
-  instance().eventHandler().copyText(text);
+  textCopy();
 
   // Remove the current line
   _currentPos = _promptStartPos;
   killLine(1);  // to end of line
   _promptEndPos = _currentPos;
+
+  resetFunctions();
 #endif
 }
 
@@ -751,65 +554,95 @@ void PromptWidget::textPaste()
   instance().eventHandler().pasteText(text);
   print(text);
   _promptEndPos = _currentPos;
+
+  resetFunctions();
 #endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int PromptWidget::historyDir(int& index, int direction)
+{
+  index += direction;
+  if(index < 0)
+    index += int(_history.size());
+  else
+    index %= int(_history.size());
+
+  return index;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PromptWidget::historyAdd(const string& entry)
+{
+  if(_historyIndex >= int(_history.size()))
+    _history.push_back(entry);
+  else
+    _history[_historyIndex] = entry;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::addToHistory(const char* str)
 {
-#if defined(BSPF_WINDOWS)
-  strncpy_s(_history[_historyIndex], kLineBufferSize, str, kLineBufferSize - 1);
-#else
-  strncpy(_history[_historyIndex], str, kLineBufferSize - 1);
-#endif
-  _historyIndex = (_historyIndex + 1) % kHistorySize;
-  _historyLine = 0;
-
-  if (_historySize < kHistorySize)
-    _historySize++;
-}
-
-#if 0 // FIXME
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int PromptWidget::compareHistory(const char *histLine)
-{
-  return 1;
-}
-#endif
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PromptWidget::historyScroll(int direction)
-{
-  if (_historySize == 0)
-    return;
-
-  if (_historyLine == 0 && direction > 0)
+  // Do not add duplicates, remove old duplicate
+  if(_history.size())
   {
-    int i;
-    for (i = 0; i < _promptEndPos - _promptStartPos; i++)
-      _history[_historyIndex][i] = buffer(_promptStartPos + i); //FIXME: int to char??
+    int i = _historyIndex;
+    int historyEnd = _historyIndex % _history.size();
 
-    _history[_historyIndex][i] = '\0';
-  }
+    do
+    {
+      historyDir(i, -1);
 
-  // Advance to the next line in the history
-  int line = _historyLine + direction;
-  if(line < 0)
-    line += _historySize + 1;
-  line %= (_historySize + 1);
+      if(!BSPF::compareIgnoreCase(_history[i], str))
+      {
+        int j = i, prevJ;
 
-  // If they press arrow-up with anything in the buffer, search backwards
-  // in the history.
-  /*
-  if(direction < 0 && _currentPos > _promptStartPos) {
-    for(;line > 0; line--) {
-      if(compareHistory(_history[line]) == 0)
+        do
+        {
+          prevJ = j;
+          historyDir(j, +1);
+          _history[prevJ] = _history[j];
+        }
+        while(j != historyEnd);
+
+        historyDir(_historyIndex, -1);
         break;
+      }
     }
+    while(i != historyEnd);
   }
-  */
+  historyAdd(str);
+  _historyLine = 0; // reset history scroll
+  _historyIndex = (_historyIndex + 1) % kHistorySize;
+}
 
-  _historyLine = line;
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool PromptWidget::historyScroll(int direction)
+{
+  if(_history.size() == 0)
+    return false;
+
+  // add current input temporarily to history
+  if(_historyLine == 0)
+    historyAdd(getLine());
+
+  // Advance to the next/prev line in the history
+  historyDir(_historyLine, direction);
+
+  // Search the history using the original input
+  do
+  {
+    int idx = _historyLine
+      ? (_historyIndex - _historyLine + _history.size()) % int(_history.size())
+      : _historyIndex;
+
+    if(BSPF::startsWithIgnoreCase(_history[idx], _history[_historyIndex]))
+      break;
+
+    // Advance to the next/prev line in the history
+    historyDir(_historyLine, direction);
+  }
+  while(_historyLine); // If _historyLine == 0, nothing was found
 
   // Remove the current user text
   _currentPos = _promptStartPos;
@@ -819,21 +652,145 @@ void PromptWidget::historyScroll(int direction)
   scrollToCurrent();
 
   // Print the text from the history
-  int idx;
-  if (_historyLine > 0)
-    idx = (_historyIndex - _historyLine + _historySize) % _historySize;
-  else
-    idx = _historyIndex;
+  int idx = _historyLine
+    ? (_historyIndex - _historyLine + _history.size()) % int(_history.size())
+    : _historyIndex;
 
-  for (int i = 0; i < kLineBufferSize && _history[idx][i] != '\0'; i++)
+  for(int i = 0; i < kLineBufferSize && _history[idx][i] != '\0'; i++)
     putcharIntern(_history[idx][i]);
-
   _promptEndPos = _currentPos;
 
   // Ensure once more the caret is visible (in case of very long history entries)
   scrollToCurrent();
 
-  setDirty();
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool PromptWidget::execute()
+{
+  nextLine();
+
+  assert(_promptEndPos >= _promptStartPos);
+  int len = _promptEndPos - _promptStartPos;
+
+  if(len > 0)
+  {
+    // Copy the user input to command
+    string command = getLine();
+
+    // Add the input to the history
+    addToHistory(command.c_str());
+
+    // Pass the command to the debugger, and print the result
+    string result = instance().debugger().run(command);
+
+    // This is a bit of a hack
+    // Certain commands remove the debugger dialog from underneath us,
+    // so we shouldn't print any messages
+    // Those commands will return '_EXIT_DEBUGGER' as their result
+    if(result == "_EXIT_DEBUGGER")
+    {
+      _exitedEarly = true;
+      return true;
+    }
+    else if(result == "_NO_PROMPT")
+      return true;
+    else if(result != "")
+      print(result + "\n");
+  }
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool PromptWidget::autoComplete(int direction)
+{
+  // Tab completion: we complete either commands or labels, but not
+  // both at once.
+
+  if(_currentPos <= _promptStartPos)
+    return false; // no input
+
+  scrollToCurrent();
+
+  int len = _promptEndPos - _promptStartPos;
+
+  if(_tabCount != -1)
+    len = int(strlen(_inputStr));
+  if(len > kLineBufferSize - 1)
+    len = kLineBufferSize - 1;
+
+  int lastDelimPos = -1;
+  char delimiter = '\0';
+
+  for(int i = 0; i < len; i++)
+  {
+    // copy the input at first tab press only
+    if(_tabCount == -1)
+      _inputStr[i] = buffer(_promptStartPos + i) & 0x7f;
+    // whitespace characters
+    if(strchr("{*@<> =[]()+-/&|!^~%", _inputStr[i]))
+    {
+      lastDelimPos = i;
+      delimiter = _inputStr[i];
+    }
+}
+  if(_tabCount == -1)
+    _inputStr[len] = '\0';
+
+  StringList list;
+
+  if(lastDelimPos == -1)
+    // no delimiters, do only command completion:
+    instance().debugger().parser().getCompletions(_inputStr, list);
+  else
+  {
+    size_t strLen = len - lastDelimPos - 1;
+    // do not show ALL commands/labels without any filter as it makes no sense
+    if(strLen > 0)
+    {
+      // Special case for 'help' command
+      if(BSPF::startsWithIgnoreCase(_inputStr, "help"))
+        instance().debugger().parser().getCompletions(_inputStr + lastDelimPos + 1, list);
+      else
+      {
+        // we got a delimiter, so this must be a label or a function
+        const Debugger& dbg = instance().debugger();
+
+        dbg.cartDebug().getCompletions(_inputStr + lastDelimPos + 1, list);
+        dbg.getCompletions(_inputStr + lastDelimPos + 1, list);
+      }
+    }
+
+  }
+  if(list.size() < 1)
+    return false;
+  sort(list.begin(), list.end());
+
+  if(direction < 0)
+  {
+    if(--_tabCount < 0)
+      _tabCount = int(list.size()) - 1;
+  }
+  else
+    _tabCount = (_tabCount + 1) % list.size();
+
+  nextLine();
+  _currentPos = _promptStartPos;
+  killLine(1);  // kill whole line
+
+  // start with-autocompleted, fixed string...
+  for(int i = 0; i < lastDelimPos; i++)
+    putcharIntern(_inputStr[i]);
+  if(lastDelimPos > 0)
+    putcharIntern(delimiter);
+
+  // ...and add current autocompletion string
+  print(list[_tabCount]);
+  putcharIntern(' ');
+  _promptEndPos = _currentPos;
+
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1001,30 +958,6 @@ string PromptWidget::saveBuffer(const FilesystemNode& file)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string PromptWidget::getCompletionPrefix(const StringList& completions)
-{
-  // Find the number of characters matching for each of the completions provided
-  for(uInt32 len = 1;; ++len)
-  {
-    for(uInt32 i = 0; i < completions.size(); ++i)
-    {
-      string s1 = completions[i];
-      if(s1.length() < len)
-      {
-        return s1.substr(0, len - 1);
-      }
-      string find = s1.substr(0, len);
-
-      for(uInt32 j = i + 1; j < completions.size(); ++j)
-      {
-        if(!BSPF::startsWithIgnoreCase(completions[j], find))
-          return s1.substr(0, len - 1);
-      }
-    }
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::clearScreen()
 {
   // Initialize start position
@@ -1036,4 +969,21 @@ void PromptWidget::clearScreen()
 
   if(!_firstTime)
     updateScrollBuffer();
+
+  resetFunctions();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PromptWidget::clearHistory()
+{
+  _history.clear();
+  _historyIndex = 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PromptWidget::resetFunctions()
+{
+  // reset special functions
+  _tabCount = -1;
+  _historyLine = 0;
 }

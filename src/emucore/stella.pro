@@ -74,6 +74,7 @@
 "Cart.Manufacturer" "Aaron Curtis"
 "Cart.Name" "AStar (NTSC)"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=821"
 ""
 
 "Cart.MD5" "012020625a3227815e47b37fd025e480"
@@ -157,6 +158,14 @@
 "Cart.Name" "Demo Image Series #3 - Baboon (19-02-2003) (AD)"
 ""
 
+"Cart.MD5" "021dbeb7417cac4e5f8e867393e742d6"
+"Cart.Manufacturer" "Simone Serra - AtariAge"
+"Cart.ModelNo" "RC 09.09.2008"
+"Cart.Name" "Lead "
+"Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=932"
+""
+
 "Cart.MD5" "024365007a87f213cbe8ef5f2e8e1333"
 "Cart.Manufacturer" "Atari, Frank Hausman, Mimi Nyden, Steve Woita"
 "Cart.ModelNo" "CX2686"
@@ -169,6 +178,7 @@
 "Cart.Name" "Raiders of the Lost Ark (06-14-82) (Atari) (Prototype)"
 "Cart.Note" "Console ports are swapped"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/rotla/rotla.htm"
 "Console.SwapPorts" "YES"
 ""
 
@@ -209,6 +219,7 @@
 "Cart.ModelNo" "MA017600"
 "Cart.Name" "Diagnostic Test Cartridge 2.6 (1982) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/diagnostic/diagnostic.htm"
 ""
 
 "Cart.MD5" "02ced7ea2b7cb509748db6bfa227ebec"
@@ -267,6 +278,7 @@
 "Cart.Name" "Aquaventure (08-12-1983) (Atari) (Prototype)"
 "Cart.Note" "AKA Sea Sentinel"
 "Cart.Rarity" "Unbelievably Rare"
+"Cart.Url" "http://www.atariprotos.com/2600/software/aquaventure/aquaventure.htm"
 ""
 
 "Cart.MD5" "039cf18b459d33b8a8fca31d06c4c244"
@@ -358,7 +370,8 @@
 
 "Cart.MD5" "04dfb4acac1d0909e4c360fd2ac04480"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Jammed (2001) (XYPE) (NTSC)"
+"Cart.Name" "Jammed (2001) (XYPE)"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=98"
 ""
 
 "Cart.MD5" "04e737c9d53cd84bfd5ee679954e4706"
@@ -435,6 +448,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Challenge of... Nexar, The - Amiga Mouse Hack v1.1 (NTSC) (TJ)"
 "Cart.Note" "Uses Amiga Mouse Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1181"
 ""
 
 "Cart.MD5" "05ccf96247af12eef59698f1a060a54f"
@@ -483,6 +497,7 @@
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Display.Format" "PAL60"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_count\":1}"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1188"
 ""
 
 "Cart.MD5" "0651216c4a4a9c9ac5ada3013a317c72"
@@ -496,6 +511,14 @@
 "Cart.Name" "Healthbars (PD)"
 ""
 
+"Cart.MD5" "0653285db216755085bd025b93ea6a25"
+"Cart.Manufacturer" "AtariAge, Chris Walton & Thomas Jentzsch"
+"Cart.Name" "Star Castle Arcade (2014) (Chris Walton, Thomas Jentzsch) (PAL)"
+"Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1046"
+"Display.Phosphor" "YES"
+""
+
 "Cart.MD5" "0685bd0bcb975ceef7041749a5454a48"
 "Cart.Manufacturer" "Piero Cavina"
 "Cart.Name" "11 Sprite Demo (Piero Cavina) (PD)"
@@ -505,12 +528,14 @@
 "Cart.MD5" "069c17beb1e8e0557adb8539fdcf6cba"
 "Cart.Name" "Phantom II & Pirate (PAL60)"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=843"
 ""
 
 "Cart.MD5" "06b0194ce992584c365278e0d7323279"
 "Cart.Manufacturer" "Activision"
 "Cart.Name" "Unknown Activision Game #2 (Prototype) (PAL)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/unknown2/unknown2.htm"
 ""
 
 "Cart.MD5" "06b6c5031b8353f3a424a5b86b8fe409"
@@ -532,6 +557,7 @@
 "Cart.ModelNo" "4L 2737 0000"
 "Cart.Name" "Omega Race (1983) (CBS Electronics) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/omegarace/omegarace.htm"
 "Controller.Left" "BOOSTERGRIP"
 ""
 
@@ -687,12 +713,14 @@
 "Cart.Manufacturer" "Androbot - Western Technologies, Michael Case, Lenny Carlson"
 "Cart.Name" "AndroMan on the Moon (1984) (Western Tech) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/androman/androman.htm"
 ""
 
 "Cart.MD5" "0891252ee4e307689febccf3cfd8a8ab"
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Centipede - Atari Trak-Ball Hack v1.4 (PAL60) (Half-Speed) (TJ)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
@@ -722,6 +750,7 @@
 "Cart.Name" "Meteoroids (1982) (Arcadia) (Prototype)"
 "Cart.Note" "Suicide Mission Beta"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/suicidemission/suicidemission.htm"
 "Display.Phosphor" "YES"
 ""
 
@@ -740,14 +769,16 @@
 "Cart.Manufacturer" "Atari - CCW, Christopher H. Omarzu, Preston Stuart, Bruce Williams"
 "Cart.ModelNo" "CX26101"
 "Cart.Name" "Oscar's Trash Race (10-20-1982) (Atari) (Prototype)"
-"Cart.Note" "Uses the Keypad Controllers"
+"Cart.Note" "Uses the Keyboard Controllers"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/oscar/oscar.htm"
 ""
 
 "Cart.MD5" "08ea2fdaa22e5802c839ee7dfb0483dc"
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Challenge of... Nexar, The - Atari Trak-Ball Hack v1.2 (PAL60) (TJ)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1181"
 ""
 
 "Cart.MD5" "08f4dc6f118f7c98e2406c180c08e78e"
@@ -818,6 +849,7 @@
 
 "Cart.MD5" "097074f24cde141fe6a0f26a10333265"
 "Cart.Name" "Marble Craze (V0.90) (Paul Slocum)"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=99"
 ""
 
 "Cart.MD5" "097936b07e0e0117b9026ae6835eb168"
@@ -852,6 +884,7 @@
 "Cart.ModelNo" "MA017600"
 "Cart.Name" "Diagnostic Test Cartridge 2.6 (1982) (Atari) (Prototype) (4K)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/diagnostic/diagnostic.htm"
 ""
 
 "Cart.MD5" "0a1b98937911d621b004b1617446d124"
@@ -888,6 +921,7 @@
 "Cart.MD5" "0acaf71e60b89f6b6eab63db6ab84510"
 "Cart.Name" "This Planet Sucks (Greg Troutman) [a2]"
 "Cart.Rarity" "New Release"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=102"
 ""
 
 "Cart.MD5" "0aceb7c3bd13fe048b77a1928ed4267d"
@@ -947,8 +981,9 @@
 "Cart.Manufacturer" "Atari - CCW, Christopher H. Omarzu"
 "Cart.ModelNo" "CX26104"
 "Cart.Name" "Big Bird's Egg Catch (05-17-1983) (Atari) (Prototype)"
-"Cart.Note" "Uses the Keypad Controller"
+"Cart.Note" "Uses the Keyboard Controller"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/bigbird/bigbird.htm"
 "Controller.Left" "KEYBOARD"
 ""
 
@@ -999,6 +1034,7 @@
 "Cart.ModelNo" "CX26118"
 "Cart.Name" "Millipede (01-04-1984) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/millipede/millipede.htm"
 ""
 
 "Cart.MD5" "0bf1e354304f46c0caf8fc0f6f5e9525"
@@ -1052,6 +1088,7 @@
 "Cart.ModelNo" "v1.3"
 "Cart.Name" "Amoeba Jump (2018) (Dionoid) (PAL60)"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1211"
 ""
 
 "Cart.MD5" "0c7926d660f903a2d6910c254660c32c"
@@ -1105,6 +1142,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Challenge of... Nexar, The - Atari Mouse Hack v1.1 (PAL60) (TJ)"
 "Cart.Note" "Uses Atari Mouse Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1181"
 ""
 
 "Cart.MD5" "0cfdd2f3b243cac21f38a0f09f54bead"
@@ -1119,6 +1157,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Missile Control - Atari Mouse Hack v1.15 (NTSC) (TJ)"
 "Cart.Note" "Uses Atari Mouse Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1184"
 ""
 
 "Cart.MD5" "0d09cff0d28033c02c3290edfc3a5cea"
@@ -1126,6 +1165,7 @@
 "Cart.ModelNo" "CX2699"
 "Cart.Name" "Taz (1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/taz/taz.htm"
 ""
 
 "Cart.MD5" "0d1b3abf681a2fc9a6aa31a9b0e8b445"
@@ -1211,6 +1251,7 @@
 "Cart.Name" "Mind Maze (10-10-1984) (Atari) (Prototype)"
 "Cart.Note" "Uses the MindLink controller"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/mindmaze/mindmaze.htm"
 "Controller.Right" "MINDLINK"
 ""
 
@@ -1218,6 +1259,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Centipede - Amiga Mouse Hack v1.4 (PAL60) (Half-Speed) (TJ)"
 "Cart.Note" "Uses Amiga Mouse Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
@@ -1253,6 +1295,7 @@
 "Cart.ModelNo" "CX2688"
 "Cart.Name" "Jungle Hunt (02-25-1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/junglehunt/junglehunt.htm"
 ""
 
 "Cart.MD5" "0ecdb07bf9b36ef18f3780ef48e6c709"
@@ -1284,6 +1327,7 @@
 "Cart.Manufacturer" "B.J. Best (aka bjbest60)"
 "Cart.Name" "Space Cactus Canyon (2017)"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1108"
 "Display.Phosphor" "YES"
 ""
 
@@ -1291,6 +1335,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Reactor - Atari Trak-Ball Hack v1.3 (PAL) (Full-Speed) (TJ)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
 ""
 
 "Cart.MD5" "0f14c03050b35d6b1d8850b07578722d"
@@ -1319,6 +1364,7 @@
 "Cart.ModelNo" "CX26111"
 "Cart.Name" "Snoopy and the Red Baron (05-27-1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/snoopy/snoopy.htm"
 ""
 
 "Cart.MD5" "0f604cd4c9d2795cf5746e8af7948064"
@@ -1328,6 +1374,7 @@
 "Cart.Note" "Rev 2 release"
 "Cart.Rarity" "Homebrew"
 "Cart.Highscore" "{\"score_addresses\":[\"0x92\",\"0x94\",\"0x96\"],\"score_digits\":6,\"special_address\":\"0x9a\",\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_address\":\"0x89\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=822"
 ""
 
 "Cart.MD5" "0f643c34e40e3f1daafd9c524d3ffe64"
@@ -1406,7 +1453,7 @@
 "Cart.Manufacturer" "Atari, Alan Miller - Sears"
 "Cart.ModelNo" "CX2642 - 6-99814"
 "Cart.Name" "Hunt & Score - Memory Match (1978) (Atari)"
-"Cart.Note" "Uses Keypad Controllers"
+"Cart.Note" "Uses Keyboard Controllers"
 ""
 
 "Cart.MD5" "103e9d616328969f5d7b4e0a381b25d5"
@@ -1451,6 +1498,7 @@
 "Cart.ModelNo" "AG-009"
 "Cart.Name" "Bloody Human Freeway (1981) (Activision) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/freeway/freeway.htm"
 ""
 
 "Cart.MD5" "10958cd0a1a81d599005f1797ab0e51d"
@@ -1478,6 +1526,7 @@
 "Cart.Name" "Shooting Arcade (03-07-1989) (Atari) (Prototype) [a4]"
 "Cart.Note" "Uses the Light Gun Controller (left only)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/shootingarcade/shootingarcade.htm"
 ""
 
 "Cart.MD5" "10c8cfd8c37522f11d47540ff024e5f9"
@@ -1497,6 +1546,7 @@
 "Cart.Name" "Bionic Breakthrough (06-22-1984) (Atari) (Prototype)"
 "Cart.Note" "Uses the Mindlink Controller"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/bionic/bionic.htm"
 "Controller.Left" "MINDLINK"
 ""
 
@@ -1540,6 +1590,7 @@
 "Cart.ModelNo" "CX26118"
 "Cart.Name" "Millipede (1984) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/millipede/millipede.htm"
 ""
 
 "Cart.MD5" "11e7e0d9437ec98fa085284cf16d0eb4"
@@ -1550,6 +1601,7 @@
 "Cart.Manufacturer" "Chris Walton, Justin Hairgrove, Tony Morse"
 "Cart.Name" "Hunchy II (2005) (PAL)"
 "Cart.Note" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=330"
 ""
 
 "Cart.MD5" "1201c18cf00d2c236f42e4d7d8c86aa1"
@@ -1560,6 +1612,7 @@
 "Cart.Manufacturer" "Omegamatrix"
 "Cart.Name" "Star Wars Arcade (Amiga Mouse) v4 (Omegamatrix)"
 "Cart.Note" "Uses Amiga Mouse Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1189"
 ""
 
 "Cart.MD5" "12123b534bdee79ed7563b9ad74f1cbd"
@@ -1592,6 +1645,7 @@
 "Cart.ModelNo" "CX2676"
 "Cart.Name" "Centipede (1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/centipede/centipede.htm"
 ""
 
 "Cart.MD5" "1278f74ca1dfaa9122df3eca3c5bcaad"
@@ -1712,6 +1766,7 @@
 "Cart.MD5" "137373599e9b7bf2cf162a102eb5927f"
 "Cart.Manufacturer" "AtariAge, Joe Grand"
 "Cart.Name" "Ultra SCSIcide (SCSIcide 2.0)"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=296"
 "Controller.Left" "PADDLES"
 "Cart.Highscore" "{\"score_addresses\":[\"0xdc\",\"0xdd\",\"0xde\"],\"score_bcd\":false,\"score_digits\":6,\"variations_count\":1}"
 ""
@@ -1796,6 +1851,7 @@
 "Cart.ModelNo" "PB5550"
 "Cart.Name" "Q-bert's Qubes (1984) (Parker Bros) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/qbertsqubes/qbertsqubes.htm"
 ""
 
 "Cart.MD5" "149b543c917c180a1b02d33c12415206"
@@ -1814,6 +1870,7 @@
 "Cart.Manufacturer" "Atari, Carol Shaw - Ralph Lauren"
 "Cart.Name" "Polo (1978) (Atari) (Prototype) (4K)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/polo/polo.htm"
 ""
 
 "Cart.MD5" "14c2548712099c220964d7f044c59fd9"
@@ -1838,14 +1895,16 @@
 "Cart.Manufacturer" "Parker Brothers, Laura Nikolich"
 "Cart.Name" "Care Bears (1983) (Parker Bros) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/carebear/carebear.htm"
 ""
 
 "Cart.MD5" "151fa3218d8d7600114eb5bcd79c85cb"
 "Cart.Manufacturer" "Atari - CCW, Christopher H. Omarzu"
 "Cart.ModelNo" "CX26104"
 "Cart.Name" "Big Bird's Egg Catch (05-02-1983) (Atari) (Prototype)"
-"Cart.Note" "Uses the Keypad Controller"
+"Cart.Note" "Uses the Keyboard Controller"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/bigbird/bigbird.htm"
 "Controller.Left" "KEYBOARD"
 ""
 
@@ -1894,6 +1953,7 @@
 "Cart.ModelNo" "CX26115"
 "Cart.Name" "Dumbo's Flying Circus (04-04-1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/dumbo/dumbo.htm"
 ""
 
 "Cart.MD5" "15b498199ed0ed28057bf0dbdce9b8d8"
@@ -1925,6 +1985,7 @@
 "Cart.Name" "Shooting Arcade (09-19-1989) (Atari) (Prototype)"
 "Cart.Note" "Uses the Light Gun Controller (left only)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/shootingarcade/shootingarcade.htm"
 ""
 
 "Cart.MD5" "15dd21c2608e0d7d9f54c0d3f08cca1f"
@@ -2026,6 +2087,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Challenge of... Nexar, The - Amiga Mouse Hack v1.1 (PAL60) (TJ)"
 "Cart.Note" "Uses Amiga Mouse Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1181"
 ""
 
 "Cart.MD5" "1733772165d7b886a94e2b4ed0f74ccd"
@@ -2072,6 +2134,7 @@
 "Cart.Name" "Pitfall! (1982) (Activision) (Prototype)"
 "Cart.Note" "Pitfall Harry's Jungle Adventure (Jungle Runner)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/pitfall/pitfall.htm"
 ""
 
 "Cart.MD5" "17ba72433dd41383065d4aa6dedb3d91"
@@ -2124,7 +2187,7 @@
 "Cart.Manufacturer" "Atari - CCW, Christopher H. Omarzu"
 "Cart.ModelNo" "CX26104"
 "Cart.Name" "Big Bird's Egg Catch (1983) (Atari)"
-"Cart.Note" "Uses Kids/Keypad Controllers"
+"Cart.Note" "Uses Kids/Keyboard Controllers"
 "Cart.Rarity" "Rare"
 "Controller.Left" "KEYBOARD"
 "Controller.Right" "KEYBOARD"
@@ -2135,6 +2198,7 @@
 "Cart.Name" "Missile Command (Amiga Mouse) (2002) (TJ) (PAL)"
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1183"
 "Display.Phosphor" "YES"
 "Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
 ""
@@ -2154,6 +2218,7 @@
 "Cart.Manufacturer" "Manuel Polik"
 "Cart.Name" "Gunfight 2600 (MP) (PAL)"
 "Cart.Rarity" "New Release"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=124"
 ""
 
 "Cart.MD5" "18b476a34ce5e6db2c032029873ac39b"
@@ -2167,10 +2232,12 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Missile Control - Amiga Mouse Hack v1.15 (PAL60) (TJ)"
 "Cart.Note" "Uses Amiga Mouse Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1184"
 ""
 
 "Cart.MD5" "18bebbbd41c234f82b1717b1905e6027"
 "Cart.Name" "Space Instigators (Public Release) (02-01-2003) (CT)"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=114"
 ""
 
 "Cart.MD5" "18d26111cef66dff0c8af8cf0e117843"
@@ -2222,6 +2289,7 @@
 "Cart.Name" "Los Angeles 1984 Games (1984) (Atari) (Prototype) (PAL)"
 "Cart.Note" "AKA Track and Field (Uses Track & Field Controller)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/track/track.htm"
 ""
 
 "Cart.MD5" "193f060553ba0a2a2676f91d9ec0c555"
@@ -2242,6 +2310,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Reactor - Atari Trak-Ball Hack v1.3 (PAL) (Half-Speed) (TJ)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
 ""
 
 "Cart.MD5" "199985cae1c0123ab1aef921daace8be"
@@ -2322,6 +2391,7 @@
 "Cart.Name" "Missile Command (1981) (Atari) [no initials]"
 "Cart.Rarity" "Prototype"
 "Display.Phosphor" "YES"
+"Cart.Url" "http://www.atariprotos.com/2600/software/missilecommand/missilecommand.htm"
 ""
 
 "Cart.MD5" "1aa7344b563c597eecfbfcf8e7093c27"
@@ -2352,6 +2422,7 @@
 "Cart.Manufacturer" "Arcadia Corporation, Stephen H. Landrum"
 "Cart.ModelNo" "AR-4400"
 "Cart.Name" "Excalibur (Dragonstomper Beta) (1982) (Arcadia) (Prototype) [a]"
+"Cart.Url" "http://www.atariprotos.com/2600/software/dragonstomper/dragonstomper.htm"
 ""
 
 "Cart.MD5" "1b5a8da0622bffcee4c5b42aed4e0ef0"
@@ -2463,7 +2534,7 @@
 "Cart.Manufacturer" "Atari, Larry Kaplan - Sears"
 "Cart.ModelNo" "CX2664 - 6-99818"
 "Cart.Name" "Brain Games (1978) (Atari)"
-"Cart.Note" "Uses Keypad Controllers"
+"Cart.Note" "Uses Keyboard Controllers"
 "Controller.Left" "KEYBOARD"
 "Controller.Right" "KEYBOARD"
 ""
@@ -2498,6 +2569,7 @@
 "Cart.ModelNo" "11034"
 "Cart.Name" "Pick Up (1983) (20th Century Fox) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/pickup/pickup.htm"
 ""
 
 "Cart.MD5" "1d5eac85e67b8cff1377c8dba1136929"
@@ -2533,6 +2605,7 @@
 "Cart.Name" "Sweat! - The Decathlon Game (3 of 3) (1983) (Arcadia) (Prototype)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/sweat/sweat.htm"
 ""
 
 "Cart.MD5" "1e0ef01e330e5b91387f75f700ccaf8f"
@@ -2548,6 +2621,7 @@
 "Cart.ModelNo" "PB5540"
 "Cart.Name" "Star Wars - The Arcade Game (12-15-1983) (Parker Bros) (Prototype) (4K)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/starwarsarcade/starwarsarcade.htm"
 "Display.Phosphor" "YES"
 ""
 
@@ -2562,6 +2636,7 @@
 "Cart.Name" "Firefox (1983) (Atari) (Prototype)"
 "Cart.Note" "AKA Combat II, Fighter Command"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/fightercommand/fightercommand.htm"
 ""
 
 "Cart.MD5" "1e587ca91518a47753a28217cd4fd586"
@@ -2581,6 +2656,7 @@
 "Cart.ModelNo" "CX26122"
 "Cart.Name" "Sinistar (02-13-1984) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/sinistar/sinistar.htm"
 ""
 
 "Cart.MD5" "1e89f722494608d6ea15a00d99f81337"
@@ -2600,6 +2676,7 @@
 "Cart.ModelNo" "CX2675"
 "Cart.Name" "Ms. Pac-Man (1982) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/mspacman/mspac.htm"
 ""
 
 "Cart.MD5" "1ec57bbd27bdbd08b60c391c4895c1cf"
@@ -2607,6 +2684,7 @@
 "Cart.ModelNo" "CX26119"
 "Cart.Name" "Saboteur (09-02-1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/saboteur/saboteur.htm"
 ""
 
 "Cart.MD5" "1ec5bef77b91e59313cba205f15b06d7"
@@ -2663,6 +2741,7 @@
 "Cart.Manufacturer" "Atari, Chris Crawford"
 "Cart.Name" "Wizard (1980) (Atari) (Prototype) (4K) [a]"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/wizard/wizard.htm"
 ""
 
 "Cart.MD5" "1f562b89d081e36d58e6fc943512ec05"
@@ -2690,6 +2769,7 @@
 "Cart.Name" "Dumbo's Flying Circus (07-11-1983) (Atari) (Prototype) (PAL)"
 "Cart.Note" "AKA Dumbo Flies Home"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/dumbo/dumbo.htm"
 ""
 
 "Cart.MD5" "1fa58679d4a39052bd9db059e8cda4ad"
@@ -2704,6 +2784,7 @@
 "Cart.Name" "Cabbage Patch Kids (09-04-1984) (Coleco) (Prototype)"
 "Cart.Note" "Adventures in the Park"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/cpk/cpk.htm"
 ""
 
 "Cart.MD5" "1fa86282403fa35d103ab88a9d603c31"
@@ -2711,6 +2792,7 @@
 "Cart.Name" "Stay Frosty (SpiceWare) (PAL60)"
 "Cart.Note" "Part of Stella's Stocking 2007 Xmas compilation"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=897"
 "Display.Phosphor" "YES"
 ""
 
@@ -2718,6 +2800,7 @@
 "Cart.Manufacturer" "20th Century Fox Video Games - Videa, Lee Actor"
 "Cart.Name" "Lasercade (1983) (20th Century Fox) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/lasercade/lasercade.htm"
 ""
 
 "Cart.MD5" "200309c8fba0f248c13751ed4fc69bab"
@@ -2774,6 +2857,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Reactor - Amiga Mouse Hack v1.3 (PAL60) (Full-Speed) (TJ)"
 "Cart.Note" "Uses Amiga Mouse Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
 ""
 
 "Cart.MD5" "2091af29b4e7b86914d79d9aaa4cbd20"
@@ -2792,6 +2876,7 @@
 "Cart.ModelNo" "CX2640"
 "Cart.Name" "RealSports Baseball (1982) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/rsbaseball/rsbaseball.htm"
 ""
 
 "Cart.MD5" "20dca534b997bf607d658e77fbb3c0ee"
@@ -2852,7 +2937,7 @@
 "Cart.Manufacturer" "Atari, Larry Kaplan"
 "Cart.ModelNo" "CX2664, CX2664P"
 "Cart.Name" "Brain Games (1978) (Atari) (PAL) (4K)"
-"Cart.Note" "Uses Keypad Controllers"
+"Cart.Note" "Uses Keyboard Controllers"
 "Controller.Left" "KEYBOARD"
 "Controller.Right" "KEYBOARD"
 ""
@@ -2866,6 +2951,7 @@
 "Cart.Name" "Centipede - Atari Trak-Ball Hack v1.4 (NTSC) (Full-Speed) (TJ)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
 ""
 
 "Cart.MD5" "218b76f5a4142dc2ea9051a768583d70"
@@ -2921,6 +3007,7 @@
 "Cart.MD5" "225522777dc7155627808bde0c1d0ef0"
 "Cart.Name" "This Planet Sucks Demo 1 (Greg Troutman) (PD)"
 "Cart.Rarity" "New Release"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=102"
 ""
 
 "Cart.MD5" "22675cacd9b71dea21800cbf8597f000"
@@ -2941,11 +3028,13 @@
 "Cart.Name" "Squoosh (1983) (Apollo) (Prototype) [a]"
 "Cart.Note" "AKA Vat's Incredible!, The Grape Escape"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/squoosh/squoosh.htm"
 ""
 
 "Cart.MD5" "22b22c4ce240303012e8a9596ae8d189"
 "Cart.Name" "Skeleton+ (03-05-2003) (Eric Ball) (PAL)"
 "Cart.Sound" "STEREO"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=226"
 ""
 
 "Cart.MD5" "22f6b40fc82110d68e50a1208ae0bb97"
@@ -2974,6 +3063,7 @@
 "Cart.Name" "Scramble (PAL60)"
 "Cart.Note" "Compatible with Genesis controller"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1093"
 "Controller.Left" "JOYSTICK"
 "Display.Phosphor" "YES"
 ""
@@ -2990,6 +3080,7 @@
 "Cart.Name" "Missile Command (Atari Mouse) (2002) (TJ)"
 "Cart.Note" "Uses Atari ST Mouse Controller"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1183"
 "Controller.Left" "ATARIMOUSE"
 "Controller.Right" "ATARIMOUSE"
 "Display.Phosphor" "YES"
@@ -3025,6 +3116,14 @@
 "Cart.Highscore" "{\"notes\":\"High score is from current player\",\"score_addresses\":[\"0xb8\",\"0xb9\",\"0xba\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
+"Cart.MD5" "2418fa5ecfb685f7bb70bc4527e9d966"
+"Cart.Manufacturer" "AtariAge, Chris Walton & Thomas Jentzsch"
+"Cart.Name" "Star Castle Arcade (2014) (Chris Walton, Thomas Jentzsch)"
+"Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1046"
+"Display.Phosphor" "YES"
+""
+
 "Cart.MD5" "2432f33fd278dea5fe6ae94073627fcc"
 "Cart.Manufacturer" "CBS Electronics, Tom DiDomenico"
 "Cart.ModelNo" "4L2477, 4L2482, 4L2485, 4L4171"
@@ -3037,6 +3136,7 @@
 "Cart.Name" "Arkyology (1983) (Sparrow) (Prototype)"
 "Cart.Note" "ROM must be started in bank 0"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/arkyology/arkyology.htm"
 "Cart.StartBank" "0"
 ""
 
@@ -3095,6 +3195,7 @@
 "Cart.Manufacturer" "CBS Electronics, Richard K. Balaska Jr., Bob Curtiss, Alex Leavens, Alex Nevelson"
 "Cart.Name" "Kick-Man (01-08-82) (CBS Electronics) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/kickman/kickman.htm"
 ""
 
 "Cart.MD5" "2496d404bfc561a40a80bea6a69695c3"
@@ -3227,6 +3328,7 @@
 "Cart.ModelNo" "CX26113"
 "Cart.Name" "Miss Piggy's Wedding (1983) (Atari) (Prototype) (4K) [a]"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/misspiggy/misspiggy.htm"
 ""
 
 "Cart.MD5" "25f2e760cd7f56b88aac88d63757d41b"
@@ -3291,6 +3393,7 @@
 "Cart.Name" "Oystron (V2.7) (Piero Cavina) (PD)"
 "Cart.Rarity" "New Release"
 "Cart.Highscore" "{\"score_addresses\":[\"0xd4\",\"0xd3\"],\"score_digits\":5,\"score_trailing_zeroes\":1,\"variations_address\":\"0xe5\",\"variations_count\":3,\"variations_zero_based\":true}"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=134"
 ""
 
 "Cart.MD5" "270229c6d5578446e6a588492e4e5910"
@@ -3304,6 +3407,7 @@
 "Cart.Manufacturer" "Omegamatrix"
 "Cart.Name" "SpaceMaster X-7 (Amiga Mouse) (PAL60) (Omegamatrix)"
 "Cart.Note" "Uses Amiga Mouse Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1187"
 ""
 
 "Cart.MD5" "271bfd5dc2673d382019f1fb6cab9332"
@@ -3345,6 +3449,7 @@
 "Cart.Name" "RealSports Football (1982) (Atari) (Prototype)"
 "Cart.Note" "AKA Football II"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/rsfootball/rsfootball.htm"
 "Display.Phosphor" "YES"
 ""
 
@@ -3371,6 +3476,7 @@
 "Cart.Name" "SWOOPS! (v0.96) (TJ)"
 "Cart.Note" "Uses the Joystick (L) and Paddle (R) Controllers"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=329"
 "Controller.MouseAxis" "28"
 "Cart.Highscore" "{\"score_addresses\":[\"0xfd\",\"0xfe\",\"0xff\"],\"score_digits\":6,\"variations_address\":\"0xfc\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
@@ -3387,6 +3493,7 @@
 "Cart.Manufacturer" "Omegamatrix"
 "Cart.Name" "Star Wars Arcade (Atari Trak-Ball) v4 (Omegamatrix)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1189"
 ""
 
 "Cart.MD5" "27c4c2af4b46394bb98638af8e0f6e9d"
@@ -3394,6 +3501,7 @@
 "Cart.ModelNo" "CX26109"
 "Cart.Name" "Sorcerer's Apprentice (1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/sorcerersapp/sorcerersapp.htm"
 ""
 
 "Cart.MD5" "27c6a2ca16ad7d814626ceea62fa8fb4"
@@ -3465,6 +3573,7 @@
 "Cart.ModelNo" "CX2695"
 "Cart.Name" "Xevious (05-25-1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/xevious/xevious.htm"
 "Display.Phosphor" "YES"
 ""
 
@@ -3513,6 +3622,7 @@
 "Cart.ModelNo" "CX26163P"
 "Cart.Name" "32 in 1 Game Cartridge (1988) (Atari) (Prototype) (PAL)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/32in1/32in1.htm"
 "Cart.Type" "32IN1"
 ""
 
@@ -3526,6 +3636,7 @@
 "Cart.Manufacturer" "Atari"
 "Cart.Name" "32 in 1 Console ROM (02-10-1989) (Atari) (Prototype) (PAL)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/32in1/32in1.htm"
 "Cart.Type" "32IN1"
 ""
 
@@ -3725,6 +3836,7 @@
 "Cart.ModelNo" "AX-018, AX-018-04"
 "Cart.Name" "Pitfall! (1982) (Activision) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/pitfall/pitfall.htm"
 ""
 
 "Cart.MD5" "2b71a59a53be5883399917bf582b7772"
@@ -3784,13 +3896,15 @@
 "Cart.ModelNo" "CX26192"
 "Cart.Name" "Klax (08-18-1990) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/klax/klax.htm"
 ""
 
 "Cart.MD5" "2c2aea31b01c6126c1a43e10cacbfd58"
 "Cart.Manufacturer" "Paul Slocum"
 "Cart.Name" "Synthcart (2002) (Paul Slocum)"
-"Cart.Note" "Uses Keypad Controllers"
+"Cart.Note" "Uses Keyboard Controllers"
 "Display.Phosphor" "YES"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=101"
 ""
 
 "Cart.MD5" "2c3b2843295c9d6b16996971180a3fe9"
@@ -3840,7 +3954,7 @@
 "Cart.Manufacturer" "Atari, Christopher H. Omarzu - Children's Computer Workshop"
 "Cart.ModelNo" "CX26104"
 "Cart.Name" "Big Bird's Egg Catch (1983) (Atari) (PAL) [a]"
-"Cart.Note" "Uses Kids/Keypad Controllers"
+"Cart.Note" "Uses Kids/Keyboard Controllers"
 "Controller.Left" "KEYBOARD"
 "Controller.Right" "KEYBOARD"
 ""
@@ -3849,6 +3963,7 @@
 "Cart.Manufacturer" "Video Soft"
 "Cart.Name" "Atom Smasher (1984) (Video Soft) (Prototype) [stack pointer fix]"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/atomsmasher/atomsmasher.htm"
 ""
 
 "Cart.MD5" "2cccc079c15e9af94246f867ffc7e9bf"
@@ -3879,6 +3994,7 @@
 "Cart.Manufacturer" "Wizard Video Games, Bob Davis, Robert H. O'Neil"
 "Cart.Name" "Texas Chainsaw Massacre, The (1982) (Wizard Video Games) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/texaschainsaw/texaschainsaw.htm"
 ""
 
 "Cart.MD5" "2d16a8b59a225ea551667be45f554652"
@@ -3903,12 +4019,14 @@
 "Cart.ModelNo" "RC2"
 "Cart.Name" "Flappy (2014) (AtariAge)"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1038"
 ""
 
 "Cart.MD5" "2d38a96f92952b301eefdf25a5e6976b"
 "Cart.Manufacturer" "Omegamatrix"
 "Cart.Name" "Star Wars Arcade (Atari Mouse) (Y_Inverted) v4 (Omegamatrix)"
 "Cart.Note" "Uses Atari Mouse Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1189"
 ""
 
 "Cart.MD5" "2d405da70af82b20a6b3ecc3d1d2c4ec"
@@ -3922,6 +4040,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Reactor - Atari Mouse Hack v1.3 (NTSC) (Half-Speed) (TJ)"
 "Cart.Note" "Uses Atari Mouse Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
 ""
 
 "Cart.MD5" "2d63b452f897818c52b3fceeb080a4d0"
@@ -3934,6 +4053,7 @@
 "Cart.ModelNo" "80110"
 "Cart.Name" "Targ (1983) (CBS Electronics) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/targ/targ.htm"
 ""
 
 "Cart.MD5" "2d69a5f23784f1c2230143292a073b53"
@@ -4010,6 +4130,7 @@
 "Cart.ModelNo" "PB5065"
 "Cart.Name" "Star Wars - Ewok Adventure (1983) (Parker Bros) (Prototype) (16K)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/ewok/ewok.htm"
 ""
 
 "Cart.MD5" "2e3728f3086dc3e71047ffd6b2d9f015"
@@ -4022,6 +4143,7 @@
 "Cart.Manufacturer" "Atari"
 "Cart.Name" "Rabbit Transit (08-29-1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/rabbittransit/rabbittransit.htm"
 ""
 
 "Cart.MD5" "2e663eaa0d6b723b645e643750b942fd"
@@ -4052,6 +4174,7 @@
 "Cart.Manufacturer" "Arcadia Corporation, Stephen H. Landrum"
 "Cart.ModelNo" "AR-4400"
 "Cart.Name" "Excalibur Version 39 (Dragonstomper Beta) (1982) (Arcadia) (Prototype)"
+"Cart.Url" "http://www.atariprotos.com/2600/software/dragonstomper/dragonstomper.htm"
 ""
 
 "Cart.MD5" "2ec6b045cfd7bc52d9cdfd1b1447d1e5"
@@ -4077,6 +4200,7 @@
 "Cart.Manufacturer" "SEGA, Jeff Lorenz"
 "Cart.Name" "Ixion (1984) (SEGA) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/ixion/ixion.htm"
 ""
 
 "Cart.MD5" "2f0a8bb4e18839f9b1dcaa2f5d02fd1d"
@@ -4091,12 +4215,14 @@
 "Cart.ModelNo" "CX2676"
 "Cart.Name" "Centipede (1982) (Atari) (Prototype) (PAL)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/centipede/centipede.htm"
 ""
 
 "Cart.MD5" "2f16663b01591539624d0ef52934a17d"
 "Cart.Manufacturer" "M Network"
 "Cart.Name" "Rocky and Bullwinkle"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/rocky/rocky.htm"
 ""
 
 "Cart.MD5" "2f2f9061398a74c80420b99ddecf6448"
@@ -4236,6 +4362,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Missile Control - Amiga Mouse Hack v1.15 (PAL) (TJ)"
 "Cart.Note" "Uses Amiga Mouse Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1184"
 ""
 
 "Cart.MD5" "313243fc41e49ef6bd3aa9ebc0d372dd"
@@ -4310,13 +4437,14 @@
 "Cart.Name" "Last Starfighter (1984) (Atari) (Prototype)"
 "Cart.Note" "Solaris Beta"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/tlsf/tlsf.htm"
 ""
 
 "Cart.MD5" "31f4692ee2ca07a7ce1f7a6a1dab4ac9"
 "Cart.Manufacturer" "Atari, Alan Miller"
 "Cart.ModelNo" "CX2642"
 "Cart.Name" "Game of Concentration (1980) (Atari) (4K)"
-"Cart.Note" "Uses Keypad Controllers"
+"Cart.Note" "Uses Keyboard Controllers"
 ""
 
 "Cart.MD5" "31fcbce1cfa6ec9f5b6de318e1f57647"
@@ -4325,6 +4453,7 @@
 "Cart.Name" "Dumbo's Flying Circus (1983) (Atari) (Prototype) (PAL)"
 "Cart.Note" "AKA Dumbo Flies Home"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/dumbo/dumbo.htm"
 ""
 
 "Cart.MD5" "32199271dc980eb31a2cc96e10a9e244"
@@ -4354,12 +4483,14 @@
 "Cart.ModelNo" "CX2663"
 "Cart.Name" "Road Runner (06-25-1984) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/roadrunner/roadrunner.htm"
 ""
 
 "Cart.MD5" "324cb4a749bcac4f3db9da842b85d2f7"
 "Cart.Manufacturer" "Dennis Debro"
 "Cart.Name" "Climber 5 (01-05-2003) (Dennis Debro)"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=261"
 ""
 
 "Cart.MD5" "327468d6c19697e65ab702f06502c7ed"
@@ -4398,6 +4529,7 @@
 "Cart.ModelNo" "CX26112"
 "Cart.Name" "Good Luck, Charlie Brown (04-18-1984) (Atari) (Prototype)"
 "Cart.Note" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/charliebrown/charliebrown.htm"
 ""
 
 "Cart.MD5" "32d1260ea682e1bb10850fa94c04ec5f"
@@ -4476,6 +4608,7 @@
 "Cart.ModelNo" "CM-010"
 "Cart.Name" "Rush Hour (1983) (Commavid) (Prototype) [a4]"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/rushhour/rushhour.htm"
 ""
 
 "Cart.MD5" "33cac5e767a534c95d292b04f439dc37"
@@ -4513,6 +4646,7 @@
 "Cart.ModelNo" "4L 2486 5000"
 "Cart.Name" "Blueprint (1983) (CBS Electronics) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/blueprint/blueprint.htm"
 ""
 
 "Cart.MD5" "345758747b893e4c9bdde8877de47788"
@@ -4554,6 +4688,7 @@
 "Cart.Name" "Squoosh (1983) (Apollo) (Prototype)"
 "Cart.Note" "AKA Vat's Incredible!, The Grape Escape"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/squoosh/squoosh.htm"
 ""
 
 "Cart.MD5" "34ca2fcbc8ba4a0b544acd94991cfb50"
@@ -4561,6 +4696,7 @@
 "Cart.Name" "Dukes of Hazzard (1980) (Atari) (Prototype) (4K)"
 "Cart.Note" "AKA Stunt Cycle"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/dukes/dukes.htm"
 ""
 
 "Cart.MD5" "34e37eaffc0d34e05e40ed883f848b40"
@@ -4588,6 +4724,7 @@
 "Cart.ModelNo" "CX26119"
 "Cart.Name" "Saboteur (06-09-1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/saboteur/saboteur.htm"
 ""
 
 "Cart.MD5" "35156407e54f67eb1f625450d5c093e1"
@@ -4607,6 +4744,7 @@
 "Cart.ModelNo" "M8774, M8794"
 "Cart.Name" "Wizard of Wor (1982) (CBS Electronics) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/wizardwor/wizardwor.htm"
 ""
 
 "Cart.MD5" "3556e125681aea864e17b09f3f3b2a75"
@@ -4640,12 +4778,14 @@
 "Cart.Manufacturer" "Parker Brothers, Dave Engman, Isabel Garret"
 "Cart.Name" "McDonald's (06-06-1983) (Parker Bros) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/mcdonalds/mcdonalds.htm"
 ""
 
 "Cart.MD5" "35be55426c1fec32dfb503b4f0651572"
 "Cart.Manufacturer" "Men-A-Vision"
-"Cart.Name" "Air Raid (Men-A-Vision) (PAL)"
+"Cart.Name" "Air Raid (Men-A-Vision) (NTSC)"
 "Cart.Rarity" "Extremely Rare"
+"Display.Format" "NTSC50"
 "Display.Phosphor" "YES"
 ""
 
@@ -4660,6 +4800,7 @@
 "Cart.ModelNo" "CX2699"
 "Cart.Name" "Taz (06-15-1983) (Atari) (Prototype) (PAL)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/taz/taz.htm"
 ""
 
 "Cart.MD5" "360c0dcb11506e73bd0b77207c81bc62"
@@ -4890,6 +5031,7 @@
 "Cart.Name" "Dumbo's Flying Circus (05-05-1983) (Atari) (Prototype)"
 "Cart.Note" "AKA Dumbo Flies Home"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/dumbo/dumbo.htm"
 ""
 
 "Cart.MD5" "38bd172da8b2a3a176e517c213fcd5a6"
@@ -4930,6 +5072,7 @@
 "Cart.ModelNo" "CX2686"
 "Cart.Name" "Quadrun (1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/quadrun/quadrun.htm"
 ""
 
 "Cart.MD5" "392f00fd1a074a3c15bc96b0a57d52a1"
@@ -5051,6 +5194,7 @@
 "Cart.Name" "Centipede - Atari Mouse Hack v1.4 (NTSC) (Full-Speed) (TJ)"
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
 ""
 
 "Cart.MD5" "3a526e6a1f9fe918af0f2ce997dfea73"
@@ -5099,6 +5243,7 @@
 "Cart.Manufacturer" "Arcadia Corporation, Stephen H. Landrum"
 "Cart.ModelNo" "AR-4400"
 "Cart.Name" "Excalibur Version 36 (Dragonstomper Beta) (1982) (Arcadia) (Prototype)"
+"Cart.Url" "http://www.atariprotos.com/2600/software/dragonstomper/dragonstomper.htm"
 ""
 
 "Cart.MD5" "3b040ed7d1ef8acb4efdeebebdaa2052"
@@ -5164,6 +5309,7 @@
 "Cart.Manufacturer" "Atari, Chris Crawford"
 "Cart.Name" "Wizard (1980) (Atari) (Prototype) (4K)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/wizard/wizard.htm"
 ""
 
 "Cart.MD5" "3b8aacf5f5638492b926b5124de19f18"
@@ -5195,6 +5341,7 @@
 
 "Cart.MD5" "3c21a89bc38d8cd0b010a2916bcff5c2"
 "Cart.Name" "Colony 7 - CX-22 Hack v0.4 (NTSC)"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1182"
 "Display.Phosphor" "YES"
 "Display.PPBlend" "50"
 ""
@@ -5233,6 +5380,7 @@
 "Cart.Name" "Racer (1982) (Atari) (Prototype)"
 "Cart.Note" "ROM must be started in bank 0"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/racer/racer.htm"
 "Cart.StartBank" "0"
 ""
 
@@ -5267,6 +5415,7 @@
 "Cart.Name" "Haunted House (09-28-81) (Atari) (Prototype)"
 "Cart.Note" "AKA Mystery Mansion, Graves' Manor, Nightmare Manor"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/hauntedhouse/hauntedhouse.htm"
 ""
 
 "Cart.MD5" "3caa902ac0ce4509308990645876426a"
@@ -5335,6 +5484,7 @@
 "Cart.Name" "Telepathy (1983) (Atari) (Prototype)"
 "Cart.Note" "Uses both left joystick and right Mindlink controllers (press Fire on respective controller to begin)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/telepathy/telepathy.htm"
 "Controller.Right" "MINDLINK"
 "Controller.MouseAxis" "78"
 ""
@@ -5428,6 +5578,7 @@
 "Cart.ModelNo" "CX26122"
 "Cart.Name" "Sinistar (01-23-1984) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/sinistar/sinistar.htm"
 ""
 
 "Cart.MD5" "3e899eba0ca8cd2972da1ae5479b4f0d"
@@ -5567,6 +5718,7 @@
 "Cart.Manufacturer" "Aaron Curtis"
 "Cart.Name" "AStar (PAL)"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=821"
 ""
 
 "Cart.MD5" "3fd53bfeee39064c945a769f17815a7f"
@@ -5638,6 +5790,7 @@
 "Cart.Manufacturer" "Atari, Peter C. Niday"
 "Cart.Name" "Rubik's Cube 3-D (1982) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/3drubikscube/3drubikscube.htm"
 ""
 
 "Cart.MD5" "40b59249e05135bca33861e383735e9e"
@@ -5668,6 +5821,7 @@
 "Cart.Name" "Seawolf 3 (03-23-1981) (Sears) (Prototype) (PAL)"
 "Cart.Note" "Submarine Commander Beta"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/subcommander/subcommander.htm"
 ""
 
 "Cart.MD5" "413c925c5fdcea62842a63a4c671a5f2"
@@ -5690,6 +5844,7 @@
 "Cart.ModelNo" "CX26113"
 "Cart.Name" "Miss Piggy's Wedding (06-24-1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/misspiggy/misspiggy.htm"
 ""
 
 "Cart.MD5" "41810dd94bd0de1110bedc5092bef5b0"
@@ -5723,6 +5878,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Reactor - Amiga Mouse Hack v1.3 (PAL) (Half-Speed) (TJ)"
 "Cart.Note" "Uses Amiga Mouse Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
 ""
 
 "Cart.MD5" "41c4e3d45a06df9d21b7aae6ae7e9912"
@@ -5803,6 +5959,7 @@
 "Cart.ModelNo" "CX26127"
 "Cart.Name" "Gremlins (03-12-1984) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/gremlins/gremlins.htm"
 ""
 
 "Cart.MD5" "42cdd6a9e42a3639e190722b8ea3fc51"
@@ -5860,6 +6017,8 @@
 "Cart.MD5" "43f8459d39fb4eddf9186d62722ff795"
 "Cart.Name" "Skeleton+ (17-04-2003) (Eric Ball) (PAL)"
 "Cart.Sound" "STEREO"
+"Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=226"
 ""
 
 "Cart.MD5" "442602713cb45b9321ee93c6ea28a5d0"
@@ -5873,6 +6032,7 @@
 "Cart.Name" "Star Wars - Jedi Arena (1983) (Parker Bros) (Prototype)"
 "Cart.Note" "Uses the Paddle Controllers (swapped)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/jediarena/jediarena.htm"
 "Controller.SwapPaddles" "YES"
 "Controller.MouseAxis" "10 50"
 ""
@@ -5953,6 +6113,7 @@
 "Cart.ModelNo" "CX26201"
 "Cart.Name" "Zippy the Porcupine (2014) (Sprybug)"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1052"
 ""
 
 "Cart.MD5" "457e7d4fcd56ebc47f5925dbea3ee427"
@@ -6005,6 +6166,7 @@
 "Cart.Name" "Cabbage Patch Kids (07-03-1984) (Coleco) (Prototype)"
 "Cart.Note" "Adventures in the Park"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/cpk/cpk.htm"
 ""
 
 "Cart.MD5" "461029ab23800833e9645be3e472d470"
@@ -6039,6 +6201,7 @@
 "Cart.Name" "Oystron (V2.6) (Piero Cavina) (PD)"
 "Cart.Rarity" "New Release"
 "Cart.Highscore" "{\"score_addresses\":[\"0xd4\",\"0xd3\"],\"score_digits\":5,\"score_trailing_zeroes\":1,\"variations_address\":\"0xe5\",\"variations_count\":3,\"variations_zero_based\":true}"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=134"
 ""
 
 "Cart.MD5" "468f2dec984f3d4114ea84f05edf82b6"
@@ -6056,6 +6219,7 @@
 "Cart.Manufacturer" "Atari, Bruce Poehlman, Gary Stark"
 "Cart.Name" "Dune (07-10-1984) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/dune/dune.htm"
 "Display.Phosphor" "YES"
 ""
 
@@ -6073,6 +6237,7 @@
 "Cart.Manufacturer" "Omegamatrix"
 "Cart.Name" "SpaceMaster X-7 (Atari Mouse) (Omegamatrix)"
 "Cart.Note" "Uses Atari Mouse Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1187"
 ""
 
 "Cart.MD5" "46e9428848c9ea71a4d8f91ff81ac9cc"
@@ -6101,6 +6266,7 @@
 "Cart.Name" "Millipede (Atari Mouse) v6.5 (Omegamatrix)"
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_count\":1}"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1188"
 ""
 
 "Cart.MD5" "47464694e9cce07fdbfd096605bf39d4"
@@ -6113,6 +6279,7 @@
 "Cart.Manufacturer" "Omegamatrix"
 "Cart.Name" "Star Wars Arcade (Atari Trak-Ball) v4 (PAL60) (Omegamatrix)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1189"
 ""
 
 "Cart.MD5" "4767356fa0ed3ebe21437b4473d4ee28"
@@ -6120,6 +6287,7 @@
 "Cart.ModelNo" "CX2685"
 "Cart.Name" "Gravitar (04-12-1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/gravitar/gravitar.htm"
 ""
 
 "Cart.MD5" "47711c44723da5d67047990157dcb5dd"
@@ -6131,7 +6299,7 @@
 "Cart.Manufacturer" "Atari - CCW, Christopher H. Omarzu, Preston Stuart, Bruce Williams"
 "Cart.ModelNo" "CX26101"
 "Cart.Name" "Oscar's Trash Race (1984) (Atari) (PAL)"
-"Cart.Note" "Uses the Keypad Controllers"
+"Cart.Note" "Uses the Keyboard Controllers"
 "Controller.Left" "KEYBOARD"
 "Controller.Right" "KEYBOARD"
 ""
@@ -6222,6 +6390,7 @@
 "Cart.Name" "Haunted House (08-12-81) (Atari) (Prototype)"
 "Cart.Note" "AKA Mystery Mansion, Graves' Manor, Nightmare Manor"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/hauntedhouse/hauntedhouse.htm"
 ""
 
 "Cart.MD5" "4868a81e1b6031ed66ecd60547e6ec85"
@@ -6234,6 +6403,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Challenge of... Nexar, The - Atari Trak-Ball Hack v1.1 (NTSC) (TJ)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1181"
 ""
 
 "Cart.MD5" "4884b1297500bd1243659e43c7e7579e"
@@ -6241,6 +6411,7 @@
 "Cart.ModelNo" "CX26178"
 "Cart.Name" "Save Mary! (10-24-1991) (Atari) (Prototype) (PAL)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/savemary/savemary.htm"
 ""
 
 "Cart.MD5" "4892b85c248131d6a42c66a4163a40d0"
@@ -6271,6 +6442,7 @@
 "Cart.ModelNo" "GN-070"
 "Cart.Name" "Mysterious Thief, A (1983) (ZiMAG) (Prototype) [a]"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/mysteriousthief/mysteriousthief.htm"
 "Display.Phosphor" "YES"
 ""
 
@@ -6343,6 +6515,7 @@
 "Cart.Manufacturer" "Omegamatrix"
 "Cart.Name" "SpaceMaster X-7 (Atari Trak-Ball) (Omegamatrix)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1187"
 ""
 
 "Cart.MD5" "497f3d2970c43e5224be99f75e97cbbb"
@@ -6396,6 +6569,7 @@
 "Cart.Name" "Power Play Arcade Video Game Album IV (1984) (Amiga) (Prototype)"
 "Cart.Note" "Atlantis, Cosmic Ark, Dragonfire"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/powerarcade/powerarcade.htm"
 ""
 
 "Cart.MD5" "4a6be79310f86f0bebc7dfcba4d74161"
@@ -6407,6 +6581,7 @@
 "Cart.Manufacturer" "Hozer Video Games"
 "Cart.Name" "Crazy Valet (Hozer Video Games)"
 "Cart.Rarity" "New Release"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=112"
 ""
 
 "Cart.MD5" "4a8c743396b8ad69d97e6fd3dd3e3132"
@@ -6444,8 +6619,9 @@
 "Cart.Manufacturer" "Atari - CCW, Stephan R. Keith, Laura Scholl, Preston Stuart"
 "Cart.ModelNo" "CX26106"
 "Cart.Name" "Grover's Music Maker (12-29-1982) (Atari) (Prototype)"
-"Cart.Note" "Uses Keypad Controller"
+"Cart.Note" "Uses Keyboard Controller"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/grover/grover.htm"
 ""
 
 "Cart.MD5" "4ae8c76cd6f24a2e181ae874d4d2aa3d"
@@ -6463,6 +6639,7 @@
 "Cart.Manufacturer" "Ed Fries"
 "Cart.Name" "Halo 2600 (2010) (Ed Fries)"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=998"
 ""
 
 "Cart.MD5" "4afe528a082f0d008e7319ebd481248d"
@@ -6491,6 +6668,7 @@
 "Cart.Manufacturer" "Omegamatrix"
 "Cart.Name" "SpaceMaster X-7 (Atari Mouse) (PAL60) (Omegamatrix)"
 "Cart.Note" "Uses Atari Mouse Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1187"
 ""
 
 "Cart.MD5" "4b71197153d651480830638cb6a03249"
@@ -6509,8 +6687,9 @@
 "Cart.Manufacturer" "Atari - CCW, Christopher H. Omarzu, Preston Stuart, Bruce Williams"
 "Cart.ModelNo" "CX26101"
 "Cart.Name" "Oscar's Trash Race (12-03-1982) (Atari) (Prototype)"
-"Cart.Note" "Uses the Keypad Controllers"
+"Cart.Note" "Uses the Keyboard Controllers"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/oscar/oscar.htm"
 "Controller.Left" "KEYBOARD"
 "Controller.Right" "KEYBOARD"
 ""
@@ -6530,6 +6709,7 @@
 "Cart.ModelNo" "CX2690"
 "Cart.Name" "Pengo (1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/pengo/pengo.htm"
 ""
 
 "Cart.MD5" "4bdae9246d6ee258c26665512c1c8de3"
@@ -6544,6 +6724,7 @@
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Display.Format" "PAL60"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_count\":1}"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1188"
 ""
 
 "Cart.MD5" "4c030667d07d1438f0e5c458a90978d8"
@@ -6606,6 +6787,7 @@
 "Cart.ModelNo" "720106-1A, IA3409"
 "Cart.Name" "Sky Patrol (1982) (Imagic) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/skypatrol/skypatrol.htm"
 ""
 
 "Cart.MD5" "4ca0959f846d2beada18ecf29efe137e"
@@ -6671,6 +6853,7 @@
 "Cart.ModelNo" "CX26178"
 "Cart.Name" "Save Mary! (11-21-1989) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/savemary/savemary.htm"
 ""
 
 "Cart.MD5" "4d5f6db55f7f44fd0253258e810bde21"
@@ -6742,6 +6925,7 @@
 "Cart.ModelNo" "CX26119"
 "Cart.Name" "Saboteur (06-15-1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/saboteur/saboteur.htm"
 ""
 
 "Cart.MD5" "4e02880beeb8dbd4da724a3f33f0971f"
@@ -6877,6 +7061,7 @@
 
 "Cart.MD5" "4fae08027365d31c558e400b687adf21"
 "Cart.Name" "Qb (V2.17) (NTSC) (2001) (Retroactive)"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=926"
 "Display.Phosphor" "YES"
 "Cart.Highscore" "{\"score_addresses\":[\"0xe6\",\"0xe5\",\"0xe4\"],\"score_digits\":6,\"variations_count\":1}"
 ""
@@ -6923,6 +7108,7 @@
 "Cart.Name" "SWOOPS! (v0.94) (TJ)"
 "Cart.Note" "Uses the Joystick (L) and Paddle (R) Controllers"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=329"
 "Controller.MouseAxis" "28"
 "Cart.Highscore" "{\"score_addresses\":[\"0xfd\",\"0xfe\",\"0xff\"],\"score_digits\":6,\"variations_address\":\"0xfc\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
@@ -6930,6 +7116,7 @@
 "Cart.MD5" "50568c80ac61cab789d9923c9b05b68e"
 "Cart.Manufacturer" "Ebivision"
 "Cart.Name" "Merlin's Walls - Standard Edition (1999) (Ebivision)"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=302"
 "Cart.Note" "Image rotated 90 degrees CW"
 ""
 
@@ -7020,6 +7207,7 @@
 "Cart.Manufacturer" "Amiga - Video Soft"
 "Cart.Name" "Depth Charge (1983) (Amiga) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/depthcharge/depthcharge.htm"
 ""
 
 "Cart.MD5" "51c1ddc9d6d597f71fb7efb56012abec"
@@ -7063,6 +7251,7 @@
 "Cart.Name" "Millipede (Amiga Mouse) v6.5 (Omegamatrix)"
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_count\":1}"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1188"
 ""
 
 "Cart.MD5" "522c9cf684ecd72db2f85053e6f6f720"
@@ -7098,6 +7287,7 @@
 "Cart.ModelNo" "CX2692"
 "Cart.Name" "Moon Patrol (07-26-1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/moonpatrol/moonpatrol.htm"
 ""
 
 "Cart.MD5" "525ea747d746f3e80e3027720e1fa7ac"
@@ -7167,6 +7357,7 @@
 "Cart.Manufacturer" "Omegamatrix"
 "Cart.Name" "Star Wars Arcade (Atari Trak-Ball) (Y Inverted) v4 (Omegamatrix)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1189"
 ""
 
 "Cart.MD5" "5336f86f6b982cc925532f2e80aa1e17"
@@ -7194,6 +7385,7 @@
 "Cart.Name" "Oystron (V2.85) (Piero Cavina) (PD)"
 "Cart.Rarity" "New Release"
 "Cart.Highscore" "{\"score_addresses\":[\"0xd4\",\"0xd3\"],\"score_digits\":5,\"score_trailing_zeroes\":1,\"variations_address\":\"0xe5\",\"variations_count\":3,\"variations_zero_based\":true}"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=134"
 ""
 
 "Cart.MD5" "536bf56baa70acb17113884ac41f2820"
@@ -7226,6 +7418,7 @@
 "Cart.ModelNo" "v1.3"
 "Cart.Name" "Amoeba Jump (2018) (Dionoid)"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1211"
 ""
 
 "Cart.MD5" "53b66f11f67c3b53b2995e0e02017bd7"
@@ -7240,6 +7433,7 @@
 "Cart.ModelNo" "CX2665"
 "Cart.Name" "Frog Pond (1982) (Atari) (Prototype) (4K)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/frogpond/frogpond.htm"
 ""
 
 "Cart.MD5" "53d181cde2e0219b5754caad246fcb66"
@@ -7251,6 +7445,7 @@
 "Cart.Name" "Centipede - Atari Trak-Ball Hack v1.4 (PAL) (Half-Speed) (TJ)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
 ""
 
 "Cart.MD5" "53f147b9746fdc997c62f3dd67888ee5"
@@ -7276,6 +7471,7 @@
 "Cart.Name" "Stay Frosty 2"
 "Cart.Note" "AtariAge Holiday Greetings 2014"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1044"
 "Controller.Left" "JOYSTICK"
 "Display.Phosphor" "YES"
 "Cart.Highscore" "{\"score_addresses\":[\"0x1cf7\",\"0x1cf6\",\"0x1cf5\",\"0x1cf4\"],\"score_digits\":8,\"special_address\":\"0x18ac\",\"special_bcd\":false,\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_count\":1}"
@@ -7295,6 +7491,7 @@
 "Cart.ModelNo" "GN-080"
 "Cart.Name" "Spinning Fireball (1983) (ZiMAG) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/firespinner/firespinner.htm"
 ""
 
 "Cart.MD5" "5438e84b90e50a5362f01cc843b358d4"
@@ -7383,6 +7580,7 @@
 "Cart.ModelNo" "CX2691"
 "Cart.Name" "Joust (07-05-1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/joust/joust.htm"
 "Display.Phosphor" "YES"
 ""
 
@@ -7391,6 +7589,7 @@
 "Cart.Name" "Firefox (06-01-83) (Atari) (Prototype)"
 "Cart.Note" "AKA Combat II, Fighter Command"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/fightercommand/fightercommand.htm"
 ""
 
 "Cart.MD5" "557e893616648c37a27aab5a47acbf10"
@@ -7399,6 +7598,7 @@
 "Cart.Name" "Shooting Arcade (01-16-1990) (Atari) (Prototype) (PAL)"
 "Cart.Note" "Uses the Light Gun Controller (left only)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/shootingarcade/shootingarcade.htm"
 ""
 
 "Cart.MD5" "559317712f989f097ea464517f1a8318"
@@ -7435,6 +7635,7 @@
 "Cart.Name" "Pursuit of the Pink Panther (Probe) (Prototype) [bad dump]"
 "Cart.Note" "AKA Adventures of the Pink Panther"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/pinkpanther/pinkpanther.htm"
 ""
 
 "Cart.MD5" "56300ed31fef018bd96768ccc982f7b4"
@@ -7471,6 +7672,7 @@
 "Cart.Manufacturer" "Omegamatrix"
 "Cart.Name" "Star Wars Arcade (Amiga Mouse) v4 (PAL60) (Omegamatrix)"
 "Cart.Note" "Uses Amiga Mouse Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1189"
 ""
 
 "Cart.MD5" "571c6d9bc71cb97617422851f787f8fe"
@@ -7517,7 +7719,7 @@
 "Cart.Manufacturer" "Atari - CCW, Gary Stark"
 "Cart.ModelNo" "CX26102"
 "Cart.Name" "Cookie Monster Munch (1983) (Atari)"
-"Cart.Note" "Uses Kids/Keypad Controllers"
+"Cart.Note" "Uses Kids/Keyboard Controllers"
 "Controller.Right" "KEYBOARD"
 ""
 
@@ -7530,7 +7732,7 @@
 "Cart.Manufacturer" "Atari - Sears"
 "Cart.ModelNo" "CX2643 - 6-99815"
 "Cart.Name" "Codebreaker (1978) (Atari)"
-"Cart.Note" "Uses Keypad Controllers"
+"Cart.Note" "Uses Keyboard Controllers"
 ""
 
 "Cart.MD5" "58513bae774360b96866a07ca0e8fd8e"
@@ -7596,6 +7798,7 @@
 "Cart.ModelNo" "CX2684"
 "Cart.Name" "Galaxian (01-05-1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/galaxian/galaxian.htm"
 ""
 
 "Cart.MD5" "59135f13985b84c4f13cc9e55eec869a"
@@ -7612,6 +7815,7 @@
 "Cart.Name" "Bouncin' Baby Bunnies (1983) (Telesys) (Prototype)"
 "Cart.Note" "AKA Baby Boom Boom, Bouncing Baby Monkeys"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/bouncingbabybunnies/bouncingbabybunnies.htm"
 ""
 
 "Cart.MD5" "5961d259115e99c30b64fe7058256bcf"
@@ -7631,6 +7835,7 @@
 "Cart.ModelNo" "7-008"
 "Cart.Name" "Miner 2049er (1983) (Tigervision) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/miner/miner.htm"
 ""
 
 "Cart.MD5" "599cbf919d47a05af975ad447df29497"
@@ -7654,6 +7859,7 @@
 "Cart.Manufacturer" "Data Age"
 "Cart.Name" "Survival Run (1983) (Data Age) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/survivalrun/survivalrun.htm"
 ""
 
 "Cart.MD5" "59e96de9628e8373d1c685f5e57dcf10"
@@ -7677,6 +7883,7 @@
 "Cart.Name" "Super Cobra Arcade (PAL60)"
 "Cart.Note" "Compatible with Genesis controller"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1106"
 "Controller.Left" "JOYSTICK"
 "Display.Phosphor" "YES"
 ""
@@ -7706,6 +7913,7 @@
 "Cart.Name" "Centipede - Amiga Mouse Hack v1.4 (PAL) (Full-Speed) (TJ)"
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
 ""
 
 "Cart.MD5" "5a5390f91437af9951a5f8455b61cd43"
@@ -7826,6 +8034,7 @@
 "Cart.ModelNo" "CX2681"
 "Cart.Name" "Battlezone (05-12-1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/battlezone/battlezone.htm"
 ""
 
 "Cart.MD5" "5b92a93b23523ff16e2789b820e2a4c5"
@@ -7850,6 +8059,7 @@
 "Cart.ModelNo" "2654"
 "Cart.Name" "Looping (1983) (Coleco) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/looping/looping.htm"
 ""
 
 "Cart.MD5" "5bba254e18257e578c245ed96f6b003b"
@@ -7866,6 +8076,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Missile Control - Atari Trak-Ball Hack v1.15 (NTSC) (TJ)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1184"
 ""
 
 "Cart.MD5" "5bc9998b7e9a970e31d2cb60e8696cc4"
@@ -7894,7 +8105,7 @@
 "Cart.Manufacturer" "Atari, Alan Miller"
 "Cart.ModelNo" "CX2642"
 "Cart.Name" "Hunt & Score (1978) (Atari) (PAL)"
-"Cart.Note" "Uses Keypad Controllers"
+"Cart.Note" "Uses Keyboard Controllers"
 ""
 
 "Cart.MD5" "5c0227ad63300670a647fcebf595ea37"
@@ -7971,6 +8182,7 @@
 "Cart.Name" "Cabbage Patch Kids (09-07-1984) (Coleco) (Prototype)"
 "Cart.Note" "Adventures in the Park"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/cpk/cpk.htm"
 ""
 
 "Cart.MD5" "5d132d121aabc5235dd039dfc46aa024"
@@ -8000,6 +8212,7 @@
 "Cart.Name" "Shooting Arcade (03-07-1989) (Atari) (Prototype) [a1]"
 "Cart.Note" "Uses the Light Gun Controller (left only)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/shootingarcade/shootingarcade.htm"
 ""
 
 "Cart.MD5" "5d799bfa9e1e7b6224877162accada0d"
@@ -8013,6 +8226,7 @@
 "Cart.Name" "SWOOPS! (v0.96) (TJ) (PAL)"
 "Cart.Note" "Uses the Joystick (L) and Paddle (R) Controllers"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=329"
 "Controller.MouseAxis" "28"
 "Cart.Highscore" "{\"score_addresses\":[\"0xfd\",\"0xfe\",\"0xff\"],\"score_digits\":6,\"variations_address\":\"0xfc\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
@@ -8114,6 +8328,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch, Paul Slocum"
 "Cart.Name" "Thrust+ Platinum (v1.27)"
 "Cart.Rarity" "New Release, supports BoosterGrip"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=37"
 "Controller.Left" "BOOSTERGRIP"
 "Controller.Right" "DRIVING"
 ""
@@ -8128,6 +8343,7 @@
 "Cart.Name" "Sweat! - The Decathlon Game (2 of 3) (1983) (Arcadia) (Prototype)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/sweat/sweat.htm"
 ""
 
 "Cart.MD5" "5eeb81292992e057b290a5cd196f155d"
@@ -8205,6 +8421,7 @@
 "Cart.ModelNo" "CX2665"
 "Cart.Name" "Frog Pond (1982) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/frogpond/frogpond.htm"
 ""
 
 "Cart.MD5" "5f786b67e05fb9985b77d4beb35e06ee"
@@ -8231,6 +8448,7 @@
 "Cart.Manufacturer" "20th Century Fox Video Games - Micro Computer Technologies, Jim Collas"
 "Cart.Name" "Heart Like a Wheel (1983) (20th Century Fox) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/unknown3/unknown3.htm"
 "Display.Phosphor" "YES"
 ""
 
@@ -8249,6 +8467,7 @@
 
 "Cart.MD5" "5fb71cc60e293fe10a5023f11c734e55"
 "Cart.Name" "This Planet Sucks (Fix) (27-12-2002) (Greg Troutman)"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=102"
 ""
 
 "Cart.MD5" "600d48eef5c0ec27db554b7328b3251c"
@@ -8301,6 +8520,7 @@
 "Cart.Name" "Secret Agent (1983) (Data Age) (Prototype)"
 "Cart.Note" "Uses the Paddle Controllers"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/secretagent/secretagent.htm"
 "Controller.MouseAxis" "01 45"
 ""
 
@@ -8332,6 +8552,7 @@
 "Cart.Name" "3-D Havoc (1983) (Amiga) (Prototype)"
 "Cart.Rarity" "Prototype"
 "Display.Phosphor" "YES"
+"Cart.Url" "http://www.atariprotos.com/2600/software/3dhavok/3dhavok.htm"
 ""
 
 "Cart.MD5" "60d304582d33e2957b73eb300a7495bb"
@@ -8441,6 +8662,7 @@
 "Cart.Manufacturer" "Atari"
 "Cart.ModelNo" "50008"
 "Cart.Name" "Diagnostic Test Cartridge 2.0 (1980) (Atari) (Prototype)"
+"Cart.Url" "http://www.atariprotos.com/2600/software/diagnostic/diagnostic.htm"
 ""
 
 "Cart.MD5" "6272f348a9a7f2d500a4006aa93e0d08"
@@ -8479,6 +8701,7 @@
 "Cart.Name" "Pursuit of the Pink Panther (Probe) (Prototype)"
 "Cart.Note" "AKA Adventures of the Pink Panther"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/pinkpanther/pinkpanther.htm"
 ""
 
 "Cart.MD5" "62f74a2736841191135514422b20382d"
@@ -8503,6 +8726,7 @@
 "Cart.Manufacturer" "Greg Troutman"
 "Cart.Name" "Dark Mage (Greg Troutman) (PD) (8K)"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=196"
 "Display.Phosphor" "YES"
 ""
 
@@ -8536,6 +8760,7 @@
 "Cart.Name" "Cosmic Swarm (1982) (CommaVid) (Prototype)"
 "Cart.Note" "AKA Termite"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/cosmicswarm/cosmicswarm.htm"
 "Display.Phosphor" "YES"
 ""
 
@@ -8593,6 +8818,7 @@
 "Cart.Note" "Stereo sound"
 "Cart.Rarity" "Homebrew"
 "Cart.Sound" "STEREO"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=226"
 ""
 
 "Cart.MD5" "63d6247f35902ba32aa49e7660b0ecaa"
@@ -8681,6 +8907,7 @@
 "Cart.ModelNo" "CX26119"
 "Cart.Name" "Saboteur (05-20-1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/saboteur/saboteur.htm"
 ""
 
 "Cart.MD5" "650df778c6ce22d3fd1a7c33c565bcc3"
@@ -8819,6 +9046,7 @@
 "Cart.Manufacturer" "Atari - Roklan, Joe Gaucher"
 "Cart.Name" "Racer (1982) (Atari) (Prototype) [a]"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/racer/racer.htm"
 ""
 
 "Cart.MD5" "6651e2791d38edc02c5a5fd7b47a1627"
@@ -8827,6 +9055,7 @@
 "Cart.Name" "Star Wars - The Arcade Game (04-05-1984) (Parker Bros) (Prototype)"
 "Cart.Rarity" "Prototype"
 "Display.Phosphor" "YES"
+"Cart.Url" "http://www.atariprotos.com/2600/software/starwarsarcade/starwarsarcade.htm"
 ""
 
 "Cart.MD5" "665b8f8ead0eef220ed53886fbd61ec9"
@@ -8854,6 +9083,7 @@
 "Cart.ModelNo" "PB5370"
 "Cart.Name" "Popeye (1983) (Parker Bros) (Prototype) (4K)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/popeye/popeye.htm"
 ""
 
 "Cart.MD5" "668dc528b7ea9345140f4fcfbecf7066"
@@ -8876,8 +9106,9 @@
 "Cart.Manufacturer" "Atari - CCW, Stephan R. Keith, Laura Scholl, Preston Stuart"
 "Cart.ModelNo" "CX26106"
 "Cart.Name" "Grover's Music Maker (01-18-1983) (Atari) (Prototype)"
-"Cart.Note" "Uses Keypad Controller"
+"Cart.Note" "Uses Keyboard Controller"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/grover/grover.htm"
 ""
 
 "Cart.MD5" "66b92ede655b73b402ecd1f4d8cd9c50"
@@ -8918,6 +9149,7 @@
 "Cart.Name" "Cabbage Patch Kids (09-13-1984) (Coleco) (Prototype)"
 "Cart.Note" "Adventures in the Park"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/cpk/cpk.htm"
 ""
 
 "Cart.MD5" "6706a00f9635508cfeda20639156e66e"
@@ -8925,6 +9157,7 @@
 "Cart.ModelNo" "CX2667"
 "Cart.Name" "RealSports Soccer (1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/rssoccer/rssoccer.htm"
 ""
 
 "Cart.MD5" "672012d40336b403edea4a98ce70c76d"
@@ -9007,6 +9240,7 @@
 "Cart.Manufacturer" "Omegamatrix"
 "Cart.Name" "SpaceMaster X-7 (Atari Trak-Ball) (PAL60) (Omegamatrix)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1187"
 ""
 
 "Cart.MD5" "6803fa7c2c094b428b859a58dc1dd06a"
@@ -9031,6 +9265,7 @@
 "Cart.Name" "Centipede - Atari Mouse Hack v1.4 (PAL60) (Full-Speed) (TJ)"
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
 ""
 
 "Cart.MD5" "683bb0d0f0c5df58557fba9dffc32c40"
@@ -9101,6 +9336,7 @@
 "Cart.Manufacturer" "Oscar Toledo G., Thomas Jentzsch, Nathan Strum"
 "Cart.Name" "Aardvark (2019) (PAL60)"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1212"
 "Display.Phosphor" "YES"
 ""
 
@@ -9120,6 +9356,7 @@
 "Cart.Manufacturer" "Omegamatrix"
 "Cart.Name" "Star Wars Arcade (Atari Mouse) v4 (Omegamatrix)"
 "Cart.Note" "Uses Atari Mouse Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1189"
 ""
 
 "Cart.MD5" "68cd2adc6b1fc9a1f263ab4561112f30"
@@ -9144,8 +9381,9 @@
 "Cart.Manufacturer" "Atari - CCW"
 "Cart.ModelNo" "CX26131"
 "Cart.Name" "Monster Cise (1984) (Atari) (Prototype)"
-"Cart.Note" "Uses the Keypad Controllers (left only)"
+"Cart.Note" "Uses the Keyboard Controllers (left only)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/monstercise/monstercise.htm"
 ""
 
 "Cart.MD5" "691d67910b08b63de8631901d1887c1f"
@@ -9168,6 +9406,7 @@
 "Cart.Name" "Centipede - Atari Trak-Ball Hack v1.4 (NTSC) (Half-Speed) (TJ)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
 ""
 
 "Cart.MD5" "6979f30204149be3e227558cffe21c1d"
@@ -9188,6 +9427,7 @@
 "Cart.ModelNo" "CX2683"
 "Cart.Name" "Crazy Climber (1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/crazyclimber/crazyclimber.htm"
 ""
 
 "Cart.MD5" "698f569eab5a9906eec3bc7c6b3e0980"
@@ -9227,6 +9467,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Missile Command Atari Trak-Ball Hack v1.3 (PAL) (TJ)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1183"
 "Display.Phosphor" "YES"
 "Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
 ""
@@ -9248,6 +9489,7 @@
 "Cart.Name" "Guardian (1982) (Apollo) (Prototype)"
 "Cart.Note" "Uses the Paddle Controller (left only)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/guardian/guardian.htm"
 "Controller.MouseAxis" "01"
 ""
 
@@ -9265,6 +9507,7 @@
 "Cart.Manufacturer" "Atari, Larry Wagner, Bob Whitehead"
 "Cart.Name" "Computer Chess (07-07-1978) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/videochess/videochess.htm"
 ""
 
 "Cart.MD5" "6a3b0c33cf74b1e213a629e3c142b73c"
@@ -9536,6 +9779,7 @@
 "Cart.Manufacturer" "Video Soft"
 "Cart.Name" "Atom Smasher (1984) (Video Soft) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/atomsmasher/atomsmasher.htm"
 ""
 
 "Cart.MD5" "6cf054cd23a02e09298d2c6f787eb21d"
@@ -9597,6 +9841,7 @@
 "Cart.ModelNo" "PB5065"
 "Cart.Name" "Star Wars - Ewok Adventure (1983) (Parker Bros) (Prototype) (PAL)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/ewok/ewok.htm"
 ""
 
 "Cart.MD5" "6e179eee3d4631a7434d40cf7aeea6e8"
@@ -9604,6 +9849,7 @@
 "Cart.ModelNo" "007"
 "Cart.Name" "Halloween (1983) (Wizard Video Games) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/halloween/halloween.htm"
 ""
 
 "Cart.MD5" "6e19428387686a77d8c8d2f731cb09e0"
@@ -9638,6 +9884,7 @@
 "Cart.ModelNo" "AP-2006"
 "Cart.Name" "Infiltrate (1982) (Apollo) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/infiltrate/infiltrate.htm"
 ""
 
 "Cart.MD5" "6eb10fd23c7161751d18b9e8484c0004"
@@ -9646,6 +9893,7 @@
 "Cart.Name" "Smurf - Rescue in Gargamel's Castle (1983) (Coleco) (Prototype)"
 "Cart.Note" "AKA Smurf, Smurf Action"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/smurf/smurf.htm"
 ""
 
 "Cart.MD5" "6ed5012793f5ddf4353a48c11ea9b8d3"
@@ -9691,6 +9939,7 @@
 "Cart.ModelNo" "CX2683"
 "Cart.Name" "Crazy Climber (1983) (Atari) (Prototype) [a3]"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/crazyclimber/crazyclimber.htm"
 ""
 
 "Cart.MD5" "6f74ed915ffe73b524ef0f63819e2a1d"
@@ -9703,6 +9952,7 @@
 "Cart.Manufacturer" "Imagic, Rob Fulop"
 "Cart.Name" "Cubicolor (1982) (Imagic) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/cubicolor/cubicolor.htm"
 ""
 
 "Cart.MD5" "6fac680fc9a72e0e54255567c72afe34"
@@ -9767,6 +10017,7 @@
 "Cart.Manufacturer" "Activision"
 "Cart.Name" "Hard-Head (1983) (Activision) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/unknown2/unknown2.htm"
 ""
 
 "Cart.MD5" "703d32062436e4c20c48313dff30e257"
@@ -9813,6 +10064,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Reactor - Atari Mouse Hack v1.3 (PAL) (Half-Speed) (TJ)"
 "Cart.Note" "Uses Atari Mouse Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
 ""
 
 "Cart.MD5" "70a8480cfaf08776e5420365732159d2"
@@ -9831,6 +10083,7 @@
 "Cart.Name" "Oystron (V2.82) (Piero Cavina) (PD)"
 "Cart.Rarity" "New Release"
 "Cart.Highscore" "{\"score_addresses\":[\"0xd4\",\"0xd3\"],\"score_digits\":5,\"score_trailing_zeroes\":1,\"variations_address\":\"0xe5\",\"variations_count\":3,\"variations_zero_based\":true}"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=134"
 ""
 
 "Cart.MD5" "710497df2caab69cdcc45e919c69e13f"
@@ -9862,6 +10115,7 @@
 "Cart.Name" "S.A.C. Alert (1983) (Amiga) (Prototype)"
 "Cart.Note" "Uses Joyboard"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/sacalert/sacalert.htm"
 ""
 
 "Cart.MD5" "715dd9e0240638d441a3add49316c018"
@@ -9909,7 +10163,7 @@
 "Cart.Manufacturer" "Atari, Larry Kaplan"
 "Cart.ModelNo" "CX2643"
 "Cart.Name" "Codebreaker (1978) (Atari) (PAL) (4K) [a]"
-"Cart.Note" "Uses Keypad Controllers"
+"Cart.Note" "Uses Keyboard Controllers"
 ""
 
 "Cart.MD5" "71f09f128e76eb14e244be8f44848759"
@@ -9923,6 +10177,7 @@
 "Cart.ModelNo" "CX26126"
 "Cart.Name" "Elevator Action (1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/elevator/elevator.htm"
 ""
 
 "Cart.MD5" "72097e9dc366900ba2da73a47e3e80f5"
@@ -9946,6 +10201,14 @@
 "Cart.Name" "Super-Ferrari (Unknown)"
 "Cart.Note" "AKA Enduro"
 "Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xa9\",\"0xa8\"],\"score_digits\":6,\"special_address\":\"0xad\",\"special_label\":\"Day\",\"variations_count\":1}"
+""
+
+"Cart.MD5" "726af33d9acfc8616a8df05de4f560af"
+"Cart.Manufacturer" "Thomas Jentzsch"
+"Cart.Name" "Robot City RC8 (PAL-60)"
+"Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1233"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "728152f5ae6fdd0d3a9b88709bee6c7a"
@@ -9975,6 +10238,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Missile Control - Atari Trak-Ball Hack v1.15 (PAL60) (TJ)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1184"
 ""
 
 "Cart.MD5" "72bda70c75dfa2365b3f8894bace9e6a"
@@ -10121,6 +10385,7 @@
 "Cart.Name" "8 in 1 (01-16-92) (Atari) (Prototype)"
 "Cart.Note" "Game 2 is Centipede, but doesn't work"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/8in1/8in1.htm"
 "Cart.Type" "8IN1"
 ""
 
@@ -10160,6 +10425,7 @@
 "Cart.ModelNo" "CX26107"
 "Cart.Name" "Snow White (02-09-1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/snowwhite/snowwhite.htm"
 ""
 
 "Cart.MD5" "7511c34518a9a124ea773f5b0b5c9a48"
@@ -10182,6 +10448,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Reactor - Atari Mouse Hack v1.3 (PAL) (Full-Speed) (TJ)"
 "Cart.Note" "Uses Atari Mouse Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
 ""
 
 "Cart.MD5" "753375d183c713cfa0aa7298d1f3067b"
@@ -10239,6 +10506,7 @@
 "Cart.Note" "Rev 2 release"
 "Cart.Rarity" "Homebrew"
 "Cart.Highscore" "{\"score_addresses\":[\"0x92\",\"0x94\",\"0x96\"],\"score_digits\":6,\"special_address\":\"0x9a\",\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_address\":\"0x89\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=822"
 ""
 
 "Cart.MD5" "75a303fd46ad12457ed8e853016815a0"
@@ -10246,11 +10514,13 @@
 "Cart.ModelNo" "715-111 - GN-060"
 "Cart.Name" "Immies & Aggies (1983) (ZiMAG) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/immies/immies.htm"
 ""
 
 "Cart.MD5" "75b22fdf632d76e246433db1ebccd3c4"
 "Cart.Name" "Skeleton+ (05-05-2003) (Eric Ball) (PAL)"
 "Cart.Sound" "STEREO"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=226"
 ""
 
 "Cart.MD5" "75b557be7f08db84ec5b242207b9f241"
@@ -10289,6 +10559,7 @@
 "Cart.Note" "ROM must be started in bank 0"
 "Cart.Rarity" "Prototype"
 "Cart.StartBank" "0"
+"Cart.Url" "http://www.atariprotos.com/2600/software/snowwhite/snowwhite.htm"
 ""
 
 "Cart.MD5" "7608abdfd9b26f4a0ecec18b232bea54"
@@ -10316,6 +10587,7 @@
 "Cart.Name" "Tunnel Runner (1983) (CBS Electronics) (Prototype)"
 "Cart.Note" "Black Box"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/tunnelrunner/tunnelrunner.htm"
 ""
 
 "Cart.MD5" "764ce6801f28a9ad36f11de3e57c053b"
@@ -10323,6 +10595,7 @@
 "Cart.ModelNo" "CX2666"
 "Cart.Name" "RealSports Volleyball (1982) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/rsvolleyball/rsvolleyball.htm"
 ""
 
 "Cart.MD5" "76809eb1ee0db8a318308a5cdda0f4e2"
@@ -10330,6 +10603,7 @@
 "Cart.ModelNo" "CX2699"
 "Cart.Name" "Taz (1983) (Atari) (Prototype) [a]"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/taz/taz.htm"
 ""
 
 "Cart.MD5" "769ddc995dbb9edb8167efcea9f34a7c"
@@ -10397,6 +10671,7 @@
 "Cart.ModelNo" "RetroN 77 edition"
 "Cart.Name" "Amoeba Jump (R77) (DionoiD)"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1211"
 ""
 
 "Cart.MD5" "7778ac65d775a079f537e97cbdad541c"
@@ -10474,6 +10749,7 @@
 "Cart.MD5" "787ebc2609a31eb5c57c4a18837d1aee"
 "Cart.Manufacturer" "Prescott"
 "Cart.Name" "Vault Assault (19xx) (Prescott)"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=113"
 ""
 
 "Cart.MD5" "78821ef76ebc3934850d1bc1b9e4f4b0"
@@ -10516,6 +10792,7 @@
 "Cart.Name" "Stay Frosty 2 (PAL60)"
 "Cart.Note" "AtariAge Holiday Greetings 2014"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1044"
 "Controller.Left" "JOYSTICK"
 "Display.Phosphor" "YES"
 "Cart.Highscore" "{\"score_addresses\":[\"0x1cf7\",\"0x1cf6\",\"0x1cf5\",\"0x1cf4\"],\"score_digits\":8,\"special_address\":\"0x18ac\",\"special_bcd\":false,\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_count\":1}"
@@ -10544,7 +10821,7 @@
 "Cart.Manufacturer" "Atari - CCW, Gary Stark"
 "Cart.ModelNo" "CX26102"
 "Cart.Name" "Cookie Monster Munch (1983) (Atari) (PAL) [a]"
-"Cart.Note" "Uses Kids/Keypad Controllers"
+"Cart.Note" "Uses Kids/Keyboard Controllers"
 "Controller.Right" "KEYBOARD"
 ""
 
@@ -10691,6 +10968,7 @@
 "Cart.ModelNo" "720119-1A, 03211"
 "Cart.Name" "Kwibble (1983) (Imagic) (Prototype)"
 "Cart.Note" "AKA Quick Step! Beta"
+"Cart.Url" "http://www.atariprotos.com/2600/software/quickstep/quickstep.htm"
 ""
 
 "Cart.MD5" "7adbcf78399b19596671edbffc3d34aa"
@@ -10710,6 +10988,7 @@
 "Cart.Manufacturer" "Atari, Chris Crawford"
 "Cart.Name" "Wizard (1980) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/wizard/wizard.htm"
 ""
 
 "Cart.MD5" "7b33407b2b198af74906b936ce1eecbb"
@@ -10728,12 +11007,14 @@
 "Cart.Manufacturer" "Syncro, Daniel Wolf"
 "Cart.Name" "Kamikaze Saucers (1983) (Syncro) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/kamikaze/kamikaze.htm"
 ""
 
 "Cart.MD5" "7b4be337ac4d73eda75c848355f6f480"
 "Cart.Manufacturer" "Omegamatrix"
 "Cart.Name" "Star Wars Arcade (Atari Trak-Ball) (Y Inverted) (PAL60) v4 (Omegamatrix)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1189"
 ""
 
 "Cart.MD5" "7b5207e68ee85b16998bea861987c690"
@@ -10746,6 +11027,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Reactor - Amiga Mouse Hack v1.3 (PAL) (Full-Speed) (TJ)"
 "Cart.Note" "Uses Amiga Mouse Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
 ""
 
 "Cart.MD5" "7b6f3348dbf71ada88db0fdaf7feefe0"
@@ -10769,6 +11051,7 @@
 "Cart.ModelNo" "CX2692"
 "Cart.Name" "Moon Patrol (05-12-1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/moonpatrol/moonpatrol.htm"
 ""
 
 "Cart.MD5" "7b938c7ddf18e8362949b62c7eaa660a"
@@ -10789,6 +11072,7 @@
 "Cart.Name" "Save Mary! (04-03-1989) (Atari) (Prototype)"
 "Cart.Note" "AKA Saving Mary"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/savemary/savemary.htm"
 ""
 
 "Cart.MD5" "7bc4fd254ec8c0a25a13f02fd3f762ff"
@@ -10819,6 +11103,7 @@
 "Cart.Manufacturer" "Atari, Warren Robinett"
 "Cart.Name" "Elf Adventure (04-22-83) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/elfadventure/elfadventure.htm"
 ""
 
 "Cart.MD5" "7c9b3b8b25acf2fe3b8da834f69629c6"
@@ -10829,6 +11114,7 @@
 "Cart.Manufacturer" "Tim Snider"
 "Cart.Name" "Venture II (2001) (Tim Snider)"
 "Cart.Rarity" "New Release"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=38"
 "Display.Phosphor" "YES"
 ""
 
@@ -10864,6 +11150,7 @@
 "Cart.ModelNo" "CX2638 - 49-75166"
 "Cart.Name" "Missile Command (1981) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/missilecommand/missilecommand.htm"
 "Display.Phosphor" "YES"
 ""
 
@@ -10872,6 +11159,7 @@
 "Cart.Name" "Centipede - Atari Mouse Hack v1.4 (PAL60) (Half-Speed) (TJ)"
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
 ""
 
 "Cart.MD5" "7d0b49ea4fe3a5f1e119a6d14843db17"
@@ -10894,6 +11182,7 @@
 "Cart.Manufacturer" "Atari, Warren Robinett"
 "Cart.Name" "Elf Adventure (05-25-83) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/elfadventure/elfadventure.htm"
 ""
 
 "Cart.MD5" "7d5c3b7b908752b98e30690e2a3322c2"
@@ -10906,12 +11195,14 @@
 "Cart.Name" "Cabbage Patch Kids (07-27-1984) (Coleco) (Prototype)"
 "Cart.Note" "Adventures in the Park"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/cpk/cpk.htm"
 ""
 
 "Cart.MD5" "7d8287e8423a56d4f8cef10435d97179"
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Challenge of... Nexar, The - Atari Trak-Ball Hack v1.2 (NTSC) (TJ)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1181"
 ""
 
 "Cart.MD5" "7d903411807704e725cf3fafbeb97255"
@@ -10940,7 +11231,7 @@
 "Cart.Manufacturer" "CommaVid, John Bronstein"
 "Cart.ModelNo" "CM-001"
 "Cart.Name" "MagiCard (1981) (CommaVid) (4K)"
-"Cart.Note" "Uses the Keypad Controllers"
+"Cart.Note" "Uses the Keyboard Controllers"
 ""
 
 "Cart.MD5" "7dbc8fa2e488e3f6b87fbe0f76c5b89f"
@@ -10972,6 +11263,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch, Paul Slocum"
 "Cart.Name" "Thrust+ Platinum (v1.26)"
 "Cart.Rarity" "New Release, supports BoosterGrip"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=37"
 "Controller.Left" "BOOSTERGRIP"
 "Controller.Right" "DRIVING"
 ""
@@ -11042,6 +11334,7 @@
 "Cart.ModelNo" "CX2679"
 "Cart.Name" "RealSports Basketball (12-28-1982) (Atari) (Prototype) (PAL)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/rsbasketball/rsbasketball.htm"
 ""
 
 "Cart.MD5" "7eab0284a0cd1043461d446a08d08cec"
@@ -11067,6 +11360,7 @@
 "Cart.Manufacturer" "Atari, Mark R. Hahn"
 "Cart.Name" "Elk Attack (1987) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/elkattack/elkattack.htm"
 ""
 
 "Cart.MD5" "7eba20c2291a982214cc7cbe8d0b47cd"
@@ -11110,6 +11404,7 @@
 "Cart.Name" "Pole Position (05-15-1983) (Atari) (Prototype)"
 "Cart.Note" "AKA RealSports Driving"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/poleposition/poleposition.htm"
 ""
 
 "Cart.MD5" "7f07cd2e89dda5a3a90d3ab064bfd1f6"
@@ -11147,6 +11442,7 @@
 "Cart.MD5" "7f790939f7eaa8c47a246c4283981f84"
 "Cart.Name" "This Planet Sucks Demo 3 (Greg Troutman) (PD)"
 "Cart.Rarity" "New Release"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=102"
 "Display.Phosphor" "YES"
 ""
 
@@ -11197,6 +11493,7 @@
 "Cart.ModelNo" "CX2684"
 "Cart.Name" "Galaxian (02-04-1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/galaxian/galaxian.htm"
 ""
 
 "Cart.MD5" "804ed85eadf1ce3e93721547cbea7592"
@@ -11208,6 +11505,7 @@
 "Cart.Manufacturer" "Activision"
 "Cart.Name" "Unknown Activision Game #1 (1983) (Activision) (Prototype) (PAL)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/unknown1/unknown1.htm"
 ""
 
 "Cart.MD5" "805f9a32ef97ac25f999a25014dc5c23"
@@ -11228,6 +11526,7 @@
 "Cart.ModelNo" "2455"
 "Cart.Name" "Turbo (1982) (Coleco) (Prototype)"
 "Cart.Note" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/turbo/turbo.htm"
 ""
 
 "Cart.MD5" "807a8ff6216b00d52aba2dfea5d8d860"
@@ -11235,6 +11534,7 @@
 "Cart.Name" "Strat-O-Gems Deluxe (2005) (J. Payson)"
 "Cart.Note" "Uses the AtariVox controller"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=337"
 "Controller.Right" "ATARIVOX"
 ""
 
@@ -11279,17 +11579,20 @@
 "Cart.Name" "Cabbage Patch Kids (06-XX-1984) (Coleco) (Prototype)"
 "Cart.Note" "Adventures in the Park"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/cpk/cpk.htm"
 ""
 
 "Cart.MD5" "80f7bf7418a462e8687ecefeaf6eb9c2"
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Reactor - Atari Trak-Ball Hack v1.3 (NTSC) (Half-Speed) (TJ)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
 ""
 
 "Cart.MD5" "8101efafcf0af32fedda4579c941e6f4"
 "Cart.Name" "Okie Dokie (4K) (PD)"
 "Cart.Rarity" "New Release"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=40"
 ""
 
 "Cart.MD5" "81073d0377a2badef8d5e74fc44fc323"
@@ -11411,6 +11714,7 @@
 "Cart.Manufacturer" "CBS Electronics, Stuart Ross"
 "Cart.Name" "Wings (10-10-1983) (CBS Electronics) (Prototype) (PAL)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/wings/wings.htm"
 "Display.Phosphor" "YES"
 ""
 
@@ -11449,6 +11753,7 @@
 "Cart.Manufacturer" "Oscar Toledo G., Thomas Jentzsch, Nathan Strum"
 "Cart.Name" "Aardvark (2019) (NTSC)"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1212"
 "Display.Phosphor" "YES"
 ""
 
@@ -11480,6 +11785,14 @@
 "Cart.ModelNo" "CX2686"
 "Cart.Name" "Quadrun (12-06-1982) (Atari) (Prototype) (4K)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/quadrun/quadrun.htm"
+""
+
+"Cart.MD5" "838e691e97d753d28320a932cf3fd6b3"
+"Cart.Manufacturer" "Thomas Jentzsch"
+"Cart.Name" "Three.s (2014) (Thomas Jentzsch)"
+"Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1042"
 ""
 
 "Cart.MD5" "83b8c01c72306d60dd9b753332ebd276"
@@ -11510,7 +11823,7 @@
 "Cart.Manufacturer" "Atari, Larry Kaplan - Sears"
 "Cart.ModelNo" "CX2643 - 6-99815"
 "Cart.Name" "Codebreaker (1978) (Atari) (4K)"
-"Cart.Note" "Uses Keypad Controllers"
+"Cart.Note" "Uses Keyboard Controllers"
 ""
 
 "Cart.MD5" "83fafd7bd12e3335166c6314b3bde528"
@@ -11531,6 +11844,7 @@
 "Cart.Name" "Super Cobra Arcade (NTSC)"
 "Cart.Note" "Compatible with Genesis controller"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1106"
 "Controller.Left" "JOYSTICK"
 "Display.Phosphor" "YES"
 ""
@@ -11539,6 +11853,7 @@
 "Cart.Manufacturer" "Activision"
 "Cart.Name" "Unknown Activision Game (10-22-1982) (Activision) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/unknown1/unknown1.htm"
 ""
 
 "Cart.MD5" "84290e333ff7567c2380f179430083b8"
@@ -11602,6 +11917,7 @@
 "Cart.MD5" "8530caaaf40acbdcd118c282b5f8a37a"
 "Cart.Name" "This Planet Sucks Demo 2 (Greg Troutman) (PD)"
 "Cart.Rarity" "New Release"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=102"
 ""
 
 "Cart.MD5" "8538c5e3ee83267774480649f83fa8d6"
@@ -11617,6 +11933,7 @@
 "Cart.ModelNo" "CX26162"
 "Cart.Name" "Fatal Run (1989) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/fatalrun/fatalrun.htm"
 ""
 
 "Cart.MD5" "85478bb289dfa5c63726b9153992a920"
@@ -11662,6 +11979,7 @@
 "Cart.ModelNo" "CX26113"
 "Cart.Name" "Miss Piggy's Wedding (1983) (Atari) (Prototype) (4K)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/misspiggy/misspiggy.htm"
 ""
 
 "Cart.MD5" "8597f66dd37d9c855663804669d69d7a"
@@ -11669,6 +11987,7 @@
 "Cart.ModelNo" "7-003"
 "Cart.Name" "Threshold (1982) (Tigervision) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/threshold/threshold.htm"
 ""
 
 "Cart.MD5" "85a4133f6dcf4180e36e70ad0fca0921"
@@ -11694,6 +12013,7 @@
 "Cart.Name" "Conquest Of Mars (PAL60)"
 "Cart.Rarity" "Homebrew"
 "Cart.Highscore" "{\"score_addresses\":[\"0x92\",\"0x94\",\"0x96\"],\"score_digits\":6,\"special_address\":\"0x9a\",\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_address\":\"0x89\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=822"
 ""
 
 "Cart.MD5" "85e48d68c8d802e3ba9d494a47d6e016"
@@ -11779,6 +12099,7 @@
 "Cart.ModelNo" "CM-010"
 "Cart.Name" "Rush Hour (1983) (Commavid) (Prototype) [a5]"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/rushhour/rushhour.htm"
 ""
 
 "Cart.MD5" "874c76726f68c166fcfac48ce78eef95"
@@ -11833,6 +12154,7 @@
 "Cart.Manufacturer" "Dennis Debro"
 "Cart.Name" "Climber 5 (20-03-2003) (Dennis Debro)"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=261"
 ""
 
 "Cart.MD5" "87b6a17132fc32f576bc49ea18729506"
@@ -11906,6 +12228,7 @@
 "Cart.ModelNo" "CX2669"
 "Cart.Name" "Vanguard (1982) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/vanguard/vanguard.htm"
 ""
 
 "Cart.MD5" "88d8a1accab58cf1abb043613cf185e9"
@@ -11935,6 +12258,7 @@
 "Cart.Name" "Cabbage Patch Kids (05-24-1984) (Coleco) (Prototype)"
 "Cart.Note" "Adventures in the Park"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/cpk/cpk.htm"
 ""
 
 "Cart.MD5" "890c13590e0d8d5d6149737d930e4d95"
@@ -11951,7 +12275,7 @@
 
 "Cart.MD5" "8933976f2029c0d8492ebd8f4eb21492"
 "Cart.Name" "Synthcart Plus (09-02-2003) (Paul Slocum)"
-"Cart.Note" "Uses Keypad Controllers"
+"Cart.Note" "Uses Keyboard Controllers"
 ""
 
 "Cart.MD5" "8953bc11352d794431d3303e31d3b892"
@@ -11959,11 +12283,12 @@
 "Cart.ModelNo" "7-007"
 "Cart.Name" "Polaris (02-17-1983) (Tigervision) (Prototype) (4K)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/polaris/polaris.htm"
 ""
 
 "Cart.MD5" "896ec58f26e930e02f5e4f046602c3a1"
 "Cart.Name" "Synthcart (Beta) (2002) (Paul Slocum)"
-"Cart.Note" "Uses Keypad Controllers"
+"Cart.Note" "Uses Keyboard Controllers"
 "Display.Phosphor" "YES"
 ""
 
@@ -12019,6 +12344,7 @@
 "Cart.ModelNo" "CX2679"
 "Cart.Name" "RealSports Basketball (01-11-1983) (Atari) (Prototype) (PAL)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/rsbasketball/rsbasketball.htm"
 ""
 
 "Cart.MD5" "8a42e2c7266439d8997a55d0124c912c"
@@ -12099,7 +12425,8 @@
 
 "Cart.MD5" "8b556c3d9ca8e5e6e665bd759b93ffae"
 "Cart.Name" "Synthcart (2002) (Paul Slocum) (PAL) [!]"
-"Cart.Note" "Uses Keypad Controllers"
+"Cart.Note" "Uses Keyboard Controllers"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=101"
 "Display.Phosphor" "YES"
 ""
 
@@ -12131,6 +12458,7 @@
 "Cart.Manufacturer" "UA Limited"
 "Cart.Name" "Pleiades (1983) (UA Limited) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/pleiades/pleiades.htm"
 "Display.Phosphor" "YES"
 ""
 
@@ -12174,6 +12502,7 @@
 "Cart.Manufacturer" "Omegamatrix"
 "Cart.Name" "Star Wars Arcade (Amiga Mouse) (Y Inverted) (PAL60) v4 (Omegamatrix)"
 "Cart.Note" "Uses Amiga Mouse Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1189"
 ""
 
 "Cart.MD5" "8c1cc284edba691139d6626d062c606f"
@@ -12232,6 +12561,7 @@
 "Cart.Name" "Centipede - Amiga Mouse Hack v1.4 (NTSC) (Full-Speed) (TJ)"
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
 ""
 
 "Cart.MD5" "8cd26dcf249456fe4aeb8db42d49df74"
@@ -12245,6 +12575,7 @@
 "Cart.Name" "Missile Command (Trakball) (2002) (TJ)"
 "Cart.Note" "Uses the Trakball Controller"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1183"
 "Controller.Left" "TRAKBALL"
 "Controller.Right" "TRAKBALL"
 "Display.Phosphor" "YES"
@@ -12316,6 +12647,7 @@
 "Cart.Manufacturer" "CBS Electronics, Stuart Ross"
 "Cart.Name" "Wings (06-03-1983) (CBS Electronics) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/wings/wings.htm"
 "Display.Phosphor" "YES"
 ""
 
@@ -12337,6 +12669,7 @@
 "Cart.Name" "Reindeer Rescue (2005)"
 "Cart.Note" "2005 AtariAge Holiday Cart"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=845"
 ""
 
 "Cart.MD5" "8e7241bfc8380aac3c0ef1b6881cdded"
@@ -12345,6 +12678,7 @@
 "Cart.Name" "Yars' Revenge (09-01-81) (Atari) (Prototype)"
 "Cart.Note" "Time Freeze"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/yars/yars.htm"
 "Display.Phosphor" "YES"
 ""
 
@@ -12392,6 +12726,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Reactor - Amiga Mouse Hack v1.3 (PAL60) (Half-Speed) (TJ)"
 "Cart.Note" "Uses Amiga Mouse Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
 ""
 
 "Cart.MD5" "8f33bce5ba1053dcf4cea9c1c69981e4"
@@ -12406,8 +12741,9 @@
 "Cart.Manufacturer" "Atari - CCW, Michael Callahan, Preston Stuart"
 "Cart.ModelNo" "CX26103"
 "Cart.Name" "Alpha Beam with Ernie (12-22-1982) (Atari) (Prototype)"
-"Cart.Note" "Uses Keypad Controllers"
+"Cart.Note" "Uses Keyboard Controllers"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/alphabeam/alphabeam.htm"
 ""
 
 "Cart.MD5" "8f60551db6d1535ef0030f155018c738"
@@ -12471,6 +12807,7 @@
 "Cart.Name" "Pitfall! (03-18-1983) (Activision) (Prototype)"
 "Cart.Note" "Pitfall Harry's Jungle Adventure (Jungle Runner)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/pitfall/pitfall.htm"
 ""
 
 "Cart.MD5" "9048ccb7e0802cd8fa5bfc2609f292d8"
@@ -12478,6 +12815,7 @@
 "Cart.ModelNo" "7-007"
 "Cart.Name" "Polaris (1983) (Tigervision) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/polaris/polaris.htm"
 ""
 
 "Cart.MD5" "9057694dce8449521e6164d263702185"
@@ -12505,6 +12843,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Challenge of... Nexar, The - Atari Trak-Ball Hack v1.1 (PAL) (TJ)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1181"
 ""
 
 "Cart.MD5" "90b1799dddb8bf748ee286d22e609480"
@@ -12516,6 +12855,7 @@
 "Cart.Name" "Juno First (2009)"
 "Cart.Note" "AtariVox supported"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=894"
 "Controller.Right" "ATARIVOX"
 "Display.Phosphor" "YES"
 ""
@@ -12597,6 +12937,7 @@
 "Cart.Name" "Oystron (V2.9) (Piero Cavina) (PD)"
 "Cart.Rarity" "New Release"
 "Cart.Highscore" "{\"score_addresses\":[\"0xd4\",\"0xd3\"],\"score_digits\":5,\"score_trailing_zeroes\":1,\"variations_address\":\"0xe5\",\"variations_count\":3,\"variations_zero_based\":true}"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=134"
 ""
 
 "Cart.MD5" "91fdb6541f70c40b16aabf8308123be8"
@@ -12627,6 +12968,7 @@
 "Cart.Manufacturer" "Retroactive"
 "Cart.Name" "Qb (2.15) (Retroactive) (PAL)"
 "Cart.Rarity" "New Release"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=926"
 "Display.Phosphor" "YES"
 "Cart.Highscore" "{\"score_addresses\":[\"0xe6\",\"0xe5\",\"0xe4\"],\"score_digits\":6,\"variations_count\":1}"
 ""
@@ -12712,6 +13054,7 @@
 "Cart.Name" "Donald Duck's Speedboat (04-12-1983) (Atari) (Prototype)"
 "Cart.Note" "AKA Donald Duck's Regatta"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/donaldduck/donaldduck.htm"
 ""
 
 "Cart.MD5" "939ce554f5c0e74cc6e4e62810ec2111"
@@ -12740,6 +13083,7 @@
 "Cart.Name" "Arkyology (1983) (Sparrow) (Prototype) [fixed]"
 "Cart.Note" "Fix for un-initialized 'X' register"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/arkyology/arkyology.htm"
 ""
 
 "Cart.MD5" "93c52141d3c4e1b5574d072f1afde6cd"
@@ -12766,6 +13110,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Challenge of... Nexar, The - Atari Trak-Ball Hack v1.1 (PAL60) (TJ)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1181"
 ""
 
 "Cart.MD5" "93dc15d15e77a7b23162467f95a5f22d"
@@ -12794,6 +13139,7 @@
 "Cart.Manufacturer" "Omegamatrix"
 "Cart.Name" "Star Wars Arcade (Amiga Mouse) (Y Inverted) v4 (Omegamatrix)"
 "Cart.Note" "Uses Amiga Mouse Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1189"
 ""
 
 "Cart.MD5" "9436b7ad131b5a1f7753ce4309ba3dee"
@@ -12806,7 +13152,9 @@
 "Cart.MD5" "943798452ceba9357e2c56303cadb4f7"
 "Cart.Manufacturer" "Thomas Jentzsch, Paul Slocum"
 "Cart.Name" "Thrust+ Platinum (v1.28)"
-"Cart.Rarity" "New Release, supports BoosterGrip and Genesis (switched by Color/B+W)"
+"Cart.Note" "Also supports BoosterGrip/Genesis (switched by Color/B+W)"
+"Cart.Rarity" "New Release"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=37"
 "Controller.Left" "JOYSTICK"
 "Controller.Right" "DRIVING"
 ""
@@ -12821,6 +13169,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Missile Control - Atari Trak-Ball Hack v1.15 (PAL) (TJ)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1184"
 ""
 
 "Cart.MD5" "9469d18238345d87768e8965f9f4a6b2"
@@ -12872,6 +13221,7 @@
 "Cart.ModelNo" "CX2692"
 "Cart.Name" "Moon Patrol (07-31-1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/moonpatrol/moonpatrol.htm"
 ""
 
 "Cart.MD5" "951e8cec7a1a1d6c01fd649e7ff7743a"
@@ -12879,6 +13229,7 @@
 "Cart.ModelNo" "CX26151, CX26151P"
 "Cart.Name" "Dark Chambers (1988) (Atari) (Prototype) (PAL)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/darkchambers/darkchambers.htm"
 ""
 
 "Cart.MD5" "9526e3db3bdfbc27989a9cbfd0ee34bf"
@@ -12974,6 +13325,7 @@
 "Cart.Name" "Centipede - Atari Mouse Hack v1.4 (PAL) (Full-Speed) (TJ)"
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
 ""
 
 "Cart.MD5" "9671b658286e276cc4a3d02aa25931d2"
@@ -13006,6 +13358,7 @@
 "Cart.ModelNo" "11029"
 "Cart.Name" "Meltdown (1983) (20th Century Fox) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/meltdown/meltdown.htm"
 "Display.Phosphor" "YES"
 ""
 
@@ -13014,6 +13367,7 @@
 "Cart.Name" "Missile Command (Atari Mouse) (2002) (TJ) (PAL)"
 "Cart.Note" "Uses Atari ST Mouse Controller"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1183"
 "Controller.Left" "ATARIMOUSE"
 "Controller.Right" "ATARIMOUSE"
 "Display.Phosphor" "YES"
@@ -13059,6 +13413,7 @@
 "Cart.ModelNo" "1.0 (Release)"
 "Cart.Name" "Chetiry (2011) (AtariAge) (60k)"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1003"
 "Display.Phosphor" "YES"
 "Display.PPBlend" "50"
 ""
@@ -13080,6 +13435,7 @@
 "Cart.Manufacturer" "Atari"
 "Cart.Name" "Colors (1980) (Atari) (Prototype) (PAL)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/colors/colors.htm"
 ""
 
 "Cart.MD5" "97cd63c483fe3c68b7ce939ab8f7a318"
@@ -13105,12 +13461,14 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Missile Control - Amiga Mouse Hack v1.15 (NTSC) (TJ)"
 "Cart.Note" "Uses Amiga Mouse Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1184"
 ""
 
 "Cart.MD5" "97f4da9f1031486f4e588f1e53572e53"
 "Cart.Manufacturer" "SpiceWare - Darrell Spice Jr."
 "Cart.Name" "Draconian"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1107"
 "Display.Phosphor" "YES"
 "Cart.Highscore" "{\"notes\":\"Variations are difficulty level\",\"score_addresses\":[\"0x177b\",\"0x177a\",\"0x1779\",\"0x1778\"],\"score_digits\":8,\"special_address\":\"0x1780\",\"special_bcd\":false,\"special_label\":\"Sect.\",\"special_zero_based\":true,\"variations_address\":\"0x0811\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
@@ -13255,6 +13613,7 @@
 "Cart.ModelNo" "CX2686"
 "Cart.Name" "Quadrun (18-03-1982) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/quadrun/quadrun.htm"
 ""
 
 "Cart.MD5" "99f7c6c26046bbe95f1c604b25da8360"
@@ -13267,6 +13626,7 @@
 "Cart.ModelNo" "CX2699"
 "Cart.Name" "Taz (07-15-1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/taz/taz.htm"
 ""
 
 "Cart.MD5" "9a165c39af3f050fdee6583fdfcdc9be"
@@ -13472,6 +13832,7 @@
 "Cart.ModelNo" "PB5065"
 "Cart.Name" "Star Wars - Ewok Adventure (1983) (Parker Bros) (Prototype) (PAL) (16K)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/ewok/ewok.htm"
 ""
 
 "Cart.MD5" "9de0d45731f90a0a922ab09228510393"
@@ -13491,7 +13852,7 @@
 "Cart.Manufacturer" "Atari - CCW, Michael Callahan, Preston Stuart"
 "Cart.ModelNo" "CX26103"
 "Cart.Name" "Alpha Beam with Ernie (1983) (Atari)"
-"Cart.Note" "Uses Keypad Controllers"
+"Cart.Note" "Uses Keyboard Controllers"
 "Cart.Rarity" "Rare"
 ""
 
@@ -13499,6 +13860,7 @@
 "Cart.Manufacturer" "Fabrizio Zavagli"
 "Cart.Name" "Space Treat Deluxe (2003)"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=125"
 ""
 
 "Cart.MD5" "9e192601829f5f5c2d3b51f8ae25dbe5"
@@ -13541,6 +13903,7 @@
 "Cart.Manufacturer" "Eric Mooney, Piero Cavina"
 "Cart.Name" "INV+"
 "Cart.Rarity" "New Release"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=283"
 ""
 
 "Cart.MD5" "9ec1b259a1bcffa63042a3c2b3b90f0a"
@@ -13577,6 +13940,7 @@
 "Cart.Manufacturer" "20th Century Fox Video Games, John W.S. Marvin"
 "Cart.Name" "Planet of the Apes (1983) (20th Century Fox) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/planetoftheapes/planetoftheapes.htm"
 ""
 
 "Cart.MD5" "9f2d58dce1b81c6ba201ed103507c025"
@@ -13587,7 +13951,7 @@
 "Cart.Manufacturer" "Atari, Warren Robinett"
 "Cart.ModelNo" "CX2620"
 "Cart.Name" "Basic Programming (1979) (Atari)"
-"Cart.Note" "Uses Keypad Controllers"
+"Cart.Note" "Uses Keyboard Controllers"
 "Cart.Rarity" "Rare"
 "Display.Phosphor" "YES"
 ""
@@ -13597,6 +13961,7 @@
 "Cart.ModelNo" "11036"
 "Cart.Name" "Entity, The (1983) (20th Century Fox) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/entity/entity.htm"
 ""
 
 "Cart.MD5" "9f52271759f8a2004d207b2247ae0bb3"
@@ -13604,6 +13969,7 @@
 "Cart.ModelNo" "PB5820"
 "Cart.Name" "Mr. Do!'s Castle (03-12-84) (Parker Bros) (Prototype) (4K)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/mrdoscastle/mrdoscastle.htm"
 "Display.Phosphor" "YES"
 ""
 
@@ -13650,6 +14016,7 @@
 "Cart.Manufacturer" "Chris Walton, Justin Hairgrove, Tony Morse"
 "Cart.Name" "Hunchy II (2005)"
 "Cart.Note" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=330"
 ""
 
 "Cart.MD5" "9fc2d1627dcdd8925f4c042e38eb0bc9"
@@ -13701,7 +14068,7 @@
 "Cart.Manufacturer" "Atari - CCW, Gary Stark"
 "Cart.ModelNo" "CX26102"
 "Cart.Name" "Cookie Monster Munch (1983) (Atari) (PAL)"
-"Cart.Note" "Uses Kids/Keypad Controllers"
+"Cart.Note" "Uses Kids/Keyboard Controllers"
 "Controller.Right" "KEYBOARD"
 ""
 
@@ -13840,12 +14207,14 @@
 "Cart.Name" "Surf's Up (1983) (Amiga) (Prototype) [a1]"
 "Cart.Note" "Uses the Joyboard controller"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/surfsup/surfsup.htm"
 ""
 
 "Cart.MD5" "a2276822c772f72073a8a40a72a1ca52"
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Challenge of... Nexar, The - Atari Mouse Hack v1.1 (NTSC) (TJ)"
 "Cart.Note" "Uses Atari Mouse Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1181"
 ""
 
 "Cart.MD5" "a2424c1a0c783d7585d701b1c71b5fdc"
@@ -13892,6 +14261,7 @@
 "Cart.Manufacturer" "Omegamatrix"
 "Cart.Name" "Star Wars Arcade (Atari Mouse) (Y Inverted) (PAL60) v4 (Omegamatrix)"
 "Cart.Note" "Uses Atari Mouse Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1189"
 ""
 
 "Cart.MD5" "a2de0fc85548871279ed2a3c1325c13e"
@@ -13950,6 +14320,7 @@
 "Cart.ModelNo" "CX26100"
 "Cart.Name" "Bugs Bunny (08-04-1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/bugsbunny/bugsbunny.htm"
 ""
 
 "Cart.MD5" "a35d47898b2b16ec641d1dfa8a45c2b7"
@@ -13997,6 +14368,7 @@
 "Cart.Manufacturer" "Aaron Curtis"
 "Cart.Name" "AStar (PAL60)"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=821"
 ""
 
 "Cart.MD5" "a406d2f6d84e61d842f4cb13b2b1cfa7"
@@ -14043,7 +14415,7 @@
 "Cart.Manufacturer" "Atari"
 "Cart.ModelNo" "CX2643"
 "Cart.Name" "Codebreaker (1978) (Atari) (PAL)"
-"Cart.Note" "Uses Keypad Controllers"
+"Cart.Note" "Uses Keyboard Controllers"
 ""
 
 "Cart.MD5" "a484638990de7b12c62947c79dafa4c6"
@@ -14107,6 +14479,7 @@
 "Cart.ModelNo" "CX26119"
 "Cart.Name" "Saboteur (12-20-1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/saboteur/saboteur.htm"
 ""
 
 "Cart.MD5" "a4f1cea2c8479284e2a2292f8d51b5fa"
@@ -14153,6 +14526,7 @@
 "Cart.Name" "Boggle (08-07-1978) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
 "Display.Phosphor" "YES"
+"Cart.Url" "http://www.atariprotos.com/2600/software/boggle/boggle.htm"
 ""
 
 "Cart.MD5" "a58b11148c18d85e4c2aef4ff46ade67"
@@ -14275,6 +14649,7 @@
 "Cart.ModelNo" "CX2658 - 49-75128"
 "Cart.Name" "Math Gran Prix (1982) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/mgp/mgp.htm"
 ""
 
 "Cart.MD5" "a7cf2b9afdbb3a161bf418dbcf0321dc"
@@ -14290,6 +14665,7 @@
 "Cart.ModelNo" "CX2683"
 "Cart.Name" "Crazy Climber (1983) (Atari) (Prototype) [a1]"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/crazyclimber/crazyclimber.htm"
 ""
 
 "Cart.MD5" "a7ed7dc5cbc901388afa59030fb11d26"
@@ -14326,6 +14702,7 @@
 "Cart.ModelNo" "AP-2011"
 "Cart.Name" "Pompeii (1983) (Apollo) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/pompeii/pompeii.htm"
 ""
 
 "Cart.MD5" "a8435ec570141de5d833c4abec499e55"
@@ -14362,6 +14739,7 @@
 "Cart.ModelNo" "MT4646"
 "Cart.Name" "Rocky & Bullwinkle (1983) (Mattel) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/rocky/rocky.htm"
 "Cart.Type" "4K"
 ""
 
@@ -14464,6 +14842,7 @@
 "Cart.MD5" "a98b649912b6ca19eaf5c2d2faf38562"
 "Cart.Name" "This Planet Sucks (Greg Troutman) (PAL) [!]"
 "Cart.Rarity" "New Release"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=102"
 ""
 
 "Cart.MD5" "a995b6cbdb1f0433abc74050808590e6"
@@ -14484,6 +14863,7 @@
 "Cart.ModelNo" "CX26201"
 "Cart.Name" "Zippy the Porcupine (2014) (Sprybug) (PAL60)"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1052"
 ""
 
 "Cart.MD5" "a9e3c23599c0d77151602f8e31daf879"
@@ -14505,6 +14885,7 @@
 "Cart.Name" "Oystron X (Piero Cavina) (PD)"
 "Cart.Rarity" "New Release"
 "Cart.Highscore" "{\"score_addresses\":[\"0xd4\",\"0xd3\"],\"score_digits\":5,\"score_trailing_zeroes\":1,\"variations_address\":\"0xe5\",\"variations_count\":3,\"variations_zero_based\":true}"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=134"
 ""
 
 "Cart.MD5" "aa5cfe3b20395aba1d479135943ad85c"
@@ -14523,6 +14904,7 @@
 "Cart.Manufacturer" "Bob Montgomery (aka vdub_bobby)"
 "Cart.Name" "Squish 'Em (2007)"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=871"
 ""
 
 "Cart.MD5" "aa8e4b2cb8a78ffe6b20580033f4dec9"
@@ -14546,6 +14928,7 @@
 "Cart.ModelNo" "CM-010"
 "Cart.Name" "Rush Hour (1983) (Commavid) (Prototype) [a1]"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/rushhour/rushhour.htm"
 ""
 
 "Cart.MD5" "aad91be0bf78d33d29758876d999848a"
@@ -14554,6 +14937,7 @@
 "Cart.Name" "Pitfall! (1981) (Activision) (Prototype)"
 "Cart.Note" "Pitfall Harry's Jungle Adventure (Jungle Runner)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/pitfall/pitfall.htm"
 ""
 
 "Cart.MD5" "aaea37b65db9e492798f0105a6915e96"
@@ -14680,12 +15064,14 @@
 "Cart.ModelNo" "CX2692"
 "Cart.Name" "Moon Patrol (06-15-1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/moonpatrol/moonpatrol.htm"
 ""
 
 "Cart.MD5" "ac53b83e1b57a601eeae9d3ce1b4a458"
 "Cart.Manufacturer" "Retroactive"
 "Cart.Name" "Qb (2.15) (Retroactive) (NTSC)"
 "Cart.Rarity" "New Release"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=926"
 "Display.Phosphor" "YES"
 "Cart.Highscore" "{\"score_addresses\":[\"0xe6\",\"0xe5\",\"0xe4\"],\"score_digits\":6,\"variations_count\":1}"
 ""
@@ -14761,6 +15147,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Reactor - Atari Trak-Ball Hack v1.3 (PAL60) (Full-Speed) (TJ)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
 ""
 
 "Cart.MD5" "ad7e97c19bd25d5aa3999430845c755b"
@@ -14795,6 +15182,7 @@
 "Cart.ModelNo" "CG-01-N"
 "Cart.Name" "Lady Bug (NTSC)"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=829"
 "Console.RightDiff" "A"
 "Display.Phosphor" "YES"
 "Cart.Highscore" "{\"score_addresses\":[\"0x8e\",\"0x8d\",\"0x8c\"],\"score_digits\":6,\"special_address\":\"0x89\",\"special_bcd\":false,\"special_label\":\"Part\",\"special_zero_based\":true,\"variations_address\":\"0x8a\",\"variations_count\":3,\"variations_zero_based\":true}"
@@ -14828,6 +15216,7 @@
 "Cart.ModelNo" "PB5540"
 "Cart.Name" "Star Wars - The Arcade Game (12-23-1983) (Parker Bros) (Prototype) (4K)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/starwarsarcade/starwarsarcade.htm"
 "Display.Phosphor" "YES"
 ""
 
@@ -14872,6 +15261,7 @@
 "Cart.Name" "Surf's Up (1983) (Amiga) (Prototype)"
 "Cart.Note" "Uses the Joyboard controller"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/surfsup/surfsup.htm"
 ""
 
 "Cart.MD5" "aed0b7bd64cc384f85fdea33e28daf3b"
@@ -14900,6 +15290,7 @@
 "Cart.ModelNo" "CX2695"
 "Cart.Name" "Xevious (01-18-1984) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/xevious/xevious.htm"
 ""
 
 "Cart.MD5" "afb3bc45c6a82739cc82582127cd96e6"
@@ -14908,6 +15299,7 @@
 "Cart.Name" "Dungeon (11-22-1985) (Atari) (Prototype)"
 "Cart.Note" "Dark Chambers Beta"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/darkchambers/darkchambers.htm"
 ""
 
 "Cart.MD5" "afc194534c1b346609ef05eff6d3cef6"
@@ -14920,8 +15312,9 @@
 "Cart.Manufacturer" "Atari - CCW, Christopher H. Omarzu"
 "Cart.ModelNo" "CX26104"
 "Cart.Name" "Big Bird's Egg Catch (12-08-1982) (Atari) (Prototype)"
-"Cart.Note" "Uses the Keypad Controller"
+"Cart.Note" "Uses the Keyboard Controller"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/bigbird/bigbird.htm"
 "Controller.Left" "KEYBOARD"
 ""
 
@@ -14973,6 +15366,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Reactor - Amiga Mouse Hack v1.3 (NTSC) (Half-Speed) (TJ)"
 "Cart.Note" "Uses Amiga Mouse Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
 ""
 
 "Cart.MD5" "b049fc8ac50be7c2f28418817979c637"
@@ -14992,7 +15386,7 @@
 "Cart.Manufacturer" "Atari, Warren Robinett"
 "Cart.ModelNo" "CX2620, CX2620P"
 "Cart.Name" "Basic Programming (1979) (Atari) (PAL)"
-"Cart.Note" "Uses Keypad Controllers"
+"Cart.Note" "Uses Keyboard Controllers"
 "Cart.Rarity" "Common"
 "Display.Phosphor" "YES"
 ""
@@ -15026,6 +15420,8 @@
 
 "Cart.MD5" "b0c47e426c7f799aee2c40422df8f56a"
 "Cart.Name" "Space Treat (PAL) (Fabrizio Zavagli)"
+"Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=125"
 ""
 
 "Cart.MD5" "b0c9cf89a6d4e612524f4fd48b5bb562"
@@ -15034,6 +15430,7 @@
 "Cart.Name" "Combat Two (1982) (Atari) (Prototype)"
 "Cart.Note" "AKA Super Combat"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/combat2/combat2.htm"
 ""
 
 "Cart.MD5" "b0e1ee07fbc73493eac5651a52f90f00"
@@ -15086,6 +15483,7 @@
 "Cart.Manufacturer" "Video Soft, Jerry Lawson, Dan McElroy"
 "Cart.Name" "Golf Diagnostic (1983) (Video Soft) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/golfdiagnostic/golfdiagnostic.htm"
 ""
 
 "Cart.MD5" "b17b9cc4103844dcda54f77f44acc93a"
@@ -15099,6 +15497,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Reactor - Atari Mouse Hack v1.3 (PAL60) (Half-Speed) (TJ)"
 "Cart.Note" "Uses Atari Mouse Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
 ""
 
 "Cart.MD5" "b1a6c96e9093352106bc335e96caa154"
@@ -15168,7 +15567,7 @@
 "Cart.Manufacturer" "Atari, Alan Miller"
 "Cart.ModelNo" "CX2642"
 "Cart.Name" "Hunt & Score (1978) (Atari) (PAL) (4K)"
-"Cart.Note" "Uses the Keypad Controllers"
+"Cart.Note" "Uses the Keyboard Controllers"
 ""
 
 "Cart.MD5" "b2737034f974535f5c0c6431ab8caf73"
@@ -15208,6 +15607,7 @@
 "Cart.Name" "Shooting Arcade (03-07-1989) (Atari) (Prototype) [a3]"
 "Cart.Note" "Uses the Light Gun Controller (left only)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/shootingarcade/shootingarcade.htm"
 ""
 
 "Cart.MD5" "b2d1e63f7f22864096b7b6c154151d55"
@@ -15222,6 +15622,7 @@
 "Cart.ModelNo" "CX2691"
 "Cart.Name" "Joust (08-09-1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/joust/joust.htm"
 "Display.Phosphor" "YES"
 ""
 
@@ -15260,6 +15661,7 @@
 "Cart.Manufacturer" "Omegamatrix"
 "Cart.Name" "Star Wars Arcade (Atari Mouse) v4 (PAL60) (Omegamatrix)"
 "Cart.Note" "Uses Atari Mouse Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1189"
 ""
 
 "Cart.MD5" "b31f178aa0d569cccac7959f84e0a724"
@@ -15267,6 +15669,7 @@
 "Cart.ModelNo" "CX2699"
 "Cart.Name" "Taz (07-13-1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/taz/taz.htm"
 ""
 
 "Cart.MD5" "b3203e383b435f7e43f9492893c7469f"
@@ -15390,6 +15793,7 @@
 "Cart.Manufacturer" "Arcadia Corporation, Stephen H. Landrum"
 "Cart.ModelNo" "AR-4400"
 "Cart.Name" "Excalibur (Dragonstomper Beta) (1982) (Arcadia) (Prototype)"
+"Cart.Url" "http://www.atariprotos.com/2600/software/dragonstomper/dragonstomper.htm"
 ""
 
 "Cart.MD5" "b59417d083b0be2d49a7d93769880a4b"
@@ -15402,6 +15806,7 @@
 "Cart.Manufacturer" "VentureVision, Dan Oliver"
 "Cart.Name" "Innerspace (1983) (VentureVision) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/innerspace/innerspace.htm"
 ""
 
 "Cart.MD5" "b5a1a189601a785bdb2f02a424080412"
@@ -15431,6 +15836,7 @@
 "Cart.ModelNo" "CX26192"
 "Cart.Name" "Klax (06-14-1990) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/klax/klax.htm"
 ""
 
 "Cart.MD5" "b6166f15720fdf192932f1f76df5b65d"
@@ -15438,6 +15844,7 @@
 "Cart.ModelNo" "3130"
 "Cart.Name" "Off Your Rocker (1983) (Amiga) (Prototype)"
 "Cart.Note" "Uses the Amiga Joyboard"
+"Cart.Url" "http://www.atariprotos.com/2600/software/offyourrocker/offyourrocker.htm"
 ""
 
 "Cart.MD5" "b64426e787f04ff23ee629182c168603"
@@ -15556,6 +15963,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Three.s (v1.02)"
 "Cart.Rarity" "New Release"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1042"
 ""
 
 "Cart.MD5" "b7d7c76e37f372f4e4979b380ed95a58"
@@ -15563,6 +15971,7 @@
 "Cart.ModelNo" "RC2"
 "Cart.Name" "Flappy (2014) (AtariAge) (PAL60)"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1038"
 ""
 
 "Cart.MD5" "b7e459d5416eeb196aaa8e092db14463"
@@ -15609,6 +16018,7 @@
 "Cart.ModelNo" "AP-2007"
 "Cart.Name" "Kyphus (1982) (Apollo) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/kyphus/kyphus.htm"
 ""
 
 "Cart.MD5" "b86a12e53ab107b6caedd4e0272aa034"
@@ -15640,6 +16050,7 @@
 "Cart.ModelNo" "PB5820"
 "Cart.Name" "Mr. Do!'s Castle (1984) (Parker Bros) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/mrdoscastle/mrdoscastle.htm"
 "Display.Phosphor" "YES"
 ""
 
@@ -15698,12 +16109,14 @@
 "Cart.ModelNo" "CM-010"
 "Cart.Name" "Rush Hour (1983) (Commavid) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/rushhour/rushhour.htm"
 ""
 
 "Cart.MD5" "b9d1e3be30b131324482345959aed5e5"
 "Cart.Manufacturer" "Activision - Boston Design Center, Rex Bradford"
 "Cart.Name" "Kabobber (07-25-1983) (Activision) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/kabobber/kabobber.htm"
 ""
 
 "Cart.MD5" "b9f6fa399b8cd386c235983ec45e4355"
@@ -15787,6 +16200,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Missile Control - Atari Mouse Hack v1.15 (PAL60) (TJ)"
 "Cart.Note" "Uses Atari Mouse Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1184"
 ""
 
 "Cart.MD5" "bb5049e4558daade0f87fed69a244c59"
@@ -15818,6 +16232,7 @@
 "Cart.Manufacturer" "Omegamatrix"
 "Cart.Name" "SpaceMaster X-7 (Amiga Mouse) (Omegamatrix)"
 "Cart.Note" "Uses Amiga Mouse Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1187"
 ""
 
 "Cart.MD5" "bbf8c7c9ed280151934aabe138e41ba7"
@@ -15826,6 +16241,7 @@
 "Cart.Name" "Power Play Arcade Video Game Album V (1984) (Amiga) (Prototype)"
 "Cart.Note" "Mogul Maniac, Surf's Up, Off Your Rocker, S.A.C. Alert"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/powerarcade/powerarcade.htm"
 ""
 
 "Cart.MD5" "bc24440b59092559a1ec26055fd1270e"
@@ -15863,6 +16279,14 @@
 "Cart.Name" "SwordQuest - WaterWorld (1983) (Atari)"
 ""
 
+"Cart.MD5" "bc593f2284c67b7d8716d110f541953f"
+"Cart.Manufacturer" "Simone Serra - AtariAge"
+"Cart.ModelNo" "30.11.2011"
+"Cart.Name" "Omicron"
+"Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1037"
+""
+
 "Cart.MD5" "bc703ea6afb20bc089f04d8c9d79a2bd"
 "Cart.Name" "Gunfight 2600 - Not mergeable with Colbert wizardry... (2001) (MP)"
 ""
@@ -15880,6 +16304,7 @@
 "Cart.Manufacturer" "Bob Montgomery (aka vdub_bobby)"
 "Cart.Name" "Squish 'Em (2007) (PAL60)"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=871"
 ""
 
 "Cart.MD5" "bccb4e2cfad5efc93f6d55dc992118ce"
@@ -16001,6 +16426,7 @@
 "Cart.Note" "Hack of Berzerk"
 "Cart.Rarity" "Hack"
 "Cart.Highscore" "{\"score_addresses\":[\"0xdd\",\"0xde\",\"0xdf\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":12}"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=29"
 ""
 
 "Cart.MD5" "be561b286b6432cac71bccbae68002f7"
@@ -16036,6 +16462,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Reactor - Amiga Mouse Hack v1.3 (NTSC) (Full-Speed) (TJ)"
 "Cart.Note" "Uses Amiga Mouse Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
 ""
 
 "Cart.MD5" "bf52327c2197d9d2c4544be053caded1"
@@ -16070,6 +16497,7 @@
 "Cart.ModelNo" "165"
 "Cart.Name" "Star Castle Arcade (2014) (AtariAge)"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1046"
 "Display.Phosphor" "YES"
 ""
 
@@ -16087,6 +16515,7 @@
 "Cart.Name" "A-Team, The (03-30-1984) (Atari) (Prototype)"
 "Cart.Note" "AKA Saboteur"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/ateam/ateam.htm"
 ""
 
 "Cart.MD5" "c00b65d1bae0aef6a1b5652c9c2156a1"
@@ -16109,6 +16538,7 @@
 "Cart.Manufacturer" "Activision, Charlie Heath"
 "Cart.Name" "Thwocker (04-09-1984) (Activision) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/thwocker/thwocker.htm"
 ""
 
 "Cart.MD5" "c033dc1d7b6fde41b9cadce9638909bb"
@@ -16147,6 +16577,7 @@
 "Cart.Name" "Solar Fox (1983) (CBS Electronics) (Prototype) (4K)"
 "Cart.Note" "RAM must be zero'ed to start correctly"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/solarfox/solarfox.htm"
 "Display.Phosphor" "YES"
 ""
 
@@ -16161,6 +16592,7 @@
 "Cart.ModelNo" "CX2665"
 "Cart.Name" "Frog Pond (1982) (Atari) (Prototype) (4K) [a]"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/frogpond/frogpond.htm"
 ""
 
 "Cart.MD5" "c118854d670289a8b5d5156aa74b0c49"
@@ -16174,6 +16606,7 @@
 "Cart.ModelNo" "1.0 (Release)"
 "Cart.Name" "Chetiry (2011) (AtariAge) (60k) (PAL)"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1003"
 "Display.Phosphor" "YES"
 "Display.PPBlend" "50"
 ""
@@ -16191,6 +16624,7 @@
 "Cart.Name" "Millipede (Atari Trak-Ball) v6.5 (Omegamatrix)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_count\":1}"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1188"
 ""
 
 "Cart.MD5" "c150c76cbde2c9b5a97eb5399d46c64f"
@@ -16218,7 +16652,7 @@
 "Cart.Manufacturer" "Atari, Carla Meninsky"
 "Cart.ModelNo" "CX2660"
 "Cart.Name" "Star Raiders (1982) (Atari) (PAL)"
-"Cart.Note" "Uses Joystick (left) and Keypad (right) Controllers"
+"Cart.Note" "Uses Joystick (left) and Keyboard (right) Controllers"
 ""
 
 "Cart.MD5" "c1b038ce5cb6d85e956c5509b0e0d0d8"
@@ -16234,6 +16668,7 @@
 "Cart.Name" "Dukes of Hazard (1980) (Atari) (Prototype)"
 "Cart.Note" "AKA Stunt Cycle"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/dukes/dukes.htm"
 ""
 
 "Cart.MD5" "c1cb228470a87beb5f36e90ac745da26"
@@ -16361,12 +16796,14 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Challenge of... Nexar, The - Atari Mouse Hack v1.1 (PAL) (TJ)"
 "Cart.Note" "Uses Atari Mouse Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1181"
 ""
 
 "Cart.MD5" "c2dea467f4a02fa1f06d66f52bc12e6e"
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Missile Command Atari Trak-Ball Hack v1.3 (NTSC) (TJ)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1183"
 "Display.Phosphor" "YES"
 "Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
 ""
@@ -16377,6 +16814,7 @@
 "Cart.Name" "Conquest Of Mars (NTSC)"
 "Cart.Rarity" "Homebrew"
 "Cart.Highscore" "{\"score_addresses\":[\"0x92\",\"0x94\",\"0x96\"],\"score_digits\":6,\"special_address\":\"0x9a\",\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_address\":\"0x89\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=822"
 ""
 
 "Cart.MD5" "c31a17942d162b80962cb1f7571cd1d5"
@@ -16416,6 +16854,7 @@
 "Cart.Manufacturer" "Atari, Robert C. Polaro"
 "Cart.ModelNo" "CX26157"
 "Cart.Name" "Stunt Cycle (07-21-1980) (Atari) (Prototype)"
+"Cart.Url" "http://www.atariprotos.com/2600/software/stuntcycle/stuntcycle.htm"
 ""
 
 "Cart.MD5" "c3e4aa718f46291311f1cce53e6ccd79"
@@ -16451,6 +16890,7 @@
 "Cart.Manufacturer" "Atari, Chris Crawford"
 "Cart.Name" "Wizard (1980) (Atari) (Prototype) [a]"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/wizard/wizard.htm"
 ""
 
 "Cart.MD5" "c446288fe62c0c2737639fd788ae4a21"
@@ -16556,8 +16996,9 @@
 "Cart.Manufacturer" "Atari, Robert C. Polaro"
 "Cart.ModelNo" "CX26130"
 "Cart.Name" "Holey Moley (02-29-1984) (Atari) (Prototype)"
-"Cart.Note" "Uses Keypad Controllers"
+"Cart.Note" "Uses Keyboard Controllers"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/holeymoley/holeymoley.htm"
 ""
 
 "Cart.MD5" "c5301f549d0722049bb0add6b10d1e09"
@@ -16589,8 +17030,9 @@
 "Cart.Manufacturer" "Atari, Carla Meninsky - Sears"
 "Cart.ModelNo" "CX2660 - 49-75187"
 "Cart.Name" "Star Raiders (1981) (Atari) (Prototype) (4K)"
-"Cart.Note" "Uses Joystick (left) and Keypad (right) Controllers"
+"Cart.Note" "Uses Joystick (left) and Keyboard (right) Controllers"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/starraiders/starraiders.htm"
 "Controller.Right" "KEYBOARD"
 ""
 
@@ -16649,6 +17091,7 @@
 "Cart.Note" "Part of Stella's Stocking 2007 Xmas compilation"
 "Cart.Rarity" "Homebrew"
 "Cart.Sound" "STEREO"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=897"
 "Display.Phosphor" "YES"
 ""
 
@@ -16658,6 +17101,7 @@
 "Cart.Name" "Shooting Arcade (03-07-1989) (Atari) (Prototype) [a2]"
 "Cart.Note" "Uses the Light Gun Controller (left only)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/shootingarcade/shootingarcade.htm"
 ""
 
 "Cart.MD5" "c5c7cc66febf2d4e743b4459de7ed868"
@@ -16678,6 +17122,7 @@
 "Cart.ModelNo" "CX2680"
 "Cart.Name" "RealSports Tennis (1982) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/rstennis/rstennis.htm"
 ""
 
 "Cart.MD5" "c5f71dfbdca9cc96b28643ff4d06aa6f"
@@ -16685,6 +17130,7 @@
 "Cart.Name" "Centipede - Atari Trak-Ball Hack v1.4 (PAL) (Full-Speed) (TJ)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
 ""
 
 "Cart.MD5" "c5fe45f2734afd47e27ca3b04a90213c"
@@ -16715,6 +17161,7 @@
 "Cart.ModelNo" "CX2695"
 "Cart.Name" "Xevious (08-02-1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/xevious/xevious.htm"
 "Display.Phosphor" "YES"
 ""
 
@@ -16734,6 +17181,7 @@
 "Cart.ModelNo" "CX26110"
 "Cart.Name" "Crystal Castles (1984) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/crystalcastles/crystalcastles.htm"
 ""
 
 "Cart.MD5" "c6ae21caceaad734987cb24243793bd5"
@@ -16759,6 +17207,7 @@
 "Cart.Name" "Lord of the Rings (1983) (Parker Bros) (Prototype) [a]"
 "Cart.Note" "Journey to Rivendell (The Lord of the Rings I)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/lotr/lotr.htm"
 ""
 
 "Cart.MD5" "c6db733e0b108c2580a1d65211f06dbf"
@@ -16766,6 +17215,7 @@
 "Cart.ModelNo" "CX2640"
 "Cart.Name" "RealSports Baseball (07-09-1982) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/rsbaseball/rsbaseball.htm"
 ""
 
 "Cart.MD5" "c738fc3f5aae1e8f86f7249f6c82ac81"
@@ -16803,6 +17253,7 @@
 "Cart.Name" "Sweat! - The Decathlon Game (1 of 3) (1983) (Arcadia) (Prototype)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/sweat/sweat.htm"
 ""
 
 "Cart.MD5" "c77c35a6fc3c0f12bf9e8bae48cba54b"
@@ -16860,6 +17311,7 @@
 "Cart.ModelNo" "CX2687"
 "Cart.Name" "Tempest (01-05-1984) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/tempest/tempest.htm"
 ""
 
 "Cart.MD5" "c866c995c0d2ca7d017fef0fc0c2e268"
@@ -16892,6 +17344,7 @@
 "Cart.Name" "Firefox (1983) (Atari) (Prototype) [a]"
 "Cart.Note" "AKA Combat II, Fighter Command"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/fightercommand/fightercommand.htm"
 ""
 
 "Cart.MD5" "c8fa5d69d9e555eb16068ef87b1c9c45"
@@ -17016,6 +17469,7 @@
 "Cart.Manufacturer" "Amiga - Video Soft, Jerry Lawson, Dan McElroy"
 "Cart.Name" "3-D Genesis (1983) (Amiga) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/3dgenesis/3dgenesis.htm"
 "Display.Phosphor" "YES"
 ""
 
@@ -17062,7 +17516,7 @@
 "Cart.Manufacturer" "Atari, Larry Kaplan - Sears"
 "Cart.ModelNo" "CX2664 - 6-99818"
 "Cart.Name" "Brain Games (1978) (Atari) (4K)"
-"Cart.Note" "Uses Keypad Controllers"
+"Cart.Note" "Uses Keyboard Controllers"
 "Controller.Left" "KEYBOARD"
 "Controller.Right" "KEYBOARD"
 ""
@@ -17071,6 +17525,7 @@
 "Cart.Manufacturer" "Silvio Mogno"
 "Cart.Name" "Rainbow Invaders"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=823"
 ""
 
 "Cart.MD5" "cb9b2e9806a7fbab3d819cfe15f0f05a"
@@ -17108,7 +17563,7 @@
 "Cart.Manufacturer" "Atari, Carla Meninsky - Sears"
 "Cart.ModelNo" "CX2660 - 49-75187"
 "Cart.Name" "Star Raiders (1982) (Atari)"
-"Cart.Note" "Uses Joystick (left) and Keypad (right) Controllers"
+"Cart.Note" "Uses Joystick (left) and Keyboard (right) Controllers"
 ""
 
 "Cart.MD5" "cbe5a166550a8129a5e6d374901dffad"
@@ -17133,6 +17588,7 @@
 "Cart.Manufacturer" "Dave Neuman"
 "Cart.Name" "Space Battle (PAL)"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=848"
 ""
 
 "Cart.MD5" "cc1939e4769d0c157ace326efcfdcf80"
@@ -17158,9 +17614,10 @@
 "Cart.Manufacturer" "Atari - CCW, Christopher H. Omarzu, Preston Stuart, Bruce Williams"
 "Cart.ModelNo" "CX26101"
 "Cart.Name" "Oscar's Trash Race (03-30-1983) (Atari) (Prototype)"
-"Cart.Note" "Uses the Keypad Controllers"
+"Cart.Note" "Uses the Keyboard Controllers"
 "Cart.Rarity" "Prototype"
 "Controller.Right" "KEYBOARD"
+"Cart.Url" "http://www.atariprotos.com/2600/software/oscar/oscar.htm"
 ""
 
 "Cart.MD5" "cc724ebe74a109e39c0b2784ddc980ca"
@@ -17168,6 +17625,7 @@
 "Cart.ModelNo" "CX2682"
 "Cart.Name" "Krull (05-27-1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/krull/krull.htm"
 ""
 
 "Cart.MD5" "cc74ddb45d7bc4d04c2e6f1907416699"
@@ -17177,6 +17635,7 @@
 "Cart.MD5" "cca33ae30a58f39e3fc5d80f94dc0362"
 "Cart.Name" "Okie Dokie (PD)"
 "Cart.Rarity" "New Release"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=40"
 ""
 
 "Cart.MD5" "ccb56107ff0492232065b85493daa635"
@@ -17224,6 +17683,7 @@
 "Cart.ModelNo" "CX2675"
 "Cart.Name" "Ms. Pac-Man (09-20-1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/mspacman/mspac.htm"
 ""
 
 "Cart.MD5" "cd032ab6764b55438a7b0bfb5e78595a"
@@ -17283,6 +17743,7 @@
 "Cart.Name" "A-Team, The (05-08-1984) (Atari) (Prototype)"
 "Cart.Note" "AKA Saboteur"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/ateam/ateam.htm"
 ""
 
 "Cart.MD5" "cd88ef1736497288c4533bcca339f881"
@@ -17301,6 +17762,7 @@
 "Cart.ModelNo" "4 AR-4102"
 "Cart.Name" "Suicide Mission (1982) (Arcadia) (Prototype)"
 "Cart.Note" "AKA Meteoroids"
+"Cart.Url" "http://www.atariprotos.com/2600/software/suicidemission/suicidemission.htm"
 "Display.Phosphor" "YES"
 ""
 
@@ -17319,6 +17781,7 @@
 "Cart.Name" "Centipede - Amiga Mouse Hack v1.4 (PAL60) (Full-Speed) (TJ)"
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
 ""
 
 "Cart.MD5" "cdb81bf33d830ee4ee0606ee99e84dba"
@@ -17339,7 +17802,7 @@
 "Cart.Manufacturer" "Computer Magic - CommaVid, John Bronstein"
 "Cart.ModelNo" "CM-001"
 "Cart.Name" "MagiCard (1981) (CommaVid)"
-"Cart.Note" "Uses the Keypad Controllers"
+"Cart.Note" "Uses the Keyboard Controllers"
 ""
 
 "Cart.MD5" "ce17325834bf8b0a0d0d8de08478d436"
@@ -17353,6 +17816,7 @@
 "Cart.ModelNo" "CX2689"
 "Cart.Name" "Kangaroo (01-19-1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/kangaroo/kangaroo.htm"
 ""
 
 "Cart.MD5" "ce243747bf34a2de366f846b3f4ca772"
@@ -17424,6 +17888,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Reactor - Atari Trak-Ball Hack v1.3 (PAL60) (Half-Speed) (TJ)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
 ""
 
 "Cart.MD5" "cedbd67d1ff321c996051eec843f8716"
@@ -17500,6 +17965,7 @@
 "Cart.Manufacturer" "Starpath Corporation"
 "Cart.Name" "Going-Up (1983) (Starpath) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/goingup/goingup.htm"
 ""
 
 "Cart.MD5" "cfc226d04d7490b69e155abd7741e98c"
@@ -17548,6 +18014,7 @@
 "Cart.MD5" "cfef1a2d1f6a5ee7a5e1f43f3056f112"
 "Cart.Name" "Skeleton+ (05-05-2003) (Eric Ball) (NTSC)"
 "Cart.Sound" "STEREO"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=226"
 ""
 
 "Cart.MD5" "cff1e9170bdbc29859b815203edf18fa"
@@ -17586,6 +18053,7 @@
 "Cart.Name" "Medieval Mayhem (PAL)"
 "Cart.Rarity" "Homebrew"
 "Cart.Sound" "STEREO"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=842"
 "Controller.MouseAxis" "AUTO 55"
 ""
 
@@ -17687,8 +18155,9 @@
 
 "Cart.MD5" "d0b9f705aa5f61f47a748a66009ae2d2"
 "Cart.Name" "Synthcart (14-01-2002) (Paul Slocum)"
-"Cart.Note" "Uses Keypad Controllers"
+"Cart.Note" "Uses Keyboard Controllers"
 "Display.Phosphor" "YES"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=101"
 ""
 
 "Cart.MD5" "d0cb28e1b7bd6c7f683a0917b59f707e"
@@ -17709,6 +18178,7 @@
 "Cart.Name" "Centipede - Atari Mouse Hack v1.4 (PAL) (Half-Speed) (TJ)"
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
 ""
 
 "Cart.MD5" "d0e15a3ce322c5af60f07343594392af"
@@ -17717,6 +18187,7 @@
 "Cart.Name" "Surf's Up (1983) (Amiga) (Prototype) (4K)"
 "Cart.Note" "Uses the Joyboard controller"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/surfsup/surfsup.htm"
 ""
 
 "Cart.MD5" "d0e9beb2347595c6c7d158e9d83d2da8"
@@ -17852,6 +18323,7 @@
 "Cart.ModelNo" "08-08-1980"
 "Cart.Name" "Laser Blast (08-08-1980) (Activision) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/laserblast/laserblast.htm"
 ""
 
 "Cart.MD5" "d2c957dd7746521b51bb09fde25c5774"
@@ -17869,6 +18341,7 @@
 "Cart.ModelNo" "C 3007"
 "Cart.Name" "Snoopy and the Red Baron (Canal 3)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/snoopy/snoopy.htm"
 ""
 
 "Cart.MD5" "d2f713c78a9ebba9da6d10aeefc6f20f"
@@ -17882,6 +18355,7 @@
 "Cart.ModelNo" "GN-080"
 "Cart.Name" "Spinning Fireball (1983) (ZiMAG) (Prototype) [a]"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/firespinner/firespinner.htm"
 "Display.Phosphor" "YES"
 ""
 
@@ -17936,6 +18410,7 @@
 "Cart.Manufacturer" "UA Limited"
 "Cart.Name" "Funky Fish (1983) (UA Limited) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/funkyfish/funkyfish.htm"
 "Display.Phosphor" "YES"
 ""
 
@@ -17944,6 +18419,7 @@
 "Cart.ModelNo" "PB5065"
 "Cart.Name" "Star Wars - Ewok Adventure (1983) (Parker Bros) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/ewok/ewok.htm"
 ""
 
 "Cart.MD5" "d45bf71871b196022829aa3b96bfcfd4"
@@ -17997,6 +18473,7 @@
 
 "Cart.MD5" "d4aa89e96d2902692f5c45f36903d336"
 "Cart.Name" "Euchre (NTSC) (Erik Eid) (PD)"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=126"
 ""
 
 "Cart.MD5" "d4c590ccfb611a73b3331359700c01a3"
@@ -18015,6 +18492,7 @@
 "Cart.Name" "Power Play Arcade Video Game Album (1983) (Amiga) (Prototype)"
 "Cart.Note" "3-D Ghost Attack only (3-D Genesis & 3-D Havoc missing in ROM)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/powerarcade/powerarcade.htm"
 "Display.Phosphor" "YES"
 ""
 
@@ -18202,6 +18680,7 @@
 "Cart.ModelNo" "CX26157"
 "Cart.Name" "Stunt Cycle (1980) (Atari) (Prototype) (4K)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/stuntcycle/stuntcycle.htm"
 ""
 
 "Cart.MD5" "d782543818b6320e4f60d77da2b596de"
@@ -18225,6 +18704,7 @@
 "Cart.ModelNo" "PB5320"
 "Cart.Name" "Super Cobra (1983) (Parker Bros) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/supercobra/supercobra.htm"
 ""
 
 "Cart.MD5" "d7b58303ec8d8c4dbcbf54d3b9734c7e"
@@ -18340,6 +18820,7 @@
 "Cart.Name" "Centipede - Amiga Mouse Hack v1.4 (PAL) (Half-Speed) (TJ)"
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
 ""
 
 "Cart.MD5" "d97e3d0b4575ce0b9a6132e19cfeac6e"
@@ -18354,6 +18835,7 @@
 "Cart.ModelNo" "MT4646"
 "Cart.Name" "Rocky & Bullwinkle (04-20-1983) (M Network) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/rocky/rocky.htm"
 ""
 
 "Cart.MD5" "d9ab6b67a17da51e5ad13717e93fa2e2"
@@ -18400,6 +18882,7 @@
 "Cart.ModelNo" "713-111 - GN-050"
 "Cart.Name" "Pizza Chef (1983) (ZiMAG) (Prototype)"
 "Cart.Note" "AKA Pizza Time"
+"Cart.Url" "http://www.atariprotos.com/2600/software/pizzachef/pizzachef.htm"
 ""
 
 "Cart.MD5" "da0fb2a484d0d2d8f79d6e063c94063d"
@@ -18531,6 +19014,7 @@
 "Cart.ModelNo" "MT4646"
 "Cart.Name" "Rocky & Bullwinkle (1983) (Mattel) (Prototype) (4K)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/rocky/rocky.htm"
 ""
 
 "Cart.MD5" "db971b6afc9d243f614ebf380af0ac60"
@@ -18561,6 +19045,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Reactor - Atari Trak-Ball Hack v1.3 (NTSC) (Full-Speed) (TJ)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
 ""
 
 "Cart.MD5" "dbc7485ad5814d466de780a3e7ed3b46"
@@ -18596,6 +19081,7 @@
 "Cart.Name" "Garfield (06-21-1984) (Atari) (Prototype)"
 "Cart.Note" "AKA Garfield on the Run"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/garfield/garfield.htm"
 ""
 
 "Cart.MD5" "dc33479d66615a3b09670775de4c2a38"
@@ -18615,6 +19101,7 @@
 "Cart.Manufacturer" "Atari, Warren Robinett"
 "Cart.Name" "Elf Adventure (05-02-83) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/elfadventure/elfadventure.htm"
 ""
 
 "Cart.MD5" "dc97cbcf091a5ef4ca7fe95dc0848036"
@@ -18622,6 +19109,7 @@
 "Cart.ModelNo" "CX2683"
 "Cart.Name" "Crazy Climber (1983) (Atari) (Prototype) [a2]"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/crazyclimber/crazyclimber.htm"
 ""
 
 "Cart.MD5" "dca90ea1084a2fdbe300d7178ca1a138"
@@ -18683,6 +19171,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Missile Control - Atari Mouse Hack v1.15 (PAL) (TJ)"
 "Cart.Note" "Uses Atari Mouse Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1184"
 ""
 
 "Cart.MD5" "dd1422ffd538e2e33b339ebeef4f259d"
@@ -18753,8 +19242,9 @@
 "Cart.Manufacturer" "Manuel Rotschkar (Xype)"
 "Cart.Name" "Seawolf (2004)"
 "Cart.Highscore" "{\"notes\":\"User defined variation based on switches\",\"score_addresses\":[\"0x90\",\"0x91\",\"0x92\"],\"score_digits\":6,\"variations_address\":\"0x00\",\"variations_count\":4}"
+"Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=287"
 ""
-
 
 "Cart.MD5" "de0173ed6be9de6fd049803811e5f1a8"
 "Cart.Manufacturer" "Xonox - K-Tel Software - Product Guild, Anthony R. Henderson"
@@ -18849,6 +19339,7 @@
 "Cart.ModelNo" "CX26122"
 "Cart.Name" "Sinistar (01-04-1984) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/sinistar/sinistar.htm"
 ""
 
 "Cart.MD5" "dea0ade296f7093e71185e802b500db8"
@@ -18872,6 +19363,7 @@
 "Cart.Name" "S.A.C. Alert (1983) (Amiga) (Prototype) (PAL)"
 "Cart.Note" "Uses Joyboard"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/sacalert/sacalert.htm"
 ""
 
 "Cart.MD5" "df2745d585238780101df812d00b49f4"
@@ -18936,8 +19428,9 @@
 "Cart.Manufacturer" "Atari - CCW, Michael Callahan, Preston Stuart"
 "Cart.ModelNo" "CX26103"
 "Cart.Name" "Alpha Beam with Ernie (06-03-1983) (Atari) (Prototype) (PAL)"
-"Cart.Note" "Uses Keypad Controllers"
+"Cart.Note" "Uses Keyboard Controllers"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/alphabeam/alphabeam.htm"
 ""
 
 "Cart.MD5" "dfad86dd85a11c80259f3ddb6151f48f"
@@ -18972,6 +19465,7 @@
 "Cart.MD5" "dfe6aa7443bb813cefa35a4cf4887422"
 "Cart.Name" "This Planet Sucks (Greg Troutman) [a1]"
 "Cart.Rarity" "New Release"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=102"
 ""
 
 "Cart.MD5" "dff33523ccd2fdc8912e84cab8e0d982"
@@ -19016,6 +19510,7 @@
 "Cart.ModelNo" "007"
 "Cart.Name" "Halloween (1983) (Wizard Video Games) (Prototype) [a]"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/halloween/halloween.htm"
 ""
 
 "Cart.MD5" "e0b24c3f40a46cda52e29835ab7ad660"
@@ -19042,6 +19537,7 @@
 "Cart.ModelNo" "CX2609 - 49-75186"
 "Cart.Name" "Defender (10-30-1981) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/defender/defender.htm"
 ""
 
 "Cart.MD5" "e10bf1af6bf3b4a253c5bef6577fe923"
@@ -19091,6 +19587,7 @@
 "Cart.Name" "Cabbage Patch Kids (06-14-1984) (Coleco) (Prototype)"
 "Cart.Note" "Adventures in the Park"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/cpk/cpk.htm"
 ""
 
 "Cart.MD5" "e14dc36b24fe22c04fa076e298f2e15f"
@@ -19140,6 +19637,7 @@
 "Cart.Manufacturer" "20th Century Fox, John Russell"
 "Cart.Name" "Alligator People (1983) (20th Century Fox) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/alligator/alligatorpeople.htm"
 ""
 
 "Cart.MD5" "e1b90f1e01b1a316d7bbf141525cc00e"
@@ -19192,6 +19690,7 @@
 "Cart.Name" "SwordQuest - EarthWorld (1982) (Atari) (Prototype)"
 "Cart.Note" "AKA Adventure I, SwordQuest I - EarthWorld"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/earthworld/earthworld.htm"
 ""
 
 "Cart.MD5" "e237ee91514d5ed535c95a14fc608c11"
@@ -19212,6 +19711,7 @@
 "Cart.Name" "Lord of the Rings (1983) (Parker Bros) (Prototype)"
 "Cart.Note" "Journey to Rivendell (The Lord of the Rings I)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/lotr/lotr.htm"
 ""
 
 "Cart.MD5" "e25e173740f7ecc0e23025445c4591f3"
@@ -19230,6 +19730,7 @@
 "Cart.Manufacturer" "Manuel Polik"
 "Cart.Name" "Star Fire (2003) (XYPE) (PAL)"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=229"
 "Cart.Highscore" "{\"score_addresses\":[\"0x81\",\"0x82\",\"0x83\"],\"score_digits\":6,\"special_address\":\"0x84\",\"special_label\":\"Wave\",\"special_zero_based\":true,\"variations_count\":1}"
 ""
 
@@ -19246,6 +19747,7 @@
 "Cart.Name" "Adventure Plus (2003) (Steve Engelhardt) (Hack)"
 "Cart.Note" "Hack of Adventure"
 "Cart.Rarity" "Hack"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=145"
 ""
 
 "Cart.MD5" "e2904748da63dfefc8816652b924b642"
@@ -19263,6 +19765,7 @@
 "Cart.ModelNo" "CX2692"
 "Cart.Name" "Moon Patrol (07-04-1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/moonpatrol/moonpatrol.htm"
 ""
 
 "Cart.MD5" "e2c89f270f72cd256ed667507fa038a2"
@@ -19329,6 +19832,7 @@
 "Cart.ModelNo" "11035"
 "Cart.Name" "Save the Whales (1983) (20th Century Fox) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/savethewhales/savethewhales.htm"
 ""
 
 "Cart.MD5" "e37c8055d70979af354251ebe9f1b7dd"
@@ -19371,8 +19875,9 @@
 "Cart.Manufacturer" "Atari, Bill Aspromonte, Dr. Lee Salk"
 "Cart.ModelNo" "CX26135"
 "Cart.Name" "Peek-A-Boo (1984) (Atari) (Prototype)"
-"Cart.Note" "Uses the Keypad Controllers"
+"Cart.Note" "Uses the Keyboard Controllers"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/peekaboo/peekaboo.htm"
 ""
 
 "Cart.MD5" "e42b937c30c617241ca9e01e4510c3f6"
@@ -19385,6 +19890,7 @@
 "Cart.ModelNo" "CX2681"
 "Cart.Name" "Battlezone (05-02-1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/battlezone/battlezone.htm"
 ""
 
 "Cart.MD5" "e48d3a4056ede9393586421996db1ae8"
@@ -19392,6 +19898,7 @@
 "Cart.Name" "Centipede - Atari Trak-Ball Hack v1.4 (PAL60) (Full-Speed) (TJ)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
 ""
 
 "Cart.MD5" "e49ac0ec879a0d7820bc2598fc2cfcd4"
@@ -19484,6 +19991,7 @@
 "Cart.Name" "Sweat! - The Decathlon Game (1983) (Arcadia) (Prototype)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/sweat/sweat.htm"
 ""
 
 "Cart.MD5" "e5359cbbbff9c6d7fe8aeff5fb471b46"
@@ -19514,6 +20022,7 @@
 "Cart.MD5" "e56da674188ba2f02c7a0a343a01236f"
 "Cart.Name" "This Planet Sucks Demo 4 (Greg Troutman) (PD)"
 "Cart.Rarity" "New Release"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=102"
 ""
 
 "Cart.MD5" "e59d022d524d05acc19515598c831e4d"
@@ -19535,6 +20044,7 @@
 
 "Cart.MD5" "e5d5085123a98c1e61818caa2971e999"
 "Cart.Name" "Euchre (PAL) (Erik Eid) (PD)"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=126"
 ""
 
 "Cart.MD5" "e5d72ff8bab4450be57785cc9e83f3c0"
@@ -19549,6 +20059,7 @@
 "Cart.ModelNo" "720020-1A, IA3611"
 "Cart.Name" "Cheese (Dragonfire Beta) (05-21-1982) (Imagic) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/dragonfire/dragonfire.htm"
 "Display.Phosphor" "YES"
 ""
 
@@ -19632,6 +20143,7 @@
 "Cart.Name" "Oystron (V2.8) (Piero Cavina) (PD)"
 "Cart.Rarity" "New Release"
 "Cart.Highscore" "{\"score_addresses\":[\"0xd4\",\"0xd3\"],\"score_digits\":5,\"score_trailing_zeroes\":1,\"variations_address\":\"0xe5\",\"variations_count\":3,\"variations_zero_based\":true}"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=134"
 ""
 
 "Cart.MD5" "e66e5af5dea661d58420088368e4ef0d"
@@ -19784,6 +20296,7 @@
 "Cart.ModelNo" "PB5540"
 "Cart.Name" "Star Wars - The Arcade Game (12-05-1983) (Parker Bros) (Prototype) (4K)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/starwarsarcade/starwarsarcade.htm"
 "Display.Phosphor" "YES"
 ""
 
@@ -19853,6 +20366,7 @@
 "Cart.MD5" "e959b5a2c882ccaacb43c32790957c2d"
 "Cart.Name" "Phantom II & Pirate (NTSC)"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=843"
 ""
 
 "Cart.MD5" "e97eafd0635651d3999cece953c06bd5"
@@ -19887,6 +20401,7 @@
 "Cart.Note" "Uses Atari Mouse Controller"
 "Display.Format" "PAL60"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_count\":1}"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1188"
 ""
 
 "Cart.MD5" "e9e646f730b8400cd5da08c849ef3e3b"
@@ -19901,6 +20416,7 @@
 "Cart.Name" "Desert Falcon (05-27-1987) (Atari) (Prototype) (PAL)"
 "Cart.Note" "AKA Nile Flyer, Sphinx"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/desertfalcon/desertfalcon.htm"
 ""
 
 "Cart.MD5" "e9f25c7af4f27c9e1b5b8f6fe6141e8c"
@@ -19909,6 +20425,7 @@
 "Cart.Name" "Scramble (NTSC)"
 "Cart.Note" "Compatible with Genesis controller"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1093"
 "Controller.Left" "JOYSTICK"
 "Display.Phosphor" "YES"
 ""
@@ -19918,6 +20435,7 @@
 "Cart.ModelNo" "CX26122"
 "Cart.Name" "Sinistar (01-XX-1984) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/sinistar/sinistar.htm"
 ""
 
 "Cart.MD5" "ea6d40db5498d6386571a76df448aa4c"
@@ -19981,6 +20499,7 @@
 "Cart.Note" "Stereo sound"
 "Cart.Rarity" "Homebrew"
 "Cart.Sound" "STEREO"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=226"
 ""
 
 "Cart.MD5" "eb3d680699f8762f71f38e28e321234d"
@@ -20076,6 +20595,7 @@
 "Cart.Name" "Centipede - Amiga Mouse Hack v1.4 (NTSC) (Half-Speed) (TJ)"
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
 ""
 
 "Cart.MD5" "ebf2dff78a08733251bf3838f02f7938"
@@ -20083,6 +20603,7 @@
 "Cart.ModelNo" "CM-010"
 "Cart.Name" "Rush Hour (1983) (Commavid) (Prototype) [a2]"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/rushhour/rushhour.htm"
 ""
 
 "Cart.MD5" "ebf9038e927e6a0db3e0d170c59911e6"
@@ -20102,6 +20623,14 @@
 "Cart.ModelNo" "876.482 1"
 "Cart.Name" "Landung in der Normandie (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Commando Raid"
+""
+
+"Cart.MD5" "ec44dcf2ddb4319962fc43b725a902e8"
+"Cart.Manufacturer" "Thomas Jentzsch"
+"Cart.Name" "Robot City RC8 (NTSC)"
+"Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1233"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "ec5c861b487a5075876ab01155e74c6c"
@@ -20219,6 +20748,7 @@
 "Cart.Manufacturer" "Atari, Carol Shaw - Ralph Lauren"
 "Cart.Name" "Polo (1978) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/polo/polo.htm"
 ""
 
 "Cart.MD5" "ee456542b93fa8d7e6a8c689b5a0413c"
@@ -20258,6 +20788,7 @@
 "Cart.Manufacturer" "Activision"
 "Cart.Name" "Unknown Activision Game (10-29-1982) (Activision) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/unknown1/unknown1.htm"
 ""
 
 "Cart.MD5" "ee6cbedf6c0aac90faa0a8dbc093ffbe"
@@ -20364,6 +20895,7 @@
 "Cart.ModelNo" "CX26118"
 "Cart.Name" "Millipede (1984) (Atari) (Prototype) (PAL)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/millipede/millipede.htm"
 ""
 
 "Cart.MD5" "efefc02bbc5258815457f7a5b8d8750a"
@@ -20377,6 +20909,7 @@
 "Cart.Name" "Centipede - Atari Mouse Hack v1.4 (NTSC) (Half-Speed) (TJ)"
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
 ""
 
 "Cart.MD5" "efffafc17b7cb01b9ca35324aa767364"
@@ -20398,6 +20931,7 @@
 "Cart.Manufacturer" "Dave Neuman"
 "Cart.Name" "Space Battle (NTSC)"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=848"
 ""
 
 "Cart.MD5" "f04ee80011d95798006378643650aaa7"
@@ -20405,12 +20939,14 @@
 "Cart.ModelNo" "CX26114"
 "Cart.Name" "Pigs in Space (1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/pigsinspace/pigsinspace.htm"
 ""
 
 "Cart.MD5" "f0510abbfbe24ead552e92e3841f63f3"
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Reactor - Atari Mouse Hack v1.3 (NTSC) (Full-Speed) (TJ)"
 "Cart.Note" "Uses Atari Mouse Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
 ""
 
 "Cart.MD5" "f0536303f49006806bac3aec15738336"
@@ -20424,6 +20960,7 @@
 "Cart.Name" "Bionic Breakthrough (1984) (Atari) (Prototype)"
 "Cart.Note" "Uses Mindlink Controller (left only)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/bionic/bionic.htm"
 "Controller.Left" "MINDLINK"
 ""
 
@@ -20437,6 +20974,7 @@
 "Cart.Manufacturer" "Paul Slocum"
 "Cart.Name" "Test Cart (2002) (Paul Slocum)"
 "Display.Phosphor" "YES"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=102"
 ""
 
 "Cart.MD5" "f066bea7ab0a37b83c83c924a87c5b67"
@@ -20477,6 +21015,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Reactor - Atari Mouse Hack v1.3 (PAL60) (Full-Speed) (TJ)"
 "Cart.Note" "Uses Atari Mouse Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
 ""
 
 "Cart.MD5" "f0e0addc07971561ab80d9abe1b8d333"
@@ -20493,6 +21032,7 @@
 "Cart.Name" "Shooting Arcade (03-07-1989) (Atari) (Prototype) [a5]"
 "Cart.Note" "Uses the Light Gun Controller (left only)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/shootingarcade/shootingarcade.htm"
 ""
 
 "Cart.MD5" "f10e3f45fb01416c87e5835ab270b53a"
@@ -20517,6 +21057,7 @@
 "Cart.ModelNo" "CX26110"
 "Cart.Name" "Crystal Castles (01-04-1984) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/crystalcastles/crystalcastles.htm"
 "Display.Phosphor" "YES"
 ""
 
@@ -20529,6 +21070,7 @@
 "Cart.ModelNo" "CG-01-P"
 "Cart.Name" "Lady Bug (PAL60)"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=829"
 "Console.RightDiff" "A"
 "Display.Phosphor" "YES"
 "Cart.Highscore" "{\"score_addresses\":[\"0x8e\",\"0x8d\",\"0x8c\"],\"score_digits\":6,\"special_address\":\"0x89\",\"special_bcd\":false,\"special_label\":\"Part\",\"special_zero_based\":true,\"variations_address\":\"0x8a\",\"variations_count\":3,\"variations_zero_based\":true}"
@@ -20633,6 +21175,7 @@
 "Cart.MD5" "f20bd756f3990e06c492f53cd0168e68"
 "Cart.Name" "Skeleton+ (03-05-2003) (Eric Ball) (NTSC)"
 "Cart.Sound" "STEREO"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=226"
 ""
 
 "Cart.MD5" "f21813aa050437f0dbc8479864acec6d"
@@ -20643,6 +21186,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Challenge of... Nexar, The - Amiga Mouse Hack v1.1 (PAL) (TJ)"
 "Cart.Note" "Uses Amiga Mouse Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1181"
 ""
 
 "Cart.MD5" "f240ba9f8092d2e8a4c7d82c554bf509"
@@ -20657,7 +21201,7 @@
 "Cart.Manufacturer" "Atari, Larry Kaplan"
 "Cart.ModelNo" "CX2664, CX2664P"
 "Cart.Name" "Brain Games (1978) (Atari) (PAL)"
-"Cart.Note" "Uses Keypad Controllers"
+"Cart.Note" "Uses Keyboard Controllers"
 "Controller.Left" "KEYBOARD"
 "Controller.Right" "KEYBOARD"
 ""
@@ -20666,7 +21210,7 @@
 "Cart.Manufacturer" "Atari - CCW, Christopher H. Omarzu"
 "Cart.ModelNo" "CX26104"
 "Cart.Name" "Big Bird's Egg Catch (1983) (Atari) (PAL)"
-"Cart.Note" "Uses Kids/Keypad Controllers"
+"Cart.Note" "Uses Kids/Keyboard Controllers"
 "Cart.Rarity" "Rare"
 "Controller.Left" "KEYBOARD"
 "Controller.Right" "KEYBOARD"
@@ -20683,7 +21227,7 @@
 "Cart.Manufacturer" "Atari - CCW, Michael Callahan, Preston Stuart"
 "Cart.ModelNo" "CX26103"
 "Cart.Name" "Alpha Beam with Ernie (1983) (Atari) (PAL)"
-"Cart.Note" "Uses Keypad Controllers"
+"Cart.Note" "Uses Keyboard Controllers"
 "Cart.Rarity" "Rare"
 ""
 
@@ -20711,6 +21255,7 @@
 "Cart.Manufacturer" "AtariAge - Fred Quimby"
 "Cart.Name" "Gingerbread Man (Fred Quimby)"
 "Cart.Rarity" "New Release"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=867"
 ""
 
 "Cart.MD5" "f3213a8a702b0646d2eaf9ee0722b51c"
@@ -20764,6 +21309,7 @@
 "Cart.Manufacturer" "AtariAge"
 "Cart.Name" "Toyshop Trouble (AtariAge)"
 "Cart.Note" "F8 Emulator Release"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=873"
 ""
 
 "Cart.MD5" "f3c431930e035a457fe370ed4d230659"
@@ -20775,6 +21321,7 @@
 "Cart.ModelNo" "CM-010"
 "Cart.Name" "Rush Hour (1983) (Commavid) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/rushhour/rushhour.htm"
 ""
 
 "Cart.MD5" "f3dfae774f3bd005a026e29894db40d3"
@@ -20858,6 +21405,7 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Challenge of... Nexar, The - Atari Trak-Ball Hack v1.2 (PAL) (TJ)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1181"
 ""
 
 "Cart.MD5" "f4ab6bd5f80d8988141edde4c84b23b5"
@@ -20871,6 +21419,7 @@
 "Cart.ModelNo" "PB5540"
 "Cart.Name" "Star Wars - The Arcade Game (01-03-1984) (Parker Bros) (Prototype) (4K)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/starwarsarcade/starwarsarcade.htm"
 "Display.Phosphor" "YES"
 ""
 
@@ -20893,6 +21442,7 @@
 "Cart.Name" "Cabbage Patch Kids (08-21-1984) (Coleco) (Prototype)"
 "Cart.Note" "Adventures in the Park"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/cpk/cpk.htm"
 ""
 
 "Cart.MD5" "f526d0c519f5001adb1fc7948bfbb3ce"
@@ -20968,6 +21518,7 @@
 "Cart.ModelNo" "CX2665"
 "Cart.Name" "Frog Pond (08-27-1982) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/frogpond/frogpond.htm"
 ""
 
 "Cart.MD5" "f687ec4b69611a7f78bd69b8a567937a"
@@ -21010,6 +21561,7 @@
 "Cart.Name" "Cabbage Patch Kids (09-13-1984) (Coleco) (Prototype) [a]"
 "Cart.Note" "Adventures in the Park"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/cpk/cpk.htm"
 ""
 
 "Cart.MD5" "f6c13e816e58c8c62f82b2c8b91a2d67"
@@ -21052,6 +21604,7 @@
 "Cart.Manufacturer" "Fabrizio Zavagli"
 "Cart.Name" "Space Treat Deluxe (2003) (PAL)"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=125"
 ""
 
 "Cart.MD5" "f724d3dd2471ed4cf5f191dbb724b69f"
@@ -21102,6 +21655,7 @@
 "Cart.Name" "Steeplechase (04-15-1980) (Sears) (Prototype)"
 "Cart.Note" "Uses the Paddle Controllers"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/steeplechase/steeplechase.htm"
 ""
 
 "Cart.MD5" "f777444fc21a5925e066b68b1d350575"
@@ -21180,6 +21734,7 @@
 "Cart.Name" "Medieval Mayhem (NTSC)"
 "Cart.Rarity" "Homebrew"
 "Cart.Sound" "STEREO"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=842"
 "Controller.MouseAxis" "AUTO 55"
 ""
 
@@ -21261,6 +21816,7 @@
 "Cart.ModelNo" "CX2640"
 "Cart.Name" "RealSports Baseball (1982) (Atari) (Prototype) (4K)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/rsbaseball/rsbaseball.htm"
 ""
 
 "Cart.MD5" "f8ff34b53d86f55bd52d7a520af6d1dc"
@@ -21311,6 +21867,7 @@
 "Cart.ModelNo" "ASC2001"
 "Cart.Name" "Confrontation (1983) (Answer) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/confrontation/confrontation.htm"
 "Display.Phosphor" "YES"
 ""
 
@@ -21340,6 +21897,7 @@
 "Cart.MD5" "f98d869f287d2ce4f8fb36e0686929d9"
 "Cart.Name" "Skeleton+ (17-04-2003) (Eric Ball) (NTSC)"
 "Cart.Sound" "STEREO"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=226"
 ""
 
 "Cart.MD5" "f991e0670b5f67faa6b6211e9bd81b91"
@@ -21401,7 +21959,7 @@
 "Cart.Manufacturer" "Atari - CCW, Christopher H. Omarzu, Preston Stuart, Bruce Williams"
 "Cart.ModelNo" "CX26101"
 "Cart.Name" "Oscar's Trash Race (1984) (Atari)"
-"Cart.Note" "Uses the Keypad Controllers"
+"Cart.Note" "Uses the Keyboard Controllers"
 "Controller.Left" "KEYBOARD"
 "Controller.Right" "KEYBOARD"
 ""
@@ -21421,6 +21979,7 @@
 "Cart.ModelNo" "CX26100"
 "Cart.Name" "Bugs Bunny (1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/bugsbunny/bugsbunny.htm"
 ""
 
 "Cart.MD5" "fa529ec88eca679f6d5fd0ccb2120e46"
@@ -21440,6 +21999,7 @@
 "Cart.Name" "Donald Duck's Speedboat (04-18-1983) (Atari) (Prototype) (PAL)"
 "Cart.Note" "AKA Donald Duck's Regatta"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/donaldduck/donaldduck.htm"
 ""
 
 "Cart.MD5" "fa7e11a3dbea4365975cd2f094e61d25"
@@ -21455,6 +22015,7 @@
 "Cart.Name" "Juno First (2009) (PAL60)"
 "Cart.Note" "AtariVox supported"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=894"
 "Controller.Right" "ATARIVOX"
 "Display.Phosphor" "YES"
 ""
@@ -21464,6 +22025,7 @@
 "Cart.ModelNo" "11008"
 "Cart.Name" "Fantastic Voyage (11-04-1982) (20th Century Fox) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/fantastic/fantastic.htm"
 ""
 
 "Cart.MD5" "fabca526d57de46768b392f758f1a008"
@@ -21557,6 +22119,7 @@
 "Cart.Manufacturer" "Manuel Polik"
 "Cart.Name" "Star Fire (2003) (XYPE)"
 "Cart.Rarity" "Homebrew"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=229"
 "Cart.Highscore" "{\"score_addresses\":[\"0x81\",\"0x82\",\"0x83\"],\"score_digits\":6,\"special_address\":\"0x84\",\"special_label\":\"Wave\",\"special_zero_based\":true,\"variations_count\":1}"
 ""
 
@@ -21584,6 +22147,7 @@
 "Cart.Name" "Shooting Arcade (03-07-1989) (Atari) (Prototype)"
 "Cart.Note" "Uses the Light Gun Controller (left only)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/shootingarcade/shootingarcade.htm"
 ""
 
 "Cart.MD5" "fbac6476e7b2b20d246202af81662c88"
@@ -21669,6 +22233,7 @@
 "Cart.ModelNo" "GN-070"
 "Cart.Name" "Mysterious Thief, A (1983) (ZiMAG) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/mysteriousthief/mysteriousthief.htm"
 "Display.Phosphor" "YES"
 ""
 
@@ -21676,6 +22241,7 @@
 "Cart.Manufacturer" "Amiga - Video Soft, Michael K. Glass, Jerry Lawson"
 "Cart.Name" "3-D Ghost Attack (1983) (Amiga) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/3dghostattack/3dghostattack.htm"
 "Display.Phosphor" "YES"
 ""
 
@@ -21708,6 +22274,7 @@
 "Cart.ModelNo" "CX2688"
 "Cart.Name" "Jungle Hunt (02-03-1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/junglehunt/junglehunt.htm"
 ""
 
 "Cart.MD5" "fd4f5536fd80f35c64d365df85873418"
@@ -21733,6 +22300,7 @@
 "Cart.Name" "Surf's Up (1983) (Amiga) (Prototype) [a2]"
 "Cart.Note" "Uses the Joyboard controller"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/surfsup/surfsup.htm"
 ""
 
 "Cart.MD5" "fd8b4ee0d57605b35e236e814f706ff1"
@@ -21789,6 +22357,7 @@
 "Cart.ModelNo" "11035"
 "Cart.Name" "Save the Whales (02-07-1983) (20th Century Fox) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/savethewhales/savethewhales.htm"
 ""
 
 "Cart.MD5" "fe67087f9c22655ce519616fc6c6ef4d"
@@ -21796,6 +22365,7 @@
 "Cart.ModelNo" "CX26142"
 "Cart.Name" "Crack'ed (11-28-1988) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/cracked/cracked.htm"
 ""
 
 "Cart.MD5" "fe6abc0f63e31e2646c9c600926b5b7f"
@@ -21804,6 +22374,7 @@
 "Cart.Name" "4 in 1 (02-19-1987) (Atari) (Prototype)"
 "Cart.Note" "Home Run, Canyon Bomber, Sky Diver, Night Driver"
 "Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/4in1/4in1.htm"
 "Cart.Type" "4IN1"
 ""
 

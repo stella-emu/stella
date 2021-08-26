@@ -304,7 +304,7 @@ bool RomListWidget::handleKeyDown(StellaKey key, StellaMod mod)
 {
   // Ignore all Alt-mod keys
   if(StellaModTest::isAlt(mod))
-    return true;
+    return false;
 
   bool handled = true;
   int oldSelectedItem = _selectedItem;

@@ -163,7 +163,6 @@ int DialogContainer::addDialog(Dialog* d)
       myDialogStack.top()->tooltip().hide();
 
     d->setDirty();
-    d->resetSurfaces();
     myDialogStack.push(d);
   }
   return myDialogStack.size();
@@ -198,14 +197,6 @@ void DialogContainer::reStack()
 
   // Reset all continuous events
   reset();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DialogContainer::resetSurfaces()
-{
-  myDialogStack.applyAll([&](Dialog*& d) {
-    d->resetSurfaces();
-  });
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

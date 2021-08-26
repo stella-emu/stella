@@ -32,38 +32,38 @@ Joystick::Joystick(Jack jack, const Event& event, const System& system,
   {
     if(!altmap)
     {
-      myUpEvent = Event::JoystickZeroUp;
-      myDownEvent = Event::JoystickZeroDown;
-      myLeftEvent = Event::JoystickZeroLeft;
-      myRightEvent = Event::JoystickZeroRight;
-      myFireEvent = Event::JoystickZeroFire;
+      myUpEvent = Event::LeftJoystickUp;
+      myDownEvent = Event::LeftJoystickDown;
+      myLeftEvent = Event::LeftJoystickLeft;
+      myRightEvent = Event::LeftJoystickRight;
+      myFireEvent = Event::LeftJoystickFire;
     }
     else
     {
-      myUpEvent = Event::JoystickTwoUp;
-      myDownEvent = Event::JoystickTwoDown;
-      myLeftEvent = Event::JoystickTwoLeft;
-      myRightEvent = Event::JoystickTwoRight;
-      myFireEvent = Event::JoystickTwoFire;
+      myUpEvent = Event::QTJoystickThreeUp;
+      myDownEvent = Event::QTJoystickThreeDown;
+      myLeftEvent = Event::QTJoystickThreeLeft;
+      myRightEvent = Event::QTJoystickThreeRight;
+      myFireEvent = Event::QTJoystickThreeFire;
     }
   }
   else
   {
     if(!altmap)
     {
-      myUpEvent = Event::JoystickOneUp;
-      myDownEvent = Event::JoystickOneDown;
-      myLeftEvent = Event::JoystickOneLeft;
-      myRightEvent = Event::JoystickOneRight;
-      myFireEvent = Event::JoystickOneFire;
+      myUpEvent = Event::RightJoystickUp;
+      myDownEvent = Event::RightJoystickDown;
+      myLeftEvent = Event::RightJoystickLeft;
+      myRightEvent = Event::RightJoystickRight;
+      myFireEvent = Event::RightJoystickFire;
     }
     else
     {
-      myUpEvent = Event::JoystickThreeUp;
-      myDownEvent = Event::JoystickThreeDown;
-      myLeftEvent = Event::JoystickThreeLeft;
-      myRightEvent = Event::JoystickThreeRight;
-      myFireEvent = Event::JoystickThreeFire;
+      myUpEvent = Event::QTJoystickFourUp;
+      myDownEvent = Event::QTJoystickFourDown;
+      myLeftEvent = Event::QTJoystickFourLeft;
+      myRightEvent = Event::QTJoystickFourRight;
+      myFireEvent = Event::QTJoystickFourFire;
     }
   }
 }

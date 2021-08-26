@@ -20,6 +20,7 @@
 #include "Dialog.hxx"
 #include "Widget.hxx"
 #include "Font.hxx"
+#include "MediaFactory.hxx"
 
 #include "HelpDialog.hxx"
 
@@ -32,7 +33,8 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
             fontHeight   = Dialog::fontHeight(),
             fontWidth    = Dialog::fontWidth(),
             buttonHeight = Dialog::buttonHeight(),
-            buttonWidth  = Dialog::buttonWidth("Previous"),
+            buttonWidth  = Dialog::buttonWidth(" << "),
+            closeButtonWidth = Dialog::buttonWidth("Close"),
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap();
@@ -47,19 +49,27 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
   xpos = HBORDER;  ypos = _h - buttonHeight - VBORDER;
   myPrevButton =
     new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                     "Previous", GuiObject::kPrevCmd);
+                     "<<", GuiObject::kPrevCmd);
   myPrevButton->clearFlags(Widget::FLAG_ENABLED);
   wid.push_back(myPrevButton);
 
   xpos += buttonWidth + fontWidth;
   myNextButton =
     new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                     "Next", GuiObject::kNextCmd);
+                     ">>", GuiObject::kNextCmd);
   wid.push_back(myNextButton);
 
-  xpos = _w - buttonWidth - HBORDER;
+  xpos += buttonWidth + fontWidth;
+
+  int updButtonWidth = Dialog::buttonWidth("Check for Update" + ELLIPSIS);
+  myUpdateButton =
+    new ButtonWidget(this, font, xpos, ypos, updButtonWidth, buttonHeight,
+                     "Check for Update" + ELLIPSIS, kUpdateCmd);
+  wid.push_back(myUpdateButton);
+
+  xpos = _w - closeButtonWidth - HBORDER;
   ButtonWidget* b =
-    new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
+    new ButtonWidget(this, font, xpos, ypos, closeButtonWidth, buttonHeight,
                      "Close", GuiObject::kCloseCmd);
   wid.push_back(b);
   addCancelWidget(b);
@@ -79,12 +89,11 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
     myDesc[i] =
       new StaticTextWidget(this, font, xpos+lwidth, ypos, _w - xpos - lwidth - HBORDER,
                            fontHeight);
+    myDesc[i]->setID(i);
     ypos += fontHeight;
   }
 
   addToFocusList(wid);
-
-  setHelpAnchor("Hotkeys");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -105,6 +114,7 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
   auto ADD_TEXT = [&](const string& d) { ADD_BIND("", d); };
   auto ADD_LINE = [&]() { ADD_BIND("", ""); };
 
+  setHelpAnchor("Hotkeys");
   switch(page)
   {
     case 1:
@@ -170,6 +180,7 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
       ADD_TEXT("remapped. Please consult the");
       ADD_TEXT("'Options/Input" + ELLIPSIS + "' dialog for");
       ADD_TEXT("more information.");
+      setHelpAnchor("Remapping");
       break;
 
     default:
@@ -191,6 +202,13 @@ void HelpDialog::displayInfo()
   {
     myKey[i]->setLabel(myKeyStr[i]);
     myDesc[i]->setLabel(myDescStr[i]);
+
+    if(BSPF::containsIgnoreCase(myDescStr[i], "Options/Input" + ELLIPSIS))
+      myDesc[i]->setUrl("https://stella-emu.github.io/docs/index.html#Remapping",
+                        "Options/Input" + ELLIPSIS);
+    else
+      // extract URL from label
+      myDesc[i]->setUrl();
   }
 }
 
@@ -219,6 +237,20 @@ void HelpDialog::handleCommand(CommandSender* sender, int cmd,
 
       displayInfo();
       break;
+
+    case kUpdateCmd:
+      MediaFactory::openURL("https://stella-emu.github.io/downloads.html?version="
+                            + instance().settings().getString("stella.version"));
+      break;
+
+    case StaticTextWidget::kOpenUrlCmd:
+    {
+      const string url = myDesc[id]->getUrl();
+
+      if(url != EmptyString)
+        MediaFactory::openURL(url);
+      break;
+    }
 
     default:
       Dialog::handleCommand(sender, cmd, data, 0);

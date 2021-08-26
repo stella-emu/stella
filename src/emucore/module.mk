@@ -5,6 +5,7 @@ MODULE_OBJS := \
         src/emucore/Bankswitch.o \
         src/emucore/Booster.o \
         src/emucore/Cart.o \
+	src/emucore/CartARM.o \
         src/emucore/CartCreator.o \
         src/emucore/CartDetector.o \
         src/emucore/CartEnhanced.o \

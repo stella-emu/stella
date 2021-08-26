@@ -80,10 +80,11 @@ enum class EventMode {
   kMenuMode,      // mapping used for dialogs
   kJoystickMode,  // 4 extra modes for mapping controller keys separately for emulation mode
   kPaddlesMode,
-  kKeypadMode,
+  kKeyboardMode,
   kCompuMateMode, // cannot be remapped
   kCommonMode,    // mapping common between controllers
   kEditMode,      // mapping used in editable widgets
+  kPromptMode,    // extra mappings used in debugger's prompt widget
   kNumModes
 };
 

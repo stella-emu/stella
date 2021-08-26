@@ -367,17 +367,17 @@ void GameInfoDialog::addControllersTab()
   wid.push_back(myMouseControl);
 
   // Mouse controller specific axis
-  pwidth = _font.getStringWidth("MindLink 0");
+  pwidth = _font.getStringWidth("Right MindLink");
   ctrls.clear();
-  VarList::push_back(ctrls, "None",       static_cast<uInt32>(MouseControl::Type::NoControl));
-  VarList::push_back(ctrls, "Paddle 0",   static_cast<uInt32>(MouseControl::Type::Paddle0));
-  VarList::push_back(ctrls, "Paddle 1",   static_cast<uInt32>(MouseControl::Type::Paddle1));
-  VarList::push_back(ctrls, "Paddle 2",   static_cast<uInt32>(MouseControl::Type::Paddle2));
-  VarList::push_back(ctrls, "Paddle 3",   static_cast<uInt32>(MouseControl::Type::Paddle3));
-  VarList::push_back(ctrls, "Driving 0",  static_cast<uInt32>(MouseControl::Type::Driving0));
-  VarList::push_back(ctrls, "Driving 1",  static_cast<uInt32>(MouseControl::Type::Driving1));
-  VarList::push_back(ctrls, "MindLink 0", static_cast<uInt32>(MouseControl::Type::MindLink0));
-  VarList::push_back(ctrls, "MindLink 1", static_cast<uInt32>(MouseControl::Type::MindLink1));
+  VarList::push_back(ctrls, "None",           static_cast<uInt32>(MouseControl::Type::NoControl));
+  VarList::push_back(ctrls, "Left Paddle A",  static_cast<uInt32>(MouseControl::Type::LeftPaddleA));
+  VarList::push_back(ctrls, "Left Paddle B",  static_cast<uInt32>(MouseControl::Type::LeftPaddleB));
+  VarList::push_back(ctrls, "Right Paddle A", static_cast<uInt32>(MouseControl::Type::RightPaddleA));
+  VarList::push_back(ctrls, "Right Paddle B", static_cast<uInt32>(MouseControl::Type::RightPaddleB));
+  VarList::push_back(ctrls, "Left Driving",   static_cast<uInt32>(MouseControl::Type::LeftDriving));
+  VarList::push_back(ctrls, "Right Driving",  static_cast<uInt32>(MouseControl::Type::RightDriving));
+  VarList::push_back(ctrls, "Left MindLink",  static_cast<uInt32>(MouseControl::Type::LeftMindLink));
+  VarList::push_back(ctrls, "Right MindLink", static_cast<uInt32>(MouseControl::Type::RightMindLink));
 
   xpos += CheckboxWidget::prefixSize(_font);
   ypos += lineHeight + VGAP;
@@ -972,7 +972,7 @@ void GameInfoDialog::saveProperties()
   myGameProperties.set(PropType::Cart_ModelNo, myModelNo->getText());
   myGameProperties.set(PropType::Cart_Rarity, myRarity->getText());
   myGameProperties.set(PropType::Cart_Note, myNote->getText());
-  myGameProperties.set(PropType::Cart_Note, myUrl->getText());
+  myGameProperties.set(PropType::Cart_Url, myUrl->getText());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
