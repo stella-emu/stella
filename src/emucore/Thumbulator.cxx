@@ -74,13 +74,13 @@ using Common::Base;
   #define INC_LDR_CYCLES                 \
     INC_N_CYCLES(rb, AccessType::data);  \
     INC_I_CYCLES; \
-    //FETCH_TYPE(CycleType::N, AccessType::data); \
-    //FETCH_TYPE_N;
+    /*FETCH_TYPE(CycleType::N, AccessType::data); \
+      FETCH_TYPE_N;*/
   #define INC_LDRB_CYCLES                       \
     INC_N_CYCLES(rb & (~1U), AccessType::data); \
     INC_I_CYCLES; \
-    //FETCH_TYPE(CycleType::N, AccessType::data); \
-    //FETCH_TYPE_N;
+    /*FETCH_TYPE(CycleType::N, AccessType::data); \
+      FETCH_TYPE_N;*/
 
   #define INC_STR_CYCLES                 \
     INC_N_CYCLES(rb, AccessType::data);  \
@@ -91,9 +91,11 @@ using Common::Base;
     FETCH_TYPE_N; \
     //INC_N_CYCLES(rb & (~1U), AccessType::data);
 
+#if 0 // unused for now
   #define FETCH_TYPE(cycleType, accessType) \
     _prefetchCycleType[_pipeIdx] = cycleType; \
     _prefetchAccessType[_pipeIdx] = accessType
+#endif
   #define FETCH_TYPE_N                          \
     _prefetchCycleType[_pipeIdx] = CycleType::N
 
@@ -290,7 +292,7 @@ uInt32 Thumbulator::fetch16(uInt32 addr)
   uInt32 data;
 
 #ifdef THUMB_CYCLE_COUNT
-  _pipeIdx = (++_pipeIdx) % 3;
+  _pipeIdx = (_pipeIdx+1) % 3;
 
 #ifdef MERGE_I_S
   if(_lastCycleType[2] == CycleType::I)

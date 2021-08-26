@@ -107,7 +107,8 @@ CartridgeCDF::CartridgeCDF(const ByteBuffer& image, size_t size,
     static_cast<uInt32>(mySize),
     cBase, cStart, cStack,
     devSettings ? settings.getBool("dev.thumb.trapfatal") : false,
-    devSettings ? settings.getFloat("dev.thumb.cyclefactor") : 1.0,
+    devSettings ? static_cast<double>(
+      settings.getFloat("dev.thumb.cyclefactor")) : 1.0,
     thumulatorConfiguration(myCDFSubtype),
     this);
 
