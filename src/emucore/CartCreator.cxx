@@ -55,6 +55,7 @@
 #include "CartFC.hxx"
 #include "CartFE.hxx"
 #include "CartMDM.hxx"
+#include "CartMVC.hxx"
 #include "CartSB.hxx"
 #include "CartTVBoy.hxx"
 #include "CartUA.hxx"
@@ -195,6 +196,10 @@ unique_ptr<Cartridge> CartCreator::create(const FilesystemNode& file,
       else
         throw runtime_error("Invalid cart size for type '" +
                             Bankswitch::typeToName(type) + "'");
+      break;
+
+    case Bankswitch::Type::_MVC:
+      cartridge = make_unique<CartridgeMVC>(file.getPath(), size, md5, settings);
       break;
 
     default:

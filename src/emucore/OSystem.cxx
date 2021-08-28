@@ -44,6 +44,7 @@
 #include "MD5.hxx"
 #include "Cart.hxx"
 #include "CartCreator.hxx"
+#include "CartDetector.hxx"
 #include "FrameBuffer.hxx"
 #include "TIASurface.hxx"
 #include "TIAConstants.hxx"
@@ -689,8 +690,16 @@ ByteBuffer OSystem::openROM(const FilesystemNode& rom, string& md5, size_t& size
   // but also adds a properties entry if the one for the ROM doesn't
   // contain a valid name
 
+  // First check if this is a 'streaming' ROM (one where we only read
+  // a portion of the file)
+  size_t sizeToRead = CartDetector::isProbablyMVC(rom);
+
+  // Next check if rom is a valid size
+  // TODO: We should check if ROM is < Cart::maxSize(), but only
+  //       if it's not a ZIP file (that size should be higher; still TBD)
+
   ByteBuffer image;
-  if((size = rom.read(image)) == 0)
+  if((size = rom.read(image, sizeToRead)) == 0)
     return nullptr;
 
   // If we get to this point, we know we have a valid file to open
