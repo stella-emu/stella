@@ -78,6 +78,14 @@ Serializer::Serializer()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Serializer::setPosition(size_t pos)
+{
+  myStream->clear();
+  myStream->seekg(pos);
+  myStream->seekp(pos);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Serializer::rewind()
 {
   myStream->clear();
@@ -86,11 +94,15 @@ void Serializer::rewind()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-size_t Serializer::size() const
+size_t Serializer::size()
 {
-  myStream->seekp(0, std::ios::end);
+  std::streampos oldPos = myStream->tellp();
 
-  return myStream->tellp();
+  myStream->seekp(0, std::ios::end);
+  size_t s = myStream->tellp();
+  setPosition(oldPos);
+
+  return s;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

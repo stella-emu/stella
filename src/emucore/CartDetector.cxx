@@ -19,6 +19,7 @@
 #include "Logger.hxx"
 
 #include "CartDetector.hxx"
+#include "CartMVC.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t size)
@@ -242,6 +243,8 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
     type = Bankswitch::Type::_3EP;
   else if(isProbablyMDM(image, size))
     type = Bankswitch::Type::_MDM;
+  else if(isProbablyMVC(image, size))
+    type = Bankswitch::Type::_MVC;
 
   // If we get here and autodetection failed, then we force '4K'
   if(type == Bankswitch::Type::_AUTO)
@@ -455,7 +458,7 @@ bool CartDetector::isProbablyCDF(const ByteBuffer& image, size_t size)
   // 0x10adab1e (LOADABLE) if needed for future improvement
   uInt8 cdf[] = { 'C', 'D', 'F' };
   uInt8 cdfjplus[] = { 'P', 'L', 'U', 'S', 'C', 'D', 'F', 'J' };
-  return (searchForBytes(image, size, cdf, 3, 3) || 
+  return (searchForBytes(image, size, cdf, 3, 3) ||
           searchForBytes(image, size, cdfjplus, 8, 1));
 }
 
@@ -689,6 +692,38 @@ bool CartDetector::isProbablyMDM(const ByteBuffer& image, size_t size)
   // MDM cart is identified key 'MDMC' in the first 8K of ROM
   uInt8 mdmc[] = { 'M', 'D', 'M', 'C' };
   return searchForBytes(image, std::min<size_t>(size, 8_KB), mdmc, 4);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartDetector::isProbablyMVC(const ByteBuffer& image, size_t size)
+{
+  // MVC version 0
+  uInt8 sig[] = { 'M', 'V', 'C', 0 };
+  int sigSize = sizeof(sig);
+  return searchForBytes(image, std::min<size_t>(size, sigSize+1), sig, sigSize);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+size_t CartDetector::isProbablyMVC(const FilesystemNode& rom)
+{
+  constexpr size_t frameSize = 2 * CartridgeMVC::MVC_FIELD_PAD_SIZE;
+
+  if(Bankswitch::typeFromExtension(rom) == Bankswitch::Type::_MVC)
+    return frameSize;
+
+  Serializer s(rom.getPath(), Serializer::Mode::ReadOnly);
+  if(s)
+  {
+    if(s.size() < frameSize)
+      return 0;
+
+    uInt8 image[frameSize];
+    s.getByteArray(image, frameSize);
+
+    uInt8 sig[] = { 'M', 'V', 'C', 0 };  // MVC version 0
+    return searchForBytes(image, frameSize, sig, 4) ? frameSize : 0;
+  }
+  return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

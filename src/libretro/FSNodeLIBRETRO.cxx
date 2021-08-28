@@ -92,7 +92,7 @@ AbstractFSNodePtr FilesystemNodeLIBRETRO::getParent() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-size_t FilesystemNodeLIBRETRO::read(ByteBuffer& image) const
+size_t FilesystemNodeLIBRETRO::read(ByteBuffer& image, size_t) const
 {
   image = make_unique<uInt8[]>(Cartridge::maxSize());
 
