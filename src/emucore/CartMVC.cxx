@@ -132,8 +132,7 @@ class StreamReader : public Serializable
         out.putByteArray(myBuffer1, CartridgeMVC::MVC_FIELD_SIZE);
         out.putByteArray(myBuffer2, CartridgeMVC::MVC_FIELD_SIZE);
 
-        // FIXME - complete this
-      #if 0
+      #if 0  // FIXME - determine whether we need to load/save this
         const uInt8*  myAudio
         const uInt8*  myGraph
         const uInt8*  myGraphOverride
@@ -156,8 +155,7 @@ class StreamReader : public Serializable
         in.getByteArray(myBuffer1, CartridgeMVC::MVC_FIELD_SIZE);
         in.getByteArray(myBuffer2, CartridgeMVC::MVC_FIELD_SIZE);
 
-        // FIXME - complete this
-      #if 0
+      #if 0  // FIXME - determine whether we need to load/save this
         const uInt8*  myAudio
         const uInt8*  myGraph
         const uInt8*  myGraphOverride
@@ -1421,7 +1419,8 @@ bool MovieCart::save(Serializer& out) const
     out.putByte(myButtonsValue);
 
     out.putByte(myVolume);
-// FIXME     const uInt8* myVolumeScale{scales[DEFAULT_LEVEL]};
+    // FIXME - determine whether we need to load/save this
+    // const uInt8* myVolumeScale{scales[DEFAULT_LEVEL]};
     out.putByte(myFirstAudioVal);
   }
   catch(...)
@@ -1474,7 +1473,8 @@ bool MovieCart::load(Serializer& in)
     myButtonsValue = in.getByte();
 
     myVolume = in.getByte();
-// FIXME    const uInt8* myVolumeScale{scales[DEFAULT_LEVEL]};
+    // FIXME - determine whether we need to load/save this
+    // const uInt8* myVolumeScale{scales[DEFAULT_LEVEL]};
     myFirstAudioVal = in.getByte();
   }
   catch(...)
