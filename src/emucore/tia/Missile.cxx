@@ -285,6 +285,7 @@ bool Missile::save(Serializer& out) const
     out.putBool(myIsVisible);
     out.putBool(myIsRendering);
     out.putByte(myRenderCounter);
+    out.putByte(myCopy);
 
     out.putByte(myDecodesOffset);
 
@@ -325,6 +326,7 @@ bool Missile::load(Serializer& in)
     myIsVisible = in.getBool();
     myIsRendering = in.getBool();
     myRenderCounter = in.getByte();
+    myCopy = in.getByte();
 
     myDecodesOffset = in.getByte();
     myDecodes = DrawCounterDecodes::get().missileDecodes()[myDecodesOffset];

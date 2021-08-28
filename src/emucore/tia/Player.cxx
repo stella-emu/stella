@@ -425,6 +425,7 @@ bool Player::save(Serializer& out) const
     out.putBool(myIsRendering);
     out.putByte(myRenderCounter);
     out.putByte(myRenderCounterTripPoint);
+    out.putByte(myCopy);
     out.putByte(myDivider);
     out.putByte(myDividerPending);
     out.putByte(mySampleCounter);
@@ -471,6 +472,7 @@ bool Player::load(Serializer& in)
     myIsRendering = in.getBool();
     myRenderCounter = in.getByte();
     myRenderCounterTripPoint = in.getByte();
+    myCopy = in.getByte();
     myDivider = in.getByte();
     myDividerPending = in.getByte();
     mySampleCounter = in.getByte();
