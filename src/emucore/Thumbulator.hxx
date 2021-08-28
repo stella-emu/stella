@@ -311,7 +311,9 @@ class Thumbulator
     uInt32 _pipeIdx{0};
     CycleType _prefetchCycleType[3]{CycleType::S};
     CycleType _lastCycleType[3]{CycleType::S};
+#if 0 // unused for now
     AccessType _prefetchAccessType[3]{AccessType::data};
+#endif
    #ifdef EMULATE_PIPELINE
     uInt32 _fetchPipeline{0}; // reserve fetch cycles resulting from pipelining (execution stage)
     uInt32 _memory0Pipeline{0}, _memory1Pipeline{0};
