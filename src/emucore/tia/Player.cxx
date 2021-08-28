@@ -34,6 +34,7 @@ void Player::reset()
   isMoving = false;
   myIsRendering = false;
   myRenderCounter = 0;
+  myCopy = 1;
   myPatternOld = 0;
   myPatternNew = 0;
   myIsReflected = 0;
@@ -353,6 +354,23 @@ void Player::applyColors()
   }
   else
     myColor = myDebugColor;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 Player::getColor() const
+{
+  if(!myDebugEnabled)
+    return myColor;
+  else
+    switch(myCopy)
+    {
+      case 2:
+        return myColor - 2;
+      case 3:
+        return myColor + 2;
+      default:
+        return myColor;
+    }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

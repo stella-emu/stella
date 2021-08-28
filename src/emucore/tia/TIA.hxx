@@ -76,7 +76,7 @@ class TIA : public Device
      * Possible palette entries for objects in "fixed debug color mode".
      */
     enum FixedColor {
-      NTSC_RED      = 0x30,
+      NTSC_RED      = 0x42,
       NTSC_ORANGE   = 0x38,
       NTSC_YELLOW   = 0x1c,
       NTSC_GREEN    = 0xc6,
@@ -86,7 +86,7 @@ class TIA : public Device
 
       PAL_RED       = 0x62,
       PAL_ORANGE    = 0x4a,
-      PAL_YELLOW    = 0x2e,
+      PAL_YELLOW    = 0x2c,
       PAL_GREEN     = 0x36,
       PAL_BLUE      = 0xbc,
       PAL_PURPLE    = 0xa6,

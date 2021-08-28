@@ -40,6 +40,7 @@ void Missile::reset()
   myIsRendering = false;
   myIsVisible = false;
   myRenderCounter = 0;
+  myCopy = 1;
   myColor = myObjectColor = myDebugColor = 0;
   myDebugEnabled = false;
   collision = myCollisionMaskDisabled;
@@ -218,6 +219,23 @@ void Missile::applyColors()
   }
   else
     myColor = myDebugColor;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 Missile::getColor() const
+{
+  if(!myDebugEnabled)
+    return myColor;
+  else
+    switch (myCopy)
+    {
+      case 2:
+        return myColor - 2;
+      case 3:
+        return myColor + 2;
+      default:
+        return myColor;
+    }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
