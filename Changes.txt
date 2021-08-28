@@ -14,6 +14,9 @@
 
 6.5.3 to 6.6 (??? ??, 202?)
 
+  * Added preliminary support for 'MVC' bankswitching scheme by
+    Rob Bairos.
+
   * Added web links for many games
 
   * Debugger: added optional logging of breaks and traps
