@@ -19,9 +19,11 @@
 
   * Added web links for many games
 
+  * Debugger: enhanced prompt's auto complete and history
+
   * Debugger: added optional logging of breaks and traps
 
-  * Debugger: enhanced prompt's auto complete and history
+  * Debugger: added Thumb cycle counting
 
 -Have fun!
 

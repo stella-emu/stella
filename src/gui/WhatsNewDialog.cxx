@@ -61,6 +61,7 @@ WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent,
     add(ypos, "fixed QuadTari support for some controller types");
     add(ypos, "fixed palette and TV effects saving");
   }
+  add(ypos, "added MovieCart support");
 #else
   if(version < "6.5")
   {
@@ -72,17 +73,15 @@ WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent,
     add(ypos, "added tooltips to many UI items");
     add(ypos, "added sound to Time Machine playback");
     add(ypos, "moved settings, properties etc. to an SQLite database");
-    add(ypos, "fixed paddle button bug for jittering controllers");
-    add(ypos, "fixed broken Driving Controller support for Stelladaptor/2600-daptor devices");
-    add(ypos, "fixed missing QuadTari option in UI");
     add(ypos, "added context-sensitive help");
     add(ypos, "improved analog input reading");
     add(ypos, "improved multi-monitor support");
-    add(ypos, "fixed QuadTari support for some controller types");
   }
+  add(ypos, "added MovieCart support");
   add(ypos, "added weblinks for many games");
   add(ypos, "debugger: added optional logging of breaks and traps");
   add(ypos, "debugger: enhanced prompt auto complete and history");
+  add(ypos, "debugger: added Thumb cycle counting");
   add(ypos, ELLIPSIS + " (for a complete list see 'docs/Changes.txt')");
 #endif
 
