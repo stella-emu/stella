@@ -22,9 +22,11 @@
 
 #include "bspf.hxx"
 #include "PlusROM.hxx"
-#include "http_lib.hxx"
 #include "Logger.hxx"
 #include "Version.hxx"
+
+#if defined(HTTP_LIB_SUPPORT)
+  #include "http_lib.hxx"
 
 namespace {
   constexpr int MAX_CONCURRENT_REQUESTS = 5;
@@ -32,6 +34,7 @@ namespace {
   constexpr int READ_TIMEOUT_MSEC = 3000;
   constexpr int WRITE_TIMEOUT_MSEC = 3000;
 }
+#endif
 
 using std::chrono::milliseconds;
 
@@ -68,6 +71,7 @@ class PlusROMRequest {
       memcpy(myRequest.data(), request, myRequestSize);
     }
 
+  #if defined(HTTP_LIB_SUPPORT)
     void execute() {
       myState = State::pending;
 
@@ -133,6 +137,7 @@ class PlusROMRequest {
         myResponse.size() > 1 ? reinterpret_cast<const uInt8*>(myResponse.data() + 1) : nullptr
       );
     }
+  #endif
 
   private:
     std::atomic<State> myState;
@@ -155,6 +160,7 @@ class PlusROMRequest {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PlusROM::initialize(const ByteBuffer& image, size_t size)
 {
+#if defined(HTTP_LIB_SUPPORT)
   // Host and path are stored at the NMI vector
   size_t i = ((image[size - 5] - 16) << 8) | image[size - 6];  // NMI @ $FFFA
   if(i >= size)
@@ -186,11 +192,15 @@ bool PlusROM::initialize(const ByteBuffer& image, size_t size)
   reset();
 
   return myIsPlusROM = true;
+#else
+  return myIsPlusROM = false;
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PlusROM::peekHotspot(uInt16 address, uInt8& value)
 {
+#if defined(HTTP_LIB_SUPPORT)
   switch(address & 0x0FFF)
   {
     case 0x0FF2:  // Read next byte from Rx buffer
@@ -208,6 +218,7 @@ bool PlusROM::peekHotspot(uInt16 address, uInt8& value)
 
       return true;
   }
+#endif
 
   return false;
 }
@@ -215,6 +226,7 @@ bool PlusROM::peekHotspot(uInt16 address, uInt8& value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PlusROM::pokeHotspot(uInt16 address, uInt8 value)
 {
+#if defined(HTTP_LIB_SUPPORT)
   switch(address & 0x0FFF)
   {
     case 0x0FF0:  // Write byte to Tx buffer
@@ -230,6 +242,8 @@ bool PlusROM::pokeHotspot(uInt16 address, uInt8 value)
 
       return true;
   }
+#endif
+
   return false;
 }
 
@@ -310,6 +324,7 @@ bool PlusROM::isValidPath(const string& path) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PlusROM::send()
 {
+#if defined(HTTP_LIB_SUPPORT)
   if (myPendingRequests.size() >= MAX_CONCURRENT_REQUESTS) {
     // Try to make room by cosuming any requests that have completed.
     receive();
@@ -340,11 +355,13 @@ void PlusROM::send()
   std::thread thread([=](){ request->execute(); });
 
   thread.detach();
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PlusROM::receive()
 {
+#if defined(HTTP_LIB_SUPPORT)
   auto iter = myPendingRequests.begin();
 
   while (iter != myPendingRequests.end()) {
@@ -375,4 +392,5 @@ void PlusROM::receive()
         iter++;
     }
   }
+#endif
 }

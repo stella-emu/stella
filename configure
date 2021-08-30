@@ -20,6 +20,7 @@ _build_sound=yes
 _build_debugger=yes
 _build_joystick=yes
 _build_cheats=yes
+_build_httplib=yes
 _build_png=yes
 _build_zip=yes
 _build_static=no
@@ -537,6 +538,7 @@ if test -n "$_host"; then
       _build_windowed=no
       _build_debugger=no
       _build_cheats=no
+      _build_httplib=no
       ;;
 		mingw32-cross)
 			echo "Cross-compiling for Windows using MinGW."
@@ -782,7 +784,7 @@ SQLITE_LIB="$SRC/sqlite"
 JSON="$SRC/json"
 HTTP_LIB="$SRC/httplib"
 
-INCLUDES="-I$CORE -I$COMMON -I$TV -I$TIA -I$TIA_FRAME_MANAGER -I$JSON -I$SQLITE_REPO -I$SQLITE_LIB -I$HTTP_LIB"
+INCLUDES="-I$CORE -I$COMMON -I$TV -I$TIA -I$TIA_FRAME_MANAGER -I$JSON -I$SQLITE_REPO -I$SQLITE_LIB"
 
 INCLUDES="$INCLUDES `$_sdlconfig --cflags`"
 if test "$_build_static" = yes ; then
@@ -854,6 +856,11 @@ if test "$_build_cheats" = yes ; then
 	DEFINES="$DEFINES -DCHEATCODE_SUPPORT"
 	MODULES="$MODULES $CHEAT"
 	INCLUDES="$INCLUDES -I$CHEAT"
+fi
+
+if test "$_build_httplib" = yes ; then
+	DEFINES="$DEFINES -DHTTP_LIB_SUPPORT"
+	INCLUDES="$INCLUDES -I$HTTP_LIB"
 fi
 
 if test "$_build_png" = yes ; then
