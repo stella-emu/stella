@@ -780,8 +780,9 @@ ZLIB="$SRC/zlib"
 SQLITE_REPO="$SRC/common/repository/sqlite"
 SQLITE_LIB="$SRC/sqlite"
 JSON="$SRC/json"
+HTTP_LIB="$SRC/httplib"
 
-INCLUDES="-I$CORE -I$COMMON -I$TV -I$TIA -I$TIA_FRAME_MANAGER -I$JSON -I$SQLITE_REPO -I$SQLITE_LIB"
+INCLUDES="-I$CORE -I$COMMON -I$TV -I$TIA -I$TIA_FRAME_MANAGER -I$JSON -I$SQLITE_REPO -I$SQLITE_LIB -I$HTTP_LIB"
 
 INCLUDES="$INCLUDES `$_sdlconfig --cflags`"
 if test "$_build_static" = yes ; then
