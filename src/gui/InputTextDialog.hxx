@@ -69,7 +69,7 @@ class InputTextDialog : public Dialog, public CommandSender
     vector<EditTextWidget*> myInput;
     StaticTextWidget* myMessage{nullptr};
 
-    bool myEnableCenter{false};
+    bool myEnableCenter{true};
     bool myErrorFlag{false};
     int	 myCmd{0};
 
