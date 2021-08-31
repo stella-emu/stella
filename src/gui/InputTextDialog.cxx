@@ -47,6 +47,16 @@ InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& lfont,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+InputTextDialog::InputTextDialog(OSystem& osystem, DialogContainer& parent,
+                                 const GUI::Font& font, const StringList& labels, const string& title)
+  : Dialog(osystem, parent, font, title),
+    CommandSender(nullptr)
+{
+  initialize(font, font, labels);
+}
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputTextDialog::initialize(const GUI::Font& lfont, const GUI::Font& nfont,
                                  const StringList& labels)
 {

@@ -34,6 +34,9 @@ class InputTextDialog : public Dialog, public CommandSender
     InputTextDialog(GuiObject* boss, const GUI::Font& lfont,
                     const GUI::Font& nfont, const StringList& labels,
                     const string& title = "");
+    InputTextDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font,
+                    const StringList& labels, const string& title = "");
+
     ~InputTextDialog() override = default;
 
     /** Place the input dialog onscreen and center it */

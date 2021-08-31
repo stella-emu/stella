@@ -55,6 +55,7 @@
   #include "CommandMenu.hxx"
   #include "HighScoresMenu.hxx"
   #include "MessageMenu.hxx"
+  #include "InputMenu.hxx"
   #include "TimeMachine.hxx"
 #endif
 
@@ -444,6 +445,19 @@ void FrameBuffer::update(UpdateMode mode)
         myOSystem.messageMenu().draw(forceRedraw);
       }
       break;  // EventHandlerState::MESSAGEMENU
+    }
+
+    case EventHandlerState::INPUTMENU:
+    {
+      myOSystem.inputMenu().tick();
+      redraw |= myOSystem.inputMenu().needsRedraw();
+      if(redraw)
+      {
+        clear();
+        myTIASurface->render(true);
+        myOSystem.inputMenu().draw(forceRedraw);
+      }
+      break;  // EventHandlerState::INPUTMENU
     }
 
     case EventHandlerState::TIMEMACHINE:

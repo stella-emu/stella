@@ -2153,6 +2153,13 @@ bool EventHandler::changeStateByEvent(Event::Type type)
       else
         handled = false;
       break;
+
+    case Event::InputTextDialogMode:
+      if(myState != EventHandlerState::INPUTMENU)
+        enterMenuMode(EventHandlerState::INPUTMENU);
+      else
+        leaveMenuMode();
+      break;
 #endif
 
     case Event::TimeMachineMode:
@@ -2995,6 +3002,11 @@ void EventHandler::setState(EventHandlerState state)
 
     case EventHandlerState::MESSAGEMENU:
       myOverlay = &myOSystem.messageMenu();
+      enableTextEvents(true);
+      break;
+
+    case EventHandlerState::INPUTMENU:
+      myOverlay = &myOSystem.inputMenu();
       enableTextEvents(true);
       break;
 
