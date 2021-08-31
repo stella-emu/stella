@@ -61,6 +61,7 @@
   #include "CommandMenu.hxx"
   #include "HighScoresMenu.hxx"
   #include "MessageMenu.hxx"
+  #include "InputMenu.hxx"
   #include "DialogContainer.hxx"
   #include "Launcher.hxx"
   #include "TimeMachine.hxx"
@@ -2154,12 +2155,20 @@ bool EventHandler::changeStateByEvent(Event::Type type)
         handled = false;
       break;
 
-    case Event::InputTextDialogMode:
+    case Event::InputTextDialogMode: // TODO rename
+    {
+      StringList labels;
+
+      labels.push_back("Nick");
+      myOSystem.inputMenu().setTitle("PlusROMs first start setup");
+      myOSystem.inputMenu().setLabels(labels);
+
       if(myState != EventHandlerState::INPUTMENU)
         enterMenuMode(EventHandlerState::INPUTMENU);
       else
         leaveMenuMode();
       break;
+    }
 #endif
 
     case Event::TimeMachineMode:
