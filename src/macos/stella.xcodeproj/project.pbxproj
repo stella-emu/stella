@@ -713,6 +713,8 @@
 		E0406FB81F81A85400A82AE0 /* FrameManager.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0DFDD7B1F81A358000F3505 /* FrameManager.cxx */; };
 		E050876E25A1337400E4B62A /* OSystemStandalone.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E050876C25A1337400E4B62A /* OSystemStandalone.cxx */; };
 		E050876F25A1337400E4B62A /* OSystemStandalone.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E050876D25A1337400E4B62A /* OSystemStandalone.hxx */; };
+		E05BF1BF26DE04F10027F30C /* httplib.h in Headers */ = {isa = PBXBuildFile; fileRef = E05BF1BD26DE04F10027F30C /* httplib.h */; };
+		E05BF1C026DE04F10027F30C /* http_lib.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E05BF1BE26DE04F10027F30C /* http_lib.hxx */; };
 		E06508BE2272447200B341AC /* KeyValueRepositoryNoop.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E06508B82272447200B341AC /* KeyValueRepositoryNoop.hxx */; };
 		E06508BF2272447200B341AC /* KeyValueRepository.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E06508B92272447200B341AC /* KeyValueRepository.hxx */; };
 		E06508C02272447200B341AC /* KeyValueRepositoryConfigfile.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E06508BA2272447200B341AC /* KeyValueRepositoryConfigfile.hxx */; };
@@ -1526,6 +1528,8 @@
 		E034A5ED209FB25C00C89E9E /* EmulationTiming.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = EmulationTiming.hxx; sourceTree = "<group>"; };
 		E050876C25A1337400E4B62A /* OSystemStandalone.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OSystemStandalone.cxx; sourceTree = "<group>"; };
 		E050876D25A1337400E4B62A /* OSystemStandalone.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = OSystemStandalone.hxx; sourceTree = "<group>"; };
+		E05BF1BD26DE04F10027F30C /* httplib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = httplib.h; path = httplib/httplib.h; sourceTree = "<group>"; };
+		E05BF1BE26DE04F10027F30C /* http_lib.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = http_lib.hxx; path = httplib/http_lib.hxx; sourceTree = "<group>"; };
 		E06508B82272447200B341AC /* KeyValueRepositoryNoop.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = KeyValueRepositoryNoop.hxx; sourceTree = "<group>"; };
 		E06508B92272447200B341AC /* KeyValueRepository.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = KeyValueRepository.hxx; sourceTree = "<group>"; };
 		E06508BA2272447200B341AC /* KeyValueRepositoryConfigfile.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = KeyValueRepositoryConfigfile.hxx; sourceTree = "<group>"; };
@@ -1644,6 +1648,7 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
+				E05BF1BC26DE04E00027F30C /* httplib */,
 				DCCC0C9109C3541E0088BFF1 /* cheat */,
 				2D6050C5089876F300C6DE89 /* common */,
 				2D605130089879BA00C6DE89 /* debugger */,
@@ -2498,6 +2503,15 @@
 			path = tia;
 			sourceTree = "<group>";
 		};
+		E05BF1BC26DE04E00027F30C /* httplib */ = {
+			isa = PBXGroup;
+			children = (
+				E05BF1BE26DE04F10027F30C /* http_lib.hxx */,
+				E05BF1BD26DE04F10027F30C /* httplib.h */,
+			);
+			name = httplib;
+			sourceTree = "<group>";
+		};
 		E06508B72272447200B341AC /* repository */ = {
 			isa = PBXGroup;
 			children = (
@@ -2755,6 +2769,7 @@
 				2D91745909BA90380026E9FF /* PromptWidget.hxx in Headers */,
 				DC3C9BC62469C8F700CF2D47 /* PaletteHandler.hxx in Headers */,
 				2D91745A09BA90380026E9FF /* RamWidget.hxx in Headers */,
+				E05BF1C026DE04F10027F30C /* http_lib.hxx in Headers */,
 				2D91745B09BA90380026E9FF /* RomListWidget.hxx in Headers */,
 				2D91745C09BA90380026E9FF /* RomWidget.hxx in Headers */,
 				2D91745D09BA90380026E9FF /* TiaInfoWidget.hxx in Headers */,
@@ -2831,6 +2846,7 @@
 				E06508C02272447200B341AC /* KeyValueRepositoryConfigfile.hxx in Headers */,
 				DC68F8901FA64C5300F4A2CC /* TIAConstants.hxx in Headers */,
 				DCA82C721FEB4E780059340F /* TimeMachine.hxx in Headers */,
+				E05BF1BF26DE04F10027F30C /* httplib.h in Headers */,
 				DCF467C50F939A1400B25D7A /* CartEFSC.hxx in Headers */,
 				DC3EE8641E2C0E6D00905161 /* inffixed.h in Headers */,
 				DC5D1AA7102C6FC900E59AC1 /* Stack.hxx in Headers */,
@@ -3471,6 +3487,7 @@
 					WINDOWED_SUPPORT,
 					BSPF_MACOS,
 					MAC_OSX,
+					HTTP_LIB_SUPPORT,
 				);
 				HEADER_SEARCH_PATHS = (
 					/Library/Frameworks/SDL2.framework/Headers,
@@ -3528,6 +3545,7 @@
 					WINDOWED_SUPPORT,
 					BSPF_MACOS,
 					MAC_OSX,
+					HTTP_LIB_SUPPORT,
 				);
 				HEADER_SEARCH_PATHS = (
 					/Library/Frameworks/SDL2.framework/Headers,
