@@ -42,6 +42,7 @@ class AudioSettings;
   class Launcher;
   class Menu;
   class MessageMenu;
+  class InputMenu;
   class TimeMachine;
   class VideoAudioDialog;
 #endif
@@ -225,6 +226,13 @@ class OSystem
       @return The message menu object
     */
     MessageMenu& messageMenu() const { return *myMessageMenu; }
+
+    /**
+      Get the input menu of the system.
+
+      @return The input menu object
+    */
+    InputMenu& inputMenu() const { return *myInputMenu; }
 
     /**
       Get the ROM launcher of the system.
@@ -522,6 +530,9 @@ class OSystem
 
     // Pointer to the MessageMenu object
     unique_ptr<MessageMenu> myMessageMenu;
+
+    // Pointer to the InputMenu object
+    unique_ptr<InputMenu> myInputMenu;
 
     // Pointer to the TimeMachine object
     unique_ptr<TimeMachine> myTimeMachine;
