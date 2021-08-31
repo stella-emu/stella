@@ -328,7 +328,6 @@ void PlusROM::send()
   // Try to make room by cosuming any requests that have completed.
   receive();
 
-
   if (myPendingRequests.size() >= MAX_CONCURRENT_REQUESTS) {
     Logger::error("PlusCart: max number of concurrent requests exceeded");
 
