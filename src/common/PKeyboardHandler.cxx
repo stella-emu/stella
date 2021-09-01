@@ -602,6 +602,7 @@ PhysicalKeyboardHandler::DefaultCommonMapping = {
   { Event::CmdMenuMode,              KBDK_BACKSLASH },
   { Event::TimeMachineMode,          KBDK_T, KBDM_SHIFT },
   { Event::DebuggerMode,             KBDK_GRAVE },
+  { Event::PlusRomsSetupMode,        KBDK_P, KBDM_SHIFT | KBDM_CTRL | MOD3 },
   { Event::ExitMode,                 KBDK_ESCAPE },
   #ifdef BSPF_MACOS
   { Event::Quit,                     KBDK_Q, MOD3 },

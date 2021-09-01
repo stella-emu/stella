@@ -35,7 +35,7 @@
   #include "CommandMenu.hxx"
   #include "HighScoresMenu.hxx"
   #include "MessageMenu.hxx"
-  #include "InputMenu.hxx"
+  #include "PlusRomsMenu.hxx"
   #include "Launcher.hxx"
   #include "TimeMachine.hxx"
   #include "Widget.hxx"
@@ -182,7 +182,7 @@ bool OSystem::initialize(const Settings::Options& options)
   myHighScoresManager = make_unique<HighScoresManager>(*this);
   myHighScoresMenu = make_unique<HighScoresMenu>(*this);
   myMessageMenu = make_unique<MessageMenu>(*this);
-  myInputMenu = make_unique<InputMenu>(*this);
+  myPlusRomMenu = make_unique<PlusRomsMenu>(*this);
   myTimeMachine = make_unique<TimeMachine>(*this);
   myLauncher = make_unique<Launcher>(*this);
 
@@ -509,37 +509,10 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
       myFrameBuffer->showTextMessage(msg.str());
     }
     // Check for first PlusROM start
-    if(true)
-      // myConsole->cartridge().plusROM().isvalid() && Settings
+    if(myConsole->cartridge().isPlusROM() &&
+       settings().getString("plusroms.nick") == EmptyString)
     {
-      //myEventHandler->changeStateByEvent(Event::OptionsMenuMode);
-      myEventHandler->changeStateByEvent(Event::InputTextDialogMode);
-      //TODO: Event::InputTextDialogMode
-
-
-/*
-      // Inputbox which will pop up when searching RAM
-
-      StringList labels = {"Value"};
-      myInputBox = make_unique<InputTextDialog>(boss, lfont, nfont, labels, " ");
-      myInputBox->setTarget(this);
-
-
-
-      // Add inputbox in the middle of the RAM widget
-      uInt32 x = getAbsX() + ((getWidth() - myInputBox->getWidth()) >> 1);
-      uInt32 y = getAbsY() + ((getHeight() - myInputBox->getHeight()) >> 1);
-
-      myInputBox->show(x, y, dialog().surface().dstRect());
-      myInputBox->setText("");
-      myInputBox->setMessage("");
-      myInputBox->setToolTip(cmd == kSValEntered
-                             ? "Enter search value (leave blank for all)."
-                             : "Enter relative or absolute value\nto compare with searched values.");
-      myInputBox->setFocus(0);
-      myInputBox->setEmitSignal(cmd);
-      myInputBox->setTitle(cmd == kSValEntered ? "Search" : "Compare");
-*/
+      myEventHandler->changeStateByEvent(Event::PlusRomsSetupMode);
     }
   }
 

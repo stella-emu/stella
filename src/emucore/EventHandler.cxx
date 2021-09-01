@@ -61,7 +61,7 @@
   #include "CommandMenu.hxx"
   #include "HighScoresMenu.hxx"
   #include "MessageMenu.hxx"
-  #include "InputMenu.hxx"
+  #include "PlusRomsMenu.hxx"
   #include "DialogContainer.hxx"
   #include "Launcher.hxx"
   #include "TimeMachine.hxx"
@@ -2155,21 +2155,18 @@ bool EventHandler::changeStateByEvent(Event::Type type)
         handled = false;
       break;
 
-    case Event::InputTextDialogMode: // TODO rename
+    case Event::PlusRomsSetupMode:
     {
-      StringList labels;
-
-      labels.push_back("Nick");
-      myOSystem.inputMenu().setTitle("PlusROMs first start setup");
-      myOSystem.inputMenu().setLabels(labels);
-
-      if(myState != EventHandlerState::INPUTMENU)
-        enterMenuMode(EventHandlerState::INPUTMENU);
-      else
+      if(myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE
+          || myState == EventHandlerState::TIMEMACHINE || myState == EventHandlerState::PLAYBACK)
+        enterMenuMode(EventHandlerState::PLUSROMSMENU);
+      else if(myState == EventHandlerState::PLUSROMSMENU)
         leaveMenuMode();
+      else
+        handled = false;
       break;
     }
-#endif
+#endif // GUI_SUPPORT
 
     case Event::TimeMachineMode:
       if(myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE
@@ -3014,8 +3011,8 @@ void EventHandler::setState(EventHandlerState state)
       enableTextEvents(true);
       break;
 
-    case EventHandlerState::INPUTMENU:
-      myOverlay = &myOSystem.inputMenu();
+    case EventHandlerState::PLUSROMSMENU:
+      myOverlay = &myOSystem.plusRomsMenu();
       enableTextEvents(true);
       break;
 
@@ -3095,6 +3092,7 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::OptionsMenuMode,         "Enter Options menu UI",                 "" },
   { Event::CmdMenuMode,             "Toggle Commands menu UI",               "" },
   { Event::HighScoresMenuMode,      "Toggle High Scores UI",                 "" },
+  { Event::PlusRomsSetupMode,       "Toggle PlusROM setup UI",               "" },
   { Event::TogglePauseMode,         "Toggle Pause mode",                     "" },
   { Event::StartPauseMode,          "Start Pause mode",                      "" },
   { Event::Fry,                     "Fry cartridge",                         "" },
@@ -3382,7 +3380,8 @@ EventHandler::MenuActionList EventHandler::ourMenuActionList = { {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const Event::EventSet EventHandler::MiscEvents = {
   Event::Quit, Event::ReloadConsole, Event::Fry, Event::StartPauseMode,
-  Event::TogglePauseMode, Event::OptionsMenuMode, Event::CmdMenuMode, Event::ExitMode,
+  Event::TogglePauseMode, Event::OptionsMenuMode, Event::CmdMenuMode,
+  Event::PlusRomsSetupMode, Event::ExitMode,
   Event::ToggleTurbo, Event::DecreaseSpeed, Event::IncreaseSpeed,
   Event::TakeSnapshot, Event::ToggleContSnapshots, Event::ToggleContSnapshotsFrame,
   // Event::MouseAxisXMove, Event::MouseAxisYMove,

@@ -35,7 +35,7 @@ class InputTextDialog : public Dialog, public CommandSender
                     const GUI::Font& nfont, const StringList& labels,
                     const string& title = "");
     InputTextDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font,
-                    const StringList& labels, const string& title = "");
+                    const string& label, const string& title, int numInput = 0);
 
     ~InputTextDialog() override = default;
 
@@ -57,14 +57,15 @@ class InputTextDialog : public Dialog, public CommandSender
     void setFocus(int idx = 0);
 
   protected:
-    void initialize(const GUI::Font& lfont, const GUI::Font& nfont,
-                    const StringList& labels);
+    void initialize(const StringList& labels, int widthChars = 39, int numInput = 0);
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
     /** This dialog uses its own positioning, so we override Dialog::center() */
     void setPosition() override;
 
   private:
+    const GUI::Font& lfont;
+    const GUI::Font& nfont;
     vector<StaticTextWidget*> myLabel;
     vector<EditTextWidget*> myInput;
     StaticTextWidget* myMessage{nullptr};

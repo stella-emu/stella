@@ -31,9 +31,11 @@
 InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& font,
                                  const StringList& labels, const string& title)
   : Dialog(boss->instance(), boss->parent(), font, title),
-    CommandSender(boss)
+    CommandSender(boss),
+    lfont(font),
+    nfont(font)
 {
-  initialize(font, font, labels);
+  initialize(labels);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -41,24 +43,31 @@ InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& lfont,
                                  const GUI::Font& nfont,
                                  const StringList& labels, const string& title)
   : Dialog(boss->instance(), boss->parent(), lfont, title),
-    CommandSender(boss)
+    CommandSender(boss),
+    lfont(lfont),
+    nfont(nfont)
 {
-  initialize(lfont, nfont, labels);
+  initialize(labels);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 InputTextDialog::InputTextDialog(OSystem& osystem, DialogContainer& parent,
-                                 const GUI::Font& font, const StringList& labels, const string& title)
+                                 const GUI::Font& font, const string& label,
+                                 const string& title, int numInput)
   : Dialog(osystem, parent, font, title),
-    CommandSender(nullptr)
+    CommandSender(nullptr),
+    lfont(font),
+    nfont(font)
 {
-  initialize(font, font, labels);
+  StringList labels;
+
+  clear();
+  labels.push_back(label);
+  initialize(labels, static_cast<int>(label.length()) + (numInput ? numInput : 24) + 2, numInput);
 }
 
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void InputTextDialog::initialize(const GUI::Font& lfont, const GUI::Font& nfont,
-                                 const StringList& labels)
+void InputTextDialog::initialize(const StringList& labels, int widthChars, int numInput)
 {
   const int lineHeight   = Dialog::lineHeight(),
             fontHeight   = Dialog::fontHeight(),
@@ -71,7 +80,7 @@ void InputTextDialog::initialize(const GUI::Font& lfont, const GUI::Font& nfont,
   WidgetArray wid;
 
   // Calculate real dimensions
-  _w = HBORDER * 2 + fontWidth * 39;
+  _w = HBORDER * 2 + fontWidth * widthChars;
   _h = buttonHeight + lineHeight + VGAP + int(labels.size()) * (lineHeight + VGAP) + _th + VBORDER * 2;
 
   // Determine longest label
@@ -83,7 +92,8 @@ void InputTextDialog::initialize(const GUI::Font& lfont, const GUI::Font& nfont,
       maxIdx = i;
     }
   }
-  lwidth = lfont.getStringWidth(labels[maxIdx]);
+  if(labels.size())
+    lwidth = lfont.getStringWidth(labels[maxIdx]);
 
   // Create editboxes for all labels
   ypos = VBORDER + _th;
@@ -98,6 +108,8 @@ void InputTextDialog::initialize(const GUI::Font& lfont, const GUI::Font& nfont,
     xpos += lwidth + fontWidth;
     EditTextWidget* w = new EditTextWidget(this, nfont, xpos, ypos,
                                            _w - xpos - HBORDER, lineHeight, "");
+    if(numInput)
+      w->setMaxLen(numInput);
     wid.push_back(w);
 
     myInput.push_back(w);

@@ -29,7 +29,7 @@ enum class EventHandlerState {
   CMDMENU,
   HIGHSCORESMENU,
   MESSAGEMENU,
-  INPUTMENU,
+  PLUSROMSMENU,
   DEBUGGER,
   NONE
 };
