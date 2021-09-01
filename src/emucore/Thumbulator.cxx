@@ -303,12 +303,20 @@ void Thumbulator::next()
 int Thumbulator::step()
 {
   next();                 // n++
-
+#ifdef PIPED
+  // The order of the function calls here is currently irrelevant
+  // But later on, a data access in execute might abort a fetch
   int result = execute(); // pipeline[n-2];
   decode();               // pipeline[n-1]
   fetch();                // pipeline[n]
 
   return result;
+#else
+  // Without pipeline emulation, the order IS relevant!
+  fetch();                // pipeline[n]
+  decode();               // pipeline[n-1]
+  return execute();       // pipeline[n-2]
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -376,6 +384,7 @@ void Thumbulator::fetch()
       fatalError("fetch", pc, "abort");
   }
 #else
+  // TODO: Does RAM code work here?
   pc &= ROMADDMASK;
   pc >>= 1;
   inst = CONV_RAMROM(rom[pc]);
@@ -819,14 +828,16 @@ void Thumbulator::write_register(uInt32 reg, uInt32 data, bool isFlowBreak)
       INC_N_CYCLES(reg_norm[PC_REG] + 4, AccessType::prefetch);
       INC_S_CYCLES(data, AccessType::branch);
 
-      fetch(); // dummy
-      reg_norm[PC_REG] = data;
-      fetch();  // pipeline[n-2]
 #ifdef PIPED
+      fetch();                  // dummy
+      reg_norm[PC_REG] = data;
+      fetch();                  // pipeline[n-2]
       next();
+      fetch();                  // pipeline[n-1]
+      decode();                 // pipeline[n-2]
+#else
+      reg_norm[PC_REG] = data;
 #endif
-      fetch();  // pipeline[n-1]
-      decode(); // pipeline[n-2]
       return;
     }
   }
