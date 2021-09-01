@@ -158,6 +158,14 @@ class CartridgeEnhanced : public Cartridge
     bool poke(uInt16 address, uInt8 value) override;
 
     /**
+      Answer whether this is a PlusROM cart.  Note that until the
+      initialize method has been called, this will always return false.
+
+      @return  Whether this is actually a PlusROM cart
+    */
+    bool isPlusROM() const override { return myPlusROM.isValid(); }
+
+    /**
       Get the hotspot in ROM address space.
 
       @return  The first hotspot address (usually in ROM) space or 0

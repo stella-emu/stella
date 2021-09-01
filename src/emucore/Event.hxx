@@ -89,7 +89,7 @@ class Event
 
       Quit, ReloadConsole, Fry,
       TogglePauseMode, StartPauseMode,
-      OptionsMenuMode, CmdMenuMode, DebuggerMode, ExitMode,
+      OptionsMenuMode, CmdMenuMode, DebuggerMode, PlusRomsSetupMode, ExitMode,
       TakeSnapshot, ToggleContSnapshots, ToggleContSnapshotsFrame,
       ToggleTurbo,
 
@@ -169,7 +169,6 @@ class Event
       SALeftAxis0Value, SALeftAxis1Value, SARightAxis0Value, SARightAxis1Value,
       QTPaddle3AFire, QTPaddle3BFire, QTPaddle4AFire, QTPaddle4BFire,
       UIHelp,
-      InputTextDialogMode,
       LastType
     };
 

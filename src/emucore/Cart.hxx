@@ -128,6 +128,14 @@ class Cartridge : public Device
     */
     virtual uInt8 internalRamGetValue(uInt16 addr) const { return 0; }
 
+    /**
+      Answer whether this is a PlusROM cart.  Note that until the
+      initialize method has been called, this will always return false.
+
+      @return  Whether this is actually a PlusROM cart
+    */
+    virtual bool isPlusROM() const { return false; }
+
   #ifdef DEBUGGER_SUPPORT
     /**
       To be called at the start of each instruction.

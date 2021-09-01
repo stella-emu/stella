@@ -181,6 +181,8 @@ Settings::Settings()
   setTemporary("maxres", "");
   setPermanent("initials", "");
   setTemporary("turbo", "0");
+  setPermanent("plusroms.nick", "");
+  setPermanent("plusroms.id", "");
 
 #ifdef DEBUGGER_SUPPORT
   // Debugger/disassembly options

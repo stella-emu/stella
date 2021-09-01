@@ -78,6 +78,12 @@ Dialog::~Dialog()
   else
     cerr << "!!! framebuffer not available\n";
 
+  clear();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::clear()
+{
   _myFocus.list.clear();
   _myTabList.clear();
 
