@@ -307,7 +307,7 @@
       TIA sprites and collisions for each object separately</li>
     <li>Full system state save/load functionality</li>
     <li>Automatic save state creation ('Time Machine') which allows moving back and forth in the recorded timeline</li>
-    <li>High scores saving</li>
+    <li>High scores saving (internal or via PlusROMs store)</li>
     <li>Cross-platform UI including a built-in ROM launcher frontend</li>
     <li>Built-in extensive debugger, including static analysis with the Distella disassembler
       and dynamic analysis at runtime by tracking code/graphics/data sections, and
@@ -2086,6 +2086,12 @@
       <td>Alt + Up arrow</td>
       <td>Cmd + Up arrow</td>
     </tr>
+    <tr>
+      <td>Enter/Exit the PlusROMs setup dialog</td>
+      <td>Shift-Control-Alt + P</td>
+      <td>Shift-Control-Cmd + P</td>
+    </tr>
+
   </table>
 
   <p><b>UI Keys (can be remapped)</b></p>
@@ -3233,6 +3239,19 @@
       <td>Override the base directory for all config files by attempting to use
       the application directory.
       <br>Note: Only available for Windows</td>
+    </tr>
+
+    << "  -plusroms.nick <nick>        Define a nickname for the PlusROMs store\n"
+    << "  -plusroms.id   <id>          Define an ID for the PlusROMs store\n"
+
+    <tr>
+      <td><pre>-plusroms.nick &lt;name&gt;</pre></td>
+      <td>Define a nickname for the PlusROMs store</td>
+    </tr>
+
+    <tr>
+      <td><pre>-plusroms.id &lt;id&gt;</pre></td>
+      <td>Define an ID for the PlusROMs store (32 chars, hex)</td>
     </tr>
 
     <tr>
