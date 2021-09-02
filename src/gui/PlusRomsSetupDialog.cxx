@@ -26,14 +26,26 @@ static const char* MIN_NICK_LEN_STR = "Two";
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PlusRomsSetupDialog::PlusRomsSetupDialog(OSystem& osystem, DialogContainer& parent,
-                                         const GUI::Font& font, const StringList& labels, const string& title)
+                                         const GUI::Font& font)
   : InputTextDialog(osystem, parent, font, "Nickname", "PlusROMs setup", MAX_NICK_LEN)
 {
-  setText(instance().settings().getString("plusroms.nick"), 0);
   EditableWidget::TextFilter filter = [](char c) {
     return isalnum(c) || (c == '_');
   };
+
   setTextFilter(filter, 0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PlusRomsSetupDialog::loadConfig()
+{
+  setText(instance().settings().getString("plusroms.nick"), 0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PlusRomsSetupDialog::saveConfig()
+{
+  instance().settings().setValue("plusroms.nick", getResult(0));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -44,18 +56,15 @@ void PlusRomsSetupDialog::handleCommand(CommandSender* sender, int cmd,
   {
     case GuiObject::kOKCmd:
     case EditableWidget::kAcceptCmd:
-    {
-      const string nick = getResult(0);
-
-      if(nick.length() >= MIN_NICK_LEN)
+      if(getResult(0).length() >= MIN_NICK_LEN)
       {
-        instance().settings().setValue("plusroms.nick", nick);
+        saveConfig();
         instance().eventHandler().leaveMenuMode();
       }
       else
         setMessage(MIN_NICK_LEN_STR + string(" characters minimum"));
       break;
-    }
+
     case kCloseCmd:
       instance().eventHandler().leaveMenuMode();
       break;

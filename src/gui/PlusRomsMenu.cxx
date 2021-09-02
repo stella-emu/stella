@@ -15,10 +15,10 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "Dialog.hxx"
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
 #include "PlusRomsSetupDialog.hxx"
+
 #include "PlusRomsMenu.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -41,10 +41,8 @@ Dialog* PlusRomsMenu::baseDialog()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PlusRomsSetupDialog& PlusRomsMenu::plusRomsSetupDialog()
 {
-  StringList labels; // empty list
-
   if(myPlusRomsSetupDialog == nullptr)
-    myPlusRomsSetupDialog = new PlusRomsSetupDialog(myOSystem, *this, myOSystem.frameBuffer().font(), labels);
+    myPlusRomsSetupDialog = new PlusRomsSetupDialog(myOSystem, *this, myOSystem.frameBuffer().font());
 
   return *myPlusRomsSetupDialog;
 }

@@ -2156,7 +2156,6 @@ bool EventHandler::changeStateByEvent(Event::Type type)
       break;
 
     case Event::PlusRomsSetupMode:
-    {
       if(myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE
           || myState == EventHandlerState::TIMEMACHINE || myState == EventHandlerState::PLAYBACK)
         enterMenuMode(EventHandlerState::PLUSROMSMENU);
@@ -2165,7 +2164,7 @@ bool EventHandler::changeStateByEvent(Event::Type type)
       else
         handled = false;
       break;
-    }
+
 #endif // GUI_SUPPORT
 
     case Event::TimeMachineMode:
@@ -3092,7 +3091,7 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::OptionsMenuMode,         "Enter Options menu UI",                 "" },
   { Event::CmdMenuMode,             "Toggle Commands menu UI",               "" },
   { Event::HighScoresMenuMode,      "Toggle High Scores UI",                 "" },
-  { Event::PlusRomsSetupMode,       "Toggle PlusROM setup UI",               "" },
+  { Event::PlusRomsSetupMode,       "Toggle PlusROMs setup UI",              "" },
   { Event::TogglePauseMode,         "Toggle Pause mode",                     "" },
   { Event::StartPauseMode,          "Start Pause mode",                      "" },
   { Event::Fry,                     "Fry cartridge",                         "" },

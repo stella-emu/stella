@@ -31,11 +31,9 @@
 InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& font,
                                  const StringList& labels, const string& title)
   : Dialog(boss->instance(), boss->parent(), font, title),
-    CommandSender(boss),
-    lfont(font),
-    nfont(font)
+    CommandSender(boss)
 {
-  initialize(labels);
+  initialize(font, font, labels);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -43,11 +41,9 @@ InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& lfont,
                                  const GUI::Font& nfont,
                                  const StringList& labels, const string& title)
   : Dialog(boss->instance(), boss->parent(), lfont, title),
-    CommandSender(boss),
-    lfont(lfont),
-    nfont(nfont)
+    CommandSender(boss)
 {
-  initialize(labels);
+  initialize(lfont, nfont, labels);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -55,19 +51,19 @@ InputTextDialog::InputTextDialog(OSystem& osystem, DialogContainer& parent,
                                  const GUI::Font& font, const string& label,
                                  const string& title, int numInput)
   : Dialog(osystem, parent, font, title),
-    CommandSender(nullptr),
-    lfont(font),
-    nfont(font)
+    CommandSender(nullptr)
 {
   StringList labels;
 
   clear();
   labels.push_back(label);
-  initialize(labels, static_cast<int>(label.length()) + (numInput ? numInput : 24) + 2, numInput);
+  initialize(font, font, labels,
+             static_cast<int>(label.length()) + (numInput ? numInput : 24) + 2, numInput);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void InputTextDialog::initialize(const StringList& labels, int widthChars, int numInput)
+void InputTextDialog::initialize(const GUI::Font& lfont, const GUI::Font& nfont,
+                                 const StringList& labels, int widthChars, int numInput)
 {
   const int lineHeight   = Dialog::lineHeight(),
             fontHeight   = Dialog::fontHeight(),

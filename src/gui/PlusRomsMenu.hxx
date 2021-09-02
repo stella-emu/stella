@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef INPUT_MENU_HXX
-#define INPUT_MENU_HXX
+#ifndef PLUSROMS_MENU_HXX
+#define PLUSROMS_MENU_HXX
 
 class OSystem;
 class PlusRomsSetupDialog;
@@ -24,7 +24,7 @@ class PlusRomsSetupDialog;
 #include "DialogContainer.hxx"
 
 /**
-  The dialog for Plus ROMs setup.
+  The dialog container for PlusROMs setup.
 
   @author  Thomas Jentzsch
 */
@@ -42,6 +42,7 @@ class PlusRomsMenu : public DialogContainer
       Return (and possibly create) the bottom-most dialog of this container.
     */
     Dialog* baseDialog() override;
+
     PlusRomsSetupDialog& plusRomsSetupDialog();
 
   private:
