@@ -53,7 +53,7 @@ void PlusRomsSetupDialog::handleCommand(CommandSender* sender, int cmd,
         instance().eventHandler().leaveMenuMode();
       }
       else
-        setMessage("Two characters minimum");
+        setMessage(MIN_NICK_LEN_STR + string(" characters minimum"));
       break;
     }
     case kCloseCmd:

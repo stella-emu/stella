@@ -67,7 +67,6 @@ WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent,
   {
     add(ypos, "added high scores saving");
     add(ypos, "enhanced cut/copy/paste and undo/redo for text editing");
-    add(ypos, "added mouse support for text editing");
     add(ypos, "added wildcard support to launcher dialog filter");
     add(ypos, "added option to search subdirectories in launcher");
     add(ypos, "added tooltips to many UI items");
@@ -77,6 +76,7 @@ WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent,
     add(ypos, "improved analog input reading");
     add(ypos, "improved multi-monitor support");
   }
+  add(ypos, "added PlusROMs support for saving high scores");
   add(ypos, "added MovieCart support");
   add(ypos, "added weblinks for many games");
   add(ypos, "debugger: added optional logging of breaks and traps");

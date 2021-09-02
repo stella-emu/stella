@@ -602,6 +602,8 @@ void Settings::usage() const
     << "  -basedir  <path>             Override the base directory for all config files\n"
     << "  -baseinappdir                Override the base directory for all config files\n"
     << "                                by attempting to use the application directory\n"
+    << "  -plusroms.nick <nick>        Define a nickname for the PlusROMs store.\n"
+    << "  -plusroms.id   <id>          Define an ID for the PlusROMs store.\n"
     << "  -help                        Show the text you're now reading\n"
   #ifdef DEBUGGER_SUPPORT
     << endl
