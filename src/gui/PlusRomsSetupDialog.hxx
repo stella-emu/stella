@@ -18,21 +18,22 @@
 #ifndef PLUSROMS_SETUP_DIALOG_HXX
 #define PLUSROMS_SETUP_DIALOG_HXX
 
-//class GuiObject;
-//class StaticTextWidget;
-//class EditTextWidget;
-
 #include "InputTextDialog.hxx"
 
+/**
+  The dialog for PlusROMs setup.
+
+  @author  Thomas Jentzsch
+*/
 class PlusRomsSetupDialog: public InputTextDialog
 {
   public:
-    PlusRomsSetupDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font,
-                        const StringList& labels, const string& title = "");
-
+    PlusRomsSetupDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font);
     ~PlusRomsSetupDialog() override = default;
 
   protected:
+    void loadConfig() override;
+    void saveConfig() override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
