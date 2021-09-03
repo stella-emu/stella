@@ -246,6 +246,8 @@ bool EditableWidget::tryInsertChar(char c, int pos)
 {
   if(_filter(tolower(c)))
   {
+    if(_selectSize < 0)   // left to right selection
+      pos += _selectSize; // adjust to new position after removing selected text
     killSelectedText();
     if(!_maxLen || static_cast<int>(_editString.length()) < _maxLen)
     {
