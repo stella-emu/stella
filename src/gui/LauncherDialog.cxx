@@ -643,8 +643,11 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
 {
   // Grab the key before passing it to the actual dialog and check for
   // context menu keys
+  bool handled = false;
+
   if(StellaModTest::isControl(mod))
   {
+    handled = true;
     switch(key)
     {
       case KBDK_P:
@@ -661,10 +664,11 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
         break;
 
       default:
+        handled = false;
         break;
     }
   }
-  else
+  if(!handled)
 #if defined(RETRON77)
     // handle keys used by R77
     switch(key)
