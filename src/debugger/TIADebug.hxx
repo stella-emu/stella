@@ -38,7 +38,7 @@ class TiaState : public DebuggerState
     IntArray gr;
     BoolArray ref;
     BoolArray vdel;
-    BoolArray res;
+    BoolArray resm;
     IntArray pos;
     IntArray hm;
     IntArray pf;
@@ -186,7 +186,11 @@ class TIADebug : public DebuggerSystem
     string colorSwatch(uInt8 c) const;
 
     string audFreq(uInt8 div);
-    string booleanWithLabel(string label, bool value);
+    string stringOnly(string value, bool changed = false);
+    string decWithLabel(string label, uInt16 value, bool changed = false);
+    string hexWithLabel(string label, uInt16 value, bool changed = false);
+    string binWithLabel(string label, uInt16 value, bool changed = false);
+    string boolWithLabel(string label, bool value, bool changed = false);
 
   private:
     TiaState myState;

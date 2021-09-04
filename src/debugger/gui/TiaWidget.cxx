@@ -1121,7 +1121,7 @@ void TiaWidget::loadConfig()
       state.size[TiaState::M0] != oldstate.size[TiaState::M0]);
 
   // resMP0
-  myResMP0->setState(tia.resMP0(), state.res[TiaState::P0] != oldstate.res[TiaState::P0]);
+  myResMP0->setState(tia.resMP0(), state.resm[TiaState::P0] != oldstate.resm[TiaState::P0]);
 
   ////////////////////////////
   // M1 register info
@@ -1143,7 +1143,7 @@ void TiaWidget::loadConfig()
       state.size[TiaState::M1] != oldstate.size[TiaState::M1]);
 
   // resMP1
-  myResMP1->setState(tia.resMP1(),state.res[TiaState::P1] != oldstate.res[TiaState::P1]);
+  myResMP1->setState(tia.resMP1(),state.resm[TiaState::P1] != oldstate.resm[TiaState::P1]);
 
   ////////////////////////////
   // BL register info

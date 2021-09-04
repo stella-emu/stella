@@ -20,6 +20,7 @@
 #include "Debugger.hxx"
 #include "TIA.hxx"
 #include "DelayQueueIterator.hxx"
+#include "RiotDebug.hxx"
 
 #include "TIADebug.hxx"
 
@@ -89,9 +90,9 @@ const DebuggerState& TIADebug::getState()
   myState.vdel.push_back(vdelP0());
   myState.vdel.push_back(vdelP1());
   myState.vdel.push_back(vdelBL());
-  myState.res.clear();
-  myState.res.push_back(resMP0());
-  myState.res.push_back(resMP1());
+  myState.resm.clear();
+  myState.resm.push_back(resMP0());
+  myState.resm.push_back(resMP1());
 
   // Position registers
   myState.pos.clear();
@@ -199,9 +200,9 @@ void TIADebug::saveOldState()
   myOldState.vdel.push_back(vdelP0());
   myOldState.vdel.push_back(vdelP1());
   myOldState.vdel.push_back(vdelBL());
-  myOldState.res.clear();
-  myOldState.res.push_back(resMP0());
-  myOldState.res.push_back(resMP1());
+  myOldState.resm.clear();
+  myOldState.resm.push_back(resMP0());
+  myOldState.resm.push_back(resMP1());
 
   // Position registers
   myOldState.pos.clear();
@@ -1019,12 +1020,82 @@ string TIADebug::audFreq(uInt8 div)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string TIADebug::booleanWithLabel(string label, bool value)
+string TIADebug::stringOnly(string value, bool changed)
 {
-  if(value)
-    return "+" + BSPF::toUpperCase(label);
+  ostringstream buf;
+
+  buf << value;
+
+  if(changed)
+    return char(kDbgColorRed & 0xff) + buf.str() + char(kTextColor & 0xff);
   else
-    return "-" + BSPF::toLowerCase(label);
+    return buf.str();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string TIADebug::decWithLabel(string label, uInt16 value, bool changed)
+{
+  ostringstream buf;
+
+  buf << label;
+  if(label != EmptyString)
+    buf << "=";
+  buf << "#" << std::dec << value;
+
+  if(changed)
+    return char(kDbgColorRed & 0xff) + buf.str() + char(kTextColor & 0xff);
+  else
+    return buf.str();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string TIADebug::hexWithLabel(string label, uInt16 value, bool changed)
+{
+  ostringstream buf;
+
+  buf << label;
+  if(label != EmptyString)
+    buf << "=";
+  buf << "$" << Common::Base::HEX2 << value;
+
+  if(changed)
+    return char(kDbgColorRed & 0xff) + buf.str() + char(kTextColor & 0xff);
+  else
+    return buf.str();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string TIADebug::binWithLabel(string label, uInt16 value, bool changed)
+{
+  ostringstream buf;
+
+  buf << label;
+  if(label != EmptyString)
+    buf << "=";
+  buf << "%" << Common::Base::toString(value, Common::Base::Fmt::_2_8);
+
+  if(changed)
+    return char(kDbgColorRed & 0xff) + buf.str() + char(kTextColor & 0xff);
+  else
+    return buf.str();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string TIADebug::boolWithLabel(string label, bool value, bool changed)
+{
+  ostringstream buf;
+
+  if(value)
+    buf << "\177" << BSPF::toUpperCase(label) << "\177";
+    //return "+" + BSPF::toUpperCase(label);
+  else
+    buf << label;
+    //return "-" + BSPF::toLowerCase(label);
+
+  if(changed)
+    return char(kDbgColorRed & 0xff) + buf.str() + char(kTextColor & 0xff);
+  else
+    return buf.str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1078,114 +1149,172 @@ string TIADebug::toString()
 {
   ostringstream buf;
 
-  buf << "00: ";
-  for (uInt8 j = 0; j < 0x010; ++j)
-  {
-    buf << Common::Base::HEX2 << int(mySystem.peek(j)) << " ";
-    if(j == 0x07) buf << "- ";
-  }
-  buf << endl;
-
-  // TODO: inverse video for changed regs. Core needs to track this.
   // TODO: strobes? WSYNC RSYNC RESP0/1 RESM0/1 RESBL HMOVE HMCLR CXCLR
 
+  RiotDebug& riot = myDebugger.riotDebug();
+  const RiotState& riotState = static_cast<const RiotState&>(riot.getState());
+  const RiotState& oldRiotState = static_cast<const RiotState&>(riot.getOldState());
+
   const TiaState& state = static_cast<const TiaState&>(getState());
+  const TiaState& oldState = static_cast<const TiaState&>(getOldState());
 
   // build up output, then return it.
-  buf << "scanline " << std::dec << myTIA.scanlines() << " "
-      << booleanWithLabel("vsync", vsync()) << " "
-      << booleanWithLabel("vblank", vblank())
-      << endl
-      << booleanWithLabel("inpt0", myTIA.peek(0x08) & 0x80) << " "
-      << booleanWithLabel("inpt1", myTIA.peek(0x09) & 0x80) << " "
-      << booleanWithLabel("inpt2", myTIA.peek(0x0a) & 0x80) << " "
-      << booleanWithLabel("inpt3", myTIA.peek(0x0b) & 0x80) << " "
-      << booleanWithLabel("inpt4", myTIA.peek(0x0c) & 0x80) << " "
-      << booleanWithLabel("inpt5", myTIA.peek(0x0d) & 0x80) << " "
-      << booleanWithLabel("dump_gnd_0123", myTIA.myAnalogReadouts[0].vblankDumped())
-      << endl
-      << "COLUxx: "
-      << "P0=$" << Common::Base::HEX2 << state.coluRegs[0] << "/"
-      << colorSwatch(state.coluRegs[0])
-      << " P1=$" << Common::Base::HEX2 << state.coluRegs[1] << "/"
-      << colorSwatch(state.coluRegs[1])
-      << " PF=$" << Common::Base::HEX2 << state.coluRegs[2] << "/"
-      << colorSwatch(state.coluRegs[2])
-      << " BK=$" << Common::Base::HEX2 << state.coluRegs[3] << "/"
-      << colorSwatch(state.coluRegs[3])
-      << endl
-      << "P0: GR=%" << Common::Base::toString(state.gr[TiaState::P0], Common::Base::Fmt::_2_8)
-      << " pos=#" << std::dec << state.pos[TiaState::P0]
-      << " HM=$" << Common::Base::HEX2 << state.hm[TiaState::P0] << " "
-      << nusizP0String() << " "
-      << booleanWithLabel("refl", refP0()) << " "
-      << booleanWithLabel("delay", vdelP0())
-      << endl
-      << "P1: GR=%" << Common::Base::toString(state.gr[TiaState::P1], Common::Base::Fmt::_2_8)
-      << " pos=#" << std::dec << state.pos[TiaState::P1]
-      << " HM=$" << Common::Base::HEX2 << state.hm[TiaState::P1] << " "
-      << nusizP1String() << " "
-      << booleanWithLabel("refl", refP1()) << " "
-      << booleanWithLabel("delay", vdelP1())
-      << endl
-      << "M0: " << (enaM0() ? " ENABLED" : "disabled")
-      << " pos=#" << std::dec << state.pos[TiaState::M0]
-      << " HM=$" << Common::Base::HEX2 << state.hm[TiaState::M0]
-      << " size=" << std::dec << state.size[TiaState::M0] << " "
-      << booleanWithLabel("reset", resMP0())
-      << endl
-      << "M1: " << (enaM1() ? " ENABLED" : "disabled")
-      << " pos=#" << std::dec << state.pos[TiaState::M1]
-      << " HM=$" << Common::Base::HEX2 << state.hm[TiaState::M1]
-      << " size=" << std::dec << state.size[TiaState::M1] << " "
-      << booleanWithLabel("reset", resMP0())
-      << endl
-      << "BL: " << (enaBL() ? " ENABLED" : "disabled")
-      << " pos=#" << std::dec << state.pos[TiaState::BL]
-      << " HM=$" << Common::Base::HEX2 << state.hm[TiaState::BL]
-      << " size=" << std::dec << state.size[TiaState::BL] << " "
-      << booleanWithLabel("delay", vdelBL())
-      << endl
-      << "PF0: %" << Common::Base::toString(state.pf[0], Common::Base::Fmt::_2_8) << "/$"
-      << Common::Base::HEX2 << state.pf[0]
-      << " PF1: %" << Common::Base::toString(state.pf[1], Common::Base::Fmt::_2_8) << "/$"
-      << Common::Base::HEX2 << state.pf[1]
-      << " PF2: %" << Common::Base::toString(state.pf[2], Common::Base::Fmt::_2_8) << "/$"
-      << Common::Base::HEX2 << state.pf[2]
-      << endl << "     "
-      << booleanWithLabel("reflect",  refPF()) << " "
-      << booleanWithLabel("score",    scorePF()) << " "
-      << booleanWithLabel("priority", priorityPF())
+  buf << decWithLabel("scanline", myTIA.scanlines(),
+                      static_cast<int>(myTIA.scanlines()) != oldState.info[4]) << " "
+      << boolWithLabel("vsync",  vsync(),
+                       state.vsb[0] != oldState.vsb[0]) << " "
+      << boolWithLabel("vblank", vblank(),
+                       state.vsb[1] != oldState.vsb[1])
       << endl
       << "Collisions: "
-      << booleanWithLabel("m0_p1 ", collM0_P1())
-      << booleanWithLabel("m0_p0 ", collM0_P0())
-      << booleanWithLabel("m1_p0 ", collM1_P0())
-      << booleanWithLabel("m1_p1 ", collM1_P1())
-      << booleanWithLabel("p0_pf ", collP0_PF())
-      << booleanWithLabel("p0_bl ", collP0_BL())
-      << booleanWithLabel("p1_pf ", collP1_PF())
+      << boolWithLabel("p0_pf", collP0_PF(), state.cx[0] != oldState.cx[0]) << " "
+      << boolWithLabel("p0_bl", collP0_BL(), state.cx[1] != oldState.cx[1]) << " "
+      << boolWithLabel("m1_p0", collM1_P0(), state.cx[2] != oldState.cx[2]) << " "
+      << boolWithLabel("m0_p0", collM0_P0(), state.cx[3] != oldState.cx[3]) << " "
+      << boolWithLabel("p0_p1", collP0_P1(), state.cx[4] != oldState.cx[4]) << " "
+      << boolWithLabel("p1_pf", collP1_PF(), state.cx[5] != oldState.cx[5]) << " "
+      << boolWithLabel("p1_bl", collP1_BL(), state.cx[6] != oldState.cx[6]) << " "
+      << boolWithLabel("m1_p1", collM1_P1(), state.cx[7] != oldState.cx[7])
       << endl << "            "
-      << booleanWithLabel("p1_bl ", collP1_BL())
-      << booleanWithLabel("m0_pf ", collM0_PF())
-      << booleanWithLabel("m0_bl ", collM0_BL())
-      << booleanWithLabel("m1_pf ", collM1_PF())
-      << booleanWithLabel("m1_bl ", collM1_BL())
-      << booleanWithLabel("bl_pf ", collBL_PF())
-      << booleanWithLabel("p0_p1 ", collP0_P1())
-      << endl << "            "
-      << booleanWithLabel("m0_m1 ", collM0_M1())
+      << boolWithLabel("m0_p1", collM0_P1(), state.cx[8] != oldState.cx[8]) << " "
+      << boolWithLabel("m0_pf", collM0_PF(), state.cx[9] != oldState.cx[9]) << " "
+      << boolWithLabel("m0_bl", collM0_BL(), state.cx[10] != oldState.cx[10]) << " "
+      << boolWithLabel("m0_m1", collM0_M1(), state.cx[11] != oldState.cx[11]) << " "
+      << boolWithLabel("m1_pf", collM1_PF(), state.cx[12] != oldState.cx[12]) << " "
+      << boolWithLabel("m1_bl", collM1_BL(), state.cx[13] != oldState.cx[13]) << " "
+      << boolWithLabel("bl_pf", collBL_PF(), state.cx[14] != oldState.cx[14])
       << endl
-      << "AUDF0: $" << Common::Base::HEX2 << int(audF0())
-      << "/" << audFreq(audF0()) << " "
-      << "AUDC0: $" << Common::Base::HEX2 << int(audC0()) << " "
-      << "AUDV0: $" << Common::Base::HEX2 << int(audV0())
+      << "COLUxx: "
+      << hexWithLabel("P0", state.coluRegs[TiaState::P0],
+                      state.coluRegs[TiaState::P0] != oldState.coluRegs[TiaState::P0]) << "/"
+      << colorSwatch(state.coluRegs[TiaState::P0])
+      << hexWithLabel("P1", state.coluRegs[TiaState::P1],
+                      state.coluRegs[TiaState::P1] != oldState.coluRegs[TiaState::P1]) << "/"
+      << colorSwatch(state.coluRegs[TiaState::P1])
+      << hexWithLabel("PF", state.coluRegs[2],
+                      state.coluRegs[2] != oldState.coluRegs[2]) << "/"
+      << colorSwatch(state.coluRegs[2])
+      << hexWithLabel("BK", state.coluRegs[3],
+                      state.coluRegs[3] != oldState.coluRegs[3]) << "/"
+      << colorSwatch(state.coluRegs[3])
       << endl
-      << "AUDF1: $" << Common::Base::HEX2 << int(audF1())
-      << "/" << audFreq(audF1()) << " "
-      << "AUDC1: $" << Common::Base::HEX2 << int(audC1()) << " "
-      << "AUDV1: $" << Common::Base::HEX2 << int(audV1())
-      ;
+      << "P0: "
+      << binWithLabel("GR", state.gr[TiaState::P0],
+                      state.gr[TiaState::P0] != oldState.gr[TiaState::P0]) << " "
+      << decWithLabel("pos", state.pos[TiaState::P0],
+                      state.pos[TiaState::P0] != oldState.pos[TiaState::P0]) << " "
+      << hexWithLabel("HM", state.hm[TiaState::P0],
+                      state.hm[TiaState::P0] != oldState.hm[TiaState::P0]) << " "
+      << stringOnly(nusizP0String(),
+                    state.size[TiaState::P0] != oldState.size[TiaState::P0]) << " "
+      << boolWithLabel("refl",  refP0(),
+                       state.ref[TiaState::P0]  != oldState.ref[TiaState::P0]) << " "
+      << boolWithLabel("delay", vdelP0(),
+                       state.vdel[TiaState::P0] != oldState.vdel[TiaState::P0])
+      << endl
+      << "P1: "
+      << binWithLabel("GR", state.gr[TiaState::P1],
+                     state.gr[TiaState::P1] != oldState.gr[TiaState::P1]) << " "
+      << decWithLabel("pos", state.pos[TiaState::P1],
+                      state.pos[TiaState::P1] != oldState.pos[TiaState::P1]) << " "
+      << hexWithLabel("HM", state.hm[TiaState::P1],
+                      state.hm[TiaState::P1] != oldState.hm[TiaState::P1]) << " "
+      << stringOnly(nusizP1String(),
+                    state.size[TiaState::P1] != oldState.size[TiaState::P1]) << " "
+      << boolWithLabel("refl", refP1(),
+                       state.ref[TiaState::P1] != oldState.ref[TiaState::P1]) << " "
+      << boolWithLabel("delay", vdelP1(),
+                       state.vdel[TiaState::P1] != oldState.vdel[TiaState::P1])
+      << endl
+      << "M0: "
+      << stringOnly(enaM0() ? " ENABLED" : "disabled") << " " // TODO: changed, not tracked?
+      << decWithLabel("pos", state.pos[TiaState::M0],
+                      state.pos[TiaState::M0] != oldState.pos[TiaState::M0]) << " "
+      << hexWithLabel("HM", state.hm[TiaState::M0],
+                      state.hm[TiaState::M0] != oldState.hm[TiaState::M0]) << " "
+      << decWithLabel("size", state.size[TiaState::M0],
+                      state.size[TiaState::M0] != oldState.size[TiaState::M0]) << " "
+      << boolWithLabel("reset", resMP0(), state.resm[TiaState::P0] != oldState.resm[TiaState::P0])
+      << endl
+      << "M1: "
+      << stringOnly(enaM1() ? " ENABLED" : "disabled") << " " // TODO: changed, not tracked?
+      << decWithLabel("pos", state.pos[TiaState::M1],
+                      state.pos[TiaState::M1] != oldState.pos[TiaState::M1]) << " "
+      << hexWithLabel("HM", state.hm[TiaState::M1],
+                      state.hm[TiaState::M1] != oldState.hm[TiaState::M1]) << " "
+      << decWithLabel("size", state.size[TiaState::M1],
+                      state.size[TiaState::M1] != oldState.size[TiaState::M1]) << " "
+      << boolWithLabel("reset", resMP0(), state.resm[TiaState::P1] != oldState.resm[TiaState::P1])
+      << endl
+      << "BL: "
+      << stringOnly(enaBL() ? " ENABLED" : "disabled",
+                    state.gr[4] != oldState.gr[4]) << " "
+      << decWithLabel("pos", state.pos[TiaState::BL],
+                      state.pos[TiaState::BL] != oldState.pos[TiaState::BL]) << " "
+      << hexWithLabel("HM", state.hm[TiaState::BL],
+                      state.hm[TiaState::BL] != oldState.hm[TiaState::BL]) << " "
+      << decWithLabel("size", state.size[TiaState::BL],
+                      state.size[TiaState::BL] != oldState.size[TiaState::BL]) << " "
+      << boolWithLabel("delay", vdelBL(), state.vdel[2] != oldState.vdel[2])
+      << endl
+      << "PF0: "
+      << binWithLabel("", state.pf[0],
+                      state.pf[0] != oldState.pf[0]) << "/"
+      << hexWithLabel("", state.pf[0],
+                      state.pf[0] != oldState.pf[0]) << " "
+      << "PF1: "
+      << binWithLabel("", state.pf[1],
+                      state.pf[1] != oldState.pf[1]) << "/"
+      << hexWithLabel("", state.pf[1],
+                      state.pf[1] != oldState.pf[1]) << " "
+      << "PF2: "
+      << binWithLabel("", state.pf[2],
+                      state.pf[2] != oldState.pf[2]) << "/"
+      << hexWithLabel("", state.pf[2],
+                      state.pf[2] != oldState.pf[2]) << " "
+      << endl << "     "
+      << boolWithLabel("reflect",  refPF(),      state.pf[3] != oldState.pf[3]) << " "
+      << boolWithLabel("score",    scorePF(),    state.pf[4] != oldState.pf[4]) << " "
+      << boolWithLabel("priority", priorityPF(), state.pf[5] != oldState.pf[5])
+      << endl
+      << boolWithLabel("inpt0", myTIA.peek(0x08) & 0x80,
+                        riotState.INPT0 != oldRiotState.INPT0) << " "
+      << boolWithLabel("inpt1", myTIA.peek(0x09) & 0x80,
+                        riotState.INPT1 != oldRiotState.INPT1) << " "
+      << boolWithLabel("inpt2", myTIA.peek(0x0a) & 0x80,
+                        riotState.INPT2 != oldRiotState.INPT2) << " "
+      << boolWithLabel("inpt3", myTIA.peek(0x0b) & 0x80,
+                        riotState.INPT3 != oldRiotState.INPT3) << " "
+      << boolWithLabel("inpt4", myTIA.peek(0x0c) & 0x80,
+                        riotState.INPT4 != oldRiotState.INPT4) << " "
+      << boolWithLabel("inpt5", myTIA.peek(0x0d) & 0x80,
+                        riotState.INPT5 != oldRiotState.INPT5) << " "
+      << boolWithLabel("dump_gnd_0123", myTIA.myAnalogReadouts[0].vblankDumped(),
+                        riotState.INPTDump != oldRiotState.INPTDump)
+      << endl
+      << "AUDF0: "
+      << hexWithLabel("", int(audF0()),
+                      state.aud[0] != oldState.aud[0]) << "/"
+      << stringOnly(audFreq(audF0()),
+                    state.aud[0] != oldState.aud[0]) << " "
+      << "AUDC0: "
+      << hexWithLabel("", int(audC0()),
+                      state.aud[2] != oldState.aud[2]) << " "
+      << "AUDV0: "
+      << hexWithLabel("", int(audV0()),
+                      state.aud[4] != oldState.aud[4])
+      << endl
+      << "AUDF1: "
+      << hexWithLabel("", int(audF1()),
+                      state.aud[1] != oldState.aud[1]) << "/"
+      << stringOnly(audFreq(audF1()),
+                    state.aud[1] != oldState.aud[1]) << " "
+      << "AUDC1: "
+      << hexWithLabel("", int(audC1()),
+                      state.aud[3] != oldState.aud[3]) << " "
+      << "AUDV1: "
+      << hexWithLabel("", int(audV1()),
+                      state.aud[5] != oldState.aud[5]);
   // note: last line should not contain \n, caller will add.
   return buf.str();
 }
