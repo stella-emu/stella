@@ -81,6 +81,8 @@ const DebuggerState& TIADebug::getState()
   myState.gr.push_back(myTIA.myPlayer1.getGRPOld());
   myState.gr.push_back(myTIA.myBall.getENABLNew());
   myState.gr.push_back(myTIA.myBall.getENABLOld());
+  myState.gr.push_back(enaM0());
+  myState.gr.push_back(enaM1());
 
   // Player 0 & 1, Missile 0 & 1 and Ball graphics status registers
   myState.ref.clear();
@@ -191,6 +193,8 @@ void TIADebug::saveOldState()
   myOldState.gr.push_back(myTIA.myPlayer1.getGRPOld());
   myOldState.gr.push_back(myTIA.myBall.getENABLNew());
   myOldState.gr.push_back(myTIA.myBall.getENABLOld());
+  myOldState.gr.push_back(enaM0());
+  myOldState.gr.push_back(enaM1());
 
   // Player 0 & 1, Missile 0 & 1 and Ball graphics status registers
   myOldState.ref.clear();
@@ -1227,7 +1231,8 @@ string TIADebug::toString()
                        state.vdel[TiaState::P1] != oldState.vdel[TiaState::P1])
       << endl
       << "M0: "
-      << stringOnly(enaM0() ? " ENABLED" : "disabled") << " " // TODO: changed, not tracked?
+      << stringOnly(enaM0() ? " ENABLED" : "disabled",
+                    state.gr[6] != oldState.gr[6]) << " "
       << decWithLabel("pos", state.pos[TiaState::M0],
                       state.pos[TiaState::M0] != oldState.pos[TiaState::M0]) << " "
       << hexWithLabel("HM", state.hm[TiaState::M0],
@@ -1237,7 +1242,8 @@ string TIADebug::toString()
       << boolWithLabel("reset", resMP0(), state.resm[TiaState::P0] != oldState.resm[TiaState::P0])
       << endl
       << "M1: "
-      << stringOnly(enaM1() ? " ENABLED" : "disabled") << " " // TODO: changed, not tracked?
+      << stringOnly(enaM1() ? " ENABLED" : "disabled",
+                    state.gr[7] != oldState.gr[7]) << " "
       << decWithLabel("pos", state.pos[TiaState::M1],
                       state.pos[TiaState::M1] != oldState.pos[TiaState::M1]) << " "
       << hexWithLabel("HM", state.hm[TiaState::M1],
@@ -1278,17 +1284,17 @@ string TIADebug::toString()
       << boolWithLabel("priority", priorityPF(), state.pf[5] != oldState.pf[5])
       << endl
       << boolWithLabel("inpt0", myTIA.peek(0x08) & 0x80,
-                        riotState.INPT0 != oldRiotState.INPT0) << " "
+                        (riotState.INPT0 & 0x80) != (oldRiotState.INPT0 & 0x80)) << " "
       << boolWithLabel("inpt1", myTIA.peek(0x09) & 0x80,
-                        riotState.INPT1 != oldRiotState.INPT1) << " "
+                        (riotState.INPT1 & 0x80) != (oldRiotState.INPT1 & 0x80)) << " "
       << boolWithLabel("inpt2", myTIA.peek(0x0a) & 0x80,
-                        riotState.INPT2 != oldRiotState.INPT2) << " "
+                        (riotState.INPT2 & 0x80) != (oldRiotState.INPT2 & 0x80)) << " "
       << boolWithLabel("inpt3", myTIA.peek(0x0b) & 0x80,
-                        riotState.INPT3 != oldRiotState.INPT3) << " "
+                        (riotState.INPT3 & 0x80) != (oldRiotState.INPT3 & 0x80)) << " "
       << boolWithLabel("inpt4", myTIA.peek(0x0c) & 0x80,
-                        riotState.INPT4 != oldRiotState.INPT4) << " "
+                        (riotState.INPT4 & 0x80) != (oldRiotState.INPT4 & 0x80)) << " "
       << boolWithLabel("inpt5", myTIA.peek(0x0d) & 0x80,
-                        riotState.INPT5 != oldRiotState.INPT5) << " "
+                        (riotState.INPT5 & 0x80) != (oldRiotState.INPT5 & 0x80)) << " "
       << boolWithLabel("dump_gnd_0123", myTIA.myAnalogReadouts[0].vblankDumped(),
                         riotState.INPTDump != oldRiotState.INPTDump)
       << endl
