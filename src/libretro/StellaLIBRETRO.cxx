@@ -187,6 +187,7 @@ void StellaLIBRETRO::updateAudio()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool StellaLIBRETRO::loadState(const void* data, size_t size)
 {
+#if 0
   Serializer state;
 
   state.putByteArray(reinterpret_cast<const uInt8*>(data), static_cast<uInt32>(size));
@@ -196,11 +197,15 @@ bool StellaLIBRETRO::loadState(const void* data, size_t size)
 
   memcpy(system_ram, myOSystem->console().system().m6532().getRAM(), 128);
   return true;
+#else
+  return false;
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool StellaLIBRETRO::saveState(void* data, size_t size) const
 {
+#if 0
   Serializer state;
 
   if (!myOSystem->state().saveState(state))
@@ -211,6 +216,9 @@ bool StellaLIBRETRO::saveState(void* data, size_t size) const
 
   state.getByteArray(reinterpret_cast<uInt8*>(data), static_cast<uInt32>(state.size()));
   return true;
+#else
+  return false;
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
