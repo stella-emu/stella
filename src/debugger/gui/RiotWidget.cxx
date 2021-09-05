@@ -138,6 +138,13 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   myTimWrite->setID(kTimWriteID);
   addFocusWidget(myTimWrite);
 
+  t = new StaticTextWidget(boss, lfont, myTimWrite->getRight() + _fontWidth, ypos + 2 , "#");
+  myTimClocks = new DataGridWidget(boss, nfont, t->getRight() + _fontWidth / 2, ypos,
+                                   1, 1, 6, 30, Common::Base::Fmt::_10_6);
+  myTimClocks->setToolTip("Number of CPU cycles available for current timer interval.\n");
+  myTimClocks->setTarget(this);
+  myTimClocks->setEditable(false);
+
   // Timer registers (RO)
   static constexpr std::array<const char*, 5> readNames = {
     "INTIM", "TIMINT", "Total Clks", "INTIM Clks", "Divider  #"
@@ -148,7 +155,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
     t = new StaticTextWidget(boss, lfont, xpos, ypos + row * lineHeight + 2,
                              readNames[row]);
   }
-  xpos += t->getWidth() + 5;
+  xpos += t->getWidth() + _fontWidth / 2;
   myTimRead = new DataGridWidget(boss, nfont, xpos, ypos, 1, 4, 4, 30, Common::Base::Fmt::_16);
   myTimRead->setTarget(this);
   myTimRead->setEditable(false);
@@ -340,6 +347,24 @@ void RiotWidget::loadConfig()
   alist.push_back(kTim1024TID);  vlist.push_back(state.T1024T);
     changed.push_back(state.T1024T != oldstate.T1024T);
   myTimWrite->setList(alist, vlist, changed);
+
+  alist.clear();  vlist.clear();  changed.clear();
+  alist.push_back(0);
+  if(state.TIM1T)
+    vlist.push_back((state.TIM1T  - 1) * 1);
+  else if(state.TIM8T)
+    vlist.push_back((state.TIM8T  - 1) * 8);
+  else if(state.TIM64T)
+    vlist.push_back((state.TIM64T - 1) * 64);
+  else if(state.T1024T)
+    vlist.push_back((state.T1024T - 1) * 1024);
+  else
+    vlist.push_back(0);
+  changed.push_back(state.TIM1T != oldstate.TIM1T ||
+                    state.TIM8T != oldstate.TIM8T ||
+                    state.TIM64T != oldstate.TIM64T ||
+                    state.T1024T != oldstate.T1024T);
+  myTimClocks->setList(alist, vlist, changed);
 
   // Update timer read registers
   alist.clear();  vlist.clear();  changed.clear();

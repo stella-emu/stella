@@ -58,6 +58,7 @@ class RiotWidget : public Widget, public CommandSender
     CheckboxWidget* myINPTDump{nullptr};
 
     DataGridWidget* myTimWrite{nullptr};
+    DataGridWidget* myTimClocks{nullptr};
     DataGridWidget* myTimRead{nullptr};
     DataGridWidget* myTimDivider{nullptr};
 
