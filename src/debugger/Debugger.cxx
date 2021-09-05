@@ -962,7 +962,7 @@ std::array<Debugger::BuiltinFunction, 18> Debugger::ourBuiltinFunctions = { {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Names are defined here, but processed in YaccParser
-std::array<Debugger::PseudoRegister, 16> Debugger::ourPseudoRegisters = { {
+std::array<Debugger::PseudoRegister, 18> Debugger::ourPseudoRegisters = {{
 // Debugger::PseudoRegister Debugger::ourPseudoRegisters[NUM_PSEUDO_REGS] = {
   { "_bank",          "Currently selected bank" },
   { "_cClocks",       "Color clocks on current scanline" },
@@ -973,9 +973,11 @@ std::array<Debugger::PseudoRegister, 16> Debugger::ourPseudoRegisters = { {
   { "_fTimReadCycles","Number of cycles used by timer reads since frame started" },
   { "_fWsyncCycles",  "Number of cycles skipped by WSYNC since frame started" },
   { "_iCycles",       "Number of cycles of last instruction" },
+  { "_inTim",         "Curent INTIM value" },
   { "_scan",          "Current scanline count" },
   { "_scanEnd",       "Scanline count at end of last frame" },
   { "_sCycles",       "Number of cycles in current scanline" },
+  { "_timInt",        "Current TIMINT value" },
   { "_timWrapRead",   "Timer read wrapped on this cycle" },
   { "_timWrapWrite",  "Timer write wrapped on this cycle" },
   { "_vBlank",        "Whether vertical blank is enabled (1 or 0)" },
