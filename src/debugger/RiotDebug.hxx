@@ -85,6 +85,8 @@ class RiotDebug : public DebuggerSystem
     int timWrappedOnWrite() const;
 
     int timReadCycles() const;
+    int timintAsInt() const { return int(timint()); } // so we can use _timInt pseudo-register
+    int intimAsInt() const { return int(intim()); }   // so we can use _inTim pseudo-register
 
     /* Console switches */
     bool diffP0(int newVal = -1);

@@ -366,7 +366,7 @@ class Debugger : public DialogContainer
       string name, help;
     };
     static std::array<BuiltinFunction, 18> ourBuiltinFunctions;
-    static std::array<PseudoRegister, 16> ourPseudoRegisters;
+    static std::array<PseudoRegister, 18> ourPseudoRegisters;
 
     static constexpr Int8 ANY_BANK = -1;
     bool myFirstLog{true};
