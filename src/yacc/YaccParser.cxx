@@ -238,6 +238,10 @@ RiotMethod getRiotSpecial(char* ch)
     return &RiotDebug::timWrappedOnWrite;
   else if(BSPF::equalsIgnoreCase(ch, "_fTimReadCycles"))
     return &RiotDebug::timReadCycles;
+  else if(BSPF::equalsIgnoreCase(ch, "_inTim"))
+    return &RiotDebug::intimAsInt;
+  else if(BSPF::equalsIgnoreCase(ch, "_timInt"))
+    return &RiotDebug::timintAsInt;
   else
     return nullptr;
 }
