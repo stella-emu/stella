@@ -84,7 +84,8 @@ class DataGridWidget : public EditableWidget
 
     void setCrossed(bool enable);
 
-    void setGridToolTip(int column, int row, const string& text);
+    using EditableWidget::setToolTip;
+    void setToolTip(int column, int row, const string& text);
     string getToolTip(const Common::Point& pos) const override;
     bool changedToolTip(const Common::Point& oldPos, const Common::Point& newPos) const override;
 
