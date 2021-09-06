@@ -55,7 +55,8 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
   {
     _addrList.push_back(0);
     _valueList.push_back(0);
-    _valueStringList.push_back("");
+    _valueStringList.push_back(EmptyString);
+    _toolTipList.push_back(EmptyString);
     _changedList.push_back(0);
     _hiliteList.push_back(false);
   }
@@ -585,6 +586,13 @@ void DataGridWidget::handleCommand(CommandSender* sender, int cmd,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DataGridWidget::setGridToolTip(int column, int row, const string& text)
+{
+  if(row >= 0 && row < _rows && column >= 0 && column < _cols)
+    _toolTipList[row * _cols + column] = text;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int DataGridWidget::getToolTipIndex(const Common::Point& pos) const
 {
   const int col = (pos.x - getAbsX()) / _colWidth;
@@ -607,9 +615,12 @@ string DataGridWidget::getToolTip(const Common::Point& pos) const
   const Int32 val = _valueList[idx];
   ostringstream buf;
 
-  buf << _toolTipText
-    << "$" << Common::Base::toString(val, Common::Base::Fmt::_16)
-    << " = #" << val;
+  if(_toolTipList[idx] != EmptyString)
+    buf << _toolTipList[idx];
+  else
+    buf << _toolTipText;
+   buf << "$" << Common::Base::toString(val, Common::Base::Fmt::_16)
+       << " = #" << val;
   if(val < 0x100)
   {
     if(val >= 0x80)
