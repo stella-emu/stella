@@ -157,6 +157,8 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   }
   xpos += t->getWidth() + _fontWidth / 2;
   myTimRead = new DataGridWidget(boss, nfont, xpos, ypos, 1, 4, 4, 30, Common::Base::Fmt::_16);
+  myTimRead->setGridToolTip(0, 1, "Timer interrupt flag in bit 7.\n");
+  myTimRead->setGridToolTip(0, 2, "Number of CPU cycles since last TIMxxT write.\n");
   myTimRead->setTarget(this);
   myTimRead->setEditable(false);
 

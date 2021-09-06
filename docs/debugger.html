@@ -1098,11 +1098,11 @@ in another part of the debugger).</p>
 <p><img src="graphics/debugger_iotab.png"></p>
 
 <p>As with the TIA tab, most of the values here will be self-explanatory to a 2600
-developer, and almost all can be modified. However, the SWCHx registers need
+developer, and many can be modified. However, the SWCHx registers need
 further explanation:<p>
-<p>SWCHx(W) can be modified; here, the (W) stands for write. Similarly,
-SWACNT/SWBCNT can be directly modified. However, the results of reading back from
-the SWCHx register are influenced by SWACNT/SWBCNT, and SWCHx(R) is a read-only display
+<p>SWCHx(W/R) can be modified; here (W) stands for write, (R) for read.
+Similarly, SWxCNT can be directly modified. However, the results of reading
+back from the SWCHx register are influenced by SWxCNT, and SWCHx(R) is
 reflecting this result.</p>
 
 
