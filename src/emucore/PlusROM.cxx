@@ -326,7 +326,7 @@ void PlusROM::send()
 {
 #if defined(HTTP_LIB_SUPPORT)
   if (myPendingRequests.size() >= MAX_CONCURRENT_REQUESTS) {
-    // Try to make room by cosuming any requests that have completed.
+    // Try to make room by consuming any requests that have completed.
     receive();
   }
 

@@ -20,9 +20,7 @@
 
 #include "PlusRomsSetupDialog.hxx"
 
-static const int MIN_NICK_LEN = 2;
 static const int MAX_NICK_LEN = 16;
-static const char* MIN_NICK_LEN_STR = "Two";
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PlusRomsSetupDialog::PlusRomsSetupDialog(OSystem& osystem, DialogContainer& parent,
@@ -33,7 +31,8 @@ PlusRomsSetupDialog::PlusRomsSetupDialog(OSystem& osystem, DialogContainer& pare
     return isalnum(c) || (c == '_');
   };
 
-  setTextFilter(filter, 0);
+  setTextFilter(filter);
+  setToolTip("Enter your PlusCart High Score Club nickname here.");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -46,6 +45,9 @@ void PlusRomsSetupDialog::loadConfig()
 void PlusRomsSetupDialog::saveConfig()
 {
   instance().settings().setValue("plusroms.nick", getResult(0));
+  if(instance().settings().getString("plusroms.id") == EmptyString)
+    instance().settings().setValue("plusroms.id", "12345678901234567890123456789012"); // TODO: generate in PlusROM class
+  // Note: The user can cancel, so the existance of an ID must be checked (and generated if not existing) when transmitting scores
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -56,13 +58,8 @@ void PlusRomsSetupDialog::handleCommand(CommandSender* sender, int cmd,
   {
     case GuiObject::kOKCmd:
     case EditableWidget::kAcceptCmd:
-      if(getResult(0).length() >= MIN_NICK_LEN)
-      {
-        saveConfig();
-        instance().eventHandler().leaveMenuMode();
-      }
-      else
-        setMessage(MIN_NICK_LEN_STR + string(" characters minimum"));
+      saveConfig();
+      instance().eventHandler().leaveMenuMode();
       break;
 
     case kCloseCmd:
