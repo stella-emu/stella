@@ -473,7 +473,9 @@ class EventHandler
       INTERPOLATION,
       // *** Input group ***
       DEADZONE,
+      ANALOG_DEADZONE,
       ANALOG_SENSITIVITY,
+      ANALOG_ACCEL,
       DEJITTER_AVERAGING,
       DEJITTER_REACTION,
       DIGITAL_SENSITIVITY,
@@ -645,7 +647,7 @@ class EventHandler
     #else
       REFRESH_SIZE         = 0,
     #endif
-      EMUL_ACTIONLIST_SIZE = 212 + PNG_SIZE + COMBO_SIZE + REFRESH_SIZE,
+      EMUL_ACTIONLIST_SIZE = 216 + PNG_SIZE + COMBO_SIZE + REFRESH_SIZE,
       MENU_ACTIONLIST_SIZE = 19
     ;
 

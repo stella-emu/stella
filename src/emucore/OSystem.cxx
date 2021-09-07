@@ -510,7 +510,7 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
     }
     // Check for first PlusROM start
     if(myConsole->cartridge().isPlusROM() &&
-       settings().getString("plusroms.nick") == EmptyString)
+       settings().getString("plusroms.id") == EmptyString)
     {
       myEventHandler->changeStateByEvent(Event::PlusRomsSetupMode);
     }

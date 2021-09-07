@@ -99,6 +99,9 @@ void EventHandler::initialize()
   setActionMappings(EventMode::kMenuMode);
 
   Joystick::setDeadZone(myOSystem.settings().getInt("joydeadzone"));
+  Paddles::setAnalogDeadzone(myOSystem.settings().getInt("pdeadzone"));
+  Paddles::setAnalogAccel(myOSystem.settings().getInt("paccel"));
+  Paddles::setDejitterDiff(myOSystem.settings().getInt("dejitter.diff"));
   Paddles::setDejitterBase(myOSystem.settings().getInt("dejitter.base"));
   Paddles::setDejitterDiff(myOSystem.settings().getInt("dejitter.diff"));
   Paddles::setDigitalSensitivity(myOSystem.settings().getInt("dsense"));
@@ -455,7 +458,9 @@ bool EventHandler::skipInputSetting() const
         && (myAdjustSetting == AdjustSetting::DEADZONE
         || myAdjustSetting == AdjustSetting::FOUR_DIRECTIONS))
     || (!paddle
-        && (myAdjustSetting == AdjustSetting::ANALOG_SENSITIVITY
+        && (myAdjustSetting == AdjustSetting::ANALOG_DEADZONE
+        || myAdjustSetting == AdjustSetting::ANALOG_SENSITIVITY
+        || myAdjustSetting == AdjustSetting::ANALOG_ACCEL
         || myAdjustSetting == AdjustSetting::DEJITTER_AVERAGING
         || myAdjustSetting == AdjustSetting::DEJITTER_REACTION
         || myAdjustSetting == AdjustSetting::DIGITAL_SENSITIVITY
@@ -591,7 +596,9 @@ AdjustFunction EventHandler::getAdjustSetting(AdjustSetting setting)
 
     // *** Input settings ***
     std::bind(&PhysicalJoystickHandler::changeDeadzone, &joyHandler(), _1),
+    std::bind(&PhysicalJoystickHandler::changeAnalogPaddleDeadzone, &joyHandler(), _1),
     std::bind(&PhysicalJoystickHandler::changeAnalogPaddleSensitivity, &joyHandler(), _1),
+    std::bind(&PhysicalJoystickHandler::changeAnalogPaddleAcceleration, &joyHandler(), _1),
     std::bind(&PhysicalJoystickHandler::changePaddleDejitterAveraging, &joyHandler(), _1),
     std::bind(&PhysicalJoystickHandler::changePaddleDejitterReaction, &joyHandler(), _1),
     std::bind(&PhysicalJoystickHandler::changeDigitalPaddleSensitivity, &joyHandler(), _1),
@@ -1371,11 +1378,29 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       }
       return;
 
+    case Event::DecAnalogDeadzone:
+      if(pressed)
+      {
+        myPJoyHandler->changeAnalogPaddleDeadzone(-1);
+        myAdjustSetting = AdjustSetting::ANALOG_DEADZONE;
+        myAdjustActive = true;
+      }
+      return;
+
+    case Event::IncAnalogDeadzone:
+      if(pressed)
+      {
+        myPJoyHandler->changeAnalogPaddleDeadzone(+1);
+        myAdjustSetting = AdjustSetting::ANALOG_DEADZONE;
+        myAdjustActive = true;
+      }
+      return;
+
     case Event::DecAnalogSense:
       if(pressed)
       {
         myPJoyHandler->changeAnalogPaddleSensitivity(-1);
-        myAdjustSetting = AdjustSetting::PADDLE_SENSITIVITY;
+        myAdjustSetting = AdjustSetting::ANALOG_SENSITIVITY;
         myAdjustActive = true;
       }
       return;
@@ -1384,10 +1409,27 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myPJoyHandler->changeAnalogPaddleSensitivity(+1);
-        myAdjustSetting = AdjustSetting::PADDLE_SENSITIVITY;
+        myAdjustSetting = AdjustSetting::ANALOG_SENSITIVITY;
         myAdjustActive = true;
       }
+      return;
 
+    case Event::DecAnalogAccel:
+      if(pressed)
+      {
+        myPJoyHandler->changeAnalogPaddleAcceleration(-1);
+        myAdjustSetting = AdjustSetting::ANALOG_ACCEL;
+        myAdjustActive = true;
+      }
+      return;
+
+    case Event::IncAnalogAccel:
+      if(pressed)
+      {
+        myPJoyHandler->changeAnalogPaddleAcceleration(+1);
+        myAdjustSetting = AdjustSetting::ANALOG_ACCEL;
+        myAdjustActive = true;
+      }
       return;
 
     case Event::DecDejtterAveraging:
@@ -3279,11 +3321,14 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::VolumeDecrease,          "Decrease volume",                       "" },
   { Event::VolumeIncrease,          "Increase volume",                       "" },
 
-
   { Event::DecreaseDeadzone,        "Decrease joystick deadzone",            "" },
   { Event::IncreaseDeadzone,        "Increase joystick deadzone",            "" },
+  { Event::DecAnalogDeadzone,       "Decrease analog paddle deadzone",       "" },
+  { Event::IncAnalogDeadzone,       "Increase analog paddle deadzone",       "" },
   { Event::DecAnalogSense,          "Decrease analog paddle sensitivity",    "" },
   { Event::IncAnalogSense,          "Increase analog paddle sensitivity",    "" },
+  { Event::DecAnalogAccel,          "Decrease analog paddle acceleration",   "" },
+  { Event::IncAnalogAccel,          "Increase analog paddle acceleration",   "" },
   { Event::DecDejtterAveraging,     "Decrease paddle dejitter averaging",    "" },
   { Event::IncDejtterAveraging,     "Increase paddle dejitter averaging",    "" },
   { Event::DecDejtterReaction,      "Decrease paddle dejitter reaction",     "" },
@@ -3467,7 +3512,9 @@ const Event::EventSet EventHandler::KeyboardEvents = {
 
 const Event::EventSet EventHandler::DevicesEvents = {
   Event::DecreaseDeadzone, Event::IncreaseDeadzone,
+  Event::DecAnalogDeadzone, Event::IncAnalogDeadzone,
   Event::DecAnalogSense, Event::IncAnalogSense,
+  Event::DecAnalogAccel, Event::IncAnalogAccel,
   Event::DecDejtterAveraging, Event::IncDejtterAveraging,
   Event::DecDejtterReaction, Event::IncDejtterReaction,
   Event::DecDigitalSense, Event::IncDigitalSense,

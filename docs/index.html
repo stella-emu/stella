@@ -1585,6 +1585,17 @@
     </tr>
 
     <tr>
+      <td><i>Decrease</i> analog paddle deadzone</td>
+      <td>Shift-Control-Alt + F1</td>
+      <td>Shift-Control-Cmd + F1</td>
+    </tr>
+    <tr>
+      <td><i>Increase</i> analog paddle deadzone</td>
+      <td>Control-Alt + F1</td>
+      <td>Control-Cmd + F1</td>
+    </tr>
+
+    <tr>
       <td><i>Decrease</i> analog paddle sensitivity</td>
       <td>Shift-Control + F2</td>
       <td>Shift-Control + F2</td>
@@ -1593,6 +1604,17 @@
       <td><i>Increase</i> analog paddle sensitivity</td>
       <td>Control + F2</td>
       <td>Control + F2</td>
+    </tr>
+
+    <tr>
+      <td><i>Decrease</i> analog paddle acceleration</td>
+      <td>Shift-Control-Alt + F2</td>
+      <td>Shift-Control-Cmd + F2</td>
+    </tr>
+    <tr>
+      <td><i>Increase</i> analog paddle acceleration</td>
+      <td>Control-Alt + F2</td>
+      <td>Control-Cmd + F2</td>
     </tr>
 
     <tr>
@@ -1933,8 +1955,9 @@
   </table>
 
   <p><b><a name="GlobalKeys">Global Keys</a> (can be remapped)</b></p>
-  <p>These keys allow selecting and changing settings without having to remember the
-  dedicated keys. They keys are grouped by 'Audio & Video', 'Input Device & Ports' and 'Debug' settings.</p>
+  <p>These keys allow selecting and changing settings without having to remember
+    the dedicated hotkeys. The global keys are grouped by 'Audio & Video',
+    'Input Devices & Ports' and 'Debug' settings.</p>
   <table BORDER=2 cellpadding=4>
     <tr>
       <th>Function</th>
@@ -1976,8 +1999,8 @@
       <ul>
           <li>Only available if UI messages are enabled.</li>
           <li>Currently not available settings are automatically skipped.</li>
-          <li>If a setting was previously selected via a dedicated key, its value can also be changed with the
-          global keys.</li>
+          <li>If a setting was previously selected via a dedicated hotkey, its
+          value can also be directly changed with the global keys.</li>
       </ul>
   </p>
 
@@ -2948,6 +2971,13 @@
     </tr>
 
     <tr>
+      <td><pre>-pdeadzone &lt;0 - 15000&gt;</pre></td>
+      <td>Set the deadzone area for analog paddles. All values within the
+        deadzone are treated as zero-axis values, while only those values
+        outside are registered as valid input.</td>
+    </tr>
+
+    <tr>
       <td><pre>-psense &lt;number&gt;</pre></td>
       <td>Sensitivity for emulation of paddles when using analog paddles.
       Valid range of values is from 0 to 30, with larger numbers causing
@@ -2955,13 +2985,18 @@
     </tr>
 
     <tr>
+      <td><pre>-paccel &lt;0 - 100&gt;</pre></td>
+      <td>Acceleration of analog paddles when moving them fast.</td>
+    </tr>
+
+    <tr>
       <td><pre>-dejitter.base &lt;0 - 10&gt;</pre></td>
-      <td>Strength of paddle input averaging.</td>
+      <td>Strength of analog paddle input averaging.</td>
     </tr>
 
     <tr>
       <td><pre>-dejitter.diff &lt;0 - 10&gt;</pre></td>
-      <td>Impact of fast paddle movement on input averaging.</td>
+      <td>Impact of fast analog paddle movement on input averaging.</td>
     </tr>
 
     <tr>
@@ -2990,7 +3025,7 @@
       when you want to disable them.</br>
       E.g. a 2-player game is using either the 'F' or 'R' keys for movement,
       and pressing Control (for Fire) will perform an unwanted action
-      associated with 'Control + R' or 'Control + F' default keys.</td>
+      associated with 'Control + F' or 'Control + R' default keys.</td>
     </tr>
 
     <tr>
@@ -3989,7 +4024,9 @@
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">Command Line</a></th></tr>
           <tr><td>Joystick deadzone size</td><td>Deadzone area for axes on joysticks/gamepads</td><td>-joydeadzone</td></tr>
+          <tr><td>(Analog paddle) Deadzone size</td><td>Deadzone area for analog paddles</td><td>-pdeadzone</td></tr>
           <tr><td>(Analog paddle) Sensitivity</td><td>Sensitivity of an analog paddle</td><td>-psense</td></tr>
+          <tr><td>(Analog paddle) Acceleration</td><td>Acceleration of analog paddles when moving them fast</td><td>-paccel</td></tr>
           <tr><td>(Analog paddle) Dejitter averaging</td><td>Strength of paddle input averaging, suppresses paddle jitter.<br>
                   Note: The 2600-daptor has built-in dejitter, so there should be no need to use Stella's dejitter.
                   </td><td>-dejitter.base</td></tr>

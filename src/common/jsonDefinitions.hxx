@@ -195,8 +195,12 @@ NLOHMANN_JSON_SERIALIZE_ENUM(Event::Type, {
 
   {Event::DecreaseDeadzone, "DecreaseDeadzone"},
   {Event::IncreaseDeadzone, "IncreaseDeadzone"},
+  {Event::DecAnalogDeadzone, "DecAnalogDeadzone"},
+  {Event::IncAnalogDeadzone, "IncAnalogDeadzone"},
   {Event::DecAnalogSense, "DecAnalogSense"},
   {Event::IncAnalogSense, "IncAnalogSense"},
+  {Event::DecAnalogAccel, "DecAnalogAccel"},
+  {Event::IncAnalogAccel, "IncAnalogAccel"},
   {Event::DecDejtterAveraging, "DecDejtterAveraging"},
   {Event::IncDejtterAveraging, "IncDejtterAveraging"},
   {Event::DecDejtterReaction, "DecDejtterReaction"},

@@ -48,9 +48,13 @@ class Paddles : public Controller
     ~Paddles() override = default;
 
   public:
+    static constexpr int MIN_ANALOG_DEADZONE = 0;
+    static constexpr int MAX_ANALOG_DEADZONE = 15000;
     static constexpr float BASE_ANALOG_SENSE = 0.148643628F;
     static constexpr int MIN_ANALOG_SENSE = 0;
     static constexpr int MAX_ANALOG_SENSE = 30;
+    static constexpr int MIN_ANALOG_ACCEL = 0;
+    static constexpr int MAX_ANALOG_ACCEL = 100;
     static constexpr int MIN_ANALOG_CENTER = -10;
     static constexpr int MAX_ANALOG_CENTER = 30;
     static constexpr int MIN_DIGITAL_SENSE = 1;
@@ -112,6 +116,20 @@ class Paddles : public Controller
     static void setAnalogYCenter(int ycenter);
 
     /**
+      Sets the deadzone for analog paddles.
+
+      @param deadzone Value from 0 to 15000
+    */
+    static void setAnalogDeadzone(int deadzone);
+
+    /**
+      Sets the acceleration for analog paddles.
+
+      @param accel Value from 100 to 300
+    */
+    static void setAnalogAccel(int accel);
+
+    /**
       Sets the sensitivity for analog paddles.
 
       @param sensitivity  Value from 0 to 30, where 20 equals 1
@@ -120,6 +138,7 @@ class Paddles : public Controller
     static float setAnalogSensitivity(int sensitivity);
 
     static float analogSensitivityValue(int sensitivity);
+
 
     /**
       @param strength  Value from 0 to 10
@@ -192,16 +211,18 @@ class Paddles : public Controller
 
     static int XCENTER;
     static int YCENTER;
-    static float SENSITIVITY;
+    static float SENSITIVITY, ACCEL;
 
     static int DIGITAL_SENSITIVITY, DIGITAL_DISTANCE;
-    static int DEJITTER_BASE, DEJITTER_DIFF;
+    static int DEADZONE, DEJITTER_BASE, DEJITTER_DIFF;
     static int MOUSE_SENSITIVITY;
 
     /**
       Swap two events.
     */
     void swapEvents(Event::Type& event1, Event::Type& event2);
+
+    AnalogReadout::Connection getReadOut(int lastAxis, int& newAxis, int center);
 
     /**
       Update the axes pin state according to the events currently set.
