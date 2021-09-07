@@ -664,7 +664,6 @@ bool PhysicalJoystickHandler::addJoyMapping(Event::Type event, EventMode mode, i
   {
     EventMode evMode = getEventMode(event, mode);
 
-
     // This confusing code is because each axis has two associated values,
     // but analog events only affect one of the axis.
     if (Event::isAnalog(event))
@@ -956,7 +955,20 @@ void PhysicalJoystickHandler::changeDeadzone(int direction)
   int value = Joystick::deadZoneValue(deadzone);
 
   myOSystem.frameBuffer().showGaugeMessage("Joystick deadzone", std::to_string(value),
-                                           value, 3200, 32200);
+                                           deadzone, Joystick::DEAD_ZONE_MIN, Joystick::DEAD_ZONE_MAX);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PhysicalJoystickHandler::changeAnalogPaddleDeadzone(int direction)
+{
+  int deadzone = BSPF::clamp(myOSystem.settings().getInt("pdeadzone") + direction * 500,
+                             Paddles::MIN_ANALOG_DEADZONE, Paddles::MAX_ANALOG_DEADZONE);
+  myOSystem.settings().setValue("pdeadzone", deadzone);
+
+  Paddles::setAnalogDeadzone(deadzone);
+
+  myOSystem.frameBuffer().showGaugeMessage("Analog paddle deadzone", std::to_string(deadzone), deadzone,
+                                           Paddles::MIN_ANALOG_DEADZONE, Paddles::MAX_ANALOG_DEADZONE);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -970,8 +982,28 @@ void PhysicalJoystickHandler::changeAnalogPaddleSensitivity(int direction)
 
   ostringstream ss;
   ss << std::round(Paddles::analogSensitivityValue(sense) * 100.F) << "%";
+
   myOSystem.frameBuffer().showGaugeMessage("Analog paddle sensitivity", ss.str(), sense,
                                            Paddles::MIN_ANALOG_SENSE, Paddles::MAX_ANALOG_SENSE);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PhysicalJoystickHandler::changeAnalogPaddleAcceleration(int direction)
+{
+  int accel = BSPF::clamp(myOSystem.settings().getInt("paccel") + direction * 5,
+                          Paddles::MIN_ANALOG_ACCEL, Paddles::MAX_ANALOG_ACCEL);
+  myOSystem.settings().setValue("paccel", accel);
+
+  Paddles::setAnalogAccel(accel);
+
+  ostringstream ss;
+  if(accel)
+    ss << accel << "%";
+  else
+    ss << "Off";
+
+  myOSystem.frameBuffer().showGaugeMessage("Analog paddle acceleration", ss.str(), accel,
+                                           Paddles::MIN_ANALOG_ACCEL, Paddles::MAX_ANALOG_ACCEL);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

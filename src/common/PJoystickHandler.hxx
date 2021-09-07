@@ -111,7 +111,9 @@ class PhysicalJoystickHandler
     VariantList database() const;
 
     void changeDeadzone(int direction = +1);
+    void changeAnalogPaddleDeadzone(int direction = +1);
     void changeAnalogPaddleSensitivity(int direction = +1);
+    void changeAnalogPaddleAcceleration(int direction = +1);
     void changePaddleDejitterAveraging(int direction = +1);
     void changePaddleDejitterReaction(int direction = +1);
     void changeDigitalPaddleSensitivity(int direction = +1);

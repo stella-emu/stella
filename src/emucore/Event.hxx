@@ -147,7 +147,9 @@ class Event
       HighScoresMenuMode,
       // Input settings
       DecreaseDeadzone, IncreaseDeadzone,
+      DecAnalogDeadzone, IncAnalogDeadzone,
       DecAnalogSense, IncAnalogSense,
+      DecAnalogAccel, IncAnalogAccel,
       DecDejtterAveraging, IncDejtterAveraging,
       DecDejtterReaction, IncDejtterReaction,
       DecDigitalSense, IncDigitalSense,

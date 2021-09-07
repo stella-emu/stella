@@ -22,6 +22,7 @@
 #include "Logger.hxx"
 #include "AudioSettings.hxx"
 #include "PaletteHandler.hxx"
+#include "Joystick.hxx"
 #include "Paddles.hxx"
 
 #ifdef DEBUGGER_SUPPORT
@@ -114,6 +115,8 @@ Settings::Settings()
   setPermanent("usemouse", "analog");
   setPermanent("grabmouse", "true");
   setPermanent("cursor", "2");
+  setPermanent("pdeadzone", "0");
+  setPermanent("paccel", "100");
   setPermanent("dejitter.base", "0");
   setPermanent("dejitter.diff", "0");
   setPermanent("dsense", "10");
@@ -354,25 +357,33 @@ void Settings::validate()
   AudioSettings::normalize(*this);
 #endif
 
-  i = getInt("joydeadzone");
-  if(i < 0)        setValue("joydeadzone", "0");
-  else if(i > 29)  setValue("joydeadzone", "29");
+  setValue("joydeadzone", BSPF::clamp(getInt("joydeadzone"),
+           Joystick::DEAD_ZONE_MIN, Joystick::DEAD_ZONE_MAX));
+
+  setValue("pdeadzone", BSPF::clamp(getInt("pdeadzone"),
+           Paddles::MIN_ANALOG_DEADZONE, Paddles::MAX_ANALOG_DEADZONE));
+
+  setValue("psense", BSPF::clamp(getInt("psense"),
+           Paddles::MIN_ANALOG_SENSE, Paddles::MAX_ANALOG_SENSE));
+
+  setValue("paccel", BSPF::clamp(getInt("paccel"),
+           Paddles::MIN_ANALOG_ACCEL, Paddles::MAX_ANALOG_ACCEL));
+
+  setValue("dejitter.base", BSPF::clamp(getInt("dejitter.base"),
+           Paddles::MIN_DEJITTER, Paddles::MAX_DEJITTER));
+
+  setValue("dejitter.diff", BSPF::clamp(getInt("dejitter.diff"),
+           Paddles::MIN_DEJITTER, Paddles::MAX_DEJITTER));
+
+  setValue("dsense", BSPF::clamp(getInt("dsense"),
+           Paddles::MIN_DIGITAL_SENSE, Paddles::MAX_DIGITAL_SENSE));
+
+  setValue("msense", BSPF::clamp(getInt("msense"),
+           Paddles::MIN_MOUSE_SENSE, Paddles::MAX_MOUSE_SENSE));
 
   i = getInt("cursor");
   if(i < 0 || i > 3)
     setValue("cursor", "2");
-
-  i = getInt("psense");
-  if(i < Paddles::MIN_ANALOG_SENSE || i > Paddles::MAX_ANALOG_SENSE)
-    setValue("psense", "20");
-
-  i = getInt("dsense");
-  if(i < Paddles::MIN_DIGITAL_SENSE || i > Paddles::MAX_DIGITAL_SENSE)
-    setValue("dsense", "10");
-
-  i = getInt("msense");
-  if(i < 1 || i > 20)
-    setValue("msense", "10");
 
   i = getInt("tsense");
   if(i < 1 || i > 20)
@@ -510,15 +521,17 @@ void Settings::usage() const
     << "                 analog|\n"
     << "                 never>        Use mouse as a controller as specified by ROM\n"
     << "                                properties in given mode(see manual)\n"
-    << "  -grabmouse    <1|0>          Locks the mouse cursor in the TIA window\n"
-    << "  -cursor       <0,1,2,3>      Set cursor state in UI/emulation modes\n"
-    << "  -dejitter.base <0-10>        Strength of analog paddle value averaging\n"
-    << "  -dejitter.diff <0-10>        Strength of analog paddle reaction to fast movements\n"
-    << "  -psense       <0-30>         Sensitivity of analog paddle movement\n"
-    << "  -dsense       <1-20>         Sensitivity of digital emulated paddle movement\n"
-    << "  -msense       <1-20>         Sensitivity of mouse emulated paddle movement\n"
-    << "  -tsense       <1-20>         Sensitivity of mouse emulated trackball movement\n"
-    << "  -dcsense      <1-20>         Sensitivity of digital emulated driving controller\n"
+    << "  -grabmouse      <1|0>        Locks the mouse cursor in the TIA window\n"
+    << "  -cursor         <0,1,2,3>    Set cursor state in UI/emulation modes\n"
+    << "  -pdeadzone      <number>     Sets 'deadzone' area for analog paddles (0-15000)\n"
+    << "  -paccel         <0-100>      Sets paddle acceleration strength\n"
+    << "  -dejitter.base  <0-10>       Strength of analog paddle value averaging\n"
+    << "  -dejitter.diff  <0-10>       Strength of analog paddle reaction to fast movements\n"
+    << "  -psense         <0-30>       Sensitivity of analog paddle movement\n"
+    << "  -dsense         <1-20>       Sensitivity of digital emulated paddle movement\n"
+    << "  -msense         <1-20>       Sensitivity of mouse emulated paddle movement\n"
+    << "  -tsense         <1-20>       Sensitivity of mouse emulated trackball movement\n"
+    << "  -dcsense        <1-20>       Sensitivity of digital emulated driving controller\n"
     << "                                movement\n"
     << "  -autofirerate <0-30>         Set fire button's autofire rate (0 means off)\n"
     << "  -saport       <lr|rl>        How to assign virtual ports to multiple\n"
