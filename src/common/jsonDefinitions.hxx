@@ -35,7 +35,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(JoyDir, {
   {JoyDir::NONE, nullptr},
   {JoyDir::ANALOG, "analog"},
   {JoyDir::NEG, "negative"},
-  {JoyDir::POS, "position"}
+  {JoyDir::POS, "positive"}
 })
 
 NLOHMANN_JSON_SERIALIZE_ENUM(JoyHatDir, {
