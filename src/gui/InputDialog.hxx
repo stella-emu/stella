@@ -64,6 +64,7 @@ class InputDialog : public Dialog
 
     void handleMouseControlState();
     void handleCursorState();
+    void updatePaddleAccel();
     void updateDejitterAveraging();
     void updateDejitterReaction();
     void updateAutoFireRate();
@@ -71,8 +72,9 @@ class InputDialog : public Dialog
 
   private:
     enum {
-      kDeadzoneChanged    = 'DZch',
+      kJDeadzoneChanged   = 'DZch',
       kPSpeedChanged      = 'Ppch',
+      kPAccelChanged      = 'PAch',
       kDejitterAvChanged  = 'JAch',
       kDejitterReChanged  = 'JRch',
       kDPSpeedChanged     = 'PDch',
@@ -96,8 +98,10 @@ class InputDialog : public Dialog
 
     PopUpWidget*      myAVoxPort{nullptr};
 
-    SliderWidget*     myDeadzone{nullptr};
+    SliderWidget*     myJoystickDeadzone{nullptr};
     SliderWidget*     myPaddleSpeed{nullptr};
+    SliderWidget*     myPaddleDeadzone{nullptr};
+    SliderWidget*     myPaddleAccel{nullptr};
     SliderWidget*     myDejitterBase{nullptr};
     SliderWidget*     myDejitterDiff{nullptr};
     SliderWidget*     myDPaddleSpeed{nullptr};
