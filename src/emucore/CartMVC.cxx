@@ -78,9 +78,11 @@ class StreamReader : public Serializable
         myColor[colorSize - 2] = 0;
         myColor[colorSize - 1] = 0;
       }
+
+      myColorBK[0] = 0;
     }
 
-    void swapField(bool index) {
+    void swapField(bool index, int frame) {
       uInt8* offset = index ? myBuffer1 : myBuffer2;
 
       myVersion  = offset + VERSION_DATA_OFFSET;
@@ -89,6 +91,11 @@ class StreamReader : public Serializable
       myGraph    = offset + GRAPH_DATA_OFFSET;
       myTimecode = offset + TIMECODE_DATA_OFFSET;
       myColor    = offset + COLOR_DATA_OFFSET;
+      myColorBK  = offset + COLORBK_DATA_OFFSET;
+
+      myColorBK++;
+      if (!(frame & 1))
+          myColorBK++;
     }
 
     bool readField(uInt32 fnum, bool index) {
@@ -112,7 +119,8 @@ class StreamReader : public Serializable
 
     uInt8 readVersion() { return *myVersion++; }
     uInt8 readFrame()   { return *myFrame++;   }
-    uInt8 readColor()   { return *myColor++;   }
+    uInt8 readColor() { return *myColor++; }
+    uInt8 readColorBK() { return *myColorBK++;   }
 
     uInt8 readGraph() {
       return myGraphOverride ? *myGraphOverride++ : *myGraph++;
@@ -138,6 +146,7 @@ class StreamReader : public Serializable
         const uInt8*  myGraphOverride
         const uInt8*  myTimecode
         const uInt8*  myColor
+        const uInt8*  myColorBK
         const uInt8*  myVersion
         const uInt8*  myFrame
       #endif
@@ -161,6 +170,7 @@ class StreamReader : public Serializable
         const uInt8*  myGraphOverride
         const uInt8*  myTimecode
         const uInt8*  myColor
+        const uInt8*  myColorBK
         const uInt8*  myVersion
         const uInt8*  myFrame
       #endif
@@ -180,7 +190,8 @@ class StreamReader : public Serializable
         GRAPH_DATA_OFFSET = 269,
         TIMECODE_DATA_OFFSET = 1229,
         COLOR_DATA_OFFSET = 1289,
-        END_DATA_OFFSET = 2249;
+        COLORBK_DATA_OFFSET = 2249,
+        END_DATA_OFFSET = 2441;
 
     const uInt8*  myAudio{nullptr};
 
@@ -189,6 +200,7 @@ class StreamReader : public Serializable
 
     const uInt8*  myTimecode{nullptr};
     uInt8*        myColor{nullptr};
+    uInt8*        myColorBK{nullptr};
     const uInt8*  myVersion{nullptr};
     const uInt8*  myFrame{nullptr};
 
@@ -287,20 +299,27 @@ class MovieInputs : public Serializable
 #define DEFAULT_LEVEL       6
 #define BLANK_LINE_SIZE   (30+3+37-1) // 70-1
 
-// #define addr_kernel_48 0x800
-#define addr_right_line 0x946
-#define addr_set_aud_right 0x94a
-#define addr_set_gdata9 0x94c
-#define addr_set_gcol9 0x950
-#define addr_set_gdata6 0x952
-#define addr_set_gcol6 0x956
-#define addr_set_gdata5 0x95a
-#define addr_set_gcol5 0x95e
-#define addr_set_gdata8 0x962
-#define addr_set_gcol7 0x966
-#define addr_set_gdata7 0x96a
-#define addr_set_gcol8 0x96e
-// #define addr_left_line 0x980
+
+// Automatically generated
+// Several not used
+#define addr_kernel_48 0x800
+#define addr_transport_direction 0x880
+#define addr_transport_buttons 0x896
+#define addr_right_line 0x944
+#define addr_set_aud_right 0x948
+#define addr_set_gdata9 0x94a
+#define addr_set_gcol9 0x94e
+#define addr_set_gdata6 0x950
+#define addr_set_gcol6 0x954
+#define addr_set_gdata5 0x958
+#define addr_set_gcol5 0x95c
+#define addr_set_gdata8 0x960
+#define addr_set_gcol7 0x964
+#define addr_set_gdata7 0x968
+#define addr_set_gcol8 0x96c
+#define addr_set_colubk_r 0x976
+#define addr_set_colupf_r 0x97c
+#define addr_left_line 0x980
 #define addr_set_gdata1 0x982
 #define addr_set_aud_left 0x986
 #define addr_set_gdata4 0x98a
@@ -312,31 +331,30 @@ class MovieInputs : public Serializable
 #define addr_set_gcol2 0x99e
 #define addr_set_gdata2 0x9a2
 #define addr_set_gcol3 0x9a6
-#define addr_pick_continue 0x9b4
-// #define addr_main_start 0xa00
-// #define addr_aud_bank_setup 0xa0c
-// #define addr_tg0 0xa24
-// #define addr_title_again 0xa3b
-// #define addr_wait_cnt 0xa77
+#define addr_set_colubk_l 0x9b4
+#define addr_set_colupf_l 0x9b8
+#define addr_pick_continue 0x9ba
+#define addr_main_start 0xa00
+#define addr_aud_bank_setup 0xa0c
+#define addr_tg0 0xa24
+#define addr_title_again 0xa3b
+#define addr_wait_cnt 0xa77
 #define addr_end_lines 0xa80
 #define addr_set_aud_endlines 0xa8c
-#define addr_set_overscan_size 0xa90
-#define addr_set_vblank_size 0xaa6
-#define addr_pick_extra_lines 0xaaf
-#define addr_pick_transport 0xab6
-#define addr_transport_direction 0xab9
-#define addr_transport_buttons 0xac2
-// #define addr_transport_done 0xacb
-// #define addr_wait_lines 0xad0
-// #define addr_transport_done1 0xae1
-// #define addr_draw_title 0xb00
+#define addr_set_overscan_size 0xa9c
+#define addr_set_vblank_size 0xab2
+#define addr_pick_extra_lines 0xabb
+#define addr_pick_transport 0xac8
+#define addr_wait_lines 0xacb
+#define addr_transport_done1 0xadc
+#define addr_draw_title 0xb00
 #define addr_title_loop 0xb50
-// #define addr_black_bar 0xb52
-// #define addr_animate_bar1 0xb58
-// #define addr_animate_bar_again1 0xb5a
-// #define addr_animate_dex1 0xb65
+#define addr_black_bar 0xb52
+#define addr_animate_bar1 0xb58
+#define addr_animate_bar_again1 0xb5a
+#define addr_animate_dex1 0xb65
 #define addr_audio_bank 0xb80
-// #define addr_reset_loop 0xbfa
+#define addr_reset_loop 0xbfa
 
 // scale adjustments, automatically generated
 static constexpr uInt8 scale0[16] = {
@@ -385,70 +403,70 @@ static constexpr uInt8 shiftBright[16 + MAX_LEVEL - 1] = {
 
 // Compiled kernel
 static constexpr unsigned char kernelROM[] = {
-  133, 2, 185, 50, 248, 133, 27, 185, 62, 248, 133, 28, 185, 74, 248, 133,
-  27, 185, 86, 248, 133, 135, 185, 98, 248, 190, 110, 248, 132, 136, 164, 135,
-  132, 28, 133, 27, 134, 28, 134, 27, 164, 136, 102, 137, 176, 210, 136, 16,
-  207, 96, 0, 1, 1, 1, 0, 0, 48, 48, 50, 53, 56, 48, 249, 129,
-  129, 128, 248, 0, 99, 102, 102, 102, 230, 99, 140, 252, 140, 136, 112, 0,
-  192, 97, 99, 102, 102, 198, 198, 198, 248, 198, 248, 0, 193, 32, 48, 24,
-  24, 25, 24, 24, 24, 24, 126, 0, 249, 97, 97, 97, 97, 249, 0, 0,
-  0, 0, 0, 0, 248, 128, 128, 224, 128, 248, 255, 255, 255, 255, 255, 255,
-  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-  255, 255, 255, 255, 255, 255, 133, 2, 133, 42, 169, 0, 162, 223, 133, 25,
-  160, 98, 169, 159, 133, 28, 169, 248, 133, 7, 169, 231, 133, 27, 169, 242,
-  133, 6, 169, 247, 133, 28, 169, 172, 133, 6, 169, 253, 133, 27, 169, 216,
-  133, 7, 134, 27, 132, 6, 133, 43, 133, 128, 133, 128, 133, 128, 133, 42,
-  133, 2, 169, 207, 133, 28, 169, 0, 133, 25, 162, 191, 160, 114, 169, 54,
-  133, 7, 169, 243, 133, 27, 169, 66, 133, 6, 169, 239, 133, 28, 169, 238,
-  133, 6, 169, 251, 133, 27, 169, 182, 133, 7, 134, 27, 132, 6, 169, 128,
-  133, 32, 133, 33, 76, 70, 249, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-  120, 216, 162, 255, 154, 169, 0, 149, 0, 202, 208, 251, 169, 128, 133, 130,
-  169, 251, 133, 131, 169, 1, 133, 37, 133, 38, 169, 3, 133, 4, 133, 5,
-  133, 2, 162, 4, 133, 128, 202, 208, 251, 133, 128, 133, 16, 133, 17, 169,
-  208, 133, 32, 169, 224, 133, 33, 133, 2, 133, 42, 165, 132, 106, 106, 133,
-  6, 133, 7, 169, 85, 133, 137, 32, 0, 251, 176, 239, 169, 0, 133, 9,
-  133, 37, 133, 27, 133, 16, 234, 133, 17, 133, 28, 133, 27, 133, 28, 169,
-  6, 133, 4, 169, 2, 133, 5, 169, 1, 133, 38, 169, 0, 133, 32, 169,
-  240, 133, 33, 133, 42, 162, 5, 202, 208, 253, 133, 43, 76, 128, 250, 255,
-  160, 0, 132, 27, 132, 28, 132, 27, 169, 0, 169, 0, 169, 0, 133, 25,
-  162, 29, 32, 208, 250, 169, 2, 133, 0, 162, 3, 32, 208, 250, 169, 0,
-  133, 0, 169, 2, 133, 1, 162, 37, 32, 208, 250, 162, 0, 134, 1, 162,
-  0, 240, 3, 32, 208, 250, 76, 194, 250, 173, 128, 2, 74, 74, 74, 76,
-  203, 250, 165, 12, 10, 173, 130, 2, 42, 41, 23, 133, 129, 76, 70, 249,
-  133, 2, 169, 0, 177, 130, 133, 25, 165, 129, 240, 5, 198, 129, 173, 128,
-  20, 200, 202, 208, 235, 96, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-  162, 30, 32, 82, 251, 169, 2, 133, 0, 162, 3, 32, 82, 251, 169, 0,
-  133, 0, 169, 2, 133, 1, 162, 37, 32, 82, 251, 169, 0, 133, 1, 198,
-  132, 165, 132, 133, 133, 160, 255, 162, 30, 32, 88, 251, 162, 54, 32, 82,
-  251, 160, 11, 32, 0, 248, 169, 0, 133, 27, 133, 28, 133, 27, 133, 28,
-  162, 54, 32, 82, 251, 165, 132, 133, 133, 160, 1, 162, 30, 32, 88, 251,
-  56, 96, 169, 0, 133, 133, 160, 0, 132, 134, 24, 165, 133, 101, 134, 133,
-  133, 133, 2, 133, 9, 202, 208, 242, 96, 255, 255, 255, 255, 255, 255, 255,
-  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 0, 250, 0, 250, 0, 250,
+ 133, 2, 185, 50, 248, 133, 27, 185, 62, 248, 133, 28, 185, 74, 248, 133,
+ 27, 185, 86, 248, 133, 135, 185, 98, 248, 190, 110, 248, 132, 136, 164, 135,
+ 132, 28, 133, 27, 134, 28, 134, 27, 164, 136, 102, 137, 176, 210, 136, 16,
+ 207, 96, 0, 1, 1, 1, 0, 0, 48, 48, 50, 53, 56, 48, 249, 129,
+ 129, 128, 248, 0, 99, 102, 102, 102, 230, 99, 140, 252, 140, 136, 112, 0,
+ 192, 97, 99, 102, 102, 198, 198, 198, 248, 198, 248, 0, 193, 32, 48, 24,
+ 24, 25, 24, 24, 24, 24, 126, 0, 249, 97, 97, 97, 97, 249, 0, 0,
+ 0, 0, 0, 0, 248, 128, 128, 224, 128, 248, 255, 255, 255, 255, 255, 255,
+ 173, 128, 2, 74, 74, 74, 133, 129, 234, 133, 128, 133, 128, 133, 128, 133,
+ 128, 169, 0, 76, 68, 249, 165, 12, 10, 173, 130, 2, 42, 41, 23, 133,
+ 129, 234, 133, 128, 133, 128, 133, 128, 169, 0, 76, 68, 249, 255, 255, 255,
+ 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+ 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+ 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+ 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+ 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+ 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+ 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+ 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+ 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+ 255, 255, 255, 255, 133, 8, 133, 42, 169, 0, 162, 223, 133, 25, 160, 98,
+ 169, 159, 133, 28, 169, 248, 133, 7, 169, 231, 133, 27, 169, 242, 133, 6,
+ 169, 247, 133, 28, 169, 172, 133, 6, 169, 253, 133, 27, 169, 216, 133, 7,
+ 134, 27, 132, 6, 133, 43, 169, 0, 133, 9, 169, 0, 169, 0, 133, 42,
+ 133, 8, 169, 207, 133, 28, 169, 0, 133, 25, 162, 191, 160, 114, 169, 54,
+ 133, 7, 169, 243, 133, 27, 169, 66, 133, 6, 169, 239, 133, 28, 169, 238,
+ 133, 6, 169, 251, 133, 27, 169, 182, 133, 7, 134, 27, 132, 6, 169, 128,
+ 133, 32, 133, 33, 169, 0, 133, 9, 169, 0, 76, 68, 249, 255, 255, 255,
+ 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+ 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+ 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+ 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+ 120, 216, 162, 255, 154, 169, 0, 149, 0, 202, 208, 251, 169, 128, 133, 130,
+ 169, 251, 133, 131, 169, 1, 133, 37, 133, 38, 169, 3, 133, 4, 133, 5,
+ 133, 2, 162, 4, 133, 128, 202, 208, 251, 133, 128, 133, 16, 133, 17, 169,
+ 208, 133, 32, 169, 224, 133, 33, 133, 2, 133, 42, 165, 132, 106, 106, 133,
+ 6, 133, 7, 169, 85, 133, 137, 32, 0, 251, 176, 239, 169, 0, 133, 9,
+ 133, 37, 133, 27, 133, 16, 234, 133, 17, 133, 28, 133, 27, 133, 28, 169,
+ 6, 133, 4, 169, 2, 133, 5, 169, 1, 133, 38, 169, 0, 133, 32, 169,
+ 240, 133, 33, 133, 42, 162, 5, 202, 208, 253, 133, 43, 76, 128, 250, 255,
+ 160, 0, 132, 27, 132, 28, 132, 27, 169, 0, 169, 0, 169, 0, 133, 25,
+ 169, 48, 133, 13, 169, 204, 133, 14, 169, 51, 133, 15, 162, 29, 32, 203,
+ 250, 169, 2, 133, 0, 162, 3, 32, 203, 250, 169, 0, 133, 0, 169, 2,
+ 133, 1, 162, 37, 32, 203, 250, 162, 0, 134, 1, 162, 0, 240, 9, 32,
+ 203, 250, 234, 234, 133, 128, 133, 128, 76, 150, 248, 133, 2, 169, 0, 177,
+ 130, 133, 25, 165, 129, 240, 5, 198, 129, 173, 128, 20, 200, 202, 208, 235,
+ 96, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+ 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+ 162, 30, 32, 82, 251, 169, 2, 133, 0, 162, 3, 32, 82, 251, 169, 0,
+ 133, 0, 169, 2, 133, 1, 162, 37, 32, 82, 251, 169, 0, 133, 1, 198,
+ 132, 165, 132, 133, 133, 160, 255, 162, 30, 32, 88, 251, 162, 54, 32, 82,
+ 251, 160, 11, 32, 0, 248, 169, 0, 133, 27, 133, 28, 133, 27, 133, 28,
+ 162, 54, 32, 82, 251, 165, 132, 133, 133, 160, 1, 162, 30, 32, 88, 251,
+ 56, 96, 169, 0, 133, 133, 160, 0, 132, 134, 24, 165, 133, 101, 134, 133,
+ 133, 133, 2, 133, 9, 202, 208, 242, 96, 255, 255, 255, 255, 255, 255, 255,
+ 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+ 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+ 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+ 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+ 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+ 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+ 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+ 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+ 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 0, 250, 0, 250, 0, 250,
 };
 
 // OSD labels
@@ -759,7 +777,7 @@ class MovieCart : public Serializable
       writeROM(addr_title_loop + 0, 0x18);
     }
 
-    void writeColor(uInt16 address);
+    void writeColor(uInt16 address, uInt8 val);
     void writeAudioData(uInt16 address, uInt8 val) {
       writeROM(address, myVolumeScale[val]);
     }
@@ -861,16 +879,14 @@ bool MovieCart::init(const string& path)
   if(!myStream.open(path))
     return false;
 
-  myStream.swapField(true);
+  myStream.swapField(true, myFrameNumber);
 
   return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void MovieCart::writeColor(uInt16 address)
+void MovieCart::writeColor(uInt16 address, uInt8 v)
 {
-  uint8_t v = myStream.readColor();
-
   v = (v & 0xf0) | shiftBright[(v & 0x0f) + myBright];
 
   if(myForceColor)
@@ -1079,6 +1095,7 @@ void MovieCart::updateTransport()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MovieCart::fill_addr_right_line()
 {
+  uint8_t v;
   writeAudio(addr_set_aud_right + 1);
 
   writeGraph(addr_set_gdata5 + 1);
@@ -1087,16 +1104,43 @@ void MovieCart::fill_addr_right_line()
   writeGraph(addr_set_gdata8 + 1);
   writeGraph(addr_set_gdata9 + 1);
 
-  writeColor(addr_set_gcol5 + 1);
-  writeColor(addr_set_gcol6 + 1);
-  writeColor(addr_set_gcol7 + 1);
-  writeColor(addr_set_gcol8 + 1);
-  writeColor(addr_set_gcol9 + 1);
+  v = myStream.readColor();
+  writeColor(addr_set_gcol5 + 1, v);
+
+  v = myStream.readColor();
+  writeColor(addr_set_gcol6 + 1, v);
+
+  v = myStream.readColor();
+  writeColor(addr_set_gcol7 + 1, v);
+
+  v = myStream.readColor();
+  writeColor(addr_set_gcol8 + 1, v);
+
+  v = myStream.readColor();
+  writeColor(addr_set_gcol9 + 1, v);
+
+  // alternate between background color and playfield color
+  if (myForceColor)
+  {
+      v = 0;
+      writeROM(addr_set_colubk_r + 1, v);
+      writeROM(addr_set_colupf_r + 1, v);
+  }
+  else
+  {
+      v = myStream.readColorBK();
+      writeColor(addr_set_colubk_r + 1, v);
+
+      v = 0;
+      writeROM(addr_set_colupf_r + 1, v);   // don't modify black color
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MovieCart::fill_addr_left_line(bool again)
 {
+  uint8_t v;
+
   writeAudio(addr_set_aud_left + 1);
 
   writeGraph(addr_set_gdata0 + 1);
@@ -1105,11 +1149,37 @@ void MovieCart::fill_addr_left_line(bool again)
   writeGraph(addr_set_gdata3 + 1);
   writeGraph(addr_set_gdata4 + 1);
 
-  writeColor(addr_set_gcol0 + 1);
-  writeColor(addr_set_gcol1 + 1);
-  writeColor(addr_set_gcol2 + 1);
-  writeColor(addr_set_gcol3 + 1);
-  writeColor(addr_set_gcol4 + 1);
+  v = myStream.readColor();
+  writeColor(addr_set_gcol0 + 1, v);
+
+  v = myStream.readColor();
+  writeColor(addr_set_gcol1 + 1, v);
+
+  v = myStream.readColor();
+  writeColor(addr_set_gcol2 + 1, v);
+
+  v = myStream.readColor();
+  writeColor(addr_set_gcol3 + 1, v);
+
+  v = myStream.readColor();
+  writeColor(addr_set_gcol4 + 1, v);
+
+
+  // alternate between background color and playfield color
+  if (myForceColor)
+  {
+      v = 0;
+      writeROM(addr_set_colubk_l + 1, v);   // don't modify black color
+      writeROM(addr_set_colupf_l + 1, v);
+  }
+  else
+  {
+      v = 0;
+      writeROM(addr_set_colubk_l + 1, v);   // don't modify black color
+
+      v = myStream.readColorBK();
+      writeColor(addr_set_colupf_l + 1, v);
+  }
 
   // addr_pick_line_end
   //    jmp right_line
@@ -1300,7 +1370,7 @@ void MovieCart::runStateMachine()
           fill_addr_left_line(0);
           fill_addr_end_lines();
 
-          myStream.swapField(myBufferIndex);
+          myStream.swapField(myBufferIndex, myFrameNumber);
           myStream.blankPartialLines(myOdd);
 
           myBufferIndex = !myBufferIndex;
