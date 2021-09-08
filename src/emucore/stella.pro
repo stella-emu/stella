@@ -14183,8 +14183,7 @@
 "Cart.Manufacturer" "Coleco, Rob Harris"
 "Cart.ModelNo" "2511"
 "Cart.Name" "Smurfs Save the Day (1983) (Coleco)"
-"Cart.Note" "Uses the Kid Vid Controller"
-"Controller.Right" "KIDVID"
+"Cart.Note" "Uses the Kid Vid Voice Module"
 ""
 
 "Cart.MD5" "a20b7abbcdf90fbc29ac0fafa195bd12"
@@ -20774,10 +20773,9 @@
 "Cart.Manufacturer" "Coleco"
 "Cart.ModelNo" "2658"
 "Cart.Name" "Berenstain Bears (1983) (Coleco)"
-"Cart.Note" "Uses the KidVid Controller"
+"Cart.Note" "Uses the Kid Vid Voice Module"
 "Cart.Rarity" "Unbelievably Rare"
 "Console.LeftDiff" "A"
-"Controller.Right" "KIDVID"
 ""
 
 "Cart.MD5" "ee67dc0b01746372d2b983d88f48e24f"
