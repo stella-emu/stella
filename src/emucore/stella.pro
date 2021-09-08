@@ -7301,6 +7301,7 @@
 "Cart.ModelNo" "AG-930-04, AZ-030"
 "Cart.Name" "Decathlon (1983) (Activision) [fixed]"
 "Cart.Highscore" "{\"notes\":\"Decathlon & 100m dash share variation 1\",\"score_addresses\":[\"0x95\",\"0x96\"],\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":10,\"variations_zero_based\":true}"
+"Controller.Right" "PADDLES"
 ""
 
 "Cart.MD5" "52615ae358a68de6e76467e95eb404c7"
@@ -15085,6 +15086,7 @@
 "Cart.Name" "Decathlon (1983) (Activision)"
 "Cart.Rarity" "Rare"
 "Cart.Highscore" "{\"notes\":\"Decathlon & 100m dash share variation 1\",\"score_addresses\":[\"0x95\",\"0x96\"],\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":10,\"variations_zero_based\":true}"
+"Controller.Right" "PADDLES"
 ""
 
 "Cart.MD5" "ac9adbd6de786a242e19d4bec527982b"
