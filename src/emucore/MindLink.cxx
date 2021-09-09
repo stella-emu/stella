@@ -22,10 +22,6 @@
 MindLink::MindLink(Jack jack, const Event& event, const System& system)
   : Controller(jack, event, system, Controller::Type::MindLink)
 {
-  setPin(DigitalPin::One, true);
-  setPin(DigitalPin::Two, true);
-  setPin(DigitalPin::Three, true);
-  setPin(DigitalPin::Four, true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
