@@ -149,23 +149,23 @@ Controller::Type Controller::getType(const string& propName)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Controller::setDigitalDeadZone(int deadzone)
+void Controller::setDigitalDeadZone(int deadZone)
 {
-  DIGITAL_DEAD_ZONE = digitalDeadzoneValue(deadzone);
+  DIGITAL_DEAD_ZONE = digitalDeadZoneValue(deadZone);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Controller::digitalDeadzoneValue(int deadzone)
+int Controller::digitalDeadZoneValue(int deadZone)
 {
-  deadzone = BSPF::clamp(deadzone, MIN_DIGITAL_DEADZONE, MAX_DIGITAL_DEADZONE);
+  deadZone = BSPF::clamp(deadZone, MIN_DIGITAL_DEADZONE, MAX_DIGITAL_DEADZONE);
 
-  return 3200 + deadzone * 1000;
+  return 3200 + deadZone * 1000;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Controller::setAnalogDeadzone(int deadzone)
+void Controller::setAnalogDeadZone(int deadZone)
 {
-  ANALOG_DEAD_ZONE = BSPF::clamp(deadzone, MIN_ANALOG_DEADZONE, MAX_ANALOG_DEADZONE);
+  ANALOG_DEAD_ZONE = BSPF::clamp(deadZone, MIN_ANALOG_DEADZONE, MAX_ANALOG_DEADZONE);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -789,7 +789,22 @@ void PhysicalJoystickHandler::handleRegularAxisEvent(const PhysicalJoystickPtr j
     if((abs(j->axisLastValue[axis] - value) < 30000)
        && (eventAxisAnalog = j->joyMap.get(EventMode::kEmulationMode, button, JoyAxis(axis), JoyDir::ANALOG)) != Event::Type::NoType)
     {
-      myHandler.handleEvent(eventAxisAnalog, value);
+      // TODO: TEST!!!
+      if(abs(value) > Controller::analogDeadZone())
+        myHandler.handleEvent(eventAxisAnalog, value);
+      else
+      {
+        // Treat any dead zone value as zero
+        value = 0;
+
+        // Now filter out consecutive, similar values
+        // (only pass on the event if the state has changed)
+        if(j->axisLastValue[axis] != value)
+        {
+          // Turn off events
+          myHandler.handleEvent(eventAxisAnalog, 0);
+        }
+      }
     }
     else
     {
@@ -798,13 +813,13 @@ void PhysicalJoystickHandler::handleRegularAxisEvent(const PhysicalJoystickPtr j
       Event::Type eventAxisNeg = j->joyMap.get(EventMode::kEmulationMode, button, JoyAxis(axis), JoyDir::NEG);
       Event::Type eventAxisPos = j->joyMap.get(EventMode::kEmulationMode, button, JoyAxis(axis), JoyDir::POS);
 
-      if(value > Controller::digitalDeadzone())
+      if(value > Controller::digitalDeadZone())
         myHandler.handleEvent(eventAxisPos);
-      else if(value < -Controller::digitalDeadzone())
+      else if(value < -Controller::digitalDeadZone())
         myHandler.handleEvent(eventAxisNeg);
       else
       {
-        // Treat any deadzone value as zero
+        // Treat any dead zone value as zero
         value = 0;
 
         // Now filter out consecutive, similar values
@@ -813,8 +828,8 @@ void PhysicalJoystickHandler::handleRegularAxisEvent(const PhysicalJoystickPtr j
         {
           // Turn off both events, since we don't know exactly which one
           // was previously activated.
-          myHandler.handleEvent(eventAxisNeg, false);
-          myHandler.handleEvent(eventAxisPos, false);
+          myHandler.handleEvent(eventAxisNeg, 0);
+          myHandler.handleEvent(eventAxisPos, 0);
         }
       }
     }
@@ -824,13 +839,13 @@ void PhysicalJoystickHandler::handleRegularAxisEvent(const PhysicalJoystickPtr j
   else if(myHandler.hasOverlay())
   {
     // A value change lower than Controller::digitalDeadzone indicates analog input which is ignored
-    if((abs(j->axisLastValue[axis] - value) > Controller::digitalDeadzone()))
+    if((abs(j->axisLastValue[axis] - value) > Controller::digitalDeadZone()))
     {
       // First, clamp the values to simulate digital input
       // (the only thing that the underlying code understands)
-      if(value > Controller::digitalDeadzone())
+      if(value > Controller::digitalDeadZone())
         value = 32000;
-      else if(value < -Controller::digitalDeadzone())
+      else if(value < -Controller::digitalDeadZone())
         value = -32000;
       else
         value = 0;
@@ -945,33 +960,33 @@ ostream& operator<<(ostream& os, const PhysicalJoystickHandler& jh)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalJoystickHandler::changeDigitalDeadzone(int direction)
+void PhysicalJoystickHandler::changeDigitalDeadZone(int direction)
 {
-  int deadzone = BSPF::clamp(myOSystem.settings().getInt("joydeadzone") + direction,
+  int deadZone = BSPF::clamp(myOSystem.settings().getInt("joydeadzone") + direction,
                              Controller::MIN_DIGITAL_DEADZONE, Controller::MAX_DIGITAL_DEADZONE);
-  myOSystem.settings().setValue("joydeadzone", deadzone);
+  myOSystem.settings().setValue("joydeadzone", deadZone);
 
-  Controller::setDigitalDeadZone(deadzone);
+  Controller::setDigitalDeadZone(deadZone);
 
   ostringstream ss;
-  ss << std::round(Controller::digitalDeadzoneValue(deadzone) * 100.F / 32768) << "%";
+  ss << std::round(Controller::digitalDeadZoneValue(deadZone) * 100.F / 32768) << "%";
 
-  myOSystem.frameBuffer().showGaugeMessage("Digital controller dead zone", ss. str(), deadzone,
+  myOSystem.frameBuffer().showGaugeMessage("Digital controller dead zone", ss. str(), deadZone,
                                            Controller::MIN_DIGITAL_DEADZONE, Controller::MAX_DIGITAL_DEADZONE);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalJoystickHandler::changeAnalogPaddleDeadzone(int direction)
+void PhysicalJoystickHandler::changeAnalogPaddleDeadZone(int direction)
 {
-  int deadzone = BSPF::clamp(myOSystem.settings().getInt("adeadzone") + direction * 500,
+  int deadZone = BSPF::clamp(myOSystem.settings().getInt("adeadzone") + direction * 500,
                              Controller::MIN_ANALOG_DEADZONE, Controller::MAX_ANALOG_DEADZONE);
-  myOSystem.settings().setValue("adeadzone", deadzone);
+  myOSystem.settings().setValue("adeadzone", deadZone);
 
-  Controller::setAnalogDeadzone(deadzone);
+  Controller::setAnalogDeadZone(deadZone);
   ostringstream ss;
-  ss << std::round(deadzone * 100.F / 32768) << "%";
+  ss << std::round(deadZone * 100.F / 32768) << "%";
 
-  myOSystem.frameBuffer().showGaugeMessage("Analog controller dead zone", ss.str(), deadzone,
+  myOSystem.frameBuffer().showGaugeMessage("Analog controller dead zone", ss.str(), deadZone,
                                            Controller::MIN_ANALOG_DEADZONE, Controller::MAX_ANALOG_DEADZONE);
 }
 
