@@ -5484,6 +5484,7 @@
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/telepathy/telepathy.htm"
 "Controller.Right" "MINDLINK"
+"Controller.MouseAxis" "78"
 ""
 
 "Cart.MD5" "3d8a2d6493123a53ade45e3e2c5cafa0"
