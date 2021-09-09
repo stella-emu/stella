@@ -1574,23 +1574,23 @@
     </tr>
 
     <tr>
-      <td><i>Decrease</i> joystick deadzone</td>
+      <td><i>Decrease</i> analog joystick dead zone for digital controllers</td>
       <td>Shift-Control + F1</td>
       <td>Shift-Control + F1</td>
     </tr>
     <tr>
-      <td><i>Increase</i> joystick deadzone</td>
+      <td><i>Increase</i> analog joystick dead zone for digital controllers</td>
       <td>Control + F1</td>
       <td>Control + F1</td>
     </tr>
 
     <tr>
-      <td><i>Decrease</i> analog paddle deadzone</td>
+      <td><i>Decrease</i> analog joystick dead zone for analog controllers</td>
       <td>Shift-Control-Alt + F1</td>
       <td>Shift-Control-Cmd + F1</td>
     </tr>
     <tr>
-      <td><i>Increase</i> analog paddle deadzone</td>
+      <td><i>Increase</i> analog joystick dead zone for analog controllers</td>
       <td>Control-Alt + F1</td>
       <td>Control-Cmd + F1</td>
     </tr>
@@ -2961,20 +2961,21 @@
     </tr>
 
     <tr>
-      <td><pre>-joydeadzone &lt;number&gt;</pre></td>
-      <td>Set the joystick axis deadzone area for analog joysticks/gamepads.
-        All values within the deadzone are treated as zero-axis values,
+      <td><pre>-joydeadzone &lt;0 - 29&gt;</pre></td>
+      <td>Set the joystick axis dead zone area for analog joysticks/gamepads
+        emulating digital controllers.
+        All values within the dead zone are treated as zero-axis values,
         while only those values outside are registered as valid input.
-        Accepts a number from 0 - 29, and uses the formula
-        3200 + number * 1000. So the possible deadzone values
-        range from 3200 to 32200.</td>
+        Dead zone is calculated as 3200 + value * 1000. So the possible dead
+        zone values range from 3200 to 32200 (= 10% - 98%).</td>
     </tr>
 
     <tr>
-      <td><pre>-pdeadzone &lt;0 - 15000&gt;</pre></td>
-      <td>Set the deadzone area for analog paddles. All values within the
-        deadzone are treated as zero-axis values, while only those values
-        outside are registered as valid input.</td>
+      <td><pre>-adeadzone &lt;0 - 16500&gt;</pre></td>
+      <td>Set the joystick axis dead zone area for analog joysticks/gamepads
+        emulating analog controllers. All values within the
+        dead zone are treated as zero-axis values, while only those values
+        outside are registered as valid input. Range: 0% - 50%</td>
     </tr>
 
     <tr>
@@ -2986,17 +2987,20 @@
 
     <tr>
       <td><pre>-paccel &lt;0 - 100&gt;</pre></td>
-      <td>Acceleration of analog paddles when moving them fast.</td>
+      <td>Acceleration of analog paddles while moving them fast.</td>
     </tr>
 
     <tr>
       <td><pre>-dejitter.base &lt;0 - 10&gt;</pre></td>
-      <td>Strength of analog paddle input averaging.</td>
+      <td>Strength of analog paddle input averaging. Higher values will make
+      the movement smoother, but also less responsive.</td>
     </tr>
 
     <tr>
       <td><pre>-dejitter.diff &lt;0 - 10&gt;</pre></td>
-      <td>Impact of fast analog paddle movement on input averaging.</td>
+      <td>Impact of fast analog paddle movement on input averaging. Higher
+      values will reduce the movement smoothing while the paddle is moved
+      fast, making fast paddle movements more responsive.</td>
     </tr>
 
     <tr>
@@ -4023,14 +4027,18 @@
       <td valign="top">
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">Command Line</a></th></tr>
-          <tr><td>Joystick deadzone size</td><td>Deadzone area for axes on joysticks/gamepads</td><td>-joydeadzone</td></tr>
-          <tr><td>(Analog paddle) Deadzone size</td><td>Deadzone area for analog paddles</td><td>-pdeadzone</td></tr>
+          <tr><td>Digital dead zone size</td><td>Dead zone area for axes on joysticks/gamepads emulating
+                  digital controllers
+          </td><td>-joydeadzone</td></tr>
+          <tr><td>Analog dead zone size</td><td>Dead zone area for axes on joysticks/gamepads emulating
+                  analog controllers
+          </td><td>-adeadzone</td></tr>
           <tr><td>(Analog paddle) Sensitivity</td><td>Sensitivity of an analog paddle</td><td>-psense</td></tr>
           <tr><td>(Analog paddle) Acceleration</td><td>Acceleration of analog paddles when moving them fast</td><td>-paccel</td></tr>
-          <tr><td>(Analog paddle) Dejitter averaging</td><td>Strength of paddle input averaging, suppresses paddle jitter.<br>
+          <tr><td>(Analog paddle) Dejitter averaging</td><td>Strength of paddle input averaging, suppresses paddle jitter<br>
                   Note: The 2600-daptor has built-in dejitter, so there should be no need to use Stella's dejitter.
                   </td><td>-dejitter.base</td></tr>
-          <tr><td>(Analog paddle) Dejitter reaction</td><td>Strength of paddle reaction to fast paddle movements, suppresses paddle jitter.</td><td>-dejitter.diff</td></tr>
+          <tr><td>(Analog paddle) Dejitter reaction</td><td>Strength of paddle reaction to fast paddle movements, suppresses paddle jitter</td><td>-dejitter.diff</td></tr>
           <tr><td>Digital paddle sensitivity</td><td>Sensitivity used when emulating a paddle using a digital device</td><td>-dsense</td></tr>
           <tr><td>Autofire rate</td><td>Automatic trigger rate of the fire buttons in Hz</td><td>-autofirerate</td></tr>
           <tr><td>Allow all 4 directions ...</td><td>Allow all 4 joystick directions to be pressed simultaneously</td><td>-joyallow4</td></tr>
