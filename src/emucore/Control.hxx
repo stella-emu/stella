@@ -281,27 +281,27 @@ class Controller : public Serializable
     static Type getType(const string& propName);
 
     /**
-      Sets the deadzone amount for real analog joysticks.
-      Technically, this isn't really used by the Joystick class at all,
-      but it seemed like the best place to put it.
+      Sets the dead zone amount for real analog joysticks.
+
+      @param deadZone Value from 0 to 29
     */
-    static void setDigitalDeadZone(int deadzone);
+    static void setDigitalDeadZone(int deadZone);
 
     /**
-      Sets the deadzone for analog paddles.
+      Sets the dead zone for analog paddles.
 
-      @param deadzone Value from 0 to 16500
+      @param deadZone Value from 0 to 16500
     */
-    static void setAnalogDeadzone(int deadzone);
+    static void setAnalogDeadZone(int deadZone);
 
     /**
-      Retrieves the effective digital deadzone value
+      Retrieves the effective digital dead zone value
     */
-    static int digitalDeadzoneValue(int deadzone);
+    static int digitalDeadZoneValue(int deadZone);
 
-    inline static int digitalDeadzone() { return DIGITAL_DEAD_ZONE; }
+    inline static int digitalDeadZone() { return DIGITAL_DEAD_ZONE; }
 
-    inline static int analogDeadzone() { return ANALOG_DEAD_ZONE; }
+    inline static int analogDeadZone() { return ANALOG_DEAD_ZONE; }
 
     /**
       Sets the sensitivity for analog emulation movement

@@ -160,6 +160,7 @@ void InputDialog::addDevicePortTab()
   myPaddleAccel->setMaxValue(Paddles::MAX_ANALOG_ACCEL);
   myPaddleAccel->setStepValue(5);
   myPaddleAccel->setTickmarkIntervals(4);
+  myPaddleAccel->setToolTip("Adjust fast paddle movement acceleration.");
   wid.push_back(myPaddleAccel);
 
   // Add dejitter (analog paddles)
@@ -434,13 +435,13 @@ void InputDialog::saveConfig()
 
   // *** Device & Ports ***
   // Digital dead zone
-  int deadzone = myDigitalDeadzone->getValue();
-  settings.setValue("joydeadzone", deadzone);
-  Controller::setDigitalDeadZone(deadzone);
+  int deadZone = myDigitalDeadzone->getValue();
+  settings.setValue("joydeadzone", deadZone);
+  Controller::setDigitalDeadZone(deadZone);
   // Analog dead zone
-  deadzone = myAnalogDeadzone->getValue();
-  settings.setValue("adeadzone", deadzone);
-  Controller::setAnalogDeadzone(deadzone);
+  deadZone = myAnalogDeadzone->getValue();
+  settings.setValue("adeadzone", deadZone);
+  Controller::setAnalogDeadZone(deadZone);
 
   // Paddle speed (analog)
   int sensitivity = myPaddleSpeed->getValue();
@@ -699,7 +700,7 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kDDeadzoneChanged:
-      myDigitalDeadzone->setValueLabel(std::round(Controller::digitalDeadzoneValue(myDigitalDeadzone->getValue()) * 100.f / 32768));
+      myDigitalDeadzone->setValueLabel(std::round(Controller::digitalDeadZoneValue(myDigitalDeadzone->getValue()) * 100.f / 32768));
       break;
 
     case kADeadzoneChanged:

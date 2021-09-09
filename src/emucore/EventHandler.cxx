@@ -100,7 +100,7 @@ void EventHandler::initialize()
   setActionMappings(EventMode::kMenuMode);
 
   Controller::setDigitalDeadZone(myOSystem.settings().getInt("joydeadzone"));
-  Controller::setAnalogDeadzone(myOSystem.settings().getInt("adeadzone"));
+  Controller::setAnalogDeadZone(myOSystem.settings().getInt("adeadzone"));
   Paddles::setAnalogAccel(myOSystem.settings().getInt("paccel"));
   Paddles::setDejitterDiff(myOSystem.settings().getInt("dejitter.diff"));
   Paddles::setDejitterBase(myOSystem.settings().getInt("dejitter.base"));
@@ -596,8 +596,8 @@ AdjustFunction EventHandler::getAdjustSetting(AdjustSetting setting)
     std::bind(&Console::toggleInter, &myOSystem.console(), _1),
 
     // *** Input settings ***
-    std::bind(&PhysicalJoystickHandler::changeDigitalDeadzone, &joyHandler(), _1),
-    std::bind(&PhysicalJoystickHandler::changeAnalogPaddleDeadzone, &joyHandler(), _1),
+    std::bind(&PhysicalJoystickHandler::changeDigitalDeadZone, &joyHandler(), _1),
+    std::bind(&PhysicalJoystickHandler::changeAnalogPaddleDeadZone, &joyHandler(), _1),
     std::bind(&PhysicalJoystickHandler::changeAnalogPaddleSensitivity, &joyHandler(), _1),
     std::bind(&PhysicalJoystickHandler::changeAnalogPaddleAcceleration, &joyHandler(), _1),
     std::bind(&PhysicalJoystickHandler::changePaddleDejitterAveraging, &joyHandler(), _1),
@@ -1364,7 +1364,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::DecreaseDeadzone:
       if(pressed)
       {
-        myPJoyHandler->changeDigitalDeadzone(-1);
+        myPJoyHandler->changeDigitalDeadZone(-1);
         myAdjustSetting = AdjustSetting::DEADZONE;
         myAdjustActive = true;
       }
@@ -1373,7 +1373,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::IncreaseDeadzone:
       if(pressed)
       {
-        myPJoyHandler->changeDigitalDeadzone(+1);
+        myPJoyHandler->changeDigitalDeadZone(+1);
         myAdjustSetting = AdjustSetting::DEADZONE;
         myAdjustActive = true;
       }
@@ -1382,7 +1382,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::DecAnalogDeadzone:
       if(pressed)
       {
-        myPJoyHandler->changeAnalogPaddleDeadzone(-1);
+        myPJoyHandler->changeAnalogPaddleDeadZone(-1);
         myAdjustSetting = AdjustSetting::ANALOG_DEADZONE;
         myAdjustActive = true;
       }
@@ -1391,7 +1391,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::IncAnalogDeadzone:
       if(pressed)
       {
-        myPJoyHandler->changeAnalogPaddleDeadzone(+1);
+        myPJoyHandler->changeAnalogPaddleDeadZone(+1);
         myAdjustSetting = AdjustSetting::ANALOG_DEADZONE;
         myAdjustActive = true;
       }
@@ -3322,10 +3322,10 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::VolumeDecrease,          "Decrease volume",                       "" },
   { Event::VolumeIncrease,          "Increase volume",                       "" },
 
-  { Event::DecreaseDeadzone,        "Decrease joystick deadzone",            "" },
-  { Event::IncreaseDeadzone,        "Increase joystick deadzone",            "" },
-  { Event::DecAnalogDeadzone,       "Decrease analog paddle deadzone",       "" },
-  { Event::IncAnalogDeadzone,       "Increase analog paddle deadzone",       "" },
+  { Event::DecreaseDeadzone,        "Decrease digital dead zone",            "" },
+  { Event::IncreaseDeadzone,        "Increase digital dead zone",            "" },
+  { Event::DecAnalogDeadzone,       "Decrease analog dead zone",             "" },
+  { Event::IncAnalogDeadzone,       "Increase analog dead zone",             "" },
   { Event::DecAnalogSense,          "Decrease analog paddle sensitivity",    "" },
   { Event::IncAnalogSense,          "Increase analog paddle sensitivity",    "" },
   { Event::DecAnalogAccel,          "Decrease analog paddle acceleration",   "" },
