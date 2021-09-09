@@ -107,10 +107,10 @@ string Controller::getName(const Type type)
   static const std::array<string, int(Controller::Type::LastType)> NAMES =
   {
     "Unknown",
-    "AmigaMouse", "AtariMouse", "AtariVox", "BoosterGrip", "CompuMate",
-    "Driving", "Sega Genesis", "Joystick", "Keyboard", "KidVid", "MindLink",
-    "Paddles", "Paddles_IAxis", "Paddles_IAxDr", "SaveKey", "TrakBall",
-    "Lightgun", "QuadTari"
+    "Amiga mouse", "Atari mouse", "AtariVox", "Booster Grip", "CompuMate",
+    "Driving", "Sega Genesis", "Joystick", "Keyboard", "Kid Vid", "MindLink",
+    "Paddles", "Paddles_IAxis", "Paddles_IAxDr", "SaveKey", "Trak-Ball",
+    "Light Gun", "QuadTari"
   };
 
   return NAMES[int(type)];
