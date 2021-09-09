@@ -21,6 +21,8 @@
 
   * Added web links for many games
 
+  * Fixe MindLink controller
+
   * Debugger: enhanced prompt's auto complete and history
 
   * Debugger: added optional logging of breaks and traps
