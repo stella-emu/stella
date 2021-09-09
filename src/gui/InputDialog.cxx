@@ -117,7 +117,7 @@ void InputDialog::addDevicePortTab()
 
   // Add digital dead zone setting
   myDigitalDeadzone = new SliderWidget(myTab, _font, xpos, ypos - 1, 13 * fontWidth, lineHeight,
-                                        "Digital dead zone",
+                                        "Digital dead zone size ",
                                         lwidth, kDDeadzoneChanged, 3 * fontWidth, "%");
   myDigitalDeadzone->setMinValue(Controller::MIN_DIGITAL_DEADZONE);
   myDigitalDeadzone->setMaxValue(Controller::MAX_DIGITAL_DEADZONE);
@@ -128,7 +128,7 @@ void InputDialog::addDevicePortTab()
   // Add analog dead zone
   ypos += lineHeight + VGAP;
   myAnalogDeadzone = new SliderWidget(myTab, _font, xpos, ypos - 1, 13 * fontWidth, lineHeight,
-                                      "Analog dead zone",
+                                      "Analog dead zone size",
                                       lwidth, kADeadzoneChanged, 3 * fontWidth, "%");
   myAnalogDeadzone->setMinValue(Controller::MIN_ANALOG_DEADZONE);
   myAnalogDeadzone->setMaxValue(Controller::MAX_ANALOG_DEADZONE);
