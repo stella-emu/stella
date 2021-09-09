@@ -112,34 +112,37 @@ void InputDialog::addDevicePortTab()
   // Devices/ports
   tabID = myTab->addTab(" Devices & Ports ", TabWidget::AUTO_WIDTH);
 
-  ypos = VBORDER;
+  xpos = HBORDER; ypos = VBORDER;
   lwidth = _font.getStringWidth("Digital paddle sensitivity ");
 
-  // Add joystick deadzone setting
-  myJoystickDeadzone = new SliderWidget(myTab, _font, HBORDER, ypos - 1, 13 * fontWidth, lineHeight,
-                                "Joystick deadzone size", lwidth, kJDeadzoneChanged, 5 * fontWidth);
-  myJoystickDeadzone->setMinValue(Joystick::DEAD_ZONE_MIN);
-  myJoystickDeadzone->setMaxValue(Joystick::DEAD_ZONE_MAX);
-  myJoystickDeadzone->setTickmarkIntervals(4);
-  wid.push_back(myJoystickDeadzone);
+  // Add digital dead zone setting
+  myDigitalDeadzone = new SliderWidget(myTab, _font, xpos, ypos - 1, 13 * fontWidth, lineHeight,
+                                        "Digital dead zone",
+                                        lwidth, kDDeadzoneChanged, 3 * fontWidth, "%");
+  myDigitalDeadzone->setMinValue(Controller::MIN_DIGITAL_DEADZONE);
+  myDigitalDeadzone->setMaxValue(Controller::MAX_DIGITAL_DEADZONE);
+  myDigitalDeadzone->setTickmarkIntervals(4);
+  myDigitalDeadzone->setToolTip("Adjust dead zone size for analog joysticks when emulating digital controllers.");
+  wid.push_back(myDigitalDeadzone);
 
-  xpos = HBORDER; ypos += lineHeight + VGAP * (3 - 2);
+  // Add analog dead zone
+  ypos += lineHeight + VGAP;
+  myAnalogDeadzone = new SliderWidget(myTab, _font, xpos, ypos - 1, 13 * fontWidth, lineHeight,
+                                      "Analog dead zone",
+                                      lwidth, kADeadzoneChanged, 3 * fontWidth, "%");
+  myAnalogDeadzone->setMinValue(Controller::MIN_ANALOG_DEADZONE);
+  myAnalogDeadzone->setMaxValue(Controller::MAX_ANALOG_DEADZONE);
+  myAnalogDeadzone->setStepValue(500);
+  myAnalogDeadzone->setTickmarkIntervals(3);
+  myAnalogDeadzone->setToolTip("Adjust dead zone size for analog joysticks when emulating analog controllers.");
+  wid.push_back(myAnalogDeadzone);
+
+  ypos += lineHeight + VGAP * (3 - 2);
   new StaticTextWidget(myTab, _font, xpos, ypos+1, "Analog paddle:");
   xpos += fontWidth * 2;
 
-  // Add analog paddle deadzone
-  ypos += lineHeight;
-  myPaddleDeadzone = new SliderWidget(myTab, _font, xpos, ypos - 1, 13 * fontWidth, lineHeight,
-                                      "Deadzone size",
-                                      lwidth - fontWidth * 2, 0, 5 * fontWidth);
-  myPaddleDeadzone->setMinValue(Paddles::MIN_ANALOG_DEADZONE);
-  myPaddleDeadzone->setMaxValue(Paddles::MAX_ANALOG_DEADZONE);
-  myPaddleDeadzone->setStepValue(500);
-  myPaddleDeadzone->setTickmarkIntervals(3);
-  wid.push_back(myPaddleDeadzone);
-
   // Add analog paddle sensitivity
-  ypos += lineHeight + VGAP;
+  ypos += lineHeight;
   myPaddleSpeed = new SliderWidget(myTab, _font, xpos, ypos - 1, 13 * fontWidth, lineHeight,
                                  "Sensitivity",
                                  lwidth - fontWidth * 2, kPSpeedChanged, 4 * fontWidth, "%");
@@ -360,11 +363,11 @@ void InputDialog::loadConfig()
   myCursorState->setSelected(settings.getString("cursor"), "2");
   handleCursorState();
 
-  // Joystick deadzone
-  myJoystickDeadzone->setValue(settings.getInt("joydeadzone"));
+  // Digital dead zone
+  myDigitalDeadzone->setValue(settings.getInt("joydeadzone"));
+  // Analog dead zone
+  myAnalogDeadzone->setValue(settings.getInt("adeadzone"));
 
-  // Paddle deadzone (analog)
-  myPaddleDeadzone->setValue(settings.getInt("pdeadzone"));
   // Paddle speed (analog)
   myPaddleSpeed->setValue(settings.getInt("psense"));
   // Paddle acceleration (analog)
@@ -430,15 +433,15 @@ void InputDialog::saveConfig()
   Settings& settings = instance().settings();
 
   // *** Device & Ports ***
-  // Joystick deadzone
-  int deadzone = myJoystickDeadzone->getValue();
+  // Digital dead zone
+  int deadzone = myDigitalDeadzone->getValue();
   settings.setValue("joydeadzone", deadzone);
-  Joystick::setDeadZone(deadzone);
+  Controller::setDigitalDeadZone(deadzone);
+  // Analog dead zone
+  deadzone = myAnalogDeadzone->getValue();
+  settings.setValue("adeadzone", deadzone);
+  Controller::setAnalogDeadzone(deadzone);
 
-  // Paddle deadzone (analog)
-  deadzone = myPaddleDeadzone->getValue();
-  settings.setValue("pdeadzone", deadzone);
-  Paddles::setAnalogDeadzone(deadzone);
   // Paddle speed (analog)
   int sensitivity = myPaddleSpeed->getValue();
   settings.setValue("psense", sensitivity);
@@ -526,11 +529,11 @@ void InputDialog::setDefaults()
       break;
 
     case 1:  // Devices & Ports
-      // Joystick deadzone
-      myJoystickDeadzone->setValue(0);
+      // Digital dead zone
+      myDigitalDeadzone->setValue(0);
 
-      // Paddle deadzone
-      myPaddleDeadzone->setValue(0);
+      // Analog dead zone
+      myAnalogDeadzone->setValue(0);
 
       // Paddle speed (analog)
       myPaddleSpeed->setValue(20);
@@ -695,8 +698,12 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
       setDefaults();
       break;
 
-    case kJDeadzoneChanged:
-      myJoystickDeadzone->setValueLabel(Joystick::deadZoneValue(myJoystickDeadzone->getValue()));
+    case kDDeadzoneChanged:
+      myDigitalDeadzone->setValueLabel(std::round(Controller::digitalDeadzoneValue(myDigitalDeadzone->getValue()) * 100.f / 32768));
+      break;
+
+    case kADeadzoneChanged:
+      myAnalogDeadzone->setValueLabel(std::round(myAnalogDeadzone->getValue() * 100.f / 32768));
       break;
 
     case kPSpeedChanged:

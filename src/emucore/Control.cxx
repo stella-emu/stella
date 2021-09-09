@@ -149,6 +149,32 @@ Controller::Type Controller::getType(const string& propName)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Controller::setDigitalDeadZone(int deadzone)
+{
+  DIGITAL_DEAD_ZONE = digitalDeadzoneValue(deadzone);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int Controller::digitalDeadzoneValue(int deadzone)
+{
+  deadzone = BSPF::clamp(deadzone, MIN_DIGITAL_DEADZONE, MAX_DIGITAL_DEADZONE);
+
+  return 3200 + deadzone * 1000;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Controller::setAnalogDeadzone(int deadzone)
+{
+  ANALOG_DEAD_ZONE = BSPF::clamp(deadzone, MIN_ANALOG_DEADZONE, MAX_ANALOG_DEADZONE);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Controller::setMouseSensitivity(int sensitivity)
+{
+  MOUSE_SENSITIVITY = BSPF::clamp(sensitivity, MIN_MOUSE_SENSE, MAX_MOUSE_SENSE);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Controller::setAutoFireRate(int rate, bool isNTSC)
 {
   rate = BSPF::clamp(rate, 0, isNTSC ? 30 : 25);
@@ -156,5 +182,7 @@ void Controller::setAutoFireRate(int rate, bool isNTSC)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int Controller::DIGITAL_DEAD_ZONE = 3200;
+int Controller::ANALOG_DEAD_ZONE = 0;
+int Controller::MOUSE_SENSITIVITY = -1;
 int Controller::AUTO_FIRE_RATE = 0;
-

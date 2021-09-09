@@ -48,8 +48,6 @@ class Paddles : public Controller
     ~Paddles() override = default;
 
   public:
-    static constexpr int MIN_ANALOG_DEADZONE = 0;
-    static constexpr int MAX_ANALOG_DEADZONE = 15000;
     static constexpr float BASE_ANALOG_SENSE = 0.148643628F;
     static constexpr int MIN_ANALOG_SENSE = 0;
     static constexpr int MAX_ANALOG_SENSE = 30;
@@ -59,8 +57,6 @@ class Paddles : public Controller
     static constexpr int MAX_ANALOG_CENTER = 30;
     static constexpr int MIN_DIGITAL_SENSE = 1;
     static constexpr int MAX_DIGITAL_SENSE = 20;
-    static constexpr int MIN_MOUSE_SENSE = 1;
-    static constexpr int MAX_MOUSE_SENSE = 20;
     static constexpr int MIN_DEJITTER = 0;
     static constexpr int MAX_DEJITTER = 10;
     static constexpr int MIN_MOUSE_RANGE = 1;
@@ -116,13 +112,6 @@ class Paddles : public Controller
     static void setAnalogYCenter(int ycenter);
 
     /**
-      Sets the deadzone for analog paddles.
-
-      @param deadzone Value from 0 to 15000
-    */
-    static void setAnalogDeadzone(int deadzone);
-
-    /**
       Sets the acceleration for analog paddles.
 
       @param accel Value from 100 to 300
@@ -160,15 +149,6 @@ class Paddles : public Controller
                           values causing more movement
     */
     static void setDigitalSensitivity(int sensitivity);
-
-    /**
-      Sets the sensitivity for analog emulation of paddle movement
-      using a mouse.
-
-      @param sensitivity  Value from 1 to MAX_MOUSE_SENSE, with larger
-                          values causing more movement
-    */
-    static void setMouseSensitivity(int sensitivity);
 
     /**
       Sets the maximum upper range for digital/mouse emulation of paddle
@@ -214,8 +194,7 @@ class Paddles : public Controller
     static float SENSITIVITY, ACCEL;
 
     static int DIGITAL_SENSITIVITY, DIGITAL_DISTANCE;
-    static int DEADZONE, DEJITTER_BASE, DEJITTER_DIFF;
-    static int MOUSE_SENSITIVITY;
+    static int DEJITTER_BASE, DEJITTER_DIFF;
 
     /**
       Swap two events.

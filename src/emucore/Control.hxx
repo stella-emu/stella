@@ -71,6 +71,13 @@ class Controller : public Serializable
   friend class ControllerLowLevel;
 
   public:
+    static constexpr int MIN_DIGITAL_DEADZONE = 0;
+    static constexpr int MAX_DIGITAL_DEADZONE = 29;
+    static constexpr int MIN_ANALOG_DEADZONE = 0;
+    static constexpr int MAX_ANALOG_DEADZONE = 16500;
+    static constexpr int MIN_MOUSE_SENSE = 1;
+    static constexpr int MAX_MOUSE_SENSE = 20;
+
     /**
       Enumeration of the controller jacks
     */
@@ -274,6 +281,38 @@ class Controller : public Serializable
     static Type getType(const string& propName);
 
     /**
+      Sets the deadzone amount for real analog joysticks.
+      Technically, this isn't really used by the Joystick class at all,
+      but it seemed like the best place to put it.
+    */
+    static void setDigitalDeadZone(int deadzone);
+
+    /**
+      Sets the deadzone for analog paddles.
+
+      @param deadzone Value from 0 to 16500
+    */
+    static void setAnalogDeadzone(int deadzone);
+
+    /**
+      Retrieves the effective digital deadzone value
+    */
+    static int digitalDeadzoneValue(int deadzone);
+
+    inline static int digitalDeadzone() { return DIGITAL_DEAD_ZONE; }
+
+    inline static int analogDeadzone() { return ANALOG_DEAD_ZONE; }
+
+    /**
+      Sets the sensitivity for analog emulation movement
+      using a mouse.
+
+      @param sensitivity  Value from 1 to MAX_MOUSE_SENSE, with larger
+                          values causing more movement
+    */
+    static void setMouseSensitivity(int sensitivity);
+
+    /**
       Sets the auto fire rate. 0 disables auto fire.
 
       @param rate   Auto fire rate (0..30/25) in Hz
@@ -365,6 +404,14 @@ class Controller : public Serializable
 
     /// The callback that is dispatched whenver an analog pin has changed
     onAnalogPinUpdateCallback myOnAnalogPinUpdateCallback{nullptr};
+
+    /// Defines the dead zone of analog joysticks for digital Atari controllers</summary>
+    static int DIGITAL_DEAD_ZONE;
+
+    /// Defines the dead zone of analog joysticks for analog Atari controllers</summary>
+    static int ANALOG_DEAD_ZONE;
+
+    static int MOUSE_SENSITIVITY;
 
     /// Defines the speed of the auto fire
     static int AUTO_FIRE_RATE;
