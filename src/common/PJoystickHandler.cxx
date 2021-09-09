@@ -20,6 +20,7 @@
 #include "Console.hxx"
 #include "Joystick.hxx"
 #include "Paddles.hxx"
+#include "MindLink.hxx"
 #include "PointingDevice.hxx"
 #include "Driving.hxx"
 #include "Settings.hxx"
@@ -1074,6 +1075,7 @@ void PhysicalJoystickHandler::changeMousePaddleSensitivity(int direction)
   myOSystem.settings().setValue("msense", sense);
 
   Paddles::setMouseSensitivity(sense);
+  MindLink::setMouseSensitivity(sense);
 
   ostringstream ss;
   ss << sense * 10 << "%";

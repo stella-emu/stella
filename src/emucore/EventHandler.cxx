@@ -28,6 +28,7 @@
 #include "OSystem.hxx"
 #include "Joystick.hxx"
 #include "Paddles.hxx"
+#include "MindLink.hxx"
 #include "Lightgun.hxx"
 #include "PointingDevice.hxx"
 #include "Driving.hxx"
@@ -106,6 +107,7 @@ void EventHandler::initialize()
   Paddles::setDejitterDiff(myOSystem.settings().getInt("dejitter.diff"));
   Paddles::setDigitalSensitivity(myOSystem.settings().getInt("dsense"));
   Paddles::setMouseSensitivity(myOSystem.settings().getInt("msense"));
+  MindLink::setMouseSensitivity(myOSystem.settings().getInt("msense"));
   PointingDevice::setSensitivity(myOSystem.settings().getInt("tsense"));
   Driving::setSensitivity(myOSystem.settings().getInt("dcsense"));
   Controller::setAutoFireRate(myOSystem.settings().getInt("autofirerate"));

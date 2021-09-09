@@ -21,6 +21,7 @@
 #include "EventHandler.hxx"
 #include "Joystick.hxx"
 #include "Paddles.hxx"
+#include "MindLink.hxx"
 #include "PointingDevice.hxx"
 #include "Driving.hxx"
 #include "SaveKey.hxx"
@@ -487,6 +488,7 @@ void InputDialog::saveConfig()
   sensitivity = myMPaddleSpeed->getValue();
   settings.setValue("msense", sensitivity);
   Paddles::setMouseSensitivity(sensitivity);
+  MindLink::setMouseSensitivity(sensitivity);
 
   // Trackball speed
   sensitivity = myTrackBallSpeed->getValue();
