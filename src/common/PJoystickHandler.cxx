@@ -798,9 +798,9 @@ void PhysicalJoystickHandler::handleRegularAxisEvent(const PhysicalJoystickPtr j
       Event::Type eventAxisNeg = j->joyMap.get(EventMode::kEmulationMode, button, JoyAxis(axis), JoyDir::NEG);
       Event::Type eventAxisPos = j->joyMap.get(EventMode::kEmulationMode, button, JoyAxis(axis), JoyDir::POS);
 
-      if(value > Joystick::deadzone())
+      if(value > Controller::digitalDeadzone())
         myHandler.handleEvent(eventAxisPos);
-      else if(value < -Joystick::deadzone())
+      else if(value < -Controller::digitalDeadzone())
         myHandler.handleEvent(eventAxisNeg);
       else
       {
@@ -823,14 +823,14 @@ void PhysicalJoystickHandler::handleRegularAxisEvent(const PhysicalJoystickPtr j
 #ifdef GUI_SUPPORT
   else if(myHandler.hasOverlay())
   {
-    // A value change lower than Joystick::deadzone indicates analog input which is ignored
-    if((abs(j->axisLastValue[axis] - value) > Joystick::deadzone()))
+    // A value change lower than Controller::digitalDeadzone indicates analog input which is ignored
+    if((abs(j->axisLastValue[axis] - value) > Controller::digitalDeadzone()))
     {
       // First, clamp the values to simulate digital input
       // (the only thing that the underlying code understands)
-      if(value > Joystick::deadzone())
+      if(value > Controller::digitalDeadzone())
         value = 32000;
-      else if(value < -Joystick::deadzone())
+      else if(value < -Controller::digitalDeadzone())
         value = -32000;
       else
         value = 0;
@@ -945,31 +945,34 @@ ostream& operator<<(ostream& os, const PhysicalJoystickHandler& jh)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalJoystickHandler::changeDeadzone(int direction)
+void PhysicalJoystickHandler::changeDigitalDeadzone(int direction)
 {
   int deadzone = BSPF::clamp(myOSystem.settings().getInt("joydeadzone") + direction,
-                             Joystick::DEAD_ZONE_MIN, Joystick::DEAD_ZONE_MAX);
+                             Controller::MIN_DIGITAL_DEADZONE, Controller::MAX_DIGITAL_DEADZONE);
   myOSystem.settings().setValue("joydeadzone", deadzone);
 
-  Joystick::setDeadZone(deadzone);
+  Controller::setDigitalDeadZone(deadzone);
 
-  int value = Joystick::deadZoneValue(deadzone);
+  ostringstream ss;
+  ss << std::round(Controller::digitalDeadzoneValue(deadzone) * 100.F / 32768) << "%";
 
-  myOSystem.frameBuffer().showGaugeMessage("Joystick deadzone", std::to_string(value),
-                                           deadzone, Joystick::DEAD_ZONE_MIN, Joystick::DEAD_ZONE_MAX);
+  myOSystem.frameBuffer().showGaugeMessage("Digital controller dead zone", ss. str(), deadzone,
+                                           Controller::MIN_DIGITAL_DEADZONE, Controller::MAX_DIGITAL_DEADZONE);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalJoystickHandler::changeAnalogPaddleDeadzone(int direction)
 {
-  int deadzone = BSPF::clamp(myOSystem.settings().getInt("pdeadzone") + direction * 500,
-                             Paddles::MIN_ANALOG_DEADZONE, Paddles::MAX_ANALOG_DEADZONE);
-  myOSystem.settings().setValue("pdeadzone", deadzone);
+  int deadzone = BSPF::clamp(myOSystem.settings().getInt("adeadzone") + direction * 500,
+                             Controller::MIN_ANALOG_DEADZONE, Controller::MAX_ANALOG_DEADZONE);
+  myOSystem.settings().setValue("adeadzone", deadzone);
 
-  Paddles::setAnalogDeadzone(deadzone);
+  Controller::setAnalogDeadzone(deadzone);
+  ostringstream ss;
+  ss << std::round(deadzone * 100.F / 32768) << "%";
 
-  myOSystem.frameBuffer().showGaugeMessage("Analog paddle deadzone", std::to_string(deadzone), deadzone,
-                                           Paddles::MIN_ANALOG_DEADZONE, Paddles::MAX_ANALOG_DEADZONE);
+  myOSystem.frameBuffer().showGaugeMessage("Analog controller dead zone", ss.str(), deadzone,
+                                           Controller::MIN_ANALOG_DEADZONE, Controller::MAX_ANALOG_DEADZONE);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1071,18 +1074,17 @@ void PhysicalJoystickHandler::changeDigitalPaddleSensitivity(int direction)
 void PhysicalJoystickHandler::changeMousePaddleSensitivity(int direction)
 {
   int sense = BSPF::clamp(myOSystem.settings().getInt("msense") + direction,
-                          Paddles::MIN_MOUSE_SENSE, Paddles::MAX_MOUSE_SENSE);
+                          Controller::MIN_MOUSE_SENSE, Controller::MAX_MOUSE_SENSE);
   myOSystem.settings().setValue("msense", sense);
 
-  Paddles::setMouseSensitivity(sense);
-  MindLink::setMouseSensitivity(sense);
+  Controller::setMouseSensitivity(sense);
 
   ostringstream ss;
   ss << sense * 10 << "%";
 
   myOSystem.frameBuffer().showGaugeMessage("Mouse paddle sensitivity",
                                            ss.str(), sense,
-                                           Paddles::MIN_MOUSE_SENSE, Paddles::MAX_MOUSE_SENSE);
+                                           Controller::MIN_MOUSE_SENSE, Controller::MAX_MOUSE_SENSE);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

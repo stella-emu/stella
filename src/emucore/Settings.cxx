@@ -115,7 +115,7 @@ Settings::Settings()
   setPermanent("usemouse", "analog");
   setPermanent("grabmouse", "true");
   setPermanent("cursor", "2");
-  setPermanent("pdeadzone", "0");
+  setPermanent("adeadzone", "0");
   setPermanent("paccel", "100");
   setPermanent("dejitter.base", "0");
   setPermanent("dejitter.diff", "0");
@@ -358,10 +358,10 @@ void Settings::validate()
 #endif
 
   setValue("joydeadzone", BSPF::clamp(getInt("joydeadzone"),
-           Joystick::DEAD_ZONE_MIN, Joystick::DEAD_ZONE_MAX));
+           Controller::MIN_DIGITAL_DEADZONE, Joystick::MAX_DIGITAL_DEADZONE));
 
-  setValue("pdeadzone", BSPF::clamp(getInt("pdeadzone"),
-           Paddles::MIN_ANALOG_DEADZONE, Paddles::MAX_ANALOG_DEADZONE));
+  setValue("adeadzone", BSPF::clamp(getInt("adeadzone"),
+           Controller::MIN_ANALOG_DEADZONE, Controller::MAX_ANALOG_DEADZONE));
 
   setValue("psense", BSPF::clamp(getInt("psense"),
            Paddles::MIN_ANALOG_SENSE, Paddles::MAX_ANALOG_SENSE));
@@ -379,7 +379,7 @@ void Settings::validate()
            Paddles::MIN_DIGITAL_SENSE, Paddles::MAX_DIGITAL_SENSE));
 
   setValue("msense", BSPF::clamp(getInt("msense"),
-           Paddles::MIN_MOUSE_SENSE, Paddles::MAX_MOUSE_SENSE));
+           Controller::MIN_MOUSE_SENSE, Controller::MAX_MOUSE_SENSE));
 
   i = getInt("cursor");
   if(i < 0 || i > 3)
@@ -514,7 +514,7 @@ void Settings::usage() const
     << "  -loglevel     <0|1|2>        Set level of logging during application run\n"
     << endl
     << "  -logtoconsole <1|0>          Log output to console/commandline\n"
-    << "  -joydeadzone  <number>       Sets 'deadzone' area for analog joysticks (0-29)\n"
+    << "  -joydeadzone  <0-29>         Sets digital 'dead zone' area for analog joysticks\n"
     << "  -joyallow4    <1|0>          Allow all 4 directions on a joystick to be\n"
     << "                                pressed simultaneously\n"
     << "  -usemouse     <always|\n"
@@ -523,7 +523,8 @@ void Settings::usage() const
     << "                                properties in given mode(see manual)\n"
     << "  -grabmouse      <1|0>        Locks the mouse cursor in the TIA window\n"
     << "  -cursor         <0,1,2,3>    Set cursor state in UI/emulation modes\n"
-    << "  -pdeadzone      <number>     Sets 'deadzone' area for analog paddles (0-15000)\n"
+    << "  -adeadzone      <number>     Sets analog 'dead zone' area for analog joysticks\n"
+    << "                                (0-16500)\n"
     << "  -paccel         <0-100>      Sets paddle acceleration strength\n"
     << "  -dejitter.base  <0-10>       Strength of analog paddle value averaging\n"
     << "  -dejitter.diff  <0-10>       Strength of analog paddle reaction to fast movements\n"

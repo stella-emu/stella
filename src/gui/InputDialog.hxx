@@ -72,12 +72,13 @@ class InputDialog : public Dialog
 
   private:
     enum {
-      kJDeadzoneChanged   = 'DZch',
+      kDDeadzoneChanged   = 'DDch',
+      kADeadzoneChanged   = 'ADch',
       kPSpeedChanged      = 'Ppch',
       kPAccelChanged      = 'PAch',
       kDejitterAvChanged  = 'JAch',
       kDejitterReChanged  = 'JRch',
-      kDPSpeedChanged     = 'PDch',
+      kDPSpeedChanged     = 'DSch',
       kAutoFireChanged    = 'AFch',
       kTBSpeedChanged     = 'TBch',
       kDCSpeedChanged     = 'DCch',
@@ -98,9 +99,9 @@ class InputDialog : public Dialog
 
     PopUpWidget*      myAVoxPort{nullptr};
 
-    SliderWidget*     myJoystickDeadzone{nullptr};
+    SliderWidget*     myDigitalDeadzone{nullptr};
+    SliderWidget*     myAnalogDeadzone{nullptr};
     SliderWidget*     myPaddleSpeed{nullptr};
-    SliderWidget*     myPaddleDeadzone{nullptr};
     SliderWidget*     myPaddleAccel{nullptr};
     SliderWidget*     myDejitterBase{nullptr};
     SliderWidget*     myDejitterDiff{nullptr};

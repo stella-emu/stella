@@ -479,12 +479,6 @@ float Paddles::analogSensitivityValue(int sensitivity)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Paddles::setAnalogDeadzone(int deadzone)
-{
-  DEADZONE = BSPF::clamp(deadzone, MIN_ANALOG_DEADZONE, MAX_ANALOG_DEADZONE);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Paddles::setAnalogAccel(int accel)
 {
   ACCEL = 1.f + BSPF::clamp(accel, MIN_ANALOG_ACCEL, MAX_ANALOG_ACCEL) / 100.f;
@@ -509,12 +503,6 @@ void Paddles::setDigitalSensitivity(int sensitivity)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Paddles::setMouseSensitivity(int sensitivity)
-{
-  MOUSE_SENSITIVITY = BSPF::clamp(sensitivity, MIN_MOUSE_SENSE, MAX_MOUSE_SENSE);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Paddles::setDigitalPaddleRange(int range)
 {
   range = BSPF::clamp(range, MIN_MOUSE_RANGE, MAX_MOUSE_RANGE);
@@ -525,7 +513,6 @@ void Paddles::setDigitalPaddleRange(int range)
 int Paddles::XCENTER = 0;
 int Paddles::YCENTER = 0;
 float Paddles::SENSITIVITY = 1.0;
-int Paddles::DEADZONE = 0;
 float Paddles::ACCEL = 1.0;
 int Paddles::DEJITTER_BASE = 0;
 int Paddles::DEJITTER_DIFF = 0;
@@ -533,4 +520,3 @@ int Paddles::TRIGRANGE = Paddles::TRIGMAX;
 
 int Paddles::DIGITAL_SENSITIVITY = -1;
 int Paddles::DIGITAL_DISTANCE = -1;
-int Paddles::MOUSE_SENSITIVITY = -1;

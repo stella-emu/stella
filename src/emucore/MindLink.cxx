@@ -22,6 +22,10 @@
 MindLink::MindLink(Jack jack, const Event& event, const System& system)
   : Controller(jack, event, system, Controller::Type::MindLink)
 {
+  setPin(DigitalPin::One, true);
+  setPin(DigitalPin::Two, true);
+  setPin(DigitalPin::Three, true);
+  setPin(DigitalPin::Four, true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -73,11 +77,3 @@ bool MindLink::setMouseControl(
   return true;
 }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void MindLink::setMouseSensitivity(int sensitivity)
-{
-  MOUSE_SENSITIVITY = BSPF::clamp(sensitivity, MIN_MOUSE_SENSE, MAX_MOUSE_SENSE);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int MindLink::MOUSE_SENSITIVITY = -1;

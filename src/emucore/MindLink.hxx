@@ -101,15 +101,6 @@ class MindLink : public Controller
     bool setMouseControl(
       Controller::Type xtype, int xid, Controller::Type ytype, int yid) override;
 
-    /**
-      Sets the sensitivity for analog emulation of MindLink movement
-      using a mouse.
-
-      @param sensitivity  Value from 1 to MAX_MOUSE_SENSE, with larger
-                          values causing more movement
-    */
-    static void setMouseSensitivity(int sensitivity);
-
   private:
     void nextMindlinkBit();
 
@@ -117,11 +108,6 @@ class MindLink : public Controller
     static constexpr int MIN_POS = 0x2700;
     static constexpr int MAX_POS = 0x3e00;
     static constexpr int CALIBRATE_FLAG = 0x8000; // this causes a left side calibration
-
-    static constexpr int MIN_MOUSE_SENSE = 1;
-    static constexpr int MAX_MOUSE_SENSE = 20;
-
-    static int MOUSE_SENSITIVITY;
 
   private:
     // Position value in Mindlink controller
