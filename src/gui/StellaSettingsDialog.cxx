@@ -187,12 +187,12 @@ void StellaSettingsDialog::addGameOptions(WidgetArray& wid, int& xpos, int& ypos
   VarList::push_back(ctrls, "Auto-detect", "AUTO");
   VarList::push_back(ctrls, "Joystick", "JOYSTICK");
   VarList::push_back(ctrls, "Paddles", "PADDLES");
-  VarList::push_back(ctrls, "BoosterGrip", "BOOSTERGRIP");
+  VarList::push_back(ctrls, "Booster Grip", "BOOSTERGRIP");
   VarList::push_back(ctrls, "Driving", "DRIVING");
   VarList::push_back(ctrls, "Keyboard", "KEYBOARD");
-  VarList::push_back(ctrls, "AmigaMouse", "AMIGAMOUSE");
-  VarList::push_back(ctrls, "AtariMouse", "ATARIMOUSE");
-  VarList::push_back(ctrls, "Trakball", "TRAKBALL");
+  VarList::push_back(ctrls, "Amiga mouse", "AMIGAMOUSE");
+  VarList::push_back(ctrls, "Atari mouse", "ATARIMOUSE");
+  VarList::push_back(ctrls, "Trak-Ball", "TRAKBALL");
   VarList::push_back(ctrls, "Sega Genesis", "GENESIS");
   VarList::push_back(ctrls, "QuadTari", "QUADTARI");
 

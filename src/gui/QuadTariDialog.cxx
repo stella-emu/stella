@@ -47,17 +47,17 @@ QuadTariDialog::QuadTariDialog(GuiObject* boss, const GUI::Font& font, int max_w
   VarList::push_back(ctrls, "Paddles", "PADDLES");
   //VarList::push_back(ctrls, "Paddles_IAxis", "PADDLES_IAXIS");
   //VarList::push_back(ctrls, "Paddles_IAxDr", "PADDLES_IAXDR");
-  //VarList::push_back(ctrls, "BoosterGrip", "BOOSTERGRIP");
+  //VarList::push_back(ctrls, "Booster Grip", "BOOSTERGRIP");
   VarList::push_back(ctrls, "Driving", "DRIVING");
   //VarList::push_back(ctrls, "Keyboard", "KEYBOARD");
-  //VarList::push_back(ctrls, "AmigaMouse", "AMIGAMOUSE");
-  //VarList::push_back(ctrls, "AtariMouse", "ATARIMOUSE");
-  //VarList::push_back(ctrls, "Trakball", "TRAKBALL");
+  //VarList::push_back(ctrls, "Amiga mouse", "AMIGAMOUSE");
+  //VarList::push_back(ctrls, "Atari mouse", "ATARIMOUSE");
+  //VarList::push_back(ctrls, "Trak-Ball", "TRAKBALL");
   VarList::push_back(ctrls, "AtariVox", "ATARIVOX");
   VarList::push_back(ctrls, "SaveKey", "SAVEKEY");
   //VarList::push_back(ctrls, "Sega Genesis", "GENESIS");
-  //VarList::push_back(ctrls, "KidVid", "KIDVID");
-  //VarList::push_back(ctrls, "Lightgun", "LIGHTGUN");
+  //VarList::push_back(ctrls, "Kid Vid", "KIDVID");
+  //VarList::push_back(ctrls, "Light Gun", "LIGHTGUN");
   //VarList::push_back(ctrls, "MindLink", "MINDLINK");
   //VarList::push_back(ctrls, "QuadTari", "QUADTARI");
 
