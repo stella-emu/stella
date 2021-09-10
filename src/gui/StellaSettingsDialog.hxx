@@ -21,7 +21,7 @@
 class PopUpWidget;
 
 #include "Props.hxx"
-#include "Menu.hxx"
+#include "OptionsMenu.hxx"
 #include "Dialog.hxx"
 
 #if defined(RETRON77)
@@ -39,7 +39,7 @@ class StellaSettingsDialog : public Dialog
 {
   public:
     StellaSettingsDialog(OSystem& osystem, DialogContainer& parent,
-      int max_w, int max_h, Menu::AppMode mode);
+      int max_w, int max_h, OptionsMenu::AppMode mode);
     ~StellaSettingsDialog() override;
 
   private:
@@ -103,7 +103,7 @@ class StellaSettingsDialog : public Dialog
   #endif
 
     // Indicates if this dialog is used for global (vs. in-game) settings
-    Menu::AppMode myMode{Menu::AppMode::emulator};
+    OptionsMenu::AppMode myMode{OptionsMenu::AppMode::emulator};
 
     enum {
       kAdvancedSettings = 'SSad',

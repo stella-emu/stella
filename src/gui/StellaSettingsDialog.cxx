@@ -30,7 +30,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StellaSettingsDialog::StellaSettingsDialog(OSystem& osystem, DialogContainer& parent,
-  int max_w, int max_h, Menu::AppMode mode)
+  int max_w, int max_h, OptionsMenu::AppMode mode)
   : Dialog(osystem, parent, osystem.frameBuffer().font(), "Basic settings"),
     myMode{mode}
 {
@@ -351,7 +351,7 @@ void StellaSettingsDialog::handleCommand(CommandSender* sender, int cmd,
       saveConfig();
       [[fallthrough]];
     case GuiObject::kCloseCmd:
-      if (myMode != Menu::AppMode::emulator)
+      if (myMode != OptionsMenu::AppMode::emulator)
         close();
       else
         instance().eventHandler().leaveMenuMode();
@@ -363,7 +363,7 @@ void StellaSettingsDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kConfirmSwitchCmd:
       instance().settings().setValue("basic_settings", false);
-      if (myMode != Menu::AppMode::emulator)
+      if (myMode != OptionsMenu::AppMode::emulator)
         close();
       else
         instance().eventHandler().leaveMenuMode();

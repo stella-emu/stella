@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef MENU_HXX
-#define MENU_HXX
+#ifndef OPTIONS_MENU_HXX
+#define OPTIONS_MENU_HXX
 
 class OSystem;
 class StellaSettingsDialog;
@@ -29,7 +29,7 @@ class OptionsDialog;
 
   @author  Stephen Anthony
 */
-class Menu : public DialogContainer
+class OptionsMenu : public DialogContainer
 {
   public:
     // Current Stella mode
@@ -38,8 +38,8 @@ class Menu : public DialogContainer
     /**
       Create a new menu stack
     */
-    explicit Menu(OSystem& osystem);
-    ~Menu() override;
+    explicit OptionsMenu(OSystem& osystem);
+    ~OptionsMenu() override;
 
   private:
     Dialog* baseDialog() override;
@@ -48,11 +48,11 @@ class Menu : public DialogContainer
 
   private:
     // Following constructors and assignment operators not supported
-    Menu() = delete;
-    Menu(const Menu&) = delete;
-    Menu(Menu&&) = delete;
-    Menu& operator=(const Menu&) = delete;
-    Menu& operator=(Menu&&) = delete;
+    OptionsMenu() = delete;
+    OptionsMenu(const OptionsMenu&) = delete;
+    OptionsMenu(OptionsMenu&&) = delete;
+    OptionsMenu& operator=(const OptionsMenu&) = delete;
+    OptionsMenu& operator=(OptionsMenu&&) = delete;
 };
 
 #endif

@@ -285,7 +285,7 @@ void DebuggerDialog::handleCommand(CommandSender* sender, int cmd,
 
         getDynamicBounds(w, h);
         myOptions = make_unique<OptionsDialog>(instance(), parent(), this, w, h,
-                                               Menu::AppMode::debugger);
+                                               OptionsMenu::AppMode::debugger);
       }
       myOptions->open();
 

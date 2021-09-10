@@ -423,7 +423,7 @@
     <ClCompile Include="..\gui\ListWidget.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
-    <ClCompile Include="..\gui\Menu.cxx">
+    <ClCompile Include="..\gui\OptionsMenu.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
     <ClCompile Include="..\gui\MessageBox.cxx">
@@ -1505,7 +1505,7 @@
     <ClInclude Include="..\gui\ListWidget.hxx">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
-    <ClInclude Include="..\gui\Menu.hxx">
+    <ClInclude Include="..\gui\OptionsMenu.hxx">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
     <ClInclude Include="..\gui\MessageBox.hxx">

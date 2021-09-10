@@ -51,7 +51,7 @@
   #include "ConsoleFont.hxx"
   #include "ConsoleBFont.hxx"
   #include "Launcher.hxx"
-  #include "Menu.hxx"
+  #include "OptionsMenu.hxx"
   #include "CommandMenu.hxx"
   #include "HighScoresMenu.hxx"
   #include "MessageMenu.hxx"
@@ -379,19 +379,19 @@ void FrameBuffer::update(UpdateMode mode)
   #ifdef GUI_SUPPORT
     case EventHandlerState::OPTIONSMENU:
     {
-      myOSystem.menu().tick();
-      redraw |= myOSystem.menu().needsRedraw();
+      myOSystem.optionsMenu().tick();
+      redraw |= myOSystem.optionsMenu().needsRedraw();
       if(redraw)
       {
         clear();
         myTIASurface->render(true);
-        myOSystem.menu().draw(forceRedraw);
+        myOSystem.optionsMenu().draw(forceRedraw);
       }
       else if(rerender)
       {
         clear();
         myTIASurface->render(true);
-        myOSystem.menu().render();
+        myOSystem.optionsMenu().render();
       }
       break;  // EventHandlerState::OPTIONSMENU
     }

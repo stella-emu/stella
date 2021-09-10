@@ -28,7 +28,7 @@ namespace GUI {
 }
 class Serializer;
 
-#include "Menu.hxx"
+#include "OptionsMenu.hxx"
 #include "Dialog.hxx"
 #include "HighScoresManager.hxx"
 #include "json_lib.hxx"
@@ -47,7 +47,7 @@ class HighScoresDialog : public Dialog
     static constexpr uInt32 NUM_RANKS = 10;
 
     HighScoresDialog(OSystem& osystem, DialogContainer& parent,
-                     int max_w, int max_h, Menu::AppMode mode);
+                     int max_w, int max_h, OptionsMenu::AppMode mode);
     ~HighScoresDialog() override;
 
   protected:
@@ -110,7 +110,7 @@ class HighScoresDialog : public Dialog
     StaticTextWidget* myMD5Widget{nullptr};
     StaticTextWidget* myCheckSumWidget{nullptr};
 
-    Menu::AppMode myMode{Menu::AppMode::emulator};
+    OptionsMenu::AppMode myMode{OptionsMenu::AppMode::emulator};
 
   private:
     // Following constructors and assignment operators not supported
