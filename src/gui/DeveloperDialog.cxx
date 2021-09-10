@@ -146,7 +146,7 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
                                  "most classic bankswitching types.");
   wid.push_back(myRandomBankWidget);
 
-  myRandomizeTIAWidget = new CheckboxWidget(myTab, font, myRandomBankWidget->getRight() + fontWidth * 2, ypos + 1,
+  myRandomizeTIAWidget = new CheckboxWidget(myTab, font, myRandomBankWidget->getRight() + fontWidth * 2.5, ypos + 1,
                                          "Randomize TIA");
   wid.push_back(myRandomizeTIAWidget);
   ypos += lineHeight + VGAP;
