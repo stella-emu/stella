@@ -58,7 +58,7 @@
   #include "DebuggerParser.hxx"
 #endif
 #ifdef GUI_SUPPORT
-  #include "Menu.hxx"
+  #include "OptionsMenu.hxx"
   #include "CommandMenu.hxx"
   #include "HighScoresMenu.hxx"
   #include "MessageMenu.hxx"
@@ -3034,7 +3034,7 @@ void EventHandler::setState(EventHandlerState state)
 
   #ifdef GUI_SUPPORT
     case EventHandlerState::OPTIONSMENU:
-      myOverlay = &myOSystem.menu();
+      myOverlay = &myOSystem.optionsMenu();
       enableTextEvents(true);
       break;
 
@@ -3083,11 +3083,11 @@ void EventHandler::setState(EventHandlerState state)
   }
 
   // Inform various subsystems about the new state
-  myOSystem.stateChanged(myState);
-  myOSystem.frameBuffer().stateChanged(myState);
-  myOSystem.frameBuffer().setCursorState();
+  myOSystem.stateChanged(myState); // does nothing
+  myOSystem.frameBuffer().stateChanged(myState); // ignores state
+  myOSystem.frameBuffer().setCursorState(); // en/disables cursor for UI and emulation states
   if(myOSystem.hasConsole())
-    myOSystem.console().stateChanged(myState);
+    myOSystem.console().stateChanged(myState); // does nothing
 
   // Sometimes an extraneous mouse motion event is generated
   // after a state change, which should be supressed

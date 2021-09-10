@@ -22,23 +22,23 @@
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
 #include "bspf.hxx"
-#include "Menu.hxx"
+#include "OptionsMenu.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Menu::Menu(OSystem& osystem)
+OptionsMenu::OptionsMenu(OSystem& osystem)
   : DialogContainer(osystem)
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Menu::~Menu()
+OptionsMenu::~OptionsMenu()
 {
   delete stellaSettingDialog;  stellaSettingDialog = nullptr;
   delete optionsDialog;  optionsDialog = nullptr;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Dialog* Menu::baseDialog()
+Dialog* OptionsMenu::baseDialog()
 {
   if (myOSystem.settings().getBool("basic_settings"))
   {

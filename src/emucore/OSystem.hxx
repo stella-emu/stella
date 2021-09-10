@@ -40,7 +40,7 @@ class AudioSettings;
   class CommandMenu;
   class HighScoresMenu;
   class Launcher;
-  class Menu;
+  class OptionsMenu;
   class MessageMenu;
   class PlusRomsMenu;
   class TimeMachine;
@@ -200,11 +200,11 @@ class OSystem
 
   #ifdef GUI_SUPPORT
     /**
-      Get the settings menu of the system.
+      Get the option menu of the system.
 
-      @return The settings menu object
+      @return The option menu object
     */
-    Menu& menu() const { return *myMenu; }
+    OptionsMenu& optionsMenu() const { return *myOptionsMenu; }
 
     /**
       Get the command menu of the system.
@@ -516,8 +516,8 @@ class OSystem
   #endif
 
   #ifdef GUI_SUPPORT
-    // Pointer to the Menu object
-    unique_ptr<Menu> myMenu;
+    // Pointer to the OptionMenu object
+    unique_ptr<OptionsMenu> myOptionsMenu;
 
     // Pointer to the CommandMenu object
     unique_ptr<CommandMenu> myCommandMenu;
