@@ -3567,6 +3567,9 @@
       <td><pre>-&lt;plr.|dev.&gt;bankrandom &lt;1|0&gt;</pre></td>
       <td>On reset, randomize the startup bank (only for selected bankswitch types).</td>
     </tr><tr>
+      <td><pre>-&lt;plr.|dev.&gt;tiarandom &lt;1|0&gt;</pre></td>
+      <td>On reset, randomize the TIA registers.</td>
+    </tr><tr>
       <td><pre>-&lt;plr.|dev.&gt;ramrandom &lt;1|0&gt;</pre></td>
       <td>On reset, either randomize all RAM content, or initialize with zero (console = 2600)/startup values (console = 7800) instead.</td>
     </tr><tr>
@@ -4323,15 +4326,57 @@
       <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
       <td valign="top">
         <table border="1" cellpadding="4">
-          <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">Command Line</a></th></tr>
-          <tr><td>Player/Developer settings</td><td>Selects the active settings set</td><td>-dev.settings</td></tr>
-          <tr><td>Console info overlay</td><td>Overlay console info on the TIA image during emulation.</td><td>-plr.stats<br/>-dev.stats</td></tr>
-          <tr><td>Detected settings info</td><td>Display detected settings when a ROM is loaded.</td><td>-plr.detectedinfo<br/>-dev.detectedinfo</td></tr>
-          <tr><td>Console</td><td>Select the console type, this affects Color/B&W/Pause key emulation and zero-page RAM initialization</td><td>-plr.console <br/>-dev.console</td></tr>
-          <tr><td>Random startup bank</td><td>Randomize the startup bank (only for selected bankswitch types)</td><td>-plr.bankrandom<br/>-dev.bankrandom</td></tr>
-          <tr><td>Randomize zero-page ...</td><td>When loading a ROM, randomize all RAM content instead of initializing with all zeroes (for 'Console' = 'Atari 2600' only)</td><td>-plr.ramrandom<br/>-dev.ramrandom</td></tr>
-          <tr><td>Randomize CPU</td><td>When loading a ROM, randomize the content of the specified CPU registers</td><td>-plr.cpurandom<br/>-dev.cpurandom</td></tr>
-          <tr><td>Drive unused TIA pins ...</td><td>Unused TIA pins are read random instead of the last databus values</td><td>-dev.tiadriven</td></tr>
+          <tr>
+            <th>Item</th>
+            <th>Brief description</th>
+            <th>For more information,<br>see <a href="#CommandLine">Command Line</a></th>
+          </tr>
+          <tr>
+            <td>Player/Developer settings</td>
+            <td>Selects the active settings set</td>
+            <td>-dev.settings</td>
+          </tr>
+          <tr>
+            <td>Console info overlay</td>
+            <td>Overlay console info on the TIA image during emulation.</td>
+            <td>-plr.stats<br/>-dev.stats</td></tr>
+          <tr>
+            <td>Detected settings info</td>
+            <td>Display detected settings when a ROM is loaded.</td>
+            <td>-plr.detectedinfo<br/>-dev.detectedinfo</td>
+          </tr>
+          <tr>
+            <td>Console</td>
+            <td>Select the console type, this affects Color/B&W/Pause key
+              emulation and zero-page RAM initialization</td>
+            <td>-plr.console <br/>-dev.console</td>
+          </tr>
+          <tr>
+            <td>Random startup bank</td>
+            <td>Randomize the startup bank (only for selected bankswitch types)</td>
+            <td>-plr.bankrandom<br/>-dev.bankrandom</td>
+          </tr>
+          <tr>
+            <td>Randomize TIA</td>
+            <td>Randomizes TIA registers on the startup</td>
+            <td>-plr.tiarandom<br/>-dev.tiarandom</td>
+          </tr>
+          <tr>
+            <td>Randomize zero-page ...</td>
+            <td>When loading a ROM, randomize all RAM content instead of
+              initializing with all zeroes (for 'Console' = 'Atari 2600' only)</td>
+            <td>-plr.ramrandom<br/>-dev.ramrandom</td>
+          </tr>
+          <tr>
+            <td>Randomize CPU</td>
+            <td>When loading a ROM, randomize the content of the specified CPU registers</td>
+            <td>-plr.cpurandom<br/>-dev.cpurandom</td>
+          </tr>
+          <tr>
+            <td>Drive unused TIA pins ...</td>
+            <td>Unused TIA pins are read random instead of the last databus values</td>
+            <td>-dev.tiadriven</td>
+          </tr>
           <tr>
             <td>Break on reads from ...</td>
             <td>A read from a write port interrupts emulation and the debugger is entered.</td>
@@ -4347,7 +4392,11 @@
             <td>Thumb ARM emulation throws an exception and enters the debugger on fatal errors</td>
             <td><span style="white-space:nowrap">-dev.thumb.trapfatal</span></td>
           </tr>
-          <tr><td>Display AtariVox...</td><td>Display a message when the AtariVox/SaveKey EEPROM is read or written</td><td>-plr.eepromaccess<br/>-dev.eepromaccess</td></tr>
+          <tr>
+            <td>Display AtariVox...</td>
+            <td>Display a message when the AtariVox/SaveKey EEPROM is read or written</td>
+            <td>-plr.eepromaccess<br/>-dev.eepromaccess</td>
+          </tr>
         </table>
       </td>
     </tr>

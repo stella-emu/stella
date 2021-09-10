@@ -21,7 +21,9 @@
 
   * Added web links for many games
 
-  * Fixe MindLink controller
+  * Fixed MindLink controller
+
+  * Added TIA randomization on startup option
 
   * Debugger: enhanced prompt's auto complete and history
 
