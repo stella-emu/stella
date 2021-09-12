@@ -82,7 +82,7 @@ class StreamReader : public Serializable
       myColorBK[0] = 0;
     }
 
-    void swapField(bool index, int frame) {
+    void swapField(bool index, bool odd) {
       uInt8* offset = index ? myBuffer1 : myBuffer2;
 
       myVersion  = offset + VERSION_DATA_OFFSET;
@@ -93,8 +93,7 @@ class StreamReader : public Serializable
       myColor    = offset + COLOR_DATA_OFFSET;
       myColorBK  = offset + COLORBK_DATA_OFFSET;
 
-//      myColorBK++;
-      if (!(frame & 1))
+      if (!odd)
           myColorBK++;
     }
 
@@ -885,7 +884,7 @@ bool MovieCart::init(const string& path)
   if(!myStream.open(path))
     return false;
 
-  myStream.swapField(true, myFrameNumber);
+  myStream.swapField(true, myOdd);
 
   return true;
 }
@@ -1368,7 +1367,7 @@ void MovieCart::runStateMachine()
           fill_addr_left_line(0);
           fill_addr_end_lines();
 
-          myStream.swapField(myBufferIndex, myFrameNumber);
+          myStream.swapField(myBufferIndex, myOdd);
           myStream.blankPartialLines(myOdd);
 
           myBufferIndex = !myBufferIndex;
