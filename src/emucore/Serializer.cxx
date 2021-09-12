@@ -33,8 +33,9 @@ Serializer::Serializer(const string& filename, Mode m)
       if(str && str->is_open())
       {
         myStream = std::move(str);
-        myStream->exceptions( ios_base::failbit | ios_base::badbit | ios_base::eofbit );
         rewind();
+        myStream->exceptions( ios_base::failbit | ios_base::badbit |
+                              ios_base::eofbit );
       }
     }
   }
@@ -57,8 +58,9 @@ Serializer::Serializer(const string& filename, Mode m)
     if(str && str->is_open())
     {
       myStream = std::move(str);
-      myStream->exceptions( ios_base::failbit | ios_base::badbit | ios_base::eofbit );
       rewind();
+      myStream->exceptions( ios_base::failbit | ios_base::badbit |
+                            ios_base::eofbit );
     }
   }
 }
@@ -71,9 +73,9 @@ Serializer::Serializer()
   // the stream before it is used for the first time
   if(myStream)
   {
-    myStream->exceptions( ios_base::failbit | ios_base::badbit | ios_base::eofbit );
     putBool(true);
     rewind();
+    myStream->exceptions( ios_base::failbit | ios_base::badbit | ios_base::eofbit );
   }
 }
 
@@ -100,7 +102,7 @@ size_t Serializer::size()
 
   myStream->seekp(0, std::ios::end);
   size_t s = myStream->tellp();
-  setPosition(oldPos);
+  myStream->seekp(oldPos);
 
   return s;
 }
