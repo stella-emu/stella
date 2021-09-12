@@ -304,11 +304,11 @@ class MovieInputs : public Serializable
 // Several not used
 #define addr_kernel_48 0x800
 #define addr_transport_direction 0x880
-#define addr_transport_buttons 0x896
+#define addr_transport_buttons 0x894
 #define addr_right_line 0x948
 #define addr_set_gdata6 0x948
 #define addr_set_aud_right 0x94e
-#define addr_set_gdata9 0x952
+#define addr_set_gdata9 0x950
 #define addr_set_gcol9 0x954
 #define addr_set_gcol6 0x956
 #define addr_set_gdata5 0x95a
@@ -319,18 +319,18 @@ class MovieInputs : public Serializable
 #define addr_set_gdata7 0x96e
 #define addr_set_gcol8 0x972
 #define addr_left_line 0x980
-#define addr_set_gdata1 0x980
-#define addr_set_gcol1 0x986
-#define addr_set_aud_left 0x98a
-#define addr_set_gdata4 0x98e
-#define addr_set_gcol4 0x990
-#define addr_set_gdata0 0x992
-#define addr_set_gcol0 0x996
-#define addr_set_gdata3 0x99a
-#define addr_set_colupf_l 0x99e
-#define addr_set_gcol2 0x9a2
-#define addr_set_gdata2 0x9a6
-#define addr_set_gcol3 0x9aa
+#define addr_set_gdata1 0x982
+#define addr_set_gcol1 0x988
+#define addr_set_aud_left 0x98c
+#define addr_set_gdata4 0x990
+#define addr_set_gcol4 0x992
+#define addr_set_gdata0 0x994
+#define addr_set_gcol0 0x998
+#define addr_set_gdata3 0x99c
+#define addr_set_colupf_l 0x9a0
+#define addr_set_gcol2 0x9a4
+#define addr_set_gdata2 0x9a8
+#define addr_set_gcol3 0x9ac
 #define addr_pick_continue 0x9be
 #define addr_main_start 0xa00
 #define addr_aud_bank_setup 0xa0c
@@ -338,13 +338,13 @@ class MovieInputs : public Serializable
 #define addr_title_again 0xa3b
 #define addr_wait_cnt 0xa77
 #define addr_end_lines 0xa80
-#define addr_set_aud_endlines 0xa86
-#define addr_set_overscan_size 0xa9c
-#define addr_set_vblank_size 0xab2
-#define addr_pick_extra_lines 0xabb
-#define addr_pick_transport 0xac8
-#define addr_wait_lines 0xacb
-#define addr_transport_done1 0xadc
+#define addr_set_aud_endlines 0xa80
+#define addr_set_overscan_size 0xa9a
+#define addr_set_vblank_size 0xab0
+#define addr_pick_extra_lines 0xab9
+#define addr_pick_transport 0xac6
+#define addr_wait_lines 0xac9
+#define addr_transport_done1 0xada
 #define addr_draw_title 0xb00
 #define addr_title_loop 0xb50
 #define addr_black_bar 0xb52
@@ -410,8 +410,8 @@ static constexpr unsigned char kernelROM[] = {
  24, 25, 24, 24, 24, 24, 126, 0, 249, 97, 97, 97, 97, 249, 0, 0,
  0, 0, 0, 0, 248, 128, 128, 224, 128, 248, 255, 255, 255, 255, 255, 255,
  173, 128, 2, 74, 74, 74, 133, 129, 234, 133, 128, 133, 128, 133, 128, 133,
- 128, 169, 0, 76, 72, 249, 165, 12, 10, 173, 130, 2, 42, 41, 23, 133,
- 129, 234, 133, 128, 133, 128, 133, 128, 169, 0, 76, 72, 249, 255, 255, 255,
+ 128, 76, 72, 249, 165, 12, 10, 173, 130, 2, 42, 41, 23, 133, 129, 234,
+ 133, 128, 133, 128, 133, 128, 76, 72, 249, 255, 255, 255, 255, 255, 255, 255,
  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -422,13 +422,13 @@ static constexpr unsigned char kernelROM[] = {
  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
  255, 255, 255, 255, 255, 255, 255, 255, 169, 159, 133, 28, 133, 42, 169, 0,
- 133, 25, 162, 223, 160, 98, 169, 248, 133, 7, 169, 231, 133, 27, 169, 242,
+ 162, 223, 133, 25, 160, 98, 169, 248, 133, 7, 169, 231, 133, 27, 169, 242,
  133, 6, 169, 247, 133, 28, 169, 0, 133, 9, 169, 172, 133, 6, 169, 253,
  133, 27, 169, 216, 133, 7, 134, 27, 132, 6, 169, 0, 133, 9, 133, 43,
- 169, 207, 133, 42, 133, 28, 169, 54, 133, 7, 169, 0, 133, 25, 162, 191,
- 160, 114, 169, 243, 133, 27, 169, 66, 133, 6, 169, 239, 133, 28, 169, 0,
- 133, 8, 169, 238, 133, 6, 169, 251, 133, 27, 169, 182, 133, 7, 134, 27,
- 132, 6, 169, 0, 133, 8, 169, 128, 133, 32, 133, 33, 169, 0, 76, 72,
+ 169, 0, 169, 207, 133, 42, 133, 28, 169, 54, 133, 7, 169, 0, 133, 25,
+ 162, 191, 160, 114, 169, 243, 133, 27, 169, 66, 133, 6, 169, 239, 133, 28,
+ 169, 0, 133, 8, 169, 238, 133, 6, 169, 251, 133, 27, 169, 182, 133, 7,
+ 134, 27, 132, 6, 169, 0, 133, 8, 169, 128, 133, 32, 133, 33, 76, 72,
  249, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -441,13 +441,13 @@ static constexpr unsigned char kernelROM[] = {
  133, 37, 133, 27, 133, 16, 234, 133, 17, 133, 28, 133, 27, 133, 28, 169,
  6, 133, 4, 169, 2, 133, 5, 169, 1, 133, 38, 169, 0, 133, 32, 169,
  240, 133, 33, 133, 42, 162, 5, 202, 208, 253, 133, 43, 76, 128, 250, 255,
- 160, 0, 132, 27, 132, 28, 169, 0, 133, 25, 132, 27, 169, 0, 169, 0,
- 169, 207, 133, 13, 169, 51, 133, 14, 169, 204, 133, 15, 162, 29, 32, 203,
- 250, 169, 2, 133, 0, 162, 3, 32, 203, 250, 169, 0, 133, 0, 169, 2,
- 133, 1, 162, 37, 32, 203, 250, 162, 0, 134, 1, 162, 0, 240, 9, 32,
- 203, 250, 234, 234, 133, 128, 133, 128, 76, 150, 248, 133, 2, 169, 0, 177,
- 130, 133, 25, 165, 129, 240, 5, 198, 129, 173, 128, 20, 200, 202, 208, 235,
- 96, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+ 169, 0, 162, 0, 160, 0, 132, 27, 132, 28, 133, 25, 132, 27, 169, 207,
+ 133, 13, 169, 51, 133, 14, 169, 204, 133, 15, 162, 29, 32, 201, 250, 169,
+ 2, 133, 0, 162, 3, 32, 201, 250, 169, 0, 133, 0, 169, 2, 133, 1,
+ 162, 37, 32, 201, 250, 162, 0, 134, 1, 162, 0, 240, 9, 32, 201, 250,
+ 234, 234, 133, 128, 133, 128, 76, 148, 248, 133, 2, 169, 0, 177, 130, 133,
+ 25, 165, 129, 240, 5, 198, 129, 173, 128, 20, 200, 202, 208, 235, 96, 255,
+ 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
  162, 30, 32, 82, 251, 169, 2, 133, 0, 162, 3, 32, 82, 251, 169, 0,
  133, 0, 169, 2, 133, 1, 162, 37, 32, 82, 251, 169, 0, 133, 1, 198,
