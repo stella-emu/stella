@@ -481,6 +481,8 @@ static constexpr uInt8 brightLabelEven[] = {
   0, 49, 48, 12, 96,
   6, 140, 231, 96, 0,
   0, 225, 48, 12, 96,
+  0, 0, 0, 0, 0, 
+  0, 0, 0, 0, 0
 };
 
 static constexpr uInt8 brightLabelOdd[] = {
@@ -495,6 +497,8 @@ static constexpr uInt8 brightLabelOdd[] = {
   6, 156, 195, 96, 0,
   0, 113, 48, 12, 96,
   7, 142, 127, 96, 0,
+  0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 
   0, 0, 0, 0, 0
 };
 
@@ -511,6 +515,8 @@ static constexpr uInt8 volumeLabelEven[] = {
   0, 12, 192, 15, 192,
   30, 112, 119, 176, 0,
   0, 7, 252, 12, 254,
+  0, 0, 0, 0, 0, 
+  0, 0, 0, 0, 0
 };
 
 static constexpr uInt8 volumeLabelOdd[] = {
@@ -525,6 +531,8 @@ static constexpr uInt8 volumeLabelOdd[] = {
   30, 112, 99, 176, 0,
   0, 14, 192, 13, 192,
   14, 224, 62, 48, 0,
+  0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 
   0, 0, 0, 0, 0
 };
 
