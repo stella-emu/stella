@@ -25,8 +25,8 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
                  bool swappaddle, bool swapaxis, bool swapdir, bool altmap)
   : Controller(jack, event, system, Controller::Type::Paddles)
 {
-  // We must start with minimum resistance; see commit
-  // 38b452e1a047a0dca38c5bcce7c271d40f76736e for more information
+  // We must start with a physical valid resistance (e.g. 0);
+  // see commit 38b452e1a047a0dca38c5bcce7c271d40f76736e for more information
   setPin(AnalogPin::Five, AnalogReadout::connectToVcc());
   setPin(AnalogPin::Nine, AnalogReadout::connectToVcc());
 
@@ -197,11 +197,21 @@ void Paddles::update()
 
 AnalogReadout::Connection Paddles::getReadOut(int lastAxis, int& newAxis, int center)
 {
+  const double range = ANALOG_RANGE - analogDeadZone() * 2;
+
+  // dead zone, ignore changes inside the dead zone
+  if(newAxis > analogDeadZone())
+    newAxis -= analogDeadZone();
+  else if(newAxis < -analogDeadZone())
+    newAxis += analogDeadZone();
+  else
+    newAxis = 0; // treat any dead zone value as zero
+
   static constexpr std::array<double, MAX_DEJITTER - MIN_DEJITTER + 1> bFac = {
-      // higher values mean more dejitter strength
-      0, // off
-      0.50, 0.59, 0.67, 0.74, 0.80,
-      0.85, 0.89, 0.92, 0.94, 0.95
+    // higher values mean more dejitter strength
+    0, // off
+    0.50, 0.59, 0.67, 0.74, 0.80,
+    0.85, 0.89, 0.92, 0.94, 0.95
   };
   static constexpr std::array<double, MAX_DEJITTER - MIN_DEJITTER + 1> dFac = {
     // lower values mean more dejitter strength
@@ -220,24 +230,30 @@ AnalogReadout::Connection Paddles::getReadOut(int lastAxis, int& newAxis, int ce
   if(abs(newVal - newAxis) > 10)
     newAxis = newVal;
 
-  // TODO: deadzone
-  // here or in PJoystickhandler?
+  // apply linearity
+  double linearVal = newAxis / (range / 2); // scale to -1.0..+1.0
 
-  // accelerate, reduces sensitivity accordingly
-  int diff = newAxis - lastAxis;
-  float factor = diff ? pow(abs(diff), ACCEL) / abs(diff) : 0;
+  if(newAxis >= 0)
+    linearVal = pow(abs(linearVal), LINEARITY);
+  else
+    linearVal = -pow(abs(linearVal), LINEARITY);
 
-  newAxis = lastAxis - diff * factor * pow(MOUSE_SENSITIVITY, 1.f/ACCEL); // TODO: predefine pow(...)
+  newAxis = linearVal * (range / 2); // scale back to ANALOG_RANGE
+
+  // scale axis to range including dead zone
+  const Int32 scaledAxis = newAxis * ANALOG_RANGE / range;
 
   // scale result
   return AnalogReadout::connectToVcc(MAX_RESISTANCE *
-         (BSPF::clamp(32768 - Int32(Int32(newAxis) * SENSITIVITY + center), 0, 65536) / 65536.0));
+      BSPF::clamp((ANALOG_MAX_VALUE - (scaledAxis * SENSITIVITY + center)) / double(ANALOG_RANGE),
+                  0.0, 1.0));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Paddles::updateAnalogAxes()
 {
-  // Analog axis events from Stelladaptor-like devices
+  // Analog axis events from Stelladaptor-like devices,
+  // (which includes analog USB controllers)
   // These devices generate data in the range -32768 to 32767,
   // so we have to scale appropriately
   // Since these events are generated and stored indefinitely,
@@ -245,20 +261,6 @@ bool Paddles::updateAnalogAxes()
   // previous values by a pre-defined amount)
   // Otherwise, it would always override input from digital and mouse
 
-  //static constexpr std::array<double, MAX_DEJITTER - MIN_DEJITTER + 1> bFac = {
-  //  // higher values mean more dejitter strength
-  //  0, // off
-  //  0.50, 0.59, 0.67, 0.74, 0.80,
-  //  0.85, 0.89, 0.92, 0.94, 0.95
-  //};
-  //static constexpr std::array<double, MAX_DEJITTER - MIN_DEJITTER + 1> dFac = {
-  //  // lower values mean more dejitter strength
-  //  1, // off
-  //  1.0 / 181, 1.0 / 256, 1.0 / 362, 1.0 / 512, 1.0 / 724,
-  //  1.0 / 1024, 1.0 / 1448, 1.0 / 2048, 1.0 / 2896, 1.0 / 4096
-  //};
-  //const double baseFactor = bFac[DEJITTER_BASE];
-  //const double diffFactor = dFac[DEJITTER_DIFF];
 
   int sa_xaxis = myEvent.get(myAAxisValue);
   int sa_yaxis = myEvent.get(myBAxisValue);
@@ -266,34 +268,13 @@ bool Paddles::updateAnalogAxes()
 
   if(abs(myLastAxisX - sa_xaxis) > 10)
   {
-
-    //// dejitter, suppress small changes only
-    //double dejitter = pow(baseFactor, abs(sa_xaxis - myLastAxisX) * diffFactor);
-    //int new_val = sa_xaxis * (1 - dejitter) + myLastAxisX * dejitter;
-
-    //// only use new dejittered value for larger differences
-    //if(abs(new_val - sa_xaxis) > 10)
-    //  sa_xaxis = new_val;
-
-    //setPin(AnalogPin::Nine, AnalogReadout::connectToVcc(MAX_RESISTANCE *
-    //       (BSPF::clamp(32768 - Int32(Int32(sa_xaxis) * SENSITIVITY + XCENTER), 0, 65536) / 65536.0)));
     setPin(AnalogPin::Nine, getReadOut(myLastAxisX, sa_xaxis, XCENTER));
     sa_changed = true;
   }
 
   if(abs(myLastAxisY - sa_yaxis) > 10)
   {
-    //// dejitter, suppress small changes only
-    //double dejitter = pow(baseFactor, abs(sa_yaxis - myLastAxisY) * diffFactor);
-    //int new_val = sa_yaxis * (1 - dejitter) + myLastAxisY * dejitter;
-
-    //// only use new dejittered value for larger differences
-    //if(abs(new_val - sa_yaxis) > 10)
-    //  sa_yaxis = new_val;
-
-    //setPin(AnalogPin::Five, AnalogReadout::connectToVcc(MAX_RESISTANCE *
-    //       (BSPF::clamp(32768 - Int32(Int32(sa_yaxis) * SENSITIVITY + YCENTER), 0, 65536) / 65536.0)));
-    setPin(AnalogPin::Nine, getReadOut(myLastAxisY, sa_yaxis, YCENTER));
+    setPin(AnalogPin::Five, getReadOut(myLastAxisY, sa_yaxis, YCENTER));
     sa_changed = true;
   }
   myLastAxisX = sa_xaxis;
@@ -329,20 +310,9 @@ void Paddles::updateMouse(bool& firePressedA, bool& firePressedB)
     // mapped to a separate paddle
     if(myMPaddleIDX > -1)
     {
-      // TODO: REMOVE! Test for 2600-daptor paddles only!
-      // deadzone
-      //  TODO
-      //
-      // accelerate
-      int diff = myEvent.get(myAxisMouseMotion);
-      float factor = diff ? pow(abs(diff), ACCEL) / abs(diff) : 0;
-      int newVal = myCharge[myMPaddleIDX] - diff * factor * pow(MOUSE_SENSITIVITY, 1.f/ACCEL);
-
-      myCharge[myMPaddleIDX] = BSPF::clamp(newVal, TRIGMIN, TRIGRANGE);
-
- /*     myCharge[myMPaddleIDX] = BSPF::clamp(myCharge[myMPaddleIDX] -
+      myCharge[myMPaddleIDX] = BSPF::clamp(myCharge[myMPaddleIDX] -
                                            (myEvent.get(Event::MouseAxisXMove) * MOUSE_SENSITIVITY),
-                                           TRIGMIN, TRIGRANGE);*/
+                                           TRIGMIN, TRIGRANGE);
       if(myMPaddleIDX == 0)
         firePressedA = firePressedA
           || myEvent.get(Event::MouseButtonLeftValue);
@@ -479,9 +449,9 @@ float Paddles::analogSensitivityValue(int sensitivity)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Paddles::setAnalogAccel(int accel)
+void Paddles::setAnalogLinearity(int linearity)
 {
-  ACCEL = 1.f + BSPF::clamp(accel, MIN_ANALOG_ACCEL, MAX_ANALOG_ACCEL) / 100.f;
+  LINEARITY = 100.f / BSPF::clamp(linearity, MIN_ANALOG_LINEARITY, MAX_ANALOG_LINEARITY);
 }
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Paddles::setDejitterBase(int strength)
@@ -513,7 +483,7 @@ void Paddles::setDigitalPaddleRange(int range)
 int Paddles::XCENTER = 0;
 int Paddles::YCENTER = 0;
 float Paddles::SENSITIVITY = 1.0;
-float Paddles::ACCEL = 1.0;
+float Paddles::LINEARITY = 1.0;
 int Paddles::DEJITTER_BASE = 0;
 int Paddles::DEJITTER_DIFF = 0;
 int Paddles::TRIGRANGE = Paddles::TRIGMAX;

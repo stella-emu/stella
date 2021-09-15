@@ -165,8 +165,17 @@ int Controller::digitalDeadZoneValue(int deadZone)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Controller::setAnalogDeadZone(int deadZone)
 {
-  ANALOG_DEAD_ZONE = BSPF::clamp(deadZone, MIN_ANALOG_DEADZONE, MAX_ANALOG_DEADZONE);
+  ANALOG_DEAD_ZONE = analogDeadZoneValue(deadZone);
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int Controller::analogDeadZoneValue(int deadZone)
+{
+  deadZone = BSPF::clamp(deadZone, MIN_ANALOG_DEADZONE, MAX_ANALOG_DEADZONE);
+
+  return deadZone * std::round(32768 / 2. / MAX_DIGITAL_DEADZONE);
+}
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Controller::setMouseSensitivity(int sensitivity)

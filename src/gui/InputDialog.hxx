@@ -64,7 +64,6 @@ class InputDialog : public Dialog
 
     void handleMouseControlState();
     void handleCursorState();
-    void updatePaddleAccel();
     void updateDejitterAveraging();
     void updateDejitterReaction();
     void updateAutoFireRate();
@@ -75,7 +74,6 @@ class InputDialog : public Dialog
       kDDeadzoneChanged   = 'DDch',
       kADeadzoneChanged   = 'ADch',
       kPSpeedChanged      = 'Ppch',
-      kPAccelChanged      = 'PAch',
       kDejitterAvChanged  = 'JAch',
       kDejitterReChanged  = 'JRch',
       kDPSpeedChanged     = 'DSch',
@@ -102,7 +100,7 @@ class InputDialog : public Dialog
     SliderWidget*     myDigitalDeadzone{nullptr};
     SliderWidget*     myAnalogDeadzone{nullptr};
     SliderWidget*     myPaddleSpeed{nullptr};
-    SliderWidget*     myPaddleAccel{nullptr};
+    SliderWidget*     myPaddleLinearity{nullptr};
     SliderWidget*     myDejitterBase{nullptr};
     SliderWidget*     myDejitterDiff{nullptr};
     SliderWidget*     myDPaddleSpeed{nullptr};

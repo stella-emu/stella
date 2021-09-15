@@ -101,7 +101,7 @@ void EventHandler::initialize()
 
   Controller::setDigitalDeadZone(myOSystem.settings().getInt("joydeadzone"));
   Controller::setAnalogDeadZone(myOSystem.settings().getInt("adeadzone"));
-  Paddles::setAnalogAccel(myOSystem.settings().getInt("paccel"));
+  Paddles::setAnalogLinearity(myOSystem.settings().getInt("plinear"));
   Paddles::setDejitterDiff(myOSystem.settings().getInt("dejitter.diff"));
   Paddles::setDejitterBase(myOSystem.settings().getInt("dejitter.base"));
   Paddles::setDejitterDiff(myOSystem.settings().getInt("dejitter.diff"));
@@ -461,7 +461,7 @@ bool EventHandler::skipInputSetting() const
     || (!paddle
         && (myAdjustSetting == AdjustSetting::ANALOG_DEADZONE
         || myAdjustSetting == AdjustSetting::ANALOG_SENSITIVITY
-        || myAdjustSetting == AdjustSetting::ANALOG_ACCEL
+        || myAdjustSetting == AdjustSetting::ANALOG_LINEARITY
         || myAdjustSetting == AdjustSetting::DEJITTER_AVERAGING
         || myAdjustSetting == AdjustSetting::DEJITTER_REACTION
         || myAdjustSetting == AdjustSetting::DIGITAL_SENSITIVITY
@@ -599,7 +599,7 @@ AdjustFunction EventHandler::getAdjustSetting(AdjustSetting setting)
     std::bind(&PhysicalJoystickHandler::changeDigitalDeadZone, &joyHandler(), _1),
     std::bind(&PhysicalJoystickHandler::changeAnalogPaddleDeadZone, &joyHandler(), _1),
     std::bind(&PhysicalJoystickHandler::changeAnalogPaddleSensitivity, &joyHandler(), _1),
-    std::bind(&PhysicalJoystickHandler::changeAnalogPaddleAcceleration, &joyHandler(), _1),
+    std::bind(&PhysicalJoystickHandler::changeAnalogPaddleLinearity, &joyHandler(), _1),
     std::bind(&PhysicalJoystickHandler::changePaddleDejitterAveraging, &joyHandler(), _1),
     std::bind(&PhysicalJoystickHandler::changePaddleDejitterReaction, &joyHandler(), _1),
     std::bind(&PhysicalJoystickHandler::changeDigitalPaddleSensitivity, &joyHandler(), _1),
@@ -1415,20 +1415,20 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       }
       return;
 
-    case Event::DecAnalogAccel:
+    case Event::DecAnalogLinear:
       if(pressed)
       {
-        myPJoyHandler->changeAnalogPaddleAcceleration(-1);
-        myAdjustSetting = AdjustSetting::ANALOG_ACCEL;
+        myPJoyHandler->changeAnalogPaddleLinearity(-1);
+        myAdjustSetting = AdjustSetting::ANALOG_LINEARITY;
         myAdjustActive = true;
       }
       return;
 
-    case Event::IncAnalogAccel:
+    case Event::IncAnalogLinear:
       if(pressed)
       {
-        myPJoyHandler->changeAnalogPaddleAcceleration(+1);
-        myAdjustSetting = AdjustSetting::ANALOG_ACCEL;
+        myPJoyHandler->changeAnalogPaddleLinearity(+1);
+        myAdjustSetting = AdjustSetting::ANALOG_LINEARITY;
         myAdjustActive = true;
       }
       return;
@@ -3328,8 +3328,8 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::IncAnalogDeadzone,       "Increase analog dead zone",             "" },
   { Event::DecAnalogSense,          "Decrease analog paddle sensitivity",    "" },
   { Event::IncAnalogSense,          "Increase analog paddle sensitivity",    "" },
-  { Event::DecAnalogAccel,          "Decrease analog paddle acceleration",   "" },
-  { Event::IncAnalogAccel,          "Increase analog paddle acceleration",   "" },
+  { Event::DecAnalogLinear,         "Decrease analog paddle linearity",      "" },
+  { Event::IncAnalogLinear,         "Increase analog paddle linearity",      "" },
   { Event::DecDejtterAveraging,     "Decrease paddle dejitter averaging",    "" },
   { Event::IncDejtterAveraging,     "Increase paddle dejitter averaging",    "" },
   { Event::DecDejtterReaction,      "Decrease paddle dejitter reaction",     "" },
@@ -3515,7 +3515,7 @@ const Event::EventSet EventHandler::DevicesEvents = {
   Event::DecreaseDeadzone, Event::IncreaseDeadzone,
   Event::DecAnalogDeadzone, Event::IncAnalogDeadzone,
   Event::DecAnalogSense, Event::IncAnalogSense,
-  Event::DecAnalogAccel, Event::IncAnalogAccel,
+  Event::DecAnalogLinear, Event::IncAnalogLinear,
   Event::DecDejtterAveraging, Event::IncDejtterAveraging,
   Event::DecDejtterReaction, Event::IncDejtterReaction,
   Event::DecDigitalSense, Event::IncDigitalSense,

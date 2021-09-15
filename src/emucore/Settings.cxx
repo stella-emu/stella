@@ -116,7 +116,7 @@ Settings::Settings()
   setPermanent("grabmouse", "true");
   setPermanent("cursor", "2");
   setPermanent("adeadzone", "0");
-  setPermanent("paccel", "100");
+  setPermanent("plinear", "100");
   setPermanent("dejitter.base", "0");
   setPermanent("dejitter.diff", "0");
   setPermanent("dsense", "10");
@@ -368,8 +368,8 @@ void Settings::validate()
   setValue("psense", BSPF::clamp(getInt("psense"),
            Paddles::MIN_ANALOG_SENSE, Paddles::MAX_ANALOG_SENSE));
 
-  setValue("paccel", BSPF::clamp(getInt("paccel"),
-           Paddles::MIN_ANALOG_ACCEL, Paddles::MAX_ANALOG_ACCEL));
+  setValue("plinear", BSPF::clamp(getInt("plinear"),
+           Paddles::MIN_ANALOG_LINEARITY, Paddles::MAX_ANALOG_LINEARITY));
 
   setValue("dejitter.base", BSPF::clamp(getInt("dejitter.base"),
            Paddles::MIN_DEJITTER, Paddles::MAX_DEJITTER));
@@ -525,9 +525,8 @@ void Settings::usage() const
     << "                                properties in given mode(see manual)\n"
     << "  -grabmouse      <1|0>        Locks the mouse cursor in the TIA window\n"
     << "  -cursor         <0,1,2,3>    Set cursor state in UI/emulation modes\n"
-    << "  -adeadzone      <number>     Sets analog 'dead zone' area for analog joysticks\n"
-    << "                                (0-16500)\n"
-    << "  -paccel         <0-100>      Sets paddle acceleration strength\n"
+    << "  -adeadzone      <0-29>       Sets analog 'dead zone' area for analog joysticks\n"
+    << "  -plinear        <25-100>     Sets paddle linearity\n"
     << "  -dejitter.base  <0-10>       Strength of analog paddle value averaging\n"
     << "  -dejitter.diff  <0-10>       Strength of analog paddle reaction to fast movements\n"
     << "  -psense         <0-30>       Sensitivity of analog paddle movement\n"

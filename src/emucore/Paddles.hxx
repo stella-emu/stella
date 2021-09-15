@@ -48,11 +48,14 @@ class Paddles : public Controller
     ~Paddles() override = default;
 
   public:
+    static constexpr int ANALOG_MIN_VALUE = -32768;
+    static constexpr int ANALOG_MAX_VALUE = 32767;
+    static constexpr int ANALOG_RANGE = ANALOG_MAX_VALUE - ANALOG_MIN_VALUE + 1;
     static constexpr float BASE_ANALOG_SENSE = 0.148643628F;
     static constexpr int MIN_ANALOG_SENSE = 0;
     static constexpr int MAX_ANALOG_SENSE = 30;
-    static constexpr int MIN_ANALOG_ACCEL = 0;
-    static constexpr int MAX_ANALOG_ACCEL = 100;
+    static constexpr int MIN_ANALOG_LINEARITY = 25;
+    static constexpr int MAX_ANALOG_LINEARITY = 100;
     static constexpr int MIN_ANALOG_CENTER = -10;
     static constexpr int MAX_ANALOG_CENTER = 30;
     static constexpr int MIN_DIGITAL_SENSE = 1;
@@ -112,11 +115,11 @@ class Paddles : public Controller
     static void setAnalogYCenter(int ycenter);
 
     /**
-      Sets the acceleration for analog paddles.
+      Sets the linearity of analog paddles.
 
-      @param accel Value from 100 to 300
+      @param linearity Value from 25 to 100
     */
-    static void setAnalogAccel(int accel);
+    static void setAnalogLinearity(int linearity);
 
     /**
       Sets the sensitivity for analog paddles.
@@ -191,7 +194,7 @@ class Paddles : public Controller
 
     static int XCENTER;
     static int YCENTER;
-    static float SENSITIVITY, ACCEL;
+    static float SENSITIVITY, LINEARITY;
 
     static int DIGITAL_SENSITIVITY, DIGITAL_DISTANCE;
     static int DEJITTER_BASE, DEJITTER_DIFF;
