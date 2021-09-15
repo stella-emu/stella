@@ -1607,12 +1607,12 @@
     </tr>
 
     <tr>
-      <td><i>Decrease</i> analog paddle acceleration</td>
+      <td><i>Decrease</i> analog paddle linearity</td>
       <td>Shift-Control-Alt + F2</td>
       <td>Shift-Control-Cmd + F2</td>
     </tr>
     <tr>
-      <td><i>Increase</i> analog paddle acceleration</td>
+      <td><i>Increase</i> analog paddle linearity</td>
       <td>Control-Alt + F2</td>
       <td>Control-Cmd + F2</td>
     </tr>
@@ -2965,29 +2965,31 @@
       <td>Set the joystick axis dead zone area for analog joysticks/gamepads
         emulating digital controllers.
         All values within the dead zone are treated as zero-axis values,
-        while only those values outside are registered as valid input.
+        while only those values outside are registered as valid input.</br>
         Dead zone is calculated as 3200 + value * 1000. So the possible dead
         zone values range from 3200 to 32200 (= 10% - 98%).</td>
     </tr>
 
     <tr>
-      <td><pre>-adeadzone &lt;0 - 16500&gt;</pre></td>
+      <td><pre>-adeadzone &lt;0 - 29&gt;</pre></td>
       <td>Set the joystick axis dead zone area for analog joysticks/gamepads
-        emulating analog controllers. All values within the
-        dead zone are treated as zero-axis values, while only those values
-        outside are registered as valid input. Range: 0% - 50%</td>
+        emulating analog controllers. All values within the dead zone are
+        treated as zero-axis values, while only those values outside are
+        registered as valid input. </br>
+        Dead zone is calculated as value * 565. So the possible dead zone
+        values range from 0 to 16384 (= 0% - 50%)</td>
     </tr>
 
     <tr>
-      <td><pre>-psense &lt;number&gt;</pre></td>
-      <td>Sensitivity for emulation of paddles when using analog paddles.
-      Valid range of values is from 0 to 30, with larger numbers causing
-      faster movement.</td>
+      <td><pre>-psense &lt;0 - 30&gt;</pre></td>
+      <td>Sensitivity for emulation of paddles when using analog controllers.
+      Larger numbers are causing faster movement.</td>
     </tr>
 
     <tr>
-      <td><pre>-paccel &lt;0 - 100&gt;</pre></td>
-      <td>Acceleration of analog paddles while moving them fast.</td>
+      <td><pre>-plinear &lt;25 - 100&gt;</pre></td>
+      <td>Linearity of analog paddles. Lower numbers allow finer control
+      around the paddle center.</td>
     </tr>
 
     <tr>
@@ -4036,8 +4038,8 @@
           <tr><td>Analog dead zone size</td><td>Dead zone area for axes on joysticks/gamepads emulating
                   analog controllers
           </td><td>-adeadzone</td></tr>
-          <tr><td>(Analog paddle) Sensitivity</td><td>Sensitivity of an analog paddle</td><td>-psense</td></tr>
-          <tr><td>(Analog paddle) Acceleration</td><td>Acceleration of analog paddles when moving them fast</td><td>-paccel</td></tr>
+          <tr><td>(Analog paddle) Sensitivity</td><td>Sensitivity of analog paddles</td><td>-psense</td></tr>
+          <tr><td>(Analog paddle) Linearity</td><td>Linearity of analog paddles</td><td>-plinear</td></tr>
           <tr><td>(Analog paddle) Dejitter averaging</td><td>Strength of paddle input averaging, suppresses paddle jitter<br>
                   Note: The 2600-daptor has built-in dejitter, so there should be no need to use Stella's dejitter.
                   </td><td>-dejitter.base</td></tr>

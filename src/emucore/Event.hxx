@@ -149,7 +149,7 @@ class Event
       DecreaseDeadzone, IncreaseDeadzone,
       DecAnalogDeadzone, IncAnalogDeadzone,
       DecAnalogSense, IncAnalogSense,
-      DecAnalogAccel, IncAnalogAccel,
+      DecAnalogLinear, IncAnalogLinear,
       DecDejtterAveraging, IncDejtterAveraging,
       DecDejtterReaction, IncDejtterReaction,
       DecDigitalSense, IncDigitalSense,

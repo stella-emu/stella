@@ -121,7 +121,7 @@ void InputDialog::addDevicePortTab()
                                         lwidth, kDDeadzoneChanged, 3 * fontWidth, "%");
   myDigitalDeadzone->setMinValue(Controller::MIN_DIGITAL_DEADZONE);
   myDigitalDeadzone->setMaxValue(Controller::MAX_DIGITAL_DEADZONE);
-  myDigitalDeadzone->setTickmarkIntervals(4);
+  myDigitalDeadzone->setTickmarkIntervals(5);
   myDigitalDeadzone->setToolTip("Adjust dead zone size for analog joysticks when emulating digital controllers.");
   wid.push_back(myDigitalDeadzone);
 
@@ -132,8 +132,7 @@ void InputDialog::addDevicePortTab()
                                       lwidth, kADeadzoneChanged, 3 * fontWidth, "%");
   myAnalogDeadzone->setMinValue(Controller::MIN_ANALOG_DEADZONE);
   myAnalogDeadzone->setMaxValue(Controller::MAX_ANALOG_DEADZONE);
-  myAnalogDeadzone->setStepValue(500);
-  myAnalogDeadzone->setTickmarkIntervals(3);
+  myAnalogDeadzone->setTickmarkIntervals(5);
   myAnalogDeadzone->setToolTip("Adjust dead zone size for analog joysticks when emulating analog controllers.");
   wid.push_back(myAnalogDeadzone);
 
@@ -151,17 +150,16 @@ void InputDialog::addDevicePortTab()
   myPaddleSpeed->setTickmarkIntervals(3);
   wid.push_back(myPaddleSpeed);
 
-  // Add analog paddle acceleration
+  // Add analog paddle linearity
   ypos += lineHeight + VGAP;
-  myPaddleAccel = new SliderWidget(myTab, _font, xpos, ypos - 1, 13 * fontWidth, lineHeight,
-                                          "Acceleration",
-                                          lwidth - fontWidth * 2, kPAccelChanged, 4 * fontWidth);
-  myPaddleAccel->setMinValue(Paddles::MIN_ANALOG_ACCEL);
-  myPaddleAccel->setMaxValue(Paddles::MAX_ANALOG_ACCEL);
-  myPaddleAccel->setStepValue(5);
-  myPaddleAccel->setTickmarkIntervals(4);
-  myPaddleAccel->setToolTip("Adjust fast paddle movement acceleration.");
-  wid.push_back(myPaddleAccel);
+  myPaddleLinearity = new SliderWidget(myTab, _font, xpos, ypos - 1, 13 * fontWidth, lineHeight,
+                                       "Linearity", lwidth - fontWidth * 2, 0, 4 * fontWidth, "%");
+  myPaddleLinearity->setMinValue(Paddles::MIN_ANALOG_LINEARITY);
+  myPaddleLinearity->setMaxValue(Paddles::MAX_ANALOG_LINEARITY);
+  myPaddleLinearity->setStepValue(5);
+  myPaddleLinearity->setTickmarkIntervals(3);
+  myPaddleLinearity->setToolTip("Adjust paddle movement linearity.");
+  wid.push_back(myPaddleLinearity);
 
   // Add dejitter (analog paddles)
   ypos += lineHeight + VGAP;
@@ -371,8 +369,8 @@ void InputDialog::loadConfig()
 
   // Paddle speed (analog)
   myPaddleSpeed->setValue(settings.getInt("psense"));
-  // Paddle acceleration (analog)
-  myPaddleAccel->setValue(settings.getInt("paccel"));
+  // Paddle linearity (analog)
+  myPaddleLinearity->setValue(settings.getInt("plinear"));
   // Paddle dejitter (analog)
   myDejitterBase->setValue(settings.getInt("dejitter.base"));
   myDejitterDiff->setValue(settings.getInt("dejitter.diff"));
@@ -447,10 +445,10 @@ void InputDialog::saveConfig()
   int sensitivity = myPaddleSpeed->getValue();
   settings.setValue("psense", sensitivity);
   Paddles::setAnalogSensitivity(sensitivity);
-  // Paddle acceleration (analog)
-  int accel = myPaddleAccel->getValue();
-  settings.setValue("paccel", accel);
-  Paddles::setAnalogAccel(accel);
+  // Paddle linearity (analog)
+  int linearity = myPaddleLinearity->getValue();
+  settings.setValue("plinear", linearity);
+  Paddles::setAnalogLinearity(linearity);
 
   // Paddle dejitter (analog)
   int dejitter = myDejitterBase->getValue();
@@ -539,8 +537,8 @@ void InputDialog::setDefaults()
       // Paddle speed (analog)
       myPaddleSpeed->setValue(20);
 
-      // Paddle acceleration
-      myPaddleAccel->setValue(0);
+      // Paddle linearity
+      myPaddleLinearity->setValue(100);
     #if defined(RETRON77)
       myDejitterBase->setValue(2);
       myDejitterDiff->setValue(6);
@@ -700,20 +698,18 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kDDeadzoneChanged:
-      myDigitalDeadzone->setValueLabel(std::round(Controller::digitalDeadZoneValue(myDigitalDeadzone->getValue()) * 100.f / 32768));
+      myDigitalDeadzone->setValueLabel(std::round(Controller::digitalDeadZoneValue(myDigitalDeadzone->getValue()) * 100.f /
+                                       (Paddles::ANALOG_RANGE / 2)));
       break;
 
     case kADeadzoneChanged:
-      myAnalogDeadzone->setValueLabel(std::round(myAnalogDeadzone->getValue() * 100.f / 32768));
+      myAnalogDeadzone->setValueLabel(std::round(Controller::analogDeadZoneValue(myAnalogDeadzone->getValue()) * 100.f /
+                                      (Paddles::ANALOG_RANGE / 2)));
       break;
 
     case kPSpeedChanged:
       myPaddleSpeed->setValueLabel(std::round(Paddles::setAnalogSensitivity(
             myPaddleSpeed->getValue()) * 100.F));
-      break;
-
-    case kPAccelChanged:
-      updatePaddleAccel();
       break;
 
     case kDejitterAvChanged:
@@ -789,13 +785,6 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
     default:
       Dialog::handleCommand(sender, cmd, data, 0);
   }
-}
-
-void InputDialog::updatePaddleAccel()
-{
-  int strength = myPaddleAccel->getValue();
-
-  myPaddleAccel->setValueLabel(strength ? std::to_string(strength) + "%" : "Off");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

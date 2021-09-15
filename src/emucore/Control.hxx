@@ -74,7 +74,7 @@ class Controller : public Serializable
     static constexpr int MIN_DIGITAL_DEADZONE = 0;
     static constexpr int MAX_DIGITAL_DEADZONE = 29;
     static constexpr int MIN_ANALOG_DEADZONE = 0;
-    static constexpr int MAX_ANALOG_DEADZONE = 16500;
+    static constexpr int MAX_ANALOG_DEADZONE = 29;
     static constexpr int MIN_MOUSE_SENSE = 1;
     static constexpr int MAX_MOUSE_SENSE = 20;
 
@@ -290,7 +290,7 @@ class Controller : public Serializable
     /**
       Sets the dead zone for analog paddles.
 
-      @param deadZone Value from 0 to 16500
+      @param deadZone Value from 0 to 29
     */
     static void setAnalogDeadZone(int deadZone);
 
@@ -298,6 +298,11 @@ class Controller : public Serializable
       Retrieves the effective digital dead zone value
     */
     static int digitalDeadZoneValue(int deadZone);
+
+    /**
+      Retrieves the effective analog dead zone value
+    */
+    static int Controller::analogDeadZoneValue(int deadZone);
 
     inline static int digitalDeadZone() { return DIGITAL_DEAD_ZONE; }
 

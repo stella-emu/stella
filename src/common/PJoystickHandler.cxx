@@ -789,22 +789,7 @@ void PhysicalJoystickHandler::handleRegularAxisEvent(const PhysicalJoystickPtr j
     if((abs(j->axisLastValue[axis] - value) < 30000)
        && (eventAxisAnalog = j->joyMap.get(EventMode::kEmulationMode, button, JoyAxis(axis), JoyDir::ANALOG)) != Event::Type::NoType)
     {
-      // TODO: TEST!!!
-      if(abs(value) > Controller::analogDeadZone())
-        myHandler.handleEvent(eventAxisAnalog, value);
-      else
-      {
-        // Treat any dead zone value as zero
-        value = 0;
-
-        // Now filter out consecutive, similar values
-        // (only pass on the event if the state has changed)
-        if(j->axisLastValue[axis] != value)
-        {
-          // Turn off events
-          myHandler.handleEvent(eventAxisAnalog, 0);
-        }
-      }
+      myHandler.handleEvent(eventAxisAnalog, value);
     }
     else
     {
@@ -978,13 +963,14 @@ void PhysicalJoystickHandler::changeDigitalDeadZone(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalJoystickHandler::changeAnalogPaddleDeadZone(int direction)
 {
-  int deadZone = BSPF::clamp(myOSystem.settings().getInt("adeadzone") + direction * 500,
+  int deadZone = BSPF::clamp(myOSystem.settings().getInt("adeadzone") + direction,
                              Controller::MIN_ANALOG_DEADZONE, Controller::MAX_ANALOG_DEADZONE);
   myOSystem.settings().setValue("adeadzone", deadZone);
 
   Controller::setAnalogDeadZone(deadZone);
+
   ostringstream ss;
-  ss << std::round(deadZone * 100.F / 32768) << "%";
+  ss << std::round(Controller::analogDeadZoneValue(deadZone) * 100.F / 32768) << "%";
 
   myOSystem.frameBuffer().showGaugeMessage("Analog controller dead zone", ss.str(), deadZone,
                                            Controller::MIN_ANALOG_DEADZONE, Controller::MAX_ANALOG_DEADZONE);
@@ -1007,22 +993,22 @@ void PhysicalJoystickHandler::changeAnalogPaddleSensitivity(int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalJoystickHandler::changeAnalogPaddleAcceleration(int direction)
+void PhysicalJoystickHandler::changeAnalogPaddleLinearity(int direction)
 {
-  int accel = BSPF::clamp(myOSystem.settings().getInt("paccel") + direction * 5,
-                          Paddles::MIN_ANALOG_ACCEL, Paddles::MAX_ANALOG_ACCEL);
-  myOSystem.settings().setValue("paccel", accel);
+  int linear = BSPF::clamp(myOSystem.settings().getInt("plinear") + direction * 5,
+                          Paddles::MIN_ANALOG_LINEARITY, Paddles::MAX_ANALOG_LINEARITY);
+  myOSystem.settings().setValue("plinear", linear);
 
-  Paddles::setAnalogAccel(accel);
+  Paddles::setAnalogLinearity(linear);
 
   ostringstream ss;
-  if(accel)
-    ss << accel << "%";
+  if(linear)
+    ss << linear << "%";
   else
     ss << "Off";
 
-  myOSystem.frameBuffer().showGaugeMessage("Analog paddle acceleration", ss.str(), accel,
-                                           Paddles::MIN_ANALOG_ACCEL, Paddles::MAX_ANALOG_ACCEL);
+  myOSystem.frameBuffer().showGaugeMessage("Analog paddle linearity", ss.str(), linear,
+                                           Paddles::MIN_ANALOG_LINEARITY, Paddles::MAX_ANALOG_LINEARITY);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
