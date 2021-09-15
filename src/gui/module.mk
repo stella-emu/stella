@@ -35,7 +35,7 @@ MODULE_OBJS := \
         src/gui/MessageMenu.o \
         src/gui/MinUICommandDialog.o\
         src/gui/OptionsDialog.o \
-        src/gui/OptionMenu.o \
+        src/gui/OptionsMenu.o \
         src/gui/PlusRomsMenu.o\
         src/gui/PlusRomsSetupDialog.o\
         src/gui/PopUpWidget.o \

@@ -16,6 +16,7 @@
 //============================================================================
 
 #include <cassert>
+#include <cmath>
 
 #include "System.hxx"
 #include "Control.hxx"
