@@ -209,15 +209,15 @@ AnalogReadout::Connection Paddles::getReadOut(int lastAxis, int& newAxis, int ce
 
   static constexpr std::array<float, MAX_DEJITTER - MIN_DEJITTER + 1> bFac = {
     // higher values mean more dejitter strength
-    0, // off
-    0.50, 0.59, 0.67, 0.74, 0.80,
-    0.85, 0.89, 0.92, 0.94, 0.95
+    0.f, // off
+    0.50f, 0.59f, 0.67f, 0.74f, 0.80f,
+    0.85f, 0.89f, 0.92f, 0.94f, 0.95f
   };
   static constexpr std::array<float, MAX_DEJITTER - MIN_DEJITTER + 1> dFac = {
     // lower values mean more dejitter strength
-    1, // off
-    1.0 / 181, 1.0 / 256, 1.0 / 362, 1.0 / 512, 1.0 / 724,
-    1.0 / 1024, 1.0 / 1448, 1.0 / 2048, 1.0 / 2896, 1.0 / 4096
+    1.f, // off
+    1.0f / 181, 1.0f / 256, 1.0f / 362, 1.0f / 512, 1.0f / 724,
+    1.0f / 1024, 1.0f / 1448, 1.0f / 2048, 1.0f / 2896, 1.0f / 4096
   };
   const float baseFactor = bFac[DEJITTER_BASE];
   const float diffFactor = dFac[DEJITTER_DIFF];
