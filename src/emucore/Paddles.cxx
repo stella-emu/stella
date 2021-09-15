@@ -197,7 +197,7 @@ void Paddles::update()
 
 AnalogReadout::Connection Paddles::getReadOut(int lastAxis, int& newAxis, int center)
 {
-  const double range = ANALOG_RANGE - analogDeadZone() * 2;
+  const float range = ANALOG_RANGE - analogDeadZone() * 2;
 
   // dead zone, ignore changes inside the dead zone
   if(newAxis > analogDeadZone())
@@ -207,23 +207,23 @@ AnalogReadout::Connection Paddles::getReadOut(int lastAxis, int& newAxis, int ce
   else
     newAxis = 0; // treat any dead zone value as zero
 
-  static constexpr std::array<double, MAX_DEJITTER - MIN_DEJITTER + 1> bFac = {
+  static constexpr std::array<float, MAX_DEJITTER - MIN_DEJITTER + 1> bFac = {
     // higher values mean more dejitter strength
     0, // off
     0.50, 0.59, 0.67, 0.74, 0.80,
     0.85, 0.89, 0.92, 0.94, 0.95
   };
-  static constexpr std::array<double, MAX_DEJITTER - MIN_DEJITTER + 1> dFac = {
+  static constexpr std::array<float, MAX_DEJITTER - MIN_DEJITTER + 1> dFac = {
     // lower values mean more dejitter strength
     1, // off
     1.0 / 181, 1.0 / 256, 1.0 / 362, 1.0 / 512, 1.0 / 724,
     1.0 / 1024, 1.0 / 1448, 1.0 / 2048, 1.0 / 2896, 1.0 / 4096
   };
-  const double baseFactor = bFac[DEJITTER_BASE];
-  const double diffFactor = dFac[DEJITTER_DIFF];
+  const float baseFactor = bFac[DEJITTER_BASE];
+  const float diffFactor = dFac[DEJITTER_DIFF];
 
   // dejitter, suppress small changes only
-  double dejitter = pow(baseFactor, abs(newAxis - lastAxis) * diffFactor);
+  float dejitter = powf(baseFactor, std::abs(newAxis - lastAxis) * diffFactor);
   int newVal = newAxis * (1 - dejitter) + lastAxis * dejitter;
 
   // only use new dejittered value for larger differences
@@ -231,12 +231,12 @@ AnalogReadout::Connection Paddles::getReadOut(int lastAxis, int& newAxis, int ce
     newAxis = newVal;
 
   // apply linearity
-  double linearVal = newAxis / (range / 2); // scale to -1.0..+1.0
+  float linearVal = newAxis / (range / 2); // scale to -1.0..+1.0
 
   if(newAxis >= 0)
-    linearVal = pow(abs(linearVal), LINEARITY);
+    linearVal = powf(std::abs(linearVal), LINEARITY);
   else
-    linearVal = -pow(abs(linearVal), LINEARITY);
+    linearVal = -powf(std::abs(linearVal), LINEARITY);
 
   newAxis = linearVal * (range / 2); // scale back to ANALOG_RANGE
 
@@ -245,8 +245,8 @@ AnalogReadout::Connection Paddles::getReadOut(int lastAxis, int& newAxis, int ce
 
   // scale result
   return AnalogReadout::connectToVcc(MAX_RESISTANCE *
-      BSPF::clamp((ANALOG_MAX_VALUE - (scaledAxis * SENSITIVITY + center)) / double(ANALOG_RANGE),
-                  0.0, 1.0));
+        BSPF::clamp((ANALOG_MAX_VALUE - (scaledAxis * SENSITIVITY + center)) /
+        float(ANALOG_RANGE), 0.F, 1.F));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

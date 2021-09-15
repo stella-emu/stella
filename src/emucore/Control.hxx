@@ -302,7 +302,7 @@ class Controller : public Serializable
     /**
       Retrieves the effective analog dead zone value
     */
-    static int Controller::analogDeadZoneValue(int deadZone);
+    static int analogDeadZoneValue(int deadZone);
 
     inline static int digitalDeadZone() { return DIGITAL_DEAD_ZONE; }
 
@@ -410,10 +410,10 @@ class Controller : public Serializable
     /// The callback that is dispatched whenver an analog pin has changed
     onAnalogPinUpdateCallback myOnAnalogPinUpdateCallback{nullptr};
 
-    /// Defines the dead zone of analog joysticks for digital Atari controllers</summary>
+    /// Defines the dead zone of analog joysticks for digital Atari controllers
     static int DIGITAL_DEAD_ZONE;
 
-    /// Defines the dead zone of analog joysticks for analog Atari controllers</summary>
+    /// Defines the dead zone of analog joysticks for analog Atari controllers
     static int ANALOG_DEAD_ZONE;
 
     static int MOUSE_SENSITIVITY;
