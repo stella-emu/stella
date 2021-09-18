@@ -1033,7 +1033,7 @@ void DeveloperDialog::setDefaults()
       myConsole[set] = 0;
       // Randomization
       myRandomBank[set] = devSettings ? true : false;
-      myRandomizeTIA[set] = true;
+      myRandomizeTIA[set] = devSettings ? true : false;
       myRandomizeRAM[set] = true;
       myRandomizeCPU[set] = devSettings ? "SAXYP" : "AXYP";
       // Undriven TIA pins
