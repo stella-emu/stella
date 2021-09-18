@@ -269,8 +269,8 @@ std::array<string, Properties::NUM_PROPS> Properties::ourDefaultProperties =
   "",       // Controller.Right1
   "",       // Controller.Right2
   "NO",     // Controller.SwapPaddles
-  "0",      // Controller.PaddlesXCenter
-  "0",      // Controller.PaddlesYCenter
+  "12",     // Controller.PaddlesXCenter
+  "12",     // Controller.PaddlesYCenter
   "AUTO",   // Controller.MouseAxis
   "AUTO",   // Display.Format
   "0",      // Display.VCenter

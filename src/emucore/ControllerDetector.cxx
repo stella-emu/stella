@@ -524,7 +524,7 @@ bool ControllerDetector::usesPaddle(const ByteBuffer& image, size_t size,
       { 0xb5, 0x3a, 0x10 }, // lda INPT2|$30,x; bpl
       { 0xb5, 0x3a, 0x30 }, // lda INPT2|$30,x; bmi
       { 0xb5, 0x38, 0x10 }, // lda INPT0|$30,x; bpl  (Circus Atari, old code!)
-      { 0xb5, 0x38, 0x30 }, // lda INPT0|$30,x; bmi (no joystick games)
+      { 0xb5, 0x38, 0x30 }, // lda INPT0|$30,x; bmi (no joystick games, except G.I. Joe)
       { 0xa4, 0x3a, 0x30 }, // ldy INPT2|$30; bmi (no joystick games)
       { 0xa5, 0x3b, 0x30 }  // lda INPT3|$30; bmi (only Tac Scan, ports and paddles swapped)
     };
