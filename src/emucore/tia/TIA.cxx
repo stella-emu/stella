@@ -198,6 +198,15 @@ void TIA::reset()
   // Simply call initialize(); mostly to get around calling a virtual method
   // from the constructor
   initialize();
+
+  if(myRandomize)
+    for(uInt32 i = 0; i < 0x10000; ++i)
+    {
+      uInt16 address = mySystem->randGenerator().next() & 0x3F;
+      uInt8 value = mySystem->randGenerator().next();
+      poke(address, value);
+      cycle(2); // process delay queue
+    }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -956,6 +965,7 @@ void TIA::applyDeveloperSettings()
     setBlSwapDelay(false);
   }
 
+  myRandomize = mySettings.getBool(devSettings ? "dev.tiarandom" : "plr.tiarandom");
   myTIAPinsDriven = devSettings ? mySettings.getBool("dev.tiadriven") : false;
 
   myEnableJitter = mySettings.getBool(devSettings ? "dev.tv.jitter" : "plr.tv.jitter");

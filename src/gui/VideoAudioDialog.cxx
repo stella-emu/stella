@@ -23,7 +23,6 @@
 #include "Cart.hxx"
 #include "CartDPC.hxx"
 #include "Dialog.hxx"
-#include "Menu.hxx"
 #include "OSystem.hxx"
 #include "EditTextWidget.hxx"
 #include "PopUpWidget.hxx"

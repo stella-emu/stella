@@ -30,7 +30,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StellaSettingsDialog::StellaSettingsDialog(OSystem& osystem, DialogContainer& parent,
-  int max_w, int max_h, Menu::AppMode mode)
+  int max_w, int max_h, OptionsMenu::AppMode mode)
   : Dialog(osystem, parent, osystem.frameBuffer().font(), "Basic settings"),
     myMode{mode}
 {
@@ -187,12 +187,12 @@ void StellaSettingsDialog::addGameOptions(WidgetArray& wid, int& xpos, int& ypos
   VarList::push_back(ctrls, "Auto-detect", "AUTO");
   VarList::push_back(ctrls, "Joystick", "JOYSTICK");
   VarList::push_back(ctrls, "Paddles", "PADDLES");
-  VarList::push_back(ctrls, "BoosterGrip", "BOOSTERGRIP");
+  VarList::push_back(ctrls, "Booster Grip", "BOOSTERGRIP");
   VarList::push_back(ctrls, "Driving", "DRIVING");
   VarList::push_back(ctrls, "Keyboard", "KEYBOARD");
-  VarList::push_back(ctrls, "AmigaMouse", "AMIGAMOUSE");
-  VarList::push_back(ctrls, "AtariMouse", "ATARIMOUSE");
-  VarList::push_back(ctrls, "Trakball", "TRAKBALL");
+  VarList::push_back(ctrls, "Amiga mouse", "AMIGAMOUSE");
+  VarList::push_back(ctrls, "Atari mouse", "ATARIMOUSE");
+  VarList::push_back(ctrls, "Trak-Ball", "TRAKBALL");
   VarList::push_back(ctrls, "Sega Genesis", "GENESIS");
   VarList::push_back(ctrls, "QuadTari", "QUADTARI");
 
@@ -351,7 +351,7 @@ void StellaSettingsDialog::handleCommand(CommandSender* sender, int cmd,
       saveConfig();
       [[fallthrough]];
     case GuiObject::kCloseCmd:
-      if (myMode != Menu::AppMode::emulator)
+      if (myMode != OptionsMenu::AppMode::emulator)
         close();
       else
         instance().eventHandler().leaveMenuMode();
@@ -363,7 +363,7 @@ void StellaSettingsDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kConfirmSwitchCmd:
       instance().settings().setValue("basic_settings", false);
-      if (myMode != Menu::AppMode::emulator)
+      if (myMode != OptionsMenu::AppMode::emulator)
         close();
       else
         instance().eventHandler().leaveMenuMode();

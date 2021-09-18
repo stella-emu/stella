@@ -57,8 +57,6 @@ class DeveloperDialog : public Dialog
       kPlrSettings          = 'DVpl',
       kDevSettings          = 'DVdv',
       kConsole              = 'DVco',
-      kRandRAMID            = 'DVrm',
-      kRandCPUID            = 'DVcp',
       kTIAType              = 'DVtt',
       kTVJitter             = 'DVjt',
       kTVJitterChanged      = 'DVjr',
@@ -94,6 +92,7 @@ class DeveloperDialog : public Dialog
     PopUpWidget*        myConsoleWidget{nullptr};
     StaticTextWidget*   myLoadingROMLabel{nullptr};
     CheckboxWidget*     myRandomBankWidget{nullptr};
+    CheckboxWidget*     myRandomizeTIAWidget{nullptr};
     CheckboxWidget*     myRandomizeRAMWidget{nullptr};
     StaticTextWidget*   myRandomizeCPULabel{nullptr};
     CheckboxWidget*     myUndrivenPinsWidget{nullptr};
@@ -154,6 +153,7 @@ class DeveloperDialog : public Dialog
     std::array<bool, 2>   myDetectedInfo;
     std::array<int, 2>    myConsole;
     std::array<bool, 2>   myRandomBank;
+    std::array<bool, 2>   myRandomizeTIA;
     std::array<bool, 2>   myRandomizeRAM;
     std::array<string, 2> myRandomizeCPU;
     std::array<bool, 2>   myColorLoss;

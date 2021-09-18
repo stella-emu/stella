@@ -22,6 +22,7 @@
 #include "Logger.hxx"
 #include "AudioSettings.hxx"
 #include "PaletteHandler.hxx"
+#include "Joystick.hxx"
 #include "Paddles.hxx"
 
 #ifdef DEBUGGER_SUPPORT
@@ -114,6 +115,8 @@ Settings::Settings()
   setPermanent("usemouse", "analog");
   setPermanent("grabmouse", "true");
   setPermanent("cursor", "2");
+  setPermanent("adeadzone", "0");
+  setPermanent("plinear", "100");
   setPermanent("dejitter.base", "0");
   setPermanent("dejitter.diff", "0");
   setPermanent("dsense", "10");
@@ -205,6 +208,7 @@ Settings::Settings()
   setPermanent("plr.bankrandom", "false");
   setPermanent("plr.ramrandom", "true");
   setPermanent("plr.cpurandom", "AXYP");
+  setPermanent("plr.tiarandom", "true");
   setPermanent("plr.colorloss", "false");
   setPermanent("plr.tv.jitter", "true");
   setPermanent("plr.tv.jitter_recovery", "10");
@@ -224,6 +228,7 @@ Settings::Settings()
   setPermanent("dev.bankrandom", "true");
   setPermanent("dev.ramrandom", "true");
   setPermanent("dev.cpurandom", "SAXYP");
+  setPermanent("dev.tiarandom", "true");
   setPermanent("dev.colorloss", "true");
   setPermanent("dev.tv.jitter", "true");
   setPermanent("dev.tv.jitter_recovery", "2");
@@ -354,25 +359,33 @@ void Settings::validate()
   AudioSettings::normalize(*this);
 #endif
 
-  i = getInt("joydeadzone");
-  if(i < 0)        setValue("joydeadzone", "0");
-  else if(i > 29)  setValue("joydeadzone", "29");
+  setValue("joydeadzone", BSPF::clamp(getInt("joydeadzone"),
+           Controller::MIN_DIGITAL_DEADZONE, Joystick::MAX_DIGITAL_DEADZONE));
+
+  setValue("adeadzone", BSPF::clamp(getInt("adeadzone"),
+           Controller::MIN_ANALOG_DEADZONE, Controller::MAX_ANALOG_DEADZONE));
+
+  setValue("psense", BSPF::clamp(getInt("psense"),
+           Paddles::MIN_ANALOG_SENSE, Paddles::MAX_ANALOG_SENSE));
+
+  setValue("plinear", BSPF::clamp(getInt("plinear"),
+           Paddles::MIN_ANALOG_LINEARITY, Paddles::MAX_ANALOG_LINEARITY));
+
+  setValue("dejitter.base", BSPF::clamp(getInt("dejitter.base"),
+           Paddles::MIN_DEJITTER, Paddles::MAX_DEJITTER));
+
+  setValue("dejitter.diff", BSPF::clamp(getInt("dejitter.diff"),
+           Paddles::MIN_DEJITTER, Paddles::MAX_DEJITTER));
+
+  setValue("dsense", BSPF::clamp(getInt("dsense"),
+           Paddles::MIN_DIGITAL_SENSE, Paddles::MAX_DIGITAL_SENSE));
+
+  setValue("msense", BSPF::clamp(getInt("msense"),
+           Controller::MIN_MOUSE_SENSE, Controller::MAX_MOUSE_SENSE));
 
   i = getInt("cursor");
   if(i < 0 || i > 3)
     setValue("cursor", "2");
-
-  i = getInt("psense");
-  if(i < Paddles::MIN_ANALOG_SENSE || i > Paddles::MAX_ANALOG_SENSE)
-    setValue("psense", "20");
-
-  i = getInt("dsense");
-  if(i < Paddles::MIN_DIGITAL_SENSE || i > Paddles::MAX_DIGITAL_SENSE)
-    setValue("dsense", "10");
-
-  i = getInt("msense");
-  if(i < 1 || i > 20)
-    setValue("msense", "10");
 
   i = getInt("tsense");
   if(i < 1 || i > 20)
@@ -503,22 +516,24 @@ void Settings::usage() const
     << "  -loglevel     <0|1|2>        Set level of logging during application run\n"
     << endl
     << "  -logtoconsole <1|0>          Log output to console/commandline\n"
-    << "  -joydeadzone  <number>       Sets 'deadzone' area for analog joysticks (0-29)\n"
+    << "  -joydeadzone  <0-29>         Sets digital 'dead zone' area for analog joysticks\n"
     << "  -joyallow4    <1|0>          Allow all 4 directions on a joystick to be\n"
     << "                                pressed simultaneously\n"
     << "  -usemouse     <always|\n"
     << "                 analog|\n"
     << "                 never>        Use mouse as a controller as specified by ROM\n"
     << "                                properties in given mode(see manual)\n"
-    << "  -grabmouse    <1|0>          Locks the mouse cursor in the TIA window\n"
-    << "  -cursor       <0,1,2,3>      Set cursor state in UI/emulation modes\n"
-    << "  -dejitter.base <0-10>        Strength of analog paddle value averaging\n"
-    << "  -dejitter.diff <0-10>        Strength of analog paddle reaction to fast movements\n"
-    << "  -psense       <0-30>         Sensitivity of analog paddle movement\n"
-    << "  -dsense       <1-20>         Sensitivity of digital emulated paddle movement\n"
-    << "  -msense       <1-20>         Sensitivity of mouse emulated paddle movement\n"
-    << "  -tsense       <1-20>         Sensitivity of mouse emulated trackball movement\n"
-    << "  -dcsense      <1-20>         Sensitivity of digital emulated driving controller\n"
+    << "  -grabmouse      <1|0>        Locks the mouse cursor in the TIA window\n"
+    << "  -cursor         <0,1,2,3>    Set cursor state in UI/emulation modes\n"
+    << "  -adeadzone      <0-29>       Sets analog 'dead zone' area for analog joysticks\n"
+    << "  -plinear        <25-100>     Sets paddle linearity\n"
+    << "  -dejitter.base  <0-10>       Strength of analog paddle value averaging\n"
+    << "  -dejitter.diff  <0-10>       Strength of analog paddle reaction to fast movements\n"
+    << "  -psense         <0-30>       Sensitivity of analog paddle movement\n"
+    << "  -dsense         <1-20>       Sensitivity of digital emulated paddle movement\n"
+    << "  -msense         <1-20>       Sensitivity of mouse emulated paddle movement\n"
+    << "  -tsense         <1-20>       Sensitivity of mouse emulated trackball movement\n"
+    << "  -dcsense        <1-20>       Sensitivity of digital emulated driving controller\n"
     << "                                movement\n"
     << "  -autofirerate <0-30>         Set fire button's autofire rate (0 means off)\n"
     << "  -saport       <lr|rl>        How to assign virtual ports to multiple\n"
@@ -663,8 +678,8 @@ void Settings::usage() const
     << "                                    handling and RAM initialization\n"
     << "  -plr.bankrandom   <1|0>          Randomize the startup bank on reset\n"
     << "  -plr.ramrandom    <1|0>          Randomize the contents of RAM on reset\n"
-    << "  -plr.cpurandom    <1|0>          Randomize the contents of CPU registers on\n"
-    << "                                    reset\n"
+    << "  -plr.tiarandom    <1|0>          Randomize the TIA registers on reset\n"
+    << "  -plr.ramrandom    <1|0>          Randomize the contents of RAM on reset\n"
     << "  -plr.debugcolors  <1|0>          Enable debug colors\n"
     << "  -plr.colorloss    <1|0>          Enable PAL color-loss effect\n"
     << "  -plr.tv.jitter    <1|0>          Enable TV jitter effect\n"
@@ -681,6 +696,7 @@ void Settings::usage() const
     << "  -dev.ramrandom    <1|0>          Randomize the contents of RAM on reset\n"
     << "  -dev.cpurandom    <1|0>          Randomize the contents of CPU registers on\n"
     << "                                    reset\n"
+    << "  -dev.tiarandom    <1|0>          Randomize the TIA registers on reset\n"
     << "  -dev.debugcolors  <1|0>          Enable debug colors\n"
     << "  -dev.colorloss    <1|0>          Enable PAL color-loss effect\n"
     << "  -dev.tv.jitter    <1|0>          Enable TV jitter effect\n"
