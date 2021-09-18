@@ -272,9 +272,9 @@
       Atari 2600 FPGA project, including cycle-exact audio, analog interference
       from mixing of audio channels, as well as stereo sound support; dynamic
       sound resampling is also included</li>
-    <li>Emulates the Atari 2600 Joystick, Paddle, Driving, CBS BoosterGrip, Sega Genesis, QuadTari controllers using your computer's keyboard,
+    <li>Emulates the Atari 2600 Joystick, Paddle, Driving, CBS Booster Grip, Sega Genesis, QuadTari controllers using your computer's keyboard,
       joysticks or mouse</li>
-    <li>Emulates CX22/CX80 style Trackballs, Amiga/Atari Mouse, Mindlink controller and the Light Gun using your
+    <li>Emulates CX22/CX80 style Trak-Balls, Amiga/Atari mouse, MindLink controller and the Light Gun using your
       computer's mouse</li>
     <li>Emulates the Atari 2600 Keyboard controllers using your computer's keyboard</li>
     <li>Emulates <a href="https://en.wikipedia.org/wiki/CompuMate">Spectravideo CompuMate</a> system using your computer's keyboard,
@@ -781,7 +781,7 @@
   </table>
 
 
-  <p><b>Joystick/BoosterGrip Controller (can be remapped)</b></p>
+  <p><b>Joystick/Booster Grip Controller (can be remapped)</b></p>
 
   <table BORDER=2>
     <tr>
@@ -880,7 +880,7 @@
     </tr>
   </table>
 
-  <p><b>Sega Genesis Controller (cannot be remapped, always associated with joystick and booster-grip controllers)</b></p>
+  <p><b>Sega Genesis Controller (cannot be remapped, always associated with joystick and Booster Grip controllers)</b></p>
 
   <table BORDER=2>
     <tr>
@@ -1574,14 +1574,25 @@
     </tr>
 
     <tr>
-      <td><i>Decrease</i> joystick deadzone</td>
+      <td><i>Decrease</i> analog joystick dead zone for digital controllers</td>
       <td>Shift-Control + F1</td>
       <td>Shift-Control + F1</td>
     </tr>
     <tr>
-      <td><i>Increase</i> joystick deadzone</td>
+      <td><i>Increase</i> analog joystick dead zone for digital controllers</td>
       <td>Control + F1</td>
       <td>Control + F1</td>
+    </tr>
+
+    <tr>
+      <td><i>Decrease</i> analog joystick dead zone for analog controllers</td>
+      <td>Shift-Control-Alt + F1</td>
+      <td>Shift-Control-Cmd + F1</td>
+    </tr>
+    <tr>
+      <td><i>Increase</i> analog joystick dead zone for analog controllers</td>
+      <td>Control-Alt + F1</td>
+      <td>Control-Cmd + F1</td>
     </tr>
 
     <tr>
@@ -1593,6 +1604,17 @@
       <td><i>Increase</i> analog paddle sensitivity</td>
       <td>Control + F2</td>
       <td>Control + F2</td>
+    </tr>
+
+    <tr>
+      <td><i>Decrease</i> analog paddle linearity</td>
+      <td>Shift-Control-Alt + F2</td>
+      <td>Shift-Control-Cmd + F2</td>
+    </tr>
+    <tr>
+      <td><i>Increase</i> analog paddle linearity</td>
+      <td>Control-Alt + F2</td>
+      <td>Control-Cmd + F2</td>
     </tr>
 
     <tr>
@@ -1933,8 +1955,9 @@
   </table>
 
   <p><b><a name="GlobalKeys">Global Keys</a> (can be remapped)</b></p>
-  <p>These keys allow selecting and changing settings without having to remember the
-  dedicated keys. They keys are grouped by 'Audio & Video', 'Input Device & Ports' and 'Debug' settings.</p>
+  <p>These keys allow selecting and changing settings without having to remember
+    the dedicated hotkeys. The global keys are grouped by 'Audio & Video',
+    'Input Devices & Ports' and 'Debug' settings.</p>
   <table BORDER=2 cellpadding=4>
     <tr>
       <th>Function</th>
@@ -1976,8 +1999,8 @@
       <ul>
           <li>Only available if UI messages are enabled.</li>
           <li>Currently not available settings are automatically skipped.</li>
-          <li>If a setting was previously selected via a dedicated key, its value can also be changed with the
-          global keys.</li>
+          <li>If a setting was previously selected via a dedicated hotkey, its
+          value can also be directly changed with the global keys.</li>
       </ul>
   </p>
 
@@ -2395,7 +2418,7 @@
       <td> &#x2713;</td>
     </tr>
     <tr>
-      <th> Booster</th>
+      <th> Booster Grip</th>
       <td> &#x2713;</td>
       <td> &#x2713;</td>
       <td> &#x2713; (+ extra)</td>
@@ -2403,7 +2426,7 @@
       <td> &#x2713; (+ extra)</td>
     </tr>
     <tr>
-      <th> Genesis</th>
+      <th> Sega Genesis</th>
       <td> &#x2713;</td>
       <td> &#x2713; (+ extra)</td>
       <td> &#x2713;</td>
@@ -2427,7 +2450,7 @@
       <td> &#x2713;</td>
     </tr>
     <tr>
-      <th> Trackball/Mouse</th>
+      <th> Trak-Ball/Mouse</th>
       <td> &#x2715;</td>
       <td> &#x2715;</td>
       <td> &#x2713;</td>
@@ -2451,7 +2474,7 @@
       <td> &#x2715;</td>
     </tr>
     <tr>
-      <th> Mindlink</th>
+      <th> MindLink</th>
       <td> &#x2715;</td>
       <td> &#x2715;</td>
       <td> &#x2713;</td>
@@ -2938,30 +2961,48 @@
     </tr>
 
     <tr>
-      <td><pre>-joydeadzone &lt;number&gt;</pre></td>
-      <td>Set the joystick axis deadzone area for analog joysticks/gamepads.
-        All values within the deadzone are treated as zero-axis values,
-        while only those values outside are registered as valid input.
-        Accepts a number from 0 - 29, and uses the formula
-        3200 + number * 1000. So the possible deadzone values
-        range from 3200 to 32200.</td>
+      <td><pre>-joydeadzone &lt;0 - 29&gt;</pre></td>
+      <td>Set the joystick axis dead zone area for analog joysticks/gamepads
+        emulating digital controllers.
+        All values within the dead zone are treated as zero-axis values,
+        while only those values outside are registered as valid input.</br>
+        Dead zone is calculated as 3200 + value * 1000. So the possible dead
+        zone values range from 3200 to 32200 (= 10% - 98%).</td>
     </tr>
 
     <tr>
-      <td><pre>-psense &lt;number&gt;</pre></td>
-      <td>Sensitivity for emulation of paddles when using analog paddles.
-      Valid range of values is from 0 to 30, with larger numbers causing
-      faster movement.</td>
+      <td><pre>-adeadzone &lt;0 - 29&gt;</pre></td>
+      <td>Set the joystick axis dead zone area for analog joysticks/gamepads
+        emulating analog controllers. All values within the dead zone are
+        treated as zero-axis values, while only those values outside are
+        registered as valid input. </br>
+        Dead zone is calculated as value * 565. So the possible dead zone
+        values range from 0 to 16384 (= 0% - 50%)</td>
+    </tr>
+
+    <tr>
+      <td><pre>-psense &lt;0 - 30&gt;</pre></td>
+      <td>Sensitivity for emulation of paddles when using analog controllers.
+      Larger numbers are causing faster movement.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-plinear &lt;25 - 100&gt;</pre></td>
+      <td>Linearity of analog paddles. Lower numbers allow finer control
+      around the paddle center.</td>
     </tr>
 
     <tr>
       <td><pre>-dejitter.base &lt;0 - 10&gt;</pre></td>
-      <td>Strength of paddle input averaging.</td>
+      <td>Strength of analog paddle input averaging. Higher values will make
+      the movement smoother, but also less responsive.</td>
     </tr>
 
     <tr>
       <td><pre>-dejitter.diff &lt;0 - 10&gt;</pre></td>
-      <td>Impact of fast paddle movement on input averaging.</td>
+      <td>Impact of fast analog paddle movement on input averaging. Higher
+      values will reduce the movement smoothing while the paddle is moved
+      fast, making fast paddle movements more responsive.</td>
     </tr>
 
     <tr>
@@ -2990,7 +3031,7 @@
       when you want to disable them.</br>
       E.g. a 2-player game is using either the 'F' or 'R' keys for movement,
       and pressing Control (for Fire) will perform an unwanted action
-      associated with 'Control + R' or 'Control + F' default keys.</td>
+      associated with 'Control + F' or 'Control + R' default keys.</td>
     </tr>
 
     <tr>
@@ -3528,6 +3569,9 @@
       <td><pre>-&lt;plr.|dev.&gt;bankrandom &lt;1|0&gt;</pre></td>
       <td>On reset, randomize the startup bank (only for selected bankswitch types).</td>
     </tr><tr>
+      <td><pre>-&lt;plr.|dev.&gt;tiarandom &lt;1|0&gt;</pre></td>
+      <td>On reset, randomize the TIA registers.</td>
+    </tr><tr>
       <td><pre>-&lt;plr.|dev.&gt;ramrandom &lt;1|0&gt;</pre></td>
       <td>On reset, either randomize all RAM content, or initialize with zero (console = 2600)/startup values (console = 7800) instead.</td>
     </tr><tr>
@@ -3988,12 +4032,18 @@
       <td valign="top">
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">Command Line</a></th></tr>
-          <tr><td>Joystick deadzone size</td><td>Deadzone area for axes on joysticks/gamepads</td><td>-joydeadzone</td></tr>
-          <tr><td>(Analog paddle) Sensitivity</td><td>Sensitivity of an analog paddle</td><td>-psense</td></tr>
-          <tr><td>(Analog paddle) Dejitter averaging</td><td>Strength of paddle input averaging, suppresses paddle jitter.<br>
+          <tr><td>Digital dead zone size</td><td>Dead zone area for axes on joysticks/gamepads emulating
+                  digital controllers
+          </td><td>-joydeadzone</td></tr>
+          <tr><td>Analog dead zone size</td><td>Dead zone area for axes on joysticks/gamepads emulating
+                  analog controllers
+          </td><td>-adeadzone</td></tr>
+          <tr><td>(Analog paddle) Sensitivity</td><td>Sensitivity of analog paddles</td><td>-psense</td></tr>
+          <tr><td>(Analog paddle) Linearity</td><td>Linearity of analog paddles</td><td>-plinear</td></tr>
+          <tr><td>(Analog paddle) Dejitter averaging</td><td>Strength of paddle input averaging, suppresses paddle jitter<br>
                   Note: The 2600-daptor has built-in dejitter, so there should be no need to use Stella's dejitter.
                   </td><td>-dejitter.base</td></tr>
-          <tr><td>(Analog paddle) Dejitter reaction</td><td>Strength of paddle reaction to fast paddle movements, suppresses paddle jitter.</td><td>-dejitter.diff</td></tr>
+          <tr><td>(Analog paddle) Dejitter reaction</td><td>Strength of paddle reaction to fast paddle movements, suppresses paddle jitter</td><td>-dejitter.diff</td></tr>
           <tr><td>Digital paddle sensitivity</td><td>Sensitivity used when emulating a paddle using a digital device</td><td>-dsense</td></tr>
           <tr><td>Autofire rate</td><td>Automatic trigger rate of the fire buttons in Hz</td><td>-autofirerate</td></tr>
           <tr><td>Allow all 4 directions ...</td><td>Allow all 4 joystick directions to be pressed simultaneously</td><td>-joyallow4</td></tr>
@@ -4278,15 +4328,57 @@
       <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
       <td valign="top">
         <table border="1" cellpadding="4">
-          <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">Command Line</a></th></tr>
-          <tr><td>Player/Developer settings</td><td>Selects the active settings set</td><td>-dev.settings</td></tr>
-          <tr><td>Console info overlay</td><td>Overlay console info on the TIA image during emulation.</td><td>-plr.stats<br/>-dev.stats</td></tr>
-          <tr><td>Detected settings info</td><td>Display detected settings when a ROM is loaded.</td><td>-plr.detectedinfo<br/>-dev.detectedinfo</td></tr>
-          <tr><td>Console</td><td>Select the console type, this affects Color/B&W/Pause key emulation and zero-page RAM initialization</td><td>-plr.console <br/>-dev.console</td></tr>
-          <tr><td>Random startup bank</td><td>Randomize the startup bank (only for selected bankswitch types)</td><td>-plr.bankrandom<br/>-dev.bankrandom</td></tr>
-          <tr><td>Randomize zero-page ...</td><td>When loading a ROM, randomize all RAM content instead of initializing with all zeroes (for 'Console' = 'Atari 2600' only)</td><td>-plr.ramrandom<br/>-dev.ramrandom</td></tr>
-          <tr><td>Randomize CPU</td><td>When loading a ROM, randomize the content of the specified CPU registers</td><td>-plr.cpurandom<br/>-dev.cpurandom</td></tr>
-          <tr><td>Drive unused TIA pins ...</td><td>Unused TIA pins are read random instead of the last databus values</td><td>-dev.tiadriven</td></tr>
+          <tr>
+            <th>Item</th>
+            <th>Brief description</th>
+            <th>For more information,<br>see <a href="#CommandLine">Command Line</a></th>
+          </tr>
+          <tr>
+            <td>Player/Developer settings</td>
+            <td>Selects the active settings set</td>
+            <td>-dev.settings</td>
+          </tr>
+          <tr>
+            <td>Console info overlay</td>
+            <td>Overlay console info on the TIA image during emulation.</td>
+            <td>-plr.stats<br/>-dev.stats</td></tr>
+          <tr>
+            <td>Detected settings info</td>
+            <td>Display detected settings when a ROM is loaded.</td>
+            <td>-plr.detectedinfo<br/>-dev.detectedinfo</td>
+          </tr>
+          <tr>
+            <td>Console</td>
+            <td>Select the console type, this affects Color/B&W/Pause key
+              emulation and zero-page RAM initialization</td>
+            <td>-plr.console <br/>-dev.console</td>
+          </tr>
+          <tr>
+            <td>Random startup bank</td>
+            <td>Randomize the startup bank (only for selected bankswitch types)</td>
+            <td>-plr.bankrandom<br/>-dev.bankrandom</td>
+          </tr>
+          <tr>
+            <td>Randomize TIA</td>
+            <td>Randomize TIA registers when loading a ROM</td>
+            <td>-plr.tiarandom<br/>-dev.tiarandom</td>
+          </tr>
+          <tr>
+            <td>Randomize zero-page ...</td>
+            <td>When loading a ROM, randomize all RAM content instead of
+              initializing with all zeroes (for 'Console' = 'Atari 2600' only)</td>
+            <td>-plr.ramrandom<br/>-dev.ramrandom</td>
+          </tr>
+          <tr>
+            <td>Randomize CPU</td>
+            <td>When loading a ROM, randomize the content of the specified CPU registers</td>
+            <td>-plr.cpurandom<br/>-dev.cpurandom</td>
+          </tr>
+          <tr>
+            <td>Drive unused TIA pins ...</td>
+            <td>Unused TIA pins are read random instead of the last databus values</td>
+            <td>-dev.tiadriven</td>
+          </tr>
           <tr>
             <td>Break on reads from ...</td>
             <td>A read from a write port interrupts emulation and the debugger is entered.</td>
@@ -4302,7 +4394,11 @@
             <td>Thumb ARM emulation throws an exception and enters the debugger on fatal errors</td>
             <td><span style="white-space:nowrap">-dev.thumb.trapfatal</span></td>
           </tr>
-          <tr><td>Display AtariVox...</td><td>Display a message when the AtariVox/SaveKey EEPROM is read or written</td><td>-plr.eepromaccess<br/>-dev.eepromaccess</td></tr>
+          <tr>
+            <td>Display AtariVox...</td>
+            <td>Display a message when the AtariVox/SaveKey EEPROM is read or written</td>
+            <td>-plr.eepromaccess<br/>-dev.eepromaccess</td>
+          </tr>
         </table>
       </td>
     </tr>
@@ -4896,11 +4992,11 @@ Ms Pac-Man (Stella extended codes):
         <tr><td>Trakball</td><td>Standard Atari 2600 CX22/CX80 'Trak-Ball' controller.</td></tr>
         <tr><td><a href="https://atariage.com/store/index.php?l=product_detail&p=1045">AtariVox &#185</a></td><td>A SpeakJet based unlimited-vocabulary speech/sound synthesizer with 32K EEPROM.</td></tr>
         <tr><td>SaveKey</td><td>A 32K EEPROM for saving high scores, etc. (the EEPROM portion of an AtariVox).</td></tr>
-        <tr><td>Genesis </td><td>Sega Genesis controller, which can be used similar to a BoosterGrip, giving an extra button.</td></tr>
+        <tr><td>Genesis </td><td>Sega Genesis controller, which can be used similar to a Booster Grip, giving an extra button.</td></tr>
         <tr><td>CompuMate &#185</td><td>Spectravideo CompuMate (if either left or right is set, CompuMate is used for both).</td></tr>
-        <tr><td>Lightgun</td><td>Atari XG-1 compatible Light Gun</td></tr>
-        <tr><td>Mindlink &#185</td><td>Mindlink controller.</td></tr>
-        <tr><td>KidVid &#185</td><td>KidVid controller, limited support (8, 9 and 0 start the games).</td></tr>
+        <tr><td>Lightgun</td><td>Atari XG-1 compatible Light Gun.</td></tr>
+        <tr><td>MindLink &#185</td><td>MindLink controller.</td></tr>
+        <tr><td>KidVid</td><td>Kid Vid Voice Module, limited support (Right Keyboard controller buttons 1, 2 and 3 start the games, default mapping is 8, 9 and 0).</td></tr>
         <tr><td>QuadTari</td><td><a href="#Quadtari">QuadTari</a> controller, limited support (see below).</td></tr>
       </table></td>
     </tr>

@@ -21,6 +21,12 @@
 
   * Added web links for many games
 
+  * Added dead zone and linearity settings for analog controllers
+
+  * Fixed MindLink controller
+
+  * Added TIA randomization on startup option
+
   * Debugger: enhanced prompt's auto complete and history
 
   * Debugger: added optional logging of breaks and traps

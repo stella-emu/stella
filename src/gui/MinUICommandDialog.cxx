@@ -321,14 +321,14 @@ void MinUICommandDialog::openSettings()
   if (instance().settings().getBool("basic_settings"))
   {
     myDialog = make_unique<StellaSettingsDialog>(instance(), parent(),
-                                                 1280, 720, Menu::AppMode::launcher);
+                                                 1280, 720, OptionsMenu::AppMode::launcher);
     myDialog->open();
   }
   else
   {
     myDialog = make_unique<OptionsDialog>(instance(), parent(), this,
                                           FBMinimum::Width, FBMinimum::Height,
-                                          Menu::AppMode::launcher);
+                                          OptionsMenu::AppMode::launcher);
     myDialog->open();
   }
 }
@@ -337,6 +337,6 @@ void MinUICommandDialog::openSettings()
 void MinUICommandDialog::openHighscores()
 {
   myDialog = make_unique<HighScoresDialog>(instance(), parent(),
-                                           1280, 720, Menu::AppMode::emulator);
+                                           1280, 720, OptionsMenu::AppMode::emulator);
   myDialog->open();
 }

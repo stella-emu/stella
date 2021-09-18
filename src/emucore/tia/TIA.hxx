@@ -820,6 +820,11 @@ class TIA : public Device
     uInt32 myFramesSinceLastRender{0};
 
     /**
+     * Setting this to true randomizes TIA on reset.
+     */
+    bool myRandomize{false};
+
+    /**
      * Setting this to true injects random values into undefined reads.
      */
     bool myTIAPinsDriven{false};

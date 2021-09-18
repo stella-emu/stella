@@ -301,7 +301,7 @@ class MovieInputs : public Serializable
 
 // Automatically generated
 // Several not used
-#define addr_kernel_48 0x800
+// #define addr_kernel_48 0x800
 #define addr_transport_direction 0x880
 #define addr_transport_buttons 0x894
 #define addr_right_line 0x948
@@ -317,7 +317,7 @@ class MovieInputs : public Serializable
 #define addr_set_gcol7 0x96a
 #define addr_set_gdata7 0x96e
 #define addr_set_gcol8 0x972
-#define addr_left_line 0x980
+// #define addr_left_line 0x980
 #define addr_set_gdata1 0x982
 #define addr_set_gcol1 0x988
 #define addr_set_aud_left 0x98c
@@ -331,27 +331,27 @@ class MovieInputs : public Serializable
 #define addr_set_gdata2 0x9a8
 #define addr_set_gcol3 0x9ac
 #define addr_pick_continue 0x9be
-#define addr_main_start 0xa00
-#define addr_aud_bank_setup 0xa0c
-#define addr_tg0 0xa24
-#define addr_title_again 0xa3b
-#define addr_wait_cnt 0xa77
+// #define addr_main_start 0xa00
+// #define addr_aud_bank_setup 0xa0c
+// #define addr_tg0 0xa24
+// #define addr_title_again 0xa3b
+// #define addr_wait_cnt 0xa77
 #define addr_end_lines 0xa80
 #define addr_set_aud_endlines 0xa80
 #define addr_set_overscan_size 0xa9a
 #define addr_set_vblank_size 0xab0
 #define addr_pick_extra_lines 0xab9
 #define addr_pick_transport 0xac6
-#define addr_wait_lines 0xac9
-#define addr_transport_done1 0xada
-#define addr_draw_title 0xb00
+// #define addr_wait_lines 0xac9
+// #define addr_transport_done1 0xada
+// #define addr_draw_title 0xb00
 #define addr_title_loop 0xb50
-#define addr_black_bar 0xb52
-#define addr_animate_bar1 0xb58
-#define addr_animate_bar_again1 0xb5a
-#define addr_animate_dex1 0xb65
+// #define addr_black_bar 0xb52
+// #define addr_animate_bar1 0xb58
+// #define addr_animate_bar_again1 0xb5a
+// #define addr_animate_dex1 0xb65
 #define addr_audio_bank 0xb80
-#define addr_reset_loop 0xbfa
+// #define addr_reset_loop 0xbfa
 
 // scale adjustments, automatically generated
 static constexpr uInt8 scale0[16] = {
@@ -480,7 +480,7 @@ static constexpr uInt8 brightLabelEven[] = {
   0, 49, 48, 12, 96,
   6, 140, 231, 96, 0,
   0, 225, 48, 12, 96,
-  0, 0, 0, 0, 0, 
+  0, 0, 0, 0, 0,
   0, 0, 0, 0, 0
 };
 
@@ -497,7 +497,7 @@ static constexpr uInt8 brightLabelOdd[] = {
   0, 113, 48, 12, 96,
   7, 142, 127, 96, 0,
   0, 0, 0, 0, 0,
-  0, 0, 0, 0, 0, 
+  0, 0, 0, 0, 0,
   0, 0, 0, 0, 0
 };
 
@@ -514,7 +514,7 @@ static constexpr uInt8 volumeLabelEven[] = {
   0, 12, 192, 15, 192,
   30, 112, 119, 176, 0,
   0, 7, 252, 12, 254,
-  0, 0, 0, 0, 0, 
+  0, 0, 0, 0, 0,
   0, 0, 0, 0, 0
 };
 
@@ -531,7 +531,7 @@ static constexpr uInt8 volumeLabelOdd[] = {
   0, 14, 192, 13, 192,
   14, 224, 62, 48, 0,
   0, 0, 0, 0, 0,
-  0, 0, 0, 0, 0, 
+  0, 0, 0, 0, 0,
   0, 0, 0, 0, 0
 };
 

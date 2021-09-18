@@ -31,7 +31,7 @@
   #include "Debugger.hxx"
 #endif
 #ifdef GUI_SUPPORT
-  #include "Menu.hxx"
+  #include "OptionsMenu.hxx"
   #include "CommandMenu.hxx"
   #include "HighScoresMenu.hxx"
   #include "MessageMenu.hxx"
@@ -177,7 +177,7 @@ bool OSystem::initialize(const Settings::Options& options)
 
 #ifdef GUI_SUPPORT
   // Create various subsystems (menu and launcher GUI objects, etc)
-  myMenu = make_unique<Menu>(*this);
+  myOptionsMenu = make_unique<OptionsMenu>(*this);
   myCommandMenu = make_unique<CommandMenu>(*this);
   myHighScoresManager = make_unique<HighScoresManager>(*this);
   myHighScoresMenu = make_unique<HighScoresMenu>(*this);
@@ -510,7 +510,7 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
     }
     // Check for first PlusROM start
     if(myConsole->cartridge().isPlusROM() &&
-       settings().getString("plusroms.nick") == EmptyString)
+       settings().getString("plusroms.id") == EmptyString)
     {
       myEventHandler->changeStateByEvent(Event::PlusRomsSetupMode);
     }

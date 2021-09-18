@@ -981,7 +981,7 @@
     <ClCompile Include="..\gui\Launcher.cxx" />
     <ClCompile Include="..\gui\LauncherDialog.cxx" />
     <ClCompile Include="..\gui\ListWidget.cxx" />
-    <ClCompile Include="..\gui\Menu.cxx" />
+    <ClCompile Include="..\gui\OptionsMenu.cxx" />
     <ClCompile Include="..\gui\MessageBox.cxx" />
     <ClCompile Include="..\gui\OptionsDialog.cxx" />
     <ClCompile Include="..\gui\PopUpWidget.cxx" />
@@ -2096,7 +2096,7 @@
     <ClInclude Include="..\gui\Launcher.hxx" />
     <ClInclude Include="..\gui\LauncherDialog.hxx" />
     <ClInclude Include="..\gui\ListWidget.hxx" />
-    <ClInclude Include="..\gui\Menu.hxx" />
+    <ClInclude Include="..\gui\OptionsMenu.hxx" />
     <ClInclude Include="..\gui\MessageBox.hxx" />
     <ClInclude Include="..\gui\OptionsDialog.hxx" />
     <ClInclude Include="..\gui\PopUpWidget.hxx" />

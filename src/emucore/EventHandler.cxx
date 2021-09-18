@@ -28,6 +28,7 @@
 #include "OSystem.hxx"
 #include "Joystick.hxx"
 #include "Paddles.hxx"
+#include "MindLink.hxx"
 #include "Lightgun.hxx"
 #include "PointingDevice.hxx"
 #include "Driving.hxx"
@@ -57,7 +58,7 @@
   #include "DebuggerParser.hxx"
 #endif
 #ifdef GUI_SUPPORT
-  #include "Menu.hxx"
+  #include "OptionsMenu.hxx"
   #include "CommandMenu.hxx"
   #include "HighScoresMenu.hxx"
   #include "MessageMenu.hxx"
@@ -98,11 +99,14 @@ void EventHandler::initialize()
   setActionMappings(EventMode::kEmulationMode);
   setActionMappings(EventMode::kMenuMode);
 
-  Joystick::setDeadZone(myOSystem.settings().getInt("joydeadzone"));
+  Controller::setDigitalDeadZone(myOSystem.settings().getInt("joydeadzone"));
+  Controller::setAnalogDeadZone(myOSystem.settings().getInt("adeadzone"));
+  Paddles::setAnalogLinearity(myOSystem.settings().getInt("plinear"));
+  Paddles::setDejitterDiff(myOSystem.settings().getInt("dejitter.diff"));
   Paddles::setDejitterBase(myOSystem.settings().getInt("dejitter.base"));
   Paddles::setDejitterDiff(myOSystem.settings().getInt("dejitter.diff"));
   Paddles::setDigitalSensitivity(myOSystem.settings().getInt("dsense"));
-  Paddles::setMouseSensitivity(myOSystem.settings().getInt("msense"));
+  Controller::setMouseSensitivity(myOSystem.settings().getInt("msense"));
   PointingDevice::setSensitivity(myOSystem.settings().getInt("tsense"));
   Driving::setSensitivity(myOSystem.settings().getInt("dcsense"));
   Controller::setAutoFireRate(myOSystem.settings().getInt("autofirerate"));
@@ -455,7 +459,9 @@ bool EventHandler::skipInputSetting() const
         && (myAdjustSetting == AdjustSetting::DEADZONE
         || myAdjustSetting == AdjustSetting::FOUR_DIRECTIONS))
     || (!paddle
-        && (myAdjustSetting == AdjustSetting::ANALOG_SENSITIVITY
+        && (myAdjustSetting == AdjustSetting::ANALOG_DEADZONE
+        || myAdjustSetting == AdjustSetting::ANALOG_SENSITIVITY
+        || myAdjustSetting == AdjustSetting::ANALOG_LINEARITY
         || myAdjustSetting == AdjustSetting::DEJITTER_AVERAGING
         || myAdjustSetting == AdjustSetting::DEJITTER_REACTION
         || myAdjustSetting == AdjustSetting::DIGITAL_SENSITIVITY
@@ -590,8 +596,10 @@ AdjustFunction EventHandler::getAdjustSetting(AdjustSetting setting)
     std::bind(&Console::toggleInter, &myOSystem.console(), _1),
 
     // *** Input settings ***
-    std::bind(&PhysicalJoystickHandler::changeDeadzone, &joyHandler(), _1),
+    std::bind(&PhysicalJoystickHandler::changeDigitalDeadZone, &joyHandler(), _1),
+    std::bind(&PhysicalJoystickHandler::changeAnalogPaddleDeadZone, &joyHandler(), _1),
     std::bind(&PhysicalJoystickHandler::changeAnalogPaddleSensitivity, &joyHandler(), _1),
+    std::bind(&PhysicalJoystickHandler::changeAnalogPaddleLinearity, &joyHandler(), _1),
     std::bind(&PhysicalJoystickHandler::changePaddleDejitterAveraging, &joyHandler(), _1),
     std::bind(&PhysicalJoystickHandler::changePaddleDejitterReaction, &joyHandler(), _1),
     std::bind(&PhysicalJoystickHandler::changeDigitalPaddleSensitivity, &joyHandler(), _1),
@@ -1356,7 +1364,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::DecreaseDeadzone:
       if(pressed)
       {
-        myPJoyHandler->changeDeadzone(-1);
+        myPJoyHandler->changeDigitalDeadZone(-1);
         myAdjustSetting = AdjustSetting::DEADZONE;
         myAdjustActive = true;
       }
@@ -1365,8 +1373,26 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::IncreaseDeadzone:
       if(pressed)
       {
-        myPJoyHandler->changeDeadzone(+1);
+        myPJoyHandler->changeDigitalDeadZone(+1);
         myAdjustSetting = AdjustSetting::DEADZONE;
+        myAdjustActive = true;
+      }
+      return;
+
+    case Event::DecAnalogDeadzone:
+      if(pressed)
+      {
+        myPJoyHandler->changeAnalogPaddleDeadZone(-1);
+        myAdjustSetting = AdjustSetting::ANALOG_DEADZONE;
+        myAdjustActive = true;
+      }
+      return;
+
+    case Event::IncAnalogDeadzone:
+      if(pressed)
+      {
+        myPJoyHandler->changeAnalogPaddleDeadZone(+1);
+        myAdjustSetting = AdjustSetting::ANALOG_DEADZONE;
         myAdjustActive = true;
       }
       return;
@@ -1375,7 +1401,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myPJoyHandler->changeAnalogPaddleSensitivity(-1);
-        myAdjustSetting = AdjustSetting::PADDLE_SENSITIVITY;
+        myAdjustSetting = AdjustSetting::ANALOG_SENSITIVITY;
         myAdjustActive = true;
       }
       return;
@@ -1384,10 +1410,27 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myPJoyHandler->changeAnalogPaddleSensitivity(+1);
-        myAdjustSetting = AdjustSetting::PADDLE_SENSITIVITY;
+        myAdjustSetting = AdjustSetting::ANALOG_SENSITIVITY;
         myAdjustActive = true;
       }
+      return;
 
+    case Event::DecAnalogLinear:
+      if(pressed)
+      {
+        myPJoyHandler->changeAnalogPaddleLinearity(-1);
+        myAdjustSetting = AdjustSetting::ANALOG_LINEARITY;
+        myAdjustActive = true;
+      }
+      return;
+
+    case Event::IncAnalogLinear:
+      if(pressed)
+      {
+        myPJoyHandler->changeAnalogPaddleLinearity(+1);
+        myAdjustSetting = AdjustSetting::ANALOG_LINEARITY;
+        myAdjustActive = true;
+      }
       return;
 
     case Event::DecDejtterAveraging:
@@ -2991,7 +3034,7 @@ void EventHandler::setState(EventHandlerState state)
 
   #ifdef GUI_SUPPORT
     case EventHandlerState::OPTIONSMENU:
-      myOverlay = &myOSystem.menu();
+      myOverlay = &myOSystem.optionsMenu();
       enableTextEvents(true);
       break;
 
@@ -3040,11 +3083,11 @@ void EventHandler::setState(EventHandlerState state)
   }
 
   // Inform various subsystems about the new state
-  myOSystem.stateChanged(myState);
-  myOSystem.frameBuffer().stateChanged(myState);
-  myOSystem.frameBuffer().setCursorState();
+  myOSystem.stateChanged(myState); // does nothing
+  myOSystem.frameBuffer().stateChanged(myState); // ignores state
+  myOSystem.frameBuffer().setCursorState(); // en/disables cursor for UI and emulation states
   if(myOSystem.hasConsole())
-    myOSystem.console().stateChanged(myState);
+    myOSystem.console().stateChanged(myState); // does nothing
 
   // Sometimes an extraneous mouse motion event is generated
   // after a state change, which should be supressed
@@ -3279,11 +3322,14 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::VolumeDecrease,          "Decrease volume",                       "" },
   { Event::VolumeIncrease,          "Increase volume",                       "" },
 
-
-  { Event::DecreaseDeadzone,        "Decrease joystick deadzone",            "" },
-  { Event::IncreaseDeadzone,        "Increase joystick deadzone",            "" },
+  { Event::DecreaseDeadzone,        "Decrease digital dead zone",            "" },
+  { Event::IncreaseDeadzone,        "Increase digital dead zone",            "" },
+  { Event::DecAnalogDeadzone,       "Decrease analog dead zone",             "" },
+  { Event::IncAnalogDeadzone,       "Increase analog dead zone",             "" },
   { Event::DecAnalogSense,          "Decrease analog paddle sensitivity",    "" },
   { Event::IncAnalogSense,          "Increase analog paddle sensitivity",    "" },
+  { Event::DecAnalogLinear,         "Decrease analog paddle linearity",      "" },
+  { Event::IncAnalogLinear,         "Increase analog paddle linearity",      "" },
   { Event::DecDejtterAveraging,     "Decrease paddle dejitter averaging",    "" },
   { Event::IncDejtterAveraging,     "Increase paddle dejitter averaging",    "" },
   { Event::DecDejtterReaction,      "Decrease paddle dejitter reaction",     "" },
@@ -3467,7 +3513,9 @@ const Event::EventSet EventHandler::KeyboardEvents = {
 
 const Event::EventSet EventHandler::DevicesEvents = {
   Event::DecreaseDeadzone, Event::IncreaseDeadzone,
+  Event::DecAnalogDeadzone, Event::IncAnalogDeadzone,
   Event::DecAnalogSense, Event::IncAnalogSense,
+  Event::DecAnalogLinear, Event::IncAnalogLinear,
   Event::DecDejtterAveraging, Event::IncDejtterAveraging,
   Event::DecDejtterReaction, Event::IncDejtterReaction,
   Event::DecDigitalSense, Event::IncDigitalSense,

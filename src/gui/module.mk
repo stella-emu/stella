@@ -30,12 +30,12 @@ MODULE_OBJS := \
         src/gui/Launcher.o \
         src/gui/ListWidget.o \
         src/gui/LoggerDialog.o \
-        src/gui/Menu.o \
         src/gui/MessageBox.o \
         src/gui/MessageDialog.o \
         src/gui/MessageMenu.o \
         src/gui/MinUICommandDialog.o\
         src/gui/OptionsDialog.o \
+        src/gui/OptionsMenu.o \
         src/gui/PlusRomsMenu.o\
         src/gui/PlusRomsSetupDialog.o\
         src/gui/PopUpWidget.o \

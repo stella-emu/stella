@@ -277,17 +277,17 @@ void GameInfoDialog::addControllersTab()
   VarList::push_back(items, "Paddles", "PADDLES");
   VarList::push_back(items, "Paddles_IAxis", "PADDLES_IAXIS");
   VarList::push_back(items, "Paddles_IAxDr", "PADDLES_IAXDR");
-  VarList::push_back(items, "BoosterGrip", "BOOSTERGRIP");
+  VarList::push_back(items, "Booster Grip", "BOOSTERGRIP");
   VarList::push_back(items, "Driving", "DRIVING");
   VarList::push_back(items, "Keyboard", "KEYBOARD");
-  VarList::push_back(items, "AmigaMouse", "AMIGAMOUSE");
-  VarList::push_back(items, "AtariMouse", "ATARIMOUSE");
-  VarList::push_back(items, "Trakball", "TRAKBALL");
+  VarList::push_back(items, "Amiga mouse", "AMIGAMOUSE");
+  VarList::push_back(items, "Atari mouse", "ATARIMOUSE");
+  VarList::push_back(items, "Trak-Ball", "TRAKBALL");
   VarList::push_back(items, "AtariVox", "ATARIVOX");
   VarList::push_back(items, "SaveKey", "SAVEKEY");
   VarList::push_back(items, "Sega Genesis", "GENESIS");
-  VarList::push_back(items, "KidVid", "KIDVID");
-  VarList::push_back(items, "Lightgun", "LIGHTGUN");
+  VarList::push_back(items, "Kid Vid", "KIDVID");
+  VarList::push_back(items, "Light Gun", "LIGHTGUN");
   VarList::push_back(items, "MindLink", "MINDLINK");
   VarList::push_back(items, "QuadTari", "QUADTARI");
 

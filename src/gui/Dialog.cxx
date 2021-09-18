@@ -23,7 +23,7 @@
 #include "FrameBuffer.hxx"
 #include "FBSurface.hxx"
 #include "Font.hxx"
-#include "Menu.hxx"
+#include "OptionsMenu.hxx"
 #include "Dialog.hxx"
 #include "Widget.hxx"
 #include "TabWidget.hxx"

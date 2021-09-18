@@ -145,11 +145,15 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   myRandomBankWidget->setToolTip("Randomize the startup bank for\n"
                                  "most classic bankswitching types.");
   wid.push_back(myRandomBankWidget);
+
+  myRandomizeTIAWidget = new CheckboxWidget(myTab, font, myRandomBankWidget->getRight() + fontWidth * 2.5, ypos + 1,
+                                         "Randomize TIA");
+  wid.push_back(myRandomizeTIAWidget);
   ypos += lineHeight + VGAP;
 
   // Randomize RAM
   myRandomizeRAMWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
-                                            "Randomize zero-page and extended RAM", kRandRAMID);
+                                            "Randomize zero-page and extended RAM");
   wid.push_back(myRandomizeRAMWidget);
   ypos += lineHeight + VGAP;
 
@@ -162,7 +166,7 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   for(int i = 0; i < 5; ++i)
   {
     myRandomizeCPUWidget[i] = new CheckboxWidget(myTab, font, xpos, ypos + 1,
-                                           cpuregsLabels[i], kRandCPUID);
+                                           cpuregsLabels[i]);
     wid.push_back(myRandomizeCPUWidget[i]);
     xpos += CheckboxWidget::boxSize(font) + font.getStringWidth("XX") + fontWidth * 2.5;
   }
@@ -669,6 +673,7 @@ void DeveloperDialog::loadSettings(SettingsSet set)
   myConsole[set] = instance().settings().getString(prefix + "console") == "7800" ? 1 : 0;
   // Randomization
   myRandomBank[set] = instance().settings().getBool(prefix + "bankrandom");
+  myRandomizeTIA[set] = instance().settings().getBool(prefix + "tiarandom");
   myRandomizeRAM[set] = instance().settings().getBool(prefix + "ramrandom");
   myRandomizeCPU[set] = instance().settings().getString(prefix + "cpurandom");
   // Undriven TIA pins
@@ -725,6 +730,7 @@ void DeveloperDialog::saveSettings(SettingsSet set)
 
   // Randomization
   instance().settings().setValue(prefix + "bankrandom", myRandomBank[set]);
+  instance().settings().setValue(prefix + "tiarandom", myRandomizeTIA[set]);
   instance().settings().setValue(prefix + "ramrandom", myRandomizeRAM[set]);
   instance().settings().setValue(prefix + "cpurandom", myRandomizeCPU[set]);
 
@@ -786,6 +792,7 @@ void DeveloperDialog::getWidgetStates(SettingsSet set)
   myConsole[set] = myConsoleWidget->getSelected() == 1;
   // Randomization
   myRandomBank[set] = myRandomBankWidget->getState();
+  myRandomizeTIA[set] = myRandomizeTIAWidget->getState();
   myRandomizeRAM[set] = myRandomizeRAMWidget->getState();
   string cpurandom;
   const std::array<string, 5> cpuregs = {"S", "A", "X", "Y", "P"};
@@ -841,6 +848,7 @@ void DeveloperDialog::setWidgetStates(SettingsSet set)
   myConsoleWidget->setSelectedIndex(myConsole[set]);
   // Randomization
   myRandomBankWidget->setState(myRandomBank[set]);
+  myRandomizeTIAWidget->setState(myRandomizeTIA[set]);
   myRandomizeRAMWidget->setState(myRandomizeRAM[set]);
 
   const string& cpurandom = myRandomizeCPU[set];
@@ -1025,6 +1033,7 @@ void DeveloperDialog::setDefaults()
       myConsole[set] = 0;
       // Randomization
       myRandomBank[set] = devSettings ? true : false;
+      myRandomizeTIA[set] = true;
       myRandomizeRAM[set] = true;
       myRandomizeCPU[set] = devSettings ? "SAXYP" : "AXYP";
       // Undriven TIA pins

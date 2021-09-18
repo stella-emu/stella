@@ -689,8 +689,12 @@ PhysicalKeyboardHandler::DefaultCommonMapping = {
 
   { Event::DecreaseDeadzone,         KBDK_F1, KBDM_CTRL | KBDM_SHIFT },
   { Event::IncreaseDeadzone,         KBDK_F1, KBDM_CTRL },
+  { Event::DecAnalogDeadzone,        KBDK_F1, KBDM_CTRL | MOD3 | KBDM_SHIFT},
+  { Event::IncAnalogDeadzone,        KBDK_F1, KBDM_CTRL | MOD3},
   { Event::DecAnalogSense,           KBDK_F2, KBDM_CTRL | KBDM_SHIFT },
   { Event::IncAnalogSense,           KBDK_F2, KBDM_CTRL },
+  { Event::DecAnalogLinear,          KBDK_F2, KBDM_CTRL | MOD3 | KBDM_SHIFT},
+  { Event::IncAnalogLinear,          KBDK_F2, KBDM_CTRL | MOD3},
   { Event::DecDejtterAveraging,      KBDK_F3, KBDM_CTRL | KBDM_SHIFT },
   { Event::IncDejtterAveraging,      KBDK_F3, KBDM_CTRL },
   { Event::DecDejtterReaction,       KBDK_F4, KBDM_CTRL | KBDM_SHIFT },

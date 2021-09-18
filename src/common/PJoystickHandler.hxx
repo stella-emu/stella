@@ -110,8 +110,10 @@ class PhysicalJoystickHandler
     /** Returns a list of pairs consisting of joystick name and associated ID. */
     VariantList database() const;
 
-    void changeDeadzone(int direction = +1);
+    void changeDigitalDeadZone(int direction = +1);
+    void changeAnalogPaddleDeadZone(int direction = +1);
     void changeAnalogPaddleSensitivity(int direction = +1);
+    void changeAnalogPaddleLinearity(int direction = +1);
     void changePaddleDejitterAveraging(int direction = +1);
     void changePaddleDejitterReaction(int direction = +1);
     void changeDigitalPaddleSensitivity(int direction = +1);
