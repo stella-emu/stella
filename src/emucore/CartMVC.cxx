@@ -1355,6 +1355,20 @@ void MovieCart::runStateMachine()
     case 2:
       if(!myA7)
       {
+         if(myOdd)
+         {
+            if(myDrawTimeCode)
+            {
+               if (myLines == (TIMECODE_HEIGHT - 0))
+                  myStream.blankPartialLines(true);
+            }
+            if(myDrawLevelBars)
+            {
+               if(myLines == 22)
+                  myStream.blankPartialLines(true);
+            }
+        }  
+
         if(myLines >= 1)
         {
           fill_addr_left_line(1);
