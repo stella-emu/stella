@@ -1061,9 +1061,9 @@ void MovieCart::updateTransport()
     if(myMode == Mode::Time)
     {
       if(myInputs.right && !myLastInputs.right)
-        step = 1;
+        step = 2;
       else if(myInputs.left && !myLastInputs.left)
-        step = -3;
+        step = -2;
       else
         step = (myFrameNumber & 1) ? -1 : 1;
     }
@@ -1403,6 +1403,7 @@ void MovieCart::runStateMachine()
         {
           myFrameNumber -= 2;
           myJoyRepeat = 0;
+          myPlaying = false;
         }
 
         myForceColor = 0;
