@@ -756,17 +756,20 @@ bool CartDetector::isProbablyUA(const ByteBuffer& image, size_t size)
   // Similar Brazilian (Digivison) cart bankswitching switches to bank 1 by accessing address 0x2C0
   // using 'BIT $2C0', 'STA $2C0' or 'LDA $2C0'
   // Other Brazilian (Atari Mania) ROM's bankswitching switches to bank 1 by accessing address 0xFC0
-  // using 'BIT $FA0', 'BIT $FC0' or 'STA $FA0'
-  uInt8 signature[7][3] = {
+  // using 'BIT $FA0', 'BIT $FC0' or 'STA $FC0'
+  // Also a game (Motocross) using 'BIT $EFC0' has been found
+  uInt8 signature[9][3] = {
     { 0x8D, 0x40, 0x02 },  // STA $240 (Funky Fish, Pleiades)
     { 0xAD, 0x40, 0x02 },  // LDA $240 (???)
     { 0xBD, 0x1F, 0x02 },  // LDA $21F,X (Gingerbread Man)
     { 0x2C, 0xC0, 0x02 },  // BIT $2C0 (Time Pilot)
     { 0x8D, 0xC0, 0x02 },  // STA $2C0 (Fathom, Vanguard)
     { 0xAD, 0xC0, 0x02 },  // LDA $2C0 (Mickey)
-    { 0x2C, 0xC0, 0x0F }   // BIT $FC0 (H.E.R.O., Kung-Fu Master)
+    { 0x2C, 0xC0, 0x0F },  // BIT $FC0 (H.E.R.O., Kung-Fu Master)
+    { 0x8d, 0xC0, 0x0F },  // STA $FC0 (Pole Position)
+    { 0x2C, 0xC0, 0xEF }   // BIT $EFC0 (Motocross)
   };
-  for(uInt32 i = 0; i < 7; ++i)
+  for(uInt32 i = 0; i < 9; ++i)
     if(searchForBytes(image, size, signature[i], 3))
       return true;
 
