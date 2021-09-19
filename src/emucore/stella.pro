@@ -1,4 +1,4 @@
-€ggo"Cart.MD5" "000509d1ed2b8d30a9d94be1b3b5febb"
+"Cart.MD5" "000509d1ed2b8d30a9d94be1b3b5febb"
 "Cart.Manufacturer" "Greg Zumwalt"
 "Cart.Name" "Jungle Jane (2003) (Greg Zumwalt) (Hack)"
 "Cart.Note" "Hack of Pitfall!"
@@ -1199,7 +1199,7 @@
 
 "Cart.MD5" "0d6b974fe58a1bdd453600401c407856"
 "Cart.Manufacturer" "Atari"
-"Cart.Name" "128-in-1 Junior Console (Chip 3 or 4) (1991) (Atari) (PAL)"
+"Cart.Name" "128 in 1 Junior Console (Chip 3 or 4) (1991) (Atari) (PAL)"
 "Cart.Note" "Actually contains only 16 games, not 32"
 "Cart.Type" "16IN1"
 ""
@@ -1574,8 +1574,8 @@
 ""
 
 "Cart.MD5" "11330eaa5dd2629052fac37cfe1a0b7d"
-"Cart.Manufacturer" "128-in-1 Junior Console"
-"Cart.Name" "Human Cannonball (128-in-1 Junior Console) (PAL)"
+"Cart.Manufacturer" "128 in 1 Junior Console"
+"Cart.Name" "Human Cannonball (128 in 1 Junior Console) (PAL)"
 ""
 
 "Cart.MD5" "113cd09c9771ac278544b7e90efe7df2"
@@ -2215,7 +2215,7 @@
 
 "Cart.MD5" "1862fca4f98e66f363308b859b5863af"
 "Cart.Manufacturer" "Atari"
-"Cart.Name" "128-in-1 Junior Console (Chip 1 of 4) (1991) (Atari) (PAL)"
+"Cart.Name" "128 in 1 Junior Console (Chip 1 of 4) (1991) (Atari) (PAL)"
 "Cart.Note" "Actually contains only 16 games, not 32"
 "Cart.Type" "16IN1"
 ""
@@ -8680,7 +8680,7 @@
 ""
 
 "Cart.MD5" "61baadddc2c8f6e5faa57d4d0f285462"
-"Cart.Name" "208-in-1 MDM-Test (PAL) (127 games)"
+"Cart.Name" "208 in 1 MDM-Test (PAL) (127 games)"
 "Cart.Type" "MDM"
 "Controller.Left" "JOYSTICK"
 "Controller.Right" "JOYSTICK"
@@ -10192,7 +10192,7 @@
 
 "Cart.MD5" "715dd9e0240638d441a3add49316c018"
 "Cart.Manufacturer" "Atari"
-"Cart.Name" "128-in-1 Junior Console (Chip 2 of 4) (1991) (Atari) (PAL)"
+"Cart.Name" "128 in 1 Junior Console (Chip 2 of 4) (1991) (Atari) (PAL)"
 "Cart.Note" "Actually contains only 16 games, not 32"
 "Cart.Type" "16IN1"
 ""
@@ -11507,7 +11507,7 @@
 
 "Cart.MD5" "7f525b07bc98080cc8950f7284e52ede"
 "Cart.Manufacturer" "Atari"
-"Cart.Name" "128-in-1 Junior Console (Chip 4 of 4) (1991) (Atari) (PAL)"
+"Cart.Name" "128 in 1 Junior Console (Chip 4 of 4) (1991) (Atari) (PAL)"
 "Cart.Note" "Actually contains only 16 games, not 32"
 "Cart.Type" "16IN1"
 ""
@@ -12447,8 +12447,8 @@
 ""
 
 "Cart.MD5" "8a6c84f481acf42abcb78ba5064ad755"
-"Cart.Manufacturer" "128-in-1 Junior Console"
-"Cart.Name" "Street Racer (128-in-1 Junior Console) (PAL) (4K)"
+"Cart.Manufacturer" "128 in 1 Junior Console"
+"Cart.Name" "Street Racer (128 in 1 Junior Console) (PAL) (4K)"
 "Cart.Note" "Uses the Paddle Controllers (swapped)"
 "Controller.SwapPaddles" "YES"
 "Controller.MouseAxis" "10 75"
@@ -13290,7 +13290,7 @@
 
 "Cart.MD5" "94e3fbc19107a169909e274187247a9d"
 "Cart.ModelNo" "2402-044-01"
-"Cart.Name" "2-in-1 Freeway and Tennis (Unknown)"
+"Cart.Name" "2 in 1 Freeway and Tennis (Unknown)"
 "Cart.Type" "2IN1"
 ""
 
@@ -17314,8 +17314,8 @@
 ""
 
 "Cart.MD5" "c6c63da3bc2e47291f63280e057061d0"
-"Cart.Manufacturer" "128-in-1 Junior Console"
-"Cart.Name" "Human Cannonball (128-in-1 Junior Console) (PAL) (4K)"
+"Cart.Manufacturer" "128 in 1 Junior Console"
+"Cart.Name" "Human Cannonball (128 in 1 Junior Console) (PAL) (4K)"
 ""
 
 "Cart.MD5" "c6d48c6ae6461e0e82753540a985ac9e"
@@ -17929,6 +17929,10 @@
 "Cart.Name" "Qb (V0.12) (Stella) (2001) (Retroactive)"
 "Display.Phosphor" "YES"
 ""
+
+"Cart.MD5" "cdd4a538c420358ab64767d326921bf6"
+"Cart.Name" "4 in 1 (Logitachi)"
+"Cart.Type" "4IN1"
 
 "Cart.MD5" "cddabfd68363a76cd30bee4e8094c646"
 "Cart.Manufacturer" "Computer Magic - CommaVid, John Bronstein"
@@ -20870,6 +20874,10 @@
 "Cart.ModelNo" "CX2626, CX2626P"
 "Cart.Name" "Miniature Golf (1979) (Atari) (PAL)"
 ""
+
+"Cart.MD5" "ed637054c93e82e436618bcc687e8777"
+"Cart.Name" "2 in 1 (Motocross, Pole Position)"
+"Cart.Type" "2IN1"
 
 "Cart.MD5" "ed8f319e82d355832195eb7715644795"
 "Cart.Manufacturer" "Activision, Larry Kaplan, David Crane"
