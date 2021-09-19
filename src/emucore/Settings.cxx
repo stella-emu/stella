@@ -208,7 +208,7 @@ Settings::Settings()
   setPermanent("plr.bankrandom", "false");
   setPermanent("plr.ramrandom", "true");
   setPermanent("plr.cpurandom", "AXYP");
-  setPermanent("plr.tiarandom", "true");
+  setPermanent("plr.tiarandom", "false");
   setPermanent("plr.colorloss", "false");
   setPermanent("plr.tv.jitter", "true");
   setPermanent("plr.tv.jitter_recovery", "10");

@@ -1,4 +1,4 @@
-"Cart.MD5" "000509d1ed2b8d30a9d94be1b3b5febb"
+€ggo"Cart.MD5" "000509d1ed2b8d30a9d94be1b3b5febb"
 "Cart.Manufacturer" "Greg Zumwalt"
 "Cart.Name" "Jungle Jane (2003) (Greg Zumwalt) (Hack)"
 "Cart.Note" "Hack of Pitfall!"
@@ -438,6 +438,8 @@
 "Cart.Note" "Uses the Paddle Controllers (swapped)"
 "Controller.SwapPaddles" "YES"
 "Controller.MouseAxis" "10 50"
+"Controller.PaddlesXCenter" "16"
+"Controller.PaddlesYCenter" "16"
 ""
 
 "Cart.MD5" "05c60458ec69e7fe8b1be973852d84f1"
@@ -936,6 +938,8 @@
 "Cart.Name" "Super Breakout (1982 - 1981) (Atari) [a]"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.MouseAxis" "01 45"
+"Controller.PaddlesXCenter" "17"
+"Controller.PaddlesYCenter" "17"
 "Cart.Highscore" "{\"score_addresses\":[\"0xdc\",\"0xdd\"],\"variations_address\":\"0xc0\",\"variations_count\":9}"
 ""
 
@@ -1059,6 +1063,8 @@
 "Cart.ModelNo" "R320"
 "Cart.Name" "Circus Atari (32 in 1) (BitCorp) (Hack)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xab\"],\"variations_address\":\"0xa8\",\"variations_count\":8}"
+"Controller.Left" "JOYSTICK"
+"Controller.Right" "JOYSTICK"
 ""
 
 "Cart.MD5" "0c35806ff0019a270a7acae68de89d28"
@@ -1114,6 +1120,8 @@
 "Cart.Name" "Warlords (1981) (Atari) (PAL)"
 "Cart.Note" "Uses the Paddle Controllers"
 "Controller.MouseAxis" "01 50"
+"Controller.PaddlesXCenter" "18"
+"Controller.PaddlesYCenter" "19"
 ""
 
 "Cart.MD5" "0cb7af80fd0ddef84844481d85e5d29b"
@@ -2072,6 +2080,8 @@
 "Controller.Left" "PADDLES"
 "Controller.SwapPaddles" "YES"
 "Controller.MouseAxis" "AUTO 55"
+"Controller.PaddlesXCenter" "16"
+"Controller.PaddlesYCenter" "16"
 ""
 
 "Cart.MD5" "171cd6b55267573e6a9c2921fb720794"
@@ -2158,6 +2168,8 @@
 "Cart.Name" "Picnic (1983) (U.S. Games)"
 "Cart.Note" "Uses the Paddle Controllers"
 "Controller.MouseAxis" "AUTO 45"
+"Controller.PaddlesXCenter" "22"
+"Controller.PaddlesYCenter" "22"
 ""
 
 "Cart.MD5" "17d000a2882f9fdaa8b4a391ad367f00"
@@ -2301,6 +2313,8 @@
 "Cart.Name" "Super Breakout Menu (2020) (PAL) (Hack)"
 "Cart.Note" "Hack of Super Breakout"
 "Controller.MouseAxis" "AUTO 55"
+"Controller.PaddlesXCenter" "17"
+"Controller.PaddlesYCenter" "17"
 "Cart.Highscore" "{\"score_addresses\":[\"0xdc\",\"0xdd\"],\"variations_address\":\"0xc0\",\"variations_count\":9}"
 ""
 
@@ -3167,6 +3181,8 @@
 "Cart.Name" "Picnic (1983) (Carrere Video) (PAL)"
 "Cart.Note" "Uses the Paddle Controllers"
 "Controller.MouseAxis" "AUTO 45"
+"Controller.PaddlesXCenter" "22"
+"Controller.PaddlesYCenter" "22"
 ""
 
 "Cart.MD5" "245f07c8603077a0caf5f83ee6cf8b43"
@@ -3476,6 +3492,7 @@
 "Cart.Rarity" "Homebrew"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=329"
 "Controller.MouseAxis" "28"
+"Controller.PaddlesXCenter" "7"
 "Cart.Highscore" "{\"score_addresses\":[\"0xfd\",\"0xfe\",\"0xff\"],\"score_digits\":6,\"variations_address\":\"0xfc\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
@@ -3485,6 +3502,8 @@
 "Cart.Note" "Hack of Video Olympics"
 "Controller.SwapPaddles" "YES"
 "Controller.MouseAxis" "AUTO 60"
+"Controller.PaddlesXCenter" "13"
+"Controller.PaddlesYCenter" "13"
 ""
 
 "Cart.MD5" "27baecd618e7e53dc11f2a9c559f529d"
@@ -3699,6 +3718,8 @@
 "Cart.Note" "Hack of Kaboom!"
 "Cart.Rarity" "Hack"
 "Controller.MouseAxis" "01 50"
+"Controller.PaddlesXCenter" "17"
+"Controller.PaddlesYCenter" "17"
 "Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
@@ -3813,6 +3834,8 @@
 "Cart.Name" "Eggomania (1983) (Carrere Video) (PAL)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.MouseAxis" "AUTO 60"
+"Controller.PaddlesXCenter" "10"
+"Controller.PaddlesYCenter" "10"
 ""
 
 "Cart.MD5" "2b27eb194e13f3b38d23c879cc1e3abf"
@@ -4333,6 +4356,8 @@
 "Cart.Name" "Circus Atari (1980) (Atari) (PAL)"
 "Cart.Note" "Uses the Paddle Controllers"
 "Controller.MouseAxis" "01 55"
+"Controller.PaddlesXCenter" "14"
+"Controller.PaddlesYCenter" "14"
 "Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xab\"],\"variations_address\":\"0xa8\",\"variations_count\":8}"
 ""
 
@@ -5010,6 +5035,8 @@
 "Cart.Name" "Fireball (1982) (Arcadia)"
 "Cart.Note" "Uses the Paddle Controllers"
 "Controller.MouseAxis" "01"
+"Controller.PaddlesXCenter" "15"
+"Controller.PaddlesYCenter" "15"
 ""
 
 "Cart.MD5" "3882224adbd0ca7c748b2a1c9b87263e"
@@ -5079,6 +5106,7 @@
 "Cart.Name" "Night Driver (1980) (Atari)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.MouseAxis" "AUTO 65"
+"Controller.PaddlesXCenter" "12"
 "Display.Phosphor" "YES"
 ""
 
@@ -5944,6 +5972,8 @@
 "Cart.Name" "Eggomania (1982) (U.S. Games)"
 "Cart.Note" "Uses the Paddle Controllers"
 "Controller.MouseAxis" "AUTO 60"
+"Controller.PaddlesXCenter" "10"
+"Controller.PaddlesYCenter" "10"
 ""
 
 "Cart.MD5" "42b3ab3cf661929bdc77b621a8c37574"
@@ -6033,6 +6063,8 @@
 "Cart.Url" "http://www.atariprotos.com/2600/software/jediarena/jediarena.htm"
 "Controller.SwapPaddles" "YES"
 "Controller.MouseAxis" "10 50"
+"Controller.PaddlesXCenter" "16"
+"Controller.PaddlesYCenter" "16"
 ""
 
 "Cart.MD5" "442b7863683e5f084716fda050474feb"
@@ -6245,6 +6277,8 @@
 "Controller.Left" "PADDLES"
 "Controller.SwapPaddles" "YES"
 "Controller.MouseAxis" "AUTO 55"
+"Controller.PaddlesXCenter" "16"
+"Controller.PaddlesYCenter" "16"
 ""
 
 "Cart.MD5" "4702d8d9b48a332724af198aeac9e469"
@@ -6419,6 +6453,9 @@
 "Console.SwapPorts" "YES"
 "Controller.SwapPaddles" "YES"
 "Controller.MouseAxis" "AUTO 60"
+"Controller.PaddlesXCenter" "18"
+"Controller.PaddlesYCenter" "18"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "48bcf2c5a8c80f18b24c55db96845472"
@@ -6859,6 +6896,11 @@
 "Cart.Name" "Betterblast (Fabrizio Zavagli) (Hack)"
 "Cart.Note" "Hack of Astroblast"
 "Cart.Rarity" "Hack"
+"Controller.Left" "PADDLES"
+"Controller.SwapPaddles" "YES"
+"Controller.MouseAxis" "AUTO 55"
+"Controller.PaddlesXCenter" "16"
+"Controller.PaddlesYCenter" "16"
 ""
 
 "Cart.MD5" "4d7517ae69f95cfbc053be01312b7dba"
@@ -6910,6 +6952,8 @@
 "Cart.Name" "Breakout (1978) (Atari) [a]"
 "Cart.Note" "Uses the Paddle Controllers"
 "Controller.MouseAxis" "01 60"
+"Controller.PaddlesXCenter" "12"
+"Controller.PaddlesYCenter" "12"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xce\",\"0xcd\"],\"score_digits\":3,\"variations_count\":1}"
 ""
 
@@ -7108,6 +7152,7 @@
 "Cart.Rarity" "Homebrew"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=329"
 "Controller.MouseAxis" "28"
+"Controller.PaddlesXCenter" "7"
 "Cart.Highscore" "{\"score_addresses\":[\"0xfd\",\"0xfe\",\"0xff\"],\"score_digits\":6,\"variations_address\":\"0xfc\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
@@ -7199,6 +7244,8 @@
 "Cart.Name" "Encounter at L-5 (1983) (Gameworld) (PAL)"
 "Cart.Note" "Uses the Paddle Controllers"
 "Controller.MouseAxis" "AUTO 50"
+"Controller.PaddlesXCenter" "15"
+"Controller.PaddlesYCenter" "15"
 ""
 
 "Cart.MD5" "519f007c0e14fb90208dbb5199dfb604"
@@ -7393,6 +7440,8 @@
 "Cart.Note" "Hack of Video Olympics"
 "Controller.SwapPaddles" "YES"
 "Controller.MouseAxis" "AUTO 60"
+"Controller.PaddlesXCenter" "13"
+"Controller.PaddlesYCenter" "13"
 ""
 
 "Cart.MD5" "537ed1e0d80e6c9f752b33ea7acbe079"
@@ -7482,6 +7531,8 @@
 "Cart.Name" "Kaboom! (1981) (Activision)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.MouseAxis" "01 50"
+"Controller.PaddlesXCenter" "17"
+"Controller.PaddlesYCenter" "17"
 "Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
@@ -7498,6 +7549,9 @@
 "Cart.ModelNo" "3 AR-4300"
 "Cart.Name" "Fireball (1982) (Arcadia) (Prototype)"
 "Cart.Note" "Uses the Paddle Controllers"
+"Controller.MouseAxis" "01"
+"Controller.PaddlesXCenter" "15"
+"Controller.PaddlesYCenter" "15"
 ""
 
 "Cart.MD5" "543b4b8ff1d616fa250c648be428a75c"
@@ -7550,6 +7604,8 @@
 "Cart.Note" "Hack of Kaboom!"
 "Cart.Rarity" "Hack"
 "Controller.MouseAxis" "01 50"
+"Controller.PaddlesXCenter" "17"
+"Controller.PaddlesYCenter" "17"
 "Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
@@ -7868,6 +7924,7 @@
 "Cart.Note" "Uses the Paddle Controllers"
 "Cart.Rarity" "Extremely Rare"
 "Controller.MouseAxis" "AUTO 45"
+"Controller.PaddlesXCenter" "20"
 ""
 
 "Cart.MD5" "59f596285d174233c84597dee6f34f1f"
@@ -8227,6 +8284,7 @@
 "Cart.Rarity" "Homebrew"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=329"
 "Controller.MouseAxis" "28"
+"Controller.PaddlesXCenter" "7"
 "Cart.Highscore" "{\"score_addresses\":[\"0xfd\",\"0xfe\",\"0xff\"],\"score_digits\":6,\"variations_address\":\"0xfc\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
@@ -8399,6 +8457,8 @@
 "Cart.Name" "Eggomania (Canal 3)"
 "Cart.Note" "Uses the Paddle Controllers"
 "Controller.MouseAxis" "AUTO 60"
+"Controller.PaddlesXCenter" "10"
+"Controller.PaddlesYCenter" "10"
 ""
 
 "Cart.MD5" "5f681403b1051a0822344f467b05a94d"
@@ -8521,6 +8581,7 @@
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/secretagent/secretagent.htm"
 "Controller.MouseAxis" "01 45"
+"Controller.PaddlesXCenter" "18"
 ""
 
 "Cart.MD5" "606c2c1753051e03c1f1ac096c9d2832"
@@ -8567,6 +8628,8 @@
 "Controller.Right" "PADDLES_IAXDR"
 "Controller.SwapPaddles" "YES"
 "Controller.MouseAxis" "AUTO 60"
+"Controller.PaddlesXCenter" "13"
+"Controller.PaddlesYCenter" "13"
 ""
 
 "Cart.MD5" "613abf596c304ef6dbd8f3351920c37a"
@@ -8998,6 +9061,8 @@
 "Cart.Name" "Music Machine, The (1983) (Sparrow)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.MouseAxis" "AUTO 45"
+"Controller.PaddlesXCenter" "20"
+"Controller.PaddlesYCenter" "20"
 ""
 
 "Cart.MD5" "65ba1a4c643d1ab44481bdddeb403827"
@@ -9122,7 +9187,6 @@
 "Cart.ModelNo" "AR-4300"
 "Cart.Name" "Fireball (Preview) (1982) (Arcadia)"
 "Cart.Note" "Uses the Paddle Controllers"
-"Controller.MouseAxis" "01"
 ""
 
 "Cart.MD5" "66c2380c71709efa7b166621e5bb4558"
@@ -9201,6 +9265,8 @@
 "Cart.Name" "Warplock (1982) (Data Age)"
 "Cart.Note" "Uses the Paddle Controllers"
 "Controller.MouseAxis" "01 40"
+"Controller.PaddlesXCenter" "22"
+"Controller.PaddlesYCenter" "22"
 "Display.Phosphor" "YES"
 ""
 
@@ -9273,6 +9339,8 @@
 "Cart.Name" "Fireball (1982) (Arcadia) [a]"
 "Cart.Note" "Uses the Paddle Controllers"
 "Controller.MouseAxis" "01"
+"Controller.PaddlesXCenter" "15"
+"Controller.PaddlesYCenter" "15"
 ""
 
 "Cart.MD5" "683dc64ef7316c13ba04ee4398e2b93a"
@@ -9489,7 +9557,9 @@
 "Cart.Note" "Uses the Paddle Controller (left only)"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/guardian/guardian.htm"
-"Controller.MouseAxis" "01"
+"Controller.MouseAxis" "01 65"
+"Controller.PaddlesXCenter" "5"
+"Controller.PaddlesYCenter" "9"
 ""
 
 "Cart.MD5" "6a091b8ffeacd0939850da2094b51564"
@@ -9695,6 +9765,7 @@
 "Cart.Name" "Beat 'Em & Eat 'Em (1983) (Dynacom)"
 "Cart.Note" "Uses the Paddle Controller (left only)"
 "Controller.MouseAxis" "AUTO 45"
+"Controller.PaddlesXCenter" "20"
 ""
 
 "Cart.MD5" "6c449db9bbbd90972ad1932d6af87330"
@@ -9713,6 +9784,8 @@
 "Cart.Name" "Breakout (1978) (Atari) (PAL)"
 "Cart.Note" "Uses the Paddle Controllers"
 "Controller.MouseAxis" "01 60"
+"Controller.PaddlesXCenter" "9"
+"Controller.PaddlesYCenter" "9"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xce\",\"0xcd\"],\"score_digits\":3,\"variations_count\":1}"
 ""
 
@@ -10441,6 +10514,8 @@
 "Controller.Left" "PADDLES"
 "Controller.SwapPaddles" "YES"
 "Controller.MouseAxis" "AUTO 55"
+"Controller.PaddlesXCenter" "16"
+"Controller.PaddlesYCenter" "16"
 ""
 
 "Cart.MD5" "752da1c0acd7d132ccfb0b1067f53cf6"
@@ -10710,6 +10785,8 @@
 "Controller.Right" "PADDLES_IAXDR"
 "Controller.SwapPaddles" "YES"
 "Controller.MouseAxis" "AUTO 60"
+"Controller.PaddlesXCenter" "13"
+"Controller.PaddlesYCenter" "13"
 ""
 
 "Cart.MD5" "78297db7f416af3052dd793b53ff014e"
@@ -10802,6 +10879,11 @@
 "Cart.Name" "Face Invaders 2 (Barry Laws Jr.) (Hack)"
 "Cart.Note" "Hack of Astroblast"
 "Cart.Rarity" "Hack"
+"Controller.Left" "PADDLES"
+"Controller.SwapPaddles" "YES"
+"Controller.MouseAxis" "AUTO 55"
+"Controller.PaddlesXCenter" "16"
+"Controller.PaddlesYCenter" "16"
 ""
 
 "Cart.MD5" "792b1d93eb1d8045260c840b0688ec8f"
@@ -10933,6 +11015,8 @@
 "Cart.Note" "Hack of Kaboom!"
 "Cart.Rarity" "Hack"
 "Controller.MouseAxis" "01 50"
+"Controller.PaddlesXCenter" "17"
+"Controller.PaddlesYCenter" "17"
 "Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
@@ -10946,6 +11030,8 @@
 "Cart.Name" "Guardian (1982) (Apollo)"
 "Cart.Note" "Uses the Paddle Controllers"
 "Controller.MouseAxis" "01 65"
+"Controller.PaddlesXCenter" "5"
+"Controller.PaddlesYCenter" "9"
 ""
 
 "Cart.MD5" "7ac4f4fb425db38288fa07fb8ff4b21d"
@@ -11600,6 +11686,8 @@
 "Cart.Note" "Hack of Kaboom!"
 "Cart.Rarity" "Hack"
 "Controller.MouseAxis" "01 50"
+"Controller.PaddlesXCenter" "17"
+"Controller.PaddlesYCenter" "17"
 "Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
@@ -12202,6 +12290,8 @@
 "Cart.Name" "Super Breakout (1982 - 1981) (Atari)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.MouseAxis" "01 45"
+"Controller.PaddlesXCenter" "17"
+"Controller.PaddlesYCenter" "17"
 "Cart.Highscore" "{\"score_addresses\":[\"0xdc\",\"0xdd\"],\"variations_address\":\"0xc0\",\"variations_count\":9}"
 ""
 
@@ -12509,6 +12599,8 @@
 "Cart.Name" "Super Breakout Menu (2020) (PAL60) (Hack)"
 "Cart.Note" "Hack of Super Breakout"
 "Controller.MouseAxis" "AUTO 45"
+"Controller.PaddlesXCenter" "17"
+"Controller.PaddlesYCenter" "17"
 "Cart.Highscore" "{\"score_addresses\":[\"0xdc\",\"0xdd\"],\"variations_address\":\"0xc0\",\"variations_count\":9}"
 ""
 
@@ -13423,6 +13515,8 @@
 "Cart.Name" "Solar Storm (1983) (Imagic)"
 "Cart.Note" "Uses the Paddle Controllers"
 "Controller.MouseAxis" "01 45"
+"Controller.PaddlesXCenter" "20"
+"Controller.PaddlesYCenter" "20"
 ""
 
 "Cart.MD5" "97933c9f20873446e4c1f8a4da21575f"
@@ -13646,6 +13740,8 @@
 "Cart.Name" "Breakout (1978) (Atari) (4K)"
 "Cart.Note" "Uses the Paddle Controllers"
 "Controller.MouseAxis" "01 60"
+"Controller.PaddlesXCenter" "12"
+"Controller.PaddlesYCenter" "12"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xce\",\"0xcd\"],\"score_digits\":3,\"variations_count\":1}"
 ""
 
@@ -14002,6 +14098,8 @@
 "Cart.Name" "Super Breakout Menu (2020) (Hack)"
 "Cart.Note" "Hack of Super Breakout"
 "Controller.MouseAxis" "AUTO 45"
+"Controller.PaddlesXCenter" "17"
+"Controller.PaddlesYCenter" "17"
 "Cart.Highscore" "{\"score_addresses\":[\"0xdc\",\"0xdd\"],\"variations_address\":\"0xc0\",\"variations_count\":9}"
 ""
 
@@ -14234,6 +14332,8 @@
 "Cart.Manufacturer" "Atari"
 "Cart.Name" "Circus Atari (1980) (Atari) (Joystick)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xab\"],\"variations_address\":\"0xa8\",\"variations_count\":8}"
+"Controller.Left" "JOYSTICK"
+"Controller.Right" "JOYSTICK"
 ""
 
 "Cart.MD5" "a29fc854838e08c247553a7d883dd65b"
@@ -14295,6 +14395,8 @@
 "Cart.Name" "Circus (Zellers)"
 "Cart.Note" "AKA Circus Atari"
 "Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xab\"],\"variations_address\":\"0xa8\",\"variations_count\":8}"
+"Controller.Left" "JOYSTICK"
+"Controller.Right" "JOYSTICK"
 ""
 
 "Cart.MD5" "a310494ad5ba2b5b221a30d7180a0336"
@@ -14347,7 +14449,6 @@
 "Cart.ModelNo" "AR-4300"
 "Cart.Name" "Fireball (Preview) (1982) (Arcadia) (PAL)"
 "Cart.Note" "Uses the Paddle Controllers"
-"Controller.MouseAxis" "01"
 ""
 
 "Cart.MD5" "a3f2a0fcf74bbc5fa763b0ee979b05b1"
@@ -14639,6 +14740,8 @@
 "Cart.Name" "Circus Atari (1980) (Atari)"
 "Cart.Note" "Uses the Paddle Controllers"
 "Controller.MouseAxis" "01 55"
+"Controller.PaddlesXCenter" "16"
+"Controller.PaddlesYCenter" "16"
 "Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xab\"],\"variations_address\":\"0xa8\",\"variations_count\":8}"
 ""
 
@@ -14798,6 +14901,8 @@
 "Cart.Note" "Hack of Kaboom!"
 "Cart.Rarity" "Hack"
 "Controller.MouseAxis" "01 50"
+"Controller.PaddlesXCenter" "17"
+"Controller.PaddlesYCenter" "17"
 "Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
@@ -15281,6 +15386,8 @@
 "Cart.Name" "Kaboom! (1981) (Activision) (4K)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.MouseAxis" "01 50"
+"Controller.PaddlesXCenter" "17"
+"Controller.PaddlesYCenter" "17"
 "Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
@@ -15400,6 +15507,8 @@
 "Cart.Name" "Kaboom! (1981) (Activision) (PAL) (4K)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.MouseAxis" "01 50"
+"Controller.PaddlesXCenter" "17"
+"Controller.PaddlesYCenter" "17"
 "Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
@@ -15758,6 +15867,7 @@
 "Cart.Name" "Beat 'Em & Eat 'Em (1982) (Mystique) (PAL)"
 "Cart.Note" "Uses the Paddle Controller (left only)"
 "Controller.MouseAxis" "AUTO 45"
+"Controller.PaddlesXCenter" "20"
 ""
 
 "Cart.MD5" "b4f87ce75f7329c18301a2505fe59cd3"
@@ -16124,6 +16234,9 @@
 "Cart.Name" "Action Force (1983) (Parker Bros) (PAL)"
 "Cart.Note" "AKA G.I. Joe - Cobra Strike"
 "Controller.MouseAxis" "01 55"
+"Controller.PaddlesXCenter" "10"
+"Controller.PaddlesYCenter" "10"
+"Controller.Right" "JOYSTICK"
 ""
 
 "Cart.MD5" "b9f9c0fed0db08c34346317f3957a945"
@@ -16478,6 +16591,8 @@
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.SwapPaddles" "YES"
 "Controller.MouseAxis" "10 57"
+"Controller.PaddlesXCenter" "15"
+"Controller.PaddlesYCenter" "15"
 ""
 
 "Cart.MD5" "bf976cf80bcf52c5f164c1d45f2b316b"
@@ -16525,6 +16640,8 @@
 "Controller.Left" "PADDLES_IAXDR"
 "Controller.SwapPaddles" "YES"
 "Controller.MouseAxis" "AUTO 60"
+"Controller.PaddlesXCenter" "13"
+"Controller.PaddlesYCenter" "13"
 ""
 
 "Cart.MD5" "c02e1afa0671e438fd526055c556d231"
@@ -16695,6 +16812,9 @@
 "Cart.ModelNo" "PB5920"
 "Cart.Name" "G.I. Joe - Cobra Strike (1983) (Parker Bros)"
 "Cart.Note" "Uses the Paddle (left) and Joystick (right) Controllers"
+"Controller.PaddlesXCenter" "16"
+"Controller.PaddlesYCenter" "16"
+"Controller.Right" "JOYSTICK"
 ""
 
 "Cart.MD5" "c20f15282a1aa8724d70c117e5c9709e"
@@ -16988,6 +17108,8 @@
 "Cart.Note" "Hack of Kaboom!"
 "Cart.Rarity" "Hack"
 "Controller.MouseAxis" "01 50"
+"Controller.PaddlesXCenter" "17"
+"Controller.PaddlesYCenter" "17"
 "Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
@@ -17138,6 +17260,8 @@
 "Cart.Name" "Breakout (1978) (Atari) (PAL) (4K)"
 "Cart.Note" "Uses the Paddle Controllers"
 "Controller.MouseAxis" "01"
+"Controller.PaddlesXCenter" "9"
+"Controller.PaddlesYCenter" "9"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xce\",\"0xcd\"],\"score_digits\":3,\"variations_count\":1}"
 ""
 
@@ -17223,6 +17347,8 @@
 "Cart.Name" "Breakout (1978) (Atari) (16K)"
 "Cart.Note" "Uses the Paddle Controllers"
 "Controller.MouseAxis" "01 60"
+"Controller.PaddlesXCenter" "12"
+"Controller.PaddlesYCenter" "12"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xce\",\"0xcd\"],\"score_digits\":3,\"variations_count\":1}"
 ""
 
@@ -17407,6 +17533,8 @@
 "Cart.Note" "Uses the Paddle Controllers (swapped)"
 "Controller.SwapPaddles" "YES"
 "Controller.MouseAxis" "10 50"
+"Controller.PaddlesXCenter" "16"
+"Controller.PaddlesYCenter" "16"
 ""
 
 "Cart.MD5" "ca09fa7406b7d2aea10d969b6fc90195"
@@ -17443,6 +17571,7 @@
 "Cart.Name" "Philly Flasher (1982) (PlayAround)"
 "Cart.Note" "Uses the Paddle Controllers, AKA Beat 'Em & Eat 'Em"
 "Controller.MouseAxis" "AUTO 45"
+"Controller.PaddlesXCenter" "20"
 ""
 
 "Cart.MD5" "ca7aaebd861a9ef47967d31c5a6c4555"
@@ -17570,7 +17699,9 @@
 "Cart.ModelNo" "CX2610 - 49-75127"
 "Cart.Name" "Warlords (1981) (Atari)"
 "Cart.Note" "Uses the Paddle Controllers"
-"Controller.MouseAxis" "AUTO 50"
+"Controller.MouseAxis" "01 50"
+"Controller.PaddlesXCenter" "18"
+"Controller.PaddlesYCenter" "19"
 ""
 
 "Cart.MD5" "cbeafd37f15e0dddb0540dbe15c545a4"
@@ -17789,6 +17920,8 @@
 "Cart.Name" "Fireball (1982) (Arcadia) (PAL)"
 "Cart.Note" "Uses the Paddle Controllers"
 "Controller.MouseAxis" "01"
+"Controller.PaddlesXCenter" "15"
+"Controller.PaddlesYCenter" "15"
 ""
 
 "Cart.MD5" "cdc1a5c61d7488eadc9aba36166b253d"
@@ -18249,7 +18382,9 @@
 "Cart.ModelNo" "133-002"
 "Cart.Name" "Warplock (1983) (Gameworld) (PAL)"
 "Cart.Note" "Uses the Paddle Controllers"
-"Controller.MouseAxis" "01"
+"Controller.MouseAxis" "01 40"
+"Controller.PaddlesXCenter" "22"
+"Controller.PaddlesYCenter" "22"
 "Display.Phosphor" "YES"
 ""
 
@@ -18380,6 +18515,7 @@
 "Cart.Name" "Piece o' Cake (1983) (U.S. Games)"
 "Cart.Note" "Uses the Paddle Controllers"
 "Controller.MouseAxis" "AUTO 60"
+"Controller.PaddlesXCenter" "10"
 ""
 
 "Cart.MD5" "d3456b4cf1bd1a7b8fb907af1a80ee15"
@@ -18436,6 +18572,8 @@
 "Console.SwapPorts" "YES"
 "Controller.SwapPaddles" "YES"
 "Controller.MouseAxis" "AUTO 60"
+"Controller.PaddlesXCenter" "18"
+"Controller.PaddlesYCenter" "18"
 "Display.Phosphor" "YES"
 ""
 
@@ -18516,6 +18654,9 @@
 "Cart.Name" "Action Force (1983) (Parker Bros) (PAL) [a]"
 "Cart.Note" "AKA G.I. Joe - Cobra Strike"
 "Controller.MouseAxis" "01 55"
+"Controller.PaddlesXCenter" "10"
+"Controller.PaddlesYCenter" "10"
+"Controller.Right" "JOYSTICK"
 ""
 
 "Cart.MD5" "d57913088e0c49ac3a716bf9837b284f"
@@ -18588,6 +18729,8 @@
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.SwapPaddles" "YES"
 "Controller.MouseAxis" "10 57"
+"Controller.PaddlesXCenter" "12"
+"Controller.PaddlesYCenter" "12"
 ""
 
 "Cart.MD5" "d62d7d1a974c31c5803f96a8c1552510"
@@ -18873,6 +19016,7 @@
 "Cart.Name" "Night Driver (1980) (Atari) (PAL) (4K)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.MouseAxis" "AUTO 65"
+"Controller.PaddlesXCenter" "12"
 "Display.Phosphor" "YES"
 ""
 
@@ -19060,6 +19204,8 @@
 "Cart.Name" "Encounter at L-5 (1982) (Data Age)"
 "Cart.Note" "Uses the Paddle Controllers"
 "Controller.MouseAxis" "AUTO 50"
+"Controller.PaddlesXCenter" "15"
+"Controller.PaddlesYCenter" "15"
 ""
 
 "Cart.MD5" "dbdaf82f4f0c415a94d1030271a9ef44"
@@ -19067,6 +19213,8 @@
 "Cart.Name" "Kaboom! (CCE)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.MouseAxis" "01 50"
+"Controller.PaddlesXCenter" "17"
+"Controller.PaddlesYCenter" "17"
 "Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
@@ -19595,6 +19743,8 @@
 "Cart.Name" "Kaboom! (1981) (Activision) (16K)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.MouseAxis" "01 50"
+"Controller.PaddlesXCenter" "17"
+"Controller.PaddlesYCenter" "17"
 "Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
@@ -19905,6 +20055,8 @@
 "Cart.Name" "Kaboom! (CCE) (4K)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.MouseAxis" "01 50"
+"Controller.PaddlesXCenter" "17"
+"Controller.PaddlesYCenter" "17"
 "Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
@@ -20157,6 +20309,8 @@
 "Cart.Note" "Hack of Video Olympics"
 "Controller.SwapPaddles" "YES"
 "Controller.MouseAxis" "AUTO 60"
+"Controller.PaddlesXCenter" "13"
+"Controller.PaddlesYCenter" "13"
 ""
 
 "Cart.MD5" "e6d5948f451a24994dfaaca51dfdb4e1"
@@ -20171,6 +20325,8 @@
 "Cart.Name" "Solar Storm (1983) (Imagic) (PAL)"
 "Cart.Note" "Uses the Paddle Controllers"
 "Controller.MouseAxis" "01 45"
+"Controller.PaddlesXCenter" "20"
+"Controller.PaddlesYCenter" "20"
 ""
 
 "Cart.MD5" "e6e5bb0e4f4350da573023256268313d"
@@ -20190,6 +20346,8 @@
 "Cart.Note" "Hack of Kaboom!"
 "Cart.Rarity" "Hack"
 "Controller.MouseAxis" "01 50"
+"Controller.PaddlesXCenter" "17"
+"Controller.PaddlesYCenter" "17"
 "Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
@@ -20719,6 +20877,8 @@
 "Cart.Name" "Kaboom! (1981) (Activision) (8K)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.MouseAxis" "01 50"
+"Controller.PaddlesXCenter" "17"
+"Controller.PaddlesYCenter" "17"
 "Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
@@ -20760,6 +20920,8 @@
 "Cart.Name" "Super Breakout (1982 - 1981) (Atari) (PAL)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.MouseAxis" "01 45"
+"Controller.PaddlesXCenter" "17"
+"Controller.PaddlesYCenter" "17"
 "Cart.Highscore" "{\"score_addresses\":[\"0xdc\",\"0xdd\"],\"variations_address\":\"0xc0\",\"variations_count\":9}"
 ""
 
@@ -20913,6 +21075,8 @@
 "Cart.MD5" "efffafc17b7cb01b9ca35324aa767364"
 "Cart.Name" "Circus Atari (Unknown)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xab\"],\"variations_address\":\"0xa8\",\"variations_count\":8}"
+"Controller.Left" "JOYSTICK"
+"Controller.Right" "JOYSTICK"
 ""
 
 "Cart.MD5" "f02ba8b5292bf3017d10553c9b7b2861"
@@ -21287,6 +21451,8 @@
 "Cart.Name" "Breakout (1978) (Atari)"
 "Cart.Note" "Uses the Paddle Controllers"
 "Controller.MouseAxis" "01 60"
+"Controller.PaddlesXCenter" "12"
+"Controller.PaddlesYCenter" "12"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xce\",\"0xcd\"],\"score_digits\":3,\"variations_count\":1}"
 ""
 
@@ -21386,6 +21552,7 @@
 "Cart.Name" "Night Driver (1980) (Atari) (4K)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.MouseAxis" "AUTO 65"
+"Controller.PaddlesXCenter" "12"
 "Display.Phosphor" "YES"
 ""
 
@@ -21834,6 +22001,8 @@
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.SwapPaddles" "YES"
 "Controller.MouseAxis" "10 57"
+"Controller.PaddlesXCenter" "15"
+"Controller.PaddlesYCenter" "15"
 ""
 
 "Cart.MD5" "f93d7fee92717e161e6763a88a293ffa"
@@ -21944,6 +22113,8 @@
 "Cart.Name" "Kaboom! (1981) (Activision) (PAL)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.MouseAxis" "01 50"
+"Controller.PaddlesXCenter" "17"
+"Controller.PaddlesYCenter" "17"
 "Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
@@ -22348,6 +22519,8 @@
 "Cart.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES_IAXDR"
 "Controller.SwapPaddles" "YES"
+"Controller.PaddlesXCenter" "13"
+"Controller.PaddlesYCenter" "13"
 ""
 
 "Cart.MD5" "fe641247a4ab9bee970e19ab55f23b25"
@@ -22391,6 +22564,8 @@
 "Cart.Name" "Super Circus (Unknown) (PAL)"
 "Cart.Note" "AKA Circus Atari"
 "Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xab\"],\"variations_address\":\"0xa8\",\"variations_count\":8}"
+"Controller.Left" "JOYSTICK"
+"Controller.Right" "JOYSTICK"
 ""
 
 "Cart.MD5" "fec0c2e2ab0588ed20c750b58cf3baa3"
@@ -22411,6 +22586,7 @@
 "Cart.Name" "Night Driver (1980) (Atari) (PAL)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.MouseAxis" "AUTO 65"
+"Controller.PaddlesXCenter" "12"
 "Display.Phosphor" "YES"
 ""
 
