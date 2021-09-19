@@ -10982,6 +10982,11 @@
 "Cart.Name" "Turmoil (1982) (20th Century Fox)"
 ""
 
+"Cart.MD5" "7a48dd03d839da082dc2287ede070383"
+"Cart.Name" "Atari 2600 Multicart (16x8K, F8/E0)"
+"Cart.Type" "16IN1"
+""
+
 "Cart.MD5" "7a63d7ea3f2851bcf04f0bb4ba1a3929"
 "Cart.Manufacturer" "Arcadia Corporation, Dennis Caswell"
 "Cart.ModelNo" "AR-4200"
@@ -17933,6 +17938,7 @@
 "Cart.MD5" "cdd4a538c420358ab64767d326921bf6"
 "Cart.Name" "4 in 1 (Logitachi)"
 "Cart.Type" "4IN1"
+""
 
 "Cart.MD5" "cddabfd68363a76cd30bee4e8094c646"
 "Cart.Manufacturer" "Computer Magic - CommaVid, John Bronstein"
@@ -20878,6 +20884,7 @@
 "Cart.MD5" "ed637054c93e82e436618bcc687e8777"
 "Cart.Name" "2 in 1 (Motocross, Pole Position)"
 "Cart.Type" "2IN1"
+""
 
 "Cart.MD5" "ed8f319e82d355832195eb7715644795"
 "Cart.Manufacturer" "Activision, Larry Kaplan, David Crane"
