@@ -1403,6 +1403,7 @@ void MovieCart::runStateMachine()
         {
           myFrameNumber -= 2;
           myJoyRepeat = 0;
+          myPlaying = false;
         }
 
         myForceColor = 0;
