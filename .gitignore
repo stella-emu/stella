@@ -38,3 +38,4 @@ src/tools/fonts/*
 a.out
 *.json
 *.sqlite3
+*.bak
