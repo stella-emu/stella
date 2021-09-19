@@ -199,7 +199,7 @@ void TIA::reset()
   // from the constructor
   initialize();
 
-  if(myRandomize)
+  if(myRandomize && !mySystem->autodetectMode())
   {
     for(uInt32 i = 0; i < 0x10000; ++i)
     {
