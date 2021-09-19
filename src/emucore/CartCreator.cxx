@@ -247,7 +247,7 @@ CartCreator::createFromMultiCart(const ByteBuffer& image, size_t& size,
   else if(size == 4_KB)
     type = Bankswitch::Type::_4K;
   else if(size == 8_KB || size == 16_KB || size == 32_KB || size == 64_KB)
-    type = CartDetector::autodetectType(image, size);
+    type = CartDetector::autodetectType(slice, size);
   else  /* default */
     type = Bankswitch::Type::_4K;
 
