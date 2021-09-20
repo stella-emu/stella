@@ -1184,6 +1184,8 @@ void Console::toggleJitter(bool toggle) const
   bool enabled = myTIA->toggleJitter(toggle ? 2 : 3);
   const string message = string("TV scanline jitter ") + (enabled ? "enabled" : "disabled");
 
+  myOSystem.settings().setValue(
+    myOSystem.settings().getBool("dev.settings") ? "dev.tv.jitter" : "plr.tv.jitter", enabled);
   myOSystem.frameBuffer().showTextMessage(message);
 }
 

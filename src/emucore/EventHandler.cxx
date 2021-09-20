@@ -549,8 +549,8 @@ AdjustFunction EventHandler::getAdjustSetting(AdjustSetting setting)
     std::bind(&FrameBuffer::toggleAdaptRefresh, &myOSystem.frameBuffer(), _1),
   #endif
     std::bind(&FrameBuffer::changeOverscan, &myOSystem.frameBuffer(), _1),
-    std::bind(&Console::selectFormat, &myOSystem.console(), _1),
-    std::bind(&Console::changeVerticalCenter, &myOSystem.console(), _1),
+    std::bind(&Console::selectFormat, &myOSystem.console(), _1), // property, not persisted
+    std::bind(&Console::changeVerticalCenter, &myOSystem.console(), _1), // property, not persisted
     std::bind(&Console::toggleCorrectAspectRatio, &myOSystem.console(), _1),
     std::bind(&Console::changeVSizeAdjust, &myOSystem.console(), _1),
     // Palette adjustables
@@ -614,37 +614,37 @@ AdjustFunction EventHandler::getAdjustSetting(AdjustSetting setting)
     std::bind(&EventHandler::changeMouseCursor, this, _1),
     std::bind(&FrameBuffer::toggleGrabMouse, &myOSystem.frameBuffer(), _1),
     // Game properties/Controllers
-    std::bind(&Console::changeLeftController, &myOSystem.console(), _1),
-    std::bind(&Console::changeRightController, &myOSystem.console(), _1),
-    std::bind(&Console::toggleSwapPorts, &myOSystem.console(), _1),
-    std::bind(&Console::toggleSwapPaddles, &myOSystem.console(), _1),
-    std::bind(&Console::changePaddleCenterX, &myOSystem.console(), _1),
-    std::bind(&Console::changePaddleCenterY, &myOSystem.console(), _1),
-    std::bind(&EventHandler::changeMouseControl, this, _1),
-    std::bind(&Console::changePaddleAxesRange, &myOSystem.console(), _1),
+    std::bind(&Console::changeLeftController, &myOSystem.console(), _1), // property, not persisted
+    std::bind(&Console::changeRightController, &myOSystem.console(), _1), // property, not persisted
+    std::bind(&Console::toggleSwapPorts, &myOSystem.console(), _1), // property, not persisted
+    std::bind(&Console::toggleSwapPaddles, &myOSystem.console(), _1), // property, not persisted
+    std::bind(&Console::changePaddleCenterX, &myOSystem.console(), _1), // property, not persisted
+    std::bind(&Console::changePaddleCenterY, &myOSystem.console(), _1), // property, not persisted
+    std::bind(&EventHandler::changeMouseControl, this, _1), // property, not persisted
+    std::bind(&Console::changePaddleAxesRange, &myOSystem.console(), _1), // property, not persisted
 
     // *** Debug settings ***
     std::bind(&FrameBuffer::toggleFrameStats, &myOSystem.frameBuffer(), _1),
-    std::bind(&Console::toggleP0Bit, &myOSystem.console(), _1),
-    std::bind(&Console::toggleP1Bit, &myOSystem.console(), _1),
-    std::bind(&Console::toggleM0Bit, &myOSystem.console(), _1),
-    std::bind(&Console::toggleM1Bit, &myOSystem.console(), _1),
-    std::bind(&Console::toggleBLBit, &myOSystem.console(), _1),
-    std::bind(&Console::togglePFBit, &myOSystem.console(), _1),
-    std::bind(&Console::toggleBits, &myOSystem.console(), _1),
-    std::bind(&Console::toggleP0Collision, &myOSystem.console(), _1),
-    std::bind(&Console::toggleP1Collision, &myOSystem.console(), _1),
-    std::bind(&Console::toggleM0Collision, &myOSystem.console(), _1),
-    std::bind(&Console::toggleM1Collision, &myOSystem.console(), _1),
-    std::bind(&Console::toggleBLCollision, &myOSystem.console(), _1),
-    std::bind(&Console::togglePFCollision, &myOSystem.console(), _1),
-    std::bind(&Console::toggleCollisions, &myOSystem.console(), _1),
-    std::bind(&Console::toggleFixedColors, &myOSystem.console(), _1),
+    std::bind(&Console::toggleP0Bit, &myOSystem.console(), _1), // debug, not persisted
+    std::bind(&Console::toggleP1Bit, &myOSystem.console(), _1), // debug, not persisted
+    std::bind(&Console::toggleM0Bit, &myOSystem.console(), _1), // debug, not persisted
+    std::bind(&Console::toggleM1Bit, &myOSystem.console(), _1), // debug, not persisted
+    std::bind(&Console::toggleBLBit, &myOSystem.console(), _1), // debug, not persisted
+    std::bind(&Console::togglePFBit, &myOSystem.console(), _1), // debug, not persisted
+    std::bind(&Console::toggleBits, &myOSystem.console(), _1), // debug, not persisted
+    std::bind(&Console::toggleP0Collision, &myOSystem.console(), _1), // debug, not persisted
+    std::bind(&Console::toggleP1Collision, &myOSystem.console(), _1), // debug, not persisted
+    std::bind(&Console::toggleM0Collision, &myOSystem.console(), _1), // debug, not persisted
+    std::bind(&Console::toggleM1Collision, &myOSystem.console(), _1), // debug, not persisted
+    std::bind(&Console::toggleBLCollision, &myOSystem.console(), _1), // debug, not persisted
+    std::bind(&Console::togglePFCollision, &myOSystem.console(), _1), // debug, not persisted
+    std::bind(&Console::toggleCollisions, &myOSystem.console(), _1), // debug, not persisted
+    std::bind(&Console::toggleFixedColors, &myOSystem.console(), _1), // debug, not persisted
     std::bind(&Console::toggleColorLoss, &myOSystem.console(), _1),
     std::bind(&Console::toggleJitter, &myOSystem.console(), _1),
 
     // *** Following functions are not used when cycling settings but for "direct only" hotkeys ***
-    std::bind(&StateManager::changeState, &myOSystem.state(), _1),
+    std::bind(&StateManager::changeState, &myOSystem.state(), _1), // temporary, not persisted
     std::bind(&PaletteHandler::changeCurrentAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(), _1),
     std::bind(&TIASurface::changeCurrentNTSCAdjustable, &myOSystem.frameBuffer().tiaSurface(), _1),
     std::bind(&Console::changeSpeed, &myOSystem.console(), _1),
