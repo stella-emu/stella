@@ -190,6 +190,7 @@ void PaletteHandler::changeCurrentAdjustable(int direction)
     showAdjustableMessage();
     setPalette();
   }
+  saveConfig(myOSystem.settings());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

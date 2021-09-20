@@ -243,6 +243,7 @@ void TIASurface::changeNTSCAdjustable(int adjustable, int direction)
 
   setNTSC(NTSCFilter::Preset::CUSTOM);
   ntsc().changeAdjustable(adjustable, direction, text, valueText, newValue);
+  ntsc().saveConfig(myOSystem.settings());
   myOSystem.frameBuffer().showGaugeMessage(text, valueText, newValue);
 }
 
@@ -254,6 +255,7 @@ void TIASurface::changeCurrentNTSCAdjustable(int direction)
 
   setNTSC(NTSCFilter::Preset::CUSTOM);
   ntsc().changeCurrentAdjustable(direction, text, valueText, newValue);
+  ntsc().saveConfig(myOSystem.settings());
   myOSystem.frameBuffer().showGaugeMessage(text, valueText, newValue);
 }
 
