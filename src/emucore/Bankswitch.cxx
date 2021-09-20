@@ -138,7 +138,7 @@ Bankswitch::BSList = {{
   { "FA"      , "FA (CBS RAM Plus)"           },
   { "FA2"     , "FA2 (CBS RAM Plus 24/28K)"   },
   { "FC"      , "FC (32K Amiga)"              },
-  { "FE"      , "FE (8K Decathlon)"           },
+  { "FE"      , "FE (8K Activision)"          },
   { "MDM"     , "MDM (Menu Driven Megacart)"  },
   { "MVC"     , "MVC (Movie Cart)"            },
   { "SB"      , "SB (128-256K SUPERbank)"     },
