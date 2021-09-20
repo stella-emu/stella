@@ -25,7 +25,7 @@
   regenerated and the application recompiled.
 */
 
-static constexpr uInt32 DEF_PROPS_SIZE = 3532;
+static constexpr uInt32 DEF_PROPS_SIZE = 3533;
 
 static const BSPF::array2D<const char*, DEF_PROPS_SIZE, 29> DefProps = {{
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}", "" },
@@ -3402,6 +3402,7 @@ static const BSPF::array2D<const char*, DEF_PROPS_SIZE, 29> DefProps = {{
   { "f5a3e051730d45fea518f2e8b926565b", "Robby", "", "Keystone Kapers (Robby)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "{\"score_addresses\":[\"0x9a\",\"0x9b\",\"0x9c\"],\"score_digits\":6,\"variations_count\":1}", "" },
   { "f5aa6bd10f662199c42e43863a30106c", "", "", "Music Kit (V1.0) - Song Player (Paul Slocum)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "", "", "" },
   { "f5d103a9ae36d1d4ee7eef657b75d2b3", "Starpath Corporation, Stephen H. Landrum", "9 AR-4105", "Official Frogger, The (Preview) (1983) (Starpath)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "f610d2bc17283d8064f7389fdf2ce8d4", "Megatronix", "", "Game Over 2600 (Megatronix)", "256 games", "", "", "", "128IN1", "", "", "", "", "JOYSTICK", "", "", "JOYSTICK", "", "", "", "", "", "", "", "", "", "", "", "https://20thcenturyvideogames.com/sistemas/AtariClone/modelos/GameOver2600Megatronix.jpg" },
   { "f613aad84d2163d6b197b220bfec1b7e", "", "", "X-Doom V.27 (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "f661f129644f338b13d9f4510d816c03", "Atari, David Crane", "CX26163P", "Outlaw (32 in 1) (1988) (Atari) (PAL) (4K)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "f6676e3fe901eb8515fc7ae310302c3c", "Activision, David Crane", "AG-008", "Laser Blast (1981) (Activision) (8K)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },

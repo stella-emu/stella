@@ -21677,6 +21677,16 @@
 "Cart.Name" "Official Frogger, The (Preview) (1983) (Starpath)"
 ""
 
+"Cart.MD5" "f610d2bc17283d8064f7389fdf2ce8d4"
+"Cart.Manufacturer" "Megatronix"
+"Cart.Name" "Game Over 2600 (Megatronix)"
+"Cart.Note" "256 games"
+"Cart.Type" "128IN1"
+"Cart.Url" "https://20thcenturyvideogames.com/sistemas/AtariClone/modelos/GameOver2600Megatronix.jpg"
+"Controller.Left" "JOYSTICK"
+"Controller.Right" "JOYSTICK"
+""
+
 "Cart.MD5" "f613aad84d2163d6b197b220bfec1b7e"
 "Cart.Name" "X-Doom V.27 (PD)"
 ""
