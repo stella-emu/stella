@@ -201,18 +201,17 @@ void TIA::reset()
 
   if(myRandomize && !mySystem->autodetectMode())
   {
-    for(uInt32 i = 0; i < 0x10000; ++i)
+    for(uInt32 i = 0; i < 0x4000; ++i)
     {
       uInt16 address = mySystem->randGenerator().next() & 0x3F;
+
       if(address <= 0x2F)
       {
-        uInt8 value = mySystem->randGenerator().next();
-
-        poke(address, value);
-        cycle(2); // process delay queue
+        poke(address, mySystem->randGenerator().next());
+        cycle(1 + (mySystem->randGenerator().next() & 7)); // process delay queue
       }
     }
-    cycle(100); // just to be sure :)
+    cycle(76); // just to be sure :)
   }
 }
 
