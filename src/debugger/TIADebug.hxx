@@ -187,8 +187,8 @@ class TIADebug : public DebuggerSystem
 
     string audFreq(uInt8 div);
     string stringOnly(string value, bool changed = false);
-    string decWithLabel(string label, uInt16 value, bool changed = false);
-    string hexWithLabel(string label, uInt16 value, bool changed = false);
+    string decWithLabel(string label, uInt16 value, bool changed = false, uInt16 width = 3);
+    string hexWithLabel(string label, uInt16 value, bool changed = false, uInt16 width = 2);
     string binWithLabel(string label, uInt16 value, bool changed = false);
     string boolWithLabel(string label, bool value, bool changed = false);
 

@@ -1037,14 +1037,14 @@ string TIADebug::stringOnly(string value, bool changed)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string TIADebug::decWithLabel(string label, uInt16 value, bool changed)
+string TIADebug::decWithLabel(string label, uInt16 value, bool changed, uInt16 width)
 {
   ostringstream buf;
 
   buf << label;
   if(label != EmptyString)
     buf << "=";
-  buf << "#" << std::dec << value;
+  buf << "#" << std::setw(width) << std::dec << std::left << value;
 
   if(changed)
     return char(kDbgColorRed & 0xff) + buf.str() + char(kTextColor & 0xff);
@@ -1053,14 +1053,14 @@ string TIADebug::decWithLabel(string label, uInt16 value, bool changed)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string TIADebug::hexWithLabel(string label, uInt16 value, bool changed)
+string TIADebug::hexWithLabel(string label, uInt16 value, bool changed, uInt16 width)
 {
   ostringstream buf;
 
   buf << label;
   if(label != EmptyString)
     buf << "=";
-  buf << "$" << Common::Base::HEX2 << value;
+  buf << "$" << (width == 1 ? Common::Base::HEX1 : Common::Base::HEX2) << value;
 
   if(changed)
     return char(kDbgColorRed & 0xff) + buf.str() + char(kTextColor & 0xff);
@@ -1163,7 +1163,8 @@ string TIADebug::toString()
   const TiaState& oldState = static_cast<const TiaState&>(getOldState());
 
   // build up output, then return it.
-  buf << decWithLabel("scanline", myTIA.scanlines(),
+  buf << std::setfill(' ') << std::left
+      << decWithLabel("scanline", myTIA.scanlines(),
                       static_cast<int>(myTIA.scanlines()) != oldState.info[4]) << " "
       << boolWithLabel("vsync",  vsync(),
                        state.vsb[0] != oldState.vsb[0]) << " "
@@ -1208,7 +1209,7 @@ string TIADebug::toString()
       << decWithLabel("pos", state.pos[TiaState::P0],
                       state.pos[TiaState::P0] != oldState.pos[TiaState::P0]) << " "
       << hexWithLabel("HM", state.hm[TiaState::P0],
-                      state.hm[TiaState::P0] != oldState.hm[TiaState::P0]) << " "
+                      state.hm[TiaState::P0] != oldState.hm[TiaState::P0], 1) << " "
       << stringOnly(nusizP0String(),
                     state.size[TiaState::P0] != oldState.size[TiaState::P0]) << " "
       << boolWithLabel("refl",  refP0(),
@@ -1222,7 +1223,7 @@ string TIADebug::toString()
       << decWithLabel("pos", state.pos[TiaState::P1],
                       state.pos[TiaState::P1] != oldState.pos[TiaState::P1]) << " "
       << hexWithLabel("HM", state.hm[TiaState::P1],
-                      state.hm[TiaState::P1] != oldState.hm[TiaState::P1]) << " "
+                      state.hm[TiaState::P1] != oldState.hm[TiaState::P1], 1) << " "
       << stringOnly(nusizP1String(),
                     state.size[TiaState::P1] != oldState.size[TiaState::P1]) << " "
       << boolWithLabel("refl", refP1(),
@@ -1231,36 +1232,36 @@ string TIADebug::toString()
                        state.vdel[TiaState::P1] != oldState.vdel[TiaState::P1])
       << endl
       << "M0: "
-      << stringOnly(enaM0() ? " ENABLED" : "disabled",
+      << stringOnly(enaM0() ? "ENABLED " : "disabled",
                     state.gr[6] != oldState.gr[6]) << " "
       << decWithLabel("pos", state.pos[TiaState::M0],
                       state.pos[TiaState::M0] != oldState.pos[TiaState::M0]) << " "
       << hexWithLabel("HM", state.hm[TiaState::M0],
-                      state.hm[TiaState::M0] != oldState.hm[TiaState::M0]) << " "
+                      state.hm[TiaState::M0] != oldState.hm[TiaState::M0], 1) << " "
       << decWithLabel("size", state.size[TiaState::M0],
-                      state.size[TiaState::M0] != oldState.size[TiaState::M0]) << " "
+                      state.size[TiaState::M0] != oldState.size[TiaState::M0], 1) << " "
       << boolWithLabel("reset", resMP0(), state.resm[TiaState::P0] != oldState.resm[TiaState::P0])
       << endl
       << "M1: "
-      << stringOnly(enaM1() ? " ENABLED" : "disabled",
+      << stringOnly(enaM1() ? "ENABLED " : "disabled",
                     state.gr[7] != oldState.gr[7]) << " "
       << decWithLabel("pos", state.pos[TiaState::M1],
                       state.pos[TiaState::M1] != oldState.pos[TiaState::M1]) << " "
       << hexWithLabel("HM", state.hm[TiaState::M1],
-                      state.hm[TiaState::M1] != oldState.hm[TiaState::M1]) << " "
+                      state.hm[TiaState::M1] != oldState.hm[TiaState::M1], 1) << " "
       << decWithLabel("size", state.size[TiaState::M1],
-                      state.size[TiaState::M1] != oldState.size[TiaState::M1]) << " "
+                      state.size[TiaState::M1] != oldState.size[TiaState::M1], 1) << " "
       << boolWithLabel("reset", resMP0(), state.resm[TiaState::P1] != oldState.resm[TiaState::P1])
       << endl
       << "BL: "
-      << stringOnly(enaBL() ? " ENABLED" : "disabled",
+      << stringOnly(enaBL() ? "ENABLED " : "disabled",
                     state.gr[4] != oldState.gr[4]) << " "
       << decWithLabel("pos", state.pos[TiaState::BL],
                       state.pos[TiaState::BL] != oldState.pos[TiaState::BL]) << " "
       << hexWithLabel("HM", state.hm[TiaState::BL],
-                      state.hm[TiaState::BL] != oldState.hm[TiaState::BL]) << " "
+                      state.hm[TiaState::BL] != oldState.hm[TiaState::BL], 1) << " "
       << decWithLabel("size", state.size[TiaState::BL],
-                      state.size[TiaState::BL] != oldState.size[TiaState::BL]) << " "
+                      state.size[TiaState::BL] != oldState.size[TiaState::BL], 1) << " "
       << boolWithLabel("delay", vdelBL(), state.vdel[2] != oldState.vdel[2])
       << endl
       << "PF0: "
@@ -1301,38 +1302,38 @@ string TIADebug::toString()
       << "AUDF0: "
       << hexWithLabel("", int(audF0()),
                       state.aud[0] != oldState.aud[0]) << "/"
-      << stringOnly(audFreq(audF0()),
+      << std::setw(11) << std::right << stringOnly(audFreq(audF0()),
                     state.aud[0] != oldState.aud[0]) << " "
       << "AUDC0: "
       << hexWithLabel("", int(audC0()),
-                      state.aud[2] != oldState.aud[2]) << " "
+                      state.aud[2] != oldState.aud[2], 1) << " "
       << "AUDV0: "
       << hexWithLabel("", int(audV0()),
-                      state.aud[4] != oldState.aud[4])
+                      state.aud[4] != oldState.aud[4], 1)
       << endl
       << "AUDF1: "
       << hexWithLabel("", int(audF1()),
                       state.aud[1] != oldState.aud[1]) << "/"
-      << stringOnly(audFreq(audF1()),
+      << std::setw(11) << std::right << stringOnly(audFreq(audF1()),
                     state.aud[1] != oldState.aud[1]) << " "
       << "AUDC1: "
       << hexWithLabel("", int(audC1()),
-                      state.aud[3] != oldState.aud[3]) << " "
+                      state.aud[3] != oldState.aud[3], 1) << " "
       << "AUDV1: "
       << hexWithLabel("", int(audV1()),
-                      state.aud[5] != oldState.aud[5]);
+                      state.aud[5] != oldState.aud[5], 1);
   // note: last line should not contain \n, caller will add.
   return buf.str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const std::array<string, 8> TIADebug::nusizStrings = {
-  "1 copy",
+  "1 copy              ",
   "2 copies - close (8)",
-  "2 copies - med (24)",
+  "2 copies - med (24) ",
   "3 copies - close (8)",
   "2 copies - wide (56)",
   "2x (16) sized player",
-  "3 copies - med (24)",
+  "3 copies - med (24) ",
   "4x (32) sized player"
 };
