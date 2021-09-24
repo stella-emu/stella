@@ -30,9 +30,7 @@ MODULE_OBJS := \
         src/debugger/gui/CartDPCWidget.o \
         src/debugger/gui/CartE0Widget.o \
         src/debugger/gui/CartEnhancedWidget.o \
-        src/debugger/gui/CartMNetworkWidget.o \
         src/debugger/gui/CartE7Widget.o \
-        src/debugger/gui/CartE78KWidget.o \
         src/debugger/gui/CartEFSCWidget.o \
         src/debugger/gui/CartEFWidget.o \
         src/debugger/gui/CartF0Widget.o \

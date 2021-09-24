@@ -16,14 +16,14 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CARTRIDGE_MNETWORK_HXX
-#define CARTRIDGE_MNETWORK_HXX
+#ifndef CARTRIDGE_E7_HXX
+#define CARTRIDGE_E7_HXX
 
 #include "System.hxx"
 #include "bspf.hxx"
 #include "Cart.hxx"
 #ifdef DEBUGGER_SUPPORT
-  #include "CartMNetworkWidget.hxx"
+  #include "CartE7Widget.hxx"
 #endif
 
 
@@ -62,9 +62,9 @@
 
   @author  Bradford W. Mott, Thomas Jentzsch
 */
-class CartridgeMNetwork : public Cartridge
+class CartridgeE7 : public Cartridge
 {
-    friend class CartridgeMNetworkWidget;
+    friend class CartridgeE7Widget;
 
   public:
     /**
@@ -75,9 +75,9 @@ class CartridgeMNetwork : public Cartridge
       @param md5       The md5sum of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    CartridgeMNetwork(const ByteBuffer& image, size_t size, const string& md5,
+    CartridgeE7(const ByteBuffer& image, size_t size, const string& md5,
                       const Settings& settings);
-    ~CartridgeMNetwork() override = default;
+    ~CartridgeE7() override = default;
 
   public:
     /**
@@ -180,7 +180,7 @@ class CartridgeMNetwork : public Cartridge
     CartDebugWidget* debugWidget(GuiObject* boss, const GUI::Font& lfont,
                                  const GUI::Font& nfont, int x, int y, int w, int h) override
     {
-      return new CartridgeMNetworkWidget(boss, lfont, nfont, x, y, w, h, *this);
+      return new CartridgeE7Widget(boss, lfont, nfont, x, y, w, h, *this);
     }
   #endif
 
@@ -240,11 +240,11 @@ class CartridgeMNetwork : public Cartridge
 
   private:
     // Following constructors and assignment operators not supported
-    CartridgeMNetwork() = delete;
-    CartridgeMNetwork(const CartridgeMNetwork&) = delete;
-    CartridgeMNetwork(CartridgeMNetwork&&) = delete;
-    CartridgeMNetwork& operator=(const CartridgeMNetwork&) = delete;
-    CartridgeMNetwork& operator=(CartridgeMNetwork&&) = delete;
+    CartridgeE7() = delete;
+    CartridgeE7(const CartridgeE7&) = delete;
+    CartridgeE7(CartridgeE7&&) = delete;
+    CartridgeE7& operator=(const CartridgeE7&) = delete;
+    CartridgeE7& operator=(CartridgeE7&&) = delete;
 };
 
 #endif

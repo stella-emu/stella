@@ -27,9 +27,7 @@ MODULE_OBJS := \
         src/emucore/CartDPC.o \
         src/emucore/CartDPCPlus.o \
         src/emucore/CartE0.o \
-        src/emucore/CartMNetwork.o \
         src/emucore/CartE7.o \
-        src/emucore/CartE78K.o \
         src/emucore/CartEF.o \
         src/emucore/CartEFSC.o \
         src/emucore/CartBF.o \
