@@ -70,7 +70,6 @@ SOURCES_CXX := \
 	$(CORE_DIR)/emucore/CartDPC.cxx \
 	$(CORE_DIR)/emucore/CartDPCPlus.cxx \
 	$(CORE_DIR)/emucore/CartE0.cxx \
-	$(CORE_DIR)/emucore/CartE78K.cxx \
 	$(CORE_DIR)/emucore/CartE7.cxx \
 	$(CORE_DIR)/emucore/CartEF.cxx \
 	$(CORE_DIR)/emucore/CartEFSC.cxx \
@@ -87,7 +86,6 @@ SOURCES_CXX := \
 	$(CORE_DIR)/emucore/CartFE.cxx \
 	$(CORE_DIR)/emucore/CartMDM.cxx \
 	$(CORE_DIR)/emucore/CartMVC.cxx \
-	$(CORE_DIR)/emucore/CartMNetwork.cxx \
 	$(CORE_DIR)/emucore/CartSB.cxx \
 	$(CORE_DIR)/emucore/CartTVBoy.cxx \
 	$(CORE_DIR)/emucore/CartUA.cxx \

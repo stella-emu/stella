@@ -14,7 +14,7 @@ MODULE_OBJS := \
         src/debugger/gui/Cart4A50Widget.o \
         src/debugger/gui/Cart4KSCWidget.o \
         src/debugger/gui/Cart4KWidget.o \
-	src/debugger/gui/CartARMWidget.o \
+	    src/debugger/gui/CartARMWidget.o \
         src/debugger/gui/CartARWidget.o \
         src/debugger/gui/CartBFSCWidget.o \
         src/debugger/gui/CartBFWidget.o \
@@ -54,7 +54,7 @@ MODULE_OBJS := \
         src/debugger/gui/CartDebugWidget.o \
         src/debugger/gui/CpuWidget.o \
         src/debugger/gui/DataGridOpsWidget.o \
-	src/debugger/gui/DataGridRamWidget.o \
+	    src/debugger/gui/DataGridRamWidget.o \
         src/debugger/gui/DataGridWidget.o \
         src/debugger/gui/DebuggerDialog.o \
         src/debugger/gui/DelayQueueWidget.o \
