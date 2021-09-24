@@ -115,6 +115,14 @@ void CartridgeE7::checkSwitchBank(uInt16 address)
   {
     bank(address & 0x0003);
   }
+  else if(romBankCount() == 6 && (address >= 0x0FE0) && (address <= 0x0FE7))
+  {
+    static constexpr std::array<int, 8> banks = {
+      0, 1, 0, 1, 2, 3, 4 ,5
+    };
+
+    bank(banks[address & 0x0007]);
+  }
   else if(romBankCount() == 8 && (address >= 0x0FE0) && (address <= 0x0FE7))
   {
     bank(address & 0x0007);
