@@ -70,8 +70,6 @@ SOURCES_CXX := \
 	$(CORE_DIR)/emucore/CartDPC.cxx \
 	$(CORE_DIR)/emucore/CartDPCPlus.cxx \
 	$(CORE_DIR)/emucore/CartE0.cxx \
-	$(CORE_DIR)/emucore/CartE78K.cxx \
-	$(CORE_DIR)/emucore/CartE7.cxx \
 	$(CORE_DIR)/emucore/CartEF.cxx \
 	$(CORE_DIR)/emucore/CartEFSC.cxx \
 	$(CORE_DIR)/emucore/CartF0.cxx \
