@@ -22,6 +22,10 @@
 #include "System.hxx"
 #include "bspf.hxx"
 #include "Cart.hxx"
+#ifdef DEBUGGER_SUPPORT
+  #include "CartMNetworkWidget.hxx"
+#endif
+
 
 /**
   This is the abstract cartridge class for M-Network
@@ -50,8 +54,8 @@
   read port.  You select which 256 byte block appears
   here by accessing 1FE8 to 1FEB.
 
-  This cart reports having 8 banks; 1 for each of the possible 7
-  bank in the lower 2K area, and the last for RAM in the lower
+  This cart reports having 8 banks; one for each of the possible
+  7 banks in the lower 2K area, and the last for RAM in the lower
   2K area."
 
   There are 8K, 12K and 16K variations, with or without RAM.
@@ -61,8 +65,6 @@
 class CartridgeMNetwork : public Cartridge
 {
     friend class CartridgeMNetworkWidget;
-    friend class CartridgeE7Widget;
-    friend class CartridgeE78KWidget;
 
   public:
     /**
@@ -163,6 +165,25 @@ class CartridgeMNetwork : public Cartridge
     */
     bool poke(uInt16 address, uInt8 value) override;
 
+    /**
+      Get a descriptor for the device name (used in error checking).
+
+      @return The name of the object
+    */
+    string name() const override { return "CartridgeE7"; }
+
+  #ifdef DEBUGGER_SUPPORT
+    /**
+      Get debugger widget responsible for accessing the inner workings
+      of the cart.
+      */
+    CartDebugWidget* debugWidget(GuiObject* boss, const GUI::Font& lfont,
+                                 const GUI::Font& nfont, int x, int y, int w, int h) override
+    {
+      return new CartridgeMNetworkWidget(boss, lfont, nfont, x, y, w, h, *this);
+    }
+  #endif
+
   protected:
     /**
       Class initialization
@@ -175,6 +196,11 @@ class CartridgeMNetwork : public Cartridge
       @param bank The bank that should be installed in the system
     */
     void bankRAM(uInt16 bank);
+
+    /**
+      Check hotspots and switch bank if triggered.
+    */
+    void checkSwitchBank(uInt16 address);
 
     // Size of a ROM or RAM bank
     static constexpr uInt32 BANK_SIZE = 0x800; // 2K
@@ -189,11 +215,6 @@ class CartridgeMNetwork : public Cartridge
       Query the size of the BS type.
     */
     uInt16 romSize() const;
-
-    /**
-      Check hotspots and switch bank if triggered.
-    */
-    virtual void checkSwitchBank(uInt16 address) = 0;
 
     void setAccess(uInt16 addrFrom, uInt16 size, uInt16 directOffset, uInt8* directData,
                    uInt16 codeOffset, System::PageAccessType type, uInt16 addrMask = 0);
