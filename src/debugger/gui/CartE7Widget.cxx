@@ -15,15 +15,15 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "CartMNetwork.hxx"
+#include "CartE7.hxx"
 #include "PopUpWidget.hxx"
-#include "CartMNetworkWidget.hxx"
+#include "CartE7Widget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeMNetworkWidget::CartridgeMNetworkWidget(
+CartridgeE7Widget::CartridgeE7Widget(
     GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
     int x, int y, int w, int h,
-    CartridgeMNetwork& cart)
+    CartridgeE7& cart)
   : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
     myCart{cart}
 {
@@ -57,8 +57,8 @@ CartridgeMNetworkWidget::CartridgeMNetworkWidget(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeMNetworkWidget::initialize(GuiObject* boss,
-    CartridgeMNetwork& cart, ostringstream& info)
+void CartridgeE7Widget::initialize(GuiObject* boss,
+    CartridgeE7& cart, ostringstream& info)
 {
   uInt32 size = cart.romBankCount() * cart.BANK_SIZE;
 
@@ -89,7 +89,7 @@ void CartridgeMNetworkWidget::initialize(GuiObject* boss,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeMNetworkWidget::saveOldState()
+void CartridgeE7Widget::saveOldState()
 {
   myOldState.internalram.clear();
 
@@ -101,7 +101,7 @@ void CartridgeMNetworkWidget::saveOldState()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeMNetworkWidget::loadConfig()
+void CartridgeE7Widget::loadConfig()
 {
   myLower2K->setSelectedIndex(myCart.myCurrentBank[0], myCart.myCurrentBank[0] != myOldState.lowerBank);
   myUpper256B->setSelectedIndex(myCart.myCurrentRAM, myCart.myCurrentRAM != myOldState.upperBank);
@@ -110,7 +110,7 @@ void CartridgeMNetworkWidget::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeMNetworkWidget::handleCommand(CommandSender* sender,
+void CartridgeE7Widget::handleCommand(CommandSender* sender,
                                             int cmd, int data, int id)
 {
   myCart.unlockBank();
@@ -132,7 +132,7 @@ void CartridgeMNetworkWidget::handleCommand(CommandSender* sender,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartridgeMNetworkWidget::bankState()
+string CartridgeE7Widget::bankState()
 {
   ostringstream& buf = buffer();
 
@@ -144,19 +144,19 @@ string CartridgeMNetworkWidget::bankState()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 CartridgeMNetworkWidget::internalRamSize()
+uInt32 CartridgeE7Widget::internalRamSize()
 {
   return 2048;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 CartridgeMNetworkWidget::internalRamRPort(int start)
+uInt32 CartridgeE7Widget::internalRamRPort(int start)
 {
   return 0x0000 + start;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartridgeMNetworkWidget::internalRamDescription()
+string CartridgeE7Widget::internalRamDescription()
 {
   ostringstream desc;
   desc << "First 1K accessible via:\n"
@@ -170,7 +170,7 @@ string CartridgeMNetworkWidget::internalRamDescription()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const ByteArray& CartridgeMNetworkWidget::internalRamOld(int start, int count)
+const ByteArray& CartridgeE7Widget::internalRamOld(int start, int count)
 {
   myRamOld.clear();
   for(int i = 0; i < count; i++)
@@ -179,7 +179,7 @@ const ByteArray& CartridgeMNetworkWidget::internalRamOld(int start, int count)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const ByteArray& CartridgeMNetworkWidget::internalRamCurrent(int start, int count)
+const ByteArray& CartridgeE7Widget::internalRamCurrent(int start, int count)
 {
   myRamCurrent.clear();
   for(int i = 0; i < count; i++)
@@ -188,19 +188,19 @@ const ByteArray& CartridgeMNetworkWidget::internalRamCurrent(int start, int coun
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeMNetworkWidget::internalRamSetValue(int addr, uInt8 value)
+void CartridgeE7Widget::internalRamSetValue(int addr, uInt8 value)
 {
   myCart.myRAM[addr] = value;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 CartridgeMNetworkWidget::internalRamGetValue(int addr)
+uInt8 CartridgeE7Widget::internalRamGetValue(int addr)
 {
   return myCart.myRAM[addr];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* CartridgeMNetworkWidget::getSpotLower(int idx)
+const char* CartridgeE7Widget::getSpotLower(int idx)
 {
   static constexpr std::array<const char*, 4> spot_lower_8K = {
     "#0 - ROM ($FFE4)", "#1 - ROM ($FFE5)", "#2 - ROM ($FFE6)", "#3 - RAM ($FFE7)"
@@ -217,7 +217,7 @@ const char* CartridgeMNetworkWidget::getSpotLower(int idx)
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* CartridgeMNetworkWidget::getSpotUpper(int idx)
+const char* CartridgeE7Widget::getSpotUpper(int idx)
 {
   static constexpr std::array<const char*, 4> spot_upper = {
     "#0 - RAM ($FFE8)", "#1 - RAM ($FFE9)", "#2 - RAM ($FFEA)", "#3 - RAM ($FFEB)"

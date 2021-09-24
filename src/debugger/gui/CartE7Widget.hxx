@@ -15,27 +15,27 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CARTRIDGE_MNETWORK_WIDGET_HXX
-#define CARTRIDGE_MNETWORK_WIDGET_HXX
+#ifndef CARTRIDGE_E7_WIDGET_HXX
+#define CARTRIDGE_E7_WIDGET_HXX
 
-class CartridgeMNetwork;
+class CartridgeE7;
 class PopUpWidget;
 
 #include "CartDebugWidget.hxx"
 
-class CartridgeMNetworkWidget : public CartDebugWidget
+class CartridgeE7Widget : public CartDebugWidget
 {
   public:
-    CartridgeMNetworkWidget(GuiObject* boss, const GUI::Font& lfont,
+    CartridgeE7Widget(GuiObject* boss, const GUI::Font& lfont,
                       const GUI::Font& nfont,
                       int x, int y, int w, int h,
                       //CartridgeE7& cart);
-                      CartridgeMNetwork& cart);
-    ~CartridgeMNetworkWidget() override = default;
+                      CartridgeE7& cart);
+    ~CartridgeE7Widget() override = default;
 
   protected:
     //CartridgeE7& myCart;
-    CartridgeMNetwork& myCart;
+    CartridgeE7& myCart;
 
     PopUpWidget *myLower2K{nullptr}, *myUpper256B{nullptr};
 
@@ -54,7 +54,7 @@ class CartridgeMNetworkWidget : public CartDebugWidget
     };
 
   protected:
-    void initialize(GuiObject* boss, CartridgeMNetwork& cart, ostringstream& info);
+    void initialize(GuiObject* boss, CartridgeE7& cart, ostringstream& info);
     virtual const char* getSpotLower(int idx);
     virtual const char* getSpotUpper(int idx);
 
@@ -75,11 +75,11 @@ class CartridgeMNetworkWidget : public CartDebugWidget
 
   private:
     // Following constructors and assignment operators not supported
-    CartridgeMNetworkWidget() = delete;
-    CartridgeMNetworkWidget(const CartridgeMNetworkWidget&) = delete;
-    CartridgeMNetworkWidget(CartridgeMNetworkWidget&&) = delete;
-    CartridgeMNetworkWidget& operator=(const CartridgeMNetworkWidget&) = delete;
-    CartridgeMNetworkWidget& operator=(CartridgeMNetworkWidget&&) = delete;
+    CartridgeE7Widget() = delete;
+    CartridgeE7Widget(const CartridgeE7Widget&) = delete;
+    CartridgeE7Widget(CartridgeE7Widget&&) = delete;
+    CartridgeE7Widget& operator=(const CartridgeE7Widget&) = delete;
+    CartridgeE7Widget& operator=(CartridgeE7Widget&&) = delete;
 };
 
 #endif

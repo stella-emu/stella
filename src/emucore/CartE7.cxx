@@ -16,10 +16,10 @@
 //============================================================================
 
 #include "System.hxx"
-#include "CartMNetwork.hxx"
+#include "CartE7.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeMNetwork::CartridgeMNetwork(const ByteBuffer& image, size_t size,
+CartridgeE7::CartridgeE7(const ByteBuffer& image, size_t size,
                                      const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
     mySize{size}
@@ -28,7 +28,7 @@ CartridgeMNetwork::CartridgeMNetwork(const ByteBuffer& image, size_t size,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeMNetwork::initialize(const ByteBuffer& image, size_t size)
+void CartridgeE7::initialize(const ByteBuffer& image, size_t size)
 {
   // Allocate array for the ROM image
   myImage = make_unique<uInt8[]>(size);
@@ -41,7 +41,7 @@ void CartridgeMNetwork::initialize(const ByteBuffer& image, size_t size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeMNetwork::reset()
+void CartridgeE7::reset()
 {
   initializeRAM(myRAM.data(), myRAM.size());
 
@@ -57,7 +57,7 @@ void CartridgeMNetwork::reset()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeMNetwork::setAccess(uInt16 addrFrom, uInt16 size,
+void CartridgeE7::setAccess(uInt16 addrFrom, uInt16 size,
     uInt16 directOffset, uInt8* directData, uInt16 codeOffset,
     System::PageAccessType type, uInt16 addrMask)
 {
@@ -79,7 +79,7 @@ void CartridgeMNetwork::setAccess(uInt16 addrFrom, uInt16 size,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeMNetwork::install(System& system)
+void CartridgeE7::install(System& system)
 {
   mySystem = &system;
 
@@ -108,7 +108,7 @@ void CartridgeMNetwork::install(System& system)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeMNetwork::checkSwitchBank(uInt16 address)
+void CartridgeE7::checkSwitchBank(uInt16 address)
 {
   // Switch banks if necessary
   if(romBankCount() == 4 && (address >= 0x0FE4) && (address <= 0x0FE7))
@@ -126,7 +126,7 @@ void CartridgeMNetwork::checkSwitchBank(uInt16 address)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 CartridgeMNetwork::peek(uInt16 address)
+uInt8 CartridgeE7::peek(uInt16 address)
 {
   uInt16 peekAddress = address;
   address &= 0x0FFF;
@@ -149,7 +149,7 @@ uInt8 CartridgeMNetwork::peek(uInt16 address)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeMNetwork::poke(uInt16 address, uInt8 value)
+bool CartridgeE7::poke(uInt16 address, uInt8 value)
 {
   uInt16 pokeAddress = address;
   address &= 0x0FFF;
@@ -202,7 +202,7 @@ bool CartridgeMNetwork::poke(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeMNetwork::bankRAM(uInt16 bank)
+void CartridgeE7::bankRAM(uInt16 bank)
 {
   if(bankLocked()) return;
 
@@ -220,7 +220,7 @@ void CartridgeMNetwork::bankRAM(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeMNetwork::bank(uInt16 bank, uInt16)
+bool CartridgeE7::bank(uInt16 bank, uInt16)
 {
   if(bankLocked()) return false;
 
@@ -246,13 +246,13 @@ bool CartridgeMNetwork::bank(uInt16 bank, uInt16)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeMNetwork::getBank(uInt16 address) const
+uInt16 CartridgeE7::getBank(uInt16 address) const
 {
   return myCurrentBank[(address & 0xFFF) >> 11]; // 2K segments
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeMNetwork::patch(uInt16 address, uInt8 value)
+bool CartridgeE7::patch(uInt16 address, uInt8 value)
 {
   address = address & 0x0FFF;
 
@@ -282,14 +282,14 @@ bool CartridgeMNetwork::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const ByteBuffer& CartridgeMNetwork::getImage(size_t& size) const
+const ByteBuffer& CartridgeE7::getImage(size_t& size) const
 {
   size = romBankCount() * BANK_SIZE;
   return myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeMNetwork::save(Serializer& out) const
+bool CartridgeE7::save(Serializer& out) const
 {
   try
   {
@@ -307,7 +307,7 @@ bool CartridgeMNetwork::save(Serializer& out) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeMNetwork::load(Serializer& in)
+bool CartridgeE7::load(Serializer& in)
 {
   try
   {
@@ -329,13 +329,13 @@ bool CartridgeMNetwork::load(Serializer& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeMNetwork::romBankCount() const
+uInt16 CartridgeE7::romBankCount() const
 {
   return uInt16(mySize >> 11);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeMNetwork::romSize() const
+uInt16 CartridgeE7::romSize() const
 {
   return romBankCount() * BANK_SIZE;
 }
