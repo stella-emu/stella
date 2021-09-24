@@ -30,13 +30,16 @@ CartridgeE7Widget::CartridgeE7Widget(
   ostringstream info;
 
   info << "E7 cartridge, "
-    << (myCart.romBankCount() == 4 ? "four" : "eight")
+    << (myCart.romBankCount() == 4 ? "four"
+        : myCart.romBankCount() == 6 ? "six" : "eight")
     << " 2K banks ROM + 2K RAM, \n"
     << "  mapped into three segments\n"
     << "Lower 2K accessible @ $F000 - $F7FF\n"
     << (myCart.romBankCount() == 4
-        ? "  ROM banks 0 - 2 (hotspots $FFE4 to $FFE6)\n"
-        : "  ROM Banks 0 - 6 (hotspots $FFE0 to $FFE6)\n")
+        ? "  ROM banks 0 - 2 (hotspots $FFE4 - $FFE6)\n"
+        : myCart.romBankCount() == 6
+          ? "  ROM Banks 0 - 4 (hotspots $FFE0/$FFE1\n    and $FFE4 - $FFE6)\n"
+          : "  ROM Banks 0 - 6 (hotspots $FFE0 - $FFE6)\n")
     << "  1K RAM bank 3 (hotspot $FFE7)\n"
     << "    $F400 - $F7FF (R), $F000 - $F3FF (W)\n"
     << "256B RAM accessible @ $F800 - $F9FF\n"
@@ -205,6 +208,10 @@ const char* CartridgeE7Widget::getSpotLower(int idx)
   static constexpr std::array<const char*, 4> spot_lower_8K = {
     "#0 - ROM ($FFE4)", "#1 - ROM ($FFE5)", "#2 - ROM ($FFE6)", "#3 - RAM ($FFE7)"
   };
+  static constexpr std::array<const char*, 6> spot_lower_12K = {
+    "#0 - ROM ($FFE0)", "#1 - ROM ($FFE1)",
+    "#2 - ROM ($FFE4)", "#3 - ROM ($FFE5)", "#4 - ROM ($FFE6)", "#5 - RAM ($FFE7)"
+  };
   static constexpr std::array<const char*, 8> spot_lower_16K = {
     "#0 - ROM ($FFE0)", "#1 - ROM ($FFE1)", "#2 - ROM ($FFE2)", "#3 - ROM ($FFE3)",
     "#4 - ROM ($FFE4)", "#5 - ROM ($FFE5)", "#6 - ROM ($FFE6)", "#7 - RAM ($FFE7)"
@@ -212,7 +219,9 @@ const char* CartridgeE7Widget::getSpotLower(int idx)
 
   return myCart.romBankCount() == 4
     ? spot_lower_8K[idx]
-    : spot_lower_16K[idx];
+    : myCart.romBankCount() == 6
+      ? spot_lower_12K[idx]
+      : spot_lower_16K[idx];
 }
 
 

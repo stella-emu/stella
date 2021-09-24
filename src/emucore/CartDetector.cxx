@@ -98,7 +98,10 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
   }
   else if(size == 12_KB)
   {
-    type = Bankswitch::Type::_FA;
+    if(isProbablyE7(image, size))
+      type = Bankswitch::Type::_E7;
+    else
+      type = Bankswitch::Type::_FA;
   }
   else if(size == 16_KB)
   {
