@@ -80,7 +80,7 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
     else if(isProbably0840(image, size))
       type = Bankswitch::Type::_0840;
     else if(isProbablyE78K(image, size))
-      type = Bankswitch::Type::_E78K;
+      type = Bankswitch::Type::_E7;
     else if (isProbablyWD(image,size))
       type = Bankswitch::Type::_WD;
     else if (isProbablyFC(image, size))

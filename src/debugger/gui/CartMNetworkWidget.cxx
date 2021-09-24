@@ -15,7 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-//#include "CartE7.hxx"
 #include "CartMNetwork.hxx"
 #include "PopUpWidget.hxx"
 #include "CartMNetworkWidget.hxx"
@@ -28,6 +27,33 @@ CartridgeMNetworkWidget::CartridgeMNetworkWidget(
   : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
     myCart{cart}
 {
+  ostringstream info;
+
+  info << "E7 cartridge, "
+    << (myCart.romBankCount() == 4 ? "four" : "eight")
+    << " 2K banks ROM + 2K RAM, \n"
+    << "  mapped into three segments\n"
+    << "Lower 2K accessible @ $F000 - $F7FF\n"
+    << (myCart.romBankCount() == 4
+        ? "  ROM banks 0 - 2 (hotspots $FFE4 to $FFE6)\n"
+        : "  ROM Banks 0 - 6 (hotspots $FFE0 to $FFE6)\n")
+    << "  1K RAM bank 3 (hotspot $FFE7)\n"
+    << "    $F400 - $F7FF (R), $F000 - $F3FF (W)\n"
+    << "256B RAM accessible @ $F800 - $F9FF\n"
+    << "  RAM banks 0 - 3 (hotspots $FFE8 - $FFEB)\n"
+    << "    $F900 - $F9FF (R), $F800 - $F8FF (W)\n"
+    << "Upper 1.5K ROM accessible @ $FA00 - $FFFF\n"
+    << "  Always points to last 1.5K of ROM\n"
+    << "Startup segments = 0 / 0 or undetermined\n";
+#if 0
+  // Eventually, we should query this from the debugger/disassembler
+  uInt16 start = (cart.myImage[size - 3] << 8) | cart.myImage[size - 4];
+  start -= start % 0x1000;
+  info << "Bank RORG" << " = $" << HEX4 << start << "\n";
+#endif
+
+  initialize(boss, cart, info);
+
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -172,3 +198,31 @@ uInt8 CartridgeMNetworkWidget::internalRamGetValue(int addr)
 {
   return myCart.myRAM[addr];
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const char* CartridgeMNetworkWidget::getSpotLower(int idx)
+{
+  static constexpr std::array<const char*, 4> spot_lower_8K = {
+    "#0 - ROM ($FFE4)", "#1 - ROM ($FFE5)", "#2 - ROM ($FFE6)", "#3 - RAM ($FFE7)"
+  };
+  static constexpr std::array<const char*, 8> spot_lower_16K = {
+    "#0 - ROM ($FFE0)", "#1 - ROM ($FFE1)", "#2 - ROM ($FFE2)", "#3 - ROM ($FFE3)",
+    "#4 - ROM ($FFE4)", "#5 - ROM ($FFE5)", "#6 - ROM ($FFE6)", "#7 - RAM ($FFE7)"
+  };
+
+  return myCart.romBankCount() == 4
+    ? spot_lower_8K[idx]
+    : spot_lower_16K[idx];
+}
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const char* CartridgeMNetworkWidget::getSpotUpper(int idx)
+{
+  static constexpr std::array<const char*, 4> spot_upper = {
+    "#0 - RAM ($FFE8)", "#1 - RAM ($FFE9)", "#2 - RAM ($FFEA)", "#3 - RAM ($FFEB)"
+  };
+
+  return spot_upper[idx];
+}
+

@@ -55,8 +55,8 @@ class CartridgeMNetworkWidget : public CartDebugWidget
 
   protected:
     void initialize(GuiObject* boss, CartridgeMNetwork& cart, ostringstream& info);
-    virtual const char* getSpotLower(int idx) = 0;
-    virtual const char* getSpotUpper(int idx) = 0;
+    virtual const char* getSpotLower(int idx);
+    virtual const char* getSpotUpper(int idx);
 
   private:
     void saveOldState() override;

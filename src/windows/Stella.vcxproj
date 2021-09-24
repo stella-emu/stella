@@ -624,12 +624,6 @@
     <ClCompile Include="..\debugger\gui\CartE0Widget.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\debugger\gui\CartE78KWidget.cxx">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\debugger\gui\CartE7Widget.cxx">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\debugger\gui\CartEFSCWidget.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClCompile>
@@ -758,7 +752,6 @@
     <ClCompile Include="..\emucore\CartFC.cxx" />
     <ClCompile Include="..\emucore\CartMDM.cxx" />
     <ClCompile Include="..\emucore\CartMNetwork.cxx" />
-    <ClCompile Include="..\emucore\CartE78K.cxx" />
     <ClCompile Include="..\emucore\CartMVC.cxx" />
     <ClCompile Include="..\emucore\CartTVBoy.cxx" />
     <ClCompile Include="..\emucore\CartWD.cxx" />
@@ -844,7 +837,6 @@
     <ClCompile Include="..\emucore\CartDPC.cxx" />
     <ClCompile Include="..\emucore\CartDPCPlus.cxx" />
     <ClCompile Include="..\emucore\CartE0.cxx" />
-    <ClCompile Include="..\emucore\CartE7.cxx" />
     <ClCompile Include="..\emucore\CartEF.cxx" />
     <ClCompile Include="..\emucore\CartEFSC.cxx" />
     <ClCompile Include="..\emucore\CartF0.cxx" />
@@ -1686,12 +1678,6 @@
     <ClInclude Include="..\debugger\gui\CartE0Widget.hxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="..\debugger\gui\CartE78KWidget.hxx">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="..\debugger\gui\CartE7Widget.hxx">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="..\debugger\gui\CartEFSCWidget.hxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClInclude>
@@ -1831,7 +1817,6 @@
     <ClInclude Include="..\emucore\CartFC.hxx" />
     <ClInclude Include="..\emucore\CartMDM.hxx" />
     <ClInclude Include="..\emucore\CartMNetwork.hxx" />
-    <ClInclude Include="..\emucore\CartE78K.hxx" />
     <ClInclude Include="..\emucore\CartMVC.hxx" />
     <ClInclude Include="..\emucore\CartTVBoy.hxx" />
     <ClInclude Include="..\emucore\CartWD.hxx" />
@@ -1939,7 +1924,6 @@
     <ClInclude Include="..\emucore\CartDPC.hxx" />
     <ClInclude Include="..\emucore\CartDPCPlus.hxx" />
     <ClInclude Include="..\emucore\CartE0.hxx" />
-    <ClInclude Include="..\emucore\CartE7.hxx" />
     <ClInclude Include="..\emucore\CartEF.hxx" />
     <ClInclude Include="..\emucore\CartEFSC.hxx" />
     <ClInclude Include="..\emucore\CartF0.hxx" />

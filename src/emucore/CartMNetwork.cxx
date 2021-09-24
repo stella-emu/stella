@@ -24,6 +24,7 @@ CartridgeMNetwork::CartridgeMNetwork(const ByteBuffer& image, size_t size,
   : Cartridge(settings, md5),
     mySize{size}
 {
+  initialize(image, size);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -104,6 +105,24 @@ void CartridgeMNetwork::install(System& system)
   // Install some default banks for the RAM and first segment
   bankRAM(0);
   bank(startBank());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeMNetwork::checkSwitchBank(uInt16 address)
+{
+  // Switch banks if necessary
+  if(romBankCount() == 4 && (address >= 0x0FE4) && (address <= 0x0FE7))
+  {
+    bank(address & 0x0003);
+  }
+  else if(romBankCount() == 8 && (address >= 0x0FE0) && (address <= 0x0FE7))
+  {
+    bank(address & 0x0007);
+  }
+  else if((address >= 0x0FE8) && (address <= 0x0FEB))
+  {
+    bankRAM(address & 0x0003);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
