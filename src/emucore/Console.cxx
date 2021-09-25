@@ -472,11 +472,14 @@ void Console::setFormat(uInt32 format, bool force)
   myConsoleInfo.DisplayFormat = myDisplayFormat + autodetected;
 
   setTIAProperties();
-  initializeVideo();  // takes care of refreshing the screen
-  initializeAudio(); // ensure that audio synthesis is set up to match emulation rate
-  myOSystem.resetFps(); // Reset FPS measurement
+  if(myOSystem.eventHandler().inTIAMode())
+  {
+    initializeVideo();    // takes care of refreshing the screen
+    initializeAudio();    // ensure that audio synthesis is set up to match emulation rate
+    myOSystem.resetFps(); // Reset FPS measurement
 
-  myOSystem.frameBuffer().showTextMessage(message);
+    myOSystem.frameBuffer().showTextMessage(message);
+  }
 
   // Let the other devices know about the console change
   mySystem->consoleChanged(myConsoleTiming);
