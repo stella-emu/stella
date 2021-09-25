@@ -114,7 +114,7 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   wid.push_back(myFrameStatsWidget);
 
   myDetectedInfoWidget = new CheckboxWidget(myTab, font,
-                                            myFrameStatsWidget->getRight() + fontWidth * 2.5, ypos + 1,
+                                            myFrameStatsWidget->getRight() + fontWidth * 3, ypos + 1,
                                             "Detected settings info");
   myDetectedInfoWidget->setToolTip("Display detected controllers, bankswitching\n"
                                    "and TV types at ROM start.");
@@ -146,8 +146,8 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
                                  "most classic bankswitching types.");
   wid.push_back(myRandomBankWidget);
 
-  myRandomizeTIAWidget = new CheckboxWidget(myTab, font, myRandomBankWidget->getRight() + fontWidth * 2.5, ypos + 1,
-                                         "Randomize TIA");
+  myRandomizeTIAWidget = new CheckboxWidget(myTab, font, myDetectedInfoWidget->getLeft(), ypos + 1,
+                                            "Randomize TIA");
   wid.push_back(myRandomizeTIAWidget);
   ypos += lineHeight + VGAP;
 

@@ -29,12 +29,10 @@ class CartridgeE7Widget : public CartDebugWidget
     CartridgeE7Widget(GuiObject* boss, const GUI::Font& lfont,
                       const GUI::Font& nfont,
                       int x, int y, int w, int h,
-                      //CartridgeE7& cart);
                       CartridgeE7& cart);
     ~CartridgeE7Widget() override = default;
 
   protected:
-    //CartridgeE7& myCart;
     CartridgeE7& myCart;
 
     PopUpWidget *myLower2K{nullptr}, *myUpper256B{nullptr};
@@ -55,8 +53,8 @@ class CartridgeE7Widget : public CartDebugWidget
 
   protected:
     void initialize(GuiObject* boss, CartridgeE7& cart, ostringstream& info);
-    virtual const char* getSpotLower(int idx);
-    virtual const char* getSpotUpper(int idx);
+    const char* getSpotLower(int idx);
+    const char* getSpotUpper(int idx);
 
   private:
     void saveOldState() override;

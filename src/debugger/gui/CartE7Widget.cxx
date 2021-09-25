@@ -149,7 +149,7 @@ string CartridgeE7Widget::bankState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 CartridgeE7Widget::internalRamSize()
 {
-  return 2048;
+  return myCart.RAM_SIZE;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
