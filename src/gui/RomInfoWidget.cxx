@@ -150,10 +150,11 @@ void RomInfoWidget::parseProperties(const FilesystemNode& node)
   Controller::Type leftType = Controller::getType(left);
   Controller::Type rightType = Controller::getType(right);
   string bsDetected = myProperties.get(PropType::Cart_Type);
+  size_t size = 0;
   try
   {
     ByteBuffer image;
-    string md5 = "";  size_t size = 0;
+    string md5 = "";
 
     if(node.exists() && !node.isDirectory() &&
       (image = instance().openROM(node, md5, size)) != nullptr)
@@ -178,9 +179,22 @@ void RomInfoWidget::parseProperties(const FilesystemNode& node)
   if(left != "" && right != "")
     myRomInfo.push_back("Controllers: " + (left + " (left), " + right + " (right)"));
 
-  if (bsDetected != "")
-    myRomInfo.push_back("Type: " + Bankswitch::typeToDesc(Bankswitch::nameToType(bsDetected)));
+  if(bsDetected != "")
+  {
+    ostringstream buf;
 
+    // Display actual ROM size in developer mode
+    if(instance().settings().getBool("dev.settings"))
+    {
+      buf << " - ";
+      if(size < 1_KB)
+        buf << size << "B";
+      else
+        buf << (std::round(size / float(1_KB))) << "K";
+    }
+    myRomInfo.push_back("Type: " + Bankswitch::typeToDesc(Bankswitch::nameToType(bsDetected))
+                        + buf.str());
+  }
   setDirty();
 }
 
