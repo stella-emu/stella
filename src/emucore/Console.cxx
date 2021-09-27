@@ -312,13 +312,14 @@ void Console::redetectFrameLayout()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Console::formatFromFilename() const
 {
-  static const BSPF::array2D<string, 6, 2> Pattern = {{
-    { R"([ _\-(\[<]+NTSC[ _-]?50)",     "NTSC50"  },
-    { R"([ _\-(\[<]+PAL[ _-]?60)",      "PAL60"   },
-    { R"([ _\-(\[<]+SECAM[ _-]?60)",    "SECAM60" },
-    { R"([ _\-(\[<]+NTSC[ _\-)\]>.])",  "NTSC"    },
-    { R"([ _\-(\[<]+PAL[ _\-)\]>.])",   "PAL"     },
-    { R"([ _\-(\[<]+SECAM[ _\-)\]>.])", "SECAM"   }
+  static const BSPF::array2D<string, 7, 2> Pattern = {{
+    { R"([ _\-(\[<]+NTSC[ _-]?50)",          "NTSC50"  },
+    { R"([ _\-(\[<]+PAL[ _-]?60)",           "PAL60"   },
+    { R"([ _\-(\[<]+SECAM[ _-]?60)",         "SECAM60" },
+    { R"([ _\-(\[<]+NTSC[ _\-)\]>.])",       "NTSC"    },
+    { R"([ _\-(\[<]+PAL[ _-]?M[ _\-)\]>.])", "NTSC"    }, // PAL-M == NTSC
+    { R"([ _\-(\[<]+PAL[ _\-)\]>.])",        "PAL"     },
+    { R"([ _\-(\[<]+SECAM[ _\-)\]>.])",      "SECAM"   }
   }};
 
   // Get filename, and search using regex's above
