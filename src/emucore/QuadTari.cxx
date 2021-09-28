@@ -108,26 +108,38 @@ unique_ptr<Controller> QuadTari::addController(const Controller::Type type, bool
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool QuadTari::isFirst()
+{
+  constexpr int MIN_CYCLES = 76; // minimal cycles required for stable input switch (just to be safe)
+
+  if(mySystem.tia().dumpPortsCycles() < MIN_CYCLES)
+    // Random controller if read too soon after dump ports changed
+    return mySystem.randGenerator().next() % 2;
+  else
+    // If bit 7 of VBlank is not set, read first, else second controller
+    return !(mySystem.tia().registerValue(VBLANK) & 0x80);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool QuadTari::read(DigitalPin pin)
 {
   // We need to override the Controller::read() method, since the QuadTari
   // can switch the controller multiple times per frame
   // (we can't just read 60 times per second in the ::update() method)
 
-  constexpr int MIN_CYCLES = 76; // minimal cycles required for stable input switch (just to be safe)
-  bool readFirst;
-
-  if(mySystem.tia().dumpPortsCycles() < MIN_CYCLES)
-    // Random controller if read too soon after dump ports changed
-    readFirst = mySystem.randGenerator().next() % 2;
-  else
-    // If bit 7 of VBlank is not set, read first, else second controller
-    readFirst = !(mySystem.tia().registerValue(VBLANK) & 0x80);
-
-  if(readFirst)
+  if(isFirst())
     return myFirstController->read(pin);
   else
     return mySecondController->read(pin);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void QuadTari::write(DigitalPin pin, bool value)
+{
+  if(isFirst())
+    return myFirstController->write(pin, value);
+  else
+    return mySecondController->write(pin, value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

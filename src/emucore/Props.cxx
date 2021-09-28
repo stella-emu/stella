@@ -171,7 +171,7 @@ void Properties::print() const
        << get(PropType::Controller_Left2)       << "|"
        << get(PropType::Controller_Right)       << "|"
        << get(PropType::Controller_Right1)      << "|"
-       << get(PropType::Controller_Right2)     << "|"
+       << get(PropType::Controller_Right2)      << "|"
        << get(PropType::Controller_SwapPaddles) << "|"
        << get(PropType::Controller_PaddlesXCenter) << "|"
        << get(PropType::Controller_PaddlesYCenter) << "|"
