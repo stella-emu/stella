@@ -47,7 +47,7 @@ void PlusRomsSetupDialog::loadConfig()
     const char* HEX_DIGITS = "0123456789ABCDEF";
     char id_chr[ID_LEN];
 
-    srand(time(NULL));
+    srand(time(nullptr));
     for(int i = 0; i < ID_LEN; i++)
       id_chr[i] = HEX_DIGITS[(rand() % 16)];
 

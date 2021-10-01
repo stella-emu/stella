@@ -76,7 +76,7 @@ class CartridgeE7 : public Cartridge
       @param settings  A reference to the various settings (read-only)
     */
     CartridgeE7(const ByteBuffer& image, size_t size, const string& md5,
-                      const Settings& settings);
+                const Settings& settings);
     ~CartridgeE7() override = default;
 
   public:
