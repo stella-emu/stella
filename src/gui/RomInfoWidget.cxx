@@ -150,6 +150,7 @@ void RomInfoWidget::parseProperties(const FilesystemNode& node)
   Controller::Type leftType = Controller::getType(left);
   Controller::Type rightType = Controller::getType(right);
   string bsDetected = myProperties.get(PropType::Cart_Type);
+  bool isPlusCart = false;
   size_t size = 0;
   try
   {
@@ -168,6 +169,8 @@ void RomInfoWidget::parseProperties(const FilesystemNode& node)
           instance().settings());
       if (bsDetected == "AUTO")
         bsDetected = Bankswitch::typeToName(CartDetector::autodetectType(image, size));
+
+      isPlusCart = CartDetector::isProbablyPlusROM(image, size);
     }
   }
   catch(const runtime_error&)
@@ -193,6 +196,7 @@ void RomInfoWidget::parseProperties(const FilesystemNode& node)
         buf << (std::round(size / float(1_KB))) << "K";
     }
     myRomInfo.push_back("Type: " + Bankswitch::typeToDesc(Bankswitch::nameToType(bsDetected))
+                        + (isPlusCart ? " - PlusROM" : "")
                         + buf.str());
   }
   setDirty();

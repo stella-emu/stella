@@ -152,7 +152,7 @@ void QuadTari::update()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string QuadTari::name() const
 {
-  return "QuadTari (" + myFirstController->name() + "/" + mySecondController->name() + ")";
+  return "QT(" + myFirstController->name() + "/" + mySecondController->name() + ")";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
