@@ -24,6 +24,7 @@
 #include "PlusROM.hxx"
 #include "Logger.hxx"
 #include "Version.hxx"
+#include "Settings.hxx"
 
 #if defined(HTTP_LIB_SUPPORT)
   #include "http_lib.hxx"
@@ -156,6 +157,12 @@ class PlusROMRequest {
     PlusROMRequest& operator=(const PlusROMRequest&) = delete;
     PlusROMRequest& operator=(PlusROMRequest&&) = delete;
 };
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+PlusROM::PlusROM(const Settings& settings)
+  : mySettings(settings)
+{
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PlusROM::initialize(const ByteBuffer& image, size_t size)
@@ -337,24 +344,29 @@ void PlusROM::send()
     return;
   }
 
-  auto request = make_shared<PlusROMRequest>(
-    PlusROMRequest::Destination(myHost, myPath),
-    PlusROMRequest::PlusStoreId("DirtyHairy", "0123456789012345678912"),
-    myTxBuffer.data(),
-    myTxPos
-  );
+  const string id = mySettings.getString("plusroms.id");
+  if(id != EmptyString)
+  {
+    const string nick = mySettings.getString("plusroms.nick");
+    auto request = make_shared<PlusROMRequest>(
+      PlusROMRequest::Destination(myHost, myPath),
+      PlusROMRequest::PlusStoreId(nick, id),
+      myTxBuffer.data(),
+      myTxPos
+      );
 
-  myTxPos = 0;
+    myTxPos = 0;
 
-  // We push to the back in order to avoid reverse_iterator in receive()
-  myPendingRequests.push_back(request);
+    // We push to the back in order to avoid reverse_iterator in receive()
+    myPendingRequests.push_back(request);
 
-  // The lambda will retain a copy of the shared_ptr that is alive as long as the
-  // thread is running. Thus, the request can only be destructed once the thread has
-  // finished, and we can safely evict it from the deque at any time.
-  std::thread thread([=](){ request->execute(); });
+    // The lambda will retain a copy of the shared_ptr that is alive as long as the
+    // thread is running. Thus, the request can only be destructed once the thread has
+    // finished, and we can safely evict it from the deque at any time.
+    std::thread thread([=]() { request->execute(); });
 
-  thread.detach();
+    thread.detach();
+  }
 #endif
 }
 

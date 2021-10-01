@@ -163,7 +163,7 @@ class CartridgeEnhanced : public Cartridge
 
       @return  Whether this is actually a PlusROM cart
     */
-    bool isPlusROM() const override { return myPlusROM.isValid(); }
+    bool isPlusROM() const override { return myPlusROM->isValid(); }
 
     /**
       Get the hotspot in ROM address space.
@@ -234,7 +234,7 @@ class CartridgeEnhanced : public Cartridge
     size_t mySize{0};
 
     // Handle PlusROM functionality, if available
-    PlusROM myPlusROM;
+    unique_ptr<PlusROM> myPlusROM;
 
   protected:
     // The mask for 6507 address space
