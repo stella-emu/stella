@@ -505,6 +505,7 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
 
       msg << myConsole->leftController().name() << "/" << myConsole->rightController().name()
         << " - " << myConsole->cartridge().detectedType()
+        << (myConsole->cartridge().isPlusROM() ? " PlusROM " : "")
         << " - " << myConsole->getFormatString();
       myFrameBuffer->showTextMessage(msg.str());
     }

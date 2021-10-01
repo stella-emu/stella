@@ -39,33 +39,43 @@ PlusRomsSetupDialog::PlusRomsSetupDialog(OSystem& osystem, DialogContainer& pare
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PlusRomsSetupDialog::loadConfig()
 {
-  setText(instance().settings().getString("plusroms.nick"), 0);
+  setText(instance().settings().getString("plusroms.nick"));
+
+  // Make sure there always is an id
+  if(instance().settings().getString("plusroms.id") == EmptyString)
+  {
+    const char* HEX_DIGITS = "0123456789ABCDEF";
+    char id_chr[ID_LEN];
+
+    srand(time(NULL));
+    for(int i = 0; i < ID_LEN; i++)
+      id_chr[i] = HEX_DIGITS[(rand() % 16)];
+
+    std::string id_str(id_chr, ID_LEN);
+    instance().settings().setValue("plusroms.id", id_str);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PlusRomsSetupDialog::saveConfig()
 {
-  instance().settings().setValue("plusroms.nick", getResult(0));
+  instance().settings().setValue("plusroms.nick", getResult());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PlusRomsSetupDialog::handleCommand(CommandSender* sender, int cmd,
                                         int data, int id)
 {
-  bool exit = false;
-
   switch(cmd)
   {
     case GuiObject::kOKCmd:
     case EditableWidget::kAcceptCmd:
       saveConfig();
       instance().eventHandler().leaveMenuMode();
-      exit = true;
       break;
 
     case kCloseCmd:
       instance().eventHandler().leaveMenuMode();
-      exit = true;
       break;
 
     case EditableWidget::kCancelCmd:
@@ -74,21 +84,5 @@ void PlusRomsSetupDialog::handleCommand(CommandSender* sender, int cmd,
     default:
       InputTextDialog::handleCommand(sender, cmd, data, id);
       break;
-  }
-  // Make sure there always is an id
-  if(exit)
-  {
-    if(instance().settings().getString("plusroms.id") == EmptyString)
-    {
-      const char* HEX_DIGITS = "0123456789ABCDEF";
-      char id_chr[ID_LEN];
-
-      srand(time(NULL));
-      for(int i = 0; i < ID_LEN; i++)
-        id_chr[i] = HEX_DIGITS[(rand() % 16)];
-
-      std::string id_str(id_chr, ID_LEN);
-      instance().settings().setValue("plusroms.id", id_str);
-    }
   }
 }

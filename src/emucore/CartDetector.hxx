@@ -47,6 +47,11 @@ class CartDetector
     */
     static size_t isProbablyMVC(const FilesystemNode& rom);
 
+    /**
+      Returns true if the image is probably a HSC PlusROM
+    */
+    static bool isProbablyPlusROM(const ByteBuffer& image, size_t size);
+
   private:
     /**
       Search the image for the specified byte signature
