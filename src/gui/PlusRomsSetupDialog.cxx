@@ -21,6 +21,7 @@
 #include "PlusRomsSetupDialog.hxx"
 
 static const int MAX_NICK_LEN = 16;
+static const int ID_LEN = 32 - 2; // WE prefix added later
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PlusRomsSetupDialog::PlusRomsSetupDialog(OSystem& osystem, DialogContainer& parent,
@@ -45,25 +46,26 @@ void PlusRomsSetupDialog::loadConfig()
 void PlusRomsSetupDialog::saveConfig()
 {
   instance().settings().setValue("plusroms.nick", getResult(0));
-  if(instance().settings().getString("plusroms.id") == EmptyString)
-    instance().settings().setValue("plusroms.id", "12345678901234567890123456789012"); // TODO: generate in PlusROM class
-  // Note: The user can cancel, so the existance of an ID must be checked (and generated if not existing) when transmitting scores
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PlusRomsSetupDialog::handleCommand(CommandSender* sender, int cmd,
                                         int data, int id)
 {
+  bool exit = false;
+
   switch(cmd)
   {
     case GuiObject::kOKCmd:
     case EditableWidget::kAcceptCmd:
       saveConfig();
       instance().eventHandler().leaveMenuMode();
+      exit = true;
       break;
 
     case kCloseCmd:
       instance().eventHandler().leaveMenuMode();
+      exit = true;
       break;
 
     case EditableWidget::kCancelCmd:
@@ -72,5 +74,21 @@ void PlusRomsSetupDialog::handleCommand(CommandSender* sender, int cmd,
     default:
       InputTextDialog::handleCommand(sender, cmd, data, id);
       break;
+  }
+  // Make sure there always is an id
+  if(exit)
+  {
+    if(instance().settings().getString("plusroms.id") == EmptyString)
+    {
+      const char* HEX_DIGITS = "0123456789ABCDEF";
+      char id_chr[ID_LEN];
+
+      srand(time(NULL));
+      for(int i = 0; i < ID_LEN; i++)
+        id_chr[i] = HEX_DIGITS[(rand() % 16)];
+
+      std::string id_str(id_chr, ID_LEN);
+      instance().settings().setValue("plusroms.id", id_str);
+    }
   }
 }

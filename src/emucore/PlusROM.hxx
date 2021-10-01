@@ -18,6 +18,8 @@
 #ifndef PLUSROM_HXX
 #define PLUSROM_HXX
 
+class Settings;
+
 #include <deque>
 
 #include "bspf.hxx"
@@ -50,7 +52,7 @@ class PlusROMRequest;
 class PlusROM : public Serializable
 {
   public:
-    PlusROM() = default;
+    PlusROM(const Settings& settings);
     ~PlusROM() override = default;
 
   public:
@@ -133,6 +135,7 @@ class PlusROM : public Serializable
     void send();
 
   private:
+    const Settings& mySettings;
     bool myIsPlusROM{false};
     string myHost;
     string myPath;

@@ -56,9 +56,11 @@ CartridgeEnhanced::CartridgeEnhanced(const ByteBuffer& image, size_t size,
   // space will be filled with 0's from above
   std::copy_n(image.get(), std::min(mySize, size), myImage.get());
 
+  myPlusROM = make_unique<PlusROM>(mySettings);
+
   // Determine whether we have a PlusROM cart
   // PlusROM needs to call peek() method, so disable direct peeks
-  if(myPlusROM.initialize(myImage, mySize))
+  if(myPlusROM->initialize(myImage, mySize))
     myDirectPeek = false;
 }
 
@@ -142,7 +144,7 @@ void CartridgeEnhanced::reset()
   // Upon reset we switch to the reset bank
   bank(startBank());
 
-  if (myPlusROM.isValid()) myPlusROM.reset();
+  if (myPlusROM->isValid()) myPlusROM->reset();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -151,10 +153,10 @@ uInt8 CartridgeEnhanced::peek(uInt16 address)
   const uInt16 peekAddress = address;
 
   // Is this a PlusROM?
-  if(myPlusROM.isValid())
+  if(myPlusROM->isValid())
   {
     uInt8 value = 0;
-    if(myPlusROM.peekHotspot(address, value))
+    if(myPlusROM->peekHotspot(address, value))
       return value;
   }
 
@@ -188,7 +190,7 @@ uInt8 CartridgeEnhanced::peek(uInt16 address)
 bool CartridgeEnhanced::poke(uInt16 address, uInt8 value)
 {
   // Is this a PlusROM?
-  if(myPlusROM.isValid() && myPlusROM.pokeHotspot(address, value))
+  if(myPlusROM->isValid() && myPlusROM->pokeHotspot(address, value))
     return true;
 
   // Switch banks if necessary
@@ -384,7 +386,7 @@ bool CartridgeEnhanced::save(Serializer& out) const
     if(myRamSize > 0)
       out.putByteArray(myRAM.get(), myRamSize);
 
-    if(myPlusROM.isValid() && !myPlusROM.save(out))
+    if(myPlusROM->isValid() && !myPlusROM->save(out))
       return false;
 
   }
@@ -406,7 +408,7 @@ bool CartridgeEnhanced::load(Serializer& in)
     if(myRamSize > 0)
       in.getByteArray(myRAM.get(), myRamSize);
 
-    if(myPlusROM.isValid() && !myPlusROM.load(in))
+    if(myPlusROM->isValid() && !myPlusROM->load(in))
       return false;
   }
   catch(...)
