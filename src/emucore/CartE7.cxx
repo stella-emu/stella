@@ -20,7 +20,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeE7::CartridgeE7(const ByteBuffer& image, size_t size,
-                                     const string& md5, const Settings& settings)
+                         const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
     mySize{size}
 {

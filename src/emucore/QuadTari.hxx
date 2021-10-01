@@ -107,7 +107,7 @@ class QuadTari : public Controller
 
   private:
     // determine which controller is active
-    bool isFirst();
+    bool isFirst() const;
 
     unique_ptr<Controller> addController(const Controller::Type type, bool second);
 

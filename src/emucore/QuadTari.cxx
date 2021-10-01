@@ -108,7 +108,7 @@ unique_ptr<Controller> QuadTari::addController(const Controller::Type type, bool
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool QuadTari::isFirst()
+bool QuadTari::isFirst() const
 {
   constexpr int MIN_CYCLES = 76; // minimal cycles required for stable input switch (just to be safe)
 

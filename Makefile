@@ -61,11 +61,11 @@ ifdef HAVE_CLANG
 endif
 
 ifdef CLANG_WARNINGS
-  EXTRA_WARN=-Weverything -Wno-c++98-compat-pedantic \
+  EXTRA_WARN=-Weverything -Wno-c++98-compat-pedantic -Wno-unknown-warning-option \
     -Wno-switch-enum -Wno-conversion -Wno-covered-switch-default \
     -Wno-inconsistent-missing-destructor-override -Wno-float-equal \
     -Wno-exit-time-destructors -Wno-global-constructors -Wno-weak-vtables \
-    -Wno-four-char-constants -Wno-padded
+    -Wno-four-char-constants -Wno-padded -Wno-reserved-identifier
 
   CXXFLAGS+= $(EXTRA_WARN)
   CFLAGS+= $(EXTRA_WARN)
