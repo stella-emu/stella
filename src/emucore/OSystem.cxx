@@ -513,6 +513,21 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
     if(myConsole->cartridge().isPlusROM() &&
        settings().getString("plusroms.id") == EmptyString)
     {
+      // Make sure there always is an id
+      if(settings().getString("plusroms.id") == EmptyString)
+      {
+        const int ID_LEN = 32 - 2; // WE prefix added later
+        const char* HEX_DIGITS = "0123456789ABCDEF";
+        char id_chr[ID_LEN] = {0};
+
+        srand(time(NULL));
+        for(int i = 0; i < ID_LEN; i++)
+          id_chr[i] = HEX_DIGITS[(rand() % 16)];
+
+        std::string id_str(id_chr, ID_LEN);
+        settings().setValue("plusroms.id", id_str);
+      }
+
       myEventHandler->changeStateByEvent(Event::PlusRomsSetupMode);
     }
   }

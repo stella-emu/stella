@@ -21,7 +21,6 @@
 #include "PlusRomsSetupDialog.hxx"
 
 static const int MAX_NICK_LEN = 16;
-static const int ID_LEN = 32 - 2; // WE prefix added later
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PlusRomsSetupDialog::PlusRomsSetupDialog(OSystem& osystem, DialogContainer& parent,
@@ -40,20 +39,6 @@ PlusRomsSetupDialog::PlusRomsSetupDialog(OSystem& osystem, DialogContainer& pare
 void PlusRomsSetupDialog::loadConfig()
 {
   setText(instance().settings().getString("plusroms.nick"));
-
-  // Make sure there always is an id
-  if(instance().settings().getString("plusroms.id") == EmptyString)
-  {
-    const char* HEX_DIGITS = "0123456789ABCDEF";
-    char id_chr[ID_LEN];
-
-    srand(time(nullptr));
-    for(int i = 0; i < ID_LEN; i++)
-      id_chr[i] = HEX_DIGITS[(rand() % 16)];
-
-    std::string id_str(id_chr, ID_LEN);
-    instance().settings().setValue("plusroms.id", id_str);
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
