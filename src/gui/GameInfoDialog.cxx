@@ -1130,7 +1130,7 @@ void GameInfoDialog::updateControllerStates()
     {
       label = (!swapPorts ? instance().console().leftController().name()
                : instance().console().rightController().name()) + " detected";
-      if(BSPF::startsWithIgnoreCase(label, "QUADTARI"))
+      if(BSPF::startsWithIgnoreCase(label, "QT"))
         label = "QuadTari detected"; // remove plugged-in controller names
     }
     else if(autoDetect)
@@ -1149,7 +1149,7 @@ void GameInfoDialog::updateControllerStates()
     {
       label = (!swapPorts ? instance().console().rightController().name()
                : instance().console().leftController().name()) + " detected";
-      if(BSPF::startsWithIgnoreCase(label, "QUADTARI"))
+      if(BSPF::startsWithIgnoreCase(label, "QT"))
         label = "QuadTari detected"; // remove plugged-in controller names
     }
     else if(autoDetect)
@@ -1193,7 +1193,9 @@ void GameInfoDialog::updateControllerStates()
   myQuadTariButton->setEnabled(BSPF::startsWithIgnoreCase(contrLeft, "QUADTARI") ||
                                BSPF::startsWithIgnoreCase(contrRight, "QUADTARI") ||
                                BSPF::startsWithIgnoreCase(myLeftPortDetected->getLabel(), "QUADTARI") ||
-                               BSPF::startsWithIgnoreCase(myRightPortDetected->getLabel(), "QUADTARI"));
+                               BSPF::startsWithIgnoreCase(myLeftPortDetected->getLabel(), "QT") ||
+                               BSPF::startsWithIgnoreCase(myRightPortDetected->getLabel(), "QUADTARI") ||
+                               BSPF::startsWithIgnoreCase(myRightPortDetected->getLabel(), "QT"));
 
   mySwapPorts->setEnabled(enableSelectControl);
   mySwapPaddles->setEnabled(enablePaddles);
@@ -1422,9 +1424,11 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
     {
       bool enableLeft =
         BSPF::startsWithIgnoreCase(myLeftPort->getSelectedTag().toString(), "QUADTARI") ||
+        BSPF::startsWithIgnoreCase(myLeftPortDetected->getLabel(), "QT") ||
         BSPF::startsWithIgnoreCase(myLeftPortDetected->getLabel(), "QUADTARI");
       bool enableRight =
         BSPF::startsWithIgnoreCase(myRightPort->getSelectedTag().toString(), "QUADTARI") ||
+        BSPF::startsWithIgnoreCase(myRightPortDetected->getLabel(), "QT") ||
         BSPF::startsWithIgnoreCase(myRightPortDetected->getLabel(), "QUADTARI");
 
       if(!myQuadTariDialog)
