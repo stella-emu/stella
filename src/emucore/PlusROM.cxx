@@ -32,8 +32,13 @@
 namespace {
   constexpr int MAX_CONCURRENT_REQUESTS = 5;
   constexpr int CONNECTION_TIMEOUT_MSEC = 3000;
-  constexpr int READ_TIMEOUT_MSEC = 3000;
-  constexpr int WRITE_TIMEOUT_MSEC = 3000;
+  constexpr int READ_TIMEOUT_MSEC       = 3000;
+  constexpr int WRITE_TIMEOUT_MSEC      = 3000;
+
+  constexpr uInt16 WRITE_TO_BUFFER      = 0x1FF0;
+  constexpr uInt16 WRITE_SEND_BUFFER    = 0x1FF1;
+  constexpr uInt16 RECEIVE_BUFFER       = 0x1FF2;
+  constexpr uInt16 RECEIVE_BUFFER_SIZE  = 0x1FF3;
 }
 #endif
 
@@ -208,25 +213,32 @@ bool PlusROM::initialize(const ByteBuffer& image, size_t size)
 bool PlusROM::peekHotspot(uInt16 address, uInt8& value)
 {
 #if defined(HTTP_LIB_SUPPORT)
-  switch(address & 0x0FFF)
+  switch(address & 0x1FFF)
   {
-    case 0x0FF2:  // Read next byte from Rx buffer
-      receive();
+    // invalid reads from write addresses
+    case WRITE_TO_BUFFER:     // Write byte to Tx buffer
+      myTxBuffer[myTxPos++] = address & 0xff; // TODO: value is undetermined
+      break;
 
+    case WRITE_SEND_BUFFER:   // Write byte to Tx buffer and send to backend
+                              // (and receive into Rx buffer)
+      myTxBuffer[myTxPos++] = address & 0xff; // TODO: value is undetermined
+      send();
+      break;
+
+    // valid reads
+    case RECEIVE_BUFFER:      // Read next byte from Rx buffer
+      receive();
       value = myRxBuffer[myRxReadPos];
       if (myRxReadPos != myRxWritePos) myRxReadPos++;
-
       return true;
 
-    case 0x0FF3:  // Get number of unread bytes in Rx buffer
+    case RECEIVE_BUFFER_SIZE: // Get number of unread bytes in Rx buffer
       receive();
-
       value = myRxWritePos - myRxReadPos;
-
       return true;
   }
 #endif
-
   return false;
 }
 
@@ -234,23 +246,30 @@ bool PlusROM::peekHotspot(uInt16 address, uInt8& value)
 bool PlusROM::pokeHotspot(uInt16 address, uInt8 value)
 {
 #if defined(HTTP_LIB_SUPPORT)
-  switch(address & 0x0FFF)
+  switch(address & 0x1FFF)
   {
-    case 0x0FF0:  // Write byte to Tx buffer
+    // valid writes
+    case WRITE_TO_BUFFER:     // Write byte to Tx buffer
       myTxBuffer[myTxPos++] = value;
-
       return true;
 
-    case 0x0FF1:  // Write byte to Tx buffer and send to backend
-                  // (and receive into Rx buffer)
-
+    case WRITE_SEND_BUFFER:   // Write byte to Tx buffer and send to backend
+                              // (and receive into Rx buffer)
       myTxBuffer[myTxPos++] = value;
       send();
-
       return true;
+
+    // invalid writes to read addresses
+    case RECEIVE_BUFFER:      // Read next byte from Rx buffer
+      receive();
+      if(myRxReadPos != myRxWritePos) myRxReadPos++;
+      break;
+
+    case RECEIVE_BUFFER_SIZE: // Get number of unread bytes in Rx buffer
+      receive();
+      break;;
   }
 #endif
-
   return false;
 }
 
