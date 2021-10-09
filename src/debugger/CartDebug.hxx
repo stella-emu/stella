@@ -374,7 +374,7 @@ class CartDebug : public DebuggerSystem
     /// Table of instruction mnemonics
     static std::array<const char*, 16>  ourTIAMnemonicR; // read mode
     static std::array<const char*, 64>  ourTIAMnemonicW; // write mode
-    static std::array<const char*, 24>  ourIOMnemonic;
+    static std::array<const char*, 32>  ourIOMnemonic;
     static std::array<const char*, 128> ourZPMnemonic;
 
   private:
