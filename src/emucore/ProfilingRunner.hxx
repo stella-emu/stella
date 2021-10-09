@@ -18,6 +18,8 @@
 #ifndef PROFILING_RUNNER
 #define PROFILING_RUNNER
 
+class OSystem;
+
 #include "bspf.hxx"
 #include "Control.hxx"
 #include "Switches.hxx"
@@ -57,6 +59,7 @@ class ProfilingRunner {
 
     vector<ProfilingRun> profilingRuns;
 
+    unique_ptr<OSystem> myOSystem;
     Settings mySettings;
 
     Properties myProps;
