@@ -52,7 +52,7 @@ class Cartridge : public Device
     /**
       Callback type for general cart messages
     */
-    using messageCallback = std::function<void(const string&)>;   
+    using messageCallback = std::function<void(const string&)>;
 
     // Maximum size of a ROM cart that Stella can support
     static constexpr size_t maxSize() { return 512_KB; }
@@ -144,10 +144,10 @@ class Cartridge : public Device
     /**
       Set the callback for displaying messages
     */
-    void setMessageCallback(const messageCallback& callback)
+    void setMessageCallback(messageCallback callback)
     {
-      if(myMsgCallback == nullptr)
-        myMsgCallback = &callback;
+      if(!myMsgCallback)
+        myMsgCallback = callback;
     }
 
   #ifdef DEBUGGER_SUPPORT
@@ -415,7 +415,7 @@ class Cartridge : public Device
     uInt32 myAccessSize;
 
     // Callback to output messages
-    const messageCallback* myMsgCallback{nullptr};
+    messageCallback myMsgCallback{nullptr};
 
   private:
     // The startup bank to use (where to look for the reset vector address)

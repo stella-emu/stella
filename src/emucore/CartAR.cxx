@@ -306,7 +306,7 @@ void CartridgeAR::loadIntoRAM(uInt8 load)
       if(checksum(myHeader.data(), 8) != 0x55)
       {
         cerr << "WARNING: The Supercharger header checksum is invalid...\n";
-        (*myMsgCallback)("Supercharger load #" + std::to_string(load) + " done with hearder checksum error");
+        myMsgCallback("Supercharger load #" + std::to_string(load) + " done with hearder checksum error");
         success = false;
       }
 
@@ -322,7 +322,7 @@ void CartridgeAR::loadIntoRAM(uInt8 load)
         if(!invalidPageChecksumSeen && (sum != 0x55))
         {
           cerr << "WARNING: Some Supercharger page checksums are invalid...\n";
-          (*myMsgCallback)("Supercharger load #" + std::to_string(load) + " done with page #"
+          myMsgCallback("Supercharger load #" + std::to_string(load) + " done with page #"
                            + std::to_string(j) + " checksum error");
           invalidPageChecksumSeen = true;
         }
@@ -341,7 +341,7 @@ void CartridgeAR::loadIntoRAM(uInt8 load)
 
       myBankChanged = true;
       if(success)
-        (*myMsgCallback)("Supercharger load #" + std::to_string(load) + " done");
+        myMsgCallback("Supercharger load #" + std::to_string(load) + " done");
       return;
     }
   }
