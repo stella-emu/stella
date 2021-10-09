@@ -106,7 +106,7 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
       mySystemAddresses.emplace(ourTIAMnemonicW[addr], addr);
     myReserved.TIAWrite[addr] = false;
   }
-  for(uInt16 addr = 0x280; addr <= 0x297; ++addr)
+  for(uInt16 addr = 0x280; addr <= 0x29F; ++addr)
   {
     if(ourIOMnemonic[addr-0x280])
       mySystemAddresses.emplace(ourIOMnemonic[addr-0x280], addr);
@@ -646,7 +646,7 @@ bool CartDebug::getLabel(ostream& buf, uInt16 addr, bool isRead,
     case AddrType::IO:
     {
       uInt16 a = addr & 0xFF, offset = addr & 0xFD00;
-      if(a <= 0x97)
+      if(a <= 0x9F)
       {
         if(ourIOMnemonic[a - 0x80])
         {
@@ -1279,7 +1279,7 @@ string CartDebug::saveDisassembly(string path)
     out << "\n";
 
     // RIOT IO access
-    for(uInt16 addr = 0x00; addr <= 0x17; ++addr)
+    for(uInt16 addr = 0x00; addr <= 0x1F; ++addr)
       if(myReserved.IOReadWrite[addr] && ourIOMnemonic[addr])
         out << ALIGN(16) << ourIOMnemonic[addr] << "= $"
             << Base::HEX4 << right << (addr+0x280) << "\n";
@@ -1498,7 +1498,7 @@ void CartDebug::getCompletions(const char* in, StringList& completions) const
   for(uInt16 addr = 0x00; addr <= 0x3F; ++addr)
     if(ourTIAMnemonicW[addr] && BSPF::matchesIgnoreCase(ourTIAMnemonicW[addr], in))
       completions.push_back(ourTIAMnemonicW[addr]);
-  for(uInt16 addr = 0; addr <= 0x297-0x280; ++addr)
+  for(uInt16 addr = 0; addr <= 0x29F-0x280; ++addr)
     if(ourIOMnemonic[addr] && BSPF::matchesIgnoreCase(ourIOMnemonic[addr], in))
       completions.push_back(ourIOMnemonic[addr]);
   for(uInt16 addr = 0; addr <= 0x7F; ++addr)
@@ -1693,11 +1693,13 @@ std::array<const char*, 64> CartDebug::ourTIAMnemonicW = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-std::array<const char*, 24> CartDebug::ourIOMnemonic = {
+std::array<const char*, 32> CartDebug::ourIOMnemonic = {
   "SWCHA", "SWACNT", "SWCHB", "SWBCNT", "INTIM", "TIMINT",
   "$286", "$287", "$288", "$289", "$28a", "$28b", "$28c",
   "$28d", "$28e", "$28f", "$290", "$291", "$292", "$293",
-  "TIM1T", "TIM8T", "TIM64T", "T1024T"
+  "TIM1T", "TIM8T", "TIM64T", "T1024T",
+  "$298", "$299", "$29A", "$29B",
+  "TIM1I", "TIM8I", "TIM64I", "T1024I"
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
