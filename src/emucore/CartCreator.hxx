@@ -21,6 +21,7 @@
 class Cartridge;
 class Properties;
 class Settings;
+class OSystem;
 
 #include "Bankswitch.hxx"
 #include "bspf.hxx"
@@ -47,7 +48,7 @@ class CartCreator
     */
     static unique_ptr<Cartridge> create(const FilesystemNode& file,
                  const ByteBuffer& image, size_t size, string& md5,
-                 const string& dtype, Settings& settings);
+                 const string& dtype,  OSystem& osystem);
 
   private:
     /**
@@ -67,7 +68,7 @@ class CartCreator
     static unique_ptr<Cartridge>
       createFromMultiCart(const ByteBuffer& image, size_t& size,
         uInt32 numroms, string& md5, Bankswitch::Type type, string& id,
-        Settings& settings);
+        OSystem& osystem);
 
     /**
       Create a cartridge from the entire image pointer.
@@ -82,7 +83,8 @@ class CartCreator
     */
     static unique_ptr<Cartridge>
       createFromImage(const ByteBuffer& image, size_t size, Bankswitch::Type type,
-                      const string& md5, Settings& settings);
+                      const string& md5, OSystem& osystem);
+
 
   private:
     // Following constructors and assignment operators not supported

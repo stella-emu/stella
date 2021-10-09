@@ -632,8 +632,17 @@ unique_ptr<Console> OSystem::openConsole(const FilesystemNode& romfile, string& 
     // Now create the cartridge
     string cartmd5 = md5;
     const string& type = props.get(PropType::Cart_Type);
+    const Cartridge::messageCallback callback = [&os = *this](const string& msg)
+    {
+      bool devSettings = os.settings().getBool("dev.settings");
+
+      if(os.settings().getBool(devSettings ? "dev.eepromaccess" : "plr.eepromaccess"))
+        os.frameBuffer().showTextMessage(msg);
+    };
+
     unique_ptr<Cartridge> cart =
-      CartCreator::create(romfile, image, size, cartmd5, type, *mySettings);
+      CartCreator::create(romfile, image, size, cartmd5, type, *this);
+    cart->setMessageCallback(callback);
 
     // Some properties may not have a name set; we can't leave it blank
     if(props.get(PropType::Cart_Name) == EmptyString)
