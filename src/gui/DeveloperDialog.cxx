@@ -121,6 +121,14 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   wid.push_back(myDetectedInfoWidget);
   ypos += lineHeight + VGAP;
 
+  // AtariVox/SaveKey/PlusROM access
+  myExternAccessWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1,
+                                            "Display AtariVox/SaveKey and PlusROM access");
+  myExternAccessWidget->setToolTip("Display message when AtariVox/SaveKey EEPROM\n"
+                                   "is read or written or PlusROM is accessed.");
+  wid.push_back(myExternAccessWidget);
+  ypos += lineHeight + VGAP;
+
   // 2600/7800 mode
   items.clear();
   VarList::push_back(items, "Atari 2600", "2600");
@@ -202,14 +210,6 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   myThumbExceptionWidget->setToolTip("Cause Thumb ARM emulation to throw exceptions\n"
                                      "on fatal errors and enter the debugger.");
   wid.push_back(myThumbExceptionWidget);
-  ypos += lineHeight + VGAP;
-
-  // AtariVox/SaveKey EEPROM access
-  myEEPROMAccessWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1,
-                                            "Display AtariVox/SaveKey EEPROM R/W access");
-  myEEPROMAccessWidget->setToolTip("Cause message display when AtariVox/\n"
-                                   "SaveKey EEPROM is read or written.");
-  wid.push_back(myEEPROMAccessWidget);
 
   // Add items for tab 0
   addToFocusList(wid, myTab, tabID);
@@ -686,8 +686,8 @@ void DeveloperDialog::loadSettings(SettingsSet set)
 #endif
   // Thumb ARM emulation exception
   myThumbException[set] = devSettings ? instance().settings().getBool("dev.thumb.trapfatal") : false;
-  // AtariVox/SaveKey EEPROM access
-  myEEPROMAccess[set] = instance().settings().getBool(prefix + "eepromaccess");
+  // AtariVox/SaveKey/PlusROM access
+  myExternAccess[set] = instance().settings().getBool(prefix + "eepromaccess");
 
   // TIA tab
   myTIAType[set] = devSettings ? instance().settings().getString("dev.tia.type") : "standard";
@@ -748,8 +748,8 @@ void DeveloperDialog::saveSettings(SettingsSet set)
     instance().settings().setValue("dev.thumb.trapfatal", myThumbException[set]);
   }
 
-  // AtariVox/SaveKey EEPROM access
-  instance().settings().setValue(prefix + "eepromaccess", myEEPROMAccess[set]);
+  // AtariVox/SaveKey/PlusROM access
+  instance().settings().setValue(prefix + "eepromaccess", myExternAccess[set]);
 
   // TIA tab
   if (devSettings)
@@ -810,8 +810,8 @@ void DeveloperDialog::getWidgetStates(SettingsSet set)
 #endif
   // Thumb ARM emulation exception
   myThumbException[set] = myThumbExceptionWidget->getState();
-  // AtariVox/SaveKey EEPROM access
-  myEEPROMAccess[set] = myEEPROMAccessWidget->getState();
+  // AtariVox/SaveKey/PlusROM access
+  myExternAccess[set] = myExternAccessWidget->getState();
 
   // TIA tab
   myTIAType[set] = myTIATypeWidget->getSelectedTag().toString();
@@ -865,8 +865,8 @@ void DeveloperDialog::setWidgetStates(SettingsSet set)
 #endif
   // Thumb ARM emulation exception
   myThumbExceptionWidget->setState(myThumbException[set]);
-  // AtariVox/SaveKey EEPROM access
-  myEEPROMAccessWidget->setState(myEEPROMAccess[set]);
+  // AtariVox/SaveKey/PlusROM access
+  myExternAccessWidget->setState(myExternAccess[set]);
   handleConsole();
 
   // TIA tab
@@ -1030,6 +1030,8 @@ void DeveloperDialog::setDefaults()
     case 0: // Emulation
       myFrameStats[set] = devSettings ? true : false;
       myDetectedInfo[set] = devSettings ? true : false;
+      // AtariVox/SaveKey/PlusROM access
+      myExternAccess[set] = devSettings ? true : false;
       myConsole[set] = 0;
       // Randomization
       myRandomBank[set] = devSettings ? true : false;
@@ -1045,8 +1047,6 @@ void DeveloperDialog::setDefaults()
     #endif
       // Thumb ARM emulation exception
       myThumbException[set] = devSettings ? true : false;
-      // AtariVox/SaveKey EEPROM access
-      myEEPROMAccess[set] = devSettings ? true : false;
 
       setWidgetStates(set);
       break;
