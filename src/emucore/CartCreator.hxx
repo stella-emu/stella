@@ -43,12 +43,12 @@ class CartCreator
       @param size     The size of the ROM image
       @param md5      The md5sum for the given ROM image (can be updated)
       @param dtype    The detected bankswitch type of the ROM image
-      @param settings The settings container
+      @param osystem  The OSystem object to use
       @return   Pointer to the new cartridge object allocated on the heap
     */
     static unique_ptr<Cartridge> create(const FilesystemNode& file,
                  const ByteBuffer& image, size_t size, string& md5,
-                 const string& dtype,  OSystem& osystem);
+                 const string& dtype, OSystem& osystem);
 
   private:
     /**
@@ -61,7 +61,7 @@ class CartCreator
       @param md5      The md5sum for the slice of the ROM image
       @param type     The detected type of the slice of the ROM image
       @param id       The ID for the slice of the ROM image
-      @param settings The settings container
+      @param osystem  The OSystem object to use
 
       @return  Pointer to the new cartridge object allocated on the heap
     */
@@ -77,7 +77,7 @@ class CartCreator
       @param size     The size of the ROM image
       @param type     The bankswitch type of the ROM image
       @param md5      The md5sum for the ROM image
-      @param settings The settings container
+      @param osystem  The OSystem object to use
 
       @return  Pointer to the new cartridge object allocated on the heap
     */
