@@ -26,7 +26,6 @@
 #include "Control.hxx"
 #include "M6502.hxx"
 #include "M6532.hxx"
-#include "MediaFactory.hxx"
 #include "TIA.hxx"
 #include "ConsoleTiming.hxx"
 #include "FrameManager.hxx"
@@ -74,7 +73,6 @@ ProfilingRunner::ProfilingRunner(int argc, char* argv[])
     }
   }
 
-  myOSystem = MediaFactory::createOSystem();
   mySettings.setValue("fastscbios", true);
 }
 
@@ -112,7 +110,7 @@ bool ProfilingRunner::runOne(const ProfilingRun& run)
   string md5 = MD5::hash(image, size);
   string type = "";
   unique_ptr<Cartridge> cartridge = CartCreator::create(
-      imageFile, image, size, md5, type, *myOSystem);
+      imageFile, image, size, md5, type, mySettings);
 
   if (!cartridge) {
     cout << "ERROR: unable to determine cartridge type" << endl;

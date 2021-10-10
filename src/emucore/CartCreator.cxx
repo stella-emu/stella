@@ -63,7 +63,7 @@
 #include "MD5.hxx"
 #include "Props.hxx"
 #include "Logger.hxx"
-#include "OSystem.hxx"
+#include "Settings.hxx"
 
 #include "CartDetector.hxx"
 #include "CartCreator.hxx"
@@ -71,7 +71,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 unique_ptr<Cartridge> CartCreator::create(const FilesystemNode& file,
     const ByteBuffer& image, size_t size, string& md5,
-    const string& propertiesType, OSystem& osystem)
+    const string& propertiesType, Settings& settings)
 {
   unique_ptr<Cartridge> cartridge;
   Bankswitch::Type type = Bankswitch::nameToType(propertiesType),
@@ -89,7 +89,7 @@ unique_ptr<Cartridge> CartCreator::create(const FilesystemNode& file,
 
   // See if we should try to auto-detect the cartridge type
   // If we ask for extended info, always do an autodetect
-  if(type == Bankswitch::Type::_AUTO || osystem.settings().getBool("rominfo"))
+  if(type == Bankswitch::Type::_AUTO || settings.getBool("rominfo"))
   {
     detectedType = CartDetector::autodetectType(image, size);
     if(type != Bankswitch::Type::_AUTO && type != detectedType)
@@ -111,7 +111,7 @@ unique_ptr<Cartridge> CartCreator::create(const FilesystemNode& file,
       if(size == 2*2_KB || size == 2*4_KB || size == 2*8_KB || size == 2*16_KB || size == 2*32_KB)
       {
         cartridge =
-          createFromMultiCart(image, size, 2, md5, detectedType, id, osystem);
+          createFromMultiCart(image, size, 2, md5, detectedType, id, settings);
         buf << id;
       }
       else
@@ -124,7 +124,7 @@ unique_ptr<Cartridge> CartCreator::create(const FilesystemNode& file,
       if(size == 4*2_KB || size == 4*4_KB || size == 4*8_KB || size == 4*16_KB)
       {
         cartridge =
-          createFromMultiCart(image, size, 4, md5, detectedType, id, osystem);
+          createFromMultiCart(image, size, 4, md5, detectedType, id, settings);
         buf << id;
       }
       else
@@ -137,7 +137,7 @@ unique_ptr<Cartridge> CartCreator::create(const FilesystemNode& file,
       if(size == 8*2_KB || size == 8*4_KB || size == 8*8_KB)
       {
         cartridge =
-          createFromMultiCart(image, size, 8, md5, detectedType, id, osystem);
+          createFromMultiCart(image, size, 8, md5, detectedType, id, settings);
         buf << id;
       }
       else
@@ -150,7 +150,7 @@ unique_ptr<Cartridge> CartCreator::create(const FilesystemNode& file,
       if(size == 16*2_KB || size == 16*4_KB || size == 16*8_KB)
       {
         cartridge =
-          createFromMultiCart(image, size, 16, md5, detectedType, id, osystem);
+          createFromMultiCart(image, size, 16, md5, detectedType, id, settings);
         buf << id;
       }
       else
@@ -163,7 +163,7 @@ unique_ptr<Cartridge> CartCreator::create(const FilesystemNode& file,
       if(size == 32*2_KB || size == 32*4_KB)
       {
         cartridge =
-          createFromMultiCart(image, size, 32, md5, detectedType, id, osystem);
+          createFromMultiCart(image, size, 32, md5, detectedType, id, settings);
         buf << id;
       }
       else
@@ -176,7 +176,7 @@ unique_ptr<Cartridge> CartCreator::create(const FilesystemNode& file,
       if(size == 64*2_KB || size == 64*4_KB)
       {
         cartridge =
-          createFromMultiCart(image, size, 64, md5, detectedType, id, osystem);
+          createFromMultiCart(image, size, 64, md5, detectedType, id, settings);
         buf << id;
       }
       else
@@ -189,7 +189,7 @@ unique_ptr<Cartridge> CartCreator::create(const FilesystemNode& file,
       if(size == 128*2_KB || size == 128*4_KB)
       {
         cartridge =
-          createFromMultiCart(image, size, 128, md5, detectedType, id, osystem);
+          createFromMultiCart(image, size, 128, md5, detectedType, id, settings);
         buf << id;
       }
       else
@@ -198,11 +198,11 @@ unique_ptr<Cartridge> CartCreator::create(const FilesystemNode& file,
       break;
 
     case Bankswitch::Type::_MVC:
-      cartridge = make_unique<CartridgeMVC>(file.getPath(), size, md5, osystem.settings());
+      cartridge = make_unique<CartridgeMVC>(file.getPath(), size, md5, settings);
       break;
 
     default:
-      cartridge = createFromImage(image, size, detectedType, md5, osystem);
+      cartridge = createFromImage(image, size, detectedType, md5, settings);
       break;
   }
 
@@ -219,10 +219,8 @@ unique_ptr<Cartridge> CartCreator::create(const FilesystemNode& file,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 unique_ptr<Cartridge>
 CartCreator::createFromMultiCart(const ByteBuffer& image, size_t& size,
-    uInt32 numroms, string& md5, Bankswitch::Type type, string& id, OSystem& osystem)
+    uInt32 numroms, string& md5, Bankswitch::Type type, string& id, Settings& settings)
 {
-  Settings& settings = osystem.settings();
-
   // Get a piece of the larger image
   uInt32 i = settings.getInt("romloadcount");
 
@@ -252,16 +250,14 @@ CartCreator::createFromMultiCart(const ByteBuffer& image, size_t& size,
   else  /* default */
     type = Bankswitch::Type::_4K;
 
-  return createFromImage(slice, size, type, md5, osystem);
+  return createFromImage(slice, size, type, md5, settings);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 unique_ptr<Cartridge>
 CartCreator::createFromImage(const ByteBuffer& image, size_t size, Bankswitch::Type type,
-                             const string& md5, OSystem& osystem)
+                             const string& md5, Settings& settings)
 {
-  Settings& settings = osystem.settings();
-
   // We should know the cart's type by now so let's create it
   switch(type)
   {
