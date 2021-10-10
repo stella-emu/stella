@@ -144,10 +144,9 @@ class Cartridge : public Device
     /**
       Set the callback for displaying messages
     */
-    void setMessageCallback(messageCallback callback)
+    void setMessageCallback(const messageCallback& callback)
     {
-      if(!myMsgCallback)
-        myMsgCallback = callback;
+      myMsgCallback = callback;
     }
 
   #ifdef DEBUGGER_SUPPORT

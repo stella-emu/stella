@@ -89,6 +89,7 @@ class DeveloperDialog : public Dialog
     RadioButtonGroup*   mySettingsGroupEmulation{nullptr};
     CheckboxWidget*     myFrameStatsWidget{nullptr};
     CheckboxWidget*     myDetectedInfoWidget{nullptr};
+    CheckboxWidget*     myExternAccessWidget{nullptr};
     PopUpWidget*        myConsoleWidget{nullptr};
     StaticTextWidget*   myLoadingROMLabel{nullptr};
     CheckboxWidget*     myRandomBankWidget{nullptr};
@@ -102,7 +103,6 @@ class DeveloperDialog : public Dialog
     CheckboxWidget*     myWRPortBreakWidget{nullptr};
 #endif
     CheckboxWidget*     myThumbExceptionWidget{nullptr};
-    CheckboxWidget*     myEEPROMAccessWidget{nullptr};
 
     // TIA widgets
     RadioButtonGroup*   mySettingsGroupTia{nullptr};
@@ -151,6 +151,7 @@ class DeveloperDialog : public Dialog
     // Emulator sets
     std::array<bool, 2>   myFrameStats;
     std::array<bool, 2>   myDetectedInfo;
+    std::array<bool, 2>   myExternAccess;
     std::array<int, 2>    myConsole;
     std::array<bool, 2>   myRandomBank;
     std::array<bool, 2>   myRandomizeTIA;
@@ -166,7 +167,6 @@ class DeveloperDialog : public Dialog
     std::array<bool, 2>   myWRPortBreak;
 #endif
     std::array<bool, 2>   myThumbException;
-    std::array<bool, 2>   myEEPROMAccess;
     // TIA sets
     std::array<string, 2> myTIAType;
     std::array<bool, 2>   myPlInvPhase;
