@@ -79,6 +79,11 @@ CartridgeDPCPlus::CartridgeDPCPlus(const ByteBuffer& image, size_t size,
     myFractionalLowMask = 0x0F0000;
 
   setInitialState();
+
+  myPlusROM = make_unique<PlusROM>(mySettings);
+
+  // Determine whether we have a PlusROM cart
+  myPlusROM->initialize(myImage, mySize);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -91,6 +96,8 @@ void CartridgeDPCPlus::reset()
 
   // Upon reset we switch to the startup bank
   bank(startBank());
+
+  CartridgeARM::reset();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -218,6 +225,14 @@ inline void CartridgeDPCPlus::callFunction(uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeDPCPlus::peek(uInt16 address)
 {
+  // Is this a PlusROM?
+  if(myPlusROM->isValid())
+  {
+    uInt8 value = 0;
+    if(myPlusROM->peekHotspot(address, value))
+      return value;
+  }
+
   address &= 0x0FFF;
 
   uInt8 peekvalue = myProgramImage[myBankOffset + address];
@@ -405,6 +420,10 @@ uInt8 CartridgeDPCPlus::peek(uInt16 address)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeDPCPlus::poke(uInt16 address, uInt8 value)
 {
+  // Is this a PlusROM?
+  if(myPlusROM->isValid() && myPlusROM->pokeHotspot(address, value))
+    return true;
+
   address &= 0x0FFF;
 
   if((address >= 0x0028) && (address < 0x0080))

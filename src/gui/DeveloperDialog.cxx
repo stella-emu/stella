@@ -123,9 +123,9 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
 
   // AtariVox/SaveKey/PlusROM access
   myExternAccessWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1,
-                                            "Display AtariVox/SaveKey and PlusROM access");
-  myExternAccessWidget->setToolTip("Display message when AtariVox/SaveKey EEPROM\n"
-                                   "is read or written or PlusROM is accessed.");
+                                            "Display external access message");
+  myExternAccessWidget->setToolTip("Display a message for any external access\n"
+                                   "AtariVox/SaveKey EEPROM, PlusROM, Supercharger...).");
   wid.push_back(myExternAccessWidget);
   ypos += lineHeight + VGAP;
 
@@ -687,7 +687,7 @@ void DeveloperDialog::loadSettings(SettingsSet set)
   // Thumb ARM emulation exception
   myThumbException[set] = devSettings ? instance().settings().getBool("dev.thumb.trapfatal") : false;
   // AtariVox/SaveKey/PlusROM access
-  myExternAccess[set] = instance().settings().getBool(prefix + "eepromaccess");
+  myExternAccess[set] = instance().settings().getBool(prefix + "extaccess");
 
   // TIA tab
   myTIAType[set] = devSettings ? instance().settings().getString("dev.tia.type") : "standard";
@@ -749,7 +749,7 @@ void DeveloperDialog::saveSettings(SettingsSet set)
   }
 
   // AtariVox/SaveKey/PlusROM access
-  instance().settings().setValue(prefix + "eepromaccess", myExternAccess[set]);
+  instance().settings().setValue(prefix + "extaccess", myExternAccess[set]);
 
   // TIA tab
   if (devSettings)

@@ -113,6 +113,11 @@ CartridgeCDF::CartridgeCDF(const ByteBuffer& image, size_t size,
     this);
 
   setInitialState();
+
+  myPlusROM = make_unique<PlusROM>(mySettings);
+
+  // Determine whether we have a PlusROM cart
+  myPlusROM->initialize(myImage, mySize);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -130,6 +135,8 @@ void CartridgeCDF::reset()
 
   // Upon reset we switch to the startup bank
   bank(startBank());
+
+  CartridgeARM::reset();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -213,6 +220,14 @@ inline void CartridgeCDF::callFunction(uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeCDF::peek(uInt16 address)
 {
+  // Is this a PlusROM?
+  if(myPlusROM->isValid())
+  {
+    uInt8 value = 0;
+    if(myPlusROM->peekHotspot(address, value))
+      return value;
+  }
+
   address &= 0x0FFF;
   uInt8 peekvalue = myProgramImage[myBankOffset + address];
 
@@ -355,6 +370,10 @@ uInt8 CartridgeCDF::peek(uInt16 address)
 bool CartridgeCDF::poke(uInt16 address, uInt8 value)
 {
   uInt32 pointer;
+
+  // Is this a PlusROM?
+  if(myPlusROM->isValid() && myPlusROM->pokeHotspot(address, value))
+    return true;
 
   address &= 0x0FFF;
   switch(address)

@@ -253,6 +253,14 @@ class CartridgeCDF : public CartridgeARM
     uInt32 getSample();
     void setupVersion();
 
+    /**
+      Answer whether this is a PlusROM cart.  Note that until the
+      initialize method has been called, this will always return false.
+
+      @return  Whether this is actually a PlusROM cart
+    */
+    bool isPlusROM() const override { return myPlusROM->isValid(); }
+
   private:
     // The ROM image of the cartridge
     ByteBuffer myImage{nullptr};

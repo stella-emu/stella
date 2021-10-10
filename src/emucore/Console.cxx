@@ -957,7 +957,7 @@ unique_ptr<Controller> Console::getControllerPort(const Controller::Type type,
       nvramfile /= "atarivox_eeprom.dat";
       Controller::onMessageCallback callback = [&os = myOSystem](const string& msg) {
         bool devSettings = os.settings().getBool("dev.settings");
-        if(os.settings().getBool(devSettings ? "dev.eepromaccess" : "plr.eepromaccess"))
+        if(os.settings().getBool(devSettings ? "dev.extaccess" : "plr.extaccess"))
           os.frameBuffer().showTextMessage(msg);
       };
       controller = make_unique<AtariVox>(port, myEvent, *mySystem,
@@ -970,7 +970,7 @@ unique_ptr<Controller> Console::getControllerPort(const Controller::Type type,
       nvramfile /= "savekey_eeprom.dat";
       Controller::onMessageCallback callback = [&os = myOSystem](const string& msg) {
         bool devSettings = os.settings().getBool("dev.settings");
-        if(os.settings().getBool(devSettings ? "dev.eepromaccess" : "plr.eepromaccess"))
+        if(os.settings().getBool(devSettings ? "dev.extaccess" : "plr.extaccess"))
           os.frameBuffer().showTextMessage(msg);
       };
       controller = make_unique<SaveKey>(port, myEvent, *mySystem, nvramfile, callback);

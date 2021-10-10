@@ -382,7 +382,22 @@ void PlusROM::send()
     // The lambda will retain a copy of the shared_ptr that is alive as long as the
     // thread is running. Thus, the request can only be destructed once the thread has
     // finished, and we can safely evict it from the deque at any time.
-    std::thread thread([=]() { request->execute(); });
+    std::thread thread([=]() {
+      request->execute();
+      switch(request->getState())
+      {
+        case PlusROMRequest::State::failed:
+          myMsgCallback("PlusROM data sending failed!");
+          break;
+
+        case PlusROMRequest::State::done:
+          myMsgCallback("PlusROM data sent successfully");
+          break;
+
+        default:
+          break;
+      }
+    });
 
     thread.detach();
   }
@@ -398,14 +413,15 @@ void PlusROM::receive()
   while (iter != myPendingRequests.end()) {
     switch ((*iter)->getState()) {
       case PlusROMRequest::State::failed:
+        myMsgCallback("PlusROM data receiving failed!");
         // Request has failed? -> remove it and start over
         myPendingRequests.erase(iter);
         iter = myPendingRequests.begin();
-
         continue;
 
       case PlusROMRequest::State::done:
       {
+        myMsgCallback("PlusROM data received successfully");
         // Request has finished sucessfully? -> consume the response, remove it
         // and start over
         auto [responseSize, response] = (*iter)->getResponse();
@@ -415,7 +431,6 @@ void PlusROM::receive()
 
         myPendingRequests.erase(iter);
         iter = myPendingRequests.begin();
-
         continue;
       }
 

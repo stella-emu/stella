@@ -3621,9 +3621,9 @@
         Note: Mode X (3) is for testing only. It reduces Flash memory access
         clock cycles to always 1.</td>
     </tr><tr>
-      <td><pre>-&lt;plr.|dev.&gt;eepromaccess &lt;1|0&gt;</pre></td>
-      <td>When enabled, each read or write access to the AtariVox/SaveKey EEPROM is
-        signalled by a message.</td>
+      <td><pre>-&lt;plr.|dev.&gt;extaccess &lt;1|0&gt;</pre></td>
+      <td>When enabled, each external access (AtariVox/SaveKey EEPROM, PlusROM, Supercharger...)
+        is signalled by a message.</td>
     </tr><tr>
       <td><pre>-dev.tia.type &lt;standard|koolaidman|cosmicark|</br>  pesco|quickstep|indy500|heman|custom&gt;</pre></td>
       <td>Set emulated TIA type.</td>
@@ -4341,8 +4341,14 @@
             <td>-plr.stats<br/>-dev.stats</td></tr>
           <tr>
             <td>Detected settings info</td>
-            <td>Display detected settings when a ROM is loaded.</td>
+            <td>Display detected settings when a ROM is loaded</td>
             <td>-plr.detectedinfo<br/>-dev.detectedinfo</td>
+          </tr>
+          <tr>
+            <td>Display external access message</td>
+            <td>Display a message for any external access
+              (AtariVox/SaveKey EEPROM, PlusROM, Supercharger...)</td>
+            <td>-plr.extaccess<br/>-dev.extaccess</td>
           </tr>
           <tr>
             <td>Console</td>
@@ -4390,11 +4396,6 @@
             <td>Fatal ARM emulation ...</td>
             <td>Thumb ARM emulation throws an exception and enters the debugger on fatal errors</td>
             <td><span style="white-space:nowrap">-dev.thumb.trapfatal</span></td>
-          </tr>
-          <tr>
-            <td>Display AtariVox...</td>
-            <td>Display a message when the AtariVox/SaveKey EEPROM is read or written</td>
-            <td>-plr.eepromaccess<br/>-dev.eepromaccess</td>
           </tr>
         </table>
       </td>

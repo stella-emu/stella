@@ -26,6 +26,13 @@ CartridgeARM::CartridgeARM(const string& md5, const Settings& settings)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeARM::reset()
+{
+  if(myPlusROM->isValid())
+    myPlusROM->reset();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeARM::setInitialState()
 {
   bool devSettings = mySettings.getBool("dev.settings");
@@ -96,6 +103,9 @@ bool CartridgeARM::save(Serializer& out) const
     out.putInt(myPrevStats.instructions);
     out.putInt(myCycles);
     out.putInt(myStats.instructions);
+
+    if(myPlusROM->isValid() && !myPlusROM->save(out))
+      return false;
   }
   catch(...)
   {
@@ -116,6 +126,9 @@ bool CartridgeARM::load(Serializer& in)
     myPrevStats.instructions = in.getInt();
     myCycles = in.getInt();
     myStats.instructions = in.getInt();
+
+    if(myPlusROM->isValid() && !myPlusROM->load(in))
+      return false;
   }
   catch(...)
   {

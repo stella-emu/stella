@@ -149,6 +149,13 @@ class CartridgeDPCPlus : public CartridgeARM
     */
     uInt8 internalRamGetValue(uInt16 addr) const override;
 
+    /**
+      Answer whether this is a PlusROM cart.  Note that until the
+      initialize method has been called, this will always return false.
+
+      @return  Whether this is actually a PlusROM cart
+    */
+    bool isPlusROM() const override { return myPlusROM->isValid(); }
 
   #ifdef DEBUGGER_SUPPORT
     /**

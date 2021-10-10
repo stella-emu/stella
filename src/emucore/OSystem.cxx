@@ -636,7 +636,7 @@ unique_ptr<Console> OSystem::openConsole(const FilesystemNode& romfile, string& 
     {
       bool devSettings = os.settings().getBool("dev.settings");
 
-      if(os.settings().getBool(devSettings ? "dev.eepromaccess" : "plr.eepromaccess"))
+      if(os.settings().getBool(devSettings ? "dev.extaccess" : "plr.extaccess"))
         os.frameBuffer().showTextMessage(msg);
     };
 
