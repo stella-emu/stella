@@ -640,7 +640,7 @@ unique_ptr<Console> OSystem::openConsole(const FilesystemNode& romfile, string& 
     };
 
     unique_ptr<Cartridge> cart =
-      CartCreator::create(romfile, image, size, cartmd5, type, *this);
+      CartCreator::create(romfile, image, size, cartmd5, type, *mySettings);
     cart->setMessageCallback(callback);
 
     // Some properties may not have a name set; we can't leave it blank

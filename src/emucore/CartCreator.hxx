@@ -21,7 +21,6 @@
 class Cartridge;
 class Properties;
 class Settings;
-class OSystem;
 
 #include "Bankswitch.hxx"
 #include "bspf.hxx"
@@ -43,12 +42,12 @@ class CartCreator
       @param size     The size of the ROM image
       @param md5      The md5sum for the given ROM image (can be updated)
       @param dtype    The detected bankswitch type of the ROM image
-      @param osystem  The OSystem object to use
+      @param settings The settings container
       @return   Pointer to the new cartridge object allocated on the heap
     */
     static unique_ptr<Cartridge> create(const FilesystemNode& file,
                  const ByteBuffer& image, size_t size, string& md5,
-                 const string& dtype, OSystem& osystem);
+                 const string& dtype, Settings& settings);
 
   private:
     /**
@@ -61,14 +60,14 @@ class CartCreator
       @param md5      The md5sum for the slice of the ROM image
       @param type     The detected type of the slice of the ROM image
       @param id       The ID for the slice of the ROM image
-      @param osystem  The OSystem object to use
+      @param settings The settings container
 
       @return  Pointer to the new cartridge object allocated on the heap
     */
     static unique_ptr<Cartridge>
       createFromMultiCart(const ByteBuffer& image, size_t& size,
         uInt32 numroms, string& md5, Bankswitch::Type type, string& id,
-        OSystem& osystem);
+        Settings& settings);
 
     /**
       Create a cartridge from the entire image pointer.
@@ -77,14 +76,13 @@ class CartCreator
       @param size     The size of the ROM image
       @param type     The bankswitch type of the ROM image
       @param md5      The md5sum for the ROM image
-      @param osystem  The OSystem object to use
+      @param settings The settings container
 
       @return  Pointer to the new cartridge object allocated on the heap
     */
     static unique_ptr<Cartridge>
       createFromImage(const ByteBuffer& image, size_t size, Bankswitch::Type type,
-                      const string& md5, OSystem& osystem);
-
+                      const string& md5, Settings& settings);
 
   private:
     // Following constructors and assignment operators not supported
