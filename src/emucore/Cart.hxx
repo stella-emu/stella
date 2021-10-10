@@ -144,7 +144,7 @@ class Cartridge : public Device
     /**
       Set the callback for displaying messages
     */
-    void setMessageCallback(const messageCallback& callback)
+    virtual void setMessageCallback(const messageCallback& callback)
     {
       myMsgCallback = callback;
     }

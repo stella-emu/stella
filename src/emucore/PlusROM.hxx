@@ -24,6 +24,7 @@ class Settings;
 
 #include "bspf.hxx"
 #include "Serializable.hxx"
+#include "Cart.hxx"
 
 /**
   Class used to emulate the 'PlusROM' meta-scheme, documented at
@@ -120,6 +121,14 @@ class PlusROM : public Serializable
     */
     void reset();
 
+    /**
+      Set the callback for displaying messages
+    */
+    void setMessageCallback(const Cartridge::messageCallback& callback)
+    {
+      myMsgCallback = callback;
+    }
+
   private:
     bool isValidHost(const string& host) const;
     bool isValidPath(const string& path) const;
@@ -144,6 +153,9 @@ class PlusROM : public Serializable
     uInt8 myRxReadPos, myRxWritePos, myTxPos;
 
     std::deque<shared_ptr<PlusROMRequest>> myPendingRequests;
+
+    // Callback to output messages
+    Cartridge::messageCallback myMsgCallback{nullptr};
 
   private:
     // Following constructors and assignment operators not supported

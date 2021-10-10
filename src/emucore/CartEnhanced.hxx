@@ -158,6 +158,14 @@ class CartridgeEnhanced : public Cartridge
     bool poke(uInt16 address, uInt8 value) override;
 
     /**
+      Get the hotspot in ROM address space.
+
+      @return  The first hotspot address (usually in ROM) space or 0
+    */
+    virtual uInt16 hotspot() const { return 0; }
+    // TODO: handle cases where there the hotspots cover multiple pages
+
+    /**
       Answer whether this is a PlusROM cart.  Note that until the
       initialize method has been called, this will always return false.
 
@@ -166,12 +174,14 @@ class CartridgeEnhanced : public Cartridge
     bool isPlusROM() const override { return myPlusROM->isValid(); }
 
     /**
-      Get the hotspot in ROM address space.
-
-      @return  The first hotspot address (usually in ROM) space or 0
+      Set the callback for displaying messages
     */
-    virtual uInt16 hotspot() const { return 0; }
-    // TODO: handle cases where there the hotspots cover multiple pages
+    void setMessageCallback(const messageCallback& callback) override
+    {
+      Cartridge::setMessageCallback(callback);
+      if(myPlusROM->isValid())
+        myPlusROM->setMessageCallback(myMsgCallback);
+    }
 
   protected:
     // The '2 ^ N = bank segment size' exponent

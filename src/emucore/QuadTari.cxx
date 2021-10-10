@@ -71,7 +71,7 @@ unique_ptr<Controller> QuadTari::addController(const Controller::Type type, bool
   FilesystemNode nvramfile = myOSystem.nvramDir();
   Controller::onMessageCallback callback = [&os = myOSystem](const string& msg) {
     bool devSettings = os.settings().getBool("dev.settings");
-    if(os.settings().getBool(devSettings ? "dev.eepromaccess" : "plr.eepromaccess"))
+    if(os.settings().getBool(devSettings ? "dev.extaccess" : "plr.extaccess"))
       os.frameBuffer().showTextMessage(msg);
   };
 

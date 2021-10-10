@@ -220,7 +220,7 @@ Settings::Settings()
   setPermanent("plr.tm.interval", "30f"); // = 0.5 seconds
   setPermanent("plr.tm.horizon", "10m"); // = ~10 minutes
   setPermanent("plr.detectedinfo", "false");
-  setPermanent("plr.eepromaccess", "false");
+  setPermanent("plr.extaccess", "false");
 
   // Developer settings
   setPermanent("dev.settings", "false");
@@ -250,7 +250,7 @@ Settings::Settings()
   setPermanent("dev.tm.interval", "1f"); // = 1 frame
   setPermanent("dev.tm.horizon", "30s"); // = ~30 seconds
   setPermanent("dev.detectedinfo", "true");
-  setPermanent("dev.eepromaccess", "true");
+  setPermanent("dev.extaccess", "true");
   // Thumb ARM emulation options
   setPermanent("dev.thumb.trapfatal", "true");
 #ifdef DEBUGGER_SUPPORT
@@ -684,8 +684,7 @@ void Settings::usage() const
     << "  -plr.colorloss    <1|0>          Enable PAL color-loss effect\n"
     << "  -plr.tv.jitter    <1|0>          Enable TV jitter effect\n"
     << "  -plr.tv.jitter_recovery <1-20>   Set recovery time for TV jitter effect\n"
-    << "  -plr.eepromaccess <1|0>          Enable messages for AtariVox/SaveKey access\n"
-    << "                                    messages\n"
+    << "  -plr.extaccess    <1|0>          Enable messages for external access\n"
     << endl
     << " The same parameters but for developer settings mode\n"
     << "  -dev.stats        <1|0>          Overlay console info during emulation\n"
@@ -716,8 +715,7 @@ void Settings::usage() const
     << "  -dev.thumb.chiptype    <0|1>     Selects the ARM chip type\n"
     << "  -dev.thumb.mammode     <0-3>     Selects the LPC's MAM mode\n"
 #endif
-    << "  -dev.eepromaccess      <1|0>     Enable messages for AtariVox/SaveKey access\n"
-    << "                                    messages\n"
+    << "  -dev.extaccess         <1|0>     Enable messages for external access\n"
     << "  -dev.tia.type <standard|custom|  Selects a TIA type\n"
     << "                 koolaidman|\n"
     << "                 cosmicark|pesco|\n"

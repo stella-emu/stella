@@ -19,6 +19,7 @@
 #define CARTRIDGE_ARM_HXX
 
 #include "Thumbulator.hxx"
+#include "PlusROM.hxx"
 #include "Cart.hxx"
 
 /**
@@ -33,6 +34,11 @@ class CartridgeARM : public Cartridge
   public:
     CartridgeARM(const string& md5, const Settings& settings);
     ~CartridgeARM() override = default;
+
+    /**
+      Reset device to its power-on state
+    */
+    void reset() override;
 
   protected:
     /**
@@ -85,9 +91,22 @@ class CartridgeARM : public Cartridge
     void setMamMode(Thumbulator::MamModeType mamMode) { myThumbEmulator->setMamMode(mamMode); }
     Thumbulator::MamModeType mamMode() const { return myThumbEmulator->mamMode(); }
 
+    /**
+      Set the callback for displaying messages
+    */
+    void setMessageCallback(const messageCallback& callback) override
+    {
+      Cartridge::setMessageCallback(callback);
+      if(myPlusROM->isValid())
+        myPlusROM->setMessageCallback(myMsgCallback);
+    }
+
   protected:
     // Pointer to the Thumb ARM emulator object
     unique_ptr<Thumbulator> myThumbEmulator;
+
+    // Handle PlusROM functionality, if available
+    unique_ptr<PlusROM> myPlusROM;
 
     // ARM code increases 6507 cycles
     bool myIncCycles{false};
