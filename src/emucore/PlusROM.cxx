@@ -99,6 +99,22 @@ class PlusROMRequest {
         "application/octet-stream"
       );
 
+      if (!response) {
+        ostringstream ss;
+        ss
+          << "PlusCart: request to "
+          << myDestination.host
+          << "/"
+          << myDestination.path
+          << ": failed --- bad URL";
+
+        Logger::error(ss.str());
+
+        myState = State::failed;
+
+        return;
+      }
+
       if (response->status != 200) {
         ostringstream ss;
         ss
