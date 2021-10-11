@@ -19,6 +19,7 @@
 #define LOGGER_HXX
 
 #include <functional>
+#include <mutex>
 
 #include "bspf.hxx"
 
@@ -61,6 +62,8 @@ class Logger {
 
     // The list of log messages
     string myLogMessages;
+
+    std::mutex mutex;
 
   private:
     void logMessage(const string& message, Level level);
