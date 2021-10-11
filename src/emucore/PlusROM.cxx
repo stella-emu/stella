@@ -106,7 +106,7 @@ class PlusROMRequest {
           << myDestination.host
           << "/"
           << myDestination.path
-          << ": failed --- bad URL";
+          << ": failed";
 
         Logger::error(ss.str());
 
