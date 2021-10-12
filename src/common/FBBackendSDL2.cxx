@@ -231,7 +231,7 @@ bool FBBackendSDL2::setVideoMode(const VideoModeHandler::Mode& mode,
 
   const bool fullScreen = mode.fsIndex != -1;
   bool forceCreateRenderer = false;
-  Int32 displayIndex = std::min(myNumDisplays, winIdx);
+  Int32 displayIndex = std::min(myNumDisplays - 1, winIdx);
 
   int posX, posY;
 
@@ -244,9 +244,9 @@ bool FBBackendSDL2::setVideoMode(const VideoModeHandler::Mode& mode,
     posY = winPos.y;
 
     // Make sure the window is at least partially visibile
-    int x0 = 0, y0 = 0, x1 = 0, y1 = 0;
+    int x0 = INT_MAX, y0 = INT_MAX, x1 = 0, y1 = 0;
 
-    for(int display = SDL_GetNumVideoDisplays() - 1; display >= 0; --display)
+    for(int display = myNumDisplays - 1; display >= 0; --display)
     {
       SDL_Rect rect;
 
