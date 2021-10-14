@@ -208,11 +208,9 @@ class FBBackendSDL2 : public FBBackend
     /**
       Create a new renderer if required.
 
-      @param force  If true, force new renderer creation
-
       @return  False on any errors, else true
     */
-    bool createRenderer(bool force);
+    bool createRenderer();
 
     /**
       This method must be called after all drawing is done, and indicates

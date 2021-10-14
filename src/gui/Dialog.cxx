@@ -346,7 +346,7 @@ void Dialog::render()
     _renderCallback();
 
   // A dialog is still on top if a non-shading dialog (e.g. ContextMenu)
-  // is opended above it.
+  // is opened above it.
   bool onTop = parent().myDialogStack.top() == this
     || (parent().myDialogStack.get(parent().myDialogStack.size() - 2) == this
         && !parent().myDialogStack.top()->isShading());

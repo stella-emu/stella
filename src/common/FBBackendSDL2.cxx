@@ -230,7 +230,6 @@ bool FBBackendSDL2::setVideoMode(const VideoModeHandler::Mode& mode,
     return false;
 
   const bool fullScreen = mode.fsIndex != -1;
-  bool forceCreateRenderer = false;
   Int32 displayIndex = std::min(myNumDisplays - 1, winIdx);
 
   int posX, posY;
@@ -292,6 +291,9 @@ bool FBBackendSDL2::setVideoMode(const VideoModeHandler::Mode& mode,
     if(d != displayIndex || uInt32(w) != mode.screenS.w ||
        uInt32(h) != mode.screenS.h || adaptRefresh)
     {
+      // Renderer has to be destroyed *before* the window gets destroyed to avoid memory leaks
+      SDL_DestroyRenderer(myRenderer);
+      myRenderer = nullptr;
       SDL_DestroyWindow(myWindow);
       myWindow = nullptr;
     }
@@ -305,7 +307,6 @@ bool FBBackendSDL2::setVideoMode(const VideoModeHandler::Mode& mode,
   }
   else
   {
-    forceCreateRenderer = true;
     myWindow = SDL_CreateWindow(myScreenTitle.c_str(), posX, posY,
                                 mode.screenS.w, mode.screenS.h, flags);
     if(myWindow == nullptr)
@@ -337,7 +338,7 @@ bool FBBackendSDL2::setVideoMode(const VideoModeHandler::Mode& mode,
   }
 #endif
 
-  return createRenderer(forceCreateRenderer);
+  return createRenderer();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -400,16 +401,15 @@ bool FBBackendSDL2::adaptRefreshRate(Int32 displayIndex,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FBBackendSDL2::createRenderer(bool force)
+bool FBBackendSDL2::createRenderer()
 {
   ASSERT_MAIN_THREAD;
 
   // A new renderer is only created when necessary:
-  // - new myWindow (force = true)
   // - no renderer existing
   // - different renderer flags
   // - different renderer name
-  bool recreate = force || myRenderer == nullptr;
+  bool recreate = myRenderer == nullptr;
   uInt32 renderFlags = SDL_RENDERER_ACCELERATED;
   const string& video = myOSystem.settings().getString("video");  // Render hint
   SDL_RendererInfo renderInfo;
@@ -426,9 +426,6 @@ bool FBBackendSDL2::createRenderer(bool force)
   if(recreate)
   {
     //cerr << "Create new renderer for buffer type #" << int(myBufferType) << endl;
-    if(myRenderer)
-      SDL_DestroyRenderer(myRenderer);
-
     if(video != "")
       SDL_SetHint(SDL_HINT_RENDER_DRIVER, video.c_str());
 
