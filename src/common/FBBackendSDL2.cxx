@@ -426,6 +426,9 @@ bool FBBackendSDL2::createRenderer()
   if(recreate)
   {
     //cerr << "Create new renderer for buffer type #" << int(myBufferType) << endl;
+    if(myRenderer)
+      SDL_DestroyRenderer(myRenderer);
+
     if(video != "")
       SDL_SetHint(SDL_HINT_RENDER_DRIVER, video.c_str());
 
