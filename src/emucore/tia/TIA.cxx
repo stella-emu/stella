@@ -114,6 +114,12 @@ void TIA::setAudioQueue(const shared_ptr<AudioQueue>& queue)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::setAudioRewindMode(bool enable)
+{
+  myAudio.setAudioRewindMode(enable);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::clearFrameManager()
 {
   if (!myFrameManager) return;
