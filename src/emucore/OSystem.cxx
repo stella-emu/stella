@@ -597,6 +597,13 @@ string OSystem::getROMInfo(const FilesystemNode& romfile)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OSystem::toggleTimeMachine()
+{
+  myStateManager->toggleTimeMachine();
+  myConsole->tia().setAudioRewindMode(myStateManager->mode() != StateManager::Mode::Off);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::resetFps()
 {
   myFpsMeter.reset();

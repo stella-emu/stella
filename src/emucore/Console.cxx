@@ -49,6 +49,7 @@
 #include "SaveKey.hxx"
 #include "Settings.hxx"
 #include "Sound.hxx"
+#include "StateManager.hxx"
 #include "Switches.hxx"
 #include "System.hxx"
 #include "FrameBuffer.hxx"
@@ -659,6 +660,7 @@ void Console::initializeAudio()
 
   createAudioQueue();
   myTIA->setAudioQueue(myAudioQueue);
+  myTIA->setAudioRewindMode(myOSystem.state().mode() != StateManager::Mode::Off);
 
   myOSystem.sound().open(myAudioQueue, &myEmulationTiming);
 }

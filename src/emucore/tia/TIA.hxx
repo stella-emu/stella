@@ -132,6 +132,12 @@ class TIA : public Device
     void setAudioQueue(const shared_ptr<AudioQueue>& audioQueue);
 
     /**
+      Enable/disable pushing audio samples. These are required for TimeMachine
+      playback with sound.
+    */
+    void setAudioRewindMode(bool enable);
+
+    /**
       Clear the configured frame manager and deteach the lifecycle callbacks.
      */
     void clearFrameManager();

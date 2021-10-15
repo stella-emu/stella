@@ -1850,7 +1850,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::ToggleTimeMachine:
-      if (pressed && !repeated) myOSystem.state().toggleTimeMachine();
+      if (pressed && !repeated) myOSystem.toggleTimeMachine();
       return;
 
   #ifdef PNG_SUPPORT

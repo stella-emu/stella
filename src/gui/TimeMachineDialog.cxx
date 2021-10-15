@@ -418,7 +418,7 @@ void TimeMachineDialog::handleCommand(CommandSender* sender, int cmd,
     }
 
     case kToggle:
-      instance().state().toggleTimeMachine();
+      instance().toggleTimeMachine();
       handleToggle();
       break;
 

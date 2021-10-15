@@ -389,6 +389,13 @@ class OSystem
     string getROMInfo(const FilesystemNode& romfile);
 
     /**
+      Toggle state rewind recording mode; this uses the RewindManager
+      for its functionality. Also makes sure that audio samples are
+      only saved if the recording mode is enabled.
+    */
+    void toggleTimeMachine();
+
+    /**
       The features which are conditionally compiled into Stella.
 
       @return  The supported features

@@ -189,7 +189,7 @@ void CommandDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kTimeMachineCmd:
       instance().eventHandler().leaveMenuMode();
-      instance().state().toggleTimeMachine();
+      instance().toggleTimeMachine();
       break;
 
     case kExitCmd:
