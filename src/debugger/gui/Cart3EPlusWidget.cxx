@@ -174,14 +174,14 @@ void Cartridge3EPlusWidget::handleCommand(CommandSender* sender,
 
       uInt8 bank = myBankWidgets[segment]->getSelected();
 
-      myCart.unlockBank();
+      myCart.unlockHotspots();
 
       if(myBankType[segment]->getSelectedTag() == "ROM")
         myCart.bank(bank, segment);
       else
         myCart.bank(bank + myCart.romBankCount(), segment);
 
-      myCart.lockBank();
+      myCart.lockHotspots();
       invalidate();
       updateUIState();
       break;

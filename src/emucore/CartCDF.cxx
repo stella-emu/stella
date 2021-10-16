@@ -233,7 +233,7 @@ uInt8 CartridgeCDF::peek(uInt16 address)
 
   // In debugger/bank-locked mode, we ignore all hotspots and in general
   // anything that can change the internal state of the cart
-  if(bankLocked())
+  if(hotspotsLocked())
     return peekvalue;
 
   // implement JMP FASTJMP which fetches the destination address from stream 33
@@ -453,7 +453,7 @@ bool CartridgeCDF::poke(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeCDF::bank(uInt16 bank, uInt16)
 {
-  if(bankLocked()) return false;
+  if(hotspotsLocked()) return false;
 
   // Remember what bank we're in
   myBankOffset = bank << 12;

@@ -212,7 +212,7 @@ bool CartridgeE7::poke(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeE7::bankRAM(uInt16 bank)
 {
-  if(bankLocked()) return;
+  if(hotspotsLocked()) return;
 
   // Remember what bank we're in
   myCurrentRAM = bank;
@@ -230,7 +230,7 @@ void CartridgeE7::bankRAM(uInt16 bank)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeE7::bank(uInt16 bank, uInt16)
 {
-  if(bankLocked()) return false;
+  if(hotspotsLocked()) return false;
 
   // Remember what bank we're in
   myCurrentBank[0] = bank;

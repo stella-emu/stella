@@ -917,14 +917,14 @@ void Debugger::getCompletions(const char* in, StringList& list) const
 void Debugger::lockSystem()
 {
   mySystem.lockDataBus();
-  myConsole.cartridge().lockBank();
+  myConsole.cartridge().lockHotspots();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::unlockSystem()
 {
   mySystem.unlockDataBus();
-  myConsole.cartridge().unlockBank();
+  myConsole.cartridge().unlockHotspots();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

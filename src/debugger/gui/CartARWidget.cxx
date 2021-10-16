@@ -98,9 +98,9 @@ void CartridgeARWidget::handleCommand(CommandSender* sender,
 {
   if(cmd == kBankChanged)
   {
-    myCart.unlockBank();
+    myCart.unlockHotspots();
     myCart.bank(myBank->getSelected());
-    myCart.lockBank();
+    myCart.lockHotspots();
     invalidate();
   }
 }

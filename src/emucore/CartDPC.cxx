@@ -143,7 +143,7 @@ uInt8 CartridgeDPC::peek(uInt16 address)
 
   // In debugger/bank-locked mode, we ignore all hotspots and in general
   // anything that can change the internal state of the cart
-  if(bankLocked())
+  if(hotspotsLocked())
     return myImage[myCurrentSegOffset[0] + address];
 
 

@@ -87,7 +87,7 @@ uInt8 CartridgeAR::peek(uInt16 addr)
 {
   // In debugger/bank-locked mode, we ignore all hotspots and in general
   // anything that can change the internal state of the cart
-  if(bankLocked())
+  if(hotspotsLocked())
     return myImage[(addr & 0x07FF) + myImageOffset[(addr & 0x0800) ? 1 : 0]];
 
   // Is the "dummy" SC BIOS hotspot for reading a load being accessed?
@@ -354,7 +354,7 @@ void CartridgeAR::loadIntoRAM(uInt8 load)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeAR::bank(uInt16 bank, uInt16)
 {
-  if(!bankLocked())
+  if(!hotspotsLocked())
     return bankConfiguration(uInt8(bank));
   else
     return false;

@@ -297,9 +297,9 @@ void CartridgeEnhancedWidget::handleCommand(CommandSender* sender,
 {
   if(cmd == kBankChanged)
   {
-    myCart.unlockBank();
+    myCart.unlockHotspots();
     myCart.bank(myBankWidgets[id]->getSelected(), id);
-    myCart.lockBank();
+    myCart.lockHotspots();
     invalidate();
   }
 }

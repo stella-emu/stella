@@ -81,9 +81,9 @@ void CartridgeCTYWidget::handleCommand(CommandSender* sender,
 {
   if(cmd == kBankChanged)
   {
-    myCart.unlockBank();
+    myCart.unlockHotspots();
     myCart.bank(myBank->getSelected()+1);
-    myCart.lockBank();
+    myCart.lockHotspots();
     invalidate();
   }
 }

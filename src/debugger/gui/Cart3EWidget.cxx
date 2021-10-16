@@ -151,9 +151,9 @@ void Cartridge3EWidget::handleCommand(CommandSender* sender, int cmd, int data, 
       myBankWidgets[0]->setSelectedIndex(0);
     }
   }
-  myCart.unlockBank();
+  myCart.unlockHotspots();
   myCart.bank(bank);
-  myCart.lockBank();
+  myCart.lockHotspots();
   invalidate();
 }
 

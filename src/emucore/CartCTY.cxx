@@ -103,7 +103,7 @@ uInt8 CartridgeCTY::peek(uInt16 address)
 
   // In debugger/bank-locked mode, we ignore all hotspots and in general
   // anything that can change the internal state of the cart
-  if(bankLocked())
+  if(hotspotsLocked())
     return peekValue;
 
   // Check for aliasing to 'LDA #$F2'
@@ -248,7 +248,7 @@ bool CartridgeCTY::poke(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeCTY::bank(uInt16 bank, uInt16)
 {
-  if(bankLocked()) return false;
+  if(hotspotsLocked()) return false;
 
   // Remember what bank we're in
   myBankOffset = bank << 12;
@@ -382,7 +382,7 @@ uInt8 CartridgeCTY::ramReadWrite()
        1 s for write).
   */
 
-  if(bankLocked()) return 0xff;
+  if(hotspotsLocked()) return 0xff;
 
   // First access sets the timer
   if(myRamAccessTimeout == 0)

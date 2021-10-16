@@ -234,7 +234,7 @@ bool CartridgeEnhanced::poke(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment)
 {
-  if(bankLocked()) return false;
+  if(hotspotsLocked()) return false;
 
   const uInt16 segmentOffset = segment << myBankShift;
 
