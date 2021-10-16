@@ -53,7 +53,7 @@ class PlusROMRequest;
 class PlusROM : public Serializable
 {
   public:
-    PlusROM(const Settings& settings);
+    PlusROM(const Settings& settings, const Cartridge& cart);
     ~PlusROM() override = default;
 
   public:
@@ -145,6 +145,8 @@ class PlusROM : public Serializable
 
   private:
     const Settings& mySettings;
+    const Cartridge& myCart;
+
     bool myIsPlusROM{false};
     string myHost;
     string myPath;

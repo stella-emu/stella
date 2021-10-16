@@ -56,7 +56,7 @@ CartridgeEnhanced::CartridgeEnhanced(const ByteBuffer& image, size_t size,
   // space will be filled with 0's from above
   std::copy_n(image.get(), std::min(mySize, size), myImage.get());
 
-  myPlusROM = make_unique<PlusROM>(mySettings);
+  myPlusROM = make_unique<PlusROM>(mySettings, *this);
 
   // Determine whether we have a PlusROM cart
   // PlusROM needs to call peek() method, so disable direct peeks

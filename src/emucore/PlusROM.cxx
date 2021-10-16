@@ -180,8 +180,9 @@ class PlusROMRequest {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PlusROM::PlusROM(const Settings& settings)
-  : mySettings(settings)
+PlusROM::PlusROM(const Settings& settings, const Cartridge& cart)
+  : mySettings(settings),
+    myCart(cart)
 {
 }
 
@@ -229,6 +230,8 @@ bool PlusROM::initialize(const ByteBuffer& image, size_t size)
 bool PlusROM::peekHotspot(uInt16 address, uInt8& value)
 {
 #if defined(HTTP_LIB_SUPPORT)
+  if(myCart.bankLocked()) return false;
+
   switch(address & 0x1FFF)
   {
     // invalid reads from write addresses
@@ -262,6 +265,8 @@ bool PlusROM::peekHotspot(uInt16 address, uInt8& value)
 bool PlusROM::pokeHotspot(uInt16 address, uInt8 value)
 {
 #if defined(HTTP_LIB_SUPPORT)
+  if(myCart.bankLocked()) return false;
+
   switch(address & 0x1FFF)
   {
     // valid writes
