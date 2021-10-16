@@ -1090,15 +1090,15 @@ string CartDebug::saveDisassembly(string path)
   uInt16 oldBank = myConsole.cartridge().getBank();
 
   // prepare for switching banks
-  myConsole.cartridge().unlockBank();
+  myConsole.cartridge().unlockHotspots();
   uInt32 origin = 0;
 
   for(int bank = 0; bank < romBankCount; ++bank)
   {
     // TODO: not every CartDebugWidget does it like that, we need a method
-    myConsole.cartridge().unlockBank();
+    myConsole.cartridge().unlockHotspots();
     myConsole.cartridge().bank(bank);
-    myConsole.cartridge().lockBank();
+    myConsole.cartridge().lockHotspots();
 
     BankInfo& info = myBankInfo[bank];
 
@@ -1196,9 +1196,9 @@ string CartDebug::saveDisassembly(string path)
       buf << "\n";
     }
   }
-  myConsole.cartridge().unlockBank();
+  myConsole.cartridge().unlockHotspots();
   myConsole.cartridge().bank(oldBank);
-  myConsole.cartridge().lockBank();
+  myConsole.cartridge().lockHotspots();
 
   // Some boilerplate, similar to what DiStella adds
   auto timeinfo = BSPF::localTime();

@@ -240,7 +240,7 @@ uInt8 CartridgeDPCPlus::peek(uInt16 address)
 
   // In debugger/bank-locked mode, we ignore all hotspots and in general
   // anything that can change the internal state of the cart
-  if(bankLocked())
+  if(hotspotsLocked())
     return peekvalue;
 
   // Check if we're in Fast Fetch mode and the prior byte was an A9 (LDA #value)
@@ -614,7 +614,7 @@ bool CartridgeDPCPlus::poke(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeDPCPlus::bank(uInt16 bank, uInt16)
 {
-  if(bankLocked()) return false;
+  if(hotspotsLocked()) return false;
 
   // Remember what bank we're in
   myBankOffset = bank << 12;

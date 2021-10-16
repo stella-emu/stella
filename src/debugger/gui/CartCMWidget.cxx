@@ -210,11 +210,11 @@ void CartridgeCMWidget::handleCommand(CommandSender* sender,
 {
   if(cmd == kBankChanged)
   {
-    myCart.unlockBank();
+    myCart.unlockHotspots();
     myCart.mySWCHA &= 0xFC;
     myCart.mySWCHA |= myBank->getSelected();
     myCart.bank(myCart.mySWCHA & 0x03);
-    myCart.lockBank();
+    myCart.lockHotspots();
     invalidate();
   }
 }

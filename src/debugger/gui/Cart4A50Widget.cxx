@@ -169,7 +169,7 @@ void Cartridge4A50Widget::loadConfig()
 void Cartridge4A50Widget::handleCommand(CommandSender* sender,
                                       int cmd, int data, int id)
 {
-  myCart.unlockBank();
+  myCart.unlockHotspots();
 
   switch(cmd)
   {
@@ -261,7 +261,7 @@ void Cartridge4A50Widget::handleCommand(CommandSender* sender,
       break;
   }
 
-  myCart.lockBank();
+  myCart.lockHotspots();
   invalidate();
 }
 
