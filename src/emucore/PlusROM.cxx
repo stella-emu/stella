@@ -288,7 +288,7 @@ bool PlusROM::pokeHotspot(uInt16 address, uInt8 value)
 
     case RECEIVE_BUFFER_SIZE: // Get number of unread bytes in Rx buffer
       receive();
-      break;;
+      break;
   }
 #endif
   return false;
