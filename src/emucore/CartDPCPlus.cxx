@@ -80,7 +80,7 @@ CartridgeDPCPlus::CartridgeDPCPlus(const ByteBuffer& image, size_t size,
 
   setInitialState();
 
-  myPlusROM = make_unique<PlusROM>(mySettings);
+  myPlusROM = make_unique<PlusROM>(mySettings, *this);
 
   // Determine whether we have a PlusROM cart
   myPlusROM->initialize(myImage, mySize);
