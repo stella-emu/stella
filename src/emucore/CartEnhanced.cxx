@@ -59,9 +59,7 @@ CartridgeEnhanced::CartridgeEnhanced(const ByteBuffer& image, size_t size,
   myPlusROM = make_unique<PlusROM>(mySettings, *this);
 
   // Determine whether we have a PlusROM cart
-  // PlusROM needs to call peek() method, so disable direct peeks
-  if(myPlusROM->initialize(myImage, mySize))
-    myDirectPeek = false;
+  myPlusROM->initialize(myImage, mySize);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -246,6 +244,7 @@ bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment)
     const uInt32 bankOffset = myCurrentSegOffset[segment] = romBank << myBankShift;
     const uInt16 hotspot = this->hotspot();
     uInt16 hotSpotAddr;
+    uInt16 plusROMAddr;
     // Skip extra RAM; if existing it is only mapped into first segment
     const uInt16 fromAddr = (ROM_OFFSET + segmentOffset + (segment == 0 ? myRomOffset : 0)) & ~System::PAGE_MASK;
     // for ROMs < 4_KB, the whole address space will be mapped.
@@ -255,6 +254,10 @@ bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment)
       hotSpotAddr = (hotspot & ~System::PAGE_MASK);
     else
       hotSpotAddr = 0xFFFF; // none
+    if(myPlusROM->isValid())
+      plusROMAddr = (0x1FF0 & ~System::PAGE_MASK);
+    else
+      plusROMAddr = 0xFFFF; // none
 
     System::PageAccess access(this, System::PageAccessType::READ);
     // Setup the page access methods for the current bank
@@ -262,7 +265,7 @@ bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment)
     {
       const uInt32 offset = bankOffset + (addr & myBankMask);
 
-      if(myDirectPeek && addr != hotSpotAddr)
+      if(myDirectPeek && addr != hotSpotAddr && addr != plusROMAddr)
         access.directPeekBase = &myImage[offset];
       else
         access.directPeekBase = nullptr;
