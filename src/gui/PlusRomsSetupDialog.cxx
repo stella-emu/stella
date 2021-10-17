@@ -25,14 +25,14 @@ static const int MAX_NICK_LEN = 16;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PlusRomsSetupDialog::PlusRomsSetupDialog(OSystem& osystem, DialogContainer& parent,
                                          const GUI::Font& font)
-  : InputTextDialog(osystem, parent, font, "Nickname", "PlusROM HSC setup", MAX_NICK_LEN)
+  : InputTextDialog(osystem, parent, font, "Nickname", "PlusROM backends setup", MAX_NICK_LEN)
 {
   EditableWidget::TextFilter filter = [](char c) {
     return isalnum(c) || (c == ' ') || (c == '_') || (c == '.');
   };
 
   setTextFilter(filter);
-  setToolTip("Enter your PlusROM High Score Club nickname here.");
+  setToolTip("Enter your PlusROM backends nickname here.");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
