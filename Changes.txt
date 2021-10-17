@@ -12,26 +12,32 @@
                               Release History
 ===========================================================================
 
-6.5.3 to 6.6 (??? ??, 202?)
+6.5.3 to 6.6 (??? ??, 202?) (Halloween?)
 
-  * Added PlusROMs support for saving high scores
+  * Added PlusROMs support for saving high scores.
 
   * Added preliminary support for 'MVC' bankswitching scheme by
     Rob Bairos.
 
-  * Added web links for many games
+  * Added web links for many games.
 
-  * Added dead zone and linearity settings for analog controllers
+  * Added dead zone and linearity settings for analog controllers.
 
-  * Fixed MindLink controller
+  * Added 'Check for Update' button to Help dialog.
 
-  * Added TIA randomization on startup option
+  * Fixed MindLink controller.
 
-  * Debugger: enhanced prompt's auto complete and history
+  * Fixed SaveKey not working with QuadTari.
 
-  * Debugger: added optional logging of breaks and traps
+  * Added TIA randomization on startup option.
 
-  * Debugger: added Thumb cycle counting
+  * Added different debug color luminances for player and missile copies.
+
+  * Debugger: enhanced prompt's auto complete and history.
+
+  * Debugger: added optional logging of breaks and traps.
+
+  * Debugger: added Thumb cycle counting.
 
 -Have fun!
 
