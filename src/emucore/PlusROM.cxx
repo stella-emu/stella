@@ -81,10 +81,15 @@ class PlusROMRequest {
     void execute() {
       myState = State::pending;
 
+      ostringstream content;
+      content << "agent=Stella; "
+        << "ver=" << STELLA_VERSION << "; "
+        << "id=WE" << myId.id << "; "
+        << "nick=" << myId.nick;
+
       httplib::Client client(myDestination.host);
       httplib::Headers headers = {
-        {"PlusStore-ID", myId.nick + " WE" + myId.id},
-        {"User-Agent", string("Stella ") + STELLA_VERSION}
+        {"PlusROM-Info", content.str()}
       };
 
       client.set_connection_timeout(milliseconds(CONNECTION_TIMEOUT_MSEC));
