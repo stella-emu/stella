@@ -129,12 +129,13 @@ StringList SerialPortWINDOWS::portNames()
       &numValues, NULL, NULL, NULL, NULL);
     if (result == ERROR_SUCCESS)
     {
-      DWORD type = 0;
-      DWORD deviceNameLen = 2047;
-      DWORD friendlyNameLen = 31;
-
       for (DWORD i = 0; i < numValues; ++i)
       {
+        // must be reset to work in a loop!
+        DWORD type = 0;
+        DWORD deviceNameLen = 2047;
+        DWORD friendlyNameLen = 31;
+
         result = RegEnumValue(hKey, i, deviceName, &deviceNameLen,
           NULL, &type, (LPBYTE)friendlyName, &friendlyNameLen);
 
@@ -144,6 +145,13 @@ StringList SerialPortWINDOWS::portNames()
     }
   }
   RegCloseKey(hKey);
+
+  std::sort(ports.begin(), ports.end(),
+    [](const std::string& a, const std::string& b)
+  {
+    return a < b;
+  }
+  );
 
   return ports;
 }
