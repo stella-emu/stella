@@ -84,7 +84,7 @@ class PlusROMRequest {
       ostringstream content;
       content << "agent=Stella; "
         << "ver=" << STELLA_VERSION << "; "
-        << "id=WE" << myId.id << "; "
+        << "id=" << myId.id << "; "
         << "nick=" << myId.nick;
 
       httplib::Client client(myDestination.host);
