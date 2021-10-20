@@ -231,9 +231,9 @@ void CartridgeARMWidget::handleChipType()
   tip = tip.substr(0, 25);
 
   buf << tip << "\nCurrent:\n"
-    << chipProps.MHz << " MHz, "
     << chipProps.flashBanks << " flash bank"
     << (chipProps.flashBanks > 1 ? "s" : "") << ", "
+    << chipProps.MHz << " MHz, "
     << chipProps.flashCycles - 1 << " wait states";
   myChipType->setToolTip(buf.str());
 }
