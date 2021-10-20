@@ -389,7 +389,11 @@ void PlusROM::send()
     return;
   }
 
-  const string id = mySettings.getString("plusroms.id");
+  string id = mySettings.getString("plusroms.id");
+
+  if(id == EmptyString)
+    id = mySettings.getString("plusroms.fixedid");
+
   if(id != EmptyString)
   {
     const string nick = mySettings.getString("plusroms.nick");

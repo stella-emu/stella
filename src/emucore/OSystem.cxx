@@ -511,7 +511,7 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
     }
     // Check for first PlusROM start
     if(myConsole->cartridge().isPlusROM() &&
-       settings().getString("plusroms.id") == EmptyString)
+       settings().getString("plusroms.fixedid") == EmptyString)
     {
       // Make sure there always is an id
       constexpr int ID_LEN = 32;
@@ -522,7 +522,7 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
       for(char& c: id_chr)
         c = HEX_DIGITS[rnd.next() % 16];
 
-      settings().setValue("plusroms.id", string(id_chr, ID_LEN));
+      settings().setValue("plusroms.fixedid", string(id_chr, ID_LEN));
 
       myEventHandler->changeStateByEvent(Event::PlusRomsSetupMode);
     }
