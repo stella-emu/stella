@@ -185,7 +185,8 @@ Settings::Settings()
   setPermanent("initials", "");
   setTemporary("turbo", "0");
   setPermanent("plusroms.nick", "");
-  setPermanent("plusroms.id", "");
+  setTemporary("plusroms.id", "");
+  setPermanent("plusroms.fixedid", "");
 
 #ifdef DEBUGGER_SUPPORT
   // Debugger/disassembly options
@@ -617,8 +618,8 @@ void Settings::usage() const
     << "  -basedir  <path>             Override the base directory for all config files\n"
     << "  -baseinappdir                Override the base directory for all config files\n"
     << "                                by attempting to use the application directory\n"
-    << "  -plusroms.nick <nick>        Define a nickname for the PlusROMs store.\n"
-    << "  -plusroms.id   <id>          Define an ID for the PlusROMs store.\n"
+    << "  -plusroms.nick <nick>        Define a nickname for the PlusROMs backends.\n"
+    << "  -plusroms.id   <id>          Define a temporary ID for the PlusROMs backends.\n"
     << "  -help                        Show the text you're now reading\n"
   #ifdef DEBUGGER_SUPPORT
     << endl
