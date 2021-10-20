@@ -752,9 +752,11 @@ const Variant& Settings::value(const string& key) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Settings::setValue(const string& key, const Variant& value, bool persist)
 {
-  auto it = myPermanentSettings.find(key);
+  const auto it = myPermanentSettings.find(key);
+
   if(it != myPermanentSettings.end()) {
-    if (persist && it->second != value && myRespository->atomic()) myRespository->atomic()->save(key, value);
+    if (persist && it->second != value && myRespository->atomic())
+      myRespository->atomic()->save(key, value);
     it->second = value;
   }
   else
