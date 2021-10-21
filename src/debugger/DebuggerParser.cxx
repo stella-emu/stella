@@ -690,16 +690,21 @@ string DebuggerParser::saveScriptFile(string file)
 
   FilesystemNode node(file);
 
-  try
+  if(node.exists() || out.str().length())
   {
-    node.write(out);
-  }
-  catch(...)
-  {
-    return "Unable to save script to " + node.getShortPath();
-  }
+    try
+    {
+      node.write(out);
+    }
+    catch(...)
+    {
+      return "Unable to save script to " + node.getShortPath();
+    }
 
-  return "saved " + node.getShortPath() + " OK";
+    return "saved " + node.getShortPath() + " OK";
+  }
+  else
+    return "nothing to save";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
