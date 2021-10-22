@@ -68,27 +68,27 @@ using Common::Base;
       incICycles(m)
 
   #define INC_SHIFT_CYCLES               \
-    INC_I_CYCLES;                        \
+    INC_I_CYCLES                         \
     //FETCH_TYPE(CycleType::S, AccessType::data)
 
   #define INC_LDR_CYCLES                 \
     INC_N_CYCLES(rb, AccessType::data);  \
-    INC_I_CYCLES; \
+    INC_I_CYCLES                         \
     /*FETCH_TYPE(CycleType::N, AccessType::data); \
       FETCH_TYPE_N;*/
   #define INC_LDRB_CYCLES                       \
     INC_N_CYCLES(rb & (~1U), AccessType::data); \
-    INC_I_CYCLES; \
+    INC_I_CYCLES                                \
     /*FETCH_TYPE(CycleType::N, AccessType::data); \
       FETCH_TYPE_N;*/
 
   #define INC_STR_CYCLES                 \
     INC_N_CYCLES(rb, AccessType::data);  \
-    FETCH_TYPE_N; \
+    FETCH_TYPE_N                         \
     //INC_N_CYCLES(rb, AccessType::data);
   #define INC_STRB_CYCLES                       \
     INC_N_CYCLES(rb & (~1U), AccessType::data); \
-    FETCH_TYPE_N; \
+    FETCH_TYPE_N                                \
     //INC_N_CYCLES(rb & (~1U), AccessType::data);
 
 #if 0 // unused for now
@@ -3012,7 +3012,7 @@ bool Thumbulator::isMamBuffered(uInt32 addr, AccessType accessType)
         ++_stats.mamDataHits;
       #endif
         break;
-    };
+    }
   }
   else // e.g. LPC2104_05_06
   {
@@ -3068,7 +3068,7 @@ bool Thumbulator::isMamBuffered(uInt32 addr, AccessType accessType)
         ++_stats.mamDataHits;
       #endif
         break;
-    };
+    }
   }
   return true;
 }
