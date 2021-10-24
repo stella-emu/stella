@@ -1900,7 +1900,9 @@ int Thumbulator::execute()
             first = false;
           }
           else
+          {
             INC_S_CYCLES(sp, AccessType::data);
+          }
           sp += 4;
         }
       }
@@ -2352,7 +2354,9 @@ int Thumbulator::execute()
             first = false;
           }
           else
+          {
             INC_S_CYCLES(sp, AccessType::data);
+          }
           sp += 4;
         }
       }
@@ -2423,7 +2427,9 @@ int Thumbulator::execute()
             first = false;
           }
           else
+          {
             INC_S_CYCLES(rd, AccessType::data);
+          }
           rd += 4;
         }
       }
@@ -2587,7 +2593,9 @@ int Thumbulator::execute()
             first = false;
           }
           else
+          {
             INC_S_CYCLES(sp, AccessType::data);
+          }
           sp += 4;
         }
       }
