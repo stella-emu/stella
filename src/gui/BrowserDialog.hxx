@@ -85,6 +85,14 @@ class BrowserDialog : public Dialog
                      const FilesystemNode::NameFilter& namefilter = {
                       [](const FilesystemNode&) { return true; } });
 
+    /**
+      Since the show methods allocate a static BrowserDialog, at some
+      point we need to manually de-allocate it.  This method must be
+      called from one of the lowest-level destructors to do that.
+      Currently this is called from the OSystem destructor.
+    */
+    static void hide();
+
   private:
     /** Place the browser window onscreen, using the given attributes */
     void show(const string& startpath,
@@ -118,6 +126,8 @@ class BrowserDialog : public Dialog
     CheckboxWidget*   _savePathBox{nullptr};
 
     BrowserDialog::Mode _mode{Mode::Directories};
+
+    static unique_ptr<BrowserDialog> ourBrowser;
 
   private:
     // Following constructors and assignment operators not supported

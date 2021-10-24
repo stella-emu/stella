@@ -115,6 +115,7 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// static
 void BrowserDialog::show(GuiObject* parent, const GUI::Font& font,
                          const string& title, const string& startpath,
                          BrowserDialog::Mode mode,
@@ -127,8 +128,6 @@ void BrowserDialog::show(GuiObject* parent, const GUI::Font& font,
   if(w > uInt32(font.getMaxCharWidth() * 80))
     w = font.getMaxCharWidth() * 80;
 
-  static unique_ptr<BrowserDialog> ourBrowser{nullptr};
-
   if(ourBrowser == nullptr
      || ourBrowser->getWidth() != int(w) || ourBrowser->getHeight() != int(h))
     ourBrowser = make_unique<BrowserDialog>(parent, font, w, h);
@@ -138,6 +137,7 @@ void BrowserDialog::show(GuiObject* parent, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// static
 void BrowserDialog::show(GuiObject* parent,
                          const string& title, const string& startpath,
                          BrowserDialog::Mode mode,
@@ -146,6 +146,13 @@ void BrowserDialog::show(GuiObject* parent,
 {
   show(parent, parent->instance().frameBuffer().font(), title, startpath,
        mode, command, namefilter);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// static
+void BrowserDialog::hide()
+{
+  ourBrowser.reset();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -326,3 +333,6 @@ void BrowserDialog::updateUI(bool fileSelected)
   if(fileSelected && !_fileList->selected().isDirectory())
     _selected->setText(_fileList->getSelectedString());
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+unique_ptr<BrowserDialog> BrowserDialog::ourBrowser;

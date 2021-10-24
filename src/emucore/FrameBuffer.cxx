@@ -68,7 +68,6 @@ FrameBuffer::FrameBuffer(OSystem& osystem)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBuffer::~FrameBuffer()
 {
-cerr << "~FrameBuffer()\n";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -911,10 +910,7 @@ shared_ptr<FBSurface> FrameBuffer::allocateSurface(
 void FrameBuffer::deallocateSurface(shared_ptr<FBSurface> surface)
 {
   if(surface)
-  {
-    cerr << "deallocateSurface: " << surface << endl;
     mySurfaceList.remove(surface);
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

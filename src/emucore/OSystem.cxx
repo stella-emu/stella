@@ -31,6 +31,7 @@
   #include "Debugger.hxx"
 #endif
 #ifdef GUI_SUPPORT
+  #include "BrowserDialog.hxx"
   #include "OptionsMenu.hxx"
   #include "CommandMenu.hxx"
   #include "HighScoresMenu.hxx"
@@ -112,7 +113,13 @@ OSystem::OSystem()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OSystem::~OSystem()
 {
-cerr << "~OSystem()\n";
+#ifdef GUI_SUPPORT
+  // BrowserDialog is a special dialog that is statically allocated
+  // So we need to make sure that it is destroyed in the normal d'tor chain;
+  // not at the very end of program exit, when some objects it requires
+  // have already been destroyed
+  BrowserDialog::hide();
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
