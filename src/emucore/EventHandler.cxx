@@ -654,6 +654,13 @@ AdjustFunction EventHandler::getAdjustSetting(AdjustSetting setting)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::setAdjustSetting(AdjustSetting setting)
+{
+  myAdjustSetting = setting;
+  myAdjustActive = true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
 {
   // Take care of special events that aren't part of the emulation core
@@ -845,8 +852,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.sound().adjustVolume(-1);
-        myAdjustSetting = AdjustSetting::VOLUME;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::VOLUME);
       }
       return;
 
@@ -854,8 +860,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.sound().adjustVolume(+1);
-        myAdjustSetting = AdjustSetting::VOLUME;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::VOLUME);
       }
       return;
 
@@ -863,8 +868,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.sound().toggleMute();
-        myAdjustSetting = AdjustSetting::VOLUME;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::VOLUME);
       }
       return;
 
@@ -872,8 +876,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.frameBuffer().switchVideoMode(-1);
-        myAdjustSetting = AdjustSetting::ZOOM;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::ZOOM);
       }
       return;
 
@@ -881,8 +884,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.frameBuffer().switchVideoMode(+1);
-        myAdjustSetting = AdjustSetting::ZOOM;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::ZOOM);
       }
       return;
 
@@ -890,8 +892,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.frameBuffer().toggleFullscreen();
-        myAdjustSetting = AdjustSetting::FULLSCREEN;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::FULLSCREEN);
       }
       return;
 
@@ -900,8 +901,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.frameBuffer().toggleAdaptRefresh();
-        myAdjustSetting = AdjustSetting::ADAPT_REFRESH;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::ADAPT_REFRESH);
       }
       return;
     #endif
@@ -910,8 +910,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.frameBuffer().changeOverscan(-1);
-        myAdjustSetting = AdjustSetting::OVERSCAN;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::OVERSCAN);
       }
       return;
 
@@ -919,8 +918,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.frameBuffer().changeOverscan(+1);
-        myAdjustSetting = AdjustSetting::OVERSCAN;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::OVERSCAN);
       }
       return;
 
@@ -928,8 +926,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().selectFormat(-1);
-        myAdjustSetting = AdjustSetting::TVFORMAT;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::TVFORMAT);
       }
       return;
 
@@ -937,8 +934,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().selectFormat(+1);
-        myAdjustSetting = AdjustSetting::TVFORMAT;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::TVFORMAT);
       }
       return;
 
@@ -946,8 +942,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.console().changeVerticalCenter(-1);
-        myAdjustSetting = AdjustSetting::VCENTER;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::VCENTER);
       }
       return;
 
@@ -955,16 +950,14 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.console().changeVerticalCenter(+1);
-        myAdjustSetting = AdjustSetting::VCENTER;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::VCENTER);
       }
       return;
     case Event::VSizeAdjustDecrease:
       if(pressed)
       {
         myOSystem.console().changeVSizeAdjust(-1);
-        myAdjustSetting = AdjustSetting::VSIZE;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::VSIZE);
       }
       return;
 
@@ -972,8 +965,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.console().changeVSizeAdjust(+1);
-        myAdjustSetting = AdjustSetting::VSIZE;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::VSIZE);
       }
       return;
 
@@ -981,8 +973,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().toggleCorrectAspectRatio();
-        myAdjustSetting = AdjustSetting::ASPECT_RATIO;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::ASPECT_RATIO);
       }
       break;
 
@@ -990,8 +981,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.frameBuffer().tiaSurface().paletteHandler().cyclePalette(-1);
-        myAdjustSetting = AdjustSetting::PALETTE;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::PALETTE);
       }
       return;
 
@@ -999,8 +989,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.frameBuffer().tiaSurface().paletteHandler().cyclePalette(+1);
-        myAdjustSetting = AdjustSetting::PALETTE;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::PALETTE);
       }
       return;
 
@@ -1008,8 +997,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.frameBuffer().tiaSurface().changeNTSC(-1);
-        myAdjustSetting = AdjustSetting::NTSC_PRESET;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::NTSC_PRESET);
       }
       return;
 
@@ -1017,8 +1005,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.frameBuffer().tiaSurface().changeNTSC(+1);
-        myAdjustSetting = AdjustSetting::NTSC_PRESET;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::NTSC_PRESET);
       }
       return;
 
@@ -1026,8 +1013,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::OFF);
-        myAdjustDirect = AdjustSetting::NTSC_PRESET;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::NTSC_PRESET);
       }
       return;
 
@@ -1035,8 +1021,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::RGB);
-        myAdjustSetting = AdjustSetting::NTSC_PRESET;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::NTSC_PRESET);
       }
       return;
 
@@ -1044,8 +1029,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::SVIDEO);
-        myAdjustSetting = AdjustSetting::NTSC_PRESET;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::NTSC_PRESET);
       }
       return;
 
@@ -1053,8 +1037,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::COMPOSITE);
-        myAdjustSetting = AdjustSetting::NTSC_PRESET;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::NTSC_PRESET);
       }
       return;
 
@@ -1062,8 +1045,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::BAD);
-        myAdjustSetting = AdjustSetting::NTSC_PRESET;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::NTSC_PRESET);
       }
       return;
 
@@ -1071,16 +1053,14 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::CUSTOM);
-        myAdjustSetting = AdjustSetting::NTSC_PRESET;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::NTSC_PRESET);
       }
       return;
     case Event::PhosphorDecrease:
       if(pressed)
       {
         myOSystem.console().changePhosphor(-1);
-        myAdjustSetting = AdjustSetting::PHOSPHOR;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::PHOSPHOR);
       }
       return;
 
@@ -1088,8 +1068,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.console().changePhosphor(+1);
-        myAdjustSetting = AdjustSetting::PHOSPHOR;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::PHOSPHOR);
       }
       return;
 
@@ -1097,8 +1076,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().togglePhosphor();
-        myAdjustSetting = AdjustSetting::PHOSPHOR;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::PHOSPHOR);
       }
       return;
 
@@ -1106,8 +1084,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.frameBuffer().tiaSurface().setScanlineIntensity(-1);
-        myAdjustSetting = AdjustSetting::SCANLINES;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::SCANLINES);
       }
       return;
 
@@ -1115,8 +1092,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.frameBuffer().tiaSurface().setScanlineIntensity(+1);
-        myAdjustSetting = AdjustSetting::SCANLINES;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::SCANLINES);
       }
       return;
 
@@ -1124,8 +1100,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().toggleInter();
-        myAdjustSetting = AdjustSetting::INTERPOLATION;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::INTERPOLATION);
       }
       return;
 
@@ -1201,8 +1176,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.frameBuffer().toggleFrameStats();
-        myAdjustSetting = AdjustSetting::STATS;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::STATS);
       }
       return;
 
@@ -1210,8 +1184,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().toggleP0Collision();
-        myAdjustSetting = AdjustSetting::P0_CX;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::P0_CX);
       }
       return;
 
@@ -1219,8 +1192,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().toggleP0Bit();
-        myAdjustSetting = AdjustSetting::P0_ENAM;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::P0_ENAM);
       }
       return;
 
@@ -1228,8 +1200,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().toggleP1Collision();
-        myAdjustSetting = AdjustSetting::P1_CX;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::P1_CX);
       }
       return;
 
@@ -1237,8 +1208,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().toggleP1Bit();
-        myAdjustSetting = AdjustSetting::P1_ENAM;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::P1_ENAM);
       }
       return;
 
@@ -1246,8 +1216,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().toggleM0Collision();
-        myAdjustSetting = AdjustSetting::M0_CX;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::M0_CX);
       }
       return;
 
@@ -1255,8 +1224,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().toggleM0Bit();
-        myAdjustSetting = AdjustSetting::M0_ENAM;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::M0_ENAM);
       }
       return;
 
@@ -1264,8 +1232,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().toggleM1Collision();
-        myAdjustSetting = AdjustSetting::M1_CX;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::M1_CX);
       }
       return;
 
@@ -1273,8 +1240,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().toggleM1Bit();
-        myAdjustSetting = AdjustSetting::M1_ENAM;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::M1_ENAM);
       }
       return;
 
@@ -1282,8 +1248,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().toggleBLCollision();
-        myAdjustSetting = AdjustSetting::BL_CX;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::BL_CX);
       }
       return;
 
@@ -1291,8 +1256,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().toggleBLBit();
-        myAdjustSetting = AdjustSetting::BL_ENAM;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::BL_ENAM);
       }
       return;
 
@@ -1300,8 +1264,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().togglePFCollision();
-        myAdjustSetting = AdjustSetting::PF_CX;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::PF_CX);
       }
       return;
 
@@ -1309,8 +1272,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().togglePFBit();
-        myAdjustSetting = AdjustSetting::PF_ENAM;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::PF_ENAM);
       }
       return;
 
@@ -1318,8 +1280,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().toggleCollisions();
-        myAdjustSetting = AdjustSetting::ALL_CX;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::ALL_CX);
       }
       return;
 
@@ -1327,8 +1288,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().toggleBits();
-        myAdjustSetting = AdjustSetting::ALL_ENAM;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::ALL_ENAM);
       }
       return;
 
@@ -1336,8 +1296,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().toggleFixedColors();
-        myAdjustSetting = AdjustSetting::FIXED_COL;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::FIXED_COL);
       }
       return;
 
@@ -1345,8 +1304,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().toggleColorLoss();
-        myAdjustSetting = AdjustSetting::COLOR_LOSS;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::COLOR_LOSS);
       }
       return;
 
@@ -1354,8 +1312,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().toggleJitter();
-        myAdjustSetting = AdjustSetting::JITTER;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::JITTER);
       }
       return;
 
@@ -1365,8 +1322,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myPJoyHandler->changeDigitalDeadZone(-1);
-        myAdjustSetting = AdjustSetting::DEADZONE;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::DEADZONE);
       }
       return;
 
@@ -1374,8 +1330,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myPJoyHandler->changeDigitalDeadZone(+1);
-        myAdjustSetting = AdjustSetting::DEADZONE;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::DEADZONE);
       }
       return;
 
@@ -1383,8 +1338,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myPJoyHandler->changeAnalogPaddleDeadZone(-1);
-        myAdjustSetting = AdjustSetting::ANALOG_DEADZONE;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::ANALOG_DEADZONE);
       }
       return;
 
@@ -1392,8 +1346,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myPJoyHandler->changeAnalogPaddleDeadZone(+1);
-        myAdjustSetting = AdjustSetting::ANALOG_DEADZONE;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::ANALOG_DEADZONE);
       }
       return;
 
@@ -1401,8 +1354,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myPJoyHandler->changeAnalogPaddleSensitivity(-1);
-        myAdjustSetting = AdjustSetting::ANALOG_SENSITIVITY;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::ANALOG_SENSITIVITY);
       }
       return;
 
@@ -1410,8 +1362,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myPJoyHandler->changeAnalogPaddleSensitivity(+1);
-        myAdjustSetting = AdjustSetting::ANALOG_SENSITIVITY;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::ANALOG_SENSITIVITY);
       }
       return;
 
@@ -1419,8 +1370,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myPJoyHandler->changeAnalogPaddleLinearity(-1);
-        myAdjustSetting = AdjustSetting::ANALOG_LINEARITY;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::ANALOG_LINEARITY);
       }
       return;
 
@@ -1428,8 +1378,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myPJoyHandler->changeAnalogPaddleLinearity(+1);
-        myAdjustSetting = AdjustSetting::ANALOG_LINEARITY;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::ANALOG_LINEARITY);
       }
       return;
 
@@ -1437,8 +1386,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myPJoyHandler->changePaddleDejitterAveraging(-1);
-        myAdjustSetting = AdjustSetting::DEJITTER_AVERAGING;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::DEJITTER_AVERAGING);
       }
       return;
 
@@ -1446,8 +1394,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myPJoyHandler->changePaddleDejitterAveraging(+1);
-        myAdjustSetting = AdjustSetting::DEJITTER_AVERAGING;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::DEJITTER_AVERAGING);
       }
       return;
 
@@ -1455,8 +1402,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myPJoyHandler->changePaddleDejitterReaction(-1);
-        myAdjustSetting = AdjustSetting::DEJITTER_REACTION;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::DEJITTER_REACTION);
       }
       return;
 
@@ -1464,8 +1410,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myPJoyHandler->changePaddleDejitterReaction(+1);
-        myAdjustSetting = AdjustSetting::DEJITTER_REACTION;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::DEJITTER_REACTION);
       }
       return;
 
@@ -1473,8 +1418,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myPJoyHandler->changeDigitalPaddleSensitivity(-1);
-        myAdjustSetting = AdjustSetting::DIGITAL_SENSITIVITY;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::DIGITAL_SENSITIVITY);
       }
       return;
 
@@ -1482,8 +1426,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myPJoyHandler->changeDigitalPaddleSensitivity(+1);
-        myAdjustSetting = AdjustSetting::DIGITAL_SENSITIVITY;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::DIGITAL_SENSITIVITY);
       }
       return;
 
@@ -1491,8 +1434,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.console().changeAutoFireRate(-1);
-        myAdjustSetting = AdjustSetting::AUTO_FIRE;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::AUTO_FIRE);
       }
       return;
 
@@ -1500,8 +1442,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.console().changeAutoFireRate(+1);
-        myAdjustSetting = AdjustSetting::AUTO_FIRE;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::AUTO_FIRE);
       }
       return;
 
@@ -1509,8 +1450,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         toggleAllow4JoyDirections();
-        myAdjustSetting = AdjustSetting::FOUR_DIRECTIONS;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::FOUR_DIRECTIONS);
       }
       return;
 
@@ -1518,8 +1458,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myPKeyHandler->toggleModKeys();
-        myAdjustSetting = AdjustSetting::MOD_KEY_COMBOS;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::MOD_KEY_COMBOS);
       }
       return;
 
@@ -1527,8 +1466,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         toggleSAPortOrder();
-        myAdjustSetting = AdjustSetting::SA_PORT_ORDER;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::SA_PORT_ORDER);
       }
       return;
 
@@ -1536,8 +1474,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         changeMouseControllerMode(-1);
-        myAdjustSetting = AdjustSetting::USE_MOUSE;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::USE_MOUSE);
       }
       return;
 
@@ -1545,8 +1482,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         changeMouseControllerMode(+1);
-        myAdjustSetting = AdjustSetting::USE_MOUSE;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::USE_MOUSE);
       }
       return;
 
@@ -1554,8 +1490,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myPJoyHandler->changeMousePaddleSensitivity(-1);
-        myAdjustSetting = AdjustSetting::PADDLE_SENSITIVITY;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::PADDLE_SENSITIVITY);
       }
       return;
 
@@ -1563,8 +1498,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myPJoyHandler->changeMousePaddleSensitivity(+1);
-        myAdjustSetting = AdjustSetting::PADDLE_SENSITIVITY;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::PADDLE_SENSITIVITY);
       }
       return;
 
@@ -1572,8 +1506,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myPJoyHandler->changeMouseTrackballSensitivity(-1);
-        myAdjustSetting = AdjustSetting::TRACKBALL_SENSITIVITY;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::TRACKBALL_SENSITIVITY);
       }
       return;
 
@@ -1581,8 +1514,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myPJoyHandler->changeMouseTrackballSensitivity(+1);
-        myAdjustSetting = AdjustSetting::TRACKBALL_SENSITIVITY;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::TRACKBALL_SENSITIVITY);
       }
       return;
 
@@ -1590,8 +1522,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myPJoyHandler->changeDrivingSensitivity(-1);
-        myAdjustSetting = AdjustSetting::DRIVING_SENSITIVITY;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::DRIVING_SENSITIVITY);
       }
       return;
 
@@ -1599,8 +1530,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myPJoyHandler->changeDrivingSensitivity(+1);
-        myAdjustSetting = AdjustSetting::DRIVING_SENSITIVITY;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::DRIVING_SENSITIVITY);
       }
       return;
 
@@ -1608,8 +1538,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         changeMouseCursor(-1);
-        myAdjustSetting = AdjustSetting::MOUSE_CURSOR;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::MOUSE_CURSOR);
       }
       return;
 
@@ -1617,8 +1546,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         changeMouseCursor(+1);
-        myAdjustSetting = AdjustSetting::MOUSE_CURSOR;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::MOUSE_CURSOR);
       }
       return;
 
@@ -1626,8 +1554,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated && !myOSystem.frameBuffer().fullScreen())
       {
         myOSystem.frameBuffer().toggleGrabMouse();
-        myAdjustSetting = AdjustSetting::GRAB_MOUSE;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::GRAB_MOUSE);
       }
       return;
 
@@ -1635,8 +1562,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().changeLeftController(-1);
-        myAdjustSetting = AdjustSetting::LEFT_PORT;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::LEFT_PORT);
       }
       return;
 
@@ -1644,8 +1570,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().changeLeftController(+1);
-        myAdjustSetting = AdjustSetting::LEFT_PORT;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::LEFT_PORT);
       }
 
       return;
@@ -1654,8 +1579,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().changeRightController(-1);
-        myAdjustSetting = AdjustSetting::RIGHT_PORT;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::RIGHT_PORT);
       }
       return;
 
@@ -1663,8 +1587,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().changeRightController(+1);
-        myAdjustSetting = AdjustSetting::RIGHT_PORT;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::RIGHT_PORT);
       }
       return;
 
@@ -1672,8 +1595,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().toggleSwapPorts();
-        myAdjustSetting = AdjustSetting::SWAP_PORTS;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::SWAP_PORTS);
       }
       return;
 
@@ -1681,8 +1603,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().toggleSwapPaddles();
-        myAdjustSetting = AdjustSetting::SWAP_PADDLES;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::SWAP_PADDLES);
       }
       return;
 
@@ -1690,8 +1611,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.console().changePaddleCenterX(-1);
-        myAdjustSetting = AdjustSetting::PADDLE_CENTER_X;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::PADDLE_CENTER_X);
       }
       return;
 
@@ -1699,8 +1619,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.console().changePaddleCenterX(+1);
-        myAdjustSetting = AdjustSetting::PADDLE_CENTER_X;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::PADDLE_CENTER_X);
       }
       return;
 
@@ -1708,8 +1627,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.console().changePaddleCenterY(-1);
-        myAdjustSetting = AdjustSetting::PADDLE_CENTER_Y;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::PADDLE_CENTER_Y);
       }
       return;
 
@@ -1717,19 +1635,25 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.console().changePaddleCenterY(+1);
-        myAdjustSetting = AdjustSetting::PADDLE_CENTER_Y;
-        myAdjustActive = true;
+        setAdjustSetting(AdjustSetting::PADDLE_CENTER_Y);
       }
       return;
 
     case Event::PreviousMouseControl:
-      if(pressed && !repeated) changeMouseControl(-1);
+      if(pressed && !repeated)
+      {
+        changeMouseControl(-1);
+        setAdjustSetting(AdjustSetting::MOUSE_CONTROL);
+      }
       return;
 
     case Event::NextMouseControl:
-      if(pressed && !repeated) changeMouseControl(+1);
+      if(pressed && !repeated)
+      {
+        changeMouseControl(+1);
+        setAdjustSetting(AdjustSetting::MOUSE_CONTROL);
+      }
       return;
-
 
     ///////////////////////////////////////////////////////////////////////////
     // State events
@@ -1763,7 +1687,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::ToggleAutoSlot:
-      if (pressed) myOSystem.state().toggleAutoSlot();
+      if (pressed && !repeated) myOSystem.state().toggleAutoSlot();
       return;
 
     case Event::LoadState:

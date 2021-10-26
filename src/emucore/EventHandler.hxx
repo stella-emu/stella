@@ -571,9 +571,10 @@ class EventHandler
     AdjustGroup getAdjustGroup();
     AdjustFunction cycleAdjustSetting(int direction);
     AdjustFunction getAdjustSetting(AdjustSetting setting);
+    void setAdjustSetting(AdjustSetting setting);
 
-    PhysicalJoystickHandler& joyHandler() { return *myPJoyHandler; }
-    PhysicalKeyboardHandler& keyHandler() { return *myPKeyHandler; }
+    PhysicalJoystickHandler& joyHandler() const { return *myPJoyHandler; }
+    PhysicalKeyboardHandler& keyHandler() const { return *myPKeyHandler; }
 
     bool isJoystick(const Controller& controller) const;
     bool isPaddle(const Controller& controller) const;
