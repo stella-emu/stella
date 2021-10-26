@@ -750,11 +750,11 @@ PhysicalKeyboardHandler::DefaultCommonMapping = {
   { Event::ToggleBits,               KBDK_COMMA, MOD3 },
   { Event::ToggleFixedColors,        KBDK_PERIOD, MOD3 },
 
-  { Event::RewindPause,              KBDK_LEFT, KBDM_SHIFT },
+  { Event::RewindPause,              KBDK_LEFT, KBDM_CTRL | MOD3},
   { Event::Rewind1Menu,              KBDK_LEFT, MOD3 },
   { Event::Rewind10Menu,             KBDK_LEFT, KBDM_SHIFT | MOD3 },
   { Event::RewindAllMenu,            KBDK_DOWN, MOD3 },
-  { Event::UnwindPause,              KBDK_LEFT, KBDM_SHIFT },
+  { Event::UnwindPause,              KBDK_RIGHT, KBDM_CTRL | MOD3},
   { Event::Unwind1Menu,              KBDK_RIGHT, MOD3 },
   { Event::Unwind10Menu,             KBDK_RIGHT, KBDM_SHIFT | MOD3 },
   { Event::UnwindAllMenu,            KBDK_UP, MOD3 },
