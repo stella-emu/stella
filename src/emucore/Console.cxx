@@ -514,19 +514,25 @@ void Console::enableColorLoss(bool state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::toggleInter(bool toggle)
 {
-  bool enabled = myOSystem.settings().getBool("tia.inter");
+  if(myOSystem.settings().getString("video") != "software")
+  {
+    bool enabled = myOSystem.settings().getBool("tia.inter");
 
-  if(toggle)
-    enabled = !enabled;
+    if(toggle)
+      enabled = !enabled;
 
-  myOSystem.settings().setValue("tia.inter", enabled);
+    myOSystem.settings().setValue("tia.inter", enabled);
 
-  // ... and apply potential setting changes to the TIA surface
-  myOSystem.frameBuffer().tiaSurface().updateSurfaceSettings();
-  ostringstream ss;
+    // ... and apply potential setting changes to the TIA surface
+    myOSystem.frameBuffer().tiaSurface().updateSurfaceSettings();
+    ostringstream ss;
 
-  ss << "Interpolation " << (enabled ? "enabled" : "disabled");
-  myOSystem.frameBuffer().showTextMessage(ss.str());
+    ss << "Interpolation " << (enabled ? "enabled" : "disabled");
+    myOSystem.frameBuffer().showTextMessage(ss.str());
+  }
+  else
+    myOSystem.frameBuffer().showTextMessage(
+      "Interpolation not available for Software renderer");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
