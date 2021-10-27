@@ -52,6 +52,7 @@ class VideoAudioDialog : public Dialog
     void addAudioTab();
     void handleTVModeChange(NTSCFilter::Preset);
     void loadTVAdjustables(NTSCFilter::Preset preset);
+    void handleRendererChanged();
     void handlePaletteChange();
     void handleShiftChanged(SliderWidget* widget);
     void handlePaletteUpdate();
@@ -136,6 +137,7 @@ class VideoAudioDialog : public Dialog
     PaletteHandler::Adjustable myPaletteAdj;
 
     enum {
+      kRendererChanged    = 'VDRe',
       kZoomChanged        = 'VDZo',
       kVSizeChanged       = 'VDVs',
       kFullScreenChanged  = 'VDFs',

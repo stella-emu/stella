@@ -121,7 +121,7 @@ void VideoAudioDialog::addDisplayTab()
   // Video renderer
   myRenderer = new PopUpWidget(myTab, _font, xpos, ypos, pwidth, lineHeight,
                                instance().frameBuffer().supportedRenderers(),
-                               "Renderer ", lwidth);
+                               "Renderer ", lwidth, kRendererChanged);
   myRenderer->setToolTip("Select renderer used for displaying screen.");
   wid.push_back(myRenderer);
   const int swidth = myRenderer->getWidth() - lwidth;
@@ -544,6 +544,7 @@ void VideoAudioDialog::loadConfig()
   // Display tab
   // Renderer settings
   myRenderer->setSelected(settings.getString("video"), "default");
+  handleRendererChanged();
 
   // TIA interpolation
   myTIAInterpolate->setState(settings.getBool("tia.inter"));
@@ -946,6 +947,13 @@ void VideoAudioDialog::loadTVAdjustables(NTSCFilter::Preset preset)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void VideoAudioDialog::handleRendererChanged()
+{
+  bool enable = myRenderer->getSelectedTag().toString() != "software";
+  myTIAInterpolate->setEnabled(enable);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoAudioDialog::handlePaletteChange()
 {
   bool enable = myTIAPalette->getSelectedTag().toString() == "custom";
@@ -1091,6 +1099,10 @@ void VideoAudioDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kBlueShiftChanged:
       handleShiftChanged(myTVBlueShift);
+      break;
+
+    case kRendererChanged:
+      handleRendererChanged();
       break;
 
     case kVSizeChanged:

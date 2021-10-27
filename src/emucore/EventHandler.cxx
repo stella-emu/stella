@@ -420,6 +420,8 @@ bool EventHandler::skipAVSetting() const
     myOSystem.settings().getString("palette") == PaletteHandler::SETTING_CUSTOM;
   const bool isCustomFilter =
     myOSystem.settings().getInt("tv.filter") == int(NTSCFilter::Preset::CUSTOM);
+  const bool isSoftwareRenderer =
+    myOSystem.settings().getString("video") == "software";
 
   return (myAdjustSetting == AdjustSetting::OVERSCAN && !isFullScreen)
   #ifdef ADAPTABLE_REFRESH_SUPPORT
@@ -430,7 +432,8 @@ bool EventHandler::skipAVSetting() const
         && !isCustomPalette)
     || (myAdjustSetting >= AdjustSetting::NTSC_SHARPNESS
         && myAdjustSetting <= AdjustSetting::NTSC_BLEEDING
-        && !isCustomFilter);
+        && !isCustomFilter)
+    || (myAdjustSetting == AdjustSetting::INTERPOLATION && isSoftwareRenderer);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
