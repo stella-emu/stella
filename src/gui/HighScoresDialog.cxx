@@ -98,7 +98,7 @@ static constexpr std::array<uInt32, BUTTON_GFX_H_LARGE> NEXT_GFX_LARGE = {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
                                    int max_w, int max_h,
-                                   OptionsMenu::AppMode mode)
+                                   AppMode mode)
   : Dialog(osystem, parent, osystem.frameBuffer().font(), "High Scores"),
     _max_w{max_w},
     _max_h{max_h},
@@ -219,7 +219,7 @@ HighScoresDialog::~HighScoresDialog()
 void HighScoresDialog::loadConfig()
 {
   // Enable blending (only once is necessary)
-  if (myMode == OptionsMenu::AppMode::emulator && !surface().attributes().blending)
+  if (myMode == AppMode::emulator && !surface().attributes().blending)
   {
     surface().attributes().blending = true;
     surface().attributes().blendalpha = 90;
@@ -314,7 +314,7 @@ void HighScoresDialog::handleCommand(CommandSender* sender, int cmd, int data, i
       saveConfig();
       [[fallthrough]];
     case kCloseCmd:
-      if(myMode != OptionsMenu::AppMode::emulator)
+      if(myMode != AppMode::emulator)
         close();
       else
         instance().eventHandler().leaveMenuMode();

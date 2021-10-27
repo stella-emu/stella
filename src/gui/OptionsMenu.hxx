@@ -32,9 +32,6 @@ class OptionsDialog;
 class OptionsMenu : public DialogContainer
 {
   public:
-    // Current Stella mode
-    enum class AppMode { launcher, emulator, debugger };
-
     /**
       Create a new menu stack
     */

@@ -44,14 +44,14 @@ Dialog* OptionsMenu::baseDialog()
   {
     if (stellaSettingDialog == nullptr)
       stellaSettingDialog = new StellaSettingsDialog(myOSystem, *this,
-                                                     1280, 720, AppMode::emulator);
+                                                     1280, 720, Dialog::AppMode::emulator);
     return stellaSettingDialog;
   }
   else
   {
     if (optionsDialog == nullptr)
       optionsDialog = new OptionsDialog(myOSystem, *this, nullptr,
-        FBMinimum::Width, FBMinimum::Height, AppMode::emulator);
+        FBMinimum::Width, FBMinimum::Height, Dialog::AppMode::emulator);
     return optionsDialog;
   }
 }

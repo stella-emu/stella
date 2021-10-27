@@ -30,7 +30,7 @@ class OptionsDialog : public Dialog
 {
   public:
     OptionsDialog(OSystem& osystem, DialogContainer& parent, GuiObject* boss,
-                  int max_w, int max_h, OptionsMenu::AppMode mode);
+                  int max_w, int max_h, AppMode mode);
     ~OptionsDialog() override;
 
   private:
@@ -46,7 +46,7 @@ class OptionsDialog : public Dialog
 
     GuiObject* myBoss{nullptr};
     // Indicates if this dialog is used for global (vs. in-game) settings
-    OptionsMenu::AppMode myMode{OptionsMenu::AppMode::emulator};
+    AppMode myMode{AppMode::emulator};
 
     enum {
       kBasSetCmd   = 'BAST',

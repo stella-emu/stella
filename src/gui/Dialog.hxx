@@ -44,6 +44,9 @@ class Dialog : public GuiObject
   friend class DialogContainer;
 
   public:
+    // Current Stella mode
+    enum class AppMode { launcher, emulator, debugger };
+
     using RenderCallback = std::function<void()>;
 
     Dialog(OSystem& instance, DialogContainer& parent,
