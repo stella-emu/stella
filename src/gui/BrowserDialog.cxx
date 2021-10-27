@@ -128,8 +128,7 @@ void BrowserDialog::show(GuiObject* parent, const GUI::Font& font,
   if(w > uInt32(font.getMaxCharWidth() * 80))
     w = font.getMaxCharWidth() * 80;
 
-  if(ourBrowser == nullptr
-     || ourBrowser->getWidth() != int(w) || ourBrowser->getHeight() != int(h))
+  if(ourBrowser == nullptr || &ourBrowser->parent() != &parent->parent())
     ourBrowser = make_unique<BrowserDialog>(parent, font, w, h);
 
   ourBrowser->setTitle(title); // has to be always updated!
