@@ -654,6 +654,102 @@ AdjustFunction EventHandler::getAdjustSetting(AdjustSetting setting)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool EventHandler::isAdjustRepeated(AdjustSetting setting)
+{
+  const bool ADJUST_REPEATED[int(AdjustSetting::NUM_ADJ)] =
+  {
+    // *** Audio & Video group ***
+    true,  // VOLUME
+    false, // ZOOM (always repeating)
+    false, // FULLSCREEN (always repeating)
+    #ifdef ADAPTABLE_REFRESH_SUPPORT
+    false, // ADAPT_REFRESH (always repeating)
+#endif
+    true,  // OVERSCAN
+    false, // TVFORMAT
+    true,  // VCENTER
+    false, // ASPECT_RATIO (always repeating)
+    true,  // VSIZE
+    // Palette adjustables
+    false, // PALETTE
+    true,  // PALETTE_PHASE
+    true,  // PALETTE_RED_SCALE
+    true,  // PALETTE_RED_SHIFT
+    true,  // PALETTE_GREEN_SCALE
+    true,  // PALETTE_GREEN_SHIFT
+    true,  // PALETTE_BLUE_SCALE
+    true,  // PALETTE_BLUE_SHIFT
+    true,  // PALETTE_HUE
+    true,  // PALETTE_SATURATION
+    true,  // PALETTE_CONTRAST
+    true,  // PALETTE_BRIGHTNESS
+    true,  // PALETTE_GAMMA
+    // NTSC filter adjustables
+    false, // NTSC_PRESET
+    true,  // NTSC_SHARPNESS
+    true,  // NTSC_RESOLUTION
+    true,  // NTSC_ARTIFACTS
+    true,  // NTSC_FRINGING
+    true,  // NTSC_BLEEDING
+    // Other TV effects adjustables
+    true,  // PHOSPHOR
+    true,  // SCANLINES
+    false, // INTERPOLATION
+    // *** Input group ***
+    true,  // DEADZONE
+    true,  // ANALOG_DEADZONE
+    true,  // ANALOG_SENSITIVITY
+    true,  // ANALOG_LINEARITY
+    true,  // DEJITTER_AVERAGING
+    true,  // DEJITTER_REACTION
+    true,  // DIGITAL_SENSITIVITY
+    true,  // AUTO_FIRE
+    false, // FOUR_DIRECTIONS
+    false, // MOD_KEY_COMBOS
+    false, // SA_PORT_ORDER
+    false, // USE_MOUSE
+    true,  // PADDLE_SENSITIVITY
+    true,  // TRACKBALL_SENSITIVITY
+    true,  // DRIVING_SENSITIVITY
+    false, // MOUSE_CURSOR
+    false, // GRAB_MOUSE
+    false, // LEFT_PORT
+    false, // RIGHT_PORT
+    false, // SWAP_PORTS
+    false, // SWAP_PADDLES
+    true,  // PADDLE_CENTER_X
+    true,  // PADDLE_CENTER_Y
+    false, // MOUSE_CONTROL
+    true,  // MOUSE_RANGE
+    // *** Debug group ***
+    false, // STATS
+    false, // P0_ENAM
+    false, // P1_ENAM
+    false, // M0_ENAM
+    false, // M1_ENAM
+    false, // BL_ENAM
+    false, // PF_ENAM
+    false, // ALL_ENAM
+    false, // P0_CX
+    false, // P1_CX
+    false, // M0_CX
+    false, // M1_CX
+    false, // BL_CX
+    false, // PF_CX
+    false, // ALL_CX
+    false, // FIXED_COL
+    false, // COLOR_LOSS
+    false, // JITTER
+    // *** Only used via direct hotkeys ***
+    true,  // STATE
+    true,  // PALETTE_CHANGE_ATTRIBUTE
+    true,  // NTSC_CHANGE_ATTRIBUTE
+    true,  // CHANGE_SPEED
+  };
+  return ADJUST_REPEATED[int(setting)];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setAdjustSetting(AdjustSetting setting)
 {
   myAdjustSetting = setting;
@@ -752,14 +848,18 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
         if(adjustAVDirect != AdjustSetting::NONE)
         {
           myAdjustDirect = adjustAVDirect;
-          getAdjustSetting(myAdjustDirect)(direction);
+          if(!repeated || isAdjustRepeated(myAdjustDirect))
+            getAdjustSetting(myAdjustDirect)(direction);
         }
         else
         {
           // Get (and display) the current adjustment function,
           //  but only change its value if the function was already active before
-          getAdjustSetting(myAdjustSetting)(adjustActive ? direction : 0);
-          myAdjustActive = true;
+          if(!repeated || isAdjustRepeated(myAdjustSetting))
+          {
+            getAdjustSetting(myAdjustSetting)(adjustActive ? direction : 0);
+            myAdjustActive = true;
+          }
         }
       }
       return;

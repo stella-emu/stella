@@ -566,11 +566,13 @@ class EventHandler
     int getEmulActionListIndex(int idx, const Event::EventSet& events) const;
     int getActionListIndex(int idx, Event::Group group) const;
 
-    // The following two methods are used for adjusting several settings using global hotkeys
+    // The following methods are used for adjusting several settings using global hotkeys
     // They return the function used to adjust the currenly selected setting
     AdjustGroup getAdjustGroup();
     AdjustFunction cycleAdjustSetting(int direction);
     AdjustFunction getAdjustSetting(AdjustSetting setting);
+    // Check if the current adjustment should be repeated
+    bool isAdjustRepeated(AdjustSetting setting);
     void setAdjustSetting(AdjustSetting setting);
 
     PhysicalJoystickHandler& joyHandler() const { return *myPJoyHandler; }
