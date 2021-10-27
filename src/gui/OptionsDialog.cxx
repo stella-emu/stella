@@ -47,13 +47,13 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
-                             GuiObject* boss, int max_w, int max_h, OptionsMenu::AppMode mode)
+                             GuiObject* boss, int max_w, int max_h, AppMode mode)
   : Dialog(osystem, parent, osystem.frameBuffer().font(), "Options"),
     myBoss{boss},
     myMode{mode}
 {
   // do not show basic settings options in debugger
-  bool minSettings = osystem.settings().getBool("minimal_ui") && mode != OptionsMenu::AppMode::debugger;
+  bool minSettings = osystem.settings().getBool("minimal_ui") && mode != AppMode::debugger;
   const int buttonHeight = Dialog::buttonHeight(),
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder(),
@@ -138,7 +138,7 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   addToFocusList(wid);
 
   // Certain buttons are disabled depending on mode
-  if(myMode == OptionsMenu::AppMode::launcher)
+  if(myMode == AppMode::launcher)
   {
     myCheatCodeButton->clearFlags(Widget::FLAG_ENABLED);
   }
@@ -186,7 +186,7 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
     case kBasSetCmd:
       // enable basic settings
       instance().settings().setValue("basic_settings", true);
-      if (myMode != OptionsMenu::AppMode::emulator)
+      if (myMode != AppMode::emulator)
         close();
       else
         instance().eventHandler().leaveMenuMode();
@@ -297,7 +297,7 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kExitCmd:
-      if(myMode != OptionsMenu::AppMode::emulator)
+      if(myMode != AppMode::emulator)
         close();
       else
         instance().eventHandler().leaveMenuMode();

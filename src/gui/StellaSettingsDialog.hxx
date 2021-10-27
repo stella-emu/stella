@@ -39,7 +39,7 @@ class StellaSettingsDialog : public Dialog
 {
   public:
     StellaSettingsDialog(OSystem& osystem, DialogContainer& parent,
-      int max_w, int max_h, OptionsMenu::AppMode mode);
+      int max_w, int max_h, AppMode mode);
     ~StellaSettingsDialog() override;
 
   private:
@@ -103,7 +103,7 @@ class StellaSettingsDialog : public Dialog
   #endif
 
     // Indicates if this dialog is used for global (vs. in-game) settings
-    OptionsMenu::AppMode myMode{OptionsMenu::AppMode::emulator};
+    AppMode myMode{AppMode::emulator};
 
     enum {
       kAdvancedSettings = 'SSad',

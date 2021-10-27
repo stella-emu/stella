@@ -47,7 +47,7 @@ class HighScoresDialog : public Dialog
     static constexpr uInt32 NUM_RANKS = 10;
 
     HighScoresDialog(OSystem& osystem, DialogContainer& parent,
-                     int max_w, int max_h, OptionsMenu::AppMode mode);
+                     int max_w, int max_h, AppMode mode);
     ~HighScoresDialog() override;
 
   protected:
@@ -110,7 +110,7 @@ class HighScoresDialog : public Dialog
     StaticTextWidget* myMD5Widget{nullptr};
     StaticTextWidget* myCheckSumWidget{nullptr};
 
-    OptionsMenu::AppMode myMode{OptionsMenu::AppMode::emulator};
+    AppMode myMode{AppMode::emulator};
 
   private:
     // Following constructors and assignment operators not supported

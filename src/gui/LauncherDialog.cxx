@@ -926,10 +926,10 @@ void LauncherDialog::openSettings()
   // Create an options dialog, similar to the in-game one
   if (instance().settings().getBool("basic_settings"))
     myDialog = make_unique<StellaSettingsDialog>(instance(), parent(),
-                                                 _w, _h, OptionsMenu::AppMode::launcher);
+                                                 _w, _h, AppMode::launcher);
   else
     myDialog = make_unique<OptionsDialog>(instance(), parent(), this, _w, _h,
-                                          OptionsMenu::AppMode::launcher);
+                                          AppMode::launcher);
   myDialog->open();
 }
 
@@ -938,7 +938,7 @@ void LauncherDialog::openHighScores()
 {
   // Create an high scores dialog, similar to the in-game one
   myDialog = make_unique<HighScoresDialog>(instance(), parent(), _w, _h,
-                                           OptionsMenu::AppMode::launcher);
+                                           AppMode::launcher);
   myDialog->open();
 }
 
