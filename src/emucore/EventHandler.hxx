@@ -26,6 +26,7 @@ class MouseControl;
 class DialogContainer;
 class PhysicalJoystick;
 class Variant;
+class GlobalKeyHandler;
 
 namespace GUI {
   class Font;
@@ -34,7 +35,6 @@ namespace GUI {
 #include "Event.hxx"
 #include "EventHandlerConstants.hxx"
 #include "Control.hxx"
-#include "StellaKeys.hxx"
 #include "PKeyboardHandler.hxx"
 #include "PJoystickHandler.hxx"
 #include "bspf.hxx"
@@ -180,6 +180,11 @@ class EventHandler
     /** Used to access the list of events assigned to a specific combo event. */
     StringList getComboListForEvent(Event::Type event) const;
     void setComboListForEvent(Event::Type event, const StringList& events);
+
+    /** Provide the joystick handler for the global hotkey handler */
+    PhysicalJoystickHandler& joyHandler() const { return *myPJoyHandler; }
+    /** Provide the keyboard handler for the global hotkey handler */
+    PhysicalKeyboardHandler& keyHandler() const { return *myPKeyHandler; }
 
     /** Convert keys and physical joystick events into Stella events. */
     Event::Type eventForKey(EventMode mode, StellaKey key, StellaMod mod) const {
@@ -431,114 +436,6 @@ class EventHandler
     void removePhysicalJoystick(int index);
 
   private:
-    enum class AdjustSetting
-    {
-      NONE = -1,
-      // *** Audio & Video group ***
-      VOLUME,
-      ZOOM,
-      FULLSCREEN,
-    #ifdef ADAPTABLE_REFRESH_SUPPORT
-      ADAPT_REFRESH,
-    #endif
-      OVERSCAN,
-      TVFORMAT,
-      VCENTER,
-      ASPECT_RATIO,
-      VSIZE,
-      // Palette adjustables
-      PALETTE,
-      PALETTE_PHASE,
-      PALETTE_RED_SCALE,
-      PALETTE_RED_SHIFT,
-      PALETTE_GREEN_SCALE,
-      PALETTE_GREEN_SHIFT,
-      PALETTE_BLUE_SCALE,
-      PALETTE_BLUE_SHIFT,
-      PALETTE_HUE,
-      PALETTE_SATURATION,
-      PALETTE_CONTRAST,
-      PALETTE_BRIGHTNESS,
-      PALETTE_GAMMA,
-      // NTSC filter adjustables
-      NTSC_PRESET,
-      NTSC_SHARPNESS,
-      NTSC_RESOLUTION,
-      NTSC_ARTIFACTS,
-      NTSC_FRINGING,
-      NTSC_BLEEDING,
-      // Other TV effects adjustables
-      PHOSPHOR,
-      SCANLINES,
-      INTERPOLATION,
-      // *** Input group ***
-      DEADZONE,
-      ANALOG_DEADZONE,
-      ANALOG_SENSITIVITY,
-      ANALOG_LINEARITY,
-      DEJITTER_AVERAGING,
-      DEJITTER_REACTION,
-      DIGITAL_SENSITIVITY,
-      AUTO_FIRE,
-      FOUR_DIRECTIONS,
-      MOD_KEY_COMBOS,
-      SA_PORT_ORDER,
-      USE_MOUSE,
-      PADDLE_SENSITIVITY,
-      TRACKBALL_SENSITIVITY,
-      DRIVING_SENSITIVITY,
-      MOUSE_CURSOR,
-      GRAB_MOUSE,
-      LEFT_PORT,
-      RIGHT_PORT,
-      SWAP_PORTS,
-      SWAP_PADDLES,
-      PADDLE_CENTER_X,
-      PADDLE_CENTER_Y,
-      MOUSE_CONTROL,
-      MOUSE_RANGE,
-      // *** Debug group ***
-      STATS,
-      P0_ENAM,
-      P1_ENAM,
-      M0_ENAM,
-      M1_ENAM,
-      BL_ENAM,
-      PF_ENAM,
-      ALL_ENAM,
-      P0_CX,
-      P1_CX,
-      M0_CX,
-      M1_CX,
-      BL_CX,
-      PF_CX,
-      ALL_CX,
-      FIXED_COL,
-      COLOR_LOSS,
-      JITTER,
-      // *** Only used via direct hotkeys ***
-      STATE,
-      PALETTE_CHANGE_ATTRIBUTE,
-      NTSC_CHANGE_ATTRIBUTE,
-      CHANGE_SPEED,
-      // *** Ranges ***
-      NUM_ADJ,
-      START_AV_ADJ = VOLUME,
-      END_AV_ADJ = INTERPOLATION,
-      START_INPUT_ADJ = DEADZONE,
-      END_INPUT_ADJ = MOUSE_RANGE,
-      START_DEBUG_ADJ = STATS,
-      END_DEBUG_ADJ = JITTER,
-    };
-    enum class AdjustGroup
-    {
-      AV,
-      INPUT,
-      DEBUG,
-      NUM_GROUPS
-    };
-
-  private:
     // Define event groups
     static const Event::EventSet MiscEvents;
     static const Event::EventSet AudioVideoEvents;
@@ -566,27 +463,6 @@ class EventHandler
     int getEmulActionListIndex(int idx, const Event::EventSet& events) const;
     int getActionListIndex(int idx, Event::Group group) const;
 
-    // The following methods are used for adjusting several settings using global hotkeys
-    // They return the function used to adjust the currenly selected setting
-    AdjustGroup getAdjustGroup();
-    AdjustFunction cycleAdjustSetting(int direction);
-    AdjustFunction getAdjustSetting(AdjustSetting setting);
-    // Check if the current adjustment should be repeated
-    bool isAdjustRepeated(AdjustSetting setting);
-    void setAdjustSetting(AdjustSetting setting);
-
-    PhysicalJoystickHandler& joyHandler() const { return *myPJoyHandler; }
-    PhysicalKeyboardHandler& keyHandler() const { return *myPKeyHandler; }
-
-    bool isJoystick(const Controller& controller) const;
-    bool isPaddle(const Controller& controller) const;
-    bool isTrackball(const Controller& controller) const;
-
-    // Check if a currently non-relevant adjustment can be skipped
-    bool skipAVSetting() const;
-    bool skipInputSetting() const;
-    bool skipDebugSetting() const;
-
   private:
     // Structure used for action menu items
     struct ActionList {
@@ -595,18 +471,14 @@ class EventHandler
       string key;
     };
 
-    // If true, the setting is visible and its value can be changed
-    bool myAdjustActive{false};
-    // ID of the currently selected global setting
-    AdjustSetting myAdjustSetting{AdjustSetting::START_AV_ADJ};
-    // ID of the currently selected direct hotkey setting (0 if none)
-    AdjustSetting myAdjustDirect{AdjustSetting::NONE};
-
     // Global Event object
     Event myEvent;
 
     // Indicates current overlay object
     DialogContainer* myOverlay{nullptr};
+
+    // Handler for all global key events
+    unique_ptr<GlobalKeyHandler> myGlobalKeyHandler;
 
     // Handler for all keyboard-related events
     unique_ptr<PhysicalKeyboardHandler> myPKeyHandler;
