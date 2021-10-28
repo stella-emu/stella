@@ -65,6 +65,7 @@ MODULE_OBJS := \
         src/emucore/FBSurface.o \
         src/emucore/FSNode.o \
         src/emucore/Genesis.o \
+	src/emucore/GlobalKeyHandler.o \
         src/emucore/Joystick.o \
         src/emucore/Keyboard.o \
         src/emucore/KidVid.o \

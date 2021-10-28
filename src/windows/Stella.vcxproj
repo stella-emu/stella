@@ -879,6 +879,7 @@
     <ClCompile Include="..\emucore\EmulationTiming.cxx" />
     <ClCompile Include="..\emucore\EmulationWorker.cxx" />
     <ClCompile Include="..\emucore\FBSurface.cxx" />
+    <ClCompile Include="..\emucore\GlobalKeyHandler.cxx" />
     <ClCompile Include="..\emucore\Lightgun.cxx" />
     <ClCompile Include="..\emucore\MindLink.cxx" />
     <ClCompile Include="..\emucore\OSystemStandalone.cxx" />
@@ -2070,6 +2071,7 @@
     <ClInclude Include="..\emucore\FBBackend.hxx" />
     <ClInclude Include="..\emucore\FBSurface.hxx" />
     <ClInclude Include="..\emucore\FrameBufferConstants.hxx" />
+    <ClInclude Include="..\emucore\GlobalKeyHandler.hxx" />
     <ClInclude Include="..\emucore\Lightgun.hxx" />
     <ClInclude Include="..\emucore\MindLink.hxx" />
     <ClInclude Include="..\emucore\OSystemStandalone.hxx" />

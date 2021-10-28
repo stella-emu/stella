@@ -81,6 +81,16 @@ class QuadTari : public Controller
     string name() const override;
 
     /**
+      Returns the first attached controller.
+    */
+    const Controller& firstController() const { return *myFirstController; }
+
+    /**
+      Returns the second attached controller.
+    */
+    const Controller& secondController() const { return *mySecondController; }
+
+    /**
       Answers whether the controller is intrinsically an analog controller.
       Depends on the attached controllers.
     */
