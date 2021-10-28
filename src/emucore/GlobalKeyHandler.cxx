@@ -172,15 +172,12 @@ const GlobalKeyHandler::AdjustGroup GlobalKeyHandler::getAdjustGroup() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool GlobalKeyHandler::isJoystick(const Controller& controller) const
 {
-  //const Controller* pleft = &controller;
-  //const QuadTari* pleftQT = dynamic_cast<const QuadTari*>(pleft);
-  //const Controller& c = (dynamic_cast<const QuadTari*>(&controller))->firstController();
   return controller.type() == Controller::Type::Joystick
     || controller.type() == Controller::Type::BoosterGrip
     || controller.type() == Controller::Type::Genesis
     || (controller.type() == Controller::Type::QuadTari
-      && (isJoystick(dynamic_cast<const QuadTari*>(&controller)->firstController())
-      || isJoystick(dynamic_cast<const QuadTari*>(&controller)->secondController())));
+      && (isJoystick(static_cast<const QuadTari*>(&controller)->firstController())
+      || isJoystick(static_cast<const QuadTari*>(&controller)->secondController())));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -190,8 +187,8 @@ bool GlobalKeyHandler::isPaddle(const Controller& controller) const
     || controller.type() == Controller::Type::PaddlesIAxDr
     || controller.type() == Controller::Type::PaddlesIAxis
     || (controller.type() == Controller::Type::QuadTari
-      && (isPaddle(dynamic_cast<const QuadTari*>(&controller)->firstController())
-      || isPaddle(dynamic_cast<const QuadTari*>(&controller)->secondController())));
+      && (isPaddle(static_cast<const QuadTari*>(&controller)->firstController())
+      || isPaddle(static_cast<const QuadTari*>(&controller)->secondController())));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
