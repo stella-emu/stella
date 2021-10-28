@@ -249,6 +249,7 @@
     <ClCompile Include="..\emucore\FrameBuffer.cxx" />
     <ClCompile Include="..\emucore\FSNode.cxx" />
     <ClCompile Include="..\emucore\Genesis.cxx" />
+    <ClCompile Include="..\emucore\GlobalKeyHandler.cxx" />
     <ClCompile Include="..\emucore\Joystick.cxx" />
     <ClCompile Include="..\emucore\Keyboard.cxx" />
     <ClCompile Include="..\emucore\KidVid.cxx" />
@@ -399,6 +400,7 @@
     <ClInclude Include="..\emucore\FrameBuffer.hxx" />
     <ClInclude Include="..\emucore\FSNode.hxx" />
     <ClInclude Include="..\emucore\Genesis.hxx" />
+    <ClInclude Include="..\emucore\GlobalKeyHandler.hxx" />
     <ClInclude Include="..\emucore\Joystick.hxx" />
     <ClInclude Include="..\emucore\Keyboard.hxx" />
     <ClInclude Include="..\emucore\KidVid.hxx" />
