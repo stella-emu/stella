@@ -87,8 +87,6 @@ using StringList = std::vector<std::string>;
 using ByteBuffer = std::unique_ptr<uInt8[]>;  // NOLINT
 using DWordBuffer = std::unique_ptr<uInt32[]>;  // NOLINT
 
-using AdjustFunction = std::function<void(int)>;
-
 // We use KB a lot; let's make a literal for it
 constexpr size_t operator "" _KB(unsigned long long size)
 {

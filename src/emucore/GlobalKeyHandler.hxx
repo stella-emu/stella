@@ -31,7 +31,7 @@ class GlobalKeyHandler
     GlobalKeyHandler(OSystem& osystem);
 
   public:
-    enum class AdjustSetting
+    enum class Setting
     {
       NONE = -1,
       // *** Audio & Video group ***
@@ -118,8 +118,8 @@ class GlobalKeyHandler
       JITTER,
       // *** Only used via direct hotkeys ***
       STATE,
-      PALETTE_CHANGE_ATTRIBUTE,
-      NTSC_CHANGE_ATTRIBUTE,
+      PALETTE_ATTRIBUTE,
+      NTSC_ATTRIBUTE,
       CHANGE_SPEED,
       // *** Ranges ***
       NUM_ADJ,
@@ -133,11 +133,13 @@ class GlobalKeyHandler
 
   public:
     bool handleEvent(const Event::Type event, bool pressed, bool repeated);
-    void setAdjustSetting(const AdjustSetting setting);
-    void setAdjustDirect(const AdjustSetting setting);
+    void setSetting(const Setting setting);
+    void setDirectSetting(const Setting setting);
 
   private:
-    enum class AdjustGroup
+    using Function = std::function<void(int)>;
+
+    enum class Group
     {
       AV,
       INPUT,
@@ -145,18 +147,30 @@ class GlobalKeyHandler
       NUM_GROUPS
     };
 
+    struct GroupData
+    {
+      Setting start{Setting::NONE};
+      string  name{EmptyString};
+    };
+
+    struct SettingData
+    {
+      bool     repeated{true};
+      Function function{nullptr};
+    };
+
   private:
-    // The following methods are used for adjusting several settings using global hotkeys
-    // They return the function used to adjust the currenly selected setting
-    const AdjustGroup getAdjustGroup() const;
-    const AdjustFunction cycleAdjustSetting(int direction);
-    const AdjustFunction getAdjustSetting(const AdjustSetting setting) const;
-    // Check if the current adjustment should be repeated
-    bool isAdjustRepeated(const AdjustSetting setting) const;
+    // Get group based on given setting
+    const Group getGroup() const;
+    // Cycle settings using given direction (can be 0)
+    const Function cycleSetting(int direction);
+    // Get adjustment function and if it is repeated
+    const SettingData getSettingData(const Setting setting) const;
 
     PhysicalJoystickHandler& joyHandler() const { return myOSystem.eventHandler().joyHandler(); }
     PhysicalKeyboardHandler& keyHandler() const { return myOSystem.eventHandler().keyHandler(); }
 
+    // Check if controller type is used (skips related input settings if not)
     bool isJoystick(const Controller& controller) const;
     bool isPaddle(const Controller& controller) const;
     bool isTrackball(const Controller& controller) const;
@@ -171,13 +185,16 @@ class GlobalKeyHandler
     OSystem& myOSystem;
 
     // If true, the setting's message is visible and its value can be changed
-    bool myAdjustActive{false};
+    bool mySettingActive{false};
 
-    // ID of the currently selected global setting
-    AdjustSetting myAdjustSetting{AdjustSetting::START_AV_ADJ};
+    // Currently selected setting
+    Setting mySetting{Setting::VOLUME};
 
-    // ID of the currently selected direct hotkey setting (0 if none)
-    AdjustSetting myAdjustDirect{AdjustSetting::NONE};
+    // Currently selected direct setting (0 if none). These settings are not
+    //  selected using global hotkeys, but direct hotkeys only. Nevertheless
+    //  they can be changed with global hotkeys while their message is still
+    //  displayed
+    Setting myDirectSetting{Setting::NONE};
 };
 
 #endif

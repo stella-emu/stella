@@ -43,17 +43,17 @@ bool GlobalKeyHandler::handleEvent(const Event::Type event, bool pressed, bool r
   //  b) other keys have been pressed
   if(!myOSystem.frameBuffer().messageShown())
   {
-    myAdjustActive = false;
-    myAdjustDirect = AdjustSetting::NONE;
+    mySettingActive = false;
+    myDirectSetting = Setting::NONE;
   }
 
-  const bool adjustActive = myAdjustActive;
-  const AdjustSetting adjustAVDirect = myAdjustDirect;
+  const bool settingActive = mySettingActive;
+  const Setting directSetting = myDirectSetting;
 
   if(pressed)
   {
-    myAdjustActive = false;
-    myAdjustDirect = AdjustSetting::NONE;
+    mySettingActive = false;
+    myDirectSetting = Setting::NONE;
   }
 
   bool handled = true;
@@ -66,50 +66,35 @@ bool GlobalKeyHandler::handleEvent(const Event::Type event, bool pressed, bool r
     case Event::NextSettingGroup:
       if(pressed && !repeated)
       {
-        const int direction = event == Event::PreviousSettingGroup ? -1 : +1;
-        AdjustGroup adjustGroup = AdjustGroup(BSPF::clampw(int(getAdjustGroup()) + direction,
-                                              0, int(AdjustGroup::NUM_GROUPS) - 1));
-        string msg;
+        const int direction = (event == Event::PreviousSettingGroup ? -1 : +1);
+        Group group = Group(BSPF::clampw(int(getGroup()) + direction,
+                            0, int(Group::NUM_GROUPS) - 1));
+        const std::map<Group, GroupData> GroupMap = {
+          {Group::AV,    {Setting::START_AV_ADJ,    "Audio & Video"}},
+          {Group::INPUT, {Setting::START_INPUT_ADJ, "Input Devices & Ports"}},
+          {Group::DEBUG, {Setting::START_DEBUG_ADJ, "Debug"}},
+        };
+        const auto result = GroupMap.find(group);
 
-        switch(adjustGroup)
-        {
-          case AdjustGroup::AV:
-            msg = "Audio & Video";
-            myAdjustSetting = AdjustSetting::START_AV_ADJ;
-            break;
-
-          case AdjustGroup::INPUT:
-            msg = "Input Devices & Ports";
-            myAdjustSetting = AdjustSetting::START_INPUT_ADJ;
-            break;
-
-          case AdjustGroup::DEBUG:
-            msg = "Debug";
-            myAdjustSetting = AdjustSetting::START_DEBUG_ADJ;
-            break;
-
-          default:
-            break;
-        }
-        myOSystem.frameBuffer().showTextMessage(msg + " settings");
-        myAdjustActive = false;
+        myOSystem.frameBuffer().showTextMessage(result->second.name + " settings");
+        mySetting = result->second.start;
+        mySettingActive = false;
       }
       break;
 
-      // Allow adjusting several (mostly repeated) settings using the same four hotkeys
     case Event::PreviousSetting:
     case Event::NextSetting:
       if(pressed && !repeated)
       {
-        const int direction = event == Event::PreviousSetting ? -1 : +1;
+        const int direction = (event == Event::PreviousSetting ? -1 : +1);
 
         // Get (and display) the previous|next adjustment function,
         //  but do not change its value
-        cycleAdjustSetting(adjustActive ? direction : 0)(0);
+        cycleSetting(settingActive ? direction : 0)(0);
         // Fallback message when no message is displayed by method
         //if(!myOSystem.frameBuffer().messageShown())
-        //  myOSystem.frameBuffer().showMessage("Message " + std::to_string(int(myAdjustSetting)));
-        myAdjustActive = true;
+        //  myOSystem.frameBuffer().showMessage("Message " + std::to_string(int(mySetting)));
+        mySettingActive = true;
       }
       break;
 
@@ -117,23 +102,27 @@ bool GlobalKeyHandler::handleEvent(const Event::Type event, bool pressed, bool r
     case Event::SettingIncrease:
       if(pressed)
       {
-        const int direction = event == Event::SettingDecrease ? -1 : +1;
+        const int direction = (event == Event::SettingDecrease ? -1 : +1);
 
         // if a "direct only" hotkey was pressed last, use this one
-        if(adjustAVDirect != AdjustSetting::NONE)
+        if(directSetting != Setting::NONE)
         {
-          myAdjustDirect = adjustAVDirect;
-          if(!repeated || isAdjustRepeated(myAdjustDirect))
-            getAdjustSetting(myAdjustDirect)(direction);
+          const SettingData& data = getSettingData(directSetting);
+
+          myDirectSetting = directSetting;
+          if(!repeated || data.repeated)
+            data.function(direction);
         }
         else
         {
           // Get (and display) the current adjustment function,
           //  but only change its value if the function was already active before
-          if(!repeated || isAdjustRepeated(myAdjustSetting))
+          const SettingData& data = getSettingData(mySetting);
+
+          if(!repeated || data.repeated)
           {
-            getAdjustSetting(myAdjustSetting)(adjustActive ? direction : 0);
-            myAdjustActive = true;
+            data.function(settingActive ? direction : 0);
+            mySettingActive = true;
           }
         }
       }
@@ -146,27 +135,28 @@ bool GlobalKeyHandler::handleEvent(const Event::Type event, bool pressed, bool r
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void GlobalKeyHandler::setAdjustSetting(const AdjustSetting setting)
+void GlobalKeyHandler::setSetting(const Setting setting)
 {
-  myAdjustSetting = setting;
-  myAdjustActive = true;
+  mySetting = setting;
+  mySettingActive = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void GlobalKeyHandler::setAdjustDirect(const AdjustSetting setting)
+void GlobalKeyHandler::setDirectSetting(const Setting setting)
 {
-  myAdjustDirect = setting;
+  myDirectSetting = setting;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const GlobalKeyHandler::AdjustGroup GlobalKeyHandler::getAdjustGroup() const
+const GlobalKeyHandler::Group GlobalKeyHandler::getGroup() const
 {
-  if(myAdjustSetting >= AdjustSetting::START_DEBUG_ADJ && myAdjustSetting <= AdjustSetting::END_DEBUG_ADJ)
-    return AdjustGroup::DEBUG;
-  if(myAdjustSetting >= AdjustSetting::START_INPUT_ADJ && myAdjustSetting <= AdjustSetting::END_INPUT_ADJ)
-    return AdjustGroup::INPUT;
+  if(mySetting >= Setting::START_DEBUG_ADJ && mySetting <= Setting::END_DEBUG_ADJ)
+    return Group::DEBUG;
 
-  return AdjustGroup::AV;
+  if(mySetting >= Setting::START_INPUT_ADJ && mySetting <= Setting::END_INPUT_ADJ)
+    return Group::INPUT;
+
+  return Group::AV;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -210,17 +200,17 @@ bool GlobalKeyHandler::skipAVSetting() const
   const bool isSoftwareRenderer =
     myOSystem.settings().getString("video") == "software";
 
-  return (myAdjustSetting == AdjustSetting::OVERSCAN && !isFullScreen)
-  #ifdef ADAPTABLE_REFRESH_SUPPORT
-    || (myAdjustSetting == AdjustSetting::ADAPT_REFRESH && !isFullScreen)
-  #endif
-    || (myAdjustSetting >= AdjustSetting::PALETTE_PHASE
-      && myAdjustSetting <= AdjustSetting::PALETTE_BLUE_SHIFT
+  return (mySetting == Setting::OVERSCAN && !isFullScreen)
+#ifdef ADAPTABLE_REFRESH_SUPPORT
+    || (mySetting == Setting::ADAPT_REFRESH && !isFullScreen)
+#endif
+    || (mySetting >= Setting::PALETTE_PHASE
+      && mySetting <= Setting::PALETTE_BLUE_SHIFT
       && !isCustomPalette)
-    || (myAdjustSetting >= AdjustSetting::NTSC_SHARPNESS
-      && myAdjustSetting <= AdjustSetting::NTSC_BLEEDING
+    || (mySetting >= Setting::NTSC_SHARPNESS
+      && mySetting <= Setting::NTSC_BLEEDING
       && !isCustomFilter)
-    || (myAdjustSetting == AdjustSetting::INTERPOLATION && isSoftwareRenderer);
+    || (mySetting == Setting::INTERPOLATION && isSoftwareRenderer);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -244,32 +234,32 @@ bool GlobalKeyHandler::skipInputSetting() const
       && analog);
   const bool stelladapter = joyHandler().hasStelladaptors();
 
-  return (!grabMouseAllowed && myAdjustSetting == AdjustSetting::GRAB_MOUSE)
+  return (!grabMouseAllowed && mySetting == Setting::GRAB_MOUSE)
     || (!joystick
-      && (myAdjustSetting == AdjustSetting::DEADZONE
-      || myAdjustSetting == AdjustSetting::FOUR_DIRECTIONS))
+      && (mySetting == Setting::DEADZONE
+      || mySetting == Setting::FOUR_DIRECTIONS))
     || (!paddle
-      && (myAdjustSetting == AdjustSetting::ANALOG_DEADZONE
-      || myAdjustSetting == AdjustSetting::ANALOG_SENSITIVITY
-      || myAdjustSetting == AdjustSetting::ANALOG_LINEARITY
-      || myAdjustSetting == AdjustSetting::DEJITTER_AVERAGING
-      || myAdjustSetting == AdjustSetting::DEJITTER_REACTION
-      || myAdjustSetting == AdjustSetting::DIGITAL_SENSITIVITY
-      || myAdjustSetting == AdjustSetting::SWAP_PADDLES
-      || myAdjustSetting == AdjustSetting::PADDLE_CENTER_X
-      || myAdjustSetting == AdjustSetting::PADDLE_CENTER_Y))
+      && (mySetting == Setting::ANALOG_DEADZONE
+      || mySetting == Setting::ANALOG_SENSITIVITY
+      || mySetting == Setting::ANALOG_LINEARITY
+      || mySetting == Setting::DEJITTER_AVERAGING
+      || mySetting == Setting::DEJITTER_REACTION
+      || mySetting == Setting::DIGITAL_SENSITIVITY
+      || mySetting == Setting::SWAP_PADDLES
+      || mySetting == Setting::PADDLE_CENTER_X
+      || mySetting == Setting::PADDLE_CENTER_Y))
     || ((!paddle || !useMouse)
-      && myAdjustSetting == AdjustSetting::PADDLE_SENSITIVITY)
+      && mySetting == Setting::PADDLE_SENSITIVITY)
     || ((!trackball || !useMouse)
-      && myAdjustSetting == AdjustSetting::TRACKBALL_SENSITIVITY)
+      && mySetting == Setting::TRACKBALL_SENSITIVITY)
     || (!driving
-      && myAdjustSetting == AdjustSetting::DRIVING_SENSITIVITY) // also affects digital device input sensitivity
+      && mySetting == Setting::DRIVING_SENSITIVITY) // also affects digital device input sensitivity
     || ((!myOSystem.eventHandler().hasMouseControl() || !useMouse)
-      && myAdjustSetting == AdjustSetting::MOUSE_CONTROL)
+      && mySetting == Setting::MOUSE_CONTROL)
     || ((!paddle || !useMouse)
-      && myAdjustSetting == AdjustSetting::MOUSE_RANGE)
+      && mySetting == Setting::MOUSE_RANGE)
     || (!stelladapter
-      && myAdjustSetting == AdjustSetting::SA_PORT_ORDER);
+      && mySetting == Setting::SA_PORT_ORDER);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -277,37 +267,38 @@ bool GlobalKeyHandler::skipDebugSetting() const
 {
   const bool isPAL = myOSystem.console().timing() == ConsoleTiming::pal;
 
-  return (myAdjustSetting == AdjustSetting::COLOR_LOSS && !isPAL);
+  return (mySetting == Setting::COLOR_LOSS && !isPAL);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const AdjustFunction GlobalKeyHandler::cycleAdjustSetting(int direction)
+const GlobalKeyHandler::Function GlobalKeyHandler::cycleSetting(int direction)
 {
   bool skip = false;
+
   do
   {
-    switch(getAdjustGroup())
+    switch(getGroup())
     {
-      case AdjustGroup::AV:
-        myAdjustSetting =
-          AdjustSetting(BSPF::clampw(int(myAdjustSetting) + direction,
-            int(AdjustSetting::START_AV_ADJ), int(AdjustSetting::END_AV_ADJ)));
+      case Group::AV:
+        mySetting =
+          Setting(BSPF::clampw(int(mySetting) + direction,
+            int(Setting::START_AV_ADJ), int(Setting::END_AV_ADJ)));
         // skip currently non-relevant adjustments
         skip = skipAVSetting();
         break;
 
-      case AdjustGroup::INPUT:
-        myAdjustSetting =
-          AdjustSetting(BSPF::clampw(int(myAdjustSetting) + direction,
-            int(AdjustSetting::START_INPUT_ADJ), int(AdjustSetting::END_INPUT_ADJ)));
+      case Group::INPUT:
+        mySetting =
+          Setting(BSPF::clampw(int(mySetting) + direction,
+            int(Setting::START_INPUT_ADJ), int(Setting::END_INPUT_ADJ)));
         // skip currently non-relevant adjustments
         skip = skipInputSetting();
         break;
 
-      case AdjustGroup::DEBUG:
-        myAdjustSetting =
-          AdjustSetting(BSPF::clampw(int(myAdjustSetting) + direction,
-            int(AdjustSetting::START_DEBUG_ADJ), int(AdjustSetting::END_DEBUG_ADJ)));
+      case Group::DEBUG:
+        mySetting =
+          Setting(BSPF::clampw(int(mySetting) + direction,
+            int(Setting::START_DEBUG_ADJ), int(Setting::END_DEBUG_ADJ)));
         // skip currently non-relevant adjustments
         skip = skipDebugSetting();
         break;
@@ -320,222 +311,130 @@ const AdjustFunction GlobalKeyHandler::cycleAdjustSetting(int direction)
       direction = 1;
   } while(skip);
 
-  return getAdjustSetting(myAdjustSetting);
+  return getSettingData(mySetting).function;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const AdjustFunction GlobalKeyHandler::getAdjustSetting(const AdjustSetting setting) const
+const GlobalKeyHandler::SettingData GlobalKeyHandler::getSettingData(const Setting setting) const
 {
   // Notes:
-  // - All methods MUST show a message
-  // - This array MUST have the same order as AdjustSetting
-  const AdjustFunction ADJUST_FUNCTIONS[int(AdjustSetting::NUM_ADJ)] =
-  {
-    // *** Audio & Video settings ***
-    std::bind(&Sound::adjustVolume, &myOSystem.sound(), _1),
-    std::bind(&FrameBuffer::switchVideoMode, &myOSystem.frameBuffer(), _1),
-    std::bind(&FrameBuffer::toggleFullscreen, &myOSystem.frameBuffer(), _1),
-  #ifdef ADAPTABLE_REFRESH_SUPPORT
-    std::bind(&FrameBuffer::toggleAdaptRefresh, &myOSystem.frameBuffer(), _1),
-  #endif
-    std::bind(&FrameBuffer::changeOverscan, &myOSystem.frameBuffer(), _1),
-    std::bind(&Console::selectFormat, &myOSystem.console(), _1), // property, not persisted
-    std::bind(&Console::changeVerticalCenter, &myOSystem.console(), _1), // property, not persisted
-    std::bind(&Console::toggleCorrectAspectRatio, &myOSystem.console(), _1),
-    std::bind(&Console::changeVSizeAdjust, &myOSystem.console(), _1),
-    // Palette adjustables
-    std::bind(&PaletteHandler::cyclePalette, &myOSystem.frameBuffer().tiaSurface().paletteHandler(), _1),
-    std::bind(&PaletteHandler::changeAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(),
-      PaletteHandler::PHASE_SHIFT, _1),
-    std::bind(&PaletteHandler::changeAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(),
-      PaletteHandler::RED_SCALE, _1),
-    std::bind(&PaletteHandler::changeAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(),
-      PaletteHandler::RED_SHIFT, _1),
-    std::bind(&PaletteHandler::changeAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(),
-      PaletteHandler::GREEN_SCALE, _1),
-    std::bind(&PaletteHandler::changeAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(),
-      PaletteHandler::GREEN_SHIFT, _1),
-    std::bind(&PaletteHandler::changeAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(),
-      PaletteHandler::BLUE_SCALE, _1),
-    std::bind(&PaletteHandler::changeAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(),
-      PaletteHandler::BLUE_SHIFT, _1),
-    std::bind(&PaletteHandler::changeAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(),
-      PaletteHandler::HUE, _1),
-    std::bind(&PaletteHandler::changeAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(),
-      PaletteHandler::SATURATION, _1),
-    std::bind(&PaletteHandler::changeAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(),
-      PaletteHandler::CONTRAST, _1),
-    std::bind(&PaletteHandler::changeAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(),
-      PaletteHandler::BRIGHTNESS, _1),
-    std::bind(&PaletteHandler::changeAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(),
-      PaletteHandler::GAMMA, _1),
-    // NTSC filter adjustables
-    std::bind(&TIASurface::changeNTSC, &myOSystem.frameBuffer().tiaSurface(), _1),
-    std::bind(&TIASurface::changeNTSCAdjustable, &myOSystem.frameBuffer().tiaSurface(),
-      int(NTSCFilter::Adjustables::SHARPNESS), _1),
-    std::bind(&TIASurface::changeNTSCAdjustable, &myOSystem.frameBuffer().tiaSurface(),
-      int(NTSCFilter::Adjustables::RESOLUTION), _1),
-    std::bind(&TIASurface::changeNTSCAdjustable, &myOSystem.frameBuffer().tiaSurface(),
-      int(NTSCFilter::Adjustables::ARTIFACTS), _1),
-    std::bind(&TIASurface::changeNTSCAdjustable, &myOSystem.frameBuffer().tiaSurface(),
-      int(NTSCFilter::Adjustables::FRINGING), _1),
-    std::bind(&TIASurface::changeNTSCAdjustable, &myOSystem.frameBuffer().tiaSurface(),
-      int(NTSCFilter::Adjustables::BLEEDING), _1),
-    std::bind(&Console::changePhosphor, &myOSystem.console(), _1),
-    std::bind(&TIASurface::setScanlineIntensity, &myOSystem.frameBuffer().tiaSurface(), _1),
-    std::bind(&Console::toggleInter, &myOSystem.console(), _1),
-
-    // *** Input settings ***
-    std::bind(&PhysicalJoystickHandler::changeDigitalDeadZone, &joyHandler(), _1),
-    std::bind(&PhysicalJoystickHandler::changeAnalogPaddleDeadZone, &joyHandler(), _1),
-    std::bind(&PhysicalJoystickHandler::changeAnalogPaddleSensitivity, &joyHandler(), _1),
-    std::bind(&PhysicalJoystickHandler::changeAnalogPaddleLinearity, &joyHandler(), _1),
-    std::bind(&PhysicalJoystickHandler::changePaddleDejitterAveraging, &joyHandler(), _1),
-    std::bind(&PhysicalJoystickHandler::changePaddleDejitterReaction, &joyHandler(), _1),
-    std::bind(&PhysicalJoystickHandler::changeDigitalPaddleSensitivity, &joyHandler(), _1),
-    std::bind(&Console::changeAutoFireRate, &myOSystem.console(), _1),
-    std::bind(&EventHandler::toggleAllow4JoyDirections, &myOSystem.eventHandler(), _1),
-    std::bind(&PhysicalKeyboardHandler::toggleModKeys, &keyHandler(), _1),
-    std::bind(&EventHandler::toggleSAPortOrder, &myOSystem.eventHandler(), _1),
-    std::bind(&EventHandler::changeMouseControllerMode, &myOSystem.eventHandler(), _1),
-    std::bind(&PhysicalJoystickHandler::changeMousePaddleSensitivity, &joyHandler(), _1),
-    std::bind(&PhysicalJoystickHandler::changeMouseTrackballSensitivity, &joyHandler(), _1),
-    std::bind(&PhysicalJoystickHandler::changeDrivingSensitivity, &joyHandler(), _1),
-    std::bind(&EventHandler::changeMouseCursor, &myOSystem.eventHandler(), _1),
-    std::bind(&FrameBuffer::toggleGrabMouse, &myOSystem.frameBuffer(), _1),
-    // Game properties/Controllers
-    std::bind(&Console::changeLeftController, &myOSystem.console(), _1), // property, not persisted
-    std::bind(&Console::changeRightController, &myOSystem.console(), _1), // property, not persisted
-    std::bind(&Console::toggleSwapPorts, &myOSystem.console(), _1), // property, not persisted
-    std::bind(&Console::toggleSwapPaddles, &myOSystem.console(), _1), // property, not persisted
-    std::bind(&Console::changePaddleCenterX, &myOSystem.console(), _1), // property, not persisted
-    std::bind(&Console::changePaddleCenterY, &myOSystem.console(), _1), // property, not persisted
-    std::bind(&EventHandler::changeMouseControl, &myOSystem.eventHandler(), _1), // property, not persisted
-    std::bind(&Console::changePaddleAxesRange, &myOSystem.console(), _1), // property, not persisted
-
-    // *** Debug settings ***
-    std::bind(&FrameBuffer::toggleFrameStats, &myOSystem.frameBuffer(), _1),
-    std::bind(&Console::toggleP0Bit, &myOSystem.console(), _1), // debug, not persisted
-    std::bind(&Console::toggleP1Bit, &myOSystem.console(), _1), // debug, not persisted
-    std::bind(&Console::toggleM0Bit, &myOSystem.console(), _1), // debug, not persisted
-    std::bind(&Console::toggleM1Bit, &myOSystem.console(), _1), // debug, not persisted
-    std::bind(&Console::toggleBLBit, &myOSystem.console(), _1), // debug, not persisted
-    std::bind(&Console::togglePFBit, &myOSystem.console(), _1), // debug, not persisted
-    std::bind(&Console::toggleBits, &myOSystem.console(), _1), // debug, not persisted
-    std::bind(&Console::toggleP0Collision, &myOSystem.console(), _1), // debug, not persisted
-    std::bind(&Console::toggleP1Collision, &myOSystem.console(), _1), // debug, not persisted
-    std::bind(&Console::toggleM0Collision, &myOSystem.console(), _1), // debug, not persisted
-    std::bind(&Console::toggleM1Collision, &myOSystem.console(), _1), // debug, not persisted
-    std::bind(&Console::toggleBLCollision, &myOSystem.console(), _1), // debug, not persisted
-    std::bind(&Console::togglePFCollision, &myOSystem.console(), _1), // debug, not persisted
-    std::bind(&Console::toggleCollisions, &myOSystem.console(), _1), // debug, not persisted
-    std::bind(&Console::toggleFixedColors, &myOSystem.console(), _1), // debug, not persisted
-    std::bind(&Console::toggleColorLoss, &myOSystem.console(), _1),
-    std::bind(&Console::toggleJitter, &myOSystem.console(), _1),
-
-    // *** Following functions are not used when cycling settings, but for "direct only" hotkeys ***
-    std::bind(&StateManager::changeState, &myOSystem.state(), _1), // temporary, not persisted
-    std::bind(&PaletteHandler::changeCurrentAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(), _1),
-    std::bind(&TIASurface::changeCurrentNTSCAdjustable, &myOSystem.frameBuffer().tiaSurface(), _1),
-    std::bind(&Console::changeSpeed, &myOSystem.console(), _1),
-  };
-
-  return ADJUST_FUNCTIONS[int(setting)];
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool GlobalKeyHandler::isAdjustRepeated(const AdjustSetting setting) const
-{
-  const bool ADJUST_REPEATED[int(AdjustSetting::NUM_ADJ)] =
-  {
+  // - all setting methods MUST always display a message
+  // - some settings reset the repeat state, therefore the code cannot detect repeats
+  const std::map<Setting, SettingData> SettingMap = {
     // *** Audio & Video group ***
-    true,   // VOLUME
-    false,  // ZOOM (always repeating)
-    false,  // FULLSCREEN (always repeating)
+    {Setting::VOLUME,                 {true,  std::bind(&Sound::adjustVolume, &myOSystem.sound(), _1)}},
+    {Setting::ZOOM,                   {false, std::bind(&FrameBuffer::switchVideoMode, &myOSystem.frameBuffer(), _1)}}, // always repeating
+    {Setting::FULLSCREEN,             {false, std::bind(&FrameBuffer::toggleFullscreen, &myOSystem.frameBuffer(), _1)}}, // always repeating
   #ifdef ADAPTABLE_REFRESH_SUPPORT
-    false,  // ADAPT_REFRESH (always repeating)
+    {Setting::ADAPT_REFRESH,          {false, std::bind(&FrameBuffer::toggleAdaptRefresh, &myOSystem.frameBuffer(), _1)}}, // always repeating
   #endif
-    true,   // OVERSCAN
-    false,  // TVFORMAT
-    true,   // VCENTER
-    false,  // ASPECT_RATIO (always repeating)
-    true,   // VSIZE
+    {Setting::OVERSCAN,               {true,  std::bind(&FrameBuffer::changeOverscan, &myOSystem.frameBuffer(), _1)}},
+    {Setting::TVFORMAT,               {false, std::bind(&Console::selectFormat, &myOSystem.console(), _1)}}, // property, not persisted
+    {Setting::VCENTER,                {true,  std::bind(&Console::changeVerticalCenter, &myOSystem.console(), _1)}}, // property, not persisted
+    {Setting::ASPECT_RATIO,           {false, std::bind(&Console::toggleCorrectAspectRatio, &myOSystem.console(), _1)}}, // always repeating
+    {Setting::VSIZE,                  {true,  std::bind(&Console::changeVSizeAdjust, &myOSystem.console(), _1)}},
     // Palette adjustables
-    false,  // PALETTE
-    true,   // PALETTE_PHASE
-    true,   // PALETTE_RED_SCALE
-    true,   // PALETTE_RED_SHIFT
-    true,   // PALETTE_GREEN_SCALE
-    true,   // PALETTE_GREEN_SHIFT
-    true,   // PALETTE_BLUE_SCALE
-    true,   // PALETTE_BLUE_SHIFT
-    true,   // PALETTE_HUE
-    true,   // PALETTE_SATURATION
-    true,   // PALETTE_CONTRAST
-    true,   // PALETTE_BRIGHTNESS
-    true,   // PALETTE_GAMMA
+    {Setting::PALETTE,                {false, std::bind(&PaletteHandler::cyclePalette,
+                                              &myOSystem.frameBuffer().tiaSurface().paletteHandler(), _1)}},
+    {Setting::PALETTE_PHASE,          {true,  std::bind(&PaletteHandler::changeAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(),
+                                              PaletteHandler::PHASE_SHIFT, _1)}},
+    {Setting::PALETTE_RED_SCALE,      {true,  std::bind(&PaletteHandler::changeAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(),
+                                              PaletteHandler::RED_SCALE, _1)}},
+    {Setting::PALETTE_RED_SHIFT,      {true,  std::bind(&PaletteHandler::changeAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(),
+                                              PaletteHandler::RED_SHIFT, _1)}},
+    {Setting::PALETTE_GREEN_SCALE,    {true,  std::bind(&PaletteHandler::changeAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(),
+                                              PaletteHandler::GREEN_SCALE, _1)}},
+    {Setting::PALETTE_GREEN_SHIFT,    {true,  std::bind(&PaletteHandler::changeAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(),
+                                              PaletteHandler::GREEN_SHIFT, _1)}},
+    {Setting::PALETTE_BLUE_SCALE,     {true,  std::bind(&PaletteHandler::changeAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(),
+                                              PaletteHandler::BLUE_SCALE, _1)}},
+    {Setting::PALETTE_BLUE_SHIFT,     {true,  std::bind(&PaletteHandler::changeAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(),
+                                              PaletteHandler::BLUE_SHIFT, _1)}},
+    {Setting::PALETTE_HUE,            {true,  std::bind(&PaletteHandler::changeAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(),
+                                              PaletteHandler::HUE, _1)}},
+    {Setting::PALETTE_SATURATION,     {true,  std::bind(&PaletteHandler::changeAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(),
+                                              PaletteHandler::SATURATION, _1)}},
+    {Setting::PALETTE_CONTRAST,       {true,  std::bind(&PaletteHandler::changeAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(),
+                                              PaletteHandler::CONTRAST, _1)}},
+    {Setting::PALETTE_BRIGHTNESS,     {true,  std::bind(&PaletteHandler::changeAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(),
+                                              PaletteHandler::BRIGHTNESS, _1)}},
+    {Setting::PALETTE_GAMMA,          {true,  std::bind(&PaletteHandler::changeAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(),
+                                              PaletteHandler::GAMMA, _1)}},
     // NTSC filter adjustables
-    false,  // NTSC_PRESET
-    true,   // NTSC_SHARPNESS
-    true,   // NTSC_RESOLUTION
-    true,   // NTSC_ARTIFACTS
-    true,   // NTSC_FRINGING
-    true,   // NTSC_BLEEDING
+    {Setting::NTSC_PRESET,            {false, std::bind(&TIASurface::changeNTSC, &myOSystem.frameBuffer().tiaSurface(), _1)}},
+    {Setting::NTSC_SHARPNESS,         {true,  std::bind(&TIASurface::changeNTSCAdjustable, &myOSystem.frameBuffer().tiaSurface(),
+                                              int(NTSCFilter::Adjustables::SHARPNESS), _1)}},
+    {Setting::NTSC_RESOLUTION,        {true,  std::bind(&TIASurface::changeNTSCAdjustable, &myOSystem.frameBuffer().tiaSurface(),
+                                              int(NTSCFilter::Adjustables::RESOLUTION), _1)}},
+    {Setting::NTSC_ARTIFACTS,         {true,  std::bind(&TIASurface::changeNTSCAdjustable, &myOSystem.frameBuffer().tiaSurface(),
+                                              int(NTSCFilter::Adjustables::ARTIFACTS), _1)}},
+    {Setting::NTSC_FRINGING,          {true,  std::bind(&TIASurface::changeNTSCAdjustable, &myOSystem.frameBuffer().tiaSurface(),
+                                              int(NTSCFilter::Adjustables::FRINGING), _1)}},
+    {Setting::NTSC_BLEEDING,          {true,  std::bind(&TIASurface::changeNTSCAdjustable, &myOSystem.frameBuffer().tiaSurface(),
+                                              int(NTSCFilter::Adjustables::BLEEDING), _1)}},
     // Other TV effects adjustables
-    true,   // PHOSPHOR
-    true,   // SCANLINES
-    false,  // INTERPOLATION
+    {Setting::PHOSPHOR,               {true,  std::bind(&Console::changePhosphor, &myOSystem.console(), _1)}},
+    {Setting::SCANLINES,              {true,  std::bind(&TIASurface::setScanlineIntensity, &myOSystem.frameBuffer().tiaSurface(), _1)}},
+    {Setting::INTERPOLATION,          {false, std::bind(&Console::toggleInter, &myOSystem.console(), _1)}},
     // *** Input group ***
-    true,   // DEADZONE
-    true,   // ANALOG_DEADZONE
-    true,   // ANALOG_SENSITIVITY
-    true,   // ANALOG_LINEARITY
-    true,   // DEJITTER_AVERAGING
-    true,   // DEJITTER_REACTION
-    true,   // DIGITAL_SENSITIVITY
-    true,   // AUTO_FIRE
-    false,  // FOUR_DIRECTIONS
-    false,  // MOD_KEY_COMBOS
-    false,  // SA_PORT_ORDER
-    false,  // USE_MOUSE
-    true,   // PADDLE_SENSITIVITY
-    true,   // TRACKBALL_SENSITIVITY
-    true,   // DRIVING_SENSITIVITY
-    false,  // MOUSE_CURSOR
-    false,  // GRAB_MOUSE
-    false,  // LEFT_PORT
-    false,  // RIGHT_PORT
-    false,  // SWAP_PORTS
-    false,  // SWAP_PADDLES
-    true,   // PADDLE_CENTER_X
-    true,   // PADDLE_CENTER_Y
-    false,  // MOUSE_CONTROL
-    true,   // MOUSE_RANGE
+    {Setting::DEADZONE,               {true,  std::bind(&PhysicalJoystickHandler::changeDigitalDeadZone, &joyHandler(), _1)}},
+    {Setting::ANALOG_DEADZONE,        {true,  std::bind(&PhysicalJoystickHandler::changeAnalogPaddleDeadZone, &joyHandler(), _1)}},
+    {Setting::ANALOG_SENSITIVITY,     {true,  std::bind(&PhysicalJoystickHandler::changeAnalogPaddleSensitivity, &joyHandler(), _1)}},
+    {Setting::ANALOG_LINEARITY,       {true,  std::bind(&PhysicalJoystickHandler::changeAnalogPaddleLinearity, &joyHandler(), _1)}},
+    {Setting::DEJITTER_AVERAGING,     {true,  std::bind(&PhysicalJoystickHandler::changePaddleDejitterAveraging, &joyHandler(), _1)}},
+    {Setting::DEJITTER_REACTION,      {true,  std::bind(&PhysicalJoystickHandler::changePaddleDejitterReaction, &joyHandler(), _1)}},
+    {Setting::DIGITAL_SENSITIVITY,    {true,  std::bind(&PhysicalJoystickHandler::changeDigitalPaddleSensitivity, &joyHandler(), _1)}},
+    {Setting::AUTO_FIRE,              {true,  std::bind(&Console::changeAutoFireRate, &myOSystem.console(), _1)}},
+    {Setting::FOUR_DIRECTIONS,        {false, std::bind(&EventHandler::toggleAllow4JoyDirections, &myOSystem.eventHandler(), _1)}},
+    {Setting::MOD_KEY_COMBOS,         {false, std::bind(&PhysicalKeyboardHandler::toggleModKeys, &keyHandler(), _1)}},
+    {Setting::SA_PORT_ORDER,          {false, std::bind(&EventHandler::toggleSAPortOrder, &myOSystem.eventHandler(), _1)}},
+    {Setting::USE_MOUSE,              {false, std::bind(&EventHandler::changeMouseControllerMode, &myOSystem.eventHandler(), _1)}},
+    {Setting::PADDLE_SENSITIVITY,     {true,  std::bind(&PhysicalJoystickHandler::changeMousePaddleSensitivity, &joyHandler(), _1)}},
+    {Setting::TRACKBALL_SENSITIVITY,  {true,  std::bind(&PhysicalJoystickHandler::changeMouseTrackballSensitivity, &joyHandler(), _1)}},
+    {Setting::DRIVING_SENSITIVITY,    {true,  std::bind(&PhysicalJoystickHandler::changeDrivingSensitivity, &joyHandler(), _1)}},
+    {Setting::MOUSE_CURSOR,           {false, std::bind(&EventHandler::changeMouseCursor, &myOSystem.eventHandler(), _1)}},
+    {Setting::GRAB_MOUSE,             {false, std::bind(&FrameBuffer::toggleGrabMouse, &myOSystem.frameBuffer(), _1)}},
+    // Game properties/Controllers
+    {Setting::LEFT_PORT,              {false, std::bind(&Console::changeLeftController, &myOSystem.console(), _1)}}, // property, not persisted
+    {Setting::RIGHT_PORT,             {false, std::bind(&Console::changeRightController, &myOSystem.console(), _1)}}, // property, not persisted
+    {Setting::SWAP_PORTS,             {false, std::bind(&Console::toggleSwapPorts, &myOSystem.console(), _1)}}, // property, not persisted
+    {Setting::SWAP_PADDLES,           {false, std::bind(&Console::toggleSwapPaddles, &myOSystem.console(), _1)}}, // property, not persisted
+    {Setting::PADDLE_CENTER_X,        {true,  std::bind(&Console::changePaddleCenterX, &myOSystem.console(), _1)}}, // property, not persisted
+    {Setting::PADDLE_CENTER_Y,        {true,  std::bind(&Console::changePaddleCenterY, &myOSystem.console(), _1)}}, // property, not persisted
+    {Setting::MOUSE_CONTROL,          {false, std::bind(&EventHandler::changeMouseControl, &myOSystem.eventHandler(), _1)}}, // property, not persisted
+    {Setting::MOUSE_RANGE,            {true,  std::bind(&Console::changePaddleAxesRange, &myOSystem.console(), _1)}}, // property, not persisted
     // *** Debug group ***
-    false,  // STATS
-    false,  // P0_ENAM
-    false,  // P1_ENAM
-    false,  // M0_ENAM
-    false,  // M1_ENAM
-    false,  // BL_ENAM
-    false,  // PF_ENAM
-    false,  // ALL_ENAM
-    false,  // P0_CX
-    false,  // P1_CX
-    false,  // M0_CX
-    false,  // M1_CX
-    false,  // BL_CX
-    false,  // PF_CX
-    false,  // ALL_CX
-    false,  // FIXED_COL
-    false,  // COLOR_LOSS
-    false,  // JITTER
-    // *** Only used via direct hotkeys ***
-    true,   // STATE
-    true,   // PALETTE_CHANGE_ATTRIBUTE
-    true,   // NTSC_CHANGE_ATTRIBUTE
-    true,   // CHANGE_SPEED
+    {Setting::STATS,                  {false, std::bind(&FrameBuffer::toggleFrameStats, &myOSystem.frameBuffer(), _1)}},
+    {Setting::P0_ENAM,                {false, std::bind(&Console::toggleP0Bit, &myOSystem.console(), _1)}}, // debug, not persisted
+    {Setting::P1_ENAM,                {false, std::bind(&Console::toggleP1Bit, &myOSystem.console(), _1)}}, // debug, not persisted
+    {Setting::M0_ENAM,                {false, std::bind(&Console::toggleM0Bit, &myOSystem.console(), _1)}}, // debug, not persisted
+    {Setting::M1_ENAM,                {false, std::bind(&Console::toggleM1Bit, &myOSystem.console(), _1)}}, // debug, not persisted
+    {Setting::BL_ENAM,                {false, std::bind(&Console::toggleBLBit, &myOSystem.console(), _1)}}, // debug, not persisted
+    {Setting::PF_ENAM,                {false, std::bind(&Console::togglePFBit, &myOSystem.console(), _1)}}, // debug, not persisted
+    {Setting::ALL_ENAM,               {false, std::bind(&Console::toggleBits, &myOSystem.console(), _1)}}, // debug, not persisted
+    {Setting::P0_CX,                  {false, std::bind(&Console::toggleP0Collision, &myOSystem.console(), _1)}}, // debug, not persisted
+    {Setting::P1_CX,                  {false, std::bind(&Console::toggleP1Collision, &myOSystem.console(), _1)}}, // debug, not persisted
+    {Setting::M0_CX,                  {false, std::bind(&Console::toggleM0Collision, &myOSystem.console(), _1)}}, // debug, not persisted
+    {Setting::M1_CX,                  {false, std::bind(&Console::toggleM1Collision, &myOSystem.console(), _1)}}, // debug, not persisted
+    {Setting::BL_CX,                  {false, std::bind(&Console::toggleBLCollision, &myOSystem.console(), _1)}}, // debug, not persisted
+    {Setting::PF_CX,                  {false, std::bind(&Console::togglePFCollision, &myOSystem.console(), _1)}}, // debug, not persisted
+    {Setting::ALL_CX,                 {false, std::bind(&Console::toggleCollisions, &myOSystem.console(), _1)}}, // debug, not persisted
+    {Setting::FIXED_COL,              {false, std::bind(&Console::toggleFixedColors, &myOSystem.console(), _1)}}, // debug, not persisted
+    {Setting::COLOR_LOSS,             {false, std::bind(&Console::toggleColorLoss, &myOSystem.console(), _1)}},
+    {Setting::JITTER,                 {false, std::bind(&Console::toggleJitter, &myOSystem.console(), _1)}},
+    // *** Following functions are not used when cycling settings, but for "direct only" hotkeys ***
+    {Setting::STATE,                  {true,  std::bind(&StateManager::changeState, &myOSystem.state(), _1)}}, // temporary, not persisted
+    {Setting::PALETTE_ATTRIBUTE,      {true,  std::bind(&PaletteHandler::changeCurrentAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(), _1)}},
+    {Setting::NTSC_ATTRIBUTE,         {true,  std::bind(&TIASurface::changeCurrentNTSCAdjustable, &myOSystem.frameBuffer().tiaSurface(), _1)}},
+    {Setting::CHANGE_SPEED,           {true,  std::bind(&Console::changeSpeed, &myOSystem.console(), _1)}},
   };
+  const auto result = SettingMap.find(setting);
 
-  return ADJUST_REPEATED[int(setting)];
+  if(result != SettingMap.end())
+    return result->second;
+  else
+  {
+    cerr << "Error: setting " << int(setting) << " missing in SettingMap!" << endl;
+    return SettingMap.find(Setting::VOLUME)->second; // default function!
+  }
 }
