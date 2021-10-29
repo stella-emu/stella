@@ -148,7 +148,7 @@ void GlobalKeyHandler::setDirectSetting(const Setting setting)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const GlobalKeyHandler::Group GlobalKeyHandler::getGroup() const
+GlobalKeyHandler::Group GlobalKeyHandler::getGroup() const
 {
   if(mySetting >= Setting::START_DEBUG_ADJ && mySetting <= Setting::END_DEBUG_ADJ)
     return Group::DEBUG;
@@ -315,7 +315,7 @@ const GlobalKeyHandler::Function GlobalKeyHandler::cycleSetting(int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const GlobalKeyHandler::SettingData GlobalKeyHandler::getSettingData(const Setting setting) const
+GlobalKeyHandler::SettingData GlobalKeyHandler::getSettingData(const Setting setting) const
 {
   // Notes:
   // - all setting methods MUST always display a message

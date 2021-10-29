@@ -161,11 +161,11 @@ class GlobalKeyHandler
 
   private:
     // Get group based on given setting
-    const Group getGroup() const;
+    Group getGroup() const;
     // Cycle settings using given direction (can be 0)
     const Function cycleSetting(int direction);
     // Get adjustment function and if it is repeated
-    const SettingData getSettingData(const Setting setting) const;
+    SettingData getSettingData(const Setting setting) const;
 
     PhysicalJoystickHandler& joyHandler() const { return myOSystem.eventHandler().joyHandler(); }
     PhysicalKeyboardHandler& keyHandler() const { return myOSystem.eventHandler().keyHandler(); }
