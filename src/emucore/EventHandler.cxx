@@ -481,7 +481,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.sound().adjustVolume(-1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::VOLUME);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::VOLUME);
       }
       return;
 
@@ -489,7 +489,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.sound().adjustVolume(+1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::VOLUME);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::VOLUME);
       }
       return;
 
@@ -497,7 +497,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.sound().toggleMute();
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::VOLUME);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::VOLUME);
       }
       return;
 
@@ -505,7 +505,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.frameBuffer().switchVideoMode(-1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::ZOOM);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::ZOOM);
       }
       return;
 
@@ -513,7 +513,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.frameBuffer().switchVideoMode(+1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::ZOOM);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::ZOOM);
       }
       return;
 
@@ -521,7 +521,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.frameBuffer().toggleFullscreen();
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::FULLSCREEN);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::FULLSCREEN);
       }
       return;
 
@@ -530,7 +530,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.frameBuffer().toggleAdaptRefresh();
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::ADAPT_REFRESH);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::ADAPT_REFRESH);
       }
       return;
     #endif
@@ -539,7 +539,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.frameBuffer().changeOverscan(-1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::OVERSCAN);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::OVERSCAN);
       }
       return;
 
@@ -547,7 +547,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.frameBuffer().changeOverscan(+1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::OVERSCAN);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::OVERSCAN);
       }
       return;
 
@@ -555,7 +555,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().selectFormat(-1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::TVFORMAT);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::TVFORMAT);
       }
       return;
 
@@ -563,7 +563,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().selectFormat(+1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::TVFORMAT);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::TVFORMAT);
       }
       return;
 
@@ -571,7 +571,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.console().changeVerticalCenter(-1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::VCENTER);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::VCENTER);
       }
       return;
 
@@ -579,14 +579,14 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.console().changeVerticalCenter(+1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::VCENTER);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::VCENTER);
       }
       return;
     case Event::VSizeAdjustDecrease:
       if(pressed)
       {
         myOSystem.console().changeVSizeAdjust(-1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::VSIZE);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::VSIZE);
       }
       return;
 
@@ -594,7 +594,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.console().changeVSizeAdjust(+1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::VSIZE);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::VSIZE);
       }
       return;
 
@@ -602,7 +602,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().toggleCorrectAspectRatio();
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::ASPECT_RATIO);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::ASPECT_RATIO);
       }
       break;
 
@@ -610,7 +610,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.frameBuffer().tiaSurface().paletteHandler().cyclePalette(-1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::PALETTE);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::PALETTE);
       }
       return;
 
@@ -618,7 +618,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.frameBuffer().tiaSurface().paletteHandler().cyclePalette(+1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::PALETTE);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::PALETTE);
       }
       return;
 
@@ -626,7 +626,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.frameBuffer().tiaSurface().changeNTSC(-1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::NTSC_PRESET);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::NTSC_PRESET);
       }
       return;
 
@@ -634,7 +634,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.frameBuffer().tiaSurface().changeNTSC(+1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::NTSC_PRESET);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::NTSC_PRESET);
       }
       return;
 
@@ -642,7 +642,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::OFF);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::NTSC_PRESET);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::NTSC_PRESET);
       }
       return;
 
@@ -650,7 +650,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::RGB);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::NTSC_PRESET);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::NTSC_PRESET);
       }
       return;
 
@@ -658,7 +658,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::SVIDEO);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::NTSC_PRESET);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::NTSC_PRESET);
       }
       return;
 
@@ -666,7 +666,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::COMPOSITE);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::NTSC_PRESET);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::NTSC_PRESET);
       }
       return;
 
@@ -674,7 +674,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::BAD);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::NTSC_PRESET);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::NTSC_PRESET);
       }
       return;
 
@@ -682,14 +682,14 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::CUSTOM);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::NTSC_PRESET);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::NTSC_PRESET);
       }
       return;
     case Event::PhosphorDecrease:
       if(pressed)
       {
         myOSystem.console().changePhosphor(-1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::PHOSPHOR);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::PHOSPHOR);
       }
       return;
 
@@ -697,7 +697,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.console().changePhosphor(+1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::PHOSPHOR);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::PHOSPHOR);
       }
       return;
 
@@ -705,7 +705,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().togglePhosphor();
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::PHOSPHOR);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::PHOSPHOR);
       }
       return;
 
@@ -713,7 +713,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.frameBuffer().tiaSurface().setScanlineIntensity(-1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::SCANLINES);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::SCANLINES);
       }
       return;
 
@@ -721,7 +721,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.frameBuffer().tiaSurface().setScanlineIntensity(+1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::SCANLINES);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::SCANLINES);
       }
       return;
 
@@ -729,7 +729,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().toggleInter();
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::INTERPOLATION);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::INTERPOLATION);
       }
       return;
 
@@ -739,7 +739,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.frameBuffer().tiaSurface().paletteHandler().cycleAdjustable(-1);
-        myGlobalKeyHandler->setAdjustDirect(GlobalKeyHandler::AdjustSetting::PALETTE_CHANGE_ATTRIBUTE);
+        myGlobalKeyHandler->setDirectSetting(GlobalKeyHandler::Setting::PALETTE_ATTRIBUTE);
       }
       return;
 
@@ -747,7 +747,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.frameBuffer().tiaSurface().paletteHandler().cycleAdjustable(+1);
-        myGlobalKeyHandler->setAdjustDirect(GlobalKeyHandler::AdjustSetting::PALETTE_CHANGE_ATTRIBUTE);
+        myGlobalKeyHandler->setDirectSetting(GlobalKeyHandler::Setting::PALETTE_ATTRIBUTE);
       }
       return;
 
@@ -755,7 +755,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.frameBuffer().tiaSurface().paletteHandler().changeCurrentAdjustable(-1);
-        myGlobalKeyHandler->setAdjustDirect(GlobalKeyHandler::AdjustSetting::PALETTE_CHANGE_ATTRIBUTE);
+        myGlobalKeyHandler->setDirectSetting(GlobalKeyHandler::Setting::PALETTE_ATTRIBUTE);
       }
       return;
 
@@ -763,7 +763,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.frameBuffer().tiaSurface().paletteHandler().changeCurrentAdjustable(+1);
-        myGlobalKeyHandler->setAdjustDirect(GlobalKeyHandler::AdjustSetting::PALETTE_CHANGE_ATTRIBUTE);
+        myGlobalKeyHandler->setDirectSetting(GlobalKeyHandler::Setting::PALETTE_ATTRIBUTE);
       }
       return;
 
@@ -771,7 +771,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.frameBuffer().tiaSurface().setNTSCAdjustable(-1);
-        myGlobalKeyHandler->setAdjustDirect(GlobalKeyHandler::AdjustSetting::NTSC_CHANGE_ATTRIBUTE);
+        myGlobalKeyHandler->setDirectSetting(GlobalKeyHandler::Setting::NTSC_ATTRIBUTE);
       }
       return;
 
@@ -779,7 +779,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.frameBuffer().tiaSurface().setNTSCAdjustable(+1);
-        myGlobalKeyHandler->setAdjustDirect(GlobalKeyHandler::AdjustSetting::NTSC_CHANGE_ATTRIBUTE);
+        myGlobalKeyHandler->setDirectSetting(GlobalKeyHandler::Setting::NTSC_ATTRIBUTE);
       }
       return;
 
@@ -787,7 +787,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.frameBuffer().tiaSurface().changeCurrentNTSCAdjustable(-1);
-        myGlobalKeyHandler->setAdjustDirect(GlobalKeyHandler::AdjustSetting::NTSC_CHANGE_ATTRIBUTE);
+        myGlobalKeyHandler->setDirectSetting(GlobalKeyHandler::Setting::NTSC_ATTRIBUTE);
       }
       return;
 
@@ -795,7 +795,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.frameBuffer().tiaSurface().changeCurrentNTSCAdjustable(+1);
-        myGlobalKeyHandler->setAdjustDirect(GlobalKeyHandler::AdjustSetting::NTSC_CHANGE_ATTRIBUTE);
+        myGlobalKeyHandler->setDirectSetting(GlobalKeyHandler::Setting::NTSC_ATTRIBUTE);
       }
       return;
 
@@ -805,7 +805,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.frameBuffer().toggleFrameStats();
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::STATS);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::STATS);
       }
       return;
 
@@ -813,7 +813,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().toggleP0Collision();
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::P0_CX);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::P0_CX);
       }
       return;
 
@@ -821,7 +821,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().toggleP0Bit();
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::P0_ENAM);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::P0_ENAM);
       }
       return;
 
@@ -829,7 +829,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().toggleP1Collision();
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::P1_CX);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::P1_CX);
       }
       return;
 
@@ -837,7 +837,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().toggleP1Bit();
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::P1_ENAM);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::P1_ENAM);
       }
       return;
 
@@ -845,7 +845,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().toggleM0Collision();
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::M0_CX);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::M0_CX);
       }
       return;
 
@@ -853,7 +853,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().toggleM0Bit();
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::M0_ENAM);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::M0_ENAM);
       }
       return;
 
@@ -861,7 +861,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().toggleM1Collision();
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::M1_CX);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::M1_CX);
       }
       return;
 
@@ -869,7 +869,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().toggleM1Bit();
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::M1_ENAM);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::M1_ENAM);
       }
       return;
 
@@ -877,7 +877,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().toggleBLCollision();
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::BL_CX);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::BL_CX);
       }
       return;
 
@@ -885,7 +885,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().toggleBLBit();
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::BL_ENAM);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::BL_ENAM);
       }
       return;
 
@@ -893,7 +893,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().togglePFCollision();
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::PF_CX);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::PF_CX);
       }
       return;
 
@@ -901,7 +901,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().togglePFBit();
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::PF_ENAM);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::PF_ENAM);
       }
       return;
 
@@ -909,7 +909,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().toggleCollisions();
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::ALL_CX);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::ALL_CX);
       }
       return;
 
@@ -917,7 +917,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().toggleBits();
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::ALL_ENAM);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::ALL_ENAM);
       }
       return;
 
@@ -925,7 +925,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().toggleFixedColors();
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::FIXED_COL);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::FIXED_COL);
       }
       return;
 
@@ -933,7 +933,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().toggleColorLoss();
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::COLOR_LOSS);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::COLOR_LOSS);
       }
       return;
 
@@ -941,7 +941,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().toggleJitter();
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::JITTER);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::JITTER);
       }
       return;
 
@@ -951,7 +951,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myPJoyHandler->changeDigitalDeadZone(-1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::DEADZONE);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::DEADZONE);
       }
       return;
 
@@ -959,7 +959,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myPJoyHandler->changeDigitalDeadZone(+1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::DEADZONE);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::DEADZONE);
       }
       return;
 
@@ -967,7 +967,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myPJoyHandler->changeAnalogPaddleDeadZone(-1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::ANALOG_DEADZONE);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::ANALOG_DEADZONE);
       }
       return;
 
@@ -975,7 +975,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myPJoyHandler->changeAnalogPaddleDeadZone(+1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::ANALOG_DEADZONE);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::ANALOG_DEADZONE);
       }
       return;
 
@@ -983,7 +983,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myPJoyHandler->changeAnalogPaddleSensitivity(-1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::ANALOG_SENSITIVITY);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::ANALOG_SENSITIVITY);
       }
       return;
 
@@ -991,7 +991,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myPJoyHandler->changeAnalogPaddleSensitivity(+1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::ANALOG_SENSITIVITY);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::ANALOG_SENSITIVITY);
       }
       return;
 
@@ -999,7 +999,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myPJoyHandler->changeAnalogPaddleLinearity(-1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::ANALOG_LINEARITY);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::ANALOG_LINEARITY);
       }
       return;
 
@@ -1007,7 +1007,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myPJoyHandler->changeAnalogPaddleLinearity(+1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::ANALOG_LINEARITY);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::ANALOG_LINEARITY);
       }
       return;
 
@@ -1015,7 +1015,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myPJoyHandler->changePaddleDejitterAveraging(-1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::DEJITTER_AVERAGING);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::DEJITTER_AVERAGING);
       }
       return;
 
@@ -1023,7 +1023,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myPJoyHandler->changePaddleDejitterAveraging(+1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::DEJITTER_AVERAGING);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::DEJITTER_AVERAGING);
       }
       return;
 
@@ -1031,7 +1031,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myPJoyHandler->changePaddleDejitterReaction(-1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::DEJITTER_REACTION);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::DEJITTER_REACTION);
       }
       return;
 
@@ -1039,7 +1039,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myPJoyHandler->changePaddleDejitterReaction(+1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::DEJITTER_REACTION);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::DEJITTER_REACTION);
       }
       return;
 
@@ -1047,7 +1047,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myPJoyHandler->changeDigitalPaddleSensitivity(-1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::DIGITAL_SENSITIVITY);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::DIGITAL_SENSITIVITY);
       }
       return;
 
@@ -1055,7 +1055,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myPJoyHandler->changeDigitalPaddleSensitivity(+1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::DIGITAL_SENSITIVITY);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::DIGITAL_SENSITIVITY);
       }
       return;
 
@@ -1063,7 +1063,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.console().changeAutoFireRate(-1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::AUTO_FIRE);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::AUTO_FIRE);
       }
       return;
 
@@ -1071,7 +1071,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.console().changeAutoFireRate(+1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::AUTO_FIRE);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::AUTO_FIRE);
       }
       return;
 
@@ -1079,7 +1079,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         toggleAllow4JoyDirections();
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::FOUR_DIRECTIONS);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::FOUR_DIRECTIONS);
       }
       return;
 
@@ -1087,7 +1087,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myPKeyHandler->toggleModKeys();
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::MOD_KEY_COMBOS);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::MOD_KEY_COMBOS);
       }
       return;
 
@@ -1095,7 +1095,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         toggleSAPortOrder();
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::SA_PORT_ORDER);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::SA_PORT_ORDER);
       }
       return;
 
@@ -1103,7 +1103,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         changeMouseControllerMode(-1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::USE_MOUSE);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::USE_MOUSE);
       }
       return;
 
@@ -1111,7 +1111,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         changeMouseControllerMode(+1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::USE_MOUSE);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::USE_MOUSE);
       }
       return;
 
@@ -1119,7 +1119,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myPJoyHandler->changeMousePaddleSensitivity(-1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::PADDLE_SENSITIVITY);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::PADDLE_SENSITIVITY);
       }
       return;
 
@@ -1127,7 +1127,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myPJoyHandler->changeMousePaddleSensitivity(+1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::PADDLE_SENSITIVITY);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::PADDLE_SENSITIVITY);
       }
       return;
 
@@ -1135,7 +1135,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myPJoyHandler->changeMouseTrackballSensitivity(-1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::TRACKBALL_SENSITIVITY);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::TRACKBALL_SENSITIVITY);
       }
       return;
 
@@ -1143,7 +1143,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myPJoyHandler->changeMouseTrackballSensitivity(+1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::TRACKBALL_SENSITIVITY);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::TRACKBALL_SENSITIVITY);
       }
       return;
 
@@ -1151,7 +1151,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myPJoyHandler->changeDrivingSensitivity(-1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::DRIVING_SENSITIVITY);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::DRIVING_SENSITIVITY);
       }
       return;
 
@@ -1159,7 +1159,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myPJoyHandler->changeDrivingSensitivity(+1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::DRIVING_SENSITIVITY);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::DRIVING_SENSITIVITY);
       }
       return;
 
@@ -1167,7 +1167,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         changeMouseCursor(-1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::MOUSE_CURSOR);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::MOUSE_CURSOR);
       }
       return;
 
@@ -1175,7 +1175,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         changeMouseCursor(+1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::MOUSE_CURSOR);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::MOUSE_CURSOR);
       }
       return;
 
@@ -1183,7 +1183,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated && !myOSystem.frameBuffer().fullScreen())
       {
         myOSystem.frameBuffer().toggleGrabMouse();
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::GRAB_MOUSE);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::GRAB_MOUSE);
       }
       return;
 
@@ -1191,7 +1191,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().changeLeftController(-1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::LEFT_PORT);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::LEFT_PORT);
       }
       return;
 
@@ -1199,7 +1199,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().changeLeftController(+1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::LEFT_PORT);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::LEFT_PORT);
       }
 
       return;
@@ -1208,7 +1208,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().changeRightController(-1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::RIGHT_PORT);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::RIGHT_PORT);
       }
       return;
 
@@ -1216,7 +1216,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().changeRightController(+1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::RIGHT_PORT);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::RIGHT_PORT);
       }
       return;
 
@@ -1224,7 +1224,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().toggleSwapPorts();
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::SWAP_PORTS);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::SWAP_PORTS);
       }
       return;
 
@@ -1232,7 +1232,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().toggleSwapPaddles();
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::SWAP_PADDLES);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::SWAP_PADDLES);
       }
       return;
 
@@ -1240,7 +1240,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.console().changePaddleCenterX(-1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::PADDLE_CENTER_X);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::PADDLE_CENTER_X);
       }
       return;
 
@@ -1248,7 +1248,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.console().changePaddleCenterX(+1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::PADDLE_CENTER_X);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::PADDLE_CENTER_X);
       }
       return;
 
@@ -1256,7 +1256,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.console().changePaddleCenterY(-1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::PADDLE_CENTER_Y);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::PADDLE_CENTER_Y);
       }
       return;
 
@@ -1264,7 +1264,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.console().changePaddleCenterY(+1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::PADDLE_CENTER_Y);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::PADDLE_CENTER_Y);
       }
       return;
 
@@ -1272,7 +1272,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         changeMouseControl(-1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::MOUSE_CONTROL);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::MOUSE_CONTROL);
       }
       return;
 
@@ -1280,92 +1280,102 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         changeMouseControl(+1);
-        myGlobalKeyHandler->setAdjustSetting(GlobalKeyHandler::AdjustSetting::MOUSE_CONTROL);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::MOUSE_CONTROL);
       }
       return;
 
     ///////////////////////////////////////////////////////////////////////////
     // State events
     case Event::SaveState:
-      if (pressed && !repeated)
+      if(pressed && !repeated)
       {
         myOSystem.state().saveState();
-        myGlobalKeyHandler->setAdjustDirect(GlobalKeyHandler::AdjustSetting::STATE);
+        myGlobalKeyHandler->setDirectSetting(GlobalKeyHandler::Setting::STATE);
       }
       return;
 
     case Event::SaveAllStates:
-      if (pressed && !repeated)
+      if(pressed && !repeated)
+      {
         myOSystem.frameBuffer().showTextMessage(myOSystem.state().rewindManager().saveAllStates());
+        myGlobalKeyHandler->setDirectSetting(GlobalKeyHandler::Setting::STATE);
+      }
       return;
 
     case Event::PreviousState:
-      if (pressed)
+      if(pressed)
       {
         myOSystem.state().changeState(-1);
-        myGlobalKeyHandler->setAdjustDirect(GlobalKeyHandler::AdjustSetting::STATE);
+        myGlobalKeyHandler->setDirectSetting(GlobalKeyHandler::Setting::STATE);
       }
       return;
 
     case Event::NextState:
-      if (pressed)
+      if(pressed)
       {
         myOSystem.state().changeState(+1);
-        myGlobalKeyHandler->setAdjustDirect(GlobalKeyHandler::AdjustSetting::STATE);
+        myGlobalKeyHandler->setDirectSetting(GlobalKeyHandler::Setting::STATE);
       }
       return;
 
     case Event::ToggleAutoSlot:
-      if (pressed && !repeated) myOSystem.state().toggleAutoSlot();
+      if(pressed && !repeated)
+      {
+        myOSystem.state().toggleAutoSlot();
+        myGlobalKeyHandler->setDirectSetting(GlobalKeyHandler::Setting::STATE);
+      }
       return;
 
     case Event::LoadState:
-      if (pressed && !repeated)
+      if(pressed && !repeated)
       {
         myOSystem.state().loadState();
-        myGlobalKeyHandler->setAdjustDirect(GlobalKeyHandler::AdjustSetting::STATE);
+        myGlobalKeyHandler->setDirectSetting(GlobalKeyHandler::Setting::STATE);
       }
       return;
 
     case Event::LoadAllStates:
-      if (pressed && !repeated)
+      if(pressed && !repeated)
+      {
         myOSystem.frameBuffer().showTextMessage(myOSystem.state().rewindManager().loadAllStates());
+        myGlobalKeyHandler->setDirectSetting(GlobalKeyHandler::Setting::STATE);
+      }
       return;
 
     case Event::RewindPause:
-      if (pressed) myOSystem.state().rewindStates();
+      if(pressed) myOSystem.state().rewindStates();
       if (myState == EventHandlerState::EMULATION)
         setState(EventHandlerState::PAUSE);
       return;
 
     case Event::UnwindPause:
-      if (pressed) myOSystem.state().unwindStates();
+      if(pressed) myOSystem.state().unwindStates();
       if (myState == EventHandlerState::EMULATION)
         setState(EventHandlerState::PAUSE);
       return;
 
     case Event::Rewind1Menu:
-      if (pressed) enterTimeMachineMenuMode(1, false);
+      if(pressed) enterTimeMachineMenuMode(1, false);
       return;
 
     case Event::Rewind10Menu:
-      if (pressed) enterTimeMachineMenuMode(10, false);
+      if(pressed) enterTimeMachineMenuMode(10, false);
       return;
 
     case Event::RewindAllMenu:
-      if (pressed) enterTimeMachineMenuMode(1000, false);
+      if(pressed) enterTimeMachineMenuMode(1000, false);
       return;
 
     case Event::Unwind1Menu:
-      if (pressed) enterTimeMachineMenuMode(1, true);
+      if(pressed) enterTimeMachineMenuMode(1, true);
       return;
 
     case Event::Unwind10Menu:
-      if (pressed) enterTimeMachineMenuMode(10, true);
+      if(pressed) enterTimeMachineMenuMode(10, true);
       return;
 
     case Event::UnwindAllMenu:
-      if (pressed) enterTimeMachineMenuMode(1000, true);
+      if(pressed) enterTimeMachineMenuMode(1000, true);
       return;
 
     ///////////////////////////////////////////////////////////////////////////
@@ -1374,7 +1384,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.console().changeSpeed(-1);
-        myGlobalKeyHandler->setAdjustDirect(GlobalKeyHandler::AdjustSetting::CHANGE_SPEED);
+        myGlobalKeyHandler->setDirectSetting(GlobalKeyHandler::Setting::CHANGE_SPEED);
       }
       return;
 
@@ -1382,37 +1392,41 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myOSystem.console().changeSpeed(+1);
-        myGlobalKeyHandler->setAdjustDirect(GlobalKeyHandler::AdjustSetting::CHANGE_SPEED);
+        myGlobalKeyHandler->setDirectSetting(GlobalKeyHandler::Setting::CHANGE_SPEED);
       }
       return;
 
     case Event::ToggleTurbo:
-      if (pressed && !repeated) myOSystem.console().toggleTurbo();
+      if(pressed && !repeated)
+      {
+        myOSystem.console().toggleTurbo();
+        myGlobalKeyHandler->setDirectSetting(GlobalKeyHandler::Setting::CHANGE_SPEED);
+      }
       return;
 
     case Event::Fry:
-      if (!repeated) myFryingFlag = pressed;
+      if(!repeated) myFryingFlag = pressed;
       return;
 
     case Event::ReloadConsole:
-      if (pressed && !repeated) myOSystem.reloadConsole(true);
+      if(pressed && !repeated) myOSystem.reloadConsole(true);
       return;
 
     case Event::PreviousMultiCartRom:
-      if (pressed && !repeated) myOSystem.reloadConsole(false);
+      if(pressed && !repeated) myOSystem.reloadConsole(false);
       return;
 
     case Event::ToggleTimeMachine:
-      if (pressed && !repeated) myOSystem.toggleTimeMachine();
+      if(pressed && !repeated) myOSystem.toggleTimeMachine();
       return;
 
   #ifdef PNG_SUPPORT
     case Event::ToggleContSnapshots:
-      if (pressed && !repeated) myOSystem.png().toggleContinuousSnapshots(false);
+      if(pressed && !repeated) myOSystem.png().toggleContinuousSnapshots(false);
       return;
 
     case Event::ToggleContSnapshotsFrame:
-      if (pressed && !repeated) myOSystem.png().toggleContinuousSnapshots(true);
+      if(pressed && !repeated) myOSystem.png().toggleContinuousSnapshots(true);
       return;
   #endif
 
@@ -1423,26 +1437,26 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::ExitMode:
       // Special handling for Escape key
       // Basically, exit whichever mode we're currently in
-      switch (myState)
+      switch(myState)
       {
         case EventHandlerState::PAUSE:
-          if (pressed && !repeated) changeStateByEvent(Event::TogglePauseMode);
+          if(pressed && !repeated) changeStateByEvent(Event::TogglePauseMode);
           return;
 
         case EventHandlerState::CMDMENU:
-          if (pressed && !repeated) changeStateByEvent(Event::CmdMenuMode);
+          if(pressed && !repeated) changeStateByEvent(Event::CmdMenuMode);
           return;
 
         case EventHandlerState::TIMEMACHINE:
-          if (pressed && !repeated) changeStateByEvent(Event::TimeMachineMode);
+          if(pressed && !repeated) changeStateByEvent(Event::TimeMachineMode);
           return;
 
         case EventHandlerState::PLAYBACK:
-          if (pressed && !repeated) changeStateByEvent(Event::TogglePlayBackMode);
+          if(pressed && !repeated) changeStateByEvent(Event::TogglePlayBackMode);
           return;
 
         case EventHandlerState::EMULATION:
-          if (pressed && !repeated)
+          if(pressed && !repeated)
           {
 #ifdef GUI_SUPPORT
             if (myOSystem.settings().getBool("confirmexit"))
@@ -1471,7 +1485,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
 
 #ifdef GUI_SUPPORT
         case EventHandlerState::MESSAGEMENU:
-          if (pressed && !repeated)
+          if(pressed && !repeated)
           {
             leaveMenuMode();
             if (myOSystem.messageMenu().confirmed())
@@ -1499,7 +1513,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::StartPauseMode:
-      if (pressed && !repeated && myState == EventHandlerState::EMULATION)
+      if(pressed && !repeated && myState == EventHandlerState::EMULATION)
         setState(EventHandlerState::PAUSE);
       return;
 
