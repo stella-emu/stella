@@ -63,6 +63,7 @@
 #include "FrameLayout.hxx"
 #include "AudioQueue.hxx"
 #include "AudioSettings.hxx"
+#include "DevSettingsHandler.hxx"
 #include "frame-manager/FrameManager.hxx"
 #include "frame-manager/FrameLayoutDetector.hxx"
 
@@ -154,6 +155,9 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
 
   // We can only initialize after all the devices/components have been created
   mySystem->initialize();
+
+  // Create developer/player settings handler (handles switching sets)
+  myDevSettingsHandler = make_unique<DevSettingsHandler>(myOSystem);
 
   // Auto-detect NTSC/PAL mode if it's requested
   string autodetected = "";
@@ -1143,6 +1147,26 @@ int Console::gameRefreshRate() const
   return
     myDisplayFormat == "NTSC" || myDisplayFormat == "PAL60" ||
     myDisplayFormat == "SECAM60" ? 60 : 50;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::toggleDeveloperSet(bool toggle)
+{
+  bool devSettings = myOSystem.settings().getBool("dev.settings");
+  if(toggle)
+  {
+    devSettings = !devSettings;
+    DevSettingsHandler::SettingsSet set = devSettings
+      ? DevSettingsHandler::SettingsSet::developer
+      : DevSettingsHandler::SettingsSet::player;
+
+    myOSystem.settings().setValue("dev.settings", devSettings);
+    myDevSettingsHandler->loadSettings(set);
+    myDevSettingsHandler->applySettings(set);
+  }
+  const string message = (devSettings ? "Developer" : "Player") + string(" settings enabled");
+
+  myOSystem.frameBuffer().showTextMessage(message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

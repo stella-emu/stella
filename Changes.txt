@@ -33,6 +33,8 @@
 
   * Added different debug color luminances for player and missile copies.
 
+  * Added hotkeys for TV roll speed and toggling 'Developer settings' sets.
+
   * Debugger: enhanced prompt's auto complete and history.
 
   * Debugger: added optional logging of breaks and traps.

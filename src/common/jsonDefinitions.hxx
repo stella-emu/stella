@@ -350,6 +350,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(Event::Type, {
   {Event::PhosphorDecrease, "PhosphorDecrease"},
   {Event::PhosphorIncrease, "PhosphorIncrease"},
   {Event::TogglePhosphor, "TogglePhosphor"},
+  {Event::ToggleDeveloperSet, "ToggleDeveloperSet"},
   {Event::ToggleInter, "ToggleInter"},
   {Event::JitterDecrease, "JitterDecrease"},
   {Event::JitterIncrease, "JitterIncrease"},

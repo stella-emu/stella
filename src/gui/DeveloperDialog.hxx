@@ -29,6 +29,7 @@ class RadioButtonWidget;
 class SliderWidget;
 class StaticTextWidget;
 class ColorWidget;
+class DevSettingsHandler;
 
 namespace GUI {
   class Font;
@@ -36,8 +37,9 @@ namespace GUI {
 
 #include "bspf.hxx"
 #include "Dialog.hxx"
+#include "DevSettingsHandler.hxx"
 
-class DeveloperDialog : public Dialog
+class DeveloperDialog : public Dialog, DevSettingsHandler
 {
   public:
     DeveloperDialog(OSystem& osystem, DialogContainer& parent,
@@ -60,7 +62,6 @@ class DeveloperDialog : public Dialog
       kTIAType              = 'DVtt',
       kTVJitter             = 'DVjt',
       kTVJitterChanged      = 'DVjr',
-      kPPinCmd              = 'DVpn',
       kTimeMachine          = 'DTtm',
       kSizeChanged          = 'DTsz',
       kUncompressedChanged  = 'DTuc',
@@ -76,7 +77,6 @@ class DeveloperDialog : public Dialog
       kDFontSizeChanged     = 'UIfs',
   #endif
     };
-    enum SettingsSet { player = 0, developer = 1 };
 
     // MUST be aligned with RewindManager!
     static constexpr int NUM_INTERVALS = 7;
@@ -148,41 +148,6 @@ class DeveloperDialog : public Dialog
 #endif
 
     bool    mySettings{false};
-    // Emulator sets
-    std::array<bool, 2>   myFrameStats;
-    std::array<bool, 2>   myDetectedInfo;
-    std::array<bool, 2>   myExternAccess;
-    std::array<int, 2>    myConsole;
-    std::array<bool, 2>   myRandomBank;
-    std::array<bool, 2>   myRandomizeTIA;
-    std::array<bool, 2>   myRandomizeRAM;
-    std::array<string, 2> myRandomizeCPU;
-    std::array<bool, 2>   myColorLoss;
-    std::array<bool, 2>   myTVJitter;
-    std::array<int, 2>    myTVJitterRec;
-    std::array<bool, 2>   myDebugColors;
-    std::array<bool, 2>   myUndrivenPins;
-#ifdef DEBUGGER_SUPPORT
-    std::array<bool, 2>   myRWPortBreak;
-    std::array<bool, 2>   myWRPortBreak;
-#endif
-    std::array<bool, 2>   myThumbException;
-    // TIA sets
-    std::array<string, 2> myTIAType;
-    std::array<bool, 2>   myPlInvPhase;
-    std::array<bool, 2>   myMsInvPhase;
-    std::array<bool, 2>   myBlInvPhase;
-    std::array<bool, 2>   myPFBits;
-    std::array<bool, 2>   myPFColor;
-    std::array<bool, 2>   myBKColor;
-    std::array<bool, 2>   myPlSwap;
-    std::array<bool, 2>   myBlSwap;
-    // States sets
-    std::array<bool, 2>   myTimeMachine;
-    std::array<int, 2>    myStateSize;
-    std::array<int, 2>    myUncompressed;
-    std::array<string, 2> myStateInterval;
-    std::array<string, 2> myStateHorizon;
 
   private:
     void addEmulationTab(const GUI::Font& font);
@@ -191,14 +156,11 @@ class DeveloperDialog : public Dialog
     void addVideoTab(const GUI::Font& font);
     void addDebuggerTab(const GUI::Font& font);
 
-    void loadSettings(SettingsSet set);
-    void saveSettings(SettingsSet set);
     void getWidgetStates(SettingsSet set);
     void setWidgetStates(SettingsSet set);
 
     void handleSettings(bool devSettings);
     void handleTVJitterChange(bool enable);
-    void handleEnableDebugColors();
     void handleConsole();
 
     void handleTia();

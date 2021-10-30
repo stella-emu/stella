@@ -23,6 +23,7 @@
 #include "SaveKey.hxx"
 #include "AtariVox.hxx"
 #include "Settings.hxx"
+#include "DevSettingsHandler.hxx"
 #include "EditTextWidget.hxx"
 #include "PopUpWidget.hxx"
 #include "RadioButtonWidget.hxx"
@@ -46,7 +47,8 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DeveloperDialog::DeveloperDialog(OSystem& osystem, DialogContainer& parent,
                                  const GUI::Font& font, int max_w, int max_h)
-  : Dialog(osystem, parent, font, "Developer settings")
+  : Dialog(osystem, parent, font, "Developer settings"),
+    DevSettingsHandler(osystem)
 {
   const int lineHeight   = Dialog::lineHeight(),
             fontWidth    = Dialog::fontWidth(),
@@ -663,128 +665,6 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DeveloperDialog::loadSettings(SettingsSet set)
-{
-  bool devSettings = set == SettingsSet::developer;
-  const string& prefix = devSettings ? "dev." : "plr.";
-
-  myFrameStats[set] = instance().settings().getBool(prefix + "stats");
-  myDetectedInfo[set] = instance().settings().getBool(prefix + "detectedinfo");
-  myConsole[set] = instance().settings().getString(prefix + "console") == "7800" ? 1 : 0;
-  // Randomization
-  myRandomBank[set] = instance().settings().getBool(prefix + "bankrandom");
-  myRandomizeTIA[set] = instance().settings().getBool(prefix + "tiarandom");
-  myRandomizeRAM[set] = instance().settings().getBool(prefix + "ramrandom");
-  myRandomizeCPU[set] = instance().settings().getString(prefix + "cpurandom");
-  // Undriven TIA pins
-  myUndrivenPins[set] = devSettings ? instance().settings().getBool("dev.tiadriven") : false;
-#ifdef DEBUGGER_SUPPORT
-  // Read from write ports break
-  myRWPortBreak[set] = devSettings ? instance().settings().getBool("dev.rwportbreak") : false;
-  // Write to read ports break
-  myWRPortBreak[set] = devSettings ? instance().settings().getBool("dev.wrportbreak") : false;
-#endif
-  // Thumb ARM emulation exception
-  myThumbException[set] = devSettings ? instance().settings().getBool("dev.thumb.trapfatal") : false;
-  // AtariVox/SaveKey/PlusROM access
-  myExternAccess[set] = instance().settings().getBool(prefix + "extaccess");
-
-  // TIA tab
-  myTIAType[set] = devSettings ? instance().settings().getString("dev.tia.type") : "standard";
-  myPlInvPhase[set] = devSettings ? instance().settings().getBool("dev.tia.plinvphase") : false;
-  myMsInvPhase[set] = devSettings ? instance().settings().getBool("dev.tia.msinvphase") : false;
-  myBlInvPhase[set] = devSettings ? instance().settings().getBool("dev.tia.blinvphase") : false;
-  myPFBits[set] = devSettings ? instance().settings().getBool("dev.tia.delaypfbits") : false;
-  myPFColor[set] = devSettings ? instance().settings().getBool("dev.tia.delaypfcolor") : false;
-  myBKColor[set] = devSettings ? instance().settings().getBool("dev.tia.delaybkcolor") : false;
-  myPlSwap[set] = devSettings ? instance().settings().getBool("dev.tia.delayplswap") : false;
-  myBlSwap[set] = devSettings ? instance().settings().getBool("dev.tia.delayblswap") : false;
-
-  // Debug colors
-  myDebugColors[set] = instance().settings().getBool(prefix + "debugcolors");
-  // PAL color-loss effect
-  myColorLoss[set] = instance().settings().getBool(prefix + "colorloss");
-  // Jitter
-  myTVJitter[set] = instance().settings().getBool(prefix + "tv.jitter");
-  myTVJitterRec[set] = instance().settings().getInt(prefix + "tv.jitter_recovery");
-
-  // States
-  myTimeMachine[set] = instance().settings().getBool(prefix + "timemachine");
-  myStateSize[set] = instance().settings().getInt(prefix + "tm.size");
-  myUncompressed[set] = instance().settings().getInt(prefix + "tm.uncompressed");
-  myStateInterval[set] = instance().settings().getString(prefix + "tm.interval");
-  myStateHorizon[set] = instance().settings().getString(prefix + "tm.horizon");
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DeveloperDialog::saveSettings(SettingsSet set)
-{
-  bool devSettings = set == SettingsSet::developer;
-  const string& prefix = devSettings ? "dev." : "plr.";
-
-  instance().settings().setValue(prefix + "stats", myFrameStats[set]);
-  instance().settings().setValue(prefix + "detectedinfo", myDetectedInfo[set]);
-  instance().settings().setValue(prefix + "console", myConsole[set] == 1 ? "7800" : "2600");
-  if(instance().hasConsole())
-    instance().eventHandler().set7800Mode();
-
-  // Randomization
-  instance().settings().setValue(prefix + "bankrandom", myRandomBank[set]);
-  instance().settings().setValue(prefix + "tiarandom", myRandomizeTIA[set]);
-  instance().settings().setValue(prefix + "ramrandom", myRandomizeRAM[set]);
-  instance().settings().setValue(prefix + "cpurandom", myRandomizeCPU[set]);
-
-  if(devSettings)
-  {
-    // Undriven TIA pins
-    instance().settings().setValue("dev.tiadriven", myUndrivenPins[set]);
-  #ifdef DEBUGGER_SUPPORT
-    // Read from write ports break
-    instance().settings().setValue("dev.rwportbreak", myRWPortBreak[set]);
-    // Write to read ports break
-    instance().settings().setValue("dev.wrportbreak", myWRPortBreak[set]);
-  #endif
-    // Thumb ARM emulation exception
-    instance().settings().setValue("dev.thumb.trapfatal", myThumbException[set]);
-  }
-
-  // AtariVox/SaveKey/PlusROM access
-  instance().settings().setValue(prefix + "extaccess", myExternAccess[set]);
-
-  // TIA tab
-  if (devSettings)
-  {
-    instance().settings().setValue("dev.tia.type", myTIAType[set]);
-    if (BSPF::equalsIgnoreCase("custom", myTIAType[set]))
-    {
-      instance().settings().setValue("dev.tia.plinvphase", myPlInvPhase[set]);
-      instance().settings().setValue("dev.tia.msinvphase", myMsInvPhase[set]);
-      instance().settings().setValue("dev.tia.blinvphase", myBlInvPhase[set]);
-      instance().settings().setValue("dev.tia.delaypfbits", myPFBits[set]);
-      instance().settings().setValue("dev.tia.delaypfcolor", myPFColor[set]);
-      instance().settings().setValue("dev.tia.delaybkcolor", myBKColor[set]);
-      instance().settings().setValue("dev.tia.delayplswap", myPlSwap[set]);
-      instance().settings().setValue("dev.tia.delayblswap", myBlSwap[set]);
-    }
-  }
-
-  // Debug colors
-  instance().settings().setValue(prefix + "debugcolors", myDebugColors[set]);
-  // PAL color loss
-  instance().settings().setValue(prefix + "colorloss", myColorLoss[set]);
-  // Jitter
-  instance().settings().setValue(prefix + "tv.jitter", myTVJitter[set]);
-  instance().settings().setValue(prefix + "tv.jitter_recovery", myTVJitterRec[set]);
-
-  // States
-  instance().settings().setValue(prefix + "timemachine", myTimeMachine[set]);
-  instance().settings().setValue(prefix + "tm.size", myStateSize[set]);
-  instance().settings().setValue(prefix + "tm.uncompressed", myUncompressed[set]);
-  instance().settings().setValue(prefix + "tm.interval", myStateInterval[set]);
-  instance().settings().setValue(prefix + "tm.horizon", myStateHorizon[set]);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::getWidgetStates(SettingsSet set)
 {
   myFrameStats[set] = myFrameStatsWidget->getState();
@@ -947,39 +827,16 @@ void DeveloperDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::saveConfig()
 {
-  instance().settings().setValue("dev.settings", mySettingsGroupEmulation->getSelected() == SettingsSet::developer);
+  bool devSettings = mySettingsGroupEmulation->getSelected() == SettingsSet::developer;
+
+  instance().settings().setValue("dev.settings", devSettings);
   // copy current widget status into set...
   getWidgetStates(SettingsSet(mySettingsGroupEmulation->getSelected()));
   // ...and save both sets
   saveSettings(SettingsSet::player);
   saveSettings(SettingsSet::developer);
-
   // activate the current settings
-  instance().frameBuffer().showFrameStats(myFrameStatsWidget->getState());
-  // jitter
-  if(instance().hasConsole())
-  {
-    instance().console().tia().toggleJitter(myTVJitterWidget->getState() ? 1 : 0);
-    instance().console().tia().setJitterRecoveryFactor(myTVJitterRecWidget->getValue());
-  }
-
-  // TIA tab
-  if(instance().hasConsole())
-  {
-    instance().console().tia().setPlInvertedPhaseClock(myPlInvPhaseWidget->getState());
-    instance().console().tia().setMsInvertedPhaseClock(myMsInvPhaseWidget->getState());
-    instance().console().tia().setBlInvertedPhaseClock(myBlInvPhaseWidget->getState());
-    instance().console().tia().setPFBitsDelay(myPFBitsWidget->getState());
-    instance().console().tia().setPFColorDelay(myPFColorWidget->getState());
-    instance().console().tia().setBKColorDelay(myBKColorWidget->getState());
-    instance().console().tia().setPlSwapDelay(myPlSwapWidget->getState());
-    instance().console().tia().setBlSwapDelay(myBlSwapWidget->getState());
-  }
-
-  handleEnableDebugColors();
-  // PAL color loss
-  if(instance().hasConsole())
-    instance().console().enableColorLoss(myColorLossWidget->getState());
+  applySettings(devSettings ? SettingsSet::developer : SettingsSet::player);
 
   // Debug colours
   string dbgcolors;
@@ -988,11 +845,6 @@ void DeveloperDialog::saveConfig()
   if(instance().hasConsole() &&
      instance().console().tia().setFixedColorPalette(dbgcolors))
     instance().settings().setValue("tia.dbgcolors", dbgcolors);
-
-  // update RewindManager
-  instance().state().rewindManager().setup();
-  instance().state().setRewindMode(myTimeMachineWidget->getState() ?
-                                   StateManager::Mode::TimeMachine : StateManager::Mode::Off);
 
 #ifdef DEBUGGER_SUPPORT
   // Debugger font style
@@ -1009,13 +861,6 @@ void DeveloperDialog::saveConfig()
   instance().settings().setValue("dbg.ghostreadstrap", myGhostReadsTrapWidget->getState());
   if(instance().hasConsole())
     instance().console().system().m6502().setGhostReadsTrap(myGhostReadsTrapWidget->getState());
-
-  // Read from write ports and write to read ports breaks
-  if (instance().hasConsole())
-  {
-    instance().console().system().m6502().setReadFromWritePortBreak(myRWPortBreakWidget->getState());
-    instance().console().system().m6502().setWriteToReadPortBreak(myWRPortBreakWidget->getState());
-  }
 #endif
 }
 
@@ -1132,7 +977,7 @@ void DeveloperDialog::handleCommand(CommandSender* sender, int cmd, int data, in
 
     case kConsole:
       handleConsole();
-        break;
+      break;
 
     case kTVJitter:
       handleTVJitterChange(myTVJitterWidget->getState());
@@ -1140,10 +985,6 @@ void DeveloperDialog::handleCommand(CommandSender* sender, int cmd, int data, in
 
     case kTVJitterChanged:
       myTVJitterRecLabelWidget->setValue(myTVJitterRecWidget->getValue());
-      break;
-
-    case kPPinCmd:
-      instance().console().tia().driveUnusedPinsRandom(myUndrivenPinsWidget->getState());
       break;
 
     case kTimeMachine:
@@ -1228,12 +1069,16 @@ void DeveloperDialog::handleSettings(bool devSettings)
   if (mySettings != devSettings)
   {
     mySettings = devSettings; // block redundant events first!
-    SettingsSet set = devSettings ? SettingsSet::developer : SettingsSet::player;
+    SettingsSet set = devSettings ? SettingsSet::developer
+                                  : SettingsSet::player;
     mySettingsGroupEmulation->setSelected(set);
     mySettingsGroupTia->setSelected(set);
     mySettingsGroupVideo->setSelected(set);
     mySettingsGroupTM->setSelected(set);
-    getWidgetStates(devSettings ? SettingsSet::player : SettingsSet::developer);
+    // Save current widget states into old set
+    getWidgetStates(devSettings ? SettingsSet::player
+                                : SettingsSet::developer);
+    // Load new set into widgets states
     setWidgetStates(set);
   }
 }
@@ -1243,17 +1088,6 @@ void DeveloperDialog::handleTVJitterChange(bool enable)
 {
   myTVJitterRecWidget->setEnabled(enable);
   myTVJitterRecLabelWidget->setEnabled(enable);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DeveloperDialog::handleEnableDebugColors()
-{
-  if(instance().hasConsole())
-  {
-    bool fixed = instance().console().tia().usingFixedColors();
-    if(fixed != myDebugColorsWidget->getState())
-      instance().console().tia().toggleFixedColors();
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1287,14 +1121,16 @@ void DeveloperDialog::handleTia()
 
   if(BSPF::equalsIgnoreCase("custom", myTIATypeWidget->getSelectedTag().toString()))
   {
-    myPlInvPhaseWidget->setState(myPlInvPhase[SettingsSet::developer]);
-    myMsInvPhaseWidget->setState(myMsInvPhase[SettingsSet::developer]);
-    myBlInvPhaseWidget->setState(myBlInvPhase[SettingsSet::developer]);
-    myPFBitsWidget->setState(myPFBits[SettingsSet::developer]);
-    myPFColorWidget->setState(myPFColor[SettingsSet::developer]);
-    myBKColorWidget->setState(myBKColor[SettingsSet::developer]);
-    myPlSwapWidget->setState(myPlSwap[SettingsSet::developer]);
-    myBlSwapWidget->setState(myBlSwap[SettingsSet::developer]);
+    SettingsSet set = SettingsSet::developer;
+
+    myPlInvPhaseWidget->setState(myPlInvPhase[set]);
+    myMsInvPhaseWidget->setState(myMsInvPhase[set]);
+    myBlInvPhaseWidget->setState(myBlInvPhase[set]);
+    myPFBitsWidget->setState(myPFBits[set]);
+    myPFColorWidget->setState(myPFColor[set]);
+    myBKColorWidget->setState(myBKColor[set]);
+    myPlSwapWidget->setState(myPlSwap[set]);
+    myBlSwapWidget->setState(myBlSwap[set]);
   }
   else
   {
