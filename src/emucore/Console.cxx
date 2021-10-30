@@ -1202,6 +1202,37 @@ void Console::toggleJitter(bool toggle) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::changeJitter(int direction) const
+{
+  const string prefix = myOSystem.settings().getBool("dev.settings") ? "dev." : "plr.";
+  int recovery = myOSystem.settings().getInt(prefix + "tv.jitter_recovery");
+  bool enabled = direction ? recovery + direction > 0 : myTIA->toggleJitter(3);
+
+  // if disabled, enable before first before increasing recovery
+  if(!myTIA->toggleJitter(3))
+    direction = 0;
+
+  recovery = BSPF::clamp(recovery + direction, 1, 20);
+  myOSystem.settings().setValue(prefix + "tv.jitter", enabled);
+
+  if(enabled)
+  {
+    ostringstream val;
+
+    myTIA->toggleJitter(1);
+    myTIA->setJitterRecoveryFactor(recovery);
+    myOSystem.settings().setValue(prefix + "tv.jitter_recovery", recovery);
+    val << recovery;
+    myOSystem.frameBuffer().showGaugeMessage("TV jitter roll", val.str(), recovery, 0, 20);
+  }
+  else
+  {
+    myTIA->toggleJitter(0);
+    myOSystem.frameBuffer().showTextMessage("TV scanline jitter disabled");
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::attachDebugger(Debugger& dbg)
 {
 #ifdef DEBUGGER_SUPPORT

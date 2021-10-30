@@ -945,6 +945,22 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       }
       return;
 
+    case Event::JitterDecrease:
+      if(pressed)
+      {
+        myOSystem.console().changeJitter(-1);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::JITTER);
+      }
+      return;
+
+    case Event::JitterIncrease:
+      if(pressed)
+      {
+        myOSystem.console().changeJitter(+1);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::JITTER);
+      }
+      return;
+
     ///////////////////////////////////////////////////////////////////////////
     // Input events
     case Event::DecreaseDeadzone:
@@ -2883,7 +2899,9 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::ToggleCollisions,        "Toggle all TIA collisions",             "" },
   { Event::ToggleFixedColors,       "Toggle TIA 'Fixed Debug Colors' mode",  "" },
   { Event::ToggleColorLoss,         "Toggle PAL color-loss effect",          "" },
-  { Event::ToggleJitter,            "Toggle TV 'Jitter' effect",             "" },
+  { Event::ToggleJitter,            "Toggle TV scanline 'Jitter' effect",    "" },
+  { Event::JitterDecrease,          "Decrease TV 'Jitter' roll",             "" },
+  { Event::JitterIncrease,          "Increase TV 'Jitter' roll",             "" },
   // Other keys:
   { Event::SoundToggle,             "Toggle sound",                          "" },
   { Event::VolumeDecrease,          "Decrease volume",                       "" },
@@ -3120,5 +3138,5 @@ const Event::EventSet EventHandler::DebugEvents = {
   Event::ToggleBLCollision, Event::ToggleBLBit, Event::TogglePFCollision, Event::TogglePFBit,
   Event::ToggleCollisions, Event::ToggleBits, Event::ToggleFixedColors,
   Event::ToggleColorLoss,
-  Event::ToggleJitter,
+  Event::ToggleJitter, Event::JitterDecrease,Event::JitterIncrease,
 };

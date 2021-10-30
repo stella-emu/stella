@@ -111,7 +111,8 @@ class Event
       PreviousVideoMode, NextVideoMode,
       PreviousAttribute, NextAttribute, DecreaseAttribute, IncreaseAttribute,
       ScanlinesDecrease, ScanlinesIncrease,
-      PhosphorDecrease, PhosphorIncrease, TogglePhosphor, ToggleInter, ToggleJitter,
+      PhosphorDecrease, PhosphorIncrease, TogglePhosphor, ToggleInter,
+      JitterDecrease, JitterIncrease, ToggleJitter,
 
       VolumeDecrease, VolumeIncrease, SoundToggle,
 
