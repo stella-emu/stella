@@ -236,7 +236,7 @@ bool GlobalKeyHandler::skipInputSetting() const
 
   return (!grabMouseAllowed && mySetting == Setting::GRAB_MOUSE)
     || (!joystick
-      && (mySetting == Setting::DEADZONE
+      && (mySetting == Setting::DIGITAL_DEADZONE
       || mySetting == Setting::FOUR_DIRECTIONS))
     || (!paddle
       && (mySetting == Setting::ANALOG_DEADZONE
@@ -377,7 +377,7 @@ GlobalKeyHandler::SettingData GlobalKeyHandler::getSettingData(const Setting set
     {Setting::SCANLINES,              {true,  std::bind(&TIASurface::setScanlineIntensity, &myOSystem.frameBuffer().tiaSurface(), _1)}},
     {Setting::INTERPOLATION,          {false, std::bind(&Console::toggleInter, &myOSystem.console(), _1)}},
     // *** Input group ***
-    {Setting::DEADZONE,               {true,  std::bind(&PhysicalJoystickHandler::changeDigitalDeadZone, &joyHandler(), _1)}},
+    {Setting::DIGITAL_DEADZONE,       {true,  std::bind(&PhysicalJoystickHandler::changeDigitalDeadZone, &joyHandler(), _1)}},
     {Setting::ANALOG_DEADZONE,        {true,  std::bind(&PhysicalJoystickHandler::changeAnalogPaddleDeadZone, &joyHandler(), _1)}},
     {Setting::ANALOG_SENSITIVITY,     {true,  std::bind(&PhysicalJoystickHandler::changeAnalogPaddleSensitivity, &joyHandler(), _1)}},
     {Setting::ANALOG_LINEARITY,       {true,  std::bind(&PhysicalJoystickHandler::changeAnalogPaddleLinearity, &joyHandler(), _1)}},
