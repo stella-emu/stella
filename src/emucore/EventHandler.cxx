@@ -88,6 +88,7 @@ EventHandler::~EventHandler()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::initialize()
 {
+  // Create global key handler (handles all global hot keys)
   myGlobalKeyHandler = make_unique<GlobalKeyHandler>(myOSystem);
 
   // Create keyboard handler (to handle all physical keyboard functionality)
@@ -936,6 +937,14 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
         myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::COLOR_LOSS);
       }
       return;
+
+    case Event::ToggleDeveloperSet:
+      if(pressed && !repeated)
+      {
+        myOSystem.console().toggleDeveloperSet();
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::DEVELOPER);
+      }
+      break;
 
     case Event::ToggleJitter:
       if(pressed && !repeated)
@@ -2882,6 +2891,7 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::SettingIncrease,         "Increase current setting",              "" },
 
   // Developer keys:
+  { Event::ToggleDeveloperSet,      "Toggle developer settings sets",        "" },
   { Event::ToggleFrameStats,        "Toggle frame stats",                    "" },
   { Event::ToggleP0Bit,             "Toggle TIA Player0 object",             "" },
   { Event::ToggleP0Collision,       "Toggle TIA Player0 collisions",         "" },
@@ -3131,7 +3141,7 @@ const Event::EventSet EventHandler::ComboEvents = {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const Event::EventSet EventHandler::DebugEvents = {
-  Event::DebuggerMode,
+  Event::DebuggerMode, Event::ToggleDeveloperSet,
   Event::ToggleFrameStats,
   Event::ToggleP0Collision, Event::ToggleP0Bit, Event::ToggleP1Collision, Event::ToggleP1Bit,
   Event::ToggleM0Collision, Event::ToggleM0Bit, Event::ToggleM1Collision, Event::ToggleM1Bit,

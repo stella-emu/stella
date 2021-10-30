@@ -159,6 +159,7 @@
     <ClCompile Include="..\common\AudioQueue.cxx" />
     <ClCompile Include="..\common\AudioSettings.cxx" />
     <ClCompile Include="..\common\Base.cxx" />
+    <ClCompile Include="..\common\DevSettingsHandler.cxx" />
     <ClCompile Include="..\common\FpsMeter.cxx" />
     <ClCompile Include="..\common\MouseControl.cxx" />
     <ClCompile Include="..\common\PhysicalJoystick.cxx" />

@@ -614,6 +614,7 @@
     <ClCompile Include="..\common\audio\LanczosResampler.cxx" />
     <ClCompile Include="..\common\audio\SimpleResampler.cxx" />
     <ClCompile Include="..\common\Base.cxx" />
+    <ClCompile Include="..\common\DevSettingsHandler.cxx" />
     <ClCompile Include="..\common\EventHandlerSDL2.cxx" />
     <ClCompile Include="..\common\FBBackendSDL2.cxx" />
     <ClCompile Include="..\common\FBSurfaceSDL2.cxx" />
@@ -1778,6 +1779,7 @@
     <ClInclude Include="..\common\audio\SimpleResampler.hxx" />
     <ClInclude Include="..\common\Base.hxx" />
     <ClInclude Include="..\common\bspf.hxx" />
+    <ClInclude Include="..\common\DevSettingsHandler.hxx" />
     <ClInclude Include="..\common\EventHandlerSDL2.hxx" />
     <ClInclude Include="..\common\FBBackendSDL2.hxx" />
     <ClInclude Include="..\common\FBSurfaceSDL2.hxx" />

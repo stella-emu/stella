@@ -680,6 +680,7 @@ PhysicalKeyboardHandler::DefaultCommonMapping = {
   { Event::ToggleTurbo,              KBDK_T, KBDM_CTRL },
   { Event::JitterDecrease,           KBDK_J, KBDM_SHIFT | KBDM_CTRL },
   { Event::JitterIncrease,           KBDK_J, KBDM_CTRL },
+  { Event::ToggleDeveloperSet,       KBDK_D, KBDM_CTRL },
   { Event::ToggleJitter,             KBDK_J, MOD3 },
   { Event::ToggleFrameStats,         KBDK_L, MOD3 },
   { Event::ToggleTimeMachine,        KBDK_T, MOD3 },

@@ -29,6 +29,7 @@ class CompuMate;
 class Debugger;
 class AudioQueue;
 class AudioSettings;
+class DevSettingsHandler;
 
 #include "bspf.hxx"
 #include "ConsoleIO.hxx"
@@ -325,6 +326,11 @@ class Console : public Serializable, public ConsoleIO
     int gameRefreshRate() const;
 
     /**
+      Toggle between developer settings sets (player/developer)
+    */
+    void toggleDeveloperSet(bool toggle = true);
+
+    /**
       Toggles the TIA bit specified in the method name.
     */
     void toggleP0Bit(bool toggle = true) const { toggleTIABit(P0Bit, "P0", true, toggle); }
@@ -452,6 +458,9 @@ class Console : public Serializable, public ConsoleIO
 
     // Pointers to the left and right controllers
     unique_ptr<Controller> myLeftControl, myRightControl;
+
+    // Pointer to handler for switching developer settings sets
+    unique_ptr<DevSettingsHandler> myDevSettingsHandler;
 
     // Pointer to CompuMate handler (only used in CompuMate ROMs)
     shared_ptr<CompuMate> myCMHandler;

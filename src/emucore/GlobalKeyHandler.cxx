@@ -404,6 +404,7 @@ GlobalKeyHandler::SettingData GlobalKeyHandler::getSettingData(const Setting set
     {Setting::MOUSE_CONTROL,          {false, std::bind(&EventHandler::changeMouseControl, &myOSystem.eventHandler(), _1)}}, // property, not persisted
     {Setting::MOUSE_RANGE,            {true,  std::bind(&Console::changePaddleAxesRange, &myOSystem.console(), _1)}}, // property, not persisted
     // *** Debug group ***
+    {Setting::DEVELOPER,              {false, std::bind(&Console::toggleDeveloperSet, &myOSystem.console(), _1)}},
     {Setting::STATS,                  {false, std::bind(&FrameBuffer::toggleFrameStats, &myOSystem.frameBuffer(), _1)}},
     {Setting::P0_ENAM,                {false, std::bind(&Console::toggleP0Bit, &myOSystem.console(), _1)}}, // debug, not persisted
     {Setting::P1_ENAM,                {false, std::bind(&Console::toggleP1Bit, &myOSystem.console(), _1)}}, // debug, not persisted

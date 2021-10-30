@@ -112,7 +112,7 @@ class Event
       PreviousAttribute, NextAttribute, DecreaseAttribute, IncreaseAttribute,
       ScanlinesDecrease, ScanlinesIncrease,
       PhosphorDecrease, PhosphorIncrease, TogglePhosphor, ToggleInter,
-      JitterDecrease, JitterIncrease, ToggleJitter,
+      ToggleDeveloperSet, JitterDecrease, JitterIncrease, ToggleJitter,
 
       VolumeDecrease, VolumeIncrease, SoundToggle,
 

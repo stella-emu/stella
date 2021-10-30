@@ -1116,6 +1116,9 @@
     <ClCompile Include="..\emucore\GlobalKeyHandler.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
+    <ClCompile Include="..\common\DevSettingsHandler.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">
@@ -2293,6 +2296,9 @@
     </ClInclude>
     <ClInclude Include="..\emucore\GlobalKeyHandler.hxx">
       <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\DevSettingsHandler.hxx">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

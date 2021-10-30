@@ -98,6 +98,7 @@ class GlobalKeyHandler
       MOUSE_CONTROL,
       MOUSE_RANGE,
       // *** Debug group ***
+      DEVELOPER,
       STATS,
       P0_ENAM,
       P1_ENAM,
@@ -127,7 +128,7 @@ class GlobalKeyHandler
       END_AV_ADJ = INTERPOLATION,
       START_INPUT_ADJ = DIGITAL_DEADZONE,
       END_INPUT_ADJ = MOUSE_RANGE,
-      START_DEBUG_ADJ = STATS,
+      START_DEBUG_ADJ = DEVELOPER,
       END_DEBUG_ADJ = JITTER,
     };
 
@@ -195,6 +196,13 @@ class GlobalKeyHandler
     //  they can be changed with global hotkeys while their message is still
     //  displayed
     Setting myDirectSetting{Setting::NONE};
+
+    // Following constructors and assignment operators not supported
+    GlobalKeyHandler() = delete;
+    GlobalKeyHandler(const GlobalKeyHandler&) = delete;
+    GlobalKeyHandler(GlobalKeyHandler&&) = delete;
+    GlobalKeyHandler& operator=(const GlobalKeyHandler&) = delete;
+    GlobalKeyHandler& operator=(GlobalKeyHandler&&) = delete;
 };
 
 #endif
