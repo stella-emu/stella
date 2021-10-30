@@ -967,7 +967,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myPJoyHandler->changeDigitalDeadZone(-1);
-        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::DEADZONE);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::DIGITAL_DEADZONE);
       }
       return;
 
@@ -975,7 +975,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed)
       {
         myPJoyHandler->changeDigitalDeadZone(+1);
-        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::DEADZONE);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::DIGITAL_DEADZONE);
       }
       return;
 

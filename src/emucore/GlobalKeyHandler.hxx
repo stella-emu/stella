@@ -72,7 +72,7 @@ class GlobalKeyHandler
       SCANLINES,
       INTERPOLATION,
       // *** Input group ***
-      DEADZONE,
+      DIGITAL_DEADZONE,
       ANALOG_DEADZONE,
       ANALOG_SENSITIVITY,
       ANALOG_LINEARITY,
@@ -125,7 +125,7 @@ class GlobalKeyHandler
       NUM_ADJ,
       START_AV_ADJ = VOLUME,
       END_AV_ADJ = INTERPOLATION,
-      START_INPUT_ADJ = DEADZONE,
+      START_INPUT_ADJ = DIGITAL_DEADZONE,
       END_INPUT_ADJ = MOUSE_RANGE,
       START_DEBUG_ADJ = STATS,
       END_DEBUG_ADJ = JITTER,
