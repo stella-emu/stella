@@ -147,8 +147,14 @@ void QisBlitter::recreateTexturesIfNecessary()
 
   SDL_TextureAccess texAccess = myStaticData == nullptr ? SDL_TEXTUREACCESS_STREAMING : SDL_TEXTUREACCESS_STATIC;
 
-  myIntermediateRect.w = (myDstRect.w / mySrcRect.w) * mySrcRect.w;
-  myIntermediateRect.h = (myDstRect.h / mySrcRect.h) * mySrcRect.h;
+  if(myDstRect.w > mySrcRect.w)
+    myIntermediateRect.w = (myDstRect.w / mySrcRect.w) * mySrcRect.w;
+  else
+    myIntermediateRect.w = mySrcRect.w;
+  if(myDstRect.h > mySrcRect.h)
+    myIntermediateRect.h = (myDstRect.h / mySrcRect.h) * mySrcRect.h;
+  else
+    myIntermediateRect.h = mySrcRect.h;
   myIntermediateRect.x = 0;
   myIntermediateRect.y = 0;
 

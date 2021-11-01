@@ -61,16 +61,6 @@ TIASurface::TIASurface(OSystem& system)
       : interpolationModeFromSettings(myOSystem.settings())
   );
 
-  // Generate scanline data, and a pre-defined scanline surface
-  constexpr uInt32 scanHeight = TIAConstants::frameBufferHeight * 2;
-  std::array<uInt32, scanHeight> scanData;
-  for(uInt32 i = 0; i < scanHeight; i += 2)
-  {
-    scanData[i]   = 0x00000000;
-    scanData[i+1] = 0xff000000;
-  }
-  mySLineSurface = myFB.allocateSurface(1, scanHeight, interpolationModeFromSettings(myOSystem.settings()), scanData.data());
-
   // Base TIA surface for use in taking snapshots in 1x mode
   myBaseTiaSurface = myFB.allocateSurface(TIAConstants::frameBufferWidth*2,
                                           TIAConstants::frameBufferHeight);
@@ -108,8 +98,6 @@ void TIASurface::initialize(const Console& console,
 
   myTiaSurface->setDstPos(mode.imageR.x(), mode.imageR.y());
   myTiaSurface->setDstSize(mode.imageR.w(), mode.imageR.h());
-  mySLineSurface->setDstPos(mode.imageR.x(), mode.imageR.y());
-  mySLineSurface->setDstSize(mode.imageR.w(), mode.imageR.h());
 
   myPaletteHandler->setPalette();
 
@@ -129,6 +117,7 @@ void TIASurface::initialize(const Console& console,
   }
   enablePhosphor(enable, p_blend);
 
+  createScanlineSurface();
   setNTSC(NTSCFilter::Preset(myOSystem.settings().getInt("tv.filter")), false);
 
 #if 0
@@ -260,14 +249,20 @@ void TIASurface::changeCurrentNTSCAdjustable(int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIASurface::setScanlineIntensity(int direction)
+void TIASurface::changeScanlineIntensity(int direction)
 {
-  ostringstream buf;
-  uInt32 intensity = enableScanlines(direction * 2);
+  FBSurface::Attributes& attr = mySLineSurface->attributes();
+
+  attr.blendalpha += direction * 2;
+  attr.blendalpha = BSPF::clamp(Int32(attr.blendalpha), 0, 100);
+  mySLineSurface->applyAttributes();
+
+  uInt32 intensity = attr.blendalpha;
 
   myOSystem.settings().setValue("tv.scanlines", intensity);
   enableNTSC(ntscEnabled());
 
+  ostringstream buf;
   if(intensity)
     buf << intensity << "%";
   else
@@ -276,15 +271,51 @@ void TIASurface::setScanlineIntensity(int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 TIASurface::enableScanlines(int change)
+TIASurface::ScanlineMask TIASurface::scanlineMaskType(int direction)
 {
-  FBSurface::Attributes& attr = mySLineSurface->attributes();
+  const string Masks[int(ScanlineMask::NumMasks)] = {
+    SETTING_STANDARD,
+    SETTING_THIN,
+    SETTING_PIXELS,
+    SETTING_MAME
+  };
+  int i = 0;
+  const string& name = myOSystem.settings().getString("tv.scanmask");
 
-  attr.blendalpha += change;
-  attr.blendalpha = BSPF::clamp(Int32(attr.blendalpha), 0, 100);
-  mySLineSurface->applyAttributes();
+  for(auto& mask : Masks)
+  {
+    if(mask == name)
+    {
+      if(direction)
+      {
+        i = BSPF::clampw(i + direction, 0, int(ScanlineMask::NumMasks) - 1);
+        myOSystem.settings().setValue("tv.scanmask", Masks[i]);
+      }
+      return ScanlineMask(i);
+    }
+    ++i;
+  }
+  return ScanlineMask::Standard;
+}
 
-  return attr.blendalpha;
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIASurface::cycleScanlineMask(int direction)
+{
+  const string Names[int(ScanlineMask::NumMasks)] = {
+    "'Standard'",
+    "'Thin lines'",
+    "'Pixelated'",
+    "'MAME'"
+  };
+  int i = int(scanlineMaskType(direction));
+
+  if(direction)
+    createScanlineSurface();
+
+  ostringstream msg;
+
+  msg << "Scanline pattern " << Names[i];
+  myOSystem.frameBuffer().showTextMessage(msg.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -295,6 +326,109 @@ void TIASurface::enablePhosphor(bool enable, int blend)
     myFilter = Filter(enable ? uInt8(myFilter) | 0x01 : uInt8(myFilter) & 0x10);
     myRGBFramebuffer.fill(0);
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIASurface::createScanlineSurface()
+{
+  struct PatternSize
+  {
+    uInt16 width{1};
+    uInt16 height{1};
+    uInt16 hRepeats{1};
+
+    explicit PatternSize(uInt16 c_width, uInt16 c_height, uInt16 c_yRepeats)
+      : width(c_width), height(c_height), hRepeats(c_yRepeats)
+    {}
+    PatternSize(const PatternSize& size)
+      : width(size.width), height(size.height), hRepeats(size.hRepeats)
+    {}
+  };
+  std::array <PatternSize, int(ScanlineMask::NumMasks)> Sizes = {{
+    PatternSize(1, 2, 1),
+    PatternSize(1, 3, 1),
+    PatternSize(3, 3, 2),
+    PatternSize(3, 4, 3)
+  }};
+  std::array<std::vector<std::vector<uInt32>>, int(ScanlineMask::NumMasks)> Pattern = {{
+    { // standard
+      { 0x00000000 },
+      { 0xff000000 },
+    }, { // thin lines
+      { 0x00000000 },
+      { 0x00000000 },
+      { 0xff000000 },
+    }, { // pixelated
+    // orignal data from https://forum.arcadeotaku.com/posting.php?mode=quote&f=10&p=134359
+      //{ 0x08ffffff, 0x02ffffff, 0x80e7e7e7 },
+      //{ 0x08ffffff, 0x80e7e7e7, 0x40ffffff },
+      //{ 0xff282828, 0xff282828, 0xff282828 },
+      //{ 0x80e7e7e7, 0x04ffffff, 0x04ffffff },
+      //{ 0x04ffffff, 0x80e7e7e7, 0x20ffffff },
+      //{ 0xff282828, 0xff282828, 0xff282828 },
+      // same but using RGB = 0,0,0
+      { 0x08000000, 0x02000000, 0x80000000 },
+      { 0x08000000, 0x80000000, 0x40000000 },
+      { 0xff000000, 0xff000000, 0xff000000 },
+      { 0x80000000, 0x04000000, 0x04000000 },
+      { 0x04000000, 0x80000000, 0x20000000 },
+      { 0xff000000, 0xff000000, 0xff000000 },
+    }, { // mame
+      // original tile data from https://wiki.arcadeotaku.com/w/MAME_CRT_Simulation
+      //{ 0xffb4b4b4, 0xffa5a5a5, 0xffc3c3c3 },
+      //{ 0xffffffff, 0xfff0f0f0, 0xfff0f0f0 },
+      //{ 0xfff0f0f0, 0xffffffff, 0xffe1e1e1 },
+      //{ 0xff000000, 0xff000000, 0xff000000 },
+      //{ 0xffa5a5a5, 0xffc3c3c3, 0xffb4b4b4 },
+      //{ 0xfff0f0f0, 0xfff0f0f0, 0xffffffff },
+      //{ 0xffffffff, 0xffe1e1e1, 0xfff0f0f0 },
+      //{ 0xff000000, 0xff000000, 0xff000000 },
+      //{ 0xffc3c3c3, 0xffb4b4b4, 0xffa5a5a5 },
+      //{ 0xfff0f0f0, 0xffffffff, 0xfff0f0f0 },
+      //{ 0xffe1e1e1, 0xfff0f0f0, 0xffffffff },
+      //{ 0xff000000, 0xff000000, 0xff000000 },
+      // MAME tile RGB values inverted into alpha channel
+      { 0x4b000000, 0x5a000000, 0x3c000000 },
+      { 0x00000000, 0x0f000000, 0x0f000000 },
+      { 0x0f000000, 0x00000000, 0x1e000000 },
+      { 0xff000000, 0xff000000, 0xff000000 },
+      { 0x5a000000, 0x3c000000, 0x4b000000 },
+      { 0x0f000000, 0x0f000000, 0x00000000 },
+      { 0x00000000, 0x1e000000, 0x0f000000 },
+      { 0xff000000, 0xff000000, 0xff000000 },
+      { 0x3c000000, 0x4b000000, 0x5a000000 },
+      { 0x0f000000, 0x00000000, 0x0f000000 },
+      { 0x1e000000, 0x0f000000, 0x00000000 },
+      { 0xff000000, 0xff000000, 0xff000000 },
+    }
+  }};
+
+  const int mask = int(scanlineMaskType());
+  const PatternSize size(Sizes[mask]);
+  uInt32 width{1}, height{1};
+
+  // Single width pattern need no x-repeats
+  if(size.width > 1)
+    width = TIAConstants::frameBufferWidth * size.width;
+  else
+    width = 1;
+  // TODO: use alternative mask pattern if destination is scaled smaller than mask height
+  height = myTIA->height() * size.height; // hRepeats are not used here
+
+  // Copy repeated pattern into surface data
+  std::vector<uInt32>data(width * height);
+
+  for(uInt32 i = 0; i < width * height; ++i)
+    data[i] = Pattern[mask][(i / width) % (size.height * size.hRepeats)][i % size.width];
+
+  myFB.deallocateSurface(mySLineSurface);
+  mySLineSurface = myFB.allocateSurface(width, height,
+    interpolationModeFromSettings(myOSystem.settings()), data.data());
+
+  mySLineSurface->setSrcSize(mySLineSurface->width(), height);
+  mySLineSurface->setDstRect(myTiaSurface->dstRect());
+
+  enableNTSC(ntscEnabled());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -311,11 +445,11 @@ void TIASurface::enableNTSC(bool enable)
     myTiaSurface->invalidate();
   }
 
-  mySLineSurface->setSrcSize(1, 2 * myTIA->height());
-
+  // Generate a scanline surface from current scanline pattern
+  // Apply current blend to scan line surface
   myScanlinesEnabled = myOSystem.settings().getInt("tv.scanlines") > 0;
   FBSurface::Attributes& sl_attr = mySLineSurface->attributes();
-  sl_attr.blending   = myScanlinesEnabled;
+  sl_attr.blending = myScanlinesEnabled;
   sl_attr.blendalpha = myOSystem.settings().getInt("tv.scanlines");
   mySLineSurface->applyAttributes();
 

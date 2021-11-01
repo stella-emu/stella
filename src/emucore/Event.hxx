@@ -111,6 +111,7 @@ class Event
       PreviousVideoMode, NextVideoMode,
       PreviousAttribute, NextAttribute, DecreaseAttribute, IncreaseAttribute,
       ScanlinesDecrease, ScanlinesIncrease,
+      PreviousScanlineMask, NextScanlineMask,
       PhosphorDecrease, PhosphorIncrease, TogglePhosphor, ToggleInter,
       ToggleDeveloperSet, JitterDecrease, JitterIncrease, ToggleJitter,
 

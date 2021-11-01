@@ -345,6 +345,8 @@ NLOHMANN_JSON_SERIALIZE_ENUM(Event::Type, {
   {Event::NextAttribute, "NextAttribute"},
   {Event::DecreaseAttribute, "DecreaseAttribute"},
   {Event::IncreaseAttribute, "IncreaseAttribute"},
+  {Event::PreviousScanlineMask, "PreviousScanlineMask"},
+  {Event::NextScanlineMask, "NextScanlineMask"},
   {Event::ScanlinesDecrease, "ScanlinesDecrease"},
   {Event::ScanlinesIncrease, "ScanlinesIncrease"},
   {Event::PhosphorDecrease, "PhosphorDecrease"},

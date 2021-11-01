@@ -23,7 +23,7 @@ class OSystem;
 #include <array>
 
 /**
-  This class takes care developer settings sets.
+  This class takes care of developer settings sets.
 
   @author  Thomas Jentzsch
 */
@@ -33,7 +33,7 @@ class DevSettingsHandler
     enum SettingsSet {
       player,
       developer,
-      numSettings
+      numSets
     };
 
     DevSettingsHandler(OSystem& osystem);
@@ -45,40 +45,40 @@ class DevSettingsHandler
   protected:
     OSystem& myOSystem;
     // Emulator sets
-    std::array<bool, numSettings>   myFrameStats;
-    std::array<bool, numSettings>   myDetectedInfo;
-    std::array<bool, numSettings>   myExternAccess;
-    std::array<int, numSettings>    myConsole;
-    std::array<bool, numSettings>   myRandomBank;
-    std::array<bool, numSettings>   myRandomizeTIA;
-    std::array<bool, numSettings>   myRandomizeRAM;
-    std::array<string, numSettings> myRandomizeCPU;
-    std::array<bool, numSettings>   myColorLoss;
-    std::array<bool, numSettings>   myTVJitter;
-    std::array<int, numSettings>    myTVJitterRec;
-    std::array<bool, numSettings>   myDebugColors;
-    std::array<bool, numSettings>   myUndrivenPins;
+    std::array<bool, numSets>   myFrameStats;
+    std::array<bool, numSets>   myDetectedInfo;
+    std::array<bool, numSets>   myExternAccess;
+    std::array<int, numSets>    myConsole;
+    std::array<bool, numSets>   myRandomBank;
+    std::array<bool, numSets>   myRandomizeTIA;
+    std::array<bool, numSets>   myRandomizeRAM;
+    std::array<string, numSets> myRandomizeCPU;
+    std::array<bool, numSets>   myColorLoss;
+    std::array<bool, numSets>   myTVJitter;
+    std::array<int, numSets>    myTVJitterRec;
+    std::array<bool, numSets>   myDebugColors;
+    std::array<bool, numSets>   myUndrivenPins;
   #ifdef DEBUGGER_SUPPORT
-    std::array<bool, numSettings>   myRWPortBreak;
-    std::array<bool, numSettings>   myWRPortBreak;
+    std::array<bool, numSets>   myRWPortBreak;
+    std::array<bool, numSets>   myWRPortBreak;
   #endif
-    std::array<bool, numSettings>   myThumbException;
+    std::array<bool, numSets>   myThumbException;
     // TIA sets
-    std::array<string, numSettings> myTIAType;
-    std::array<bool, numSettings>   myPlInvPhase;
-    std::array<bool, numSettings>   myMsInvPhase;
-    std::array<bool, numSettings>   myBlInvPhase;
-    std::array<bool, numSettings>   myPFBits;
-    std::array<bool, numSettings>   myPFColor;
-    std::array<bool, numSettings>   myBKColor;
-    std::array<bool, numSettings>   myPlSwap;
-    std::array<bool, numSettings>   myBlSwap;
+    std::array<string, numSets> myTIAType;
+    std::array<bool, numSets>   myPlInvPhase;
+    std::array<bool, numSets>   myMsInvPhase;
+    std::array<bool, numSets>   myBlInvPhase;
+    std::array<bool, numSets>   myPFBits;
+    std::array<bool, numSets>   myPFColor;
+    std::array<bool, numSets>   myBKColor;
+    std::array<bool, numSets>   myPlSwap;
+    std::array<bool, numSets>   myBlSwap;
     // States sets
-    std::array<bool, numSettings>   myTimeMachine;
-    std::array<int, numSettings>    myStateSize;
-    std::array<int, numSettings>    myUncompressed;
-    std::array<string, numSettings> myStateInterval;
-    std::array<string, numSettings> myStateHorizon;
+    std::array<bool, numSets>   myTimeMachine;
+    std::array<int, numSets>    myStateSize;
+    std::array<int, numSets>    myUncompressed;
+    std::array<string, numSets> myStateInterval;
+    std::array<string, numSets> myStateHorizon;
 
   private:
     void handleEnableDebugColors(bool enable);

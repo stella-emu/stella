@@ -713,7 +713,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::ScanlinesDecrease:
       if(pressed)
       {
-        myOSystem.frameBuffer().tiaSurface().setScanlineIntensity(-1);
+        myOSystem.frameBuffer().tiaSurface().changeScanlineIntensity(-1);
         myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::SCANLINES);
       }
       return;
@@ -721,8 +721,24 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::ScanlinesIncrease:
       if(pressed)
       {
-        myOSystem.frameBuffer().tiaSurface().setScanlineIntensity(+1);
+        myOSystem.frameBuffer().tiaSurface().changeScanlineIntensity(+1);
         myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::SCANLINES);
+      }
+      return;
+
+    case Event::PreviousScanlineMask:
+      if(pressed && !repeated)
+      {
+        myOSystem.frameBuffer().tiaSurface().cycleScanlineMask(-1);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::SCANLINE_MASK);
+      }
+      return;
+
+    case Event::NextScanlineMask:
+      if(pressed && !repeated)
+      {
+        myOSystem.frameBuffer().tiaSurface().cycleScanlineMask(+1);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::SCANLINE_MASK);
       }
       return;
 
@@ -2882,6 +2898,8 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::PhosphorIncrease,        "Increase 'phosphor' blend",             "" },
   { Event::ScanlinesDecrease,       "Decrease scanlines",                    "" },
   { Event::ScanlinesIncrease,       "Increase scanlines",                    "" },
+  { Event::PreviousScanlineMask,    "Switch to previous scanline mask",      "" },
+  { Event::NextScanlineMask,        "Switch to next scanline mask",          "" },
 
   { Event::PreviousSettingGroup,    "Select previous setting group",         "" },
   { Event::NextSettingGroup,        "Select next setting group",             "" },
@@ -3050,6 +3068,7 @@ const Event::EventSet EventHandler::AudioVideoEvents = {
   Event::PreviousAttribute, Event::NextAttribute, Event::DecreaseAttribute, Event::IncreaseAttribute,
   Event::PhosphorDecrease, Event::PhosphorIncrease, Event::TogglePhosphor,
   Event::ScanlinesDecrease, Event::ScanlinesIncrease,
+  Event::PreviousScanlineMask, Event::NextScanlineMask,
   Event::ToggleInter,
 };
 

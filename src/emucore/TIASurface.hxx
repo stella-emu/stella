@@ -45,6 +45,12 @@ class PaletteHandler;
 class TIASurface
 {
   public:
+    // Setting names of palette types
+    static constexpr const char* SETTING_STANDARD = "standard";
+    static constexpr const char* SETTING_THIN     = "thin";
+    static constexpr const char* SETTING_PIXELS   = "pixels";
+    static constexpr const char* SETTING_MAME     = "mame";
+
     /**
       Creates a new TIASurface object
     */
@@ -138,21 +144,25 @@ class TIASurface
 
       @param direction  +1 indicates increase, -1 indicates decrease.
     */
-    void setScanlineIntensity(int direction = +1);
+    void changeScanlineIntensity(int direction = +1);
 
     /**
-      Change scanline intensity and interpolation.
+      Cycle through available scanline masks.
 
-      @param change  change current intensity by 'change'
-      @return  New current intensity
+      @param direction  +1 next mask, -1 mask.
     */
-    uInt32 enableScanlines(int change);
+    void cycleScanlineMask(int direction = +1);
 
     /**
       Enable/disable/query phosphor effect.
     */
     void enablePhosphor(bool enable, int blend = -1);
     bool phosphorEnabled() const { return myPhosphorHandler.phosphorEnabled(); }
+
+    /**
+      Creates a scanline surface for the current TIA resolution
+    */
+    void createScanlineSurface();
 
     /**
       Enable/disable/query NTSC filtering effects.
@@ -184,15 +194,14 @@ class TIASurface
     void updateSurfaceSettings();
 
   private:
-    /**
-      Average current calculated buffer's pixel with previous calculated buffer's pixel (50:50).
-    */
-    uInt32 averageBuffers(uInt32 bufOfs);
+    enum class ScanlineMask {
+      Standard,
+      Thin,
+      Pixels,
+      Mame,
+      NumMasks
+    };
 
-    // Is plain video mode enabled?
-    bool correctAspect() const;
-
-  private:
     // Enumeration created such that phosphor off/on is in LSB,
     // and Blargg off/on is in MSB
     enum class Filter: uInt8 {
@@ -201,6 +210,19 @@ class TIASurface
       BlarggNormal   = 0x10,
       BlarggPhosphor = 0x11
     };
+
+  private:
+    /**
+      Average current calculated buffer's pixel with previous calculated buffer's pixel (50:50).
+    */
+    uInt32 averageBuffers(uInt32 bufOfs);
+
+    // Is plain video mode enabled?
+    bool correctAspect() const;
+
+    // Convert scanline mask setting name into type
+    ScanlineMask scanlineMaskType(int direction = 0);
+
     Filter myFilter{Filter::Normal};
 
   private:
