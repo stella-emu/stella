@@ -1201,7 +1201,7 @@ void FrameBuffer::switchVideoMode(int direction)
   }
 
   saveCurrentWindowPosition();
-  if(applyVideoMode() == FBInitStatus::Success)
+  if(!direction || applyVideoMode() == FBInitStatus::Success)
   {
     if(fullScreen())
       showTextMessage(myActiveVidMode.description);

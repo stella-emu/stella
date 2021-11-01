@@ -331,7 +331,7 @@ void VideoAudioDialog::addTVEffectsTab()
   int xpos = HBORDER,
       ypos = VBORDER;
   const int lwidth = _font.getStringWidth("Saturation ");
-  const int pwidth = _font.getStringWidth("Bad adjust  ");
+  int pwidth = _font.getStringWidth("Bad adjust  ");
   WidgetArray wid;
   VariantList items;
   const int tabID = myTab->addTab(" TV Effects ", TabWidget::AUTO_WIDTH);
@@ -379,6 +379,17 @@ void VideoAudioDialog::addTVEffectsTab()
 
   xpos += INDENT;
   CREATE_CUSTOM_SLIDERS(ScanIntense, "Intensity", kScanlinesChanged)
+
+  items.clear();
+  VarList::push_back(items, "Standard", TIASurface::SETTING_STANDARD);
+  VarList::push_back(items, "Thin lines", TIASurface::SETTING_THIN);
+  VarList::push_back(items, "Pixelated", TIASurface::SETTING_PIXELS);
+  VarList::push_back(items, "MAME", TIASurface::SETTING_MAME);
+
+  pwidth = _font.getStringWidth("Thin lines");
+  myTVScanMask = new PopUpWidget(myTab, _font, myTVScanIntense->getRight() + fontWidth * 2,
+    myTVScanIntense->getTop() + 1, pwidth, lineHeight, items, "Mask ");
+  wid.push_back(myTVScanMask);
 
   // Create buttons in 2nd column
   xpos = _w - HBORDER - 2 * 2 - buttonWidth;
@@ -633,15 +644,14 @@ void VideoAudioDialog::loadConfig()
   // TV Custom adjustables
   loadTVAdjustables(NTSCFilter::Preset::CUSTOM);
 
-  // TV phosphor mode
+  // TV phosphor mode & blend
   myTVPhosphor->setState(settings.getString("tv.phosphor") == "always");
-
-  // TV phosphor blend
   myTVPhosLevel->setValue(settings.getInt("tv.phosblend"));
   handlePhosphorChange();
 
-  // TV scanline intensity and interpolation
+  // TV scanline intensity & mask
   myTVScanIntense->setValue(settings.getInt("tv.scanlines"));
+  myTVScanMask->setSelected(settings.getString("tv.scanmask"), TIASurface::SETTING_STANDARD);
 
   /////////////////////////////////////////////////////////////////////////////
   // Audio tab
@@ -754,15 +764,15 @@ void VideoAudioDialog::saveConfig()
   instance().frameBuffer().tiaSurface().ntsc().saveConfig(settings);
 
 
-  // TV phosphor mode
+  // TV phosphor mode & blend
   settings.setValue("tv.phosphor",
                                  myTVPhosphor->getState() ? "always" : "byrom");
-  // TV phosphor blend
   settings.setValue("tv.phosblend", myTVPhosLevel->getValueLabel() == "Off"
                                  ? "0" : myTVPhosLevel->getValueLabel());
 
-  // TV scanline intensity
+  // TV scanline intensity & mask
   settings.setValue("tv.scanlines", myTVScanIntense->getValueLabel());
+  settings.setValue("tv.scanmask", myTVScanMask->getSelectedTag());
 
   if(instance().hasConsole())
   {
@@ -879,14 +889,13 @@ void VideoAudioDialog::setDefaults()
     {
       myTVMode->setSelected("0", "0");
 
-      // TV phosphor mode
+      // TV phosphor mode & blend
       myTVPhosphor->setState(false);
-
-      // TV phosphor blend
       myTVPhosLevel->setValue(50);
 
-      // TV scanline intensity and interpolation
+      // TV scanline intensity & mask
       myTVScanIntense->setValue(25);
+      myTVScanMask->setSelected(TIASurface::SETTING_STANDARD);
 
       // Make sure that mutually-exclusive items are not enabled at the same time
       handleTVModeChange(NTSCFilter::Preset::OFF);

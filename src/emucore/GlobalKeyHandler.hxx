@@ -70,6 +70,7 @@ class GlobalKeyHandler
       // Other TV effects adjustables
       PHOSPHOR,
       SCANLINES,
+      SCANLINE_MASK,
       INTERPOLATION,
       // *** Input group ***
       DIGITAL_DEADZONE,

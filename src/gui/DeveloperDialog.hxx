@@ -29,7 +29,6 @@ class RadioButtonWidget;
 class SliderWidget;
 class StaticTextWidget;
 class ColorWidget;
-class DevSettingsHandler;
 
 namespace GUI {
   class Font;

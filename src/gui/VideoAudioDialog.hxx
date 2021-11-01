@@ -95,6 +95,7 @@ class VideoAudioDialog : public Dialog
     // TV scanline intensity and interpolation
     StaticTextWidget* myTVScanLabel{nullptr};
     SliderWidget*     myTVScanIntense{nullptr};
+    PopUpWidget*      myTVScanMask{nullptr};
 
     // TV effects adjustables presets (custom mode)
     ButtonWidget*     myCloneComposite{nullptr};

@@ -21,6 +21,7 @@
 #include "Version.hxx"
 #include "Logger.hxx"
 #include "AudioSettings.hxx"
+#include "TIASurface.hxx"
 #include "PaletteHandler.hxx"
 #include "Joystick.hxx"
 #include "Paddles.hxx"
@@ -80,6 +81,7 @@ Settings::Settings()
   setPermanent("tv.phosphor", "byrom");
   setPermanent("tv.phosblend", "50");
   setPermanent("tv.scanlines", "0");
+  setPermanent("tv.scanmask", TIASurface::SETTING_STANDARD);
   // TV options when using 'custom' mode
   setPermanent("tv.sharpness", "0.0");
   setPermanent("tv.resolution", "0.0");
@@ -315,6 +317,13 @@ void Settings::validate()
   i = getInt("tv.phosblend");
   if(i < 0 || i > 100)  setValue("tv.phosblend", "50");
 
+  s = getString("tv.scanmask");
+  if(s != TIASurface::SETTING_STANDARD
+    && s != TIASurface::SETTING_THIN
+    && s != TIASurface::SETTING_PIXELS
+    && s != TIASurface::SETTING_MAME)
+    setValue("tv.scanmask", TIASurface::SETTING_STANDARD);
+
   i = getInt("tv.filter");
   if(i < 0 || i > 5)  setValue("tv.filter", "0");
 
@@ -506,6 +515,9 @@ void Settings::usage() const
     << "  -tv.phosblend <0-100>         Set default blend level in phosphor mode\n"
     << "  -tv.scanlines <0-100>         Set scanline intensity to percentage\n"
     << "                                 (0 disables completely)\n"
+    << "  -tv.scanmask  <standard|      Use the specified scanline mask\n"
+    << "                 thin|pixel|\n"
+    << "                 mame>\n"
     << "  -tv.sharpness   <-1.0 - 1.0>  Set TV effects custom sharpness\n"
     << "  -tv.resolution  <-1.0 - 1.0>  Set TV effects custom resolution\n"
     << "  -tv.artifacts   <-1.0 - 1.0>  Set TV effects custom artifacts\n"

@@ -644,6 +644,8 @@ PhysicalKeyboardHandler::DefaultCommonMapping = {
   { Event::TogglePhosphor,           KBDK_P, MOD3 },
   { Event::ScanlinesDecrease,        KBDK_5, KBDM_SHIFT | MOD3 },
   { Event::ScanlinesIncrease,        KBDK_5, MOD3 },
+  { Event::PreviousScanlineMask,     KBDK_6, KBDM_SHIFT | MOD3 },
+  { Event::NextScanlineMask,         KBDK_6, MOD3 },
   { Event::PreviousPaletteAttribute, KBDK_9, KBDM_SHIFT | MOD3 },
   { Event::NextPaletteAttribute,     KBDK_9, MOD3 },
   { Event::PaletteAttributeDecrease, KBDK_0, KBDM_SHIFT | MOD3 },

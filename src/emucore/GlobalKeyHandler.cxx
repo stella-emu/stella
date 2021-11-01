@@ -374,7 +374,8 @@ GlobalKeyHandler::SettingData GlobalKeyHandler::getSettingData(const Setting set
                                               int(NTSCFilter::Adjustables::BLEEDING), _1)}},
     // Other TV effects adjustables
     {Setting::PHOSPHOR,               {true,  std::bind(&Console::changePhosphor, &myOSystem.console(), _1)}},
-    {Setting::SCANLINES,              {true,  std::bind(&TIASurface::setScanlineIntensity, &myOSystem.frameBuffer().tiaSurface(), _1)}},
+    {Setting::SCANLINES,              {true,  std::bind(&TIASurface::changeScanlineIntensity, &myOSystem.frameBuffer().tiaSurface(), _1)}},
+    {Setting::SCANLINE_MASK,       {false, std::bind(&TIASurface::cycleScanlineMask, &myOSystem.frameBuffer().tiaSurface(), _1)}},
     {Setting::INTERPOLATION,          {false, std::bind(&Console::toggleInter, &myOSystem.console(), _1)}},
     // *** Input group ***
     {Setting::DIGITAL_DEADZONE,       {true,  std::bind(&PhysicalJoystickHandler::changeDigitalDeadZone, &joyHandler(), _1)}},
