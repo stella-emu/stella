@@ -384,10 +384,12 @@ void VideoAudioDialog::addTVEffectsTab()
   VarList::push_back(items, "Standard", TIASurface::SETTING_STANDARD);
   VarList::push_back(items, "Thin lines", TIASurface::SETTING_THIN);
   VarList::push_back(items, "Pixelated", TIASurface::SETTING_PIXELS);
+  VarList::push_back(items, "Aperture Gr.", TIASurface::SETTING_APERTURE);
   VarList::push_back(items, "MAME", TIASurface::SETTING_MAME);
 
-  pwidth = _font.getStringWidth("Thin lines");
-  myTVScanMask = new PopUpWidget(myTab, _font, myTVScanIntense->getRight() + fontWidth * 2,
+  xpos = myTVScanIntense->getRight() + fontWidth * 2;
+  pwidth = _w - HBORDER - xpos - fontWidth * 5 - PopUpWidget::dropDownWidth(_font) - 2 * 2;
+  myTVScanMask = new PopUpWidget(myTab, _font, xpos,
     myTVScanIntense->getTop() + 1, pwidth, lineHeight, items, "Mask ");
   wid.push_back(myTVScanMask);
 
@@ -894,7 +896,7 @@ void VideoAudioDialog::setDefaults()
       myTVPhosLevel->setValue(50);
 
       // TV scanline intensity & mask
-      myTVScanIntense->setValue(25);
+      myTVScanIntense->setValue(0);
       myTVScanMask->setSelected(TIASurface::SETTING_STANDARD);
 
       // Make sure that mutually-exclusive items are not enabled at the same time
@@ -1155,9 +1157,13 @@ void VideoAudioDialog::handleCommand(CommandSender* sender, int cmd,
       {
         myTVScanIntense->setValueLabel("Off");
         myTVScanIntense->setValueUnit("");
+        myTVScanMask->setEnabled(false);
       }
       else
+      {
         myTVScanIntense->setValueUnit("%");
+        myTVScanMask->setEnabled(true);
+      }
       break;
 
     case kPhosphorChanged:

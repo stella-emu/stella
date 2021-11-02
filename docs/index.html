@@ -1554,6 +1554,16 @@
       <td>Cmd + 5</td>
     </tr>
     <tr>
+      <td>Switch to <i>previous</i> scanline mask</td>
+      <td>Shift-Alt + 6</td>
+      <td>Shift-Cmd + 6</td>
+    </tr>
+    <tr>
+      <td>Switch to <i>next</i> scanline mask</td>
+      <td>Alt + 6</td>
+      <td>Cmd + 6</td>
+    </tr>
+    <tr>
       <td colspan="3"><center><font size="-1">
         These settings can also be changed using <a href="#GlobalKeys"><b>Global Keys</a></font></center>
       </td>
@@ -2965,6 +2975,12 @@
     </tr>
 
     <tr>
+      <td><pre>-tv.scanmask &lt;standard|thin|pixel|aperture|mame&gt;</pre></td>
+      <td>Set the scanline mask.
+      </br>Note: All masks (except 'standard') work better at higher zoom levels.</td>
+    </tr>
+
+    <tr>
       <td><pre>-cheat &lt;code&gt;</pre></td>
       <td>Use the specified cheatcode (see <a href="#Cheats"><b>Cheat</b></a> section for description).</td>
     </tr>
@@ -3782,11 +3798,13 @@
                 (needs to be manually adjusted for your particular hardware)</td><td>-tv.phosblend</td></tr>
           <tr><td>Scanline intensity</td><td>Sets scanline black-level intensity.</br>
                   Note: No scanlines in 1x mode snapshots</td><td>-tv.scanlines</td></tr>
+          <tr><td>(Scanline) Mask</td><td>Sets the scanline mask.</br>
+                  Note: All masks (except 'standard') work better at higher zoom levels</td><td>-tv.scanmask</td></tr>
           <tr><td>Clone RGB</td><td>Copy 'RGB' attributes to 'Custom' TV mode sliders</td><td>&nbsp;</td></tr>
           <tr><td>Clone S-Video</td><td>Copy 'S-Video' attributes to 'Custom' TV mode sliders</td><td>&nbsp;</td></tr>
           <tr><td>Clone Composite</td><td>Copy 'Composite' attributes to 'Custom' TV mode sliders</td><td>&nbsp;</td></tr>
           <tr><td>Clone Bad adjust</td><td>Copy 'Bad Adjust' attributes to 'Custom' TV mode sliders</td><td>&nbsp;</td></tr>
-          <tr><td>Revert</td><td>Revert attribute sliders to saved 'Custom' TV mode settings</td><td>&nbsp;</td></tr>
+          <tr><td>Revert</td><td>Revert attribute sliders to previously saved 'Custom' TV mode settings</td><td>&nbsp;</td></tr>
         </table>
       </td>
     </tr>

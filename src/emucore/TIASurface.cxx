@@ -277,6 +277,7 @@ TIASurface::ScanlineMask TIASurface::scanlineMaskType(int direction)
     SETTING_STANDARD,
     SETTING_THIN,
     SETTING_PIXELS,
+    SETTING_APERTURE,
     SETTING_MAME
   };
   int i = 0;
@@ -302,10 +303,11 @@ TIASurface::ScanlineMask TIASurface::scanlineMaskType(int direction)
 void TIASurface::cycleScanlineMask(int direction)
 {
   const string Names[int(ScanlineMask::NumMasks)] = {
-    "'Standard'",
-    "'Thin lines'",
-    "'Pixelated'",
-    "'MAME'"
+    "Standard",
+    "Thin lines",
+    "Pixelated",
+    "Aperture Grille",
+    "MAME"
   };
   int i = int(scanlineMaskType(direction));
 
@@ -314,7 +316,7 @@ void TIASurface::cycleScanlineMask(int direction)
 
   ostringstream msg;
 
-  msg << "Scanline pattern " << Names[i];
+  msg << "Scanline pattern '" << Names[i] << "'";
   myOSystem.frameBuffer().showTextMessage(msg.str());
 }
 
@@ -331,6 +333,10 @@ void TIASurface::enablePhosphor(bool enable, int blend)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIASurface::createScanlineSurface()
 {
+  // Idea: Emulate
+  // - Dot-Trio Shadow-Mask
+  // - Slot-Mask (NEC 'CromaClear')
+  // - Aperture-Grille (Sony 'Trinitron')
   struct PatternSize
   {
     uInt16 width{1};
@@ -345,15 +351,17 @@ void TIASurface::createScanlineSurface()
     {}
   };
   std::array <PatternSize, int(ScanlineMask::NumMasks)> Sizes = {{
-    PatternSize(1, 2, 1),
-    PatternSize(1, 3, 1),
-    PatternSize(3, 3, 2),
-    PatternSize(3, 4, 3)
+    PatternSize(1, 2, 1), // standard
+    PatternSize(1, 3, 1), // thin
+    PatternSize(3, 3, 2), // pixel
+    PatternSize(6, 3, 1), // aperture
+    PatternSize(3, 4, 3), // mame
   }};
+  // Note: With RGB = 0,0,0, the average alpha should be ~0x55 (85)
   std::array<std::vector<std::vector<uInt32>>, int(ScanlineMask::NumMasks)> Pattern = {{
     { // standard
       { 0x00000000 },
-      { 0xff000000 },
+      { 0xaa000000 }, // 0xff decreased to 0xaa (67%) to match overall brightness of other pattern
     }, { // thin lines
       { 0x00000000 },
       { 0x00000000 },
@@ -367,12 +375,26 @@ void TIASurface::createScanlineSurface()
       //{ 0x04ffffff, 0x80e7e7e7, 0x20ffffff },
       //{ 0xff282828, 0xff282828, 0xff282828 },
       // same but using RGB = 0,0,0
-      { 0x08000000, 0x02000000, 0x80000000 },
-      { 0x08000000, 0x80000000, 0x40000000 },
-      { 0xff000000, 0xff000000, 0xff000000 },
-      { 0x80000000, 0x04000000, 0x04000000 },
-      { 0x04000000, 0x80000000, 0x20000000 },
-      { 0xff000000, 0xff000000, 0xff000000 },
+      //{ 0x08000000, 0x02000000, 0x80000000 },
+      //{ 0x08000000, 0x80000000, 0x40000000 },
+      //{ 0xff000000, 0xff000000, 0xff000000 },
+      //{ 0x80000000, 0x04000000, 0x04000000 },
+      //{ 0x04000000, 0x80000000, 0x20000000 },
+      //{ 0xff000000, 0xff000000, 0xff000000 },
+      // brightened
+      { 0x06000000, 0x01000000, 0x5a000000 },
+      { 0x06000000, 0x5a000000, 0x3d000000 },
+      { 0xb4000000, 0xb4000000, 0xb4000000 },
+      { 0x5a000000, 0x03000000, 0x03000000 },
+      { 0x03000000, 0x5a000000, 0x17000000 },
+      { 0xb4000000, 0xb4000000, 0xb4000000 },
+    }, { // aperture (doubled & darkened, alpha */ 1.75)
+      //{ 0x2cf31d00, 0x1500ffce, 0x1c1200a4 },
+      //{ 0x557e0f00, 0x40005044, 0x45070067 },
+      //{ 0x800c0200, 0x89000606, 0x8d02000d },
+      { 0x19f31d00, 0x0c00ffce, 0x101200a4, 0x19f31d00, 0x0c00ffce, 0x101200a4 },
+      { 0x317e0f00, 0x25005044, 0x37070067, 0x317e0f00, 0x25005044, 0x37070067 },
+      { 0xe00c0200, 0xf0000606, 0xf702000d, 0xe00c0200, 0xf0000606, 0xf702000d },
     }, { // mame
       // original tile data from https://wiki.arcadeotaku.com/w/MAME_CRT_Simulation
       //{ 0xffb4b4b4, 0xffa5a5a5, 0xffc3c3c3 },
@@ -427,6 +449,7 @@ void TIASurface::createScanlineSurface()
 
   mySLineSurface->setSrcSize(mySLineSurface->width(), height);
   mySLineSurface->setDstRect(myTiaSurface->dstRect());
+  updateSurfaceSettings();
 
   enableNTSC(ntscEnabled());
 }
@@ -664,12 +687,13 @@ void TIASurface::renderForSnapshot()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIASurface::updateSurfaceSettings()
 {
-  myTiaSurface->setScalingInterpolation(
-      interpolationModeFromSettings(myOSystem.settings())
-  );
-  mySLineSurface->setScalingInterpolation(
-      interpolationModeFromSettings(myOSystem.settings())
-  );
+  if(myTiaSurface != nullptr)
+    myTiaSurface->setScalingInterpolation(
+      interpolationModeFromSettings(myOSystem.settings()));
+
+  if(mySLineSurface != nullptr)
+    mySLineSurface->setScalingInterpolation(
+      interpolationModeFromSettings(myOSystem.settings()));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
