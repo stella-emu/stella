@@ -197,6 +197,8 @@ bool GlobalKeyHandler::skipAVSetting() const
     myOSystem.settings().getString("palette") == PaletteHandler::SETTING_CUSTOM;
   const bool isCustomFilter =
     myOSystem.settings().getInt("tv.filter") == int(NTSCFilter::Preset::CUSTOM);
+  const bool hasScanlines =
+    myOSystem.settings().getInt("tv.scanlines") > 0;
   const bool isSoftwareRenderer =
     myOSystem.settings().getString("video") == "software";
 
@@ -210,6 +212,7 @@ bool GlobalKeyHandler::skipAVSetting() const
     || (mySetting >= Setting::NTSC_SHARPNESS
       && mySetting <= Setting::NTSC_BLEEDING
       && !isCustomFilter)
+    || (mySetting == Setting::SCANLINE_MASK && !hasScanlines)
     || (mySetting == Setting::INTERPOLATION && isSoftwareRenderer);
 }
 
@@ -375,7 +378,7 @@ GlobalKeyHandler::SettingData GlobalKeyHandler::getSettingData(const Setting set
     // Other TV effects adjustables
     {Setting::PHOSPHOR,               {true,  std::bind(&Console::changePhosphor, &myOSystem.console(), _1)}},
     {Setting::SCANLINES,              {true,  std::bind(&TIASurface::changeScanlineIntensity, &myOSystem.frameBuffer().tiaSurface(), _1)}},
-    {Setting::SCANLINE_MASK,       {false, std::bind(&TIASurface::cycleScanlineMask, &myOSystem.frameBuffer().tiaSurface(), _1)}},
+    {Setting::SCANLINE_MASK,          {false, std::bind(&TIASurface::cycleScanlineMask, &myOSystem.frameBuffer().tiaSurface(), _1)}},
     {Setting::INTERPOLATION,          {false, std::bind(&Console::toggleInter, &myOSystem.console(), _1)}},
     // *** Input group ***
     {Setting::DIGITAL_DEADZONE,       {true,  std::bind(&PhysicalJoystickHandler::changeDigitalDeadZone, &joyHandler(), _1)}},

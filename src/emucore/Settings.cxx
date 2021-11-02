@@ -319,9 +319,10 @@ void Settings::validate()
 
   s = getString("tv.scanmask");
   if(s != TIASurface::SETTING_STANDARD
-    && s != TIASurface::SETTING_THIN
-    && s != TIASurface::SETTING_PIXELS
-    && s != TIASurface::SETTING_MAME)
+      && s != TIASurface::SETTING_THIN
+      && s != TIASurface::SETTING_PIXELS
+      && s != TIASurface::SETTING_APERTURE
+      && s != TIASurface::SETTING_MAME)
     setValue("tv.scanmask", TIASurface::SETTING_STANDARD);
 
   i = getInt("tv.filter");

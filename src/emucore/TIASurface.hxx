@@ -49,6 +49,7 @@ class TIASurface
     static constexpr const char* SETTING_STANDARD = "standard";
     static constexpr const char* SETTING_THIN     = "thin";
     static constexpr const char* SETTING_PIXELS   = "pixels";
+    static constexpr const char* SETTING_APERTURE = "aperture";
     static constexpr const char* SETTING_MAME     = "mame";
 
     /**
@@ -198,6 +199,7 @@ class TIASurface
       Standard,
       Thin,
       Pixels,
+      Aperture,
       Mame,
       NumMasks
     };

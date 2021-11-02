@@ -278,6 +278,10 @@ void FBSurfaceSDL2::applyAttributes()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL2::setScalingInterpolation(ScalingInterpolation interpolation)
 {
+  if (interpolation == ScalingInterpolation::sharp
+      && mySrcGUIR.h() >= myDstGUIR.h())
+    interpolation = ScalingInterpolation::blur;
+
   if (interpolation == myInterpolationMode) return;
 
   myInterpolationMode = interpolation;
