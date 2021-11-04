@@ -316,7 +316,7 @@ void TIASurface::cycleScanlineMask(int direction)
 
   ostringstream msg;
 
-  msg << "Scanline pattern '" << Names[i] << "'";
+  msg << "Scanline data '" << Names[i] << "'";
   myOSystem.frameBuffer().showTextMessage(msg.str());
 }
 
@@ -337,37 +337,33 @@ void TIASurface::createScanlineSurface()
   // - Dot-Trio Shadow-Mask
   // - Slot-Mask (NEC 'CromaClear')
   // - Aperture-Grille (Sony 'Trinitron')
-  struct PatternSize
-  {
-    uInt16 width{1};
-    uInt16 height{1};
-    uInt16 hRepeats{1};
 
-    explicit PatternSize(uInt16 c_width, uInt16 c_height, uInt16 c_yRepeats)
-      : width(c_width), height(c_height), hRepeats(c_yRepeats)
-    {}
-    PatternSize(const PatternSize& size)
-      : width(size.width), height(size.height), hRepeats(size.hRepeats)
+  using Data = std::vector<std::vector<uInt32>>;
+
+  struct Pattern
+  {
+    uInt32 vRepeats{1}; // number of vertically repeated data blocks (adding a bit of variation)
+    Data   data;
+
+    explicit Pattern(uInt32 c_vRepeats, const Data& c_data)
+      : vRepeats(c_vRepeats), data(c_data)
     {}
   };
-  std::array <PatternSize, int(ScanlineMask::NumMasks)> Sizes = {{
-    PatternSize(1, 2, 1), // standard
-    PatternSize(1, 3, 1), // thin
-    PatternSize(3, 3, 2), // pixel
-    PatternSize(6, 3, 1), // aperture
-    PatternSize(3, 4, 3), // mame
-  }};
-  // Note: With RGB = 0,0,0, the average alpha should be ~0x55 (85)
-  std::array<std::vector<std::vector<uInt32>>, int(ScanlineMask::NumMasks)> Pattern = {{
-    { // standard
+  std::array<Pattern, int(ScanlineMask::NumMasks)> Patterns = {{
+    Pattern(1,  // standard
+    {
       { 0x00000000 },
-      { 0xaa000000 }, // 0xff decreased to 0xaa (67%) to match overall brightness of other pattern
-    }, { // thin lines
+      { 0xaa000000 } // 0xff decreased to 0xaa (67%) to match overall brightness of other pattern
+    }),
+    Pattern(1,  // thin
+    {
       { 0x00000000 },
       { 0x00000000 },
-      { 0xff000000 },
-    }, { // pixelated
-    // orignal data from https://forum.arcadeotaku.com/posting.php?mode=quote&f=10&p=134359
+      { 0xff000000 }
+    }),
+    Pattern(2,  // pixel
+    {
+      // orignal data from https://forum.arcadeotaku.com/posting.php?mode=quote&f=10&p=134359
       //{ 0x08ffffff, 0x02ffffff, 0x80e7e7e7 },
       //{ 0x08ffffff, 0x80e7e7e7, 0x40ffffff },
       //{ 0xff282828, 0xff282828, 0xff282828 },
@@ -387,15 +383,20 @@ void TIASurface::createScanlineSurface()
       { 0xb4000000, 0xb4000000, 0xb4000000 },
       { 0x5a000000, 0x03000000, 0x03000000 },
       { 0x03000000, 0x5a000000, 0x17000000 },
-      { 0xb4000000, 0xb4000000, 0xb4000000 },
-    }, { // aperture (doubled & darkened, alpha */ 1.75)
+      { 0xb4000000, 0xb4000000, 0xb4000000 }
+    }),
+    Pattern(1,  // aperture
+    {
       //{ 0x2cf31d00, 0x1500ffce, 0x1c1200a4 },
       //{ 0x557e0f00, 0x40005044, 0x45070067 },
       //{ 0x800c0200, 0x89000606, 0x8d02000d },
+      // (doubled & darkened, alpha */ 1.75)
       { 0x19f31d00, 0x0c00ffce, 0x101200a4, 0x19f31d00, 0x0c00ffce, 0x101200a4 },
       { 0x317e0f00, 0x25005044, 0x37070067, 0x317e0f00, 0x25005044, 0x37070067 },
       { 0xe00c0200, 0xf0000606, 0xf702000d, 0xe00c0200, 0xf0000606, 0xf702000d },
-    }, { // mame
+    }),
+    Pattern(3,  // mame
+    {
       // original tile data from https://wiki.arcadeotaku.com/w/MAME_CRT_Simulation
       //{ 0xffb4b4b4, 0xffa5a5a5, 0xffc3c3c3 },
       //{ 0xffffffff, 0xfff0f0f0, 0xfff0f0f0 },
@@ -422,26 +423,21 @@ void TIASurface::createScanlineSurface()
       { 0x0f000000, 0x00000000, 0x0f000000 },
       { 0x1e000000, 0x0f000000, 0x00000000 },
       { 0xff000000, 0xff000000, 0xff000000 },
-    }
+    }),
   }};
-
   const int mask = int(scanlineMaskType());
-  const PatternSize size(Sizes[mask]);
-  uInt32 width{1}, height{1};
-
-  // Single width pattern need no x-repeats
-  if(size.width > 1)
-    width = TIAConstants::frameBufferWidth * size.width;
-  else
-    width = 1;
-  // TODO: use alternative mask pattern if destination is scaled smaller than mask height
-  height = myTIA->height() * size.height; // hRepeats are not used here
-
+  const uInt32 pWidth = uInt32(Patterns[mask].data[0].size());
+  const uInt32 pHeight = uInt32(Patterns[mask].data.size() / Patterns[mask].vRepeats);
+  const uInt32 vRepeats = Patterns[mask].vRepeats;
+  // Single width pattern need no horizontal repeats
+  const uInt32 width = pWidth > 1 ? TIAConstants::frameBufferWidth * pWidth : 1;
+  // TODO: Idea, alternative mask pattern if destination is scaled smaller than mask height?
+  const uInt32 height = myTIA->height()* pHeight; // vRepeats are not used here
   // Copy repeated pattern into surface data
   std::vector<uInt32>data(width * height);
 
   for(uInt32 i = 0; i < width * height; ++i)
-    data[i] = Pattern[mask][(i / width) % (size.height * size.hRepeats)][i % size.width];
+    data[i] = Patterns[mask].data[(i / width) % (pHeight * vRepeats)][i % pWidth];
 
   myFB.deallocateSurface(mySLineSurface);
   mySLineSurface = myFB.allocateSurface(width, height,
