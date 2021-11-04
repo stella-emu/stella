@@ -79,6 +79,7 @@ WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent,
   add(ypos, "added PlusROMs support for saving high scores");
   add(ypos, "added MovieCart support");
   add(ypos, "added weblinks for many games");
+  add(ypos, "added different mask pattern for scanline emulation");
   add(ypos, "debugger: added optional logging of breaks and traps");
   add(ypos, "debugger: enhanced prompt auto complete and history");
   add(ypos, "debugger: added Thumb cycle counting");
@@ -86,9 +87,10 @@ WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent,
 #endif
 
   // Set needed dimensions
-  setSize(MAX_CHARS * fontWidth + HBORDER * 2,
-          ypos + VGAP * 2 + buttonHeight + VBORDER,
-          max_w, max_h);
+  ypos += VGAP * 2 + buttonHeight + VBORDER;
+  if(ypos > FBMinimum::Height) // minimal launcher height
+    throw runtime_error("ERROR: Too many entries in WhatsNewDialog!");
+  setSize(MAX_CHARS * fontWidth + HBORDER * 2, ypos, max_w, max_h);
 
   WidgetArray wid;
   addOKBGroup(wid, _font);
