@@ -25,7 +25,7 @@
 
   * Added 'Check for Update' button to Help dialog.
 
-  * Added different mask pattern for scanline emulation (TODO: doc)
+  * Added different mask pattern for scanline emulation
 
   * Fixed MindLink controller.
 
