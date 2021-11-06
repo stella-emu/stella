@@ -243,6 +243,9 @@ class TIASurface
     // RGB frame buffer
     PhosphorHandler myPhosphorHandler;
 
+    // Phosphor blend
+    int myPBlend{0};
+
     std::array<uInt32, AtariNTSC::outWidth(TIAConstants::frameBufferWidth) *
         TIAConstants::frameBufferHeight> myRGBFramebuffer;
     std::array<uInt32, AtariNTSC::outWidth(TIAConstants::frameBufferWidth) *
