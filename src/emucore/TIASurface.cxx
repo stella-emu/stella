@@ -325,6 +325,7 @@ void TIASurface::enablePhosphor(bool enable, int blend)
 {
   if(myPhosphorHandler.initialize(enable, blend))
   {
+    myPBlend = blend;
     myFilter = Filter(enable ? uInt8(myFilter) | 0x01 : uInt8(myFilter) & 0x10);
     myRGBFramebuffer.fill(0);
   }
@@ -487,18 +488,21 @@ string TIASurface::effectsInfo() const
       buf << "Disabled, normal mode";
       break;
     case Filter::Phosphor:
-      buf << "Disabled, phosphor mode";
+      buf << "Disabled, phosphor=" << myPBlend;
       break;
     case Filter::BlarggNormal:
-      buf << myNTSCFilter.getPreset() << ", scanlines=" << attr.blendalpha;
+      buf << myNTSCFilter.getPreset();
       break;
     case Filter::BlarggPhosphor:
-      buf << myNTSCFilter.getPreset() << ", phosphor, scanlines=" << attr.blendalpha;
+      buf << myNTSCFilter.getPreset() << ", phosphor=" << myPBlend;
       break;
   }
-
+  if(attr.blendalpha)
+    buf << ", scanlines=" << attr.blendalpha
+      << "/" << myOSystem.settings().getString("tv.scanmask");
   buf << ", inter=" << (myOSystem.settings().getBool("tia.inter") ? "enabled" : "disabled");
   buf << ", aspect correction=" << (correctAspect() ? "enabled" : "disabled");
+  buf << ", palette=" << myOSystem.settings().getString("palette");
 
   return buf.str();
 }
