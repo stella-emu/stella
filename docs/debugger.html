@@ -1302,13 +1302,40 @@ are lost (they will NOT end up in the Carry flag).</p>
 <h2><a name="M6532"><u>(K)</u> M6532/RIOT RAM</a></h2>
 <p>This is a spreadsheet-like GUI for inspecting and changing the contents
 of the 2600's zero-page RAM.</p>
-<p>You can navigate with either the mouse or the keyboard arrow keys.
+<p>You can navigate with either the mouse or the keyboard (see below).
 To change a RAM location, either double-click on it or press 'Enter' while
 it's highlighted. Enter the new value (hex, other formats using the bottom textboxes), then
 press 'Enter' to make the change. The currently selected RAM cell
 can also be changed by using the
 <a href="#DataOpButtons"><b>Data Operations Buttons</b></a> or the associated
 shortcut keys.</p>
+
+<p>You can navigate all RAM grids (and other data grids too) using the following keyboard shortcuts.</p>
+<table border="1" cellpadding=4>
+  <tr>
+    <th>Shortut</th><th>Description</th>
+  </tr>
+  <tr>
+    <td>Left arrow</td><td>Move to left cell.</td>
+  </tr><tr>
+    <td>Right arrow</td><td>Move to right cell.</td>
+  </tr><tr>
+    <td>Home</td><td>Move to leftmost cell.</td>
+  </tr><tr>
+    <td>End</td><td>Move to rightmost cell.</td>
+  </tr><tr>
+    <td>Up arrow</td><td>Move to cell above.</td>
+  </tr><tr>
+    <td>Down arrow</td><td>Move to cell below.</td>
+  </tr><tr>
+    <td>Page Up</td><td>Move to top visible row.</td>
+  </tr><tr>
+    <td>Page Down</td><td>Move to bottom visible row.</td>
+  </tr><tr>
+    <td>Shift + Page Up</td><td>Scroll one page up.</td>
+  </tr><tr>
+    <td>Shift + Page Down</td><td>Scroll one page down.</td>
+</table>
 <p><img src="graphics/debugger_ram.png"></p>
 <p>The 'Undo' button in the upper right should be self-explanatory; it will
 undo the most previous operation to one cell only. The 'Revert' button is
