@@ -88,7 +88,7 @@ WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent,
 
   // Set needed dimensions
   ypos += VGAP * 2 + buttonHeight + VBORDER;
-  assert(ypos <= FBMinimum::Height); // minimal launcher height
+  assert(ypos <= int(FBMinimum::Height)); // minimal launcher height
   setSize(MAX_CHARS * fontWidth + HBORDER * 2, ypos, max_w, max_h);
 
   WidgetArray wid;
