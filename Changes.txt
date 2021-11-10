@@ -12,9 +12,9 @@
                               Release History
 ===========================================================================
 
-6.5.3 to 6.6 (??? ??, 202?) (Halloween?)
+6.5.3 to 6.6 (November 15, 2021)
 
-  * Added PlusROMs support for saving high scores.
+  * Added preliminary PlusROM support for saving high scores.
 
   * Added preliminary support for 'MVC' bankswitching scheme by
     Rob Bairos.
@@ -25,7 +25,7 @@
 
   * Added 'Check for Update' button to Help dialog.
 
-  * Added different mask pattern for scanline emulation
+  * Added different mask patterns for scanline emulation.
 
   * Fixed MindLink controller.
 
