@@ -329,7 +329,7 @@ void BrowserDialog::updateUI(bool fileSelected)
     enable = !_selected->getText().empty();
   _okWidget->setEnabled(enable);
 
-  if(fileSelected && !_fileList->selected().isDirectory())
+  if(fileSelected && _fileList->getList().size() && !_fileList->selected().isDirectory())
     _selected->setText(_fileList->getSelectedString());
 }
 
