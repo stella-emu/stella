@@ -12,7 +12,7 @@
                               Release History
 ===========================================================================
 
-6.5.3 to 6.6 (November 15, 2021)
+6.5.3 to 6.6 (November 16, 2021)
 
   * Added preliminary PlusROM support for saving high scores.
 
