@@ -101,22 +101,6 @@ void TIASurface::initialize(const Console& console,
 
   myPaletteHandler->setPalette();
 
-  // Phosphor mode can be enabled either globally or per-ROM
-  int p_blend = 0;
-  bool enable = false;
-
-  if(myOSystem.settings().getString("tv.phosphor") == "always")
-  {
-    p_blend = myOSystem.settings().getInt("tv.phosblend");
-    enable = true;
-  }
-  else
-  {
-    p_blend = BSPF::stringToInt(console.properties().get(PropType::Display_PPBlend));
-    enable = console.properties().get(PropType::Display_Phosphor) == "YES";
-  }
-  enablePhosphor(enable, p_blend);
-
   createScanlineSurface();
   setNTSC(NTSCFilter::Preset(myOSystem.settings().getInt("tv.filter")), false);
 

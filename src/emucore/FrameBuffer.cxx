@@ -313,6 +313,27 @@ FBInitStatus FrameBuffer::createDisplay(const string& title, BufferType type,
   // Initialize video subsystem
   string pre_about = myBackend->about();
   FBInitStatus status = applyVideoMode();
+
+  // Only set phosphor once when ROM is started
+  if(myOSystem.eventHandler().inTIAMode())
+  {
+    // Phosphor mode can be enabled either globally or per-ROM
+    int p_blend = 0;
+    bool enable = false;
+
+    if(myOSystem.settings().getString("tv.phosphor") == "always")
+    {
+      p_blend = myOSystem.settings().getInt("tv.phosblend");
+      enable = true;
+    }
+    else
+    {
+      p_blend = BSPF::stringToInt(myOSystem.console().properties().get(PropType::Display_PPBlend));
+      enable = myOSystem.console().properties().get(PropType::Display_Phosphor) == "YES";
+    }
+    myTIASurface->enablePhosphor(enable, p_blend);
+  }
+
   if(status != FBInitStatus::Success)
     return status;
 
