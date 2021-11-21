@@ -38,6 +38,7 @@ class GlobalKeyHandler
       VOLUME,
       ZOOM,
       FULLSCREEN,
+      FS_ASPECT,
     #ifdef ADAPTABLE_REFRESH_SUPPORT
       ADAPT_REFRESH,
     #endif

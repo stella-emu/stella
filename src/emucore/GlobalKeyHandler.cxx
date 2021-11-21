@@ -137,7 +137,10 @@ bool GlobalKeyHandler::handleEvent(const Event::Type event, bool pressed, bool r
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GlobalKeyHandler::setSetting(const Setting setting)
 {
-  mySetting = setting;
+  if(setting == Setting::ZOOM && myOSystem.frameBuffer().fullScreen())
+    mySetting = Setting::FS_ASPECT;
+  else
+    mySetting = setting;
   mySettingActive = true;
 }
 
@@ -193,6 +196,8 @@ bool GlobalKeyHandler::isTrackball(const Controller& controller) const
 bool GlobalKeyHandler::skipAVSetting() const
 {
   const bool isFullScreen = myOSystem.frameBuffer().fullScreen();
+  const bool isFsStretch = isFullScreen &&
+    myOSystem.settings().getBool("tia.fs_stretch");
   const bool isCustomPalette =
     myOSystem.settings().getString("palette") == PaletteHandler::SETTING_CUSTOM;
   const bool isCustomFilter =
@@ -203,9 +208,12 @@ bool GlobalKeyHandler::skipAVSetting() const
     myOSystem.settings().getString("video") == "software";
 
   return (mySetting == Setting::OVERSCAN && !isFullScreen)
+    || (mySetting == Setting::ZOOM && isFullScreen)
 #ifdef ADAPTABLE_REFRESH_SUPPORT
     || (mySetting == Setting::ADAPT_REFRESH && !isFullScreen)
 #endif
+    || (mySetting == Setting::FS_ASPECT && !isFullScreen)
+    || (mySetting == Setting::ASPECT_RATIO && isFsStretch)
     || (mySetting >= Setting::PALETTE_PHASE
       && mySetting <= Setting::PALETTE_BLUE_SHIFT
       && !isCustomPalette)
@@ -328,6 +336,7 @@ GlobalKeyHandler::SettingData GlobalKeyHandler::getSettingData(const Setting set
     {Setting::VOLUME,                 {true,  std::bind(&Sound::adjustVolume, &myOSystem.sound(), _1)}},
     {Setting::ZOOM,                   {false, std::bind(&FrameBuffer::switchVideoMode, &myOSystem.frameBuffer(), _1)}}, // always repeating
     {Setting::FULLSCREEN,             {false, std::bind(&FrameBuffer::toggleFullscreen, &myOSystem.frameBuffer(), _1)}}, // always repeating
+    {Setting::FS_ASPECT,              {false, std::bind(&FrameBuffer::switchVideoMode, &myOSystem.frameBuffer(), _1)}}, // always repeating
   #ifdef ADAPTABLE_REFRESH_SUPPORT
     {Setting::ADAPT_REFRESH,          {false, std::bind(&FrameBuffer::toggleAdaptRefresh, &myOSystem.frameBuffer(), _1)}}, // always repeating
   #endif
