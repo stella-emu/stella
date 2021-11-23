@@ -12,6 +12,13 @@
                               Release History
 ===========================================================================
 
+6.6 to 6.?
+
+  * Added option to toggle autofire mode. (TODO: doc)
+
+-Have fun!
+
+
 6.5.3 to 6.6 (November 16, 2021)
 
   * Added preliminary PlusROM support for saving high scores.
@@ -42,9 +49,6 @@
   * Debugger: added optional logging of breaks and traps.
 
   * Debugger: added Thumb cycle counting.
-
--Have fun!
-
 
 6.5.2 to 6.5.3 (April 20, 2021)
 
