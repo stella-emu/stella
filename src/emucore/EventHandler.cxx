@@ -113,6 +113,7 @@ void EventHandler::initialize()
   Controller::setMouseSensitivity(myOSystem.settings().getInt("msense"));
   PointingDevice::setSensitivity(myOSystem.settings().getInt("tsense"));
   Driving::setSensitivity(myOSystem.settings().getInt("dcsense"));
+  Controller::setAutoFire(myOSystem.settings().getBool("autofire"));
   Controller::setAutoFireRate(myOSystem.settings().getInt("autofirerate"));
 
 #ifdef GUI_SUPPORT
@@ -1097,6 +1098,14 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       {
         myPJoyHandler->changeDigitalPaddleSensitivity(+1);
         myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::DIGITAL_SENSITIVITY);
+      }
+      return;
+
+    case Event::ToggleAutoFire:
+      if(pressed && !repeated)
+      {
+        myOSystem.console().toggleAutoFire();
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::AUTO_FIRE);
       }
       return;
 
@@ -2929,6 +2938,7 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::IncDejtterReaction,      "Increase paddle dejitter reaction",     "" },
   { Event::DecDigitalSense,         "Decrease digital paddle sensitivity",   "" },
   { Event::IncDigitalSense,         "Increase digital paddle sensitivity",   "" },
+  { Event::ToggleAutoFire,          "Toggle auto fire",                      "" },
   { Event::DecreaseAutoFire,        "Decrease auto fire speed",              "" },
   { Event::IncreaseAutoFire,        "Increase auto fire speed",              "" },
   { Event::ToggleFourDirections,    "Toggle allow four joystick directions", "" },
@@ -3142,7 +3152,7 @@ const Event::EventSet EventHandler::DevicesEvents = {
   Event::DecDejtterAveraging, Event::IncDejtterAveraging,
   Event::DecDejtterReaction, Event::IncDejtterReaction,
   Event::DecDigitalSense, Event::IncDigitalSense,
-  Event::DecreaseAutoFire, Event::IncreaseAutoFire,
+  Event::ToggleAutoFire, Event::DecreaseAutoFire, Event::IncreaseAutoFire,
   Event::ToggleFourDirections, Event::ToggleKeyCombos, Event::ToggleSAPortOrder,
   Event::PrevMouseAsController, Event::NextMouseAsController,
   Event::DecMousePaddleSense, Event::IncMousePaddleSense,

@@ -1111,6 +1111,22 @@ void Console::changePaddleAxesRange(int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::toggleAutoFire(bool toggle)
+{
+  bool enabled = myOSystem.settings().getBool("autofire");
+
+  if(toggle)
+  {
+    myOSystem.settings().setValue("autofire", !enabled);
+    Controller::setAutoFire(!enabled);
+  }
+
+  ostringstream ss;
+  ss << "Autofire " << (!enabled ? "enabled" : "disabled");
+  myOSystem.frameBuffer().showTextMessage(ss.str());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::changeAutoFireRate(int direction)
 {
   const Int32 scanlines = std::max<Int32>(tia().scanlinesLastFrame(), 240);
@@ -1126,7 +1142,11 @@ void Console::changeAutoFireRate(int direction)
   ostringstream val;
 
   if(rate)
+  {
+    myOSystem.settings().setValue("autofire", true);
+    Controller::setAutoFire(true);
     val << rate << " Hz";
+  }
   else
     val << "Off";
 

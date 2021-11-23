@@ -78,6 +78,7 @@ class InputDialog : public Dialog
       kDejitterReChanged  = 'JRch',
       kDPSpeedChanged     = 'DSch',
       kAutoFireChanged    = 'AFch',
+      kAutoFireRate       = 'AFra',
       kTBSpeedChanged     = 'TBch',
       kDCSpeedChanged     = 'DCch',
       kDBButtonPressed    = 'DBbp',
@@ -104,6 +105,7 @@ class InputDialog : public Dialog
     SliderWidget*     myDejitterBase{nullptr};
     SliderWidget*     myDejitterDiff{nullptr};
     SliderWidget*     myDPaddleSpeed{nullptr};
+    CheckboxWidget*   myAutoFire{nullptr};
     SliderWidget*     myAutoFireRate{nullptr};
     CheckboxWidget*   myAllowAll4{nullptr};
     CheckboxWidget*   myModCombo{nullptr};

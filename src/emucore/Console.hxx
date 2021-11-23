@@ -188,11 +188,6 @@ class Console : public Serializable, public ConsoleIO
     EmulationTiming& emulationTiming() { return myEmulationTiming; }
 
     /**
-      Retrieve the current game's refresh rate, or 0 if no game.
-    */
-    int refreshRate() const;
-
-    /**
       Toggle left and right controller ports swapping
     */
     void toggleSwapPorts(bool toggle = true);
@@ -377,6 +372,11 @@ class Console : public Serializable, public ConsoleIO
       the current display format.
     */
     void setTIAProperties();
+
+    /**
+      Toggle autofire for all controllers
+    */
+    void toggleAutoFire(bool toggle = true);
 
     /**
       Change the autofire speed for all controllers
