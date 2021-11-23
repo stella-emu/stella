@@ -700,6 +700,7 @@ PhysicalKeyboardHandler::DefaultCommonMapping = {
   { Event::IncDejtterReaction,       KBDK_F4, KBDM_CTRL },
   { Event::DecDigitalSense,          KBDK_F5, KBDM_CTRL | KBDM_SHIFT },
   { Event::IncDigitalSense,          KBDK_F5, KBDM_CTRL },
+  { Event::ToggleAutoFire,           KBDK_A, MOD3 },
   { Event::DecreaseAutoFire,         KBDK_A, KBDM_CTRL | KBDM_SHIFT },
   { Event::IncreaseAutoFire,         KBDK_A, KBDM_CTRL },
   { Event::ToggleFourDirections,     KBDK_F6, KBDM_CTRL },

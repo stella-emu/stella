@@ -185,6 +185,12 @@ void Controller::setMouseSensitivity(int sensitivity)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Controller::setAutoFire(bool enable)
+{
+  AUTO_FIRE = enable;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Controller::setAutoFireRate(int rate, bool isNTSC)
 {
   rate = BSPF::clamp(rate, 0, isNTSC ? 30 : 25);
@@ -195,4 +201,5 @@ void Controller::setAutoFireRate(int rate, bool isNTSC)
 int Controller::DIGITAL_DEAD_ZONE = 3200;
 int Controller::ANALOG_DEAD_ZONE = 0;
 int Controller::MOUSE_SENSITIVITY = -1;
+bool Controller::AUTO_FIRE = false;
 int Controller::AUTO_FIRE_RATE = 0;

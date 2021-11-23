@@ -106,6 +106,7 @@ void InputDialog::addDevicePortTab()
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap();
+  const int swidth = 13 * fontWidth;
   int xpos, ypos, lwidth, tabID;
   WidgetArray wid;
 
@@ -116,7 +117,7 @@ void InputDialog::addDevicePortTab()
   lwidth = _font.getStringWidth("Digital paddle sensitivity ");
 
   // Add digital dead zone setting
-  myDigitalDeadzone = new SliderWidget(myTab, _font, xpos, ypos - 1, 13 * fontWidth, lineHeight,
+  myDigitalDeadzone = new SliderWidget(myTab, _font, xpos, ypos - 1, swidth, lineHeight,
                                         "Digital dead zone size ",
                                         lwidth, kDDeadzoneChanged, 3 * fontWidth, "%");
   myDigitalDeadzone->setMinValue(Controller::MIN_DIGITAL_DEADZONE);
@@ -127,7 +128,7 @@ void InputDialog::addDevicePortTab()
 
   // Add analog dead zone
   ypos += lineHeight + VGAP;
-  myAnalogDeadzone = new SliderWidget(myTab, _font, xpos, ypos - 1, 13 * fontWidth, lineHeight,
+  myAnalogDeadzone = new SliderWidget(myTab, _font, xpos, ypos - 1, swidth, lineHeight,
                                       "Analog dead zone size",
                                       lwidth, kADeadzoneChanged, 3 * fontWidth, "%");
   myAnalogDeadzone->setMinValue(Controller::MIN_ANALOG_DEADZONE);
@@ -142,7 +143,7 @@ void InputDialog::addDevicePortTab()
 
   // Add analog paddle sensitivity
   ypos += lineHeight;
-  myPaddleSpeed = new SliderWidget(myTab, _font, xpos, ypos - 1, 13 * fontWidth, lineHeight,
+  myPaddleSpeed = new SliderWidget(myTab, _font, xpos, ypos - 1, swidth, lineHeight,
                                  "Sensitivity",
                                  lwidth - fontWidth * 2, kPSpeedChanged, 4 * fontWidth, "%");
   myPaddleSpeed->setMinValue(0);
@@ -152,7 +153,7 @@ void InputDialog::addDevicePortTab()
 
   // Add analog paddle linearity
   ypos += lineHeight + VGAP;
-  myPaddleLinearity = new SliderWidget(myTab, _font, xpos, ypos - 1, 13 * fontWidth, lineHeight,
+  myPaddleLinearity = new SliderWidget(myTab, _font, xpos, ypos - 1, swidth, lineHeight,
                                        "Linearity", lwidth - fontWidth * 2, 0, 4 * fontWidth, "%");
   myPaddleLinearity->setMinValue(Paddles::MIN_ANALOG_LINEARITY);
   myPaddleLinearity->setMaxValue(Paddles::MAX_ANALOG_LINEARITY);
@@ -163,7 +164,7 @@ void InputDialog::addDevicePortTab()
 
   // Add dejitter (analog paddles)
   ypos += lineHeight + VGAP;
-  myDejitterBase = new SliderWidget(myTab, _font, xpos, ypos - 1, 13 * fontWidth, lineHeight,
+  myDejitterBase = new SliderWidget(myTab, _font, xpos, ypos - 1, swidth, lineHeight,
                                     "Dejitter averaging", lwidth - fontWidth * 2,
                                     kDejitterAvChanged, 3 * fontWidth);
   myDejitterBase->setMinValue(Paddles::MIN_DEJITTER);
@@ -175,7 +176,7 @@ void InputDialog::addDevicePortTab()
   wid.push_back(myDejitterBase);
 
   ypos += lineHeight + VGAP;
-  myDejitterDiff = new SliderWidget(myTab, _font, xpos, ypos - 1, 13 * fontWidth, lineHeight,
+  myDejitterDiff = new SliderWidget(myTab, _font, xpos, ypos - 1, swidth, lineHeight,
                                     "Dejitter reaction", lwidth - fontWidth * 2,
                                     kDejitterReChanged, 3 * fontWidth);
   myDejitterDiff->setMinValue(Paddles::MIN_DEJITTER);
@@ -186,7 +187,7 @@ void InputDialog::addDevicePortTab()
 
   // Add paddle speed (digital emulation)
   ypos += lineHeight + VGAP * (3 - 2);
-  myDPaddleSpeed = new SliderWidget(myTab, _font, HBORDER, ypos - 1, 13 * fontWidth, lineHeight,
+  myDPaddleSpeed = new SliderWidget(myTab, _font, HBORDER, ypos - 1, swidth, lineHeight,
                                     "Digital paddle sensitivity",
                                     lwidth, kDPSpeedChanged, 4 * fontWidth, "%");
   myDPaddleSpeed->setMinValue(1); myDPaddleSpeed->setMaxValue(20);
@@ -194,9 +195,11 @@ void InputDialog::addDevicePortTab()
   wid.push_back(myDPaddleSpeed);
 
   ypos += lineHeight + VGAP * (3 - 2);
-  myAutoFireRate = new SliderWidget(myTab, _font, HBORDER, ypos - 1, 13 * fontWidth, lineHeight,
-                                    "Autofire rate",
-                                    lwidth, kAutoFireChanged, 5 * fontWidth, "Hz");
+  myAutoFire = new CheckboxWidget(myTab, _font, HBORDER, ypos + 1, "Autofire", kAutoFireChanged);
+  wid.push_back(myAutoFire);
+
+  myAutoFireRate = new SliderWidget(myTab, _font, HBORDER + lwidth - fontWidth * 5,
+    ypos - 1, swidth, lineHeight, "Rate ", 0, kAutoFireRate, 5 * fontWidth, "Hz");
   myAutoFireRate->setMinValue(0); myAutoFireRate->setMaxValue(30);
   myAutoFireRate->setTickmarkIntervals(6);
   wid.push_back(myAutoFireRate);
@@ -204,13 +207,13 @@ void InputDialog::addDevicePortTab()
   // Add 'allow all 4 directions' for joystick
   ypos += lineHeight + VGAP * (4 - 2);
   myAllowAll4 = new CheckboxWidget(myTab, _font, HBORDER, ypos,
-                  "Allow all 4 directions on joystick");
+                                   "Allow all 4 directions on joystick");
   wid.push_back(myAllowAll4);
 
   // Enable/disable modifier key-combos
   ypos += lineHeight + VGAP;
   myModCombo = new CheckboxWidget(myTab, _font, HBORDER, ypos,
-                  "Use modifier key combos");
+                                  "Use modifier key combos");
   wid.push_back(myModCombo);
   ypos += lineHeight + VGAP;
 
@@ -264,6 +267,7 @@ void InputDialog::addMouseTab()
             HBORDER    = Dialog::hBorder(),
             VGAP       = Dialog::vGap(),
             INDENT     = Dialog::indent();
+  const int swidth = 13 * fontWidth;
   int xpos = HBORDER, ypos, lwidth, pwidth, tabID;
   WidgetArray wid;
   VariantList items;
@@ -289,7 +293,7 @@ void InputDialog::addMouseTab()
   // Add paddle speed (mouse emulation)
   xpos += INDENT;  ypos += lineHeight + VGAP;
   lwidth -= INDENT;
-  myMPaddleSpeed = new SliderWidget(myTab, _font, xpos, ypos - 1, 13 * fontWidth, lineHeight,
+  myMPaddleSpeed = new SliderWidget(myTab, _font, xpos, ypos - 1, swidth, lineHeight,
                                     "Paddle",
                                     lwidth, kMPSpeedChanged, 4 * fontWidth, "%");
   myMPaddleSpeed->setMinValue(1); myMPaddleSpeed->setMaxValue(20);
@@ -298,7 +302,7 @@ void InputDialog::addMouseTab()
 
   // Add trackball speed
   ypos += lineHeight + VGAP;
-  myTrackBallSpeed = new SliderWidget(myTab, _font, xpos, ypos - 1, 13 * fontWidth, lineHeight,
+  myTrackBallSpeed = new SliderWidget(myTab, _font, xpos, ypos - 1, swidth, lineHeight,
                                       "Trackball",
                                       lwidth, kTBSpeedChanged, 4 * fontWidth, "%");
   myTrackBallSpeed->setMinValue(1); myTrackBallSpeed->setMaxValue(20);
@@ -307,7 +311,7 @@ void InputDialog::addMouseTab()
 
   // Add driving controller speed
   ypos += lineHeight + VGAP;
-  myDrivingSpeed = new SliderWidget(myTab, _font, xpos, ypos - 1, 13 * fontWidth, lineHeight,
+  myDrivingSpeed = new SliderWidget(myTab, _font, xpos, ypos - 1, swidth, lineHeight,
                                     "Driving controller",
                                     lwidth, kDCSpeedChanged, 4 * fontWidth, "%");
   myDrivingSpeed->setMinValue(1); myDrivingSpeed->setMaxValue(20);
@@ -383,6 +387,9 @@ void InputDialog::loadConfig()
   myTrackBallSpeed->setValue(settings.getInt("tsense"));
   // Driving controller speed
   myDrivingSpeed->setValue(settings.getInt("dcsense"));
+
+  // Autofire
+  myAutoFire->setState(settings.getBool("autofire"));
 
   // Autofire rate
   myAutoFireRate->setValue(settings.getInt("autofirerate"));
@@ -462,7 +469,11 @@ void InputDialog::saveConfig()
   settings.setValue("dsense", sensitivity);
   Paddles::setDigitalSensitivity(sensitivity);
 
-  // Autofire rate
+  // Autofire mode & rate
+  bool enabled = myAutoFire->getState();
+  settings.setValue("autofire", enabled);
+  Controller::setAutoFire(enabled);
+
   int rate = myAutoFireRate->getValue();
   settings.setValue("autofirerate", rate);
   Controller::setAutoFireRate(rate);
@@ -549,6 +560,9 @@ void InputDialog::setDefaults()
 
       // Paddle speed (digital)
       myDPaddleSpeed->setValue(10);
+
+      // Autofire
+      myAutoFire->setState(false);
 
       // Autofire rate
       myAutoFireRate->setValue(0);
@@ -733,6 +747,7 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kAutoFireChanged:
+    case kAutoFireRate:
       updateAutoFireRate();
       break;
 
@@ -806,8 +821,10 @@ void InputDialog::updateDejitterReaction()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputDialog::updateAutoFireRate()
 {
+  bool enable = myAutoFire->getState();
   int rate = myAutoFireRate->getValue();
 
+  myAutoFireRate->setEnabled(enable);
   myAutoFireRate->setValueLabel(rate ? std::to_string(rate) : "Off");
   myAutoFireRate->setValueUnit(rate ? " Hz" : "");
 }

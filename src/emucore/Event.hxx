@@ -128,7 +128,7 @@ class Event
       // add new (after Version 4) events from here to avoid that user remapped events get overwritten
       PreviousSettingGroup, NextSettingGroup,
       TogglePlayBackMode,
-      DecreaseAutoFire, IncreaseAutoFire,
+      ToggleAutoFire, DecreaseAutoFire, IncreaseAutoFire,
       DecreaseSpeed, IncreaseSpeed,
 
       QTJoystickThreeUp, QTJoystickThreeDown, QTJoystickThreeLeft, QTJoystickThreeRight,
