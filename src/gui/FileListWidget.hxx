@@ -97,11 +97,23 @@ class FileListWidget : public StringListWidget
     void incProgress();
 
   private:
+    enum class IconType {
+      unknown,
+      rom,
+      directory,
+      zip
+    };
+    using IconTypeList = std::vector<IconType>;
+    using Icon = std::vector<uInt32>;
+
+  private:
     /** Very similar to setDirectory(), but also updates the history */
     void setLocation(const FilesystemNode& node, const string& select);
 
     bool handleText(char text) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    int drawIcon(int i, int x, int y, ColorId color) override;
+    int iconWidth() const;
 
   private:
     FilesystemNode::ListMode _fsmode{FilesystemNode::ListMode::All};
@@ -111,6 +123,7 @@ class FileListWidget : public StringListWidget
     bool _includeSubDirs{false};
 
     StringList _dirList;
+    IconTypeList _iconList;
 
     Common::FixedStack<string> _history;
     uInt32 _selected{0};

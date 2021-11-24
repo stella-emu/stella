@@ -171,7 +171,7 @@ bool FilesystemNode::getChildren(FSList& fslist, ListMode mode,
   if (includeParentDirectory && hasParent())
   {
     FilesystemNode parent = getParent();
-    parent.setName(" [..]");
+    parent.setName("..");
     fslist.emplace_back(parent);
   }
 
@@ -204,10 +204,6 @@ bool FilesystemNode::getChildren(FSList& fslist, ListMode mode,
     else
   #endif
     {
-      // Make directories stand out
-      if(i->isDirectory())
-        i->setName(" [" + i->getName() + "]");
-
       FilesystemNode node(i);
 
       if(includeChildDirectories)
