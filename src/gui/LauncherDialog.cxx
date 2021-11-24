@@ -796,7 +796,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
     case kLoadROMCmd:
       if(myList->selected().isDirectory())
       {
-        if(myList->selected().getName() == " [..]")
+        if(myList->selected().getName() == "..")
           myList->selectParent();
         else
           myList->selectDirectory();

@@ -102,6 +102,7 @@ void StringListWidget::drawWidget(bool hilite)
   for (i = 0, pos = _currentPos; i < _rows && pos < len; i++, pos++)
   {
     const int y = _y + 2 + _lineHeight * i;
+    int iw = 0;
     ColorId textColor = kTextColor;
 
     // Draw the selected item inverted, on a highlighted background.
@@ -115,17 +116,18 @@ void StringListWidget::drawWidget(bool hilite)
       else
         s.frameRect(_x + 1, _y + 1 + _lineHeight * i, _w - 1, _lineHeight, kWidColorHi);
     }
+    iw = drawIcon(pos, _x, y - 1, textColor);
 
     Common::Rect r(getEditRect());
     if (_selectedItem == pos && _editMode)
     {
       adjustOffset();
 
-      s.drawString(_font, editString(), _x + r.x(), y, r.w(), textColor,
+      s.drawString(_font, editString(), _x + iw + r.x(), y, r.w() - iw, textColor,
                    TextAlign::Left, -_editScrollOffset, false);
     }
     else
-      s.drawString(_font, _list[pos], _x + r.x(), y, r.w(), textColor);
+      s.drawString(_font, _list[pos], _x + iw + r.x(), y, r.w() - iw, textColor);
   }
 
   // Only draw the caret while editing, and if it's in the current viewport

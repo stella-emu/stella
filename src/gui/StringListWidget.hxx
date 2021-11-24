@@ -44,6 +44,7 @@ class StringListWidget : public ListWidget
     int getToolTipIndex(const Common::Point& pos) const;
 
     void drawWidget(bool hilite) override;
+    virtual int drawIcon(int i, int x, int y, ColorId color) { return 0; }
     Common::Rect getEditRect() const override;
 
   protected:

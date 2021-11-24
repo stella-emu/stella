@@ -16,6 +16,8 @@
 
   * Added option to toggle autofire mode.
 
+  * Added icons to file lists (TODO: doc)
+
 -Have fun!
 
 
