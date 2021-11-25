@@ -104,9 +104,9 @@ void FileListWidget::setLocation(const FilesystemNode& node,
   _iconList.clear();
   for(const auto& file : _fileList)
   {
-    const string path = file.getShortPath();
-    const string name = file.getName();
-    const string displayName = _showFileExtensions ? name : file.getNameWithExt(EmptyString);
+    const string& path = file.getShortPath();
+    const string& name = file.getName();
+    const string& displayName = _showFileExtensions ? name : file.getNameWithExt(EmptyString);
 
     // display only relative path in tooltip
     if(path.length() >= orgLen)
@@ -269,7 +269,7 @@ void FileListWidget::handleCommand(CommandSender* sender, int cmd, int data, int
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int FileListWidget::drawIcon(int i, int x, int y, ColorId color)
 {
-  const Icon unknown_small = {
+  static const Icon unknown_small = {
     0b00111111'1100000,
     0b00100000'0110000,
     0b00100000'0011000,
@@ -285,7 +285,7 @@ int FileListWidget::drawIcon(int i, int x, int y, ColorId color)
     0b00100000'0000100,
     0b00111111'1111100
   };
-  const Icon rom_small = {
+  static const Icon rom_small = {
     0b00001111'1110000,
     0b00001010'1010000,
     0b00001010'1010000,
@@ -300,7 +300,7 @@ int FileListWidget::drawIcon(int i, int x, int y, ColorId color)
     0b10011010'1011001,
     0b11110011'1001111
   };
-  const Icon directory_small = {
+  static const Icon directory_small = {
     0b11111000'0000000,
     0b11111100'0000000,
     0b11111111'1111111,
@@ -315,7 +315,7 @@ int FileListWidget::drawIcon(int i, int x, int y, ColorId color)
     0b10000000'0000001,
     0b11111111'1111111
   };
-  const Icon zip_small = {
+  static const Icon zip_small = {
     //0b0011111'11111111,
     //0b0110000'11000111,
     //0b1111111'11111101,
@@ -344,7 +344,7 @@ int FileListWidget::drawIcon(int i, int x, int y, ColorId color)
     0b11111111'1111111
 
   };
-  const Icon unknown_large = {
+  static const Icon unknown_large = {
     0b00111'11111111'11000000,
     0b00111'11111111'11100000,
     0b00110'00000000'01110000,
@@ -367,7 +367,7 @@ int FileListWidget::drawIcon(int i, int x, int y, ColorId color)
     0b00111'11111111'11111100,
     0b00111'11111111'11111100
   };
-  const Icon rom_large = {
+  static const Icon rom_large = {
     0b00000'01111111'11000000,
     0b00000'01111111'11000000,
     0b00000'01101010'11000000,
@@ -390,7 +390,7 @@ int FileListWidget::drawIcon(int i, int x, int y, ColorId color)
     0b11111'11011111'01111111,
     0b11111'10011111'00111111
   };
-  const Icon directory_large = {
+  static const Icon directory_large = {
     0b111111'10000000'0000000,
     0b111111'11000000'0000000,
     0b111111'11100000'0000000,
@@ -413,7 +413,7 @@ int FileListWidget::drawIcon(int i, int x, int y, ColorId color)
     0b111111'11111111'1111111,
     0b111111'11111111'1111111
   };
-  const Icon zip_large = {
+  static const Icon zip_large = {
     0b111111'10000000'0000000,
     0b111111'11000000'0000000,
     0b111111'11100000'0000000,
@@ -438,30 +438,32 @@ int FileListWidget::drawIcon(int i, int x, int y, ColorId color)
   };
   const bool smallIcon = iconWidth() < 24;
   const int iconGap = smallIcon ? 2 : 3;
-  Icon icon = smallIcon ? unknown_small : unknown_large;
 
+  const Icon* icon{nullptr};
   switch(_iconList[i])
   {
     case IconType::rom:
-      icon = smallIcon ? rom_small: rom_large;
+      icon = smallIcon ? &rom_small: &rom_large;
       break;
 
     case IconType::directory:
-      icon = smallIcon ? directory_small : directory_large;
+      icon = smallIcon ? &directory_small : &directory_large;
       break;
 
     case IconType::zip:
-      icon = smallIcon ? zip_small : zip_large;
+      icon = smallIcon ? &zip_small : &zip_large;
       break;
 
     default:
+      icon = smallIcon ? &unknown_small : &unknown_large;
       break;
   }
 
   FBSurface& s = _boss->dialog().surface();
 
-  s.drawBitmap(icon.data(), x + 1 + iconGap, y + (_lineHeight - static_cast<int>(icon.size())) / 2,
-    color, iconWidth() - iconGap * 2, static_cast<int>(icon.size()));
+  s.drawBitmap(icon->data(), x + 1 + iconGap,
+      y + (_lineHeight - static_cast<int>(icon->size())) / 2,
+      color, iconWidth() - iconGap * 2, static_cast<int>(icon->size()));
 
   return iconWidth();
 }
@@ -477,7 +479,7 @@ int FileListWidget::iconWidth() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string FileListWidget::getToolTip(const Common::Point& pos) const
 {
-  const Common::Rect rect = getEditRect();
+  const Common::Rect& rect = getEditRect();
   const int idx = getToolTipIndex(pos);
 
   if(idx < 0)
