@@ -107,7 +107,7 @@ class FileListWidget : public StringListWidget
       zip
     };
     using IconTypeList = std::vector<IconType>;
-    using Icon = std::vector<uInt32>;
+    using Icon = uIntArray;
 
   private:
     /** Very similar to setDirectory(), but also updates the history */
