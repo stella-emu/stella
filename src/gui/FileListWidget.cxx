@@ -204,7 +204,7 @@ bool FileListWidget::handleText(char text)
   {
     if(BSPF::startsWithIgnoreCase(i, _quickSelectStr))
       // Select directories when the first character is uppercase
-      if(std::isupper(_quickSelectStr[0]) ==
+      if((std::isupper(_quickSelectStr[0]) != 0) ==
           (_iconList[selectedItem] == IconType::directory))
         break;
     selectedItem++;
