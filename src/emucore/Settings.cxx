@@ -154,6 +154,7 @@ Settings::Settings()
   setPermanent("launcherfont", "medium");
   setPermanent("launcherroms", "true");
   setPermanent("launchersubdirs", "false");
+  setPermanent("launcherextensions", "false");
   setPermanent("romviewer", "1");
   setPermanent("lastrom", "");
 
@@ -579,7 +580,8 @@ void Settings::usage() const
     << "                                entry\n"
     << endl
     << "  -exitlauncher <0|1>          On exiting a ROM, go back to the ROM launcher\n"
-    << "  -launcherpos  <XxY>          Sets the window position in windowed EOM launcher mode\n"
+    << "  -launcherpos  <XxY>          Sets the window position in windowed launcher\n"
+    << "                                mode\n"
     << "  -launcherdisplay <number>    Sets the display for the ROM launcher\n"
     << "  -launcherres  <WxH>          The resolution to use in ROM launcher mode\n"
     << "  -launcherfont <small|        Use the specified font in the ROM launcher\n"
@@ -589,13 +591,14 @@ void Settings::usage() const
     << "                 large16>\n"
     << "  -romviewer    <float>        Show ROM info viewer at given zoom level in ROM\n"
     << "                                launcher (use 0 for off)\n"
-    << "  -launcherroms    <1|0>       Show only ROMs in the launcher (vs. all files)\n"
-    << "  -launchersubdirs <0|1>       Show files from subdirectories too\n"
-    << "  -romdir          <dir>       Set the path where the ROM launcher will start\n"
-    << "  -followlauncher  <0|1>       Default ROM path follows launcher navigation\n"
-    << "  -userdir         <dir>       Set the path to save user files to\n"
-    << "  -saveuserdir     <0|1>       Update user path when navigating in browser\n"
-    << "  -lastrom      <name>         Last played ROM, automatically selected in\n"
+    << "  -launcherroms       <1|0>    Show only ROMs in the launcher (vs. all files)\n"
+    << "  -launchersubdirs    <0|1>    Show files from subdirectories too\n"
+    << "  -launcherextensions <0|1>    Display file extensions in launcher\n"
+    << "  -romdir             <dir>    Set the path where the ROM launcher will start\n"
+    << "  -followlauncher     <0|1>    Default ROM path follows launcher navigation\n"
+    << "  -userdir            <dir>    Set the path to save user files to\n"
+    << "  -saveuserdir        <0|1>    Update user path when navigating in browser\n"
+    << "  -lastrom            <name>   Last played ROM, automatically selected in\n"
     << "                                launcher\n"
     << "  -romloadcount <number>       Number of ROM to load next from multicard\n"
     << "  -uipalette    <standard|     Selects GUI theme\n"
