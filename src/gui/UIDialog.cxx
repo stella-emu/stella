@@ -254,6 +254,13 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
     new PopUpWidget(myTab, font, xpos, ypos + 1, pwidth, lineHeight, items,
                     "Launcher font ", lwidth);
   wid.push_back(myLauncherFontPopup);
+
+  // Display launcher extensions
+  ypos += lineHeight + VGAP;
+  myLauncherExtensionsWidget = new CheckboxWidget(myTab, _font, xpos, ypos + 1,
+    "Display file extensions");
+  wid.push_back(myLauncherExtensionsWidget);
+
   ypos += lineHeight + VGAP * 4;
 
   // ROM launcher info/snapshot viewer
@@ -352,6 +359,8 @@ void UIDialog::loadConfig()
   const string& launcherFont = settings.getString("launcherfont");
   myLauncherFontPopup->setSelected(launcherFont, "medium");
 
+  myLauncherExtensionsWidget->setState(settings.getBool("launcherextensions"));
+
   // ROM launcher info viewer
   float zoom = instance().settings().getFloat("romviewer");
   int percentage = zoom * TIAConstants::viewableWidth * 100 / w;
@@ -434,6 +443,9 @@ void UIDialog::saveConfig()
   // Launcher font
   settings.setValue("launcherfont",
                     myLauncherFontPopup->getSelectedTag().toString());
+
+  // Display launcher extensions
+  settings.setValue("launcherextensions", myLauncherExtensionsWidget->getState());
 
   // ROM launcher info viewer
   int w = myLauncherWidthSlider->getValue();
@@ -518,6 +530,7 @@ void UIDialog::setDefaults()
       myLauncherWidthSlider->setValue(w);
       myLauncherHeightSlider->setValue(h);
       myLauncherFontPopup->setSelected("medium", "");
+      myLauncherExtensionsWidget->setState(false);
       myRomViewerSize->setValue(35);
       mySnapLoadPath->setText(instance().userDir().getShortPath());
       myLauncherExitWidget->setState(false);
@@ -535,12 +548,16 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
   {
     case GuiObject::kOKCmd:
     {
-      bool inform = myIsGlobal &&
+      bool informPath = myIsGlobal &&
         myRomPath->getText() != instance().settings().getString("romdir");
+      bool informExt = myIsGlobal &&
+        myLauncherExtensionsWidget->getState() != instance().settings().getBool("launcherextensions");
       saveConfig();
       close();
-      if(inform) // Let the boss know romdir has changed
+      if(informPath) // Let the boss know romdir has changed
         sendCommand(LauncherDialog::kRomDirChosenCmd, 0, 0);
+      if(informExt) // Let the boss know the file extension display setting has changed
+        sendCommand(LauncherDialog::kExtChangedCmd, 0, 0);
       break;
     }
     case GuiObject::kDefaultsCmd:
