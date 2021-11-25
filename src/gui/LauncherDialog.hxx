@@ -47,7 +47,8 @@ class LauncherDialog : public Dialog
     // These must be accessible from dialogs created by this class
     enum {
       kLoadROMCmd      = 'STRT',  // load currently selected ROM
-      kRomDirChosenCmd = 'romc'   // rom dir chosen
+      kRomDirChosenCmd = 'romc',  // ROM dir chosen
+      kExtChangedCmd   = 'extc'   // File extension display changed
     };
 
   public:

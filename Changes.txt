@@ -16,7 +16,9 @@
 
   * Added option to toggle autofire mode.
 
-  * Added icons to file lists (TODO: doc)
+  * Added icons to file lists.
+
+  * Added option to show/hide file extensions.
 
 -Have fun!
 

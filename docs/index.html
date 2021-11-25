@@ -2278,6 +2278,11 @@
       <td>Control + R</td>
       <td>Control + R</td>
     </tr>
+    <tr>
+      <td>Toggle file extensions display</td>
+      <td>Control + X</td>
+      <td>Control + X</td>
+    </tr>
   </table>
 
   <p><b>UI Keys in Text Editing areas (cannot be remapped)</b></p>
@@ -3230,6 +3235,17 @@
     </tr>
 
     <tr>
+      <td><pre>-launcherextensions &lt;1|0&gt;</pre></td>
+      <td>Display file extensions in the ROM launcher.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-launchersubdirs &lt;1|0&gt;</pre></td>
+      <td>Specifies whether the ROM launcher lists files from current
+        directory only or all subdirectories too.</td>
+    </tr>
+
+    <tr>
       <td><pre>-romviewer &lt;float&gt;</pre></td>
       <td>Hide ROM Info Viewer in ROM launcher mode (0) or use the
         given zoom level.
@@ -4157,7 +4173,7 @@
   <p>ROM Info Viewer width at 40%, UI sized 800x480, small launcher font:</p>
   <img src="graphics/rominfo_1x_small.png">
 
-  <p>ROM Info Viewer width at 32%, UI sized 1000x720, medium launcher font:</p>
+  <p>ROM Info Viewer width at 32%, UI sized 900x720, medium launcher font:</p>
   <img src="graphics/rominfo_1x_large.png">
 
   <p>ROM Info Viewer width at 50% , UI sized 1280x900, large launcher font:</p>
