@@ -65,6 +65,9 @@ class FileListWidget : public StringListWidget
     // When enabled, all subdirectories will be searched too.
     void setIncludeSubDirs(bool enable) { _includeSubDirs = enable; }
 
+    // When enabled, file extensions will be displayed too.
+    void setShowFileExtensions(bool enable) { _showFileExtensions = enable; }
+
     /**
       Set initial directory, and optionally select the given item.
 
@@ -121,6 +124,7 @@ class FileListWidget : public StringListWidget
     FilesystemNode _node;
     FSList _fileList;
     bool _includeSubDirs{false};
+    bool _showFileExtensions{true};
 
     StringList _dirList;
     IconTypeList _iconList;

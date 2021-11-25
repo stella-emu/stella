@@ -106,8 +106,8 @@ void FileListWidget::setLocation(const FilesystemNode& node,
   {
     const string path = file.getShortPath();
     const string name = file.getName();
+    const string displayName = _showFileExtensions ? name : file.getNameWithExt(EmptyString);
 
-    l.push_back(name);
     // display only relative path in tooltip
     if(path.length() >= orgLen)
       _dirList.push_back(path.substr(orgLen));
@@ -116,14 +116,24 @@ void FileListWidget::setLocation(const FilesystemNode& node,
     if(file.isDirectory())
     {
       if(BSPF::endsWithIgnoreCase(name, ".zip"))
+      {
+        l.push_back(displayName);
         _iconList.push_back(IconType::zip);
+      }
       else
+      {
+        l.push_back(name);
         _iconList.push_back(IconType::directory);
+      }
     }
-    else if(file.isFile() && Bankswitch::isValidRomName(name))
-      _iconList.push_back(IconType::rom);
     else
-      _iconList.push_back(IconType::unknown);
+    {
+      l.push_back(displayName);
+      if(file.isFile() && Bankswitch::isValidRomName(name))
+        _iconList.push_back(IconType::rom);
+      else
+        _iconList.push_back(IconType::unknown);
+    }
   }
 
   setList(l);
@@ -152,7 +162,10 @@ void FileListWidget::reload()
 {
   if(_node.exists())
   {
-    _selectedFile = selected().getName();
+    if(_showFileExtensions || selected().isDirectory())
+      _selectedFile = selected().getName();
+    else
+      _selectedFile = selected().getNameWithExt(EmptyString);
     setLocation(_node, _selectedFile);
   }
 }

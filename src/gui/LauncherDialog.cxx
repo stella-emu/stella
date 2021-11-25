@@ -348,7 +348,12 @@ const FilesystemNode& LauncherDialog::currentDir() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::reload()
 {
+  bool subDirs = instance().settings().getBool("launchersubdirs");
+  bool extensions = instance().settings().getBool("launcherextensions");
+
   myMD5List.clear();
+  myList->setIncludeSubDirs(subDirs);
+  myList->setShowFileExtensions(extensions);
   myList->reload();
   myPendingReload = false;
 }
@@ -380,8 +385,11 @@ void LauncherDialog::loadConfig()
   }
 
   bool subDirs = instance().settings().getBool("launchersubdirs");
+  bool extensions = instance().settings().getBool("launcherextensions");
+
   if (mySubDirs) mySubDirs->setState(subDirs);
   myList->setIncludeSubDirs(subDirs);
+  myList->setShowFileExtensions(extensions);
 
   // Assume that if the list is empty, this is the first time that loadConfig()
   // has been called (and we should reload the list)
@@ -663,6 +671,16 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
         reload();
         break;
 
+      case KBDK_X:
+      {
+        bool extensions = !instance().settings().getBool("launcherextensions");
+
+        instance().settings().setValue("launcherextensions", extensions);
+        myList->setShowFileExtensions(extensions);
+        reload();
+        break;
+      }
+
       default:
         handled = false;
         break;
@@ -866,6 +884,10 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       }
       break;
     }
+
+    case kExtChangedCmd:
+      reload();
+      break;
 
     case ContextMenu::kItemSelectedCmd:
       handleContextMenu();
