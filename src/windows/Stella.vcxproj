@@ -615,7 +615,7 @@
     <ClCompile Include="..\common\audio\SimpleResampler.cxx" />
     <ClCompile Include="..\common\Base.cxx" />
     <ClCompile Include="..\common\DevSettingsHandler.cxx" />
-    <ClCompile Include="..\common\EventHandlerSDL2.cxx" />
+    <ClCompile Include="..\common\EventHandlerSDL2.cxx" />    
     <ClCompile Include="..\common\FBBackendSDL2.cxx" />
     <ClCompile Include="..\common\FBSurfaceSDL2.cxx" />
     <ClCompile Include="..\common\FpsMeter.cxx" />
@@ -907,9 +907,11 @@
     <ClCompile Include="..\gui\ColorWidget.cxx" />
     <ClCompile Include="..\gui\DeveloperDialog.cxx" />
     <ClCompile Include="..\gui\EmulationDialog.cxx" />
+    <ClCompile Include="..\gui\FavoritesManager.cxx" />
     <ClCompile Include="..\gui\FileListWidget.cxx" />
     <ClCompile Include="..\gui\HighScoresDialog.cxx" />
     <ClCompile Include="..\gui\HighScoresMenu.cxx" />
+    <ClCompile Include="..\gui\LauncherFileListWidget.cxx" />
     <ClCompile Include="..\gui\PlusRomsMenu.cxx" />
     <ClCompile Include="..\gui\JoystickDialog.cxx" />
     <ClCompile Include="..\gui\LoggerDialog.cxx" />
@@ -1780,7 +1782,7 @@
     <ClInclude Include="..\common\Base.hxx" />
     <ClInclude Include="..\common\bspf.hxx" />
     <ClInclude Include="..\common\DevSettingsHandler.hxx" />
-    <ClInclude Include="..\common\EventHandlerSDL2.hxx" />
+    <ClInclude Include="..\common\EventHandlerSDL2.hxx" />    
     <ClInclude Include="..\common\FBBackendSDL2.hxx" />
     <ClInclude Include="..\common\FBSurfaceSDL2.hxx" />
     <ClInclude Include="..\common\FpsMeter.hxx" />
@@ -2111,9 +2113,11 @@
     <ClInclude Include="..\gui\ConsoleMediumFont.hxx" />
     <ClInclude Include="..\gui\DeveloperDialog.hxx" />
     <ClInclude Include="..\gui\EmulationDialog.hxx" />
+    <ClInclude Include="..\gui\FavoritesManager.hxx" />
     <ClInclude Include="..\gui\FileListWidget.hxx" />
     <ClInclude Include="..\gui\HighScoresDialog.hxx" />
     <ClInclude Include="..\gui\HighScoresMenu.hxx" />
+    <ClInclude Include="..\gui\LauncherFileListWidget.hxx" />
     <ClInclude Include="..\gui\PlusRomsMenu.hxx" />
     <ClInclude Include="..\gui\JoystickDialog.hxx" />
     <ClInclude Include="..\gui\LoggerDialog.hxx" />

@@ -1,0 +1,264 @@
+//============================================================================
+//
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
+//   SSSS    tt   ee  ee  ll   ll      aa
+//      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
+//  SS  SS   tt   ee      ll   ll  aa  aa
+//   SSSS     ttt  eeeee llll llll  aaaaa
+//
+// Copyright (c) 1995-2021 by Bradford W. Mott, Stephen Anthony
+// and the Stella Team
+//
+// See the file "License.txt" for information on usage and redistribution of
+// this file, and for a DISCLAIMER OF ALL WARRANTIES.
+//============================================================================
+
+#include "FSNode.hxx"
+#include "json_lib.hxx"
+#include "Settings.hxx"
+
+#include "FavoritesManager.hxx"
+
+using json = nlohmann::json;
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FavoritesManager::FavoritesManager(Settings& settings)
+  : mySettings(settings)
+{
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FavoritesManager::load()
+{
+  myMaxRecent = mySettings.getInt("maxrecentroms");
+
+  // User Favorites
+  myUserSet.clear();
+  const string& serializedUser = mySettings.getString("favoriteroms");
+  if(!serializedUser.empty())
+  {
+    const json& jUser = json::parse(serializedUser);
+    for(const auto& u : jUser)
+    {
+      const string& path = u.get<string>();
+      addUser(path);
+    }
+  }
+
+  // Recently Played
+  myRecentList.clear();
+  const string& serializedRecent = mySettings.getString("recentroms");
+  if(!serializedRecent.empty())
+  {
+    const json& jRecent = json::parse(serializedRecent);
+    for(const auto& r : jRecent)
+    {
+      const string& path = r.get<string>();
+      addRecent(path);
+    }
+  }
+
+  // Most Popular
+  myPopularMap.clear();
+  const string& serializedPopular = mySettings.getString("popularroms");
+  if(!serializedPopular.empty())
+  {
+    const json& jPopular = json::parse(serializedPopular);
+    for(const auto& p : jPopular)
+    {
+      const string& path = p[0].get<string>();
+      const uInt32 count = p[1].get<uInt32>();
+      myPopularMap.emplace(path, count);
+    }
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FavoritesManager::save()
+{
+  // User Favorites
+  json jUser = json::array();
+  for(const auto& path : myUserSet)
+    jUser.push_back(path);
+  mySettings.setValue("favoriteroms", jUser.dump(2));
+
+  // Recently Played
+  json jRecent = json::array();
+  for(const auto& path : myRecentList)
+    jRecent.push_back(path);
+  mySettings.setValue("recentroms", jRecent.dump(2));
+
+  // Most Popular
+  json jPopular = json::array();
+  for(const auto& path : myPopularMap)
+    jPopular.push_back(path);
+  mySettings.setValue("popularroms", jPopular.dump(2));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FavoritesManager::addUser(const string& path)
+{
+  myUserSet.emplace(path);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FavoritesManager::removeUser(const string& path)
+{
+  myUserSet.erase(path);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FavoritesManager::toggleUser(const string& path)
+{
+  bool favorize = !existsUser(path);
+
+  if(favorize)
+    addUser(path);
+  else
+    removeUser(path);
+
+  return favorize;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FavoritesManager::existsUser(const string& path) const
+{
+  return myUserSet.find(path) != myUserSet.end();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const FavoritesManager::UserList& FavoritesManager::userList() const
+{
+  // Return newest to oldest
+  static UserList sortedList;
+
+  sortedList.clear();
+  sortedList.assign(myUserSet.begin(), myUserSet.end());
+
+  if(!mySettings.getBool("altsorting"))
+    std::sort(sortedList.begin(), sortedList.end(),
+      [](const string& a, const string& b)
+    {
+      // Sort without path
+      FilesystemNode aNode(a);
+      FilesystemNode bNode(b);
+      return BSPF::compareIgnoreCase(aNode.getName(), bNode.getName()) < 0;
+    });
+  return sortedList;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FavoritesManager::update(const string& path)
+{
+  addRecent(path);
+  incPopular(path);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FavoritesManager::addRecent(const string& path)
+{
+  auto it = std::find(myRecentList.begin(), myRecentList.end(), path);
+
+  // Always remove existing before adding at the end again
+  if(it != myRecentList.end())
+    myRecentList.erase(it);
+  myRecentList.emplace_back(path);
+  // Limit size
+  while(myRecentList.size() > myMaxRecent)
+    myRecentList.erase(myRecentList.begin());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const FavoritesManager::RecentList& FavoritesManager::recentList() const
+{
+  static RecentList sortedList;
+  bool sortByName = mySettings.getBool("altsorting");
+
+  sortedList.clear();
+  if(sortByName)
+  {
+    sortedList.assign(myRecentList.begin(), myRecentList.end());
+
+    std::sort(sortedList.begin(), sortedList.end(),
+      [](const string& a, const string& b)
+    {
+      // Sort alphabetical, without path
+      FilesystemNode aNode(a);
+      FilesystemNode bNode(b);
+      return BSPF::compareIgnoreCase(aNode.getName(), bNode.getName()) < 0;
+    });
+
+  }
+  else
+    // sort newest to oldest
+    sortedList.assign(myRecentList.rbegin(), myRecentList.rend());
+
+  return sortedList;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FavoritesManager::incPopular(const string& path)
+{
+  static constexpr uInt32 scale = 100;
+  static constexpr double factor = 0.7;
+  static constexpr uInt32 max_popular = scale;
+  static constexpr uInt32 min_popular = max_popular * factor;
+
+  auto increased = myPopularMap.find(path);
+  if(increased != myPopularMap.end())
+    increased->second += scale;
+  else
+  {
+    // Limit number of entries and age data
+    if(myPopularMap.size() >= max_popular)
+    {
+      PopularList sortedList = sortedPopularList(); // sorted by frequency!
+      for(auto item = sortedList.cbegin(); item != sortedList.cend(); ++item)
+      {
+        auto entry = myPopularMap.find(item->first);
+        if(entry != myPopularMap.end())
+        {
+          //if(item - sortedList.cbegin() <= min_popular)
+          if(entry->second >= scale * (1.0 - factor))
+            entry->second *= factor; // age data
+          else
+            myPopularMap.erase(entry); // remove least popular
+        }
+
+      }
+    }
+    myPopularMap.emplace(path, scale);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const FavoritesManager::PopularList& FavoritesManager::popularList() const
+{
+  return sortedPopularList(mySettings.getBool("altsorting"));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const FavoritesManager::PopularList& FavoritesManager::sortedPopularList(bool sortByName) const
+{
+  // Return most to least popular or sorted by name
+  static PopularList sortedList;
+
+  sortedList.clear();
+  sortedList.assign(myPopularMap.begin(), myPopularMap.end());
+
+  std::sort(sortedList.begin(), sortedList.end(),
+    [sortByName](const PopularType& a, const PopularType& b)
+  {
+    // 1. sort by most popular
+    if(!sortByName && a.second != b.second)
+      return a.second > b.second;
+
+    // 2. Sort alphabetical, without path
+    FilesystemNode aNode(a.first);
+    FilesystemNode bNode(b.first);
+    return BSPF::compareIgnoreCase(aNode.getName(), bNode.getName()) < 0;
+  });
+  return sortedList;
+}

@@ -23,6 +23,7 @@
 #include "Dialog.hxx"
 #include "EditTextWidget.hxx"
 #include "FileListWidget.hxx"
+#include "LauncherFileListWidget.hxx"
 #include "FSNode.hxx"
 #include "MD5.hxx"
 #include "OptionsDialog.hxx"
@@ -211,9 +212,10 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   if(romWidth > 0) romWidth += HBORDER;
   int listWidth = _w - (romWidth > 0 ? romWidth + fontWidth : 0) - HBORDER * 2;
   xpos = HBORDER;  ypos += lineHeight + VGAP;
-  myList = new FileListWidget(this, _font, xpos, ypos, listWidth, listHeight);
+  myList = new LauncherFileListWidget(this, _font, xpos, ypos, listWidth, listHeight);
   myList->setEditable(false);
   myList->setListMode(FilesystemNode::ListMode::All);
+
   wid.push_back(myList);
 
   // Add ROM info area (if enabled)
@@ -301,10 +303,11 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   myList->progress().setMessage("        Filtering files" + ELLIPSIS + "        ");
 
   // Do we show only ROMs or all files?
-  bool onlyROMs = instance().settings().getBool("launcherroms");
-  showOnlyROMs(onlyROMs);
+  myShowOnlyROMs = instance().settings().getBool("launcherroms");
+  //showOnlyROMs(onlyROMs);
   if(myAllFiles)
-    myAllFiles->setState(!onlyROMs);
+    myAllFiles->setState(!myShowOnlyROMs);
+  applyFiltering();
 
   setHelpAnchor("ROMInfo");
 }
@@ -348,11 +351,9 @@ const FilesystemNode& LauncherDialog::currentDir() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::reload()
 {
-  bool subDirs = instance().settings().getBool("launchersubdirs");
   bool extensions = instance().settings().getBool("launcherextensions");
 
   myMD5List.clear();
-  myList->setIncludeSubDirs(subDirs);
   myList->setShowFileExtensions(extensions);
   myList->reload();
   myPendingReload = false;
@@ -372,34 +373,37 @@ void LauncherDialog::loadConfig()
 {
   // Should we use a temporary directory specified on the commandline, or the
   // default one specified by the settings?
-  const string& tmpromdir = instance().settings().getString("tmpromdir");
+  Settings& settings = instance().settings();
+  const string& tmpromdir = settings.getString("tmpromdir");
   const string& romdir = tmpromdir != "" ? tmpromdir :
-      instance().settings().getString("romdir");
-  const string& version = instance().settings().getString("stella.version");
+      settings.getString("romdir");
+  const string& version = settings.getString("stella.version");
 
   // Show "What's New" message when a new version of Stella is run for the first time
   if(version != STELLA_VERSION)
   {
     openWhatsNew();
-    instance().settings().setValue("stella.version", STELLA_VERSION);
+    settings.setValue("stella.version", STELLA_VERSION);
   }
 
-  bool subDirs = instance().settings().getBool("launchersubdirs");
-  bool extensions = instance().settings().getBool("launcherextensions");
+  bool subDirs = settings.getBool("launchersubdirs");
+  bool extensions = settings.getBool("launcherextensions");
 
   if (mySubDirs) mySubDirs->setState(subDirs);
   myList->setIncludeSubDirs(subDirs);
   myList->setShowFileExtensions(extensions);
+  // Favorites
+  myList->loadFavorites();
 
   // Assume that if the list is empty, this is the first time that loadConfig()
   // has been called (and we should reload the list)
   if(myList->getList().empty())
   {
     FilesystemNode node(romdir == "" ? "~" : romdir);
-    if(!(node.exists() && node.isDirectory()))
+    if(!myList->isDirectory(node))
       node = FilesystemNode("~");
 
-    myList->setDirectory(node, instance().settings().getString("lastrom"));
+    myList->setDirectory(node, settings.getString("lastrom"));
     updateUI();
   }
   Dialog::setFocus(getFocusList()[mySelectedItem]);
@@ -413,10 +417,15 @@ void LauncherDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::saveConfig()
 {
-  if (mySubDirs)
-    instance().settings().setValue("launchersubdirs", mySubDirs->getState());
-  if(instance().settings().getBool("followlauncher"))
-    instance().settings().setValue("romdir", myList->currentDir().getShortPath());
+  Settings& settings = instance().settings();
+
+  if(mySubDirs)
+    settings.setValue("launchersubdirs", mySubDirs->getState());
+  if(settings.getBool("followlauncher"))
+    settings.setValue("romdir", myList->currentDir().getShortPath());
+
+  // Favorites
+  myList->saveFavorites();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -617,25 +626,36 @@ void LauncherDialog::loadRomInfo()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::handleContextMenu()
 {
-  const string& cmd = menu().getSelectedTag().toString();
+  const string& cmd = contextMenu().getSelectedTag().toString();
 
-  if(cmd == "override")
+  if(cmd == "favorite")
+    myList->toggleUserFavorite();
+  else if(cmd == "override")
     openGlobalProps();
+  else if(cmd == "extensions")
+    toggleExtensions();
+  else if(cmd == "sorting")
+    toggleSorting();
+  else if(cmd == "showall")
+    toggleShowAll();
+  else if(cmd == "subdirs")
+    toggleSubDirs();
   else if(cmd == "reload")
     reload();
   else if(cmd == "highscores")
     openHighScores();
+  else if(cmd == "options")
+    openSettings();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ContextMenu& LauncherDialog::menu()
+ContextMenu& LauncherDialog::contextMenu()
 {
-  if(myMenu == nullptr)
+  if(myContextMenu == nullptr)
     // Create (empty) context menu for ROM list options
-    myMenu = make_unique<ContextMenu>(this, _font, EmptyVarList);
+    myContextMenu = make_unique<ContextMenu>(this, _font, EmptyVarList);
 
-
-  return *myMenu;
+  return *myContextMenu;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -658,8 +678,16 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
     handled = true;
     switch(key)
     {
-      case KBDK_P:
-        openGlobalProps();
+      case KBDK_A:
+        toggleShowAll();
+        break;
+
+      case KBDK_D:
+        toggleSubDirs();
+        break;
+
+      case KBDK_F:
+        myList->toggleUserFavorite();
         break;
 
       case KBDK_H:
@@ -667,19 +695,25 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
           openHighScores();
         break;
 
+      case KBDK_O:
+        openSettings();
+        break;
+
+      case KBDK_P:
+        openGlobalProps();
+        break;
+
       case KBDK_R:
         reload();
         break;
 
-      case KBDK_X:
-      {
-        bool extensions = !instance().settings().getBool("launcherextensions");
-
-        instance().settings().setValue("launcherextensions", extensions);
-        myList->setShowFileExtensions(extensions);
-        reload();
+      case KBDK_S:
+        toggleSorting();
         break;
-      }
+
+      case KBDK_X:
+        toggleExtensions();
+        break;
 
       default:
         handled = false;
@@ -736,7 +770,7 @@ void LauncherDialog::handleJoyUp(int stick, int button)
   if (button == 1 && (e == Event::UIOK || e == Event::NoType) &&
       !currentNode().isDirectory() && Bankswitch::isValidRomName(currentNode()))
     openGlobalProps();
-  if (button == 3 && (e == Event::Event::UITabPrev || e == Event::NoType))
+  if (button == 3 && (e == Event::UITabPrev || e == Event::NoType))
     openSettings();
   else if (!myEventHandled)
     Dialog::handleJoyUp(stick, button);
@@ -779,18 +813,7 @@ void LauncherDialog::handleMouseDown(int x, int y, MouseButton b, int clickCount
      && x + getAbsX() >= myList->getLeft() && x + getAbsX() <= myList->getRight()
      && y + getAbsY() >= myList->getTop() && y + getAbsY() <= myList->getBottom())
   {
-    // Dynamically create context menu for ROM list options
-    VariantList items;
-
-    if(!currentNode().isDirectory() && Bankswitch::isValidRomName(currentNode()))
-      VarList::push_back(items, " Power-on options" + ELLIPSIS + "   Ctrl+P", "override");
-    if(instance().highScores().enabled())
-      VarList::push_back(items, " High scores" + ELLIPSIS + "        Ctrl+H", "highscores");
-    VarList::push_back(items, " Reload listing      Ctrl+R ", "reload");
-    menu().addItems(items);
-
-    // Add menu at current x,y mouse location
-    menu().show(x + getAbsX(), y + getAbsY(), surface().dstRect());
+    openContextMenu(x, y);
   }
   else
     Dialog::handleMouseDown(x, y, b, clickCount);
@@ -813,7 +836,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kLoadROMCmd:
-      if(myList->selected().isDirectory())
+      if(myList->isDirectory(myList->selected()))
       {
         if(myList->selected().getName() == "..")
           myList->selectParent();
@@ -823,6 +846,9 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       }
       [[fallthrough]];
     case FileListWidget::ItemActivated:
+      // Assumes that the ROM will be loaded successfully, has to be done
+      //  before saving the config.
+      myList->updateFavorites();
       saveConfig();
       loadRom();
       break;
@@ -840,8 +866,8 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case ListWidget::kLongButtonPressCmd:
-      if (!currentNode().isDirectory() && Bankswitch::isValidRomName(currentNode()))
-        openGlobalProps();
+      if(!currentNode().isDirectory() && Bankswitch::isValidRomName(currentNode()))
+        openContextMenu();
       myEventHandled = true;
       break;
 
@@ -878,7 +904,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       {
         FilesystemNode node(romDir);
 
-        if(!(node.exists() && node.isDirectory()))
+        if(!myList->isDirectory(node))
           node = FilesystemNode("~");
 
         myList->setDirectory(node);
@@ -928,6 +954,117 @@ void LauncherDialog::loadRom()
 void LauncherDialog::setDefaultDir()
 {
   instance().settings().setValue("romdir", myList->currentDir().getShortPath());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::toggleShowAll()
+{
+  myShowOnlyROMs = !instance().settings().getBool("launcherroms");
+
+  instance().settings().setValue("launcherroms", myShowOnlyROMs);
+  if(myAllFiles)
+    myAllFiles->setState(!myShowOnlyROMs);
+  applyFiltering();
+  reload();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::toggleSubDirs()
+{
+  bool subdirs = !instance().settings().getBool("launchersubdirs");
+
+  instance().settings().setValue("launchersubdirs", subdirs);
+  if(mySubDirs)
+    mySubDirs->setState(subdirs);
+  myList->setIncludeSubDirs(subdirs);
+  reload();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::toggleExtensions()
+{
+  bool extensions = !instance().settings().getBool("launcherextensions");
+
+  instance().settings().setValue("launcherextensions", extensions);
+  myList->setShowFileExtensions(extensions);
+  reload();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::toggleSorting()
+{
+  if(myList->inVirtualDir())
+  {
+    // Toggle between normal and alternative sorting of virtual directories
+    bool altSorting = !instance().settings().getBool("altsorting");
+
+    instance().settings().setValue("altsorting", altSorting);
+    reload();
+  }
+}
+
+void LauncherDialog::addContextItem(VariantList& items, const string& label,
+  const string& shortcut, const string& key)
+{
+  const string pad = "                        ";
+
+  if(myUseMinimalUI)
+    VarList::push_back(items, " " + label + " ", key);
+  else
+    VarList::push_back(items, " " + label + pad.substr(0, 24 - label.length())
+      + shortcut + " ", key);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::openContextMenu(int x, int y)
+{
+  if(x < 0 || y < 0)
+  {
+    // Determine position from currently selected list item
+    x = myList->getLeft() + myList->getWidth() / 2;
+    y = myList->getTop() + (myList->getSelected() - myList->currentPos() + 1) * _font.getLineHeight();
+  }
+
+  // Dynamically create context menu for ROM list options
+  VariantList items;
+
+  // TODO: remove subdirs and show all from GUI
+
+  if(!currentNode().isDirectory() && Bankswitch::isValidRomName(currentNode()))
+  {
+    addContextItem(items, myList->isUserFavorite(myList->selected().getPath())
+      ? "Remove from favorites"
+      : "Add to favorites", "Ctrl+F", "favorite");
+    addContextItem(items, "Power-on options" + ELLIPSIS, "Ctrl+P", "override");
+    if(instance().highScores().enabled())
+      addContextItem(items, "High scores" + ELLIPSIS, "Ctrl+H", "highscores");
+  }
+  if(myUseMinimalUI)
+    addContextItem(items, "Options" + ELLIPSIS, "Ctrl+O", "options");
+  else
+  {
+    addContextItem(items, instance().settings().getBool("launcherextensions")
+      ? "Disable file extensions"
+      : "Enable file extensions", "Ctrl+X", "extensions");
+    if(myList->inVirtualDir())
+      addContextItem(items, instance().settings().getBool("altsorting")
+        ? "Normal sorting"
+        : "Alternative sorting", "Ctrl+S", "sorting");
+    else
+    {
+      addContextItem(items, instance().settings().getBool("launcherroms")
+        ? "Show all files"
+        : "Show only ROMs", "Ctrl+A", "showall");
+      addContextItem(items, instance().settings().getBool("launchersubdirs")
+        ? "Exclude subdirectories"
+        : "Include subdirectories", "Ctrl+D", "subdirs");
+    }
+    addContextItem(items, "Reload listing", "Ctrl+R", "reload");
+  }
+  contextMenu().addItems(items);
+
+  // Add menu at current x,y mouse location
+  contextMenu().show(x + getAbsX(), y + getAbsY(), surface().dstRect());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

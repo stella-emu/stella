@@ -47,6 +47,7 @@ class FileListWidget : public StringListWidget
       ItemChanged   = 'FLic',  // Entry in the list is changed (single-click, etc)
       ItemActivated = 'FLac'   // Entry in the list is activated (double-click, etc)
     };
+    using IconTypeFilter = std::function<bool(const FilesystemNode& node)>;
 
   public:
     FileListWidget(GuiObject* boss, const GUI::Font& font,
@@ -99,15 +100,38 @@ class FileListWidget : public StringListWidget
     ProgressDialog& progress();
     void incProgress();
 
-  private:
+  protected:
     enum class IconType {
       unknown,
       rom,
       directory,
-      zip
+      zip,
+      updir,
+      numTypes,
+      favorite = numTypes,
+      favdir,
+      recentdir,
+      popdir,
+      numLauncherTypes = popdir - numTypes + 1
     };
     using IconTypeList = std::vector<IconType>;
     using Icon = uIntArray;
+
+  protected:
+    virtual bool isDirectory(const FilesystemNode& node) const;
+    virtual void getChildren(const FilesystemNode::CancelCheck& isCancelled);
+    virtual void extendLists(StringList& list) { };
+    virtual IconType romIconType(const FilesystemNode& file) const;
+    virtual const Icon* getIcon(int i) const;
+    int iconWidth() const;
+    virtual bool fullPathToolTip() const { return false; }
+
+  protected:
+    FilesystemNode _node;
+    FSList _fileList;
+    FilesystemNode::NameFilter _filter;
+    StringList _dirList;
+    IconTypeList _iconTypeList;
 
   private:
     /** Very similar to setDirectory(), but also updates the history */
@@ -116,18 +140,11 @@ class FileListWidget : public StringListWidget
     bool handleText(char text) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
     int drawIcon(int i, int x, int y, ColorId color) override;
-    int iconWidth() const;
 
   private:
     FilesystemNode::ListMode _fsmode{FilesystemNode::ListMode::All};
-    FilesystemNode::NameFilter _filter;
-    FilesystemNode _node;
-    FSList _fileList;
     bool _includeSubDirs{false};
     bool _showFileExtensions{true};
-
-    StringList _dirList;
-    IconTypeList _iconList;
 
     Common::FixedStack<string> _history;
     uInt32 _selected{0};

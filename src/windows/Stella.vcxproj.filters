@@ -1119,6 +1119,12 @@
     <ClCompile Include="..\common\DevSettingsHandler.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\gui\LauncherFileListWidget.cxx">
+      <Filter>Source Files\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gui\FavoritesManager.cxx">
+      <Filter>Source Files\gui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">
@@ -2299,6 +2305,12 @@
     </ClInclude>
     <ClInclude Include="..\common\DevSettingsHandler.hxx">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gui\LauncherFileListWidget.hxx">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gui\FavoritesManager.hxx">
+      <Filter>Header Files\gui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -16,6 +16,7 @@ MODULE_OBJS := \
         src/gui/EditTextWidget.o \
         src/gui/EmulationDialog.o \
         src/gui/EventMappingWidget.o \
+	src/gui/FavoritesManager.o \
         src/gui/FileListWidget.o \
         src/gui/Font.o \
         src/gui/GameInfoDialog.o \
@@ -27,6 +28,7 @@ MODULE_OBJS := \
         src/gui/InputTextDialog.o \
         src/gui/JoystickDialog.o \
         src/gui/LauncherDialog.o \
+	src/gui/LauncherFileListWidget.o \
         src/gui/Launcher.o \
         src/gui/ListWidget.o \
         src/gui/LoggerDialog.o \
