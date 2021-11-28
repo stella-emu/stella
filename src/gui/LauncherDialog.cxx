@@ -722,8 +722,9 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
 void LauncherDialog::handleJoyDown(int stick, int button, bool longPress)
 {
   myEventHandled = false;
-  myList->setFlags(Widget::FLAG_WANTS_RAWDATA); // allow handling long button press
+  myList->setFlags(Widget::FLAG_WANTS_RAWDATA);   // allow handling long button press
   Dialog::handleJoyDown(stick, button, longPress);
+  myList->clearFlags(Widget::FLAG_WANTS_RAWDATA); // revert flag afterwards!
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
