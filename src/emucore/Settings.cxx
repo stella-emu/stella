@@ -157,6 +157,11 @@ Settings::Settings()
   setPermanent("launcherextensions", "false");
   setPermanent("romviewer", "1");
   setPermanent("lastrom", "");
+  setPermanent("favoriteroms", "");
+  setPermanent("recentroms", "");
+  setPermanent("maxrecentroms", "20");
+  setPermanent("popularroms", "");
+  setPermanent("altsorting", "false");
 
   // UI-related options
 #ifdef DEBUGGER_SUPPORT
@@ -594,6 +599,8 @@ void Settings::usage() const
     << "  -launcherroms       <1|0>    Show only ROMs in the launcher (vs. all files)\n"
     << "  -launchersubdirs    <0|1>    Show files from subdirectories too\n"
     << "  -launcherextensions <0|1>    Display file extensions in launcher\n"
+    << "  -altsorting         <0|1>    Alternative sorting in virtual folders\n"
+    << "  -maxrecentroms      <number> Number of ROMs tracked in 'Recently played'\n"
     << "  -romdir             <dir>    Set the path where the ROM launcher will start\n"
     << "  -followlauncher     <0|1>    Default ROM path follows launcher navigation\n"
     << "  -userdir            <dir>    Set the path to save user files to\n"

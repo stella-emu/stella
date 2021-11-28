@@ -14,11 +14,15 @@
 
 6.6 to 6.?
 
+  * Reworked the file launcher:
+    - Added tracking of user favorites, recently played and most popular
+      games.
+    - Added virtual directories for selecting tracked games.
+    - Added icons for files and directories.
+    - Added option to show/hide file extensions.
+    - Extended context menu and shortcuts.
+
   * Added option to toggle autofire mode.
-
-  * Added icons to file lists.
-
-  * Added option to show/hide file extensions.
 
 -Have fun!
 

@@ -43,7 +43,7 @@ void FileListWidget::setDirectory(const FilesystemNode& node,
   _node = node;
 
   // We always want a directory listing
-  if(!_node.isDirectory() && _node.hasParent())
+  if(!isDirectory(_node) && _node.hasParent())
   {
     _selectedFile = _node.getName();
     _node = _node.getParent();
@@ -83,6 +83,67 @@ void FileListWidget::setLocation(const FilesystemNode& node,
   // Read in the data from the file system (start with an empty list)
   _fileList.clear();
 
+  getChildren(isCancelled);
+
+  // Now fill the list widget with the names from the file list,
+  // even if cancelled
+  StringList list;
+  size_t orgLen = _node.getShortPath().length();
+
+  _dirList.clear();
+  _iconTypeList.clear();
+
+  for(const auto& file : _fileList)
+  {
+    const string& path = file.getShortPath();
+    const string& name = file.getName();
+    const string& displayName = _showFileExtensions ? name : file.getNameWithExt(EmptyString);
+
+    // display only relative path in tooltip
+    if(path.length() >= orgLen && !fullPathToolTip())
+      _dirList.push_back(path.substr(orgLen));
+    else
+      _dirList.push_back(path);
+    if(file.isDirectory())
+    {
+      if(BSPF::endsWithIgnoreCase(name, ".zip"))
+      {
+        list.push_back(displayName);
+        _iconTypeList.push_back(IconType::zip);
+      }
+      else
+      {
+        list.push_back(name);
+        if(name == "..")
+          _iconTypeList.push_back(IconType::updir);
+        else
+          _iconTypeList.push_back(IconType::directory);
+      }
+    }
+    else
+    {
+      list.push_back(displayName);
+      _iconTypeList.push_back(romIconType(file));
+    }
+  }
+  extendLists(list);
+
+  setList(list);
+  setSelected(select);
+  ListWidget::recalc();
+
+  progress().close();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FileListWidget::isDirectory(const FilesystemNode& node) const
+{
+  return node.isDirectory();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FileListWidget::getChildren(const FilesystemNode::CancelCheck& isCancelled)
+{
   if(_includeSubDirs)
   {
     // Actually this could become HUGE
@@ -94,53 +155,15 @@ void FileListWidget::setLocation(const FilesystemNode& node,
     _fileList.reserve(0x200);
     _node.getChildren(_fileList, _fsmode, _filter, false, true, isCancelled);
   }
+}
 
-  // Now fill the list widget with the names from the file list,
-  // even if cancelled
-  StringList l;
-  size_t orgLen = _node.getShortPath().length();
-
-  _dirList.clear();
-  _iconList.clear();
-  for(const auto& file : _fileList)
-  {
-    const string& path = file.getShortPath();
-    const string& name = file.getName();
-    const string& displayName = _showFileExtensions ? name : file.getNameWithExt(EmptyString);
-
-    // display only relative path in tooltip
-    if(path.length() >= orgLen)
-      _dirList.push_back(path.substr(orgLen));
-    else
-      _dirList.push_back(path);
-    if(file.isDirectory())
-    {
-      if(BSPF::endsWithIgnoreCase(name, ".zip"))
-      {
-        l.push_back(displayName);
-        _iconList.push_back(IconType::zip);
-      }
-      else
-      {
-        l.push_back(name);
-        _iconList.push_back(IconType::directory);
-      }
-    }
-    else
-    {
-      l.push_back(displayName);
-      if(file.isFile() && Bankswitch::isValidRomName(name))
-        _iconList.push_back(IconType::rom);
-      else
-        _iconList.push_back(IconType::unknown);
-    }
-  }
-
-  setList(l);
-  setSelected(select);
-  ListWidget::recalc();
-
-  progress().close();
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FileListWidget::IconType FileListWidget::romIconType(const FilesystemNode& file) const
+{
+  if(file.isFile() && Bankswitch::isValidRomName(file.getName()))
+    return IconType::rom;
+  else
+    return IconType::unknown;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -160,12 +183,16 @@ void FileListWidget::selectParent()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FileListWidget::reload()
 {
-  if(_node.exists())
+  if(isDirectory(_node))
   {
-    if(_showFileExtensions || selected().isDirectory())
-      _selectedFile = selected().getName();
-    else
-      _selectedFile = selected().getNameWithExt(EmptyString);
+    _selectedFile = selected().getName();
+    setLocation(_node, _selectedFile);
+  }
+  else if(_node.exists())
+  {
+    _selectedFile = _showFileExtensions
+      ? selected().getName()
+      : selected().getNameWithExt(EmptyString);
     setLocation(_node, _selectedFile);
   }
 }
@@ -205,7 +232,10 @@ bool FileListWidget::handleText(char text)
     if(BSPF::startsWithIgnoreCase(i, _quickSelectStr))
       // Select directories when the first character is uppercase
       if((std::isupper(_quickSelectStr[0]) != 0) ==
-          (_iconList[selectedItem] == IconType::directory))
+          (_iconTypeList[selectedItem] == IconType::directory
+          || _iconTypeList[selectedItem] == IconType::favdir
+          || _iconTypeList[selectedItem] == IconType::recentdir
+          || _iconTypeList[selectedItem] == IconType::popdir))
         break;
     selectedItem++;
   }
@@ -233,7 +263,7 @@ void FileListWidget::handleCommand(CommandSender* sender, int cmd, int data, int
     case ListWidget::kActivatedCmd:
     case ListWidget::kDoubleClickedCmd:
       _selected = data;
-      if(selected().isDirectory())
+      if(isDirectory(selected())/* || !selected().exists()*/)
       {
         if(selected().getName() == "..")
           selectParent();
@@ -269,6 +299,22 @@ void FileListWidget::handleCommand(CommandSender* sender, int cmd, int data, int
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int FileListWidget::drawIcon(int i, int x, int y, ColorId color)
 {
+  const bool smallIcon = iconWidth() < 24;
+  const Icon* icon = getIcon(i);
+  const int iconGap = smallIcon ? 2 : 3;
+  FBSurface& s = _boss->dialog().surface();
+
+  s.drawBitmap(icon->data(), x + 1 + iconGap,
+      y + (_lineHeight - static_cast<int>(icon->size())) / 2,
+      color, iconWidth() - iconGap * 2, static_cast<int>(icon->size()));
+
+  return iconWidth();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const FileListWidget::Icon* FileListWidget::getIcon(int i) const
+{
+#if 1
   static const Icon unknown_small = {
     0b00111111'1100000,
     0b00100000'0110000,
@@ -342,8 +388,38 @@ int FileListWidget::drawIcon(int i, int x, int y, ColorId color)
     0b10001111'1110001,
     0b10000000'0000001,
     0b11111111'1111111
-
   };
+  static const Icon up_small = {
+    //0b00000100'0000000,
+    //0b00001110'0000000,
+    //0b00011111'0000000,
+    //0b00111111'1000000,
+    //0b01111111'1100000,
+    //0b11111111'1110000,
+    //0b00001110'0000000,
+    //0b00001110'0000000,
+    //0b00001110'0000000,
+    //0b00001111'0000000,
+    //0b00001111'1111111,
+    //0b00000111'1111111,
+    //0b00000011'1111111,
+    //0b00000000'0000000,
+
+    0b11111000'0000000,
+    0b11111100'0000000,
+    0b11111111'1111111,
+    0b10000000'0000001,
+    0b10000011'1000001,
+    0b10000111'1100001,
+    0b10001111'1110001,
+    0b10011111'1111001,
+    0b10000011'1000001,
+    0b10000011'1000001,
+    0b10000011'1000001,
+    0b10000011'1000001,
+    0b11111111'1111111
+  };
+
   static const Icon unknown_large = {
     0b00111'11111111'11000000,
     0b00111'11111111'11100000,
@@ -420,52 +496,59 @@ int FileListWidget::drawIcon(int i, int x, int y, ColorId color)
     0b111111'11111111'1111111,
     0b111111'11111111'1111111,
     0b110000'00000000'0000011,
-    0b110000'00000000'0000011,
-    0b110000'11111111'1000011,
-    0b110000'11111111'1000011,
-    0b110000'00000011'0000011,
-    0b110000'00000110'0000011,
-    0b110000'00001100'0000011,
-    0b110000'00011000'0000011,
-    0b110000'00110000'0000011,
-    0b110000'01100000'0000011,
-    0b110000'11111111'1000011,
-    0b110000'11111111'1000011,
-    0b110000'00000000'0000011,
+    0b110001'11111111'1100011,
+    0b110001'11111111'1100011,
+    0b110001'11111111'1100011,
+    0b110000'00000111'1000011,
+    0b110000'00001111'0000011,
+    0b110000'00011110'0000011,
+    0b110000'00111100'0000011,
+    0b110000'01111000'0000011,
+    0b110000'11110000'0000011,
+    0b110001'11111111'1100011,
+    0b110001'11111111'1100011,
+    0b110001'11111111'1100011,
     0b110000'00000000'0000011,
     0b111111'11111111'1111111,
     0b111111'11111111'1111111
   };
+  static const Icon up_large = {
+    0b111111'10000000'0000000,
+    0b111111'11000000'0000000,
+    0b111111'11100000'0000000,
+    0b111111'11111111'1111111,
+    0b111111'11111111'1111111,
+    0b110000'00000000'0000011,
+    0b110000'00011100'0000011,
+    0b110000'00111110'0000011,
+    0b110000'01111111'0000011,
+    0b110000'11111111'1000011,
+    0b110001'11111111'1100011,
+    0b110011'11111111'1110011,
+    0b110011'11111111'1110011,
+    0b110000'00111110'0000011,
+    0b110000'00111110'0000011,
+    0b110000'00111110'0000011,
+    0b110000'00111110'0000011,
+    0b110000'00111110'0000011,
+    0b110000'00000000'0000011,
+    0b111111'11111111'1111111,
+    0b111111'11111111'1111111
+  };
+
+#endif
+  static const Icon* small_icons[int(IconType::numTypes)] = {
+    &unknown_small, &rom_small, &directory_small, &zip_small, &up_small
+  };
+  static const Icon* large_icons[int(IconType::numTypes)] = {
+    &unknown_large, &rom_large, &directory_large, &zip_large, &up_large,
+  };
   const bool smallIcon = iconWidth() < 24;
-  const int iconGap = smallIcon ? 2 : 3;
+  const int iconType = int(_iconTypeList[i]);
 
-  const Icon* icon{nullptr};
-  switch(_iconList[i])
-  {
-    case IconType::rom:
-      icon = smallIcon ? &rom_small: &rom_large;
-      break;
+  assert(iconType < 5);
 
-    case IconType::directory:
-      icon = smallIcon ? &directory_small : &directory_large;
-      break;
-
-    case IconType::zip:
-      icon = smallIcon ? &zip_small : &zip_large;
-      break;
-
-    default:
-      icon = smallIcon ? &unknown_small : &unknown_large;
-      break;
-  }
-
-  FBSurface& s = _boss->dialog().surface();
-
-  s.drawBitmap(icon->data(), x + 1 + iconGap,
-      y + (_lineHeight - static_cast<int>(icon->size())) / 2,
-      color, iconWidth() - iconGap * 2, static_cast<int>(icon->size()));
-
-  return iconWidth();
+  return smallIcon ? small_icons[iconType] : large_icons[iconType];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

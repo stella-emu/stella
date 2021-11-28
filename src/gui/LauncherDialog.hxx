@@ -25,9 +25,10 @@ class DialogContainer;
 class OSystem;
 class Properties;
 class EditTextWidget;
-class FileListWidget;
+class LauncherFileListWidget;
 class RomInfoWidget;
 class StaticTextWidget;
+
 namespace Common {
   struct Size;
 }
@@ -36,10 +37,12 @@ namespace GUI {
 }
 
 #include <unordered_map>
+#include <unordered_set>
 
 #include "bspf.hxx"
 #include "Dialog.hxx"
 #include "FSNode.hxx"
+#include "Variant.hxx"
 
 class LauncherDialog : public Dialog
 {
@@ -50,6 +53,7 @@ class LauncherDialog : public Dialog
       kRomDirChosenCmd = 'romc',  // ROM dir chosen
       kExtChangedCmd   = 'extc'   // File extension display changed
     };
+    using FileList = std::unordered_set<string>;
 
   public:
     LauncherDialog(OSystem& osystem, DialogContainer& parent,
@@ -153,16 +157,23 @@ class LauncherDialog : public Dialog
     void handleContextMenu();
     void showOnlyROMs(bool state);
     void setDefaultDir();
+    void toggleShowAll();
+    void toggleSubDirs();
+    void toggleExtensions();
+    void toggleSorting();
+    void addContextItem(VariantList& items, const string& label,
+      const string& shortcut, const string& key);
+    void openContextMenu(int x = -1, int y = -1);
     void openGlobalProps();
     void openSettings();
     void openHighScores();
     void openWhatsNew();
 
-    ContextMenu& menu();
+    ContextMenu& contextMenu();
 
   private:
     unique_ptr<Dialog> myDialog;
-    unique_ptr<ContextMenu> myMenu;
+    unique_ptr<ContextMenu> myContextMenu;
 
     // automatically sized font for ROM info viewer
     unique_ptr<GUI::Font> myROMInfoFont;
@@ -172,7 +183,7 @@ class LauncherDialog : public Dialog
     CheckboxWidget*   mySubDirs{nullptr};
     StaticTextWidget* myRomCount{nullptr};
 
-    FileListWidget*   myList{nullptr};
+    LauncherFileListWidget*   myList{nullptr};
 
     StaticTextWidget* myDirLabel{nullptr};
     EditTextWidget*   myDir{nullptr};
@@ -182,8 +193,8 @@ class LauncherDialog : public Dialog
     ButtonWidget*     myOptionsButton{nullptr};
     ButtonWidget*     myQuitButton{nullptr};
 
-// FIXME - NOT USED    StaticTextWidget* myRomLink{nullptr};
     RomInfoWidget*    myRomInfoWidget{nullptr};
+
     std::unordered_map<string,string> myMD5List;
 
     int mySelectedItem{0};
