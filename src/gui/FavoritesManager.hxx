@@ -39,7 +39,7 @@ class FavoritesManager
     using PopularType = std::pair<string, uInt32>;
     using PopularList = std::vector<PopularType>;
 
-    FavoritesManager::FavoritesManager(Settings& settings);
+    explicit FavoritesManager(Settings& settings);
 
     void load();
     void save();
