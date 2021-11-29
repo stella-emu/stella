@@ -51,10 +51,6 @@ bool LauncherFileListWidget::isDirectory(const FilesystemNode& node) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherFileListWidget::getChildren(const FilesystemNode::CancelCheck& isCancelled)
 {
-  // TODO:
-  // - remove subdirs & all files from GUI
-  // - doc (launcher, virtual directories)
-
   if(_node.exists() || !_node.hasParent())
   {
     myInVirtualDir = false;
@@ -179,13 +175,10 @@ void LauncherFileListWidget::toggleUserFavorite()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherFileListWidget::removeFavorite()
 {
-  if(!selected().isDirectory())
-  {
-    if((inRecentDir() && myFavorites->removeRecent(selected().getPath()))
-        || (inPopularDir() && myFavorites->removePopular(selected().getPath())))
-      // Redraw file list
-      setDirty();
-  }
+  if(inRecentDir())
+    myFavorites->removeRecent(selected().getPath());
+  else if(inPopularDir())
+    myFavorites->removePopular(selected().getPath());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

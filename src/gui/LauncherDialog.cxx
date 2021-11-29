@@ -1038,7 +1038,7 @@ void LauncherDialog::openContextMenu(int x, int y)
   // Dynamically create context menu for ROM list options
   VariantList items;
 
-  // TODO: remove subdirs and show all from GUI
+  // TODO: remove 'Incl. subdirs' and 'Show all' from GUI? Replace with icons.
 
   if(!currentNode().isDirectory())
   {

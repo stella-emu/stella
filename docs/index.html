@@ -55,6 +55,7 @@
         <li><a href="#ROMInfo">ROM Launcher</a></li>
         <ul>
           <li><a href="#ROMInfoViewer">ROM Launcher Viewer</a></li>
+          <li><a href="#FavoriteROMs">Favorite ROMs</a></li>
           <li><a href="#ROMLauncherContextMenu">ROM Launcher Context Menu</a></li>
         </ul>
         <li><a href="#ROMAudit">ROM Audit Mode</a></li>
@@ -3273,7 +3274,7 @@
 
     <tr>
       <td><pre>-maxrecentroms &lt;1|0&gt;</pre></td>
-      <td>Number of ROMs tracked in 'Recently played' folder.</td>
+      <td>Number of ROMs tracked in 'Recently Played' folder.</td>
     </tr>
 
     <tr>
@@ -4234,6 +4235,31 @@
   </ul>
   </br>
 
+  <h3><b><a name="FavoriteROMs">Favorite ROMs</a></b></h3>
+  Stella allows to manually favor ROMs and also automatially tracks all played
+  ROMs. These ROMs are presented in three virtual directories:
+  <ul>
+    <li>
+      <p><b>Favorites</b>: Lists all ROMs manually favored by the user (see
+      <b><a href="#ROMLauncherContextMenu">ROM Launcher Context Menu</a></b>).
+      </p>
+    </li>
+    <li>
+      <p><b>Recently Played</b>: Contains the recently played ROMs. By default
+      the latest 20 ROMs are tracked (the <b><a href="#CommandLine">Command Line</a></b>
+      parameter '-maxrecentroms' allows changing the number of tracked ROMs).</p>
+    </li>
+    <li>
+      <p><b>Most Popular</b>: Stella automatically creates a list of most
+      frequently and lately played ROMs. This list is presented here.</p>
+    </li>
+  </ul>
+  <p>The directories are only displayed when they are not empty (e.g. no
+  favored ROMs) and are only present in the current ROM path. Their default ROM
+  sort order can be changed (see
+  <b><a href="#ROMLauncherContextMenu">ROM Launcher Context Menu</a></b>).</p>
+  </br>
+
   <h3><b><a name="ROMLauncherContextMenu">ROM Launcher Context Menu</a></b></h3>
 
   <p>The ROM launcher also contains a context menu, opened by clicking the
@@ -4306,6 +4332,8 @@
     </li>
   </ul></p>
   </blockquote></br>
+
+
 
   <h2><b><a name="ROMAudit">ROM Audit Mode</a></b></h2>
   <blockquote>
