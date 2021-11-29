@@ -36,7 +36,7 @@ void FavoritesManager::load()
 
   // User Favorites
   myUserSet.clear();
-  const string& serializedUser = mySettings.getString("favoriteroms");
+  const string& serializedUser = mySettings.getString("_favoriteroms");
   if(!serializedUser.empty())
   {
     const json& jUser = json::parse(serializedUser);
@@ -49,7 +49,7 @@ void FavoritesManager::load()
 
   // Recently Played
   myRecentList.clear();
-  const string& serializedRecent = mySettings.getString("recentroms");
+  const string& serializedRecent = mySettings.getString("_recentroms");
   if(!serializedRecent.empty())
   {
     const json& jRecent = json::parse(serializedRecent);
@@ -62,7 +62,7 @@ void FavoritesManager::load()
 
   // Most Popular
   myPopularMap.clear();
-  const string& serializedPopular = mySettings.getString("popularroms");
+  const string& serializedPopular = mySettings.getString("_popularroms");
   if(!serializedPopular.empty())
   {
     const json& jPopular = json::parse(serializedPopular);
@@ -82,19 +82,19 @@ void FavoritesManager::save()
   json jUser = json::array();
   for(const auto& path : myUserSet)
     jUser.push_back(path);
-  mySettings.setValue("favoriteroms", jUser.dump(2));
+  mySettings.setValue("_favoriteroms", jUser.dump(2));
 
   // Recently Played
   json jRecent = json::array();
   for(const auto& path : myRecentList)
     jRecent.push_back(path);
-  mySettings.setValue("recentroms", jRecent.dump(2));
+  mySettings.setValue("_recentroms", jRecent.dump(2));
 
   // Most Popular
   json jPopular = json::array();
   for(const auto& path : myPopularMap)
-    jPopular.push_back(path);
-  mySettings.setValue("popularroms", jPopular.dump(2));
+    jPopular.emplace_back(path);
+  mySettings.setValue("_popularroms", jPopular.dump(2));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -159,15 +159,23 @@ void FavoritesManager::update(const string& path)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FavoritesManager::addRecent(const string& path)
 {
-  auto it = std::find(myRecentList.begin(), myRecentList.end(), path);
-
   // Always remove existing before adding at the end again
-  if(it != myRecentList.end())
-    myRecentList.erase(it);
+  removeRecent(path);
   myRecentList.emplace_back(path);
+
   // Limit size
   while(myRecentList.size() > myMaxRecent)
     myRecentList.erase(myRecentList.begin());
+}
+
+bool FavoritesManager::removeRecent(const string& path)
+{
+  auto it = std::find(myRecentList.begin(), myRecentList.end(), path);
+
+  if(it != myRecentList.end())
+    myRecentList.erase(it);
+
+  return it != myRecentList.end();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -198,6 +206,11 @@ const FavoritesManager::RecentList& FavoritesManager::recentList() const
   return sortedList;
 }
 
+bool FavoritesManager::removePopular(const string& path)
+{
+  return myPopularMap.erase(path);
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FavoritesManager::incPopular(const string& path)
 {
@@ -220,7 +233,6 @@ void FavoritesManager::incPopular(const string& path)
         auto entry = myPopularMap.find(item->first);
         if(entry != myPopularMap.end())
         {
-          //if(item - sortedList.cbegin() <= min_popular)
           if(entry->second >= scale * (1.0 - factor))
             entry->second *= factor; // age data
           else

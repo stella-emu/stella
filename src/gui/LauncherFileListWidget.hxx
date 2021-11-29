@@ -44,9 +44,13 @@ class LauncherFileListWidget : public FileListWidget
     void updateFavorites();
     bool isUserFavorite(const string& path) const;
     void toggleUserFavorite();
+    void removeFavorite();
 
     bool isDirectory(const FilesystemNode& node) const override;
     bool inVirtualDir() const { return myInVirtualDir; }
+    bool inUserDir() const { return myVirtualDir == user_name; }
+    bool inRecentDir() const { return myVirtualDir == recent_name; }
+    bool inPopularDir() const { return myVirtualDir == popular_name; }
 
   private:
     static const string user_name;
@@ -55,6 +59,7 @@ class LauncherFileListWidget : public FileListWidget
 
     unique_ptr<FavoritesManager> myFavorites;
     bool myInVirtualDir{false};
+    string myVirtualDir;
     string myRomDir;
 
   private:

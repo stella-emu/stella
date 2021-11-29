@@ -630,6 +630,11 @@ void LauncherDialog::handleContextMenu()
 
   if(cmd == "favorite")
     myList->toggleUserFavorite();
+  else if(cmd == "remove")
+  {
+    myList->removeFavorite();
+    reload();
+  }
   else if(cmd == "override")
     openGlobalProps();
   else if(cmd == "extensions")
@@ -640,12 +645,12 @@ void LauncherDialog::handleContextMenu()
     toggleShowAll();
   else if(cmd == "subdirs")
     toggleSubDirs();
-  else if(cmd == "reload")
-    reload();
   else if(cmd == "highscores")
     openHighScores();
   else if(cmd == "options")
     openSettings();
+  else if(cmd == "reload")
+    reload();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -686,6 +691,10 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
         toggleSubDirs();
         break;
 
+      case KBDK_E:
+        toggleExtensions();
+        break;
+
       case KBDK_F:
         myList->toggleUserFavorite();
         break;
@@ -712,7 +721,8 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
         break;
 
       case KBDK_X:
-        toggleExtensions();
+        myList->removeFavorite();
+        reload();
         break;
 
       default:
@@ -1006,12 +1016,12 @@ void LauncherDialog::toggleSorting()
 void LauncherDialog::addContextItem(VariantList& items, const string& label,
   const string& shortcut, const string& key)
 {
-  const string pad = "                        ";
+  const string pad = "                             ";
 
   if(myUseMinimalUI)
     VarList::push_back(items, " " + label + " ", key);
   else
-    VarList::push_back(items, " " + label + pad.substr(0, 24 - label.length())
+    VarList::push_back(items, " " + label + pad.substr(0, 29 - label.length())
       + shortcut + " ", key);
 }
 
@@ -1030,14 +1040,21 @@ void LauncherDialog::openContextMenu(int x, int y)
 
   // TODO: remove subdirs and show all from GUI
 
-  if(!currentNode().isDirectory() && Bankswitch::isValidRomName(currentNode()))
+  if(!currentNode().isDirectory())
   {
-    addContextItem(items, myList->isUserFavorite(myList->selected().getPath())
-      ? "Remove from favorites"
-      : "Add to favorites", "Ctrl+F", "favorite");
-    addContextItem(items, "Power-on options" + ELLIPSIS, "Ctrl+P", "override");
-    if(instance().highScores().enabled())
-      addContextItem(items, "High scores" + ELLIPSIS, "Ctrl+H", "highscores");
+    if(myList->inRecentDir())
+      addContextItem(items, "Remove from recently played", "Ctrl+X", "remove");
+    if(myList->inPopularDir())
+      addContextItem(items, "Remove from most popular", "Ctrl+X", "remove");
+    if(Bankswitch::isValidRomName(currentNode()))
+    {
+      addContextItem(items, myList->isUserFavorite(myList->selected().getPath())
+        ? "Remove from favorites"
+        : "Add to favorites", "Ctrl+F", "favorite");
+      addContextItem(items, "Power-on options" + ELLIPSIS, "Ctrl+P", "override");
+      if(instance().highScores().enabled())
+        addContextItem(items, "High scores" + ELLIPSIS, "Ctrl+H", "highscores");
+    }
   }
   if(myUseMinimalUI)
     addContextItem(items, "Options" + ELLIPSIS, "Ctrl+O", "options");
@@ -1045,7 +1062,7 @@ void LauncherDialog::openContextMenu(int x, int y)
   {
     addContextItem(items, instance().settings().getBool("launcherextensions")
       ? "Disable file extensions"
-      : "Enable file extensions", "Ctrl+X", "extensions");
+      : "Enable file extensions", "Ctrl+E", "extensions");
     if(myList->inVirtualDir())
       addContextItem(items, instance().settings().getBool("altsorting")
         ? "Normal sorting"

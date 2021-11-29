@@ -52,36 +52,25 @@ bool LauncherFileListWidget::isDirectory(const FilesystemNode& node) const
 void LauncherFileListWidget::getChildren(const FilesystemNode::CancelCheck& isCancelled)
 {
   // TODO:
-  // + remove virtual folders in virtual folders
-  // + tooltips (incl. subdirs)
-  // + always add (after remove) recent ROMs
-  // + age recently played (e.g. reduce all regularly, WHEN? HOW MUCH?)
-  // + mark virtual dir when returning from it
-  // + "lastrom"
-  // + uppercase search
-  // + change sort order
-  // + move subdirs & all files into popup menu
-  // + no all files option in virtual folders
-  // + missing large icons
-  // + Settings.cxx doc
-  // + display only in ROM path folder
   // - remove subdirs & all files from GUI
-  // - doc (settings, hotkeys, popup, launcher, virtual folders)
+  // - doc (launcher, virtual directories)
 
   if(_node.exists() || !_node.hasParent())
   {
     myInVirtualDir = false;
+    myVirtualDir = EmptyString;
     FileListWidget::getChildren(isCancelled);
   }
   else
   {
     myInVirtualDir = true;
+    myVirtualDir = _node.getName();
+
     FilesystemNode parent(_node.getParent());
     parent.setName("..");
     _fileList.emplace_back(parent);
 
-    const string& name = _node.getName();
-    if(name == user_name)
+    if(myVirtualDir == user_name)
     {
       for(auto& item : myFavorites->userList())
       {
@@ -90,7 +79,7 @@ void LauncherFileListWidget::getChildren(const FilesystemNode::CancelCheck& isCa
           _fileList.emplace_back(node);
       }
     }
-    else if(name == popular_name)
+    else if(myVirtualDir == popular_name)
     {
       for(auto& item : myFavorites->popularList())
       {
@@ -99,7 +88,7 @@ void LauncherFileListWidget::getChildren(const FilesystemNode::CancelCheck& isCa
           _fileList.emplace_back(node);
       }
     }
-    else if(name == recent_name)
+    else if(myVirtualDir == recent_name)
     {
       for(auto& item : myFavorites->recentList())
       {
@@ -184,6 +173,18 @@ void LauncherFileListWidget::toggleUserFavorite()
     userFavor(selected().getPath(), isUserFavorite);
     // Redraw file list
     setDirty();
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherFileListWidget::removeFavorite()
+{
+  if(!selected().isDirectory())
+  {
+    if((inRecentDir() && myFavorites->removeRecent(selected().getPath()))
+        || (inPopularDir() && myFavorites->removePopular(selected().getPath())))
+      // Redraw file list
+      setDirty();
   }
 }
 

@@ -54,9 +54,11 @@ class FavoritesManager
     void update(const string& path);
 
     // Recently played
+    bool removeRecent(const string& path);
     const RecentList& recentList() const;
 
     // Most popular
+    bool removePopular(const string& path);
     const PopularList& popularList() const;
 
 
@@ -67,7 +69,7 @@ class FavoritesManager
     UserSet myUserSet;
     RecentList myRecentList;
     PopularMap myPopularMap;
-    uInt32 myMaxRecent{10};
+    uInt32 myMaxRecent{20};
 
     Settings& mySettings;
 

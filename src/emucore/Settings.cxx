@@ -157,10 +157,10 @@ Settings::Settings()
   setPermanent("launcherextensions", "false");
   setPermanent("romviewer", "1");
   setPermanent("lastrom", "");
-  setPermanent("favoriteroms", "");
-  setPermanent("recentroms", "");
+  setPermanent("_favoriteroms", "");  // internal only
+  setPermanent("_recentroms", "");    // internal only
   setPermanent("maxrecentroms", "20");
-  setPermanent("popularroms", "");
+  setPermanent("_popularroms", "");   // internal only
   setPermanent("altsorting", "false");
 
   // UI-related options
