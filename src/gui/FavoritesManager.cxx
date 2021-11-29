@@ -49,14 +49,17 @@ void FavoritesManager::load()
 
   // Recently Played
   myRecentList.clear();
-  const string& serializedRecent = mySettings.getString("_recentroms");
-  if(!serializedRecent.empty())
+  if(myMaxRecent > 0)
   {
-    const json& jRecent = json::parse(serializedRecent);
-    for(const auto& r : jRecent)
+    const string& serializedRecent = mySettings.getString("_recentroms");
+    if(!serializedRecent.empty())
     {
-      const string& path = r.get<string>();
-      addRecent(path);
+      const json& jRecent = json::parse(serializedRecent);
+      for(const auto& r : jRecent)
+      {
+        const string& path = r.get<string>();
+        addRecent(path);
+      }
     }
   }
 
