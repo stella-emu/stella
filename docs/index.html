@@ -307,6 +307,7 @@
       TIA sprites and collisions for each object separately</li>
     <li>Full system state save/load functionality</li>
     <li>Automatic save state creation ('Time Machine') which allows moving back and forth in the recorded timeline</li>
+    <li>Tracking of user favorites and popular or recently played ROMs.</li>
     <li>High scores saving (internal or via PlusROM High Score Club)</li>
     <li>Cross-platform UI including a built-in ROM launcher frontend</li>
     <li>Built-in extensive debugger, including static analysis with the Distella disassembler
@@ -2264,6 +2265,16 @@
       <td>Backspace</td>
     </tr>
     <tr>
+      <td>Remove from 'Recently Played' or 'Most Popular' folder</td>
+      <td>Control + X</td>
+      <td>Control + X</td>
+    </tr>
+    <tr>
+      <td>Toggle favorite</td>
+      <td>Control + F</td>
+      <td>Control + F</td>
+    </tr>
+    <tr>
       <td>Open Power-On options dialog</td>
       <td>Control + P</td>
       <td>Control + P</td>
@@ -2274,19 +2285,24 @@
       <td>Control + H</td>
     </tr>
     <tr>
-      <td>Toggle favorite</td>
-      <td>Control + F</td>
-      <td>Control + F</td>
+      <td>Toggle file extensions display</td>
+      <td>Control + E</td>
+      <td>Control + E</td>
+    </tr>
+    <tr>
+      <td>Toggle show all ROMs</td>
+      <td>Control + A</td>
+      <td>Control + A</td>
+    </tr>
+    <tr>
+      <td>Toggle search ROMs in subdirectories too</td>
+      <td>Control + D</td>
+      <td>Control + D</td>
     </tr>
     <tr>
       <td>Reload ROM listing</td>
       <td>Control + R</td>
       <td>Control + R</td>
-    </tr>
-    <tr>
-      <td>Toggle file extensions display</td>
-      <td>Control + X</td>
-      <td>Control + X</td>
     </tr>
   </table>
 
@@ -3251,6 +3267,16 @@
     </tr>
 
     <tr>
+      <td><pre>-altsorting &lt;1|0&gt;</pre></td>
+      <td>Alternative sorting in virtual folders.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-maxrecentroms &lt;1|0&gt;</pre></td>
+      <td>Number of ROMs tracked in 'Recently played' folder.</td>
+    </tr>
+
+    <tr>
       <td><pre>-romviewer &lt;float&gt;</pre></td>
       <td>Hide ROM Info Viewer in ROM launcher mode (0) or use the
         given zoom level.
@@ -4210,12 +4236,21 @@
 
   <h3><b><a name="ROMLauncherContextMenu">ROM Launcher Context Menu</a></b></h3>
 
-  <p>The ROM launcher also contains a context menu, selected by clicking the
-  right mouse button in the ROM list. This context menu
-  contains the following items:</p>
+  <p>The ROM launcher also contains a context menu, opened by clicking the
+  right mouse button in the ROM list or by a long controller button press.
+  This context menu can contain the following items:</p>
 
-  <p><ol>
-    <li><p><b><a name="PowerOn">Power-on options</a></b>: Selecting this option shows a dialog whereby
+  <p><ul>
+    <li>
+      <p><b>Remove from recently played/most popular</b> (or 'Control + X'):
+        This option removes the selected ROM from the current folder.</p>
+    </li>
+    <li>
+      <p><b>Add to/remove from favorites</b> (or 'Control + F'): This option
+        toggles the favorite state of the selected ROM.</p>
+    </li>
+    <li><p><b><a name="PowerOn">Power-on options</a></b> (or 'Control + P'):
+    Selecting this option shows a dialog whereby
     ROM properties can be temporarily overridden, and joystick/console buttons can be
     temporarily held down. Selecting options from this dialog will cause all ROMs launched
     after that to use those properties you specify. Clicking <b>Defaults</b> will disable
@@ -4243,16 +4278,33 @@
         </td>
       </tr>
     </table>
-    <p>This dialog can also be opened by pressing 'Control + P'.</p>
     </li>
-    <li><b>High scores</b>: This option displays the <a href="#HighScores">
-    High Scores</a> dialog for the selected ROM. Only available if high score
-    properties have been setup for the ROM. Also available via 'Control + H' keys combo.</li>
+    <li>
+      <p><b>High scores</b> (or 'Control + H'): This option displays the <a href="#HighScores">
+      High Scores</a> dialog for the selected ROM. Only available if high score
+      properties have been setup for the ROM.</p>
     </li>
-    <br><li><b>Reload listing</b>: Selecting this performs a reload of the
-    current listing. It is an alternative to pressing the 'Control + R'
-    key combo.</li>
-  </ol></p>
+    <li>
+      <p><b>Enable/disable file extensions</b> (or 'Control + E'): Toggles the
+      display of the file extensions.</p>
+    </li>
+    <li>
+      <p><b>Toggle alternative sorting</b> (or 'Control + S'): Toggles
+      alternative sorting in the virtual directories.</p>
+    </li>
+    <li>
+      <p><b>Show all files/only ROMs</b> (or 'Control + A'): Toggles display of
+      non-ROM files.</p>
+    </li>
+    <li>
+      <p><b>Include/exclude subdirectories</b> (or 'Control + D'): Toggles searching
+      of ROMs in current directory only or all subdirectories too.</p>
+    </li>
+    <li>
+      <p><b>Reload listing</b> (or 'Control + R'): Selecting this performs a
+      reload of the current listing. </p>
+    </li>
+  </ul></p>
   </blockquote></br>
 
   <h2><b><a name="ROMAudit">ROM Audit Mode</a></b></h2>
