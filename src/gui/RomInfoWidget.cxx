@@ -71,6 +71,7 @@ void RomInfoWidget::clearProperties()
   // Decide whether the information should be shown immediately
   if(instance().eventHandler().state() == EventHandlerState::LAUNCHER)
     setDirty();
+  myUrl.clear();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
