@@ -120,7 +120,7 @@ class FileListWidget : public StringListWidget
   protected:
     virtual bool isDirectory(const FilesystemNode& node) const;
     virtual void getChildren(const FilesystemNode::CancelCheck& isCancelled);
-    virtual void extendLists(StringList& list) { };
+    virtual void extendLists(StringList& list) { }
     virtual IconType romIconType(const FilesystemNode& file) const;
     virtual const Icon* getIcon(int i) const;
     int iconWidth() const;
