@@ -184,7 +184,7 @@ void LauncherFileListWidget::removeFavorite()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherFileListWidget::userFavor(const string& path, bool isUserFavorite)
 {
-  int pos = 0;
+  size_t pos = 0;
 
   for(const auto& file : _fileList)
   {

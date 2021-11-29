@@ -220,7 +220,7 @@ void FavoritesManager::incPopular(const string& path)
   static constexpr uInt32 scale = 100;
   static constexpr double factor = 0.7;
   static constexpr uInt32 max_popular = scale;
-  static constexpr uInt32 min_popular = max_popular * factor;
+  //static constexpr uInt32 min_popular = max_popular * factor;
 
   auto increased = myPopularMap.find(path);
   if(increased != myPopularMap.end())
