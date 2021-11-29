@@ -653,6 +653,10 @@
 		DCE8B1871E7E03B300189864 /* FrameLayout.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE8B1861E7E03B300189864 /* FrameLayout.hxx */; };
 		DCE9158B201543B900960CC0 /* TimeLineWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE91589201543B900960CC0 /* TimeLineWidget.cxx */; };
 		DCE9158C201543B900960CC0 /* TimeLineWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE9158A201543B900960CC0 /* TimeLineWidget.hxx */; };
+		DCE9681427553F1000E99839 /* LauncherFileListWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE9681027553F1000E99839 /* LauncherFileListWidget.hxx */; };
+		DCE9681527553F1000E99839 /* FavoritesManager.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE9681127553F1000E99839 /* FavoritesManager.cxx */; };
+		DCE9681627553F1000E99839 /* FavoritesManager.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE9681227553F1000E99839 /* FavoritesManager.hxx */; };
+		DCE9681727553F1000E99839 /* LauncherFileListWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE9681327553F1000E99839 /* LauncherFileListWidget.cxx */; };
 		DCEC58581E945125002F0246 /* DelayQueueWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCEC58561E945125002F0246 /* DelayQueueWidget.cxx */; };
 		DCEC58591E945125002F0246 /* DelayQueueWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCEC58571E945125002F0246 /* DelayQueueWidget.hxx */; };
 		DCEC585E1E945175002F0246 /* DelayQueueIterator.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCEC585B1E945175002F0246 /* DelayQueueIterator.hxx */; };
@@ -1469,6 +1473,10 @@
 		DCE8B1861E7E03B300189864 /* FrameLayout.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FrameLayout.hxx; sourceTree = "<group>"; };
 		DCE91589201543B900960CC0 /* TimeLineWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TimeLineWidget.cxx; sourceTree = "<group>"; };
 		DCE9158A201543B900960CC0 /* TimeLineWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TimeLineWidget.hxx; sourceTree = "<group>"; };
+		DCE9681027553F1000E99839 /* LauncherFileListWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = LauncherFileListWidget.hxx; sourceTree = "<group>"; };
+		DCE9681127553F1000E99839 /* FavoritesManager.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FavoritesManager.cxx; sourceTree = "<group>"; };
+		DCE9681227553F1000E99839 /* FavoritesManager.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FavoritesManager.hxx; sourceTree = "<group>"; };
+		DCE9681327553F1000E99839 /* LauncherFileListWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LauncherFileListWidget.cxx; sourceTree = "<group>"; };
 		DCEC58561E945125002F0246 /* DelayQueueWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DelayQueueWidget.cxx; sourceTree = "<group>"; };
 		DCEC58571E945125002F0246 /* DelayQueueWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = DelayQueueWidget.hxx; sourceTree = "<group>"; };
 		DCEC585B1E945175002F0246 /* DelayQueueIterator.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = DelayQueueIterator.hxx; sourceTree = "<group>"; };
@@ -2206,6 +2214,8 @@
 				DC3C9BCA2469C93D00CF2D47 /* EmulationDialog.hxx */,
 				2D05FF5E096E269100A518FE /* EventMappingWidget.cxx */,
 				2D05FF5F096E269100A518FE /* EventMappingWidget.hxx */,
+				DCE9681127553F1000E99839 /* FavoritesManager.cxx */,
+				DCE9681227553F1000E99839 /* FavoritesManager.hxx */,
 				DC7A24DD173B1DBC00B20FE9 /* FileListWidget.cxx */,
 				DC7A24DE173B1DBC00B20FE9 /* FileListWidget.hxx */,
 				2D9217FB0857CC88001D664B /* Font.cxx */,
@@ -2231,6 +2241,8 @@
 				2DDBEABB084578BF00812C11 /* Launcher.hxx */,
 				2DDBEABC084578BF00812C11 /* LauncherDialog.cxx */,
 				2DDBEABD084578BF00812C11 /* LauncherDialog.hxx */,
+				DCE9681327553F1000E99839 /* LauncherFileListWidget.cxx */,
+				DCE9681027553F1000E99839 /* LauncherFileListWidget.hxx */,
 				2DDBEAC0084578BF00812C11 /* ListWidget.cxx */,
 				2DDBEAC1084578BF00812C11 /* ListWidget.hxx */,
 				DC6C726013CDEA0A008A5975 /* LoggerDialog.cxx */,
@@ -2918,6 +2930,7 @@
 				DC70065D241EC97900A459AB /* Stella16x32tFont.hxx in Headers */,
 				DCDFF08220B781B0001227C0 /* DispatchResult.hxx in Headers */,
 				DCF8621A21C9D43300F95F52 /* StaggeredLogger.hxx in Headers */,
+				DCE9681627553F1000E99839 /* FavoritesManager.hxx in Headers */,
 				DCAAE5E31715887B0080BB82 /* CartF0Widget.hxx in Headers */,
 				DCAAE5E51715887B0080BB82 /* CartF4SCWidget.hxx in Headers */,
 				DC816CF62572F92A00FBCCDA /* json.hxx in Headers */,
@@ -2944,6 +2957,7 @@
 				DCCA26B31FA64D5E000EE4D8 /* AbstractFrameManager.hxx in Headers */,
 				DC3EE8631E2C0E6D00905161 /* inffast.h in Headers */,
 				DC676A501729A0B000E4E73D /* CartE0Widget.hxx in Headers */,
+				DCE9681427553F1000E99839 /* LauncherFileListWidget.hxx in Headers */,
 				DC676A521729A0B000E4E73D /* CartE7Widget.hxx in Headers */,
 				DC911C7626333B9200666AC0 /* CartMVC.hxx in Headers */,
 				DC676A541729A0B000E4E73D /* CartFA2Widget.hxx in Headers */,
@@ -3162,7 +3176,9 @@
 				DC3C9BD92469C9C700CF2D47 /* CartEnhancedWidget.cxx in Sources */,
 				CFE3F60D1E84A9A200A8204E /* CartCDFWidget.cxx in Sources */,
 				2D9174B709BA90380026E9FF /* OptionsDialog.cxx in Sources */,
+				DCE9681727553F1000E99839 /* LauncherFileListWidget.cxx in Sources */,
 				2D9174B809BA90380026E9FF /* PopUpWidget.cxx in Sources */,
+				DCE9681527553F1000E99839 /* FavoritesManager.cxx in Sources */,
 				DC1E474E24D34F3B0047E61A /* WhatsNewDialog.cxx in Sources */,
 				DCBDDE9A1D6A5F0E009DF1E9 /* Cart3EPlusWidget.cxx in Sources */,
 				DCE9158B201543B900960CC0 /* TimeLineWidget.cxx in Sources */,
