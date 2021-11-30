@@ -816,17 +816,17 @@ Event::Type LauncherDialog::getJoyAxisEvent(int stick, JoyAxis axis, JoyDir adir
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::handleMouseDown(int x, int y, MouseButton b, int clickCount)
+void LauncherDialog::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 {
   // Grab right mouse button for context menu, send left to base class
   if(b == MouseButton::RIGHT
-     && x + getAbsX() >= myList->getLeft() && x + getAbsX() <= myList->getRight()
-     && y + getAbsY() >= myList->getTop() && y + getAbsY() <= myList->getBottom())
+    && x + getAbsX() >= myList->getLeft() && x + getAbsX() <= myList->getRight()
+    && y + getAbsY() >= myList->getTop() && y + getAbsY() <= myList->getBottom())
   {
     openContextMenu(x, y);
   }
   else
-    Dialog::handleMouseDown(x, y, b, clickCount);
+    Dialog::handleMouseUp(x, y, b, clickCount);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1057,7 +1057,17 @@ void LauncherDialog::openContextMenu(int x, int y)
     }
   }
   if(myUseMinimalUI)
+  {
+  #ifndef RETRON77
+    addContextItem(items, instance().settings().getBool("launcherroms")
+      ? "Show all files"
+      : "Show only ROMs", "Ctrl+A", "showall");
+    addContextItem(items, instance().settings().getBool("launchersubdirs")
+      ? "Exclude subdirectories"
+      : "Include subdirectories", "Ctrl+D", "subdirs");
+  #endif
     addContextItem(items, "Options" + ELLIPSIS, "Ctrl+O", "options");
+  }
   else
   {
     addContextItem(items, instance().settings().getBool("launcherextensions")
@@ -1067,21 +1077,12 @@ void LauncherDialog::openContextMenu(int x, int y)
       addContextItem(items, instance().settings().getBool("altsorting")
         ? "Normal sorting"
         : "Alternative sorting", "Ctrl+S", "sorting");
-    else
-    {
-      addContextItem(items, instance().settings().getBool("launcherroms")
-        ? "Show all files"
-        : "Show only ROMs", "Ctrl+A", "showall");
-      addContextItem(items, instance().settings().getBool("launchersubdirs")
-        ? "Exclude subdirectories"
-        : "Include subdirectories", "Ctrl+D", "subdirs");
-    }
     addContextItem(items, "Reload listing", "Ctrl+R", "reload");
   }
   contextMenu().addItems(items);
 
   // Add menu at current x,y mouse location
-  contextMenu().show(x + getAbsX(), y + getAbsY(), surface().dstRect());
+  contextMenu().show(x + getAbsX(), y + getAbsY(), surface().dstRect(), 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
