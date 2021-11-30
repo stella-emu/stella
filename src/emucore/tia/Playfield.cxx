@@ -41,6 +41,8 @@ void Playfield::reset()
   myColorLeft = myColorRight = 0;
   myColorP0 = myColorP1 = 0;
   myColorMode = ColorMode::normal;
+  myScoreGlitch = false;
+  myScoreHaste = 0;
   myDebugEnabled = false;
 
   collision = 0;
@@ -107,6 +109,7 @@ void Playfield::ctrlpf(uInt8 value)
 
   myReflected = reflected;
   myColorMode = colorMode;
+  myScoreHaste = (myColorMode == ColorMode::score && myScoreGlitch) ? 1 : 0;
   applyColors();
 }
 
@@ -150,6 +153,13 @@ void Playfield::setColorP1(uInt8 color)
 
   myColorP1 = color;
   applyColors();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Playfield::setScoreGlitch(bool enable)
+{
+  myScoreGlitch = enable;
+  myScoreHaste = (myColorMode == ColorMode::score && myScoreGlitch) ? 1 : 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -222,10 +232,10 @@ void Playfield::applyColors()
 uInt8 Playfield::getColor() const
 {
   if (!myDebugEnabled)
-    return myX < TIAConstants::H_PIXEL / 2 ? myColorLeft : myColorRight;
+    return myX < uInt16(TIAConstants::H_PIXEL / 2 - myScoreHaste) ? myColorLeft : myColorRight;
   else
   {
-    if (myX < TIAConstants::H_PIXEL / 2)
+    if (myX < uInt16(TIAConstants::H_PIXEL / 2 - myScoreHaste))
     {
       // left side:
       if(myX < 16)
@@ -281,6 +291,7 @@ bool Playfield::save(Serializer& out) const
     out.putBool(myDebugEnabled);
 
     out.putByte(uInt8(myColorMode));
+    out.putBool(myScoreGlitch);
 
     out.putInt(myPattern);
     out.putInt(myEffectivePattern);
@@ -322,6 +333,8 @@ bool Playfield::load(Serializer& in)
     myDebugEnabled = in.getBool();
 
     myColorMode = ColorMode(in.getByte());
+    myScoreGlitch = in.getBool();
+    myScoreHaste = myColorMode == ColorMode::score && myScoreGlitch ? 1 : 0;
 
     myPattern = in.getInt();
     myEffectivePattern = in.getInt();

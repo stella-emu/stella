@@ -24,6 +24,8 @@
 
   * Added option to toggle autofire mode.
 
+  * Added another oddball TIA glitch option for score mode color.
+
 -Have fun!
 
 

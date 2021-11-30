@@ -70,6 +70,7 @@ class DevSettingsHandler
     std::array<bool, numSets>   myBlInvPhase;
     std::array<bool, numSets>   myPFBits;
     std::array<bool, numSets>   myPFColor;
+    std::array<bool, numSets>   myPFScore;
     std::array<bool, numSets>   myBKColor;
     std::array<bool, numSets>   myPlSwap;
     std::array<bool, numSets>   myBlSwap;

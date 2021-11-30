@@ -957,6 +957,9 @@ void TIA::applyDeveloperSettings()
     setPFColorDelay(custom
                     ? mySettings.getBool("dev.tia.delaypfcolor")
                     : BSPF::equalsIgnoreCase("quickstep", mySettings.getString("dev.tia.type")));
+    setPFScoreGlitch(custom
+                     ? mySettings.getBool("dev.tia.pfscoreglitch")
+                     : BSPF::equalsIgnoreCase("matchie", mySettings.getString("dev.tia.type")));
     setBKColorDelay(custom
                     ? mySettings.getBool("dev.tia.delaybkcolor")
                     : BSPF::equalsIgnoreCase("indy500", mySettings.getString("dev.tia.type")));
@@ -972,6 +975,7 @@ void TIA::applyDeveloperSettings()
     setBlInvertedPhaseClock(false);
     setPFBitsDelay(false);
     setPFColorDelay(false);
+    myPlayfield.setScoreGlitch(false);
     setBKColorDelay(false);
     setPlSwapDelay(false);
     setBlSwapDelay(false);
@@ -1659,6 +1663,12 @@ void TIA::setPFBitsDelay(bool delayed)
 void TIA::setPFColorDelay(bool delayed)
 {
   myPFColorDelay = delayed ? 1 : 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::setPFScoreGlitch(bool enable)
+{
+  myPlayfield.setScoreGlitch(enable);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
