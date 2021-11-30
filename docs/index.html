@@ -3723,8 +3723,8 @@
       <td>When enabled, each external access (AtariVox/SaveKey EEPROM, PlusROM, Supercharger...)
         is signalled by a message.</td>
     </tr><tr>
-      <td><pre>-dev.tia.type &lt;standard|koolaidman|cosmicark|</br>  pesco|quickstep|indy500|heman|custom&gt;</pre></td>
-      <td>Set emulated TIA type.</td>
+      <td><pre>-dev.tia.type &lt;standard|koolaidman|</br>  cosmicark|pesco|quickstep|matchie|</br>  indy500|heman|custom&gt;</pre></td>
+      <td>Set emulated TIA type. Only with 'custom' the following TIA options become relevant.</td>
     </tr><tr>
       <td><pre>-dev.tia.plinvphase &lt;1|0&gt;</pre></td>
       <td>Enable/disable inverted HMOVE clock phase for players (Kool Aid Man glitch).</td>
@@ -3740,6 +3740,9 @@
     </tr><tr>
       <td><pre>-dev.tia.delaypfcolor &lt;1|0&gt;</pre></td>
       <td>Enable/disable playfield color delayed by one color clock (colored step borders in Quick Step!).</td>
+    </tr><tr>
+      <td><pre>-dev.tia.pfscoreglitch &lt;1|0&gt;</pre></td>
+      <td>Enable/disable earlier playfield score mode color color switch (center vertical line in Matchie).</td>
     </tr><tr>
       <td><pre>-dev.tia.delaybkcolor &lt;1|0&gt;</pre></td>
       <td>Enable/disable background color delayed by one color clock (stray pixels in Indy 500 menu hack).</td>
@@ -4570,10 +4573,10 @@
     <tr><td>Inverted HMOVE clock...</td><td>Emulates the Kool-Aid Man
       collision and Cosmic Ark stars glitches for the given objects.</td>
       <td>-dev.tia.plinvphase</br>-dev.tia.msinvphase</br>-dev.tia.blinvphase</td></tr>
-    <tr><td>Delayed Playfield</td><td>Emulates playfield register changes delayed
+    <tr><td>Delayed Playfield</td><td>Emulates playfield changes moved
       by one color clock. This e.g. causes glitches in Pesco (stray playfield
-      pixel) and Quick Step! (colored step borders).</td>
-      <td>-dev.tia.delaypfbits</br>-dev.tia.delaypfcolor</td></tr>
+      pixel), Quick Step! (colored step borders) and Matchie (vertical line at pixel 79).</td>
+      <td>-dev.tia.delaypfbits</br>-dev.tia.delaypfcolor</br>-dev.tia.pfscoreglitch</td></tr>
     <tr><td>Delayed Background</td><td>Emulates background color register changes delayed
       by one color clock. This causes stray pixel in the Indy 500 menu hack.</td>
       <td>-dev.tia.delaybkcolor</td></tr>

@@ -458,6 +458,13 @@ class TIA : public Device
     void setPFColorDelay(bool delayed);
 
     /**
+      Enables/disables score mode playfield color glitch
+
+      @param enable   Wether to enable color glitch
+    */
+    void setPFScoreGlitch(bool enable);
+
+    /**
       Enables/disables delayed background colors.
 
       @param delayed   Wether to enable delayed background colors

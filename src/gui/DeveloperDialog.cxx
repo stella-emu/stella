@@ -252,6 +252,7 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
   VarList::push_back(items, "Faulty Cosmic Ark stars", "cosmicark");
   VarList::push_back(items, "Glitched Pesco", "pesco");
   VarList::push_back(items, "Glitched Quick Step!", "quickstep");
+  VarList::push_back(items, "Glitched Matchie line", "matchie");
   VarList::push_back(items, "Glitched Indy 500 menu", "indy500");
   VarList::push_back(items, "Glitched He-Man title", "heman");
   VarList::push_back(items, "Custom", "custom");
@@ -273,12 +274,12 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
                                           "Players");
   wid.push_back(myPlInvPhaseWidget);
 
-  myMsInvPhaseWidget = new CheckboxWidget(myTab, font, myPlInvPhaseWidget->getRight() + 20, ypos + 1,
-                                          "Missiles");
+  myMsInvPhaseWidget = new CheckboxWidget(myTab, font, myPlInvPhaseWidget->getRight() + fontWidth() * 2.5,
+                                          ypos + 1, "Missiles");
   wid.push_back(myMsInvPhaseWidget);
 
-  myBlInvPhaseWidget = new CheckboxWidget(myTab, font, myMsInvPhaseWidget->getRight() + 20, ypos + 1,
-                                          "Ball");
+  myBlInvPhaseWidget = new CheckboxWidget(myTab, font, myMsInvPhaseWidget->getRight() + fontWidth() * 2.5,
+                                          ypos + 1, "Ball");
   wid.push_back(myBlInvPhaseWidget);
   ypos += lineHeight + VGAP * 1;
 
@@ -290,10 +291,14 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
 
   myPFBitsWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 3, ypos + 1, "Bits");
   wid.push_back(myPFBitsWidget);
-  //ypos += lineHeight + VGAP * 1;
 
-  myPFColorWidget = new CheckboxWidget(myTab, font, myPFBitsWidget->getRight() + 20, ypos + 1, "Color");
+  myPFColorWidget = new CheckboxWidget(myTab, font, myPFBitsWidget->getRight() + +fontWidth() * 2.5,
+                                       ypos + 1, "Color");
   wid.push_back(myPFColorWidget);
+
+  myPFScoreWidget = new CheckboxWidget(myTab, font, myPFColorWidget->getRight() + +fontWidth() * 2.5,
+                                       ypos + 1, "Score");
+  wid.push_back(myPFScoreWidget);
   ypos += lineHeight + VGAP * 1;
 
   myBackgroundLabel = new StaticTextWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
@@ -316,7 +321,8 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
   myPlSwapWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 3, ypos + 1, "Players");
   wid.push_back(myPlSwapWidget);
 
-  myBlSwapWidget = new CheckboxWidget(myTab, font, myPlSwapWidget->getRight() + 20, ypos + 1, "Ball");
+  myBlSwapWidget = new CheckboxWidget(myTab, font, myPlSwapWidget->getRight() + fontWidth() * 2.5,
+                                      ypos + 1, "Ball");
   wid.push_back(myBlSwapWidget);
 
   // Add items for tab 2
@@ -700,6 +706,7 @@ void DeveloperDialog::getWidgetStates(SettingsSet set)
   myBlInvPhase[set] = myBlInvPhaseWidget->getState();
   myPFBits[set] = myPFBitsWidget->getState();
   myPFColor[set] = myPFColorWidget->getState();
+  myPFScore[set] = myPFScoreWidget->getState();
   myBKColor[set] = myBKColorWidget->getState();
   myPlSwap[set] = myPlSwapWidget->getState();
   myBlSwap[set] = myBlSwapWidget->getState();
@@ -904,6 +911,7 @@ void DeveloperDialog::setDefaults()
       myBlInvPhase[set] = devSettings ? true : false;
       myPFBits[set] = devSettings ? true : false;
       myPFColor[set] = devSettings ? true : false;
+      myPFScore[set] = devSettings ? true : false;
       myBKColor[set] = devSettings ? true : false;
       myPlSwap[set] = devSettings ? true : false;
       myBlSwap[set] = devSettings ? true : false;
@@ -1114,6 +1122,7 @@ void DeveloperDialog::handleTia()
   myBackgroundLabel->setEnabled(enable);
   myPFBitsWidget->setEnabled(enable);
   myPFColorWidget->setEnabled(enable);
+  myPFScoreWidget->setEnabled(enable);
   myBKColorWidget->setEnabled(enable);
   mySwapLabel->setEnabled(enable);
   myPlSwapWidget->setEnabled(enable);
@@ -1128,6 +1137,7 @@ void DeveloperDialog::handleTia()
     myBlInvPhaseWidget->setState(myBlInvPhase[set]);
     myPFBitsWidget->setState(myPFBits[set]);
     myPFColorWidget->setState(myPFColor[set]);
+    myPFScoreWidget->setState(myPFScore[set]);
     myBKColorWidget->setState(myBKColor[set]);
     myPlSwapWidget->setState(myPlSwap[set]);
     myBlSwapWidget->setState(myBlSwap[set]);
@@ -1139,6 +1149,7 @@ void DeveloperDialog::handleTia()
     myBlInvPhaseWidget->setState(false);
     myPFBitsWidget->setState(BSPF::equalsIgnoreCase("pesco", myTIATypeWidget->getSelectedTag().toString()));
     myPFColorWidget->setState(BSPF::equalsIgnoreCase("quickstep", myTIATypeWidget->getSelectedTag().toString()));
+    myPFScoreWidget->setState(BSPF::equalsIgnoreCase("matchie", myTIATypeWidget->getSelectedTag().toString()));
     myBKColorWidget->setState(BSPF::equalsIgnoreCase("indy500", myTIATypeWidget->getSelectedTag().toString()));
     myPlSwapWidget->setState(BSPF::equalsIgnoreCase("heman", myTIATypeWidget->getSelectedTag().toString()));
     myBlSwapWidget->setState(false);

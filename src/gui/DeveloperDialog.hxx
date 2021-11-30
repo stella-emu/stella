@@ -113,6 +113,7 @@ class DeveloperDialog : public Dialog, DevSettingsHandler
     StaticTextWidget*   myPlayfieldLabel{nullptr};
     CheckboxWidget*     myPFBitsWidget{nullptr};
     CheckboxWidget*     myPFColorWidget{nullptr};
+    CheckboxWidget*     myPFScoreWidget{nullptr};
     StaticTextWidget*   myBackgroundLabel{nullptr};
     CheckboxWidget*     myBKColorWidget{nullptr};
     StaticTextWidget*   mySwapLabel{nullptr};

@@ -67,6 +67,7 @@ void DevSettingsHandler::loadSettings(SettingsSet set)
   myBlInvPhase[set] = devSettings ? settings.getBool("dev.tia.blinvphase") : false;
   myPFBits[set] = devSettings ? settings.getBool("dev.tia.delaypfbits") : false;
   myPFColor[set] = devSettings ? settings.getBool("dev.tia.delaypfcolor") : false;
+  myPFScore[set] = devSettings ? settings.getBool("dev.tia.pfscoreglitch") : false;
   myBKColor[set] = devSettings ? settings.getBool("dev.tia.delaybkcolor") : false;
   myPlSwap[set] = devSettings ? settings.getBool("dev.tia.delayplswap") : false;
   myBlSwap[set] = devSettings ? settings.getBool("dev.tia.delayblswap") : false;
@@ -134,6 +135,7 @@ void DevSettingsHandler::saveSettings(SettingsSet set)
       settings.setValue("dev.tia.blinvphase", myBlInvPhase[set]);
       settings.setValue("dev.tia.delaypfbits", myPFBits[set]);
       settings.setValue("dev.tia.delaypfcolor", myPFColor[set]);
+      settings.setValue("dev.tia.pfscoreglitch", myPFScore[set]);
       settings.setValue("dev.tia.delaybkcolor", myBKColor[set]);
       settings.setValue("dev.tia.delayplswap", myPlSwap[set]);
       settings.setValue("dev.tia.delayblswap", myBlSwap[set]);
@@ -187,6 +189,7 @@ void DevSettingsHandler::applySettings(SettingsSet set)
     myOSystem.console().tia().setBlInvertedPhaseClock(myBlInvPhase[set]);
     myOSystem.console().tia().setPFBitsDelay(myPFBits[set]);
     myOSystem.console().tia().setPFColorDelay(myPFColor[set]);
+    myOSystem.console().tia().setPFScoreGlitch(myPFScore[set]);
     myOSystem.console().tia().setBKColorDelay(myBKColor[set]);
     myOSystem.console().tia().setPlSwapDelay(myPlSwap[set]);
     myOSystem.console().tia().setBlSwapDelay(myBlSwap[set]);
