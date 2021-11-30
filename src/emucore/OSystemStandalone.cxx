@@ -48,3 +48,8 @@ shared_ptr<CompositeKeyValueRepositoryAtomic> OSystemStandalone::getHighscoreRep
 {
   return shared_ptr<CompositeKeyValueRepositoryAtomic>(myStellaDb, &myStellaDb->highscoreRepository());
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OSystemStandalone::getBaseDirectories(string& basedir, string& homedir,
+                                    bool useappdir, const string& usedir)
+{}

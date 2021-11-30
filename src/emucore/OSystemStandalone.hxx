@@ -40,6 +40,9 @@ class OSystemStandalone : public OSystem
 
     string describePresistence() override;
 
+    void getBaseDirectories(string& basedir, string& homedir,
+                                    bool useappdir, const string& usedir) override;
+
   private:
 
     shared_ptr<StellaDb> myStellaDb;
