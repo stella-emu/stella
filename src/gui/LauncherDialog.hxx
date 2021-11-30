@@ -161,8 +161,6 @@ class LauncherDialog : public Dialog
     void toggleSubDirs();
     void toggleExtensions();
     void toggleSorting();
-    void addContextItem(VariantList& items, const string& label,
-      const string& shortcut, const string& key);
     void openContextMenu(int x = -1, int y = -1);
     void openGlobalProps();
     void openSettings();

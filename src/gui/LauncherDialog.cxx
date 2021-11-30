@@ -1013,73 +1013,89 @@ void LauncherDialog::toggleSorting()
   }
 }
 
-void LauncherDialog::addContextItem(VariantList& items, const string& label,
-  const string& shortcut, const string& key)
-{
-  const string pad = "                             ";
-
-  if(myUseMinimalUI)
-    VarList::push_back(items, " " + label + " ", key);
-  else
-    VarList::push_back(items, " " + label + pad.substr(0, 29 - label.length())
-      + shortcut + " ", key);
-}
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::openContextMenu(int x, int y)
 {
+  // Dynamically create context menu for ROM list options
+  // TODO: remove 'Incl. subdirs' and 'Show all' from GUI? Replace with icons.
+
   if(x < 0 || y < 0)
   {
-    // Determine position from currently selected list item
+    // Long pressed button, determine position from currently selected list item
     x = myList->getLeft() + myList->getWidth() / 2;
     y = myList->getTop() + (myList->getSelected() - myList->currentPos() + 1) * _font.getLineHeight();
   }
 
-  // Dynamically create context menu for ROM list options
-  VariantList items;
-
-  // TODO: remove 'Incl. subdirs' and 'Show all' from GUI? Replace with icons.
+  struct ContextItem {
+    string label;
+    string shortcut;
+    string key;
+    explicit ContextItem(const string _label, const string _shortcut, const string _key)
+      : label{_label}, shortcut{_shortcut}, key{_key} {}
+    // No shortcuts displayed in minimal UI
+    ContextItem(const string _label, const string _key)
+      : label{_label}, key{_key} {}
+  };
+  using ContextList = std::vector<ContextItem>;
+  ContextList items;
 
   if(!currentNode().isDirectory())
   {
     if(myList->inRecentDir())
-      addContextItem(items, "Remove from recently played", "Ctrl+X", "remove");
+      items.push_back(ContextItem("Remove from recently played", "Ctrl+X", "remove"));
     if(myList->inPopularDir())
-      addContextItem(items, "Remove from most popular", "Ctrl+X", "remove");
+      items.push_back(ContextItem("Remove from most popular", "Ctrl+X", "remove"));
     if(Bankswitch::isValidRomName(currentNode()))
     {
-      addContextItem(items, myList->isUserFavorite(myList->selected().getPath())
+      items.push_back(ContextItem(myList->isUserFavorite(myList->selected().getPath())
         ? "Remove from favorites"
-        : "Add to favorites", "Ctrl+F", "favorite");
-      addContextItem(items, "Power-on options" + ELLIPSIS, "Ctrl+P", "override");
+        : "Add to favorites", "Ctrl+F", "favorite"));
+      items.push_back(ContextItem("Power-on options" + ELLIPSIS, "Ctrl+P", "override"));
       if(instance().highScores().enabled())
-        addContextItem(items, "High scores" + ELLIPSIS, "Ctrl+H", "highscores");
+        items.push_back(ContextItem("High scores" + ELLIPSIS, "Ctrl+H", "highscores"));
     }
   }
   if(myUseMinimalUI)
   {
   #ifndef RETRON77
-    addContextItem(items, instance().settings().getBool("launcherroms")
+    items.push_back(ContextItem(instance().settings().getBool("launcherroms")
       ? "Show all files"
-      : "Show only ROMs", "Ctrl+A", "showall");
-    addContextItem(items, instance().settings().getBool("launchersubdirs")
+      : "Show only ROMs", "showall"));
+    items.push_back(ContextItem(instance().settings().getBool("launchersubdirs")
       ? "Exclude subdirectories"
-      : "Include subdirectories", "Ctrl+D", "subdirs");
+      : "Include subdirectories", "subdirs"));
   #endif
-    addContextItem(items, "Options" + ELLIPSIS, "Ctrl+O", "options");
+    items.push_back(ContextItem("Options" + ELLIPSIS, "options"));
   }
   else
   {
-    addContextItem(items, instance().settings().getBool("launcherextensions")
+    items.push_back(ContextItem(instance().settings().getBool("launcherextensions")
       ? "Disable file extensions"
-      : "Enable file extensions", "Ctrl+E", "extensions");
+      : "Enable file extensions", "Ctrl+E", "extensions"));
     if(myList->inVirtualDir())
-      addContextItem(items, instance().settings().getBool("altsorting")
+      items.push_back(ContextItem(instance().settings().getBool("altsorting")
         ? "Normal sorting"
-        : "Alternative sorting", "Ctrl+S", "sorting");
-    addContextItem(items, "Reload listing", "Ctrl+R", "reload");
+        : "Alternative sorting", "Ctrl+S", "sorting"));
+    items.push_back(ContextItem("Reload listing", "Ctrl+R", "reload"));
   }
-  contextMenu().addItems(items);
+
+  // Format items for menu
+  VariantList varItems;
+  if(myUseMinimalUI)
+    for(auto& item : items)
+      VarList::push_back(varItems, " " + item.label + " ", item.key);
+  else
+  {
+    // Align all shortcuts to the right
+    size_t maxLen = 0;
+    for(auto& item : items)
+      maxLen = std::max(maxLen, item.label.length());
+
+    for(auto& item : items)
+      VarList::push_back(varItems, " " + item.label.append(maxLen - item.label.length(), ' ')
+        + "  " + item.shortcut + " ", item.key);
+  }
+  contextMenu().addItems(varItems);
 
   // Add menu at current x,y mouse location
   contextMenu().show(x + getAbsX(), y + getAbsY(), surface().dstRect(), 0);
