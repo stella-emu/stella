@@ -255,13 +255,13 @@ uInt8 Playfield::getColor() const
       }
       else
       {
-        if(myX >= TIAConstants::H_PIXEL - 16)
-          return myDebugColor - 2;  // PF0
-        if(myX >= TIAConstants::H_PIXEL - 48)
+        if(myX < TIAConstants::H_PIXEL / 2 + 32)
+          return myDebugColor - 2;  // PF2
+        if(myX < TIAConstants::H_PIXEL / 2 + 64)
           return myDebugColor;      // PF1
       }
     }
-    return myDebugColor + 2;        // PF2
+    return myDebugColor + 2;        // PF2/PF0
   }
 }
 
