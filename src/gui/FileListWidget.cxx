@@ -185,11 +185,6 @@ void FileListWidget::reload()
 {
   if(isDirectory(_node))
   {
-    _selectedFile = selected().getName();
-    setLocation(_node, _selectedFile);
-  }
-  else if(_node.exists())
-  {
     _selectedFile = _showFileExtensions
       ? selected().getName()
       : selected().getNameWithExt(EmptyString);
@@ -318,8 +313,8 @@ const FileListWidget::Icon* FileListWidget::getIcon(int i) const
   static const Icon unknown_small = {
     0b00111111'1100000,
     0b00100000'0110000,
-    0b00100000'0011000,
-    0b00100000'0001100,
+    0b00100000'0111000,
+    0b00100000'0111100,
     0b00100000'0000100,
     0b00100000'0000100,
     0b00100000'0000100,
