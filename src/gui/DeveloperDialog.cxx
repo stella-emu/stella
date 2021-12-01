@@ -297,7 +297,8 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
   wid.push_back(myPFColorWidget);
 
   myPFScoreWidget = new CheckboxWidget(myTab, font, myPFColorWidget->getRight() + +fontWidth() * 2.5,
-                                       ypos + 1, "Score");
+                                       ypos + 1, "Score color");
+  myPFScoreWidget->setToolTip("In score mode, playfield color gets updated one pixel early.");
   wid.push_back(myPFScoreWidget);
   ypos += lineHeight + VGAP * 1;
 
