@@ -39,6 +39,9 @@ class LauncherFileListWidget : public FileListWidget
       int x, int y, int w, int h);
     ~LauncherFileListWidget() override = default;
 
+    /** Descend into currently selected directory */
+    void selectDirectory() override;
+
     void loadFavorites();
     void saveFavorites();
     void updateFavorites();
@@ -64,10 +67,10 @@ class LauncherFileListWidget : public FileListWidget
 
   private:
     void getChildren(const FilesystemNode::CancelCheck& isCancelled) override;
-    void userFavor(const string& path, bool enable = true);
+    void userFavor(const string& path);
     void addFolder(StringList& list, int& offset, const string& name, IconType icon);
     void extendLists(StringList& list) override;
-    IconType romIconType(const FilesystemNode& file) const override;
+    IconType getIconType(const string& path) const override;
     const Icon* getIcon(int i) const override;
     bool fullPathToolTip() const override { return myInVirtualDir; }
 };

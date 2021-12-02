@@ -82,7 +82,7 @@ class FileListWidget : public StringListWidget
     /** Select parent directory (if applicable) */
     void selectParent();
     /** Descend into currently selected directory */
-    void selectDirectory();
+    virtual void selectDirectory();
 
     /** Reload current location (file or directory) */
     void reload();
@@ -108,8 +108,10 @@ class FileListWidget : public StringListWidget
       zip,
       updir,
       numTypes,
-      favorite = numTypes,
+      favrom = numTypes,
       favdir,
+      favzip,
+      userdir,
       recentdir,
       popdir,
       numLauncherTypes = popdir - numTypes + 1
@@ -118,10 +120,12 @@ class FileListWidget : public StringListWidget
     using Icon = uIntArray;
 
   protected:
+    /** Very similar to setDirectory(), but also updates the history */
+    void setLocation(const FilesystemNode& node, const string& select);
     virtual bool isDirectory(const FilesystemNode& node) const;
     virtual void getChildren(const FilesystemNode::CancelCheck& isCancelled);
     virtual void extendLists(StringList& list) { }
-    virtual IconType romIconType(const FilesystemNode& file) const;
+    virtual IconType getIconType(const string& path) const;
     virtual const Icon* getIcon(int i) const;
     int iconWidth() const;
     virtual bool fullPathToolTip() const { return false; }
@@ -130,13 +134,12 @@ class FileListWidget : public StringListWidget
     FilesystemNode _node;
     FSList _fileList;
     FilesystemNode::NameFilter _filter;
+    Common::FixedStack<string> _history;
+    string _selectedFile;
     StringList _dirList;
     IconTypeList _iconTypeList;
 
   private:
-    /** Very similar to setDirectory(), but also updates the history */
-    void setLocation(const FilesystemNode& node, const string& select);
-
     bool handleText(char text) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
     int drawIcon(int i, int x, int y, ColorId color) override;
@@ -146,9 +149,7 @@ class FileListWidget : public StringListWidget
     bool _includeSubDirs{false};
     bool _showFileExtensions{true};
 
-    Common::FixedStack<string> _history;
     uInt32 _selected{0};
-    string _selectedFile;
 
     string _quickSelectStr;
     uInt64 _quickSelectTime{0};

@@ -43,8 +43,8 @@ void FavoritesManager::load()
     for(const auto& u : jUser)
     {
       const string& path = u.get<string>();
-      FilesystemNode node(path);
-      if(node.exists())
+      //FilesystemNode node(path);
+      //if(node.exists())
         addUser(path);
     }
   }
@@ -60,8 +60,8 @@ void FavoritesManager::load()
       for(const auto& r : jRecent)
       {
         const string& path = r.get<string>();
-        FilesystemNode node(path);
-        if(node.exists())
+        //FilesystemNode node(path);
+        //if(node.exists())
           addRecent(path);
       }
     }
@@ -77,8 +77,8 @@ void FavoritesManager::load()
     {
       const string& path = p[0].get<string>();
       const uInt32 count = p[1].get<uInt32>();
-      FilesystemNode node(path);
-      if(node.exists())
+      //FilesystemNode node(path);
+      //if(node.exists())
         myPopularMap.emplace(path, count);
     }
   }
@@ -153,6 +153,10 @@ const FavoritesManager::UserList& FavoritesManager::userList() const
       // Sort without path
       FilesystemNode aNode(a);
       FilesystemNode bNode(b);
+      bool realDir = aNode.isDirectory() && !BSPF::endsWithIgnoreCase(aNode.getPath(), ".zip");
+
+      if(realDir != (bNode.isDirectory() && !BSPF::endsWithIgnoreCase(bNode.getPath(), ".zip")))
+        return realDir;
       return BSPF::compareIgnoreCase(aNode.getName(), bNode.getName()) < 0;
     });
   return sortedList;
@@ -226,7 +230,6 @@ void FavoritesManager::incPopular(const string& path)
   static constexpr uInt32 scale = 100;
   static constexpr double factor = 0.7;
   static constexpr uInt32 max_popular = scale;
-  //static constexpr uInt32 min_popular = max_popular * factor;
 
   auto increased = myPopularMap.find(path);
   if(increased != myPopularMap.end())
