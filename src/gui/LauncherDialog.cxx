@@ -856,10 +856,6 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       }
       [[fallthrough]];
     case FileListWidget::ItemActivated:
-      // Assumes that the ROM will be loaded successfully, has to be done
-      //  before saving the config.
-      myList->updateFavorites();
-      saveConfig();
       loadRom();
       break;
 
@@ -947,6 +943,11 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::loadRom()
 {
+  // Assumes that the ROM will be loaded successfully, has to be done
+  //  before saving the config.
+  myList->updateFavorites();
+  saveConfig();
+
   const string& result = instance().createConsole(currentNode(), selectedRomMD5());
   if(result == EmptyString)
   {
@@ -1045,15 +1046,16 @@ void LauncherDialog::openContextMenu(int x, int y)
       items.push_back(ContextItem("Remove from recently played", "Ctrl+X", "remove"));
     if(myList->inPopularDir())
       items.push_back(ContextItem("Remove from most popular", "Ctrl+X", "remove"));
-    if(Bankswitch::isValidRomName(currentNode()))
-    {
-      items.push_back(ContextItem(myList->isUserFavorite(myList->selected().getPath())
-        ? "Remove from favorites"
-        : "Add to favorites", "Ctrl+F", "favorite"));
-      items.push_back(ContextItem("Power-on options" + ELLIPSIS, "Ctrl+P", "override"));
-      if(instance().highScores().enabled())
-        items.push_back(ContextItem("High scores" + ELLIPSIS, "Ctrl+H", "highscores"));
-    }
+  }
+  if(currentNode().isDirectory() || Bankswitch::isValidRomName(currentNode()))
+    items.push_back(ContextItem(myList->isUserFavorite(myList->selected().getPath())
+      ? "Remove from favorites"
+      : "Add to favorites", "Ctrl+F", "favorite"));
+  if(!currentNode().isDirectory() && Bankswitch::isValidRomName(currentNode()))
+  {
+    items.push_back(ContextItem("Power-on options" + ELLIPSIS, "Ctrl+P", "override"));
+    if(instance().highScores().enabled())
+      items.push_back(ContextItem("High scores" + ELLIPSIS, "Ctrl+H", "highscores"));
   }
   if(myUseMinimalUI)
   {
