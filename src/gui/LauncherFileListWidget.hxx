@@ -49,6 +49,9 @@ class LauncherFileListWidget : public FileListWidget
     bool isUserFavorite(const string& path) const;
     void toggleUserFavorite();
     void removeFavorite();
+    void removeAllUserFavorites();
+    void removeAllPopular();
+    void removeAllRecent();
 
     bool isDirectory(const FilesystemNode& node) const override;
     bool inVirtualDir() const { return myInVirtualDir; }

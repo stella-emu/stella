@@ -60,6 +60,8 @@
 #include "MediaFactory.hxx"
 #include "LauncherDialog.hxx"
 
+#include "MessageMenu.hxx"
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
                                int x, int y, int w, int h)
@@ -244,6 +246,11 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   xpos = HBORDER;
   ypos += myList->getHeight() + VGAP;
 
+  // Path display
+  lwSelect = _font.getStringWidth("Path") + LBL_GAP;
+  myDirLabel = new StaticTextWidget(this, _font, xpos, ypos + 2, lwSelect, fontHeight, "Path");
+  xpos += lwSelect;
+
   // Home button
   static const uIntArray home_small = {
     0b0000001000000,
@@ -260,44 +267,28 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
     0b0011100011100,
     0b0011100011100,
     0b0011100011100
-
-    //0b000000010000000,
-    //0b000000111000000,
-    //0b000001101100000,
-    //0b000011010110000,
-    //0b000110111011000,
-    //0b001101111101100,
-    //0b011011111110110,
-    //0b110111111111011,
-    //0b101111111111101,
-    //0b001111101111100,
-    //0b001111000111100,
-    //0b001111000111100,
-    //0b001111000111100,
-    //0b001111000111100,
-    //0b001111000111100,
   };
   static const uIntArray home_large = {
-      0b0000000001000000000,
-      0b0000000011100000000,
-      0b0000000110110000000,
-      0b0000001101011000000,
-      0b0000011011101100000,
-      0b0000110111110110000,
-      0b0001101111111011000,
-      0b0011011111111101100,
-      0b0110111111111110110,
-      0b1101111111111111011,
-      0b1001111111111111001,
-      0b0001111100011111000,
-      0b0001111000001111000,
-      0b0001111000001111000,
-      0b0001111000001111000,
-      0b0001111000001111000,
-      0b0001111000001111000,
-      0b0001111000001111000,
-      0b0001111000001111000,
-      0b0001111000001111000
+    0b0000000001000000000,
+    0b0000000011100000000,
+    0b0000000110110000000,
+    0b0000001101011000000,
+    0b0000011011101100000,
+    0b0000110111110110000,
+    0b0001101111111011000,
+    0b0011011111111101100,
+    0b0110111111111110110,
+    0b1101111111111111011,
+    0b1001111111111111001,
+    0b0001111100011111000,
+    0b0001111000001111000,
+    0b0001111000001111000,
+    0b0001111000001111000,
+    0b0001111000001111000,
+    0b0001111000001111000,
+    0b0001111000001111000,
+    0b0001111000001111000,
+    0b0001111000001111000
   };
   const bool smallIcon = lineHeight < 26;
   const uIntArray* icon = smallIcon ? &home_small : &home_large;
@@ -308,12 +299,8 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
     icon->data(), iconWidth, int(icon->size()), kHomeDirCmd);
   myHomeButton->setToolTip("Go back to Stella's ROM directory.");
   wid.push_back(myHomeButton);
-  xpos = myHomeButton->getRight() + LBL_GAP;
+  xpos = myHomeButton->getRight() + 1;// +LBL_GAP;
 
-  // Path display
-  lwSelect = _font.getStringWidth("Path") + LBL_GAP;
-  myDirLabel = new StaticTextWidget(this, _font, xpos, ypos+2, lwSelect, fontHeight, "Path");
-  xpos += lwSelect;
   myDir = new EditTextWidget(this, _font, xpos, ypos, _w - xpos - HBORDER, lineHeight, "");
   myDir->setEditable(false, true);
   myDir->clearFlags(Widget::FLAG_RETAIN_FOCUS);
@@ -737,6 +724,12 @@ void LauncherDialog::handleContextMenu()
     myList->removeFavorite();
     reload();
   }
+  else if (cmd == "removefavorites")
+    removeAllFavorites();
+  else if (cmd == "removepopular")
+    removeAllPopular();
+  else if (cmd == "removerecent")
+    removeAllRecent();
   else if(cmd == "override")
     openGlobalProps();
   else if(cmd == "extensions")
@@ -1043,6 +1036,21 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       handleFavoritesChanged();
       break;
 
+    case kRmAllFav:
+      myList->removeAllUserFavorites();
+      reload();
+      break;
+
+    case kRmAllPop:
+      myList->removeAllPopular();
+      reload();
+      break;
+
+    case kRmAllRec:
+      myList->removeAllRecent();
+      reload();
+      break;
+
     case kExtChangedCmd:
       reload();
       break;
@@ -1134,6 +1142,51 @@ void LauncherDialog::toggleSorting()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::removeAllFavorites()
+{
+  StringList msg;
+
+  msg.push_back("This will remove ALL ROMs from");
+  msg.push_back("your 'Favorites' list!");
+  msg.push_back("");
+  msg.push_back("Are you sure?");
+  myConfirmMsg = make_unique<GUI::MessageBox>
+    (this, _font, msg, _w, _h, kRmAllFav,
+      "Yes", "No", "Remove all Favorites", false);
+  myConfirmMsg->show();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::removeAllPopular()
+{
+  StringList msg;
+
+  msg.push_back("This will remove ALL ROMs from");
+  msg.push_back("your 'Most Popular' list!");
+  msg.push_back("");
+  msg.push_back("Are you sure?");
+  myConfirmMsg = make_unique<GUI::MessageBox>
+    (this, _font, msg, _w, _h, kRmAllPop,
+      "Yes", "No", "Remove all Most Popular", false);
+  myConfirmMsg->show();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::removeAllRecent()
+{
+  StringList msg;
+
+  msg.push_back("This will remove ALL ROMs from");
+  msg.push_back("from your 'Recently Played' list!");
+  msg.push_back("");
+  msg.push_back("Are you sure?");
+  myConfirmMsg = make_unique<GUI::MessageBox>
+    (this, _font, msg, _w, _h, kRmAllRec,
+      "Yes", "No", "Remove all Recently Played", false);
+  myConfirmMsg->show();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::openContextMenu(int x, int y)
 {
   // Dynamically create context menu for ROM list options
@@ -1199,6 +1252,12 @@ void LauncherDialog::openContextMenu(int x, int y)
         ? "Normal sorting"
         : "Alternative sorting", "Ctrl+S", "sorting"));
     items.push_back(ContextItem("Reload listing", "Ctrl+R", "reload"));
+  }
+  if (useFavorites)
+  {
+    items.push_back(ContextItem("Remove all from favorites", "", "removefavorites"));
+    items.push_back(ContextItem("Remove all from most popular", "", "removepopular"));
+    items.push_back(ContextItem("Remove all from recently played", "", "removerecent"));
   }
 
   // Format items for menu

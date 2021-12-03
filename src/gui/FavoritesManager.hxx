@@ -47,7 +47,8 @@ class FavoritesManager
 
     // User favorites
     void addUser(const string& path);
-    void removeUser(const string& path);
+    void removeUser(const string& path);    
+    void removeAllUser();
     bool toggleUser(const string& path);
     bool existsUser(const string& path) const;
     const UserList& userList() const;
@@ -56,10 +57,12 @@ class FavoritesManager
 
     // Recently played
     bool removeRecent(const string& path);
+    void removeAllRecent();
     const RecentList& recentList() const;
 
     // Most popular
     bool removePopular(const string& path);
+    void removeAllPopular();
     const PopularList& popularList() const;
 
 
