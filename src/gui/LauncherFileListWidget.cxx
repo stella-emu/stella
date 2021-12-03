@@ -31,7 +31,7 @@ LauncherFileListWidget::LauncherFileListWidget(GuiObject* boss, const GUI::Font&
   // This widget is special, in that it catches signals and redirects them
   setTarget(this);
   myFavorites = make_unique<FavoritesManager>(instance().settings());
-  myRomDir = instance().settings().getString("romdir");
+  myRomDir = startRomDir();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -124,15 +124,24 @@ void LauncherFileListWidget::addFolder(StringList& list, int& offset, const stri
   ++offset;
 }
 
+string LauncherFileListWidget::startRomDir()
+{
+  string romDir = instance().settings().getString("startromdir");
+  FilesystemNode node(romDir);
+  return node.getPath();
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherFileListWidget::extendLists(StringList& list)
 {
   // Only show virtual dirs in "romdir". Except if
   //  "romdir" is virtual or "romdir" is a ZIP
   //  Then show virtual dirs in parent dir of "romdir".
-  if(myRomDir == instance().settings().getString("romdir")
+  if(myRomDir == startRomDir()
       && (myInVirtualDir || BSPF::endsWithIgnoreCase(_node.getPath(), ".zip")))
     myRomDir = _node.getParent().getPath();
+  else
+    myRomDir = startRomDir();
 
   if(_node.getPath() == myRomDir)
   {
