@@ -66,6 +66,11 @@ class Launcher : public DialogContainer
     void reload();
 
     /**
+      Wrapper for LauncherDialog::quit() method.
+    */
+    void quit();
+
+    /**
       Return (and possibly create) the bottom-most dialog of this container.
     */
     Dialog* baseDialog() override;

@@ -96,6 +96,12 @@ class LauncherDialog : public Dialog
     */
     void reload();
 
+    /**
+      Quit the dialog
+    */
+    void quit();
+
+
     void tick() override;
 
   private:

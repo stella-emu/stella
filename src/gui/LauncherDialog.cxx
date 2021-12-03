@@ -432,6 +432,12 @@ void LauncherDialog::reload()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::quit()
+{
+  saveConfig();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::tick()
 {
   if(myPendingReload && myReloadTime < TimerManager::getTicks() / 1000)

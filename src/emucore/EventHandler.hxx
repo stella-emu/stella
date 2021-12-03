@@ -367,6 +367,7 @@ class EventHandler
     void saveKeyMapping();
     void saveJoyMapping();
 
+    void exitLauncher();
     void exitEmulation(bool checkLauncher = false);
 
   protected:

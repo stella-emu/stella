@@ -1558,6 +1558,8 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
         saveJoyMapping();
         if (myState != EventHandlerState::LAUNCHER)
           exitEmulation();
+        else
+          exitLauncher();
         myOSystem.quit();
       }
       return;
@@ -2713,6 +2715,12 @@ void EventHandler::setState(EventHandlerState state)
   // Erase any previously set events, since a state change implies
   // that old events are now invalid
   myEvent.clear();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::exitLauncher()
+{
+  myOSystem.launcher().quit();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

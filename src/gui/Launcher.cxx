@@ -85,6 +85,12 @@ void Launcher::reload()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Launcher::quit()
+{
+  (static_cast<LauncherDialog*>(myBaseDialog))->quit();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Dialog* Launcher::baseDialog()
 {
   return myBaseDialog;
