@@ -127,6 +127,12 @@ void FavoritesManager::removeUser(const string& path)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FavoritesManager::removeAllUser()
+{
+  myUserSet.clear();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FavoritesManager::toggleUser(const string& path)
 {
   bool favorize = !existsUser(path);
@@ -200,6 +206,12 @@ bool FavoritesManager::removeRecent(const string& path)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FavoritesManager::removeAllRecent()
+{
+  myRecentList.clear();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const FavoritesManager::RecentList& FavoritesManager::recentList() const
 {
   static RecentList sortedList;
@@ -230,6 +242,12 @@ const FavoritesManager::RecentList& FavoritesManager::recentList() const
 bool FavoritesManager::removePopular(const string& path)
 {
   return myPopularMap.erase(path);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FavoritesManager::removeAllPopular()
+{
+  myPopularMap.clear();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -53,7 +53,6 @@ class LauncherDialog : public Dialog
       kRomDirChosenCmd = 'romc',  // ROM dir chosen
       kFavChangedCmd   = 'favc',  // Favorite tracking changed
       kExtChangedCmd   = 'extc',  // File extension display changed
-      kHomeDirCmd      = 'homc',  // goto Home directory
     };
     using FileList = std::unordered_set<string>;
 
@@ -170,6 +169,9 @@ class LauncherDialog : public Dialog
     void toggleSubDirs();
     void toggleExtensions();
     void toggleSorting();
+    void removeAllFavorites();
+    void removeAllPopular();
+    void removeAllRecent();
     void openContextMenu(int x = -1, int y = -1);
     void openGlobalProps();
     void openSettings();
@@ -205,6 +207,9 @@ class LauncherDialog : public Dialog
 
     std::unordered_map<string,string> myMD5List;
 
+    // Show a message about the dangers of using this function
+    unique_ptr<GUI::MessageBox> myConfirmMsg;
+
     int mySelectedItem{0};
 
     bool myShowOnlyROMs{false};
@@ -219,7 +224,11 @@ class LauncherDialog : public Dialog
       kSubDirsCmd    = 'lred',
       kPrevDirCmd    = 'PRVD',
       kOptionsCmd    = 'OPTI',
-      kQuitCmd       = 'QUIT'
+      kQuitCmd       = 'QUIT',
+      kHomeDirCmd    = 'homc',  // goto Home directory
+      kRmAllFav      = 'rmaf',
+      kRmAllPop      = 'rmap',
+      kRmAllRec      = 'rmar'
     };
 
   private:

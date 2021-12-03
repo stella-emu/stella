@@ -239,6 +239,24 @@ void LauncherFileListWidget::userFavor(const string& path)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherFileListWidget::removeAllUserFavorites()
+{
+  myFavorites->removeAllUser();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherFileListWidget::removeAllPopular()
+{
+  myFavorites->removeAllPopular();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherFileListWidget::removeAllRecent()
+{
+  myFavorites->removeAllRecent();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FileListWidget::IconType LauncherFileListWidget::getIconType(const string& path) const
 {
   if(!isUserFavorite(path))
