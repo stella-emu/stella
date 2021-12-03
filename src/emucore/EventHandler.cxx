@@ -2720,7 +2720,9 @@ void EventHandler::setState(EventHandlerState state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::exitLauncher()
 {
+#ifdef GUI_SUPPORT
   myOSystem.launcher().quit();
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
