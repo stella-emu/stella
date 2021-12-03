@@ -35,18 +35,6 @@ FilesystemNodeZIP::FilesystemNodeZIP(const string& p)
 
   _zipFile = p.substr(0, pos+4);
 
-  // Expand '~' to the users 'home' directory
-  if (_zipFile[0] == '~')
-  {
-#if defined(BSPF_UNIX) || defined(BSPF_MACOS)
-    string home = BSPF::getenv("HOME");
-    if (home != EmptyString)
-      _zipFile.replace(0, 1, home);
-#elif defined(BSPF_WINDOWS)
-    _zipFile.replace(0, 1, myHomeFinder.getHomePath());
-#endif
-  }
-
   // Open file at least once to initialize the virtual file count
   try
   {
