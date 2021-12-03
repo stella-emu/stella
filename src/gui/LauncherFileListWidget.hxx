@@ -43,7 +43,8 @@ class LauncherFileListWidget : public FileListWidget
     void selectDirectory() override;
 
     void loadFavorites();
-    void saveFavorites();
+    void saveFavorites(bool force = false);
+    void clearFavorites();
     void updateFavorites();
     bool isUserFavorite(const string& path) const;
     void toggleUserFavorite();

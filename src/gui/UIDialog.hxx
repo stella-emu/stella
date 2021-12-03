@@ -58,6 +58,7 @@ class UIDialog : public Dialog, public CommandSender
     SliderWidget*     myLauncherHeightSlider{nullptr};
     PopUpWidget*      myLauncherFontPopup{nullptr};
     CheckboxWidget*   myLauncherExtensionsWidget{nullptr};
+    CheckboxWidget*   myFavoritesWidget{nullptr};
     SliderWidget*     myRomViewerSize{nullptr};
     ButtonWidget*     myOpenBrowserButton{nullptr};
     EditTextWidget*   mySnapLoadPath{nullptr};

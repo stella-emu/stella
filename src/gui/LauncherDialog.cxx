@@ -709,6 +709,23 @@ void LauncherDialog::loadRomInfo()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::handleFavoritesChanged()
+{
+  if (instance().settings().getBool("favorites"))
+  {
+    myList->loadFavorites();
+  }
+  else
+  {
+    if(myList->inVirtualDir())
+      myList->selectParent();
+    myList->saveFavorites(true);
+    myList->clearFavorites();
+  }
+  reload();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::handleContextMenu()
 {
   const string& cmd = contextMenu().getSelectedTag().toString();
@@ -1022,6 +1039,10 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       break;
     }
 
+    case kFavChangedCmd:
+      handleFavoritesChanged();
+      break;
+
     case kExtChangedCmd:
       reload();
       break;
@@ -1137,15 +1158,16 @@ void LauncherDialog::openContextMenu(int x, int y)
   };
   using ContextList = std::vector<ContextItem>;
   ContextList items;
+  const bool useFavorites = instance().settings().getBool("favorites");
 
-  if(!currentNode().isDirectory())
+  if(useFavorites && !currentNode().isDirectory())
   {
     if(myList->inRecentDir())
       items.push_back(ContextItem("Remove from recently played", "Ctrl+X", "remove"));
     if(myList->inPopularDir())
       items.push_back(ContextItem("Remove from most popular", "Ctrl+X", "remove"));
   }
-  if(currentNode().isDirectory() || Bankswitch::isValidRomName(currentNode()))
+  if(useFavorites && (currentNode().isDirectory() || Bankswitch::isValidRomName(currentNode())))
     items.push_back(ContextItem(myList->isUserFavorite(myList->selected().getPath())
       ? "Remove from favorites"
       : "Add to favorites", "Ctrl+F", "favorite"));
@@ -1172,7 +1194,7 @@ void LauncherDialog::openContextMenu(int x, int y)
     items.push_back(ContextItem(instance().settings().getBool("launcherextensions")
       ? "Disable file extensions"
       : "Enable file extensions", "Ctrl+E", "extensions"));
-    if(myList->inVirtualDir())
+    if(useFavorites && myList->inVirtualDir())
       items.push_back(ContextItem(instance().settings().getBool("altsorting")
         ? "Normal sorting"
         : "Alternative sorting", "Ctrl+S", "sorting"));

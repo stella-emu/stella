@@ -157,6 +157,7 @@ Settings::Settings()
   setPermanent("launcherextensions", "false");
   setPermanent("romviewer", "1");
   setPermanent("lastrom", "");
+  setPermanent("favorites", "true");
   setPermanent("_favoriteroms", "");  // internal only
   setPermanent("_recentroms", "");    // internal only
   setPermanent("maxrecentroms", "20");
@@ -600,6 +601,7 @@ void Settings::usage() const
     << "  -launcherroms       <1|0>    Show only ROMs in the launcher (vs. all files)\n"
     << "  -launchersubdirs    <0|1>    Show files from subdirectories too\n"
     << "  -launcherextensions <0|1>    Display file extensions in launcher\n"
+    << "  -favorites          <0|1>    Enable virtual favorite directories in launcher\n"
     << "  -altsorting         <0|1>    Alternative sorting in virtual folders\n"
     << "  -maxrecentroms      <number> Number of ROMs tracked in 'Recently played'\n"
     << "  -romdir             <dir>    Set the path where the ROM launcher will start\n"
