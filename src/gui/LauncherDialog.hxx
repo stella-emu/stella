@@ -51,7 +51,8 @@ class LauncherDialog : public Dialog
     enum {
       kLoadROMCmd      = 'STRT',  // load currently selected ROM
       kRomDirChosenCmd = 'romc',  // ROM dir chosen
-      kExtChangedCmd   = 'extc'   // File extension display changed
+      kExtChangedCmd   = 'extc',  // File extension display changed
+      kHomeDirCmd      = 'homc',  // goto Home directory
     };
     using FileList = std::unordered_set<string>;
 
@@ -114,6 +115,7 @@ class LauncherDialog : public Dialog
     void loadConfig() override;
     void saveConfig() override;
     void updateUI();
+    string getRomDir();
 
     /**
       Search if string contains pattern including wildcard '*'
@@ -156,7 +158,6 @@ class LauncherDialog : public Dialog
     void loadRomInfo();
     void handleContextMenu();
     void showOnlyROMs(bool state);
-    void setDefaultDir();
     void toggleShowAll();
     void toggleSubDirs();
     void toggleExtensions();
@@ -186,6 +187,7 @@ class LauncherDialog : public Dialog
     StaticTextWidget* myDirLabel{nullptr};
     EditTextWidget*   myDir{nullptr};
 
+    ButtonWidget*     myHomeButton{nullptr};
     ButtonWidget*     myStartButton{nullptr};
     ButtonWidget*     myPrevDirButton{nullptr};
     ButtonWidget*     myOptionsButton{nullptr};

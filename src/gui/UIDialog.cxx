@@ -549,7 +549,8 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
     case GuiObject::kOKCmd:
     {
       bool informPath = myIsGlobal &&
-        myRomPath->getText() != instance().settings().getString("romdir");
+        (myRomPath->getText() != instance().settings().getString("romdir")
+         || myRomPath->getText() != instance().settings().getString("startromdir"));
       bool informExt = myIsGlobal &&
         myLauncherExtensionsWidget->getState() != instance().settings().getBool("launcherextensions");
       saveConfig();

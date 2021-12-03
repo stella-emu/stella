@@ -66,6 +66,7 @@ class LauncherFileListWidget : public FileListWidget
     string myRomDir;
 
   private:
+    string startRomDir();
     void getChildren(const FilesystemNode::CancelCheck& isCancelled) override;
     void userFavor(const string& path);
     void addFolder(StringList& list, int& offset, const string& name, IconType icon);

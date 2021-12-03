@@ -212,6 +212,11 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   if(romWidth > 0) romWidth += HBORDER;
   int listWidth = _w - (romWidth > 0 ? romWidth + fontWidth : 0) - HBORDER * 2;
   xpos = HBORDER;  ypos += lineHeight + VGAP;
+
+  // remember initial ROM directory for returning there via home button
+  string romDir = getRomDir();
+  instance().settings().setValue("startromdir", getRomDir());
+  cerr << instance().settings().getString("romdir") << endl;
   myList = new LauncherFileListWidget(this, _font, xpos, ypos, listWidth, listHeight);
   myList->setEditable(false);
   myList->setListMode(FilesystemNode::ListMode::All);
@@ -238,9 +243,76 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   // Add textfield to show current directory
   xpos = HBORDER;
   ypos += myList->getHeight() + VGAP;
+
+  // Home button
+  static const uIntArray home_small = {
+    0b0000001000000,
+    0b0000011100000,
+    0b0000110110000,
+    0b0001101011000,
+    0b0011011101100,
+    0b0110111110110,
+    0b1101111111011,
+    0b1011111111101,
+    0b0011110111100,
+    0b0011100011100,
+    0b0011100011100,
+    0b0011100011100,
+    0b0011100011100,
+    0b0011100011100
+
+    //0b000000010000000,
+    //0b000000111000000,
+    //0b000001101100000,
+    //0b000011010110000,
+    //0b000110111011000,
+    //0b001101111101100,
+    //0b011011111110110,
+    //0b110111111111011,
+    //0b101111111111101,
+    //0b001111101111100,
+    //0b001111000111100,
+    //0b001111000111100,
+    //0b001111000111100,
+    //0b001111000111100,
+    //0b001111000111100,
+  };
+  static const uIntArray home_large = {
+      0b0000000001000000000,
+      0b0000000011100000000,
+      0b0000000110110000000,
+      0b0000001101011000000,
+      0b0000011011101100000,
+      0b0000110111110110000,
+      0b0001101111111011000,
+      0b0011011111111101100,
+      0b0110111111111110110,
+      0b1101111111111111011,
+      0b1001111111111111001,
+      0b0001111100011111000,
+      0b0001111000001111000,
+      0b0001111000001111000,
+      0b0001111000001111000,
+      0b0001111000001111000,
+      0b0001111000001111000,
+      0b0001111000001111000,
+      0b0001111000001111000,
+      0b0001111000001111000
+  };
+  const bool smallIcon = lineHeight < 26;
+  const uIntArray* icon = smallIcon ? &home_small : &home_large;
+  const int iconWidth = smallIcon ? 13 : 19;
+  const int iconGap = fontWidth & ~0b1; // make even
+
+  myHomeButton = new ButtonWidget(this, _font, xpos, ypos, iconWidth + iconGap, lineHeight + 2,
+    icon->data(), iconWidth, int(icon->size()), kHomeDirCmd);
+  myHomeButton->setToolTip("Go back to Stella's ROM directory.");
+  wid.push_back(myHomeButton);
+  xpos = myHomeButton->getRight() + LBL_GAP;
+
+  // Path display
   lwSelect = _font.getStringWidth("Path") + LBL_GAP;
-  myDirLabel = new StaticTextWidget(this, _font, xpos, ypos+2, lwSelect, fontHeight,
-                                    "Path", TextAlign::Left);
+  myDirLabel = new StaticTextWidget(this, _font, xpos, ypos+2, lwSelect, fontHeight, "Path");
   xpos += lwSelect;
   myDir = new EditTextWidget(this, _font, xpos, ypos, _w - xpos - HBORDER, lineHeight, "");
   myDir->setEditable(false, true);
@@ -374,9 +446,7 @@ void LauncherDialog::loadConfig()
   // Should we use a temporary directory specified on the commandline, or the
   // default one specified by the settings?
   Settings& settings = instance().settings();
-  const string& tmpromdir = settings.getString("tmpromdir");
-  const string& romdir = tmpromdir != "" ? tmpromdir :
-      settings.getString("romdir");
+  const string& romdir = getRomDir();
   const string& version = settings.getString("stella.version");
 
   // Show "What's New" message when a new version of Stella is run for the first time
@@ -446,6 +516,15 @@ void LauncherDialog::updateUI()
 
   // Update ROM info UI item
   loadRomInfo();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string LauncherDialog::getRomDir()
+{
+  Settings& settings = instance().settings();
+  const string& tmpromdir = settings.getString("tmpromdir");
+
+  return tmpromdir != EmptyString ? tmpromdir : settings.getString("romdir");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -845,6 +924,20 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       reload();
       break;
 
+    case kHomeDirCmd:
+    {
+      if(myList->currentDir().getPath() != instance().settings().getString("startromdir"))
+      {
+        FilesystemNode node(instance().settings().getString("startromdir"));
+
+        if(!myList->isDirectory(node))
+          node = FilesystemNode("~");
+
+        myList->setDirectory(node);
+        reload();
+      }
+      break;
+    }
     case kLoadROMCmd:
       if(myList->isDirectory(myList->selected()))
       {
@@ -904,7 +997,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kRomDirChosenCmd:
     {
-      string romDir = instance().settings().getString("romdir");
+      const string romDir = instance().settings().getString("romdir");
 
       if(myList->currentDir().getPath() != romDir)
       {
@@ -914,6 +1007,11 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
           node = FilesystemNode("~");
 
         myList->setDirectory(node);
+      }
+      if(romDir != instance().settings().getString("startromdir"))
+      {
+        instance().settings().setValue("startromdir", romDir);
+        reload();
       }
       break;
     }
@@ -959,12 +1057,6 @@ void LauncherDialog::loadRom()
   }
   else
     instance().frameBuffer().showTextMessage(result, MessagePosition::MiddleCenter, true);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::setDefaultDir()
-{
-  instance().settings().setValue("romdir", myList->currentDir().getShortPath());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
