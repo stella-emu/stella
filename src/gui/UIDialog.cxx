@@ -216,14 +216,31 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
                                  _w - xpos - HBORDER - 2, lineHeight, "");
   wid.push_back(myRomPath);
 
-  xpos = _w - HBORDER - font.getStringWidth("Follow Launcher path") - CheckboxWidget::prefixSize(font) - 1;
+  const int xpos2 = _w - HBORDER - font.getStringWidth("Display file extensions")
+    - CheckboxWidget::prefixSize(font) - 1;
   ypos += lineHeight + VGAP * 2;
-  myFollowLauncherWidget = new CheckboxWidget(myTab, font, xpos, ypos, "Follow Launcher path");
+  myFollowLauncherWidget = new CheckboxWidget(myTab, font, xpos2, ypos, "Follow Launcher path");
   myFollowLauncherWidget->setToolTip("The ROM path is updated during Launcher navigation.");
   wid.push_back(myFollowLauncherWidget);
 
   xpos = HBORDER;
-  ypos += VGAP * 2;
+  ypos += VGAP * 4;
+
+  // Launcher font
+  pwidth = font.getStringWidth("2x (1000x760)");
+  items.clear();
+  VarList::push_back(items, "Small", "small");            //  8x13
+  VarList::push_back(items, "Low Medium", "low_medium");  //  9x15
+  VarList::push_back(items, "Medium", "medium");          //  9x18
+  VarList::push_back(items, "Large (10pt)", "large");     // 10x20
+  VarList::push_back(items, "Large (12pt)", "large12");   // 12x24
+  VarList::push_back(items, "Large (14pt)", "large14");   // 14x28
+  VarList::push_back(items, "Large (16pt)", "large16");   // 16x32
+  myLauncherFontPopup =
+    new PopUpWidget(myTab, font, xpos, ypos + 1, pwidth, lineHeight, items,
+      "Launcher font ", lwidth);
+  wid.push_back(myLauncherFontPopup);
+  ypos += lineHeight + VGAP;
 
   // Launcher width and height
   myLauncherWidthSlider = new SliderWidget(myTab, font, xpos, ypos, "Launcher width ",
@@ -240,30 +257,21 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myLauncherHeightSlider);
   ypos += lineHeight + VGAP;
 
-  // Launcher font
-  pwidth = font.getStringWidth("2x (1000x760)");
-  items.clear();
-  VarList::push_back(items, "Small", "small");            //  8x13
-  VarList::push_back(items, "Low Medium", "low_medium");  //  9x15
-  VarList::push_back(items, "Medium", "medium");          //  9x18
-  VarList::push_back(items, "Large (10pt)", "large");     // 10x20
-  VarList::push_back(items, "Large (12pt)", "large12");   // 12x24
-  VarList::push_back(items, "Large (14pt)", "large14");   // 14x28
-  VarList::push_back(items, "Large (16pt)", "large16");   // 16x32
-  myLauncherFontPopup =
-    new PopUpWidget(myTab, font, xpos, ypos + 1, pwidth, lineHeight, items,
-                    "Launcher font ", lwidth);
-  wid.push_back(myLauncherFontPopup);
+  // Track favorites
+  ypos = myLauncherWidthSlider->getTop();
+  myFavoritesWidget = new CheckboxWidget(myTab, _font, xpos2, ypos + 2,
+    "Track favorites");
+  myFavoritesWidget->setToolTip("Check to enable favorites tracking and display.");
+  wid.push_back(myFavoritesWidget);
+  ypos += lineHeight + VGAP;
 
   // Display launcher extensions
-  ypos += lineHeight + VGAP;
-  myLauncherExtensionsWidget = new CheckboxWidget(myTab, _font, xpos, ypos + 1,
+  myLauncherExtensionsWidget = new CheckboxWidget(myTab, _font, xpos2, ypos + 2,
     "Display file extensions");
   wid.push_back(myLauncherExtensionsWidget);
 
-  ypos += lineHeight + VGAP * 4;
-
   // ROM launcher info/snapshot viewer
+  ypos = myLauncherHeightSlider->getTop() + lineHeight + VGAP * 4;
   myRomViewerSize = new SliderWidget(myTab, font, xpos, ypos, "ROM info width  ",
                                      lwidth, kRomViewer, 6 * fontWidth, "%  ");
   myRomViewerSize->setMinValue(0);
@@ -359,6 +367,7 @@ void UIDialog::loadConfig()
   const string& launcherFont = settings.getString("launcherfont");
   myLauncherFontPopup->setSelected(launcherFont, "medium");
 
+  myFavoritesWidget->setState(settings.getBool("favorites"));
   myLauncherExtensionsWidget->setState(settings.getBool("launcherextensions"));
 
   // ROM launcher info viewer
@@ -444,6 +453,8 @@ void UIDialog::saveConfig()
   settings.setValue("launcherfont",
                     myLauncherFontPopup->getSelectedTag().toString());
 
+  // Track favorites
+  settings.setValue("favorites", myFavoritesWidget->getState());
   // Display launcher extensions
   settings.setValue("launcherextensions", myLauncherExtensionsWidget->getState());
 
@@ -530,6 +541,7 @@ void UIDialog::setDefaults()
       myLauncherWidthSlider->setValue(w);
       myLauncherHeightSlider->setValue(h);
       myLauncherFontPopup->setSelected("medium", "");
+      myFavoritesWidget->setState(true);
       myLauncherExtensionsWidget->setState(false);
       myRomViewerSize->setValue(35);
       mySnapLoadPath->setText(instance().userDir().getShortPath());
@@ -551,12 +563,16 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
       bool informPath = myIsGlobal &&
         (myRomPath->getText() != instance().settings().getString("romdir")
          || myRomPath->getText() != instance().settings().getString("startromdir"));
+      bool informFav = myIsGlobal &&
+        myFavoritesWidget->getState() != instance().settings().getBool("favorites");
       bool informExt = myIsGlobal &&
         myLauncherExtensionsWidget->getState() != instance().settings().getBool("launcherextensions");
       saveConfig();
       close();
       if(informPath) // Let the boss know romdir has changed
         sendCommand(LauncherDialog::kRomDirChosenCmd, 0, 0);
+      if(informFav) // Let the boss know the favaorites tracking has changed
+        sendCommand(LauncherDialog::kFavChangedCmd, 0, 0);
       if(informExt) // Let the boss know the file extension display setting has changed
         sendCommand(LauncherDialog::kExtChangedCmd, 0, 0);
       break;

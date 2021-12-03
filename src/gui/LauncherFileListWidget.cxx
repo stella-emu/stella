@@ -66,7 +66,7 @@ void LauncherFileListWidget::getChildren(const FilesystemNode::CancelCheck& isCa
     myVirtualDir = EmptyString;
     FileListWidget::getChildren(isCancelled);
   }
-  else
+  else if(instance().settings().getBool("favorites"))
   {
     myInVirtualDir = true;
     myVirtualDir = _node.getName();
@@ -143,7 +143,7 @@ void LauncherFileListWidget::extendLists(StringList& list)
   else
     myRomDir = startRomDir();
 
-  if(_node.getPath() == myRomDir)
+  if(instance().settings().getBool("favorites") && _node.getPath() == myRomDir)
   {
     // Add virtual directories behind ".."
     int offset = _fileList.begin()->getName() == ".." ? 1 : 0;
@@ -160,22 +160,33 @@ void LauncherFileListWidget::extendLists(StringList& list)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherFileListWidget::loadFavorites()
 {
-  myFavorites->load();
+  if(instance().settings().getBool("favorites"))
+  {
+    myFavorites->load();
 
-  for(const auto& path : myFavorites->userList())
-    userFavor(path);
+    for (const auto& path : myFavorites->userList())
+      userFavor(path);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherFileListWidget::saveFavorites()
+void LauncherFileListWidget::saveFavorites(bool force)
 {
-  myFavorites->save();
+  if (force || instance().settings().getBool("favorites"))
+    myFavorites->save();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherFileListWidget::clearFavorites()
+{
+    myFavorites->clear();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherFileListWidget::updateFavorites()
 {
-  myFavorites->update(selected().getPath());
+  if (instance().settings().getBool("favorites"))
+    myFavorites->update(selected().getPath());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -187,7 +198,8 @@ bool LauncherFileListWidget::isUserFavorite(const string& path) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherFileListWidget::toggleUserFavorite()
 {
-  if(selected().isDirectory() || Bankswitch::isValidRomName(selected()))
+  if(instance().settings().getBool("favorites")
+    && (selected().isDirectory() || Bankswitch::isValidRomName(selected())))
   {
     myFavorites->toggleUser(selected().getPath());
     userFavor(selected().getPath());
@@ -202,10 +214,13 @@ void LauncherFileListWidget::toggleUserFavorite()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherFileListWidget::removeFavorite()
 {
-  if(inRecentDir())
-    myFavorites->removeRecent(selected().getPath());
-  else if(inPopularDir())
-    myFavorites->removePopular(selected().getPath());
+  if (instance().settings().getBool("favorites"))
+  {
+    if (inRecentDir())
+      myFavorites->removeRecent(selected().getPath());
+    else if (inPopularDir())
+      myFavorites->removePopular(selected().getPath());
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

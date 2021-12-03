@@ -107,6 +107,14 @@ void FavoritesManager::save()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FavoritesManager::clear()
+{
+  myUserSet.clear();
+  myRecentList.clear();
+  myPopularMap.clear();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FavoritesManager::addUser(const string& path)
 {
   myUserSet.emplace(path);

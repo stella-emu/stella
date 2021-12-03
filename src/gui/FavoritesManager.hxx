@@ -43,6 +43,7 @@ class FavoritesManager
 
     void load();
     void save();
+    void clear();
 
     // User favorites
     void addUser(const string& path);

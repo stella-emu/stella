@@ -51,6 +51,7 @@ class LauncherDialog : public Dialog
     enum {
       kLoadROMCmd      = 'STRT',  // load currently selected ROM
       kRomDirChosenCmd = 'romc',  // ROM dir chosen
+      kFavChangedCmd   = 'favc',  // Favorite tracking changed
       kExtChangedCmd   = 'extc',  // File extension display changed
       kHomeDirCmd      = 'homc',  // goto Home directory
     };
@@ -162,6 +163,7 @@ class LauncherDialog : public Dialog
 
     void loadRom();
     void loadRomInfo();
+    void handleFavoritesChanged();
     void handleContextMenu();
     void showOnlyROMs(bool state);
     void toggleShowAll();
