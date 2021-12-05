@@ -121,6 +121,10 @@ class LauncherDialog : public Dialog
     void loadConfig() override;
     void saveConfig() override;
     void updateUI();
+    void addOptionWidgets(int& ypos, WidgetArray& wid);
+    void addPathWidgets(int& ypos, WidgetArray& wid);
+    void addRomWidgets(int& ypos, WidgetArray& wid);
+    void addButtonWidgets(int& ypos, WidgetArray& wid);
     string getRomDir();
 
     /**
@@ -162,21 +166,23 @@ class LauncherDialog : public Dialog
 
     void loadRom();
     void loadRomInfo();
-    void handleFavoritesChanged();
-    void handleContextMenu();
+    void openSettings();
+    void openContextMenu(int x = -1, int y = -1);
+    void openGlobalProps();
+    void openHighScores();
+    void openWhatsNew();
     void showOnlyROMs(bool state);
-    void toggleShowAll();
-    void toggleSubDirs();
+    void toggleShowAll(bool toggle = true);
+    void toggleSubDirs(bool toggle = true);
+    void gotoHomeDir();
+    void handleContextMenu();
+    void handleQuit();
     void toggleExtensions();
     void toggleSorting();
+    void handleFavoritesChanged();
     void removeAllFavorites();
     void removeAllPopular();
     void removeAllRecent();
-    void openContextMenu(int x = -1, int y = -1);
-    void openGlobalProps();
-    void openSettings();
-    void openHighScores();
-    void openWhatsNew();
 
     ContextMenu& contextMenu();
 
@@ -187,17 +193,19 @@ class LauncherDialog : public Dialog
     // automatically sized font for ROM info viewer
     unique_ptr<GUI::Font> myROMInfoFont;
 
-    CheckboxWidget*   myAllFiles{nullptr};
+    ButtonWidget*     mySettingsButton{nullptr};
     EditTextWidget*   myPattern{nullptr};
-    CheckboxWidget*   mySubDirs{nullptr};
+    ButtonWidget*     myOnlyRomsButton{nullptr};
+    ButtonWidget*     mySubDirsButton{nullptr};
     StaticTextWidget* myRomCount{nullptr};
+
+    ButtonWidget*     myHomeButton{nullptr};
+    ButtonWidget*     myUpButton{nullptr};
+    EditTextWidget*   myDir{nullptr};
+    ButtonWidget*     myReloadButton{nullptr};
 
     LauncherFileListWidget*   myList{nullptr};
 
-    StaticTextWidget* myDirLabel{nullptr};
-    EditTextWidget*   myDir{nullptr};
-
-    ButtonWidget*     myHomeButton{nullptr};
     ButtonWidget*     myStartButton{nullptr};
     ButtonWidget*     myPrevDirButton{nullptr};
     ButtonWidget*     myOptionsButton{nullptr};
@@ -213,6 +221,7 @@ class LauncherDialog : public Dialog
     int mySelectedItem{0};
 
     bool myShowOnlyROMs{false};
+    bool myIncludeSubDirs{false};
     bool myUseMinimalUI{false};
     bool myEventHandled{false};
     bool myShortCount{false};
@@ -226,6 +235,7 @@ class LauncherDialog : public Dialog
       kOptionsCmd    = 'OPTI',
       kQuitCmd       = 'QUIT',
       kHomeDirCmd    = 'homc',  // goto Home directory
+      kReloadCmd     = 'relc',
       kRmAllFav      = 'rmaf',
       kRmAllPop      = 'rmap',
       kRmAllRec      = 'rmar'

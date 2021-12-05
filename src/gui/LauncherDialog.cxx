@@ -60,169 +60,404 @@
 #include "MediaFactory.hxx"
 #include "LauncherDialog.hxx"
 
-#include "MessageMenu.hxx"
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
                                int x, int y, int w, int h)
   : Dialog(osystem, parent, osystem.frameBuffer().launcherFont(), "",
            x, y, w, h)
 {
+  const bool bottomButtons = instance().settings().getBool("launcherbuttons");
+  int ypos = Dialog::vBorder();
+  WidgetArray wid;
+
   myUseMinimalUI = instance().settings().getBool("minimal_ui");
+
+  addOptionWidgets(ypos, wid);
+  addPathWidgets(ypos, wid);
+  addRomWidgets(ypos, wid);
+  if(!myUseMinimalUI && bottomButtons)
+    addButtonWidgets(ypos, wid);
+
+  if(myUseMinimalUI) // Highlight 'Rom Listing'
+    mySelectedItem = 0; // skip nothing
+  else
+    mySelectedItem = 7; // skip filter items and 3 navigation buttons
+
+  addToFocusList(wid);
+
+  // Do we show only ROMs or all files?
+  toggleShowAll(false);
+
+  applyFiltering();
+  setHelpAnchor("ROMInfo");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::addOptionWidgets(int& ypos, WidgetArray& wid)
+{
   const int lineHeight   = Dialog::lineHeight(),
             fontHeight   = Dialog::fontHeight(),
             fontWidth    = Dialog::fontWidth(),
-            BUTTON_GAP   = Dialog::buttonGap(),
-            VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder(),
-            VGAP         = Dialog::vGap();
-  const int LBL_GAP      = fontWidth,
-            buttonHeight = myUseMinimalUI ? lineHeight - VGAP * 2: Dialog::buttonHeight(),
-            buttonWidth  = (_w - 2 * HBORDER - BUTTON_GAP * (4 - 1));
-
-  int xpos = HBORDER, ypos = VBORDER;
-  WidgetArray wid;
-  string lblSelect = "Select a ROM from the list" + ELLIPSIS;
-  string lblAllFiles = "Show all files";
-  const string& lblFilter = "Filter";
-  string lblSubDirs = "Incl. subdirectories";
+            VGAP         = Dialog::vGap(),
+            LBL_GAP      = Dialog::fontWidth(),
+            buttonHeight = Dialog::buttonHeight(),
+            btnGap       = fontWidth / 4,
+            btnYOfs      = (buttonHeight - lineHeight) / 2 + 1;
   string lblFound = "12345 items found";
-
-  tooltip().setFont(_font);
-
-  int lwSelect = _font.getStringWidth(lblSelect);
-  int cwAllFiles = _font.getStringWidth(lblAllFiles) + CheckboxWidget::prefixSize(_font);
-  int cwSubDirs = _font.getStringWidth(lblSubDirs) + CheckboxWidget::prefixSize(_font);
-  int lwFilter = _font.getStringWidth(lblFilter);
   int lwFound = _font.getStringWidth(lblFound);
-  int wTotal = HBORDER * 2 + lwSelect + cwAllFiles + cwSubDirs + lwFilter + lwFound
-    + EditTextWidget::calcWidth(_font, "123456") + LBL_GAP * 7;
-  bool noSelect = false;
-
-  if(w < wTotal)
-  {
-    // make sure there is space for at least 6 characters in the filter field
-    lblSelect = "Select a ROM" + ELLIPSIS;
-    int lwSelectShort = _font.getStringWidth(lblSelect);
-
-    wTotal -= lwSelect - lwSelectShort;
-    lwSelect = lwSelectShort;
-  }
-  if(w < wTotal)
-  {
-    // make sure there is space for at least 6 characters in the filter field
-    lblSubDirs = "Subdir.";
-    int cwSubDirsShort = _font.getStringWidth(lblSubDirs) + CheckboxWidget::prefixSize(_font);
-
-    wTotal -= cwSubDirs - cwSubDirsShort;
-    cwSubDirs = cwSubDirsShort;
-  }
-  if(w < wTotal)
-  {
-    // make sure there is space for at least 6 characters in the filter field
-    lblAllFiles = "All files";
-    int cwAllFilesShort = _font.getStringWidth(lblAllFiles) + CheckboxWidget::prefixSize(_font);
-
-    wTotal -= cwAllFiles - cwAllFilesShort;
-    cwAllFiles = cwAllFilesShort;
-  }
-  if(w < wTotal)
-  {
-    // make sure there is space for at least 6 characters in the filter field
-    lblFound = "12345 found";
-    int lwFoundShort = _font.getStringWidth(lblFound);
-
-    wTotal -= lwFound - lwFoundShort;
-    lwFound = lwFoundShort;
-    myShortCount = true;
-  }
-  if(w < wTotal)
-  {
-    // make sure there is space for at least 6 characters in the filter field
-    lblSelect = "";
-    int lwSelectShort = _font.getStringWidth(lblSelect);
-
-    // wTotal -= lwSelect - lwSelectShort; // dead code
-    lwSelect = lwSelectShort;
-    noSelect = true;
-  }
 
   if(myUseMinimalUI)
   {
     // App information
     ostringstream ver;
     ver << "Stella " << STELLA_VERSION;
-  #if defined(RETRON77)
+#if defined(RETRON77)
     ver << " for RetroN 77";
-  #endif
+#endif
     new StaticTextWidget(this, _font, 0, ypos, _w, fontHeight,
-                         ver.str(), TextAlign::Center);
-    ypos += lineHeight;
+      ver.str(), TextAlign::Center);
+    ypos += fontHeight + VGAP;
   }
 
-  // Show the header
-  new StaticTextWidget(this, _font, xpos, ypos, lblSelect);
-  // Shop the files counter
-  xpos = _w - HBORDER - lwFound;
-  myRomCount = new StaticTextWidget(this, _font, xpos, ypos,
-                                    lwFound, fontHeight,
-                                    "", TextAlign::Right);
+  tooltip().setFont(_font);
 
-  // Add filter that can narrow the results shown in the listing
-  // It has to fit between both labels
-  if(!myUseMinimalUI && w >= 640)
+  if(!myUseMinimalUI && _w >= 640)
   {
-    int fwFilter = std::min(EditTextWidget::calcWidth(_font, "123456789012345"),
-                            xpos - cwSubDirs - lwFilter - cwAllFiles
-                            - lwSelect - HBORDER - LBL_GAP * (noSelect ? 5 : 7));
+    // Settings button
+    static const uIntArray settings_small = {
+      0b0000000000000,
+      0b0001100011000,
+      0b0011111111100,
+      0b0011111111100,
+      0b0011111111100,
+      0b0111100011110,
+      0b1111000001111,
+      0b1111000001111,
+      0b1111000001111,
+      0b0111100011110,
+      0b0011111111100,
+      0b0011111111100,
+      0b0011111111100,
+      0b0001100011000
+    };
+    static const uIntArray settings_large = {
+      0b0000000000000000000,
+      0b0000111000001110000,
+      0b0001111111111111000,
+      0b0001111111111111000,
+      0b0001111111111111000,
+      0b0001111111111111000,
+      0b0011111111111111100,
+      0b1111111000001111111,
+      0b1111110000000111111,
+      0b1111110000000111111,
+      0b1111110000000111111,
+      0b1111110000000111111,
+      0b1111110000000111111,
+      0b1111111000001111111,
+      0b0011111111111111100,
+      0b0001111111111111000,
+      0b0001111111111111000,
+      0b0001111111111111000,
+      0b0001111111111111000,
+      0b0000111000001110000
+    };
+    const bool smallIcon = lineHeight < 26;
+    const int iconWidth = smallIcon ? 13 : 19;
+    const int iconGap = (fontWidth + 1) & ~0b1; // round up to next even
+    const uIntArray* settingsIcon = smallIcon ? &settings_small : &settings_large;
+    const uIntArray* dummyIcon = settingsIcon;
 
-    // Show the filter input field
-    xpos -= fwFilter + LBL_GAP;
-    myPattern = new EditTextWidget(this, _font, xpos, ypos - 2, fwFilter, lineHeight, "");
-    myPattern->setToolTip("Enter filter text to reduce file list.\n"
-                          "Use '*' and '?' as wildcards.");
+    int xpos = HBORDER;
+    mySettingsButton = new ButtonWidget(this, _font, xpos, ypos - btnYOfs,
+      iconWidth, Dialog::buttonHeight()/*lineHeight + 2*/, settingsIcon->data(), iconWidth, int(settingsIcon->size()),
+      iconGap, " Options" + ELLIPSIS + " ", kOptionsCmd);
+    wid.push_back(mySettingsButton);
+
+    const int cwSettings = mySettingsButton->getWidth();
+    const int cwSubDirs = iconWidth + iconGap + 1;
+    const int cwAllFiles = iconWidth + iconGap + 1;
+    const string& lblFilter = "Filter";
+    int lwFilter = _font.getStringWidth(lblFilter);
+    int fwFilter = EditTextWidget::calcWidth(_font, "123456"); // at least 6 chars
+    int wTotal = cwSettings + cwSubDirs + cwAllFiles + lwFilter + fwFilter + lwFound
+      + LBL_GAP * 4 + btnGap * 2 + HBORDER * 2;
+
+    // make sure there is space for at least 6 characters in the filter field
+    if(_w < wTotal)
+    {
+      wTotal -= lwFound;
+      lblFound = "12345 items";
+      myShortCount = true;
+      lwFound = _font.getStringWidth(lblFound);
+      wTotal += lwFound;
+    }
+    if(_w < wTotal)
+    {
+      wTotal -= lwFilter + LBL_GAP;
+      lwFilter = 0;
+    }
+
+    fwFilter += _w - wTotal;
 
     // Show the "Filter" label
-    xpos -= lwFilter + LBL_GAP;
-    new StaticTextWidget(this, _font, xpos, ypos, lblFilter);
+    xpos = mySettingsButton->getRight() + LBL_GAP * 2;
+    if(lwFilter)
+    {
+      StaticTextWidget* s = new StaticTextWidget(this, _font, xpos, ypos, lblFilter);
+      xpos = s->getRight() + LBL_GAP;
+    }
 
-    // Show the subdirectories checkbox
-    xpos -= cwSubDirs + LBL_GAP * 2;
-    mySubDirs = new CheckboxWidget(this, _font, xpos, ypos, lblSubDirs, kSubDirsCmd);
-    ostringstream tip;
-    tip << "Search files in subdirectories too.";
-    mySubDirs->setToolTip(tip.str());
-
-    // Show the checkbox for all files
-    if(noSelect)
-      xpos = HBORDER;
-    else
-      xpos -= cwAllFiles + LBL_GAP;
-    myAllFiles = new CheckboxWidget(this, _font, xpos, ypos, lblAllFiles, kAllfilesCmd);
-    myAllFiles->setToolTip("Uncheck to show ROM files only.");
-
-    wid.push_back(myAllFiles);
+    // Show the filter input field that can narrow the results shown in the listing
+    myPattern = new EditTextWidget(this, _font, xpos, ypos - 2, fwFilter, lineHeight, "");
+    myPattern->setToolTip("Enter filter text to reduce file list.\n"
+      "Use '*' and '?' as wildcards.");
     wid.push_back(myPattern);
-    wid.push_back(mySubDirs);
+
+    // Show the button for all files
+    xpos = myPattern->getRight() + btnGap;
+    myOnlyRomsButton = new ButtonWidget(this, _font, xpos, ypos - btnYOfs,
+      iconWidth + iconGap + 1, Dialog::buttonHeight()/*lineHeight + 2*/,
+      dummyIcon->data(), iconWidth + 1, int(dummyIcon->size()),
+      kAllfilesCmd);
+    myOnlyRomsButton->setToolTip("Toggle file type filter");
+    wid.push_back(myOnlyRomsButton);
+
+    // Show the subdirectories button
+    xpos = myOnlyRomsButton->getRight() + btnGap;
+    mySubDirsButton = new ButtonWidget(this, _font, xpos, ypos - btnYOfs,
+      iconWidth + iconGap + 1, Dialog::buttonHeight()/*lineHeight + 2*/,
+      dummyIcon->data(), iconWidth, int(dummyIcon->size()),
+      kSubDirsCmd);
+    mySubDirsButton->setToolTip("Toggle subdirectories");
+    wid.push_back(mySubDirsButton);
+
+    // Show the files counter
+    xpos = _w - HBORDER - lwFound;
+    myRomCount = new StaticTextWidget(this, _font, xpos, ypos,
+      lwFound, fontHeight, "", TextAlign::Right);
+
+    ypos += lineHeight + VGAP * 2;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::addPathWidgets(int& ypos, WidgetArray& wid)
+{
+  // Add some buttons and textfield to show current directory
+  const int
+    lineHeight   = Dialog::lineHeight(),
+    fontHeight    = Dialog::fontHeight(),
+    fontWidth    = Dialog::fontWidth(),
+    HBORDER      = Dialog::hBorder(),
+    LBL_GAP      = fontWidth,
+    BTN_GAP      = fontWidth / 4;
+  const bool smallIcon = lineHeight < 26;
+  const int iconWidth = smallIcon ? 13 : 19;
+  const int iconGap = (fontWidth + 1) & ~0b1; // round up to next even
+  const string lblFound = "12345 items";
+  const int lwFound = _font.getStringWidth(lblFound);
+  int xpos = HBORDER;
+
+  if(!myUseMinimalUI)
+  {
+    // Up button
+    static const uIntArray up_small = {
+      0b0000001000000,
+      0b0000011100000,
+      0b0000111110000,
+      0b0001111111000,
+      0b0011111111100,
+      0b0111111111110,
+      0b1111111111111,
+      0b0000111110000,
+      0b0000111110000,
+      0b0000111110000,
+      0b0000111110000,
+      0b0000111110000,
+      0b0000111110000,
+      0b0000111110000
+    };
+    static const uIntArray up_large = {
+      0b0000000001000000000,
+      0b0000000011100000000,
+      0b0000000111110000000,
+      0b0000001111111000000,
+      0b0000011111111100000,
+      0b0000111111111110000,
+      0b0001111111111111000,
+      0b0011111111111111100,
+      0b0111111111111111110,
+      0b1111111111111111111,
+      0b0000001111111000000,
+      0b0000001111111000000,
+      0b0000001111111000000,
+      0b0000001111111000000,
+      0b0000001111111000000,
+      0b0000001111111000000,
+      0b0000001111111000000,
+      0b0000001111111000000,
+      0b0000001111111000000,
+      0b0000001111111000000
+    };
+    // Home button
+    static const uIntArray home_small = {
+      0b0000001000000,
+      0b0000011100000,
+      0b0000110110000,
+      0b0001101011000,
+      0b0011011101100,
+      0b0110111110110,
+      0b1101111111011,
+      0b1011111111101,
+      0b0011110111100,
+      0b0011100011100,
+      0b0011100011100,
+      0b0011100011100,
+      0b0011100011100,
+      0b0011100011100
+    };
+    static const uIntArray home_large = {
+      0b0000000001000000000,
+      0b0000000011100000000,
+      0b0000000110110000000,
+      0b0000001101011000000,
+      0b0000011011101100000,
+      0b0000110111110110000,
+      0b0001101111111011000,
+      0b0011011111111101100,
+      0b0110111111111110110,
+      0b1101111111111111011,
+      0b1001111111111111001,
+      0b0001111100011111000,
+      0b0001111000001111000,
+      0b0001111000001111000,
+      0b0001111000001111000,
+      0b0001111000001111000,
+      0b0001111000001111000,
+      0b0001111000001111000,
+      0b0001111000001111000,
+      0b0001111000001111000
+    };
+    const uIntArray* homeIcon = smallIcon ? &home_small : &home_large;
+    const uIntArray* upIcon = smallIcon ? &up_small : &up_large;
+
+    myHomeButton = new ButtonWidget(this, _font, xpos, ypos, iconWidth + iconGap, lineHeight + 2,
+      homeIcon->data(), iconWidth, int(homeIcon->size()), kHomeDirCmd);
+    myHomeButton->setToolTip("Go back to Stella's ROM directory.");
+    wid.push_back(myHomeButton);
+
+    xpos = myHomeButton->getRight() + BTN_GAP;
+    myUpButton = new ButtonWidget(this, _font, xpos, ypos, iconWidth + iconGap, lineHeight + 2,
+      upIcon->data(), iconWidth, int(upIcon->size()), kPrevDirCmd);
+    myUpButton->setToolTip("Go Up");
+    wid.push_back(myUpButton);
+    xpos = myUpButton->getRight() + BTN_GAP;
+  }
+
+  myDir = new EditTextWidget(this, _font, xpos, ypos,
+    _w - xpos - (myUseMinimalUI
+      ? lwFound + LBL_GAP
+      : (iconWidth + iconGap + BTN_GAP))
+    - HBORDER, lineHeight, "");
+  myDir->setEditable(false, true);
+  myDir->clearFlags(Widget::FLAG_RETAIN_FOCUS);
+
+  if(!myUseMinimalUI)
+  {
+    // Reload button
+    static const uIntArray reload_small = {
+      0b0000000000000,
+      0b0000111110001,
+      0b0011111111111,
+      0b0111000001111,
+      0b0110000001111,
+      0b1100000011111,
+      0b1100000000000,
+      0b1100000000000,
+      0b1100000000000,
+      0b1100000000011,
+      0b0110000000110,
+      0b0111000001110,
+      0b0011111111100,
+      0b0000111110000
+    };
+    static const uIntArray reload_large = {
+      0b0000000000000000000,
+      0b0000001111111000001,
+      0b0000111111111110011,
+      0b0001111111111111111,
+      0b0011110000000111111,
+      0b0111000000000011111,
+      0b0111000000000111111,
+      0b1110000000001111111,
+      0b1110000000000000000,
+      0b1110000000000000000,
+      0b1110000000000000000,
+      0b1110000000000000000,
+      0b1110000000000000000,
+      0b1110000000000000111,
+      0b0111000000000000110,
+      0b0111000000000001110,
+      0b0011110000000111100,
+      0b0001111111111111000,
+      0b0000111111111110000,
+      0b0000001111111000000
+    };
+    const uIntArray* reloadIcon = smallIcon ? &reload_small : &reload_large;
+
+    xpos = myDir->getRight() + BTN_GAP;
+    myReloadButton = new ButtonWidget(this, _font, xpos, ypos, iconWidth + iconGap, lineHeight + 2,
+      reloadIcon->data(), iconWidth, int(reloadIcon->size()), kReloadCmd);
+    myReloadButton->setToolTip("Reload listing");
+    wid.push_back(myReloadButton);
+  }
+  else
+  {
+    // Show the files counter
+    myShortCount = true;
+    xpos = _w - HBORDER - lwFound - LBL_GAP / 2;
+    myRomCount = new StaticTextWidget(this, _font, xpos, ypos + 2,
+      lwFound, fontHeight, "", TextAlign::Right);
+
+    EditTextWidget* e = new EditTextWidget(this, _font, myDir->getRight() - 1, ypos,
+      lwFound + LBL_GAP + 1, lineHeight, "");
+    e->setEditable(false, true);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::addRomWidgets(int& ypos, WidgetArray& wid)
+{
+  const bool bottomButtons = instance().settings().getBool("launcherbuttons");
+  const int lineHeight   = Dialog::lineHeight(),
+    fontWidth    = Dialog::fontWidth(),
+    VBORDER      = Dialog::vBorder(),
+    HBORDER      = Dialog::hBorder(),
+    VGAP         = Dialog::vGap(),
+    buttonHeight = myUseMinimalUI
+      ? - VGAP * 4
+      : bottomButtons ? Dialog::buttonHeight() : - VGAP * 2;
+  int xpos = HBORDER;
 
   // Add list with game titles
   // Before we add the list, we need to know the size of the RomInfoWidget
-  int listHeight = _h - VBORDER * 2 - buttonHeight - lineHeight * 2 - VGAP * 6;
-  float imgZoom = getRomInfoZoom(listHeight);
-  int romWidth = imgZoom * TIAConstants::viewableWidth;
-  if(romWidth > 0) romWidth += HBORDER;
-  int listWidth = _w - (romWidth > 0 ? romWidth + fontWidth : 0) - HBORDER * 2;
-  xpos = HBORDER;  ypos += lineHeight + VGAP;
+  ypos += lineHeight + VGAP;
+  const int listHeight = _h - VBORDER * 2 - lineHeight * 2 - buttonHeight - VGAP * 6;
+  const float imgZoom = getRomInfoZoom(listHeight);
+  const int romWidth = imgZoom * TIAConstants::viewableWidth;
+  const int listWidth = _w - (romWidth > 0 ? romWidth + fontWidth : 0) - HBORDER * 2;
 
   // remember initial ROM directory for returning there via home button
   string romDir = getRomDir();
   instance().settings().setValue("startromdir", getRomDir());
-  cerr << instance().settings().getString("romdir") << endl;
   myList = new LauncherFileListWidget(this, _font, xpos, ypos, listWidth, listHeight);
   myList->setEditable(false);
   myList->setListMode(FilesystemNode::ListMode::All);
-
+  // since we cannot know how many files there are, use are really high value here
+  myList->progress().setRange(0, 50000, 5);
+  myList->progress().setMessage("        Filtering files" + ELLIPSIS + "        ");
   wid.push_back(myList);
 
   // Add ROM info area (if enabled)
@@ -231,144 +466,78 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
     xpos += myList->getWidth() + fontWidth;
 
     // Initial surface size is the same as the viewable area
-    Common::Size imgSize(TIAConstants::viewableWidth*imgZoom,
-                         TIAConstants::viewableHeight*imgZoom);
-
+    const Common::Size imgSize(TIAConstants::viewableWidth * imgZoom,
+      TIAConstants::viewableHeight * imgZoom);
     // Calculate font area, and in the process the font that can be used
-    Common::Size fontArea(romWidth - fontWidth * 2, myList->getHeight() - imgSize.h - VGAP * 3);
+    const Common::Size fontArea(romWidth - fontWidth * 2,
+      myList->getHeight() - imgSize.h - VGAP * 3);
 
     setRomInfoFont(fontArea);
     myRomInfoWidget = new RomInfoWidget(this, *myROMInfoFont,
-        xpos, ypos, romWidth, myList->getHeight(), imgSize);
+      xpos, ypos, romWidth, myList->getHeight(), imgSize);
   }
+}
 
-  // Add textfield to show current directory
-  xpos = HBORDER;
-  ypos += myList->getHeight() + VGAP;
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::addButtonWidgets(int& ypos, WidgetArray& wid)
+{
+  const bool bottomButtons = instance().settings().getBool("launcherbuttons");
+  const int lineHeight = Dialog::lineHeight(),
+    BUTTON_GAP = Dialog::buttonGap(),
+    VBORDER = Dialog::vBorder(),
+    HBORDER = Dialog::hBorder(),
+    VGAP = Dialog::vGap(),
+    LBL_GAP = Dialog::fontWidth(),
+    buttonHeight = myUseMinimalUI
+    ? lineHeight - VGAP * 4
+    : bottomButtons
+    ? Dialog::buttonHeight()
+    : -VGAP * 2,
+    buttonWidth = (_w - 2 * HBORDER - BUTTON_GAP * (4 - 1));
+  int xpos = HBORDER;
 
-  // Path display
-  lwSelect = _font.getStringWidth("Path") + LBL_GAP;
-  myDirLabel = new StaticTextWidget(this, _font, xpos, ypos + 2, lwSelect, fontHeight, "Path");
-  xpos += lwSelect;
+  // Add four buttons at the bottom
+  ypos = _h - VBORDER - buttonHeight;
+#ifndef BSPF_MACOS
+  myStartButton = new ButtonWidget(this, _font, xpos, ypos, (buttonWidth + 0) / 4, buttonHeight,
+    "Select", kLoadROMCmd);
+  wid.push_back(myStartButton);
 
-  // Home button
-  static const uIntArray home_small = {
-    0b0000001000000,
-    0b0000011100000,
-    0b0000110110000,
-    0b0001101011000,
-    0b0011011101100,
-    0b0110111110110,
-    0b1101111111011,
-    0b1011111111101,
-    0b0011110111100,
-    0b0011100011100,
-    0b0011100011100,
-    0b0011100011100,
-    0b0011100011100,
-    0b0011100011100
-  };
-  static const uIntArray home_large = {
-    0b0000000001000000000,
-    0b0000000011100000000,
-    0b0000000110110000000,
-    0b0000001101011000000,
-    0b0000011011101100000,
-    0b0000110111110110000,
-    0b0001101111111011000,
-    0b0011011111111101100,
-    0b0110111111111110110,
-    0b1101111111111111011,
-    0b1001111111111111001,
-    0b0001111100011111000,
-    0b0001111000001111000,
-    0b0001111000001111000,
-    0b0001111000001111000,
-    0b0001111000001111000,
-    0b0001111000001111000,
-    0b0001111000001111000,
-    0b0001111000001111000,
-    0b0001111000001111000
-  };
-  const bool smallIcon = lineHeight < 26;
-  const uIntArray* icon = smallIcon ? &home_small : &home_large;
-  const int iconWidth = smallIcon ? 13 : 19;
-  const int iconGap = fontWidth & ~0b1; // make even
+  xpos += (buttonWidth + 0) / 4 + BUTTON_GAP;
+  myPrevDirButton = new ButtonWidget(this, _font, xpos, ypos, (buttonWidth + 1) / 4, buttonHeight,
+    "Go Up", kPrevDirCmd);
+  wid.push_back(myPrevDirButton);
 
-  myHomeButton = new ButtonWidget(this, _font, xpos, ypos, iconWidth + iconGap, lineHeight + 2,
-    icon->data(), iconWidth, int(icon->size()), kHomeDirCmd);
-  myHomeButton->setToolTip("Go back to Stella's ROM directory.");
-  wid.push_back(myHomeButton);
-  xpos = myHomeButton->getRight() + 1;// +LBL_GAP;
+  xpos += (buttonWidth + 1) / 4 + BUTTON_GAP;
+  myOptionsButton = new ButtonWidget(this, _font, xpos, ypos, (buttonWidth + 3) / 4, buttonHeight,
+    "Options" + ELLIPSIS, kOptionsCmd);
+  wid.push_back(myOptionsButton);
 
-  myDir = new EditTextWidget(this, _font, xpos, ypos, _w - xpos - HBORDER, lineHeight, "");
-  myDir->setEditable(false, true);
-  myDir->clearFlags(Widget::FLAG_RETAIN_FOCUS);
+  xpos += (buttonWidth + 2) / 4 + BUTTON_GAP;
+  myQuitButton = new ButtonWidget(this, _font, xpos, ypos, (buttonWidth + 4) / 4, buttonHeight,
+    "Quit", kQuitCmd);
+  wid.push_back(myQuitButton);
+#else
+  myQuitButton = new ButtonWidget(this, _font, xpos, ypos, (buttonWidth + 0) / 4, buttonHeight,
+    "Quit", kQuitCmd);
+  wid.push_back(myQuitButton);
 
-  if(!myUseMinimalUI)
-  {
-    // Add four buttons at the bottom
-    xpos = HBORDER;  ypos = _h - VBORDER - buttonHeight;
-  #ifndef BSPF_MACOS
-    myStartButton = new ButtonWidget(this, _font, xpos, ypos, (buttonWidth + 0) / 4, buttonHeight,
-                                     "Select", kLoadROMCmd);
-    wid.push_back(myStartButton);
+  xpos += (buttonWidth + 0) / 4 + BUTTON_GAP;
+  myOptionsButton = new ButtonWidget(this, _font, xpos, ypos, (buttonWidth + 1) / 4, buttonHeight,
+    "Options" + ELLIPSIS, kOptionsCmd);
+  wid.push_back(myOptionsButton);
 
-    xpos += (buttonWidth + 0) / 4 + BUTTON_GAP;
-    myPrevDirButton = new ButtonWidget(this, _font, xpos, ypos, (buttonWidth + 1) / 4, buttonHeight,
-                                       "Go Up", kPrevDirCmd);
-    wid.push_back(myPrevDirButton);
+  xpos += (buttonWidth + 1) / 4 + BUTTON_GAP;
+  myPrevDirButton = new ButtonWidget(this, _font, xpos, ypos, (buttonWidth + 2) / 4, buttonHeight,
+    "Go Up", kPrevDirCmd);
+  wid.push_back(myPrevDirButton);
 
-    xpos += (buttonWidth + 1) / 4 + BUTTON_GAP;
-    myOptionsButton = new ButtonWidget(this, _font, xpos, ypos, (buttonWidth + 3) / 4, buttonHeight,
-                                       "Options" + ELLIPSIS, kOptionsCmd);
-    wid.push_back(myOptionsButton);
-
-    xpos += (buttonWidth + 2) / 4 + BUTTON_GAP;
-    myQuitButton = new ButtonWidget(this, _font, xpos, ypos, (buttonWidth + 4) / 4, buttonHeight,
-                                    "Quit", kQuitCmd);
-    wid.push_back(myQuitButton);
-  #else
-    myQuitButton = new ButtonWidget(this, _font, xpos, ypos, (buttonWidth + 0) / 4, buttonHeight,
-                                    "Quit", kQuitCmd);
-    wid.push_back(myQuitButton);
-
-    xpos += (buttonWidth + 0) / 4 + BUTTON_GAP;
-    myOptionsButton = new ButtonWidget(this, _font, xpos, ypos, (buttonWidth + 1) / 4, buttonHeight,
-                                       "Options" + ELLIPSIS, kOptionsCmd);
-    wid.push_back(myOptionsButton);
-
-    xpos += (buttonWidth + 1) / 4 + BUTTON_GAP;
-    myPrevDirButton = new ButtonWidget(this, _font, xpos, ypos, (buttonWidth + 2) / 4, buttonHeight,
-                                       "Go Up", kPrevDirCmd);
-    wid.push_back(myPrevDirButton);
-
-    xpos += (buttonWidth + 2) / 4 + BUTTON_GAP;
-    myStartButton = new ButtonWidget(this, _font, xpos, ypos, (buttonWidth + 3) / 4, buttonHeight,
-                                     "Select", kLoadROMCmd);
-    wid.push_back(myStartButton);
-  #endif
-    myStartButton->setToolTip("Start emulation of selected ROM\nor switch to selected directory.");
-  }
-  if(myUseMinimalUI) // Highlight 'Rom Listing'
-    mySelectedItem = 0;
-  else
-    mySelectedItem = 3;
-
-  addToFocusList(wid);
-
-  // since we cannot know how many files there are, use are really high value here
-  myList->progress().setRange(0, 50000, 5);
-  myList->progress().setMessage("        Filtering files" + ELLIPSIS + "        ");
-
-  // Do we show only ROMs or all files?
-  myShowOnlyROMs = instance().settings().getBool("launcherroms");
-  //showOnlyROMs(onlyROMs);
-  if(myAllFiles)
-    myAllFiles->setState(!myShowOnlyROMs);
-  applyFiltering();
-
-  setHelpAnchor("ROMInfo");
+  xpos += (buttonWidth + 2) / 4 + BUTTON_GAP;
+  myStartButton = new ButtonWidget(this, _font, xpos, ypos, (buttonWidth + 3) / 4, buttonHeight,
+    "Select", kLoadROMCmd);
+  wid.push_back(myStartButton);
+#endif
+  myStartButton->setToolTip("Start emulation of selected ROM\nor switch to selected directory.");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -419,6 +588,14 @@ void LauncherDialog::reload()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::handleQuit()
+{
+  // saveConfig() will be done in quit()
+  close();
+  instance().eventHandler().quit();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::quit()
 {
   saveConfig();
@@ -449,12 +626,8 @@ void LauncherDialog::loadConfig()
     settings.setValue("stella.version", STELLA_VERSION);
   }
 
-  bool subDirs = settings.getBool("launchersubdirs");
-  bool extensions = settings.getBool("launcherextensions");
-
-  if (mySubDirs) mySubDirs->setState(subDirs);
-  myList->setIncludeSubDirs(subDirs);
-  myList->setShowFileExtensions(extensions);
+  toggleSubDirs(false);
+  myList->setShowFileExtensions(settings.getBool("launcherextensions"));
   // Favorites
   myList->loadFavorites();
 
@@ -482,8 +655,6 @@ void LauncherDialog::saveConfig()
 {
   Settings& settings = instance().settings();
 
-  if(mySubDirs)
-    settings.setValue("launchersubdirs", mySubDirs->getState());
   if(settings.getBool("followlauncher"))
     settings.setValue("romdir", myList->currentDir().getShortPath());
 
@@ -504,7 +675,7 @@ void LauncherDialog::updateUI()
   // Indicate how many files were found
   ostringstream buf;
   buf << (myList->getList().size() - (currentDir().hasParent() ? 1 : 0))
-    << (myShortCount ? " found" : " items found");
+    << (myShortCount ? " items" : " items found");
   myRomCount->setLabel(buf.str());
 
   // Update ROM info UI item
@@ -740,12 +911,18 @@ void LauncherDialog::handleContextMenu()
     toggleShowAll();
   else if(cmd == "subdirs")
     toggleSubDirs();
+  else if(cmd == "homedir")
+    gotoHomeDir();
+  else if(cmd == "prevdir")
+    myList->selectParent();
   else if(cmd == "highscores")
     openHighScores();
-  else if(cmd == "options")
-    openSettings();
   else if(cmd == "reload")
     reload();
+  else if(cmd == "options")
+    openSettings();
+  else if(cmd == "quit")
+    handleQuit();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -763,7 +940,6 @@ void LauncherDialog::showOnlyROMs(bool state)
 {
   myShowOnlyROMs = state;
   instance().settings().setValue("launcherroms", state);
-  applyFiltering();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -931,29 +1107,17 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
   switch (cmd)
   {
     case kAllfilesCmd:
-      showOnlyROMs(myAllFiles ? !myAllFiles->getState() : true);
-      reload();
+      toggleShowAll();
       break;
 
     case kSubDirsCmd:
-      myList->setIncludeSubDirs(mySubDirs->getState());
-      reload();
+      toggleSubDirs();
       break;
 
     case kHomeDirCmd:
-    {
-      if(myList->currentDir().getPath() != instance().settings().getString("startromdir"))
-      {
-        FilesystemNode node(instance().settings().getString("startromdir"));
-
-        if(!myList->isDirectory(node))
-          node = FilesystemNode("~");
-
-        myList->setDirectory(node);
-        reload();
-      }
+      gotoHomeDir();
       break;
-    }
+
     case kLoadROMCmd:
       if(myList->isDirectory(myList->selected()))
       {
@@ -976,6 +1140,10 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       myList->selectParent();
       break;
 
+    case kReloadCmd:
+      reload();
+      break;
+
     case FileListWidget::ItemChanged:
       updateUI();
       break;
@@ -989,11 +1157,9 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
     case EditableWidget::kChangedCmd:
     case EditableWidget::kAcceptCmd:
     {
-      bool subDirs = mySubDirs->getState();
+      bool subDirs = instance().settings().getBool("launchersubdirs");
 
       myList->setIncludeSubDirs(subDirs);
-      applyFiltering();  // pattern matching taken care of directly in this method
-
       if(subDirs && cmd == EditableWidget::kChangedCmd)
       {
         // delay (potentially slow) subdirectories reloads until user stops typing
@@ -1006,9 +1172,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
     }
 
     case kQuitCmd:
-      saveConfig();
-      close();
-      instance().eventHandler().quit();
+      handleQuit();
       break;
 
     case kRomDirChosenCmd:
@@ -1095,27 +1259,413 @@ void LauncherDialog::loadRom()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::toggleShowAll()
+void LauncherDialog::openContextMenu(int x, int y)
 {
-  myShowOnlyROMs = !instance().settings().getBool("launcherroms");
+  // Dynamically create context menu for ROM list options
+  // TODO: remove 'Incl. subdirs' and 'Show all' from GUI? Replace with icons.
 
-  instance().settings().setValue("launcherroms", myShowOnlyROMs);
-  if(myAllFiles)
-    myAllFiles->setState(!myShowOnlyROMs);
-  applyFiltering();
-  reload();
+  if(x < 0 || y < 0)
+  {
+    // Long pressed button, determine position from currently selected list item
+    x = myList->getLeft() + myList->getWidth() / 2;
+    y = myList->getTop() + (myList->getSelected() - myList->currentPos() + 1) * _font.getLineHeight();
+  }
+
+  struct ContextItem {
+    string label;
+    string shortcut;
+    string key;
+    explicit ContextItem(const string _label, const string _shortcut, const string _key)
+      : label{ _label }, shortcut{ _shortcut }, key{ _key } {}
+    // No shortcuts displayed in minimal UI
+    ContextItem(const string _label, const string _key)
+      : label{ _label }, key{ _key } {}
+  };
+  using ContextList = std::vector<ContextItem>;
+  ContextList items;
+  const bool useFavorites = instance().settings().getBool("favorites");
+
+  if(useFavorites)
+  {
+    if(!currentNode().isDirectory())
+    {
+      if(myList->isUserDir(currentNode().getName()))
+        items.push_back(ContextItem("Remove all from favorites", "removefavorites"));
+      if(myList->isPopularDir(currentNode().getName()))
+        items.push_back(ContextItem("Remove all from most popular", "removepopular"));
+      if(myList->isRecentDir(currentNode().getName()))
+        items.push_back(ContextItem("Remove all from recently played", "removerecent"));
+      if(myList->inRecentDir())
+        items.push_back(ContextItem("Remove from recently played", "Ctrl+X", "remove"));
+      if(myList->inPopularDir())
+        items.push_back(ContextItem("Remove from most popular", "Ctrl+X", "remove"));
+    }
+    if(currentNode().isDirectory() || Bankswitch::isValidRomName(currentNode()))
+      items.push_back(ContextItem(myList->isUserFavorite(myList->selected().getPath())
+        ? "Remove from favorites"
+        : "Add to favorites", "Ctrl+F", "favorite"));
+  }
+  if(!currentNode().isDirectory() && Bankswitch::isValidRomName(currentNode()))
+  {
+    items.push_back(ContextItem("Power-on options" + ELLIPSIS, "Ctrl+P", "override"));
+    if(instance().highScores().enabled())
+      items.push_back(ContextItem("High scores" + ELLIPSIS, "Ctrl+H", "highscores"));
+  }
+  if(myUseMinimalUI)
+  {
+  #ifndef RETRON77
+    items.push_back(ContextItem(instance().settings().getBool("launcherroms")
+      ? "Show all files"
+      : "Show only ROMs", "showall"));
+    items.push_back(ContextItem(instance().settings().getBool("launchersubdirs")
+      ? "Exclude subdirectories"
+      : "Include subdirectories", "subdirs"));
+  #endif
+    items.push_back(ContextItem("Go to home directory", "homedir"));
+    items.push_back(ContextItem("Go to parent directory", "prevdir"));
+  #ifndef RETRON77
+    items.push_back(ContextItem("Reload listing", "reload"));
+  #endif
+    items.push_back(ContextItem("Options" + ELLIPSIS, "options"));
+  }
+  else
+  {
+    items.push_back(ContextItem(instance().settings().getBool("launcherextensions")
+      ? "Disable file extensions"
+      : "Enable file extensions", "Ctrl+E", "extensions"));
+    if(useFavorites && myList->inVirtualDir())
+      items.push_back(ContextItem(instance().settings().getBool("altsorting")
+        ? "Normal sorting"
+        : "Alternative sorting", "Ctrl+S", "sorting"));
+    //if(!instance().settings().getBool("launcherbuttons"))
+    //{
+    //  items.push_back(ContextItem("Options" + ELLIPSIS, "Ctrl+O", "options"));
+    //  items.push_back(ContextItem("Quit", "Ctrl+Q", "quit"));
+    //}
+  }
+
+  // Format items for menu
+  VariantList varItems;
+  if(myUseMinimalUI)
+    for(auto& item : items)
+      VarList::push_back(varItems, " " + item.label + " ", item.key);
+  else
+  {
+    // Align all shortcuts to the right
+    size_t maxLen = 0;
+    for(auto& item : items)
+      maxLen = std::max(maxLen, item.label.length());
+
+    for(auto& item : items)
+      VarList::push_back(varItems, " " + item.label.append(maxLen - item.label.length(), ' ')
+        + "  " + item.shortcut + " ", item.key);
+  }
+  contextMenu().addItems(varItems);
+
+  // Add menu at current x,y mouse location
+  contextMenu().show(x + getAbsX(), y + getAbsY(), surface().dstRect(), 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::toggleSubDirs()
+void LauncherDialog::openSettings()
 {
-  bool subdirs = !instance().settings().getBool("launchersubdirs");
+  saveConfig();
 
-  instance().settings().setValue("launchersubdirs", subdirs);
-  if(mySubDirs)
-    mySubDirs->setState(subdirs);
+  // Create an options dialog, similar to the in-game one
+  if (instance().settings().getBool("basic_settings"))
+    myDialog = make_unique<StellaSettingsDialog>(instance(), parent(),
+                                                 _w, _h, AppMode::launcher);
+  else
+    myDialog = make_unique<OptionsDialog>(instance(), parent(), this, _w, _h,
+                                          AppMode::launcher);
+  myDialog->open();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::openGlobalProps()
+{
+  // Create global props dialog, which is used to temporarily override
+  // ROM properties
+  myDialog = make_unique<GlobalPropsDialog>(this, myUseMinimalUI
+                                            ? _font
+                                            : instance().frameBuffer().font());
+  myDialog->open();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::openHighScores()
+{
+  // Create an high scores dialog, similar to the in-game one
+  myDialog = make_unique<HighScoresDialog>(instance(), parent(), _w, _h,
+                                           AppMode::launcher);
+  myDialog->open();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::openWhatsNew()
+{
+  myDialog = make_unique<WhatsNewDialog>(instance(), parent(), _w, _h);
+  myDialog->open();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::gotoHomeDir()
+{
+  if(myList->currentDir().getPath() != instance().settings().getString("startromdir"))
+  {
+    FilesystemNode node(instance().settings().getString("startromdir"));
+
+    if(!myList->isDirectory(node))
+      node = FilesystemNode("~");
+
+    myList->setDirectory(node);
+    reload();
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::toggleShowAll(bool toggle)
+{
+  myShowOnlyROMs = instance().settings().getBool("launcherroms");
+
+  if(toggle)
+  {
+    myShowOnlyROMs = !myShowOnlyROMs;
+    instance().settings().setValue("launcherroms", myShowOnlyROMs);
+    //myAllFilesButton->setBitmap();
+  }
+
+  if(myOnlyRomsButton)
+  {
+    const int lineHeight = Dialog::lineHeight(),
+              fontWidth  = Dialog::fontWidth();
+    // allfiles button
+    static const uIntArray onlyroms_small_on = {
+      0b00000000000000,
+      0b00000111100000,
+      0b00000111100000,
+      0b00000111100000,
+      0b00000111100000,
+      0b00000111100000,
+      0b00000111100000,
+      0b00001111110000,
+      0b00001111110000,
+      0b00011111111000,
+      0b00011011011000,
+      0b00110011001100,
+      0b11110011001111,
+      0b11100011000111
+    };
+    static const uIntArray onlyroms_large_on = {
+      0b00000000000000000000,
+      0b00000001011010000000,
+      0b00000001011010000000,
+      0b00000001011010000000,
+      0b00000001011010000000,
+      0b00000001011010000000,
+      0b00000001011010000000,
+      0b00000001011010000000,
+      0b00000001011010000000,
+      0b00000001011010000000,
+      0b00000001011010000000,
+      0b00000011011011000000,
+      0b00000011011011000000,
+      0b00000111011011100000,
+      0b00000110011001100000,
+      0b00001110011001110000,
+      0b00011100011000111000,
+      0b01111100011000011110,
+      0b11111000011000001111,
+      0b11100000011000000111
+    };
+    static const uIntArray onlyroms_small_off = {
+      0b01111111111000,
+      0b01000000001100,
+      0b01000000000110,
+      0b01000000000010,
+      0b01001000010010,
+      0b01001100110010,
+      0b01000111100010,
+      0b01011111111010,
+      0b01000111100010,
+      0b01001100110010,
+      0b01001000010010,
+      0b01000000000010,
+      0b01000000000010,
+      0b01111111111110
+    };
+    static const uIntArray onlyroms_large_off = {
+      0b0111111111111100000,
+      0b0100000000000110000,
+      0b0100000000000011000,
+      0b0100000000000001100,
+      0b0100011000011000100,
+      0b0100011100111000100,
+      0b0100001100110000100,
+      0b0100001111110000100,
+      0b0100000111100000100,
+      0b0101111111111110100,
+      0b0101111111111110100,
+      0b0100000111100000100,
+      0b0100001111110000100,
+      0b0100001100110000100,
+      0b0100011100111000100,
+      0b0100011000011000100,
+      0b0100000000000000100,
+      0b0100000000000000100,
+      0b0100000000000000100,
+      0b0111111111111111100
+    };
+    const bool smallIcon = lineHeight < 26;
+    const int iconWidth = smallIcon ? 14 : 19;
+    const int iconGap = (fontWidth + 1) & ~0b1; // round up to next even
+    const uIntArray* onlyromsIcon = myShowOnlyROMs
+      ? smallIcon ? &onlyroms_small_on : &onlyroms_large_on
+      : smallIcon ? &onlyroms_small_off : &onlyroms_large_off;
+
+    myOnlyRomsButton->setBitmap(onlyromsIcon->data(), iconWidth + 1, int(onlyromsIcon->size()));
+  }
+  if(toggle)
+    reload();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::toggleSubDirs(bool toggle)
+{
+  bool subdirs = instance().settings().getBool("launchersubdirs");
+
+  if(toggle)
+  {
+    subdirs = !subdirs;
+    instance().settings().setValue("launchersubdirs", subdirs);
+  }
+
+  if(mySubDirsButton)
+  {
+    const int lineHeight = Dialog::lineHeight(),
+              fontWidth  = Dialog::fontWidth();
+    // subdirs button
+    static const uIntArray subdirs_small_off = {
+      0b11110000000000,
+      0b11111000000000,
+      0b11111111111111,
+      0b10000000000001,
+      0b10000000000001,
+      0b10000000000001,
+      0b10000000000001,
+      0b10000000000001,
+      0b10000000000001,
+      0b10000000000001,
+      0b10000000000001,
+      0b10000000000001,
+      0b10000000000001,
+      0b11111111111111
+    };
+    static const uIntArray subdirs_large_off = {
+      0b1111110000000000000,
+      0b1111111000000000000,
+      0b1111111100000000000,
+      0b1111111111111111111,
+      0b1000000000000000001,
+      0b1000000000000000001,
+      0b1000000000000000001,
+      0b1000000000000000001,
+      0b1000000000000000001,
+      0b1000000000000000001,
+      0b1000000000000000001,
+      0b1000000000000000001,
+      0b1000000000000000001,
+      0b1000000000000000001,
+      0b1000000000000000001,
+      0b1000000000000000001,
+      0b1000000000000000001,
+      0b1000000000000000001,
+      0b1000000000000000001,
+      0b1111111111111111111
+    };
+    static const uIntArray subdirs_small_on = {
+#if 1
+      0b11100000000000,
+      0b11110000000000,
+      0b11111111110000,
+      0b10000000010000,
+      0b10000000011100,
+      0b10000000010100,
+      0b10000000010111,
+      0b10000000010101,
+      0b10000000010101,
+      0b11111111110101,
+      0b00100000000101,
+      0b00111111111101,
+      0b00001000000001,
+      0b00001111111111
+#else
+      0b0000111000000,
+      0b0000111111111,
+      0b0011100000001,
+      0b0011111111101,
+      0b1110000000101,
+      0b1111111110101,
+      0b1000000010101,
+      0b1000000010101,
+      0b1000000010101,
+      0b1000000010111,
+      0b1000000010100,
+      0b1000000011100,
+      0b1000000010000,
+      0b1111111110000
+
+      //0b0000111000000,
+      //0b0000111100000,
+      //0b0011111111111,
+      //0b0011100000001,
+      //0b1111111111101,
+      //0b1110000000101,
+      //0b1111111110101,
+      //0b1000000010101,
+      //0b1000000010101,
+      //0b1000000010111,
+      //0b1000000010100,
+      //0b1000000011100,
+      //0b1000000010000,
+      //0b1111111110000
+
+#endif
+    };
+    static const uIntArray subdirs_large_on = {
+      0b1111100000000000000,
+      0b1111110000000000000,
+      0b1111111000000000000,
+      0b1111111111111110000,
+      0b1000000000000010000,
+      0b1000000000000011100,
+      0b1000000000000010100,
+      0b1000000000000010111,
+      0b1000000000000010101,
+      0b1000000000000010101,
+      0b1000000000000010101,
+      0b1000000000000010101,
+      0b1000000000000010101,
+      0b1000000000000010101,
+      0b1000000000000010101,
+      0b1111111111111110101,
+      0b0010000000000000101,
+      0b0011111111111111101,
+      0b0000100000000000001,
+      0b0000111111111111111
+    };
+    const bool smallIcon = lineHeight < 26;
+    const int iconWidth = smallIcon ? 14 : 19;
+    const int iconGap = (fontWidth + 1) & ~0b1; // round up to next even
+    const uIntArray* subdirsIcon = subdirs
+      ? smallIcon ? &subdirs_small_on : &subdirs_large_on
+      : smallIcon ? &subdirs_small_off : &subdirs_large_off;
+
+    mySubDirsButton->setBitmap(subdirsIcon->data(), iconWidth + 1, int(subdirsIcon->size()));
+  }
   myList->setIncludeSubDirs(subdirs);
-  reload();
+  if(toggle)
+    reload();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1184,142 +1734,4 @@ void LauncherDialog::removeAllRecent()
     (this, _font, msg, _w, _h, kRmAllRec,
       "Yes", "No", "Remove all Recently Played", false);
   myConfirmMsg->show();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::openContextMenu(int x, int y)
-{
-  // Dynamically create context menu for ROM list options
-  // TODO: remove 'Incl. subdirs' and 'Show all' from GUI? Replace with icons.
-
-  if(x < 0 || y < 0)
-  {
-    // Long pressed button, determine position from currently selected list item
-    x = myList->getLeft() + myList->getWidth() / 2;
-    y = myList->getTop() + (myList->getSelected() - myList->currentPos() + 1) * _font.getLineHeight();
-  }
-
-  struct ContextItem {
-    string label;
-    string shortcut;
-    string key;
-    explicit ContextItem(const string _label, const string _shortcut, const string _key)
-      : label{_label}, shortcut{_shortcut}, key{_key} {}
-    // No shortcuts displayed in minimal UI
-    ContextItem(const string _label, const string _key)
-      : label{_label}, key{_key} {}
-  };
-  using ContextList = std::vector<ContextItem>;
-  ContextList items;
-  const bool useFavorites = instance().settings().getBool("favorites");
-
-  if(useFavorites && !currentNode().isDirectory())
-  {
-    if(myList->inRecentDir())
-      items.push_back(ContextItem("Remove from recently played", "Ctrl+X", "remove"));
-    if(myList->inPopularDir())
-      items.push_back(ContextItem("Remove from most popular", "Ctrl+X", "remove"));
-  }
-  if(useFavorites && (currentNode().isDirectory() || Bankswitch::isValidRomName(currentNode())))
-    items.push_back(ContextItem(myList->isUserFavorite(myList->selected().getPath())
-      ? "Remove from favorites"
-      : "Add to favorites", "Ctrl+F", "favorite"));
-  if(!currentNode().isDirectory() && Bankswitch::isValidRomName(currentNode()))
-  {
-    items.push_back(ContextItem("Power-on options" + ELLIPSIS, "Ctrl+P", "override"));
-    if(instance().highScores().enabled())
-      items.push_back(ContextItem("High scores" + ELLIPSIS, "Ctrl+H", "highscores"));
-  }
-  if(myUseMinimalUI)
-  {
-  #ifndef RETRON77
-    items.push_back(ContextItem(instance().settings().getBool("launcherroms")
-      ? "Show all files"
-      : "Show only ROMs", "showall"));
-    items.push_back(ContextItem(instance().settings().getBool("launchersubdirs")
-      ? "Exclude subdirectories"
-      : "Include subdirectories", "subdirs"));
-  #endif
-    items.push_back(ContextItem("Options" + ELLIPSIS, "options"));
-  }
-  else
-  {
-    items.push_back(ContextItem(instance().settings().getBool("launcherextensions")
-      ? "Disable file extensions"
-      : "Enable file extensions", "Ctrl+E", "extensions"));
-    if(useFavorites && myList->inVirtualDir())
-      items.push_back(ContextItem(instance().settings().getBool("altsorting")
-        ? "Normal sorting"
-        : "Alternative sorting", "Ctrl+S", "sorting"));
-    items.push_back(ContextItem("Reload listing", "Ctrl+R", "reload"));
-  }
-  if (useFavorites)
-  {
-    items.push_back(ContextItem("Remove all from favorites", "", "removefavorites"));
-    items.push_back(ContextItem("Remove all from most popular", "", "removepopular"));
-    items.push_back(ContextItem("Remove all from recently played", "", "removerecent"));
-  }
-
-  // Format items for menu
-  VariantList varItems;
-  if(myUseMinimalUI)
-    for(auto& item : items)
-      VarList::push_back(varItems, " " + item.label + " ", item.key);
-  else
-  {
-    // Align all shortcuts to the right
-    size_t maxLen = 0;
-    for(auto& item : items)
-      maxLen = std::max(maxLen, item.label.length());
-
-    for(auto& item : items)
-      VarList::push_back(varItems, " " + item.label.append(maxLen - item.label.length(), ' ')
-        + "  " + item.shortcut + " ", item.key);
-  }
-  contextMenu().addItems(varItems);
-
-  // Add menu at current x,y mouse location
-  contextMenu().show(x + getAbsX(), y + getAbsY(), surface().dstRect(), 0);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::openGlobalProps()
-{
-  // Create global props dialog, which is used to temporarily override
-  // ROM properties
-  myDialog = make_unique<GlobalPropsDialog>(this, myUseMinimalUI
-                                            ? _font
-                                            : instance().frameBuffer().font());
-  myDialog->open();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::openSettings()
-{
-  saveConfig();
-
-  // Create an options dialog, similar to the in-game one
-  if (instance().settings().getBool("basic_settings"))
-    myDialog = make_unique<StellaSettingsDialog>(instance(), parent(),
-                                                 _w, _h, AppMode::launcher);
-  else
-    myDialog = make_unique<OptionsDialog>(instance(), parent(), this, _w, _h,
-                                          AppMode::launcher);
-  myDialog->open();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::openHighScores()
-{
-  // Create an high scores dialog, similar to the in-game one
-  myDialog = make_unique<HighScoresDialog>(instance(), parent(), _w, _h,
-                                           AppMode::launcher);
-  myDialog->open();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::openWhatsNew()
-{
-  myDialog = make_unique<WhatsNewDialog>(instance(), parent(), _w, _h);
-  myDialog->open();
 }

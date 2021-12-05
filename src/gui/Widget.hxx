@@ -266,12 +266,15 @@ class ButtonWidget : public StaticTextWidget
                  int x, int y, int dw, int dh,
                  const uInt32* bitmap, int bmw, int bmh,
                  int cmd = 0, bool repeat = false);
+    ButtonWidget(GuiObject* boss, const GUI::Font& font,
+                 int x, int y, int w, int h,
+                 const uInt32* bitmap, int bmw, int bmh, int bmx,
+                 const string& label,
+                 int cmd = 0, bool repeat= false);
     ~ButtonWidget() override = default;
 
     bool handleEvent(Event::Type event) override;
 
-    void setCmd(int cmd)  { _cmd = cmd; }
-    int getCmd() const    { return _cmd; }
     /* Sets/changes the button's bitmap **/
     void setBitmap(const uInt32* bitmap, int bmw, int bmh);
 
@@ -286,9 +289,10 @@ class ButtonWidget : public StaticTextWidget
 
   protected:
     bool _repeat{false}; // button repeats
+    bool _useText{true};
     bool _useBitmap{false};
     const uInt32* _bitmap{nullptr};
-    int  _bmw{0}, _bmh{0};
+    int  _bmw{0}, _bmh{0}, _bmx{0};
 
   private:
     // Following constructors and assignment operators not supported

@@ -662,9 +662,27 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
   : ButtonWidget(boss, font, x, y, w, h, "", cmd, repeat)
 {
   _useBitmap = true;
+  _useText = false;
   _bitmap = bitmap;
   _bmw = bmw;
   _bmh = bmh;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
+                           int x, int y, int w, int h,
+                           const uInt32* bitmap, int bmw, int bmh, int bmx,
+                           const string& label,
+                           int cmd, bool repeat)
+  : ButtonWidget(boss, font, x, y, w + bmx * 1.5 + font.getStringWidth(label), h,
+                 label, cmd, repeat)
+{
+  _useBitmap = true;
+  _bitmap = bitmap;
+  _bmw = bmw;
+  _bmh = bmh;
+  _bmx = bmx;
+  _align = TextAlign::Left;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -736,15 +754,20 @@ void ButtonWidget::drawWidget(bool hilite)
 
   s.frameRect(_x, _y, _w, _h, hilite && isEnabled() ? kBtnBorderColorHi : kBtnBorderColor);
 
-  if (!_useBitmap)
-    s.drawString(_font, _label, _x, _y + (_h - _lineHeight)/2 + 1, _w,
-                 !isEnabled() ? _textcolorlo :
-                 hilite ? _textcolorhi : _textcolor, _align);
-  else
-    s.drawBitmap(_bitmap, _x + (_w - _bmw) / 2, _y + (_h - _bmh) / 2,
+  int x = _x;
+  if(_useBitmap)
+  {
+    int xb = _useText ? _x + _bmx / 2 : _x + (_w - _bmw) / 2;
+    s.drawBitmap(_bitmap, xb, _y + (_h - _bmh) / 2,
                  !isEnabled() ? _textcolorlo :
                  hilite ? _textcolorhi : _textcolor,
                  _bmw, _bmh);
+    x = _x + _bmw + _bmx;
+  }
+  if(_useText)
+    s.drawString(_font, _label, x, _y + (_h - _lineHeight)/2 + 1, _w,
+                 !isEnabled() ? _textcolorlo :
+                 hilite ? _textcolorhi : _textcolor, _align);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
