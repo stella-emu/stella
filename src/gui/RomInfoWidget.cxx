@@ -213,7 +213,7 @@ bool RomInfoWidget::loadPng(const string& filename)
 
     // Scale surface to available image area
     const Common::Rect& src = mySurface->srcRect();
-    float scale = std::min(float(myAvail.w) / src.w(), float(myAvail.h) / src.h()) *
+    const float scale = std::min(float(myAvail.w) / src.w(), float(myAvail.h) / src.h()) *
       instance().frameBuffer().hidpiScaleFactor();
     mySurface->setDstSize(uInt32(src.w() * scale), uInt32(src.h() * scale));
 
@@ -241,10 +241,9 @@ void RomInfoWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 void RomInfoWidget::drawWidget(bool hilite)
 {
   FBSurface& s = dialog().surface();
-  const int yoff = myAvail.h + 10;
+  const int yoff = myAvail.h + _font.getFontHeight() / 2;
 
   s.fillRect(_x+2, _y+2, _w-4, _h-4, _bgcolor);
-  s.frameRect(_x, _y, _w, _h, kColor);
   s.frameRect(_x, _y+yoff, _w, _h-yoff, kColor);
 
   if(!myHaveProperties)
@@ -257,8 +256,8 @@ void RomInfoWidget::drawWidget(bool hilite)
   {
     const Common::Rect& dst = mySurface->dstRect();
     const uInt32 scale = instance().frameBuffer().hidpiScaleFactor();
-    uInt32 x = _x*scale + ((_w*scale - dst.w()) >> 1);
-    uInt32 y = _y*scale + ((yoff*scale - dst.h()) >> 1);
+    const uInt32 x = _x * scale + ((_w * scale - dst.w()) >> 1);
+    const uInt32 y = _y * scale + ((myAvail.h * scale - dst.h()) >> 1);
 
     // Make sure when positioning the snapshot surface that we take
     // the dialog surface position into account
@@ -267,12 +266,13 @@ void RomInfoWidget::drawWidget(bool hilite)
   }
   else if(mySurfaceErrorMsg != "")
   {
-    uInt32 x = _x + ((_w - _font.getStringWidth(mySurfaceErrorMsg)) >> 1);
-    uInt32 y = _y + ((yoff - _font.getLineHeight()) >> 1);
+    const uInt32 x = _x + ((_w - _font.getStringWidth(mySurfaceErrorMsg)) >> 1);
+    const uInt32 y = _y + ((yoff - _font.getLineHeight()) >> 1);
     s.drawString(_font, mySurfaceErrorMsg, x, y, _w - 10, _textcolor);
   }
 
-  int xpos = _x + 8, ypos = _y + yoff + 5;
+  const int xpos = _x + 8;
+  int ypos = _y + yoff + 5;
   for(const auto& info : myRomInfo)
   {
     if(info.length() * _font.getMaxCharWidth() <= uInt64(_w - 16))

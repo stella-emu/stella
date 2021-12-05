@@ -224,7 +224,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myFollowLauncherWidget);
 
   xpos = HBORDER;
-  ypos += VGAP * 4;
+  ypos += lineHeight + VGAP;
 
   // Launcher font
   pwidth = font.getStringWidth("2x (1000x760)");
@@ -255,20 +255,27 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   myLauncherHeightSlider->setMaxValue(ds.h);
   myLauncherHeightSlider->setStepValue(10);
   wid.push_back(myLauncherHeightSlider);
-  ypos += lineHeight + VGAP;
+
+  ypos = myLauncherFontPopup->getTop();
 
   // Track favorites
-  ypos = myLauncherWidthSlider->getTop();
-  myFavoritesWidget = new CheckboxWidget(myTab, _font, xpos2, ypos + 2,
+  myFavoritesWidget = new CheckboxWidget(myTab, _font, xpos2, ypos + 1,
     "Track favorites");
   myFavoritesWidget->setToolTip("Check to enable favorites tracking and display.");
   wid.push_back(myFavoritesWidget);
   ypos += lineHeight + VGAP;
 
   // Display launcher extensions
-  myLauncherExtensionsWidget = new CheckboxWidget(myTab, _font, xpos2, ypos + 2,
+  myLauncherExtensionsWidget = new CheckboxWidget(myTab, _font, xpos2, ypos + 1,
     "Display file extensions");
   wid.push_back(myLauncherExtensionsWidget);
+  ypos += lineHeight + VGAP;
+
+  // Display bottom buttons
+  myLauncherButtonsWidget = new CheckboxWidget(myTab, _font, xpos2, ypos + 1,
+    "Display bottom buttons");
+  myLauncherButtonsWidget->setToolTip("Check to enable bottom command buttons.");
+  wid.push_back(myLauncherButtonsWidget);
 
   // ROM launcher info/snapshot viewer
   ypos = myLauncherHeightSlider->getTop() + lineHeight + VGAP * 4;
@@ -369,6 +376,7 @@ void UIDialog::loadConfig()
 
   myFavoritesWidget->setState(settings.getBool("favorites"));
   myLauncherExtensionsWidget->setState(settings.getBool("launcherextensions"));
+  myLauncherButtonsWidget->setState(settings.getBool("launcherbuttons"));
 
   // ROM launcher info viewer
   float zoom = instance().settings().getFloat("romviewer");
@@ -457,6 +465,8 @@ void UIDialog::saveConfig()
   settings.setValue("favorites", myFavoritesWidget->getState());
   // Display launcher extensions
   settings.setValue("launcherextensions", myLauncherExtensionsWidget->getState());
+  // Display bottom buttons
+  settings.setValue("launcherbuttons", myLauncherButtonsWidget->getState());
 
   // ROM launcher info viewer
   int w = myLauncherWidthSlider->getValue();
@@ -543,6 +553,7 @@ void UIDialog::setDefaults()
       myLauncherFontPopup->setSelected("medium", "");
       myFavoritesWidget->setState(true);
       myLauncherExtensionsWidget->setState(false);
+      myLauncherButtonsWidget->setState(false);
       myRomViewerSize->setValue(35);
       mySnapLoadPath->setText(instance().userDir().getShortPath());
       myLauncherExitWidget->setState(false);

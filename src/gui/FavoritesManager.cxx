@@ -39,13 +39,20 @@ void FavoritesManager::load()
   const string& serializedUser = mySettings.getString("_favoriteroms");
   if(!serializedUser.empty())
   {
-    const json& jUser = json::parse(serializedUser);
-    for(const auto& u : jUser)
+    try
     {
-      const string& path = u.get<string>();
-      FilesystemNode node(path);
-      if(node.exists())
-        addUser(path);
+      const json& jUser = json::parse(serializedUser);
+      for (const auto& u : jUser)
+      {
+        const string& path = u.get<string>();
+        FilesystemNode node(path);
+        if (node.exists())
+          addUser(path);
+      }
+    }
+    catch (...)
+    {
+      cerr << "ERROR: FavoritesManager::load() '_favoriteroms' exception\n";
     }
   }
 
@@ -56,13 +63,20 @@ void FavoritesManager::load()
     const string& serializedRecent = mySettings.getString("_recentroms");
     if(!serializedRecent.empty())
     {
-      const json& jRecent = json::parse(serializedRecent);
-      for(const auto& r : jRecent)
+      try
       {
-        const string& path = r.get<string>();
-        FilesystemNode node(path);
-        if(node.exists())
-          addRecent(path);
+        const json& jRecent = json::parse(serializedRecent);
+        for (const auto& r : jRecent)
+        {
+          const string& path = r.get<string>();
+          FilesystemNode node(path);
+          if (node.exists())
+            addRecent(path);
+        }
+      }
+      catch (...)
+      {
+        cerr << "ERROR: FavoritesManager::load() '_recentroms' exception\n";
       }
     }
   }
@@ -70,16 +84,23 @@ void FavoritesManager::load()
   // Most Popular
   myPopularMap.clear();
   const string& serializedPopular = mySettings.getString("_popularroms");
-  if(!serializedPopular.empty())
+  if (!serializedPopular.empty())
   {
-    const json& jPopular = json::parse(serializedPopular);
-    for(const auto& p : jPopular)
+    try
     {
-      const string& path = p[0].get<string>();
-      const uInt32 count = p[1].get<uInt32>();
-      FilesystemNode node(path);
-      if(node.exists())
-        myPopularMap.emplace(path, count);
+      const json& jPopular = json::parse(serializedPopular);
+      for (const auto& p : jPopular)
+      {
+        const string& path = p[0].get<string>();
+        const uInt32 count = p[1].get<uInt32>();
+        FilesystemNode node(path);
+        if (node.exists())
+          myPopularMap.emplace(path, count);
+      }
+    }
+    catch (...)
+    {
+      cerr << "ERROR: FavoritesManager::load() '_popularroms' exception\n";
     }
   }
 }
