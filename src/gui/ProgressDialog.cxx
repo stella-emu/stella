@@ -29,8 +29,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ProgressDialog::ProgressDialog(GuiObject* boss, const GUI::Font& font,
                                const string& message)
-  : Dialog(boss->instance(), boss->parent()),
-    myFont{font}
+  : Dialog(boss->instance(), boss->parent(), font)
 {
   const int lineHeight   = Dialog::lineHeight(),
             fontHeight   = Dialog::fontHeight(),
@@ -72,7 +71,7 @@ void ProgressDialog::setMessage(const string& message)
 {
   const int buttonWidth  = Dialog::buttonWidth("Cancel"),
             HBORDER      = Dialog::hBorder();
-  const int lwidth = myFont.getStringWidth(message);
+  const int lwidth = _font.getStringWidth(message);
   // Recalculate real dimensions
   _w = HBORDER * 2 + std::max(lwidth, buttonWidth);
 
