@@ -244,6 +244,7 @@ void RomInfoWidget::drawWidget(bool hilite)
   const int yoff = myAvail.h + _font.getFontHeight() / 2;
 
   s.fillRect(_x+2, _y+2, _w-4, _h-4, _bgcolor);
+  s.frameRect(_x, _y, _w, myAvail.h, kColor);
   s.frameRect(_x, _y+yoff, _w, _h-yoff, kColor);
 
   if(!myHaveProperties)

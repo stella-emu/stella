@@ -41,7 +41,6 @@ class ProgressDialog : public Dialog
     bool isCancelled() const { return myIsCancelled; }
 
   private:
-    const GUI::Font& myFont;
     StaticTextWidget* myMessage{nullptr};
     SliderWidget*     mySlider{nullptr};
 
