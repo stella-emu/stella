@@ -24,7 +24,6 @@ MODULE_OBJS := \
         src/gui/HelpDialog.o \
         src/gui/HighScoresDialog.o \
         src/gui/HighScoresMenu.o \
-	src/gui/Icon.o \
         src/gui/InputDialog.o \
         src/gui/InputTextDialog.o \
         src/gui/JoystickDialog.o \
