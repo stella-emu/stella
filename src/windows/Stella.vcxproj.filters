@@ -1125,9 +1125,6 @@
     <ClCompile Include="..\gui\FavoritesManager.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
-    <ClCompile Include="..\gui\Icon.cxx">
-      <Filter>Source Files\gui</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">

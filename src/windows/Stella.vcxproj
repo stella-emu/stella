@@ -912,7 +912,6 @@
     <ClCompile Include="..\gui\FileListWidget.cxx" />
     <ClCompile Include="..\gui\HighScoresDialog.cxx" />
     <ClCompile Include="..\gui\HighScoresMenu.cxx" />
-    <ClCompile Include="..\gui\Icon.cxx" />
     <ClCompile Include="..\gui\LauncherFileListWidget.cxx" />
     <ClCompile Include="..\gui\PlusRomsMenu.cxx" />
     <ClCompile Include="..\gui\JoystickDialog.cxx" />
