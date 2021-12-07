@@ -671,16 +671,26 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
                            int x, int y, int w, int h,
-                           const uInt32* bitmap, int bmw, int bmh, int bmx,
+                           const GUI::Icon& icon,
+                           int cmd, bool repeat)
+  : ButtonWidget(boss, font, x, y, w, h,
+                 icon.bitmap(), icon.width(), icon.height(), cmd, repeat)
+{
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
+                           int x, int y, int w, int h,
+                           const GUI::Icon& icon, int bmx,
                            const string& label,
                            int cmd, bool repeat)
   : ButtonWidget(boss, font, x, y, w + bmx * 1.5 + font.getStringWidth(label), h,
                  label, cmd, repeat)
 {
   _useBitmap = true;
-  _bitmap = bitmap;
-  _bmw = bmw;
-  _bmh = bmh;
+  _bitmap = icon.bitmap();
+  _bmw = icon.width();
+  _bmh = icon.height();
   _bmx = bmx;
   _align = TextAlign::Left;
 }
@@ -745,6 +755,12 @@ void ButtonWidget::setBitmap(const uInt32* bitmap, int bmw, int bmh)
   _bmw = bmw;
 
   setDirty();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ButtonWidget::setIcon(const GUI::Icon& icon)
+{
+  setBitmap(icon.bitmap(), icon.width(), icon.height());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
