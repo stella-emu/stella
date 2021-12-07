@@ -180,7 +180,7 @@
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'" />
-    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">MixedRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'" />
@@ -228,6 +228,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LibraryPath>$(ProjectDir)\SDL\lib\x64;$(LibraryPath)</LibraryPath>
     <IncludePath>$(ProjectDir)\SDL\include;$(IncludePath)</IncludePath>
+    <EnableMicrosoftCodeAnalysis>true</EnableMicrosoftCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">
     <LibraryPath>$(ProjectDir)\SDL\lib\x64;$(LibraryPath)</LibraryPath>
@@ -615,7 +616,7 @@
     <ClCompile Include="..\common\audio\SimpleResampler.cxx" />
     <ClCompile Include="..\common\Base.cxx" />
     <ClCompile Include="..\common\DevSettingsHandler.cxx" />
-    <ClCompile Include="..\common\EventHandlerSDL2.cxx" />    
+    <ClCompile Include="..\common\EventHandlerSDL2.cxx" />
     <ClCompile Include="..\common\FBBackendSDL2.cxx" />
     <ClCompile Include="..\common\FBSurfaceSDL2.cxx" />
     <ClCompile Include="..\common\FpsMeter.cxx" />
@@ -911,6 +912,7 @@
     <ClCompile Include="..\gui\FileListWidget.cxx" />
     <ClCompile Include="..\gui\HighScoresDialog.cxx" />
     <ClCompile Include="..\gui\HighScoresMenu.cxx" />
+    <ClCompile Include="..\gui\Icon.cxx" />
     <ClCompile Include="..\gui\LauncherFileListWidget.cxx" />
     <ClCompile Include="..\gui\PlusRomsMenu.cxx" />
     <ClCompile Include="..\gui\JoystickDialog.cxx" />
@@ -1782,7 +1784,7 @@
     <ClInclude Include="..\common\Base.hxx" />
     <ClInclude Include="..\common\bspf.hxx" />
     <ClInclude Include="..\common\DevSettingsHandler.hxx" />
-    <ClInclude Include="..\common\EventHandlerSDL2.hxx" />    
+    <ClInclude Include="..\common\EventHandlerSDL2.hxx" />
     <ClInclude Include="..\common\FBBackendSDL2.hxx" />
     <ClInclude Include="..\common\FBSurfaceSDL2.hxx" />
     <ClInclude Include="..\common\FpsMeter.hxx" />
@@ -2117,6 +2119,7 @@
     <ClInclude Include="..\gui\FileListWidget.hxx" />
     <ClInclude Include="..\gui\HighScoresDialog.hxx" />
     <ClInclude Include="..\gui\HighScoresMenu.hxx" />
+    <ClInclude Include="..\gui\Icon.hxx" />
     <ClInclude Include="..\gui\LauncherFileListWidget.hxx" />
     <ClInclude Include="..\gui\PlusRomsMenu.hxx" />
     <ClInclude Include="..\gui\JoystickDialog.hxx" />
@@ -2128,6 +2131,7 @@
     <ClInclude Include="..\gui\QuadTariDialog.hxx" />
     <ClInclude Include="..\gui\R77HelpDialog.hxx" />
     <ClInclude Include="..\gui\RadioButtonWidget.hxx" />
+    <ClInclude Include="..\gui\Icons.hxx" />
     <ClInclude Include="..\gui\SnapshotDialog.hxx" />
     <ClInclude Include="..\gui\Stella12x24tFont.hxx" />
     <ClInclude Include="..\gui\Stella14x28tFont.hxx" />

@@ -181,6 +181,7 @@ class LauncherDialog : public Dialog
     void toggleSorting();
     void handleFavoritesChanged();
     void removeAllFavorites();
+    void removeAll(const string& name);
     void removeAllPopular();
     void removeAllRecent();
 

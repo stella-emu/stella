@@ -33,6 +33,7 @@ class Dialog;
 #include "StellaKeys.hxx"
 #include "GuiObject.hxx"
 #include "Font.hxx"
+#include "Icon.hxx"
 
 /**
   This is the base class for all widgets.
@@ -267,8 +268,12 @@ class ButtonWidget : public StaticTextWidget
                  const uInt32* bitmap, int bmw, int bmh,
                  int cmd = 0, bool repeat = false);
     ButtonWidget(GuiObject* boss, const GUI::Font& font,
+                 int x, int y, int dw, int dh,
+                 const GUI::Icon& icon,
+                 int cmd = 0, bool repeat = false);
+    ButtonWidget(GuiObject* boss, const GUI::Font& font,
                  int x, int y, int w, int h,
-                 const uInt32* bitmap, int bmw, int bmh, int bmx,
+                 const GUI::Icon& icon, int bmx,
                  const string& label,
                  int cmd = 0, bool repeat= false);
     ~ButtonWidget() override = default;
@@ -277,6 +282,7 @@ class ButtonWidget : public StaticTextWidget
 
     /* Sets/changes the button's bitmap **/
     void setBitmap(const uInt32* bitmap, int bmw, int bmh);
+    void setIcon(const GUI::Icon& icon);
 
   protected:
     bool handleMouseClicks(int x, int y, MouseButton b) override;
