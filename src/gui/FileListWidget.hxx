@@ -45,10 +45,7 @@ class FileListWidget : public StringListWidget
   public:
     enum {
       ItemChanged   = 'FLic',  // Entry in the list is changed (single-click, etc)
-      ItemActivated = 'FLac',  // Entry in the list is activated (double-click, etc)
-      kHomeDirCmd   = 'homc',  // go to Home directory
-      kPrevDirCmd   = 'prvc',  // go back in history to previous directory
-      kNextDirCmd   = 'nxtc'   // go back in history to next directory
+      ItemActivated = 'FLac'   // Entry in the list is activated (double-click, etc)
     };
     using IconTypeFilter = std::function<bool(const FilesystemNode& node)>;
 
@@ -86,11 +83,9 @@ class FileListWidget : public StringListWidget
     virtual void selectDirectory();
     /** Select parent directory (if applicable) */
     void selectParent();
-    /** Select to home directory */
-    void selectHomeDir();
     /** Select previous directory in history (if applicable) */
     void selectPrevHistory();
-    /** Select next directory in history (if applicable) */
+    /** Select next directory in history */
     void selectNextHistory();
     /** Check if the there is a previous directory in history */
     bool hasPrevHistory();
@@ -152,7 +147,6 @@ class FileListWidget : public StringListWidget
     virtual const Icon* getIcon(int i) const;
     int iconWidth() const;
     virtual bool fullPathToolTip() const { return false; }
-    string& fixPath(string& path);
     void addHistory(const FilesystemNode& node);
 
   protected:

@@ -174,6 +174,7 @@ class LauncherDialog : public Dialog, CommandSender
     void showOnlyROMs(bool state);
     void toggleShowAll(bool toggle = true);
     void toggleSubDirs(bool toggle = true);
+    void gotoHomeDir();
     void handleContextMenu();
     void handleQuit();
     void toggleExtensions();
@@ -233,8 +234,12 @@ class LauncherDialog : public Dialog, CommandSender
     enum {
       kAllfilesCmd   = 'lalf',  // show all files (or ROMs only)
       kSubDirsCmd    = 'lred',
+      kParentDirCmd  = 'PARD',
       kOptionsCmd    = 'OPTI',
       kQuitCmd       = 'QUIT',
+      kHomeDirCmd    = 'homc',  // go to Home directory
+      kPrevDirCmd    = 'prvc',  // go back in history to previous directory
+      kNextDirCmd    = 'nxtc',  // go back in history to next directory
       kReloadCmd     = 'relc',
       kRmAllFav      = 'rmaf',
       kRmAllPop      = 'rmap',

@@ -34,10 +34,6 @@ class Cartridge;
   #define UNSAFE_OPTIMIZATIONS
 #endif
 
-// Note: This is still experimental, no guarantees!
-// TODO: make selectable from command line
-#define STM32F4  // compile for UnoCart/PlusCart using STM32F407xxx CPU
-
 #define ROMADDMASK 0x7FFFF
 #define RAMADDMASK 0x7FFF
 
@@ -99,15 +95,6 @@ class Thumbulator
       uInt32 mamDataHits{0}, mamDataMisses{0};
     #endif
     };
-#ifndef STM32F4
-    // Harmony/Encore base adresses
-    static constexpr uInt32 ram_base = 0x40000000;
-    static constexpr uInt32 rom_base = 0x00000000;
-#else
-    // UnoCart/PlusCart base adresses (TODO!)
-    static constexpr uInt32 ram_base = 0x10000000;
-    static constexpr uInt32 rom_base = 0x20000000;
-#endif
 
     Thumbulator(const uInt16* rom_ptr, uInt16* ram_ptr, uInt32 rom_size,
                 const uInt32 c_base, const uInt32 c_start, const uInt32 c_stack,
