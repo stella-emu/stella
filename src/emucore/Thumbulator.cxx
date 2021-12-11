@@ -123,6 +123,8 @@ using Common::Base;
   #define INC_ARM_CYCLES(m)
 #endif
 
+//#define UNSAFE_OPTIMIZATIONS
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Thumbulator::Thumbulator(const uInt16* rom_ptr, uInt16* ram_ptr, uInt32 rom_size,
                          const uInt32 c_base, const uInt32 c_start, const uInt32 c_stack,
@@ -325,7 +327,7 @@ uInt32 Thumbulator::fetch16(uInt32 addr)
 
   switch(addr & 0xF0000000)
   {
-    case 0x00000000: //ROM
+    case rom_base: //ROM
       addr &= ROMADDMASK;
       if(addr < 0x50)
         fatalError("fetch16", addr, "abort");
@@ -334,7 +336,7 @@ uInt32 Thumbulator::fetch16(uInt32 addr)
       DO_DBUG(statusMsg << "fetch16(" << Base::HEX8 << addr << ")=" << Base::HEX4 << data << endl);
       return data;
 
-    case 0x40000000: //RAM
+    case ram_base: //RAM
       addr &= RAMADDMASK;
       addr >>= 1;
       data = CONV_RAMROM(ram[addr]);
@@ -353,7 +355,7 @@ uInt32 Thumbulator::fetch16(uInt32 addr)
 void Thumbulator::write16(uInt32 addr, uInt32 data)
 {
 #ifndef UNSAFE_OPTIMIZATIONS
-  if((addr > 0x40007fff) && (addr < 0x50000000))
+  if((addr > Thumbulator::ram_base + 0x7fff) && (addr < Thumbulator::ram_base + 0x10000000))
     fatalError("write16", addr, "abort - out of range");
 
   if (isProtected(addr)) fatalError("write16", addr, "to driver area");
@@ -369,7 +371,7 @@ void Thumbulator::write16(uInt32 addr, uInt32 data)
 
   switch(addr & 0xF0000000)
   {
-    case 0x40000000: //RAM
+    case ram_base: //RAM
       addr &= RAMADDMASK;
       addr >>= 1;
       ram[addr] = CONV_DATA(data);
@@ -531,7 +533,7 @@ void Thumbulator::write32(uInt32 addr, uInt32 data)
       return;
 
 #ifndef UNSAFE_OPTIMIZATIONS
-    case 0x40000000: //RAM
+    case ram_base: //RAM
 #else
     default:
 #endif
@@ -548,8 +550,8 @@ void Thumbulator::write32(uInt32 addr, uInt32 data)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Thumbulator::isProtected(uInt32 addr)
 {
-  if (addr < 0x40000000) return false;
-  addr -= 0x40000000;
+  if (addr < ram_base) return false;
+  addr -= ram_base;
 
   switch (configuration) {
     case ConfigureFor::DPCplus:
@@ -578,9 +580,9 @@ uInt32 Thumbulator::read16(uInt32 addr)
 {
   uInt32 data;
 #ifndef UNSAFE_OPTIMIZATIONS
-  if((addr > 0x40007fff) && (addr < 0x50000000))
+  if((addr > Thumbulator::ram_base + 0x7fff) && (addr < Thumbulator::ram_base + 0x10000000))
     fatalError("read16", addr, "abort - out of range");
-  else if((addr > 0x0007ffff) && (addr < 0x10000000))
+  else if((addr > Thumbulator::rom_base + 0x0007ffff) && (addr < Thumbulator::rom_base + 0x10000000))
     fatalError("read16", addr, "abort - out of range");
   if(addr & 1)
     fatalError("read16", addr, "abort - misaligned");
@@ -591,14 +593,16 @@ uInt32 Thumbulator::read16(uInt32 addr)
 
   switch(addr & 0xF0000000)
   {
-    case 0x00000000: //ROM
+    //case 0x00000000: //ROM
+    case rom_base: //ROM
       addr &= ROMADDMASK;
       addr >>= 1;
       data = CONV_RAMROM(rom[addr]);
       DO_DBUG(statusMsg << "read16(" << Base::HEX8 << addr << ")=" << Base::HEX4 << data << endl);
       return data;
 
-    case 0x40000000: //RAM
+    //case 0x40000000: //RAM
+    case ram_base: //RAM
       addr &= RAMADDMASK;
       addr >>= 1;
       data = CONV_RAMROM(ram[addr]);
@@ -633,8 +637,10 @@ uInt32 Thumbulator::read32(uInt32 addr)
   uInt32 data;
   switch(addr & 0xF0000000)
   {
-    case 0x00000000: //ROM
-    case 0x40000000: //RAM
+    case rom_base: //ROM
+    //case 0x00000000: //ROM
+    case ram_base: //RAM
+    //case 0x40000000: //RAM
       data = read16(addr+0);
       data |= (uInt32(read16(addr+2))) << 16;
       DO_DBUG(statusMsg << "read32(" << Base::HEX8 << addr << ")=" << Base::HEX8 << data << endl);
@@ -1061,8 +1067,9 @@ int Thumbulator::execute()
 
   Op decodedOp;
 #ifndef UNSAFE_OPTIMIZATIONS
-  if ((instructionPtr & 0xF0000000) == 0 && instructionPtr < romSize)
-    decodedOp = decodedRom[instructionPtr >> 1];
+  if ((instructionPtr & 0xF0000000) == rom_base
+      && instructionPtr >= rom_base && instructionPtr < rom_base + romSize)
+    decodedOp = decodedRom[(instructionPtr - rom_base) >> 1];
   else
     decodedOp = decodeInstructionWord(inst);
 #else
@@ -1565,10 +1572,10 @@ int Thumbulator::execute()
 
             // address to test for is + 4 due to pipelining
 
-  #define BUS_SetNote     (0x000006da + 4)
-  #define BUS_ResetWave   (0x000006de + 4)
-  #define BUS_GetWavePtr  (0x000006e2 + 4)
-  #define BUS_SetWaveSize (0x000006e6 + 4)
+  #define BUS_SetNote     (rom_base + 0x06da + 4)
+  #define BUS_ResetWave   (rom_base + 0x06de + 4)
+  #define BUS_GetWavePtr  (rom_base + 0x06e2 + 4)
+  #define BUS_SetWaveSize (rom_base + 0x06e6 + 4)
 
             if      (pc == BUS_SetNote)
             {
@@ -1590,7 +1597,7 @@ int Thumbulator::execute()
               myCartridge->thumbCallback(3, read_register(2), read_register(3));
               handled = true;
             }
-            else if (pc == 0x0000083a)
+            else if (pc == Thumbulator::rom_base + 0x083a)
             {
               // exiting Custom ARM code, returning to BUS Driver control
             }
@@ -1626,10 +1633,10 @@ int Thumbulator::execute()
 
             // address to test for is + 4 due to pipelining
 
-          #define CDF_SetNote     (0x000006e2 + 4)
-          #define CDF_ResetWave   (0x000006e6 + 4)
-          #define CDF_GetWavePtr  (0x000006ea + 4)
-          #define CDF_SetWaveSize (0x000006ee + 4)
+          #define CDF_SetNote     (rom_base + 0x06e2 + 4)
+          #define CDF_ResetWave   (rom_base + 0x06e6 + 4)
+          #define CDF_GetWavePtr  (rom_base + 0x06ea + 4)
+          #define CDF_SetWaveSize (rom_base + 0x06ee + 4)
 
             if      (pc == CDF_SetNote)
             {
@@ -1651,7 +1658,7 @@ int Thumbulator::execute()
               myCartridge->thumbCallback(3, read_register(2), read_register(3));
               handled = true;
             }
-            else if (pc == 0x0000083a)
+            else if (pc == Thumbulator::rom_base + 0x083a)
             {
               // exiting Custom ARM code, returning to CDF Driver control
             }
@@ -1689,10 +1696,10 @@ int Thumbulator::execute()
 
             // address to test for is + 4 due to pipelining
 
-  #define CDF1_SetNote     (0x00000752 + 4)
-  #define CDF1_ResetWave   (0x00000756 + 4)
-  #define CDF1_GetWavePtr  (0x0000075a + 4)
-  #define CDF1_SetWaveSize (0x0000075e + 4)
+  #define CDF1_SetNote     (rom_base + 0x0752 + 4)
+  #define CDF1_ResetWave   (rom_base + 0x0756 + 4)
+  #define CDF1_GetWavePtr  (rom_base + 0x075a + 4)
+  #define CDF1_SetWaveSize (rom_base + 0x075e + 4)
 
             if      (pc == CDF1_SetNote)
             {
@@ -1730,7 +1737,7 @@ int Thumbulator::execute()
               INC_ARM_CYCLES(2 + _flashCycles + 2);       // ARM code ReturnC
               handled = true;
             }
-            else if (pc == 0x0000083a)
+            else if (pc == Thumbulator::rom_base + 0x083a)
             {
               // exiting Custom ARM code, returning to CDFJ Driver control
             }
@@ -2898,9 +2905,9 @@ int Thumbulator::reset()
   cpsr = 0;
   handler_mode = false;
 
-  systick_ctrl = 0x00000004;
-  systick_reload = 0x00000000;
-  systick_count = 0x00000000;
+  systick_ctrl = rom_base + 0x0004; // TODO: not 100% sure about rom_base here
+  systick_reload = rom_base;
+  systick_count = rom_base;
   systick_calibrate = 0x00ABCDEF;
 
   // fxq: don't care about below so much (maybe to guess timing???)
