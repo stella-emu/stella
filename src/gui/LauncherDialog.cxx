@@ -228,25 +228,25 @@ void LauncherDialog::addPathWidgets(int& ypos, WidgetArray& wid)
     const GUI::Icon& upIcon = smallIcon ? GUI::icon_up_small : GUI::icon_up_large;
 
     myHomeButton = new ButtonWidget(this, _font, xpos, ypos,
-      iconWidth + iconGap - 1, lineHeight + 2, homeIcon, kHomeDirCmd);
+      iconWidth + iconGap - 1, lineHeight + 2, homeIcon, FileListWidget::kHomeDirCmd);
     myHomeButton->setToolTip("Go back to Stella's ROM directory.");
     wid.push_back(myHomeButton);
     xpos = myHomeButton->getRight() + BTN_GAP;
 
     myPrevButton = new ButtonWidget(this, _font, xpos, ypos,
-      iconWidth + iconGap - 1, lineHeight + 2, prevIcon, kPrevDirCmd);
+      iconWidth + iconGap - 1, lineHeight + 2, prevIcon, FileListWidget::kPrevDirCmd);
     myPrevButton->setToolTip("Go back in directory history.");
     wid.push_back(myPrevButton);
     xpos = myPrevButton->getRight() + BTN_GAP;
 
     myNextButton = new ButtonWidget(this, _font, xpos, ypos,
-      iconWidth + iconGap - 1, lineHeight + 2, nextIcon, kNextDirCmd);
+      iconWidth + iconGap - 1, lineHeight + 2, nextIcon, FileListWidget::kNextDirCmd);
     myNextButton->setToolTip("Go forward in directory history.");
     wid.push_back(myNextButton);
     xpos = myNextButton->getRight() + BTN_GAP;
 
     myUpButton = new ButtonWidget(this, _font, xpos, ypos,
-      iconWidth + iconGap - 1, lineHeight + 2, upIcon, kParentDirCmd);
+      iconWidth + iconGap - 1, lineHeight + 2, upIcon, ListWidget::kParentDirCmd);
     myUpButton->setToolTip("Go Up");
     wid.push_back(myUpButton);
     xpos = myUpButton->getRight() + BTN_GAP;
@@ -358,7 +358,7 @@ void LauncherDialog::addButtonWidgets(int& ypos, WidgetArray& wid)
 
   xpos += (buttonWidth + 0) / 4 + BUTTON_GAP;
   myGoUpButton = new ButtonWidget(this, _font, xpos, ypos, (buttonWidth + 1) / 4, buttonHeight,
-    "Go Up", kParentDirCmd);
+    "Go Up", ListWidget::kParentDirCmd);
   wid.push_back(myGoUpButton);
 
   xpos += (buttonWidth + 1) / 4 + BUTTON_GAP;
@@ -382,7 +382,7 @@ void LauncherDialog::addButtonWidgets(int& ypos, WidgetArray& wid)
 
   xpos += (buttonWidth + 1) / 4 + BUTTON_GAP;
   myGoUpButton = new ButtonWidget(this, _font, xpos, ypos, (buttonWidth + 2) / 4, buttonHeight,
-    "Go Up", kParentDirCmd);
+    "Go Up", ListWidget::kParentDirCmd);
   wid.push_back(myGoUpButton);
 
   xpos += (buttonWidth + 2) / 4 + BUTTON_GAP;
@@ -774,7 +774,7 @@ void LauncherDialog::handleContextMenu()
   else if(cmd == "subdirs")
     sendCommand(kSubDirsCmd, 0, 0);
   else if(cmd == "homedir")
-    sendCommand(kHomeDirCmd, 0, 0);
+    sendCommand(FileListWidget::kHomeDirCmd, 0, 0);
   else if(cmd == "highscores")
     openHighScores();
   else if(cmd == "reload")
@@ -818,19 +818,19 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
       switch(key)
       {
         case KBDK_HOME:
-          sendCommand(kHomeDirCmd, 0, 0);
+          sendCommand(FileListWidget::kHomeDirCmd, 0, 0);
           break;
 
         case KBDK_LEFT:
-          sendCommand(kPrevDirCmd, 0, 0);
+          sendCommand(FileListWidget::kPrevDirCmd, 0, 0);
           break;
 
         case KBDK_RIGHT:
-          sendCommand(kNextDirCmd, 0, 0);
+          sendCommand(FileListWidget::kNextDirCmd, 0, 0);
           break;
 
         case KBDK_UP:
-          sendCommand(kParentDirCmd, 0, 0);
+          sendCommand(ListWidget::kParentDirCmd, 0, 0);
           break;
 
         case KBDK_DOWN:
@@ -1007,22 +1007,21 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       toggleSubDirs();
       break;
 
-    case kHomeDirCmd:
-      gotoHomeDir();
+    case FileListWidget::kHomeDirCmd:
+      myList->selectHomeDir();
       break;
 
-    case kPrevDirCmd:
+    case FileListWidget::kPrevDirCmd:
       myList->selectPrevHistory();
       break;
 
-    case kNextDirCmd:
+    case FileListWidget::kNextDirCmd:
       myList->selectNextHistory();
       break;
 
-    case kParentDirCmd:
+    case ListWidget::kParentDirCmd:
       myList->selectParent();
       break;
-
 
     case kLoadROMCmd:
       if(myList->isDirectory(myList->selected()))
@@ -1312,13 +1311,6 @@ void LauncherDialog::openWhatsNew()
 {
   myDialog = make_unique<WhatsNewDialog>(instance(), parent(), _w, _h);
   myDialog->open();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::gotoHomeDir()
-{
-  while(myList->hasPrevHistory())
-    myList->selectPrevHistory();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
