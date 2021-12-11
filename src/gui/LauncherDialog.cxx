@@ -65,7 +65,8 @@
 LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
                                int x, int y, int w, int h)
   : Dialog(osystem, parent, osystem.frameBuffer().launcherFont(), "",
-           x, y, w, h)
+           x, y, w, h),
+    CommandSender(this)
 {
   const bool bottomButtons = instance().settings().getBool("launcherbuttons");
   int ypos = Dialog::vBorder();
@@ -84,7 +85,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   if(myUseMinimalUI) // Highlight 'Rom Listing'
     mySelectedItem = 0; // skip nothing
   else
-    mySelectedItem = 7; // skip filter items and 3 navigation buttons
+    mySelectedItem = 9; // skip filter items and 5 navigation buttons
 
   addToFocusList(wid);
 
@@ -215,29 +216,41 @@ void LauncherDialog::addPathWidgets(int& ypos, WidgetArray& wid)
   const int iconGap = (fontWidth + 1) & ~0b1; // round up to next even
   const string lblFound = "12345 items";
   const int lwFound = _font.getStringWidth(lblFound);
+  const GUI::Icon& reloadIcon = smallIcon ? GUI::icon_reload_small : GUI::icon_reload_large;
+  const int iconWidth = reloadIcon.width();
   int xpos = HBORDER;
 
   if(!myUseMinimalUI)
   {
+    const GUI::Icon& prevIcon = smallIcon ? GUI::icon_prev_small : GUI::icon_prev_large;
+    const GUI::Icon& nextIcon = smallIcon ? GUI::icon_next_small : GUI::icon_next_large;
     const GUI::Icon& homeIcon = smallIcon ? GUI::icon_home_small : GUI::icon_home_large;
     const GUI::Icon& upIcon = smallIcon ? GUI::icon_up_small : GUI::icon_up_large;
-    const int iconWidth = homeIcon.width();
 
     myHomeButton = new ButtonWidget(this, _font, xpos, ypos,
       iconWidth + iconGap - 1, lineHeight + 2, homeIcon, kHomeDirCmd);
     myHomeButton->setToolTip("Go back to Stella's ROM directory.");
     wid.push_back(myHomeButton);
-
     xpos = myHomeButton->getRight() + BTN_GAP;
+
+    myPrevButton = new ButtonWidget(this, _font, xpos, ypos,
+      iconWidth + iconGap - 1, lineHeight + 2, prevIcon, kPrevDirCmd);
+    myPrevButton->setToolTip("Go back in directory history.");
+    wid.push_back(myPrevButton);
+    xpos = myPrevButton->getRight() + BTN_GAP;
+
+    myNextButton = new ButtonWidget(this, _font, xpos, ypos,
+      iconWidth + iconGap - 1, lineHeight + 2, nextIcon, kNextDirCmd);
+    myNextButton->setToolTip("Go forward in directory history.");
+    wid.push_back(myNextButton);
+    xpos = myNextButton->getRight() + BTN_GAP;
+
     myUpButton = new ButtonWidget(this, _font, xpos, ypos,
-      iconWidth + iconGap - 1, lineHeight + 2, upIcon, kPrevDirCmd);
+      iconWidth + iconGap - 1, lineHeight + 2, upIcon, kParentDirCmd);
     myUpButton->setToolTip("Go Up");
     wid.push_back(myUpButton);
     xpos = myUpButton->getRight() + BTN_GAP;
   }
-
-  const GUI::Icon& reloadIcon = smallIcon ? GUI::icon_reload_small : GUI::icon_reload_large;
-  const int iconWidth = reloadIcon.width();
 
   myDir = new EditTextWidget(this, _font, xpos, ypos,
     _w - xpos - (myUseMinimalUI
@@ -344,9 +357,9 @@ void LauncherDialog::addButtonWidgets(int& ypos, WidgetArray& wid)
   wid.push_back(myStartButton);
 
   xpos += (buttonWidth + 0) / 4 + BUTTON_GAP;
-  myPrevDirButton = new ButtonWidget(this, _font, xpos, ypos, (buttonWidth + 1) / 4, buttonHeight,
-    "Go Up", kPrevDirCmd);
-  wid.push_back(myPrevDirButton);
+  myGoUpButton = new ButtonWidget(this, _font, xpos, ypos, (buttonWidth + 1) / 4, buttonHeight,
+    "Go Up", kParentDirCmd);
+  wid.push_back(myGoUpButton);
 
   xpos += (buttonWidth + 1) / 4 + BUTTON_GAP;
   myOptionsButton = new ButtonWidget(this, _font, xpos, ypos, (buttonWidth + 3) / 4, buttonHeight,
@@ -368,9 +381,9 @@ void LauncherDialog::addButtonWidgets(int& ypos, WidgetArray& wid)
   wid.push_back(myOptionsButton);
 
   xpos += (buttonWidth + 1) / 4 + BUTTON_GAP;
-  myPrevDirButton = new ButtonWidget(this, _font, xpos, ypos, (buttonWidth + 2) / 4, buttonHeight,
-    "Go Up", kPrevDirCmd);
-  wid.push_back(myPrevDirButton);
+  myGoUpButton = new ButtonWidget(this, _font, xpos, ypos, (buttonWidth + 2) / 4, buttonHeight,
+    "Go Up", kParentDirCmd);
+  wid.push_back(myGoUpButton);
 
   xpos += (buttonWidth + 2) / 4 + BUTTON_GAP;
   myStartButton = new ButtonWidget(this, _font, xpos, ypos, (buttonWidth + 3) / 4, buttonHeight,
@@ -505,9 +518,18 @@ void LauncherDialog::saveConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::updateUI()
 {
-  // Only hilite the 'up' button if there's a parent directory
-  if(myPrevDirButton)
-    myPrevDirButton->setEnabled(myList->currentDir().hasParent());
+  // Only enable the 'up' button if there's a parent directory
+  if(myGoUpButton)
+    myGoUpButton->setEnabled(myList->currentDir().hasParent());
+  // Only enable the navigation buttons if function is available
+  if(myHomeButton)
+    myHomeButton->setEnabled(myList->hasPrevHistory());
+  if(myPrevButton)
+    myPrevButton->setEnabled(myList->hasPrevHistory());
+  if(myNextButton)
+    myNextButton->setEnabled(myList->hasNextHistory());
+  if(myUpButton)
+    myUpButton->setEnabled(myList->currentDir().hasParent());
 
   // Show current directory
   myDir->setText(myList->currentDir().getShortPath());
@@ -735,11 +757,11 @@ void LauncherDialog::handleContextMenu()
     myList->removeFavorite();
     reload();
   }
-  else if (cmd == "removefavorites")
+  else if(cmd == "removefavorites")
     removeAllFavorites();
-  else if (cmd == "removepopular")
+  else if(cmd == "removepopular")
     removeAllPopular();
-  else if (cmd == "removerecent")
+  else if(cmd == "removerecent")
     removeAllRecent();
   else if(cmd == "override")
     openGlobalProps();
@@ -748,13 +770,11 @@ void LauncherDialog::handleContextMenu()
   else if(cmd == "sorting")
     toggleSorting();
   else if(cmd == "showall")
-    toggleShowAll();
+    sendCommand(kAllfilesCmd, 0, 0);
   else if(cmd == "subdirs")
-    toggleSubDirs();
+    sendCommand(kSubDirsCmd, 0, 0);
   else if(cmd == "homedir")
-    gotoHomeDir();
-  else if(cmd == "prevdir")
-    myList->selectParent();
+    sendCommand(kHomeDirCmd, 0, 0);
   else if(cmd == "highscores")
     openHighScores();
   else if(cmd == "reload")
@@ -789,58 +809,91 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
   // context menu keys
   bool handled = false;
 
-  if(StellaModTest::isControl(mod) &&
-    !(myPattern->isHighlighted()
-      && instance().eventHandler().eventForKey(EventMode::kEditMode, key, mod) != Event::NoType))
+  if(!(myPattern->isHighlighted()
+    && instance().eventHandler().eventForKey(EventMode::kEditMode, key, mod) != Event::NoType))
   {
-    handled = true;
-    switch(key)
+    if(StellaModTest::isAlt(mod))
     {
-      case KBDK_A:
-        toggleShowAll();
-        break;
+      handled = true;
+      switch(key)
+      {
+        case KBDK_HOME:
+          sendCommand(kHomeDirCmd, 0, 0);
+          break;
 
-      case KBDK_D:
-        toggleSubDirs();
-        break;
+        case KBDK_LEFT:
+          sendCommand(kPrevDirCmd, 0, 0);
+          break;
 
-      case KBDK_E:
-        toggleExtensions();
-        break;
+        case KBDK_RIGHT:
+          sendCommand(kNextDirCmd, 0, 0);
+          break;
 
-      case KBDK_F:
-        myList->toggleUserFavorite();
-        break;
+        case KBDK_UP:
+          sendCommand(kParentDirCmd, 0, 0);
+          break;
 
-      case KBDK_H:
-        if(instance().highScores().enabled())
-          openHighScores();
-        break;
+        case KBDK_DOWN:
+          sendCommand(kLoadROMCmd, 0, 0);
+          break;
 
-      case KBDK_O:
-        openSettings();
-        break;
+        default:
+          handled = false;
+          break;
+      }
+    }
+    else if(StellaModTest::isControl(mod))
+    {
+      handled = true;
+      switch(key)
+      {
+        case KBDK_A:
+          sendCommand(kAllfilesCmd, 0, 0);
+          toggleShowAll();
+          break;
 
-      case KBDK_P:
-        openGlobalProps();
-        break;
+        case KBDK_D:
+          sendCommand(kSubDirsCmd, 0, 0);
+          break;
 
-      case KBDK_R:
-        reload();
-        break;
+        case KBDK_E:
+          toggleExtensions();
+          break;
 
-      case KBDK_S:
-        toggleSorting();
-        break;
+        case KBDK_F:
+          myList->toggleUserFavorite();
+          break;
 
-      case KBDK_X:
-        myList->removeFavorite();
-        reload();
-        break;
+        case KBDK_H:
+          if(instance().highScores().enabled())
+            openHighScores();
+          break;
 
-      default:
-        handled = false;
-        break;
+        case KBDK_O:
+          openSettings();
+          break;
+
+        case KBDK_P:
+          openGlobalProps();
+          break;
+
+        case KBDK_R:
+          reload();
+          break;
+
+        case KBDK_S:
+          toggleSorting();
+          break;
+
+        case KBDK_X:
+          myList->removeFavorite();
+          reload();
+          break;
+
+        default:
+          handled = false;
+          break;
+      }
     }
   }
   if(!handled)
@@ -849,8 +902,7 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
     switch(key)
     {
       case KBDK_F8: // front  ("Skill P2")
-        if (!currentNode().isDirectory() && Bankswitch::isValidRomName(currentNode()))
-          openGlobalProps();
+        openGlobalProps();
         break;
       case KBDK_F4: // back ("COLOR", "B/W")
         openSettings();
@@ -890,8 +942,7 @@ void LauncherDialog::handleJoyUp(int stick, int button)
   // open power-up options and settings for 2nd and 4th button if not mapped otherwise
   Event::Type e = instance().eventHandler().eventForJoyButton(EventMode::kMenuMode, stick, button);
 
-  if (button == 1 && (e == Event::UIOK || e == Event::NoType) &&
-      !currentNode().isDirectory() && Bankswitch::isValidRomName(currentNode()))
+  if (button == 1 && (e == Event::UIOK || e == Event::NoType))
     openGlobalProps();
   if (button == 3 && (e == Event::UITabPrev || e == Event::NoType))
     openSettings();
@@ -960,6 +1011,19 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       gotoHomeDir();
       break;
 
+    case kPrevDirCmd:
+      myList->selectPrevHistory();
+      break;
+
+    case kNextDirCmd:
+      myList->selectNextHistory();
+      break;
+
+    case kParentDirCmd:
+      myList->selectParent();
+      break;
+
+
     case kLoadROMCmd:
       if(myList->isDirectory(myList->selected()))
       {
@@ -976,10 +1040,6 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kOptionsCmd:
       openSettings();
-      break;
-
-    case kPrevDirCmd:
-      myList->selectParent();
       break;
 
     case kReloadCmd:
@@ -1227,12 +1287,15 @@ void LauncherDialog::openSettings()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::openGlobalProps()
 {
-  // Create global props dialog, which is used to temporarily override
-  // ROM properties
-  myDialog = make_unique<GlobalPropsDialog>(this, myUseMinimalUI
-                                            ? _font
-                                            : instance().frameBuffer().font());
-  myDialog->open();
+  if(!currentNode().isDirectory() && Bankswitch::isValidRomName(currentNode()))
+  {
+    // Create global props dialog, which is used to temporarily override
+    // ROM properties
+    myDialog = make_unique<GlobalPropsDialog>(this, myUseMinimalUI
+                                              ? _font
+                                              : instance().frameBuffer().font());
+    myDialog->open();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1254,16 +1317,8 @@ void LauncherDialog::openWhatsNew()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::gotoHomeDir()
 {
-  if(myList->currentDir().getPath() != instance().settings().getString("startromdir"))
-  {
-    FilesystemNode node(instance().settings().getString("startromdir"));
-
-    if(!myList->isDirectory(node))
-      node = FilesystemNode("~");
-
-    myList->setDirectory(node);
-    reload();
-  }
+  while(myList->hasPrevHistory())
+    myList->selectPrevHistory();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
