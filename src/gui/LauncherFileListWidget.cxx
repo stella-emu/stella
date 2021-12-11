@@ -35,15 +35,6 @@ LauncherFileListWidget::LauncherFileListWidget(GuiObject* boss, const GUI::Font&
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherFileListWidget::selectDirectory()
-{
-  if(!myInVirtualDir && !_history.empty())
-    _history.pop();
-  _history.push(selected().getName());
-  setLocation(selected(), _selectedFile);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool LauncherFileListWidget::isDirectory(const FilesystemNode& node) const
 {
   bool isDir = node.isDirectory();
@@ -274,21 +265,6 @@ FileListWidget::IconType LauncherFileListWidget::getIconType(const string& path)
 const FileListWidget::Icon* LauncherFileListWidget::getIcon(int i) const
 {
   static const Icon favrom_small = {
-    //0b00000011'00000000,
-    //0b00000111'10000000,
-    //0b00000100'10000000,
-    //0b00001100'11000000,
-    //0b01111000'01111000,
-    //0b11000000'00001100,
-    //0b01100000'00011000,
-    //0b00110000'00110000,
-    //0b00011000'01100000,
-    //0b00110000'00110000,
-    //0b00100011'00010000,
-    //0b01101111'11011000,
-    //0b01111000'01111000,
-    //0b00110000'00110000
-
     0b00000000'00001000,
     0b00001111'00011100,
     0b00001010'01111111,
@@ -386,29 +362,6 @@ const FileListWidget::Icon* LauncherFileListWidget::getIcon(int i) const
   };
 
   static const Icon favrom_large = {
-    //0b00000000000'00000000000,
-    //0b00000000001'00000000000,
-    //0b00000000011'10000000000,
-    //0b00000000011'10000000000,
-    //0b00000000111'11000000000,
-    //0b00000000111'11000000000,
-    //0b00000000110'11000000000,
-    //0b00000001100'01100000000,
-    //0b01111111100'01111111100,
-    //0b11111111000'00111111110,
-    //0b01110000000'00000011100,
-    //0b00111000000'00000111000,
-    //0b00011100000'00001110000,
-    //0b00001110000'00011100000,
-    //0b00000111000'00111000000,
-    //0b00001110000'00011100000,
-    //0b00001110011'10011100000,
-    //0b00011100111'11001110000,
-    //0b00011001110'11100110000,
-    //0b00111111000'00111111000,
-    //0b00111110000'00011111000,
-    //0b00011000000'00000110000
-
     0b00000000000'00000100000,
     0b00000011111'11101110000,
     0b00000011111'11001110000,

@@ -37,7 +37,7 @@ class ListWidget : public EditableWidget
       kRClickedCmd         = 'LIrc',  // right click on item - 'data' will be item index
       kSelectionChangedCmd = 'Lsch',  // selection changed - 'data' will be item index
       kScrolledCmd         = 'Lscl',  // list scrolled - 'data' will be current position
-      kPrevDirCmd          = 'Lpdr'   // request to go to parent list, if applicable
+      kParentDirCmd        = 'Lpdr'   // request to go to parent list, if applicable
     };
 
   public:

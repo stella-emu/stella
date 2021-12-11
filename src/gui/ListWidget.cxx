@@ -374,7 +374,7 @@ bool ListWidget::handleEvent(Event::Type e)
       break;
 
     case Event::UIPrevDir:
-      sendCommand(ListWidget::kPrevDirCmd, _selectedItem, _id);
+      sendCommand(ListWidget::kParentDirCmd, _selectedItem, _id);
       break;
 
     default:

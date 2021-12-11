@@ -53,16 +53,25 @@ void FileListWidget::setDirectory(const FilesystemNode& node,
 
   // Initialize history
   FilesystemNode tmp = _node;
-  while(tmp.hasParent() && !_history.full())
+  string name = select;
+
+  _history.clear();
+  while(tmp.hasParent())
   {
-    string name = tmp.getName();
     if(name.back() == FilesystemNode::PATH_SEPARATOR)
       name.pop_back();
-    _history.push(name);
+    _history.push_back(HistoryType(tmp, name));
+
+    name = tmp.getName();
+    if(name.back() == FilesystemNode::PATH_SEPARATOR)
+      name.pop_back();
+
     tmp = tmp.getParent();
   }
   // History is in reverse order; we need to fix that
-  _history.reverse();
+  std::reverse(_history.begin(), _history.end());
+  _currentHistory = std::prev(_history.end(), 1);
+  _historyHome = _currentHistory - _history.begin();
 
   // Finally, go to this location
   setLocation(_node, _selectedFile);
@@ -70,8 +79,10 @@ void FileListWidget::setDirectory(const FilesystemNode& node,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FileListWidget::setLocation(const FilesystemNode& node,
-                                 const string& select)
+                                 const string select)
 {
+  cerr << node.getPath() << " : " << select << endl;
+
   progress().resetProgress();
   progress().open();
   FilesystemNode::CancelCheck isCancelled = [this]() {
@@ -168,7 +179,7 @@ FileListWidget::IconType FileListWidget::getIconType(const string& path) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FileListWidget::selectDirectory()
 {
-  _history.push(selected().getName());
+  addHistory(selected());
   setLocation(selected(), _selectedFile);
 }
 
@@ -176,7 +187,67 @@ void FileListWidget::selectDirectory()
 void FileListWidget::selectParent()
 {
   if(_node.hasParent())
-    setLocation(_node.getParent(), !_history.empty() ? _history.pop() : EmptyString);
+  {
+    string name = _node.getName();
+    FilesystemNode parent(_node.getParent());
+
+    if(name.back() == FilesystemNode::PATH_SEPARATOR)
+      name.pop_back();
+    _currentHistory->selected = selected().getName();
+    addHistory(parent);
+    setLocation(parent, name);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FileListWidget::selectPrevHistory()
+{
+  if(_currentHistory != _history.begin() + _historyHome)
+  {
+    _currentHistory->selected = selected().getName();
+    _currentHistory = std::prev(_currentHistory, 1);
+    setLocation(_currentHistory->node, _currentHistory->selected);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FileListWidget::selectNextHistory()
+{
+  if(_currentHistory != std::prev(_history.end(), 1))
+  {
+    _currentHistory->selected = selected().getName();
+    _currentHistory = std::next(_currentHistory, 1);
+    setLocation(_currentHistory->node, _currentHistory->selected);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FileListWidget::hasPrevHistory()
+{
+  return _currentHistory != _history.begin() + _historyHome;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FileListWidget::hasNextHistory()
+{
+  return _currentHistory != std::prev(_history.end(), 1);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FileListWidget::addHistory(const FilesystemNode& node)
+{
+  //while(_history.size() > _historyIndex)
+  while(_currentHistory != std::prev(_history.end(), 1))
+    _history.pop_back();
+
+  string select = selected().getName();
+  if(select.back() == FilesystemNode::PATH_SEPARATOR)
+    select.pop_back();
+  _currentHistory->selected = select;
+
+  _history.push_back(HistoryType(node, select));
+  _currentHistory = std::prev(_history.end(), 1);
+  //_historyIndex++;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -245,7 +316,7 @@ void FileListWidget::handleCommand(CommandSender* sender, int cmd, int data, int
 {
   switch (cmd)
   {
-    case ListWidget::kPrevDirCmd:
+    case ListWidget::kParentDirCmd:
       selectParent();
       break;
 
@@ -377,7 +448,7 @@ const FileListWidget::Icon* FileListWidget::getIcon(int i) const
     0b11111000'00000000,
     0b11111100'00000000,
     0b11111111'11111110,
-    0b10000000'00000010,
+    0b10000001'00000010,
     0b10000011'10000010,
     0b10000111'11000010,
     0b10001111'11100010,
@@ -493,18 +564,18 @@ const FileListWidget::Icon* FileListWidget::getIcon(int i) const
     0b11111111111'11111111110,
     0b11111111111'11111111110,
     0b11000000000'00000000110,
+    0b11000000001'10000000110,
     0b11000000011'10000000110,
     0b11000000111'11000000110,
     0b11000001111'11100000110,
     0b11000011111'11110000110,
     0b11000111111'11111000110,
     0b11001111111'11111100110,
-    0b11001111111'11111100110,
-    0b11000000111'11000000110,
-    0b11000000111'11000000110,
-    0b11000000111'11000000110,
-    0b11000000111'11000000110,
-    0b11000000111'11000000110,
+    0b11000000011'10000000110,
+    0b11000000011'10000000110,
+    0b11000000011'10000000110,
+    0b11000000011'10000000110,
+    0b11000000011'10000000110,
     0b11000000000'00000000110,
     0b11111111111'11111111110,
     0b11111111111'11111111110

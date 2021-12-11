@@ -39,9 +39,6 @@ class LauncherFileListWidget : public FileListWidget
       int x, int y, int w, int h);
     ~LauncherFileListWidget() override = default;
 
-    /** Descend into currently selected directory */
-    void selectDirectory() override;
-
     void loadFavorites();
     void saveFavorites(bool force = false);
     void clearFavorites();

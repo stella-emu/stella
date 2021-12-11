@@ -44,7 +44,7 @@ namespace GUI {
 #include "FSNode.hxx"
 #include "Variant.hxx"
 
-class LauncherDialog : public Dialog
+class LauncherDialog : public Dialog, CommandSender
 {
   public:
     // These must be accessible from dialogs created by this class
@@ -201,6 +201,8 @@ class LauncherDialog : public Dialog
     StaticTextWidget* myRomCount{nullptr};
 
     ButtonWidget*     myHomeButton{nullptr};
+    ButtonWidget*     myPrevButton{nullptr};
+    ButtonWidget*     myNextButton{nullptr};
     ButtonWidget*     myUpButton{nullptr};
     EditTextWidget*   myDir{nullptr};
     ButtonWidget*     myReloadButton{nullptr};
@@ -208,7 +210,7 @@ class LauncherDialog : public Dialog
     LauncherFileListWidget*   myList{nullptr};
 
     ButtonWidget*     myStartButton{nullptr};
-    ButtonWidget*     myPrevDirButton{nullptr};
+    ButtonWidget*     myGoUpButton{nullptr};
     ButtonWidget*     myOptionsButton{nullptr};
     ButtonWidget*     myQuitButton{nullptr};
 
@@ -232,10 +234,12 @@ class LauncherDialog : public Dialog
     enum {
       kAllfilesCmd   = 'lalf',  // show all files (or ROMs only)
       kSubDirsCmd    = 'lred',
-      kPrevDirCmd    = 'PRVD',
+      kParentDirCmd  = 'PARD',
       kOptionsCmd    = 'OPTI',
       kQuitCmd       = 'QUIT',
-      kHomeDirCmd    = 'homc',  // goto Home directory
+      kHomeDirCmd    = 'homc',  // go to Home directory
+      kPrevDirCmd    = 'prvc',  // go back in history to previous directory
+      kNextDirCmd    = 'nxtc',  // go back in history to next directory
       kReloadCmd     = 'relc',
       kRmAllFav      = 'rmaf',
       kRmAllPop      = 'rmap',

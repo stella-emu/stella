@@ -79,10 +79,18 @@ class FileListWidget : public StringListWidget
     void setDirectory(const FilesystemNode& node,
                       const string& select = EmptyString);
 
-    /** Select parent directory (if applicable) */
-    void selectParent();
     /** Descend into currently selected directory */
     virtual void selectDirectory();
+    /** Select parent directory (if applicable) */
+    void selectParent();
+    /** Select previous directory in history (if applicable) */
+    void selectPrevHistory();
+    /** Select next directory in history */
+    void selectNextHistory();
+    /** Check if the there is a previous directory in history */
+    bool hasPrevHistory();
+    /** Check if the there is a next directory in history */
+    bool hasNextHistory();
 
     /** Reload current location (file or directory) */
     void reload();
@@ -101,6 +109,16 @@ class FileListWidget : public StringListWidget
     void incProgress();
 
   protected:
+    struct HistoryType
+    {
+      FilesystemNode node;
+      string  selected;
+
+      HistoryType()
+        : node{}, selected{} {}
+      explicit HistoryType(const FilesystemNode _node, const string _selected)
+        : node{_node}, selected{_selected} {}
+    };
     enum class IconType {
       unknown,
       rom,
@@ -121,7 +139,7 @@ class FileListWidget : public StringListWidget
 
   protected:
     /** Very similar to setDirectory(), but also updates the history */
-    void setLocation(const FilesystemNode& node, const string& select);
+    void setLocation(const FilesystemNode& node, const string select);
     virtual bool isDirectory(const FilesystemNode& node) const;
     virtual void getChildren(const FilesystemNode::CancelCheck& isCancelled);
     virtual void extendLists(StringList& list) { }
@@ -129,14 +147,17 @@ class FileListWidget : public StringListWidget
     virtual const Icon* getIcon(int i) const;
     int iconWidth() const;
     virtual bool fullPathToolTip() const { return false; }
+    void addHistory(const FilesystemNode& node);
 
   protected:
     FilesystemNode _node;
     FSList _fileList;
     FilesystemNode::NameFilter _filter;
-    Common::FixedStack<string> _history;
     string _selectedFile;
     StringList _dirList;
+    std::vector<HistoryType> _history;
+    int _historyHome{0}; // offset into initially created history
+    std::vector<HistoryType>::iterator _currentHistory{_history.begin()};
     IconTypeList _iconTypeList;
 
   private:
