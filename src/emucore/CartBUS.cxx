@@ -67,9 +67,9 @@ CartridgeBUS::CartridgeBUS(const ByteBuffer& image, size_t size,
     reinterpret_cast<uInt16*>(myImage.get()),
     reinterpret_cast<uInt16*>(myRAM.data()),
     static_cast<uInt32>(32_KB),
-    Thumbulator::rom_base + 0x0800,
-    Thumbulator::rom_base + 0x0808,
-    Thumbulator::ram_base + 0x1FDC,
+    0x00000800,
+    0x00000808,
+    0x40001FDC,
     devSettings ? settings.getBool("dev.thumb.trapfatal") : false,
     devSettings ? static_cast<double>(
         settings.getFloat("dev.thumb.cyclefactor")) : 1.0,
@@ -256,8 +256,8 @@ uInt8 CartridgeBUS::peek(uInt16 address)
           // get sample value from ROM or RAM
           if (sampleaddress < 0x8000)
             peekvalue = myImage[sampleaddress];
-          else if (sampleaddress >= Thumbulator::ram_base && sampleaddress < Thumbulator::ram_base + 0x2000) // check for RAM
-            peekvalue = myRAM[sampleaddress - Thumbulator::ram_base];
+          else if (sampleaddress >= 0x40000000 && sampleaddress < 0x40002000) // check for RAM
+            peekvalue = myRAM[sampleaddress - 0x40000000];
           else
             peekvalue = 0;
 
@@ -707,7 +707,7 @@ uInt32 CartridgeBUS::getWaveform(uInt8 index) const
           (myRAM[WAVEFORM + index*4 + 2] << 16) +
           (myRAM[WAVEFORM + index*4 + 3] << 24);   // high byte
 
-  result -= Thumbulator::ram_base + 0x0800;
+  result -= 0x40000800;
 
   if (result >= 4096)
     result = 0;

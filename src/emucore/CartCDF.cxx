@@ -90,13 +90,13 @@ CartridgeCDF::CartridgeCDF(const ByteBuffer& image, size_t size,
   // C addresses
   uInt32 cBase, cStart, cStack;
   if (isCDFJplus()) {
-    cBase = Thumbulator::rom_base + getUInt32(myImage.get(), 0x17F8) & 0x0FFFFFFE;    // C Base Address
+    cBase = getUInt32(myImage.get(), 0x17F8) & 0xFFFFFFFE;    // C Base Address
     cStart = cBase;                                           // C Start Address
-    cStack = Thumbulator::ram_base + (getUInt32(myImage.get(), 0x17F4) & 0x0FFFFFFF);                // C Stack
+    cStack = getUInt32(myImage.get(), 0x17F4);                // C Stack
   } else {
-    cBase = Thumbulator::rom_base + 0x800;          // C Base Address
-    cStart = Thumbulator::rom_base + 0x808;         // C Start Address (skip ARM header)
-    cStack = Thumbulator::ram_base + 0x1FDC;    // C Stack
+    cBase = 0x800;          // C Base Address
+    cStart = 0x808;         // C Start Address (skip ARM header)
+    cStack = 0x40001FDC;    // C Stack
   }
 
   // Create Thumbulator ARM emulator
@@ -296,8 +296,8 @@ uInt8 CartridgeCDF::peek(uInt16 address)
         // get sample value from ROM or RAM
         if (sampleaddress < 0x00080000)
           peekvalue = myImage[sampleaddress];
-        else if (sampleaddress >= Thumbulator::ram_base && sampleaddress < Thumbulator::ram_base + 0x8000) // check for RAM
-          peekvalue = myRAM[sampleaddress - Thumbulator::ram_base];
+        else if (sampleaddress >= 0x40000000 && sampleaddress < 0x40008000) // check for RAM
+          peekvalue = myRAM[sampleaddress - 0x40000000];
         else
           peekvalue = 0;
 
@@ -677,7 +677,7 @@ uInt32 CartridgeCDF::getWaveform(uInt8 index) const
                  (myRAM[address + 2] << 16) +
                  (myRAM[address + 3] << 24);   // high byte
 
-  result -= (Thumbulator::ram_base + uInt32(2_KB));
+  result -= (0x40000000 + uInt32(2_KB));
 
   if (!isCDFJplus()) {
     if (result >= 4096) {
