@@ -58,14 +58,9 @@ void FileListWidget::setDirectory(const FilesystemNode& node,
   _history.clear();
   while(tmp.hasParent())
   {
-    if(name.back() == FilesystemNode::PATH_SEPARATOR)
-      name.pop_back();
-    _history.push_back(HistoryType(tmp, name));
+    _history.push_back(HistoryType(tmp, fixPath(name)));
 
     name = tmp.getName();
-    if(name.back() == FilesystemNode::PATH_SEPARATOR)
-      name.pop_back();
-
     tmp = tmp.getParent();
   }
   // History is in reverse order; we need to fix that
@@ -191,12 +186,17 @@ void FileListWidget::selectParent()
     string name = _node.getName();
     FilesystemNode parent(_node.getParent());
 
-    if(name.back() == FilesystemNode::PATH_SEPARATOR)
-      name.pop_back();
     _currentHistory->selected = selected().getName();
     addHistory(parent);
-    setLocation(parent, name);
+    setLocation(parent, fixPath(name));
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FileListWidget::selectHomeDir()
+{
+  while(hasPrevHistory())
+    selectPrevHistory();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -233,6 +233,17 @@ bool FileListWidget::hasNextHistory()
   return _currentHistory != std::prev(_history.end(), 1);
 }
 
+string& FileListWidget::fixPath(string& path)
+{
+  if(path.back() == FilesystemNode::PATH_SEPARATOR)
+  {
+    path.pop_back();
+    if(path.length() == 2 && path.back() == ':')
+      path.pop_back();
+  }
+  return path;
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FileListWidget::addHistory(const FilesystemNode& node)
 {
@@ -241,11 +252,9 @@ void FileListWidget::addHistory(const FilesystemNode& node)
     _history.pop_back();
 
   string select = selected().getName();
-  if(select.back() == FilesystemNode::PATH_SEPARATOR)
-    select.pop_back();
-  _currentHistory->selected = select;
+  _currentHistory->selected = fixPath(select);
 
-  _history.push_back(HistoryType(node, select));
+  _history.push_back(HistoryType(node, ".."));
   _currentHistory = std::prev(_history.end(), 1);
   //_historyIndex++;
 }
