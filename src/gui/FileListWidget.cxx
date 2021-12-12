@@ -327,7 +327,8 @@ void FileListWidget::handleCommand(CommandSender* sender, int cmd, int data, int
   {
     case ListWidget::kParentDirCmd:
       selectParent();
-      break;
+      // Do not let the boss know
+      return;
 
     case ListWidget::kSelectionChangedCmd:
       _selected = data;
