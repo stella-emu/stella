@@ -86,12 +86,6 @@ class FileListWidget : public StringListWidget
     virtual void selectDirectory();
     /** Select parent directory (if applicable) */
     void selectParent();
-    /** Select to home directory */
-    void selectHomeDir();
-    /** Select previous directory in history (if applicable) */
-    void selectPrevHistory();
-    /** Select next directory in history (if applicable) */
-    void selectNextHistory();
     /** Check if the there is a previous directory in history */
     bool hasPrevHistory();
     /** Check if the there is a next directory in history */
@@ -145,6 +139,12 @@ class FileListWidget : public StringListWidget
   protected:
     /** Very similar to setDirectory(), but also updates the history */
     void setLocation(const FilesystemNode& node, const string select);
+    /** Select to home directory */
+    void selectHomeDir();
+    /** Select previous directory in history (if applicable) */
+    void selectPrevHistory();
+    /** Select next directory in history (if applicable) */
+    void selectNextHistory();
     virtual bool isDirectory(const FilesystemNode& node) const;
     virtual void getChildren(const FilesystemNode::CancelCheck& isCancelled);
     virtual void extendLists(StringList& list) { }

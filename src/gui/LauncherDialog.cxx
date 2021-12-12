@@ -1008,19 +1008,19 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case FileListWidget::kHomeDirCmd:
-      myList->selectHomeDir();
+      myList->sendCommand(FileListWidget::kHomeDirCmd, 0, 0);
       break;
 
     case FileListWidget::kPrevDirCmd:
-      myList->selectPrevHistory();
+      myList->sendCommand(FileListWidget::kPrevDirCmd, 0, 0);
       break;
 
     case FileListWidget::kNextDirCmd:
-      myList->selectNextHistory();
+      myList->sendCommand(FileListWidget::kNextDirCmd, 0, 0);
       break;
 
     case ListWidget::kParentDirCmd:
-      myList->selectParent();
+      myList->sendCommand(ListWidget::kParentDirCmd, 0, 0);
       break;
 
     case kLoadROMCmd:

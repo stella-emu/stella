@@ -325,6 +325,21 @@ void FileListWidget::handleCommand(CommandSender* sender, int cmd, int data, int
 {
   switch (cmd)
   {
+    case FileListWidget::kHomeDirCmd:
+      // Do not let the boss know
+      selectHomeDir();
+      return;
+
+    case FileListWidget::kPrevDirCmd:
+      // Do not let the boss know
+      selectPrevHistory();
+      return;
+
+    case FileListWidget::kNextDirCmd:
+      // Do not let the boss know
+      selectNextHistory();
+      return;
+
     case ListWidget::kParentDirCmd:
       selectParent();
       // Do not let the boss know
