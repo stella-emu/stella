@@ -130,7 +130,10 @@ void LauncherFileListWidget::extendLists(StringList& list)
   //  Then show virtual dirs in parent dir of "romdir".
   if(myRomDir == startRomDir()
       && (myInVirtualDir || BSPF::endsWithIgnoreCase(_node.getPath(), ".zip")))
+  {
     myRomDir = _node.getParent().getPath();
+    instance().settings().setValue("startromdir", myRomDir);
+  }
   else
     myRomDir = startRomDir();
 
