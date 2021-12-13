@@ -35,11 +35,12 @@ MODULE_OBJS := \
         src/gui/MessageBox.o \
         src/gui/MessageDialog.o \
         src/gui/MessageMenu.o \
-        src/gui/MinUICommandDialog.o\
+        src/gui/MinUICommandDialog.o \
+	src/gui/NavigationWidget.o \
         src/gui/OptionsDialog.o \
         src/gui/OptionsMenu.o \
         src/gui/PlusRomsMenu.o\
-        src/gui/PlusRomsSetupDialog.o\
+        src/gui/PlusRomsSetupDialog.o \
         src/gui/PopUpWidget.o \
         src/gui/ProgressDialog.o \
         src/gui/QuadTariDialog.o \

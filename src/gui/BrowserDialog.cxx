@@ -23,6 +23,7 @@
 #include "FrameBuffer.hxx"
 #include "EditTextWidget.hxx"
 #include "FileListWidget.hxx"
+#include "NavigationWidget.hxx"
 #include "Widget.hxx"
 #include "Font.hxx"
 #include "BrowserDialog.hxx"
@@ -51,10 +52,7 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
   xpos = HBORDER;  ypos = VBORDER + _th;
 
   // Current path - TODO: handle long paths ?
-  StaticTextWidget* t = new StaticTextWidget(this, font, xpos, ypos + 2, "Path ");
-  _currentPath = new EditTextWidget(this, font, xpos + t->getWidth(), ypos,
-                                    _w - t->getWidth() - 2 * xpos, lineHeight);
-  _currentPath->setEditable(false);
+  _navigationBar = new NavigationWidget(this, font, xpos, ypos, _w - HBORDER * 2, lineHeight);
 
   xpos = _w - (HBORDER + _font.getStringWidth("Save") + CheckboxWidget::prefixSize(_font));
   _savePathBox = new CheckboxWidget(this, font, xpos, ypos + 2, "Save");
@@ -66,6 +64,7 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
                                  _h - selectHeight - buttonHeight - ypos - VBORDER * 2);
   _fileList->setEditable(false);
   addFocusWidget(_fileList);
+  _navigationBar->setList(_fileList);
 
   // Add currently selected item
   ypos += _fileList->getHeight() + VGAP * 2;
@@ -183,8 +182,8 @@ void BrowserDialog::show(const string& startpath,
       _fileList->setListMode(FilesystemNode::ListMode::All);
       _fileList->setNameFilter(namefilter);
       _fileList->setHeight(_selected->getTop() - VGAP * 2 - _fileList->getTop());
-
-      _currentPath->setWidth(_savePathBox->getLeft() - _currentPath->getLeft() - fontWidth);
+      // Show "save" checkbox
+      _navigationBar->setWidth(_savePathBox->getLeft() - _navigationBar->getLeft() - fontWidth);
       _savePathBox->setEnabled(true);
       _savePathBox->clearFlags(Widget::FLAG_INVISIBLE);
       _savePathBox->setState(instance().settings().getBool("saveuserdir"));
@@ -200,8 +199,8 @@ void BrowserDialog::show(const string& startpath,
       _fileList->setListMode(FilesystemNode::ListMode::All);
       _fileList->setNameFilter(namefilter);
       _fileList->setHeight(_selected->getTop() - VGAP * 2 - _fileList->getTop());
-
-      _currentPath->setWidth(_savePathBox->getLeft() - _currentPath->getLeft() - fontWidth);
+      // Show "save" checkbox
+      _navigationBar->setWidth(_savePathBox->getLeft() - _navigationBar->getLeft() - fontWidth);
       _savePathBox->setEnabled(true);
       _savePathBox->clearFlags(Widget::FLAG_INVISIBLE);
       _savePathBox->setState(instance().settings().getBool("saveuserdir"));
@@ -220,8 +219,8 @@ void BrowserDialog::show(const string& startpath,
       _fileList->setNameFilter([](const FilesystemNode&) { return true; });
       // TODO: scrollbar affected too!
       _fileList->setHeight(_selected->getBottom() - _fileList->getTop());
-
-      _currentPath->setWidth(_savePathBox->getRight() - _currentPath->getLeft());
+      // Hide "save" checkbox
+      _navigationBar->setWidth(_savePathBox->getRight() - _navigationBar->getLeft());
       _savePathBox->setEnabled(false);
       _savePathBox->setFlags(Widget::FLAG_INVISIBLE);
 
@@ -257,6 +256,16 @@ const FilesystemNode& BrowserDialog::getResult() const
   }
   else
     return _fileList->currentDir();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void BrowserDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
+{
+  // Grab the key before passing it to the actual dialog and check for
+  // file list navigation keys
+  // Required because BrowserDialog does not want raw input
+  if(repeated || !_fileList->handleKeyDown(key, mod))
+    Dialog::handleKeyDown(key, mod, repeated);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -320,7 +329,7 @@ void BrowserDialog::updateUI(bool fileSelected)
   _goUpButton->setEnabled(_fileList->currentDir().hasParent());
 
   // Update the path display
-  _currentPath->setText(_fileList->currentDir().getShortPath());
+  _navigationBar->updateUI();
 
   // Enable/disable OK button based on current mode and status
   bool enable = true;

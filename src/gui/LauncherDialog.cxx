@@ -24,6 +24,7 @@
 #include "EditTextWidget.hxx"
 #include "FileListWidget.hxx"
 #include "LauncherFileListWidget.hxx"
+#include "NavigationWidget.hxx"
 #include "FSNode.hxx"
 #include "MD5.hxx"
 #include "OptionsDialog.hxx"
@@ -79,6 +80,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   addRomWidgets(ypos, wid);
   if(!myUseMinimalUI && bottomButtons)
     addButtonWidgets(ypos, wid);
+  myNavigationBar->setList(myList);
 
   tooltip().setFont(_font);
 
@@ -213,58 +215,22 @@ void LauncherDialog::addPathWidgets(int& ypos, WidgetArray& wid)
     LBL_GAP      = fontWidth,
     BTN_GAP      = fontWidth / 4;
   const bool smallIcon = lineHeight < 26;
-  const int iconGap = (fontWidth + 1) & ~0b1; // round up to next even
   const string lblFound = "12345 items";
   const int lwFound = _font.getStringWidth(lblFound);
   const GUI::Icon& reloadIcon = smallIcon ? GUI::icon_reload_small : GUI::icon_reload_large;
   const int iconWidth = reloadIcon.width();
+  const int buttonWidth = iconWidth + ((fontWidth + 1) & ~0b1) - 1; // round up to next odd
+  const int buttonHeight = lineHeight + 2;
+  const int wNav = _w - HBORDER * 2 - (myUseMinimalUI ? lwFound + LBL_GAP : buttonWidth + BTN_GAP);
+
   int xpos = HBORDER;
+  myNavigationBar = new NavigationWidget(this, _font, xpos, ypos, wNav, buttonHeight);
 
   if(!myUseMinimalUI)
   {
-    const GUI::Icon& prevIcon = smallIcon ? GUI::icon_prev_small : GUI::icon_prev_large;
-    const GUI::Icon& nextIcon = smallIcon ? GUI::icon_next_small : GUI::icon_next_large;
-    const GUI::Icon& homeIcon = smallIcon ? GUI::icon_home_small : GUI::icon_home_large;
-    const GUI::Icon& upIcon = smallIcon ? GUI::icon_up_small : GUI::icon_up_large;
-
-    myHomeButton = new ButtonWidget(this, _font, xpos, ypos,
-      iconWidth + iconGap - 1, lineHeight + 2, homeIcon, FileListWidget::kHomeDirCmd);
-    myHomeButton->setToolTip("Go back to Stella's ROM directory.");
-    wid.push_back(myHomeButton);
-    xpos = myHomeButton->getRight() + BTN_GAP;
-
-    myPrevButton = new ButtonWidget(this, _font, xpos, ypos,
-      iconWidth + iconGap - 1, lineHeight + 2, prevIcon, FileListWidget::kPrevDirCmd);
-    myPrevButton->setToolTip("Go back in directory history.");
-    wid.push_back(myPrevButton);
-    xpos = myPrevButton->getRight() + BTN_GAP;
-
-    myNextButton = new ButtonWidget(this, _font, xpos, ypos,
-      iconWidth + iconGap - 1, lineHeight + 2, nextIcon, FileListWidget::kNextDirCmd);
-    myNextButton->setToolTip("Go forward in directory history.");
-    wid.push_back(myNextButton);
-    xpos = myNextButton->getRight() + BTN_GAP;
-
-    myUpButton = new ButtonWidget(this, _font, xpos, ypos,
-      iconWidth + iconGap - 1, lineHeight + 2, upIcon, ListWidget::kParentDirCmd);
-    myUpButton->setToolTip("Go Up");
-    wid.push_back(myUpButton);
-    xpos = myUpButton->getRight() + BTN_GAP;
-  }
-
-  myDir = new EditTextWidget(this, _font, xpos, ypos,
-    _w - xpos - (myUseMinimalUI
-      ? lwFound + LBL_GAP
-      : (iconWidth + iconGap + BTN_GAP))
-    - HBORDER, lineHeight, "");
-  myDir->setEditable(false, true);
-  myDir->clearFlags(Widget::FLAG_RETAIN_FOCUS);
-
-  if(!myUseMinimalUI)
-  {
-    xpos = myDir->getRight() + BTN_GAP;
+    xpos = myNavigationBar->getRight() + BTN_GAP;
     myReloadButton = new ButtonWidget(this, _font, xpos, ypos,
-      iconWidth + iconGap - 1, lineHeight + 2, reloadIcon, kReloadCmd);
+      buttonWidth, buttonHeight, reloadIcon, kReloadCmd);
     myReloadButton->setToolTip("Reload listing");
     wid.push_back(myReloadButton);
   }
@@ -276,7 +242,7 @@ void LauncherDialog::addPathWidgets(int& ypos, WidgetArray& wid)
     myRomCount = new StaticTextWidget(this, _font, xpos, ypos + 2,
       lwFound, fontHeight, "", TextAlign::Right);
 
-    EditTextWidget* e = new EditTextWidget(this, _font, myDir->getRight() - 1, ypos,
+    EditTextWidget* e = new EditTextWidget(this, _font, myNavigationBar->getRight() - 1, ypos,
       lwFound + LBL_GAP + 1, lineHeight, "");
     e->setEditable(false, true);
   }
@@ -522,17 +488,7 @@ void LauncherDialog::updateUI()
   if(myGoUpButton)
     myGoUpButton->setEnabled(myList->currentDir().hasParent());
   // Only enable the navigation buttons if function is available
-  if(myHomeButton)
-    myHomeButton->setEnabled(myList->hasPrevHistory());
-  if(myPrevButton)
-    myPrevButton->setEnabled(myList->hasPrevHistory());
-  if(myNextButton)
-    myNextButton->setEnabled(myList->hasNextHistory());
-  if(myUpButton)
-    myUpButton->setEnabled(myList->currentDir().hasParent());
-
-  // Show current directory
-  myDir->setText(myList->currentDir().getShortPath());
+  myNavigationBar->updateUI();
 
   // Indicate how many files were found
   ostringstream buf;
@@ -781,8 +737,6 @@ void LauncherDialog::handleContextMenu()
     reload();
   else if(cmd == "options")
     openSettings();
-  //else if(cmd == "quit")
-  //  handleQuit();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -809,91 +763,59 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
   // context menu keys
   bool handled = false;
 
-  if(!(myPattern->isHighlighted()
-    && instance().eventHandler().eventForKey(EventMode::kEditMode, key, mod) != Event::NoType))
+  if(StellaModTest::isControl(mod) &&
+    !(myPattern && myPattern->isHighlighted()
+      && instance().eventHandler().eventForKey(EventMode::kEditMode, key, mod) != Event::NoType))
   {
-    if(StellaModTest::isAlt(mod))
+    handled = true;
+    switch(key)
     {
-      handled = true;
-      switch(key)
-      {
-        case KBDK_HOME:
-          sendCommand(FileListWidget::kHomeDirCmd, 0, 0);
-          break;
+      case KBDK_A:
+        sendCommand(kAllfilesCmd, 0, 0);
+        toggleShowAll();
+        break;
 
-        case KBDK_LEFT:
-          sendCommand(FileListWidget::kPrevDirCmd, 0, 0);
-          break;
+      case KBDK_D:
+        sendCommand(kSubDirsCmd, 0, 0);
+        break;
 
-        case KBDK_RIGHT:
-          sendCommand(FileListWidget::kNextDirCmd, 0, 0);
-          break;
+      case KBDK_E:
+        toggleExtensions();
+        break;
 
-        case KBDK_UP:
-          sendCommand(ListWidget::kParentDirCmd, 0, 0);
-          break;
+      case KBDK_F:
+        myList->toggleUserFavorite();
+        break;
 
-        case KBDK_DOWN:
-          sendCommand(kLoadROMCmd, 0, 0);
-          break;
+      case KBDK_H:
+        if(instance().highScores().enabled())
+          openHighScores();
+        break;
 
-        default:
-          handled = false;
-          break;
-      }
-    }
-    else if(StellaModTest::isControl(mod))
-    {
-      handled = true;
-      switch(key)
-      {
-        case KBDK_A:
-          sendCommand(kAllfilesCmd, 0, 0);
-          toggleShowAll();
-          break;
+      case KBDK_O:
+        openSettings();
+        break;
 
-        case KBDK_D:
-          sendCommand(kSubDirsCmd, 0, 0);
-          break;
+      case KBDK_P:
+        openGlobalProps();
+        break;
 
-        case KBDK_E:
-          toggleExtensions();
-          break;
+      case KBDK_R:
+        reload();
+        break;
 
-        case KBDK_F:
-          myList->toggleUserFavorite();
-          break;
+      case KBDK_S:
+        toggleSorting();
+        break;
 
-        case KBDK_H:
-          if(instance().highScores().enabled())
-            openHighScores();
-          break;
+      case KBDK_X:
+        myList->removeFavorite();
+        reload();
+        break;
 
-        case KBDK_O:
-          openSettings();
-          break;
-
-        case KBDK_P:
-          openGlobalProps();
-          break;
-
-        case KBDK_R:
-          reload();
-          break;
-
-        case KBDK_S:
-          toggleSorting();
-          break;
-
-        case KBDK_X:
-          myList->removeFavorite();
-          reload();
-          break;
-
-        default:
-          handled = false;
-          break;
-      }
+      default:
+        handled = false;
+        break;
     }
   }
   if(!handled)
@@ -923,7 +845,9 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
         break;
     }
 #else
-    Dialog::handleKeyDown(key, mod);
+    // Required because BrowserDialog does not want raw input
+    if(repeated || !myList->handleKeyDown(key, mod))
+      Dialog::handleKeyDown(key, mod, repeated);
 #endif
 }
 
@@ -997,7 +921,7 @@ void LauncherDialog::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
                                    int data, int id)
 {
-  switch (cmd)
+  switch(cmd)
   {
     case kAllfilesCmd:
       toggleShowAll();
@@ -1005,22 +929,6 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kSubDirsCmd:
       toggleSubDirs();
-      break;
-
-    case FileListWidget::kHomeDirCmd:
-      myList->sendCommand(FileListWidget::kHomeDirCmd, 0, 0);
-      break;
-
-    case FileListWidget::kPrevDirCmd:
-      myList->sendCommand(FileListWidget::kPrevDirCmd, 0, 0);
-      break;
-
-    case FileListWidget::kNextDirCmd:
-      myList->sendCommand(FileListWidget::kNextDirCmd, 0, 0);
-      break;
-
-    case ListWidget::kParentDirCmd:
-      myList->sendCommand(ListWidget::kParentDirCmd, 0, 0);
       break;
 
     case kLoadROMCmd:
@@ -1242,7 +1150,6 @@ void LauncherDialog::openContextMenu(int x, int y)
     //if(!instance().settings().getBool("launcherbuttons"))
     //{
     //  items.push_back(ContextItem("Options" + ELLIPSIS, "Ctrl+O", "options"));
-    //  items.push_back(ContextItem("Quit", "Ctrl+Q", "quit"));
     //}
   }
 

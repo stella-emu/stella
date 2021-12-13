@@ -913,6 +913,7 @@
     <ClCompile Include="..\gui\HighScoresDialog.cxx" />
     <ClCompile Include="..\gui\HighScoresMenu.cxx" />
     <ClCompile Include="..\gui\LauncherFileListWidget.cxx" />
+    <ClCompile Include="..\gui\NavigationWidget.cxx" />
     <ClCompile Include="..\gui\PlusRomsMenu.cxx" />
     <ClCompile Include="..\gui\JoystickDialog.cxx" />
     <ClCompile Include="..\gui\LoggerDialog.cxx" />
@@ -2120,6 +2121,7 @@
     <ClInclude Include="..\gui\HighScoresMenu.hxx" />
     <ClInclude Include="..\gui\Icon.hxx" />
     <ClInclude Include="..\gui\LauncherFileListWidget.hxx" />
+    <ClInclude Include="..\gui\NavigationWidget.hxx" />
     <ClInclude Include="..\gui\PlusRomsMenu.hxx" />
     <ClInclude Include="..\gui\JoystickDialog.hxx" />
     <ClInclude Include="..\gui\LoggerDialog.hxx" />
