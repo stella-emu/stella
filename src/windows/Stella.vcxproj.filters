@@ -1125,6 +1125,9 @@
     <ClCompile Include="..\gui\FavoritesManager.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
+    <ClCompile Include="..\gui\NavigationWidget.cxx">
+      <Filter>Source Files\gui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">
@@ -2316,6 +2319,9 @@
       <Filter>Header Files\gui</Filter>
     </ClInclude>
     <ClInclude Include="..\gui\Icons.hxx">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gui\NavigationWidget.hxx">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
   </ItemGroup>

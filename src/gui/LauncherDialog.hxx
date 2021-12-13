@@ -25,6 +25,7 @@ class DialogContainer;
 class OSystem;
 class Properties;
 class EditTextWidget;
+class NavigationWidget;
 class LauncherFileListWidget;
 class RomInfoWidget;
 class StaticTextWidget;
@@ -199,14 +200,10 @@ class LauncherDialog : public Dialog, CommandSender
     ButtonWidget*     mySubDirsButton{nullptr};
     StaticTextWidget* myRomCount{nullptr};
 
-    ButtonWidget*     myHomeButton{nullptr};
-    ButtonWidget*     myPrevButton{nullptr};
-    ButtonWidget*     myNextButton{nullptr};
-    ButtonWidget*     myUpButton{nullptr};
-    EditTextWidget*   myDir{nullptr};
+    NavigationWidget* myNavigationBar{nullptr};
     ButtonWidget*     myReloadButton{nullptr};
 
-    LauncherFileListWidget*   myList{nullptr};
+    LauncherFileListWidget* myList{nullptr};
 
     ButtonWidget*     myStartButton{nullptr};
     ButtonWidget*     myGoUpButton{nullptr};

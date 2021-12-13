@@ -57,6 +57,8 @@ class FileListWidget : public StringListWidget
                    int x, int y, int w, int h);
     ~FileListWidget() override = default;
 
+    bool handleKeyDown(StellaKey key, StellaMod mod) override;
+
     string getToolTip(const Common::Point& pos) const override;
 
     /** Determines how to display files/folders; either setDirectory or reload

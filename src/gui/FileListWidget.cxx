@@ -76,8 +76,6 @@ void FileListWidget::setDirectory(const FilesystemNode& node,
 void FileListWidget::setLocation(const FilesystemNode& node,
                                  const string select)
 {
-  cerr << node.getPath() << " : " << select << endl;
-
   progress().resetProgress();
   progress().open();
   FilesystemNode::CancelCheck isCancelled = [this]() {
@@ -284,6 +282,47 @@ ProgressDialog& FileListWidget::progress()
 void FileListWidget::incProgress()
 {
   progress().incProgress();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FileListWidget::handleKeyDown(StellaKey key, StellaMod mod)
+{
+  // Grab the key before passing it to the actual dialog and check for
+  // file list navigation keys
+  bool handled = false;
+
+  if(StellaModTest::isAlt(mod))
+  {
+    handled = true;
+    cerr << "  " << mod << ", " << key << endl;
+    switch(key)
+    {
+      case KBDK_HOME:
+        sendCommand(kHomeDirCmd, 0, 0);
+        break;
+
+      case KBDK_LEFT:
+        sendCommand(kPrevDirCmd, 0, 0);
+        break;
+
+      case KBDK_RIGHT:
+        sendCommand(kNextDirCmd, 0, 0);
+        break;
+
+      case KBDK_UP:
+        sendCommand(kParentDirCmd, 0, 0);
+        break;
+
+      case KBDK_DOWN:
+        sendCommand(kActivatedCmd, _selected, 0);
+        break;
+
+      default:
+        handled = false;
+        break;
+    }
+  }
+  return handled;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

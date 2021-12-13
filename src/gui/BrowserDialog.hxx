@@ -22,6 +22,7 @@ class GuiObject;
 class ButtonWidget;
 class EditTextWidget;
 class FileListWidget;
+class NavigationWidget;
 class StaticTextWidget;
 
 #include "Dialog.hxx"
@@ -103,6 +104,7 @@ class BrowserDialog : public Dialog
     /** Get resulting file node (called after receiving kChooseCmd) */
     const FilesystemNode& getResult() const;
 
+    void handleKeyDown(StellaKey key, StellaMod mod, bool repeated) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
     void updateUI(bool fileSelected);
 
@@ -119,7 +121,7 @@ class BrowserDialog : public Dialog
     Command _command{[](bool, const FilesystemNode&){}};
 
     FileListWidget*   _fileList{nullptr};
-    EditTextWidget*   _currentPath{nullptr};
+    NavigationWidget* _navigationBar{nullptr};
     StaticTextWidget* _name{nullptr};
     EditTextWidget*   _selected{nullptr};
     ButtonWidget*     _goUpButton{nullptr};
