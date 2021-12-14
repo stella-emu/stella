@@ -43,7 +43,7 @@ class NavigationWidget : public Widget
             ~FolderLinkWidget() = default;
 
             void setPath(const string& path) { myPath = path; }
-            const string& getPath() const { return myPath; };
+            const string& getPath() const { return myPath; }
 
           private:
             void drawWidget(bool hilite) override;
