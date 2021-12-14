@@ -85,7 +85,9 @@ class FileListWidget : public StringListWidget
                       const string& select = EmptyString);
 
     /** Descend into currently selected directory */
-    virtual void selectDirectory();
+    void selectDirectory();
+    /** Go to directory */
+    void selectDirectory(const FilesystemNode& node);
     /** Select parent directory (if applicable) */
     void selectParent();
     /** Check if the there is a previous directory in history */

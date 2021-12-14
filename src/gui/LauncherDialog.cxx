@@ -71,15 +71,14 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
 {
   const bool bottomButtons = instance().settings().getBool("launcherbuttons");
   int ypos = Dialog::vBorder();
-  WidgetArray wid;
 
   myUseMinimalUI = instance().settings().getBool("minimal_ui");
 
-  addOptionWidgets(ypos, wid);
-  addPathWidgets(ypos, wid);
-  addRomWidgets(ypos, wid);
+  addOptionWidgets(ypos);
+  addPathWidgets(ypos);
+  addRomWidgets(ypos);
   if(!myUseMinimalUI && bottomButtons)
-    addButtonWidgets(ypos, wid);
+    addButtonWidgets(ypos);
   myNavigationBar->setList(myList);
 
   tooltip().setFont(_font);
@@ -89,8 +88,6 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   else
     mySelectedItem = 9; // skip filter items and 5 navigation buttons
 
-  addToFocusList(wid);
-
   // Do we show only ROMs or all files?
   toggleShowAll(false);
 
@@ -99,7 +96,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::addOptionWidgets(int& ypos, WidgetArray& wid)
+void LauncherDialog::addOptionWidgets(int& ypos)
 {
   const int lineHeight   = Dialog::lineHeight(),
             fontHeight   = Dialog::fontHeight(),
@@ -112,6 +109,7 @@ void LauncherDialog::addOptionWidgets(int& ypos, WidgetArray& wid)
             btnYOfs      = (buttonHeight - lineHeight) / 2 + 1;
   string lblFound = "12345 items found";
   int lwFound = _font.getStringWidth(lblFound);
+  WidgetArray wid;
 
   if(myUseMinimalUI)
   {
@@ -200,11 +198,13 @@ void LauncherDialog::addOptionWidgets(int& ypos, WidgetArray& wid)
       lwFound, fontHeight, "", TextAlign::Right);
 
     ypos += lineHeight + VGAP * 2;
+
   }
+  addToFocusList(wid);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::addPathWidgets(int& ypos, WidgetArray& wid)
+void LauncherDialog::addPathWidgets(int& ypos)
 {
   // Add some buttons and textfield to show current directory
   const int
@@ -222,8 +222,9 @@ void LauncherDialog::addPathWidgets(int& ypos, WidgetArray& wid)
   const int buttonWidth = iconWidth + ((fontWidth + 1) & ~0b1) - 1; // round up to next odd
   const int buttonHeight = lineHeight + 2;
   const int wNav = _w - HBORDER * 2 - (myUseMinimalUI ? lwFound + LBL_GAP : buttonWidth + BTN_GAP);
-
   int xpos = HBORDER;
+  WidgetArray wid;
+
   myNavigationBar = new NavigationWidget(this, _font, xpos, ypos, wNav, buttonHeight);
 
   if(!myUseMinimalUI)
@@ -246,10 +247,11 @@ void LauncherDialog::addPathWidgets(int& ypos, WidgetArray& wid)
       lwFound + LBL_GAP + 1, lineHeight, "");
     e->setEditable(false, true);
   }
+  addToFocusList(wid);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::addRomWidgets(int& ypos, WidgetArray& wid)
+void LauncherDialog::addRomWidgets(int& ypos)
 {
   const bool bottomButtons = instance().settings().getBool("launcherbuttons");
   const int lineHeight   = Dialog::lineHeight(),
@@ -261,6 +263,7 @@ void LauncherDialog::addRomWidgets(int& ypos, WidgetArray& wid)
       ? -VGAP * 4
       : bottomButtons ? Dialog::buttonHeight() : -VGAP * 2;
   int xpos = HBORDER;
+  WidgetArray wid;
 
   // Add list with game titles
   // Before we add the list, we need to know the size of the RomInfoWidget
@@ -297,10 +300,11 @@ void LauncherDialog::addRomWidgets(int& ypos, WidgetArray& wid)
     myRomInfoWidget = new RomInfoWidget(this, *myROMInfoFont,
       xpos, ypos, romWidth, myList->getHeight(), imgSize);
   }
+  addToFocusList(wid);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::addButtonWidgets(int& ypos, WidgetArray& wid)
+void LauncherDialog::addButtonWidgets(int& ypos)
 {
   const bool bottomButtons = instance().settings().getBool("launcherbuttons");
   const int lineHeight = Dialog::lineHeight(),
@@ -314,6 +318,7 @@ void LauncherDialog::addButtonWidgets(int& ypos, WidgetArray& wid)
       : bottomButtons ? Dialog::buttonHeight() : -VGAP * 2,
     buttonWidth = (_w - 2 * HBORDER - BUTTON_GAP * (4 - 1));
   int xpos = HBORDER;
+  WidgetArray wid;
 
   // Add four buttons at the bottom
   ypos = _h - VBORDER - buttonHeight;
@@ -357,6 +362,7 @@ void LauncherDialog::addButtonWidgets(int& ypos, WidgetArray& wid)
   wid.push_back(myStartButton);
 #endif
   myStartButton->setToolTip("Start emulation of selected ROM\nor switch to selected directory.");
+  addToFocusList(wid);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

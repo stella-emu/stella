@@ -122,10 +122,10 @@ class LauncherDialog : public Dialog, CommandSender
     void loadConfig() override;
     void saveConfig() override;
     void updateUI();
-    void addOptionWidgets(int& ypos, WidgetArray& wid);
-    void addPathWidgets(int& ypos, WidgetArray& wid);
-    void addRomWidgets(int& ypos, WidgetArray& wid);
-    void addButtonWidgets(int& ypos, WidgetArray& wid);
+    void addOptionWidgets(int& ypos);
+    void addPathWidgets(int& ypos);
+    void addRomWidgets(int& ypos);
+    void addButtonWidgets(int& ypos);
     string getRomDir();
 
     /**
