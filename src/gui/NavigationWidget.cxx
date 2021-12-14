@@ -37,7 +37,6 @@ NavigationWidget::NavigationWidget(GuiObject* boss, const GUI::Font& font,
   if(!myUseMinimalUI)
   {
     const int
-      fontHeight   = _font.getFontHeight(),
       fontWidth    = _font.getMaxCharWidth(),
       BTN_GAP      = fontWidth / 4;
     const bool smallIcon = lineHeight < 26;
@@ -181,7 +180,7 @@ void NavigationWidget::PathWidget::setPath(const string& path)
     cutFirst = true;
 
   // Update/add widgets for path parts display
-  int idx = 0;
+  size_t idx = 0;
   for(auto it = paths.rbegin(); it != paths.rend(); ++it, ++idx)
   {
     const string& curPath = *it;
@@ -229,7 +228,7 @@ void NavigationWidget::PathWidget::setPath(const string& path)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string& NavigationWidget::PathWidget::getPath(int idx) const
 {
-  assert(idx < myFolderList.size());
+  assert(size_t(idx) < myFolderList.size());
   return myFolderList[idx]->getPath();
 }
 
