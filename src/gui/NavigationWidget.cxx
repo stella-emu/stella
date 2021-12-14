@@ -210,7 +210,7 @@ void NavigationWidget::PathWidget::setPath(const string& path)
       // Add new widget to list
       FolderLinkWidget* s = new FolderLinkWidget(_boss, _font, x, _y,
         width, lineHeight + 2, name, curPath);
-      s->setID(idx);
+      s->setID(uInt32(idx));
       s->setTarget(myTarget);
       myFolderList.push_back(s);
       _boss->addFocusWidget(s);
