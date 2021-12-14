@@ -177,6 +177,14 @@ void FileListWidget::selectDirectory()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FileListWidget::selectDirectory(const FilesystemNode& node)
+{
+  if(node.getPath() != _node.getPath())
+    addHistory(node);
+  setLocation(node, _selectedFile);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FileListWidget::selectParent()
 {
   if(_node.hasParent())

@@ -18,6 +18,7 @@
 #include "Command.hxx"
 #include "Dialog.hxx"
 #include "EditTextWidget.hxx"
+#include "FBSurface.hxx"
 #include "FileListWidget.hxx"
 #include "Icons.hxx"
 #include "OSystem.hxx"
@@ -31,9 +32,9 @@ NavigationWidget::NavigationWidget(GuiObject* boss, const GUI::Font& font,
 {
   // Add some buttons and textfield to show current directory
   const int lineHeight = _font.getLineHeight();
-  const bool useMinimalUI = instance().settings().getBool("minimal_ui");
+  myUseMinimalUI = instance().settings().getBool("minimal_ui");
 
-  if(!useMinimalUI)
+  if(!myUseMinimalUI)
   {
     const int
       fontHeight   = _font.getFontHeight(),
@@ -71,10 +72,15 @@ NavigationWidget::NavigationWidget(GuiObject* boss, const GUI::Font& font,
     myUpButton->setToolTip("Go Up");
     boss->addFocusWidget(myUpButton);
     xpos = myUpButton->getRight() + BTN_GAP;
+
+    myPath = new PathWidget(boss, this, _font, xpos, ypos, _w + _x - xpos, lineHeight);
   }
-  myDir = new EditTextWidget(boss, _font, xpos, ypos, _w + _x - xpos, lineHeight, "");
-  myDir->setEditable(false, true);
-  myDir->clearFlags(Widget::FLAG_RETAIN_FOCUS);
+  else
+  {
+    myDir = new EditTextWidget(boss, _font, xpos, ypos, _w + _x - xpos, lineHeight, "");
+    myDir->setEditable(false, true);
+    myDir->clearFlags(Widget::FLAG_RETAIN_FOCUS);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -83,21 +89,23 @@ void NavigationWidget::setList(FileListWidget* list)
   myList = list;
 
   // Let the FileListWidget handle the button commands
-  if(myHomeButton)
+  if(!myUseMinimalUI)
+  {
     myHomeButton->setTarget(myList);
-  if(myPrevButton)
     myPrevButton->setTarget(myList);
-  if(myNextButton)
     myNextButton->setTarget(myList);
-  if(myUpButton)
     myUpButton->setTarget(myList);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void NavigationWidget::setWidth(int w)
 {
   // Adjust path display accordingly too
-  myDir->setWidth(w - (myDir->getLeft() - _x));
+  if(myUseMinimalUI)
+    myDir->setWidth(w - (myDir->getLeft() - _x));
+  else
+    myPath->setWidth(w - (myPath->getLeft() - _x));
   Widget::setWidth(w);
 }
 
@@ -105,15 +113,147 @@ void NavigationWidget::setWidth(int w)
 void NavigationWidget::updateUI()
 {
   // Only enable the navigation buttons if function is available
-  if(myHomeButton)
+  if(myUseMinimalUI)
+  {
+    myDir->setText(myList->currentDir().getShortPath());
+  }
+  else
+  {
     myHomeButton->setEnabled(myList->hasPrevHistory());
-  if(myPrevButton)
     myPrevButton->setEnabled(myList->hasPrevHistory());
-  if(myNextButton)
     myNextButton->setEnabled(myList->hasNextHistory());
-  if(myUpButton)
     myUpButton->setEnabled(myList->currentDir().hasParent());
+    myPath->setPath(myList->currentDir().getShortPath());
+  }
+}
 
-  // Show current directory
-  myDir->setText(myList->currentDir().getShortPath());
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void NavigationWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
+{
+  switch(cmd)
+  {
+    case kFolderClicked:
+    {
+      FilesystemNode node(myPath->getPath(id));
+      myList->selectDirectory(node);
+      break;
+    }
+
+    default:
+      break;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+NavigationWidget::PathWidget::PathWidget(GuiObject* boss, CommandReceiver* target,
+    const GUI::Font& font, int xpos, int ypos, int w, int h)
+  : Widget(boss, font, xpos, ypos, w, h),
+    myTarget{target}
+{
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void NavigationWidget::PathWidget::setPath(const string& path)
+{
+  const int lineHeight = _font.getLineHeight();
+  const int fontWidth = _font.getMaxCharWidth();
+  int x = _x + fontWidth, w = _w;
+  FilesystemNode node(path);
+
+  // Calculate how many path parts can be displayed
+  StringList paths;
+  bool cutFirst = false;
+  while(node.hasParent() && w >= fontWidth * 1)
+  {
+    const string& name = node.getName();
+    int l = int(name.length() + 2);
+
+    if(name.back() == FilesystemNode::PATH_SEPARATOR)
+      l--;
+    if(node.getParent().hasParent())
+      l++;
+
+    w -= l * fontWidth;
+    paths.push_back(node.getPath());
+    node = node.getParent();
+  }
+  if(w < 0 || node.hasParent())
+    cutFirst = true;
+
+  // Update/add widgets for path parts display
+  int idx = 0;
+  for(auto it = paths.rbegin(); it != paths.rend(); ++it, ++idx)
+  {
+    const string& curPath = *it;
+    node = FilesystemNode(curPath);
+    string name = node.getName();
+
+    if(it == paths.rbegin() && cutFirst)
+      name = ">";
+    else
+    {
+      if(name.back() == FilesystemNode::PATH_SEPARATOR)
+        name.pop_back();
+      if(it + 1 != paths.rend())
+        name += " >";
+    }
+    const int width = int(name.length() + 1) * fontWidth;
+
+    if(myFolderList.size() > idx)
+    {
+      myFolderList[idx]->setPath(curPath);
+      myFolderList[idx]->setPosX(x);
+      myFolderList[idx]->setWidth(width);
+      myFolderList[idx]->setLabel(name);
+    }
+    else
+    {
+      // Add new widget to list
+      FolderLinkWidget* s = new FolderLinkWidget(_boss, _font, x, _y,
+        width, lineHeight + 2, name, curPath);
+      s->setID(idx);
+      s->setTarget(myTarget);
+      myFolderList.push_back(s);
+      _boss->addFocusWidget(s);
+    }
+    x += width;
+  }
+  // Hide any remaining widgets
+  while(idx < size(myFolderList))
+  {
+    myFolderList[idx]->setWidth(0);
+    ++idx;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const string& NavigationWidget::PathWidget::getPath(int idx) const
+{
+  assert(idx < myFolderList.size());
+  return myFolderList[idx]->getPath();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+NavigationWidget::PathWidget::FolderLinkWidget::FolderLinkWidget(
+    GuiObject* boss, const GUI::Font& font,
+    int x, int y, int w, int h, const string& text, const string& path)
+  : ButtonWidget(boss, font, x, y, w, h, text, kFolderClicked),
+    myPath{path}
+{
+  _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG;
+
+  _bgcolor = kDlgColor;
+  _bgcolorhi = kBtnColorHi;
+  _textcolor = kTextColor;
+  _align = TextAlign::Center;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void NavigationWidget::PathWidget::FolderLinkWidget::drawWidget(bool hilite)
+{
+  FBSurface& s = _boss->dialog().surface();
+
+  if(hilite)
+    s.frameRect(_x, _y, _w, _h, kBtnBorderColorHi);
+  s.drawString(_font, _label, _x + 1, _y + 2, _w, hilite ? _textcolorhi : _textcolor, _align);
 }

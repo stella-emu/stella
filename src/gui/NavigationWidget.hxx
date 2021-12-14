@@ -27,6 +27,69 @@ class Font;
 class NavigationWidget : public Widget
 {
   public:
+    enum {
+      kFolderClicked = 'flcl'
+    };
+
+  private:
+    class PathWidget : public Widget
+    {
+      private:
+        class FolderLinkWidget : public ButtonWidget
+        {
+          public:
+            FolderLinkWidget(GuiObject* boss, const GUI::Font& font,
+              int x, int y, int w, int h, const string& text, const string& path);
+            ~FolderLinkWidget() = default;
+
+            void setPath(const string& path) { myPath = path; }
+            const string& getPath() const { return myPath; };
+
+          private:
+            void drawWidget(bool hilite) override;
+
+          private:
+            string myPath;
+
+          private:
+            // Following constructors and assignment operators not supported
+            FolderLinkWidget() = delete;
+            FolderLinkWidget(const FolderLinkWidget&) = delete;
+            FolderLinkWidget(FolderLinkWidget&&) = delete;
+            FolderLinkWidget& operator=(const FolderLinkWidget&) = delete;
+            FolderLinkWidget& operator=(FolderLinkWidget&&) = delete;
+        }; // FolderLinkWidget
+
+      public:
+        PathWidget(GuiObject* boss, CommandReceiver* target,
+          const GUI::Font& font, int x, int y, int w, int h);
+        ~PathWidget() = default;
+
+        void setPath(const string& path);
+        const string& getPath(int idx) const;
+
+      private:
+        struct PathType
+        {
+          string path;
+          StaticTextWidget* widget{nullptr};
+
+          explicit PathType(const string& _path, StaticTextWidget* _widget)
+            : path{_path}, widget{_widget} {}
+        };
+        std::vector<FolderLinkWidget*> myFolderList;
+        CommandReceiver* myTarget;
+
+      private:
+        // Following constructors and assignment operators not supported
+        PathWidget() = delete;
+        PathWidget(const PathWidget&) = delete;
+        PathWidget(PathWidget&&) = delete;
+        PathWidget& operator=(const PathWidget&) = delete;
+        PathWidget& operator=(PathWidget&&) = delete;
+    }; // PathWidget
+
+  public:
     NavigationWidget(GuiObject* boss, const GUI::Font& font,
       int x, int y, int w, int h);
     ~NavigationWidget() = default;
@@ -36,13 +99,27 @@ class NavigationWidget : public Widget
     void updateUI();
 
   private:
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+  private:
+    bool              myUseMinimalUI{false};
+
     ButtonWidget*     myHomeButton{nullptr};
     ButtonWidget*     myPrevButton{nullptr};
     ButtonWidget*     myNextButton{nullptr};
     ButtonWidget*     myUpButton{nullptr};
     EditTextWidget*   myDir{nullptr};
+    PathWidget*       myPath{nullptr};
 
     FileListWidget*   myList{nullptr};
-};
+
+  private:
+    // Following constructors and assignment operators not supported
+    NavigationWidget() = delete;
+    NavigationWidget(const NavigationWidget&) = delete;
+    NavigationWidget(NavigationWidget&&) = delete;
+    NavigationWidget& operator=(const NavigationWidget&) = delete;
+    NavigationWidget& operator=(NavigationWidget&&) = delete;
+}; // NavigationWidget
 
 #endif
