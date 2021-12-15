@@ -149,6 +149,10 @@ class Dialog : public GuiObject
     int indent() const { return fontWidth() * 2; }
 
   protected:
+    enum {
+      kHelpCmd = 'DlHp'
+    };
+
     void draw() override { }
     void releaseFocus() override;
 
@@ -205,10 +209,6 @@ class Dialog : public GuiObject
     virtual bool repeatEnabled() { return true; }
 
   private:
-    enum {
-      kHelpCmd = 'DlHp'
-    };
-
     void buildCurrentFocusList(int tabID = -1);
     bool handleNavEvent(Event::Type e, bool repeated = false);
     void getTabIdForWidget(Widget* w);

@@ -199,6 +199,7 @@ class LauncherDialog : public Dialog, CommandSender
     ButtonWidget*     myOnlyRomsButton{nullptr};
     ButtonWidget*     mySubDirsButton{nullptr};
     StaticTextWidget* myRomCount{nullptr};
+    ButtonWidget*     myHelpButton{nullptr};
 
     NavigationWidget* myNavigationBar{nullptr};
     ButtonWidget*     myReloadButton{nullptr};
