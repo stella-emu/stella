@@ -657,6 +657,10 @@
 		DCE9681527553F1000E99839 /* FavoritesManager.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE9681127553F1000E99839 /* FavoritesManager.cxx */; };
 		DCE9681627553F1000E99839 /* FavoritesManager.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE9681227553F1000E99839 /* FavoritesManager.hxx */; };
 		DCE9681727553F1000E99839 /* LauncherFileListWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE9681327553F1000E99839 /* LauncherFileListWidget.cxx */; };
+		DCE9681A2761128200E99839 /* Icons.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE968182761128200E99839 /* Icons.hxx */; };
+		DCE9681B2761128200E99839 /* Icon.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE968192761128200E99839 /* Icon.hxx */; };
+		DCE9681E276A40AC00E99839 /* NavigationWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE9681C276A40AB00E99839 /* NavigationWidget.cxx */; };
+		DCE9681F276A40AC00E99839 /* NavigationWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE9681D276A40AB00E99839 /* NavigationWidget.hxx */; };
 		DCEC58581E945125002F0246 /* DelayQueueWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCEC58561E945125002F0246 /* DelayQueueWidget.cxx */; };
 		DCEC58591E945125002F0246 /* DelayQueueWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCEC58571E945125002F0246 /* DelayQueueWidget.hxx */; };
 		DCEC585E1E945175002F0246 /* DelayQueueIterator.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCEC585B1E945175002F0246 /* DelayQueueIterator.hxx */; };
@@ -1477,6 +1481,10 @@
 		DCE9681127553F1000E99839 /* FavoritesManager.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FavoritesManager.cxx; sourceTree = "<group>"; };
 		DCE9681227553F1000E99839 /* FavoritesManager.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FavoritesManager.hxx; sourceTree = "<group>"; };
 		DCE9681327553F1000E99839 /* LauncherFileListWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LauncherFileListWidget.cxx; sourceTree = "<group>"; };
+		DCE968182761128200E99839 /* Icons.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Icons.hxx; sourceTree = "<group>"; };
+		DCE968192761128200E99839 /* Icon.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Icon.hxx; sourceTree = "<group>"; };
+		DCE9681C276A40AB00E99839 /* NavigationWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NavigationWidget.cxx; sourceTree = "<group>"; };
+		DCE9681D276A40AB00E99839 /* NavigationWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = NavigationWidget.hxx; sourceTree = "<group>"; };
 		DCEC58561E945125002F0246 /* DelayQueueWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DelayQueueWidget.cxx; sourceTree = "<group>"; };
 		DCEC58571E945125002F0246 /* DelayQueueWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = DelayQueueWidget.hxx; sourceTree = "<group>"; };
 		DCEC585B1E945175002F0246 /* DelayQueueIterator.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = DelayQueueIterator.hxx; sourceTree = "<group>"; };
@@ -2231,6 +2239,8 @@
 				DC816CFE25757DC200FBCCDA /* HighScoresDialog.hxx */,
 				DC816D0025757DC200FBCCDA /* HighScoresMenu.cxx */,
 				DC816D0125757DC200FBCCDA /* HighScoresMenu.hxx */,
+				DCE968192761128200E99839 /* Icon.hxx */,
+				DCE968182761128200E99839 /* Icons.hxx */,
 				2D05FF60096E269100A518FE /* InputDialog.cxx */,
 				2D05FF61096E269100A518FE /* InputDialog.hxx */,
 				2D02207F08A301F200B9C76B /* InputTextDialog.cxx */,
@@ -2255,6 +2265,8 @@
 				DCDE647A23E6638D00EE3EFF /* MessageMenu.hxx */,
 				DC2410E22274BDA8007A4CBF /* MinUICommandDialog.cxx */,
 				DC2410E12274BDA7007A4CBF /* MinUICommandDialog.hxx */,
+				DCE9681C276A40AB00E99839 /* NavigationWidget.cxx */,
+				DCE9681D276A40AB00E99839 /* NavigationWidget.hxx */,
 				2DDBEAC4084578BF00812C11 /* OptionsDialog.cxx */,
 				2DDBEAC5084578BF00812C11 /* OptionsDialog.hxx */,
 				DC6DC5DB273C2A5E00F64413 /* OptionsMenu.cxx */,
@@ -2884,6 +2896,7 @@
 				DCFCDE7320C9E66500915CBE /* EmulationWorker.hxx in Headers */,
 				DC6C726313CDEA0A008A5975 /* LoggerDialog.hxx in Headers */,
 				DC8C1BAE14B25DE7006440EE /* CartCM.hxx in Headers */,
+				DCE9681F276A40AC00E99839 /* NavigationWidget.hxx in Headers */,
 				DCF3A6FB1DFC75E3008A8AF3 /* Player.hxx in Headers */,
 				DCDDEAC71F5DBF0400C67366 /* StateManager.hxx in Headers */,
 				DC8C1BB014B25DE7006440EE /* CompuMate.hxx in Headers */,
@@ -2929,6 +2942,7 @@
 				DCAAE5E11715887B0080BB82 /* CartEFWidget.hxx in Headers */,
 				DC70065D241EC97900A459AB /* Stella16x32tFont.hxx in Headers */,
 				DCDFF08220B781B0001227C0 /* DispatchResult.hxx in Headers */,
+				DCE9681A2761128200E99839 /* Icons.hxx in Headers */,
 				DCF8621A21C9D43300F95F52 /* StaggeredLogger.hxx in Headers */,
 				DCE9681627553F1000E99839 /* FavoritesManager.hxx in Headers */,
 				DCAAE5E31715887B0080BB82 /* CartF0Widget.hxx in Headers */,
@@ -2954,6 +2968,7 @@
 				DC676A4C1729A0B000E4E73D /* CartDPCPlusWidget.hxx in Headers */,
 				DC676A4E1729A0B000E4E73D /* CartDPCWidget.hxx in Headers */,
 				DC2410E32274BDA8007A4CBF /* MinUICommandDialog.hxx in Headers */,
+				DCE9681B2761128200E99839 /* Icon.hxx in Headers */,
 				DCCA26B31FA64D5E000EE4D8 /* AbstractFrameManager.hxx in Headers */,
 				DC3EE8631E2C0E6D00905161 /* inffast.h in Headers */,
 				DC676A501729A0B000E4E73D /* CartE0Widget.hxx in Headers */,
@@ -3434,6 +3449,7 @@
 				DCAACAF8188D631500A4D282 /* CartBF.cxx in Sources */,
 				DCAACAFA188D631500A4D282 /* CartBFSC.cxx in Sources */,
 				DCAACAFC188D631500A4D282 /* CartDF.cxx in Sources */,
+				DCE9681E276A40AC00E99839 /* NavigationWidget.cxx in Sources */,
 				DCAACAFE188D631500A4D282 /* CartDFSC.cxx in Sources */,
 				DCAACB0E188D636F00A4D282 /* Cart4KSCWidget.cxx in Sources */,
 				DCB60AD02543100900A5C1D2 /* FBBackendSDL2.cxx in Sources */,
@@ -3510,6 +3526,7 @@
 				INFOPLIST_FILE = "Info-Stella.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = "$(LIBRARY_SEARCH_PATHS)";
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-lz";
 				PRODUCT_BUNDLE_IDENTIFIER = "Stella-emu";
@@ -3569,6 +3586,7 @@
 				INFOPLIST_FILE = "Info-Stella.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = "$(LIBRARY_SEARCH_PATHS)";
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-lz";
 				PRODUCT_BUNDLE_IDENTIFIER = "Stella-emu";
@@ -3652,7 +3670,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INSTALL_PATH = "@rpath";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 				VALID_ARCHS = x86_64;
@@ -3727,7 +3745,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INSTALL_PATH = "@rpath";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 				VALID_ARCHS = x86_64;

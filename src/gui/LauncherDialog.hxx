@@ -221,7 +221,6 @@ class LauncherDialog : public Dialog, CommandSender
     int mySelectedItem{0};
 
     bool myShowOnlyROMs{false};
-    bool myIncludeSubDirs{false};
     bool myUseMinimalUI{false};
     bool myEventHandled{false};
     bool myShortCount{false};

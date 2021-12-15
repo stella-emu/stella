@@ -66,7 +66,7 @@ void FileListWidget::setDirectory(const FilesystemNode& node,
   // History is in reverse order; we need to fix that
   std::reverse(_history.begin(), _history.end());
   _currentHistory = std::prev(_history.end(), 1);
-  _historyHome = _currentHistory - _history.begin();
+  _historyHome = int(_currentHistory - _history.begin());
 
   // Finally, go to this location
   setLocation(_node, _selectedFile);
