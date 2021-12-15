@@ -62,6 +62,9 @@ WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent,
     add(ypos, "fixed palette and TV effects saving");
   }
   add(ypos, "added MovieCart support");
+  add(ypos, "keep multiple dump files when dumping to SD");
+  add(ypos, "removed deadzone from USB game controllers");
+  add(ypos, "add opt-out for overclocking to the settings file")
 #else
   if(version < "6.5")
   {
