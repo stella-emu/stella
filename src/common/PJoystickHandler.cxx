@@ -838,11 +838,10 @@ void PhysicalJoystickHandler::handleRegularAxisEvent(const PhysicalJoystickPtr j
       // Now filter out consecutive, similar values
       // (only pass on the event if the state has changed)
       if(value != j->axisLastValue[axis])
-      {
         myHandler.overlay().handleJoyAxisEvent(stick, JoyAxis(axis), convertAxisValue(value), button);
-
-      }
     }
+    else
+      myHandler.overlay().handleJoyAxisEvent(stick, JoyAxis(axis), JoyDir::NONE, button);
     j->axisLastValue[axis] = value;
   }
 #endif
