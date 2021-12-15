@@ -323,7 +323,6 @@ void LauncherDialog::addButtonWidgets(int& ypos)
     VBORDER = Dialog::vBorder(),
     HBORDER = Dialog::hBorder(),
     VGAP = Dialog::vGap(),
-    LBL_GAP = Dialog::fontWidth(),
     buttonHeight = myUseMinimalUI
       ? lineHeight - VGAP * 4
       : bottomButtons ? Dialog::buttonHeight() : -VGAP * 2,
