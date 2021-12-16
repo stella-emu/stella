@@ -605,7 +605,10 @@ void LauncherDialog::applyFiltering()
       if(!node.isDirectory())
       {
         // Do we want to show only ROMs or all files?
-        if(myShowOnlyROMs && !Bankswitch::isValidRomName(node))
+        string ext;
+        if(myShowOnlyROMs &&
+            (!Bankswitch::isValidRomName(node, ext)
+              || BSPF::compareIgnoreCase(ext, "zip") == 0)) // exclude ZIPs without any valid ROMs
           return false;
 
         // Skip over files that don't match the pattern in the 'pattern' textbox
