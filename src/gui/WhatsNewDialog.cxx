@@ -47,20 +47,6 @@ WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent,
 
   const string& version = instance().settings().getString("stella.version");
 #ifdef RETRON77
-  if(version < "6.5")
-  {
-    add(ypos, "increased sample size for CDFJ+");
-    add(ypos, "fixed navigation bug in Video & Audio settings dialog");
-    add(ypos, "fixed autofire bug for trackball controllers");
-    add(ypos, "fixed paddle button bug for jittering controllers");
-    add(ypos, "improved switching between joysticks and paddles");
-    add(ypos, "improved memory usage in UI mode");
-    add(ypos, "fixed broken Driving Controller support for Stelladaptor/2600-daptor devices");
-    add(ypos, "fixed missing QuadTari option in UI");
-    add(ypos, "improved analog input reading");
-    add(ypos, "fixed QuadTari support for some controller types");
-    add(ypos, "fixed palette and TV effects saving");
-  }
   add(ypos, "added MovieCart support");
   add(ypos, "keep multiple dump files when dumping to SD");
   add(ypos, "removed deadzone from USB game controllers");
