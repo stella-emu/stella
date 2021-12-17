@@ -1152,12 +1152,14 @@ void LauncherDialog::openContextMenu(int x, int y)
       ? "Show all files"
       : "Show only ROMs", "showall"));
   #endif
-    items.push_back(ContextItem("Go to home directory", "homedir"));
+    items.push_back(ContextItem("Go to initial directory", "homedir"));
     items.push_back(ContextItem("Go to parent directory", "prevdir"));
   #ifndef RETRON77
     items.push_back(ContextItem("Reload listing", "reload"));
-  #endif
     items.push_back(ContextItem("Options" + ELLIPSIS, "options"));
+  #else
+    items.push_back(ContextItem("Settings" + ELLIPSIS, "options"));
+  #endif
   }
   else
   {

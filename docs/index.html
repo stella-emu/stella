@@ -2261,29 +2261,24 @@
       <th>Key (macOS)</th>
     </tr>
     <tr>
-      <td>Open context-sensitive help</td>
-      <td>F1</td>
-      <td>Shift-Cmd + ?</td>
+      <td>Go to initial directory (also in other file dialogs)</td>
+      <td>Alt + Home</td>
+      <td>Alt + Home</td>
+    </tr>
+    <tr>
+      <td>Go to previous directory in history (also in other file dialogs)</td>
+      <td>Alt + Left arrow</td>
+      <td>Alt + Left arrow</td>
+    </tr>
+    <tr>
+      <td>Go to next directory in history (also in other file dialogs)</td>
+      <td>Alt + Right arrow</td>
+      <td>Alt + Right arrow</td>
     </tr>
     <tr>
       <td>Go to parent directory (also in other file dialogs)</td>
       <td>Backspace, Alt + Up arrow</td>
       <td>Backspace, Alt + Up arrow</td>
-    </tr>
-    <tr>
-      <td>Go to home directory</td>
-      <td>Alt + Home</td>
-      <td>Alt + Home</td>
-    </tr>
-    <tr>
-      <td>Go to previous directory in history</td>
-      <td>Alt + Left arrow</td>
-      <td>Alt + Left arrow</td>
-    </tr>
-    <tr>
-      <td>Go to next directory in history</td>
-      <td>Alt + Right arrow</td>
-      <td>Alt + Right arrow</td>
     </tr>
     <tr>
       <td>Remove from 'Recently Played' or 'Most Popular' folder</td>
@@ -2321,7 +2316,7 @@
       <td>Control + A</td>
     </tr>
     <tr>
-      <td>Toggle favorites sorting</td>
+      <td>Toggle favorites sorting (normal or alternative)</td>
       <td>Control + S</td>
       <td>Control + S</td>
     </tr>
@@ -3281,6 +3276,11 @@
     </tr>
 
     <tr>
+      <td><pre>-launcherbuttons &lt;1|0&gt;</pre></td>
+      <td>Enable bottom buttons in the ROM launcher.</td>
+    </tr>
+
+    <tr>
       <td><pre>-launcherroms &lt;1|0&gt;</pre></td>
       <td>Specifies whether to show ROMs only (the default) or all
         files in the ROM launcher.</td>
@@ -3298,13 +3298,18 @@
     </tr>
 
     <tr>
-      <td><pre>-altsorting &lt;1|0&gt;</pre></td>
-      <td>Alternative sorting in virtual folders.</td>
+      <td><pre>-favorites &lt;1|0&gt;</pre></td>
+      <td>Enable favorites tracking and display.</td>
     </tr>
 
     <tr>
-      <td><pre>-maxrecentroms &lt;1|0&gt;</pre></td>
-      <td>Number of ROMs tracked in 'Recently Played' folder.</td>
+      <td><pre>-altsorting &lt;1|0&gt;</pre></td>
+      <td>Use alternative sorting in virtual favorites folders.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-maxrecentroms &lt;number&gt;</pre></td>
+      <td>Set number of ROMs tracked in 'Recently Played' folder (default = 20).</td>
     </tr>
 
     <tr>

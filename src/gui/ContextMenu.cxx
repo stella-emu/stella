@@ -331,6 +331,7 @@ void ContextMenu::handleEvent(Event::Type e)
       moveToLast();
       break;
     case Event::UICancel:
+    case Event::UIOK:
       close();
       break;
     default:
