@@ -37,8 +37,6 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
   _w = max_w;
   _h = max_h;
   const int lineHeight   = Dialog::lineHeight(),
-            //fontHeight   = Dialog::fontHeight(),
-            //fontWidth    = Dialog::fontWidth(),
             buttonHeight = Dialog::buttonHeight(),
             buttonWidth  = Dialog::buttonWidth("Base Dir"),
             BUTTON_GAP   = Dialog::buttonGap(),
@@ -51,15 +49,15 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
 
   xpos = HBORDER;  ypos = VBORDER + _th;
 
-  // Current path - TODO: handle long paths ?
-  _navigationBar = new NavigationWidget(this, font, xpos, ypos, _w - HBORDER * 2, lineHeight);
+  // Current path
+  _navigationBar = new NavigationWidget(this, font, xpos, ypos, _w - HBORDER * 2, buttonHeight);
 
   xpos = _w - (HBORDER + _font.getStringWidth("Save") + CheckboxWidget::prefixSize(_font));
   _savePathBox = new CheckboxWidget(this, font, xpos, ypos + 2, "Save");
   _savePathBox->setToolTip("Check to save current path as default.");
 
   // Add file list
-  xpos = HBORDER; ypos += lineHeight + VGAP * 2;
+  xpos = HBORDER; ypos = _navigationBar->getBottom() + VGAP;
   _fileList = new FileListWidget(this, font, xpos, ypos, _w - 2 * xpos,
                                  _h - selectHeight - buttonHeight - ypos - VBORDER * 2);
   _fileList->setEditable(false);
@@ -300,11 +298,11 @@ void BrowserDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kBaseDirCmd:
-      _fileList->setDirectory(FilesystemNode(instance().baseDir()));
+      _fileList->selectDirectory(FilesystemNode(instance().baseDir()));
       break;
 
     case kHomeDirCmd:
-      _fileList->setDirectory(FilesystemNode(instance().homeDir()));
+      _fileList->selectDirectory(FilesystemNode(instance().homeDir()));
       break;
 
     case EditableWidget::kChangedCmd:
