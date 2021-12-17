@@ -45,8 +45,8 @@ NavigationWidget::NavigationWidget(GuiObject* boss, const GUI::Font& font,
     const GUI::Icon& nextIcon = smallIcon ? GUI::icon_next_small : GUI::icon_next_large;
     const GUI::Icon& upIcon = smallIcon ? GUI::icon_up_small : GUI::icon_up_large;
     const int iconWidth = homeIcon.width();
-    const int buttonWidth = iconWidth + ((fontWidth + 1) & ~0b1) - 1; // round up to next odd
-    const int buttonHeight = lineHeight + 2;
+    const int buttonWidth = iconWidth + ((fontWidth + 1) & ~0b1) + 1; // round up to next odd
+    const int buttonHeight = h;
 
     myHomeButton = new ButtonWidget(boss, _font, xpos, ypos,
       buttonWidth, buttonHeight, homeIcon, FileListWidget::kHomeDirCmd);
@@ -72,7 +72,7 @@ NavigationWidget::NavigationWidget(GuiObject* boss, const GUI::Font& font,
     boss->addFocusWidget(myUpButton);
     xpos = myUpButton->getRight() + BTN_GAP;
 
-    myPath = new PathWidget(boss, this, _font, xpos, ypos, _w + _x - xpos, lineHeight);
+    myPath = new PathWidget(boss, this, _font, xpos, ypos, _w + _x - xpos, h);
   }
   else
   {
@@ -209,7 +209,7 @@ void NavigationWidget::PathWidget::setPath(const string& path)
     {
       // Add new widget to list
       FolderLinkWidget* s = new FolderLinkWidget(_boss, _font, x, _y,
-        width, lineHeight + 2, name, curPath);
+        width, _h, name, curPath);
       s->setID(uInt32(idx));
       s->setTarget(myTarget);
       myFolderList.push_back(s);
@@ -254,5 +254,6 @@ void NavigationWidget::PathWidget::FolderLinkWidget::drawWidget(bool hilite)
 
   if(hilite)
     s.frameRect(_x, _y, _w, _h, kBtnBorderColorHi);
-  s.drawString(_font, _label, _x + 1, _y + 2, _w, hilite ? _textcolorhi : _textcolor, _align);
+  s.drawString(_font, _label, _x + 1, _y + (_h - _font.getFontHeight()) / 2 , _w,
+    hilite ? _textcolorhi : _textcolor, _align);
 }
