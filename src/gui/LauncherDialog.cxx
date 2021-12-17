@@ -130,20 +130,20 @@ void LauncherDialog::addOptionWidgets(int& ypos)
     const GUI::Icon& settingsIcon = smallIcon ? GUI::icon_settings_small : GUI::icon_settings_large;
     const GUI::Icon& helpIcon = smallIcon ? GUI::icon_help_small : GUI::icon_help_large;
     const int iconWidth = settingsIcon.width();
-    const int iconGap = (fontWidth + 1) & ~0b1; // round up to next even
+    const int iconGap = ((fontWidth + 1) & ~0b1) + 1; // round up to next even
     const int buttonWidth = iconWidth + iconGap;
     const GUI::Icon& dummyIcon = settingsIcon;
 
     int xpos = HBORDER;
     mySettingsButton = new ButtonWidget(this, _font, xpos, ypos - btnYOfs,
-      iconWidth, Dialog::buttonHeight(), settingsIcon,
+      iconWidth, buttonHeight, settingsIcon,
       iconGap, " Options" + ELLIPSIS + " ", kOptionsCmd);
     wid.push_back(mySettingsButton);
 
     const int cwSettings = mySettingsButton->getWidth();
     const int cwSubDirs = buttonWidth;
     const int cwAllFiles = buttonWidth;
-    const int cwHelp = buttonWidth - 1; // one pixel narrower to align the the reload button below.
+    const int cwHelp = buttonWidth;
     const string& lblFilter = "Filter";
     int lwFilter = _font.getStringWidth(lblFilter);
     int fwFilter = EditTextWidget::calcWidth(_font, "123456"); // at least 6 chars
@@ -196,9 +196,9 @@ void LauncherDialog::addOptionWidgets(int& ypos)
     wid.push_back(mySubDirsButton);
 
     // Show the help button
-    xpos = _w - HBORDER - (buttonWidth - 1);
+    xpos = _w - HBORDER - buttonWidth;
     myHelpButton = new ButtonWidget(this, _font, xpos, ypos - btnYOfs,
-      buttonWidth - 1, buttonHeight, helpIcon, kHelpCmd);
+      buttonWidth, buttonHeight, helpIcon, kHelpCmd);
     const string key = instance().eventHandler().getMappingDesc(Event::UIHelp, EventMode::kMenuMode);
     myHelpButton->setToolTip("Click or press " + key + " for help.");
     wid.push_back(myHelpButton);
@@ -230,8 +230,8 @@ void LauncherDialog::addPathWidgets(int& ypos)
   const int lwFound = _font.getStringWidth(lblFound);
   const GUI::Icon& reloadIcon = smallIcon ? GUI::icon_reload_small : GUI::icon_reload_large;
   const int iconWidth = reloadIcon.width();
-  const int buttonWidth = iconWidth + ((fontWidth + 1) & ~0b1) - 1; // round up to next odd
-  const int buttonHeight = lineHeight + 2;
+  const int buttonWidth = iconWidth + ((fontWidth + 1) & ~0b1) + 1; // round up to next odd
+  const int buttonHeight = Dialog::buttonHeight(); //  lineHeight + 2;
   const int wNav = _w - HBORDER * 2 - (myUseMinimalUI ? lwFound + LBL_GAP : buttonWidth + BTN_GAP);
   int xpos = HBORDER;
   WidgetArray wid;
@@ -245,6 +245,7 @@ void LauncherDialog::addPathWidgets(int& ypos)
       buttonWidth, buttonHeight, reloadIcon, kReloadCmd);
     myReloadButton->setToolTip("Reload listing");
     wid.push_back(myReloadButton);
+    ypos = myNavigationBar->getBottom() + Dialog::vGap();
   }
   else
   {
@@ -257,6 +258,7 @@ void LauncherDialog::addPathWidgets(int& ypos)
     EditTextWidget* e = new EditTextWidget(this, _font, myNavigationBar->getRight() - 1, ypos,
       lwFound + LBL_GAP + 1, lineHeight, "");
     e->setEditable(false, true);
+    ypos = myNavigationBar->getBottom();
   }
   addToFocusList(wid);
 }
@@ -271,15 +273,15 @@ void LauncherDialog::addRomWidgets(int& ypos)
     HBORDER      = Dialog::hBorder(),
     VGAP         = Dialog::vGap(),
     buttonHeight = myUseMinimalUI
-      ? -VGAP * 4
+      ? -VGAP * 2
       : bottomButtons ? Dialog::buttonHeight() : -VGAP * 2;
   int xpos = HBORDER;
   WidgetArray wid;
 
   // Add list with game titles
   // Before we add the list, we need to know the size of the RomInfoWidget
-  ypos += lineHeight + VGAP;
-  const int listHeight = _h - VBORDER * 2 - lineHeight * 2 - buttonHeight - VGAP * 6;
+  const int listHeight = _h - ypos - VBORDER - buttonHeight - VGAP * 3;
+
   const float imgZoom = getRomInfoZoom(listHeight);
   const int romWidth = imgZoom * TIAConstants::viewableWidth;
   const int listWidth = _w - (romWidth > 0 ? romWidth + fontWidth : 0) - HBORDER * 2;
