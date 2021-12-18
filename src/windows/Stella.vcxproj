@@ -1826,6 +1826,7 @@
     <ClInclude Include="..\common\sdl_blitter\Blitter.hxx" />
     <ClInclude Include="..\common\sdl_blitter\BlitterFactory.hxx" />
     <ClInclude Include="..\common\sdl_blitter\QisBlitter.hxx" />
+    <ClInclude Include="..\common\SDL_lib.hxx" />
     <ClInclude Include="..\common\StaggeredLogger.hxx" />
     <ClInclude Include="..\common\StateManager.hxx" />
     <ClInclude Include="..\common\StellaKeys.hxx" />

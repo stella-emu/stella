@@ -24,7 +24,7 @@
  * We can't control the quality of code from outside projects, so for now
  * just disable warnings for it.
  */
-#ifdef __clang__
+#if defined(__clang__)
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Wdocumentation"
   #pragma clang diagnostic ignored "-Wdocumentation-unknown-command"
@@ -33,6 +33,10 @@
   #pragma clang diagnostic ignored "-Wold-style-cast"
   #include <SDL.h>
   #pragma clang diagnostic pop
+#elif defined(BSPF_WINDOWS)
+  #pragma warning(push, 0)
+  #include <SDL.h>
+  #pragma warning(pop)
 #else
   #include <SDL.h>
 #endif
@@ -51,7 +55,8 @@ static inline string SDLVersion()
   ostringstream buf;
   SDL_version ver;
   SDL_GetVersion(&ver);
-  buf << "SDL " << int(ver.major) << "." << int(ver.minor) << "." << int(ver.patch);
+  buf << "SDL " << static_cast<int>(ver.major) << "." << static_cast<int>(ver.minor)
+      << "." << static_cast<int>(ver.patch);
   return buf.str();
 }
 

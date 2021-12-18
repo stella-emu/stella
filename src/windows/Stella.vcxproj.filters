@@ -2333,6 +2333,9 @@
     <ClInclude Include="..\httplib\httplib.h">
       <Filter>Header Files\httplib</Filter>
     </ClInclude>
+    <ClInclude Include="..\common\SDL_lib.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="stella.ico">
