@@ -135,7 +135,7 @@ namespace BSPF
   #endif
 
   // Get next power of two greater than or equal to the given value
-  inline size_t nextPowerOfTwo(size_t size) {
+  inline constexpr size_t nextPowerOfTwo(size_t size) {
     if(size < 2) return 1;
     size_t power2 = 1;
     while(power2 < size)
@@ -145,7 +145,7 @@ namespace BSPF
 
   // Get next multiple of the given value
   // Note that this only works when multiple is a power of two
-  inline size_t nextMultipleOf(size_t size, size_t multiple) {
+  inline constexpr size_t nextMultipleOf(size_t size, size_t multiple) {
     return (size + multiple - 1) & ~(multiple - 1);
   }
 
@@ -244,7 +244,7 @@ namespace BSPF
   {
     auto pos = std::search(s1.cbegin()+startpos, s1.cend(),
       s2.cbegin(), s2.cend(), [](char ch1, char ch2) {
-        return toupper(uInt8(ch1)) == toupper(uInt8(ch2));
+        return toupper(static_cast<uInt8>(ch1)) == toupper(static_cast<uInt8>(ch2));
       });
     return pos == s1.cend() ? string::npos : pos - (s1.cbegin()+startpos);
   }
@@ -265,7 +265,7 @@ namespace BSPF
       size_t pos = 1;
       for(uInt32 j = 1; j < s2.size(); ++j)
       {
-        size_t found = findIgnoreCase(s1, s2.substr(j, 1), pos);
+        const size_t found = findIgnoreCase(s1, s2.substr(j, 1), pos);
         if(found == string::npos)
           return false;
         pos += found + 1;
@@ -282,7 +282,7 @@ namespace BSPF
   inline bool matchesCamelCase(const string_view s1, const string_view s2)
   {
     // skip leading '_' for matching
-    uInt32 ofs = (s1[0] == '_' && s2[0] == '_') ? 1 : 0;
+    const uInt32 ofs = (s1[0] == '_' && s2[0] == '_') ? 1 : 0;
 
     if(startsWithIgnoreCase(s1.substr(ofs), s2.substr(ofs, 1)))
     {
@@ -292,7 +292,7 @@ namespace BSPF
       {
         if(std::isupper(s2[j]))
         {
-          size_t found = s1.find_first_of(s2[j], pos + ofs);
+          const size_t found = s1.find_first_of(s2[j], pos + ofs);
 
           if(found == string::npos)
             return false;
@@ -306,7 +306,7 @@ namespace BSPF
         }
         else
         {
-          size_t found = findIgnoreCase(s1, s2.substr(j, 1), pos + ofs);
+          const size_t found = findIgnoreCase(s1, s2.substr(j, 1), pos + ofs);
 
           if(found == string::npos)
             return false;
@@ -335,7 +335,7 @@ namespace BSPF
   // Trim leading and trailing whitespace from a string
   inline string trim(const string& str)
   {
-    string::size_type first = str.find_first_not_of(' ');
+    const string::size_type first = str.find_first_not_of(' ');
     return (first == string::npos) ? EmptyString :
             str.substr(first, str.find_last_not_of(' ')-first+1);
   }

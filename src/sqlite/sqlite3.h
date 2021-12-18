@@ -24,11 +24,15 @@
  * We can't control the quality of code from outside projects, so for now
  * just disable warnings for it.
  */
-#ifdef __clang__
+#if defined(__clang__)
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Weverything"
   #include "source/sqlite3.h"
   #pragma clang diagnostic pop
+#elif defined(BSPF_WINDOWS)
+  #pragma warning(push, 0)
+  #include "source/sqlite3.h"
+  #pragma warning(pop)
 #else
   #include "source/sqlite3.h"
 #endif
