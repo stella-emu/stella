@@ -91,6 +91,9 @@
     <Filter Include="Source Files\sqlite\source">
       <UniqueIdentifier>{ea737878-f4b5-4334-a356-353c6b68bdcd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\httplib">
+      <UniqueIdentifier>{e216a718-4078-4a08-b134-4987ec071e31}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common\FBBackendSDL2.cxx">
@@ -2323,6 +2326,12 @@
     </ClInclude>
     <ClInclude Include="..\gui\NavigationWidget.hxx">
       <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\httplib\http_lib.hxx">
+      <Filter>Header Files\httplib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\httplib\httplib.h">
+      <Filter>Header Files\httplib</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
