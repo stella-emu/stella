@@ -95,7 +95,7 @@ class Properties
       @return     The value of the property
     */
     const string& get(PropType key) const {
-      uInt8 pos = static_cast<uInt8>(key);
+      const uInt8 pos = static_cast<uInt8>(key);
       return pos < static_cast<uInt8>(PropType::NumTypes) ? myProperties[pos] : EmptyString;
     }
 
