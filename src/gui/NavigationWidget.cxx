@@ -154,7 +154,6 @@ NavigationWidget::PathWidget::PathWidget(GuiObject* boss, CommandReceiver* targe
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void NavigationWidget::PathWidget::setPath(const string& path)
 {
-  const int lineHeight = _font.getLineHeight();
   const int fontWidth = _font.getMaxCharWidth();
   int x = _x + fontWidth, w = _w;
   FilesystemNode node(path);

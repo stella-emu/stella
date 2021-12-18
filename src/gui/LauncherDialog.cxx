@@ -267,14 +267,13 @@ void LauncherDialog::addPathWidgets(int& ypos)
 void LauncherDialog::addRomWidgets(int& ypos)
 {
   const bool bottomButtons = instance().settings().getBool("launcherbuttons");
-  const int lineHeight   = Dialog::lineHeight(),
-    fontWidth    = Dialog::fontWidth(),
-    VBORDER      = Dialog::vBorder(),
-    HBORDER      = Dialog::hBorder(),
-    VGAP         = Dialog::vGap(),
-    buttonHeight = myUseMinimalUI
-      ? -VGAP * 2
-      : bottomButtons ? Dialog::buttonHeight() : -VGAP * 2;
+  const int fontWidth    = Dialog::fontWidth(),
+            VBORDER      = Dialog::vBorder(),
+            HBORDER      = Dialog::hBorder(),
+            VGAP         = Dialog::vGap(),
+            buttonHeight = myUseMinimalUI
+              ? -VGAP * 2
+              : bottomButtons ? Dialog::buttonHeight() : -VGAP * 2;
   int xpos = HBORDER;
   WidgetArray wid;
 
