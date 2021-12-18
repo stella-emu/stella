@@ -216,6 +216,7 @@ void FavoritesManager::addRecent(const string& path)
     myRecentList.erase(myRecentList.begin());
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FavoritesManager::removeRecent(const string& path)
 {
   auto it = std::find(myRecentList.begin(), myRecentList.end(), path);
@@ -260,6 +261,7 @@ const FavoritesManager::RecentList& FavoritesManager::recentList() const
   return sortedList;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FavoritesManager::removePopular(const string& path)
 {
   return myPopularMap.erase(path);

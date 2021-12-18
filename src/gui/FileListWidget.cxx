@@ -155,6 +155,7 @@ void FileListWidget::getChildren(const FilesystemNode::CancelCheck& isCancelled)
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FileListWidget::IconType FileListWidget::getIconType(const string& path) const
 {
   const FilesystemNode node(path);
@@ -239,6 +240,7 @@ bool FileListWidget::hasNextHistory()
   return _currentHistory != std::prev(_history.end(), 1);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string& FileListWidget::fixPath(string& path)
 {
   if(path.back() == FilesystemNode::PATH_SEPARATOR)

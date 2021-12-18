@@ -27,8 +27,8 @@ namespace GUI {
 
 struct IconDesc
 {
-  int width;
-  int height;
+  int width{0};
+  int height{0};
 
   explicit IconDesc(int _width, int _height)
     : width{_width}, height{_height} {}

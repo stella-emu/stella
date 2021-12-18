@@ -40,7 +40,7 @@ class NavigationWidget : public Widget
           public:
             FolderLinkWidget(GuiObject* boss, const GUI::Font& font,
               int x, int y, int w, int h, const string& text, const string& path);
-            ~FolderLinkWidget() = default;
+            ~FolderLinkWidget() override = default;
 
             void setPath(const string& path) { myPath = path; }
             const string& getPath() const { return myPath; }
@@ -63,7 +63,7 @@ class NavigationWidget : public Widget
       public:
         PathWidget(GuiObject* boss, CommandReceiver* target,
           const GUI::Font& font, int x, int y, int w, int h);
-        ~PathWidget() = default;
+        ~PathWidget() override = default;
 
         void setPath(const string& path);
         const string& getPath(int idx) const;
@@ -78,7 +78,7 @@ class NavigationWidget : public Widget
             : path{_path}, widget{_widget} {}
         };
         std::vector<FolderLinkWidget*> myFolderList;
-        CommandReceiver* myTarget;
+        CommandReceiver* myTarget{nullptr};
 
       private:
         // Following constructors and assignment operators not supported
@@ -92,7 +92,7 @@ class NavigationWidget : public Widget
   public:
     NavigationWidget(GuiObject* boss, const GUI::Font& font,
       int x, int y, int w, int h);
-    ~NavigationWidget() = default;
+    ~NavigationWidget() override = default;
 
     void setWidth(int w) override;
     void setList(FileListWidget* list);
