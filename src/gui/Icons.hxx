@@ -527,4 +527,5 @@ static const Icon icon_help_large(
   });
 
 }  // namespace GUI
+
 #endif
