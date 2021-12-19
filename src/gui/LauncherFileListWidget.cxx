@@ -128,7 +128,7 @@ void LauncherFileListWidget::extendLists(StringList& list)
   // Only show virtual dirs in "romdir". Except if
   //  "romdir" is virtual or "romdir" is a ZIP
   //  Then show virtual dirs in parent dir of "romdir".
-  if(myRomDir == startRomDir()
+  if(_node.getPath() == startRomDir()
       && (myInVirtualDir || BSPF::endsWithIgnoreCase(_node.getPath(), ".zip")))
   {
     myRomDir = _node.getParent().getPath();
