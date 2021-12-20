@@ -217,6 +217,8 @@ Optional Features:
   --disable-profile
   --enable-debug         build with debugging symbols [disabled]
   --disable-debug
+  --enable-release       build with all optimizations, for final release [disabled]
+  --disable-release
 
 Optional Libraries:
   --with-sdl-prefix=DIR    Prefix where the sdl2-config script is installed (optional)
