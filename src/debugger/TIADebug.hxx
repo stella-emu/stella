@@ -106,6 +106,8 @@ class TIADebug : public DebuggerSystem
     uInt8 audF1(int newVal = -1);
     uInt8 audV0(int newVal = -1);
     uInt8 audV1(int newVal = -1);
+    string audFreq0();
+    string audFreq1();
 
     void setGRP0Old(uInt8 b);
     void setGRP1Old(uInt8 b);
@@ -185,7 +187,7 @@ class TIADebug : public DebuggerSystem
     /** Display a color patch for color at given index in the palette */
     string colorSwatch(uInt8 c) const;
 
-    string audFreq(uInt8 div);
+    string audFreq(uInt8 dist, uInt8 div);
     string stringOnly(string value, bool changed = false);
     string decWithLabel(string label, uInt16 value, bool changed = false, uInt16 width = 3);
     string hexWithLabel(string label, uInt16 value, bool changed = false, uInt16 width = 2);
