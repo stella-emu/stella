@@ -176,8 +176,7 @@ MODULES += \
 	src/emucore \
 	src/emucore/tia \
 	src/emucore/tia/frame-manager \
-	src/common/repository/sqlite \
-	src/sqlite
+	src/common/repository/sqlite
 
 ######################################################################
 # The build rules follow - normally you should have no need to
