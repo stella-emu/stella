@@ -40,9 +40,11 @@ class AudioWidget : public Widget, public CommandSender
       kAUDVID
     };
 
-    DataGridWidget* myAudF{nullptr};
-    DataGridWidget* myAudC{nullptr};
-    DataGridWidget* myAudV{nullptr};
+    DataGridWidget*   myAudF{nullptr};
+    StaticTextWidget* myAud0F{nullptr};
+    StaticTextWidget* myAud1F{nullptr};
+    DataGridWidget*   myAudC{nullptr};
+    DataGridWidget*   myAudV{nullptr};
     StaticTextWidget* myAudEffV{nullptr};
 
     // Audio channels
@@ -59,6 +61,7 @@ class AudioWidget : public Widget, public CommandSender
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
     void loadConfig() override;
 
+    void handleFrequencies();
     void handleVolume();
     uInt32 getEffectiveVolume();
 

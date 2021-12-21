@@ -49,6 +49,12 @@ AudioWidget::AudioWidget(GuiObject* boss, const GUI::Font& lfont,
   myAudF->setTarget(this);
   myAudF->setID(kAUDFID);
   addFocusWidget(myAudF);
+  myAud0F = new StaticTextWidget(boss, lfont,
+    myAudF->getRight() + fontWidth, ypos + (lineHeight + 5)/ 2 + 2, "         ");
+  new StaticTextWidget(boss, lfont,
+    myAud0F->getRight(), ypos + (lineHeight + 5)/ 2 + 2, "/");
+  myAud1F = new StaticTextWidget(boss, lfont,
+    myAud0F->getRight() + fontWidth, ypos + (lineHeight + 5)/ 2 + 2, "         ");
 
   for(int col = 0; col < 2; ++col)
   {
@@ -57,7 +63,6 @@ AudioWidget::AudioWidget(GuiObject* boss, const GUI::Font& lfont,
                          Common::Base::toString(col, Common::Base::Fmt::_16_1),
                          TextAlign::Left);
   }
-
   // AudC registers
   xpos = 10;  ypos += lineHeight + 5;
   new StaticTextWidget(boss, lfont, xpos, ypos+2, lwidth, fontHeight,
@@ -80,7 +85,8 @@ AudioWidget::AudioWidget(GuiObject* boss, const GUI::Font& lfont,
   myAudV->setID(kAUDVID);
   addFocusWidget(myAudV);
 
-  myAudEffV = new StaticTextWidget(boss, lfont, myAudV->getRight() + fontWidth, myAudV->getTop() + 2,
+  myAudEffV = new StaticTextWidget(boss, lfont,
+                                   myAudV->getRight() + fontWidth * 2, myAudV->getTop() + 2,
                                    "100% (eff. volume)");
 
   setHelpAnchor("AudioTab", true);
@@ -128,8 +134,17 @@ void AudioWidget::loadConfig()
   }
   myAudV->setList(alist, vlist, changed);
 
+  handleFrequencies();
   handleVolume();
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void AudioWidget::handleFrequencies()
+{
+  myAud0F->setLabel(instance().debugger().tiaDebug().audFreq0());
+  myAud1F->setLabel(instance().debugger().tiaDebug().audFreq1());
+}
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AudioWidget::handleVolume()
@@ -185,6 +200,7 @@ void AudioWidget::changeFrequencyRegs()
     default:
       break;
   }
+  handleFrequencies();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -206,6 +222,7 @@ void AudioWidget::changeControlRegs()
     default:
       break;
   }
+  handleFrequencies();
   handleVolume();
 }
 

@@ -1007,20 +1007,33 @@ string TIADebug::colorSwatch(uInt8 c) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// FIXME - how does this work; is this even needed ??
-//         convert to stringstream, get rid of snprintf
-string TIADebug::audFreq(uInt8 div)
+string TIADebug::audFreq0()
 {
-  string ret;
-  std::array<char, 10> buf;
+  return audFreq(audC0(), audF0());
+}
 
-  double hz = 31400.0;
-  if(div) hz /= div;
-  std::snprintf(buf.data(), 9, "%5.1f", hz);
-  ret += buf.data();
-  ret += "Hz";
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string TIADebug::audFreq1()
+{
+  return audFreq(audC1(), audF1());
+}
 
-  return ret;
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string TIADebug::audFreq(uInt8 dist, uInt8 div)
+{
+  uInt16 dist_div[16] = {
+      1, 15, 465, 465, 2, 2, 31, 31,
+    511, 31,  31,   1, 6, 6, 93, 93
+  };
+  const double hz =
+    (myConsole.timing() == ConsoleTiming::ntsc ? 31440.0 : 31200.0)
+    / dist_div[dist] / (div + 1);
+  ostringstream buf;
+
+  buf.setf(std::ios_base::fixed, std::ios_base::floatfield);
+  buf << std::setw(7) << std::setprecision(1) << hz << "Hz";
+
+  return buf.str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1302,7 +1315,7 @@ string TIADebug::toString()
       << "AUDF0: "
       << hexWithLabel("", int(audF0()),
                       state.aud[0] != oldState.aud[0]) << "/"
-      << std::setw(11) << std::right << stringOnly(audFreq(audF0()),
+      << std::setw(11) << std::right << stringOnly(audFreq0(),
                     state.aud[0] != oldState.aud[0]) << " "
       << "AUDC0: "
       << hexWithLabel("", int(audC0()),
@@ -1314,7 +1327,7 @@ string TIADebug::toString()
       << "AUDF1: "
       << hexWithLabel("", int(audF1()),
                       state.aud[1] != oldState.aud[1]) << "/"
-      << std::setw(11) << std::right << stringOnly(audFreq(audF1()),
+      << std::setw(11) << std::right << stringOnly(audFreq1(),
                     state.aud[1] != oldState.aud[1]) << " "
       << "AUDC1: "
       << hexWithLabel("", int(audC1()),
