@@ -22,6 +22,7 @@ _build_joystick=yes
 _build_cheats=yes
 _build_httplib=yes
 _build_png=yes
+_build_sqlite3=yes
 _build_zip=yes
 _build_static=no
 _build_profile=no
@@ -206,6 +207,7 @@ Optional Features:
   --disable-png
   --enable-zip           enable/disable ZIP file support [enabled]
   --disable-zip
+  --use-system-sqlite    use libsqlite3 installed on system [disabled]
   --enable-windowed      enable/disable windowed rendering modes [enabled]
   --disable-windowed
   --enable-shared        build shared binary [enabled]
@@ -215,6 +217,8 @@ Optional Features:
   --disable-profile
   --enable-debug         build with debugging symbols [disabled]
   --disable-debug
+  --enable-release       build with all optimizations, for final release [disabled]
+  --disable-release
 
 Optional Libraries:
   --with-sdl-prefix=DIR    Prefix where the sdl2-config script is installed (optional)
@@ -250,6 +254,7 @@ for ac_option in $@; do
       --disable-png)            _build_png=no        ;;
       --enable-zip)             _build_zip=yes       ;;
       --disable-zip)            _build_zip=no        ;;
+      --use-system-sqlite)      _build_sqlite3=no    ;;
       --enable-windowed)        _build_windowed=yes  ;;
       --disable-windowed)       _build_windowed=no   ;;
       --enable-shared)          _build_static=no     ;;
@@ -618,7 +623,7 @@ if test "$_build_zip" = yes ; then
 #include <zlib.h>
 int main(void) { return strcmp(ZLIB_VERSION, zlibVersion()); }
 EOF
-	cc_check $LDFLAGS $CXXFLAGS $ZLIB_CFLAGS $ZLIB_LIBS -lz && _zlib=yes
+	cc_check $LDFLAGS $CXXFLAGS $ZLIB_CFLAGS $ZLIB_LIBS `pkg-config --libs zlib` && _zlib=yes
 
   if test "$_zlib" = yes ; then
     echo "$_zlib"
@@ -655,6 +660,30 @@ EOF
 else
   echo "disabled"
   _build_png=no
+fi
+
+#
+# Check for sqlite3
+#
+_libsqlite3=no
+echocheck "libsqlite3"
+if test "$_build_sqlite3" = no ; then
+  cat > $TMPC << EOF
+#include <stdio.h>
+#include <sqlite3.h>
+int main(void) { return printf("%s\n", SQLITE_VERSION); }
+EOF
+  cc_check $LDFLAGS $CXXFLAGS `pkg-config --libs sqlite3` && _libsqlite3=yes
+
+  if test "$_libsqlite3" = yes ; then
+    echo "$_libsqlite3 (WIP, not complete)"
+  else
+    echo "built-in"
+    _build_sqlite3=yes
+  fi
+else
+  echo "built-in"
+  _build_sqlite3=yes
 fi
 
 #
@@ -784,7 +813,7 @@ SQLITE_LIB="$SRC/sqlite"
 JSON="$SRC/json"
 HTTP_LIB="$SRC/httplib"
 
-INCLUDES="-I$CORE -I$COMMON -I$TV -I$TIA -I$TIA_FRAME_MANAGER -I$JSON -I$SQLITE_REPO -I$SQLITE_LIB"
+INCLUDES="-I$CORE -I$COMMON -I$TV -I$TIA -I$TIA_FRAME_MANAGER -I$JSON -I$SQLITE_REPO"
 
 INCLUDES="$INCLUDES `$_sdlconfig --cflags`"
 if test "$_build_static" = yes ; then
@@ -866,17 +895,24 @@ fi
 if test "$_build_png" = yes ; then
 	DEFINES="$DEFINES -DPNG_SUPPORT"
   if test "$_libpng" = yes ; then
-    LIBS="$LIBS -lpng"
+    LIBS="$LIBS `pkg-config --libs libpng`"
   else
     MODULES="$MODULES $LIBPNG"
     INCLUDES="$INCLUDES -I$LIBPNG"
   fi
 fi
 
+if test "$_libsqlite3" = yes ; then
+  LIBS="$LIBS `pkg-config --libs sqlite3`"
+else
+  MODULES="$MODULES $SQLITE_LIB"
+  INCLUDES="$INCLUDES -I$SQLITE_LIB"
+fi
+
 if test "$_build_zip" = yes ; then
 	DEFINES="$DEFINES -DZIP_SUPPORT"
   if test "$_zlib" = yes ; then
-    LIBS="$LIBS -lz"
+    LIBS="$LIBS `pkg-config --libs zlib`"
   else
     MODULES="$MODULES $ZLIB"
     INCLUDES="$INCLUDES -I$ZLIB"
