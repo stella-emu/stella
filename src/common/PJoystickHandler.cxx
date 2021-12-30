@@ -173,8 +173,8 @@ void PhysicalJoystickHandler::addToDatabase(const PhysicalJoystickPtr& stick)
   {
     StickInfo info("", stick);
     myDatabase.emplace(stick->name, info);
-    setStickDefaultMapping(stick->ID, Event::NoType, EventMode::kEmulationMode);
     setStickDefaultMapping(stick->ID, Event::NoType, EventMode::kMenuMode);
+    setStickDefaultMapping(stick->ID, Event::NoType, EventMode::kEmulationMode);
   }
 
   ostringstream buf;
