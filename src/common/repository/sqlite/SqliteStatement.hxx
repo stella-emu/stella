@@ -68,9 +68,9 @@ class SqliteStatement {
 // IMPLEMENTATION
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifdef __clang__
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wformat-nonliteral"
+#if defined(__clang__)
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wformat-nonliteral"
 #endif
 
 template<class T, class ...Ts>
@@ -85,8 +85,8 @@ SqliteStatement::SqliteStatement(sqlite3* handle, const string& sql, T arg1, Ts.
   initialize(buffer);
 }
 
-#ifdef __clang__
-#pragma clang diagnostic pop
+#if defined(__clang__)
+  #pragma clang diagnostic pop
 #endif
 
 #endif // SQLITE_STATEMENT_HXX
