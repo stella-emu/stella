@@ -39,7 +39,7 @@ PhysicalJoystickHandler::PhysicalJoystickHandler(
       OSystem& system, EventHandler& handler, Event& event)
   : myOSystem{system},
     myHandler{handler},
-    myEvent(event)
+    myEvent{event}
 {
   if(myOSystem.settings().getInt("event_ver") != Event::VERSION) {
     Logger::info("event version mismatch; dropping previous joystick mappings");

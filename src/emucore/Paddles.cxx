@@ -195,6 +195,7 @@ void Paddles::update()
   setPin(DigitalPin::Three, !getAutoFireStateP1(firePressedB));
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AnalogReadout::Connection Paddles::getReadOut(int lastAxis, int& newAxis, int center)
 {
   const float range = ANALOG_RANGE - analogDeadZone() * 2;
