@@ -25,6 +25,8 @@
 */
 @interface AboutBox : NSObject
 
+@property (nonatomic, strong) IBOutlet NSWindow *theWindow;
+
 + (AboutBox *)sharedInstance;
 - (IBAction)showPanel:(id)sender;
 - (IBAction)OK:(id)sender;

@@ -52,7 +52,6 @@ static AboutBox *sharedInstance = nil;
 
   if (!appNameField)
   {
-    NSWindow *theWindow;
     NSString *creditsPath;
     NSAttributedString *creditsString;
     NSString *appName;
@@ -61,13 +60,13 @@ static AboutBox *sharedInstance = nil;
     CFBundleRef localInfoBundle;
     NSDictionary *localInfoDict;
 
-    if (![NSBundle loadNibNamed:@"AboutBox" owner:self])
+    if (![[NSBundle mainBundle] loadNibNamed:@"AboutBox" owner:self topLevelObjects:nil])
     {
       NSLog( @"Failed to load AboutBox.nib" );
       NSBeep();
       return;
     }
-    theWindow = [appNameField window];
+    self.theWindow = [appNameField window];
 
     // Get the info dictionary (Info.plist)
     infoDictionary = [[NSBundle mainBundle] infoDictionary];
@@ -81,7 +80,7 @@ static AboutBox *sharedInstance = nil;
     [appNameField setStringValue:appName];
 
     // Set the about box window title
-    [theWindow setTitle:[NSString stringWithFormat:@"About %@", appName]];
+    [self.theWindow setTitle:[NSString stringWithFormat:@"About %@", appName]];
 
     // Setup the version field
     versionString = [infoDictionary objectForKey:@"CFBundleVersion"];
@@ -106,9 +105,9 @@ static AboutBox *sharedInstance = nil;
     maxScrollHeight = creditsBounds.size.height*2.75;
 
     // Setup the window
-    [theWindow setExcludedFromWindowsMenu:YES];
-    [theWindow setMenu:nil];
-    [theWindow center];
+    [self.theWindow setExcludedFromWindowsMenu:YES];
+    [self.theWindow setMenu:nil];
+    [self.theWindow center];
   }
 
   if (![[appNameField window] isVisible])
