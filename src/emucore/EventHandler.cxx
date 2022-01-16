@@ -2214,6 +2214,9 @@ StringList EventHandler::getActionList(Event::Group group) const
     case Event::Group::Keyboard:
       return getActionList(KeyboardEvents);
 
+    case Event::Group::Driving:
+      return getActionList(DrivingEvents);
+
     case Event::Group::Devices:
       return getActionList(DevicesEvents);
 
@@ -2385,6 +2388,9 @@ int EventHandler::getActionListIndex(int idx, Event::Group group) const
 
     case Event::Group::Keyboard:
       return getEmulActionListIndex(idx, KeyboardEvents);
+
+    case Event::Group::Driving:
+      return getEmulActionListIndex(idx, DrivingEvents);
 
     case Event::Group::Devices:
       return getEmulActionListIndex(idx, DevicesEvents);
@@ -2883,6 +2889,16 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::RightKeyboard0,          "Right Keyboard 0",                      "" },
   { Event::RightKeyboardPound,      "Right Keyboard #",                      "" },
 
+  { Event::LeftDrivingAnalog,       "Left Driving Analog",                   "" },
+  { Event::LeftDrivingCCW,          "Left Driving Turn Left",                "" },
+  { Event::LeftDrivingCW,           "Left Driving Turn Right",               "" },
+  { Event::LeftDrivingFire,         "Left Driving Fire",                     "" },
+
+  { Event::RightDrivingAnalog,      "Right Driving Analog",                  "" },
+  { Event::RightDrivingCCW,         "Right Driving Turn Left",               "" },
+  { Event::RightDrivingCW,          "Right Driving Turn Right",              "" },
+  { Event::RightDrivingFire,        "Right Driving Fire",                    "" },
+
   // Video
   { Event::ToggleInter,             "Toggle display interpolation",          "" },
   { Event::VidmodeDecrease,         "Previous zoom level",                   "" },
@@ -3152,6 +3168,12 @@ const Event::EventSet EventHandler::KeyboardEvents = {
   Event::RightKeyboard4, Event::RightKeyboard5, Event::RightKeyboard6,
   Event::RightKeyboard7, Event::RightKeyboard8, Event::RightKeyboard9,
   Event::RightKeyboardStar, Event::RightKeyboard0, Event::RightKeyboardPound,
+};
+
+const Event::EventSet EventHandler::DrivingEvents = {
+  Event::LeftDrivingAnalog, Event::LeftDrivingCCW, Event::LeftDrivingCW,
+  Event::LeftDrivingFire, Event::RightDrivingAnalog, Event::RightDrivingCCW,
+  Event::RightDrivingCW, Event::RightDrivingFire,
 };
 
 const Event::EventSet EventHandler::DevicesEvents = {

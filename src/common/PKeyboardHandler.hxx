@@ -105,6 +105,7 @@ class PhysicalKeyboardHandler
     bool isJoystickEvent(const Event::Type event) const;
     bool isPaddleEvent(const Event::Type event) const;
     bool isKeyboardEvent(const Event::Type event) const;
+    bool isDrivingEvent(const Event::Type event) const;
     bool isCommonEvent(const Event::Type event) const;
 
     void enableCommonMappings();
@@ -158,6 +159,7 @@ class PhysicalKeyboardHandler
     static EventMappingArray DefaultJoystickMapping;
     static EventMappingArray DefaultPaddleMapping;
     static EventMappingArray DefaultKeyboardMapping;
+    static EventMappingArray DefaultDrivingMapping;
     static EventMappingArray CompuMateMapping;
 };
 

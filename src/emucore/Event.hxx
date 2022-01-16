@@ -62,6 +62,9 @@ class Event
       RightKeyboard7, RightKeyboard8, RightKeyboard9,
       RightKeyboardStar, RightKeyboard0, RightKeyboardPound,
 
+      LeftDrivingCCW, LeftDrivingCW, LeftDrivingFire, LeftDrivingAnalog,
+      RightDrivingCCW, RightDrivingCW, RightDrivingFire, RightDrivingAnalog,
+
       CompuMateFunc, CompuMateShift,
       CompuMate0, CompuMate1, CompuMate2, CompuMate3, CompuMate4,
       CompuMate5, CompuMate6, CompuMate7, CompuMate8, CompuMate9,
@@ -180,7 +183,7 @@ class Event
     enum Group
     {
       Menu, Emulation,
-      Misc, AudioVideo, States, Console, Joystick, Paddles, Keyboard,
+      Misc, AudioVideo, States, Console, Joystick, Paddles, Keyboard, Driving,
       Devices,
       Debug, Combo,
       LastGroup
@@ -237,6 +240,8 @@ class Event
         case Event::LeftPaddleBAnalog:
         case Event::RightPaddleAAnalog:
         case Event::RightPaddleBAnalog:
+        case Event::LeftDrivingAnalog:
+        case Event::RightDrivingAnalog:
           return true;
         default:
           return false;
@@ -316,6 +321,18 @@ static const Event::EventSet RightKeyboardEvents = {
   Event::RightKeyboard4, Event::RightKeyboard5, Event::RightKeyboard6,
   Event::RightKeyboard7, Event::RightKeyboard8, Event::RightKeyboard9,
   Event::RightKeyboardStar, Event::RightKeyboard0, Event::RightKeyboardPound,
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+static const Event::EventSet LeftDrivingEvents = {
+  Event::LeftDrivingAnalog, Event::LeftDrivingCCW,
+  Event::LeftDrivingCW, Event::LeftDrivingFire,
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+static const Event::EventSet RightDrivingEvents = {
+  Event::RightDrivingAnalog, Event::RightDrivingCCW,
+  Event::RightDrivingCW, Event::RightDrivingFire,
 };
 
 #endif

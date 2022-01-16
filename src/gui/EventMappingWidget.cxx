@@ -63,6 +63,7 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
   VarList::push_back(items, " Joystick", Event::Group::Joystick);
   VarList::push_back(items, " Paddles", Event::Group::Paddles);
   VarList::push_back(items, " Keyboard", Event::Group::Keyboard);
+  VarList::push_back(items, " Driving", Event::Group::Driving);
   VarList::push_back(items, " Input Devices & Ports", Event::Group::Devices);
   VarList::push_back(items, " Combo", Event::Group::Combo);
   VarList::push_back(items, " Debug", Event::Group::Debug);

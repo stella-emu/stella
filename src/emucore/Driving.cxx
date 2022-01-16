@@ -25,9 +25,10 @@ Driving::Driving(Jack jack, const Event& event, const System& system, bool altma
   {
     if(!altmap)
     {
-      myCCWEvent  = Event::LeftJoystickLeft;
-      myCWEvent   = Event::LeftJoystickRight;
-      myFireEvent = Event::LeftJoystickFire;
+      myCCWEvent  = Event::LeftDrivingCCW;
+      myCWEvent   = Event::LeftDrivingCW;
+      myFireEvent = Event::LeftDrivingFire;
+      myAnalogEvent = Event::LeftDrivingAnalog;
     }
     else
     {
@@ -42,9 +43,10 @@ Driving::Driving(Jack jack, const Event& event, const System& system, bool altma
   {
     if(!altmap)
     {
-      myCCWEvent  = Event::RightJoystickLeft;
-      myCWEvent   = Event::RightJoystickRight;
-      myFireEvent = Event::RightJoystickFire;
+      myCCWEvent  = Event::RightDrivingCCW;
+      myCWEvent   = Event::RightDrivingCW;
+      myFireEvent = Event::RightDrivingFire;
+      myAnalogEvent = Event::RightDrivingAnalog;
     }
     else
     {
@@ -66,7 +68,7 @@ void Driving::update()
 {
   updateButtons();
 
-  updateDigitalAxes();
+  updateControllerAxes();
   updateMouseAxes();
   updateStelladaptorAxes();
 
@@ -108,18 +110,29 @@ void Driving::updateMouseButtons(bool& firePressed)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Driving::updateDigitalAxes()
+void Driving::updateControllerAxes()
 {
   // Digital events (from keyboard or joystick hats & buttons)
   int d_axis = myEvent.get(myXAxisValue);
 
   if(myEvent.get(myCCWEvent) != 0 || d_axis < -16384)
-    --myCounter;
+    myCounterHires -= 64;
   else if(myEvent.get(myCWEvent) != 0 || d_axis > 16384)
-    ++myCounter;
+    myCounterHires += 64;
+
+  // Analog events (from joystick axes)
+  int a_axis = myEvent.get(myAnalogEvent);
+
+  if( abs(a_axis) > Controller::analogDeadZone()) {
+    /* a_axis is in -2^15 to +2^15-1; dividing by 2^9 gives us -2^6 to
+       +2^6-1, which gives us roughly the same range as digital
+       inputs.
+    */
+    myCounterHires += a_axis/512;
+  }
 
   // Only consider the lower-most bits (corresponding to pins 1 & 2)
-  myGrayIndex = Int32(myCounter * SENSITIVITY / 4.0F) & 0b11;
+  myGrayIndex = Int32((myCounterHires / 256) * SENSITIVITY) & 0b11;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
