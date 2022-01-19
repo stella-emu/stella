@@ -384,6 +384,8 @@ void PhysicalJoystickHandler::setStickDefaultMapping(int stick, Event::Type even
             setDefaultAction(stick, item, event, EventMode::kPaddlesMode, updateDefaults);
           for (const auto& item : DefaultLeftKeyboardMapping)
             setDefaultAction(stick, item, event, EventMode::kKeyboardMode, updateDefaults);
+          for (const auto& item : DefaultLeftDrivingMapping)
+            setDefaultAction(stick, item, event, EventMode::kDrivingMode, updateDefaults);
         }
         else
         {
@@ -394,6 +396,8 @@ void PhysicalJoystickHandler::setStickDefaultMapping(int stick, Event::Type even
             setDefaultAction(stick, item, event, EventMode::kPaddlesMode, updateDefaults);
           for (const auto& item : DefaultRightKeyboardMapping)
             setDefaultAction(stick, item, event, EventMode::kKeyboardMode, updateDefaults);
+          for (const auto& item : DefaultRightDrivingMapping)
+            setDefaultAction(stick, item, event, EventMode::kDrivingMode, updateDefaults);
         }
         for(const auto& item : DefaultCommonMapping)
           setDefaultAction(stick, item, event, EventMode::kCommonMode, updateDefaults);
@@ -448,6 +452,13 @@ void PhysicalJoystickHandler::defineControllerMappings(const Controller::Type ty
       myLeftMode = myRightMode = EventMode::kCompuMateMode;
       break;
 
+    case Controller::Type::Driving:
+      if(port == Controller::Jack::Left)
+        myLeftMode = EventMode::kDrivingMode;
+      else
+        myRightMode = EventMode::kDrivingMode;
+      break;
+
     default:
       // let's use joystick then
       if(port == Controller::Jack::Left)
@@ -481,6 +492,10 @@ void PhysicalJoystickHandler::enableEmulationMappings()
       enableMappings(RightKeyboardEvents, EventMode::kKeyboardMode);
       break;
 
+    case EventMode::kDrivingMode:
+      enableMappings(RightDrivingEvents, EventMode::kDrivingMode);
+      break;
+
     default:
       enableMappings(RightJoystickEvents, EventMode::kJoystickMode);
       break;
@@ -494,6 +509,10 @@ void PhysicalJoystickHandler::enableEmulationMappings()
 
     case EventMode::kKeyboardMode:
       enableMappings(LeftKeyboardEvents, EventMode::kKeyboardMode);
+      break;
+
+    case EventMode::kDrivingMode:
+      enableMappings(LeftDrivingEvents, EventMode::kDrivingMode);
       break;
 
     default:
@@ -551,6 +570,9 @@ EventMode PhysicalJoystickHandler::getEventMode(const Event::Type event, const E
     if(isKeyboardEvent(event))
       return EventMode::kKeyboardMode;
 
+    if(isDrivingEvent(event))
+      return EventMode::kDrivingMode;
+
     if(isCommonEvent(event))
       return EventMode::kCommonMode;
   }
@@ -580,9 +602,16 @@ bool PhysicalJoystickHandler::isKeyboardEvent(const Event::Type event) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool PhysicalJoystickHandler::isDrivingEvent(const Event::Type event) const
+{
+  return LeftDrivingEvents.find(event) != LeftDrivingEvents.end()
+    || RightDrivingEvents.find(event) != RightDrivingEvents.end();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PhysicalJoystickHandler::isCommonEvent(const Event::Type event) const
 {
-  return !(isJoystickEvent(event) || isPaddleEvent(event) || isKeyboardEvent(event));
+  return !(isJoystickEvent(event) || isPaddleEvent(event) || isKeyboardEvent(event) || isDrivingEvent(event));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -600,6 +629,7 @@ void PhysicalJoystickHandler::eraseMapping(Event::Type event, EventMode mode)
         _joyptr->eraseMap(EventMode::kCommonMode);
         _joyptr->eraseMap(EventMode::kJoystickMode);
         _joyptr->eraseMap(EventMode::kPaddlesMode);
+        _joyptr->eraseMap(EventMode::kDrivingMode);
         _joyptr->eraseMap(EventMode::kKeyboardMode);
       }
     }
@@ -678,6 +708,7 @@ bool PhysicalJoystickHandler::addJoyMapping(Event::Type event, EventMode mode, i
       j->joyMap.erase(EventMode::kPaddlesMode, button, axis, adir);
       //j->joyMap.erase(EventMode::kKeyboardMode, button, axis, adir); // no common buttons in keyboard mode!
       j->joyMap.erase(EventMode::kCompuMateMode, button, axis, adir);
+      j->joyMap.erase(EventMode::kDrivingMode, button, axis, adir);
     }
     else if (evMode != EventMode::kMenuMode)
     {
@@ -712,6 +743,7 @@ bool PhysicalJoystickHandler::addJoyHatMapping(Event::Type event, EventMode mode
       j->joyMap.erase(EventMode::kJoystickMode, button, hat, hdir);
       j->joyMap.erase(EventMode::kPaddlesMode, button, hat, hdir);
       j->joyMap.erase(EventMode::kKeyboardMode, button, hat, hdir);
+      j->joyMap.erase(EventMode::kDrivingMode, button, hat, hdir);
       j->joyMap.erase(EventMode::kCompuMateMode, button, hat, hdir);
     }
     else if (evMode != EventMode::kMenuMode)
@@ -1231,6 +1263,28 @@ PhysicalJoystickHandler::EventMappingArray PhysicalJoystickHandler::DefaultRight
   {Event::RightKeyboardStar,    9},
   {Event::RightKeyboard0,       10},
   {Event::RightKeyboardPound,   11},
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+PhysicalJoystickHandler::EventMappingArray PhysicalJoystickHandler::DefaultLeftDrivingMapping = {
+  // Left joystick (assume buttons zero..two)
+  {Event::LeftDrivingFire,   0},
+  // Left joystick left/right directions
+  {Event::LeftDrivingAnalog, JOY_CTRL_NONE, JoyAxis::X, JoyDir::ANALOG},
+  // Left joystick left/right directions (assume hat 0)
+  {Event::LeftDrivingCCW,    JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::LEFT},
+  {Event::LeftDrivingCW,     JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::RIGHT},
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+PhysicalJoystickHandler::EventMappingArray PhysicalJoystickHandler::DefaultRightDrivingMapping = {
+  // Right joystick (assume buttons zero..two)
+  {Event::RightDrivingFire,   0},
+  // Right joystick left/right directions
+  {Event::RightDrivingAnalog, JOY_CTRL_NONE, JoyAxis::X, JoyDir::ANALOG},
+  // Right joystick left/right directions (assume hat 0)
+  {Event::RightDrivingCCW,    JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::LEFT},
+  {Event::RightDrivingCW,     JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::RIGHT},
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

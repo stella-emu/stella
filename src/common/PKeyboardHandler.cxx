@@ -53,6 +53,7 @@ PhysicalKeyboardHandler::PhysicalKeyboardHandler(OSystem& system, EventHandler& 
     loadSerializedMappings(myOSystem.settings().getString("keymap_emu"), EventMode::kCommonMode);
     loadSerializedMappings(myOSystem.settings().getString("keymap_joy"), EventMode::kJoystickMode);
     loadSerializedMappings(myOSystem.settings().getString("keymap_pad"), EventMode::kPaddlesMode);
+    loadSerializedMappings(myOSystem.settings().getString("keymap_drv"), EventMode::kDrivingMode);
     loadSerializedMappings(myOSystem.settings().getString("keymap_key"), EventMode::kKeyboardMode);
     loadSerializedMappings(myOSystem.settings().getString("keymap_ui"), EventMode::kMenuMode);
 
@@ -113,6 +114,7 @@ bool PhysicalKeyboardHandler::isMappingUsed(EventMode mode, const EventMapping& 
     || myKeyMap.check(EventMode::kJoystickMode, map.key, map.mod)
     || myKeyMap.check(EventMode::kPaddlesMode, map.key, map.mod)
     || myKeyMap.check(EventMode::kKeyboardMode, map.key, map.mod)
+    || myKeyMap.check(EventMode::kDrivingMode, map.key, map.mod)
     || myKeyMap.check(EventMode::kCompuMateMode, map.key, map.mod);
 }
 
@@ -182,6 +184,8 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
         setDefaultKey(item, event, EventMode::kPaddlesMode, updateDefaults);
       for (const auto& item: DefaultKeyboardMapping)
         setDefaultKey(item, event, EventMode::kKeyboardMode, updateDefaults);
+      for (const auto& item: DefaultDrivingMapping )
+        setDefaultKey(item, event, EventMode::kDrivingMode, updateDefaults);
       for (const auto& item : CompuMateMapping)
         setDefaultKey(item, event, EventMode::kCompuMateMode, updateDefaults);
       break;
@@ -274,6 +278,9 @@ EventMode PhysicalKeyboardHandler::getMode(const Controller::Type type)
     case Controller::Type::CompuMate:
       return EventMode::kCompuMateMode;
 
+    case Controller::Type::Driving:
+      return EventMode::kDrivingMode;
+
     default:
       // let's use joystick then
       return EventMode::kJoystickMode;
@@ -331,6 +338,10 @@ void PhysicalKeyboardHandler::enableEmulationMappings()
       // see below
       break;
 
+    case EventMode::kDrivingMode:
+      enableMappings(RightDrivingEvents, EventMode::kDrivingMode);
+      break;
+
     default:
       enableMappings(RightJoystickEvents, EventMode::kJoystickMode);
       break;
@@ -349,6 +360,10 @@ void PhysicalKeyboardHandler::enableEmulationMappings()
     case EventMode::kCompuMateMode:
       for(const auto& item : CompuMateMapping)
         enableMapping(item.event, EventMode::kCompuMateMode);
+      break;
+
+    case EventMode::kDrivingMode:
+      enableMappings(LeftDrivingEvents, EventMode::kDrivingMode);
       break;
 
     default:
@@ -403,6 +418,9 @@ EventMode PhysicalKeyboardHandler::getEventMode(const Event::Type event,
     if (isKeyboardEvent(event))
       return EventMode::kKeyboardMode;
 
+    if (isDrivingEvent(event))
+      return EventMode::kDrivingMode;
+
     if (isCommonEvent(event))
       return EventMode::kCommonMode;
   }
@@ -426,6 +444,13 @@ bool PhysicalKeyboardHandler::isPaddleEvent(const Event::Type event) const
     || QTPaddles3Events.find(event) != QTPaddles3Events.end()
     || RightPaddlesEvents.find(event) != RightPaddlesEvents.end()
     || QTPaddles4Events.find(event) != QTPaddles4Events.end();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool PhysicalKeyboardHandler::isDrivingEvent(const Event::Type event) const
+{
+  return LeftDrivingEvents.find(event) != LeftDrivingEvents.end()
+    || RightDrivingEvents.find(event) != RightDrivingEvents.end();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -455,6 +480,7 @@ void PhysicalKeyboardHandler::saveMapping()
   myOSystem.settings().setValue("keymap_emu", myKeyMap.saveMapping(EventMode::kCommonMode).dump(2));
   myOSystem.settings().setValue("keymap_joy", myKeyMap.saveMapping(EventMode::kJoystickMode).dump(2));
   myOSystem.settings().setValue("keymap_pad", myKeyMap.saveMapping(EventMode::kPaddlesMode).dump(2));
+  myOSystem.settings().setValue("keymap_drv", myKeyMap.saveMapping(EventMode::kDrivingMode).dump(2));
   myOSystem.settings().setValue("keymap_key", myKeyMap.saveMapping(EventMode::kKeyboardMode).dump(2));
   myOSystem.settings().setValue("keymap_ui", myKeyMap.saveMapping(EventMode::kMenuMode).dump(2));
   enableEmulationMappings();
@@ -1042,6 +1068,21 @@ PhysicalKeyboardHandler::DefaultKeyboardMapping = {
   {Event::RightKeyboardStar,        KBDK_COMMA},
   {Event::RightKeyboard0,           KBDK_PERIOD},
   {Event::RightKeyboardPound,       KBDK_SLASH},
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultDrivingMapping = {
+  {Event::LeftDrivingCCW,          KBDK_LEFT},
+  {Event::LeftDrivingCW,           KBDK_RIGHT},
+  {Event::LeftDrivingCCW,          KBDK_KP_4},
+  {Event::LeftDrivingCW,           KBDK_KP_6},
+  {Event::LeftDrivingFire,         KBDK_SPACE},
+  {Event::LeftDrivingFire,         KBDK_LCTRL},
+  {Event::LeftDrivingFire,         KBDK_KP_5},
+
+  {Event::RightDrivingCCW,         KBDK_G},
+  {Event::RightDrivingCW,          KBDK_J},
+  {Event::RightDrivingFire,        KBDK_F},
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

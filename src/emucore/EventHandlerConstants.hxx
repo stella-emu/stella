@@ -79,9 +79,10 @@ enum JoyHatMask {
 enum class EventMode {
   kEmulationMode, // active mapping used for emulation
   kMenuMode,      // mapping used for dialogs
-  kJoystickMode,  // 4 extra modes for mapping controller keys separately for emulation mode
+  kJoystickMode,  // 5 extra modes for mapping controller keys separately for emulation mode
   kPaddlesMode,
   kKeyboardMode,
+  kDrivingMode,
   kCompuMateMode, // cannot be remapped
   kCommonMode,    // mapping common between controllers
   kEditMode,      // mapping used in editable widgets

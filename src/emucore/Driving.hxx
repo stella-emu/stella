@@ -94,6 +94,9 @@ class Driving : public Controller
     // Counter to iterate through the gray codes
     Int32 myCounter{0};
 
+    // Higher resolution counter for analog (non-Stelladaptor) inputs
+    uInt32 myCounterHires{0};
+
     // Index into the gray code table
     uInt32 myGrayIndex{0};
 
@@ -103,7 +106,7 @@ class Driving : public Controller
 
     // Pre-compute the events we care about based on given port
     // This will eliminate test for left or right port in update()
-    Event::Type myCWEvent, myCCWEvent, myFireEvent,
+    Event::Type myCWEvent, myCCWEvent, myFireEvent, myAnalogEvent,
                 myXAxisValue, myYAxisValue;
 
     // Controller to emulate in normal mouse axis mode
@@ -129,9 +132,9 @@ class Driving : public Controller
 
     /**
       Update the axes pin states according to the keyboard
-      or joystick hats & buttons events currently set.
+      or joystick events currently set.
     */
-    void updateDigitalAxes();
+    void updateControllerAxes();
 
     /**
       Update the axes pin states according to the Stelladaptor axes value

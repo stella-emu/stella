@@ -59,6 +59,7 @@ void PhysicalJoystick::initialize(int index, const string& desc,
   eraseMap(EventMode::kJoystickMode);
   eraseMap(EventMode::kPaddlesMode);
   eraseMap(EventMode::kKeyboardMode);
+  eraseMap(EventMode::kDrivingMode);
   eraseMap(EventMode::kCommonMode);
 }
 
@@ -70,7 +71,8 @@ json PhysicalJoystick::getMap() const
   mapping["name"] = name;
 
   for (auto& mode: {
-    EventMode::kMenuMode, EventMode::kJoystickMode, EventMode::kPaddlesMode, EventMode::kKeyboardMode, EventMode::kCommonMode
+    EventMode::kMenuMode, EventMode::kJoystickMode, EventMode::kPaddlesMode, EventMode::kKeyboardMode,
+    EventMode::kDrivingMode, EventMode::kCommonMode
   })
     mapping[jsonName(mode)] = joyMap.saveMapping(mode);
 
@@ -94,7 +96,7 @@ bool PhysicalJoystick::setMap(const json& map)
     i++;
   }
 
-  if(i != 5)
+  if(i != 6)
   {
     Logger::error("invalid controller mappings found for " +
       ((map.contains("name") && map.at("name").is_string()) ? ("stick " + map["name"].get<string>()) : "unknown stick")
