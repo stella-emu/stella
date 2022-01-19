@@ -445,6 +445,7 @@ class EventHandler
     static const Event::EventSet JoystickEvents;
     static const Event::EventSet PaddlesEvents;
     static const Event::EventSet KeyboardEvents;
+    static const Event::EventSet DrivingEvents;
     static const Event::EventSet DevicesEvents;
     static const Event::EventSet ComboEvents;
     static const Event::EventSet DebugEvents;
@@ -523,7 +524,7 @@ class EventHandler
     #else
       REFRESH_SIZE         = 0,
     #endif
-      EMUL_ACTIONLIST_SIZE = 222 + PNG_SIZE + COMBO_SIZE + REFRESH_SIZE,
+      EMUL_ACTIONLIST_SIZE = 230 + PNG_SIZE + COMBO_SIZE + REFRESH_SIZE,
       MENU_ACTIONLIST_SIZE = 19
     ;
 

@@ -102,9 +102,9 @@ int32_t input_bitmask[4];
       break;
 
     case Controller::Type::Driving:
-      EVENT(Event::LeftJoystickLeft, pad, RETRO_DEVICE_ID_JOYPAD_LEFT);
-      EVENT(Event::LeftJoystickRight, pad, RETRO_DEVICE_ID_JOYPAD_RIGHT);
-      EVENT(Event::LeftJoystickFire, pad, RETRO_DEVICE_ID_JOYPAD_B);
+      EVENT(Event::LeftDrivingCCW, pad, RETRO_DEVICE_ID_JOYPAD_LEFT);
+      EVENT(Event::LeftDrivingCW, pad, RETRO_DEVICE_ID_JOYPAD_RIGHT);
+      EVENT(Event::LeftDrivingFire, pad, RETRO_DEVICE_ID_JOYPAD_B);
       break;
 
     case Controller::Type::Genesis:
@@ -158,9 +158,9 @@ int32_t input_bitmask[4];
       break;
 
     case Controller::Type::Driving:
-      EVENT(Event::RightJoystickLeft, pad, RETRO_DEVICE_ID_JOYPAD_LEFT);
-      EVENT(Event::RightJoystickRight, pad, RETRO_DEVICE_ID_JOYPAD_RIGHT);
-      EVENT(Event::RightJoystickFire, pad, RETRO_DEVICE_ID_JOYPAD_B);
+      EVENT(Event::RightDrivingCCW, pad, RETRO_DEVICE_ID_JOYPAD_LEFT);
+      EVENT(Event::RightDrivingCW, pad, RETRO_DEVICE_ID_JOYPAD_RIGHT);
+      EVENT(Event::RightDrivingFire, pad, RETRO_DEVICE_ID_JOYPAD_B);
       break;
 
     case Controller::Type::Genesis:
