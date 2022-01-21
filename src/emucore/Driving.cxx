@@ -124,15 +124,15 @@ void Driving::updateControllerAxes()
   int a_axis = myEvent.get(myAnalogEvent);
 
   if( abs(a_axis) > Controller::analogDeadZone()) {
-    /* a_axis is in -2^15 to +2^15-1; dividing by 2^9 gives us -2^6 to
-       +2^6-1, which gives us roughly the same range as digital
-       inputs.
+    /* a_axis is in -2^15 to +2^15-1; adding 1 when non-negative and
+       dividing by 2^9 gives us -2^6 to +2^6, which gives us the same
+       range as digital inputs.
     */
-    myCounterHires += a_axis/512;
+    myCounterHires += (a_axis/512) + (a_axis >= 0);
   }
 
   // Only consider the lower-most bits (corresponding to pins 1 & 2)
-  myGrayIndex = Int32((myCounterHires / 256) * SENSITIVITY) & 0b11;
+  myGrayIndex = Int32((myCounterHires / 256.0) * SENSITIVITY) & 0b11;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
