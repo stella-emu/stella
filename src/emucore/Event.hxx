@@ -183,7 +183,7 @@ class Event
     enum Group
     {
       Menu, Emulation,
-      Misc, AudioVideo, States, Console, Joystick, Paddles, Keyboard, Driving,
+      Misc, AudioVideo, States, Console, Joystick, Paddles, Driving, Keyboard,
       Devices,
       Debug, Combo,
       LastGroup
