@@ -126,6 +126,13 @@ int32_t input_bitmask[4];
       EVENT(Event::LeftJoystickFire9, pad, RETRO_DEVICE_ID_JOYPAD_Y);
       break;
 
+    case Controller::Type::Lightgun:
+      EVENT(Event::MouseAxisXValue, input_state_cb(pad, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_X));
+      EVENT(Event::MouseAxisYValue, input_state_cb(pad, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_Y));
+      EVENT(Event::MouseButtonLeftValue, input_state_cb(pad, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_TRIGGER));
+      EVENT(Event::MouseButtonRightValue, input_state_cb(pad, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_TRIGGER));
+      break;
+
     default:
       break;
   }
@@ -573,6 +580,10 @@ bool retro_load_game(const struct retro_game_info *info)
     { 3, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT,   "Left" },
     { 3, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT,  "Right" },
     { 3, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B,      "Fire" },
+
+    { 0, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_X,       "Pointer X" },
+    { 0, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_Y,       "Pointer Y" },
+    { 0, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_PRESSED, "Pointer Button" },
 
     { 0, 0, 0, 0, NULL },
   };

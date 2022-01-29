@@ -55,7 +55,7 @@ Lightgun::Lightgun(Jack jack, const Event& event, const System& system,
   else if (romMd5 == "2559948f39b91682934ea99d90ede631" ||
            romMd5 == "e75ab446017448045b152eea78bf7910")
   {
-    // Booby is Hungry
+    // Bobby is Hungry
     myOfsX = -21;
     myOfsY = 5;
   }
