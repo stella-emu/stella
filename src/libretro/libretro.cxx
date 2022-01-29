@@ -160,7 +160,7 @@ static void update_input()
       GET_BITMASK(pad)
       MASK_EVENT(Event::RightPaddleBIncrease, pad, RETRO_DEVICE_ID_JOYPAD_LEFT);
       MASK_EVENT(Event::RightPaddleBDecrease, pad, RETRO_DEVICE_ID_JOYPAD_RIGHT);
-      MASK_EVENT(Event::RightPaddleBFire, pad, RETRO_DEVICE_JOYPAD);
+      MASK_EVENT(Event::RightPaddleBFire, pad, RETRO_DEVICE_ID_JOYPAD_B);
       //MASK_EVENT(Event::RightPaddleBAnalog, pad, RETRO_DEVICE_ID_JOYPAD_B);
       break;
 
@@ -485,19 +485,11 @@ void retro_set_controller_port_device(unsigned port, unsigned device)
     switch (device)
     {
       case RETRO_DEVICE_NONE:
-        input_devices[port] = RETRO_DEVICE_NONE;
-        break;
-
       case RETRO_DEVICE_JOYPAD:
-        input_devices[port] = RETRO_DEVICE_JOYPAD;
-        break;
-
       case RETRO_DEVICE_MOUSE:
-        input_devices[port] = RETRO_DEVICE_MOUSE;
-        break;
-
       case RETRO_DEVICE_KEYBOARD:
-        input_devices[port] = RETRO_DEVICE_KEYBOARD;
+      case RETRO_DEVICE_LIGHTGUN:
+        input_devices[port] = device;
         break;
 
       default:
@@ -582,9 +574,9 @@ bool retro_load_game(const struct retro_game_info *info)
     { 3, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT,  "Right" },
     { 3, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B,      "Fire" },
 
-    { 0, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_X,       "Pointer X" },
-    { 0, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_Y,       "Pointer Y" },
-    { 0, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_PRESSED, "Pointer Button" },
+    { 0, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_X, "Lightgun X" },
+    { 0, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_Y, "Lightgun Y" },
+    { 0, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_TRIGGER,  "Lightgun Button" },
 
     { 0, 0, 0, 0, NULL },
   };
