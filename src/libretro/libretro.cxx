@@ -129,11 +129,18 @@ static void update_input()
       break;
 
     case Controller::Type::Lightgun:
-      EVENT(Event::MouseAxisXValue, input_state_cb(pad, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_X));
-      EVENT(Event::MouseAxisYValue, input_state_cb(pad, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_Y));
+    {
+      // scale from -0x8000..0x7fff to image rect
+      const Common::Rect& rect =  stella.getImageRect();
+      const Int32 x = (input_state_cb(pad, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_X) + 0x8000) * rect.w() / 0xffff;
+      const Int32 y = (input_state_cb(pad, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_Y) + 0x8000) * rect.h() / 0xffff;
+
+      EVENT(Event::MouseAxisXValue, x);
+      EVENT(Event::MouseAxisYValue, y);
       EVENT(Event::MouseButtonLeftValue, input_state_cb(pad, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_TRIGGER));
       EVENT(Event::MouseButtonRightValue, input_state_cb(pad, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_TRIGGER));
       break;
+    }
 
     default:
       break;
