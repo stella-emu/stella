@@ -20,12 +20,14 @@
 
 #include "FrameLayout.hxx"
 #include "AbstractFrameManager.hxx"
+#include "TIAConstants.hxx"
 
 /**
  * This frame manager performs frame layout autodetection. It counts the scanlines
  * in each frame and assigns guesses the frame layout from this.
  */
-class FrameLayoutDetector: public AbstractFrameManager {
+class FrameLayoutDetector: public AbstractFrameManager
+{
   public:
 
     FrameLayoutDetector();
@@ -67,6 +69,24 @@ class FrameLayoutDetector: public AbstractFrameManager {
       waitForVsyncEnd
     };
 
+    /**
+     * Misc. numeric constants used in the algorithm.
+     */
+    enum Metrics: uInt32 {
+      // ideal frame heights
+      frameLinesNTSC            = 262,
+      frameLinesPAL             = 312,
+
+      // number of scanlines to wait for vsync to start and stop
+      // (exceeding ideal frame height)
+      waitForVsync              = 100,
+
+      // tolerance window around ideal frame size for TV mode detection
+      tvModeDetectionTolerance  = 20,
+
+      // these frames will not be considered for detection
+      initialGarbageFrames      = TIAConstants::initialGarbageFrames
+    };
 
   private:
 

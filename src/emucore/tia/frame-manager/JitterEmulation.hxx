@@ -21,7 +21,8 @@
 #include "bspf.hxx"
 #include "Serializable.hxx"
 
-class JitterEmulation: public Serializable {
+class JitterEmulation: public Serializable
+{
   public:
 
     JitterEmulation();
@@ -69,6 +70,13 @@ class JitterEmulation: public Serializable {
     Int32 myJitterFactor{0};
 
     uInt32 myYStart{0};
+
+    enum Metrics: uInt32 {
+      framesForStableHeight       = 2,
+      framesUntilDestabilization  = 10,
+      minDeltaForJitter           = 3,
+      maxJitter                   = 50
+    };
 
   private:
 
