@@ -17,13 +17,6 @@
 
 #include "JitterEmulation.hxx"
 
-enum Metrics: uInt32 {
-  framesForStableHeight       = 2,
-  framesUntilDestabilization  = 10,
-  minDeltaForJitter           = 3,
-  maxJitter                   = 50
-};
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 JitterEmulation::JitterEmulation()
 {
