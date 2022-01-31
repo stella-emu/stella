@@ -35,6 +35,7 @@ static int setting_ntsc, setting_pal;
 static int setting_stereo;
 static int setting_phosphor, setting_console, setting_phosphor_blend;
 static int stella_paddle_joypad_sensitivity;
+static int stella_paddle_analog_sensitivity;
 static int setting_crop_hoverscan, crop_left;
 static NTSCFilter::Preset setting_filter;
 static const char* setting_palette;
@@ -132,8 +133,8 @@ static void update_input()
     {
       // scale from -0x8000..0x7fff to image rect
       const Common::Rect& rect =  stella.getImageRect();
-      const Int32 x = (input_state_cb(pad, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_X) + 0x8000) * rect.w() / 0xffff;
-      const Int32 y = (input_state_cb(pad, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_Y) + 0x8000) * rect.h() / 0xffff;
+      const Int32 x = (input_state_cb(pad, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_X) + 0x8000) * rect.w() / 0x10000;
+      const Int32 y = (input_state_cb(pad, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_Y) + 0x8000) * rect.h() / 0x10000;
 
       EVENT(Event::MouseAxisXValue, x);
       EVENT(Event::MouseAxisYValue, y);
@@ -204,15 +205,23 @@ static void update_input()
       break;
   }
 
-
-  MASK_EVENT(Event::ConsoleLeftDiffA, 0, RETRO_DEVICE_ID_JOYPAD_L);
-  MASK_EVENT(Event::ConsoleLeftDiffB, 0, RETRO_DEVICE_ID_JOYPAD_L2);
-  MASK_EVENT(Event::ConsoleColor, 0, RETRO_DEVICE_ID_JOYPAD_L3);
+  MASK_EVENT(Event::ConsoleLeftDiffA,  0, RETRO_DEVICE_ID_JOYPAD_L);
+  MASK_EVENT(Event::ConsoleLeftDiffB,  0, RETRO_DEVICE_ID_JOYPAD_L2);
+  MASK_EVENT(Event::ConsoleColor,      0, RETRO_DEVICE_ID_JOYPAD_L3);
   MASK_EVENT(Event::ConsoleRightDiffA, 0, RETRO_DEVICE_ID_JOYPAD_R);
   MASK_EVENT(Event::ConsoleRightDiffB, 0, RETRO_DEVICE_ID_JOYPAD_R2);
   MASK_EVENT(Event::ConsoleBlackWhite, 0, RETRO_DEVICE_ID_JOYPAD_R3);
-  MASK_EVENT(Event::ConsoleSelect, 0, RETRO_DEVICE_ID_JOYPAD_SELECT);
-  MASK_EVENT(Event::ConsoleReset, 0, RETRO_DEVICE_ID_JOYPAD_START);
+  MASK_EVENT(Event::ConsoleSelect,     0, RETRO_DEVICE_ID_JOYPAD_SELECT);
+  MASK_EVENT(Event::ConsoleReset,      0, RETRO_DEVICE_ID_JOYPAD_START);
+
+  MASK_EVENT(Event::ConsoleLeftDiffA,  1, RETRO_DEVICE_ID_JOYPAD_L);
+  MASK_EVENT(Event::ConsoleLeftDiffB,  1, RETRO_DEVICE_ID_JOYPAD_L2);
+  MASK_EVENT(Event::ConsoleColor,      1, RETRO_DEVICE_ID_JOYPAD_L3);
+  MASK_EVENT(Event::ConsoleRightDiffA, 1, RETRO_DEVICE_ID_JOYPAD_R);
+  MASK_EVENT(Event::ConsoleRightDiffB, 1, RETRO_DEVICE_ID_JOYPAD_R2);
+  MASK_EVENT(Event::ConsoleBlackWhite, 1, RETRO_DEVICE_ID_JOYPAD_R3);
+  MASK_EVENT(Event::ConsoleSelect,     1, RETRO_DEVICE_ID_JOYPAD_SELECT);
+  MASK_EVENT(Event::ConsoleReset,      1, RETRO_DEVICE_ID_JOYPAD_START);
 
 #undef EVENT
 #undef MASK_EVENT
@@ -400,6 +409,20 @@ static void update_variables(bool init = false)
     }
   }
 
+  RETRO_GET("stella_paddle_analog_sensitivity")
+  {
+    int value = 0;
+
+    value = atoi(var.value);
+
+    if(stella_paddle_analog_sensitivity != value)
+    {
+      if(!init) stella.setPaddleAnalogSensitivity(value);
+
+      stella_paddle_analog_sensitivity = value;
+    }
+  }
+
   if(!init && !system_reset)
   {
     crop_left = setting_crop_hoverscan ? (stella.getVideoZoom() == 2 ? 26 : 8) : 0;
@@ -426,6 +449,7 @@ static bool reset_system()
   input_type[0] = stella.getLeftControllerType();
   input_type[1] = stella.getRightControllerType();
   stella.setPaddleJoypadSensitivity(stella_paddle_joypad_sensitivity);
+  stella.setPaddleAnalogSensitivity(stella_paddle_analog_sensitivity);
 
   system_reset = false;
 
@@ -498,9 +522,9 @@ void retro_set_controller_port_device(unsigned port, unsigned device)
       case RETRO_DEVICE_NONE:
       case RETRO_DEVICE_JOYPAD:
       case RETRO_DEVICE_ANALOG:
-      //case RETRO_DEVICE_MOUSE:
-      //case RETRO_DEVICE_KEYBOARD:
       case RETRO_DEVICE_LIGHTGUN:
+      //case RETRO_DEVICE_KEYBOARD:
+      //case RETRO_DEVICE_MOUSE:
         input_devices[port] = device;
         break;
 
@@ -528,6 +552,7 @@ void retro_set_environment(retro_environment_t cb)
     { "stella_phosphor", "Phosphor mode; auto|off|on" },
     { "stella_phosphor_blend", "Phosphor blend %; 60|65|70|75|80|85|90|95|100|0|5|10|15|20|25|30|35|40|45|50|55" },
     { "stella_paddle_joypad_sensitivity", "Paddle joypad sensitivity; 3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|1|2" },
+    { "stella_paddle_analog_sensitivity", "Paddle analog sensitivity; 20|21|22|23|24|25|26|27|28|29|30|0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19" },
     { NULL, NULL },
   };
 
@@ -599,6 +624,15 @@ bool retro_load_game(const struct retro_game_info *info)
     { 1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B,      "Fire" },
     { 1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_A,      "Trigger" },
     { 1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_Y,      "Booster" },
+
+    { 1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_L,      "Left Difficulty A" },
+    { 1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_L2,     "Left Difficulty B" },
+    { 1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_L3,     "Color" },
+    { 1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_R,      "Right Difficulty A" },
+    { 1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_R2,     "Right Difficulty B" },
+    { 1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_R3,     "Black/White" },
+    { 1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_SELECT, "Select" },
+    { 1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_START,  "Reset" },
 
     { 2, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT,   "Left" },
     { 2, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT,  "Right" },

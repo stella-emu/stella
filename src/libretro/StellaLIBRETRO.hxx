@@ -145,6 +145,14 @@ class StellaLIBRETRO
         static_cast<Paddles&>(myOSystem->console().rightController()).setDigitalSensitivity(sensitivity);
     }
 
+    void setPaddleAnalogSensitivity(int sensitivity)
+    {
+      if(getLeftControllerType() == Controller::Type::Paddles)
+        static_cast<Paddles&>(myOSystem->console().leftController()).setAnalogSensitivity(sensitivity);
+      if(getRightControllerType() == Controller::Type::Paddles)
+        static_cast<Paddles&>(myOSystem->console().rightController()).setAnalogSensitivity(sensitivity);
+    }
+
   protected:
     void   updateInput();
     void   updateVideo();
