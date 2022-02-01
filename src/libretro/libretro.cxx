@@ -82,10 +82,10 @@ static void update_input()
   {
     case Controller::Type::BoosterGrip:
       MASK_EVENT(Event::LeftJoystickFire9, pad, RETRO_DEVICE_ID_JOYPAD_Y);
-      [[__fallthrough]]
+      [[fallthrough]];
     case Controller::Type::Genesis:
       MASK_EVENT(Event::LeftJoystickFire5, pad, RETRO_DEVICE_ID_JOYPAD_A);
-      [[__fallthrough]]
+      [[fallthrough]];
     case Controller::Type::Joystick:
       MASK_EVENT(Event::LeftJoystickLeft, pad, RETRO_DEVICE_ID_JOYPAD_LEFT);
       MASK_EVENT(Event::LeftJoystickRight, pad, RETRO_DEVICE_ID_JOYPAD_RIGHT);
@@ -138,10 +138,10 @@ static void update_input()
   {
     case Controller::Type::BoosterGrip:
       MASK_EVENT(Event::RightJoystickFire9, pad, RETRO_DEVICE_ID_JOYPAD_Y);
-      [[__fallthrough]]
+      [[fallthrough]];
     case Controller::Type::Genesis:
       MASK_EVENT(Event::RightJoystickFire5, pad, RETRO_DEVICE_ID_JOYPAD_A);
-      [[__fallthrough]]
+      [[fallthrough]];
     case Controller::Type::Joystick:
       MASK_EVENT(Event::RightJoystickLeft, pad, RETRO_DEVICE_ID_JOYPAD_LEFT);
       MASK_EVENT(Event::RightJoystickRight, pad, RETRO_DEVICE_ID_JOYPAD_RIGHT);
