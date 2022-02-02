@@ -43,6 +43,7 @@ class EmulationDialog : public Dialog
     CheckboxWidget*   myUIMessages{nullptr};
     CheckboxWidget*   myFastSCBios{nullptr};
     CheckboxWidget*   myUseThreads{nullptr};
+    CheckboxWidget*   myAutoPauseWidget{nullptr};
     CheckboxWidget*   myConfirmExitWidget{nullptr};
     RadioButtonGroup* mySaveOnExitGroup{nullptr};
     CheckboxWidget*   myAutoSlotWidget{nullptr};
