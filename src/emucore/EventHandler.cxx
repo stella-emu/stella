@@ -376,6 +376,15 @@ void EventHandler::handleSystemEvent(SystemEvent e, int, int)
         enterMenuMode(EventHandlerState::OPTIONSMENU);
       break;
 #endif
+    case SystemEvent::WINDOW_FOCUS_GAINED:
+      if(myOSystem.settings().getBool("autopause") && myState == EventHandlerState::PAUSE)
+        setState(EventHandlerState::EMULATION);
+      break;
+    case SystemEvent::WINDOW_FOCUS_LOST:
+      if(myOSystem.settings().getBool("autopause") && myState == EventHandlerState::EMULATION)
+        setState(EventHandlerState::PAUSE);
+      break;
+
     default:  // handle other events as testing requires
       // cerr << "handleSystemEvent: " << e << endl;
       break;

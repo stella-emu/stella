@@ -184,6 +184,8 @@ Settings::Settings()
   setPermanent("dialogfont", "medium");
   setPermanent("dialogpos", 0);
   setPermanent("confirmexit", false);
+  setPermanent("autopause", false);
+
 
   // Misc options
   setPermanent("loglevel", int(Logger::Level::INFO));
@@ -624,6 +626,7 @@ void Settings::usage() const
     << "                 large16>\n"
     << "  -dialogpos    <0..4>         Display all dialogs at given positions\n"
     << "  -confirmexit  <0|1>          Display a confirm dialog when exiting emulation\n"
+    << "  -autopause    <0|1>          Pause/continue emulation when focus is lost/gained\n"
     << "  -listdelay    <delay>        Time to wait between keypresses in list widgets\n"
     << "                                (300-1000)\n"
     << "  -mwheel       <lines>        Number of lines the mouse wheel will scroll in\n"

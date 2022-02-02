@@ -25,6 +25,8 @@
     - Added option to show/hide file extensions.
     - Extended context menu and shortcuts.
 
+  * Added option to automatically pause emulation when focus is lost.
+
   * Added option to toggle autofire mode.
 
   * Added another oddball TIA glitch option for score mode color.

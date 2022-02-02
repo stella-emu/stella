@@ -81,7 +81,7 @@ EmulationDialog::EmulationDialog(OSystem& osystem, DialogContainer& parent,
 
   // Set real dimensions
   _w = 37 * fontWidth + HBORDER * 2 + CheckboxWidget::prefixSize(_font);
-  _h = 12 * (lineHeight + VGAP) + VGAP * 7 + VBORDER * 3 + _th + buttonHeight;
+  _h = 13 * (lineHeight + VGAP) + VGAP * 7 + VBORDER * 3 + _th + buttonHeight;
 
   xpos = HBORDER;  ypos = VBORDER + _th;
 
@@ -122,8 +122,14 @@ EmulationDialog::EmulationDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myUIMessages);
   ypos += lineHeight + VGAP;
 
-  // Confirm dialog when exiting emulation
+  // Automatically pause emulation when focus is lost
   xpos = HBORDER; ypos += VGAP * 3;
+  myAutoPauseWidget = new CheckboxWidget(this, _font, xpos, ypos, "Automatic pause");
+  myAutoPauseWidget->setToolTip("Check for automatic pause/continue of\nemulation when Stella loses/gains focus.");
+  wid.push_back(myAutoPauseWidget);
+
+  // Confirm dialog when exiting emulation
+  ypos += lineHeight + VGAP;
   myConfirmExitWidget = new CheckboxWidget(this, _font, xpos, ypos, "Confirm exiting emulation");
   wid.push_back(myConfirmExitWidget);
 
@@ -186,6 +192,9 @@ void EmulationDialog::loadConfig()
   // Multi-threaded rendering
   myUseThreads->setState(settings.getBool("threads"));
 
+  // Automatically pause emulation when focus is lost
+  myAutoPauseWidget->setState(settings.getBool("autopause"));
+
   // Confirm dialog when exiting emulation
   myConfirmExitWidget->setState(settings.getBool("confirmexit"));
 
@@ -222,6 +231,9 @@ void EmulationDialog::saveConfig()
   // Multi-threaded rendering
   settings.setValue("threads", myUseThreads->getState());
 
+  // Automatically pause emulation when focus is lost
+  settings.setValue("autopause", myAutoPauseWidget->getState());
+
   // Confirm dialog when exiting emulation
   settings.setValue("confirmexit", myConfirmExitWidget->getState());
 
@@ -254,6 +266,7 @@ void EmulationDialog::setDefaults()
   myUIMessages->setState(true);
   myFastSCBios->setState(true);
   myUseThreads->setState(false);
+  myAutoPauseWidget->setState(false);
   myConfirmExitWidget->setState(false);
 
   mySaveOnExitGroup->setSelected(0);
