@@ -362,24 +362,24 @@ void EventHandler::handleSystemEvent(SystemEvent e, int, int)
       // Force full render update
       myOSystem.frameBuffer().update(FrameBuffer::UpdateMode::RERENDER);
       break;
-#ifdef BSPF_UNIX
-    case SystemEvent::WINDOW_FOCUS_GAINED:
-      // Used to handle Alt-x key combos; sometimes the key associated with
-      // Alt gets 'stuck'  and is passed to the core for processing
-      if(myPKeyHandler->altKeyCount() > 0)
-        myPKeyHandler->altKeyCount() = 2;
-      break;
-#endif
 #if 0
     case SystemEvent::WINDOW_MINIMIZED:
       if(myState == EventHandlerState::EMULATION)
         enterMenuMode(EventHandlerState::OPTIONSMENU);
       break;
 #endif
+
     case SystemEvent::WINDOW_FOCUS_GAINED:
+  #ifdef BSPF_UNIX
+      // Used to handle Alt-x key combos; sometimes the key associated with
+      // Alt gets 'stuck'  and is passed to the core for processing
+      if(myPKeyHandler->altKeyCount() > 0)
+        myPKeyHandler->altKeyCount() = 2;
+  #endif
       if(myOSystem.settings().getBool("autopause") && myState == EventHandlerState::PAUSE)
         setState(EventHandlerState::EMULATION);
       break;
+
     case SystemEvent::WINDOW_FOCUS_LOST:
       if(myOSystem.settings().getBool("autopause") && myState == EventHandlerState::EMULATION)
         setState(EventHandlerState::PAUSE);
