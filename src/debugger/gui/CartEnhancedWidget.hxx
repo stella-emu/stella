@@ -19,6 +19,8 @@
 #define CART_ENHANCED_WIDGET_HXX
 
 class CartridgeEnhanced;
+class EditTextWidget;
+class StringListWidget;
 class PopUpWidget;
 
 namespace GUI {
@@ -51,6 +53,8 @@ class CartridgeEnhancedWidget : public CartDebugWidget
     virtual string ramDescription();
 
     virtual string romDescription();
+
+    virtual void plusROMInfo(int& ypos);
 
     virtual void bankList(uInt16 bankCount, int seg, VariantList& items, int& width);
 
@@ -91,6 +95,11 @@ class CartridgeEnhancedWidget : public CartDebugWidget
 
     // Distance between two hotspots
     int myHotspotDelta{1};
+
+    EditTextWidget* myPlusROMHostWidget{nullptr};
+    EditTextWidget* myPlusROMPathWidget{nullptr};
+    EditTextWidget* myPlusROMSendWidget{nullptr};
+    EditTextWidget* myPlusROMReceiveWidget{nullptr};
 
     std::unique_ptr<PopUpWidget* []> myBankWidgets{nullptr};
 
