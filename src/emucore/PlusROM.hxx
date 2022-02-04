@@ -122,6 +122,33 @@ class PlusROM : public Serializable
     void reset();
 
     /**
+      Retrieve host.
+
+      @return The host string
+    */
+    const string& getHost() const { return myHost; }
+
+    /**
+      Retrieve path.
+
+      @return The path string
+    */
+    const string& getPath() const { return myPath; }
+
+    /**
+      Retrieve send data.
+
+      @return The send data
+    */
+    ByteArray getSend() const;
+    /**
+      Retrieve receive data.
+
+      @return The receive data
+    */
+    ByteArray getReceive() const;
+
+    /**
       Set the callback for displaying messages
     */
     void setMessageCallback(const Cartridge::messageCallback& callback)

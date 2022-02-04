@@ -18,7 +18,6 @@
 #ifndef CARTRIDGE_HXX
 #define CARTRIDGE_HXX
 
-class Cartridge;
 class Properties;
 class FilesystemNode;
 class CartDebugWidget;

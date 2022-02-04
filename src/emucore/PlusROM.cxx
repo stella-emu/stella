@@ -156,6 +156,16 @@ class PlusROMRequest {
       return myState;
     }
 
+    const Destination& getDestination() const
+    {
+      return myDestination;
+    }
+
+    const PlusStoreId& getPlusStoreId() const
+    {
+      return myId;
+    }
+
     std::pair<size_t, const uInt8*> getResponse() {
       if (myState != State::done) throw runtime_error("invalid access to response");
 
@@ -221,7 +231,7 @@ bool PlusROM::initialize(const ByteBuffer& image, size_t size)
     return myIsPlusROM = false;  // Invalid host
 
   myHost = host;
-  myPath = "/" + path;
+  myPath = path;
 
   reset();
 
@@ -398,7 +408,7 @@ void PlusROM::send()
   {
     const string nick = mySettings.getString("plusroms.nick");
     auto request = make_shared<PlusROMRequest>(
-      PlusROMRequest::Destination(myHost, myPath),
+      PlusROMRequest::Destination(myHost, "/" + myPath),
       PlusROMRequest::PlusStoreId(nick, id),
       myTxBuffer.data(),
       myTxPos
@@ -440,8 +450,8 @@ void PlusROM::receive()
 #if defined(HTTP_LIB_SUPPORT)
   auto iter = myPendingRequests.begin();
 
-  while (iter != myPendingRequests.end()) {
-    switch ((*iter)->getState()) {
+  while(iter != myPendingRequests.end()) {
+    switch((*iter)->getState()) {
       case PlusROMRequest::State::failed:
         myMsgCallback("PlusROM data receiving failed!");
         // Request has failed? -> remove it and start over
@@ -456,7 +466,7 @@ void PlusROM::receive()
         // and start over
         auto [responseSize, response] = (*iter)->getResponse();
 
-        for (uInt8 i = 0; i < responseSize; i++)
+        for(uInt8 i = 0; i < responseSize; i++)
           myRxBuffer[myRxWritePos++] = response[i];
 
         myPendingRequests.erase(iter);
@@ -469,4 +479,26 @@ void PlusROM::receive()
     }
   }
 #endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ByteArray PlusROM::getSend() const
+{
+  ByteArray arr;
+
+  for(int i = 0; i < myTxPos; ++i)
+    arr.push_back(myTxBuffer[i]);
+
+  return arr;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ByteArray PlusROM::getReceive() const
+{
+  ByteArray arr;
+
+  for(uInt8 i = myRxReadPos; i != myRxWritePos; ++i)
+    arr.push_back(myRxBuffer[i]);
+
+  return arr;
 }

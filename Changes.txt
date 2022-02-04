@@ -31,6 +31,8 @@
 
   * Added another oddball TIA glitch option for score mode color.
 
+  * Debugger: added PlusROM information.
+
 -Have fun!
 
 

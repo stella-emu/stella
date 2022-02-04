@@ -1315,7 +1315,7 @@ string TIADebug::toString()
       << "AUDF0: "
       << hexWithLabel("", int(audF0()),
                       state.aud[0] != oldState.aud[0]) << "/"
-      << std::setw(11) << std::right << stringOnly(audFreq0(),
+      << std::setw(9) << std::right << stringOnly(audFreq0(),
                     state.aud[0] != oldState.aud[0]) << " "
       << "AUDC0: "
       << hexWithLabel("", int(audC0()),
@@ -1327,7 +1327,7 @@ string TIADebug::toString()
       << "AUDF1: "
       << hexWithLabel("", int(audF1()),
                       state.aud[1] != oldState.aud[1]) << "/"
-      << std::setw(11) << std::right << stringOnly(audFreq1(),
+      << std::setw(9) << std::right << stringOnly(audFreq1(),
                     state.aud[1] != oldState.aud[1]) << " "
       << "AUDC1: "
       << hexWithLabel("", int(audC1()),

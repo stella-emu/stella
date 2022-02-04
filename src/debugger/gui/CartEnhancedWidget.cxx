@@ -15,6 +15,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include "EditTextWidget.hxx"
 #include "PopUpWidget.hxx"
 #include "OSystem.hxx"
 #include "Debugger.hxx"
@@ -35,8 +36,10 @@ CartridgeEnhancedWidget::CartridgeEnhancedWidget(GuiObject* boss, const GUI::Fon
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int CartridgeEnhancedWidget::initialize()
 {
-  int ypos = addBaseInformation(size(), manufacturer(), description(), descriptionLines())
-    + myLineHeight;
+  int ypos = addBaseInformation(size(), manufacturer(), description(), descriptionLines());
+
+  plusROMInfo(ypos);
+  ypos += myLineHeight;
 
   bankSelect(ypos);
 
@@ -135,6 +138,41 @@ string CartridgeEnhancedWidget::romDescription()
   }
 
   return info.str();
+}
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeEnhancedWidget::plusROMInfo(int& ypos)
+{
+  if(myCart.isPlusROM())
+  {
+    const int xpos = 2,
+              lwidth = _font.getStringWidth("Manufacturer "),
+              fwidth = _w - lwidth - 12;
+
+    new StaticTextWidget(_boss, _font, xpos, ypos + 1, "PlusROM:");
+    ypos += myLineHeight + 4;
+
+    new StaticTextWidget(_boss, _font, xpos + _fontWidth * 2, ypos + 1, "Host");
+    myPlusROMHostWidget = new EditTextWidget(_boss, _font, xpos + lwidth, ypos - 1, fwidth, myLineHeight);
+    myPlusROMHostWidget->setEditable(false);
+    ypos += myLineHeight + 4;
+
+    new StaticTextWidget(_boss, _font, xpos + _fontWidth * 2, ypos + 1, "Path");
+    myPlusROMPathWidget = new EditTextWidget(_boss, _font, xpos + lwidth, ypos - 1, fwidth, myLineHeight);
+    myPlusROMPathWidget->setEditable(false);
+    ypos += myLineHeight + 4;
+
+    new StaticTextWidget(_boss, _font, xpos + _fontWidth * 2, ypos + 1, "Send");
+    myPlusROMSendWidget = new EditTextWidget(_boss, _nfont, xpos + lwidth, ypos - 1, fwidth, myLineHeight);
+    myPlusROMSendWidget->setEditable(false);
+    ypos += myLineHeight + 4;
+
+    new StaticTextWidget(_boss, _font, xpos + _fontWidth * 2, ypos + 1, "Receive");
+    myPlusROMReceiveWidget = new EditTextWidget(_boss, _nfont, xpos + lwidth, ypos - 1, fwidth, myLineHeight);
+    myPlusROMReceiveWidget->setEditable(false);
+    ypos += myLineHeight + 4;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -278,9 +316,28 @@ void CartridgeEnhancedWidget::saveOldState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeEnhancedWidget::loadConfig()
 {
+  if(myCart.isPlusROM())
+  {
+    myPlusROMHostWidget->setText(myCart.myPlusROM->getHost());
+    myPlusROMPathWidget->setText(myCart.myPlusROM->getPath());
+
+    ostringstream buf;
+    ByteArray arr = myCart.myPlusROM->getSend();
+
+    for(int i = 0; i < arr.size(); ++i)
+      buf << Common::Base::HEX2 << int(arr[i]) << " ";
+    myPlusROMSendWidget->setText(buf.str());
+
+    buf.str("");
+    arr = myCart.myPlusROM->getReceive();
+
+    for(int i = 0; i < arr.size(); ++i)
+      buf << Common::Base::HEX2 << int(arr[i]) << " ";
+    myPlusROMReceiveWidget->setText(buf.str());
+  }
   if(myBankWidgets != nullptr)
   {
-    if (bankSegs() > 1)
+    if(bankSegs() > 1)
       for(int seg = 0; seg < bankSegs(); ++seg)
         myBankWidgets[seg]->setSelectedIndex(myCart.getSegmentBank(seg),
                                              myCart.getSegmentBank(seg) != myOldState.banks[seg]);

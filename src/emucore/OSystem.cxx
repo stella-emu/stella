@@ -517,21 +517,30 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
       myFrameBuffer->showTextMessage(msg.str());
     }
     // Check for first PlusROM start
-    if(myConsole->cartridge().isPlusROM() &&
-       settings().getString("plusroms.fixedid") == EmptyString)
+    if(myConsole->cartridge().isPlusROM())
     {
-      // Make sure there always is an id
-      constexpr int ID_LEN = 32;
-      const char* HEX_DIGITS = "0123456789ABCDEF";
-      char id_chr[ID_LEN] = {0};
-      Random rnd;
+      if(settings().getString("plusroms.fixedid") == EmptyString)
+      {
+        // Make sure there always is an id
+        constexpr int ID_LEN = 32;
+        const char* HEX_DIGITS = "0123456789ABCDEF";
+        char id_chr[ID_LEN] = { 0 };
+        Random rnd;
 
-      for(char& c: id_chr)
-        c = HEX_DIGITS[rnd.next() % 16];
+        for(char& c : id_chr)
+          c = HEX_DIGITS[rnd.next() % 16];
 
-      settings().setValue("plusroms.fixedid", string(id_chr, ID_LEN));
+        settings().setValue("plusroms.fixedid", string(id_chr, ID_LEN));
 
-      myEventHandler->changeStateByEvent(Event::PlusRomsSetupMode);
+        myEventHandler->changeStateByEvent(Event::PlusRomsSetupMode);
+      }
+
+      string id = settings().getString("plusroms.id");
+
+      if(id == EmptyString)
+        id = settings().getString("plusroms.fixedid");
+
+      Logger::info("PlusROM Nick: " + settings().getString("plusroms.nick") + ", ID: " + id);
     }
   }
 
