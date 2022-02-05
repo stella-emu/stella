@@ -88,6 +88,8 @@ class CartridgeEnhancedWidget : public CartDebugWidget
     struct CartState {
       ByteArray internalRam;
       ByteArray banks;
+      ByteArray send;
+      ByteArray receive;
     };
     CartState myOldState;
 

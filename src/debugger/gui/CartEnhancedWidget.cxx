@@ -154,22 +154,26 @@ void CartridgeEnhancedWidget::plusROMInfo(int& ypos)
     ypos += myLineHeight + 4;
 
     new StaticTextWidget(_boss, _font, xpos + _fontWidth * 2, ypos + 1, "Host");
-    myPlusROMHostWidget = new EditTextWidget(_boss, _font, xpos + lwidth, ypos - 1, fwidth, myLineHeight);
+    myPlusROMHostWidget = new EditTextWidget(_boss, _font, xpos + lwidth, ypos - 1,
+      fwidth, myLineHeight, myCart.myPlusROM->getHost());
     myPlusROMHostWidget->setEditable(false);
     ypos += myLineHeight + 4;
 
     new StaticTextWidget(_boss, _font, xpos + _fontWidth * 2, ypos + 1, "Path");
-    myPlusROMPathWidget = new EditTextWidget(_boss, _font, xpos + lwidth, ypos - 1, fwidth, myLineHeight);
+    myPlusROMPathWidget = new EditTextWidget(_boss, _font, xpos + lwidth, ypos - 1,
+      fwidth, myLineHeight, myCart.myPlusROM->getPath());
     myPlusROMPathWidget->setEditable(false);
     ypos += myLineHeight + 4;
 
     new StaticTextWidget(_boss, _font, xpos + _fontWidth * 2, ypos + 1, "Send");
-    myPlusROMSendWidget = new EditTextWidget(_boss, _nfont, xpos + lwidth, ypos - 1, fwidth, myLineHeight);
+    myPlusROMSendWidget = new EditTextWidget(_boss, _nfont, xpos + lwidth, ypos - 1,
+      fwidth, myLineHeight);
     myPlusROMSendWidget->setEditable(false);
     ypos += myLineHeight + 4;
 
     new StaticTextWidget(_boss, _font, xpos + _fontWidth * 2, ypos + 1, "Receive");
-    myPlusROMReceiveWidget = new EditTextWidget(_boss, _nfont, xpos + lwidth, ypos - 1, fwidth, myLineHeight);
+    myPlusROMReceiveWidget = new EditTextWidget(_boss, _nfont, xpos + lwidth, ypos - 1,
+      fwidth, myLineHeight);
     myPlusROMReceiveWidget->setEditable(false);
     ypos += myLineHeight + 4;
   }
@@ -305,6 +309,12 @@ void CartridgeEnhancedWidget::saveOldState()
   for(uInt32 i = 0; i < myCart.myRamSize; ++i)
     myOldState.internalRam.push_back(myCart.myRAM[i]);
 
+  if(myCart.isPlusROM())
+  {
+    myOldState.send = myCart.myPlusROM->getSend();
+    myOldState.receive = myCart.myPlusROM->getReceive();
+  }
+
   myOldState.banks.clear();
   if (bankSegs() > 1)
     for(int seg = 0; seg < bankSegs(); ++seg)
@@ -318,22 +328,19 @@ void CartridgeEnhancedWidget::loadConfig()
 {
   if(myCart.isPlusROM())
   {
-    myPlusROMHostWidget->setText(myCart.myPlusROM->getHost());
-    myPlusROMPathWidget->setText(myCart.myPlusROM->getPath());
-
     ostringstream buf;
     ByteArray arr = myCart.myPlusROM->getSend();
 
     for(int i = 0; i < arr.size(); ++i)
       buf << Common::Base::HEX2 << int(arr[i]) << " ";
-    myPlusROMSendWidget->setText(buf.str());
+    myPlusROMSendWidget->setText(buf.str(), arr != myOldState.send);
 
     buf.str("");
     arr = myCart.myPlusROM->getReceive();
 
     for(int i = 0; i < arr.size(); ++i)
       buf << Common::Base::HEX2 << int(arr[i]) << " ";
-    myPlusROMReceiveWidget->setText(buf.str());
+    myPlusROMReceiveWidget->setText(buf.str(), arr != myOldState.receive);
   }
   if(myBankWidgets != nullptr)
   {
