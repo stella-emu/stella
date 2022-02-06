@@ -94,7 +94,8 @@ void FBBackendSDL2::queryHardware(vector<Common::Size>& fullscreenRes,
     int numModes = SDL_GetNumDisplayModes(i);
     ostringstream s;
 
-    s << "Supported video modes (" << numModes << ") for display " << i << ":";
+    s << "Supported video modes (" << numModes << ") for display " << i
+      << " (" << SDL_GetDisplayName(i) << "):";
 
     string lastRes = "";
 
