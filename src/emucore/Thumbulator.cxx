@@ -213,13 +213,13 @@ void Thumbulator::updateTimer(uInt32 cycles)
   if(T0TCR & 1) // bit 0 controls timer on/off
   {
     T0TC += static_cast<uInt32>(cycles * timing_factor);
-    tim0Total = 0;
+    tim0Total = tim0Start;
   }
 #endif
   if(T1TCR & 1) // bit 0 controls timer on/off
   {
     T1TC += static_cast<uInt32>(cycles * timing_factor);
-    tim1Total = 0;
+    tim1Total = tim1Start;
   }
 }
 
