@@ -123,7 +123,8 @@ void Driving::updateControllerAxes()
   // Analog events (from joystick axes)
   int a_axis = myEvent.get(myAnalogEvent);
 
-  if( abs(a_axis) > Controller::analogDeadZone()) {
+  if( abs(a_axis) > Controller::analogDeadZone())
+  {
     /* a_axis is in -2^15 to +2^15-1; adding 1 when non-negative and
        dividing by 2^9 gives us -2^6 to +2^6, which gives us the same
        range as digital inputs.
@@ -132,7 +133,7 @@ void Driving::updateControllerAxes()
   }
 
   // Only consider the lower-most bits (corresponding to pins 1 & 2)
-  myGrayIndex = Int32((myCounterHires / 256.0) * SENSITIVITY) & 0b11;
+  myGrayIndex = Int32((myCounterHires / 256.0F) * SENSITIVITY) & 0b11;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -240,4 +241,4 @@ void Driving::setSensitivity(int sensitivity)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-float Driving::SENSITIVITY = 1.0;
+float Driving::SENSITIVITY = 1.0F;

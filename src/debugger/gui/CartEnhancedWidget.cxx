@@ -331,14 +331,14 @@ void CartridgeEnhancedWidget::loadConfig()
     ostringstream buf;
     ByteArray arr = myCart.myPlusROM->getSend();
 
-    for(int i = 0; i < arr.size(); ++i)
+    for(size_t i = 0; i < arr.size(); ++i)
       buf << Common::Base::HEX2 << int(arr[i]) << " ";
     myPlusROMSendWidget->setText(buf.str(), arr != myOldState.send);
 
     buf.str("");
     arr = myCart.myPlusROM->getReceive();
 
-    for(int i = 0; i < arr.size(); ++i)
+    for(size_t i = 0; i < arr.size(); ++i)
       buf << Common::Base::HEX2 << int(arr[i]) << " ";
     myPlusROMReceiveWidget->setText(buf.str(), arr != myOldState.receive);
   }
