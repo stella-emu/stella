@@ -46,6 +46,7 @@ void CartridgeARM::setInitialState()
   else
   {
     myIncCycles = false;
+    myThumbEmulator->setChipType();
   }
   enableCycleCount(devSettings);
 }

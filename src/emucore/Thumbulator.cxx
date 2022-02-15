@@ -213,13 +213,13 @@ void Thumbulator::updateTimer(uInt32 cycles)
   if(T0TCR & 1) // bit 0 controls timer on/off
   {
     T0TC += static_cast<uInt32>(cycles * timing_factor);
-    tim0Total = tim0Start;
+    tim0Total = tim0Start = 0;
   }
 #endif
   if(T1TCR & 1) // bit 0 controls timer on/off
   {
     T1TC += static_cast<uInt32>(cycles * timing_factor);
-    tim1Total = tim1Start;
+    tim1Total = tim1Start = 0;
   }
 }
 
@@ -2931,6 +2931,20 @@ int Thumbulator::reset()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Thumbulator::ChipPropsType Thumbulator::setChipType(ChipType type)
 {
+  if(type == ChipType::AUTO)
+  {
+    if(_chipType != ChipType::AUTO)
+      type = _chipType;
+    else if(searchPattern(0x3016E5C0, 3)) // alternate bus location (standard = 0x3015E5C0)
+      type = ChipType::LPC213x;
+    else if(romSize <= 0x8000)            // LPC2104.. is always > 32K
+      type = ChipType::LPC2101;
+    else if(searchPattern(0x1026E3A0))    // 70 MHz pattern (60 MHZ = 0x1025E3A0)
+      type = ChipType::LPC2104_OC;
+    else
+      type = ChipType::LPC2104;
+  }
+
   ChipPropsType props = ChipProps[static_cast<uInt32>(type)];
 
   _chipType = type;
@@ -3283,3 +3297,21 @@ void Thumbulator::incICycles(uInt32 m)
 }
 
 #endif // THUMB_CYCLE_COUNT
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Thumbulator::searchPattern(uInt32 pattern, uInt32 repeats) const
+{
+  // Note: The pattern is defined in 1-0-3-2 byte order!
+  const uInt16 patternLo = pattern >> 16;
+  const uInt16 patternHi = pattern & 0xffff;
+  uInt32 count = 0;
+
+  // The pattern is always aligned to 4
+  for(uInt32 i = 0; i < romSize/2 - 2; i += 2)
+  {
+    if(rom[i] == patternLo && rom[i + 1] == patternHi)
+      if(++count == repeats)
+        return true;
+  }
+  return false;
+}
