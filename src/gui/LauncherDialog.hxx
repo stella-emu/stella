@@ -168,6 +168,7 @@ class LauncherDialog : public Dialog, CommandSender
     void loadRom();
     void loadRomInfo();
     void openSettings();
+    void openGameProperties();
     void openContextMenu(int x = -1, int y = -1);
     void openGlobalProps();
     void openHighScores();
