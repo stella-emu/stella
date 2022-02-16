@@ -28,6 +28,7 @@
 #include "FSNode.hxx"
 #include "MD5.hxx"
 #include "OptionsDialog.hxx"
+#include "GameInfoDialog.hxx"
 #include "HighScoresDialog.hxx"
 #include "HighScoresManager.hxx"
 #include "GlobalPropsDialog.hxx"
@@ -245,7 +246,6 @@ void LauncherDialog::addPathWidgets(int& ypos)
       buttonWidth, buttonHeight, reloadIcon, kReloadCmd);
     myReloadButton->setToolTip("Reload listing");
     wid.push_back(myReloadButton);
-    ypos = myNavigationBar->getBottom() + Dialog::vGap();
   }
   else
   {
@@ -256,10 +256,10 @@ void LauncherDialog::addPathWidgets(int& ypos)
       lwFound, fontHeight, "", TextAlign::Right);
 
     EditTextWidget* e = new EditTextWidget(this, _font, myNavigationBar->getRight() - 1, ypos,
-      lwFound + LBL_GAP + 1, lineHeight, "");
+      lwFound + LBL_GAP + 1, buttonHeight - 2, "");
     e->setEditable(false, true);
-    ypos = myNavigationBar->getBottom();
   }
+  ypos = myNavigationBar->getBottom() + Dialog::vGap();
   addToFocusList(wid);
 }
 
@@ -739,6 +739,8 @@ void LauncherDialog::handleContextMenu()
     removeAllPopular();
   else if(cmd == "removerecent")
     removeAllRecent();
+  else if(cmd == "properties")
+    openGameProperties();
   else if(cmd == "override")
     openGlobalProps();
   else if(cmd == "extensions")
@@ -805,6 +807,10 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
 
       case KBDK_F:
         myList->toggleUserFavorite();
+        break;
+
+      case KBDK_G:
+        openGameProperties();
         break;
 
       case KBDK_H:
@@ -1137,6 +1143,7 @@ void LauncherDialog::openContextMenu(int x, int y)
   }
   if(!currentNode().isDirectory() && Bankswitch::isValidRomName(currentNode()))
   {
+    items.push_back(ContextItem("Game properties" + ELLIPSIS, "Ctrl+G", "properties"));
     items.push_back(ContextItem("Power-on options" + ELLIPSIS, "Ctrl+P", "override"));
     if(instance().highScores().enabled())
       items.push_back(ContextItem("High scores" + ELLIPSIS, "Ctrl+H", "highscores"));
@@ -1210,6 +1217,18 @@ void LauncherDialog::openSettings()
     myDialog = make_unique<OptionsDialog>(instance(), parent(), this, _w, _h,
                                           AppMode::launcher);
   myDialog->open();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::openGameProperties()
+{
+  if(!currentNode().isDirectory() && Bankswitch::isValidRomName(currentNode()))
+  {
+    // Create game properties dialog
+    myDialog = make_unique<GameInfoDialog>(instance(), parent(),
+      myUseMinimalUI ? _font : instance().frameBuffer().font(), this, _w, _h);
+    myDialog->open();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

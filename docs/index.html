@@ -2291,6 +2291,11 @@
       <td>Control + F</td>
     </tr>
     <tr>
+      <td>Open Game properties dialog</td>
+      <td>Control + G</td>
+      <td>Control + G</td>
+    </tr>
+    <tr>
       <td>Open Power-On options dialog</td>
       <td>Control + P</td>
       <td>Control + P</td>
@@ -4317,46 +4322,50 @@
   <p><ul>
     <li>
       <p><b>Remove from recently played/most popular</b> (or 'Control + X'):
-        This option removes the selected ROM from the current folder.</p>
+        Removes the selected ROM from the current virtual folder.</p>
     </li>
     <li>
-      <p><b>Add to/remove from favorites</b> (or 'Control + F'): This option
-        toggles the favorite state of the selected ROM or directory.</p>
+      <p><b>Add to/remove from favorites</b> (or 'Control + F'): Toggles the
+        favorite state of the selected ROM or directory.</p>
+    </li>
+    <li>
+      <p><b>Game properties</b> (or 'Control + G'): Opens the
+        <b><a href="#Properties">Game properties</a></b> dialog.</p>
     </li>
     <li><p><b><a name="PowerOn">Power-on options</a></b> (or 'Control + P'):
-    Selecting this option shows a dialog whereby
-    ROM properties can be temporarily overridden, and joystick/console buttons can be
-    temporarily held down. Selecting options from this dialog will cause all ROMs launched
-    after that to use those properties you specify. Clicking <b>Defaults</b> will disable
-    its functionality, and use ROM properties as defined by the ROM itself. The dialog is as
-    follows (see <b>Advanced Configuration - <a href="#Properties">Game Properties</a></b>
-    for more information concerning ROM properties):</p>
-    <table border="5" cellpadding="2" frame="box" rules="none">
-      <tr>
-        <td><img src="graphics/launcher_override.png"></td>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-        <td valign="top">
-          <table border="1" cellpadding="4">
-            <tr><th>Item</th><th>For more information,<br>see <a href="#CommandLine">Commandline</a></th></tr>
-            <tr><td>Bankswitch type</td><td>-bs</td></tr>
-            <tr><td>TV type</td><td>-tv</td></tr>
-            <tr><td>Left difficulty</td><td>-ld</td></tr>
-            <tr><td>Right difficulty</td><td>-rd</td></tr>
-            <tr><td>Startup mode</td><td>-debug</td></tr>
-            <tr><td>Left joy items</td><td>-holdjoy0</td></tr>
-            <tr><td>Right joy items</td><td>-holdjoy1</td></tr>
-            <tr><td>Console: Select</td><td>-holdselect</td></tr>
-            <tr><td>Console: Reset</td><td>-holdreset</td></tr>
-          </table>
-          <p></p>
-        </td>
-      </tr>
-    </table>
+      Opens a dialog whereby ROM properties can be temporarily overridden, and
+      joystick/console buttons can be temporarily held down. Selecting options
+      from this dialog will cause all ROMs launched after that to use those
+      properties you specify. Clicking <b>Defaults</b> will disable its
+      functionality, and use ROM properties as defined by the ROM itself. The dialog is as
+      follows (see <b>Advanced Configuration - <a href="#Properties">Game Properties</a></b>
+      for more information concerning ROM properties):</p>
+      <table border="5" cellpadding="2" frame="box" rules="none">
+        <tr>
+          <td><img src="graphics/launcher_override.png"></td>
+          <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+          <td valign="top">
+            <table border="1" cellpadding="4">
+              <tr><th>Item</th><th>For more information,<br>see <a href="#CommandLine">Commandline</a></th></tr>
+              <tr><td>Bankswitch type</td><td>-bs</td></tr>
+              <tr><td>TV type</td><td>-tv</td></tr>
+              <tr><td>Left difficulty</td><td>-ld</td></tr>
+              <tr><td>Right difficulty</td><td>-rd</td></tr>
+              <tr><td>Startup mode</td><td>-debug</td></tr>
+              <tr><td>Left joy items</td><td>-holdjoy0</td></tr>
+              <tr><td>Right joy items</td><td>-holdjoy1</td></tr>
+              <tr><td>Console: Select</td><td>-holdselect</td></tr>
+              <tr><td>Console: Reset</td><td>-holdreset</td></tr>
+            </table>
+            <p></p>
+          </td>
+        </tr>
+      </table>
     </li>
     <li>
-      <p><b>High scores</b> (or 'Control + H'): This option displays the <a href="#HighScores">
-      High Scores</a> dialog for the selected ROM. Only available if high score
-      properties have been setup for the ROM.</p>
+      <p><b>High scores</b> (or 'Control + H'): Opens the
+      <b><a href="#HighScores"></b>High Scores</a> dialog for the selected ROM.
+      Only available if high score properties have been setup for the ROM.</p>
     </li>
     <li>
       <p><b>Enable/disable file extensions</b> (or 'Control + E'): Toggles the
@@ -4375,8 +4384,8 @@
       of ROMs in current directory only or all subdirectories too.</p>
     </li>
     <li>
-      <p><b>Reload listing</b> (or 'Control + R'): Selecting this performs a
-      reload of the current listing. </p>
+      <p><b>Reload listing</b> (or 'Control + R'): Performs a reload of the
+      current file listing. </p>
     </li>
   </ul></p>
   </blockquote></br>
