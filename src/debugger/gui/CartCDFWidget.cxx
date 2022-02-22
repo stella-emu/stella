@@ -64,8 +64,23 @@ CartridgeCDFWidget::CartridgeCDFWidget(
                                    "Fast Fetcher enabled");
   myFastFetch->setTarget(this);
   myFastFetch->setEditable(false);
-
+  
   int lwidth;
+
+  // Fast Fetch Offset
+  if (isCDFJplus())
+  {
+    ypos += myLineHeight + VGAP;
+    
+
+    new StaticTextWidget(_boss, _font, myFastFetch->getLeft(), ypos, "Fast Fetch Offset: ");
+    lwidth = _font.getStringWidth("Fast Fetch Offset: ");
+
+    myFastFetcherOffset = new DataGridWidget(boss, _nfont, myFastFetch->getLeft() + lwidth, ypos, 1, 1, 2, 8,
+                                         Common::Base::Fmt::_16_2);
+    myFastFetcherOffset->setTarget(this);
+    myFastFetcherOffset->setEditable(false);
+  }
 
   // Datastream Pointers
 #define DS_X (HBORDER + _font.getStringWidth("xx "))
@@ -208,8 +223,9 @@ CartridgeCDFWidget::CartridgeCDFWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCDFWidget::saveOldState()
 {
-  myOldState.tops.clear();
-  myOldState.bottoms.clear();
+  Int32 ds_shift = isCDFJplus() ? 8 : 12;
+  
+  myOldState.fastfetchoffset.clear();
   myOldState.datastreampointers.clear();
   myOldState.datastreamincrements.clear();
   myOldState.addressmaps.clear();
@@ -219,6 +235,10 @@ void CartridgeCDFWidget::saveOldState()
   myOldState.mwavesizes.clear();
   myOldState.internalram.clear();
   myOldState.samplepointer.clear();
+  
+  
+  if (isCDFJplus())
+    myOldState.fastfetchoffset.push_back(myCart.myRAM[myCart.myFastFetcherOffset]);
 
   for(uInt32 i = 0; i < static_cast<uInt32>((isCDFJ() || isCDFJplus()) ? 35 : 34); ++i)
   {
@@ -232,7 +252,7 @@ void CartridgeCDFWidget::saveOldState()
     // I = Increment
     // F = Fractional
 
-    myOldState.datastreampointers.push_back(myCart.getDatastreamPointer(i)>>12);
+    myOldState.datastreampointers.push_back(myCart.getDatastreamPointer(i)>>ds_shift);
     myOldState.datastreamincrements.push_back(myCart.getDatastreamIncrement(i));
   }
 
@@ -257,18 +277,29 @@ void CartridgeCDFWidget::saveOldState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCDFWidget::loadConfig()
 {
+  Int32 ds_shift = isCDFJplus() ? 8 : 12;
   myBank->setSelectedIndex(myCart.getBank());
 
   // Get registers, using change tracking
   IntArray alist;
   IntArray vlist;
   BoolArray changed;
+  
+  
+  if (isCDFJplus())
+  {
+    alist.clear();  vlist.clear();  changed.clear();
+    alist.push_back(0);  vlist.push_back(myCart.myRAM[myCart.myFastFetcherOffset]);
+    changed.push_back((myCart.myRAM[myCart.myFastFetcherOffset]) != uInt32(myOldState.fastfetchoffset[0]));
+    myFastFetcherOffset->setList(alist, vlist, changed);
+  }
 
   alist.clear();  vlist.clear();  changed.clear();
   for(int i = 0; i < 32; ++i)
   {
     // Pointers are stored as:
-    // PPPFF---
+    // PPPFF---     CDFJ
+    // PPPPFF--     CDFJ+
     //
     // Increments are stored as
     // ----IIFF
@@ -277,7 +308,7 @@ void CartridgeCDFWidget::loadConfig()
     // I = Increment
     // F = Fractional
 
-    Int32 pointervalue = myCart.getDatastreamPointer(i) >> 12;
+    Int32 pointervalue = myCart.getDatastreamPointer(i) >> ds_shift;
     alist.push_back(0);  vlist.push_back(pointervalue);
     changed.push_back(pointervalue != myOldState.datastreampointers[i]);
   }
@@ -286,21 +317,21 @@ void CartridgeCDFWidget::loadConfig()
   alist.clear();  vlist.clear();  changed.clear();
   for(int i = 32; i < 34; ++i)
   {
-    Int32 pointervalue = myCart.getDatastreamPointer(i) >> 12;
+    Int32 pointervalue = myCart.getDatastreamPointer(i) >> ds_shift;
     alist.push_back(0);  vlist.push_back(pointervalue);
     changed.push_back(pointervalue != myOldState.datastreampointers[i]);
   }
 
   alist.clear();  vlist.clear();  changed.clear();
   alist.push_back(0);
-  vlist.push_back(myCart.getDatastreamPointer(0x20) >> 12);
+  vlist.push_back(myCart.getDatastreamPointer(0x20) >> ds_shift);
   changed.push_back(static_cast<Int32>(myCart.getDatastreamPointer(0x20)) != myOldState.datastreampointers[0x20]);
   myCommandStreamPointer->setList(alist, vlist, changed);
 
   alist.clear();  vlist.clear();  changed.clear();
   for(int i = 0; i < ((isCDFJ() || isCDFJplus()) ? 2 : 1); ++i)
   {
-    Int32 pointervalue = myCart.getDatastreamPointer(0x21 + i) >> 12;
+    Int32 pointervalue = myCart.getDatastreamPointer(0x21 + i) >> ds_shift;
     alist.push_back(0);  vlist.push_back(pointervalue);
     changed.push_back(pointervalue != myOldState.datastreampointers[0x21 + i]);
   }
@@ -324,7 +355,7 @@ void CartridgeCDFWidget::loadConfig()
   alist.clear();  vlist.clear();  changed.clear();
   for(int i = 0; i < ((isCDFJ() || isCDFJplus()) ? 2 : 1); ++i)
   {
-    Int32 pointervalue = myCart.getDatastreamIncrement(0x21 + i) >> 12;
+    Int32 pointervalue = myCart.getDatastreamIncrement(0x21 + i) >> ds_shift;
     alist.push_back(0);  vlist.push_back(pointervalue);
     changed.push_back(pointervalue != myOldState.datastreamincrements[0x21 + i]);
   }

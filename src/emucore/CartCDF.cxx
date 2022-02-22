@@ -34,10 +34,10 @@
 #define FAST_FETCH_ON ((myMode & 0x0F) == 0)
 #define DIGITAL_AUDIO_ON ((myMode & 0xF0) == 0)
 
-#define getUInt32(_array, _address) ((_array)[(_address) + 0]        +  \
-                                    ((_array)[(_address) + 1] << 8)  +  \
-                                    ((_array)[(_address) + 2] << 16) +  \
-                                    ((_array)[(_address) + 3] << 24))
+#define getUInt32(_array, _address) (unsigned int)((_array)[(_address) + 0]        +  \
+                                                  ((_array)[(_address) + 1] << 8)  +  \
+                                                  ((_array)[(_address) + 2] << 16) +  \
+                                                  ((_array)[(_address) + 3] << 24))
 
 namespace {
   Thumbulator::ConfigureFor thumulatorConfiguration(CartridgeCDF::CDFSubtype subtype)
@@ -151,7 +151,7 @@ void CartridgeCDF::setInitialState()
   // need to confirm with Chris
   myMode = 0xFF;
 
-  myBankOffset = myLDAimmediateOperandAddress = myJMPoperandAddress = 0;
+  myBankOffset = myLDAXYimmediateOperandAddress = myJMPoperandAddress = 0;
   myFastJumpActive = myFastJumpStream = 0;
 
   CartridgeARM::setInitialState();
@@ -277,12 +277,19 @@ uInt8 CartridgeCDF::peek(uInt16 address)
   // Do a FAST FETCH LDA# if:
   //  1) in Fast Fetch mode
   //  2) peeking the operand of an LDA # instruction
-  //  3) peek value is 0-34
-  if(FAST_FETCH_ON
-     && myLDAimmediateOperandAddress == address
-     && peekvalue <= myAmplitudeStream)
+  //  3) peek value is between myDSfetcherOffset and myDSfetcherOffset+34 inclusive
+  bool fastfetch;
+  if (myFastFetcherOffset)
+    fastfetch = (FAST_FETCH_ON && myLDAXYimmediateOperandAddress == address
+                 && peekvalue >= myRAM[myFastFetcherOffset] && peekvalue <= myRAM[myFastFetcherOffset]+myAmplitudeStream);
+  else
+    fastfetch = (FAST_FETCH_ON && myLDAXYimmediateOperandAddress == address
+                 && peekvalue >= 0 && peekvalue <= myAmplitudeStream);
+  if (fastfetch)
   {
-    myLDAimmediateOperandAddress = 0;
+    myLDAXYimmediateOperandAddress = 0;
+    if (myFastFetcherOffset)
+      peekvalue -= myRAM[myFastFetcherOffset]; // normalize peekvalue to 0 - 35
     if (peekvalue == myAmplitudeStream)
     {
       updateMusicModeDataFetchers();
@@ -319,7 +326,7 @@ uInt8 CartridgeCDF::peek(uInt16 address)
       return readFromDatastream(peekvalue);
     }
   }
-  myLDAimmediateOperandAddress = 0;
+  myLDAXYimmediateOperandAddress = 0;
 
   // Switch banks if necessary
   switch(address)
@@ -360,8 +367,13 @@ uInt8 CartridgeCDF::peek(uInt16 address)
       break;
   }
 
-  if(FAST_FETCH_ON && peekvalue == 0xA9)
-    myLDAimmediateOperandAddress = address + 1;
+  if (FAST_FETCH_ON)
+  {
+    if ((peekvalue == 0xA9) ||
+        (myLDXenabled && peekvalue == 0xA2 ) ||
+        (myLDYenabled && peekvalue == 0xA0))
+      myLDAXYimmediateOperandAddress = address + 1;
+  }
 
   return peekvalue;
 }
@@ -562,7 +574,7 @@ bool CartridgeCDF::save(Serializer& out) const
     out.putByte(myFastJumpActive);
 
     // operand addresses
-    out.putShort(myLDAimmediateOperandAddress);
+    out.putShort(myLDAXYimmediateOperandAddress);
     out.putShort(myJMPoperandAddress);
 
     // Harmony RAM
@@ -604,7 +616,7 @@ bool CartridgeCDF::load(Serializer& in)
     myFastJumpActive = in.getByte();
 
     // Address of LDA # operand
-    myLDAimmediateOperandAddress = in.getShort();
+    myLDAXYimmediateOperandAddress = in.getShort();
     myJMPoperandAddress = in.getShort();
 
     // Harmony RAM
@@ -735,20 +747,58 @@ uInt8 CartridgeCDF::readFromDatastream(uInt8 index)
   return value;
 }
 
+// params:
+//  - searchValue: uInt32 value to search for; assumes it is on a DWORD boundary
+//
+// returns:
+//  - offset in image where value was found
+//  - 0xFFFFFFFF if not found
+uInt32 CartridgeCDF::scanCDFDriver(uInt32 searchValue)
+{
+    for (int i = 0; i < 2048; i += 4)
+    {
+        if (getUInt32(myImage.get(), i) == searchValue)
+        {
+            return i;
+        }
+    }
+
+    return 0xFFFFFFFF;
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCDF::setupVersion()
 {
   // CDFJ+ detection
-  if (getUInt32(myImage.get(), 0x174) == 0x53554c50 &&    // Plus
-      getUInt32(myImage.get(), 0x178) == 0x4a464443 &&    // CDFJ
-      getUInt32(myImage.get(), 0x17C) == 0x00000001) {    // V1
 
+  // get offset of CDFJPlus ID
+  uInt32 cdfjOffset;
+
+  if ((cdfjOffset = scanCDFDriver(0x53554c50)) != 0xFFFFFFFF && // Plus
+      getUInt32(myImage.get(), cdfjOffset+4) == 0x4a464443 &&   // CDFJ
+      getUInt32(myImage.get(), cdfjOffset+8) == 0x00000001) {   // V1
     myCDFSubtype = CDFSubtype::CDFJplus;
     myAmplitudeStream = 0x23;
     myFastjumpStreamIndexMask = 0xfe;
     myDatastreamBase = 0x0098;
     myDatastreamIncrementBase = 0x0124;
+    myFastFetcherOffset = 0;
     myWaveformBase = 0x01b0;
+
+    uInt32 cdfjValue;
+    for (int i=0; i<2048; i += 4)
+    {
+      cdfjValue = getUInt32(myImage.get(), i);
+      if (cdfjValue == 0x135200A2)
+        myLDXenabled = true;
+      if (cdfjValue == 0x135200A0)
+        myLDYenabled = true;
+
+      // search for Fast Fetcher Offset (default is 0)
+      if ((cdfjValue & 0xFFFFFF00) == 0xE2422000)
+        myFastFetcherOffset = i;
+    }
+
     return;
   }
 

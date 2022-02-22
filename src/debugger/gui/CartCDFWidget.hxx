@@ -39,8 +39,7 @@ class CartridgeCDFWidget : public CartridgeARMWidget
 
   private:
     struct CartState {
-      ByteArray tops;
-      ByteArray bottoms;
+      ByteArray fastfetchoffset;
       IntArray datastreampointers;
       IntArray datastreamincrements;
       IntArray addressmaps;
@@ -67,6 +66,7 @@ class CartridgeCDFWidget : public CartridgeARMWidget
     DataGridWidget* myMusicWaveforms{nullptr};
     DataGridWidget* myMusicWaveformSizes{nullptr};
     DataGridWidget* mySamplePointer{nullptr};
+    DataGridWidget* myFastFetcherOffset{nullptr};
     std::array<StaticTextWidget*, 10> myDatastreamLabels{nullptr};
 
     CheckboxWidget* myFastFetch{nullptr};
