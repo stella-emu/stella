@@ -28,16 +28,18 @@
 #include "TIA.hxx"
 #include "exception/FatalEmulationError.hxx"
 
-#define COMMSTREAM        0x20
-#define JUMPSTREAM_BASE   0x21
+static constexpr uInt8 COMMSTREAM = 0x20,
+                       JUMPSTREAM_BASE = 0x21;
 
-#define FAST_FETCH_ON ((myMode & 0x0F) == 0)
-#define DIGITAL_AUDIO_ON ((myMode & 0xF0) == 0)
+static constexpr bool FAST_FETCH_ON(uInt8 mode)    { return (mode & 0x0F) == 0; }
+static constexpr bool DIGITAL_AUDIO_ON(uInt8 mode) { return (mode & 0xF0) == 0; }
 
-#define getUInt32(_array, _address) (unsigned int)((_array)[(_address) + 0]        +  \
-                                                  ((_array)[(_address) + 1] << 8)  +  \
-                                                  ((_array)[(_address) + 2] << 16) +  \
-                                                  ((_array)[(_address) + 3] << 24))
+static constexpr uInt32 getUInt32(const uInt8* _array, size_t _address) {
+  return static_cast<uInt32>((_array)[(_address) + 0]        +
+                            ((_array)[(_address) + 1] << 8)  +
+                            ((_array)[(_address) + 2] << 16) +
+                            ((_array)[(_address) + 3] << 24));
+}
 
 namespace {
   Thumbulator::ConfigureFor thumulatorConfiguration(CartridgeCDF::CDFSubtype subtype)
@@ -261,7 +263,7 @@ uInt8 CartridgeCDF::peek(uInt16 address)
   }
 
   // test for JMP FASTJUMP where FASTJUMP = $0000
-  if (FAST_FETCH_ON
+  if (FAST_FETCH_ON(myMode)
       && peekvalue == 0x4C
       && (myProgramImage[myBankOffset + address+1] & myFastjumpStreamIndexMask) == 0
       && myProgramImage[myBankOffset + address+2] == 0)
@@ -280,11 +282,12 @@ uInt8 CartridgeCDF::peek(uInt16 address)
   //  3) peek value is between myDSfetcherOffset and myDSfetcherOffset+34 inclusive
   bool fastfetch;
   if (myFastFetcherOffset)
-    fastfetch = (FAST_FETCH_ON && myLDAXYimmediateOperandAddress == address
-                 && peekvalue >= myRAM[myFastFetcherOffset] && peekvalue <= myRAM[myFastFetcherOffset]+myAmplitudeStream);
+    fastfetch = (FAST_FETCH_ON(myMode) && myLDAXYimmediateOperandAddress == address
+                 && peekvalue >= myRAM[myFastFetcherOffset]
+                 && peekvalue <= myRAM[myFastFetcherOffset]+myAmplitudeStream);
   else
-    fastfetch = (FAST_FETCH_ON && myLDAXYimmediateOperandAddress == address
-                 && peekvalue >= 0 && peekvalue <= myAmplitudeStream);
+    fastfetch = (FAST_FETCH_ON(myMode) && myLDAXYimmediateOperandAddress == address
+                 && peekvalue <= myAmplitudeStream);
   if (fastfetch)
   {
     myLDAXYimmediateOperandAddress = 0;
@@ -294,7 +297,7 @@ uInt8 CartridgeCDF::peek(uInt16 address)
     {
       updateMusicModeDataFetchers();
 
-      if DIGITAL_AUDIO_ON
+      if (DIGITAL_AUDIO_ON(myMode))
       {
         // retrieve packed sample (max size is 2K, or 4K of unpacked data)
 
@@ -367,7 +370,7 @@ uInt8 CartridgeCDF::peek(uInt16 address)
       break;
   }
 
-  if (FAST_FETCH_ON)
+  if (FAST_FETCH_ON(myMode))
   {
     if ((peekvalue == 0xA9) ||
         (myLDXenabled && peekvalue == 0xA2 ) ||
@@ -381,7 +384,7 @@ uInt8 CartridgeCDF::peek(uInt16 address)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeCDF::poke(uInt16 address, uInt8 value)
 {
-  uInt32 pointer;
+  uInt32 pointer = 0;
 
   // Is this a PlusROM?
   if(myPlusROM->isValid() && myPlusROM->pokeHotspot(address, value))
@@ -735,10 +738,13 @@ uInt8 CartridgeCDF::readFromDatastream(uInt8 index)
   uInt16 increment = getDatastreamIncrement(index);
 
   uInt8 value;
-  if (isCDFJplus()) {
+  if (isCDFJplus())
+  {
     value = myDisplayImage[ pointer >> 16 ];
     pointer += (increment << 8);
-  } else {
+  }
+  else
+  {
     value = myDisplayImage[ pointer >> 20 ];
     pointer += (increment << 12);
   }
@@ -747,6 +753,7 @@ uInt8 CartridgeCDF::readFromDatastream(uInt8 index)
   return value;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // params:
 //  - searchValue: uInt32 value to search for; assumes it is on a DWORD boundary
 //
@@ -755,15 +762,11 @@ uInt8 CartridgeCDF::readFromDatastream(uInt8 index)
 //  - 0xFFFFFFFF if not found
 uInt32 CartridgeCDF::scanCDFDriver(uInt32 searchValue)
 {
-    for (int i = 0; i < 2048; i += 4)
-    {
-        if (getUInt32(myImage.get(), i) == searchValue)
-        {
-            return i;
-        }
-    }
+  for (int i = 0; i < 2048; i += 4)
+    if (getUInt32(myImage.get(), i) == searchValue)
+      return i;
 
-    return 0xFFFFFFFF;
+  return 0xFFFFFFFF;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -772,7 +775,7 @@ void CartridgeCDF::setupVersion()
   // CDFJ+ detection
 
   // get offset of CDFJPlus ID
-  uInt32 cdfjOffset;
+  uInt32 cdfjOffset = 0;
 
   if ((cdfjOffset = scanCDFDriver(0x53554c50)) != 0xFFFFFFFF && // Plus
       getUInt32(myImage.get(), cdfjOffset+4) == 0x4a464443 &&   // CDFJ
@@ -815,8 +818,8 @@ void CartridgeCDF::setupVersion()
         }
   }
 
-  switch (subversion) {
-
+  switch (subversion)
+  {
     case 0x4a:
       myCDFSubtype = CDFSubtype::CDFJ;
 
@@ -874,18 +877,20 @@ bool CartridgeCDF::isCDFJplus() const
   return (myCDFSubtype == CDFSubtype::CDFJplus);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 CartridgeCDF::ramSize() const
 {
   return uInt32(isCDFJplus() ? 32_KB : 8_KB);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 CartridgeCDF::romSize() const
 {
   return uInt32(isCDFJplus() ? mySize : 32_KB);
 }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #ifdef DEBUGGER_SUPPORT
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   CartDebugWidget* CartridgeCDF::debugWidget(GuiObject* boss, const GUI::Font& lfont,
                                const GUI::Font& nfont, int x, int y, int w, int h)
   {
