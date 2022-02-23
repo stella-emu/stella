@@ -256,7 +256,7 @@ void StateManager::saveState(int slot)
         << ".st" << slot;
 
     // Make sure the file can be opened for writing
-    Serializer out(buf.str());
+    Serializer out(buf.str(), Serializer::Mode::ReadWriteTrunc);
     if(!out)
     {
       buf.str("");
