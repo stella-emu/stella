@@ -178,7 +178,7 @@ uInt8 CartridgeEnhanced::peek(uInt16 address)
   {
     // This is a read access to a write port!
     // Reading from the write port triggers an unwanted write
-    return peekRAM(myRAM[address], peekAddress);
+    return peekRAM(myRAM[address - myWriteOffset], peekAddress);
   }
 
   return myImage[romAddressSegmentOffset(peekAddress) + (peekAddress & myBankMask)];
