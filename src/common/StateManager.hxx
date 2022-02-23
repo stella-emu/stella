@@ -173,9 +173,11 @@ class StateManager
     // MD5 of the currently active ROM (either in movie or rewind mode)
     string myMD5;
 
+#if 0
     // Serializer classes used to save/load the eventstream
     Serializer myMovieWriter;
     Serializer myMovieReader;
+#endif
 
     // Stored savestates to be later rewound
     unique_ptr<RewindManager> myRewindManager;
