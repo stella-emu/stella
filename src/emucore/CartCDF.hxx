@@ -58,6 +58,9 @@ class System;
   @authors: Darrell Spice Jr, Chris Walton, Fred Quimby, John Champeau
             Thomas Jentzsch, Stephen Anthony, Bradford W. Mott
 */
+
+#define LDAXY_OVERRIDE_INACTIVE 0xFFFF
+
 class CartridgeCDF : public CartridgeARM
 {
   friend class CartridgeCDFWidget;
@@ -341,7 +344,7 @@ class CartridgeCDF : public CartridgeARM
 
     // set to address of #value if last byte peeked was A9 (LDA #),
     // or for CDFJ+ variations if A0 (LDY #) or A2 (LDX #)
-    uInt16 myLDAXYimmediateOperandAddress{0};
+    uInt16 myLDAXYimmediateOperandAddress{LDAXY_OVERRIDE_INACTIVE};
   
     // Some CDFJ+ drivers also override LDX # and/or LDY # for fast fetcher
     // use. These flag if this has been done.
