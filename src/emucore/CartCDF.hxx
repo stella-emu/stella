@@ -43,7 +43,7 @@ class System;
   used. There are 2 versions of the driver, with minor changes  due to hardware.
     1) 32K ROM and 8K RAM - compatible with 48-Pin LPC210X Family (Harmony, Harmony Encore, Melody)
     2) 64/128/256/512K ROM and16/32K RAM - compatible with 64-Pin LPC213X Family
- 
+
   The CDFJ+ driver can be modified to also override LDX # and LDY # for fast fetcher use. Additionally
   an offset can be set for the Fast Fetchers - if the offset was set to $80 then LDA #$85 would do a fast fetch
   of datastream 5. As implemented Stella's CDFJ+ support expects these to have been set in the driver ahead
@@ -58,8 +58,6 @@ class System;
   @authors: Darrell Spice Jr, Chris Walton, Fred Quimby, John Champeau
             Thomas Jentzsch, Stephen Anthony, Bradford W. Mott
 */
-
-#define LDAXY_OVERRIDE_INACTIVE 0xFFFF
 
 class CartridgeCDF : public CartridgeARM
 {
@@ -274,6 +272,9 @@ class CartridgeCDF : public CartridgeARM
     bool isPlusROM() const override { return myPlusROM->isValid(); }
 
   private:
+    static constexpr uInt8  COMMSTREAM = 0x20, JUMPSTREAM_BASE = 0x21;
+    static constexpr uInt16 LDAXY_OVERRIDE_INACTIVE = 0xFFFF;
+
     // The ROM image of the cartridge
     ByteBuffer myImage{nullptr};
 
@@ -345,7 +346,7 @@ class CartridgeCDF : public CartridgeARM
     // set to address of #value if last byte peeked was A9 (LDA #),
     // or for CDFJ+ variations if A0 (LDY #) or A2 (LDX #)
     uInt16 myLDAXYimmediateOperandAddress{LDAXY_OVERRIDE_INACTIVE};
-  
+
     // Some CDFJ+ drivers also override LDX # and/or LDY # for fast fetcher
     // use. These flag if this has been done.
     bool myLDXenabled{false};
