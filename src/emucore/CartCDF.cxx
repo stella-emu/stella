@@ -28,9 +28,6 @@
 #include "TIA.hxx"
 #include "exception/FatalEmulationError.hxx"
 
-static constexpr uInt8 COMMSTREAM = 0x20,
-                       JUMPSTREAM_BASE = 0x21;
-
 static constexpr bool FAST_FETCH_ON(uInt8 mode)    { return (mode & 0x0F) == 0; }
 static constexpr bool DIGITAL_AUDIO_ON(uInt8 mode) { return (mode & 0xF0) == 0; }
 
