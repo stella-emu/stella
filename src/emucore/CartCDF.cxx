@@ -153,8 +153,9 @@ void CartridgeCDF::setInitialState()
   // need to confirm with Chris
   myMode = 0xFF;
 
-  myBankOffset = myLDAXYimmediateOperandAddress = myJMPoperandAddress = 0;
+  myBankOffset = myJMPoperandAddress = 0;
   myFastJumpActive = myFastJumpStream = 0;
+  myLDAXYimmediateOperandAddress = LDAXY_OVERRIDE_INACTIVE;
 
   CartridgeARM::setInitialState();
 }
@@ -290,7 +291,7 @@ uInt8 CartridgeCDF::peek(uInt16 address)
                  && peekvalue <= myAmplitudeStream);
   if (fastfetch)
   {
-    myLDAXYimmediateOperandAddress = 0;
+    myLDAXYimmediateOperandAddress = LDAXY_OVERRIDE_INACTIVE;
     if (myFastFetcherOffset)
       peekvalue -= myRAM[myFastFetcherOffset]; // normalize peekvalue to 0 - 35
     if (peekvalue == myAmplitudeStream)
@@ -329,7 +330,7 @@ uInt8 CartridgeCDF::peek(uInt16 address)
       return readFromDatastream(peekvalue);
     }
   }
-  myLDAXYimmediateOperandAddress = 0;
+  myLDAXYimmediateOperandAddress = LDAXY_OVERRIDE_INACTIVE;
 
   // Switch banks if necessary
   switch(address)

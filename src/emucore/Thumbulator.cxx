@@ -548,6 +548,11 @@ void Thumbulator::write32(uInt32 addr, uInt32 data)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Thumbulator::isProtected(uInt32 addr)
 {
+  // Protected is within the driver RAM.
+  // For CDF variations parts of the driver RAM are reused to hold the
+  // datastream information, so is not protected.
+  // Additionally for CDFJ+ the Fast Fetcher offset is not write protected.
+  
   if (addr < 0x40000000) return false;
   addr -= 0x40000000;
 
@@ -562,8 +567,10 @@ bool Thumbulator::isProtected(uInt32 addr)
       return  (addr < 0x0800) && (addr > 0x0028) && !((addr >= 0x00a0) && (addr < (0x00a0 + 284)));
 
     case ConfigureFor::CDFJ:
-    case ConfigureFor::CDFJplus:
       return  (addr < 0x0800) && (addr > 0x0028) && !((addr >= 0x0098) && (addr < (0x0098 + 292)));
+
+    case ConfigureFor::CDFJplus:
+      return  (addr < 0x0800) && (addr > 0x0028) && !((addr >= 0x0098) && (addr < (0x0098 + 292))) && addr != 0x3E0;
 
     case ConfigureFor::BUS:
       return  (addr < 0x06d8) && (addr > 0x0028);
