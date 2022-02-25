@@ -590,7 +590,7 @@
   for more information. To exit a game and re-enter the ROM launcher, press the 'Escape'
   key.</p>
 
-  <p>Using the 'Search' textbox in the upper-right of the ROM launcher, the
+  <p>Using the 'Search' textbox in the upper row of the ROM launcher, the
   listing can be narrowed down, showing only the ROMs that match the pattern
   you enter.</p>
 
@@ -3827,7 +3827,7 @@
       <td>Enable/disable the fixed debug colors.</td>
     </tr><tr>
       <td><pre>-&lt;plr.|dev.&gt;timemachine &lt;1|0&gt;</pre></td>
-      <td>Enable/disable the Time Machine</td>
+      <td>Enable/disable the Time Machine.</td>
     </tr><tr>
       <td><pre>-&lt;plr.|dev.&gt;tm.size &lt;20 - 1000&gt;</pre></td>
       <td>Define the Time Machine buffer size.</td>
@@ -4175,6 +4175,7 @@
 
   <p>The following screenshots illustrate the event remapping process:<br><br>
   <img src="graphics/eventmapping.png">
+  &nbsp;&nbsp;
   <img src="graphics/eventmapping_remap.png">
 
   <p>Finally there is a <a name="Combo">'Combo'</a> button in the 'Emulation Events' tab, accessible
@@ -4274,25 +4275,19 @@
   <p>The following snapshots illustrate the various font sizes and rom info
   widths:</p>
 
-  <p>ROM Info Viewer width at 40%, UI sized 800x480, small launcher font:</p>
+  <p>ROM Info Viewer width at 40%, UI sized 800x480, small launcher font, bottom buttons enabled:</p>
   <img src="graphics/rominfo_1x_small.png">
 
-  <p>ROM Info Viewer width at 32%, UI sized 900x720, medium launcher font:</p>
+  <p>ROM Info Viewer width at 32%, UI sized 900x720, medium launcher font, bottom buttons disabled::</p>
   <img src="graphics/rominfo_1x_large.png">
 
-  <p>ROM Info Viewer width at 50% , UI sized 1280x900, large launcher font:</p>
+  <p>ROM Info Viewer width at 50% , UI sized 1280x900, large launcher font, bottom buttons disabled::</p>
   <img src="graphics/rominfo_2x_small.png">
 
-  <p>The dialog items at the top can be used to define the listed files:</p>
+  <p>The dialog items at the top can be used to define the listed files and to navigate your folders:</p>
 
   <ul>
     <li>
-      The 'Show all files' checkbox allows displaying files which do not
-      have a valid ROM extension.
-    </li><li>
-      If 'Incl. subdirectories' is checked, Stella will list matching files
-      from all subdirectories too.
-    </li><li>
       The 'Filter' text box can be used to narrow down the results in the
       ROM listing. When this box is empty, all files are shown. Typing
       characters here will show only those files that match that
@@ -4303,6 +4298,24 @@
       about capital or lower-case letters. You also can use '*' and '?' as
       wildcards. E.g. for '(198?)*atari' only ROMs from the 1980s made by
       Atari will be listed.
+    </li>
+    <li>
+    <img src="graphics/show_roms.png" style="vertical-align: middle; margin-top: 4px; margin-bottom: 4px">
+    <img src="graphics/show_all.png" style="vertical-align: middle; margin-top: 4px; margin-bottom: 4px; margin-right: 4px">
+      Display either files which do have a valid ROM extension or all files.
+    </li><li>
+    <img src="graphics/show_current_dir.png" style="vertical-align: middle; margin-top: 4px; margin-bottom: 4px">
+    <img src="graphics/show_sub_dirs.png" style="vertical-align: middle; margin-top: 4px; margin-bottom: 4px; margin-right: 4px">
+      Display either files from current directory only or all subdirectories too.
+    </li><li>
+    <img src="graphics/open_help.png" style="vertical-align: middle; margin-top: 4px; margin-bottom: 4px; margin-right: 4px">
+      Open this help for the launcher.
+    </li><li>
+    <img src="graphics/navigation_buttons.png" style="vertical-align: middle; margin-top: 4px; margin-bottom: 4px; margin-right: 4px">
+      Quick folder navigation buttons; the path display allows direct navigation by clicking an element.
+    </li><li>
+    <img src="graphics/reload_list.png" style="vertical-align: middle; margin-top: 4px; margin-bottom: 4px; margin-right: 4px">
+      Reload the list.
     </li>
   </ul>
   </br>
