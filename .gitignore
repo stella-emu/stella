@@ -27,6 +27,8 @@ src/windows/x64/*
 src/windows/Win32/*
 src/windows/Stella.vcxproj.user
 src/windows/*.bak
+src/libretro/x64/*
+src/libretro/Stella.vcxproj.user
 .vs/*
 .tgitconfig
 src/**/*.psess
