@@ -286,7 +286,6 @@ void LauncherDialog::addRomWidgets(int& ypos)
   const int listWidth = _w - (romWidth > 0 ? romWidth + fontWidth : 0) - HBORDER * 2;
 
   // remember initial ROM directory for returning there via home button
-  string romDir = getRomDir();
   instance().settings().setValue("startromdir", getRomDir());
   myList = new LauncherFileListWidget(this, _font, xpos, ypos, listWidth, listHeight);
   myList->setEditable(false);
