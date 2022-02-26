@@ -39,15 +39,14 @@ class System;
   7 banks (4K) of atari code
   4K display data (16K and 32K available with CDFJ+)
 
-  Note that for CDFJ+ the programmer must ensure that only the available RAM/ROM on the target device is
-  used. There are 2 versions of the driver, with minor changes  due to hardware.
+  Note that for CDFJ+ the programmer must ensure that only the available RAM/ROM on the target
+  device is used. There are 2 versions of the driver, with minor changes  due to hardware.
     1) 32K ROM and 8K RAM - compatible with 48-Pin LPC210X Family (Harmony, Harmony Encore, Melody)
     2) 64/128/256/512K ROM and16/32K RAM - compatible with 64-Pin LPC213X Family
 
-  The CDFJ+ driver can be modified to also override LDX # and LDY # for fast fetcher use. Additionally
-  an offset can be set for the Fast Fetchers - if the offset was set to $80 then LDA #$85 would do a fast fetch
-  of datastream 5. As implemented Stella's CDFJ+ support expects these to have been set in the driver ahead
-  of time, though In theory they could be done at run time.
+  The CDFJ+ driver can be modified to also override LDX # and LDY # for fast fetcher use.
+  Additionally an offset can be set for the Fast Fetchers - if the offset was set to $80 then
+  LDA #$85 would do a fast fetch of datastream 5.
 
   Bankswitching Note:
   CDF/CDFJ uses $FFF5 through $FFFB (initial bank 6)
