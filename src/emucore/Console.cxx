@@ -484,6 +484,9 @@ void Console::setFormat(uInt32 format, bool force)
     initializeAudio();    // ensure that audio synthesis is set up to match emulation rate
     myOSystem.resetFps(); // Reset FPS measurement
 
+    enableColorLoss(myOSystem.settings().getBool(
+      myOSystem.settings().getBool("dev.settings") ? "dev.colorloss" : "plr.colorloss"));
+
     myOSystem.frameBuffer().showTextMessage(message);
   }
 
