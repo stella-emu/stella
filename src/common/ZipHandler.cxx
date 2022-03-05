@@ -63,9 +63,16 @@ void ZipHandler::open(const string& filename)
     myZip = std::move(ptr);
 
     // Count ROM files (we do it here so it will be cached)
-    while(hasNext())
-      if(Bankswitch::isValidRomName(next()))
-        myZip->myRomfiles++;
+    try
+    {
+      while(hasNext())
+        if(Bankswitch::isValidRomName(next()))
+          myZip->myRomfiles++;
+    }
+    catch(...)
+    {
+      myZip->myRomfiles = 0;
+    }
   }
 
   reset();  // Reset iterator to beginning for subsequent use
@@ -91,7 +98,9 @@ const string& ZipHandler::next()
   if(hasNext())
   {
     const ZipHeader* header = myZip->nextFile();
-    if(!header || header->uncompressedLength == 0)
+    if(!header)
+      throw runtime_error(errorMessage(ZipError::FILE_CORRUPT));
+    else if(header->uncompressedLength == 0)
       return next();
     else
       return header->filename;

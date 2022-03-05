@@ -39,7 +39,7 @@ FilesystemNodeZIP::FilesystemNodeZIP(const string& p)
   if (_zipFile[0] == '~')
   {
 #if defined(BSPF_UNIX) || defined(BSPF_MACOS)
-    string home = BSPF::getenv("HOME");
+    const string& home = BSPF::getenv("HOME");
     if (home != EmptyString)
       _zipFile.replace(0, 1, home);
 #elif defined(BSPF_WINDOWS)
@@ -71,6 +71,9 @@ FilesystemNodeZIP::FilesystemNodeZIP(const string& p)
     _virtualPath = p.substr(pos+5);
     _isFile = Bankswitch::isValidRomName(_virtualPath);
     _isDirectory = !_isFile;
+
+// cerr << _virtualPath << ", isfile: " << _isFile << endl;
+
   }
   else if(_numFiles == 1)
   {
@@ -97,7 +100,8 @@ FilesystemNodeZIP::FilesystemNodeZIP(const string& p)
   // has direct access to the actual filesystem (aka, a 'System' node)
   // Behind the scenes, this node is actually a platform-specific object
   // for whatever system we are running on
-  _realNode = FilesystemNodeFactory::create(_zipFile, FilesystemNodeFactory::Type::SYSTEM);
+  _realNode = FilesystemNodeFactory::create(_zipFile,
+      FilesystemNodeFactory::Type::SYSTEM);
 
   setFlags(_zipFile, _virtualPath, _realNode);
 }
@@ -144,10 +148,17 @@ bool FilesystemNodeZIP::exists() const
   if(_realNode && _realNode->exists())
   {
     // We need to inspect the actual path, not just the ZIP file itself
-    myZipHandler->open(_zipFile);
-    while(myZipHandler->hasNext())
-      if(BSPF::startsWithIgnoreCase(myZipHandler->next(), _virtualPath))
-        return true;
+    try
+    {
+      myZipHandler->open(_zipFile);
+      while(myZipHandler->hasNext())
+        if(BSPF::startsWithIgnoreCase(myZipHandler->next(), _virtualPath))
+          return true;
+    }
+    catch(const runtime_error&)
+    {
+      // TODO: Actually present the error passed in back to the user
+    }
   }
 
   return false;
