@@ -47,42 +47,38 @@ WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent,
 
   const string& version = instance().settings().getString("stella.version");
 #ifdef RETRON77
-  if(version < "6.5")
+  if(version < "6.6")
   {
-    add(ypos, "increased sample size for CDFJ+");
-    add(ypos, "fixed navigation bug in Video & Audio settings dialog");
-    add(ypos, "fixed autofire bug for trackball controllers");
     add(ypos, "fixed paddle button bug for jittering controllers");
     add(ypos, "improved switching between joysticks and paddles");
-    add(ypos, "improved memory usage in UI mode");
     add(ypos, "fixed broken Driving Controller support for Stelladaptor/2600-daptor devices");
-    add(ypos, "fixed missing QuadTari option in UI");
     add(ypos, "improved analog input reading");
     add(ypos, "fixed QuadTari support for some controller types");
-    add(ypos, "fixed palette and TV effects saving");
+    add(ypos, "added MovieCart support");
   }
-  add(ypos, "added MovieCart support");
+  add(ypos, "completely reworked and enhanced the file launcher");
+  add(ypos, "improved controller mappings for Paddles");
+  add(ypos, "improved controller mappings for Driving controllers");
+  add(ypos, "enhanced support for CDFJ+ bankswitching type");
+
 #else
-  if(version < "6.5")
+  if(version < "6.6")
   {
-    add(ypos, "added high scores saving");
-    add(ypos, "enhanced cut/copy/paste and undo/redo for text editing");
-    add(ypos, "added wildcard support to launcher dialog filter");
-    add(ypos, "added option to search subdirectories in launcher");
     add(ypos, "added tooltips to many UI items");
     add(ypos, "added sound to Time Machine playback");
     add(ypos, "moved settings, properties etc. to an SQLite database");
     add(ypos, "added context-sensitive help");
-    add(ypos, "improved analog input reading");
-    add(ypos, "improved multi-monitor support");
+    add(ypos, "added PlusROMs support for saving high scores");
+    add(ypos, "added MovieCart support");
+    add(ypos, "added weblinks for many games");
   }
-  add(ypos, "added PlusROMs support for saving high scores");
-  add(ypos, "added MovieCart support");
-  add(ypos, "added weblinks for many games");
-  add(ypos, "added different mask pattern for scanline emulation");
-  add(ypos, "debugger: added optional logging of breaks and traps");
-  add(ypos, "debugger: enhanced prompt auto complete and history");
-  add(ypos, "debugger: added Thumb cycle counting");
+  add(ypos, "completely reworked and enhanced the file launcher");
+  add(ypos, "added option to automatically pause emulation when focus is lost");
+  add(ypos, "added option to toggle autofire mode");
+  add(ypos, "improved controller mappings for Paddles");
+  add(ypos, "improved controller mappings for Driving controllers");
+  add(ypos, "added another oddball TIA glitch option for score mode color");
+  add(ypos, "enhanced support for CDFJ+ bankswitching type");
   add(ypos, ELLIPSIS + " (for a complete list see 'docs/Changes.txt')");
 #endif
 

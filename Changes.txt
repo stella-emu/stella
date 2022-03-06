@@ -14,7 +14,7 @@
 
 6.6 to 6.?
 
-  * Reworked the file launcher:
+  * Completely reworked the file launcher:
     - Redesigned user interface
     - Added tracking of user favorites, recently played and most popular
       games.
@@ -29,9 +29,29 @@
 
   * Added option to toggle autofire mode.
 
+  * Improved controller mappings for Paddles.
+
+  * Improved controller mappings for Driving controllers.
+
   * Added another oddball TIA glitch option for score mode color.
 
+  * Enhanced support for CDFJ+ bankswitching type.
+
+  * Added ARM chip auto detection.
+
+  * Fixed Stella crash due to invalid ZIP files.
+
+  * Fixed TV mode auto detection in some ARM ROMs.
+
+  * Fixed color loss when switching TV mode from/to PAL.
+
+  * Fixed score mode glitch emulation corner case.
+
+  * Fixed state messages staying on screen forever.
+
   * Debugger: added PlusROM information.
+
+  * Debugger: fixed patching code in ZP-RAM.
 
 -Have fun!
 
