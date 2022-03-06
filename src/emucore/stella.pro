@@ -155,7 +155,7 @@
 ""
 
 "Cart.MD5" "02066b17f29082412c6754c1a2d6302e"
-"Cart.Name" "Demo Image Series #3 - Baboon (19-02-2003) (AD)"
+"Cart.Name" "Demo Image Series #3 - Baboon (19-02-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "021dbeb7417cac4e5f8e867393e742d6"
@@ -205,7 +205,7 @@
 ""
 
 "Cart.MD5" "02811151906e477d47c135db5b1699c6"
-"Cart.Name" "FlickerSort Demo (Updated) (20-04-2002) (MP)"
+"Cart.Name" "FlickerSort Demo (Updated) (20-04-2002) (Manuel Rotschkar)"
 ""
 
 "Cart.MD5" "02a5fc90a0d183f870e8eebac1f16591"
@@ -260,7 +260,7 @@
 ""
 
 "Cart.MD5" "0375f589f7da06d2d2be532e0d4d4b94"
-"Cart.Name" "Push (V0.04) (2001) (AD)"
+"Cart.Name" "Push (V0.04) (2001) (Andrew Davie)"
 ""
 
 "Cart.MD5" "0383dc02cb82302da3d155fd108bfe3a"
@@ -282,7 +282,7 @@
 ""
 
 "Cart.MD5" "039cf18b459d33b8a8fca31d06c4c244"
-"Cart.Name" "Demo Image Series #0 (12-02-2003) (AD)"
+"Cart.Name" "Demo Image Series #0 (12-02-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "03b1051c9374678363c899914412cfc5"
@@ -317,7 +317,7 @@
 
 "Cart.MD5" "041b5e56bbc650db574bd8db3fae2696"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Thrust (V1.0) (2000) (TJ)"
+"Cart.Name" "Thrust (V1.0) (2000) (Thomas Jentzsch)"
 "Cart.Rarity" "New Release"
 ""
 
@@ -448,7 +448,7 @@
 
 "Cart.MD5" "05c765a63e61882abd1c2d627b652225"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Challenge of... Nexar, The - Amiga Mouse Hack v1.1 (NTSC) (TJ)"
+"Cart.Name" "Challenge of... Nexar, The - Amiga Mouse Hack v1.1 (NTSC) (Thomas Jentzsch)"
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1181"
 ""
@@ -479,7 +479,7 @@
 ""
 
 "Cart.MD5" "05f11fb2e45c4e47424d3cb25414d278"
-"Cart.Name" "Boring (NTSC) (AD)"
+"Cart.Name" "Boring (NTSC) (Andrew Davie)"
 ""
 
 "Cart.MD5" "060c865c782debb047e6fd101c8923fc"
@@ -581,7 +581,7 @@
 ""
 
 "Cart.MD5" "072a6ea2181ca0df88ac0dedc67b239d"
-"Cart.Name" "Multiple Missiles Demo (19-12-2002) (CT)"
+"Cart.Name" "Multiple Missiles Demo (19-12-2002) (Christopher Tumber)"
 ""
 
 "Cart.MD5" "073cb76b006af034fd150be3f5e0e7e6"
@@ -621,7 +621,8 @@
 ""
 
 "Cart.MD5" "079fe9103515d15bc108577e234a484d"
-"Cart.Name" "Multi-Color Demo 0 (Bob Colbert) (PD)"
+"Cart.Name" "Multi Demo 5.5 (Bob Colbert) (PD)"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "07a3af1e18b63765b6807876366f5e8a"
@@ -720,7 +721,7 @@
 
 "Cart.MD5" "0891252ee4e307689febccf3cfd8a8ab"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Centipede - Atari Trak-Ball Hack v1.4 (PAL60) (Half-Speed) (TJ)"
+"Cart.Name" "Centipede - Atari Trak-Ball Hack v1.4 (PAL60) (Half-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
@@ -778,7 +779,7 @@
 
 "Cart.MD5" "08ea2fdaa22e5802c839ee7dfb0483dc"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Challenge of... Nexar, The - Atari Trak-Ball Hack v1.2 (PAL60) (TJ)"
+"Cart.Name" "Challenge of... Nexar, The - Atari Trak-Ball Hack v1.2 (PAL60) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1181"
 ""
@@ -811,7 +812,7 @@
 
 "Cart.MD5" "09274c3fc1c43bf1e362fda436651fd8"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Acid Drop (TJ)"
+"Cart.Name" "Acid Drop (Thomas Jentzsch)"
 "Cart.Note" "NTSC Conversion"
 "Cart.Rarity" "Homebrew"
 ""
@@ -951,7 +952,7 @@
 ""
 
 "Cart.MD5" "0ae3497e731ca0bf6a77b23441d9d9f9"
-"Cart.Name" "Analog Clock (V0.0) (20-01-2003) (AD)"
+"Cart.Name" "Analog Clock (V0.0) (20-01-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "0af51ceb4aecc7a8fc89781ac44a1973"
@@ -1130,7 +1131,7 @@
 
 "Cart.MD5" "0cc8224ff1edfe458e8629e9e5fe3f5b"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Trick 12 (2001) (TJ)"
+"Cart.Name" "Trick 12 (2001) (Thomas Jentzsch)"
 ""
 
 "Cart.MD5" "0cdd9cc692e8b04ba8eb31fc31d72e5e"
@@ -1148,7 +1149,7 @@
 
 "Cart.MD5" "0cec9e46a25d338bf595a29aa2606516"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Challenge of... Nexar, The - Atari Mouse Hack v1.1 (PAL60) (TJ)"
+"Cart.Name" "Challenge of... Nexar, The - Atari Mouse Hack v1.1 (PAL60) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1181"
 ""
@@ -1163,7 +1164,7 @@
 
 "Cart.MD5" "0d08558f34a47e4eaa39d01c8efb81f0"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Missile Control - Atari Mouse Hack v1.15 (NTSC) (TJ)"
+"Cart.Name" "Missile Control - Atari Mouse Hack v1.15 (NTSC) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1184"
 ""
@@ -1183,7 +1184,7 @@
 ""
 
 "Cart.MD5" "0d27c7f5db349b592f70f68daf5e8f3b"
-"Cart.Name" "Space Instigators (21-10-2002) (CT)"
+"Cart.Name" "Space Instigators (21-10-2002) (Christopher Tumber)"
 ""
 
 "Cart.MD5" "0d35618b6d76ddd46d2626e9e3e40db5"
@@ -1263,7 +1264,7 @@
 
 "Cart.MD5" "0e23d0ed4c33b2011ab4cc93a7619683"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Centipede - Amiga Mouse Hack v1.4 (PAL60) (Half-Speed) (TJ)"
+"Cart.Name" "Centipede - Amiga Mouse Hack v1.4 (PAL60) (Half-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
@@ -1339,7 +1340,7 @@
 
 "Cart.MD5" "0effef4a341f8eebab65621c60c48787"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Reactor - Atari Trak-Ball Hack v1.3 (PAL) (Full-Speed) (TJ)"
+"Cart.Name" "Reactor - Atari Trak-Ball Hack v1.3 (PAL) (Full-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
 ""
@@ -1413,7 +1414,7 @@
 ""
 
 "Cart.MD5" "0fba7d8c3520bdb681f75494e498ec36"
-"Cart.Name" "Gunfight 2600 - Final Run (MP)"
+"Cart.Name" "Gunfight 2600 - Final Run (Manuel Rotschkar)"
 ""
 
 "Cart.MD5" "0fbf618be43d4396856d4244126fe7dc"
@@ -1483,7 +1484,7 @@
 ""
 
 "Cart.MD5" "106326c262dfd3e8eaeabd961d2a0519"
-"Cart.Name" "PAL-NTSC Detector (15-11-2002) (CT)[a1]"
+"Cart.Name" "PAL-NTSC Detector (15-11-2002) (Christopher Tumber)[a1]"
 ""
 
 "Cart.MD5" "106855474c69d08c8ffa308d47337269"
@@ -1569,7 +1570,7 @@
 
 "Cart.MD5" "111029770226b319524134193886a10e"
 "Cart.Manufacturer" "Hozer Video Games"
-"Cart.Name" "Gunfight 2600 - One Limit Reached! (2001) (MP)"
+"Cart.Name" "Gunfight 2600 - One Limit Reached! (2001) (Manuel Rotschkar)"
 "Cart.Rarity" "New Release"
 ""
 
@@ -1827,7 +1828,8 @@
 ""
 
 "Cart.MD5" "14163eb2a3ddd35576bd8527eae3b45e"
-"Cart.Name" "Multi-Color Demo 6 (Bob Colbert) (PD)"
+"Cart.Name" "Multi Demo 6 (Bob Colbert) (PD)"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "1423f560062c4f3c669d55891a2bcbe7"
@@ -1848,7 +1850,7 @@
 
 "Cart.MD5" "1442d1b35a6478fba22ae7dd1fcb5634"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Thrust (V0.2) (2000) (TJ)"
+"Cart.Name" "Thrust (V0.2) (2000) (Thomas Jentzsch)"
 "Cart.Rarity" "New Release"
 ""
 
@@ -1868,7 +1870,7 @@
 
 "Cart.MD5" "14a56b493a8d9d10e94a3e100362e3a2"
 "Cart.Manufacturer" "Hozer Video Games"
-"Cart.Name" "Gunfight 2600 - Early Play-kernel (2001) (MP)"
+"Cart.Name" "Gunfight 2600 - Early Play-kernel (2001) (Manuel Rotschkar)"
 "Cart.Rarity" "New Release"
 ""
 
@@ -1894,7 +1896,7 @@
 ""
 
 "Cart.MD5" "14dbb3686dd31964332dc2ef0c55cad0"
-"Cart.Name" "Demo Image Series #15 - Three Marios (PAL) (Non-Interleave) (06-03-2003) (AD)"
+"Cart.Name" "Demo Image Series #15 - Three Marios (PAL) (Non-Interleave) (06-03-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "151c33a71b99e6bcffb34b43c6f0ec23"
@@ -1925,7 +1927,7 @@
 ""
 
 "Cart.MD5" "1542662f665d2ffaa77b4b897dd2e2af"
-"Cart.Name" "Starfield (V1.0) (2002) (MP)"
+"Cart.Name" "Starfield (V1.0) (2002) (Manuel Rotschkar)"
 ""
 
 "Cart.MD5" "155fa7f479dcba3b10b1494e236d6010"
@@ -1964,7 +1966,7 @@
 
 "Cart.MD5" "15b498199ed0ed28057bf0dbdce9b8d8"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Jammed (V0.2) (Demo) (2001) (TJ)"
+"Cart.Name" "Jammed (V0.2) (Demo) (2001) (Thomas Jentzsch)"
 "Cart.Rarity" "New Release"
 ""
 
@@ -2016,7 +2018,7 @@
 
 "Cart.MD5" "161ded4a85d3c78e44fffd40426f537f"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "JtzBall (Alpha) (TJ)"
+"Cart.Name" "JtzBall (Alpha) (Thomas Jentzsch)"
 ""
 
 "Cart.MD5" "16229d61d7b0c89b01853660a8da22bb"
@@ -2093,7 +2095,7 @@
 
 "Cart.MD5" "171ebf135b13ba907f462c10d88a2c25"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Challenge of... Nexar, The - Amiga Mouse Hack v1.1 (PAL60) (TJ)"
+"Cart.Name" "Challenge of... Nexar, The - Amiga Mouse Hack v1.1 (PAL60) (Thomas Jentzsch)"
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1181"
 ""
@@ -2205,7 +2207,7 @@
 
 "Cart.MD5" "183020a80848e06a1238a1ab74079d52"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Missile Command (Amiga Mouse) (2002) (TJ) (PAL)"
+"Cart.Name" "Missile Command (Amiga Mouse) (2002) (Thomas Jentzsch) (PAL)"
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Rarity" "Homebrew"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1183"
@@ -2226,7 +2228,7 @@
 
 "Cart.MD5" "18b28b386abdadb3a700ac8fb68e639a"
 "Cart.Manufacturer" "Manuel Polik"
-"Cart.Name" "Gunfight 2600 (MP) (PAL)"
+"Cart.Name" "Gunfight 2600 (Manuel Rotschkar) (PAL)"
 "Cart.Rarity" "New Release"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=124"
 ""
@@ -2240,18 +2242,18 @@
 
 "Cart.MD5" "18be8981b8201638f3ed8ae92bb4c215"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Missile Control - Amiga Mouse Hack v1.15 (PAL60) (TJ)"
+"Cart.Name" "Missile Control - Amiga Mouse Hack v1.15 (PAL60) (Thomas Jentzsch)"
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1184"
 ""
 
 "Cart.MD5" "18bebbbd41c234f82b1717b1905e6027"
-"Cart.Name" "Space Instigators (Public Release) (02-01-2003) (CT)"
+"Cart.Name" "Space Instigators (Public Release) (02-01-2003) (Christopher Tumber)"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=114"
 ""
 
 "Cart.MD5" "18d26111cef66dff0c8af8cf0e117843"
-"Cart.Name" "Tunnel Demo (Cycling Colours 2) (29-03-2003) (AD)"
+"Cart.Name" "Tunnel Demo (Cycling Colours 2) (29-03-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "18dc28bc22402f21e1c9b81344b3b8c5"
@@ -2280,7 +2282,8 @@
 ""
 
 "Cart.MD5" "191449e40b0c56411c70772706f79224"
-"Cart.Name" "Multi-Color Demo 2 (Bob Colbert) (PD)"
+"Cart.Name" "Multi Demo 2 (Bob Colbert) (PD)"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "19162393786098d50587827588198a86"
@@ -2320,7 +2323,7 @@
 
 "Cart.MD5" "1986f864e32e3e8d198b5becf3022257"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Reactor - Atari Trak-Ball Hack v1.3 (PAL) (Half-Speed) (TJ)"
+"Cart.Name" "Reactor - Atari Trak-Ball Hack v1.3 (PAL) (Half-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
 ""
@@ -2362,7 +2365,7 @@
 ""
 
 "Cart.MD5" "19d9b5f8428947eae6f8e97c7f33bf44"
-"Cart.Name" "Fortress (Dual Version) (20-04-2003) (CT)"
+"Cart.Name" "Fortress (Dual Version) (20-04-2003) (Christopher Tumber)"
 ""
 
 "Cart.MD5" "19e739c2764a5ab9ed08f9095aa2af0b"
@@ -2484,7 +2487,7 @@
 
 "Cart.MD5" "1bfae770e089fa81412d04eb299f4c3f"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Marble Craze - Atari Mouse Hack v1.0 (NTSC) (TJ)"
+"Cart.Name" "Marble Craze - Atari Mouse Hack v1.0 (NTSC) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Mouse Controllers"
 ""
 
@@ -2822,7 +2825,7 @@
 ""
 
 "Cart.MD5" "2008c76deba5953201ef75a09b2ff7dc"
-"Cart.Name" "Fortress (21-04-2003) (CT)"
+"Cart.Name" "Fortress (21-04-2003) (Christopher Tumber)"
 ""
 
 "Cart.MD5" "200a9d2a7cb4441ce4f002df6aa47e38"
@@ -2867,7 +2870,7 @@
 
 "Cart.MD5" "2058cf3fefad4d2bc03ed817cedddcd4"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Reactor - Amiga Mouse Hack v1.3 (PAL60) (Full-Speed) (TJ)"
+"Cart.Name" "Reactor - Amiga Mouse Hack v1.3 (PAL60) (Full-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
 ""
@@ -2960,7 +2963,7 @@
 
 "Cart.MD5" "217b1452881264ac75126bf77b8d0db8"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Centipede - Atari Trak-Ball Hack v1.4 (NTSC) (Full-Speed) (TJ)"
+"Cart.Name" "Centipede - Atari Trak-Ball Hack v1.4 (NTSC) (Full-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
@@ -3005,7 +3008,7 @@
 ""
 
 "Cart.MD5" "2228c67d25e507603d4873d3934f0757"
-"Cart.Name" "Fu Kung! (V0.10) (28-01-2003) (AD)"
+"Cart.Name" "Fu Kung! (V0.10) (28-01-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "22319be7a640af5314ec3c482cceb676"
@@ -3013,7 +3016,7 @@
 ""
 
 "Cart.MD5" "2240655247d6de1c585564004a853ab7"
-"Cart.Name" "Fu Kung! (V0.17) (07-02-2003) (AD)"
+"Cart.Name" "Fu Kung! (V0.17) (07-02-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "225522777dc7155627808bde0c1d0ef0"
@@ -3089,7 +3092,7 @@
 
 "Cart.MD5" "2365e1534d67f94d8670394ab99150ce"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Missile Command (Atari Mouse) (2002) (TJ)"
+"Cart.Name" "Missile Command (Atari Mouse) (2002) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari ST Mouse Controller"
 "Cart.Rarity" "Homebrew"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1183"
@@ -3107,7 +3110,7 @@
 ""
 
 "Cart.MD5" "23e4ca038aba11982e1694559f3be10f"
-"Cart.Name" "Big Dig (V3) (20-10-2002) (CT)"
+"Cart.Name" "Big Dig (V3) (20-10-2002) (Christopher Tumber)"
 ""
 
 "Cart.MD5" "23fad5a125bcd4463701c8ad8a0043a9"
@@ -3194,7 +3197,7 @@
 
 "Cart.MD5" "24759be31e8fe55d2829fd86bdf3181f"
 "Cart.Manufacturer" "Hozer Video Games"
-"Cart.Name" "Gunfight 2600 - Worst Nightmare... (2001) (MP)"
+"Cart.Name" "Gunfight 2600 - Worst Nightmare... (2001) (Manuel Rotschkar)"
 "Cart.Rarity" "New Release"
 ""
 
@@ -3220,7 +3223,7 @@
 ""
 
 "Cart.MD5" "24ad538291eb5f5cac4b9998f3b851c3"
-"Cart.Name" "Gunfight 2600 - This time it's your decission! (2001) (MP)"
+"Cart.Name" "Gunfight 2600 - This time it's your decission! (2001) (Manuel Rotschkar)"
 ""
 
 "Cart.MD5" "24aff972d58990f9b88a6d787c796f1e"
@@ -3288,11 +3291,11 @@
 ""
 
 "Cart.MD5" "25472dfdeef6a42581a231d631d6b04d"
-"Cart.Name" "Gunfight 2600 - Design thoughts (MP)"
+"Cart.Name" "Gunfight 2600 - Design thoughts (Manuel Rotschkar)"
 ""
 
 "Cart.MD5" "25710bde8fa181b0c5cf0846b983bec1"
-"Cart.Name" "Demo Image Series #15 - Three Marios (NTSC) (06-03-2003) (AD)"
+"Cart.Name" "Demo Image Series #15 - Three Marios (NTSC) (06-03-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "257bc3b72a6b5db3fd0d47619125b387"
@@ -3377,7 +3380,7 @@
 ""
 
 "Cart.MD5" "265a85f66544eaf95fda06c3d9e48abf"
-"Cart.Name" "Tunnel Demo (Cycling Colours) (29-03-2003) (AD)"
+"Cart.Name" "Tunnel Demo (Cycling Colours) (29-03-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "265c74a956500bd31efd24adc6d5ccf6"
@@ -3487,7 +3490,7 @@
 
 "Cart.MD5" "278f14887d601b5e5b620f1870bc09f6"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "SWOOPS! (v0.96) (TJ)"
+"Cart.Name" "SWOOPS! (v0.96) (Thomas Jentzsch)"
 "Cart.Note" "Uses the Joystick (L) and Paddle (R) Controllers"
 "Cart.Rarity" "Homebrew"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=329"
@@ -3658,7 +3661,7 @@
 ""
 
 "Cart.MD5" "292a0bb975b2587f9ac784c960e1b453"
-"Cart.Name" "Qb (05-02-2001) (AD)"
+"Cart.Name" "Qb (05-02-2001) (Andrew Davie)"
 "Display.Phosphor" "YES"
 ""
 
@@ -3668,7 +3671,7 @@
 ""
 
 "Cart.MD5" "29396db58406084e416032c372734a3e"
-"Cart.Name" "Gunfight 2600 - Fixed Beta Release! (2001) (MP)"
+"Cart.Name" "Gunfight 2600 - Fixed Beta Release! (2001) (Manuel Rotschkar)"
 ""
 
 "Cart.MD5" "2942680c47beb9bf713a910706ffabfe"
@@ -3738,7 +3741,7 @@
 ""
 
 "Cart.MD5" "29dfa26b7988af9984d617708e4fc6e2"
-"Cart.Name" "Boulderdash Demo (05-04-2003) (AD)"
+"Cart.Name" "Boulderdash Demo (05-04-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "2a0ba55e56e7a596146fa729acf0e109"
@@ -3749,7 +3752,7 @@
 ""
 
 "Cart.MD5" "2a10053fd08664c7cfbbb104386ed77f"
-"Cart.Name" "Alpha Demo - The Beta Demo (2000) (MP)"
+"Cart.Name" "Alpha Demo - The Beta Demo (2000) (Manuel Rotschkar)"
 ""
 
 "Cart.MD5" "2a1b454a5c3832b0240111e7fd73de8a"
@@ -3801,7 +3804,7 @@
 ""
 
 "Cart.MD5" "2abc3d46b3f2140160759e2e10bc86d9"
-"Cart.Name" "Gunfight 2600 - Beta Release! (2001) (MP)"
+"Cart.Name" "Gunfight 2600 - Beta Release! (2001) (Manuel Rotschkar)"
 ""
 
 "Cart.MD5" "2ac3a08cfbf1942ba169c3e9e6c47e09"
@@ -4059,7 +4062,7 @@
 
 "Cart.MD5" "2d6388a8389f1d59108fd169c3356d79"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Reactor - Atari Mouse Hack v1.3 (NTSC) (Half-Speed) (TJ)"
+"Cart.Name" "Reactor - Atari Mouse Hack v1.3 (NTSC) (Half-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
 ""
@@ -4078,7 +4081,7 @@
 ""
 
 "Cart.MD5" "2d69a5f23784f1c2230143292a073b53"
-"Cart.Name" "Qb (Fixed background animation) (2001) (AD)"
+"Cart.Name" "Qb (Fixed background animation) (2001) (Andrew Davie)"
 "Display.Phosphor" "YES"
 ""
 
@@ -4252,7 +4255,7 @@
 ""
 
 "Cart.MD5" "2f66ebf037321ed0442ac4b89ce22633"
-"Cart.Manufacturer" "Baroque Gaming (Brian Eno)"
+"Cart.Manufacturer" "Baroque Gaming (Billy Eno)"
 "Cart.Name" "Warring Worms (Beta 2) (2002) (Baroque Gaming)"
 "Cart.Rarity" "Prototype"
 ""
@@ -4281,7 +4284,7 @@
 ""
 
 "Cart.MD5" "3025bdc30b5aec9fb40668787f67d24c"
-"Cart.Name" "Demo Image Series #14 - Two Marios (4K Interleaved Chronocolour Vertical Movement) (05-03-2003) (AD)"
+"Cart.Name" "Demo Image Series #14 - Two Marios (4K Interleaved Chronocolour Vertical Movement) (05-03-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "303242c239474f2d7763b843de58c1c3"
@@ -4383,7 +4386,7 @@
 
 "Cart.MD5" "31235a27b065c2863048fa84db330dc6"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Missile Control - Amiga Mouse Hack v1.15 (PAL) (TJ)"
+"Cart.Name" "Missile Control - Amiga Mouse Hack v1.15 (PAL) (Thomas Jentzsch)"
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1184"
 ""
@@ -4607,7 +4610,7 @@
 ""
 
 "Cart.MD5" "335793736cbf6fc99c9359ed2a32a49d"
-"Cart.Name" "Analog Clock (V0.0) (20-01-2003) (AD) [a]"
+"Cart.Name" "Analog Clock (V0.0) (20-01-2003) (Andrew Davie) [a]"
 ""
 
 "Cart.MD5" "335a7c5cfa6fee0f35f5824d1fa09aed"
@@ -4689,7 +4692,7 @@
 
 "Cart.MD5" "346555779a2d51b48833463b5433472f"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Thrust (V0.1) (2000) (TJ)"
+"Cart.Name" "Thrust (V0.1) (2000) (Thomas Jentzsch)"
 "Cart.Rarity" "New Release"
 ""
 
@@ -4938,7 +4941,7 @@
 ""
 
 "Cart.MD5" "373b8a081acd98a895db0cb02df35673"
-"Cart.Name" "Demo Image Series #5 - Boofly (19-02-2003) (AD)"
+"Cart.Name" "Demo Image Series #5 - Boofly (19-02-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "3750f2375252b6a20e4628692e94e8b1"
@@ -5206,7 +5209,7 @@
 ""
 
 "Cart.MD5" "3a35d7f1dc2a33565c8dca52baa86bc4"
-"Cart.Name" "Rubik's Cube Demo 2 (23-12-2002) (CT)"
+"Cart.Name" "Rubik's Cube Demo 2 (23-12-2002) (Christopher Tumber)"
 ""
 
 "Cart.MD5" "3a51a6860848e36e6d06ffe01b71fb13"
@@ -5217,7 +5220,7 @@
 
 "Cart.MD5" "3a521b7e29123b2d38e34e3ff8dc255c"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Centipede - Atari Mouse Hack v1.4 (NTSC) (Full-Speed) (TJ)"
+"Cart.Name" "Centipede - Atari Mouse Hack v1.4 (NTSC) (Full-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
@@ -5279,7 +5282,7 @@
 ""
 
 "Cart.MD5" "3b097a7ed5bd2a84dc3d3ed361e9c31c"
-"Cart.Name" "Interleaved ChronoColour Demo (PAL) (05-03-2003) (AD)"
+"Cart.Name" "Interleaved ChronoColour Demo (PAL) (05-03-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "3b10106836565e5db28c7823c0898fbb"
@@ -5313,7 +5316,7 @@
 
 "Cart.MD5" "3b6dba1a24bb2893bd3bd0593f92016b"
 "Cart.Manufacturer" "CBS Electronics / Thomas Jentzsch"
-"Cart.Name" "Omega Race JS (TJ)"
+"Cart.Name" "Omega Race JS (Thomas Jentzsch)"
 "Cart.Note" "Hack of Omega Race (CBS Electronics)"
 "Cart.Rarity" "New Release (Hack)"
 ""
@@ -5355,7 +5358,7 @@
 ""
 
 "Cart.MD5" "3b966bf3c2ca34ac6ca1de4cf6383582"
-"Cart.Name" "Double-Height 6-Digit Score Display (2001) (AD)"
+"Cart.Name" "Double-Height 6-Digit Score Display (2001) (Andrew Davie)"
 ""
 
 "Cart.MD5" "3bb9793c60c92911895cf44530846136"
@@ -5373,7 +5376,7 @@
 ""
 
 "Cart.MD5" "3c3a2bb776dec245c7d6678b5a56ac10"
-"Cart.Name" "Unknown Title (bin00003) (PD)"
+"Cart.Name" "Push (V0.xx) (2001) (Andrew Davie)"
 ""
 
 "Cart.MD5" "3c4223316c835ceaad619651e25df0f9"
@@ -5554,7 +5557,7 @@
 
 "Cart.MD5" "3e1682ddaec486d8b6b90b527aaa0fc4"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Robot City (V0.12) (TJ)"
+"Cart.Name" "Robot City (V0.12) (Thomas Jentzsch)"
 "Cart.Rarity" "New Release"
 ""
 
@@ -5862,7 +5865,7 @@
 ""
 
 "Cart.MD5" "415c11fcac66bbd2ace2096687774b5a"
-"Cart.Name" "Fu Kung! (V0.00) (07-01-2003) (AD)"
+"Cart.Name" "Fu Kung! (V0.00) (07-01-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "4181087389a79c7f59611fb51c263137"
@@ -5902,7 +5905,7 @@
 
 "Cart.MD5" "41b554c6970b18670acc7b6baef8ed2e"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Reactor - Amiga Mouse Hack v1.3 (PAL) (Half-Speed) (TJ)"
+"Cart.Name" "Reactor - Amiga Mouse Hack v1.3 (PAL) (Half-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
 ""
@@ -5943,12 +5946,12 @@
 
 "Cart.MD5" "4251b4557ea6953e88afb22a3a868724"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Robot City (V1.1) (TJ)"
+"Cart.Name" "Robot City (V1.1) (Thomas Jentzsch)"
 ""
 
 "Cart.MD5" "425ee444a41d218598893d6b6e03431a"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Invaders Demo (2001) (TJ)"
+"Cart.Name" "Invaders Demo (2001) (Thomas Jentzsch)"
 ""
 
 "Cart.MD5" "4279485e922b34f127a88904b31ce9fa"
@@ -5963,7 +5966,8 @@
 ""
 
 "Cart.MD5" "42ae81ae8ac51e5c238639f9f77d91ae"
-"Cart.Name" "Multi-Sprite Demo 2 (Piero Cavina) (PD)"
+"Cart.Name" "Multi Demo 8 (Bob Colbert) (PD)"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "42b2c3b4545f1499a083cfbc4a3b7640"
@@ -6086,7 +6090,7 @@
 ""
 
 "Cart.MD5" "4476c39736090dabac09f6caf835fc49"
-"Cart.Name" "Text Screen (25-01-2003) (AD)"
+"Cart.Name" "Text Screen (25-01-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "448c2a175afc8df174d6ff4cce12c794"
@@ -6433,7 +6437,7 @@
 
 "Cart.MD5" "487193a7b7fe57a1bbc2f431f628bd5f"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Challenge of... Nexar, The - Atari Trak-Ball Hack v1.1 (NTSC) (TJ)"
+"Cart.Name" "Challenge of... Nexar, The - Atari Trak-Ball Hack v1.1 (NTSC) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1181"
 ""
@@ -6516,7 +6520,7 @@
 ""
 
 "Cart.MD5" "493daaf9fb1ba450eba6b8ed53ffb37d"
-"Cart.Name" "3-D Corridor Demo (27-03-2003) (MP)"
+"Cart.Name" "3-D Corridor Demo (27-03-2003) (Manuel Rotschkar)"
 ""
 
 "Cart.MD5" "493de059b32f84ab29cde6213964aeee"
@@ -6532,7 +6536,7 @@
 ""
 
 "Cart.MD5" "4947c9de2e28b2f5f3b0c40ce7e56d93"
-"Cart.Name" "3-D Corridor Demo 2 (29-03-2003) (MP)"
+"Cart.Name" "3-D Corridor Demo 2 (29-03-2003) (Manuel Rotschkar)"
 ""
 
 "Cart.MD5" "494cda91cc640551b4898c82be058dd9"
@@ -6678,7 +6682,8 @@
 ""
 
 "Cart.MD5" "4afe528a082f0d008e7319ebd481248d"
-"Cart.Name" "Multi-Color Demo 1 (Bob Colbert) (PD)"
+"Cart.Name" "Multi Demo 1 (Bob Colbert) (PD)"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "4b143d7dcf6c96796c37090cba045f4f"
@@ -6790,7 +6795,7 @@
 ""
 
 "Cart.MD5" "4c4ce802cbfd160f7b3ec0f13f2a29df"
-"Cart.Name" "Beta Demo (V1.1) (26-09-2002) (MP)"
+"Cart.Name" "Beta Demo (V1.1) (26-09-2002) (Manuel Rotschkar)"
 ""
 
 "Cart.MD5" "4c606235f4ec5d2a4b89139093a69437"
@@ -7147,7 +7152,7 @@
 
 "Cart.MD5" "504688d49a41bf03d8a955512609f3f2"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "SWOOPS! (v0.94) (TJ)"
+"Cart.Name" "SWOOPS! (v0.94) (Thomas Jentzsch)"
 "Cart.Note" "Uses the Joystick (L) and Paddle (R) Controllers"
 "Cart.Rarity" "Homebrew"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=329"
@@ -7372,7 +7377,7 @@
 ""
 
 "Cart.MD5" "52bae1726d2d7a531c9ca81e25377fc3"
-"Cart.Name" "Space Instigators (V1.8 Fixed) (20-10-2002) (CT)"
+"Cart.Name" "Space Instigators (V1.8 Fixed) (20-10-2002) (Christopher Tumber)"
 ""
 
 "Cart.MD5" "52e1954dc01454c03a336b30c390fb8d"
@@ -7382,7 +7387,7 @@
 ""
 
 "Cart.MD5" "52e9db3fe8b5d336843acac234aaea79"
-"Cart.Name" "Fu Kung! (V0.11) (28-01-2003) (AD)"
+"Cart.Name" "Fu Kung! (V0.11) (28-01-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "5305f69fbf772fac4760cdcf87f1ab1f"
@@ -7490,7 +7495,7 @@
 
 "Cart.MD5" "53e03df47e76329b701641f8bdc206f5"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Centipede - Atari Trak-Ball Hack v1.4 (PAL) (Half-Speed) (TJ)"
+"Cart.Name" "Centipede - Atari Trak-Ball Hack v1.4 (PAL) (Half-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
@@ -7840,7 +7845,7 @@
 ""
 
 "Cart.MD5" "58d331c23297ed98663d11b869636f16"
-"Cart.Name" "Fu Kung! (V0.09) (26-01-2003) (AD)"
+"Cart.Name" "Fu Kung! (V0.09) (26-01-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "58e313e2b5613b2439b5f12bb41e3eef"
@@ -7966,7 +7971,7 @@
 
 "Cart.MD5" "5a4205aeedd3b0588f973f38bbd9dfd4"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Centipede - Amiga Mouse Hack v1.4 (PAL) (Full-Speed) (TJ)"
+"Cart.Name" "Centipede - Amiga Mouse Hack v1.4 (PAL) (Full-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
@@ -7986,7 +7991,7 @@
 ""
 
 "Cart.MD5" "5a734779d797ccef25dc8acfa47244c7"
-"Cart.Name" "Oh No! (Version 2) (18-01-2003) (AD)"
+"Cart.Name" "Oh No! (Version 2) (18-01-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "5a80b857eb8b908ab477ec4ef902edc8"
@@ -8130,7 +8135,7 @@
 
 "Cart.MD5" "5bbb75b49b2bccef9c91ff84bb249c80"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Missile Control - Atari Trak-Ball Hack v1.15 (NTSC) (TJ)"
+"Cart.Name" "Missile Control - Atari Trak-Ball Hack v1.15 (NTSC) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1184"
 ""
@@ -8187,7 +8192,7 @@
 ""
 
 "Cart.MD5" "5c1b1aa78b7609d43c5144c3b3b60adf"
-"Cart.Name" "Demo Image Series #8 - Two Marios (Different Interlacing) (27-02-2003) (AD)"
+"Cart.Name" "Demo Image Series #8 - Two Marios (Different Interlacing) (27-02-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "5c3a6d27c026f59a96b7af91e8b1bf26"
@@ -8279,7 +8284,7 @@
 
 "Cart.MD5" "5d8f1ab95362acdf3426d572a6301bf2"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "SWOOPS! (v0.96) (TJ) (PAL)"
+"Cart.Name" "SWOOPS! (v0.96) (Thomas Jentzsch) (PAL)"
 "Cart.Note" "Uses the Joystick (L) and Paddle (R) Controllers"
 "Cart.Rarity" "Homebrew"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=329"
@@ -8565,7 +8570,7 @@
 ""
 
 "Cart.MD5" "6058e40ce79d7434c7f7477b29abd4a5"
-"Cart.Name" "Rubik's Cube Demo (23-12-2002) (CT)"
+"Cart.Name" "Rubik's Cube Demo (23-12-2002) (Christopher Tumber)"
 ""
 
 "Cart.MD5" "605dcb73d22f4efdb90ef9da2f290f7c"
@@ -8591,7 +8596,7 @@
 ""
 
 "Cart.MD5" "6076b187a5d8ea7a2a05111c19b5d5cd"
-"Cart.Name" "Fu Kung! (V0.14) (01-02-2003) (AD)"
+"Cart.Name" "Fu Kung! (V0.14) (01-02-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "60a61da9b2f43dd7e13a5093ec41a53d"
@@ -8657,7 +8662,7 @@
 ""
 
 "Cart.MD5" "61621a556ad3228f0234f5feb3ab135c"
-"Cart.Name" "Fu Kung! (V0.05 Cuttle Card Compattle Revision) (14-01-2003) (AD)"
+"Cart.Name" "Fu Kung! (V0.05 Cuttle Card Compattle Revision) (14-01-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "61631c2f96221527e7da9802b4704f93"
@@ -8709,7 +8714,7 @@
 
 "Cart.MD5" "6238ac888871fec301d1b9fc4fc613c9"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Marble Craze - Atari Mouse Hack v1.0 (PAL) (TJ)"
+"Cart.Name" "Marble Craze - Atari Mouse Hack v1.0 (PAL) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Mouse Controllers"
 ""
 
@@ -8811,7 +8816,7 @@
 
 "Cart.MD5" "6354f9c7588a27109c66905b0405825b"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Amidar DS (2003) (TJ) (Hack)"
+"Cart.Name" "Amidar DS (2003) (Thomas Jentzsch) (Hack)"
 "Cart.Note" "Hack of Amidar"
 "Cart.Rarity" "Hack"
 ""
@@ -8870,7 +8875,7 @@
 ""
 
 "Cart.MD5" "63c5fef3208bb1424d26cf1ab984b40c"
-"Cart.Name" "Analog Clock (V0.1) (20-01-2003) (AD)"
+"Cart.Name" "Analog Clock (V0.1) (20-01-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "63c7395d412a3cd095ccdd9b5711f387"
@@ -9243,7 +9248,7 @@
 ""
 
 "Cart.MD5" "678c1d71a1616d9d022f03d8545b64bb"
-"Cart.Name" "Demo Image Series #11 - Donald And Mario (28-02-2003) (AD)"
+"Cart.Name" "Demo Image Series #11 - Donald And Mario (28-02-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "67931b0d37dc99af250dd06f1c095e8d"
@@ -9327,7 +9332,7 @@
 
 "Cart.MD5" "6833c26f385e866f3a0fa0dff311216e"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Centipede - Atari Mouse Hack v1.4 (PAL60) (Full-Speed) (TJ)"
+"Cart.Name" "Centipede - Atari Mouse Hack v1.4 (PAL60) (Full-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
@@ -9388,7 +9393,7 @@
 ""
 
 "Cart.MD5" "687c23224e26f81c56e431c24faea36d"
-"Cart.Name" "Qb (Simple Background Animation) (2001) (AD)"
+"Cart.Name" "Qb (Simple Background Animation) (2001) (Andrew Davie)"
 "Display.Phosphor" "YES"
 ""
 
@@ -9415,7 +9420,7 @@
 
 "Cart.MD5" "68c80e7e1d30df98a0cf67ecbf39cc67"
 "Cart.Manufacturer" "Hozer Video Games"
-"Cart.Name" "Gunfight 2600 - One Step Forward & Two Steps Back (2001) (MP)"
+"Cart.Name" "Gunfight 2600 - One Step Forward & Two Steps Back (2001) (Manuel Rotschkar)"
 "Cart.Rarity" "New Release"
 ""
 
@@ -9428,13 +9433,13 @@
 
 "Cart.MD5" "68cd2adc6b1fc9a1f263ab4561112f30"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Boulderdash Demo (09-12-2002) (TJ)"
+"Cart.Name" "Boulderdash Demo (09-12-2002) (Thomas Jentzsch)"
 "Cart.Rarity" "Homebrew"
 "Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "68feb6d6ff63e80df1302d8547979aec"
-"Cart.Name" "Starfield Demo 2 (20-12-2002) (CT)"
+"Cart.Name" "Starfield Demo 2 (20-12-2002) (Christopher Tumber)"
 ""
 
 "Cart.MD5" "690a6049db78b9400c13521646708e9c"
@@ -9470,7 +9475,7 @@
 
 "Cart.MD5" "6936aa6763835f62ac13d1aaa79b9f91"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Centipede - Atari Trak-Ball Hack v1.4 (NTSC) (Half-Speed) (TJ)"
+"Cart.Name" "Centipede - Atari Trak-Ball Hack v1.4 (NTSC) (Half-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
@@ -9532,7 +9537,7 @@
 
 "Cart.MD5" "69edfb4e1810a523311b3e250fc1e275"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Missile Command Atari Trak-Ball Hack v1.3 (PAL) (TJ)"
+"Cart.Name" "Missile Command Atari Trak-Ball Hack v1.3 (PAL) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1183"
 "Display.Phosphor" "YES"
@@ -9695,7 +9700,7 @@
 
 "Cart.MD5" "6b75f8fa4fd011a6698c58315f83d2ac"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Sprintmaster DC (TJ)"
+"Cart.Name" "Sprintmaster DC (Thomas Jentzsch)"
 "Cart.Note" "Uses the Driving Controllers, Hack of Sprintmaster (Atari)"
 "Cart.Rarity" "New Release (Hack)"
 "Controller.Left" "DRIVING"
@@ -9816,7 +9821,7 @@
 ""
 
 "Cart.MD5" "6cbe945e16d9f827d0d295546ac11b22"
-"Cart.Name" "Gunfight 2600 - AI (MP)"
+"Cart.Name" "Gunfight 2600 - AI (Manuel Rotschkar)"
 ""
 
 "Cart.MD5" "6ccd8ca17a0e4429b446cdcb66327bf1"
@@ -9874,7 +9879,7 @@
 ""
 
 "Cart.MD5" "6d74ebaba914a5cfc868de9dd1a5c434"
-"Cart.Name" "Fortress (Smooth Version) (20-04-2003) (CT)"
+"Cart.Name" "Fortress (Smooth Version) (20-04-2003) (Christopher Tumber)"
 ""
 
 "Cart.MD5" "6d842c96d5a01967be9680080dd5be54"
@@ -10032,7 +10037,7 @@
 ""
 
 "Cart.MD5" "6fbd05b0ad65b2a261fa154b34328a7f"
-"Cart.Name" "Boardgame Demo (20-12-2002) (CT)"
+"Cart.Name" "Boardgame Demo (20-12-2002) (Christopher Tumber)"
 ""
 
 "Cart.MD5" "6fc0176ccf53d7bce249aeb56d59d414"
@@ -10116,7 +10121,7 @@
 ""
 
 "Cart.MD5" "707ecd80030e85751ef311ced66220bc"
-"Cart.Name" "Double-Height 6-Digit Score Display (Background Color Change) (2001) (AD)"
+"Cart.Name" "Double-Height 6-Digit Score Display (Background Color Change) (2001) (Andrew Davie)"
 ""
 
 "Cart.MD5" "7096a198531d3f16a99d518ac0d7519a"
@@ -10134,7 +10139,7 @@
 
 "Cart.MD5" "70a43fbdb1c039283ee5048d99842469"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Reactor - Atari Mouse Hack v1.3 (PAL) (Half-Speed) (TJ)"
+"Cart.Name" "Reactor - Atari Mouse Hack v1.3 (PAL) (Half-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
 ""
@@ -10308,14 +10313,14 @@
 
 "Cart.MD5" "72a63bcb5eb31bd0fd5e98ed05125ec1"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Missile Control - Atari Trak-Ball Hack v1.15 (PAL60) (TJ)"
+"Cart.Name" "Missile Control - Atari Trak-Ball Hack v1.15 (PAL60) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1184"
 ""
 
 "Cart.MD5" "72bda70c75dfa2365b3f8894bace9e6a"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Atlantis (TJ) (Hack)"
+"Cart.Name" "Atlantis (Thomas Jentzsch) (Hack)"
 "Cart.Note" "Hack of Atlantis"
 "Cart.Rarity" "Hack"
 "Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa2\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x8d\",\"variations_count\":4,\"variations_zero_based\":true}"
@@ -10374,7 +10379,7 @@
 ""
 
 "Cart.MD5" "73b4e8f8b04515d91937510e680214bc"
-"Cart.Name" "Rubik's Cube Demo 3 (24-12-2002) (CT)"
+"Cart.Name" "Rubik's Cube Demo 3 (24-12-2002) (Christopher Tumber)"
 ""
 
 "Cart.MD5" "73c545db2afd5783d37c46004e4024c2"
@@ -10520,7 +10525,7 @@
 
 "Cart.MD5" "752da1c0acd7d132ccfb0b1067f53cf6"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Reactor - Atari Mouse Hack v1.3 (PAL) (Full-Speed) (TJ)"
+"Cart.Name" "Reactor - Atari Mouse Hack v1.3 (PAL) (Full-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
 ""
@@ -10823,8 +10828,8 @@
 ""
 
 "Cart.MD5" "787ebc2609a31eb5c57c4a18837d1aee"
-"Cart.Manufacturer" "Prescott"
-"Cart.Name" "Vault Assault (19xx) (Prescott)"
+"Cart.Manufacturer" "Brian Prescott"
+"Cart.Name" "Vault Assault (19xx) (Brian Prescott)"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=113"
 ""
 
@@ -10835,7 +10840,7 @@
 ""
 
 "Cart.MD5" "78963290052fd17c6c7998305ab3a6a0"
-"Cart.Name" "Push (V0.08) (2001) (AD)"
+"Cart.Name" "Push (V0.08) (2001) (Andrew Davie)"
 ""
 
 "Cart.MD5" "78b84cfb1c57b0488d674d2374e656e6"
@@ -10845,7 +10850,7 @@
 ""
 
 "Cart.MD5" "78c2de58e42cd1faac2ea7df783eaeb3"
-"Cart.Name" "Fu Kung! (V0.07) (25-01-2003) (AD)"
+"Cart.Name" "Fu Kung! (V0.07) (25-01-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "79004f84bdeee78d142e445057883169"
@@ -10949,7 +10954,7 @@
 ""
 
 "Cart.MD5" "79d6f61da3c64688ac8e075667f8a39f"
-"Cart.Name" "Tie-Fighters (MP)"
+"Cart.Name" "Tie-Fighters (Manuel Rotschkar)"
 ""
 
 "Cart.MD5" "79e5338dbfa6b64008bb0d72a3179d3c"
@@ -10973,7 +10978,7 @@
 ""
 
 "Cart.MD5" "7a2af383014f5d810ad26d322823549d"
-"Cart.Name" "FlickerSort Demo (20-04-2002) (MP)"
+"Cart.Name" "FlickerSort Demo (20-04-2002) (Manuel Rotschkar)"
 ""
 
 "Cart.MD5" "7a5463545dfb2dcfdafa6074b2f2c15e"
@@ -11000,7 +11005,7 @@
 ""
 
 "Cart.MD5" "7a64b5a6e90619c6aacf244cdd7502f8"
-"Cart.Manufacturer" "Baroque Gaming (Brian Eno)"
+"Cart.Manufacturer" "Baroque Gaming (Billy Eno)"
 "Cart.Name" "Warring Worms (Beta 1) (2002) (Baroque Gaming)"
 "Cart.Rarity" "Prototype"
 ""
@@ -11026,7 +11031,7 @@
 ""
 
 "Cart.MD5" "7ab210f448de518fa61a5924120ba872"
-"Cart.Name" "Fortress (20-04-2003) (CT)"
+"Cart.Name" "Fortress (20-04-2003) (Christopher Tumber)"
 ""
 
 "Cart.MD5" "7ab2f190d4e59e8742e76a6e870b567e"
@@ -11115,13 +11120,13 @@
 
 "Cart.MD5" "7b57318c489ff178f7ff500da1ec9e8c"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Reactor - Amiga Mouse Hack v1.3 (PAL) (Full-Speed) (TJ)"
+"Cart.Name" "Reactor - Amiga Mouse Hack v1.3 (PAL) (Full-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
 ""
 
 "Cart.MD5" "7b6f3348dbf71ada88db0fdaf7feefe0"
-"Cart.Name" "3-D Corridor (Pink Spiral) (31-03-2003) (AD)"
+"Cart.Name" "3-D Corridor (Pink Spiral) (31-03-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "7b79beb378d1b4471def90ceccf413de"
@@ -11216,11 +11221,11 @@
 ""
 
 "Cart.MD5" "7ccf350354ee15cd9b85564a2014b08c"
-"Cart.Name" "Big Dig (13-04-2003) (CT)"
+"Cart.Name" "Big Dig (13-04-2003) (Christopher Tumber)"
 ""
 
 "Cart.MD5" "7cd379da92c93679f3b6d2548617746a"
-"Cart.Name" "Demo Image Series #5 - Clown (19-02-2003) (AD)"
+"Cart.Name" "Demo Image Series #5 - Clown (19-02-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "7cd900e9eccbb240fe9c37fa28f917b5"
@@ -11246,7 +11251,7 @@
 
 "Cart.MD5" "7cf3a9267cdb95aba91abc5838d61cc5"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Centipede - Atari Mouse Hack v1.4 (PAL60) (Half-Speed) (TJ)"
+"Cart.Name" "Centipede - Atari Mouse Hack v1.4 (PAL60) (Half-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
@@ -11290,7 +11295,7 @@
 
 "Cart.MD5" "7d8287e8423a56d4f8cef10435d97179"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Challenge of... Nexar, The - Atari Trak-Ball Hack v1.2 (NTSC) (TJ)"
+"Cart.Name" "Challenge of... Nexar, The - Atari Trak-Ball Hack v1.2 (NTSC) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1181"
 ""
@@ -11303,7 +11308,7 @@
 ""
 
 "Cart.MD5" "7d93071b3e3616093a6b5a98b0315751"
-"Cart.Name" "Gunfight 2600 - Music & Bugfixes 2 (2001) (MP)"
+"Cart.Name" "Gunfight 2600 - Music & Bugfixes 2 (2001) (Manuel Rotschkar)"
 ""
 
 "Cart.MD5" "7d940d749e55b96b7b746519fa06f2de"
@@ -11399,7 +11404,7 @@
 ""
 
 "Cart.MD5" "7e7c4c59d55494e66eef5e04ec1c6157"
-"Cart.Manufacturer" "Baroque Gaming (Brian Eno)"
+"Cart.Manufacturer" "Baroque Gaming (Billy Eno)"
 "Cart.Name" "Warring Worms (2002) (Baroque Gaming)"
 "Cart.Rarity" "New Release"
 ""
@@ -11465,7 +11470,7 @@
 ""
 
 "Cart.MD5" "7ed7130a6e4020161836414332b11983"
-"Cart.Name" "Fu Kung! (V0.05 Cuttle Card Compatible) (13-01-2003) (AD)"
+"Cart.Name" "Fu Kung! (V0.05 Cuttle Card Compatible) (13-01-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "7edc8fcb319b3fb61cac87614afd4ffa"
@@ -11574,7 +11579,7 @@
 
 "Cart.MD5" "801ba40f3290fc413e8c816c467c765c"
 "Cart.Manufacturer" "Hozer Video Games"
-"Cart.Name" "Gunfight 2600 - Westward Ho! (2001) (MP)"
+"Cart.Name" "Gunfight 2600 - Westward Ho! (2001) (Manuel Rotschkar)"
 "Cart.Rarity" "New Release"
 ""
 
@@ -11674,7 +11679,7 @@
 
 "Cart.MD5" "80f7bf7418a462e8687ecefeaf6eb9c2"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Reactor - Atari Trak-Ball Hack v1.3 (NTSC) (Half-Speed) (TJ)"
+"Cart.Name" "Reactor - Atari Trak-Ball Hack v1.3 (NTSC) (Half-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
 ""
@@ -11687,7 +11692,7 @@
 
 "Cart.MD5" "81073d0377a2badef8d5e74fc44fc323"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Sadoom (TJ) (PAL60) (Hack)"
+"Cart.Name" "Sadoom (Thomas Jentzsch) (PAL60) (Hack)"
 "Cart.Note" "Hack of Kaboom!"
 "Cart.Rarity" "Hack"
 "Controller.MouseAxis" "01 50"
@@ -11722,7 +11727,7 @@
 ""
 
 "Cart.MD5" "81341f00b61ab37d19d1529f483d496d"
-"Cart.Name" "Fu Kung! (V0.04) (10-01-2003) (AD)"
+"Cart.Name" "Fu Kung! (V0.04) (10-01-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "813985a940aa739cc28df19e0edd4722"
@@ -11792,7 +11797,7 @@
 
 "Cart.MD5" "82337e5fe0f418ca9484ca851dfc226a"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Robot City (V1.0) (Alpha) (TJ)"
+"Cart.Name" "Robot City (V1.0) (Alpha) (Thomas Jentzsch)"
 ""
 
 "Cart.MD5" "826481f6fc53ea47c9f272f7050eedf7"
@@ -11898,7 +11903,7 @@
 ""
 
 "Cart.MD5" "83d15fb9843d9f84aa3710538403f434"
-"Cart.Name" "Gunfight 2600 - Release Candidate (2001) (MP) (PAL)"
+"Cart.Name" "Gunfight 2600 - Release Candidate (2001) (Manuel Rotschkar) (PAL)"
 ""
 
 "Cart.MD5" "83e1b9f22f29259679e1018bc04cc018"
@@ -11908,7 +11913,7 @@
 ""
 
 "Cart.MD5" "83f05ececae8be59ba1e51135f4bdcbf"
-"Cart.Name" "Demo Image Series #13 - Mario (4K Interleaved Chronocolour) (05-03-2003) (AD)"
+"Cart.Name" "Demo Image Series #13 - Mario (4K Interleaved Chronocolour) (05-03-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "83f50fa0fbae545e4b88bb53b788c341"
@@ -11991,7 +11996,7 @@
 ""
 
 "Cart.MD5" "850ffd5849c911946b24544ea1e60496"
-"Cart.Name" "Invasion (07-10-2002) (CT)"
+"Cart.Name" "Invasion (07-10-2002) (Christopher Tumber)"
 ""
 
 "Cart.MD5" "851cc1f3c64eaedd10361ea26345acea"
@@ -12136,7 +12141,7 @@
 ""
 
 "Cart.MD5" "862cf669cbced78f9ed31a5d375b2ebe"
-"Cart.Name" "Gunfight 2600 - Flicker acceptance (2001) (MP)"
+"Cart.Name" "Gunfight 2600 - Flicker acceptance (2001) (Manuel Rotschkar)"
 ""
 
 "Cart.MD5" "8644352b806985efde499ae6fc7b0fec"
@@ -12172,7 +12177,7 @@
 ""
 
 "Cart.MD5" "8726c17ee7b559cb7bf2330d20972ad0"
-"Cart.Name" "Cave Demo (21-04-2003) (CT)"
+"Cart.Name" "Cave Demo (21-04-2003) (Christopher Tumber)"
 ""
 
 "Cart.MD5" "873fb75a7788ba0f4ae715229a05545e"
@@ -12301,7 +12306,7 @@
 ""
 
 "Cart.MD5" "888debb162d7d1ae71025b4ab794257f"
-"Cart.Name" "Interleaved ChronoColour - Nude Art (17-04-2003) (AD)"
+"Cart.Name" "Interleaved ChronoColour - Nude Art (17-04-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "88a6c9c88cb329ee5fa7d168bd6c7c63"
@@ -12326,12 +12331,12 @@
 ""
 
 "Cart.MD5" "88d8a1accab58cf1abb043613cf185e9"
-"Cart.Manufacturer" "Ultravison"
-"Cart.Name" "Sabotage (Ultravison)"
+"Cart.Manufacturer" "Bob Colbert"
+"Cart.Name" "Sabotage (Multi Demo) (Bob Colbert)"
 ""
 
 "Cart.MD5" "88dce4037471424bb38ab6841aaa8cab"
-"Cart.Name" "Double-Height 6-Digit Score Display (Two Background Color Change) (2001) (AD)"
+"Cart.Name" "Double-Height 6-Digit Score Display (Two Background Color Change) (2001) (Andrew Davie)"
 ""
 
 "Cart.MD5" "88ed87c011f699dd27321dbe404db6c8"
@@ -12448,7 +12453,7 @@
 ""
 
 "Cart.MD5" "8a49cf1785e3dea2012d331a3ad476e1"
-"Cart.Name" "Boulderdash (10 Blocks Wide) (02-04-2003) (AD)"
+"Cart.Name" "Boulderdash (10 Blocks Wide) (02-04-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "8a6c84f481acf42abcb78ba5064ad755"
@@ -12572,7 +12577,7 @@
 
 "Cart.MD5" "8bebac614571135933116045204f0f00"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Missile Command (Trakball) (2002) (TJ) (PAL)"
+"Cart.Name" "Missile Command (Trakball) (2002) (Thomas Jentzsch) (PAL)"
 "Cart.Note" "Uses the Trakball Controller"
 "Cart.Rarity" "Homebrew"
 "Controller.Left" "TRAKBALL"
@@ -12654,7 +12659,7 @@
 
 "Cart.MD5" "8ccf63141a029603572d1056e772990e"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Centipede - Amiga Mouse Hack v1.4 (NTSC) (Full-Speed) (TJ)"
+"Cart.Name" "Centipede - Amiga Mouse Hack v1.4 (NTSC) (Full-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
@@ -12668,7 +12673,7 @@
 
 "Cart.MD5" "8ce9126066f2ddd5173e9f1f9ce1494e"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Missile Command (Trakball) (2002) (TJ)"
+"Cart.Name" "Missile Command (Trakball) (2002) (Thomas Jentzsch)"
 "Cart.Note" "Uses the Trakball Controller"
 "Cart.Rarity" "Homebrew"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1183"
@@ -12688,12 +12693,12 @@
 ""
 
 "Cart.MD5" "8d00a38f4c8f8800f1c237215ac243fc"
-"Cart.Name" "3-D Corridor (Green) (30-03-2003) (AD)"
+"Cart.Name" "3-D Corridor (Green) (30-03-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "8d1e2a6d2885966e6d86717180938f87"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Missile Command (Amiga Mouse) (2002) (TJ)"
+"Cart.Name" "Missile Command (Amiga Mouse) (2002) (Thomas Jentzsch)"
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Rarity" "Homebrew"
 "Display.Phosphor" "YES"
@@ -12701,11 +12706,11 @@
 ""
 
 "Cart.MD5" "8d8b7d7b983f75debbdaac651e814768"
-"Cart.Name" "Demo Image Series #15 - Three Marios (PAL) (06-03-2003) (AD)"
+"Cart.Name" "Demo Image Series #15 - Three Marios (PAL) (06-03-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "8d9a06101ebb0f147936356e645309b8"
-"Cart.Name" "Grid Pattern Demo 2 (20-12-2002) (CT)"
+"Cart.Name" "Grid Pattern Demo 2 (20-12-2002) (Christopher Tumber)"
 ""
 
 "Cart.MD5" "8da51e0c4b6b46f7619425119c7d018e"
@@ -12820,7 +12825,7 @@
 
 "Cart.MD5" "8ef96ace4a1d6dfb65926c1e868b0188"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Reactor - Amiga Mouse Hack v1.3 (PAL60) (Half-Speed) (TJ)"
+"Cart.Name" "Reactor - Amiga Mouse Hack v1.3 (PAL60) (Half-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
 ""
@@ -12937,7 +12942,7 @@
 
 "Cart.MD5" "90a3c3255f2a54225cdcb50831f8793a"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Challenge of... Nexar, The - Atari Trak-Ball Hack v1.1 (PAL) (TJ)"
+"Cart.Name" "Challenge of... Nexar, The - Atari Trak-Ball Hack v1.1 (PAL) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1181"
 ""
@@ -12975,12 +12980,12 @@
 ""
 
 "Cart.MD5" "910dd9bf98cc5bc080943e5128b15bf5"
-"Cart.Name" "Gunfight 2600 - Improved AI (MP)"
+"Cart.Name" "Gunfight 2600 - Improved AI (Manuel Rotschkar)"
 ""
 
 "Cart.MD5" "911d385ee0805ff5b8f96c5a63da7de5"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Jammed (V0.1) (Demo) (2001) (TJ)"
+"Cart.Name" "Jammed (V0.1) (Demo) (2001) (Thomas Jentzsch)"
 "Cart.Rarity" "New Release"
 ""
 
@@ -13008,7 +13013,7 @@
 ""
 
 "Cart.MD5" "91a3749ff7b7e72b7fa09e05396a0e7b"
-"Cart.Name" "Gunfight 2600 - Final Run Part 2 (2002) (MP)"
+"Cart.Name" "Gunfight 2600 - Final Run Part 2 (2002) (Manuel Rotschkar)"
 ""
 
 "Cart.MD5" "91b007f33f9b790be64f57220ec52e80"
@@ -13026,7 +13031,7 @@
 ""
 
 "Cart.MD5" "91d1c82ceaf8af2add3973a3c34bc0cb"
-"Cart.Name" "Starfield Demo 1 (20-12-2002) (CT)"
+"Cart.Name" "Starfield Demo 1 (20-12-2002) (Christopher Tumber)"
 ""
 
 "Cart.MD5" "91f0a708eeb93c133e9672ad2c8e0429"
@@ -13169,7 +13174,7 @@
 
 "Cart.MD5" "93b9229fc0ea4fb959d604f83f8f603c"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Amidar DS (Fast Enemies) (2003) (TJ) (Hack)"
+"Cart.Name" "Amidar DS (Fast Enemies) (2003) (Thomas Jentzsch) (Hack)"
 "Cart.Note" "Hack of Amidar"
 "Cart.Rarity" "Hack"
 ""
@@ -13204,7 +13209,7 @@
 
 "Cart.MD5" "93db185c3b3dc382f3aecd6a2fea7fd9"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Challenge of... Nexar, The - Atari Trak-Ball Hack v1.1 (PAL60) (TJ)"
+"Cart.Name" "Challenge of... Nexar, The - Atari Trak-Ball Hack v1.1 (PAL60) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1181"
 ""
@@ -13257,13 +13262,13 @@
 
 "Cart.MD5" "9446940866c9417f210f8552cf6c3078"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Marble Craze - Amiga Mouse Hack v1.0 (PAL60) (TJ)"
+"Cart.Name" "Marble Craze - Amiga Mouse Hack v1.0 (PAL60) (Thomas Jentzsch)"
 "Cart.Note" "Uses Amiga Mouse Controllers"
 ""
 
 "Cart.MD5" "94507dee401b0a072a481c00d7699ffe"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Missile Control - Atari Trak-Ball Hack v1.15 (PAL) (TJ)"
+"Cart.Name" "Missile Control - Atari Trak-Ball Hack v1.15 (PAL) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1184"
 ""
@@ -13359,7 +13364,7 @@
 ""
 
 "Cart.MD5" "95a69cf8c08ef1522b050529464f0bca"
-"Cart.Name" "Grid Pattern Demo 1 (20-12-2002) (CT)"
+"Cart.Name" "Grid Pattern Demo 1 (20-12-2002) (Christopher Tumber)"
 ""
 
 "Cart.MD5" "95a89d1bf767d7cc9d0d5093d579ba61"
@@ -13383,7 +13388,7 @@
 ""
 
 "Cart.MD5" "95fd6097dc27c20666f039cfe34f7c69"
-"Cart.Name" "Oh No! (Version 1) (17-01-2003) (AD)"
+"Cart.Name" "Oh No! (Version 1) (17-01-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "961112b74a920a5242e233480326c356"
@@ -13418,7 +13423,7 @@
 
 "Cart.MD5" "966c955e4aaca7082d9ffb9a68e3f3ed"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Centipede - Atari Mouse Hack v1.4 (PAL) (Full-Speed) (TJ)"
+"Cart.Name" "Centipede - Atari Mouse Hack v1.4 (PAL) (Full-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
@@ -13460,7 +13465,7 @@
 
 "Cart.MD5" "96eccc2277043508a6c481ea432d7dd9"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Missile Command (Atari Mouse) (2002) (TJ) (PAL)"
+"Cart.Name" "Missile Command (Atari Mouse) (2002) (Thomas Jentzsch) (PAL)"
 "Cart.Note" "Uses Atari ST Mouse Controller"
 "Cart.Rarity" "Homebrew"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1183"
@@ -13471,7 +13476,7 @@
 ""
 
 "Cart.MD5" "96f806fc62005205d851e758d050dfca"
-"Cart.Name" "Push (V0.05) (2001) (AD)"
+"Cart.Name" "Push (V0.05) (2001) (Andrew Davie)"
 ""
 
 "Cart.MD5" "97184b263722748757cfdc41107ca5c0"
@@ -13538,7 +13543,7 @@
 
 "Cart.MD5" "97cd63c483fe3c68b7ce939ab8f7a318"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Robot City (V0.21) (15-09-2002) (TJ)"
+"Cart.Name" "Robot City (V0.21) (15-09-2002) (Thomas Jentzsch)"
 "Cart.Rarity" "New Release"
 ""
 
@@ -13557,7 +13562,7 @@
 
 "Cart.MD5" "97e47512f89e79818d988d078dc90410"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Missile Control - Amiga Mouse Hack v1.15 (NTSC) (TJ)"
+"Cart.Name" "Missile Control - Amiga Mouse Hack v1.15 (NTSC) (Thomas Jentzsch)"
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1184"
 ""
@@ -13591,7 +13596,7 @@
 
 "Cart.MD5" "9853089672116117258097dbbdb939b7"
 "Cart.Manufacturer" "Hozer Video Games"
-"Cart.Name" "Gunfight 2600 - Cowboy Hair (2001) (MP)"
+"Cart.Name" "Gunfight 2600 - Cowboy Hair (2001) (Manuel Rotschkar)"
 "Cart.Rarity" "New Release"
 ""
 
@@ -13619,7 +13624,7 @@
 ""
 
 "Cart.MD5" "98e6e34af45a0664597972c3bb31180f"
-"Cart.Name" "Space Instigators (V1.7) (17-10-2002) (CT)"
+"Cart.Name" "Space Instigators (V1.7) (17-10-2002) (Christopher Tumber)"
 ""
 
 "Cart.MD5" "98e7caaab8ec237558378d2776c66616"
@@ -13654,7 +13659,7 @@
 
 "Cart.MD5" "98fa3ad778a668a79449350de4b3b95b"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Thrust (V1.1) (2000) (TJ)"
+"Cart.Name" "Thrust (V1.1) (2000) (Thomas Jentzsch)"
 ""
 
 "Cart.MD5" "9905f9f4706223dadee84f6867ede8e3"
@@ -13671,7 +13676,7 @@
 ""
 
 "Cart.MD5" "991d57bbcd529ad62925098e0aec1241"
-"Cart.Name" "Gunfight 2600 - The Final Kernel (MP) [a1]"
+"Cart.Name" "Gunfight 2600 - The Final Kernel (Manuel Rotschkar) [a1]"
 ""
 
 "Cart.MD5" "9945a22f60bbaf6d04a8d73b3cf3db75"
@@ -13807,7 +13812,7 @@
 ""
 
 "Cart.MD5" "9b246683f44c963a50e41d6b485bee77"
-"Cart.Name" "Boring (PAL) (AD)"
+"Cart.Name" "Boring (PAL) (Andrew Davie)"
 ""
 
 "Cart.MD5" "9bb136b62521c67ac893213e01dd338f"
@@ -13898,7 +13903,7 @@
 ""
 
 "Cart.MD5" "9d2f05d0fe8b2dfcf770b02eda066fc1"
-"Cart.Name" "Push (V0.06) (2001) (AD)"
+"Cart.Name" "Push (V0.06) (2001) (Andrew Davie)"
 ""
 
 "Cart.MD5" "9d33d31fb1de58c5460d8a67b57b36da"
@@ -13992,7 +13997,7 @@
 ""
 
 "Cart.MD5" "9e792a59f8795664cbaaff1ba152d731"
-"Cart.Name" "Bullet Demo (20-12-2002) (CT)"
+"Cart.Name" "Bullet Demo (20-12-2002) (Christopher Tumber)"
 ""
 
 "Cart.MD5" "9e904e2eaa471c050c491289b8b80f60"
@@ -14013,7 +14018,7 @@
 ""
 
 "Cart.MD5" "9eca521db1959156a115dee85a405194"
-"Cart.Name" "Fu Kung! (V0.08) (2003) (AD)"
+"Cart.Name" "Fu Kung! (V0.08) (2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "9ed0f2aa226c34d4f55f661442e8f22a"
@@ -14044,7 +14049,7 @@
 ""
 
 "Cart.MD5" "9f2d58dce1b81c6ba201ed103507c025"
-"Cart.Name" "Fu Kung! (V0.02) (2003) (AD)"
+"Cart.Name" "Fu Kung! (V0.02) (2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "9f48eeb47836cf145a15771775f0767a"
@@ -14095,7 +14100,7 @@
 ""
 
 "Cart.MD5" "9f93734c68f6479eb022cab40814142e"
-"Cart.Name" "Push (V0.07) (2001) (AD)"
+"Cart.Name" "Push (V0.07) (2001) (Andrew Davie)"
 ""
 
 "Cart.MD5" "9f982421b9b4320ede00fe4aa2e812f4"
@@ -14162,7 +14167,7 @@
 
 "Cart.MD5" "a025a8f83a42a4d6d46c4887e799bfac"
 "Cart.Manufacturer" "Hozer Video Games"
-"Cart.Name" "Gunfight 2600 - Descissions had to be made (2001) (MP)"
+"Cart.Name" "Gunfight 2600 - Descissions had to be made (2001) (Manuel Rotschkar)"
 "Cart.Rarity" "New Release"
 ""
 
@@ -14191,7 +14196,7 @@
 ""
 
 "Cart.MD5" "a0d502dc8b90b1d7daa5f6effb10d349"
-"Cart.Name" "Demo Image Series #5 - Sam (19-02-2003) (AD)"
+"Cart.Name" "Demo Image Series #5 - Sam (19-02-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "a0e2d310e3e98646268200c8f0f08f46"
@@ -14220,12 +14225,12 @@
 ""
 
 "Cart.MD5" "a14d8a388083c60283e00592b18d4c6c"
-"Cart.Name" "Tunnel Demo (28-03-2003) (AD)"
+"Cart.Name" "Tunnel Demo (28-03-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "a15b5831a1fab52e4c416068c85ec011"
 "Cart.Manufacturer" "Hozer Video Games"
-"Cart.Name" "Gunfight 2600 - The Good, The Bad, The Ugly (2001) (MP)"
+"Cart.Name" "Gunfight 2600 - The Good, The Bad, The Ugly (2001) (Manuel Rotschkar)"
 "Cart.Rarity" "New Release"
 ""
 
@@ -14313,7 +14318,7 @@
 
 "Cart.MD5" "a2276822c772f72073a8a40a72a1ca52"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Challenge of... Nexar, The - Atari Mouse Hack v1.1 (NTSC) (TJ)"
+"Cart.Name" "Challenge of... Nexar, The - Atari Mouse Hack v1.1 (NTSC) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1181"
 ""
@@ -14323,7 +14328,7 @@
 ""
 
 "Cart.MD5" "a25bb76e9e773117e567fd4300b1bb23"
-"Cart.Name" "Interleaved ChronoColour Demo (NTSC) (05-03-2003) (AD)"
+"Cart.Name" "Interleaved ChronoColour Demo (NTSC) (05-03-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "a28d872fc50fa6b64eb35981d0f4bb8d"
@@ -14375,7 +14380,7 @@
 ""
 
 "Cart.MD5" "a2eb84cfeed55acd7fece7fefdc83fbb"
-"Cart.Name" "Kool Aid Man (Fixed) (15-11-2002) (CT)"
+"Cart.Name" "Kool Aid Man (Fixed) (15-11-2002) (Christopher Tumber)"
 "Cart.Note" "HMOVE handling fixed in this version"
 ""
 
@@ -14405,7 +14410,7 @@
 ""
 
 "Cart.MD5" "a310494ad5ba2b5b221a30d7180a0336"
-"Cart.Name" "Demo Image Series #6 - Mario (19-02-2003) (AD)"
+"Cart.Name" "Demo Image Series #6 - Mario (19-02-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "a336beac1f0a835614200ecd9c41fd70"
@@ -14505,7 +14510,7 @@
 ""
 
 "Cart.MD5" "a47878a760f5fa3aa99f95c3fdc70a0b"
-"Cart.Name" "Demo Image Series #5 - Baboon (19-02-2003) (AD)"
+"Cart.Name" "Demo Image Series #5 - Baboon (19-02-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "a4790224bd5afabd53cbe93e46a7f241"
@@ -14524,7 +14529,7 @@
 
 "Cart.MD5" "a484638990de7b12c62947c79dafa4c6"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Marble Craze - Atari Mouse Hack v1.0 (PAL60) (TJ)"
+"Cart.Name" "Marble Craze - Atari Mouse Hack v1.0 (PAL60) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Mouse Controllers"
 ""
 
@@ -14542,7 +14547,7 @@
 ""
 
 "Cart.MD5" "a4ab331e8768eafdc20ce8b0411ff77a"
-"Cart.Name" "Demo Image Series #1 - Sam (19-02-2003) (AD)"
+"Cart.Name" "Demo Image Series #1 - Sam (19-02-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "a4b9423877a0b86ca35b52ca3c994ac5"
@@ -14587,7 +14592,7 @@
 ""
 
 "Cart.MD5" "a4f1cea2c8479284e2a2292f8d51b5fa"
-"Cart.Name" "Gunfight 2600 - The Final Kernel Part 2 (MP)"
+"Cart.Name" "Gunfight 2600 - The Final Kernel Part 2 (Manuel Rotschkar)"
 ""
 
 "Cart.MD5" "a4ff39d513b993159911efe01ac12eba"
@@ -14944,7 +14949,7 @@
 
 "Cart.MD5" "a9784c24cddb33bd0d14442b97784f3d"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Omega Race DC (2003) (TJ) (Omega Race Hack)"
+"Cart.Name" "Omega Race DC (2003) (Thomas Jentzsch) (Omega Race Hack)"
 ""
 
 "Cart.MD5" "a98b649912b6ca19eaf5c2d2faf38562"
@@ -15016,7 +15021,7 @@
 ""
 
 "Cart.MD5" "aa8e4b2cb8a78ffe6b20580033f4dec9"
-"Cart.Name" "Bitmap Demo (13-01-2003) (AD)"
+"Cart.Name" "Bitmap Demo (13-01-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "aaac0d277eda054861e613c59c2e4ff2"
@@ -15073,7 +15078,7 @@
 ""
 
 "Cart.MD5" "ab2ea35dcc1098c87455bb8210b018cf"
-"Cart.Name" "Fu Kung! (V0.04 Single Line Resolution) (10-01-2003) (AD)"
+"Cart.Name" "Fu Kung! (V0.04 Single Line Resolution) (10-01-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "ab301d3d7f2f4fe3fdd8a3540b7a74f5"
@@ -15157,7 +15162,7 @@
 
 "Cart.MD5" "ac0ddbcff34d064009591607746e33b8"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Atlantis FH (2003) (TJ) (Hack)"
+"Cart.Name" "Atlantis FH (2003) (Thomas Jentzsch) (Hack)"
 "Cart.Note" "Hack of Atlantis"
 "Cart.Rarity" "Hack"
 "Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa2\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x8d\",\"variations_count\":4,\"variations_zero_based\":true}"
@@ -15254,7 +15259,7 @@
 
 "Cart.MD5" "ad72d616030a17634ff29ce8680d3c4c"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Reactor - Atari Trak-Ball Hack v1.3 (PAL60) (Full-Speed) (TJ)"
+"Cart.Name" "Reactor - Atari Trak-Ball Hack v1.3 (PAL60) (Full-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
 ""
@@ -15298,7 +15303,7 @@
 ""
 
 "Cart.MD5" "ae047e9468bda961d8e9e9d8ff52980f"
-"Cart.Name" "Tunnel Demo (Red Spiral) (30-03-2003) (AD)"
+"Cart.Name" "Tunnel Demo (Red Spiral) (30-03-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "ae0d4f3396cb49de0fabdff03cb2756f"
@@ -15317,7 +15322,8 @@
 ""
 
 "Cart.MD5" "ae18c11e4d7ed2437f0bf5d167c0e96c"
-"Cart.Name" "Multi-Color Demo 3 (Bob Colbert) (PD)"
+"Cart.Name" "Multi Demo 3 (Bob Colbert) (PD)"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "ae2f1f69bb38355395c1c75c81acc644"
@@ -15346,7 +15352,7 @@
 ""
 
 "Cart.MD5" "ae6cb335470788b94beb5787976e8818"
-"Cart.Name" "Mortal Kurling (02-01-2003) (CT)"
+"Cart.Name" "Mortal Kurling (02-01-2003) (Christopher Tumber)"
 ""
 
 "Cart.MD5" "ae83541cf4a4c0bce0adccd2c1bf6288"
@@ -15439,7 +15445,7 @@
 
 "Cart.MD5" "afe776db50e3378cd6f29c7cdd79104a"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Bobby is Going Home (TJ)"
+"Cart.Name" "Bobby is Going Home (Thomas Jentzsch)"
 "Cart.Note" "NTSC Conversion"
 "Cart.Rarity" "Homebrew"
 ""
@@ -15475,7 +15481,7 @@
 
 "Cart.MD5" "b011d8fdc450597c0762c2c0010a9b17"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Reactor - Amiga Mouse Hack v1.3 (NTSC) (Half-Speed) (TJ)"
+"Cart.Name" "Reactor - Amiga Mouse Hack v1.3 (NTSC) (Half-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
 ""
@@ -15555,13 +15561,13 @@
 
 "Cart.MD5" "b1276417fb0f79bc52e741bb8f4d8360"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Marble Craze - Amiga Mouse Hack v1.0 (NTSC) (TJ)"
+"Cart.Name" "Marble Craze - Amiga Mouse Hack v1.0 (NTSC) (Thomas Jentzsch)"
 "Cart.Note" "Uses Amiga Mouse Controllers"
 ""
 
 "Cart.MD5" "b129d7541cff79ebe33852a83057c524"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Marble Craze - Atari Trak-Ball Hack v1.0 (NTSC) (TJ)"
+"Cart.Name" "Marble Craze - Atari Trak-Ball Hack v1.0 (NTSC) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Trak-Ball Controllers"
 ""
 
@@ -15608,7 +15614,7 @@
 
 "Cart.MD5" "b182d9708e00709830caab9cf8205ca0"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Reactor - Atari Mouse Hack v1.3 (PAL60) (Half-Speed) (TJ)"
+"Cart.Name" "Reactor - Atari Mouse Hack v1.3 (PAL60) (Half-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
 ""
@@ -15644,7 +15650,8 @@
 ""
 
 "Cart.MD5" "b1fd0b71de9f6eeb5143a97963674cb6"
-"Cart.Name" "Multi-Color Demo 7 (Bob Colbert) (PD)"
+"Cart.Name" "Multi Demo 7 (Bob Colbert) (PD)"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "b227175699e372b8fe10ce243ad6dda5"
@@ -15711,7 +15718,7 @@
 ""
 
 "Cart.MD5" "b2a6f31636b699aeda900f07152bab6e"
-"Cart.Name" "Space Instigators (Public Release 2) (06-01-2003) (CT)"
+"Cart.Name" "Space Instigators (Public Release 2) (06-01-2003) (Christopher Tumber)"
 ""
 
 "Cart.MD5" "b2ab209976354ad4a0e1676fc1fe5a82"
@@ -15838,7 +15845,7 @@
 ""
 
 "Cart.MD5" "b451307b8b5e29f1c5f2cf064f6c7227"
-"Cart.Name" "Demo Image Series #6 - Mario (Fixed) (26-02-2003) (AD)"
+"Cart.Name" "Demo Image Series #6 - Mario (Fixed) (26-02-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "b49331b237c8f11d5f36fe2054a7b92b"
@@ -15987,11 +15994,11 @@
 
 "Cart.MD5" "b6821ac51c4c1dcb283f01be2f047dc1"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Rubik's Cube 3D Demo (25-11-2002) (TJ)"
+"Cart.Name" "Rubik's Cube 3D Demo (25-11-2002) (Thomas Jentzsch)"
 ""
 
 "Cart.MD5" "b6960be26bee87d53ba4e2e71cfe772f"
-"Cart.Name" "3-D Corridor (Spiral Words) (31-03-2003) (AD)"
+"Cart.Name" "3-D Corridor (Spiral Words) (31-03-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "b6d52a0cf53ad4216feb04147301f87d"
@@ -16022,7 +16029,7 @@
 
 "Cart.MD5" "b731d35e4ac6b3b47eba5dd0991f452f"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Rubik's Cube 3D Demo (Final) (08-01-2003) (TJ)"
+"Cart.Name" "Rubik's Cube 3D Demo (Final) (08-01-2003) (Thomas Jentzsch)"
 ""
 
 "Cart.MD5" "b7345220a0c587f3b0c47af33ebe533c"
@@ -16089,7 +16096,7 @@
 ""
 
 "Cart.MD5" "b7e459d5416eeb196aaa8e092db14463"
-"Cart.Name" "Push (V0.02) (1998) (AD)"
+"Cart.Name" "Push (V0.02) (1998) (Andrew Davie)"
 ""
 
 "Cart.MD5" "b7f184013991823fc02a6557341d2a7a"
@@ -16270,7 +16277,7 @@
 
 "Cart.MD5" "ba3b0eebccc7b791107de5b4abb671b4"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Thrust (V0.9) (2000) (TJ)"
+"Cart.Name" "Thrust (V0.9) (2000) (Thomas Jentzsch)"
 "Cart.Rarity" "New Release"
 ""
 
@@ -16315,7 +16322,7 @@
 
 "Cart.MD5" "bb2b83fff97604f74ada565e0b5bae94"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Missile Control - Atari Mouse Hack v1.15 (PAL60) (TJ)"
+"Cart.Name" "Missile Control - Atari Mouse Hack v1.15 (PAL60) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1184"
 ""
@@ -16333,7 +16340,7 @@
 ""
 
 "Cart.MD5" "bb6a5a2f7b67bee5d1f237f62f1e643f"
-"Cart.Name" "Demo Image Series #5 - Animegirl (19-02-2003) (AD)"
+"Cart.Name" "Demo Image Series #5 - Animegirl (19-02-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "bb745c893999b0efc96ea9029e3c62ca"
@@ -16405,7 +16412,7 @@
 ""
 
 "Cart.MD5" "bc703ea6afb20bc089f04d8c9d79a2bd"
-"Cart.Name" "Gunfight 2600 - Not mergeable with Colbert wizardry... (2001) (MP)"
+"Cart.Name" "Gunfight 2600 - Not mergeable with Colbert wizardry... (2001) (Manuel Rotschkar)"
 ""
 
 "Cart.MD5" "bc97d544f1d4834cc72bcc92a37b8c1b"
@@ -16451,7 +16458,7 @@
 ""
 
 "Cart.MD5" "bd1bd6f6b928df17a702def0302f46f4"
-"Cart.Name" "Binary To Decimal Routine (2001) (AD)"
+"Cart.Name" "Binary To Decimal Routine (2001) (Andrew Davie)"
 ""
 
 "Cart.MD5" "bd39598f067a1193ae81bd6182e756d1"
@@ -16572,12 +16579,12 @@
 ""
 
 "Cart.MD5" "befce0de2012b24fd6cb8b53c17c8271"
-"Cart.Name" "Push (V0.03) (No Illegal Opcodes) (1998) (AD)"
+"Cart.Name" "Push (V0.03) (No Illegal Opcodes) (1998) (Andrew Davie)"
 ""
 
 "Cart.MD5" "bf1970b692275b42c4ec0683588eb062"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Reactor - Amiga Mouse Hack v1.3 (NTSC) (Full-Speed) (TJ)"
+"Cart.Name" "Reactor - Amiga Mouse Hack v1.3 (NTSC) (Full-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
 ""
@@ -16677,7 +16684,7 @@
 
 "Cart.MD5" "c05f367fa4767ceb27abadf0066df7f4"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "TomInv (31-07-2001) (TJ)"
+"Cart.Name" "TomInv (31-07-2001) (Thomas Jentzsch)"
 ""
 
 "Cart.MD5" "c08d0cee43077d3055febb00e5745c1d"
@@ -16781,7 +16788,7 @@
 ""
 
 "Cart.MD5" "c1b1049b88bcd98437d8872d1d62ba31"
-"Cart.Name" "Demo Image Series #4 - Donald (19-02-2003) (AD)"
+"Cart.Name" "Demo Image Series #4 - Donald (19-02-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "c1b7aeabc3ec41556d924c8372a9ba5b"
@@ -16830,7 +16837,7 @@
 
 "Cart.MD5" "c21450c21efb7715746e9fa87ad6f145"
 "Cart.Manufacturer" "Hozer Video Games"
-"Cart.Name" "Gunfight 2600 - It could've been soooo cool, but... (2001) (MP)"
+"Cart.Name" "Gunfight 2600 - It could've been soooo cool, but... (2001) (Manuel Rotschkar)"
 "Cart.Rarity" "New Release"
 ""
 
@@ -16875,7 +16882,8 @@
 ""
 
 "Cart.MD5" "c28b29764c2338b0cf95537cc9aad8c9"
-"Cart.Name" "Multi-Color Demo 4 (Bob Colbert) (PD)"
+"Cart.Name" "Multi Demo 4 (Bob Colbert) (PD)"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "c29d17eef6b0784db4586c12cb5fd454"
@@ -16918,14 +16926,14 @@
 
 "Cart.MD5" "c2c8eb642765137bb82b83a65232961f"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Challenge of... Nexar, The - Atari Mouse Hack v1.1 (PAL) (TJ)"
+"Cart.Name" "Challenge of... Nexar, The - Atari Mouse Hack v1.1 (PAL) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1181"
 ""
 
 "Cart.MD5" "c2dea467f4a02fa1f06d66f52bc12e6e"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Missile Command Atari Trak-Ball Hack v1.3 (NTSC) (TJ)"
+"Cart.Name" "Missile Command Atari Trak-Ball Hack v1.3 (NTSC) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1183"
 "Display.Phosphor" "YES"
@@ -16994,12 +17002,12 @@
 ""
 
 "Cart.MD5" "c3f53993ade534b0982ca3a286c85bb5"
-"Cart.Name" "Full Screen Bitmap Drawing System (12-02-2003) (AD)"
+"Cart.Name" "Full Screen Bitmap Drawing System (12-02-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "c4060a31d61ba857e756430a0a15ed2e"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Pick 'n Pile (2003) (TJ)"
+"Cart.Name" "Pick 'n Pile (2003) (Thomas Jentzsch)"
 "Cart.Note" "NTSC Conversion"
 "Cart.Rarity" "Homebrew"
 "Display.Phosphor" "YES"
@@ -17055,7 +17063,7 @@
 
 "Cart.MD5" "c482f8eebd45e0b8d479d9b71dd72bb8"
 "Cart.Manufacturer" "Retroactive"
-"Cart.Name" "Push (V0.03) (1998) (AD)"
+"Cart.Name" "Push (V0.03) (1998) (Andrew Davie)"
 "Display.Phosphor" "YES"
 ""
 
@@ -17253,7 +17261,7 @@
 
 "Cart.MD5" "c5f71dfbdca9cc96b28643ff4d06aa6f"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Centipede - Atari Trak-Ball Hack v1.4 (PAL) (Full-Speed) (TJ)"
+"Cart.Name" "Centipede - Atari Trak-Ball Hack v1.4 (PAL) (Full-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
@@ -17294,7 +17302,7 @@
 ""
 
 "Cart.MD5" "c67ff409f28f44883bd5251cea79727d"
-"Cart.Name" "Gunfight 2600 - Music & Bugfixes 1 (2001) (MP)"
+"Cart.Name" "Gunfight 2600 - Music & Bugfixes 1 (2001) (Manuel Rotschkar)"
 ""
 
 "Cart.MD5" "c689148ad9275667924ab334107b517e"
@@ -17415,7 +17423,7 @@
 ""
 
 "Cart.MD5" "c7e43ad79c5e5c029d9f5ffde23e32cf"
-"Cart.Name" "PAL-NTSC Detector (15-11-2002) (CT)"
+"Cart.Name" "PAL-NTSC Detector (15-11-2002) (Christopher Tumber)"
 ""
 
 "Cart.MD5" "c7eab66576696e11e3c11ffff92e13cc"
@@ -17466,7 +17474,7 @@
 ""
 
 "Cart.MD5" "c8c7da12f087e8d16d3e6a21b371a5d3"
-"Cart.Name" "Demo Image Series #9 - Genius (28-02-2003) (AD)"
+"Cart.Name" "Demo Image Series #9 - Genius (28-02-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "c8e90fc944596718c84c82b55139b065"
@@ -17485,7 +17493,7 @@
 
 "Cart.MD5" "c90788d9aa71a78bcc78c015edb22c54"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Marble Craze - Atari Trak-Ball Hack v1.0 (PAL60) (TJ)"
+"Cart.Name" "Marble Craze - Atari Trak-Ball Hack v1.0 (PAL60) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Trak-Ball Controllers"
 ""
 
@@ -17642,7 +17650,7 @@
 ""
 
 "Cart.MD5" "cb8399dc0d409ff1f531ef86b3b34953"
-"Cart.Name" "Demo Image Series #12 - Luigi And Mario (01-03-2003) (AD)"
+"Cart.Name" "Demo Image Series #12 - Luigi And Mario (01-03-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "cb9626517b440f099c0b6b27ca65142c"
@@ -17672,7 +17680,7 @@
 ""
 
 "Cart.MD5" "cbad928e10aeee848786cc55394fb692"
-"Cart.Name" "Fu Kung! (V0.06a Cuttle Cart Compatible) (15-01-2003) (AD)"
+"Cart.Name" "Fu Kung! (V0.06a Cuttle Cart Compatible) (15-01-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "cbb0ee17c1308148823cc6da85bff25c"
@@ -17840,7 +17848,7 @@
 ""
 
 "Cart.MD5" "cd38ad19f51b1048d8e5e99c86a2a655"
-"Cart.Name" "Demo Image Series #5 - Flag (19-02-2003) (AD)"
+"Cart.Name" "Demo Image Series #5 - Flag (19-02-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "cd399bc422992a361ba932cc50f48b65"
@@ -17908,12 +17916,12 @@
 ""
 
 "Cart.MD5" "cda38714267978b9a8b0b24bee3529ae"
-"Cart.Name" "Space Instigators (V1.6) (17-10-2002) (CT)"
+"Cart.Name" "Space Instigators (V1.6) (17-10-2002) (Christopher Tumber)"
 ""
 
 "Cart.MD5" "cdadb57b34438805ee322ff05bd3d43e"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Centipede - Amiga Mouse Hack v1.4 (PAL60) (Full-Speed) (TJ)"
+"Cart.Name" "Centipede - Amiga Mouse Hack v1.4 (PAL60) (Full-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
@@ -18028,7 +18036,7 @@
 
 "Cart.MD5" "ceba7965a93c689bdecdb46a5b2ac0c1"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Reactor - Atari Trak-Ball Hack v1.3 (PAL60) (Half-Speed) (TJ)"
+"Cart.Name" "Reactor - Atari Trak-Ball Hack v1.3 (PAL60) (Half-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
 ""
@@ -18135,7 +18143,7 @@
 ""
 
 "Cart.MD5" "cfdb4d0427a1ea8085c6bc6eb90259d8"
-"Cart.Name" "Gunfight 2600 - Release Candidate (2001) (MP)"
+"Cart.Name" "Gunfight 2600 - Release Candidate (2001) (Manuel Rotschkar)"
 ""
 
 "Cart.MD5" "cfe2185f84ce8501933beb5c5e1fd053"
@@ -18150,7 +18158,7 @@
 ""
 
 "Cart.MD5" "cfee10bd7119f10b136921ced2ee8972"
-"Cart.Name" "Space Instigators (V1.8) (19-10-2002) (CT)"
+"Cart.Name" "Space Instigators (V1.8) (19-10-2002) (Christopher Tumber)"
 ""
 
 "Cart.MD5" "cfef1a2d1f6a5ee7a5e1f43f3056f112"
@@ -18161,7 +18169,7 @@
 
 "Cart.MD5" "cff1e9170bdbc29859b815203edf18fa"
 "Cart.Manufacturer" "Retroactive"
-"Cart.Name" "Push (V0.01) (1998) (AD)"
+"Cart.Name" "Push (V0.01) (1998) (Andrew Davie)"
 "Display.Phosphor" "YES"
 ""
 
@@ -18206,7 +18214,7 @@
 ""
 
 "Cart.MD5" "d026716b3c5be2c951cc4c064317c524"
-"Cart.Name" "Fu Kung! (V0.06) (14-01-2003) (AD)"
+"Cart.Name" "Fu Kung! (V0.06) (14-01-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "d0498baca989e792db4b8270a02b9624"
@@ -18317,7 +18325,7 @@
 
 "Cart.MD5" "d0e05ba5f10e3df3023c5ee787f760ef"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Centipede - Atari Mouse Hack v1.4 (PAL) (Half-Speed) (TJ)"
+"Cart.Name" "Centipede - Atari Mouse Hack v1.4 (PAL) (Half-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
@@ -18363,7 +18371,7 @@
 
 "Cart.MD5" "d17a671029b1532b197defca5f3649a7"
 "Cart.Manufacturer" "Hozer Video Games"
-"Cart.Name" "Gunfight 2600 - Limit broken again! (2001) (MP)"
+"Cart.Name" "Gunfight 2600 - Limit broken again! (2001) (Manuel Rotschkar)"
 "Cart.Rarity" "New Release"
 ""
 
@@ -18384,7 +18392,7 @@
 ""
 
 "Cart.MD5" "d1b4075925e8d3031a7616d2f02fdd1f"
-"Cart.Name" "Demo Image Series #7 - Two Marios (27-02-2003) (AD)"
+"Cart.Name" "Demo Image Series #7 - Two Marios (27-02-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "d1c3520b57c348bc21d543699bc88e7e"
@@ -18435,7 +18443,7 @@
 ""
 
 "Cart.MD5" "d245e2f27c84016041e9496b66b722fe"
-"Cart.Name" "Gunfight 2600 - The Final Kernel (MP)"
+"Cart.Name" "Gunfight 2600 - The Final Kernel (Manuel Rotschkar)"
 ""
 
 "Cart.MD5" "d25018349c544320bf3fd5092ee072bc"
@@ -18536,7 +18544,8 @@
 ""
 
 "Cart.MD5" "d34b933660e29c0a0a04004f15d7e160"
-"Cart.Name" "Multi-Color Demo 5 (Bob Colbert) (PD)"
+"Cart.Name" "Multi Demo 5 (Bob Colbert) (PD)"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "d36308387241e98f813646f346e7f9f7"
@@ -18725,7 +18734,7 @@
 ""
 
 "Cart.MD5" "d605ed12f4eaaaec3dcd5aa909a4bad7"
-"Cart.Name" "Chronocolor Frame Demo (10-01-2003) (AD)"
+"Cart.Name" "Chronocolor Frame Demo (10-01-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "d61629bbbe035f45552e31cef7d591b2"
@@ -18750,7 +18759,7 @@
 ""
 
 "Cart.MD5" "d632b74fea533d593af82cf16e7c5e4a"
-"Cart.Name" "Fu Kung! (V0.13) (01-02-2003) (AD)"
+"Cart.Name" "Fu Kung! (V0.13) (01-02-2003) (Andrew Davie)"
 "Display.Phosphor" "YES"
 ""
 
@@ -18878,12 +18887,12 @@
 ""
 
 "Cart.MD5" "d81bb6965e6c99b3be99ffd8978740e4"
-"Cart.Name" "Gunfight 2600 - The Final Kernel Part 3 (MP)"
+"Cart.Name" "Gunfight 2600 - The Final Kernel Part 3 (Manuel Rotschkar)"
 ""
 
 "Cart.MD5" "d82675ce67caf16afe5ed6b6fac8aa37"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Robot City (V0.23) (13-11-2002) (TJ)"
+"Cart.Name" "Robot City (V0.23) (13-11-2002) (Thomas Jentzsch)"
 ""
 
 "Cart.MD5" "d8295eff5dcc43360afa87221ea6021f"
@@ -18932,7 +18941,7 @@
 ""
 
 "Cart.MD5" "d8b2c81cea5af04f795eb3dc6573d72b"
-"Cart.Name" "Tunnel Demo 2 (27-03-2003) (CT)"
+"Cart.Name" "Tunnel Demo 2 (27-03-2003) (Christopher Tumber)"
 ""
 
 "Cart.MD5" "d8df256c0d89e494a9fb3e9abb8e44ac"
@@ -18949,7 +18958,7 @@
 
 "Cart.MD5" "d90205e29bb73a4cdf28ea7662ba0c3c"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Boulderdash Demo (Brighter Version) (09-12-2002) (TJ)"
+"Cart.Name" "Boulderdash Demo (Brighter Version) (09-12-2002) (Thomas Jentzsch)"
 "Cart.Rarity" "Homebrew"
 "Display.Phosphor" "YES"
 ""
@@ -18969,7 +18978,7 @@
 
 "Cart.MD5" "d968de2b4ff18bfe4a95066cde310578"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Centipede - Amiga Mouse Hack v1.4 (PAL) (Half-Speed) (TJ)"
+"Cart.Name" "Centipede - Amiga Mouse Hack v1.4 (PAL) (Half-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
@@ -18992,7 +19001,7 @@
 
 "Cart.MD5" "d9ab6b67a17da51e5ad13717e93fa2e2"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Turbo (Coleco) Prototype Fake v0.1 (TJ)"
+"Cart.Name" "Turbo (Coleco) Prototype Fake v0.1 (Thomas Jentzsch)"
 ""
 
 "Cart.MD5" "d9b49f0678776e04916fa5478685a819"
@@ -19140,7 +19149,7 @@
 ""
 
 "Cart.MD5" "db339aea2b65b84c7cfe0eeab11e110a"
-"Cart.Name" "Chronocolor Frame Demo 2 (10-01-2003) (AD)"
+"Cart.Name" "Chronocolor Frame Demo 2 (10-01-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "db4eb44bc5d652d9192451383d3249fc"
@@ -19196,7 +19205,7 @@
 
 "Cart.MD5" "dbba14a0f69f0e13fdccb3fde3baedca"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Reactor - Atari Trak-Ball Hack v1.3 (NTSC) (Full-Speed) (TJ)"
+"Cart.Name" "Reactor - Atari Trak-Ball Hack v1.3 (NTSC) (Full-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
 ""
@@ -19321,12 +19330,12 @@
 ""
 
 "Cart.MD5" "dd10b5ee37fdbf909423f2998a1f3179"
-"Cart.Name" "Space Instigators (V1.9) (21-10-2002) (CT)"
+"Cart.Name" "Space Instigators (V1.9) (21-10-2002) (Christopher Tumber)"
 ""
 
 "Cart.MD5" "dd13a16d14100819f79b1ce3a5bf499c"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Missile Control - Atari Mouse Hack v1.15 (PAL) (TJ)"
+"Cart.Name" "Missile Control - Atari Mouse Hack v1.15 (PAL) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1184"
 ""
@@ -19355,7 +19364,7 @@
 
 "Cart.MD5" "dd4f4e0fbd81762533e39e6f5b55bb3a"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Turbo WIP (TJ)"
+"Cart.Name" "Turbo WIP (Thomas Jentzsch)"
 ""
 
 "Cart.MD5" "dd7598b8bcb81590428900f71b720efb"
@@ -19410,7 +19419,7 @@
 ""
 
 "Cart.MD5" "de07e9cb43ad8d06a35f6506e22c62e9"
-"Cart.Name" "Oh No! (Version 4) (22-01-2003) (AD)"
+"Cart.Name" "Oh No! (Version 4) (22-01-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "de1a636d098349be11bbc2d090f4e9cf"
@@ -19485,7 +19494,7 @@
 
 "Cart.MD5" "de7bca4e569ad9d3fd08ff1395e53d2d"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Thrust (V1.22) (2000) (TJ)"
+"Cart.Name" "Thrust (V1.22) (2000) (Thomas Jentzsch)"
 "Cart.Note" "Supports BoosterGrip"
 "Cart.Rarity" "New Release"
 "Controller.Left" "BOOSTERGRIP"
@@ -19577,7 +19586,7 @@
 
 "Cart.MD5" "df91277a3569344b89e6e8bd5bebc8d1"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Marble Craze - Amiga Mouse Hack v1.0 (PAL) (TJ)"
+"Cart.Name" "Marble Craze - Amiga Mouse Hack v1.0 (PAL) (Thomas Jentzsch)"
 "Cart.Note" "Uses Amiga Mouse Controllers"
 ""
 
@@ -19612,7 +19621,7 @@
 ""
 
 "Cart.MD5" "dfcdd6f593bb7b05dbc2e8e1fc6ee0de"
-"Cart.Name" "Gunfight 2600 - Scenarios complete (MP)"
+"Cart.Name" "Gunfight 2600 - Scenarios complete (Manuel Rotschkar)"
 ""
 
 "Cart.MD5" "dfe034297200dff672df9533ed1449a9"
@@ -19626,7 +19635,7 @@
 ""
 
 "Cart.MD5" "dff33523ccd2fdc8912e84cab8e0d982"
-"Cart.Name" "Fu Kung! (V0.03) (10-01-2003) (AD)"
+"Cart.Name" "Fu Kung! (V0.03) (10-01-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "e01e00504e6d4b88fa743c0bbe8a96e5"
@@ -19682,7 +19691,7 @@
 ""
 
 "Cart.MD5" "e0de3773f5b867795db557be7b8a703e"
-"Cart.Name" "Boulderdash (13 Blocks Wide) (02-04-2003) (AD)"
+"Cart.Name" "Boulderdash (13 Blocks Wide) (02-04-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "e0eff071f578ecf19edc2ab276644e46"
@@ -19819,7 +19828,7 @@
 
 "Cart.MD5" "e1e09e2f280e8e142121a377d0dc1b46"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Thrust (V1.21) (2000) (TJ)"
+"Cart.Name" "Thrust (V1.21) (2000) (Thomas Jentzsch)"
 "Cart.Note" "Bugfixed"
 "Cart.Rarity" "New Release"
 "Controller.Left" "BOOSTERGRIP"
@@ -20013,7 +20022,7 @@
 ""
 
 "Cart.MD5" "e39a13b13dc82c5fdbfbbfd55ba1230e"
-"Cart.Name" "Analog Clock (Additional Frame Info) (V0.0) (20-01-2003) (AD)"
+"Cart.Name" "Analog Clock (Additional Frame Info) (V0.0) (20-01-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "e3c0451d29dad724231bc5818ec4bae0"
@@ -20054,7 +20063,7 @@
 
 "Cart.MD5" "e48d3a4056ede9393586421996db1ae8"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Centipede - Atari Trak-Ball Hack v1.4 (PAL60) (Full-Speed) (TJ)"
+"Cart.Name" "Centipede - Atari Trak-Ball Hack v1.4 (PAL60) (Full-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
@@ -20071,7 +20080,7 @@
 ""
 
 "Cart.MD5" "e4a0b28befaaa2915df1fa01238b1e29"
-"Cart.Name" "Gunfight 2600 - Red River (MP)"
+"Cart.Name" "Gunfight 2600 - Red River (Manuel Rotschkar)"
 ""
 
 "Cart.MD5" "e4afe157c09962cf39cdb25845d83d47"
@@ -20347,12 +20356,12 @@
 ""
 
 "Cart.MD5" "e6f49a1053c79211f82be4d90dc9fe3d"
-"Cart.Name" "Gunfight 2600 - Little progress... (2001) (MP)"
+"Cart.Name" "Gunfight 2600 - Little progress... (2001) (Manuel Rotschkar)"
 ""
 
 "Cart.MD5" "e723ad8f406cb258b89681ef4cef0eff"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Sadoom (TJ) (PAL) (Hack)"
+"Cart.Name" "Sadoom (Thomas Jentzsch) (PAL) (Hack)"
 "Cart.Note" "Hack of Kaboom!"
 "Cart.Rarity" "Hack"
 "Controller.MouseAxis" "01 50"
@@ -20513,7 +20522,7 @@
 ""
 
 "Cart.MD5" "e927ecf80f3784d745abd8368d78f2f3"
-"Cart.Name" "Space Instigators (V1.8) (19-10-2002) (CT) [a1]"
+"Cart.Name" "Space Instigators (V1.8) (19-10-2002) (Christopher Tumber) [a1]"
 ""
 
 "Cart.MD5" "e932f44fad2a66b6d5faec9addec208e"
@@ -20527,7 +20536,7 @@
 ""
 
 "Cart.MD5" "e957eb4612d6bd5940d3492dfa749668"
-"Cart.Name" "Tunnel Demo (27-03-2003) (CT)"
+"Cart.Name" "Tunnel Demo (27-03-2003) (Christopher Tumber)"
 ""
 
 "Cart.MD5" "e959b5a2c882ccaacb43c32790957c2d"
@@ -20619,7 +20628,7 @@
 ""
 
 "Cart.MD5" "ea86176b27ab0da8cce8f0179884bfaa"
-"Cart.Name" "Demo Image Series #10 - It's Art (28-02-2003) (AD)"
+"Cart.Name" "Demo Image Series #10 - It's Art (28-02-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "eaacfcdc1d4ee1258429b7ae7f084125"
@@ -20670,7 +20679,7 @@
 ""
 
 "Cart.MD5" "eb3d680699f8762f71f38e28e321234d"
-"Cart.Name" "Fu Kung! (V0.01) (08-01-2003) (AD)"
+"Cart.Name" "Fu Kung! (V0.01) (08-01-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "eb4252faff7a4f2ba5284a98b8f78d1a"
@@ -20759,7 +20768,7 @@
 
 "Cart.MD5" "ebdc5716b85c4ff44fa357cb697d6cef"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Centipede - Amiga Mouse Hack v1.4 (NTSC) (Half-Speed) (TJ)"
+"Cart.Name" "Centipede - Amiga Mouse Hack v1.4 (NTSC) (Half-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
@@ -20910,7 +20919,7 @@
 ""
 
 "Cart.MD5" "ede7e8bf865b0afb4744f86d13624f9a"
-"Cart.Name" "Demo Image Series #2 - Clown (19-02-2003) (AD)"
+"Cart.Name" "Demo Image Series #2 - Clown (19-02-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "edf69b123e06eaf8663cc78d8aeba06e"
@@ -20956,7 +20965,7 @@
 ""
 
 "Cart.MD5" "ee67dc0b01746372d2b983d88f48e24f"
-"Cart.Name" "Scroller Demo (02-01-2003) (CT)"
+"Cart.Name" "Scroller Demo (02-01-2003) (Christopher Tumber)"
 ""
 
 "Cart.MD5" "ee681f566aad6c07c61bbbfc66d74a27"
@@ -21022,7 +21031,7 @@
 
 "Cart.MD5" "ef263d40a23483ab339cac44d9515a56"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Fatal Run (TJ)"
+"Cart.Name" "Fatal Run (Thomas Jentzsch)"
 "Cart.Note" "NTSC Conversion"
 "Cart.Rarity" "Homebrew"
 ""
@@ -21081,7 +21090,7 @@
 
 "Cart.MD5" "effa3a7ce078c6d83bf43174a7bfdb1f"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Centipede - Atari Mouse Hack v1.4 (NTSC) (Half-Speed) (TJ)"
+"Cart.Name" "Centipede - Atari Mouse Hack v1.4 (NTSC) (Half-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
@@ -21121,7 +21130,7 @@
 
 "Cart.MD5" "f0510abbfbe24ead552e92e3841f63f3"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Reactor - Atari Mouse Hack v1.3 (NTSC) (Full-Speed) (TJ)"
+"Cart.Name" "Reactor - Atari Mouse Hack v1.3 (NTSC) (Full-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
 ""
@@ -21190,7 +21199,7 @@
 
 "Cart.MD5" "f0de4f49e95d529569e8788d5a7b4d30"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Reactor - Atari Mouse Hack v1.3 (PAL60) (Full-Speed) (TJ)"
+"Cart.Name" "Reactor - Atari Mouse Hack v1.3 (PAL60) (Full-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
 ""
@@ -21309,7 +21318,7 @@
 ""
 
 "Cart.MD5" "f1b2ea568b3e156e3f2849dac83591f6"
-"Cart.Name" "Sprite Demo (1997) (Bob Colbert) (PD)"
+"Cart.Name" "Multi Demo 2 (Bob Colbert) (PD)"
 ""
 
 "Cart.MD5" "f1b7edff81ceef5af7ae1fa76c8590fc"
@@ -21320,7 +21329,7 @@
 ""
 
 "Cart.MD5" "f1beca5a198cf08190487e5c27b8e540"
-"Cart.Name" "Fu Kung! (V0.16) (2003) (AD)"
+"Cart.Name" "Fu Kung! (V0.16) (2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "f1e375d921858467166e53bcec05803f"
@@ -21361,7 +21370,7 @@
 
 "Cart.MD5" "f23d19b73dac50cc6149316912b8ee53"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Challenge of... Nexar, The - Amiga Mouse Hack v1.1 (PAL) (TJ)"
+"Cart.Name" "Challenge of... Nexar, The - Amiga Mouse Hack v1.1 (PAL) (Thomas Jentzsch)"
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1181"
 ""
@@ -21583,7 +21592,7 @@
 
 "Cart.MD5" "f4a09f906cc37be31224433f576d77d3"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Challenge of... Nexar, The - Atari Trak-Ball Hack v1.2 (PAL) (TJ)"
+"Cart.Name" "Challenge of... Nexar, The - Atari Trak-Ball Hack v1.2 (PAL) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1181"
 ""
@@ -21835,7 +21844,7 @@
 
 "Cart.MD5" "f750b5d613796963acecab1690f554ae"
 "Cart.Manufacturer" "Manuel Polik"
-"Cart.Name" "Gunfight 2600 (MP)"
+"Cart.Name" "Gunfight 2600 (Manuel Rotschkar)"
 "Cart.Rarity" "New Release"
 ""
 
@@ -21936,7 +21945,7 @@
 ""
 
 "Cart.MD5" "f80cf77164079d774b9b0fae33dffca9"
-"Cart.Name" "Fu Kung! (V0.15) (Negative Version) (05-02-2003) (AD)"
+"Cart.Name" "Fu Kung! (V0.15) (Negative Version) (05-02-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "f8240e62d8c0a64a61e19388414e3104"
@@ -22010,7 +22019,7 @@
 ""
 
 "Cart.MD5" "f8ff34b53d86f55bd52d7a520af6d1dc"
-"Cart.Name" "Big Dig (04-04-2003) (CT)"
+"Cart.Name" "Big Dig (04-04-2003) (Christopher Tumber)"
 ""
 
 "Cart.MD5" "f90b5da189f24d7e1a2117d8c8abc952"
@@ -22044,7 +22053,7 @@
 
 "Cart.MD5" "f954381f9e0f2009d1ac40dedd777b1a"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Robot City (V0.18) (01-09-2002) (TJ)"
+"Cart.Name" "Robot City (V0.18) (01-09-2002) (Thomas Jentzsch)"
 "Cart.Rarity" "New Release"
 ""
 
@@ -22269,11 +22278,11 @@
 ""
 
 "Cart.MD5" "fb0c32ef7af5b45486db663510094be8"
-"Cart.Name" "Demo Image Series #15 - Three Marios (NTSC) (Non-Interleave) (06-03-2003) (AD)"
+"Cart.Name" "Demo Image Series #15 - Three Marios (NTSC) (Non-Interleave) (06-03-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "fb0e84cee4c108d24253bcb7e382cffd"
-"Cart.Name" "Interleaved ChronoColour Demo (SECAM) (05-03-2003) (AD)"
+"Cart.Name" "Interleaved ChronoColour Demo (SECAM) (05-03-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "fb27afe896e7c928089307b32e5642ee"
@@ -22402,7 +22411,7 @@
 
 "Cart.MD5" "fc668a2251dd79cbd903d4fa0e558f96"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Thrust (V1.1) (2000) (TJ) [a1]"
+"Cart.Name" "Thrust (V1.1) (2000) (Thomas Jentzsch) [a1]"
 ""
 
 "Cart.MD5" "fc92d74f073a44bc6e46a3b3fa8256a2"
@@ -22511,7 +22520,7 @@
 ""
 
 "Cart.MD5" "fdd4995a50395db14f518f63c2d63438"
-"Cart.Name" "Oh No! (Version 3) (18-01-2003) (AD)"
+"Cart.Name" "Oh No! (Version 3) (18-01-2003) (Andrew Davie)"
 ""
 
 "Cart.MD5" "fde42e39710e75e9e4d4d75440f8e4e5"
@@ -22526,7 +22535,7 @@
 ""
 
 "Cart.MD5" "fdf6680b2b1e8054293a39700a765692"
-"Cart.Name" "Alpha Demo - The Beta Demo 2 (2000) (MP)"
+"Cart.Name" "Alpha Demo - The Beta Demo 2 (2000) (Manuel Rotschkar)"
 ""
 
 "Cart.MD5" "fe0b7f27e3ad50bbf9ff468ee56d553d"
@@ -22627,7 +22636,7 @@
 
 "Cart.MD5" "ff1523783e0e76a3b0d1f7f0d1cb3050"
 "Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Marble Craze - Atari Trak-Ball Hack v1.0 (PAL) (TJ)"
+"Cart.Name" "Marble Craze - Atari Trak-Ball Hack v1.0 (PAL) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Trak-Ball Controllers"
 ""
 
