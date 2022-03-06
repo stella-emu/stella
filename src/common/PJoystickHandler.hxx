@@ -201,6 +201,10 @@ class PhysicalJoystickHandler
     static EventMappingArray DefaultRightJoystickMapping;
     static EventMappingArray DefaultLeftPaddlesMapping;
     static EventMappingArray DefaultRightPaddlesMapping;
+    static EventMappingArray DefaultLeftAPaddlesMapping;
+    static EventMappingArray DefaultLeftBPaddlesMapping;
+    static EventMappingArray DefaultRightAPaddlesMapping;
+    static EventMappingArray DefaultRightBPaddlesMapping;
     static EventMappingArray DefaultLeftKeyboardMapping;
     static EventMappingArray DefaultRightKeyboardMapping;
     static EventMappingArray DefaultLeftDrivingMapping;
