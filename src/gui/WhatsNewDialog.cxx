@@ -56,7 +56,7 @@ WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent,
     add(ypos, "fixed QuadTari support for some controller types");
     add(ypos, "added MovieCart support");
   }
-  add(ypos, "completely reworked and enhanced the file launcher");
+  add(ypos, "extensively redesigned and enhanced file launcher");
   add(ypos, "improved controller mappings for Paddles");
   add(ypos, "improved controller mappings for Driving controllers");
   add(ypos, "enhanced support for CDFJ+ bankswitching type");
@@ -72,8 +72,8 @@ WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent,
     add(ypos, "added MovieCart support");
     add(ypos, "added weblinks for many games");
   }
-  add(ypos, "completely reworked and enhanced the file launcher");
-  add(ypos, "added option to automatically pause emulation when focus is lost");
+  add(ypos, "extensively redesigned and enhanced file launcher");
+  add(ypos, "added automatic emulation pause when focus is lost");
   add(ypos, "added option to toggle autofire mode");
   add(ypos, "improved controller mappings for Paddles");
   add(ypos, "improved controller mappings for Driving controllers");
