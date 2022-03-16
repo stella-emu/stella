@@ -21164,7 +21164,9 @@
 ""
 
 "Cart.MD5" "f066bea7ab0a37b83c83c924a87c5b67"
-"Cart.Name" "Air Raiders (1982) (Unknown)"
+"Cart.Name" "Air Raiders (2003) (Hack) (Thomas Jentzsch)"
+"Cart.Note" "Unlimited ammo hack"
+"Cart.Rarity" "Hack"
 ""
 
 "Cart.MD5" "f0a6e99f5875891246c3dbecbf2d2cea"
