@@ -38,7 +38,7 @@ void AtariVoxWidget::eraseCurrent()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool AtariVoxWidget::isPageUsed(uInt32 page)
 {
-  AtariVox& avox = static_cast<AtariVox&>(controller());
+  const AtariVox& avox = static_cast<AtariVox&>(controller());
 
   return avox.isPageUsed(page);
 }

@@ -28,7 +28,7 @@
 class GlobalKeyHandler
 {
   public:
-    GlobalKeyHandler(OSystem& osystem);
+    explicit GlobalKeyHandler(OSystem& osystem);
 
   public:
     enum class Setting

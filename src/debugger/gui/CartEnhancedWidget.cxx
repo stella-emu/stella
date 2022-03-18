@@ -455,6 +455,6 @@ uInt8 CartridgeEnhancedWidget::internalRamGetValue(int addr)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeEnhancedWidget::internalRamLabel(int addr)
 {
-  CartDebug& dbg = instance().debugger().cartDebug();
+  const CartDebug& dbg = instance().debugger().cartDebug();
   return dbg.getLabel(addr + ADDR_BASE + myCart.myReadOffset, false, -1, true);
 }

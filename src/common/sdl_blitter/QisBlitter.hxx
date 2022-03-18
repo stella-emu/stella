@@ -29,7 +29,7 @@ class QisBlitter : public Blitter {
 
     explicit QisBlitter(FBBackendSDL2& fb);
 
-    static bool isSupported(FBBackendSDL2& fb);
+    static bool isSupported(const FBBackendSDL2& fb);
 
     ~QisBlitter() override;
 

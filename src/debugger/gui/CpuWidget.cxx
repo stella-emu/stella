@@ -296,8 +296,8 @@ void CpuWidget::loadConfig()
 
   // We push the enumerated items as addresses, and deal with the real
   // address in the callback (handleCommand)
-  Debugger& dbg = instance().debugger();
-  CartDebug& cart = dbg.cartDebug();
+  const Debugger& dbg = instance().debugger();
+  const CartDebug& cart = dbg.cartDebug();
   CpuDebug& cpu = dbg.cpuDebug();
   const CpuState& state    = static_cast<const CpuState&>(cpu.getState());
   const CpuState& oldstate = static_cast<const CpuState&>(cpu.getOldState());

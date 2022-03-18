@@ -156,7 +156,7 @@ void TiaInfoWidget::handleCommand(CommandSender* sender, int cmd, int data, int 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaInfoWidget::loadConfig()
 {
-  Debugger& dbg = instance().debugger();
+  const Debugger& dbg = instance().debugger();
   TIADebug& tia = dbg.tiaDebug();
   const TiaState& oldTia = static_cast<const TiaState&>(tia.getOldState());
   RiotDebug& riot = dbg.riotDebug();

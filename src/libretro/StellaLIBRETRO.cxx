@@ -147,7 +147,7 @@ void StellaLIBRETRO::runFrame()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StellaLIBRETRO::updateInput()
 {
-  Console& console = myOSystem->console();
+  const Console& console = myOSystem->console();
 
   console.leftController().update();
   console.rightController().update();

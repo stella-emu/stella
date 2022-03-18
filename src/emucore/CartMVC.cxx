@@ -1367,7 +1367,7 @@ void MovieCart::runStateMachine()
                if(myLines == 22)
                   myStream.blankPartialLines(true);
             }
-        }  
+        }
 
         if(myLines >= 1)
         {
@@ -1571,13 +1571,11 @@ CartridgeMVC::CartridgeMVC(const string& path, size_t size,
                            const string& md5, const Settings& settings,
                            size_t bsSize)
   : Cartridge(settings, md5),
+    myImage{make_unique<uInt8[]>(bsSize)},  // not used
     mySize{bsSize},
+    myMovie{make_unique<MovieCart>()},
     myPath{path}
 {
-  myMovie = make_unique<MovieCart>();
-
-  // not used
-  myImage = make_unique<uInt8[]>(mySize);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

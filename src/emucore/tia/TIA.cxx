@@ -917,7 +917,7 @@ bool TIA::saveDisplay(Serializer& out) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool TIA::loadDisplay(Serializer& in)
+bool TIA::loadDisplay(const Serializer& in)
 {
   try
   {

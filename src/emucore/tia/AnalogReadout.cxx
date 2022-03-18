@@ -64,7 +64,8 @@ uInt8 AnalogReadout::inpt(uInt64 timestamp)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void AnalogReadout::update(Connection connection, uInt64 timestamp, ConsoleTiming consoleTiming)
+void AnalogReadout::update(Connection connection, uInt64 timestamp,
+                           ConsoleTiming consoleTiming)
 {
   if (consoleTiming != myConsoleTiming) {
     setConsoleTiming(consoleTiming);
@@ -165,21 +166,25 @@ bool AnalogReadout::load(Serializer& in)
   return true;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AnalogReadout::Connection AnalogReadout::connectToGround(uInt32 resistance)
 {
   return Connection{ConnectionType::ground, resistance};
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AnalogReadout::Connection AnalogReadout::connectToVcc(uInt32 resistance)
 {
   return Connection{ConnectionType::vcc, resistance};
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AnalogReadout::Connection AnalogReadout::disconnect()
 {
   return Connection{ConnectionType::disconnected, 0};
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool AnalogReadout::Connection::save(Serializer& out) const
 {
   try
@@ -196,7 +201,8 @@ bool AnalogReadout::Connection::save(Serializer& out) const
   return true;
 }
 
-bool AnalogReadout::Connection::load(Serializer& in)
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool AnalogReadout::Connection::load(const Serializer& in)
 {
   try
   {
@@ -212,7 +218,9 @@ bool AnalogReadout::Connection::load(Serializer& in)
   return true;
 }
 
-bool operator==(const AnalogReadout::Connection& c1, const AnalogReadout::Connection& c2)
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool operator==(const AnalogReadout::Connection& c1,
+                const AnalogReadout::Connection& c2)
 {
   if (c1.type == AnalogReadout::ConnectionType::disconnected)
     return c2.type == AnalogReadout::ConnectionType::disconnected;
@@ -220,7 +228,9 @@ bool operator==(const AnalogReadout::Connection& c1, const AnalogReadout::Connec
   return c1.type == c2.type && c1.resistance == c2.resistance;
 }
 
-bool operator!=(const AnalogReadout::Connection& c1, const AnalogReadout::Connection& c2)
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool operator!=(const AnalogReadout::Connection& c1,
+                const AnalogReadout::Connection& c2)
 {
   return !(c1 == c2);
 }

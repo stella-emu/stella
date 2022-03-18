@@ -29,7 +29,7 @@ class KeyValueRepositoryPropertyFile : public KeyValueRepositoryFile<KeyValueRep
     using KeyValueRepositoryFile<KeyValueRepositoryPropertyFile>::load;
     using KeyValueRepositoryFile<KeyValueRepositoryPropertyFile>::save;
 
-    KeyValueRepositoryPropertyFile(const FilesystemNode& node);
+    explicit KeyValueRepositoryPropertyFile(const FilesystemNode& node);
 
     static std::map<string, Variant> load(istream& in);
 

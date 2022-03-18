@@ -208,7 +208,7 @@ class TIA : public Device
       and eliminate having to save approx. 50K to normal state files.
     */
     bool saveDisplay(Serializer& out) const;
-    bool loadDisplay(Serializer& in);
+    bool loadDisplay(const Serializer& in);
 
     /**
       This method should be called at an interval corresponding to the

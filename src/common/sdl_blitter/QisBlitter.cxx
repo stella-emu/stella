@@ -32,7 +32,7 @@ QisBlitter::~QisBlitter()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool QisBlitter::isSupported(FBBackendSDL2& fb)
+bool QisBlitter::isSupported(const FBBackendSDL2& fb)
 {
   if (!fb.isInitialized()) throw runtime_error("framebuffer not initialized");
 

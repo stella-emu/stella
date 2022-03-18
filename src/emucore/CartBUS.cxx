@@ -76,7 +76,7 @@ CartridgeBUS::CartridgeBUS(const ByteBuffer& image, size_t size,
     Thumbulator::ConfigureFor::BUS,
     this);
 
-  setInitialState();
+  this->setInitialState();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -41,7 +41,7 @@ class RiotState : public DebuggerState
 
     uInt8 TIM1T{0}, TIM8T{0}, TIM64T{0}, T1024T{0}, INTIM{0}, TIMINT{0};
     Int32 TIMCLKS{0}, INTIMCLKS{0}, TIMDIV{0};
-    uInt16 timReadCycles;
+    uInt16 timReadCycles{0};
 
     // These are actually from the TIA, but are I/O related
     uInt8 INPT0{0}, INPT1{0}, INPT2{0}, INPT3{0}, INPT4{0}, INPT5{0};

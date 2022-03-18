@@ -78,7 +78,7 @@ CartridgeDPCPlus::CartridgeDPCPlus(const ByteBuffer& image, size_t size,
      myDriverMD5 == "8dd73b44fd11c488326ce507cbeb19d1" )
     myFractionalLowMask = 0x0F0000;
 
-  setInitialState();
+  this->setInitialState();
 
   myPlusROM = make_unique<PlusROM>(mySettings, *this);
 

@@ -60,7 +60,7 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomWidget::loadConfig()
 {
-  Debugger& dbg = instance().debugger();
+  const Debugger& dbg = instance().debugger();
   CartDebug& cart = dbg.cartDebug();
   const CartState& state = static_cast<const CartState&>(cart.getState());
   const CartState& oldstate = static_cast<const CartState&>(cart.getOldState());
