@@ -36,7 +36,7 @@ class DevSettingsHandler
       numSets
     };
 
-    DevSettingsHandler(OSystem& osystem);
+    explicit DevSettingsHandler(OSystem& osystem);
 
     void loadSettings(SettingsSet set);
     void saveSettings(SettingsSet set);

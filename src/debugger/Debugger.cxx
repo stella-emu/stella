@@ -763,7 +763,7 @@ void Debugger::setStartState()
   lockSystem();
 
   // Save initial state and add it to the rewind list (except when in currently rewinding)
-  RewindManager& r = myOSystem.state().rewindManager();
+  const RewindManager& r = myOSystem.state().rewindManager();
   // avoid invalidating future states when entering the debugger e.g. during rewind
   if(r.atLast() && (myOSystem.eventHandler().state() != EventHandlerState::TIMEMACHINE
      || myOSystem.state().mode() == StateManager::Mode::Off))

@@ -48,14 +48,14 @@ class PlusROMRequest {
   public:
 
     struct Destination {
-      Destination(string _host, string _path) : host(_host), path(_path) {}
+      Destination(string _host, string _path) : host{_host}, path{_path} {}
 
       string host;
       string path;
     };
 
     struct PlusStoreId {
-      PlusStoreId(string _nick, string _id) : nick(_nick), id(_id) {}
+      PlusStoreId(string _nick, string _id) : nick{_nick}, id{_id} {}
 
       string nick;
       string id;
@@ -70,10 +70,11 @@ class PlusROMRequest {
 
   public:
 
-    PlusROMRequest(Destination destination, PlusStoreId id, const uInt8* request, uInt8 requestSize)
-      : myDestination(destination), myId(id), myRequestSize(requestSize)
+    PlusROMRequest(Destination destination, PlusStoreId id, const uInt8* request,
+                   uInt8 requestSize)
+      : myState{State::created}, myDestination{destination},
+        myId{id}, myRequestSize{requestSize}
     {
-      myState = State::created;
       memcpy(myRequest.data(), request, myRequestSize);
     }
 
@@ -152,7 +153,7 @@ class PlusROMRequest {
       myState = State::done;
     }
 
-    State getState() {
+    State getState() const {
       return myState;
     }
 
@@ -177,13 +178,13 @@ class PlusROMRequest {
   #endif
 
   private:
-    std::atomic<State> myState;
+    std::atomic<State> myState{State::failed};
 
     Destination myDestination;
     PlusStoreId myId;
 
     std::array<uInt8, 256> myRequest;
-    uInt8 myRequestSize;
+    uInt8 myRequestSize{0};
 
     string myResponse;
 
@@ -196,8 +197,8 @@ class PlusROMRequest {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PlusROM::PlusROM(const Settings& settings, const Cartridge& cart)
-  : mySettings(settings),
-    myCart(cart)
+  : mySettings{settings},
+    myCart{cart}
 {
 }
 
@@ -419,9 +420,10 @@ void PlusROM::send()
     // We push to the back in order to avoid reverse_iterator in receive()
     myPendingRequests.push_back(request);
 
-    // The lambda will retain a copy of the shared_ptr that is alive as long as the
-    // thread is running. Thus, the request can only be destructed once the thread has
-    // finished, and we can safely evict it from the deque at any time.
+    // The lambda will retain a copy of the shared_ptr that is alive as long
+    // as the thread is running. Thus, the request can only be destructed once
+    // the thread has finished, and we can safely evict it from the deque at
+    // any time.
     std::thread thread([=]() {
       request->execute();
       switch(request->getState())

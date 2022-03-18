@@ -410,7 +410,7 @@ class Cartridge : public Device
     uInt16 myRamWriteAccess{0};
 
     // Total size of ROM access area (might include RAM too)
-    uInt32 myAccessSize;
+    uInt32 myAccessSize{0};
 
     // Callback to output messages
     messageCallback myMsgCallback{nullptr};

@@ -79,7 +79,6 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
   }
 
   // Add filtering
-  EditableWidget::TextFilter f;
   switch(base)
   {
     case Common::Base::Fmt::_16:

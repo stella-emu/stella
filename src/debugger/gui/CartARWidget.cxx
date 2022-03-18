@@ -82,8 +82,7 @@ CartridgeARWidget::CartridgeARWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeARWidget::loadConfig()
 {
-  Debugger& dbg = instance().debugger();
-  CartDebug& cart = dbg.cartDebug();
+  CartDebug& cart = instance().debugger().cartDebug();
   const CartState& state = static_cast<const CartState&>(cart.getState());
   const CartState& oldstate = static_cast<const CartState&>(cart.getOldState());
 

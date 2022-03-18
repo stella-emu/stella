@@ -308,7 +308,7 @@ void MinUICommandDialog::updateTVFormat()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MinUICommandDialog::updateWinds()
 {
-  RewindManager& r = instance().state().rewindManager();
+  const RewindManager& r = instance().state().rewindManager();
 
   myRewindButton->setEnabled(!r.atFirst());
   myUnwindButton->setEnabled(!r.atLast());

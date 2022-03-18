@@ -102,7 +102,7 @@ inline void CartridgeDPC::updateMusicModeDataFetchers()
   uInt32 wholeClocks = uInt32(clocks);
   myFractionalClocks = clocks - double(wholeClocks);
 
-  if(wholeClocks <= 0)
+  if(wholeClocks == 0)
     return;
 
   // Let's update counters and flags of the music mode data fetchers

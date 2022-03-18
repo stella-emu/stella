@@ -484,7 +484,7 @@ void TimeMachineDialog::handleCommand(CommandSender* sender, int cmd,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TimeMachineDialog::initBar()
 {
-  RewindManager& r = instance().state().rewindManager();
+  const RewindManager& r = instance().state().rewindManager();
   IntArray cycles = r.cyclesList();
 
   // Set range and intervals for timeline

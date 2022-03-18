@@ -111,7 +111,7 @@ CartridgeCDF::CartridgeCDF(const ByteBuffer& image, size_t size,
     thumulatorConfiguration(myCDFSubtype),
     this);
 
-  setInitialState();
+  this->setInitialState();
 
   myPlusROM = make_unique<PlusROM>(mySettings, *this);
 
@@ -786,10 +786,9 @@ void CartridgeCDF::setupVersion()
     myFastFetcherOffset = 0;
     myWaveformBase = 0x01b0;
 
-    uInt32 cdfjValue;
     for (int i=0; i<2048; i += 4)
     {
-      cdfjValue = getUInt32(myImage.get(), i);
+      uInt32 cdfjValue = getUInt32(myImage.get(), i);
       if (cdfjValue == 0x135200A2)
         myLDXenabled = true;
       if (cdfjValue == 0x135200A0)

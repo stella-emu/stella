@@ -28,7 +28,7 @@
 template<class T>
 class KeyValueRepositoryFile : public KeyValueRepository {
   public:
-    KeyValueRepositoryFile(const FilesystemNode& node);
+    explicit KeyValueRepositoryFile(const FilesystemNode& node);
 
     std::map<string, Variant> load() override;
 

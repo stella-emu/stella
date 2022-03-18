@@ -37,7 +37,7 @@ void SaveKeyWidget::eraseCurrent()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool SaveKeyWidget::isPageUsed(uInt32 page)
 {
-  SaveKey& skey = static_cast<SaveKey&>(controller());
+  const SaveKey& skey = static_cast<SaveKey&>(controller());
 
   return skey.isPageUsed(page);
 }

@@ -674,8 +674,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
-  Debugger& dbg = instance().debugger();
-  TIADebug& tia = dbg.tiaDebug();
+  TIADebug& tia = instance().debugger().tiaDebug();
 
   switch(cmd)
   {
@@ -974,10 +973,9 @@ void TiaWidget::loadConfig()
 {
   IntArray alist;
   IntArray vlist;
-  BoolArray blist, changed, grNew, grOld;
+  BoolArray changed;
 
-  Debugger& dbg = instance().debugger();
-  TIADebug& tia = dbg.tiaDebug();
+  TIADebug& tia = instance().debugger().tiaDebug();
   const TiaState& state    = static_cast<const TiaState&>(tia.getState());
   const TiaState& oldstate = static_cast<const TiaState&>(tia.getOldState());
 

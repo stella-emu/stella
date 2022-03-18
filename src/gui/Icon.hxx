@@ -13,9 +13,6 @@
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
 #ifndef ICON_HXX
@@ -31,15 +28,15 @@ struct IconDesc
   int height{0};
 
   explicit IconDesc(int _width, int _height)
-    : width{_width}, height{_height} {}
+    : width{_width}, height{_height} { }
 };
 
 class Icon
 {
   public:
-    explicit Icon(IconDesc desc, uIntArray bitmap)
+    Icon(IconDesc desc, const uIntArray& bitmap)
       : myIconDesc{desc}, myBitmap{bitmap} { }
-    Icon(int width, int height, uIntArray bitmap)
+    Icon(int width, int height, const uIntArray& bitmap)
       : Icon(IconDesc(width, height), bitmap) { }
 
     const IconDesc& desc() const { return myIconDesc; }

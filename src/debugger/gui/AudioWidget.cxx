@@ -97,9 +97,9 @@ void AudioWidget::loadConfig()
 {
   IntArray alist;
   IntArray vlist;
-  BoolArray blist, changed, grNew, grOld;
+  BoolArray changed;
 
-  Debugger& dbg = instance().debugger();
+  const Debugger& dbg = instance().debugger();
   TIADebug& tia = dbg.tiaDebug();
   const TiaState& state    = static_cast<const TiaState&>(tia.getState());
   const TiaState& oldstate = static_cast<const TiaState&>(tia.getOldState());
