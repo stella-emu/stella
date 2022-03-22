@@ -3509,6 +3509,7 @@
 					WINDOWED_SUPPORT,
 					BSPF_MACOS,
 					MAC_OSX,
+					"PNG_ARM_NEON_OPT=0",
 				);
 				HEADER_SEARCH_PATHS = (
 					/Library/Frameworks/SDL2.framework/Headers,
@@ -3533,6 +3534,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "Stella-emu";
 				PRODUCT_NAME = Stella;
 				SECTORDER_FLAGS = "";
+				VALID_ARCHS = "x86_64 arm64";
 				WARNING_CFLAGS = (
 					"-Wmost",
 					"-Wno-four-char-constants",
@@ -3570,6 +3572,7 @@
 					WINDOWED_SUPPORT,
 					BSPF_MACOS,
 					MAC_OSX,
+					"PNG_ARM_NEON_OPT=0",
 				);
 				HEADER_SEARCH_PATHS = (
 					/Library/Frameworks/SDL2.framework/Headers,
@@ -3589,11 +3592,13 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = "$(LIBRARY_SEARCH_PATHS)";
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-lz";
 				PRODUCT_BUNDLE_IDENTIFIER = "Stella-emu";
 				PRODUCT_NAME = Stella;
 				SECTORDER_FLAGS = "";
+				VALID_ARCHS = "x86_64 arm64";
 				WARNING_CFLAGS = (
 					"-Wmost",
 					"-Wno-four-char-constants",
