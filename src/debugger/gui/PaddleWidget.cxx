@@ -23,7 +23,7 @@ PaddleWidget::PaddleWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
                            Controller& controller, bool embedded, bool second)
   : ControllerWidget(boss, font, x, y, controller)
 {
-  bool leftport = isLeftPort();
+  const bool leftport = isLeftPort();
   const string& label = getHeader();
   const int fontHeight = font.getFontHeight();
 
@@ -86,15 +86,15 @@ PaddleWidget::PaddleWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
                                   "Fire", kP1Fire);
   }
   myP0Resistance->setMinValue(0);
-  myP0Resistance->setMaxValue(uInt32(Paddles::MAX_RESISTANCE));
-  myP0Resistance->setStepValue(uInt32(Paddles::MAX_RESISTANCE/100));
+  myP0Resistance->setMaxValue(uInt32{Paddles::MAX_RESISTANCE});
+  myP0Resistance->setStepValue(uInt32{Paddles::MAX_RESISTANCE / 100});
   myP0Resistance->setTarget(this);
 
   myP0Fire->setTarget(this);
 
   myP1Resistance->setMinValue(0);
-  myP1Resistance->setMaxValue(uInt32(Paddles::MAX_RESISTANCE));
-  myP1Resistance->setStepValue(uInt32(Paddles::MAX_RESISTANCE/100));
+  myP1Resistance->setMaxValue(uInt32{Paddles::MAX_RESISTANCE});
+  myP1Resistance->setStepValue(uInt32{Paddles::MAX_RESISTANCE / 100});
   myP1Resistance->setTarget(this);
 
   myP1Fire->setTarget(this);
@@ -108,9 +108,9 @@ PaddleWidget::PaddleWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PaddleWidget::loadConfig()
 {
-  myP0Resistance->setValue(Int32(Paddles::MAX_RESISTANCE -
+  myP0Resistance->setValue(static_cast<Int32>(Paddles::MAX_RESISTANCE -
       getPin(Controller::AnalogPin::Nine).resistance));
-  myP1Resistance->setValue(Int32(Paddles::MAX_RESISTANCE -
+  myP1Resistance->setValue(static_cast<Int32>(Paddles::MAX_RESISTANCE -
       getPin(Controller::AnalogPin::Five).resistance));
   myP0Fire->setState(!getPin(Controller::DigitalPin::Four));
   myP1Fire->setState(!getPin(Controller::DigitalPin::Three));

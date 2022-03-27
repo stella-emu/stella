@@ -190,7 +190,7 @@ int CartDebug::lastWriteBaseAddress()
 string CartDebug::toString()
 {
   ostringstream buf;
-  uInt32 bytesPerLine;
+  uInt32 bytesPerLine = 0;
 
   switch(Base::format())
   {
@@ -245,7 +245,7 @@ string CartDebug::toString()
 bool CartDebug::disassembleAddr(uInt16 address, bool force)
 {
   // ROM/RAM bank or ZP-RAM?
-  int bank = (address & 0x1000) ? getBank(address) : int(myBankInfo.size()) - 1;
+  const int bank = (address & 0x1000) ? getBank(address) : int(myBankInfo.size()) - 1;
 
   return disassemble(bank, address, force);
 }
@@ -271,15 +271,15 @@ bool CartDebug::disassemble(int bank, uInt16 PC, bool force)
 {
   // Test current disassembly; don't re-disassemble if it hasn't changed
   // Also check if the current PC is in the current list
-  bool bankChanged = myConsole.cartridge().bankChanged();
-  int pcline = addressToLine(PC);
-  bool pcfound = (pcline != -1) && (uInt32(pcline) < myDisassembly.list.size()) &&
-                  (myDisassembly.list[pcline].disasm[0] != '.');
-  bool pagedirty = (PC & 0x1000) ? mySystem.isPageDirty(0x1000, 0x1FFF) :
-                                   mySystem.isPageDirty(0x80, 0xFF);
+  const bool bankChanged = myConsole.cartridge().bankChanged();
+  const int pcline = addressToLine(PC);
+  const bool pcfound = (pcline != -1) && (static_cast<uInt32>(pcline) < myDisassembly.list.size()) &&
+                       (myDisassembly.list[pcline].disasm[0] != '.');
+  const bool pagedirty = (PC & 0x1000) ? mySystem.isPageDirty(0x1000, 0x1FFF) :
+                                         mySystem.isPageDirty(0x80, 0xFF);
 
-  bool changed = !mySystem.autodetectMode() &&
-                 (force || bankChanged || !pcfound || pagedirty);
+  const bool changed = !mySystem.autodetectMode() &&
+                       (force || bankChanged || !pcfound || pagedirty);
   if(changed)
   {
     // Are we disassembling from ROM or ZP RAM?
@@ -316,7 +316,7 @@ bool CartDebug::disassemble(int bank, uInt16 PC, bool force)
 
     // Always attempt to resolve code sections unless it's been
     // specifically disabled
-    bool found = fillDisassemblyList(info, PC);
+    const bool found = fillDisassemblyList(info, PC);
     if(!found && DiStella::settings.resolveCode)
     {
       // Temporarily turn off code resolution
@@ -385,8 +385,8 @@ string CartDebug::disassembleLines(uInt16 start, uInt16 lines) const
   ostringstream buffer;
 
   // First find the lines in the range, and determine the longest string
-  uInt32 list_size = uInt32(myDisassembly.list.size());
-  uInt32 begin = list_size, end = 0, length = 0;
+  const size_t list_size = myDisassembly.list.size();
+  size_t begin = list_size, end = 0, length = 0;
   for(end = 0; end < list_size && lines > 0; ++end)
   {
     const CartDebug::DisassemblyTag& tag = myDisassembly.list[end];
@@ -394,14 +394,14 @@ string CartDebug::disassembleLines(uInt16 start, uInt16 lines) const
     {
       if(begin == list_size) begin = end;
       if(tag.type != Device::ROW)
-        length = std::max(length, uInt32(tag.disasm.length()));
+        length = std::max(length, tag.disasm.length());
 
       --lines;
     }
   }
 
   // Now output the disassembly, using as little space as possible
-  for(uInt32 i = begin; i < end; ++i)
+  for(size_t i = begin; i < end; ++i)
   {
     const CartDebug::DisassemblyTag& tag = myDisassembly.list[i];
     if(tag.type == Device::NONE)
@@ -412,7 +412,7 @@ string CartDebug::disassembleLines(uInt16 start, uInt16 lines) const
     else
       buffer << "       ";
 
-    buffer << tag.disasm << std::setw(int(length - tag.disasm.length() + 2))
+    buffer << tag.disasm << std::setw(static_cast<int>(length - tag.disasm.length() + 2))
            << std::setfill(' ') << " "
            << std::setw(4) << std::left << tag.ccount << "   " << tag.bytes << endl;
   }
@@ -618,7 +618,7 @@ bool CartDebug::getLabel(ostream& buf, uInt16 addr, bool isRead,
     {
       if(isRead)
       {
-        uInt16 a = addr & 0x0F, offset = addr & 0xFFF0;
+        const uInt16 a = addr & 0x0F, offset = addr & 0xFFF0;
         if(ourTIAMnemonicR[a])
         {
           buf << ourTIAMnemonicR[a];
@@ -630,7 +630,7 @@ bool CartDebug::getLabel(ostream& buf, uInt16 addr, bool isRead,
       }
       else
       {
-        uInt16 a = addr & 0x3F, offset = addr & 0xFFC0;
+        const uInt16 a = addr & 0x3F, offset = addr & 0xFFC0;
         if(ourTIAMnemonicW[a])
         {
           buf << ourTIAMnemonicW[a];
@@ -645,7 +645,7 @@ bool CartDebug::getLabel(ostream& buf, uInt16 addr, bool isRead,
 
     case AddrType::IO:
     {
-      uInt16 a = addr & 0xFF, offset = addr & 0xFD00;
+      const uInt16 a = addr & 0xFF, offset = addr & 0xFD00;
       if(a <= 0x9F)
       {
         if(ourIOMnemonic[a - 0x80])
@@ -668,7 +668,7 @@ bool CartDebug::getLabel(ostream& buf, uInt16 addr, bool isRead,
       // RAM can use user-defined labels; otherwise we default to
       // standard mnemonics
       AddrToLabel::const_iterator iter;
-      uInt16 a = addr & 0xFF, offset = addr & 0xFF00;
+      const uInt16 a = addr & 0xFF, offset = addr & 0xFF00;
       bool found = false;
 
       // Search for nearest label
@@ -798,7 +798,7 @@ string CartDebug::loadListFile()
       if(addr_s.length() == 0)
         continue;
       const char* p = addr_s[0] == 'U' ? addr_s.c_str() + 1 : addr_s.c_str();
-      addr = int(strtoul(p, nullptr, 16));
+      addr = static_cast<int>(strtoul(p, nullptr, 16));
 
       // For now, completely ignore ROM addresses
       if(!(addr & 0x1000))
@@ -1063,8 +1063,8 @@ string CartDebug::saveDisassembly(string path)
     "BLACK", "BLUE", "RED", "PURPLE",
     "GREEN", "CYAN", "YELLOW", "WHITE"
   };
-  bool isNTSC = myConsole.timing() == ConsoleTiming::ntsc;
-  bool isPAL = myConsole.timing() == ConsoleTiming::pal;
+  const bool isNTSC = myConsole.timing() == ConsoleTiming::ntsc;
+  const bool isPAL = myConsole.timing() == ConsoleTiming::pal;
 
 #define ALIGN(x) setfill(' ') << left << setw(x)
 
@@ -1086,8 +1086,8 @@ string CartDebug::saveDisassembly(string path)
 
   Disassembly disasm;
   disasm.list.reserve(2048);
-  uInt16 romBankCount = myConsole.cartridge().romBankCount();
-  uInt16 oldBank = myConsole.cartridge().getBank();
+  const uInt16 romBankCount = myConsole.cartridge().romBankCount();
+  const uInt16 oldBank = myConsole.cartridge().getBank();
 
   // prepare for switching banks
   myConsole.cartridge().unlockHotspots();
@@ -1129,7 +1129,7 @@ string CartDebug::saveDisassembly(string path)
     else
       buf << "    ORG     $" << Base::HEX4 << origin << "\n"
           << "    RORG    $" << Base::HEX4 << info.offset << "\n\n";
-    origin += uInt32(info.size);
+    origin += static_cast<uInt32>(info.size);
 
     // Format in 'distella' style
     for(uInt32 i = 0; i < disasm.list.size(); ++i)
@@ -1298,9 +1298,9 @@ string CartDebug::saveDisassembly(string path)
         << ";-----------------------------------------------------------\n\n";
 
     for (uInt16 addr = 0x80; addr <= 0xFF; ++addr) {
-      bool ramUsed = (mySystem.getAccessFlags(addr) & (Device::DATA | Device::WRITE));
-      bool codeUsed = (mySystem.getAccessFlags(addr) & Device::CODE);
-      bool stackUsed = (mySystem.getAccessFlags(addr|0x100) & (Device::DATA | Device::WRITE));
+      const bool ramUsed = (mySystem.getAccessFlags(addr) & (Device::DATA | Device::WRITE));
+      const bool codeUsed = (mySystem.getAccessFlags(addr) & Device::CODE);
+      const bool stackUsed = (mySystem.getAccessFlags(addr|0x100) & (Device::DATA | Device::WRITE));
 
       if (myReserved.ZPRAM[addr - 0x80] &&
           myUserLabels.find(addr) == myUserLabels.end()) {
@@ -1534,6 +1534,8 @@ CartDebug::AddrType CartDebug::addressType(uInt16 addr) const
         case 0x200:  case 0x300:  case 0x600:  case 0x700:
         case 0xa00:  case 0xb00:  case 0xe00:  case 0xf00:
           return AddrType::IO;
+        default:
+          break;
       }
     }
   }
@@ -1551,7 +1553,7 @@ void CartDebug::getBankDirectives(ostream& buf, const BankInfo& info) const
   Device::AccessType prevType = accessTypeAbsolute(mySystem.getAccessFlags(prev));
   for( ; addr < info.offset + info.size; ++addr)
   {
-    Device::AccessType currType = accessTypeAbsolute(mySystem.getAccessFlags(addr));
+    const Device::AccessType currType = accessTypeAbsolute(mySystem.getAccessFlags(addr));
 
     // Have we changed to a new type?
     if(currType != prevType)
@@ -1581,9 +1583,9 @@ void CartDebug::accessTypeAsString(ostream& buf, uInt16 addr) const
     return;
   }
 
-  uInt8 directive = myDisDirectives[addr & 0xFFF] & 0xFC,
-        debugger  = myDebugger.getAccessFlags(addr) & 0xFC,
-        label     = myDisLabels[addr & 0xFFF];
+  const uInt8 directive = myDisDirectives[addr & 0xFFF] & 0xFC,
+              debugger  = myDebugger.getAccessFlags(addr) & 0xFC,
+              label     = myDisLabels[addr & 0xFFF];
 
   buf << endl << "directive: " << Base::toString(directive, Base::Fmt::_2_8) << " ";
   AccessTypeAsString(buf, directive);

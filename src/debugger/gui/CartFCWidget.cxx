@@ -31,15 +31,14 @@ CartridgeFCWidget::CartridgeFCWidget(
 string CartridgeFCWidget::description()
 {
   ostringstream info;
-  uInt16 hotspot = myCart.hotspot() | ADDR_BASE;
+  const uInt16 hotspot = myCart.hotspot() | ADDR_BASE;
 
-  info << "FC cartridge, up to eight 4K banks\n";
-  info << "Bank selected by hotspots\n"
-    << "  $" << Common::Base::HEX4 << hotspot << " (defines low 2 bits)\n"
-    << "  $" << Common::Base::HEX4 << (hotspot + 1) << " (defines high bits)\n"
-    << "  $" << Common::Base::HEX4 << (hotspot + 4) << " (triggers bank switch)\n";
-
-  info << CartridgeEnhancedWidget::description();
+  info << "FC cartridge, up to eight 4K banks\n"
+       << "Bank selected by hotspots\n"
+       << "  $" << Common::Base::HEX4 << hotspot << " (defines low 2 bits)\n"
+       << "  $" << Common::Base::HEX4 << (hotspot + 1) << " (defines high bits)\n"
+       << "  $" << Common::Base::HEX4 << (hotspot + 4) << " (triggers bank switch)\n"
+       << CartridgeEnhancedWidget::description();
 
   return info.str();
 }
@@ -48,12 +47,12 @@ string CartridgeFCWidget::description()
 string CartridgeFCWidget::hotspotStr(int bank, int, bool prefix)
 {
   ostringstream info;
-  uInt16 hotspot = myCart.hotspot() | ADDR_BASE;
+  const uInt16 hotspot = myCart.hotspot() | ADDR_BASE;
 
-  info << "(" << (prefix ? "hotspots " : "");
-  info << "$" << Common::Base::HEX4 << hotspot << " = " << (bank & 0b11);
-  info << ", $" << Common::Base::HEX4 << (hotspot + 1) << " = " << (bank >> 2);
-  info << ")";
+  info << "(" << (prefix ? "hotspots " : "")
+       << "$" << Common::Base::HEX4 << hotspot << " = " << (bank & 0b11)
+       << ", $" << Common::Base::HEX4 << (hotspot + 1) << " = " << (bank >> 2)
+       << ")";
 
   return info.str();
 }

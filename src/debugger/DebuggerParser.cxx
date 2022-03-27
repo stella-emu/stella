@@ -109,7 +109,7 @@ string DebuggerParser::run(const string& command)
   getArgs(command, verb);
   commandResult.str("");
 
-  for(int i = 0; i < int(commands.size()); ++i)
+  for(int i = 0; i < static_cast<int>(commands.size()); ++i)
   {
     if(BSPF::equalsIgnoreCase(verb, commands[i].cmdString))
     {
@@ -193,10 +193,9 @@ void DebuggerParser::getCompletions(const char* in, StringList& completions) con
 int DebuggerParser::decipher_arg(const string& str)
 {
   bool derefByte=false, derefWord=false, lobyte=false, hibyte=false, bin=false, dec=false;
-  int result;
   string arg = str;
 
-  Base::Fmt defaultBase = Base::format();
+  const Base::Fmt defaultBase = Base::format();
 
   if(defaultBase == Base::Fmt::_2) {
     bin=true; dec=false;
@@ -238,6 +237,7 @@ int DebuggerParser::decipher_arg(const string& str)
 
   // Special cases (registers):
   const CpuState& state = static_cast<const CpuState&>(debugger.cpuDebug().getState());
+  int result = 0;
   if(arg == "a" && str != "$a") result = state.A;
   else if(arg == "x") result = state.X;
   else if(arg == "y") result = state.Y;
@@ -268,7 +268,7 @@ int DebuggerParser::decipher_arg(const string& str)
       } else if(dec) {
         result = 0;
         while(*a != '\0') {
-          int digit = (*a++) - '0';
+          const int digit = (*a++) - '0';
           if(digit < 0 || digit > 9)
             return -1;
 
@@ -278,7 +278,7 @@ int DebuggerParser::decipher_arg(const string& str)
         result = 0;
         while(*a != '\0') {
           int hex = -1;
-          char d = *a++;
+          const char d = *a++;
           if(d >= '0' && d <= '9')  hex = d - '0';
           else if(d >= 'a' && d <= 'f') hex = d - 'a' + 10;
           else if(d >= 'A' && d <= 'F') hex = d - 'A' + 10;
@@ -333,7 +333,8 @@ string DebuggerParser::showWatches()
 bool DebuggerParser::getArgs(const string& command, string& verb)
 {
   ParseState state = ParseState::IN_COMMAND;
-  uInt32 i = 0, length = uInt32(command.length());
+  size_t i = 0;
+  const size_t length = command.length();
   string curArg = "";
   verb = "";
 
@@ -346,7 +347,7 @@ bool DebuggerParser::getArgs(const string& command, string& verb)
   // The first token is the command verb, the rest go in an array
   do
   {
-    char c = command[i++];
+    const char c = command[i++];
     switch(state)
     {
       case ParseState::IN_COMMAND:
@@ -390,7 +391,7 @@ bool DebuggerParser::getArgs(const string& command, string& verb)
   if(curArg != "")
     argStrings.push_back(curArg);
 
-  argCount = uInt32(argStrings.size());
+  argCount = static_cast<uInt32>(argStrings.size());
 
   for(uInt32 arg = 0; arg < argCount; ++arg)
   {
@@ -410,7 +411,7 @@ bool DebuggerParser::getArgs(const string& command, string& verb)
 bool DebuggerParser::validateArgs(int cmd)
 {
   // cerr << "entering validateArgs(" << cmd << ")" << endl;
-  bool required = commands[cmd].parmsRequired;
+  const bool required = commands[cmd].parmsRequired;
   Parameters* p = commands[cmd].parms.data();
 
   if(argCount == 0)
@@ -444,8 +445,8 @@ bool DebuggerParser::validateArgs(int cmd)
     if(curCount >= argCount)
       break;
 
-    uInt32 curArgInt  = args[curCount];
-    string& curArgStr = argStrings[curCount];
+    const uInt32 curArgInt  = args[curCount];
+    const string& curArgStr = argStrings[curCount];
 
     switch(*p)
     {
@@ -540,8 +541,8 @@ string DebuggerParser::eval()
     {
       string rlabel = debugger.cartDebug().getLabel(args[i], true);
       string wlabel = debugger.cartDebug().getLabel(args[i], false);
-      bool validR = rlabel != "" && rlabel[0] != '$',
-        validW = wlabel != "" && wlabel[0] != '$';
+      const bool validR = rlabel != "" && rlabel[0] != '$',
+                 validW = wlabel != "" && wlabel[0] != '$';
       if(validR && validW)
       {
         if(rlabel == wlabel)
@@ -582,7 +583,7 @@ void DebuggerParser::listTraps(bool listCond)
   commandResult << (listCond ? "trapifs:" : "traps:") << endl;
   for(uInt32 i = 0; i < names.size(); ++i)
   {
-    bool hasCond = names[i] != "";
+    const bool hasCond = names[i] != "";
     if(hasCond == listCond)
     {
       commandResult << Base::toString(i) << ": ";
@@ -662,9 +663,9 @@ string DebuggerParser::saveScriptFile(string file)
   StringList names = debugger.m6502().getCondTrapNames();
   for(uInt32 i = 0; i < myTraps.size(); ++i)
   {
-    bool read = myTraps[i]->read;
-    bool write = myTraps[i]->write;
-    bool hasCond = names[i] != "";
+    const bool read = myTraps[i]->read,
+               write = myTraps[i]->write,
+               hasCond = names[i] != "";
 
     if(read && write)
       out << "trap";
@@ -736,7 +737,7 @@ void DebuggerParser::executeDirective(Device::AccessType type)
     return;
   }
 
-  bool result = debugger.cartDebug().addDirective(type, args[0], args[1]);
+  const bool result = debugger.cartDebug().addDirective(type, args[0], args[1]);
 
   commandResult << (result ? "added " : "removed ");
   debugger.cartDebug().AccessTypeAsString(commandResult, type);
@@ -815,14 +816,9 @@ void DebuggerParser::executeBCol()
 // "break"
 void DebuggerParser::executeBreak()
 {
-  uInt16 addr;
-  uInt8 bank;
-  uInt32 romBankCount = debugger.cartDebug().romBankCount();
-
-  if(argCount == 0)
-    addr = debugger.cpuDebug().pc();
-  else
-    addr = args[0];
+  const uInt32 romBankCount = debugger.cartDebug().romBankCount();
+  const uInt16 addr = (argCount == 0) ? debugger.cpuDebug().pc() : args[0];
+  uInt8 bank = 0;
 
   if(argCount < 2)
     bank = debugger.cartDebug().getBank(addr);
@@ -837,7 +833,7 @@ void DebuggerParser::executeBreak()
   }
   if(bank != 0xff)
   {
-    bool set = debugger.toggleBreakPoint(addr, bank);
+    const bool set = debugger.toggleBreakPoint(addr, bank);
 
     if(set)
       commandResult << "set";
@@ -846,13 +842,13 @@ void DebuggerParser::executeBreak()
 
     commandResult << " breakpoint at $" << Base::HEX4 << addr << " + mirrors";
     if(romBankCount > 1)
-      commandResult << " in bank #" << std::dec << int(bank);
+      commandResult << " in bank #" << std::dec << static_cast<int>(bank);
   }
   else
   {
     for(int i = 0; i < debugger.cartDebug().romBankCount(); ++i)
     {
-      bool set = debugger.toggleBreakPoint(addr, i);
+      const bool set = debugger.toggleBreakPoint(addr, i);
 
       if(i)
         commandResult << endl;
@@ -864,7 +860,7 @@ void DebuggerParser::executeBreak()
 
       commandResult << " breakpoint at $" << Base::HEX4 << addr << " + mirrors";
       if(romBankCount > 1)
-        commandResult << " in bank #" << std::dec << int(bank);
+        commandResult << " in bank #" << std::dec << static_cast<int>(bank);
     }
   }
 }
@@ -886,8 +882,8 @@ void DebuggerParser::executeBreakIf()
         return;
       }
     }
-    uInt32 ret = debugger.m6502().addCondBreak(
-                 YaccParser::getResult(), argStrings[0]);
+    const uInt32 ret = debugger.m6502().addCondBreak(
+                          YaccParser::getResult(), argStrings[0]);
     commandResult << "added breakIf " << Base::toString(ret);
   }
   else
@@ -898,14 +894,8 @@ void DebuggerParser::executeBreakIf()
 // "breakLabel"
 void DebuggerParser::executeBreakLabel()
 {
-  uInt16 addr;
-
-  if(argCount == 0)
-    addr = debugger.cpuDebug().pc();
-  else
-    addr = args[0];
-
-  bool set = debugger.toggleBreakPoint(addr, BreakpointMap::ANY_BANK);
+  const uInt16 addr = (argCount == 0) ? debugger.cpuDebug().pc() : args[0];
+  const bool set = debugger.toggleBreakPoint(addr, BreakpointMap::ANY_BANK);
 
   commandResult << (set ? "set" : "cleared");
   commandResult << " breakpoint at $" << Base::HEX4 << addr << " (no mirrors)";
@@ -1026,7 +1016,7 @@ void DebuggerParser::executeCol()
 void DebuggerParser::executeColorTest()
 {
   commandResult << "test color: "
-                << char((args[0]>>1) | 0x80)
+                << static_cast<char>((args[0]>>1) | 0x80)
                 << inverse("        ");
 }
 
@@ -1097,7 +1087,7 @@ void DebuggerParser::executeDelSaveStateIf()
 // "delTrap"
 void DebuggerParser::executeDelTrap()
 {
-  int index = args[0];
+  const int index = args[0];
 
   if(debugger.m6502().delCondTrap(index))
   {
@@ -1115,8 +1105,8 @@ void DebuggerParser::executeDelTrap()
 // "delWatch"
 void DebuggerParser::executeDelWatch()
 {
-  int which = args[0] - 1;
-  if(which >= 0 && which < int(myWatches.size()))
+  const int which = args[0] - 1;
+  if(which >= 0 && which < static_cast<int>(myWatches.size()))
   {
     Vec::removeAt(myWatches, which);
     commandResult << "removed watch";
@@ -1129,7 +1119,7 @@ void DebuggerParser::executeDelWatch()
 // "disAsm"
 void DebuggerParser::executeDisAsm()
 {
-  int start, lines = 20;
+  int start = 0, lines = 20;
 
   if(argCount == 0) {
     start = debugger.cpuDebug().pc();
@@ -1150,7 +1140,7 @@ void DebuggerParser::executeDisAsm()
 // "dump"
 void DebuggerParser::executeDump()
 {
-  auto dump = [&](ostream& os, int start, int end)
+  const auto dump = [&](ostream& os, int start, int end)
   {
     for(int i = start; i <= end; i += 16)
     {
@@ -1201,7 +1191,7 @@ void DebuggerParser::executeDump()
       path << execPrefix;
     else
       path << std::hex << std::setw(8) << std::setfill('0')
-           << uInt32(TimerManager::getTicks() / 1000);
+           << static_cast<uInt32>(TimerManager::getTicks() / 1000);
     path << ".dump";
 
     commandResult << "dumped ";
@@ -1218,7 +1208,7 @@ void DebuggerParser::executeDump()
     if((args[2] & 0x02) != 0)
     {
       // dump CPU state
-      CpuDebug& cpu = debugger.cpuDebug();
+      const CpuDebug& cpu = debugger.cpuDebug();
       out << "   <PC>PC SP  A  X  Y  -  -    N  V  B  D  I  Z  C  -\n";
       out << "XC: "
         << Base::toString(cpu.pc() & 0xff) << " "    // PC lsb
@@ -1318,7 +1308,7 @@ void DebuggerParser::executeExec()
   else {
     ostringstream prefix;
     prefix << std::hex << std::setw(8) << std::setfill('0')
-           << uInt32(TimerManager::getTicks()/1000);
+           << static_cast<uInt32>(TimerManager::getTicks()/1000);
     execPrefix = prefix.str();
   }
 
@@ -1329,7 +1319,7 @@ void DebuggerParser::executeExec()
   commandResult << exec(node, &history);
   --execDepth;
 
-  for(const auto& item : history)
+  for(const auto& item: history)
     debugger.prompt().addToHistory(item.c_str());
 }
 
@@ -1384,16 +1374,16 @@ void DebuggerParser::executeHelp()
   if(argCount == 0)  // normal help, show all commands
   {
     // Find length of longest command
-    uInt32 clen = 0;
+    size_t clen = 0;
     for(const auto& c: commands)
     {
-      uInt32 len = uInt32(c.cmdString.length());
+      const size_t len = c.cmdString.length();
       if(len > clen)  clen = len;
     }
 
     commandResult << setfill(' ');
     for(const auto& c: commands)
-      commandResult << setw(clen) << right << c.cmdString
+      commandResult << setw(static_cast<int>(clen)) << right << c.cmdString
                     << " - " << c.description << endl;
 
     commandResult << debugger.builtinHelp();
@@ -1549,9 +1539,9 @@ void DebuggerParser::executeListBreaks()
 {
   stringstream buf;
   int count = 0;
-  uInt32 romBankCount = debugger.cartDebug().romBankCount();
+  const uInt32 romBankCount = debugger.cartDebug().romBankCount();
 
-  for(const auto& bp : debugger.breakPoints().getBreakpoints())
+  for(const auto& bp: debugger.breakPoints().getBreakpoints())
   {
     if(romBankCount == 1)
     {
@@ -1564,7 +1554,7 @@ void DebuggerParser::executeListBreaks()
         buf << ", ";
       buf << debugger.cartDebug().getLabel(bp.addr, true, 4);
       if(bp.bank != 255)
-        buf << " #" << int(bp.bank);
+        buf << " #" << static_cast<int>(bp.bank);
       else
         buf << " *";
       if(!(++count % 6)) buf << endl;
@@ -1692,7 +1682,7 @@ void DebuggerParser::executeLoadState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerParser::executeLogBreaks()
 {
-  bool enable = !debugger.mySystem.m6502().getLogBreaks();
+  const bool enable = !debugger.mySystem.m6502().getLogBreaks();
 
   debugger.mySystem.m6502().setLogBreaks(enable);
   settings.setValue("dbg.logbreaks", enable);
@@ -1832,7 +1822,8 @@ void DebuggerParser::executeRunTo()
 
   debugger.saveOldState();
 
-  uInt32 count = 0, max_iterations = uInt32(list.size());
+  size_t count = 0;
+  const size_t max_iterations = list.size();
 
   // Create a progress dialog box to show the progress searching through the
   // disassembly, since this may be a time-consuming operation
@@ -1842,7 +1833,7 @@ void DebuggerParser::executeRunTo()
   buf << "runTo searching through " << max_iterations << " disassembled instructions"
     << progress.ELLIPSIS;
   progress.setMessage(buf.str());
-  progress.setRange(0, max_iterations, 5);
+  progress.setRange(0, static_cast<int>(max_iterations), 5);
   progress.open();
 
   bool done = false;
@@ -1850,7 +1841,7 @@ void DebuggerParser::executeRunTo()
     debugger.step(false);
 
     // Update romlist to point to current PC
-    int pcline = cartdbg.addressToLine(debugger.cpuDebug().pc());
+    const int pcline = cartdbg.addressToLine(debugger.cpuDebug().pc());
     if(pcline >= 0)
     {
       const string& next = list[pcline].disasm;
@@ -1897,7 +1888,7 @@ void DebuggerParser::executeRunToPc()
     debugger.step(false);
 
     // Update romlist to point to current PC
-    int pcline = cartdbg.addressToLine(debugger.cpuDebug().pc());
+    const int pcline = cartdbg.addressToLine(debugger.cpuDebug().pc());
     done = (pcline >= 0) && (list[pcline].address == args[0]);
     progress.incProgress();
     ++count;
@@ -2107,7 +2098,7 @@ void DebuggerParser::executeSaveStateIf()
         return;
       }
     }
-    uInt32 ret = debugger.m6502().addCondSaveState(
+    const uInt32 ret = debugger.m6502().addCondSaveState(
       YaccParser::getResult(), argStrings[0]);
     commandResult << "added saveStateIf " << Base::toString(ret);
   }
@@ -2142,7 +2133,7 @@ void DebuggerParser::executeStepWhile()
     commandResult << red("invalid expression");
     return;
   }
-  Expression* expr = YaccParser::getResult();
+  const Expression* expr = YaccParser::getResult();
   int ncycles = 0;
   uInt32 count = 0;
 
@@ -2229,7 +2220,7 @@ void DebuggerParser::executeTrapWriteIf()
 void DebuggerParser::executeTraps(bool read, bool write, const string& command,
                                   bool hasCond)
 {
-  uInt32 ofs = hasCond ? 1 : 0;
+  const uInt32 ofs = hasCond ? 1 : 0;
   uInt32 begin = args[ofs];
   uInt32 end = argCount == 2 + ofs ? args[1 + ofs] : begin;
 
@@ -2255,10 +2246,10 @@ void DebuggerParser::executeTraps(bool read, bool write, const string& command,
   }
 
   // base addresses of mirrors
-  uInt32 beginRead = debugger.getBaseAddress(begin, true);
-  uInt32 endRead = debugger.getBaseAddress(end, true);
-  uInt32 beginWrite = debugger.getBaseAddress(begin, false);
-  uInt32 endWrite = debugger.getBaseAddress(end, false);
+  const uInt32 beginRead = debugger.getBaseAddress(begin, true);
+  const uInt32 endRead = debugger.getBaseAddress(end, true);
+  const uInt32 beginWrite = debugger.getBaseAddress(begin, false);
+  const uInt32 endWrite = debugger.getBaseAddress(end, false);
   stringstream conditionBuf;
 
   // parenthesize provided and address range condition(s) (begin)
@@ -2418,7 +2409,7 @@ void DebuggerParser::executeType()
 // "uHex"
 void DebuggerParser::executeUHex()
 {
-  bool enable = !Base::hexUppercase();
+  const bool enable = !Base::hexUppercase();
   Base::setHexUppercase(enable);
 
   settings.setValue("dbg.uHex", enable);
@@ -2469,16 +2460,12 @@ void DebuggerParser::executeWatch()
 // wrapper function for rewind/unwind commands
 void DebuggerParser::executeWinds(bool unwind)
 {
-  uInt16 states;
+  const uInt16 states = (argCount == 0) ? 1 : args[0];
   string type = unwind ? "unwind" : "rewind";
   string message;
 
-  if(argCount == 0)
-    states = 1;
-  else
-    states = args[0];
-
-  uInt16 winds = unwind ? debugger.unwindStates(states, message) : debugger.rewindStates(states, message);
+  const uInt16 winds = unwind ? debugger.unwindStates(states, message)
+                              : debugger.rewindStates(states, message);
   if(winds > 0)
   {
     debugger.rom().invalidate();

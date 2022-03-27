@@ -30,7 +30,7 @@ EventHandlerSDL2::EventHandlerSDL2(OSystem& osystem)
 #ifdef GUI_SUPPORT
   {
     ostringstream buf;
-    myQwertz = int('y') == int(SDL_GetKeyFromScancode(SDL_Scancode(KBDK_Z)));
+    myQwertz = int{'y'} == static_cast<int>(SDL_GetKeyFromScancode(SDL_Scancode(KBDK_Z)));
     buf << "Keyboard: " << (myQwertz ? "QWERTZ" : "QWERTY");
     Logger::debug(buf.str());
   }
@@ -133,6 +133,8 @@ void EventHandlerSDL2::pollEvent()
             handleMouseButtonEvent(MouseButton::RIGHT, myEvent.button.type == SDL_MOUSEBUTTONDOWN,
                                    myEvent.button.x, myEvent.button.y);
             break;
+          default:
+            break;
         }
         break;
       }
@@ -166,7 +168,8 @@ void EventHandlerSDL2::pollEvent()
 
       case SDL_JOYHATMOTION:
       {
-        int v = myEvent.jhat.value, value = 0;
+        int value = 0;
+        const int v = myEvent.jhat.value;
         if(v == SDL_HAT_CENTERED)
           value  = EVENT_HATCENTER_M;
         else
@@ -240,8 +243,13 @@ void EventHandlerSDL2::pollEvent()
           case SDL_WINDOWEVENT_FOCUS_LOST:
             handleSystemEvent(SystemEvent::WINDOW_FOCUS_LOST);
             break;
+          default:
+            break;
         }
         break;  // SDL_WINDOWEVENT
+
+      default:
+        break;
     }
   }
 }

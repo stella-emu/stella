@@ -418,7 +418,7 @@ class M6502 : public Serializable
 
 #ifdef DEBUGGER_SUPPORT
     Int32 evalCondBreaks() {
-      for(Int32 i = Int32(myCondBreaks.size()) - 1; i >= 0; --i)
+      for(Int32 i = static_cast<Int32>(myCondBreaks.size()) - 1; i >= 0; --i)
         if(myCondBreaks[i]->evaluate())
           return i;
 
@@ -427,7 +427,7 @@ class M6502 : public Serializable
 
     Int32 evalCondSaveStates()
     {
-      for(Int32 i = Int32(myCondSaveStates.size()) - 1; i >= 0; --i)
+      for(Int32 i = static_cast<Int32>(myCondSaveStates.size()) - 1; i >= 0; --i)
         if(myCondSaveStates[i]->evaluate())
           return i;
 
@@ -436,7 +436,7 @@ class M6502 : public Serializable
 
     Int32 evalCondTraps()
     {
-      for(Int32 i = Int32(myTrapConds.size()) - 1; i >= 0; --i)
+      for(Int32 i = static_cast<Int32>(myTrapConds.size()) - 1; i >= 0; --i)
         if(myTrapConds[i]->evaluate())
           return i;
 

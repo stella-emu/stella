@@ -81,22 +81,22 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
 
   xpos += myColorRegs->colWidth() + 5;
   myCOLUP0Color = new ColorWidget(boss, nfont, xpos, ypos+2,
-                                  uInt32(1.5*lineHeight), lineHeight - 4);
+    static_cast<uInt32>(1.5*lineHeight), lineHeight - 4);
   myCOLUP0Color->setTarget(this);
 
   ypos += lineHeight;
   myCOLUP1Color = new ColorWidget(boss, nfont, xpos, ypos+2,
-                                  uInt32(1.5*lineHeight), lineHeight - 4);
+    static_cast<uInt32>(1.5*lineHeight), lineHeight - 4);
   myCOLUP1Color->setTarget(this);
 
   ypos += lineHeight;
   myCOLUPFColor = new ColorWidget(boss, nfont, xpos, ypos+2,
-                                  uInt32(1.5*lineHeight), lineHeight - 4);
+    static_cast<uInt32>(1.5*lineHeight), lineHeight - 4);
   myCOLUPFColor->setTarget(this);
 
   ypos += lineHeight;
   myCOLUBKColor = new ColorWidget(boss, nfont, xpos, ypos+2,
-                                  uInt32(1.5*lineHeight), lineHeight - 4);
+    static_cast<uInt32>(1.5*lineHeight), lineHeight - 4);
   myCOLUBKColor->setTarget(this);
 
   // Fixed debug colors
@@ -139,7 +139,8 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   xpos -= 2*fontWidth + 5;  ypos += lineHeight;
   static constexpr std::array<const char*, 5> rowLabel = { "P0", "P1", "M0", "M1", "BL" };
   static constexpr std::array<const char*, 5> colLabel = { "PF", "BL", "M1", "M0", "P1" };
-  uInt32 lwidth = 2*fontWidth, collX = xpos + lwidth + 5, collY = ypos, idx = 0;
+  const uInt32 lwidth = 2 * fontWidth;
+  int collX = xpos + lwidth + 5, collY = ypos, idx = 0;
   for(uInt32 row = 0; row < 5; ++row)
   {
     // Add vertical label
@@ -160,7 +161,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
 
       // Add horizontal label
       uInt32 labelx = collX;
-      if(lwidth > uInt32(myCollision[idx]->getWidth()))
+      if(lwidth > static_cast<uInt32>(myCollision[idx]->getWidth()))
         labelx -= (lwidth - myCollision[idx]->getWidth()) / 2;
       else
         labelx += (myCollision[idx]->getWidth() - lwidth) / 2;
@@ -583,10 +584,10 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myPF[2]);
 
   // PFx bit labels
-  auto start = [&](int sw) { return (sw - sfWidth) / 2; };
-  int colw = myPF[0]->getWidth() / 4;
+  const auto start = [&](int sw) { return (sw - sfWidth) / 2; };
+  const int colw = myPF[0]->getWidth() / 4;
   xpos = 10 + 2*fontWidth + 5 + start(colw);
-  int _ypos = ypos - sfHeight;
+  const int _ypos = ypos - sfHeight;
   for(int i = 4; i <= 7; ++i)
   {
     new StaticTextWidget(boss, sf, xpos, _ypos, sfWidth, sfHeight,
@@ -989,7 +990,7 @@ void TiaWidget::loadConfig()
   }
   myColorRegs->setList(alist, vlist, changed);
 
-  bool fixed = tia.tia().usingFixedColors();
+  const bool fixed = tia.tia().usingFixedColors();
 
   myCOLUP0Color->setColor(state.coluRegs[0]);
   myCOLUP1Color->setColor(state.coluRegs[1]);
@@ -1059,7 +1060,7 @@ void TiaWidget::loadConfig()
   myDelP0->setState(tia.vdelP0(), state.vdel[TiaState::P0] != oldstate.vdel[TiaState::P0]);
 
   // NUSIZ0 (player portion)
-  bool nusiz0changed = state.size[TiaState::P0] != oldstate.size[TiaState::P0];
+  const bool nusiz0changed = state.size[TiaState::P0] != oldstate.size[TiaState::P0];
   myNusizP0->setList(0, state.size[TiaState::P0], nusiz0changed);
   myNusizP0Text->setText(tia.nusizP0String(), nusiz0changed);
 
@@ -1095,7 +1096,7 @@ void TiaWidget::loadConfig()
   myDelP1->setState(tia.vdelP1(), state.vdel[TiaState::P1] != oldstate.vdel[TiaState::P1]);
 
   // NUSIZ1 (player portion)
-  bool nusiz1changed = state.size[TiaState::P1] != oldstate.size[TiaState::P1];
+  const bool nusiz1changed = state.size[TiaState::P1] != oldstate.size[TiaState::P1];
   myNusizP1->setList(0, state.size[TiaState::P1], nusiz1changed);
   myNusizP1Text->setText(tia.nusizP1String(), nusiz1changed);
 
@@ -1210,8 +1211,8 @@ void TiaWidget::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaWidget::changeColorRegs()
 {
-  int addr  = myColorRegs->getSelectedAddr();
-  int value = myColorRegs->getSelectedValue();
+  const int addr  = myColorRegs->getSelectedAddr();
+  const int value = myColorRegs->getSelectedValue();
 
   switch(addr)
   {

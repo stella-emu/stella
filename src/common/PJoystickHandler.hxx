@@ -95,15 +95,15 @@ class PhysicalJoystickHandler
     void handleHatEvent(int stick, int hat, int value);
 
     Event::Type eventForAxis(EventMode mode, int stick, JoyAxis axis, JoyDir adir, int button) const {
-      const PhysicalJoystickPtr j = joy(stick);
+      const PhysicalJoystickPtr& j = joy(stick);
       return j->joyMap.get(mode, button, axis, adir);
     }
     Event::Type eventForButton(EventMode mode, int stick, int button) const {
-      const PhysicalJoystickPtr j = joy(stick);
+      const PhysicalJoystickPtr& j = joy(stick);
       return j->joyMap.get(mode, button);
     }
     Event::Type eventForHat(EventMode mode, int stick, int hat, JoyHatDir hatDir, int button) const {
-      const PhysicalJoystickPtr j = joy(stick);
+      const PhysicalJoystickPtr& j = joy(stick);
       return j->joyMap.get(mode, button, hat, hatDir);
     }
 
@@ -156,7 +156,7 @@ class PhysicalJoystickHandler
     }
 
     // Handle regular axis events (besides special Stelladaptor handling)
-    void handleRegularAxisEvent(const PhysicalJoystickPtr j,
+    void handleRegularAxisEvent(const PhysicalJoystickPtr& j,
                                 int stick, int axis, int value);
 
     // Structures used for action menu items

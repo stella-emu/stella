@@ -32,8 +32,8 @@ string CartridgeBFWidget::description()
 {
   ostringstream info;
 
-  info << "256K BF cartridge, 64 4K banks\n";
-  info << CartridgeEnhancedWidget::description();
+  info << "256K BF cartridge, 64 4K banks\n"
+       << CartridgeEnhancedWidget::description();
 
   return info.str();
 }

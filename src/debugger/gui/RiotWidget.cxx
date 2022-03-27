@@ -54,7 +54,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
             fontHeight = lfont.getFontHeight(),
             lineHeight = lfont.getLineHeight();
   int xpos = 10, ypos = 25, lwidth = 8 * fontWidth, col = 0;
-  StaticTextWidget* t;
+  StaticTextWidget* t = nullptr;
   VariantList items;
 
   // Set the strings to be used in the various bit registers
@@ -221,7 +221,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   int pwidth = lfont.getStringWidth("B/easy");
   lwidth = lfont.getStringWidth("Right Diff ");
   xpos = col;  ypos += 2 * lineHeight;
-  int col2_ypos = ypos;
+  const int col2_ypos = ypos;
   items.clear();
   VarList::push_back(items, "B/easy", "b");
   VarList::push_back(items, "A/hard", "a");

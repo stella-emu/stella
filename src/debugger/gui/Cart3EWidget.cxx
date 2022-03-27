@@ -34,9 +34,8 @@ string Cartridge3EWidget::description()
   ostringstream info;
   size_t size;
   const ByteBuffer& image = myCart.getImage(size);
-  uInt16 numRomBanks = myCart.romBankCount();
-  uInt16 numRamBanks = myCart.ramBankCount();
-
+  const uInt16 numRomBanks = myCart.romBankCount();
+  const uInt16 numRamBanks = myCart.ramBankCount();
 
   info << "3E cartridge (3F + RAM),\n"
        << "  " << numRomBanks << " 2K ROM banks, " << numRamBanks << " 1K RAM banks\n"
@@ -103,8 +102,8 @@ void Cartridge3EWidget::bankSelect(int& ypos)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge3EWidget::loadConfig()
 {
-  uInt16 oldBank = myOldState.banks[0];
-  uInt16 bank = myCart.getBank();
+  const uInt16 oldBank = myOldState.banks[0];
+  const uInt16 bank = myCart.getBank();
 
   if(myCart.getBank() < myCart.romBankCount())
   {
@@ -161,7 +160,7 @@ void Cartridge3EWidget::handleCommand(CommandSender* sender, int cmd, int data, 
 string Cartridge3EWidget::bankState()
 {
   ostringstream& buf = buffer();
-  uInt16 bank = myCart.getBank();
+  const uInt16 bank = myCart.getBank();
 
   if(bank < myCart.romBankCount())
     buf << "ROM bank #" << std::dec << bank % myCart.romBankCount() << ", RAM inactive";

@@ -145,7 +145,8 @@ void QisBlitter::recreateTexturesIfNecessary()
     free();
   }
 
-  SDL_TextureAccess texAccess = myStaticData == nullptr ? SDL_TEXTUREACCESS_STREAMING : SDL_TEXTUREACCESS_STATIC;
+  const SDL_TextureAccess texAccess =
+      myStaticData == nullptr ? SDL_TEXTUREACCESS_STREAMING : SDL_TEXTUREACCESS_STATIC;
 
   myIntermediateRect.w = (myDstRect.w / mySrcRect.w) * mySrcRect.w;
   myIntermediateRect.h = (myDstRect.h / mySrcRect.h) * mySrcRect.h;
@@ -180,7 +181,7 @@ void QisBlitter::recreateTexturesIfNecessary()
   }
 
   if (myAttributes.blending) {
-    uInt8 blendAlpha = uInt8(myAttributes.blendalpha * 2.55);
+    const uInt8 blendAlpha = static_cast<uInt8>(myAttributes.blendalpha * 2.55);
 
     std::array<SDL_Texture*, 3> textures = {
       mySrcTexture, myIntermediateTexture, mySecondaryIntermedateTexture

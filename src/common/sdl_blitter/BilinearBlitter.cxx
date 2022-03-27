@@ -110,7 +110,7 @@ void BilinearBlitter::recreateTexturesIfNecessary()
     free();
   }
 
-  SDL_TextureAccess texAccess = myStaticData == nullptr ? SDL_TEXTUREACCESS_STREAMING : SDL_TEXTUREACCESS_STATIC;
+  const SDL_TextureAccess texAccess = myStaticData == nullptr ? SDL_TEXTUREACCESS_STREAMING : SDL_TEXTUREACCESS_STATIC;
 
   SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, myInterpolate ? "1" : "0");
 
@@ -126,7 +126,7 @@ void BilinearBlitter::recreateTexturesIfNecessary()
   }
 
   if (myAttributes.blending) {
-    uInt8 blendAlpha = uInt8(myAttributes.blendalpha * 2.55);
+    const uInt8 blendAlpha = static_cast<uInt8>(myAttributes.blendalpha * 2.55);
 
     std::array<SDL_Texture*, 2> textures = { myTexture, mySecondaryTexture };
     for (SDL_Texture* texture: textures) {

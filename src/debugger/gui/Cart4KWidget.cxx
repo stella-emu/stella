@@ -42,8 +42,8 @@ string Cartridge4KWidget::description()
 {
   ostringstream info;
 
-  info << "Standard 4K cartridge, non-bankswitched\n";
-  info << CartridgeEnhancedWidget::description();
+  info << "Standard 4K cartridge, non-bankswitched\n"
+       << CartridgeEnhancedWidget::description();
 
   return info.str();
 }

@@ -33,10 +33,10 @@ string CartridgeSBWidget::description()
   ostringstream info;
 
   info << "SB SUPERbanking, " << myCart.romBankCount() << " 4K banks\n"
-    << "Hotspots are from $800 to $"
-    << Common::Base::HEX2 << (0x800 + myCart.romBankCount() - 1) << ", including\n"
-    << "mirrors ($900, $" << 0xA00 << ", $" << 0xB00 << ", ...)\n";
-  info << CartridgeEnhancedWidget::description();
+       << "Hotspots are from $800 to $"
+       << Common::Base::HEX2 << (0x800 + myCart.romBankCount() - 1) << ", including\n"
+       << "mirrors ($900, $" << 0xA00 << ", $" << 0xB00 << ", ...)\n"
+       << CartridgeEnhancedWidget::description();
 
   return info.str();
 }

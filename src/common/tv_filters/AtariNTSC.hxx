@@ -185,7 +185,7 @@ class AtariNTSC
     // Begins outputting row and starts two pixels. First pixel will be cut
     // off a bit.  Use atari_ntsc_black for unused pixels.
     #define ATARI_NTSC_BEGIN_ROW( pixel0, pixel1 ) \
-      unsigned const atari_ntsc_pixel0_ = (pixel0);\
+      constexpr unsigned atari_ntsc_pixel0_ = (pixel0);\
       uInt32 const* kernel0  = myColorTable[atari_ntsc_pixel0_].data();\
       unsigned const atari_ntsc_pixel1_ = (pixel1);\
       uInt32 const* kernel1  = myColorTable[atari_ntsc_pixel1_].data();\
@@ -211,7 +211,7 @@ class AtariNTSC
 
     // Common ntsc macros
     static constexpr void ATARI_NTSC_CLAMP( uInt32& io, uInt32 shift ) {
-      uInt32 sub = io >> (9-(shift)) & atari_ntsc_clamp_mask;
+      const uInt32 sub = io >> (9-(shift)) & atari_ntsc_clamp_mask;
       uInt32 clamp = atari_ntsc_clamp_add - sub;
       io |= clamp;
       clamp -= sub;

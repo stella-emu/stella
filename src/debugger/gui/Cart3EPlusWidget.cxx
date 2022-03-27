@@ -36,8 +36,8 @@ string Cartridge3EPlusWidget::description()
   ostringstream info;
   size_t size;
   const ByteBuffer& image = myCart.getImage(size);
-  uInt16 numRomBanks = myCart.romBankCount();
-  uInt16 numRamBanks = myCart.ramBankCount();
+  const uInt16 numRomBanks = myCart.romBankCount();
+  const uInt16 numRamBanks = myCart.ramBankCount();
 
   info << "3E+ cartridge - (4" << ELLIPSIS << "64K ROM + RAM)\n"
     << "  " << numRomBanks << " 1K ROM banks + " << numRamBanks << " 512b RAM banks\n"
@@ -73,7 +73,7 @@ void Cartridge3EPlusWidget::bankSelect(int& ypos)
 
   for(uInt32 seg = 0; seg < bankSegs(); ++seg)
   {
-    int xpos = 2, xpos_s, ypos_s = ypos + 1, width;
+    int xpos = 2, ypos_s = ypos + 1, width = 0;
     ostringstream label;
     VariantList items;
 
@@ -111,18 +111,17 @@ void Cartridge3EPlusWidget::bankSelect(int& ypos)
     myBankCommit[seg]->setTarget(this);
     addFocusWidget(myBankCommit[seg]);
 
-    xpos_s = myBankCommit[seg]->getRight() + _font.getMaxCharWidth() * 2;
+    const int xpos_s = myBankCommit[seg]->getRight() + _font.getMaxCharWidth() * 2;
 
-    StaticTextWidget* t;
     uInt16 start = (image[0x400 - 3] << 8) | image[0x400 - 4];
     start -= start % 0x1000;
-    int addr1 = start + (seg * 0x400), addr2 = addr1 + 0x200;
+    const int addr1 = start + (seg * 0x400), addr2 = addr1 + 0x200;
 
     label.str("");
     label << "$" << Common::Base::HEX4 << addr1 << "-$" << Common::Base::HEX4 << (addr1 + 0x1FF);
-    t = new StaticTextWidget(_boss, _font, xpos_s, ypos_s + 2, label.str());
+    StaticTextWidget* t = new StaticTextWidget(_boss, _font, xpos_s, ypos_s + 2, label.str());
 
-    int xoffset = t->getRight() + _font.getMaxCharWidth();
+    const int xoffset = t->getRight() + _font.getMaxCharWidth();
     myBankState[2 * seg] = new EditTextWidget(_boss, _font, xoffset, ypos_s,
                                               _w - xoffset - 10, myLineHeight, "");
     myBankState[2 * seg]->setEditable(false, true);
@@ -159,7 +158,7 @@ void Cartridge3EPlusWidget::handleCommand(CommandSender* sender,
     case kRomRamChanged:
     {
       const bool isROM = myBankType[segment]->getSelectedTag() == "ROM";
-      int bank = myBankWidgets[segment]->getSelected();
+      const int bank = myBankWidgets[segment]->getSelected();
 
       myBankCommit[segment]->setEnabled((isROM && bank < myCart.romBankCount())
         || (!isROM && bank < myCart.ramBankCount()));
@@ -172,7 +171,7 @@ void Cartridge3EPlusWidget::handleCommand(CommandSender* sender,
          myBankType[segment]->getSelected() < 0)
         return;
 
-      uInt8 bank = myBankWidgets[segment]->getSelected();
+      const uInt8 bank = myBankWidgets[segment]->getSelected();
 
       myCart.unlockHotspots();
 
@@ -198,12 +197,12 @@ void Cartridge3EPlusWidget::updateUIState()
   // Set contents for actual banks number and type (@ each even index)
   for(int seg = 0; seg < myCart3EP.myBankSegs; ++seg)
   {
-    uInt16 bank = myCart.getSegmentBank(seg);
+    const uInt16 bank = myCart.getSegmentBank(seg);
     ostringstream buf;
 
     if(bank >= myCart.romBankCount()) // was RAM mapped here?
     {
-      uInt16 ramBank = bank - myCart.romBankCount();
+      const uInt16 ramBank = bank - myCart.romBankCount();
 
       buf << "RAM @ $" << Common::Base::HEX4
         << (ramBank << myCart3EP.myBankShift) << " (R)";

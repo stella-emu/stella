@@ -34,8 +34,8 @@ QuadTariWidget::QuadTariWidget(GuiObject* boss, const GUI::Font& font,
   : ControllerWidget(boss, font, x, y, controller)
 {
   string label = (isLeftPort() ? "Left" : "Right") + string(" (QuadTari)");
-  StaticTextWidget* t = new StaticTextWidget(boss, font, x, y + 2, label);
-  QuadTari& qt = static_cast<QuadTari&>(controller);
+  const StaticTextWidget* t = new StaticTextWidget(boss, font, x, y + 2, label);
+  const QuadTari& qt = static_cast<QuadTari&>(controller);
 
   y = t->getBottom() + _lineHeight;
   addController(boss, x, y, *qt.myFirstController, false);
@@ -49,7 +49,7 @@ QuadTariWidget::QuadTariWidget(GuiObject* boss, const GUI::Font& font,
 void QuadTariWidget::addController(GuiObject* boss, int x, int y,
                                    Controller& controller, bool second)
 {
-  ControllerWidget* widget;
+  ControllerWidget* widget = nullptr;
 
   x += second ? _fontWidth * 10 : 0;
   switch(controller.type())
@@ -87,7 +87,7 @@ void QuadTariWidget::addController(GuiObject* boss, int x, int y,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void QuadTariWidget::loadConfig()
 {
-  bool first = !(instance().console().tia().registerValue(VBLANK) & 0x80);
+  const bool first = !(instance().console().tia().registerValue(VBLANK) & 0x80);
 
   myPointer->setLabel(first ? "<-" : "->");
 }

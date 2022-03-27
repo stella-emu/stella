@@ -32,8 +32,8 @@ string CartridgeEFWidget::description()
 {
   ostringstream info;
 
-  info << "64K H. Runner EF cartridge, 16 4K banks\n";
-  info << CartridgeEnhancedWidget::description();
+  info << "64K H. Runner EF cartridge, 16 4K banks\n"
+       << CartridgeEnhancedWidget::description();
 
   return info.str();
 }

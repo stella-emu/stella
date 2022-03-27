@@ -28,14 +28,14 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DevSettingsHandler::DevSettingsHandler(OSystem& osystem)
-  : myOSystem(osystem)
+  : myOSystem{osystem}
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DevSettingsHandler::loadSettings(SettingsSet set)
 {
-  bool devSettings = set == SettingsSet::developer;
+  const bool devSettings = set == SettingsSet::developer;
   const string& prefix = devSettings ? "dev." : "plr.";
   const Settings& settings = myOSystem.settings();
 
@@ -91,7 +91,7 @@ void DevSettingsHandler::loadSettings(SettingsSet set)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DevSettingsHandler::saveSettings(SettingsSet set)
 {
-  bool devSettings = set == SettingsSet::developer;
+  const bool devSettings = set == SettingsSet::developer;
   const string& prefix = devSettings ? "dev." : "plr.";
   Settings& settings = myOSystem.settings();
 
@@ -220,7 +220,7 @@ void DevSettingsHandler::handleEnableDebugColors(bool enable)
 {
   if(myOSystem.hasConsole())
   {
-    bool fixed = myOSystem.console().tia().usingFixedColors();
+    const bool fixed = myOSystem.console().tia().usingFixedColors();
     if(fixed != enable)
       myOSystem.console().tia().toggleFixedColors();
   }

@@ -310,7 +310,7 @@ bool RiotDebug::reset(int newVal)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string RiotDebug::dirP0String()
 {
-  uInt8 reg = swcha();
+  const uInt8 reg = swcha();
   ostringstream buf;
   buf << ((reg & 0x80) ? "" : "right ")
       << ((reg & 0x40) ? "" : "left ")
@@ -323,7 +323,7 @@ string RiotDebug::dirP0String()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string RiotDebug::dirP1String()
 {
-  uInt8 reg = swcha();
+  const uInt8 reg = swcha();
   ostringstream buf;
   buf << ((reg & 0x08) ? "" : "right ")
       << ((reg & 0x04) ? "" : "left ")

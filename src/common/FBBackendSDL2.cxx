@@ -91,7 +91,7 @@ void FBBackendSDL2::queryHardware(vector<Common::Size>& fullscreenRes,
     fullscreenRes.emplace_back(display.w, display.h);
 
     // evaluate fullscreen display modes (debug only for now)
-    int numModes = SDL_GetNumDisplayModes(i);
+    const int numModes = SDL_GetNumDisplayModes(i);
     ostringstream s;
 
     s << "Supported video modes (" << numModes << ") for display " << i
@@ -166,7 +166,7 @@ void FBBackendSDL2::queryHardware(vector<Common::Size>& fullscreenRes,
     { "software",  "Software"  }
   }};
 
-  int numDrivers = SDL_GetNumRenderDrivers();
+  const int numDrivers = SDL_GetNumRenderDrivers();
   for(int i = 0; i < numDrivers; ++i)
   {
     SDL_RendererInfo info;
@@ -229,9 +229,9 @@ bool FBBackendSDL2::setVideoMode(const VideoModeHandler::Mode& mode,
     return false;
 
   const bool fullScreen = mode.fsIndex != -1;
-  Int32 displayIndex = std::min(myNumDisplays - 1, winIdx);
+  const Int32 displayIndex = std::min(myNumDisplays - 1, winIdx);
 
-  int posX, posY;
+  int posX = 0, posY = 0;
 
   myCenter = myOSystem.settings().getBool("center");
   if(myCenter)
@@ -256,7 +256,7 @@ bool FBBackendSDL2::setVideoMode(const VideoModeHandler::Mode& mode,
         y1 = std::max(y1, rect.y + rect.h);
       }
     }
-    posX = BSPF::clamp(posX, x0 - Int32(mode.screenS.w) + 50, x1 - 50);
+    posX = BSPF::clamp(posX, x0 - static_cast<Int32>(mode.screenS.w) + 50, x1 - 50);
     posY = BSPF::clamp(posY, y0 + 50, y1 - 50);
   }
 
@@ -287,8 +287,8 @@ bool FBBackendSDL2::setVideoMode(const VideoModeHandler::Mode& mode,
     int w, h;
 
     SDL_GetWindowSize(myWindow, &w, &h);
-    if(d != displayIndex || uInt32(w) != mode.screenS.w ||
-       uInt32(h) != mode.screenS.h || adaptRefresh)
+    if(d != displayIndex || static_cast<uInt32>(w) != mode.screenS.w ||
+      static_cast<uInt32>(h) != mode.screenS.h || adaptRefresh)
     {
       // Renderer has to be destroyed *before* the window gets destroyed to avoid memory leaks
       SDL_DestroyRenderer(myRenderer);
@@ -617,7 +617,7 @@ bool FBBackendSDL2::detectRenderTargetSupport()
   if(!tex)
     return false;
 
-  int sdlError = SDL_SetRenderTarget(myRenderer, tex);
+  const int sdlError = SDL_SetRenderTarget(myRenderer, tex);
   SDL_SetRenderTarget(myRenderer, nullptr);
 
   SDL_DestroyTexture(tex);

@@ -32,8 +32,8 @@ string CartridgeBFSCWidget::description()
 {
   ostringstream info;
 
-  info << "256K BFSC + RAM, 64 4K banks\n";
-  info << CartridgeEnhancedWidget::description();
+  info << "256K BFSC + RAM, 64 4K banks\n"
+       << CartridgeEnhancedWidget::description();
 
   return info.str();
 }

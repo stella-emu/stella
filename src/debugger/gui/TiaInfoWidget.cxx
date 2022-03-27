@@ -36,7 +36,7 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
     CommandSender(boss)
 {
   const int VGAP = lfont.getLineHeight() / 4;
-  const int VBORDER = 5 + 1;
+  constexpr int VBORDER = 5 + 1;
   const int COLUMN_GAP = _fontWidth * 1.25;
   bool longstr = lfont.getStringWidth("Frame Cycls12345") + _fontWidth * 0.5
     + COLUMN_GAP + lfont.getStringWidth("Scanline262262")
@@ -167,17 +167,19 @@ void TiaInfoWidget::loadConfig()
   myFrameCycles->setText(Common::Base::toString(tia.frameCycles(), Common::Base::Fmt::_10_5),
                          tia.frameCycles() != oldTia.info[1]);
 
-  uInt64 total = tia.cyclesLo() + (uInt64(tia.cyclesHi()) << 32);
-  uInt64 totalOld = oldTia.info[2] + (uInt64(oldTia.info[3]) << 32);
-  myTotalCycles->setText(Common::Base::toString(uInt32(total) / 1000000, Common::Base::Fmt::_10_6) + "e6",
+  const uInt64 total = tia.cyclesLo() + (static_cast<uInt64>(tia.cyclesHi()) << 32);
+  const uInt64 totalOld = oldTia.info[2] + (static_cast<uInt64>(oldTia.info[3]) << 32);
+  myTotalCycles->setText(Common::Base::toString(static_cast<uInt32>(total) / 1000000,
+                         Common::Base::Fmt::_10_6) + "e6",
                          total / 1000000 != totalOld / 1000000);
   myTotalCycles->setToolTip("Total CPU cycles (E notation) executed for this session ("
                             + std::to_string(total) + ").");
 
-  uInt64 delta = total - totalOld;
-  myDeltaCycles->setText(Common::Base::toString(uInt32(delta), Common::Base::Fmt::_10_8)); // no coloring
+  const uInt64 delta = total - totalOld;
+  myDeltaCycles->setText(Common::Base::toString(static_cast<uInt32>(delta),
+                         Common::Base::Fmt::_10_8)); // no coloring
 
-  int clk = tia.clocksThisLine();
+  const int clk = tia.clocksThisLine();
   myScanlineCount->setText(Common::Base::toString(tia.scanlines(), Common::Base::Fmt::_10_3),
                            tia.scanlines() != oldTia.info[4]);
   myScanlineCountLast->setText(

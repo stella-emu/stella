@@ -48,8 +48,8 @@ class Widget : public GuiObject
     Widget(GuiObject* boss, const GUI::Font& font, int x, int y, int w, int h);
     ~Widget() override;
 
-    virtual int getAbsX() const override { return _x + _boss->getChildX(); }
-    virtual int getAbsY() const override { return _y + _boss->getChildY(); }
+    int getAbsX() const override { return _x + _boss->getChildX(); }
+    int getAbsY() const override { return _y + _boss->getChildY(); }
     virtual int getLeft() const { return _x; }
     virtual int getTop() const { return _y; }
     virtual int getRight() const { return _x + getWidth(); }

@@ -56,7 +56,7 @@ class EventHandlerSDL2 : public EventHandler
     void pollEvent() override;
 
   private:
-    SDL_Event myEvent;
+    SDL_Event myEvent{0};
 
     // A thin wrapper around a basic PhysicalJoystick, holding the pointer to
     // the underlying SDL joystick device.

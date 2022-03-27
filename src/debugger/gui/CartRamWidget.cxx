@@ -39,17 +39,18 @@ CartRamWidget::CartRamWidget(
     myLineHeight{lfont.getLineHeight()},
     myButtonHeight{myLineHeight + 4}
 {
-  int lwidth = lfont.getStringWidth("Description "),
-            fwidth = w - lwidth - 20;
+  int lwidth = lfont.getStringWidth("Description ");
+  const int fwidth = w - lwidth - 20;
 
   EditTextWidget* etw = nullptr;
   ostringstream buf;
-  int xpos = 2, ypos = 8;
+  constexpr int xpos = 2;
+  int ypos = 8;
 
   // Add RAM size
   new StaticTextWidget(_boss, _font, xpos, ypos + 1, "RAM size ");
 
-  uInt32 ramsize = cartDebug.internalRamSize();
+  const uInt32 ramsize = cartDebug.internalRamSize();
   buf << ramsize << " bytes";
   if(ramsize >= 1024)
     buf << " / " << (ramsize/1024) << "KB";
@@ -61,10 +62,10 @@ CartRamWidget::CartRamWidget(
 
   // Add Description
   const string& desc = cartDebug.internalRamDescription();
-  const uInt16 maxlines = 6;
-  StringParser bs(desc, (fwidth - ScrollBarWidget::scrollBarWidth(_font)) / myFontWidth);
+  constexpr uInt16 maxlines = 6;
+  const StringParser bs(desc, (fwidth - ScrollBarWidget::scrollBarWidth(_font)) / myFontWidth);
   const StringList& sl = bs.stringList();
-  uInt32 lines = uInt32(sl.size());
+  uInt32 lines = static_cast<uInt32>(sl.size());
   bool useScrollbar = false;
 
   if(lines < 2) lines = 2;

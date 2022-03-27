@@ -81,8 +81,8 @@ class RewindManager
       76 * 262 * 60 * 60,
       76 * 262 * 60 * 60 * 3,
       76 * 262 * 60 * 60 * 10,
-      uInt64(76) * 262 * 60 * 60 * 30,
-      uInt64(76) * 262 * 60 * 60 * 60
+      uInt64{76} *262 * 60 * 60 * 30,
+      uInt64{76} *262 * 60 * 60 * 60
     };
     // settings values for the horzions
     const std::array<string, NUM_HORIZONS> HOR_SETTINGS = {
@@ -185,8 +185,11 @@ class RewindManager
       // We do nothing on object instantiation or copy
       // The goal of LinkedObjectPool is to not do any allocations at all
       RewindState() = default;
+      ~RewindState() = default;
       RewindState(const RewindState& rs) : cycles(rs.cycles) { }
       RewindState& operator= (const RewindState& rs) { cycles = rs.cycles; return *this; }
+      RewindState(RewindState&&) = default;
+      RewindState& operator=(RewindState&&) = default;
 
       // Output object info; used for debugging only
       friend ostream& operator<<(ostream& os, const RewindState& s) {

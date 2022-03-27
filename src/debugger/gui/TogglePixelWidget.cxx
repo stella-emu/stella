@@ -35,10 +35,10 @@ TogglePixelWidget::TogglePixelWidget(GuiObject* boss, const GUI::Font& font,
   _h = _rowHeight * rows + 1;
 
   // Changed state isn't used, but we still need to fill it
-  while(int(_changedList.size()) < rows * cols)
+  while(static_cast<int>(_changedList.size()) < rows * cols)
     _changedList.push_back(false);
   // prepare _stateList for change tracking
-  while(int(_stateList.size()) < rows * cols)
+  while(static_cast<int>(_stateList.size()) < rows * cols)
     _stateList.push_back(false);
 }
 
@@ -50,8 +50,8 @@ void TogglePixelWidget::setState(const BoolArray& state)
   {
     for(int col = 0; col < _cols; col++)
     {
-      int pos = row * _cols + col;
-      bool changed = _stateList[pos] != state[pos];
+      const int pos = row * _cols + col;
+      const bool changed = _stateList[pos] != state[pos];
 
       if(_changedList[pos] != changed)
       {
@@ -68,7 +68,7 @@ void TogglePixelWidget::setState(const BoolArray& state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TogglePixelWidget::setIntState(int value, bool swap)
 {
-  uInt32 size = _rows * _cols;
+  const uInt32 size = _rows * _cols;
   _swapBits = swap;
 
   // Create array of required size
@@ -86,7 +86,7 @@ void TogglePixelWidget::setIntState(int value, bool swap)
   //   confusing.
   for(uInt32 i = 0; i < size; ++i)
   {
-    bool bitIsSet = value & (1 << i);
+    const bool bitIsSet = value & (1 << i);
     if(_swapBits)
       b[i] = bitIsSet;
     else
@@ -100,9 +100,10 @@ void TogglePixelWidget::setIntState(int value, bool swap)
 int TogglePixelWidget::getIntState()
 {
   // Construct int based on current state and swap
-  uInt32 value = 0, size = int(_stateList.size());
+  uInt32 value = 0;
+  const int size = static_cast<int>(_stateList.size());
 
-  for(uInt32 i = 0; i < size; ++i)
+  for(int i = 0; i < size; ++i)
   {
     if(_stateList[i])
     {
@@ -131,26 +132,26 @@ void TogglePixelWidget::drawWidget(bool hilite)
 {
 //cerr << "TogglePixelWidget::drawWidget\n";
   FBSurface& s = dialog().surface();
-  int row, col;
 
   s.frameRect(_x, _y, _w, _h, hilite && isEnabled() && isEditable() ? kWidColorHi : kColor);
 
+  const int linewidth = _cols * _colWidth;
+  const int lineheight = _rows * _rowHeight;
+
   // Draw the internal grid and labels
-  int linewidth = _cols * _colWidth;
-  for (row = 1; row <= _rows - 1; row++)
+  for(int row = 1; row <= _rows - 1; row++)
     s.hLine(_x, _y + (row * _rowHeight), _x + linewidth, kColor);
-  int lineheight = _rows * _rowHeight;
-  for (col = 1; col <= _cols - 1; col++)
+  for(int col = 1; col <= _cols - 1; col++)
     s.vLine(_x + (col * _colWidth), _y, _y + lineheight, kColor);
 
   // Draw the pixels
-  for (row = 0; row < _rows; row++)
+  for(int row = 0; row < _rows; row++)
   {
-    for (col = 0; col < _cols; col++)
+    for(int col = 0; col < _cols; col++)
     {
-      int x = _x + 4 + (col * _colWidth);
-      int y = _y + 2 + (row * _rowHeight);
-      int pos = row*_cols + col;
+      const int x = _x + 4 + (col * _colWidth),
+                y = _y + 2 + (row * _rowHeight),
+                pos = row*_cols + col;
 
       // Draw the selected item inverted, on a highlighted background.
       if (_currentRow == row && _currentCol == col && _hasFocus)
@@ -167,9 +168,9 @@ void TogglePixelWidget::drawWidget(bool hilite)
   // Cross out the bits?
   if(_crossBits)
   {
-    for(col = 0; col < _cols; ++col)
+    for(int col = 0; col < _cols; ++col)
     {
-      int x = _x + col * _colWidth;
+      const int x = _x + col * _colWidth;
 
       s.line(x + 1, _y + 1, x + _colWidth - 1, _y + lineheight - 1, kColor);
       s.line(x + _colWidth - 1, _y + 1, x + 1, _y + lineheight - 1, kColor);

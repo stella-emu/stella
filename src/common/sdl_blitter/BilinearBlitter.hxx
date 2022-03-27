@@ -31,14 +31,14 @@ class BilinearBlitter : public Blitter {
 
     ~BilinearBlitter() override;
 
-    virtual void reinitialize(
+    void reinitialize(
       SDL_Rect srcRect,
       SDL_Rect destRect,
       FBSurface::Attributes attributes,
       SDL_Surface* staticData = nullptr
     ) override;
 
-    virtual void blit(SDL_Surface& surface) override;
+    void blit(SDL_Surface& surface) override;
 
   private:
     FBBackendSDL2& myFB;

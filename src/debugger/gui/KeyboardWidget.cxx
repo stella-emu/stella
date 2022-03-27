@@ -23,7 +23,7 @@ KeyboardWidget::KeyboardWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, Controller& controller)
   : ControllerWidget(boss, font, x, y, controller)
 {
-  bool leftport = isLeftPort();
+  const bool leftport = isLeftPort();
   const string& label = leftport ? "Left (Keyboard)" : "Right (Keyboard)";
 
   const int fontHeight = font.getFontHeight();

@@ -21,7 +21,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void BreakpointMap::add(const Breakpoint& breakpoint, const uInt32 flags)
 {
-  Breakpoint bp = convertBreakpoint(breakpoint);
+  const Breakpoint bp = convertBreakpoint(breakpoint);
 
   myInitialized = true;
   myMap[bp] = flags;
@@ -40,7 +40,7 @@ void BreakpointMap::erase(const Breakpoint& breakpoint)
   if(!myMap.erase(breakpoint))
   {
     // 13 bit breakpoint
-    Breakpoint bp13(breakpoint.addr & ADDRESS_MASK, breakpoint.bank);
+    const Breakpoint bp13(breakpoint.addr & ADDRESS_MASK, breakpoint.bank);
 
     myMap.erase(bp13);
   }
@@ -61,7 +61,7 @@ uInt32 BreakpointMap::get(const Breakpoint& breakpoint) const
     return find->second;
 
   // 13 bit breakpoint
-  Breakpoint bp13(breakpoint.addr & ADDRESS_MASK, breakpoint.bank);
+  const Breakpoint bp13(breakpoint.addr & ADDRESS_MASK, breakpoint.bank);
 
   find = myMap.find(bp13);
   if(find != myMap.end())
@@ -85,7 +85,7 @@ bool BreakpointMap::check(const Breakpoint& breakpoint) const
     return true;
 
   // 13 bit breakpoint
-  Breakpoint bp13(breakpoint.addr & ADDRESS_MASK, breakpoint.bank);
+  const Breakpoint bp13(breakpoint.addr & ADDRESS_MASK, breakpoint.bank);
 
   find = myMap.find(bp13);
   return (find != myMap.end());
@@ -103,7 +103,7 @@ BreakpointMap::BreakpointList BreakpointMap::getBreakpoints() const
   BreakpointList map;
   std::map<Breakpoint, uInt32> ordered(myMap.begin(), myMap.end());
 
-  for(auto item : ordered)
+  for(const auto& item : ordered)
     map.push_back(item.first);
 
   return map;

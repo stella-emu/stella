@@ -36,8 +36,8 @@ string CartridgeMDMWidget::description()
 
   info << "Menu Driven Megacart, " << myCart.romBankCount() << " 4K banks\n"
        << "Banks are selected by reading from $800 - $" << Common::Base::HEX1 << 0xBFF
-       << ", where the lower byte determines the 4K bank to use.\n";
-  info << CartridgeEnhancedWidget::description();
+       << ", where the lower byte determines the 4K bank to use.\n"
+       << CartridgeEnhancedWidget::description();
 
   return info.str();
 }
@@ -48,7 +48,7 @@ void CartridgeMDMWidget::bankSelect(int& ypos)
   CartridgeEnhancedWidget::bankSelect(ypos);
   if(myCart.romBankCount() > 1)
   {
-    int xpos = myBankWidgets[0]->getRight() + 20;
+    const int xpos = myBankWidgets[0]->getRight() + 20;
     ypos = myBankWidgets[0]->getTop();
 
     myBankDisabled = new CheckboxWidget(_boss, _font, xpos, ypos + 1,

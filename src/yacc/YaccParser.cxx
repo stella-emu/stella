@@ -82,12 +82,12 @@ int parse(const string& in)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // hand-rolled lexer. Hopefully faster than flex...
-inline bool is_base_prefix(char x)
+inline constexpr bool is_base_prefix(char x)
 {
   return ( (x=='\\' || x=='$' || x=='#') );
 }
 
-inline bool is_identifier(char x)
+inline constexpr bool is_identifier(char x)
 {
   return ( (x>='0' && x<='9') ||
            (x>='a' && x<='z') ||
@@ -95,7 +95,7 @@ inline bool is_identifier(char x)
             x=='.' || x=='_'  );
 }
 
-inline bool is_operator(char x)
+inline constexpr bool is_operator(char x)
 {
   return ( (x=='+' || x=='-' || x=='*' ||
             x=='/' || x=='<' || x=='>' ||

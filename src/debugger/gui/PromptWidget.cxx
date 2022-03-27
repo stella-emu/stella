@@ -72,27 +72,27 @@ PromptWidget::PromptWidget(GuiObject* boss, const GUI::Font& font,
 void PromptWidget::drawWidget(bool hilite)
 {
 //cerr << "PromptWidget::drawWidget\n";
-  ColorId fgcolor, bgcolor;
+  ColorId fgcolor{}, bgcolor{};
   FBSurface& s = _boss->dialog().surface();
 
   // Draw text
-  int start = _scrollLine - _linesPerPage + 1;
+  const int start = _scrollLine - _linesPerPage + 1;
   int y = _y + 2;
 
   for (int line = 0; line < _linesPerPage; ++line)
   {
     int x = _x + 1;
     for (int column = 0; column < _lineWidth; ++column) {
-      int c = buffer((start + line) * _lineWidth + column);
+      const int c = buffer((start + line) * _lineWidth + column);
 
       if(c & (1 << 17))  // inverse video flag
       {
         fgcolor = _bgcolor;
-        bgcolor = ColorId((c & 0x1ffff) >> 8);
+        bgcolor = static_cast<ColorId>((c & 0x1ffff) >> 8);
         s.fillRect(x, y, _kConsoleCharWidth, _kConsoleCharHeight, bgcolor);
       }
       else
-        fgcolor = ColorId(c >> 8);
+        fgcolor = static_cast<ColorId>(c >> 8);
 
       s.drawChar(_font, c & 0x7f, x, y, fgcolor);
       x += _kConsoleCharWidth;
@@ -356,7 +356,7 @@ void PromptWidget::handleCommand(CommandSender* sender, int cmd,
 {
   if(cmd == GuiObject::kSetPositionCmd)
   {
-    int newPos = int(data) + _linesPerPage - 1 + _firstLineInBuffer;
+    const int newPos = data + _linesPerPage - 1 + _firstLineInBuffer;
     if (newPos != _scrollLine)
     {
       _scrollLine = newPos;
@@ -461,7 +461,7 @@ void PromptWidget::killLine(int direction)
 {
   if(direction == -1)  // erase from current position to beginning of line
   {
-    int count = _currentPos - _promptStartPos;
+    const int count = _currentPos - _promptStartPos;
     if(count > 0)
       for (int i = 0; i < count; i++)
        killChar(-1);
@@ -564,9 +564,9 @@ int PromptWidget::historyDir(int& index, int direction)
 {
   index += direction;
   if(index < 0)
-    index += int(_history.size());
+    index += static_cast<int>(_history.size());
   else
-    index %= int(_history.size());
+    index %= static_cast<int>(_history.size());
 
   return index;
 }
@@ -574,7 +574,7 @@ int PromptWidget::historyDir(int& index, int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::historyAdd(const string& entry)
 {
-  if(_historyIndex >= int(_history.size()))
+  if(_historyIndex >= static_cast<int>(_history.size()))
     _history.push_back(entry);
   else
     _history[_historyIndex] = entry;
@@ -587,7 +587,7 @@ void PromptWidget::addToHistory(const char* str)
   if(_history.size())
   {
     int i = _historyIndex;
-    int historyEnd = _historyIndex % _history.size();
+    const int historyEnd = _historyIndex % _history.size();
 
     do
     {
@@ -632,8 +632,8 @@ bool PromptWidget::historyScroll(int direction)
   // Search the history using the original input
   do
   {
-    int idx = _historyLine
-      ? (_historyIndex - _historyLine + _history.size()) % int(_history.size())
+    const int idx = _historyLine
+      ? (_historyIndex - _historyLine + _history.size()) % static_cast<int>(_history.size())
       : _historyIndex;
 
     if(BSPF::startsWithIgnoreCase(_history[idx], _history[_historyIndex]))
@@ -652,8 +652,8 @@ bool PromptWidget::historyScroll(int direction)
   scrollToCurrent();
 
   // Print the text from the history
-  int idx = _historyLine
-    ? (_historyIndex - _historyLine + _history.size()) % int(_history.size())
+  const int idx = _historyLine
+    ? (_historyIndex - _historyLine + _history.size()) % static_cast<int>(_history.size())
     : _historyIndex;
 
   for(int i = 0; i < kLineBufferSize && _history[idx][i] != '\0'; i++)
@@ -672,7 +672,7 @@ bool PromptWidget::execute()
   nextLine();
 
   assert(_promptEndPos >= _promptStartPos);
-  int len = _promptEndPos - _promptStartPos;
+  const int len = _promptEndPos - _promptStartPos;
 
   if(len > 0)
   {
@@ -716,7 +716,7 @@ bool PromptWidget::autoComplete(int direction)
   int len = _promptEndPos - _promptStartPos;
 
   if(_tabCount != -1)
-    len = int(strlen(_inputStr));
+    len = static_cast<int>(strlen(_inputStr));
   if(len > kLineBufferSize - 1)
     len = kLineBufferSize - 1;
 
@@ -745,7 +745,7 @@ bool PromptWidget::autoComplete(int direction)
     instance().debugger().parser().getCompletions(_inputStr, list);
   else
   {
-    size_t strLen = len - lastDelimPos - 1;
+    const size_t strLen = len - lastDelimPos - 1;
     // do not show ALL commands/labels without any filter as it makes no sense
     if(strLen > 0)
     {
@@ -770,7 +770,7 @@ bool PromptWidget::autoComplete(int direction)
   if(direction < 0)
   {
     if(--_tabCount < 0)
-      _tabCount = int(list.size()) - 1;
+      _tabCount = static_cast<int>(list.size()) - 1;
   }
   else
     _tabCount = (_tabCount + 1) % list.size();
@@ -800,7 +800,7 @@ void PromptWidget::nextLine()
   _textcolor = kTextColor;
   _inverse = false;
 
-  int line = _currentPos / _lineWidth;
+  const int line = _currentPos / _lineWidth;
   if (line == _scrollLine)
     _scrollLine++;
 
@@ -813,10 +813,10 @@ void PromptWidget::nextLine()
 // Call this (at least) when the current line changes or when a new line is added
 void PromptWidget::updateScrollBuffer()
 {
-  int lastchar = std::max(_promptEndPos, _currentPos);
-  int line = lastchar / _lineWidth;
-  int numlines = (line < _linesInBuffer) ? line + 1 : _linesInBuffer;
-  int firstline = line - numlines + 1;
+  const int lastchar = std::max(_promptEndPos, _currentPos),
+            line = lastchar / _lineWidth,
+            numlines = (line < _linesInBuffer) ? line + 1 : _linesInBuffer,
+            firstline = line - numlines + 1;
 
   if (firstline > _firstLineInBuffer)
   {
@@ -840,7 +840,7 @@ int PromptWidget::printf(const char* format, ...)  // NOLINT
   va_list argptr;
 
   va_start(argptr, format);
-  int count = this->vprintf(format, argptr);
+  const int count = this->vprintf(format, argptr);
   va_end (argptr);
   return count;
 }
@@ -849,7 +849,7 @@ int PromptWidget::printf(const char* format, ...)  // NOLINT
 int PromptWidget::vprintf(const char* format, va_list argptr)
 {
   char buf[2048];  // NOLINT  (will be rewritten soon)
-  int count = std::vsnprintf(buf, sizeof(buf), format, argptr);
+  const int count = std::vsnprintf(buf, sizeof(buf), format, argptr);
 
   print(buf);
   return count;
@@ -862,11 +862,11 @@ void PromptWidget::putcharIntern(int c)
     nextLine();
   else if(c & 0x80) { // set foreground color to TIA color
                       // don't print or advance cursor
-    _textcolor = ColorId((c & 0x7f) << 1);
+    _textcolor = static_cast<ColorId>((c & 0x7f) << 1);
   }
   else if(c && c < 0x1e) { // first actual character is large dash
     // More colors (the regular GUI ones)
-    _textcolor = ColorId(c + 0x100);
+    _textcolor = static_cast<ColorId>(c + 0x100);
   }
   else if(c == 0x7f) { // toggle inverse video (DEL char)
     _inverse = !_inverse;
@@ -887,7 +887,7 @@ void PromptWidget::putcharIntern(int c)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::print(const string& str)
 {
-  for(char c: str)
+  for(const auto c: str)
     putcharIntern(c);
 }
 
@@ -896,17 +896,17 @@ void PromptWidget::drawCaret()
 {
 //cerr << "PromptWidget::drawCaret()\n";
   FBSurface& s = _boss->dialog().surface();
-  int line = _currentPos / _lineWidth;
+  const int line = _currentPos / _lineWidth;
 
   // Don't draw the cursor if it's not in the current view
   if(_scrollLine < line)
     return;
 
-  int displayLine = line - _scrollLine + _linesPerPage - 1;
-  int x = _x + 1 + (_currentPos % _lineWidth) * _kConsoleCharWidth;
-  int y = _y + displayLine * _kConsoleLineHeight;
+  const int displayLine = line - _scrollLine + _linesPerPage - 1,
+                          x = _x + 1 + (_currentPos % _lineWidth) * _kConsoleCharWidth,
+                          y = _y + displayLine * _kConsoleLineHeight;
 
-  char c = buffer(_currentPos); //FIXME: int to char??
+  const char c = buffer(_currentPos); //FIXME: int to char??
   s.fillRect(x, y, _kConsoleCharWidth, _kConsoleLineHeight, kTextColor);
   s.drawChar(_font, c, x, y + 2, kBGColor);
 }
@@ -914,7 +914,7 @@ void PromptWidget::drawCaret()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::scrollToCurrent()
 {
-  int line = _promptEndPos / _lineWidth;
+  const int line = _promptEndPos / _lineWidth;
 
   if (line + _linesPerPage <= _scrollLine)
   {
@@ -936,13 +936,13 @@ string PromptWidget::saveBuffer(const FilesystemNode& file)
     int end = start + _lineWidth - 1;
 
     // Look for first non-space, printing char from end of line
-    while( char(_buffer[end] & 0xff) <= ' ' && end >= start)
+    while(static_cast<char>(_buffer[end] & 0xff) <= ' ' && end >= start)
       end--;
 
     // Spit out the line minus its trailing junk
     // Strip off any color/inverse bits
     for(int j = start; j <= end; ++j)
-      out << char(_buffer[j] & 0xff);
+      out << static_cast<char>(_buffer[j] & 0xff);
 
     // add a \n
     out << endl;

@@ -28,7 +28,7 @@ CartridgeBUSWidget::CartridgeBUSWidget(
   : CartridgeARMWidget(boss, lfont, nfont, x, y, w, h, cart),
     myCart{cart}
 {
-  uInt16 size = 8 * 4096;
+  constexpr uInt16 size = 8 * 4096;
 
   ostringstream info;
   info << "BUS Stuffing cartridge (EXPERIMENTAL)\n"
@@ -155,8 +155,8 @@ CartridgeBUSWidget::CartridgeBUSWidget(
   myMusicWaveforms->setTarget(this);
   myMusicWaveforms->setEditable(false);
 
-  int xpossp = xpos + myMusicWaveforms->getWidth() + 20;
-  int lwidth2 = _font.getStringWidth("Sample Pointer ");
+  const int xpossp = xpos + myMusicWaveforms->getWidth() + 20;
+  const int lwidth2 = _font.getStringWidth("Sample Pointer ");
   new StaticTextWidget(boss, _font, xpossp, ypos, lwidth2,
                        myFontHeight, "Sample Pointer ", TextAlign::Left);
 
@@ -270,7 +270,7 @@ void CartridgeBUSWidget::loadConfig()
     // I = Increment
     // F = Fractional
 
-    Int32 pointervalue = myCart.getDatastreamPointer(i) >> 12;
+    const Int32 pointervalue = myCart.getDatastreamPointer(i) >> 12;
     alist.push_back(0);  vlist.push_back(pointervalue);
     changed.push_back(pointervalue != myOldState.datastreampointers[i]);
   }
@@ -279,7 +279,7 @@ void CartridgeBUSWidget::loadConfig()
   alist.clear();  vlist.clear();  changed.clear();
   for(int i = 16; i < 18; ++i)
   {
-    Int32 pointervalue = myCart.getDatastreamPointer(i) >> 12;
+    const Int32 pointervalue = myCart.getDatastreamPointer(i) >> 12;
     alist.push_back(0);  vlist.push_back(pointervalue);
     changed.push_back(pointervalue != myOldState.datastreampointers[i]);
   }
@@ -288,7 +288,7 @@ void CartridgeBUSWidget::loadConfig()
   alist.clear();  vlist.clear();  changed.clear();
   for(int i = 0; i < 16; ++i)
   {
-    Int32 incrementvalue = myCart.getDatastreamIncrement(i);
+    const Int32 incrementvalue = myCart.getDatastreamIncrement(i);
     alist.push_back(0);  vlist.push_back(incrementvalue);
     changed.push_back(incrementvalue != myOldState.datastreamincrements[i]);
   }
@@ -297,7 +297,7 @@ void CartridgeBUSWidget::loadConfig()
   alist.clear();  vlist.clear();  changed.clear();
   for(int i = 16; i < 18; ++i)
   {
-    Int32 incrementvalue = 0x100;
+    constexpr Int32 incrementvalue = 0x100;
     alist.push_back(0);  vlist.push_back(incrementvalue);
     changed.push_back(incrementvalue != myOldState.datastreamincrements[i]);
   }
@@ -306,13 +306,13 @@ void CartridgeBUSWidget::loadConfig()
   alist.clear();  vlist.clear();  changed.clear();
   for(int i = 0; i < 37; ++i) // only 37 map values
   {
-    Int32 mapvalue = myCart.getAddressMap(i);
+    const Int32 mapvalue = myCart.getAddressMap(i);
     alist.push_back(0);  vlist.push_back(mapvalue);
     changed.push_back(mapvalue != myOldState.addressmaps[i]);
   }
   for(int i = 37; i < 40; ++i) // but need 40 for the grid
   {
-    Int32 mapvalue = 0;
+    constexpr Int32 mapvalue = 0;
     alist.push_back(0);  vlist.push_back(mapvalue);
     changed.push_back(mapvalue != myOldState.addressmaps[i]);
   }

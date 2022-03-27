@@ -44,7 +44,7 @@ class Cheat
     static uInt16 unhex(const string& hex)
     {
       int ret = 0;
-      for(char c: hex)
+      for(const auto c: hex)
       {
         ret *= 16;
         if(c >= '0' && c <= '9')

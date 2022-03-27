@@ -33,7 +33,7 @@ void ConvolutionBuffer::shift(float nextValue)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-float ConvolutionBuffer::convoluteWith(float* kernel) const
+float ConvolutionBuffer::convoluteWith(const float* const kernel) const
 {
   float result = 0.F;
 

@@ -60,7 +60,7 @@ class ListWidget : public EditableWidget
     const string& getSelectedString() const;
 
     void scrollTo(int item);
-    void scrollToEnd() { scrollToCurrent(int(_list.size())); }
+    void scrollToEnd() { scrollToCurrent(static_cast<int>(_list.size())); }
 
     // Account for the extra width of embedded scrollbar
     int getWidth() const override;

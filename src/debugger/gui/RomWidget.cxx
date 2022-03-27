@@ -36,13 +36,11 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   : Widget(boss, lfont, x, y, w, h),
     CommandSender(boss)
 {
-  int xpos, ypos;
-  StaticTextWidget* t;
   WidgetArray wid;
 
   // Show current bank state
-  xpos = x;  ypos = y + 7;
-  t = new StaticTextWidget(boss, lfont, xpos, ypos, "Info ");
+  int xpos = x, ypos = y + 7;
+  StaticTextWidget* t = new StaticTextWidget(boss, lfont, xpos, ypos, "Info ");
 
   xpos += t->getRight();
   myBank = new EditTextWidget(boss, nfont, xpos, ypos-2,
@@ -74,7 +72,7 @@ void RomWidget::loadConfig()
   }
 
   // Update romlist to point to current PC (if it has changed)
-  int pcline = cart.addressToLine(dbg.cpuDebug().pc());
+  const int pcline = cart.addressToLine(dbg.cpuDebug().pc());
 
   if(pcline >= 0 && pcline != myRomList->getHighlighted())
     myRomList->setHighlighted(pcline);
@@ -96,7 +94,7 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
     case RomListWidget::kRomChangedCmd:
       // 'data' is the line in the disassemblylist to be accessed
       // 'id' is the base to use for the data to be changed
-      patchROM(data, myRomList->getText(), Common::Base::Fmt(id));
+      patchROM(data, myRomList->getText(), Common::Base::Fmt{id});
       break;
 
     case RomListWidget::kSetPCCmd:
@@ -195,7 +193,7 @@ void RomWidget::runtoPC(int disasm_line)
   {
     ostringstream command;
     command << "runtopc #" << address;
-    string msg = instance().debugger().run(command.str());
+    const string& msg = instance().debugger().run(command.str());
     instance().frameBuffer().showTextMessage(msg);
   }
 }
@@ -227,7 +225,7 @@ void RomWidget::patchROM(int disasm_line, const string& bytes,
 
     // Temporarily set to correct base, so we don't have to prefix each byte
     // with the type of data
-    Common::Base::Fmt oldbase = Common::Base::format();
+    const Common::Base::Fmt oldbase = Common::Base::format();
 
     Common::Base::setFormat(base);
     command << "rom #" << address << " " << bytes;
@@ -244,7 +242,7 @@ uInt16 RomWidget::getAddress(int disasm_line)
   const CartDebug::DisassemblyList& list =
     instance().debugger().cartDebug().disassembly().list;
 
-  if (disasm_line < int(list.size()) && list[disasm_line].address != 0)
+  if (disasm_line < static_cast<int>(list.size()) && list[disasm_line].address != 0)
     return list[disasm_line].address;
   else
     return 0;

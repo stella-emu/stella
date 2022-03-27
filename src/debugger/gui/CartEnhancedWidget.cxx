@@ -123,31 +123,28 @@ string CartridgeEnhancedWidget::romDescription()
   else
   {
     uInt16 start = (image[myCart.mySize - 3] << 8) | image[myCart.mySize - 4];
-    uInt16 end;
-
     start -= start % std::min(int(size), 0x1000);
-    end = start + uInt16(myCart.mySize) - 1;
+    const uInt16 end = start + static_cast<uInt16>(myCart.mySize) - 1;
     // special check for ROMs where the extra RAM is not included in the image (e.g. CV).
     if((start & 0xFFFU) < size)
     {
       start += myCart.myRomOffset;
     }
     info << "ROM accessible @ $"
-      << Common::Base::HEX4 << start << " - $"
-      << Common::Base::HEX4 << end;
+         << Common::Base::HEX4 << start << " - $"
+         << Common::Base::HEX4 << end;
   }
 
   return info.str();
 }
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeEnhancedWidget::plusROMInfo(int& ypos)
 {
   if(myCart.isPlusROM())
   {
-    const int xpos = 2,
-              lwidth = _font.getStringWidth("Manufacturer "),
+    constexpr int xpos = 2;
+    const int lwidth = _font.getStringWidth("Manufacturer "),
               fwidth = _w - lwidth - 12;
 
     new StaticTextWidget(_boss, _font, xpos, ypos + 1, "PlusROM:");
@@ -201,7 +198,7 @@ void CartridgeEnhancedWidget::bankSelect(int& ypos)
 {
   if(myCart.romBankCount() > 1)
   {
-    int xpos = 2;
+    constexpr int xpos = 2;
 
     myBankWidgets = make_unique<PopUpWidget* []>(bankSegs());
 
@@ -240,8 +237,8 @@ string CartridgeEnhancedWidget::bankState()
   if(myCart.romBankCount() > 1)
   {
     ostringstream& buf = buffer();
-    uInt16 hotspot = myCart.hotspot();
-    bool hasRamBanks = myCart.myRamBankCount > 0;
+    const uInt16 hotspot = myCart.hotspot();
+    const bool hasRamBanks = myCart.myRamBankCount > 0;
 
     if(bankSegs() > 1)
     {
@@ -249,8 +246,8 @@ string CartridgeEnhancedWidget::bankState()
 
       for(int seg = 0; seg < bankSegs(); ++seg)
       {
-        int bank = myCart.getSegmentBank(seg);
-        bool isRamBank = (bank >= myCart.romBankCount());
+        const int bank = myCart.getSegmentBank(seg);
+        const bool isRamBank = (bank >= myCart.romBankCount());
 
 
         if(seg > 0)
@@ -371,7 +368,7 @@ void CartridgeEnhancedWidget::handleCommand(CommandSender* sender,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 CartridgeEnhancedWidget::internalRamSize()
 {
-  return uInt32(myCart.myRamSize);
+  return static_cast<uInt32>(myCart.myRamSize);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

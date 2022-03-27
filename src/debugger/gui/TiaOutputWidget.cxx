@@ -77,15 +77,15 @@ void TiaOutputWidget::saveSnapshot(int execDepth, const string& execPrefix)
     sspath << execPrefix << "_";
   }
   sspath << std::hex << std::setw(8) << std::setfill('0')
-         << uInt32(TimerManager::getTicks()/1000) << ".png";
+         << static_cast<uInt32>(TimerManager::getTicks()/1000) << ".png";
 
   const uInt32 width  = instance().console().tia().width(),
                height = instance().console().tia().height();
-  FBSurface& s = dialog().surface();
+  const FBSurface& s = dialog().surface();
 
   // to skip borders, add 1 to origin
-  int x = _x + 1, y = _y + 1;
-  Common::Rect rect(x, y, x + width*2, y + height);
+  const int x = _x + 1, y = _y + 1;
+  const Common::Rect rect(x, y, x + width*2, y + height);
   string message = "Snapshot saved";
   try
   {
@@ -122,7 +122,7 @@ void TiaOutputWidget::handleMouseDown(int x, int y, MouseButton b, int clickCoun
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
-  uInt32 startLine = instance().console().tia().startLine();
+  const uInt32 startLine = instance().console().tia().startLine();
 
   if(cmd == ContextMenu::kItemSelectedCmd)
   {
@@ -145,9 +145,9 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
     else if(rmb == "bp")
     {
       ostringstream command;
-      int scanline = myClickY + startLine;
+      const int scanline = myClickY + startLine;
       command << "breakIf _scan==#" << scanline;
-      string message = instance().debugger().parser().run(command.str());
+      const string& message = instance().debugger().parser().run(command.str());
       instance().frameBuffer().showTextMessage(message);
     }
     else if(rmb == "zoom")
@@ -190,7 +190,7 @@ string TiaOutputWidget::getToolTip(const Common::Point& pos) const
   const uInt32 yStart = height <= FrameManager::Metrics::baseHeightPAL
     ? 0 : (height - FrameManager::Metrics::baseHeightPAL) >> 1;
   const Int32 i = idx.x + (yStart + idx.y) * instance().console().tia().width();
-  uInt8* tiaOutputBuffer = instance().console().tia().outputBuffer();
+  const uInt8* tiaOutputBuffer = instance().console().tia().outputBuffer();
   ostringstream buf;
 
   buf << _toolTipText
@@ -215,8 +215,9 @@ void TiaOutputWidget::drawWidget(bool hilite)
   const uInt32 width = instance().console().tia().width();
   uInt32 height = instance().console().tia().height();
   // limit to 274 lines (PAL default without scaling)
-  uInt32 yStart = height <= FrameManager::Metrics::baseHeightPAL ? 0 : (height - FrameManager::Metrics::baseHeightPAL) / 2;
-  height = std::min(height, uInt32(FrameManager::Metrics::baseHeightPAL));
+  const uInt32 yStart = height <= FrameManager::Metrics::baseHeightPAL ? 0 :
+      (height - FrameManager::Metrics::baseHeightPAL) / 2;
+  height = std::min<uInt32>(height, FrameManager::Metrics::baseHeightPAL);
   FBSurface& s = dialog().surface();
 
   s.vLine(_x + _w + 1, _y, height, kColor);
@@ -225,10 +226,10 @@ void TiaOutputWidget::drawWidget(bool hilite)
   // Get current scanline position
   // This determines where the frame greying should start, and where a
   // scanline 'pointer' should be drawn
-  uInt32 scanx, scany, scanoffset;
-  bool visible = instance().console().tia().electronBeamPos(scanx, scany);
-  scanoffset = width * scany + scanx;
-  uInt8* tiaOutputBuffer = instance().console().tia().outputBuffer();
+  uInt32 scanx = 0, scany = 0;
+  const bool visible = instance().console().tia().electronBeamPos(scanx, scany);
+  const uInt32 scanoffset = width * scany + scanx;
+  const uInt8* tiaOutputBuffer = instance().console().tia().outputBuffer();
   const TIASurface& tiaSurface = instance().frameBuffer().tiaSurface();
 
   for(uInt32 y = 0, i = yStart * width; y < height; ++y)
@@ -236,7 +237,7 @@ void TiaOutputWidget::drawWidget(bool hilite)
     uInt32* line_ptr = myLineBuffer.data();
     for(uInt32 x = 0; x < width; ++x, ++i)
     {
-      uInt8 shift = i >= scanoffset ? 1 : 0;
+      const uInt8 shift = i >= scanoffset ? 1 : 0;
       uInt32 pixel = tiaSurface.mapIndexedPixel(tiaOutputBuffer[i], shift);
       *line_ptr++ = pixel;
       *line_ptr++ = pixel;

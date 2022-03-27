@@ -44,7 +44,7 @@ AudioQueue::AudioQueue(uInt32 fragmentSize, uInt32 capacity, bool isStereo)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 AudioQueue::capacity() const
 {
-  return uInt32(myFragmentQueue.size());
+  return static_cast<uInt32>(myFragmentQueue.size());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -72,7 +72,7 @@ Int16* AudioQueue::enqueue(Int16* fragment)
 {
   lock_guard<mutex> guard(myMutex);
 
-  Int16* newFragment;
+  Int16* newFragment = nullptr;
 
   if (!fragment) {
     if (!myFirstFragmentForEnqueue) throw runtime_error("enqueue called empty");
@@ -83,7 +83,7 @@ Int16* AudioQueue::enqueue(Int16* fragment)
     return newFragment;
   }
 
-  const uInt8 capacity = uInt8(myFragmentQueue.size());
+  const uInt8 capacity = static_cast<uInt8>(myFragmentQueue.size());
   const uInt8 fragmentIndex = (myNextFragment + mySize) % capacity;
 
   newFragment = myFragmentQueue.at(fragmentIndex);

@@ -73,8 +73,8 @@ void StaggeredLogger::_log()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StaggeredLogger::logLine()
 {
-  high_resolution_clock::time_point now = high_resolution_clock::now();
-  Int64 millisecondsSinceIntervalStart =
+  const high_resolution_clock::time_point now = high_resolution_clock::now();
+  const Int64 millisecondsSinceIntervalStart =
     duration_cast<duration<Int64, std::milli>>(now - myLastIntervalStartTimestamp).count();
 
   stringstream ss;
@@ -113,7 +113,7 @@ void StaggeredLogger::startInterval()
 
   myIsCurrentlyCollecting = true;
 
-  high_resolution_clock::time_point now = high_resolution_clock::now();
+  const high_resolution_clock::time_point now = high_resolution_clock::now();
   Int64 msecSinceLastIntervalEnd =
     duration_cast<duration<Int64, std::milli>>(now - myLastIntervalEndTimestamp).count();
 

@@ -127,8 +127,8 @@ void RomListWidget::setList(const CartDebug::Disassembly& disasm)
     myCheckList[i]->setFlags(Widget::FLAG_ENABLED);
 
   // Then turn off any extras
-  if(int(myDisasm->list.size()) < _rows)
-    for(int i = int(myDisasm->list.size()); i < _rows; ++i)
+  if(static_cast<int>(myDisasm->list.size()) < _rows)
+    for(int i = static_cast<int>(myDisasm->list.size()); i < _rows; ++i)
       myCheckList[i]->clearFlags(Widget::FLAG_ENABLED);
 
   recalc();
@@ -137,7 +137,7 @@ void RomListWidget::setList(const CartDebug::Disassembly& disasm)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomListWidget::setSelected(int item)
 {
-  if(item < -1 || item >= int(myDisasm->list.size()))
+  if(item < -1 || item >= static_cast<int>(myDisasm->list.size()))
     return;
 
   if(isEnabled())
@@ -153,7 +153,7 @@ void RomListWidget::setSelected(int item)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomListWidget::setHighlighted(int item)
 {
-  if(item < -1 || item >= int(myDisasm->list.size()))
+  if(item < -1 || item >= static_cast<int>(myDisasm->list.size()))
     return;
 
   if(isEnabled())
@@ -186,7 +186,7 @@ int RomListWidget::findItem(int x, int y) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomListWidget::recalc()
 {
-  int size = int(myDisasm->list.size());
+  const int size = static_cast<int>(myDisasm->list.size());
 
   if (_currentPos >= size)
     _currentPos = size - 1;
@@ -198,7 +198,7 @@ void RomListWidget::recalc()
 
   _editMode = false;
 
-  myScrollBar->_numEntries     = int(myDisasm->list.size());
+  myScrollBar->_numEntries     = static_cast<int>(myDisasm->list.size());
   myScrollBar->_entriesPerPage = _rows;
 
   // Reset to normal data entry
@@ -222,7 +222,7 @@ void RomListWidget::scrollToCurrent(int item)
     _currentPos = item - _rows + 1;
   }
 
-  int size = int(myDisasm->list.size());
+  const int size = static_cast<int>(myDisasm->list.size());
   if (_currentPos < 0 || _rows > size)
     _currentPos = 0;
   else if (_currentPos + _rows > size)
@@ -256,7 +256,7 @@ void RomListWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
     // First check whether the selection changed
     int newSelectedItem;
     newSelectedItem = findItem(x, y);
-    if (newSelectedItem > int(myDisasm->list.size()) - 1)
+    if (newSelectedItem > static_cast<int>(myDisasm->list.size()) - 1)
       newSelectedItem = -1;
 
     if (_selectedItem != newSelectedItem)
@@ -307,7 +307,7 @@ bool RomListWidget::handleKeyDown(StellaKey key, StellaMod mod)
     return false;
 
   bool handled = true;
-  int oldSelectedItem = _selectedItem;
+  const int oldSelectedItem = _selectedItem;
 
   if (_editMode)
   {
@@ -357,7 +357,7 @@ bool RomListWidget::handleEvent(Event::Type e)
     return false;
 
   bool handled = true;
-  int oldSelectedItem = _selectedItem;
+  const int oldSelectedItem = _selectedItem;
 
   switch(e)
   {
@@ -375,7 +375,7 @@ bool RomListWidget::handleEvent(Event::Type e)
       break;
 
     case Event::UIDown:
-      if (_selectedItem < int(myDisasm->list.size()) - 1)
+      if (_selectedItem < static_cast<int>(myDisasm->list.size()) - 1)
         _selectedItem++;
       break;
 
@@ -387,8 +387,8 @@ bool RomListWidget::handleEvent(Event::Type e)
 
     case Event::UIPgDown:
       _selectedItem += _rows - 1;
-      if (_selectedItem >= int(myDisasm->list.size()))
-        _selectedItem = int(myDisasm->list.size()) - 1;
+      if (_selectedItem >= static_cast<int>(myDisasm->list.size()))
+        _selectedItem = static_cast<int>(myDisasm->list.size()) - 1;
       break;
 
     case Event::UIHome:
@@ -396,7 +396,7 @@ bool RomListWidget::handleEvent(Event::Type e)
       break;
 
     case Event::UIEnd:
-      _selectedItem = int(myDisasm->list.size()) - 1;
+      _selectedItem = static_cast<int>(myDisasm->list.size()) - 1;
       break;
 
     default:
@@ -454,7 +454,7 @@ Common::Point RomListWidget::getToolTipIndex(const Common::Point& pos) const
   const int row = (pos.y - getAbsY()) / _lineHeight;
 
   if(col < 0 || col >= 8
-     || row < 0 || row + _currentPos >= int(myDisasm->list.size()))
+     || row < 0 || row + _currentPos >= static_cast<int>(myDisasm->list.size()))
     return Common::Point(-1, -1);
   else
     return Common::Point(col, row + _currentPos);
@@ -473,7 +473,7 @@ string RomListWidget::getToolTip(const Common::Point& pos) const
   if(static_cast<Int32>(bytes.length()) < idx.x + 1)
     return EmptyString;
 
-  Int32 val;
+  Int32 val = 0;
   if(bytes.length() == 8 && bytes[2] != ' ')
   {
     // Binary value
@@ -524,8 +524,7 @@ void RomListWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
   const CartDebug::DisassemblyList& dlist = myDisasm->list;
-  int i, pos, xpos, ypos, len = int(dlist.size());
-  ColorId textColor = kTextColor;
+  constexpr ColorId textColor = kTextColor;
 
   const Common::Rect& r = getEditRect();
   const Common::Rect& l = getLineRect();
@@ -535,16 +534,16 @@ void RomListWidget::drawWidget(bool hilite)
   s.vLine(_x + CheckboxWidget::boxSize(_font) + 5, _y, _y + _h - 1, kColor);
 
   // Draw the list items
-  int cycleCountW = _fontWidth * 8,
+  const int cycleCountW = _fontWidth * 8,
       noTypeDisasmW = _w - l.x() - _labelWidth,
       noCodeDisasmW = noTypeDisasmW - r.w(),
-      codeDisasmW = noCodeDisasmW - cycleCountW,
-      actualWidth = myDisasm->fieldwidth * _fontWidth;
-  if(actualWidth < codeDisasmW)
-    codeDisasmW = actualWidth;
+      actualWidth = myDisasm->fieldwidth * _fontWidth,
+      codeDisasmW = std::min(actualWidth, noCodeDisasmW - cycleCountW);
 
-  xpos = _x + CheckboxWidget::boxSize(_font) + 10;  ypos = _y + 2;
-  for(i = 0, pos = _currentPos; i < _rows && pos < len; i++, pos++, ypos += _lineHeight)
+  const int len = static_cast<int>(dlist.size());
+  const int xpos = _x + CheckboxWidget::boxSize(_font) + 10;
+  int ypos = _y + 2;
+  for(int i = 0, pos = _currentPos; i < _rows && pos < len; i++, pos++, ypos += _lineHeight)
   {
     ColorId bytesColor = textColor;
 

@@ -59,7 +59,7 @@ void FlashWidget::init(GuiObject* boss, const GUI::Font& font,
 
   xpos -= 8; ypos += 2;
   myEEPROMEraseCurrent = new ButtonWidget(boss, font, xpos, ypos,
-                                          embedded ? "Erase" : "Erase used pages", 
+                                          embedded ? "Erase" : "Erase used pages",
                                           kEEPROMEraseCurrent);
   myEEPROMEraseCurrent->setTarget(this);
 
@@ -90,8 +90,8 @@ void FlashWidget::loadConfig()
     {
       if(startPage != -1)
       {
-        int from = startPage * MT24LC256::PAGE_SIZE;
-        int to = page * MT24LC256::PAGE_SIZE - 1;
+        const int from = startPage * MT24LC256::PAGE_SIZE;
+        const int to = page * MT24LC256::PAGE_SIZE - 1;
         ostringstream label;
 
         label.str("");
@@ -99,7 +99,7 @@ void FlashWidget::loadConfig()
 
         if(!myEmbedded)
         {
-          if(int(page) - 1 != startPage)
+          if(static_cast<int>(page) - 1 != startPage)
             label << "-" << Common::Base::HEX3 << page - 1;
           else
             label << "    ";

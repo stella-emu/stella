@@ -115,10 +115,9 @@ void DataGridWidget::setList(const IntArray& alist, const IntArray& vlist,
        << ", changed.size() = " << changed.size()
        << ", _rows*_cols = "    << _rows * _cols << endl << endl;
   */
-  int size = int(vlist.size());  // assume the alist is the same size
-  assert(size == _rows * _cols);
+  const size_t size = vlist.size();  // assume the alist is the same size
 
-  bool dirty = _editMode
+  const bool dirty = _editMode
     || !std::equal(_valueList.begin(), _valueList.end(),
                    vlist.begin(), vlist.end())
     || !std::equal(_changedList.begin(), _changedList.end(),
@@ -135,7 +134,7 @@ void DataGridWidget::setList(const IntArray& alist, const IntArray& vlist,
 
   // An efficiency thing
   string temp;
-  for(int i = 0; i < size; ++i)
+  for(size_t i = 0; i < size; ++i)
     _valueStringList.push_back(Common::Base::toString(_valueList[i], _base));
 
   /*
@@ -177,7 +176,7 @@ void DataGridWidget::setList(int a, int v)
 
   alist.push_back(a);
   vlist.push_back(v);
-  bool diff = _addrList.size() == 1 ? getSelectedValue() != v : false;
+  const bool diff = _addrList.size() == 1 ? getSelectedValue() != v : false;
   changed.push_back(diff);
 
   setList(alist, vlist, changed);
@@ -229,7 +228,7 @@ void DataGridWidget::setValueInternal(int position, int value, bool changed)
 void DataGridWidget::setValue(int position, int value, bool changed,
                               bool emitSignal)
 {
-  if(position >= 0 && uInt32(position) < _valueList.size())
+  if(position >= 0 && position < static_cast<int>(_valueList.size()))
   {
     // Correctly format the data for viewing
     editString() = Common::Base::toString(value, _base);
@@ -262,7 +261,7 @@ void DataGridWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount
   // First check whether the selection changed
   int newSelectedItem;
   newSelectedItem = findItem(x, y);
-  if (newSelectedItem > int(_valueList.size()) - 1)
+  if (newSelectedItem > static_cast<int>(_valueList.size()) - 1)
     newSelectedItem = -1;
 
   if (_selectedItem != newSelectedItem)
@@ -497,7 +496,7 @@ bool DataGridWidget::handleKeyDown(StellaKey key, StellaMod mod)
 
   if (dirty)
   {
-    int oldItem = _selectedItem;
+    const int oldItem = _selectedItem;
     _selectedItem = _currentRow*_cols + _currentCol;
 
     if(_selectedItem != oldItem)
@@ -641,27 +640,26 @@ bool DataGridWidget::changedToolTip(const Common::Point& oldPos,
 void DataGridWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
-  int row, col;
 
   s.fillRect(_x, _y, _w, _h, hilite && isEnabled() && isEditable() ? _bgcolorhi : _bgcolor);
   // Draw the internal grid and labels
-  int linewidth = _cols * _colWidth;
+  const int linewidth = _cols * _colWidth;
   s.frameRect(_x, _y, _w, _h, hilite && isEnabled() && isEditable() ? kWidColorHi : kColor);
-  for(row = 1; row <= _rows-1; row++)
+  for(int row = 1; row <= _rows-1; row++)
     s.hLine(_x+1, _y + (row * _rowHeight), _x + linewidth-1, kBGColorLo);
 
-  int lineheight = _rows * _rowHeight;
-  for(col = 1; col <= _cols-1; col++)
+  const int lineheight = _rows * _rowHeight;
+  for(int col = 1; col <= _cols-1; col++)
     s.vLine(_x + (col * _colWidth), _y+1, _y + lineheight-1, kBGColorLo);
 
   // Draw the list items
-  for (row = 0; row < _rows; row++)
+  for(int row = 0; row < _rows; row++)
   {
-    for (col = 0; col < _cols; col++)
+    for(int col = 0; col < _cols; col++)
     {
-      int x = _x + 4 + (col * _colWidth);
-      int y = _y + 2 + (row * _rowHeight);
-      int pos = row*_cols + col;
+      const int x = _x + 4 + (col * _colWidth);
+      const int y = _y + 2 + (row * _rowHeight);
+      const int pos = row*_cols + col;
       ColorId textColor = kTextColor;
 
       // Draw the selected item inverted, on a highlighted background.
@@ -785,7 +783,7 @@ void DataGridWidget::endEditMode()
         break;
     }
   }
-  int value = instance().debugger().stringToValue(editString());
+  const int value = instance().debugger().stringToValue(editString());
   if(value < _lowerBound || value >= _upperBound)
   {
     abortEditMode();
@@ -811,7 +809,7 @@ void DataGridWidget::abortEditMode()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DataGridWidget::negateCell()
 {
-  int mask  = (1 << _bits) - 1;
+  const int mask  = (1 << _bits) - 1;
   int value = getSelectedValue();
   if(mask != _upperBound - 1)     // ignore when values aren't byte-aligned
     return;
@@ -823,7 +821,7 @@ void DataGridWidget::negateCell()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DataGridWidget::invertCell()
 {
-  int mask  = (1 << _bits) - 1;
+  const int mask  = (1 << _bits) - 1;
   int value = getSelectedValue();
   if(mask != _upperBound - 1)     // ignore when values aren't byte-aligned
     return;
@@ -835,7 +833,7 @@ void DataGridWidget::invertCell()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DataGridWidget::decrementCell()
 {
-  int mask  = (1 << _bits) - 1;
+  const int mask  = (1 << _bits) - 1;
   int value = getSelectedValue();
   if(value <= _lowerBound)        // take care of wrap-around
     value = _upperBound;
@@ -847,7 +845,7 @@ void DataGridWidget::decrementCell()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DataGridWidget::incrementCell()
 {
-  int mask  = (1 << _bits) - 1;
+  const int mask  = (1 << _bits) - 1;
   int value = getSelectedValue();
   if(value >= _upperBound - 1)    // take care of wrap-around
     value = _lowerBound - 1;
@@ -859,7 +857,7 @@ void DataGridWidget::incrementCell()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DataGridWidget::lshiftCell()
 {
-  int mask  = (1 << _bits) - 1;
+  const int mask  = (1 << _bits) - 1;
   int value = getSelectedValue();
   if(mask != _upperBound - 1)     // ignore when values aren't byte-aligned
     return;
@@ -871,7 +869,7 @@ void DataGridWidget::lshiftCell()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DataGridWidget::rshiftCell()
 {
-  int mask  = (1 << _bits) - 1;
+  const int mask  = (1 << _bits) - 1;
   int value = getSelectedValue();
   if(mask != _upperBound - 1)     // ignore when values aren't byte-aligned
     return;
