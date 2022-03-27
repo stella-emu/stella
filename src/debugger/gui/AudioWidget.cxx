@@ -58,7 +58,8 @@ AudioWidget::AudioWidget(GuiObject* boss, const GUI::Font& lfont,
 
   for(int col = 0; col < 2; ++col)
   {
-    new StaticTextWidget(boss, lfont, xpos + col * myAudF->colWidth() + int(myAudF->colWidth() / 2.75),
+    new StaticTextWidget(boss, lfont, xpos + col * myAudF->colWidth() +
+                         static_cast<int>(myAudF->colWidth() / 2.75),
                          ypos - lineHeight, fontWidth, fontHeight,
                          Common::Base::toString(col, Common::Base::Fmt::_16_1),
                          TextAlign::Left);
@@ -68,7 +69,7 @@ AudioWidget::AudioWidget(GuiObject* boss, const GUI::Font& lfont,
   new StaticTextWidget(boss, lfont, xpos, ypos+2, lwidth, fontHeight,
                        "AUDC", TextAlign::Left);
   xpos += lwidth;
-  myAudC = new DataGridWidget(boss, nfont, xpos + int(myAudF->colWidth() / 2.75), ypos,
+  myAudC = new DataGridWidget(boss, nfont, xpos + static_cast<int>(myAudF->colWidth() / 2.75), ypos,
                               2, 1, 1, 4, Common::Base::Fmt::_16_1);
   myAudC->setTarget(this);
   myAudC->setID(kAUDCID);
@@ -79,7 +80,7 @@ AudioWidget::AudioWidget(GuiObject* boss, const GUI::Font& lfont,
   new StaticTextWidget(boss, lfont, xpos, ypos+2, lwidth, fontHeight,
                        "AUDV", TextAlign::Left);
   xpos += lwidth;
-  myAudV = new DataGridWidget(boss, nfont, xpos + int(myAudF->colWidth() / 2.75), ypos,
+  myAudV = new DataGridWidget(boss, nfont, xpos + static_cast<int>(myAudF->colWidth() / 2.75), ypos,
                               2, 1, 1, 4, Common::Base::Fmt::_16_1);
   myAudV->setTarget(this);
   myAudV->setID(kAUDVID);
@@ -184,8 +185,8 @@ void AudioWidget::handleCommand(CommandSender* sender, int cmd, int data, int id
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AudioWidget::changeFrequencyRegs()
 {
-  int addr = myAudF->getSelectedAddr();
-  int value = myAudF->getSelectedValue();
+  const int addr = myAudF->getSelectedAddr();
+  const int value = myAudF->getSelectedValue();
 
   switch(addr)
   {
@@ -206,8 +207,8 @@ void AudioWidget::changeFrequencyRegs()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AudioWidget::changeControlRegs()
 {
-  int addr = myAudC->getSelectedAddr();
-  int value = myAudC->getSelectedValue();
+  const int addr = myAudC->getSelectedAddr();
+  const int value = myAudC->getSelectedValue();
 
   switch(addr)
   {
@@ -229,8 +230,8 @@ void AudioWidget::changeControlRegs()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AudioWidget::changeVolumeRegs()
 {
-  int addr = myAudV->getSelectedAddr();
-  int value = myAudV->getSelectedValue();
+  const int addr = myAudV->getSelectedAddr();
+  const int value = myAudV->getSelectedValue();
 
   switch(addr)
   {

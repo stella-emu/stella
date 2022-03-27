@@ -68,7 +68,7 @@ void FilesystemNodeWINDOWS::setFlags()
   _displayName = lastPathComponent(_path);
 
   // Check whether it is a directory, and whether the file actually exists
-  DWORD fileAttribs = GetFileAttributes(toUnicode(_path.c_str()));
+  const DWORD fileAttribs = GetFileAttributes(toUnicode(_path.c_str()));
 
   if(fileAttribs == INVALID_FILE_ATTRIBUTES)
   {
@@ -92,8 +92,8 @@ void FilesystemNodeWINDOWS::addFile(AbstractFSList& list, ListMode mode,
                                     const char* base, WIN32_FIND_DATA* find_data)
 {
   FilesystemNodeWINDOWS entry;
-  char* asciiName = toAscii(find_data->cFileName);
-  bool isDirectory, isFile;
+  const char* const asciiName = toAscii(find_data->cFileName);
+  bool isDirectory = false, isFile = false;
 
   // Skip local directory (.) and parent (..)
   if(!strncmp(asciiName, ".", 1) || !strncmp(asciiName, "..", 2))
@@ -123,7 +123,7 @@ void FilesystemNodeWINDOWS::addFile(AbstractFSList& list, ListMode mode,
 char* FilesystemNodeWINDOWS::toAscii(TCHAR* str)
 {
 #ifndef UNICODE
-  return (char*)str;
+  return str;
 #else
   static char asciiString[MAX_PATH];
   WideCharToMultiByte(CP_ACP, 0, str, _tcslen(str) + 1, asciiString, sizeof(asciiString), NULL, NULL);
@@ -135,7 +135,7 @@ char* FilesystemNodeWINDOWS::toAscii(TCHAR* str)
 const TCHAR* FilesystemNodeWINDOWS::toUnicode(const char* str)
 {
 #ifndef UNICODE
-  return (const TCHAR *)str;
+  return str;
 #else
   static TCHAR unicodeString[MAX_PATH];
   MultiByteToWideChar(CP_ACP, 0, str, strlen(str) + 1, unicodeString, sizeof(unicodeString) / sizeof(TCHAR));
@@ -263,7 +263,7 @@ AbstractFSNodePtr FilesystemNodeWINDOWS::getParent() const
     const char* start = _path.c_str();
     const char* end = lastPathComponent(_path);
 
-    return make_shared<FilesystemNodeWINDOWS>(string(start, size_t(end - start)));
+    return make_shared<FilesystemNodeWINDOWS>(string(start, static_cast<size_t>(end - start)));
   }
   else
     return make_shared<FilesystemNodeWINDOWS>();

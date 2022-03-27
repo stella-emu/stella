@@ -32,8 +32,8 @@ string CartridgeF6Widget::description()
 {
   ostringstream info;
 
-  info << "Standard F6 cartridge, four 4K banks\n";
-  info << CartridgeEnhancedWidget::description();
+  info << "Standard F6 cartridge, four 4K banks\n"
+       << CartridgeEnhancedWidget::description();
 
   return info.str();
 }

@@ -25,10 +25,8 @@ CartridgeFA2Widget::CartridgeFA2Widget(
   : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart),
     myCartFA2{cart}
 {
-  int xpos = 2,
-    ypos = initialize();
-
-  ypos += 12;
+  int xpos = 2;
+  const int ypos = initialize() + 12;
 
   const int bwidth = _font.getStringWidth("Erase") + 20;
 
@@ -63,10 +61,10 @@ string CartridgeFA2Widget::description()
 {
   ostringstream info;
 
-  info << "Modified FA RAM+, six or seven 4K banks\n";
-  info << "RAM+ can be loaded/saved to Harmony flash memory by accessing $"
-    << Common::Base::HEX4 << 0xFFF4 << "\n";
-  info << CartridgeEnhancedWidget::description();
+  info << "Modified FA RAM+, six or seven 4K banks\n"
+       << "RAM+ can be loaded/saved to Harmony flash memory by accessing $"
+       << Common::Base::HEX4 << 0xFFF4 << "\n"
+       << CartridgeEnhancedWidget::description();
 
   return info.str();
 }

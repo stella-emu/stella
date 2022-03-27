@@ -101,8 +101,8 @@ void DelayQueueWidget::drawWidget(bool hilite)
 
   int y = _y,
       x = _x,
-      w = _w,
-      lineHeight = _font.getLineHeight();
+      w = _w;
+  const int lineHeight = _font.getLineHeight();
 
   surface.frameRect(x, y, w, _h, kColor);
 

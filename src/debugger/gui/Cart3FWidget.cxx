@@ -32,7 +32,7 @@ Cartridge3FWidget::Cartridge3FWidget(
 string Cartridge3FWidget::description()
 {
   ostringstream info;
-  size_t size;
+  size_t size = 0;
   const ByteBuffer& image = myCart.getImage(size);
 
   info << "Tigervision 3F cartridge, 2 - 256 2K banks\n"

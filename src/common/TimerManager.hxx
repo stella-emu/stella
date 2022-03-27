@@ -158,7 +158,7 @@ class TimerManager
 
       TimerId id{0};
       Timestamp next;
-      Duration period;
+      Duration period{0};
       TFunction handler;
 
       // You must be holding the 'sync' lock to assign waitCond

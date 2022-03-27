@@ -42,7 +42,7 @@ const DebuggerState& TIADebug::getState()
   myState.coluRegs.push_back(coluBK());
 
   // Debug Colors
-  int timing = myConsole.timing() == ConsoleTiming::ntsc ? 0
+  const int timing = myConsole.timing() == ConsoleTiming::ntsc ? 0
     : myConsole.timing() == ConsoleTiming::pal ? 1 : 2;
 
   myState.fixedCols.clear();
@@ -925,13 +925,13 @@ int TIADebug::frameWsyncCycles() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int TIADebug::cyclesLo() const
 {
-  return int(myTIA.cycles());
+  return static_cast<int>(myTIA.cycles());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int TIADebug::cyclesHi() const
 {
-  return int(myTIA.cycles() >> 32);
+  return static_cast<int>(myTIA.cycles() >> 32);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -999,7 +999,7 @@ string TIADebug::colorSwatch(uInt8 c) const
 {
   string ret;
 
-  ret += char((c >> 1) | 0x80);
+  ret += static_cast<char>((c >> 1) | 0x80);
   ret += "\177     ";
   ret += "\177\001 ";
 
@@ -1021,7 +1021,7 @@ string TIADebug::audFreq1()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string TIADebug::audFreq(uInt8 dist, uInt8 div)
 {
-  uInt16 dist_div[16] = {
+  constexpr uInt16 dist_div[16] = {
       1, 15, 465, 465, 2, 2, 31, 31,
     511, 31,  31,   1, 6, 6, 93, 93
   };
@@ -1044,7 +1044,8 @@ string TIADebug::stringOnly(string value, bool changed)
   buf << value;
 
   if(changed)
-    return char(kDbgColorRed & 0xff) + buf.str() + char(kTextColor & 0xff);
+    return static_cast<char>(kDbgColorRed & 0xff) + buf.str() +
+           static_cast<char>(kTextColor & 0xff);
   else
     return buf.str();
 }
@@ -1060,7 +1061,8 @@ string TIADebug::decWithLabel(string label, uInt16 value, bool changed, uInt16 w
   buf << "#" << std::setw(width) << std::dec << std::left << value;
 
   if(changed)
-    return char(kDbgColorRed & 0xff) + buf.str() + char(kTextColor & 0xff);
+    return static_cast<char>(kDbgColorRed & 0xff) + buf.str() +
+           static_cast<char>(kTextColor & 0xff);
   else
     return buf.str();
 }
@@ -1076,7 +1078,8 @@ string TIADebug::hexWithLabel(string label, uInt16 value, bool changed, uInt16 w
   buf << "$" << (width == 1 ? Common::Base::HEX1 : Common::Base::HEX2) << value;
 
   if(changed)
-    return char(kDbgColorRed & 0xff) + buf.str() + char(kTextColor & 0xff);
+    return static_cast<char>(kDbgColorRed & 0xff) + buf.str() +
+           static_cast<char>(kTextColor & 0xff);
   else
     return buf.str();
 }
@@ -1092,7 +1095,8 @@ string TIADebug::binWithLabel(string label, uInt16 value, bool changed)
   buf << "%" << Common::Base::toString(value, Common::Base::Fmt::_2_8);
 
   if(changed)
-    return char(kDbgColorRed & 0xff) + buf.str() + char(kTextColor & 0xff);
+    return static_cast<char>(kDbgColorRed & 0xff) + buf.str() +
+           static_cast<char>(kTextColor & 0xff);
   else
     return buf.str();
 }
@@ -1110,7 +1114,8 @@ string TIADebug::boolWithLabel(string label, bool value, bool changed)
     //return "-" + BSPF::toLowerCase(label);
 
   if(changed)
-    return char(kDbgColorRed & 0xff) + buf.str() + char(kTextColor & 0xff);
+    return static_cast<char>(kDbgColorRed & 0xff) + buf.str() +
+           static_cast<char>(kTextColor & 0xff);
   else
     return buf.str();
 }
@@ -1120,7 +1125,7 @@ string TIADebug::debugColors() const
 {
   ostringstream buf;
 
-  int timing = myConsole.timing() == ConsoleTiming::ntsc ? 0
+  const int timing = myConsole.timing() == ConsoleTiming::ntsc ? 0
     : myConsole.timing() == ConsoleTiming::pal ? 1 : 2;
 
   buf << " " << myTIA.myFixedColorNames[TIA::P0] << " " << colorSwatch(myTIA.myFixedColorPalette[timing][TIA::P0])
@@ -1313,27 +1318,27 @@ string TIADebug::toString()
                         riotState.INPTDump != oldRiotState.INPTDump)
       << endl
       << "AUDF0: "
-      << hexWithLabel("", int(audF0()),
+      << hexWithLabel("", static_cast<int>(audF0()),
                       state.aud[0] != oldState.aud[0]) << "/"
       << std::setw(9) << std::right << stringOnly(audFreq0(),
                     state.aud[0] != oldState.aud[0]) << " "
       << "AUDC0: "
-      << hexWithLabel("", int(audC0()),
+      << hexWithLabel("", static_cast<int>(audC0()),
                       state.aud[2] != oldState.aud[2], 1) << " "
       << "AUDV0: "
-      << hexWithLabel("", int(audV0()),
+      << hexWithLabel("", static_cast<int>(audV0()),
                       state.aud[4] != oldState.aud[4], 1)
       << endl
       << "AUDF1: "
-      << hexWithLabel("", int(audF1()),
+      << hexWithLabel("", static_cast<int>(audF1()),
                       state.aud[1] != oldState.aud[1]) << "/"
       << std::setw(9) << std::right << stringOnly(audFreq1(),
                     state.aud[1] != oldState.aud[1]) << " "
       << "AUDC1: "
-      << hexWithLabel("", int(audC1()),
+      << hexWithLabel("", static_cast<int>(audC1()),
                       state.aud[3] != oldState.aud[3], 1) << " "
       << "AUDV1: "
-      << hexWithLabel("", int(audV1()),
+      << hexWithLabel("", static_cast<int>(audV1()),
                       state.aud[5] != oldState.aud[5], 1);
   // note: last line should not contain \n, caller will add.
   return buf.str();

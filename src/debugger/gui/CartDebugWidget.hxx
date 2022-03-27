@@ -48,8 +48,8 @@ class CartDebugWidget : public Widget, public CommandSender
     // implement change tracking; most carts probably won't do anything here
     virtual void saveOldState() { }
 
-    virtual void loadConfig() override;
-    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id) override { }
+    void loadConfig() override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override { }
 
     // Query internal state of the cart (usually just bankswitching info)
     virtual string bankState() { return "0 (non-bankswitched)"; }

@@ -35,8 +35,7 @@ CartridgeARMWidget::CartridgeARMWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeARMWidget::addCycleWidgets(int xpos, int ypos)
 {
-  const int INDENT = 20;
-  const int VGAP = 4;
+  constexpr int INDENT = 20, VGAP = 4;
   VariantList items;
 
   new StaticTextWidget(_boss, _font, xpos, ypos + 1, "ARM emulation cycles:");
@@ -142,17 +141,16 @@ void CartridgeARMWidget::saveOldState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeARMWidget::loadConfig()
 {
-  bool isChanged;
   bool devSettings = instance().settings().getBool("dev.settings");
   IntArray alist;
   IntArray vlist;
   BoolArray changed;
 
   myChipType->setSelectedIndex(static_cast<Int32>(instance().settings().getInt("dev.thumb.chiptype")
-    - int(Thumbulator::ChipType::AUTO)));
+    - static_cast<int>(Thumbulator::ChipType::AUTO)));
   handleChipType();
 
-  isChanged = static_cast<uInt32>(myCart.mamMode()) != myOldState.mamMode;
+  const bool isChanged = static_cast<uInt32>(myCart.mamMode()) != myOldState.mamMode;
   myMamMode->setSelectedIndex(static_cast<uInt32>(myCart.mamMode()), isChanged);
   myMamMode->setEnabled(devSettings && myLockMamMode->getState());
   myLockMamMode->setEnabled(devSettings);
@@ -245,7 +243,7 @@ void CartridgeARMWidget::handleChipType()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeARMWidget::handleMamLock()
 {
-  bool checked = myLockMamMode->getState();
+  const bool checked = myLockMamMode->getState();
 
   myMamMode->setEnabled(checked);
   myCart.lockMamMode(checked);
@@ -255,7 +253,7 @@ void CartridgeARMWidget::handleMamLock()
 void CartridgeARMWidget::handleMamMode()
 {
   // override MAM mode set by ROM
-  Int32 mode = myMamMode->getSelected();
+  const Int32 mode = myMamMode->getSelected();
 
   string name = myMamMode->getSelectedName();
   myMamMode->setSelectedName(name + "XXX");
@@ -268,9 +266,9 @@ void CartridgeARMWidget::handleMamMode()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeARMWidget::handleArmCycles()
 {
-  bool devSettings = instance().settings().getBool("dev.settings");
-  bool enable = myIncCycles->getState();
-  double factor = static_cast<double>(myCycleFactor->getValue()) / 100.0;
+  const bool devSettings = instance().settings().getBool("dev.settings");
+  const bool enable = myIncCycles->getState();
+  const double factor = static_cast<double>(myCycleFactor->getValue()) / 100.0;
 
   if(devSettings)
   {

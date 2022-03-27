@@ -180,7 +180,7 @@ int main(int ac, char* av[])
 
   unique_ptr<OSystem> theOSystem;
 
-  auto Cleanup = [&theOSystem]() {
+  const auto Cleanup = [&theOSystem]() {
     if(theOSystem)
     {
       Logger::debug("Cleanup from main");

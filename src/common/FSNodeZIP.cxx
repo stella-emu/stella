@@ -29,7 +29,7 @@
 FilesystemNodeZIP::FilesystemNodeZIP(const string& p)
 {
   // Extract ZIP file and virtual file (if specified)
-  size_t pos = BSPF::findIgnoreCase(p, ".zip");
+  const size_t pos = BSPF::findIgnoreCase(p, ".zip");
   if(pos == string::npos)
     return;
 
@@ -185,7 +185,7 @@ bool FilesystemNodeZIP::getChildren(AbstractFSList& myList, ListMode mode) const
       // First strip off the leading directory
       const string& curr = next.substr(_virtualPath == "" ? 0 : _virtualPath.size()+1);
       // Only add sub-directory entries once
-      auto pos = curr.find_first_of("/\\");
+      const auto pos = curr.find_first_of("/\\");
       if(pos != string::npos)
         dirs.emplace(curr.substr(0, pos));
       else
@@ -228,7 +228,7 @@ size_t FilesystemNodeZIP::read(stringstream& image) const
   // For now, we just read into a buffer and store in the stream
   // TODO: maybe there's a more efficient way to do this?
   ByteBuffer buffer;
-  size_t size = read(buffer, 0);
+  const size_t size = read(buffer, 0);
   if(size > 0)
     image.write(reinterpret_cast<char*>(buffer.get()), size);
 

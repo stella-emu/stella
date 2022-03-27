@@ -243,7 +243,7 @@ void FBSurfaceSDL2::createSurface(uInt32 width, uInt32 height,
 
   ////////////////////////////////////////////////////
   // These *must* be set for the parent class
-  myPixels = reinterpret_cast<uInt32*>(mySurface->pixels);
+  myPixels = static_cast<uInt32*>(mySurface->pixels);
   myPitch = mySurface->pitch / pf.BytesPerPixel;
   ////////////////////////////////////////////////////
 

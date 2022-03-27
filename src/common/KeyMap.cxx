@@ -99,15 +99,15 @@ Event::Type KeyMap::get(const Mapping& mapping) const
 
   if(myModEnabled)
   {
-    auto find = myMap.find(m);
+    const auto find = myMap.find(m);
     if(find != myMap.end())
       return find->second;
   }
 
   // mapping not found, try without modifiers
-  m.mod = StellaMod(0);
+  m.mod = static_cast<StellaMod>(0);
 
-  auto find = myMap.find(m);
+  const auto find = myMap.find(m);
   if(find != myMap.end())
     return find->second;
 
@@ -123,7 +123,7 @@ Event::Type KeyMap::get(const EventMode mode, const int key, const int mod) cons
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool KeyMap::check(const Mapping& mapping) const
 {
-  auto find = myMap.find(convertMod(mapping));
+  const auto find = myMap.find(convertMod(mapping));
 
   return (find != myMap.end());
 }
@@ -139,23 +139,23 @@ string KeyMap::getDesc(const Mapping& mapping) const
 {
   ostringstream buf;
 #if defined(BSPF_MACOS) || defined(MACOS_KEYS)
-  string mod2 = "Option";
-  int MOD2 = KBDM_ALT;
-  int LMOD2 = KBDM_LALT;
-  int RMOD2 = KBDM_RALT;
-  string mod3 = "Cmd";
-  int MOD3 = KBDM_GUI;
-  int LMOD3 = KBDM_LGUI;
-  int RMOD3 = KBDM_RGUI;
+  const string mod2 = "Option";
+  constexpr int MOD2 = KBDM_ALT;
+  constexpr int LMOD2 = KBDM_LALT;
+  constexpr int RMOD2 = KBDM_RALT;
+  const string mod3 = "Cmd";
+  constexpr int MOD3 = KBDM_GUI;
+  constexpr int LMOD3 = KBDM_LGUI;
+  constexpr int RMOD3 = KBDM_RGUI;
 #else
-  string mod2 = "Windows";
-  int MOD2 = KBDM_GUI;
-  int LMOD2 = KBDM_LGUI;
-  int RMOD2 = KBDM_RGUI;
-  string mod3 = "Alt";
-  int MOD3 = KBDM_ALT;
-  int LMOD3 = KBDM_LALT;
-  int RMOD3 = KBDM_RALT;
+  const string mod2 = "Windows";
+  constexpr int MOD2 = KBDM_GUI;
+  constexpr int LMOD2 = KBDM_LGUI;
+  constexpr int RMOD2 = KBDM_RGUI;
+  const string mod3 = "Alt";
+  constexpr int MOD3 = KBDM_ALT;
+  constexpr int LMOD3 = KBDM_LALT;
+  constexpr int RMOD3 = KBDM_RALT;
 #endif
 
   if((mapping.mod & KBDM_CTRL) == KBDM_CTRL) buf << "Ctrl";
@@ -295,7 +295,7 @@ json KeyMap::convertLegacyMapping(string list)
   std::replace(list.begin(), list.end(), ':', ' ');
   std::replace(list.begin(), list.end(), ',', ' ');
   istringstream buf(list);
-  int event, key, mod;
+  int event = 0, key = 0, mod = 0;
 
   while(buf >> event && buf >> key && buf >> mod)
   {
@@ -318,7 +318,7 @@ void KeyMap::eraseMode(const EventMode mode)
 {
   for(auto item = myMap.begin(); item != myMap.end();)
     if(item->first.mode == mode) {
-      auto _item = item++;
+      const auto _item = item++;
       erase(_item->first);
     }
     else item++;
@@ -329,7 +329,7 @@ void KeyMap::eraseEvent(const Event::Type event, const EventMode mode)
 {
   for(auto item = myMap.begin(); item != myMap.end();)
     if(item->second == event && item->first.mode == mode) {
-      auto _item = item++;
+      const auto _item = item++;
       erase(_item->first);
     }
     else item++;
@@ -346,7 +346,7 @@ KeyMap::Mapping KeyMap::convertMod(const Mapping& mapping) const
   else
   {
     // limit to modifiers we want to support
-    m.mod = StellaMod(m.mod & (KBDM_SHIFT | KBDM_CTRL | KBDM_ALT | KBDM_GUI));
+    m.mod = static_cast<StellaMod>(m.mod & (KBDM_SHIFT | KBDM_CTRL | KBDM_ALT | KBDM_GUI));
   }
 
   return m;

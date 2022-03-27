@@ -28,7 +28,7 @@ class ConvolutionBuffer
 
     void shift(float nextValue);
 
-    float convoluteWith(float* kernel) const;
+    float convoluteWith(const float* const kernel) const;
 
   private:
 

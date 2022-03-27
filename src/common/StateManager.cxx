@@ -128,7 +128,7 @@ void StateManager::toggleRecordMode()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StateManager::toggleTimeMachine()
 {
-  bool devSettings = myOSystem.settings().getBool("dev.settings");
+  const bool devSettings = myOSystem.settings().getBool("dev.settings");
 
   myActiveMode = myActiveMode == Mode::TimeMachine ? Mode::Off : Mode::TimeMachine;
   if(myActiveMode == Mode::TimeMachine)

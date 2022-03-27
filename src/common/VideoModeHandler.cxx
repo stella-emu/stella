@@ -56,8 +56,8 @@ VideoModeHandler::buildMode(const Settings& settings, bool inTIAMode)
       const float overscan = 1 - settings.getInt("tia.fs_overscan") / 100.0;
 
       // First calculate maximum zoom that keeps aspect ratio
-      const float scaleX = float(myImage.w) / myDisplay.w,
-                  scaleY = float(myImage.h) / myDisplay.h;
+      const float scaleX = static_cast<float>(myImage.w) / myDisplay.w,
+                  scaleY = static_cast<float>(myImage.h) / myDisplay.h;
       float zoom = 1.F / std::max(scaleX, scaleY);
 
       // When aspect ratio correction is off, we want pixel-exact images,

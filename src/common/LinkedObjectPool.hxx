@@ -256,9 +256,9 @@ class LinkedObjectPool
 
     uInt32 capacity() const { return myCapacity; }
 
-    uInt32 size() const { return uInt32(myList.size()); }
-    bool empty() const  { return size() == 0;           }
-    bool full() const   { return size() >= capacity();  }
+    uInt32 size() const { return static_cast<uInt32>(myList.size()); }
+    bool empty() const  { return size() == 0; }
+    bool full() const   { return size() >= capacity(); }
 
     friend ostream& operator<<(ostream& os, const LinkedObjectPool<T>& p) {
       for(const auto& i: p.myList)

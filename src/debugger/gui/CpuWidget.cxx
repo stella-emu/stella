@@ -39,11 +39,11 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   const int fontWidth  = lfont.getMaxCharWidth(),
             fontHeight = lfont.getFontHeight(),
             lineHeight = lfont.getLineHeight();
-  const int VGAP = 2;
-  int xpos, ypos, lwidth;
+  constexpr int VGAP = 2;
+  const int lwidth = 4 * fontWidth;
 
   // Create a 1x1 grid with label for the PC register
-  xpos = x;  ypos = y;  lwidth = 4 * fontWidth;
+  int xpos = x, ypos = y;
   new StaticTextWidget(boss, lfont, xpos, ypos + 2, lwidth-2, fontHeight,
                        "PC ", TextAlign::Left);
   myPCGrid =
@@ -91,8 +91,8 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   // Create labels showing the source of data for SP/A/X/Y registers
   const std::array<string, 4> labels = { "SP", "A", "X", "Y" };
   xpos += myCpuGridBinValue->getWidth() + 20;
-  int src_y = ypos, src_w = (max_w - xpos + x) - 10;
-  for(int i = 0; i < 4; ++i)
+  const int src_w = (max_w - xpos + x) - 10;
+  for(int i = 0, src_y = ypos; i < 4; ++i)
   {
     myCpuDataSrc[i] = new EditTextWidget(boss, nfont, xpos, src_y, src_w, fontHeight + 1);
     myCpuDataSrc[i]->setToolTip("Source label of last read for " + labels[i] + ".");
@@ -244,7 +244,7 @@ void CpuWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 
     case ToggleWidget::kItemDataChangedCmd:
     {
-      bool state = myPSRegister->getSelectedState();
+      const bool state = myPSRegister->getSelectedState();
 
       switch(data)
       {

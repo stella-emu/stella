@@ -138,7 +138,7 @@ void DebuggerDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
   }
 
   // handle emulation keys second (can be remapped)
-  Event::Type event = instance().eventHandler().eventForKey(EventMode::kEmulationMode, key, mod);
+  const Event::Type event = instance().eventHandler().eventForKey(EventMode::kEmulationMode, key, mod);
   switch (event)
   {
     case Event::ExitMode:
@@ -453,7 +453,7 @@ void DebuggerDialog::addTiaArea()
 void DebuggerDialog::addTabArea()
 {
   const Common::Rect& r = getTabBounds();
-  const int vBorder = 4;
+  constexpr int vBorder = 4;
 
   // The tab widget
   // Since there are two tab widgets in this dialog, we specifically
@@ -465,10 +465,9 @@ void DebuggerDialog::addTabArea()
 
   const int widWidth  = r.w() - vBorder;
   const int widHeight = r.h() - myTab->getTabHeight() - vBorder - 4;
-  int tabID;
 
   // The Prompt/console tab
-  tabID = myTab->addTab("Prompt");
+  int tabID = myTab->addTab("Prompt");
   myPrompt = new PromptWidget(myTab, *myNFont,
                               2, 2, widWidth - 4, widHeight);
   myTab->setParentWidget(tabID, myPrompt);
@@ -503,11 +502,11 @@ void DebuggerDialog::addStatusArea()
 {
   const int lineHeight = myLFont->getLineHeight();
   const Common::Rect& r = getStatusBounds();
-  const int HBORDER = 10;
+  constexpr int HBORDER = 10;
   const int VGAP = lineHeight / 3;
-  int xpos, ypos;
 
-  xpos = r.x() + HBORDER;  ypos = r.y();
+  const int xpos = r.x() + HBORDER;
+  int ypos = r.y();
   myTiaInfo = new TiaInfoWidget(this, *myLFont, *myNFont, xpos, ypos, r.w() - HBORDER);
 
   ypos = myTiaInfo->getBottom() + VGAP;
@@ -554,9 +553,9 @@ void DebuggerDialog::addRomArea()
   };
 
   const Common::Rect& r = getRomBounds();
-  const int VBORDER = 4;
+  constexpr int VBORDER = 4;
   WidgetArray wid1, wid2;
-  ButtonWidget* b;
+  ButtonWidget* b = nullptr;
 
   int bwidth  = myLFont->getStringWidth("Frame +1 "),
       bheight = myLFont->getLineHeight() + 2;
@@ -620,7 +619,7 @@ void DebuggerDialog::addRomArea()
 
   DataGridOpsWidget* ops = new DataGridOpsWidget(this, *myLFont, xpos, ypos);
 
-  int max_w = xpos - r.x() - 10;
+  const int max_w = xpos - r.x() - 10;
   xpos = r.x() + 10;  ypos = 5;
   myCpu = new CpuWidget(this, *myLFont, *myNFont, xpos, ypos, max_w);
   addToFocusList(myCpu->getFocusList());
@@ -644,7 +643,6 @@ void DebuggerDialog::addRomArea()
   xpos = r.x() + VBORDER;  ypos += myRam->getHeight() + 5;
   const int tabWidth  = r.w() - VBORDER - 1;
   const int tabHeight = r.h() - ypos - 1;
-  int tabID;
 
   // Since there are two tab widgets in this dialog, we specifically
   // assign an ID of 1
@@ -654,7 +652,7 @@ void DebuggerDialog::addRomArea()
   addTabWidget(myRomTab);
 
   // The main disassembly tab
-  tabID = myRomTab->addTab("  Disassembly  ", TabWidget::AUTO_WIDTH);
+  int tabID = myRomTab->addTab("  Disassembly  ", TabWidget::AUTO_WIDTH);
   myRom = new RomWidget(myRomTab, *myLFont, *myNFont, 2, 2, tabWidth - 1,
                         tabHeight - myRomTab->getTabHeight() - 2);
   myRom->setHelpAnchor("Disassembly", true);
@@ -708,7 +706,8 @@ void DebuggerDialog::addRomArea()
 Common::Rect DebuggerDialog::getTiaBounds() const
 {
   // The area showing the TIA image (NTSC and PAL supported, up to 274 lines without scaling)
-  return Common::Rect(0, 0, 320, std::max(int(FrameManager::Metrics::baseHeightPAL), int(_h * 0.35)));
+  return Common::Rect(0, 0, 320, std::max(static_cast<int>(FrameManager::Metrics::baseHeightPAL),
+                                          static_cast<int>(_h * 0.35)));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -727,12 +726,11 @@ Common::Rect DebuggerDialog::getStatusBounds() const
   // 30% of any space above 1030 pixels will be allocated to this area
   const Common::Rect& tia = getTiaBounds();
 
-  int x1 = tia.x() + tia.w() + 1;
-  int y1 = 0;
-  int x2 = tia.x() + tia.w() + 225 + (_w > 1030 ? int(0.35 * (_w - 1030)) : 0);
-  int y2 = tia.y() + tia.h();
-
-  return Common::Rect(x1, y1, x2, y2);
+  return Common::Rect(
+      tia.x() + tia.w() + 1,
+      0,
+      tia.x() + tia.w() + 225 + (_w > 1030 ? int(0.35 * (_w - 1030)) : 0),
+      tia.y() + tia.h());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

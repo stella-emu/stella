@@ -24,24 +24,24 @@ CartridgeCDFInfoWidget::CartridgeCDFInfoWidget(
   : CartDebugWidget(boss, lfont, nfont, x, y, w, h)
 {
   ostringstream info;
-  
+
   info << describeCDFVersion(cart.myCDFSubtype) << " cartridge\n"
-    << (cart.romSize() / 1024) << "K ROM\n"
-    << (cart.ramSize() / 1024) << "K RAM\n"
-    << "Seven 4K banks are available to 2600\n"
-    << "Functions accessible @ $FFF0 - $FFF3\n"
-    << (cart.isCDFJplus() ? "Banks accessible @ $FFF4 to $FFFA\n" : "Banks accessible @ $FFF5 to $FFFB\n")
-    << "Startup bank = " << cart.startBank() << "\n"
-    << "Fast Fetcher(s): LDA #";
-  
+       << (cart.romSize() / 1024) << "K ROM\n"
+       << (cart.ramSize() / 1024) << "K RAM\n"
+       << "Seven 4K banks are available to 2600\n"
+       << "Functions accessible @ $FFF0 - $FFF3\n"
+       << (cart.isCDFJplus() ? "Banks accessible @ $FFF4 to $FFFA\n" : "Banks accessible @ $FFF5 to $FFFB\n")
+       << "Startup bank = " << cart.startBank() << "\n"
+       << "Fast Fetcher(s): LDA #";
+
   if (cart.myLDXenabled)
     info << ", LDX #";
-  
+
   if (cart.myLDYenabled)
     info << ", LDY #";
-  
+
   info << "\n";
-  
+
 #if 0
   // Eventually, we should query this from the debugger/disassembler
   for(uInt32 i = 0, offset = 0xFFC, spot = 0xFF5; i < 7; ++i, offset += 0x1000)

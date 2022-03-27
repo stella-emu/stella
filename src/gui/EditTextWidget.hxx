@@ -40,7 +40,7 @@ class EditTextWidget : public EditableWidget
     // Get total width of widget
     static int calcWidth(const GUI::Font& font, const string& str)
     {
-      return calcWidth(font, int(str.length()));
+      return calcWidth(font, static_cast<int>(str.length()));
     }
 
   protected:

@@ -83,7 +83,7 @@ void SoundSDL2::queryHardware(VariantList& devices)
 {
   ASSERT_MAIN_THREAD;
 
-  int numDevices = SDL_GetNumAudioDevices(0);
+  const int numDevices = SDL_GetNumAudioDevices(0);
 
   // log the available audio devices
   ostringstream s;
@@ -112,12 +112,12 @@ bool SoundSDL2::openDevice()
   desired.channels = 2;
   desired.samples  = static_cast<Uint16>(myAudioSettings.fragmentSize());
   desired.callback = callback;
-  desired.userdata = static_cast<void*>(this);
+  desired.userdata = this;
 
   if(myIsInitializedFlag)
     SDL_CloseAudioDevice(myDevice);
 
-  myDeviceId = BSPF::clamp(myAudioSettings.device(), 0U, uInt32(myDevices.size() - 1));
+  myDeviceId = BSPF::clamp(myAudioSettings.device(), 0U, static_cast<uInt32>(myDevices.size() - 1));
   const char* device = myDeviceId ? myDevices.at(myDeviceId).first.c_str() : nullptr;
 
   myDevice = SDL_OpenAudioDevice(device, 0, &desired, &myHardwareSpec,
@@ -154,8 +154,8 @@ void SoundSDL2::open(shared_ptr<AudioQueue> audioQueue,
 
   // Do we need to re-open the sound device?
   // Only do this when absolutely necessary
-  if(myAudioSettings.sampleRate() != uInt32(myHardwareSpec.freq) ||
-     myAudioSettings.fragmentSize() != uInt32(myHardwareSpec.samples) ||
+  if(myAudioSettings.sampleRate() != static_cast<uInt32>(myHardwareSpec.freq) ||
+     myAudioSettings.fragmentSize() != static_cast<uInt32>(myHardwareSpec.samples) ||
      myAudioSettings.device() != myDeviceId)
     openDevice();
 
@@ -206,7 +206,7 @@ void SoundSDL2::close()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool SoundSDL2::mute(bool state)
 {
-  bool oldstate = SDL_GetAudioDeviceStatus(myDevice) == SDL_AUDIO_PAUSED;
+  const bool oldstate = SDL_GetAudioDeviceStatus(myDevice) == SDL_AUDIO_PAUSED;
   if(myIsInitializedFlag)
     SDL_PauseAudioDevice(myDevice, state ? 1 : 0);
 
@@ -216,7 +216,7 @@ bool SoundSDL2::mute(bool state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool SoundSDL2::toggleMute()
 {
-  bool enabled = !myAudioSettings.enabled();
+  const bool enabled = !myAudioSettings.enabled();
 
   setEnabled(enabled);
   myOSystem.console().initializeAudio();
@@ -269,7 +269,7 @@ void SoundSDL2::adjustVolume(int direction)
   setVolume(percent);
 
   // Enable audio if it is currently disabled
-  bool enabled = myAudioSettings.enabled();
+  const bool enabled = myAudioSettings.enabled();
 
   if(percent > 0 && !enabled)
   {
@@ -292,7 +292,7 @@ string SoundSDL2::about() const
   buf << "Sound enabled:"  << endl
       << "  Volume:   " << myVolume << "%" << endl
       << "  Device:   " << myDevices.at(myDeviceId).first << endl
-      << "  Channels: " << uInt32(myHardwareSpec.channels)
+      << "  Channels: " << static_cast<uInt32>(myHardwareSpec.channels)
       << (myAudioQueue->isStereo() ? " (Stereo)" : " (Mono)") << endl
       << "  Preset:   ";
   switch (myAudioSettings.preset()) {
@@ -312,8 +312,8 @@ string SoundSDL2::about() const
       buf << "Ultra quality, minimal lag" << endl;
       break;
   }
-  buf << "    Fragment size: " << uInt32(myHardwareSpec.samples) << " bytes" << endl
-      << "    Sample rate:   " << uInt32(myHardwareSpec.freq) << " Hz" << endl;
+  buf << "    Fragment size: " << static_cast<uInt32>(myHardwareSpec.samples) << " bytes" << endl
+      << "    Sample rate:   " << static_cast<uInt32>(myHardwareSpec.freq) << " Hz" << endl;
   buf << "    Resampling:    ";
   switch(myAudioSettings.resamplingQuality())
   {

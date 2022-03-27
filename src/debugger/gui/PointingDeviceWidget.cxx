@@ -19,15 +19,16 @@
 #include "DataGridWidget.hxx"
 #include "PointingDeviceWidget.hxx"
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PointingDeviceWidget::PointingDeviceWidget(GuiObject* boss, const GUI::Font& font,
       int x, int y, Controller& controller)
   : ControllerWidget(boss, font, x, y, controller)
 {
   int ypos = y;
-  int xLeft = x + 10;
-  int xMid = xLeft + 30;
-  int xRight = xLeft + 60;
-  int xValue = xLeft + 87;
+  const int xLeft = x + 10,
+            xMid = xLeft + 30,
+            xRight = xLeft + 60,
+            xValue = xLeft + 87;
   StaticTextWidget* t;
 
   t = new StaticTextWidget(boss, font, x, y + 2, getHeader());
@@ -142,7 +143,7 @@ void PointingDeviceWidget::setGrayCodeV()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PointingDeviceWidget::setValue(DataGridWidget* grayValue, const int index, const int direction)
 {
-  uInt8 grayCode = getGrayCodeTable(index, direction);
+  const uInt8 grayCode = getGrayCodeTable(index, direction);
 
   // FIXME  * 8 = a nasty hack, because the DataGridWidget does not support 2 digit binary output
   grayValue->setList(0, (grayCode & 0b01) + (grayCode & 0b10) * 8);

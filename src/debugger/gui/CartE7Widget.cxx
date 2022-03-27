@@ -63,11 +63,10 @@ CartridgeE7Widget::CartridgeE7Widget(
 void CartridgeE7Widget::initialize(GuiObject* boss,
     CartridgeE7& cart, ostringstream& info)
 {
-  uInt32 size = cart.romBankCount() * cart.BANK_SIZE;
+  const uInt32 size = cart.romBankCount() * cart.BANK_SIZE;
 
-  int xpos = 2,
-    ypos = addBaseInformation(size, "M Network", info.str(), 15) +
-    myLineHeight;
+  constexpr int xpos = 2;
+  int ypos = addBaseInformation(size, "M Network", info.str(), 15) + myLineHeight;
 
   VariantList items0, items1;
   for(int i = 0; i < cart.romBankCount(); ++i)

@@ -85,20 +85,16 @@ class MouseControl
       int xid{-1}, yid{-1};
       string message;
 
-      explicit MouseMode(const string& msg = "") : message(msg) { }
+      explicit MouseMode(const string& msg = "") : message{msg} { }
       MouseMode(Controller::Type xt, int xi,
                 Controller::Type yt, int yi,
                 const string& msg)
-        : xtype(xt),
-          ytype(yt),
-          xid(xi),
-          yid(yi),
-          message(msg)  { }
+        : xtype{xt}, ytype{yt}, xid{xi}, yid{yi}, message{msg}  { }
 
       friend ostream& operator<<(ostream& os, const MouseMode& mm)
       {
-        os << "xtype=" << int(mm.xtype) << ", xid=" << mm.xid
-           << ", ytype=" << int(mm.ytype) << ", yid=" << mm.yid
+        os << "xtype=" << static_cast<int>(mm.xtype) << ", xid=" << mm.xid
+           << ", ytype=" << static_cast<int>(mm.ytype) << ", yid=" << mm.yid
            << ", msg=" << mm.message;
         return os;
       }

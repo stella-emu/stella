@@ -45,7 +45,7 @@ void FpsMeter::render(uInt32 frameCount)
     return;
   }
 
-  size_t queueSize = myQueue.capacity();
+  const size_t queueSize = myQueue.capacity();
   entry first, last;
 
   last.frames = frameCount;
@@ -64,7 +64,7 @@ void FpsMeter::render(uInt32 frameCount)
     first = myQueue.at(myQueueOffset);
   }
 
-  float myTimeInterval =
+  const float myTimeInterval =
     duration_cast<duration<float>>(last.timestamp - first.timestamp).count();
 
   if (myTimeInterval > 0) myFps = (myFrameCount - first.frames) / myTimeInterval;

@@ -46,7 +46,8 @@ int CartDebugWidget::addBaseInformation(size_t bytes, const string& manufacturer
   EditTextWidget* w = nullptr;
   ostringstream buf;
 
-  int x = 2, y = 8;
+  constexpr int x = 2;
+  int y = 8;
 
   // Add ROM size, manufacturer and bankswitch info
   new StaticTextWidget(_boss, _font, x, y + 1, "ROM size ");
@@ -67,7 +68,7 @@ int CartDebugWidget::addBaseInformation(size_t bytes, const string& manufacturer
 
   StringParser bs(desc, (fwidth - ScrollBarWidget::scrollBarWidth(_font)) / myFontWidth - 4);
   const StringList& sl = bs.stringList();
-  uInt32 lines = uInt32(sl.size());
+  size_t lines = sl.size();
   if(lines < 3) lines = 3;
   bool useScrollbar = false;
   if(lines > maxlines)
@@ -78,7 +79,8 @@ int CartDebugWidget::addBaseInformation(size_t bytes, const string& manufacturer
 
   new StaticTextWidget(_boss, _font, x, y + 1, "Description ");
   myDesc = new StringListWidget(_boss, _nfont, x+lwidth, y - 1,
-                                fwidth, lines * myLineHeight, false, useScrollbar);
+                                fwidth, static_cast<int>(lines) * myLineHeight,
+                                false, useScrollbar);
   myDesc->setEditable(false);
   myDesc->setEnabled(false);
   myDesc->setList(sl);

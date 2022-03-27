@@ -41,14 +41,14 @@ MouseControl::MouseControl(Console& console, const string& mode)
           m_mode[0] >= '0' && m_mode[0] <= '8' &&
           m_mode[1] >= '0' && m_mode[1] <= '8')
   {
-    MouseControl::Type xaxis = MouseControl::Type(int(m_mode[0]) - '0');
-    MouseControl::Type yaxis = MouseControl::Type(int(m_mode[1]) - '0');
+    const MouseControl::Type xaxis = static_cast<MouseControl::Type>(static_cast<int>(m_mode[0]) - '0');
+    const MouseControl::Type yaxis = static_cast<MouseControl::Type>(static_cast<int>(m_mode[1]) - '0');
     ostringstream msg;
     Controller::Type xtype = Controller::Type::Joystick, ytype = Controller::Type::Joystick;
     int xid = -1, yid = -1;
 
-    auto MControlToController = [&msg](MouseControl::Type axis,
-                                       Controller::Type& type, int& id) {
+    const auto MControlToController = [&msg](MouseControl::Type axis,
+                                             Controller::Type& type, int& id) {
       switch(axis)
       {
         case MouseControl::Type::NoControl:
@@ -107,7 +107,7 @@ MouseControl::MouseControl(Console& console, const string& mode)
 
   // Now consider the possible modes for the mouse based on the left
   // and right controllers
-  bool noswap = BSPF::equalsIgnoreCase(myProps.get(PropType::Console_SwapPorts), "NO");
+  const bool noswap = BSPF::equalsIgnoreCase(myProps.get(PropType::Console_SwapPorts), "NO");
   if(noswap)
   {
     addLeftControllerModes(noswap);
@@ -139,12 +139,13 @@ MouseControl::MouseControl(Console& console, const string& mode)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string& MouseControl::change(int direction)
 {
-  myCurrentModeNum = BSPF::clampw(myCurrentModeNum + direction, 0, int(myModeList.size() - 1));
+  myCurrentModeNum = BSPF::clampw(myCurrentModeNum + direction, 0,
+                                  static_cast<int>(myModeList.size() - 1));
   const MouseMode& mode = myModeList[myCurrentModeNum];
 
-  bool leftControl =
+  const bool leftControl =
     myLeftController.setMouseControl(mode.xtype, mode.xid, mode.ytype, mode.yid);
-  bool rightControl =
+  const bool rightControl =
     myRightController.setMouseControl(mode.xtype, mode.xid, mode.ytype, mode.yid);
 
   myHasMouseControl = leftControl || rightControl;
@@ -197,14 +198,14 @@ void MouseControl::addRightControllerModes(bool noswap)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MouseControl::addPaddleModes(int lport, int rport, int lname, int rname)
 {
-  Controller::Type type = Controller::Type::Paddles;
+  const Controller::Type type = Controller::Type::Paddles;
   ostringstream msg;
   msg << "Mouse is Paddle " << lname << " controller";
-  MouseMode mode0(type, lport, type, lport, msg.str());
+  const MouseMode mode0(type, lport, type, lport, msg.str());
 
   msg.str("");
   msg << "Mouse is Paddle " << rname << " controller";
-  MouseMode mode1(type, rport, type, rport, msg.str());
+  const MouseMode mode1(type, rport, type, rport, msg.str());
 
   if(BSPF::equalsIgnoreCase(myProps.get(PropType::Controller_SwapPaddles), "NO"))
   {

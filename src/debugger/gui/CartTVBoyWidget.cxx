@@ -35,9 +35,9 @@ string CartridgeTVBoyWidget::description()
   ostringstream info;
 
   info << "TV Boy, " << myCart.romBankCount() << " 4K banks\n"
-    << "Hotspots are from $" << Common::Base::HEX2 << 0xf800 << " to $"
-    << Common::Base::HEX2 << (0xf800 + myCart.romBankCount() - 1) << "\n";
-  info << CartridgeEnhancedWidget::description();
+       << "Hotspots are from $" << Common::Base::HEX2 << 0xf800 << " to $"
+       << Common::Base::HEX2 << (0xf800 + myCart.romBankCount() - 1) << "\n"
+       << CartridgeEnhancedWidget::description();
 
   return info.str();
 }
@@ -48,7 +48,7 @@ void CartridgeTVBoyWidget::bankSelect(int& ypos)
   CartridgeEnhancedWidget::bankSelect(ypos);
   if(myCart.romBankCount() > 1)
   {
-    int xpos = myBankWidgets[0]->getRight() + _font.getMaxCharWidth() * 4;
+    const int xpos = myBankWidgets[0]->getRight() + _font.getMaxCharWidth() * 4;
     ypos = myBankWidgets[0]->getTop();
 
     myBankLocked = new CheckboxWidget(_boss, _font, xpos, ypos + 1,

@@ -44,7 +44,7 @@ TiaZoomWidget::TiaZoomWidget(GuiObject* boss, const GUI::Font& font,
 
   // Use all available space, up to the maximum bounds of the TIA image
   _w = std::min(w, 320);
-  _h = std::min(h, int(FrameManager::Metrics::maxHeight));
+  _h = std::min(h, static_cast<int>(FrameManager::Metrics::maxHeight));
 
   addFocusWidget(this);
 
@@ -169,8 +169,8 @@ void TiaZoomWidget::handleMouseMoved(int x, int y)
   if(myMouseMoving)
   {
     y--;
-    int diffx = x + myOffXLo - myClickX;
-    int diffy = y + myOffYLo - myClickY;
+    const int diffx = x + myOffXLo - myClickX;
+    const int diffy = y + myOffYLo - myClickY;
 
     myClickX = x;
     myClickY = y;
@@ -247,7 +247,7 @@ void TiaZoomWidget::handleCommand(CommandSender* sender, int cmd, int data, int 
 {
   if(cmd == ContextMenu::kItemSelectedCmd)
   {
-    uInt32 startLine = instance().console().tia().startLine();
+    const uInt32 startLine = instance().console().tia().startLine();
     const string& rmb = myMenu->getSelectedTag().toString();
 
     if(rmb == "scanline")
@@ -267,14 +267,14 @@ void TiaZoomWidget::handleCommand(CommandSender* sender, int cmd, int data, int 
     else if(rmb == "bp")
     {
       ostringstream command;
-      int scanline = myClickY / myZoomLevel + myOffY + startLine;
+      const int scanline = myClickY / myZoomLevel + myOffY + startLine;
       command << "breakif _scan==#" << scanline;
-      string message = instance().debugger().parser().run(command.str());
+      const string& message = instance().debugger().parser().run(command.str());
       instance().frameBuffer().showTextMessage(message);
     }
     else
     {
-      int level = myMenu->getSelectedTag().toInt();
+      const int level = myMenu->getSelectedTag().toInt();
       if(level > 0)
         zoom(level);
     }
@@ -305,7 +305,7 @@ string TiaZoomWidget::getToolTip(const Common::Point& pos) const
 
   const Int32 i = idx.x + idx.y * instance().console().tia().width();
   const uInt32 startLine = instance().console().tia().startLine();
-  uInt8* tiaOutputBuffer = instance().console().tia().outputBuffer();
+  const uInt8* tiaOutputBuffer = instance().console().tia().outputBuffer();
   ostringstream buf;
 
   buf << _toolTipText
@@ -342,17 +342,16 @@ void TiaZoomWidget::drawWidget(bool hilite)
 
   // Get current scanline position
   // This determines where the frame greying should start
-  uInt32 scanx, scany, scanoffset;
+  uInt32 scanx = 0, scany = 0;
   instance().console().tia().electronBeamPos(scanx, scany);
-  scanoffset = width * scany + scanx;
+  const uInt32 scanoffset = width * scany + scanx;
 
-  int x, y, col, row;
-  for(y = myOffY, row = 0; y < myNumRows+myOffY; ++y, row += hzoom)
+  for(int y = myOffY, row = 0; y < myNumRows+myOffY; ++y, row += hzoom)
   {
-    for(x = myOffX >> 1, col = 0; x < (myNumCols+myOffX) >> 1; ++x, col += wzoom)
+    for(int x = myOffX >> 1, col = 0; x < (myNumCols+myOffX) >> 1; ++x, col += wzoom)
     {
-      uInt32 idx = y*width + x;
-      ColorId color = ColorId(currentFrame[idx] | (idx > scanoffset ? 1 : 0));
+      const uInt32 idx = y*width + x;
+      const ColorId color = static_cast<ColorId>(currentFrame[idx] | (idx > scanoffset ? 1 : 0));
       s.fillRect(_x + col + 1, _y + row + 1, wzoom, hzoom, color);
     }
   }

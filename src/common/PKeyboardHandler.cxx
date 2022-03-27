@@ -128,7 +128,7 @@ void PhysicalKeyboardHandler::setDefaultKey(EventMapping map, Event::Type event,
 {
   // If event is 'NoType', erase and reset all mappings
   // Otherwise, only reset the given event
-  bool eraseAll = !updateDefaults && (event == Event::NoType);
+  const bool eraseAll = !updateDefaults && (event == Event::NoType);
 
 #ifdef GUI_SUPPORT
   // Swap Y and Z for QWERTZ keyboards
@@ -148,13 +148,13 @@ void PhysicalKeyboardHandler::setDefaultKey(EventMapping map, Event::Type event,
     if (myKeyMap.getEventMapping(map.event, mode).size() == 0 &&
         !isMappingUsed(mode, map))
     {
-      addMapping(map.event, mode, map.key, StellaMod(map.mod));
+      addMapping(map.event, mode, map.key, static_cast<StellaMod>(map.mod));
     }
   }
   else if (eraseAll || map.event == event)
   {
     //myKeyMap.eraseEvent(map.event, mode);
-    addMapping(map.event, mode, map.key, StellaMod(map.mod));
+    addMapping(map.event, mode, map.key, static_cast<StellaMod>(map.mod));
   }
 }
 
@@ -239,7 +239,7 @@ void PhysicalKeyboardHandler::defineControllerMappings(
 
     default:
     {
-      EventMode mode = getMode(type);
+      const EventMode mode = getMode(type);
 
       if(port == Controller::Jack::Left)
         myLeftMode = mode;
@@ -377,7 +377,7 @@ void PhysicalKeyboardHandler::enableCommonMappings()
 {
   for (int i = Event::NoType + 1; i < Event::LastType; i++)
   {
-    Event::Type event = static_cast<Event::Type>(i);
+    const Event::Type event = static_cast<Event::Type>(i);
 
     if (isCommonEvent(event))
       enableMapping(event, EventMode::kCommonMode);
@@ -495,7 +495,7 @@ bool PhysicalKeyboardHandler::addMapping(Event::Type event, EventMode mode,
     return false;
   else
   {
-    EventMode evMode = getEventMode(event, mode);
+    const EventMode evMode = getEventMode(event, mode);
 
     // avoid double mapping in common and controller modes
     if (evMode == EventMode::kCommonMode)
@@ -543,13 +543,13 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod,
   }
 #endif
 
-  EventHandlerState estate = myHandler.state();
+  const EventHandlerState estate = myHandler.state();
 
   // special handling for CompuMate in emulation modes
   if ((estate == EventHandlerState::EMULATION || estate == EventHandlerState::PAUSE) &&
       myOSystem.console().leftController().type() == Controller::Type::CompuMate)
   {
-    Event::Type event = myKeyMap.get(EventMode::kCompuMateMode, key, mod);
+    const Event::Type event = myKeyMap.get(EventMode::kCompuMateMode, key, mod);
 
     // (potential) CompuMate events are handled directly.
     if (myKeyMap.get(EventMode::kEmulationMode, key, mod) != Event::ExitMode &&

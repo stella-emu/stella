@@ -68,7 +68,7 @@ bool CheatManager::add(const string& name, const string& code,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheatManager::remove(int idx)
 {
-  if(uInt32(idx) < myCheatList.size())
+  if(static_cast<size_t>(idx) < myCheatList.size())
   {
     // This will also remove it from the per-frame list (if applicable)
     myCheatList[idx]->disable();
@@ -186,6 +186,9 @@ void CheatManager::parse(const string& cheats)
         code = s[1];
         add(name, code, s[2] == "1");
         break;
+
+      default:
+        break;
     }
     s.clear();
 
@@ -218,7 +221,6 @@ void CheatManager::loadCheatDatabase()
   catch(...)  { return; }
 
   string line, md5, cheat;
-  string::size_type one, two, three, four;
 
   // Loop reading cheats
   while(getline(in, line))
@@ -226,10 +228,10 @@ void CheatManager::loadCheatDatabase()
     if(line.length() == 0)
       continue;
 
-    one = line.find('\"', 0);
-    two = line.find('\"', one + 1);
-    three = line.find('\"', two + 1);
-    four = line.find('\"', three + 1);
+    const string::size_type one = line.find('\"', 0);
+    const string::size_type two = line.find('\"', one + 1);
+    const string::size_type three = line.find('\"', two + 1);
+    const string::size_type four = line.find('\"', three + 1);
 
     // Invalid line if it doesn't contain 4 quotes
     if((one == string::npos) || (two == string::npos) ||
@@ -302,7 +304,7 @@ void CheatManager::saveCheats(const string& md5sum)
   // Only update the list if absolutely necessary
   if(changed)
   {
-    auto iter = myCheatMap.find(md5sum);
+    const auto iter = myCheatMap.find(md5sum);
 
     // Erase old entry and add a new one only if it's changed
     if(iter != myCheatMap.end())
@@ -322,10 +324,10 @@ void CheatManager::saveCheats(const string& md5sum)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CheatManager::isValidCode(const string& code) const
 {
-  for(char c: code)
+  for(const auto c: code)
     if(!isxdigit(c))
       return false;
 
-  uInt32 length = uInt32(code.length());
+  const size_t length = code.length();
   return (length == 4 || length == 6 || length == 7 || length == 8);
 }

@@ -108,7 +108,7 @@ class GuiObject : public CommandReceiver
 
     void setFlags(uInt32 flags, bool updateDirty = true)
     {
-      uInt32 oldFlags = _flags;
+      const uInt32 oldFlags = _flags;
 
       _flags |= flags;
       if(updateDirty && oldFlags != _flags)
@@ -116,7 +116,7 @@ class GuiObject : public CommandReceiver
     }
     void clearFlags(uInt32 flags, bool updateDirty = true)
     {
-      uInt32 oldFlags = _flags;
+      const uInt32 oldFlags = _flags;
 
       _flags &= ~flags;
       if(updateDirty && oldFlags != _flags)

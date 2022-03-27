@@ -62,10 +62,11 @@ void PaletteHandler::cyclePalette(int direction)
   int type = toPaletteType(myOSystem.settings().getString("palette"));
 
   do {
-    type = BSPF::clampw(type + direction, int(PaletteType::MinType), int(PaletteType::MaxType));
+    type = BSPF::clampw(type + direction,
+        static_cast<int>(PaletteType::MinType), static_cast<int>(PaletteType::MaxType));
   } while(type == PaletteType::User && !myUserPaletteDefined);
 
-  const string palette = toPaletteName(PaletteType(type));
+  const string palette = toPaletteName(static_cast<PaletteType>(type));
   const string message = MESSAGES[type] + " palette";
 
   myOSystem.frameBuffer().showTextMessage(message);
@@ -139,10 +140,11 @@ void PaletteHandler::showAdjustableMessage()
 void PaletteHandler::cycleAdjustable(int direction)
 {
   const bool isCustomPalette = SETTING_CUSTOM == myOSystem.settings().getString("palette");
-  bool isCustomAdj;
+  bool isCustomAdj = false;
 
   do {
-    myCurrentAdjustable = BSPF::clampw(int(myCurrentAdjustable + direction), 0, NUM_ADJUSTABLES - 1);
+    myCurrentAdjustable = BSPF::clampw(static_cast<int>(myCurrentAdjustable + direction), 0,
+        NUM_ADJUSTABLES - 1);
     isCustomAdj = isCustomAdjustable();
     // skip phase shift when 'Custom' palette is not selected
     if(!direction && isCustomAdj && !isCustomPalette)
@@ -330,7 +332,7 @@ void PaletteHandler::setPalette()
     const ConsoleTiming timing = myOSystem.console().timing();
     const PaletteType paletteType = toPaletteType(name);
     // Now consider the current display format
-    const PaletteArray* palette = palettes[paletteType][int(timing)];
+    const PaletteArray* palette = palettes[paletteType][static_cast<int>(timing)];
 
     if(paletteType == PaletteType::Custom)
       generateCustomPalette(timing);
@@ -342,7 +344,7 @@ void PaletteHandler::setPalette()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PaletteArray PaletteHandler::adjustedPalette(const PaletteArray& palette)
 {
-  PaletteArray destPalette;
+  PaletteArray destPalette{0};
   // Constants for saturation and gray scale calculation
   constexpr float PR = .2989F;
   constexpr float PG = .5870F;
@@ -358,7 +360,7 @@ PaletteArray PaletteHandler::adjustedPalette(const PaletteArray& palette)
   const float gamma = 1.1333F - myGamma * 0.5F;
   /* match common PC's 2.2 gamma to TV's 2.65 gamma */
   constexpr float toFloat = 1.F / (ADJUST_SIZE - 1);
-  std::array<float, ADJUST_SIZE> adjust;
+  std::array<float, ADJUST_SIZE> adjust{0};
 
   for(int i = 0; i < ADJUST_SIZE; i++)
     adjust[i] = powf(i * toFloat, gamma) * contrast + brightness;
@@ -408,19 +410,25 @@ void PaletteHandler::loadUserPalette()
   uInt8* pixbuf = in.get();
   for(int i = 0; i < 128; i++, pixbuf += 3)  // NTSC palette
   {
-    const uInt32 pixel = (int(pixbuf[0]) << 16) + (int(pixbuf[1]) << 8) + int(pixbuf[2]);
+    const uInt32 pixel = (static_cast<int>(pixbuf[0]) << 16) +
+                         (static_cast<int>(pixbuf[1]) << 8)  +
+                          static_cast<int>(pixbuf[2]);
     ourUserNTSCPalette[(i<<1)] = pixel;
   }
   for(int i = 0; i < 128; i++, pixbuf += 3)  // PAL palette
   {
-    const uInt32 pixel = (int(pixbuf[0]) << 16) + (int(pixbuf[1]) << 8) + int(pixbuf[2]);
+    const uInt32 pixel = (static_cast<int>(pixbuf[0]) << 16) +
+                         (static_cast<int>(pixbuf[1]) << 8)  +
+                          static_cast<int>(pixbuf[2]);
     ourUserPALPalette[(i<<1)] = pixel;
   }
 
-  std::array<uInt32, 16> secam;  // All 8 24-bit pixels, plus 8 colorloss pixels
+  std::array<uInt32, 16> secam{0};  // All 8 24-bit pixels, plus 8 colorloss pixels
   for(int i = 0; i < 8; i++, pixbuf += 3)    // SECAM palette
   {
-    const uInt32 pixel = (int(pixbuf[0]) << 16) + (int(pixbuf[1]) << 8) + int(pixbuf[2]);
+    const uInt32 pixel = (static_cast<int>(pixbuf[0]) << 16) +
+                         (static_cast<int>(pixbuf[1]) << 8)  +
+                          static_cast<int>(pixbuf[2]);
     secam[(i<<1)]   = pixel;
     secam[(i<<1)+1] = 0;
   }

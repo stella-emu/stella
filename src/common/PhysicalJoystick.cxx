@@ -84,7 +84,7 @@ bool PhysicalJoystick::setMap(const json& map)
 {
   int i = 0;
 
-  for (auto& entry: map.items()) {
+  for (const auto& entry: map.items()) {
     if (entry.key() == "name") continue;
 
     try {
@@ -130,9 +130,9 @@ json PhysicalJoystick::convertLegacyMapping(const string& mapping, const string&
     // Remove leading "<mode>|" string
     map.erase(0, 2);
 
-    json mappingForMode = JoyMap::convertLegacyMapping(map);
+    const json mappingForMode = JoyMap::convertLegacyMapping(map);
 
-    convertedMapping[jsonName(EventMode(mode))] = mappingForMode;
+    convertedMapping[jsonName(static_cast<EventMode>(mode))] = mappingForMode;
   }
 
   convertedMapping["name"] = name;

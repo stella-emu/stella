@@ -24,13 +24,12 @@ DataGridOpsWidget::DataGridOpsWidget(GuiObject* boss, const GUI::Font& font,
   : Widget(boss, font, x, y, 16, 16),
     CommandSender(boss)
 {
-  const int bwidth  = _font.getMaxCharWidth() * 4+2,
-            bheight = _font.getFontHeight() + 3,
-            space = 4;
-  int xpos, ypos;
+  const int bwidth = _font.getMaxCharWidth() * 4 + 2,
+            bheight = _font.getFontHeight() + 3;
+  constexpr int space = 4;
 
   // Create operations buttons
-  xpos = x;  ypos = y;
+  int xpos = x;  int ypos = y;
   _zeroButton = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
                                  "0", kDGZeroCmd);
   _zeroButton->setToolTip("Zero currently selected value");

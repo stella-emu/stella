@@ -28,7 +28,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   : CartridgeARMWidget(boss, lfont, nfont, x, y, w, h, cart),
     myCart{cart}
 {
-  size_t size = cart.mySize;
+  const size_t size = cart.mySize;
 
   ostringstream info;
   info << "Extended DPC cartridge, six 4K banks, 4K display bank, 1K frequency table, "

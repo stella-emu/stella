@@ -92,7 +92,7 @@ RomListSettings::RomListSettings(GuiObject* boss, const GUI::Font& font)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomListSettings::show(uInt32 x, uInt32 y, const Common::Rect& bossRect, int data)
 {
-  uInt32 scale = instance().frameBuffer().hidpiScaleFactor();
+  const uInt32 scale = instance().frameBuffer().hidpiScaleFactor();
   _xorig = bossRect.x() + x * scale;
   _yorig = bossRect.y() + y * scale;
 

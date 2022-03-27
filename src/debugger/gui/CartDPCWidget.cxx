@@ -27,8 +27,8 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
     myCart{cart}
 {
-  const int V_GAP = 4;
-  size_t size = cart.mySize;
+  constexpr int V_GAP = 4;
+  const size_t size = cart.mySize;
   ostringstream info;
 
   info << "DPC cartridge, two 4K banks + 2K display bank\n"
@@ -38,7 +38,8 @@ CartridgeDPCWidget::CartridgeDPCWidget(
        << "Startup bank = " << cart.startBank() << " or undetermined\n";
 
   // Eventually, we should query this from the debugger/disassembler
-  for(uInt32 i = 0, offset = 0xFFC, spot = 0xFF8; i < 2; ++i, offset += 0x1000)
+  constexpr uInt32 spot = 0xFF8;
+  for(uInt32 i = 0, offset = 0xFFC; i < 2; ++i, offset += 0x1000)
   {
     uInt16 start = (cart.myImage[offset+1] << 8) | cart.myImage[offset];
     start -= start % 0x1000;

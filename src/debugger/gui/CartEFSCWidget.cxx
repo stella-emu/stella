@@ -32,8 +32,8 @@ string CartridgeEFSCWidget::description()
 {
   ostringstream info;
 
-  info << "64K H. Runner EFSC + RAM, 16 4K banks\n";
-  info << CartridgeEnhancedWidget::description();
+  info << "64K H. Runner EFSC + RAM, 16 4K banks\n"
+       << CartridgeEnhancedWidget::description();
 
   return info.str();
 }

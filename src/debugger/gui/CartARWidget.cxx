@@ -29,14 +29,14 @@ CartridgeARWidget::CartridgeARWidget(
   : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
     myCart{cart}
 {
-  size_t size = myCart.mySize;
+  const size_t size = myCart.mySize;
 
   string info =
     "Supercharger cartridge, four 2K slices (3 RAM, 1 ROM)\n"
     "\nTHIS SCHEME IS NOT FULLY IMPLEMENTED OR TESTED\n";
 
-  int xpos = 2,
-      ypos = addBaseInformation(size, "Starpath", info) + myLineHeight;
+  constexpr int xpos = 2;
+  const int ypos = addBaseInformation(size, "Starpath", info) + myLineHeight;
 
   VariantList items;
   VarList::push_back(items, "  0");

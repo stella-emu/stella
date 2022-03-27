@@ -50,7 +50,7 @@ namespace HSM {
 
   using ScoreAddresses = array<Int16, MAX_SCORE_ADDR>;
 
-  static const uInt32 NUM_RANKS = 10;
+  static constexpr uInt32 NUM_RANKS = 10;
 
   struct ScoresProps {
     // Formats

@@ -29,7 +29,7 @@ CartridgeCTYWidget::CartridgeCTYWidget(
   : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
     myCart{cart}
 {
-  uInt16 size = 8 * 4096;
+  constexpr uInt16 size = 8 * 4096;
 
   string info =
     "Chetiry cartridge, eight 4K banks (bank 0 is ARM code and is ignored)\n"
@@ -37,8 +37,8 @@ CartridgeCTYWidget::CartridgeCTYWidget(
     "  $F040 - $F07F (R), $F000 - $F03F (W)\n"
     "\nTHIS SCHEME IS NOT FULLY IMPLEMENTED OR TESTED\n";
 
-  int xpos = 2,
-      ypos = addBaseInformation(size, "Chris D. Walton", info) + myLineHeight;
+  constexpr int xpos = 2;
+  const int ypos = addBaseInformation(size, "Chris D. Walton", info) + myLineHeight;
 
   VariantList items;
   VarList::push_back(items, "1 ($FFF5)");
@@ -96,7 +96,7 @@ string CartridgeCTYWidget::bankState()
   static constexpr std::array<const char*, 8> spot = {
     "", "$FFF5", "$FFF6", "$FFF7", "$FFF8", "$FFF9", "$FFFA", "$FFFB"
   };
-  uInt16 bank = myCart.getBank();
+  const uInt16 bank = myCart.getBank();
   buf << "Bank = " << std::dec << bank << ", hotspot = " << spot[bank];
 
   return buf.str();

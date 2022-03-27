@@ -180,15 +180,15 @@ class PNGLibrary
     /**
       Write PNG tEXt chunks to the image.
     */
-    void writeComments(png_structp png_ptr, png_infop info_ptr,
+    void writeComments(const png_structp png_ptr, png_infop info_ptr,
                        const VariantList& comments);
 
     /** PNG library callback functions */
-    static void png_read_data(png_structp ctx, png_bytep area, png_size_t size);
-    static void png_write_data(png_structp ctx, png_bytep area, png_size_t size);
-    static void png_io_flush(png_structp ctx);
-    [[noreturn]] static void png_user_warn(png_structp ctx, png_const_charp str);
-    [[noreturn]] static void png_user_error(png_structp ctx, png_const_charp str);
+    static void png_read_data(const png_structp ctx, png_bytep area, png_size_t size);
+    static void png_write_data(const png_structp ctx, png_bytep area, png_size_t size);
+    static void png_io_flush(const png_structp ctx);
+    [[noreturn]] static void png_user_warn(const png_structp ctx, png_const_charp str);
+    [[noreturn]] static void png_user_error(const png_structp ctx, png_const_charp str);
 
   private:
     // Following constructors and assignment operators not supported

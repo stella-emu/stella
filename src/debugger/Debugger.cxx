@@ -96,8 +96,8 @@ void Debugger::initialize()
 
   // The debugger dialog is resizable, within certain bounds
   // We check those bounds now
-  mySize.clamp(uInt32(DebuggerDialog::kSmallFontMinW), d.w,
-               uInt32(DebuggerDialog::kSmallFontMinH), d.h);
+  mySize.clamp(static_cast<uInt32>(DebuggerDialog::kSmallFontMinW), d.w,
+               static_cast<uInt32>(DebuggerDialog::kSmallFontMinH), d.h);
 
   myOSystem.settings().setValue("dbg.res", mySize);
 
@@ -190,7 +190,7 @@ string Debugger::autoExec(StringList* history)
   for(const auto& func: ourBuiltinFunctions)
   {
     // TODO - check this for memory leaks
-    int res = YaccParser::parse(func.defn);
+    const int res = YaccParser::parse(func.defn);
     if(res == 0)
       addFunction(func.name, func.defn, YaccParser::getResult(), true);
     else
@@ -228,7 +228,7 @@ const string Debugger::invIfChanged(int reg, int oldReg)
 {
   string ret;
 
-  bool changed = reg != oldReg;
+  const bool changed = reg != oldReg;
   if(changed) ret += "\177";
   ret += Common::Base::toString(reg, Common::Base::Fmt::_16_2);
   if(changed) ret += "\177";
@@ -252,9 +252,9 @@ string Debugger::setRAM(IntArray& args)
 {
   ostringstream buf;
 
-  int count = int(args.size());
+  const size_t count = args.size();
   int address = args[0];
-  for(int i = 1; i < count; ++i)
+  for(size_t i = 1; i < count; ++i)
     mySystem.poke(address++, args[i]);
 
   buf << "changed " << (count-1) << " location";
@@ -309,7 +309,7 @@ int Debugger::step(bool save)
   if(save)
     saveOldState();
 
-  uInt64 startCycle = mySystem.cycles();
+  const uInt64 startCycle = mySystem.cycles();
 
   unlockSystem();
   myOSystem.console().tia().updateScanlineByStep().flushLineCache();
@@ -317,7 +317,7 @@ int Debugger::step(bool save)
 
   if(save)
     addState("step");
-  return int(mySystem.cycles() - startCycle);
+  return static_cast<int>(mySystem.cycles() - startCycle);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -337,11 +337,11 @@ int Debugger::trace()
   {
     saveOldState();
 
-    uInt64 startCycle = mySystem.cycles();
-    int targetPC = myCpuDebug->pc() + 3; // return address
+    const uInt64 startCycle = mySystem.cycles();
+    const int targetPC = myCpuDebug->pc() + 3; // return address
 
     // set temporary breakpoint at target PC (if not existing already)
-    Int8 bank = myCartDebug->getBank(targetPC);
+    const Int8 bank = myCartDebug->getBank(targetPC);
     if(!checkBreakPoint(targetPC, bank))
     {
       // add temporary breakpoint and remove later
@@ -354,7 +354,7 @@ int Debugger::trace()
     lockSystem();
 
     addState("trace");
-    return int(mySystem.cycles() - startCycle);
+    return static_cast<int>(mySystem.cycles() - startCycle);
   }
   else
     return step();
@@ -363,9 +363,7 @@ int Debugger::trace()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Debugger::setBreakPoint(uInt16 addr, uInt8 bank, uInt32 flags)
 {
-  bool exists = checkBreakPoint(addr, bank);
-
-  if(exists)
+  if(checkBreakPoint(addr, bank))
     return false;
 
   breakPoints().add(addr, bank, flags);
@@ -375,9 +373,7 @@ bool Debugger::setBreakPoint(uInt16 addr, uInt8 bank, uInt32 flags)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Debugger::clearBreakPoint(uInt16 addr, uInt8 bank)
 {
-  bool exists = checkBreakPoint(addr, bank);
-
-  if(!exists)
+  if(!checkBreakPoint(addr, bank))
     return false;
 
   breakPoints().erase(addr, bank);
@@ -457,7 +453,7 @@ bool Debugger::writeTrap(uInt16 t)
 void Debugger::log(const string& triggerMsg)
 {
   const CartDebug::Disassembly& disasm = myCartDebug->disassembly();
-  int pc = myCpuDebug->pc();
+  const int pc = myCpuDebug->pc();
 
   if(myFirstLog)
   {
@@ -477,9 +473,9 @@ void Debugger::log(const string& triggerMsg)
   }
 
   // First find the lines in the range, and determine the longest string
-  uInt16 start = pc & 0xFFF;
-  uInt32 list_size = uInt32(disasm.list.size());
-  uInt32 pos;
+  const uInt16 start = pc & 0xFFF;
+  const size_t list_size = disasm.list.size();
+  size_t pos = 0;
 
   for(pos = 0; pos < list_size; ++pos)
   {
@@ -538,7 +534,8 @@ uInt8 Debugger::peek(uInt16 addr, Device::AccessFlags flags)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 Debugger::dpeek(uInt16 addr, Device::AccessFlags flags)
 {
-  return uInt16(mySystem.peek(addr, flags) | (mySystem.peek(addr+1, flags) << 8));
+  return static_cast<uInt16>(mySystem.peek(addr, flags) |
+                            (mySystem.peek(addr+1, flags) << 8));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -556,14 +553,14 @@ M6502& Debugger::m6502() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Debugger::peekAsInt(int addr, Device::AccessFlags flags)
 {
-  return mySystem.peek(uInt16(addr), flags);
+  return mySystem.peek(static_cast<uInt16>(addr), flags);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Debugger::dpeekAsInt(int addr, Device::AccessFlags flags)
 {
-  return mySystem.peek(uInt16(addr), flags) |
-      (mySystem.peek(uInt16(addr+1), flags) << 8);
+  return mySystem.peek(static_cast<uInt16>(addr), flags) |
+      (mySystem.peek(static_cast<uInt16>(addr+1), flags) << 8);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -680,8 +677,8 @@ uInt16 Debugger::windStates(uInt16 numStates, bool unwind, string& message)
 
   unlockSystem();
 
-  uInt64 startCycles = myOSystem.console().tia().cycles();
-  uInt16 winds = r.windStates(numStates, unwind);
+  const uInt64 startCycles = myOSystem.console().tia().cycles();
+  const uInt16 winds = r.windStates(numStates, unwind);
   message = r.getUnitString(myOSystem.console().tia().cycles() - startCycles);
 
   lockSystem();
@@ -852,23 +849,23 @@ const Debugger::FunctionDefMap Debugger::getFunctionDefMap() const
 string Debugger::builtinHelp() const
 {
   ostringstream buf;
-  uInt32 len, c_maxlen = 0, i_maxlen = 0;
+  size_t len = 0, c_maxlen = 0, i_maxlen = 0;
 
   // Get column widths for aligned output (functions)
   for(const auto& func: ourBuiltinFunctions)
   {
-    len = uInt32(func.name.size());
+    len = func.name.size();
     if(len > c_maxlen)  c_maxlen = len;
-    len = uInt32(func.defn.size());
+    len = func.defn.size();
     if(len > i_maxlen)  i_maxlen = len;
   }
 
   buf << std::setfill(' ') << endl << "Built-in functions:" << endl;
   for(const auto& func: ourBuiltinFunctions)
   {
-    buf << std::setw(c_maxlen) << std::left << func.name
+    buf << std::setw(static_cast<int>(c_maxlen)) << std::left << func.name
         << std::setw(2) << std::right << "{"
-        << std::setw(i_maxlen) << std::left << func.defn
+        << std::setw(static_cast<int>(i_maxlen)) << std::left << func.defn
         << std::setw(4) << "}"
         << func.help
         << endl;
@@ -878,16 +875,16 @@ string Debugger::builtinHelp() const
   c_maxlen = 0;
   for(const auto& reg: ourPseudoRegisters)
   {
-    len = uInt32(reg.name.size());
+    len = reg.name.size();
     if(len > c_maxlen)  c_maxlen = len;
   }
 
   buf << endl << "Pseudo-registers:" << endl;
   for(const auto& reg: ourPseudoRegisters)
   {
-    buf << std::setw(c_maxlen) << std::left << reg.name
+    buf << std::setw(static_cast<int>(c_maxlen)) << std::left << reg.name
         << std::setw(2) << " "
-        << std::setw(i_maxlen) << std::left << reg.help
+        << std::setw(static_cast<int>(i_maxlen)) << std::left << reg.help
         << endl;
   }
 

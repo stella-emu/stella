@@ -326,7 +326,7 @@ class TIA : public Device
     /**
       Answers the total system cycles from the start of the emulation.
     */
-    uInt64 cycles() const { return uInt64(mySystem->cycles()); }
+    uInt64 cycles() const { return mySystem->cycles(); }
 
   #ifdef DEBUGGER_SUPPORT
     /**
@@ -338,7 +338,7 @@ class TIA : public Device
       Answers the system cycles from the start of the current frame.
     */
     uInt32 frameCycles() const {
-      return uInt32(mySystem->cycles() - myCyclesAtFrameStart);
+      return static_cast<uInt32>(mySystem->cycles() - myCyclesAtFrameStart);
     }
 
     /**
@@ -526,7 +526,7 @@ class TIA : public Device
       Get the current x value.
     */
     uInt8 getPosition() const {
-      uInt8 realHctr = myHctr - myHctrDelta;
+      const uInt8 realHctr = myHctr - myHctrDelta;
 
       return (realHctr < TIAConstants::H_BLANK_CLOCKS) ? 0 : (realHctr - TIAConstants::H_BLANK_CLOCKS);
     }

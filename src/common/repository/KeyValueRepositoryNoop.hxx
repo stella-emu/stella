@@ -24,7 +24,7 @@ class KeyValueRepositoryNoop : public KeyValueRepositoryAtomic
 {
   public:
 
-    virtual std::map<string, Variant> load() override {
+    std::map<string, Variant> load() override {
       return std::map<string, Variant>();
     }
 

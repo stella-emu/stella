@@ -27,7 +27,7 @@ HighPass::HighPass(float cutOffFrequency, float frequency)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 float HighPass::apply(float valueIn)
 {
-  float valueOut = myAlpha * (myLastValueOut + valueIn - myLastValueIn);
+  const float valueOut = myAlpha * (myLastValueOut + valueIn - myLastValueIn);
 
   myLastValueIn = valueIn;
   myLastValueOut = valueOut;

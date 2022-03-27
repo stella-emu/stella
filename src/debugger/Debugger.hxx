@@ -210,9 +210,9 @@ class Debugger : public DialogContainer
     static uInt8 set_bit(uInt8 input, uInt8 bit, bool on)
     {
       if(on)
-        return uInt8(input | (1 << bit));
+        return static_cast<uInt8>(input | (1 << bit));
       else
-        return uInt8(input & ~(1 << bit));
+        return static_cast<uInt8>(input & ~(1 << bit));
     }
     static void set_bits(uInt8 reg, BoolArray& bits)
     {

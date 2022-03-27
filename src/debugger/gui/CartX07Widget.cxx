@@ -34,8 +34,8 @@ string CartridgeX07Widget::description()
 
   info << "64K X07 cartridge, 16 4K banks\n"
        << "Multiple hotspots, all below $1000\n"
-       << "See documentation for further details\n";
-  info << CartridgeEnhancedWidget::description();
+       << "See documentation for further details\n"
+       << CartridgeEnhancedWidget::description();
 
   return info.str();
 }

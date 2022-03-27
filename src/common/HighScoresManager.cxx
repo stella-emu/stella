@@ -181,7 +181,7 @@ void HighScoresManager::set(Properties& props, uInt32 numVariations,
   if(info.scoreInvert != DEFAULT_SCORE_REVERSED)
     jprops[SCORE_INVERTED] = info.scoreInvert;
 
-  uInt32 addrBytes = numAddrBytes(info.numDigits, info.trailingZeroes);
+  const uInt32 addrBytes = numAddrBytes(info.numDigits, info.trailingZeroes);
   json addresses = json::array();
 
   for(uInt32 a = 0; a < addrBytes; ++a)
@@ -312,7 +312,7 @@ Int32 HighScoresManager::variation(uInt16 addr, bool varBCD, bool zeroBased,
   if (!myOSystem.hasConsole())
     return DEFAULT_VARIATION;
 
-  Int32 var = peek(addr);
+  const Int32 var = peek(addr);
 
   return convert(var, numVariations, varBCD, zeroBased);
 }
@@ -344,11 +344,10 @@ Int32 HighScoresManager::score(uInt32 numAddrBytes, uInt32 trailingZeroes,
 
   for (uInt32 b = 0; b < numAddrBytes; ++b)
   {
-    uInt16 addr = scoreAddr[b];
-    Int32 score;
+    const uInt16 addr = scoreAddr[b];
 
     totalScore *= isBCD ? 100 : 256;
-    score = peek(addr);
+    Int32 score = peek(addr);
     if (isBCD)
     {
       score = fromBCD(score);
@@ -373,7 +372,7 @@ Int32 HighScoresManager::score() const
   uInt32 numBytes = numAddrBytes(properties(jprops));
   const ScoreAddresses scoreAddr = getPropScoreAddr(jprops);
 
-  if(uInt32(scoreAddr.size()) < numBytes)
+  if(static_cast<uInt32>(scoreAddr.size()) < numBytes)
     return NO_VALUE;
   return score(numBytes, trailingZeroes(jprops), scoreBCD(jprops), scoreAddr);
 }
@@ -412,7 +411,7 @@ string HighScoresManager::md5Props() const
   buf << varAddress(jprops) << numVariations() << varBCD(jprops)
     << varZeroBased(jprops);
 
-  uInt32 addrBytes = numAddrBytes(jprops);
+  const uInt32 addrBytes = numAddrBytes(jprops);
   HSM::ScoreAddresses addr = getPropScoreAddr(jprops);
   for(uInt32 a = 0; a < addrBytes; ++a)
     buf << addr[a];
@@ -467,7 +466,7 @@ Int32 HighScoresManager::convert(Int32 val, uInt32 maxVal, bool isBCD, bool zero
 {
   //maxVal += zeroBased ? 0 : 1;
   maxVal -= zeroBased ? 1 : 0;
-  Int32 bits = isBCD
+  const Int32 bits = isBCD
     ? ceil(log(maxVal) / log(10) * 4)
     : ceil(log(maxVal) / log(2));
 
@@ -548,7 +547,7 @@ uInt16 HighScoresManager::fromHexStr(const string& addr) const
 {
   string naked = addr;
 
-  if(int pos = naked.find("0x") != std::string::npos)
+  if(const int pos = naked.find("0x") != std::string::npos)
     naked = naked.substr(pos + 1);
 
   return stringToIntBase16(naked);

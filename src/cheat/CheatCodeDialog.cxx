@@ -43,7 +43,6 @@ CheatCodeDialog::CheatCodeDialog(OSystem& osystem, DialogContainer& parent,
             VGAP         = Dialog::vGap(),
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder();
-  int xpos, ypos;
   WidgetArray wid;
   ButtonWidget* b;
 
@@ -52,7 +51,7 @@ CheatCodeDialog::CheatCodeDialog(OSystem& osystem, DialogContainer& parent,
   _h = _th + 11 * (lineHeight + 4) + VBORDER * 2;
 
   // List of cheats, with checkboxes to enable/disable
-  xpos = HBORDER;  ypos = _th + VBORDER;
+  int xpos = HBORDER, ypos = _th + VBORDER;
   myCheatList =
     new CheckListWidget(this, font, xpos, ypos, _w - buttonWidth - HBORDER * 2 - fontWidth,
                         _h - _th - buttonHeight - VBORDER * 3);
@@ -136,7 +135,7 @@ void CheatCodeDialog::loadConfig()
   // Redraw the list, auto-selecting the first item if possible
   myCheatList->setSelected(l.size() > 0 ? 0 : -1);
 
-  bool enabled = (list.size() > 0);
+  const bool enabled = (list.size() > 0);
   myEditButton->setEnabled(enabled);
   myRemoveButton->setEnabled(enabled);
 }
@@ -169,7 +168,7 @@ void CheatCodeDialog::addCheat()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheatCodeDialog::editCheat()
 {
-  int idx = myCheatList->getSelected();
+  const int idx = myCheatList->getSelected();
   if(idx < 0)
     return;
 
@@ -249,8 +248,8 @@ void CheatCodeDialog::handleCommand(CommandSender* sender, int cmd,
     {
       const string& name = myCheatInput->getResult(0);
       const string& code = myCheatInput->getResult(1);
-      bool enable = myCheatList->getSelectedState();
-      int idx = myCheatList->getSelected();
+      const bool enable = myCheatList->getSelectedState();
+      const int idx = myCheatList->getSelected();
       if(instance().cheat().isValidCode(code))
       {
         myCheatInput->close();

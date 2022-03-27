@@ -34,8 +34,9 @@ string CartridgeUAWidget::description()
 {
   ostringstream info;
 
-  info << "8K UA cartridge" << (mySwappedHotspots ? " (swapped banks)" : "") << ", two 4K banks\n";
-  info << CartridgeEnhancedWidget::description();
+  info << "8K UA cartridge" << (mySwappedHotspots ? " (swapped banks)" : "")
+       << ", two 4K banks\n"
+       << CartridgeEnhancedWidget::description();
 
   return info.str();
 }
@@ -44,11 +45,11 @@ string CartridgeUAWidget::description()
 string CartridgeUAWidget::hotspotStr(int bank, int, bool prefix)
 {
   ostringstream info;
-  uInt16 hotspot = myCart.hotspot() + (bank ^ (mySwappedHotspots ? 1 : 0)) * myHotspotDelta;
+  const uInt16 hotspot = myCart.hotspot() + (bank ^ (mySwappedHotspots ? 1 : 0)) * myHotspotDelta;
 
-  info << "(" << (prefix ? "hotspot " : "");
-  info << "$" << Common::Base::HEX1 << hotspot << ", $" << (hotspot | 0x80) << ", $" << (hotspot | 0xf80);
-  info << ")";
+  info << "(" << (prefix ? "hotspot " : "")
+       << "$" << Common::Base::HEX1 << hotspot << ", $" << (hotspot | 0x80)
+       << ", $" << (hotspot | 0xf80) << ")";
 
   return info.str();
 }

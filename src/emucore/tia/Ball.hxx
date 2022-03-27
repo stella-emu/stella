@@ -380,7 +380,7 @@ void Ball::tick(bool isReceivingRegularClock)
   collision = (mySignalActive && myIsEnabled) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
 
   // Regular clock pulse during movement -> starfield mode
-  bool starfieldEffect = isMoving && isReceivingRegularClock;
+  const bool starfieldEffect = isMoving && isReceivingRegularClock;
 
   // Decode value that triggers rendering
   if (myCounter == 156) {
@@ -388,7 +388,7 @@ void Ball::tick(bool isReceivingRegularClock)
     myRenderCounter = renderCounterOffset;
 
     // What follows is an effective description of ball width in starfield mode.
-    uInt8 starfieldDelta = (myCounter + TIAConstants::H_PIXEL - myLastMovementTick) % 4;
+    const uInt8 starfieldDelta = (myCounter + TIAConstants::H_PIXEL - myLastMovementTick) % 4;
     if (starfieldEffect && starfieldDelta == 3 && myWidth < 4) ++myRenderCounter;
 
     switch (starfieldDelta) {

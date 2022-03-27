@@ -33,7 +33,7 @@ CartridgeCMWidget::CartridgeCMWidget(
   : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
     myCart{cart}
 {
-  uInt16 size = 4 * 4096;
+  constexpr uInt16 size = 4 * 4096;
 
   string info =
     "CM cartridge, four 4K banks + 2K RAM\n"
@@ -87,7 +87,7 @@ CartridgeCMWidget::CartridgeCMWidget(
   myIncrease->setTarget(this);
   myIncrease->setEditable(false);
 
-  int orig_ypos = ypos;  // save for when we go to the next column
+  const int orig_ypos = ypos;  // save for when we go to the next column
 
   // D5 (column part)
   ypos += myLineHeight + 4;
@@ -168,7 +168,7 @@ void CartridgeCMWidget::loadConfig()
   RiotDebug& riot = Debugger::debugger().riotDebug();
   const RiotState& state = static_cast<const RiotState&>(riot.getState());
 
-  uInt8 swcha = myCart.mySWCHA;
+  const uInt8 swcha = myCart.mySWCHA;
 
   // SWCHA
   BoolArray oldbits, newbits, changed;

@@ -32,8 +32,8 @@ string CartridgeDFSCWidget::description()
 {
   ostringstream info;
 
-  info << "128K DFSC + RAM, 32 4K banks\n";
-  info << CartridgeEnhancedWidget::description();
+  info << "128K DFSC + RAM, 32 4K banks\n"
+       << CartridgeEnhancedWidget::description();
 
   return info.str();
 }

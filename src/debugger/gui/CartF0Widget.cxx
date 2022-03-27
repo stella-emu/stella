@@ -34,8 +34,8 @@ string CartridgeF0Widget::description()
   ostringstream info;
 
   info << "Megaboy F0 cartridge, 16 4K banks\n"
-    << "Startup bank = #" << myCart.startBank() << " or undetermined\n"
-    << "Bankswitch triggered by accessing $" << Common::Base::HEX4 << 0xFFF0 << "\n";
+       << "Startup bank = #" << myCart.startBank() << " or undetermined\n"
+       << "Bankswitch triggered by accessing $" << Common::Base::HEX4 << 0xFFF0 << "\n";
 
   return info.str();
 }
@@ -46,7 +46,7 @@ string CartridgeF0Widget::bankState()
   ostringstream& buf = buffer();
 
   buf << "Bank #" << std::dec << myCart.getBank()
-    << " (hotspot $" << Common::Base::HEX4 << 0xFFF0 << ")";
+      << " (hotspot $" << Common::Base::HEX4 << 0xFFF0 << ")";
 
   return buf.str();
 }

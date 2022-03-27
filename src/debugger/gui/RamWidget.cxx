@@ -47,14 +47,14 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
             bheight = myLineHeight + 2;
   //const int VGAP = 4;
   const int VGAP = myFontHeight / 4;
-  StaticTextWidget* s;
+  StaticTextWidget* s = nullptr;
   WidgetArray wid;
 
   int ypos = y + myLineHeight;
 
   // Add RAM grid (with scrollbar)
   int xpos = x + _font.getStringWidth("xxxx");
-  bool useScrollbar = ramsize / numrows > 16;
+  const bool useScrollbar = ramsize / numrows > 16;
   myRamGrid = new DataGridRamWidget(_boss, *this, _nfont, xpos, ypos,
                                     16, myNumRows, 2, 8, Common::Base::Fmt::_16, useScrollbar);
   myRamGrid->setHelpAnchor(helpAnchor, true);
@@ -63,7 +63,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   addFocusWidget(myRamGrid);
 
   // Create actions buttons to the left of the RAM grid
-  int bx = xpos + myRamGrid->getWidth() + 4;
+  const int bx = xpos + myRamGrid->getWidth() + 4;
   int by = ypos;
 
   myUndoButton = new ButtonWidget(boss, lfont, bx, by, bwidth, bheight,
@@ -168,7 +168,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   addFocusWidget(myBinValue);
 
   // Add Label of selected RAM cell
-  int xpos_r = xpos - myFontWidth * 1.5;
+  const int xpos_r = xpos - myFontWidth * 1.5;
   xpos = x;
   s = new StaticTextWidget(boss, lfont, xpos, ypos, "Label");
   xpos = s->getRight() + myFontWidth / 2;
@@ -232,7 +232,7 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
           break;
       }
 
-      uInt8 oldval = getValue(addr);
+      const uInt8 oldval = getValue(addr);
       setValue(addr, value);
 
       myUndoAddress = addr;
@@ -252,7 +252,7 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
     {
       addr  = myRamGrid->getSelectedAddr();
       value = myRamGrid->getSelectedValue();
-      bool changed = myRamGrid->getSelectedChanged();
+      const bool changed = myRamGrid->getSelectedChanged();
 
       myLabel->setText(getLabel(addr));
       myHexValue->setValueInternal(0, value, changed);
@@ -330,8 +330,8 @@ void RamWidget::loadConfig()
 {
   fillGrid(true);
 
-  int value = myRamGrid->getSelectedValue();
-  bool changed = myRamGrid->getSelectedChanged();
+  const int value = myRamGrid->getSelectedValue();
+  const bool changed = myRamGrid->getSelectedChanged();
 
   myHexValue->setValueInternal(0, value, changed);
   myDecValue->setValueInternal(0, value, changed);
@@ -345,7 +345,7 @@ void RamWidget::fillGrid(bool updateOld)
   IntArray vlist;
   BoolArray changed;
 
-  uInt32 start = myCurrentRamBank * myPageSize;
+  const uInt32 start = myCurrentRamBank * myPageSize;
   fillList(start, myPageSize, alist, vlist, changed);
 
   if(updateOld)
@@ -360,7 +360,8 @@ void RamWidget::fillGrid(bool updateOld)
   }
 
   // Update RAM labels
-  uInt32 rport = readPort(start), page = rport & 0xf0;
+  const uInt32 rport = readPort(start);
+  int page = rport & 0xf0;
   string label = Common::Base::toString(rport, Common::Base::Fmt::_16_4);
 
   label[2] = label[3] = 'x';
@@ -373,8 +374,8 @@ void RamWidget::fillGrid(bool updateOld)
 void RamWidget::showInputBox(int cmd)
 {
   // Add inputbox in the middle of the RAM widget
-  uInt32 x = getAbsX() + ((getWidth() - myInputBox->getWidth()) >> 1);
-  uInt32 y = getAbsY() + ((getHeight() - myInputBox->getHeight()) >> 1);
+  const uInt32 x = getAbsX() + ((getWidth() - myInputBox->getWidth()) >> 1);
+  const uInt32 y = getAbsY() + ((getHeight() - myInputBox->getHeight()) >> 1);
 
   myInputBox->show(x, y, dialog().surface().dstRect());
   myInputBox->setText("");
@@ -403,7 +404,7 @@ string RamWidget::doSearch(const string& str)
     return "Invalid input +|-";
   }
 
-  int searchVal = instance().debugger().stringToValue(str);
+  const int searchVal = instance().debugger().stringToValue(str);
 
   // Clear the search array of previous items
   mySearchAddr.clear();
@@ -416,7 +417,7 @@ string RamWidget::doSearch(const string& str)
   bool hitfound = false;
   for(uInt32 addr = 0; addr < ram.size(); ++addr)
   {
-    int value = ram[addr];
+    const int value = ram[addr];
     if(comparisonSearch && searchVal != value)
     {
       mySearchState.push_back(false);
@@ -454,7 +455,7 @@ string RamWidget::doCompare(const string& str)
     return "Enter an absolute or comparative value";
 
   // Do some pre-processing on the string
-  string::size_type pos = str.find_first_of("+-", 0);
+  const string::size_type pos = str.find_first_of("+-", 0);
   if(pos > 0 && pos != string::npos)
   {
     // Only accept '+' or '-' at the start of the string
@@ -496,7 +497,7 @@ string RamWidget::doCompare(const string& str)
         continue;
     }
 
-    int addr = mySearchAddr[i];
+    const int addr = mySearchAddr[i];
     if(ram[addr] == searchVal)
     {
       tempAddrList.push_back(addr);
@@ -541,7 +542,7 @@ void RamWidget::showSearchResults()
 {
   // Only update the search results for the bank currently being shown
   BoolArray temp;
-  uInt32 start = myCurrentRamBank * myPageSize;
+  const uInt32 start = myCurrentRamBank * myPageSize;
   if(mySearchState.size() == 0 || start > mySearchState.size())
   {
     for(uInt32 i = 0; i < myPageSize; ++i)

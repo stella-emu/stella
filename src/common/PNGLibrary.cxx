@@ -40,12 +40,12 @@ PNGLibrary::PNGLibrary(OSystem& osystem)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PNGLibrary::loadImage(const string& filename, FBSurface& surface)
 {
-  png_structp png_ptr = nullptr;
-  png_infop info_ptr = nullptr;
-  png_uint_32 iwidth, iheight;
-  int bit_depth, color_type, interlace_type;
+  png_structp png_ptr{nullptr};
+  png_infop info_ptr{nullptr};
+  png_uint_32 iwidth{0}, iheight{0};
+  int bit_depth{0}, color_type{0}, interlace_type{0};
 
-  auto loadImageERROR = [&](const char* s) {
+  const auto loadImageERROR = [&](const char* s) {
     if(png_ptr)
       png_destroy_read_struct(&png_ptr, info_ptr ? &info_ptr : nullptr, nullptr);
     if(s)
@@ -106,7 +106,7 @@ void PNGLibrary::loadImage(const string& filename, FBSurface& surface)
 
   // The PNG read function expects an array of rows, not a single 1-D array
   for(uInt32 irow = 0, offset = 0; irow < ReadInfo.height; ++irow, offset += ReadInfo.pitch)
-    ReadInfo.row_pointers[irow] = static_cast<png_bytep>(ReadInfo.buffer.data() + offset);
+    ReadInfo.row_pointers[irow] = ReadInfo.buffer.data() + offset;
 
   // Read the entire image in one go
   png_read_image(png_ptr, ReadInfo.row_pointers.data());
@@ -137,7 +137,7 @@ void PNGLibrary::saveImage(const string& filename, const VariantList& comments)
     fb.scaleX(rectUnscaled.w()), fb.scaleY(rectUnscaled.h())
   );
 
-  png_uint_32 width = rect.w(), height = rect.h();
+  const png_uint_32 width = rect.w(), height = rect.h();
 
   // Get framebuffer pixel data (we get ABGR format)
   vector<png_byte> buffer(width * height * 4);
@@ -146,7 +146,7 @@ void PNGLibrary::saveImage(const string& filename, const VariantList& comments)
   // Set up pointers into "buffer" byte array
   vector<png_bytep> rows(height);
   for(png_uint_32 k = 0; k < height; ++k)
-    rows[k] = static_cast<png_bytep>(buffer.data() + k*width*4);
+    rows[k] = buffer.data() + k*width*4;
 
   // And save the image
   saveImageToDisk(out, rows, width, height, comments);
@@ -175,7 +175,7 @@ void PNGLibrary::saveImage(const string& filename, const FBSurface& surface,
   // Set up pointers into "buffer" byte array
   vector<png_bytep> rows(height);
   for(png_uint_32 k = 0; k < height; ++k)
-    rows[k] = static_cast<png_bytep>(buffer.data() + k*width*4);
+    rows[k] = buffer.data() + k*width*4;
 
   // And save the image
   saveImageToDisk(out, rows, width, height, comments);
@@ -188,7 +188,7 @@ void PNGLibrary::saveImageToDisk(std::ofstream& out, const vector<png_bytep>& ro
   png_structp png_ptr = nullptr;
   png_infop info_ptr = nullptr;
 
-  auto saveImageERROR = [&](const char* s) {
+  const auto saveImageERROR = [&](const char* s) {
     if(png_ptr)
       png_destroy_write_struct(&png_ptr, &info_ptr);
     if(s)
@@ -247,7 +247,7 @@ void PNGLibrary::saveImageToDisk(std::ofstream& out, const vector<png_bytep>& ro
 void PNGLibrary::updateTime(uInt64 time)
 {
   if(++mySnapCounter % mySnapInterval == 0)
-    takeSnapshot(uInt32(time) >> 10);  // not quite milliseconds, but close enough
+    takeSnapshot(static_cast<uInt32>(time) >> 10);  // not quite milliseconds, but close enough
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -265,7 +265,7 @@ void PNGLibrary::toggleContinuousSnapshots(bool perFrame)
     else
     {
       buf << "Enabling snapshots in " << interval << " second intervals";
-      interval *= uInt32(myOSystem.frameRate());
+      interval *= static_cast<uInt32>(myOSystem.frameRate());
     }
     myOSystem.frameBuffer().showTextMessage(buf.str());
     setContinuousSnapInterval(interval);
@@ -385,11 +385,11 @@ void PNGLibrary::takeSnapshot(uInt32 number)
 bool PNGLibrary::allocateStorage(png_uint_32 w, png_uint_32 h)
 {
   // Create space for the entire image (3 bytes per pixel in RGB format)
-  size_t req_buffer_size = w * h * 3;
+  const size_t req_buffer_size = w * h * 3;
   if(req_buffer_size > ReadInfo.buffer.size())
     ReadInfo.buffer.resize(req_buffer_size);
 
-  size_t req_row_size = h;
+  const size_t req_row_size = h;
   if(req_row_size > ReadInfo.row_pointers.size())
     ReadInfo.row_pointers.resize(req_row_size);
 
@@ -404,7 +404,7 @@ bool PNGLibrary::allocateStorage(png_uint_32 w, png_uint_32 h)
 void PNGLibrary::loadImagetoSurface(FBSurface& surface)
 {
   // First determine if we need to resize the surface
-  uInt32 iw = ReadInfo.width, ih = ReadInfo.height;
+  const uInt32 iw = ReadInfo.width, ih = ReadInfo.height;
   if(iw > surface.width() || ih > surface.height())
     surface.resize(iw, ih);
 
@@ -430,10 +430,10 @@ void PNGLibrary::loadImagetoSurface(FBSurface& surface)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PNGLibrary::writeComments(png_structp png_ptr, png_infop info_ptr,
+void PNGLibrary::writeComments(const png_structp png_ptr, png_infop info_ptr,
                                const VariantList& comments)
 {
-  uInt32 numComments = uInt32(comments.size());
+  const uInt32 numComments = static_cast<uInt32>(comments.size());
   if(numComments == 0)
     return;
 
@@ -449,33 +449,33 @@ void PNGLibrary::writeComments(png_structp png_ptr, png_infop info_ptr,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PNGLibrary::png_read_data(png_structp ctx, png_bytep area, png_size_t size)
+void PNGLibrary::png_read_data(const png_structp ctx, png_bytep area, png_size_t size)
 {
   (static_cast<std::ifstream*>(png_get_io_ptr(ctx)))->read(
     reinterpret_cast<char *>(area), size);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PNGLibrary::png_write_data(png_structp ctx, png_bytep area, png_size_t size)
+void PNGLibrary::png_write_data(const png_structp ctx, png_bytep area, png_size_t size)
 {
   (static_cast<std::ofstream*>(png_get_io_ptr(ctx)))->write(
     reinterpret_cast<const char *>(area), size);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PNGLibrary::png_io_flush(png_structp ctx)
+void PNGLibrary::png_io_flush(const png_structp ctx)
 {
   (static_cast<std::ofstream*>(png_get_io_ptr(ctx)))->flush();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PNGLibrary::png_user_warn(png_structp ctx, png_const_charp str)
+void PNGLibrary::png_user_warn(const png_structp ctx, png_const_charp str)
 {
   throw runtime_error(string("PNGLibrary warning: ") + str);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PNGLibrary::png_user_error(png_structp ctx, png_const_charp str)
+void PNGLibrary::png_user_error(const png_structp ctx, png_const_charp str)
 {
   throw runtime_error(string("PNGLibrary error: ") + str);
 }

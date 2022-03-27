@@ -42,12 +42,12 @@ class ControllerWidget : public Widget, public CommandSender, public ControllerL
     }
     ~ControllerWidget() override = default;
 
-    virtual void loadConfig() override { }
+    void loadConfig() override { }
 
   protected:
     bool isLeftPort()
     {
-      bool swappedPorts =
+      const bool swappedPorts =
         instance().console().properties().get(PropType::Console_SwapPorts) == "YES";
       return (controller().jack() == Controller::Jack::Left) ^ swappedPorts;
     }
@@ -58,7 +58,7 @@ class ControllerWidget : public Widget, public CommandSender, public ControllerL
     }
 
   private:
-    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id) override { }
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override { }
 
     // Following constructors and assignment operators not supported
     ControllerWidget() = delete;

@@ -34,8 +34,8 @@ string CartridgeCVWidget::description()
 {
   ostringstream info;
 
-  info << "CV 2K ROM + 1K RAM, non-bankswitched\n";
-  info << CartridgeEnhancedWidget::description();
+  info << "CV 2K ROM + 1K RAM, non-bankswitched\n"
+       << CartridgeEnhancedWidget::description();
 
   return info.str();
 }

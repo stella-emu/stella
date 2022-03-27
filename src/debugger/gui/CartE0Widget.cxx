@@ -32,8 +32,8 @@ string CartridgeE0Widget::description()
 {
   ostringstream info;
 
-  info << "E0 cartridge,\n  eight 1K banks mapped into four segments\n";
-  info << CartridgeEnhancedWidget::description();
+  info << "E0 cartridge,\n  eight 1K banks mapped into four segments\n"
+       << CartridgeEnhancedWidget::description();
 
   return info.str();
 }
@@ -45,7 +45,7 @@ string CartridgeE0Widget::romDescription()
 
   for(int seg = 0; seg < 4; ++seg)
   {
-    uInt16 segmentOffset = seg << 10; // myCart.myBankShift;
+    const uInt16 segmentOffset = seg << 10; // myCart.myBankShift;
 
     info << "Segment #" << seg << " accessible @ $"
       << Common::Base::HEX4 << (ADDR_BASE | segmentOffset)
@@ -64,11 +64,11 @@ string CartridgeE0Widget::romDescription()
 string CartridgeE0Widget::hotspotStr(int bank, int segment, bool noBrackets)
 {
   ostringstream info;
-  uInt16 hotspot = myCart.hotspot();
+  const uInt16 hotspot = myCart.hotspot();
 
-  info << (noBrackets ? "" : "(");
-  info << "$" << Common::Base::HEX1 << (hotspot + bank + segment * 8);
-  info << (noBrackets ? "" : ")");
+  info << (noBrackets ? "" : "(")
+       << "$" << Common::Base::HEX1 << (hotspot + bank + segment * 8)
+       << (noBrackets ? "" : ")");
 
   return info.str();
 }
