@@ -149,7 +149,7 @@ class ZipHandler
     class ReaderBase
     {
       protected:
-        explicit ReaderBase(const uInt8* const b) : myBuf(b) { }
+        explicit ReaderBase(const uInt8* const b) : myBuf{b} { }
 
         uInt8 read_byte(size_t offs) const
         {
@@ -157,26 +157,26 @@ class ZipHandler
         }
         uInt16 read_word(size_t offs) const
         {
-          return (uInt16(myBuf[offs + 1]) << 8) |
-                 (uInt16(myBuf[offs + 0]) << 0);
+          return (static_cast<uInt16>(myBuf[offs + 1]) << 8) |
+                 (static_cast<uInt16>(myBuf[offs + 0]) << 0);
         }
         uInt32 read_dword(std::size_t offs) const
         {
-          return (uInt32(myBuf[offs + 3]) << 24) |
-                 (uInt32(myBuf[offs + 2]) << 16) |
-                 (uInt32(myBuf[offs + 1]) << 8)  |
-                 (uInt32(myBuf[offs + 0]) << 0);
+          return (static_cast<uInt32>(myBuf[offs + 3]) << 24) |
+                 (static_cast<uInt32>(myBuf[offs + 2]) << 16) |
+                 (static_cast<uInt32>(myBuf[offs + 1]) << 8)  |
+                 (static_cast<uInt32>(myBuf[offs + 0]) << 0);
         }
         uInt64 read_qword(size_t offs) const
         {
-          return (uInt64(myBuf[offs + 7]) << 56) |
-                 (uInt64(myBuf[offs + 6]) << 48) |
-                 (uInt64(myBuf[offs + 5]) << 40) |
-                 (uInt64(myBuf[offs + 4]) << 32) |
-                 (uInt64(myBuf[offs + 3]) << 24) |
-                 (uInt64(myBuf[offs + 2]) << 16) |
-                 (uInt64(myBuf[offs + 1]) << 8)  |
-                 (uInt64(myBuf[offs + 0]) << 0);
+          return (static_cast<uInt64>(myBuf[offs + 7]) << 56) |
+                 (static_cast<uInt64>(myBuf[offs + 6]) << 48) |
+                 (static_cast<uInt64>(myBuf[offs + 5]) << 40) |
+                 (static_cast<uInt64>(myBuf[offs + 4]) << 32) |
+                 (static_cast<uInt64>(myBuf[offs + 3]) << 24) |
+                 (static_cast<uInt64>(myBuf[offs + 2]) << 16) |
+                 (static_cast<uInt64>(myBuf[offs + 1]) << 8)  |
+                 (static_cast<uInt64>(myBuf[offs + 0]) << 0);
         }
         string read_string(size_t offs, size_t len = string::npos) const
         {
@@ -269,18 +269,18 @@ class ZipHandler
     class GeneralFlagReader
     {
       public:
-        explicit GeneralFlagReader(uInt16 val) : myValue(val) { }
+        explicit GeneralFlagReader(uInt16 val) : myValue{val} { }
 
-        bool   encrypted() const           { return bool(myValue & 0x0001); }
-        bool   implode8kDict() const       { return bool(myValue & 0x0002); }
-        bool   implode3Trees() const       { return bool(myValue & 0x0004); }
-        uInt32 deflateOption() const       { return uInt32((myValue >> 1) & 0x0003); }
-        bool   lzmaEosMark() const         { return bool(myValue & 0x0002); }
-        bool   useDescriptor() const       { return bool(myValue & 0x0008); }
-        bool   patchData() const           { return bool(myValue & 0x0020); }
-        bool   strongEncryption() const    { return bool(myValue & 0x0040); }
-        bool   utf8Encoding() const        { return bool(myValue & 0x0800); }
-        bool   directoryEncryption() const { return bool(myValue & 0x2000); }
+        bool   encrypted() const           { return static_cast<bool>(myValue & 0x0001); }
+        bool   implode8kDict() const       { return static_cast<bool>(myValue & 0x0002); }
+        bool   implode3Trees() const       { return static_cast<bool>(myValue & 0x0004); }
+        uInt32 deflateOption() const       { return static_cast<uInt32>((myValue >> 1) & 0x0003); }
+        bool   lzmaEosMark() const         { return static_cast<bool>(myValue & 0x0002); }
+        bool   useDescriptor() const       { return static_cast<bool>(myValue & 0x0008); }
+        bool   patchData() const           { return static_cast<bool>(myValue & 0x0020); }
+        bool   strongEncryption() const    { return static_cast<bool>(myValue & 0x0040); }
+        bool   utf8Encoding() const        { return static_cast<bool>(myValue & 0x0800); }
+        bool   directoryEncryption() const { return static_cast<bool>(myValue & 0x2000); }
 
       private:
         uInt16 myValue{0};

@@ -36,7 +36,7 @@ void CartridgeX07::install(System& system)
   // Set the page accessing methods for the hot spots
   // The hotspots use almost all addresses below 0x1000, so we simply grab them
   // all and forward the TIA/RIOT calls from the peek and poke methods.
-  System::PageAccess access(this, System::PageAccessType::READWRITE);
+  const System::PageAccess access(this, System::PageAccessType::READWRITE);
   for(uInt16 addr = 0x00; addr < 0x1000; addr += System::PAGE_SIZE)
     mySystem->setPageAccess(addr, access);
 }
@@ -67,7 +67,7 @@ uInt8 CartridgeX07::peek(uInt16 address)
 {
   uInt8 value = 0; // JTZ: is this correct?
   // Check for RAM or TIA mirroring
-  uInt16 lowAddress = address & 0x3ff;
+  const uInt16 lowAddress = address & 0x3ff;
 
   if(lowAddress & 0x80)
     value = mySystem->m6532().peek(address);
@@ -83,7 +83,7 @@ uInt8 CartridgeX07::peek(uInt16 address)
 bool CartridgeX07::poke(uInt16 address, uInt8 value)
 {
   // Check for RAM or TIA mirroring
-  uInt16 lowAddress = address & 0x3ff;
+  const uInt16 lowAddress = address & 0x3ff;
 
   if(lowAddress & 0x80)
     mySystem->m6532().poke(address, value);

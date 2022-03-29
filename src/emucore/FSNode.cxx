@@ -272,7 +272,7 @@ string FilesystemNode::getPathWithExt(const string& ext) const
 
   string s = _realNode->getPath();
 
-  size_t pos = s.find_last_of('.');
+  const size_t pos = s.find_last_of('.');
   return (pos != string::npos) ? s.replace(pos, string::npos, ext) : s + ext;
 }
 

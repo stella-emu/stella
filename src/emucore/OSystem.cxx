@@ -272,9 +272,9 @@ void OSystem::saveConfig()
 void OSystem::setConfigPaths()
 {
   // Make sure all required directories actually exist
-  auto buildDirIfRequired = [](FilesystemNode& path,
-                               const FilesystemNode& initialPath,
-                               const string& pathToAppend = EmptyString)
+  const auto buildDirIfRequired = [](FilesystemNode& path,
+                                     const FilesystemNode& initialPath,
+                                     const string& pathToAppend = EmptyString)
   {
     path = initialPath;
     if(pathToAppend != EmptyString)
@@ -341,7 +341,7 @@ bool OSystem::checkUserPalette(bool outputError) const
   try
   {
     ByteBuffer palette;
-    size_t size = paletteFile().read(palette);
+    const size_t size = paletteFile().read(palette);
 
     // Make sure the contains enough data for the NTSC, PAL and SECAM palettes
     // This means 128 colours each for NTSC and PAL, at 3 bytes per pixel
@@ -638,7 +638,7 @@ unique_ptr<Console> OSystem::openConsole(const FilesystemNode& romfile, string& 
     myPropSet->getMD5(md5, props);
 
     // Local helper method
-    auto CMDLINE_PROPS_UPDATE = [&](const string& name, PropType prop)
+    const auto CMDLINE_PROPS_UPDATE = [&](const string& name, PropType prop)
     {
       const string& s = mySettings->getString(name);
       if(s != "") props.set(prop, s);
@@ -744,7 +744,7 @@ ByteBuffer OSystem::openROM(const FilesystemNode& rom, string& md5, size_t& size
 
   // First check if this is a 'streaming' ROM (one where we only read
   // a portion of the file)
-  size_t sizeToRead = CartDetector::isProbablyMVC(rom);
+  const size_t sizeToRead = CartDetector::isProbablyMVC(rom);
 
   // Next check if rom is a valid size
   // TODO: We should check if ROM is < Cart::maxSize(), but only
@@ -798,7 +798,7 @@ double OSystem::dispatchEmulation(EmulationWorker& emulationWorker)
   DispatchResult dispatchResult;
 
   // Check whether we have a frame pending for rendering...
-  bool framePending = tia.newFramePending();
+  const bool framePending = tia.newFramePending();
   // ... and copy it to the frame buffer. It is important to do this before
   // the worker is started to avoid racing.
   if (framePending) {
@@ -821,7 +821,7 @@ double OSystem::dispatchEmulation(EmulationWorker& emulationWorker)
   if (framePending) myFrameBuffer->updateInEmulationMode(myFpsMeter.fps());
 
   // Stop the worker and wait until it has finished
-  uInt64 totalCycles = emulationWorker.stop();
+  const uInt64 totalCycles = emulationWorker.stop();
 
   // Handle the dispatch result
   switch (dispatchResult.getStatus()) {
@@ -874,7 +874,7 @@ void OSystem::mainLoop()
 
   for(;;)
   {
-    bool wasEmulation = myEventHandler->state() == EventHandlerState::EMULATION;
+    const bool wasEmulation = myEventHandler->state() == EventHandlerState::EMULATION;
 
     myEventHandler->poll(TimerManager::getTicks());
     if(myQuitLoop) break;  // Exit if the user wants to quit
@@ -903,12 +903,12 @@ void OSystem::mainLoop()
       myFrameBuffer->update();
     }
 
-    duration<double> timeslice(timesliceSeconds);
+    const duration<double> timeslice(timesliceSeconds);
     virtualTime += duration_cast<high_resolution_clock::duration>(timeslice);
-    time_point<high_resolution_clock> now = high_resolution_clock::now();
+    const time_point<high_resolution_clock> now = high_resolution_clock::now();
 
     // We allow 6507 time to lag behind by one frame max
-    double maxLag = myConsole
+    const double maxLag = myConsole
       ? (
         static_cast<double>(myConsole->emulationTiming().cyclesPerFrame()) /
         static_cast<double>(myConsole->emulationTiming().cyclesPerSecond())

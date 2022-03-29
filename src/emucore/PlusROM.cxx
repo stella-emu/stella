@@ -200,6 +200,8 @@ PlusROM::PlusROM(const Settings& settings, const Cartridge& cart)
   : mySettings{settings},
     myCart{cart}
 {
+  myRxBuffer.fill(0);
+  myTxBuffer.fill(0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -272,6 +274,9 @@ bool PlusROM::peekHotspot(uInt16 address, uInt8& value)
       receive();
       value = myRxWritePos - myRxReadPos;
       return true;
+
+    default:  // satisfy compiler
+      break;
   }
 #endif
   return false;
@@ -304,6 +309,9 @@ bool PlusROM::pokeHotspot(uInt16 address, uInt8 value)
 
     case RECEIVE_BUFFER_SIZE: // Get number of unread bytes in Rx buffer
       receive();
+      break;
+
+    default:  // satisfy compiler
       break;
   }
 #endif
@@ -466,7 +474,7 @@ void PlusROM::receive()
         myMsgCallback("PlusROM data received successfully");
         // Request has finished sucessfully? -> consume the response, remove it
         // and start over
-        auto [responseSize, response] = (*iter)->getResponse();
+        const auto [responseSize, response] = (*iter)->getResponse();
 
         for(uInt8 i = 0; i < responseSize; i++)
           myRxBuffer[myRxWritePos++] = response[i];

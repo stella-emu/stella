@@ -37,7 +37,7 @@ void JitterEmulation::reset()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void JitterEmulation::frameComplete(uInt32 scanlineCount)
 {
-  if (Int32(scanlineCount) != myStableFrameFinalLines) {
+  if (static_cast<Int32>(scanlineCount) != myStableFrameFinalLines) {
     if (myDestabilizationCounter++ > Metrics::framesUntilDestabilization) myStableFrameFinalLines = -1;
 
     if (scanlineCount == myLastFrameScanlines) {
@@ -63,7 +63,7 @@ void JitterEmulation::frameComplete(uInt32 scanlineCount)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void JitterEmulation::updateJitter(Int32 scanlineDifference)
 {
-  if (uInt32(abs(scanlineDifference)) < Metrics::minDeltaForJitter) return;
+  if (static_cast<uInt32>(abs(scanlineDifference)) < Metrics::minDeltaForJitter) return;
 
   Int32 jitter = std::min<Int32>(scanlineDifference, Metrics::maxJitter);
   jitter = std::max<Int32>(jitter, -myYStart);

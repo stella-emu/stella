@@ -39,8 +39,15 @@ class ConsoleIO
     */
     virtual Switches& switches() const = 0;
 
+    ConsoleIO() = default;
     virtual ~ConsoleIO() = default;
 
+  private:
+    // Following constructors and assignment operators not supported
+    ConsoleIO(const ConsoleIO&) = delete;
+    ConsoleIO(ConsoleIO&&) = delete;
+    ConsoleIO& operator=(const ConsoleIO&) = delete;
+    ConsoleIO& operator=(ConsoleIO&&) = delete;
 };
 
 #endif // CONSOLE_IO_HXX

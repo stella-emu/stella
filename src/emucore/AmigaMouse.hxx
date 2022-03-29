@@ -54,6 +54,13 @@ class AmigaMouse : public PointingDevice
     }
 
     static constexpr float trackballSensitivity = 0.8F;
+
+  private:
+    // Following constructors and assignment operators not supported
+    AmigaMouse(const AmigaMouse&) = delete;
+    AmigaMouse(AmigaMouse&&) = delete;
+    AmigaMouse& operator=(const AmigaMouse&) = delete;
+    AmigaMouse& operator=(AmigaMouse&&) = delete;
 };
 
 #endif // AMIGAMOUSE_HXX

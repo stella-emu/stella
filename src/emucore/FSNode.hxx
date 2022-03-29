@@ -72,6 +72,7 @@ class FilesystemNode
      * getPath()) will always return false or raise an assertion.
      */
     FilesystemNode() = default;
+    ~FilesystemNode() = default;
 
     /**
      * Create a new FilesystemNode referring to the specified path. This is
@@ -89,6 +90,8 @@ class FilesystemNode
      */
     FilesystemNode(const FilesystemNode&) = default;
     FilesystemNode& operator=(const FilesystemNode&) = default;
+    FilesystemNode& operator=(FilesystemNode&&) = default;
+    FilesystemNode(FilesystemNode&&) = default;
 
     /**
      * Compare the name of this node to the name of another, testing for
@@ -326,9 +329,9 @@ class AbstractFSNode
      */
     AbstractFSNode() = default;
     AbstractFSNode(const AbstractFSNode&) = default;
-//    AbstractFSNode(AbstractFSNode&&) = default;
+    AbstractFSNode(AbstractFSNode&&) = delete;
     AbstractFSNode& operator=(const AbstractFSNode&) = default;
-//    AbstractFSNode& operator=(AbstractFSNode&&) = default;
+    AbstractFSNode& operator=(AbstractFSNode&&) = delete;
     virtual ~AbstractFSNode() = default;
 
     /*

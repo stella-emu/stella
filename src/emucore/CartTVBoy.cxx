@@ -43,7 +43,7 @@ bool CartridgeTVBoy::bank(uInt16 bank, uInt16)
 {
   if(myBankingDisabled) return false;
 
-  bool banked = CartridgeEnhanced::bank(bank);
+  const bool banked = CartridgeEnhanced::bank(bank);
 
   // Any bankswitching locks further bankswitching, we check for bank 0
   // to avoid locking on cart init.

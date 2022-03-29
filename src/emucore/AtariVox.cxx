@@ -109,7 +109,7 @@ void AtariVox::clockDataIn(bool value)
 
   // If this is the first write this frame, or if it's been a long time
   // since the last write, start a new data byte.
-  uInt64 cycle = mySystem.cycles();
+  const uInt64 cycle = mySystem.cycles();
   if((cycle < myLastDataWriteCycle) || (cycle > myLastDataWriteCycle + 1000))
   {
     myShiftRegister = 0;
@@ -132,7 +132,7 @@ void AtariVox::clockDataIn(bool value)
         cerr << "AtariVox: bad stop bit" << endl;
       else
       {
-        uInt8 data = ((myShiftRegister >> 1) & 0xff);
+        const uInt8 data = ((myShiftRegister >> 1) & 0xff);
         mySerialPort->writeByte(data);
       }
       myShiftRegister = 0;

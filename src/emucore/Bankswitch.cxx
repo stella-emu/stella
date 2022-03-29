@@ -26,7 +26,7 @@ string Bankswitch::typeToName(Bankswitch::Type type)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Bankswitch::Type Bankswitch::nameToType(const string& name)
 {
-  auto it = ourNameToTypes.find(name);
+  const auto it = ourNameToTypes.find(name);
   if(it != ourNameToTypes.end())
     return it->second;
 
@@ -43,10 +43,10 @@ string Bankswitch::typeToDesc(Bankswitch::Type type)
 Bankswitch::Type Bankswitch::typeFromExtension(const FilesystemNode& file)
 {
   const string& name = file.getPath();
-  string::size_type idx = name.find_last_of('.');
+  const string::size_type idx = name.find_last_of('.');
   if(idx != string::npos)
   {
-    auto it = ourExtensions.find(name.c_str() + idx + 1);
+    const auto it = ourExtensions.find(name.c_str() + idx + 1);
     if(it != ourExtensions.end())
       return it->second;
   }
@@ -57,11 +57,11 @@ Bankswitch::Type Bankswitch::typeFromExtension(const FilesystemNode& file)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Bankswitch::isValidRomName(const string& name, string& ext)
 {
-  string::size_type idx = name.find_last_of('.');
+  const string::size_type idx = name.find_last_of('.');
   if(idx != string::npos)
   {
     const char* const e = name.c_str() + idx + 1;
-    auto it = ourExtensions.find(e);
+    const auto it = ourExtensions.find(e);
     if(it != ourExtensions.end())
     {
       ext = e;

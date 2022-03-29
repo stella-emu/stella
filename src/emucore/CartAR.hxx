@@ -187,7 +187,7 @@ class CartridgeAR : public Cartridge
     bool bankConfiguration(uInt8 configuration);
 
     // Compute the sum of the array of bytes
-    uInt8 checksum(uInt8* s, uInt16 length);
+    uInt8 checksum(const uInt8* s, uInt16 length);
 
     // Load the specified load into SC RAM
     void loadIntoRAM(uInt8 load);
