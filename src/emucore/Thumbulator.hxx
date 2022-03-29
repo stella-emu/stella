@@ -228,7 +228,9 @@ class Thumbulator
     uInt32 read16(uInt32 addr);
     uInt32 read32(uInt32 addr);
   #ifndef UNSAFE_OPTIMIZATIONS
-    bool isProtected(uInt32 addr);
+    bool isInvalidROM(uInt32 addr);
+    bool isInvalidRAM(uInt32 addr);
+    bool isProtectedRAM(uInt32 addr);
   #endif
     void write16(uInt32 addr, uInt32 data);
     void write32(uInt32 addr, uInt32 data);

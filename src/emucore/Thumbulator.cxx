@@ -353,11 +353,6 @@ uInt32 Thumbulator::fetch16(uInt32 addr)
 void Thumbulator::write16(uInt32 addr, uInt32 data)
 {
 #ifndef UNSAFE_OPTIMIZATIONS
-  if((addr > 0x40007fff) && (addr < 0x50000000))
-    fatalError("write16", addr, "abort - out of range");
-
-  if (isProtected(addr)) fatalError("write16", addr, "to driver area");
-
   if(addr & 1)
     fatalError("write16", addr, "abort - misaligned");
 #endif
@@ -370,6 +365,12 @@ void Thumbulator::write16(uInt32 addr, uInt32 data)
   switch(addr & 0xF0000000)
   {
     case 0x40000000: //RAM
+#ifndef UNSAFE_OPTIMIZATIONS
+      if(isInvalidRAM(addr))
+        fatalError("write16", addr, "abort - out of range");
+      if(isProtectedRAM(addr))
+        fatalError("write16", addr, "to driver area");
+#endif
       addr &= RAMADDMASK;
       addr >>= 1;
       ram[addr] = CONV_DATA(data);
@@ -399,8 +400,6 @@ void Thumbulator::write32(uInt32 addr, uInt32 data)
 #ifndef UNSAFE_OPTIMIZATIONS
   if(addr & 3)
     fatalError("write32", addr, "abort - misaligned");
-
-  if (isProtected(addr)) fatalError("write32", addr, "to driver area");
 #endif
   DO_DBUG(statusMsg << "write32(" << Base::HEX8 << addr << "," << Base::HEX8 << data << ")" << endl);
 
@@ -546,34 +545,96 @@ void Thumbulator::write32(uInt32 addr, uInt32 data)
 
 #ifndef UNSAFE_OPTIMIZATIONS
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Thumbulator::isProtected(uInt32 addr)
+bool Thumbulator::isInvalidROM(uInt32 addr)
+{
+  const uInt32 romStart = configuration == ConfigureFor::DPCplus ? 0xc00 : 0x750; // was 0x800
+
+  switch(romSize)
+  {
+    case 64_KB:
+      if(!(addr >= romStart && addr <= 0x0FFFF))
+        return true;
+      break;
+
+    case 128_KB:
+      if(!(addr >= romStart && addr <= 0x1FFFF))
+        return true;
+      break;
+
+    case 256_KB:
+      if(!(addr >= romStart && addr <= 0x3FFFF))
+        return true;
+      break;
+
+    case 512_KB:
+      if(!(addr >= romStart && addr <= 0x7FFFF))
+        return true;
+      break;
+
+    default: // assuming 32 KB
+      if(!(addr >= romStart && addr <= 0x07FFF))
+        return true;
+      break;
+  }
+
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Thumbulator::isInvalidRAM(uInt32 addr)
+{
+  // Note: addr is already checked for RAM (0x4xxxxxxx)
+  switch(romSize)
+  {
+    case 64_KB:
+    case 128_KB:
+      if(addr > 0x40003fff)
+        return true;
+      break;
+
+    case 256_KB:
+    case 512_KB:
+      if(addr > 0x40007fff)
+        return true;
+      break;
+
+    default: // assuming 32 KB
+      if(addr > 0x40001fff)
+        return true;
+      break;
+  }
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Thumbulator::isProtectedRAM(uInt32 addr)
 {
   // Protected is within the driver RAM.
   // For CDF variations parts of the driver RAM are reused to hold the
-  // datastream information, so is not protected.
+  // datastream information, so are not write protected.
   // Additionally for CDFJ+ the Fast Fetcher offset is not write protected.
-  
+
   if (addr < 0x40000000) return false;
   addr -= 0x40000000;
 
-  switch (configuration) {
+  switch(configuration) {
     case ConfigureFor::DPCplus:
       return (addr < 0x0c00) && (addr > 0x0028);
 
     case ConfigureFor::CDF:
-      return  (addr < 0x0800) && (addr > 0x0028) && !((addr >= 0x06e0) && (addr < (0x0e60 + 284)));
+      return (addr < 0x0800) && (addr > 0x0028) && !((addr >= 0x06e0) && (addr < (0x0e60 + 284)));
 
     case ConfigureFor::CDF1:
-      return  (addr < 0x0800) && (addr > 0x0028) && !((addr >= 0x00a0) && (addr < (0x00a0 + 284)));
+      return (addr < 0x0800) && (addr > 0x0028) && !((addr >= 0x00a0) && (addr < (0x00a0 + 284)));
 
     case ConfigureFor::CDFJ:
-      return  (addr < 0x0800) && (addr > 0x0028) && !((addr >= 0x0098) && (addr < (0x0098 + 292)));
+      return (addr < 0x0800) && (addr > 0x0028) && !((addr >= 0x0098) && (addr < (0x0098 + 292)));
 
     case ConfigureFor::CDFJplus:
-      return  (addr < 0x0800) && (addr > 0x0028) && !((addr >= 0x0098) && (addr < (0x0098 + 292))) && addr != 0x3E0;
+      return (addr < 0x0800) && (addr > 0x0028) && !((addr >= 0x0098) && (addr < (0x0098 + 292))) && addr != 0x3E0;
 
     case ConfigureFor::BUS:
-      return  (addr < 0x06d8) && (addr > 0x0028);
+      return (addr < 0x06d8) && (addr > 0x0028);
   }
 
   return false;
@@ -585,10 +646,6 @@ uInt32 Thumbulator::read16(uInt32 addr)
 {
   uInt32 data;
 #ifndef UNSAFE_OPTIMIZATIONS
-  if((addr > 0x40007fff) && (addr < 0x50000000))
-    fatalError("read16", addr, "abort - out of range");
-  else if((addr > 0x0007ffff) && (addr < 0x10000000))
-    fatalError("read16", addr, "abort - out of range");
   if(addr & 1)
     fatalError("read16", addr, "abort - misaligned");
 #endif
@@ -599,6 +656,10 @@ uInt32 Thumbulator::read16(uInt32 addr)
   switch(addr & 0xF0000000)
   {
     case 0x00000000: //ROM
+#ifndef UNSAFE_OPTIMIZATIONS
+      if(isInvalidROM(addr))
+        fatalError("read16", addr, "abort - out of range");
+#endif
       addr &= ROMADDMASK;
       addr >>= 1;
       data = CONV_RAMROM(rom[addr]);
@@ -606,6 +667,10 @@ uInt32 Thumbulator::read16(uInt32 addr)
       return data;
 
     case 0x40000000: //RAM
+#ifndef UNSAFE_OPTIMIZATIONS
+      if(isInvalidRAM(addr))
+        fatalError("read16", addr, "abort - out of range");
+#endif
       addr &= RAMADDMASK;
       addr >>= 1;
       data = CONV_RAMROM(ram[addr]);
@@ -641,7 +706,20 @@ uInt32 Thumbulator::read32(uInt32 addr)
   switch(addr & 0xF0000000)
   {
     case 0x00000000: //ROM
+#ifndef UNSAFE_OPTIMIZATIONS
+      if(isInvalidROM(addr))
+        fatalError("read32", addr, "abort - out of range");
+#endif
+      data = read16(addr+0);
+      data |= (uInt32(read16(addr+2))) << 16;
+      DO_DBUG(statusMsg << "read32(" << Base::HEX8 << addr << ")=" << Base::HEX8 << data << endl);
+      return data;
+
     case 0x40000000: //RAM
+#ifndef UNSAFE_OPTIMIZATIONS
+      if(isInvalidRAM(addr))
+        fatalError("read32", addr, "abort - out of range");
+#endif
       data = read16(addr+0);
       data |= (uInt32(read16(addr+2))) << 16;
       DO_DBUG(statusMsg << "read32(" << Base::HEX8 << addr << ")=" << Base::HEX8 << data << endl);
