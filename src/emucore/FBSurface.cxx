@@ -34,7 +34,7 @@ void FBSurface::readPixels(uInt8* buffer, uInt32 pitch, const Common::Rect& rect
     std::copy_n(src, width() * height() * 4, buffer);
   else
   {
-    uInt32 w = std::min(rect.w(), width());
+    const uInt32 w = std::min(rect.w(), width());
     uInt32 h = std::min(rect.h(), height());
 
     // Copy 'height' lines of width 'pitch' (in bytes for both)
@@ -77,7 +77,7 @@ void FBSurface::line(uInt32 x, uInt32 y, uInt32 x2, uInt32 y2, ColorId color)
       dx = -dx;
       dy = -dy;
     }
-    Int32 yd = dy > 0 ? 1 : -1;
+    const Int32 yd = dy > 0 ? 1 : -1;
     dy = abs(dy);
     Int32 err = dx / 2;
     // now draw the line
@@ -102,7 +102,7 @@ void FBSurface::line(uInt32 x, uInt32 y, uInt32 x2, uInt32 y2, ColorId color)
       dx = -dx;
       dy = -dy;
     }
-    Int32 xd = dx > 0 ? 1 : -1;
+    const Int32 xd = dx > 0 ? 1 : -1;
     dx = abs(dx);
     Int32 err = dy / 2;
     // now draw the line
@@ -136,7 +136,7 @@ void FBSurface::vLine(uInt32 x, uInt32 y, uInt32 y2, ColorId color)
   if(!checkBounds(x, y) || !checkBounds(x, y2))
     return;
 
-  uInt32* buffer = static_cast<uInt32*>(myPixels + y * myPitch + x);
+  uInt32* buffer = myPixels + y * myPitch + x;
   while(y++ <= y2)
   {
     *buffer = myPalette[color];
@@ -174,7 +174,7 @@ void FBSurface::drawChar(const GUI::Font& font, uInt8 chr,
   chr -= desc.firstchar;
 
   // Get the bounding box of the character
-  int bbw, bbh, bbx, bby;
+  int bbw = 0, bbh = 0, bbx = 0, bby = 0;
   if(!desc.bbx)
   {
     bbw = desc.fbbw;
@@ -300,14 +300,14 @@ void FBSurface::splitString(const GUI::Font& font, const string& s, int w,
                             string& left, string& right) const
 {
 #ifdef GUI_SUPPORT
-  uInt32 pos;
+  uInt32 pos = 0;
   int w2 = 0;
   bool split = false;
 
   // SLOW algorithm to find the acceptable length. But it is good enough for now.
   for(pos = 0; pos < s.size(); ++pos)
   {
-    int charWidth = font.getCharWidth(s[pos]);
+    const int charWidth = font.getCharWidth(s[pos]);
     if(w2 + charWidth > w || s[pos] == '\n')
     {
       split = true;
@@ -394,7 +394,6 @@ void FBSurface::drawString(const GUI::Font& font, const string& s,
 #ifdef GUI_SUPPORT
   const string ELLIPSIS = "\x1d"; // "..."
   const int leftX = x, rightX = x + w;
-  uInt32 i;
   int width = font.getStringWidth(s);
   string str;
 
@@ -408,9 +407,9 @@ void FBSurface::drawString(const GUI::Font& font, const string& s,
     int w2 = font.getStringWidth(ELLIPSIS);
 
     // SLOW algorithm to find the acceptable length. But it is good enough for now.
-    for(i = 0; i < s.size(); ++i)
+    for(size_t i = 0; i < s.size(); ++i)
     {
-      int charWidth = font.getCharWidth(s[i]);
+      const int charWidth = font.getCharWidth(s[i]);
       if(w2 + charWidth > w)
         break;
 
@@ -433,7 +432,7 @@ void FBSurface::drawString(const GUI::Font& font, const string& s,
 
   int x0 = x, x1 = 0;
 
-  for(i = 0; i < str.size(); ++i)
+  for(size_t i = 0; i < str.size(); ++i)
   {
     w = font.getCharWidth(str[i]);
     if(x + w > rightX)

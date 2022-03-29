@@ -44,7 +44,7 @@ void CartridgeMDM::install(System& system)
   myHotSpotPageAccess[7] = mySystem->getPageAccess(0x0F00);
 
   // Set the page accessing methods for the hot spots
-  System::PageAccess access(this, System::PageAccessType::READWRITE);
+  const System::PageAccess access(this, System::PageAccessType::READWRITE);
   for(uInt16 addr = 0x0800; addr < 0x0BFF; addr += System::PAGE_SIZE)
     mySystem->setPageAccess(addr, access);
 }
@@ -69,7 +69,7 @@ uInt8 CartridgeMDM::peek(uInt16 address)
 
   checkSwitchBank(address);
 
-  int hotspot = ((address & 0x0F00) >> 8) - 8;
+  const int hotspot = ((address & 0x0F00) >> 8) - 8;
   return myHotSpotPageAccess[hotspot].device->peek(address);
 }
 
@@ -82,7 +82,7 @@ bool CartridgeMDM::poke(uInt16 address, uInt8 value)
   {
     checkSwitchBank(address);
 
-    int hotspot = ((address & 0x0F00) >> 8) - 8;
+    const int hotspot = ((address & 0x0F00) >> 8) - 8;
     myHotSpotPageAccess[hotspot].device->poke(address, value);
   }
 

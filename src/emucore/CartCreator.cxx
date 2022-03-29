@@ -83,7 +83,7 @@ unique_ptr<Cartridge> CartCreator::create(const FilesystemNode& file,
 
   // First inspect the file extension itself
   // If a valid type is found, it will override the one passed into this method
-  Bankswitch::Type typeByName = Bankswitch::typeFromExtension(file);
+  const Bankswitch::Type typeByName = Bankswitch::typeFromExtension(file);
   if(typeByName != Bankswitch::Type::_AUTO)
     type = detectedType = typeByName;
 

@@ -42,7 +42,7 @@ void AnalogReadout::vblank(uInt8 value, uInt64 timestamp)
 {
   updateCharge(timestamp);
 
-  bool oldIsDumped = myIsDumped;
+  const bool oldIsDumped = myIsDumped;
 
   if (value & 0x80) {
     myIsDumped = true;
@@ -58,7 +58,7 @@ uInt8 AnalogReadout::inpt(uInt64 timestamp)
 {
   updateCharge(timestamp);
 
-  bool state = myIsDumped ? false : myU > myUThresh;
+  const bool state = myIsDumped ? false : myU > myUThresh;
 
   return state ? 0x80 : 0;
 }
@@ -152,7 +152,7 @@ bool AnalogReadout::load(Serializer& in)
     myConnection.load(in);
     myTimestamp = in.getLong();
 
-    myConsoleTiming = ConsoleTiming(in.getInt());
+    myConsoleTiming = static_cast<ConsoleTiming>(in.getInt());
     myClockFreq = in.getDouble();
 
     myIsDumped = in.getBool();
@@ -206,7 +206,7 @@ bool AnalogReadout::Connection::load(const Serializer& in)
 {
   try
   {
-    type = ConnectionType(in.getInt());
+    type = static_cast<ConnectionType>(in.getInt());
     resistance = in.getInt();
   }
   catch(...)

@@ -63,7 +63,7 @@ bool Properties::save(KeyValueRepository& repo) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Properties::set(PropType key, const string& value)
 {
-  size_t pos = static_cast<size_t>(key);
+  const size_t pos = static_cast<size_t>(key);
   if(pos < myProperties.size())
   {
     myProperties[pos] = value;
@@ -95,7 +95,7 @@ void Properties::set(PropType key, const string& value)
 
       case PropType::Display_PPBlend:
       {
-        int blend = BSPF::stringToInt(myProperties[pos]);
+        const int blend = BSPF::stringToInt(myProperties[pos]);
         if(blend < 0 || blend > 100)
           myProperties[pos] = ourDefaultProperties[pos];
         break;
@@ -188,7 +188,7 @@ void Properties::print() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Properties::reset(PropType key)
 {
-  size_t pos = static_cast<size_t>(key);
+  const size_t pos = static_cast<size_t>(key);
 
   myProperties[pos] = ourDefaultProperties[pos];
 }

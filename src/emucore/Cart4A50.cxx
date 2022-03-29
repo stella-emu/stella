@@ -65,7 +65,7 @@ void Cartridge4A50::install(System& system)
   mySystem = &system;
 
   // Map all of the accesses to call peek and poke (We don't yet indicate RAM areas)
-  System::PageAccess access(this, System::PageAccessType::READ);
+  const System::PageAccess access(this, System::PageAccessType::READ);
   for(uInt16 addr = 0x1000; addr < 0x2000; addr += System::PAGE_SIZE)
     mySystem->setPageAccess(addr, access);
 
@@ -83,7 +83,7 @@ uInt8 Cartridge4A50::peek(uInt16 address)
   if(!(address & 0x1000))                      // Hotspots below 0x1000
   {
     // Check for RAM or TIA mirroring
-    uInt16 lowAddress = address & 0x3ff;
+    const uInt16 lowAddress = address & 0x3ff;
     if(lowAddress & 0x80)
       value = mySystem->m6532().peek(address);
     else if(!(lowAddress & 0x200))
@@ -130,7 +130,7 @@ bool Cartridge4A50::poke(uInt16 address, uInt8 value)
   if(!(address & 0x1000))                      // Hotspots below 0x1000
   {
     // Check for RAM or TIA mirroring
-    uInt16 lowAddress = address & 0x3ff;
+    const uInt16 lowAddress = address & 0x3ff;
     if(lowAddress & 0x80)
       mySystem->m6532().poke(address, value);
     else if(!(lowAddress & 0x200))

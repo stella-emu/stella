@@ -38,7 +38,7 @@ void CartridgeUA::install(System& system)
   myHotSpotPageAccess[1] = mySystem->getPageAccess(0x0220 | 0x80);
 
   // Set the page accessing methods for the hot spots
-  System::PageAccess access(this, System::PageAccessType::READ);
+  const System::PageAccess access(this, System::PageAccessType::READ);
   // Map all potential addresses
   // - A11, A10 and A8 are not connected to RIOT
   // - A9 is the fixed part of the hotspot address
@@ -49,7 +49,7 @@ void CartridgeUA::install(System& system)
       for(uInt16 a8 = 0; a8 <= 1; ++a8)
         for(uInt16 a7 = 0; a7 <= 1; ++a7)
         {
-          uInt16 addr = (a11 << 11) + (a10 << 10) + (a8 << 8) + (a7 << 7);
+          const uInt16 addr = (a11 << 11) + (a10 << 10) + (a8 << 8) + (a7 << 7);
 
           mySystem->setPageAccess(0x0220 | addr, access);
           mySystem->setPageAccess(0x0240 | addr, access);
@@ -89,7 +89,7 @@ uInt8 CartridgeUA::peek(uInt16 address)
 
   // Because of the way accessing is set up, we will only get here
   // when doing a TIA read
-  int hotspot = ((address & 0x80) >> 7);
+  const int hotspot = ((address & 0x80) >> 7);
   return myHotSpotPageAccess[hotspot].device->peek(address);
 }
 
@@ -104,7 +104,7 @@ bool CartridgeUA::poke(uInt16 address, uInt8 value)
   // doing a write to TIA or cart; we ignore the cart write
   if (!(address & 0x1000))
   {
-    int hotspot = ((address & 0x80) >> 7);
+    const int hotspot = ((address & 0x80) >> 7);
     myHotSpotPageAccess[hotspot].device->poke(address, value);
   }
 

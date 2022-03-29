@@ -28,7 +28,7 @@ class KeyValueRepositoryAtomic;
 class KeyValueRepository
 {
   public:
-
+    KeyValueRepository() = default;
     virtual ~KeyValueRepository() = default;
 
     virtual std::map<string, Variant> load() = 0;
@@ -36,6 +36,13 @@ class KeyValueRepository
     virtual bool save(const std::map<string, Variant>& values) = 0;
 
     virtual KeyValueRepositoryAtomic* atomic() { return nullptr; }
+
+  private:
+    // Following constructors and assignment operators not supported
+    KeyValueRepository(const KeyValueRepository&) = delete;
+    KeyValueRepository(KeyValueRepository&&) = delete;
+    KeyValueRepository& operator=(const KeyValueRepository&) = delete;
+    KeyValueRepository& operator=(KeyValueRepository&&) = delete;
 };
 
 class KeyValueRepositoryAtomic : public KeyValueRepository {

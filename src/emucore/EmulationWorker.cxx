@@ -279,7 +279,7 @@ void EmulationWorker::dispatchEmulation(std::unique_lock<std::mutex>& lock)
 
   if (myDispatchResult->getStatus() == DispatchResult::Status::ok) {
     // If emulation finished successfully, we are free to go for another round
-    duration<double> timesliceSeconds(static_cast<double>(totalCycles) / static_cast<double>(myCyclesPerSecond));
+    const duration<double> timesliceSeconds(static_cast<double>(totalCycles) / static_cast<double>(myCyclesPerSecond));
     myVirtualTime += duration_cast<high_resolution_clock::duration>(timesliceSeconds);
 
     // If we aren't fast enough to keep up with the emulation, we stop immediatelly to avoid

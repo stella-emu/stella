@@ -36,10 +36,18 @@ class CommandReceiver
   friend class CommandSender;
 
   public:
+    CommandReceiver() = default;
     virtual ~CommandReceiver() = default;
 
   protected:
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id) { }
+
+  private:
+    // Following constructors and assignment operators not supported
+    CommandReceiver(const CommandReceiver&) = delete;
+    CommandReceiver(CommandReceiver&&) = delete;
+    CommandReceiver& operator=(const CommandReceiver&) = delete;
+    CommandReceiver& operator=(CommandReceiver&&) = delete;
 };
 
 class CommandSender
@@ -47,6 +55,7 @@ class CommandSender
   // TODO - allow for multiple targets, i.e. store targets in a list
   // and add methods addTarget/removeTarget.
   public:
+    CommandSender() = default;
     explicit CommandSender(CommandReceiver* target)
         : _target{target} { }
 
@@ -63,6 +72,13 @@ class CommandSender
 
   protected:
     CommandReceiver* _target{nullptr};
+
+  private:
+    // Following constructors and assignment operators not supported
+    CommandSender(const CommandSender&) = delete;
+    CommandSender(CommandSender&&) = delete;
+    CommandSender& operator=(const CommandSender&) = delete;
+    CommandSender& operator=(CommandSender&&) = delete;
 };
 
 #endif

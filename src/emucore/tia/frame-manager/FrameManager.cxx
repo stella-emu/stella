@@ -44,9 +44,7 @@ void FrameManager::onReset()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameManager::onNextLine()
 {
-  Int32 jitter;
-
-  State previousState = myState;
+  const State previousState = myState;
   ++myLineInState;
 
   switch (myState)
@@ -66,11 +64,13 @@ void FrameManager::onNextLine()
       break;
 
     case State::waitForFrameStart:
-      jitter =
+    {
+      const Int32 jitter =
         (myJitterEnabled && myTotalFrames > Metrics::initialGarbageFrames) ? myJitterEmulation.jitter() : 0;
 
       if (myLineInState >= (myYStart + jitter)) setState(State::frame);
       break;
+    }
 
     case State::frame:
       if (myLineInState >= myHeight)
@@ -192,7 +192,7 @@ bool FrameManager::onLoad(Serializer& in)
 {
   if (!myJitterEmulation.load(in)) return false;
 
-  myState = State(in.getInt());
+  myState = static_cast<State>(in.getInt());
   myLineInState = in.getInt();
   myVsyncLines = in.getInt();
   myY = in.getInt();
@@ -213,8 +213,8 @@ bool FrameManager::onLoad(Serializer& in)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameManager::recalculateMetrics() {
-  Int32 ystartBase;
-  Int32 baseHeight;
+  Int32 ystartBase = 0;
+  Int32 baseHeight = 0;
 
   switch (layout())
   {

@@ -212,7 +212,7 @@ void KidVid::setNextSong()
   {
     myBeep = (ourSongPositions[myFilePointer] & 0x80) ? false : true;
 
-    uInt8 temp = ourSongPositions[myFilePointer] & 0x7f;
+    const uInt8 temp = ourSongPositions[myFilePointer] & 0x7f;
     mySharedData = (temp < 10);
     mySongCounter = ourSongStart[temp+1] - ourSongStart[temp];
 
