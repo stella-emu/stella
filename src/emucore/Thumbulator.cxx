@@ -289,7 +289,7 @@ void Thumbulator::dump_regs()
 uInt32 Thumbulator::fetch16(uInt32 addr)
 {
 #ifndef UNSAFE_OPTIMIZATIONS
-  uInt32 data;
+  uInt32 data = 0;
 
 #ifdef THUMB_CYCLE_COUNT
   _pipeIdx = (_pipeIdx+1) % 3;
@@ -340,6 +340,9 @@ uInt32 Thumbulator::fetch16(uInt32 addr)
       data = CONV_RAMROM(ram[addr]);
       DO_DBUG(statusMsg << "fetch16(" << Base::HEX8 << addr << ")=" << Base::HEX4 << data << endl);
       return data;
+
+    default:  // reserved
+      break;
   }
   return fatalError("fetch16", addr, "abort");
 #else
@@ -470,7 +473,7 @@ void Thumbulator::write32(uInt32 addr, uInt32 data)
 
         case 0xE000E010:
         {
-          uInt32 old = systick_ctrl;
+          const uInt32 old = systick_ctrl;
           systick_ctrl = data & 0x00010007;
           if(((old & 1) == 0) && (systick_ctrl & 1))
           {
@@ -644,7 +647,7 @@ bool Thumbulator::isProtectedRAM(uInt32 addr)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 Thumbulator::read16(uInt32 addr)
 {
-  uInt32 data;
+  uInt32 data = 0;
 #ifndef UNSAFE_OPTIMIZATIONS
   if(addr & 1)
     fatalError("read16", addr, "abort - misaligned");
@@ -702,7 +705,7 @@ uInt32 Thumbulator::read32(uInt32 addr)
     fatalError("read32", addr, "abort - misaligned");
 #endif
 
-  uInt32 data;
+  uInt32 data = 0;
   switch(addr & 0xF0000000)
   {
     case 0x00000000: //ROM
@@ -721,7 +724,7 @@ uInt32 Thumbulator::read32(uInt32 addr)
         fatalError("read32", addr, "abort - out of range");
 #endif
       data = read16(addr+0);
-      data |= (uInt32(read16(addr+2))) << 16;
+      data |= (static_cast<uInt32>(read16(addr+2))) << 16;
       DO_DBUG(statusMsg << "read32(" << Base::HEX8 << addr << ")=" << Base::HEX8 << data << endl);
       return data;
 
@@ -877,11 +880,9 @@ void Thumbulator::do_cflag(uInt32 a, uInt32 b, uInt32 c)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Thumbulator::do_vflag(uInt32 a, uInt32 b, uInt32 c)
 {
-  uInt32 rc, rd;
-
-  rc = (a & 0x7FFFFFFF) + (b & 0x7FFFFFFF) + c; //carry in
+  uInt32 rc = (a & 0x7FFFFFFF) + (b & 0x7FFFFFFF) + c; //carry in
   rc >>= 31; //carry in in lsbit
-  rd = (rc & 1) + ((a >> 31) & 1) + ((b >> 31) & 1); //carry out
+  uInt32 rd = (rc & 1) + ((a >> 31) & 1) + ((b >> 31) & 1); //carry out
   rd >>= 1; //carry out in lsbit
   rc = (rc^rd) & 1; //if carry in != carry out then signed overflow
   if(rc)
@@ -1133,7 +1134,7 @@ int Thumbulator::execute()
 
   pc = read_register(15);
 
-  uInt32 instructionPtr = pc - 2;
+  const uInt32 instructionPtr = pc - 2;
   inst = fetch16(instructionPtr);
 
   pc += 2;
@@ -3263,8 +3264,7 @@ void Thumbulator::incSCycles(uInt32 addr, AccessType accessType)
   ++_stats.sCylces;
 #endif
 
-  uInt32 cycles;
-
+  uInt32 cycles = 0;
 
   if(addr & 0xC0000000) // RAM, peripherals
     cycles = 1;
@@ -3327,7 +3327,7 @@ void Thumbulator::incNCycles(uInt32 addr, AccessType accessType)
   ++_stats.nCylces;
 #endif
 
-  uInt32 cycles;
+  uInt32 cycles = 0;
 
   if(addr & 0xC0000000) // RAM, peripherals
     cycles = 1;

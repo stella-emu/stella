@@ -35,7 +35,7 @@ void CartridgeARM::reset()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeARM::setInitialState()
 {
-  bool devSettings = mySettings.getBool("dev.settings");
+  const bool devSettings = mySettings.getBool("dev.settings");
 
   if(devSettings)
   {

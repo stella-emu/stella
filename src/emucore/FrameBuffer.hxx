@@ -556,7 +556,7 @@ class FrameBuffer
     // Maximum gauge bar width [chars]
     static constexpr int GAUGEBAR_WIDTH = 30;
 
-    FullPaletteArray myFullPalette;
+    FullPaletteArray myFullPalette{0};
     // Holds UI palette data (for each variation)
     static UIPaletteArray ourStandardUIPalette, ourClassicUIPalette,
                           ourLightUIPalette, ourDarkUIPalette;

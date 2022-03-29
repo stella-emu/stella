@@ -185,7 +185,7 @@ void Paddles::updateA()
     // Only change state if the charge has actually changed
     if(myCharge[0] != myLastCharge[0])
     {
-      setPin(AnalogPin::Nine, AnalogReadout::connectToVcc(MAX_RESISTANCE * (myCharge[0] / double(TRIGMAX))));
+      setPin(AnalogPin::Nine, AnalogReadout::connectToVcc(MAX_RESISTANCE * (myCharge[0] / double{TRIGMAX})));
       myLastCharge[0] = myCharge[0];
     }
   }
@@ -222,7 +222,7 @@ AnalogReadout::Connection Paddles::getReadOut(int lastAxis, int& newAxis, int ce
   const float diffFactor = dFac[DEJITTER_DIFF];
 
   // dejitter, suppress small changes only
-  float dejitter = powf(baseFactor, std::abs(newAxis - lastAxis) * diffFactor);
+  const float dejitter = powf(baseFactor, std::abs(newAxis - lastAxis) * diffFactor);
   int newVal = newAxis * (1 - dejitter) + lastAxis * dejitter;
 
   // only use new dejittered value for larger differences
@@ -245,7 +245,7 @@ AnalogReadout::Connection Paddles::getReadOut(int lastAxis, int& newAxis, int ce
   // scale result
   return AnalogReadout::connectToVcc(MAX_RESISTANCE *
         BSPF::clamp((ANALOG_MAX_VALUE - (scaledAxis * SENSITIVITY + center)) /
-        float(ANALOG_RANGE), 0.F, 1.F));
+                    float{ANALOG_RANGE}, 0.F, 1.F));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -357,7 +357,7 @@ void Paddles::updateB()
     // Only change state if the charge has actually changed
     if(myCharge[1] != myLastCharge[1])
     {
-      setPin(AnalogPin::Five, AnalogReadout::connectToVcc(MAX_RESISTANCE * (myCharge[1] / double(TRIGMAX))));
+      setPin(AnalogPin::Five, AnalogReadout::connectToVcc(MAX_RESISTANCE * (myCharge[1] / double{TRIGMAX})));
       myLastCharge[1] = myCharge[1];
     }
   }
@@ -542,7 +542,7 @@ void Paddles::setDigitalSensitivity(int sensitivity)
 void Paddles::setDigitalPaddleRange(int range)
 {
   range = BSPF::clamp(range, MIN_MOUSE_RANGE, MAX_MOUSE_RANGE);
-  TRIGRANGE = int(TRIGMAX * (range / 100.0));
+  TRIGRANGE = static_cast<int>(TRIGMAX * (range / 100.0));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -115,9 +115,9 @@ void Joystick::updateMouseAxes()
   if(myControlID > -1)
   {
     // The following code was taken from z26
-    #define MJ_Threshold 2
-    int mousex = myEvent.get(Event::MouseAxisXMove),
-        mousey = myEvent.get(Event::MouseAxisYMove);
+    static constexpr int MJ_Threshold = 2;
+    const int mousex = myEvent.get(Event::MouseAxisXMove),
+              mousey = myEvent.get(Event::MouseAxisYMove);
 
     if(mousex || mousey)
     {

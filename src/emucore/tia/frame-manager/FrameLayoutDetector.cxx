@@ -105,8 +105,8 @@ void FrameLayoutDetector::finalizeFrame()
   // Calculate the delta between scanline count and the sweet spot for the respective
   // frame layouts
   const uInt32
-    deltaNTSC = abs(Int32(myCurrentFrameFinalLines) - Int32(frameLinesNTSC)),
-    deltaPAL =  abs(Int32(myCurrentFrameFinalLines) - Int32(frameLinesPAL));
+    deltaNTSC = abs(static_cast<Int32>(myCurrentFrameFinalLines) - static_cast<Int32>(frameLinesNTSC)),
+    deltaPAL =  abs(static_cast<Int32>(myCurrentFrameFinalLines) - static_cast<Int32>(frameLinesPAL));
 
   // Does the scanline count fall into one of our tolerance windows? -> use it
   if (std::min(deltaNTSC, deltaPAL) <= Metrics::tvModeDetectionTolerance)

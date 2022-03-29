@@ -232,10 +232,10 @@ void Playfield::applyColors()
 uInt8 Playfield::getColor() const
 {
   if (!myDebugEnabled)
-    return myX < uInt16(TIAConstants::H_PIXEL / 2 - myScoreHaste) ? myColorLeft : myColorRight;
+    return myX < static_cast<uInt16>(TIAConstants::H_PIXEL / 2 - myScoreHaste) ? myColorLeft : myColorRight;
   else
   {
-    if (myX < uInt16(TIAConstants::H_PIXEL / 2 - myScoreHaste))
+    if (myX < static_cast<uInt16>(TIAConstants::H_PIXEL / 2 - myScoreHaste))
     {
       // left side:
       if(myX < 16)
@@ -332,7 +332,7 @@ bool Playfield::load(Serializer& in)
     myDebugColor = in.getByte();
     myDebugEnabled = in.getBool();
 
-    myColorMode = ColorMode(in.getByte());
+    myColorMode = static_cast<ColorMode>(in.getByte());
     myScoreGlitch = in.getBool();
     myScoreHaste = myColorMode == ColorMode::score && myScoreGlitch ? 1 : 0;
 

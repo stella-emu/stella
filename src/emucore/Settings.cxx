@@ -309,17 +309,13 @@ void Settings::save()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Settings::validate()
 {
-  string s;
-  int i;
-  float f;
-
-  f = getFloat("speed");
+  float f = getFloat("speed");
   if (f <= 0) setValue("speed", "1.0");
 
-  i = getInt("tia.vsizeadjust");
+  int i = getInt("tia.vsizeadjust");
   if(i < -5 || i > 5)  setValue("tia.vsizeadjust", 0);
 
-  s = getString("tia.dbgcolors");
+  string s = getString("tia.dbgcolors");
   sort(s.begin(), s.end());
   if(s != "bgopry")  setValue("tia.dbgcolors", "roygpb");
 
@@ -442,7 +438,7 @@ void Settings::validate()
   if(i < 0) setValue("romviewer", "0");
 
   i = getInt("loglevel");
-  if(i < int(Logger::Level::MIN) || i > int(Logger::Level::MAX))
+  if(i < static_cast<int>(Logger::Level::MIN) || i > static_cast<int>(Logger::Level::MAX))
     setValue("loglevel", int(Logger::Level::INFO));
 }
 

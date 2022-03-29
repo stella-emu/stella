@@ -100,7 +100,7 @@ class StreamReader : public Serializable
     bool readField(uInt32 fnum, bool index) {
       if(myFile)
       {
-        size_t offset = ((fnum + 0) * CartridgeMVC::MVC_FIELD_PAD_SIZE);
+        const size_t offset = ((fnum + 0) * CartridgeMVC::MVC_FIELD_PAD_SIZE);
 
         if(offset + CartridgeMVC::MVC_FIELD_PAD_SIZE < myFileSize)
         {
@@ -118,8 +118,8 @@ class StreamReader : public Serializable
 
     uInt8 readVersion() { return *myVersion++; }
     uInt8 readFrame()   { return *myFrame++;   }
-    uInt8 readColor() { return *myColor++; }
-    uInt8 readColorBK() { return *myColorBK++;   }
+    uInt8 readColor()   { return *myColor++;   }
+    uInt8 readColorBK() { return *myColorBK++; }
 
     uInt8 readGraph() {
       return myGraphOverride ? *myGraphOverride++ : *myGraph++;
@@ -911,7 +911,7 @@ void MovieCart::updateTransport()
   {
     if(myBufferIndex)
     {
-      uInt8 temp = ~(myA10_Count & 0x1e) & 0x1e;
+      const uInt8 temp = ~(myA10_Count & 0x1e) & 0x1e;
 
       if (temp == myDirectionValue)
         myInputs.updateDirection(temp);
@@ -920,7 +920,7 @@ void MovieCart::updateTransport()
     }
     else
     {
-      uInt8 temp = ~(myA10_Count & 0x17) & 0x17;
+      const uInt8 temp = ~(myA10_Count & 0x17) & 0x17;
 
       if(temp == myButtonsValue)
         myInputs.updateTransport(temp);
@@ -942,7 +942,7 @@ void MovieCart::updateTransport()
     return;
   }
 
-  uInt8 lastMainMode = myMode;
+  const uInt8 lastMainMode = myMode;
 
   if(myInputs.up && !myLastInputs.up)
   {
@@ -1244,7 +1244,7 @@ void MovieCart::fill_addr_blank_lines()
   // frame number
   myStream.readFrame();
   myStream.readFrame();
-  uInt8 v = myStream.readFrame();
+  const uInt8 v = myStream.readFrame();
 
   // make sure we're in sync with frame data
   myOdd = (v & 1);
@@ -1420,11 +1420,11 @@ void MovieCart::runStateMachine()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool MovieCart::process(uInt16 address)
 {
-  bool a12 = (address & (1 << 12)) ? 1:0;
-  bool a11 = (address & (1 << 11)) ? 1:0;
+  const bool a12 = (address & (1 << 12)) ? 1:0;
+  const bool a11 = (address & (1 << 11)) ? 1:0;
 
   // count a10 pulses
-  bool a10i = (address & (1 << 10));
+  const bool a10i = (address & (1 << 10));
   if(a10i && !myA10)
     myA10_Count++;
   myA10 = a10i;
@@ -1589,7 +1589,7 @@ void CartridgeMVC::install(System& system)
   mySystem = &system;
 
   // Map all of the accesses to call peek and poke
-  System::PageAccess access(this, System::PageAccessType::READWRITE);
+  const System::PageAccess access(this, System::PageAccessType::READWRITE);
   for(uInt16 addr = 0x1000; addr < 0x2000; addr += System::PAGE_SIZE)
     mySystem->setPageAccess(addr, access);
 }

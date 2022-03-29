@@ -66,7 +66,7 @@ TIASurface::TIASurface(OSystem& system)
                                           TIAConstants::frameBufferHeight);
 
   // Create shading surface
-  uInt32 data = 0xff000000;
+  static constexpr uInt32 data = 0xff000000;
 
   myShadeSurface = myFB.allocateSurface(1, 1, ScalingInterpolation::sharp, &data);
 
@@ -102,7 +102,7 @@ void TIASurface::initialize(const Console& console,
   myPaletteHandler->setPalette();
 
   createScanlineSurface();
-  setNTSC(NTSCFilter::Preset(myOSystem.settings().getInt("tv.filter")), false);
+  setNTSC(static_cast<NTSCFilter::Preset>(myOSystem.settings().getInt("tv.filter")), false);
 
 #if 0
 cerr << "INITIALIZE:\n"
@@ -131,7 +131,7 @@ void TIASurface::setPalette(const PaletteArray& tia_palette,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const FBSurface& TIASurface::baseSurface(Common::Rect& rect) const
 {
-  uInt32 tiaw = myTIA->width(), width = tiaw * 2, height = myTIA->height();
+  const uInt32 tiaw = myTIA->width(), width = tiaw * 2, height = myTIA->height();
   rect.setBounds(0, 0, width, height);
 
   // Fill the surface with pixels from the TIA, scaled 2x horizontally
@@ -166,7 +166,7 @@ void TIASurface::setNTSC(NTSCFilter::Preset preset, bool show)
     const string& mode = myNTSCFilter.setPreset(preset);
     buf << "TV filtering (" << mode << " mode)";
   }
-  myOSystem.settings().setValue("tv.filter", int(preset));
+  myOSystem.settings().setValue("tv.filter", static_cast<int>(preset));
 
   if(show) myFB.showTextMessage(buf.str());
 }
@@ -182,15 +182,15 @@ void TIASurface::changeNTSC(int direction)
 
   if(direction == +1)
   {
-    if(preset == int(NTSCFilter::Preset::CUSTOM))
-      preset = int(NTSCFilter::Preset::OFF);
+    if(preset == static_cast<int>(NTSCFilter::Preset::CUSTOM))
+      preset = static_cast<int>(NTSCFilter::Preset::OFF);
     else
       preset++;
   }
   else if (direction == -1)
   {
-    if(preset == int(NTSCFilter::Preset::OFF))
-      preset = int(NTSCFilter::Preset::CUSTOM);
+    if(preset == static_cast<int>(NTSCFilter::Preset::OFF))
+      preset = static_cast<int>(NTSCFilter::Preset::CUSTOM);
     else
       preset--;
   }
@@ -238,10 +238,10 @@ void TIASurface::changeScanlineIntensity(int direction)
   FBSurface::Attributes& attr = mySLineSurface->attributes();
 
   attr.blendalpha += direction * 2;
-  attr.blendalpha = BSPF::clamp(Int32(attr.blendalpha), 0, 100);
+  attr.blendalpha = BSPF::clamp(static_cast<Int32>(attr.blendalpha), 0, 100);
   mySLineSurface->applyAttributes();
 
-  uInt32 intensity = attr.blendalpha;
+  const uInt32 intensity = attr.blendalpha;
 
   myOSystem.settings().setValue("tv.scanlines", intensity);
   enableNTSC(ntscEnabled());
@@ -273,7 +273,7 @@ TIASurface::ScanlineMask TIASurface::scanlineMaskType(int direction)
     {
       if(direction)
       {
-        i = BSPF::clampw(i + direction, 0, int(ScanlineMask::NumMasks) - 1);
+        i = BSPF::clampw(i + direction, 0, static_cast<int>(ScanlineMask::NumMasks) - 1);
         myOSystem.settings().setValue("tv.scanmask", Masks[i]);
       }
       return ScanlineMask(i);
@@ -293,7 +293,7 @@ void TIASurface::cycleScanlineMask(int direction)
     "Aperture Grille",
     "MAME"
   };
-  int i = int(scanlineMaskType(direction));
+  const int i = static_cast<int>(scanlineMaskType(direction));
 
   if(direction)
     createScanlineSurface();
@@ -310,7 +310,7 @@ void TIASurface::enablePhosphor(bool enable, int blend)
   if(myPhosphorHandler.initialize(enable, blend))
   {
     myPBlend = blend;
-    myFilter = Filter(enable ? uInt8(myFilter) | 0x01 : uInt8(myFilter) & 0x10);
+    myFilter = static_cast<Filter>(enable ? uInt8(myFilter) | 0x01 : uInt8(myFilter) & 0x10);
     myRGBFramebuffer.fill(0);
   }
 }
@@ -410,9 +410,9 @@ void TIASurface::createScanlineSurface()
       { 0xff000000, 0xff000000, 0xff000000 },
     }),
   }};
-  const int mask = int(scanlineMaskType());
-  const uInt32 pWidth = uInt32(Patterns[mask].data[0].size());
-  const uInt32 pHeight = uInt32(Patterns[mask].data.size() / Patterns[mask].vRepeats);
+  const int mask = static_cast<int>(scanlineMaskType());
+  const uInt32 pWidth = static_cast<uInt32>(Patterns[mask].data[0].size());
+  const uInt32 pHeight = static_cast<uInt32>(Patterns[mask].data.size() / Patterns[mask].vRepeats);
   const uInt32 vRepeats = Patterns[mask].vRepeats;
   // Single width pattern need no horizontal repeats
   const uInt32 width = pWidth > 1 ? TIAConstants::frameBufferWidth * pWidth : 1;
@@ -438,9 +438,9 @@ void TIASurface::createScanlineSurface()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIASurface::enableNTSC(bool enable)
 {
-  myFilter = Filter(enable ? uInt8(myFilter) | 0x10 : uInt8(myFilter) & 0x01);
+  myFilter = static_cast<Filter>(enable ? uInt8(myFilter) | 0x10 : uInt8(myFilter) & 0x01);
 
-  uInt32 surfaceWidth = enable ?
+  const uInt32 surfaceWidth = enable ?
     AtariNTSC::outWidth(TIAConstants::frameBufferWidth) : TIAConstants::frameBufferWidth;
 
   if (surfaceWidth != myTiaSurface->srcRect().w() || myTIA->height() != myTiaSurface->srcRect().h()) {
@@ -517,7 +517,7 @@ inline uInt32 TIASurface::averageBuffers(uInt32 bufOfs)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIASurface::render(bool shade)
 {
-  uInt32 width = myTIA->width(), height = myTIA->height();
+  const uInt32 width = myTIA->width(), height = myTIA->height();
 
   uInt32 *out, outPitch;
   myTiaSurface->basePtr(out, outPitch);
@@ -526,12 +526,12 @@ void TIASurface::render(bool shade)
   {
     case Filter::Normal:
     {
-      uInt8* tiaIn = myTIA->frameBuffer();
+      const uInt8* tiaIn = myTIA->frameBuffer();
 
-      uInt32 bufofs = 0, screenofsY = 0, pos;
+      uInt32 bufofs = 0, screenofsY = 0;
       for(uInt32 y = 0; y < height; ++y)
       {
-        pos = screenofsY;
+        uInt32 pos = screenofsY;
         for (uInt32 x = width / 2; x; --x)
         {
           out[pos++] = myPalette[tiaIn[bufofs++]];
@@ -544,17 +544,17 @@ void TIASurface::render(bool shade)
 
     case Filter::Phosphor:
     {
-      uInt8*  tiaIn = myTIA->frameBuffer();
+      const uInt8* tiaIn = myTIA->frameBuffer();
       uInt32* rgbIn = myRGBFramebuffer.data();
 
       if (mySaveSnapFlag)
         std::copy_n(myRGBFramebuffer.begin(), width * height,
                     myPrevRGBFramebuffer.begin());
 
-      uInt32 bufofs = 0, screenofsY = 0, pos;
+      uInt32 bufofs = 0, screenofsY = 0;
       for(uInt32 y = height; y ; --y)
       {
-        pos = screenofsY;
+        uInt32 pos = screenofsY;
         for(uInt32 x = width / 2; x ; --x)
         {
           // Store back into displayed frame buffer (for next frame)
@@ -616,8 +616,7 @@ void TIASurface::renderForSnapshot()
   // Furthermore, toggling the variable 'mySaveSnapFlag' in different places
   // is brittle, especially since rendering can happen in a different thread.
 
-  uInt32 width = myTIA->width();
-  uInt32 height = myTIA->height();
+  const uInt32 width = myTIA->width(), height = myTIA->height();
   uInt32 pos = 0;
   uInt32 *outPtr, outPitch;
 

@@ -164,8 +164,7 @@ void EventHandler::reset(EventHandlerState state)
 void EventHandler::addPhysicalJoystick(const PhysicalJoystickPtr& joy)
 {
 #ifdef JOYSTICK_SUPPORT
-  int ID = myPJoyHandler->add(joy);
-  if(ID < 0)
+  if(myPJoyHandler->add(joy) < 0)
     return;
 
   setActionMappings(EventMode::kEmulationMode);
@@ -337,10 +336,10 @@ void EventHandler::handleMouseButtonEvent(MouseButton b, bool pressed,
     switch(b)
     {
       case MouseButton::LEFT:
-        myEvent.set(Event::MouseButtonLeftValue, int(pressed));
+        myEvent.set(Event::MouseButtonLeftValue, static_cast<int>(pressed));
         break;
       case MouseButton::RIGHT:
-        myEvent.set(Event::MouseButtonRightValue, int(pressed));
+        myEvent.set(Event::MouseButtonRightValue, static_cast<int>(pressed));
         break;
       default:
         return;
@@ -1597,10 +1596,13 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::Combo14:
     case Event::Combo15:
     case Event::Combo16:
-      for(int i = 0, combo = event - Event::Combo1; i < EVENTS_PER_COMBO; ++i)
+    {
+      const int combo = event - Event::Combo1;
+      for(int i = 0; i < EVENTS_PER_COMBO; ++i)
         if(myComboTable[combo][i] != Event::NoType)
           handleEvent(myComboTable[combo][i], pressed, repeated);
       return;
+    }
 
     ////////////////////////////////////////////////////////////////////////
     // Events which relate to switches()
@@ -1953,7 +1955,7 @@ void EventHandler::setComboMap()
   }
 
   // Erase the 'combo' array
-  auto ERASE_ALL = [&]() {
+  const auto ERASE_ALL = [&]() {
     for(int i = 0; i < COMBO_SIZE; ++i)
       for(int j = 0; j < EVENTS_PER_COMBO; ++j)
         myComboTable[i][j] = Event::NoType;
@@ -2077,7 +2079,7 @@ bool EventHandler::addJoyHatMapping(Event::Type event, EventMode mode,
                                     bool updateMenus)
 {
 #ifdef JOYSTICK_SUPPORT
-  bool mapped = myPJoyHandler->addJoyHatMapping(event, mode, stick, button, hat, dir);
+  const bool mapped = myPJoyHandler->addJoyHatMapping(event, mode, stick, button, hat, dir);
   if (mapped && updateMenus)
     setActionMappings(mode);
 
@@ -2150,7 +2152,7 @@ void EventHandler::saveComboMapping()
 
     for(int j = 0; j < EVENTS_PER_COMBO; ++j)
     {
-      int event = myComboTable[i][j];
+      const int event = myComboTable[i][j];
 
       // skip all NoType events
       if(event != Event::NoType)
@@ -2298,7 +2300,7 @@ StringList EventHandler::getComboListForEvent(Event::Type event) const
   ostringstream buf;
   if(event >= Event::Combo1 && event <= Event::Combo16)
   {
-    int combo = event - Event::Combo1;
+    const int combo = event - Event::Combo1;
     for(uInt32 i = 0; i < EVENTS_PER_COMBO; ++i)
     {
       const Event::Type e = myComboTable[combo][i];
@@ -2328,7 +2330,7 @@ void EventHandler::setComboListForEvent(Event::Type event, const StringList& eve
     const int combo = event - Event::Combo1;
     for(uInt32 i = 0; i < EVENTS_PER_COMBO; ++i)
     {
-      uInt32 idx = BSPF::stringToInt(events[i]);
+      const uInt32 idx = BSPF::stringToInt(events[i]);
       if(idx < ourEmulActionList.size())
         myComboTable[combo][i] = EventHandler::ourEmulActionList[idx].event;
       else
@@ -2422,14 +2424,14 @@ Event::Type EventHandler::eventAtIndex(int idx, Event::Group group) const
 
   if(group == Event::Group::Menu)
   {
-    if(index < 0 || index >= int(ourMenuActionList.size()))
+    if(index < 0 || index >= static_cast<int>(ourMenuActionList.size()))
       return Event::NoType;
     else
       return ourMenuActionList[index].event;
   }
   else
   {
-    if(index < 0 || index >= int(ourEmulActionList.size()))
+    if(index < 0 || index >= static_cast<int>(ourEmulActionList.size()))
       return Event::NoType;
     else
       return ourEmulActionList[index].event;
@@ -2443,14 +2445,14 @@ string EventHandler::actionAtIndex(int idx, Event::Group group) const
 
   if(group == Event::Group::Menu)
   {
-    if(index < 0 || index >= int(ourMenuActionList.size()))
+    if(index < 0 || index >= static_cast<int>(ourMenuActionList.size()))
       return EmptyString;
     else
       return ourMenuActionList[index].action;
   }
   else
   {
-    if(index < 0 || index >= int(ourEmulActionList.size()))
+    if(index < 0 || index >= static_cast<int>(ourEmulActionList.size()))
       return EmptyString;
     else
       return ourEmulActionList[index].action;
@@ -2464,14 +2466,14 @@ string EventHandler::keyAtIndex(int idx, Event::Group group) const
 
   if(group == Event::Group::Menu)
   {
-    if(index < 0 || index >= int(ourMenuActionList.size()))
+    if(index < 0 || index >= static_cast<int>(ourMenuActionList.size()))
       return EmptyString;
     else
       return ourMenuActionList[index].key;
   }
   else
   {
-    if(index < 0 || index >= int(ourEmulActionList.size()))
+    if(index < 0 || index >= static_cast<int>(ourEmulActionList.size()))
       return EmptyString;
     else
       return ourEmulActionList[index].key;
@@ -2505,7 +2507,7 @@ void EventHandler::setMouseControllerMode(const string& enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::changeMouseControllerMode(int direction)
 {
-  const int NUM_MODES = 3;
+  constexpr int NUM_MODES = 3;
   const string MODES[NUM_MODES] = {"always", "analog", "never"};
   const string MSG[NUM_MODES] = {"all", "analog", "no"};
   string usemouse = myOSystem.settings().getString("usemouse");
@@ -2579,7 +2581,7 @@ bool EventHandler::enterDebugMode()
   myOSystem.debugger().setStartState();
   setState(EventHandlerState::DEBUGGER);
 
-  FBInitStatus fbstatus = myOSystem.createFrameBuffer();
+  const FBInitStatus fbstatus = myOSystem.createFrameBuffer();
   if(fbstatus != FBInitStatus::Success)
   {
     myOSystem.debugger().setQuitState();

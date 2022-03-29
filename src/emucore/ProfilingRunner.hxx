@@ -36,7 +36,7 @@ class ProfilingRunner {
 
     struct ProfilingRun {
       string romFile;
-      uInt32 runtime;
+      uInt32 runtime{0};
     };
 
     struct IO: public ConsoleIO {

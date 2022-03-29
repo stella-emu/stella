@@ -55,7 +55,7 @@ void CartridgeWD::install(System& system)
 {
   CartridgeEnhanced::install(system);
 
-  System::PageAccess access(this, System::PageAccessType::READ);
+  const System::PageAccess access(this, System::PageAccessType::READ);
 
   // The hotspots are in TIA address space, so we claim it here
   for(uInt16 addr = 0x00; addr < 0x40; addr += System::PAGE_SIZE)
