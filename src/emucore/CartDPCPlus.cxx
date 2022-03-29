@@ -55,7 +55,7 @@ CartridgeDPCPlus::CartridgeDPCPlus(const ByteBuffer& image, size_t size,
        static_cast<uInt32>(32_KB),
       0x00000C00,
       0x00000C08,
-      0x40001FDC,
+      0x40001FFC,
        devSettings ? settings.getBool("dev.thumb.trapfatal") : false,
        devSettings ? static_cast<double>(
           settings.getFloat("dev.thumb.cyclefactor")) : 1.0,

@@ -95,7 +95,7 @@ CartridgeCDF::CartridgeCDF(const ByteBuffer& image, size_t size,
   } else {
     cBase = 0x800;          // C Base Address
     cStart = 0x808;         // C Start Address (skip ARM header)
-    cStack = 0x40001FDC;    // C Stack
+    cStack = 0x40001FFC;    // C Stack
   }
 
   // Create Thumbulator ARM emulator
