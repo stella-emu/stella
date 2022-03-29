@@ -40,9 +40,9 @@ DrawCounterDecodes::DrawCounterDecodes()
 {
   uInt8 *decodeTables[] = {myDecodes0, myDecodes1, myDecodes2, myDecodes3, myDecodes4, myDecodes6};
 
-  for (uInt8 *decodes : decodeTables)
+  for (auto decodes: decodeTables)
   {
-    memset(decodes, 0, 160);              // TJ: magic number 160 = pixel/scanline
+    std::fill_n(decodes, 160, 0);         // TJ: magic number 160 = pixel/scanline
     decodes[156] = 1;                     // TJ: set for all copy pattern (first copy)
   }
 

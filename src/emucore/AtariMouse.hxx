@@ -54,6 +54,13 @@ class AtariMouse : public PointingDevice
     }
 
     static constexpr float trackballSensitivity = 0.8F;
+
+  private:
+    // Following constructors and assignment operators not supported
+    AtariMouse(const AtariMouse&) = delete;
+    AtariMouse(AtariMouse&&) = delete;
+    AtariMouse& operator=(const AtariMouse&) = delete;
+    AtariMouse& operator=(AtariMouse&&) = delete;
 };
 
 #endif // ATARIMOUSE_HXX

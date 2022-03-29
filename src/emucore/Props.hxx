@@ -74,6 +74,7 @@ class Properties
       new properties object does not claim ownership of the defaults.
     */
     Properties();
+    ~Properties() = default;
 
     /**
       Creates a properties list by copying another one
@@ -184,6 +185,11 @@ class Properties
 
     // The text strings associated with each property type
     static std::array<string, NUM_PROPS> ourPropertyNames;
+
+  private:
+    // Following constructors and assignment operators not supported
+    Properties(Properties&&) = delete;
+    Properties& operator=(Properties&&) = delete;
 };
 
 #endif

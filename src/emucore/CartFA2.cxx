@@ -143,7 +143,7 @@ uInt8 CartridgeFA2::ramReadWrite()
       }
     }
     // Bit 6 is 1, busy
-    return myImage[myCurrentSegOffset[0]  + 0xFF4] | 0x40;
+    return myImage[myCurrentSegOffset[0] + 0xFF4] | 0x40;
   }
   else
   {

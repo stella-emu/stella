@@ -382,8 +382,8 @@ bool MT24LC256::jpee_timercheck(int mode)
   {
     if(myTimerActive)
     {
-      uInt64 elapsed = mySystem.cycles() - myCyclesWhenTimerSet;
-      myTimerActive = elapsed < uInt64(5000000.0 / 838.0);
+      const uInt64 elapsed = mySystem.cycles() - myCyclesWhenTimerSet;
+      myTimerActive = elapsed < static_cast<uInt64>(5000000.0 / 838.0);
     }
     return myTimerActive;
   }

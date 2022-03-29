@@ -43,9 +43,8 @@ void CartridgeSB::install(System& system)
   myHotSpotPageAccess[6] = mySystem->getPageAccess(0x0E00);
   myHotSpotPageAccess[7] = mySystem->getPageAccess(0x0F00);
 
-  System::PageAccess access(this, System::PageAccessType::READ);
-
   // Set the page accessing methods for the hot spots
+  const System::PageAccess access(this, System::PageAccessType::READ);
   for(uInt16 addr = 0x0800; addr < 0x0FFF; addr += System::PAGE_SIZE)
     mySystem->setPageAccess(addr, access);
 }
@@ -73,7 +72,7 @@ uInt8 CartridgeSB::peek(uInt16 address)
   {
     // Because of the way we've set up accessing above, we can only
     // get here when the addresses are from 0x800 - 0xFFF
-    int hotspot = ((address & 0x0F00) >> 8) - 8;
+    const int hotspot = ((address & 0x0F00) >> 8) - 8;
     return myHotSpotPageAccess[hotspot].device->peek(address);
   }
 
@@ -91,7 +90,7 @@ bool CartridgeSB::poke(uInt16 address, uInt8 value)
   {
     // Because of the way we've set up accessing above, we can only
     // get here when the addresses are from 0x800 - 0xFFF
-    int hotspot = ((address & 0x0F00) >> 8) - 8;
+    const int hotspot = ((address & 0x0F00) >> 8) - 8;
     myHotSpotPageAccess[hotspot].device->poke(address, value);
   }
   return false;

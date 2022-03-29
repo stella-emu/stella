@@ -243,21 +243,13 @@ bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment)
     // Remember what bank is in this segment
     const uInt32 bankOffset = myCurrentSegOffset[segment] = romBank << myBankShift;
     const uInt16 hotspot = this->hotspot();
-    uInt16 hotSpotAddr;
-    uInt16 plusROMAddr;
+    const uInt16 hotSpotAddr = (hotspot & 0x1000) ? (hotspot & ~System::PAGE_MASK) : 0xFFFF;
+    const uInt16 plusROMAddr = (myPlusROM->isValid()) ? (0x1FF0 & ~System::PAGE_MASK) : 0xFFFF;
+
     // Skip extra RAM; if existing it is only mapped into first segment
     const uInt16 fromAddr = (ROM_OFFSET + segmentOffset + (segment == 0 ? myRomOffset : 0)) & ~System::PAGE_MASK;
     // for ROMs < 4_KB, the whole address space will be mapped.
     const uInt16 toAddr   = (ROM_OFFSET + segmentOffset + (mySize < 4_KB ? 4_KB : myBankSize)) & ~System::PAGE_MASK;
-
-    if(hotspot & 0x1000)
-      hotSpotAddr = (hotspot & ~System::PAGE_MASK);
-    else
-      hotSpotAddr = 0xFFFF; // none
-    if(myPlusROM->isValid())
-      plusROMAddr = (0x1FF0 & ~System::PAGE_MASK);
-    else
-      plusROMAddr = 0xFFFF; // none
 
     System::PageAccess access(this, System::PageAccessType::READ);
     // Setup the page access methods for the current bank
@@ -335,7 +327,7 @@ uInt16 CartridgeEnhanced::getSegmentBank(uInt16 segment) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeEnhanced::romBankCount() const
 {
-  return uInt16(mySize >> myBankShift);
+  return static_cast<uInt16>(mySize >> myBankShift);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

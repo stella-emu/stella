@@ -105,7 +105,7 @@ bool Controller::load(Serializer& in)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Controller::getName(const Type type)
 {
-  static const std::array<string, int(Controller::Type::LastType)> NAMES =
+  static constexpr std::array<const char*, static_cast<int>(Controller::Type::LastType)> NAMES =
   {
     "Unknown",
     "Amiga mouse", "Atari mouse", "AtariVox", "Booster Grip", "CompuMate",
@@ -114,13 +114,13 @@ string Controller::getName(const Type type)
     "Light Gun", "QuadTari"
   };
 
-  return NAMES[int(type)];
+  return NAMES[static_cast<int>(type)];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Controller::getPropName(const Type type)
 {
-  static const std::array<string, int(Controller::Type::LastType)> PROP_NAMES =
+  static constexpr std::array<const char*, int(Controller::Type::LastType)> PROP_NAMES =
   {
     "AUTO",
     "AMIGAMOUSE", "ATARIMOUSE", "ATARIVOX", "BOOSTERGRIP", "COMPUMATE",
@@ -129,7 +129,7 @@ string Controller::getPropName(const Type type)
     "LIGHTGUN", "QUADTARI"
   };
 
-  return PROP_NAMES[int(type)];
+  return PROP_NAMES[static_cast<int>(type)];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -137,9 +137,9 @@ Controller::Type Controller::getType(const string& propName)
 {
   for(int i = 0; i < static_cast<int>(Type::LastType); ++i)
   {
-    if(BSPF::equalsIgnoreCase(propName, getPropName(Type(i))))
+    if (BSPF::equalsIgnoreCase(propName, getPropName(Type{i})))
     {
-      return Type(i);
+      return Type{i};
     }
   }
   // special case
@@ -176,7 +176,6 @@ int Controller::analogDeadZoneValue(int deadZone)
 
   return deadZone * std::round(32768 / 2. / MAX_DIGITAL_DEADZONE);
 }
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Controller::setMouseSensitivity(int sensitivity)

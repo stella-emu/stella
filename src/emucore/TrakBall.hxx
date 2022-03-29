@@ -55,6 +55,13 @@ class TrakBall : public PointingDevice
 
     // 50% of Atari and Amiga mouse
     static constexpr float trackballSensitivity = 0.4F;
+
+  private:
+    // Following constructors and assignment operators not supported
+    TrakBall(const TrakBall&) = delete;
+    TrakBall(TrakBall&&) = delete;
+    TrakBall& operator=(const TrakBall&) = delete;
+    TrakBall& operator=(TrakBall&&) = delete;
 };
 
 #endif // TRAKBALL_HXX

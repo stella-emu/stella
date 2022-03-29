@@ -188,7 +188,7 @@ class CartridgeEnhanced : public Cartridge
     uInt16 myBankShift{BANK_SHIFT};             // default 12 (-> one 4K segment)
 
     // The size of a bank's segment
-    uInt16 myBankSize{uInt16(4_KB)};
+    uInt16 myBankSize{static_cast<uInt16>(4_KB)};
 
     // The mask for a bank segment
     uInt16 myBankMask{ROM_MASK};

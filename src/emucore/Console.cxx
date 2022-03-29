@@ -96,9 +96,9 @@ namespace {
     );
   }
 
-  float unmapSpeed(int speed)
+  constexpr float unmapSpeed(int speed)
   {
-    float f_speed = static_cast<float>(speed) / 100;
+    const float f_speed = static_cast<float>(speed) / 100;
 
     return speed < 0 ? -1 / (f_speed - 1) : 1 + f_speed;
   }
@@ -231,7 +231,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   // Finally, add remaining info about the console
   myConsoleInfo.CartName   = myProperties.get(PropType::Cart_Name);
   myConsoleInfo.CartMD5    = myProperties.get(PropType::Cart_MD5);
-  bool swappedPorts = properties().get(PropType::Console_SwapPorts) == "YES";
+  const bool swappedPorts  = properties().get(PropType::Console_SwapPorts) == "YES";
   myConsoleInfo.Control0   = myLeftControl->about(swappedPorts);
   myConsoleInfo.Control1   = myRightControl->about(swappedPorts);
   myConsoleInfo.BankSwitch = myCart->about();
@@ -472,6 +472,8 @@ void Console::setFormat(uInt32 format, bool force)
       message = "SECAM60 mode";
       myFormatAutodetected = false;
       break;
+    default:  // satisfy compiler
+      break;
   }
   myProperties.set(PropType::Display_Format, saveformat);
 
@@ -497,7 +499,7 @@ void Console::setFormat(uInt32 format, bool force)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::toggleColorLoss(bool toggle)
 {
-  bool colorloss = !myTIA->colorLossEnabled();
+  const bool colorloss = !myTIA->colorLossEnabled();
   if(myTIA->enableColorLoss(colorloss))
   {
     myOSystem.settings().setValue(
@@ -771,7 +773,7 @@ void Console::toggleCorrectAspectRatio(bool toggle)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::setTIAProperties()
 {
-  Int32 vcenter = BSPF::clamp(
+  const Int32 vcenter = BSPF::clamp(
     static_cast<Int32>(BSPF::stringToInt(myProperties.get(PropType::Display_VCenter))), TIAConstants::minVcenter, TIAConstants::maxVcenter
   );
 
@@ -880,40 +882,41 @@ void Console::setControllers(const string& romMd5)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::changeLeftController(int direction)
 {
-  int type = int(Controller::getType(myProperties.get(PropType::Controller_Left)));
+  int type = static_cast<int>(Controller::getType(myProperties.get(PropType::Controller_Left)));
   if(!type)
-    type = int(Controller::getType(leftController().name()));
+    type = static_cast<int>(Controller::getType(leftController().name()));
   type = BSPF::clampw(type + direction,
-                      1, int(Controller::Type::LastType) - 1);
+                      1, static_cast<int>(Controller::Type::LastType) - 1);
 
-  myProperties.set(PropType::Controller_Left, Controller::getPropName(Controller::Type(type)));
+  myProperties.set(PropType::Controller_Left, Controller::getPropName(Controller::Type{type}));
   setControllers(myProperties.get(PropType::Cart_MD5));
 
   ostringstream msg;
-  msg << "Left controller " << Controller::getName(Controller::Type(type));
+  msg << "Left controller " << Controller::getName(Controller::Type{type});
   myOSystem.frameBuffer().showTextMessage(msg.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::changeRightController(int direction)
 {
-  int type = int(Controller::getType(myProperties.get(PropType::Controller_Right)));
+  int type = static_cast<int>(Controller::getType(myProperties.get(PropType::Controller_Right)));
   if(!type)
-    type = int(Controller::getType(rightController().name()));
+    type = static_cast<int>(Controller::getType(rightController().name()));
   type = BSPF::clampw(type + direction,
-                      1, int(Controller::Type::LastType) - 1);
+                      1, static_cast<int>(Controller::Type::LastType) - 1);
 
-  myProperties.set(PropType::Controller_Right, Controller::getPropName(Controller::Type(type)));
+  myProperties.set(PropType::Controller_Right, Controller::getPropName(Controller::Type{type}));
   setControllers(myProperties.get(PropType::Cart_MD5));
 
   ostringstream msg;
-  msg << "Right controller " << Controller::getName(Controller::Type(type));
+  msg << "Right controller " << Controller::getName(Controller::Type{type});
   myOSystem.frameBuffer().showTextMessage(msg.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 unique_ptr<Controller> Console::getControllerPort(const Controller::Type type,
-                                                  const Controller::Jack port, const string& romMd5)
+                                                  const Controller::Jack port,
+                                                  const string& romMd5)
 {
   unique_ptr<Controller> controller;
 
@@ -1059,7 +1062,7 @@ void Console::toggleSwapPaddles(bool toggle)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::changePaddleCenterX(int direction)
 {
-  int center =
+  const int center =
     BSPF::clamp(BSPF::stringToInt(myProperties.get(PropType::Controller_PaddlesXCenter)) + direction,
                 Paddles::MIN_ANALOG_CENTER, Paddles::MAX_ANALOG_CENTER);
   myProperties.set(PropType::Controller_PaddlesXCenter, std::to_string(center));
@@ -1074,7 +1077,7 @@ void Console::changePaddleCenterX(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::changePaddleCenterY(int direction)
 {
-  int center =
+  const int center =
     BSPF::clamp(BSPF::stringToInt(myProperties.get(PropType::Controller_PaddlesYCenter)) + direction,
                 Paddles::MIN_ANALOG_CENTER, Paddles::MAX_ANALOG_CENTER);
   myProperties.set(PropType::Controller_PaddlesYCenter, std::to_string(center));
@@ -1179,7 +1182,7 @@ void Console::toggleDeveloperSet(bool toggle)
   if(toggle)
   {
     devSettings = !devSettings;
-    DevSettingsHandler::SettingsSet set = devSettings
+    const DevSettingsHandler::SettingsSet set = devSettings
       ? DevSettingsHandler::SettingsSet::developer
       : DevSettingsHandler::SettingsSet::player;
 
@@ -1195,7 +1198,7 @@ void Console::toggleDeveloperSet(bool toggle)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::toggleTIABit(TIABit bit, const string& bitname, bool show, bool toggle) const
 {
-  bool result = myTIA->toggleBit(bit, toggle ? 2 : 3);
+  const bool result = myTIA->toggleBit(bit, toggle ? 2 : 3);
   const string message = bitname + (result ? " enabled" : " disabled");
 
   myOSystem.frameBuffer().showTextMessage(message);
@@ -1204,7 +1207,7 @@ void Console::toggleTIABit(TIABit bit, const string& bitname, bool show, bool to
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::toggleBits(bool toggle) const
 {
-  bool enabled = myTIA->toggleBits(toggle);
+  const bool enabled = myTIA->toggleBits(toggle);
   const string message = string("TIA bits ") + (enabled ? "enabled" : "disabled");
 
   myOSystem.frameBuffer().showTextMessage(message);
@@ -1213,7 +1216,7 @@ void Console::toggleBits(bool toggle) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::toggleTIACollision(TIABit bit, const string& bitname, bool show, bool toggle) const
 {
-  bool result = myTIA->toggleCollision(bit, toggle ? 2 : 3);
+  const bool result = myTIA->toggleCollision(bit, toggle ? 2 : 3);
   const string message = bitname + (result ? " collision enabled" : " collision disabled");
 
   myOSystem.frameBuffer().showTextMessage(message);
@@ -1222,7 +1225,7 @@ void Console::toggleTIACollision(TIABit bit, const string& bitname, bool show, b
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::toggleCollisions(bool toggle) const
 {
-  bool enabled = myTIA->toggleCollisions(toggle);
+  const bool enabled = myTIA->toggleCollisions(toggle);
   const string message = string("TIA collisions ") + (enabled ? "enabled" : "disabled");
 
   myOSystem.frameBuffer().showTextMessage(message);
@@ -1231,7 +1234,7 @@ void Console::toggleCollisions(bool toggle) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::toggleFixedColors(bool toggle) const
 {
-  bool enabled = toggle ? myTIA->toggleFixedColors() : myTIA->usingFixedColors();
+  const bool enabled = toggle ? myTIA->toggleFixedColors() : myTIA->usingFixedColors();
   const string message = string("Fixed debug colors ") + (enabled ? "enabled" : "disabled");
 
   myOSystem.frameBuffer().showTextMessage(message);
@@ -1240,7 +1243,7 @@ void Console::toggleFixedColors(bool toggle) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::toggleJitter(bool toggle) const
 {
-  bool enabled = myTIA->toggleJitter(toggle ? 2 : 3);
+  const bool enabled = myTIA->toggleJitter(toggle ? 2 : 3);
   const string message = string("TV scanline jitter ") + (enabled ? "enabled" : "disabled");
 
   myOSystem.settings().setValue(
@@ -1253,7 +1256,7 @@ void Console::changeJitter(int direction) const
 {
   const string prefix = myOSystem.settings().getBool("dev.settings") ? "dev." : "plr.";
   int recovery = myOSystem.settings().getInt(prefix + "tv.jitter_recovery");
-  bool enabled = direction ? recovery + direction > 0 : myTIA->toggleJitter(3);
+  const bool enabled = direction ? recovery + direction > 0 : myTIA->toggleJitter(3);
 
   // if disabled, enable before first before increasing recovery
   if(!myTIA->toggleJitter(3))

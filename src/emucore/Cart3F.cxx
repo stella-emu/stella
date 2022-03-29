@@ -34,7 +34,7 @@ void Cartridge3F::install(System& system)
 {
   CartridgeEnhanced::install(system);
 
-  System::PageAccess access(this, System::PageAccessType::READWRITE);
+  const System::PageAccess access(this, System::PageAccessType::READWRITE);
 
   // The hotspot ($3F) is in TIA address space, so we claim it here
   for(uInt16 addr = 0x00; addr < 0x40; addr += System::PAGE_SIZE)

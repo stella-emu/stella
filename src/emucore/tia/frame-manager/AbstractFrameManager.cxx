@@ -143,7 +143,7 @@ bool AbstractFrameManager::load(Serializer& in)
     myCurrentFrameFinalLines = in.getInt();
     myPreviousFrameFinalLines = in.getInt();
     myTotalFrames = in.getInt();
-    myLayout = FrameLayout(in.getInt());
+    myLayout = static_cast<FrameLayout>(in.getInt());
 
     return onLoad(in);
   }

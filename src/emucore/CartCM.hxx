@@ -249,7 +249,7 @@ class CartridgeCM : public Cartridge
     ByteBuffer myImage;
 
     // The 2K of RAM
-    std::array<uInt8, 2_KB> myRAM;
+    std::array<uInt8, 2_KB> myRAM{0};
 
     // Current copy of SWCHA (controls ROM/RAM accesses)
     uInt8 mySWCHA{0xFF};  // Port A all 1's

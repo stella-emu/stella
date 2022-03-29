@@ -44,6 +44,9 @@ void AudioChannel::phase0()
       case 0x03:
         myPulseCounterHold = !myNoiseCounterBit4;
         break;
+
+      default:  // not possible, but silence the compiler
+        break;
     }
 
     switch (myAudc & 0x03) {
@@ -84,7 +87,6 @@ uInt8 AudioChannel::phase1()
           (((myPulseCounter & 0x02) ? 1 : 0) ^ (myPulseCounter & 0x01)) &&
           (myPulseCounter != 0x0a) &&
           (myAudc & 0x03);
-
         break;
 
       case 0x01:
@@ -97,6 +99,9 @@ uInt8 AudioChannel::phase1()
 
       case 0x03:
         pulseFeedback = !((myPulseCounter & 0x02) || !(myPulseCounter & 0x0e));
+        break;
+
+      default:
         break;
     }
 

@@ -123,7 +123,7 @@ void CartridgeBUS::install(System& system)
   mySystem = &system;
 
   // Map all of the accesses to call peek and poke
-  System::PageAccess access(this, System::PageAccessType::READ);
+  const System::PageAccess access(this, System::PageAccessType::READ);
   for(uInt16 addr = 0x1000; addr < 0x1040; addr += System::PAGE_SIZE)
     mySystem->setPageAccess(addr, access);
 
@@ -140,13 +140,13 @@ void CartridgeBUS::install(System& system)
 inline void CartridgeBUS::updateMusicModeDataFetchers()
 {
   // Calculate the number of cycles since the last update
-  uInt32 cycles = uInt32(mySystem->cycles() - myAudioCycles);
+  const uInt32 cycles = static_cast<uInt32>(mySystem->cycles() - myAudioCycles);
   myAudioCycles = mySystem->cycles();
 
   // Calculate the number of BUS OSC clocks since the last update
-  double clocks = ((20000.0 * cycles) / myClockRate) + myFractionalClocks;
-  uInt32 wholeClocks = uInt32(clocks);
-  myFractionalClocks = clocks - double(wholeClocks);
+  const double clocks = ((20000.0 * cycles) / myClockRate) + myFractionalClocks;
+  uInt32 wholeClocks = static_cast<uInt32>(clocks);
+  myFractionalClocks = clocks - static_cast<double>(wholeClocks);
 
   // Let's update counters and flags of the music mode data fetchers
   if(wholeClocks > 0)
@@ -164,7 +164,7 @@ inline void CartridgeBUS::callFunction(uInt8 value)
               // time for Stella as ARM code "runs in zero 6507 cycles".
     case 255: // call without IRQ driven audio
       try {
-        uInt32 cycles = uInt32(mySystem->cycles() - myARMCycles);
+        uInt32 cycles = static_cast<uInt32>(mySystem->cycles() - myARMCycles);
 
         myARMCycles = mySystem->cycles();
         myThumbEmulator->run(cycles, value == 254);
@@ -188,7 +188,7 @@ uInt8 CartridgeBUS::peek(uInt16 address)
   if(!(address & 0x1000))                      // Hotspots below 0x1000
   {
     // Check for RAM or TIA mirroring
-    uInt16 lowAddress = address & 0x3ff;
+    const uInt16 lowAddress = address & 0x3ff;
     if(lowAddress & 0x80)
       return mySystem->m6532().peek(address);
     else if(!(lowAddress & 0x200))
@@ -209,14 +209,11 @@ uInt8 CartridgeBUS::peek(uInt16 address)
     if (myFastJumpActive
         && myJMPoperandAddress == address)
     {
-      uInt32 pointer;
-      uInt8 value;
-
       --myFastJumpActive;
       ++myJMPoperandAddress;
 
-      pointer = getDatastreamPointer(JUMPSTREAM);
-      value = myDisplayImage[ pointer >> 20 ];
+      uInt32 pointer = getDatastreamPointer(JUMPSTREAM);
+      const uInt8 value = myDisplayImage[pointer >> 20];
       pointer += 0x100000;  // always increment by 1
       setDatastreamPointer(JUMPSTREAM, pointer);
 
@@ -251,7 +248,7 @@ uInt8 CartridgeBUS::peek(uInt16 address)
         if DIGITAL_AUDIO_ON
         {
           // retrieve packed sample (max size is 2K, or 4K of unpacked data)
-          uInt32 sampleaddress = getSample() + (myMusicCounters[0] >> 21);
+          const uInt32 sampleaddress = getSample() + (myMusicCounters[0] >> 21);
 
           // get sample value from ROM or RAM
           if (sampleaddress < 0x8000)
@@ -270,11 +267,12 @@ uInt8 CartridgeBUS::peek(uInt16 address)
         {
           // using myDisplayImage[] instead of myProgramImage[] because waveforms
           // can be modified during runtime.
-          uInt32 i = myDisplayImage[(getWaveform(0) ) + (myMusicCounters[0] >> myMusicWaveformSize[0])] +
-                     myDisplayImage[(getWaveform(1) ) + (myMusicCounters[1] >> myMusicWaveformSize[1])] +
-                     myDisplayImage[(getWaveform(2) ) + (myMusicCounters[2] >> myMusicWaveformSize[2])];
+          const uInt32 i =
+              myDisplayImage[(getWaveform(0) ) + (myMusicCounters[0] >> myMusicWaveformSize[0])] +
+              myDisplayImage[(getWaveform(1) ) + (myMusicCounters[1] >> myMusicWaveformSize[1])] +
+              myDisplayImage[(getWaveform(2) ) + (myMusicCounters[2] >> myMusicWaveformSize[2])];
 
-          peekvalue = uInt8(i);
+          peekvalue = static_cast<uInt8>(i);
         }
         break;
 
@@ -346,7 +344,7 @@ bool CartridgeBUS::poke(uInt16 address, uInt8 value)
     value &= busOverdrive(address);
 
     // Check for RAM or TIA mirroring
-    uInt16 lowAddress = address & 0x3ff;
+    const uInt16 lowAddress = address & 0x3ff;
     if(lowAddress & 0x80)
       mySystem->m6532().poke(address, value);
     else if(!(lowAddress & 0x200))
@@ -354,7 +352,7 @@ bool CartridgeBUS::poke(uInt16 address, uInt8 value)
   }
   else
   {
-    uInt32 pointer;
+    uInt32 pointer = 0;
 
     address &= 0x0FFF;
 
@@ -495,11 +493,11 @@ uInt8 CartridgeBUS::busOverdrive(uInt16 address)
   // only overdrive if the address matches
   if (address == myBusOverdriveAddress)
   {
-    uInt8 map = address & 0x7f;
+    const uInt8 map = address & 0x7f;
     if (map <= 0x24) // map TIA registers VSYNC thru HMBL inclusive
     {
       uInt32 alldatastreams = getAddressMap(map);
-      uInt8 datastream = alldatastreams & 0x0f;  // lowest nybble has the current datastream to use
+      const uInt8 datastream = alldatastreams & 0x0f;  // lowest nybble has the current datastream to use
       overdrive = readFromDatastream(datastream);
 
       // rotate map nybbles for next time
@@ -758,8 +756,8 @@ uInt8 CartridgeBUS::readFromDatastream(uInt8 index)
   // F = Fractional
 
   uInt32 pointer = getDatastreamPointer(index);
-  uInt16 increment = getDatastreamIncrement(index);
-  uInt8 value = myDisplayImage[ pointer >> 20 ];
+  const uInt16 increment = getDatastreamIncrement(index);
+  const uInt8 value = myDisplayImage[pointer >> 20];
   pointer += (increment << 12);
   setDatastreamPointer(index, pointer);
   return value;

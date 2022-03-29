@@ -32,7 +32,7 @@ bool CartridgeF0::checkSwitchBank(uInt16 address, uInt8)
   if(address == 0x1FF0)
   {
     // Switch to next bank
-    uInt8 nextBank = ((getBank()) + 1) & 0x0F;
+    const uInt8 nextBank = ((getBank()) + 1) & 0x0F;
     bank(nextBank);
     return true;
   }
