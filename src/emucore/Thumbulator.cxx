@@ -552,61 +552,26 @@ bool Thumbulator::isInvalidROM(uInt32 addr)
 {
   const uInt32 romStart = configuration == ConfigureFor::DPCplus ? 0xc00 : 0x750; // was 0x800
 
-  switch(romSize)
-  {
-    case 64_KB:
-      if(!(addr >= romStart && addr <= 0x0FFFF))
-        return true;
-      break;
-
-    case 128_KB:
-      if(!(addr >= romStart && addr <= 0x1FFFF))
-        return true;
-      break;
-
-    case 256_KB:
-      if(!(addr >= romStart && addr <= 0x3FFFF))
-        return true;
-      break;
-
-    case 512_KB:
-      if(!(addr >= romStart && addr <= 0x7FFFF))
-        return true;
-      break;
-
-    default: // assuming 32 KB
-      if(!(addr >= romStart && addr <= 0x07FFF))
-        return true;
-      break;
-  }
-
-  return false;
+  return addr < romStart || addr >= romSize; // CDFJ+ allows ROM sizes larger than 32 KB
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Thumbulator::isInvalidRAM(uInt32 addr)
 {
   // Note: addr is already checked for RAM (0x4xxxxxxx)
-  switch(romSize)
+  switch(romSize) // CDFJ+ allows more than 8 KB RAM depending on ROM sizes
   {
     case 64_KB:
     case 128_KB:
-      if(addr > 0x40003fff)
-        return true;
-      break;
+      return addr > 0x40003fff; // 16 KB
 
     case 256_KB:
     case 512_KB:
-      if(addr > 0x40007fff)
-        return true;
-      break;
+      return addr > 0x40007fff; // 32 KB
 
     default: // assuming 32 KB
-      if(addr > 0x40001fff)
-        return true;
-      break;
+      return addr > 0x40001fff; // 8 KB
   }
-  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
