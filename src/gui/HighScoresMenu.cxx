@@ -29,7 +29,7 @@ HighScoresMenu::HighScoresMenu(OSystem& osystem)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 HighScoresMenu::~HighScoresMenu()
 {
-  delete myHighScoresDialog; myHighScoresDialog = nullptr;
+  delete myHighScoresDialog;  myHighScoresDialog = nullptr;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

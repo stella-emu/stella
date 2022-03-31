@@ -43,9 +43,9 @@ namespace {
     );
   }
 
-  float unmapSpeed(int speed)
+  constexpr float unmapSpeed(int speed)
   {
-    float f_speed = static_cast<float>(speed) / 100;
+    const float f_speed = static_cast<float>(speed) / 100;
 
     return speed < 0 ? -1 / (f_speed - 1) : 1 + f_speed;
   }
@@ -73,7 +73,6 @@ EmulationDialog::EmulationDialog(OSystem& osystem, DialogContainer& parent,
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap(),
             INDENT       = Dialog::indent();
-  int xpos, ypos;
   int lwidth = font.getStringWidth("Emulation speed ");
   WidgetArray wid;
   VariantList items;
@@ -83,7 +82,7 @@ EmulationDialog::EmulationDialog(OSystem& osystem, DialogContainer& parent,
   _w = 37 * fontWidth + HBORDER * 2 + CheckboxWidget::prefixSize(_font);
   _h = 13 * (lineHeight + VGAP) + VGAP * 7 + VBORDER * 3 + _th + buttonHeight;
 
-  xpos = HBORDER;  ypos = VBORDER + _th;
+  int xpos = HBORDER, ypos = VBORDER + _th;
 
   // Speed
   mySpeed =
@@ -170,7 +169,7 @@ EmulationDialog::EmulationDialog(OSystem& osystem, DialogContainer& parent,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EmulationDialog::loadConfig()
 {
-  Settings& settings = instance().settings();
+  const Settings& settings = instance().settings();
 
   // Emulation speed
   int speed = mapSpeed(settings.getFloat("speed"));
@@ -238,7 +237,7 @@ void EmulationDialog::saveConfig()
   settings.setValue("confirmexit", myConfirmExitWidget->getState());
 
   // Save on exit
-  int saveOnExit = mySaveOnExitGroup->getSelected();
+  const int saveOnExit = mySaveOnExitGroup->getSelected();
   settings.setValue("saveonexit",
                     saveOnExit == 0 ? "none" : saveOnExit == 1 ? "current" : "all");
   // Automatically change save state slots

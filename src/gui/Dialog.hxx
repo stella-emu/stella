@@ -77,7 +77,7 @@ class Dialog : public GuiObject
 
     void addFocusWidget(Widget* w) override;
     void addToFocusList(const WidgetArray& list) override;
-    void addToFocusList(const WidgetArray& list, TabWidget* w, int tabId);
+    void addToFocusList(const WidgetArray& list, const TabWidget* w, int tabId);
     void addBGroupToFocusList(const WidgetArray& list) { _buttonGroup = list; }
     void addTabWidget(TabWidget* w);
     void addDefaultWidget(ButtonWidget* w) { _defaultWidget = w; }
@@ -211,7 +211,7 @@ class Dialog : public GuiObject
   private:
     void buildCurrentFocusList(int tabID = -1);
     bool handleNavEvent(Event::Type e, bool repeated = false);
-    void getTabIdForWidget(Widget* w);
+    void getTabIdForWidget(const Widget* w);
     bool cycleTab(int direction);
     const string getHelpURL() const override;
     bool hasHelp() const override { return !getHelpURL().empty(); }

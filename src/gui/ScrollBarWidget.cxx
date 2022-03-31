@@ -116,7 +116,7 @@ void ScrollBarWidget::handleMouseDown(int x, int y, MouseButton b,
   if(_draggingPart == Part::Slider)
     return;
 
-  int old_pos = _currentPos;
+  const int old_pos = _currentPos;
 
   // Do nothing if there are less items than fit on one page
   if(_numEntries <= _entriesPerPage)
@@ -162,7 +162,7 @@ void ScrollBarWidget::handleMouseUp(int x, int y, MouseButton b,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ScrollBarWidget::handleMouseWheel(int x, int y, int direction)
 {
-  int old_pos = _currentPos;
+  const int old_pos = _currentPos;
 
   if(_numEntries < _entriesPerPage)
     return;
@@ -185,7 +185,7 @@ void ScrollBarWidget::handleMouseMoved(int x, int y)
 
   if(_draggingPart == Part::Slider)
   {
-    int old_pos = _currentPos;
+    const int old_pos = _currentPos;
     _sliderPos = y - _sliderDeltaMouseDownPos;
 
     if(_sliderPos < _upDownBoxHeight)
@@ -200,7 +200,7 @@ void ScrollBarWidget::handleMouseMoved(int x, int y)
   }
   else
   {
-    Part old_part = _part;
+    const Part old_part = _part;
 
     if(y <= _upDownBoxHeight)   // Up arrow
       _part = Part::UpArrow;
@@ -252,8 +252,8 @@ void ScrollBarWidget::handleMouseLeft()
 void ScrollBarWidget::recalc()
 {
 //cerr << "ScrollBarWidget::recalc()\n";
-  int oldSliderHeight = _sliderHeight,
-    oldSliderPos = _sliderPos;
+  const int oldSliderHeight = _sliderHeight,
+            oldSliderPos = _sliderPos;
 
   if(_numEntries > _entriesPerPage)
   {
@@ -280,8 +280,8 @@ void ScrollBarWidget::recalc()
 void ScrollBarWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
-  int bottomY = _y + _h;
-  bool isSinglePage = (_numEntries <= _entriesPerPage);
+  const int bottomY = _y + _h;
+  const bool isSinglePage = (_numEntries <= _entriesPerPage);
 
   s.frameRect(_x, _y, _w, _h, hilite ? kWidColorHi : kColor);
 

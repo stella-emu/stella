@@ -39,14 +39,14 @@ ProgressDialog::ProgressDialog(GuiObject* boss, const GUI::Font& font,
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap();
   const int lwidth = font.getStringWidth(message);
-  int xpos, ypos;
   WidgetArray wid;
 
   // Calculate real dimensions
   _w = HBORDER * 2 + std::max(lwidth, buttonWidth);
   _h = VBORDER * 2 + lineHeight * 2 + buttonHeight + VGAP * 6;
 
-  xpos = HBORDER; ypos = VBORDER;
+  const int xpos = HBORDER;
+  int ypos = VBORDER;
   myMessage = new StaticTextWidget(this, font, xpos, ypos, lwidth, fontHeight,
                                    message, TextAlign::Center);
   myMessage->setTextColor(kTextColorEm);
@@ -87,7 +87,7 @@ void ProgressDialog::setRange(int start, int finish, int step)
 {
   myStart = start;
   myFinish = finish;
-  myStep = int((step / 100.0) * (myFinish - myStart + 1));
+  myStep = static_cast<int>((step / 100.0) * (myFinish - myStart + 1));
 
   mySlider->setMinValue(myStart + myStep);
   mySlider->setMaxValue(myFinish);

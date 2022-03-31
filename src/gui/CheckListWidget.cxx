@@ -59,8 +59,8 @@ void CheckListWidget::setList(const StringList& list, const BoolArray& state)
     _checkList[i]->setFlags(Widget::FLAG_ENABLED);
 
   // Then turn off any extras
-  if(int(_stateList.size()) < _rows)
-    for(int i = int(_stateList.size()); i < _rows; ++i)
+  if(static_cast<int>(_stateList.size()) < _rows)
+    for(int i = static_cast<int>(_stateList.size()); i < _rows; ++i)
       _checkList[i]->clearFlags(Widget::FLAG_ENABLED);
 
   ListWidget::recalc();
@@ -69,7 +69,7 @@ void CheckListWidget::setList(const StringList& list, const BoolArray& state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheckListWidget::setLine(int line, const string& str, const bool& state)
 {
-  if(line >= int(_list.size()))
+  if(line >= static_cast<int>(_list.size()))
     return;
 
   _list[line]      = str;
@@ -81,14 +81,14 @@ void CheckListWidget::drawWidget(bool hilite)
 {
 //cerr << "CheckListWidget::drawWidget\n";
   FBSurface& s = _boss->dialog().surface();
-  int i, pos, len = int(_list.size());
+  const int len = static_cast<int>(_list.size());
 
   // Draw a thin frame around the list and to separate columns
   s.frameRect(_x, _y, _w, _h, hilite ? kWidColorHi : kColor);
   s.vLine(_x + CheckboxWidget::boxSize(_font) + 5, _y, _y + _h - 1, kColor);
 
   // Draw the list items
-  for (i = 0, pos = _currentPos; i < _rows && pos < len; i++, pos++)
+  for (int i = 0, pos = _currentPos; i < _rows && pos < len; i++, pos++)
   {
     // Draw checkboxes for correct lines (takes scrolling into account)
     _checkList[i]->setState(_stateList[pos]);
@@ -98,7 +98,7 @@ void CheckListWidget::drawWidget(bool hilite)
     const int y = _y + 2 + _lineHeight * i + 2;
     ColorId textColor = kTextColor;
 
-    Common::Rect r(getEditRect());
+    const Common::Rect r(getEditRect());
 
     // Draw the selected item inverted, on a highlighted background.
     if (_selectedItem == pos)
@@ -145,7 +145,7 @@ Common::Rect CheckListWidget::getEditRect() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CheckListWidget::getState(int line) const
 {
-  if(line >= 0 && line < int(_stateList.size()))
+  if(line >= 0 && line < static_cast<int>(_stateList.size()))
     return _stateList[line];
   else
     return false;
@@ -171,8 +171,8 @@ void CheckListWidget::handleCommand(CommandSender* sender, int cmd,
   if(cmd == CheckboxWidget::kCheckActionCmd)
   {
     // Figure out which line has been checked
-    int line = _currentPos + id;
-    _stateList[line] = bool(data);
+    const int line = _currentPos + id;
+    _stateList[line] = static_cast<bool>(data);
 
     // Let the boss know about it
     sendCommand(CheckListWidget::kListItemChecked, line, _id);

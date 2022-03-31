@@ -43,7 +43,6 @@ StellaSettingsDialog::StellaSettingsDialog(OSystem& osystem, DialogContainer& pa
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap(),
             INDENT       = Dialog::indent();
-  int xpos, ypos;
   ButtonWidget* bw = nullptr;
 
   WidgetArray wid;
@@ -54,8 +53,8 @@ StellaSettingsDialog::StellaSettingsDialog(OSystem& osystem, DialogContainer& pa
           VBORDER * 2 +_th + 10 * (lineHeight + VGAP) + 3 * (iLineHeight + VGAP)
           + VGAP * 12 + buttonHeight * 2, max_w, max_h);
 
-  xpos = HBORDER;
-  ypos = VBORDER + _th;
+  int xpos = HBORDER;
+  int ypos = VBORDER + _th;
 
   bw = new ButtonWidget(this, _font, xpos, ypos, _w - HBORDER * 2 - buttonWidth - 8, buttonHeight,
     "Use Advanced Settings" + ELLIPSIS, kAdvancedSettings);
@@ -94,7 +93,7 @@ StellaSettingsDialog::~StellaSettingsDialog()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StellaSettingsDialog::addUIOptions(WidgetArray& wid, int& xpos, int& ypos)
+void StellaSettingsDialog::addUIOptions(WidgetArray& wid, int xpos, int& ypos)
 {
   const int lineHeight = Dialog::lineHeight(),
             VGAP       = Dialog::vGap();
@@ -123,7 +122,7 @@ void StellaSettingsDialog::addUIOptions(WidgetArray& wid, int& xpos, int& ypos)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StellaSettingsDialog::addVideoOptions(WidgetArray& wid, int& xpos, int& ypos)
+void StellaSettingsDialog::addVideoOptions(WidgetArray& wid, int xpos, int& ypos)
 {
   const int lineHeight = Dialog::lineHeight(),
             fontWidth  = Dialog::fontWidth(),
@@ -132,7 +131,7 @@ void StellaSettingsDialog::addVideoOptions(WidgetArray& wid, int& xpos, int& ypo
   VariantList items;
 
   // TV effects options
-  int swidth = _font.getMaxCharWidth() * 11;
+  const int swidth = _font.getMaxCharWidth() * 11;
 
   // TV Mode
   VarList::push_back(items, "Disabled", static_cast<uInt32>(NTSCFilter::Preset::OFF));
@@ -177,7 +176,7 @@ void StellaSettingsDialog::addVideoOptions(WidgetArray& wid, int& xpos, int& ypo
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StellaSettingsDialog::addGameOptions(WidgetArray& wid, int& xpos, int& ypos)
+void StellaSettingsDialog::addGameOptions(WidgetArray& wid, int xpos, int& ypos)
 {
   const int lineHeight = Dialog::lineHeight(),
             VGAP       = Dialog::vGap();
@@ -562,7 +561,7 @@ void StellaSettingsDialog::updateControllerStates()
   myRightPortDetected->setLabel(label);
 
   // Compumate bankswitching scheme doesn't allow to select controllers
-  bool enableSelectControl = myGameProperties.get(PropType::Cart_Type) != "CM";
+  const bool enableSelectControl = myGameProperties.get(PropType::Cart_Type) != "CM";
 
   myLeftPortLabel->setEnabled(enableSelectControl);
   myRightPortLabel->setEnabled(enableSelectControl);

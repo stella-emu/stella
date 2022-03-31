@@ -35,7 +35,6 @@ R77HelpDialog::R77HelpDialog(OSystem& osystem, DialogContainer& parent,
             BUTTON_GAP = Dialog::buttonGap(),
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder();
-  int xpos, ypos;
   WidgetArray wid;
 
   // Set real dimensions
@@ -43,7 +42,7 @@ R77HelpDialog::R77HelpDialog(OSystem& osystem, DialogContainer& parent,
   _h = (LINES_PER_PAGE + 2) * lineHeight + VBORDER * 2 + _th;
 
   // Add Previous, Next and Close buttons
-  xpos = HBORDER;  ypos = _h - buttonHeight - VBORDER;
+  int xpos = HBORDER, ypos = _h - buttonHeight - VBORDER;
   myPrevButton =
     new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
       "Previous", GuiObject::kPrevCmd);
@@ -101,8 +100,8 @@ void R77HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
   {
     myJoyStr[i] = j; myBtnStr[i] = b;  myDescStr[i] = d;  i++;
   };
-  auto ADD_TEXT = [&](const string & d) { ADD_BIND("", d.substr(0, 11), d.substr(11, 40)); };
-  auto ADD_LINE = [&]() { ADD_BIND("-----------", "-----------", "------------------------"); };
+  const auto ADD_TEXT = [&](const string & d) { ADD_BIND("", d.substr(0, 11), d.substr(11, 40)); };
+  const auto ADD_LINE = [&]() { ADD_BIND("-----------", "-----------", "------------------------"); };
 
   switch (page)
   {

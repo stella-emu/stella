@@ -105,7 +105,7 @@ void Widget::draw()
   #endif
 
     FBSurface& s = _boss->dialog().surface();
-    int oldX = _x, oldY = _y;
+    const int oldX = _x, oldY = _y;
 
     // Account for our relative position in the dialog
     _x = getAbsX();
@@ -336,7 +336,7 @@ Widget* Widget::findWidgetInChain(Widget* w, int x, int y)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Widget::isWidgetInChain(Widget* w, Widget* find)
+bool Widget::isWidgetInChain(Widget* w, const Widget* find)
 {
   while(w)
   {
@@ -354,13 +354,14 @@ bool Widget::isWidgetInChain(const WidgetArray& list, Widget* find)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Widget* Widget::setFocusForChain(GuiObject* boss, WidgetArray& arr,
-                                 Widget* wid, int direction,
+Widget* Widget::setFocusForChain(const GuiObject* boss, WidgetArray& arr,
+                                 const Widget* wid, int direction,
                                  bool emitFocusEvents)
 {
   FBSurface& s = boss->dialog().surface();
-  int size = int(arr.size()), pos = -1;
-  Widget* tmp;
+  const int size = static_cast<int>(arr.size());
+  int pos = -1;
+  Widget* tmp = nullptr;
 
   for(int i = 0; i < size; ++i)
   {
@@ -374,8 +375,8 @@ Widget* Widget::setFocusForChain(GuiObject* boss, WidgetArray& arr,
     // Note: we must use getXXX() methods and not access the variables
     // directly, since in some cases (notably those widgets with embedded
     // ScrollBars) the two quantities may be different
-    int x = tmp->getAbsX() - 1,  y = tmp->getAbsY() - 1,
-        w = tmp->getWidth() + 2, h = tmp->getHeight() + 2;
+    const int x = tmp->getAbsX() - 1,  y = tmp->getAbsY() - 1,
+              w = tmp->getWidth() + 2, h = tmp->getHeight() + 2;
 
     // First clear area surrounding all widgets
     if(tmp->_hasFocus)
@@ -394,7 +395,7 @@ Widget* Widget::setFocusForChain(GuiObject* boss, WidgetArray& arr,
     return nullptr;
   else
   {
-    int oldPos = pos;
+    const int oldPos = pos;
     do
     {
       switch(direction)
@@ -428,8 +429,8 @@ Widget* Widget::setFocusForChain(GuiObject* boss, WidgetArray& arr,
   // Note: we must use getXXX() methods and not access the variables
   // directly, since in some cases (notably those widgets with embedded
   // ScrollBars) the two quantities may be different
-  int x = tmp->getAbsX() - 1,  y = tmp->getAbsY() - 1,
-      w = tmp->getWidth() + 2, h = tmp->getHeight() + 2;
+  const int x = tmp->getAbsX() - 1,  y = tmp->getAbsY() - 1,
+            w = tmp->getWidth() + 2, h = tmp->getHeight() + 2;
 
   if(emitFocusEvents)
     tmp->receivedFocus();
@@ -551,7 +552,7 @@ bool StaticTextWidget::setUrl(const string& url, const string& label,
       // find end of URL
       for(size_t i = start; i < _label.size(); ++i)
       {
-        char ch = _label[i];
+        const char ch = _label[i];
 
         if(ch == ' ' || ch == ')' || ch == '>')
         {
@@ -570,7 +571,7 @@ bool StaticTextWidget::setUrl(const string& url, const string& label,
 
   if(len)
   {
-    setLink(start, int(len), true);
+    setLink(start, static_cast<int>(len), true);
     setCmd(kOpenUrlCmd);
     return true;
   }
@@ -773,7 +774,7 @@ void ButtonWidget::drawWidget(bool hilite)
   int x = _x;
   if(_useBitmap)
   {
-    int xb = _useText ? _x + _bmx / 2 : _x + (_w - _bmw) / 2;
+    const int xb = _useText ? _x + _bmx / 2 : _x + (_w - _bmw) / 2;
     s.drawBitmap(_bitmap, xb, _y + (_h - _bmh) / 2,
                  !isEnabled() ? _textcolorlo :
                  hilite ? _textcolorhi : _textcolor,
@@ -1043,7 +1044,8 @@ void SliderWidget::handleMouseMoved(int x, int y)
   // TODO: when the mouse is dragged outside the widget, the slider should
   // snap back to the old value.
   if(isEnabled() && _isDragging &&
-     x >= int(_labelWidth - 4) && x <= int(_w - _valueLabelGap - _valueLabelWidth + 4))
+     x >= static_cast<int>(_labelWidth - 4) &&
+     x <= static_cast<int>(_w - _valueLabelGap - _valueLabelWidth + 4))
     setValue(posToValue(x - _labelWidth));
 }
 
@@ -1121,7 +1123,7 @@ void SliderWidget::drawWidget(bool hilite)
   if(_labelWidth > 0)
     s.drawString(_font, _label, _x, _y + 2, _labelWidth, isEnabled() ? kTextColor : kColor);
 
-  int p = valueToPos(_value),
+  const int p = valueToPos(_value),
     h = _h - _font.getFontHeight() / 2 - 1,
     x = _x + _labelWidth,
     y = _y + 2 + _font.desc().ascent - (_font.getFontHeight() + 1) / 2 - 1; // align to bottom of font
@@ -1136,7 +1138,7 @@ void SliderWidget::drawWidget(bool hilite)
   // Draw the 'tickmarks'
   for(int i = 1; i < _numIntervals; ++i)
   {
-    int xt = x + (_w - _labelWidth - _valueLabelGap - _valueLabelWidth) * i / _numIntervals - 1;
+    const int xt = x + (_w - _labelWidth - _valueLabelGap - _valueLabelWidth) * i / _numIntervals - 1;
     ColorId color = kNone;
 
     if(isEnabled())
@@ -1170,7 +1172,7 @@ int SliderWidget::valueToPos(int value) const
 {
   if(value < _valueMin)      value = _valueMin;
   else if(value > _valueMax) value = _valueMax;
-  int range = std::max(_valueMax - _valueMin, 1);  // don't divide by zero
+  const int range = std::max(_valueMax - _valueMin, 1);  // don't divide by zero
 
   return ((_w - _labelWidth - _valueLabelGap - _valueLabelWidth - 2) * (value - _valueMin) / range);
 }
@@ -1178,7 +1180,7 @@ int SliderWidget::valueToPos(int value) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int SliderWidget::posToValue(int pos) const
 {
-  int value = (pos) * (_valueMax - _valueMin) / (_w - _labelWidth - _valueLabelGap - _valueLabelWidth - 4) + _valueMin;
+  const int value = (pos) * (_valueMax - _valueMin) / (_w - _labelWidth - _valueLabelGap - _valueLabelWidth - 4) + _valueMin;
 
   // Scale the position to the correct interval (according to step value)
   return value - (value % _stepValue);

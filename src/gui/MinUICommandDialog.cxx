@@ -37,10 +37,10 @@
 MinUICommandDialog::MinUICommandDialog(OSystem& osystem, DialogContainer& parent)
   : Dialog(osystem, parent, osystem.frameBuffer().font(), "Commands")
 {
-  const int HBORDER = 10;
-  const int VBORDER = 10;
-  const int HGAP = 8;
-  const int VGAP = 5;
+  constexpr int HBORDER = 10;
+  constexpr int VBORDER = 10;
+  constexpr int HGAP = 8;
+  constexpr int VGAP = 5;
 
   const int buttonWidth = _font.getStringWidth(" Load State 0") + 20,
     buttonHeight = _font.getLineHeight() + 8,
@@ -53,7 +53,7 @@ MinUICommandDialog::MinUICommandDialog(OSystem& osystem, DialogContainer& parent
   WidgetArray wid;
   int xoffset = HBORDER, yoffset = VBORDER + _th;
 
-  auto ADD_CD_BUTTON = [&](const string& label, int cmd)
+  const auto ADD_CD_BUTTON = [&](const string& label, int cmd)
   {
     ButtonWidget* b = new ButtonWidget(this, _font, xoffset, yoffset,
                                        buttonWidth, buttonHeight, label, cmd);
@@ -208,7 +208,7 @@ void MinUICommandDialog::handleCommand(CommandSender* sender, int cmd,
     {
       event = Event::NextState;
       stateCmd = true;
-      int slot = (instance().state().currentSlot() + 1) % 10;
+      const int slot = (instance().state().currentSlot() + 1) % 10;
       updateSlot(slot);
       break;
     }

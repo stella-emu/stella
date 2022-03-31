@@ -101,7 +101,7 @@ void Dialog::open()
   // dialogs cause drawing to occur within loadConfig()
   if (_surface == nullptr)
     _surface = instance().frameBuffer().allocateSurface(_w, _h);
-  else if (uInt32(_w) > _surface->width() || uInt32(_h) > _surface->height())
+  else if (static_cast<uInt32>(_w) > _surface->width() || static_cast<uInt32>(_h) > _surface->height())
     _surface->resize(_w, _h);
   _surface->setSrcSize(_w, _h);
   _layer = parent().addDialog(this);
@@ -209,12 +209,12 @@ const string Dialog::getHelpURL() const
   if(_focusedWidget && _focusedWidget->hasHelp())
     return _focusedWidget->getHelpURL();
 
-  if(_tabID < int(_myTabList.size()))
+  if(_tabID < static_cast<int>(_myTabList.size()))
   {
     TabWidget* activeTabGroup = _myTabList[_tabID].widget;
 
     // 2. check active tab
-    int activeTab = activeTabGroup->getActiveTab();
+    const int activeTab = activeTabGroup->getActiveTab();
     const Widget* parentTab = activeTabGroup->parentWidget(activeTab);
 
     if(parentTab->hasHelp())
@@ -286,12 +286,12 @@ void Dialog::positionAt(uInt32 pos)
   const Common::Size& screen = instance().frameBuffer().screenSize();
   const Common::Rect& dst = _surface->dstRect();
   // shift stacked dialogs
-  Int32 hgap = (screen.w >> 6) * _layer + screen.w * overscan;
-  Int32 vgap = (screen.w >> 6) * _layer + screen.h * overscan;
-  int top = std::min(std::max(0, Int32(screen.h - dst.h())), vgap);
-  int btm = std::max(0, Int32(screen.h - dst.h() - vgap));
-  int left = std::min(std::max(0, Int32(screen.w - dst.w())), hgap);
-  int right = std::max(0, Int32(screen.w - dst.w() - hgap));
+  const Int32 hgap = (screen.w >> 6) * _layer + screen.w * overscan;
+  const Int32 vgap = (screen.w >> 6) * _layer + screen.h * overscan;
+  const int top = std::min(std::max(0, static_cast<Int32>(screen.h - dst.h())), vgap);
+  const int btm = std::max(0, static_cast<Int32>(screen.h - dst.h() - vgap));
+  const int left = std::min(std::max(0, static_cast<Int32>(screen.w - dst.w())), hgap);
+  const int right = std::max(0, static_cast<Int32>(screen.w - dst.w() - hgap));
 
   switch (pos)
   {
@@ -347,7 +347,7 @@ void Dialog::render()
 
   // A dialog is still on top if a non-shading dialog (e.g. ContextMenu)
   // is opened above it.
-  bool onTop = parent().myDialogStack.top() == this
+  const bool onTop = parent().myDialogStack.top() == this
     || (parent().myDialogStack.get(parent().myDialogStack.size() - 2) == this
         && !parent().myDialogStack.top()->isShading());
 
@@ -356,7 +356,7 @@ void Dialog::render()
     if(_shadeSurface == nullptr)
     {
       // Create shading surface
-      uInt32 data = 0xff000000;
+      constexpr uInt32 data = 0xff000000;
 
       _shadeSurface = instance().frameBuffer().allocateSurface(
         1, 1, ScalingInterpolation::sharp, &data);
@@ -416,7 +416,7 @@ void Dialog::addToFocusList(const WidgetArray& list)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::addToFocusList(const WidgetArray& list, TabWidget* w, int tabId)
+void Dialog::addToFocusList(const WidgetArray& list, const TabWidget* w, int tabId)
 {
   // Only add the list if the tab actually exists
   if(!w || w->getID() >= _myTabList.size())
@@ -432,7 +432,7 @@ void Dialog::addToFocusList(const WidgetArray& list, TabWidget* w, int tabId)
   FocusList& focus = _myTabList[w->getID()].focus;
 
   // Now insert in the correct place in that focus list
-  uInt32 id = tabId;
+  const uInt32 id = tabId;
   if(id < focus.size())
     Vec::append(focus[id].list, list);
   else
@@ -455,7 +455,7 @@ void Dialog::addTabWidget(TabWidget* w)
     return;
 
   // Make sure the array is large enough
-  uInt32 id = w->getID();
+  const uInt32 id = w->getID();
   while(_myTabList.size() < id)
     _myTabList.push_back(TabFocus());
 
@@ -487,7 +487,7 @@ void Dialog::buildCurrentFocusList(int tabID)
   // Remember which tab item previously had focus, if applicable
   // This only applies if this method was called for a tab change
   Widget* tabFocusWidget = nullptr;
-  if(tabID >= 0 && tabID < int(_myTabList.size()))
+  if(tabID >= 0 && tabID < static_cast<int>(_myTabList.size()))
   {
     // Save focus in previously selected tab column,
     // and get focus for new tab column
@@ -707,17 +707,17 @@ void Dialog::handleMouseWheel(int x, int y, int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::handleMouseMoved(int x, int y)
 {
-  Widget* w;
+  Widget* w = nullptr;
 
   if(_focusedWidget && !_dragWidget)
   {
     w = _focusedWidget;
-    int wx = w->getAbsX() - _x;
-    int wy = w->getAbsY() - _y;
+    const int wx = w->getAbsX() - _x;
+    const int wy = w->getAbsY() - _y;
 
     // We still send mouseEntered/Left messages to the focused item
     // (but to no other items).
-    bool mouseInFocusedWidget = (x >= wx && x < wx + w->_w && y >= wy && y < wy + w->_h);
+    const bool mouseInFocusedWidget = (x >= wx && x < wx + w->_w && y >= wy && y < wy + w->_h);
     if(mouseInFocusedWidget && _mouseWidget != w)
     {
       if(_mouseWidget)
@@ -777,7 +777,7 @@ void Dialog::handleJoyDown(int stick, int button, bool longPress)
   // Focused widget receives joystick events
   if(_focusedWidget)
   {
-    Event::Type e =
+    const Event::Type e =
       instance().eventHandler().eventForJoyButton(EventMode::kMenuMode, stick, button);
 
     if(_focusedWidget->wantsRaw() || e == Event::NoType)
@@ -788,7 +788,7 @@ void Dialog::handleJoyDown(int stick, int button, bool longPress)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::handleJoyUp(int stick, int button)
 {
-  Event::Type e =
+  const Event::Type e =
     instance().eventHandler().eventForJoyButton(EventMode::kMenuMode, stick, button);
 
   // Unless a widget has claimed all responsibility for data, we assume
@@ -811,7 +811,7 @@ Event::Type Dialog::getJoyAxisEvent(int stick, JoyAxis axis, JoyDir adir, int bu
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::handleJoyAxis(int stick, JoyAxis axis, JoyDir adir, int button)
 {
-  Event::Type e = getJoyAxisEvent(stick, axis, adir, button);
+  const Event::Type e = getJoyAxisEvent(stick, axis, adir, button);
 
   // Unless a widget has claimed all responsibility for data, we assume
   // that if an event exists for the given data, it should have priority.
@@ -827,7 +827,7 @@ void Dialog::handleJoyAxis(int stick, JoyAxis axis, JoyDir adir, int button)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Dialog::handleJoyHat(int stick, int hat, JoyHatDir hdir, int button)
 {
-  Event::Type e =
+  const Event::Type e =
     instance().eventHandler().eventForJoyHat(EventMode::kMenuMode, stick, hat, hdir, button);
 
   // Unless a widget has claimed all responsibility for data, we assume
@@ -916,7 +916,7 @@ bool Dialog::handleNavEvent(Event::Type e, bool repeated)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::getTabIdForWidget(Widget* w)
+void Dialog::getTabIdForWidget(const Widget* w)
 {
   if(_myTabList.size() == 0 || !w)
     return;
@@ -934,7 +934,7 @@ void Dialog::getTabIdForWidget(Widget* w)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Dialog::cycleTab(int direction)
 {
-  if(_tabID >= 0 && _tabID < int(_myTabList.size()))
+  if(_tabID >= 0 && _tabID < static_cast<int>(_myTabList.size()))
   {
     _myTabList[_tabID].widget->cycleTab(direction);
     return true;
@@ -1086,9 +1086,9 @@ void Dialog::addDefaultsExtraOKCancelBGroup(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::TabFocus::appendFocusList(WidgetArray& list)
 {
-  int active = widget->getActiveTab();
+  const int active = widget->getActiveTab();
 
-  if(active >= 0 && active < int(focus.size()))
+  if(active >= 0 && active < static_cast<int>(focus.size()))
     Vec::append(list, focus[active].list);
 }
 
@@ -1122,8 +1122,8 @@ bool Dialog::getDynamicBounds(uInt32& w, uInt32& h) const
   }
   else
   {
-    w = uInt32(0.95 * r.w() / scale);
-    h = uInt32(0.95 * r.h() / scale);
+    w = static_cast<uInt32>(0.95 * r.w() / scale);
+    h = static_cast<uInt32>(0.95 * r.h() / scale);
     return true;
   }
 }
@@ -1144,7 +1144,7 @@ bool Dialog::shouldResize(uInt32& w, uInt32& h) const
 
   // returns true if the current size is larger than the allowed size or
   //  if the current size is smaller than the allowed and wanted size
-  return (uInt32(_w) > w || uInt32(_h) > h ||
-          (uInt32(_w) < w && uInt32(_w) < _max_w) ||
-          (uInt32(_h) < h && uInt32(_h) < _max_h));
+  return (static_cast<uInt32>(_w) > w || static_cast<uInt32>(_h) > h ||
+         (static_cast<uInt32>(_w) < w && static_cast<uInt32>(_w) < _max_w) ||
+         (static_cast<uInt32>(_h) < h && static_cast<uInt32>(_h) < _max_h));
 }

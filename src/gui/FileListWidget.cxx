@@ -66,7 +66,7 @@ void FileListWidget::setDirectory(const FilesystemNode& node,
   // History is in reverse order; we need to fix that
   std::reverse(_history.begin(), _history.end());
   _currentHistory = std::prev(_history.end(), 1);
-  _historyHome = int(_currentHistory - _history.begin());
+  _historyHome = static_cast<int>(_currentHistory - _history.begin());
 
   // Finally, go to this location
   setLocation(_node, _selectedFile);
@@ -341,7 +341,7 @@ bool FileListWidget::handleText(char text)
   // Quick selection mode: Go to first list item starting with this key
   // (or a substring accumulated from the last couple key presses).
   // Only works in a useful fashion if the list entries are sorted.
-  uInt64 time = TimerManager::getTicks() / 1000;
+  const uInt64 time = TimerManager::getTicks() / 1000;
 
   if(_quickSelectTime < time)
     _quickSelectStr = text;
@@ -671,7 +671,7 @@ const FileListWidget::Icon* FileListWidget::getIcon(int i) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int FileListWidget::iconWidth() const
 {
-  bool smallIcon = _lineHeight < 26;
+  const bool smallIcon = _lineHeight < 26;
 
   return smallIcon ? 16 + 4: 24 + 6;
 }
@@ -690,7 +690,7 @@ string FileListWidget::getToolTip(const Common::Point& pos) const
 
   const string value = _list[idx];
 
-  if(uInt32(_font.getStringWidth(value)) > rect.w() - iconWidth())
+  if(static_cast<uInt32>(_font.getStringWidth(value)) > rect.w() - iconWidth())
     return _toolTipText + value;
   else
     return _toolTipText;

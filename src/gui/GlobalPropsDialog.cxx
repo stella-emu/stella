@@ -39,7 +39,6 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap();
-  int xpos, ypos;
   int lwidth = font.getStringWidth("Right difficulty "),
       pwidth = font.getStringWidth("CM (SpectraVideo CompuMate)");
   WidgetArray wid;
@@ -51,11 +50,11 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
                               49 * infofont.getMaxCharWidth());
   _h = _th + 11 * (lineHeight + VGAP) + 3 * infofont.getLineHeight() + VGAP * 12 + buttonHeight + VBORDER * 2;
 
-  xpos = HBORDER;  ypos = VBORDER + _th;
+  int xpos = HBORDER, ypos = VBORDER + _th;
 
   // Bankswitch type
   new StaticTextWidget(this, font, xpos, ypos+1, "Bankswitch type");
-  for(uInt32 i = 0; i < uInt32(Bankswitch::Type::NumSchemes); ++i)
+  for(uInt32 i = 0; i < static_cast<uInt32>(Bankswitch::Type::NumSchemes); ++i)
     VarList::push_back(items, Bankswitch::BSList[i].desc, Bankswitch::BSList[i].name);
   myBSType = new PopUpWidget(this, font, xpos+lwidth, ypos,
                              pwidth, lineHeight, items, "");
@@ -139,9 +138,9 @@ int GlobalPropsDialog::addHoldWidgets(const GUI::Font& font, int x, int y,
                                       WidgetArray& wid)
 {
   const int fontWidth  = Dialog::fontWidth(),
-            //fontHeight = Dialog::fontHeight(),
             VGAP       = Dialog::vGap();
-  int xpos = x, ypos = y, xdiff = CheckboxWidget::boxSize(font) - 9;
+  int xpos = x, ypos = y;
+  const int xdiff = CheckboxWidget::boxSize(font) - 9;
 
   // Left joystick
   StaticTextWidget* t = new StaticTextWidget(this, font, xpos, ypos + 2, "Left joy");
@@ -158,7 +157,7 @@ int GlobalPropsDialog::addHoldWidgets(const GUI::Font& font, int x, int y,
   ypos += myJoy[kJ0Down]->getHeight() * 2 + VGAP * 2;
   myJoy[kJ0Fire] = new CheckboxWidget(this, font, xpos, ypos, "Fire", kJ0Fire);
 
-  int final_y = ypos;
+  const int final_y = ypos;
   xpos = _w / 3;  ypos = y;
 
   // Right joystick
@@ -201,7 +200,7 @@ int GlobalPropsDialog::addHoldWidgets(const GUI::Font& font, int x, int y,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GlobalPropsDialog::loadConfig()
 {
-  Settings& settings = instance().settings();
+  const Settings& settings = instance().settings();
 
   myBSType->setSelected(settings.getString("bs"), "AUTO");
   myLeftDiff->setSelected(settings.getString("ld"), "DEFAULT");

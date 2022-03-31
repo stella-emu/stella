@@ -21,7 +21,7 @@
 
 #include "WhatsNewDialog.hxx"
 
-constexpr int MAX_CHARS = 64; // maximum number of chars per line
+static constexpr int MAX_CHARS = 64; // maximum number of chars per line
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent,

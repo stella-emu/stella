@@ -164,7 +164,7 @@ void NavigationWidget::PathWidget::setPath(const string& path)
   while(node.hasParent() && w >= fontWidth * 1)
   {
     const string& name = node.getName();
-    int l = int(name.length() + 2);
+    int l = static_cast<int>(name.length() + 2);
 
     if(name.back() == FilesystemNode::PATH_SEPARATOR)
       l--;
@@ -195,7 +195,7 @@ void NavigationWidget::PathWidget::setPath(const string& path)
       if(it + 1 != paths.rend())
         name += " >";
     }
-    const int width = int(name.length() + 1) * fontWidth;
+    const int width = static_cast<int>(name.length() + 1) * fontWidth;
 
     if(myFolderList.size() > idx)
     {
@@ -209,7 +209,7 @@ void NavigationWidget::PathWidget::setPath(const string& path)
       // Add new widget to list
       FolderLinkWidget* s = new FolderLinkWidget(_boss, _font, x, _y,
         width, _h, name, curPath);
-      s->setID(uInt32(idx));
+      s->setID(static_cast<uInt32>(idx));
       s->setTarget(myTarget);
       myFolderList.push_back(s);
       _boss->addFocusWidget(s);

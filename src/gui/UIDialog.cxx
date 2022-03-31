@@ -53,8 +53,6 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap(),
             INDENT       = Dialog::indent();
-  int xpos, ypos, tabID;
-  int lwidth, pwidth, bwidth;
   WidgetArray wid;
   VariantList items;
   const Common::Size& ds = instance().frameBuffer().desktopSize(BufferType::Launcher);
@@ -73,10 +71,10 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   //////////////////////////////////////////////////////////
   // 1) Misc. options
   wid.clear();
-  tabID = myTab->addTab(" Look & Feel ");
-  lwidth = font.getStringWidth("Controller repeat delay ");
-  pwidth = font.getStringWidth("Right bottom");
-  xpos = HBORDER;  ypos = VBORDER;
+  int tabID = myTab->addTab(" Look & Feel ");
+  int lwidth = font.getStringWidth("Controller repeat delay ");
+  int pwidth = font.getStringWidth("Right bottom");
+  int xpos = HBORDER, ypos = VBORDER;
 
   // UI Palette
   ypos += 1;
@@ -131,7 +129,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
 
   // Delay between quick-selecting characters in ListWidget
   xpos = HBORDER; ypos += lineHeight + VGAP * 4;
-  int swidth = myPalettePopup->getWidth() - lwidth;
+  const int swidth = myPalettePopup->getWidth() - lwidth;
   myListDelaySlider = new SliderWidget(myTab, font, xpos, ypos, swidth, lineHeight,
                                       "List input delay        ", 0, kListDelay,
                                       font.getStringWidth("1 second"));
@@ -206,7 +204,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   xpos = HBORDER;  ypos = VBORDER;
 
   // ROM path
-  bwidth = font.getStringWidth("ROM path" + ELLIPSIS) + 20 + 1;
+  int bwidth = font.getStringWidth("ROM path" + ELLIPSIS) + 20 + 1;
   ButtonWidget* romButton =
     new ButtonWidget(myTab, font, xpos, ypos, bwidth, buttonHeight,
                      "ROM path" + ELLIPSIS, kChooseRomDirCmd);
@@ -379,8 +377,8 @@ void UIDialog::loadConfig()
   myLauncherButtonsWidget->setState(settings.getBool("launcherbuttons"));
 
   // ROM launcher info viewer
-  float zoom = instance().settings().getFloat("romviewer");
-  int percentage = zoom * TIAConstants::viewableWidth * 100 / w;
+  const float zoom = instance().settings().getFloat("romviewer");
+  const int percentage = zoom * TIAConstants::viewableWidth * 100 / w;
   myRomViewerSize->setValue(percentage);
 
   // ROM launcher info viewer image path
@@ -469,8 +467,8 @@ void UIDialog::saveConfig()
   settings.setValue("launcherbuttons", myLauncherButtonsWidget->getState());
 
   // ROM launcher info viewer
-  int w = myLauncherWidthSlider->getValue();
-  float zoom = myRomViewerSize->getValue() * w / 100.F / TIAConstants::viewableWidth;
+  const int w = myLauncherWidthSlider->getValue();
+  const float zoom = myRomViewerSize->getValue() * w / 100.F / TIAConstants::viewableWidth;
   settings.setValue("romviewer", zoom);
 
   // ROM launcher info viewer image path
@@ -546,8 +544,8 @@ void UIDialog::setDefaults()
       const Common::Size& size = instance().frameBuffer().desktopSize(BufferType::Launcher);
 
       myRomPath->setText(node.getShortPath());
-      uInt32 w = std::min<uInt32>(size.w, 900);
-      uInt32 h = std::min<uInt32>(size.h, 600);
+      const uInt32 w = std::min<uInt32>(size.w, 900);
+      const uInt32 h = std::min<uInt32>(size.h, 600);
       myLauncherWidthSlider->setValue(w);
       myLauncherHeightSlider->setValue(h);
       myLauncherFontPopup->setSelected("medium", "");
@@ -665,9 +663,9 @@ void UIDialog::handleLauncherSize()
 {
   // Determine minimal launcher sizebased on the default font
   //  So what fits with default font should fit for any font.
-  FontDesc fd = instance().frameBuffer().getFontDesc(myDialogFontPopup->getSelectedTag().toString());
-  int w = std::max(FBMinimum::Width, FBMinimum::Width * fd.maxwidth / GUI::stellaMediumDesc.maxwidth);
-  int h = std::max(FBMinimum::Height, FBMinimum::Height * fd.height / GUI::stellaMediumDesc.height);
+  const FontDesc fd = instance().frameBuffer().getFontDesc(myDialogFontPopup->getSelectedTag().toString());
+  const int w = std::max(FBMinimum::Width, FBMinimum::Width * fd.maxwidth / GUI::stellaMediumDesc.maxwidth);
+  const int h = std::max(FBMinimum::Height, FBMinimum::Height * fd.height / GUI::stellaMediumDesc.height);
   const Common::Size& ds = instance().frameBuffer().desktopSize(BufferType::Launcher);
 
   myLauncherWidthSlider->setMinValue(w);
@@ -727,8 +725,8 @@ void UIDialog::handleLauncherSize()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void UIDialog::handleRomViewer()
 {
-  int size = myRomViewerSize->getValue();
-  bool enable = size > myRomViewerSize->getMinValue();
+  const int size = myRomViewerSize->getValue();
+  const bool enable = size > myRomViewerSize->getMinValue();
 
   if(enable)
   {

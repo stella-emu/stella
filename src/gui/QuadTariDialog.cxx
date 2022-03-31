@@ -35,11 +35,10 @@ QuadTariDialog::QuadTariDialog(GuiObject* boss, const GUI::Font& font, int max_w
             VBORDER    = Dialog::vBorder(),
             HBORDER    = Dialog::hBorder(),
             VGAP       = Dialog::vGap();
-  int xpos, ypos;
   WidgetArray wid;
   VariantList ctrls;
 
-  xpos = HBORDER; ypos = VBORDER + _th;
+  int xpos = HBORDER, ypos = VBORDER + _th;
 
   ctrls.clear();
   //VarList::push_back(ctrls, "Auto-detect", "AUTO");

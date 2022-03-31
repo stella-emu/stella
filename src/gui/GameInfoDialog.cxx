@@ -110,20 +110,19 @@ void GameInfoDialog::addEmulationTab()
             VBORDER    = Dialog::vBorder(),
             HBORDER    = Dialog::hBorder(),
             VGAP       = Dialog::vGap();
-  int ypos, pwidth, tabID;
   WidgetArray wid;
   VariantList items;
-  StaticTextWidget* t;
+  StaticTextWidget* t = nullptr;
 
   // 1) Emulation properties
-  tabID = myTab->addTab("Emulation", TabWidget::AUTO_WIDTH);
+  int tabID = myTab->addTab("Emulation", TabWidget::AUTO_WIDTH);
 
-  ypos = VBORDER;
+  int ypos = VBORDER;
 
   t = new StaticTextWidget(myTab, _font, HBORDER, ypos + 1, "Type (*)      ");
-  pwidth = _font.getStringWidth("CM (SpectraVideo CompuMate)");
+  int pwidth = _font.getStringWidth("CM (SpectraVideo CompuMate)");
   items.clear();
-  for(uInt32 i = 0; i < uInt32(Bankswitch::Type::NumSchemes); ++i)
+  for(uInt32 i = 0; i < static_cast<uInt32>(Bankswitch::Type::NumSchemes); ++i)
     VarList::push_back(items, Bankswitch::BSList[i].desc, Bankswitch::BSList[i].name);
   myBSType = new PopUpWidget(myTab, _font, t->getRight() + fontWidth, ypos,
                              pwidth, lineHeight, items);
@@ -205,14 +204,14 @@ void GameInfoDialog::addConsoleTab()
             VBORDER    = Dialog::vBorder(),
             HBORDER    = Dialog::hBorder(),
             VGAP       = Dialog::vGap();
-  int xpos, ypos, lwidth, tabID;
   WidgetArray wid;
 
   // 2) Console properties
-  tabID = myTab->addTab(" Console ", TabWidget::AUTO_WIDTH);
+  int tabID = myTab->addTab(" Console ", TabWidget::AUTO_WIDTH);
 
-  xpos = HBORDER; ypos = VBORDER;
-  lwidth = _font.getStringWidth(GUI::RIGHT_DIFFICULTY + " ");
+  const int xpos = HBORDER;
+  int ypos = VBORDER;
+  int lwidth = _font.getStringWidth(GUI::RIGHT_DIFFICULTY + " ");
 
   new StaticTextWidget(myTab, _font, xpos, ypos + 1, "TV type");
   myTVTypeGroup = new RadioButtonGroup();
@@ -263,13 +262,12 @@ void GameInfoDialog::addControllersTab()
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap(),
             INDENT       = Dialog::indent();
-  int xpos, ypos, pwidth, tabID;
   VariantList items, ctrls;
   WidgetArray wid;
 
   // 3) Controller properties
   wid.clear();
-  tabID = myTab->addTab("Controllers", TabWidget::AUTO_WIDTH);
+  int tabID = myTab->addTab("Controllers", TabWidget::AUTO_WIDTH);
 
   items.clear();
   VarList::push_back(items, "Auto-detect", "AUTO");
@@ -291,8 +289,8 @@ void GameInfoDialog::addControllersTab()
   VarList::push_back(items, "MindLink", "MINDLINK");
   VarList::push_back(items, "QuadTari", "QUADTARI");
 
-  xpos = HBORDER; ypos = VBORDER;
-  pwidth = _font.getStringWidth("Paddles_IAxis");
+  int xpos = HBORDER, ypos = VBORDER;
+  int pwidth = _font.getStringWidth("Paddles_IAxis");
   myLeftPortLabel = new StaticTextWidget(myTab, _font, HBORDER, ypos+1, "Left port        ");
   myLeftPort = new PopUpWidget(myTab, _font, myLeftPortLabel->getRight(),
                                myLeftPortLabel->getTop()-1,
@@ -414,16 +412,16 @@ void GameInfoDialog::addCartridgeTab()
             HBORDER    = Dialog::hBorder(),
             VGAP       = Dialog::vGap(),
             HGAP       = Dialog::fontWidth() / 4;
-  int xpos, ypos, lwidth, fwidth, tabID;
   WidgetArray wid;
   VariantList items;
 
   wid.clear();
-  tabID = myTab->addTab("Cartridge", TabWidget::AUTO_WIDTH);
+  int tabID = myTab->addTab("Cartridge", TabWidget::AUTO_WIDTH);
 
-  xpos = HBORDER; ypos = VBORDER;
-  lwidth = _font.getStringWidth("Manufacturer ");
-  fwidth = _w - lwidth - HBORDER * 2 - 2;
+  const int xpos = HBORDER;
+  int ypos = VBORDER;
+  int lwidth = _font.getStringWidth("Manufacturer ");
+  const int fwidth = _w - lwidth - HBORDER * 2 - 2;
   new StaticTextWidget(myTab, _font, xpos, ypos + 1, lwidth, fontHeight, "Name");
   myName = new EditTextWidget(myTab, _font, xpos + lwidth, ypos - 1,
                               fwidth, lineHeight, "");
@@ -486,11 +484,10 @@ void GameInfoDialog::addHighScoresTab()
             HBORDER    = Dialog::hBorder(),
             VGAP       = Dialog::vGap(),
             INDENT     = Dialog::indent();
-  int xpos, ypos, lwidth, pwidth, tabID;
   WidgetArray wid;
   VariantList items;
 
-  tabID = myTab->addTab("High Scores", TabWidget::AUTO_WIDTH);
+  int tabID = myTab->addTab("High Scores", TabWidget::AUTO_WIDTH);
 
   EditableWidget::TextFilter fAddr = [](char c) {
     return (c >= 'a' && c <= 'f') || (c >= '0' && c <= '9');
@@ -503,8 +500,8 @@ void GameInfoDialog::addHighScoresTab()
     return (c >= 'a' && c <= 'z') || (c >= ' ' && c < ',') || (c > ',' && c < '@');
   };
 
-  xpos = HBORDER; ypos = VBORDER;
-  lwidth = _font.getStringWidth("Variations ");
+  int xpos = HBORDER, ypos = VBORDER;
+  int lwidth = _font.getStringWidth("Variations ");
 
   myHighScores = new CheckboxWidget(myTab, _font, xpos, ypos + 1, "Enable High Scores",
                                     kHiScoresChanged);
@@ -516,12 +513,12 @@ void GameInfoDialog::addHighScoresTab()
 
   ypos += lineHeight + VGAP;*/
 
-  pwidth = _font.getStringWidth("4"); // popup
+  int pwidth = _font.getStringWidth("4"); // popup
 
-  int awidth = EditTextWidget::calcWidth(_font, 4); // addresses
+  const int awidth = EditTextWidget::calcWidth(_font, 4); // addresses
   int vwidth = EditTextWidget::calcWidth(_font, 3); // values
-  int swidth = EditTextWidget::calcWidth(_font, HSM::MAX_SPECIAL_NAME); // special
-  int fwidth = EditTextWidget::calcWidth(_font, 3); // variants
+  const int swidth = EditTextWidget::calcWidth(_font, HSM::MAX_SPECIAL_NAME); // special
+  const int fwidth = EditTextWidget::calcWidth(_font, 3); // variants
 
   myVariationsLabel = new StaticTextWidget(myTab, _font, xpos, ypos + 1, lwidth, fontHeight,
                                            "Variations");
@@ -712,7 +709,7 @@ void GameInfoDialog::loadEmulationProperties(const Properties& props)
     if(instance().hasConsole())
     {
       string bs = instance().console().about().BankSwitch;
-      size_t pos = bs.find_first_of('*');
+      const size_t pos = bs.find_first_of('*');
       // remove '*':
       if(pos != string::npos)
         bs = bs.substr(0, pos) + bs.substr(pos + 1);
@@ -741,7 +738,7 @@ void GameInfoDialog::loadEmulationProperties(const Properties& props)
   VarList::push_back(items, "Auto", "AUTO");
   if(instance().hasConsole())
   {
-    uInt16 numBanks = instance().console().cartridge().romBankCount();
+    const uInt16 numBanks = instance().console().cartridge().romBankCount();
 
     for(uInt16 i = 0; i < numBanks; ++i)
       VarList::push_back(items, i, i);
@@ -772,8 +769,8 @@ void GameInfoDialog::loadEmulationProperties(const Properties& props)
     myFormatDetected->setLabel("");
 
   // if phosphor is always enabled, disable game specific phosphor settings
-  bool alwaysPhosphor = instance().settings().getString("tv.phosphor") == "always";
-  bool usePhosphor = props.get(PropType::Display_Phosphor) == "YES";
+  const bool alwaysPhosphor = instance().settings().getString("tv.phosphor") == "always";
+  const bool usePhosphor = props.get(PropType::Display_Phosphor) == "YES";
   myPhosphor->setState(usePhosphor);
   myPhosphor->setEnabled(!alwaysPhosphor);
   if (alwaysPhosphor)
@@ -786,7 +783,7 @@ void GameInfoDialog::loadEmulationProperties(const Properties& props)
   myPPBlend->setValue(stringToInt(blend));
 
   // set vertical center
-  Int32 vcenter = stringToInt(props.get(PropType::Display_VCenter));
+  const Int32 vcenter = stringToInt(props.get(PropType::Display_VCenter));
   myVCenter->setValueLabel(vcenter);
   myVCenter->setValue(vcenter);
   myVCenter->setValueUnit(vcenter ? "px" : "");
@@ -823,7 +820,7 @@ void GameInfoDialog::loadControllerProperties(const Properties& props)
   istringstream m_axis(props.get(PropType::Controller_MouseAxis));
   string m_control, m_range;
   m_axis >> m_control;
-  bool autoAxis = equalsIgnoreCase(m_control, "AUTO");
+  const bool autoAxis = equalsIgnoreCase(m_control, "AUTO");
   myMouseControl->setState(!autoAxis);
   if(autoAxis)
   {
@@ -867,8 +864,8 @@ void GameInfoDialog::loadCartridgeProperties(const Properties& props)
 void GameInfoDialog::loadHighScoresProperties(const Properties& props)
 {
   HSM::ScoresProps info;
-  uInt32 numVariations;
-  bool enable = instance().highScores().get(props, numVariations, info);
+  uInt32 numVariations = 0;
+  const bool enable = instance().highScores().get(props, numVariations, info);
 
   myHighScores->setState(enable);
 
@@ -922,7 +919,7 @@ void GameInfoDialog::saveProperties()
   myGameProperties.set(PropType::Display_Phosphor, myPhosphor->getState() ? "YES" : "NO");
   myGameProperties.set(PropType::Display_PPBlend, myPPBlend->getValueLabel() == "Off" ? "0" :
                        myPPBlend->getValueLabel());
-  Int32 vcenter = myVCenter->getValue();
+  const Int32 vcenter = myVCenter->getValue();
 
   myGameProperties.set(PropType::Display_VCenter, to_string(vcenter));
   myGameProperties.set(PropType::Cart_Sound, mySound->getState() ? "STEREO" : "MONO");
@@ -1108,7 +1105,7 @@ void GameInfoDialog::setDefaults()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::updateControllerStates()
 {
-  bool swapPorts = mySwapPorts->getState();
+  const bool swapPorts = mySwapPorts->getState();
   bool autoDetect = false;
   ByteBuffer image;
   string md5 = myGameProperties.get(PropType::Cart_MD5);
@@ -1164,9 +1161,9 @@ void GameInfoDialog::updateControllerStates()
   bool enableEEEraseButton = false;
 
   // Compumate bankswitching scheme doesn't allow to select controllers
-  bool enableSelectControl = myBSType->getSelectedTag() != "CM";
+  const bool enableSelectControl = myBSType->getSelectedTag() != "CM";
   // Enable Swap Paddles checkbox only for paddle games
-  bool enablePaddles = BSPF::startsWithIgnoreCase(contrLeft, "PADDLES") ||
+  const bool enablePaddles = BSPF::startsWithIgnoreCase(contrLeft, "PADDLES") ||
     BSPF::startsWithIgnoreCase(contrRight, "PADDLES") ||
     BSPF::startsWithIgnoreCase(myLeftPortDetected->getLabel(), "Paddles") ||
     BSPF::startsWithIgnoreCase(myRightPortDetected->getLabel(), "Paddles");
@@ -1177,10 +1174,10 @@ void GameInfoDialog::updateControllerStates()
     const Controller& rport = instance().console().rightController();
 
     // we only enable the button if we have a valid previous and new controller.
-    bool enableBtnForLeft =
+    const bool enableBtnForLeft =
       (contrLeft == "AUTO" || contrLeft == "SAVEKEY" || contrLeft == "ATARIVOX") &&
       (lport.type() == Controller::Type::SaveKey || lport.type() == Controller::Type::AtariVox);
-    bool enableBtnForRight =
+    const bool enableBtnForRight =
       (contrRight == "AUTO" || contrRight == "SAVEKEY" || contrRight == "ATARIVOX") &&
       (rport.type() == Controller::Type::SaveKey || rport.type() == Controller::Type::AtariVox);
     enableEEEraseButton = enableBtnForLeft || enableBtnForRight;
@@ -1208,7 +1205,7 @@ void GameInfoDialog::updateControllerStates()
   myPaddleXCenter->setEnabled(enablePaddles);
   myPaddleYCenter->setEnabled(enablePaddles);
 
-  bool enableMouse = enablePaddles ||
+  const bool enableMouse = enablePaddles ||
     BSPF::startsWithIgnoreCase(contrLeft, "Driving") ||
     BSPF::startsWithIgnoreCase(contrRight, "Driving") ||
     BSPF::startsWithIgnoreCase(contrLeft, "MindLink") ||
@@ -1246,7 +1243,7 @@ void GameInfoDialog::eraseEEPROM()
 void GameInfoDialog::updateLink()
 {
   string link = myUrl->getText();
-  bool enable = startsWithIgnoreCase(link, "http://")
+  const bool enable = startsWithIgnoreCase(link, "http://")
     || startsWithIgnoreCase(link, "https://")
     || startsWithIgnoreCase(link, "www.");
 
@@ -1256,12 +1253,12 @@ void GameInfoDialog::updateLink()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::updateHighScoresWidgets()
 {
-  bool enable = myHighScores->getState();
-  bool enableVars = enable && myVariations->getText() > "1";
-  bool enableSpecial = enable && !mySpecialName->getText().empty();
-  bool enableConsole = instance().hasConsole();
-  uInt32 numAddr = instance().highScores().numAddrBytes(myScoreDigits->getSelected() + 1,
-                                                        myTrailingZeroes->getSelected());
+  const bool enable = myHighScores->getState();
+  const bool enableVars = enable && myVariations->getText() > "1";
+  const bool enableSpecial = enable && !mySpecialName->getText().empty();
+  const bool enableConsole = instance().hasConsole();
+  const uInt32 numAddr = instance().highScores().numAddrBytes(
+      myScoreDigits->getSelected() + 1, myTrailingZeroes->getSelected());
 
   // enable widgets
   //myARMGame->setEnabled(enable);
@@ -1317,7 +1314,7 @@ void GameInfoDialog::updateHighScoresWidgets()
                 mySpecialZeroBased->getState());
 
   // update score RAM values and resulting scores
-  HSM::ScoreAddresses scoreAddr;
+  HSM::ScoreAddresses scoreAddr{};
 
   for(uInt32 a = 0; a < HSM::MAX_SCORE_ADDR; ++a)
   {
@@ -1331,14 +1328,14 @@ void GameInfoDialog::updateHighScoresWidgets()
       myScoreAddressVal[a]->setText("");
   }
 
-  Int32 score = instance().highScores().score(numAddr, myTrailingZeroes->getSelected(),
-                                              myScoreBCD->getState(), scoreAddr);
+  const Int32 score = instance().highScores().score(numAddr, myTrailingZeroes->getSelected(),
+                                                    myScoreBCD->getState(), scoreAddr);
 
   myCurrentScore->setLabel(instance().highScores().formattedScore(score));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void GameInfoDialog::setAddressVal(EditTextWidget* addressWidget, EditTextWidget* valWidget,
+void GameInfoDialog::setAddressVal(const EditTextWidget* addressWidget, EditTextWidget* valWidget,
                                    bool isBCD, bool zeroBased, uInt8 maxVal)
 {
   string strAddr;
@@ -1349,20 +1346,18 @@ void GameInfoDialog::setAddressVal(EditTextWidget* addressWidget, EditTextWidget
 
   if (instance().hasConsole() && valWidget->isEnabled())
   {
-    uInt16 addr;
-    uInt8 val;
     ostringstream ss;
 
     // convert to number and read from memory
-    addr = stringToIntBase16(strAddr, HSM::DEFAULT_ADDRESS);
-    val = instance().highScores().peek(addr);
+    const uInt16 addr = stringToIntBase16(strAddr, HSM::DEFAULT_ADDRESS);
+    uInt8 val = instance().highScores().peek(addr);
     val = instance().highScores().convert(val, maxVal, isBCD, zeroBased);
 
     // format output and display in value widget
     // if (isBCD)
     //  ss << hex;
     ss << right // << setw(2) << setfill(' ')
-      << uppercase << uInt16(val);
+      << uppercase << static_cast<uInt16>(val);
     valWidget->setText(ss.str());
   }
   else
@@ -1422,11 +1417,11 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kQuadTariPressed:
     {
-      bool enableLeft =
+      const bool enableLeft =
         BSPF::startsWithIgnoreCase(myLeftPort->getSelectedTag().toString(), "QUADTARI") ||
         BSPF::startsWithIgnoreCase(myLeftPortDetected->getLabel(), "QT") ||
         BSPF::startsWithIgnoreCase(myLeftPortDetected->getLabel(), "QUADTARI");
-      bool enableRight =
+      const bool enableRight =
         BSPF::startsWithIgnoreCase(myRightPort->getSelectedTag().toString(), "QUADTARI") ||
         BSPF::startsWithIgnoreCase(myRightPortDetected->getLabel(), "QT") ||
         BSPF::startsWithIgnoreCase(myRightPortDetected->getLabel(), "QUADTARI");
@@ -1444,7 +1439,7 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kPhosphorChanged:
     {
-      bool status = myPhosphor->getState();
+      const bool status = myPhosphor->getState();
       myPPBlend->setEnabled(status);
       break;
     }
@@ -1479,7 +1474,7 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kMCtrlChanged:
     {
-      bool state = myMouseControl->getState();
+      const bool state = myMouseControl->getState();
       myMouseX->setEnabled(state);
       myMouseY->setEnabled(state);
       break;

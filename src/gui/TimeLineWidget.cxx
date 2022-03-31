@@ -25,8 +25,8 @@
 
 #include "TimeLineWidget.hxx"
 
-const int HANDLE_W = 3;
-const int HANDLE_H = 3; // size above/below the slider
+static constexpr int HANDLE_W = 3;
+static constexpr int HANDLE_H = 3; // size above/below the slider
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TimeLineWidget::TimeLineWidget(GuiObject* boss, const GUI::Font& font,
@@ -86,7 +86,7 @@ void TimeLineWidget::setStepValues(const IntArray& steps)
     if(steps.size() > _stepValue.capacity())
       _stepValue.reserve(2 * steps.size());
 
-    double scale = (_w - _labelWidth - 2 - HANDLE_W) / double(steps.back());
+    const double scale = (_w - _labelWidth - 2 - HANDLE_W) / static_cast<double>(steps.back());
 
     // Skip the very last value; we take care of it outside the end of the loop
     for(uInt32 i = 0; i < steps.size() - 1; ++i)
@@ -149,10 +149,10 @@ void TimeLineWidget::drawWidget(bool hilite)
                  isEnabled() ? kTextColor : kColor, TextAlign::Left);
 
   // Frame the handle
-  const int HANDLE_W2 = (HANDLE_W + 1) / 2;
-  int p = valueToPos(_value),
-    x = _x + _labelWidth + HANDLE_W2,
-    w = _w - _labelWidth - HANDLE_W;
+  constexpr int HANDLE_W2 = (HANDLE_W + 1) / 2;
+  const int p = valueToPos(_value),
+            x = _x + _labelWidth + HANDLE_W2,
+            w = _w - _labelWidth - HANDLE_W;
   s.hLine(x + p - HANDLE_W2, _y + 0, x + p - HANDLE_W2 + HANDLE_W, kColorInfo);
   s.vLine(x + p - HANDLE_W2, _y + 1, _y + _h - 2, kColorInfo);
   s.hLine(x + p - HANDLE_W2 + 1, _y + _h - 1, x + p - HANDLE_W2 + 1 + HANDLE_W, kBGColor);
@@ -171,13 +171,13 @@ void TimeLineWidget::drawWidget(bool hilite)
              !isEnabled() ? kColor : hilite ? kSliderColorHi : kSliderColor);
 
   // Add 4 tickmarks for 5 intervals
-  int numTicks = std::min(5, int(_stepValue.size()));
+  const int numTicks = std::min(5, static_cast<int>(_stepValue.size()));
   for(int i = 1; i < numTicks; ++i)
   {
-    int idx = int((_stepValue.size() * i + numTicks / 2) / numTicks);
+    const int idx = static_cast<int>((_stepValue.size() * i + numTicks / 2) / numTicks);
     if(idx > 1)
     {
-      int xt = x + valueToPos(idx - 1);
+      const int xt = x + valueToPos(idx - 1);
       ColorId color = kNone;
 
       if(isEnabled())

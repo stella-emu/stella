@@ -49,7 +49,7 @@ void EditableWidget::setText(const string& str, bool changed)
   _backupString = str;
   // Filter input string
   _editString = "";
-  for(char c: str)
+  for(const auto c: str)
     if(_filter(tolower(c)))
       _editString.push_back(c);
   if(_maxLen)
@@ -61,7 +61,7 @@ void EditableWidget::setText(const string& str, bool changed)
   myUndoHandler->reset();
   myUndoHandler->doo(_editString);
 
-  _caretPos = int(_editString.size());
+  _caretPos = static_cast<int>(_editString.size());
   _selectSize = 0;
 
   _editScrollOffset = (_font.getStringWidth(_editString) - (getEditRect().w()));
@@ -125,7 +125,7 @@ void EditableWidget::lostFocusWidget()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int EditableWidget::toCaretPos(int x) const
 {
-  int i;
+  int i = 0;
 
   x += caretOfs();
   for(i = 0; i < static_cast<int>(_editString.size()); ++i)
@@ -198,7 +198,7 @@ void EditableWidget::handleMouseMoved(int x, int y)
 {
   if(isEditable() && _isDragging)
   {
-    int deltaPos = toCaretPos(x) - _caretPos;
+    const int deltaPos = toCaretPos(x) - _caretPos;
 
     if(deltaPos)
     {
@@ -226,7 +226,7 @@ void EditableWidget::handleCommand(CommandSender* sender, int cmd, int data, int
       {
         // Copy everything if widget is not editable
         _caretPos = 0;
-        _selectSize = int(_editString.length());
+        _selectSize = static_cast<int>(_editString.length());
       }
       copySelectedText();
     }
@@ -282,7 +282,7 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
     return false;
 
   bool handled = true;
-  Event::Type event = instance().eventHandler().eventForKey(EventMode::kEditMode, key, mod);
+  const Event::Type event = instance().eventHandler().eventForKey(EventMode::kEditMode, key, mod);
 
   switch(event)
   {
@@ -297,7 +297,7 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
     case Event::MoveRightChar:
       if(_selectSize)
         handled = setCaretPos(selectEndPos());
-      else if(_caretPos < int(_editString.size()))
+      else if(_caretPos < static_cast<int>(_editString.size()))
         handled = setCaretPos(_caretPos + 1);
       _selectSize = 0;
       break;
@@ -318,7 +318,7 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
       break;
 
     case Event::MoveEnd:
-      handled = setCaretPos(int(_editString.size()));
+      handled = setCaretPos(static_cast<int>(_editString.size()));
       _selectSize = 0;
       break;
 
@@ -328,7 +328,7 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
       break;
 
     case Event::SelectRightChar:
-      if(_caretPos < int(_editString.size()))
+      if(_caretPos < static_cast<int>(_editString.size()))
         handled = moveCaretPos(+1);
       break;
 
@@ -345,12 +345,12 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
       break;
 
     case Event::SelectEnd:
-      handled = moveCaretPos(int(_editString.size()) - _caretPos);
+      handled = moveCaretPos(static_cast<int>(_editString.size()) - _caretPos);
       break;
 
     case Event::SelectAll:
-      if(setCaretPos(int(_editString.size())))
-        _selectSize = -int(_editString.size());
+      if(setCaretPos(static_cast<int>(_editString.size())))
+        _selectSize = -static_cast<int>(_editString.size());
       break;
 
     case Event::Backspace:
@@ -487,8 +487,8 @@ void EditableWidget::drawCaretSelection()
     int x = editRect.x();
     int y = editRect.y();
     int w = editRect.w();
-    int h = editRect.h();
-    int wt = int(text.length()) * _boss->dialog().fontWidth() + 1;
+    const int h = editRect.h();
+    int wt = static_cast<int>(text.length()) * _boss->dialog().fontWidth() + 1;
     int dx = selectStartPos() * _boss->dialog().fontWidth() - _editScrollOffset;
 
     if(dx < 0)
@@ -518,7 +518,7 @@ void EditableWidget::drawCaretSelection()
     const Common::Rect& editRect = getEditRect();
     int x = editRect.x();
     int y = editRect.y();
-    ColorId color = _caretEnabled ? kTextColorHi : kTextColorInv;
+    const ColorId color = _caretEnabled ? kTextColorHi : kTextColorInv;
 
     x += getCaretOffset();
     x += _x;
@@ -564,7 +564,7 @@ bool EditableWidget::adjustOffset()
   // For some reason (differences in ScummVM event handling??),
   // this method should always return true.
 
-  int caretOfs = getCaretOffset();
+  const int caretOfs = getCaretOffset();
   const int editWidth = getEditRect().w();
 
   if (caretOfs < 0)
@@ -615,7 +615,7 @@ bool EditableWidget::killChar(int direction, bool addEdit)
   }
   else if(direction == 1)  // Delete next character (delete)
   {
-    if(_caretPos < int(_editString.size()))
+    if(_caretPos < static_cast<int>(_editString.size()))
     {
       if(_selectSize > 0)
         _selectSize--;
@@ -644,7 +644,7 @@ bool EditableWidget::killLine(int direction)
   if(direction == -1)  // erase from current position to beginning of line
     count = _caretPos;
   else if(direction == +1)  // erase from current position to end of line
-    count = int(_editString.size()) - _caretPos;
+    count = static_cast<int>(_editString.size()) - _caretPos;
 
   if(count > 0)
   {
@@ -682,7 +682,7 @@ bool EditableWidget::killWord(int direction)
   }
   else if(direction == +1)  // move to first character of next word
   {
-    while(currentPos < int(_editString.size()))
+    while(currentPos < static_cast<int>(_editString.size()))
     {
       if(currentPos && BSPF::isWhiteSpace(_editString[currentPos - 1]))
       {
@@ -737,7 +737,7 @@ bool EditableWidget::moveWord(int direction, bool select)
   }
   else if(direction == +1)  // move to first character of next word
   {
-    while (currentPos < int(_editString.size()))
+    while (currentPos < static_cast<int>(_editString.size()))
     {
       if (currentPos && BSPF::isWhiteSpace(_editString[currentPos - 1]))
       {
@@ -763,7 +763,7 @@ bool EditableWidget::markWord()
 {
   _selectSize = 0;
 
-  while(_caretPos + _selectSize < int(_editString.size()))
+  while(_caretPos + _selectSize < static_cast<int>(_editString.size()))
   {
     if(BSPF::isWhiteSpace(_editString[_caretPos + _selectSize]))
       break;
@@ -873,7 +873,7 @@ bool EditableWidget::pasteSelectedText()
   ostringstream buf;
   bool lastOk = true; // only one filler char per invalid character (block)
 
-  for(char c : pasted)
+  for(const auto c : pasted)
     if(_filter(tolower(c)))
     {
       buf << c;
@@ -888,7 +888,7 @@ bool EditableWidget::pasteSelectedText()
 
   _editString.insert(_caretPos, buf.str());
   // position cursor at the end of pasted text
-  setCaretPos(_caretPos + int(buf.str().length()));
+  setCaretPos(_caretPos + static_cast<int>(buf.str().length()));
 
   if(selected || !pasted.empty())
   {

@@ -29,6 +29,13 @@ class WhatsNewDialog : public Dialog
 
   private:
     void add(int& ypos, const string& text);
+
+  private:
+    // Following constructors and assignment operators not supported
+    WhatsNewDialog(const WhatsNewDialog&) = delete;
+    WhatsNewDialog(WhatsNewDialog&&) = delete;
+    WhatsNewDialog& operator=(const WhatsNewDialog&) = delete;
+    WhatsNewDialog& operator=(WhatsNewDialog&&) = delete;
 };
 
 #endif

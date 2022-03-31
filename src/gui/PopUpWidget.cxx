@@ -258,7 +258,7 @@ void PopUpWidget::drawWidget(bool hilite)
 {
   FBSurface& s = dialog().surface();
 
-  int x = _x + _labelWidth;
+  const int x = _x + _labelWidth;
   int w = _w - _labelWidth;
 
   // Draw the label, if any
@@ -272,7 +272,7 @@ void PopUpWidget::drawWidget(bool hilite)
     s.frameRect(x + w - (_arrowWidth * 2 - 1), _y, (_arrowWidth * 2 - 1), _h, kWidColorHi);
 
   // Fill the background
-  ColorId bgCol = isEditable() ? kWidColor : kDlgColor;
+  const ColorId bgCol = isEditable() ? kWidColor : kDlgColor;
   s.fillRect(x + 1, _y + 1, w - (_arrowWidth * 2 - 1), _h - 2,
              _changed ? kDbgChangedColor : bgCol);
   s.fillRect(x + w - (_arrowWidth * 2 - 2), _y + 1, (_arrowWidth * 2 - 3), _h - 2,
@@ -283,11 +283,11 @@ void PopUpWidget::drawWidget(bool hilite)
 
   // Draw the selected entry, if any
   const string& name = editString();
-  bool editable = isEditable();
+  const bool editable = isEditable();
 
   w -= dropDownWidth(_font);
-  TextAlign align = (_font.getStringWidth(name) > w && !editable) ?
-                     TextAlign::Right : TextAlign::Left;
+  const TextAlign align = (_font.getStringWidth(name) > w && !editable) ?
+                           TextAlign::Right : TextAlign::Left;
   adjustOffset();
   s.drawString(_font, name, x + _textOfs, _y + myTextY, w,
                !isEnabled() ? kColor : _changed ? kDbgChangedTextColor : kTextColor,

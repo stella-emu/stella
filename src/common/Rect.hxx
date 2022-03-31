@@ -36,7 +36,7 @@ struct Point
   Int32 y{0};  //!< The vertical part of the point
 
   Point() = default;
-  explicit Point(Int32 x1, Int32 y1) : x(x1), y(y1) { }
+  explicit constexpr Point(Int32 x1, Int32 y1) : x{x1}, y{y1} { }
   explicit Point(const string& p) {
     char c = '\0';
     istringstream buf(p);
@@ -59,7 +59,7 @@ struct Size
   uInt32 h{0};  //!< The height part of the size
 
   Size() = default;
-  explicit Size(uInt32 w1, uInt32 h1) : w(w1), h(h1) { }
+  explicit constexpr Size(uInt32 w1, uInt32 h1) : w{w1}, h{h1} { }
   explicit Size(const string& s) {
     char c = '\0';
     istringstream buf(s);
@@ -106,84 +106,84 @@ struct Size
 */
 struct Rect
 {
-  private:
-    //!< The point at the top left of the rectangle (part of the rect).
-    uInt32 top{0}, left{0};
-    //!< The point at the bottom right of the rectangle (not part of the rect).
-    uInt32 bottom{0}, right{0};
+private:
+  //!< The point at the top left of the rectangle (part of the rect).
+  uInt32 top{0}, left{0};
+  //!< The point at the bottom right of the rectangle (not part of the rect).
+  uInt32 bottom{0}, right{0};
 
-  public:
-    Rect() {}
-    explicit Rect(const Size& s) : bottom(s.h), right(s.w) { assert(valid()); }
-    Rect(uInt32 w, uInt32 h) : bottom(h), right(w) { assert(valid()); }
-    Rect(const Point& p, uInt32 w, uInt32 h)
-      : top(p.y), left(p.x), bottom(p.y + h), right(p.x + w) { assert(valid()); }
-    Rect(uInt32 x1, uInt32 y1, uInt32 x2, uInt32 y2) : top(y1), left(x1), bottom(y2), right(x2) { assert(valid()); }
+public:
+  Rect() {}
+  constexpr explicit Rect(const Size& s) : bottom{ s.h }, right{ s.w } { assert(valid()); }
+  constexpr Rect(uInt32 w, uInt32 h) : bottom{ h }, right{ w } { assert(valid()); }
+  constexpr Rect(const Point& p, uInt32 w, uInt32 h)
+    : top(p.y), left(p.x), bottom(p.y + h), right( p.x + w) { assert(valid()); }
+  constexpr Rect(uInt32 x1, uInt32 y1, uInt32 x2, uInt32 y2) : top{y1}, left{x1}, bottom{y2}, right{x2} { assert(valid()); }
 
-    uInt32 x() const { return left; }
-    uInt32 y() const { return top;  }
-    Point point() const { return Point(x(), y()); }
+  uInt32 x() const { return left; }
+  uInt32 y() const { return top;  }
+  Point point() const { return Point(x(), y()); }
 
-    uInt32 w() const { return right - left; }
-    uInt32 h() const { return bottom - top; }
-    Size size() const { return Size(w(), h()); }
+  uInt32 w() const { return right - left; }
+  uInt32 h() const { return bottom - top; }
+  Size size() const { return Size(w(), h()); }
 
-    void setWidth(uInt32 aWidth)   { right = left + aWidth;  }
-    void setHeight(uInt32 aHeight) { bottom = top + aHeight; }
-    void setSize(const Size& size) { setWidth(size.w); setHeight(size.h); }
+  void setWidth(uInt32 aWidth)   { right = left + aWidth;  }
+  void setHeight(uInt32 aHeight) { bottom = top + aHeight; }
+  void setSize(const Size& size) { setWidth(size.w); setHeight(size.h); }
 
-    void setBounds(uInt32 x1, uInt32 y1, uInt32 x2, uInt32 y2) {
-      top = y1;
-      left = x1;
-      bottom = y2;
-      right = x2;
-      assert(valid());
-    }
+  void setBounds(uInt32 x1, uInt32 y1, uInt32 x2, uInt32 y2) {
+    top = y1;
+    left = x1;
+    bottom = y2;
+    right = x2;
+    assert(valid());
+  }
 
-    bool valid() const {
-      return (left <= right && top <= bottom);
-    }
+  bool valid() const {
+    return (left <= right && top <= bottom);
+  }
 
-    bool empty() const {
-      return top == 0 && left == 0 && bottom == 0 && right == 0;
-    }
+  bool empty() const {
+    return top == 0 && left == 0 && bottom == 0 && right == 0;
+  }
 
-    void moveTo(uInt32 x, uInt32 y) {
-      bottom += y - top;
-      right += x - left;
-      top = y;
-      left = x;
-    }
+  void moveTo(uInt32 x, uInt32 y) {
+    bottom += y - top;
+    right += x - left;
+    top = y;
+    left = x;
+  }
 
-    void moveTo(const Point& p) {
-      moveTo(p.x, p.y);
-    }
+  void moveTo(const Point& p) {
+    moveTo(p.x, p.y);
+  }
 
-    bool contains(uInt32 x, uInt32 y) const {
-      return x >= left && y >= top && x < right && y < bottom;
-    }
+  bool contains(uInt32 x, uInt32 y) const {
+    return x >= left && y >= top && x < right && y < bottom;
+  }
 
-    // Tests whether 'r' is completely contained within this rectangle.
-    // If it isn't, then set 'x' and 'y' such that moving 'r' to this
-    // position will make it be contained.
-    bool contains(uInt32& x, uInt32& y, const Rect& r) const {
-      if(r.left < left)  x = left;
-      else if(r.right > right) x = r.left - (r.right - right);
-      if(r.top < top)  y = top;
-      else if(r.bottom > bottom) y = r.top - (r.bottom - bottom);
+  // Tests whether 'r' is completely contained within this rectangle.
+  // If it isn't, then set 'x' and 'y' such that moving 'r' to this
+  // position will make it be contained.
+  bool contains(uInt32& x, uInt32& y, const Rect& r) const {
+    if(r.left < left)  x = left;
+    else if(r.right > right) x = r.left - (r.right - right);
+    if(r.top < top)  y = top;
+    else if(r.bottom > bottom) y = r.top - (r.bottom - bottom);
 
-      return r.left != x || r.top != y;
-    }
+    return r.left != x || r.top != y;
+  }
 
-    bool operator==(const Rect& r) const {
-      return top == r.top && left == r.left && bottom == r.bottom && right == r.right;
-    }
-    bool operator!=(const Rect& r) const { return !(*this == r); }
+  bool operator==(const Rect& r) const {
+    return top == r.top && left == r.left && bottom == r.bottom && right == r.right;
+  }
+  bool operator!=(const Rect& r) const { return !(*this == r); }
 
-    friend ostream& operator<<(ostream& os, const Rect& r) {
-      os << r.point() << "," << r.size();
-      return os;
-    }
+  friend ostream& operator<<(ostream& os, const Rect& r) {
+    os << r.point() << "," << r.size();
+    return os;
+  }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

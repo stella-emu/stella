@@ -101,6 +101,13 @@ class ToolTip
     bool myTipShown{false};
     uInt32 myScale{1};
     shared_ptr<FBSurface> mySurface;
+
+  private:
+    // Following constructors and assignment operators not supported
+    ToolTip(const ToolTip&) = delete;
+    ToolTip(ToolTip&&) = delete;
+    ToolTip& operator=(const ToolTip&) = delete;
+    ToolTip& operator=(ToolTip&&) = delete;
 };
 
 #endif

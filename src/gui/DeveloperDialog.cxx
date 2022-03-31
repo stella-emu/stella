@@ -56,7 +56,6 @@ DeveloperDialog::DeveloperDialog(OSystem& osystem, DialogContainer& parent,
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap();
-  int xpos, ypos;
 
   // Set real dimensions
   setSize(53 * fontWidth + HBORDER * 2,
@@ -64,7 +63,8 @@ DeveloperDialog::DeveloperDialog(OSystem& osystem, DialogContainer& parent,
           max_w, max_h);
 
   // The tab widget
-  xpos = 2; ypos = VGAP;
+  constexpr int xpos = 2;
+  const int ypos = VGAP;
   myTab = new TabWidget(this, font, xpos, ypos + _th,
                         _w - 2 * xpos,
                         _h - _th - VGAP - buttonHeight - VBORDER * 2);
@@ -406,7 +406,7 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
     kM1ColourChangedCmd,  kPFColourChangedCmd,  kBLColourChangedCmd
   };
 
-  auto createDebugColourWidgets = [&](int idx, const string& desc)
+  const auto createDebugColourWidgets = [&](int idx, const string& desc)
   {
     int x = HBORDER + INDENT * 1;
     myDbgColour[idx] = new PopUpWidget(myTab, font, x, ypos - 1,
@@ -512,7 +512,7 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
   xpos += CheckboxWidget::prefixSize(font);
   ypos += lineHeight + VGAP;
 
-  int swidth = fontWidth * 12 + 5; // width of PopUpWidgets below
+  const int swidth = fontWidth * 12 + 5; // width of PopUpWidgets below
   myStateSizeWidget = new SliderWidget(myTab, font, xpos,  ypos - 1, swidth, lineHeight,
                                        "Buffer size (*)   ", 0, kSizeChanged, lwidth, " states");
   myStateSizeWidget->setMinValue(20);
@@ -589,18 +589,16 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
             HBORDER    = Dialog::hBorder(),
             VGAP       = Dialog::vGap();
   VariantList items;
-  int xpos, ypos, pwidth;
   const Common::Size& ds = instance().frameBuffer().desktopSize(BufferType::Debugger);
-
-  xpos = HBORDER;
-  ypos = VBORDER;
+  const int xpos = HBORDER;
+  int ypos = VBORDER;
 
   // font size
   items.clear();
   VarList::push_back(items, "Small", "small");
   VarList::push_back(items, "Medium", "medium");
   VarList::push_back(items, "Large", "large");
-  pwidth = font.getStringWidth("Medium");
+  int pwidth = font.getStringWidth("Medium");
   myDebuggerFontSize =
     new PopUpWidget(myTab, font, HBORDER, ypos + 1, pwidth, lineHeight, items,
                     "Font size (*)  ", 0, kDFontSizeChanged);
@@ -800,17 +798,15 @@ void DeveloperDialog::loadConfig()
   loadSettings(SettingsSet::player);
   loadSettings(SettingsSet::developer);
   // ...and select the current one
-  setWidgetStates(SettingsSet(mySettingsGroupEmulation->getSelected()));
+  setWidgetStates(static_cast<SettingsSet>(mySettingsGroupEmulation->getSelected()));
 
   // Debug colours
   handleDebugColours(instance().settings().getString("tia.dbgcolors"));
 
 #ifdef DEBUGGER_SUPPORT
-  uInt32 w, h;
-
   // Debugger size
   const Common::Size& ds = instance().settings().getSize("dbg.res");
-  w = ds.w; h = ds.h;
+  const int w = ds.w, h = ds.h;
 
   myDebuggerWidthSlider->setValue(w);
   myDebuggerHeightSlider->setValue(h);
@@ -835,11 +831,11 @@ void DeveloperDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::saveConfig()
 {
-  bool devSettings = mySettingsGroupEmulation->getSelected() == SettingsSet::developer;
+  const bool devSettings = mySettingsGroupEmulation->getSelected() == SettingsSet::developer;
 
   instance().settings().setValue("dev.settings", devSettings);
   // copy current widget status into set...
-  getWidgetStates(SettingsSet(mySettingsGroupEmulation->getSelected()));
+  getWidgetStates(static_cast<SettingsSet>(mySettingsGroupEmulation->getSelected()));
   // ...and save both sets
   saveSettings(SettingsSet::player);
   saveSettings(SettingsSet::developer);
@@ -875,8 +871,8 @@ void DeveloperDialog::saveConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::setDefaults()
 {
-  bool devSettings = mySettings;
-  SettingsSet set = SettingsSet(mySettingsGroupEmulation->getSelected());
+  const bool devSettings = mySettings;
+  const SettingsSet set = static_cast<SettingsSet>(mySettingsGroupEmulation->getSelected());
 
   switch(myTab->getActiveTab())
   {
@@ -948,8 +944,8 @@ void DeveloperDialog::setDefaults()
 #ifdef DEBUGGER_SUPPORT
       const Common::Size& size = instance().frameBuffer().desktopSize(BufferType::Debugger);
 
-      uInt32 w = std::min(size.w, uInt32(DebuggerDialog::kMediumFontMinW));
-      uInt32 h = std::min(size.h, uInt32(DebuggerDialog::kMediumFontMinH));
+      const uInt32 w = std::min(size.w, static_cast<uInt32>(DebuggerDialog::kMediumFontMinW));
+      const uInt32 h = std::min(size.h, static_cast<uInt32>(DebuggerDialog::kMediumFontMinH));
       myDebuggerWidthSlider->setValue(w);
       myDebuggerHeightSlider->setValue(h);
       myDebuggerFontSize->setSelected("medium");
@@ -1078,8 +1074,8 @@ void DeveloperDialog::handleSettings(bool devSettings)
   if (mySettings != devSettings)
   {
     mySettings = devSettings; // block redundant events first!
-    SettingsSet set = devSettings ? SettingsSet::developer
-                                  : SettingsSet::player;
+    const SettingsSet set = devSettings ? SettingsSet::developer
+                                        : SettingsSet::player;
     mySettingsGroupEmulation->setSelected(set);
     mySettingsGroupTia->setSelected(set);
     mySettingsGroupVideo->setSelected(set);
@@ -1102,7 +1098,7 @@ void DeveloperDialog::handleTVJitterChange(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::handleConsole()
 {
-  bool is7800 = myConsoleWidget->getSelected() == 1;
+  const bool is7800 = myConsoleWidget->getSelected() == 1;
 
   myRandomizeRAMWidget->setEnabled(!is7800);
   if(is7800)
@@ -1112,7 +1108,7 @@ void DeveloperDialog::handleConsole()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::handleTia()
 {
-  bool enable = BSPF::equalsIgnoreCase("custom", myTIATypeWidget->getSelectedTag().toString());
+  const bool enable = BSPF::equalsIgnoreCase("custom", myTIATypeWidget->getSelectedTag().toString());
 
   myTIATypeWidget->setEnabled(mySettings);
   myInvPhaseLabel->setEnabled(enable);
@@ -1131,7 +1127,7 @@ void DeveloperDialog::handleTia()
 
   if(BSPF::equalsIgnoreCase("custom", myTIATypeWidget->getSelectedTag().toString()))
   {
-    SettingsSet set = SettingsSet::developer;
+    const SettingsSet set = SettingsSet::developer;
 
     myPlInvPhaseWidget->setState(myPlInvPhase[set]);
     myMsInvPhaseWidget->setState(myMsInvPhase[set]);
@@ -1160,14 +1156,14 @@ void DeveloperDialog::handleTia()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::handleTimeMachine()
 {
-  bool enable = myTimeMachineWidget->getState();
+  const bool enable = myTimeMachineWidget->getState();
 
   myStateSizeWidget->setEnabled(enable);
   myUncompressedWidget->setEnabled(enable);
   myStateIntervalWidget->setEnabled(enable);
 
-  uInt32 size = myStateSizeWidget->getValue();
-  uInt32 uncompressed = myUncompressedWidget->getValue();
+  const uInt32 size = myStateSizeWidget->getValue();
+  const uInt32 uncompressed = myUncompressedWidget->getValue();
 
   myStateHorizonWidget->setEnabled(enable && size > uncompressed);
 }
@@ -1175,12 +1171,12 @@ void DeveloperDialog::handleTimeMachine()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::handleSize()
 {
-  uInt32 size = myStateSizeWidget->getValue();
-  uInt32 uncompressed = myUncompressedWidget->getValue();
+  const uInt32 size = myStateSizeWidget->getValue();
+  const uInt32 uncompressed = myUncompressedWidget->getValue();
   Int32 interval = myStateIntervalWidget->getSelected();
   Int32 horizon = myStateHorizonWidget->getSelected();
   bool found = false;
-  Int32 i;
+  Int32 i = 0;
 
   // handle illegal values
   if(interval == -1)
@@ -1193,7 +1189,7 @@ void DeveloperDialog::handleSize()
   {
     for(i = horizon; i < NUM_HORIZONS; ++i)
     {
-      if(uInt64(size) * instance().state().rewindManager().INTERVAL_CYCLES[interval]
+      if(static_cast<uInt64>(size) * instance().state().rewindManager().INTERVAL_CYCLES[interval]
          <= instance().state().rewindManager().HORIZON_CYCLES[i])
       {
         found = true;
@@ -1214,8 +1210,8 @@ void DeveloperDialog::handleSize()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::handleUncompressed()
 {
-  uInt32 size = myStateSizeWidget->getValue();
-  uInt32 uncompressed = myUncompressedWidget->getValue();
+  const uInt32 size = myStateSizeWidget->getValue();
+  const uInt32 uncompressed = myUncompressedWidget->getValue();
 
   if(size < uncompressed)
     myStateSizeWidget->setValue(uncompressed);
@@ -1226,11 +1222,11 @@ void DeveloperDialog::handleUncompressed()
 void DeveloperDialog::handleInterval()
 {
   uInt32 size = myStateSizeWidget->getValue();
-  uInt32 uncompressed = myUncompressedWidget->getValue();
+  const uInt32 uncompressed = myUncompressedWidget->getValue();
   Int32 interval = myStateIntervalWidget->getSelected();
   Int32 horizon = myStateHorizonWidget->getSelected();
   bool found = false;
-  Int32 i;
+  Int32 i = 0;
 
   // handle illegal values
   if(interval == -1)
@@ -1243,7 +1239,7 @@ void DeveloperDialog::handleInterval()
   {
     for(i = horizon; i < NUM_HORIZONS; ++i)
     {
-      if(uInt64(size) * instance().state().rewindManager().INTERVAL_CYCLES[interval]
+      if(static_cast<uInt64>(size) * instance().state().rewindManager().INTERVAL_CYCLES[interval]
          <= instance().state().rewindManager().HORIZON_CYCLES[i])
       {
         found = true;
@@ -1264,11 +1260,11 @@ void DeveloperDialog::handleInterval()
 void DeveloperDialog::handleHorizon()
 {
   uInt32 size = myStateSizeWidget->getValue();
-  uInt32 uncompressed = myUncompressedWidget->getValue();
+  const uInt32 uncompressed = myUncompressedWidget->getValue();
   Int32 interval = myStateIntervalWidget->getSelected();
   Int32 horizon = myStateHorizonWidget->getSelected();
   bool found = false;
-  Int32 i;
+  Int32 i = 0;
 
   // handle illegal values
   if(interval == -1)
@@ -1281,7 +1277,7 @@ void DeveloperDialog::handleHorizon()
   {
     for(i = interval; i >= 0; --i)
     {
-      if(uInt64(size) * instance().state().rewindManager().INTERVAL_CYCLES[i]
+      if(static_cast<uInt64>(size) * instance().state().rewindManager().INTERVAL_CYCLES[i]
          <= instance().state().rewindManager().HORIZON_CYCLES[horizon])
       {
         found = true;
@@ -1338,14 +1334,14 @@ void DeveloperDialog::handleDebugColours(int idx, int color)
     }
   }};
 
-  int timing = instance().console().timing() == ConsoleTiming::ntsc ? 0
+  const int timing = instance().console().timing() == ConsoleTiming::ntsc ? 0
     : instance().console().timing() == ConsoleTiming::pal ? 1 : 2;
 
   myDbgColourSwatch[idx]->setColor(dbg_color[timing][color]);
   myDbgColour[idx]->setSelectedIndex(color);
 
   // make sure the selected debug colors are all different
-  std::array<bool, DEBUG_COLORS> usedCol;
+  std::array<bool, DEBUG_COLORS> usedCol = {0};
 
   // identify used colors
   for(int i = 0; i < DEBUG_COLORS; ++i)
@@ -1401,8 +1397,8 @@ void DeveloperDialog::handleDebugColours(const string& colors)
 void DeveloperDialog::handleFontSize()
 {
 #ifdef DEBUGGER_SUPPORT
-  uInt32 minW, minH;
-  int fontSize = myDebuggerFontSize->getSelected();
+  uInt32 minW = 0, minH = 0;
+  const int fontSize = myDebuggerFontSize->getSelected();
 
   if(fontSize == 0)
   {
@@ -1424,11 +1420,11 @@ void DeveloperDialog::handleFontSize()
   minH = std::min(size.h, minH);
 
   myDebuggerWidthSlider->setMinValue(minW);
-  if(minW > uInt32(myDebuggerWidthSlider->getValue()))
+  if(minW > static_cast<uInt32>(myDebuggerWidthSlider->getValue()))
     myDebuggerWidthSlider->setValue(minW);
 
   myDebuggerHeightSlider->setMinValue(minH);
-  if(minH > uInt32(myDebuggerHeightSlider->getValue()))
+  if(minH > static_cast<uInt32>(myDebuggerHeightSlider->getValue()))
     myDebuggerHeightSlider->setValue(minH);
 #endif
 }

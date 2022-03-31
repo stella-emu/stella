@@ -172,7 +172,7 @@ void LauncherDialog::addOptionWidgets(int& ypos)
     xpos = mySettingsButton->getRight() + LBL_GAP * 2;
     if(lwFilter)
     {
-      StaticTextWidget* s = new StaticTextWidget(this, _font, xpos, ypos, lblFilter);
+      const StaticTextWidget* s = new StaticTextWidget(this, _font, xpos, ypos, lblFilter);
       xpos = s->getRight() + LBL_GAP;
     }
 
@@ -264,7 +264,7 @@ void LauncherDialog::addPathWidgets(int& ypos)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::addRomWidgets(int& ypos)
+void LauncherDialog::addRomWidgets(int ypos)
 {
   const bool bottomButtons = instance().settings().getBool("launcherbuttons");
   const int fontWidth    = Dialog::fontWidth(),
@@ -392,7 +392,7 @@ const string& LauncherDialog::selectedRomMD5()
     myMD5List.clear();
 
   // Lookup MD5, and if not present, cache it
-  auto iter = myMD5List.find(currentNode().getPath());
+  const auto iter = myMD5List.find(currentNode().getPath());
   if(iter == myMD5List.end())
     myMD5List[currentNode().getPath()] = MD5::hash(currentNode());
 
@@ -519,7 +519,7 @@ void LauncherDialog::updateUI()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string LauncherDialog::getRomDir()
 {
-  Settings& settings = instance().settings();
+  const Settings& settings = instance().settings();
   const string& tmpromdir = settings.getString("tmpromdir");
 
   return tmpromdir != EmptyString ? tmpromdir : settings.getString("romdir");
@@ -566,14 +566,14 @@ bool LauncherDialog::matchWithWildcards(const string& str, const string& pattern
   pat.erase(i + 1);
 
   // Search for first '*'
-  size_t pos = pat.find('*');
+  const size_t pos = pat.find('*');
 
   if(pos != string::npos)
   {
     // '*' found, split pattern into left and right part, search recursively
     const string leftPat = pat.substr(0, pos);
     const string rightPat = pat.substr(pos + 1);
-    size_t posLeft = matchWithJoker(str, leftPat);
+    const size_t posLeft = matchWithJoker(str, leftPat);
 
     if(posLeft != string::npos)
       return matchWithWildcards(str.substr(pos + posLeft), rightPat);
@@ -637,14 +637,14 @@ float LauncherDialog::getRomInfoZoom(int listHeight) const
     if((_w - (HBORDER * 2 + fontWidth + 30) - zoom * TIAConstants::viewableWidth)
        / fontWidth < MIN_LAUNCHER_CHARS)
     {
-      zoom = float(_w - (HBORDER * 2 + fontWidth + 30) - MIN_LAUNCHER_CHARS * fontWidth)
+      zoom = static_cast<float>(_w - (HBORDER * 2 + fontWidth + 30) - MIN_LAUNCHER_CHARS * fontWidth)
         / TIAConstants::viewableWidth;
     }
     if((listHeight - 12 - zoom * TIAConstants::viewableHeight) <
        MIN_ROMINFO_ROWS * smallFont.getLineHeight() +
        MIN_ROMINFO_LINES * smallFont.getFontHeight())
     {
-      zoom = float(listHeight - 12 -
+      zoom = static_cast<float>(listHeight - 12 -
                    MIN_ROMINFO_ROWS * smallFont.getLineHeight() -
                    MIN_ROMINFO_LINES * smallFont.getFontHeight())
         / TIAConstants::viewableHeight;
@@ -654,7 +654,7 @@ float LauncherDialog::getRomInfoZoom(int listHeight) const
     if((zoom * TIAConstants::viewableWidth)
        / smallFont.getMaxCharWidth() < MIN_ROMINFO_CHARS + 6)
     {
-      zoom = float(MIN_ROMINFO_CHARS * smallFont.getMaxCharWidth() + 6)
+      zoom = static_cast<float>(MIN_ROMINFO_CHARS * smallFont.getMaxCharWidth() + 6)
         / TIAConstants::viewableWidth;
     }
   }
@@ -678,9 +678,9 @@ void LauncherDialog::setRomInfoFont(const Common::Size& area)
     // only use fonts <= launcher fonts
     if(Dialog::fontHeight() >= FONTS[i].height)
     {
-      if(area.h >= uInt32(MIN_ROMINFO_ROWS * FONTS[i].height + 2
+      if(area.h >= static_cast<uInt32>(MIN_ROMINFO_ROWS * FONTS[i].height + 2
          + MIN_ROMINFO_LINES * FONTS[i].height)
-         && area.w >= uInt32(MIN_ROMINFO_CHARS * FONTS[i].maxwidth))
+         && area.w >= static_cast<uInt32>(MIN_ROMINFO_CHARS * FONTS[i].maxwidth))
       {
         myROMInfoFont = make_unique<GUI::Font>(FONTS[i]);
         return;
@@ -889,7 +889,7 @@ void LauncherDialog::handleJoyDown(int stick, int button, bool longPress)
 void LauncherDialog::handleJoyUp(int stick, int button)
 {
   // open power-up options and settings for 2nd and 4th button if not mapped otherwise
-  Event::Type e = instance().eventHandler().eventForJoyButton(EventMode::kMenuMode, stick, button);
+  const Event::Type e = instance().eventHandler().eventForJoyButton(EventMode::kMenuMode, stick, button);
 
   if (button == 1 && (e == Event::UIOK || e == Event::NoType))
     openGlobalProps();

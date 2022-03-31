@@ -55,14 +55,14 @@ void ContextMenu::addItems(const VariantList& items)
   _h = 1;  // recalculate this in ::recalc()
 
   _scrollUpColor = _firstEntry > 0 ? kScrollColor : kColor;
-  _scrollDnColor = (_firstEntry + _numEntries < int(_entries.size())) ?
+  _scrollDnColor = (_firstEntry + _numEntries < static_cast<int>(_entries.size())) ?
       kScrollColor : kColor;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::show(uInt32 x, uInt32 y, const Common::Rect& bossRect, int item)
 {
-  uInt32 scale = instance().frameBuffer().hidpiScaleFactor();
+  const uInt32 scale = instance().frameBuffer().hidpiScaleFactor();
   _xorig = bossRect.x() + x * scale;
   _yorig = bossRect.y() + y * scale;
 
@@ -94,7 +94,7 @@ void ContextMenu::recalc(const Common::Rect& image)
 {
   // Now is the time to adjust the height
   // If it's higher than the screen, we need to scroll through
-  uInt32 maxentries = std::min<uInt32>(18, (image.h() - 2) / _rowHeight);
+  const uInt32 maxentries = std::min<uInt32>(18, (image.h() - 2) / _rowHeight);
   if(_entries.size() > maxentries)
   {
     // We show two less than the max, so we have room for two scroll buttons
@@ -104,8 +104,8 @@ void ContextMenu::recalc(const Common::Rect& image)
   }
   else
   {
-    _numEntries = int(_entries.size());
-    _h = int(_entries.size()) * _rowHeight + 2;
+    _numEntries = static_cast<int>(_entries.size());
+    _h = static_cast<int>(_entries.size()) * _rowHeight + 2;
     _showScroll = false;
   }
   _isScrolling = false;
@@ -114,7 +114,7 @@ void ContextMenu::recalc(const Common::Rect& image)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::setSelectedIndex(int idx)
 {
-  if(idx >= 0 && idx < int(_entries.size()))
+  if(idx >= 0 && idx < static_cast<int>(_entries.size()))
     _selectedItem = idx;
   else
     _selectedItem = -1;
@@ -123,7 +123,7 @@ void ContextMenu::setSelectedIndex(int idx)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::setSelected(const Variant& tag, const Variant& defaultTag)
 {
-  auto SEARCH_AND_SELECT = [&](const Variant& t)
+  const auto SEARCH_AND_SELECT = [&](const Variant& t)
   {
     for(uInt32 item = 0; item < _entries.size(); ++item)
     {
@@ -147,7 +147,7 @@ void ContextMenu::setSelected(const Variant& tag, const Variant& defaultTag)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::setSelectedMax()
 {
-  setSelectedIndex(int(_entries.size()) - 1);
+  setSelectedIndex(static_cast<int>(_entries.size()) - 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -195,7 +195,7 @@ bool ContextMenu::sendSelectionUp()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool ContextMenu::sendSelectionDown()
 {
-  if(isVisible() || _selectedItem >= int(_entries.size()) - 1)
+  if(isVisible() || _selectedItem >= static_cast<int>(_entries.size()) - 1)
     return false;
 
   _selectedItem++;
@@ -220,7 +220,7 @@ bool ContextMenu::sendSelectionLast()
   if(isVisible())
     return false;
 
-  _selectedItem = int(_entries.size()) - 1;
+  _selectedItem = static_cast<int>(_entries.size()) - 1;
   sendCommand(_cmd ? _cmd : ContextMenu::kItemSelectedCmd, _selectedItem, _id);
   return true;
 }
@@ -229,7 +229,7 @@ bool ContextMenu::sendSelectionLast()
 void ContextMenu::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
   // Compute over which item the mouse is...
-  int item = findItem(x, y);
+  const int item = findItem(x, y);
 
   // Only do a selection when the left button is in the dialog
   if(b == MouseButton::LEFT)
@@ -248,7 +248,7 @@ void ContextMenu::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 void ContextMenu::handleMouseMoved(int x, int y)
 {
   // Compute over which item the mouse is...
-  int item = findItem(x, y);
+  const int item = findItem(x, y);
   if(item == -1)
     return;
 
@@ -419,12 +419,12 @@ void ContextMenu::moveDown()
     // Otherwise, the offset should increase by 1
     if(_selectedOffset == _numEntries)
       scrollDown();
-    else if(_selectedOffset < int(_entries.size()))
+    else if(_selectedOffset < static_cast<int>(_entries.size()))
       drawCurrentSelection(_selectedOffset+1);
   }
   else
   {
-    if(_selectedOffset < int(_entries.size()) - 1)
+    if(_selectedOffset < static_cast<int>(_entries.size()) - 1)
       drawCurrentSelection(_selectedOffset+1);
   }
 }
@@ -441,7 +441,7 @@ void ContextMenu::movePgUp()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::movePgDown()
 {
-  if(_firstEntry == int(_entries.size() - _numEntries))
+  if(_firstEntry == static_cast<int>(_entries.size() - _numEntries))
     moveToLast();
   else
     scrollDown(_numEntries);
@@ -460,7 +460,7 @@ void ContextMenu::moveToFirst()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::moveToLast()
 {
-  _firstEntry = int(_entries.size()) - _numEntries;
+  _firstEntry = static_cast<int>(_entries.size()) - _numEntries;
   _scrollUpColor = kScrollColor;
   _scrollDnColor = kColor;
 
@@ -470,7 +470,7 @@ void ContextMenu::moveToLast()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::moveToSelected()
 {
-  if(_selectedItem < 0 || _selectedItem >= int(_entries.size()))
+  if(_selectedItem < 0 || _selectedItem >= static_cast<int>(_entries.size()))
     return;
 
   // First jump immediately to the item
@@ -479,7 +479,7 @@ void ContextMenu::moveToSelected()
 
   // Now check if we've gone past the current 'window' size, and scale
   // back accordingly
-  int max_offset = int(_entries.size()) - _numEntries;
+  const int max_offset = static_cast<int>(_entries.size()) - _numEntries;
   if(_firstEntry > max_offset)
   {
     offset = _firstEntry - max_offset;
@@ -508,7 +508,7 @@ void ContextMenu::scrollUp(int distance)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::scrollDown(int distance)
 {
-  int max_offset = int(_entries.size()) - _numEntries;
+  const int max_offset = static_cast<int>(_entries.size()) - _numEntries;
   if(_firstEntry == max_offset)
     return;
 
@@ -601,7 +601,8 @@ void ContextMenu::drawDialog()
   s.frameRect(_x, _y, _w, _h, kTextColor);
 
   // Draw the entries, taking scroll buttons into account
-  int x = _x + 1, y = _y + 1, w = _w - 2;
+  const int x = _x + 1, w = _w - 2;
+  int y = _y + 1;
 
   // Show top scroll area
   int offset = _selectedOffset;
@@ -615,7 +616,7 @@ void ContextMenu::drawDialog()
 
   for(int i = _firstEntry, current = 0; i < _firstEntry + _numEntries; ++i, ++current)
   {
-    bool hilite = offset == current;
+    const bool hilite = offset == current;
     if(hilite) s.fillRect(x, y, w, _rowHeight, kTextColorHi);
     s.drawString(_font, _entries[i].first, x + _textOfs, y + 2, w,
                  !hilite ? kTextColor : kTextColorInv);

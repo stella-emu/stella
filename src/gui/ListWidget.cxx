@@ -72,7 +72,7 @@ void ListWidget::setSelected(int item)
 {
   setDirty();
 
-  if(item < 0 || item >= int(_list.size()))
+  if(item < 0 || item >= static_cast<int>(_list.size()))
     return;
 
   if(isEnabled())
@@ -118,7 +118,7 @@ void ListWidget::setSelected(const string& item)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::setHighlighted(int item)
 {
-  if(item < -1 || item >= int(_list.size()))
+  if(item < -1 || item >= static_cast<int>(_list.size()))
     return;
 
   if(isEnabled())
@@ -141,14 +141,14 @@ void ListWidget::setHighlighted(int item)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string& ListWidget::getSelectedString() const
 {
-  return (_selectedItem >= 0 && _selectedItem < int(_list.size()))
+  return (_selectedItem >= 0 && _selectedItem < static_cast<int>(_list.size()))
             ? _list[_selectedItem] : EmptyString;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::scrollTo(int item)
 {
-  int size = int(_list.size());
+  const int size = static_cast<int>(_list.size());
   if (item >= size)
     item = size - 1;
   if (item < 0)
@@ -170,7 +170,7 @@ int ListWidget::getWidth() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::recalc()
 {
-  int size = int(_list.size());
+  const int size = static_cast<int>(_list.size());
 
   if(_currentPos >= size - _rows)
   {
@@ -191,7 +191,7 @@ void ListWidget::recalc()
 
   if(_useScrollbar)
   {
-    _scrollBar->_numEntries = int(_list.size());
+    _scrollBar->_numEntries = static_cast<int>(_list.size());
     _scrollBar->_entriesPerPage = _rows;
     // disable scrollbar if no longer necessary
     scrollBarRecalc();
@@ -224,7 +224,7 @@ void ListWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
   // First check whether the selection changed
   int newSelectedItem;
   newSelectedItem = findItem(x, y);
-  if (newSelectedItem >= int(_list.size()))
+  if (newSelectedItem >= static_cast<int>(_list.size()))
     return;
 
   if (_selectedItem != newSelectedItem)
@@ -314,7 +314,7 @@ void ListWidget::handleJoyDown(int stick, int button, bool longPress)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::handleJoyUp(int stick, int button)
 {
-  Event::Type e = _boss->instance().eventHandler().eventForJoyButton(EventMode::kMenuMode, stick, button);
+  const Event::Type e = _boss->instance().eventHandler().eventForJoyButton(EventMode::kMenuMode, stick, button);
 
   handleEvent(e);
 }
@@ -326,8 +326,8 @@ bool ListWidget::handleEvent(Event::Type e)
     return false;
 
   bool handled = true;
-  int oldSelectedItem = _selectedItem;
-  int size = int(_list.size());
+  const int oldSelectedItem = _selectedItem;
+  const int size = static_cast<int>(_list.size());
 
   switch(e)
   {
@@ -435,14 +435,14 @@ void ListWidget::scrollToCurrent(int item)
     _currentPos = item - _rows + 1;
   }
 
-  if (_currentPos < 0 || _rows > int(_list.size()))
+  if (_currentPos < 0 || _rows > static_cast<int>(_list.size()))
     _currentPos = 0;
-  else if (_currentPos + _rows > int(_list.size()))
-    _currentPos = int(_list.size()) - _rows;
+  else if (_currentPos + _rows > static_cast<int>(_list.size()))
+    _currentPos = static_cast<int>(_list.size()) - _rows;
 
   if(_useScrollbar)
   {
-    int oldScrollPos = _scrollBar->_currentPos;
+    const int oldScrollPos = _scrollBar->_currentPos;
     _scrollBar->_currentPos = _currentPos;
     _scrollBar->recalc();
 

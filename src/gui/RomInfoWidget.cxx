@@ -143,13 +143,13 @@ void RomInfoWidget::parseProperties(const FilesystemNode& node)
     myRomInfo.push_back("Rarity: " + value);
   if((value = myProperties.get(PropType::Cart_Note)) != EmptyString)
     myRomInfo.push_back("Note: " + value);
-  bool swappedPorts = myProperties.get(PropType::Console_SwapPorts) == "YES";
+  const bool swappedPorts = myProperties.get(PropType::Console_SwapPorts) == "YES";
 
   // Load the image for controller and bankswitch type auto detection
   string left = myProperties.get(PropType::Controller_Left);
   string right = myProperties.get(PropType::Controller_Right);
-  Controller::Type leftType = Controller::getType(left);
-  Controller::Type rightType = Controller::getType(right);
+  const Controller::Type leftType = Controller::getType(left);
+  const Controller::Type rightType = Controller::getType(right);
   string bsDetected = myProperties.get(PropType::Cart_Type);
   bool isPlusCart = false;
   size_t size = 0;
@@ -194,7 +194,7 @@ void RomInfoWidget::parseProperties(const FilesystemNode& node)
       if(size < 1_KB)
         buf << size << "B";
       else
-        buf << (std::round(size / float(1_KB))) << "K";
+        buf << (std::round(size / static_cast<float>(1_KB))) << "K";
     }
     myRomInfo.push_back("Type: " + Bankswitch::typeToDesc(Bankswitch::nameToType(bsDetected))
                         + (isPlusCart ? " - PlusROM" : "")
@@ -215,7 +215,7 @@ bool RomInfoWidget::loadPng(const string& filename)
     const Common::Rect& src = mySurface->srcRect();
     const float scale = std::min(float(myAvail.w) / src.w(), float(myAvail.h) / src.h()) *
       instance().frameBuffer().hidpiScaleFactor();
-    mySurface->setDstSize(uInt32(src.w() * scale), uInt32(src.h() * scale));
+    mySurface->setDstSize(static_cast<uInt32>(src.w() * scale), static_cast<uInt32>(src.h() * scale));
 
     return true;
   }
@@ -276,7 +276,7 @@ void RomInfoWidget::drawWidget(bool hilite)
   int ypos = _y + yoff + 5;
   for(const auto& info : myRomInfo)
   {
-    if(info.length() * _font.getMaxCharWidth() <= uInt64(_w - 16))
+    if(info.length() * _font.getMaxCharWidth() <= static_cast<size_t>(_w - 16))
 
     {
       // 1 line for next entry
@@ -290,7 +290,7 @@ void RomInfoWidget::drawWidget(bool hilite)
         break;
     }
 
-    int lines;
+    int lines = 0;
 
     if(BSPF::startsWithIgnoreCase(info, "Name: ") && myUrl != EmptyString)
     {

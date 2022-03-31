@@ -78,6 +78,13 @@ class LauncherFileListWidget : public FileListWidget
     IconType getIconType(const string& path) const override;
     const Icon* getIcon(int i) const override;
     bool fullPathToolTip() const override { return myInVirtualDir; }
+
+  private:
+    // Following constructors and assignment operators not supported
+    LauncherFileListWidget(const LauncherFileListWidget&) = delete;
+    LauncherFileListWidget(LauncherFileListWidget&&) = delete;
+    LauncherFileListWidget& operator=(const LauncherFileListWidget&) = delete;
+    LauncherFileListWidget& operator=(LauncherFileListWidget&&) = delete;
 };
 
 #endif
