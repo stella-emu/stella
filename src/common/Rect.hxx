@@ -67,7 +67,7 @@ struct Size
     if(c != 'x')
       w = h = 0;
   }
-  bool valid() const { return w > 0 && h > 0; }
+  constexpr bool valid() const { return w > 0 && h > 0; }
 
   void clamp(uInt32 lower_w, uInt32 upper_w, uInt32 lower_h, uInt32 upper_h) {
     w = BSPF::clamp(w, lower_w, upper_w);
@@ -120,19 +120,19 @@ public:
     : top(p.y), left(p.x), bottom(p.y + h), right( p.x + w) { assert(valid()); }
   constexpr Rect(uInt32 x1, uInt32 y1, uInt32 x2, uInt32 y2) : top{y1}, left{x1}, bottom{y2}, right{x2} { assert(valid()); }
 
-  uInt32 x() const { return left; }
-  uInt32 y() const { return top;  }
-  Point point() const { return Point(x(), y()); }
+  constexpr uInt32 x() const { return left; }
+  constexpr uInt32 y() const { return top;  }
+  constexpr Point point() const { return Point(x(), y()); }
 
-  uInt32 w() const { return right - left; }
-  uInt32 h() const { return bottom - top; }
-  Size size() const { return Size(w(), h()); }
+  constexpr uInt32 w() const { return right - left; }
+  constexpr uInt32 h() const { return bottom - top; }
+  constexpr Size size() const { return Size(w(), h()); }
 
-  void setWidth(uInt32 aWidth)   { right = left + aWidth;  }
-  void setHeight(uInt32 aHeight) { bottom = top + aHeight; }
-  void setSize(const Size& size) { setWidth(size.w); setHeight(size.h); }
+  constexpr void setWidth(uInt32 aWidth)   { right = left + aWidth;  }
+  constexpr void setHeight(uInt32 aHeight) { bottom = top + aHeight; }
+  constexpr void setSize(const Size& size) { setWidth(size.w); setHeight(size.h); }
 
-  void setBounds(uInt32 x1, uInt32 y1, uInt32 x2, uInt32 y2) {
+  constexpr void setBounds(uInt32 x1, uInt32 y1, uInt32 x2, uInt32 y2) {
     top = y1;
     left = x1;
     bottom = y2;
@@ -140,33 +140,33 @@ public:
     assert(valid());
   }
 
-  bool valid() const {
+  constexpr bool valid() const {
     return (left <= right && top <= bottom);
   }
 
-  bool empty() const {
+  constexpr bool empty() const {
     return top == 0 && left == 0 && bottom == 0 && right == 0;
   }
 
-  void moveTo(uInt32 x, uInt32 y) {
+  constexpr void moveTo(uInt32 x, uInt32 y) {
     bottom += y - top;
     right += x - left;
     top = y;
     left = x;
   }
 
-  void moveTo(const Point& p) {
+  constexpr void moveTo(const Point& p) {
     moveTo(p.x, p.y);
   }
 
-  bool contains(uInt32 x, uInt32 y) const {
+  constexpr bool contains(uInt32 x, uInt32 y) const {
     return x >= left && y >= top && x < right && y < bottom;
   }
 
   // Tests whether 'r' is completely contained within this rectangle.
   // If it isn't, then set 'x' and 'y' such that moving 'r' to this
   // position will make it be contained.
-  bool contains(uInt32& x, uInt32& y, const Rect& r) const {
+  constexpr bool contains(uInt32& x, uInt32& y, const Rect& r) const {
     if(r.left < left)  x = left;
     else if(r.right > right) x = r.left - (r.right - right);
     if(r.top < top)  y = top;
