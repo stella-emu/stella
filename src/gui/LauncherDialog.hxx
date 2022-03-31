@@ -124,7 +124,7 @@ class LauncherDialog : public Dialog, CommandSender
     void updateUI();
     void addOptionWidgets(int& ypos);
     void addPathWidgets(int& ypos);
-    void addRomWidgets(int& ypos);
+    void addRomWidgets(int ypos);
     void addButtonWidgets(int& ypos);
     string getRomDir();
 

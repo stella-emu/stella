@@ -20,7 +20,7 @@
 
 #include "PlusRomsSetupDialog.hxx"
 
-static const int MAX_NICK_LEN = 16;
+static constexpr int MAX_NICK_LEN = 16;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PlusRomsSetupDialog::PlusRomsSetupDialog(OSystem& osystem, DialogContainer& parent,

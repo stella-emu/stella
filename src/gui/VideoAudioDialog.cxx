@@ -62,7 +62,6 @@ VideoAudioDialog::VideoAudioDialog(OSystem& osystem, DialogContainer& parent,
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap();
-  int xpos, ypos;
 
   // Set real dimensions
   setSize(44 * fontWidth + HBORDER * 2 + PopUpWidget::dropDownWidth(font) * 2,
@@ -70,7 +69,8 @@ VideoAudioDialog::VideoAudioDialog(OSystem& osystem, DialogContainer& parent,
           max_w, max_h);
 
   // The tab widget
-  xpos = 2;  ypos = VGAP;
+  constexpr int xpos = 2;
+  const int ypos = VGAP;
   myTab = new TabWidget(this, font, xpos, ypos + _th,
                         _w - 2*xpos,
                         _h - _th - VGAP - buttonHeight - VBORDER * 2);
@@ -112,8 +112,8 @@ void VideoAudioDialog::addDisplayTab()
   const int INDENT = CheckboxWidget::prefixSize(_font);
   const int lwidth = _font.getStringWidth("V-Size adjust "),
             pwidth = _font.getStringWidth("OpenGLES2");
-  int xpos = HBORDER,
-      ypos = VBORDER;
+  const int xpos = HBORDER;
+  int ypos = VBORDER;
   WidgetArray wid;
   VariantList items;
   const int tabID = myTab->addTab(" Display ", TabWidget::AUTO_WIDTH);
@@ -427,14 +427,12 @@ void VideoAudioDialog::addAudioTab()
             HBORDER    = Dialog::hBorder(),
             VGAP       = Dialog::vGap();
   const int INDENT = CheckboxWidget::prefixSize(_font);
-  int xpos, ypos;
-  int lwidth = _font.getStringWidth("Volume "),
-    pwidth;
+  int lwidth = _font.getStringWidth("Volume "), pwidth = 0;
   WidgetArray wid;
   VariantList items;
   const int tabID = myTab->addTab("  Audio  ", TabWidget::AUTO_WIDTH);
 
-  xpos = HBORDER;  ypos = VBORDER;
+  int xpos = HBORDER, ypos = VBORDER;
 
   // Enable sound
   mySoundEnableCheckbox = new CheckboxWidget(myTab, _font, xpos, ypos,
@@ -552,7 +550,7 @@ void VideoAudioDialog::addAudioTab()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoAudioDialog::loadConfig()
 {
-  Settings& settings = instance().settings();
+  const Settings& settings = instance().settings();
 
   // Display tab
   // Renderer settings
@@ -565,8 +563,8 @@ void VideoAudioDialog::loadConfig()
   // TIA zoom levels
   // These are dynamically loaded, since they depend on the size of
   // the desktop and which renderer we're using
-  float minZoom = instance().frameBuffer().supportedTIAMinZoom(); // or 2 if we allow lower values
-  float maxZoom = instance().frameBuffer().supportedTIAMaxZoom();
+  const float minZoom = instance().frameBuffer().supportedTIAMinZoom(); // or 2 if we allow lower values
+  const float maxZoom = instance().frameBuffer().supportedTIAMaxZoom();
 
   myTIAZoom->setMinValue(minZoom * 100);
   myTIAZoom->setMaxValue(maxZoom * 100);
@@ -598,7 +596,7 @@ void VideoAudioDialog::loadConfig()
   myTIAPalette->setSelected(myPalette, PaletteHandler::SETTING_STANDARD);
 
   // Palette adjustables
-  bool isPAL = instance().hasConsole()
+  const bool isPAL = instance().hasConsole()
     && instance().console().timing() == ConsoleTiming::pal;
 
   instance().frameBuffer().tiaSurface().paletteHandler().getAdjustables(myPaletteAdj);
@@ -641,7 +639,7 @@ void VideoAudioDialog::loadConfig()
   myTVMode->setSelected(
     settings.getString("tv.filter"), "0");
   int preset = settings.getInt("tv.filter");
-  handleTVModeChange(NTSCFilter::Preset(preset));
+  handleTVModeChange(static_cast<NTSCFilter::Preset>(preset));
 
   // TV Custom adjustables
   loadTVAdjustables(NTSCFilter::Preset::CUSTOM);
@@ -670,8 +668,8 @@ void VideoAudioDialog::loadConfig()
   myVolumeSlider->setValue(audioSettings.volume());
 
   // Device
-  uInt32 deviceId = BSPF::clamp(audioSettings.device(), 0U,
-                                uInt32(instance().sound().supportedDevices().size() - 1));
+  const uInt32 deviceId = BSPF::clamp(audioSettings.device(), 0U,
+      static_cast<uInt32>(instance().sound().supportedDevices().size() - 1));
   myDevicePopup->setSelected(deviceId);
 
   // Stereo
@@ -820,7 +818,7 @@ void VideoAudioDialog::saveConfig()
     cart.setDpcPitch(myDpcPitch->getValue());
   }
 
-  AudioSettings::Preset preset = static_cast<AudioSettings::Preset>(myModePopup->getSelectedTag().toInt());
+  const AudioSettings::Preset preset = static_cast<AudioSettings::Preset>(myModePopup->getSelectedTag().toInt());
   audioSettings.setPreset(preset);
 
   if (preset == AudioSettings::Preset::custom) {
@@ -864,7 +862,7 @@ void VideoAudioDialog::setDefaults()
 
     case 1:  // Palettes
     {
-      bool isPAL = instance().hasConsole()
+      const bool isPAL = instance().hasConsole()
         && instance().console().timing() == ConsoleTiming::pal;
 
       myTIAPalette->setSelected(PaletteHandler::SETTING_STANDARD);
@@ -913,7 +911,7 @@ void VideoAudioDialog::setDefaults()
       myDpcPitch->setValue(AudioSettings::DEFAULT_DPC_PITCH);
       myModePopup->setSelected(static_cast<int>(AudioSettings::DEFAULT_PRESET));
 
-      if (AudioSettings::DEFAULT_PRESET == AudioSettings::Preset::custom) {
+      if constexpr(AudioSettings::DEFAULT_PRESET == AudioSettings::Preset::custom) {
         myResamplingPopup->setSelected(static_cast<int>(AudioSettings::DEFAULT_RESAMPLING_QUALITY));
         myFragsizePopup->setSelected(AudioSettings::DEFAULT_FRAGMENT_SIZE);
         myFreqPopup->setSelected(AudioSettings::DEFAULT_SAMPLE_RATE);
@@ -924,13 +922,16 @@ void VideoAudioDialog::setDefaults()
 
       updateEnabledState();
       break;
+
+    default:  // satisfy compiler
+      break;
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoAudioDialog::handleTVModeChange(NTSCFilter::Preset preset)
 {
-  bool enable = preset == NTSCFilter::Preset::CUSTOM;
+  const bool enable = preset == NTSCFilter::Preset::CUSTOM;
 
   myTVSharp->setEnabled(enable);
   myTVRes->setEnabled(enable);
@@ -960,14 +961,14 @@ void VideoAudioDialog::loadTVAdjustables(NTSCFilter::Preset preset)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoAudioDialog::handleRendererChanged()
 {
-  bool enable = myRenderer->getSelectedTag().toString() != "software";
+  const bool enable = myRenderer->getSelectedTag().toString() != "software";
   myTIAInterpolate->setEnabled(enable);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoAudioDialog::handlePaletteChange()
 {
-  bool enable = myTIAPalette->getSelectedTag().toString() == "custom";
+  const bool enable = myTIAPalette->getSelectedTag().toString() == "custom";
 
   myPhaseShift->setEnabled(enable);
   myTVRedScale->setEnabled(enable);
@@ -997,7 +998,7 @@ void VideoAudioDialog::handlePaletteUpdate()
                                   myTIAPalette->getSelectedTag().toString());
   // Palette adjustables
   PaletteHandler::Adjustable paletteAdj;
-  bool isPAL = instance().hasConsole()
+  const bool isPAL = instance().hasConsole()
     && instance().console().timing() == ConsoleTiming::pal;
 
   if(isPAL)
@@ -1039,7 +1040,7 @@ void VideoAudioDialog::handlePaletteUpdate()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoAudioDialog::handleFullScreenChange()
 {
-  bool enable = myFullscreen->getState();
+  const bool enable = myFullscreen->getState();
   myUseStretch->setEnabled(enable);
 #ifdef ADAPTABLE_REFRESH_SUPPORT
   myRefreshAdapt->setEnabled(enable);
@@ -1118,7 +1119,7 @@ void VideoAudioDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kVSizeChanged:
     {
-      int adjust = myVSizeAdjust->getValue();
+      const int adjust = myVSizeAdjust->getValue();
 
       if (!adjust)
       {
@@ -1138,7 +1139,7 @@ void VideoAudioDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kTVModeChanged:
-      handleTVModeChange(NTSCFilter::Preset(myTVMode->getSelectedTag().toInt()));
+      handleTVModeChange(static_cast<NTSCFilter::Preset>(myTVMode->getSelectedTag().toInt()));
       break;
 
     case kCloneCompositeCmd: loadTVAdjustables(NTSCFilter::Preset::COMPOSITE);
@@ -1217,8 +1218,8 @@ void VideoAudioDialog::addPalette(int x, int y, int w, int h)
   constexpr int NUM_CHROMA = 16;
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
   const int lwidth = ifont.getMaxCharWidth() * 1.5;
-  const float COLW = float(w - lwidth) / NUM_LUMA;
-  const float COLH = float(h) / NUM_CHROMA;
+  const float COLW = static_cast<float>(w - lwidth) / NUM_LUMA;
+  const float COLH = static_cast<float>(h) / NUM_CHROMA;
   const int yofs = (COLH - ifont.getFontHeight() + 1) / 2;
 
   for(int idx = 0; idx < NUM_CHROMA; ++idx)
@@ -1269,9 +1270,9 @@ void VideoAudioDialog::colorPalette()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoAudioDialog::updateEnabledState()
 {
-  bool active = mySoundEnableCheckbox->getState();
-  AudioSettings::Preset preset = static_cast<AudioSettings::Preset>(myModePopup->getSelectedTag().toInt());
-  bool userMode = preset == AudioSettings::Preset::custom;
+  const bool active = mySoundEnableCheckbox->getState();
+  const AudioSettings::Preset preset = static_cast<AudioSettings::Preset>(myModePopup->getSelectedTag().toInt());
+  const bool userMode = preset == AudioSettings::Preset::custom;
 
   myVolumeSlider->setEnabled(active);
   myDevicePopup->setEnabled(active);
@@ -1290,7 +1291,7 @@ void VideoAudioDialog::updateEnabledState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoAudioDialog::updatePreset()
 {
-  AudioSettings::Preset preset = static_cast<AudioSettings::Preset>(myModePopup->getSelectedTag().toInt());
+  const AudioSettings::Preset preset = static_cast<AudioSettings::Preset>(myModePopup->getSelectedTag().toInt());
 
   // Make a copy that does not affect the actual settings...
   AudioSettings audioSettings = instance().audioSettings();

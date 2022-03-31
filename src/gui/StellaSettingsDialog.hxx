@@ -47,9 +47,9 @@ class StellaSettingsDialog : public Dialog
     void saveConfig() override;
     void setDefaults() override;
 
-    void addVideoOptions(WidgetArray& wid, int& xpos, int& ypos);
-    void addUIOptions(WidgetArray& wid, int& xpos, int& ypos);
-    void addGameOptions(WidgetArray& wid, int& xpos, int& ypos);
+    void addVideoOptions(WidgetArray& wid, int xpos, int& ypos);
+    void addUIOptions(WidgetArray& wid, int xpos, int& ypos);
+    void addGameOptions(WidgetArray& wid, int xpos, int& ypos);
 
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
     void handleOverscanChange();

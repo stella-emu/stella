@@ -29,7 +29,6 @@ JoystickDialog::JoystickDialog(GuiObject* boss, const GUI::Font& font,
                                int max_w, int max_h)
   : Dialog(boss->instance(), boss->parent(), font, "Controller database", 0, 0, max_w, max_h)
 {
-  int xpos, ypos;
   WidgetArray wid;
   const int lineHeight   = Dialog::lineHeight(),
             //fontHeight   = Dialog::fontHeight(),
@@ -39,9 +38,9 @@ JoystickDialog::JoystickDialog(GuiObject* boss, const GUI::Font& font,
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder();
   // Joystick list
-  xpos = HBORDER;  ypos = VBORDER + _th;
-  int w = _w - 2 * xpos;
-  int h = _h - buttonHeight - ypos - VBORDER * 2;
+  int xpos = HBORDER, ypos = VBORDER + _th;
+  const int w = _w - 2 * xpos;
+  const int h = _h - buttonHeight - ypos - VBORDER * 2;
   myJoyList = new StringListWidget(this, font, xpos, ypos, w, h);
   myJoyList->setEditable(false);
   wid.push_back(myJoyList);

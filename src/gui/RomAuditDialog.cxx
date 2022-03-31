@@ -48,7 +48,8 @@ RomAuditDialog::RomAuditDialog(OSystem& osystem, DialogContainer& parent,
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap();
   const int lwidth = font.getStringWidth("ROMs without properties (skipped) ");
-  int xpos, ypos = _th + VBORDER;
+  const int xpos = HBORDER + buttonWidth + fontWidth;
+  int ypos = _th + VBORDER;
   WidgetArray wid;
 
   // Set real dimensions
@@ -60,7 +61,6 @@ RomAuditDialog::RomAuditDialog(OSystem& osystem, DialogContainer& parent,
     new ButtonWidget(this, font, HBORDER, ypos, buttonWidth, buttonHeight,
                      "Audit path" + ELLIPSIS, kChooseAuditDirCmd);
   wid.push_back(romButton);
-  xpos = HBORDER + buttonWidth + fontWidth;
   myRomPath = new EditTextWidget(this, font, xpos, ypos + (buttonHeight - lineHeight) / 2 - 1,
                                  _w - xpos - HBORDER, lineHeight);
   wid.push_back(myRomPath);
@@ -124,7 +124,7 @@ void RomAuditDialog::auditRoms()
 
   buf << "Auditing ROM files" << ELLIPSIS;
   progress.setMessage(buf.str());
-  progress.setRange(0, int(files.size()) - 1, 5);
+  progress.setRange(0, static_cast<int>(files.size()) - 1, 5);
   progress.open();
 
   Properties props;

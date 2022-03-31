@@ -30,7 +30,7 @@ PlusRomsMenu::PlusRomsMenu(OSystem& osystem)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PlusRomsMenu::~PlusRomsMenu()
 {
-  delete myPlusRomsSetupDialog; myPlusRomsSetupDialog = nullptr;
+  delete myPlusRomsSetupDialog;  myPlusRomsSetupDialog = nullptr;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

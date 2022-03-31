@@ -47,7 +47,7 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
             VBORDER      = boss->dialog().vBorder(),
             HBORDER      = boss->dialog().hBorder(),
             VGAP         = boss->dialog().vGap();
-  const int ACTION_LINES = 2;
+  constexpr int ACTION_LINES = 2;
   int xpos = HBORDER, ypos = VBORDER;
   const int listWidth = _w - buttonWidth - HBORDER * 2 - fontWidth;
   int listHeight = _h - (2 + ACTION_LINES) * lineHeight - VBORDER + 2;
@@ -163,7 +163,7 @@ void EventMappingWidget::saveConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventMappingWidget::updateActions()
 {
-  myEventGroup = Event::Group(myFilterPopup->getSelectedTag().toInt());
+  myEventGroup = static_cast<Event::Group>(myFilterPopup->getSelectedTag().toInt());
   myEventMode = myEventGroup == Event::Group::Menu
     ? EventMode::kMenuMode
     : EventMode::kEmulationMode;
@@ -225,7 +225,7 @@ void EventMappingWidget::eraseRemapping()
   if(myActionSelected < 0)
     return;
 
-  Event::Type event =
+  const Event::Type event =
     instance().eventHandler().eventAtIndex(myActionSelected, myEventGroup);
   instance().eventHandler().eraseMapping(event, myEventMode);
 
@@ -238,7 +238,7 @@ void EventMappingWidget::resetRemapping()
   if(myActionSelected < 0)
     return;
 
-  Event::Type event =
+  const Event::Type event =
     instance().eventHandler().eventAtIndex(myActionSelected, myEventGroup);
   instance().eventHandler().setDefaultMapping(event, myEventMode);
 
@@ -288,7 +288,7 @@ void EventMappingWidget::enableButtons(bool state)
   myEraseButton->setEnabled(state);
   myResetButton->setEnabled(state);
 
-  Event::Type e =
+  const Event::Type e =
     instance().eventHandler().eventAtIndex(myActionSelected, myEventGroup);
 
   myComboButton->setEnabled(state && e >= Event::Combo1 && e <= Event::Combo16);
@@ -318,7 +318,7 @@ bool EventMappingWidget::handleKeyUp(StellaKey key, StellaMod mod)
   if (myRemapStatus && myActionSelected >= 0
     && (mod & (KBDM_CTRL | KBDM_SHIFT | KBDM_ALT | KBDM_GUI)) == 0)
   {
-    Event::Type event =
+    const Event::Type event =
       instance().eventHandler().eventAtIndex(myActionSelected, myEventGroup);
 
     // if not pressed alone, map left and right modifier keys
@@ -359,7 +359,7 @@ void EventMappingWidget::handleJoyUp(int stick, int button)
     if (myLastStick == stick && myLastButton == button)
     {
       EventHandler& eh = instance().eventHandler();
-      Event::Type event = eh.eventAtIndex(myActionSelected, myEventGroup);
+      const Event::Type event = eh.eventAtIndex(myActionSelected, myEventGroup);
 
       // map either button/hat, solo button or button/axis combinations
       if(myLastHat != -1)
@@ -395,7 +395,7 @@ void EventMappingWidget::handleJoyAxis(int stick, JoyAxis axis, JoyDir adir, int
     else if(myLastStick == stick && axis == myLastAxis && adir == JoyDir::NONE)
     {
       EventHandler& eh = instance().eventHandler();
-      Event::Type event = eh.eventAtIndex(myActionSelected, myEventGroup);
+      const Event::Type event = eh.eventAtIndex(myActionSelected, myEventGroup);
 
       if (eh.addJoyMapping(event, myEventMode, stick, myLastButton, axis, myLastDir))
         stopRemapping();
@@ -426,7 +426,7 @@ bool EventMappingWidget::handleJoyHat(int stick, int hat, JoyHatDir hdir, int bu
     else if(myLastStick == stick && hat == myLastHat && hdir == JoyHatDir::CENTER)
     {
       EventHandler& eh = instance().eventHandler();
-      Event::Type event = eh.eventAtIndex(myActionSelected, myEventGroup);
+      const Event::Type event = eh.eventAtIndex(myActionSelected, myEventGroup);
 
       if (eh.addJoyHatMapping(event, myEventMode, stick, myLastButton, hat, myLastHatDir))
       {

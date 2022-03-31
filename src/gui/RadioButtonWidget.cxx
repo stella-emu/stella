@@ -333,7 +333,7 @@ void RadioButtonGroup::addWidget(RadioButtonWidget* widget)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RadioButtonGroup::select(RadioButtonWidget* widget)
+void RadioButtonGroup::select(const RadioButtonWidget* widget)
 {
   uInt32 i = 0;
 

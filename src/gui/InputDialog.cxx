@@ -51,7 +51,6 @@ InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap();
-  int xpos, ypos, tabID;
 
   // Set real dimensions
   setSize(48 * fontWidth + PopUpWidget::dropDownWidth(_font) + HBORDER * 2,
@@ -59,14 +58,15 @@ InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
           max_w, max_h);
 
   // The tab widget
-  xpos = 2; ypos = VGAP + _th;
+  constexpr int xpos = 2;
+  const int ypos = VGAP + _th;
   myTab = new TabWidget(this, _font, xpos, ypos,
                         _w - 2*xpos,
                         _h -_th - VGAP - buttonHeight - VBORDER * 2);
   addTabWidget(myTab);
 
   // 1) Event mapper
-  tabID = myTab->addTab(" Event Mappings ", TabWidget::AUTO_WIDTH);
+  int tabID = myTab->addTab(" Event Mappings ", TabWidget::AUTO_WIDTH);
   myEventMapper = new EventMappingWidget(myTab, _font, 2, 2,
                                              myTab->getWidth(),
                                              myTab->getHeight() - VGAP);
@@ -107,14 +107,13 @@ void InputDialog::addDevicePortTab()
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap();
   const int swidth = 13 * fontWidth;
-  int xpos, ypos, lwidth, tabID;
   WidgetArray wid;
 
   // Devices/ports
-  tabID = myTab->addTab(" Devices & Ports ", TabWidget::AUTO_WIDTH);
+  int tabID = myTab->addTab(" Devices & Ports ", TabWidget::AUTO_WIDTH);
 
-  xpos = HBORDER; ypos = VBORDER;
-  lwidth = _font.getStringWidth("Digital paddle sensitivity ");
+  int xpos = HBORDER, ypos = VBORDER;
+  int lwidth = _font.getStringWidth("Digital paddle sensitivity ");
 
   // Add digital dead zone setting
   myDigitalDeadzone = new SliderWidget(myTab, _font, xpos, ypos - 1, swidth, lineHeight,
@@ -222,11 +221,9 @@ void InputDialog::addDevicePortTab()
                                 "Swap Stelladaptor ports");
   wid.push_back(mySAPort);
 
-  int fwidth;
-
   // Add EEPROM erase (part 1/2)
   ypos += VGAP * (3 - 1);
-  fwidth = _font.getStringWidth("AtariVox/SaveKey");
+  int fwidth = _font.getStringWidth("AtariVox/SaveKey");
   new StaticTextWidget(myTab, _font, _w - HBORDER - 2 - fwidth, ypos,
                        "AtariVox/SaveKey");
 
@@ -268,16 +265,15 @@ void InputDialog::addMouseTab()
             VGAP       = Dialog::vGap(),
             INDENT     = Dialog::indent();
   const int swidth = 13 * fontWidth;
-  int xpos = HBORDER, ypos, lwidth, pwidth, tabID;
   WidgetArray wid;
   VariantList items;
 
   // Mouse
-  tabID = myTab->addTab("  Mouse  ", TabWidget::AUTO_WIDTH);
+  int tabID = myTab->addTab("  Mouse  ", TabWidget::AUTO_WIDTH);
 
-  ypos = VBORDER;
-  lwidth = _font.getStringWidth("Use mouse as a controller ");
-  pwidth = _font.getStringWidth("-UI, -Emulation");
+  int xpos = HBORDER, ypos = VBORDER;
+  int lwidth = _font.getStringWidth("Use mouse as a controller ");
+  int pwidth = _font.getStringWidth("-UI, -Emulation");
 
   // Use mouse as controller
   VarList::push_back(items, "Always", "always");
@@ -352,7 +348,7 @@ void InputDialog::addMouseTab()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputDialog::loadConfig()
 {
-  Settings& settings = instance().settings();
+  const Settings& settings = instance().settings();
 
   // Left & right ports
   mySAPort->setState(settings.getString("saport") == "rl");
@@ -412,11 +408,12 @@ void InputDialog::loadConfig()
   // EEPROM erase (only enable in emulation mode and for valid controllers)
   if(instance().hasConsole())
   {
-    Controller& lport = instance().console().leftController();
-    Controller& rport = instance().console().rightController();
+    const Controller& lport = instance().console().leftController();
+    const Controller& rport = instance().console().rightController();
 
-    myEraseEEPROMButton->setEnabled(lport.type() == Controller::Type::SaveKey || lport.type() == Controller::Type::AtariVox ||
-                                    rport.type() == Controller::Type::SaveKey || rport.type() == Controller::Type::AtariVox);
+    myEraseEEPROMButton->setEnabled(
+        lport.type() == Controller::Type::SaveKey || lport.type() == Controller::Type::AtariVox ||
+        rport.type() == Controller::Type::SaveKey || rport.type() == Controller::Type::AtariVox);
   }
   else
     myEraseEEPROMButton->setEnabled(false);
@@ -453,7 +450,7 @@ void InputDialog::saveConfig()
   settings.setValue("psense", sensitivity);
   Paddles::setAnalogSensitivity(sensitivity);
   // Paddle linearity (analog)
-  int linearity = myPaddleLinearity->getValue();
+  const int linearity = myPaddleLinearity->getValue();
   settings.setValue("plinear", linearity);
   Paddles::setAnalogLinearity(linearity);
 
@@ -470,16 +467,16 @@ void InputDialog::saveConfig()
   Paddles::setDigitalSensitivity(sensitivity);
 
   // Autofire mode & rate
-  bool enabled = myAutoFire->getState();
+  const bool enabled = myAutoFire->getState();
   settings.setValue("autofire", enabled);
   Controller::setAutoFire(enabled);
 
-  int rate = myAutoFireRate->getValue();
+  const int rate = myAutoFireRate->getValue();
   settings.setValue("autofirerate", rate);
   Controller::setAutoFireRate(rate);
 
   // Allow all 4 joystick directions
-  bool allowall4 = myAllowAll4->getState();
+  const bool allowall4 = myAllowAll4->getState();
   settings.setValue("joyallow4", allowall4);
   instance().eventHandler().allowAllDirections(allowall4);
 
@@ -518,9 +515,9 @@ void InputDialog::saveConfig()
   settings.setValue("cursor", cursor);
 
   // only allow grab mouse if cursor is hidden in emulation
-  int state = myCursorState->getSelected();
-  bool enableGrab = state != 1 && state != 3;
-  bool grab = enableGrab ? myGrabMouse->getState() : false;
+  const int state = myCursorState->getSelected();
+  const bool enableGrab = state != 1 && state != 3;
+  const bool grab = enableGrab ? myGrabMouse->getState() : false;
   settings.setValue("grabmouse", grab);
   instance().frameBuffer().enableGrabMouse(grab);
 
@@ -805,7 +802,7 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputDialog::updateDejitterAveraging()
 {
-  int strength = myDejitterBase->getValue();
+  const int strength = myDejitterBase->getValue();
 
   myDejitterBase->setValueLabel(strength ? std::to_string(strength) : "Off");
 }
@@ -813,7 +810,7 @@ void InputDialog::updateDejitterAveraging()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputDialog::updateDejitterReaction()
 {
-  int strength = myDejitterDiff->getValue();
+  const int strength = myDejitterDiff->getValue();
 
   myDejitterDiff->setValueLabel(strength ? std::to_string(strength) : "Off");
 }
@@ -821,8 +818,8 @@ void InputDialog::updateDejitterReaction()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputDialog::updateAutoFireRate()
 {
-  bool enable = myAutoFire->getState();
-  int rate = myAutoFireRate->getValue();
+  const bool enable = myAutoFire->getState();
+  const int rate = myAutoFireRate->getValue();
 
   myAutoFireRate->setEnabled(enable);
   myAutoFireRate->setValueLabel(rate ? std::to_string(rate) : "Off");
@@ -832,7 +829,7 @@ void InputDialog::updateAutoFireRate()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputDialog::handleMouseControlState()
 {
-  bool enable = myMouseControl->getSelected() != 2;
+  const bool enable = myMouseControl->getSelected() != 2;
 
   myMPaddleSpeed->setEnabled(enable);
   myTrackBallSpeed->setEnabled(enable);
@@ -841,8 +838,8 @@ void InputDialog::handleMouseControlState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputDialog::handleCursorState()
 {
-  int state = myCursorState->getSelected();
-  bool enableGrab = state != 1 && state != 3 && myMouseControl->getSelected() != 2;
+  const int state = myCursorState->getSelected();
+  const bool enableGrab = state != 1 && state != 3 && myMouseControl->getSelected() != 2;
 
   myGrabMouse->setEnabled(enableGrab);
 }

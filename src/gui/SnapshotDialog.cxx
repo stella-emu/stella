@@ -38,18 +38,16 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap(),
             INDENT       = Dialog::indent();
-  int xpos, ypos, fwidth;
   WidgetArray wid;
-  ButtonWidget* b;
 
   // Set real dimensions
   setSize(64 * fontWidth + HBORDER * 2, 9 * (lineHeight + VGAP) + VBORDER + _th, max_w, max_h);
 
-  xpos = HBORDER;  ypos = VBORDER + _th;
+  int xpos = HBORDER, ypos = VBORDER + _th;
 
   // Snapshot path (save files)
-  b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                       "Save path" + ELLIPSIS, kChooseSnapSaveDirCmd);
+  ButtonWidget* b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
+                                     "Save path" + ELLIPSIS, kChooseSnapSaveDirCmd);
   wid.push_back(b);
   xpos += buttonWidth + fontWidth;
   mySnapSavePath = new EditTextWidget(this, font, xpos, ypos + (buttonHeight - lineHeight) / 2 - 1,
@@ -69,7 +67,7 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(mySnapInterval);
 
   // Booleans for saving snapshots
-  fwidth = font.getStringWidth("When saving snapshots:");
+  int fwidth = font.getStringWidth("When saving snapshots:");
   xpos = HBORDER;  ypos += lineHeight + VGAP * 3;
   new StaticTextWidget(this, font, xpos, ypos, fwidth, lineHeight,
                        "When saving snapshots:", TextAlign::Left);

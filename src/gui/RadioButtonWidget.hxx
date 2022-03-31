@@ -66,7 +66,7 @@ class RadioButtonGroup
     // add widget to group
     void addWidget(RadioButtonWidget* widget);
     // tell the group which widget was selected
-    void select(RadioButtonWidget* widget);
+    void select(const RadioButtonWidget* widget);
     void setSelected(uInt32 selected);
     uInt32 getSelected() { return mySelected; }
 

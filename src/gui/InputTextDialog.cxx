@@ -72,19 +72,20 @@ void InputTextDialog::initialize(const GUI::Font& lfont, const GUI::Font& nfont,
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap();
-  uInt32 xpos, ypos, i, lwidth = 0, maxIdx = 0;
+  uInt32 xpos = 0, lwidth = 0;
   WidgetArray wid;
 
   // Calculate real dimensions
   _w = HBORDER * 2 + fontWidth * widthChars;
-  _h = buttonHeight + lineHeight + VGAP + int(labels.size()) * (lineHeight + VGAP) + _th + VBORDER * 2;
+  _h = buttonHeight + lineHeight + VGAP + static_cast<int>(labels.size()) * (lineHeight + VGAP) + _th + VBORDER * 2;
 
   // Determine longest label
-  for(i = 0; i < labels.size(); ++i)
+  size_t maxIdx = 0;
+  for(size_t i = 0; i < labels.size(); ++i)
   {
     if(labels[i].length() > lwidth)
     {
-      lwidth = int(labels[i].length());
+      lwidth = static_cast<int>(labels[i].length());
       maxIdx = i;
     }
   }
@@ -92,8 +93,8 @@ void InputTextDialog::initialize(const GUI::Font& lfont, const GUI::Font& nfont,
     lwidth = lfont.getStringWidth(labels[maxIdx]);
 
   // Create editboxes for all labels
-  ypos = VBORDER + _th;
-  for(i = 0; i < labels.size(); ++i)
+  int ypos = VBORDER + _th;
+  for(size_t i = 0; i < labels.size(); ++i)
   {
     xpos = HBORDER;
     StaticTextWidget* s = new StaticTextWidget(this, lfont, xpos, ypos + 2,
@@ -135,7 +136,7 @@ void InputTextDialog::show()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputTextDialog::show(uInt32 x, uInt32 y, const Common::Rect& bossRect)
 {
-  uInt32 scale = instance().frameBuffer().hidpiScaleFactor();
+  const uInt32 scale = instance().frameBuffer().hidpiScaleFactor();
   myXOrig = bossRect.x() + x * scale;
   myYOrig = bossRect.y() + y * scale;
 
@@ -175,7 +176,7 @@ void InputTextDialog::setMessage(const string& title)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string& InputTextDialog::getResult(int idx)
 {
-  if(uInt32(idx) < myInput.size())
+  if(static_cast<uInt32>(idx) < myInput.size())
     return myInput[idx]->getText();
   else
     return EmptyString;
@@ -184,28 +185,28 @@ const string& InputTextDialog::getResult(int idx)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputTextDialog::setText(const string& str, int idx)
 {
-  if(uInt32(idx) < myInput.size())
+  if(static_cast<uInt32>(idx) < myInput.size())
     myInput[idx]->setText(str);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputTextDialog::setTextFilter(const EditableWidget::TextFilter& f, int idx)
 {
-  if(uInt32(idx) < myInput.size())
+  if(static_cast<uInt32>(idx) < myInput.size())
     myInput[idx]->setTextFilter(f);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputTextDialog::setToolTip(const string& str, int idx)
 {
-  if(uInt32(idx) < myLabel.size())
+  if(static_cast<uInt32>(idx) < myLabel.size())
     myLabel[idx]->setToolTip(str);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputTextDialog::setFocus(int idx)
 {
-  if(uInt32(idx) < myInput.size())
+  if(static_cast<uInt32>(idx) < myInput.size())
     Dialog::setFocus(getFocusList()[idx]);
 }
 

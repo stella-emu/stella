@@ -37,7 +37,7 @@ LauncherFileListWidget::LauncherFileListWidget(GuiObject* boss, const GUI::Font&
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool LauncherFileListWidget::isDirectory(const FilesystemNode& node) const
 {
-  bool isDir = node.isDirectory();
+  const bool isDir = node.isDirectory();
 
   // Check for virtual directories
   if(!isDir && !node.exists())
@@ -516,11 +516,11 @@ const FileListWidget::Icon* LauncherFileListWidget::getIcon(int i) const
     &favrom_large, &favdir_large, &favzip_large, &user_large, &recent_large, &popular_large
   };
 
-  if(int(_iconTypeList[i]) < int(IconType::numTypes))
+  if(int(_iconTypeList[i]) < static_cast<int>(IconType::numTypes))
     return FileListWidget::getIcon(i);
 
   const bool smallIcon = iconWidth() < 24;
-  const int iconType = int(_iconTypeList[i]) - int(IconType::numTypes);
+  const int iconType = int(_iconTypeList[i]) - static_cast<int>(IconType::numTypes);
 
   assert(iconType < int(IconType::numLauncherTypes));
 

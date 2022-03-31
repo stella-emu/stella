@@ -168,15 +168,15 @@ class Widget : public GuiObject
     static Widget* findWidgetInChain(Widget* start, int x, int y);
 
     /** Determine if 'find' is in the chain pointed to by 'start' */
-    static bool isWidgetInChain(Widget* start, Widget* find);
+    static bool isWidgetInChain(Widget* start, const Widget* find);
 
     /** Determine if 'find' is in the widget array */
     static bool isWidgetInChain(const WidgetArray& list, Widget* find);
 
     /** Select either previous, current, or next widget in chain to have
         focus, and deselects all others */
-    static Widget* setFocusForChain(GuiObject* boss, WidgetArray& arr,
-                                    Widget* w, int direction,
+    static Widget* setFocusForChain(const GuiObject* boss, WidgetArray& arr,
+                                    const Widget* w, int direction,
                                     bool emitFocusEvents = true);
 
     /** Sets all widgets in this chain to be dirty (must be redrawn) */

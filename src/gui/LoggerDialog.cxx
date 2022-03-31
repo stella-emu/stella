@@ -44,7 +44,6 @@ LoggerDialog::LoggerDialog(OSystem& osystem, DialogContainer& parent,
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap();
-  int xpos, ypos;
   WidgetArray wid;
 
   // Set real dimensions
@@ -52,7 +51,7 @@ LoggerDialog::LoggerDialog(OSystem& osystem, DialogContainer& parent,
   setSize(4000, 4000, max_w, max_h);
 
   // Test listing of the log output
-  xpos = HBORDER;  ypos = VBORDER + _th;
+  int xpos = HBORDER, ypos = VBORDER + _th;
   myLogInfo = new StringListWidget(this, uselargefont ? font :
                   instance().frameBuffer().infoFont(), xpos, ypos, _w - 2 * xpos,
                   _h - buttonHeight - ypos - VBORDER - lineHeight - VGAP * 4, false);
@@ -105,8 +104,8 @@ void LoggerDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LoggerDialog::saveConfig()
 {
-  int loglevel = myLogLevel->getSelectedTag().toInt();
-  bool logtoconsole = myLogToConsole->getState();
+  const int loglevel = myLogLevel->getSelectedTag().toInt();
+  const bool logtoconsole = myLogToConsole->getState();
 
   instance().settings().setValue("loglevel", loglevel);
   instance().settings().setValue("logtoconsole", logtoconsole);

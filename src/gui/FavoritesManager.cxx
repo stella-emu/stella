@@ -156,7 +156,7 @@ void FavoritesManager::removeAllUser()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FavoritesManager::toggleUser(const string& path)
 {
-  bool favorize = !existsUser(path);
+  const bool favorize = !existsUser(path);
 
   if(favorize)
     addUser(path);
@@ -188,7 +188,7 @@ const FavoritesManager::UserList& FavoritesManager::userList() const
       // Sort without path
       FilesystemNode aNode(a);
       FilesystemNode bNode(b);
-      bool realDir = aNode.isDirectory() && !BSPF::endsWithIgnoreCase(aNode.getPath(), ".zip");
+      const bool realDir = aNode.isDirectory() && !BSPF::endsWithIgnoreCase(aNode.getPath(), ".zip");
 
       if(realDir != (bNode.isDirectory() && !BSPF::endsWithIgnoreCase(bNode.getPath(), ".zip")))
         return realDir;
@@ -280,7 +280,7 @@ void FavoritesManager::incPopular(const string& path)
   static constexpr double factor = 0.7;
   static constexpr uInt32 max_popular = scale;
 
-  auto increased = myPopularMap.find(path);
+  const auto increased = myPopularMap.find(path);
   if(increased != myPopularMap.end())
     increased->second += scale;
   else
@@ -291,7 +291,7 @@ void FavoritesManager::incPopular(const string& path)
       PopularList sortedList = sortedPopularList(); // sorted by frequency!
       for(auto item = sortedList.cbegin(); item != sortedList.cend(); ++item)
       {
-        auto entry = myPopularMap.find(item->first);
+        const auto entry = myPopularMap.find(item->first);
         if(entry != myPopularMap.end())
         {
           if(entry->second >= scale * (1.0 - factor))

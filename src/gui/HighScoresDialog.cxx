@@ -116,20 +116,20 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap();
-  int xposRank = HBORDER;
+  const int xposRank = HBORDER;
   int xposScore = xposRank + _font.getStringWidth("Rank");
   int xposSpecial = xposScore + _font.getStringWidth("   Score  ");
   int xposName = xposSpecial + _font.getStringWidth("Round  ");
   int xposDate = xposName + _font.getStringWidth("Name  ");
   int xposDelete = xposDate + _font.getStringWidth("YY-MM-DD HH:MM  ");
   int nWidth = _font.getStringWidth("ABC") + fontWidth * 0.75;
-  bool smallFont = _font.getFontHeight() < 24;
-  int buttonSize = smallFont ? BUTTON_GFX_H : BUTTON_GFX_H_LARGE;
-  int xpos, ypos;
+  const bool smallFont = _font.getFontHeight() < 24;
+  const int buttonSize = smallFont ? BUTTON_GFX_H : BUTTON_GFX_H_LARGE;
   WidgetArray wid;
   VariantList items;
 
-  ypos = VBORDER + _th; xpos = HBORDER;
+  const int xpos = HBORDER;
+  int ypos = VBORDER + _th;
   ypos += lineHeight + VGAP * 2; // space for game name
 
   StaticTextWidget* s = new StaticTextWidget(this, _font, xpos, ypos + 1, "Variation ");
@@ -137,7 +137,7 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
                                       _font.getStringWidth("256"), lineHeight, items, "", 0,
                                       kVariationChanged);
   wid.push_back(myVariationPopup);
-  int bWidth = fontWidth * 5;
+  const int bWidth = fontWidth * 5;
   myPrevVarButton = new ButtonWidget(this, _font, xposDelete + fontWidth * 2 - bWidth * 2 - BUTTON_GAP, ypos - 1,
                                      bWidth, myVariationPopup->getHeight(),
                                      smallFont ? PREV_GFX.data() : PREV_GFX_LARGE.data(),
@@ -238,7 +238,7 @@ void HighScoresDialog::loadConfig()
   }
   myVariationPopup->addItems(items);
 
-  Int32 variation;
+  Int32 variation = 0;
   if(instance().highScores().numVariations() == 1)
     variation = HSM::DEFAULT_VARIATION;
   else
@@ -432,19 +432,19 @@ void HighScoresDialog::updateWidgets(bool init)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void HighScoresDialog::handlePlayedVariation()
 {
-  Int32 newScore = instance().highScores().score();
+  const Int32 newScore = instance().highScores().score();
 
   if (!myHighScoreSaved && newScore > 0)
   {
-    Int32 newSpecial = instance().highScores().special();
-    bool scoreInvert = instance().highScores().scoreInvert();
+    const Int32 newSpecial = instance().highScores().special();
+    const bool scoreInvert = instance().highScores().scoreInvert();
 
     for (myHighScoreRank = 0; myHighScoreRank < static_cast<Int32>(NUM_RANKS); ++myHighScoreRank)
     {
-      Int32 highScore = myScores.scores[myHighScoreRank].score;
+      const Int32 highScore = myScores.scores[myHighScoreRank].score;
 
       if ((!scoreInvert && newScore > highScore) ||
-        ((scoreInvert && newScore < highScore) ||
+          ((scoreInvert && newScore < highScore) ||
           highScore == 0))
         break;
       if (newScore == highScore && newSpecial > myScores.scores[myHighScoreRank].special)

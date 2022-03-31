@@ -38,7 +38,6 @@ AboutDialog::AboutDialog(OSystem& osystem, DialogContainer& parent,
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap();
-  int xpos, ypos;
   WidgetArray wid;
 
   // Set real dimensions
@@ -46,7 +45,7 @@ AboutDialog::AboutDialog(OSystem& osystem, DialogContainer& parent,
   _h = _th + 14 * lineHeight + VGAP * 3 + buttonHeight + VBORDER * 2;
 
   // Add Previous, Next and Close buttons
-  xpos = HBORDER; ypos = _h - buttonHeight - VBORDER;
+  int xpos = HBORDER, ypos = _h - buttonHeight - VBORDER;
   myPrevButton =
     new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
                      "Previous", GuiObject::kPrevCmd);
@@ -112,8 +111,8 @@ AboutDialog::~AboutDialog()
 void AboutDialog::updateStrings(int page, int lines, string& title)
 {
   int i = 0;
-  auto ADD_ATEXT = [&](const string& d) { myDescStr[i] = d; i++; };
-  auto ADD_ALINE = [&]() { ADD_ATEXT(""); };
+  const auto ADD_ATEXT = [&](const string& d) { myDescStr[i] = d; i++; };
+  const auto ADD_ALINE = [&]() { ADD_ATEXT(""); };
 
   switch(page)
   {
@@ -323,7 +322,7 @@ const string AboutDialog::getUrl(const string& str) const
   for(size_t i = 0; i < str.size(); ++i)
   {
     string remainder = str.substr(i);
-    char ch = str[i];
+    const char ch = str[i];
 
     if(!isUrl
        && (BSPF::startsWithIgnoreCase(remainder, "http://")

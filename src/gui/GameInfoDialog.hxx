@@ -77,7 +77,7 @@ class GameInfoDialog : public Dialog, public CommandSender
     // update 'High Scores' tab widgets
     void updateHighScoresWidgets();
     // set formatted memory value for given address field
-    void setAddressVal(EditTextWidget* address, EditTextWidget* val,
+    void setAddressVal(const EditTextWidget* address, EditTextWidget* val,
                        bool isBCD = true, bool zeroBased = false, uInt8 maxVal = 255);
     void exportCurrentPropertiesToDisk(const FilesystemNode& node);
 

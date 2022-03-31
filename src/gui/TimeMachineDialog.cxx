@@ -205,12 +205,9 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   : Dialog(osystem, parent)
 {
   const GUI::Font& font = instance().frameBuffer().font();
-  const int H_BORDER = 6, BUTTON_GAP = 4, V_BORDER = 4;
-  const int buttonWidth = BUTTON_W + 10,
-            buttonHeight = BUTTON_H + 10,
-            rowHeight = font.getLineHeight();
-
-  int xpos, ypos;
+  constexpr int H_BORDER = 6, BUTTON_GAP = 4, V_BORDER = 4;
+  constexpr int buttonWidth = BUTTON_W + 10, buttonHeight = BUTTON_H + 10;
+  const int rowHeight = font.getLineHeight();
 
   // Set real dimensions
   _w = width;  // Parent determines our width (based on window size)
@@ -220,8 +217,7 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   this->clearFlags(Widget::FLAG_BORDER);
   this->setFlags(Widget::FLAG_NOBG);
 
-  xpos = H_BORDER;
-  ypos = V_BORDER;
+  int xpos = H_BORDER, ypos = V_BORDER;
 
   // Add index info
   myCurrentIdxWidget = new StaticTextWidget(this, font, xpos, ypos, "1000", TextAlign::Left, kBGColor);
@@ -242,7 +238,7 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   ypos += rowHeight;
 
   // Add time info
-  int ypos_s = ypos + (buttonHeight - font.getFontHeight() + 1) / 2; // align to button vertical center
+  const int ypos_s = ypos + (buttonHeight - font.getFontHeight() + 1) / 2; // align to button vertical center
   myCurrentTimeWidget = new StaticTextWidget(this, font, xpos, ypos_s, "00:00.00", TextAlign::Left, kBGColor);
   myCurrentTimeWidget->setFlags(Widget::FLAG_CLEARBG | Widget::FLAG_NOBG);
   myCurrentTimeWidget->setTextColor(kColorInfo);
@@ -295,7 +291,7 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   xpos = myLoadAllWidget->getRight() + BUTTON_GAP * 4;
 
   // Add message
-  int mWidth = (myLastTimeWidget->getLeft() - xpos) / font.getMaxCharWidth();
+  const int mWidth = (myLastTimeWidget->getLeft() - xpos) / font.getMaxCharWidth();
   const string blanks = "                                             ";
 
   myMessageWidget = new StaticTextWidget(this, font, xpos, ypos_s,
@@ -332,7 +328,7 @@ void TimeMachineDialog::loadConfig()
 void TimeMachineDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
 {
   // The following shortcuts duplicate the shortcuts in EventHandler
-  Event::Type event = instance().eventHandler().eventForKey(EventMode::kEmulationMode, key, mod);
+  const Event::Type event = instance().eventHandler().eventForKey(EventMode::kEmulationMode, key, mod);
 
   switch(event)
   {
@@ -395,7 +391,7 @@ void TimeMachineDialog::handleKeyUp(StellaKey key, StellaMod mod)
   // The following shortcuts duplicate the shortcuts in EventHandler
   // Note: mode switches must happen in key UP
 
-  Event::Type event = instance().eventHandler().eventForKey(EventMode::kEmulationMode, key, mod);
+  const Event::Type event = instance().eventHandler().eventForKey(EventMode::kEmulationMode, key, mod);
 
   if(event == Event::TogglePlayBackMode || key == KBDK_SPACE)
     handleCommand(nullptr, kPlayBack, 0, 0);
@@ -411,7 +407,7 @@ void TimeMachineDialog::handleCommand(CommandSender* sender, int cmd,
   {
     case kTimeline:
     {
-      Int32 winds = myTimeline->getValue() -
+      const Int32 winds = myTimeline->getValue() -
           instance().state().rewindManager().getCurrentIdx() + 1;
       handleWinds(winds);
       break;
@@ -468,7 +464,7 @@ void TimeMachineDialog::handleCommand(CommandSender* sender, int cmd,
     case Event::PreviousState:
     case Event::NextState:
     case Event::LoadState:
-      instance().eventHandler().handleEvent(Event::Type(cmd));
+      instance().eventHandler().handleEvent(static_cast<Event::Type>(cmd));
       break;
 
     case Event::TakeSnapshot:
@@ -488,7 +484,7 @@ void TimeMachineDialog::initBar()
   IntArray cycles = r.cyclesList();
 
   // Set range and intervals for timeline
-  uInt32 maxValue = cycles.size() > 1 ? uInt32(cycles.size() - 1) : 0;
+  const uInt32 maxValue = cycles.size() > 1 ? static_cast<uInt32>(cycles.size() - 1) : 0;
   myTimeline->setMaxValue(maxValue);
   myTimeline->setStepValues(cycles);
 
@@ -504,15 +500,15 @@ string TimeMachineDialog::getTimeString(uInt64 cycles) const
 {
   const Int32 scanlines = std::max<Int32>(instance().console().tia().scanlinesLastFrame(), 240);
   const bool isNTSC = scanlines <= 287;
-  const Int32 NTSC_FREQ = 1193182; // ~76*262*60
-  const Int32 PAL_FREQ  = 1182298; // ~76*312*50
+  constexpr Int32 NTSC_FREQ = 1193182; // ~76*262*60
+  constexpr Int32 PAL_FREQ  = 1182298; // ~76*312*50
   const Int32 freq = isNTSC ? NTSC_FREQ : PAL_FREQ; // = cycles/second
 
-  uInt32 minutes = uInt32(cycles / (freq * 60));
+  const uInt32 minutes = static_cast<uInt32>(cycles / (freq * 60));
   cycles -= minutes * (freq * 60);
-  uInt32 seconds = uInt32(cycles / freq);
+  const uInt32 seconds = static_cast<uInt32>(cycles / freq);
   cycles -= seconds * freq;
-  uInt32 frames = uInt32(cycles / (scanlines * 76));
+  const uInt32 frames = static_cast<uInt32>(cycles / (scanlines * 76));
 
   stringstream time;
   time << Common::Base::toString(minutes, Common::Base::Fmt::_10_02) << ":";
@@ -529,11 +525,11 @@ void TimeMachineDialog::handleWinds(Int32 numWinds)
 
   if(numWinds)
   {
-    uInt64 startCycles = r.getCurrentCycles();
+    const uInt64 startCycles = r.getCurrentCycles();
     if(numWinds < 0)      r.rewindStates(-numWinds);
     else if(numWinds > 0) r.unwindStates(numWinds);
 
-    uInt64 elapsed = instance().console().tia().cycles() - startCycles;
+    const uInt64 elapsed = instance().console().tia().cycles() - startCycles;
     if(elapsed > 0)
     {
       string message = r.getUnitString(elapsed);

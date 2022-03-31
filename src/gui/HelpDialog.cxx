@@ -38,7 +38,6 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap();
-  int xpos, ypos;
   WidgetArray wid;
 
   // Set real dimensions
@@ -46,7 +45,7 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
   _h = _th + 11 * lineHeight + VGAP * 3 + buttonHeight + VBORDER * 2;
 
   // Add Previous, Next and Close buttons
-  xpos = HBORDER;  ypos = _h - buttonHeight - VBORDER;
+  int xpos = HBORDER, ypos = _h - buttonHeight - VBORDER;
   myPrevButton =
     new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
                      "<<", GuiObject::kPrevCmd);
@@ -79,7 +78,7 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
                                  "", TextAlign::Center);
   myTitle->setTextColor(kTextColorEm);
 
-  int lwidth = 15 * fontWidth;
+  const int lwidth = 15 * fontWidth;
   ypos += lineHeight + VGAP * 2;
   for(uInt32 i = 0; i < LINES_PER_PAGE; ++i)
   {
@@ -100,19 +99,19 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
 void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
 {
   int i = 0;
-  auto ADD_BIND = [&](const string& k, const string& d)
+  const auto ADD_BIND = [&](const string& k, const string& d)
   {
     myKeyStr[i] = k;  myDescStr[i] = d;  i++;
   };
-  auto ADD_EVENT = [&](const Event::Type e, const string & d)
+  const auto ADD_EVENT = [&](const Event::Type e, const string & d)
   {
     string desc = instance().eventHandler().getMappingDesc(e, EventMode::kEmulationMode);
     if(!desc.length())
       desc = instance().eventHandler().getMappingDesc(e, EventMode::kMenuMode);
     ADD_BIND(desc.length() ? desc : "None", d);
   };
-  auto ADD_TEXT = [&](const string& d) { ADD_BIND("", d); };
-  auto ADD_LINE = [&]() { ADD_BIND("", ""); };
+  const auto ADD_TEXT = [&](const string& d) { ADD_BIND("", d); };
+  const auto ADD_LINE = [&]() { ADD_BIND("", ""); };
 
   setHelpAnchor("Hotkeys");
   switch(page)

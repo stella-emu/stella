@@ -53,7 +53,7 @@ int Font::getStringWidth(const string& str) const
 {
   // If no width table is specified, use the maximum width
   if(!myFontDesc.width)
-    return myFontDesc.maxwidth * int(str.size());
+    return myFontDesc.maxwidth * static_cast<int>(str.size());
   else
     return std::accumulate(str.cbegin(), str.cend(), 0,
         [&](int x, char c) { return x + getCharWidth(c); });

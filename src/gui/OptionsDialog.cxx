@@ -77,7 +77,7 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
     _h += rowHeight + VGAP * 2;
   }
 
-  auto ADD_OD_BUTTON = [&](const string& label, int cmd)
+  const auto ADD_OD_BUTTON = [&](const string& label, int cmd)
   {
     ButtonWidget* bw = new ButtonWidget(this, _font, xoffset, yoffset,
             buttonWidth, buttonHeight, label, cmd);

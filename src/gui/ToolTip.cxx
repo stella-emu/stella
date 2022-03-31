@@ -143,13 +143,14 @@ void ToolTip::show(const string& tip)
 {
   myTipPos = myMousePos;
 
-  uInt32 maxWidth = std::min(myWidth - myTextXOfs * 2, uInt32(myFont->getStringWidth(tip)));
+  const uInt32 maxWidth = std::min(myWidth - myTextXOfs * 2,
+                                   static_cast<uInt32>(myFont->getStringWidth(tip)));
 
   surface()->fillRect(1, 1, maxWidth + myTextXOfs * 2 - 2, myHeight - 2, kWidColor);
-  int lines = std::min(MAX_ROWS,
-                       uInt32(surface()->drawString(*myFont, tip, myTextXOfs, myTextYOfs,
-                                                    maxWidth, myHeight - myTextYOfs * 2,
-                                                    kTextColor)));
+  const int lines = std::min(MAX_ROWS,
+      static_cast<uInt32>(surface()->drawString(*myFont, tip, myTextXOfs, myTextYOfs,
+                                                maxWidth, myHeight - myTextYOfs * 2,
+                                                kTextColor)));
   // Calculate maximum width of drawn string lines
   uInt32 width = 0;
   string inStr = tip;
@@ -165,11 +166,11 @@ void ToolTip::show(const string& tip)
 
   // Calculate and set surface size and position
   const uInt32 height = std::min(myHeight, myFont->getFontHeight() * lines + myTextYOfs * 2);
-  const uInt32 V_GAP = 1;
-  const uInt32 H_CURSOR = 18;
+  constexpr uInt32 V_GAP = 1;
+  constexpr uInt32 H_CURSOR = 18;
   // Note: The rects include HiDPI scaling
-  const Common::Rect imageRect = myDialog.instance().frameBuffer().imageRect();
-  const Common::Rect dialogRect = myDialog.surface().dstRect();
+  const Common::Rect& imageRect = myDialog.instance().frameBuffer().imageRect();
+  const Common::Rect& dialogRect = myDialog.surface().dstRect();
   // Limit position to app size and adjust accordingly
   const Int32 xAbs = myTipPos.x + dialogRect.x() / myScale;
   const uInt32 yAbs = myTipPos.y + dialogRect.y() / myScale;

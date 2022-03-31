@@ -44,10 +44,8 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap();
   const int selectHeight = lineHeight + VGAP * 3;
-  int xpos, ypos;
-  ButtonWidget* b;
-
-  xpos = HBORDER;  ypos = VBORDER + _th;
+  int xpos = HBORDER, ypos = VBORDER + _th;
+  ButtonWidget* b = nullptr;
 
   // Current path
   _navigationBar = new NavigationWidget(this, font, xpos, ypos, _w - HBORDER * 2, buttonHeight);
@@ -122,7 +120,7 @@ void BrowserDialog::show(GuiObject* parent, const GUI::Font& font,
   uInt32 w = 0, h = 0;
 
   static_cast<Dialog*>(parent)->getDynamicBounds(w, h);
-  if(w > uInt32(font.getMaxCharWidth() * 80))
+  if(w > static_cast<uInt32>(font.getMaxCharWidth() * 80))
     w = font.getMaxCharWidth() * 80;
 
   if(ourBrowser == nullptr || &ourBrowser->parent() != &parent->parent())
@@ -277,7 +275,7 @@ void BrowserDialog::handleCommand(CommandSender* sender, int cmd,
       // Send a signal to the calling class that a selection has been made
       if(_mode != Mode::Directories)
       {
-        bool savePath = _savePathBox->getState();
+        const bool savePath = _savePathBox->getState();
 
         instance().settings().setValue("saveuserdir", savePath);
         if(savePath)

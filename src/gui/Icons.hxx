@@ -26,8 +26,8 @@
 namespace GUI {
 
 /* Exported structure definition. */
-static const IconDesc iconSmallDesc(14, 14);
-static const IconDesc iconLargeDesc(19, 20);
+static constexpr IconDesc iconSmallDesc(14, 14);
+static constexpr IconDesc iconLargeDesc(19, 20);
 
 // Settings icon
 static const Icon icon_settings_small(

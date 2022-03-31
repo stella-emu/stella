@@ -83,7 +83,6 @@ void MessageBox::addText(const GUI::Font& font, const StringList& text)
             fontHeight = Dialog::fontHeight(),
             VBORDER    = Dialog::vBorder(),
             HBORDER    = Dialog::hBorder();
-  int xpos, ypos;
   // Set real dimensions
   int str_w = 0;
 
@@ -92,7 +91,8 @@ void MessageBox::addText(const GUI::Font& font, const StringList& text)
   _w = std::min(str_w * fontWidth + HBORDER * 2, _w);
   _h = std::min(uInt32((text.size() + 2) * fontHeight + VBORDER * 2 + _th), uInt32(_h));
 
-  xpos = HBORDER;  ypos = VBORDER + _th;
+  const int xpos = HBORDER;
+  int ypos = VBORDER + _th;
   for(const auto& s: text)
   {
     new StaticTextWidget(this, font, xpos, ypos, _w - HBORDER * 2,

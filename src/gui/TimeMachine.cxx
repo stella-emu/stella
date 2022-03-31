@@ -45,7 +45,7 @@ void TimeMachine::requestResize()
   {
     myWidth = w;
     Dialog* oldPtr = myBaseDialog;
-    Int32 enterWinds = static_cast<TimeMachineDialog*>(myBaseDialog)->getEnterWinds();
+    const Int32 enterWinds = static_cast<TimeMachineDialog*>(myBaseDialog)->getEnterWinds();
     delete myBaseDialog;
     myBaseDialog = new TimeMachineDialog(myOSystem, *this, myWidth);
     setEnterWinds(enterWinds);

@@ -30,7 +30,7 @@ MessageMenu::MessageMenu(OSystem& osystem)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 MessageMenu::~MessageMenu()
 {
-  delete myMessageDialog; myMessageDialog = nullptr;
+  delete myMessageDialog;  myMessageDialog = nullptr;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

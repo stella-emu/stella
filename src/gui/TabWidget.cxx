@@ -63,17 +63,17 @@ int TabWidget::getChildY() const
 int TabWidget::addTab(const string& title, int tabWidth)
 {
   // Add a new tab page
-  int newWidth = _font.getStringWidth(title) + 2 * kTabPadding;
+  const int newWidth = _font.getStringWidth(title) + 2 * kTabPadding;
 
   if(tabWidth == AUTO_WIDTH)
     _tabs.push_back(Tab(title, newWidth));
   else
     _tabs.push_back(Tab(title, tabWidth));
-  int numTabs = int(_tabs.size());
+  const int numTabs = static_cast<int>(_tabs.size());
 
   // Determine the new tab width
   int fixedWidth = 0, fixedTabs = 0;
-  for(int i = 0; i < int(_tabs.size()); ++i)
+  for(int i = 0; i < static_cast<int>(_tabs.size()); ++i)
   {
     if(_tabs[i].tabWidth != NO_WIDTH)
     {
@@ -88,7 +88,7 @@ int TabWidget::addTab(const string& title, int tabWidth)
 
   if(numTabs - fixedTabs)
   {
-    int maxWidth = (_w - kTabLeftOffset - fixedWidth) / (numTabs - fixedTabs) - kTabLeftOffset;
+    const int maxWidth = (_w - kTabLeftOffset - fixedWidth) / (numTabs - fixedTabs) - kTabLeftOffset;
     if(_tabWidth > maxWidth)
       _tabWidth = maxWidth;
   }
@@ -165,12 +165,12 @@ void TabWidget::cycleTab(int direction)
   {
     tabID--;
     if(tabID == -1)
-      tabID = int(_tabs.size()) - 1;
+      tabID = static_cast<int>(_tabs.size()) - 1;
   }
   else if(direction == 1)  // Go to the next tab, wrap around at end
   {
     tabID++;
-    if(tabID == int(_tabs.size()))
+    if(tabID == static_cast<int>(_tabs.size()))
       tabID = 0;
   }
 
@@ -182,7 +182,7 @@ void TabWidget::cycleTab(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TabWidget::setParentWidget(int tabID, Widget* parent)
 {
-  assert(0 <= tabID && tabID < int(_tabs.size()));
+  assert(0 <= tabID && tabID < static_cast<int>(_tabs.size()));
   _tabs[tabID].parentWidget = parent;
 }
 
@@ -210,9 +210,9 @@ void TabWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
   int tabID = -1;
   x -= kTabLeftOffset;
 
-  for(int i = 0; i < int(_tabs.size()); ++i)
+  for(int i = 0; i < static_cast<int>(_tabs.size()); ++i)
   {
-    int tabWidth = _tabs[i].tabWidth ? _tabs[i].tabWidth : _tabWidth;
+    const int tabWidth = _tabs[i].tabWidth ? _tabs[i].tabWidth : _tabWidth;
     if(x >= 0 && x < tabWidth)
     {
       tabID = i;
@@ -283,12 +283,12 @@ void TabWidget::drawWidget(bool hilite)
     FBSurface& s = dialog().surface();
 
     // Iterate over all tabs and draw them
-    int i, x = _x + kTabLeftOffset;
-    for(i = 0; i < int(_tabs.size()); ++i)
+    int x = _x + kTabLeftOffset;
+    for(int i = 0; i < static_cast<int>(_tabs.size()); ++i)
     {
-      int tabWidth = _tabs[i].tabWidth ? _tabs[i].tabWidth : _tabWidth;
-      ColorId fontcolor = _tabs[i].enabled ? kTextColor : kColor;
-      int yOffset = (i == _activeTab) ? 0 : 1;
+      const int tabWidth = _tabs[i].tabWidth ? _tabs[i].tabWidth : _tabWidth;
+      const ColorId fontcolor = _tabs[i].enabled ? kTextColor : kColor;
+      const int yOffset = (i == _activeTab) ? 0 : 1;
       s.fillRect(x, _y + 1, tabWidth, _tabHeight - 1,
                  (i == _activeTab)
                  ? kDlgColor : kBGColorHi); // ? kWidColor : kDlgColor

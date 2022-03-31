@@ -49,7 +49,7 @@ CommandDialog::CommandDialog(OSystem& osystem, DialogContainer& parent)
   WidgetArray wid;
   int xoffset = HBORDER, yoffset = VBORDER + _th;
 
-  auto ADD_CD_BUTTON = [&](const string& label, int cmd)
+  const auto ADD_CD_BUTTON = [&](const string& label, int cmd)
   {
     ButtonWidget* b = new ButtonWidget(this, _font, xoffset, yoffset,
             buttonWidth, buttonHeight, label, cmd);
@@ -173,8 +173,7 @@ void CommandDialog::handleCommand(CommandSender* sender, int cmd,
     {
       event = Event::NextState;
       stateCmd = true;
-      int slot = (instance().state().currentSlot() + 1) % 10;
-      updateSlot(slot);
+      updateSlot((instance().state().currentSlot() + 1) % 10);
       break;
     }
     case kLoadStateCmd:
