@@ -114,8 +114,14 @@ class Widget : public GuiObject
     void setBGColorHi(ColorId color)   { _bgcolorhi = color;   setDirty(); }
     void setShadowColor(ColorId color) { _shadowcolor = color; setDirty(); }
 
-    void setToolTip(const string& text);
-    virtual string getToolTip(const Common::Point& pos) const { return _toolTipText; }
+    void setToolTip(const string& text,
+      Event::Type event1 = Event::Type::NoType, EventMode = EventMode::kEmulationMode);
+    void setToolTip(const string& text,
+      Event::Type event1, Event::Type event2, EventMode = EventMode::kEmulationMode);
+    void setToolTip(Event::Type event1, EventMode mode = EventMode::kEmulationMode);
+    void setToolTip(Event::Type event1, Event::Type event2,
+      EventMode mode = EventMode::kEmulationMode);
+    virtual string getToolTip(const Common::Point& pos) const;
     virtual bool changedToolTip(const Common::Point& oldPos,
                                 const Common::Point& newPos) const { return false; }
 
@@ -135,7 +141,7 @@ class Widget : public GuiObject
     void releaseFocus() override { assert(_boss); _boss->releaseFocus(); }
 
     virtual bool wantsToolTip() const { return hasMouseFocus() && hasToolTip(); }
-    virtual bool hasToolTip() const { return !_toolTipText.empty(); }
+    virtual bool hasToolTip() const;
 
     // By default, delegate unhandled commands to the boss
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override
@@ -145,24 +151,27 @@ class Widget : public GuiObject
     bool hasHelp() const override { return !getHelpURL().empty(); }
 
   protected:
-    GuiObject* _boss{nullptr};
+    GuiObject*  _boss{nullptr};
     const GUI::Font& _font;
-    Widget*    _next{nullptr};
-    uInt32     _id{0};
-    bool       _hasFocus{false};
-    int        _fontWidth{0};
-    int        _lineHeight{0};
-    ColorId    _bgcolor{kWidColor};
-    ColorId    _bgcolorhi{kWidColor};
-    ColorId    _bgcolorlo{kBGColorLo};
-    ColorId    _textcolor{kTextColor};
-    ColorId    _textcolorhi{kTextColorHi};
-    ColorId    _textcolorlo{kBGColorLo};
-    ColorId    _shadowcolor{kShadowColor};
-    string     _toolTipText;
-    string     _helpAnchor;
-    string     _helpURL;
-    bool       _debuggerHelp{false};
+    Widget*     _next{nullptr};
+    uInt32      _id{0};
+    bool        _hasFocus{false};
+    int         _fontWidth{0};
+    int         _lineHeight{0};
+    ColorId     _bgcolor{kWidColor};
+    ColorId     _bgcolorhi{kWidColor};
+    ColorId     _bgcolorlo{kBGColorLo};
+    ColorId     _textcolor{kTextColor};
+    ColorId     _textcolorhi{kTextColorHi};
+    ColorId     _textcolorlo{kBGColorLo};
+    ColorId     _shadowcolor{kShadowColor};
+    string      _toolTipText;
+    Event::Type _toolTipEvent1{Event::NoType};
+    Event::Type _toolTipEvent2{Event::NoType};
+    EventMode   _toolTipMode{EventMode::kEmulationMode};
+    string      _helpAnchor;
+    string      _helpURL;
+    bool        _debuggerHelp{false};
 
   public:
     static Widget* findWidgetInChain(Widget* start, int x, int y);

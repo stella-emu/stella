@@ -25,6 +25,7 @@
 #include "FBSurface.hxx"
 #include "GuiObject.hxx"
 #include "OSystem.hxx"
+#include "EventHandler.hxx"
 
 #include "Widget.hxx"
 
@@ -277,11 +278,73 @@ void Widget::setEnabled(bool e)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Widget::setToolTip(const string& text)
+void Widget::setToolTip(const string& text, Event::Type event1, EventMode mode)
+{
+  setToolTip(text, event1, Event::Type::NoType, mode);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Widget::setToolTip(const string& text, Event::Type event1, Event::Type event2, EventMode mode)
 {
   assert(text.length() <= ToolTip::MAX_LEN);
 
   _toolTipText = text;
+  setToolTip(event1, event2, mode);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Widget::setToolTip(Event::Type event1, EventMode mode)
+{
+  setToolTip(event1, Event::Type::NoType, mode);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Widget::setToolTip(Event::Type event1, Event::Type event2, EventMode mode)
+{
+  _toolTipEvent1 = event1;
+  _toolTipEvent2 = event2;
+  _toolTipMode = mode;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string Widget::getToolTip(const Common::Point& pos) const
+{
+  string hotkey = instance().eventHandler().keyHandler().getMappingDesc(_toolTipEvent1, _toolTipMode);
+  string hotkey2 = instance().eventHandler().keyHandler().getMappingDesc(_toolTipEvent2, _toolTipMode);
+
+  if(hotkey2 != EmptyString)
+  {
+    // Merge hotkeys if they only differ by "+Shift"
+    const string mod = "+Shift";
+    size_t p = BSPF::findIgnoreCase(hotkey, mod);
+
+    if(p != string::npos)
+    {
+      string testKey = hotkey.substr(0, p) + hotkey.substr(p + string(mod).length());
+      if(testKey == hotkey2)
+        hotkey = hotkey.substr(0, p) + "[" + mod + "]" + hotkey.substr(p + string(mod).length());
+      else
+        hotkey += ", " + hotkey2;
+    }
+    else
+      hotkey += ", " + hotkey2;
+  }
+
+  if(hotkey == EmptyString)
+    return _toolTipText;
+  else if(_toolTipText == EmptyString)
+    return "(" + hotkey + ")";
+  else
+    if(_toolTipText.length() + hotkey.length() + 3 <= ToolTip::MAX_COLUMNS)
+      return _toolTipText + " (" + hotkey + ")";
+    else
+      return _toolTipText + "\n(" + hotkey + ")";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Widget::hasToolTip() const
+{
+  return !_toolTipText.empty() || _toolTipEvent1 != Event::Type::NoType;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

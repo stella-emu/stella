@@ -33,8 +33,10 @@ class FBSurface;
 
 class ToolTip
 {
-  private:
+  public:
     static constexpr uInt32 MAX_COLUMNS = 60;
+
+  private:
     static constexpr uInt32 MAX_ROWS = 5;
 
   public:

@@ -104,15 +104,18 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   mySettingsGroupEmulation = new RadioButtonGroup();
   RadioButtonWidget* r = new RadioButtonWidget(myTab, font, HBORDER, ypos + 1,
                                                "Player settings", mySettingsGroupEmulation, kPlrSettings);
+  r->setToolTip(Event::ToggleDeveloperSet);
   wid.push_back(r);
   ypos += lineHeight + VGAP;
   r = new RadioButtonWidget(myTab, font, HBORDER, ypos + 1,
                             "Developer settings", mySettingsGroupEmulation, kDevSettings);
+  r->setToolTip(Event::ToggleDeveloperSet);
   wid.push_back(r);
   ypos += lineHeight + VGAP * 1;
 
   myFrameStatsWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1,
                                           "Console info overlay");
+  myFrameStatsWidget->setToolTip(Event::ToggleFrameStats);
   wid.push_back(myFrameStatsWidget);
 
   myDetectedInfoWidget = new CheckboxWidget(myTab, font,
@@ -239,10 +242,12 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
   mySettingsGroupTia = new RadioButtonGroup();
   RadioButtonWidget* r = new RadioButtonWidget(myTab, font, HBORDER, ypos + 1,
                                                "Player settings", mySettingsGroupTia, kPlrSettings);
+  r->setToolTip(Event::ToggleDeveloperSet);
   wid.push_back(r);
   ypos += lineHeight + VGAP;
   r = new RadioButtonWidget(myTab, font, HBORDER, ypos + 1,
                             "Developer settings", mySettingsGroupTia, kDevSettings);
+  r->setToolTip(Event::ToggleDeveloperSet);
   wid.push_back(r);
   ypos += lineHeight + VGAP * 1;
 
@@ -355,24 +360,27 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
   mySettingsGroupVideo = new RadioButtonGroup();
   RadioButtonWidget* r = new RadioButtonWidget(myTab, font, HBORDER, ypos + 1,
                                                "Player settings", mySettingsGroupVideo, kPlrSettings);
+  r->setToolTip(Event::ToggleDeveloperSet);
   wid.push_back(r);
   ypos += lineHeight + VGAP;
   r = new RadioButtonWidget(myTab, font, HBORDER, ypos + 1,
                             "Developer settings", mySettingsGroupVideo, kDevSettings);
+  r->setToolTip(Event::ToggleDeveloperSet);
   wid.push_back(r);
   ypos += lineHeight + VGAP * 1;
 
   // TV jitter effect
   myTVJitterWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1,
                                         "Jitter/roll effect", kTVJitter);
-  myTVJitterWidget->setToolTip("Enable to emulate TV loss of sync.");
+  myTVJitterWidget->setToolTip("Enable to emulate TV loss of sync.", Event::ToggleJitter);
   wid.push_back(myTVJitterWidget);
   myTVJitterRecWidget = new SliderWidget(myTab, font,
                                          myTVJitterWidget->getRight() + fontWidth * 3, ypos - 1,
                                          "Recovery ", 0, kTVJitterChanged);
   myTVJitterRecWidget->setMinValue(1); myTVJitterRecWidget->setMaxValue(20);
   myTVJitterRecWidget->setTickmarkIntervals(5);
-  myTVJitterRecWidget->setToolTip("Define speed of sync recovery.");
+  myTVJitterRecWidget->setToolTip("Define speed of sync recovery.",
+    Event::JitterDecrease, Event::JitterIncrease);
   wid.push_back(myTVJitterRecWidget);
   myTVJitterRecLabelWidget = new StaticTextWidget(myTab, font,
                                                   myTVJitterRecWidget->getRight() + 4,
@@ -383,13 +391,14 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
   myColorLossWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1,
                                          "PAL color-loss");
   myColorLossWidget->setToolTip("PAL games with odd scanline count\n"
-                                "will be displayed without color.");
+                                "will be displayed without color.", Event::ToggleColorLoss);
   wid.push_back(myColorLossWidget);
   ypos += lineHeight + VGAP;
 
   // debug colors
   myDebugColorsWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1,
                                            "Debug colors (*)");
+  myDebugColorsWidget->setToolTip(Event::ToggleFixedColors);
   wid.push_back(myDebugColorsWidget);
   ypos += lineHeight + VGAP + 2;
 
@@ -498,16 +507,19 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
   mySettingsGroupTM = new RadioButtonGroup();
   RadioButtonWidget* r = new RadioButtonWidget(myTab, font, xpos, ypos + 1,
                                                "Player settings", mySettingsGroupTM, kPlrSettings);
+  r->setToolTip(Event::ToggleDeveloperSet);
   wid.push_back(r);
   ypos += lineHeight + VGAP;
   r = new RadioButtonWidget(myTab, font, xpos, ypos + 1,
                             "Developer settings", mySettingsGroupTM, kDevSettings);
+  r->setToolTip(Event::ToggleDeveloperSet);
   wid.push_back(r);
   xpos += INDENT;
   ypos += lineHeight + VGAP * 1;
 
   myTimeMachineWidget = new CheckboxWidget(myTab, font, xpos, ypos + 1,
                                            "Time Machine", kTimeMachine);
+  myTimeMachineWidget->setToolTip(Event::ToggleTimeMachine);
   wid.push_back(myTimeMachineWidget);
   xpos += CheckboxWidget::prefixSize(font);
   ypos += lineHeight + VGAP;

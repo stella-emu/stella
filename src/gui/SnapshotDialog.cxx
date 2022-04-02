@@ -20,7 +20,6 @@
 #include "EditTextWidget.hxx"
 #include "FSNode.hxx"
 #include "Font.hxx"
-#include "LauncherDialog.hxx"
 #include "OSystem.hxx"
 #include "Settings.hxx"
 #include "SnapshotDialog.hxx"

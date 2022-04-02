@@ -139,6 +139,7 @@ void LauncherDialog::addOptionWidgets(int& ypos)
     mySettingsButton = new ButtonWidget(this, _font, xpos, ypos - btnYOfs,
       iconWidth, buttonHeight, settingsIcon,
       iconGap, " Options" + ELLIPSIS + " ", kOptionsCmd);
+    mySettingsButton-> setToolTip("(Ctrl+O)");
     wid.push_back(mySettingsButton);
 
     const int cwSettings = mySettingsButton->getWidth();
@@ -186,14 +187,14 @@ void LauncherDialog::addOptionWidgets(int& ypos)
     xpos = myPattern->getRight() + btnGap;
     myOnlyRomsButton = new ButtonWidget(this, _font, xpos, ypos - btnYOfs,
       buttonWidth, buttonHeight, dummyIcon, kAllfilesCmd);
-    myOnlyRomsButton->setToolTip("Toggle file type filter");
+    myOnlyRomsButton->setToolTip("Toggle file type filter (Ctrl+A)");
     wid.push_back(myOnlyRomsButton);
 
     // Show the subdirectories button
     xpos = myOnlyRomsButton->getRight() + btnGap;
     mySubDirsButton = new ButtonWidget(this, _font, xpos, ypos - btnYOfs,
       buttonWidth, buttonHeight, dummyIcon, kSubDirsCmd);
-    mySubDirsButton->setToolTip("Toggle subdirectories");
+    mySubDirsButton->setToolTip("Toggle subdirectories (Ctrl+D)");
     wid.push_back(mySubDirsButton);
 
     // Show the help button
@@ -201,7 +202,7 @@ void LauncherDialog::addOptionWidgets(int& ypos)
     myHelpButton = new ButtonWidget(this, _font, xpos, ypos - btnYOfs,
       buttonWidth, buttonHeight, helpIcon, kHelpCmd);
     const string key = instance().eventHandler().getMappingDesc(Event::UIHelp, EventMode::kMenuMode);
-    myHelpButton->setToolTip("Click or press " + key + " for help.");
+    myHelpButton->setToolTip("Click for help. (" + key + ")");
     wid.push_back(myHelpButton);
 
     // Show the files counter
@@ -244,7 +245,7 @@ void LauncherDialog::addPathWidgets(int& ypos)
     xpos = myNavigationBar->getRight() + BTN_GAP;
     myReloadButton = new ButtonWidget(this, _font, xpos, ypos,
       buttonWidth, buttonHeight, reloadIcon, kReloadCmd);
-    myReloadButton->setToolTip("Reload listing");
+    myReloadButton->setToolTip("Reload listing. (Ctrl+R)");
     wid.push_back(myReloadButton);
   }
   else
@@ -793,7 +794,6 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
     {
       case KBDK_A:
         sendCommand(kAllfilesCmd, 0, 0);
-        toggleShowAll();
         break;
 
       case KBDK_D:

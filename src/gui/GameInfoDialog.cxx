@@ -153,6 +153,7 @@ void GameInfoDialog::addEmulationTab()
   VarList::push_back(items, "SECAM60", "SECAM60");
   myFormat = new PopUpWidget(myTab, _font, t->getRight(), ypos,
                              pwidth, lineHeight, items);
+  myFormat->setToolTip(Event::FormatDecrease, Event::FormatIncrease);
   wid.push_back(myFormat);
 
   myFormatDetected = new StaticTextWidget(myTab, ifont, myFormat->getRight() + fontWidth, ypos + 4,
@@ -162,6 +163,7 @@ void GameInfoDialog::addEmulationTab()
   ypos += lineHeight + VGAP;
   myPhosphor = new CheckboxWidget(myTab, _font, HBORDER, ypos + 1,
                                   "Phosphor (enabled for all ROMs)", kPhosphorChanged);
+  myPhosphor->setToolTip(Event::TogglePhosphor);
   wid.push_back(myPhosphor);
 
   ypos += lineHeight + VGAP * 0;
@@ -170,6 +172,7 @@ void GameInfoDialog::addEmulationTab()
                                "Blend  ", 0, kPPBlendChanged, 4 * fontWidth, "%");
   myPPBlend->setMinValue(0); myPPBlend->setMaxValue(100);
   myPPBlend->setTickmarkIntervals(2);
+  myPPBlend->setToolTip(Event::PhosphorDecrease, Event::PhosphorIncrease);
   wid.push_back(myPPBlend);
 
   ypos += lineHeight + VGAP;
@@ -180,6 +183,7 @@ void GameInfoDialog::addEmulationTab()
   myVCenter->setMinValue(TIAConstants::minVcenter);
   myVCenter->setMaxValue(TIAConstants::maxVcenter);
   myVCenter->setTickmarkIntervals(4);
+  myVCenter->setToolTip(Event::VCenterDecrease, Event::VCenterIncrease);
   wid.push_back(myVCenter);
 
   ypos += lineHeight + VGAP * 3;
@@ -295,6 +299,7 @@ void GameInfoDialog::addControllersTab()
   myLeftPort = new PopUpWidget(myTab, _font, myLeftPortLabel->getRight(),
                                myLeftPortLabel->getTop()-1,
                                pwidth, lineHeight, items, "", 0, kLeftCChanged);
+  myLeftPort->setToolTip(Event::PreviousLeftPort, Event::NextLeftPort);
   wid.push_back(myLeftPort);
   ypos += lineHeight + VGAP;
 
@@ -306,6 +311,7 @@ void GameInfoDialog::addControllersTab()
   myRightPort = new PopUpWidget(myTab, _font, myRightPortLabel->getRight(),
                                 myRightPortLabel->getTop()-1,
                                 pwidth, lineHeight, items, "", 0, kRightCChanged);
+  myRightPort->setToolTip(Event::PreviousRightPort, Event::NextRightPort);
   wid.push_back(myRightPort);
 
   ypos += lineHeight + VGAP;
@@ -314,6 +320,7 @@ void GameInfoDialog::addControllersTab()
 
   mySwapPorts = new CheckboxWidget(myTab, _font, myLeftPort->getRight() + fontWidth * 4,
                                    myLeftPort->getTop() + 1, "Swap ports");
+  mySwapPorts->setToolTip(Event::ToggleSwapPorts);
   wid.push_back(mySwapPorts);
 
   myQuadTariButton = new ButtonWidget(myTab, _font, myRightPort->getRight() + fontWidth * 4, myRightPort->getTop() - 2,
@@ -334,6 +341,7 @@ void GameInfoDialog::addControllersTab()
   ypos += lineHeight + VGAP * 4;
 
   mySwapPaddles = new CheckboxWidget(myTab, _font, xpos, ypos, "Swap paddles");
+  mySwapPaddles->setToolTip(Event::ToggleSwapPaddles);
   wid.push_back(mySwapPaddles);
   ypos += lineHeight + VGAP;
 
@@ -393,7 +401,8 @@ void GameInfoDialog::addControllersTab()
                                   "Mouse axes range ", 0, 0, fontWidth * 4, "%");
   myMouseRange->setMinValue(1); myMouseRange->setMaxValue(100);
   myMouseRange->setTickmarkIntervals(4);
-  myMouseRange->setToolTip("Adjust paddle range emulated by the mouse.");
+  myMouseRange->setToolTip("Adjust paddle range emulated by the mouse.",
+    Event::DecreaseMouseAxesRange, Event::IncreaseMouseAxesRange);
   wid.push_back(myMouseRange);
 
   // Add items for tab 2
