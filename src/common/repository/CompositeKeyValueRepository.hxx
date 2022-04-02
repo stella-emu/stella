@@ -28,6 +28,7 @@ class CompositeKeyValueRepositoryAtomic;
 class CompositeKeyValueRepository
 {
   public:
+    CompositeKeyValueRepository() = default;
 
     virtual ~CompositeKeyValueRepository() = default;
 
@@ -38,6 +39,13 @@ class CompositeKeyValueRepository
     virtual void remove(const string& key) = 0;
 
     virtual CompositeKeyValueRepositoryAtomic* atomic() { return nullptr; }
+
+  private:
+    // Following constructors and assignment operators not supported
+    CompositeKeyValueRepository(const CompositeKeyValueRepository&) = delete;
+    CompositeKeyValueRepository(CompositeKeyValueRepository&&) = delete;
+    CompositeKeyValueRepository& operator=(const CompositeKeyValueRepository&) = delete;
+    CompositeKeyValueRepository& operator=(CompositeKeyValueRepository&&) = delete;
 };
 
 class CompositeKeyValueRepositoryAtomic : public CompositeKeyValueRepository

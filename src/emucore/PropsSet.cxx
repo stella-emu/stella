@@ -27,7 +27,10 @@
 #include "repository/KeyValueRepositoryPropertyFile.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PropertiesSet::PropertiesSet() : myRepository{make_shared<CompositeKeyValueRepositoryNoop>()} {}
+PropertiesSet::PropertiesSet()
+  : myRepository{make_shared<CompositeKeyValueRepositoryNoop>()}
+{
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PropertiesSet::setRepository(shared_ptr<CompositeKeyValueRepository> repository)

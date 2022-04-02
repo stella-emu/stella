@@ -126,22 +126,22 @@ class ZipHandler
       void readEcd();
 
       /** Read data from stream */
-      bool readStream(ByteBuffer& out, uInt64 offset, uInt64 length, uInt64& actual);
+      bool readStream(const ByteBuffer& out, uInt64 offset, uInt64 length, uInt64& actual);
 
       /** Return the next entry in the ZIP file */
       const ZipHeader* nextFile();
 
       /** Decompress the most recently found file in the ZIP into target buffer */
-      void decompress(ByteBuffer& out, uInt64 length);
+      void decompress(const ByteBuffer& out, uInt64 length);
 
       /** Return the offset of the compressed data */
       uInt64 getCompressedDataOffset();
 
       /** Decompress type 0 data (which is uncompressed) */
-      void decompressDataType0(uInt64 offset, ByteBuffer& out, uInt64 length);
+      void decompressDataType0(uInt64 offset, const ByteBuffer& out, uInt64 length);
 
       /** Decompress type 8 data (which is deflated) */
-      void decompressDataType8(uInt64 offset, ByteBuffer& out, uInt64 length);
+      void decompressDataType8(uInt64 offset, const ByteBuffer& out, uInt64 length);
     };
     using ZipFilePtr = unique_ptr<ZipFile>;
 

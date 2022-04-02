@@ -167,24 +167,6 @@ bool AnalogReadout::load(Serializer& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AnalogReadout::Connection AnalogReadout::connectToGround(uInt32 resistance)
-{
-  return Connection{ConnectionType::ground, resistance};
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AnalogReadout::Connection AnalogReadout::connectToVcc(uInt32 resistance)
-{
-  return Connection{ConnectionType::vcc, resistance};
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AnalogReadout::Connection AnalogReadout::disconnect()
-{
-  return Connection{ConnectionType::disconnected, 0};
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool AnalogReadout::Connection::save(Serializer& out) const
 {
   try

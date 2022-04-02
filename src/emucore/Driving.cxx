@@ -25,9 +25,9 @@ Driving::Driving(Jack jack, const Event& event, const System& system, bool altma
   {
     if(!altmap)
     {
-      myCCWEvent  = Event::LeftDrivingCCW;
-      myCWEvent   = Event::LeftDrivingCW;
-      myFireEvent = Event::LeftDrivingFire;
+      myCCWEvent    = Event::LeftDrivingCCW;
+      myCWEvent     = Event::LeftDrivingCW;
+      myFireEvent   = Event::LeftDrivingFire;
       myAnalogEvent = Event::LeftDrivingAnalog;
     }
     else
@@ -43,9 +43,9 @@ Driving::Driving(Jack jack, const Event& event, const System& system, bool altma
   {
     if(!altmap)
     {
-      myCCWEvent  = Event::RightDrivingCCW;
-      myCWEvent   = Event::RightDrivingCW;
-      myFireEvent = Event::RightDrivingFire;
+      myCCWEvent    = Event::RightDrivingCCW;
+      myCWEvent     = Event::RightDrivingCW;
+      myFireEvent   = Event::RightDrivingFire;
       myAnalogEvent = Event::RightDrivingAnalog;
     }
     else

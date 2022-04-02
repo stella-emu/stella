@@ -30,7 +30,7 @@
 FileListWidget::FileListWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, int w, int h)
   : StringListWidget(boss, font, x, y, w, h),
-    _filter{[](const FilesystemNode& node) { return true; }}
+    _filter{[](const FilesystemNode&) { return true; }}
 {
   // This widget is special, in that it catches signals and redirects them
   setTarget(this);

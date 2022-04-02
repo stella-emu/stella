@@ -72,7 +72,8 @@ namespace {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 KeyValueRepositoryPropertyFile::KeyValueRepositoryPropertyFile(const FilesystemNode& node)
   : KeyValueRepositoryFile<KeyValueRepositoryPropertyFile>(node)
-{}
+{
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 std::map<string, Variant> KeyValueRepositoryPropertyFile::load(istream& in)

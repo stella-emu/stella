@@ -37,7 +37,7 @@ class Sound
       Create a new sound object.  The open method must be invoked before
       using the object.
     */
-    Sound(OSystem& osystem) : myOSystem(osystem) { }
+    Sound(OSystem& osystem) : myOSystem{osystem} { }
     virtual ~Sound() = default;
 
   public:

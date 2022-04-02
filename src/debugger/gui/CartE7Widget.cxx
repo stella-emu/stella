@@ -61,7 +61,7 @@ CartridgeE7Widget::CartridgeE7Widget(
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeE7Widget::initialize(GuiObject* boss,
-    CartridgeE7& cart, ostringstream& info)
+    const CartridgeE7& cart, const ostringstream& info)
 {
   const uInt32 size = cart.romBankCount() * cart.BANK_SIZE;
 

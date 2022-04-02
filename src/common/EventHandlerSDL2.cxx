@@ -99,8 +99,8 @@ void EventHandlerSDL2::pollEvent()
       case SDL_KEYUP:
       case SDL_KEYDOWN:
       {
-        handleKeyEvent(StellaKey(myEvent.key.keysym.scancode),
-                       StellaMod(myEvent.key.keysym.mod),
+        handleKeyEvent(static_cast<StellaKey>(myEvent.key.keysym.scancode),
+                       static_cast<StellaMod>(myEvent.key.keysym.mod),
                        myEvent.key.type == SDL_KEYDOWN,
                        myEvent.key.repeat);
         break;

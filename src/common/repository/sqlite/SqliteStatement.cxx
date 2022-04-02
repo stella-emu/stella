@@ -62,7 +62,7 @@ SqliteStatement& SqliteStatement::bind(int index, Int32 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool SqliteStatement::step()
 {
-  int result = sqlite3_step(myStmt);
+  const int result = sqlite3_step(myStmt);
 
   if (result == SQLITE_ERROR) throw SqliteError(myHandle);
 

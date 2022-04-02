@@ -47,8 +47,8 @@ DrivingWidget::DrivingWidget(GuiObject* boss, const GUI::Font& font,
     const int lwidth = font.getStringWidth("Right (Driving)"),
       bWidth = font.getStringWidth("Gray code +") + _fontWidth * 1.25;
 
-    StaticTextWidget* t = new StaticTextWidget(boss, font, xpos, ypos + 2, lwidth,
-                                               lineHeight, label, TextAlign::Left);
+    const StaticTextWidget* t = new StaticTextWidget(boss, font, xpos, ypos + 2, lwidth,
+                                                     lineHeight, label, TextAlign::Left);
 
     ypos = t->getBottom() + _lineHeight * 1.334;
     myGrayUp = new ButtonWidget(boss, font, xpos, ypos, bWidth, bHeight,
@@ -125,10 +125,7 @@ void DrivingWidget::handleCommand(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DrivingWidget::setValue(int idx)
 {
-  int grayCode = ourGrayTable[idx];
+  const int grayCode = ourGrayTable[idx];
   // FIXME  * 8 = a nasty hack, because the DataGridWidget does not support 2 digit binary output
   myGrayValue->setList(0, (grayCode & 0b01) + (grayCode & 0b10) * 8);
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const std::array<uInt8, 4> DrivingWidget::ourGrayTable = { 0x03, 0x01, 0x00, 0x02 };

@@ -44,7 +44,7 @@ class CartridgeAR : public Cartridge
   friend class CartridgeARWidget;
 
   public:
-    static constexpr uInt32 BANK_SIZE = uInt32(2_KB);
+    static constexpr uInt32 BANK_SIZE = static_cast<uInt32>(2_KB);
     static constexpr uInt32 RAM_SIZE = 3 * BANK_SIZE;
     static constexpr uInt32 LOAD_SIZE = 8448;
 

@@ -153,7 +153,7 @@ class GlobalKeyHandler
     struct GroupData
     {
       Setting start{Setting::NONE};
-      string  name{EmptyString};
+      string  name;
     };
 
     struct SettingData

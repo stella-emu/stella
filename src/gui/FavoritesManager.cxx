@@ -25,7 +25,7 @@ using json = nlohmann::json;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FavoritesManager::FavoritesManager(Settings& settings)
-  : mySettings(settings)
+  : mySettings{settings}
 {
 }
 

@@ -50,7 +50,7 @@ bool CompositeKeyValueRepositorySqlite::has(const string& key)
     if (!myStmtCountSet->step())
       throw SqliteError("count failed");
 
-    Int32 rowCount = myStmtCountSet->columnInt(0);
+    const Int32 rowCount = myStmtCountSet->columnInt(0);
 
     myStmtCountSet->reset();
 

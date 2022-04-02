@@ -44,7 +44,9 @@ class DrivingWidget : public ControllerWidget
 
     int myGrayIndex{0};
 
-    static const std::array<uInt8, 4> ourGrayTable;
+    static constexpr std::array<uInt8, 4> ourGrayTable = {
+      { 0x03, 0x01, 0x00, 0x02 }
+    };
 
   private:
     void loadConfig() override;
