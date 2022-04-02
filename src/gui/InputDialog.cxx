@@ -122,7 +122,8 @@ void InputDialog::addDevicePortTab()
   myDigitalDeadzone->setMinValue(Controller::MIN_DIGITAL_DEADZONE);
   myDigitalDeadzone->setMaxValue(Controller::MAX_DIGITAL_DEADZONE);
   myDigitalDeadzone->setTickmarkIntervals(5);
-  myDigitalDeadzone->setToolTip("Adjust dead zone size for analog joysticks when emulating digital controllers.");
+  myDigitalDeadzone->setToolTip("Adjust dead zone size for analog joysticks when emulating digital controllers.",
+    Event::DecreaseDeadzone, Event::IncreaseDeadzone);
   wid.push_back(myDigitalDeadzone);
 
   // Add analog dead zone
@@ -133,7 +134,8 @@ void InputDialog::addDevicePortTab()
   myAnalogDeadzone->setMinValue(Controller::MIN_ANALOG_DEADZONE);
   myAnalogDeadzone->setMaxValue(Controller::MAX_ANALOG_DEADZONE);
   myAnalogDeadzone->setTickmarkIntervals(5);
-  myAnalogDeadzone->setToolTip("Adjust dead zone size for analog joysticks when emulating analog controllers.");
+  myAnalogDeadzone->setToolTip("Adjust dead zone size for analog joysticks when emulating analog controllers.",
+    Event::DecAnalogDeadzone, Event::IncAnalogDeadzone);
   wid.push_back(myAnalogDeadzone);
 
   ypos += lineHeight + VGAP * (3 - 2);
@@ -148,6 +150,7 @@ void InputDialog::addDevicePortTab()
   myPaddleSpeed->setMinValue(0);
   myPaddleSpeed->setMaxValue(Paddles::MAX_ANALOG_SENSE);
   myPaddleSpeed->setTickmarkIntervals(3);
+  myPaddleSpeed->setToolTip(Event::DecAnalogSense, Event::IncAnalogSense);
   wid.push_back(myPaddleSpeed);
 
   // Add analog paddle linearity
@@ -158,7 +161,8 @@ void InputDialog::addDevicePortTab()
   myPaddleLinearity->setMaxValue(Paddles::MAX_ANALOG_LINEARITY);
   myPaddleLinearity->setStepValue(5);
   myPaddleLinearity->setTickmarkIntervals(3);
-  myPaddleLinearity->setToolTip("Adjust paddle movement linearity.");
+  myPaddleLinearity->setToolTip("Adjust paddle movement linearity.",
+    Event::DecAnalogLinear, Event::IncAnalogLinear);
   wid.push_back(myPaddleLinearity);
 
   // Add dejitter (analog paddles)
@@ -170,7 +174,8 @@ void InputDialog::addDevicePortTab()
   myDejitterBase->setMaxValue(Paddles::MAX_DEJITTER);
   myDejitterBase->setTickmarkIntervals(5);
   myDejitterBase->setToolTip("Adjust paddle input averaging.\n"
-                             "Note: Already implemented in 2600-daptor");
+                             "Note: Already implemented in 2600-daptor",
+    Event::DecDejtterAveraging, Event::IncDejtterAveraging);
   //xpos += myDejitterBase->getWidth() + fontWidth - 4;
   wid.push_back(myDejitterBase);
 
@@ -181,7 +186,8 @@ void InputDialog::addDevicePortTab()
   myDejitterDiff->setMinValue(Paddles::MIN_DEJITTER);
   myDejitterDiff->setMaxValue(Paddles::MAX_DEJITTER);
   myDejitterDiff->setTickmarkIntervals(5);
-  myDejitterDiff->setToolTip("Adjust paddle reaction to fast movements.");
+  myDejitterDiff->setToolTip("Adjust paddle reaction to fast movements.",
+    Event::DecDejtterReaction, Event::IncDejtterReaction);
   wid.push_back(myDejitterDiff);
 
   // Add paddle speed (digital emulation)
@@ -191,34 +197,40 @@ void InputDialog::addDevicePortTab()
                                     lwidth, kDPSpeedChanged, 4 * fontWidth, "%");
   myDPaddleSpeed->setMinValue(1); myDPaddleSpeed->setMaxValue(20);
   myDPaddleSpeed->setTickmarkIntervals(4);
+  myDPaddleSpeed->setToolTip(Event::DecDigitalSense, Event::IncDigitalSense);
   wid.push_back(myDPaddleSpeed);
 
   ypos += lineHeight + VGAP * (3 - 2);
   myAutoFire = new CheckboxWidget(myTab, _font, HBORDER, ypos + 1, "Autofire", kAutoFireChanged);
+  myAutoFire->setToolTip(Event::ToggleAutoFire);
   wid.push_back(myAutoFire);
 
   myAutoFireRate = new SliderWidget(myTab, _font, HBORDER + lwidth - fontWidth * 5,
     ypos - 1, swidth, lineHeight, "Rate ", 0, kAutoFireRate, 5 * fontWidth, "Hz");
   myAutoFireRate->setMinValue(0); myAutoFireRate->setMaxValue(30);
   myAutoFireRate->setTickmarkIntervals(6);
+  myAutoFireRate->setToolTip(Event::DecreaseAutoFire, Event::IncreaseAutoFire);
   wid.push_back(myAutoFireRate);
 
   // Add 'allow all 4 directions' for joystick
   ypos += lineHeight + VGAP * (4 - 2);
   myAllowAll4 = new CheckboxWidget(myTab, _font, HBORDER, ypos,
                                    "Allow all 4 directions on joystick");
+  myAllowAll4->setToolTip(Event::ToggleFourDirections);
   wid.push_back(myAllowAll4);
 
   // Enable/disable modifier key-combos
   ypos += lineHeight + VGAP;
   myModCombo = new CheckboxWidget(myTab, _font, HBORDER, ypos,
                                   "Use modifier key combos");
+  myModCombo->setToolTip(Event::ToggleKeyCombos);
   wid.push_back(myModCombo);
   ypos += lineHeight + VGAP;
 
   // Stelladaptor mappings
   mySAPort = new CheckboxWidget(myTab, _font, HBORDER, ypos,
                                 "Swap Stelladaptor ports");
+  mySAPort->setToolTip(Event::ToggleSAPortOrder);
   wid.push_back(mySAPort);
 
   // Add EEPROM erase (part 1/2)
@@ -281,6 +293,7 @@ void InputDialog::addMouseTab()
   VarList::push_back(items, "Never", "never");
   myMouseControl = new PopUpWidget(myTab, _font, xpos, ypos, pwidth, lineHeight, items,
                                    "Use mouse as a controller ", lwidth, kMouseCtrlChanged);
+  myMouseControl->setToolTip(Event::PrevMouseAsController, Event::NextMouseAsController);
   wid.push_back(myMouseControl);
 
   ypos += lineHeight + VGAP;
@@ -294,6 +307,7 @@ void InputDialog::addMouseTab()
                                     lwidth, kMPSpeedChanged, 4 * fontWidth, "%");
   myMPaddleSpeed->setMinValue(1); myMPaddleSpeed->setMaxValue(20);
   myMPaddleSpeed->setTickmarkIntervals(4);
+  myMPaddleSpeed->setToolTip(Event::DecMousePaddleSense, Event::IncMousePaddleSense);
   wid.push_back(myMPaddleSpeed);
 
   // Add trackball speed
@@ -303,6 +317,7 @@ void InputDialog::addMouseTab()
                                       lwidth, kTBSpeedChanged, 4 * fontWidth, "%");
   myTrackBallSpeed->setMinValue(1); myTrackBallSpeed->setMaxValue(20);
   myTrackBallSpeed->setTickmarkIntervals(4);
+  myTrackBallSpeed->setToolTip(Event::DecMouseTrackballSense, Event::IncMouseTrackballSense);
   wid.push_back(myTrackBallSpeed);
 
   // Add driving controller speed
@@ -312,7 +327,8 @@ void InputDialog::addMouseTab()
                                     lwidth, kDCSpeedChanged, 4 * fontWidth, "%");
   myDrivingSpeed->setMinValue(1); myDrivingSpeed->setMaxValue(20);
   myDrivingSpeed->setTickmarkIntervals(4);
-  myDrivingSpeed->setToolTip("Adjust driving controller sensitivity for digital and mouse input.");
+  myDrivingSpeed->setToolTip("Adjust driving controller sensitivity for digital and mouse input.",
+    Event::DecreaseDrivingSense, Event::IncreaseDrivingSense);
   wid.push_back(myDrivingSpeed);
 
   // Mouse cursor state
@@ -325,6 +341,7 @@ void InputDialog::addMouseTab()
   VarList::push_back(items, "+UI, +Emulation", "3");
   myCursorState = new PopUpWidget(myTab, _font, HBORDER, ypos, pwidth, lineHeight, items,
                                   "Mouse cursor visibility ", lwidth, kCursorStateChanged);
+  myCursorState->setToolTip(Event::PreviousCursorVisbility, Event::NextCursorVisbility);
   wid.push_back(myCursorState);
 #ifndef WINDOWED_SUPPORT
   myCursorState->clearFlags(Widget::FLAG_ENABLED);
@@ -334,6 +351,7 @@ void InputDialog::addMouseTab()
   ypos += lineHeight + VGAP;
   myGrabMouse = new CheckboxWidget(myTab, _font, HBORDER, ypos,
                                    "Grab mouse in emulation mode");
+  myGrabMouse->setToolTip(Event::ToggleGrabMouse);
   wid.push_back(myGrabMouse);
 #ifndef WINDOWED_SUPPORT
   myGrabMouse->clearFlags(Widget::FLAG_ENABLED);

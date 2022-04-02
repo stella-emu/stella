@@ -129,7 +129,7 @@ void VideoAudioDialog::addDisplayTab()
 
   // TIA interpolation
   myTIAInterpolate = new CheckboxWidget(myTab, _font, xpos, ypos + 1, "Interpolation ");
-  myTIAInterpolate->setToolTip("Blur emulated display.");
+  myTIAInterpolate->setToolTip("Blur emulated display.", Event::ToggleInter);
   wid.push_back(myTIAInterpolate);
 
   ypos += lineHeight + VGAP * 4;
@@ -137,11 +137,13 @@ void VideoAudioDialog::addDisplayTab()
   myTIAZoom = new SliderWidget(myTab, _font, xpos, ypos - 1, swidth, lineHeight,
                                "Zoom ", lwidth, 0, fontWidth * 4, "%");
   myTIAZoom->setMinValue(200); myTIAZoom->setStepValue(FrameBuffer::ZOOM_STEPS * 100);
+  myTIAZoom->setToolTip(Event::VidmodeDecrease, Event::VidmodeIncrease);
   wid.push_back(myTIAZoom);
   ypos += lineHeight + VGAP;
 
   // Fullscreen
   myFullscreen = new CheckboxWidget(myTab, _font, xpos, ypos + 1, "Fullscreen", kFullScreenChanged);
+  myFullscreen->setToolTip(Event::ToggleFullScreen);
   wid.push_back(myFullscreen);
   ypos += lineHeight + VGAP;
 
@@ -154,7 +156,7 @@ void VideoAudioDialog::addDisplayTab()
   // Adapt refresh rate
   ypos += lineHeight + VGAP;
   myRefreshAdapt = new CheckboxWidget(myTab, _font, xpos + INDENT, ypos + 1, "Adapt display refresh rate");
-  myRefreshAdapt->setToolTip("Select optimal display refresh rate for each ROM.");
+  myRefreshAdapt->setToolTip("Select optimal display refresh rate for each ROM.", Event::ToggleAdaptRefresh);
   wid.push_back(myRefreshAdapt);
 #else
   myRefreshAdapt = nullptr;
@@ -166,12 +168,14 @@ void VideoAudioDialog::addDisplayTab()
                                   "Overscan", lwidth - INDENT, kOverscanChanged, fontWidth * 3, "%");
   myTVOverscan->setMinValue(0); myTVOverscan->setMaxValue(10);
   myTVOverscan->setTickmarkIntervals(2);
+  myTVOverscan->setToolTip(Event::OverscanDecrease, Event::OverscanIncrease);
   wid.push_back(myTVOverscan);
 
   // Aspect ratio correction
   ypos += lineHeight + VGAP * 4;
   myCorrectAspect = new CheckboxWidget(myTab, _font, xpos, ypos + 1, "Correct aspect ratio (*)");
-  myCorrectAspect->setToolTip("Uncheck to disable real world aspect ratio correction.");
+  myCorrectAspect->setToolTip("Uncheck to disable real world aspect ratio correction.",
+    Event::ToggleCorrectAspectRatio);
   wid.push_back(myCorrectAspect);
 
   // Vertical size
@@ -181,7 +185,8 @@ void VideoAudioDialog::addDisplayTab()
                      "V-Size adjust", lwidth, kVSizeChanged, fontWidth * 7, "%", 0, true);
   myVSizeAdjust->setMinValue(-5); myVSizeAdjust->setMaxValue(5);
   myVSizeAdjust->setTickmarkIntervals(2);
-  myVSizeAdjust->setToolTip("Adjust vertical size to match emulated TV display.");
+  myVSizeAdjust->setToolTip("Adjust vertical size to match emulated TV display.",
+    Event::VSizeAdjustDecrease, Event::VSizeAdjustIncrease);
   wid.push_back(myVSizeAdjust);
 
 
@@ -224,6 +229,7 @@ void VideoAudioDialog::addPaletteTab()
   VarList::push_back(items, "Custom", PaletteHandler::SETTING_CUSTOM);
   myTIAPalette = new PopUpWidget(myTab, _font, xpos, ypos, pwidth,
                                  lineHeight, items, "Palette ", lwidth, kPaletteChanged);
+  myTIAPalette->setToolTip(Event::PaletteDecrease, Event::PaletteIncrease);
   wid.push_back(myTIAPalette);
   ypos += lineHeight + VGAP;
 
@@ -345,6 +351,7 @@ void VideoAudioDialog::addTVEffectsTab()
   VarList::push_back(items, "Custom", static_cast<uInt32>(NTSCFilter::Preset::CUSTOM));
   myTVMode = new PopUpWidget(myTab, _font, xpos, ypos, pwidth, lineHeight,
                              items, "TV mode ", 0, kTVModeChanged);
+  myTVMode->setToolTip(Event::PreviousVideoMode, Event::NextVideoMode);
   wid.push_back(myTVMode);
   ypos += lineHeight + VGAP;
 
@@ -379,6 +386,7 @@ void VideoAudioDialog::addTVEffectsTab()
 
   xpos += INDENT;
   CREATE_CUSTOM_SLIDERS(ScanIntense, "Intensity", kScanlinesChanged)
+  myTVScanIntense->setToolTip(Event::ScanlinesDecrease, Event::ScanlinesIncrease);
 
   items.clear();
   VarList::push_back(items, "Standard", TIASurface::SETTING_STANDARD);
@@ -391,6 +399,7 @@ void VideoAudioDialog::addTVEffectsTab()
   pwidth = _w - HBORDER - xpos - fontWidth * 5 - PopUpWidget::dropDownWidth(_font) - 2 * 2;
   myTVScanMask = new PopUpWidget(myTab, _font, xpos,
     myTVScanIntense->getTop() + 1, pwidth, lineHeight, items, "Mask ");
+  myTVScanMask->setToolTip(Event::PreviousScanlineMask, Event::NextScanlineMask);
   wid.push_back(myTVScanMask);
 
   // Create buttons in 2nd column
@@ -437,6 +446,7 @@ void VideoAudioDialog::addAudioTab()
   // Enable sound
   mySoundEnableCheckbox = new CheckboxWidget(myTab, _font, xpos, ypos,
                                              "Enable sound", kSoundEnableChanged);
+  mySoundEnableCheckbox->setToolTip(Event::SoundToggle);
   wid.push_back(mySoundEnableCheckbox);
   ypos += lineHeight + VGAP;
   xpos += CheckboxWidget::prefixSize(_font);
@@ -446,6 +456,7 @@ void VideoAudioDialog::addAudioTab()
                                     "Volume", lwidth, 0, 4 * fontWidth, "%");
   myVolumeSlider->setMinValue(1); myVolumeSlider->setMaxValue(100);
   myVolumeSlider->setTickmarkIntervals(4);
+  myVolumeSlider->setToolTip(Event::VolumeDecrease, Event::VolumeIncrease);
   wid.push_back(myVolumeSlider);
   ypos += lineHeight + VGAP;
 

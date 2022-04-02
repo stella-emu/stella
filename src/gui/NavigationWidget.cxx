@@ -50,25 +50,25 @@ NavigationWidget::NavigationWidget(GuiObject* boss, const GUI::Font& font,
 
     myHomeButton = new ButtonWidget(boss, _font, xpos, ypos,
       buttonWidth, buttonHeight, homeIcon, FileListWidget::kHomeDirCmd);
-    myHomeButton->setToolTip("Go back to initial directory.");
+    myHomeButton->setToolTip("Go back to initial directory. (Alt+Pos1)");
     boss->addFocusWidget(myHomeButton);
     xpos = myHomeButton->getRight() + BTN_GAP;
 
     myPrevButton = new ButtonWidget(boss, _font, xpos, ypos,
       buttonWidth, buttonHeight, prevIcon, FileListWidget::kPrevDirCmd);
-    myPrevButton->setToolTip("Go back in directory history.");
+    myPrevButton->setToolTip("Go back in directory history. (Alt+Left)");
     boss->addFocusWidget(myPrevButton);
     xpos = myPrevButton->getRight() + BTN_GAP;
 
     myNextButton = new ButtonWidget(boss, _font, xpos, ypos,
       buttonWidth, buttonHeight, nextIcon, FileListWidget::kNextDirCmd);
-    myNextButton->setToolTip("Go forward in directory history.");
+    myNextButton->setToolTip("Go forward in directory history. (Alt+Right)");
     boss->addFocusWidget(myNextButton);
     xpos = myNextButton->getRight() + BTN_GAP;
 
     myUpButton = new ButtonWidget(boss, _font, xpos, ypos,
       buttonWidth, buttonHeight, upIcon, ListWidget::kParentDirCmd);
-    myUpButton->setToolTip("Go Up");
+    myUpButton->setToolTip("Go Up.", Event::UIPrevDir, EventMode::kMenuMode);
     boss->addFocusWidget(myUpButton);
     xpos = myUpButton->getRight() + BTN_GAP;
 

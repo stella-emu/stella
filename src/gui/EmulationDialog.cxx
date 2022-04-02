@@ -91,6 +91,7 @@ EmulationDialog::EmulationDialog(OSystem& osystem, DialogContainer& parent,
   mySpeed->setMinValue(MIN_SPEED); mySpeed->setMaxValue(MAX_SPEED);
   mySpeed->setStepValue(SPEED_STEP);
   mySpeed->setTickmarkIntervals(2);
+  mySpeed->setToolTip(Event::DecreaseSpeed, Event::IncreaseSpeed);
   wid.push_back(mySpeed);
   ypos += lineHeight + VGAP;
 
@@ -102,6 +103,7 @@ EmulationDialog::EmulationDialog(OSystem& osystem, DialogContainer& parent,
 
 
   myTurbo = new CheckboxWidget(this, _font, xpos, ypos + 1, "Turbo mode");
+  myTurbo->setToolTip(Event::ToggleTurbo);
   wid.push_back(myTurbo);
   ypos += lineHeight + VGAP * 3;
 
@@ -155,6 +157,7 @@ EmulationDialog::EmulationDialog(OSystem& osystem, DialogContainer& parent,
 
 
   myAutoSlotWidget = new CheckboxWidget(this, font, xpos, ypos + 1, "Automatically change save state slots");
+  myAutoSlotWidget->setToolTip("Cycle to next state slot after saving.", Event::ToggleAutoSlot);
   wid.push_back(myAutoSlotWidget);
   ypos += lineHeight + VGAP;
 
