@@ -28,10 +28,8 @@ KeyboardWidget::KeyboardWidget(GuiObject* boss, const GUI::Font& font,
 
   const int fontHeight = font.getFontHeight();
   int xpos = x, ypos = y, lwidth = font.getStringWidth("Right (Keyboard)");
-  StaticTextWidget* t;
-
-  t = new StaticTextWidget(boss, font, xpos, ypos+2, lwidth,
-                           fontHeight, label, TextAlign::Left);
+  const StaticTextWidget* t = new StaticTextWidget(boss, font, xpos, ypos+2, lwidth,
+                                      fontHeight, label, TextAlign::Left);
 
   xpos += 30;  ypos += t->getHeight() + 20;
 
@@ -67,7 +65,3 @@ void KeyboardWidget::handleCommand(
   if(cmd == CheckboxWidget::kCheckActionCmd)
     instance().eventHandler().handleEvent(myEvent[id], myBox[id]->getState());
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-constexpr std::array<Event::Type, 12> KeyboardWidget::ourLeftEvents;
-constexpr std::array<Event::Type, 12> KeyboardWidget::ourRightEvents;

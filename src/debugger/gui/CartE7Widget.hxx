@@ -52,7 +52,7 @@ class CartridgeE7Widget : public CartDebugWidget
     };
 
   protected:
-    void initialize(GuiObject* boss, CartridgeE7& cart, ostringstream& info);
+    void initialize(GuiObject* boss, const CartridgeE7& cart, const ostringstream& info);
     const char* getSpotLower(int idx);
     const char* getSpotUpper(int idx);
 

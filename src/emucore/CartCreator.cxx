@@ -236,7 +236,7 @@ CartCreator::createFromMultiCart(const ByteBuffer& image, size_t& size,
   std::copy_n(image.get()+i*size, size, slice.get());
 
   // We need a new md5 and name
-  md5 = MD5::hash(slice, uInt32(size)); // FIXME
+  md5 = MD5::hash(slice, size);
   ostringstream buf;
   buf << " [G" << (i+1) << "]";
   id = buf.str();

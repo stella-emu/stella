@@ -32,38 +32,38 @@ Joystick::Joystick(Jack jack, const Event& event, const System& system,
   {
     if(!altmap)
     {
-      myUpEvent = Event::LeftJoystickUp;
-      myDownEvent = Event::LeftJoystickDown;
-      myLeftEvent = Event::LeftJoystickLeft;
+      myUpEvent    = Event::LeftJoystickUp;
+      myDownEvent  = Event::LeftJoystickDown;
+      myLeftEvent  = Event::LeftJoystickLeft;
       myRightEvent = Event::LeftJoystickRight;
-      myFireEvent = Event::LeftJoystickFire;
+      myFireEvent  = Event::LeftJoystickFire;
     }
     else
     {
-      myUpEvent = Event::QTJoystickThreeUp;
-      myDownEvent = Event::QTJoystickThreeDown;
-      myLeftEvent = Event::QTJoystickThreeLeft;
+      myUpEvent    = Event::QTJoystickThreeUp;
+      myDownEvent  = Event::QTJoystickThreeDown;
+      myLeftEvent  = Event::QTJoystickThreeLeft;
       myRightEvent = Event::QTJoystickThreeRight;
-      myFireEvent = Event::QTJoystickThreeFire;
+      myFireEvent  = Event::QTJoystickThreeFire;
     }
   }
   else
   {
     if(!altmap)
     {
-      myUpEvent = Event::RightJoystickUp;
-      myDownEvent = Event::RightJoystickDown;
-      myLeftEvent = Event::RightJoystickLeft;
+      myUpEvent    = Event::RightJoystickUp;
+      myDownEvent  = Event::RightJoystickDown;
+      myLeftEvent  = Event::RightJoystickLeft;
       myRightEvent = Event::RightJoystickRight;
-      myFireEvent = Event::RightJoystickFire;
+      myFireEvent  = Event::RightJoystickFire;
     }
     else
     {
-      myUpEvent = Event::QTJoystickFourUp;
-      myDownEvent = Event::QTJoystickFourDown;
-      myLeftEvent = Event::QTJoystickFourLeft;
+      myUpEvent    = Event::QTJoystickFourUp;
+      myDownEvent  = Event::QTJoystickFourDown;
+      myLeftEvent  = Event::QTJoystickFourLeft;
       myRightEvent = Event::QTJoystickFourRight;
-      myFireEvent = Event::QTJoystickFourFire;
+      myFireEvent  = Event::QTJoystickFourFire;
     }
   }
 }

@@ -30,10 +30,8 @@ JoystickWidget::JoystickWidget(GuiObject* boss, const GUI::Font& font,
   {
     const string& label = getHeader();
     const int lwidth = font.getStringWidth("Right (Joystick)");
-    StaticTextWidget* t;
-
-    t = new StaticTextWidget(boss, font, xpos, ypos + 2, lwidth,
-                             _lineHeight, label, TextAlign::Left);
+    const StaticTextWidget* t = new StaticTextWidget(boss, font, xpos, ypos + 2, lwidth,
+                                        _lineHeight, label, TextAlign::Left);
     xpos += t->getWidth() / 2 - 5;  ypos = t->getBottom() + fontHeight;
   }
   myPins[kJUp] = new CheckboxWidget(boss, font, xpos, ypos, "",
@@ -91,6 +89,3 @@ void JoystickWidget::handleCommand(
   if(cmd == CheckboxWidget::kCheckActionCmd)
     setPin(ourPinNo[id], !myPins[id]->getState());
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-constexpr std::array<Controller::DigitalPin, 5> JoystickWidget::ourPinNo;

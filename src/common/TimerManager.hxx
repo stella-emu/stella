@@ -146,15 +146,17 @@ class TimerManager
 
     struct Timer
     {
-      explicit Timer(TimerId tid = 0) : id(tid) { }
+      explicit Timer(TimerId tid = 0) : id{tid} { }
       Timer(Timer&& r) noexcept;
-      Timer& operator=(Timer&& r) noexcept;
 
       Timer(TimerId id, Timestamp next, Duration period, const TFunction& func) noexcept;
 
       // Never called
+      Timer() = default;
+      ~Timer() = default;
       Timer(Timer const& r) = delete;
       Timer& operator=(Timer const& r) = delete;
+      Timer& operator=(Timer&& r) = delete;
 
       TimerId id{0};
       Timestamp next;
@@ -204,6 +206,13 @@ class TimerManager
 
     // Valid IDs are guaranteed not to be this value
     static TimerId constexpr no_timer = TimerId(0);
+
+  private:
+    // Following constructors and assignment operators not supported
+    TimerManager(const TimerManager&) = delete;
+    TimerManager(TimerManager&&) = delete;
+    TimerManager& operator=(const TimerManager&) = delete;
+    TimerManager& operator=(TimerManager&&) = delete;
 };
 
 #endif // TIMERTHREAD_H

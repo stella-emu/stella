@@ -32,7 +32,8 @@ namespace {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 KeyValueRepositoryJsonFile::KeyValueRepositoryJsonFile(const FilesystemNode& node)
   : KeyValueRepositoryFile<KeyValueRepositoryJsonFile>(node)
-{}
+{
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 std::map<string, Variant> KeyValueRepositoryJsonFile::load(istream& in)

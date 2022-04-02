@@ -84,7 +84,7 @@ class Dialog : public GuiObject
     void addExtraWidget(ButtonWidget* w)   { _extraWidget = w;   }
     void addOKWidget(ButtonWidget* w)      { _okWidget = w;      }
     void addCancelWidget(ButtonWidget* w)  { _cancelWidget = w;  }
-    void setFocus(Widget* w);
+    void setFocus(const Widget* w);
 
     /** Returns the base surface associated with this dialog. */
     FBSurface& surface() const { return *_surface; }

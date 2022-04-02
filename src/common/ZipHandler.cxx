@@ -113,7 +113,7 @@ uInt64 ZipHandler::decompress(ByteBuffer& image)
 {
   if(myZip && myZip->myHeader.uncompressedLength > 0)
   {
-    uInt64 length = myZip->myHeader.uncompressedLength;
+    const uInt64 length = myZip->myHeader.uncompressedLength;
     image = make_unique<uInt8[]>(length);
     if(image == nullptr)
       throw runtime_error(errorMessage(ZipError::OUT_OF_MEMORY));
@@ -247,7 +247,7 @@ void ZipHandler::ZipFile::initialize()
 
     // Read the central directory
     uInt64 read_length = 0;
-    bool success = readStream(myCd, myEcd.cdStartDiskOffset, myEcd.cdSize, read_length);
+    const bool success = readStream(myCd, myEcd.cdStartDiskOffset, myEcd.cdSize, read_length);
     if(!success)
       throw runtime_error(errorMessage(ZipError::FILE_ERROR));
     else if(read_length != myEcd.cdSize)
@@ -275,7 +275,7 @@ void ZipHandler::ZipFile::readEcd()
   // We may need multiple tries
   while(buflen < 65536)
   {
-    uInt64 read_length;
+    uInt64 read_length = 0;
 
     // Max out the buf length at the size of the file
     if(buflen > myLength)
@@ -287,15 +287,15 @@ void ZipHandler::ZipFile::readEcd()
       throw runtime_error(errorMessage(ZipError::OUT_OF_MEMORY));
 
     // Read in one buffers' worth of data
-    bool success = readStream(buffer, myLength - buflen, buflen, read_length);
+    const bool success = readStream(buffer, myLength - buflen, buflen, read_length);
     if(!success || read_length != buflen)
       throw runtime_error(errorMessage(ZipError::FILE_ERROR));
 
     // Find the ECD signature
-    Int32 offset;
-    for(offset = Int32(buflen - EcdReader::minimumLength()); offset >= 0; --offset)
+    Int32 offset = 0;
+    for(offset = static_cast<Int32>(buflen - EcdReader::minimumLength()); offset >= 0; --offset)
     {
-      EcdReader reader(buffer.get() + offset);
+      const EcdReader reader(buffer.get() + offset);
       if(reader.signatureCorrect() && ((reader.totalLength() + offset) <= buflen))
         break;
     }
@@ -324,7 +324,7 @@ void ZipHandler::ZipFile::readEcd()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool ZipHandler::ZipFile::readStream(ByteBuffer& out, uInt64 offset,
+bool ZipHandler::ZipFile::readStream(const ByteBuffer& out, uInt64 offset,
                                      uInt64 length, uInt64& actual)
 {
   try
@@ -368,7 +368,7 @@ const ZipHandler::ZipHeader* ZipHandler::ZipFile::nextFile()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ZipHandler::ZipFile::decompress(ByteBuffer& out, uInt64 length)
+void ZipHandler::ZipFile::decompress(const ByteBuffer& out, uInt64 length)
 {
   // If we don't have enough buffer, error
   if(length < myHeader.uncompressedLength)
@@ -381,7 +381,7 @@ void ZipHandler::ZipFile::decompress(ByteBuffer& out, uInt64 length)
   try
   {
     // Get the compressed data offset
-    uInt64 offset = getCompressedDataOffset();
+    const uInt64 offset = getCompressedDataOffset();
 
     // Handle compression types
     switch(myHeader.compression)
@@ -420,14 +420,14 @@ uInt64 ZipHandler::ZipFile::getCompressedDataOffset()
 
   // Read the fixed-sized part of the local file header
   uInt64 read_length = 0;
-  bool success = readStream(myBuffer, myHeader.localHeaderOffset, 0x1e, read_length);
+  const bool success = readStream(myBuffer, myHeader.localHeaderOffset, 0x1e, read_length);
   if(!success)
     throw runtime_error(errorMessage(ZipError::FILE_ERROR));
   else if(read_length != LocalFileHeaderReader::minimumLength())
     throw runtime_error(errorMessage(ZipError::FILE_TRUNCATED));
 
   // Compute the final offset
-  LocalFileHeaderReader reader(&myBuffer[0]);
+  const LocalFileHeaderReader reader(&myBuffer[0]);
   if(!reader.signatureCorrect())
     throw runtime_error(errorMessage(ZipError::BAD_SIGNATURE));
 
@@ -436,11 +436,11 @@ uInt64 ZipHandler::ZipFile::getCompressedDataOffset()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ZipHandler::ZipFile::decompressDataType0(
-    uInt64 offset, ByteBuffer& out, uInt64 length)
+    uInt64 offset, const ByteBuffer& out, uInt64 length)
 {
   // The data is uncompressed; just read it
   uInt64 read_length = 0;
-  bool success = readStream(out, offset, myHeader.compressedLength, read_length);
+  const bool success = readStream(out, offset, myHeader.compressedLength, read_length);
   if(!success)
     throw runtime_error(errorMessage(ZipError::FILE_ERROR));
   else if(read_length != myHeader.compressedLength)
@@ -449,18 +449,18 @@ void ZipHandler::ZipFile::decompressDataType0(
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ZipHandler::ZipFile::decompressDataType8(
-    uInt64 offset, ByteBuffer& out, uInt64 length)
+    uInt64 offset, const ByteBuffer& out, uInt64 length)
 {
   uInt64 input_remaining = myHeader.compressedLength;
 
   // Reset the stream
-  z_stream stream;
+  z_stream stream{};
   stream.zalloc = Z_NULL;
   stream.zfree = Z_NULL;
   stream.opaque = Z_NULL;
   stream.avail_in = 0;
   stream.next_out = reinterpret_cast<Bytef *>(out.get());
-  stream.avail_out = uInt32(length); // TODO - use zip64
+  stream.avail_out = static_cast<uInt32>(length); // TODO - use zip64
 
   // Initialize the decompressor
   int zerr = inflateInit2(&stream, -MAX_WBITS);
@@ -472,8 +472,8 @@ void ZipHandler::ZipFile::decompressDataType8(
   {
     // Read in the next chunk of data
     uInt64 read_length = 0;
-    bool success = readStream(myBuffer, offset,
-          std::min(input_remaining, uInt64(sizeof(myBuffer.get()))), read_length);
+    const bool success = readStream(myBuffer, offset,
+          std::min(input_remaining, static_cast<uInt64>(sizeof(myBuffer.get()))), read_length);
     if(!success)
     {
       inflateEnd(&stream);
@@ -490,7 +490,7 @@ void ZipHandler::ZipFile::decompressDataType8(
 
     // Fill out the input data
     stream.next_in = myBuffer.get();
-    stream.avail_in = uInt32(read_length); // TODO - use zip64
+    stream.avail_in = static_cast<uInt32>(read_length); // TODO - use zip64
     input_remaining -= read_length;
 
     // Add a dummy byte at end of compressed data

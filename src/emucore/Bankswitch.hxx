@@ -55,8 +55,8 @@ class Bankswitch
     // Info about the various bankswitch schemes, useful for displaying
     // in GUI dropdown boxes, etc
     struct Description {
-      const char* const name;
-      const char* const desc;
+      const char* const name{nullptr};
+      const char* const desc{nullptr};
     };
     static const std::array<Description, static_cast<int>(Type::NumSchemes)> BSList;
 

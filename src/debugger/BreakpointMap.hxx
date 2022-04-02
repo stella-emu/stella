@@ -42,7 +42,7 @@ class BreakpointMap
       uInt16 addr{0};
       uInt8 bank{0};
 
-      explicit Breakpoint(uInt16 c_addr, uInt8 c_bank) : addr(c_addr), bank(c_bank) { }
+      explicit constexpr Breakpoint(uInt16 c_addr, uInt8 c_bank) : addr{c_addr}, bank{c_bank} { }
 
       bool operator==(const Breakpoint& other) const
       {

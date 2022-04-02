@@ -31,8 +31,8 @@ class AnalogReadout : public Serializable
     };
 
     struct Connection {
-      ConnectionType type;
-      uInt32 resistance;
+      ConnectionType type{ConnectionType::ground};
+      uInt32 resistance{0};
 
       bool save(Serializer& out) const;
       bool load(const Serializer& in);
@@ -61,11 +61,17 @@ class AnalogReadout : public Serializable
 
   public:
 
-    static Connection connectToGround(uInt32 resistance = 0);
+    static constexpr Connection connectToGround(uInt32 resistance = 0) {
+      return Connection{ConnectionType::ground, resistance};
+    }
 
-    static Connection connectToVcc(uInt32 resistance = 0);
+    static constexpr Connection connectToVcc(uInt32 resistance = 0) {
+      return Connection{ConnectionType::vcc, resistance};
+    }
 
-    static Connection disconnect();
+    static constexpr Connection disconnect() {
+      return Connection{ConnectionType::disconnected, 0};
+    }
 
   private:
 

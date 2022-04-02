@@ -463,7 +463,7 @@ void Dialog::addTabWidget(TabWidget* w)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::setFocus(Widget* w)
+void Dialog::setFocus(const Widget* w)
 {
   // If the click occured inside a widget which is not the currently
   // focused one, change the focus to that widget.

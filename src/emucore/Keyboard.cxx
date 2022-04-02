@@ -54,8 +54,9 @@ Keyboard::Keyboard(Jack jack, const Event& event, const System& system)
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Keyboard::ColumnState Keyboard::processColumn(const Event::Type buttons[]) {
-  constexpr DigitalPin signals[] =
+  static constexpr DigitalPin signals[] =
     {DigitalPin::One, DigitalPin::Two, DigitalPin::Three, DigitalPin::Four};
 
   for (uInt8 i = 0; i < 4; i++)
@@ -67,6 +68,7 @@ Keyboard::ColumnState Keyboard::processColumn(const Event::Type buttons[]) {
   return ColumnState::notConnected;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AnalogReadout::Connection Keyboard::columnStateToAnalogSignal(ColumnState state) const {
   switch (state) {
     case ColumnState::gnd:
@@ -82,7 +84,6 @@ AnalogReadout::Connection Keyboard::columnStateToAnalogSignal(ColumnState state)
       throw runtime_error("unreachable");
   }
 }
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Keyboard::write(DigitalPin pin, bool value)

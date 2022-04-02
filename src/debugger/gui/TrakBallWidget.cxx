@@ -17,6 +17,7 @@
 
 #include "TrakBallWidget.hxx"
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TrakBallWidget::TrakBallWidget(GuiObject* boss, const GUI::Font& font,
       int x, int y, Controller& controller)
   : PointingDeviceWidget(boss, font, x, y, controller)

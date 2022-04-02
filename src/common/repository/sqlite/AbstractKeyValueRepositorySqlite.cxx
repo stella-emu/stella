@@ -80,7 +80,6 @@ bool AbstractKeyValueRepositorySqlite::get(const string& key, Variant& value)
   }
 }
 
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool AbstractKeyValueRepositorySqlite::save(const std::map<string, Variant>& values)
 {

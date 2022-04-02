@@ -29,9 +29,8 @@ PointingDeviceWidget::PointingDeviceWidget(GuiObject* boss, const GUI::Font& fon
             xMid = xLeft + 30,
             xRight = xLeft + 60,
             xValue = xLeft + 87;
-  StaticTextWidget* t;
-
-  t = new StaticTextWidget(boss, font, x, y + 2, getHeader());
+  const StaticTextWidget* t = new StaticTextWidget(boss, font,
+                                      x, y + 2, getHeader());
   ypos += t->getHeight() + 8;
 
   // add gray code and up widgets

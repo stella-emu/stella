@@ -200,7 +200,7 @@ void StellaDb::importOldPropset(const FilesystemNode& node)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StellaDb::migrate()
 {
-  Int32 version = myDb->getUserVersion();
+  const Int32 version = myDb->getUserVersion();
   switch (version) {
     case 1:
       return;

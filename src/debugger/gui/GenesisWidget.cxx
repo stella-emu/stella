@@ -26,10 +26,9 @@ GenesisWidget::GenesisWidget(GuiObject* boss, const GUI::Font& font,
 
   const int fontHeight = font.getFontHeight();
   int xpos = x, ypos = y, lwidth = font.getStringWidth("Right (Genesis)");
-  StaticTextWidget* t;
 
-  t = new StaticTextWidget(boss, font, xpos, ypos+2, lwidth,
-                           fontHeight, label, TextAlign::Left);
+  const StaticTextWidget* t = new StaticTextWidget(boss, font, xpos, ypos+2, lwidth,
+                                      fontHeight, label, TextAlign::Left);
   xpos += t->getWidth()/2 - 5;  ypos += t->getHeight() + 20;
   myPins[kJUp] = new CheckboxWidget(boss, font, xpos, ypos, "",
                                     CheckboxWidget::kCheckActionCmd);
@@ -114,6 +113,3 @@ void GenesisWidget::handleCommand(
     }
   }
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-constexpr std::array<Controller::DigitalPin, 5> GenesisWidget::ourPinNo;

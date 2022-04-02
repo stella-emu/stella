@@ -27,17 +27,18 @@
 #include "exception/FatalEmulationError.hxx"
 
 // Location of data within the RAM copy of the BUS Driver.
-#define DSxPTR        0x06D8
-#define DSxINC        0x0720
-#define DSMAPS        0x0760
-#define WAVEFORM      0x07F4
-#define DSRAM         0x0800
+static constexpr int
+    DSxPTR   = 0x06D8,
+    DSxINC   = 0x0720,
+    DSMAPS   = 0x0760,
+    WAVEFORM = 0x07F4,
+    DSRAM    = 0x0800,
 
-#define COMMSTREAM    0x10
-#define JUMPSTREAM    0x11
+    COMMSTREAM = 0x10,
+    JUMPSTREAM = 0x11;
 
-#define BUS_STUFF_ON ((myMode & 0x0F) == 0)
-#define DIGITAL_AUDIO_ON ((myMode & 0xF0) == 0)
+static constexpr bool BUS_STUFF_ON(uInt8 mode) { return (mode & 0x0F) == 0; }
+static constexpr bool DIGITAL_AUDIO_ON(uInt8 mode) { return (mode & 0xF0) == 0; }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeBUS::CartridgeBUS(const ByteBuffer& image, size_t size,
@@ -221,7 +222,7 @@ uInt8 CartridgeBUS::peek(uInt16 address)
     }
 
     // test for JMP FASTJUMP where FASTJUMP = $0000
-    if (BUS_STUFF_ON
+    if (BUS_STUFF_ON(myMode)
         && peekvalue == 0x4C
         && myProgramImage[myBankOffset + address+1] == 0
         && myProgramImage[myBankOffset + address+2] == 0)
@@ -234,7 +235,7 @@ uInt8 CartridgeBUS::peek(uInt16 address)
     myJMPoperandAddress = 0;
 
     // save the STY's zero page address
-    if (BUS_STUFF_ON && mySTYZeroPageAddress == address)
+    if (BUS_STUFF_ON(myMode) && mySTYZeroPageAddress == address)
       myBusOverdriveAddress =  peekvalue;
 
     mySTYZeroPageAddress = 0;
@@ -245,7 +246,7 @@ uInt8 CartridgeBUS::peek(uInt16 address)
         // Update the music data fetchers (counter & flag)
         updateMusicModeDataFetchers();
 
-        if DIGITAL_AUDIO_ON
+        if (DIGITAL_AUDIO_ON(myMode))
         {
           // retrieve packed sample (max size is 2K, or 4K of unpacked data)
           const uInt32 sampleaddress = getSample() + (myMusicCounters[0] >> 21);
@@ -327,7 +328,7 @@ uInt8 CartridgeBUS::peek(uInt16 address)
     }
 
     // this might not work right for STY $84
-    if (BUS_STUFF_ON && peekvalue == 0x84)
+    if (BUS_STUFF_ON(myMode) && peekvalue == 0x84)
       mySTYZeroPageAddress = address + 1;
 
     return peekvalue;

@@ -60,7 +60,7 @@ QuadTariDialog::QuadTariDialog(GuiObject* boss, const GUI::Font& font, int max_w
   //VarList::push_back(ctrls, "MindLink", "MINDLINK");
   //VarList::push_back(ctrls, "QuadTari", "QUADTARI");
 
-  int pwidth = font.getStringWidth("Joystick12"); // a bit wider looks better overall
+  const int pwidth = font.getStringWidth("Joystick12"); // a bit wider looks better overall
 
   myLeftPortLabel = new StaticTextWidget(this, font, xpos, ypos + 1, "Left port");
 

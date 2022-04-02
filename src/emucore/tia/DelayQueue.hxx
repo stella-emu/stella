@@ -79,12 +79,12 @@ void DelayQueue<length, capacity>::push(uInt8 address, uInt8 value, uInt8 delay)
   if (delay >= length)
     throw runtime_error("delay exceeds queue length");
 
-  uInt8 currentIndex = myIndices[address];
+  const uInt8 currentIndex = myIndices[address];
 
   if (currentIndex < length)
     myMembers[currentIndex].remove(address);
 
-  uInt8 index = smartmod<length>(myIndex + delay);
+  const uInt8 index = smartmod<length>(myIndex + delay);
   myMembers[index].push(address, value);
 
   myIndices[address] = index;

@@ -23,6 +23,7 @@
 class DelayQueueIterator
 {
   public:
+    DelayQueueIterator() = default;
     virtual ~DelayQueueIterator() = default;
 
   public:
@@ -35,6 +36,13 @@ class DelayQueueIterator
     virtual uInt8 value() const = 0;
 
     virtual bool next() = 0;
+
+  private:
+    // Following constructors and assignment operators not supported
+    DelayQueueIterator(const DelayQueueIterator&) = delete;
+    DelayQueueIterator(DelayQueueIterator&&) = delete;
+    DelayQueueIterator& operator=(const DelayQueueIterator&) = delete;
+    DelayQueueIterator& operator=(DelayQueueIterator&&) = delete;
 };
 
 #endif // TIA_DELAY_QUEUE_ITERATOR

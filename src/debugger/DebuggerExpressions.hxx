@@ -117,7 +117,7 @@ class DivExpression : public Expression
   public:
     DivExpression(Expression* left, Expression* right) : Expression(left, right) { }
     Int32 evaluate() const override
-      { int denom = myRHS->evaluate();
+      { const int denom = myRHS->evaluate();
         return denom == 0 ? 0 : myLHS->evaluate() / denom; }
 };
 
@@ -250,7 +250,7 @@ class ModExpression : public Expression
   public:
     ModExpression(Expression* left, Expression* right) : Expression(left, right) { }
     Int32 evaluate() const override
-      { int rhs = myRHS->evaluate();
+      { const int rhs = myRHS->evaluate();
         return rhs == 0 ? 0 : myLHS->evaluate() % rhs; }
 };
 

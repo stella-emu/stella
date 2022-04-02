@@ -38,7 +38,6 @@ class StaggeredLogger
   public:
 
     StaggeredLogger(const string& message, Logger::Level level);
-
     ~StaggeredLogger();
 
     void log();
@@ -83,6 +82,13 @@ class StaggeredLogger
     // returns. This id is unique per timer and is used to return from the callback
     // early in case the time is stale.
     uInt32 myTimerCallbackId{0};
+
+  private:
+    // Following constructors and assignment operators not supported
+    StaggeredLogger(const StaggeredLogger&) = delete;
+    StaggeredLogger(StaggeredLogger&&) = delete;
+    StaggeredLogger& operator=(const StaggeredLogger&) = delete;
+    StaggeredLogger& operator=(StaggeredLogger&&) = delete;
 };
 
 #endif // STAGGERED_LOGGER

@@ -21,7 +21,8 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 KeyValueRepositoryConfigfile::KeyValueRepositoryConfigfile(const FilesystemNode& file)
   : KeyValueRepositoryFile<KeyValueRepositoryConfigfile>(file)
-{}
+{
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 std::map<string, Variant> KeyValueRepositoryConfigfile::load(istream& in)
@@ -29,7 +30,7 @@ std::map<string, Variant> KeyValueRepositoryConfigfile::load(istream& in)
   std::map<string, Variant> values;
 
   string line, key, value;
-  string::size_type equalPos, garbage;
+  string::size_type equalPos = 0, garbage = 0;
 
   while(getline(in, line))
   {

@@ -50,8 +50,8 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
     if(!altmap)
     {
       // First paddle is left A, second is left B
-      myAAxisValue = Event::LeftPaddleAAnalog;
-      myBAxisValue = Event::LeftPaddleBAnalog;
+      myAAxisValue     = Event::LeftPaddleAAnalog;
+      myBAxisValue     = Event::LeftPaddleBAnalog;
       myLeftAFireEvent = Event::LeftPaddleAFire;
       myLeftBFireEvent = Event::LeftPaddleBFire;
 
@@ -77,8 +77,8 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
     if(!altmap)
     {
       // First paddle is right A, second is right B
-      myAAxisValue = Event::RightPaddleAAnalog;
-      myBAxisValue = Event::RightPaddleBAnalog;
+      myAAxisValue     = Event::RightPaddleAAnalog;
+      myBAxisValue     = Event::RightPaddleBAnalog;
       myLeftAFireEvent = Event::RightPaddleAFire;
       myLeftBFireEvent = Event::RightPaddleBFire;
 
@@ -159,6 +159,7 @@ void Paddles::update()
   updateB();
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Paddles::updateA()
 {
   setPin(DigitalPin::Four, true);
@@ -274,7 +275,6 @@ bool Paddles::updateAnalogAxesA()
   return sa_changed;
 }
 
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Paddles::updateMouseA(bool& firePressedA)
 {
@@ -342,6 +342,7 @@ void Paddles::updateDigitalAxesA()
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Paddles::updateB()
 {
   setPin(DigitalPin::Three, true);
