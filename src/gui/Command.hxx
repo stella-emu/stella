@@ -61,8 +61,8 @@ class CommandSender
 
     virtual ~CommandSender() = default;
 
-    void setTarget(CommandReceiver* target) { _target = target; }
-    CommandReceiver* getTarget() const { return _target; }
+    virtual void setTarget(CommandReceiver* target) { _target = target; }
+    virtual CommandReceiver* getTarget() const { return _target; }
 
     virtual void sendCommand(int cmd, int data, int id)
     {

@@ -545,8 +545,8 @@ StaticTextWidget::StaticTextWidget(GuiObject* boss, const GUI::Font& font,
                                    int x, int y,
                                    const string& text, TextAlign align,
                                    ColorId shadowColor)
-  : StaticTextWidget(boss, font, x, y, font.getStringWidth(text), font.getLineHeight(),
-                     text, align, shadowColor)
+  : StaticTextWidget(boss, font, x, y, font.getStringWidth(text),
+                     font.getLineHeight(), text, align, shadowColor)
 {
 }
 

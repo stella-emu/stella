@@ -41,7 +41,7 @@ class PopUpWidget : public EditableWidget
                 const string& label = "", int labelWidth = 0, int cmd = 0);
     ~PopUpWidget() override = default;
 
-    void setID(uInt32 id);
+    void setID(uInt32 id) override;
 
     int getTop() const override { return _y + 1; }
     int getBottom() const override { return _y + 1 + getHeight(); }

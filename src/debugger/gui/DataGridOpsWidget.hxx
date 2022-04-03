@@ -38,8 +38,8 @@ class DataGridOpsWidget : public Widget, public CommandSender
     DataGridOpsWidget(GuiObject* boss, const GUI::Font& font, int x, int y);
     ~DataGridOpsWidget() override = default;
 
-    void setTarget(CommandReceiver* target);
-    void setEnabled(bool e);
+    void setTarget(CommandReceiver* target) override;
+    void setEnabled(bool e) override;
 
   private:
     ButtonWidget* _zeroButton{nullptr};

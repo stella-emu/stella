@@ -35,10 +35,10 @@ class RadioButtonWidget : public CheckboxWidget
                       int cmd = 0);
 
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
-    void setState(bool state, bool send = true);
+    void setState(bool state, bool send = true) override;
 
   protected:
-    void setFill(FillType type);
+    void setFill(FillType type) override;
     void drawWidget(bool hilite) override;
     static uInt32 buttonSize(const GUI::Font& font)
     {
