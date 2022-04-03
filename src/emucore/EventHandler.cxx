@@ -380,7 +380,8 @@ void EventHandler::handleSystemEvent(SystemEvent e, int, int)
       break;
 
     case SystemEvent::WINDOW_FOCUS_LOST:
-      if(myOSystem.settings().getBool("autopause") && myState == EventHandlerState::EMULATION)
+      if(myOSystem.settings().getBool("autopause") && myState == EventHandlerState::EMULATION
+          && myOSystem.launcherLostFocus())
         setState(EventHandlerState::PAUSE);
       break;
 
