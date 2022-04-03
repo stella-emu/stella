@@ -587,7 +587,18 @@ bool OSystem::createLauncher(const string& startdir)
 #endif
 
   myLauncherUsed = myLauncherUsed || status;
+  myLauncherLostFocus = !status;
   return status;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool OSystem::launcherLostFocus()
+{
+  if(myLauncherLostFocus)
+    return true;
+
+  myLauncherLostFocus = true;
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

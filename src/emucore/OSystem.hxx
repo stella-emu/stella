@@ -380,6 +380,13 @@ class OSystem
     bool launcherUsed() const { return myLauncherUsed; }
 
     /**
+      Answers whether the ROM launcher has lost focus after starting emulation.
+
+      @return  True if launcher has lost focus, otherwise false
+    */
+    bool launcherLostFocus();
+
+    /**
       Gets all possible info about the ROM by creating a temporary
       Console object and querying it.
 
@@ -563,6 +570,9 @@ class OSystem
 
     // Indicates whether ROM launcher was ever opened during this run
     bool myLauncherUsed{false};
+
+    // Indicates whether ROM launcher has focus after starting emulation
+    bool myLauncherLostFocus{true};
 
     // Indicates whether to stop the main loop
     bool myQuitLoop{false};
