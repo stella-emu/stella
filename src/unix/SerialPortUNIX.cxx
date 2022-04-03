@@ -104,14 +104,14 @@ StringList SerialPortUNIX::portNames()
 
   // Check if port is valid; for now that means if it can be opened
   // Eventually we may extend this to do more intensive checks
-  auto isPortValid = [](const string& port) {
+  const auto isPortValid = [](const string& port) {
     int handle = open(port.c_str(), O_RDWR | O_NOCTTY | O_NONBLOCK);
     if(handle > 0)  close(handle);
     return handle > 0;
   };
 
   // Get all possible devices in the '/dev' directory
-  FilesystemNode::NameFilter filter = [](const FilesystemNode& node) {
+  const FilesystemNode::NameFilter filter = [](const FilesystemNode& node) {
     return BSPF::startsWithIgnoreCase(node.getPath(), "/dev/ttyACM") ||
            BSPF::startsWithIgnoreCase(node.getPath(), "/dev/ttyUSB");
   };
