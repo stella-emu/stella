@@ -50,13 +50,13 @@ TimeLineWidget::TimeLineWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TimeLineWidget::setValue(uInt32 value)
+void TimeLineWidget::setValue(int value)
 {
-  value = BSPF::clamp(value, _valueMin, _valueMax);
+  const uInt32 v = BSPF::clamp(static_cast<uInt32>(value), _valueMin, _valueMax);
 
-  if(value != _value)
+  if(v != _value)
   {
-    _value = value;
+    _value = v;
     setDirty();
     sendCommand(_cmd, _value, _id);
   }

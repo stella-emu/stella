@@ -28,12 +28,6 @@ class QuadTariWidget: public ControllerWidget
                    Controller& controller);
     ~QuadTariWidget() override = default;
 
-  protected:
-    virtual string getHeader()
-    {
-      return (isLeftPort() ? "Left (" : "Right (") + string("QuadTari)");
-    }
-
   private:
     StaticTextWidget* myPointer{nullptr};
 

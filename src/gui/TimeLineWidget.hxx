@@ -27,7 +27,7 @@ class TimeLineWidget : public ButtonWidget
                    int x, int y, int w, int h, const string& label = "",
                    uInt32 labelWidth = 0, int cmd = 0);
 
-    void setValue(uInt32 value);
+    void setValue(int value) override;
     uInt32 getValue() const { return _value; }
 
     void setMinValue(uInt32 value);

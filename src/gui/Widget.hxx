@@ -93,7 +93,7 @@ class Widget : public GuiObject
     }
 
     /** Set/clear FLAG_ENABLED */
-    void setEnabled(bool e);
+    virtual void setEnabled(bool e);
 
     bool isEnabled() const          { return _flags & FLAG_ENABLED;         }
     bool isVisible() const override { return !(_flags & FLAG_INVISIBLE);    }
@@ -103,7 +103,7 @@ class Widget : public GuiObject
     bool wantsTab() const           { return _flags & FLAG_WANTS_TAB;       }
     bool wantsRaw() const           { return _flags & FLAG_WANTS_RAWDATA;   }
 
-    void setID(uInt32 id) { _id = id;   }
+    virtual void setID(uInt32 id) { _id = id;   }
     uInt32 getID() const  { return _id; }
 
     virtual const GUI::Font& font() const { return _font; }
@@ -222,7 +222,7 @@ class StaticTextWidget : public Widget, public CommandSender
 
     void setCmd(int cmd) { _cmd = cmd; }
 
-    void setValue(int value);
+    virtual void setValue(int value);
     void setLabel(const string& label);
     void setAlign(TextAlign align) { _align = align; setDirty(); }
     const string& getLabel() const { return _label; }
@@ -331,9 +331,9 @@ class CheckboxWidget : public ButtonWidget
     ~CheckboxWidget() override = default;
 
     void setEditable(bool editable);
-    void setFill(FillType type);
+    virtual void setFill(FillType type);
 
-    void setState(bool state, bool changed = false);
+    virtual void setState(bool state, bool changed = false);
     void toggleState()     { setState(!_state); }
     bool getState() const  { return _state;     }
 
@@ -390,7 +390,7 @@ class SliderWidget : public ButtonWidget
                  int valueLabelGap = 0, bool forceLabelSign = false);
     ~SliderWidget() override = default;
 
-    void setValue(int value);
+    void setValue(int value) override;
     int getValue() const { return BSPF::clamp(_value, _valueMin, _valueMax); }
 
     void setMinValue(int value);
