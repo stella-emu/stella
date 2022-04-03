@@ -37,7 +37,7 @@ FilesystemNodePOSIX::FilesystemNodePOSIX(const string& path, bool verify)
   // Expand '~' to the HOME environment variable
   if(_path[0] == '~')
   {
-    string home = BSPF::getenv("HOME");
+    const string& home = BSPF::getenv("HOME");
     if(home != EmptyString)
       _path.replace(0, 1, home);
   }
@@ -78,7 +78,7 @@ void FilesystemNodePOSIX::setFlags()
 string FilesystemNodePOSIX::getShortPath() const
 {
   // If the path starts with the home directory, replace it with '~'
-  string home = BSPF::getenv("HOME");
+  const string& home = BSPF::getenv("HOME");
   if(home != EmptyString && BSPF::startsWithIgnoreCase(_path, home))
   {
     string path = "~";
@@ -106,7 +106,7 @@ bool FilesystemNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode) con
     return false;
 
   // Loop over dir entries using readdir
-  struct dirent* dp;
+  struct dirent* dp = nullptr;
   while ((dp = readdir(dirp)) != nullptr)
   {
     // Ignore all hidden files
