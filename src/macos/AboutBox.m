@@ -58,7 +58,6 @@ static AboutBox *sharedInstance = nil;
     NSString *versionString;
     NSDictionary *infoDictionary;
     CFBundleRef localInfoBundle;
-    NSDictionary *localInfoDict;
 
     if (![[NSBundle mainBundle] loadNibNamed:@"AboutBox" owner:self topLevelObjects:nil])
     {
@@ -73,7 +72,7 @@ static AboutBox *sharedInstance = nil;
 
     // Get the localized info dictionary (InfoPlist.strings)
     localInfoBundle = CFBundleGetMainBundle();
-    localInfoDict = (NSDictionary *) CFBundleGetLocalInfoDictionary( localInfoBundle );
+    CFBundleGetLocalInfoDictionary(localInfoBundle);
 
     // Setup the app name field
     appName = @"Stella";
