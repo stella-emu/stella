@@ -32,38 +32,38 @@ DataGridOpsWidget::DataGridOpsWidget(GuiObject* boss, const GUI::Font& font,
   int xpos = x;  int ypos = y;
   _zeroButton = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
                                  "0", kDGZeroCmd);
-  _zeroButton->setToolTip("Zero currently selected value");
+  _zeroButton->setToolTip("Zero currently selected value (Z)");
 
   ypos += bheight + space;
   _invButton = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
                                 "Inv", kDGInvertCmd);
-  _invButton->setToolTip("Invert currently selected value");
+  _invButton->setToolTip("Invert currently selected value (I)");
 
   ypos += bheight + space;
   _incButton = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
                                 "++", kDGIncCmd);
-  _incButton->setToolTip("Increase currently selected value.");
+  _incButton->setToolTip("Increase currently selected value. (=, Keypad +)");
 
   ypos += bheight + space;
   _shiftLeftButton = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
                                       "<<", kDGShiftLCmd);
-  _shiftLeftButton->setToolTip("Shift currently selected value left");
+  _shiftLeftButton->setToolTip("Shift currently selected value left (,)");
 
   // Move to next column, skip a row
   xpos = x + bwidth + space;  ypos = y + bheight + space;
   _negButton = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
                                 "Neg", kDGNegateCmd);
-  _negButton->setToolTip("Negate currently selected value");
+  _negButton->setToolTip("Negate currently selected value (N)");
 
   ypos += bheight + space;
   _decButton = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
                                 "--", kDGDecCmd);
-  _decButton->setToolTip("Decrease currently selected value");
+  _decButton->setToolTip("Decrease currently selected value (-, Keypad -)");
 
   ypos += bheight + space;
   _shiftRightButton = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
                                        ">>", kDGShiftRCmd);
-  _shiftRightButton->setToolTip("Shift currently selected value right");
+  _shiftRightButton->setToolTip("Shift currently selected value right (.)");
 
   // Calculate real dimensions
   _w = 2 * (bwidth+space);

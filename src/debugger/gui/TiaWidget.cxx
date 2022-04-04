@@ -102,6 +102,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   // Fixed debug colors
   xpos += myCOLUP0Color->getWidth() + 30;  ypos = 10 + lineHeight + 6;
   myFixedEnabled = new CheckboxWidget(boss, lfont, xpos, ypos, "Debug Colors", kDbgClCmd);
+  myFixedEnabled->setToolTip("Enable fixed debug colors", Event::ToggleFixedColors);
   myFixedEnabled->setTarget(this);
   addFocusWidget(myFixedEnabled);
 

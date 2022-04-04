@@ -398,7 +398,7 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
   // debug colors
   myDebugColorsWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1,
                                            "Debug colors (*)");
-  myDebugColorsWidget->setToolTip(Event::ToggleFixedColors);
+  myDebugColorsWidget->setToolTip("Enable fixed debug colors", Event::ToggleFixedColors);
   wid.push_back(myDebugColorsWidget);
   ypos += lineHeight + VGAP + 2;
 

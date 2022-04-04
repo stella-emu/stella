@@ -563,26 +563,31 @@ void DebuggerDialog::addRomArea()
 
   b = new ButtonWidget(this, *myLFont, buttonX, buttonY,
                        bwidth, bheight, "Step", kDDStepCmd, true);
+  b->setToolTip("Ctrl+S");
   b->setHelpAnchor("GlobalButtons", true);
   wid2.push_back(b);
   buttonY += bheight + 4;
   b = new ButtonWidget(this, *myLFont, buttonX, buttonY,
                        bwidth, bheight, "Trace", kDDTraceCmd, true);
+  b->setToolTip("Ctrl+T");
   b->setHelpAnchor("GlobalButtons", true);
   wid2.push_back(b);
   buttonY += bheight + 4;
   b = new ButtonWidget(this, *myLFont, buttonX, buttonY,
                        bwidth, bheight, "Scan +1", kDDSAdvCmd, true);
+  b->setToolTip("Ctrl+L");
   b->setHelpAnchor("GlobalButtons", true);
   wid2.push_back(b);
   buttonY += bheight + 4;
   b = new ButtonWidget(this, *myLFont, buttonX, buttonY,
                        bwidth, bheight, "Frame +1", kDDAdvCmd, true);
+  b->setToolTip("Ctrl+F");
   b->setHelpAnchor("GlobalButtons", true);
   wid2.push_back(b);
   buttonY += bheight + 4;
   b = new ButtonWidget(this, *myLFont, buttonX, buttonY,
                        bwidth, bheight, "Run", kDDRunCmd);
+  b->setToolTip("Escape");
   b->setHelpAnchor("GlobalButtons", true);
   wid2.push_back(b);
 
@@ -594,6 +599,7 @@ void DebuggerDialog::addRomArea()
   myRewindButton =
     new ButtonWidget(this, *myLFont, buttonX, buttonY,
                      bwidth, bheight, LEFT_ARROW.data(), 7, 11, kDDRewindCmd, true);
+  myRewindButton->setToolTip("Alt[+Shift]+Left");
   myRewindButton->setHelpAnchor("GlobalButtons", true);
   myRewindButton->clearFlags(Widget::FLAG_ENABLED);
 
@@ -603,6 +609,7 @@ void DebuggerDialog::addRomArea()
   myUnwindButton =
     new ButtonWidget(this, *myLFont, buttonX, buttonY,
                      bwidth, bheight, RIGHT_ARROW.data(), 7, 11, kDDUnwindCmd, true);
+  myUnwindButton->setToolTip("Alt[+Shift]+Right");
   myUnwindButton->setHelpAnchor("GlobalButtons", true);
   myUnwindButton->clearFlags(Widget::FLAG_ENABLED);
 
