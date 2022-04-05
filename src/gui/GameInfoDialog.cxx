@@ -221,10 +221,12 @@ void GameInfoDialog::addConsoleTab()
   myTVTypeGroup = new RadioButtonGroup();
   RadioButtonWidget* r = new RadioButtonWidget(myTab, _font, xpos + lwidth, ypos + 1,
                                                "Color", myTVTypeGroup);
+  r->setToolTip(Event::ConsoleColor, Event::ConsoleColorToggle);
   wid.push_back(r);
   ypos += lineHeight;
   r = new RadioButtonWidget(myTab, _font, xpos + lwidth, ypos + 1,
                             "B/W", myTVTypeGroup);
+  r->setToolTip(Event::ConsoleBlackWhite, Event::ConsoleColorToggle);
   wid.push_back(r);
   ypos += lineHeight + VGAP * 2;
 
@@ -232,21 +234,25 @@ void GameInfoDialog::addConsoleTab()
   myLeftDiffGroup = new RadioButtonGroup();
   r = new RadioButtonWidget(myTab, _font, xpos + lwidth, ypos + 1,
                             "A (Expert)", myLeftDiffGroup);
+  r->setToolTip(Event::ConsoleLeftDiffA, Event::ConsoleLeftDiffToggle);
   wid.push_back(r);
   ypos += lineHeight;
   r = new RadioButtonWidget(myTab, _font, xpos + lwidth, ypos + 1,
                             "B (Novice)", myLeftDiffGroup);
   wid.push_back(r);
+  r->setToolTip(Event::ConsoleLeftDiffB, Event::ConsoleLeftDiffToggle);
   ypos += lineHeight + VGAP * 2;
 
   new StaticTextWidget(myTab, _font, xpos, ypos+1, GUI::RIGHT_DIFFICULTY);
   myRightDiffGroup = new RadioButtonGroup();
   r = new RadioButtonWidget(myTab, _font, xpos + lwidth, ypos + 1,
                             "A (Expert)", myRightDiffGroup);
+  r->setToolTip(Event::ConsoleRightDiffA, Event::ConsoleRightDiffToggle);
   wid.push_back(r);
   ypos += lineHeight;
   r = new RadioButtonWidget(myTab, _font, xpos + lwidth, ypos + 1,
                             "B (Novice)", myRightDiffGroup);
+  r->setToolTip(Event::ConsoleRightDiffB, Event::ConsoleRightDiffToggle);
   wid.push_back(r);
 
   // Add items for tab 1
@@ -355,6 +361,7 @@ void GameInfoDialog::addControllersTab()
   myPaddleXCenter->setMinValue(Paddles::MIN_ANALOG_CENTER);
   myPaddleXCenter->setMaxValue(Paddles::MAX_ANALOG_CENTER);
   myPaddleXCenter->setTickmarkIntervals(4);
+  myPaddleXCenter->setToolTip(Event::DecreasePaddleCenterX, Event::IncreasePaddleCenterX);
   wid.push_back(myPaddleXCenter);
   ypos += lineHeight + VGAP;
 
@@ -363,6 +370,7 @@ void GameInfoDialog::addControllersTab()
   myPaddleYCenter->setMinValue(Paddles::MIN_ANALOG_CENTER);
   myPaddleYCenter->setMaxValue(Paddles::MAX_ANALOG_CENTER);
   myPaddleYCenter->setTickmarkIntervals(4);
+  myPaddleYCenter->setToolTip(Event::DecreasePaddleCenterY, Event::IncreasePaddleCenterY);
   wid.push_back(myPaddleYCenter);
 
   // Mouse
