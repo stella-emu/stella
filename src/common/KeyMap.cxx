@@ -162,17 +162,17 @@ string KeyMap::getDesc(const Mapping& mapping) const
   else if(mapping.mod & KBDM_LCTRL) buf << "Left Ctrl";
   else if(mapping.mod & KBDM_RCTRL) buf << "Right Ctrl";
 
-  if((mapping.mod & (MOD2)) && buf.tellp()) buf << "+";
+  if((mapping.mod & (MOD2)) && buf.tellp()) buf << "-";
   if((mapping.mod & MOD2) == MOD2) buf << mod2;
   else if(mapping.mod & LMOD2) buf << "Left " << mod2;
   else if(mapping.mod & RMOD2) buf << "Right " << mod2;
 
-  if((mapping.mod & (MOD3)) && buf.tellp()) buf << "+";
+  if((mapping.mod & (MOD3)) && buf.tellp()) buf << "-";
   if((mapping.mod & MOD3) == MOD3) buf << mod3;
   else if(mapping.mod & LMOD3) buf << "Left " << mod3;
   else if(mapping.mod & RMOD3) buf << "Right " << mod3;
 
-  if((mapping.mod & (KBDM_SHIFT)) && buf.tellp()) buf << "+";
+  if((mapping.mod & (KBDM_SHIFT)) && buf.tellp()) buf << "-";
   if((mapping.mod & KBDM_SHIFT) == KBDM_SHIFT) buf << "Shift";
   else if(mapping.mod & KBDM_LSHIFT) buf << "Left Shift";
   else if(mapping.mod & KBDM_RSHIFT) buf << "Right Shift";
