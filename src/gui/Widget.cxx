@@ -314,8 +314,8 @@ string Widget::getToolTip(const Common::Point& pos) const
 
   if(hotkey2 != EmptyString)
   {
-    // Merge hotkeys if they only differ by "+Shift"
-    const string mod = "+Shift";
+    // Merge hotkeys if they only differ by "-Shift"
+    const string mod = "-Shift";
     const size_t p = BSPF::findIgnoreCase(hotkey, mod);
 
     if(p != string::npos)
