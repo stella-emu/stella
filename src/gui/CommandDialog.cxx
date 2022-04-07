@@ -49,56 +49,60 @@ CommandDialog::CommandDialog(OSystem& osystem, DialogContainer& parent)
   WidgetArray wid;
   int xoffset = HBORDER, yoffset = VBORDER + _th;
 
-  const auto ADD_CD_BUTTON = [&](const string& label, int cmd)
+  const auto ADD_CD_BUTTON = [&](const string& label, int cmd,
+    Event::Type event1 = Event::NoType, Event::Type event2 = Event::NoType)
   {
     ButtonWidget* b = new ButtonWidget(this, _font, xoffset, yoffset,
             buttonWidth, buttonHeight, label, cmd);
+    b->setToolTip(event1, event2);
     yoffset += buttonHeight + VGAP;
     return b;
   };
 
   // Column 1
-  bw = ADD_CD_BUTTON(GUI::SELECT, kSelectCmd);
+  bw = ADD_CD_BUTTON(GUI::SELECT, kSelectCmd, Event::ConsoleSelect);
   wid.push_back(bw);
-  bw = ADD_CD_BUTTON("Reset", kResetCmd);
+  bw = ADD_CD_BUTTON("Reset", kResetCmd, Event::ConsoleReset);
   wid.push_back(bw);
-  myColorButton = ADD_CD_BUTTON("", kColorCmd);
+  myColorButton = ADD_CD_BUTTON("", kColorCmd, Event::ConsoleColor, Event::ConsoleBlackWhite);
   wid.push_back(myColorButton);
-  myLeftDiffButton = ADD_CD_BUTTON("", kLeftDiffCmd);
+  myLeftDiffButton = ADD_CD_BUTTON("", kLeftDiffCmd,
+    Event::ConsoleLeftDiffA, Event::ConsoleLeftDiffB);
   wid.push_back(myLeftDiffButton);
-  myRightDiffButton = ADD_CD_BUTTON("", kRightDiffCmd);
+  myRightDiffButton = ADD_CD_BUTTON("", kRightDiffCmd,
+    Event::ConsoleRightDiffA, Event::ConsoleRightDiffB);
   wid.push_back(myRightDiffButton);
 
   // Column 2
   xoffset += buttonWidth + HGAP;
   yoffset = VBORDER + _th;
 
-  mySaveStateButton = ADD_CD_BUTTON("", kSaveStateCmd);
+  mySaveStateButton = ADD_CD_BUTTON("", kSaveStateCmd, Event::SaveState);
   wid.push_back(mySaveStateButton);
-  myStateSlotButton = ADD_CD_BUTTON("Change Slot", kStateSlotCmd);
+  myStateSlotButton = ADD_CD_BUTTON("Change Slot", kStateSlotCmd, Event::NextState);
   wid.push_back(myStateSlotButton);
-  myLoadStateButton = ADD_CD_BUTTON("", kLoadStateCmd);
+  myLoadStateButton = ADD_CD_BUTTON("", kLoadStateCmd, Event::LoadState);
   wid.push_back(myLoadStateButton);
-  bw = ADD_CD_BUTTON("Snapshot", kSnapshotCmd);
+  bw = ADD_CD_BUTTON("Snapshot", kSnapshotCmd, Event::TakeSnapshot);
   wid.push_back(bw);
-  myTimeMachineButton = ADD_CD_BUTTON("", kTimeMachineCmd);
+  myTimeMachineButton = ADD_CD_BUTTON("", kTimeMachineCmd, Event::TimeMachineMode);
   wid.push_back(myTimeMachineButton);
-  bw = ADD_CD_BUTTON("Exit Game", kExitCmd);
+  bw = ADD_CD_BUTTON("Exit Game", kExitCmd, Event::ExitMode);
   wid.push_back(bw);
 
   // Column 3
   xoffset += buttonWidth + HGAP;
   yoffset = VBORDER + _th;
 
-  myTVFormatButton = ADD_CD_BUTTON("", kFormatCmd);
+  myTVFormatButton = ADD_CD_BUTTON("", kFormatCmd, Event::FormatIncrease);
   wid.push_back(myTVFormatButton);
-  myPaletteButton = ADD_CD_BUTTON("", kPaletteCmd);
+  myPaletteButton = ADD_CD_BUTTON("", kPaletteCmd, Event::PaletteIncrease);
   wid.push_back(myPaletteButton);
-  myPhosphorButton = ADD_CD_BUTTON("", kPhosphorCmd);
+  myPhosphorButton = ADD_CD_BUTTON("", kPhosphorCmd, Event::TogglePhosphor);
   wid.push_back(myPhosphorButton);
-  mySoundButton = ADD_CD_BUTTON("", kSoundCmd);
+  mySoundButton = ADD_CD_BUTTON("", kSoundCmd, Event::SoundToggle);
   wid.push_back(mySoundButton);
-  bw = ADD_CD_BUTTON("Reload ROM", kReloadRomCmd);
+  bw = ADD_CD_BUTTON("Reload ROM", kReloadRomCmd, Event::ReloadConsole);
   wid.push_back(bw);
 
   addToFocusList(wid);
