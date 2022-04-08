@@ -39,8 +39,8 @@ FilesystemNodeZIP::FilesystemNodeZIP(const string& p)
   if (_zipFile[0] == '~')
   {
 #if defined(BSPF_UNIX) || defined(BSPF_MACOS)
-    const string& home = BSPF::getenv("HOME");
-    if (home != EmptyString)
+    const char* home = std::getenv("HOME");
+    if (home != nullptr)
       _zipFile.replace(0, 1, home);
 #elif defined(BSPF_WINDOWS)
     _zipFile.replace(0, 1, myHomeFinder.getHomePath());

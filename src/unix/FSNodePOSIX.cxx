@@ -37,8 +37,8 @@ FilesystemNodePOSIX::FilesystemNodePOSIX(const string& path, bool verify)
   // Expand '~' to the HOME environment variable
   if(_path[0] == '~')
   {
-    const string& home = BSPF::getenv("HOME");
-    if(home != EmptyString)
+    const char* home = std::getenv("HOME");
+    if (home != nullptr)
       _path.replace(0, 1, home);
   }
   // Get absolute path (only used for relative directories)
@@ -78,7 +78,9 @@ void FilesystemNodePOSIX::setFlags()
 string FilesystemNodePOSIX::getShortPath() const
 {
   // If the path starts with the home directory, replace it with '~'
-  const string& home = BSPF::getenv("HOME");
+  const char* env_home = std::getenv("HOME");
+  const string& home = env_home != nullptr ? env_home : EmptyString;
+
   if(home != EmptyString && BSPF::startsWithIgnoreCase(_path, home))
   {
     string path = "~";

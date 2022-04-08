@@ -355,30 +355,6 @@ namespace BSPF
     return tm_snapshot;
   }
 
-  // Coverity complains if 'getenv' is used unrestricted
-  inline string getenv(const string& env_var)
-  {
-  #if (defined BSPF_WINDOWS || defined __WIN32__) && !defined __GNUG__
-    char* buf = nullptr;
-    size_t sz = 0;
-    if(_dupenv_s(&buf, &sz, env_var.c_str()) == 0 && buf != nullptr)
-    {
-      string val(buf);
-      free(buf);
-      return val;
-    }
-    return EmptyString;
-  #else
-    try {
-      const char* val = std::getenv(env_var.c_str());
-      return val ? string(val) : EmptyString;
-    }
-    catch(...) {
-      return EmptyString;
-    }
-  #endif
-  }
-
   inline bool isWhiteSpace(const char s)
   {
     const string WHITESPACES = " ,.;:+-*&/\\'";
