@@ -1134,7 +1134,7 @@
     <ClCompile Include="..\emucore\Cart0FA0.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
-    <ClCompile Include="..\emucore\Cart0FA0Widget.cxx">
+    <ClCompile Include="..\debugger\gui\Cart0FA0Widget.cxx">
       <Filter>Source Files\debugger</Filter>
     </ClCompile>
   </ItemGroup>
@@ -2352,6 +2352,9 @@
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
     <ClInclude Include="..\emucore\Cart0FA0Widget.hxx">
+      <Filter>Header Files\debugger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\Cart0FA0Widget.hxx">
       <Filter>Header Files\debugger</Filter>
     </ClInclude>
   </ItemGroup>
