@@ -2351,9 +2351,6 @@
     <ClInclude Include="..\emucore\Cart0FA0.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
-    <ClInclude Include="..\emucore\Cart0FA0Widget.hxx">
-      <Filter>Header Files\debugger</Filter>
-    </ClInclude>
     <ClInclude Include="..\debugger\gui\Cart0FA0Widget.hxx">
       <Filter>Header Files\debugger</Filter>
     </ClInclude>

@@ -24,27 +24,27 @@ class Cartridge0FA0;
 
 class Cartridge0FA0Widget : public CartridgeEnhancedWidget
 {
-public:
-  Cartridge0FA0Widget(GuiObject* boss, const GUI::Font& lfont,
-                    const GUI::Font& nfont,
-                    int x, int y, int w, int h,
-                    Cartridge0FA0& cart);
-  ~Cartridge0FA0Widget() override = default;
+  public:
+    Cartridge0FA0Widget(GuiObject* boss, const GUI::Font& lfont,
+                        const GUI::Font& nfont,
+                        int x, int y, int w, int h,
+                        Cartridge0FA0& cart);
+    ~Cartridge0FA0Widget() override = default;
 
-private:
-  string manufacturer() override { return "Mania"; }
+  private:
+    string manufacturer() override { return "Mania"; }
 
-  string description() override;
+    string description() override;
 
-  string hotspotStr(int bank, int seg, bool prefix = false) override;
+    string hotspotStr(int bank, int seg, bool prefix = false) override;
 
-private:
-  // Following constructors and assignment operators not supported
-  Cartridge0FA0Widget() = delete;
-  Cartridge0FA0Widget(const Cartridge0FA0Widget&) = delete;
-  Cartridge0FA0Widget(Cartridge0FA0Widget&&) = delete;
-  Cartridge0FA0Widget& operator=(const Cartridge0FA0Widget&) = delete;
-  Cartridge0FA0Widget& operator=(Cartridge0FA0Widget&&) = delete;
+  private:
+    // Following constructors and assignment operators not supported
+    Cartridge0FA0Widget() = delete;
+    Cartridge0FA0Widget(const Cartridge0FA0Widget&) = delete;
+    Cartridge0FA0Widget(Cartridge0FA0Widget&&) = delete;
+    Cartridge0FA0Widget& operator=(const Cartridge0FA0Widget&) = delete;
+    Cartridge0FA0Widget& operator=(Cartridge0FA0Widget&&) = delete;
 };
 
 #endif

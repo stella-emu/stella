@@ -209,6 +209,10 @@
 		DC0984860D3985160073C852 /* CartSB.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC0984840D3985160073C852 /* CartSB.hxx */; };
 		DC0DF8690F0DAAF500B0F1F3 /* GlobalPropsDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC0DF8670F0DAAF500B0F1F3 /* GlobalPropsDialog.cxx */; };
 		DC0DF86A0F0DAAF500B0F1F3 /* GlobalPropsDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC0DF8680F0DAAF500B0F1F3 /* GlobalPropsDialog.hxx */; };
+		DC0E98E02801CC8900097C68 /* Cart0FA0Widget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC0E98DE2801CC8900097C68 /* Cart0FA0Widget.cxx */; };
+		DC0E98E12801CC8900097C68 /* Cart0FA0Widget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC0E98DF2801CC8900097C68 /* Cart0FA0Widget.hxx */; };
+		DC0E98E42801CD1600097C68 /* Cart0FA0.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC0E98E22801CD1500097C68 /* Cart0FA0.cxx */; };
+		DC0E98E52801CD1600097C68 /* Cart0FA0.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC0E98E32801CD1500097C68 /* Cart0FA0.hxx */; };
 		DC11F78D0DB36933003B505E /* MT24LC256.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC11F78B0DB36933003B505E /* MT24LC256.cxx */; };
 		DC11F78E0DB36933003B505E /* MT24LC256.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC11F78C0DB36933003B505E /* MT24LC256.hxx */; };
 		DC13B53F176FF2F500B8B4BB /* RomListSettings.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC13B53D176FF2F500B8B4BB /* RomListSettings.cxx */; };
@@ -1031,6 +1035,10 @@
 		DC0984840D3985160073C852 /* CartSB.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartSB.hxx; sourceTree = "<group>"; };
 		DC0DF8670F0DAAF500B0F1F3 /* GlobalPropsDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GlobalPropsDialog.cxx; sourceTree = "<group>"; };
 		DC0DF8680F0DAAF500B0F1F3 /* GlobalPropsDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = GlobalPropsDialog.hxx; sourceTree = "<group>"; };
+		DC0E98DE2801CC8900097C68 /* Cart0FA0Widget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Cart0FA0Widget.cxx; sourceTree = "<group>"; };
+		DC0E98DF2801CC8900097C68 /* Cart0FA0Widget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Cart0FA0Widget.hxx; sourceTree = "<group>"; };
+		DC0E98E22801CD1500097C68 /* Cart0FA0.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Cart0FA0.cxx; sourceTree = "<group>"; };
+		DC0E98E32801CD1500097C68 /* Cart0FA0.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Cart0FA0.hxx; sourceTree = "<group>"; };
 		DC11F78B0DB36933003B505E /* MT24LC256.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = MT24LC256.cxx; sourceTree = "<group>"; };
 		DC11F78C0DB36933003B505E /* MT24LC256.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = MT24LC256.hxx; sourceTree = "<group>"; };
 		DC13B53D176FF2F500B8B4BB /* RomListSettings.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RomListSettings.cxx; sourceTree = "<group>"; };
@@ -1717,6 +1725,8 @@
 				2D2331900900B5EF00613B1F /* AudioWidget.hxx */,
 				DCCF4ACE14B7E6C300814FAB /* BoosterWidget.cxx */,
 				DCCF4ACF14B7E6C300814FAB /* BoosterWidget.hxx */,
+				DC0E98DE2801CC8900097C68 /* Cart0FA0Widget.cxx */,
+				DC0E98DF2801CC8900097C68 /* Cart0FA0Widget.hxx */,
 				DCAAE5B21715887B0080BB82 /* Cart2KWidget.cxx */,
 				DCAAE5B31715887B0080BB82 /* Cart2KWidget.hxx */,
 				DCBDDE981D6A5F0E009DF1E9 /* Cart3EPlusWidget.cxx */,
@@ -1991,6 +2001,8 @@
 				2DE2DF110627AE07006BEC99 /* Booster.hxx */,
 				2DE2DF120627AE07006BEC99 /* Cart.cxx */,
 				2DE2DF130627AE07006BEC99 /* Cart.hxx */,
+				DC0E98E22801CD1500097C68 /* Cart0FA0.cxx */,
+				DC0E98E32801CD1500097C68 /* Cart0FA0.hxx */,
 				2DE2DF140627AE07006BEC99 /* Cart2K.cxx */,
 				2DE2DF150627AE07006BEC99 /* Cart2K.hxx */,
 				2D9555D90880E78000466554 /* Cart3E.cxx */,
@@ -2755,6 +2767,7 @@
 				DC22F1352507D24E00AB43E9 /* QuadTariDialog.hxx in Headers */,
 				2D91745309BA90380026E9FF /* CommandMenu.hxx in Headers */,
 				E0306E111F93E916003DDD52 /* JitterEmulation.hxx in Headers */,
+				DC0E98E52801CD1600097C68 /* Cart0FA0.hxx in Headers */,
 				DC1E474F24D34F3B0047E61A /* WhatsNewDialog.hxx in Headers */,
 				2D91745509BA90380026E9FF /* CpuWidget.hxx in Headers */,
 				2D91745609BA90380026E9FF /* DataGridOpsWidget.hxx in Headers */,
@@ -2767,6 +2780,7 @@
 				DC2C5EDB1F8F2403007D2A09 /* smartmod.hxx in Headers */,
 				DC2ABA69259D466C007E57D3 /* CompositeKeyValueRepositoryNoop.hxx in Headers */,
 				DCE5CDE41BA10024005CD08A /* RiotRamWidget.hxx in Headers */,
+				DC0E98E12801CC8900097C68 /* Cart0FA0Widget.hxx in Headers */,
 				DCBD31E82299ADB400567357 /* KeyMap.hxx in Headers */,
 				DCF3A6E81DFC75E3008A8AF3 /* Background.hxx in Headers */,
 				DC21E5C021CA903E007D0E1A /* OSystemMACOS.hxx in Headers */,
@@ -3292,6 +3306,7 @@
 				DCE3BBF90C95CEDC00A671DF /* RomInfoWidget.cxx in Sources */,
 				DC2ABA62259BD56F007E57D3 /* AbstractKeyValueRepositorySqlite.cxx in Sources */,
 				DC0984850D3985160073C852 /* CartSB.cxx in Sources */,
+				DC0E98E02801CC8900097C68 /* Cart0FA0Widget.cxx in Sources */,
 				DC3EE8651E2C0E6D00905161 /* inflate.c in Sources */,
 				DC6D39871A3CE65000171E71 /* CartWDWidget.cxx in Sources */,
 				DCA23AE90D75B22500F77B33 /* CartX07.cxx in Sources */,
@@ -3370,6 +3385,7 @@
 				DC1BC6662066B4390076F74A /* PKeyboardHandler.cxx in Sources */,
 				DC6C726213CDEA0A008A5975 /* LoggerDialog.cxx in Sources */,
 				DC8C1BAD14B25DE7006440EE /* CartCM.cxx in Sources */,
+				DC0E98E42801CD1600097C68 /* Cart0FA0.cxx in Sources */,
 				DCDDEAC61F5DBF0400C67366 /* StateManager.cxx in Sources */,
 				DC8C1BAF14B25DE7006440EE /* CompuMate.cxx in Sources */,
 				E09F4142201E9050004A3391 /* Audio.cxx in Sources */,

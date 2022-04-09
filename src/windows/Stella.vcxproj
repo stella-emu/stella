@@ -2068,7 +2068,6 @@
     <ClInclude Include="..\emucore\CartFC.hxx" />
     <ClInclude Include="..\emucore\CartMDM.hxx" />
     <ClInclude Include="..\emucore\CartMVC.hxx" />
-    <ClInclude Include="..\emucore\Cart0FA0Widget.hxx" />
     <ClInclude Include="..\emucore\CartTVBoy.hxx" />
     <ClInclude Include="..\emucore\CartWD.hxx" />
     <ClInclude Include="..\emucore\CompuMate.hxx" />

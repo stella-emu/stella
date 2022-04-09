@@ -41,13 +41,15 @@ void Cartridge0FA0::install(System& system)
   // - A10, A9 and A7 are the fixed part of the hotspot address
   // - A6 and A5 determine bank
   for(uInt16 a11 = 0; a11 <= 1; ++a11)
-      for(uInt16 a8 = 0; a8 <= 1; ++a8)
-      {
-        const uInt16 addr = (a11 << 11) + (a8 << 8);
+  {
+    for(uInt16 a8 = 0; a8 <= 1; ++a8)
+    {
+      const uInt16 addr = (a11 << 11) + (a8 << 8);
 
-        mySystem->setPageAccess(0x06a0 | addr, access);
-        mySystem->setPageAccess(0x06c0 | addr, access);
-      }
+      mySystem->setPageAccess(0x06a0 | addr, access);
+      mySystem->setPageAccess(0x06c0 | addr, access);
+    }
+  }
   // Install pages for the startup bank
   bank(startBank());
 }
@@ -74,7 +76,7 @@ bool Cartridge0FA0::checkSwitchBank(uInt16 address, uInt8)
   return false;
 }
 
-//// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 Cartridge0FA0::peek(uInt16 address)
 {
   address &= myBankMask;
