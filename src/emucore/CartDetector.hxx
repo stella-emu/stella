@@ -92,6 +92,11 @@ class CartDetector
     static bool isProbably0840(const ByteBuffer& image, size_t size);
 
     /**
+      Returns true if the image is probably a BRazilian bankswitching cartridge
+    */
+    static bool isProbably0FA0(const ByteBuffer& image, size_t size);
+
+    /**
       Returns true if the image is probably a 3E bankswitching cartridge
     */
     static bool isProbably3E(const ByteBuffer& image, size_t size);

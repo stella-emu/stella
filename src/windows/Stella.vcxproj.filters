@@ -1131,6 +1131,12 @@
     <ClCompile Include="..\gui\NavigationWidget.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
+    <ClCompile Include="..\emucore\Cart0FA0.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\emucore\Cart0FA0Widget.cxx">
+      <Filter>Source Files\debugger</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">
@@ -2341,6 +2347,12 @@
     </ClInclude>
     <ClInclude Include="..\emucore\ConsoleTiming.hxx">
       <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\Cart0FA0.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\Cart0FA0Widget.hxx">
+      <Filter>Header Files\debugger</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

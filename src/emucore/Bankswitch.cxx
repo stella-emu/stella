@@ -96,6 +96,7 @@ const std::array<Bankswitch::Description, static_cast<int>(Bankswitch::Type::Num
 Bankswitch::BSList = {{
   { "AUTO"    , "Auto-detect"                 },
   { "0840"    , "0840 (8K ECONObank)"         },
+  { "0FA0"    , "0FA0 (8K Mania)"             },
   { "2IN1"    , "2IN1 Multicart (4-64K)"      },
   { "4IN1"    , "4IN1 Multicart (8-64K)"      },
   { "8IN1"    , "8IN1 Multicart (16-64K)"     },
@@ -167,6 +168,8 @@ Bankswitch::ExtensionMap Bankswitch::ourExtensions = {
   // All bankswitch types (those that UnoCart and HarmonyCart support have the same name)
   { "084"   , Bankswitch::Type::_0840   },
   { "0840"  , Bankswitch::Type::_0840   },
+  { "0FA"   , Bankswitch::Type::_0FA0   },
+  { "0FA0"  , Bankswitch::Type::_0FA0   },
   { "2N1"   , Bankswitch::Type::_2IN1   },
   { "4N1"   , Bankswitch::Type::_4IN1   },
   { "8N1"   , Bankswitch::Type::_8IN1   },
@@ -241,6 +244,7 @@ Bankswitch::ExtensionMap Bankswitch::ourExtensions = {
 Bankswitch::NameToTypeMap Bankswitch::ourNameToTypes = {
   { "AUTO"    , Bankswitch::Type::_AUTO   },
   { "0840"    , Bankswitch::Type::_0840   },
+  { "0FA0"    , Bankswitch::Type::_0FA0   },
   { "2IN1"    , Bankswitch::Type::_2IN1   },
   { "4IN1"    , Bankswitch::Type::_4IN1   },
   { "8IN1"    , Bankswitch::Type::_8IN1   },

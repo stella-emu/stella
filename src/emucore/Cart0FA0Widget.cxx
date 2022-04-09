@@ -15,40 +15,39 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "CartUA.hxx"
-#include "CartUAWidget.hxx"
+#include "Cart0FA0.hxx"
+#include "Cart0FA0Widget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeUAWidget::CartridgeUAWidget(
+Cartridge0FA0Widget::Cartridge0FA0Widget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-      int x, int y, int w, int h, CartridgeUA& cart, bool swapHotspots)
-  : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart),
-    mySwappedHotspots{swapHotspots}
+      int x, int y, int w, int h, Cartridge0FA0& cart)
+  : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart)
 {
   myHotspotDelta = 0x20;
   initialize();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartridgeUAWidget::description()
+string Cartridge0FA0Widget::description()
 {
   ostringstream info;
 
-  info << "8K UA cartridge" << (mySwappedHotspots ? " (swapped banks)" : "")
-       << ", two 4K banks\n"
-       << CartridgeEnhancedWidget::description();
+  info << "8K BR cartridge, two 4K banks\n"
+    << CartridgeEnhancedWidget::description();
 
   return info.str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartridgeUAWidget::hotspotStr(int bank, int, bool prefix)
+string Cartridge0FA0Widget::hotspotStr(int bank, int, bool prefix)
 {
   ostringstream info;
-  const uInt16 hotspot = myCart.hotspot() + (bank ^ (mySwappedHotspots ? 1 : 0)) * myHotspotDelta;
+  const uInt16 hotspot = myCart.hotspot() + bank * myHotspotDelta;
 
   info << "(" << (prefix ? "hotspot " : "")
-       << "$" << Common::Base::HEX1 << hotspot << ", $" << (hotspot | 0x80) << ")";
+    << "$" << Common::Base::HEX1 << hotspot
+    << ", $" << (hotspot | 0xf80) << ")";
 
   return info.str();
 }

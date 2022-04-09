@@ -49,6 +49,7 @@ SOURCES_CXX := \
 	$(CORE_DIR)/emucore/CartDetector.cxx \
 	$(CORE_DIR)/emucore/CartEnhanced.cxx \
 	$(CORE_DIR)/emucore/Cart0840.cxx \
+	$(CORE_DIR)/emucore/Cart0FA0.cxx \
 	$(CORE_DIR)/emucore/Cart2K.cxx \
 	$(CORE_DIR)/emucore/Cart3E.cxx \
 	$(CORE_DIR)/emucore/Cart3EPlus.cxx \
