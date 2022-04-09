@@ -18,6 +18,7 @@
 #include "bspf.hxx"
 #include "Cart.hxx"
 #include "Cart0840.hxx"
+#include "Cart0FA0.hxx"
 #include "Cart2K.hxx"
 #include "Cart3E.hxx"
 #include "Cart3EX.hxx"
@@ -245,7 +246,7 @@ CartCreator::createFromMultiCart(const ByteBuffer& image, size_t& size,
     type = Bankswitch::Type::_2K;
   else if(size == 4_KB)
     type = Bankswitch::Type::_4K;
-  else if(size == 8_KB || size == 16_KB || size == 32_KB || size == 64_KB)
+  else if(size == 8_KB || size == 16_KB || size == 32_KB || size == 64_KB || size == 128_KB)
     type = CartDetector::autodetectType(slice, size);
   else  /* default */
     type = Bankswitch::Type::_4K;
@@ -263,6 +264,8 @@ CartCreator::createFromImage(const ByteBuffer& image, size_t size, Bankswitch::T
   {
     case Bankswitch::Type::_0840:
       return make_unique<Cartridge0840>(image, size, md5, settings);
+    case Bankswitch::Type::_0FA0:
+      return make_unique<Cartridge0FA0>(image, size, md5, settings);
     case Bankswitch::Type::_2K:
       return make_unique<Cartridge2K>(image, size, md5, settings);
     case Bankswitch::Type::_3E:

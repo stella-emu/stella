@@ -39,6 +39,8 @@
 
   * Enhanced support for CDFJ+ bankswitching type.
 
+  * Added 0FA0 bankswitching for Mania ROMs
+
   * Added ARM chip auto detection.
 
   * Fixed Stella crash due to invalid ZIP files.

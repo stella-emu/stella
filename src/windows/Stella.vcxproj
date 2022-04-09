@@ -857,6 +857,8 @@
     <ClCompile Include="..\emucore\Cart3EX.cxx" />
     <ClCompile Include="..\emucore\Cart4KSC.cxx" />
     <ClCompile Include="..\emucore\CartARM.cxx" />
+    <ClCompile Include="..\emucore\Cart0FA0.cxx" />
+    <ClCompile Include="..\emucore\Cart0FA0Widget.cxx" />
     <ClCompile Include="..\emucore\CartCreator.cxx" />
     <ClCompile Include="..\emucore\CartE7.cxx" />
     <ClCompile Include="..\emucore\CartEnhanced.cxx" />
@@ -2048,6 +2050,7 @@
     <ClInclude Include="..\emucore\Cart3EX.hxx" />
     <ClInclude Include="..\emucore\Cart4KSC.hxx" />
     <ClInclude Include="..\emucore\CartARM.hxx" />
+    <ClInclude Include="..\emucore\Cart0FA0.hxx" />
     <ClInclude Include="..\emucore\CartCreator.hxx" />
     <ClInclude Include="..\emucore\CartE7.hxx" />
     <ClInclude Include="..\emucore\CartEnhanced.hxx" />
@@ -2064,6 +2067,7 @@
     <ClInclude Include="..\emucore\CartFC.hxx" />
     <ClInclude Include="..\emucore\CartMDM.hxx" />
     <ClInclude Include="..\emucore\CartMVC.hxx" />
+    <ClInclude Include="..\emucore\Cart0FA0Widget.hxx" />
     <ClInclude Include="..\emucore\CartTVBoy.hxx" />
     <ClInclude Include="..\emucore\CartWD.hxx" />
     <ClInclude Include="..\emucore\CompuMate.hxx" />

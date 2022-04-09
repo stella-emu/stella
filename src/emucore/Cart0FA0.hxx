@@ -15,27 +15,28 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CARTRIDGEUA_HXX
-#define CARTRIDGEUA_HXX
+#ifndef CARTRIDGEBR_HXX
+#define CARTRIDGEBR_HXX
 
 #include "bspf.hxx"
 #include "CartEnhanced.hxx"
 #include "System.hxx"
 #ifdef DEBUGGER_SUPPORT
-  #include "CartUAWidget.hxx"
+#include "Cart0FA0Widget.hxx"
 #endif
 
 /**
-  Cartridge class used for UA Limited's 8K bankswitched games.  There
-  are two 4K banks, which are switched by accessing $0220 (bank 0) and
-  $0240 (bank 1).  Similar addresses are used by Brazilian carts, e.g.
-  $02A0 and $02C0.  The code accepts further potential hotspot addresses.
+  Cartridge class used for some brazilian 8K bankswitched games. There
+  are two 4K banks, which are switched by accessing
+  (address & $16A0) = $06a0 (bank 0) and = $06c0 (bank 1).
+  Actual addresses used by these carts are e.g. $0FA0, $0FC0 and $EFC0.
+  The code accepts further potential hotspot addresses.
 
-  @author  Bradford W. Mott, Thomas Jentzsch
+  @author  Thomas Jentzsch
 */
-class CartridgeUA : public CartridgeEnhanced
+class Cartridge0FA0 : public CartridgeEnhanced
 {
-  friend class CartridgeUAWidget;
+  friend class Cartridge0FA0Widget;
 
   public:
     /**
@@ -45,11 +46,10 @@ class CartridgeUA : public CartridgeEnhanced
       @param size          The size of the ROM image
       @param md5           The md5sum of the ROM image
       @param settings      A reference to the various settings (read-only)
-      @param swapHotspots  Swap hotspots
     */
-    CartridgeUA(const ByteBuffer& image, size_t size, const string& md5,
-                const Settings& settings, bool swapHotspots = false);
-    ~CartridgeUA() override = default;
+    Cartridge0FA0(const ByteBuffer& image, size_t size, const string& md5,
+      const Settings& settings);
+    ~Cartridge0FA0() override = default;
 
   public:
     /**
@@ -66,7 +66,7 @@ class CartridgeUA : public CartridgeEnhanced
       @return The name of the object
     */
     string name() const override {
-      return mySwappedHotspots ? "CartridgeUASW" : "CartridgeUA";
+      return "Cartridge0FA0";
     }
 
   #ifdef DEBUGGER_SUPPORT
@@ -75,9 +75,9 @@ class CartridgeUA : public CartridgeEnhanced
       of the cart.
     */
     CartDebugWidget* debugWidget(GuiObject* boss, const GUI::Font& lfont,
-        const GUI::Font& nfont, int x, int y, int w, int h) override
+      const GUI::Font& nfont, int x, int y, int w, int h) override
     {
-      return new CartridgeUAWidget(boss, lfont, nfont, x, y, w, h, *this, mySwappedHotspots);
+      return new Cartridge0FA0Widget(boss, lfont, nfont, x, y, w, h, *this);
     }
   #endif
 
@@ -99,24 +99,29 @@ class CartridgeUA : public CartridgeEnhanced
     bool poke(uInt16 address, uInt8 value) override;
 
   private:
+    /**
+      Checks if startup bank randomization is enabled.  For this scheme,
+      randomization is not supported (see above).
+    */
+    bool randomStartBank() const override { return false; }
+
     bool checkSwitchBank(uInt16 address, uInt8 value = 0) override;
 
-    uInt16 hotspot() const override { return 0x0220; }
+    uInt16 hotspot() const override { return 0x06a0; }
+
+    uInt16 getStartBank() const override { return 1; }
 
   private:
     // Previous Device's page access
-    std::array<System::PageAccess, 2> myHotSpotPageAccess;
-
-    // Indicates if banks are swapped ("Mickey" cart)
-    bool mySwappedHotspots{false};
+    System::PageAccess myHotSpotPageAccess;
 
   private:
     // Following constructors and assignment operators not supported
-    CartridgeUA() = delete;
-    CartridgeUA(const CartridgeUA&) = delete;
-    CartridgeUA(CartridgeUA&&) = delete;
-    CartridgeUA& operator=(const CartridgeUA&) = delete;
-    CartridgeUA& operator=(CartridgeUA&&) = delete;
+    Cartridge0FA0() = delete;
+    Cartridge0FA0(const Cartridge0FA0&) = delete;
+    Cartridge0FA0(Cartridge0FA0&&) = delete;
+    Cartridge0FA0& operator=(const Cartridge0FA0&) = delete;
+    Cartridge0FA0& operator=(Cartridge0FA0&&) = delete;
 };
 
 #endif

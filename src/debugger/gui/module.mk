@@ -7,6 +7,7 @@ MODULE_OBJS := \
         src/debugger/gui/AudioWidget.o \
         src/debugger/gui/BoosterWidget.o \
         src/debugger/gui/Cart0840Widget.o \
+	src/debugger/gui/Cart0FA0Widget.o \
         src/debugger/gui/Cart2KWidget.o \
         src/debugger/gui/Cart3EPlusWidget.o \
         src/debugger/gui/Cart3EWidget.o \
