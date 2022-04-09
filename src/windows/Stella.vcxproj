@@ -677,6 +677,7 @@
     <ClCompile Include="..\debugger\gui\Cart0840Widget.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\debugger\gui\Cart0FA0Widget.cxx" />
     <ClCompile Include="..\debugger\gui\Cart2KWidget.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClCompile>
@@ -858,7 +859,6 @@
     <ClCompile Include="..\emucore\Cart4KSC.cxx" />
     <ClCompile Include="..\emucore\CartARM.cxx" />
     <ClCompile Include="..\emucore\Cart0FA0.cxx" />
-    <ClCompile Include="..\emucore\Cart0FA0Widget.cxx" />
     <ClCompile Include="..\emucore\CartCreator.cxx" />
     <ClCompile Include="..\emucore\CartE7.cxx" />
     <ClCompile Include="..\emucore\CartEnhanced.cxx" />
@@ -1859,6 +1859,7 @@
     <ClInclude Include="..\debugger\gui\Cart0840Widget.hxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="..\debugger\gui\Cart0FA0Widget.hxx" />
     <ClInclude Include="..\debugger\gui\Cart2KWidget.hxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClInclude>
