@@ -96,7 +96,7 @@ const std::array<Bankswitch::Description, static_cast<int>(Bankswitch::Type::Num
 Bankswitch::BSList = {{
   { "AUTO"    , "Auto-detect"                 },
   { "0840"    , "0840 (8K ECONObank)"         },
-  { "0FA0"    , "0FA0 (8K Mania)"             },
+  { "0FA0"    , "0FA0 (8K Fotomania)"         },
   { "2IN1"    , "2IN1 Multicart (4-64K)"      },
   { "4IN1"    , "4IN1 Multicart (8-64K)"      },
   { "8IN1"    , "8IN1 Multicart (16-64K)"     },

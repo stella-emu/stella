@@ -32,7 +32,7 @@ class Cartridge0FA0Widget : public CartridgeEnhancedWidget
     ~Cartridge0FA0Widget() override = default;
 
   private:
-    string manufacturer() override { return "Mania"; }
+    string manufacturer() override { return "Fotomania"; }
 
     string description() override;
 
