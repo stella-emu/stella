@@ -33,7 +33,7 @@ string Cartridge0840Widget::description()
 {
   ostringstream info;
 
-  info << "0840 ECONObanking, two 4K banks\n"
+  info << "0840 EconoBanking, two 4K banks\n"
        << CartridgeEnhancedWidget::description();
 
   return info.str();

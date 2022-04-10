@@ -26,7 +26,7 @@
 #endif
 
 /**
-  Cartridge class used for 0840 "Econobanking" 8K bankswitched games.  There
+  Cartridge class used for 0840 "EconoBanking" 8K bankswitched games.  There
   are two 4K banks, which are switched by accessing $0800 (bank 0) and
   $0840 (bank 1).
 
