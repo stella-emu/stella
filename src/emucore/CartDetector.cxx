@@ -349,7 +349,7 @@ bool CartDetector::isProbably0840(const ByteBuffer& image, size_t size)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartDetector::isProbably0FA0(const ByteBuffer& image, size_t size)
 {
-  // Other Brazilian (Atari Mania) ROM's bankswitching switches to bank 1 by
+  // Other Brazilian (Fotomania) ROM's bankswitching switches to bank 1 by
   // accessing address 0xFC0 using 'BIT $FC0', 'BIT $FC0' or 'STA $FC0'
   // Also a game (Motocross) using 'BIT $EFC0' has been found
   static constexpr uInt8 signature[4][3] = {
