@@ -180,10 +180,10 @@ string Cartridge::getAccessCounters() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 Cartridge::bankOrigin(uInt16 bank) const
+uInt16 Cartridge::bankOrigin(uInt16 bank, uInt16 PC) const
 {
-  // isolate the high 3 address bits, count them and
-  // select the most frequent to define the bank origin
+  // Isolate the high 3 address bits, count them, include the PC if provided
+  // and select the most frequent to define the bank origin
   // TODO: origin for banks smaller than 4K
   constexpr int intervals = 0x8000 / 0x100;
   const uInt32 offset = bank * bankSize();
@@ -196,6 +196,8 @@ uInt16 Cartridge::bankOrigin(uInt16 bank) const
   //addrMask;
 
   count.fill(0);
+  if(PC)
+    count[PC >> 13]++;
   for(uInt16 addr = 0x0000; addr < bankSize(bank); ++addr)
   {
     const Device::AccessFlags flags = myRomAccessBase[offset + addr];
