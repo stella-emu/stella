@@ -189,9 +189,10 @@ class Cartridge : public Device
       Determine the bank's origin
 
       @param bank  The bank to query
+      @param PC    The current PC
       @return  The origin of the bank
     */
-    uInt16 bankOrigin(uInt16 bank) const;
+    uInt16 bankOrigin(uInt16 bank, uInt16 PC = 0) const;
   #endif
 
   public:
