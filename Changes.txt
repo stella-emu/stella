@@ -57,6 +57,8 @@
 
   * Debugger: fixed patching code in ZP-RAM.
 
+  * Debugger: improved bank origin detection.
+
 -Have fun!
 
 
