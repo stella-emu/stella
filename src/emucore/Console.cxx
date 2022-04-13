@@ -317,8 +317,9 @@ void Console::redetectFrameLayout()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Console::formatFromFilename() const
 {
-  static const BSPF::array2D<string, 7, 2> Pattern = {{
+  static const BSPF::array2D<string, 8, 2> Pattern = {{
     { R"([ _\-(\[<]+NTSC[ _-]?50)",          "NTSC50"  },
+    { R"([ _\-(\[<]+PAL[ _-]?N[ _\-)\]>.])", "NTSC50"  }, // PAL-N == NTSC50
     { R"([ _\-(\[<]+PAL[ _-]?60)",           "PAL60"   },
     { R"([ _\-(\[<]+SECAM[ _-]?60)",         "SECAM60" },
     { R"([ _\-(\[<]+NTSC[ _\-)\]>.])",       "NTSC"    },
