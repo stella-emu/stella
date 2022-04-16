@@ -351,8 +351,8 @@ size_t FilesystemNode::read(ByteBuffer& buffer, size_t size) const
 
     if (sizeRead == 0)
       throw runtime_error("Zero-byte file");
-    else if (size != 0)
-      sizeRead = size;
+    else if (size > 0)  // If a requested size to read is provided, honour it
+      sizeRead = std::min(sizeRead, size);
 
     buffer = make_unique<uInt8[]>(sizeRead);
     in.read(reinterpret_cast<char*>(buffer.get()), sizeRead);

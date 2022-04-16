@@ -753,6 +753,34 @@ ByteBuffer OSystem::openROM(const FilesystemNode& rom, string& md5, size_t& size
   // but also adds a properties entry if the one for the ROM doesn't
   // contain a valid name
 
+  ByteBuffer image = openROM(rom, size);
+  if(image)
+  {
+    // If we get to this point, we know we have a valid file to open
+    // Now we make sure that the file has a valid properties entry
+    // To save time, only generate an MD5 if we really need one
+    if(md5 == "")
+      md5 = MD5::hash(image, size);
+
+    // Make sure to load a per-ROM properties entry, if one exists
+    myPropSet->loadPerROM(rom, md5);
+  }
+
+  return image;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string OSystem::getROMMD5(const FilesystemNode& rom) const
+{
+  size_t size = 0;
+  const ByteBuffer image = openROM(rom, size);
+
+  return image ? MD5::hash(image, size) : EmptyString;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ByteBuffer OSystem::openROM(const FilesystemNode& rom, size_t& size) const
+{
   // First check if this is a 'streaming' ROM (one where we only read
   // a portion of the file)
   const size_t sizeToRead = CartDetector::isProbablyMVC(rom);
@@ -762,17 +790,15 @@ ByteBuffer OSystem::openROM(const FilesystemNode& rom, string& md5, size_t& size
   //       if it's not a ZIP file (that size should be higher; still TBD)
 
   ByteBuffer image;
-  if((size = rom.read(image, sizeToRead)) == 0)
-    return nullptr;
-
-  // If we get to this point, we know we have a valid file to open
-  // Now we make sure that the file has a valid properties entry
-  // To save time, only generate an MD5 if we really need one
-  if(md5 == "")
-    md5 = MD5::hash(image, size);
-
-  // Make sure to load a per-ROM properties entry, if one exists
-  myPropSet->loadPerROM(rom, md5);
+  try
+  {
+    if((size = rom.read(image, sizeToRead)) == 0)
+      return nullptr;
+  }
+  catch(const runtime_error& e)
+  {
+    cerr << "ERROR: Couldn't open ROM (" << e.what() << ")";
+  }
 
   return image;
 }
