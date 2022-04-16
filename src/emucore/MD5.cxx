@@ -317,7 +317,7 @@ string hash(const ByteBuffer& buffer, size_t length)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string hash(const uInt8* buffer, size_t length)
 {
-  constexpr char hex[] = "0123456789abcdef";
+  static constexpr char hex[] = "0123456789abcdef";
   MD5_CTX context{};
   uInt8 md5[16] = {0};
   const uInt32 len32 = static_cast<uInt32>(length);  // Always use 32-bit for now
@@ -334,24 +334,6 @@ string hash(const uInt8* buffer, size_t length)
   }
 
   return result;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string hash(const FilesystemNode& node)
-{
-  ByteBuffer image;
-  size_t size = 0;
-  try
-  {
-    size = node.read(image);
-  }
-  catch(...)
-  {
-    return EmptyString;
-  }
-
-  const string& md5 = hash(image, size);
-  return md5;
 }
 
 }  // Namespace MD5

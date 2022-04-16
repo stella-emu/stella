@@ -339,6 +339,15 @@ class OSystem
     ByteBuffer openROM(const FilesystemNode& rom, string& md5, size_t& size);
 
     /**
+      Open the given ROM and return the MD5sum of the data.
+
+      @param rom  The file node of the ROM to open (contains path)
+
+      @return  MD5 of the ROM image (if valid), otherwise EmptyString
+    */
+    string getROMMD5(const FilesystemNode& rom) const;
+
+    /**
       Creates a new game console from the specified romfile, and correctly
       initializes the system state to start emulation of the Console.
 
@@ -596,7 +605,6 @@ class OSystem
     static bool ourOverrideBaseDirWithApp;
 
   private:
-
     /**
       This method should be called to initiate the process of loading settings
       from the config file.  It takes care of loading settings, applying
@@ -610,12 +618,23 @@ class OSystem
     void createSound();
 
     /**
+      Open the given ROM and return an array containing its contents.
+      This method takes care of using only a valid size for the
+
+      @param romfile  The file node of the ROM to open (contains path)
+      @param size     The amount of data read into the image array
+
+      @return  Unique pointer to the array, otherwise nullptr
+    */
+    ByteBuffer openROM(const FilesystemNode& romfile, size_t& size) const;
+
+    /**
       Creates an actual Console object based on the given info.
 
       @param romfile  The file node of the ROM to use (contains path)
       @param md5      The MD5sum of the ROM
 
-      @return  The actual Console object, otherwise nullptr.
+      @return  The actual Console object, otherwise nullptr
     */
     unique_ptr<Console> openConsole(const FilesystemNode& romfile, string& md5);
 
