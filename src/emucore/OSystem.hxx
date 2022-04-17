@@ -623,10 +623,13 @@ class OSystem
 
       @param romfile  The file node of the ROM to open (contains path)
       @param size     The amount of data read into the image array
+      @param showErrorMessage  Whether to show (or ignore) any errors
+                               when opening the ROM
 
       @return  Unique pointer to the array, otherwise nullptr
     */
-    ByteBuffer openROM(const FilesystemNode& romfile, size_t& size) const;
+    ByteBuffer openROM(const FilesystemNode& romfile, size_t& size,
+                       bool showErrorMessage) const;
 
     /**
       Creates an actual Console object based on the given info.

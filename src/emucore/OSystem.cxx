@@ -753,7 +753,7 @@ ByteBuffer OSystem::openROM(const FilesystemNode& rom, string& md5, size_t& size
   // but also adds a properties entry if the one for the ROM doesn't
   // contain a valid name
 
-  ByteBuffer image = openROM(rom, size);
+  ByteBuffer image = openROM(rom, size, true);  // handle error message here
   if(image)
   {
     // If we get to this point, we know we have a valid file to open
@@ -773,13 +773,14 @@ ByteBuffer OSystem::openROM(const FilesystemNode& rom, string& md5, size_t& size
 string OSystem::getROMMD5(const FilesystemNode& rom) const
 {
   size_t size = 0;
-  const ByteBuffer image = openROM(rom, size);
+  const ByteBuffer image = openROM(rom, size, false);  // ignore error message
 
   return image ? MD5::hash(image, size) : EmptyString;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ByteBuffer OSystem::openROM(const FilesystemNode& rom, size_t& size) const
+ByteBuffer OSystem::openROM(const FilesystemNode& rom, size_t& size,
+                            bool showErrorMessage) const
 {
   // First check if this is a 'streaming' ROM (one where we only read
   // a portion of the file)
@@ -797,7 +798,8 @@ ByteBuffer OSystem::openROM(const FilesystemNode& rom, size_t& size) const
   }
   catch(const runtime_error& e)
   {
-    cerr << "ERROR: Couldn't open ROM (" << e.what() << ")";
+    if(showErrorMessage)  // If caller wants error messages, pass it back
+      throw;
   }
 
   return image;
