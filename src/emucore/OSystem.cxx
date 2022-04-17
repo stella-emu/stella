@@ -796,7 +796,7 @@ ByteBuffer OSystem::openROM(const FilesystemNode& rom, size_t& size,
     if((size = rom.read(image, sizeToRead)) == 0)
       return nullptr;
   }
-  catch(const runtime_error& e)
+  catch(const runtime_error&)
   {
     if(showErrorMessage)  // If caller wants error messages, pass it back
       throw;
