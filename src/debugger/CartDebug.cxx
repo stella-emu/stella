@@ -78,7 +78,8 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
   myConsole.cartridge().getImage(romSize);
 
   BankInfo info;
-  info.size = std::min<size_t>(romSize, 4_KB);
+  info.size = std::min<size_t>(romSize, myConsole.cartridge().bankSize());
+
   for(uInt32 i = 0; i < myConsole.cartridge().romBankCount(); ++i)
     myBankInfo.push_back(info);
 
@@ -244,10 +245,54 @@ string CartDebug::toString()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartDebug::disassembleAddr(uInt16 address, bool force)
 {
+  Cartridge& cart = myConsole.cartridge();
+  const int segCount = cart.segmentCount();
   // ROM/RAM bank or ZP-RAM?
-  const int bank = (address & 0x1000) ? getBank(address) : int(myBankInfo.size()) - 1;
+  const int addrBank = (address & 0x1000) ? getBank(address) : int(myBankInfo.size()) - 1;
 
-  return disassemble(bank, address, force);
+  myDisassembly.list.clear();
+  myAddrToLineList.clear();
+
+  if(segCount > 1)
+  {
+    bool changed = false;
+
+    myDisassembly.fieldwidth = 24;
+    for(int seg = 0; seg < segCount; ++seg)
+    {
+      const int bank = cart.getSegmentBank(seg);
+      Disassembly disassembly;
+      AddrToLineList addrToLineList;
+      uInt16 segAddress;
+      BankInfo& info = myBankInfo[bank];
+
+      info.offset = cart.bankOrigin(bank) | cart.bankSize() * seg;
+      if(bank == addrBank)
+        segAddress = address;
+      else
+        segAddress = info.offset;
+      // disassemble segment
+      changed |= disassemble(bank, segAddress, disassembly, addrToLineList, force);
+      // add extra empty line between segments
+      if(seg < segCount - 1)
+      {
+        CartDebug::DisassemblyTag tag;
+        tag.address = 0;
+        tag.disasm = " ";
+        disassembly.list.push_back(tag);
+        addrToLineList.emplace(0, static_cast<uInt32>(disassembly.list.size() +
+                               myDisassembly.list.size()) - 1);
+      }
+      // aggregate segment disassemblies
+      myDisassembly.list.insert(myDisassembly.list.end(),
+                                disassembly.list.begin(), disassembly.list.end());
+      myDisassembly.fieldwidth = std::max(myDisassembly.fieldwidth, disassembly.fieldwidth);
+      myAddrToLineList.insert(addrToLineList.begin(), addrToLineList.end());
+    }
+    return changed;
+  }
+  else
+    return disassemble(addrBank, address, myDisassembly, myAddrToLineList, force);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -263,18 +308,19 @@ bool CartDebug::disassembleBank(int bank)
 
   info.offset = myConsole.cartridge().bankOrigin(bank);
 
-  return disassemble(bank, info.offset, true);
+  return disassemble(bank, info.offset, myDisassembly, myAddrToLineList, true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDebug::disassemble(int bank, uInt16 PC, bool force)
+bool CartDebug::disassemble(int bank, uInt16 PC, Disassembly& disassembly,
+                            AddrToLineList& addrToLineList, bool force)
 {
   // Test current disassembly; don't re-disassemble if it hasn't changed
   // Also check if the current PC is in the current list
   const bool bankChanged = myConsole.cartridge().bankChanged();
   const int pcline = addressToLine(PC);
-  const bool pcfound = (pcline != -1) && (static_cast<uInt32>(pcline) < myDisassembly.list.size()) &&
-                       (myDisassembly.list[pcline].disasm[0] != '.');
+  const bool pcfound = (pcline != -1) && (static_cast<uInt32>(pcline) < disassembly.list.size()) &&
+                       (disassembly.list[pcline].disasm[0] != '.');
   const bool pagedirty = (PC & 0x1000) ? mySystem.isPageDirty(0x1000, 0x1FFF) :
                                          mySystem.isPageDirty(0x80, 0xFF);
 
@@ -313,49 +359,51 @@ bool CartDebug::disassemble(int bank, uInt16 PC, bool force)
           addDirective(Device::AccessType::CODE, PC, PC, bank);
       }
     }
-
     // Always attempt to resolve code sections unless it's been
     // specifically disabled
-    const bool found = fillDisassemblyList(info, PC);
+    const bool found = fillDisassemblyList(info, disassembly, addrToLineList, PC);
     if(!found && DiStella::settings.resolveCode)
     {
       // Temporarily turn off code resolution
       DiStella::settings.resolveCode = false;
-      fillDisassemblyList(info, PC);
+      fillDisassemblyList(info, disassembly, addrToLineList, PC);
       DiStella::settings.resolveCode = true;
     }
   }
-
   return changed;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDebug::fillDisassemblyList(BankInfo& info, uInt16 search)
+bool CartDebug::fillDisassemblyList(BankInfo& info, Disassembly& disassembly,
+                                    AddrToLineList& addrToLineList, uInt16 search)
 {
+  disassembly.list.clear();
+  addrToLineList.clear();
   // An empty address list means that DiStella can't do a disassembly
   if(info.addressList.size() == 0)
     return false;
 
-  myDisassembly.list.clear();
-  myDisassembly.fieldwidth = 24 + myLabelLength;
-  DiStella distella(*this, myDisassembly.list, info, DiStella::settings,
+  disassembly.fieldwidth = 24 + myLabelLength;
+  // line offset must be set before calling DiStella!
+  uInt32 lineOfs = static_cast<uInt32>(myDisassembly.list.size());
+  DiStella distella(*this, disassembly.list, info, DiStella::settings,
                     myDisLabels, myDisDirectives, myReserved);
 
   // Parts of the disassembly will be accessed later in different ways
   // We place those parts in separate maps, to speed up access
   bool found = false;
-  myAddrToLineList.clear();
+
   myAddrToLineIsROM = info.offset & 0x1000;
-  for(uInt32 i = 0; i < myDisassembly.list.size(); ++i)
+  for(uInt32 i = 0; i < disassembly.list.size(); ++i)
   {
-    const DisassemblyTag& tag = myDisassembly.list[i];
+    const DisassemblyTag& tag = disassembly.list[i];
     const uInt16 address = tag.address & 0xFFF;
 
     // Exclude 'Device::ROW|NONE'; they don't have a valid address
     if(tag.type != Device::ROW && tag.type != Device::NONE)
     {
       // Create a mapping from addresses to line numbers
-      myAddrToLineList.emplace(address, i);
+      addrToLineList.emplace(address, i + lineOfs);
 
       // Did we find the search value?
       if(address == (search & 0xFFF))
@@ -1086,19 +1134,20 @@ string CartDebug::saveDisassembly(string path)
 
   Disassembly disasm;
   disasm.list.reserve(2048);
-  const uInt16 romBankCount = myConsole.cartridge().romBankCount();
-  const uInt16 oldBank = myConsole.cartridge().getBank();
+  Cartridge& cart = myConsole.cartridge();
+  const uInt16 romBankCount = cart.romBankCount();
+  const uInt16 oldBank = cart.getBank();
 
   // prepare for switching banks
-  myConsole.cartridge().unlockHotspots();
+  //cart.unlockHotspots();
   uInt32 origin = 0;
 
   for(int bank = 0; bank < romBankCount; ++bank)
   {
     // TODO: not every CartDebugWidget does it like that, we need a method
-    myConsole.cartridge().unlockHotspots();
-    myConsole.cartridge().bank(bank);
-    myConsole.cartridge().lockHotspots();
+    cart.unlockHotspots();
+    cart.bank(bank);
+    cart.lockHotspots();
 
     BankInfo& info = myBankInfo[bank];
 
@@ -1196,9 +1245,9 @@ string CartDebug::saveDisassembly(string path)
       buf << "\n";
     }
   }
-  myConsole.cartridge().unlockHotspots();
-  myConsole.cartridge().bank(oldBank);
-  myConsole.cartridge().lockHotspots();
+  cart.unlockHotspots();
+  cart.bank(oldBank);
+  cart.lockHotspots();
 
   // Some boilerplate, similar to what DiStella adds
   auto timeinfo = BSPF::localTime();
@@ -1353,7 +1402,6 @@ string CartDebug::saveDisassembly(string path)
 
   // And finally, output the disassembly
   out << buf.str();
-
 
   if(path.empty())
     path = myOSystem.userDir().getPath()

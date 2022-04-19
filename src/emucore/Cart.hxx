@@ -226,6 +226,13 @@ class Cartridge : public Device
     virtual uInt16 getBank(uInt16 address = 0) const { return 0; }
 
     /**
+      Get the current bank for a bank segment.
+
+      @param segment  The segment to get the bank for
+    */
+    virtual uInt16 getSegmentBank(uInt16 segment = 0) const { return getBank(); };
+
+    /**
       Query the number of ROM 'banks' supported by the cartridge.  Note that
       this information is cart-specific, where each cart basically defines
       what a 'bank' is.
@@ -246,6 +253,11 @@ class Cartridge : public Device
       what a 'bank' is.
     */
     virtual uInt16 ramBankCount() const { return 0; }
+
+    /**
+      Get the number of segments supported by the cartridge.
+    */
+    virtual uInt16 segmentCount() const { return 1; }
 
     /**
       Get the size of a bank.
