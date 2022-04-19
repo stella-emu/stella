@@ -269,6 +269,7 @@ class CartDebug : public DebuggerSystem
     void AccessTypeAsString(ostream& buf, Device::AccessType type) const;
 
   private:
+    using AddrToLineList = std::map<uInt16, int>;
     using AddrToLabel = std::map<uInt16, string>;
     using LabelToAddr = std::map<string, uInt16,
         std::function<bool(const string&, const string&)>>;
@@ -316,11 +317,13 @@ class CartDebug : public DebuggerSystem
 
       @return  True if disassembly changed from previous call, else false
     */
-    bool disassemble(int bank, uInt16 PC, bool force = false);
+    bool disassemble(int bank, uInt16 PC, Disassembly& disassembly, 
+                     AddrToLineList& addrToLineList, bool force = false);
 
     // Actually call DiStella to fill the DisassemblyList structure
     // Return whether the search address was actually in the list
-    bool fillDisassemblyList(BankInfo& bankinfo, uInt16 search);
+    bool fillDisassemblyList(BankInfo& bankinfo, Disassembly& disassembly,
+                             AddrToLineList& addrToLineList, uInt16 search);
 
     // Analyze of bank of ROM, generating a list of Distella directives
     // based on its disassembly
@@ -347,7 +350,7 @@ class CartDebug : public DebuggerSystem
     // Used for the disassembly display, and mapping from addresses
     // to corresponding lines of text in that display
     Disassembly myDisassembly;
-    std::map<uInt16, int> myAddrToLineList;
+    AddrToLineList myAddrToLineList;
     bool myAddrToLineIsROM{true};
 
     // Mappings from label to address (and vice versa) for items
