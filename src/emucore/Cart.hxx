@@ -230,7 +230,7 @@ class Cartridge : public Device
 
       @param segment  The segment to get the bank for
     */
-    virtual uInt16 getSegmentBank(uInt16 segment = 0) const { return getBank(); };
+    virtual uInt16 getSegmentBank(uInt16 segment = 0) const { return getBank(); }
 
     /**
       Query the number of ROM 'banks' supported by the cartridge.  Note that
