@@ -288,7 +288,7 @@ uInt8 Player::getRespClock() const
       return (myCounter + TIAConstants::H_PIXEL - 5) % TIAConstants::H_PIXEL;
 
     case 2:
-      return (myCounter + TIAConstants::H_PIXEL - 9) % TIAConstants::H_PIXEL;
+      return (myCounter + TIAConstants::H_PIXEL - 8) % TIAConstants::H_PIXEL;
 
     case 4:
       return (myCounter + TIAConstants::H_PIXEL - 12) % TIAConstants::H_PIXEL;
