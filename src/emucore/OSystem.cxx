@@ -782,14 +782,17 @@ string OSystem::getROMMD5(const FilesystemNode& rom) const
 ByteBuffer OSystem::openROM(const FilesystemNode& rom, size_t& size,
                             bool showErrorMessage) const
 {
-  // First check if this is a 'streaming' ROM (one where we only read
-  // a portion of the file)
+  // First check if this is a valid ROM filename
+  const bool isValidROM = rom.isFile() && Bankswitch::isValidRomName(rom);
+  if(!isValidROM && showErrorMessage)
+    throw runtime_error("Unrecognized ROM file type");
+
+  // Next check for a proper file size:
+  //   Streaming ROMs read only a portion of the file
+  //   TODO: Otherwise, cap the size to the maximum Cart size
   const size_t sizeToRead = CartDetector::isProbablyMVC(rom);
 
-  // Next check if rom is a valid size
-  // TODO: We should check if ROM is < Cart::maxSize(), but only
-  //       if it's not a ZIP file (that size should be higher; still TBD)
-
+  // Now we can try to open the file
   ByteBuffer image;
   try
   {
