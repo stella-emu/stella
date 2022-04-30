@@ -166,7 +166,7 @@ FileListWidget::IconType FileListWidget::getIconType(const string& path) const
       ? IconType::zip : IconType::directory;
   }
   else
-    return node.isFile() && Bankswitch::isValidRomName(node.getName())
+    return node.isFile() && Bankswitch::isValidRomName(node)
       ? IconType::rom : IconType::unknown;
 }
 

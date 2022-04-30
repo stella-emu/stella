@@ -43,7 +43,7 @@ class FixedStack
     bool full() const  { return _size >= CAPACITY; }
 
     T top() const { return _stack[_size - 1];    }
-    T get(uInt32 pos) { return _stack[pos]; }
+    T get(uInt32 pos) const { return _stack[pos]; }
     void push(const T& x) { _stack[_size++] = x; }
     T pop() { return std::move(_stack[--_size]); }
     uInt32 size() const { return _size; }
