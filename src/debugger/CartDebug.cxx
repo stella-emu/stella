@@ -245,13 +245,10 @@ string CartDebug::toString()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartDebug::disassembleAddr(uInt16 address, bool force)
 {
-  Cartridge& cart = myConsole.cartridge();
+  const Cartridge& cart = myConsole.cartridge();
   const int segCount = cart.segmentCount();
   // ROM/RAM bank or ZP-RAM?
   const int addrBank = (address & 0x1000) ? getBank(address) : int(myBankInfo.size()) - 1;
-
-  myDisassembly.list.clear();
-  myAddrToLineList.clear();
 
   if(segCount > 1)
   {
@@ -272,7 +269,16 @@ bool CartDebug::disassembleAddr(uInt16 address, bool force)
       else
         segAddress = info.offset;
       // disassemble segment
-      changed |= disassemble(bank, segAddress, disassembly, addrToLineList, force);
+      const bool newChanged = disassemble(bank, segAddress, disassembly, addrToLineList, force);
+
+      if(!changed && newChanged)
+      {
+        // clear lists at first change
+        changed = true;
+        myDisassembly.list.clear();
+        myAddrToLineList.clear();
+
+      }
       // add extra empty line between segments
       if(seg < segCount - 1)
       {
@@ -323,7 +329,6 @@ bool CartDebug::disassemble(int bank, uInt16 PC, Disassembly& disassembly,
                        (disassembly.list[pcline].disasm[0] != '.');
   const bool pagedirty = (PC & 0x1000) ? mySystem.isPageDirty(0x1000, 0x1FFF) :
                                          mySystem.isPageDirty(0x80, 0xFF);
-
   const bool changed = !mySystem.autodetectMode() &&
                        (force || bankChanged || !pcfound || pagedirty);
   if(changed)
@@ -336,7 +341,7 @@ bool CartDebug::disassemble(int bank, uInt16 PC, Disassembly& disassembly,
     // If the offset has changed, all old addresses must be 'converted'
     // For example, if the list contains any $fxxx and the address space is now
     // $bxxx, it must be changed
-    uInt16 offset = myConsole.cartridge().bankOrigin(bank, PC);
+    const uInt16 offset = PC & 0x1000 ? myConsole.cartridge().bankOrigin(bank, PC) : 0;
     AddressList& addresses = info.addressList;
     for(auto& i: addresses)
       i = (i & 0xFFF) + offset;
