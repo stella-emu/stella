@@ -317,7 +317,7 @@ class CartDebug : public DebuggerSystem
 
       @return  True if disassembly changed from previous call, else false
     */
-    bool disassemble(int bank, uInt16 PC, Disassembly& disassembly, 
+    bool disassemble(int bank, uInt16 PC, Disassembly& disassembly,
                      AddrToLineList& addrToLineList, bool force = false);
 
     // Actually call DiStella to fill the DisassemblyList structure
@@ -345,6 +345,7 @@ class CartDebug : public DebuggerSystem
     CartDebugWidget* myDebugWidget{nullptr};
 
     // A complete record of relevant diassembly information for each bank
+    // (ROM banks, RAM banks, ZP RAM)
     vector<BankInfo> myBankInfo;
 
     // Used for the disassembly display, and mapping from addresses
