@@ -268,18 +268,19 @@ bool CartDebug::disassembleAddr(uInt16 address, bool force)
         segAddress = address;
       else
         segAddress = info.offset;
-      // disassemble segment
+      // Disassemble segment
       const bool newChanged = disassemble(bank, segAddress, disassembly, addrToLineList, force);
 
       if(!changed && newChanged)
       {
-        // clear lists at first change
+        // Clear lists at first change
+        // Note: This is currently either true for all or no segments
         changed = true;
         myDisassembly.list.clear();
         myAddrToLineList.clear();
 
       }
-      // add extra empty line between segments
+      // Add extra empty line between segments
       if(seg < segCount - 1)
       {
         CartDebug::DisassemblyTag tag;
@@ -289,7 +290,7 @@ bool CartDebug::disassembleAddr(uInt16 address, bool force)
         addrToLineList.emplace(0, static_cast<uInt32>(disassembly.list.size() +
                                myDisassembly.list.size()) - 1);
       }
-      // aggregate segment disassemblies
+      // Aggregate segment disassemblies
       myDisassembly.list.insert(myDisassembly.list.end(),
                                 disassembly.list.begin(), disassembly.list.end());
       myDisassembly.fieldwidth = std::max(myDisassembly.fieldwidth, disassembly.fieldwidth);
@@ -310,11 +311,8 @@ bool CartDebug::disassemblePC(bool force)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartDebug::disassembleBank(int bank)
 {
-  BankInfo& info = myBankInfo[bank];
-
-  info.offset = myConsole.cartridge().bankOrigin(bank);
-
-  return disassemble(bank, info.offset, myDisassembly, myAddrToLineList, true);
+  // Provide no PC
+  return disassemble(bank, 0xFFFF, myDisassembly, myAddrToLineList, true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1100,25 +1098,6 @@ string CartDebug::saveConfigFile()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::saveDisassembly(string path)
 {
-  string NTSC_COLOR[16] = {
-    "BLACK", "YELLOW", "BROWN", "ORANGE",
-    "RED", "MAUVE", "VIOLET", "PURPLE",
-    "BLUE", "BLUE_CYAN", "CYAN", "CYAN_GREEN",
-    "GREEN", "GREEN_YELLOW", "GREEN_BEIGE", "BEIGE"
-  };
-  string PAL_COLOR[16] = {
-    "BLACK0", "BLACK1", "YELLOW", "GREEN_YELLOW",
-    "ORANGE", "GREEN", "RED", "CYAN_GREEN",
-    "MAUVE", "CYAN", "VIOLET", "BLUE_CYAN",
-    "PURPLE", "BLUE", "BLACKE", "BLACKF"
-  };
-  string SECAM_COLOR[8] = {
-    "BLACK", "BLUE", "RED", "PURPLE",
-    "GREEN", "CYAN", "YELLOW", "WHITE"
-  };
-  const bool isNTSC = myConsole.timing() == ConsoleTiming::ntsc;
-  const bool isPAL = myConsole.timing() == ConsoleTiming::pal;
-
 #define ALIGN(x) setfill(' ') << left << setw(x)
 
   // We can't print the header to the disassembly until it's actually
@@ -1144,7 +1123,6 @@ string CartDebug::saveDisassembly(string path)
   const uInt16 oldBank = cart.getBank();
 
   // prepare for switching banks
-  //cart.unlockHotspots();
   uInt32 origin = 0;
 
   for(int bank = 0; bank < romBankCount; ++bank)
@@ -1281,18 +1259,37 @@ string CartDebug::saveDisassembly(string path)
       << ";      Color constants\n"
       << ";-----------------------------------------------------------\n\n";
 
-  if(isNTSC)
+  if(myConsole.timing() == ConsoleTiming::ntsc)
   {
+    string NTSC_COLOR[16] = {
+      "BLACK", "YELLOW", "BROWN", "ORANGE",
+      "RED", "MAUVE", "VIOLET", "PURPLE",
+      "BLUE", "BLUE_CYAN", "CYAN", "CYAN_GREEN",
+      "GREEN", "GREEN_YELLOW", "GREEN_BEIGE", "BEIGE"
+    };
+
     for(int i = 0; i < 16; ++i)
       out << ALIGN(16) << NTSC_COLOR[i] << " = $" << Base::HEX2 << (i << 4) << "\n";
   }
-  else if(isPAL)
+  else if(myConsole.timing() == ConsoleTiming::pal)
   {
+    string PAL_COLOR[16] = {
+      "BLACK0", "BLACK1", "YELLOW", "GREEN_YELLOW",
+      "ORANGE", "GREEN", "RED", "CYAN_GREEN",
+      "MAUVE", "CYAN", "VIOLET", "BLUE_CYAN",
+      "PURPLE", "BLUE", "BLACKE", "BLACKF"
+    };
+
     for(int i = 0; i < 16; ++i)
       out << ALIGN(16) << PAL_COLOR[i] << " = $" << Base::HEX2 << (i << 4) << "\n";
   }
   else
   {
+    string SECAM_COLOR[8] = {
+      "BLACK", "BLUE", "RED", "PURPLE",
+      "GREEN", "CYAN", "YELLOW", "WHITE"
+    };
+
     for(int i = 0; i < 8; ++i)
       out << ALIGN(16) << SECAM_COLOR[i] << " = $" << Base::HEX1 << (i << 1) << "\n";
   }
