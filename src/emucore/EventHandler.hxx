@@ -349,7 +349,7 @@ class EventHandler
     /**
       Check for QWERTZ keyboard layout
     */
-    bool isQwertz() { return myQwertz; }
+    bool isQwertz() const { return myQwertz; }
 
     /**
       Clipboard methods.

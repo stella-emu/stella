@@ -182,6 +182,10 @@ class FileListWidget : public StringListWidget
 
     uInt32 _selected{0};
 
+    // Allow quick select for "uppercase", non-letter input
+    StellaKey _lastKey{StellaKey::KBDK_UNKNOWN};
+    StellaMod _lastMod{StellaMod::KBDM_NONE};
+    StellaMod _firstMod{StellaMod::KBDM_NONE};
     string _quickSelectStr;
     uInt64 _quickSelectTime{0};
     static uInt64 _QUICK_SELECT_DELAY;
