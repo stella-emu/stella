@@ -304,7 +304,9 @@ bool FileListWidget::handleKeyDown(StellaKey key, StellaMod mod)
   if(StellaModTest::isAlt(mod))
   {
     handled = true;
+#ifdef DEBUG_BUILD
     cerr << "  " << mod << ", " << key << endl;
+#endif
     switch(key)
     {
       case KBDK_HOME:
@@ -332,6 +334,11 @@ bool FileListWidget::handleKeyDown(StellaKey key, StellaMod mod)
         break;
     }
   }
+  // Handle shift input for quick directory selection
+  _lastKey = key; _lastMod = mod;
+  if(_quickSelectTime < TimerManager::getTicks() / 1000)
+    _firstMod = mod;
+
   return handled;
 }
 
@@ -342,6 +349,10 @@ bool FileListWidget::handleText(char text)
   // (or a substring accumulated from the last couple key presses).
   // Only works in a useful fashion if the list entries are sorted.
   const uInt64 time = TimerManager::getTicks() / 1000;
+  const bool firstShift = StellaModTest::isShift(_firstMod);
+
+  if(StellaModTest::isShift(_lastMod))
+    text = *StellaKeyName::forKey(_lastKey);
 
   if(_quickSelectTime < time)
     _quickSelectStr = text;
@@ -354,7 +365,7 @@ bool FileListWidget::handleText(char text)
   {
     if(BSPF::startsWithIgnoreCase(i, _quickSelectStr))
       // Select directories when the first character is uppercase
-      if((std::isupper(_quickSelectStr[0]) != 0) ==
+      if(firstShift ==
           (_iconTypeList[selectedItem] == IconType::directory
           || _iconTypeList[selectedItem] == IconType::userdir
           || _iconTypeList[selectedItem] == IconType::recentdir
