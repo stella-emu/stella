@@ -271,9 +271,8 @@ void DiStella::disasm(uInt32 distart, int pass)
               /* Line information is already printed; append .byte since last
                  instruction will put recompilable object larger that original
                  binary file */
-              myDisasmBuf << ".byte $" << Base::HEX2 << static_cast<int>(opcode) << "              $"
-                << Base::HEX4 << myPC + myOffset << "'"
-                << Base::HEX2 << static_cast<int>(opcode);
+              myDisasmBuf << ".byte $" << Base::HEX2 << static_cast<int>(opcode)
+                << " ;" << ourLookup[opcode].mnemonic;
               addEntry(Device::DATA);
 
               if(myPC == myAppData.end) {
@@ -283,9 +282,7 @@ void DiStella::disasm(uInt32 distart, int pass)
                   myDisasmBuf << Base::HEX4 << myPC + myOffset << "'     '";
 
                 opcode = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
-                myDisasmBuf << ".byte $" << Base::HEX2 << static_cast<int>(opcode) << "              $"
-                  << Base::HEX4 << myPC + myOffset << "'"
-                  << Base::HEX2 << static_cast<int>(opcode);
+                myDisasmBuf << ".byte $" << Base::HEX2 << static_cast<int>(opcode);
                 addEntry(Device::DATA);
               }
             }
