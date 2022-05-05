@@ -116,6 +116,11 @@ class CartridgeE7 : public Cartridge
     uInt16 romBankCount() const override;
 
     /**
+      Get the number of segments supported by the cartridge.
+    */
+    uInt16 segmentCount() const override { return NUM_SEGMENTS; }
+
+    /**
       Patch the cartridge ROM.
 
       @param address  The ROM address to patch
