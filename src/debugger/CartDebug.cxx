@@ -339,7 +339,7 @@ bool CartDebug::disassemble(int bank, uInt16 PC, Disassembly& disassembly,
     // If the offset has changed, all old addresses must be 'converted'
     // For example, if the list contains any $fxxx and the address space is now
     // $bxxx, it must be changed
-    const uInt16 offset = PC & 0x1000 ? myConsole.cartridge().bankOrigin(bank, PC) : 0;
+    const uInt16 offset = (PC & 0x1000) ? myConsole.cartridge().bankOrigin(bank, PC) : 0;
     AddressList& addresses = info.addressList;
     for(auto& i: addresses)
       i = (i & 0xFFF) + offset;
