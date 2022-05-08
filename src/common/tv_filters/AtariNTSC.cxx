@@ -100,8 +100,9 @@ void AtariNTSC::enableThreading(bool enable)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void AtariNTSC::render(const uInt8* atari_in, const uInt32 in_width, const uInt32 in_height,
-  void* rgb_out, const uInt32 out_pitch, uInt32* rgb_in)
+void AtariNTSC::render(const uInt8* atari_in, const uInt32 in_width,
+                       const uInt32 in_height, void* rgb_out,
+                       const uInt32 out_pitch, uInt32* rgb_in)
 {
   // Spawn the threads...
   for(uInt32 i = 0; i < myWorkerThreads; ++i)
@@ -521,27 +522,8 @@ void AtariNTSC::genKernel(init_t& impl, float y, float i, float q, uInt32* out)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const AtariNTSC::Setup AtariNTSC::TV_Composite = {
-  0.0F, 0.15F, 0.0F, 0.0F, 0.0F
-};
-const AtariNTSC::Setup AtariNTSC::TV_SVideo = {
-  0.0F, 0.45F, -1.0F, -1.0F, 0.0F
-};
-const AtariNTSC::Setup AtariNTSC::TV_RGB = {
-  0.2F, 0.70F, -1.0F, -1.0F, -1.0F
-};
-const AtariNTSC::Setup AtariNTSC::TV_Bad = {
-  0.2F, 0.1F, 0.5F, 0.5F, 0.5F
-};
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const std::array<AtariNTSC::pixel_info_t, AtariNTSC::alignment_count>
 AtariNTSC::atari_ntsc_pixels = { {
   { PIXEL_OFFSET1(-4, -9), PIXEL_OFFSET2(-4), { 1, 1, 1, 1            } },
   { PIXEL_OFFSET1( 0, -5), PIXEL_OFFSET2( 0), {            1, 1, 1, 1 } }
 } };
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const std::array<float, 6> AtariNTSC::default_decoder = {
-  0.9563F, 0.6210F, -0.2721F, -0.6474F, -1.1070F, 1.7046F
-};

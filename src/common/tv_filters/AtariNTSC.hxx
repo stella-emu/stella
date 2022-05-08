@@ -67,10 +67,18 @@ class AtariNTSC
     };
 
     // Video format presets
-    static const Setup TV_Composite; // color bleeding + artifacts
-    static const Setup TV_SVideo;    // color bleeding only
-    static const Setup TV_RGB;       // crisp image
-    static const Setup TV_Bad;       // badly adjusted TV
+    static constexpr Setup TV_Composite = { // color bleeding + artifacts
+      0.0F, 0.15F, 0.0F, 0.0F, 0.0F
+    };
+    static constexpr Setup TV_SVideo = {    // color bleeding only
+      0.0F, 0.45F, -1.0F, -1.0F, 0.0F
+    };
+    static constexpr Setup TV_RGB = {       // crisp image
+      0.2F, 0.70F, -1.0F, -1.0F, -1.0F
+    };
+    static constexpr Setup TV_Bad = {       // badly adjusted TV
+      0.2F, 0.1F, 0.5F, 0.5F, 0.5F
+    };
 
     // Initializes and adjusts parameters
     // Note that this must be called before setting a palette
@@ -175,7 +183,9 @@ class AtariNTSC
     };
     static const std::array<pixel_info_t, alignment_count> atari_ntsc_pixels;
 
-    static const std::array<float, 6> default_decoder;
+    static constexpr std::array<float, 6> default_decoder = {
+      0.9563F, 0.6210F, -0.2721F, -0.6474F, -1.1070F, 1.7046F
+    };
 
     void init(init_t& impl, const Setup& setup);
     void initFilters(init_t& impl, const Setup& setup);
@@ -242,7 +252,7 @@ class AtariNTSC
         (rescale_out - (((scaled) + rescale_out * 10) % rescale_out)) % rescale_out +
         (kernel_size * 2 * (((scaled) + rescale_out * 10) % rescale_out)));
     }
-    static constexpr int PIXEL_OFFSET2( int ntsc ) {
+    static constexpr float PIXEL_OFFSET2( int ntsc ) {
       return 1.0F - (((ntsc) + 100) & 2);
     }
 
