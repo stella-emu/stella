@@ -20,7 +20,9 @@
 
 class EditTextWidget;
 class FileListWidget;
-class Font;
+namespace GUI {
+  class Font;
+}
 
 #include "Widget.hxx"
 

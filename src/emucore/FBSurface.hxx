@@ -400,10 +400,10 @@ class FBSurface
 
     /**
       Check if the given character is a whitespace.
-      @param s      Character to check
+      @param c      Character to check
       @return       True if whitespace character
     */
-    bool isWhiteSpace(const char s) const;
+    bool isWhiteSpace(const char c) const;
 
   protected:
     uInt32* myPixels{nullptr};  // NOTE: MUST be set in child classes

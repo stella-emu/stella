@@ -522,7 +522,7 @@ const HSM::ScoreAddresses HighScoresManager::getPropScoreAddr(const json& jprops
 
   if(jprops.contains(SCORE_ADDRESSES))
   {
-    const json addrProps = jprops.at(SCORE_ADDRESSES);
+    const json& addrProps = jprops.at(SCORE_ADDRESSES);
 
     if(!addrProps.empty() && addrProps.is_array())
     {
@@ -642,7 +642,7 @@ void HighScoresManager::loadHighScores(ScoresData& data)
         buf << "Error: Incompatible high scores data for variation " << data.variation << ".";
       else if(hsObject.contains(DATA))
       {
-        const json hsData = hsObject.at(DATA);
+        const json& hsData = hsObject.at(DATA);
 
         if(!load(hsData, data)
           || !hsObject.contains(MD5) || hsObject.at(MD5) != data.md5

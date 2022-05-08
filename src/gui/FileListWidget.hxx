@@ -117,9 +117,7 @@ class FileListWidget : public StringListWidget
       FilesystemNode node;
       string  selected;
 
-      HistoryType()
-        : node{}, selected{} {}
-      explicit HistoryType(const FilesystemNode _hnode, const string _hselected)
+      explicit HistoryType(const FilesystemNode& _hnode, const string& _hselected)
         : node{_hnode}, selected{_hselected} {}
     };
     enum class IconType {

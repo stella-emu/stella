@@ -242,7 +242,7 @@ namespace BSPF
   // starting from 'startpos' in the first string
   static size_t findIgnoreCase(string_view s1, string_view s2, size_t startpos = 0)
   {
-    auto pos = std::search(s1.cbegin()+startpos, s1.cend(),
+    const auto pos = std::search(s1.cbegin()+startpos, s1.cend(),
       s2.cbegin(), s2.cend(), [](char ch1, char ch2) {
         return toupper(static_cast<uInt8>(ch1)) == toupper(static_cast<uInt8>(ch2));
       });
@@ -335,7 +335,7 @@ namespace BSPF
   // Trim leading and trailing whitespace from a string
   inline string trim(const string& str)
   {
-    const string::size_type first = str.find_first_not_of(' ');
+    const auto first = str.find_first_not_of(' ');
     return (first == string::npos) ? EmptyString :
             str.substr(first, str.find_last_not_of(' ')-first+1);
   }
@@ -344,8 +344,7 @@ namespace BSPF
   // Equivalent to the C-style localtime() function, but is thread-safe
   inline std::tm localTime()
   {
-    std::time_t currtime;
-    std::time(&currtime);
+    const auto currtime = std::time(nullptr);
     std::tm tm_snapshot;
   #if (defined BSPF_WINDOWS || defined __WIN32__) && (!defined __GNUG__ || defined __MINGW32__)
     localtime_s(&tm_snapshot, &currtime);
@@ -355,15 +354,9 @@ namespace BSPF
     return tm_snapshot;
   }
 
-  inline bool isWhiteSpace(const char s)
+  inline bool isWhiteSpace(const char c)
   {
-    const string WHITESPACES = " ,.;:+-*&/\\'";
-
-    for(size_t i = 0; i < WHITESPACES.length(); ++i)
-      if(s == WHITESPACES[i])
-        return true;
-
-    return false;
+    return string(" ,.;:+-*&/\\'").find(c) != string::npos;
   }
 } // namespace BSPF
 

@@ -209,15 +209,15 @@ AnalogReadout::Connection Paddles::getReadOut(int lastAxis, int& newAxis, int ce
 
   static constexpr std::array<float, MAX_DEJITTER - MIN_DEJITTER + 1> bFac = {
     // higher values mean more dejitter strength
-    0.f, // off
-    0.50f, 0.59f, 0.67f, 0.74f, 0.80f,
-    0.85f, 0.89f, 0.92f, 0.94f, 0.95f
+    0.F, // off
+    0.50F, 0.59F, 0.67F, 0.74F, 0.80F,
+    0.85F, 0.89F, 0.92F, 0.94F, 0.95F
   };
   static constexpr std::array<float, MAX_DEJITTER - MIN_DEJITTER + 1> dFac = {
     // lower values mean more dejitter strength
-    1.f, // off
-    1.0f / 181, 1.0f / 256, 1.0f / 362, 1.0f / 512, 1.0f / 724,
-    1.0f / 1024, 1.0f / 1448, 1.0f / 2048, 1.0f / 2896, 1.0f / 4096
+    1.F, // off
+    1.0F / 181, 1.0F / 256, 1.0F / 362, 1.0F / 512, 1.0F / 724,
+    1.0F / 1024, 1.0F / 1448, 1.0F / 2048, 1.0F / 2896, 1.0F / 4096
   };
   const float baseFactor = bFac[DEJITTER_BASE];
   const float diffFactor = dFac[DEJITTER_DIFF];
@@ -518,7 +518,7 @@ float Paddles::analogSensitivityValue(int sensitivity)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Paddles::setAnalogLinearity(int linearity)
 {
-  LINEARITY = 100.f / BSPF::clamp(linearity, MIN_ANALOG_LINEARITY, MAX_ANALOG_LINEARITY);
+  LINEARITY = 100.F / BSPF::clamp(linearity, MIN_ANALOG_LINEARITY, MAX_ANALOG_LINEARITY);
 }
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Paddles::setDejitterBase(int strength)
@@ -549,8 +549,8 @@ void Paddles::setDigitalPaddleRange(int range)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Paddles::XCENTER = 0;
 int Paddles::YCENTER = 0;
-float Paddles::SENSITIVITY = 1.0;
-float Paddles::LINEARITY = 1.0;
+float Paddles::SENSITIVITY = 1.F;
+float Paddles::LINEARITY = 1.F;
 int Paddles::DEJITTER_BASE = 0;
 int Paddles::DEJITTER_DIFF = 0;
 int Paddles::TRIGRANGE = Paddles::TRIGMAX;

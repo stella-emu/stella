@@ -58,7 +58,7 @@ void FileListWidget::setDirectory(const FilesystemNode& node,
   _history.clear();
   while(tmp.hasParent())
   {
-    _history.push_back(HistoryType(tmp, fixPath(name)));
+    _history.emplace_back(tmp, fixPath(name));
 
     name = tmp.getName();
     tmp = tmp.getParent();
@@ -262,7 +262,7 @@ void FileListWidget::addHistory(const FilesystemNode& node)
   string select = selected().getName();
   _currentHistory->selected = fixPath(select);
 
-  _history.push_back(HistoryType(node, ".."));
+  _history.emplace_back(node, "..");
   _currentHistory = std::prev(_history.end(), 1);
   //_historyIndex++;
 }

@@ -75,14 +75,14 @@ class RewindManager
     static constexpr int NUM_HORIZONS = 8;
     // cycle values for the horzions
     const std::array<uInt64, NUM_HORIZONS> HORIZON_CYCLES = {
-      76 * 262 * 60 * 3,
-      76 * 262 * 60 * 10,
-      76 * 262 * 60 * 30,
-      76 * 262 * 60 * 60,
-      76 * 262 * 60 * 60 * 3,
-      76 * 262 * 60 * 60 * 10,
-      uInt64{76} *262 * 60 * 60 * 30,
-      uInt64{76} *262 * 60 * 60 * 60
+      uInt64{76} * 262 * 60 * 3,
+      uInt64{76} * 262 * 60 * 10,
+      uInt64{76} * 262 * 60 * 30,
+      uInt64{76} * 262 * 60 * 60,
+      uInt64{76} * 262 * 60 * 60 * 3,
+      uInt64{76} * 262 * 60 * 60 * 10,
+      uInt64{76} * 262 * 60 * 60 * 30,
+      uInt64{76} * 262 * 60 * 60 * 60
     };
     // settings values for the horzions
     const std::array<string, NUM_HORIZONS> HOR_SETTINGS = {
