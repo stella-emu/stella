@@ -63,7 +63,7 @@ class CompositeKeyValueRepositoryAtomic : public CompositeKeyValueRepository
 
     virtual bool has(const string& key1, const string& key2);
 
-    virtual void remove(const string& key1, const string key2);
+    virtual void remove(const string& key1, const string& key2);
 
     CompositeKeyValueRepositoryAtomic* atomic() override { return this; }
 };

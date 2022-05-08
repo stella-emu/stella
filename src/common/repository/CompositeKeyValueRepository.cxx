@@ -45,7 +45,7 @@ bool CompositeKeyValueRepositoryAtomic::has(const string& key1, const string& ke
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CompositeKeyValueRepositoryAtomic::remove(const string& key1, const string key2)
+void CompositeKeyValueRepositoryAtomic::remove(const string& key1, const string& key2)
 {
   getAtomic(key1)->remove(key2);
 }
