@@ -1555,6 +1555,7 @@
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/bionic/bionic.htm"
 "Controller.Left" "MINDLINK"
+"Controller.Right" "MINDLINK"
 ""
 
 "Cart.MD5" "10f62443f1ae087dc588a77f9e8f43e9"
@@ -21148,6 +21149,7 @@
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/bionic/bionic.htm"
 "Controller.Left" "MINDLINK"
+"Controller.Right" "MINDLINK"
 ""
 
 "Cart.MD5" "f060826626aac9e0d8cda0282f4b7fc3"
