@@ -35,6 +35,8 @@
 
   * Improved controller mappings for Driving controllers.
 
+  * Improved Mindlink support
+
   * Added another oddball TIA glitch option for score mode color.
 
   * Enhanced support for CDFJ+ bankswitching type.
