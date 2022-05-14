@@ -43,13 +43,17 @@ void FileListWidget::setDirectory(const FilesystemNode& node,
   _node = node;
 
   // We always want a directory listing
-  if(!isDirectory(_node) && _node.hasParent())
-  {
-    _selectedFile = _node.getName();
-    _node = _node.getParent();
-  }
-  else
+  if(_node.isDirectory())
     _selectedFile = select;
+  else
+  {
+    // Otherwise, keeping going up in the directory name until a valid
+    // one is found
+    while(!_node.isDirectory() && _node.hasParent())
+      _node = _node.getParent();
+
+    _selectedFile = _node.getName();
+  }
 
   // Initialize history
   FilesystemNode tmp = _node;
@@ -276,6 +280,22 @@ void FileListWidget::reload()
       ? selected().getName()
       : selected().getNameWithExt(EmptyString);
     setLocation(_node, _selectedFile);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const FilesystemNode& FileListWidget::selected()
+{
+  if(_fileList.size() > 0)
+  {
+    _selected = BSPF::clamp(_selected, 0U, static_cast<uInt32>(_fileList.size()-1));
+    return _fileList[_selected];
+  }
+  else
+  {
+    // This should never happen, but we'll error-check out-of-bounds
+    // array access anyway
+    return ourDefaultNode;
   }
 }
 
@@ -709,3 +729,6 @@ string FileListWidget::getToolTip(const Common::Point& pos) const
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt64 FileListWidget::_QUICK_SELECT_DELAY = 300;
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FilesystemNode FileListWidget::ourDefaultNode = FilesystemNode("~");
