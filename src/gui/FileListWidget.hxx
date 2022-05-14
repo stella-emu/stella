@@ -99,10 +99,7 @@ class FileListWidget : public StringListWidget
     void reload();
 
     /** Gets current node(s) */
-    const FilesystemNode& selected() {
-      _selected = BSPF::clamp(_selected, 0U, static_cast<uInt32>(_fileList.size()-1));
-      return _fileList[_selected];
-    }
+    const FilesystemNode& selected();
     const FilesystemNode& currentDir() const { return _node; }
 
     static void setQuickSelectDelay(uInt64 time) { _QUICK_SELECT_DELAY = time; }
@@ -115,7 +112,7 @@ class FileListWidget : public StringListWidget
     struct HistoryType
     {
       FilesystemNode node;
-      string  selected;
+      string selected;
 
       explicit HistoryType(const FilesystemNode& _hnode, const string& _hselected)
         : node{_hnode}, selected{_hselected} {}
@@ -189,6 +186,8 @@ class FileListWidget : public StringListWidget
     static uInt64 _QUICK_SELECT_DELAY;
 
     unique_ptr<ProgressDialog> myProgressDialog;
+
+    static FilesystemNode ourDefaultNode;
 
   private:
     // Following constructors and assignment operators not supported
