@@ -90,7 +90,7 @@ using DWordBuffer = std::unique_ptr<uInt32[]>;  // NOLINT
 // We use KB a lot; let's make a literal for it
 constexpr size_t operator "" _KB(unsigned long long size)
 {
-   return static_cast<size_t>(size * 1024);
+  return static_cast<size_t>(size * 1024);
 }
 
 // Output contents of a vector
