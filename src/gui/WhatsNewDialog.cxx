@@ -75,8 +75,7 @@ WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent,
   add(ypos, "extensively redesigned and enhanced file launcher");
   add(ypos, "added automatic emulation pause when focus is lost");
   add(ypos, "added option to toggle autofire mode");
-  add(ypos, "improved controller mappings for Paddles");
-  add(ypos, "improved controller mappings for Driving controllers");
+  add(ypos, "improved controller mappings for Paddles and Driving controllers");
   add(ypos, "added another oddball TIA glitch option for score mode color");
   add(ypos, "enhanced support for CDFJ+ bankswitching type");
   add(ypos, ELLIPSIS + " (for a complete list see 'docs/Changes.txt')");
