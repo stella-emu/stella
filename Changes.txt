@@ -12,18 +12,18 @@
                               Release History
 ===========================================================================
 
-6.6 to 6.?
+6.6 to 6.7 (May 31, 2002)
 
   * Completely reworked the file launcher:
     - Redesigned user interface
     - Added tracking of user favorites, recently played and most popular
-      games.
-    - Added virtual directories for selecting tracked games.
+      games
+    - Added virtual directories for selecting tracked games
     - Added quick path navigation
     - Added navigation history
-    - Added icons for files and directories.
-    - Added option to show/hide file extensions.
-    - Extended context menu and shortcuts.
+    - Added icons for files and directories
+    - Added option to show/hide file extensions
+    - Extended context menu and shortcuts
 
   * Added hotkey display to tooltips.
 
@@ -35,13 +35,13 @@
 
   * Improved controller mappings for Driving controllers.
 
-  * Improved Mindlink support
+  * Improved Mindlink support.
 
   * Added another oddball TIA glitch option for score mode color.
 
   * Enhanced support for CDFJ+ bankswitching type.
 
-  * Added 0FA0 bankswitching for Fotomania ROMs
+  * Added 0FA0 bankswitching for Fotomania ROMs.
 
   * Added ARM chip auto detection.
 
@@ -55,11 +55,10 @@
 
   * Fixed state messages staying on screen forever.
 
-  * Debugger: added PlusROM information.
-
-  * Debugger: fixed patching code in ZP-RAM.
-
-  * Debugger: improved bank origin detection.
+  * Debugger improvements:
+    - added PlusROM information
+    - fixed patching code in ZP-RAM
+    - improved bank origin detection
 
 -Have fun!
 
@@ -94,6 +93,7 @@
   * Debugger: added optional logging of breaks and traps.
 
   * Debugger: added Thumb cycle counting.
+
 
 6.5.2 to 6.5.3 (April 20, 2021)
 
