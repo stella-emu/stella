@@ -31,6 +31,8 @@ enum class PropType : uInt8 {
   Cart_Sound,
   Cart_StartBank,
   Cart_Type,
+  Cart_Highscore,
+  Cart_Url,
   Console_LeftDiff,
   Console_RightDiff,
   Console_TVType,
@@ -49,8 +51,6 @@ enum class PropType : uInt8 {
   Display_VCenter,
   Display_Phosphor,
   Display_PPBlend,
-  Cart_Highscore,
-  Cart_Url,
   NumTypes
 };
 

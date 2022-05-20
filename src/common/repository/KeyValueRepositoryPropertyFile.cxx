@@ -70,7 +70,8 @@ namespace {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-KeyValueRepositoryPropertyFile::KeyValueRepositoryPropertyFile(const FilesystemNode& node)
+KeyValueRepositoryPropertyFile::KeyValueRepositoryPropertyFile(
+        const FilesystemNode& node)
   : KeyValueRepositoryFile<KeyValueRepositoryPropertyFile>(node)
 {
 }
@@ -116,6 +117,8 @@ bool KeyValueRepositoryPropertyFile::save(ostream& out, const std::map<string, V
     writeQuotedString(out, value.toString());
     out.put('\n');
   }
+  out.put('"');  out.put('"');
+  out.put('\n'); out.put('\n');
 
   return true;
 }
