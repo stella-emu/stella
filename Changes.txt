@@ -12,7 +12,7 @@
                               Release History
 ===========================================================================
 
-6.6 to 6.7 (May 31, 2002)
+6.6 to 6.7 (May 31, 2022)
 
   * Completely reworked the file launcher:
     - Redesigned user interface
