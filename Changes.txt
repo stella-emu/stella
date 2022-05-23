@@ -60,6 +60,10 @@
     - fixed patching code in ZP-RAM
     - improved bank origin detection
 
+  * Updated internal ROM properties database to ROM-Hunter version 17
+    (thanks go to RomHunter for his tireless research in this area).
+    Related to this, updated the snapshot collection.
+
 -Have fun!
 
 

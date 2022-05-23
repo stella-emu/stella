@@ -106,14 +106,14 @@
 ""
 
 "Cart.MD5" "0164f26f6b38a34208cd4a2d0212afc3"
-"Cart.Manufacturer" "Coleco, Ed English"
+"Cart.Manufacturer" "Coleco - Individeo, Ed English"
 "Cart.ModelNo" "2656"
 "Cart.Name" "Mr. Do! (1983) (Coleco)"
 "Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "0173675d40a8d975763ee493377ca87d"
-"Cart.Manufacturer" "CBS Electronics, Ed English"
+"Cart.Manufacturer" "CBS Electronics - Individeo, Ed English"
 "Cart.ModelNo" "4L1751"
 "Cart.Name" "Roc 'n Rope (1984) (CBS Electronics) (PAL)"
 ""
@@ -220,6 +220,11 @@
 "Cart.Name" "Diagnostic Test Cartridge 2.6 (1982) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/diagnostic/diagnostic.htm"
+""
+
+"Cart.MD5" "02b71d3860126d9de21073d237e502db"
+"Cart.Manufacturer" "Fotomania"
+"Cart.Name" "Cosmic Ark (Fotomania)"
 ""
 
 "Cart.MD5" "02ced7ea2b7cb509748db6bfa227ebec"
@@ -352,7 +357,7 @@
 ""
 
 "Cart.MD5" "049626cbfb1a5f7a5dc885a0c4bb758e"
-"Cart.Name" "MegaMania (Unknown) (PAL)"
+"Cart.Name" "MegaMania (Unknown) (PAL) [a]"
 "Cart.Highscore" "{\"score_addresses\":[\"0xdb\",\"0xdc\",\"0xdd\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
@@ -437,9 +442,9 @@
 "Cart.Name" "Star Wars - Jedi Arena (1983) (Parker Bros) (PAL)"
 "Cart.Note" "Uses the Paddle Controllers (swapped)"
 "Controller.SwapPaddles" "YES"
-"Controller.MouseAxis" "10 50"
 "Controller.PaddlesXCenter" "16"
 "Controller.PaddlesYCenter" "16"
+"Controller.MouseAxis" "10 50"
 ""
 
 "Cart.MD5" "05c60458ec69e7fe8b1be973852d84f1"
@@ -497,9 +502,9 @@
 "Cart.Manufacturer" "Omegamatrix"
 "Cart.Name" "Millipede (Atari Trak-Ball) v6.5 (Omegamatrix)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
-"Display.Format" "PAL60"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1188"
+"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "0651216c4a4a9c9ac5ada3013a317c72"
@@ -509,16 +514,16 @@
 "Cart.Rarity" "Hack"
 ""
 
-"Cart.MD5" "06742cf522f23797157f215a1dc8a1a9"
-"Cart.Name" "Healthbars (PD)"
-""
-
 "Cart.MD5" "0653285db216755085bd025b93ea6a25"
 "Cart.Manufacturer" "AtariAge, Chris Walton & Thomas Jentzsch"
 "Cart.Name" "Star Castle Arcade (2014) (Chris Walton, Thomas Jentzsch) (PAL)"
 "Cart.Rarity" "Homebrew"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1046"
 "Display.Phosphor" "YES"
+""
+
+"Cart.MD5" "06742cf522f23797157f215a1dc8a1a9"
+"Cart.Name" "Healthbars (PD)"
 ""
 
 "Cart.MD5" "0685bd0bcb975ceef7041749a5454a48"
@@ -644,6 +649,10 @@
 "Cart.Note" "AKA Seahawk"
 ""
 
+"Cart.MD5" "07f5004d26ea2b776169bbfc41cc05a8"
+"Cart.Name" "Football (Unknown) (PAL) (4K)"
+""
+
 "Cart.MD5" "07f84db31e97ef8d08dc9fa8a5250755"
 "Cart.Manufacturer" "Supergame"
 "Cart.Name" "Enduro (1984) (Supergame)"
@@ -723,8 +732,8 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Centipede - Atari Trak-Ball Hack v1.4 (PAL60) (Half-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
-"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
 ""
 
 "Cart.MD5" "0894aa7be77521f9df562be8d9555fe6"
@@ -846,8 +855,8 @@
 "Cart.Name" "Yar Vs. Yar (2002) (Justin J. Scott) (Hack)"
 "Cart.Note" "Hack of Yars' Revenge"
 "Cart.Rarity" "Hack"
-"Display.Phosphor" "YES"
 "Cart.Highscore" "{\"notes\":\"Variations are larger by 1\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":8,\"variations_zero_based\":true}"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "097074f24cde141fe6a0f26a10333265"
@@ -938,10 +947,10 @@
 "Cart.ModelNo" "CX2608 - 49-75165"
 "Cart.Name" "Super Breakout (1982 - 1981) (Atari) [a]"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
-"Controller.MouseAxis" "01 45"
+"Cart.Highscore" "{\"score_addresses\":[\"0xdc\",\"0xdd\"],\"variations_address\":\"0xc0\",\"variations_count\":9}"
 "Controller.PaddlesXCenter" "17"
 "Controller.PaddlesYCenter" "17"
-"Cart.Highscore" "{\"score_addresses\":[\"0xdc\",\"0xdd\"],\"variations_address\":\"0xc0\",\"variations_count\":9}"
+"Controller.MouseAxis" "01 45"
 ""
 
 "Cart.MD5" "0adb21206de92e8aec5ef295805ebb90"
@@ -980,6 +989,10 @@
 "Cart.Manufacturer" "Tigervision - Software Electronics Corp., Karl T. Olinger - Teldec"
 "Cart.ModelNo" "7-001 - 3.60001 VE"
 "Cart.Name" "King Kong (1982) (Tigervision) (PAL) [a]"
+""
+
+"Cart.MD5" "0b170a67e97f0c3fd908e7529a218ae9"
+"Cart.Name" "Cosmic Swarm (Unknown)"
 ""
 
 "Cart.MD5" "0b17ed42984000da8b727ca46143f87a"
@@ -1120,9 +1133,9 @@
 "Cart.ModelNo" "CX2610"
 "Cart.Name" "Warlords (1981) (Atari) (PAL)"
 "Cart.Note" "Uses the Paddle Controllers"
-"Controller.MouseAxis" "01 50"
 "Controller.PaddlesXCenter" "18"
 "Controller.PaddlesYCenter" "19"
+"Controller.MouseAxis" "01 50"
 ""
 
 "Cart.MD5" "0cb7af80fd0ddef84844481d85e5d29b"
@@ -1226,6 +1239,12 @@
 "Cart.Rarity" "Uncommon"
 ""
 
+"Cart.MD5" "0dd0658ace9a31a571a9de966985a068"
+"Cart.Manufacturer" "Fotomania"
+"Cart.Name" "Laser Gates (Fotomania)"
+"Cart.Note" "AKA Innerspace"
+""
+
 "Cart.MD5" "0dd4c69b5f9a7ae96a7a08329496779a"
 "Cart.Manufacturer" "Tigervision - Software Electronics Corp., Karl T. Olinger - Teldec"
 "Cart.ModelNo" "7-001 - 3.60001 VE"
@@ -1266,12 +1285,12 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Centipede - Amiga Mouse Hack v1.4 (PAL60) (Half-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Amiga Mouse Controller"
-"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xf4\",\"0xf5\",\"0xf6\"],\"score_digits\":6,\"variations_count\":1}"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1180"
 ""
 
 "Cart.MD5" "0e4b2b6e014a93ef8be896823da0d4ec"
-"Cart.Name" "Skiing (208 in 1) (Unknown) (PAL)"
+"Cart.Name" "Skiing (Unknown) (PAL)"
 ""
 
 "Cart.MD5" "0e713d4e272ea7322c5b27d645f56dd0"
@@ -1352,7 +1371,7 @@
 ""
 
 "Cart.MD5" "0f24ca5668b4ab5dfaf217933c505926"
-"Cart.Name" "Fantastic Voyage (208 in 1) (Unknown) (PAL)"
+"Cart.Name" "Fantastic Voyage (Unknown) (PAL)"
 ""
 
 "Cart.MD5" "0f2e09c71cc216f79d22a804152ba24b"
@@ -1367,7 +1386,7 @@
 ""
 
 "Cart.MD5" "0f39fc03d579d0d93a6b729a3746843e"
-"Cart.Manufacturer" "Atari, Sam Comstock, Richard Dobbis, Nick 'Sandy Maiwald' Turner"
+"Cart.Manufacturer" "Atari, Ed Bogas, Sam Comstock, Richard Dobbis, Nick 'Sandy Maiwald' Turner"
 "Cart.ModelNo" "CX26111"
 "Cart.Name" "Snoopy and the Red Baron (05-27-1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
@@ -1425,16 +1444,14 @@
 ""
 
 "Cart.MD5" "0fc161704c46e16f7483f92b06c1558d"
-"Cart.Manufacturer" "CCE"
-"Cart.ModelNo" "C-853"
-"Cart.Name" "Spider Fighter (1983) (CCE)"
+"Cart.Name" "Spider Fighter (Unknown)"
 ""
 
 "Cart.MD5" "0fcff6fe3b0769ad5d0cf82814d2a6d9"
 "Cart.Manufacturer" "Suntek"
 "Cart.ModelNo" "SS-027"
 "Cart.Name" "Zoo Fun (1983) (Suntek) (PAL)"
-"Cart.Note" "AKA Panda Chase"
+"Cart.Note" "AKA Pumuckl at the Zoo"
 ""
 
 "Cart.MD5" "0fd72a13b3b6103fc825a692c71963b4"
@@ -1451,7 +1468,7 @@
 ""
 
 "Cart.MD5" "101ab60f4000a5d13792ef0abad5f74b"
-"Cart.Manufacturer" "Atari, Jerome Domurat, Peter C. Niday, Robert Vieira"
+"Cart.Manufacturer" "Atari, Dave Joly, Peter C. Niday, Robert Vieira"
 "Cart.ModelNo" "CX26109"
 "Cart.Name" "Sorcerer's Apprentice (1983) (Atari) [a]"
 ""
@@ -1528,9 +1545,9 @@
 ""
 
 "Cart.MD5" "10c47acca2ecd212b900ad3cf6942dbb"
-"Cart.Manufacturer" "Atari - Axlon, Tod Frye - Heuristica, Agustin Ortiz"
+"Cart.Manufacturer" "Atari - Axlon, Tod Frye - Heuristica, Agustin Ortiz Valdiviezo"
 "Cart.ModelNo" "CX26169"
-"Cart.Name" "Shooting Arcade (03-07-1989) (Atari) (Prototype) [a4]"
+"Cart.Name" "Shooting Arcade (03-07-1989) (Atari) (Prototype) [screen 5]"
 "Cart.Note" "Uses the Light Gun Controller (left only)"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/shootingarcade/shootingarcade.htm"
@@ -1602,7 +1619,12 @@
 ""
 
 "Cart.MD5" "11e7e0d9437ec98fa085284cf16d0eb4"
-"Cart.Name" "Bowling (208 in 1) (Unknown) (PAL)"
+"Cart.Name" "Bowling (Unknown) (PAL)"
+""
+
+"Cart.MD5" "11f55cdbb4e059f5ca56c509c57cb510"
+"Cart.Manufacturer" "Fotomania"
+"Cart.Name" "Keystone Kapers (Fotomania)"
 ""
 
 "Cart.MD5" "11f9532557e4c9569f4b242164006161"
@@ -1692,6 +1714,7 @@
 "Cart.Manufacturer" "Home Vision - Gem International Corp. - VDI"
 "Cart.ModelNo" "VCS83109"
 "Cart.Name" "World End (1983) (Home Vision) (PAL)"
+"Cart.Note" "AKA The End of the World"
 ""
 
 "Cart.MD5" "1323c45d660f5a5b6d5ea45c6c4cbe4a"
@@ -1701,7 +1724,7 @@
 ""
 
 "Cart.MD5" "133456269a03e3fdae6cddd65754c50d"
-"Cart.Manufacturer" "Tigervision - Software Electronics Corporation - Teldec"
+"Cart.Manufacturer" "Tigervision - Software Electronics Corporation - Teldec - Prism"
 "Cart.ModelNo" "7-006 - 3.60008 VG"
 "Cart.Name" "Springer (1983) (Tigervision) (PAL)"
 ""
@@ -1774,9 +1797,9 @@
 "Cart.MD5" "137373599e9b7bf2cf162a102eb5927f"
 "Cart.Manufacturer" "AtariAge, Joe Grand"
 "Cart.Name" "Ultra SCSIcide (SCSIcide 2.0)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xdc\",\"0xdd\",\"0xde\"],\"score_bcd\":false,\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=296"
 "Controller.Left" "PADDLES"
-"Cart.Highscore" "{\"score_addresses\":[\"0xdc\",\"0xdd\",\"0xde\"],\"score_bcd\":false,\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "13895ef15610af0d0f89d588f376b3fe"
@@ -1813,7 +1836,7 @@
 
 "Cart.MD5" "13ccc692f111d52fec75d83df16192e2"
 "Cart.Manufacturer" "Canal 3 - Intellivision"
-"Cart.Name" "Fishing Derby (Canal 3)"
+"Cart.Name" "Fishing Derby (Canal 3) (4K)"
 ""
 
 "Cart.MD5" "13d8326bf5648db4dafce45d25e62ddd"
@@ -1834,10 +1857,7 @@
 ""
 
 "Cart.MD5" "1423f560062c4f3c669d55891a2bcbe7"
-"Cart.Manufacturer" "CCE"
-"Cart.ModelNo" "C-859"
-"Cart.Name" "MASH (1983) (CCE) [a]"
-"Cart.Note" "AKA M.A.S.H"
+"Cart.Name" "M.A.S.H. (Unknown)"
 ""
 
 "Cart.MD5" "1428029e762797069ad795ce7c6a1a93"
@@ -1953,8 +1973,8 @@
 "Cart.Name" "Yar's Defeat (2002) (Justin J. Scott) (Hack)"
 "Cart.Note" "Hack of Yars' Revenge"
 "Cart.Rarity" "Hack"
-"Display.Phosphor" "YES"
 "Cart.Highscore" "{\"notes\":\"Variations are larger by 1\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":8,\"variations_zero_based\":true}"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "15a0d59304dece2c7d0580f3ea3527f0"
@@ -1989,7 +2009,7 @@
 ""
 
 "Cart.MD5" "15c11ab6e4502b2010b18366133fc322"
-"Cart.Manufacturer" "Atari - Axlon, Tod Frye - Heuristica, Augustin Ortiz"
+"Cart.Manufacturer" "Atari - Axlon, Tod Frye - Heuristica, Agustin Ortiz Valdiviezo"
 "Cart.ModelNo" "CX26169"
 "Cart.Name" "Shooting Arcade (09-19-1989) (Atari) (Prototype)"
 "Cart.Note" "Uses the Light Gun Controller (left only)"
@@ -2004,7 +2024,7 @@
 ""
 
 "Cart.MD5" "15fe28d0c8893be9223e8cb2d032e557"
-"Cart.Name" "Towering Inferno (208 in 1) (Unknown) (PAL)"
+"Cart.Name" "Towering Inferno (Unknown) (PAL)"
 "Display.Phosphor" "YES"
 ""
 
@@ -2033,6 +2053,14 @@
 
 "Cart.MD5" "169d4c7bd3a4d09e184a3b993823d048"
 "Cart.Name" "Superman (Unknown) (PAL) [a]"
+""
+
+"Cart.MD5" "16baafb06c06aa475aa671f234399e05"
+"Cart.Manufacturer" "Parker Brothers - Roklan, Joe Gaucher"
+"Cart.ModelNo" "PB5080"
+"Cart.Name" "Gyruss (1983) (Parker Bros) (Prototype) [a1]"
+"Cart.Rarity" "Prototype"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "16cb43492987d2f32b423817cdaaf7c4"
@@ -2082,9 +2110,9 @@
 "Cart.Rarity" "Uncommon"
 "Controller.Left" "PADDLES"
 "Controller.SwapPaddles" "YES"
-"Controller.MouseAxis" "AUTO 55"
 "Controller.PaddlesXCenter" "16"
 "Controller.PaddlesYCenter" "16"
+"Controller.MouseAxis" "AUTO 55"
 ""
 
 "Cart.MD5" "171cd6b55267573e6a9c2921fb720794"
@@ -2170,9 +2198,9 @@
 "Cart.ModelNo" "VC2004"
 "Cart.Name" "Picnic (1983) (U.S. Games)"
 "Cart.Note" "Uses the Paddle Controllers"
-"Controller.MouseAxis" "AUTO 45"
 "Controller.PaddlesXCenter" "22"
 "Controller.PaddlesYCenter" "22"
+"Controller.MouseAxis" "AUTO 45"
 ""
 
 "Cart.MD5" "17d000a2882f9fdaa8b4a391ad367f00"
@@ -2211,9 +2239,9 @@
 "Cart.Name" "Missile Command (Amiga Mouse) (2002) (Thomas Jentzsch) (PAL)"
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Rarity" "Homebrew"
+"Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1183"
 "Display.Phosphor" "YES"
-"Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
 ""
 
 "Cart.MD5" "1862fca4f98e66f363308b859b5863af"
@@ -2224,7 +2252,7 @@
 ""
 
 "Cart.MD5" "18a970bea7ac4d29707c8d5cd559d03a"
-"Cart.Name" "Bridge (208 in 1) (Unknown) (PAL)"
+"Cart.Name" "Bridge (Unknown) (PAL)"
 ""
 
 "Cart.MD5" "18b28b386abdadb3a700ac8fb68e639a"
@@ -2239,6 +2267,10 @@
 "Cart.ModelNo" "R320"
 "Cart.Name" "Atlantis (32 in 1) (BitCorp) (Hack)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa2\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x8d\",\"variations_count\":4,\"variations_zero_based\":true}"
+""
+
+"Cart.MD5" "18b6a3e2b53596c15f64d1834ba1ed34"
+"Cart.Name" "Championship Soccer (Unknown) (PAL)"
 ""
 
 "Cart.MD5" "18be8981b8201638f3ed8ae92bb4c215"
@@ -2294,7 +2326,7 @@
 ""
 
 "Cart.MD5" "191ac4eec767358ee3ec3756c120423a"
-"Cart.Name" "Checkers (208 in 1) (Unknown) (PAL)"
+"Cart.Name" "Checkers (Unknown) (PAL)"
 ""
 
 "Cart.MD5" "192aa2e8c795c9e10a7913e5d41feb81"
@@ -2316,10 +2348,10 @@
 "Cart.Manufacturer" "Atari, Omegamatrix"
 "Cart.Name" "Super Breakout Menu (2020) (PAL) (Hack)"
 "Cart.Note" "Hack of Super Breakout"
-"Controller.MouseAxis" "AUTO 55"
+"Cart.Highscore" "{\"score_addresses\":[\"0xdc\",\"0xdd\"],\"variations_address\":\"0xc0\",\"variations_count\":9}"
 "Controller.PaddlesXCenter" "17"
 "Controller.PaddlesYCenter" "17"
-"Cart.Highscore" "{\"score_addresses\":[\"0xdc\",\"0xdd\"],\"variations_address\":\"0xc0\",\"variations_count\":9}"
+"Controller.MouseAxis" "AUTO 55"
 ""
 
 "Cart.MD5" "1986f864e32e3e8d198b5becf3022257"
@@ -2349,8 +2381,8 @@
 "Cart.Manufacturer" "Atari, Brad Stewart"
 "Cart.ModelNo" "CX2649, CX2649P"
 "Cart.Name" "Asteroids (1981) (Atari) (PAL) [a2]"
-"Display.Phosphor" "YES"
 "Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "19b3b807507653516985ba95da92499d"
@@ -2359,7 +2391,7 @@
 ""
 
 "Cart.MD5" "19d6956ff17a959c48fcd8f4706a848d"
-"Cart.Manufacturer" "PlayAround - J.H.M."
+"Cart.Manufacturer" "PlayAround - JHM"
 "Cart.ModelNo" "202"
 "Cart.Name" "Burning Desire (1982) (PlayAround)"
 "Display.Phosphor" "YES"
@@ -2394,9 +2426,7 @@
 ""
 
 "Cart.MD5" "1a624e236526c4c8f31175e9c89b2a22"
-"Cart.Manufacturer" "Rainbow Vision - Suntek"
-"Cart.ModelNo" "SS-007"
-"Cart.Name" "Space Raid (1983) (Rainbow Vision) (PAL) [a]"
+"Cart.Name" "Space Raid (Unknown) (PAL)"
 "Cart.Note" "AKA MegaMania"
 "Cart.Highscore" "{\"score_addresses\":[\"0xdb\",\"0xdc\",\"0xdd\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
@@ -2406,8 +2436,8 @@
 "Cart.ModelNo" "CX2638 - 49-75166"
 "Cart.Name" "Missile Command (1981) (Atari) [no initials]"
 "Cart.Rarity" "Prototype"
-"Display.Phosphor" "YES"
 "Cart.Url" "http://www.atariprotos.com/2600/software/missilecommand/missilecommand.htm"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "1aa7344b563c597eecfbfcf8e7093c27"
@@ -2525,7 +2555,7 @@
 ""
 
 "Cart.MD5" "1c8c42d1aee5010b30e7f1992d69216e"
-"Cart.Manufacturer" "PlayAround - J.H.M."
+"Cart.Manufacturer" "PlayAround - JHM"
 "Cart.ModelNo" "205"
 "Cart.Name" "Gigolo (1982) (PlayAround)"
 "Display.Phosphor" "YES"
@@ -2616,7 +2646,7 @@
 ""
 
 "Cart.MD5" "1e060a8025512ad2127e3da11e212ccc"
-"Cart.Manufacturer" "Arcadia Corporation, Scott Nelson"
+"Cart.Manufacturer" "Starpath Corporation, Stephen H. Landrum, Scott Nelson"
 "Cart.ModelNo" "13"
 "Cart.Name" "Sweat! - The Decathlon Game (3 of 3) (1983) (Arcadia) (Prototype)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
@@ -2767,8 +2797,7 @@
 ""
 
 "Cart.MD5" "1f5a2927a0b2faf87540b01d9d7d7fd1"
-"Cart.Manufacturer" "Pet Boat"
-"Cart.Name" "Tennis (Pet Boat) (PAL)"
+"Cart.Name" "Tennis (Unknown) (PAL)"
 ""
 
 "Cart.MD5" "1f60e48ad98b659a05ce0c1a8e999ad9"
@@ -3096,11 +3125,11 @@
 "Cart.Name" "Missile Command (Atari Mouse) (2002) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari ST Mouse Controller"
 "Cart.Rarity" "Homebrew"
+"Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1183"
 "Controller.Left" "ATARIMOUSE"
 "Controller.Right" "ATARIMOUSE"
 "Display.Phosphor" "YES"
-"Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
 ""
 
 "Cart.MD5" "23d445ea19a18fb78d5035878d9fb649"
@@ -3152,8 +3181,8 @@
 "Cart.Name" "Arkyology (1983) (Sparrow) (Prototype)"
 "Cart.Note" "ROM must be started in bank 0"
 "Cart.Rarity" "Prototype"
-"Cart.Url" "http://www.atariprotos.com/2600/software/arkyology/arkyology.htm"
 "Cart.StartBank" "0"
+"Cart.Url" "http://www.atariprotos.com/2600/software/arkyology/arkyology.htm"
 ""
 
 "Cart.MD5" "24385ba7f5109fbe76aadc0a375de573"
@@ -3184,9 +3213,9 @@
 "Cart.ModelNo" "USC2004"
 "Cart.Name" "Picnic (1983) (Carrere Video) (PAL)"
 "Cart.Note" "Uses the Paddle Controllers"
-"Controller.MouseAxis" "AUTO 45"
 "Controller.PaddlesXCenter" "22"
 "Controller.PaddlesYCenter" "22"
+"Controller.MouseAxis" "AUTO 45"
 ""
 
 "Cart.MD5" "245f07c8603077a0caf5f83ee6cf8b43"
@@ -3217,9 +3246,7 @@
 ""
 
 "Cart.MD5" "2496d404bfc561a40a80bea6a69695c3"
-"Cart.Manufacturer" "CCE"
-"Cart.ModelNo" "C-1007"
-"Cart.Name" "Jungle Hunt (1983) (CCE) [a]"
+"Cart.Name" "Jungle Hunt (Unknown)"
 "Cart.Highscore" "{\"score_addresses\":[\"0x85\",\"0x84\",\"0x83\"],\"score_digits\":6,\"variations_address\":\"0x8b\",\"variations_count\":2,\"variations_zero_based\":true}"
 ""
 
@@ -3342,7 +3369,7 @@
 ""
 
 "Cart.MD5" "25e73efb9a6edf119114718bd2f646ba"
-"Cart.Manufacturer" "Atari, Suki Lee"
+"Cart.Manufacturer" "Atari, Dave Joly, Gary Shannon"
 "Cart.ModelNo" "CX26113"
 "Cart.Name" "Miss Piggy's Wedding (1983) (Atari) (Prototype) (4K) [a]"
 "Cart.Rarity" "Prototype"
@@ -3494,10 +3521,10 @@
 "Cart.Name" "SWOOPS! (v0.96) (Thomas Jentzsch)"
 "Cart.Note" "Uses the Joystick (L) and Paddle (R) Controllers"
 "Cart.Rarity" "Homebrew"
-"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=329"
-"Controller.MouseAxis" "28"
-"Controller.PaddlesXCenter" "7"
 "Cart.Highscore" "{\"score_addresses\":[\"0xfd\",\"0xfe\",\"0xff\"],\"score_digits\":6,\"variations_address\":\"0xfc\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=329"
+"Controller.PaddlesXCenter" "7"
+"Controller.MouseAxis" "28"
 ""
 
 "Cart.MD5" "27a5d2d0c74c8e4b2c05b94c9f098eea"
@@ -3505,9 +3532,9 @@
 "Cart.Name" "Video Olympics Menu (2020) (PAL60) (Hack)"
 "Cart.Note" "Hack of Video Olympics"
 "Controller.SwapPaddles" "YES"
-"Controller.MouseAxis" "AUTO 60"
 "Controller.PaddlesXCenter" "13"
 "Controller.PaddlesYCenter" "13"
+"Controller.MouseAxis" "AUTO 60"
 ""
 
 "Cart.MD5" "27baecd618e7e53dc11f2a9c559f529d"
@@ -3518,7 +3545,7 @@
 ""
 
 "Cart.MD5" "27c4c2af4b46394bb98638af8e0f6e9d"
-"Cart.Manufacturer" "Atari, Jerome Domurat, Peter C. Niday, Robert Vieira"
+"Cart.Manufacturer" "Atari, Dave Joly, Peter C. Niday, Robert Vieira"
 "Cart.ModelNo" "CX26109"
 "Cart.Name" "Sorcerer's Apprentice (1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
@@ -3643,8 +3670,8 @@
 "Cart.ModelNo" "CX26163P"
 "Cart.Name" "32 in 1 Game Cartridge (1988) (Atari) (Prototype) (PAL)"
 "Cart.Rarity" "Prototype"
-"Cart.Url" "http://www.atariprotos.com/2600/software/32in1/32in1.htm"
 "Cart.Type" "32IN1"
+"Cart.Url" "http://www.atariprotos.com/2600/software/32in1/32in1.htm"
 ""
 
 "Cart.MD5" "291cc37604bc899e8e065c30153fc4b9"
@@ -3657,8 +3684,8 @@
 "Cart.Manufacturer" "Atari"
 "Cart.Name" "32 in 1 Console ROM (02-10-1989) (Atari) (Prototype) (PAL)"
 "Cart.Rarity" "Prototype"
-"Cart.Url" "http://www.atariprotos.com/2600/software/32in1/32in1.htm"
 "Cart.Type" "32IN1"
+"Cart.Url" "http://www.atariprotos.com/2600/software/32in1/32in1.htm"
 ""
 
 "Cart.MD5" "292a0bb975b2587f9ac784c960e1b453"
@@ -3721,10 +3748,10 @@
 "Cart.Name" "S.I.PLIX 2 (Hack) [a]"
 "Cart.Note" "Hack of Kaboom!"
 "Cart.Rarity" "Hack"
-"Controller.MouseAxis" "01 50"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 "Controller.PaddlesXCenter" "17"
 "Controller.PaddlesYCenter" "17"
-"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
+"Controller.MouseAxis" "01 50"
 ""
 
 "Cart.MD5" "29843f43b81f3736bf35c00b1bb88fb2"
@@ -3837,9 +3864,9 @@
 "Cart.ModelNo" "USC2003"
 "Cart.Name" "Eggomania (1983) (Carrere Video) (PAL)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
-"Controller.MouseAxis" "AUTO 60"
 "Controller.PaddlesXCenter" "10"
 "Controller.PaddlesYCenter" "10"
+"Controller.MouseAxis" "AUTO 60"
 ""
 
 "Cart.MD5" "2b27eb194e13f3b38d23c879cc1e3abf"
@@ -3928,8 +3955,8 @@
 "Cart.Manufacturer" "Paul Slocum"
 "Cart.Name" "Synthcart (2002) (Paul Slocum)"
 "Cart.Note" "Uses Keyboard Controllers"
-"Display.Phosphor" "YES"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=101"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "2c3b2843295c9d6b16996971180a3fe9"
@@ -3992,7 +4019,7 @@
 ""
 
 "Cart.MD5" "2cccc079c15e9af94246f867ffc7e9bf"
-"Cart.Manufacturer" "PlayAround - J.H.M."
+"Cart.Manufacturer" "PlayAround - JHM"
 "Cart.ModelNo" "203"
 "Cart.Name" "Jungle Fever (1982) (PlayAround)"
 "Display.Phosphor" "YES"
@@ -4027,6 +4054,13 @@
 "Cart.ModelNo" "802.744 3"
 "Cart.Name" "Der Geheimkurier (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Mr. Postman"
+""
+
+"Cart.MD5" "2d1af6442d6d5f15de37e47dd5a78411"
+"Cart.Manufacturer" "Parker Brothers - Roklan, Joe Gaucher"
+"Cart.ModelNo" "PB5080"
+"Cart.Name" "Gyruss (1983) (Parker Bros) (Prototype) (PAL) [a]"
+"Cart.Rarity" "Prototype"
 ""
 
 "Cart.MD5" "2d1cf85fbc732856bf76470cd4060f4a"
@@ -4119,10 +4153,10 @@
 "Cart.Name" "Asteroids DC+ (Thomas Jentzsch) (Hack)"
 "Cart.Note" "Uses the Joystick (left) or Driving (right) Controller"
 "Cart.Rarity" "Hack"
+"Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
 "Controller.Right" "DRIVING"
 "Controller.MouseAxis" "58"
 "Display.Phosphor" "YES"
-"Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
 ""
 
 "Cart.MD5" "2dcf9ce486393cd36ca0928cd53b96cb"
@@ -4172,7 +4206,7 @@
 ""
 
 "Cart.MD5" "2e663eaa0d6b723b645e643750b942fd"
-"Cart.Manufacturer" "Atari, Tom Rudadahl - Sears"
+"Cart.Manufacturer" "Atari, Tom Reuterdahl - Sears"
 "Cart.ModelNo" "CX2634 - 49-75121"
 "Cart.Name" "Golf (1980) (Atari)"
 ""
@@ -4184,7 +4218,7 @@
 ""
 
 "Cart.MD5" "2e82a1628ef6c735c0ab8fa92927e9b0"
-"Cart.Manufacturer" "Atari, Jerome Domurat, Peter C. Niday, Robert Vieira"
+"Cart.Manufacturer" "Atari, Dave Joly, Peter C. Niday, Robert Vieira"
 "Cart.ModelNo" "CX26109"
 "Cart.Name" "Sorcerer's Apprentice (1983) (Atari) (PAL)"
 ""
@@ -4251,7 +4285,7 @@
 ""
 
 "Cart.MD5" "2f2f9061398a74c80420b99ddecf6448"
-"Cart.Manufacturer" "Rentacom - Brazil"
+"Cart.Manufacturer" "Rentacom"
 "Cart.Name" "Bobby Is Going Home (Rentacom)"
 ""
 
@@ -4265,8 +4299,8 @@
 "Cart.Name" "Yars' Revenge (Genesis)"
 "Cart.Note" "Genesis controller (C is zorlon cannon)"
 "Cart.Rarity" "Hack of Yars' Revenge"
-"Display.Phosphor" "YES"
 "Cart.Highscore" "{\"notes\":\"Variations are larger by 1\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":8,\"variations_zero_based\":true}"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "2f77f015fc880b05f28e84156f989a0c"
@@ -4274,7 +4308,7 @@
 ""
 
 "Cart.MD5" "2f7949f71076db42480d3f5036b4a332"
-"Cart.Name" "Name This Game (208 in 1) (Unknown) (PAL) (Hack)"
+"Cart.Name" "Name This Game (Unknown) (PAL) (Hack)"
 "Cart.Rarity" "Hack"
 ""
 
@@ -4308,7 +4342,7 @@
 ""
 
 "Cart.MD5" "30516cfbaa1bc3b5335ee53ad811f17a"
-"Cart.Manufacturer" "Wizard Video Games - MicroGraphic Image, Robert Barber, Tim Martin"
+"Cart.Manufacturer" "Wizard Video Games - VSS - MicroGraphic Image, Robert Barber, Tim Martin"
 "Cart.ModelNo" "007"
 "Cart.Name" "Halloween (1983) (Wizard Video Games)"
 ""
@@ -4359,15 +4393,15 @@
 "Cart.ModelNo" "CX2630, CX2630P"
 "Cart.Name" "Circus Atari (1980) (Atari) (PAL)"
 "Cart.Note" "Uses the Paddle Controllers"
-"Controller.MouseAxis" "01 55"
+"Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xab\"],\"variations_address\":\"0xa8\",\"variations_count\":8}"
 "Controller.PaddlesXCenter" "14"
 "Controller.PaddlesYCenter" "14"
-"Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xab\"],\"variations_address\":\"0xa8\",\"variations_count\":8}"
+"Controller.MouseAxis" "01 55"
 ""
 
 "Cart.MD5" "30f0b49661cfcfd4ec63395fab837dc3"
 "Cart.Manufacturer" "SEGA, Jeff Lorenz - Teldec"
-"Cart.ModelNo" "004-01"
+"Cart.ModelNo" "004-01 - 3.60103 VG"
 "Cart.Name" "Star Trek - Strategic Operations Simulator (1983) (SEGA) (PAL)"
 "Display.Phosphor" "YES"
 ""
@@ -4409,9 +4443,9 @@
 ""
 
 "Cart.MD5" "317a4cdbab090dcc996833d07cb40165"
-"Cart.Manufacturer" "Goliath - Hot Shot"
-"Cart.ModelNo" "83-312"
-"Cart.Name" "Missile War (1983) (Goliath) (PAL)"
+"Cart.Manufacturer" "Video Game - Ariola"
+"Cart.ModelNo" "SP-204"
+"Cart.Name" "Sternkrieg (1983) (Ariola) (PAL)"
 "Cart.Note" "AKA Astrowar"
 ""
 
@@ -4441,7 +4475,7 @@
 
 "Cart.MD5" "31c5fd55a39db5ff30a0da065f86c140"
 "Cart.Manufacturer" "Dactari - Milmar"
-"Cart.Name" "Enduro (Dactari)"
+"Cart.Name" "Enduro (1983) (Dactari)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xa9\",\"0xa8\"],\"score_digits\":6,\"special_address\":\"0xad\",\"special_label\":\"Day\",\"variations_count\":1}"
 ""
 
@@ -4525,8 +4559,8 @@
 "Cart.Name" "Aster-Hawk (2002) (Charles Morgan) (Hack)"
 "Cart.Note" "Hack of Asteroids"
 "Cart.Rarity" "Hack"
-"Display.Phosphor" "YES"
 "Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "3276c777cbe97cdd2b4a63ffc16b7151"
@@ -4730,8 +4764,8 @@
 "Cart.Manufacturer" "Retroactive"
 "Cart.Name" "Qb (2.15) (Retroactive) (Stella)"
 "Cart.Rarity" "New Release"
-"Display.Phosphor" "YES"
 "Cart.Highscore" "{\"score_addresses\":[\"0xe6\",\"0xe5\",\"0xe4\"],\"score_digits\":6,\"variations_count\":1}"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "34f4b1d809aa705ace6e46b13253fd3b"
@@ -4852,7 +4886,7 @@
 "Cart.Manufacturer" "U.S. Games Corporation - JWDA, Roger Booth, Sylvia Day, Ron Dubren, Todd Marshall, Robin McDaniel, Wes Trager, Henry Will IV"
 "Cart.ModelNo" "VC1007"
 "Cart.Name" "Name This Game (1983) (U.S. Games)"
-"Cart.Note" "AKA Octopussy"
+"Cart.Note" "AKA Guardians of Treasure, Octopussy"
 ""
 
 "Cart.MD5" "36547bc6faa5132b87504e18d088e1d7"
@@ -5007,9 +5041,7 @@
 ""
 
 "Cart.MD5" "37fd7fa52d358f66984948999f1213c5"
-"Cart.Manufacturer" "Rainbow Vision - Suntek"
-"Cart.ModelNo" "SS-004"
-"Cart.Name" "Pyramid War (1983) (Rainbow Vision) (PAL) [a2]"
+"Cart.Name" "Pyramid War (Unknown) (PAL) [a]"
 "Cart.Note" "AKA Chopper Command"
 "Cart.Highscore" "{\"score_addresses\":[\"0xec\",\"0xee\",\"0xf0\"],\"score_digits\":6,\"variations_address\":\"0xe0\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
@@ -5038,9 +5070,9 @@
 "Cart.ModelNo" "AR-4300"
 "Cart.Name" "Fireball (1982) (Arcadia)"
 "Cart.Note" "Uses the Paddle Controllers"
-"Controller.MouseAxis" "01"
 "Controller.PaddlesXCenter" "15"
 "Controller.PaddlesYCenter" "15"
+"Controller.MouseAxis" "01"
 ""
 
 "Cart.MD5" "3882224adbd0ca7c748b2a1c9b87263e"
@@ -5109,8 +5141,8 @@
 "Cart.ModelNo" "CX2633 - 49-75119"
 "Cart.Name" "Night Driver (1980) (Atari)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
-"Controller.MouseAxis" "AUTO 65"
 "Controller.PaddlesXCenter" "12"
+"Controller.MouseAxis" "AUTO 65"
 "Display.Phosphor" "YES"
 ""
 
@@ -5205,8 +5237,8 @@
 "Cart.Manufacturer" "Atari, Rob Fulop - Sears"
 "Cart.ModelNo" "CX2638 - 49-75166"
 "Cart.Name" "Missile Command (1981) (Atari)"
-"Display.Phosphor" "YES"
 "Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "3a35d7f1dc2a33565c8dca52baa86bc4"
@@ -5235,7 +5267,7 @@
 ""
 
 "Cart.MD5" "3a53963f053b22599db6ac9686f7722f"
-"Cart.Name" "Word Zapper (208 in 1) (Unknown) (PAL)"
+"Cart.Name" "Word Zapper (Unknown) (PAL) [a]"
 ""
 
 "Cart.MD5" "3a771876e4b61d42e3a3892ad885d889"
@@ -5244,6 +5276,11 @@
 "Cart.Name" "Defender II (1987) (Atari)"
 "Cart.Note" "AKA Stargate"
 "Cart.Highscore" "{\"score_addresses\":[\"0x8b\",\"0x8c\",\"0x8d\"],\"score_digits\":6,\"special_address\":\"0x89\",\"special_label\":\"Wave\",\"variations_count\":1}"
+""
+
+"Cart.MD5" "3a98b97b3df21715816b6ad62e843dad"
+"Cart.Manufacturer" "Digivision"
+"Cart.Name" "Planet Patrol (Digivision) (PAL)"
 ""
 
 "Cart.MD5" "3aad0ef62885736a5b8c6ccac0dbe00c"
@@ -5410,8 +5447,8 @@
 "Cart.Name" "Racer (1982) (Atari) (Prototype)"
 "Cart.Note" "ROM must be started in bank 0"
 "Cart.Rarity" "Prototype"
-"Cart.Url" "http://www.atariprotos.com/2600/software/racer/racer.htm"
 "Cart.StartBank" "0"
+"Cart.Url" "http://www.atariprotos.com/2600/software/racer/racer.htm"
 ""
 
 "Cart.MD5" "3c7a96978f52b2b15426cdd50f2c4048"
@@ -5550,7 +5587,7 @@
 ""
 
 "Cart.MD5" "3e03086da53ecc29d855d8edf10962cb"
-"Cart.Manufacturer" "CBS Electronics - Roklan, Joe Gaucher, Alex Leavens"
+"Cart.Manufacturer" "CBS Electronics - Roklan, Joe Gaucher, Dan Kurczewski, Alex Leavens, Kathy Von"
 "Cart.ModelNo" "4L1751, 4L1752, 4L1753, 4L2275"
 "Cart.Name" "Gorf (1982) (CBS Electronics) (PAL)"
 "Display.Phosphor" "YES"
@@ -5583,8 +5620,8 @@
 "Cart.Name" "Asteroids (Genesis)"
 "Cart.Note" "Genesis controller (C is hyperspace)"
 "Cart.Rarity" "Hack of Asteroids"
-"Display.Phosphor" "YES"
 "Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "3e5ca1afaa27c5da3c54c9942fec528b"
@@ -5665,8 +5702,8 @@
 
 "Cart.MD5" "3f01bd6d059396f495a4cde7de0ab180"
 "Cart.Name" "Qb (Special Edition) (NTSC) (Retroactive)"
-"Display.Phosphor" "YES"
 "Cart.Highscore" "{\"score_addresses\":[\"0xe6\",\"0xe5\",\"0xe4\"],\"score_digits\":6,\"variations_count\":1}"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "3f039981255691d3859d04ef813a1264"
@@ -5837,7 +5874,7 @@
 
 "Cart.MD5" "40d9f5709877ecf3dd1184f9791dd35e"
 "Cart.Manufacturer" "Dactari - Milmar"
-"Cart.Name" "Skiing (Dactari - Milmar)"
+"Cart.Name" "Skiing (Dactari)"
 ""
 
 "Cart.MD5" "40e12c008037a323a1290c8fa4d2fe7f"
@@ -5870,7 +5907,7 @@
 ""
 
 "Cart.MD5" "4181087389a79c7f59611fb51c263137"
-"Cart.Manufacturer" "Atari, Suki Lee"
+"Cart.Manufacturer" "Atari, Dave Joly, Gary Shannon"
 "Cart.ModelNo" "CX26113"
 "Cart.Name" "Miss Piggy's Wedding (06-24-1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
@@ -5896,6 +5933,14 @@
 "Cart.Name" "Skeleton (Complete) (06-09-2002) (Eric Ball)"
 "Cart.Rarity" "New Release"
 "Cart.Sound" "STEREO"
+""
+
+"Cart.MD5" "418a849f977db94062c459b7f636c8d1"
+"Cart.Manufacturer" "Activision, Steve Cartwright"
+"Cart.ModelNo" "AX-031"
+"Cart.Name" "Iceman (07-27-1983) (Activision) (Prototype)"
+"Cart.Note" "Frostbite Beta"
+"Cart.Rarity" "Prototype"
 ""
 
 "Cart.MD5" "4191b671bcd8237fc8e297b4947f2990"
@@ -5956,7 +6001,7 @@
 ""
 
 "Cart.MD5" "4279485e922b34f127a88904b31ce9fa"
-"Cart.Name" "Enduro (Unknown)"
+"Cart.Name" "Enduro (Unknown) [a]"
 "Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xa9\",\"0xa8\"],\"score_digits\":6,\"special_address\":\"0xad\",\"special_label\":\"Day\",\"variations_count\":1}"
 ""
 
@@ -5976,9 +6021,9 @@
 "Cart.ModelNo" "VC2003"
 "Cart.Name" "Eggomania (1982) (U.S. Games)"
 "Cart.Note" "Uses the Paddle Controllers"
-"Controller.MouseAxis" "AUTO 60"
 "Controller.PaddlesXCenter" "10"
 "Controller.PaddlesYCenter" "10"
+"Controller.MouseAxis" "AUTO 60"
 ""
 
 "Cart.MD5" "42b3ab3cf661929bdc77b621a8c37574"
@@ -6026,7 +6071,7 @@
 ""
 
 "Cart.MD5" "438968a26b7cfe14a499f5bbbbf844db"
-"Cart.Name" "Raft Rider (208 in 1) (Unknown) (PAL)"
+"Cart.Name" "Raft Rider (Unknown) (PAL)"
 ""
 
 "Cart.MD5" "43adf60ebdd6b5a0fae21594ecf17154"
@@ -6049,8 +6094,8 @@
 
 "Cart.MD5" "43f8459d39fb4eddf9186d62722ff795"
 "Cart.Name" "Skeleton+ (17-04-2003) (Eric Ball) (PAL)"
-"Cart.Sound" "STEREO"
 "Cart.Rarity" "Homebrew"
+"Cart.Sound" "STEREO"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=226"
 ""
 
@@ -6067,9 +6112,9 @@
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/jediarena/jediarena.htm"
 "Controller.SwapPaddles" "YES"
-"Controller.MouseAxis" "10 50"
 "Controller.PaddlesXCenter" "16"
 "Controller.PaddlesYCenter" "16"
+"Controller.MouseAxis" "10 50"
 ""
 
 "Cart.MD5" "442b7863683e5f084716fda050474feb"
@@ -6158,7 +6203,7 @@
 ""
 
 "Cart.MD5" "457f4ad2cda5f4803f122508bfbde3f5"
-"Cart.Name" "Canyon Bomber (208 in 1) (Unknown) (PAL)"
+"Cart.Name" "Canyon Bomber (Unknown) (PAL)"
 ""
 
 "Cart.MD5" "458883f1d952cd772cf0057abca57497"
@@ -6281,9 +6326,9 @@
 "Cart.Note" "Can also use left joystick"
 "Controller.Left" "PADDLES"
 "Controller.SwapPaddles" "YES"
-"Controller.MouseAxis" "AUTO 55"
 "Controller.PaddlesXCenter" "16"
 "Controller.PaddlesYCenter" "16"
+"Controller.MouseAxis" "AUTO 55"
 ""
 
 "Cart.MD5" "4702d8d9b48a332724af198aeac9e469"
@@ -6371,8 +6416,8 @@
 "Cart.Name" "Asteroid 2 (Atari Freak 1) (Hack)"
 "Cart.Note" "Hack of Asteroids"
 "Cart.Rarity" "Hack"
-"Display.Phosphor" "YES"
 "Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "47cd61f83457a0890de381e478f5cf5f"
@@ -6444,7 +6489,7 @@
 ""
 
 "Cart.MD5" "4884b1297500bd1243659e43c7e7579e"
-"Cart.Manufacturer" "Atari - Axlon, Tod Frye"
+"Cart.Manufacturer" "Atari - Axlon, Tod Frye - Heuristica, Agustin Ortiz Valdiviezo"
 "Cart.ModelNo" "CX26178"
 "Cart.Name" "Save Mary! (10-24-1991) (Atari) (Prototype) (PAL)"
 "Cart.Rarity" "Prototype"
@@ -6457,9 +6502,9 @@
 "Cart.Note" "Uses the Paddle Controllers"
 "Console.SwapPorts" "YES"
 "Controller.SwapPaddles" "YES"
-"Controller.MouseAxis" "AUTO 60"
 "Controller.PaddlesXCenter" "18"
 "Controller.PaddlesYCenter" "18"
+"Controller.MouseAxis" "AUTO 60"
 "Display.Phosphor" "YES"
 ""
 
@@ -6478,10 +6523,7 @@
 ""
 
 "Cart.MD5" "48f18d69799a5f5451a5f0d17876acef"
-"Cart.Manufacturer" "ZiMAG - Emag - Vidco"
-"Cart.ModelNo" "GN-070"
-"Cart.Name" "Mysterious Thief, A (1983) (ZiMAG) (Prototype) [a]"
-"Cart.Rarity" "Prototype"
+"Cart.Name" "Mysterious Thief, A (Unknown)"
 "Cart.Url" "http://www.atariprotos.com/2600/software/mysteriousthief/mysteriousthief.htm"
 "Display.Phosphor" "YES"
 ""
@@ -6585,7 +6627,7 @@
 
 "Cart.MD5" "49f2cef5269fd06218be9f9474c74f8d"
 "Cart.Manufacturer" "Rentacom"
-"Cart.Name" "Time Pilot (Rentacom)"
+"Cart.Name" "Time Pilot (1983) (Rentacom)"
 ""
 
 "Cart.MD5" "4a196713a21ef07a3f74cf51784c6b12"
@@ -6687,6 +6729,14 @@
 "Display.Phosphor" "YES"
 ""
 
+"Cart.MD5" "4b09877f0700425ee964a166d5c192cb"
+"Cart.Manufacturer" "Parker Brothers - On-Time Software, Joe Gaucher, Dan Kurczewski, Louis Marbel, Kathy Von"
+"Cart.ModelNo" "PB5110"
+"Cart.Name" "James Bond 007 (1983) (Parker Bros) (Prototype)"
+"Cart.Note" "James Bond Agent 007"
+"Cart.Rarity" "Prototype"
+""
+
 "Cart.MD5" "4b143d7dcf6c96796c37090cba045f4f"
 "Cart.Manufacturer" "Atari, Jim Huether - Sears"
 "Cart.ModelNo" "CX2644 - 6-99824"
@@ -6722,6 +6772,12 @@
 "Cart.Manufacturer" "Glenn Saunders, Roger Williams"
 "Cart.Name" "Asymmetric Reflected Playfield (Glenn Saunders)"
 "Cart.Rarity" "Homebrew"
+""
+
+"Cart.MD5" "4b854623357e511c2fac852529f0ae2c"
+"Cart.Manufacturer" "Edu Games - Edu Juegos"
+"Cart.Name" "Commando (1984) (Edu Games) (PAL)"
+"Cart.Note" "AKA Front Line"
 ""
 
 "Cart.MD5" "4b94fd272785d7ec6c95fb7279d0f522"
@@ -6763,9 +6819,9 @@
 "Cart.Manufacturer" "Omegamatrix"
 "Cart.Name" "Millipede (Amiga Mouse) v6.5 (Omegamatrix)"
 "Cart.Note" "Uses Amiga Mouse Controller"
-"Display.Format" "PAL60"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1188"
+"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "4c030667d07d1438f0e5c458a90978d8"
@@ -6793,6 +6849,10 @@
 "Cart.Manufacturer" "Arcadia Corporation, Steve Mundry, Scott Nelson"
 "Cart.ModelNo" "AR-4401"
 "Cart.Name" "Survival Island (1 of 3) (1983) (Arcadia)"
+""
+
+"Cart.MD5" "4c4ba1549830e9fca5e2c110f4ebe47f"
+"Cart.Name" "Planet Patrol (Unknown) (PAL) [a]"
 ""
 
 "Cart.MD5" "4c4ce802cbfd160f7b3ec0f13f2a29df"
@@ -6841,6 +6901,7 @@
 "Cart.Manufacturer" "Activision, Steve Cartwright"
 "Cart.ModelNo" "AX-031"
 "Cart.Name" "Frostbite (1983) (Activision)"
+"Cart.Note" "Iceman"
 "Cart.Highscore" "{\"score_addresses\":[\"0xc8\",\"0xc9\",\"0xca\"],\"score_digits\":6,\"special_address\":\"0xcb\",\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
@@ -6890,7 +6951,7 @@
 ""
 
 "Cart.MD5" "4d502d6fb5b992ee0591569144128f99"
-"Cart.Manufacturer" "Atari - Axlon, Tod Frye"
+"Cart.Manufacturer" "Atari - Axlon, Tod Frye - Heuristica, Agustin Ortiz Valdiviezo"
 "Cart.ModelNo" "CX26178"
 "Cart.Name" "Save Mary! (11-21-1989) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
@@ -6904,9 +6965,9 @@
 "Cart.Rarity" "Hack"
 "Controller.Left" "PADDLES"
 "Controller.SwapPaddles" "YES"
-"Controller.MouseAxis" "AUTO 55"
 "Controller.PaddlesXCenter" "16"
 "Controller.PaddlesYCenter" "16"
+"Controller.MouseAxis" "AUTO 55"
 ""
 
 "Cart.MD5" "4d7517ae69f95cfbc053be01312b7dba"
@@ -6957,10 +7018,10 @@
 "Cart.ModelNo" "CX2622 - 6-99813, 49-75107"
 "Cart.Name" "Breakout (1978) (Atari) [a]"
 "Cart.Note" "Uses the Paddle Controllers"
-"Controller.MouseAxis" "01 60"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xce\",\"0xcd\"],\"score_digits\":3,\"variations_count\":1}"
 "Controller.PaddlesXCenter" "12"
 "Controller.PaddlesYCenter" "12"
-"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xce\",\"0xcd\"],\"score_digits\":3,\"variations_count\":1}"
+"Controller.MouseAxis" "01 60"
 ""
 
 "Cart.MD5" "4df9d7352a56a458abb7961bf10aba4e"
@@ -7016,8 +7077,7 @@
 ""
 
 "Cart.MD5" "4e86866d9cde738d1630e2e35d7288ce"
-"Cart.Manufacturer" "Supergame"
-"Cart.Name" "River Raid III (Supergame)"
+"Cart.Name" "Bermuda (Unknown)"
 "Cart.Note" "AKA River Raid"
 ""
 
@@ -7109,9 +7169,9 @@
 
 "Cart.MD5" "4fae08027365d31c558e400b687adf21"
 "Cart.Name" "Qb (V2.17) (NTSC) (2001) (Retroactive)"
+"Cart.Highscore" "{\"score_addresses\":[\"0xe6\",\"0xe5\",\"0xe4\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=926"
 "Display.Phosphor" "YES"
-"Cart.Highscore" "{\"score_addresses\":[\"0xe6\",\"0xe5\",\"0xe4\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "4faeb04b1b7fb0fa25db05753182a898"
@@ -7156,17 +7216,17 @@
 "Cart.Name" "SWOOPS! (v0.94) (Thomas Jentzsch)"
 "Cart.Note" "Uses the Joystick (L) and Paddle (R) Controllers"
 "Cart.Rarity" "Homebrew"
-"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=329"
-"Controller.MouseAxis" "28"
-"Controller.PaddlesXCenter" "7"
 "Cart.Highscore" "{\"score_addresses\":[\"0xfd\",\"0xfe\",\"0xff\"],\"score_digits\":6,\"variations_address\":\"0xfc\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=329"
+"Controller.PaddlesXCenter" "7"
+"Controller.MouseAxis" "28"
 ""
 
 "Cart.MD5" "50568c80ac61cab789d9923c9b05b68e"
 "Cart.Manufacturer" "Ebivision"
 "Cart.Name" "Merlin's Walls - Standard Edition (1999) (Ebivision)"
-"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=302"
 "Cart.Note" "Image rotated 90 degrees CW"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=302"
 ""
 
 "Cart.MD5" "5069fecbe4706371f17737b0357cfa68"
@@ -7203,7 +7263,7 @@
 
 "Cart.MD5" "512e874a240731d7378586a05f28aec6"
 "Cart.Manufacturer" "Tigervision, Rorke Weigandt - Teldec"
-"Cart.ModelNo" "7-005"
+"Cart.ModelNo" "7-005 - 3.60004 VE"
 "Cart.Name" "Marauder (1982) (Tigervision) (PAL)"
 ""
 
@@ -7220,7 +7280,7 @@
 ""
 
 "Cart.MD5" "515046e3061b7b18aa3a551c3ae12673"
-"Cart.Manufacturer" "Atari - GCC, Mark Ackerman, Noellie Alito"
+"Cart.Manufacturer" "Atari - GCC, Mark Ackerman, Noelie Alito"
 "Cart.ModelNo" "CX2692"
 "Cart.Name" "Moon Patrol (1983) (Atari)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xea\",\"0xeb\",\"0xec\"],\"score_digits\":6,\"variations_address\":\"0xf9\",\"variations_count\":6,\"variations_zero_based\":true}"
@@ -7240,7 +7300,7 @@
 
 "Cart.MD5" "517923e655755086a3b72c0b17b430e6"
 "Cart.Manufacturer" "Tron"
-"Cart.Name" "Super Tennis (Tron)"
+"Cart.Name" "Super Tennis (1983) (Tron)"
 "Cart.Note" "AKA RealSports Tennis"
 ""
 
@@ -7249,9 +7309,9 @@
 "Cart.ModelNo" "133-001"
 "Cart.Name" "Encounter at L-5 (1983) (Gameworld) (PAL)"
 "Cart.Note" "Uses the Paddle Controllers"
-"Controller.MouseAxis" "AUTO 50"
 "Controller.PaddlesXCenter" "15"
 "Controller.PaddlesYCenter" "15"
+"Controller.MouseAxis" "AUTO 50"
 ""
 
 "Cart.MD5" "519f007c0e14fb90208dbb5199dfb604"
@@ -7334,7 +7394,7 @@
 ""
 
 "Cart.MD5" "5256f68d1491986aae5cfdff539bfeb5"
-"Cart.Manufacturer" "Atari - GCC, Mark Ackerman, Noellie Alito"
+"Cart.Manufacturer" "Atari - GCC, Mark Ackerman, Noelie Alito"
 "Cart.ModelNo" "CX2692"
 "Cart.Name" "Moon Patrol (07-26-1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
@@ -7371,6 +7431,10 @@
 "Cart.ModelNo" "CX2641 - 99807, 49-75105"
 "Cart.Name" "Surround (1977) (Atari) (4K) [a]"
 "Cart.Type" "2K"
+""
+
+"Cart.MD5" "52a207c2ac6b4dc87d5650f1d7bf5dfa"
+"Cart.Name" "Donkey Kong (Unknown) (Hack)"
 ""
 
 "Cart.MD5" "52b448757081fd9fabf859f4e2f91f6b"
@@ -7445,9 +7509,9 @@
 "Cart.Name" "Video Olympics Menu (2020) (PAL) (Hack)"
 "Cart.Note" "Hack of Video Olympics"
 "Controller.SwapPaddles" "YES"
-"Controller.MouseAxis" "AUTO 60"
 "Controller.PaddlesXCenter" "13"
 "Controller.PaddlesYCenter" "13"
+"Controller.MouseAxis" "AUTO 60"
 ""
 
 "Cart.MD5" "537ed1e0d80e6c9f752b33ea7acbe079"
@@ -7525,21 +7589,21 @@
 "Cart.Name" "Stay Frosty 2"
 "Cart.Note" "AtariAge Holiday Greetings 2014"
 "Cart.Rarity" "Homebrew"
+"Cart.Highscore" "{\"score_addresses\":[\"0x1cf7\",\"0x1cf6\",\"0x1cf5\",\"0x1cf4\"],\"score_digits\":8,\"special_address\":\"0x18ac\",\"special_bcd\":false,\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1044"
 "Controller.Left" "JOYSTICK"
 "Display.Phosphor" "YES"
-"Cart.Highscore" "{\"score_addresses\":[\"0x1cf7\",\"0x1cf6\",\"0x1cf5\",\"0x1cf4\"],\"score_digits\":8,\"special_address\":\"0x18ac\",\"special_bcd\":false,\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "5428cdfada281c569c74c7308c7f2c26"
 "Cart.Manufacturer" "Activision, Larry Kaplan, David Crane"
-"Cart.ModelNo" "AG-010, AG-010-04"
+"Cart.ModelNo" "AG-010, CAG-010, AG-010-04"
 "Cart.Name" "Kaboom! (1981) (Activision)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
-"Controller.MouseAxis" "01 50"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 "Controller.PaddlesXCenter" "17"
 "Controller.PaddlesYCenter" "17"
-"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
+"Controller.MouseAxis" "01 50"
 ""
 
 "Cart.MD5" "542c6dd5f7280179b51917a4cba4faff"
@@ -7555,9 +7619,9 @@
 "Cart.ModelNo" "3 AR-4300"
 "Cart.Name" "Fireball (1982) (Arcadia) (Prototype)"
 "Cart.Note" "Uses the Paddle Controllers"
-"Controller.MouseAxis" "01"
 "Controller.PaddlesXCenter" "15"
 "Controller.PaddlesYCenter" "15"
+"Controller.MouseAxis" "01"
 ""
 
 "Cart.MD5" "543b4b8ff1d616fa250c648be428a75c"
@@ -7609,10 +7673,10 @@
 "Cart.Name" "Halloween III Revision (Hack)"
 "Cart.Note" "Hack of Kaboom!"
 "Cart.Rarity" "Hack"
-"Controller.MouseAxis" "01 50"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 "Controller.PaddlesXCenter" "17"
 "Controller.PaddlesYCenter" "17"
-"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
+"Controller.MouseAxis" "01 50"
 ""
 
 "Cart.MD5" "54f7efa6428f14b9f610ad0ca757e26c"
@@ -7654,7 +7718,7 @@
 ""
 
 "Cart.MD5" "557e893616648c37a27aab5a47acbf10"
-"Cart.Manufacturer" "Atari - Axlon, Tod Frye - Heuristica, Augustin Ortiz"
+"Cart.Manufacturer" "Atari - Axlon, Tod Frye - Heuristica, Agustin Ortiz Valdiviezo"
 "Cart.ModelNo" "CX26169"
 "Cart.Name" "Shooting Arcade (01-16-1990) (Atari) (Prototype) (PAL)"
 "Cart.Note" "Uses the Light Gun Controller (left only)"
@@ -7681,6 +7745,7 @@
 
 "Cart.MD5" "55ef6ab2321ca0c3d369e63d59c059c8"
 "Cart.Name" "Pitfall! (Unknown) (PAL)"
+"Cart.Note" "Pitfall Harry's Jungle Adventure"
 "Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
@@ -7757,7 +7822,7 @@
 ""
 
 "Cart.MD5" "57939b326df86b74ca6404f64f89fce9"
-"Cart.Manufacturer" "Atari, Sam Comstock, Richard Dobbis, Nick 'Sandy Maiwald' Turner"
+"Cart.Manufacturer" "Atari, Ed Bogas, Sam Comstock, Richard Dobbis, Nick 'Sandy Maiwald' Turner"
 "Cart.ModelNo" "CX26111"
 "Cart.Name" "Snoopy and the Red Baron (1983) (Atari)"
 ""
@@ -7811,7 +7876,7 @@
 ""
 
 "Cart.MD5" "5864cab0bc21a60be3853b6bcd50c59f"
-"Cart.Name" "Commando Raid (208 in 1) (Unknown) (PAL)"
+"Cart.Name" "Commando Raid (Unknown) (PAL)"
 ""
 
 "Cart.MD5" "58746219d8094edff869f0f5c2aeaad5"
@@ -7837,6 +7902,10 @@
 "Cart.Manufacturer" "CCE"
 "Cart.ModelNo" "C-824"
 "Cart.Name" "Jaw Breaker (1983) (CCE)"
+""
+
+"Cart.MD5" "58af1e991b55710486a9868f75b15cf0"
+"Cart.Name" "M.A.S.H (Unknown) (PAL)"
 ""
 
 "Cart.MD5" "58c396323ea3e85671e34c98eb54e2a4"
@@ -7929,8 +7998,8 @@
 "Cart.Name" "Beat 'Em & Eat 'Em (1982) (PlayAround)"
 "Cart.Note" "Uses the Paddle Controllers"
 "Cart.Rarity" "Extremely Rare"
-"Controller.MouseAxis" "AUTO 45"
 "Controller.PaddlesXCenter" "20"
+"Controller.MouseAxis" "AUTO 45"
 ""
 
 "Cart.MD5" "59f596285d174233c84597dee6f34f1f"
@@ -7957,8 +8026,7 @@
 ""
 
 "Cart.MD5" "5a272012a62becabcd52920348c7c60b"
-"Cart.Manufacturer" "Star Game"
-"Cart.Name" "Pitfall (Star Game)"
+"Cart.Name" "Tom Boy (Unknown)"
 "Cart.Note" "AKA Pitfall!"
 "Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
 ""
@@ -8019,6 +8087,7 @@
 "Cart.Manufacturer" "Activision, Steve Cartwright - Ariola"
 "Cart.ModelNo" "EAX-031, EAX-031-04B - 711 031-717"
 "Cart.Name" "Frostbite (1983) (Activision) (PAL)"
+"Cart.Note" "Expedition ins Eis (Iceman)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xc8\",\"0xc9\",\"0xca\"],\"score_digits\":6,\"special_address\":\"0xcb\",\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
@@ -8146,8 +8215,8 @@
 "Cart.Name" "Borgwars Asteroids (2003) (Jack Kortkamp) (Hack)"
 "Cart.Note" "Hack of Asteroids"
 "Cart.Rarity" "Hack"
-"Display.Phosphor" "YES"
 "Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "5bcc83677d68f7ef74c1b4a0697ba2a8"
@@ -8179,9 +8248,7 @@
 ""
 
 "Cart.MD5" "5c0520c00163915a4336e481ca4e7ef4"
-"Cart.Manufacturer" "Rainbow Vision - Suntek"
-"Cart.ModelNo" "SS-004"
-"Cart.Name" "Pyramid War (1983) (Rainbow Vision) (PAL) [a1]"
+"Cart.Name" "Pyramid War (Unknown) (PAL)"
 "Cart.Note" "AKA Chopper Command"
 "Cart.Highscore" "{\"score_addresses\":[\"0xec\",\"0xee\",\"0xf0\"],\"score_digits\":6,\"variations_address\":\"0xe0\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
@@ -8197,7 +8264,7 @@
 ""
 
 "Cart.MD5" "5c3a6d27c026f59a96b7af91e8b1bf26"
-"Cart.Manufacturer" "PlayAround - J.H.M."
+"Cart.Manufacturer" "PlayAround - JHM"
 "Cart.Name" "PlayAround Demo (PlayAround) (1982)"
 ""
 
@@ -8235,8 +8302,8 @@
 "Cart.Manufacturer" "CCE"
 "Cart.ModelNo" "C-828"
 "Cart.Name" "Missile Command (1983) (CCE)"
-"Display.Phosphor" "YES"
 "Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "5d0e8a25cbd23e76f843c75a86b7e15b"
@@ -8248,7 +8315,7 @@
 ""
 
 "Cart.MD5" "5d132d121aabc5235dd039dfc46aa024"
-"Cart.Name" "Basketball (208 in 1) (Unknown) (PAL) (Hack)"
+"Cart.Name" "Basketball (Unknown) (PAL) (Hack)"
 "Cart.Note" "Console ports are swapped"
 "Cart.Rarity" "Hack"
 "Console.SwapPorts" "YES"
@@ -8269,9 +8336,9 @@
 ""
 
 "Cart.MD5" "5d7293f1892b66c014e8d222e06f6165"
-"Cart.Manufacturer" "Atari - Axlon, Tod Frye - Heuristica, Agustin Ortiz"
+"Cart.Manufacturer" "Atari - Axlon, Tod Frye - Heuristica, Agustin Ortiz Valdiviezo"
 "Cart.ModelNo" "CX26169"
-"Cart.Name" "Shooting Arcade (03-07-1989) (Atari) (Prototype) [a1]"
+"Cart.Name" "Shooting Arcade (03-07-1989) (Atari) (Prototype) [screen 2]"
 "Cart.Note" "Uses the Light Gun Controller (left only)"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/shootingarcade/shootingarcade.htm"
@@ -8288,10 +8355,10 @@
 "Cart.Name" "SWOOPS! (v0.96) (Thomas Jentzsch) (PAL)"
 "Cart.Note" "Uses the Joystick (L) and Paddle (R) Controllers"
 "Cart.Rarity" "Homebrew"
-"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=329"
-"Controller.MouseAxis" "28"
-"Controller.PaddlesXCenter" "7"
 "Cart.Highscore" "{\"score_addresses\":[\"0xfd\",\"0xfe\",\"0xff\"],\"score_digits\":6,\"variations_address\":\"0xfc\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=329"
+"Controller.PaddlesXCenter" "7"
+"Controller.MouseAxis" "28"
 ""
 
 "Cart.MD5" "5d8fb14860c2f198472b233874f6b0c9"
@@ -8313,7 +8380,7 @@
 
 "Cart.MD5" "5dae540347cf0a559962d62604ecf750"
 "Cart.Manufacturer" "Canal 3 - Intellivision"
-"Cart.Name" "Freeway (Canal 3)"
+"Cart.Name" "Freeway (Canal 3) (4K)"
 ""
 
 "Cart.MD5" "5db9e5bf663cad6bf159bc395f6ead53"
@@ -8328,6 +8395,11 @@
 "Cart.ModelNo" "FG1009"
 "Cart.Name" "Sea Hunt (1987) (Froggo)"
 "Cart.Note" "AKA Skindiver"
+""
+
+"Cart.MD5" "5dd08e85fd7b928df16f59df92a9d983"
+"Cart.Name" "Boom Bang (Unknown) [a2]"
+"Cart.Note" "AKA Crackpots"
 ""
 
 "Cart.MD5" "5de8803a59c36725888346fdc6e7429d"
@@ -8401,7 +8473,7 @@
 ""
 
 "Cart.MD5" "5ec73ac7d2ac95ac9530c6d33e713d14"
-"Cart.Manufacturer" "Arcadia Corporation, Scott Nelson"
+"Cart.Manufacturer" "Starpath Corporation, Stephen H. Landrum, Scott Nelson"
 "Cart.ModelNo" "13"
 "Cart.Name" "Sweat! - The Decathlon Game (2 of 3) (1983) (Arcadia) (Prototype)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
@@ -8433,7 +8505,7 @@
 ""
 
 "Cart.MD5" "5f316973ffd107f7ab9117e93f50e4bd"
-"Cart.Name" "Commando Raid (Unknown) (PAL)"
+"Cart.Name" "Commando Raid (Unknown) (PAL) [a]"
 ""
 
 "Cart.MD5" "5f39353f7c6925779b0169a87ff86f1e"
@@ -8462,17 +8534,17 @@
 "Cart.Manufacturer" "Canal 3 - Intellivision"
 "Cart.Name" "Eggomania (Canal 3)"
 "Cart.Note" "Uses the Paddle Controllers"
-"Controller.MouseAxis" "AUTO 60"
 "Controller.PaddlesXCenter" "10"
 "Controller.PaddlesYCenter" "10"
+"Controller.MouseAxis" "AUTO 60"
 ""
 
 "Cart.MD5" "5f681403b1051a0822344f467b05a94d"
 "Cart.Manufacturer" "Atari, Howard Scott Warshaw - Sears"
 "Cart.ModelNo" "CX2655 - 49-75167"
 "Cart.Name" "Yars' Revenge (1982) (Atari) [a]"
-"Display.Phosphor" "YES"
 "Cart.Highscore" "{\"notes\":\"Variations are larger by 1\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":8,\"variations_zero_based\":true}"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "5f708ca39627697e859d1c53f8d8d7d2"
@@ -8498,7 +8570,7 @@
 ""
 
 "Cart.MD5" "5f7ae9a7f8d79a3b37e8fc841f65643a"
-"Cart.Manufacturer" "Atari, Jerome Domurat, Peter C. Niday, Robert Vieira"
+"Cart.Manufacturer" "Atari, Dave Joly, Peter C. Niday, Robert Vieira"
 "Cart.ModelNo" "CX26109"
 "Cart.Name" "Sorcerer's Apprentice (1983) (Atari)"
 ""
@@ -8510,7 +8582,7 @@
 ""
 
 "Cart.MD5" "5f950a2d1eb331a1276819520705df94"
-"Cart.Manufacturer" "20th Century Fox Video Games - Micro Computer Technologies, Jim Collas"
+"Cart.Manufacturer" "20th Century Fox Video Games - Microcomputer Technologies, Jim Collas"
 "Cart.Name" "Heart Like a Wheel (1983) (20th Century Fox) (Prototype)"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/unknown3/unknown3.htm"
@@ -8526,13 +8598,17 @@
 
 "Cart.MD5" "5faffe1c4c57430978dec5ced32b9f4a"
 "Cart.Manufacturer" "Dactari - Milmar"
-"Cart.Name" "Volleyball (Dactari - Milmar)"
+"Cart.Name" "Volleyball (Dactari)"
 "Cart.Note" "AKA RealSports Volleyball"
 ""
 
 "Cart.MD5" "5fb71cc60e293fe10a5023f11c734e55"
 "Cart.Name" "This Planet Sucks (Fix) (27-12-2002) (Greg Troutman)"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=102"
+""
+
+"Cart.MD5" "5fd4239051c76563eed086f512b4cd48"
+"Cart.Name" "Lilly Adventure (Unknown)"
 ""
 
 "Cart.MD5" "600d48eef5c0ec27db554b7328b3251c"
@@ -8586,8 +8662,8 @@
 "Cart.Note" "Uses the Paddle Controllers"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/secretagent/secretagent.htm"
-"Controller.MouseAxis" "01 45"
 "Controller.PaddlesXCenter" "18"
+"Controller.MouseAxis" "01 45"
 ""
 
 "Cart.MD5" "606c2c1753051e03c1f1ac096c9d2832"
@@ -8617,8 +8693,8 @@
 "Cart.ModelNo" "2110"
 "Cart.Name" "3-D Havoc (1983) (Amiga) (Prototype)"
 "Cart.Rarity" "Prototype"
-"Display.Phosphor" "YES"
 "Cart.Url" "http://www.atariprotos.com/2600/software/3dhavok/3dhavok.htm"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "60d304582d33e2957b73eb300a7495bb"
@@ -8633,9 +8709,9 @@
 "Controller.Left" "PADDLES_IAXDR"
 "Controller.Right" "PADDLES_IAXDR"
 "Controller.SwapPaddles" "YES"
-"Controller.MouseAxis" "AUTO 60"
 "Controller.PaddlesXCenter" "13"
 "Controller.PaddlesYCenter" "13"
+"Controller.MouseAxis" "AUTO 60"
 ""
 
 "Cart.MD5" "613abf596c304ef6dbd8f3351920c37a"
@@ -8717,6 +8793,10 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Marble Craze - Atari Mouse Hack v1.0 (PAL) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Mouse Controllers"
+""
+
+"Cart.MD5" "623c0a85245738af3954ff14591a8773"
+"Cart.Name" "Barnstorming (Unknown) (PAL) [a]"
 ""
 
 "Cart.MD5" "624e0a77f9ec67d628211aaf24d8aea6"
@@ -8890,7 +8970,7 @@
 ""
 
 "Cart.MD5" "63d6247f35902ba32aa49e7660b0ecaa"
-"Cart.Name" "Space War (208 in 1) (Unknown) (PAL)"
+"Cart.Name" "Space War (Unknown) (PAL)"
 ""
 
 "Cart.MD5" "63e42d576800086488679490a833e097"
@@ -8991,6 +9071,7 @@
 "Cart.Manufacturer" "CCE"
 "Cart.ModelNo" "C-812"
 "Cart.Name" "Pac Man (1983) (CCE) [a]"
+"Cart.Note" "AKA Pac-Man"
 ""
 
 "Cart.MD5" "6522717cfd75d1dba252cbde76992090"
@@ -9009,7 +9090,7 @@
 ""
 
 "Cart.MD5" "65490d61922f3e3883ee1d583ce10855"
-"Cart.Manufacturer" "Atari - GCC, Mark Ackerman, Noellie Alito"
+"Cart.Manufacturer" "Atari - GCC, Mark Ackerman, Noelie Alito"
 "Cart.ModelNo" "CX2692, CX2692P"
 "Cart.Name" "Moon Patrol (1983) (Atari) (PAL)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xea\",\"0xeb\",\"0xec\"],\"score_digits\":6,\"variations_address\":\"0xf9\",\"variations_count\":6,\"variations_zero_based\":true}"
@@ -9042,6 +9123,14 @@
 "Cart.Name" "Junkosoft One Year Demo (1999) (PD)"
 ""
 
+"Cart.MD5" "65949de96b741046269379289189b3de"
+"Cart.Manufacturer" "Parker Brothers - Roklan, Joe Gaucher"
+"Cart.ModelNo" "PB5080"
+"Cart.Name" "Gyruss (1983) (Parker Bros) (Prototype) [a2]"
+"Cart.Rarity" "Prototype"
+"Display.Phosphor" "YES"
+""
+
 "Cart.MD5" "6596b3737ae4b976e4aadb68d836c5c7"
 "Cart.Manufacturer" "Digivision"
 "Cart.Name" "Defender (Digivision)"
@@ -9066,9 +9155,9 @@
 "Cart.ModelNo" "GCG 1001T"
 "Cart.Name" "Music Machine, The (1983) (Sparrow)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
-"Controller.MouseAxis" "AUTO 45"
 "Controller.PaddlesXCenter" "20"
 "Controller.PaddlesYCenter" "20"
+"Controller.MouseAxis" "AUTO 45"
 ""
 
 "Cart.MD5" "65ba1a4c643d1ab44481bdddeb403827"
@@ -9079,7 +9168,7 @@
 ""
 
 "Cart.MD5" "65bd29e8ab1b847309775b0de6b2e4fe"
-"Cart.Manufacturer" "Coleco, Ed English"
+"Cart.Manufacturer" "Coleco - Individeo, Ed English"
 "Cart.ModelNo" "2667"
 "Cart.Name" "Roc 'n Rope (1984) (Coleco)"
 ""
@@ -9089,7 +9178,7 @@
 ""
 
 "Cart.MD5" "6604f72a966ca6b2df6a94ee4a68eb82"
-"Cart.Name" "MegaMania (208 in 1) (Unknown) (PAL)"
+"Cart.Name" "MegaMania (Unknown) (PAL)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xdb\",\"0xdc\",\"0xdd\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
@@ -9124,8 +9213,8 @@
 "Cart.ModelNo" "PB5540"
 "Cart.Name" "Star Wars - The Arcade Game (04-05-1984) (Parker Bros) (Prototype)"
 "Cart.Rarity" "Prototype"
-"Display.Phosphor" "YES"
 "Cart.Url" "http://www.atariprotos.com/2600/software/starwarsarcade/starwarsarcade.htm"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "665b8f8ead0eef220ed53886fbd61ec9"
@@ -9230,7 +9319,12 @@
 ""
 
 "Cart.MD5" "672012d40336b403edea4a98ce70c76d"
-"Cart.Name" "Spider Kong (208 in 1) (Unknown) (PAL)"
+"Cart.Name" "Inca Gold (Unknown) (PAL) [a]"
+""
+
+"Cart.MD5" "673268cfaa8ff3f655b9e34d75e6a90c"
+"Cart.Manufacturer" "Fotomania"
+"Cart.Name" "River Raid (Fotomania)"
 ""
 
 "Cart.MD5" "675ae9c23fa1aae376cea86cad96f9a5"
@@ -9238,12 +9332,11 @@
 ""
 
 "Cart.MD5" "67631ea5cfe44066a1e76ddcb6bcb512"
-"Cart.Name" "Termool (Unknown) (PAL)"
-"Cart.Note" "AKA Turmoil"
+"Cart.Name" "Turmoil (Unknown) (PAL)"
 ""
 
 "Cart.MD5" "67684a1d18c85ffa5d82dab48fd1cb51"
-"Cart.Manufacturer" "Tigervision, Warren Schwader - Teldec"
+"Cart.Manufacturer" "Tigervision, Warren Schwader - Teldec - Prism"
 "Cart.ModelNo" "7-003"
 "Cart.Name" "Threshold (1982) (Tigervision) (PAL)"
 ""
@@ -9270,9 +9363,9 @@
 "Cart.ModelNo" "DA1002"
 "Cart.Name" "Warplock (1982) (Data Age)"
 "Cart.Note" "Uses the Paddle Controllers"
-"Controller.MouseAxis" "01 40"
 "Controller.PaddlesXCenter" "22"
 "Controller.PaddlesYCenter" "22"
+"Controller.MouseAxis" "01 40"
 "Display.Phosphor" "YES"
 ""
 
@@ -9344,9 +9437,9 @@
 "Cart.ModelNo" "AR-4300"
 "Cart.Name" "Fireball (1982) (Arcadia) [a]"
 "Cart.Note" "Uses the Paddle Controllers"
-"Controller.MouseAxis" "01"
 "Controller.PaddlesXCenter" "15"
 "Controller.PaddlesYCenter" "15"
+"Controller.MouseAxis" "01"
 ""
 
 "Cart.MD5" "683dc64ef7316c13ba04ee4398e2b93a"
@@ -9444,10 +9537,10 @@
 ""
 
 "Cart.MD5" "690a6049db78b9400c13521646708e9c"
-"Cart.Manufacturer" "King Tripod Enterprise Co."
-"Cart.ModelNo" "SS - 007"
-"Cart.Name" "Space Raid (King Tripod) (PAL)"
-"Cart.Note" "AKA Challenge of.... Nexar, The"
+"Cart.Manufacturer" "Rainbow Vision - Suntek"
+"Cart.ModelNo" "SS-002"
+"Cart.Name" "Galactic (1983) (Rainbow Vision) (PAL) [a]"
+"Cart.Note" "AKA The Challenge of.... Nexar"
 ""
 
 "Cart.MD5" "6913c90002636c1487538d4004f7cac2"
@@ -9540,9 +9633,9 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Missile Command Atari Trak-Ball Hack v1.3 (PAL) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
+"Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1183"
 "Display.Phosphor" "YES"
-"Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
 ""
 
 "Cart.MD5" "69fac82cd2312dd9ce5d90e22e2f070a"
@@ -9563,9 +9656,9 @@
 "Cart.Note" "Uses the Paddle Controller (left only)"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/guardian/guardian.htm"
-"Controller.MouseAxis" "01 65"
 "Controller.PaddlesXCenter" "5"
 "Controller.PaddlesYCenter" "9"
+"Controller.MouseAxis" "01 65"
 ""
 
 "Cart.MD5" "6a091b8ffeacd0939850da2094b51564"
@@ -9608,6 +9701,7 @@
 "Cart.Manufacturer" "Video Game Cartridge - Ariola"
 "Cart.ModelNo" "TP-605"
 "Cart.Name" "Dragon Defender (Ariola) (PAL)"
+"Cart.Note" "AKA Dragon Power"
 "Display.Phosphor" "YES"
 ""
 
@@ -9618,7 +9712,10 @@
 ""
 
 "Cart.MD5" "6a9b30ca46b0dba9e719f4cbd340e01c"
-"Cart.Name" "Frostbite (Unknown) (PAL) (Hack)"
+"Cart.Manufacturer" "Bit Corporation"
+"Cart.ModelNo" "CP405"
+"Cart.Name" "Eskimo Jump (4 Game in One) (1983) (BitCorp) (PAL)"
+"Cart.Note" "AKA Frostbite"
 "Cart.Highscore" "{\"score_addresses\":[\"0xc8\",\"0xc9\",\"0xca\"],\"score_digits\":6,\"special_address\":\"0xcb\",\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
@@ -9770,8 +9867,8 @@
 "Cart.Manufacturer" "Dynacom"
 "Cart.Name" "Beat 'Em & Eat 'Em (1983) (Dynacom)"
 "Cart.Note" "Uses the Paddle Controller (left only)"
-"Controller.MouseAxis" "AUTO 45"
 "Controller.PaddlesXCenter" "20"
+"Controller.MouseAxis" "AUTO 45"
 ""
 
 "Cart.MD5" "6c449db9bbbd90972ad1932d6af87330"
@@ -9789,10 +9886,10 @@
 "Cart.ModelNo" "CX2622, CX2622P"
 "Cart.Name" "Breakout (1978) (Atari) (PAL)"
 "Cart.Note" "Uses the Paddle Controllers"
-"Controller.MouseAxis" "01 60"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xce\",\"0xcd\"],\"score_digits\":3,\"variations_count\":1}"
 "Controller.PaddlesXCenter" "9"
 "Controller.PaddlesYCenter" "9"
-"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xce\",\"0xcd\"],\"score_digits\":3,\"variations_count\":1}"
+"Controller.MouseAxis" "01 60"
 ""
 
 "Cart.MD5" "6c85098518d3f94f7622c42fd1d819ac"
@@ -9842,9 +9939,7 @@
 ""
 
 "Cart.MD5" "6ce2110ac5dd89ab398d9452891752ab"
-"Cart.Manufacturer" "Funvision - Fund. International Co."
-"Cart.Name" "Persian Gulf War (Funvision)"
-"Cart.Note" "AKA River Raid"
+"Cart.Name" "River Raid (Unknown) [a]"
 ""
 
 "Cart.MD5" "6cea35ded079863a846159c3a1101cc7"
@@ -9901,7 +9996,7 @@
 ""
 
 "Cart.MD5" "6dda84fb8e442ecf34241ac0d1d91d69"
-"Cart.Manufacturer" "Atari - GCC, Douglas B. Macrae"
+"Cart.Manufacturer" "Atari - GCC, Ava-Robin Cohen, Douglas B. Macrae"
 "Cart.ModelNo" "CX2677"
 "Cart.Name" "Dig Dug (1983) (Atari)"
 "Cart.Highscore" "{\"notes\":\"Variation 1 is easy; 2 is normal\",\"score_addresses\":[\"0xff\",\"0xff\"],\"variations_address\":\"0x80\",\"variations_count\":2,\"variations_zero_based\":true}"
@@ -9923,7 +10018,7 @@
 ""
 
 "Cart.MD5" "6e179eee3d4631a7434d40cf7aeea6e8"
-"Cart.Manufacturer" "Wizard Video Games - MicroGraphic Image, Robert Barber, Tim Martin"
+"Cart.Manufacturer" "Wizard Video Games - VSS - MicroGraphic Image, Robert Barber, Tim Martin"
 "Cart.ModelNo" "007"
 "Cart.Name" "Halloween (1983) (Wizard Video Games) (Prototype)"
 "Cart.Rarity" "Prototype"
@@ -9993,6 +10088,10 @@
 "Cart.ModelNo" "PG207"
 "Cart.Name" "Mission 3,000 A.D. (1983) (BitCorp) (PAL)"
 "Display.Phosphor" "YES"
+""
+
+"Cart.MD5" "6f05cbc85eb3d439036f8155090accc0"
+"Cart.Name" "Mission 3,000 A.D. (Unknown) (PAL) [a]"
 ""
 
 "Cart.MD5" "6f084daf265599f65422ef4173b69bc7"
@@ -10171,7 +10270,7 @@
 ""
 
 "Cart.MD5" "713fde2af865b6ec464dfd72e2ebb83e"
-"Cart.Name" "Challenge (208 in 1) (Unknown) (PAL)"
+"Cart.Name" "Challenge (Unknown) (PAL)"
 "Display.Phosphor" "YES"
 ""
 
@@ -10237,6 +10336,10 @@
 "Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa2\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_address\":\"0x8d\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
+"Cart.MD5" "71ba6aefca09424899441db9ae14ee04"
+"Cart.Name" "Oink! (Unknown)"
+""
+
 "Cart.MD5" "71d005b60cf6e608d04efb99a37362c3"
 "Cart.Manufacturer" "Atari, Larry Kaplan"
 "Cart.ModelNo" "CX2643"
@@ -10266,6 +10369,11 @@
 "Cart.Manufacturer" "Activision, David Crane, Dan Kitchen"
 "Cart.ModelNo" "EAG-108-04, EAZ-108-04B"
 "Cart.Name" "Ghostbusters (1985) (Activision) (PAL) [a]"
+""
+
+"Cart.MD5" "7224947dce1130f70de83f25b446e4e4"
+"Cart.Manufacturer" "Fotomania"
+"Cart.Name" "Mr. Postman (Fotomania)"
 ""
 
 "Cart.MD5" "72305c997f2cec414fe6f8c946172f83"
@@ -10457,14 +10565,21 @@
 "Cart.Name" "Phantom Tank (Unknown) (PAL)"
 ""
 
+"Cart.MD5" "745820765bd159c5bf5222fb859769d8"
+"Cart.Manufacturer" "Bit Corporation"
+"Cart.ModelNo" "CP405"
+"Cart.Name" "Laser Blaser (4 Game in One) (1983) (BitCorp) (PAL)"
+"Cart.Note" "AKA The End of the World"
+""
+
 "Cart.MD5" "7465b06b6e25a4a6c6d77d02242af6d6"
 "Cart.Manufacturer" "Atari"
 "Cart.ModelNo" "CX26193"
 "Cart.Name" "8 in 1 (01-16-92) (Atari) (Prototype)"
 "Cart.Note" "Game 2 is Centipede, but doesn't work"
 "Cart.Rarity" "Prototype"
-"Cart.Url" "http://www.atariprotos.com/2600/software/8in1/8in1.htm"
 "Cart.Type" "8IN1"
+"Cart.Url" "http://www.atariprotos.com/2600/software/8in1/8in1.htm"
 ""
 
 "Cart.MD5" "7481f0771bff13885b2ff2570cf90d7b"
@@ -10507,7 +10622,7 @@
 ""
 
 "Cart.MD5" "7511c34518a9a124ea773f5b0b5c9a48"
-"Cart.Name" "Donkey Kong (208 in 1) (Unknown) (PAL)"
+"Cart.Name" "Donkey Kong (Unknown) (PAL)"
 "Cart.Highscore" "{\"score_addresses\":[\"0x87\",\"0x88\"],\"score_digits\":6,\"score_trailing_zeroes\":2,\"variations_count\":1}"
 ""
 
@@ -10519,9 +10634,9 @@
 "Cart.Rarity" "Uncommon"
 "Controller.Left" "PADDLES"
 "Controller.SwapPaddles" "YES"
-"Controller.MouseAxis" "AUTO 55"
 "Controller.PaddlesXCenter" "16"
 "Controller.PaddlesYCenter" "16"
+"Controller.MouseAxis" "AUTO 55"
 ""
 
 "Cart.MD5" "752da1c0acd7d132ccfb0b1067f53cf6"
@@ -10628,8 +10743,8 @@
 "Cart.ModelNo" "CX2655 - 49-75167"
 "Cart.Name" "Yars' Revenge (1982) (Atari) (PAL) [a]"
 "Cart.Note" "ROM must be started in bank 0"
-"Display.Phosphor" "YES"
 "Cart.Highscore" "{\"notes\":\"Variations are larger by 1\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":8,\"variations_zero_based\":true}"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "75ee371ccfc4f43e7d9b8f24e1266b55"
@@ -10770,7 +10885,7 @@
 ""
 
 "Cart.MD5" "77be57d872e3f5b7ecf8d19d97f73281"
-"Cart.Name" "Basketball (208 in 1) (Unknown) (PAL)"
+"Cart.Name" "Basketball (Unknown) (PAL)"
 "Cart.Note" "Console ports are swapped"
 "Console.SwapPorts" "YES"
 ""
@@ -10790,9 +10905,9 @@
 "Controller.Left" "PADDLES_IAXDR"
 "Controller.Right" "PADDLES_IAXDR"
 "Controller.SwapPaddles" "YES"
-"Controller.MouseAxis" "AUTO 60"
 "Controller.PaddlesXCenter" "13"
 "Controller.PaddlesYCenter" "13"
+"Controller.MouseAxis" "AUTO 60"
 ""
 
 "Cart.MD5" "78297db7f416af3052dd793b53ff014e"
@@ -10874,10 +10989,10 @@
 "Cart.Name" "Stay Frosty 2 (PAL60)"
 "Cart.Note" "AtariAge Holiday Greetings 2014"
 "Cart.Rarity" "Homebrew"
+"Cart.Highscore" "{\"score_addresses\":[\"0x1cf7\",\"0x1cf6\",\"0x1cf5\",\"0x1cf4\"],\"score_digits\":8,\"special_address\":\"0x18ac\",\"special_bcd\":false,\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1044"
 "Controller.Left" "JOYSTICK"
 "Display.Phosphor" "YES"
-"Cart.Highscore" "{\"score_addresses\":[\"0x1cf7\",\"0x1cf6\",\"0x1cf5\",\"0x1cf4\"],\"score_digits\":8,\"special_address\":\"0x18ac\",\"special_bcd\":false,\"special_label\":\"Level\",\"special_zero_based\":true,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "7926083ad423ed685de3b3a04a914315"
@@ -10887,9 +11002,9 @@
 "Cart.Rarity" "Hack"
 "Controller.Left" "PADDLES"
 "Controller.SwapPaddles" "YES"
-"Controller.MouseAxis" "AUTO 55"
 "Controller.PaddlesXCenter" "16"
 "Controller.PaddlesYCenter" "16"
+"Controller.MouseAxis" "AUTO 55"
 ""
 
 "Cart.MD5" "792b1d93eb1d8045260c840b0688ec8f"
@@ -10925,7 +11040,7 @@
 ""
 
 "Cart.MD5" "7996b8d07462a19259baa4c811c2b4b4"
-"Cart.Name" "Math Gran Prix (208 in 1) (Unknown) (PAL)"
+"Cart.Name" "Math Gran Prix (Unknown) (PAL)"
 ""
 
 "Cart.MD5" "79ab4123a83dc11d468fb2108ea09e2e"
@@ -10982,15 +11097,15 @@
 "Cart.Name" "FlickerSort Demo (20-04-2002) (Manuel Rotschkar)"
 ""
 
+"Cart.MD5" "7a48dd03d839da082dc2287ede070383"
+"Cart.Name" "Atari 2600 Multicart (16x8K, F8/E0)"
+"Cart.Type" "16IN1"
+""
+
 "Cart.MD5" "7a5463545dfb2dcfdafa6074b2f2c15e"
 "Cart.Manufacturer" "20th Century Fox Video Games - Sirius Software, Mark Turmell"
 "Cart.ModelNo" "11007"
 "Cart.Name" "Turmoil (1982) (20th Century Fox)"
-""
-
-"Cart.MD5" "7a48dd03d839da082dc2287ede070383"
-"Cart.Name" "Atari 2600 Multicart (16x8K, F8/E0)"
-"Cart.Type" "16IN1"
 ""
 
 "Cart.MD5" "7a63d7ea3f2851bcf04f0bb4ba1a3929"
@@ -11025,10 +11140,10 @@
 "Cart.Name" "Santa's Helper (Hack)"
 "Cart.Note" "Hack of Kaboom!"
 "Cart.Rarity" "Hack"
-"Controller.MouseAxis" "01 50"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 "Controller.PaddlesXCenter" "17"
 "Controller.PaddlesYCenter" "17"
-"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
+"Controller.MouseAxis" "01 50"
 ""
 
 "Cart.MD5" "7ab210f448de518fa61a5924120ba872"
@@ -11040,9 +11155,9 @@
 "Cart.ModelNo" "AP-2008"
 "Cart.Name" "Guardian (1982) (Apollo)"
 "Cart.Note" "Uses the Paddle Controllers"
-"Controller.MouseAxis" "01 65"
 "Controller.PaddlesXCenter" "5"
 "Controller.PaddlesYCenter" "9"
+"Controller.MouseAxis" "01 65"
 ""
 
 "Cart.MD5" "7ac4f4fb425db38288fa07fb8ff4b21d"
@@ -11143,7 +11258,7 @@
 ""
 
 "Cart.MD5" "7b8a481e0c5aa78150b5555dff01f64e"
-"Cart.Manufacturer" "Atari - GCC, Mark Ackerman, Noellie Alito"
+"Cart.Manufacturer" "Atari - GCC, Mark Ackerman, Noelie Alito"
 "Cart.ModelNo" "CX2692"
 "Cart.Name" "Moon Patrol (05-12-1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
@@ -11163,7 +11278,7 @@
 ""
 
 "Cart.MD5" "7bb286cb659d146af3966d699b51f509"
-"Cart.Manufacturer" "Atari - Axlon, Tod Frye"
+"Cart.Manufacturer" "Atari - Axlon, Tod Frye - Heuristica, Agustin Ortiz Valdiviezo"
 "Cart.ModelNo" "CX26178"
 "Cart.Name" "Save Mary! (04-03-1989) (Atari) (Prototype)"
 "Cart.Note" "AKA Saving Mary"
@@ -11267,6 +11382,13 @@
 "Cart.MD5" "7d1034bcb38c9b746ea2c0ae37d9dff2"
 "Cart.Manufacturer" "Atari, Brad Stewart"
 "Cart.Name" "Morse Code Tutor (1979) (Atari)"
+""
+
+"Cart.MD5" "7d24f3054be9950aa263e005581c4786"
+"Cart.Manufacturer" "Parker Brothers - First Star Software, Alex Leavens"
+"Cart.Name" "Astro Chase (10-25-1983) (Parker Bros) (Prototype)"
+"Cart.Rarity" "Prototype"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "7d3cdde63b16fa637c4484e716839c94"
@@ -11378,7 +11500,7 @@
 ""
 
 "Cart.MD5" "7e464186ba384069582d9f0c141f7491"
-"Cart.Manufacturer" "PlayAround - J.H.M."
+"Cart.Manufacturer" "PlayAround - JHM"
 "Cart.ModelNo" "206"
 "Cart.Name" "General Re-Treat (1982) (PlayAround) (PAL)"
 "Cart.Note" "AKA Custer's Revenge"
@@ -11529,6 +11651,14 @@
 "Cart.Note" "AKA Crackpots"
 ""
 
+"Cart.MD5" "7f5da5dc44bb5e0b959507bb0ea31cd6"
+"Cart.Manufacturer" "Parker Brothers - Roklan, Joe Gaucher"
+"Cart.ModelNo" "PB5080"
+"Cart.Name" "Gyruss (1983) (Parker Bros) (Prototype)"
+"Cart.Rarity" "Prototype"
+"Display.Phosphor" "YES"
+""
+
 "Cart.MD5" "7f6533386644c7d6358f871666c86e79"
 "Cart.Manufacturer" "CommaVid, Irwin Gaines"
 "Cart.ModelNo" "CM-008"
@@ -11570,6 +11700,7 @@
 "Cart.Manufacturer" "Suntek"
 "Cart.ModelNo" "SS-032"
 "Cart.Name" "Walker (1983) (Suntek) (PAL)"
+"Cart.Note" "AKA Guignol"
 ""
 
 "Cart.MD5" "7ffc2d80fd49a124808315306d19868e"
@@ -11696,10 +11827,10 @@
 "Cart.Name" "Sadoom (Thomas Jentzsch) (PAL60) (Hack)"
 "Cart.Note" "Hack of Kaboom!"
 "Cart.Rarity" "Hack"
-"Controller.MouseAxis" "01 50"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 "Controller.PaddlesXCenter" "17"
 "Controller.PaddlesYCenter" "17"
-"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
+"Controller.MouseAxis" "01 50"
 ""
 
 "Cart.MD5" "8108162bc88b5a14adc3e031cf4175ad"
@@ -11780,7 +11911,7 @@
 ""
 
 "Cart.MD5" "81b3bf17cf01039d311b4cd738ae608e"
-"Cart.Manufacturer" "CBS Electronics - Roklan, Joe Gaucher, Alex Leavens"
+"Cart.Manufacturer" "CBS Electronics - Roklan, Joe Gaucher, Dan Kurczewski, Alex Leavens, Kathy Von"
 "Cart.ModelNo" "M8776, M8793"
 "Cart.Name" "Gorf (1982) (CBS Electronics)"
 "Display.Phosphor" "YES"
@@ -11793,7 +11924,7 @@
 ""
 
 "Cart.MD5" "822a950f27ff0122870558a89a49cad3"
-"Cart.Name" "Space Jockey (Unknown) (PAL)"
+"Cart.Name" "Space Jockey (Unknown) (PAL) [a]"
 ""
 
 "Cart.MD5" "82337e5fe0f418ca9484ca851dfc226a"
@@ -11833,6 +11964,16 @@
 "Cart.Manufacturer" "Atari, Larry Kaplan"
 "Cart.ModelNo" "CX2628, CX2628P"
 "Cart.Name" "Bowling (1979) (Atari) (PAL) (4K)"
+""
+
+"Cart.MD5" "82c9b068826f7f57c6dc710606b3e8b5"
+"Cart.Manufacturer" "Atari"
+"Cart.Name" "2 in 1 - Chess, Othello (Atari) (Prototype)"
+"Cart.Rarity" "Prototype"
+""
+
+"Cart.MD5" "82d5ada7c61833d17ca0604eb1e3709f"
+"Cart.Name" "Q-bert (Unknown)"
 ""
 
 "Cart.MD5" "82de957d155fc041fc6afb8315a28550"
@@ -11894,7 +12035,7 @@
 ""
 
 "Cart.MD5" "83b8c01c72306d60dd9b753332ebd276"
-"Cart.Name" "Bank Heist (208 in 1) (Unknown) (PAL)"
+"Cart.Name" "Bank Heist (Unknown) (PAL) [a]"
 ""
 
 "Cart.MD5" "83bdc819980db99bf89a7f2ed6a2de59"
@@ -12073,7 +12214,7 @@
 ""
 
 "Cart.MD5" "855a42078b14714bcfd490d2cf57e68d"
-"Cart.Manufacturer" "Atari, Suki Lee"
+"Cart.Manufacturer" "Atari, Dave Joly, Gary Shannon"
 "Cart.ModelNo" "CX26113"
 "Cart.Name" "Miss Piggy's Wedding (1983) (Atari) (Prototype) (4K)"
 "Cart.Rarity" "Prototype"
@@ -12300,10 +12441,10 @@
 "Cart.ModelNo" "CX2608 - 49-75165"
 "Cart.Name" "Super Breakout (1982 - 1981) (Atari)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
-"Controller.MouseAxis" "01 45"
+"Cart.Highscore" "{\"score_addresses\":[\"0xdc\",\"0xdd\"],\"variations_address\":\"0xc0\",\"variations_count\":9}"
 "Controller.PaddlesXCenter" "17"
 "Controller.PaddlesYCenter" "17"
-"Cart.Highscore" "{\"score_addresses\":[\"0xdc\",\"0xdd\"],\"variations_address\":\"0xc0\",\"variations_count\":9}"
+"Controller.MouseAxis" "01 45"
 ""
 
 "Cart.MD5" "888debb162d7d1ae71025b4ab794257f"
@@ -12431,6 +12572,7 @@
 "Cart.Manufacturer" "Apollo - Games by Apollo, Ed Salvo, Byron Parks"
 "Cart.ModelNo" "AP-2001"
 "Cart.Name" "Spacechase (1982) (Apollo) (PAL)"
+"Cart.Note" "AKA Space Attack"
 ""
 
 "Cart.MD5" "8a159ee58b2f0a54805162984b0f07e5"
@@ -12497,6 +12639,11 @@
 "Cart.Name" "Gravitar (1983) (Atari)"
 ""
 
+"Cart.MD5" "8ad3b8e7436816db03e7824406bdc670"
+"Cart.Manufacturer" "Edu Games - Edu Juegos"
+"Cart.Name" "Galaxian (Edu Games) (PAL)"
+""
+
 "Cart.MD5" "8af58a9b90b25907da0251ec0facf3b8"
 "Cart.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
 "Cart.Name" "Cosmic Swarm (Jone Yuan)"
@@ -12554,6 +12701,13 @@
 "Cart.Name" "Plaque Attack (Digivision)"
 ""
 
+"Cart.MD5" "8bb5030d015194435c3f01f220f23977"
+"Cart.Manufacturer" "Apollo - Games by Apollo"
+"Cart.ModelNo" "AP-2006"
+"Cart.Name" "Infiltrate (1982) (Apollo) (Prototype) [a]"
+"Cart.Rarity" "Prototype"
+""
+
 "Cart.MD5" "8bbfd951c89cc09c148bfabdefa08bec"
 "Cart.Manufacturer" "UA Limited"
 "Cart.Name" "Pleiades (1983) (UA Limited) (Prototype)"
@@ -12581,10 +12735,10 @@
 "Cart.Name" "Missile Command (Trakball) (2002) (Thomas Jentzsch) (PAL)"
 "Cart.Note" "Uses the Trakball Controller"
 "Cart.Rarity" "Homebrew"
+"Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
 "Controller.Left" "TRAKBALL"
 "Controller.Right" "TRAKBALL"
 "Display.Phosphor" "YES"
-"Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
 ""
 
 "Cart.MD5" "8c103a79b007a2fd5af602334937b4e1"
@@ -12609,10 +12763,10 @@
 "Cart.Manufacturer" "Atari, Omegamatrix"
 "Cart.Name" "Super Breakout Menu (2020) (PAL60) (Hack)"
 "Cart.Note" "Hack of Super Breakout"
-"Controller.MouseAxis" "AUTO 45"
+"Cart.Highscore" "{\"score_addresses\":[\"0xdc\",\"0xdd\"],\"variations_address\":\"0xc0\",\"variations_count\":9}"
 "Controller.PaddlesXCenter" "17"
 "Controller.PaddlesYCenter" "17"
-"Cart.Highscore" "{\"score_addresses\":[\"0xdc\",\"0xdd\"],\"variations_address\":\"0xc0\",\"variations_count\":9}"
+"Controller.MouseAxis" "AUTO 45"
 ""
 
 "Cart.MD5" "8c2fa33048f055f38358d51eefe417db"
@@ -12677,11 +12831,11 @@
 "Cart.Name" "Missile Command (Trakball) (2002) (Thomas Jentzsch)"
 "Cart.Note" "Uses the Trakball Controller"
 "Cart.Rarity" "Homebrew"
+"Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1183"
 "Controller.Left" "TRAKBALL"
 "Controller.Right" "TRAKBALL"
 "Display.Phosphor" "YES"
-"Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
 ""
 
 "Cart.MD5" "8cf0d333bbe85b9549b1e6b1e2390b8d"
@@ -12689,8 +12843,8 @@
 "Cart.ModelNo" "CX2649, CX2649P"
 "Cart.Name" "Asteroids (1981) (Atari) (PAL)"
 "Cart.Rarity" "Common"
-"Display.Phosphor" "YES"
 "Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "8d00a38f4c8f8800f1c237215ac243fc"
@@ -12702,8 +12856,13 @@
 "Cart.Name" "Missile Command (Amiga Mouse) (2002) (Thomas Jentzsch)"
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Rarity" "Homebrew"
-"Display.Phosphor" "YES"
 "Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
+"Display.Phosphor" "YES"
+""
+
+"Cart.MD5" "8d2a818e0255c66040802defe32c341a"
+"Cart.Manufacturer" "Fotomania"
+"Cart.Name" "Fast Food (Fotomania)"
 ""
 
 "Cart.MD5" "8d8b7d7b983f75debbdaac651e814768"
@@ -12726,13 +12885,19 @@
 "Cart.Highscore" "{\"score_addresses\":[\"0x9a\",\"0x9b\",\"0x9c\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
+"Cart.MD5" "8dda212b5d92a3b21812890b472f0e7a"
+"Cart.Manufacturer" "Artkaris Software"
+"Cart.Name" "Ms Pac-Man (1986) (Artkaris) (PAL)"
+"Cart.Note" "AKA Ms. Pac-Man"
+""
+
 "Cart.MD5" "8df4be9ddc54ac363b13dc57ceaf161a"
 "Cart.Manufacturer" "Scott Stilphen"
 "Cart.Name" "Asteroids SS (Scott Stilphen) (Hack)"
 "Cart.Note" "Hack of Asteroids"
 "Cart.Rarity" "Hack"
-"Display.Phosphor" "YES"
 "Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "8e0ab801b1705a740b476b7f588c6d16"
@@ -12761,9 +12926,10 @@
 ""
 
 "Cart.MD5" "8e4fa8c6ad8d8dce0db8c991c166cdaa"
-"Cart.Manufacturer" "Atari, Bill Aspromonte, John Russell, Michael Sierchio, Robert Zdybel"
+"Cart.Manufacturer" "Atari, Bill Aspromonte, Dave Joly, John Russell, Michael Sierchio, Robert Zdybel"
 "Cart.ModelNo" "CX26114"
 "Cart.Name" "Pigs in Space (1983) (Atari)"
+"Cart.Note" "Starring Miss Piggy"
 ""
 
 "Cart.MD5" "8e512ad4506800458f99dec084fc2c64"
@@ -12809,7 +12975,7 @@
 ""
 
 "Cart.MD5" "8ed5a746c59571feb255eaa7d6d0cf98"
-"Cart.Name" "Carnival (208 in 1) (Unknown) (PAL) (Hack)"
+"Cart.Name" "Carnival (Unknown) (PAL) (Hack)"
 "Cart.Rarity" "Hack"
 ""
 
@@ -12829,6 +12995,11 @@
 "Cart.Name" "Reactor - Amiga Mouse Hack v1.3 (PAL60) (Half-Speed) (Thomas Jentzsch)"
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1186"
+""
+
+"Cart.MD5" "8f08c777b424c3085eece73774335962"
+"Cart.Manufacturer" "Dactari - Milmar"
+"Cart.Name" "Cosmic Ark (Dactari)"
 ""
 
 "Cart.MD5" "8f33bce5ba1053dcf4cea9c1c69981e4"
@@ -12864,7 +13035,7 @@
 ""
 
 "Cart.MD5" "8f90590dba143d783df5a6cff2000e4d"
-"Cart.Name" "Gopher (208 in 1) (Unknown) (PAL)"
+"Cart.Name" "Gopher (Unknown) (PAL)"
 ""
 
 "Cart.MD5" "8f98519a91dbbf4864f135a10050d9ed"
@@ -13070,9 +13241,9 @@
 "Cart.Manufacturer" "Retroactive"
 "Cart.Name" "Qb (2.15) (Retroactive) (PAL)"
 "Cart.Rarity" "New Release"
+"Cart.Highscore" "{\"score_addresses\":[\"0xe6\",\"0xe5\",\"0xe4\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=926"
 "Display.Phosphor" "YES"
-"Cart.Highscore" "{\"score_addresses\":[\"0xe6\",\"0xe5\",\"0xe4\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "9295570a141cdec18074c55dc7229d08"
@@ -13112,6 +13283,11 @@
 "Cart.Name" "Spider Fighter (Canal 3)"
 ""
 
+"Cart.MD5" "93096a1038cd558ed0b48741bbf17c64"
+"Cart.Manufacturer" "Fotomania"
+"Cart.Name" "Pac-Man (Fotomania)"
+""
+
 "Cart.MD5" "931b91a8ea2d39fe4dca1a23832b591a"
 "Cart.Manufacturer" "Activision, David Crane"
 "Cart.ModelNo" "AG-008"
@@ -13135,12 +13311,12 @@
 "Cart.Manufacturer" "Atari, Rob Fulop"
 "Cart.ModelNo" "CX2638"
 "Cart.Name" "Missile Command (1981) (Atari) (PAL)"
-"Display.Phosphor" "YES"
 "Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "936ef1d6f8a57b9ff575dc195ee36b80"
-"Cart.Name" "Pac Kong (Unknown)"
+"Cart.Name" "Pac Kong (Unknown) [a]"
 "Cart.Note" "AKA Inca Gold"
 ""
 
@@ -13151,10 +13327,10 @@
 ""
 
 "Cart.MD5" "937736d899337036de818391a87271e0"
-"Cart.Manufacturer" "Atari, Peter C. Niday"
+"Cart.Manufacturer" "Atari, Dave Joly, Suki Lee"
 "Cart.ModelNo" "CX26108"
 "Cart.Name" "Donald Duck's Speedboat (04-12-1983) (Atari) (Prototype)"
-"Cart.Note" "AKA Donald Duck's Regatta"
+"Cart.Note" "AKA Donald Duck's Sailboat Regatta"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/donaldduck/donaldduck.htm"
 ""
@@ -13312,14 +13488,14 @@
 ""
 
 "Cart.MD5" "94e7cc6342d11e508e7e8b2ddf53c255"
-"Cart.Name" "Missile Command (208 in 1) (Unknown) (PAL) (Hack)"
+"Cart.Name" "Missile Command (Unknown) (PAL) (Hack)"
 "Cart.Rarity" "Hack"
-"Display.Phosphor" "YES"
 "Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "94ff6b7489ed401dcaaf952fece10f67"
-"Cart.Manufacturer" "Atari - GCC, Mark Ackerman, Noellie Alito"
+"Cart.Manufacturer" "Atari - GCC, Mark Ackerman, Noelie Alito"
 "Cart.ModelNo" "CX2692"
 "Cart.Name" "Moon Patrol (07-31-1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
@@ -13338,8 +13514,12 @@
 "Cart.Name" "Atari Logo Demo 6 (PD)"
 ""
 
+"Cart.MD5" "952a63b8305154a7969743c7b8671243"
+"Cart.Name" "Krull (Unknown) (PAL)"
+""
+
 "Cart.MD5" "95351b46fa9c45471d852d28b9b4e00b"
-"Cart.Manufacturer" "Atari, Tom Rudadahl"
+"Cart.Manufacturer" "Atari, Tom Reuterdahl"
 "Cart.ModelNo" "CX26163P"
 "Cart.Name" "Golf (32 in 1) (1988) (Atari) (PAL)"
 ""
@@ -13369,22 +13549,24 @@
 ""
 
 "Cart.MD5" "95a89d1bf767d7cc9d0d5093d579ba61"
-"Cart.Manufacturer" "PlayAround - J.H.M."
+"Cart.Manufacturer" "PlayAround - JHM"
 "Cart.ModelNo" "204"
 "Cart.Name" "Lady in Wading (1982) (PlayAround)"
 "Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "95e1d834c57cdd525dd0bd6048a57f7b"
-"Cart.Manufacturer" "Atari, Bill Aspromonte, John Russell, Michael Sierchio, Robert Zdybel"
+"Cart.Manufacturer" "Atari, Bill Aspromonte, Dave Joly, John Russell, Michael Sierchio, Robert Zdybel"
 "Cart.ModelNo" "CX26114"
 "Cart.Name" "Pigs in Space (1983) (Atari) (PAL)"
+"Cart.Note" "Starring Miss Piggy"
 ""
 
 "Cart.MD5" "95e542a7467c94b1e4ab24a3ebe907f1"
 "Cart.Manufacturer" "Suntek"
 "Cart.ModelNo" "SS-021"
 "Cart.Name" "Dragon Defender (1983) (Suntek) (PAL)"
+"Cart.Note" "AKA Dragon Power"
 "Display.Phosphor" "YES"
 ""
 
@@ -13469,11 +13651,11 @@
 "Cart.Name" "Missile Command (Atari Mouse) (2002) (Thomas Jentzsch) (PAL)"
 "Cart.Note" "Uses Atari ST Mouse Controller"
 "Cart.Rarity" "Homebrew"
+"Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1183"
 "Controller.Left" "ATARIMOUSE"
 "Controller.Right" "ATARIMOUSE"
 "Display.Phosphor" "YES"
-"Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
 ""
 
 "Cart.MD5" "96f806fc62005205d851e758d050dfca"
@@ -13504,7 +13686,7 @@
 ""
 
 "Cart.MD5" "977294ae6526c31c7f9a166ee00964ad"
-"Cart.Manufacturer" "Atari - GCC, Douglas B. Macrae"
+"Cart.Manufacturer" "Atari - GCC, Ava-Robin Cohen, Douglas B. Macrae"
 "Cart.ModelNo" "CX2677, CX2677P"
 "Cart.Name" "Dig Dug (1983) (Atari) (PAL)"
 "Cart.Highscore" "{\"notes\":\"Variation 1 is easy; 2 is normal\",\"score_addresses\":[\"0xff\",\"0xff\"],\"variations_address\":\"0x80\",\"variations_count\":2,\"variations_zero_based\":true}"
@@ -13525,9 +13707,9 @@
 "Cart.ModelNo" "720113-1A, 03206"
 "Cart.Name" "Solar Storm (1983) (Imagic)"
 "Cart.Note" "Uses the Paddle Controllers"
-"Controller.MouseAxis" "01 45"
 "Controller.PaddlesXCenter" "20"
 "Controller.PaddlesYCenter" "20"
+"Controller.MouseAxis" "01 45"
 ""
 
 "Cart.MD5" "97933c9f20873446e4c1f8a4da21575f"
@@ -13572,9 +13754,9 @@
 "Cart.Manufacturer" "SpiceWare - Darrell Spice Jr."
 "Cart.Name" "Draconian"
 "Cart.Rarity" "Homebrew"
+"Cart.Highscore" "{\"notes\":\"Variations are difficulty level\",\"score_addresses\":[\"0x177b\",\"0x177a\",\"0x1779\",\"0x1778\"],\"score_digits\":8,\"special_address\":\"0x1780\",\"special_bcd\":false,\"special_label\":\"Sect.\",\"special_zero_based\":true,\"variations_address\":\"0x0811\",\"variations_count\":4,\"variations_zero_based\":true}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1107"
 "Display.Phosphor" "YES"
-"Cart.Highscore" "{\"notes\":\"Variations are difficulty level\",\"score_addresses\":[\"0x177b\",\"0x177a\",\"0x1779\",\"0x1778\"],\"score_digits\":8,\"special_address\":\"0x1780\",\"special_bcd\":false,\"special_label\":\"Sect.\",\"special_zero_based\":true,\"variations_address\":\"0x0811\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "9813b9e4b8a6fd919c86a40c6bda8c93"
@@ -13603,7 +13785,13 @@
 
 "Cart.MD5" "98555b95cb38e0e0b22b482b2b60a5b6"
 "Cart.Name" "Spinning Fireball (Unknown) (PAL)"
+"Cart.Url" "http://www.atariprotos.com/2600/software/firespinner/firespinner.htm"
 "Display.Phosphor" "YES"
+""
+
+"Cart.MD5" "989a48c6ed5893c366c9592f7568c1e8"
+"Cart.Name" "Freeway (Unknown) (PAL) (Hack)"
+"Cart.Rarity" "Hack"
 ""
 
 "Cart.MD5" "98ba601a60172cb46c5bf9a962fd5b1f"
@@ -13750,10 +13938,10 @@
 "Cart.ModelNo" "CX2622 - 6-99813, 49-75107"
 "Cart.Name" "Breakout (1978) (Atari) (4K)"
 "Cart.Note" "Uses the Paddle Controllers"
-"Controller.MouseAxis" "01 60"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xce\",\"0xcd\"],\"score_digits\":3,\"variations_count\":1}"
 "Controller.PaddlesXCenter" "12"
 "Controller.PaddlesYCenter" "12"
-"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xce\",\"0xcd\"],\"score_digits\":3,\"variations_count\":1}"
+"Controller.MouseAxis" "01 60"
 ""
 
 "Cart.MD5" "9a4274409216ff09ecde799f2a56ac73"
@@ -13770,8 +13958,8 @@
 
 "Cart.MD5" "9ad362179c2eea4ea115c7640b4b003e"
 "Cart.Name" "Barnstorming (Unknown) (PAL)"
-"Display.Format" "NTSC50"
 "Cart.Highscore" "{\"score_addresses\":[\"0xb5\",\"0xb6\",\"0xb7\"],\"score_digits\":6,\"score_inverted\":true,\"variations_address\":\"0x80\",\"variations_count\":4,\"variations_zero_based\":true}"
+"Display.Format" "NTSC50"
 ""
 
 "Cart.MD5" "9ad36e699ef6f45d9eb6c4cf90475c9f"
@@ -13796,9 +13984,7 @@
 ""
 
 "Cart.MD5" "9afdfe1cff7f37f1c971fe3f0c900606"
-"Cart.Manufacturer" "Funvision - Fund. International Co."
-"Cart.Name" "Plug Attack (Funvision)"
-"Cart.Note" "AKA Plaque Attack"
+"Cart.Name" "Plaque Attack (Unknown)"
 ""
 
 "Cart.MD5" "9b150a42fc788960fbb4cbe250259ee2"
@@ -13928,7 +14114,7 @@
 ""
 
 "Cart.MD5" "9d522a3759aa855668e75962c84546f7"
-"Cart.Manufacturer" "Atari, Tom Rudadahl"
+"Cart.Manufacturer" "Atari, Tom Reuterdahl"
 "Cart.ModelNo" "CX2634, CX2634P"
 "Cart.Name" "Golf (1980) (Atari) (PAL)"
 ""
@@ -13970,7 +14156,7 @@
 ""
 
 "Cart.MD5" "9e192601829f5f5c2d3b51f8ae25dbe5"
-"Cart.Manufacturer" "PlayAround - J.H.M."
+"Cart.Manufacturer" "PlayAround - JHM"
 "Cart.ModelNo" "201"
 "Cart.Name" "Cathouse Blues (1982) (PlayAround)"
 "Display.Phosphor" "YES"
@@ -13995,6 +14181,11 @@
 "Cart.Name" "Tac Scan (1983) (Sega) [h1]"
 "Controller.MouseAxis" "AUTO 60"
 "Display.Phosphor" "YES"
+""
+
+"Cart.MD5" "9e6fde3b65726c116c3e5110c3d1dedf"
+"Cart.Manufacturer" "Fotomania"
+"Cart.Name" "Megamania (Fotomania)"
 ""
 
 "Cart.MD5" "9e792a59f8795664cbaaff1ba152d731"
@@ -14108,10 +14299,10 @@
 "Cart.Manufacturer" "Atari, Omegamatrix"
 "Cart.Name" "Super Breakout Menu (2020) (Hack)"
 "Cart.Note" "Hack of Super Breakout"
-"Controller.MouseAxis" "AUTO 45"
+"Cart.Highscore" "{\"score_addresses\":[\"0xdc\",\"0xdd\"],\"variations_address\":\"0xc0\",\"variations_count\":9}"
 "Controller.PaddlesXCenter" "17"
 "Controller.PaddlesYCenter" "17"
-"Cart.Highscore" "{\"score_addresses\":[\"0xdc\",\"0xdd\"],\"variations_address\":\"0xc0\",\"variations_count\":9}"
+"Controller.MouseAxis" "AUTO 45"
 ""
 
 "Cart.MD5" "9f9ee0f60c119c831e80694b6678ca1a"
@@ -14125,6 +14316,11 @@
 "Cart.Name" "Hunchy II (2005)"
 "Cart.Note" "Homebrew"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=330"
+""
+
+"Cart.MD5" "9fa61e79ac8ccf05103fc95bf415a7de"
+"Cart.Manufacturer" "Tron"
+"Cart.Name" "River Raid (Tron)"
 ""
 
 "Cart.MD5" "9fc2d1627dcdd8925f4c042e38eb0bc9"
@@ -14254,6 +14450,7 @@
 "Cart.Manufacturer" "Activision, Dan Kitchen"
 "Cart.ModelNo" "AX-029"
 "Cart.Name" "Crackpots (1983) (Activision)"
+"Cart.Note" "Flower Power"
 ""
 
 "Cart.MD5" "a189f280521f4e5224d345efb4e75506"
@@ -14309,7 +14506,7 @@
 ""
 
 "Cart.MD5" "a2170318a8ef4b50a1b1d38567c220d6"
-"Cart.Manufacturer" "Amiga - Video Soft"
+"Cart.Manufacturer" "Amiga - Video Soft, Chip Curry"
 "Cart.ModelNo" "3125"
 "Cart.Name" "Surf's Up (1983) (Amiga) (Prototype) [a1]"
 "Cart.Note" "Uses the Joyboard controller"
@@ -14442,7 +14639,8 @@
 ""
 
 "Cart.MD5" "a3873d7c544af459f40d58dfcfb78887"
-"Cart.Name" "Tennis (Unknown)"
+"Cart.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
+"Cart.Name" "Tennis (Jone Yuan)"
 ""
 
 "Cart.MD5" "a3b9d2be822eab07e7f4b10593fb5eaa"
@@ -14470,7 +14668,7 @@
 ""
 
 "Cart.MD5" "a3f8aebb38182749cb8da85cfbc63d7c"
-"Cart.Name" "Tennis (208 in 1) (Unknown) (PAL) (Hack)"
+"Cart.Name" "Tennis (Unknown) (PAL) (Hack)"
 "Cart.Rarity" "Hack"
 ""
 
@@ -14483,7 +14681,7 @@
 
 "Cart.MD5" "a406d2f6d84e61d842f4cb13b2b1cfa7"
 "Cart.Manufacturer" "Tigervision, John Harris - Teldec"
-"Cart.ModelNo" "7-002"
+"Cart.ModelNo" "7-002 - 3.60002 VE"
 "Cart.Name" "Jawbreaker (1982) (Tigervision) (PAL)"
 ""
 
@@ -14495,7 +14693,7 @@
 ""
 
 "Cart.MD5" "a41450333f8dd0e96e5e9f0af3770ae9"
-"Cart.Name" "Basic Math (208 in 1) (Unknown) (PAL)"
+"Cart.Name" "Basic Math (Unknown) (PAL)"
 ""
 
 "Cart.MD5" "a422194290c64ef9d444da9d6a207807"
@@ -14620,7 +14818,7 @@
 ""
 
 "Cart.MD5" "a539b9fd1ba57e46442b3e9351e6383b"
-"Cart.Name" "River Raid (208 in 1) (Unknown) (PAL) (Hack) [a]"
+"Cart.Name" "River Raid (Unknown) (PAL) (Hack) [a]"
 "Cart.Rarity" "Hack"
 ""
 
@@ -14628,15 +14826,15 @@
 "Cart.Manufacturer" "Carrere Video - JWDA, Sylvia Day, Todd Marshall, Robin McDaniel, Henry Will IV - Teldec - Prism"
 "Cart.ModelNo" "USC2001"
 "Cart.Name" "Gopher (1983) (Carrere Video) (PAL)"
-"Cart.Note" "AKA Vossicht Whlmaus!"
+"Cart.Note" "AKA Vorsicht Wuhlmaus!"
 ""
 
 "Cart.MD5" "a5855d73d304d83ef07dde03e379619f"
 "Cart.Manufacturer" "Atari, David Crane"
 "Cart.Name" "Boggle (08-07-1978) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
-"Display.Phosphor" "YES"
 "Cart.Url" "http://www.atariprotos.com/2600/software/boggle/boggle.htm"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "a58b11148c18d85e4c2aef4ff46ade67"
@@ -14750,10 +14948,10 @@
 "Cart.ModelNo" "CX2630 - 49-75122"
 "Cart.Name" "Circus Atari (1980) (Atari)"
 "Cart.Note" "Uses the Paddle Controllers"
-"Controller.MouseAxis" "01 55"
+"Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xab\"],\"variations_address\":\"0xa8\",\"variations_count\":8}"
 "Controller.PaddlesXCenter" "16"
 "Controller.PaddlesYCenter" "16"
-"Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xab\"],\"variations_address\":\"0xa8\",\"variations_count\":8}"
+"Controller.MouseAxis" "01 55"
 ""
 
 "Cart.MD5" "a7bf8353f77caca407ef85c2698fdff2"
@@ -14851,8 +15049,8 @@
 "Cart.ModelNo" "MT4646"
 "Cart.Name" "Rocky & Bullwinkle (1983) (Mattel) (Prototype)"
 "Cart.Rarity" "Prototype"
-"Cart.Url" "http://www.atariprotos.com/2600/software/rocky/rocky.htm"
 "Cart.Type" "4K"
+"Cart.Url" "http://www.atariprotos.com/2600/software/rocky/rocky.htm"
 ""
 
 "Cart.MD5" "a8a703e073183a89c94d4d99b9661b7f"
@@ -14864,9 +15062,7 @@
 ""
 
 "Cart.MD5" "a8b3ea6836b99bea77c8f603cf1ea187"
-"Cart.Manufacturer" "CCE"
-"Cart.ModelNo" "C-861"
-"Cart.Name" "Boxing (1983) (CCE)"
+"Cart.Name" "Boxing (Unknown)"
 ""
 
 "Cart.MD5" "a8c447efbec3a2b5d08b05a09999bd92"
@@ -14897,12 +15093,12 @@
 ""
 
 "Cart.MD5" "a91d0858a52de3a2e6468437212d93e8"
-"Cart.Name" "Q-bert (208 in 1) (Unknown) (PAL)"
+"Cart.Name" "Q-bert (Unknown) (PAL)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xd9\",\"0xda\",\"0xdb\"],\"score_digits\":5,\"special_address\":\"0xe3\",\"special_label\":\"Round\",\"special_zero_based\":true,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "a936d80083e99d48752ad15c2b5f7c96"
-"Cart.Name" "Room of Doom (208 in 1) (Unknown) (PAL)"
+"Cart.Name" "Room of Doom (Unknown) (PAL)"
 "Display.Phosphor" "YES"
 ""
 
@@ -14911,10 +15107,10 @@
 "Cart.Name" "Kabul! (Jess Ragan) (Hack)"
 "Cart.Note" "Hack of Kaboom!"
 "Cart.Rarity" "Hack"
-"Controller.MouseAxis" "01 50"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 "Controller.PaddlesXCenter" "17"
 "Controller.PaddlesYCenter" "17"
-"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
+"Controller.MouseAxis" "01 50"
 ""
 
 "Cart.MD5" "a94528ae05dd051894e945d4d2349b3b"
@@ -14938,8 +15134,8 @@
 "Cart.Manufacturer" "Atari, Brad Stewart"
 "Cart.ModelNo" "CX2649, CX2649P"
 "Cart.Name" "Asteroids (1981) (Atari) (PAL) [a1]"
-"Display.Phosphor" "YES"
 "Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "a97733b0852ee3096300102cb0689175"
@@ -15008,7 +15204,7 @@
 ""
 
 "Cart.MD5" "aa7bb54d2c189a31bb1fa20099e42859"
-"Cart.Manufacturer" "CBS Electronics, Ed English"
+"Cart.Manufacturer" "CBS Electronics - Individeo, Ed English"
 "Cart.ModelNo" "4L4478"
 "Cart.Name" "Mr. Do! (1983) (CBS Electronics) (PAL)"
 "Display.Phosphor" "YES"
@@ -15174,7 +15370,7 @@
 ""
 
 "Cart.MD5" "ac3dd22dd945724be705ddd2785487c2"
-"Cart.Manufacturer" "Atari - GCC, Mark Ackerman, Noellie Alito"
+"Cart.Manufacturer" "Atari - GCC, Mark Ackerman, Noelie Alito"
 "Cart.ModelNo" "CX2692"
 "Cart.Name" "Moon Patrol (06-15-1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
@@ -15185,9 +15381,9 @@
 "Cart.Manufacturer" "Retroactive"
 "Cart.Name" "Qb (2.15) (Retroactive) (NTSC)"
 "Cart.Rarity" "New Release"
+"Cart.Highscore" "{\"score_addresses\":[\"0xe6\",\"0xe5\",\"0xe4\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=926"
 "Display.Phosphor" "YES"
-"Cart.Highscore" "{\"score_addresses\":[\"0xe6\",\"0xe5\",\"0xe4\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
 "Cart.MD5" "ac5f78bae0638cf3f2a0c8d07eb4df69"
@@ -15270,9 +15466,8 @@
 ""
 
 "Cart.MD5" "ad8072675109d13fdd31a2e0403d5cff"
-"Cart.Manufacturer" "Funvision - Fund. International Co."
-"Cart.Name" "Tank City (Funvision)"
-"Cart.Note" "AKA Thunderground"
+"Cart.Name" "Thunderground (Unknown) (Hack)"
+"Cart.Rarity" "Hack"
 ""
 
 "Cart.MD5" "adb770ff70e9adf08bbb907a7eccd240"
@@ -15297,10 +15492,10 @@
 "Cart.ModelNo" "CG-01-N"
 "Cart.Name" "Lady Bug (NTSC)"
 "Cart.Rarity" "Homebrew"
+"Cart.Highscore" "{\"score_addresses\":[\"0x8e\",\"0x8d\",\"0x8c\"],\"score_digits\":6,\"special_address\":\"0x89\",\"special_bcd\":false,\"special_label\":\"Part\",\"special_zero_based\":true,\"variations_address\":\"0x8a\",\"variations_count\":3,\"variations_zero_based\":true}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=829"
 "Console.RightDiff" "A"
 "Display.Phosphor" "YES"
-"Cart.Highscore" "{\"score_addresses\":[\"0x8e\",\"0x8d\",\"0x8c\"],\"score_digits\":6,\"special_address\":\"0x89\",\"special_bcd\":false,\"special_label\":\"Part\",\"special_zero_based\":true,\"variations_address\":\"0x8a\",\"variations_count\":3,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "ae047e9468bda961d8e9e9d8ff52980f"
@@ -15372,7 +15567,7 @@
 ""
 
 "Cart.MD5" "aec9b885d0e8b24e871925630884095c"
-"Cart.Manufacturer" "Amiga - Video Soft"
+"Cart.Manufacturer" "Amiga - Video Soft, Chip Curry"
 "Cart.ModelNo" "3125"
 "Cart.Name" "Surf's Up (1983) (Amiga) (Prototype)"
 "Cart.Note" "Uses the Joyboard controller"
@@ -15397,10 +15592,10 @@
 "Cart.ModelNo" "AG-010, AG-010-04"
 "Cart.Name" "Kaboom! (1981) (Activision) (4K)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
-"Controller.MouseAxis" "01 50"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 "Controller.PaddlesXCenter" "17"
 "Controller.PaddlesYCenter" "17"
-"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
+"Controller.MouseAxis" "01 50"
 ""
 
 "Cart.MD5" "af6f3e9718bccfcd8afb421f96561a34"
@@ -15518,10 +15713,10 @@
 "Cart.ModelNo" "EAG-010, PAG-010 - 711 010-720"
 "Cart.Name" "Kaboom! (1981) (Activision) (PAL) (4K)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
-"Controller.MouseAxis" "01 50"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 "Controller.PaddlesXCenter" "17"
 "Controller.PaddlesYCenter" "17"
-"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
+"Controller.MouseAxis" "01 50"
 ""
 
 "Cart.MD5" "b0a9c6f6c8014c4023e0341ba11ca35e"
@@ -15631,7 +15826,7 @@
 ""
 
 "Cart.MD5" "b1c14b5ac896400cc91c8e5dd67acb59"
-"Cart.Name" "River Raid (208 in 1) (Unknown) (PAL) (Hack)"
+"Cart.Name" "River Raid (Unknown) (PAL) (Hack)"
 "Cart.Rarity" "Hack"
 ""
 
@@ -15660,8 +15855,8 @@
 "Cart.ModelNo" "CX2649, 49-75163"
 "Cart.Name" "Asteroids (1981) (Atari) [a1]"
 "Cart.Rarity" "Common"
-"Display.Phosphor" "YES"
 "Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "b23ebf427713dd0198b7ef47dbd07ef4"
@@ -15723,9 +15918,9 @@
 ""
 
 "Cart.MD5" "b2ab209976354ad4a0e1676fc1fe5a82"
-"Cart.Manufacturer" "Atari - Axlon, Tod Frye - Heuristica, Agustin Ortiz"
+"Cart.Manufacturer" "Atari - Axlon, Tod Frye - Heuristica, Agustin Ortiz Valdiviezo"
 "Cart.ModelNo" "CX26169"
-"Cart.Name" "Shooting Arcade (03-07-1989) (Atari) (Prototype) [a3]"
+"Cart.Name" "Shooting Arcade (03-07-1989) (Atari) (Prototype) [screen 4]"
 "Cart.Note" "Uses the Light Gun Controller (left only)"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/shootingarcade/shootingarcade.htm"
@@ -15757,6 +15952,11 @@
 "Cart.MD5" "b2f0d7217147160b2f481954cedf814b"
 "Cart.Name" "Marquee Drawer (2001) (B. Watson)"
 "Display.Phosphor" "YES"
+""
+
+"Cart.MD5" "b2ff4327d305fb473dfa474e0dc3701b"
+"Cart.Manufacturer" "Fotomania"
+"Cart.Name" "Demon Attack (Fotomania)"
 ""
 
 "Cart.MD5" "b3017e397f74efd53caf8fae0a38e3fe"
@@ -15802,6 +16002,7 @@
 "Cart.MD5" "b36040a2f9ecafa73d835d804a572dbf"
 "Cart.Manufacturer" "Digitel"
 "Cart.Name" "Pac Man (1983) (Digitel)"
+"Cart.Note" "AKA Pac-Man"
 ""
 
 "Cart.MD5" "b37f0fe822b92ca8f5e330bf62d56ea9"
@@ -15835,6 +16036,10 @@
 "Cart.ModelNo" "1003"
 "Cart.Name" "Burning Desire (1982) (Mystique) (PAL)"
 "Display.Phosphor" "YES"
+""
+
+"Cart.MD5" "b4362c4eb535eda58079e2a1a6a45707"
+"Cart.Name" "Exocet (Unknown) (PAL)"
 ""
 
 "Cart.MD5" "b438a6aa9d4b9b8f0b2ddb51323b21e4"
@@ -15879,8 +16084,8 @@
 "Cart.Manufacturer" "Mystique - American Multiple Industries, Joel H. Martin"
 "Cart.Name" "Beat 'Em & Eat 'Em (1982) (Mystique) (PAL)"
 "Cart.Note" "Uses the Paddle Controller (left only)"
-"Controller.MouseAxis" "AUTO 45"
 "Controller.PaddlesXCenter" "20"
+"Controller.MouseAxis" "AUTO 45"
 ""
 
 "Cart.MD5" "b4f87ce75f7329c18301a2505fe59cd3"
@@ -15948,7 +16153,7 @@
 "Cart.MD5" "b5cdbab514ea726a14383cff6db40e26"
 "Cart.Manufacturer" "Video Gems"
 "Cart.ModelNo" "VG-04"
-"Cart.Name" "Mission Survive (1983) (Video Gems) (PAL) [a]"
+"Cart.Name" "Mission Survive (1983) (Video Gems) (PAL) [louder sounds]"
 "Console.RightDiff" "A"
 "Display.Phosphor" "YES"
 ""
@@ -15962,7 +16167,7 @@
 ""
 
 "Cart.MD5" "b6166f15720fdf192932f1f76df5b65d"
-"Cart.Manufacturer" "Amiga - Video Soft"
+"Cart.Manufacturer" "Amiga - Video Soft, Frank Ellis"
 "Cart.ModelNo" "3130"
 "Cart.Name" "Off Your Rocker (1983) (Amiga) (Prototype)"
 "Cart.Note" "Uses the Amiga Joyboard"
@@ -16052,6 +16257,11 @@
 "Cart.Name" "Boxing (32 in 1) (1988) (Atari) (PAL) (4K)"
 ""
 
+"Cart.MD5" "b77dc19183a8fb857c601074f53f6d81"
+"Cart.Manufacturer" "Fotomania"
+"Cart.Name" "Bobby Is Going Home (Fotomania)"
+""
+
 "Cart.MD5" "b7903268e235310dc346a164af4c7022"
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Cat Trax (Thomas Jentzsch) (PAL60)"
@@ -16124,7 +16334,7 @@
 ""
 
 "Cart.MD5" "b83579c4450fcbdf2b108903731fa734"
-"Cart.Name" "Mission 3,000 A.D. (208 in 1) (Unknown) (PAL)"
+"Cart.Name" "Mission 3,000 A.D. (Unknown) (PAL)"
 "Display.Phosphor" "YES"
 ""
 
@@ -16144,9 +16354,8 @@
 ""
 
 "Cart.MD5" "b86a12e53ab107b6caedd4e0272aa034"
-"Cart.Manufacturer" "Funvision - Fund. International Co."
-"Cart.Name" "Treasure Hunting (Funvision)"
-"Cart.Note" "AKA Pitfall!"
+"Cart.Name" "Pitfall! (Unknown)"
+"Cart.Note" "Pitfall Harry's Jungle Adventure"
 "Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
@@ -16197,6 +16406,12 @@
 "Display.Phosphor" "YES"
 ""
 
+"Cart.MD5" "b9429824ab7ce3c1a83438f32af3f4e1"
+"Cart.Name" "Blackjack (Unknown) (PAL) [a]"
+"Cart.Note" "Uses the Paddle Controllers"
+"Controller.Left" "PADDLES_IAXIS"
+""
+
 "Cart.MD5" "b955eb0e2baf7a437c186bddd4c49958"
 "Cart.Manufacturer" "Atari, Omegamatrix"
 "Cart.Name" "Space Invaders Menu (2020) (PAL60) (Hack)"
@@ -16226,6 +16441,14 @@
 "Display.Phosphor" "YES"
 ""
 
+"Cart.MD5" "b98cea78c084434f226993d5f6c8059a"
+"Cart.Manufacturer" "Parker Brothers - On-Time Software, Joe Gaucher, Dan Kurczewski, Louis Marbel, Kathy Von"
+"Cart.ModelNo" "PB5110"
+"Cart.Name" "James Bond 007 (1983) (Parker Bros) (Prototype) [a2]"
+"Cart.Note" "James Bond Agent 007"
+"Cart.Rarity" "Prototype"
+""
+
 "Cart.MD5" "b9b4612358a0b2c1b4d66bb146767306"
 "Cart.Manufacturer" "Commavid, Ben Burch"
 "Cart.ModelNo" "CM-010"
@@ -16246,17 +16469,23 @@
 "Cart.ModelNo" "931511"
 "Cart.Name" "Action Force (1983) (Parker Bros) (PAL)"
 "Cart.Note" "AKA G.I. Joe - Cobra Strike"
-"Controller.MouseAxis" "01 55"
+"Controller.Right" "JOYSTICK"
 "Controller.PaddlesXCenter" "10"
 "Controller.PaddlesYCenter" "10"
-"Controller.Right" "JOYSTICK"
+"Controller.MouseAxis" "01 55"
 ""
 
 "Cart.MD5" "b9f9c0fed0db08c34346317f3957a945"
-"Cart.Manufacturer" "SuperVision"
-"Cart.ModelNo" "405, 427, 806, 808, 813, 816"
-"Cart.Name" "Chopper Command (SuperVision) (PAL)"
+"Cart.Name" "Chopper Command (Unknown) (PAL)"
 "Cart.Highscore" "{\"score_addresses\":[\"0xec\",\"0xee\",\"0xf0\"],\"score_digits\":6,\"variations_address\":\"0xe0\",\"variations_count\":4,\"variations_zero_based\":true}"
+""
+
+"Cart.MD5" "ba0d6ac9158a5c6a59431658d0df9486"
+"Cart.Manufacturer" "Atari, Jerome Domurat, Steve Woita"
+"Cart.ModelNo" "CX2696"
+"Cart.Name" "Asterix (08-01-1983) (Atari) (Prototype) (PAL)"
+"Cart.Note" "AKA Taz"
+"Cart.Rarity" "Prototype"
 ""
 
 "Cart.MD5" "ba257438f8a78862a9e014d831143690"
@@ -16321,6 +16550,10 @@
 "Cart.Highscore" "{\"score_addresses\":[\"0xb3\",\"0xb5\"],\"score_inverted\":true,\"variations_count\":1,\"variations_zero_based\":true}"
 ""
 
+"Cart.MD5" "bb268fde5a210622a09e52af539930ed"
+"Cart.Name" "Infiltrate (Unknown) (PAL)"
+""
+
 "Cart.MD5" "bb2b83fff97604f74ada565e0b5bae94"
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Missile Control - Atari Mouse Hack v1.15 (PAL60) (Thomas Jentzsch)"
@@ -16332,8 +16565,8 @@
 "Cart.Manufacturer" "Atari, Brad Stewart"
 "Cart.ModelNo" "CX2649, CX2649P"
 "Cart.Name" "Asteroids (1981) (Atari) (PAL) [no copyright]"
-"Display.Phosphor" "YES"
 "Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "bb579404924c40ca378b4aff6ccf302d"
@@ -16350,7 +16583,7 @@
 ""
 
 "Cart.MD5" "bb756aa98b847dddc8fc170bc79f92b2"
-"Cart.Name" "Golf (208 in 1) (Unknown) (PAL)"
+"Cart.Name" "Golf (Unknown) (PAL)"
 ""
 
 "Cart.MD5" "bb9112d478a1a922d2c289a752bba695"
@@ -16358,6 +16591,10 @@
 "Cart.Name" "SpaceMaster X-7 (Amiga Mouse) (Omegamatrix)"
 "Cart.Note" "Uses Amiga Mouse Controller"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1187"
+""
+
+"Cart.MD5" "bbe40e0a59628a35e9288fe8b3de7b9f"
+"Cart.Name" "Keystone Kapers (Unknown) (PAL) [a]"
 ""
 
 "Cart.MD5" "bbf8c7c9ed280151934aabe138e41ba7"
@@ -16390,7 +16627,7 @@
 "Cart.Manufacturer" "Atari, Douglas Neubauer, Mimi Nyden"
 "Cart.ModelNo" "CX26136"
 "Cart.Name" "Solaris (1986) (Atari) (PAL)"
-"Cart.Note" "AKA Universe, Star Raiders II, The Last Starfighter"
+"Cart.Note" "AKA The Last Starfighter, Star Raiders II, Universe"
 "Cart.Highscore" "{\"score_addresses\":[\"0xde\",\"0xdd\",\"0xdc\"],\"score_digits\":6,\"score_trailing_zeroes\":1,\"variations_count\":1}"
 ""
 
@@ -16422,6 +16659,7 @@
 
 "Cart.MD5" "bcb31f22856b0028c00d12f0e4c0a952"
 "Cart.Manufacturer" "Canal 3 - Intellivision"
+"Cart.ModelNo" "C 3051"
 "Cart.Name" "Thunderground (Canal 3)"
 ""
 
@@ -16498,8 +16736,26 @@
 "Cart.Name" "Mega Force (1982) (20th Century Fox) (PAL) [a]"
 ""
 
+"Cart.MD5" "bdbfd5f85421fd2a713258503123a4bc"
+"Cart.Manufacturer" "Dactari - Milmar"
+"Cart.Name" "River Raid (1983) (Dactari)"
+""
+
 "Cart.MD5" "bdc381baf7c252c63739c5e9ed087a5c"
 "Cart.Name" "Vertical Ship Demo 1 (PD)"
+""
+
+"Cart.MD5" "bdc6ecf341705ab3ae4113a1a902fca3"
+"Cart.Manufacturer" "Fotomania"
+"Cart.Name" "Atlantis (Fotomania)"
+""
+
+"Cart.MD5" "bde78ccb6478664190921b6951ec7919"
+"Cart.Manufacturer" "Parker Brothers - On-Time Software, Joe Gaucher, Dan Kurczewski, Louis Marbel, Kathy Von"
+"Cart.ModelNo" "PB5110"
+"Cart.Name" "James Bond 007 (1983) (Parker Bros) (Prototype) [a5]"
+"Cart.Note" "James Bond Agent 007"
+"Cart.Rarity" "Prototype"
 ""
 
 "Cart.MD5" "bdecc81f740200780db04a107c3a1eba"
@@ -16603,9 +16859,9 @@
 "Cart.Name" "Demons to Diamonds (CCE)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.SwapPaddles" "YES"
-"Controller.MouseAxis" "10 57"
 "Controller.PaddlesXCenter" "15"
 "Controller.PaddlesYCenter" "15"
+"Controller.MouseAxis" "10 57"
 ""
 
 "Cart.MD5" "bf976cf80bcf52c5f164c1d45f2b316b"
@@ -16626,6 +16882,10 @@
 "Cart.Rarity" "Homebrew"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1046"
 "Display.Phosphor" "YES"
+""
+
+"Cart.MD5" "bfe14ea890d3a4e2293568c0fcce726f"
+"Cart.Name" "Challenge of.... Nexar, The (Unknown) (PAL) [a]"
 ""
 
 "Cart.MD5" "bff8f8f53a8aeb1ee804004ccbb08313"
@@ -16652,9 +16912,9 @@
 "Cart.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES_IAXDR"
 "Controller.SwapPaddles" "YES"
-"Controller.MouseAxis" "AUTO 60"
 "Controller.PaddlesXCenter" "13"
 "Controller.PaddlesYCenter" "13"
+"Controller.MouseAxis" "AUTO 60"
 ""
 
 "Cart.MD5" "c02e1afa0671e438fd526055c556d231"
@@ -16686,6 +16946,11 @@
 "Cart.MD5" "c05f367fa4767ceb27abadf0066df7f4"
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "TomInv (31-07-2001) (Thomas Jentzsch)"
+""
+
+"Cart.MD5" "c07e9a1af18261a80db55d0280a0fa95"
+"Cart.Manufacturer" "Fotomania"
+"Cart.Name" "Frostbite (Fotomania)"
 ""
 
 "Cart.MD5" "c08d0cee43077d3055febb00e5745c1d"
@@ -16820,14 +17085,22 @@
 "Cart.Note" "AKA TRON - Deadly Discs"
 ""
 
+"Cart.MD5" "c1f9f70ae527093b6af3b6531860e75d"
+"Cart.Manufacturer" "CBS Electronics - Roklan, Joe Gaucher, Dan Kurczewski, Alex Leavens, Kathy Von"
+"Cart.ModelNo" "M8776, M8793"
+"Cart.Name" "Gorf (1982) (CBS Electronics) (Prototype)"
+"Cart.Rarity" "Prototype"
+"Display.Phosphor" "YES"
+""
+
 "Cart.MD5" "c1fdd44efda916414be3527a47752c75"
 "Cart.Manufacturer" "Parker Brothers, John Emerson"
 "Cart.ModelNo" "PB5920"
 "Cart.Name" "G.I. Joe - Cobra Strike (1983) (Parker Bros)"
 "Cart.Note" "Uses the Paddle (left) and Joystick (right) Controllers"
+"Controller.Right" "JOYSTICK"
 "Controller.PaddlesXCenter" "16"
 "Controller.PaddlesYCenter" "16"
-"Controller.Right" "JOYSTICK"
 ""
 
 "Cart.MD5" "c20f15282a1aa8724d70c117e5c9709e"
@@ -16896,7 +17169,7 @@
 
 "Cart.MD5" "c29f8db680990cb45ef7fef6ab57a2c2"
 "Cart.Manufacturer" "Parker Brothers - Roklan, Paul Crowley, Bob Curtiss"
-"Cart.ModelNo" "931505"
+"Cart.ModelNo" "PB5320"
 "Cart.Name" "Super Cobra (1983) (Parker Bros)"
 ""
 
@@ -16920,7 +17193,7 @@
 ""
 
 "Cart.MD5" "c2c7a11717e255593e54d0acaf653ee5"
-"Cart.Name" "Chopper Command (208 in 1) (Unknown) (PAL) (Hack)"
+"Cart.Name" "Chopper Command (Unknown) (PAL) (Hack)"
 "Cart.Rarity" "Hack"
 "Cart.Highscore" "{\"score_addresses\":[\"0xec\",\"0xee\",\"0xf0\"],\"score_digits\":6,\"variations_address\":\"0xe0\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
@@ -16936,9 +17209,9 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Missile Command Atari Trak-Ball Hack v1.3 (NTSC) (Thomas Jentzsch)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
+"Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1183"
 "Display.Phosphor" "YES"
-"Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
 ""
 
 "Cart.MD5" "c2fbef02b6eea37d8df3e91107f89950"
@@ -17004,6 +17277,14 @@
 
 "Cart.MD5" "c3f53993ade534b0982ca3a286c85bb5"
 "Cart.Name" "Full Screen Bitmap Drawing System (12-02-2003) (Andrew Davie)"
+""
+
+"Cart.MD5" "c405655354a9b674203b97f22fc31d8f"
+"Cart.Manufacturer" "Parker Brothers - On-Time Software, Joe Gaucher, Dan Kurczewski, Louis Marbel, Kathy Von"
+"Cart.ModelNo" "PB5110"
+"Cart.Name" "James Bond 007 (1983) (Parker Bros) (Prototype) [a3]"
+"Cart.Note" "James Bond Agent 007"
+"Cart.Rarity" "Prototype"
 ""
 
 "Cart.MD5" "c4060a31d61ba857e756430a0a15ed2e"
@@ -17092,6 +17373,13 @@
 "Cart.Name" "Imagic Selector ROM (1982) (Imagic) [a]"
 ""
 
+"Cart.MD5" "c4cdd90fab655d3e91933289dd1d8753"
+"Cart.Manufacturer" "Data Age, J. Ray Dettling"
+"Cart.ModelNo" "112-008"
+"Cart.Name" "Frankenstein's Monster (1982) (Data Age) (Prototype)"
+"Cart.Rarity" "Prototype"
+""
+
 "Cart.MD5" "c4d888bcf532e7c9c5fdeafbb145266a"
 "Cart.Name" "Space Robot (Unknown) (PAL)"
 "Display.Phosphor" "YES"
@@ -17121,10 +17409,10 @@
 "Cart.Name" "S.I.PLIX 2 (Hack)"
 "Cart.Note" "Hack of Kaboom!"
 "Cart.Rarity" "Hack"
-"Controller.MouseAxis" "01 50"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 "Controller.PaddlesXCenter" "17"
 "Controller.PaddlesYCenter" "17"
-"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
+"Controller.MouseAxis" "01 50"
 ""
 
 "Cart.MD5" "c52d9bbdc5530e1ef8e8ba7be692b01e"
@@ -17200,8 +17488,8 @@
 "Cart.Manufacturer" "Atari, Howard Scott Warshaw - Sears"
 "Cart.ModelNo" "CX2655 - 49-75167"
 "Cart.Name" "Yars' Revenge (1982) (Atari)"
-"Display.Phosphor" "YES"
 "Cart.Highscore" "{\"notes\":\"Variations are larger by 1\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":8,\"variations_zero_based\":true}"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "c59633dbebd926c150fb6d30b0576405"
@@ -17231,9 +17519,9 @@
 ""
 
 "Cart.MD5" "c5bf03028b2e8f4950ec8835c6811d47"
-"Cart.Manufacturer" "Atari - Axlon, Tod Frye - Heuristica, Agustin Ortiz"
+"Cart.Manufacturer" "Atari - Axlon, Tod Frye - Heuristica, Agustin Ortiz Valdiviezo"
 "Cart.ModelNo" "CX26169"
-"Cart.Name" "Shooting Arcade (03-07-1989) (Atari) (Prototype) [a2]"
+"Cart.Name" "Shooting Arcade (03-07-1989) (Atari) (Prototype) [screen 3]"
 "Cart.Note" "Uses the Light Gun Controller (left only)"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/shootingarcade/shootingarcade.htm"
@@ -17273,10 +17561,10 @@
 "Cart.ModelNo" "CX2622, CX2622P"
 "Cart.Name" "Breakout (1978) (Atari) (PAL) (4K)"
 "Cart.Note" "Uses the Paddle Controllers"
-"Controller.MouseAxis" "01"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xce\",\"0xcd\"],\"score_digits\":3,\"variations_count\":1}"
 "Controller.PaddlesXCenter" "9"
 "Controller.PaddlesYCenter" "9"
-"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xce\",\"0xcd\"],\"score_digits\":3,\"variations_count\":1}"
+"Controller.MouseAxis" "01"
 ""
 
 "Cart.MD5" "c63a98ca404aa5ee9fcff1de488c3f43"
@@ -17360,10 +17648,10 @@
 "Cart.ModelNo" "CX2622 - 6-99813, 49-75107"
 "Cart.Name" "Breakout (1978) (Atari) (16K)"
 "Cart.Note" "Uses the Paddle Controllers"
-"Controller.MouseAxis" "01 60"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xce\",\"0xcd\"],\"score_digits\":3,\"variations_count\":1}"
 "Controller.PaddlesXCenter" "12"
 "Controller.PaddlesYCenter" "12"
-"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xce\",\"0xcd\"],\"score_digits\":3,\"variations_count\":1}"
+"Controller.MouseAxis" "01 60"
 ""
 
 "Cart.MD5" "c73ae5ba5a0a3f3ac77f0a9e14770e73"
@@ -17387,7 +17675,7 @@
 ""
 
 "Cart.MD5" "c7600d72247c5dfa1ec1a88d23e6c85e"
-"Cart.Manufacturer" "Arcadia Corporation, Scott Nelson"
+"Cart.Manufacturer" "Starpath Corporation, Stephen H. Landrum, Scott Nelson"
 "Cart.ModelNo" "13"
 "Cart.Name" "Sweat! - The Decathlon Game (1 of 3) (1983) (Arcadia) (Prototype)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
@@ -17546,9 +17834,9 @@
 "Cart.Name" "Star Wars - Jedi Arena (1983) (Parker Bros)"
 "Cart.Note" "Uses the Paddle Controllers (swapped)"
 "Controller.SwapPaddles" "YES"
-"Controller.MouseAxis" "10 50"
 "Controller.PaddlesXCenter" "16"
 "Controller.PaddlesYCenter" "16"
+"Controller.MouseAxis" "10 50"
 ""
 
 "Cart.MD5" "ca09fa7406b7d2aea10d969b6fc90195"
@@ -17577,15 +17865,16 @@
 "Cart.Manufacturer" "CCE"
 "Cart.ModelNo" "C-812"
 "Cart.Name" "Pac Man (1983) (CCE)"
+"Cart.Note" "AKA Pac-Man"
 ""
 
 "Cart.MD5" "ca54de69f7cdf4d7996e86f347129892"
-"Cart.Manufacturer" "PlayAround - J.H.M."
+"Cart.Manufacturer" "PlayAround - JHM"
 "Cart.ModelNo" "201"
 "Cart.Name" "Philly Flasher (1982) (PlayAround)"
 "Cart.Note" "Uses the Paddle Controllers, AKA Beat 'Em & Eat 'Em"
-"Controller.MouseAxis" "AUTO 45"
 "Controller.PaddlesXCenter" "20"
+"Controller.MouseAxis" "AUTO 45"
 ""
 
 "Cart.MD5" "ca7aaebd861a9ef47967d31c5a6c4555"
@@ -17676,6 +17965,14 @@
 "Cart.Name" "Star Wars - Death Star Battle (1983) (Parker Bros) (PAL)"
 ""
 
+"Cart.MD5" "cb9e924160a4df520456fbe745d61959"
+"Cart.Manufacturer" "Parker Brothers - On-Time Software, Joe Gaucher, Dan Kurczewski, Louis Marbel, Kathy Von"
+"Cart.ModelNo" "PB5110"
+"Cart.Name" "James Bond 007 (1983) (Parker Bros) (Prototype) [a1]"
+"Cart.Note" "James Bond Agent 007"
+"Cart.Rarity" "Prototype"
+""
+
 "Cart.MD5" "cba56e939252b05df7b7de87307d12ca"
 "Cart.Name" "Playfield Text Demo (2001) (Roger Williams)"
 ""
@@ -17713,9 +18010,9 @@
 "Cart.ModelNo" "CX2610 - 49-75127"
 "Cart.Name" "Warlords (1981) (Atari)"
 "Cart.Note" "Uses the Paddle Controllers"
-"Controller.MouseAxis" "01 50"
 "Controller.PaddlesXCenter" "18"
 "Controller.PaddlesYCenter" "19"
+"Controller.MouseAxis" "01 50"
 ""
 
 "Cart.MD5" "cbeafd37f15e0dddb0540dbe15c545a4"
@@ -17760,8 +18057,8 @@
 "Cart.Name" "Oscar's Trash Race (03-30-1983) (Atari) (Prototype)"
 "Cart.Note" "Uses the Keyboard Controllers"
 "Cart.Rarity" "Prototype"
-"Controller.Right" "KEYBOARD"
 "Cart.Url" "http://www.atariprotos.com/2600/software/oscar/oscar.htm"
+"Controller.Right" "KEYBOARD"
 ""
 
 "Cart.MD5" "cc724ebe74a109e39c0b2784ddc980ca"
@@ -17774,6 +18071,11 @@
 
 "Cart.MD5" "cc74ddb45d7bc4d04c2e6f1907416699"
 "Cart.Name" "Colour Display Programme (1997) (Chris Cracknell)"
+""
+
+"Cart.MD5" "cc75d0c727e5e4af4fa366a78b0f60d2"
+"Cart.Manufacturer" "Fotomania"
+"Cart.Name" "Planet Patrol (Fotomania)"
 ""
 
 "Cart.MD5" "cca33ae30a58f39e3fc5d80f94dc0362"
@@ -17807,8 +18109,8 @@
 "Cart.ModelNo" "CX2649, 49-75163"
 "Cart.Name" "Asteroids (1981) (Atari) [no copyright]"
 "Cart.Rarity" "Common"
-"Display.Phosphor" "YES"
 "Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "cccfe9e9a11b1dad04beba46eefb7351"
@@ -17869,8 +18171,7 @@
 ""
 
 "Cart.MD5" "cd4ded1ede63c4dd09f3dd01bda7458c"
-"Cart.Manufacturer" "Future Video Games"
-"Cart.Name" "Laser Gate (Future Video Games) (PAL)"
+"Cart.Name" "Laser Gates (Unknown) (PAL)"
 "Cart.Note" "AKA Innerspace"
 ""
 
@@ -17892,7 +18193,7 @@
 
 "Cart.MD5" "cd88ef1736497288c4533bcca339f881"
 "Cart.Manufacturer" "SEGA - Teldec"
-"Cart.ModelNo" "005-10"
+"Cart.ModelNo" "005-10 - 3.60104 VG"
 "Cart.Name" "Buck Rogers - Planet of Zoom (1983) (SEGA) (PAL)"
 "Display.Phosphor" "YES"
 ""
@@ -17933,9 +18234,9 @@
 "Cart.ModelNo" "AR-4300"
 "Cart.Name" "Fireball (1982) (Arcadia) (PAL)"
 "Cart.Note" "Uses the Paddle Controllers"
-"Controller.MouseAxis" "01"
 "Controller.PaddlesXCenter" "15"
 "Controller.PaddlesYCenter" "15"
+"Controller.MouseAxis" "01"
 ""
 
 "Cart.MD5" "cdc1a5c61d7488eadc9aba36166b253d"
@@ -18148,7 +18449,7 @@
 ""
 
 "Cart.MD5" "cfe2185f84ce8501933beb5c5e1fd053"
-"Cart.Name" "Football (208 in 1) (Unknown) (PAL)"
+"Cart.Name" "Football (Unknown) (PAL)"
 ""
 
 "Cart.MD5" "cfe62ed7125ff9fae99b4c8a367c0399"
@@ -18186,8 +18487,8 @@
 "Cart.Name" "Mr. Roboto (Paul Slocum) (Hack)"
 "Cart.Note" "Hack of Berzerk"
 "Cart.Rarity" "Hack"
-"Display.Phosphor" "YES"
 "Cart.Highscore" "{\"score_addresses\":[\"0xdd\",\"0xde\",\"0xdf\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":12}"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "cfffc4b97d01cc3e7b9f47575f7b11ec"
@@ -18294,7 +18595,7 @@
 "Cart.Manufacturer" "Apollo - Games by Apollo, Larry Minor, Ernie Runyon, Ed Salvo - RCA Video Jeux"
 "Cart.ModelNo" "AP-2004"
 "Cart.Name" "Lost Luggage (1982) (Apollo) (PAL)"
-"Cart.Note" "AKA La valise piegee"
+"Cart.Note" "AKA La valise piegee, Airport Mayhem"
 ""
 
 "Cart.MD5" "d0b9df57bfea66378c0418ec68cfe37f"
@@ -18307,8 +18608,8 @@
 "Cart.MD5" "d0b9f705aa5f61f47a748a66009ae2d2"
 "Cart.Name" "Synthcart (14-01-2002) (Paul Slocum)"
 "Cart.Note" "Uses Keyboard Controllers"
-"Display.Phosphor" "YES"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=101"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "d0cb28e1b7bd6c7f683a0917b59f707e"
@@ -18357,6 +18658,13 @@
 "Cart.Highscore" "{\"notes\":\"Score is for current player\",\"score_addresses\":[\"0x99\",\"0x98\",\"0x97\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
+"Cart.MD5" "d1680f0bb8e6a2773fe712bb3f480a18"
+"Cart.Manufacturer" "Atari, Jim Huether, Alan J. Murphy, Robert C. Polaro"
+"Cart.ModelNo" "CX2666"
+"Cart.Name" "RealSports Volleyball (05-11-1982) (Atari) (Prototype)"
+"Cart.Rarity" "Prototype"
+""
+
 "Cart.MD5" "d170317ae4c7d997a989c7d6567c2840"
 "Cart.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
 "Cart.Name" "Stampede (Jone Yuan) (4K) (Hack)"
@@ -18365,9 +18673,7 @@
 ""
 
 "Cart.MD5" "d175258b2973b917a05b46df4e1cf15d"
-"Cart.Manufacturer" "Suntek"
-"Cart.ModelNo" "SS-032"
-"Cart.Name" "Walker (1983) (Suntek) (PAL) [a]"
+"Cart.Name" "Guignol (Unknown) (PAL)"
 ""
 
 "Cart.MD5" "d17a671029b1532b197defca5f3649a7"
@@ -18401,9 +18707,9 @@
 "Cart.ModelNo" "133-002"
 "Cart.Name" "Warplock (1983) (Gameworld) (PAL)"
 "Cart.Note" "Uses the Paddle Controllers"
-"Controller.MouseAxis" "01 40"
 "Controller.PaddlesXCenter" "22"
 "Controller.PaddlesYCenter" "22"
+"Controller.MouseAxis" "01 40"
 "Display.Phosphor" "YES"
 ""
 
@@ -18411,8 +18717,8 @@
 "Cart.Manufacturer" "Bit Corporation"
 "Cart.ModelNo" "R320"
 "Cart.Name" "Missile Command (32 in 1) (BitCorp) (Hack)"
-"Display.Phosphor" "YES"
 "Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "d1d704a7146e95709b57b6d4cac3f788"
@@ -18431,7 +18737,7 @@
 
 "Cart.MD5" "d214c7a734e133a5c18e93229435b57a"
 "Cart.Manufacturer" "Digivision"
-"Cart.Name" "Mickey (Digivision)"
+"Cart.Name" "Mickey (1984) (Digivision)"
 "Cart.Note" "AKA Sorcerer's Apprentice"
 "Cart.Type" "UASW"
 ""
@@ -18504,10 +18810,7 @@
 ""
 
 "Cart.MD5" "d3171407c3a8bb401a3a62eb578f48fb"
-"Cart.Manufacturer" "ZiMAG - Emag - Vidco"
-"Cart.ModelNo" "GN-080"
-"Cart.Name" "Spinning Fireball (1983) (ZiMAG) (Prototype) [a]"
-"Cart.Rarity" "Prototype"
+"Cart.Name" "Spinning Fireball (Unknown)"
 "Cart.Url" "http://www.atariprotos.com/2600/software/firespinner/firespinner.htm"
 "Display.Phosphor" "YES"
 ""
@@ -18533,8 +18836,8 @@
 "Cart.ModelNo" "VC2005"
 "Cart.Name" "Piece o' Cake (1983) (U.S. Games)"
 "Cart.Note" "Uses the Paddle Controllers"
-"Controller.MouseAxis" "AUTO 60"
 "Controller.PaddlesXCenter" "10"
+"Controller.MouseAxis" "AUTO 60"
 ""
 
 "Cart.MD5" "d3456b4cf1bd1a7b8fb907af1a80ee15"
@@ -18591,14 +18894,14 @@
 "Cart.Note" "Uses the Paddle Controllers (right only)"
 "Console.SwapPorts" "YES"
 "Controller.SwapPaddles" "YES"
-"Controller.MouseAxis" "AUTO 60"
 "Controller.PaddlesXCenter" "18"
 "Controller.PaddlesYCenter" "18"
+"Controller.MouseAxis" "AUTO 60"
 "Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "d47387658ed450db77c3f189b969cc00"
-"Cart.Manufacturer" "PlayAround - J.H.M."
+"Cart.Manufacturer" "PlayAround - JHM"
 "Cart.ModelNo" "206"
 "Cart.Name" "Westward Ho (1982) (PlayAround) (PAL)"
 "Cart.Note" "AKA Custer's Revenge"
@@ -18664,8 +18967,8 @@
 "Cart.Manufacturer" "Atari, Brad Stewart - Sears"
 "Cart.ModelNo" "CX2649, 49-75163"
 "Cart.Name" "Asteroids (1981) (Atari) [a2]"
-"Display.Phosphor" "YES"
 "Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "d573089534ca596e64efef474be7b6bc"
@@ -18673,10 +18976,10 @@
 "Cart.ModelNo" "931511"
 "Cart.Name" "Action Force (1983) (Parker Bros) (PAL) [a]"
 "Cart.Note" "AKA G.I. Joe - Cobra Strike"
-"Controller.MouseAxis" "01 55"
+"Controller.Right" "JOYSTICK"
 "Controller.PaddlesXCenter" "10"
 "Controller.PaddlesYCenter" "10"
-"Controller.Right" "JOYSTICK"
+"Controller.MouseAxis" "01 55"
 ""
 
 "Cart.MD5" "d57913088e0c49ac3a716bf9837b284f"
@@ -18723,9 +19026,7 @@
 ""
 
 "Cart.MD5" "d5e5b3ec074fff8976017ef121d26129"
-"Cart.Manufacturer" "Star Game"
-"Cart.ModelNo" "003"
-"Cart.Name" "River Raid (Star Game)"
+"Cart.Name" "River Raid (Unknown)"
 ""
 
 "Cart.MD5" "d5f965c159e26a1fb49a22a47fbd1dd0"
@@ -18748,9 +19049,9 @@
 "Cart.Name" "Demons to Diamonds (1982) (Atari) (PAL)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.SwapPaddles" "YES"
-"Controller.MouseAxis" "10 57"
 "Controller.PaddlesXCenter" "12"
 "Controller.PaddlesYCenter" "12"
+"Controller.MouseAxis" "10 57"
 ""
 
 "Cart.MD5" "d62d7d1a974c31c5803f96a8c1552510"
@@ -18912,7 +19213,7 @@
 "Cart.Manufacturer" "Suntek"
 "Cart.ModelNo" "SS-034"
 "Cart.Name" "Farmyard Fun (1983) (Suntek) (PAL)"
-"Cart.Note" "AKA Play Farm"
+"Cart.Note" "AKA Pumuckl at the Farm House"
 ""
 
 "Cart.MD5" "d86deb100c6abed1588aa84b2f7b3a98"
@@ -19035,8 +19336,8 @@
 "Cart.ModelNo" "CX2633, CX2633P"
 "Cart.Name" "Night Driver (1980) (Atari) (PAL) (4K)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
-"Controller.MouseAxis" "AUTO 65"
 "Controller.PaddlesXCenter" "12"
+"Controller.MouseAxis" "AUTO 65"
 "Display.Phosphor" "YES"
 ""
 
@@ -19092,11 +19393,11 @@
 ""
 
 "Cart.MD5" "da7a17dcdaa62d6971393c0a6faf202a"
-"Cart.Name" "Flag Capture (208 in 1) (Unknown) (PAL)"
+"Cart.Name" "Flag Capture (Unknown) (PAL)"
 ""
 
 "Cart.MD5" "dab844deed4c752632b5e786b0f47999"
-"Cart.Name" "Super Challenge Baseball (208 in 1) (Unknown) (PAL)"
+"Cart.Name" "Super Challenge Baseball (Unknown) (PAL)"
 ""
 
 "Cart.MD5" "dac38b4dd3da73bb7b2e9d70c61d2b7c"
@@ -19223,19 +19524,19 @@
 "Cart.ModelNo" "DA1001"
 "Cart.Name" "Encounter at L-5 (1982) (Data Age)"
 "Cart.Note" "Uses the Paddle Controllers"
-"Controller.MouseAxis" "AUTO 50"
 "Controller.PaddlesXCenter" "15"
 "Controller.PaddlesYCenter" "15"
+"Controller.MouseAxis" "AUTO 50"
 ""
 
 "Cart.MD5" "dbdaf82f4f0c415a94d1030271a9ef44"
 "Cart.Manufacturer" "CCE"
 "Cart.Name" "Kaboom! (CCE)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
-"Controller.MouseAxis" "01 50"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 "Controller.PaddlesXCenter" "17"
 "Controller.PaddlesYCenter" "17"
-"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
+"Controller.MouseAxis" "01 50"
 ""
 
 "Cart.MD5" "dbdd21e1ee3d72119e8cd14d943c585b"
@@ -19342,7 +19643,7 @@
 ""
 
 "Cart.MD5" "dd1422ffd538e2e33b339ebeef4f259d"
-"Cart.Manufacturer" "Atari, Michael Sierchio"
+"Cart.Manufacturer" "Atari, Robert Zdybel"
 "Cart.Name" "Football Demo (1982) (Atari)"
 "Cart.Rarity" "Prototype"
 ""
@@ -19378,8 +19679,8 @@
 "Cart.Manufacturer" "Atari, Brad Stewart - Sears"
 "Cart.ModelNo" "CX2649, 49-75163"
 "Cart.Name" "Asteroids (1981) (Atari)"
-"Display.Phosphor" "YES"
 "Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "dd8a2124d4eda200df715c698a6ea887"
@@ -19408,8 +19709,8 @@
 "Cart.MD5" "dde55d9868911407fe8b3fefef396f00"
 "Cart.Manufacturer" "Manuel Rotschkar (Xype)"
 "Cart.Name" "Seawolf (2004)"
-"Cart.Highscore" "{\"notes\":\"User defined variation based on switches\",\"score_addresses\":[\"0x90\",\"0x91\",\"0x92\"],\"score_digits\":6,\"variations_address\":\"0x00\",\"variations_count\":4}"
 "Cart.Rarity" "Homebrew"
+"Cart.Highscore" "{\"notes\":\"User defined variation based on switches\",\"score_addresses\":[\"0x90\",\"0x91\",\"0x92\"],\"score_digits\":6,\"variations_address\":\"0x00\",\"variations_count\":4}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=287"
 ""
 
@@ -19460,9 +19761,7 @@
 ""
 
 "Cart.MD5" "de5aab22e5aba5edcb29a3e7491ff319"
-"Cart.Manufacturer" "Star Game"
-"Cart.ModelNo" "001"
-"Cart.Name" "Donkey Kong (Star Game)"
+"Cart.Name" "Pac Kong (Unknown)"
 "Cart.Note" "AKA Inca Gold"
 ""
 
@@ -19540,7 +19839,7 @@
 ""
 
 "Cart.MD5" "df3e6a9b6927cf59b7afb626f6fd7eea"
-"Cart.Name" "Tuby Bird (208 in 1) (Unknown) (PAL)"
+"Cart.Name" "Tuby Bird (Unknown) (PAL)"
 "Cart.Note" "AKA Dolphin"
 ""
 
@@ -19549,8 +19848,8 @@
 "Cart.Name" "Asteroids 2 (Franlin Cruz) (Hack)"
 "Cart.Note" "Hack of Asteroids"
 "Cart.Rarity" "Hack"
-"Display.Phosphor" "YES"
 "Cart.Highscore" "{\"notes\":\"Variations > 32 differ by 1\",\"score_addresses\":[\"0xbd\",\"0xbe\"],\"score_bcd\":false,\"score_digits\":5,\"score_inverted\":true,\"score_trailing_zeroes\":1,\"variations_address\":\"0x80\",\"variations_bcd\":false,\"variations_count\":66}"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "df5cc5cccdc140eb7107f5b8adfacda1"
@@ -19635,6 +19934,13 @@
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=102"
 ""
 
+"Cart.MD5" "dfe885fb877a0f8fa604b7d99a6deaad"
+"Cart.Manufacturer" "Atari, Robert C. Polaro, Alan J. Murphy - Sears"
+"Cart.ModelNo" "CX2609 - 49-75186"
+"Cart.Name" "Defender (11-XX-1981) (Atari) (Prototype)"
+"Cart.Rarity" "Prototype"
+""
+
 "Cart.MD5" "dff33523ccd2fdc8912e84cab8e0d982"
 "Cart.Name" "Fu Kung! (V0.03) (10-01-2003) (Andrew Davie)"
 ""
@@ -19673,7 +19979,7 @@
 ""
 
 "Cart.MD5" "e04f1c1e4401d584d3f4343410a5bcc4"
-"Cart.Manufacturer" "Wizard Video Games - MicroGraphic Image, Robert Barber, Tim Martin"
+"Cart.Manufacturer" "Wizard Video Games - VSS - MicroGraphic Image, Robert Barber, Tim Martin"
 "Cart.ModelNo" "007"
 "Cart.Name" "Halloween (1983) (Wizard Video Games) (Prototype) [a]"
 "Cart.Rarity" "Prototype"
@@ -19685,6 +19991,14 @@
 "Cart.ModelNo" "626.502 9 - 746381"
 "Cart.Name" "Top Gun (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Air Raiders"
+""
+
+"Cart.MD5" "e0cbfc33f4926022ccaf6d0d0e920a0e"
+"Cart.Manufacturer" "Parker Brothers - Roklan, Joe Gaucher"
+"Cart.ModelNo" "PB5080"
+"Cart.Name" "Gyruss (1983) (Parker Bros) (Prototype) (PAL)"
+"Cart.Rarity" "Prototype"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "e0cf2dcc4c1348c468f5bb1e421c9164"
@@ -19762,14 +20076,14 @@
 "Cart.ModelNo" "AG-010, AG-010-04"
 "Cart.Name" "Kaboom! (1981) (Activision) (16K)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
-"Controller.MouseAxis" "01 50"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 "Controller.PaddlesXCenter" "17"
 "Controller.PaddlesYCenter" "17"
-"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
+"Controller.MouseAxis" "01 50"
 ""
 
 "Cart.MD5" "e14feddeb82f5160ed5cf9ca4078e58d"
-"Cart.Name" "SpaceMaster X-7 (208 in 1) (Unknown) (PAL)"
+"Cart.Name" "SpaceMaster X-7 (Unknown) (PAL)"
 ""
 
 "Cart.MD5" "e150f0d14f013a104b032305c0ce23ef"
@@ -19824,7 +20138,7 @@
 ""
 
 "Cart.MD5" "e1d79e4e7c150f3861256c541ec715a1"
-"Cart.Name" "Space Jockey (208 in 1) (Unknown) (PAL)"
+"Cart.Name" "Space Jockey (Unknown) (PAL)"
 ""
 
 "Cart.MD5" "e1e09e2f280e8e142121a377d0dc1b46"
@@ -19899,8 +20213,8 @@
 "Cart.Manufacturer" "Manuel Polik"
 "Cart.Name" "Star Fire (2003) (XYPE) (PAL)"
 "Cart.Rarity" "Homebrew"
-"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=229"
 "Cart.Highscore" "{\"score_addresses\":[\"0x81\",\"0x82\",\"0x83\"],\"score_digits\":6,\"special_address\":\"0x84\",\"special_label\":\"Wave\",\"special_zero_based\":true,\"variations_count\":1}"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=229"
 ""
 
 "Cart.MD5" "e28113d10c0c14cc3b5f430b0d142fcb"
@@ -19925,12 +20239,20 @@
 "Cart.Note" "AKA Plaque Attack"
 ""
 
+"Cart.MD5" "e2b36d0781d5a5be64dad87fe20e0de3"
+"Cart.Manufacturer" "Parker Brothers - On-Time Software, Joe Gaucher, Dan Kurczewski, Louis Marbel, Kathy Von"
+"Cart.ModelNo" "PB5110"
+"Cart.Name" "James Bond 007 (1983) (Parker Bros) (Prototype) [a4]"
+"Cart.Note" "James Bond Agent 007"
+"Cart.Rarity" "Prototype"
+""
+
 "Cart.MD5" "e2b682f6e6d76b35c180c7d847e93b4f"
 "Cart.Name" "Dodge Demo 4 (PD)"
 ""
 
 "Cart.MD5" "e2c1b60eaa8eda131632d73e4e0c146b"
-"Cart.Manufacturer" "Atari - GCC, Mark Ackerman, Noellie Alito"
+"Cart.Manufacturer" "Atari - GCC, Mark Ackerman, Noelie Alito"
 "Cart.ModelNo" "CX2692"
 "Cart.Name" "Moon Patrol (07-04-1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
@@ -19977,10 +20299,7 @@
 ""
 
 "Cart.MD5" "e3533684a7ef930a7fbd0c4dd8ec4847"
-"Cart.Manufacturer" "CCE"
-"Cart.ModelNo" "C-856"
-"Cart.Name" "Pimball (1983) (CCE)"
-"Cart.Note" "AKA Video Pinball"
+"Cart.Name" "Video Pinball (Unknown)"
 ""
 
 "Cart.MD5" "e3600be9eb98146adafdc12d91323d0f"
@@ -20074,10 +20393,10 @@
 "Cart.Manufacturer" "CCE"
 "Cart.Name" "Kaboom! (CCE) (4K)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
-"Controller.MouseAxis" "01 50"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 "Controller.PaddlesXCenter" "17"
 "Controller.PaddlesYCenter" "17"
-"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
+"Controller.MouseAxis" "01 50"
 ""
 
 "Cart.MD5" "e4a0b28befaaa2915df1fa01238b1e29"
@@ -20149,9 +20468,10 @@
 ""
 
 "Cart.MD5" "e51030251e440cffaab1ac63438b44ae"
-"Cart.Manufacturer" "Parker Brothers - On-Time Software, Joe Gaucher, Louis Marbel"
+"Cart.Manufacturer" "Parker Brothers - On-Time Software, Joe Gaucher, Dan Kurczewski, Louis Marbel, Kathy Von"
 "Cart.ModelNo" "PB5110"
 "Cart.Name" "James Bond 007 (1984) (Parker Bros)"
+"Cart.Note" "James Bond Agent 007"
 "Cart.Rarity" "Rare"
 "Display.Phosphor" "YES"
 ""
@@ -20166,9 +20486,7 @@
 ""
 
 "Cart.MD5" "e5359cbbbff9c6d7fe8aeff5fb471b46"
-"Cart.Manufacturer" "CCE"
-"Cart.ModelNo" "C-849"
-"Cart.Name" "Boom Bang (1983) (CCE)"
+"Cart.Name" "Boom Bang (Unknown) [a1]"
 "Cart.Note" "AKA Crackpots"
 ""
 
@@ -20286,9 +20604,7 @@
 ""
 
 "Cart.MD5" "e63a87c231ee9a506f9599aa4ef7dfb9"
-"Cart.Manufacturer" "Tigervision, Warren Schwader"
-"Cart.ModelNo" "7-003"
-"Cart.Name" "Threshold (1982) (Tigervision)"
+"Cart.Name" "Threshold (Unknown)"
 ""
 
 "Cart.MD5" "e63efdfda9a4003dcd77a854a781a06a"
@@ -20328,9 +20644,9 @@
 "Cart.Name" "Video Olympics Menu (2020) (Hack)"
 "Cart.Note" "Hack of Video Olympics"
 "Controller.SwapPaddles" "YES"
-"Controller.MouseAxis" "AUTO 60"
 "Controller.PaddlesXCenter" "13"
 "Controller.PaddlesYCenter" "13"
+"Controller.MouseAxis" "AUTO 60"
 ""
 
 "Cart.MD5" "e6d5948f451a24994dfaaca51dfdb4e1"
@@ -20344,9 +20660,9 @@
 "Cart.ModelNo" "720113-2A, 13206"
 "Cart.Name" "Solar Storm (1983) (Imagic) (PAL)"
 "Cart.Note" "Uses the Paddle Controllers"
-"Controller.MouseAxis" "01 45"
 "Controller.PaddlesXCenter" "20"
 "Controller.PaddlesYCenter" "20"
+"Controller.MouseAxis" "01 45"
 ""
 
 "Cart.MD5" "e6e5bb0e4f4350da573023256268313d"
@@ -20365,17 +20681,17 @@
 "Cart.Name" "Sadoom (Thomas Jentzsch) (PAL) (Hack)"
 "Cart.Note" "Hack of Kaboom!"
 "Cart.Rarity" "Hack"
-"Controller.MouseAxis" "01 50"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 "Controller.PaddlesXCenter" "17"
 "Controller.PaddlesYCenter" "17"
-"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
+"Controller.MouseAxis" "01 50"
 ""
 
 "Cart.MD5" "e72eb8d4410152bdcb69e7fba327b420"
 "Cart.Manufacturer" "Atari, Douglas Neubauer, Mimi Nyden"
 "Cart.ModelNo" "CX26136"
 "Cart.Name" "Solaris (1986) (Atari)"
-"Cart.Note" "AKA Universe, Star Raiders II, The Last Starfighter"
+"Cart.Note" "AKA The Last Starfighter, Star Raiders II, Universe"
 "Cart.Highscore" "{\"score_addresses\":[\"0xde\",\"0xdd\",\"0xdc\"],\"score_digits\":6,\"score_trailing_zeroes\":1,\"variations_count\":1}"
 ""
 
@@ -20468,6 +20784,11 @@
 "Cart.Name" "Lock 'n' Chase (Unknown) (PAL)"
 ""
 
+"Cart.MD5" "e88b0962a1c951e02f3fa2b8038b9d02"
+"Cart.Manufacturer" "Fotomania"
+"Cart.Name" "Chopper Command (1982) (Fotomania)"
+""
+
 "Cart.MD5" "e8a3473bf786cf796d1336d2d03a0008"
 "Cart.Manufacturer" "Parker Brothers, Wilfredo Aguilar, Michael Becker, Neil McKenzie, Bob Smith, Brad Stewart"
 "Cart.ModelNo" "PB5540"
@@ -20512,8 +20833,8 @@
 "Cart.Manufacturer" "Atari, Howard Scott Warshaw"
 "Cart.ModelNo" "CX2655, CX2655P"
 "Cart.Name" "Yars' Revenge (1982) (Atari) (PAL)"
-"Display.Phosphor" "YES"
 "Cart.Highscore" "{\"notes\":\"Variations are larger by 1\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":8,\"variations_zero_based\":true}"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "e923001015bedd7901569f035d9c592c"
@@ -20547,7 +20868,7 @@
 ""
 
 "Cart.MD5" "e97eafd0635651d3999cece953c06bd5"
-"Cart.Name" "M.A.S.H (208 in 1) (Unknown) (PAL)"
+"Cart.Name" "M.A.S.H (Unknown) (PAL) [a]"
 ""
 
 "Cart.MD5" "e9be3e8e4a7e73dd63ed4235a3a1a25f"
@@ -20561,8 +20882,7 @@
 ""
 
 "Cart.MD5" "e9c71f8cdba6037521c9a3c70819d171"
-"Cart.Manufacturer" "Action Hi Tech - Hi-Score"
-"Cart.Name" "Bank Heist (PAL)"
+"Cart.Name" "Bank Heist (Unknown) (PAL)"
 ""
 
 "Cart.MD5" "e9cb18770a41a16de63b124c1e8bd493"
@@ -20576,9 +20896,9 @@
 "Cart.Manufacturer" "Omegamatrix"
 "Cart.Name" "Millipede (Atari Mouse) v6.5 (Omegamatrix)"
 "Cart.Note" "Uses Atari Mouse Controller"
-"Display.Format" "PAL60"
 "Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_count\":1}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=1188"
+"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "e9e646f730b8400cd5da08c849ef3e3b"
@@ -20620,7 +20940,7 @@
 ""
 
 "Cart.MD5" "ea7e25ade3fe68f5b786ee0aa82b1fe5"
-"Cart.Name" "Galatic (208 in 1) (Unknown) (PAL)"
+"Cart.Name" "Galatic (Unknown) (PAL)"
 "Cart.Note" "AKA Challenge of.... Nexar, The"
 ""
 
@@ -20697,10 +21017,7 @@
 ""
 
 "Cart.MD5" "eb503cc64c3560cd78b7051188b7ba56"
-"Cart.Manufacturer" "Star Game"
-"Cart.ModelNo" "043"
-"Cart.Name" "Moto Laser (Star Game)"
-"Cart.Note" "AKA Mega Force"
+"Cart.Name" "Mega Force (Unknown)"
 ""
 
 "Cart.MD5" "eb634650c3912132092b7aee540bbce3"
@@ -20814,6 +21131,11 @@
 "Cart.Manufacturer" "Apollo - Games by Apollo, Ed Salvo, Byron Parks"
 "Cart.ModelNo" "AP-2001"
 "Cart.Name" "Spacechase (1982) (Apollo)"
+"Cart.Note" "AKA Space Attack"
+""
+
+"Cart.MD5" "ecd78ba4a9441866e7be2abd6aaef662"
+"Cart.Name" "Gas Hog (Unknown)"
 ""
 
 "Cart.MD5" "ece463abde92e8b89bcd867ec71751b8"
@@ -20824,7 +21146,7 @@
 ""
 
 "Cart.MD5" "ece908d77ab944f7bac84322b9973549"
-"Cart.Name" "Tom Boy (Unknown) (PAL60)"
+"Cart.Name" "Tom Boy (Unknown) "
 "Cart.Note" "AKA Pitfall!"
 "Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
 ""
@@ -20901,10 +21223,10 @@
 "Cart.ModelNo" "AG-010, AG-010-04"
 "Cart.Name" "Kaboom! (1981) (Activision) (8K)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
-"Controller.MouseAxis" "01 50"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 "Controller.PaddlesXCenter" "17"
 "Controller.PaddlesYCenter" "17"
-"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
+"Controller.MouseAxis" "01 50"
 ""
 
 "Cart.MD5" "eddef10fdc0029301064115ae0cd41d4"
@@ -20944,10 +21266,10 @@
 "Cart.ModelNo" "CX2608"
 "Cart.Name" "Super Breakout (1982 - 1981) (Atari) (PAL)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
-"Controller.MouseAxis" "01 45"
+"Cart.Highscore" "{\"score_addresses\":[\"0xdc\",\"0xdd\"],\"variations_address\":\"0xc0\",\"variations_count\":9}"
 "Controller.PaddlesXCenter" "17"
 "Controller.PaddlesYCenter" "17"
-"Cart.Highscore" "{\"score_addresses\":[\"0xdc\",\"0xdd\"],\"variations_address\":\"0xc0\",\"variations_count\":9}"
+"Controller.MouseAxis" "01 45"
 ""
 
 "Cart.MD5" "ee659ae50e9df886ac4f8d7ad10d046a"
@@ -20984,8 +21306,8 @@
 "Cart.MD5" "ee8027d554d14c8d0b86f94737d2fdcc"
 "Cart.Manufacturer" "Canal 3 - Intellivision"
 "Cart.Name" "Yars' Revenge (Canal 3)"
-"Display.Phosphor" "YES"
 "Cart.Highscore" "{\"notes\":\"Variations are larger by 1\",\"score_addresses\":[\"0xe0\",\"0xe1\",\"0xe2\"],\"score_digits\":6,\"variations_address\":\"0x80\",\"variations_count\":8,\"variations_zero_based\":true}"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "ee84bdc5dae268e227e407c7b5e6b6b7"
@@ -21122,9 +21444,10 @@
 ""
 
 "Cart.MD5" "f04ee80011d95798006378643650aaa7"
-"Cart.Manufacturer" "Atari, Bill Aspromonte, John Russell, Michael Sierchio, Robert Zdybel"
+"Cart.Manufacturer" "Atari, Bill Aspromonte, Dave Joly, John Russell, Michael Sierchio, Robert Zdybel"
 "Cart.ModelNo" "CX26114"
 "Cart.Name" "Pigs in Space (1983) (Atari) (Prototype)"
+"Cart.Note" "Starring Miss Piggy"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/pigsinspace/pigsinspace.htm"
 ""
@@ -21161,8 +21484,8 @@
 "Cart.MD5" "f0631c6675033428238408885d7e4fde"
 "Cart.Manufacturer" "Paul Slocum"
 "Cart.Name" "Test Cart (2002) (Paul Slocum)"
-"Display.Phosphor" "YES"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=102"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "f066bea7ab0a37b83c83c924a87c5b67"
@@ -21217,9 +21540,9 @@
 ""
 
 "Cart.MD5" "f0ef9a1e5d4027a157636d7f19952bb5"
-"Cart.Manufacturer" "Atari - Axlon, Tod Frye - Heuristica, Agustin Ortiz"
+"Cart.Manufacturer" "Atari - Axlon, Tod Frye - Heuristica, Agustin Ortiz Valdiviezo"
 "Cart.ModelNo" "CX26169"
-"Cart.Name" "Shooting Arcade (03-07-1989) (Atari) (Prototype) [a5]"
+"Cart.Name" "Shooting Arcade (03-07-1989) (Atari) (Prototype) [screen 6]"
 "Cart.Note" "Uses the Light Gun Controller (left only)"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/shootingarcade/shootingarcade.htm"
@@ -21260,10 +21583,10 @@
 "Cart.ModelNo" "CG-01-P"
 "Cart.Name" "Lady Bug (PAL60)"
 "Cart.Rarity" "Homebrew"
+"Cart.Highscore" "{\"score_addresses\":[\"0x8e\",\"0x8d\",\"0x8c\"],\"score_digits\":6,\"special_address\":\"0x89\",\"special_bcd\":false,\"special_label\":\"Part\",\"special_zero_based\":true,\"variations_address\":\"0x8a\",\"variations_count\":3,\"variations_zero_based\":true}"
 "Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=829"
 "Console.RightDiff" "A"
 "Display.Phosphor" "YES"
-"Cart.Highscore" "{\"score_addresses\":[\"0x8e\",\"0x8d\",\"0x8c\"],\"score_digits\":6,\"special_address\":\"0x89\",\"special_bcd\":false,\"special_label\":\"Part\",\"special_zero_based\":true,\"variations_address\":\"0x8a\",\"variations_count\":3,\"variations_zero_based\":true}"
 ""
 
 "Cart.MD5" "f14d5e96ec3380aef57a4b70132c6677"
@@ -21478,10 +21801,10 @@
 "Cart.ModelNo" "CX2622 - 6-99813, 49-75107"
 "Cart.Name" "Breakout (1978) (Atari)"
 "Cart.Note" "Uses the Paddle Controllers"
-"Controller.MouseAxis" "01 60"
+"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xce\",\"0xcd\"],\"score_digits\":3,\"variations_count\":1}"
 "Controller.PaddlesXCenter" "12"
 "Controller.PaddlesYCenter" "12"
-"Cart.Highscore" "{\"notes\":\"Variations cannot be defined\",\"score_addresses\":[\"0xce\",\"0xcd\"],\"score_digits\":3,\"variations_count\":1}"
+"Controller.MouseAxis" "01 60"
 ""
 
 "Cart.MD5" "f367e58667a30e7482175809e3cec4d4"
@@ -21521,9 +21844,9 @@
 "Cart.ModelNo" "649635"
 "Cart.Name" "See Saw (Double-Game Package) (1983) (Otto Versand) (PAL)"
 "Cart.Note" "AKA Circus Atari"
+"Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xab\"],\"variations_address\":\"0xa8\",\"variations_count\":8}"
 "Controller.Left" "JOYSTICK"
 "Controller.Right" "JOYSTICK"
-"Cart.Highscore" "{\"score_addresses\":[\"0xaa\",\"0xab\"],\"variations_address\":\"0xa8\",\"variations_count\":8}"
 ""
 
 "Cart.MD5" "f3f5f72bfdd67f3d0e45d097e11b8091"
@@ -21579,8 +21902,8 @@
 "Cart.ModelNo" "CX2633 - 49-75119"
 "Cart.Name" "Night Driver (1980) (Atari) (4K)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
-"Controller.MouseAxis" "AUTO 65"
 "Controller.PaddlesXCenter" "12"
+"Controller.MouseAxis" "AUTO 65"
 "Display.Phosphor" "YES"
 ""
 
@@ -21755,8 +22078,8 @@
 
 "Cart.MD5" "f6a9ea814d15b85bffe980c927df606b"
 "Cart.Name" "Missile Command (Unknown) (PAL)"
-"Display.Phosphor" "YES"
 "Cart.Highscore" "{\"score_addresses\":[\"0xf3\",\"0xf1\",\"0xef\"],\"score_digits\":6,\"variations_address\":\"0xe9\",\"variations_count\":34}"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "f6b5ebb65cbb2981af4d546c470629d7"
@@ -21790,6 +22113,12 @@
 "Cart.ModelNo" "SS-015"
 "Cart.Name" "Catch Time (1983) (Rainbow Vision) (PAL)"
 "Cart.Note" "AKA Plaque Attack"
+""
+
+"Cart.MD5" "f7048fa1f96360123ddae93cb3600ea2"
+"Cart.Manufacturer" "Fotomania"
+"Cart.Name" "Pitfall (Fotomania)"
+"Cart.Note" "AKA Pitfall!"
 ""
 
 "Cart.MD5" "f70e3f3bb2d19ec2aaec8f78dc43744f"
@@ -21828,6 +22157,7 @@
 "Cart.Manufacturer" "CCE"
 "Cart.ModelNo" "C-813"
 "Cart.Name" "Pitfall (1983) (CCE)"
+"Cart.Note" "AKA Pitfall!"
 "Cart.Highscore" "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}"
 ""
 
@@ -21914,7 +22244,12 @@
 "Cart.Manufacturer" "Video Game Cartridge - Ariola"
 "Cart.ModelNo" "TP-617"
 "Cart.Name" "Farmyard Fun (Ariola)"
-"Cart.Note" "AKA Play Farm"
+"Cart.Note" "AKA Pumuckl at the Farm House"
+""
+
+"Cart.MD5" "f7e92eccb2bb0fc307f984b4f29ce6df"
+"Cart.Manufacturer" "Fotomania"
+"Cart.Name" "Crackpots (Fotomania)"
 ""
 
 "Cart.MD5" "f7ec2f2bdbe8fbea048c0d5fa6503b0b"
@@ -21969,7 +22304,7 @@
 ""
 
 "Cart.MD5" "f844f4c6f3baaaf5322657442d6f29eb"
-"Cart.Manufacturer" "Atari, Sam Comstock, Richard Dobbis, Nick 'Sandy Maiwald' Turner"
+"Cart.Manufacturer" "Atari, Ed Bogas, Sam Comstock, Richard Dobbis, Nick 'Sandy Maiwald' Turner"
 "Cart.ModelNo" "CX26111"
 "Cart.Name" "Snoopy and the Red Baron (1983) (Atari) (PAL)"
 ""
@@ -22038,9 +22373,9 @@
 "Cart.Name" "Demons to Diamonds (1982) (Atari)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.SwapPaddles" "YES"
-"Controller.MouseAxis" "10 57"
 "Controller.PaddlesXCenter" "15"
 "Controller.PaddlesYCenter" "15"
+"Controller.MouseAxis" "10 57"
 ""
 
 "Cart.MD5" "f93d7fee92717e161e6763a88a293ffa"
@@ -22086,6 +22421,11 @@
 "Cart.Manufacturer" "Atari, Ian Shepard"
 "Cart.ModelNo" "CX2604, CX2604P"
 "Cart.Name" "Space War (1978) (Atari) (PAL)"
+""
+
+"Cart.MD5" "f979543df0113fb49571dfac8b78b694"
+"Cart.Manufacturer" "Fotomania"
+"Cart.Name" "Enduro (Fotomania)"
 ""
 
 "Cart.MD5" "f97dee1aa2629911f30f225ca31789d4"
@@ -22150,10 +22490,10 @@
 "Cart.ModelNo" "EAG-010, PAG-010 - 711 010-720"
 "Cart.Name" "Kaboom! (1981) (Activision) (PAL)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
-"Controller.MouseAxis" "01 50"
+"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
 "Controller.PaddlesXCenter" "17"
 "Controller.PaddlesYCenter" "17"
-"Cart.Highscore" "{\"score_addresses\":[\"0xa3\",\"0xa4\",\"0xa5\"],\"score_digits\":6,\"special_address\":\"0xa2\",\"special_bcd\":false,\"special_label\":\"Group\",\"variations_count\":1,\"variations_zero_based\":true}"
+"Controller.MouseAxis" "01 50"
 ""
 
 "Cart.MD5" "fa0570561aa80896f0ead05c46351389"
@@ -22201,10 +22541,10 @@
 ""
 
 "Cart.MD5" "fa7ce62e7fd77e02b3e2198d70742f80"
-"Cart.Manufacturer" "Atari, Peter C. Niday"
+"Cart.Manufacturer" "Atari, Dave Joly, Suki Lee"
 "Cart.ModelNo" "CX26108"
 "Cart.Name" "Donald Duck's Speedboat (04-18-1983) (Atari) (Prototype) (PAL)"
-"Cart.Note" "AKA Donald Duck's Regatta"
+"Cart.Note" "AKA Donald Duck's Sailboat Regatta"
 "Cart.Rarity" "Prototype"
 "Cart.Url" "http://www.atariprotos.com/2600/software/donaldduck/donaldduck.htm"
 ""
@@ -22302,7 +22642,7 @@
 ""
 
 "Cart.MD5" "fb531febf8e155328ec0cd39ef77a122"
-"Cart.Name" "Worm War I (208 in 1) (Unknown) (PAL)"
+"Cart.Name" "Worm War I (Unknown) (PAL) [a]"
 "Display.Phosphor" "YES"
 ""
 
@@ -22314,7 +22654,7 @@
 "Cart.MD5" "fb833ed50c865a9a505a125fc9d79a7e"
 "Cart.Manufacturer" "ITT Family Games"
 "Cart.Name" "Pumuckl I (1983) (ITT Family Games) (PAL)"
-"Cart.Note" "AKA Panda Chase"
+"Cart.Note" "AKA Pumuckl at the Zoo"
 ""
 
 "Cart.MD5" "fb884ffd89013331a6f01ae3f6abd214"
@@ -22326,8 +22666,8 @@
 "Cart.Manufacturer" "Manuel Polik"
 "Cart.Name" "Star Fire (2003) (XYPE)"
 "Cart.Rarity" "Homebrew"
-"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=229"
 "Cart.Highscore" "{\"score_addresses\":[\"0x81\",\"0x82\",\"0x83\"],\"score_digits\":6,\"special_address\":\"0x84\",\"special_label\":\"Wave\",\"special_zero_based\":true,\"variations_count\":1}"
+"Cart.Url" "https://atariage.com/store/index.php?l=product_detail&p=229"
 ""
 
 "Cart.MD5" "fb88c400d602fe759ae74ef1716ee84e"
@@ -22349,7 +22689,7 @@
 ""
 
 "Cart.MD5" "fb978f1c053e8061cc37a726639f43f7"
-"Cart.Manufacturer" "Atari - Axlon, Tod Frye - Heuristica, Agustin Ortiz"
+"Cart.Manufacturer" "Atari - Axlon, Tod Frye - Heuristica, Agustin Ortiz Valdiviezo"
 "Cart.ModelNo" "CX26169"
 "Cart.Name" "Shooting Arcade (03-07-1989) (Atari) (Prototype)"
 "Cart.Note" "Uses the Light Gun Controller (left only)"
@@ -22502,7 +22842,7 @@
 ""
 
 "Cart.MD5" "fd78f186bdff83fbad7f97cb583812fe"
-"Cart.Manufacturer" "Amiga - Video Soft"
+"Cart.Manufacturer" "Amiga - Video Soft, Chip Curry"
 "Cart.ModelNo" "3125"
 "Cart.Name" "Surf's Up (1983) (Amiga) (Prototype) [a2]"
 "Cart.Note" "Uses the Joyboard controller"
@@ -22583,8 +22923,8 @@
 "Cart.Name" "4 in 1 (02-19-1987) (Atari) (Prototype)"
 "Cart.Note" "Home Run, Canyon Bomber, Sky Diver, Night Driver"
 "Cart.Rarity" "Prototype"
-"Cart.Url" "http://www.atariprotos.com/2600/software/4in1/4in1.htm"
 "Cart.Type" "4IN1"
+"Cart.Url" "http://www.atariprotos.com/2600/software/4in1/4in1.htm"
 ""
 
 "Cart.MD5" "fe870018332a0221eb59fb18b0c6bccc"
@@ -22623,8 +22963,8 @@
 "Cart.ModelNo" "CX2633, CX2633P"
 "Cart.Name" "Night Driver (1980) (Atari) (PAL)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
-"Controller.MouseAxis" "AUTO 65"
 "Controller.PaddlesXCenter" "12"
+"Controller.MouseAxis" "AUTO 65"
 "Display.Phosphor" "YES"
 ""
 
@@ -22663,6 +23003,11 @@
 "Cart.Name" "Blackjack (32 in 1) (1988) (Atari) (PAL)"
 "Cart.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES_IAXIS"
+""
+
+"Cart.MD5" "ff8343ce12fa222a23ab13d7d733e27b"
+"Cart.Manufacturer" "Artkaris Software"
+"Cart.Name" "Phoenix (1986) (Artkaris) (PAL)"
 ""
 
 "Cart.MD5" "ff86fc8ffa717bb095e8471638c1c31c"
@@ -22707,3 +23052,205 @@
 "Cart.MD5" "ffebb0070689b9d322687edd9c0a2bae"
 "Cart.Name" "Spitfire Attack (1983) (Milton Bradley) [h1]"
 ""
+
+"Cart.MD5" "0be9ad4729ecd50cadece9200f324a43"
+"Cart.Manufacturer" "Bit Corporation"
+"Cart.ModelNo" "PG208"
+"Cart.Name" "Snail Against Squirrel (1983) (BitCorp) "
+""
+
+"Cart.MD5" "112afb9c6777d652968f31328a327a01"
+"Cart.Manufacturer" "Atari, Tod Frye, Mimi Nyden"
+"Cart.ModelNo" "CX2657"
+"Cart.Name" "SwordQuest - FireWorld Contest Edition (1984) (Atari)"
+""
+
+"Cart.MD5" "13e133a1efc1b55fcd76cbb3ae7cf333"
+"Cart.Name" "Yars' Revenge (Unknown) (PAL)"
+"Display.Phosphor" "YES"
+""
+
+"Cart.MD5" "19f2680259c02945a221627e2ffec18a"
+"Cart.Name" "Super Challenge Baseball (Unknown) (PAL) [a]"
+""
+
+"Cart.MD5" "1d67c50baff2df771c32e2f915879176"
+"Cart.Manufacturer" "Atari - Axlon, Tod Frye - Heuristica, Agustin Ortiz Valdiviezo"
+"Cart.ModelNo" "CX26169"
+"Cart.Name" "Shooting Arcade (09-19-1989) (Atari) (Prototype) [screen 5]"
+"Cart.Note" "Uses the Light Gun Controller (left only)"
+"Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/shootingarcade/shootingarcade.htm"
+""
+
+"Cart.MD5" "1eebb6c3ad8153b46bf45b17d879d2e5"
+"Cart.Name" "Save Our Ship (Unknown) (PAL)"
+""
+
+"Cart.MD5" "238976ea238ba2f6d85ad30d5ac50280"
+"Cart.Name" "Slot Machine (Unknown) (PAL) (4K)"
+""
+
+"Cart.MD5" "3095f60d0d9a054bdef5c43c4ad4ac1c"
+"Cart.Name" "Video Chess (Unknown)"
+""
+
+"Cart.MD5" "3584222eec8152f2feae3902bab2595f"
+"Cart.Manufacturer" "Atari, Douglas Neubauer, Mimi Nyden"
+"Cart.ModelNo" "CX26136"
+"Cart.Name" "Solaris (1986) (Atari) (Prototype)"
+"Cart.Note" "AKA The Last Starfighter, Star Raiders II, Universe"
+"Cart.Rarity" "Prototype"
+""
+
+"Cart.MD5" "4e4a263ca1f7fd37b04b9c4d7416f151"
+"Cart.Name" "Zaxxon (Unknown) (PAL)"
+""
+
+"Cart.MD5" "4f7a6ba1baac8d25ce524eb660cca78d"
+"Cart.Manufacturer" "Bit Corporation"
+"Cart.ModelNo" "CP405"
+"Cart.Name" "Turtle Race (4 Game in One) (1983) (BitCorp) (PAL)"
+"Cart.Note" "AKA Freeway"
+""
+
+"Cart.MD5" "5061a82ea69e329a46b120cfac328fef"
+"Cart.Manufacturer" "Fotomania"
+"Cart.Name" "Seaquest (Fotomania)"
+""
+
+"Cart.MD5" "52e6c8551e38b901472293339a360fa2"
+"Cart.Name" "Space Jockey (Unknown)"
+""
+
+"Cart.MD5" "52ec33be79c05b9218c9b55f7ccc1bfa"
+"Cart.Manufacturer" "Edu Games - Edu Juegos"
+"Cart.Name" "Time Pilot (1983) (Edu Games) (PAL)"
+""
+
+"Cart.MD5" "5b1e05ba56ad9345d39f261d4dadb88c"
+"Cart.Name" "Solar Fox (Unknown) (PAL)"
+""
+
+"Cart.MD5" "5f3e92916a3d1c0638e9665781119551"
+"Cart.Name" "Star Trek (Unknown) (PAL)"
+""
+
+"Cart.MD5" "60246884418a559d6c23d3a6baee9e8f"
+"Cart.Name" "Space War (Unknown) (PAL) (4K)"
+""
+
+"Cart.MD5" "660c378803503a443556525ddda08648"
+"Cart.Manufacturer" "Atari - Axlon, Tod Frye - Heuristica, Agustin Ortiz Valdiviezo"
+"Cart.ModelNo" "CX26169"
+"Cart.Name" "Shooting Arcade (09-19-1989) (Atari) (Prototype) [screen 6]"
+"Cart.Note" "Uses the Light Gun Controller (left only)"
+"Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/shootingarcade/shootingarcade.htm"
+""
+
+"Cart.MD5" "6bc89b25d541a6da465d2e2c0b527941"
+"Cart.Name" "Stampede (Unknown) (PAL) (4K)"
+""
+
+"Cart.MD5" "7095858d35ca36e7a8f46bea46bb46da"
+"Cart.Manufacturer" "Canal 3 - Intellivision"
+"Cart.Name" "Seaquest (Canal 3)"
+""
+
+"Cart.MD5" "7128e72bc1b707ef63f7a95177e96c39"
+"Cart.Name" "Star Voyager (Unknown) (PAL)"
+""
+
+"Cart.MD5" "75723c16a975afb9da92022583fa802d"
+"Cart.Manufacturer" "Bit Corporation"
+"Cart.ModelNo" "CP405"
+"Cart.Name" "Snow Hunter (4 Game in One) (1983) (BitCorp) (PAL)"
+"Cart.Note" "AKA Ski Hunt"
+""
+
+"Cart.MD5" "76226fa2eb33e796d1e7c7bb8f22a91e"
+"Cart.Name" "Spider-Man (Unknown) (PAL)"
+""
+
+"Cart.MD5" "81e44e968a4b3cd85b4a0f9a60d25dcd"
+"Cart.Name" "Stampede (Unknown)"
+""
+
+"Cart.MD5" "83531415b25531b47d23cf205961e51f"
+"Cart.Manufacturer" "Atari - Axlon, Tod Frye - Heuristica, Agustin Ortiz Valdiviezo"
+"Cart.ModelNo" "CX26169"
+"Cart.Name" "Shooting Arcade (09-19-1989) (Atari) (Prototype) [screen 3]"
+"Cart.Note" "Uses the Light Gun Controller (left only)"
+"Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/shootingarcade/shootingarcade.htm"
+""
+
+"Cart.MD5" "85b6071974aca39e980d48064ae5e847"
+"Cart.Manufacturer" "Tigervision, Warren Schwader"
+"Cart.ModelNo" "7-003"
+"Cart.Name" "Threshold (1982) (Tigervision)"
+""
+
+"Cart.MD5" "8ea7e1c23b7c0367d0d5de27dbb6da39"
+"Cart.Manufacturer" "Telesys, Alex Leavens"
+"Cart.ModelNo" "1005"
+"Cart.Name" "Stargunner (1983) (Telesys) (PAL)"
+""
+
+"Cart.MD5" "927a409c01600c64c7fe3565b409dba6"
+"Cart.Manufacturer" "Canal 3 - Intellivision"
+"Cart.Name" "Solar Storm (Canal 3)"
+"Cart.Note" "Uses the Paddle Controllers"
+""
+
+"Cart.MD5" "9713537765b4c6532f6ee40025d8f182"
+"Cart.Name" "Thunderground (Unknown) (Hack) [a]"
+"Cart.Rarity" "Hack"
+""
+
+"Cart.MD5" "a256ebbfefdc7b5ff8cc6697a868ec3a"
+"Cart.Name" "Towering Inferno (Unknown) (PAL) [a]"
+""
+
+"Cart.MD5" "b018c51949fcf78b76b3bac7d3bcb1ae"
+"Cart.Manufacturer" "Atari - Axlon, Tod Frye - Heuristica, Agustin Ortiz Valdiviezo"
+"Cart.ModelNo" "CX26169"
+"Cart.Name" "Shooting Arcade (09-19-1989) (Atari) (Prototype) [screen 4]"
+"Cart.Note" "Uses the Light Gun Controller (left only)"
+"Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/shootingarcade/shootingarcade.htm"
+""
+
+"Cart.MD5" "be7011581614ffb0c38f79f99ae67b4f"
+"Cart.Manufacturer" "Atari - Axlon, Tod Frye - Heuristica, Agustin Ortiz Valdiviezo"
+"Cart.ModelNo" "CX26169"
+"Cart.Name" "Shooting Arcade (09-19-1989) (Atari) (Prototype) [screen 2]"
+"Cart.Note" "Uses the Light Gun Controller (left only)"
+"Cart.Rarity" "Prototype"
+"Cart.Url" "http://www.atariprotos.com/2600/software/shootingarcade/shootingarcade.htm"
+""
+
+"Cart.MD5" "c16cc583860bee0b928ef7fbd0010b4e"
+"Cart.Manufacturer" "Fotomania"
+"Cart.Name" "Volleyball (Fotomania)"
+"Cart.Note" "AKA RealSports Volleyball"
+""
+
+"Cart.MD5" "cee0177142b348b323877983d4ea38dc"
+"Cart.Name" "Submarine Commander (Unknown) (PAL)"
+""
+
+"Cart.MD5" "e313e8f1d19b433ec37e586b918f4df8"
+"Cart.Manufacturer" "Fotomania"
+"Cart.Name" "Tennis (Fotomania)"
+""
+
+"Cart.MD5" "f72d7b54973203cafabc619582147ed8"
+"Cart.Name" "Skiing (Unknown) (PAL) (4K)"
+""
+
+"Cart.MD5" "fc6999c4897af166a2a8d109306650ee"
+"Cart.Name" "Vanguard (Unknown) (PAL)"
+""
+
