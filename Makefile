@@ -79,8 +79,8 @@ ifdef PROFILE
 endif
 
 ifdef DEBUG
-  CXXFLAGS += -g -Wp,-D_GLIBCXX_ASSERTIONS
-  CFLAGS += -g -Wp,-D_GLIBCXX_ASSERTIONS
+  CXXFLAGS += -g -Wp,-D_GLIBCXX_DEBUG
+  CFLAGS += -g -Wp,-D_GLIBCXX_DEBUG
 else
   ifdef HAVE_GCC
     CXXFLAGS+= -fomit-frame-pointer
