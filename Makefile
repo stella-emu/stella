@@ -21,6 +21,7 @@
 
 srcdir      ?= .
 
+# -Wp,-D_GLIBCXX_ASSERTIONS
 DEFINES     := -DSDL_SUPPORT -D_GLIBCXX_USE_CXX11_ABI=1
 LDFLAGS     := -pthread
 INCLUDES    :=

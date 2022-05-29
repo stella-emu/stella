@@ -133,15 +133,13 @@ void Cartridge::pokeRAM(uInt8& dest, uInt16 address, uInt8 value)
 void Cartridge::createRomAccessArrays(size_t size)
 {
   myAccessSize = static_cast<uInt32>(size);
-#ifdef DEBUGGER_SUPPORT
+
+  // Always create ROM access base even if DEBUGGER_SUPPORT is disabled,
+  // since other parts of the code depend on it existing
   myRomAccessBase = make_unique<Device::AccessFlags[]>(size);
   std::fill_n(myRomAccessBase.get(), size, Device::ROW);
   myRomAccessCounter = make_unique<Device::AccessCounter[]>(size * 2);
   std::fill_n(myRomAccessCounter.get(), size * 2, 0);
-#else
-  myRomAccessBase = nullptr;
-  myRomAccessCounter = nullptr;
-#endif
 }
 
 #ifdef DEBUGGER_SUPPORT
