@@ -21,7 +21,6 @@
 
 srcdir      ?= .
 
-# -Wp,-D_GLIBCXX_ASSERTIONS
 DEFINES     := -DSDL_SUPPORT -D_GLIBCXX_USE_CXX11_ABI=1
 LDFLAGS     := -pthread
 INCLUDES    :=
@@ -80,8 +79,8 @@ ifdef PROFILE
 endif
 
 ifdef DEBUG
-  CXXFLAGS += -g
-  CFLAGS += -g
+  CXXFLAGS += -g -Wp,-D_GLIBCXX_ASSERTIONS
+  CFLAGS += -g -Wp,-D_GLIBCXX_ASSERTIONS
 else
   ifdef HAVE_GCC
     CXXFLAGS+= -fomit-frame-pointer
