@@ -82,7 +82,10 @@ class LinkedObjectPool
       iter it = myCurrent;
       uInt32 idx = 1;
 
-      while(it-- != myList.begin()) ++idx;
+      while(it != myList.begin()) {
+        ++idx;
+        --it;
+      }
       return idx;
     }
 
@@ -227,7 +230,8 @@ class LinkedObjectPool
       active list.
     */
     void removeToLast() {
-      myPool.splice(myPool.end(), myList, std::next(myCurrent, 1), myList.end());
+      if(currentIsValid())
+        myPool.splice(myPool.end(), myList, std::next(myCurrent, 1), myList.end());
     }
 
     /**
