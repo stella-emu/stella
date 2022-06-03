@@ -25,7 +25,7 @@
   regenerated and the application recompiled.
 */
 
-static constexpr uInt32 DEF_PROPS_SIZE = 3636;
+static constexpr uInt32 DEF_PROPS_SIZE = 3637;
 
 static constexpr BSPF::array2D<const char*, DEF_PROPS_SIZE, 29> DefProps = {{
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "{\"score_addresses\":[\"0xd5\",\"0xd6\",\"0xd7\"],\"score_digits\":6,\"variations_count\":1}", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -281,6 +281,7 @@ static constexpr BSPF::array2D<const char*, DEF_PROPS_SIZE, 29> DefProps = {{
   { "11330eaa5dd2629052fac37cfe1a0b7d", "128 in 1 Junior Console", "", "Human Cannonball (128 in 1 Junior Console) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "113cd09c9771ac278544b7e90efe7df2", "Atari, Ed Logg, Carol Shaw - Sears", "CX2639 - 49-75162", "Othello (1981) (Atari) [no grid markers]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "114c599454d32f74c728a6e1f71012ba", "Activision, Bob Whitehead - Ariola", "EAX-015, EAX-015-04I - 711 015-725", "Chopper Command (1982) (Activision) (PAL)", "", "", "", "", "", "{\"score_addresses\":[\"0xec\",\"0xee\",\"0xf0\"],\"score_digits\":6,\"variations_address\":\"0xe0\",\"variations_count\":4,\"variations_zero_based\":true}", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "11ad7b3e15c8cb3223d5349795bef4ad", "Omegamatrix", "", "Indy 500 Menu (Omegamatrix)", "Uses the Driving Controllers", "", "", "", "", "", "", "", "", "", "", "DRIVING", "", "", "DRIVING", "", "", "", "", "", "45", "", "", "", "" },
   { "11bcf5c752088b5aaf86d6c7a6a11e8d", "Atari, Jerome Domurat, Andrew Fuchs, Dave Staugas, Robert Vieira", "CX26118", "Millipede (1984) (Atari) (Prototype)", "", "Prototype", "", "", "", "", "http://www.atariprotos.com/2600/software/millipede/millipede.htm", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "11e7e0d9437ec98fa085284cf16d0eb4", "", "", "Bowling (Unknown) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "11f55cdbb4e059f5ca56c509c57cb510", "Fotomania", "", "Keystone Kapers (Fotomania)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },

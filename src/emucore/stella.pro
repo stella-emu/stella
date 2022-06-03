@@ -1610,6 +1610,15 @@
 "Cart.Highscore" "{\"score_addresses\":[\"0xec\",\"0xee\",\"0xf0\"],\"score_digits\":6,\"variations_address\":\"0xe0\",\"variations_count\":4,\"variations_zero_based\":true}"
 ""
 
+"Cart.MD5" "11ad7b3e15c8cb3223d5349795bef4ad"
+"Cart.Manufacturer" "Omegamatrix"
+"Cart.Name" "Indy 500 Menu (Omegamatrix)"
+"Cart.Note" "Uses the Driving Controllers"
+"Controller.Left" "DRIVING"
+"Controller.Right" "DRIVING"
+"Controller.MouseAxis" "45"
+""
+
 "Cart.MD5" "11bcf5c752088b5aaf86d6c7a6a11e8d"
 "Cart.Manufacturer" "Atari, Jerome Domurat, Andrew Fuchs, Dave Staugas, Robert Vieira"
 "Cart.ModelNo" "CX26118"
