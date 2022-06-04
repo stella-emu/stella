@@ -247,7 +247,7 @@ bool FileListWidget::hasNextHistory()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string& FileListWidget::fixPath(string& path)
 {
-  if(path.back() == FilesystemNode::PATH_SEPARATOR)
+  if(path.length() > 0 && path.back() == FilesystemNode::PATH_SEPARATOR)
   {
     path.pop_back();
     if(path.length() == 2 && path.back() == ':')
