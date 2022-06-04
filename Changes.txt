@@ -14,6 +14,12 @@
 
 6.6 to 6.7 (June 6, 2022)
 
+  * IMPORTANT NOTES:
+    - Because of fixes to JSON handling, all remappings will be reset
+      to defaults; if you had custom mappings, they will need to be
+      re-entered again.
+    - Because of internal changes, all state files are now invalid.
+
   * Completely reworked the file launcher:
     - Redesigned user interface
     - Added tracking of user favorites, recently played and most popular
