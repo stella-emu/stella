@@ -49,6 +49,10 @@ class PhysicalJoystickHandler
   private:
     struct StickInfo
     {
+      // NOTE: For all future linting exercises
+      //       Make sure to *NEVER* use brace initialization or std::move
+      //       on the 'mapping' instance variable; there lay dragons ...
+      // https://json.nlohmann.me/home/faq/#brace-initialization-yields-arrays
       explicit StickInfo(nlohmann::json map, PhysicalJoystickPtr stick = nullptr)
         : mapping(map), joy{std::move(stick)} {}
 
