@@ -244,6 +244,13 @@ class FilesystemNode
     bool rename(const string& newfile);
 
     /**
+     * Get the size of the current node path.
+     *
+     * @return  Size (in bytes) of the current node path.
+     */
+    size_t getSize() const;
+
+    /**
      * Read data (binary format) into the given buffer.
      *
      * @param buffer  The buffer to contain the data (allocated in this method).
@@ -437,6 +444,13 @@ class AbstractFSNode
      * @return bool true if the node was renamed, false otherwise.
      */
     virtual bool rename(const string& newfile) = 0;
+
+    /**
+     * Get the size of the current node path.
+     *
+     * @return  Size (in bytes) of the current node path.
+     */
+    virtual size_t getSize() const { return 0; }
 
     /**
      * Read data (binary format) into the given buffer.

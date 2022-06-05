@@ -787,10 +787,22 @@ ByteBuffer OSystem::openROM(const FilesystemNode& rom, size_t& size,
   if(!isValidROM && showErrorMessage)
     throw runtime_error("Unrecognized ROM file type");
 
-  // Next check for a proper file size:
-  //   Streaming ROMs read only a portion of the file
-  //   TODO: Otherwise, cap the size to the maximum Cart size
+  // Next check for a proper file size
+  // Streaming ROMs read only a portion of the file
+  // Otherwise the size to read is 0 (meaning read the entire file)
   const size_t sizeToRead = CartDetector::isProbablyMVC(rom);
+  const bool isStreaming = sizeToRead > 0;
+
+  // Make sure we only read up to the maximum supported cart size
+  const bool isValidSize = isValidROM && (isStreaming ||
+                           rom.getSize() <= Cartridge::maxSize());
+  if(!isValidSize)
+  {
+    if(showErrorMessage)
+      throw runtime_error("ROM file too large");
+    else
+      return nullptr;
+  }
 
   // Now we can try to open the file
   ByteBuffer image;
