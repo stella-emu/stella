@@ -123,7 +123,6 @@ class DeveloperDialog : public Dialog, DevSettingsHandler
     RadioButtonGroup*   mySettingsGroupVideo{nullptr};
     CheckboxWidget*     myTVJitterWidget{nullptr};
     SliderWidget*       myTVJitterRecWidget{nullptr};
-    StaticTextWidget*   myTVJitterRecLabelWidget{nullptr};
     SliderWidget*       myTVJitterSenseWidget{nullptr};
     CheckboxWidget*     myColorLossWidget{nullptr};
     CheckboxWidget*     myDebugColorsWidget{nullptr};
