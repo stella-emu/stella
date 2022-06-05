@@ -104,7 +104,8 @@ void TIA::setFrameManager(AbstractFrameManager* frameManager)
   );
 
   myFrameManager->enableJitter(myEnableJitter);
-  myFrameManager->setJitterFactor(myJitterFactor);
+  myFrameManager->setJitterSensitivity(myJitterSensitivity);
+  myFrameManager->setJitterRecovery(myJitterRecovery);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -544,7 +545,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
       break;
 
     case VSYNC:
-      myFrameManager->setVsync(value & 0x02);
+      myFrameManager->setVsync(value & 0x02, mySystem->cycles());
       myShadowRegisters[address] = value;
       break;
 
@@ -985,7 +986,8 @@ void TIA::applyDeveloperSettings()
   myTIAPinsDriven = devSettings ? mySettings.getBool("dev.tiadriven") : false;
 
   myEnableJitter = mySettings.getBool(devSettings ? "dev.tv.jitter" : "plr.tv.jitter");
-  myJitterFactor = mySettings.getInt(devSettings ? "dev.tv.jitter_recovery" : "plr.tv.jitter_recovery");
+  myJitterSensitivity = mySettings.getInt(devSettings ? "dev.tv.jitter_sense" : "plr.tv.jitter_sense");
+  myJitterRecovery = mySettings.getInt(devSettings ? "dev.tv.jitter_recovery" : "plr.tv.jitter_recovery");
 
   if(myFrameManager)
     enableColorLoss(mySettings.getBool(devSettings ? "dev.colorloss" : "plr.colorloss"));
@@ -1282,11 +1284,19 @@ bool TIA::toggleJitter(uInt8 mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::setJitterSensitivity(Int32 sensitivity)
+{
+  myJitterSensitivity = sensitivity;
+
+  if (myFrameManager) myFrameManager->setJitterSensitivity(sensitivity);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::setJitterRecoveryFactor(Int32 factor)
 {
-  myJitterFactor = factor;
+  myJitterRecovery = factor;
 
-  if (myFrameManager) myFrameManager->setJitterFactor(myJitterFactor);
+  if (myFrameManager) myFrameManager->setJitterRecovery(myJitterRecovery);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

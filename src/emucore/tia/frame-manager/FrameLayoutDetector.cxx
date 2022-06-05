@@ -39,7 +39,7 @@ void FrameLayoutDetector::onReset()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameLayoutDetector::onSetVsync()
+void FrameLayoutDetector::onSetVsync(uInt64)
 {
   if (myVsync)
     setState(State::waitForVsyncEnd);

@@ -358,9 +358,14 @@ class Console : public Serializable, public ConsoleIO
     void toggleJitter(bool toggle = true) const;
 
     /**
+      Changes the TIA 'scanline jitter' sensitivity.
+    */
+    void changeJitterSense(int direction = +1) const;
+
+    /**
       Changes the TIA 'scanline jitter' revcovery rate.
     */
-    void changeJitter(int direction = +1) const;
+    void changeJitterRecovery(int direction = +1) const;
 
     /**
      * Update vcenter

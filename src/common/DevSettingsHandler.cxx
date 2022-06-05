@@ -78,6 +78,7 @@ void DevSettingsHandler::loadSettings(SettingsSet set)
   myColorLoss[set] = settings.getBool(prefix + "colorloss");
   // Jitter
   myTVJitter[set] = settings.getBool(prefix + "tv.jitter");
+  myTVJitterSense[set] = settings.getInt(prefix + "tv.jitter_sense");
   myTVJitterRec[set] = settings.getInt(prefix + "tv.jitter_recovery");
 
   // States
@@ -148,6 +149,7 @@ void DevSettingsHandler::saveSettings(SettingsSet set)
   settings.setValue(prefix + "colorloss", myColorLoss[set]);
   // Jitter
   settings.setValue(prefix + "tv.jitter", myTVJitter[set]);
+  settings.setValue(prefix + "tv.jitter_sense", myTVJitterSense[set]);
   settings.setValue(prefix + "tv.jitter_recovery", myTVJitterRec[set]);
 
   // States
@@ -200,6 +202,7 @@ void DevSettingsHandler::applySettings(SettingsSet set)
   {
     // TV Jitter
     myOSystem.console().tia().toggleJitter(myTVJitter[set] ? 1 : 0);
+    myOSystem.console().tia().setJitterSensitivity(myTVJitterSense[set]);
     myOSystem.console().tia().setJitterRecoveryFactor(myTVJitterRec[set]);
     // PAL color loss
     myOSystem.console().enableColorLoss(myColorLoss[set]);

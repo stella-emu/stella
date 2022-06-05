@@ -47,8 +47,9 @@ class FrameManager: public AbstractFrameManager {
     FrameManager();
 
   public:
+    void setJitterSensitivity(uInt8 sensitivity) override { myJitterEmulation.setSensitivity(sensitivity); }
 
-    void setJitterFactor(uInt8 factor) override { myJitterEmulation.setJitterFactor(factor); }
+    void setJitterRecovery(uInt8 factor) override { myJitterEmulation.setRecovery(factor); }
 
     bool jitterEnabled() const override { return myJitterEnabled; }
 
@@ -78,7 +79,7 @@ class FrameManager: public AbstractFrameManager {
 
     void setLayout(FrameLayout mode) override { layout(mode); }
 
-    void onSetVsync() override;
+    void onSetVsync(uInt64 cycles) override;
 
     void onNextLine() override;
 
@@ -122,6 +123,8 @@ class FrameManager: public AbstractFrameManager {
     Int32 myMaxVcenter{0};
     Int32 myVSizeAdjust{0};
 
+    uInt64 myVsyncStart{0};
+    uInt64 myVsyncEnd{0};
     bool myJitterEnabled{false};
 
     JitterEmulation myJitterEmulation;

@@ -116,7 +116,8 @@ class Event
       ScanlinesDecrease, ScanlinesIncrease,
       PreviousScanlineMask, NextScanlineMask,
       PhosphorDecrease, PhosphorIncrease, TogglePhosphor, ToggleInter,
-      ToggleDeveloperSet, JitterDecrease, JitterIncrease, ToggleJitter,
+      ToggleDeveloperSet, JitterRecDecrease, JitterRecIncrease,
+      JitterSenseDecrease, JitterSenseIncrease, ToggleJitter,
 
       VolumeDecrease, VolumeIncrease, SoundToggle,
 

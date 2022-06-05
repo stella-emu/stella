@@ -60,7 +60,6 @@ class DeveloperDialog : public Dialog, DevSettingsHandler
       kConsole              = 'DVco',
       kTIAType              = 'DVtt',
       kTVJitter             = 'DVjt',
-      kTVJitterChanged      = 'DVjr',
       kTimeMachine          = 'DTtm',
       kSizeChanged          = 'DTsz',
       kUncompressedChanged  = 'DTuc',
@@ -125,6 +124,7 @@ class DeveloperDialog : public Dialog, DevSettingsHandler
     CheckboxWidget*     myTVJitterWidget{nullptr};
     SliderWidget*       myTVJitterRecWidget{nullptr};
     StaticTextWidget*   myTVJitterRecLabelWidget{nullptr};
+    SliderWidget*       myTVJitterSenseWidget{nullptr};
     CheckboxWidget*     myColorLossWidget{nullptr};
     CheckboxWidget*     myDebugColorsWidget{nullptr};
     std::array<PopUpWidget*, DEBUG_COLORS> myDbgColour{nullptr};
@@ -160,7 +160,7 @@ class DeveloperDialog : public Dialog, DevSettingsHandler
     void setWidgetStates(SettingsSet set);
 
     void handleSettings(bool devSettings);
-    void handleTVJitterChange(bool enable);
+    void handleTVJitterChange();
     void handleConsole();
 
     void handleTia();

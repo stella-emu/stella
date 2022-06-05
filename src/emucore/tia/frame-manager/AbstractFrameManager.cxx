@@ -72,13 +72,13 @@ void AbstractFrameManager::setVblank(bool vblank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void AbstractFrameManager::setVsync(bool vsync)
+void AbstractFrameManager::setVsync(bool vsync, uInt64 cycles)
 {
   if (vsync == myVsync) return;
 
   myVsync = vsync;
 
-  onSetVsync();
+  onSetVsync(cycles);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

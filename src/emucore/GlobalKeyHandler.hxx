@@ -118,7 +118,8 @@ class GlobalKeyHandler
       ALL_CX,
       FIXED_COL,
       COLOR_LOSS,
-      JITTER,
+      JITTER_SENSE,
+      JITTER_REC,
       // *** Only used via direct hotkeys ***
       STATE,
       PALETTE_ATTRIBUTE,
@@ -131,7 +132,7 @@ class GlobalKeyHandler
       START_INPUT_ADJ = DIGITAL_DEADZONE,
       END_INPUT_ADJ = MOUSE_RANGE,
       START_DEBUG_ADJ = DEVELOPER,
-      END_DEBUG_ADJ = JITTER,
+      END_DEBUG_ADJ = JITTER_REC,
     };
 
   public:
