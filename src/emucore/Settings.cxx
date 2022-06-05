@@ -25,7 +25,9 @@
 #include "PaletteHandler.hxx"
 #include "Joystick.hxx"
 #include "Paddles.hxx"
-#include "JitterEmulation.hxx"
+#ifdef GUI_SUPPORT
+  #include "JitterEmulation.hxx"
+#endif
 
 #ifdef DEBUGGER_SUPPORT
   #include "DebuggerDialog.hxx"
@@ -226,8 +228,10 @@ Settings::Settings()
   setPermanent("plr.tiarandom", "false");
   setPermanent("plr.colorloss", "false");
   setPermanent("plr.tv.jitter", "true");
+#ifdef GUI_SUPPORT
   setPermanent("plr.tv.jitter_sense", JitterEmulation::PLR_SENSITIVITY);
   setPermanent("plr.tv.jitter_recovery", JitterEmulation::PLR_RECOVERY);
+#endif
   setPermanent("plr.debugcolors", "false");
   setPermanent("plr.console", "2600"); // 7800
   setPermanent("plr.timemachine", true);
@@ -247,8 +251,10 @@ Settings::Settings()
   setPermanent("dev.tiarandom", "true");
   setPermanent("dev.colorloss", "true");
   setPermanent("dev.tv.jitter", "true");
+#ifdef GUI_SUPPORT
   setPermanent("dev.tv.jitter_sense", JitterEmulation::DEV_SENSITIVITY);
   setPermanent("dev.tv.jitter_recovery", JitterEmulation::DEV_RECOVERY);
+#endif
   setPermanent("dev.debugcolors", "false");
   setPermanent("dev.tiadriven", "true");
   setPermanent("dev.console", "2600"); // 7800
@@ -339,6 +345,7 @@ void Settings::validate()
   i = getInt("tv.filter");
   if(i < 0 || i > 5)  setValue("tv.filter", "0");
 
+#ifdef GUI_SUPPORT
   i = getInt("dev.tv.jitter_sense");
   if(i < JitterEmulation::MIN_SENSITIVITY || i > JitterEmulation::MAX_SENSITIVITY)
     setValue("dev.tv.jitter_sense", JitterEmulation::DEV_SENSITIVITY);
@@ -346,6 +353,7 @@ void Settings::validate()
   i = getInt("dev.tv.jitter_recovery");
   if(i < JitterEmulation::MIN_RECOVERY || i > JitterEmulation::MAX_RECOVERY)
     setValue("dev.tv.jitter_recovery", JitterEmulation::DEV_RECOVERY);
+#endif
 
   int size = getInt("dev.tm.size");
   if(size < 20 || size > 1000)
@@ -363,12 +371,14 @@ void Settings::validate()
   i = getInt("dev.tm.horizon");
   if(i < 0 || i > 6) setValue("dev.tm.horizon", 1);*/
 
+#ifdef GUI_SUPPORT
   i = getInt("plr.tv.jitter_sense");
   if(i < JitterEmulation::MIN_SENSITIVITY || i > JitterEmulation::MAX_SENSITIVITY)
     setValue("plr.tv.jitter_sense", JitterEmulation::PLR_SENSITIVITY);
 
   i = getInt("plr.tv.jitter_recovery");
   if(i < 1 || i > 20) setValue("plr.tv.jitter_recovery", JitterEmulation::PLR_RECOVERY);
+#endif
 
   size = getInt("plr.tm.size");
   if(size < 20 || size > 1000)
