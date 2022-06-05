@@ -329,6 +329,12 @@ bool FilesystemNode::rename(const string& newfile)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+size_t FilesystemNode::getSize() const
+{
+  return (_realNode && _realNode->exists()) ? _realNode->getSize() : 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 size_t FilesystemNode::read(ByteBuffer& buffer, size_t size) const
 {
   size_t sizeRead = 0;

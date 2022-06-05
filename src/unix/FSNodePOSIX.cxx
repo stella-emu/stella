@@ -181,6 +181,13 @@ bool FilesystemNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode) con
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+size_t FilesystemNodePOSIX::getSize() const
+{
+  struct stat st;
+  return (stat(_path.c_str(), &st) == 0) ? st.st_size : 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FilesystemNodePOSIX::makeDir()
 {
   if(mkdir(_path.c_str(), 0777) == 0)
