@@ -976,23 +976,39 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated)
       {
         myOSystem.console().toggleJitter();
-        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::JITTER);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::JITTER_SENSE);
       }
       return;
 
-    case Event::JitterDecrease:
+    case Event::JitterSenseDecrease:
       if(pressed)
       {
-        myOSystem.console().changeJitter(-1);
-        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::JITTER);
+        myOSystem.console().changeJitterSense(-1);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::JITTER_SENSE);
       }
       return;
 
-    case Event::JitterIncrease:
+    case Event::JitterSenseIncrease:
       if(pressed)
       {
-        myOSystem.console().changeJitter(+1);
-        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::JITTER);
+        myOSystem.console().changeJitterSense(+1);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::JITTER_SENSE);
+      }
+      return;
+
+    case Event::JitterRecDecrease:
+      if(pressed)
+      {
+        myOSystem.console().changeJitterRecovery(-1);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::JITTER_REC);
+      }
+      return;
+
+    case Event::JitterRecIncrease:
+      if(pressed)
+      {
+        myOSystem.console().changeJitterRecovery(+1);
+        myGlobalKeyHandler->setSetting(GlobalKeyHandler::Setting::JITTER_REC);
       }
       return;
 
@@ -3041,8 +3057,10 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::ToggleFixedColors,       "Toggle TIA 'Fixed Debug Colors' mode",  "" },
   { Event::ToggleColorLoss,         "Toggle PAL color-loss effect",          "" },
   { Event::ToggleJitter,            "Toggle TV scanline 'Jitter' effect",    "" },
-  { Event::JitterDecrease,          "Decrease TV 'Jitter' roll",             "" },
-  { Event::JitterIncrease,          "Increase TV 'Jitter' roll",             "" },
+  { Event::JitterSenseDecrease,     "Decrease TV 'Jitter' sensitivity",      "" },
+  { Event::JitterSenseIncrease,     "Increase TV 'Jitter' sensitivity",      "" },
+  { Event::JitterRecDecrease,       "Decrease TV 'Jitter' roll",             "" },
+  { Event::JitterRecIncrease,       "Increase TV 'Jitter' roll",             "" },
 
   // Combo
   { Event::Combo1,                  "Combo 1",                               "" },
@@ -3230,5 +3248,6 @@ const Event::EventSet EventHandler::DebugEvents = {
   Event::ToggleBLCollision, Event::ToggleBLBit, Event::TogglePFCollision, Event::TogglePFBit,
   Event::ToggleCollisions, Event::ToggleBits, Event::ToggleFixedColors,
   Event::ToggleColorLoss,
-  Event::ToggleJitter, Event::JitterDecrease,Event::JitterIncrease,
+  Event::ToggleJitter, Event::JitterSenseDecrease,Event::JitterSenseIncrease,
+  Event::JitterRecDecrease,Event::JitterRecIncrease,
 };

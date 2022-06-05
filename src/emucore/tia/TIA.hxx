@@ -441,6 +441,7 @@ class TIA : public Device
       @return  Whether the mode was enabled or disabled
     */
     bool toggleJitter(uInt8 mode = 2);
+    void setJitterSensitivity(Int32 sensitivity);
     void setJitterRecoveryFactor(Int32 factor);
 
     /**
@@ -977,7 +978,8 @@ class TIA : public Device
      * The frame manager can change during our lifetime, so we buffer those two.
      */
     bool myEnableJitter{false};
-    uInt8 myJitterFactor{0};
+    uInt8 myJitterSensitivity{0};
+    uInt8 myJitterRecovery{0};
 
     static constexpr uInt16
       TIA_SIZE = 0x40, TIA_MASK = TIA_SIZE - 1,

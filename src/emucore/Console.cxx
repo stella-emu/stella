@@ -1253,7 +1253,40 @@ void Console::toggleJitter(bool toggle) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::changeJitter(int direction) const
+void Console::changeJitterSense(int direction) const
+{
+  const string prefix = myOSystem.settings().getBool("dev.settings") ? "dev." : "plr.";
+  int sensitivity = myOSystem.settings().getInt(prefix + "tv.jitter_sense");
+  const bool enabled = direction ? sensitivity + direction > 0 : myTIA->toggleJitter(3);
+
+  // if disabled, enable before first before increasing recovery
+  if(!myTIA->toggleJitter(3))
+    direction = 0;
+
+  sensitivity = BSPF::clamp(static_cast<Int32>(sensitivity + direction),
+    JitterEmulation::MIN_SENSITIVITY, JitterEmulation::MAX_SENSITIVITY);
+  myOSystem.settings().setValue(prefix + "tv.jitter", enabled);
+
+  if(enabled)
+  {
+    ostringstream val;
+
+    myTIA->toggleJitter(1);
+    myTIA->setJitterSensitivity(sensitivity);
+    myOSystem.settings().setValue(prefix + "tv.jitter_sense", sensitivity);
+    val << sensitivity;
+    myOSystem.frameBuffer().showGaugeMessage("TV jitter sensitivity", val.str(), sensitivity,
+      0, JitterEmulation::MAX_SENSITIVITY);
+  }
+  else
+  {
+    myTIA->toggleJitter(0);
+    myOSystem.frameBuffer().showTextMessage("TV scanline jitter disabled");
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::changeJitterRecovery(int direction) const
 {
   const string prefix = myOSystem.settings().getBool("dev.settings") ? "dev." : "plr.";
   int recovery = myOSystem.settings().getInt(prefix + "tv.jitter_recovery");
@@ -1263,7 +1296,8 @@ void Console::changeJitter(int direction) const
   if(!myTIA->toggleJitter(3))
     direction = 0;
 
-  recovery = BSPF::clamp(recovery + direction, 1, 20);
+  recovery = BSPF::clamp(static_cast<Int32>(recovery + direction),
+    JitterEmulation::MIN_RECOVERY, JitterEmulation::MAX_RECOVERY);
   myOSystem.settings().setValue(prefix + "tv.jitter", enabled);
 
   if(enabled)
@@ -1274,7 +1308,8 @@ void Console::changeJitter(int direction) const
     myTIA->setJitterRecoveryFactor(recovery);
     myOSystem.settings().setValue(prefix + "tv.jitter_recovery", recovery);
     val << recovery;
-    myOSystem.frameBuffer().showGaugeMessage("TV jitter roll", val.str(), recovery, 0, 20);
+    myOSystem.frameBuffer().showGaugeMessage("TV jitter roll", val.str(), recovery,
+      0, JitterEmulation::MAX_RECOVERY);
   }
   else
   {

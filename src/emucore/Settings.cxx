@@ -25,6 +25,7 @@
 #include "PaletteHandler.hxx"
 #include "Joystick.hxx"
 #include "Paddles.hxx"
+#include "JitterEmulation.hxx"
 
 #ifdef DEBUGGER_SUPPORT
   #include "DebuggerDialog.hxx"
@@ -225,7 +226,8 @@ Settings::Settings()
   setPermanent("plr.tiarandom", "false");
   setPermanent("plr.colorloss", "false");
   setPermanent("plr.tv.jitter", "true");
-  setPermanent("plr.tv.jitter_recovery", "10");
+  setPermanent("plr.tv.jitter_sense", JitterEmulation::PLR_SENSITIVITY);
+  setPermanent("plr.tv.jitter_recovery", JitterEmulation::PLR_RECOVERY);
   setPermanent("plr.debugcolors", "false");
   setPermanent("plr.console", "2600"); // 7800
   setPermanent("plr.timemachine", true);
@@ -245,7 +247,8 @@ Settings::Settings()
   setPermanent("dev.tiarandom", "true");
   setPermanent("dev.colorloss", "true");
   setPermanent("dev.tv.jitter", "true");
-  setPermanent("dev.tv.jitter_recovery", "2");
+  setPermanent("dev.tv.jitter_sense", JitterEmulation::DEV_SENSITIVITY);
+  setPermanent("dev.tv.jitter_recovery", JitterEmulation::DEV_RECOVERY);
   setPermanent("dev.debugcolors", "false");
   setPermanent("dev.tiadriven", "true");
   setPermanent("dev.console", "2600"); // 7800
@@ -336,8 +339,13 @@ void Settings::validate()
   i = getInt("tv.filter");
   if(i < 0 || i > 5)  setValue("tv.filter", "0");
 
+  i = getInt("dev.tv.jitter_sense");
+  if(i < JitterEmulation::MIN_SENSITIVITY || i > JitterEmulation::MAX_SENSITIVITY)
+    setValue("dev.tv.jitter_sense", JitterEmulation::DEV_SENSITIVITY);
+
   i = getInt("dev.tv.jitter_recovery");
-  if(i < 1 || i > 20) setValue("dev.tv.jitter_recovery", "2");
+  if(i < JitterEmulation::MIN_RECOVERY || i > JitterEmulation::MAX_RECOVERY)
+    setValue("dev.tv.jitter_recovery", JitterEmulation::DEV_RECOVERY);
 
   int size = getInt("dev.tm.size");
   if(size < 20 || size > 1000)
@@ -355,8 +363,12 @@ void Settings::validate()
   i = getInt("dev.tm.horizon");
   if(i < 0 || i > 6) setValue("dev.tm.horizon", 1);*/
 
+  i = getInt("plr.tv.jitter_sense");
+  if(i < JitterEmulation::MIN_SENSITIVITY || i > JitterEmulation::MAX_SENSITIVITY)
+    setValue("plr.tv.jitter_sense", JitterEmulation::PLR_SENSITIVITY);
+
   i = getInt("plr.tv.jitter_recovery");
-  if(i < 1 || i > 20) setValue("plr.tv.jitter_recovery", "10");
+  if(i < 1 || i > 20) setValue("plr.tv.jitter_recovery", JitterEmulation::PLR_RECOVERY);
 
   size = getInt("plr.tm.size");
   if(size < 20 || size > 1000)
@@ -713,6 +725,7 @@ void Settings::usage() const
     << "  -plr.debugcolors  <1|0>          Enable debug colors\n"
     << "  -plr.colorloss    <1|0>          Enable PAL color-loss effect\n"
     << "  -plr.tv.jitter    <1|0>          Enable TV jitter effect\n"
+    << "  -plr.tv.jitter_sense <1-10>      Set TV jitter effect sensitivity\n"
     << "  -plr.tv.jitter_recovery <1-20>   Set recovery time for TV jitter effect\n"
     << "  -plr.extaccess    <1|0>          Enable messages for external access\n"
     << endl
@@ -729,8 +742,9 @@ void Settings::usage() const
     << "  -dev.debugcolors  <1|0>          Enable debug colors\n"
     << "  -dev.colorloss    <1|0>          Enable PAL color-loss effect\n"
     << "  -dev.tv.jitter    <1|0>          Enable TV jitter effect\n"
+    << "  -dev.tv.jitter_sense <1-10>      Set TV jitter effect sensitivity\n"
     << "  -dev.tv.jitter_recovery <1-20>   Set recovery time for TV jitter effect\n"
-    << "  -dev.tiadriven    <1|0>          Drive unused TIA pins randomly on a\n"
+    << "  -dev.tiadriven    <1|0>          Drive unqused TIA pins randomly on a\n"
     << "                                    read/peek\n"
 #ifdef DEBUGGER_SUPPORT
     << "  -dev.rwportbreak       <1|0>     Debugger breaks on reads from write ports\n"

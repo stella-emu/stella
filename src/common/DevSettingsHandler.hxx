@@ -55,6 +55,7 @@ class DevSettingsHandler
     std::array<string, numSets> myRandomizeCPU;
     std::array<bool, numSets>   myColorLoss;
     std::array<bool, numSets>   myTVJitter;
+    std::array<int, numSets>    myTVJitterSense;
     std::array<int, numSets>    myTVJitterRec;
     std::array<bool, numSets>   myDebugColors;
     std::array<bool, numSets>   myUndrivenPins;

@@ -44,7 +44,7 @@ class FrameLayoutDetector: public AbstractFrameManager
     /**
      * Hook into vsync changes.
      */
-    void onSetVsync() override;
+    void onSetVsync(uInt64) override;
 
     /**
      * Hook into reset.

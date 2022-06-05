@@ -1983,6 +1983,18 @@
     </tr>
 
     <tr>
+      <td><i>Decrease</i> TV jitter sensitivity</td>
+      <td>Shift-Control-Alt + J</td>
+      <td>Shift-Control-Cmd + J</td>
+    </tr>
+
+    <tr>
+      <td><i>Increase</i> TV jitter sensitivity</td>
+      <td>Control-Alt + J</td>
+      <td>Control-Cmd + J</td>
+    </tr>
+
+    <tr>
       <td><i>Decrease</i> TV jitter roll time</td>
       <td>Shift-Control + J</td>
       <td>Shift-Control + J</td>
@@ -3813,9 +3825,12 @@
       <td>Enable TV jitter/roll effect, when there are too many or too few scanlines
         per frame.</td>
     </tr><tr>
+      <td><pre>-&lt;plr.|dev.&gt;tv.jitter_sense &lt;1 - 10&gt;</pre></td>
+      <td>When TV jitter/roll effect is enabled, determines the sensitivy to varying frame timings.</td>
+    </tr><tr>
       <td><pre>-&lt;plr.|dev.&gt;tv.jitter_recovery &lt;1 - 20&gt;</pre></td>
-      <td>When TV jitter/roll effect is enabled, determines how long to delay recovery
-        time (recovery spread over multiple frames).</td>
+      <td>When TV jitter/roll effect is enabled, determines the recovery time for screen rolling
+        (recovery spread over multiple frames).</td>
     </tr><tr>
       <td><pre>-&lt;plr.|dev.&gt;colorloss &lt;1|0&gt;</pre></td>
       <td>Enable/disable the PAL color-loss effect.</td>
@@ -4677,6 +4692,7 @@
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">Command Line</a></th></tr>
           <tr><td>Jitter/roll effect</td><td>Emulate screen roll with inconsistent scanline count</td><td>-plr.tv.jitter<br/>-dev.tv.jitter</td></tr>
+          <tr><td>(Jitter/roll) Sensitivity</td><td>Determines sensitivity for screen rolling</td><td><span style="white-space:nowrap">-plr.tv.jitter_sense<br/>-dev.tv.jitter_sense</span></td></tr>
           <tr><td>(Jitter/roll) Recovery</td><td>Determines recovery time for screen rolling</td><td><span style="white-space:nowrap">-plr.tv.jitter_recovery<br/>-dev.tv.jitter_recovery</span></td></tr>
           <tr><td>PAL color-loss</td><td>Use PAL color-loss effect</td><td>-plr.colorloss<br/>-dev.colorloss</td></tr>
           <tr><td>Debug colors</td><td>Use fixed debug colors</td><td>-plr.debugcolors<br/>-dev.debugcolors</td></tr>

@@ -33,6 +33,7 @@
 #include "Font.hxx"
 #include "Console.hxx"
 #include "TIA.hxx"
+#include "JitterEmulation.hxx"
 #include "OSystem.hxx"
 #include "EventHandler.hxx"
 #include "StateManager.hxx"
@@ -372,21 +373,33 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
   // TV jitter effect
   myTVJitterWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1,
                                         "Jitter/roll effect", kTVJitter);
+  ypos += lineHeight + VGAP;
+
   myTVJitterWidget->setToolTip("Enable to emulate TV loss of sync.", Event::ToggleJitter);
   wid.push_back(myTVJitterWidget);
+
+  myTVJitterSenseWidget = new SliderWidget(myTab, font,
+                                           myTVJitterWidget->getLeft() + CheckboxWidget::prefixSize(font), ypos - 1,
+                                           fontWidth * 9, lineHeight,
+                                           "Sensitivity ", 0, 0, fontWidth * 2);
+  myTVJitterSenseWidget->setMinValue(JitterEmulation::MIN_SENSITIVITY);
+  myTVJitterSenseWidget->setMaxValue(JitterEmulation::MAX_SENSITIVITY);
+  myTVJitterSenseWidget->setTickmarkIntervals(3);
+  myTVJitterSenseWidget->setToolTip("Define sensitivity to unstable frames.",
+    Event::JitterSenseDecrease, Event::JitterSenseIncrease);
+  wid.push_back(myTVJitterSenseWidget);
+
   myTVJitterRecWidget = new SliderWidget(myTab, font,
-                                         myTVJitterWidget->getRight() + fontWidth * 3, ypos - 1,
-                                         "Recovery ", 0, kTVJitterChanged);
-  myTVJitterRecWidget->setMinValue(1); myTVJitterRecWidget->setMaxValue(20);
+                                         myTVJitterSenseWidget->getRight() + fontWidth * 2, ypos - 1,
+                                         fontWidth * 9, lineHeight,
+                                         "Recovery ", 0, 0, fontWidth * 2);
+  myTVJitterRecWidget->setMinValue(JitterEmulation::MIN_RECOVERY);
+  myTVJitterRecWidget->setMaxValue(JitterEmulation::MAX_RECOVERY);
   myTVJitterRecWidget->setTickmarkIntervals(5);
   myTVJitterRecWidget->setToolTip("Define speed of sync recovery.",
-    Event::JitterDecrease, Event::JitterIncrease);
+    Event::JitterRecDecrease, Event::JitterRecIncrease);
   wid.push_back(myTVJitterRecWidget);
-  myTVJitterRecLabelWidget = new StaticTextWidget(myTab, font,
-                                                  myTVJitterRecWidget->getRight() + 4,
-                                                  myTVJitterRecWidget->getTop() + 2,
-                                                  5 * fontWidth, fontHeight);
-  ypos += lineHeight + VGAP;
+  ypos += lineHeight + VGAP * 2;
 
   myColorLossWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1,
                                          "PAL color-loss");
@@ -728,6 +741,7 @@ void DeveloperDialog::getWidgetStates(SettingsSet set)
   myColorLoss[set] = myColorLossWidget->getState();
   // Jitter
   myTVJitter[set] = myTVJitterWidget->getState();
+  myTVJitterSense[set] = myTVJitterSenseWidget->getValue();
   myTVJitterRec[set] = myTVJitterRecWidget->getValue();
 
   // States
@@ -777,9 +791,10 @@ void DeveloperDialog::setWidgetStates(SettingsSet set)
   myColorLossWidget->setState(myColorLoss[set]);
   // Jitter
   myTVJitterWidget->setState(myTVJitter[set]);
+  myTVJitterSenseWidget->setValue(myTVJitterSense[set]);
   myTVJitterRecWidget->setValue(myTVJitterRec[set]);
 
-  handleTVJitterChange(myTVJitterWidget->getState());
+  handleTVJitterChange();
 
   // States
   myTimeMachineWidget->setState(myTimeMachine[set]);
@@ -931,6 +946,9 @@ void DeveloperDialog::setDefaults()
     case 2: // Video
       // Jitter
       myTVJitter[set] = true;
+      myTVJitterSense[set] = devSettings
+        ? JitterEmulation::DEV_SENSITIVITY
+        : JitterEmulation::PLR_SENSITIVITY;
       myTVJitterRec[set] = devSettings ? 2 : 10;
       // PAL color-loss effect
       myColorLoss[set] = devSettings ? true : false;
@@ -997,11 +1015,7 @@ void DeveloperDialog::handleCommand(CommandSender* sender, int cmd, int data, in
       break;
 
     case kTVJitter:
-      handleTVJitterChange(myTVJitterWidget->getState());
-      break;
-
-    case kTVJitterChanged:
-      myTVJitterRecLabelWidget->setValue(myTVJitterRecWidget->getValue());
+      handleTVJitterChange();
       break;
 
     case kTimeMachine:
@@ -1101,10 +1115,12 @@ void DeveloperDialog::handleSettings(bool devSettings)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DeveloperDialog::handleTVJitterChange(bool enable)
+void DeveloperDialog::handleTVJitterChange()
 {
+  bool enable = myTVJitterWidget->getState();
+
+  myTVJitterSenseWidget->setEnabled(enable);
   myTVJitterRecWidget->setEnabled(enable);
-  myTVJitterRecLabelWidget->setEnabled(enable);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

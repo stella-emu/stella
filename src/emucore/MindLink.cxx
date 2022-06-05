@@ -43,9 +43,9 @@ void MindLink::update()
      myEvent.get(Event::MouseButtonRightValue))
     myMindlinkPos = myMindlinkPos | TRIGGER_VALUE; // starts game, calibration and reverse
 
-#ifdef DEBUG_BUILD
-  cerr << std::hex << myMindlinkPos << endl;
-#endif
+//#ifdef DEBUG_BUILD
+//  cerr << std::hex << myMindlinkPos << endl;
+//#endif
 
   myMindlinkShift = 1; // start transfer with least significant bit
   nextMindlinkBit();

@@ -114,10 +114,16 @@ void FrameManager::setAdjustVSize(Int32 adjustVSize)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameManager::onSetVsync()
+void FrameManager::onSetVsync(uInt64 cycles)
 {
-  if (myState == State::waitForVsyncEnd) setState(State::waitForFrameStart);
-  else setState(State::waitForVsyncEnd);
+  if (myState == State::waitForVsyncEnd) {
+    myVsyncEnd = cycles;
+    setState(State::waitForFrameStart);
+  }
+  else {
+    myVsyncStart = cycles;
+    setState(State::waitForVsyncEnd);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -133,7 +139,7 @@ void FrameManager::setState(FrameManager::State state)
       notifyFrameComplete();
 
       if (myTotalFrames > Metrics::initialGarbageFrames)
-        myJitterEmulation.frameComplete(myCurrentFrameFinalLines);
+        myJitterEmulation.frameComplete(myCurrentFrameFinalLines, myVsyncEnd - myVsyncStart);
 
       notifyFrameStart();
 

@@ -436,7 +436,8 @@ GlobalKeyHandler::SettingData GlobalKeyHandler::getSettingData(const Setting set
     {Setting::ALL_CX,                 {false, std::bind(&Console::toggleCollisions, &myOSystem.console(), _1)}}, // debug, not persisted
     {Setting::FIXED_COL,              {false, std::bind(&Console::toggleFixedColors, &myOSystem.console(), _1)}}, // debug, not persisted
     {Setting::COLOR_LOSS,             {false, std::bind(&Console::toggleColorLoss, &myOSystem.console(), _1)}},
-    {Setting::JITTER,                 {true,  std::bind(&Console::changeJitter, &myOSystem.console(), _1)}},
+    {Setting::JITTER_SENSE,           {true,  std::bind(&Console::changeJitterSense, &myOSystem.console(), _1)}},
+    {Setting::JITTER_REC,             {true,  std::bind(&Console::changeJitterRecovery, &myOSystem.console(), _1)}},
     // *** Following functions are not used when cycling settings, but for "direct only" hotkeys ***
     {Setting::STATE,                  {true,  std::bind(&StateManager::changeState, &myOSystem.state(), _1)}}, // temporary, not persisted
     {Setting::PALETTE_ATTRIBUTE,      {true,  std::bind(&PaletteHandler::changeCurrentAdjustable, &myOSystem.frameBuffer().tiaSurface().paletteHandler(), _1)}},
