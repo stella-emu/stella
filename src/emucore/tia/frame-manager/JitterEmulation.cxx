@@ -17,8 +17,6 @@
 
 #include <cmath>
 using std::abs;
-using std::max;
-using std::min;
 using std::pow;
 using std::round;
 
@@ -90,14 +88,14 @@ void JitterEmulation::frameComplete(Int32 scanlineCount, Int32 vsyncCycles)
           && abs(myJitter) < static_cast<Int32>(myRandom.next() % myJitterLines))
         {
           // Repeated invalid frames cause randomly repeated jitter
-          myJitter = max(min(scanlineDifference, myJitterLines), -myYStart);
+          myJitter = std::max(std::min(scanlineDifference, myJitterLines), -myYStart);
         }
       }
       if(!vsyncCyclesStable)
       {
         // If VSYNC length is too low, the frame rolls permanently down, speed depending on missing cycles
-        const Int32 jitter = max(
-          min<Int32>(round(scanlineCount * (1 - static_cast<float>(vsyncCycles) / myVsyncCycles)),
+        const Int32 jitter = std::max(
+          std::min<Int32>(round(scanlineCount * (1 - static_cast<float>(vsyncCycles) / myVsyncCycles)),
             myJitterLines),
           myJitterRecovery + 1); // Roll at least one scanline
 
@@ -114,7 +112,7 @@ void JitterEmulation::frameComplete(Int32 scanlineCount, Int32 vsyncCycles)
         myJitter += vsyncCycles > myLastFrameVsyncCycles ? myVsyncLines : -myVsyncLines;
 #endif
       }
-      myJitter = max(myJitter, -myYStart);
+      myJitter = std::max(myJitter, -myYStart);
     }
   }
   else
@@ -123,9 +121,9 @@ void JitterEmulation::frameComplete(Int32 scanlineCount, Int32 vsyncCycles)
 
     // Only recover during stable frames
     if(myJitter > 0)
-      myJitter = max(myJitter - myJitterRecovery, 0);
+      myJitter = std::max(myJitter - myJitterRecovery, 0);
     else if(myJitter < 0)
-      myJitter = min(myJitter + myJitterRecovery, 0);
+      myJitter = std::min(myJitter + myJitterRecovery, 0);
   }
 
   myLastFrameScanlines = scanlineCount;
