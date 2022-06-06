@@ -78,6 +78,11 @@ CartridgeBUS::CartridgeBUS(const ByteBuffer& image, size_t size,
     this);
 
   this->setInitialState();
+
+  myPlusROM = make_unique<PlusROM>(mySettings, *this);
+
+  // Determine whether we have a PlusROM cart
+  myPlusROM->initialize(myImage, size);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -186,6 +191,14 @@ inline void CartridgeBUS::callFunction(uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeBUS::peek(uInt16 address)
 {
+  // Is this a PlusROM?
+  if(myPlusROM->isValid())
+  {
+    uInt8 value = 0;
+    if(myPlusROM->peekHotspot(address, value))
+      return value;
+  }
+
   if(!(address & 0x1000))                      // Hotspots below 0x1000
   {
     // Check for RAM or TIA mirroring
@@ -340,6 +353,10 @@ uInt8 CartridgeBUS::peek(uInt16 address)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeBUS::poke(uInt16 address, uInt8 value)
 {
+  // Is this a PlusROM?
+  if(myPlusROM->isValid() && myPlusROM->pokeHotspot(address, value))
+    return true;
+
   if (!(address & 0x1000))
   {
     value &= busOverdrive(address);
