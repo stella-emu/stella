@@ -139,7 +139,8 @@ void FrameManager::setState(FrameManager::State state)
       notifyFrameComplete();
 
       if (myTotalFrames > Metrics::initialGarbageFrames)
-        myJitterEmulation.frameComplete(myCurrentFrameFinalLines, myVsyncEnd - myVsyncStart);
+        myJitterEmulation.frameComplete(myCurrentFrameFinalLines,
+            static_cast<Int32>(myVsyncEnd - myVsyncStart));
 
       notifyFrameStart();
 
