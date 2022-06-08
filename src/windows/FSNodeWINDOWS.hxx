@@ -70,6 +70,7 @@ class FilesystemNodeWINDOWS : public AbstractFSNode
     bool makeDir() override;
     bool rename(const string& newfile) override;
 
+    size_t getSize() const override;
     bool getChildren(AbstractFSList& list, ListMode mode) const override;
     AbstractFSNodePtr getParent() const override;
 

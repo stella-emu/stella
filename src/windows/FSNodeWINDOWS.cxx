@@ -229,6 +229,13 @@ bool FilesystemNodeWINDOWS::
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+size_t FilesystemNodeWINDOWS::getSize() const
+{
+  struct _stat st;
+  return _stat(_path.c_str(), &st) == 0 ? st.st_size : 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FilesystemNodeWINDOWS::makeDir()
 {
   if(!_isPseudoRoot && CreateDirectory(_path.c_str(), NULL) != 0)
