@@ -259,16 +259,16 @@ string& FileListWidget::fixPath(string& path)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FileListWidget::addHistory(const FilesystemNode& node)
 {
-  //while(_history.size() > _historyIndex)
-  while(_currentHistory != std::prev(_history.end(), 1))
-    _history.pop_back();
+  if (_history.size() > 0) {
+    while(_currentHistory != std::prev(_history.end(), 1))
+      _history.pop_back();
 
-  string select = selected().getName();
-  _currentHistory->selected = fixPath(select);
+    string select = selected().getName();
+    _currentHistory->selected = fixPath(select);
+  }
 
   _history.emplace_back(node, "..");
   _currentHistory = std::prev(_history.end(), 1);
-  //_historyIndex++;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
