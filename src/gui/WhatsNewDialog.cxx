@@ -47,15 +47,6 @@ WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent,
 
   const string& version = instance().settings().getString("stella.version");
 #ifdef RETRON77
-  if(version < "6.6")
-  {
-    add(ypos, "fixed paddle button bug for jittering controllers");
-    add(ypos, "improved switching between joysticks and paddles");
-    add(ypos, "fixed broken Driving Controller support for Stelladaptor/2600-daptor devices");
-    add(ypos, "improved analog input reading");
-    add(ypos, "fixed QuadTari support for some controller types");
-    add(ypos, "added MovieCart support");
-  }
   add(ypos, "extensively redesigned and enhanced file launcher");
   add(ypos, "improved controller mappings for Paddles");
   add(ypos, "improved controller mappings for Driving controllers");
