@@ -353,9 +353,9 @@ bool CartDetector::isProbably0FA0(const ByteBuffer& image, size_t size)
   // accessing address 0xFC0 using 'BIT $FC0', 'BIT $FC0' or 'STA $FC0'
   // Also a game (Motocross) using 'BIT $EFC0' has been found
   static constexpr uInt8 signature[4][3] = {
-    { 0x2C, 0xC0, 0x0F },  // BIT $FC0 (H.E.R.O., Kung-Fu Master)
-    { 0x8D, 0xC0, 0x0F },  // STA $FC0 (Pole Position, Subterranea)
-    { 0xAD, 0xC0, 0x0F },  // LDA $FC0 (Front Line, Zaxxon)
+    { 0x2C, 0xC0, 0x0F },  // BIT $FC0  (H.E.R.O., Kung-Fu Master)
+    { 0x8D, 0xC0, 0x0F },  // STA $FC0  (Pole Position, Subterranea)
+    { 0xAD, 0xC0, 0x0F },  // LDA $FC0  (Front Line, Zaxxon)
     { 0x2C, 0xC0, 0xEF }   // BIT $EFC0 (Motocross)
   };
   for(uInt32 i = 0; i < 4; ++i)
@@ -384,7 +384,7 @@ bool CartDetector::isProbably3E(const ByteBuffer& image, size_t size)
 bool CartDetector::isProbably3EX(const ByteBuffer& image, size_t size)
 {
   // 3EX cart have at least 2 occurrences of the string "3EX"
-  static constexpr uInt8 _3EX[] = { '3', 'E', 'X'};
+  static constexpr uInt8 _3EX[] = { '3', 'E', 'X' };
   return searchForBytes(image, size, _3EX, 3, 2);
 }
 
@@ -470,7 +470,7 @@ bool CartDetector::isProbablyBUS(const ByteBuffer& image, size_t size)
   // BUS ARM code has 2 occurrences of the string BUS
   // Note: all Harmony/Melody custom drivers also contain the value
   // 0x10adab1e (LOADABLE) if needed for future improvement
-  static constexpr uInt8 bus[] = { 'B', 'U', 'S'};
+  static constexpr uInt8 bus[] = { 'B', 'U', 'S' };
   return searchForBytes(image, size, bus, 3, 2);
 }
 
@@ -768,7 +768,7 @@ bool CartDetector::isProbablySB(const ByteBuffer& image, size_t size)
 bool CartDetector::isProbablyTVBoy(const ByteBuffer& image, size_t size)
 {
   // TV Boy cart bankswitching switches banks by accessing addresses 0x1800..$187F
-  static constexpr uInt8 signature[5] = {0x91, 0x82, 0x6c, 0xfc, 0xff};  // STA ($82),Y; JMP ($FFFC)
+  static constexpr uInt8 signature[5] = { 0x91, 0x82, 0x6c, 0xfc, 0xff };  // STA ($82),Y; JMP ($FFFC)
   return searchForBytes(image, size, signature, 5);
 }
 
@@ -827,7 +827,7 @@ bool CartDetector::isProbablyX07(const ByteBuffer& image, size_t size)
 bool CartDetector::isProbablyPlusROM(const ByteBuffer& image, size_t size)
 {
   // PlusCart uses this pattern to detect a PlusROM
-  static constexpr uInt8 signature[3] = {0x8d, 0xf0, 0x1f};  // STA $1FF0
+  static constexpr uInt8 signature[3] = { 0x8d, 0xf0, 0x1f };  // STA $1FF0
 
   return searchForBytes(image, size, signature, 3);
 }
