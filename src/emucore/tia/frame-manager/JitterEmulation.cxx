@@ -100,7 +100,7 @@ void JitterEmulation::frameComplete(Int32 scanlineCount, Int32 vsyncCycles)
           myJitterRecovery + 1); // Roll at least one scanline
 
         myJitter -= jitter;
-        // Limit jitter to -myYstart..scanlineCount
+        // Limit jitter to -myYstart..262 - myYStart
         if(myJitter < -myYStart)
           myJitter += 262;
       }

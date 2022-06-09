@@ -52,9 +52,9 @@ WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent,
   add(ypos, "improved controller mappings for Driving controllers");
   add(ypos, "enhanced support for CDFJ+ bankswitching type");
   add(ypos, "added MovieCart support");
-  add(ypos, "keep multiple dump files when dumping to SD");
+  add(ypos, "added keeping multiple dump files when dumping to SD");
   add(ypos, "removed deadzone from USB game controllers");
-  add(ypos, "add opt-out for overclocking to the settings file");
+  add(ypos, "added opt-out for overclocking to the settings file");
 #else
   if(version < "6.6")
   {
