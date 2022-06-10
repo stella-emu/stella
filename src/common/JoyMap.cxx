@@ -168,7 +168,7 @@ string JoyMap::getEventMappingDesc(int stick, const Event::Type event, const Eve
     {
       if(buf.str() != "")
         buf << ", ";
-      buf << "J" << stick << getDesc(event, _mapping);
+      buf << "C" << stick << getDesc(event, _mapping);
     }
   }
   return buf.str();
