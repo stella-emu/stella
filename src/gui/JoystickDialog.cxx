@@ -111,7 +111,7 @@ void JoystickDialog::handleCommand(CommandSender* sender, int cmd, int data, int
       {
         myRemoveBtn->setEnabled(false);
         ostringstream buf;
-        buf << "J" << myJoyIDs[data];
+        buf << "C" << myJoyIDs[data];
         myJoyText->setText(buf.str());
       }
       else
