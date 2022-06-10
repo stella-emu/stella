@@ -12,7 +12,7 @@
                               Release History
 ===========================================================================
 
-6.6 to 6.7 (June 11, 2022)
+6.6 to 6.7 (June 13, 2022)
 
   * IMPORTANT NOTES:
     - Because of fixes to JSON handling, all remappings will be reset
