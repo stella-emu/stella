@@ -64,6 +64,8 @@
 
   * Fixed state messages staying on screen forever.
 
+  * Added M1 support for the macOS build.
+
   * Debugger improvements:
     - added PlusROM information
     - fixed patching code in ZP-RAM
