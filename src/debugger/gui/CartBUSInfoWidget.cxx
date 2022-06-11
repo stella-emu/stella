@@ -25,7 +25,7 @@ CartridgeBUSInfoWidget::CartridgeBUSInfoWidget(
 {
   constexpr uInt16 size = 8 * 4096;
   ostringstream info;
-  
+
   if (cart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS0)
   {
     info << "BUS Stuffing cartridge (EXPERIMENTAL)\n"
@@ -67,7 +67,7 @@ string CartridgeBUSInfoWidget::describeBUSVersion(CartridgeBUS::BUSSubtype subty
   {
     case CartridgeBUS::BUSSubtype::BUS0:
       return "BUS (v0)";
-      
+
     case CartridgeBUS::BUSSubtype::BUS1:
       return "BUS (v1)";
 

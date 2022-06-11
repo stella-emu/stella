@@ -34,8 +34,8 @@ CartridgeBUSWidget::CartridgeBUSWidget(
                 VGAP = 4;
 
   int xpos = HBORDER, ypos = VBORDER;
-  int ds2_rows;
-  
+  int ds2_rows = 0;
+
 //  if (cart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS0)
 //  {
 //    int lwidth = _font.getStringWidth("Unsupported version of BUS"); // get width of the widest label
@@ -43,7 +43,7 @@ CartridgeBUSWidget::CartridgeBUSWidget(
 //                         myFontHeight, "Unsupported version of BUS", TextAlign::Left);
 //    return;
 //  }
-  
+
   if (cart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS3)
   {
     ds2_rows = 2;
@@ -54,7 +54,7 @@ CartridgeBUSWidget::CartridgeBUSWidget(
     ds2_rows = 4;
     myDatastreamCount = 20;
   }
-  
+
   VariantList items;
   if (cart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS0)
   {
@@ -108,7 +108,7 @@ CartridgeBUSWidget::CartridgeBUSWidget(
                          myFontWidth*2, myFontHeight, "", TextAlign::Left);
     myDatastreamLabels[row]->setLabel(Common::Base::toString(row * 4, Common::Base::Fmt::_16_2));
   }
-  
+
   if (cart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS3)
   {
     lwidth = _font.getStringWidth("Write Data (stream 16)");
@@ -141,7 +141,7 @@ CartridgeBUSWidget::CartridgeBUSWidget(
                          ypos+myLineHeight-2 + 7*myLineHeight + 2,
                          lwidth, myFontHeight, "Write Data 3(stream 19)", TextAlign::Left);
   }
-  
+
   // Datastream Increments
   xpos = DS_X + myDatastreamPointers->getWidth() + INDENT;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
@@ -296,7 +296,7 @@ void CartridgeBUSWidget::loadConfig()
 {
 //  if (myCart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS0)
 //    return;
-  
+
   myBank->setSelectedIndex(myCart.getBank());
 
   // Get registers, using change tracking
@@ -397,7 +397,6 @@ void CartridgeBUSWidget::loadConfig()
   }
   myMusicWaveformSizes->setList(alist, vlist, changed);
 
-  
   if (myCart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS3)
   {
     alist.clear();  vlist.clear();  changed.clear();

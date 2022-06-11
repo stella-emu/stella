@@ -711,6 +711,7 @@
     <ClCompile Include="..\debugger\gui\CartBFWidget.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartBUSInfoWidget.cxx" />
     <ClCompile Include="..\debugger\gui\CartBUSWidget.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClCompile>
@@ -1893,6 +1894,7 @@
     <ClInclude Include="..\debugger\gui\CartBFWidget.hxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartBUSInfoWidget.hxx" />
     <ClInclude Include="..\debugger\gui\CartBUSWidget.hxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClInclude>

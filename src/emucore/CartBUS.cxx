@@ -307,8 +307,8 @@ uInt8 CartridgeBUS::peek(uInt16 address)
       uInt8 result = 0;
 
       // Get the index of the data fetcher that's being accessed
-      uInt32 index = address & 0x0f;
-      uInt32 function = (address >> 4) & 0x01;
+      const uInt32 index = address & 0x0f;
+      const uInt32 function = (address >> 4) & 0x01;
 
       switch(function)
       {
@@ -335,20 +335,28 @@ uInt8 CartridgeBUS::peek(uInt16 address)
               break;
 
             case 0x08:  // 0x18 = AMPLITUDE
+            {
               // Update the music data fetchers (counter & flag)
               updateMusicModeDataFetchers();
 
               // using myDisplayImage[] instead of myProgramImage[] because waveforms
               // can be modified during runtime.
-              uInt32 i = myDisplayImage[(getWaveform(0) ) + (myMusicCounters[0] >> myMusicWaveformSize[0])] +
-              myDisplayImage[(getWaveform(1) ) + (myMusicCounters[1] >> myMusicWaveformSize[1])] +
-              myDisplayImage[(getWaveform(2) ) + (myMusicCounters[2] >> myMusicWaveformSize[2])];
+              const uInt32 i = myDisplayImage[(getWaveform(0)) + (myMusicCounters[0] >> myMusicWaveformSize[0])] +
+                myDisplayImage[(getWaveform(1)) + (myMusicCounters[1] >> myMusicWaveformSize[1])] +
+                myDisplayImage[(getWaveform(2)) + (myMusicCounters[2] >> myMusicWaveformSize[2])];
 
-              result = uInt8(i);
+              result = static_cast<uInt8>(i);
+              break;
+            }
+
+            default:
               break;
           }
           break;
         }
+
+        default:
+          break;
       }
 
       return result;
@@ -401,6 +409,9 @@ uInt8 CartridgeBUS::peek(uInt16 address)
         case 0xFF2: // SETMODE
         case 0xFF3: // CALLFN
           // these are write-only
+          break;
+
+        default:
           break;
       }
     }
@@ -761,6 +772,9 @@ bool CartridgeBUS::poke(uInt16 address, uInt8 value)
 
           case 0x0A:  // 0x1A CALLFUNCTION
             callFunction(value);
+            break;
+
+          default:
             break;
         }
       }
@@ -1142,9 +1156,8 @@ void CartridgeBUS::setupVersion()
   // 3 versions of the BUS driver have been found. Location of the BUS
   // strings are in a different location for each.
 
-
   // get offset of BUS ID
-  uInt32 busOffset = scanBUSDriver(0x00535542);
+  const uInt32 busOffset = scanBUSDriver(0x00535542);
 
   switch(busOffset)
   {

@@ -191,7 +191,7 @@ bool FilesystemNodeWINDOWS::
         current_drive += _tcslen(current_drive) + 1)
     {
       FilesystemNodeWINDOWS entry;
-      char drive_name[2];
+      char drive_name[2] = { 0, 0 };
 
       drive_name[0] = toAscii(current_drive)[0];
       drive_name[1] = '\0';
