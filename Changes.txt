@@ -30,6 +30,7 @@
     - Added icons for files and directories
     - Added option to show/hide file extensions
     - Extended context menu and shortcuts
+    - Fixed sluggish behaviour when reading large and/or invalid files
 
   * Added hotkey display to tooltips.
 
