@@ -20,6 +20,8 @@
 #ifndef ZIP_HANDLER_HXX
 #define ZIP_HANDLER_HXX
 
+#include <tuple>
+
 #include "bspf.hxx"
 
 /**
@@ -41,7 +43,7 @@ class ZipHandler
     // The following form an iterator for processing the filenames in the ZIP file
     void reset();          // Reset iterator to first file
     bool hasNext() const;  // Answer whether there are more files present
-    const string& next();  // Get next file
+    std::tuple<string, size_t, bool> next();  // Get information on next file
 
     // Decompress the currently selected file and return its length
     // An exception will be thrown on any errors
@@ -297,8 +299,8 @@ class ZipHandler
     void addToCache();
 
   private:
-    static constexpr size_t DECOMPRESS_BUFSIZE = 16_KB;
-    static constexpr uInt32 CACHE_SIZE = 8; // number of open files to cache
+    static constexpr size_t DECOMPRESS_BUFSIZE = 128_KB;
+    static constexpr size_t CACHE_SIZE = 16; // number of open files to cache
 
     ZipFilePtr myZip;
     std::array<ZipFilePtr, CACHE_SIZE> myZipCache;
