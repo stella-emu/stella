@@ -80,11 +80,12 @@ FilesystemNodeZIP::FilesystemNodeZIP(const string& p)
     bool found = false;
     while(myZipHandler->hasNext() && !found)
     {
-      const string& file = myZipHandler->next();
-      if(Bankswitch::isValidRomName(file))
+      const auto [name, size, isFile] = myZipHandler->next();
+      if(Bankswitch::isValidRomName(name))
       {
-        _virtualPath = file;
-        _isFile = true;
+        _virtualPath = name;
+        _size = size;
+        _isFile = isFile;
 
         found = true;
       }
@@ -109,8 +110,9 @@ FilesystemNodeZIP::FilesystemNodeZIP(const string& p)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FilesystemNodeZIP::FilesystemNodeZIP(
     const string& zipfile, const string& virtualpath,
-    const AbstractFSNodePtr& realnode, bool isdir)
-  : _isDirectory{isdir},
+    const AbstractFSNodePtr& realnode, size_t size, bool isdir)
+  : _size{size},
+    _isDirectory{isdir},
     _isFile{!isdir}
 {
   setFlags(zipfile, virtualpath, realnode);
@@ -152,8 +154,11 @@ bool FilesystemNodeZIP::exists() const
     {
       myZipHandler->open(_zipFile);
       while(myZipHandler->hasNext())
-        if(BSPF::startsWithIgnoreCase(myZipHandler->next(), _virtualPath))
+      {
+        const auto [name, size, isFile] = myZipHandler->next();
+        if(BSPF::startsWithIgnoreCase(name, _virtualPath))
           return true;
+      }
     }
     catch(const runtime_error&)
     {
@@ -177,26 +182,26 @@ bool FilesystemNodeZIP::getChildren(AbstractFSList& myList, ListMode mode) const
   {
     // Only consider entries that start with '_virtualPath'
     // Ignore empty filenames and '__MACOSX' virtual directories
-    const string& next = myZipHandler->next();
-    if(BSPF::startsWithIgnoreCase(next, "__MACOSX") || next == EmptyString)
+    const auto [name, size, isFile] = myZipHandler->next();
+    if(BSPF::startsWithIgnoreCase(name, "__MACOSX") || name == EmptyString)
       continue;
-    if(BSPF::startsWithIgnoreCase(next, _virtualPath))
+    if(BSPF::startsWithIgnoreCase(name, _virtualPath))
     {
       // First strip off the leading directory
-      const string& curr = next.substr(_virtualPath == "" ? 0 : _virtualPath.size()+1);
+      const string& curr = name.substr(_virtualPath == "" ? 0 : _virtualPath.size()+1);
       // Only add sub-directory entries once
       const auto pos = curr.find_first_of("/\\");
       if(pos != string::npos)
         dirs.emplace(curr.substr(0, pos));
       else
-        myList.emplace_back(new FilesystemNodeZIP(_zipFile, next, _realNode, false));
+        myList.emplace_back(new FilesystemNodeZIP(_zipFile, name, _realNode, size, false));
     }
   }
   for(const auto& dir: dirs)
   {
     // Prepend previous path
     const string& vpath = _virtualPath != "" ? _virtualPath + "/" + dir : dir;
-    myList.emplace_back(new FilesystemNodeZIP(_zipFile, vpath, _realNode, true));
+    myList.emplace_back(new FilesystemNodeZIP(_zipFile, vpath, _realNode, 0, true));
   }
 
   return true;
@@ -217,7 +222,10 @@ size_t FilesystemNodeZIP::read(ByteBuffer& image, size_t) const
 
   bool found = false;
   while(myZipHandler->hasNext() && !found)
-    found = myZipHandler->next() == _virtualPath;
+  {
+    const auto [name, size, isFile] = myZipHandler->next();
+    found = name == _virtualPath;
+  }
 
   return found ? myZipHandler->decompress(image) : 0;
 }

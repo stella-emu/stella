@@ -59,6 +59,7 @@ class FilesystemNodeZIP : public AbstractFSNode
     bool rename(const string& newfile) override { return false; }
     //////////////////////////////////////////////////////////
 
+    size_t getSize() const override { return _size; }
     bool getChildren(AbstractFSList& list, ListMode mode) const override;
     AbstractFSNodePtr getParent() const override;
 
@@ -69,7 +70,7 @@ class FilesystemNodeZIP : public AbstractFSNode
 
   private:
     FilesystemNodeZIP(const string& zipfile, const string& virtualpath,
-        const AbstractFSNodePtr& realnode, bool isdir);
+        const AbstractFSNodePtr& realnode, size_t size, bool isdir);
 
     void setFlags(const string& zipfile, const string& virtualpath,
         const AbstractFSNodePtr& realnode);
@@ -78,7 +79,9 @@ class FilesystemNodeZIP : public AbstractFSNode
     {
       os << "_zipFile:     " << node._zipFile << endl
          << "_virtualPath: " << node._virtualPath << endl
+         << "_name:        " << node._name << endl
          << "_path:        " << node._path << endl
+         << "_size:        " << node._size << endl
          << "_shortPath:   " << node._shortPath << endl;
       return os;
     }
@@ -100,7 +103,8 @@ class FilesystemNodeZIP : public AbstractFSNode
     string _zipFile, _virtualPath;
     string _name, _path, _shortPath;
     zip_error _error{zip_error::NONE};
-    uInt32 _numFiles{0};
+    uInt16 _numFiles{0};
+    size_t _size{0};
 
     bool _isDirectory{false}, _isFile{false};
 

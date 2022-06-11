@@ -66,8 +66,11 @@ void ZipHandler::open(const string& filename)
     try
     {
       while(hasNext())
-        if(Bankswitch::isValidRomName(next()))
+      {
+        const auto [name, size, isFile] = next();
+        if(Bankswitch::isValidRomName(name))
           myZip->myRomfiles++;
+      }
     }
     catch(...)
     {
@@ -93,7 +96,7 @@ bool ZipHandler::hasNext() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string& ZipHandler::next()
+std::tuple<string, size_t, bool> ZipHandler::next()
 {
   if(hasNext())
   {
@@ -103,9 +106,9 @@ const string& ZipHandler::next()
     else if(header->uncompressedLength == 0)
       return next();
     else
-      return header->filename;
+      return {header->filename, header->uncompressedLength, true};
   }
-  return EmptyString;
+  return {EmptyString, 0, false};
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
