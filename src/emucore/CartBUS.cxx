@@ -55,12 +55,12 @@ CartridgeBUS::CartridgeBUS(const ByteBuffer& image, size_t size,
 
   // Detect cart version
   setupVersion();
-  
+
   // Pointer to BUS driver in RAM
   myDriverImage = myRAM.data();
-  
+
   bool devSettings = settings.getBool("dev.settings");
-  
+
   if (myBUSSubtype == BUSSubtype::BUS0)
   {
     // BUS0 driver is 3K, so configuration is different from others
@@ -68,10 +68,10 @@ CartridgeBUS::CartridgeBUS(const ByteBuffer& image, size_t size,
 
     // Pointer to the program ROM (28K @ 0 byte offset)
     myProgramImage = myImage.get() + 3_KB;
-    
+
     // Pointer to the display RAM
     myDisplayImage = myRAM.data() + 0x0C00;
-    
+
     // Create Thumbulator ARM emulator
     myThumbEmulator = make_unique<Thumbulator>(
       reinterpret_cast<uInt16*>(myImage.get()),
@@ -90,10 +90,10 @@ CartridgeBUS::CartridgeBUS(const ByteBuffer& image, size_t size,
   {
     // BUS1+ drivers are 2K
     createRomAccessArrays(28_KB);
-    
+
     // Pointer to the program ROM (28K @ 0 byte offset)
     myProgramImage = myImage.get() + 4_KB;
-    
+
     // Pointer to the display RAM
     myDisplayImage = myRAM.data() + 0x0800;
 
@@ -300,16 +300,16 @@ uInt8 CartridgeBUS::peek(uInt16 address)
       myBusOverdriveAddress =  peekvalue;
 
     mySTYZeroPageAddress = 0;
-    
+
     if (address < 0x20 &&
         (myBUSSubtype == BUSSubtype::BUS1 || myBUSSubtype == BUSSubtype::BUS2))
     {
       uInt8 result = 0;
-      
+
       // Get the index of the data fetcher that's being accessed
       uInt32 index = address & 0x0f;
       uInt32 function = (address >> 4) & 0x01;
-      
+
       switch(function)
       {
         case 0x00:  // read from a datastream
@@ -333,24 +333,24 @@ uInt8 CartridgeBUS::peek(uInt16 address)
             case 0x09:  // 0x19 STUFFMODE
             case 0x0a:  // 0x1A CALLFN
               break;
-              
+
             case 0x08:  // 0x18 = AMPLITUDE
               // Update the music data fetchers (counter & flag)
               updateMusicModeDataFetchers();
-              
+
               // using myDisplayImage[] instead of myProgramImage[] because waveforms
               // can be modified during runtime.
               uInt32 i = myDisplayImage[(getWaveform(0) ) + (myMusicCounters[0] >> myMusicWaveformSize[0])] +
               myDisplayImage[(getWaveform(1) ) + (myMusicCounters[1] >> myMusicWaveformSize[1])] +
               myDisplayImage[(getWaveform(2) ) + (myMusicCounters[2] >> myMusicWaveformSize[2])];
-              
+
               result = uInt8(i);
               break;
           }
           break;
         }
       }
-      
+
       return result;
     }
     else if (address >= 0xFEE && address <= 0xFF3 && myBUSSubtype == BUSSubtype::BUS3)
@@ -408,10 +408,13 @@ uInt8 CartridgeBUS::peek(uInt16 address)
     {
       switch(address)
       {
-        case 0x00 ... 0x0f:
+        case 0x00: case 0x01: case 0x02: case 0x03:
+        case 0x04: case 0x05: case 0x06: case 0x07:
+        case 0x08: case 0x09: case 0x0a: case 0x0b:
+        case 0x0c: case 0x0d: case 0x0e: case 0x0f:
           peekvalue = readFromDatastream(address);
           break;
-          
+
         case 0xFF6:
           // Set the current bank to the first 4k bank
           bank(0);
@@ -521,15 +524,13 @@ bool CartridgeBUS::poke(uInt16 address, uInt8 value)
   }
   else
   {
-    uInt32 pointer = 0;
-
     address &= 0x0FFF;
 
     if (myBUSSubtype == BUSSubtype::BUS0)
     {
       uInt32 index = address & 0x0f;
-      uInt32 pointer, increment;
-      
+      uInt32 pointer = 0, increment = 0;
+
       switch(address)
       {
         case 0x10:  // DS0WRITE
@@ -541,25 +542,28 @@ bool CartridgeBUS::poke(uInt16 address, uInt8 value)
           //
           // P = Pointer
           // F = Fractional
-          
+
           pointer = getDatastreamPointer(index);
           myDisplayImage[ pointer >> 20 ] = value;
           pointer += 0x100000;  // always increment by 1 when writing
           setDatastreamPointer(index, pointer);
           break;
-          
+
         case 0x1B:  // CALLFN
           callFunction(value);
           break;
-          
+
         case 0x1c:  // BUSSTUFF
           if (value==0)
             myMode = 0;     // lower nybble 0 = STUFFON in BUS3
           else
             myMode = 0x0f;  // lower nybble f = STUFFOFF in BUS3
           break;
-          
-        case 0x20 ... 0x2f:
+
+        case 0x20: case 0x21: case 0x22: case 0x23:
+        case 0x24: case 0x25: case 0x26: case 0x27:
+        case 0x28: case 0x29: case 0x2a: case 0x2b:
+        case 0x2c: case 0x2d: case 0x2e: case 0x2f:
           // Pointers are stored as:
           // PPPFF---
           //
@@ -571,8 +575,11 @@ bool CartridgeBUS::poke(uInt16 address, uInt8 value)
           pointer |= (value << 20);
           setDatastreamPointer(index, pointer);
           break;
-          
-        case 0x30 ... 0x3f: // DSxINC
+
+        case 0x30: case 0x31: case 0x32: case 0x33: // DSxINC
+        case 0x34: case 0x35: case 0x36: case 0x37:
+        case 0x38: case 0x39: case 0x3a: case 0x3b:
+        case 0x3c: case 0x3d: case 0x3e: case 0x3f:
           // Increments are stored as
           // ----IIFF
           //
@@ -584,38 +591,38 @@ bool CartridgeBUS::poke(uInt16 address, uInt8 value)
           index &= 0xffff;
           setDatastreamIncrement(index, increment);
           break;
-          
-        
+
+
         case 0xFF6:
           // Set the current bank to the first 4k bank
           bank(0);
           break;
-          
+
         case 0x0FF7:
           // Set the current bank to the second 4k bank
           bank(1);
           break;
-          
+
         case 0x0FF8:
           // Set the current bank to the third 4k bank
           bank(2);
           break;
-          
+
         case 0x0FF9:
           // Set the current bank to the fourth 4k bank
           bank(3);
           break;
-          
+
         case 0x0FFA:
           // Set the current bank to the fifth 4k bank
           bank(4);
           break;
-          
+
         case 0x0FFB:
           // Set the current bank to the sixth 4k bank
           bank(5);
           break;
-          
+
         default:
           break;
       }
@@ -629,43 +636,44 @@ bool CartridgeBUS::poke(uInt16 address, uInt8 value)
           // Set the current bank to the first 4k bank
           bank(0);
           break;
-          
+
         case 0x0FF6:
           // Set the current bank to the second 4k bank
           bank(1);
           break;
-          
+
         case 0x0FF7:
           // Set the current bank to the third 4k bank
           bank(2);
           break;
-          
+
         case 0x0FF8:
           // Set the current bank to the fourth 4k bank
           bank(3);
           break;
-          
+
         case 0x0FF9:
           // Set the current bank to the fifth 4k bank
           bank(4);
           break;
-          
+
         case 0x0FFA:
           // Set the current bank to the sixth 4k bank
           bank(5);
           break;
-          
+
         case 0x0FFB:
           // Set the current bank to the last 4k bank
           bank(6);
           break;
-          
+
         default:
           break;
       }
     }
     else if (myBUSSubtype == BUSSubtype::BUS3)
     {
+      uInt32 pointer = 0;
       switch(address)
       {
         case 0xFEE: // AMPLITUDE
@@ -706,8 +714,8 @@ bool CartridgeBUS::poke(uInt16 address, uInt8 value)
       {
         // Get the index of the data fetcher that's being accessed
         uInt32 index = address & 0x0f;
-        uInt32 pointer;
-        
+        uInt32 pointer = 0;
+
         switch (index)
         {
           case 0x00:  // DS0WRITE
@@ -719,13 +727,13 @@ bool CartridgeBUS::poke(uInt16 address, uInt8 value)
             //
             // P = Pointer
             // F = Fractional
-            
+
             pointer = getDatastreamPointer(index);
             myDisplayImage[ pointer >> 20 ] = value;
             pointer += 0x100000;  // always increment by 1 when writing
             setDatastreamPointer(index, pointer);
             break;
-            
+
           case 0x04:  // 0x14 DS0PTR
           case 0x05:  // 0x15 DS1PTR
           case 0x06:  // 0x16 DS2PTR
@@ -735,7 +743,7 @@ bool CartridgeBUS::poke(uInt16 address, uInt8 value)
             //
             // P = Pointer
             // F = Fractional
-            
+
             index &= 0x03;
             pointer = getDatastreamPointer(index);
             pointer <<=8;
@@ -743,14 +751,14 @@ bool CartridgeBUS::poke(uInt16 address, uInt8 value)
             pointer |= (value << 20);
             setDatastreamPointer(index, pointer);
             break;
-            
+
           case 0x09:  // 0x19 turn on STY ZP bus stuffing if value is 0
             if (value==0)
               myMode = 0;     // lower nybble 0 = STUFFON in BUS3
             else
               myMode = 0x0f;  // lower nybble f = STUFFOFF in BUS3
             break;
-            
+
           case 0x0A:  // 0x1A CALLFUNCTION
             callFunction(value);
             break;
@@ -1133,11 +1141,11 @@ void CartridgeBUS::setupVersion()
 {
   // 3 versions of the BUS driver have been found. Location of the BUS
   // strings are in a different location for each.
-  
-  
+
+
   // get offset of BUS ID
   uInt32 busOffset = scanBUSDriver(0x00535542);
-  
+
   switch(busOffset)
   {
     case 0x7f4: // draconian_20161102.bin
@@ -1155,7 +1163,7 @@ void CartridgeBUS::setupVersion()
       myDatastreamMapBase = 0x0760;
       myWaveformBase = 0x07F4;
       break;
-     
+
     case 0x770: //  rpg_20170616_NTSC.bin newest
       myBUSSubtype = BUSSubtype::BUS3;
       myDatastreamBase = 0x06D8;
@@ -1163,7 +1171,7 @@ void CartridgeBUS::setupVersion()
       myDatastreamMapBase = 0x0760;
       myWaveformBase = 0x07F4;
       break;
-      
+
     default: // case 0xbf8: // original BUS driver was 3K in size
       myBUSSubtype = BUSSubtype::BUS0;
 //       unsupported

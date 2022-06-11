@@ -54,6 +54,10 @@
 
   * Added ARM chip auto detection.
 
+  * Extended support for older BUS (experimental) ROMs that worked
+    with an older, obsolete version of the BUS scheme; special thanks
+    to SpiceWare for the code.
+
   * Fixed Stella crash due to invalid ZIP files.
 
   * Fixed TV mode auto detection in some ARM ROMs.
