@@ -28,38 +28,53 @@ CartridgeBUSWidget::CartridgeBUSWidget(
   : CartridgeARMWidget(boss, lfont, nfont, x, y, w, h, cart),
     myCart{cart}
 {
-  constexpr uInt16 size = 8 * 4096;
+  constexpr int VBORDER = 8,
+                HBORDER = 2,
+                INDENT = 20,
+                VGAP = 4;
 
-  ostringstream info;
-  info << "BUS Stuffing cartridge (EXPERIMENTAL)\n"
-       << "32K ROM, seven 4K banks are accessible to 2600\n"
-       << "8K BUS RAM\n"
-       << "BUS registers accessible @ $FFEE - $FFF3\n"
-       << "Banks accessible at hotspots $FFFF to $FFFB\n"
-       << "Startup bank = " << cart.startBank() << "\n";
-
-#if 0
-  // Eventually, we should query this from the debugger/disassembler
-  for(uInt32 i = 0, offset = 0xFFC, spot = 0xFF5; i < 7; ++i, offset += 0x1000)
+  int xpos = HBORDER, ypos = VBORDER;
+  int ds2_rows;
+  
+//  if (cart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS0)
+//  {
+//    int lwidth = _font.getStringWidth("Unsupported version of BUS"); // get width of the widest label
+//    new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
+//                         myFontHeight, "Unsupported version of BUS", TextAlign::Left);
+//    return;
+//  }
+  
+  if (cart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS3)
   {
-    uInt16 start = (cart.myImage[offset+1] << 8) | cart.myImage[offset];
-    start -= start % 0x1000;
-    info << "Bank " << i << " @ $" << HEX4 << (start + 0x80) << " - "
-         << "$" << (start + 0xFFF) << " (hotspot = $" << (spot+i) << ")\n";
+    ds2_rows = 2;
+    myDatastreamCount = 18;
   }
-#endif
-
-  int xpos = 2,
-      ypos = addBaseInformation(size, "AtariAge", info.str(), 4) + 4;
-
+  else
+  {
+    ds2_rows = 4;
+    myDatastreamCount = 20;
+  }
+  
   VariantList items;
-  VarList::push_back(items, "0 ($FFF5)");
-  VarList::push_back(items, "1 ($FFF6)");
-  VarList::push_back(items, "2 ($FFF7)");
-  VarList::push_back(items, "3 ($FFF8)");
-  VarList::push_back(items, "4 ($FFF9)");
-  VarList::push_back(items, "5 ($FFFA)");
-  VarList::push_back(items, "6 ($FFFB)");
+  if (cart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS0)
+  {
+    VarList::push_back(items, "0 ($FFF6)");
+    VarList::push_back(items, "1 ($FFF7)");
+    VarList::push_back(items, "2 ($FFF8)");
+    VarList::push_back(items, "3 ($FFF9)");
+    VarList::push_back(items, "4 ($FFFA)");
+    VarList::push_back(items, "5 ($FFFB)");
+  }
+  else
+  {
+    VarList::push_back(items, "0 ($FFF5)");
+    VarList::push_back(items, "1 ($FFF6)");
+    VarList::push_back(items, "2 ($FFF7)");
+    VarList::push_back(items, "3 ($FFF8)");
+    VarList::push_back(items, "4 ($FFF9)");
+    VarList::push_back(items, "5 ($FFFA)");
+    VarList::push_back(items, "6 ($FFFB)");
+  }
   myBank =
     new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($FFFx)"),
                     myLineHeight, items, "Set bank     ",
@@ -72,7 +87,7 @@ CartridgeBUSWidget::CartridgeBUSWidget(
   // Datastream Pointers
 #define DS_X 30
   xpos = DS_X;
-  ypos += myLineHeight + 4;
+  ypos += myLineHeight + VGAP;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
                        myFontHeight, "Datastream Pointers", TextAlign::Left);
 
@@ -80,7 +95,7 @@ CartridgeBUSWidget::CartridgeBUSWidget(
   myDatastreamPointers->setTarget(this);
   myDatastreamPointers->setEditable(false);
 
-  myDatastreamPointers2 = new DataGridWidget(boss, _nfont, DS_X + myDatastreamPointers->getWidth() * 3 / 4, ypos+myLineHeight-2 + 4*myLineHeight, 1, 2, 6, 32, Common::Base::Fmt::_16_3_2);
+  myDatastreamPointers2 = new DataGridWidget(boss, _nfont, DS_X + myDatastreamPointers->getWidth() * 3 / 4, ypos+myLineHeight-2 + 4*myLineHeight, 1, ds2_rows, 6, 32, Common::Base::Fmt::_16_3_2);
   myDatastreamPointers2->setTarget(this);
   myDatastreamPointers2->setEditable(false);
 
@@ -93,18 +108,42 @@ CartridgeBUSWidget::CartridgeBUSWidget(
                          myFontWidth*2, myFontHeight, "", TextAlign::Left);
     myDatastreamLabels[row]->setLabel(Common::Base::toString(row * 4, Common::Base::Fmt::_16_2));
   }
-  lwidth = _font.getStringWidth("Write Data (stream 16)");
-  myDatastreamLabels[4] =
-  new StaticTextWidget(_boss, _font, DS_X - _font.getStringWidth("xx "),
-                       ypos+myLineHeight-2 + 4*myLineHeight + 2,
-                       lwidth, myFontHeight, "Write Data (stream 16)", TextAlign::Left);
-  myDatastreamLabels[5] =
-  new StaticTextWidget(_boss, _font, DS_X - _font.getStringWidth("xx "),
-                       ypos+myLineHeight-2 + 5*myLineHeight + 2,
-                       lwidth, myFontHeight, "Jump Data (stream 17)", TextAlign::Left);
-
+  
+  if (cart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS3)
+  {
+    lwidth = _font.getStringWidth("Write Data (stream 16)");
+    myDatastreamLabels[4] =
+    new StaticTextWidget(_boss, _font, DS_X - _font.getStringWidth("xx "),
+                         ypos+myLineHeight-2 + 4*myLineHeight + 2,
+                         lwidth, myFontHeight, "Write Data (stream 16)", TextAlign::Left);
+    myDatastreamLabels[5] =
+    new StaticTextWidget(_boss, _font, DS_X - _font.getStringWidth("xx "),
+                         ypos+myLineHeight-2 + 5*myLineHeight + 2,
+                         lwidth, myFontHeight, "Jump Data (stream 17)", TextAlign::Left);
+  }
+  else
+  {
+    lwidth = _font.getStringWidth("Write Data 0 (stream 16)");
+    myDatastreamLabels[4] =
+    new StaticTextWidget(_boss, _font, DS_X - _font.getStringWidth("xx "),
+                         ypos+myLineHeight-2 + 4*myLineHeight + 2,
+                         lwidth, myFontHeight, "Write Data 0(stream 16)", TextAlign::Left);
+    myDatastreamLabels[5] =
+    new StaticTextWidget(_boss, _font, DS_X - _font.getStringWidth("xx "),
+                         ypos+myLineHeight-2 + 5*myLineHeight + 2,
+                         lwidth, myFontHeight, "Write Data 1(stream 17)", TextAlign::Left);
+    myDatastreamLabels[6] =
+    new StaticTextWidget(_boss, _font, DS_X - _font.getStringWidth("xx "),
+                         ypos+myLineHeight-2 + 6*myLineHeight + 2,
+                         lwidth, myFontHeight, "Write Data 2(stream 18)", TextAlign::Left);
+    myDatastreamLabels[7] =
+    new StaticTextWidget(_boss, _font, DS_X - _font.getStringWidth("xx "),
+                         ypos+myLineHeight-2 + 7*myLineHeight + 2,
+                         lwidth, myFontHeight, "Write Data 3(stream 19)", TextAlign::Left);
+  }
+  
   // Datastream Increments
-  xpos = DS_X + myDatastreamPointers->getWidth() + 20;
+  xpos = DS_X + myDatastreamPointers->getWidth() + INDENT;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
                        myFontHeight, "Datastream Increments", TextAlign::Left);
 
@@ -112,12 +151,12 @@ CartridgeBUSWidget::CartridgeBUSWidget(
   myDatastreamIncrements->setTarget(this);
   myDatastreamIncrements->setEditable(false);
 
-  myDatastreamIncrements2 = new DataGridWidget(boss, _nfont, xpos, ypos+myLineHeight-2 + 4*myLineHeight, 1, 2, 5, 32, Common::Base::Fmt::_16_2_2);
+  myDatastreamIncrements2 = new DataGridWidget(boss, _nfont, xpos, ypos+myLineHeight-2 + 4*myLineHeight, 1, ds2_rows, 5, 32, Common::Base::Fmt::_16_2_2);
   myDatastreamIncrements2->setTarget(this);
   myDatastreamIncrements2->setEditable(false);
 
   // Datastream Maps
-  xpos = 0;  ypos += myLineHeight*7 + 4;
+  xpos = 0;  ypos += myLineHeight*(5 + ds2_rows) + VGAP;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
                        myFontHeight, "Address Maps", TextAlign::Left);
 
@@ -126,7 +165,7 @@ CartridgeBUSWidget::CartridgeBUSWidget(
   myAddressMaps->setEditable(false);
 
   // Music counters
-  xpos = 10;  ypos += myLineHeight*6 + 4;
+  xpos = 10;  ypos += myLineHeight*6 + VGAP;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
         myFontHeight, "Music Counters", TextAlign::Left);
   xpos += lwidth;
@@ -136,7 +175,7 @@ CartridgeBUSWidget::CartridgeBUSWidget(
   myMusicCounters->setEditable(false);
 
   // Music frequencies
-  xpos = 10;  ypos += myLineHeight + 4;
+  xpos = 10;  ypos += myLineHeight + VGAP;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
         myFontHeight, "Music Frequencies", TextAlign::Left);
   xpos += lwidth;
@@ -146,7 +185,7 @@ CartridgeBUSWidget::CartridgeBUSWidget(
   myMusicFrequencies->setEditable(false);
 
   // Music waveforms
-  xpos = 10;  ypos += myLineHeight + 4;
+  xpos = 10;  ypos += myLineHeight + VGAP;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
         myFontHeight, "Music Waveforms", TextAlign::Left);
   xpos += lwidth;
@@ -155,17 +194,20 @@ CartridgeBUSWidget::CartridgeBUSWidget(
   myMusicWaveforms->setTarget(this);
   myMusicWaveforms->setEditable(false);
 
-  const int xpossp = xpos + myMusicWaveforms->getWidth() + 20;
-  const int lwidth2 = _font.getStringWidth("Sample Pointer ");
-  new StaticTextWidget(boss, _font, xpossp, ypos, lwidth2,
-                       myFontHeight, "Sample Pointer ", TextAlign::Left);
+  const int xpossp = xpos + myMusicWaveforms->getWidth() + INDENT;
+  if (cart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS3)
+  {
+    const int lwidth2 = _font.getStringWidth("Sample Pointer ");
+    new StaticTextWidget(boss, _font, xpossp, ypos, lwidth2,
+                         myFontHeight, "Sample Pointer ", TextAlign::Left);
 
-  mySamplePointer = new DataGridWidget(boss, _nfont, xpossp + lwidth2, ypos-2, 1, 1, 8, 32, Common::Base::Fmt::_16_8);
-  mySamplePointer->setTarget(this);
-  mySamplePointer->setEditable(false);
+    mySamplePointer = new DataGridWidget(boss, _nfont, xpossp + lwidth2, ypos-2, 1, 1, 8, 32, Common::Base::Fmt::_16_8);
+    mySamplePointer->setTarget(this);
+    mySamplePointer->setEditable(false);
+  }
 
   // Music waveform sizes
-  xpos = 10;  ypos += myLineHeight + 4;
+  xpos = 10;  ypos += myLineHeight + VGAP;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
                        myFontHeight, "Music Waveform Sizes", TextAlign::Left);
   xpos += lwidth;
@@ -176,16 +218,18 @@ CartridgeBUSWidget::CartridgeBUSWidget(
 
 
   // BUS stuff and Digital Audio flags
-  xpos = 10;  ypos += myLineHeight + 4;
+  xpos = 10;  ypos += myLineHeight + VGAP;
   myBusOverdrive = new CheckboxWidget(boss, _font, xpos, ypos, "BUS Overdrive enabled");
   myBusOverdrive->setTarget(this);
   myBusOverdrive->setEditable(false);
 
-  myDigitalSample = new CheckboxWidget(boss, _font, xpossp, ypos, "Digital Sample mode");
-  myDigitalSample->setTarget(this);
-  myDigitalSample->setEditable(false);
-
-  xpos = 10;  ypos += myLineHeight + 4 * 2;
+  if (cart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS3)
+  {
+    myDigitalSample = new CheckboxWidget(boss, _font, xpossp, ypos, "Digital Sample mode");
+    myDigitalSample->setTarget(this);
+    myDigitalSample->setEditable(false);
+  }
+  xpos = 10;  ypos += myLineHeight + VGAP * 2;
   addCycleWidgets(xpos, ypos);
 }
 
@@ -204,7 +248,7 @@ void CartridgeBUSWidget::saveOldState()
   myOldState.internalram.clear();
   myOldState.samplepointer.clear();
 
-  for(uInt32 i = 0; i < 18; ++i)
+  for(int i = 0; i < myDatastreamCount; ++i)
   {
     // Pointers are stored as:
     // PPPFF---
@@ -250,6 +294,9 @@ void CartridgeBUSWidget::saveOldState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeBUSWidget::loadConfig()
 {
+//  if (myCart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS0)
+//    return;
+  
   myBank->setSelectedIndex(myCart.getBank());
 
   // Get registers, using change tracking
@@ -277,7 +324,7 @@ void CartridgeBUSWidget::loadConfig()
   myDatastreamPointers->setList(alist, vlist, changed);
 
   alist.clear();  vlist.clear();  changed.clear();
-  for(int i = 16; i < 18; ++i)
+  for(int i = 16; i < myDatastreamCount; ++i)
   {
     const Int32 pointervalue = myCart.getDatastreamPointer(i) >> 12;
     alist.push_back(0);  vlist.push_back(pointervalue);
@@ -295,7 +342,7 @@ void CartridgeBUSWidget::loadConfig()
   myDatastreamIncrements->setList(alist, vlist, changed);
 
   alist.clear();  vlist.clear();  changed.clear();
-  for(int i = 16; i < 18; ++i)
+  for(int i = 16; i < myDatastreamCount; ++i)
   {
     constexpr Int32 incrementvalue = 0x100;
     alist.push_back(0);  vlist.push_back(incrementvalue);
@@ -350,25 +397,32 @@ void CartridgeBUSWidget::loadConfig()
   }
   myMusicWaveformSizes->setList(alist, vlist, changed);
 
-  alist.clear();  vlist.clear();  changed.clear();
-  alist.push_back(0);  vlist.push_back(myCart.getSample());
-  changed.push_back((myCart.getSample()) != uInt32(myOldState.samplepointer[0]));
-  mySamplePointer->setList(alist, vlist, changed);
+  
+  if (myCart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS3)
+  {
+    alist.clear();  vlist.clear();  changed.clear();
+    alist.push_back(0);  vlist.push_back(myCart.getSample());
+    changed.push_back((myCart.getSample()) != uInt32(myOldState.samplepointer[0]));
+    mySamplePointer->setList(alist, vlist, changed);
+  }
 
   myBusOverdrive->setState((myCart.myMode & 0x0f) == 0);
-  myDigitalSample->setState((myCart.myMode & 0xf0) == 0);
+  if (myCart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS3)
+    myDigitalSample->setState((myCart.myMode & 0xf0) == 0);
 
   if ((myCart.myMode & 0xf0) == 0)
   {
     myMusicWaveforms->setCrossed(true);
     myMusicWaveformSizes->setCrossed(true);
-    mySamplePointer->setCrossed(false);
+    if (myCart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS3)
+      mySamplePointer->setCrossed(false);
   }
   else
   {
     myMusicWaveforms->setCrossed(false);
     myMusicWaveformSizes->setCrossed(false);
-    mySamplePointer->setCrossed(true);
+    if (myCart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS3)
+      mySamplePointer->setCrossed(true);
   }
 
   CartridgeARMWidget::loadConfig();
@@ -394,11 +448,22 @@ string CartridgeBUSWidget::bankState()
 {
   ostringstream& buf = buffer();
 
-  static constexpr std::array<const char*, 7> spot = {
-    "$FFF5", "$FFF6", "$FFF7", "$FFF8", "$FFF9", "$FFFA", "$FFFB"
-  };
-  buf << "Bank = " << std::dec << myCart.getBank()
-      << ", hotspot = " << spot[myCart.getBank()];
+  if (myCart.myBUSSubtype == CartridgeBUS::BUSSubtype::BUS0)
+  {
+    static constexpr std::array<const char*, 6> spot = {
+      "$FFF6", "$FFF7", "$FFF8", "$FFF9", "$FFFA", "$FFFB"
+    };
+    buf << "Bank = " << std::dec << myCart.getBank()
+        << ", hotspot = " << spot[myCart.getBank()];
+  }
+  else
+  {
+    static constexpr std::array<const char*, 7> spot = {
+      "$FFF5", "$FFF6", "$FFF7", "$FFF8", "$FFF9", "$FFFA", "$FFFB"
+    };
+    buf << "Bank = " << std::dec << myCart.getBank()
+        << ", hotspot = " << spot[myCart.getBank()];
+  }
 
   return buf.str();
 }

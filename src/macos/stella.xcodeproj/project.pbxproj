@@ -195,6 +195,8 @@
 		2DEFB40C09C3386F00754289 /* Cart.icns in Resources */ = {isa = PBXBuildFile; fileRef = 2DEFB40B09C3386F00754289 /* Cart.icns */; };
 		55FE2A321EE4856B00078ADE /* SDL2.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = DCDAF4D818CA9AAB00D3865D /* SDL2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		55FE2A501EE4880500078ADE /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 55FE2A3C1EE487CA00078ADE /* InfoPlist.strings */; };
+		CFB521D72853A2590083B9CE /* CartBUSInfoWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = CFB521D52853A2590083B9CE /* CartBUSInfoWidget.cxx */; };
+		CFB521D82853A2590083B9CE /* CartBUSInfoWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = CFB521D62853A2590083B9CE /* CartBUSInfoWidget.hxx */; };
 		CFE3F60B1E84A9A200A8204E /* CartBUSWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = CFE3F6071E84A9A200A8204E /* CartBUSWidget.cxx */; };
 		CFE3F60C1E84A9A200A8204E /* CartBUSWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = CFE3F6081E84A9A200A8204E /* CartBUSWidget.hxx */; };
 		CFE3F60D1E84A9A200A8204E /* CartCDFWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = CFE3F6091E84A9A200A8204E /* CartCDFWidget.cxx */; };
@@ -1021,6 +1023,8 @@
 		2DF971D70892CEA400F64D23 /* DebuggerSystem.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = DebuggerSystem.hxx; sourceTree = "<group>"; };
 		2DF971DF0892CEA400F64D23 /* Expression.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = Expression.hxx; sourceTree = "<group>"; };
 		B2F367C504C7ADC700A80002 /* SDLMain.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = SDLMain.nib; sourceTree = "<group>"; };
+		CFB521D52853A2590083B9CE /* CartBUSInfoWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartBUSInfoWidget.cxx; sourceTree = "<group>"; };
+		CFB521D62853A2590083B9CE /* CartBUSInfoWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartBUSInfoWidget.hxx; sourceTree = "<group>"; };
 		CFE3F6071E84A9A200A8204E /* CartBUSWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartBUSWidget.cxx; sourceTree = "<group>"; };
 		CFE3F6081E84A9A200A8204E /* CartBUSWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartBUSWidget.hxx; sourceTree = "<group>"; };
 		CFE3F6091E84A9A200A8204E /* CartCDFWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartCDFWidget.cxx; sourceTree = "<group>"; };
@@ -1751,6 +1755,8 @@
 				DCAACB07188D636F00A4D282 /* CartBFSCWidget.hxx */,
 				DCAACB08188D636F00A4D282 /* CartBFWidget.cxx */,
 				DCAACB09188D636F00A4D282 /* CartBFWidget.hxx */,
+				CFB521D52853A2590083B9CE /* CartBUSInfoWidget.cxx */,
+				CFB521D62853A2590083B9CE /* CartBUSInfoWidget.hxx */,
 				CFE3F6071E84A9A200A8204E /* CartBUSWidget.cxx */,
 				CFE3F6081E84A9A200A8204E /* CartBUSWidget.hxx */,
 				E0A755772244294600101889 /* CartCDFInfoWidget.cxx */,
@@ -2734,6 +2740,7 @@
 				DC816CF72572F92A00FBCCDA /* json_lib.hxx in Headers */,
 				2D91741B09BA90380026E9FF /* OSystem.hxx in Headers */,
 				DC6A18F919B3E65500DEB242 /* CartMDMWidget.hxx in Headers */,
+				CFB521D82853A2590083B9CE /* CartBUSInfoWidget.hxx in Headers */,
 				2D91741F09BA90380026E9FF /* AboutBox.h in Headers */,
 				DC84FC572677C64200E60ADE /* CartARMWidget.hxx in Headers */,
 				2D91742009BA90380026E9FF /* ConsoleFont.hxx in Headers */,
@@ -3420,6 +3427,7 @@
 				DCA233B423BAB1300032ABF3 /* Lightgun.cxx in Sources */,
 				DCAAE5DE1715887B0080BB82 /* CartEFSCWidget.cxx in Sources */,
 				DCAAE5E01715887B0080BB82 /* CartEFWidget.cxx in Sources */,
+				CFB521D72853A2590083B9CE /* CartBUSInfoWidget.cxx in Sources */,
 				DCAAE5E21715887B0080BB82 /* CartF0Widget.cxx in Sources */,
 				DCB2ECAF1F0AECA3009738A6 /* CartDetector.cxx in Sources */,
 				DCAAE5E41715887B0080BB82 /* CartF4SCWidget.cxx in Sources */,

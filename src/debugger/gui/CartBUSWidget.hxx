@@ -53,6 +53,7 @@ class CartridgeBUSWidget : public CartridgeARMWidget
 
     CartridgeBUS& myCart;
     PopUpWidget* myBank{nullptr};
+    int myDatastreamCount;
 
     DataGridWidget* myDatastreamPointers{nullptr};
     DataGridWidget* myDatastreamIncrements{nullptr};
@@ -66,7 +67,7 @@ class CartridgeBUSWidget : public CartridgeARMWidget
     DataGridWidget* mySamplePointer{nullptr};
     CheckboxWidget* myBusOverdrive{nullptr};
     CheckboxWidget* myDigitalSample{nullptr};
-    std::array<StaticTextWidget*, 6> myDatastreamLabels{nullptr};
+    std::array<StaticTextWidget*, 8> myDatastreamLabels{nullptr};
     CartState myOldState;
 
     enum { kBankChanged = 'bkCH' };
