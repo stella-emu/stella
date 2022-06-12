@@ -43,7 +43,7 @@ class ZipHandler
     // The following form an iterator for processing the filenames in the ZIP file
     void reset();          // Reset iterator to first file
     bool hasNext() const;  // Answer whether there are more files present
-    std::tuple<string, size_t, bool> next();  // Get information on next file
+    std::tuple<string, size_t> next();  // Get information on next file
 
     // Decompress the currently selected file and return its length
     // An exception will be thrown on any errors

@@ -26,7 +26,7 @@ class Settings;
 #include "FileListWidget.hxx"
 
 /**
-  Specialization of the general FileListWidget which procides support for
+  Specialization of the general FileListWidget which provides support for
   user defined favorites, recently played ROMs and most popular ROMs.
 
   @author  Thomas Jentzsch

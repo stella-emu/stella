@@ -41,10 +41,12 @@ void FilesystemNode::setPath(const string& path)
   // Is this potentially a ZIP archive?
 #if defined(ZIP_SUPPORT)
   if (BSPF::containsIgnoreCase(path, ".zip"))
-    _realNode = FilesystemNodeFactory::create(path, FilesystemNodeFactory::Type::ZIP);
+    _realNode = FilesystemNodeFactory::create(path,
+        FilesystemNodeFactory::Type::ZIP);
   else
 #endif
-    _realNode = FilesystemNodeFactory::create(path, FilesystemNodeFactory::Type::SYSTEM);
+    _realNode = FilesystemNodeFactory::create(path,
+        FilesystemNodeFactory::Type::SYSTEM);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -78,14 +80,13 @@ bool FilesystemNode::getAllChildren(FSList& fslist, ListMode mode,
   {
     // Sort only once at the end
   #if defined(ZIP_SUPPORT)
-    // before sorting, replace single file ZIP archive names with contained file names
-    //  because they are displayed using their contained file names
+    // before sorting, replace single file ZIP archive names with contained
+    // file names because they are displayed using their contained file names
     for(auto& i : fslist)
     {
       if(BSPF::endsWithIgnoreCase(i.getPath(), ".zip"))
       {
         FilesystemNodeZIP zipNode(i.getPath());
-
         i.setName(zipNode.getName());
       }
     }
@@ -108,8 +109,8 @@ bool FilesystemNode::getAllChildren(FSList& fslist, ListMode mode,
       if(BSPF::endsWithIgnoreCase(i.getPath(), ".zip"))
       {
         // Force ZIP c'tor to be called
-        AbstractFSNodePtr ptr = FilesystemNodeFactory::create(i.getPath(),
-                                                              FilesystemNodeFactory::Type::ZIP);
+        AbstractFSNodePtr ptr = FilesystemNodeFactory::create(
+            i.getPath(), FilesystemNodeFactory::Type::ZIP);
         FilesystemNode zipNode(ptr);
         i = zipNode;
       }
@@ -143,14 +144,13 @@ bool FilesystemNode::getChildren(FSList& fslist, ListMode mode,
       return false;
 
   #if defined(ZIP_SUPPORT)
-    // before sorting, replace single file ZIP archive names with contained file names
-    //  because they are displayed using their contained file names
+    // before sorting, replace single file ZIP archive names with contained
+    // file names because they are displayed using their contained file names
     for(auto& i : tmp)
     {
       if(BSPF::endsWithIgnoreCase(i->getPath(), ".zip"))
       {
         FilesystemNodeZIP node(i->getPath());
-
         i->setName(node.getName());
       }
     }
@@ -185,8 +185,8 @@ bool FilesystemNode::getChildren(FSList& fslist, ListMode mode,
     if (BSPF::endsWithIgnoreCase(i->getPath(), ".zip"))
     {
       // Force ZIP c'tor to be called
-      AbstractFSNodePtr ptr = FilesystemNodeFactory::create(i->getPath(),
-                                                            FilesystemNodeFactory::Type::ZIP);
+      AbstractFSNodePtr ptr = FilesystemNodeFactory::create(
+          i->getPath(), FilesystemNodeFactory::Type::ZIP);
       FilesystemNode zipNode(ptr);
 
       if(filter(zipNode))

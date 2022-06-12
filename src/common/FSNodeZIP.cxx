@@ -47,6 +47,8 @@ FilesystemNodeZIP::FilesystemNodeZIP(const string& p)
 #endif
   }
 
+// cerr << " => p: " << p << endl;
+
   // Open file at least once to initialize the virtual file count
   try
   {
@@ -66,26 +68,23 @@ FilesystemNodeZIP::FilesystemNodeZIP(const string& p)
 
   // We always need a virtual file/path
   // Either one is given, or we use the first one
-  if(pos+5 < p.length())
+  if(pos+5 < p.length())  // if something comes after '.zip'
   {
     _virtualPath = p.substr(pos+5);
     _isFile = Bankswitch::isValidRomName(_virtualPath);
     _isDirectory = !_isFile;
-
-// cerr << _virtualPath << ", isfile: " << _isFile << endl;
-
   }
   else if(_numFiles == 1)
   {
     bool found = false;
     while(myZipHandler->hasNext() && !found)
     {
-      const auto [name, size, isFile] = myZipHandler->next();
+      const auto& [name, size] = myZipHandler->next();
       if(Bankswitch::isValidRomName(name))
       {
         _virtualPath = name;
         _size = size;
-        _isFile = isFile;
+        _isFile = true;
 
         found = true;
       }
@@ -105,6 +104,8 @@ FilesystemNodeZIP::FilesystemNodeZIP(const string& p)
       FilesystemNodeFactory::Type::SYSTEM);
 
   setFlags(_zipFile, _virtualPath, _realNode);
+// cerr << "==============================================================\n";
+// cerr << _name << ", file: " << _isFile << ", dir: " << _isDirectory << endl << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -115,6 +116,7 @@ FilesystemNodeZIP::FilesystemNodeZIP(
     _isDirectory{isdir},
     _isFile{!isdir}
 {
+// cerr << "=> c'tor 2: " << zipfile << ", " << virtualpath << ", " << isdir << endl;
   setFlags(zipfile, virtualpath, realnode);
 }
 
@@ -155,7 +157,7 @@ bool FilesystemNodeZIP::exists() const
       myZipHandler->open(_zipFile);
       while(myZipHandler->hasNext())
       {
-        const auto [name, size, isFile] = myZipHandler->next();
+        const auto& [name, size] = myZipHandler->next();
         if(BSPF::startsWithIgnoreCase(name, _virtualPath))
           return true;
       }
@@ -178,17 +180,20 @@ bool FilesystemNodeZIP::getChildren(AbstractFSList& myList, ListMode mode) const
 
   std::set<string> dirs;
   myZipHandler->open(_zipFile);
+// cerr << "CHILDREN: --------------------------------\n";
   while(myZipHandler->hasNext())
   {
     // Only consider entries that start with '_virtualPath'
     // Ignore empty filenames and '__MACOSX' virtual directories
-    const auto [name, size, isFile] = myZipHandler->next();
+    const auto& [name, size] = myZipHandler->next();
     if(BSPF::startsWithIgnoreCase(name, "__MACOSX") || name == EmptyString)
       continue;
     if(BSPF::startsWithIgnoreCase(name, _virtualPath))
     {
       // First strip off the leading directory
-      const string& curr = name.substr(_virtualPath == "" ? 0 : _virtualPath.size()+1);
+      const string& curr = name.substr(
+          _virtualPath == "" ? 0 : _virtualPath.size()+1);
+// cerr << "  curr: " << curr << endl;
       // Only add sub-directory entries once
       const auto pos = curr.find_first_of("/\\");
       if(pos != string::npos)
@@ -204,6 +209,10 @@ bool FilesystemNodeZIP::getChildren(AbstractFSList& myList, ListMode mode) const
     myList.emplace_back(new FilesystemNodeZIP(_zipFile, vpath, _realNode, 0, true));
   }
 
+// cerr << "list: \n";
+// for(auto& s: myList)
+//   cerr << s->getPath() << " : isdir: " << s->isDirectory() << endl;
+// cerr << "------------------------------------------\n";
   return true;
 }
 
@@ -223,7 +232,7 @@ size_t FilesystemNodeZIP::read(ByteBuffer& image, size_t) const
   bool found = false;
   while(myZipHandler->hasNext() && !found)
   {
-    const auto [name, size, isFile] = myZipHandler->next();
+    const auto& [name, size] = myZipHandler->next();
     found = name == _virtualPath;
   }
 
@@ -266,7 +275,7 @@ AbstractFSNodePtr FilesystemNodeZIP::getParent() const
   const char* start = _path.c_str();
   const char* end = lastPathComponent(_path);
 
-  return make_shared<FilesystemNodeZIP>(string(start, end - start - 1));
+  return make_unique<FilesystemNodeZIP>(string(start, end - start - 1));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
