@@ -32,15 +32,15 @@
  *
  * Parts of this class are documented in the base interface class, AbstractFSNode.
  */
-class FilesystemNodeZIP : public AbstractFSNode
+class FSNodeZIP : public AbstractFSNode
 {
   public:
     /**
-     * Creates a FilesystemNodeZIP for a given path.
+     * Creates a FSNodeZIP for a given path.
      *
      * @param path  String with the path the new node should point to.
      */
-    explicit FilesystemNodeZIP(const string& path);
+    explicit FSNodeZIP(const string& path);
 
     bool exists() const override;
     const string& getName() const override    { return _name; }
@@ -69,13 +69,13 @@ class FilesystemNodeZIP : public AbstractFSNode
     size_t write(const stringstream& buffer) const override;
 
   private:
-    FilesystemNodeZIP(const string& zipfile, const string& virtualpath,
+    FSNodeZIP(const string& zipfile, const string& virtualpath,
         const AbstractFSNodePtr& realnode, size_t size, bool isdir);
 
     void setFlags(const string& zipfile, const string& virtualpath,
         const AbstractFSNodePtr& realnode);
 
-    friend ostream& operator<<(ostream& os, const FilesystemNodeZIP& node)
+    friend ostream& operator<<(ostream& os, const FSNodeZIP& node)
     {
       os << "_zipFile:     " << node._zipFile << endl
          << "_virtualPath: " << node._virtualPath << endl

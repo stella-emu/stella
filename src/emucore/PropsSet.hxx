@@ -20,7 +20,7 @@
 
 #include <map>
 
-class FilesystemNode;
+class FSNode;
 class OSystem;
 
 #include "bspf.hxx"
@@ -82,7 +82,7 @@ class PropertiesSet
       @param rom  The node representing the rom file
       @param md5  The md5 of the property to get
     */
-    void loadPerROM(const FilesystemNode& rom, const string& md5);
+    void loadPerROM(const FSNode& rom, const string& md5);
 
     /**
       Prints the contents of the PropertiesSet as a flat file.

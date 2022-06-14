@@ -290,7 +290,7 @@ void LauncherDialog::addRomWidgets(int ypos)
   instance().settings().setValue("startromdir", getRomDir());
   myList = new LauncherFileListWidget(this, _font, xpos, ypos, listWidth, listHeight);
   myList->setEditable(false);
-  myList->setListMode(FilesystemNode::ListMode::All);
+  myList->setListMode(FSNode::ListMode::All);
   // since we cannot know how many files there are, use are really high value here
   myList->progress().setRange(0, 50000, 5);
   myList->progress().setMessage("        Filtering files" + ELLIPSIS + "        ");
@@ -401,13 +401,13 @@ const string& LauncherDialog::selectedRomMD5()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const FilesystemNode& LauncherDialog::currentNode() const
+const FSNode& LauncherDialog::currentNode() const
 {
   return myList->selected();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const FilesystemNode& LauncherDialog::currentDir() const
+const FSNode& LauncherDialog::currentDir() const
 {
   return myList->currentDir();
 }
@@ -471,9 +471,9 @@ void LauncherDialog::loadConfig()
   // has been called (and we should reload the list)
   if(myList->getList().empty())
   {
-    FilesystemNode node(romdir == "" ? "~" : romdir);
+    FSNode node(romdir == "" ? "~" : romdir);
     if(!myList->isDirectory(node))
-      node = FilesystemNode("~");
+      node = FSNode("~");
 
     myList->setDirectory(node, settings.getString("lastrom"));
     updateUI();
@@ -601,7 +601,7 @@ bool LauncherDialog::matchWithWildcardsIgnoreCase(const string& str, const strin
 void LauncherDialog::applyFiltering()
 {
   myList->setNameFilter(
-    [&](const FilesystemNode& node) {
+    [&](const FSNode& node) {
       myList->incProgress();
       if(!node.isDirectory())
       {
@@ -1015,10 +1015,10 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
 
       if(myList->currentDir().getPath() != romDir)
       {
-        FilesystemNode node(romDir);
+        FSNode node(romDir);
 
         if(!myList->isDirectory(node))
-          node = FilesystemNode("~");
+          node = FSNode("~");
 
         myList->setDirectory(node);
       }

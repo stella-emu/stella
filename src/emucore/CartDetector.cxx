@@ -728,7 +728,7 @@ bool CartDetector::isProbablyMVC(const ByteBuffer& image, size_t size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-size_t CartDetector::isProbablyMVC(const FilesystemNode& rom)
+size_t CartDetector::isProbablyMVC(const FSNode& rom)
 {
   constexpr size_t frameSize = 2 * CartridgeMVC::MVC_FIELD_PAD_SIZE;
 

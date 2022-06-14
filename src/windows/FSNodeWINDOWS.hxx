@@ -34,19 +34,19 @@ static HomeFinder myHomeFinder;
  * Parts of this class are documented in the base interface class,
  * AbstractFSNode.
  */
-class FilesystemNodeWINDOWS : public AbstractFSNode
+class FSNodeWINDOWS : public AbstractFSNode
 {
   public:
     /**
-     * Creates a FilesystemNodeWINDOWS with the root node as path.
+     * Creates a FSNodeWINDOWS with the root node as path.
      *
      * In regular windows systems, a virtual root path is used "".
      * In windows CE, the "\" root is used instead.
      */
-    FilesystemNodeWINDOWS();
+    FSNodeWINDOWS();
 
     /**
-     * Creates a FilesystemNodeWINDOWS for a given path.
+     * Creates a FSNodeWINDOWS for a given path.
      *
      * Examples:
      *   path=c:\foo\bar.txt, currentDir=false -> c:\foo\bar.txt
@@ -55,7 +55,7 @@ class FilesystemNodeWINDOWS : public AbstractFSNode
      *
      * @param path String with the path the new node should point to.
      */
-    explicit FilesystemNodeWINDOWS(const string& path);
+    explicit FSNodeWINDOWS(const string& path);
 
     bool exists() const override;
     const string& getName() const override    { return _displayName; }
@@ -90,7 +90,7 @@ class FilesystemNodeWINDOWS : public AbstractFSNode
     void setFlags();
 
     /**
-     * Adds a single FilesystemNodeWINDOWS to a given list.
+     * Adds a single FSNodeWINDOWS to a given list.
      * This method is used by getChildren() to populate the directory entries list.
      *
      * @param list       List to put the file entry node in.

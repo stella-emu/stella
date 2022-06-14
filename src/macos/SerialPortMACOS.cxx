@@ -108,14 +108,14 @@ StringList SerialPortMACOS::portNames()
   };
 
   // Get all possible devices in the '/dev' directory
-  const FilesystemNode::NameFilter filter = [](const FilesystemNode& node) {
+  const FSNode::NameFilter filter = [](const FSNode& node) {
     return BSPF::startsWithIgnoreCase(node.getPath(), "/dev/cu.usb");
   };
   FSList portList;
   portList.reserve(5);
 
-  FilesystemNode dev("/dev/");
-  dev.getChildren(portList, FilesystemNode::ListMode::All, filter, false);
+  FSNode dev("/dev/");
+  dev.getChildren(portList, FSNode::ListMode::All, filter, false);
 
   // Add only those that can be opened
   for(const auto& port: portList)

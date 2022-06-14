@@ -23,7 +23,7 @@
 
 class Debugger;
 class Settings;
-class FilesystemNode;
+class FSNode;
 struct Command;
 
 #include "bspf.hxx"
@@ -38,7 +38,7 @@ class DebuggerParser
     string run(const string& command);
 
     /** Execute parser commands given in 'file' */
-    string exec(const FilesystemNode& file, StringList* history = nullptr);
+    string exec(const FSNode& file, StringList* history = nullptr);
 
     /** Given a substring, determine matching substrings from the list
         of available commands.  Used in the debugger prompt for tab-completion */
@@ -65,7 +65,7 @@ class DebuggerParser
     bool validateArgs(int cmd);
     string eval();
     string saveScriptFile(string file);
-    void saveDump(const FilesystemNode& node, const stringstream& out,
+    void saveDump(const FSNode& node, const stringstream& out,
                   ostringstream& result);
     const string& cartName() const;
 

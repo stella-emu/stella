@@ -35,7 +35,7 @@ LauncherFileListWidget::LauncherFileListWidget(GuiObject* boss, const GUI::Font&
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool LauncherFileListWidget::isDirectory(const FilesystemNode& node) const
+bool LauncherFileListWidget::isDirectory(const FSNode& node) const
 {
   const bool isDir = node.isDirectory();
 
@@ -49,7 +49,7 @@ bool LauncherFileListWidget::isDirectory(const FilesystemNode& node) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherFileListWidget::getChildren(const FilesystemNode::CancelCheck& isCancelled)
+void LauncherFileListWidget::getChildren(const FSNode::CancelCheck& isCancelled)
 {
   if(_node.exists() || !_node.hasParent())
   {
@@ -62,7 +62,7 @@ void LauncherFileListWidget::getChildren(const FilesystemNode::CancelCheck& isCa
     myInVirtualDir = true;
     myVirtualDir = _node.getName();
 
-    FilesystemNode parent(_node.getParent());
+    FSNode parent(_node.getParent());
     parent.setName("..");
     _fileList.emplace_back(parent);
 
@@ -70,10 +70,10 @@ void LauncherFileListWidget::getChildren(const FilesystemNode::CancelCheck& isCa
     {
       for(auto& item : myFavorites->userList())
       {
-        FilesystemNode node(item);
+        FSNode node(item);
         string name = node.getName();
 
-        if(name.back() == FilesystemNode::PATH_SEPARATOR)
+        if(name.back() == FSNode::PATH_SEPARATOR)
         {
           name.pop_back();
           node.setName(name);
@@ -86,7 +86,7 @@ void LauncherFileListWidget::getChildren(const FilesystemNode::CancelCheck& isCa
     {
       for(auto& item : myFavorites->popularList())
       {
-        FilesystemNode node(item.first);
+        FSNode node(item.first);
         if(_filter(node))
           _fileList.emplace_back(node);
       }
@@ -95,7 +95,7 @@ void LauncherFileListWidget::getChildren(const FilesystemNode::CancelCheck& isCa
     {
       for(auto& item : myFavorites->recentList())
       {
-        FilesystemNode node(item);
+        FSNode node(item);
         if(_filter(node))
           _fileList.emplace_back(node);
       }
@@ -107,7 +107,7 @@ void LauncherFileListWidget::getChildren(const FilesystemNode::CancelCheck& isCa
 void LauncherFileListWidget::addFolder(StringList& list, int& offset, const string& name, IconType icon)
 {
   _fileList.insert(_fileList.begin() + offset,
-    FilesystemNode(_node.getPath() + name));
+    FSNode(_node.getPath() + name));
   list.insert(list.begin() + offset, name);
   _dirList.insert(_dirList.begin() + offset, "");
   _iconTypeList.insert((_iconTypeList.begin() + offset), icon);
@@ -118,7 +118,7 @@ void LauncherFileListWidget::addFolder(StringList& list, int& offset, const stri
 string LauncherFileListWidget::startRomDir()
 {
   string romDir = instance().settings().getString("startromdir");
-  FilesystemNode node(romDir);
+  FSNode node(romDir);
   return node.getPath();
 }
 
@@ -256,7 +256,7 @@ FileListWidget::IconType LauncherFileListWidget::getIconType(const string& path)
   if(!isUserFavorite(path))
     return FileListWidget::getIconType(path);
 
-  const FilesystemNode node(path);
+  const FSNode node(path);
   if(node.isDirectory())
     return BSPF::endsWithIgnoreCase(node.getName(), ".zip")
       ? IconType::favzip : IconType::favdir;

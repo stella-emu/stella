@@ -71,7 +71,7 @@ namespace {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 KeyValueRepositoryPropertyFile::KeyValueRepositoryPropertyFile(
-        const FilesystemNode& node)
+        const FSNode& node)
   : KeyValueRepositoryFile<KeyValueRepositoryPropertyFile>(node)
 {
 }

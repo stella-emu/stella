@@ -57,7 +57,7 @@ class OSystemLIBRETRO : public OSystem
 
   protected:
 
-    void initPersistence(FilesystemNode& basedir) override;
+    void initPersistence(FSNode& basedir) override;
 
     string describePresistence() override;
 };

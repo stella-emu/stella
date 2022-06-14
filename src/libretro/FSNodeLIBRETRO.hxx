@@ -26,12 +26,12 @@
  * Parts of this class are documented in the base interface class,
  * AbstractFSNode.
  */
-class FilesystemNodeLIBRETRO : public AbstractFSNode
+class FSNodeLIBRETRO : public AbstractFSNode
 {
   public:
-    FilesystemNodeLIBRETRO();
+    FSNodeLIBRETRO();
 
-    explicit FilesystemNodeLIBRETRO(const string& path);
+    explicit FSNodeLIBRETRO(const string& path);
 
     bool exists() const override;
     const string& getName() const override    { return _name; }

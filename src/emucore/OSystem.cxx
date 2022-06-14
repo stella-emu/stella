@@ -223,11 +223,11 @@ void OSystem::loadConfig(const Settings::Options& options)
                      ourOverrideBaseDirWithApp, ourOverrideBaseDir);
 
   // Get fully-qualified pathnames, and make directories when needed
-  myBaseDir = FilesystemNode(baseDir);
+  myBaseDir = FSNode(baseDir);
   if(!myBaseDir.isDirectory())
     myBaseDir.makeDir();
 
-  myHomeDir = FilesystemNode(homeDir);
+  myHomeDir = FSNode(homeDir);
   if(!myHomeDir.isDirectory())
     myHomeDir.makeDir();
 
@@ -242,7 +242,7 @@ void OSystem::loadConfig(const Settings::Options& options)
   string userDir = mySettings->getString("userdir");
   if(userDir.empty())
     userDir = homeDir;
-  myUserDir = FilesystemNode(userDir);
+  myUserDir = FSNode(userDir);
   if(!myUserDir.isDirectory())
     myUserDir.makeDir();
 
@@ -272,8 +272,8 @@ void OSystem::saveConfig()
 void OSystem::setConfigPaths()
 {
   // Make sure all required directories actually exist
-  const auto buildDirIfRequired = [](FilesystemNode& path,
-                                     const FilesystemNode& initialPath,
+  const auto buildDirIfRequired = [](FSNode& path,
+                                     const FSNode& initialPath,
                                      const string& pathToAppend = EmptyString)
   {
     path = initialPath;
@@ -294,7 +294,7 @@ void OSystem::setConfigPaths()
   if(ssSaveDir == EmptyString)
     mySnapshotSaveDir = userDir();
   else
-    mySnapshotSaveDir = FilesystemNode(ssSaveDir);
+    mySnapshotSaveDir = FSNode(ssSaveDir);
   if(!mySnapshotSaveDir.isDirectory())
     mySnapshotSaveDir.makeDir();
 
@@ -302,7 +302,7 @@ void OSystem::setConfigPaths()
   if(ssLoadDir == EmptyString)
     mySnapshotLoadDir = userDir();
   else
-    mySnapshotLoadDir = FilesystemNode(ssLoadDir);
+    mySnapshotLoadDir = FSNode(ssLoadDir);
   if(!mySnapshotLoadDir.isDirectory())
     mySnapshotLoadDir.makeDir();
 #endif
@@ -312,7 +312,7 @@ void OSystem::setConfigPaths()
 
 #if 0
   // Debug code
-  auto dbgPath = [](const string& desc, const FilesystemNode& location)
+  auto dbgPath = [](const string& desc, const FSNode& location)
   {
     cerr << desc << ": " << location << endl;
   };
@@ -332,7 +332,7 @@ void OSystem::setUserDir(const string& path)
 {
   mySettings->setValue("userdir", path);
 
-  myUserDir = FilesystemNode(path);
+  myUserDir = FSNode(path);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -413,7 +413,7 @@ void OSystem::createSound()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
+string OSystem::createConsole(const FSNode& rom, const string& md5sum,
                               bool newrom)
 {
   bool showmessage = false;
@@ -489,7 +489,7 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
     }
     buf << "Game console created:" << endl
         << "  ROM file: " << myRomFile.getShortPath() << endl;
-    FilesystemNode propsFile(myRomFile.getPathWithExt(".pro"));
+    FSNode propsFile(myRomFile.getPathWithExt(".pro"));
     if(propsFile.exists())
       buf << "  PRO file: " << propsFile.getShortPath() << endl;
     buf << endl << getROMInfo(*myConsole);
@@ -602,7 +602,7 @@ bool OSystem::launcherLostFocus()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string OSystem::getROMInfo(const FilesystemNode& romfile)
+string OSystem::getROMInfo(const FSNode& romfile)
 {
   unique_ptr<Console> console;
   try
@@ -634,7 +634,7 @@ void OSystem::resetFps()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-unique_ptr<Console> OSystem::openConsole(const FilesystemNode& romfile, string& md5)
+unique_ptr<Console> OSystem::openConsole(const FSNode& romfile, string& md5)
 {
   unique_ptr<Console> console;
 
@@ -746,7 +746,7 @@ void OSystem::closeConsole()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ByteBuffer OSystem::openROM(const FilesystemNode& rom, string& md5, size_t& size)
+ByteBuffer OSystem::openROM(const FSNode& rom, string& md5, size_t& size)
 {
   // This method has a documented side-effect:
   // It not only loads a ROM and creates an array with its contents,
@@ -770,7 +770,7 @@ ByteBuffer OSystem::openROM(const FilesystemNode& rom, string& md5, size_t& size
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string OSystem::getROMMD5(const FilesystemNode& rom) const
+string OSystem::getROMMD5(const FSNode& rom) const
 {
   size_t size = 0;
   const ByteBuffer image = openROM(rom, size, false);  // ignore error message
@@ -779,7 +779,7 @@ string OSystem::getROMMD5(const FilesystemNode& rom) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ByteBuffer OSystem::openROM(const FilesystemNode& rom, size_t& size,
+ByteBuffer OSystem::openROM(const FSNode& rom, size_t& size,
                             bool showErrorMessage) const
 {
   // First check if this is a valid ROM filename

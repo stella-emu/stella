@@ -20,7 +20,7 @@
 
 class OSystem;
 class SerialPort;
-class FilesystemNode;
+class FSNode;
 
 #include "Control.hxx"
 #include "SaveKey.hxx"
@@ -48,7 +48,7 @@ class AtariVox : public SaveKey
       @param callback   Called to pass messages back to the parent controller
     */
     AtariVox(Jack jack, const Event& event, const System& system,
-             const string& portname, const FilesystemNode& eepromfile,
+             const string& portname, const FSNode& eepromfile,
              const onMessageCallback& callback);
     ~AtariVox() override;
 

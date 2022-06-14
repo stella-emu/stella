@@ -26,7 +26,7 @@
 #include "FSNodeZIP.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FilesystemNodeZIP::FilesystemNodeZIP(const string& p)
+FSNodeZIP::FSNodeZIP(const string& p)
 {
   // Extract ZIP file and virtual file (if specified)
   const size_t pos = BSPF::findIgnoreCase(p, ".zip");
@@ -100,8 +100,8 @@ FilesystemNodeZIP::FilesystemNodeZIP(const string& p)
   // has direct access to the actual filesystem (aka, a 'System' node)
   // Behind the scenes, this node is actually a platform-specific object
   // for whatever system we are running on
-  _realNode = FilesystemNodeFactory::create(_zipFile,
-      FilesystemNodeFactory::Type::SYSTEM);
+  _realNode = FSNodeFactory::create(_zipFile,
+      FSNodeFactory::Type::SYSTEM);
 
   setFlags(_zipFile, _virtualPath, _realNode);
 // cerr << "==============================================================\n";
@@ -109,9 +109,8 @@ FilesystemNodeZIP::FilesystemNodeZIP(const string& p)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FilesystemNodeZIP::FilesystemNodeZIP(
-    const string& zipfile, const string& virtualpath,
-    const AbstractFSNodePtr& realnode, size_t size, bool isdir)
+FSNodeZIP::FSNodeZIP(const string& zipfile, const string& virtualpath,
+                     const AbstractFSNodePtr& realnode, size_t size, bool isdir)
   : _size{size},
     _isDirectory{isdir},
     _isFile{!isdir}
@@ -121,9 +120,8 @@ FilesystemNodeZIP::FilesystemNodeZIP(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FilesystemNodeZIP::setFlags(const string& zipfile,
-                                 const string& virtualpath,
-                                 const AbstractFSNodePtr& realnode)
+void FSNodeZIP::setFlags(const string& zipfile, const string& virtualpath,
+                         const AbstractFSNodePtr& realnode)
 {
   _zipFile = zipfile;
   _virtualPath = virtualpath;
@@ -147,7 +145,7 @@ void FilesystemNodeZIP::setFlags(const string& zipfile,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FilesystemNodeZIP::exists() const
+bool FSNodeZIP::exists() const
 {
   if(_realNode && _realNode->exists())
   {
@@ -172,7 +170,7 @@ bool FilesystemNodeZIP::exists() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FilesystemNodeZIP::getChildren(AbstractFSList& myList, ListMode mode) const
+bool FSNodeZIP::getChildren(AbstractFSList& myList, ListMode mode) const
 {
   // Files within ZIP archives don't contain children
   if(!isDirectory() || _error != zip_error::NONE)
@@ -199,14 +197,14 @@ bool FilesystemNodeZIP::getChildren(AbstractFSList& myList, ListMode mode) const
       if(pos != string::npos)
         dirs.emplace(curr.substr(0, pos));
       else
-        myList.emplace_back(new FilesystemNodeZIP(_zipFile, name, _realNode, size, false));
+        myList.emplace_back(new FSNodeZIP(_zipFile, name, _realNode, size, false));
     }
   }
   for(const auto& dir: dirs)
   {
     // Prepend previous path
     const string& vpath = _virtualPath != "" ? _virtualPath + "/" + dir : dir;
-    myList.emplace_back(new FilesystemNodeZIP(_zipFile, vpath, _realNode, 0, true));
+    myList.emplace_back(new FSNodeZIP(_zipFile, vpath, _realNode, 0, true));
   }
 
 // cerr << "list: \n";
@@ -217,7 +215,7 @@ bool FilesystemNodeZIP::getChildren(AbstractFSList& myList, ListMode mode) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-size_t FilesystemNodeZIP::read(ByteBuffer& image, size_t) const
+size_t FSNodeZIP::read(ByteBuffer& image, size_t) const
 {
   switch(_error)
   {
@@ -240,7 +238,7 @@ size_t FilesystemNodeZIP::read(ByteBuffer& image, size_t) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-size_t FilesystemNodeZIP::read(stringstream& image) const
+size_t FSNodeZIP::read(stringstream& image) const
 {
   // For now, we just read into a buffer and store in the stream
   // TODO: maybe there's a more efficient way to do this?
@@ -253,21 +251,21 @@ size_t FilesystemNodeZIP::read(stringstream& image) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-size_t FilesystemNodeZIP::write(const ByteBuffer& buffer, size_t size) const
+size_t FSNodeZIP::write(const ByteBuffer& buffer, size_t size) const
 {
   // TODO: Not yet implemented
   throw runtime_error("ZIP file not writable");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-size_t FilesystemNodeZIP::write(const stringstream& buffer) const
+size_t FSNodeZIP::write(const stringstream& buffer) const
 {
   // TODO: Not yet implemented
   throw runtime_error("ZIP file not writable");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AbstractFSNodePtr FilesystemNodeZIP::getParent() const
+AbstractFSNodePtr FSNodeZIP::getParent() const
 {
   if(_virtualPath == "")
     return _realNode ? _realNode->getParent() : nullptr;
@@ -275,10 +273,10 @@ AbstractFSNodePtr FilesystemNodeZIP::getParent() const
   const char* start = _path.c_str();
   const char* end = lastPathComponent(_path);
 
-  return make_unique<FilesystemNodeZIP>(string(start, end - start - 1));
+  return make_unique<FSNodeZIP>(string(start, end - start - 1));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-unique_ptr<ZipHandler> FilesystemNodeZIP::myZipHandler = make_unique<ZipHandler>();
+unique_ptr<ZipHandler> FSNodeZIP::myZipHandler = make_unique<ZipHandler>();
 
 #endif  // ZIP_SUPPORT

@@ -71,7 +71,7 @@ class Bankswitch
 
     // Determine bankswitch type by filename extension
     // Use '_AUTO' if unknown
-    static Bankswitch::Type typeFromExtension(const FilesystemNode& file);
+    static Bankswitch::Type typeFromExtension(const FSNode& file);
 
     /**
       Is this a valid ROM filename (does it have a valid extension?).
@@ -84,8 +84,8 @@ class Bankswitch
     /**
       Convenience functions for different parameter types.
      */
-    static bool isValidRomName(const FilesystemNode& name, string& ext);
-    static bool isValidRomName(const FilesystemNode& name);
+    static bool isValidRomName(const FSNode& name, string& ext);
+    static bool isValidRomName(const FSNode& name);
     static bool isValidRomName(const string& name);
 
     // Output operator

@@ -29,7 +29,7 @@ class KeyValueRepositoryJsonFile : public KeyValueRepositoryFile<KeyValueReposit
     using KeyValueRepositoryFile<KeyValueRepositoryJsonFile>::load;
     using KeyValueRepositoryFile<KeyValueRepositoryJsonFile>::save;
 
-    explicit KeyValueRepositoryJsonFile(const FilesystemNode& node);
+    explicit KeyValueRepositoryJsonFile(const FSNode& node);
 
     static std::map<string, Variant> load(istream& in);
 

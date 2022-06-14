@@ -20,7 +20,7 @@
 
 class MT24LC256;
 class OSystem;
-class FilesystemNode;
+class FSNode;
 
 #include "Control.hxx"
 
@@ -46,7 +46,7 @@ class SaveKey : public Controller
       @param callback   Called to pass messages back to the parent controller
     */
     SaveKey(Jack jack, const Event& event, const System& system,
-            const FilesystemNode& eepromfile, const onMessageCallback& callback);
+            const FSNode& eepromfile, const onMessageCallback& callback);
     ~SaveKey() override;
 
   protected:
@@ -55,7 +55,7 @@ class SaveKey : public Controller
       that inherit from SaveKey (currently, AtariVox)
     */
     SaveKey(Jack jack, const Event& event, const System& system,
-            const FilesystemNode& eepromfile,
+            const FSNode& eepromfile,
             const onMessageCallback& callback, Type type);
 
   public:

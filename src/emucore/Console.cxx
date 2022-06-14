@@ -972,7 +972,7 @@ unique_ptr<Controller> Console::getControllerPort(const Controller::Type type,
 
     case Controller::Type::AtariVox:
     {
-      FilesystemNode nvramfile = myOSystem.nvramDir();
+      FSNode nvramfile = myOSystem.nvramDir();
       nvramfile /= "atarivox_eeprom.dat";
       Controller::onMessageCallback callback = [&os = myOSystem](const string& msg) {
         bool devSettings = os.settings().getBool("dev.settings");
@@ -985,7 +985,7 @@ unique_ptr<Controller> Console::getControllerPort(const Controller::Type type,
     }
     case Controller::Type::SaveKey:
     {
-      FilesystemNode nvramfile = myOSystem.nvramDir();
+      FSNode nvramfile = myOSystem.nvramDir();
       nvramfile /= "savekey_eeprom.dat";
       Controller::onMessageCallback callback = [&os = myOSystem](const string& msg) {
         bool devSettings = os.settings().getBool("dev.settings");

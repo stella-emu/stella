@@ -45,7 +45,7 @@ void FavoritesManager::load()
       for (const auto& u : jUser)
       {
         const string& path = u.get<string>();
-        FilesystemNode node(path);
+        FSNode node(path);
         if (node.exists())
           addUser(path);
       }
@@ -69,7 +69,7 @@ void FavoritesManager::load()
         for (const auto& r : jRecent)
         {
           const string& path = r.get<string>();
-          FilesystemNode node(path);
+          FSNode node(path);
           if (node.exists())
             addRecent(path);
         }
@@ -93,7 +93,7 @@ void FavoritesManager::load()
       {
         const string& path = p[0].get<string>();
         const uInt32 count = p[1].get<uInt32>();
-        FilesystemNode node(path);
+        FSNode node(path);
         if (node.exists())
           myPopularMap.emplace(path, count);
       }
@@ -186,8 +186,8 @@ const FavoritesManager::UserList& FavoritesManager::userList() const
       [](const string& a, const string& b)
     {
       // Sort without path
-      FilesystemNode aNode(a);
-      FilesystemNode bNode(b);
+      FSNode aNode(a);
+      FSNode bNode(b);
       const bool realDir = aNode.isDirectory() && !BSPF::endsWithIgnoreCase(aNode.getPath(), ".zip");
 
       if(realDir != (bNode.isDirectory() && !BSPF::endsWithIgnoreCase(bNode.getPath(), ".zip")))
@@ -248,8 +248,8 @@ const FavoritesManager::RecentList& FavoritesManager::recentList() const
       [](const string& a, const string& b)
     {
       // Sort alphabetical, without path
-      FilesystemNode aNode(a);
-      FilesystemNode bNode(b);
+      FSNode aNode(a);
+      FSNode bNode(b);
       return BSPF::compareIgnoreCase(aNode.getName(), bNode.getName()) < 0;
     });
 
@@ -329,8 +329,8 @@ const FavoritesManager::PopularList& FavoritesManager::sortedPopularList(bool so
       return a.second > b.second;
 
     // 2. Sort alphabetical, without path
-    FilesystemNode aNode(a.first);
-    FilesystemNode bNode(b.first);
+    FSNode aNode(a.first);
+    FSNode bNode(b.first);
     return BSPF::compareIgnoreCase(aNode.getName(), bNode.getName()) < 0;
   });
   return sortedList;

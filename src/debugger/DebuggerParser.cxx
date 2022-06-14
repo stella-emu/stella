@@ -132,7 +132,7 @@ string DebuggerParser::run(const string& command)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string DebuggerParser::exec(const FilesystemNode& file, StringList* history)
+string DebuggerParser::exec(const FSNode& file, StringList* history)
 {
   if(file.exists())
   {
@@ -686,10 +686,10 @@ string DebuggerParser::saveScriptFile(string file)
     file += ".script";
 
   // Use user dir if no path is provided
-  if(file.find_first_of(FilesystemNode::PATH_SEPARATOR) == string::npos)
+  if(file.find_first_of(FSNode::PATH_SEPARATOR) == string::npos)
     file = debugger.myOSystem.userDir().getPath() + file;
 
-  FilesystemNode node(file);
+  FSNode node(file);
 
   if(node.exists() || out.str().length())
   {
@@ -709,7 +709,7 @@ string DebuggerParser::saveScriptFile(string file)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DebuggerParser::saveDump(const FilesystemNode& node, const stringstream& out,
+void DebuggerParser::saveDump(const FSNode& node, const stringstream& out,
                               ostringstream& result)
 {
   try
@@ -1270,7 +1270,7 @@ void DebuggerParser::executeDump()
       BrowserDialog::show(dlg, "Save Dump as", path.str(),
                           BrowserDialog::Mode::FileSave,
                           [this, dlg, outStr, resultStr]
-                          (bool OK, const FilesystemNode& node)
+                          (bool OK, const FSNode& node)
       {
         if(OK)
         {
@@ -1286,7 +1286,7 @@ void DebuggerParser::executeDump()
       commandResult.str("_NO_PROMPT");
     }
     else
-      saveDump(FilesystemNode(path.str()), out, commandResult);
+      saveDump(FSNode(path.str()), out, commandResult);
   }
 }
 
@@ -1298,9 +1298,9 @@ void DebuggerParser::executeExec()
   string file = argStrings[0];
   if(file.find_last_of('.') == string::npos)
     file += ".script";
-  FilesystemNode node(file);
+  FSNode node(file);
   if (!node.exists())
-    node = FilesystemNode(debugger.myOSystem.userDir().getPath() + file);
+    node = FSNode(debugger.myOSystem.userDir().getPath() + file);
 
   if (argCount == 2) {
     execPrefix = argStrings[1];
@@ -1925,7 +1925,7 @@ void DebuggerParser::executeSave()
     {
       BrowserDialog::show(dlg, "Save Workbench as", fileName,
                           BrowserDialog::Mode::FileSave,
-                          [this, dlg](bool OK, const FilesystemNode& node)
+                          [this, dlg](bool OK, const FSNode& node)
       {
         if(OK)
           dlg->prompt().print(saveScriptFile(node.getPath()) + '\n');
@@ -1952,7 +1952,7 @@ void DebuggerParser::executeSaveAccess()
     BrowserDialog::show(dlg, "Save Access Counters as",
                         dlg->instance().userDir().getPath() + cartName() + ".csv",
                         BrowserDialog::Mode::FileSave,
-                        [this, dlg](bool OK, const FilesystemNode& node)
+                        [this, dlg](bool OK, const FSNode& node)
     {
       if(OK)
         dlg->prompt().print(debugger.cartDebug().saveAccessFile(node.getPath()) + '\n');
@@ -1983,7 +1983,7 @@ void DebuggerParser::executeSaveDisassembly()
     BrowserDialog::show(dlg, "Save Disassembly as",
                         dlg->instance().userDir().getPath() + cartName() + ".asm",
                         BrowserDialog::Mode::FileSave,
-                        [this, dlg](bool OK, const FilesystemNode& node)
+                        [this, dlg](bool OK, const FSNode& node)
     {
       if(OK)
         dlg->prompt().print(debugger.cartDebug().saveDisassembly(node.getPath()) + '\n');
@@ -2007,7 +2007,7 @@ void DebuggerParser::executeSaveRom()
     BrowserDialog::show(dlg, "Save ROM as",
                         dlg->instance().userDir().getPath() + cartName() + ".a26",
                         BrowserDialog::Mode::FileSave,
-                        [this, dlg](bool OK, const FilesystemNode& node)
+                        [this, dlg](bool OK, const FSNode& node)
     {
       if(OK)
         dlg->prompt().print(debugger.cartDebug().saveRom(node.getPath()) + '\n');
@@ -2035,7 +2035,7 @@ void DebuggerParser::executeSaveSes()
     BrowserDialog::show(dlg, "Save Session as",
                         dlg->instance().userDir().getPath() + filename.str(),
                         BrowserDialog::Mode::FileSave,
-                        [this, dlg](bool OK, const FilesystemNode& node)
+                        [this, dlg](bool OK, const FSNode& node)
     {
       if(OK)
         dlg->prompt().print(debugger.prompt().saveBuffer(node) + '\n');
@@ -2053,7 +2053,7 @@ void DebuggerParser::executeSaveSes()
     else
       path << debugger.myOSystem.userDir() << filename.str();
 
-    commandResult << debugger.prompt().saveBuffer(FilesystemNode(path.str()));
+    commandResult << debugger.prompt().saveBuffer(FSNode(path.str()));
   }
 }
 

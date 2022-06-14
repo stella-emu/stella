@@ -43,7 +43,7 @@
 */
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-MT24LC256::MT24LC256(const FilesystemNode& eepromfile, const System& system,
+MT24LC256::MT24LC256(const FSNode& eepromfile, const System& system,
                      const Controller::onMessageCallback& callback)
   : mySystem{system},
     myCallback{callback},

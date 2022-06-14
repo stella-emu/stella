@@ -41,7 +41,7 @@ class MT24LC256
       @param system     The system using the controller of this device
       @param callback   Called to pass messages back to the parent controller
     */
-    MT24LC256(const FilesystemNode& eepromfile, const System& system,
+    MT24LC256(const FSNode& eepromfile, const System& system,
               const Controller::onMessageCallback& callback);
     ~MT24LC256();
 
@@ -111,7 +111,7 @@ class MT24LC256
     uInt64 myCyclesWhenSDASet{0}, myCyclesWhenSCLSet{0};
 
     // The file containing the EEPROM data
-    FilesystemNode myDataFile;
+    FSNode myDataFile;
 
     // Indicates if the EEPROM has changed since class invocation
     bool myDataChanged{false};

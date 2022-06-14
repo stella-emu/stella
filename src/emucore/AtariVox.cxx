@@ -22,7 +22,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AtariVox::AtariVox(Jack jack, const Event& event, const System& system,
-                   const string& portname, const FilesystemNode& eepromfile,
+                   const string& portname, const FSNode& eepromfile,
                    const onMessageCallback& callback)
   : SaveKey(jack, event, system, eepromfile, callback, Controller::Type::AtariVox),
     mySerialPort{MediaFactory::createSerialPort()}

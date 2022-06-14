@@ -22,7 +22,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SaveKey::SaveKey(Jack jack, const Event& event, const System& system,
-                 const FilesystemNode& eepromfile, const onMessageCallback& callback,
+                 const FSNode& eepromfile, const onMessageCallback& callback,
                  Type type)
   : Controller(jack, event, system, type),
     myEEPROM{make_unique<MT24LC256>(eepromfile, system, callback)}
@@ -33,7 +33,7 @@ SaveKey::SaveKey(Jack jack, const Event& event, const System& system,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SaveKey::SaveKey(Jack jack, const Event& event, const System& system,
-                 const FilesystemNode& eepromfile, const onMessageCallback& callback)
+                 const FSNode& eepromfile, const onMessageCallback& callback)
   : SaveKey(jack, event, system, eepromfile, callback, Controller::Type::SaveKey)
 {
 }

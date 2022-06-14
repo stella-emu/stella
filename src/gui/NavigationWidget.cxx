@@ -133,7 +133,7 @@ void NavigationWidget::handleCommand(CommandSender* sender, int cmd, int data, i
   {
     case kFolderClicked:
     {
-      FilesystemNode node(myPath->getPath(id));
+      FSNode node(myPath->getPath(id));
       myList->selectDirectory(node);
       break;
     }
@@ -156,7 +156,7 @@ void NavigationWidget::PathWidget::setPath(const string& path)
 {
   const int fontWidth = _font.getMaxCharWidth();
   int x = _x + fontWidth, w = _w;
-  FilesystemNode node(path);
+  FSNode node(path);
 
   // Calculate how many path parts can be displayed
   StringList paths;
@@ -166,7 +166,7 @@ void NavigationWidget::PathWidget::setPath(const string& path)
     const string& name = node.getName();
     int l = static_cast<int>(name.length() + 2);
 
-    if(name.back() == FilesystemNode::PATH_SEPARATOR)
+    if(name.back() == FSNode::PATH_SEPARATOR)
       l--;
     if(node.getParent().hasParent())
       l++;
@@ -183,14 +183,14 @@ void NavigationWidget::PathWidget::setPath(const string& path)
   for(auto it = paths.rbegin(); it != paths.rend(); ++it, ++idx)
   {
     const string& curPath = *it;
-    node = FilesystemNode(curPath);
+    node = FSNode(curPath);
     string name = node.getName();
 
     if(it == paths.rbegin() && cutFirst)
       name = ">";
     else
     {
-      if(name.back() == FilesystemNode::PATH_SEPARATOR)
+      if(name.back() == FSNode::PATH_SEPARATOR)
         name.pop_back();
       if(it + 1 != paths.rend())
         name += " >";

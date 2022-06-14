@@ -45,7 +45,7 @@ class CartCreator
       @param settings The settings container
       @return   Pointer to the new cartridge object allocated on the heap
     */
-    static unique_ptr<Cartridge> create(const FilesystemNode& file,
+    static unique_ptr<Cartridge> create(const FSNode& file,
                  const ByteBuffer& image, size_t size, string& md5,
                  const string& dtype, Settings& settings);
 

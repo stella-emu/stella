@@ -815,7 +815,7 @@ string CartDebug::loadListFile()
   // The default naming/location for list files is the ROM dir based on the
   // actual ROM filename
 
-  FilesystemNode lst(myOSystem.romFile().getPathWithExt(".lst"));
+  FSNode lst(myOSystem.romFile().getPathWithExt(".lst"));
   if(!lst.isReadable())
     return DebuggerParser::red("list file \'" + lst.getShortPath() + "\' not found");
 
@@ -876,7 +876,7 @@ string CartDebug::loadSymbolFile()
   // The default naming/location for symbol files is the ROM dir based on the
   // actual ROM filename
 
-  FilesystemNode sym(myOSystem.romFile().getPathWithExt(".sym"));
+  FSNode sym(myOSystem.romFile().getPathWithExt(".sym"));
   if(!sym.isReadable())
     return DebuggerParser::red("symbol file \'" + sym.getShortPath() + "\' not found");
 
@@ -937,8 +937,8 @@ string CartDebug::loadConfigFile()
   // The default naming/location for config files is the CFG dir and based
   // on the actual ROM filename
 
-  FilesystemNode romNode(myOSystem.romFile().getPathWithExt(".cfg"));
-  FilesystemNode cfg = myOSystem.cfgDir();  cfg /= romNode.getName();
+  FSNode romNode(myOSystem.romFile().getPathWithExt(".cfg"));
+  FSNode cfg = myOSystem.cfgDir();  cfg /= romNode.getName();
   if(!cfg.isReadable())
     return DebuggerParser::red("config file \'" + cfg.getShortPath() + "\' not found");
 
@@ -1076,8 +1076,8 @@ string CartDebug::saveConfigFile()
   stringstream retVal;
   try
   {
-    FilesystemNode romNode(myOSystem.romFile().getPathWithExt(".cfg"));
-    FilesystemNode cfg = myOSystem.cfgDir();  cfg /= romNode.getName();
+    FSNode romNode(myOSystem.romFile().getPathWithExt(".cfg"));
+    FSNode cfg = myOSystem.cfgDir();  cfg /= romNode.getName();
     if(!cfg.getParent().isWritable())
       return DebuggerParser::red("config file \'" + cfg.getShortPath() + "\' not writable");
 
@@ -1413,7 +1413,7 @@ string CartDebug::saveDisassembly(string path)
     if(path.find_last_of('.') == string::npos)
       path += ".asm";
 
-  FilesystemNode node(path);
+  FSNode node(path);
   stringstream retVal;
   try
   {
@@ -1441,7 +1441,7 @@ string CartDebug::saveRom(string path)
     if(path.find_last_of('.') == string::npos)
       path += ".a26";
 
-  FilesystemNode node(path);
+  FSNode node(path);
 
   if(myConsole.cartridge().saveROM(node))
     return "saved ROM as " + node.getShortPath();
@@ -1467,7 +1467,7 @@ string CartDebug::saveAccessFile(string path)
       if(path.find_last_of('.') == string::npos)
         path += ".csv";
 
-    FilesystemNode node(path);
+    FSNode node(path);
 
     node.write(out);
     return "saved access counters as " + node.getShortPath();

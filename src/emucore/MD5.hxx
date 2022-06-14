@@ -18,7 +18,7 @@
 #ifndef MD5_HXX
 #define MD5_HXX
 
-class FilesystemNode;
+class FSNode;
 
 #include "bspf.hxx"
 

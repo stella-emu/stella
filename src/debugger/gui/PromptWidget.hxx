@@ -21,7 +21,7 @@
 #include <cstdarg>
 
 class ScrollBarWidget;
-class FilesystemNode;
+class FSNode;
 
 #include "Widget.hxx"
 #include "Command.hxx"
@@ -44,7 +44,7 @@ class PromptWidget : public Widget, public CommandSender
   public:
     void print(const string& str);
     void printPrompt();
-    string saveBuffer(const FilesystemNode& file);
+    string saveBuffer(const FSNode& file);
 
     // Clear screen
     void clearScreen();

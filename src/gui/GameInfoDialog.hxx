@@ -79,7 +79,7 @@ class GameInfoDialog : public Dialog, public CommandSender
     // set formatted memory value for given address field
     void setAddressVal(const EditTextWidget* address, EditTextWidget* val,
                        bool isBCD = true, bool zeroBased = false, uInt8 maxVal = 255);
-    void exportCurrentPropertiesToDisk(const FilesystemNode& node);
+    void exportCurrentPropertiesToDisk(const FSNode& node);
 
   private:
     TabWidget* myTab{nullptr};
@@ -193,7 +193,7 @@ class GameInfoDialog : public Dialog, public CommandSender
     // Game properties for currently loaded ROM
     Properties myGameProperties;
     // Filename of the currently loaded ROM
-    FilesystemNode myGameFile;
+    FSNode myGameFile;
 
   private:
     // Following constructors and assignment operators not supported

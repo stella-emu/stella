@@ -30,7 +30,7 @@ namespace {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-KeyValueRepositoryJsonFile::KeyValueRepositoryJsonFile(const FilesystemNode& node)
+KeyValueRepositoryJsonFile::KeyValueRepositoryJsonFile(const FSNode& node)
   : KeyValueRepositoryFile<KeyValueRepositoryJsonFile>(node)
 {
 }

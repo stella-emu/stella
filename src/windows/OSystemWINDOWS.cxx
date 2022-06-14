@@ -26,7 +26,7 @@ void OSystemWINDOWS::getBaseDirectories(string& basedir, string& homedir,
                                         bool useappdir, const string& usedir)
 {
   HomeFinder homefinder;
-  FilesystemNode appdata(homefinder.getAppDataPath());
+  FSNode appdata(homefinder.getAppDataPath());
 
   if(appdata.isDirectory())
   {
@@ -36,7 +36,7 @@ void OSystemWINDOWS::getBaseDirectories(string& basedir, string& homedir,
     basedir += "Stella\\";
   }
 
-  FilesystemNode defaultHomeDir(homefinder.getDesktopPath());
+  FSNode defaultHomeDir(homefinder.getDesktopPath());
   homedir = defaultHomeDir.getShortPath();
 
   // Check to see if basedir overrides are active
@@ -44,12 +44,12 @@ void OSystemWINDOWS::getBaseDirectories(string& basedir, string& homedir,
   {
     char filename[MAX_PATH];
     GetModuleFileNameA(NULL, filename, sizeof(filename));
-    FilesystemNode appdir(filename);
+    FSNode appdir(filename);
 
     appdir = appdir.getParent();
     if(appdir.isDirectory())
       basedir = appdir.getPath();
   }
   else if(usedir != "")
-    basedir = FilesystemNode(usedir).getPath();
+    basedir = FSNode(usedir).getPath();
 }

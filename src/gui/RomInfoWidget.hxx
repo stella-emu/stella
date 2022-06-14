@@ -40,9 +40,9 @@ class RomInfoWidget : public Widget, public CommandSender
                   const Common::Size& imgSize);
     ~RomInfoWidget() override = default;
 
-    void setProperties(const FilesystemNode& node, const string& md5);
+    void setProperties(const FSNode& node, const string& md5);
     void clearProperties();
-    void reloadProperties(const FilesystemNode& node);
+    void reloadProperties(const FSNode& node);
 
     const string& getUrl() const { return myUrl; }
 
@@ -51,7 +51,7 @@ class RomInfoWidget : public Widget, public CommandSender
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
 
   private:
-    void parseProperties(const FilesystemNode& node);
+    void parseProperties(const FSNode& node);
   #ifdef PNG_SUPPORT
     bool loadPng(const string& filename);
   #endif

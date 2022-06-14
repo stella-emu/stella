@@ -928,7 +928,7 @@ void PromptWidget::scrollToCurrent()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string PromptWidget::saveBuffer(const FilesystemNode& file)
+string PromptWidget::saveBuffer(const FSNode& file)
 {
   stringstream out;
   for(int start = 0; start < _promptStartPos; start += _lineWidth)

@@ -112,10 +112,10 @@ void RomAuditDialog::auditRoms()
   myResults1->setText("");
   myResults2->setText("");
 
-  FilesystemNode node(auditPath);
+  FSNode node(auditPath);
   FSList files;
   files.reserve(2048);
-  node.getChildren(files, FilesystemNode::ListMode::FilesOnly);
+  node.getChildren(files, FSNode::ListMode::FilesOnly);
 
   // Create a progress dialog box to show the progress of processing
   // the ROMs, since this is usually a time-consuming operation
@@ -201,7 +201,7 @@ void RomAuditDialog::handleCommand(CommandSender* sender, int cmd,
       BrowserDialog::show(this, _font, "Select ROM Directory to Audit",
                           myRomPath->getText(),
                           BrowserDialog::Mode::Directories,
-                          [this](bool OK, const FilesystemNode& node) {
+                          [this](bool OK, const FSNode& node) {
                             if(OK) {
                               myRomPath->setText(node.getShortPath());
                               myResults1->setText("");

@@ -43,22 +43,22 @@
  *
  * Parts of this class are documented in the base interface class, AbstractFSNode.
  */
-class FilesystemNodePOSIX : public AbstractFSNode
+class FSNodePOSIX : public AbstractFSNode
 {
   public:
     /**
-     * Creates a FilesystemNodePOSIX with the root node as path.
+     * Creates a FSNodePOSIX with the root node as path.
      */
-    FilesystemNodePOSIX();
+    FSNodePOSIX();
 
     /**
-     * Creates a FilesystemNodePOSIX for a given path.
+     * Creates a FSNodePOSIX for a given path.
      *
      * @param path    String with the path the new node should point to.
      * @param verify  true if the isValid and isDirectory/isFile flags should
      *                be verified during the construction.
      */
-    explicit FilesystemNodePOSIX(const string& path, bool verify = true);
+    explicit FSNodePOSIX(const string& path, bool verify = true);
 
     bool exists() const override { return access(_path.c_str(), F_OK) == 0; }
     const string& getName() const override    { return _displayName; }
