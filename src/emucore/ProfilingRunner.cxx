@@ -96,7 +96,7 @@ bool ProfilingRunner::run()
 //                stacksize '16384'.  Consider moving some data to heap.
 bool ProfilingRunner::runOne(const ProfilingRun& run)
 {
-  FilesystemNode imageFile(run.romFile);
+  FSNode imageFile(run.romFile);
 
   if (!imageFile.isFile()) {
     cout << "ERROR: " << run.romFile << " is not a ROM image" << endl;

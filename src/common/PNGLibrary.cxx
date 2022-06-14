@@ -314,7 +314,7 @@ void PNGLibrary::takeSnapshot(uInt32 number)
     // Determine if the file already exists, checking each successive filename
     // until one doesn't exist
     filename = sspath + ".png";
-    FilesystemNode node(filename);
+    FSNode node(filename);
     if(node.exists())
     {
       ostringstream buf;
@@ -322,7 +322,7 @@ void PNGLibrary::takeSnapshot(uInt32 number)
       {
         buf.str("");
         buf << sspath << "_" << i << ".png";
-        FilesystemNode next(buf.str());
+        FSNode next(buf.str());
         if(!next.exists())
           break;
       }

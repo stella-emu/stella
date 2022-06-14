@@ -30,15 +30,14 @@
 FileListWidget::FileListWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, int w, int h)
   : StringListWidget(boss, font, x, y, w, h),
-    _filter{[](const FilesystemNode&) { return true; }}
+    _filter{[](const FSNode&) { return true; }}
 {
   // This widget is special, in that it catches signals and redirects them
   setTarget(this);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FileListWidget::setDirectory(const FilesystemNode& node,
-                                  const string& select)
+void FileListWidget::setDirectory(const FSNode& node, const string& select)
 {
   _node = node;
 
@@ -56,7 +55,7 @@ void FileListWidget::setDirectory(const FilesystemNode& node,
   }
 
   // Initialize history
-  FilesystemNode tmp = _node;
+  FSNode tmp = _node;
   string name = select;
 
   _history.clear();
@@ -77,12 +76,11 @@ void FileListWidget::setDirectory(const FilesystemNode& node,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FileListWidget::setLocation(const FilesystemNode& node,
-                                 const string select)
+void FileListWidget::setLocation(const FSNode& node, const string select)
 {
   progress().resetProgress();
   progress().open();
-  FilesystemNode::CancelCheck isCancelled = [this]() {
+  FSNode::CancelCheck isCancelled = [this]() {
     return myProgressDialog->isCancelled();
   };
 
@@ -138,13 +136,13 @@ void FileListWidget::setLocation(const FilesystemNode& node,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FileListWidget::isDirectory(const FilesystemNode& node) const
+bool FileListWidget::isDirectory(const FSNode& node) const
 {
   return node.isDirectory();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FileListWidget::getChildren(const FilesystemNode::CancelCheck& isCancelled)
+void FileListWidget::getChildren(const FSNode::CancelCheck& isCancelled)
 {
   if(_includeSubDirs)
   {
@@ -162,7 +160,7 @@ void FileListWidget::getChildren(const FilesystemNode::CancelCheck& isCancelled)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FileListWidget::IconType FileListWidget::getIconType(const string& path) const
 {
-  const FilesystemNode node(path);
+  const FSNode node(path);
 
   if(node.isDirectory())
   {
@@ -182,7 +180,7 @@ void FileListWidget::selectDirectory()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FileListWidget::selectDirectory(const FilesystemNode& node)
+void FileListWidget::selectDirectory(const FSNode& node)
 {
   if(node.getPath() != _node.getPath())
     addHistory(node);
@@ -195,7 +193,7 @@ void FileListWidget::selectParent()
   if(_node.hasParent())
   {
     string name = _node.getName();
-    FilesystemNode parent(_node.getParent());
+    FSNode parent(_node.getParent());
 
     _currentHistory->selected = selected().getName();
     addHistory(parent);
@@ -247,7 +245,7 @@ bool FileListWidget::hasNextHistory()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string& FileListWidget::fixPath(string& path)
 {
-  if(path.length() > 0 && path.back() == FilesystemNode::PATH_SEPARATOR)
+  if(path.length() > 0 && path.back() == FSNode::PATH_SEPARATOR)
   {
     path.pop_back();
     if(path.length() == 2 && path.back() == ':')
@@ -257,7 +255,7 @@ string& FileListWidget::fixPath(string& path)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FileListWidget::addHistory(const FilesystemNode& node)
+void FileListWidget::addHistory(const FSNode& node)
 {
   if (_history.size() > 0) {
     while(_currentHistory != std::prev(_history.end(), 1))
@@ -284,7 +282,7 @@ void FileListWidget::reload()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const FilesystemNode& FileListWidget::selected()
+const FSNode& FileListWidget::selected()
 {
   if(_fileList.size() > 0)
   {
@@ -731,4 +729,4 @@ string FileListWidget::getToolTip(const Common::Point& pos) const
 uInt64 FileListWidget::_QUICK_SELECT_DELAY = 300;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FilesystemNode FileListWidget::ourDefaultNode = FilesystemNode("~");
+FSNode FileListWidget::ourDefaultNode = FSNode("~");

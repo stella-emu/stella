@@ -177,13 +177,13 @@ string Debugger::autoExec(StringList* history)
   ostringstream buf;
 
   // autoexec.script is always run
-  FilesystemNode autoexec(myOSystem.baseDir().getPath() + "autoexec.script");
+  FSNode autoexec(myOSystem.baseDir().getPath() + "autoexec.script");
   buf << "autoExec():" << endl
       << myParser->exec(autoexec, history) << endl;
 
   // Also, "romname.script" if present
   const string path = myOSystem.userDir().getPath() + myOSystem.romFile().getNameWithExt(".script");
-  FilesystemNode romname(path);
+  FSNode romname(path);
   buf << myParser->exec(romname, history) << endl;
 
   // Init builtins

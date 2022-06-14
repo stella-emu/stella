@@ -68,7 +68,7 @@ QuadTari::QuadTari(Jack jack, const OSystem& osystem, const System& system,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 unique_ptr<Controller> QuadTari::addController(const Controller::Type type, bool second)
 {
-  FilesystemNode nvramfile = myOSystem.nvramDir();
+  FSNode nvramfile = myOSystem.nvramDir();
   Controller::onMessageCallback callback = [&os = myOSystem](const string& msg) {
     bool devSettings = os.settings().getBool("dev.settings");
     if(os.settings().getBool(devSettings ? "dev.extaccess" : "plr.extaccess"))

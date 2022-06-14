@@ -19,7 +19,7 @@
 #define CARTRIDGE_HXX
 
 class Properties;
-class FilesystemNode;
+class FSNode;
 class CartDebugWidget;
 class CartRamWidget;
 class GuiObject;
@@ -79,7 +79,7 @@ class Cartridge : public Device
 
       @param out  The output file to save the image
     */
-    bool saveROM(const FilesystemNode& out) const;
+    bool saveROM(const FSNode& out) const;
 
     /**
       Lock/unlock bankswitching and other hotspot capabilities. The debugger

@@ -148,7 +148,7 @@ void SnapshotDialog::handleCommand(CommandSender* sender, int cmd,
       BrowserDialog::show(this, _font, "Select Snapshot Save Directory",
                           mySnapSavePath->getText(),
                           BrowserDialog::Mode::Directories,
-                          [this](bool OK, const FilesystemNode& node) {
+                          [this](bool OK, const FSNode& node) {
                             if(OK) mySnapSavePath->setText(node.getShortPath());
                           });
       break;

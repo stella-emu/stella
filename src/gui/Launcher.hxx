@@ -20,7 +20,7 @@
 
 class Properties;
 class OSystem;
-class FilesystemNode;
+class FSNode;
 
 #include "Rect.hxx"
 #include "FrameBufferConstants.hxx"
@@ -58,7 +58,7 @@ class Launcher : public DialogContainer
     /**
       Wrapper for LauncherDialog::currentDir() method.
     */
-    const FilesystemNode& currentDir() const;
+    const FSNode& currentDir() const;
 
     /**
       Wrapper for LauncherDialog::reload() method.

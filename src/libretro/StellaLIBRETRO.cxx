@@ -92,7 +92,7 @@ bool StellaLIBRETRO::create(bool logging)
   settings.setValue(AudioSettings::SETTING_VOLUME, 100);
   settings.setValue(AudioSettings::SETTING_STEREO, audio_mode);
 
-  FilesystemNode rom(rom_path);
+  FSNode rom(rom_path);
 
   if(myOSystem->createConsole(rom) != EmptyString)
     return false;

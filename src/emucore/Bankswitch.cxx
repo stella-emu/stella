@@ -40,7 +40,7 @@ string Bankswitch::typeToDesc(Bankswitch::Type type)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Bankswitch::Type Bankswitch::typeFromExtension(const FilesystemNode& file)
+Bankswitch::Type Bankswitch::typeFromExtension(const FSNode& file)
 {
   const string& name = file.getPath();
   const string::size_type idx = name.find_last_of('.');
@@ -72,13 +72,13 @@ bool Bankswitch::isValidRomName(const string& name, string& ext)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Bankswitch::isValidRomName(const FilesystemNode& name, string& ext)
+bool Bankswitch::isValidRomName(const FSNode& name, string& ext)
 {
   return isValidRomName(name.getPath(), ext);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Bankswitch::isValidRomName(const FilesystemNode& name)
+bool Bankswitch::isValidRomName(const FSNode& name)
 {
   string ext;  // extension not used
   return isValidRomName(name.getPath(), ext);

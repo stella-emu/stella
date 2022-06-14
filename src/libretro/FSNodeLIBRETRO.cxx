@@ -26,14 +26,14 @@
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FilesystemNodeLIBRETRO::FilesystemNodeLIBRETRO()
+FSNodeLIBRETRO::FSNodeLIBRETRO()
   : _name{"rom"},
     _path{"." + slash}
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FilesystemNodeLIBRETRO::FilesystemNodeLIBRETRO(const string& p)
+FSNodeLIBRETRO::FSNodeLIBRETRO(const string& p)
   : _name{p},
     _path{p}
 {
@@ -43,56 +43,56 @@ FilesystemNodeLIBRETRO::FilesystemNodeLIBRETRO(const string& p)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FilesystemNodeLIBRETRO::exists() const
+bool FSNodeLIBRETRO::exists() const
 {
   return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FilesystemNodeLIBRETRO::isReadable() const
+bool FSNodeLIBRETRO::isReadable() const
 {
   return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FilesystemNodeLIBRETRO::isWritable() const
+bool FSNodeLIBRETRO::isWritable() const
 {
   return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string FilesystemNodeLIBRETRO::getShortPath() const
+string FSNodeLIBRETRO::getShortPath() const
 {
   return ".";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FilesystemNodeLIBRETRO::
+bool FSNodeLIBRETRO::
     getChildren(AbstractFSList& myList, ListMode mode) const
 {
   return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FilesystemNodeLIBRETRO::makeDir()
+bool FSNodeLIBRETRO::makeDir()
 {
   return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FilesystemNodeLIBRETRO::rename(const string& newfile)
+bool FSNodeLIBRETRO::rename(const string& newfile)
 {
   return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AbstractFSNodePtr FilesystemNodeLIBRETRO::getParent() const
+AbstractFSNodePtr FSNodeLIBRETRO::getParent() const
 {
   return nullptr;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-size_t FilesystemNodeLIBRETRO::read(ByteBuffer& image, size_t) const
+size_t FSNodeLIBRETRO::read(ByteBuffer& image, size_t) const
 {
   image = make_unique<uInt8[]>(Cartridge::maxSize());
 

@@ -44,9 +44,9 @@ class StellaDb
 
     void initializeDb();
     void importOldSettings();
-    void importStellarc(const FilesystemNode& node);
-    void importOldStellaDb(const FilesystemNode& node);
-    void importOldPropset(const FilesystemNode& node);
+    void importStellarc(const FSNode& node);
+    void importOldStellaDb(const FSNode& node);
+    void importOldPropset(const FSNode& node);
 
     void migrate();
 

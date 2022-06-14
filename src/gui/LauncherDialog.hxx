@@ -81,16 +81,16 @@ class LauncherDialog : public Dialog, CommandSender
     /**
       Get node for the currently selected entry.
 
-      @return FilesystemNode currently selected
+      @return FSNode currently selected
     */
-    const FilesystemNode& currentNode() const;
+    const FSNode& currentNode() const;
 
     /**
       Get node for the current directory.
 
-      @return FilesystemNode (directory) currently active
+      @return FSNode (directory) currently active
     */
-    const FilesystemNode& currentDir() const;
+    const FSNode& currentDir() const;
 
     /**
       Reload the current listing

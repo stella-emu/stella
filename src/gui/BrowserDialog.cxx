@@ -115,7 +115,7 @@ void BrowserDialog::show(GuiObject* parent, const GUI::Font& font,
                          const string& title, const string& startpath,
                          BrowserDialog::Mode mode,
                          const Command& command,
-                         const FilesystemNode::NameFilter& namefilter)
+                         const FSNode::NameFilter& namefilter)
 {
   uInt32 w = 0, h = 0;
 
@@ -136,7 +136,7 @@ void BrowserDialog::show(GuiObject* parent,
                          const string& title, const string& startpath,
                          BrowserDialog::Mode mode,
                          const Command& command,
-                         const FilesystemNode::NameFilter& namefilter)
+                         const FSNode::NameFilter& namefilter)
 {
   show(parent, parent->instance().frameBuffer().font(), title, startpath,
        mode, command, namefilter);
@@ -153,7 +153,7 @@ void BrowserDialog::hide()
 void BrowserDialog::show(const string& startpath,
                          BrowserDialog::Mode mode,
                          const Command& command,
-                         const FilesystemNode::NameFilter& namefilter)
+                         const FSNode::NameFilter& namefilter)
 {
   const int fontWidth = Dialog::fontWidth(),
             VGAP      = Dialog::vGap();
@@ -167,7 +167,7 @@ void BrowserDialog::show(const string& startpath,
   if(_mode != Mode::Directories)
   {
     // split startpath into path and filename
-    FilesystemNode fs = FilesystemNode(startpath);
+    FSNode fs = FSNode(startpath);
     fileName = fs.getName();
     directory = fs.isDirectory() ? "" : fs.getParent().getPath();
   }
@@ -175,7 +175,7 @@ void BrowserDialog::show(const string& startpath,
   switch(_mode)
   {
     case Mode::FileLoad:
-      _fileList->setListMode(FilesystemNode::ListMode::All);
+      _fileList->setListMode(FSNode::ListMode::All);
       _fileList->setNameFilter(namefilter);
       _fileList->setHeight(_selected->getTop() - VGAP * 2 - _fileList->getTop());
       // Show "save" checkbox
@@ -192,7 +192,7 @@ void BrowserDialog::show(const string& startpath,
       break;
 
     case Mode::FileSave:
-      _fileList->setListMode(FilesystemNode::ListMode::All);
+      _fileList->setListMode(FSNode::ListMode::All);
       _fileList->setNameFilter(namefilter);
       _fileList->setHeight(_selected->getTop() - VGAP * 2 - _fileList->getTop());
       // Show "save" checkbox
@@ -211,8 +211,8 @@ void BrowserDialog::show(const string& startpath,
       break;
 
     case Mode::Directories:
-      _fileList->setListMode(FilesystemNode::ListMode::DirectoriesOnly);
-      _fileList->setNameFilter([](const FilesystemNode&) { return true; });
+      _fileList->setListMode(FSNode::ListMode::DirectoriesOnly);
+      _fileList->setNameFilter([](const FSNode&) { return true; });
       // TODO: scrollbar affected too!
       _fileList->setHeight(_selected->getBottom() - _fileList->getTop());
       // Hide "save" checkbox
@@ -230,9 +230,9 @@ void BrowserDialog::show(const string& startpath,
 
   // Set start path
   if(_mode != Mode::Directories)
-    _fileList->setDirectory(FilesystemNode(directory), fileName);
+    _fileList->setDirectory(FSNode(directory), fileName);
   else
-    _fileList->setDirectory(FilesystemNode(startpath));
+    _fileList->setDirectory(FSNode(startpath));
 
   updateUI(fileSelected);
 
@@ -241,14 +241,14 @@ void BrowserDialog::show(const string& startpath,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const FilesystemNode& BrowserDialog::getResult() const
+const FSNode& BrowserDialog::getResult() const
 {
   if(_mode == Mode::FileLoad || _mode == Mode::FileSave)
   {
-    static FilesystemNode node;
+    static FSNode node;
 
     return node
-      = FilesystemNode(_fileList->currentDir().getPath() + _selected->getText());
+      = FSNode(_fileList->currentDir().getPath() + _selected->getText());
   }
   else
     return _fileList->currentDir();
@@ -296,11 +296,11 @@ void BrowserDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kBaseDirCmd:
-      _fileList->selectDirectory(FilesystemNode(instance().baseDir()));
+      _fileList->selectDirectory(FSNode(instance().baseDir()));
       break;
 
     case kHomeDirCmd:
-      _fileList->selectDirectory(FilesystemNode(instance().homeDir()));
+      _fileList->selectDirectory(FSNode(instance().homeDir()));
       break;
 
     case EditableWidget::kChangedCmd:

@@ -87,7 +87,7 @@ void StellaDb::initialize()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string StellaDb::databaseFileName() const
 {
-  return myDb ? FilesystemNode(myDb->fileName()).getShortPath() : "[failed]";
+  return myDb ? FSNode(myDb->fileName()).getShortPath() : "[failed]";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -101,7 +101,7 @@ void StellaDb::initializeDb()
 {
   importOldSettings();
 
-  FilesystemNode legacyPropertyFile{myDatabaseDirectory};
+  FSNode legacyPropertyFile{myDatabaseDirectory};
   legacyPropertyFile /= "stella.pro";
 
   if (legacyPropertyFile.exists() && legacyPropertyFile.isFile())
@@ -124,10 +124,10 @@ void StellaDb::importOldSettings()
       constexpr char LEGACY_SETTINGS_FILE[] = "stellarc";
     #endif
 
-    FilesystemNode legacyConfigFile{myDatabaseDirectory};
+    FSNode legacyConfigFile{myDatabaseDirectory};
     legacyConfigFile /= LEGACY_SETTINGS_FILE;
 
-    FilesystemNode legacyConfigDatabase{myDatabaseDirectory};
+    FSNode legacyConfigDatabase{myDatabaseDirectory};
     legacyConfigDatabase /= "settings.sqlite3";
 
     if (legacyConfigDatabase.exists() && legacyConfigDatabase.isFile())
@@ -138,7 +138,7 @@ void StellaDb::importOldSettings()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StellaDb::importStellarc(const FilesystemNode& node)
+void StellaDb::importStellarc(const FSNode& node)
 {
   Logger::info("importing old settings from " + node.getPath());
 
@@ -146,7 +146,7 @@ void StellaDb::importStellarc(const FilesystemNode& node)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StellaDb::importOldStellaDb(const FilesystemNode& node)
+void StellaDb::importOldStellaDb(const FSNode& node)
 {
   Logger::info("importing old settings from " + node.getPath());
 
@@ -167,7 +167,7 @@ void StellaDb::importOldStellaDb(const FilesystemNode& node)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StellaDb::importOldPropset(const FilesystemNode& node)
+void StellaDb::importOldPropset(const FSNode& node)
 {
   Logger::info("importing old game properties from " + node.getPath());
 

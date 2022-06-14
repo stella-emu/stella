@@ -29,9 +29,9 @@ void OSystemMACOS::getBaseDirectories(string& basedir, string& homedir,
   if(useappdir)
     cout << "ERROR: base dir in app folder not supported" << endl;
   else if(usedir != "")
-    basedir = FilesystemNode(usedir).getPath();
+    basedir = FSNode(usedir).getPath();
 #endif
 
-  FilesystemNode desktop("~/Desktop/");
+  FSNode desktop("~/Desktop/");
   homedir = desktop.isDirectory() ? desktop.getShortPath() : "~/";
 }

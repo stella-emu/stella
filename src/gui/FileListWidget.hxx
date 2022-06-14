@@ -50,7 +50,7 @@ class FileListWidget : public StringListWidget
       kPrevDirCmd   = 'prvc',  // go back in history to previous directory
       kNextDirCmd   = 'nxtc'   // go back in history to next directory
     };
-    using IconTypeFilter = std::function<bool(const FilesystemNode& node)>;
+    using IconTypeFilter = std::function<bool(const FSNode& node)>;
 
   public:
     FileListWidget(GuiObject* boss, const GUI::Font& font,
@@ -63,8 +63,8 @@ class FileListWidget : public StringListWidget
 
     /** Determines how to display files/folders; either setDirectory or reload
         must be called after any of these are called. */
-    void setListMode(FilesystemNode::ListMode mode) { _fsmode = mode; }
-    void setNameFilter(const FilesystemNode::NameFilter& filter) {
+    void setListMode(FSNode::ListMode mode) { _fsmode = mode; }
+    void setNameFilter(const FSNode::NameFilter& filter) {
       _filter = filter;
     }
 
@@ -81,13 +81,13 @@ class FileListWidget : public StringListWidget
                           will instead be used, and the file will be selected
         @param select     An optional entry to select (if applicable)
     */
-    void setDirectory(const FilesystemNode& node,
+    void setDirectory(const FSNode& node,
                       const string& select = EmptyString);
 
     /** Descend into currently selected directory */
     void selectDirectory();
     /** Go to directory */
-    void selectDirectory(const FilesystemNode& node);
+    void selectDirectory(const FSNode& node);
     /** Select parent directory (if applicable) */
     void selectParent();
     /** Check if the there is a previous directory in history */
@@ -99,8 +99,8 @@ class FileListWidget : public StringListWidget
     void reload();
 
     /** Gets current node(s) */
-    const FilesystemNode& selected();
-    const FilesystemNode& currentDir() const { return _node; }
+    const FSNode& selected();
+    const FSNode& currentDir() const { return _node; }
 
     static void setQuickSelectDelay(uInt64 time) { _QUICK_SELECT_DELAY = time; }
     uInt64 getQuickSelectDelay() const { return _QUICK_SELECT_DELAY; }
@@ -111,10 +111,10 @@ class FileListWidget : public StringListWidget
   protected:
     struct HistoryType
     {
-      FilesystemNode node;
+      FSNode node;
       string selected;
 
-      explicit HistoryType(const FilesystemNode& _hnode, const string& _hselected)
+      explicit HistoryType(const FSNode& _hnode, const string& _hselected)
         : node{_hnode}, selected{_hselected} {}
     };
     enum class IconType {
@@ -137,27 +137,27 @@ class FileListWidget : public StringListWidget
 
   protected:
     /** Very similar to setDirectory(), but also updates the history */
-    void setLocation(const FilesystemNode& node, const string select);
+    void setLocation(const FSNode& node, const string select);
     /** Select to home directory */
     void selectHomeDir();
     /** Select previous directory in history (if applicable) */
     void selectPrevHistory();
     /** Select next directory in history (if applicable) */
     void selectNextHistory();
-    virtual bool isDirectory(const FilesystemNode& node) const;
-    virtual void getChildren(const FilesystemNode::CancelCheck& isCancelled);
+    virtual bool isDirectory(const FSNode& node) const;
+    virtual void getChildren(const FSNode::CancelCheck& isCancelled);
     virtual void extendLists(StringList& list) { }
     virtual IconType getIconType(const string& path) const;
     virtual const Icon* getIcon(int i) const;
     int iconWidth() const;
     virtual bool fullPathToolTip() const { return false; }
     string& fixPath(string& path);
-    void addHistory(const FilesystemNode& node);
+    void addHistory(const FSNode& node);
 
   protected:
-    FilesystemNode _node;
+    FSNode _node;
     FSList _fileList;
-    FilesystemNode::NameFilter _filter;
+    FSNode::NameFilter _filter;
     string _selectedFile;
     StringList _dirList;
     std::vector<HistoryType> _history;
@@ -171,7 +171,7 @@ class FileListWidget : public StringListWidget
     int drawIcon(int i, int x, int y, ColorId color) override;
 
   private:
-    FilesystemNode::ListMode _fsmode{FilesystemNode::ListMode::All};
+    FSNode::ListMode _fsmode{FSNode::ListMode::All};
     bool _includeSubDirs{false};
     bool _showFileExtensions{true};
 
@@ -187,7 +187,7 @@ class FileListWidget : public StringListWidget
 
     unique_ptr<ProgressDialog> myProgressDialog;
 
-    static FilesystemNode ourDefaultNode;
+    static FSNode ourDefaultNode;
 
   private:
     // Following constructors and assignment operators not supported

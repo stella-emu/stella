@@ -20,19 +20,19 @@
 #include "CartDetector.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FilesystemNode::FilesystemNode(const AbstractFSNodePtr& realNode)
+FSNode::FSNode(const AbstractFSNodePtr& realNode)
   : _realNode{realNode}
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FilesystemNode::FilesystemNode(const string& path)
+FSNode::FSNode(const string& path)
 {
   setPath(path);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FilesystemNode::setPath(const string& path)
+void FSNode::setPath(const string& path)
 {
   // Only create a new object when necessary
   if (path == getPath())
@@ -41,16 +41,14 @@ void FilesystemNode::setPath(const string& path)
   // Is this potentially a ZIP archive?
 #if defined(ZIP_SUPPORT)
   if (BSPF::containsIgnoreCase(path, ".zip"))
-    _realNode = FilesystemNodeFactory::create(path,
-        FilesystemNodeFactory::Type::ZIP);
+    _realNode = FSNodeFactory::create(path, FSNodeFactory::Type::ZIP);
   else
 #endif
-    _realNode = FilesystemNodeFactory::create(path,
-        FilesystemNodeFactory::Type::SYSTEM);
+    _realNode = FSNodeFactory::create(path, FSNodeFactory::Type::SYSTEM);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FilesystemNode& FilesystemNode::operator/=(const string& path)
+FSNode& FSNode::operator/=(const string& path)
 {
   if (path != EmptyString)
   {
@@ -65,16 +63,16 @@ FilesystemNode& FilesystemNode::operator/=(const string& path)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FilesystemNode::exists() const
+bool FSNode::exists() const
 {
   return _realNode ? _realNode->exists() : false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FilesystemNode::getAllChildren(FSList& fslist, ListMode mode,
-                                    const NameFilter& filter,
-                                    bool includeParentDirectory,
-                                    const CancelCheck& isCancelled) const
+bool FSNode::getAllChildren(FSList& fslist, ListMode mode,
+                            const NameFilter& filter,
+                            bool includeParentDirectory,
+                            const CancelCheck& isCancelled) const
 {
   if(getChildren(fslist, mode, filter, includeParentDirectory, true, isCancelled))
   {
@@ -86,14 +84,14 @@ bool FilesystemNode::getAllChildren(FSList& fslist, ListMode mode,
     {
       if(BSPF::endsWithIgnoreCase(i.getPath(), ".zip"))
       {
-        FilesystemNodeZIP zipNode(i.getPath());
+        FSNodeZIP zipNode(i.getPath());
         i.setName(zipNode.getName());
       }
     }
   #endif
 
     std::sort(fslist.begin(), fslist.end(),
-              [](const FilesystemNode& node1, const FilesystemNode& node2)
+              [](const FSNode& node1, const FSNode& node2)
     {
       if(node1.isDirectory() != node2.isDirectory())
         return node1.isDirectory();
@@ -109,9 +107,9 @@ bool FilesystemNode::getAllChildren(FSList& fslist, ListMode mode,
       if(BSPF::endsWithIgnoreCase(i.getPath(), ".zip"))
       {
         // Force ZIP c'tor to be called
-        AbstractFSNodePtr ptr = FilesystemNodeFactory::create(
-            i.getPath(), FilesystemNodeFactory::Type::ZIP);
-        FilesystemNode zipNode(ptr);
+        AbstractFSNodePtr ptr = FSNodeFactory::create(
+            i.getPath(), FSNodeFactory::Type::ZIP);
+        FSNode zipNode(ptr);
         i = zipNode;
       }
     }
@@ -122,11 +120,11 @@ bool FilesystemNode::getAllChildren(FSList& fslist, ListMode mode,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FilesystemNode::getChildren(FSList& fslist, ListMode mode,
-                                 const NameFilter& filter,
-                                 bool includeChildDirectories,
-                                 bool includeParentDirectory,
-                                 const CancelCheck& isCancelled) const
+bool FSNode::getChildren(FSList& fslist, ListMode mode,
+                         const NameFilter& filter,
+                         bool includeChildDirectories,
+                         bool includeParentDirectory,
+                         const CancelCheck& isCancelled) const
 {
   if (!_realNode || !_realNode->isDirectory())
     return false;
@@ -150,7 +148,7 @@ bool FilesystemNode::getChildren(FSList& fslist, ListMode mode,
     {
       if(BSPF::endsWithIgnoreCase(i->getPath(), ".zip"))
       {
-        FilesystemNodeZIP node(i->getPath());
+        FSNodeZIP node(i->getPath());
         i->setName(node.getName());
       }
     }
@@ -170,7 +168,7 @@ bool FilesystemNode::getChildren(FSList& fslist, ListMode mode,
   // Add parent node, if it is valid to do so
   if (includeParentDirectory && hasParent())
   {
-    FilesystemNode parent = getParent();
+    FSNode parent = getParent();
     parent.setName("..");
     fslist.emplace_back(parent);
   }
@@ -185,9 +183,9 @@ bool FilesystemNode::getChildren(FSList& fslist, ListMode mode,
     if (BSPF::endsWithIgnoreCase(i->getPath(), ".zip"))
     {
       // Force ZIP c'tor to be called
-      AbstractFSNodePtr ptr = FilesystemNodeFactory::create(
-          i->getPath(), FilesystemNodeFactory::Type::ZIP);
-      FilesystemNode zipNode(ptr);
+      AbstractFSNodePtr ptr = FSNodeFactory::create(
+          i->getPath(), FSNodeFactory::Type::ZIP);
+      FSNode zipNode(ptr);
 
       if(filter(zipNode))
       {
@@ -196,7 +194,7 @@ bool FilesystemNode::getChildren(FSList& fslist, ListMode mode,
         else
         {
           // filter by zip node but add file node
-          FilesystemNode node(i);
+          FSNode node(i);
           fslist.emplace_back(node);
         }
       }
@@ -204,7 +202,7 @@ bool FilesystemNode::getChildren(FSList& fslist, ListMode mode,
     else
   #endif
     {
-      FilesystemNode node(i);
+      FSNode node(i);
 
       if(includeChildDirectories)
       {
@@ -226,32 +224,32 @@ bool FilesystemNode::getChildren(FSList& fslist, ListMode mode,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string& FilesystemNode::getName() const
+const string& FSNode::getName() const
 {
   return _realNode ? _realNode->getName() : EmptyString;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FilesystemNode::setName(const string& name)
+void FSNode::setName(const string& name)
 {
   if (_realNode)
     _realNode->setName(name);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string& FilesystemNode::getPath() const
+const string& FSNode::getPath() const
 {
   return _realNode ? _realNode->getPath() : EmptyString;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string FilesystemNode::getShortPath() const
+string FSNode::getShortPath() const
 {
   return _realNode ? _realNode->getShortPath() : EmptyString;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string FilesystemNode::getNameWithExt(const string& ext) const
+string FSNode::getNameWithExt(const string& ext) const
 {
   if (!_realNode)
     return EmptyString;
@@ -265,7 +263,7 @@ string FilesystemNode::getNameWithExt(const string& ext) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string FilesystemNode::getPathWithExt(const string& ext) const
+string FSNode::getPathWithExt(const string& ext) const
 {
   if (!_realNode)
     return EmptyString;
@@ -277,65 +275,65 @@ string FilesystemNode::getPathWithExt(const string& ext) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FilesystemNode::hasParent() const
+bool FSNode::hasParent() const
 {
   return _realNode ? _realNode->hasParent() : false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FilesystemNode FilesystemNode::getParent() const
+FSNode FSNode::getParent() const
 {
   if (!_realNode)
     return *this;
 
   AbstractFSNodePtr node = _realNode->getParent();
-  return node ? FilesystemNode(node) : *this;
+  return node ? FSNode(node) : *this;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FilesystemNode::isDirectory() const
+bool FSNode::isDirectory() const
 {
   return _realNode ? _realNode->isDirectory() : false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FilesystemNode::isFile() const
+bool FSNode::isFile() const
 {
   return _realNode ? _realNode->isFile() : false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FilesystemNode::isReadable() const
+bool FSNode::isReadable() const
 {
   return _realNode ? _realNode->isReadable() : false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FilesystemNode::isWritable() const
+bool FSNode::isWritable() const
 {
   return _realNode ? _realNode->isWritable() : false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FilesystemNode::makeDir()
+bool FSNode::makeDir()
 {
   return (_realNode && !_realNode->exists()) ? _realNode->makeDir() : false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FilesystemNode::rename(const string& newfile)
+bool FSNode::rename(const string& newfile)
 {
   return (_realNode && _realNode->exists()) ? _realNode->rename(newfile) : false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-size_t FilesystemNode::getSize() const
+size_t FSNode::getSize() const
 {
   return (_realNode && _realNode->exists()) ? _realNode->getSize() : 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-size_t FilesystemNode::read(ByteBuffer& buffer, size_t size) const
+size_t FSNode::read(ByteBuffer& buffer, size_t size) const
 {
   size_t sizeRead = 0;
 
@@ -370,7 +368,7 @@ size_t FilesystemNode::read(ByteBuffer& buffer, size_t size) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-size_t FilesystemNode::read(stringstream& buffer) const
+size_t FSNode::read(stringstream& buffer) const
 {
   size_t sizeRead = 0;
 
@@ -403,7 +401,7 @@ size_t FilesystemNode::read(stringstream& buffer) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-size_t FilesystemNode::write(const ByteBuffer& buffer, size_t size) const
+size_t FSNode::write(const ByteBuffer& buffer, size_t size) const
 {
   size_t sizeWritten = 0;
 
@@ -428,7 +426,7 @@ size_t FilesystemNode::write(const ByteBuffer& buffer, size_t size) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-size_t FilesystemNode::write(const stringstream& buffer) const
+size_t FSNode::write(const stringstream& buffer) const
 {
   size_t sizeWritten = 0;
 

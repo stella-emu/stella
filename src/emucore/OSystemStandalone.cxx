@@ -19,7 +19,7 @@
 #include "OSystemStandalone.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystemStandalone::initPersistence(FilesystemNode& basedir)
+void OSystemStandalone::initPersistence(FSNode& basedir)
 {
   myStellaDb = make_shared<StellaDb>(basedir.getPath(), "stella");
   myStellaDb->initialize();

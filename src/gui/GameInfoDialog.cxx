@@ -703,7 +703,7 @@ void GameInfoDialog::loadConfig()
   {
     const string& md5 = instance().launcher().selectedRomMD5();
     instance().propSet().getMD5(md5, myGameProperties);
-    myGameFile = FilesystemNode(instance().launcher().selectedRom());
+    myGameFile = FSNode(instance().launcher().selectedRom());
   }
 
   loadEmulationProperties(myGameProperties);
@@ -734,7 +734,7 @@ void GameInfoDialog::loadEmulationProperties(const Properties& props)
     }
     else
     {
-      const FilesystemNode& node = FilesystemNode(instance().launcher().selectedRom());
+      const FSNode& node = FSNode(instance().launcher().selectedRom());
       ByteBuffer image;
       string md5 = props.get(PropType::Cart_MD5);
       size_t size = 0;
@@ -1131,7 +1131,7 @@ void GameInfoDialog::updateControllerStates()
   // try to load the image for auto detection
   if(!instance().hasConsole())
   {
-    const FilesystemNode& node = FilesystemNode(instance().launcher().selectedRom());
+    const FSNode& node = FSNode(instance().launcher().selectedRom());
 
     autoDetect = node.exists() && !node.isDirectory() && (image = instance().openROM(node, md5, size)) != nullptr;
   }
@@ -1382,7 +1382,7 @@ void GameInfoDialog::setAddressVal(const EditTextWidget* addressWidget, EditText
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void GameInfoDialog::exportCurrentPropertiesToDisk(const FilesystemNode& node)
+void GameInfoDialog::exportCurrentPropertiesToDisk(const FSNode& node)
 {
   saveProperties();
 
@@ -1414,7 +1414,7 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
                           instance().userDir().getPath() +
                             myGameFile.getNameWithExt(".pro"),
                           BrowserDialog::Mode::FileSave,
-                          [this](bool OK, const FilesystemNode& node) {
+                          [this](bool OK, const FSNode& node) {
                             if(OK) exportCurrentPropertiesToDisk(node);
                           });
       break;

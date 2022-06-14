@@ -70,7 +70,7 @@
 #include "CartCreator.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-unique_ptr<Cartridge> CartCreator::create(const FilesystemNode& file,
+unique_ptr<Cartridge> CartCreator::create(const FSNode& file,
     const ByteBuffer& image, size_t size, string& md5,
     const string& propertiesType, Settings& settings)
 {

@@ -24,14 +24,14 @@
 #include "FSNodePOSIX.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FilesystemNodePOSIX::FilesystemNodePOSIX()
+FSNodePOSIX::FSNodePOSIX()
   : _path{ROOT_DIR},
     _displayName{_path}
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FilesystemNodePOSIX::FilesystemNodePOSIX(const string& path, bool verify)
+FSNodePOSIX::FSNodePOSIX(const string& path, bool verify)
   : _path{path.length() > 0 ? path : "~"}  // Default to home directory
 {
   // Expand '~' to the HOME environment variable
@@ -56,7 +56,7 @@ FilesystemNodePOSIX::FilesystemNodePOSIX(const string& path, bool verify)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FilesystemNodePOSIX::setFlags()
+void FSNodePOSIX::setFlags()
 {
   struct stat st;
 
@@ -75,7 +75,7 @@ void FilesystemNodePOSIX::setFlags()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string FilesystemNodePOSIX::getShortPath() const
+string FSNodePOSIX::getShortPath() const
 {
   // If the path starts with the home directory, replace it with '~'
   const char* env_home = std::getenv("HOME");
@@ -93,13 +93,13 @@ string FilesystemNodePOSIX::getShortPath() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FilesystemNodePOSIX::hasParent() const
+bool FSNodePOSIX::hasParent() const
 {
   return _path != "" && _path != ROOT_DIR;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FilesystemNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode) const
+bool FSNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode) const
 {
   assert(_isDirectory);
 
@@ -120,7 +120,7 @@ bool FilesystemNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode) con
       newPath += '/';
     newPath += dp->d_name;
 
-    FilesystemNodePOSIX entry(newPath, false);
+    FSNodePOSIX entry(newPath, false);
 
 #if defined(SYSTEM_NOT_SUPPORTING_D_TYPE)
     /* TODO: d_type is not part of POSIX, so it might not be supported
@@ -169,11 +169,11 @@ bool FilesystemNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode) con
       continue;
 
     // Honor the chosen mode
-    if ((mode == FilesystemNode::ListMode::FilesOnly && !entry._isFile) ||
-        (mode == FilesystemNode::ListMode::DirectoriesOnly && !entry._isDirectory))
+    if ((mode == FSNode::ListMode::FilesOnly && !entry._isFile) ||
+        (mode == FSNode::ListMode::DirectoriesOnly && !entry._isDirectory))
       continue;
 
-    myList.emplace_back(make_shared<FilesystemNodePOSIX>(entry));
+    myList.emplace_back(make_shared<FSNodePOSIX>(entry));
   }
   closedir(dirp);
 
@@ -181,14 +181,14 @@ bool FilesystemNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode) con
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-size_t FilesystemNodePOSIX::getSize() const
+size_t FSNodePOSIX::getSize() const
 {
   struct stat st;
   return (stat(_path.c_str(), &st) == 0) ? st.st_size : 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FilesystemNodePOSIX::makeDir()
+bool FSNodePOSIX::makeDir()
 {
   if(mkdir(_path.c_str(), 0777) == 0)
   {
@@ -211,7 +211,7 @@ bool FilesystemNodePOSIX::makeDir()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FilesystemNodePOSIX::rename(const string& newfile)
+bool FSNodePOSIX::rename(const string& newfile)
 {
   if(std::rename(_path.c_str(), newfile.c_str()) == 0)
   {
@@ -236,7 +236,7 @@ bool FilesystemNodePOSIX::rename(const string& newfile)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AbstractFSNodePtr FilesystemNodePOSIX::getParent() const
+AbstractFSNodePtr FSNodePOSIX::getParent() const
 {
   if (_path == ROOT_DIR)
     return nullptr;
@@ -244,5 +244,5 @@ AbstractFSNodePtr FilesystemNodePOSIX::getParent() const
   const char* start = _path.c_str();
   const char* end = lastPathComponent(_path);
 
-  return make_unique<FilesystemNodePOSIX>(string(start, size_t(end - start)));
+  return make_unique<FSNodePOSIX>(string(start, size_t(end - start)));
 }

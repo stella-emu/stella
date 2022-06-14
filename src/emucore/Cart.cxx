@@ -53,7 +53,7 @@ void Cartridge::setAbout(const string& about, const string& type,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge::saveROM(const FilesystemNode& out) const
+bool Cartridge::saveROM(const FSNode& out) const
 {
   try
   {

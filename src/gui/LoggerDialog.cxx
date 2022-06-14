@@ -114,7 +114,7 @@ void LoggerDialog::saveConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LoggerDialog::saveLogFile(const FilesystemNode& node)
+void LoggerDialog::saveLogFile(const FSNode& node)
 {
   try
   {
@@ -144,7 +144,7 @@ void LoggerDialog::handleCommand(CommandSender* sender, int cmd,
       BrowserDialog::show(this, _font, "Save Log as",
                           instance().userDir().getPath() + "stella.log",
                           BrowserDialog::Mode::FileSave,
-                          [this](bool OK, const FilesystemNode& node) {
+                          [this](bool OK, const FSNode& node) {
                             if(OK) saveLogFile(node);
                           });
       break;

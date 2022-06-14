@@ -41,9 +41,9 @@ class BrowserDialog : public Dialog
 
     /** Function which is run when the user clicks OK or Cancel.
         Boolean parameter is passed as 'true' when OK is clicked, else 'false'.
-        FilesystemNode parameter is what is currently selected in the browser.
+        FSNode parameter is what is currently selected in the browser.
     */
-    using Command = std::function<void(bool, const FilesystemNode&)>;
+    using Command = std::function<void(bool, const FSNode&)>;
 
   public:
     // NOTE: Do not call this c'tor directly!  Use the static show method below
@@ -66,8 +66,8 @@ class BrowserDialog : public Dialog
                      const string& title, const string& startpath,
                      BrowserDialog::Mode mode,
                      const Command& command,
-                     const FilesystemNode::NameFilter& namefilter = {
-                      [](const FilesystemNode&) { return true; }});
+                     const FSNode::NameFilter& namefilter = {
+                      [](const FSNode&) { return true; }});
 
     /**
       Place the browser window onscreen, using the given attributes.
@@ -83,8 +83,8 @@ class BrowserDialog : public Dialog
                      const string& title, const string& startpath,
                      BrowserDialog::Mode mode,
                      const Command& command,
-                     const FilesystemNode::NameFilter& namefilter = {
-                      [](const FilesystemNode&) { return true; } });
+                     const FSNode::NameFilter& namefilter = {
+                      [](const FSNode&) { return true; } });
 
     /**
       Since the show methods allocate a static BrowserDialog, at some
@@ -99,10 +99,10 @@ class BrowserDialog : public Dialog
     void show(const string& startpath,
               BrowserDialog::Mode mode,
               const Command& command,
-              const FilesystemNode::NameFilter& namefilter);
+              const FSNode::NameFilter& namefilter);
 
     /** Get resulting file node (called after receiving kChooseCmd) */
-    const FilesystemNode& getResult() const;
+    const FSNode& getResult() const;
 
     void handleKeyDown(StellaKey key, StellaMod mod, bool repeated) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
@@ -118,7 +118,7 @@ class BrowserDialog : public Dialog
 
     // Called when the user selects OK (bool is true) or Cancel (bool is false)
     // FSNode will be set to whatever is active (basically, getResult())
-    Command _command{[](bool, const FilesystemNode&){}};
+    Command _command{[](bool, const FSNode&){}};
 
     FileListWidget*   _fileList{nullptr};
     NavigationWidget* _navigationBar{nullptr};

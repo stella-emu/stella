@@ -46,7 +46,7 @@ RomInfoWidget::RomInfoWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomInfoWidget::setProperties(const FilesystemNode& node, const string& md5)
+void RomInfoWidget::setProperties(const FSNode& node, const string& md5)
 {
   myHaveProperties = true;
 
@@ -75,7 +75,7 @@ void RomInfoWidget::clearProperties()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomInfoWidget::reloadProperties(const FilesystemNode& node)
+void RomInfoWidget::reloadProperties(const FSNode& node)
 {
   // The ROM may have changed since we were last in the browser, either
   // by saving a different image or through a change in video renderer,
@@ -85,7 +85,7 @@ void RomInfoWidget::reloadProperties(const FilesystemNode& node)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomInfoWidget::parseProperties(const FilesystemNode& node)
+void RomInfoWidget::parseProperties(const FSNode& node)
 {
   // Check if a surface has ever been created; if so, we use it
   // The surface will always be the maximum size, but sometimes we'll

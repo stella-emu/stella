@@ -540,7 +540,7 @@ void UIDialog::setDefaults()
       break;
     case 1:  // Launcher options
     {
-      FilesystemNode node("~");
+      FSNode node("~");
       const Common::Size& size = instance().frameBuffer().desktopSize(BufferType::Launcher);
 
       myRomPath->setText(node.getShortPath());
@@ -634,7 +634,7 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
       BrowserDialog::show(this, _font, "Select ROM Directory",
                           myRomPath->getText(),
                           BrowserDialog::Mode::Directories,
-                          [this](bool OK, const FilesystemNode& node) {
+                          [this](bool OK, const FSNode& node) {
                             if(OK) myRomPath->setText(node.getShortPath());
                           });
       break;
@@ -647,7 +647,7 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
       BrowserDialog::show(this, _font, "Select ROM Info Viewer Image Directory",
                           mySnapLoadPath->getText(),
                           BrowserDialog::Mode::Directories,
-                          [this](bool OK, const FilesystemNode& node) {
+                          [this](bool OK, const FSNode& node) {
                             if(OK) mySnapLoadPath->setText(node.getShortPath());
                           });
       break;

@@ -40,25 +40,25 @@
 #include "FSNodeWINDOWS.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FilesystemNodeWINDOWS::exists() const
+bool FSNodeWINDOWS::exists() const
 {
   return _access(_path.c_str(), F_OK) == 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FilesystemNodeWINDOWS::isReadable() const
+bool FSNodeWINDOWS::isReadable() const
 {
   return _access(_path.c_str(), R_OK) == 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FilesystemNodeWINDOWS::isWritable() const
+bool FSNodeWINDOWS::isWritable() const
 {
   return _access(_path.c_str(), W_OK) == 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FilesystemNodeWINDOWS::setFlags()
+void FSNodeWINDOWS::setFlags()
 {
   // Get absolute path
   TCHAR buf[4096];
@@ -88,10 +88,10 @@ void FilesystemNodeWINDOWS::setFlags()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FilesystemNodeWINDOWS::addFile(AbstractFSList& list, ListMode mode,
+void FSNodeWINDOWS::addFile(AbstractFSList& list, ListMode mode,
                                     const char* base, WIN32_FIND_DATA* find_data)
 {
-  FilesystemNodeWINDOWS entry;
+  FSNodeWINDOWS entry;
   const char* const asciiName = toAscii(find_data->cFileName);
   bool isDirectory = false, isFile = false;
 
@@ -102,8 +102,8 @@ void FilesystemNodeWINDOWS::addFile(AbstractFSList& list, ListMode mode,
   isDirectory = ((find_data->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ? true : false);
   isFile = !isDirectory;//(find_data->dwFileAttributes & FILE_ATTRIBUTE_NORMAL ? true : false);
 
-  if((isFile && mode == FilesystemNode::ListMode::DirectoriesOnly) ||
-     (isDirectory && mode == FilesystemNode::ListMode::FilesOnly))
+  if((isFile && mode == FSNode::ListMode::DirectoriesOnly) ||
+     (isDirectory && mode == FSNode::ListMode::FilesOnly))
     return;
 
   entry._isDirectory = isDirectory;
@@ -116,11 +116,11 @@ void FilesystemNodeWINDOWS::addFile(AbstractFSList& list, ListMode mode,
   entry._isValid = true;
   entry._isPseudoRoot = false;
 
-  list.emplace_back(make_shared<FilesystemNodeWINDOWS>(entry));
+  list.emplace_back(make_shared<FSNodeWINDOWS>(entry));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-char* FilesystemNodeWINDOWS::toAscii(TCHAR* str)
+char* FSNodeWINDOWS::toAscii(TCHAR* str)
 {
 #ifndef UNICODE
   return str;
@@ -132,7 +132,7 @@ char* FilesystemNodeWINDOWS::toAscii(TCHAR* str)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const TCHAR* FilesystemNodeWINDOWS::toUnicode(const char* str)
+const TCHAR* FSNodeWINDOWS::toUnicode(const char* str)
 {
 #ifndef UNICODE
   return str;
@@ -144,12 +144,12 @@ const TCHAR* FilesystemNodeWINDOWS::toUnicode(const char* str)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FilesystemNodeWINDOWS::FilesystemNodeWINDOWS()
+FSNodeWINDOWS::FSNodeWINDOWS()
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FilesystemNodeWINDOWS::FilesystemNodeWINDOWS(const string& p)
+FSNodeWINDOWS::FSNodeWINDOWS(const string& p)
   : _path{p.length() > 0 ? p : "~"}  // Default to home directory
 {
   // Expand '~' to the users 'home' directory
@@ -160,7 +160,7 @@ FilesystemNodeWINDOWS::FilesystemNodeWINDOWS(const string& p)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string FilesystemNodeWINDOWS::getShortPath() const
+string FSNodeWINDOWS::getShortPath() const
 {
   // If the path starts with the home directory, replace it with '~'
   const string& home = myHomeFinder.getHomePath();
@@ -176,7 +176,7 @@ string FilesystemNodeWINDOWS::getShortPath() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FilesystemNodeWINDOWS::
+bool FSNodeWINDOWS::
     getChildren(AbstractFSList& myList, ListMode mode) const
 {
   assert(_isDirectory);
@@ -190,7 +190,7 @@ bool FilesystemNodeWINDOWS::
     for(TCHAR *current_drive = drive_buffer; *current_drive;
         current_drive += _tcslen(current_drive) + 1)
     {
-      FilesystemNodeWINDOWS entry;
+      FSNodeWINDOWS entry;
       char drive_name[2] = { 0, 0 };
 
       drive_name[0] = toAscii(current_drive)[0];
@@ -201,7 +201,7 @@ bool FilesystemNodeWINDOWS::
       entry._isValid = true;
       entry._isPseudoRoot = false;
       entry._path = toAscii(current_drive);
-      myList.emplace_back(make_shared<FilesystemNodeWINDOWS>(entry));
+      myList.emplace_back(make_shared<FSNodeWINDOWS>(entry));
     }
   }
   else
@@ -229,14 +229,14 @@ bool FilesystemNodeWINDOWS::
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-size_t FilesystemNodeWINDOWS::getSize() const
+size_t FSNodeWINDOWS::getSize() const
 {
   struct _stat st;
   return _stat(_path.c_str(), &st) == 0 ? st.st_size : 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FilesystemNodeWINDOWS::makeDir()
+bool FSNodeWINDOWS::makeDir()
 {
   if(!_isPseudoRoot && CreateDirectory(_path.c_str(), NULL) != 0)
   {
@@ -248,7 +248,7 @@ bool FilesystemNodeWINDOWS::makeDir()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FilesystemNodeWINDOWS::rename(const string& newfile)
+bool FSNodeWINDOWS::rename(const string& newfile)
 {
   if(!_isPseudoRoot && MoveFile(_path.c_str(), newfile.c_str()) != 0)
   {
@@ -260,7 +260,7 @@ bool FilesystemNodeWINDOWS::rename(const string& newfile)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AbstractFSNodePtr FilesystemNodeWINDOWS::getParent() const
+AbstractFSNodePtr FSNodeWINDOWS::getParent() const
 {
   if(_isPseudoRoot)
     return nullptr;
@@ -270,8 +270,8 @@ AbstractFSNodePtr FilesystemNodeWINDOWS::getParent() const
     const char* start = _path.c_str();
     const char* end = lastPathComponent(_path);
 
-    return make_shared<FilesystemNodeWINDOWS>(string(start, static_cast<size_t>(end - start)));
+    return make_shared<FSNodeWINDOWS>(string(start, static_cast<size_t>(end - start)));
   }
   else
-    return make_shared<FilesystemNodeWINDOWS>();
+    return make_shared<FSNodeWINDOWS>();
 }

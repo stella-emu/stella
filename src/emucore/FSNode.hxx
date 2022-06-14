@@ -31,7 +31,7 @@
  * paths (and it's left to them whether / or \ or : is the path separator :-).
  */
 
-class FilesystemNode;
+class FSNode;
 class AbstractFSNode;
 using AbstractFSNodePtr = shared_ptr<AbstractFSNode>;
 
@@ -40,13 +40,13 @@ using AbstractFSNodePtr = shared_ptr<AbstractFSNode>;
  * This is subclass instead of just a typedef so that we can use forward
  * declarations of it in other places.
  */
-class FSList : public vector<FilesystemNode> { };
+class FSList : public vector<FSNode> { };
 
 /**
  * This class acts as a wrapper around the AbstractFSNode class defined
  * in backends/fs.
  */
-class FilesystemNode
+class FSNode
 {
   public:
   #ifdef BSPF_WINDOWS
@@ -63,19 +63,19 @@ class FilesystemNode
 
     /** Function used to filter the file listing.  Returns true if the filename
         should be included, else false.*/
-    using NameFilter = std::function<bool(const FilesystemNode& node)>;
+    using NameFilter = std::function<bool(const FSNode& node)>;
     using CancelCheck = std::function<bool()> const;
 
     /**
-     * Create a new pathless FilesystemNode. Since there's no path associated
+     * Create a new pathless FSNode. Since there's no path associated
      * with this node, path-related operations (i.e. exists(), isDirectory(),
      * getPath()) will always return false or raise an assertion.
      */
-    FilesystemNode() = default;
-    ~FilesystemNode() = default;
+    FSNode() = default;
+    ~FSNode() = default;
 
     /**
-     * Create a new FilesystemNode referring to the specified path. This is
+     * Create a new FSNode referring to the specified path. This is
      * the counterpart to the path() method.
      *
      * If path is empty or equals '~', then a node representing the
@@ -83,21 +83,21 @@ class FilesystemNode
      * operating system doesn't support the concept), some other directory is
      * used (usually the root directory).
      */
-    explicit FilesystemNode(const string& path);
+    explicit FSNode(const string& path);
 
     /**
      * Assignment operators.
      */
-    FilesystemNode(const FilesystemNode&) = default;
-    FilesystemNode& operator=(const FilesystemNode&) = default;
-    FilesystemNode& operator=(FilesystemNode&&) = default;
-    FilesystemNode(FilesystemNode&&) = default;
+    FSNode(const FSNode&) = default;
+    FSNode& operator=(const FSNode&) = default;
+    FSNode& operator=(FSNode&&) = default;
+    FSNode(FSNode&&) = default;
 
     /**
      * Compare the name of this node to the name of another, testing for
      * equality.
      */
-    inline bool operator==(const FilesystemNode& node) const
+    inline bool operator==(const FSNode& node) const
     {
       return BSPF::compareIgnoreCase(getName(), node.getName()) == 0;
     }
@@ -106,13 +106,13 @@ class FilesystemNode
      * Append the given path to the node, adding a directory separator
      * when necessary.  Modelled on the C++17 fs::path API.
      */
-    FilesystemNode& operator/=(const string& path);
+    FSNode& operator/=(const string& path);
 
     /**
      * By default, the output operator simply outputs the fully-qualified
      * pathname of the node.
      */
-    friend ostream& operator<<(ostream& os, const FilesystemNode& node)
+    friend ostream& operator<<(ostream& os, const FSNode& node)
     {
       return os << node.getPath();
     }
@@ -133,7 +133,7 @@ class FilesystemNode
      *         does not exist).
      */
     bool getAllChildren(FSList& fslist, ListMode mode = ListMode::DirectoriesOnly,
-                        const NameFilter& filter = [](const FilesystemNode&) { return true; },
+                        const NameFilter& filter = [](const FSNode&) { return true; },
                         bool includeParentDirectory = true,
                         const CancelCheck& isCancelled = []() { return false; }) const;
 
@@ -145,7 +145,7 @@ class FilesystemNode
      *         does not exist).
      */
     bool getChildren(FSList& fslist, ListMode mode = ListMode::DirectoriesOnly,
-                     const NameFilter& filter = [](const FilesystemNode&){ return true; },
+                     const NameFilter& filter = [](const FSNode&){ return true; },
                      bool includeChildDirectories = false,
                      bool includeParentDirectory = true,
                      const CancelCheck& isCancelled = []() { return false; }) const;
@@ -188,7 +188,7 @@ class FilesystemNode
      * Get the parent node of this node. If this node has no parent node,
      * then it returns a duplicate of this node.
      */
-    FilesystemNode getParent() const;
+    FSNode getParent() const;
 
     /**
      * Indicates whether the path refers to a directory or not.
@@ -306,7 +306,7 @@ class FilesystemNode
     string getPathWithExt(const string& ext) const;
 
   private:
-    explicit FilesystemNode(const AbstractFSNodePtr& realNode);
+    explicit FSNode(const AbstractFSNodePtr& realNode);
     AbstractFSNodePtr _realNode;
     void setPath(const string& path);
 };
@@ -326,9 +326,9 @@ using AbstractFSList = vector<AbstractFSNodePtr>;
 class AbstractFSNode
 {
   protected:
-    friend class FilesystemNode;
-    using ListMode = FilesystemNode::ListMode;
-    using NameFilter = FilesystemNode::NameFilter;
+    friend class FSNode;
+    using ListMode = FSNode::ListMode;
+    using NameFilter = FSNode::NameFilter;
 
   public:
     /**
@@ -360,7 +360,7 @@ class AbstractFSNode
     virtual bool getChildren(AbstractFSList& list, ListMode mode) const = 0;
 
     /**
-     * Returns the last component of the path pointed by this FilesystemNode.
+     * Returns the last component of the path pointed by this FSNode.
      *
      * Examples (POSIX):
      *			/foo/bar.txt would return /bar.txt

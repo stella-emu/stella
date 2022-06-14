@@ -226,7 +226,7 @@ int main(int ac, char* av[])
   else if(localOpts["rominfo"].toBool())
   {
     Logger::debug("Showing output from 'rominfo' ...");
-    FilesystemNode romnode(romfile);
+    FSNode romnode(romfile);
     Logger::error(theOSystem->getROMInfo(romnode));
 
     return Cleanup();
@@ -245,7 +245,7 @@ int main(int ac, char* av[])
   //   open the rom launcher in that directory.
   // If not, use the built-in ROM launcher.  In this case, we enter 'launcher'
   //   mode and let the main event loop take care of opening a new console/ROM.
-  FilesystemNode romnode(romfile);
+  FSNode romnode(romfile);
   if(romfile == "" || romnode.isDirectory())
   {
     Logger::debug("Attempting to use ROM launcher ...");

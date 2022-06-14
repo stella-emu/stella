@@ -19,7 +19,7 @@
 #include "Logger.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-KeyValueRepositoryConfigfile::KeyValueRepositoryConfigfile(const FilesystemNode& file)
+KeyValueRepositoryConfigfile::KeyValueRepositoryConfigfile(const FSNode& file)
   : KeyValueRepositoryFile<KeyValueRepositoryConfigfile>(file)
 {
 }

@@ -21,7 +21,7 @@
 class Debugger;
 class OSystem;
 class DialogContainer;
-class FilesystemNode;
+class FSNode;
 class ButtonWidget;
 class CpuWidget;
 class PromptWidget;

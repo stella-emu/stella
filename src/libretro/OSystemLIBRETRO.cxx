@@ -34,7 +34,7 @@ void OSystemLIBRETRO::getBaseDirectories(string& basedir, string& homedir,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystemLIBRETRO::initPersistence(FilesystemNode& basedir)
+void OSystemLIBRETRO::initPersistence(FSNode& basedir)
 {
 }
 

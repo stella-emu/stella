@@ -528,7 +528,7 @@ void StellaSettingsDialog::updateControllerStates()
   // try to load the image for auto detection
   if(!instance().hasConsole())
   {
-    const FilesystemNode& node = FilesystemNode(instance().launcher().selectedRom());
+    const FSNode& node = FSNode(instance().launcher().selectedRom());
 
     autoDetect = node.exists() && !node.isDirectory() && (image = instance().openROM(node, md5, size)) != nullptr;
   }

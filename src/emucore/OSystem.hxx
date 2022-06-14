@@ -266,31 +266,31 @@ class OSystem
     /**
       Return the default full/complete path name for storing data.
     */
-    const FilesystemNode& baseDir() const { return myBaseDir; }
+    const FSNode& baseDir() const { return myBaseDir; }
 
     /**
       Return the full/complete path name for storing state files.
     */
-    const FilesystemNode& stateDir() const { return myStateDir; }
+    const FSNode& stateDir() const { return myStateDir; }
 
     /**
       Return the full/complete path name for storing nvram
       (flash/EEPROM) files.
     */
-    const FilesystemNode& nvramDir() const { return myNVRamDir; }
+    const FSNode& nvramDir() const { return myNVRamDir; }
 
   #ifdef CHEATCODE_SUPPORT
     /**
       Return the full/complete path name of the cheat file.
     */
-    const FilesystemNode& cheatFile() const { return myCheatFile; }
+    const FSNode& cheatFile() const { return myCheatFile; }
   #endif
 
   #ifdef DEBUGGER_SUPPORT
     /**
       Return the full/complete path name for storing Distella cfg files.
     */
-    const FilesystemNode& cfgDir() const { return myCfgDir; }
+    const FSNode& cfgDir() const { return myCfgDir; }
   #endif
 
   #ifdef PNG_SUPPORT
@@ -298,14 +298,14 @@ class OSystem
       Return the full/complete path name for saving and loading
       PNG snapshots.
     */
-    const FilesystemNode& snapshotSaveDir() const { return mySnapshotSaveDir; }
-    const FilesystemNode& snapshotLoadDir() const { return mySnapshotLoadDir; }
+    const FSNode& snapshotSaveDir() const { return mySnapshotSaveDir; }
+    const FSNode& snapshotLoadDir() const { return mySnapshotLoadDir; }
   #endif
 
     /**
       Return the full/complete path name of the (optional) palette file.
     */
-    const FilesystemNode& paletteFile() const { return myPaletteFile; }
+    const FSNode& paletteFile() const { return myPaletteFile; }
 
     /**
       Checks if a valid a user-defined palette file exists.
@@ -315,14 +315,14 @@ class OSystem
     /**
       Return the full/complete path name of the currently loaded ROM.
     */
-    const FilesystemNode& romFile() const { return myRomFile; }
+    const FSNode& romFile() const { return myRomFile; }
 
     /**
       The default and user defined locations for saving and loading various
       files that don't already have a specific location.
     */
-    const FilesystemNode& homeDir() const { return myHomeDir; }
-    const FilesystemNode& userDir() const { return myUserDir; }
+    const FSNode& homeDir() const { return myHomeDir; }
+    const FSNode& userDir() const { return myUserDir; }
 
     /**
       Open the given ROM and return an array containing its contents.
@@ -336,7 +336,7 @@ class OSystem
 
       @return  Unique pointer to the array
     */
-    ByteBuffer openROM(const FilesystemNode& rom, string& md5, size_t& size);
+    ByteBuffer openROM(const FSNode& rom, string& md5, size_t& size);
 
     /**
       Open the given ROM and return the MD5sum of the data.
@@ -345,7 +345,7 @@ class OSystem
 
       @return  MD5 of the ROM image (if valid), otherwise EmptyString
     */
-    string getROMMD5(const FilesystemNode& rom) const;
+    string getROMMD5(const FSNode& rom) const;
 
     /**
       Creates a new game console from the specified romfile, and correctly
@@ -357,7 +357,7 @@ class OSystem
 
       @return  String indicating any error message (EmptyString for no errors)
     */
-    string createConsole(const FilesystemNode& rom, const string& md5 = "",
+    string createConsole(const FSNode& rom, const string& md5 = "",
                          bool newrom = true);
 
     /**
@@ -402,7 +402,7 @@ class OSystem
       @param romfile  The file node of the ROM to use
       @return  Some information about this ROM
     */
-    string getROMInfo(const FilesystemNode& romfile);
+    string getROMInfo(const FSNode& romfile);
 
     /**
       Toggle state rewind recording mode; this uses the RewindManager
@@ -499,7 +499,7 @@ class OSystem
     virtual void getBaseDirectories(string& basedir, string& homedir,
                                     bool useappdir, const string& usedir) = 0;
 
-    virtual void initPersistence(FilesystemNode& basedir) = 0;
+    virtual void initPersistence(FSNode& basedir) = 0;
 
     virtual string describePresistence() = 0;
 
@@ -587,10 +587,10 @@ class OSystem
     bool myQuitLoop{false};
 
   private:
-    FilesystemNode myBaseDir, myStateDir, mySnapshotSaveDir, mySnapshotLoadDir,
-                   myNVRamDir, myCfgDir, myHomeDir, myUserDir;
-    FilesystemNode myCheatFile, myPaletteFile;
-    FilesystemNode myRomFile;  string myRomMD5;
+    FSNode myBaseDir, myStateDir, mySnapshotSaveDir, mySnapshotLoadDir,
+           myNVRamDir, myCfgDir, myHomeDir, myUserDir;
+    FSNode myCheatFile, myPaletteFile;
+    FSNode myRomFile;  string myRomMD5;
 
     string myFeatures;
     string myBuildInfo;
@@ -628,7 +628,7 @@ class OSystem
 
       @return  Unique pointer to the array, otherwise nullptr
     */
-    ByteBuffer openROM(const FilesystemNode& romfile, size_t& size,
+    ByteBuffer openROM(const FSNode& romfile, size_t& size,
                        bool showErrorMessage) const;
 
     /**
@@ -639,7 +639,7 @@ class OSystem
 
       @return  The actual Console object, otherwise nullptr
     */
-    unique_ptr<Console> openConsole(const FilesystemNode& romfile, string& md5);
+    unique_ptr<Console> openConsole(const FSNode& romfile, string& md5);
 
     /**
       Close and finalize any currently open console.

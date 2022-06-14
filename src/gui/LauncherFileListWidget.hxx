@@ -19,7 +19,7 @@
 #define LAUNCHER_FILE_LIST_WIDGET_HXX
 
 class FavoritesManager;
-class FilesystemNode;
+class FSNode;
 class ProgressDialog;
 class Settings;
 
@@ -50,7 +50,7 @@ class LauncherFileListWidget : public FileListWidget
     void removeAllPopular();
     void removeAllRecent();
 
-    bool isDirectory(const FilesystemNode& node) const override;
+    bool isDirectory(const FSNode& node) const override;
     bool inVirtualDir() const { return myInVirtualDir; }
     bool inUserDir() const { return myVirtualDir == user_name; }
     bool inRecentDir() const { return myVirtualDir == recent_name; }
@@ -71,7 +71,7 @@ class LauncherFileListWidget : public FileListWidget
 
   private:
     string startRomDir();
-    void getChildren(const FilesystemNode::CancelCheck& isCancelled) override;
+    void getChildren(const FSNode::CancelCheck& isCancelled) override;
     void userFavor(const string& path);
     void addFolder(StringList& list, int& offset, const string& name, IconType icon);
     void extendLists(StringList& list) override;

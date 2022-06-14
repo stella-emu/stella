@@ -37,7 +37,7 @@ class LoggerDialog : public Dialog
   private:
     void loadConfig() override;
     void saveConfig() override;
-    void saveLogFile(const FilesystemNode& node);
+    void saveLogFile(const FSNode& node);
 
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
