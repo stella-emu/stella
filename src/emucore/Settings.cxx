@@ -227,10 +227,14 @@ Settings::Settings()
   setPermanent("plr.cpurandom", "AXYP");
   setPermanent("plr.tiarandom", "false");
   setPermanent("plr.colorloss", "false");
-  setPermanent("plr.tv.jitter", "true");
 #ifdef GUI_SUPPORT
+  setPermanent("plr.tv.jitter", "true");
   setPermanent("plr.tv.jitter_sense", JitterEmulation::PLR_SENSITIVITY);
   setPermanent("plr.tv.jitter_recovery", JitterEmulation::PLR_RECOVERY);
+#else
+  setPermanent("plr.tv.jitter", "false");
+  setPermanent("plr.tv.jitter_sense", 1);
+  setPermanent("plr.tv.jitter_recovery", 1);
 #endif
   setPermanent("plr.debugcolors", "false");
   setPermanent("plr.console", "2600"); // 7800
@@ -250,10 +254,14 @@ Settings::Settings()
   setPermanent("dev.cpurandom", "SAXYP");
   setPermanent("dev.tiarandom", "true");
   setPermanent("dev.colorloss", "true");
-  setPermanent("dev.tv.jitter", "true");
 #ifdef GUI_SUPPORT
+  setPermanent("dev.tv.jitter", "true");
   setPermanent("dev.tv.jitter_sense", JitterEmulation::DEV_SENSITIVITY);
   setPermanent("dev.tv.jitter_recovery", JitterEmulation::DEV_RECOVERY);
+#else
+  setPermanent("dev.tv.jitter", "false");
+  setPermanent("dev.tv.jitter_sense", 1);
+  setPermanent("dev.tv.jitter_recovery", 1);
 #endif
   setPermanent("dev.debugcolors", "false");
   setPermanent("dev.tiadriven", "true");
