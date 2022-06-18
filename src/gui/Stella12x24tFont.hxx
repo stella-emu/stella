@@ -34,7 +34,9 @@
    last char: 126 (0x7e)
    default char: 32 (0x20)
    proportional: no
-   Copyright (C) 2014 Dimitar Toshkov Zhekov
+   Copyright (c) 2010-2014 Dimitar Toshkov Zhekov,
+   with Reserved Font Name "Terminus Font".
+   See Terminus-Font-License.txt for details.
 */
 
 namespace GUI {
