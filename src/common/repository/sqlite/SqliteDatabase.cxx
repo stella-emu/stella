@@ -16,6 +16,7 @@
 //============================================================================
 
 #include <cstdio>
+#include <filesystem>
 
 #include "SqliteDatabase.hxx"
 #include "Logger.hxx"
@@ -25,7 +26,8 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SqliteDatabase::SqliteDatabase(const string& databaseDirectory,
                                const string& databaseName)
-  : myDatabaseFile{databaseDirectory + databaseName + ".sqlite3"}
+  : myDatabaseFile{(std::filesystem::path(databaseDirectory) /
+                   (databaseName + ".sqlite3")).string()}
 {
 }
 

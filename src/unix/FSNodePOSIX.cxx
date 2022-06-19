@@ -37,7 +37,11 @@ FSNodePOSIX::FSNodePOSIX(const string& path, bool verify)
   // Expand '~' to the HOME environment variable
   if(_path[0] == '~')
   {
+  #if defined(BSPF_WINDOWS)
+
+  #else
     const char* home = std::getenv("HOME");
+  #endif
     if (home != nullptr)
       _path.replace(0, 1, home);
   }
@@ -49,7 +53,9 @@ FSNodePOSIX::FSNodePOSIX(const string& path, bool verify)
       _path = buf.data();
   }
 
-  _displayName = lastPathComponent(_path);
+  _fspath = _path;
+  _displayName = _fspath.filename();
+  _path = _fspath.string();
 
   if(verify)
     setFlags();
@@ -58,6 +64,34 @@ FSNodePOSIX::FSNodePOSIX(const string& path, bool verify)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FSNodePOSIX::setFlags()
 {
+#if 1
+// cerr << "_fspath:      " << _fspath << endl;
+  std::error_code ec;
+  const auto s = fs::status(_fspath, ec);
+  if (!ec)
+  {
+    const auto p = s.permissions();
+
+    _isValid     = true;
+    _isFile      = fs::is_regular_file(s);
+    _isDirectory = fs::is_directory(s);
+    _isReadable  = (p & (fs::perms::owner_read |
+                         fs::perms::group_read |
+                         fs::perms::others_read)) != fs::perms::none;
+    _isWriteable = (p & (fs::perms::owner_write |
+                         fs::perms::group_write |
+                         fs::perms::others_write)) != fs::perms::none;
+// cerr << "_isValid:     " << _isValid << endl
+//      << "_isFile:      " << _isFile << endl
+//      << "_isDirectory: " << _isDirectory << endl
+//      << "_isReadable:  " << _isReadable << endl
+//      << "_isWriteable: " << _isWriteable << endl
+//      << endl;
+  }
+  else
+    _isValid = _isFile = _isDirectory = _isReadable = _isWriteable = false;
+
+#else
   struct stat st;
 
   _isValid = (0 == stat(_path.c_str(), &st));
@@ -72,13 +106,18 @@ void FSNodePOSIX::setFlags()
   }
   else
     _isDirectory = _isFile = false;
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string FSNodePOSIX::getShortPath() const
 {
   // If the path starts with the home directory, replace it with '~'
+#if defined(BSPF_WINDOWS)
+
+#else
   const char* env_home = std::getenv("HOME");
+#endif
   const string& home = env_home != nullptr ? env_home : EmptyString;
 
   if(home != EmptyString && BSPF::startsWithIgnoreCase(_path, home))
@@ -101,6 +140,7 @@ bool FSNodePOSIX::hasParent() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FSNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode) const
 {
+cerr << "getChildren: " << _path << endl;
   assert(_isDirectory);
 
   DIR* dirp = opendir(_path.c_str());
@@ -185,6 +225,91 @@ size_t FSNodePOSIX::getSize() const
 {
   struct stat st;
   return (stat(_path.c_str(), &st) == 0) ? st.st_size : 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+size_t FSNodePOSIX::read(ByteBuffer& buffer, size_t size) const
+{
+  size_t sizeRead = 0;
+  std::ifstream in(getPath(), std::ios::binary);
+  if (in)
+  {
+    in.seekg(0, std::ios::end);
+    sizeRead = static_cast<size_t>(in.tellg());
+    in.seekg(0, std::ios::beg);
+
+    if (sizeRead == 0)
+      throw runtime_error("Zero-byte file");
+    else if (size > 0)  // If a requested size to read is provided, honour it
+      sizeRead = std::min(sizeRead, size);
+
+    buffer = make_unique<uInt8[]>(sizeRead);
+    in.read(reinterpret_cast<char*>(buffer.get()), sizeRead);
+  }
+  else
+    throw runtime_error("File open/read error");
+
+  return sizeRead;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+size_t FSNodePOSIX::read(stringstream& buffer) const
+{
+  size_t sizeRead = 0;
+  std::ifstream in(getPath());
+  if (in)
+  {
+    in.seekg(0, std::ios::end);
+    sizeRead = static_cast<size_t>(in.tellg());
+    in.seekg(0, std::ios::beg);
+
+    if (sizeRead == 0)
+      throw runtime_error("Zero-byte file");
+
+    buffer << in.rdbuf();
+  }
+  else
+    throw runtime_error("File open/read error");
+
+  return sizeRead;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+size_t FSNodePOSIX::write(const ByteBuffer& buffer, size_t size) const
+{
+  size_t sizeWritten = 0;
+  std::ofstream out(getPath(), std::ios::binary);
+  if (out)
+  {
+    out.write(reinterpret_cast<const char*>(buffer.get()), size);
+
+    out.seekp(0, std::ios::end);
+    sizeWritten = static_cast<size_t>(out.tellp());
+    out.seekp(0, std::ios::beg);
+  }
+  else
+    throw runtime_error("File open/write error");
+
+  return sizeWritten;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+size_t FSNodePOSIX::write(const stringstream& buffer) const
+{
+  size_t sizeWritten = 0;
+  std::ofstream out(getPath());
+  if (out)
+  {
+    out << buffer.rdbuf();
+
+    out.seekp(0, std::ios::end);
+    sizeWritten = static_cast<size_t>(out.tellp());
+    out.seekp(0, std::ios::beg);
+  }
+  else
+    throw runtime_error("File open/write error");
+
+  return sizeWritten;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

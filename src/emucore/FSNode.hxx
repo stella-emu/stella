@@ -18,6 +18,7 @@
 #ifndef FS_NODE_HXX
 #define FS_NODE_HXX
 
+#include <filesystem>
 #include <functional>
 
 #include "bspf.hxx"
@@ -34,6 +35,7 @@
 class FSNode;
 class AbstractFSNode;
 using AbstractFSNodePtr = shared_ptr<AbstractFSNode>;
+namespace fs = std::filesystem;
 
 /**
  * List of multiple file system nodes. E.g. the contents of a given directory.
@@ -462,7 +464,7 @@ class AbstractFSNode
      *          This method can throw exceptions, and should be used inside
      *          a try-catch block.
      */
-    virtual size_t read(ByteBuffer& buffer, size_t size) const { return 0; }
+    virtual size_t read(ByteBuffer& buffer, size_t size) const = 0;
 
     /**
      * Read data (text format) into the given stream.
@@ -473,7 +475,7 @@ class AbstractFSNode
      *          This method can throw exceptions, and should be used inside
      *          a try-catch block.
      */
-    virtual size_t read(stringstream& buffer) const { return 0; }
+    virtual size_t read(stringstream& buffer) const = 0;
 
     /**
      * Write data (binary format) from the given buffer.
@@ -485,7 +487,7 @@ class AbstractFSNode
      *          This method can throw exceptions, and should be used inside
      *          a try-catch block.
      */
-    virtual size_t write(const ByteBuffer& buffer, size_t size) const { return 0; }
+    virtual size_t write(const ByteBuffer& buffer, size_t size) const = 0;
 
     /**
      * Write data (text format) from the given stream.
@@ -496,7 +498,7 @@ class AbstractFSNode
      *          This method can throw exceptions, and should be used inside
      *          a try-catch block.
      */
-    virtual size_t write(const stringstream& buffer) const { return 0; }
+    virtual size_t write(const stringstream& buffer) const = 0;
 
     /**
      * Returns the last component of a given path.

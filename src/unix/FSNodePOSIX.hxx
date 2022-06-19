@@ -39,9 +39,11 @@
 #endif
 
 /*
- * Implementation of the Stella file system API based on POSIX (for Linux and macOS)
+ * Implementation of the Stella filesystem API for regular files,
+ * based on the std::filesystem API in C++17.
  *
- * Parts of this class are documented in the base interface class, AbstractFSNode.
+ * Parts of this class are documented in the base interface classes,
+ * AbstractFSNode and FSNode.  See those classes for more information.
  */
 class FSNodePOSIX : public AbstractFSNode
 {
@@ -60,7 +62,7 @@ class FSNodePOSIX : public AbstractFSNode
      */
     explicit FSNodePOSIX(const string& path, bool verify = true);
 
-    bool exists() const override { return access(_path.c_str(), F_OK) == 0; }
+    bool exists() const override  { return fs::exists(_fspath); }
     const string& getName() const override    { return _displayName; }
     void setName(const string& name) override { _displayName = name; }
     const string& getPath() const override { return _path; }
@@ -68,21 +70,25 @@ class FSNodePOSIX : public AbstractFSNode
     bool hasParent() const override;
     bool isDirectory() const override { return _isDirectory; }
     bool isFile() const override      { return _isFile;      }
-    bool isReadable() const override  { return access(_path.c_str(), R_OK) == 0; }
-    bool isWritable() const override  { return access(_path.c_str(), W_OK) == 0; }
+    bool isReadable() const override  { return _isReadable;  }
+    bool isWritable() const override  { return _isWriteable; }
     bool makeDir() override;
     bool rename(const string& newfile) override;
 
     size_t getSize() const override;
+    size_t read(ByteBuffer& buffer, size_t size) const override;
+    size_t read(stringstream& buffer) const override;
+    size_t write(const ByteBuffer& buffer, size_t size) const override;
+    size_t write(const stringstream& buffer) const override;
+
     bool getChildren(AbstractFSList& list, ListMode mode) const override;
     AbstractFSNodePtr getParent() const override;
 
   protected:
-    string _path;
-    string _displayName;
-    bool _isValid{true};
-    bool _isFile{false};
-    bool _isDirectory{true};
+    fs::path _fspath;
+    string _path, _displayName;
+    bool _isValid{false}, _isFile{false}, _isDirectory{false},
+         _isReadable{false}, _isWriteable{false};
 
   private:
     /**
