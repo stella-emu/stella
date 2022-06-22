@@ -128,16 +128,16 @@ class FSNode
     bool exists() const;
 
     /**
-     * Return a list of child nodes of this and all sub-directories. If called on a node
-     * that does not represent a directory, false is returned.
+     * Return a list of child nodes of this and all sub-directories. If called
+     * on a node that does not represent a directory, false is returned.
      *
      * @return true if successful, false otherwise (e.g. when the directory
      *         does not exist).
      */
     bool getAllChildren(FSList& fslist, ListMode mode = ListMode::DirectoriesOnly,
-                        const NameFilter& filter = [](const FSNode&) { return true; },
-                        bool includeParentDirectory = true,
-                        const CancelCheck& isCancelled = []() { return false; }) const;
+            const NameFilter& filter = [](const FSNode&) { return true; },
+            bool includeParentDirectory = true,
+            const CancelCheck& isCancelled = []() { return false; }) const;
 
     /**
      * Return a list of child nodes of this directory node. If called on a node
@@ -147,10 +147,10 @@ class FSNode
      *         does not exist).
      */
     bool getChildren(FSList& fslist, ListMode mode = ListMode::DirectoriesOnly,
-                     const NameFilter& filter = [](const FSNode&){ return true; },
-                     bool includeChildDirectories = false,
-                     bool includeParentDirectory = true,
-                     const CancelCheck& isCancelled = []() { return false; }) const;
+            const NameFilter& filter = [](const FSNode&){ return true; },
+            bool includeChildDirectories = false,
+            bool includeParentDirectory = true,
+            const CancelCheck& isCancelled = []() { return false; }) const;
 
     /**
      * Set/get a string representation of the name of the file. This is can be
@@ -452,7 +452,7 @@ class AbstractFSNode
      *
      * @return  Size (in bytes) of the current node path.
      */
-    virtual size_t getSize() const { return 0; }
+    virtual size_t getSize() const = 0;
 
     /**
      * Read data (binary format) into the given buffer.

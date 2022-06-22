@@ -75,7 +75,7 @@ class FSNodePOSIX : public AbstractFSNode
     bool makeDir() override;
     bool rename(const string& newfile) override;
 
-    size_t getSize() const override;
+    size_t getSize() const override { return _size; }
     size_t read(ByteBuffer& buffer, size_t size) const override;
     size_t read(stringstream& buffer) const override;
     size_t write(const ByteBuffer& buffer, size_t size) const override;
@@ -87,13 +87,13 @@ class FSNodePOSIX : public AbstractFSNode
   protected:
     fs::path _fspath;
     string _path, _displayName;
-    bool _isValid{false}, _isFile{false}, _isDirectory{false},
+    bool _isFile{false}, _isDirectory{false},
          _isReadable{false}, _isWriteable{false};
+    size_t _size{0};
 
   private:
     /**
-     * Tests and sets the _isValid and _isDirectory/_isFile flags,
-     * using the stat() function.
+     * Tests and sets the various flags for a file/directory.
      */
     void setFlags();
 };

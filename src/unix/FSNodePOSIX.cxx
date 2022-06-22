@@ -64,7 +64,6 @@ FSNodePOSIX::FSNodePOSIX(const string& path, bool verify)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FSNodePOSIX::setFlags()
 {
-#if 1
 // cerr << "_fspath:      " << _fspath << endl;
   std::error_code ec;
   const auto s = fs::status(_fspath, ec);
@@ -72,7 +71,6 @@ void FSNodePOSIX::setFlags()
   {
     const auto p = s.permissions();
 
-    _isValid     = true;
     _isFile      = fs::is_regular_file(s);
     _isDirectory = fs::is_directory(s);
     _isReadable  = (p & (fs::perms::owner_read |
@@ -81,32 +79,20 @@ void FSNodePOSIX::setFlags()
     _isWriteable = (p & (fs::perms::owner_write |
                          fs::perms::group_write |
                          fs::perms::others_write)) != fs::perms::none;
-// cerr << "_isValid:     " << _isValid << endl
-//      << "_isFile:      " << _isFile << endl
+    _size = _isFile ? fs::file_size(_fspath) : 0;
+
+// cerr << "_isFile:      " << _isFile << endl
 //      << "_isDirectory: " << _isDirectory << endl
 //      << "_isReadable:  " << _isReadable << endl
 //      << "_isWriteable: " << _isWriteable << endl
+//      << "_size:        " << _size << endl
 //      << endl;
   }
   else
-    _isValid = _isFile = _isDirectory = _isReadable = _isWriteable = false;
-
-#else
-  struct stat st;
-
-  _isValid = (0 == stat(_path.c_str(), &st));
-  if(_isValid)
   {
-    _isDirectory = S_ISDIR(st.st_mode);
-    _isFile = S_ISREG(st.st_mode);
-
-    // Add a trailing slash, if necessary
-    if (_isDirectory && _path.length() > 0 && _path[_path.length()-1] != '/')
-      _path += '/';
+    _isFile = _isDirectory = _isReadable = _isWriteable = false;
+    _size = 0;
   }
-  else
-    _isDirectory = _isFile = false;
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -140,91 +126,46 @@ bool FSNodePOSIX::hasParent() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FSNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode) const
 {
-cerr << "getChildren: " << _path << endl;
-  assert(_isDirectory);
-
-  DIR* dirp = opendir(_path.c_str());
-  if (dirp == nullptr)
-    return false;
-
-  // Loop over dir entries using readdir
-  struct dirent* dp = nullptr;
-  while ((dp = readdir(dirp)) != nullptr)
+// cerr << "getChildren: " << _path << endl;
+  std::error_code ec;
+  for (const auto& entry: fs::directory_iterator{_fspath,
+         fs::directory_options::follow_directory_symlink |
+         fs::directory_options::skip_permission_denied,
+         ec
+        })
   {
-    // Ignore all hidden files
-    if (dp->d_name[0] == '.')
-      continue;
+    const auto& path = entry.path();
 
-    string newPath(_path);
-    if (newPath.length() > 0 && newPath[newPath.length()-1] != '/')
-      newPath += '/';
-    newPath += dp->d_name;
-
-    FSNodePOSIX entry(newPath, false);
-
-#if defined(SYSTEM_NOT_SUPPORTING_D_TYPE)
-    /* TODO: d_type is not part of POSIX, so it might not be supported
-     * on some of our targets. For those systems where it isn't supported,
-     * add this #elif case, which tries to use stat() instead.
-     *
-     * The d_type method is used to avoid costly recurrent stat() calls in big
-     * directories.
-     */
-    entry.setFlags();
-#else
-    if (dp->d_type == DT_UNKNOWN)
-    {
-      // Fall back to stat()
-      entry.setFlags();
-    }
-    else
-    {
-      if (dp->d_type == DT_LNK)
-      {
-        struct stat st;
-        if (stat(entry._path.c_str(), &st) == 0)
-        {
-          entry._isDirectory = S_ISDIR(st.st_mode);
-          entry._isFile = S_ISREG(st.st_mode);
-        }
-        else
-          entry._isDirectory = entry._isFile = false;
-      }
-      else
-      {
-        entry._isDirectory = (dp->d_type == DT_DIR);
-        entry._isFile = (dp->d_type == DT_REG);
-      }
-
-      if (entry._isDirectory)
-        entry._path += "/";
-
-      entry._isValid = true;
-    }
-#endif
-
-    // Skip files that are invalid for some reason (e.g. because we couldn't
-    // properly stat them).
-    if (!entry._isValid)
+    // Ignore files with errors, or any that start with '.'
+    if (ec || path.filename().string()[0] == '.')
       continue;
 
     // Honor the chosen mode
-    if ((mode == FSNode::ListMode::FilesOnly && !entry._isFile) ||
-        (mode == FSNode::ListMode::DirectoriesOnly && !entry._isDirectory))
+    const bool isFile = entry.is_regular_file(),
+               isDir  = entry.is_directory();
+    if ((mode == FSNode::ListMode::FilesOnly && !isFile) ||
+        (mode == FSNode::ListMode::DirectoriesOnly && !isDir))
       continue;
 
-    myList.emplace_back(make_shared<FSNodePOSIX>(entry));
+    // Only create the object and add it to the list when absolutely
+    // necessary
+    FSNodePOSIX node(path.string(), false);
+    node._isFile      = isFile;
+    node._isDirectory = isDir;
+    node._size = isFile ? entry.file_size() : 0;
+
+    const auto p = entry.status().permissions();
+    node._isReadable  = (p & (fs::perms::owner_read |
+                              fs::perms::group_read |
+                              fs::perms::others_read)) != fs::perms::none;
+    node._isWriteable = (p & (fs::perms::owner_write |
+                              fs::perms::group_write |
+                              fs::perms::others_write)) != fs::perms::none;
+
+    myList.emplace_back(make_shared<FSNodePOSIX>(node));
   }
-  closedir(dirp);
 
   return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-size_t FSNodePOSIX::getSize() const
-{
-  struct stat st;
-  return (stat(_path.c_str(), &st) == 0) ? st.st_size : 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
