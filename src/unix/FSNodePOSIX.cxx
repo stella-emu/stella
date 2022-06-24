@@ -64,7 +64,6 @@ FSNodePOSIX::FSNodePOSIX(const string& path, bool verify)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FSNodePOSIX::setFlags()
 {
-// cerr << "_fspath:      " << _fspath << endl;
   std::error_code ec;
   const auto s = fs::status(_fspath, ec);
   if (!ec)
@@ -80,13 +79,6 @@ void FSNodePOSIX::setFlags()
                          fs::perms::group_write |
                          fs::perms::others_write)) != fs::perms::none;
     _size = _isFile ? fs::file_size(_fspath) : 0;
-
-// cerr << "_isFile:      " << _isFile << endl
-//      << "_isDirectory: " << _isDirectory << endl
-//      << "_isReadable:  " << _isReadable << endl
-//      << "_isWriteable: " << _isWriteable << endl
-//      << "_size:        " << _size << endl
-//      << endl;
   }
   else
   {
@@ -126,7 +118,6 @@ bool FSNodePOSIX::hasParent() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FSNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode) const
 {
-// cerr << "getChildren: " << _path << endl;
   std::error_code ec;
   for (const auto& entry: fs::directory_iterator{_fspath,
          fs::directory_options::follow_directory_symlink |
@@ -171,14 +162,10 @@ bool FSNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 size_t FSNodePOSIX::read(ByteBuffer& buffer, size_t size) const
 {
-  size_t sizeRead = 0;
-  std::ifstream in(getPath(), std::ios::binary);
+  std::ifstream in(_fspath, std::ios::binary);
   if (in)
   {
-    in.seekg(0, std::ios::end);
-    sizeRead = static_cast<size_t>(in.tellg());
-    in.seekg(0, std::ios::beg);
-
+    size_t sizeRead = fs::file_size(_fspath);
     if (sizeRead == 0)
       throw runtime_error("Zero-byte file");
     else if (size > 0)  // If a requested size to read is provided, honour it
@@ -186,71 +173,63 @@ size_t FSNodePOSIX::read(ByteBuffer& buffer, size_t size) const
 
     buffer = make_unique<uInt8[]>(sizeRead);
     in.read(reinterpret_cast<char*>(buffer.get()), sizeRead);
+    return sizeRead;
   }
   else
     throw runtime_error("File open/read error");
 
-  return sizeRead;
+  return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 size_t FSNodePOSIX::read(stringstream& buffer) const
 {
-  size_t sizeRead = 0;
-  std::ifstream in(getPath());
+  std::ifstream in(_fspath);
   if (in)
   {
-    in.seekg(0, std::ios::end);
-    sizeRead = static_cast<size_t>(in.tellg());
-    in.seekg(0, std::ios::beg);
-
+    size_t sizeRead = fs::file_size(_fspath);
     if (sizeRead == 0)
       throw runtime_error("Zero-byte file");
 
     buffer << in.rdbuf();
+    return sizeRead;
   }
   else
     throw runtime_error("File open/read error");
 
-  return sizeRead;
+  return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 size_t FSNodePOSIX::write(const ByteBuffer& buffer, size_t size) const
 {
-  size_t sizeWritten = 0;
-  std::ofstream out(getPath(), std::ios::binary);
+  std::ofstream out(_fspath, std::ios::binary);
   if (out)
   {
     out.write(reinterpret_cast<const char*>(buffer.get()), size);
-
-    out.seekp(0, std::ios::end);
-    sizeWritten = static_cast<size_t>(out.tellp());
-    out.seekp(0, std::ios::beg);
+    out.close();
+    return fs::file_size(_fspath);
   }
   else
     throw runtime_error("File open/write error");
 
-  return sizeWritten;
+  return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 size_t FSNodePOSIX::write(const stringstream& buffer) const
 {
-  size_t sizeWritten = 0;
-  std::ofstream out(getPath());
+  std::ofstream out(_fspath);
   if (out)
   {
     out << buffer.rdbuf();
-
-    out.seekp(0, std::ios::end);
-    sizeWritten = static_cast<size_t>(out.tellp());
-    out.seekp(0, std::ios::beg);
+    out.close();
+    return fs::file_size(_fspath);
   }
   else
     throw runtime_error("File open/write error");
 
-  return sizeWritten;
+  return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
