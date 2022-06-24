@@ -24,9 +24,10 @@
 #include "bspf.hxx"
 
 /*
- * The API described in this header is meant to allow for file system browsing in a
- * portable fashion. To this end, multiple or single roots have to be supported
- * (compare Unix with a single root, Windows with multiple roots C:, D:, ...).
+ * The API described in this header is meant to allow for file system browsing
+ * in a portable fashion. To this end, multiple or single roots have to be
+ * supported (compare Unix with a single root, Windows with multiple roots C:,
+ * D:, ...).
  *
  * To this end, we abstract away from paths; implementations can be based on
  * paths (and it's left to them whether / or \ or : is the path separator :-).

@@ -102,7 +102,6 @@ class LauncherDialog : public Dialog, CommandSender
     */
     void quit();
 
-
     void tick() override;
 
   private:

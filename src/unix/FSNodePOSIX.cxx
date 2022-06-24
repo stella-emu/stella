@@ -54,8 +54,8 @@ FSNodePOSIX::FSNodePOSIX(const string& path, bool verify)
   }
 
   _fspath = _path;
-  _displayName = _fspath.filename();
   _path = _fspath.string();
+  _displayName = lastPathComponent(_path);
 
   if(verify)
     setFlags();
