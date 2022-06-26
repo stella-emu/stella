@@ -70,12 +70,6 @@ FSNode& FSNode::operator/=(const string& path)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FSNode::exists() const
-{
-  return _realNode ? _realNode->exists() : false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FSNode::getAllChildren(FSList& fslist, ListMode mode,
                             const NameFilter& filter,
                             bool includeParentDirectory,
@@ -291,64 +285,6 @@ string FSNode::getPathWithExt(const string& ext) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FSNode::hasParent() const
-{
-  return _realNode ? _realNode->hasParent() : false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FSNode FSNode::getParent() const
-{
-  if (!_realNode)
-    return *this;
-
-  AbstractFSNodePtr node = _realNode->getParent();
-  return node ? FSNode(node) : *this;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FSNode::isDirectory() const
-{
-  return _realNode ? _realNode->isDirectory() : false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FSNode::isFile() const
-{
-  return _realNode ? _realNode->isFile() : false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FSNode::isReadable() const
-{
-  return _realNode ? _realNode->isReadable() : false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FSNode::isWritable() const
-{
-  return _realNode ? _realNode->isWritable() : false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FSNode::makeDir()
-{
-  return (_realNode && !_realNode->exists()) ? _realNode->makeDir() : false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FSNode::rename(const string& newfile)
-{
-  return (_realNode && _realNode->exists()) ? _realNode->rename(newfile) : false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-size_t FSNode::getSize() const
-{
-  return (_realNode && _realNode->exists()) ? _realNode->getSize() : 0;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 size_t FSNode::read(ByteBuffer& buffer, size_t size) const
 {
   // File must actually exist
@@ -394,4 +330,68 @@ size_t FSNode::write(const stringstream& buffer) const
     return sizeWritten;
 
   return 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+size_t FSNode::getSize() const
+{
+  return (_realNode && _realNode->exists()) ? _realNode->getSize() : 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FSNode::hasParent() const
+{
+  return _realNode ? _realNode->hasParent() : false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FSNode FSNode::getParent() const
+{
+  if (!_realNode)
+    return *this;
+
+  AbstractFSNodePtr node = _realNode->getParent();
+  return node ? FSNode(node) : *this;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FSNode::exists() const
+{
+  return _realNode ? _realNode->exists() : false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FSNode::isDirectory() const
+{
+  return _realNode ? _realNode->isDirectory() : false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FSNode::isFile() const
+{
+  return _realNode ? _realNode->isFile() : false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FSNode::isReadable() const
+{
+  return _realNode ? _realNode->isReadable() : false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FSNode::isWritable() const
+{
+  return _realNode ? _realNode->isWritable() : false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FSNode::makeDir()
+{
+  return (_realNode && !_realNode->exists()) ? _realNode->makeDir() : false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FSNode::rename(const string& newfile)
+{
+  return (_realNode && _realNode->exists()) ? _realNode->rename(newfile) : false;
 }

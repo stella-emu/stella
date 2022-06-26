@@ -28,9 +28,6 @@
  * in a portable fashion. To this end, multiple or single roots have to be
  * supported (compare Unix with a single root, Windows with multiple roots C:,
  * D:, ...).
- *
- * To this end, we abstract away from paths; implementations can be based on
- * paths (and it's left to them whether / or \ or : is the path separator :-).
  */
 
 class FSNode;
@@ -52,11 +49,7 @@ class FSList : public vector<FSNode> { };
 class FSNode
 {
   public:
-  #ifdef BSPF_WINDOWS
-    static constexpr char PATH_SEPARATOR = '\\';
-  #else
-    static constexpr char PATH_SEPARATOR = '/';
-  #endif
+    static constexpr char PATH_SEPARATOR = fs::path::preferred_separator;
 
   public:
     /**

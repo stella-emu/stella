@@ -20,24 +20,6 @@
 
 #include "FSNode.hxx"
 
-#ifdef BSPF_MACOS
-  #include <sys/types.h>
-#endif
-
-#include <sys/param.h>
-#include <sys/stat.h>
-#include <dirent.h>
-
-#include <cassert>
-#include <cstdio>
-#include <cstring>
-#include <cstdlib>
-#include <unistd.h>
-
-#ifndef MAXPATHLEN // No MAXPATHLEN, as happens on Hurd
-  #define MAXPATHLEN 1024
-#endif
-
 /*
  * Implementation of the Stella filesystem API for regular files,
  * based on the std::filesystem API in C++17.

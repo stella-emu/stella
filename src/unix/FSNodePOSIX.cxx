@@ -35,7 +35,7 @@ FSNodePOSIX::FSNodePOSIX(const string& path, bool verify)
   : _path{path.length() > 0 ? path : "~"}  // Default to home directory
 {
   // Expand '~' to the HOME environment variable
-  if(_path[0] == '~')
+  if (_path[0] == '~')
   {
   #if defined(BSPF_WINDOWS)
 
@@ -45,20 +45,21 @@ FSNodePOSIX::FSNodePOSIX(const string& path, bool verify)
     if (home != nullptr)
       _path.replace(0, 1, home);
   }
-  // Get absolute path (only used for relative directories)
-  else if(_path[0] == '.')
-  {
-    std::array<char, MAXPATHLEN> buf;
-    if(realpath(_path.c_str(), buf.data()))
-      _path = buf.data();
-  }
-
   _fspath = _path;
+
+  if (fs::exists(_fspath))  // get absolute path whenever possible
+    _fspath = fs::canonical(_fspath);
+
   _path = _fspath.string();
   _displayName = lastPathComponent(_path);
 
-  if(verify)
+  if (verify)
     setFlags();
+
+  // Add a trailing slash, if necessary
+  if (_isDirectory && _path.length() > 0 &&
+      _path[_path.length()-1] != FSNode::PATH_SEPARATOR)
+    _path += FSNode::PATH_SEPARATOR;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -98,11 +99,12 @@ string FSNodePOSIX::getShortPath() const
 #endif
   const string& home = env_home != nullptr ? env_home : EmptyString;
 
-  if(home != EmptyString && BSPF::startsWithIgnoreCase(_path, home))
+  if (home != EmptyString && BSPF::startsWithIgnoreCase(_path, home))
   {
     string path = "~";
     const char* offset = _path.c_str() + home.size();
-    if(*offset != '/') path += "/";
+    if(*offset != FSNode::PATH_SEPARATOR)
+      path += FSNode::PATH_SEPARATOR;
     path += offset;
     return path;
   }
@@ -177,8 +179,6 @@ size_t FSNodePOSIX::read(ByteBuffer& buffer, size_t size) const
   }
   else
     throw runtime_error("File open/read error");
-
-  return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -196,8 +196,6 @@ size_t FSNodePOSIX::read(stringstream& buffer) const
   }
   else
     throw runtime_error("File open/read error");
-
-  return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -212,8 +210,6 @@ size_t FSNodePOSIX::write(const ByteBuffer& buffer, size_t size) const
   }
   else
     throw runtime_error("File open/write error");
-
-  return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -228,56 +224,51 @@ size_t FSNodePOSIX::write(const stringstream& buffer) const
   }
   else
     throw runtime_error("File open/write error");
-
-  return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FSNodePOSIX::makeDir()
 {
-  if(mkdir(_path.c_str(), 0777) == 0)
+  if (!(exists() && _isDirectory) && fs::create_directory(_fspath))
   {
-    // Get absolute path
-    std::array<char, MAXPATHLEN> buf;
-    if(realpath(_path.c_str(), buf.data()))
-      _path = buf.data();
-
+    _fspath = fs::canonical(_fspath);
+    _path = _fspath.string();
     _displayName = lastPathComponent(_path);
+
     setFlags();
 
     // Add a trailing slash, if necessary
-    if (_path.length() > 0 && _path[_path.length()-1] != '/')
-      _path += '/';
+    if (_path.length() > 0 && _path[_path.length()-1] != FSNode::PATH_SEPARATOR)
+      _path += FSNode::PATH_SEPARATOR;
 
     return true;
   }
-  else
-    return false;
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FSNodePOSIX::rename(const string& newfile)
 {
-  if(std::rename(_path.c_str(), newfile.c_str()) == 0)
+  fs::path newpath = newfile;
+
+  std::error_code ec;
+  fs::rename(_fspath, newpath, ec);
+  if (!ec)
   {
-    _path = newfile;
-
-    // Get absolute path
-    std::array<char, MAXPATHLEN> buf;
-    if(realpath(_path.c_str(), buf.data()))
-      _path = buf.data();
-
+    _fspath = fs::canonical(newpath);
+    _path = _fspath.string();
     _displayName = lastPathComponent(_path);
+
     setFlags();
 
     // Add a trailing slash, if necessary
-    if (_isDirectory && _path.length() > 0 && _path[_path.length()-1] != '/')
-      _path += '/';
+    if (_isDirectory && _path.length() > 0 &&
+        _path[_path.length()-1] != FSNode::PATH_SEPARATOR)
+      _path += FSNode::PATH_SEPARATOR;
 
     return true;
   }
-  else
-    return false;
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
