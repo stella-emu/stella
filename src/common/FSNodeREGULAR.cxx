@@ -21,17 +21,17 @@
   #define ROOT_DIR "/"
 #endif
 
-#include "FSNodePOSIX.hxx"
+#include "FSNodeREGULAR.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FSNodePOSIX::FSNodePOSIX()
+FSNodeREGULAR::FSNodeREGULAR()
   : _path{ROOT_DIR},
     _displayName{_path}
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FSNodePOSIX::FSNodePOSIX(const string& path, bool verify)
+FSNodeREGULAR::FSNodeREGULAR(const string& path, bool verify)
   : _path{path.length() > 0 ? path : "~"}  // Default to home directory
 {
   // Expand '~' to the HOME environment variable
@@ -63,7 +63,7 @@ FSNodePOSIX::FSNodePOSIX(const string& path, bool verify)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FSNodePOSIX::setFlags()
+void FSNodeREGULAR::setFlags()
 {
   std::error_code ec;
   const auto s = fs::status(_fspath, ec);
@@ -89,7 +89,7 @@ void FSNodePOSIX::setFlags()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string FSNodePOSIX::getShortPath() const
+string FSNodeREGULAR::getShortPath() const
 {
   // If the path starts with the home directory, replace it with '~'
 #if defined(BSPF_WINDOWS)
@@ -112,13 +112,13 @@ string FSNodePOSIX::getShortPath() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FSNodePOSIX::hasParent() const
+bool FSNodeREGULAR::hasParent() const
 {
   return _path != "" && _path != ROOT_DIR;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FSNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode) const
+bool FSNodeREGULAR::getChildren(AbstractFSList& myList, ListMode mode) const
 {
   std::error_code ec;
   for (const auto& entry: fs::directory_iterator{_fspath,
@@ -142,7 +142,7 @@ bool FSNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode) const
 
     // Only create the object and add it to the list when absolutely
     // necessary
-    FSNodePOSIX node(path.string(), false);
+    FSNodeREGULAR node(path.string(), false);
     node._isFile      = isFile;
     node._isDirectory = isDir;
     node._size = isFile ? entry.file_size() : 0;
@@ -155,14 +155,14 @@ bool FSNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode) const
                               fs::perms::group_write |
                               fs::perms::others_write)) != fs::perms::none;
 
-    myList.emplace_back(make_shared<FSNodePOSIX>(node));
+    myList.emplace_back(make_shared<FSNodeREGULAR>(node));
   }
 
   return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-size_t FSNodePOSIX::read(ByteBuffer& buffer, size_t size) const
+size_t FSNodeREGULAR::read(ByteBuffer& buffer, size_t size) const
 {
   std::ifstream in(_fspath, std::ios::binary);
   if (in)
@@ -182,7 +182,7 @@ size_t FSNodePOSIX::read(ByteBuffer& buffer, size_t size) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-size_t FSNodePOSIX::read(stringstream& buffer) const
+size_t FSNodeREGULAR::read(stringstream& buffer) const
 {
   std::ifstream in(_fspath);
   if (in)
@@ -199,7 +199,7 @@ size_t FSNodePOSIX::read(stringstream& buffer) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-size_t FSNodePOSIX::write(const ByteBuffer& buffer, size_t size) const
+size_t FSNodeREGULAR::write(const ByteBuffer& buffer, size_t size) const
 {
   std::ofstream out(_fspath, std::ios::binary);
   if (out)
@@ -213,7 +213,7 @@ size_t FSNodePOSIX::write(const ByteBuffer& buffer, size_t size) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-size_t FSNodePOSIX::write(const stringstream& buffer) const
+size_t FSNodeREGULAR::write(const stringstream& buffer) const
 {
   std::ofstream out(_fspath);
   if (out)
@@ -227,7 +227,7 @@ size_t FSNodePOSIX::write(const stringstream& buffer) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FSNodePOSIX::makeDir()
+bool FSNodeREGULAR::makeDir()
 {
   if (!(exists() && _isDirectory) && fs::create_directory(_fspath))
   {
@@ -247,7 +247,7 @@ bool FSNodePOSIX::makeDir()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FSNodePOSIX::rename(const string& newfile)
+bool FSNodeREGULAR::rename(const string& newfile)
 {
   fs::path newpath = newfile;
 
@@ -272,7 +272,7 @@ bool FSNodePOSIX::rename(const string& newfile)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AbstractFSNodePtr FSNodePOSIX::getParent() const
+AbstractFSNodePtr FSNodeREGULAR::getParent() const
 {
   if (_path == ROOT_DIR)
     return nullptr;
@@ -280,5 +280,5 @@ AbstractFSNodePtr FSNodePOSIX::getParent() const
   const char* start = _path.c_str();
   const char* end = lastPathComponent(_path);
 
-  return make_unique<FSNodePOSIX>(string(start, size_t(end - start)));
+  return make_unique<FSNodeREGULAR>(string(start, size_t(end - start)));
 }

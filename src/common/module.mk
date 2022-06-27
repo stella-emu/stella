@@ -9,6 +9,7 @@ MODULE_OBJS := \
 	src/common/FBBackendSDL2.o \
 	src/common/FBSurfaceSDL2.o \
 	src/common/FpsMeter.o \
+	src/common/FSNodeREGULAR.o \
 	src/common/FSNodeZIP.o \
 	src/common/HighScoresManager.o \
 	src/common/JoyMap.o \

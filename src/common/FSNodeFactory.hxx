@@ -23,14 +23,12 @@ class AbstractFSNode;
 #if defined(ZIP_SUPPORT)
   #include "FSNodeZIP.hxx"
 #endif
-#if defined(BSPF_UNIX) || defined(BSPF_MACOS)
-  #include "FSNodePOSIX.hxx"
-#elif defined(BSPF_WINDOWS)
+#if defined(BSPF_WINDOWS)
   #include "FSNodeWINDOWS.hxx"
 #elif defined(__LIB_RETRO__)
   #include "FSNodeLIBRETRO.hxx"
 #else
-  #error Unsupported platform in FSNodeFactory!
+  #include "FSNodeREGULAR.hxx"
 #endif
 
 /**
@@ -41,20 +39,20 @@ class AbstractFSNode;
 class FSNodeFactory
 {
   public:
-    enum class Type { SYSTEM, ZIP };
+    enum class Type { REGULAR, ZIP };
 
   public:
     static unique_ptr<AbstractFSNode> create(const string& path, Type type)
     {
       switch(type)
       {
-        case Type::SYSTEM:
-        #if defined(BSPF_UNIX) || defined(BSPF_MACOS)
-          return make_unique<FSNodePOSIX>(path);
-        #elif defined(BSPF_WINDOWS)
+        case Type::REGULAR:
+        #if defined(BSPF_WINDOWS)
           return make_unique<FSNodeWINDOWS>(path);
         #elif defined(__LIB_RETRO__)
           return make_unique<FSNodeLIBRETRO>(path);
+        #else
+          return make_unique<FSNodeREGULAR>(path);
         #endif
           break;
         case Type::ZIP:

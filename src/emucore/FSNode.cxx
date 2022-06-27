@@ -44,7 +44,7 @@ void FSNode::setPath(const string& path)
     _realNode = FSNodeFactory::create(path, FSNodeFactory::Type::ZIP);
   else
 #endif
-    _realNode = FSNodeFactory::create(path, FSNodeFactory::Type::SYSTEM);
+    _realNode = FSNodeFactory::create(path, FSNodeFactory::Type::REGULAR);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

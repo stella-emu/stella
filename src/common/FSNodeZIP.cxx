@@ -101,7 +101,7 @@ FSNodeZIP::FSNodeZIP(const string& p)
   // Behind the scenes, this node is actually a platform-specific object
   // for whatever system we are running on
   _realNode = FSNodeFactory::create(_zipFile,
-      FSNodeFactory::Type::SYSTEM);
+      FSNodeFactory::Type::REGULAR);
 
   setFlags(_zipFile, _virtualPath, _realNode);
 // cerr << "==============================================================\n";

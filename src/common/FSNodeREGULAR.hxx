@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef FS_NODE_POSIX_HXX
-#define FS_NODE_POSIX_HXX
+#ifndef FS_NODE_REGULAR_HXX
+#define FS_NODE_REGULAR_HXX
 
 #include "FSNode.hxx"
 
@@ -27,22 +27,22 @@
  * Parts of this class are documented in the base interface classes,
  * AbstractFSNode and FSNode.  See those classes for more information.
  */
-class FSNodePOSIX : public AbstractFSNode
+class FSNodeREGULAR : public AbstractFSNode
 {
   public:
     /**
-     * Creates a FSNodePOSIX with the root node as path.
+     * Creates a FSNodeREGULAR with the root node as path.
      */
-    FSNodePOSIX();
+    FSNodeREGULAR();
 
     /**
-     * Creates a FSNodePOSIX for a given path.
+     * Creates a FSNodeREGULAR for a given path.
      *
      * @param path    String with the path the new node should point to.
      * @param verify  true if the isValid and isDirectory/isFile flags should
      *                be verified during the construction.
      */
-    explicit FSNodePOSIX(const string& path, bool verify = true);
+    explicit FSNodeREGULAR(const string& path, bool verify = true);
 
     bool exists() const override  { return fs::exists(_fspath); }
     const string& getName() const override    { return _displayName; }
