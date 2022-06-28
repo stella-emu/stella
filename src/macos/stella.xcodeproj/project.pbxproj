@@ -137,7 +137,6 @@
 		2D9174A109BA90380026E9FF /* EventHandler.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D733D6E062895B2006265D9 /* EventHandler.cxx */; };
 		2D9174A209BA90380026E9FF /* FrameBuffer.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D733D70062895B2006265D9 /* FrameBuffer.cxx */; };
 		2D9174A309BA90380026E9FF /* Settings.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D944848062904E800DD9879 /* Settings.cxx */; };
-		2D9174A809BA90380026E9FF /* FSNodePOSIX.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DDBEA0C0845708800812C11 /* FSNodePOSIX.cxx */; };
 		2D9174AA09BA90380026E9FF /* AboutDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DDBEAA3084578BF00812C11 /* AboutDialog.cxx */; };
 		2D9174AC09BA90380026E9FF /* BrowserDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DDBEAA8084578BF00812C11 /* BrowserDialog.cxx */; };
 		2D9174AD09BA90380026E9FF /* Dialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DDBEAAB084578BF00812C11 /* Dialog.cxx */; };
@@ -642,7 +641,8 @@
 		DCDE648123E6638E00EE3EFF /* MessageMenu.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCDE647D23E6638D00EE3EFF /* MessageMenu.cxx */; };
 		DCDFF08120B781B0001227C0 /* DispatchResult.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCDFF07F20B781B0001227C0 /* DispatchResult.cxx */; };
 		DCDFF08220B781B0001227C0 /* DispatchResult.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCDFF08020B781B0001227C0 /* DispatchResult.hxx */; };
-		DCE395DB16CB0B2B008DB1E5 /* FSNodePOSIX.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE395DA16CB0B2B008DB1E5 /* FSNodePOSIX.hxx */; };
+		DCE1FF3E286B5D5A003568AD /* FSNodeREGULAR.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE1FF3C286B5D5A003568AD /* FSNodeREGULAR.hxx */; };
+		DCE1FF3F286B5D5A003568AD /* FSNodeREGULAR.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE1FF3D286B5D5A003568AD /* FSNodeREGULAR.cxx */; };
 		DCE395EF16CB0B5F008DB1E5 /* FSNodeFactory.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE395EA16CB0B5F008DB1E5 /* FSNodeFactory.hxx */; };
 		DCE395F016CB0B5F008DB1E5 /* FSNodeZIP.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE395EB16CB0B5F008DB1E5 /* FSNodeZIP.cxx */; };
 		DCE395F116CB0B5F008DB1E5 /* FSNodeZIP.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE395EC16CB0B5F008DB1E5 /* FSNodeZIP.hxx */; };
@@ -914,7 +914,6 @@
 		2D9555DA0880E78000466554 /* Cart3E.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = Cart3E.hxx; sourceTree = "<group>"; };
 		2D9555DD0880E79600466554 /* CpuDebug.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = CpuDebug.cxx; sourceTree = "<group>"; };
 		2D9555DE0880E79600466554 /* CpuDebug.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = CpuDebug.hxx; sourceTree = "<group>"; };
-		2DDBEA0C0845708800812C11 /* FSNodePOSIX.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = FSNodePOSIX.cxx; sourceTree = "<group>"; };
 		2DDBEAA3084578BF00812C11 /* AboutDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = AboutDialog.cxx; sourceTree = "<group>"; };
 		2DDBEAA4084578BF00812C11 /* AboutDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = AboutDialog.hxx; sourceTree = "<group>"; };
 		2DDBEAA8084578BF00812C11 /* BrowserDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = BrowserDialog.cxx; sourceTree = "<group>"; };
@@ -1472,7 +1471,8 @@
 		DCDE647D23E6638D00EE3EFF /* MessageMenu.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MessageMenu.cxx; sourceTree = "<group>"; };
 		DCDFF07F20B781B0001227C0 /* DispatchResult.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DispatchResult.cxx; sourceTree = "<group>"; };
 		DCDFF08020B781B0001227C0 /* DispatchResult.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = DispatchResult.hxx; sourceTree = "<group>"; };
-		DCE395DA16CB0B2B008DB1E5 /* FSNodePOSIX.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FSNodePOSIX.hxx; sourceTree = "<group>"; };
+		DCE1FF3C286B5D5A003568AD /* FSNodeREGULAR.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FSNodeREGULAR.hxx; sourceTree = "<group>"; };
+		DCE1FF3D286B5D5A003568AD /* FSNodeREGULAR.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FSNodeREGULAR.cxx; sourceTree = "<group>"; };
 		DCE395EA16CB0B5F008DB1E5 /* FSNodeFactory.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FSNodeFactory.hxx; sourceTree = "<group>"; };
 		DCE395EB16CB0B5F008DB1E5 /* FSNodeZIP.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FSNodeZIP.cxx; sourceTree = "<group>"; };
 		DCE395EC16CB0B5F008DB1E5 /* FSNodeZIP.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FSNodeZIP.hxx; sourceTree = "<group>"; };
@@ -1683,7 +1683,6 @@
 				DCD6FC5A11C281A1005DA767 /* libpng */,
 				2D6050C60898771C00C6DE89 /* macos */,
 				E0A383F72589730A0062AA93 /* sqlite */,
-				2D6050C90898774B00C6DE89 /* unix */,
 				2D60513708987A5400C6DE89 /* yacc */,
 				DC3EE83B1E2C0E4400905161 /* zlib */,
 			);
@@ -1911,6 +1910,8 @@
 				E007231D210FBF5D002CF343 /* FpsMeter.cxx */,
 				E007231C210FBF5C002CF343 /* FpsMeter.hxx */,
 				DCE395EA16CB0B5F008DB1E5 /* FSNodeFactory.hxx */,
+				DCE1FF3D286B5D5A003568AD /* FSNodeREGULAR.cxx */,
+				DCE1FF3C286B5D5A003568AD /* FSNodeREGULAR.hxx */,
 				DCE395EB16CB0B5F008DB1E5 /* FSNodeZIP.cxx */,
 				DCE395EC16CB0B5F008DB1E5 /* FSNodeZIP.hxx */,
 				DC816CFA25757D9A00FBCCDA /* HighScoresManager.cxx */,
@@ -1983,15 +1984,6 @@
 				E0D4153B25A120340031A8D6 /* SettingsRepositoryMACOS.mm */,
 			);
 			path = macos;
-			sourceTree = "<group>";
-		};
-		2D6050C90898774B00C6DE89 /* unix */ = {
-			isa = PBXGroup;
-			children = (
-				2DDBEA0C0845708800812C11 /* FSNodePOSIX.cxx */,
-				DCE395DA16CB0B2B008DB1E5 /* FSNodePOSIX.hxx */,
-			);
-			path = unix;
 			sourceTree = "<group>";
 		};
 		2D6050CC0898776500C6DE89 /* emucore */ = {
@@ -2943,7 +2935,6 @@
 				DC67270C1556F4860023653B /* CartCTY.hxx in Headers */,
 				DC6DC5ED273C2C3A00F64413 /* DevSettingsHandler.hxx in Headers */,
 				DC1B2EC41E50036100F62837 /* AmigaMouse.hxx in Headers */,
-				DCE395DB16CB0B2B008DB1E5 /* FSNodePOSIX.hxx in Headers */,
 				DCE395EF16CB0B5F008DB1E5 /* FSNodeFactory.hxx in Headers */,
 				DCE395F116CB0B5F008DB1E5 /* FSNodeZIP.hxx in Headers */,
 				DCE395F316CB0B5F008DB1E5 /* ZipHandler.hxx in Headers */,
@@ -2973,6 +2964,7 @@
 				E0A383FB2589732E0062AA93 /* sqlite3.h in Headers */,
 				DC5963142139FA14002736F2 /* Bankswitch.hxx in Headers */,
 				DCAAE5E91715887B0080BB82 /* CartF6SCWidget.hxx in Headers */,
+				DCE1FF3E286B5D5A003568AD /* FSNodeREGULAR.hxx in Headers */,
 				DCAAE5EB1715887B0080BB82 /* CartF6Widget.hxx in Headers */,
 				DCAAE5ED1715887B0080BB82 /* CartF8SCWidget.hxx in Headers */,
 				DC6DC5E0273C2A5E00F64413 /* PlusRomsSetupDialog.hxx in Headers */,
@@ -3198,7 +3190,6 @@
 				2D9174A209BA90380026E9FF /* FrameBuffer.cxx in Sources */,
 				DCDE648123E6638E00EE3EFF /* MessageMenu.cxx in Sources */,
 				2D9174A309BA90380026E9FF /* Settings.cxx in Sources */,
-				2D9174A809BA90380026E9FF /* FSNodePOSIX.cxx in Sources */,
 				2D9174AA09BA90380026E9FF /* AboutDialog.cxx in Sources */,
 				2D9174AC09BA90380026E9FF /* BrowserDialog.cxx in Sources */,
 				2D9174AD09BA90380026E9FF /* Dialog.cxx in Sources */,
@@ -3293,6 +3284,7 @@
 				DC73BD851915E5B1003FAFAD /* FBSurfaceSDL2.cxx in Sources */,
 				DCDDEAC41F5DBF0400C67366 /* RewindManager.cxx in Sources */,
 				E09F413C201E901D004A3391 /* AudioQueue.cxx in Sources */,
+				DCE1FF3F286B5D5A003568AD /* FSNodeREGULAR.cxx in Sources */,
 				2D91750809BA90380026E9FF /* AudioWidget.cxx in Sources */,
 				2D91750B09BA90380026E9FF /* EventMappingWidget.cxx in Sources */,
 				2D91750C09BA90380026E9FF /* InputDialog.cxx in Sources */,
@@ -3552,7 +3544,7 @@
 				INFOPLIST_FILE = "Info-Stella.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = "$(LIBRARY_SEARCH_PATHS)";
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-lz";
 				PRODUCT_BUNDLE_IDENTIFIER = "Stella-emu";
@@ -3615,7 +3607,7 @@
 				INFOPLIST_FILE = "Info-Stella.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = "$(LIBRARY_SEARCH_PATHS)";
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-lz";
