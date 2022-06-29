@@ -92,6 +92,9 @@ class ControllerDetector
     static bool usesJoystickButton(const ByteBuffer& image, size_t size,
                                    Controller::Jack port);
 
+    // Returns true if joystick direction access code is found.
+    static bool usesJoystickDirections(const ByteBuffer& image, size_t size);
+
     // Returns true if the port's keyboard access code is found.
     static bool usesKeyboard(const ByteBuffer& image, size_t size,
                              Controller::Jack port);

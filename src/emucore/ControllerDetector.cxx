@@ -71,7 +71,7 @@ Controller::Type ControllerDetector::autodetectPort(
       type = Controller::Type::AtariMouse;
     else if(isProbablyAmigaMouse(image, size))
       type = Controller::Type::AmigaMouse;
-    else if(usesKeyboard(image, size, port))
+    else if(usesKeyboard(image, size, port) && !usesJoystickDirections(image, size))
       type = Controller::Type::Keyboard;
     else if(usesGenesisButton(image, size, port))
       type = Controller::Type::Genesis;
@@ -249,13 +249,38 @@ bool ControllerDetector::usesJoystickButton(const ByteBuffer& image, size_t size
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Returns true if the port's joystick direction access code is found.
+bool ControllerDetector::usesJoystickDirections(const ByteBuffer& image, size_t size)
+{
+  // check for SWCHA access (both ports)
+  static constexpr int NUM_SIGS = 8;
+  static constexpr int SIG_SIZE = 3;
+  static constexpr uInt8 signature[NUM_SIGS][SIG_SIZE] = {
+    { 0xad, 0x80, 0x02 }, // lda SWCHA (also found in MagiCard, so this needs properties now!)
+    { 0xae, 0x80, 0x02 }, // ldx SWCHA
+    { 0xac, 0x80, 0x02 }, // ldy SWCHA
+    { 0x2c, 0x80, 0x02 }, // bit SWCHA
+    { 0x0d, 0x80, 0x02 }, // ora SWCHA (Official Frogger)
+    { 0x2d, 0x80, 0x02 }, // and SWCHA (Crypts of Chaos, some paddle games)
+    { 0x4d, 0x80, 0x02 }, // eor SWCHA (Chopper Command)
+    { 0xad, 0x88, 0x02 }, // lda SWCHA|8 (Jawbreaker)
+  };
+
+  for(uInt32 i = 0; i < NUM_SIGS; ++i)
+    if(searchForBytes(image, size, signature[i], SIG_SIZE))
+      return true;
+
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool ControllerDetector::usesKeyboard(const ByteBuffer& image, size_t size,
                                       Controller::Jack port)
 {
   if(port == Controller::Jack::Left)
   {
     // check for INPT0 *AND* INPT1 access
-    static constexpr int NUM_SIGS_0_0 = 6;
+    static constexpr int NUM_SIGS_0_0 = 7;
     static constexpr int SIG_SIZE_0_0 = 3;
     static constexpr uInt8 signature_0_0[NUM_SIGS_0_0][SIG_SIZE_0_0] = {
       { 0x24, 0x38, 0x30 }, // bit INPT0|$30; bmi
@@ -263,6 +288,7 @@ bool ControllerDetector::usesKeyboard(const ByteBuffer& image, size_t size,
       { 0xa4, 0x38, 0x30 }, // ldy INPT0|$30; bmi
       { 0xb5, 0x38, 0x30 }, // lda INPT0|$30,x; bmi
       { 0x24, 0x08, 0x30 }, // bit INPT0; bmi
+      { 0x24, 0x08, 0x10 }, // bit INPT0; bpl (Tap-A-Mole, also e.g. Chopper Command, Secret Quest, River Raid II)
       { 0xa6, 0x08, 0x30 }  // ldx INPT0; bmi
     };
     static constexpr int NUM_SIGS_0_2 = 1;
@@ -271,7 +297,7 @@ bool ControllerDetector::usesKeyboard(const ByteBuffer& image, size_t size,
       { 0xb5, 0x38, 0x29, 0x80, 0xd0 }  // lda INPT0,x; and #80; bne
     };
 
-    static constexpr int NUM_SIGS_1_0 = 7;
+    static constexpr int NUM_SIGS_1_0 = 8;
     static constexpr int SIG_SIZE_1_0 = 3;
     static constexpr uInt8 signature_1_0[NUM_SIGS_1_0][SIG_SIZE_1_0] = {
       { 0x24, 0x39, 0x10 }, // bit INPT1|$30; bpl
@@ -280,6 +306,7 @@ bool ControllerDetector::usesKeyboard(const ByteBuffer& image, size_t size,
       { 0xa4, 0x39, 0x30 }, // ldy INPT1|$30; bmi
       { 0xb5, 0x38, 0x30 }, // lda INPT0|$30,x; bmi
       { 0x24, 0x09, 0x30 }, // bit INPT1; bmi
+      { 0x24, 0x09, 0x10 }, // bit INPT1; bpl (Tap-A-Mole and some Genesis games)
       { 0xa6, 0x09, 0x30 }  // ldx INPT1; bmi
     };
     static constexpr int NUM_SIGS_1_2 = 1;
