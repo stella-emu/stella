@@ -259,6 +259,7 @@
     <ClCompile Include="..\emucore\FSNode.cxx" />
     <ClCompile Include="..\emucore\Genesis.cxx" />
     <ClCompile Include="..\emucore\GlobalKeyHandler.cxx" />
+    <ClCompile Include="..\emucore\Joy2BPlus.cxx" />
     <ClCompile Include="..\emucore\Joystick.cxx" />
     <ClCompile Include="..\emucore\Keyboard.cxx" />
     <ClCompile Include="..\emucore\KidVid.cxx" />

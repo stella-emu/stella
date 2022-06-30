@@ -15,39 +15,39 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "Booster.hxx"
+#include "Joy2BPlus.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-BoosterGrip::BoosterGrip(Jack jack, const Event& event, const System& system)
-  : Joystick(jack, event, system, Controller::Type::BoosterGrip)
+Joy2BPlus::Joy2BPlus(Jack jack, const Event& event, const System& system)
+  : Joystick(jack, event, system, Controller::Type::Joy2BPlus)
 {
   if(myJack == Jack::Left)
   {
-    myBoosterEvent = Event::LeftJoystickFire5;
-    myTriggerEvent = Event::LeftJoystickFire9;
+    myButtonCEvent = Event::LeftJoystickFire5;
+    myButton3Event = Event::LeftJoystickFire9;
   }
   else
   {
-    myBoosterEvent = Event::RightJoystickFire5;
-    myTriggerEvent = Event::RightJoystickFire9;
+    myButtonCEvent = Event::RightJoystickFire5;
+    myButton3Event = Event::RightJoystickFire9;
   }
 
-  setPin(AnalogPin::Five, AnalogReadout::disconnect());
-  setPin(AnalogPin::Nine, AnalogReadout::disconnect());
+  setPin(AnalogPin::Five, AnalogReadout::connectToVcc());
+  setPin(AnalogPin::Nine, AnalogReadout::connectToVcc());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void BoosterGrip::updateButtons()
+void Joy2BPlus::updateButtons()
 {
   bool firePressed = myEvent.get(myFireEvent) != 0;
-  // The CBS Booster-grip has two more buttons on it.  These buttons are
+  // The Joy 2B+ has two more buttons on it.  These buttons are
   // connected to the inputs usually used by paddles.
-  const bool triggerPressed = myEvent.get(myTriggerEvent) != 0;
-  bool boosterPressed = myEvent.get(myBoosterEvent) != 0;
+  bool buttonCPressed = myEvent.get(myButtonCEvent) != 0;
+  const bool button3Pressed = myEvent.get(myButton3Event) != 0;
 
-  updateMouseButtons(firePressed, boosterPressed);
+  updateMouseButtons(firePressed, buttonCPressed);
 
   setPin(DigitalPin::Six, !getAutoFireState(firePressed));
-  setPin(AnalogPin::Five, boosterPressed ? AnalogReadout::connectToVcc() : AnalogReadout::disconnect());
-  setPin(AnalogPin::Nine, triggerPressed ? AnalogReadout::connectToVcc() : AnalogReadout::disconnect());
+  setPin(AnalogPin::Five, buttonCPressed ? AnalogReadout::connectToGround() : AnalogReadout::connectToVcc());
+  setPin(AnalogPin::Nine, button3Pressed ? AnalogReadout::connectToGround() : AnalogReadout::connectToVcc());
 }

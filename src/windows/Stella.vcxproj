@@ -827,6 +827,7 @@
     <ClCompile Include="..\debugger\gui\GenesisWidget.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\debugger\gui\Joy2PlusWidget.cxx" />
     <ClCompile Include="..\debugger\gui\JoystickWidget.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClCompile>
@@ -885,6 +886,7 @@
     <ClCompile Include="..\emucore\EmulationWorker.cxx" />
     <ClCompile Include="..\emucore\FBSurface.cxx" />
     <ClCompile Include="..\emucore\GlobalKeyHandler.cxx" />
+    <ClCompile Include="..\emucore\Joy2BPlus.cxx" />
     <ClCompile Include="..\emucore\Lightgun.cxx" />
     <ClCompile Include="..\emucore\MindLink.cxx" />
     <ClCompile Include="..\emucore\OSystemStandalone.cxx" />
@@ -2013,6 +2015,7 @@
     <ClInclude Include="..\debugger\gui\GenesisWidget.hxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="..\debugger\gui\Joy2BPlusWidget.hxx" />
     <ClInclude Include="..\debugger\gui\JoystickWidget.hxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClInclude>
@@ -2087,6 +2090,7 @@
     <ClInclude Include="..\emucore\FBSurface.hxx" />
     <ClInclude Include="..\emucore\FrameBufferConstants.hxx" />
     <ClInclude Include="..\emucore\GlobalKeyHandler.hxx" />
+    <ClInclude Include="..\emucore\Joy2BPlus.hxx" />
     <ClInclude Include="..\emucore\Lightgun.hxx" />
     <ClInclude Include="..\emucore\MindLink.hxx" />
     <ClInclude Include="..\emucore\OSystemStandalone.hxx" />
