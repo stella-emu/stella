@@ -55,6 +55,7 @@ QuadTariDialog::QuadTariDialog(GuiObject* boss, const GUI::Font& font, int max_w
   VarList::push_back(ctrls, "AtariVox", "ATARIVOX");
   VarList::push_back(ctrls, "SaveKey", "SAVEKEY");
   //VarList::push_back(ctrls, "Sega Genesis", "GENESIS");
+  //VarList::push_back(items, "Joy2B+", "JOY_2B+");
   //VarList::push_back(ctrls, "Kid Vid", "KIDVID");
   //VarList::push_back(ctrls, "Light Gun", "LIGHTGUN");
   //VarList::push_back(ctrls, "MindLink", "MINDLINK");

@@ -67,7 +67,8 @@ MODULE_OBJS := \
         src/emucore/FSNode.o \
         src/emucore/Genesis.o \
 	src/emucore/GlobalKeyHandler.o \
-        src/emucore/Joystick.o \
+        src/emucore/Joy2BPlus.o \
+        src/emucore/Joystick.o \	
         src/emucore/Keyboard.o \
         src/emucore/KidVid.o \
         src/emucore/Lightgun.o \

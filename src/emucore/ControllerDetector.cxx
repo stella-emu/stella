@@ -71,8 +71,10 @@ Controller::Type ControllerDetector::autodetectPort(
       type = Controller::Type::AtariMouse;
     else if(isProbablyAmigaMouse(image, size))
       type = Controller::Type::AmigaMouse;
-    else if(usesKeyboard(image, size, port) && !usesJoystickDirections(image, size))
-      type = Controller::Type::Keyboard;
+    else if(usesKeyboard(image, size, port)) // must be detected before Genesis!
+      type = usesJoystickDirections(image, size)
+        ? Controller::Type::Joy2BPlus
+        : Controller::Type::Keyboard;
     else if(usesGenesisButton(image, size, port))
       type = Controller::Type::Genesis;
     else if(isProbablyLightGun(image, size, port))

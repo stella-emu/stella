@@ -294,6 +294,7 @@ void GameInfoDialog::addControllersTab()
   VarList::push_back(items, "AtariVox", "ATARIVOX");
   VarList::push_back(items, "SaveKey", "SAVEKEY");
   VarList::push_back(items, "Sega Genesis", "GENESIS");
+  VarList::push_back(items, "Joy2B+", "JOY_2B+");
   VarList::push_back(items, "Kid Vid", "KIDVID");
   VarList::push_back(items, "Light Gun", "LIGHTGUN");
   VarList::push_back(items, "MindLink", "MINDLINK");

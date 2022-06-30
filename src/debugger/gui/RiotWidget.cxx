@@ -40,6 +40,7 @@
 #include "AtariMouseWidget.hxx"
 #include "TrakBallWidget.hxx"
 #include "QuadTariWidget.hxx"
+#include "Joy2BPlusWidget.hxx"
 
 #include "RiotWidget.hxx"
 
@@ -537,6 +538,8 @@ ControllerWidget* RiotWidget::addControlWidget(GuiObject* boss, const GUI::Font&
       return new DrivingWidget(boss, font, x, y, controller);
     case Controller::Type::Genesis:
       return new GenesisWidget(boss, font, x, y, controller);
+    case Controller::Type::Joy2BPlus:
+      return new Joy2BPlusWidget(boss, font, x, y, controller);
     case Controller::Type::Joystick:
       return new JoystickWidget(boss, font, x, y, controller);
     case Controller::Type::Keyboard:
@@ -544,14 +547,14 @@ ControllerWidget* RiotWidget::addControlWidget(GuiObject* boss, const GUI::Font&
 //    case Controller::Type::KidVid:      // TODO - implement this
 //    case Controller::Type::MindLink:    // TODO - implement this
 //    case Controller::Type::Lightgun:    // TODO - implement this
+    case Controller::Type::QuadTari:
+      return new QuadTariWidget(boss, font, x, y, controller);
     case Controller::Type::Paddles:
       return new PaddleWidget(boss, font, x, y, controller);
     case Controller::Type::SaveKey:
       return new SaveKeyWidget(boss, font, x, y, controller);
     case Controller::Type::TrakBall:
       return new TrakBallWidget(boss, font, x, y, controller);
-    case Controller::Type::QuadTari:
-      return new QuadTariWidget(boss, font, x, y, controller);
     default:
       return new NullControlWidget(boss, font, x, y, controller);
   }
