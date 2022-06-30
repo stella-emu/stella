@@ -1143,7 +1143,7 @@
     <ClCompile Include="..\emucore\Joy2BPlus.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
-    <ClCompile Include="..\debugger\gui\Joy2PlusWidget.cxx">
+    <ClCompile Include="..\debugger\gui\Joy2BPlusWidget.cxx">
       <Filter>Source Files\debugger</Filter>
     </ClCompile>
   </ItemGroup>
