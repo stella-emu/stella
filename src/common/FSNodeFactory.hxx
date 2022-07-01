@@ -23,9 +23,7 @@ class AbstractFSNode;
 #if defined(ZIP_SUPPORT)
   #include "FSNodeZIP.hxx"
 #endif
-#if defined(BSPF_WINDOWS)
-  #include "FSNodeWINDOWS.hxx"
-#elif defined(__LIB_RETRO__)
+#if defined(__LIB_RETRO__)
   #include "FSNodeLIBRETRO.hxx"
 #else
   #include "FSNodeREGULAR.hxx"
@@ -47,9 +45,7 @@ class FSNodeFactory
       switch(type)
       {
         case Type::REGULAR:
-        #if defined(BSPF_WINDOWS)
-          return make_unique<FSNodeWINDOWS>(path);
-        #elif defined(__LIB_RETRO__)
+        #if defined(__LIB_RETRO__)
           return make_unique<FSNodeLIBRETRO>(path);
         #else
           return make_unique<FSNodeREGULAR>(path);

@@ -620,6 +620,7 @@
     <ClCompile Include="..\common\FBBackendSDL2.cxx" />
     <ClCompile Include="..\common\FBSurfaceSDL2.cxx" />
     <ClCompile Include="..\common\FpsMeter.cxx" />
+    <ClCompile Include="..\common\FSNodeREGULAR.cxx" />
     <ClCompile Include="..\common\FSNodeZIP.cxx" />
     <ClCompile Include="..\common\HighScoresManager.cxx" />
     <ClCompile Include="..\common\JoyMap.cxx" />
@@ -947,7 +948,6 @@
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release-Sanitize|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">CompileAsC</CompileAs>
     </ClCompile>
-    <ClCompile Include="FSNodeWINDOWS.cxx" />
     <ClCompile Include="OSystemWINDOWS.cxx" />
     <ClCompile Include="..\common\PNGLibrary.cxx" />
     <ClCompile Include="SerialPortWINDOWS.cxx" />
@@ -1792,6 +1792,7 @@
     <ClInclude Include="..\common\FBSurfaceSDL2.hxx" />
     <ClInclude Include="..\common\FpsMeter.hxx" />
     <ClInclude Include="..\common\FSNodeFactory.hxx" />
+    <ClInclude Include="..\common\FSNodeREGULAR.hxx" />
     <ClInclude Include="..\common\FSNodeZIP.hxx" />
     <ClInclude Include="..\common\HighScoresManager.hxx" />
     <ClInclude Include="..\common\JoyMap.hxx" />
@@ -2164,7 +2165,6 @@
     <ClInclude Include="..\sqlite\source\sqlite3.h" />
     <ClInclude Include="..\sqlite\sqlite3.h" />
     <ClInclude Include="..\sqlite\sqlite_options.h" />
-    <ClInclude Include="FSNodeWINDOWS.hxx" />
     <ClInclude Include="HomeFinder.hxx" />
     <ClInclude Include="OSystemWINDOWS.hxx" />
     <ClInclude Include="..\common\PNGLibrary.hxx" />

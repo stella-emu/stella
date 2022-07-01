@@ -25,6 +25,11 @@
 #include "FSNodeFactory.hxx"
 #include "FSNodeZIP.hxx"
 
+#if defined(BSPF_WINDOWS)
+  #include "HomeFinder.hxx"
+  static HomeFinder ourHomeFinder;
+#endif
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FSNodeZIP::FSNodeZIP(const string& p)
 {
@@ -43,7 +48,7 @@ FSNodeZIP::FSNodeZIP(const string& p)
     if (home != nullptr)
       _zipFile.replace(0, 1, home);
 #elif defined(BSPF_WINDOWS)
-    _zipFile.replace(0, 1, myHomeFinder.getHomePath());
+    _zipFile.replace(0, 1, ourHomeFinder.getHomePath());
 #endif
   }
 

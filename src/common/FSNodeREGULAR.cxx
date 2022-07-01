@@ -15,10 +15,18 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#if defined(RETRON77)
-  #define ROOT_DIR "/mnt/games/"
+#if defined(BSPF_UNIX) || defined(BSPF_MACOS)
+  #if defined(RETRON77)
+    #define ROOT_DIR "/mnt/games/"
+  #else
+    #define ROOT_DIR "/"
+  #endif
+#elif defined(BSPF_WINDOWS)
+  #define ROOT_DIR "C:\\"
+  #include "HomeFinder.hxx"
+  static HomeFinder ourHomeFinder;
 #else
-  #define ROOT_DIR "/"
+  #define ROOT_DIR ""
 #endif
 
 #include "FSNodeREGULAR.hxx"
@@ -38,7 +46,7 @@ FSNodeREGULAR::FSNodeREGULAR(const string& path, bool verify)
   if (_path[0] == '~')
   {
   #if defined(BSPF_WINDOWS)
-
+    const char* home = ourHomeFinder.getHomePath().c_str();
   #else
     const char* home = std::getenv("HOME");
   #endif
@@ -93,7 +101,7 @@ string FSNodeREGULAR::getShortPath() const
 {
   // If the path starts with the home directory, replace it with '~'
 #if defined(BSPF_WINDOWS)
-
+  const char* env_home = ourHomeFinder.getHomePath().c_str();
 #else
   const char* env_home = std::getenv("HOME");
 #endif
@@ -279,6 +287,6 @@ AbstractFSNodePtr FSNodeREGULAR::getParent() const
 
   const char* start = _path.c_str();
   const char* end = lastPathComponent(_path);
-
+cerr << " => path: " << _path << ", new: " << string(start, size_t(end - start)) << endl;
   return make_unique<FSNodeREGULAR>(string(start, size_t(end - start)));
 }
