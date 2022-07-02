@@ -30,7 +30,8 @@ class NavigationWidget : public Widget
 {
   public:
     enum {
-      kFolderClicked = 'flcl'
+      kFolderClicked = 'flcl',
+      kReloadCmd     = 'relc'
     };
 
   private:
@@ -110,6 +111,7 @@ class NavigationWidget : public Widget
     ButtonWidget*     myPrevButton{nullptr};
     ButtonWidget*     myNextButton{nullptr};
     ButtonWidget*     myUpButton{nullptr};
+    ButtonWidget*     myReloadButton{nullptr};
     EditTextWidget*   myDir{nullptr};
     PathWidget*       myPath{nullptr};
 

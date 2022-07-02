@@ -44,6 +44,7 @@ NavigationWidget::NavigationWidget(GuiObject* boss, const GUI::Font& font,
     const GUI::Icon& prevIcon = smallIcon ? GUI::icon_prev_small : GUI::icon_prev_large;
     const GUI::Icon& nextIcon = smallIcon ? GUI::icon_next_small : GUI::icon_next_large;
     const GUI::Icon& upIcon = smallIcon ? GUI::icon_up_small : GUI::icon_up_large;
+    const GUI::Icon& reloadIcon = smallIcon ? GUI::icon_reload_small : GUI::icon_reload_large;
     const int iconWidth = homeIcon.width();
     const int buttonWidth = iconWidth + ((fontWidth + 1) & ~0b1) + 1; // round up to next odd
     const int buttonHeight = h;
@@ -71,6 +72,12 @@ NavigationWidget::NavigationWidget(GuiObject* boss, const GUI::Font& font,
     myUpButton->setToolTip("Go Up.", Event::UIPrevDir, EventMode::kMenuMode);
     boss->addFocusWidget(myUpButton);
     xpos = myUpButton->getRight() + BTN_GAP;
+
+    myReloadButton = new ButtonWidget(boss, _font, xpos, ypos,
+      buttonWidth, buttonHeight, reloadIcon, kReloadCmd);
+    myReloadButton->setToolTip("Reload listing. (Ctrl+R)");
+    boss->addFocusWidget(myReloadButton);
+    xpos = myReloadButton->getRight() + BTN_GAP;
 
     myPath = new PathWidget(boss, this, _font, xpos, ypos, _w + _x - xpos, h);
   }
