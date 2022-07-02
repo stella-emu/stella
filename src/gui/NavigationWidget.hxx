@@ -71,14 +71,7 @@ class NavigationWidget : public Widget
         const string& getPath(int idx) const;
 
       private:
-        struct PathType
-        {
-          string path;
-          StaticTextWidget* widget{nullptr};
-
-          explicit PathType(const string& _path, StaticTextWidget* _widget)
-            : path{_path}, widget{_widget} {}
-        };
+        string myLastPath;
         std::vector<FolderLinkWidget*> myFolderList;
         CommandReceiver* myTarget{nullptr};
 
