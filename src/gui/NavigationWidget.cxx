@@ -154,6 +154,11 @@ NavigationWidget::PathWidget::PathWidget(GuiObject* boss, CommandReceiver* targe
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void NavigationWidget::PathWidget::setPath(const string& path)
 {
+  if(path == myLastPath)
+    return;
+
+  myLastPath = path;
+
   const int fontWidth = _font.getMaxCharWidth();
   int x = _x + fontWidth, w = _w;
   FSNode node(path);
