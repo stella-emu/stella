@@ -126,6 +126,18 @@ bool FSNodeREGULAR::hasParent() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+AbstractFSNodePtr FSNodeREGULAR::getParent() const
+{
+  if (_path == ROOT_DIR)
+    return nullptr;
+
+  const char* start = _path.c_str();
+  const char* end = lastPathComponent(_path);
+cerr << " => path: " << _path << ", new: " << string(start, size_t(end - start)) << endl;
+  return make_unique<FSNodeREGULAR>(string(start, size_t(end - start)));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FSNodeREGULAR::getChildren(AbstractFSList& myList, ListMode mode) const
 {
   std::error_code ec;
@@ -277,16 +289,4 @@ bool FSNodeREGULAR::rename(const string& newfile)
     return true;
   }
   return false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AbstractFSNodePtr FSNodeREGULAR::getParent() const
-{
-  if (_path == ROOT_DIR)
-    return nullptr;
-
-  const char* start = _path.c_str();
-  const char* end = lastPathComponent(_path);
-cerr << " => path: " << _path << ", new: " << string(start, size_t(end - start)) << endl;
-  return make_unique<FSNodeREGULAR>(string(start, size_t(end - start)));
 }

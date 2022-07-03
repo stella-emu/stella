@@ -49,7 +49,6 @@ class FSNodeREGULAR : public AbstractFSNode
     void setName(const string& name) override { _displayName = name; }
     const string& getPath() const override { return _path; }
     string getShortPath() const override;
-    bool hasParent() const override;
     bool isDirectory() const override { return _isDirectory; }
     bool isFile() const override      { return _isFile;      }
     bool isReadable() const override  { return _isReadable;  }
@@ -63,8 +62,9 @@ class FSNodeREGULAR : public AbstractFSNode
     size_t write(const ByteBuffer& buffer, size_t size) const override;
     size_t write(const stringstream& buffer) const override;
 
-    bool getChildren(AbstractFSList& list, ListMode mode) const override;
+    bool hasParent() const override;
     AbstractFSNodePtr getParent() const override;
+    bool getChildren(AbstractFSList& list, ListMode mode) const override;
 
   protected:
     fs::path _fspath;

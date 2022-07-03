@@ -991,7 +991,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
     case EditableWidget::kChangedCmd:
     case EditableWidget::kAcceptCmd:
     {
-      bool subDirs = instance().settings().getBool("launchersubdirs");
+      const bool subDirs = instance().settings().getBool("launchersubdirs");
 
       myList->setIncludeSubDirs(subDirs);
       if(subDirs && cmd == EditableWidget::kChangedCmd)
