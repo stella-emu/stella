@@ -30,7 +30,7 @@
 class OSystemWINDOWS : public OSystemStandalone
 {
   public:
-    OSystemWINDOWS() = default;
+    OSystemWINDOWS();
     ~OSystemWINDOWS() override = default;
 
     /**

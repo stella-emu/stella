@@ -284,17 +284,8 @@ void FileListWidget::reload()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const FSNode& FileListWidget::selected()
 {
-  if(_fileList.size() > 0)
-  {
-    _selected = BSPF::clamp(_selected, 0U, static_cast<uInt32>(_fileList.size()-1));
-    return _fileList[_selected];
-  }
-  else
-  {
-    // This should never happen, but we'll error-check out-of-bounds
-    // array access anyway
-    return ourDefaultNode;
-  }
+  _selected = BSPF::clamp(_selected, 0U, static_cast<uInt32>(_fileList.size()-1));
+  return _fileList[_selected];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -727,6 +718,3 @@ string FileListWidget::getToolTip(const Common::Point& pos) const
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt64 FileListWidget::_QUICK_SELECT_DELAY = 300;
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FSNode FileListWidget::ourDefaultNode = FSNode("~");

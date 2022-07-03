@@ -22,6 +22,15 @@
 #include "OSystemWINDOWS.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+OSystemWINDOWS::OSystemWINDOWS()
+{
+  // Make sure 'HOME' environment variable exists; other parts of the
+  // codebase depend on it
+  HomeFinder homefinder;
+  _putenv_s("HOME", homefinder.getHomePath().c_str());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystemWINDOWS::getBaseDirectories(string& basedir, string& homedir,
                                         bool useappdir, const string& usedir)
 {

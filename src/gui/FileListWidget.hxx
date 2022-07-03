@@ -187,8 +187,6 @@ class FileListWidget : public StringListWidget
 
     unique_ptr<ProgressDialog> myProgressDialog;
 
-    static FSNode ourDefaultNode;
-
   private:
     // Following constructors and assignment operators not supported
     FileListWidget() = delete;

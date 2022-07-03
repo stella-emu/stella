@@ -23,8 +23,6 @@
   #endif
 #elif defined(BSPF_WINDOWS)
   #define ROOT_DIR "C:\\"
-  #include "HomeFinder.hxx"
-  static HomeFinder ourHomeFinder;
 #else
   #define ROOT_DIR ""
 #endif
@@ -45,11 +43,7 @@ FSNodeREGULAR::FSNodeREGULAR(const string& path, bool verify)
   // Expand '~' to the HOME environment variable
   if (_path[0] == '~')
   {
-  #if defined(BSPF_WINDOWS)
-    const char* home = ourHomeFinder.getHomePath().c_str();
-  #else
     const char* home = std::getenv("HOME");
-  #endif
     if (home != nullptr)
       _path.replace(0, 1, home);
   }
@@ -100,11 +94,7 @@ void FSNodeREGULAR::setFlags()
 string FSNodeREGULAR::getShortPath() const
 {
   // If the path starts with the home directory, replace it with '~'
-#if defined(BSPF_WINDOWS)
-  const char* env_home = ourHomeFinder.getHomePath().c_str();
-#else
   const char* env_home = std::getenv("HOME");
-#endif
   const string& home = env_home != nullptr ? env_home : EmptyString;
 
   if (home != EmptyString && BSPF::startsWithIgnoreCase(_path, home))
