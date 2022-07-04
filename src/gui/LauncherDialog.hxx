@@ -204,6 +204,7 @@ class LauncherDialog : public Dialog, CommandSender
     ButtonWidget*     myHelpButton{nullptr};
 
     NavigationWidget* myNavigationBar{nullptr};
+    ButtonWidget*     myReloadButton{nullptr};
 
     LauncherFileListWidget* myList{nullptr};
 
@@ -233,6 +234,7 @@ class LauncherDialog : public Dialog, CommandSender
       kSubDirsCmd    = 'lred',
       kOptionsCmd    = 'OPTI',
       kQuitCmd       = 'QUIT',
+      kReloadCmd     = 'relc',
       kRmAllFav      = 'rmaf',
       kRmAllPop      = 'rmap',
       kRmAllRec      = 'rmar'

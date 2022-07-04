@@ -78,10 +78,10 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   // if minimalUI, show title within dialog surface instead of showing the filtering control
   if(myUseMinimalUI) {
     addTitleWidget(ypos);
-    addPathWidgets(ypos); //-- path widget will have file count
+    addPathWidgets(ypos);       //-- path widget line will have file count
   } else {
-    addPathWidgets(ypos); //-- path widget will have reload button (via navigation buttons)
-    addFilteringWidgets(ypos);
+    addPathWidgets(ypos);
+    addFilteringWidgets(ypos);  //-- filtering widget line has file count
   }
   addRomWidgets(ypos);
   if(!myUseMinimalUI && bottomButtons)
@@ -130,30 +130,37 @@ void LauncherDialog::addFilteringWidgets(int& ypos)
             buttonHeight = Dialog::buttonHeight(),
             btnGap       = fontWidth / 4,
             btnYOfs      = (buttonHeight - lineHeight) / 2 + 1;
-  string lblFound = "12345 items found";
-  int lwFound = _font.getStringWidth(lblFound);
   WidgetArray wid;
 
   if(_w >= 640)
   {
     const bool smallIcon = lineHeight < 26;
 
-    const GUI::Icon& helpIcon = smallIcon ? GUI::icon_help_small : GUI::icon_help_large;
-    const GUI::Icon& dummyIcon = helpIcon;  //-- used for sizing all the other icons
-
-    const int iconWidth = helpIcon.width();
+    // Figure out general icon button size
+    const GUI::Icon& reloadIcon = smallIcon ? GUI::icon_reload_small : GUI::icon_reload_large;
+    const GUI::Icon& dummyIcon = reloadIcon;  //-- used for sizing all the other icons
+    const int iconWidth = dummyIcon.width();
     const int iconGap = ((fontWidth + 1) & ~0b1) + 1; // round up to next even
-    const int buttonWidth = iconWidth + iconGap;
+    const int iconButtonWidth = iconWidth + iconGap;
 
     int xpos = HBORDER;
 
-    const int cwSubDirs = buttonWidth;
-    const int cwAllFiles = buttonWidth;
-    const int cwHelp = buttonWidth;
+    // Setup some constants for Settings button - icon, label, and width
+    const GUI::Icon& settingsIcon = smallIcon ? GUI::icon_settings_small : GUI::icon_settings_large;
+    const string lblSettings = "Options" + ELLIPSIS;
+    const int lwSettings = _font.getStringWidth(lblSettings);
+    const int bwSettings = iconButtonWidth + lwSettings + btnGap * 2 + 1;   // Button width for Options button
+
+    // Setup some variables for handling the Filter label + field
     const string& lblFilter = "Filter";
     int lwFilter = _font.getStringWidth(lblFilter);
+
+    string lblFound = "12345 items found";
+    int lwFound = _font.getStringWidth(lblFound);
     int fwFilter = EditTextWidget::calcWidth(_font, "123456"); // at least 6 chars
-    int wTotal = xpos + cwSubDirs + cwAllFiles + lwFilter + fwFilter + lwFound + cwHelp
+
+    // Calculate how much space everything will take
+    int wTotal = xpos + (iconButtonWidth * 3) + lwFilter + fwFilter + lwFound + bwSettings
       + LBL_GAP * 5 + btnGap * 2 + HBORDER;
 
     // make sure there is space for at least 6 characters in the filter field
@@ -173,6 +180,13 @@ void LauncherDialog::addFilteringWidgets(int& ypos)
 
     fwFilter += _w - wTotal;
 
+    // Show the reload button
+    myReloadButton = new ButtonWidget(this, _font, xpos, ypos - btnYOfs,
+                                      iconButtonWidth, buttonHeight, reloadIcon, kReloadCmd);
+    myReloadButton->setToolTip("Reload listing. (Ctrl+R)");
+    wid.push_back(myReloadButton);
+    xpos = myReloadButton->getRight() + LBL_GAP;
+
     // Show the "Filter" label
     if(lwFilter)
     {
@@ -185,33 +199,33 @@ void LauncherDialog::addFilteringWidgets(int& ypos)
     myPattern->setToolTip("Enter filter text to reduce file list.\n"
       "Use '*' and '?' as wildcards.");
     wid.push_back(myPattern);
+    xpos = myPattern->getRight() + btnGap;
 
     // Show the button for all files
-    xpos = myPattern->getRight() + btnGap;
     myOnlyRomsButton = new ButtonWidget(this, _font, xpos, ypos - btnYOfs,
-      buttonWidth, buttonHeight, dummyIcon, kAllfilesCmd);
+                                        iconButtonWidth, buttonHeight, dummyIcon, kAllfilesCmd);
     myOnlyRomsButton->setToolTip("Toggle file type filter (Ctrl+A)");
     wid.push_back(myOnlyRomsButton);
+    xpos = myOnlyRomsButton->getRight() + btnGap;
 
     // Show the subdirectories button
-    xpos = myOnlyRomsButton->getRight() + btnGap;
     mySubDirsButton = new ButtonWidget(this, _font, xpos, ypos - btnYOfs,
-      buttonWidth, buttonHeight, dummyIcon, kSubDirsCmd);
+                                       iconButtonWidth, buttonHeight, dummyIcon, kSubDirsCmd);
     mySubDirsButton->setToolTip("Toggle subdirectories (Ctrl+D)");
     wid.push_back(mySubDirsButton);
-
-    // Show the help button
-    xpos = _w - HBORDER - buttonWidth;
-    myHelpButton = new ButtonWidget(this, _font, xpos, ypos - btnYOfs,
-      buttonWidth, buttonHeight, helpIcon, kHelpCmd);
-    const string key = instance().eventHandler().getMappingDesc(Event::UIHelp, EventMode::kMenuMode);
-    myHelpButton->setToolTip("Click for help. (" + key + ")");
-    wid.push_back(myHelpButton);
+    xpos = mySubDirsButton->getRight() + btnGap + LBL_GAP;
 
     // Show the files counter
-    xpos = myHelpButton->getLeft() - fontWidth - lwFound; //  _w - HBORDER - lwFound;
     myRomCount = new StaticTextWidget(this, _font, xpos, ypos,
-      lwFound, fontHeight, "", TextAlign::Right);
+                                      lwFound, fontHeight, "", TextAlign::Right);
+
+    // Show the Settings / Options button (positioned from the right)
+    xpos = _w - HBORDER - bwSettings;
+    mySettingsButton = new ButtonWidget(this, _font, xpos, ypos - btnYOfs,
+                                        iconWidth, buttonHeight, settingsIcon,
+                                        iconGap, lblSettings, kOptionsCmd);
+    mySettingsButton-> setToolTip("(Ctrl+O)");
+    wid.push_back(mySettingsButton);
 
     ypos += lineHeight + VGAP * 2;
 
@@ -233,15 +247,13 @@ void LauncherDialog::addPathWidgets(int& ypos)
   const string lblFound = "12345 items";
   const int lwFound = _font.getStringWidth(lblFound);
 
-  const GUI::Icon& settingsIcon = smallIcon ? GUI::icon_settings_small : GUI::icon_settings_large;
-  const string lblSettings = " Options" + ELLIPSIS + " ";
-  const int lwSettings = _font.getStringWidth(lblSettings);
-
-  const int iconWidth = settingsIcon.width();
+  // Setup some constants for Help button
+  const GUI::Icon& helpIcon = smallIcon ? GUI::icon_help_small : GUI::icon_help_large;
+  const int iconWidth = helpIcon.width();
   const int iconGap = ((fontWidth + 1) & ~0b1) + 1; // round up to next even
   const int buttonWidth = iconWidth + iconGap;
   const int buttonHeight = Dialog::buttonHeight(); //  lineHeight + 2;
-  const int wNav = _w - HBORDER * 2 - (myUseMinimalUI ? lwFound + LBL_GAP : lwSettings + buttonWidth + BTN_GAP);
+  const int wNav = _w - HBORDER * 2 - (myUseMinimalUI ? lwFound + LBL_GAP : buttonWidth + BTN_GAP);
   int xpos = HBORDER;
   WidgetArray wid;
 
@@ -256,14 +268,13 @@ void LauncherDialog::addPathWidgets(int& ypos)
       lwFound + LBL_GAP + 1, buttonHeight, "", TextAlign::Right);
     myRomCount->setFlags(FLAG_BORDER);
   } else {
-    // Show Settings icon at far right
-    xpos = _w - HBORDER - (lwSettings + buttonWidth + BTN_GAP * 2);
-    mySettingsButton = new ButtonWidget(this, _font, xpos, ypos,
-                                        iconWidth, buttonHeight, settingsIcon,
-                                        iconGap, lblSettings, kOptionsCmd);
-    mySettingsButton-> setToolTip("(Ctrl+O)");
-    wid.push_back(mySettingsButton);
-    xpos += mySettingsButton->getWidth();
+    // Show Help icon at far right
+    xpos = _w - HBORDER - (buttonWidth + BTN_GAP - 2);
+    myHelpButton = new ButtonWidget(this, _font, xpos, ypos,
+                                    buttonWidth, buttonHeight, helpIcon, kHelpCmd);
+    const string key = instance().eventHandler().getMappingDesc(Event::UIHelp, EventMode::kMenuMode);
+    myHelpButton->setToolTip("Click for help. (" + key + ")");
+    wid.push_back(myHelpButton);
   }
   ypos = myNavigationBar->getBottom() + Dialog::vGap() * 2;
   addToFocusList(wid);
@@ -979,7 +990,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       openSettings();
       break;
 
-    case NavigationWidget::kReloadCmd:
+    case kReloadCmd:
       reload();
       break;
 
