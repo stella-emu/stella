@@ -73,7 +73,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   const bool bottomButtons = instance().settings().getBool("launcherbuttons");
   int ypos = Dialog::vBorder();
 
-  myUseMinimalUI = instance().settings().getBool("minimal_ui");
+  myUseMinimalUI = !instance().settings().getBool("minimal_ui");
 
   // if minimalUI, show title within dialog surface instead of showing the filtering control
   if(myUseMinimalUI) {
@@ -161,7 +161,7 @@ void LauncherDialog::addFilteringWidgets(int& ypos)
 
     // Calculate how much space everything will take
     int wTotal = xpos + (iconButtonWidth * 3) + lwFilter + fwFilter + lwFound + bwSettings
-      + LBL_GAP * 5 + btnGap * 2 + HBORDER;
+      + LBL_GAP * 6 + btnGap * 2 + HBORDER;
 
     // make sure there is space for at least 6 characters in the filter field
     if(_w < wTotal)
@@ -185,7 +185,7 @@ void LauncherDialog::addFilteringWidgets(int& ypos)
                                       iconButtonWidth, buttonHeight, reloadIcon, kReloadCmd);
     myReloadButton->setToolTip("Reload listing. (Ctrl+R)");
     wid.push_back(myReloadButton);
-    xpos = myReloadButton->getRight() + LBL_GAP;
+    xpos = myReloadButton->getRight() + LBL_GAP * 2;
 
     // Show the "Filter" label
     if(lwFilter)
