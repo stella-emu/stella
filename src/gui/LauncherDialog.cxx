@@ -125,7 +125,6 @@ void LauncherDialog::addFilteringWidgets(int& ypos)
             fontHeight   = Dialog::fontHeight(),
             fontWidth    = Dialog::fontWidth(),
             HBORDER      = Dialog::hBorder(),
-            VGAP         = Dialog::vGap(),
             LBL_GAP      = Dialog::fontWidth(),
             buttonHeight = Dialog::buttonHeight(),
             btnGap       = fontWidth / 4,
@@ -180,6 +179,7 @@ void LauncherDialog::addFilteringWidgets(int& ypos)
 
     fwFilter += _w - wTotal;
 
+    ypos += btnYOfs;
     // Show the reload button
     myReloadButton = new ButtonWidget(this, _font, xpos, ypos - btnYOfs,
                                       iconButtonWidth, buttonHeight, reloadIcon, kReloadCmd);
@@ -227,8 +227,7 @@ void LauncherDialog::addFilteringWidgets(int& ypos)
     mySettingsButton-> setToolTip("(Ctrl+O)");
     wid.push_back(mySettingsButton);
 
-    ypos += lineHeight + VGAP * 2;
-
+    ypos = mySettingsButton->getBottom() + Dialog::vGap();
   }
   addToFocusList(wid);
 }
@@ -239,10 +238,13 @@ void LauncherDialog::addPathWidgets(int& ypos)
   // Add some buttons and textfield to show current directory
   const int
     lineHeight   = Dialog::lineHeight(),
+    fontHeight   = Dialog::fontHeight(),
     fontWidth    = Dialog::fontWidth(),
     HBORDER      = Dialog::hBorder(),
     LBL_GAP      = fontWidth,
-    BTN_GAP      = fontWidth / 4;
+    buttonHeight = Dialog::buttonHeight(),
+    BTN_GAP      = fontWidth / 4,
+    btnYOfs      = (buttonHeight - lineHeight) / 2 + 1;
   const bool smallIcon = lineHeight < 26;
   const string lblFound = "12345 items";
   const int lwFound = _font.getStringWidth(lblFound);
@@ -252,31 +254,35 @@ void LauncherDialog::addPathWidgets(int& ypos)
   const int iconWidth = helpIcon.width();
   const int iconGap = ((fontWidth + 1) & ~0b1) + 1; // round up to next even
   const int buttonWidth = iconWidth + iconGap;
-  const int buttonHeight = Dialog::buttonHeight(); //  lineHeight + 2;
   const int wNav = _w - HBORDER * 2 - (myUseMinimalUI ? lwFound + LBL_GAP : buttonWidth + BTN_GAP);
   int xpos = HBORDER;
   WidgetArray wid;
 
-  myNavigationBar = new NavigationWidget(this, _font, xpos, ypos, wNav, buttonHeight);
+  myNavigationBar = new NavigationWidget(this, _font, xpos, ypos - btnYOfs, wNav, buttonHeight);
 
   if(myUseMinimalUI)
   {
     // Show the files counter
     myShortCount = true;
     xpos = _w - HBORDER - lwFound - LBL_GAP / 2;
-    myRomCount = new StaticTextWidget(this, _font, myNavigationBar->getRight() - 1, ypos + 2,
-      lwFound + LBL_GAP + 1, buttonHeight, "", TextAlign::Right);
-    myRomCount->setFlags(FLAG_BORDER);
+    myRomCount = new StaticTextWidget(this, _font, xpos, ypos,
+      lwFound, fontHeight, "", TextAlign::Right);
+
+    EditTextWidget* e = new EditTextWidget(this, _font, myNavigationBar->getRight() - 1, ypos - btnYOfs,
+      lwFound + LBL_GAP + 1, buttonHeight - 2, "");
+    e->setEditable(false);
+    e->setEnabled(false);
   } else {
     // Show Help icon at far right
     xpos = _w - HBORDER - (buttonWidth + BTN_GAP - 2);
-    myHelpButton = new ButtonWidget(this, _font, xpos, ypos,
+    myHelpButton = new ButtonWidget(this, _font, xpos, ypos - btnYOfs,
                                     buttonWidth, buttonHeight, helpIcon, kHelpCmd);
     const string key = instance().eventHandler().getMappingDesc(Event::UIHelp, EventMode::kMenuMode);
     myHelpButton->setToolTip("Click for help. (" + key + ")");
     wid.push_back(myHelpButton);
   }
-  ypos = myNavigationBar->getBottom() + Dialog::vGap() * 2;
+  ypos += lineHeight + Dialog::vGap() * 2;
+
   addToFocusList(wid);
 }
 
