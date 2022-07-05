@@ -122,7 +122,8 @@ class LauncherDialog : public Dialog, CommandSender
     void loadConfig() override;
     void saveConfig() override;
     void updateUI();
-    void addOptionWidgets(int& ypos);
+    void addTitleWidget(int& ypos);
+    void addFilteringWidgets(int& ypos);
     void addPathWidgets(int& ypos);
     void addRomWidgets(int ypos);
     void addButtonWidgets(int& ypos);
