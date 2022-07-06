@@ -107,6 +107,7 @@ SOURCES_CXX := \
 	$(CORE_DIR)/emucore/FSNode.cxx \
 	$(CORE_DIR)/emucore/Genesis.cxx \
 	$(CORE_DIR)/emucore/GlobalKeyHandler.cxx \
+	$(CORE_DIR)/emucore/Joy2BPlus.cxx \
 	$(CORE_DIR)/emucore/Joystick.cxx \
 	$(CORE_DIR)/emucore/Keyboard.cxx \
 	$(CORE_DIR)/emucore/KidVid.cxx \

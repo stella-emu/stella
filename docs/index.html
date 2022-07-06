@@ -273,10 +273,11 @@
       Atari 2600 FPGA project, including cycle-exact audio, analog interference
       from mixing of audio channels, as well as stereo sound support; dynamic
       sound resampling is also included</li>
-    <li>Emulates the Atari 2600 Joystick, Paddle, Driving, CBS Booster Grip, Sega Genesis, QuadTari controllers using your computer's keyboard,
-      joysticks or mouse</li>
-    <li>Emulates CX22/CX80 style Trak-Balls, Amiga/Atari mouse, MindLink controller and the Light Gun using your
-      computer's mouse</li>
+    <li>Emulates the Atari 2600 Joystick, Paddle, Driving, CBS Booster Grip,
+      Sega Genesis, <a href="https://github.com/ascrnet/Joy2Bplus">Joy 2B+</a>,
+      QuadTari controllers using your computer's keyboard, joysticks or mouse</li>
+    <li>Emulates CX22/CX80 style Trak-Balls, Amiga/Atari mouse, MindLink controller
+      and the Light Gun using your computer's mouse</li>
     <li>Emulates the Atari 2600 Keyboard controllers using your computer's keyboard</li>
     <li>Emulates <a href="https://en.wikipedia.org/wiki/CompuMate">Spectravideo CompuMate</a> system using your computer's keyboard,
       including mapping of CompuMate 'Backspace', 'Space' and 'Enter' functionality to
@@ -797,101 +798,57 @@
   </table>
 
   </br>
-  <p><b>Joystick/Booster Grip Controller (can be remapped)</b></p>
+  <p><b>Joystick, Booster Grip (&#185;), Sega Genesis (&#178;) & Joy 2B+ (&#179;) Controller (can be remapped)</b></p>
 
   <table style="border: hidden">
     <tr>
       <td style="padding: 0px">
         <table>
           <tr>
-            <th colspan=2>Left Joystick</th>
-          </tr>
-
-          <tr>
             <th>Function</th>
-            <th>Key</th>
+            <th>Left Controller Key</th>
+            <th>Right Controller Key</th>
           </tr>
 
           <tr>
-            <td>Joystick Up</td>
+            <td>Up</td>
             <td>Up arrow, Keypad 8</td>
-          </tr>
-
-          <tr>
-            <td>Joystick Down</td>
-            <td>Down arrow, Keypad 2</td>
-          </tr>
-
-          <tr>
-            <td>Joystick Left</td>
-            <td>Left arrow, Keypad 4</td>
-          </tr>
-
-          <tr>
-            <td>Joystick Right</td>
-            <td>Right arrow, Keypad 6</td>
-          </tr>
-
-          <tr>
-            <td>Fire Button</td>
-            <td>Left Control, Space, Keypad 5</td>
-          </tr>
-
-          <tr>
-            <td>Top Booster Button</td>
-            <td>Right Shift, 4, Keypad 9</td>
-          </tr>
-
-          <tr>
-            <td>Handle Grip Trigger</td>
-            <td>Right Control, 5, Keypad 3</td>
-          </tr>
-        </table>
-      </td>
-      <td style="border: hidden"></td>
-      <td style="padding: 0px">
-        <table>
-          <tr>
-            <th colspan=2>Right Joystick</th>
-          </tr>
-
-          <tr>
-            <th>Function</th>
-            <th>Key</th>
-          </tr>
-
-          <tr>
-            <td>Joystick Up</td>
             <td>Y</td>
           </tr>
 
           <tr>
-            <td>Joystick Down</td>
+            <td>Down</td>
+            <td>Down arrow, Keypad 2</td>
             <td>H</td>
           </tr>
 
           <tr>
-            <td>Joystick Left</td>
+            <td>Left</td>
+            <td>Left arrow, Keypad 4</td>
             <td>G</td>
           </tr>
 
           <tr>
-            <td>Joystick Right</td>
+            <td>Right</td>
+            <td>Right arrow, Keypad 6</td>
             <td>J</td>
           </tr>
 
           <tr>
-            <td>Fire Button</td>
+            <td>Fire, Button 'B'</td>
+            <td>Left Control, Space, Keypad 5</td>
             <td>F</td>
           </tr>
 
           <tr>
-            <td>Top Booster Button</td>
+            <td>Top Booster Button &#185;, Button 'C' &#178; &#179;</td>
+            <td>Right Shift, 4, Keypad 9</td>
             <td>6</td>
           </tr>
 
           <tr>
-            <td>Handle Grip Trigger</td>
+            <td>Handle Grip Trigger &#185;, Button '3' &#179;</td>
+            <td>Right Control, 5, Keypad 3</td>
             <td>7</td>
           </tr>
         </table>
@@ -900,92 +857,52 @@
   </table>
 
   </br>
-  <p><b>Sega Genesis Controller (cannot be remapped, always associated with joystick and Booster Grip controllers)</b></p>
+  <p><b>Paddle Controller (digital emulation) (can be remapped)</b></p>
 
   <table style="border: hidden">
     <tr>
       <td style="padding: 0px">
         <table>
           <tr>
-            <th colspan=2>Left Pad</th>
-          </tr>
-
-          <tr>
             <th>Function</th>
-            <th>Key</th>
+            <th>Left Paddles Key</th>
+            <th>Right Paddles Key</th>
           </tr>
 
           <tr>
-            <td>Pad Up</td>
-            <td>Same as Left Joystick 'Up'</td>
+            <td>Paddle A Turn Left</td>
+            <td>Left arrow</td>
+            <td>G</td>
           </tr>
 
           <tr>
-            <td>Pad Down</td>
-            <td>Same as Left Joystick 'Down'</td>
+            <td>Paddle A Turn Right</td>
+            <td>Right arrow</td>
+            <td>J</td>
           </tr>
 
           <tr>
-            <td>Pad Left</td>
-            <td>Same as Left Joystick 'Left'</td>
+            <td>Paddle A Fire</td>
+            <td>Left Control, Space, Keypad 5</td>
+            <td>F</td>
           </tr>
 
           <tr>
-            <td>Pad Right</td>
-            <td>Same as Left Joystick 'Right'</td>
+            <td>Paddle B Turn Left</td>
+            <td>Up arrow</td>
+            <td>Y</td>
           </tr>
 
           <tr>
-            <td>Button 'B'</td>
-            <td>Same as Left Joystick 'Fire'</td>
+            <td>Paddle B Turn Right</td>
+            <td>Down arrow</td>
+            <td>H</td>
           </tr>
 
           <tr>
-            <td>Button 'C'</td>
-            <td>Same as Left Joystick 'Top Booster Button'</td>
-          </tr>
-        </table>
-      </td>
-      <td style="border: hidden"></td>
-      <td style="padding: 0px">
-        <table>
-          <tr>
-            <th colspan=2>Right Pad</th>
-          </tr>
-
-          <tr>
-            <th>Function</th>
-            <th>Key</th>
-          </tr>
-
-          <tr>
-            <td>Pad Up</td>
-            <td>Same as Right Joystick 'Up'</td>
-          </tr>
-
-          <tr>
-            <td>Pad Down</td>
-            <td>Same as Right Joystick 'Down'</td>
-          </tr>
-
-          <tr>
-            <td>Pad Left</td>
-            <td>Same as Right Joystick 'Left'</td>
-          </tr>
-
-          <tr>
-            <td>Pad Right</td>
-            <td>Same as Right Joystick 'Right'</td>
-          </tr>
-
-          <tr>
-            <td>Button 'B'</td>
-            <td>Same as Right Joystick 'Fire'</td>
-          </tr>
-
-          <tr>
-            <td>Button 'C'</td>
-            <td>Same as Right Joystick 'Top Booster Button'</td>
+            <td>Paddle B Fire</td>
+            <td>Right Control, 4</td>
+            <td>6</td>
           </tr>
         </table>
       </td>
@@ -1000,53 +917,26 @@
       <td style="padding: 0px">
         <table>
           <tr>
-            <th colspan=2>Left Driving</th>
-          </tr>
-
-          <tr>
             <th>Function</th>
-            <th>Key</th>
+            <th>Left Driving Key</th>
+            <th>Right Driving Key</th>
           </tr>
 
           <tr>
-            <td>Counter Clockwise</td>
+            <td>Turn Left</td>
             <td>Left arrow, Keypad 4</td>
+            <td>G</td>
           </tr>
 
           <tr>
-            <td>Clockwise</td>
+            <td>Turn Right</td>
             <td>Right arrow, Keypad 6</td>
-          </tr>
-
-          <tr>
-            <td>Fire Button</td>
-            <td>Left Control, Space, Keypad 5</td>
-          </tr>
-        </table>
-      </td>
-      <td style="border: hidden"></td>
-      <td style="padding: 0px">
-        <table>
-          <tr>
-            <th colspan=2>Right Driving</th>
-          </tr>
-          <tr>
-            <th>Function</th>
-            <th>Key</th>
-          </tr>
-
-          <tr>
-            <td>Counter Clockwise</td>
-            <td>G</td>
-          </tr>
-
-          <tr>
-            <td>Clockwise</td>
             <td>J</td>
           </tr>
 
           <tr>
             <td>Fire Button</td>
+            <td>Left Control, Space, Keypad 5</td>
             <td>F</td>
           </tr>
         </table>
@@ -1055,129 +945,16 @@
   </table>
 
   </br>
-  <p><b>Trackball Controller (uses mouse, left port only)</b></p>
+  <p><b>Trackball & Light Gun Controller (uses mouse, left port only)</b></p>
 
   <table>
     <tr>
-      <th colspan=2>Left Trackball</th>
-    </tr>
-    <tr>
       <th>Function</th>
-      <th>Key</th>
+      <th>Left Trackball Key</th>
     </tr>
     <tr>
-      <td>Fire Button</td>
+      <td>Fire</td>
       <td>Same as Left Joystick 'Fire'</td>
-    </tr>
-  </table>
-
-  </br>
-  <p><b>Light Gun Controller (uses mouse, left port only)</b></p>
-
-  <table>
-    <tr>
-      <th colspan=2>Left Light Gun</th>
-    </tr>
-    <tr>
-      <th>Function</th>
-      <th>Key</th>
-    </tr>
-    <tr>
-      <td>Fire Button</td>
-      <td>Same as Left Joystick 'Fire'</td>
-    </tr>
-  </table>
-
-  </br>
-  <p><b>Paddle Controller digital emulation (can be remapped)</b></p>
-
-  <table style="border: hidden">
-    <tr>
-      <td style="padding: 0px">
-        <table>
-          <tr>
-            <th colspan=2>Left Paddles</th>
-          </tr>
-
-          <tr>
-            <th>Function</th>
-            <th>Key</th>
-          </tr>
-
-          <tr>
-            <td>Paddle A Turn Left</td>
-            <td>Left arrow</td>
-          </tr>
-
-          <tr>
-            <td>Paddle A Turn Right</td>
-            <td>Right arrow</td>
-          </tr>
-
-          <tr>
-            <td>Paddle A Fire</td>
-            <td>Left Control, Space, Keypad 5</td>
-          </tr>
-
-          <tr>
-            <td>Paddle B Turn Left</td>
-            <td>Up arrow</td>
-          </tr>
-
-          <tr>
-            <td>Paddle B Turn Right</td>
-            <td>Down arrow</td>
-          </tr>
-
-          <tr>
-            <td>Paddle B Fire</td>
-            <td>Right Control, 4</td>
-          </tr>
-        </table>
-      </td>
-      <td style="border: hidden"></td>
-      <td style="padding: 0px">
-        <table>
-          <tr>
-            <th colspan=2>Right Paddles</th>
-          </tr>
-
-          <tr>
-            <th>Function</th>
-            <th>Key</th>
-          </tr>
-
-          <tr>
-            <td>Paddle A Turn Left</td>
-            <td>G</td>
-          </tr>
-
-          <tr>
-            <td>Paddle A Turn Right</td>
-            <td>J</td>
-          </tr>
-
-          <tr>
-            <td>Paddle A Fire</td>
-            <td>F</td>
-          </tr>
-
-          <tr>
-            <td>Paddle B Turn Left</td>
-            <td>Y</td>
-          </tr>
-
-          <tr>
-            <td>Paddle B Turn Right</td>
-            <td>H</td>
-          </tr>
-
-          <tr>
-            <td>Paddle B Fire</td>
-            <td>6</td>
-          </tr>
-        </table>
-      </td>
     </tr>
   </table>
 
@@ -1189,144 +966,80 @@
       <td style="padding: 0px">
         <table>
           <tr>
-            <th colspan=2>Left Keyboard</th>
-          </tr>
-
-          <tr>
             <th>Pad Button</th>
-            <th>Key</th>
+            <th>Left Keyboard Key</th>
+            <th>Right Keyboard Key</th>
           </tr>
 
           <tr>
             <td>1</td>
             <td>1</td>
+            <td>8</td>
           </tr>
 
           <tr>
             <td>2</td>
             <td>2</td>
+            <td>9</td>
           </tr>
 
           <tr>
             <td>3</td>
             <td>3</td>
+            <td>0</td>
           </tr>
 
           <tr>
             <td>4</td>
             <td>Q</td>
-          </tr>
-
-          <tr>
-            <td>5</td>
-            <td>W</td>
-          </tr>
-
-          <tr>
-            <td>6</td>
-            <td>E</td>
-          </tr>
-
-          <tr>
-            <td>7</td>
-            <td>A</td>
-          </tr>
-
-          <tr>
-            <td>8</td>
-            <td>S</td>
-          </tr>
-
-          <tr>
-            <td>9</td>
-            <td>D</td>
-          </tr>
-
-          <tr>
-            <td>.</td>
-            <td>Z</td>
-          </tr>
-
-          <tr>
-            <td>0</td>
-            <td>X</td>
-          </tr>
-
-          <tr>
-            <td>#</td>
-            <td>C</td>
-          </tr>
-        </table>
-      </td>
-      <td style="border: hidden"></td>
-      <td style="padding: 0px">
-        <table>
-          <tr>
-            <th colspan=2>Right Keyboard</th>
-          </tr>
-
-          <tr>
-            <th>Pad Button</th>
-            <th>Key</th>
-          </tr>
-
-          <tr>
-            <td>1</td>
-            <td>8</td>
-          </tr>
-
-          <tr>
-            <td>2</td>
-            <td>9</td>
-          </tr>
-
-          <tr>
-            <td>3</td>
-            <td>0</td>
-          </tr>
-
-          <tr>
-            <td>4</td>
             <td>I</td>
           </tr>
 
           <tr>
             <td>5</td>
+            <td>W</td>
             <td>O</td>
           </tr>
 
           <tr>
             <td>6</td>
+            <td>E</td>
             <td>P</td>
           </tr>
 
           <tr>
             <td>7</td>
+            <td>A</td>
             <td>K</td>
           </tr>
 
           <tr>
             <td>8</td>
+            <td>S</td>
             <td>L</td>
           </tr>
 
           <tr>
             <td>9</td>
+            <td>D</td>
             <td>;</td>
           </tr>
 
           <tr>
             <td>.</td>
+            <td>Z</td>
             <td>,</td>
           </tr>
 
           <tr>
             <td>0</td>
+            <td>X</td>
             <td>.</td>
           </tr>
 
           <tr>
             <td>#</td>
+            <td>C</td>
             <td>/</td>
           </tr>
         </table>
@@ -1518,7 +1231,7 @@
   </table>
 
   </br>
-  <p><b>TV effects Keys (can be remapped)</b></p>
+  <p><b>TV Effects Keys (can be remapped)</b></p>
 
   <table BORDER=2 cellpadding=4>
     <tr>
@@ -2192,7 +1905,6 @@
       <td>Shift-Control-Alt + P to enter, Shift-Control-Alt + P/Escape to exit and continue with emulation</td>
       <td>Shift-Control-Cmd + P to enter, Shift-Control-Cmd + P/Escape to exit and continue with emulation</td>
     </tr>
-
   </table>
 
   </br>
@@ -2556,7 +2268,7 @@
     <tr>
       <th> Booster Grip</th>
       <td> &#x2713;</td>
-      <td> &#x2713;</td>
+      <td> &#x2713; (+ extra)</td>
       <td> &#x2713; (+ extra)</td>
       <td> &#x2715;</td>
       <td> &#x2713; (+ extra)</td>
@@ -2568,6 +2280,14 @@
       <td> &#x2713;</td>
       <td> &#x2715;</td>
       <td> &#x2715;</td>
+    </tr>
+    <tr>
+      <th> Joy 2B+</th>
+      <td> &#x2713;</td>
+      <td> &#x2713; (+ extra)</td>
+      <td> &#x2713; (+ extra)</td>
+      <td> &#x2715;</td>
+      <td> &#x2715; (+ extra)</td>
     </tr>
     <tr>
       <th> Keyboard</th>
@@ -5260,6 +4980,7 @@ Ms Pac-Man (Stella extended codes):
         <tr><td><a href="https://atariage.com/store/index.php?l=product_detail&p=1045">AtariVox &#185</a></td><td>A SpeakJet based unlimited-vocabulary speech/sound synthesizer with 32K EEPROM.</td></tr>
         <tr><td>SaveKey</td><td>A 32K EEPROM for saving high scores, etc. (the EEPROM portion of an AtariVox).</td></tr>
         <tr><td>Genesis </td><td>Sega Genesis controller, which can be used similar to a Booster Grip, giving an extra button.</td></tr>
+        <tr><td>Joy2B+ </td><td><a href="https://github.com/ascrnet/Joy2Bplus">Joy 2B+</a> controller, which can be used similar to a Booster Grip, giving two extra buttons.</td></tr>
         <tr><td>CompuMate &#185</td><td>Spectravideo CompuMate (if either left or right is set, CompuMate is used for both).</td></tr>
         <tr><td>Lightgun</td><td>Atari XG-1 compatible Light Gun.</td></tr>
         <tr><td>MindLink &#185</td><td>MindLink controller.</td></tr>

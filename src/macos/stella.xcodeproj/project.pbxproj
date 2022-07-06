@@ -643,6 +643,10 @@
 		DCDFF08220B781B0001227C0 /* DispatchResult.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCDFF08020B781B0001227C0 /* DispatchResult.hxx */; };
 		DCE1FF3E286B5D5A003568AD /* FSNodeREGULAR.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE1FF3C286B5D5A003568AD /* FSNodeREGULAR.hxx */; };
 		DCE1FF3F286B5D5A003568AD /* FSNodeREGULAR.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE1FF3D286B5D5A003568AD /* FSNodeREGULAR.cxx */; };
+		DCE1FF42286DFB76003568AD /* Joy2BPlusWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE1FF40286DFB76003568AD /* Joy2BPlusWidget.cxx */; };
+		DCE1FF43286DFB76003568AD /* Joy2BPlusWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE1FF41286DFB76003568AD /* Joy2BPlusWidget.hxx */; };
+		DCE1FF46286DFB98003568AD /* Joy2BPlus.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE1FF44286DFB98003568AD /* Joy2BPlus.hxx */; };
+		DCE1FF47286DFB98003568AD /* Joy2BPlus.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE1FF45286DFB98003568AD /* Joy2BPlus.cxx */; };
 		DCE395EF16CB0B5F008DB1E5 /* FSNodeFactory.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE395EA16CB0B5F008DB1E5 /* FSNodeFactory.hxx */; };
 		DCE395F016CB0B5F008DB1E5 /* FSNodeZIP.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE395EB16CB0B5F008DB1E5 /* FSNodeZIP.cxx */; };
 		DCE395F116CB0B5F008DB1E5 /* FSNodeZIP.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE395EC16CB0B5F008DB1E5 /* FSNodeZIP.hxx */; };
@@ -1473,6 +1477,10 @@
 		DCDFF08020B781B0001227C0 /* DispatchResult.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = DispatchResult.hxx; sourceTree = "<group>"; };
 		DCE1FF3C286B5D5A003568AD /* FSNodeREGULAR.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FSNodeREGULAR.hxx; sourceTree = "<group>"; };
 		DCE1FF3D286B5D5A003568AD /* FSNodeREGULAR.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FSNodeREGULAR.cxx; sourceTree = "<group>"; };
+		DCE1FF40286DFB76003568AD /* Joy2BPlusWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Joy2BPlusWidget.cxx; sourceTree = "<group>"; };
+		DCE1FF41286DFB76003568AD /* Joy2BPlusWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Joy2BPlusWidget.hxx; sourceTree = "<group>"; };
+		DCE1FF44286DFB98003568AD /* Joy2BPlus.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Joy2BPlus.hxx; sourceTree = "<group>"; };
+		DCE1FF45286DFB98003568AD /* Joy2BPlus.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Joy2BPlus.cxx; sourceTree = "<group>"; };
 		DCE395EA16CB0B5F008DB1E5 /* FSNodeFactory.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FSNodeFactory.hxx; sourceTree = "<group>"; };
 		DCE395EB16CB0B5F008DB1E5 /* FSNodeZIP.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FSNodeZIP.cxx; sourceTree = "<group>"; };
 		DCE395EC16CB0B5F008DB1E5 /* FSNodeZIP.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FSNodeZIP.hxx; sourceTree = "<group>"; };
@@ -1843,6 +1851,8 @@
 				DC9616271F817830008A2206 /* FlashWidget.hxx */,
 				DCCF4ADA14B9433100814FAB /* GenesisWidget.cxx */,
 				DCCF4ADB14B9433100814FAB /* GenesisWidget.hxx */,
+				DCE1FF40286DFB76003568AD /* Joy2BPlusWidget.cxx */,
+				DCE1FF41286DFB76003568AD /* Joy2BPlusWidget.hxx */,
 				DCCF47DC14B60DEE00814FAB /* JoystickWidget.cxx */,
 				DCCF47DD14B60DEE00814FAB /* JoystickWidget.hxx */,
 				DCCF4B0014BA27EB00814FAB /* KeyboardWidget.cxx */,
@@ -2133,6 +2143,8 @@
 				DCD3F7C411340AAF00DBA3AE /* Genesis.hxx */,
 				DC6DC5E5273C2BED00F64413 /* GlobalKeyHandler.cxx */,
 				DC6DC5E6273C2BED00F64413 /* GlobalKeyHandler.hxx */,
+				DCE1FF45286DFB98003568AD /* Joy2BPlus.cxx */,
+				DCE1FF44286DFB98003568AD /* Joy2BPlus.hxx */,
 				2DE2DF420627AE07006BEC99 /* Joystick.cxx */,
 				2DE2DF430627AE07006BEC99 /* Joystick.hxx */,
 				2DE2DF440627AE07006BEC99 /* Keyboard.cxx */,
@@ -2719,6 +2731,7 @@
 				2D91741309BA90380026E9FF /* ScrollBarWidget.hxx in Headers */,
 				2D91741609BA90380026E9FF /* TabWidget.hxx in Headers */,
 				DCB60ACC25430FC600A5C1D2 /* FBBackend.hxx in Headers */,
+				DCE1FF43286DFB76003568AD /* Joy2BPlusWidget.hxx in Headers */,
 				DCB2ECB01F0AECA3009738A6 /* CartDetector.hxx in Headers */,
 				2D91741809BA90380026E9FF /* Widget.hxx in Headers */,
 				2D91741909BA90380026E9FF /* CartUA.hxx in Headers */,
@@ -2727,6 +2740,7 @@
 				DC2ABA7725A0E178007E57D3 /* StellaDb.hxx in Headers */,
 				DCBD31E92299ADB400567357 /* Rect.hxx in Headers */,
 				DCBA539925557E2800087DD7 /* UndoHandler.hxx in Headers */,
+				DCE1FF46286DFB98003568AD /* Joy2BPlus.hxx in Headers */,
 				2D91741A09BA90380026E9FF /* FSNode.hxx in Headers */,
 				DC2ABA5C259BD544007E57D3 /* CompositeKeyValueRepository.hxx in Headers */,
 				DC816CF72572F92A00FBCCDA /* json_lib.hxx in Headers */,
@@ -3153,6 +3167,7 @@
 				DCF8621921C9D43300F95F52 /* StaggeredLogger.cxx in Sources */,
 				E0DCD3AA20A64E96000B614E /* ConvolutionBuffer.cxx in Sources */,
 				DC6DC5E1273C2A5E00F64413 /* OptionsMenu.cxx in Sources */,
+				DCE1FF47286DFB98003568AD /* Joy2BPlus.cxx in Sources */,
 				DC843980247B297A00C6A4FC /* CartTVBoyWidget.cxx in Sources */,
 				2D91747E09BA90380026E9FF /* CartE7.cxx in Sources */,
 				DC9616321F817830008A2206 /* PointingDeviceWidget.cxx in Sources */,
@@ -3377,6 +3392,7 @@
 				DCD6FC8111C281ED005DA767 /* pngwtran.c in Sources */,
 				DCD6FC8211C281ED005DA767 /* pngwutil.c in Sources */,
 				DCD6FC9311C28C6F005DA767 /* PNGLibrary.cxx in Sources */,
+				DCE1FF42286DFB76003568AD /* Joy2BPlusWidget.cxx in Sources */,
 				DC98F35611F5B56200AA520F /* MessageBox.cxx in Sources */,
 				DC9616301F817830008A2206 /* FlashWidget.cxx in Sources */,
 				DCFFE59D12100E1400DFA000 /* ComboDialog.cxx in Sources */,

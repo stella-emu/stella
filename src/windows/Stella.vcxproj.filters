@@ -1139,6 +1139,11 @@
     </ClCompile>
     <ClCompile Include="..\common\FSNodeREGULAR.cxx">
       <Filter>Source Files</Filter>
+    <ClCompile Include="..\emucore\Joy2BPlus.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\Joy2BPlusWidget.cxx">
+      <Filter>Source Files\debugger</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2359,6 +2364,11 @@
     </ClInclude>
     <ClInclude Include="..\common\FSNodeREGULAR.hxx">
       <Filter>Header Files</Filter>
+    <ClInclude Include="..\emucore\Joy2BPlus.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\Joy2BPlusWidget.hxx">
+      <Filter>Header Files\debugger</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

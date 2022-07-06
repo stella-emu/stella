@@ -53,7 +53,7 @@ InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
             VGAP         = Dialog::vGap();
 
   // Set real dimensions
-  setSize(48 * fontWidth + PopUpWidget::dropDownWidth(_font) + HBORDER * 2,
+  setSize(49 * fontWidth + PopUpWidget::dropDownWidth(_font) + HBORDER * 2,
           _th + VGAP * 3 + lineHeight + 13 * (lineHeight + VGAP) + VGAP * 9 + buttonHeight + VBORDER * 3,
           max_w, max_h);
 

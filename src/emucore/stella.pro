@@ -5187,6 +5187,8 @@
 "Cart.Manufacturer" "Alessandro Ciceri"
 "Cart.Name" "MagiCard+ (alex_79) WIP_20150118"
 "Cart.Note" "MagiCard hack"
+"Controller.Left" "KEYBOARD"
+"Controller.Right" "KEYBOARD"
 ""
 
 "Cart.MD5" "39790a2e9030751d7db414e13f1b6960"
@@ -10936,6 +10938,8 @@
 "Cart.Manufacturer" "Alessandro Ciceri"
 "Cart.Name" "MagiCard (TV format conversion) (alex_79) (PAL)"
 "Cart.Note" "MagiCard PAL conversion hack"
+"Controller.Left" "KEYBOARD"
+"Controller.Right" "KEYBOARD"
 ""
 
 "Cart.MD5" "7860716fa5dbc0fffab93fb9a4cb4132"
@@ -11459,6 +11463,8 @@
 "Cart.ModelNo" "CM-001"
 "Cart.Name" "MagiCard (1981) (CommaVid) (4K)"
 "Cart.Note" "Uses the Keyboard Controllers"
+"Controller.Left" "KEYBOARD"
+"Controller.Right" "KEYBOARD"
 ""
 
 "Cart.MD5" "7dbc8fa2e488e3f6b87fbe0f76c5b89f"
@@ -18264,6 +18270,8 @@
 "Cart.ModelNo" "CM-001"
 "Cart.Name" "MagiCard (1981) (CommaVid)"
 "Cart.Note" "Uses the Keyboard Controllers"
+"Controller.Left" "KEYBOARD"
+"Controller.Right" "KEYBOARD"
 ""
 
 "Cart.MD5" "ce17325834bf8b0a0d0d8de08478d436"
@@ -20527,6 +20535,8 @@
 "Cart.Manufacturer" "Alessandro Ciceri"
 "Cart.Name" "MagiCard+ (alex_79) WIP_20150118 (PAL)"
 "Cart.Note" "MagiCard hack"
+"Controller.Left" "KEYBOARD"
+"Controller.Right" "KEYBOARD"
 ""
 
 "Cart.MD5" "e5a6e0bb7d56e2f08b237e15076e5699"

@@ -40,6 +40,7 @@
 #include "TrakBall.hxx"
 #include "Lightgun.hxx"
 #include "QuadTari.hxx"
+#include "Joy2BPlus.hxx"
 #include "M6502.hxx"
 #include "M6532.hxx"
 #include "TIA.hxx"
@@ -1013,6 +1014,10 @@ unique_ptr<Controller> Console::getControllerPort(const Controller::Type type,
 
     case Controller::Type::QuadTari:
       controller = make_unique<QuadTari>(port, myOSystem, *mySystem, myProperties);
+      break;
+
+    case Controller::Type::Joy2BPlus:
+      controller = make_unique<Joy2BPlus>(port, myEvent, *mySystem);
       break;
 
     default:
