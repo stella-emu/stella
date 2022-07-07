@@ -154,6 +154,40 @@ bool isProfilingRun(int ac, char* av[]) {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void attachConsole()
+{
+#if defined(BSPF_WINDOWS)
+  // Attach console to allow command line output (e.g. for -help)
+  AttachConsole(ATTACH_PARENT_PROCESS);
+  FILE* fDummy;
+  freopen_s(&fDummy, "CONOUT$", "w", stdout);
+
+  // Windows displays a new prompt immediately after starting the app.
+  // This code tries to hide it before the new output is generated.
+  HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+  CONSOLE_SCREEN_BUFFER_INFO csbi;
+  if(GetConsoleScreenBufferInfo(hConsole, &csbi))
+  {
+    COORD pos = {0, csbi.dwCursorPosition.Y};
+    SetConsoleCursorPosition(hConsole, pos);
+    cout << std::setw(160) << ""; // this clears the extra prompt display
+    SetConsoleCursorPosition(hConsole, pos);
+  }
+  else
+    cout << endl << endl;
+#endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void freeConsole()
+{
+#if defined(BSPF_WINDOWS)
+  cout << "Press \"Enter\"" << endl << std::flush;
+  FreeConsole();
+#endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #if defined(BSPF_MACOS)
 int stellaMain(int ac, char* av[])
 #else
@@ -219,22 +253,27 @@ int main(int ac, char* av[])
   string romfile = localOpts["ROMFILE"].toString();
   if(localOpts["listrominfo"].toBool())
   {
+    attachConsole();
     Logger::debug("Showing output from 'listrominfo' ...");
     theOSystem->propSet().print();
+    freeConsole();
     return Cleanup();
   }
   else if(localOpts["rominfo"].toBool())
   {
+    attachConsole();
     Logger::debug("Showing output from 'rominfo' ...");
     FSNode romnode(romfile);
     Logger::error(theOSystem->getROMInfo(romnode));
-
+    freeConsole();
     return Cleanup();
   }
   else if(localOpts["help"].toBool())
   {
+    attachConsole();
     Logger::debug("Displaying usage");
     theOSystem->settings().usage();
+    freeConsole();
     return Cleanup();
   }
 
