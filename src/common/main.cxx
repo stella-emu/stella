@@ -161,6 +161,20 @@ void attachConsole()
   AttachConsole(ATTACH_PARENT_PROCESS);
   FILE* fDummy;
   freopen_s(&fDummy, "CONOUT$", "w", stdout);
+
+  // Windows displays a new prompt immediately after starting the app.
+  // This code tries to hide it before the new output is generated.
+  HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+  CONSOLE_SCREEN_BUFFER_INFO csbi;
+  if(GetConsoleScreenBufferInfo(hConsole, &csbi))
+  {
+    COORD pos = {0, csbi.dwCursorPosition.Y};
+    SetConsoleCursorPosition(hConsole, pos);
+    cout << std::setw(160) << ""; // this clears the extra prompt display
+    SetConsoleCursorPosition(hConsole, pos);
+  }
+  else
+    cout << endl << endl;
 #endif
 }
 
@@ -168,7 +182,7 @@ void attachConsole()
 void freeConsole()
 {
 #if defined(BSPF_WINDOWS)
-  cout << "Press \"Control + C\"" << std::flush;
+  cout << "Press \"Enter\"" << endl << std::flush;
   FreeConsole();
 #endif
 }
