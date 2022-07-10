@@ -1139,6 +1139,7 @@
     </ClCompile>
     <ClCompile Include="..\common\FSNodeREGULAR.cxx">
       <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\emucore\Joy2BPlus.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
@@ -2364,6 +2365,7 @@
     </ClInclude>
     <ClInclude Include="..\common\FSNodeREGULAR.hxx">
       <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\emucore\Joy2BPlus.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
