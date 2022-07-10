@@ -242,7 +242,7 @@ class FSNode
     /**
      * Get the size of the current node path.
      *
-     * @return  Size (in bytes) of the current node path.
+     * @return  Size in bytes of the current node path (if a file), else 0.
      */
     size_t getSize() const;
 
@@ -356,14 +356,8 @@ class AbstractFSNode
     virtual bool getChildren(AbstractFSList& list, ListMode mode) const = 0;
 
     /**
-     * Returns the last component of the path pointed by this FSNode.
-     *
-     * Examples (POSIX):
-     *			/foo/bar.txt would return /bar.txt
-     *			/foo/bar/    would return /bar/
-     *
-     * @note This method is very architecture dependent, please check the concrete
-     *       implementation for more information.
+     * Query/set the name of the node, typically what will be seen in
+     * various UI elements.
      */
     virtual const string& getName() const = 0;
     virtual void setName(const string& name) = 0;

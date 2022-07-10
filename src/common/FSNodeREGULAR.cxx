@@ -124,6 +124,9 @@ AbstractFSNodePtr FSNodeREGULAR::getParent() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FSNodeREGULAR::getChildren(AbstractFSList& myList, ListMode mode) const
 {
+  if (!_isDirectory)
+    return false;
+
   std::error_code ec;
   for (const auto& entry: fs::directory_iterator{_fspath,
          fs::directory_options::follow_directory_symlink |

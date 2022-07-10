@@ -66,7 +66,7 @@ class FSNodeREGULAR : public AbstractFSNode
     AbstractFSNodePtr getParent() const override;
     bool getChildren(AbstractFSList& list, ListMode mode) const override;
 
-  protected:
+  private:
     fs::path _fspath;
     string _path, _displayName;
     bool _isFile{false}, _isDirectory{false},
