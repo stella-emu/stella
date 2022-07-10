@@ -78,6 +78,20 @@ class FSNodeREGULAR : public AbstractFSNode
      * Tests and sets the various flags for a file/directory.
      */
     void setFlags();
+
+    /**
+     * Sets path and displayname, for accessors above.
+     */
+    inline void setPathAndDisplayNames()
+    {
+      _path = _fspath.string();
+      _displayName = (--_fspath.end())->string(); // last iterator in path
+
+      // Add a trailing slash, if necessary
+      if (_isDirectory && _path.length() > 0 &&
+          _path[_path.length()-1] != FSNode::PATH_SEPARATOR)
+        _path += FSNode::PATH_SEPARATOR;
+    }
 };
 
 #endif

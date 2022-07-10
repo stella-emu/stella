@@ -120,7 +120,7 @@ void FileListWidget::setLocation(const FSNode& node, const string select)
     }
     else
     {
-      const string& displayName = _showFileExtensions ? name : file.getNameWithExt(EmptyString);
+      const string& displayName = _showFileExtensions ? name : file.getNameWithExt();
 
       list.push_back(displayName);
       _iconTypeList.push_back(getIconType(file.getPath()));
@@ -276,7 +276,7 @@ void FileListWidget::reload()
   {
     _selectedFile = _showFileExtensions
       ? selected().getName()
-      : selected().getNameWithExt(EmptyString);
+      : selected().getNameWithExt();
     setLocation(_node, _selectedFile);
   }
 }

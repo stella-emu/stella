@@ -676,7 +676,7 @@ unique_ptr<Console> OSystem::openConsole(const FSNode& romfile, string& md5)
 
     // Some properties may not have a name set; we can't leave it blank
     if(props.get(PropType::Cart_Name) == EmptyString)
-      props.set(PropType::Cart_Name, romfile.getNameWithExt(""));
+      props.set(PropType::Cart_Name, romfile.getNameWithExt());
 
     // It's possible that the cart created was from a piece of the image,
     // and that the md5 (and hence the cart) has changed

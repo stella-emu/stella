@@ -532,7 +532,7 @@ string HighScoresDialog::cartName() const
 
     instance().propSet().getMD5(myScores.md5, props);
     if(props.get(PropType::Cart_Name).empty())
-      return instance().launcher().currentDir().getNameWithExt("");
+      return instance().launcher().currentDir().getNameWithExt();
     else
       return props.get(PropType::Cart_Name);
   }

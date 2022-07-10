@@ -52,16 +52,10 @@ FSNodeREGULAR::FSNodeREGULAR(const string& path, bool verify)
   if (fs::exists(_fspath))  // get absolute path whenever possible
     _fspath = fs::canonical(_fspath);
 
-  _path = _fspath.string();
-  _displayName = lastPathComponent(_path);
-
   if (verify)
     setFlags();
 
-  // Add a trailing slash, if necessary
-  if (_isDirectory && _path.length() > 0 &&
-      _path[_path.length()-1] != FSNode::PATH_SEPARATOR)
-    _path += FSNode::PATH_SEPARATOR;
+  setPathAndDisplayNames();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -123,7 +117,7 @@ AbstractFSNodePtr FSNodeREGULAR::getParent() const
 
   const char* start = _path.c_str();
   const char* end = lastPathComponent(_path);
-cerr << " => path: " << _path << ", new: " << string(start, size_t(end - start)) << endl;
+// cerr << " => path: " << _path << ", new: " << string(start, size_t(end - start)) << endl;
   return make_unique<FSNodeREGULAR>(string(start, size_t(end - start)));
 }
 
@@ -134,8 +128,7 @@ bool FSNodeREGULAR::getChildren(AbstractFSList& myList, ListMode mode) const
   for (const auto& entry: fs::directory_iterator{_fspath,
          fs::directory_options::follow_directory_symlink |
          fs::directory_options::skip_permission_denied,
-         ec
-        })
+         ec})
   {
     const auto& path = entry.path();
 
@@ -242,14 +235,9 @@ bool FSNodeREGULAR::makeDir()
   if (!(exists() && _isDirectory) && fs::create_directory(_fspath))
   {
     _fspath = fs::canonical(_fspath);
-    _path = _fspath.string();
-    _displayName = lastPathComponent(_path);
 
     setFlags();
-
-    // Add a trailing slash, if necessary
-    if (_path.length() > 0 && _path[_path.length()-1] != FSNode::PATH_SEPARATOR)
-      _path += FSNode::PATH_SEPARATOR;
+    setPathAndDisplayNames();
 
     return true;
   }
@@ -266,15 +254,9 @@ bool FSNodeREGULAR::rename(const string& newfile)
   if (!ec)
   {
     _fspath = fs::canonical(newpath);
-    _path = _fspath.string();
-    _displayName = lastPathComponent(_path);
 
     setFlags();
-
-    // Add a trailing slash, if necessary
-    if (_isDirectory && _path.length() > 0 &&
-        _path[_path.length()-1] != FSNode::PATH_SEPARATOR)
-      _path += FSNode::PATH_SEPARATOR;
+    setPathAndDisplayNames();
 
     return true;
   }

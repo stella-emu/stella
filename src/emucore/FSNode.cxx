@@ -251,7 +251,6 @@ string FSNode::getShortPath() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string FSNode::getNameWithExt(const string& ext) const
 {
-#if 1
   fs::path p = getName();
   if (ext != EmptyString)
     p.replace_extension(ext);
@@ -259,29 +258,18 @@ string FSNode::getNameWithExt(const string& ext) const
     p.replace_extension();
 
   return p.string();
-#else
-  if (!_realNode)
-    return EmptyString;
-
-  size_t pos = _realNode->getName().find_last_of("/\\");
-  string s = pos == string::npos ? _realNode->getName() :
-        _realNode->getName().substr(pos+1);
-
-  pos = s.find_last_of('.');
-  return (pos != string::npos) ? s.replace(pos, string::npos, ext) : s + ext;
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string FSNode::getPathWithExt(const string& ext) const
 {
-  if (!_realNode)
-    return EmptyString;
+  fs::path p = getPath();
+  if (ext != EmptyString)
+    p.replace_extension(ext);
+  else
+    p.replace_extension();
 
-  string s = _realNode->getPath();
-
-  const size_t pos = s.find_last_of('.');
-  return (pos != string::npos) ? s.replace(pos, string::npos, ext) : s + ext;
+  return p.string();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -350,8 +338,8 @@ FSNode FSNode::getParent() const
   if (!_realNode)
     return *this;
 
-  AbstractFSNodePtr node = _realNode->getParent();
-  return node ? FSNode(node) : *this;
+  AbstractFSNodePtr parent_ptr = _realNode->getParent();
+  return parent_ptr ? FSNode(parent_ptr) : *this;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
