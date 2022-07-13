@@ -56,10 +56,10 @@ void JitterEmulation::setSensitivity(Int32 sensitivity)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void JitterEmulation::frameComplete(Int32 scanlineCount, Int32 vsyncCycles)
 {
-#ifdef DEBUG_BUILD
-  const int  vsyncLines = round((vsyncCycles - 2) / 76.0);
-  cerr << "TV jitter " << myJitter << " - " << scanlineCount << ", " << vsyncCycles << ", " << vsyncLines << endl;
-#endif
+//#ifdef DEBUG_BUILD
+//  const int  vsyncLines = round((vsyncCycles - 2) / 76.0);
+//  cerr << "TV jitter " << myJitter << " - " << scanlineCount << ", " << vsyncCycles << ", " << vsyncLines << endl;
+//#endif
 
   // Check if current frame size is stable compared to previous frame
   const bool scanlinesStable = scanlineCount == myLastFrameScanlines;

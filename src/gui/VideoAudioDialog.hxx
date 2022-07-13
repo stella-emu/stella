@@ -106,6 +106,8 @@ class VideoAudioDialog : public Dialog
 
     // Palettes
     PopUpWidget*      myTIAPalette{nullptr};
+    CheckboxWidget*   myDetectPal60{nullptr};
+    CheckboxWidget*   myDetectNtsc50{nullptr};
     SliderWidget*     myPhaseShift{nullptr};
     SliderWidget*     myTVRedScale{nullptr};
     SliderWidget*     myTVRedShift{nullptr};

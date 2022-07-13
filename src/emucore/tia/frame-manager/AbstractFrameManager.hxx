@@ -70,6 +70,11 @@ class AbstractFrameManager : public Serializable
     void setVsync(bool vsync, uInt64 cycles);
 
     /**
+     * Called when a pixel is rendered.
+    */
+    virtual void pixelColor(uInt8 color) {};
+
+    /**
      * Should the TIA render its frame? This is buffered in a flag for
      * performance reasons; descendants must update the flag.
      */

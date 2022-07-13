@@ -2609,6 +2609,16 @@
     </tr>
 
     <tr>
+      <td><pre>-detectpal60 &lt;1|0&gt;</pre></td>
+      <td>Enable autodetection of PAL-60 based on colors used..</td>
+    </tr>
+
+    <tr>
+      <td><pre>-detectntsc50 &lt;1|0&gt;</pre></td>
+      <td>Enable autodetection of NTSC-50 based on colors used..</td>
+    </tr>
+
+    <tr>
       <td><pre>-speed &lt;number&gt;</pre></td>
       <td>Control the emulation speed (as a percentage, 10 - 1000).</td>
     </tr>
@@ -3642,15 +3652,17 @@
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">Command Line</a></th></tr>
           <tr><td>Palette</td><td>Palette used for emulation mode</td><td>-palette</td></tr>
-          <tr><td>NTSC/PAL phase</td><td>Adjust phase shift of 'Custom' NTSC or PAL (depends on game) palette.  </td><td>-pal.phase_ntsc, -pal.phase_pal</td></tr>
-          <tr><td>R</td><td>Adjust red scale and shift of 'Custom' palette</td><td>-pal.red_scale, -pal.red_shift</td></tr>
-          <tr><td>G</td><td>Adjust green scale and shift of 'Custom' palette</td><td>-pal.green_scale, -pal.green_shift</td></tr>
-          <tr><td>B</td><td>Adjust blue scale and shift of 'Custom' palette</td><td>-pal.blue_scale, -pal.blue_shift</td></tr>
+          <tr><td>NTSC/PAL phase</td><td>Adjust phase shift of 'Custom' NTSC or PAL (depends on game) palette.</td><td>-pal.phase_ntsc<br/>-pal.phase_pal</td></tr>
+          <tr><td>R</td><td>Adjust red scale and shift of 'Custom' palette</td><td>-pal.red_scale<br/>-pal.red_shift</td></tr>
+          <tr><td>G</td><td>Adjust green scale and shift of 'Custom' palette</td><td>-pal.green_scale<br/>-pal.green_shift</td></tr>
+          <tr><td>B</td><td>Adjust blue scale and shift of 'Custom' palette</td><td>-pal.blue_scale<br/>-pal.blue_shift</td></tr>
           <tr><td>Hue</td><td>Adjust hue of currently selected palette</td><td>-pal.hue</td></tr>
           <tr><td>Saturation</td><td>Adjust saturation of currently selected palette</td><td>-pal.saturation</td></tr>
           <tr><td>Contrast</td><td>Adjust contrast of currently selected palette</td><td>-pal.contrast</td></tr>
           <tr><td>Brightness</td><td>Adjust brightness of currently selected palette</td><td>-pal.brightness</td></tr>
           <tr><td>Gamma</td><td>Adjust gamma of currently selected palette</td><td>-pal.gamma</td></tr>
+          <tr><td>Autodetection</td><td>Enable autodetection of PAL-60/NTSC-50 based on colors used.</br>
+          Note: The detection is not very reliable and therefore uses very conservative parameters to avoid false positives.</td><td>-detectpal60<br/>-detectntsc50</td></tr>
         </table>
       </td>
     </tr>
@@ -3666,7 +3678,7 @@
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">Command Line</a></th></tr>
           <tr><td>TV mode</td><td>Disable TV effects, or select TV preset</td><td>-tv.filter</td></tr>
-          <tr><td>Adjustable sliders</td><td>Set specific attribute in 'Custom' TV mode</td><td>-tv.sharpness, -tv.resolution, etc.</td></tr>
+          <tr><td>Adjustable sliders</td><td>Set specific attribute in 'Custom' TV mode</td><td>-tv.sharpness<br/>-tv.resolution, etc.</td></tr>
           <tr><td>Phosphor for all ROMs</td><td>Enable phosphor mode for all ROMs</td><td>-tv.phosphor</td></tr>
           <tr><td>Blend (phosphor)</td><td>Blend level to use in phosphor mode for all ROMs
                 (needs to be manually adjusted for your particular hardware)</td><td>-tv.phosblend</td></tr>

@@ -123,7 +123,7 @@ class TIA : public Device
     /**
       Configure the frame manager.
      */
-    void setFrameManager(AbstractFrameManager* frameManager);
+    void setFrameManager(AbstractFrameManager* frameManager, bool layoutDetector = false);
 
     /**
       Set the audio queue. This needs to be dynamic as the queue is created after
@@ -793,6 +793,11 @@ class TIA : public Device
      * region of each frame.
      */
     AbstractFrameManager* myFrameManager{nullptr};
+
+    /**
+     * The frame manager type.
+    */
+    bool myIsLayoutDetector{false};
 
     /**
      * The various TIA objects.

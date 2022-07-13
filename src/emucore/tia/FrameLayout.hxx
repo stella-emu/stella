@@ -19,8 +19,10 @@
 #define FRAME_LAYOUT
 
 enum class FrameLayout {
-  ntsc, // ROM display has NTSC timings (~60Hz, ~262 scanlines, etc)
-  pal   // ROM display has PAL timings (~50Hz, ~312 scanlines, etc)
+  ntsc,   // ROM display has NTSC timings (~60Hz, ~262 scanlines, etc)
+  pal,    // ROM display has PAL timings (~50Hz, ~312 scanlines, etc)
+  pal60,  // ROM display has NTSC timings (~60Hz, ~262 scanlines, etc), but uses PAL colors
+  ntsc50  // ROM display has PAL timings (~50Hz, ~312 scanlines, etc), but uses NTSC colors
 };
 
 #endif // FRAME_LAYOUT
