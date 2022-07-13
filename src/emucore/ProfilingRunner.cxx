@@ -157,6 +157,9 @@ bool ProfilingRunner::runOne(const ProfilingRun& run)
       cout << "PAL";
       consoleTiming = ConsoleTiming::pal;
       break;
+
+    default:  // TODO: add other layouts here
+      break;
   }
 
   (cout << endl).flush();

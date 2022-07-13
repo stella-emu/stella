@@ -72,7 +72,7 @@ class AbstractFrameManager : public Serializable
     /**
      * Called when a pixel is rendered.
     */
-    virtual void pixelColor(uInt8 color) {};
+    virtual void pixelColor(uInt8 color) {}
 
     /**
      * Should the TIA render its frame? This is buffered in a flag for
