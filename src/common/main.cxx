@@ -74,6 +74,15 @@ void checkForCustomBaseDir(Settings::Options& options);
 */
 bool isProfilingRun(int ac, char* av[]);
 
+/**
+  In Windows, attach console to allow command line output (e.g. for -help).
+  This is needed since by default Windows doesn't set up stdout/stderr
+  correctly.
+*/
+void attachConsole();
+void freeConsole();
+
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void parseCommandLine(int ac, char* av[],
     Settings::Options& globalOpts, Settings::Options& localOpts)
