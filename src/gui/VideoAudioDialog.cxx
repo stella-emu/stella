@@ -65,7 +65,7 @@ VideoAudioDialog::VideoAudioDialog(OSystem& osystem, DialogContainer& parent,
 
   // Set real dimensions
   setSize(44 * fontWidth + HBORDER * 2 + PopUpWidget::dropDownWidth(font) * 2,
-          _th + VGAP * 3 + lineHeight + 11 * (lineHeight + VGAP) + buttonHeight + VBORDER * 3,
+          _th + VGAP * 5 + lineHeight + 11 * (lineHeight + VGAP) + buttonHeight + VBORDER * 3,
           max_w, max_h);
 
   // The tab widget
@@ -311,6 +311,17 @@ void VideoAudioDialog::addPaletteTab()
   CREATE_CUSTOM_SLIDERS(Contrast, "Contrast ", kPaletteUpdated)
   CREATE_CUSTOM_SLIDERS(Bright, "Brightness ", kPaletteUpdated)
   CREATE_CUSTOM_SLIDERS(Gamma, "Gamma ", kPaletteUpdated)
+
+  ypos += VGAP;
+  StaticTextWidget* s = new StaticTextWidget(myTab, _font, xpos, ypos + 1, "Autodetection");
+
+  myDetectPal60 = new CheckboxWidget(myTab, _font, s->getRight() + fontWidth * 2, ypos + 1, "PAL-60");
+  myDetectPal60 ->setToolTip("Enable autodetection of PAL-60 based on colors used.");
+  wid.push_back(myDetectPal60 );
+
+  myDetectNtsc50 = new CheckboxWidget(myTab, _font, myDetectPal60->getRight() + fontWidth * 2, ypos + 1, "NTSC-50");
+  myDetectNtsc50 ->setToolTip("Enable autodetection of NTSC-50 based on colors used.");
+  wid.push_back(myDetectNtsc50 );
 
   // The resulting palette
   xpos = myPhaseShift->getRight() + fontWidth * 2;
@@ -644,6 +655,10 @@ void VideoAudioDialog::loadConfig()
   handlePaletteChange();
   colorPalette();
 
+  // Autodetection
+  myDetectPal60->setState(settings.getBool("detectpal60"));
+  myDetectNtsc50->setState(settings.getBool("detectntsc50"));
+
   /////////////////////////////////////////////////////////////////////////////
   // TV Effects tab
   // TV Mode
@@ -757,6 +772,10 @@ void VideoAudioDialog::saveConfig()
 
   Logger::debug("Saving palette settings...");
   instance().frameBuffer().tiaSurface().paletteHandler().saveConfig(settings);
+
+  // Autodetection
+  settings.setValue("detectpal60", myDetectPal60->getState());
+  settings.setValue("detectntsc50", myDetectNtsc50->getState());
 
   /////////////////////////////////////////////////////////////////////////////
   // TV Effects tab
@@ -893,6 +912,8 @@ void VideoAudioDialog::setDefaults()
       myTVGamma->setValue(50);
       handlePaletteChange();
       handlePaletteUpdate();
+      myDetectPal60->setState(false);
+      myDetectNtsc50->setState(false);
       break;
     }
 
