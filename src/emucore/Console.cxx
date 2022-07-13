@@ -280,25 +280,54 @@ void Console::autodetectFrameLayout(bool reset)
   // We turn off the SuperCharger progress bars, otherwise the SC BIOS
   // will take over 250 frames!
   // The 'fastscbios' option must be changed before the system is reset
-  bool fastscbios = myOSystem.settings().getBool("fastscbios");
-  myOSystem.settings().setValue("fastscbios", true);
+  Settings& settings = myOSystem.settings();
+  bool fastscbios = settings.getBool("fastscbios");
+  settings.setValue("fastscbios", true);
 
   FrameLayoutDetector frameLayoutDetector;
-  myTIA->setFrameManager(&frameLayoutDetector);
+  myTIA->setFrameManager(&frameLayoutDetector, true);
 
   if (reset) {
     mySystem->reset(true);
     myRiot->update();
   }
 
-  for(int i = 0; i < 60; ++i) myTIA->update();
+  // Sample colors, ratio is 1/5 title (if existing), 4/5 game screen.
+  for(int i = 0; i < 20; ++i)
+    myTIA->update();
+
+  frameLayoutDetector.simulateInput(*myRiot, myOSystem.eventHandler(), true);
+  myTIA->update();
+  frameLayoutDetector.simulateInput(*myRiot, myOSystem.eventHandler(), false);
+
+  for(int i = 0; i < 40; ++i)
+    myTIA->update();
+
+  switch(frameLayoutDetector.detectedLayout(
+    settings.getBool("detectpal60"), settings.getBool("detectntsc50"),
+    myProperties.get(PropType::Cart_Name)))
+  {
+    case FrameLayout::pal:
+      myDisplayFormat = "PAL";
+      break;
+
+    case FrameLayout::pal60:
+      myDisplayFormat = "PAL60";
+      break;
+
+    case FrameLayout::ntsc50:
+      myDisplayFormat = "NTSC50";
+      break;
+
+    default:
+      myDisplayFormat = "NTSC";
+      break;
+  }
 
   myTIA->setFrameManager(myFrameManager.get());
 
-  myDisplayFormat = frameLayoutDetector.detectedLayout() == FrameLayout::pal ? "PAL" : "NTSC";
-
   // Don't forget to reset the SC progress bars again
-  myOSystem.settings().setValue("fastscbios", fastscbios);
+  settings.setValue("fastscbios", fastscbios);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

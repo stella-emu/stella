@@ -18,6 +18,9 @@
 #ifndef TIA_FRAME_LAYOUT_DETECTOR
 #define TIA_FRAME_LAYOUT_DETECTOR
 
+class M6532;
+class EventHandler;
+
 #include "FrameLayout.hxx"
 #include "AbstractFrameManager.hxx"
 #include "TIAConstants.hxx"
@@ -37,7 +40,13 @@ class FrameLayoutDetector: public AbstractFrameManager
     /**
      * Return the detected frame layout.
      */
-    FrameLayout detectedLayout() const;
+    FrameLayout detectedLayout(bool detectPal60 = false, bool detectNtsc50 = false,
+      const string& name = EmptyString) const;
+
+    /**
+     * Simulate some input to pass a potential title screen.
+    */
+    void FrameLayoutDetector::simulateInput(M6532& riot, EventHandler& eventHandler, bool pressed) const;
 
   protected:
 
@@ -55,6 +64,11 @@ class FrameLayoutDetector: public AbstractFrameManager
      * Hook into line changes.
      */
     void onNextLine() override;
+
+    /**
+     * Called when a pixel is rendered.
+    */
+    void pixelColor(uInt8 color) override;
 
   private:
 
@@ -117,6 +131,16 @@ class FrameLayoutDetector: public AbstractFrameManager
      * toggled. If a threshold is exceeded, we force the transition.
      */
     uInt32 myLinesWaitingForVsyncToStart{0};
+
+    /**
+     * We count the number of pixels for each colors used. These are
+     * evaluated against statistical color distributions and, if
+     * decisive, allow overruling the scanline results.
+    */
+    static constexpr int NUM_HUES = 16;
+    static constexpr int NUM_LUMS = 8;
+
+    std::array<uInt64, NUM_HUES * NUM_LUMS> myColorCount{0};
 
   private:
 

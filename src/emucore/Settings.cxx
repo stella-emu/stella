@@ -92,6 +92,9 @@ Settings::Settings()
   setPermanent("tv.fringing", "0.0");
   setPermanent("tv.bleed", "0.0");
 
+  setPermanent("detectpal60", "false");
+  setPermanent("detectntsc50", "false");
+
   // Sound options
   setPermanent(AudioSettings::SETTING_ENABLED, AudioSettings::DEFAULT_ENABLED);
   setPermanent(AudioSettings::SETTING_VOLUME, AudioSettings::DEFAULT_VOLUME);
@@ -515,6 +518,9 @@ void Settings::usage() const
     << "  -pal.contrast    <-1.0 - 1.0>  Adjust contrast of current palette\n"
     << "  -pal.brightness  <-1.0 - 1.0>  Adjust brightness of current palette\n"
     << "  -pal.gamma       <-1.0 - 1.0>  Adjust gamma of current palette\n"
+    << endl
+    << "  -detectpal60     <1|0>         Enable PAL-60 autodetection\n"
+    << "  -detectntsc50    <1|0>         Enable NTSC-50 autodetection\n"
     << endl
     << "  -speed        <number>       Run emulation at the given speed\n"
     << "  -turbo        <1|0>          Enable 'Turbo' mode for maximum emulation speed\n"

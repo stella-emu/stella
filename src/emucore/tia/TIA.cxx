@@ -88,11 +88,12 @@ TIA::TIA(ConsoleIO& console, const ConsoleTimingProvider& timingProvider,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::setFrameManager(AbstractFrameManager* frameManager)
+void TIA::setFrameManager(AbstractFrameManager* frameManager, bool layoutDetector)
 {
   clearFrameManager();
 
   myFrameManager = frameManager;
+  myIsLayoutDetector = layoutDetector;
 
   myFrameManager->setHandlers(
     [this] () {
@@ -1559,12 +1560,21 @@ void TIA::nextLine()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::cloneLastLine()
 {
-  const auto y = myFrameManager->getY();
+  if(myIsLayoutDetector)
+  {
+    // y is always 0 in FrameLayoutDetector
+    for(uInt32 i = 0 ; i < TIAConstants::H_PIXEL; ++i)
+      myFrameManager->pixelColor(myBackBuffer[i]);
+  }
+  else
+  {
+    const auto y = myFrameManager->getY();
 
-  if (!myFrameManager->isRendering() || y == 0) return;
+    if(!myFrameManager->isRendering() || y == 0) return;
 
-  std::copy_n(myBackBuffer.begin() + (y-1) * TIAConstants::H_PIXEL, TIAConstants::H_PIXEL,
-      myBackBuffer.begin() + y * TIAConstants::H_PIXEL);
+    std::copy_n(myBackBuffer.begin() + (y - 1) * TIAConstants::H_PIXEL, TIAConstants::H_PIXEL,
+        myBackBuffer.begin() + y * TIAConstants::H_PIXEL);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1642,6 +1652,8 @@ void TIA::renderPixel(uInt32 x, uInt32 y)
   }
 
   myBackBuffer[y * TIAConstants::H_PIXEL + x] = color;
+  if (myIsLayoutDetector)
+    myFrameManager->pixelColor(color);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -148,16 +148,16 @@ void GameInfoDialog::addEmulationTab()
   VarList::push_back(items, "NTSC", "NTSC");
   VarList::push_back(items, "PAL", "PAL");
   VarList::push_back(items, "SECAM", "SECAM");
-  VarList::push_back(items, "NTSC50", "NTSC50");
-  VarList::push_back(items, "PAL60", "PAL60");
-  VarList::push_back(items, "SECAM60", "SECAM60");
+  VarList::push_back(items, "NTSC-50", "NTSC50");
+  VarList::push_back(items, "PAL-60", "PAL60");
+  VarList::push_back(items, "SECAM-60", "SECAM60");
   myFormat = new PopUpWidget(myTab, _font, t->getRight(), ypos,
                              pwidth, lineHeight, items);
   myFormat->setToolTip(Event::FormatDecrease, Event::FormatIncrease);
   wid.push_back(myFormat);
 
   myFormatDetected = new StaticTextWidget(myTab, ifont, myFormat->getRight() + fontWidth, ypos + 4,
-                                          "SECAM60 detected");
+                                          "SECAM-60 detected");
 
   // Phosphor
   ypos += lineHeight + VGAP;
