@@ -95,9 +95,6 @@ class FrameLayoutDetector: public AbstractFrameManager
       // (exceeding ideal frame height)
       waitForVsync              = 100,
 
-      // tolerance window around ideal frame size for TV mode detection
-      tvModeDetectionTolerance  = 20,
-
       // these frames will not be considered for detection
       initialGarbageFrames      = TIAConstants::initialGarbageFrames
     };
@@ -121,10 +118,8 @@ class FrameLayoutDetector: public AbstractFrameManager
      */
     State myState{State::waitForVsyncStart};
 
-    /**
-     * The total number of frames detected as the respective frame layout.
-     */
-    uInt32 myNtscFrames{0}, myPalFrames{0};
+    // The aggregated likelynesses of respective two frame layouts.
+    double myNtscFrameSum{0}, myPalFrameSum{0};
 
     /**
      * We count the number of scanlines we spend waiting for vsync to be
@@ -139,7 +134,6 @@ class FrameLayoutDetector: public AbstractFrameManager
     */
     static constexpr int NUM_HUES = 16;
     static constexpr int NUM_LUMS = 8;
-
     std::array<uInt64, NUM_HUES * NUM_LUMS> myColorCount{0};
 
   private:
