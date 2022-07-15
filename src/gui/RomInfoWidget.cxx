@@ -109,18 +109,22 @@ void RomInfoWidget::parseProperties(const FSNode& node)
   myRomInfo.clear();
 
 #ifdef PNG_SUPPORT
-  // Get a valid filename representing a snapshot file for this rom
-  const string& filename = instance().snapshotLoadDir().getPath() +
-      myProperties.get(PropType::Cart_Name) + ".png";
+  // Get a valid filename representing a snapshot file for this rom and load the snapshot
+  const string& path = instance().snapshotLoadDir().getPath();
 
-  // Read the PNG file
-  mySurfaceIsValid = loadPng(filename);
+  // 1. Try to load snapshot by property name
+  mySurfaceIsValid = loadPng(path + myProperties.get(PropType::Cart_Name) + ".png");
 
-  // Try to load a default image if not ROM image exists
   if(!mySurfaceIsValid)
   {
-    mySurfaceIsValid = loadPng(instance().snapshotLoadDir().getPath() +
-                               "default_snapshot.png");
+    // 2. If no snapshot with property name exists, try to load snapshot image by filename
+    mySurfaceIsValid = loadPng(path + node.getNameWithExt("") + ".png");
+
+    if(!mySurfaceIsValid)
+    {
+      // 3. If no ROM snapshot exists, try to load a default snapshot
+      mySurfaceIsValid = loadPng(path + "default_snapshot.png");
+    }
   }
 #else
   mySurfaceErrorMsg = "PNG image loading not supported";
