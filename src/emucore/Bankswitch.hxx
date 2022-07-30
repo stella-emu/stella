@@ -51,6 +51,16 @@ class Bankswitch
       NumSchemes
     };
 
+#ifdef GUI_SUPPORT
+    struct SizesType {
+      size_t minSize;
+      size_t maxSize;
+    };
+    static constexpr size_t any_KB = 0;
+
+    static const std::array<SizesType, static_cast<uInt32>(Type::NumSchemes)> Sizes;
+#endif
+
     // Info about the various bankswitch schemes, useful for displaying
     // in GUI dropdown boxes, etc
     struct Description {

@@ -206,6 +206,7 @@ Settings::Settings()
   setPermanent("plusroms.nick", "");
   setTemporary("plusroms.id", "");
   setPermanent("plusroms.fixedid", "");
+  setPermanent("filterbstypes", "true");
 
 #ifdef DEBUGGER_SUPPORT
   // Debugger/disassembly options
@@ -685,6 +686,7 @@ void Settings::usage() const
     << "                                by attempting to use the application directory\n"
     << "  -plusroms.nick <nick>        Define a nickname for the PlusROMs backends.\n"
     << "  -plusroms.id   <id>          Define a temporary ID for the PlusROMs backends.\n"
+    << "  -filterbstypes <0|1>         Filter bankswitch type list by ROM size.\n"       
     << "  -help                        Show the text you're now reading\n"
   #ifdef DEBUGGER_SUPPORT
     << endl

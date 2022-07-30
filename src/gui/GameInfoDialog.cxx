@@ -122,11 +122,13 @@ void GameInfoDialog::addEmulationTab()
   t = new StaticTextWidget(myTab, _font, HBORDER, ypos + 1, "Type (*)      ");
   int pwidth = _font.getStringWidth("CM (SpectraVideo CompuMate)");
   items.clear();
-  for(uInt32 i = 0; i < static_cast<uInt32>(Bankswitch::Type::NumSchemes); ++i)
-    VarList::push_back(items, Bankswitch::BSList[i].desc, Bankswitch::BSList[i].name);
   myBSType = new PopUpWidget(myTab, _font, t->getRight() + fontWidth, ypos,
                              pwidth, lineHeight, items);
   wid.push_back(myBSType);
+  myBSFilter = new CheckboxWidget(myTab, _font, myBSType->getRight()+ fontWidth, ypos + 1,
+                                  "Filter", kBSFilterChanged);
+  myBSFilter->setToolTip("Enable to filter types by ROM size");
+  wid.push_back(myBSFilter);
   ypos += lineHeight + VGAP;
 
   myTypeDetected = new StaticTextWidget(myTab, ifont, t->getRight() + fontWidth, ypos,
@@ -719,6 +721,10 @@ void GameInfoDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::loadEmulationProperties(const Properties& props)
 {
+  myBSFilter->setState(instance().settings().getBool("filterbstypes"));
+  updateBSTypes();
+
+  VariantList items;
   string bsDetected = "";
 
   myBSType->setSelected(props.get(PropType::Cart_Type), "AUTO");
@@ -735,14 +741,12 @@ void GameInfoDialog::loadEmulationProperties(const Properties& props)
     }
     else
     {
-      const FSNode& node = FSNode(instance().launcher().selectedRom());
       ByteBuffer image;
       string md5 = props.get(PropType::Cart_MD5);
       size_t size = 0;
 
       // try to load the image for auto detection
-      if(!instance().hasConsole() &&
-        node.exists() && !node.isDirectory() && (image = instance().openROM(node, md5, size)) != nullptr)
+      if(myGameFile.exists() && !myGameFile.isDirectory() && (image = instance().openROM(myGameFile, md5, size)) != nullptr)
       {
         bsDetected = Bankswitch::typeToDesc(CartDetector::autodetectType(image, size)) + " detected";
       }
@@ -751,8 +755,6 @@ void GameInfoDialog::loadEmulationProperties(const Properties& props)
   myTypeDetected->setLabel(bsDetected);
 
   // Start bank
-  VariantList items;
-
   VarList::push_back(items, "Auto", "AUTO");
   if(instance().hasConsole())
   {
@@ -930,6 +932,8 @@ void GameInfoDialog::loadHighScoresProperties(const Properties& props)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::saveProperties()
 {
+  instance().settings().setValue("filterbstypes", myBSFilter->getState());
+
   // Emulation properties
   myGameProperties.set(PropType::Cart_Type, myBSType->getSelectedTag().toString());
   myGameProperties.set(PropType::Cart_StartBank, myStartBank->getSelectedTag().toString());
@@ -1097,6 +1101,7 @@ void GameInfoDialog::setDefaults()
   {
     case 0: // Emulation properties
       loadEmulationProperties(defaultProperties);
+      myBSFilter->setState(true);
       break;
 
     case 1: // Console properties
@@ -1118,6 +1123,22 @@ void GameInfoDialog::setDefaults()
     default: // make the compiler happy
       break;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void GameInfoDialog::updateBSTypes()
+{
+  VariantList items;
+
+  // Bankswitching type
+  for(uInt32 i = 0; i < static_cast<uInt32>(Bankswitch::Type::NumSchemes); ++i)
+    if(!myBSFilter->getState() ||
+      ((Bankswitch::Sizes[i].minSize == Bankswitch::any_KB || myGameFile.getSize() >= Bankswitch::Sizes[i].minSize) &&
+       (Bankswitch::Sizes[i].maxSize == Bankswitch::any_KB || myGameFile.getSize() <= Bankswitch::Sizes[i].maxSize)))
+    {
+      VarList::push_back(items, Bankswitch::BSList[i].desc, Bankswitch::BSList[i].name);
+    }
+  myBSType->addItems(items);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1453,6 +1474,10 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
     }
     case kEEButtonPressed:
       eraseEEPROM();
+      break;
+
+    case kBSFilterChanged:
+      updateBSTypes();
       break;
 
     case kPhosphorChanged:
