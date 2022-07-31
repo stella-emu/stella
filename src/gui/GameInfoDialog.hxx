@@ -68,6 +68,8 @@ class GameInfoDialog : public Dialog, public CommandSender
     // save properties from all tabs into the local properties object
     void saveProperties();
 
+    // update 'BS Type' list
+    void updateBSTypes();
     // update 'Controller' tab widgets
     void updateControllerStates();
     // erase SaveKey/AtariVox pages for current game
@@ -86,6 +88,7 @@ class GameInfoDialog : public Dialog, public CommandSender
 
     // Emulation properties
     PopUpWidget*      myBSType{nullptr};
+    CheckboxWidget*   myBSFilter{nullptr};
     StaticTextWidget* myTypeDetected{nullptr};
     StaticTextWidget* myStartBankLabel{nullptr};
     PopUpWidget*      myStartBank{nullptr};
@@ -173,6 +176,7 @@ class GameInfoDialog : public Dialog, public CommandSender
     EditTextWidget*   myHighScoreNotes{nullptr};
 
     enum {
+      kBSFilterChanged = 'Bfch',
       kVCenterChanged  = 'Vcch',
       kPhosphorChanged = 'PPch',
       kPPBlendChanged  = 'PBch',

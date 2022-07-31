@@ -136,7 +136,7 @@ Bankswitch::BSList = {{
   { "F8"      , "F8 (8K Atari)"               },
   { "F8SC"    , "F8SC (8K Atari + RAM)"       },
   { "FA"      , "FA (CBS RAM Plus)"           },
-  { "FA2"     , "FA2 (CBS RAM Plus 24/28K)"   },
+  { "FA2"     , "FA2 (CBS RAM Plus 24-32K)"   },
   { "FC"      , "FC (32K Amiga)"              },
   { "FE"      , "FE (8K Activision)"          },
   { "MDM"     , "MDM (Menu Driven Megacart)"  },
@@ -152,6 +152,69 @@ Bankswitch::BSList = {{
   { "CUSTOM"  ,   "CUSTOM (ARM)"                  }
 #endif
 }};
+
+#ifdef GUI_SUPPORT
+const std::array<Bankswitch::SizesType, static_cast<int>(Bankswitch::Type::NumSchemes)> 
+Bankswitch::Sizes = {{
+  { Bankswitch::any_KB, Bankswitch::any_KB }, // _AUTO  
+  {    8_KB,   8_KB }, // _0840
+  {    8_KB,   8_KB }, // _0FA0
+  {    4_KB,  64_KB }, // _2IN1
+  {    8_KB,  64_KB }, // _4IN1
+  {   16_KB,  64_KB }, // _8IN1
+  {   32_KB, 128_KB }, // _16IN1
+  {   64_KB, 128_KB }, // _32IN1
+  {  128_KB, 256_KB }, // _64IN1
+  {  256_KB, 512_KB }, // _128IN1
+  {    0_KB,   4_KB }, // _2K
+  {    8_KB, 512_KB }, // _3E
+  {    8_KB, 512_KB }, // _3EX
+  {    8_KB,  64_KB }, // _3EP
+  {    8_KB, 512_KB }, // _3F
+  {   64_KB,  64_KB }, // _4A50
+  {    4_KB,   4_KB }, // _4K
+  {    4_KB,   4_KB }, // _4KSC
+  {    6_KB,  33_KB }, // _AR
+  {  256_KB, 256_KB }, // _BF
+  {  256_KB, 256_KB }, // _BFSC
+  {   32_KB,  32_KB }, // _BUS
+  {   32_KB, 512_KB }, // _CDF
+  {   16_KB,  16_KB }, // _CM
+  {   32_KB,  32_KB }, // _CTY
+  {    2_KB,   4_KB }, // _CV
+  {  128_KB, 128_KB }, // _DF
+  {  128_KB, 128_KB }, // _DFSC
+  {   10_KB,  11_KB }, // _DPC
+  {   16_KB,  64_KB }, // _DPCP
+  {    8_KB,   8_KB }, // _E0
+  {    8_KB,  16_KB }, // _E7
+  {   64_KB,  64_KB }, // _EF
+  {   64_KB,  64_KB }, // _EFSC
+  {   64_KB,  64_KB }, // _F0
+  {   32_KB,  32_KB }, // _F4
+  {   32_KB,  32_KB }, // _F4SC
+  {   16_KB,  16_KB }, // _F6
+  {   16_KB,  16_KB }, // _F6SC
+  {    8_KB,   8_KB }, // _F8                         
+  {    8_KB,   8_KB }, // _F8SC
+  {   12_KB,  12_KB }, // _FA
+  {   24_KB,  32_KB }, // _FA2
+  {   32_KB,  32_KB }, // _FC
+  {    8_KB,   8_KB }, // _FE
+  {    8_KB, Bankswitch::any_KB }, // _MDM
+  { 1024_KB, Bankswitch::any_KB }, // _MVC
+  {  128_KB, 256_KB }, // _SB
+  {  512_KB, 512_KB }, // _TVBOY
+  {    8_KB,   8_KB }, // _UA
+  {    8_KB,   8_KB }, // _UASW
+  {    8_KB,   8_KB }, // _WD
+  {    8_KB,   8_KB+5 }, // _WDSW
+  {   64_KB,  64_KB }, // _X07
+#if defined(CUSTOM_ARM)
+  { Bankswitch::any_KB, Bankswitch::any_KB }                  }
+#endif
+}};
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Bankswitch::ExtensionMap Bankswitch::ourExtensions = {
