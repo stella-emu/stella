@@ -22,4 +22,4 @@ a list of all currently known issues.
 
 Note: Please do **not** report issues regarding platforms other than PC and RetroN 77 
 (e.g. Libretro) here. The Stella Team is not responsible for these forks and cannot 
-help with these.
+help with them.
