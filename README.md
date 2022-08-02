@@ -19,3 +19,6 @@ If you encounter any issues, please open a new issue on the project
 
 Please check out the [issue tracker](https://github.com/stella-emu/stella/issues) for
 a list of all currently known issues.
+
+Note: Please do **not** report issues regarding other platforms (e.g. Libretro) here. The 
+Stella team is not responsible for these forks. 
