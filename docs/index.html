@@ -3206,6 +3206,11 @@
     </tr>
 
     <tr>
+      <td><pre>-filterbstypes &lt;1|0&gt;</pre></td>
+      <td>Enable filtering of bankswitch type list in <a href="#EmulationProps"><b>Emulation Properties</b></a> by ROM size.</td>
+    </tr>
+
+    <tr>
       <td><pre>-help</pre></td>
       <td>Print a help message describing these options, and then
         exit Stella.</td>
@@ -4818,12 +4823,13 @@ Ms Pac-Man (Stella extended codes):
 
   <tr>
     <td VALIGN="TOP"><a name="PropertiesCartType"><i>Cart.Type</i></a></td>
-    <td>Indicates the bank-switching type for the game.
+    <td>Indicates the bankswitching type for the game.
       The value of this property must be either <b>Auto</b> or one of the following
-      (for more information about bank-switching see Kevin Horton's <a href="http://kevtris.org/files/sizes.txt">2600 bankswitching
+      (for more information about bankswitching see Kevin Horton's <a href="http://kevtris.org/files/sizes.txt">2600 bankswitching
       document</a> or the documentation in each cartridge's source code file) types. Types marked
       as (&#185;) do currently have no reliable auto-detection, those marked as (&#178;)
-      are not fully supported in the debugger.
+      are not fully supported in the debugger.<br/>
+      Note: If 'Filter' is checked, only the bankswitching types matching the ROM size are listed.
       <table cellpadding="2" border="1">
         <tr><th>&nbsp;Type&nbsp;</th><th>Description</th><th>File Extension<br>(to force type)</th></tr>
         <tr><td>0840 </td><td>8K EconoBanking</td><td>.084, .0840</td></tr>
