@@ -48,7 +48,7 @@ class TabWidget : public Widget, public CommandSender
     //void removeTab(int tabID);
 // Setting the active tab:
     void setActiveTab(int tabID, bool show = false);
-//    void disableTab(int tabID);
+    void enableTab(int tabID, bool enable = true);
     void activateTabs();
     void cycleTab(int direction);
 // setActiveTab changes the value of _firstWidget. This means Widgets added afterwards
