@@ -1131,7 +1131,7 @@ void GameInfoDialog::updateMultiCart()
 
   bool isMulti = false;
   bool isInMulti = false;
-  for each(auto entry in MultiCart)
+  for (const auto& entry: MultiCart)
   {
     if(entry == selected)
     {
