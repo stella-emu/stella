@@ -48,7 +48,8 @@ class Bankswitch
     #ifdef CUSTOM_ARM
       _CUSTOM,
     #endif
-      NumSchemes
+      NumSchemes,
+      NumMulti = _128IN1 - _2IN1 + 1,
     };
 
 #ifdef GUI_SUPPORT

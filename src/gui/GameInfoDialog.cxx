@@ -112,39 +112,36 @@ void GameInfoDialog::addEmulationTab()
             VGAP       = Dialog::vGap();
   WidgetArray wid;
   VariantList items;
-  StaticTextWidget* t = nullptr;
 
   // 1) Emulation properties
   int tabID = myTab->addTab("Emulation", TabWidget::AUTO_WIDTH);
 
   int ypos = VBORDER;
 
-  t = new StaticTextWidget(myTab, _font, HBORDER, ypos + 1, "Type (*)      ");
+  myBSTypeLabel = new StaticTextWidget(myTab, _font, HBORDER, ypos + 1, "Type (*)      ");
   int pwidth = _font.getStringWidth("CM (SpectraVideo CompuMate)");
   items.clear();
-  myBSType = new PopUpWidget(myTab, _font, t->getRight() + fontWidth, ypos,
-                             pwidth, lineHeight, items);
+  myBSType = new PopUpWidget(myTab, _font, myBSTypeLabel->getRight() + fontWidth, ypos,
+                             pwidth, lineHeight, items, "", 0, kBSTypeChanged);
   wid.push_back(myBSType);
-  myBSFilter = new CheckboxWidget(myTab, _font, myBSType->getRight()+ fontWidth, ypos + 1,
+  myBSFilter = new CheckboxWidget(myTab, _font, myBSType->getRight() + fontWidth, ypos + 1,
                                   "Filter", kBSFilterChanged);
   myBSFilter->setToolTip("Enable to filter types by ROM size");
   wid.push_back(myBSFilter);
   ypos += lineHeight + VGAP;
 
-  myTypeDetected = new StaticTextWidget(myTab, ifont, t->getRight() + fontWidth, ypos,
+  myTypeDetected = new StaticTextWidget(myTab, ifont, myBSTypeLabel->getRight() + fontWidth, ypos,
                                         "CM (SpectraVideo CompuMate) detected");
   ypos += ifont.getLineHeight() + VGAP;
 
   // Start bank
-  myStartBankLabel = new StaticTextWidget(myTab, _font, HBORDER, ypos + 1, "Start bank (*) ");
   items.clear();
-  myStartBank = new PopUpWidget(myTab, _font, myStartBankLabel->getRight(), ypos,
-                                _font.getStringWidth("AUTO"), lineHeight, items);
+  myStartBank = new PopUpWidget(myTab, _font, HBORDER, ypos,
+                                _font.getStringWidth("AUTO"), lineHeight, items, "Start bank (*) ");
   wid.push_back(myStartBank);
   ypos += lineHeight + VGAP * 4;
 
   pwidth = _font.getStringWidth("Auto-detect");
-  t = new StaticTextWidget(myTab, _font, HBORDER, ypos + 1, "TV format      ");
   items.clear();
   VarList::push_back(items, "Auto-detect", "AUTO");
   VarList::push_back(items, "NTSC", "NTSC");
@@ -153,8 +150,8 @@ void GameInfoDialog::addEmulationTab()
   VarList::push_back(items, "NTSC-50", "NTSC50");
   VarList::push_back(items, "PAL-60", "PAL60");
   VarList::push_back(items, "SECAM-60", "SECAM60");
-  myFormat = new PopUpWidget(myTab, _font, t->getRight(), ypos,
-                             pwidth, lineHeight, items);
+  myFormat = new PopUpWidget(myTab, _font, HBORDER, ypos,
+                             pwidth, lineHeight, items, "TV format      ");
   myFormat->setToolTip(Event::FormatDecrease, Event::FormatIncrease);
   wid.push_back(myFormat);
 
@@ -178,8 +175,7 @@ void GameInfoDialog::addEmulationTab()
   wid.push_back(myPPBlend);
 
   ypos += lineHeight + VGAP;
-  t = new StaticTextWidget(myTab, _font, HBORDER, ypos + 1, "V-Center ");
-  myVCenter = new SliderWidget(myTab, _font, t->getRight(), ypos, "",
+  myVCenter = new SliderWidget(myTab, _font, HBORDER, ypos, "V-Center ",
                                0, kVCenterChanged, 7 * fontWidth, "px", 0, true);
 
   myVCenter->setMinValue(TIAConstants::minVcenter);
@@ -709,6 +705,11 @@ void GameInfoDialog::loadConfig()
     myGameFile = FSNode(instance().launcher().selectedRom());
   }
 
+  string title = "Game properties - " + myGameProperties.get(PropType::Cart_Name);
+  if(_font.getStringWidth(title) > getWidth() - fontWidth() * 6)
+    title = title.substr(0, getWidth() / fontWidth() - 7) + ELLIPSIS;
+  setTitle(title);
+
   loadEmulationProperties(myGameProperties);
   loadConsoleProperties(myGameProperties);
   loadControllerProperties(myGameProperties);
@@ -753,6 +754,7 @@ void GameInfoDialog::loadEmulationProperties(const Properties& props)
     }
   }
   myTypeDetected->setLabel(bsDetected);
+  updateMultiCart();
 
   // Start bank
   VarList::push_back(items, "Auto", "AUTO");
@@ -762,14 +764,12 @@ void GameInfoDialog::loadEmulationProperties(const Properties& props)
 
     for(uInt16 i = 0; i < numBanks; ++i)
       VarList::push_back(items, i, i);
-    myStartBank->setEnabled(true);
   }
   else
   {
     const string& startBank = props.get(PropType::Cart_StartBank);
 
     VarList::push_back(items, startBank, startBank);
-    myStartBank->setEnabled(false);
   }
   myStartBank->addItems(items);
   myStartBank->setSelected(props.get(PropType::Cart_StartBank), "AUTO");
@@ -792,12 +792,10 @@ void GameInfoDialog::loadEmulationProperties(const Properties& props)
   const bool alwaysPhosphor = instance().settings().getString("tv.phosphor") == "always";
   const bool usePhosphor = props.get(PropType::Display_Phosphor) == "YES";
   myPhosphor->setState(usePhosphor);
-  myPhosphor->setEnabled(!alwaysPhosphor);
   if (alwaysPhosphor)
     myPhosphor->setLabel("Phosphor (enabled for all ROMs)");
   else
     myPhosphor->setLabel("Phosphor");
-  myPPBlend->setEnabled(!alwaysPhosphor && usePhosphor);
 
   const string& blend = props.get(PropType::Display_PPBlend);
   myPPBlend->setValue(stringToInt(blend));
@@ -809,8 +807,6 @@ void GameInfoDialog::loadEmulationProperties(const Properties& props)
   myVCenter->setValueUnit(vcenter ? "px" : "");
 
   mySound->setState(props.get(PropType::Cart_Sound) == "STEREO");
-  // if stereo is always enabled, disable game specific stereo setting
-  mySound->setEnabled(!instance().audioSettings().stereo());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1123,6 +1119,51 @@ void GameInfoDialog::setDefaults()
     default: // make the compiler happy
       break;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void GameInfoDialog::updateMultiCart()
+{
+  const std::array<string, static_cast<size_t>(Bankswitch::Type::NumMulti)> MultiCart
+    = { "2IN1", "4IN1", "8IN1", "16IN1", "32IN1", "64IN1", "128IN1" };
+  const string& selected = myBSType->getSelectedTag().toString();
+  const string& detected = myTypeDetected->getLabel();
+
+  bool isMulti = false;
+  bool isInMulti = false;
+  for each(auto entry in MultiCart)
+  {
+    if(entry == selected)
+    {
+      isMulti = true;
+      break;
+    }
+    if(detected.find(entry + " [") != string::npos)
+    {
+      isInMulti = true;
+      break;
+    }
+  }
+
+  // en/disable Emulation tab widgets
+  myBSTypeLabel->setEnabled(!isInMulti);
+  myBSType->setEnabled(!isInMulti);
+  myBSFilter->setEnabled(!isInMulti);
+  myStartBank->setEnabled(!isMulti && instance().hasConsole());
+  myFormat->setEnabled(!isMulti);
+
+  // if phosphor is always enabled, disable game specific phosphor settings
+  const bool alwaysPhosphor = isMulti || instance().settings().getString("tv.phosphor") == "always";
+  myPhosphor->setEnabled(!alwaysPhosphor);
+  myPPBlend->setEnabled(!alwaysPhosphor && myPhosphor->getState());
+
+  myVCenter->setEnabled(!isMulti);
+  // if stereo is always enabled, disable game specific stereo setting
+  mySound->setEnabled(!instance().audioSettings().stereo() && !isMulti);
+
+  myTab->enableTab(1, !isMulti); // en/disable Console tab
+  myTab->enableTab(2, !isMulti); // en/disable Controller tab
+  myTab->enableTab(4, !isMulti); // en/disable Highscore tab
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1474,6 +1515,10 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
     }
     case kEEButtonPressed:
       eraseEEPROM();
+      break;
+
+    case kBSTypeChanged:
+      updateMultiCart();
       break;
 
     case kBSFilterChanged:
