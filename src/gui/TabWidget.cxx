@@ -121,16 +121,15 @@ void TabWidget::setActiveTab(int tabID, bool show)
     sendCommand(TabWidget::kTabChangedCmd, _activeTab, _id);
 }
 
-#if 0 // FIXME
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TabWidget::disableTab(int tabID)
+void TabWidget::enableTab(int tabID, bool enable)
 {
   assert(0 <= tabID && tabID < int(_tabs.size()));
 
-  _tabs[tabID].enabled = false;
-  // TODO - also disable all widgets belonging to this tab
+  _tabs[tabID].enabled = enable;
+  // Note: We do not have to disable the widgets because the tab is disabled
+  //   and therefore cannot be selected.
 }
-#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TabWidget::updateActiveTab()
@@ -163,15 +162,19 @@ void TabWidget::cycleTab(int direction)
 
   if(direction == -1)  // Go to the previous tab, wrap around at beginning
   {
-    tabID--;
-    if(tabID == -1)
-      tabID = static_cast<int>(_tabs.size()) - 1;
+    do {
+      tabID--;
+      if(tabID == -1)
+        tabID = static_cast<int>(_tabs.size()) - 1;
+    } while(!_tabs[tabID].enabled);
   }
   else if(direction == 1)  // Go to the next tab, wrap around at end
   {
-    tabID++;
-    if(tabID == static_cast<int>(_tabs.size()))
-      tabID = 0;
+    do {
+      tabID++;
+      if(tabID == static_cast<int>(_tabs.size()))
+        tabID = 0;
+    } while(!_tabs[tabID].enabled);
   }
 
   // Finally, select the active tab
@@ -222,7 +225,7 @@ void TabWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
   }
 
   // If a tab was clicked, switch to that pane
-  if (tabID >= 0)
+  if (tabID >= 0 && _tabs[tabID].enabled)
   {
     setActiveTab(tabID, true);
     updateActiveTab();

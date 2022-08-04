@@ -68,6 +68,8 @@ class GameInfoDialog : public Dialog, public CommandSender
     // save properties from all tabs into the local properties object
     void saveProperties();
 
+    // en/disable tabs and widgets depending on multicart bankswitch type selected
+    void updateMultiCart();
     // update 'BS Type' list
     void updateBSTypes();
     // update 'Controller' tab widgets
@@ -87,10 +89,10 @@ class GameInfoDialog : public Dialog, public CommandSender
     TabWidget* myTab{nullptr};
 
     // Emulation properties
+    StaticTextWidget* myBSTypeLabel{nullptr};
     PopUpWidget*      myBSType{nullptr};
     CheckboxWidget*   myBSFilter{nullptr};
     StaticTextWidget* myTypeDetected{nullptr};
-    StaticTextWidget* myStartBankLabel{nullptr};
     PopUpWidget*      myStartBank{nullptr};
     PopUpWidget*      myFormat{nullptr};
     StaticTextWidget* myFormatDetected{nullptr};
@@ -176,6 +178,7 @@ class GameInfoDialog : public Dialog, public CommandSender
     EditTextWidget*   myHighScoreNotes{nullptr};
 
     enum {
+      kBSTypeChanged   = 'Btch',
       kBSFilterChanged = 'Bfch',
       kVCenterChanged  = 'Vcch',
       kPhosphorChanged = 'PPch',
