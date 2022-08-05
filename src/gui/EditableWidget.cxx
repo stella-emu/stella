@@ -182,7 +182,7 @@ ContextMenu& EditableWidget::mouseMenu()
 {
   // add mouse context menu
   if(myMouseMenu == nullptr)
-    myMouseMenu = make_unique<ContextMenu>(this, _font, EmptyVarList);
+    myMouseMenu = make_unique<ContextMenu>(this, _font);
 
   return *myMouseMenu;
 }

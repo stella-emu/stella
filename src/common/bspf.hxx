@@ -155,15 +155,15 @@ namespace BSPF
 
   // Combines 'max' and 'min', and clamps value to the upper/lower value
   // if it is outside the specified range
-  template<typename T> inline T clamp(T val, T lower, T upper)
+  template<typename T> inline constexpr T clamp(T val, T lower, T upper)
   {
     return (val < lower) ? lower : (val > upper) ? upper : val;
   }
-  template<typename T> inline void clamp(T& val, T lower, T upper, T setVal)
+  template<typename T> inline constexpr void clamp(T& val, T lower, T upper, T setVal)
   {
     if(val < lower || val > upper)  val = setVal;
   }
-  template<typename T> inline T clampw(T val, T lower, T upper)
+  template<typename T> inline constexpr T clampw(T val, T lower, T upper)
   {
     return (val < lower) ? upper : (val > upper) ? lower : val;
   }

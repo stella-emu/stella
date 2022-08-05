@@ -42,7 +42,8 @@ class ContextMenu : public Dialog, public CommandSender
 
   public:
     ContextMenu(GuiObject* boss, const GUI::Font& font,
-                const VariantList& items, int cmd = 0, int width = 0);
+                const VariantList& items = VariantList{},
+                int cmd = 0, int width = 0);
     ~ContextMenu() override = default;
 
     bool isShading() const override { return false; }

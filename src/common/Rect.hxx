@@ -35,7 +35,7 @@ struct Point
   Int32 x{0};  //!< The horizontal part of the point
   Int32 y{0};  //!< The vertical part of the point
 
-  Point() = default;
+  constexpr Point() = default;
   explicit constexpr Point(Int32 x1, Int32 y1) : x{x1}, y{y1} { }
   explicit Point(const string& p) {
     char c = '\0';
@@ -58,7 +58,7 @@ struct Size
   uInt32 w{0};  //!< The width part of the size
   uInt32 h{0};  //!< The height part of the size
 
-  Size() = default;
+  constexpr Size() = default;
   explicit constexpr Size(uInt32 w1, uInt32 h1) : w{w1}, h{h1} { }
   explicit Size(const string& s) {
     char c = '\0';
@@ -69,7 +69,7 @@ struct Size
   }
   constexpr bool valid() const { return w > 0 && h > 0; }
 
-  void clamp(uInt32 lower_w, uInt32 upper_w, uInt32 lower_h, uInt32 upper_h) {
+  constexpr void clamp(uInt32 lower_w, uInt32 upper_w, uInt32 lower_h, uInt32 upper_h) {
     w = BSPF::clamp(w, lower_w, upper_w);
     h = BSPF::clamp(h, lower_h, upper_h);
   }
@@ -113,7 +113,7 @@ private:
   uInt32 bottom{0}, right{0};
 
 public:
-  Rect() {}
+  constexpr Rect() = default;
   constexpr explicit Rect(const Size& s) : bottom{ s.h }, right{ s.w } { assert(valid()); }
   constexpr Rect(uInt32 w, uInt32 h) : bottom{ h }, right{ w } { assert(valid()); }
   constexpr Rect(const Point& p, uInt32 w, uInt32 h)
@@ -185,9 +185,6 @@ public:
     return os;
   }
 };
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-static const Rect EmptyRect;
 
 }  // End of namespace Common
 

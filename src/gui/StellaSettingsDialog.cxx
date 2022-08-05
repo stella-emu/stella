@@ -481,7 +481,7 @@ void StellaSettingsDialog::loadControllerProperties(const Properties& props)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int StellaSettingsDialog::levelToValue(int level)
 {
-  constexpr int NUM_LEVELS = 11;
+  static constexpr int NUM_LEVELS = 11;
   static constexpr std::array<uInt8, NUM_LEVELS> values = {
     0, 5, 11, 18, 26, 35, 45, 56, 68, 81, 95
   };
@@ -492,7 +492,7 @@ int StellaSettingsDialog::levelToValue(int level)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int StellaSettingsDialog::valueToLevel(int value)
 {
-  constexpr int NUM_LEVELS = 11;
+  static constexpr int NUM_LEVELS = 11;
   static constexpr std::array<uInt8, NUM_LEVELS> values = {
     0, 5, 11, 18, 26, 35, 45, 56, 68, 81, 95
   };

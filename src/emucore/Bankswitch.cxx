@@ -92,7 +92,7 @@ bool Bankswitch::isValidRomName(const string& name)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const std::array<Bankswitch::Description, static_cast<int>(Bankswitch::Type::NumSchemes)>
+constexpr std::array<Bankswitch::Description, static_cast<int>(Bankswitch::Type::NumSchemes)>
 Bankswitch::BSList = {{
   { "AUTO"    , "Auto-detect"                 },
   { "0840"    , "0840 (8K EconoBanking)"      },
@@ -153,10 +153,10 @@ Bankswitch::BSList = {{
 #endif
 }};
 
-#ifdef GUI_SUPPORT
-const std::array<Bankswitch::SizesType, static_cast<int>(Bankswitch::Type::NumSchemes)> 
+#if defined(GUI_SUPPORT)
+constexpr std::array<Bankswitch::SizesType, static_cast<int>(Bankswitch::Type::NumSchemes)>
 Bankswitch::Sizes = {{
-  { Bankswitch::any_KB, Bankswitch::any_KB }, // _AUTO  
+  { Bankswitch::any_KB, Bankswitch::any_KB }, // _AUTO
   {    8_KB,   8_KB }, // _0840
   {    8_KB,   8_KB }, // _0FA0
   {    4_KB,  64_KB }, // _2IN1
@@ -195,7 +195,7 @@ Bankswitch::Sizes = {{
   {   32_KB,  32_KB }, // _F4SC
   {   16_KB,  16_KB }, // _F6
   {   16_KB,  16_KB }, // _F6SC
-  {    8_KB,   8_KB }, // _F8                         
+  {    8_KB,   8_KB }, // _F8
   {    8_KB,   8_KB }, // _F8SC
   {   12_KB,  12_KB }, // _FA
   {   24_KB,  32_KB }, // _FA2
@@ -214,7 +214,7 @@ Bankswitch::Sizes = {{
   { Bankswitch::any_KB, Bankswitch::any_KB }                  }
 #endif
 }};
-#endif
+#endif  // GUI_SUPPORT
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Bankswitch::ExtensionMap Bankswitch::ourExtensions = {
