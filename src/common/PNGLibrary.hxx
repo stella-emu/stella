@@ -67,7 +67,7 @@ class PNGLibrary
              more detailed error message.
     */
     void saveImage(const string& filename,
-                   const VariantList& comments = EmptyVarList);
+                   const VariantList& comments = VariantList{});
 
     /**
       Save the given surface to a PNG file.
@@ -82,8 +82,8 @@ class PNGLibrary
              more detailed error message.
     */
     void saveImage(const string& filename, const FBSurface& surface,
-                   const Common::Rect& rect = Common::EmptyRect,
-                   const VariantList& comments = EmptyVarList);
+                   const Common::Rect& rect = Common::Rect{},
+                   const VariantList& comments = VariantList{});
 
     /**
       Called at regular intervals, and used to determine whether a

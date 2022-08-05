@@ -788,7 +788,7 @@ ContextMenu& LauncherDialog::contextMenu()
 {
   if(myContextMenu == nullptr)
     // Create (empty) context menu for ROM list options
-    myContextMenu = make_unique<ContextMenu>(this, _font, EmptyVarList);
+    myContextMenu = make_unique<ContextMenu>(this, _font);
 
   return *myContextMenu;
 }

@@ -256,8 +256,9 @@ void InputDialog::addDevicePortTab()
   ypos += lineHeight + VGAP * 3;
   lwidth = _font.getStringWidth("AtariVox serial port ");
   fwidth = _w - HBORDER * 2 - 2 - lwidth - PopUpWidget::dropDownWidth(_font);
-  myAVoxPort = new PopUpWidget(myTab, _font, HBORDER, ypos, fwidth, lineHeight, EmptyVarList,
-                               "AtariVox serial port ", lwidth, kCursorStateChanged);
+  myAVoxPort = new PopUpWidget(myTab, _font, HBORDER, ypos, fwidth, lineHeight,
+                  VariantList{}, "AtariVox serial port ", lwidth,
+                  kCursorStateChanged);
   myAVoxPort->setEditable(true);
   wid.push_back(myAVoxPort);
 

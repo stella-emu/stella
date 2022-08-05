@@ -54,8 +54,8 @@ class Bankswitch
 
 #ifdef GUI_SUPPORT
     struct SizesType {
-      size_t minSize;
-      size_t maxSize;
+      size_t minSize{0};
+      size_t maxSize{0};
     };
     static constexpr size_t any_KB = 0;
 

@@ -174,7 +174,7 @@ void TIASurface::setNTSC(NTSCFilter::Preset preset, bool show)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIASurface::changeNTSC(int direction)
 {
-  constexpr NTSCFilter::Preset PRESETS[] = {
+  static constexpr std::array<NTSCFilter::Preset, 6> PRESETS = {
     NTSCFilter::Preset::OFF, NTSCFilter::Preset::RGB, NTSCFilter::Preset::SVIDEO,
     NTSCFilter::Preset::COMPOSITE, NTSCFilter::Preset::BAD, NTSCFilter::Preset::CUSTOM
   };
@@ -334,7 +334,7 @@ void TIASurface::createScanlineSurface()
       : vRepeats(c_vRepeats), data(c_data)
     {}
   };
-  std::array<Pattern, int(ScanlineMask::NumMasks)> Patterns = {{
+  static std::array<Pattern, int(ScanlineMask::NumMasks)> Patterns = {{
     Pattern(1,  // standard
     {
       { 0x00000000 },
