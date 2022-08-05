@@ -1147,7 +1147,7 @@ void GameInfoDialog::updateMultiCart()
 
   // en/disable Emulation tab widgets
   myBSTypeLabel->setEnabled(!isInMulti);
-  myBSType->setEnabled(!isInMulti);
+  myBSType->setEnabled(!isInMulti); // TODO: currently only auto-detected, add using properties
   myBSFilter->setEnabled(!isInMulti);
   myStartBank->setEnabled(!isMulti && instance().hasConsole());
   myFormat->setEnabled(!isMulti);
