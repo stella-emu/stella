@@ -66,7 +66,7 @@ class CartCreator
     */
     static unique_ptr<Cartridge>
       createFromMultiCart(const ByteBuffer& image, size_t& size,
-        uInt32 numroms, string& md5, Bankswitch::Type type, string& id,
+        uInt32 numroms, string& md5, Bankswitch::Type& type, string& id,
         Settings& settings);
 
     /**

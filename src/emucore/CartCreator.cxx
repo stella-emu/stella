@@ -105,97 +105,50 @@ unique_ptr<Cartridge> CartCreator::create(const FSNode& file,
     buf << Bankswitch::typeToName(type);
 
   // Check for multicart first; if found, get the correct part of the image
+  bool validMultiSize = true;
+  int numRoms = 0;
   switch(type)
   {
     case Bankswitch::Type::_2IN1:
+      numRoms = 2;
       // Make sure we have a valid sized image
-      if(size == 2*2_KB || size == 2*4_KB || size == 2*8_KB || size == 2*16_KB || size == 2*32_KB)
-      {
-        cartridge =
-          createFromMultiCart(image, size, 2, md5, detectedType, id, settings);
-        buf << id;
-      }
-      else
-        throw runtime_error("Invalid cart size for type '" +
-                            Bankswitch::typeToName(type) + "'");
+      validMultiSize = (size == 2 * 2_KB || size == 2 * 4_KB || size == 2 * 8_KB || size == 2 * 16_KB || size == 2 * 32_KB);
       break;
 
     case Bankswitch::Type::_4IN1:
+      numRoms = 4;
       // Make sure we have a valid sized image
-      if(size == 4*2_KB || size == 4*4_KB || size == 4*8_KB || size == 4*16_KB)
-      {
-        cartridge =
-          createFromMultiCart(image, size, 4, md5, detectedType, id, settings);
-        buf << id;
-      }
-      else
-        throw runtime_error("Invalid cart size for type '" +
-                            Bankswitch::typeToName(type) + "'");
+      validMultiSize = (size == 4 * 2_KB || size == 4 * 4_KB || size == 4 * 8_KB || size == 4 * 16_KB);
       break;
 
     case Bankswitch::Type::_8IN1:
+      numRoms = 8;
       // Make sure we have a valid sized image
-      if(size == 8*2_KB || size == 8*4_KB || size == 8*8_KB)
-      {
-        cartridge =
-          createFromMultiCart(image, size, 8, md5, detectedType, id, settings);
-        buf << id;
-      }
-      else
-        throw runtime_error("Invalid cart size for type '" +
-                            Bankswitch::typeToName(type) + "'");
+      validMultiSize = (size == 8 * 2_KB || size == 8 * 4_KB || size == 8 * 8_KB);
       break;
 
     case Bankswitch::Type::_16IN1:
+      numRoms = 16;
       // Make sure we have a valid sized image
-      if(size == 16*2_KB || size == 16*4_KB || size == 16*8_KB)
-      {
-        cartridge =
-          createFromMultiCart(image, size, 16, md5, detectedType, id, settings);
-        buf << id;
-      }
-      else
-        throw runtime_error("Invalid cart size for type '" +
-                            Bankswitch::typeToName(type) + "'");
+      validMultiSize = (size == 16 * 2_KB || size == 16 * 4_KB || size == 16 * 8_KB);
       break;
 
     case Bankswitch::Type::_32IN1:
+      numRoms = 32;
       // Make sure we have a valid sized image
-      if(size == 32*2_KB || size == 32*4_KB)
-      {
-        cartridge =
-          createFromMultiCart(image, size, 32, md5, detectedType, id, settings);
-        buf << id;
-      }
-      else
-        throw runtime_error("Invalid cart size for type '" +
-                            Bankswitch::typeToName(type) + "'");
+      validMultiSize = (size == 32 * 2_KB || size == 32 * 4_KB);
       break;
 
     case Bankswitch::Type::_64IN1:
+      numRoms = 64;
       // Make sure we have a valid sized image
-      if(size == 64*2_KB || size == 64*4_KB)
-      {
-        cartridge =
-          createFromMultiCart(image, size, 64, md5, detectedType, id, settings);
-        buf << id;
-      }
-      else
-        throw runtime_error("Invalid cart size for type '" +
-                            Bankswitch::typeToName(type) + "'");
+      validMultiSize = (size == 64 * 2_KB || size == 64 * 4_KB);
       break;
 
     case Bankswitch::Type::_128IN1:
+      numRoms = 128;
       // Make sure we have a valid sized image
-      if(size == 128*2_KB || size == 128*4_KB)
-      {
-        cartridge =
-          createFromMultiCart(image, size, 128, md5, detectedType, id, settings);
-        buf << id;
-      }
-      else
-        throw runtime_error("Invalid cart size for type '" +
-                            Bankswitch::typeToName(type) + "'");
+      validMultiSize = (size == 128 * 2_KB || size == 128 * 4_KB);
       break;
 
     case Bankswitch::Type::_MVC:
@@ -207,10 +160,37 @@ unique_ptr<Cartridge> CartCreator::create(const FSNode& file,
       break;
   }
 
+  bool isMulti = false;
+  switch(type)
+  {
+    case Bankswitch::Type::_2IN1:
+    case Bankswitch::Type::_4IN1:
+    case Bankswitch::Type::_8IN1:
+    case Bankswitch::Type::_16IN1:
+    case Bankswitch::Type::_32IN1:
+    case Bankswitch::Type::_64IN1:
+    case Bankswitch::Type::_128IN1:
+      isMulti = true;
+      if(validMultiSize)
+        cartridge = createFromMultiCart(image, size, numRoms, md5, detectedType, id, settings);
+      else
+        throw runtime_error("Invalid cart size for type '" + Bankswitch::typeToName(type) + "'");
+
+      //type = detectedType;
+      buf << id;
+      break;
+
+    default:
+      break;
+  }
+
   if(size < 1_KB)
-    buf << " (" << size << "B) ";
+    buf << " (" << size << "B";
   else
-    buf << " (" << (size/1_KB) << "K) ";
+    buf << " (" << (size/1_KB) << "K";
+  if(isMulti && detectedType != Bankswitch::Type::_2K && detectedType != Bankswitch::Type::_4K)
+    buf << " " << Bankswitch::typeToName(detectedType);
+  buf << ") ";
 
   cartridge->setAbout(buf.str(), Bankswitch::typeToName(type), id);
 
@@ -220,7 +200,7 @@ unique_ptr<Cartridge> CartCreator::create(const FSNode& file,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 unique_ptr<Cartridge>
 CartCreator::createFromMultiCart(const ByteBuffer& image, size_t& size,
-    uInt32 numroms, string& md5, Bankswitch::Type type, string& id, Settings& settings)
+    uInt32 numroms, string& md5, Bankswitch::Type& type, string& id, Settings& settings)
 {
   // Get a piece of the larger image
   uInt32 i = settings.getInt("romloadcount");
@@ -242,6 +222,7 @@ CartCreator::createFromMultiCart(const ByteBuffer& image, size_t& size,
   buf << " [G" << (i+1) << "]";
   id = buf.str();
 
+  // TODO: allow using ROM properties instead of autodetect only
   if(size <= 2_KB)
     type = Bankswitch::Type::_2K;
   else if(size == 4_KB)
