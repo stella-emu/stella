@@ -166,7 +166,7 @@ int DialogContainer::addDialog(Dialog* d)
     d->setDirty();
     myDialogStack.push(d);
   }
-  return myDialogStack.size();
+  return static_cast<int>(myDialogStack.size());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

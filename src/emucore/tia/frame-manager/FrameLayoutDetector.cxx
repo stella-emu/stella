@@ -79,11 +79,11 @@ FrameLayout FrameLayoutDetector::detectedLayout(bool detectPal60, bool detectNts
   {
     // Multiply each hue's count with its NTSC and PAL stats and aggregate results
     // If NTSC/PAL results differ significantly, overrule frame result
-    constexpr std::array<double, NUM_HUES> ntscColorFactor{
+    static constexpr std::array<double, NUM_HUES> ntscColorFactor{
       0.00000, 0.05683, 0.06220, 0.05505, 0.06162, 0.02874, 0.03532, 0.03716,
       0.15568, 0.06471, 0.02886, 0.03224, 0.06903, 0.11478, 0.02632, 0.01675
     }; // ignore black = 0x00!
-    constexpr std::array<double, NUM_HUES> palColorFactor{
+    static constexpr std::array<double, NUM_HUES> palColorFactor{
       0.00000, 0.00450, 0.09962, 0.07603, 0.06978, 0.13023, 0.09638, 0.02268,
       0.02871, 0.04700, 0.02950, 0.11974, 0.03474, 0.08025, 0.00642, 0.00167
     }; // ignore black = 0x00!

@@ -42,7 +42,7 @@ class Variant
     }
 
   public:
-    Variant() { }  // NOLINT
+    Variant() = default;  // NOLINT
 
     Variant(const string& s) : data{s} { }
     Variant(const char* s) : data{s} { }
@@ -93,13 +93,10 @@ using VariantList = vector<std::pair<string,Variant>>;
 
 namespace VarList {
   inline void push_back(VariantList& list, const Variant& name,
-                        const Variant& tag = EmptyVariant)
+                        const Variant& tag = Variant{})
   {
     list.emplace_back(name.toString(), tag);
   }
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-static const VariantList EmptyVarList;
 
 #endif

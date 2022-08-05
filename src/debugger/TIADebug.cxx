@@ -1021,7 +1021,7 @@ string TIADebug::audFreq1()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string TIADebug::audFreq(uInt8 dist, uInt8 div)
 {
-  constexpr uInt16 dist_div[16] = {
+  static constexpr uInt16 dist_div[16] = {
       1, 15, 465, 465, 2, 2, 31, 31,
     511, 31,  31,   1, 6, 6, 93, 93
   };
