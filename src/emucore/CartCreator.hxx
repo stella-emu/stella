@@ -56,7 +56,7 @@ class CartCreator
 
       @param image    A pointer to the complete ROM image
       @param size     The size of the ROM image slice
-      @param numroms  The number of ROMs in the multicart
+      @param numRoms  The number of ROMs in the multicart
       @param md5      The md5sum for the slice of the ROM image
       @param type     The detected type of the slice of the ROM image
       @param id       The ID for the slice of the ROM image
@@ -66,7 +66,7 @@ class CartCreator
     */
     static unique_ptr<Cartridge>
       createFromMultiCart(const ByteBuffer& image, size_t& size,
-        uInt32 numroms, string& md5, Bankswitch::Type& type, string& id,
+        uInt32 numRoms, string& md5, Bankswitch::Type& type, string& id,
         Settings& settings);
 
     /**

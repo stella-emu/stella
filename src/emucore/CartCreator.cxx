@@ -106,47 +106,47 @@ unique_ptr<Cartridge> CartCreator::create(const FSNode& file,
 
   // Check for multicart first; if found, get the correct part of the image
   bool validMultiSize = true;
-  int numRoms = 0;
+  int numMultiRoms = 0;
   switch(type)
   {
     case Bankswitch::Type::_2IN1:
-      numRoms = 2;
+      numMultiRoms = 2;
       // Make sure we have a valid sized image
       validMultiSize = (size == 2 * 2_KB || size == 2 * 4_KB || size == 2 * 8_KB || size == 2 * 16_KB || size == 2 * 32_KB);
       break;
 
     case Bankswitch::Type::_4IN1:
-      numRoms = 4;
+      numMultiRoms = 4;
       // Make sure we have a valid sized image
       validMultiSize = (size == 4 * 2_KB || size == 4 * 4_KB || size == 4 * 8_KB || size == 4 * 16_KB);
       break;
 
     case Bankswitch::Type::_8IN1:
-      numRoms = 8;
+      numMultiRoms = 8;
       // Make sure we have a valid sized image
       validMultiSize = (size == 8 * 2_KB || size == 8 * 4_KB || size == 8 * 8_KB);
       break;
 
     case Bankswitch::Type::_16IN1:
-      numRoms = 16;
+      numMultiRoms = 16;
       // Make sure we have a valid sized image
       validMultiSize = (size == 16 * 2_KB || size == 16 * 4_KB || size == 16 * 8_KB);
       break;
 
     case Bankswitch::Type::_32IN1:
-      numRoms = 32;
+      numMultiRoms = 32;
       // Make sure we have a valid sized image
       validMultiSize = (size == 32 * 2_KB || size == 32 * 4_KB);
       break;
 
     case Bankswitch::Type::_64IN1:
-      numRoms = 64;
+      numMultiRoms = 64;
       // Make sure we have a valid sized image
       validMultiSize = (size == 64 * 2_KB || size == 64 * 4_KB);
       break;
 
     case Bankswitch::Type::_128IN1:
-      numRoms = 128;
+      numMultiRoms = 128;
       // Make sure we have a valid sized image
       validMultiSize = (size == 128 * 2_KB || size == 128 * 4_KB);
       break;
@@ -160,35 +160,22 @@ unique_ptr<Cartridge> CartCreator::create(const FSNode& file,
       break;
   }
 
-  bool isMulti = false;
-  switch(type)
+  if(numMultiRoms)
   {
-    case Bankswitch::Type::_2IN1:
-    case Bankswitch::Type::_4IN1:
-    case Bankswitch::Type::_8IN1:
-    case Bankswitch::Type::_16IN1:
-    case Bankswitch::Type::_32IN1:
-    case Bankswitch::Type::_64IN1:
-    case Bankswitch::Type::_128IN1:
-      isMulti = true;
-      if(validMultiSize)
-        cartridge = createFromMultiCart(image, size, numRoms, md5, detectedType, id, settings);
-      else
-        throw runtime_error("Invalid cart size for type '" + Bankswitch::typeToName(type) + "'");
+    if(validMultiSize)
+      cartridge = createFromMultiCart(image, size, numMultiRoms, md5, detectedType, id, settings);
+    else
+      throw runtime_error("Invalid cart size for type '" + Bankswitch::typeToName(type) + "'");
 
-      //type = detectedType;
-      buf << id;
-      break;
-
-    default:
-      break;
+    //type = detectedType;
+    buf << id;
   }
 
   if(size < 1_KB)
     buf << " (" << size << "B";
   else
     buf << " (" << (size/1_KB) << "K";
-  if(isMulti && detectedType != Bankswitch::Type::_2K && detectedType != Bankswitch::Type::_4K)
+  if(numMultiRoms && detectedType != Bankswitch::Type::_2K && detectedType != Bankswitch::Type::_4K)
     buf << " " << Bankswitch::typeToName(detectedType);
   buf << ") ";
 
@@ -200,21 +187,21 @@ unique_ptr<Cartridge> CartCreator::create(const FSNode& file,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 unique_ptr<Cartridge>
 CartCreator::createFromMultiCart(const ByteBuffer& image, size_t& size,
-    uInt32 numroms, string& md5, Bankswitch::Type& type, string& id, Settings& settings)
+    uInt32 numRoms, string& md5, Bankswitch::Type& type, string& id, Settings& settings)
 {
   // Get a piece of the larger image
   uInt32 i = settings.getInt("romloadcount");
 
   // Move to the next game
   if(!settings.getBool("romloadprev"))
-    i = (i + 1) % numroms;
+    i = (i + 1) % numRoms;
   else
-    i = (i - 1) % numroms;
+    i = (i - 1) % numRoms;
   settings.setValue("romloadcount", i);
 
-  size /= numroms;
+  size /= numRoms;
   ByteBuffer slice = make_unique<uInt8[]>(size);
-  std::copy_n(image.get()+i*size, size, slice.get());
+  std::copy_n(image.get() + i * size, size, slice.get());
 
   // We need a new md5 and name
   md5 = MD5::hash(slice, size);
