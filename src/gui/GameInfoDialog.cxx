@@ -772,7 +772,7 @@ void GameInfoDialog::loadEmulationProperties(const Properties& props)
     VarList::push_back(items, startBank, startBank);
   }
   myStartBank->addItems(items);
-  myStartBank->setSelected(props.get(PropType::Cart_StartBank), "AUTO");
+  myStartBank->setSelected(props.get(PropType::Cart_StartBank), "Auto");
 
   myFormat->setSelected(props.get(PropType::Display_Format), "AUTO");
   if(instance().hasConsole() && myFormat->getSelectedTag().toString() == "AUTO")
