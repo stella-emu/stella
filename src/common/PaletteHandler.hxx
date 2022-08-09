@@ -39,7 +39,7 @@ class PaletteHandler
     static constexpr float DEF_RGB_SHIFT = 0.0F;
     static constexpr float MAX_RGB_SHIFT = 22.5F;
 
-    enum Adjustables {
+    enum Adjustables : uInt32 {
       PHASE_SHIFT,
       RED_SCALE,
       GREEN_SCALE,
