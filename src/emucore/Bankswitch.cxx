@@ -211,7 +211,7 @@ Bankswitch::Sizes = {{
   {    8_KB,   8_KB+5 }, // _WDSW
   {   64_KB,  64_KB }, // _X07
 #if defined(CUSTOM_ARM)
-  { Bankswitch::any_KB, Bankswitch::any_KB }                  }
+  { Bankswitch::any_KB, Bankswitch::any_KB }
 #endif
 }};
 #endif  // GUI_SUPPORT
