@@ -77,8 +77,7 @@ void PaletteHandler::cyclePalette(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PaletteHandler::isCustomAdjustable() const
 {
-  return myCurrentAdjustable >= CUSTOM_START
-    && myCurrentAdjustable <= CUSTOM_END;
+  return myCurrentAdjustable <= CUSTOM_END;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
