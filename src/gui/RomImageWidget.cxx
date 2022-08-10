@@ -24,6 +24,7 @@
 #include "PNGLibrary.hxx"
 #include "Props.hxx"
 #include "PropsSet.hxx"
+#include "bspf.hxx"
 #include "RomImageWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -99,20 +100,26 @@ void RomImageWidget::parseProperties(const FSNode& node)
   mySurfaceIsValid = false;
 
 #ifdef PNG_SUPPORT
+  // TODO: RETRON_77
+
   // Get a valid filename representing a snapshot file for this rom and load the snapshot
   const string& path = instance().snapshotLoadDir().getPath();
 
-  // 1. Try to load snapshot by property name
-  mySurfaceIsValid = loadPng(path + myProperties.get(PropType::Cart_Name) + ".png");
+  // 1. Try to load snapshots by property name
+  if(getImageList(path + myProperties.get(PropType::Cart_Name)))
+    mySurfaceIsValid = loadPng(myImageList[0].getPath());
+  //mySurfaceIsValid = loadPng(path + myProperties.get(PropType::Cart_Name) + ".png");
 
   if(!mySurfaceIsValid)
   {
-    // 2. If no snapshot with property name exists, try to load snapshot image by filename
-    mySurfaceIsValid = loadPng(path + node.getNameWithExt("") + ".png");
+    // 2. If no snapshots with property name exists, try to load snapshot images by filename
+    if(getImageList(path + node.getNameWithExt("")))
+      mySurfaceIsValid = loadPng(myImageList[0].getPath());
+    //mySurfaceIsValid = loadPng(path + node.getNameWithExt("") + ".png");
 
     if(!mySurfaceIsValid)
     {
-      // 3. If no ROM snapshot exists, try to load a default snapshot
+      // 3. If no ROM snapshots exist, try to load a default snapshot
       mySurfaceIsValid = loadPng(path + "default_snapshot.png");
     }
   }
@@ -127,6 +134,22 @@ void RomImageWidget::parseProperties(const FSNode& node)
 
 #ifdef PNG_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool RomImageWidget::getImageList(const string& filename)
+{
+  FSNode::NameFilter filter = ([&](const FSNode& node) {
+    return (!node.isDirectory() &&
+      (node.getPath() == filename + ".png" ||
+       BSPF::matchWithWildcards(node.getPath(), filename + "#*.png")));
+  });
+
+  FSNode node(instance().snapshotLoadDir().getPath());
+
+  myImageList.clear();
+  node.getChildren(myImageList, FSNode::ListMode::FilesOnly, filter, false, false);
+  return myImageList.size() > 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool RomImageWidget::loadPng(const string& filename)
 {
   try
@@ -139,6 +162,7 @@ bool RomImageWidget::loadPng(const string& filename)
       instance().frameBuffer().hidpiScaleFactor();
     mySurface->setDstSize(static_cast<uInt32>(src.w() * scale), static_cast<uInt32>(src.h() * scale));
 
+    setDirty();
     return true;
   }
   catch(const runtime_error& e)
@@ -149,17 +173,32 @@ bool RomImageWidget::loadPng(const string& filename)
 }
 #endif
 
+#ifdef PNG_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-//void RomImageWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
-//{
-//  if(isEnabled() && isHighlighted()
-//    && x >= 0 && x < _w
-//    && y >= static_cast<int>(_h) + _font.getFontHeight() / 2 && y < _h)
-//  {
-//    clearFlags(Widget::FLAG_HILITED); // avoid double clicks and opened URLs
-//    sendCommand(kClickedCmd, 0, _id);
-//  }
-//}
+void RomImageWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
+{
+  if(isEnabled() && x >= 0 && x < _w && y >= 0 && y < _h)
+  {
+    if(x < _w/2)
+    {
+      if(myImageIdx)
+      {
+        loadPng(myImageList[--myImageIdx].getPath());
+      }
+    }
+    else if(myImageIdx < myImageList.size())
+    {
+      loadPng(myImageList[++myImageIdx].getPath());
+    }
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RomImageWidget::handleMouseMoved(int x, int y)
+{
+  myMouseX = x;
+}
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomImageWidget::drawWidget(bool hilite)
@@ -194,6 +233,16 @@ void RomImageWidget::drawWidget(bool hilite)
     const uInt32 y = _y + ((yoff - _font.getLineHeight()) >> 1);
     s.drawString(_font, mySurfaceErrorMsg, x, y, _w - 10, _textcolor);
   }
+
+#ifdef PNG_SUPPORT
+  if(isHighlighted())
+  {
+    // TODO: need another surface
+    const int xOfs = myMouseX < _w / 2 ? 10 : _w - 50;
+
+    s.line(xOfs, _h / 2 - 10, xOfs + 20, _h / 2, kBtnTextColorHi);
+  }
+#endif
 
   clearDirty();
 }
