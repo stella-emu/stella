@@ -45,10 +45,10 @@
 #include "StellaKeys.hxx"
 #include "Props.hxx"
 #include "PropsSet.hxx"
+#include "RomImageWidget.hxx"
 #include "RomInfoWidget.hxx"
 #include "TIAConstants.hxx"
 #include "Settings.hxx"
-#include "Widget.hxx"
 #include "Font.hxx"
 #include "StellaFont.hxx"
 #include "ConsoleBFont.hxx"
@@ -329,10 +329,14 @@ void LauncherDialog::addRomWidgets(int ypos)
     // Calculate font area, and in the process the font that can be used
     const Common::Size fontArea(romWidth - fontWidth * 2,
       myList->getHeight() - imgSize.h - VGAP * 3);
-
     setRomInfoFont(fontArea);
+
+    myRomImageWidget = new RomImageWidget(this, *myROMInfoFont,
+      xpos, ypos, romWidth, imgSize.h);
+
+    int yofs = imgSize.h + _font.getFontHeight() / 2;
     myRomInfoWidget = new RomInfoWidget(this, *myROMInfoFont,
-      xpos, ypos, romWidth, myList->getHeight(), imgSize);
+      xpos, ypos + yofs, romWidth, myList->getHeight() - yofs);
   }
   addToFocusList(wid);
 }
@@ -503,7 +507,10 @@ void LauncherDialog::loadConfig()
   Dialog::setFocus(getFocusList()[mySelectedItem]);
 
   if(myRomInfoWidget)
+  {
+    myRomImageWidget->reloadProperties(currentNode());
     myRomInfoWidget->reloadProperties(currentNode());
+  }
 
   myList->clearFlags(Widget::FLAG_WANTS_RAWDATA); // always reset this
 }
@@ -716,14 +723,20 @@ void LauncherDialog::setRomInfoFont(const Common::Size& area)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::loadRomInfo()
 {
-  if(!myRomInfoWidget)
+  if(!myRomImageWidget || !myROMInfoFont)
     return;
 
   const string& md5 = selectedRomMD5();
   if(md5 != EmptyString)
+  {
+    myRomImageWidget->setProperties(currentNode(), md5);
     myRomInfoWidget->setProperties(currentNode(), md5);
+  }
   else
+  {
+    myRomImageWidget->clearProperties();
     myRomInfoWidget->clearProperties();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

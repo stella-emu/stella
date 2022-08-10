@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef ROM_INFO_WIDGET_HXX
-#define ROM_INFO_WIDGET_HXX
+#ifndef ROM_IMAGE_WIDGET_HXX
+#define ROM_IMAGE_WIDGET_HXX
 
 class FBSurface;
 class Properties;
@@ -24,34 +24,38 @@ class Properties;
 #include "Widget.hxx"
 #include "bspf.hxx"
 
-class RomInfoWidget : public Widget, public CommandSender
+class RomImageWidget : public Widget, public CommandSender
 {
   public:
-    enum {
-      kClickedCmd = 'RIcl'
-    };
+    //enum {
+    //  kClickedCmd = 'RIcl'
+    //};
 
   public:
-    RomInfoWidget(GuiObject *boss, const GUI::Font& font,
+    RomImageWidget(GuiObject *boss, const GUI::Font& font,
                   int x, int y, int w, int h);
-    ~RomInfoWidget() override = default;
+    ~RomImageWidget() override = default;
 
     void setProperties(const FSNode& node, const string& md5);
     void clearProperties();
     void reloadProperties(const FSNode& node);
 
-    const string& getUrl() const { return myUrl; }
-
   protected:
     void drawWidget(bool hilite) override;
-    void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
+    //void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
 
   private:
     void parseProperties(const FSNode& node);
+  #ifdef PNG_SUPPORT
+    bool loadPng(const string& filename);
+  #endif
 
   private:
-    // Some ROM properties info, as well as 'tEXt' chunks from the PNG image
-    StringList myRomInfo;
+    // Surface pointer holding the PNG image
+    shared_ptr<FBSurface> mySurface;
+
+    // Whether the surface should be redrawn by drawWidget()
+    bool mySurfaceIsValid{false};
 
     // The properties for the currently selected ROM
     Properties myProperties;
@@ -59,16 +63,16 @@ class RomInfoWidget : public Widget, public CommandSender
     // Indicates if the current properties should actually be used
     bool myHaveProperties{false};
 
-    // Optional cart link URL
-    string myUrl;
+    // Indicates if an error occurred in creating/displaying the surface
+    string mySurfaceErrorMsg;
 
   private:
     // Following constructors and assignment operators not supported
-    RomInfoWidget() = delete;
-    RomInfoWidget(const RomInfoWidget&) = delete;
-    RomInfoWidget(RomInfoWidget&&) = delete;
-    RomInfoWidget& operator=(const RomInfoWidget&) = delete;
-    RomInfoWidget& operator=(RomInfoWidget&&) = delete;
+    RomImageWidget() = delete;
+    RomImageWidget(const RomImageWidget&) = delete;
+    RomImageWidget(RomImageWidget&&) = delete;
+    RomImageWidget& operator=(const RomImageWidget&) = delete;
+    RomImageWidget& operator=(RomImageWidget&&) = delete;
 };
 
 #endif
