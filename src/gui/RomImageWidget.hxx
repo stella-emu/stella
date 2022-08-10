@@ -27,11 +27,6 @@ class Properties;
 class RomImageWidget : public Widget, public CommandSender
 {
   public:
-    //enum {
-    //  kClickedCmd = 'RIcl'
-    //};
-
-  public:
     RomImageWidget(GuiObject *boss, const GUI::Font& font,
                   int x, int y, int w, int h);
     ~RomImageWidget() override = default;
@@ -42,11 +37,15 @@ class RomImageWidget : public Widget, public CommandSender
 
   protected:
     void drawWidget(bool hilite) override;
-    //void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
+#ifdef PNG_SUPPORT
+    void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
+    void handleMouseMoved(int x, int y) override;
+#endif
 
   private:
     void parseProperties(const FSNode& node);
   #ifdef PNG_SUPPORT
+    bool getImageList(const string& filename);
     bool loadPng(const string& filename);
   #endif
 
@@ -65,6 +64,17 @@ class RomImageWidget : public Widget, public CommandSender
 
     // Indicates if an error occurred in creating/displaying the surface
     string mySurfaceErrorMsg;
+
+#ifdef PNG_SUPPORT
+    // Contains the list of image names for the current ROM
+    FSList myImageList;
+
+    // Index of currently displayed image
+    int myImageIdx{0};
+
+    // Current x-position of the mouse
+    int myMouseX{0};
+#endif
 
   private:
     // Following constructors and assignment operators not supported
