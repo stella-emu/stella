@@ -81,7 +81,7 @@ class RomImageWidget : public Widget, public CommandSender
     FSList myImageList;
 
     // Index of currently displayed image
-    int myImageIdx{0};
+    size_t myImageIdx{0};
 
     // Current x-position of the mouse
     int myMouseX{0};
