@@ -16,7 +16,7 @@ MODULE_OBJS := \
         src/gui/EditTextWidget.o \
         src/gui/EmulationDialog.o \
         src/gui/EventMappingWidget.o \
-	src/gui/FavoritesManager.o \
+        src/gui/FavoritesManager.o \
         src/gui/FileListWidget.o \
         src/gui/Font.o \
         src/gui/GameInfoDialog.o \
@@ -28,7 +28,7 @@ MODULE_OBJS := \
         src/gui/InputTextDialog.o \
         src/gui/JoystickDialog.o \
         src/gui/LauncherDialog.o \
-	src/gui/LauncherFileListWidget.o \
+        src/gui/LauncherFileListWidget.o \
         src/gui/Launcher.o \
         src/gui/ListWidget.o \
         src/gui/LoggerDialog.o \
@@ -36,7 +36,7 @@ MODULE_OBJS := \
         src/gui/MessageDialog.o \
         src/gui/MessageMenu.o \
         src/gui/MinUICommandDialog.o \
-	src/gui/NavigationWidget.o \
+        src/gui/NavigationWidget.o \
         src/gui/OptionsDialog.o \
         src/gui/OptionsMenu.o \
         src/gui/PlusRomsMenu.o\
@@ -47,8 +47,9 @@ MODULE_OBJS := \
         src/gui/R77HelpDialog.o \
         src/gui/RadioButtonWidget.o \
         src/gui/RomAuditDialog.o \
-	src/gui/RomImageWidget.o \
+        src/gui/RomImageWidget.o \
         src/gui/RomInfoWidget.o \
+        src/gui/RomImageWidget.o \
         src/gui/ScrollBarWidget.o \
         src/gui/SnapshotDialog.o \
         src/gui/StellaSettingsDialog.o \
