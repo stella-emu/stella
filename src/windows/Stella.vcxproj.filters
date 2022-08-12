@@ -1146,6 +1146,9 @@
     <ClCompile Include="..\debugger\gui\Joy2BPlusWidget.cxx">
       <Filter>Source Files\debugger</Filter>
     </ClCompile>
+    <ClCompile Include="..\gui\RomImageWidget.cxx">
+      <Filter>Source Files\gui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">
@@ -2371,6 +2374,9 @@
     </ClInclude>
     <ClInclude Include="..\debugger\gui\Joy2BPlusWidget.hxx">
       <Filter>Header Files\debugger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gui\RomImageWidget.hxx">
+      <Filter>Header Files\gui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

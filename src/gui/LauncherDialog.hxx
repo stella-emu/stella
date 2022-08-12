@@ -27,6 +27,7 @@ class Properties;
 class EditTextWidget;
 class NavigationWidget;
 class LauncherFileListWidget;
+class RomImageWidget;
 class RomInfoWidget;
 class StaticTextWidget;
 
@@ -213,6 +214,7 @@ class LauncherDialog : public Dialog, CommandSender
     ButtonWidget*     myOptionsButton{nullptr};
     ButtonWidget*     myQuitButton{nullptr};
 
+    RomImageWidget*   myRomImageWidget{nullptr};
     RomInfoWidget*    myRomInfoWidget{nullptr};
 
     std::unordered_map<string,string> myMD5List;

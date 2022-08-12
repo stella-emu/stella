@@ -47,6 +47,7 @@ MODULE_OBJS := \
         src/gui/R77HelpDialog.o \
         src/gui/RadioButtonWidget.o \
         src/gui/RomAuditDialog.o \
+	src/gui/RomImageWidget.o \
         src/gui/RomInfoWidget.o \
         src/gui/ScrollBarWidget.o \
         src/gui/SnapshotDialog.o \
