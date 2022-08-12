@@ -879,6 +879,14 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
         reload();
         break;
 
+      case KBDK_LEFT:
+        myRomImageWidget->changeImage(-1);
+        break;
+
+      case KBDK_RIGHT:
+        myRomImageWidget->changeImage(1);
+        break;
+
       default:
         handled = false;
         break;

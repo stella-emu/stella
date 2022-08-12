@@ -39,6 +39,7 @@ class RomImageWidget : public Widget, public CommandSender
     void setProperties(const FSNode& node, const string& md5);
     void clearProperties();
     void reloadProperties(const FSNode& node);
+    bool changeImage(int direction = 1);
 
   protected:
     void drawWidget(bool hilite) override;
@@ -58,6 +59,9 @@ class RomImageWidget : public Widget, public CommandSender
     // Surface pointer holding the PNG image
     shared_ptr<FBSurface> mySurface;
 
+    // Surface pointer holding the navigation elements
+    shared_ptr<FBSurface> myNavSurface;
+
     // Whether the surface should be redrawn by drawWidget()
     bool mySurfaceIsValid{false};
 
@@ -70,7 +74,7 @@ class RomImageWidget : public Widget, public CommandSender
     // Indicates if an error occurred in creating/displaying the surface
     string mySurfaceErrorMsg;
 
-#ifdef PNG_SUPPORT
+    // Height of the image area
     int myImageHeight{0};
 
     // Contains the list of image names for the current ROM
@@ -84,7 +88,6 @@ class RomImageWidget : public Widget, public CommandSender
 
     // Label for the loaded image
     string myLabel;
-#endif
 
   private:
     // Following constructors and assignment operators not supported
