@@ -36,6 +36,7 @@ RomImageWidget::RomImageWidget(GuiObject* boss, const GUI::Font& font,
   _flags = Widget::FLAG_ENABLED;
   _bgcolor = kDlgColor;
   _bgcolorlo = kBGColorLo;
+  myImageHeight = _h - labelHeight(font);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -85,7 +86,7 @@ void RomImageWidget::parseProperties(const FSNode& node)
   if(mySurface == nullptr)
   {
     mySurface = instance().frameBuffer().allocateSurface(
-        _w, _h, ScalingInterpolation::blur);
+        _w, myImageHeight, ScalingInterpolation::blur);
     mySurface->applyAttributes();
 
     dialog().addRenderCallback([this]() {
@@ -105,24 +106,22 @@ void RomImageWidget::parseProperties(const FSNode& node)
   // Get a valid filename representing a snapshot file for this rom and load the snapshot
   const string& path = instance().snapshotLoadDir().getPath();
 
+  myImageList.clear();
+  myImageIdx = 0;
   // 1. Try to load snapshots by property name
   if(getImageList(path + myProperties.get(PropType::Cart_Name)))
     mySurfaceIsValid = loadPng(myImageList[0].getPath());
-  //mySurfaceIsValid = loadPng(path + myProperties.get(PropType::Cart_Name) + ".png");
+
+  // 2. Also try to load snapshot images by filename
+  if(getImageList(path + node.getNameWithExt("")))
+    mySurfaceIsValid = loadPng(myImageList[0].getPath());
 
   if(!mySurfaceIsValid)
   {
-    // 2. If no snapshots with property name exists, try to load snapshot images by filename
-    if(getImageList(path + node.getNameWithExt("")))
-      mySurfaceIsValid = loadPng(myImageList[0].getPath());
-    //mySurfaceIsValid = loadPng(path + node.getNameWithExt("") + ".png");
-
-    if(!mySurfaceIsValid)
-    {
-      // 3. If no ROM snapshots exist, try to load a default snapshot
-      mySurfaceIsValid = loadPng(path + "default_snapshot.png");
-    }
+    // 3. If no ROM snapshots exist, try to load a default snapshot
+    mySurfaceIsValid = loadPng(path + "default_snapshot.png");
   }
+
 #else
   mySurfaceErrorMsg = "PNG image loading not supported";
 #endif
@@ -144,7 +143,6 @@ bool RomImageWidget::getImageList(const string& filename)
 
   FSNode node(instance().snapshotLoadDir().getPath());
 
-  myImageList.clear();
   node.getChildren(myImageList, FSNode::ListMode::FilesOnly, filter, false, false);
   return myImageList.size() > 0;
 }
@@ -154,13 +152,28 @@ bool RomImageWidget::loadPng(const string& filename)
 {
   try
   {
-    instance().png().loadImage(filename, *mySurface);
+    VariantList comments;
+    instance().png().loadImage(filename, *mySurface, comments);
 
     // Scale surface to available image area
     const Common::Rect& src = mySurface->srcRect();
-    const float scale = std::min(float(_w) / src.w(), float(_h) / src.h()) *
+    const float scale = std::min(float(_w) / src.w(), float(myImageHeight) / src.h()) *
       instance().frameBuffer().hidpiScaleFactor();
     mySurface->setDstSize(static_cast<uInt32>(src.w() * scale), static_cast<uInt32>(src.h() * scale));
+    
+    // Retrieve label for loaded image
+    myLabel = "";
+    for(auto comment = comments.begin(); comment != comments.end(); ++comment)
+    {
+      if(comment->first == "Title")
+      {
+        myLabel = comment->second.toString();
+        break;
+      }
+      if(comment->first == "Software"
+          && comment->second.toString().find("Stella") == 0)
+        myLabel = "Snapshot"; // default for Stella snapshots with missing "Title" comment
+    }
 
     setDirty();
     return true;
@@ -177,7 +190,7 @@ bool RomImageWidget::loadPng(const string& filename)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomImageWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 {
-  if(isEnabled() && x >= 0 && x < _w && y >= 0 && y < _h)
+  if(isEnabled() && x >= 0 && x < _w && y >= 0 && y < myImageHeight)
   {
     if(x < _w/2)
     {
@@ -186,7 +199,7 @@ void RomImageWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
         loadPng(myImageList[--myImageIdx].getPath());
       }
     }
-    else if(myImageIdx < myImageList.size())
+    else if(myImageIdx < myImageList.size() - 1)
     {
       loadPng(myImageList[++myImageIdx].getPath());
     }
@@ -204,10 +217,10 @@ void RomImageWidget::handleMouseMoved(int x, int y)
 void RomImageWidget::drawWidget(bool hilite)
 {
   FBSurface& s = dialog().surface();
-  const int yoff = _h + _font.getFontHeight() / 2;
+  const int yoff = myImageHeight;
 
-  s.fillRect(_x+2, _y+2, _w-4, _h-4, _bgcolor);
-  s.frameRect(_x, _y, _w, _h, kColor);
+  s.fillRect(_x+1, _y+1, _w-2, _h-1, _bgcolor);
+  s.frameRect(_x, _y, _w, myImageHeight, kColor);
 
   if(!myHaveProperties)
   {
@@ -220,7 +233,7 @@ void RomImageWidget::drawWidget(bool hilite)
     const Common::Rect& dst = mySurface->dstRect();
     const uInt32 scale = instance().frameBuffer().hidpiScaleFactor();
     const uInt32 x = _x * scale + ((_w * scale - dst.w()) >> 1);
-    const uInt32 y = _y * scale + ((_h * scale - dst.h()) >> 1);
+    const uInt32 y = _y * scale + ((myImageHeight * scale - dst.h()) >> 1);
 
     // Make sure when positioning the snapshot surface that we take
     // the dialog surface position into account
@@ -233,6 +246,15 @@ void RomImageWidget::drawWidget(bool hilite)
     const uInt32 y = _y + ((yoff - _font.getLineHeight()) >> 1);
     s.drawString(_font, mySurfaceErrorMsg, x, y, _w - 10, _textcolor);
   }
+  ostringstream buf;
+  buf << myImageIdx + 1 << "/" << myImageList.size();
+  const int yText = _y + myImageHeight + _font.getFontHeight() / 8;
+  const int wText = _font.getStringWidth(buf.str());
+
+  if(myLabel.length())
+    s.drawString(_font, myLabel, _x, yText, _w - wText - _font.getMaxCharWidth() * 2, _textcolor);
+  if(myImageList.size())
+    s.drawString(_font, buf.str(), _x + _w - wText, yText, wText, _textcolor);
 
 #ifdef PNG_SUPPORT
   if(isHighlighted())
