@@ -216,7 +216,7 @@ bool RomImageWidget::loadPng(const string& filename)
 void RomImageWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 {
   if(isEnabled() && x >= 0 && x < _w && y >= 0 && y < myImageHeight)
-    changeImage(x < _w / 2 ? 1 : -1);
+    changeImage(x < _w / 2 ? -1 : 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
