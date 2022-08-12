@@ -305,8 +305,8 @@ void LauncherDialog::addRomWidgets(int ypos)
   const int listHeight = _h - ypos - VBORDER - buttonHeight - VGAP * 3;
 
   const float imgZoom = getRomInfoZoom(listHeight);
-  const int romWidth = imgZoom * TIAConstants::viewableWidth;
-  const int listWidth = _w - (romWidth > 0 ? romWidth + fontWidth : 0) - HBORDER * 2;
+  const int imageWidth = imgZoom * TIAConstants::viewableWidth;
+  const int listWidth = _w - (imageWidth > 0 ? imageWidth + fontWidth : 0) - HBORDER * 2;
 
   // remember initial ROM directory for returning there via home button
   instance().settings().setValue("startromdir", getRomDir());
@@ -319,7 +319,7 @@ void LauncherDialog::addRomWidgets(int ypos)
   wid.push_back(myList);
 
   // Add ROM info area (if enabled)
-  if(romWidth > 0)
+  if(imageWidth > 0)
   {
     xpos += myList->getWidth() + fontWidth;
 
@@ -327,16 +327,22 @@ void LauncherDialog::addRomWidgets(int ypos)
     const Common::Size imgSize(TIAConstants::viewableWidth * imgZoom,
       TIAConstants::viewableHeight * imgZoom);
     // Calculate font area, and in the process the font that can be used
-    const Common::Size fontArea(romWidth - fontWidth * 2,
-      myList->getHeight() - imgSize.h - VGAP * 3);
+
+    // Infofont is unknown yet, but used in image label too. Assuming maximum font height. 
+    int imageHeight = imgSize.h + RomImageWidget::labelHeight(_font);
+
+    const Common::Size fontArea(imageWidth - fontWidth * 2,
+      myList->getHeight() - imageHeight - VGAP * 4);
     setRomInfoFont(fontArea);
 
+    // Now we have the correct font height
+    imageHeight = imgSize.h + RomImageWidget::labelHeight(*myROMInfoFont);
     myRomImageWidget = new RomImageWidget(this, *myROMInfoFont,
-      xpos, ypos, romWidth, imgSize.h);
+      xpos, ypos, imageWidth, imageHeight);
 
-    int yofs = imgSize.h + _font.getFontHeight() / 2;
+    const int yofs = imageHeight + VGAP * 2;
     myRomInfoWidget = new RomInfoWidget(this, *myROMInfoFont,
-      xpos, ypos + yofs, romWidth, myList->getHeight() - yofs);
+      xpos, ypos + yofs, imageWidth, myList->getHeight() - yofs);
   }
   addToFocusList(wid);
 }

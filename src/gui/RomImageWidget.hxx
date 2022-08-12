@@ -31,6 +31,11 @@ class RomImageWidget : public Widget, public CommandSender
                   int x, int y, int w, int h);
     ~RomImageWidget() override = default;
 
+    static int labelHeight(const GUI::Font& font)
+    {
+      return font.getFontHeight() * 9 / 8;
+    }
+
     void setProperties(const FSNode& node, const string& md5);
     void clearProperties();
     void reloadProperties(const FSNode& node);
@@ -66,6 +71,8 @@ class RomImageWidget : public Widget, public CommandSender
     string mySurfaceErrorMsg;
 
 #ifdef PNG_SUPPORT
+    int myImageHeight{0};
+
     // Contains the list of image names for the current ROM
     FSList myImageList;
 
@@ -74,6 +81,9 @@ class RomImageWidget : public Widget, public CommandSender
 
     // Current x-position of the mouse
     int myMouseX{0};
+
+    // Label for the loaded image
+    string myLabel;
 #endif
 
   private:
