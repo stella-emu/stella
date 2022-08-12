@@ -20,9 +20,6 @@
 
 class FBSurface;
 class Properties;
-namespace Common {
-  struct Size;
-}
 
 #include "Widget.hxx"
 #include "bspf.hxx"
@@ -36,8 +33,7 @@ class RomInfoWidget : public Widget, public CommandSender
 
   public:
     RomInfoWidget(GuiObject *boss, const GUI::Font& font,
-                  int x, int y, int w, int h,
-                  const Common::Size& imgSize);
+                  int x, int y, int w, int h);
     ~RomInfoWidget() override = default;
 
     void setProperties(const FSNode& node, const string& md5);
@@ -52,17 +48,8 @@ class RomInfoWidget : public Widget, public CommandSender
 
   private:
     void parseProperties(const FSNode& node);
-  #ifdef PNG_SUPPORT
-    bool loadPng(const string& filename);
-  #endif
 
   private:
-    // Surface pointer holding the PNG image
-    shared_ptr<FBSurface> mySurface;
-
-    // Whether the surface should be redrawn by drawWidget()
-    bool mySurfaceIsValid{false};
-
     // Some ROM properties info, as well as 'tEXt' chunks from the PNG image
     StringList myRomInfo;
 
@@ -74,12 +61,6 @@ class RomInfoWidget : public Widget, public CommandSender
 
     // Optional cart link URL
     string myUrl;
-
-    // Indicates if an error occurred in creating/displaying the surface
-    string mySurfaceErrorMsg;
-
-    // How much space available for the PNG image
-    Common::Size myAvail;
 
   private:
     // Following constructors and assignment operators not supported

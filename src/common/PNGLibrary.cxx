@@ -38,7 +38,7 @@ PNGLibrary::PNGLibrary(OSystem& osystem)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PNGLibrary::loadImage(const string& filename, FBSurface& surface)
+void PNGLibrary::loadImage(const string& filename, FBSurface& surface, VariantList& comments)
 {
   png_structp png_ptr{nullptr};
   png_infop info_ptr{nullptr};
@@ -113,6 +113,9 @@ void PNGLibrary::loadImage(const string& filename, FBSurface& surface)
 
   // We're finished reading
   png_read_end(png_ptr, info_ptr);
+
+  // Read the comments we got
+  readComments(png_ptr, info_ptr, comments);
 
   // Load image into the surface, setting the correct dimensions
   loadImagetoSurface(surface);
@@ -335,6 +338,7 @@ void PNGLibrary::takeSnapshot(uInt32 number)
   // Some text fields to add to the PNG snapshot
   VariantList comments;
   ostringstream version;
+  VarList::push_back(comments, "Title", "Snapshot");
   version << "Stella " << STELLA_VERSION << " (Build " << STELLA_BUILD << ") ["
           << BSPF::ARCH << "]";
   VarList::push_back(comments, "Software", version.str());
@@ -446,6 +450,23 @@ void PNGLibrary::writeComments(const png_structp png_ptr, png_infop info_ptr,
     text_ptr[i].text_length = 0;
   }
   png_set_text(png_ptr, info_ptr, text_ptr.data(), numComments);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PNGLibrary::readComments(const png_structp png_ptr, png_infop info_ptr,
+  VariantList& comments)
+{
+  png_textp text_ptr;
+  int numComments = 0;
+
+  // TODO: currently works only if comments are *before* the image data
+  png_get_text(png_ptr, info_ptr, &text_ptr, &numComments);
+
+  comments.clear();
+  for(int i = 0; i < numComments; ++i)
+  {
+    VarList::push_back(comments, text_ptr[i].key, text_ptr[i].text);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

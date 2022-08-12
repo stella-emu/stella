@@ -52,7 +52,7 @@ class PNGLibrary
              runtime_error is thrown containing a more detailed
              error message.
     */
-    void loadImage(const string& filename, FBSurface& surface);
+    void loadImage(const string& filename, FBSurface& surface, VariantList& comments);
 
     /**
       Save the current FrameBuffer image to a PNG file.  Note that in most
@@ -182,6 +182,12 @@ class PNGLibrary
     */
     void writeComments(const png_structp png_ptr, png_infop info_ptr,
                        const VariantList& comments);
+
+    /**
+      Read PNG tEXt chunks from the image.
+    */
+    void readComments(const png_structp png_ptr, png_infop info_ptr,
+      VariantList& comments);
 
     /** PNG library callback functions */
     static void png_read_data(const png_structp ctx, png_bytep area, png_size_t size);

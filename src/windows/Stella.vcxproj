@@ -930,6 +930,7 @@
     <ClCompile Include="..\gui\QuadTariDialog.cxx" />
     <ClCompile Include="..\gui\R77HelpDialog.cxx" />
     <ClCompile Include="..\gui\RadioButtonWidget.cxx" />
+    <ClCompile Include="..\gui\RomImageWidget.cxx" />
     <ClCompile Include="..\gui\SnapshotDialog.cxx" />
     <ClCompile Include="..\gui\StellaSettingsDialog.cxx" />
     <ClCompile Include="..\gui\TimeLineWidget.cxx" />
@@ -2147,6 +2148,7 @@
     <ClInclude Include="..\gui\R77HelpDialog.hxx" />
     <ClInclude Include="..\gui\RadioButtonWidget.hxx" />
     <ClInclude Include="..\gui\Icons.hxx" />
+    <ClInclude Include="..\gui\RomImageWidget.hxx" />
     <ClInclude Include="..\gui\SnapshotDialog.hxx" />
     <ClInclude Include="..\gui\Stella12x24tFont.hxx" />
     <ClInclude Include="..\gui\Stella14x28tFont.hxx" />
