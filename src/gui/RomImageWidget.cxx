@@ -120,15 +120,13 @@ void RomImageWidget::parseProperties(const FSNode& node)
   // TODO: RETRON_77
 
   // Get a valid filename representing a snapshot file for this rom and load the snapshot
-  const string& path = instance().snapshotLoadDir().getPath();
-
   myImageList.clear();
   myImageIdx = 0;
   
   // 1. Try to load snapshots by property name
-  getImageList(path + myProperties.get(PropType::Cart_Name));
+  getImageList(myProperties.get(PropType::Cart_Name));
   // 2. Also try to load snapshot images by filename
-  getImageList(path + node.getNameWithExt());
+  getImageList(node.getNameWithExt());
 
   if(myImageList.size())
     mySurfaceIsValid = loadPng(myImageList[0].getPath());
@@ -136,7 +134,7 @@ void RomImageWidget::parseProperties(const FSNode& node)
   if(!mySurfaceIsValid)
   {
     // 3. If no ROM snapshots exist, try to load a default snapshot
-    mySurfaceIsValid = loadPng(path + "default_snapshot.png");
+    mySurfaceIsValid = loadPng(instance().snapshotLoadDir().getPath() + "default_snapshot.png");
   }
 
 #else
@@ -163,12 +161,17 @@ bool RomImageWidget::changeImage(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool RomImageWidget::getImageList(const string& filename)
 {
-  FSNode::NameFilter filter = ([&](const FSNode& node) {
-    return (!node.isDirectory() &&
-      (node.getPath() == filename + ".png" ||
-       BSPF::matchWithWildcards(node.getPath(), filename + " #*.png")));
-  });
+  const string pngName = filename + ".png";
+  FSNode::NameFilter filter = ([&](const FSNode& node)
+    {
+      const string& nodeName = node.getName();
+      return (!node.isDirectory() &&
+        (nodeName == pngName ||
+          (nodeName.find(filename + " #") == 0 && nodeName.find(".png") == nodeName.length() - 4)));
+    }
+  );
 
+  // Find all images matching the filename and the extension
   FSNode node(instance().snapshotLoadDir().getPath());
   node.getChildren(myImageList, FSNode::ListMode::FilesOnly, filter, false, false);
 
