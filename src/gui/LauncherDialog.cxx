@@ -562,65 +562,6 @@ string LauncherDialog::getRomDir()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-size_t LauncherDialog::matchWithJoker(const string& str, const string& pattern)
-{
-  if(str.length() >= pattern.length())
-  {
-    // optimize a bit
-    if(pattern.find('?') != string::npos)
-    {
-      for(size_t pos = 0; pos < str.length() - pattern.length() + 1; ++pos)
-      {
-        bool found = true;
-
-        for(size_t i = 0; found && i < pattern.length(); ++i)
-          if(pattern[i] != str[pos + i] && pattern[i] != '?')
-            found = false;
-
-        if(found)
-          return pos;
-      }
-    }
-    else
-      return str.find(pattern);
-  }
-  return string::npos;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool LauncherDialog::matchWithWildcards(const string& str, const string& pattern)
-{
-  string pat = pattern;
-
-  // remove leading and trailing '*'
-  size_t i = 0;
-  while(pat[i++] == '*');
-  pat = pat.substr(i - 1);
-
-  i = pat.length();
-  while(pat[--i] == '*');
-  pat.erase(i + 1);
-
-  // Search for first '*'
-  const size_t pos = pat.find('*');
-
-  if(pos != string::npos)
-  {
-    // '*' found, split pattern into left and right part, search recursively
-    const string leftPat = pat.substr(0, pos);
-    const string rightPat = pat.substr(pos + 1);
-    const size_t posLeft = matchWithJoker(str, leftPat);
-
-    if(posLeft != string::npos)
-      return matchWithWildcards(str.substr(pos + posLeft), rightPat);
-    else
-      return false;
-  }
-  // no further '*' found
-  return matchWithJoker(str, pat) != string::npos;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool LauncherDialog::matchWithWildcardsIgnoreCase(const string& str, const string& pattern)
 {
   string in = str;
@@ -629,7 +570,7 @@ bool LauncherDialog::matchWithWildcardsIgnoreCase(const string& str, const strin
   BSPF::toUpperCase(in);
   BSPF::toUpperCase(pat);
 
-  return matchWithWildcards(in, pat);
+  return BSPF::matchWithWildcards(in, pat);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -955,25 +896,34 @@ Event::Type LauncherDialog::getJoyAxisEvent(int stick, JoyAxis axis, JoyDir adir
 {
   Event::Type e = instance().eventHandler().eventForJoyAxis(EventMode::kMenuMode, stick, axis, adir, button);
 
-  if(myUseMinimalUI)
+  // map axis events for launcher
+  switch(e)
   {
-    // map axis events for launcher
-    switch(e)
-    {
-      case Event::UINavPrev:
+    case Event::UINavPrev:
+      if(myUseMinimalUI)
         // convert unused previous item event into page-up event
         e = Event::UIPgUp;
-        break;
+      break;
 
-      case Event::UINavNext:
+    case Event::UINavNext:
+      if(myUseMinimalUI)
         // convert unused next item event into page-down event
         e = Event::UIPgDown;
-        break;
+      break;
 
-      default:
-        break;
-    }
+    case Event::UITabPrev:
+      // TODO: check with controller, then update doc (R77 too)
+      myRomImageWidget->changeImage(-1);
+      break;
+
+    case Event::UITabNext:
+      myRomImageWidget->changeImage(1);
+      break;
+
+    default:
+      break;
   }
+
   return e;
 }
 
@@ -1145,7 +1095,6 @@ void LauncherDialog::loadRom()
 void LauncherDialog::openContextMenu(int x, int y)
 {
   // Dynamically create context menu for ROM list options
-  // TODO: remove 'Incl. subdirs' and 'Show all' from GUI? Replace with icons.
 
   if(x < 0 || y < 0)
   {

@@ -124,12 +124,13 @@ void RomImageWidget::parseProperties(const FSNode& node)
 
   myImageList.clear();
   myImageIdx = 0;
+  
   // 1. Try to load snapshots by property name
-  if(getImageList(path + myProperties.get(PropType::Cart_Name)))
-    mySurfaceIsValid = loadPng(myImageList[0].getPath());
-
+  getImageList(path + myProperties.get(PropType::Cart_Name));
   // 2. Also try to load snapshot images by filename
-  if(getImageList(path + node.getNameWithExt("")))
+  getImageList(path + node.getNameWithExt());
+
+  if(myImageList.size())
     mySurfaceIsValid = loadPng(myImageList[0].getPath());
 
   if(!mySurfaceIsValid)
@@ -165,12 +166,19 @@ bool RomImageWidget::getImageList(const string& filename)
   FSNode::NameFilter filter = ([&](const FSNode& node) {
     return (!node.isDirectory() &&
       (node.getPath() == filename + ".png" ||
-       BSPF::matchWithWildcards(node.getPath(), filename + "#*.png")));
+       BSPF::matchWithWildcards(node.getPath(), filename + " #*.png")));
   });
 
   FSNode node(instance().snapshotLoadDir().getPath());
-
   node.getChildren(myImageList, FSNode::ListMode::FilesOnly, filter, false, false);
+
+  // Sort again, not considering extensions, else <filename.png> would be at the end of the list
+  std::sort(myImageList.begin(), myImageList.end(),
+            [](const FSNode& node1, const FSNode& node2)
+    {
+      return BSPF::compareIgnoreCase(node1.getNameWithExt(), node2.getNameWithExt()) < 0;
+    }
+  );
   return myImageList.size() > 0;
 }
 
@@ -271,7 +279,7 @@ void RomImageWidget::drawWidget(bool hilite)
 
     myNavSurface->invalidate();
     if(isHighlighted() &&
-      ((leftArrow && myImageIdx) || (!leftArrow && myImageIdx < myImageList.size() - 1)) || true)
+      ((leftArrow && myImageIdx) || (!leftArrow && myImageIdx < myImageList.size() - 1)))
     {
       const int w = _w / 64;
       const int w2 = 1; // w / 2;

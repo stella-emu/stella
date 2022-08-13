@@ -140,27 +140,6 @@ class LauncherDialog : public Dialog, CommandSender
     */
     bool matchWithWildcardsIgnoreCase(const string& str, const string& pattern);
 
-    /**
-      Search if string contains pattern including wildcard '*'
-      and '?' as joker.
-
-      @param str      The searched string
-      @param pattern  The pattern to search for
-
-      @return True if pattern was found.
-    */
-    bool matchWithWildcards(const string& str, const string& pattern);
-
-    /**
-      Search if string contains pattern including '?' as joker.
-
-      @param str      The searched string
-      @param pattern  The pattern to search for
-
-      @return Position of pattern in string.
-    */
-    size_t matchWithJoker(const string& str, const string& pattern);
-
     void applyFiltering();
 
     float getRomInfoZoom(int listHeight) const;
