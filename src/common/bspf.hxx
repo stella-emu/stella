@@ -320,6 +320,10 @@ namespace BSPF
   }
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  // Search if string contains pattern including '?' as joker.
+  // @param str      The searched string
+  // @param pattern  The pattern to search for
+  // @return  Position of pattern in string.
   inline size_t matchWithJoker(const string& str, const string& pattern)
   {
     if(str.length() >= pattern.length())
@@ -346,6 +350,11 @@ namespace BSPF
   }
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  // Search if string contains pattern including wildcard '*'
+  // and '?' as joker.
+  // @param str      The searched string
+  // @param pattern  The pattern to search for
+  // @return  True if pattern was found.
   inline bool matchWithWildcards(const string& str, const string& pattern)
   {
     string pat = pattern;
