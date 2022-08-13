@@ -302,8 +302,8 @@ class FSNode
      * and replace the extension (if present) with the given one.  If no
      * extension is present, the given one is appended instead.
      */
-    string getNameWithExt(const string& ext) const;
-    string getPathWithExt(const string& ext) const;
+    string getNameWithExt(const string& ext = "") const;
+    string getPathWithExt(const string& ext = "") const;
 
   private:
     explicit FSNode(const AbstractFSNodePtr& realNode);

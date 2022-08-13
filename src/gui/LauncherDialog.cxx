@@ -562,65 +562,6 @@ string LauncherDialog::getRomDir()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-size_t LauncherDialog::matchWithJoker(const string& str, const string& pattern)
-{
-  if(str.length() >= pattern.length())
-  {
-    // optimize a bit
-    if(pattern.find('?') != string::npos)
-    {
-      for(size_t pos = 0; pos < str.length() - pattern.length() + 1; ++pos)
-      {
-        bool found = true;
-
-        for(size_t i = 0; found && i < pattern.length(); ++i)
-          if(pattern[i] != str[pos + i] && pattern[i] != '?')
-            found = false;
-
-        if(found)
-          return pos;
-      }
-    }
-    else
-      return str.find(pattern);
-  }
-  return string::npos;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool LauncherDialog::matchWithWildcards(const string& str, const string& pattern)
-{
-  string pat = pattern;
-
-  // remove leading and trailing '*'
-  size_t i = 0;
-  while(pat[i++] == '*');
-  pat = pat.substr(i - 1);
-
-  i = pat.length();
-  while(pat[--i] == '*');
-  pat.erase(i + 1);
-
-  // Search for first '*'
-  const size_t pos = pat.find('*');
-
-  if(pos != string::npos)
-  {
-    // '*' found, split pattern into left and right part, search recursively
-    const string leftPat = pat.substr(0, pos);
-    const string rightPat = pat.substr(pos + 1);
-    const size_t posLeft = matchWithJoker(str, leftPat);
-
-    if(posLeft != string::npos)
-      return matchWithWildcards(str.substr(pos + posLeft), rightPat);
-    else
-      return false;
-  }
-  // no further '*' found
-  return matchWithJoker(str, pat) != string::npos;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool LauncherDialog::matchWithWildcardsIgnoreCase(const string& str, const string& pattern)
 {
   string in = str;
@@ -629,7 +570,7 @@ bool LauncherDialog::matchWithWildcardsIgnoreCase(const string& str, const strin
   BSPF::toUpperCase(in);
   BSPF::toUpperCase(pat);
 
-  return matchWithWildcards(in, pat);
+  return BSPF::matchWithWildcards(in, pat);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
