@@ -15,6 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include "TimerManager.hxx"
+
 #if defined(RETRON77)
   #define ROOT_DIR "/mnt/games/"
 #else
@@ -101,7 +103,10 @@ bool FSNodePOSIX::hasParent() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FSNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode) const
 {
-  assert(_isDirectory);
+uInt64 T = TimerManager::getTicks();
+
+  if (!_isDirectory)
+    return false;
 
   DIR* dirp = opendir(_path.c_str());
   if (dirp == nullptr)
@@ -122,16 +127,6 @@ bool FSNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode) const
 
     FSNodePOSIX entry(newPath, false);
 
-#if defined(SYSTEM_NOT_SUPPORTING_D_TYPE)
-    /* TODO: d_type is not part of POSIX, so it might not be supported
-     * on some of our targets. For those systems where it isn't supported,
-     * add this #elif case, which tries to use stat() instead.
-     *
-     * The d_type method is used to avoid costly recurrent stat() calls in big
-     * directories.
-     */
-    entry.setFlags();
-#else
     if (dp->d_type == DT_UNKNOWN)
     {
       // Fall back to stat()
@@ -161,7 +156,6 @@ bool FSNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode) const
 
       entry._isValid = true;
     }
-#endif
 
     // Skip files that are invalid for some reason (e.g. because we couldn't
     // properly stat them).
@@ -177,6 +171,7 @@ bool FSNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode) const
   }
   closedir(dirp);
 
+cerr << (TimerManager::getTicks() - T) << endl;
   return true;
 }
 
