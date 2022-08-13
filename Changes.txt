@@ -12,6 +12,26 @@
                               Release History
 ===========================================================================
 
+6.7 to 7.0 (XXXX XX, 202X)
+
+  * Enhanced ROM launcher to allow multiple images per ROM
+    (TODO: controller support, doc)
+
+  * Added searching by filename for ROM launcher images
+
+  * Enhanced Game Properties dialog for multigame ROMs
+
+  * Added optional type format detection based on colors used
+
+  * Added Joy2B+ controller support
+
+  * Added BUS bankswitching support for some older demos
+
+  * Fixed broken 7800 pause key support
+
+-Have fun!
+
+
 6.6 to 6.7 (June 13, 2022)
 
   * IMPORTANT NOTES:
@@ -78,8 +98,6 @@
   * Updated internal ROM properties database to ROM-Hunter version 17
     (thanks go to RomHunter for his tireless research in this area).
     Related to this, updated the snapshot collection.
-
--Have fun!
 
 
 6.5.3 to 6.6 (November 16, 2021)

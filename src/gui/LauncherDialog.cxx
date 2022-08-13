@@ -896,25 +896,34 @@ Event::Type LauncherDialog::getJoyAxisEvent(int stick, JoyAxis axis, JoyDir adir
 {
   Event::Type e = instance().eventHandler().eventForJoyAxis(EventMode::kMenuMode, stick, axis, adir, button);
 
-  if(myUseMinimalUI)
+  // map axis events for launcher
+  switch(e)
   {
-    // map axis events for launcher
-    switch(e)
-    {
-      case Event::UINavPrev:
+    case Event::UINavPrev:
+      if(myUseMinimalUI)
         // convert unused previous item event into page-up event
         e = Event::UIPgUp;
-        break;
+      break;
 
-      case Event::UINavNext:
+    case Event::UINavNext:
+      if(myUseMinimalUI)
         // convert unused next item event into page-down event
         e = Event::UIPgDown;
-        break;
+      break;
 
-      default:
-        break;
-    }
+    case Event::UITabPrev:
+      // TODO: check with controller, then update doc (R77 too)
+      myRomImageWidget->changeImage(-1);
+      break;
+
+    case Event::UITabNext:
+      myRomImageWidget->changeImage(1);
+      break;
+
+    default:
+      break;
   }
+
   return e;
 }
 
@@ -1086,7 +1095,6 @@ void LauncherDialog::loadRom()
 void LauncherDialog::openContextMenu(int x, int y)
 {
   // Dynamically create context menu for ROM list options
-  // TODO: remove 'Incl. subdirs' and 'Show all' from GUI? Replace with icons.
 
   if(x < 0 || y < 0)
   {

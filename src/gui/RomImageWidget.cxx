@@ -124,12 +124,13 @@ void RomImageWidget::parseProperties(const FSNode& node)
 
   myImageList.clear();
   myImageIdx = 0;
+  
   // 1. Try to load snapshots by property name
-  if(getImageList(path + myProperties.get(PropType::Cart_Name)))
-    mySurfaceIsValid = loadPng(myImageList[0].getPath());
-
+  getImageList(path + myProperties.get(PropType::Cart_Name));
   // 2. Also try to load snapshot images by filename
-  if(getImageList(path + node.getNameWithExt("")))
+  getImageList(path + node.getNameWithExt());
+
+  if(myImageList.size())
     mySurfaceIsValid = loadPng(myImageList[0].getPath());
 
   if(!mySurfaceIsValid)
