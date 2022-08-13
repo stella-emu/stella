@@ -154,7 +154,7 @@ Bankswitch::BSList = {{
 }};
 
 #if defined(GUI_SUPPORT)
-constexpr std::array<Bankswitch::SizesType, static_cast<int>(Bankswitch::Type::NumSchemes)>
+const std::array<Bankswitch::SizesType, static_cast<int>(Bankswitch::Type::NumSchemes)>
 Bankswitch::Sizes = {{
   { Bankswitch::any_KB, Bankswitch::any_KB }, // _AUTO
   {    8_KB,   8_KB }, // _0840
