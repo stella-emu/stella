@@ -475,6 +475,9 @@ void LauncherDialog::tick()
   if(myPendingReload && myReloadTime < TimerManager::getTicks() / 1000)
     reload();
 
+  if(myPendingRomInfo && myRomInfoTime < TimerManager::getTicks() / 1000)
+    loadRomInfo(true);
+
   Dialog::tick();
 }
 
@@ -548,8 +551,10 @@ void LauncherDialog::updateUI()
     << (myShortCount ? " items" : " items found");
   myRomCount->setLabel(buf.str());
 
-  // Update ROM info UI item
-  loadRomInfo();
+  // Update ROM info UI item, delayed
+  myRomInfoTime = TimerManager::getTicks() / 1000 + 250; // TODO: define delay
+  myPendingRomInfo = true;
+  loadRomInfo(false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -668,18 +673,20 @@ void LauncherDialog::setRomInfoFont(const Common::Size& area)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::loadRomInfo()
+void LauncherDialog::loadRomInfo(bool complete)
 {
+  myPendingRomInfo = !complete;
+
   if(!myRomImageWidget || !myROMInfoFont)
     return;
 
   const string& md5 = selectedRomMD5();
   if(md5 != EmptyString)
   {
-    myRomImageWidget->setProperties(currentNode(), md5);
-    myRomInfoWidget->setProperties(currentNode(), md5);
+    myRomImageWidget->setProperties(currentNode(), md5, complete);
+    myRomInfoWidget->setProperties(currentNode(), md5); // TODO: skip controller detector?
   }
-  else
+  else if(!complete)
   {
     myRomImageWidget->clearProperties();
     myRomInfoWidget->clearProperties();

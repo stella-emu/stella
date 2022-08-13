@@ -147,7 +147,7 @@ class LauncherDialog : public Dialog, CommandSender
     void setRomInfoFont(const Common::Size& area);
 
     void loadRom();
-    void loadRomInfo();
+    void loadRomInfo(bool complete);
     void openSettings();
     void openGameProperties();
     void openContextMenu(int x = -1, int y = -1);
@@ -209,6 +209,8 @@ class LauncherDialog : public Dialog, CommandSender
     bool myShortCount{false};
     bool myPendingReload{false};
     uInt64 myReloadTime{0};
+    bool myPendingRomInfo{false};
+    uInt64 myRomInfoTime{0};
 
     enum {
       kAllfilesCmd   = 'lalf',  // show all files (or ROMs only)

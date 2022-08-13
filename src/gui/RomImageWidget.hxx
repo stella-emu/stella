@@ -36,7 +36,7 @@ class RomImageWidget : public Widget, public CommandSender
       return font.getFontHeight() * 9 / 8;
     }
 
-    void setProperties(const FSNode& node, const string& md5);
+    void setProperties(const FSNode& node, const string& md5, bool complete);
     void clearProperties();
     void reloadProperties(const FSNode& node);
     bool changeImage(int direction = 1);
@@ -49,9 +49,9 @@ class RomImageWidget : public Widget, public CommandSender
 #endif
 
   private:
-    void parseProperties(const FSNode& node);
+    void parseProperties(const FSNode& node, bool complete);
   #ifdef PNG_SUPPORT
-    bool getImageList(const string& filename);
+    bool getImageList(const string& propname, const string& filename);
     bool loadPng(const string& filename);
   #endif
 
