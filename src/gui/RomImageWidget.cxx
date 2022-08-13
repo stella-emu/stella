@@ -89,9 +89,9 @@ void RomImageWidget::parseProperties(const FSNode& node, bool complete)
     FBSurface::Attributes& attr = myNavSurface->attributes();
 
     attr.blending = true;
-    attr.blendalpha = 60; 
+    attr.blendalpha = 60;
     myNavSurface->applyAttributes();
-  }                           
+  }
 
   // Check if a surface has ever been created; if so, we use it
   // The surface will always be the maximum size, but sometimes we'll
@@ -122,7 +122,7 @@ void RomImageWidget::parseProperties(const FSNode& node, bool complete)
   // Get a valid filename representing a snapshot file for this rom and load the snapshot
   myImageList.clear();
   myImageIdx = 0;
-  
+
   if(complete)
   {
     // Try to load snapshots by property name and ROM file name
@@ -187,10 +187,12 @@ bool RomImageWidget::getImageList(const string& propname, const string& filename
   FSNode::NameFilter filter = ([&](const FSNode& node)
     {
       const string& nodeName = node.getName();
-      return (!node.isDirectory() &&
+      return
         (nodeName == pngPropName || nodeName == pngFileName ||
-          (nodeName.find(propname + " #") == 0 && nodeName.find(".png") == nodeName.length() - 4) ||
-          (nodeName.find(filename + " #") == 0 && nodeName.find(".png") == nodeName.length() - 4)));
+        (nodeName.find(propname + " #") == 0 &&
+         nodeName.find(".png") == nodeName.length() - 4) ||
+        (nodeName.find(filename + " #") == 0 &&
+         nodeName.find(".png") == nodeName.length() - 4));
     }
   );
 
@@ -198,7 +200,8 @@ bool RomImageWidget::getImageList(const string& propname, const string& filename
   FSNode node(instance().snapshotLoadDir().getPath());
   node.getChildren(myImageList, FSNode::ListMode::FilesOnly, filter, false, false);
 
-  // Sort again, not considering extensions, else <filename.png> would be at the end of the list
+  // Sort again, not considering extensions, else <filename.png> would be at
+  // the end of the list
   std::sort(myImageList.begin(), myImageList.end(),
             [](const FSNode& node1, const FSNode& node2)
     {
@@ -221,7 +224,7 @@ bool RomImageWidget::loadPng(const string& filename)
     const float scale = std::min(float(_w) / src.w(), float(myImageHeight) / src.h()) *
       instance().frameBuffer().hidpiScaleFactor();
     mySurface->setDstSize(static_cast<uInt32>(src.w() * scale), static_cast<uInt32>(src.h() * scale));
-    
+
     // Retrieve label for loaded image
     myLabel = "";
     for(auto comment = comments.begin(); comment != comments.end(); ++comment)
