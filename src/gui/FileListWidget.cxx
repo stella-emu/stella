@@ -323,7 +323,7 @@ bool FileListWidget::handleKeyDown(StellaKey key, StellaMod mod)
   {
     handled = true;
 #ifdef DEBUG_BUILD
-    cerr << "  " << mod << ", " << key << endl;
+    cerr << "  FileListWidget::handleKeyDown  " << mod << ", " << key << endl;
 #endif
     switch(key)
     {
