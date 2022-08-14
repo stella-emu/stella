@@ -22,6 +22,7 @@ class OSystem;
 
 #include "bspf.hxx"
 #include "FBBackend.hxx"
+#include "FBSurfaceLIBRETRO.hxx"
 
 /**
   This class implements a standard LIBRETRO framebuffer backend.  Most of
@@ -58,7 +59,13 @@ class FBBackendLIBRETRO : public FBBackend
     */
     void queryHardware(vector<Common::Size>& fullscreenRes,
                        vector<Common::Size>& windowedRes,
-                       VariantList& renderers) override;
+                       VariantList& renderers) override
+    {
+      fullscreenRes.emplace_back(1920, 1080);
+      windowedRes.emplace_back(1920, 1080);
+
+      VarList::push_back(renderers, "software", "Software");
+    }
 
     /**
       This method is called to create a surface with the given attributes.
@@ -68,7 +75,10 @@ class FBBackendLIBRETRO : public FBBackend
     */
     unique_ptr<FBSurface>
       createSurface(uInt32 w, uInt32 h, ScalingInterpolation,
-                    const uInt32*) const override;
+                    const uInt32*) const override
+    {
+      return make_unique<FBSurfaceLIBRETRO>(w, h);
+    }
 
     /**
       This method is called to provide information about the backend.

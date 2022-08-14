@@ -30,7 +30,17 @@
 class FBSurfaceLIBRETRO : public FBSurface
 {
   public:
-    FBSurfaceLIBRETRO(uInt32 width, uInt32 height);
+    FBSurfaceLIBRETRO(uInt32 width, uInt32 height)
+      : myWidth{width},
+        myHeight{height},
+        myPixelData{make_unique<uInt32[]>(myWidth * myHeight)}
+    {
+      ////////////////////////////////////////////////////
+      // These *must* be set for the parent class
+      myPixels = myPixelData.get();
+      myPitch = myWidth;
+      ////////////////////////////////////////////////////
+    }
     ~FBSurfaceLIBRETRO() override { }
 
     // Most of the surface drawing primitives are implemented in FBSurface;
