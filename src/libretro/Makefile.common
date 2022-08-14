@@ -7,12 +7,7 @@ endif
 
 SOURCES_CXX := \
 	$(CORE_DIR)/libretro/libretro.cxx \
-	$(CORE_DIR)/libretro/EventHandlerLIBRETRO.cxx \
 	$(CORE_DIR)/libretro/FSNodeLIBRETRO.cxx \
-	$(CORE_DIR)/libretro/FBBackendLIBRETRO.cxx \
-	$(CORE_DIR)/libretro/FBSurfaceLIBRETRO.cxx \
-	$(CORE_DIR)/libretro/OSystemLIBRETRO.cxx \
-	$(CORE_DIR)/libretro/SoundLIBRETRO.cxx \
 	$(CORE_DIR)/libretro/StellaLIBRETRO.cxx \
 	$(CORE_DIR)/common/AudioQueue.cxx \
 	$(CORE_DIR)/common/AudioSettings.cxx \
