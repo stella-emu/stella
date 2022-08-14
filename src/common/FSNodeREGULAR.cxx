@@ -128,10 +128,7 @@ bool FSNodeREGULAR::getChildren(AbstractFSList& myList, ListMode mode) const
     return false;
 
   std::error_code ec;
-  for (const auto& entry: fs::directory_iterator{_fspath,
-         fs::directory_options::follow_directory_symlink |
-         fs::directory_options::skip_permission_denied,
-         ec})
+  for (const auto& entry: fs::directory_iterator{_fspath, ec})
   {
     const auto& path = entry.path();
 
