@@ -128,17 +128,19 @@ bool FSNodeREGULAR::getChildren(AbstractFSList& myList, ListMode mode) const
     return false;
 
   std::error_code ec;
-  for (const auto& entry: fs::directory_iterator{_fspath, ec})
+  const auto di = fs::directory_iterator{_fspath, ec};
+  const auto di_end = fs::end(di);
+  for (auto it = fs::begin(di); it != di_end; ++it)
   {
-    const auto& path = entry.path();
+    const auto& path = it->path();
 
     // Ignore files with errors, or any that start with '.'
     if (ec || path.filename().string()[0] == '.')
       continue;
 
     // Honor the chosen mode
-    const bool isFile = entry.is_regular_file(),
-               isDir  = entry.is_directory();
+    const bool isFile = it->is_regular_file(),
+               isDir  = it->is_directory();
     if ((mode == FSNode::ListMode::FilesOnly && !isFile) ||
         (mode == FSNode::ListMode::DirectoriesOnly && !isDir))
       continue;
@@ -148,9 +150,9 @@ bool FSNodeREGULAR::getChildren(AbstractFSList& myList, ListMode mode) const
     FSNodeREGULAR node(path.string(), false);
     node._isFile      = isFile;
     node._isDirectory = isDir;
-    node._size = isFile ? entry.file_size() : 0;
+    node._size = isFile ? it->file_size() : 0;
 
-    const auto p = entry.status().permissions();
+    const auto p = it->status().permissions();
     node._isReadable  = (p & (fs::perms::owner_read |
                               fs::perms::group_read |
                               fs::perms::others_read)) != fs::perms::none;
