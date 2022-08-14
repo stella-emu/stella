@@ -22,7 +22,6 @@ class FBSurface;
 class Properties;
 
 #include "Widget.hxx"
-#include "bspf.hxx"
 
 class RomImageWidget : public Widget, public CommandSender
 {
@@ -36,7 +35,7 @@ class RomImageWidget : public Widget, public CommandSender
       return font.getFontHeight() * 9 / 8;
     }
 
-    void setProperties(const FSNode& node, const string& md5, bool complete);
+    void setProperties(const FSNode& node, const string& md5, bool full = true);
     void clearProperties();
     void reloadProperties(const FSNode& node);
     bool changeImage(int direction = 1);
@@ -49,10 +48,10 @@ class RomImageWidget : public Widget, public CommandSender
 #endif
 
   private:
-    void parseProperties(const FSNode& node, bool complete);
+    void parseProperties(const FSNode& node, bool full = true);
   #ifdef PNG_SUPPORT
-    bool getImageList(const string& propname, const string& filename);
-    bool loadPng(const string& filename);
+    bool getImageList(const string& propName, const string& romName);
+    bool loadPng(const string& fileName);
   #endif
 
   private:

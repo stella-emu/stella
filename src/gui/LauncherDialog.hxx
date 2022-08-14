@@ -146,7 +146,8 @@ class LauncherDialog : public Dialog, CommandSender
     void setRomInfoFont(const Common::Size& area);
 
     void loadRom();
-    void loadRomInfo(bool complete);
+    void loadRomInfo();
+    void loadPendingRomInfo();
     void openSettings();
     void openGameProperties();
     void openContextMenu(int x = -1, int y = -1);

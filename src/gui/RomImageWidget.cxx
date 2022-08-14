@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include <regex>
 #include "EventHandler.hxx"
-#include "FrameBuffer.hxx"
 #include "Dialog.hxx"
 #include "FBSurface.hxx"
 #include "Font.hxx"
@@ -24,7 +24,6 @@
 #include "PNGLibrary.hxx"
 #include "Props.hxx"
 #include "PropsSet.hxx"
-#include "bspf.hxx"
 #include "RomImageWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -40,7 +39,7 @@ RomImageWidget::RomImageWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomImageWidget::setProperties(const FSNode& node, const string& md5, bool complete)
+void RomImageWidget::setProperties(const FSNode& node, const string& md5, bool full)
 {
   myHaveProperties = true;
 
@@ -52,7 +51,7 @@ void RomImageWidget::setProperties(const FSNode& node, const string& md5, bool c
 
   // Decide whether the information should be shown immediately
   if(instance().eventHandler().state() == EventHandlerState::LAUNCHER)
-    parseProperties(node, complete);
+    parseProperties(node, full);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -74,11 +73,11 @@ void RomImageWidget::reloadProperties(const FSNode& node)
   // by saving a different image or through a change in video renderer,
   // so we reload the properties
   if(myHaveProperties)
-    parseProperties(node, true);
+    parseProperties(node);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomImageWidget::parseProperties(const FSNode& node, bool complete)
+void RomImageWidget::parseProperties(const FSNode& node, bool full)
 {
   if(myNavSurface == nullptr)
   {
@@ -112,47 +111,49 @@ void RomImageWidget::parseProperties(const FSNode& node, bool complete)
     });
   }
 
-  // Initialize to empty properties entry
-  mySurfaceErrorMsg = "";
-  mySurfaceIsValid = false;
-
-#ifdef PNG_SUPPORT
-  // TODO: RETRON_77
-
-  // Get a valid filename representing a snapshot file for this rom and load the snapshot
-  myImageList.clear();
-  myImageIdx = 0;
-
-  if(complete)
+#ifdef PNG_SUPPORT      
+  if(!full)
   {
-    // Try to load snapshots by property name and ROM file name
-    getImageList(myProperties.get(PropType::Cart_Name), node.getNameWithExt());
+    myImageIdx = 0;
+    myImageList.clear();
+    mySurfaceErrorMsg = "";
 
-    if(myImageList.size())
-      mySurfaceIsValid = loadPng(myImageList[0].getPath());
+    // Get a valid filename representing a snapshot file for this rom and load the snapshot
+    const string& path = instance().snapshotLoadDir().getPath();
+    // 1. Try to load first snapshot by property name
+    string fileName = path + myProperties.get(PropType::Cart_Name) + ".png";    
+
+    mySurfaceIsValid = loadPng(fileName);
+    if(!mySurfaceIsValid)
+    {
+      // 2. If none exists, try to load first snapshot by ROM file name
+      fileName = path + node.getNameWithExt("png");
+      mySurfaceIsValid = loadPng(fileName);
+    }
+    if(mySurfaceIsValid)
+      myImageList.emplace_back(fileName);
+    else
+      // 3. If no ROM snapshots exist, try to load a default snapshot
+      mySurfaceIsValid = loadPng(path + "default_snapshot.png");
   }
   else
   {
-    const string& path = instance().snapshotLoadDir().getPath();
-    string filename = path + myProperties.get(PropType::Cart_Name) + ".png";
+    const string& oldFileName = myImageList.size() ? myImageList[0].getPath() : "";
 
-    mySurfaceIsValid = loadPng(filename);
-    if(!mySurfaceIsValid)
+    // Try to find all snapshots by property and ROM file name
+    myImageList.clear();
+    getImageList(myProperties.get(PropType::Cart_Name), node.getNameWithExt());
+
+    // The first file found before must not be the first file now, if files by
+    // property *and* ROM name are found
+    if(myImageList.size() && myImageList[0].getPath() != oldFileName)
     {
-      filename = path + node.getNameWithExt("png");
-      mySurfaceIsValid = loadPng(filename);
+      mySurfaceErrorMsg = "";
+      mySurfaceIsValid = loadPng(myImageList[0].getPath());
     }
-    if(mySurfaceIsValid)
-      myImageList.emplace_back(filename);
   }
-
-  if(!mySurfaceIsValid)
-  {
-    // If no ROM snapshots exist, try to load a default snapshot
-    mySurfaceIsValid = loadPng(instance().snapshotLoadDir().getPath() + "default_snapshot.png");
-  }
-
 #else
+  mySurfaceIsValid = false;
   mySurfaceErrorMsg = "PNG image loading not supported";
 #endif
   if(mySurface)
@@ -174,29 +175,21 @@ bool RomImageWidget::changeImage(int direction)
 
 #ifdef PNG_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool RomImageWidget::getImageList(const string& propname, const string& filename)
+bool RomImageWidget::getImageList(const string& propName, const string& romName)
 {
-  // TODO: search for consecutive digits and letters instead of getChildren
-  //std::ifstream in(filename, std::ios_base::binary);
-  //if(!in.is_open())
-  //  loadImageERROR("No snapshot found");
-  // or use a timer before updating the images
+  const std::regex symbols{R"([-[\]{}()*+?.,\^$|#])"}; // \s
+  const string rgxPropName = std::regex_replace(propName, symbols, R"(\$&)");
+  const string rgxRomName  = std::regex_replace(romName,  symbols, R"(\$&)");
+  // Look for <name.png> or <name_#.png> (# is a number)
+  const std::regex rgx("^(" + rgxPropName + "|" + rgxRomName + ")(_\\d+){0,1}\\.png$");
 
-  const string pngPropName = propname + ".png";
-  const string pngFileName = filename + ".png";
   FSNode::NameFilter filter = ([&](const FSNode& node)
     {
-      const string& nodeName = node.getName();
-      return
-        (nodeName == pngPropName || nodeName == pngFileName ||
-        (nodeName.find(propname + " #") == 0 &&
-         nodeName.find(".png") == nodeName.length() - 4) ||
-        (nodeName.find(filename + " #") == 0 &&
-         nodeName.find(".png") == nodeName.length() - 4));
+      return std::regex_match(node.getName(), rgx);
     }
   );
 
-  // Find all images matching the filename and the extension
+  // Find all images matching the given names and the extension
   FSNode node(instance().snapshotLoadDir().getPath());
   node.getChildren(myImageList, FSNode::ListMode::FilesOnly, filter, false, false);
 
@@ -212,12 +205,12 @@ bool RomImageWidget::getImageList(const string& propname, const string& filename
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool RomImageWidget::loadPng(const string& filename)
+bool RomImageWidget::loadPng(const string& fileName)
 {
   try
   {
     VariantList comments;
-    instance().png().loadImage(filename, *mySurface, comments);
+    instance().png().loadImage(fileName, *mySurface, comments);
 
     // Scale surface to available image area
     const Common::Rect& src = mySurface->srcRect();
@@ -271,7 +264,7 @@ void RomImageWidget::drawWidget(bool hilite)
   FBSurface& s = dialog().surface();
   const int yoff = myImageHeight;
 
-  s.fillRect(_x+1, _y+1, _w-2, _h-1, _bgcolor);
+  s.fillRect(_x+1, _y+1, _w-2, _h-2, _bgcolor);
   s.frameRect(_x, _y, _w, myImageHeight, kColor);
 
   if(!myHaveProperties)
