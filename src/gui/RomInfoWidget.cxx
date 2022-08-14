@@ -16,7 +16,6 @@
 //============================================================================
 
 #include "EventHandler.hxx"
-#include "FrameBuffer.hxx"
 #include "Dialog.hxx"
 #include "FBSurface.hxx"
 #include "Font.hxx"
@@ -40,7 +39,7 @@ RomInfoWidget::RomInfoWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomInfoWidget::setProperties(const FSNode& node, const string& md5)
+void RomInfoWidget::setProperties(const FSNode& node, const string& md5, bool full)
 {
   myHaveProperties = true;
 
@@ -52,7 +51,7 @@ void RomInfoWidget::setProperties(const FSNode& node, const string& md5)
 
   // Decide whether the information should be shown immediately
   if(instance().eventHandler().state() == EventHandlerState::LAUNCHER)
-    parseProperties(node);
+    parseProperties(node, full);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -77,7 +76,7 @@ void RomInfoWidget::reloadProperties(const FSNode& node)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomInfoWidget::parseProperties(const FSNode& node)
+void RomInfoWidget::parseProperties(const FSNode& node, bool full)
 {
   // Initialize to empty properties entry
   myRomInfo.clear();
@@ -97,63 +96,68 @@ void RomInfoWidget::parseProperties(const FSNode& node)
     myRomInfo.push_back("Rarity: " + value);
   if((value = myProperties.get(PropType::Cart_Note)) != EmptyString)
     myRomInfo.push_back("Note: " + value);
-  const bool swappedPorts = myProperties.get(PropType::Console_SwapPorts) == "YES";
-
-  // Load the image for controller and bankswitch type auto detection
-  string left = myProperties.get(PropType::Controller_Left);
-  string right = myProperties.get(PropType::Controller_Right);
-  const Controller::Type leftType = Controller::getType(left);
-  const Controller::Type rightType = Controller::getType(right);
-  string bsDetected = myProperties.get(PropType::Cart_Type);
-  bool isPlusCart = false;
-  size_t size = 0;
-  try
+  
+  if(full)
   {
-    ByteBuffer image;
-    string md5 = "";
+    const bool swappedPorts = myProperties.get(PropType::Console_SwapPorts) == "YES";
 
-    if(node.exists() && !node.isDirectory() &&
-      (image = instance().openROM(node, md5, size)) != nullptr)
+    // Load the image for controller and bankswitch type auto detection
+    string left = myProperties.get(PropType::Controller_Left);
+    string right = myProperties.get(PropType::Controller_Right);
+    const Controller::Type leftType = Controller::getType(left);
+    const Controller::Type rightType = Controller::getType(right);
+    string bsDetected = myProperties.get(PropType::Cart_Type);
+    bool isPlusCart = false;
+    size_t size = 0;
+    try
     {
-      Logger::debug(myProperties.get(PropType::Cart_Name) + ":");
-      left = ControllerDetector::detectName(image, size, leftType,
+      ByteBuffer image;
+      string md5 = "";
+
+      if(node.exists() && !node.isDirectory() &&
+        (image = instance().openROM(node, md5, size)) != nullptr)
+      {
+        Logger::debug(myProperties.get(PropType::Cart_Name) + ":");
+        left = ControllerDetector::detectName(image, size, leftType,
           !swappedPorts ? Controller::Jack::Left : Controller::Jack::Right,
-          instance().settings());
-      right = ControllerDetector::detectName(image, size, rightType,
+            instance().settings());
+        right = ControllerDetector::detectName(image, size, rightType,
           !swappedPorts ? Controller::Jack::Right : Controller::Jack::Left,
-          instance().settings());
-      if (bsDetected == "AUTO")
-        bsDetected = Bankswitch::typeToName(CartDetector::autodetectType(image, size));
+            instance().settings());
+        if(bsDetected == "AUTO")
+          bsDetected = Bankswitch::typeToName(CartDetector::autodetectType(image, size));
 
-      isPlusCart = CartDetector::isProbablyPlusROM(image, size);
+        isPlusCart = CartDetector::isProbablyPlusROM(image, size);
+      }
     }
-  }
-  catch(const runtime_error&)
-  {
-    // Do nothing; we simply don't update the controllers if openROM
-    // failed for any reason
-    left = right = "";
-  }
-  if(left != "" && right != "")
-    myRomInfo.push_back("Controllers: " + (left + " (left), " + right + " (right)"));
-
-  if(bsDetected != "")
-  {
-    ostringstream buf;
-
-    // Display actual ROM size in developer mode
-    if(instance().settings().getBool("dev.settings"))
+    catch(const runtime_error&)
     {
-      buf << " - ";
-      if(size < 1_KB)
-        buf << size << "B";
-      else
-        buf << (std::round(size / static_cast<float>(1_KB))) << "K";
+      // Do nothing; we simply don't update the controllers if openROM
+      // failed for any reason
+      left = right = "";
     }
-    myRomInfo.push_back("Type: " + Bankswitch::typeToDesc(Bankswitch::nameToType(bsDetected))
-                        + (isPlusCart ? " - PlusROM" : "")
-                        + buf.str());
+    if(left != "" && right != "")
+      myRomInfo.push_back("Controllers: " + (left + " (left), " + right + " (right)"));
+
+    if(bsDetected != "")
+    {
+      ostringstream buf;
+
+      // Display actual ROM size in developer mode
+      if(instance().settings().getBool("dev.settings"))
+      {
+        buf << " - ";
+        if(size < 1_KB)
+          buf << size << "B";
+        else
+          buf << (std::round(size / static_cast<float>(1_KB))) << "K";
+      }
+      myRomInfo.push_back("Type: " + Bankswitch::typeToDesc(Bankswitch::nameToType(bsDetected))
+                          + (isPlusCart ? " - PlusROM" : "")
+                          + buf.str());
+    }
   }
+
   setDirty();
 }
 

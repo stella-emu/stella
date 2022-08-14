@@ -22,7 +22,6 @@ class FBSurface;
 class Properties;
 
 #include "Widget.hxx"
-#include "bspf.hxx"
 
 class RomInfoWidget : public Widget, public CommandSender
 {
@@ -36,7 +35,7 @@ class RomInfoWidget : public Widget, public CommandSender
                   int x, int y, int w, int h);
     ~RomInfoWidget() override = default;
 
-    void setProperties(const FSNode& node, const string& md5);
+    void setProperties(const FSNode& node, const string& md5, bool full = true);
     void clearProperties();
     void reloadProperties(const FSNode& node);
 
@@ -47,7 +46,7 @@ class RomInfoWidget : public Widget, public CommandSender
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
 
   private:
-    void parseProperties(const FSNode& node);
+    void parseProperties(const FSNode& node, bool full = true);
 
   private:
     // Some ROM properties info, as well as 'tEXt' chunks from the PNG image
