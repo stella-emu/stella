@@ -18,7 +18,17 @@
 #ifndef OSYSTEM_LIBRETRO_HXX
 #define OSYSTEM_LIBRETRO_HXX
 
+#include "FSNode.hxx"
 #include "OSystem.hxx"
+#include "OSystemLIBRETRO.hxx"
+#include "repository/KeyValueRepositoryNoop.hxx"
+#include "repository/CompositeKeyValueRepositoryNoop.hxx"
+
+#ifdef _WIN32
+  const string slash = "\\";
+#else
+  const string slash = "/";
+#endif
 
 /**
   This class defines an OSystem object for libretro.
@@ -47,19 +57,29 @@ class OSystemLIBRETRO : public OSystem
                         they are free to ignore it
     */
     void getBaseDirectories(string& basedir, string& homedir,
-                            bool useappdir, const string& usedir) override;
+                            bool useappdir, const string& usedir) override
+    {
+      basedir = homedir = "." + slash;
+    }
 
-    shared_ptr<KeyValueRepository> getSettingsRepository() override;
+    shared_ptr<KeyValueRepository>
+    getSettingsRepository() override {
+      return make_shared<KeyValueRepositoryNoop>();
+    }
 
-    shared_ptr<CompositeKeyValueRepository> getPropertyRepository() override;
+    shared_ptr<CompositeKeyValueRepository>
+    getPropertyRepository() override {
+      return make_shared<CompositeKeyValueRepositoryNoop>();
+    }
 
-    shared_ptr<CompositeKeyValueRepositoryAtomic> getHighscoreRepository() override;
+    shared_ptr<CompositeKeyValueRepositoryAtomic>
+    getHighscoreRepository() override {
+      return make_shared<CompositeKeyValueRepositoryNoop>();
+    }
 
   protected:
-
-    void initPersistence(FSNode& basedir) override;
-
-    string describePresistence() override;
+    void initPersistence(FSNode& basedir) override { }
+    string describePresistence() override { return "none"; }
 };
 
 #endif

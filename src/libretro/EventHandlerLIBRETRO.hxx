@@ -33,19 +33,19 @@ class EventHandlerLIBRETRO : public EventHandler
     /**
       Create a new LIBRETRO event handler object
     */
-    explicit EventHandlerLIBRETRO(OSystem& osystem);
-    ~EventHandlerLIBRETRO() override;
+    explicit EventHandlerLIBRETRO(OSystem& osystem) : EventHandler(osystem) { }
+    ~EventHandlerLIBRETRO() override = default;
 
   private:
     /**
       Enable/disable text events (distinct from single-key events).
     */
-    void enableTextEvents(bool enable) override;
+    void enableTextEvents(bool enable) override { }
 
     /**
       Collects and dispatches any pending SDL2 events.
     */
-    void pollEvent() override;
+    void pollEvent() override { }
 
   private:
     // Following constructors and assignment operators not supported
