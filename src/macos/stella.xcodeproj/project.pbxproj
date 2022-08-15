@@ -455,6 +455,8 @@
 		DC84FC572677C64200E60ADE /* CartARMWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC84FC552677C64200E60ADE /* CartARMWidget.hxx */; };
 		DC857D352482F66200C7C14F /* CartCreator.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC857D332482F66200C7C14F /* CartCreator.cxx */; };
 		DC857D362482F66200C7C14F /* CartCreator.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC857D342482F66200C7C14F /* CartCreator.hxx */; };
+		DC8685C128AAAF7E00DF21AA /* RomImageWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC8685BF28AAAF7D00DF21AA /* RomImageWidget.cxx */; };
+		DC8685C228AAAF7E00DF21AA /* RomImageWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8685C028AAAF7E00DF21AA /* RomImageWidget.hxx */; };
 		DC8C1BAD14B25DE7006440EE /* CartCM.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC8C1BA714B25DE7006440EE /* CartCM.cxx */; };
 		DC8C1BAE14B25DE7006440EE /* CartCM.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8C1BA814B25DE7006440EE /* CartCM.hxx */; };
 		DC8C1BAF14B25DE7006440EE /* CompuMate.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC8C1BA914B25DE7006440EE /* CompuMate.cxx */; };
@@ -1287,6 +1289,8 @@
 		DC84FC552677C64200E60ADE /* CartARMWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartARMWidget.hxx; sourceTree = "<group>"; };
 		DC857D332482F66200C7C14F /* CartCreator.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartCreator.cxx; sourceTree = "<group>"; };
 		DC857D342482F66200C7C14F /* CartCreator.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartCreator.hxx; sourceTree = "<group>"; };
+		DC8685BF28AAAF7D00DF21AA /* RomImageWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RomImageWidget.cxx; sourceTree = "<group>"; };
+		DC8685C028AAAF7E00DF21AA /* RomImageWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = RomImageWidget.hxx; sourceTree = "<group>"; };
 		DC8C1BA714B25DE7006440EE /* CartCM.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartCM.cxx; sourceTree = "<group>"; };
 		DC8C1BA814B25DE7006440EE /* CartCM.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartCM.hxx; sourceTree = "<group>"; };
 		DC8C1BA914B25DE7006440EE /* CompuMate.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CompuMate.cxx; sourceTree = "<group>"; };
@@ -2315,6 +2319,8 @@
 				DC5AAC2B1FCB24DF00C420A6 /* RadioButtonWidget.hxx */,
 				DC4613650D92C03600D8DAB9 /* RomAuditDialog.cxx */,
 				DC4613660D92C03600D8DAB9 /* RomAuditDialog.hxx */,
+				DC8685BF28AAAF7D00DF21AA /* RomImageWidget.cxx */,
+				DC8685C028AAAF7E00DF21AA /* RomImageWidget.hxx */,
 				DCE3BBF50C95CEDC00A671DF /* RomInfoWidget.cxx */,
 				DCE3BBF60C95CEDC00A671DF /* RomInfoWidget.hxx */,
 				2DDBEACA084578BF00812C11 /* ScrollBarWidget.cxx */,
@@ -2979,6 +2985,7 @@
 				DCDFF08220B781B0001227C0 /* DispatchResult.hxx in Headers */,
 				DCE9681A2761128200E99839 /* Icons.hxx in Headers */,
 				DCF8621A21C9D43300F95F52 /* StaggeredLogger.hxx in Headers */,
+				DC8685C228AAAF7E00DF21AA /* RomImageWidget.hxx in Headers */,
 				DCE9681627553F1000E99839 /* FavoritesManager.hxx in Headers */,
 				DCAAE5E31715887B0080BB82 /* CartF0Widget.hxx in Headers */,
 				DCAAE5E51715887B0080BB82 /* CartF4SCWidget.hxx in Headers */,
@@ -3194,6 +3201,7 @@
 				DC6DC91E205DB879004A5FC3 /* PhysicalJoystick.cxx in Sources */,
 				E08FCD5323A037EB0051F59B /* QisBlitter.cxx in Sources */,
 				DCCE0355225104BF008C246F /* StellaSettingsDialog.cxx in Sources */,
+				DC8685C128AAAF7E00DF21AA /* RomImageWidget.cxx in Sources */,
 				2D91748A09BA90380026E9FF /* Control.cxx in Sources */,
 				2D91748C09BA90380026E9FF /* Driving.cxx in Sources */,
 				E0306E101F93E916003DDD52 /* FrameLayoutDetector.cxx in Sources */,
