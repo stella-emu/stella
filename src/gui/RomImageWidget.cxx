@@ -252,9 +252,9 @@ void RomImageWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomImageWidget::handleMouseMoved(int x, int y)
 {
-  if(x < _w / 2 != myMouseX < _w / 2)
+  if(x < _w / 2 != myMouseLeft)
     setDirty();
-  myMouseX = x;
+  myMouseLeft = x < _w / 2;
 }
 #endif
 
@@ -297,17 +297,15 @@ void RomImageWidget::drawWidget(bool hilite)
       s.drawString(_font, buf.str(), _x + _w - wText, yText, wText, _textcolor);
 
     // Draw the navigation arrows
-    const bool leftArrow = myMouseX < _w / 2;
-
     myNavSurface->invalidate();
     if(isHighlighted() &&
-      ((leftArrow && myImageIdx) || (!leftArrow && myImageIdx < myImageList.size() - 1)))
+      ((myMouseLeft && myImageIdx) || (!myMouseLeft && myImageIdx < myImageList.size() - 1)))
     {
       const int w = _w / 64;
       const int w2 = 1; // w / 2;
-      const int ax = leftArrow ? _w / 12 - w / 2 : _w - _w / 12 - w / 2;
+      const int ax = myMouseLeft ? _w / 12 - w / 2 : _w - _w / 12 - w / 2;
       const int ay = myImageHeight >> 1;
-      const int dx = (_w / 32) * (leftArrow ? 1 : -1);
+      const int dx = (_w / 32) * (myMouseLeft ? 1 : -1);
       const int dy = myImageHeight / 16;
 
       for(int i = 0; i < w; ++i)

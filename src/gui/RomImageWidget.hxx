@@ -83,7 +83,7 @@ class RomImageWidget : public Widget, public CommandSender
     size_t myImageIdx{0};
 
     // Current x-position of the mouse
-    int myMouseX{0};
+    bool myMouseLeft{true};
 
     // Label for the loaded image
     string myLabel;
