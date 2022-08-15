@@ -602,7 +602,7 @@
   <h3><a name ="CommandMenu"><b><u>Command Menu</u></b></a></h3>
 
   <p>While playing a game, normally one would use the keyboard shortcuts for controlling the
-  'virtual' switches in Stella (ie, the commands associated with the
+  'virtual' switches in Stella (e.g. the commands associated with the
   function keys as described in
   <b>Playing a Game - <a href="#Hotkeys">Hotkeys</a></b>).
   However, another alternative is available. Pressing the '\' key (default) toggles
@@ -612,7 +612,7 @@
   <p>This dialog contains a set of buttons that represent the same functionality
   as the function keys and display the current state. You may find this useful if
   you cannot remember all the function key events, or you wish to use Stella
-  without a keyboard (ie, in a standalone gaming system).</p>
+  without a keyboard (e.g. in a standalone gaming system).</p>
 
   <p>Note: Clicking the `?` at the top right opens this document at the related
   paragraph. This works for almost all dialogs. There is also a hotkey defined
@@ -2035,6 +2035,16 @@
       <td>Go to parent directory (also in other file dialogs)</td>
       <td>Backspace, Alt + Up arrow</td>
       <td>Backspace, Alt + Up arrow</td>
+    </tr>
+    <tr>
+      <td>Select previous snapshot</td>
+      <td>Control + Left arrow</td>
+      <td>Control + Left arrow</td>
+    </tr>
+    <tr>
+      <td>Select next snapshot</td>
+      <td>Control + Right arrow</td>
+      <td>Control + Right arrow</td>
     </tr>
     <tr>
       <td>Remove from 'Recently Played' or 'Most Popular' folder</td>
@@ -4025,8 +4035,13 @@
 
   <p>Stella supports viewing snapshots and ROM properties of the currently
   selected ROM in the ROM launcher. Support is automatic, as long as your
-  image directory contains snapshots in the appropriate format. An
-  <a href="https://stella-emu.github.io/stella-snapshots.zip">archive</a> of updated snapshots is available on the Stella webpage.
+  image directory contains snapshots in the appropriate format. The title
+  (if existing) and the number of matching snapshots are displayed under the
+  current one. The mouse or the launcher hotkeys can be used to browse the
+  snapshots.
+
+  An <a href="https://stella-emu.github.io/stella-snapshots.zip">archive</a> of
+  updated snapshots is available on the Stella webpage.
   This archive may be updated periodically as new ROMs are found, and also
   for each new release of Stella. In case no snapshot is found, you can
   provide a default image named 'default_snapshot.png'.
@@ -4044,10 +4059,10 @@
   <p>ROM Info Viewer width at 40%, UI sized 800x480, small launcher font, bottom buttons enabled:</p>
   <img src="graphics/rominfo_1x_small.png">
 
-  <p>ROM Info Viewer width at 32%, UI sized 900x720, medium launcher font, bottom buttons disabled::</p>
+  <p>ROM Info Viewer width at 32%, UI sized 900x720, medium launcher font, bottom buttons disabled:</p>
   <img src="graphics/rominfo_1x_large.png">
 
-  <p>ROM Info Viewer width at 50% , UI sized 1280x900, large launcher font, bottom buttons disabled::</p>
+  <p>ROM Info Viewer width at 50% , UI sized 1280x900, large launcher font, bottom buttons disabled:</p>
   <img src="graphics/rominfo_2x_small.png">
 
   <p>The dialog items at the top can be used to define the listed files and to navigate your folders:</p>
