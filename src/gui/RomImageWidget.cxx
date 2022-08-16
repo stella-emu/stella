@@ -307,7 +307,7 @@ void RomImageWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomImageWidget::handleMouseMoved(int x, int y)
 {
-  if(x < _w / 2 != myMouseLeft)
+  if((x < _w / 2) != myMouseLeft)
     setDirty();
   myMouseLeft = x < _w / 2;
 }
