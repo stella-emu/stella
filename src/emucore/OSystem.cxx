@@ -54,6 +54,7 @@
 #include "PropsSet.hxx"
 #include "EventHandler.hxx"
 #include "PNGLibrary.hxx"
+#include "JPGLibrary.hxx"
 #include "Console.hxx"
 #include "Random.hxx"
 #include "StateManager.hxx"
@@ -90,8 +91,8 @@ OSystem::OSystem()
   #ifdef CHEATCODE_SUPPORT
     myFeatures += "Cheats ";
   #endif
-  #ifdef PNG_SUPPORT
-    myFeatures += "PNG ";
+  #ifdef IMAGE_SUPPORT
+    myFeatures += "Images ";
   #endif
   #ifdef ZIP_SUPPORT
     myFeatures += "ZIP";
@@ -196,9 +197,11 @@ bool OSystem::initialize(const Settings::Options& options)
   myHighScoresManager->setRepository(getHighscoreRepository());
 #endif
 
-#ifdef PNG_SUPPORT
+#ifdef IMAGE_SUPPORT
   // Create PNG handler
   myPNGLib = make_unique<PNGLibrary>(*this);
+  // Create JPG handler
+  myJPGLib = make_unique<JPGLibrary>(*this);
 #endif
 
   // Detect serial port for AtariVox-USB
@@ -289,7 +292,7 @@ void OSystem::setConfigPaths()
   buildDirIfRequired(myCfgDir, myBaseDir, "cfg");
 #endif
 
-#ifdef PNG_SUPPORT
+#ifdef IMAGE_SUPPORT
   const string& ssSaveDir = mySettings->getString("snapsavedir");
   if(ssSaveDir == EmptyString)
     mySnapshotSaveDir = userDir();

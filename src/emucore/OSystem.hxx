@@ -46,8 +46,9 @@ class AudioSettings;
   class TimeMachine;
   class VideoAudioDialog;
 #endif
-#ifdef PNG_SUPPORT
+#ifdef IMAGE_SUPPORT
   class PNGLibrary;
+  class JPGLibrary;
 #endif
 
 #include <chrono>
@@ -249,14 +250,21 @@ class OSystem
     TimeMachine& timeMachine() const { return *myTimeMachine; }
   #endif
 
-  #ifdef PNG_SUPPORT
+  #ifdef IMAGE_SUPPORT
     /**
       Get the PNG handler of the system.
 
       @return The PNGlib object
     */
     PNGLibrary& png() const { return *myPNGLib; }
-  #endif
+
+    /**
+      Get the JPG handler of the system.
+
+      @return The JPGlib object
+    */
+    JPGLibrary& jpg() const { return *myJPGLib; }
+#endif
 
     /**
       Set all config file paths for the OSystem.
@@ -293,7 +301,7 @@ class OSystem
     const FSNode& cfgDir() const { return myCfgDir; }
   #endif
 
-  #ifdef PNG_SUPPORT
+  #ifdef IMAGE_SUPPORT
     /**
       Return the full/complete path name for saving and loading
       PNG snapshots.
@@ -561,9 +569,12 @@ class OSystem
     unique_ptr<TimeMachine> myTimeMachine;
   #endif
 
-  #ifdef PNG_SUPPORT
+  #ifdef IMAGE_SUPPORT
     // PNG object responsible for loading/saving PNG images
     unique_ptr<PNGLibrary> myPNGLib;
+
+    // JPG object responsible for loading/saving JPG images
+    unique_ptr<JPGLibrary> myJPGLib;
   #endif
 
     // Pointer to the StateManager object
