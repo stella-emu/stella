@@ -15,7 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifdef IMAGE_SUPPORT 
+#ifdef IMAGE_SUPPORT
+
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
 #include "FBSurface.hxx"
@@ -31,12 +32,13 @@ JPGLibrary::JPGLibrary(OSystem& osystem)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void JPGLibrary::loadImage(const string& filename, FBSurface& surface, VariantList& comments)
+void JPGLibrary::loadImage(const string& filename, FBSurface& surface,
+                           VariantList& comments)
 {
   const auto loadImageERROR = [&](const char* s) {
     if(s)
       throw runtime_error(s);
-  };  
+  };
 
   std::ifstream in(filename, std::ios_base::binary | std::ios::ate);
   if(!in.is_open())
