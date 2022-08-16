@@ -111,7 +111,7 @@ void RomImageWidget::parseProperties(const FSNode& node, bool full)
     });
   }
 
-#ifdef PNG_SUPPORT      
+#ifdef PNG_SUPPORT
   if(!full)
   {
     myImageIdx = 0;
@@ -121,7 +121,7 @@ void RomImageWidget::parseProperties(const FSNode& node, bool full)
     // Get a valid filename representing a snapshot file for this rom and load the snapshot
     const string& path = instance().snapshotLoadDir().getPath();
     // 1. Try to load first snapshot by property name
-    string fileName = path + myProperties.get(PropType::Cart_Name) + ".png";    
+    string fileName = path + myProperties.get(PropType::Cart_Name) + ".png";
 
     mySurfaceIsValid = loadPng(fileName);
     if(!mySurfaceIsValid)
@@ -252,7 +252,7 @@ void RomImageWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomImageWidget::handleMouseMoved(int x, int y)
 {
-  if(x < _w / 2 != myMouseLeft)
+  if((x < _w / 2) != myMouseLeft)
     setDirty();
   myMouseLeft = x < _w / 2;
 }
