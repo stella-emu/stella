@@ -15,7 +15,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#if defined(PNG_SUPPORT)
+#ifdef IMAGE_SUPPORT 
 
 #ifndef PNGLIBRARY_HXX
 #define PNGLIBRARY_HXX
@@ -23,11 +23,7 @@
 #include <png.h>
 
 class OSystem;
-class FrameBuffer;
 class FBSurface;
-class Properties;
-
-#include "bspf.hxx"
 
 /**
   This class implements a thin wrapper around the libpng library, and
@@ -207,4 +203,4 @@ class PNGLibrary
 
 #endif
 
-#endif  // PNG_SUPPORT
+#endif  // IMAGE_SUPPORT

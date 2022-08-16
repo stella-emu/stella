@@ -146,7 +146,7 @@ void EventHandler::reset(EventHandlerState state)
 {
   setState(state);
   myOSystem.state().reset();
-#ifdef PNG_SUPPORT
+#ifdef IMAGE_SUPPORT
   myOSystem.png().setContinuousSnapInterval(0);
 #endif
   myFryingFlag = false;
@@ -274,7 +274,7 @@ void EventHandler::poll(uInt64 time)
       cheat->evaluate();
   #endif
 
-  #ifdef PNG_SUPPORT
+  #ifdef IMAGE_SUPPORT
     // Handle continuous snapshots
     if(myOSystem.png().continuousSnapEnabled())
       myOSystem.png().updateTime(time);
@@ -1495,7 +1495,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated) myOSystem.toggleTimeMachine();
       return;
 
-  #ifdef PNG_SUPPORT
+  #ifdef IMAGE_SUPPORT
     case Event::ToggleContSnapshots:
       if(pressed && !repeated) myOSystem.png().toggleContinuousSnapshots(false);
       return;
@@ -2827,7 +2827,7 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::LoadState,               "Load state"                            },
   { Event::LoadAllStates,           "Load saved TM states for current game" },
 
-#ifdef PNG_SUPPORT
+#ifdef IMAGE_SUPPORT
   { Event::TakeSnapshot,            "Snapshot"                              },
   { Event::ToggleContSnapshots,     "Save continuous snapsh. (as defined)"  },
   { Event::ToggleContSnapshotsFrame,"Save continuous snapsh. (every frame)" },

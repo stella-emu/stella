@@ -709,7 +709,7 @@ PhysicalKeyboardHandler::DefaultCommonMapping = {
   { Event::ToggleFrameStats,         KBDK_L, MOD3 },
   { Event::ToggleTimeMachine,        KBDK_T, MOD3 },
 
-  #ifdef PNG_SUPPORT
+  #ifdef IMAGE_SUPPORT
   { Event::ToggleContSnapshots,      KBDK_S, MOD3 | KBDM_CTRL },
   { Event::ToggleContSnapshotsFrame, KBDK_S, KBDM_SHIFT | MOD3 | KBDM_CTRL },
   #endif

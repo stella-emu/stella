@@ -94,6 +94,9 @@
     <Filter Include="Header Files\httplib">
       <UniqueIdentifier>{e216a718-4078-4a08-b134-4987ec071e31}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\nanojpeg">
+      <UniqueIdentifier>{7836da03-0e67-481a-b16a-529a1042d215}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common\FBBackendSDL2.cxx">
@@ -1148,6 +1151,12 @@
     </ClCompile>
     <ClCompile Include="..\gui\RomImageWidget.cxx">
       <Filter>Source Files\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\JPGLibrary.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nanojpeg\nanojpeg.c">
+      <Filter>Header Files\nanojpeg</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2377,6 +2386,15 @@
     </ClInclude>
     <ClInclude Include="..\gui\RomImageWidget.hxx">
       <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\JPGLibrary.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nanojpeg\nanojpeg_lib.hxx">
+      <Filter>Header Files\nanojpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nanojpeg\nanojpeg.h">
+      <Filter>Header Files\nanojpeg</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -514,7 +514,7 @@ class EventHandler
     static constexpr Int32
       COMBO_SIZE           = 16,
       EVENTS_PER_COMBO     = 8,
-    #ifdef PNG_SUPPORT
+    #ifdef IMAGE_SUPPORT
       PNG_SIZE             = 3,
     #else
       PNG_SIZE             = 0,

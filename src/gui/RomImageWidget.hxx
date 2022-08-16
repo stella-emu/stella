@@ -42,16 +42,19 @@ class RomImageWidget : public Widget, public CommandSender
 
   protected:
     void drawWidget(bool hilite) override;
-#ifdef PNG_SUPPORT
+#ifdef IMAGE_SUPPORT
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseMoved(int x, int y) override;
 #endif
 
   private:
     void parseProperties(const FSNode& node, bool full = true);
-  #ifdef PNG_SUPPORT
+  #ifdef IMAGE_SUPPORT
     bool getImageList(const string& propName, const string& romName);
+    bool tryImageTypes(string& fileName);
+    bool loadImage(const string& fileName);
     bool loadPng(const string& fileName);
+    bool loadJpg(const string& fileName);
   #endif
 
   private:
