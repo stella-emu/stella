@@ -70,11 +70,13 @@ class JPGLibrary
     */
     void loadImagetoSurface(FBSurface& surface);
 
-    ///**
-    //  Read EXIF meta data chunks from the image.
-    //*/
-    //void readmetaData(const png_structp png_ptr, png_infop info_ptr,
-    //  VariantList& metaData);
+    /**
+      Read EXIF meta data chunks from the image.
+
+      @param filename  The filename to load the JPG image
+      @param metaData  The meta data of the JPG image
+    */
+    void readMetaData(const string& filename, VariantList& metaData);
 
   private:
     // Following constructors and assignment operators not supported

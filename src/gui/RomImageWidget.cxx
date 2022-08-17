@@ -291,8 +291,16 @@ bool RomImageWidget::loadJpg(const string& fileName)
     VariantList metaData;
     instance().jpg().loadImage(fileName, *mySurface, metaData);
 
+    // Retrieve label for loaded image
     myLabel.clear();
-    // TODO
+    for(auto data = metaData.begin(); data != metaData.end(); ++data)
+    {
+      if(data->first == "ImageDescription")
+      {
+        myLabel = data->second.toString();
+        break;
+      }
+    }
     return true;
   }
   catch(const runtime_error& e)
