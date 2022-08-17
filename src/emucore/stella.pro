@@ -12385,9 +12385,10 @@
 ""
 
 "Cart.MD5" "8786c1e56ef221d946c64f6b65b697e9"
-"Cart.Manufacturer" "20th Century Fox Video Games, David Lubar"
+"Cart.Manufacturer" "20th Century Fox Video Games - Sirius Software, David Lubar"
 "Cart.ModelNo" "11015"
-"Cart.Name" "AKA Space Adventure"
+"Cart.Name" "Flash Gordon (1983) (20th Century Fox Video Games - Sirius Software, David Lubar)" 
+"Cart.Note" "AKA Space Adventure"
 ""
 
 "Cart.MD5" "8786f229b974c393222874f73a9f3206"

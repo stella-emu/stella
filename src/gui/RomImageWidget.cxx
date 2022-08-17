@@ -48,6 +48,13 @@ void RomImageWidget::setProperties(const FSNode& node, const Properties properti
   // Decide whether the information should be shown immediately
   if(instance().eventHandler().state() == EventHandlerState::LAUNCHER)
     parseProperties(node, full);
+  else
+  {
+#ifdef DEBUGGER_SUPPORT
+    cerr << "RomImageWidget::setProperties: else!" << endl;
+    Logger::debug("RomImageWidget::setProperties: else!");
+#endif
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -60,6 +67,13 @@ void RomImageWidget::clearProperties()
   // Decide whether the information should be shown immediately
   if(instance().eventHandler().state() == EventHandlerState::LAUNCHER)
     setDirty();
+  else
+  {
+#ifdef DEBUGGER_SUPPORT
+    cerr << "RomImageWidget::clearProperties: else!" << endl;
+    Logger::debug("RomImageWidget::clearProperties: else!");
+#endif
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -146,6 +160,8 @@ void RomImageWidget::parseProperties(const FSNode& node, bool full)
     // property *and* ROM name are found (TODO: fix that!)
     if(myImageList.size() && myImageList[0].getPath() != oldFileName)
       loadImage(myImageList[0].getPath());
+    else
+      setDirty(); // update the counter display
   }
 #else
   mySurfaceIsValid = false;
@@ -177,6 +193,8 @@ bool RomImageWidget::changeImage(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool RomImageWidget::getImageList(const string& propName, const string& romName)
 {
+  cerr << propName << "   " << romName << endl;
+
   const std::regex symbols{R"([-[\]{}()*+?.,\^$|#])"}; // \s
   const string rgxPropName = std::regex_replace(propName, symbols, R"(\$&)");
   const string rgxRomName  = std::regex_replace(romName,  symbols, R"(\$&)");
