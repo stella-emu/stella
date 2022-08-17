@@ -62,7 +62,7 @@ bool SerialPortWINDOWS::openPort(const string& device)
       dcb.StopBits = ONESTOPBIT;
       SetCommState(myHandle, &dcb);
 
-      COMMTIMEOUTS commtimeouts;
+      COMMTIMEOUTS commtimeouts{0};
       commtimeouts.ReadIntervalTimeout = MAXDWORD;
       commtimeouts.ReadTotalTimeoutMultiplier = 0;
       commtimeouts.ReadTotalTimeoutConstant = 1;
@@ -82,7 +82,7 @@ bool SerialPortWINDOWS::readByte(uInt8& data)
   if(myHandle != INVALID_HANDLE_VALUE)
   {
     DWORD read;
-    ReadFile(myHandle, &data, 1, &read, NULL);
+    std::ignore = ReadFile(myHandle, &data, 1, &read, NULL);
     return read == 1;
   }
   return false;
@@ -94,7 +94,7 @@ bool SerialPortWINDOWS::writeByte(uInt8 data)
   if(myHandle != INVALID_HANDLE_VALUE)
   {
     DWORD written;
-    WriteFile(myHandle, &data, 1, &written, NULL);
+    std::ignore = WriteFile(myHandle, &data, 1, &written, NULL);
     return written == 1;
   }
   return false;
@@ -106,7 +106,7 @@ bool SerialPortWINDOWS::isCTS()
   if(myHandle != INVALID_HANDLE_VALUE)
   {
     DWORD modemStat;
-    GetCommModemStatus(myHandle, &modemStat);
+    std::ignore = GetCommModemStatus(myHandle, &modemStat);
     return modemStat & MS_CTS_ON;
   }
   return false;
@@ -147,10 +147,7 @@ StringList SerialPortWINDOWS::portNames()
   RegCloseKey(hKey);
 
   std::sort(ports.begin(), ports.end(),
-    [](const std::string& a, const std::string& b)
-  {
-    return a < b;
-  }
+    [](const std::string& a, const std::string& b) { return a < b; }
   );
 
   return ports;

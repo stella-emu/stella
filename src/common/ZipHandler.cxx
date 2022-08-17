@@ -273,7 +273,6 @@ void ZipHandler::ZipFile::close()
 void ZipHandler::ZipFile::readEcd()
 {
   uInt64 buflen = 1024;
-  ByteBuffer buffer;
 
   // We may need multiple tries
   while(buflen < 65536)
@@ -285,7 +284,7 @@ void ZipHandler::ZipFile::readEcd()
       buflen = myLength;
 
     // Allocate buffer
-    buffer = make_unique<uInt8[]>(buflen + 1);
+    ByteBuffer buffer = make_unique<uInt8[]>(buflen + 1);
     if(buffer == nullptr)
       throw runtime_error(errorMessage(ZipError::OUT_OF_MEMORY));
 
