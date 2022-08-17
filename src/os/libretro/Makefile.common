@@ -1,14 +1,14 @@
 LIBRETRO_COMM_DIR = $(CORE_DIR)/../libretro-common
-INCFLAGS := -I. -I$(CORE_DIR) -I$(CORE_DIR)/libretro -I$(CORE_DIR)/emucore -I$(CORE_DIR)/emucore/tia -I$(CORE_DIR)/common -I$(CORE_DIR)/common/audio -I$(CORE_DIR)/common/tv_filters -I$(CORE_DIR)/common/repository/sqlite -I$(CORE_DIR)/json -I$(CORE_DIR)/httplib -I$(CORE_DIR)/sqlite
+INCFLAGS := -I. -I$(CORE_DIR) -I$(CORE_DIR)/os/libretro -I$(CORE_DIR)/emucore -I$(CORE_DIR)/emucore/tia -I$(CORE_DIR)/common -I$(CORE_DIR)/common/audio -I$(CORE_DIR)/common/tv_filters -I$(CORE_DIR)/common/repository/sqlite -I$(CORE_DIR)/json -I$(CORE_DIR)/httplib -I$(CORE_DIR)/sqlite
 
 ifneq (,$(findstring msvc2003,$(platform)))
 INCFLAGS += -I$(LIBRETRO_COMM_DIR)/include/compat/msvc
 endif
 
 SOURCES_CXX := \
-	$(CORE_DIR)/libretro/libretro.cxx \
-	$(CORE_DIR)/libretro/FSNodeLIBRETRO.cxx \
-	$(CORE_DIR)/libretro/StellaLIBRETRO.cxx \
+	$(CORE_DIR)/os/libretro/libretro.cxx \
+	$(CORE_DIR)/os/libretro/FSNodeLIBRETRO.cxx \
+	$(CORE_DIR)/os/libretro/StellaLIBRETRO.cxx \
 	$(CORE_DIR)/common/AudioQueue.cxx \
 	$(CORE_DIR)/common/AudioSettings.cxx \
 	$(CORE_DIR)/common/Base.cxx \
