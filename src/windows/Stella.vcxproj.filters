@@ -97,6 +97,12 @@
     <Filter Include="Header Files\nanojpeg">
       <UniqueIdentifier>{7836da03-0e67-481a-b16a-529a1042d215}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\tinyexif">
+      <UniqueIdentifier>{ab671015-c65e-4fac-83e0-516188525b73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\tinyexif">
+      <UniqueIdentifier>{e46a6b4a-4da4-4842-ac5b-65a6b45edc86}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common\FBBackendSDL2.cxx">
@@ -1154,6 +1160,9 @@
     </ClCompile>
     <ClCompile Include="..\common\JPGLibrary.cxx">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tinyexif\tinyexif.cxx">
+      <Filter>Source Files\tinyexif</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2389,6 +2398,9 @@
     </ClInclude>
     <ClInclude Include="..\nanojpeg\nanojpeg_lib.hxx">
       <Filter>Header Files\nanojpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\tinyexif\tinyexif_lib.hxx">
+      <Filter>Header Files\tinyexif</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

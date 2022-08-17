@@ -40,12 +40,13 @@ class JPGLibrary
 
       @param filename  The filename to load the JPG image
       @param surface   The FBSurface into which to place the JPG data
+      @param metaData  The meta data of the JPG image
 
       @post  On success, the FBSurface containing image data, otherwise a
              runtime_error is thrown containing a more detailed
              error message.
     */
-    void loadImage(const string& filename, FBSurface& surface, VariantList& comments);
+    void loadImage(const string& filename, FBSurface& surface, VariantList& metaData);
 
   private:
     // Global OSystem object
@@ -69,11 +70,13 @@ class JPGLibrary
     */
     void loadImagetoSurface(FBSurface& surface);
 
-    ///**
-    //  Read EXIF metadata chunks from the image.
-    //*/
-    //void readComments(const png_structp png_ptr, png_infop info_ptr,
-    //  VariantList& comments);
+    /**
+      Read EXIF meta data chunks from the image.
+
+      @param filename  The filename to load the JPG image
+      @param metaData  The meta data of the JPG image
+    */
+    void readMetaData(const string& filename, VariantList& metaData);
 
   private:
     // Following constructors and assignment operators not supported

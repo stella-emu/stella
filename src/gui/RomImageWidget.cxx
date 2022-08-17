@@ -25,13 +25,13 @@
 #include "PNGLibrary.hxx"
 #include "Props.hxx"
 #include "PropsSet.hxx"
+#include "TimerManager.hxx"
 #include "RomImageWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RomImageWidget::RomImageWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, int w, int h)
-  : Widget(boss, font, x, y, w, h),
-    CommandSender(boss)
+  : Widget(boss, font, x, y, w, h)
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_TRACK_MOUSE;
   _bgcolor = kDlgColor;
@@ -40,15 +40,10 @@ RomImageWidget::RomImageWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomImageWidget::setProperties(const FSNode& node, const string& md5, bool full)
+void RomImageWidget::setProperties(const FSNode& node, const Properties properties, bool full)
 {
   myHaveProperties = true;
-
-  // Make sure to load a per-ROM properties entry, if one exists
-  instance().propSet().loadPerROM(node, md5);
-
-  // And now get the properties for this ROM
-  instance().propSet().getMD5(md5, myProperties);
+  myProperties = properties;
 
   // Decide whether the information should be shown immediately
   if(instance().eventHandler().state() == EventHandlerState::LAUNCHER)
@@ -80,6 +75,7 @@ void RomImageWidget::reloadProperties(const FSNode& node)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomImageWidget::parseProperties(const FSNode& node, bool full)
 {
+  uInt64 startTime = TimerManager::getTicks() / 1000;
   if(myNavSurface == nullptr)
   {
     // Create navigation surface
@@ -111,7 +107,7 @@ void RomImageWidget::parseProperties(const FSNode& node, bool full)
     });
   }
 
-#ifdef IMAGE_SUPPORT      
+#ifdef IMAGE_SUPPORT
   if(!full)
   {
     myImageIdx = 0;
@@ -119,23 +115,24 @@ void RomImageWidget::parseProperties(const FSNode& node, bool full)
 
     // Get a valid filename representing a snapshot file for this rom and load the snapshot
     const string& path = instance().snapshotLoadDir().getPath();
+
     // 1. Try to load first snapshot by property name
-    string fileName = path + myProperties.get(PropType::Cart_Name);// +".png"; // TODO: try jpg   
-
-    tryImageTypes(fileName);
-
-    loadImage(fileName);
+    string fileName = path + myProperties.get(PropType::Cart_Name);
+    tryImageFormats(fileName);
     if(!mySurfaceIsValid)
     {
       // 2. If none exists, try to load first snapshot by ROM file name
-      fileName = path + node.getNameWithExt("png"); // TODO: try jpg   
-      loadImage(fileName);
+      fileName = path + node.getName();
+      tryImageFormats(fileName);
     }
     if(mySurfaceIsValid)
       myImageList.emplace_back(fileName);
     else
+    {
       // 3. If no ROM snapshots exist, try to load a default snapshot
-      loadImage(path + "default_snapshot.png"); // TODO: try jpg???
+      fileName = path + "default_snapshot";
+      tryImageFormats(fileName);
+    }
   }
   else
   {
@@ -152,11 +149,16 @@ void RomImageWidget::parseProperties(const FSNode& node, bool full)
   }
 #else
   mySurfaceIsValid = false;
-  mySurfaceErrorMsg = "PNG image loading not supported";
+  mySurfaceErrorMsg = "Image loading not supported";
   setDirty();
 #endif
   if(mySurface)
     mySurface->setVisible(mySurfaceIsValid);
+
+  // Update maximum load time
+  myMaxLoadTime = std::min(
+    static_cast<uInt64>(500ull / timeFactor),
+    std::max(myMaxLoadTime, TimerManager::getTicks() / 1000 - startTime));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -178,7 +180,7 @@ bool RomImageWidget::getImageList(const string& propName, const string& romName)
   const std::regex symbols{R"([-[\]{}()*+?.,\^$|#])"}; // \s
   const string rgxPropName = std::regex_replace(propName, symbols, R"(\$&)");
   const string rgxRomName  = std::regex_replace(romName,  symbols, R"(\$&)");
-  // Look for <name.png> or <name_#.png> (# is a number)
+  // Look for <name.png|jpg> or <name_#.png|jpg> (# is a number)
   const std::regex rgx("^(" + rgxPropName + "|" + rgxRomName + ")(_\\d+){0,1}\\.(png|jpg)$");
 
   FSNode::NameFilter filter = ([&](const FSNode& node)
@@ -191,15 +193,15 @@ bool RomImageWidget::getImageList(const string& propName, const string& romName)
   FSNode node(instance().snapshotLoadDir().getPath());
   node.getChildren(myImageList, FSNode::ListMode::FilesOnly, filter, false, false);
 
-  // Sort again, not considering extensions, else <filename.png> would be at
+  // Sort again, not considering extensions, else <filename.png|jpg> would be at
   // the end of the list
   std::sort(myImageList.begin(), myImageList.end(),
             [](const FSNode& node1, const FSNode& node2)
-    {       
+    {
       int compare = BSPF::compareIgnoreCase(node1.getNameWithExt(), node2.getNameWithExt());
-      return 
+      return
         compare < 0 ||
-        (compare == 0 && 
+        (compare == 0 &&
           node1.getName().substr(node1.getName().find_last_of('.') + 1) >
           node2.getName().substr(node2.getName().find_last_of('.') + 1)); // PNGs first!
     }
@@ -208,7 +210,7 @@ bool RomImageWidget::getImageList(const string& propName, const string& romName)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool RomImageWidget::tryImageTypes(string& fileName)
+bool RomImageWidget::tryImageFormats(string& fileName)
 {
   if(loadImage(fileName + ".png"))
   {
@@ -235,6 +237,15 @@ bool RomImageWidget::loadImage(const string& fileName)
   else
     mySurfaceIsValid = loadJpg(fileName);
 
+  if(mySurfaceIsValid)
+  {
+    // Scale surface to available image area
+    const Common::Rect& src = mySurface->srcRect();
+    const float scale = std::min(float(_w) / src.w(), float(myImageHeight) / src.h()) *
+      instance().frameBuffer().hidpiScaleFactor();
+    mySurface->setDstSize(static_cast<uInt32>(src.w() * scale), static_cast<uInt32>(src.h() * scale));
+  }
+
   if(mySurface)
     mySurface->setVisible(mySurfaceIsValid);
 
@@ -247,27 +258,21 @@ bool RomImageWidget::loadPng(const string& fileName)
 {
   try
   {
-    VariantList comments;
-    instance().png().loadImage(fileName, *mySurface, comments); 
-
-    // Scale surface to available image area
-    const Common::Rect& src = mySurface->srcRect();
-    const float scale = std::min(float(_w) / src.w(), float(myImageHeight) / src.h()) *
-      instance().frameBuffer().hidpiScaleFactor();
-    mySurface->setDstSize(static_cast<uInt32>(src.w() * scale), static_cast<uInt32>(src.h() * scale));
+    VariantList metaData;
+    instance().png().loadImage(fileName, *mySurface, metaData);
 
     // Retrieve label for loaded image
     myLabel.clear();
-    for(auto comment = comments.begin(); comment != comments.end(); ++comment)
+    for(auto data = metaData.begin(); data != metaData.end(); ++data)
     {
-      if(comment->first == "Title")
+      if(data->first == "Title")
       {
-        myLabel = comment->second.toString();
+        myLabel = data->second.toString();
         break;
       }
-      if(comment->first == "Software"
-          && comment->second.toString().find("Stella") == 0)
-        myLabel = "Snapshot"; // default for Stella snapshots with missing "Title" comment
+      if(data->first == "Software"
+          && data->second.toString().find("Stella") == 0)
+        myLabel = "Snapshot"; // default for Stella snapshots with missing "Title" meta data
     }
     return true;
   }
@@ -283,17 +288,25 @@ bool RomImageWidget::loadJpg(const string& fileName)
 {
   try
   {
-    VariantList comments;
-    instance().jpg().loadImage(fileName, *mySurface, comments);
+    VariantList metaData;
+    instance().jpg().loadImage(fileName, *mySurface, metaData);
 
+    // Retrieve label for loaded image
     myLabel.clear();
+    for(auto data = metaData.begin(); data != metaData.end(); ++data)
+    {
+      if(data->first == "ImageDescription")
+      {
+        myLabel = data->second.toString();
+        break;
+      }
+    }
     return true;
   }
   catch(const runtime_error& e)
   {
     mySurfaceErrorMsg = e.what();
-  }       
-  //mySurfaceErrorMsg = "JPG image loading not supported";
+  }
   return false;
 }
 

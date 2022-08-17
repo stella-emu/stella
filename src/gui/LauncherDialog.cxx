@@ -328,7 +328,7 @@ void LauncherDialog::addRomWidgets(int ypos)
       TIAConstants::viewableHeight * imgZoom);
     // Calculate font area, and in the process the font that can be used
 
-    // Infofont is unknown yet, but used in image label too. Assuming maximum font height. 
+    // Infofont is unknown yet, but used in image label too. Assuming maximum font height.
     int imageHeight = imgSize.h + RomImageWidget::labelHeight(_font);
 
     const Common::Size fontArea(imageWidth - fontWidth * 2,
@@ -676,16 +676,25 @@ void LauncherDialog::loadRomInfo()
     return;
 
   // Update ROM info UI item, delayed
-  myRomInfoTime = TimerManager::getTicks() / 1000 + 250; // TODO: define pending load delay
+  myRomInfoTime = TimerManager::getTicks() / 1000 + myRomImageWidget->pendingLoadTime();
   myPendingRomInfo = true;
 
   const string& md5 = selectedRomMD5();
-  if(md5 != EmptyString)
+  if(!md5.empty())
   {
-    myRomImageWidget->setProperties(currentNode(), md5, false);
-    myRomInfoWidget->setProperties(currentNode(), md5, false); 
+    // The properties for the currently selected ROM
+    Properties properties;
+
+    // Make sure to load a per-ROM properties entry, if one exists
+    instance().propSet().loadPerROM(currentNode(), md5);
+
+    // And now get the properties for this ROM
+    instance().propSet().getMD5(md5, properties);
+
+    myRomImageWidget->setProperties(currentNode(), properties, false);
+    myRomInfoWidget->setProperties(currentNode(), properties, false);
   }
-  else 
+  else
   {
     myRomImageWidget->clearProperties();
     myRomInfoWidget->clearProperties();
@@ -703,8 +712,16 @@ void LauncherDialog::loadPendingRomInfo()
   const string& md5 = selectedRomMD5();
   if(md5 != EmptyString)
   {
-    myRomImageWidget->setProperties(currentNode(), md5);
-    myRomInfoWidget->setProperties(currentNode(), md5);
+    // The properties for the currently selected ROM
+    Properties properties;
+
+    // Make sure to load a per-ROM properties entry, if one exists
+    instance().propSet().loadPerROM(currentNode(), md5);
+
+    // And now get the properties for this ROM
+    instance().propSet().getMD5(md5, properties);
+    myRomImageWidget->setProperties(currentNode(), properties);
+    myRomInfoWidget->setProperties(currentNode(), properties);
   }
 }
 
