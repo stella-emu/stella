@@ -895,7 +895,6 @@ fi
 
 if test "$_build_png" = yes ; then
 	DEFINES="$DEFINES -DIMAGE_SUPPORT"
-	MODULES="$MODULES $LIBJPG"
 	INCLUDES="$INCLUDES -I$LIBJPG"
   if test "$_libpng" = yes ; then
     LIBS="$LIBS `pkg-config --libs libpng`"
