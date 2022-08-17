@@ -136,7 +136,7 @@ void RomImageWidget::parseProperties(const FSNode& node, bool full)
   }
   else
   {
-    const string& oldFileName = myImageList.size() ? myImageList[0].getPath() : EmptyString;
+    const string oldFileName = myImageList.size() ? myImageList[0].getPath() : EmptyString;
 
     // Try to find all snapshots by property and ROM file name
     myImageList.clear();
