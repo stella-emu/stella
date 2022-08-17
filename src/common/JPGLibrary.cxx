@@ -43,7 +43,7 @@ void JPGLibrary::loadImage(const string& filename, FBSurface& surface,
   std::ifstream in(filename, std::ios_base::binary | std::ios::ate);
   if(!in.is_open())
     loadImageERROR("No image found");
-  size_t size = in.tellg();
+  const size_t size = in.tellg();
   in.clear();
   in.seekg(0);
 
