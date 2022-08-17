@@ -20,6 +20,7 @@
 #include "Dialog.hxx"
 #include "FBSurface.hxx"
 #include "Font.hxx"
+#include "JPGLibrary.hxx"
 #include "OSystem.hxx"
 #include "PNGLibrary.hxx"
 #include "Props.hxx"
@@ -59,7 +60,7 @@ void RomImageWidget::clearProperties()
 {
   myHaveProperties = mySurfaceIsValid = false;
   if(mySurface)
-    mySurface->setVisible(mySurfaceIsValid);
+    mySurface->setVisible(false);
 
   // Decide whether the information should be shown immediately
   if(instance().eventHandler().state() == EventHandlerState::LAUNCHER)
@@ -84,6 +85,7 @@ void RomImageWidget::parseProperties(const FSNode& node, bool full)
     // Create navigation surface
     myNavSurface = instance().frameBuffer().allocateSurface(
       _w, myImageHeight);
+    myNavSurface->setDstRect(Common::Rect(_x, _y, _x + _w, _y + myImageHeight));
 
     FBSurface::Attributes& attr = myNavSurface->attributes();
 
@@ -103,77 +105,73 @@ void RomImageWidget::parseProperties(const FSNode& node, bool full)
 
     dialog().addRenderCallback([this]() {
       if(mySurfaceIsValid)
-      {
         mySurface->render();
-        if(isHighlighted())
-          myNavSurface->render();
-      }
+      if(isHighlighted())
+        myNavSurface->render();
     });
   }
 
-#ifdef PNG_SUPPORT      
+#ifdef IMAGE_SUPPORT      
   if(!full)
   {
     myImageIdx = 0;
     myImageList.clear();
-    mySurfaceErrorMsg = "";
 
     // Get a valid filename representing a snapshot file for this rom and load the snapshot
     const string& path = instance().snapshotLoadDir().getPath();
     // 1. Try to load first snapshot by property name
-    string fileName = path + myProperties.get(PropType::Cart_Name) + ".png";    
+    string fileName = path + myProperties.get(PropType::Cart_Name);// +".png"; // TODO: try jpg   
 
-    mySurfaceIsValid = loadPng(fileName);
+    tryImageTypes(fileName);
+
+    loadImage(fileName);
     if(!mySurfaceIsValid)
     {
       // 2. If none exists, try to load first snapshot by ROM file name
-      fileName = path + node.getNameWithExt("png");
-      mySurfaceIsValid = loadPng(fileName);
+      fileName = path + node.getNameWithExt("png"); // TODO: try jpg   
+      loadImage(fileName);
     }
     if(mySurfaceIsValid)
       myImageList.emplace_back(fileName);
     else
       // 3. If no ROM snapshots exist, try to load a default snapshot
-      mySurfaceIsValid = loadPng(path + "default_snapshot.png");
+      loadImage(path + "default_snapshot.png"); // TODO: try jpg???
   }
   else
   {
-    const string& oldFileName = myImageList.size() ? myImageList[0].getPath() : "";
+    const string& oldFileName = myImageList.size() ? myImageList[0].getPath() : EmptyString;
 
     // Try to find all snapshots by property and ROM file name
     myImageList.clear();
     getImageList(myProperties.get(PropType::Cart_Name), node.getNameWithExt());
 
     // The first file found before must not be the first file now, if files by
-    // property *and* ROM name are found
+    // property *and* ROM name are found (TODO: fix that!)
     if(myImageList.size() && myImageList[0].getPath() != oldFileName)
-    {
-      mySurfaceErrorMsg = "";
-      mySurfaceIsValid = loadPng(myImageList[0].getPath());
-    }
+      loadImage(myImageList[0].getPath());
   }
 #else
   mySurfaceIsValid = false;
   mySurfaceErrorMsg = "PNG image loading not supported";
+  setDirty();
 #endif
   if(mySurface)
     mySurface->setVisible(mySurfaceIsValid);
-
-  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool RomImageWidget::changeImage(int direction)
 {
+#ifdef IMAGE_SUPPORT
   if(direction == -1 && myImageIdx)
-    return loadPng(myImageList[--myImageIdx].getPath());
+    return loadImage(myImageList[--myImageIdx].getPath());
   else if(direction == 1 && myImageIdx < myImageList.size() - 1)
-    return loadPng(myImageList[++myImageIdx].getPath());
-
+    return loadImage(myImageList[++myImageIdx].getPath());
+#endif
   return false;
 }
 
-#ifdef PNG_SUPPORT
+#ifdef IMAGE_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool RomImageWidget::getImageList(const string& propName, const string& romName)
 {
@@ -181,7 +179,7 @@ bool RomImageWidget::getImageList(const string& propName, const string& romName)
   const string rgxPropName = std::regex_replace(propName, symbols, R"(\$&)");
   const string rgxRomName  = std::regex_replace(romName,  symbols, R"(\$&)");
   // Look for <name.png> or <name_#.png> (# is a number)
-  const std::regex rgx("^(" + rgxPropName + "|" + rgxRomName + ")(_\\d+){0,1}\\.png$");
+  const std::regex rgx("^(" + rgxPropName + "|" + rgxRomName + ")(_\\d+){0,1}\\.(png|jpg)$");
 
   FSNode::NameFilter filter = ([&](const FSNode& node)
     {
@@ -197,11 +195,51 @@ bool RomImageWidget::getImageList(const string& propName, const string& romName)
   // the end of the list
   std::sort(myImageList.begin(), myImageList.end(),
             [](const FSNode& node1, const FSNode& node2)
-    {
-      return BSPF::compareIgnoreCase(node1.getNameWithExt(), node2.getNameWithExt()) < 0;
+    {       
+      int compare = BSPF::compareIgnoreCase(node1.getNameWithExt(), node2.getNameWithExt());
+      return 
+        compare < 0 ||
+        (compare == 0 && 
+          node1.getName().substr(node1.getName().find_last_of('.') + 1) >
+          node2.getName().substr(node2.getName().find_last_of('.') + 1)); // PNGs first!
     }
   );
   return myImageList.size() > 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool RomImageWidget::tryImageTypes(string& fileName)
+{
+  if(loadImage(fileName + ".png"))
+  {
+    fileName += ".png";
+    return true;
+  }
+  if(loadImage(fileName + ".jpg"))
+  {
+    fileName += ".jpg";
+    return true;
+  }
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool RomImageWidget::loadImage(const string& fileName)
+{
+  mySurfaceErrorMsg.clear();
+
+  const string::size_type idx = fileName.find_last_of('.');
+
+  if(idx != string::npos && fileName.substr(idx + 1) == "png")
+    mySurfaceIsValid = loadPng(fileName);
+  else
+    mySurfaceIsValid = loadJpg(fileName);
+
+  if(mySurface)
+    mySurface->setVisible(mySurfaceIsValid);
+
+  setDirty();
+  return mySurfaceIsValid;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -210,7 +248,7 @@ bool RomImageWidget::loadPng(const string& fileName)
   try
   {
     VariantList comments;
-    instance().png().loadImage(fileName, *mySurface, comments);
+    instance().png().loadImage(fileName, *mySurface, comments); 
 
     // Scale surface to available image area
     const Common::Rect& src = mySurface->srcRect();
@@ -219,7 +257,7 @@ bool RomImageWidget::loadPng(const string& fileName)
     mySurface->setDstSize(static_cast<uInt32>(src.w() * scale), static_cast<uInt32>(src.h() * scale));
 
     // Retrieve label for loaded image
-    myLabel = "";
+    myLabel.clear();
     for(auto comment = comments.begin(); comment != comments.end(); ++comment)
     {
       if(comment->first == "Title")
@@ -231,14 +269,31 @@ bool RomImageWidget::loadPng(const string& fileName)
           && comment->second.toString().find("Stella") == 0)
         myLabel = "Snapshot"; // default for Stella snapshots with missing "Title" comment
     }
-
-    setDirty();
     return true;
   }
   catch(const runtime_error& e)
   {
     mySurfaceErrorMsg = e.what();
   }
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool RomImageWidget::loadJpg(const string& fileName)
+{
+  try
+  {
+    VariantList comments;
+    instance().jpg().loadImage(fileName, *mySurface, comments);
+
+    myLabel.clear();
+    return true;
+  }
+  catch(const runtime_error& e)
+  {
+    mySurfaceErrorMsg = e.what();
+  }       
+  //mySurfaceErrorMsg = "JPG image loading not supported";
   return false;
 }
 
@@ -252,7 +307,7 @@ void RomImageWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomImageWidget::handleMouseMoved(int x, int y)
 {
-  if(x < _w / 2 != myMouseLeft)
+  if((x < _w / 2) != myMouseLeft)
     setDirty();
   myMouseLeft = x < _w / 2;
 }
@@ -285,51 +340,50 @@ void RomImageWidget::drawWidget(bool hilite)
     const Common::Rect& s_dst = s.dstRect();
     mySurface->setDstPos(x + s_dst.x(), y + s_dst.y());
 
-    // Draw the image label and counter
-    ostringstream buf;
-    buf << myImageIdx + 1 << "/" << myImageList.size();
-    const int yText = _y + myImageHeight + _font.getFontHeight() / 8;
-    const int wText = _font.getStringWidth(buf.str());
-
-    if(myLabel.length())
-      s.drawString(_font, myLabel, _x, yText, _w - wText - _font.getMaxCharWidth() * 2, _textcolor);
-    if(myImageList.size())
-      s.drawString(_font, buf.str(), _x + _w - wText, yText, wText, _textcolor);
-
-    // Draw the navigation arrows
-    myNavSurface->invalidate();
-    if(isHighlighted() &&
-      ((myMouseLeft && myImageIdx) || (!myMouseLeft && myImageIdx < myImageList.size() - 1)))
-    {
-      const int w = _w / 64;
-      const int w2 = 1; // w / 2;
-      const int ax = myMouseLeft ? _w / 12 - w / 2 : _w - _w / 12 - w / 2;
-      const int ay = myImageHeight >> 1;
-      const int dx = (_w / 32) * (myMouseLeft ? 1 : -1);
-      const int dy = myImageHeight / 16;
-
-      for(int i = 0; i < w; ++i)
-      {
-        myNavSurface->line(ax + dx + i + w2, ay - dy, ax + i + w2, ay, kBGColor);
-        myNavSurface->line(ax + dx + i + w2, ay + dy, ax + i + w2, ay, kBGColor);
-        myNavSurface->line(ax + dx + i, ay - dy + w2, ax + i, ay + w2, kBGColor);
-        myNavSurface->line(ax + dx + i, ay + dy + w2, ax + i, ay + w2, kBGColor);
-        myNavSurface->line(ax + dx + i + w2, ay - dy + w2, ax + i + w2, ay + w2, kBGColor);
-        myNavSurface->line(ax + dx + i + w2, ay + dy + w2, ax + i + w2, ay + w2, kBGColor);
-      }
-      for(int i = 0; i < w; ++i)
-      {
-        myNavSurface->line(ax + dx + i, ay - dy, ax + i, ay, kColorInfo);
-        myNavSurface->line(ax + dx + i, ay + dy, ax + i, ay, kColorInfo);
-      }
-      myNavSurface->setDstRect(mySurface->dstRect());
-    }
   }
-  else if(mySurfaceErrorMsg != "")
+  else if(!mySurfaceErrorMsg.empty())
   {
     const uInt32 x = _x + ((_w - _font.getStringWidth(mySurfaceErrorMsg)) >> 1);
     const uInt32 y = _y + ((yoff - _font.getLineHeight()) >> 1);
     s.drawString(_font, mySurfaceErrorMsg, x, y, _w - 10, _textcolor);
+  }
+  // Draw the image label and counter
+  ostringstream buf;
+  buf << myImageIdx + 1 << "/" << myImageList.size();
+  const int yText = _y + myImageHeight + _font.getFontHeight() / 8;
+  const int wText = _font.getStringWidth(buf.str());
+
+  if(myLabel.length())
+    s.drawString(_font, myLabel, _x, yText, _w - wText - _font.getMaxCharWidth() * 2, _textcolor);
+  if(myImageList.size())
+    s.drawString(_font, buf.str(), _x + _w - wText, yText, wText, _textcolor);
+
+  // Draw the navigation arrows
+  myNavSurface->invalidate();
+  if(isHighlighted() &&
+    ((myMouseLeft && myImageIdx) || (!myMouseLeft && myImageIdx < myImageList.size() - 1)))
+  {
+    const int w = _w / 64;
+    const int w2 = 1; // w / 2;
+    const int ax = myMouseLeft ? _w / 12 - w / 2 : _w - _w / 12 - w / 2;
+    const int ay = myImageHeight >> 1;
+    const int dx = (_w / 32) * (myMouseLeft ? 1 : -1);
+    const int dy = myImageHeight / 16;
+
+    for(int i = 0; i < w; ++i)
+    {
+      myNavSurface->line(ax + dx + i + w2, ay - dy, ax + i + w2, ay, kBGColor);
+      myNavSurface->line(ax + dx + i + w2, ay + dy, ax + i + w2, ay, kBGColor);
+      myNavSurface->line(ax + dx + i, ay - dy + w2, ax + i, ay + w2, kBGColor);
+      myNavSurface->line(ax + dx + i, ay + dy + w2, ax + i, ay + w2, kBGColor);
+      myNavSurface->line(ax + dx + i + w2, ay - dy + w2, ax + i + w2, ay + w2, kBGColor);
+      myNavSurface->line(ax + dx + i + w2, ay + dy + w2, ax + i + w2, ay + w2, kBGColor);
+    }
+    for(int i = 0; i < w; ++i)
+    {
+      myNavSurface->line(ax + dx + i, ay - dy, ax + i, ay, kColorInfo);
+      myNavSurface->line(ax + dx + i, ay + dy, ax + i, ay, kColorInfo);
+    }
   }
   clearDirty();
 }

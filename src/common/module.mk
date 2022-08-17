@@ -13,6 +13,7 @@ MODULE_OBJS := \
 	src/common/FSNodeZIP.o \
 	src/common/HighScoresManager.o \
 	src/common/JoyMap.o \
+	src/common/JPGLibrary.o \
 	src/common/KeyMap.o \
 	src/common/Logger.o \
 	src/common/main.o \

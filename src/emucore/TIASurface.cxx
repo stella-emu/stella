@@ -601,7 +601,7 @@ void TIASurface::render(bool shade)
   if(mySaveSnapFlag)
   {
     mySaveSnapFlag = false;
-  #ifdef PNG_SUPPORT
+  #ifdef IMAGE_SUPPORT
     myOSystem.png().takeSnapshot();
   #endif
   }

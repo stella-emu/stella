@@ -15,21 +15,16 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#if defined(PNG_SUPPORT)
+#ifdef IMAGE_SUPPORT
 
-#include <cmath>
-
-#include "bspf.hxx"
 #include "OSystem.hxx"
 #include "Console.hxx"
 #include "FrameBuffer.hxx"
 #include "FBSurface.hxx"
 #include "Props.hxx"
-#include "Settings.hxx"
 #include "TIASurface.hxx"
 #include "Version.hxx"
 #include "PNGLibrary.hxx"
-#include "Rect.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PNGLibrary::PNGLibrary(OSystem& osystem)
@@ -504,4 +499,4 @@ void PNGLibrary::png_user_error(const png_structp ctx, png_const_charp str)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PNGLibrary::ReadInfoType PNGLibrary::ReadInfo;
 
-#endif  // PNG_SUPPORT
+#endif  // IMAGE_SUPPORT
