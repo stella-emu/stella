@@ -538,7 +538,7 @@ else
    CXXFLAGS += -D__WIN32__
 endif
 
-CORE_DIR := ..
+CORE_DIR := ../..
 
 ifeq ($(DEBUG), 1)
    ifneq (,$(findstring msvc,$(platform)))
@@ -580,7 +580,7 @@ else ifneq (,$(findstring msvc,$(platform)))
    CODE_DEFINES =
 else
    WARNINGS_DEFINES = -Wall -W -Wno-unused-parameter
-   CODE_DEFINES = 
+   CODE_DEFINES =
 endif
 
 CXXFLAGS += $(CODE_DEFINES) $(WARNINGS_DEFINES) $(fpic)

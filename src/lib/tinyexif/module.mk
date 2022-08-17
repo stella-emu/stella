@@ -1,11 +1,10 @@
-MODULE := src/unix
+MODULE := src/lib/tinyexif
 
 MODULE_OBJS := \
-	src/unix/OSystemUNIX.o \
-	src/unix/SerialPortUNIX.o
+	src/lib/tinyexif/tinyexif.o
 
 MODULE_DIRS += \
-	src/unix
+	src/lib/tinyexif
 
 # Include common rules
 include $(srcdir)/common.rules

@@ -345,9 +345,6 @@ arm-riscos-aof)
 psp)
 	EXEEXT=".elf"
 	;;
-gp2x)
-	EXEEXT=""
-	;;
 *)
 	EXEEXT=""
 	;;
@@ -796,6 +793,8 @@ echo
 find_sdlconfig
 
 SRC="src"
+SRC_OS="$SRC/os"
+SRC_LIB="$SRC/lib"
 CORE="$SRC/emucore"
 COMMON="$SRC/common"
 TIA="$SRC/emucore/tia"
@@ -804,16 +803,16 @@ TV="$SRC/common/tv_filters"
 GUI="$SRC/gui"
 DBG="$SRC/debugger"
 DBGGUI="$SRC/debugger/gui"
-YACC="$SRC/yacc"
+YACC="$SRC/debugger/yacc"
 CHEAT="$SRC/cheat"
-LIBPNG="$SRC/libpng"
-LIBJPG="$SRC/nanojpeg"
-LIBJPGEXIF="$SRC/tinyexif"
-ZLIB="$SRC/zlib"
+LIBPNG="$SRC_LIB/libpng"
+LIBJPG="$SRC_LIB/nanojpeg"
+LIBJPGEXIF="$SRC_LIB/tinyexif"
+ZLIB="$SRC_LIB/zlib"
 SQLITE_REPO="$SRC/common/repository/sqlite"
-SQLITE_LIB="$SRC/sqlite"
-JSON="$SRC/json"
-HTTP_LIB="$SRC/httplib"
+SQLITE_LIB="$SRC_LIB/sqlite"
+JSON="$SRC_LIB/json"
+HTTP_LIB="$SRC_LIB/httplib"
 
 INCLUDES="-I$CORE -I$COMMON -I$TV -I$TIA -I$TIA_FRAME_MANAGER -I$JSON -I$SQLITE_REPO"
 
@@ -831,26 +830,26 @@ LD=$CXX
 case $_host_os in
 		unix)
 			DEFINES="$DEFINES -DBSPF_UNIX"
-			MODULES="$MODULES $SRC/unix"
-			INCLUDES="$INCLUDES -I$SRC/unix"
+			MODULES="$MODULES $SRC_OS/unix"
+			INCLUDES="$INCLUDES -I$SRC_OS/unix"
 			;;
 		darwin)
 			DEFINES="$DEFINES -DBSPF_UNIX -DMACOS_KEYS"
-			MODULES="$MODULES $SRC/unix"
-			INCLUDES="$INCLUDES -I$SRC/unix"
+			MODULES="$MODULES $SRC_OS/unix"
+			INCLUDES="$INCLUDES -I$SRC_OS/unix"
 			if test "$have_clang" == yes; then
 				CXXFLAGS="$CXXFLAGS -Wno-poison-system-directories"
 			fi
 			;;
     retron77)
       DEFINES="$DEFINES -DBSPF_UNIX -DRETRON77"
-      MODULES="$MODULES $SRC/unix $SRC/unix/r77"
-      INCLUDES="$INCLUDES -I$SRC/unix -I$SRC/unix/r77"
+      MODULES="$MODULES $SRC_OS/unix $SRC_OS/unix/r77"
+      INCLUDES="$INCLUDES -I$SRC_OS/unix -I$SRC_OS/unix/r77"
       ;;
 		win32)
 			DEFINES="$DEFINES -DBSPF_WINDOWS"
-			MODULES="$MODULES $SRC/windows"
-			INCLUDES="$INCLUDES -I$SRC/windows"
+			MODULES="$MODULES $SRC_OS/windows"
+			INCLUDES="$INCLUDES -I$SRC_OS/windows"
 			LIBS="$LIBS -lmingw32 -lwinmm"
 			;;
 		*)

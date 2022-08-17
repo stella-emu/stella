@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef PARSER_HXX
-#define PARSER_HXX
+#ifndef YACC_PARSER_HXX
+#define YACC_PARSER_HXX
 
 #include "Expression.hxx"
 #include "CartDebug.hxx"

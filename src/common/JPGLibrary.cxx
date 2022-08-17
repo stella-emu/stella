@@ -111,7 +111,7 @@ void JPGLibrary::readMetaData(const string& filename, VariantList& metaData)
   std::ifstream in(filename, std::ifstream::binary);
 
   // parse image EXIF metadata
-  TinyEXIF::EXIFInfo imageEXIF(in);
+  const TinyEXIF::EXIFInfo imageEXIF(in);
   if(imageEXIF.Fields)
   {
     // For now we only read the image description

@@ -1,10 +1,10 @@
-MODULE := src/sqlite
+MODULE := src/debugger/yacc
 
 MODULE_OBJS := \
-	src/sqlite/sqlite3.o
+	src/debugger/yacc/YaccParser.o
 
 MODULE_DIRS += \
-	src/sqlite
+	src/debugger/yacc
 
 # Include common rules
 include $(srcdir)/common.rules
