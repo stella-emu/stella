@@ -2384,7 +2384,6 @@
     <ClInclude Include="Windows.hxx" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\emucore\tia\frame-manager\module.mk" />
     <None Include="stella.ico" />
   </ItemGroup>
   <ItemGroup>

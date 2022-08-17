@@ -109,6 +109,12 @@
     <Filter Include="Source Files\lib\zlib">
       <UniqueIdentifier>{31501e98-40f8-4bcd-bf6f-52b133725061}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\debugger\yacc">
+      <UniqueIdentifier>{784bd01b-df5b-40b9-9119-6fff5281f307}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\debugger\yacc">
+      <UniqueIdentifier>{7e8254e5-72fa-4b53-9fde-7cf813f15562}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\common\FBBackendSDL2.cxx">
@@ -370,9 +376,6 @@
       <Filter>Source Files\debugger</Filter>
     </ClCompile>
     <ClCompile Include="..\..\debugger\gui\ToggleWidget.cxx">
-      <Filter>Source Files\debugger</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\debugger\yacc\YaccParser.cxx">
       <Filter>Source Files\debugger</Filter>
     </ClCompile>
     <ClCompile Include="..\..\gui\AboutDialog.cxx">
@@ -1170,6 +1173,9 @@
     <ClCompile Include="..\..\lib\tinyexif\tinyexif.cxx">
       <Filter>Source Files\lib\tinyexif</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\debugger\yacc\YaccParser.cxx">
+      <Filter>Source Files\debugger\yacc</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\common\bspf.hxx">
@@ -1452,9 +1458,6 @@
       <Filter>Header Files\debugger</Filter>
     </ClInclude>
     <ClInclude Include="..\..\debugger\gui\ToggleWidget.hxx">
-      <Filter>Header Files\debugger</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\debugger\yacc\YaccParser.hxx">
       <Filter>Header Files\debugger</Filter>
     </ClInclude>
     <ClInclude Include="..\..\cheat\BankRomCheat.hxx">
@@ -2408,12 +2411,14 @@
     <ClInclude Include="..\..\lib\tinyexif\tinyexif_lib.hxx">
       <Filter>Header Files\lib\tinyexif</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\debugger\yacc\YaccParser.hxx">
+      <Filter>Header Files\debugger\yacc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="stella.ico">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\..\emucore\tia\frame-manager\module.mk" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="stella.rc">
