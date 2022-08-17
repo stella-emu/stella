@@ -25,7 +25,7 @@
 #if defined(__clang__)
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Weverything"
-  #include "tinyexif.h"
+  #include "source/TinyEXIF.h"
   #pragma clang diagnostic pop
 #elif defined(__GNUC__) || defined(__GNUG__)
   #pragma GCC diagnostic push
@@ -33,15 +33,15 @@
   #pragma GCC diagnostic ignored "-Wcast-function-type"
   #pragma GCC diagnostic ignored "-Wshift-negative-value"
   #pragma GCC diagnostic ignored "-Wregister"
-  #include "tinyexif.h"
+  #include "source/TinyEXIF.h"
   #pragma GCC diagnostic pop
 #elif defined(BSPF_WINDOWS)
   #pragma warning(push, 0)
   #pragma warning(disable : 4505)
-  #include "tinyexif.h"
+  #include "source/TinyEXIF.h"
   #pragma warning(pop)
 #else
-  #include "tinyexif.h"
+  #include "source/TinyEXIF.h"
 #endif
 
 #endif  // TINYEXIF_LIB_HXX

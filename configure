@@ -808,6 +808,7 @@ YACC="$SRC/yacc"
 CHEAT="$SRC/cheat"
 LIBPNG="$SRC/libpng"
 LIBJPG="$SRC/nanojpeg"
+LIBJPGEXIF="$SRC/tinyexif"
 ZLIB="$SRC/zlib"
 SQLITE_REPO="$SRC/common/repository/sqlite"
 SQLITE_LIB="$SRC/sqlite"
@@ -895,7 +896,8 @@ fi
 
 if test "$_build_png" = yes ; then
 	DEFINES="$DEFINES -DIMAGE_SUPPORT"
-	INCLUDES="$INCLUDES -I$LIBJPG"
+	INCLUDES="$INCLUDES -I$LIBJPG -I$LIBJPGEXIF"
+	MODULES="$MODULES $LIBJPGEXIF"
   if test "$_libpng" = yes ; then
     LIBS="$LIBS `pkg-config --libs libpng`"
   else
