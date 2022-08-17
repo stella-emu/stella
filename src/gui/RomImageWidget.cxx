@@ -193,8 +193,6 @@ bool RomImageWidget::changeImage(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool RomImageWidget::getImageList(const string& propName, const string& romName)
 {
-  cerr << propName << "   " << romName << endl;
-
   const std::regex symbols{R"([-[\]{}()*+?.,\^$|#])"}; // \s
   const string rgxPropName = std::regex_replace(propName, symbols, R"(\$&)");
   const string rgxRomName  = std::regex_replace(romName,  symbols, R"(\$&)");
