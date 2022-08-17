@@ -620,6 +620,7 @@
     <ClCompile Include="..\..\common\FBBackendSDL2.cxx" />
     <ClCompile Include="..\..\common\FBSurfaceSDL2.cxx" />
     <ClCompile Include="..\..\common\FpsMeter.cxx" />
+    <ClCompile Include="..\..\common\FSNodeREGULAR.cxx" />
     <ClCompile Include="..\..\common\FSNodeZIP.cxx" />
     <ClCompile Include="..\..\common\HighScoresManager.cxx" />
     <ClCompile Include="..\..\common\JoyMap.cxx" />
@@ -1796,6 +1797,7 @@
     <ClInclude Include="..\..\common\FBSurfaceSDL2.hxx" />
     <ClInclude Include="..\..\common\FpsMeter.hxx" />
     <ClInclude Include="..\..\common\FSNodeFactory.hxx" />
+    <ClInclude Include="..\..\common\FSNodeREGULAR.hxx" />
     <ClInclude Include="..\..\common\FSNodeZIP.hxx" />
     <ClInclude Include="..\..\common\HighScoresManager.hxx" />
     <ClInclude Include="..\..\common\JoyMap.hxx" />

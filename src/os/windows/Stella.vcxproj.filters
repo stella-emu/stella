@@ -138,9 +138,6 @@
     <ClCompile Include="..\..\common\FBBackendSDL2.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FSNodeWINDOWS.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="OSystemWINDOWS.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1194,6 +1191,9 @@
     <ClCompile Include="..\..\common\sdl_blitter\QisBlitter.cxx">
       <Filter>Source Files\sdl_blitter</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\common\FSNodeREGULAR.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\common\bspf.hxx">
@@ -1650,9 +1650,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\FSNodeZIP.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FSNodeWINDOWS.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\ZipHandler.hxx">
@@ -2433,6 +2430,9 @@
       <Filter>Header Files\sdl_blitter</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\smartmod.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\FSNodeREGULAR.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
