@@ -33,7 +33,7 @@ PNGLibrary::PNGLibrary(OSystem& osystem)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PNGLibrary::loadImage(const string& filename, FBSurface& surface, VariantList& comments)
+void PNGLibrary::loadImage(const string& filename, FBSurface& surface, VariantList& metaData)
 {
   png_structp png_ptr{nullptr};
   png_infop info_ptr{nullptr};
@@ -109,8 +109,8 @@ void PNGLibrary::loadImage(const string& filename, FBSurface& surface, VariantLi
   // We're finished reading
   png_read_end(png_ptr, info_ptr);
 
-  // Read the comments we got
-  readComments(png_ptr, info_ptr, comments);
+  // Read the meta data we got
+  readMetaData(png_ptr, info_ptr, metaData);
 
   // Load image into the surface, setting the correct dimensions
   loadImagetoSurface(surface);
@@ -121,7 +121,7 @@ void PNGLibrary::loadImage(const string& filename, FBSurface& surface, VariantLi
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PNGLibrary::saveImage(const string& filename, const VariantList& comments)
+void PNGLibrary::saveImage(const string& filename, const VariantList& metaData)
 {
   std::ofstream out(filename, std::ios_base::binary);
   if(!out.is_open())
@@ -147,12 +147,12 @@ void PNGLibrary::saveImage(const string& filename, const VariantList& comments)
     rows[k] = buffer.data() + k*width*4;
 
   // And save the image
-  saveImageToDisk(out, rows, width, height, comments);
+  saveImageToDisk(out, rows, width, height, metaData);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PNGLibrary::saveImage(const string& filename, const FBSurface& surface,
-                           const Common::Rect& rect, const VariantList& comments)
+                           const Common::Rect& rect, const VariantList& metaData)
 {
   std::ofstream out(filename, std::ios_base::binary);
   if(!out.is_open())
@@ -176,12 +176,12 @@ void PNGLibrary::saveImage(const string& filename, const FBSurface& surface,
     rows[k] = buffer.data() + k*width*4;
 
   // And save the image
-  saveImageToDisk(out, rows, width, height, comments);
+  saveImageToDisk(out, rows, width, height, metaData);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PNGLibrary::saveImageToDisk(std::ofstream& out, const vector<png_bytep>& rows,
-    png_uint_32 width, png_uint_32 height, const VariantList& comments)
+    png_uint_32 width, png_uint_32 height, const VariantList& metaData)
 {
   png_structp png_ptr = nullptr;
   png_infop info_ptr = nullptr;
@@ -212,8 +212,8 @@ void PNGLibrary::saveImageToDisk(std::ofstream& out, const vector<png_bytep>& ro
       PNG_COLOR_TYPE_RGB, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT,
       PNG_FILTER_TYPE_DEFAULT);
 
-  // Write comments
-  writeComments(png_ptr, info_ptr, comments);
+  // Write meta data
+  writeMetaData(png_ptr, info_ptr, metaData);
 
   // Write the file header information.  REQUIRED
   png_write_info(png_ptr, info_ptr);
@@ -331,18 +331,18 @@ void PNGLibrary::takeSnapshot(uInt32 number)
     filename = sspath + ".png";
 
   // Some text fields to add to the PNG snapshot
-  VariantList comments;
+  VariantList metaData;
   ostringstream version;
-  VarList::push_back(comments, "Title", "Snapshot");
+  VarList::push_back(metaData, "Title", "Snapshot");
   version << "Stella " << STELLA_VERSION << " (Build " << STELLA_BUILD << ") ["
           << BSPF::ARCH << "]";
-  VarList::push_back(comments, "Software", version.str());
+  VarList::push_back(metaData, "Software", version.str());
   const string& name = (myOSystem.settings().getString("snapname") == "int")
       ? myOSystem.console().properties().get(PropType::Cart_Name)
       : myOSystem.romFile().getName();
-  VarList::push_back(comments, "ROM Name", name);
-  VarList::push_back(comments, "ROM MD5", myOSystem.console().properties().get(PropType::Cart_MD5));
-  VarList::push_back(comments, "TV Effects", myOSystem.frameBuffer().tiaSurface().effectsInfo());
+  VarList::push_back(metaData, "ROM Name", name);
+  VarList::push_back(metaData, "ROM MD5", myOSystem.console().properties().get(PropType::Cart_MD5));
+  VarList::push_back(metaData, "TV Effects", myOSystem.frameBuffer().tiaSurface().effectsInfo());
 
   // Now create a PNG snapshot
   string message = "Snapshot saved";
@@ -352,7 +352,7 @@ void PNGLibrary::takeSnapshot(uInt32 number)
     {
       Common::Rect rect;
       const FBSurface& surface = myOSystem.frameBuffer().tiaSurface().baseSurface(rect);
-      myOSystem.png().saveImage(filename, surface, rect, comments);
+      myOSystem.png().saveImage(filename, surface, rect, metaData);
     }
     catch(const runtime_error& e)
     {
@@ -367,7 +367,7 @@ void PNGLibrary::takeSnapshot(uInt32 number)
 
     try
     {
-      myOSystem.png().saveImage(filename, comments);
+      myOSystem.png().saveImage(filename, metaData);
     }
     catch(const runtime_error& e)
     {
@@ -429,38 +429,37 @@ void PNGLibrary::loadImagetoSurface(FBSurface& surface)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PNGLibrary::writeComments(const png_structp png_ptr, png_infop info_ptr,
-                               const VariantList& comments)
+void PNGLibrary::writeMetaData(const png_structp png_ptr, png_infop info_ptr,
+                               const VariantList& metaData)
 {
-  const uInt32 numComments = static_cast<uInt32>(comments.size());
-  if(numComments == 0)
+  const uInt32 numMetaData = static_cast<uInt32>(metaData.size());
+  if(numMetaData == 0)
     return;
 
-  vector<png_text> text_ptr(numComments);
-  for(uInt32 i = 0; i < numComments; ++i)
+  vector<png_text> text_ptr(numMetaData);
+  for(uInt32 i = 0; i < numMetaData; ++i)
   {
-    text_ptr[i].key = const_cast<char*>(comments[i].first.c_str());
-    text_ptr[i].text = const_cast<char*>(comments[i].second.toCString());
+    text_ptr[i].key = const_cast<char*>(metaData[i].first.c_str());
+    text_ptr[i].text = const_cast<char*>(metaData[i].second.toCString());
     text_ptr[i].compression = PNG_TEXT_COMPRESSION_NONE;
     text_ptr[i].text_length = 0;
   }
-  png_set_text(png_ptr, info_ptr, text_ptr.data(), numComments);
+  png_set_text(png_ptr, info_ptr, text_ptr.data(), numMetaData);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PNGLibrary::readComments(const png_structp png_ptr, png_infop info_ptr,
-  VariantList& comments)
+void PNGLibrary::readMetaData(const png_structp png_ptr, png_infop info_ptr,
+  VariantList& metaData)
 {
   png_textp text_ptr;
-  int numComments = 0;
+  int numMetaData = 0;
 
-  // TODO: currently works only if comments are *before* the image data
-  png_get_text(png_ptr, info_ptr, &text_ptr, &numComments);
+  png_get_text(png_ptr, info_ptr, &text_ptr, &numMetaData);
 
-  comments.clear();
-  for(int i = 0; i < numComments; ++i)
+  metaData.clear();
+  for(int i = 0; i < numMetaData; ++i)
   {
-    VarList::push_back(comments, text_ptr[i].key, text_ptr[i].text);
+    VarList::push_back(metaData, text_ptr[i].key, text_ptr[i].text);
   }
 }
 

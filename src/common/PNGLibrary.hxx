@@ -15,7 +15,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifdef IMAGE_SUPPORT 
+#ifdef IMAGE_SUPPORT
 
 #ifndef PNGLIBRARY_HXX
 #define PNGLIBRARY_HXX
@@ -43,12 +43,13 @@ class PNGLibrary
 
       @param filename  The filename to load the PNG image
       @param surface   The FBSurface into which to place the PNG data
+      @param metaData  The meta data of the PNG image
 
       @post  On success, the FBSurface containing image data, otherwise a
              runtime_error is thrown containing a more detailed
              error message.
     */
-    void loadImage(const string& filename, FBSurface& surface, VariantList& comments);
+    void loadImage(const string& filename, FBSurface& surface, VariantList& metaData);
 
     /**
       Save the current FrameBuffer image to a PNG file.  Note that in most
@@ -56,14 +57,14 @@ class PNGLibrary
       *any* mode.
 
       @param filename  The filename to save the PNG image
-      @param comments  The text comments to add to the PNG image
+      @param metaData  The meta data s to add to the PNG image
 
       @post  On success, the PNG file has been saved to 'filename',
              otherwise a runtime_error is thrown containing a
              more detailed error message.
     */
     void saveImage(const string& filename,
-                   const VariantList& comments = VariantList{});
+                   const VariantList& metaData = VariantList{});
 
     /**
       Save the given surface to a PNG file.
@@ -71,7 +72,7 @@ class PNGLibrary
       @param filename  The filename to save the PNG image
       @param surface   The surface data for the PNG image
       @param rect      The area of the surface to use
-      @param comments  The text comments to add to the PNG image
+      @param metaData  The meta data to add to the PNG image
 
       @post  On success, the PNG file has been saved to 'filename',
              otherwise a runtime_error is thrown containing a
@@ -79,7 +80,7 @@ class PNGLibrary
     */
     void saveImage(const string& filename, const FBSurface& surface,
                    const Common::Rect& rect = Common::Rect{},
-                   const VariantList& comments = VariantList{});
+                   const VariantList& metaData = VariantList{});
 
     /**
       Called at regular intervals, and used to determine whether a
@@ -155,15 +156,15 @@ class PNGLibrary
 
     /** The actual method which saves a PNG image.
 
-      @param out      The output stream for writing PNG data
-      @param rows     Pointer into PNG RGB data for each row
-      @param width    The width of the PNG image
-      @param height   The height of the PNG image
-      @param comments The text comments to add to the PNG image
+      @param out       The output stream for writing PNG data
+      @param rows      Pointer into PNG RGB data for each row
+      @param width     The width of the PNG image
+      @param height    The height of the PNG image
+      @param metaData  The meta data to add to the PNG image
     */
     void saveImageToDisk(std::ofstream& out, const vector<png_bytep>& rows,
                          png_uint_32 width, png_uint_32 height,
-                         const VariantList& comments);
+                         const VariantList& metaData);
 
     /**
       Load the PNG data from 'ReadInfo' into the FBSurface.  The surface
@@ -176,14 +177,14 @@ class PNGLibrary
     /**
       Write PNG tEXt chunks to the image.
     */
-    void writeComments(const png_structp png_ptr, png_infop info_ptr,
-                       const VariantList& comments);
+    void writeMetaData(const png_structp png_ptr, png_infop info_ptr,
+                       const VariantList& metaData);
 
     /**
       Read PNG tEXt chunks from the image.
     */
-    void readComments(const png_structp png_ptr, png_infop info_ptr,
-      VariantList& comments);
+    void readMetaData(const png_structp png_ptr, png_infop info_ptr,
+      VariantList& metaData);
 
     /** PNG library callback functions */
     static void png_read_data(const png_structp ctx, png_bytep area, png_size_t size);

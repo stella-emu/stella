@@ -23,7 +23,7 @@ class Properties;
 
 #include "Widget.hxx"
 
-class RomImageWidget : public Widget, public CommandSender
+class RomImageWidget : public Widget
 {
   public:
     RomImageWidget(GuiObject *boss, const GUI::Font& font,
@@ -35,10 +35,12 @@ class RomImageWidget : public Widget, public CommandSender
       return font.getFontHeight() * 9 / 8;
     }
 
-    void setProperties(const FSNode& node, const string& md5, bool full = true);
+    void setProperties(const FSNode& node, const Properties properties, bool full = true);
     void clearProperties();
     void reloadProperties(const FSNode& node);
     bool changeImage(int direction = 1);
+
+    uInt64 pendingLoadTime() { return myMaxLoadTime * timeFactor; }
 
   protected:
     void drawWidget(bool hilite) override;
@@ -51,14 +53,18 @@ class RomImageWidget : public Widget, public CommandSender
     void parseProperties(const FSNode& node, bool full = true);
   #ifdef IMAGE_SUPPORT
     bool getImageList(const string& propName, const string& romName);
-    bool tryImageTypes(string& fileName);
+    bool tryImageFormats(string& fileName);
     bool loadImage(const string& fileName);
     bool loadPng(const string& fileName);
     bool loadJpg(const string& fileName);
   #endif
 
   private:
-    // Surface pointer holding the PNG image
+    // Pending load time safety factor
+    static constexpr double timeFactor = 1.2;
+
+  private:
+    // Surface pointer holding the image
     shared_ptr<FBSurface> mySurface;
 
     // Surface pointer holding the navigation elements
@@ -90,6 +96,9 @@ class RomImageWidget : public Widget, public CommandSender
 
     // Label for the loaded image
     string myLabel;
+
+    // Maximum load time, for adapting pending loads delay
+    uInt64 myMaxLoadTime{0};
 
   private:
     // Following constructors and assignment operators not supported

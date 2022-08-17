@@ -39,15 +39,10 @@ RomInfoWidget::RomInfoWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomInfoWidget::setProperties(const FSNode& node, const string& md5, bool full)
+void RomInfoWidget::setProperties(const FSNode& node, const Properties properties, bool full)
 {
   myHaveProperties = true;
-
-  // Make sure to load a per-ROM properties entry, if one exists
-  instance().propSet().loadPerROM(node, md5);
-
-  // And now get the properties for this ROM
-  instance().propSet().getMD5(md5, myProperties);
+  myProperties = properties;
 
   // Decide whether the information should be shown immediately
   if(instance().eventHandler().state() == EventHandlerState::LAUNCHER)
@@ -96,7 +91,7 @@ void RomInfoWidget::parseProperties(const FSNode& node, bool full)
     myRomInfo.push_back("Rarity: " + value);
   if((value = myProperties.get(PropType::Cart_Note)) != EmptyString)
     myRomInfo.push_back("Note: " + value);
-  
+
   if(full)
   {
     const bool swappedPorts = myProperties.get(PropType::Console_SwapPorts) == "YES";
