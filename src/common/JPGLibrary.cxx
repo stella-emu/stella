@@ -33,7 +33,7 @@ JPGLibrary::JPGLibrary(OSystem& osystem)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void JPGLibrary::loadImage(const string& filename, FBSurface& surface,
-                           VariantList& comments)
+                           VariantList& metaData)
 {
   const auto loadImageERROR = [&](const char* s) {
     if(s)
@@ -63,8 +63,8 @@ void JPGLibrary::loadImage(const string& filename, FBSurface& surface,
   myReadInfo.height = njGetHeight();
   myReadInfo.pitch = myReadInfo.width * 3;
 
-  // Read the comments we got   TODO
-  //readComments(png_ptr, info_ptr, comments);
+  // TODO: Read the meta data we got
+  //readMetaData(png_ptr, info_ptr, metaData);
 
   // Load image into the surface, setting the correct dimensions
   loadImagetoSurface(surface);
@@ -103,8 +103,8 @@ void JPGLibrary::loadImagetoSurface(FBSurface& surface)
 }
 
 //// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-//void JPGLibrary::readComments(const png_structp png_ptr, png_infop info_ptr,
-//  VariantList& comments)
+//void JPGLibrary::readMetaData(const png_structp png_ptr, png_infop info_ptr,
+//  VariantList& metaData)
 //{
 //  png_textp text_ptr;
 //  int numComments = 0;
@@ -112,10 +112,10 @@ void JPGLibrary::loadImagetoSurface(FBSurface& surface)
 //  // TODO: currently works only if comments are *before* the image data
 //  png_get_text(png_ptr, info_ptr, &text_ptr, &numComments);
 //
-//  comments.clear();
+//  metaData.clear();
 //  for(int i = 0; i < numComments; ++i)
 //  {
-//    VarList::push_back(comments, text_ptr[i].key, text_ptr[i].text);
+//    VarList::push_back(metaData, text_ptr[i].key, text_ptr[i].text);
 //  }
 //}
 
