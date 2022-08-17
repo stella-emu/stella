@@ -345,9 +345,6 @@ arm-riscos-aof)
 psp)
 	EXEEXT=".elf"
 	;;
-gp2x)
-	EXEEXT=""
-	;;
 *)
 	EXEEXT=""
 	;;
@@ -796,6 +793,7 @@ echo
 find_sdlconfig
 
 SRC="src"
+SRC_OS="$SRC/os"
 CORE="$SRC/emucore"
 COMMON="$SRC/common"
 TIA="$SRC/emucore/tia"
@@ -831,26 +829,26 @@ LD=$CXX
 case $_host_os in
 		unix)
 			DEFINES="$DEFINES -DBSPF_UNIX"
-			MODULES="$MODULES $SRC/unix"
-			INCLUDES="$INCLUDES -I$SRC/unix"
+			MODULES="$MODULES $SRC_OS/unix"
+			INCLUDES="$INCLUDES -I$SRC_OS/unix"
 			;;
 		darwin)
 			DEFINES="$DEFINES -DBSPF_UNIX -DMACOS_KEYS"
-			MODULES="$MODULES $SRC/unix"
-			INCLUDES="$INCLUDES -I$SRC/unix"
+			MODULES="$MODULES $SRC_OS/unix"
+			INCLUDES="$INCLUDES -I$SRC_OS/unix"
 			if test "$have_clang" == yes; then
 				CXXFLAGS="$CXXFLAGS -Wno-poison-system-directories"
 			fi
 			;;
     retron77)
       DEFINES="$DEFINES -DBSPF_UNIX -DRETRON77"
-      MODULES="$MODULES $SRC/unix $SRC/unix/r77"
-      INCLUDES="$INCLUDES -I$SRC/unix -I$SRC/unix/r77"
+      MODULES="$MODULES $SRC_OS/unix $SRC_OS/unix/r77"
+      INCLUDES="$INCLUDES -I$SRC_OS/unix -I$SRC_OS/unix/r77"
       ;;
 		win32)
 			DEFINES="$DEFINES -DBSPF_WINDOWS"
-			MODULES="$MODULES $SRC/windows"
-			INCLUDES="$INCLUDES -I$SRC/windows"
+			MODULES="$MODULES $SRC_OS/windows"
+			INCLUDES="$INCLUDES -I$SRC_OS/windows"
 			LIBS="$LIBS -lmingw32 -lwinmm"
 			;;
 		*)
