@@ -53,7 +53,6 @@ void JPGLibrary::loadImage(const string& filename, FBSurface& surface,
     myFileBuffer.resize(size);
   if(!in.read(myFileBuffer.data(), size))
     loadImageERROR("Image data reading failed");
-  in.close();
 
   if(njDecode(myFileBuffer.data(), static_cast<int>(size)))
     loadImageERROR("Error decoding the input file");
@@ -109,10 +108,10 @@ void JPGLibrary::readMetaData(const string& filename, VariantList& metaData)
   metaData.clear();
 
   // open a stream to read just the necessary parts of the image file
-  std::ifstream istream(filename, std::ifstream::binary);
+  std::ifstream in(filename, std::ifstream::binary);
 
   // parse image EXIF metadata
-  TinyEXIF::EXIFInfo imageEXIF(istream);
+  TinyEXIF::EXIFInfo imageEXIF(in);
   if(imageEXIF.Fields)
   {
     // For now we only read the image description
