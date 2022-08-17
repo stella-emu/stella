@@ -17,12 +17,6 @@
     <Filter Include="Source Files\gui">
       <UniqueIdentifier>{e031c7d2-674c-472b-9a04-70707ac75a7e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\zlib">
-      <UniqueIdentifier>{31501e98-40f8-4bcd-bf6f-52b133725061}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\libpng">
-      <UniqueIdentifier>{9ca218eb-55db-44fa-abba-f20cf9d69d48}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
@@ -38,12 +32,6 @@
     </Filter>
     <Filter Include="Header Files\gui">
       <UniqueIdentifier>{ccb2b3e4-7db7-4397-8160-5a68059c656e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\zlib">
-      <UniqueIdentifier>{6ae0e432-d0ce-419a-8909-bc4c03fc0e23}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\libpng">
-      <UniqueIdentifier>{b4ef4876-8f8c-4035-bc4a-0cbdbe2a5a44}</UniqueIdentifier>
     </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
@@ -70,38 +58,56 @@
     <Filter Include="Source Files\repository">
       <UniqueIdentifier>{1aab46fa-ee39-415d-9e41-d5ad3ee14ce7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\json">
-      <UniqueIdentifier>{966c18c1-dae3-4dae-8e00-c621187898b1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\repository\sqlite">
       <UniqueIdentifier>{21af5583-5f53-4c1d-96d1-05ceaa2d6bae}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\repository\sqlite">
       <UniqueIdentifier>{47b68040-eac2-4f3c-82d1-eceb7a6e6b7b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\sqlite">
-      <UniqueIdentifier>{1d446ef0-61e1-42e4-a025-8629bfdca1af}</UniqueIdentifier>
+    <Filter Include="Header Files\lib">
+      <UniqueIdentifier>{456bc377-aa1c-4601-894a-2385d91f83c4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\sqlite\source">
-      <UniqueIdentifier>{438b21ed-1358-478c-af80-8ac809dd9709}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\sqlite">
-      <UniqueIdentifier>{667527a4-a1a4-43d8-8d36-21c75d317ea0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\sqlite\source">
-      <UniqueIdentifier>{ea737878-f4b5-4334-a356-353c6b68bdcd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\httplib">
+    <Filter Include="Header Files\lib\httplib">
       <UniqueIdentifier>{e216a718-4078-4a08-b134-4987ec071e31}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\nanojpeg">
+    <Filter Include="Header Files\lib\json">
+      <UniqueIdentifier>{966c18c1-dae3-4dae-8e00-c621187898b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\lib\libpng">
+      <UniqueIdentifier>{b4ef4876-8f8c-4035-bc4a-0cbdbe2a5a44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\lib\nanojpeg">
       <UniqueIdentifier>{7836da03-0e67-481a-b16a-529a1042d215}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\tinyexif">
+    <Filter Include="Header Files\lib\sqlite">
+      <UniqueIdentifier>{1d446ef0-61e1-42e4-a025-8629bfdca1af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\lib\sqlite\source">
+      <UniqueIdentifier>{438b21ed-1358-478c-af80-8ac809dd9709}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\lib\tinyexif">
       <UniqueIdentifier>{ab671015-c65e-4fac-83e0-516188525b73}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\tinyexif">
+    <Filter Include="Header Files\lib\zlib">
+      <UniqueIdentifier>{6ae0e432-d0ce-419a-8909-bc4c03fc0e23}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\lib">
+      <UniqueIdentifier>{78160f63-326d-4e93-b808-598f5c979300}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\lib\libpng">
+      <UniqueIdentifier>{9ca218eb-55db-44fa-abba-f20cf9d69d48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\lib\sqlite">
+      <UniqueIdentifier>{667527a4-a1a4-43d8-8d36-21c75d317ea0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\lib\sqlite\source">
+      <UniqueIdentifier>{ea737878-f4b5-4334-a356-353c6b68bdcd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\lib\tinyexif">
       <UniqueIdentifier>{e46a6b4a-4da4-4842-ac5b-65a6b45edc86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\lib\zlib">
+      <UniqueIdentifier>{31501e98-40f8-4bcd-bf6f-52b133725061}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -468,95 +474,95 @@
     <ClCompile Include="..\..\gui\Widget.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\zlib\adler32.c">
-      <Filter>Source Files\zlib</Filter>
+    <ClCompile Include="..\..\lib\zlib\adler32.c">
+      <Filter>Source Files\lib\zlib</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\zlib\compress.c">
-      <Filter>Source Files\zlib</Filter>
+    <ClCompile Include="..\..\lib\zlib\compress.c">
+      <Filter>Source Files\lib\zlib</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\zlib\crc32.c">
-      <Filter>Source Files\zlib</Filter>
+    <ClCompile Include="..\..\lib\zlib\crc32.c">
+      <Filter>Source Files\lib\zlib</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\zlib\deflate.c">
-      <Filter>Source Files\zlib</Filter>
+    <ClCompile Include="..\..\lib\zlib\deflate.c">
+      <Filter>Source Files\lib\zlib</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\zlib\gzclose.c">
-      <Filter>Source Files\zlib</Filter>
+    <ClCompile Include="..\..\lib\zlib\gzclose.c">
+      <Filter>Source Files\lib\zlib</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\zlib\gzlib.c">
-      <Filter>Source Files\zlib</Filter>
+    <ClCompile Include="..\..\lib\zlib\gzlib.c">
+      <Filter>Source Files\lib\zlib</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\zlib\gzread.c">
-      <Filter>Source Files\zlib</Filter>
+    <ClCompile Include="..\..\lib\zlib\gzread.c">
+      <Filter>Source Files\lib\zlib</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\zlib\gzwrite.c">
-      <Filter>Source Files\zlib</Filter>
+    <ClCompile Include="..\..\lib\zlib\gzwrite.c">
+      <Filter>Source Files\lib\zlib</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\zlib\infback.c">
-      <Filter>Source Files\zlib</Filter>
+    <ClCompile Include="..\..\lib\zlib\infback.c">
+      <Filter>Source Files\lib\zlib</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\zlib\inffast.c">
-      <Filter>Source Files\zlib</Filter>
+    <ClCompile Include="..\..\lib\zlib\inffast.c">
+      <Filter>Source Files\lib\zlib</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\zlib\inflate.c">
-      <Filter>Source Files\zlib</Filter>
+    <ClCompile Include="..\..\lib\zlib\inflate.c">
+      <Filter>Source Files\lib\zlib</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\zlib\inftrees.c">
-      <Filter>Source Files\zlib</Filter>
+    <ClCompile Include="..\..\lib\zlib\inftrees.c">
+      <Filter>Source Files\lib\zlib</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\zlib\trees.c">
-      <Filter>Source Files\zlib</Filter>
+    <ClCompile Include="..\..\lib\zlib\trees.c">
+      <Filter>Source Files\lib\zlib</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\zlib\uncompr.c">
-      <Filter>Source Files\zlib</Filter>
+    <ClCompile Include="..\..\lib\zlib\uncompr.c">
+      <Filter>Source Files\lib\zlib</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\zlib\zutil.c">
-      <Filter>Source Files\zlib</Filter>
+    <ClCompile Include="..\..\lib\zlib\zutil.c">
+      <Filter>Source Files\lib\zlib</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\libpng\png.c">
-      <Filter>Source Files\libpng</Filter>
+    <ClCompile Include="..\..\lib\libpng\png.c">
+      <Filter>Source Files\lib\libpng</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\libpng\pngerror.c">
-      <Filter>Source Files\libpng</Filter>
+    <ClCompile Include="..\..\lib\libpng\pngerror.c">
+      <Filter>Source Files\lib\libpng</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\libpng\pngget.c">
-      <Filter>Source Files\libpng</Filter>
+    <ClCompile Include="..\..\lib\libpng\pngget.c">
+      <Filter>Source Files\lib\libpng</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\libpng\pngmem.c">
-      <Filter>Source Files\libpng</Filter>
+    <ClCompile Include="..\..\lib\libpng\pngmem.c">
+      <Filter>Source Files\lib\libpng</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\libpng\pngpread.c">
-      <Filter>Source Files\libpng</Filter>
+    <ClCompile Include="..\..\lib\libpng\pngpread.c">
+      <Filter>Source Files\lib\libpng</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\libpng\pngread.c">
-      <Filter>Source Files\libpng</Filter>
+    <ClCompile Include="..\..\lib\libpng\pngread.c">
+      <Filter>Source Files\lib\libpng</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\libpng\pngrio.c">
-      <Filter>Source Files\libpng</Filter>
+    <ClCompile Include="..\..\lib\libpng\pngrio.c">
+      <Filter>Source Files\lib\libpng</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\libpng\pngrtran.c">
-      <Filter>Source Files\libpng</Filter>
+    <ClCompile Include="..\..\lib\libpng\pngrtran.c">
+      <Filter>Source Files\lib\libpng</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\libpng\pngrutil.c">
-      <Filter>Source Files\libpng</Filter>
+    <ClCompile Include="..\..\lib\libpng\pngrutil.c">
+      <Filter>Source Files\lib\libpng</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\libpng\pngset.c">
-      <Filter>Source Files\libpng</Filter>
+    <ClCompile Include="..\..\lib\libpng\pngset.c">
+      <Filter>Source Files\lib\libpng</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\libpng\pngtrans.c">
-      <Filter>Source Files\libpng</Filter>
+    <ClCompile Include="..\..\lib\libpng\pngtrans.c">
+      <Filter>Source Files\lib\libpng</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\libpng\pngwio.c">
-      <Filter>Source Files\libpng</Filter>
+    <ClCompile Include="..\..\lib\libpng\pngwio.c">
+      <Filter>Source Files\lib\libpng</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\libpng\pngwrite.c">
-      <Filter>Source Files\libpng</Filter>
+    <ClCompile Include="..\..\lib\libpng\pngwrite.c">
+      <Filter>Source Files\lib\libpng</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\libpng\pngwtran.c">
-      <Filter>Source Files\libpng</Filter>
+    <ClCompile Include="..\..\lib\libpng\pngwtran.c">
+      <Filter>Source Files\lib\libpng</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\libpng\pngwutil.c">
-      <Filter>Source Files\libpng</Filter>
+    <ClCompile Include="..\..\lib\libpng\pngwutil.c">
+      <Filter>Source Files\lib\libpng</Filter>
     </ClCompile>
     <ClCompile Include="..\..\gui\LoggerDialog.cxx">
       <Filter>Source Files\gui</Filter>
@@ -1074,8 +1080,8 @@
     <ClCompile Include="..\..\common\repository\sqlite\SqliteTransaction.cxx">
       <Filter>Source Files\repository\sqlite</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\sqlite\source\sqlite3.c">
-      <Filter>Source Files\sqlite\source</Filter>
+    <ClCompile Include="..\..\lib\sqlite\source\sqlite3.c">
+      <Filter>Source Files\lib\sqlite\source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\common\repository\sqlite\AbstractKeyValueRepositorySqlite.cxx">
       <Filter>Source Files\repository\sqlite</Filter>
@@ -1161,8 +1167,8 @@
     <ClCompile Include="..\..\common\JPGLibrary.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinyexif\tinyexif.cxx">
-      <Filter>Source Files\tinyexif</Filter>
+    <ClCompile Include="..\..\lib\tinyexif\tinyexif.cxx">
+      <Filter>Source Files\lib\tinyexif</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1580,59 +1586,59 @@
     <ClInclude Include="..\..\gui\Widget.hxx">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\zlib\crc32.h">
-      <Filter>Header Files\zlib</Filter>
+    <ClInclude Include="..\..\lib\zlib\crc32.h">
+      <Filter>Header Files\lib\zlib</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\zlib\deflate.h">
-      <Filter>Header Files\zlib</Filter>
+    <ClInclude Include="..\..\lib\zlib\deflate.h">
+      <Filter>Header Files\lib\zlib</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\zlib\gzguts.h">
-      <Filter>Header Files\zlib</Filter>
+    <ClInclude Include="..\..\lib\zlib\gzguts.h">
+      <Filter>Header Files\lib\zlib</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\zlib\inffast.h">
-      <Filter>Header Files\zlib</Filter>
+    <ClInclude Include="..\..\lib\zlib\inffast.h">
+      <Filter>Header Files\lib\zlib</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\zlib\inffixed.h">
-      <Filter>Header Files\zlib</Filter>
+    <ClInclude Include="..\..\lib\zlib\inffixed.h">
+      <Filter>Header Files\lib\zlib</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\zlib\inflate.h">
-      <Filter>Header Files\zlib</Filter>
+    <ClInclude Include="..\..\lib\zlib\inflate.h">
+      <Filter>Header Files\lib\zlib</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\zlib\inftrees.h">
-      <Filter>Header Files\zlib</Filter>
+    <ClInclude Include="..\..\lib\zlib\inftrees.h">
+      <Filter>Header Files\lib\zlib</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\zlib\trees.h">
-      <Filter>Header Files\zlib</Filter>
+    <ClInclude Include="..\..\lib\zlib\trees.h">
+      <Filter>Header Files\lib\zlib</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\zlib\zconf.h">
-      <Filter>Header Files\zlib</Filter>
+    <ClInclude Include="..\..\lib\zlib\zconf.h">
+      <Filter>Header Files\lib\zlib</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\zlib\zlib.h">
-      <Filter>Header Files\zlib</Filter>
+    <ClInclude Include="..\..\lib\zlib\zlib.h">
+      <Filter>Header Files\lib\zlib</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\zlib\zutil.h">
-      <Filter>Header Files\zlib</Filter>
+    <ClInclude Include="..\..\lib\zlib\zutil.h">
+      <Filter>Header Files\lib\zlib</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\libpng\png.h">
-      <Filter>Header Files\libpng</Filter>
+    <ClInclude Include="..\..\lib\libpng\png.h">
+      <Filter>Header Files\lib\libpng</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\libpng\pngconf.h">
-      <Filter>Header Files\libpng</Filter>
+    <ClInclude Include="..\..\lib\libpng\pngconf.h">
+      <Filter>Header Files\lib\libpng</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\libpng\pngpriv.h">
-      <Filter>Header Files\libpng</Filter>
+    <ClInclude Include="..\..\lib\libpng\pngpriv.h">
+      <Filter>Header Files\lib\libpng</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\libpng\pngdebug.h">
-      <Filter>Header Files\libpng</Filter>
+    <ClInclude Include="..\..\lib\libpng\pngdebug.h">
+      <Filter>Header Files\lib\libpng</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\libpng\pnginfo.h">
-      <Filter>Header Files\libpng</Filter>
+    <ClInclude Include="..\..\lib\libpng\pnginfo.h">
+      <Filter>Header Files\lib\libpng</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\libpng\pnglibconf.h">
-      <Filter>Header Files\libpng</Filter>
+    <ClInclude Include="..\..\lib\libpng\pnglibconf.h">
+      <Filter>Header Files\lib\libpng</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\libpng\pngstruct.h">
-      <Filter>Header Files\libpng</Filter>
+    <ClInclude Include="..\..\lib\libpng\pngstruct.h">
+      <Filter>Header Files\lib\libpng</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\StringParser.hxx">
       <Filter>Header Files</Filter>
@@ -2249,11 +2255,11 @@
     <ClInclude Include="..\..\debugger\gui\DataGridRamWidget.hxx">
       <Filter>Header Files\debugger</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\json\json.hxx">
-      <Filter>Header Files\json</Filter>
+    <ClInclude Include="..\..\lib\json\json.hxx">
+      <Filter>Header Files\lib\json</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\json\json_lib.hxx">
-      <Filter>Header Files\json</Filter>
+    <ClInclude Include="..\..\lib\json\json_lib.hxx">
+      <Filter>Header Files\lib\json</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\jsonDefinitions.hxx">
       <Filter>Header Files</Filter>
@@ -2276,11 +2282,11 @@
     <ClInclude Include="..\..\common\repository\sqlite\SqliteTransaction.hxx">
       <Filter>Header Files\repository\sqlite</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\sqlite\sqlite3.h">
-      <Filter>Header Files\sqlite</Filter>
+    <ClInclude Include="..\..\lib\sqlite\sqlite3.h">
+      <Filter>Header Files\lib\sqlite</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\sqlite\source\sqlite3.h">
-      <Filter>Header Files\sqlite\source</Filter>
+    <ClInclude Include="..\..\lib\sqlite\source\sqlite3.h">
+      <Filter>Header Files\lib\sqlite\source</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\repository\CompositeKeyValueRepository.hxx">
       <Filter>Header Files\repository</Filter>
@@ -2309,8 +2315,8 @@
     <ClInclude Include="..\..\common\repository\CompositeKeyValueRepositoryNoop.hxx">
       <Filter>Header Files\repository</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\sqlite\sqlite_options.h">
-      <Filter>Header Files\sqlite</Filter>
+    <ClInclude Include="..\..\lib\sqlite\sqlite_options.h">
+      <Filter>Header Files\lib\sqlite</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\repository\sqlite\StellaDb.hxx">
       <Filter>Header Files\repository\sqlite</Filter>
@@ -2360,11 +2366,11 @@
     <ClInclude Include="..\..\gui\NavigationWidget.hxx">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\httplib\http_lib.hxx">
-      <Filter>Header Files\httplib</Filter>
+    <ClInclude Include="..\..\lib\httplib\http_lib.hxx">
+      <Filter>Header Files\lib\httplib</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\httplib\httplib.h">
-      <Filter>Header Files\httplib</Filter>
+    <ClInclude Include="..\..\lib\httplib\httplib.h">
+      <Filter>Header Files\lib\httplib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\SDL_lib.hxx">
       <Filter>Header Files</Filter>
@@ -2396,11 +2402,11 @@
     <ClInclude Include="..\..\common\JPGLibrary.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\nanojpeg\nanojpeg_lib.hxx">
-      <Filter>Header Files\nanojpeg</Filter>
+    <ClInclude Include="..\..\lib\nanojpeg\nanojpeg_lib.hxx">
+      <Filter>Header Files\lib\nanojpeg</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinyexif\tinyexif_lib.hxx">
-      <Filter>Header Files\tinyexif</Filter>
+    <ClInclude Include="..\..\lib\tinyexif\tinyexif_lib.hxx">
+      <Filter>Header Files\lib\tinyexif</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
