@@ -249,7 +249,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\zlib;..\..\libpng;..\..\json;..\..\common\repository\sqlite;..\..\sqlite;..\..\nanojpeg;..\..\tinyexif;..\..\httplib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\lib\zlib;..\..\lib\libpng;..\..\lib\json;..\..\common\repository\sqlite;..\..\lib\sqlite;..\..\lib\nanojpeg;..\..\lib\tinyexif;..\..\lib\httplib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NOMINMAX;DEBUG_BUILD;SDL_SUPPORT;GUI_SUPPORT;IMAGE_SUPPORT;ZIP_SUPPORT;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;HTTP_LIB_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -283,7 +283,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\zlib;..\..\libpng;..\..\json;..\..\common\repository\sqlite;..\..\sqlite;..\..\nanojpeg;..\..\tinyexif;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\lib\zlib;..\..\lib\libpng;..\..\lib\json;..\..\common\repository\sqlite;..\..\lib\sqlite;..\..\lib\nanojpeg;..\..\lib\tinyexif;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NOMINMAX;DEBUG_BUILD;SDL_SUPPORT;GUI_SUPPORT;IMAGE_SUPPORT;ZIP_SUPPORT;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -320,7 +320,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\zlib;..\..\libpng;..\..\json;..\..\common\repository\sqlite;..\..\sqlite;..\..\nanojpeg;..\..\tinyexif;..\..\httplib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\lib\zlib;..\..\lib\libpng;..\..\lib\json;..\..\common\repository\sqlite;..\..\lib\sqlite;..\..\lib\nanojpeg;..\..\lib\tinyexif;..\..\lib\httplib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NOMINMAX;DEBUG_BUILD;SDL_SUPPORT;GUI_SUPPORT;IMAGE_SUPPORT;ZIP_SUPPORT;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;HTTP_LIB_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -356,7 +356,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\zlib;..\..\libpng;..\..\json;..\..\common\repository\sqlite;..\..\sqlite;..\..\nanojpeg;..\..\tinyexif;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\lib\zlib;..\..\lib\libpng;..\..\lib\json;..\..\common\repository\sqlite;..\..\lib\sqlite;..\..\lib\nanojpeg;..\..\lib\tinyexif;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NOMINMAX;DEBUG_BUILD;SDL_SUPPORT;GUI_SUPPORT;IMAGE_SUPPORT;ZIP_SUPPORT;JOYSTICK_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -390,7 +390,7 @@
     <ClCompile>
       <OmitFramePointers>true</OmitFramePointers>
       <WholeProgramOptimization>true</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>..\..\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\zlib;..\..\libpng;..\..\json;..\..\common\repository\sqlite;..\..\sqlite;..\..\nanojpeg;..\..\tinyexif;..\..\httplib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\lib\zlib;..\..\lib\libpng;..\..\lib\json;..\..\common\repository\sqlite;..\..\lib\sqlite;..\..\lib\nanojpeg;..\..\lib\tinyexif;..\..\lib\httplib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NOMINMAX;NDEBUG;SDL_SUPPORT;GUI_SUPPORT;IMAGE_SUPPORT;ZIP_SUPPORT;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;HTTP_LIB_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
@@ -425,7 +425,7 @@
     <ClCompile>
       <OmitFramePointers>true</OmitFramePointers>
       <WholeProgramOptimization>true</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>..\..\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\zlib;..\..\libpng;..\..\json;..\..\common\repository\sqlite;..\..\sqlite;..\..\nanojpeg;..\..\tinyexif;..\..\httplib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\lib\zlib;..\..\lib\libpng;..\..\lib\json;..\..\common\repository\sqlite;..\..\lib\sqlite;..\..\lib\nanojpeg;..\..\lib\tinyexif;..\..\lib\httplib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NOMINMAX;NDEBUG;SDL_SUPPORT;GUI_SUPPORT;IMAGE_SUPPORT;ZIP_SUPPORT;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;HTTP_LIB_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
@@ -460,7 +460,7 @@
     <ClCompile>
       <OmitFramePointers>true</OmitFramePointers>
       <WholeProgramOptimization>false</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>..\..\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\zlib;..\..\libpng;..\..\json;..\..\common\repository\sqlite;..\..\sqlite;..\..\nanojpeg;..\..\tinyexif;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\lib\zlib;..\..\lib\libpng;..\..\lib\json;..\..\common\repository\sqlite;..\..\lib\sqlite;..\..\lib\nanojpeg;..\..\lib\tinyexif;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NOMINMAX;NDEBUG;SDL_SUPPORT;GUI_SUPPORT;IMAGE_SUPPORT;ZIP_SUPPORT;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
@@ -499,7 +499,7 @@
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>..\..\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\zlib;..\..\libpng;..\..\json;..\..\common\repository\sqlite;..\..\sqlite;..\..\nanojpeg;..\..\tinyexif;..\..\httplib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\lib\zlib;..\..\lib\libpng;..\..\lib\json;..\..\common\repository\sqlite;..\..\lib\sqlite;..\..\lib\nanojpeg;..\..\lib\tinyexif;..\..\lib\httplib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NOMINMAX;NDEBUG;SDL_SUPPORT;GUI_SUPPORT;IMAGE_SUPPORT;ZIP_SUPPORT;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;HTTP_LIB_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
@@ -538,7 +538,7 @@
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>..\..\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\zlib;..\..\libpng;..\..\json;..\..\common\repository\sqlite;..\..\sqlite;..\..\nanojpeg;..\..\tinyexif;..\..\httplib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\lib\zlib;..\..\lib\libpng;..\..\lib\json;..\..\common\repository\sqlite;..\..\lib\sqlite;..\..\lib\nanojpeg;..\..\lib\tinyexif;..\..\lib\httplib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NOMINMAX;NDEBUG;SDL_SUPPORT;GUI_SUPPORT;IMAGE_SUPPORT;ZIP_SUPPORT;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;HTTP_LIB_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
@@ -577,7 +577,7 @@
       <Optimization>Full</Optimization>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>..\..\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\zlib;..\..\libpng;..\..\json;..\..\common\repository\sqlite;..\..\sqlite;..\..\nanojpeg;..\..\tinyexif;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\yacc;..\..\emucore;..\..\emucore\tia;..\..\emucore\tia\frame-manager;..\..\common;..\..\common\tv_filters;..\..\gui;..\..\debugger\gui;..\..\debugger;..\..\os\windows;..\..\cheat;..\..\lib\zlib;..\..\lib\libpng;..\..\lib\json;..\..\common\repository\sqlite;..\..\lib\sqlite;..\..\lib\nanojpeg;..\..\lib\tinyexif;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NOMINMAX;NDEBUG;SDL_SUPPORT;GUI_SUPPORT;IMAGE_SUPPORT;ZIP_SUPPORT;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
@@ -939,7 +939,7 @@
     <ClCompile Include="..\..\gui\ToolTip.cxx" />
     <ClCompile Include="..\..\gui\UndoHandler.cxx" />
     <ClCompile Include="..\..\gui\WhatsNewDialog.cxx" />
-    <ClCompile Include="..\..\sqlite\source\sqlite3.c">
+    <ClCompile Include="..\..\lib\sqlite\source\sqlite3.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
@@ -951,7 +951,7 @@
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release-Sanitize|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">CompileAsC</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\tinyexif\tinyexif.cxx" />
+    <ClCompile Include="..\..\lib\tinyexif\tinyexif.cxx" />
     <ClCompile Include="FSNodeWINDOWS.cxx" />
     <ClCompile Include="OSystemWINDOWS.cxx" />
     <ClCompile Include="..\..\common\PNGLibrary.cxx" />
@@ -1120,7 +1120,7 @@
     <ClCompile Include="..\..\gui\UIDialog.cxx" />
     <ClCompile Include="..\..\gui\VideoAudioDialog.cxx" />
     <ClCompile Include="..\..\gui\Widget.cxx" />
-    <ClCompile Include="..\..\zlib\adler32.c">
+    <ClCompile Include="..\..\lib\zlib\adler32.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
@@ -1142,7 +1142,7 @@
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release-Sanitize|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Level2</WarningLevel>
     </ClCompile>
-    <ClCompile Include="..\..\zlib\compress.c">
+    <ClCompile Include="..\..\lib\zlib\compress.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
@@ -1164,7 +1164,7 @@
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release-Sanitize|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Level2</WarningLevel>
     </ClCompile>
-    <ClCompile Include="..\..\zlib\crc32.c">
+    <ClCompile Include="..\..\lib\zlib\crc32.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
@@ -1186,7 +1186,7 @@
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release-Sanitize|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Level2</WarningLevel>
     </ClCompile>
-    <ClCompile Include="..\..\zlib\deflate.c">
+    <ClCompile Include="..\..\lib\zlib\deflate.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
@@ -1208,7 +1208,7 @@
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release-Sanitize|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Level2</WarningLevel>
     </ClCompile>
-    <ClCompile Include="..\..\zlib\gzclose.c">
+    <ClCompile Include="..\..\lib\zlib\gzclose.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
@@ -1230,7 +1230,7 @@
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release-Sanitize|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Level2</WarningLevel>
     </ClCompile>
-    <ClCompile Include="..\..\zlib\gzlib.c">
+    <ClCompile Include="..\..\lib\zlib\gzlib.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
@@ -1252,7 +1252,7 @@
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release-Sanitize|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Level2</WarningLevel>
     </ClCompile>
-    <ClCompile Include="..\..\zlib\gzread.c">
+    <ClCompile Include="..\..\lib\zlib\gzread.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
@@ -1274,7 +1274,7 @@
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release-Sanitize|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Level2</WarningLevel>
     </ClCompile>
-    <ClCompile Include="..\..\zlib\gzwrite.c">
+    <ClCompile Include="..\..\lib\zlib\gzwrite.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
@@ -1296,7 +1296,7 @@
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release-Sanitize|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Level2</WarningLevel>
     </ClCompile>
-    <ClCompile Include="..\..\zlib\infback.c">
+    <ClCompile Include="..\..\lib\zlib\infback.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
@@ -1318,7 +1318,7 @@
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release-Sanitize|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Level2</WarningLevel>
     </ClCompile>
-    <ClCompile Include="..\..\zlib\inffast.c">
+    <ClCompile Include="..\..\lib\zlib\inffast.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
@@ -1340,7 +1340,7 @@
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release-Sanitize|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Level2</WarningLevel>
     </ClCompile>
-    <ClCompile Include="..\..\zlib\inflate.c">
+    <ClCompile Include="..\..\lib\zlib\inflate.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
@@ -1362,7 +1362,7 @@
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release-Sanitize|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Level2</WarningLevel>
     </ClCompile>
-    <ClCompile Include="..\..\zlib\inftrees.c">
+    <ClCompile Include="..\..\lib\zlib\inftrees.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
@@ -1384,7 +1384,7 @@
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release-Sanitize|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Level2</WarningLevel>
     </ClCompile>
-    <ClCompile Include="..\..\zlib\trees.c">
+    <ClCompile Include="..\..\lib\zlib\trees.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
@@ -1406,7 +1406,7 @@
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release-Sanitize|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Level2</WarningLevel>
     </ClCompile>
-    <ClCompile Include="..\..\zlib\uncompr.c">
+    <ClCompile Include="..\..\lib\zlib\uncompr.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
@@ -1428,7 +1428,7 @@
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release-Sanitize|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Level2</WarningLevel>
     </ClCompile>
-    <ClCompile Include="..\..\zlib\zutil.c">
+    <ClCompile Include="..\..\lib\zlib\zutil.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
@@ -1450,7 +1450,7 @@
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release-Sanitize|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Level2</WarningLevel>
     </ClCompile>
-    <ClCompile Include="..\..\libpng\png.c">
+    <ClCompile Include="..\..\lib\libpng\png.c">
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Level2</WarningLevel>
@@ -1472,7 +1472,7 @@
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release-Sanitize|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">CompileAsC</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\libpng\pngerror.c">
+    <ClCompile Include="..\..\lib\libpng\pngerror.c">
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Level2</WarningLevel>
@@ -1494,7 +1494,7 @@
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release-Sanitize|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">CompileAsC</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\libpng\pngget.c">
+    <ClCompile Include="..\..\lib\libpng\pngget.c">
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Level2</WarningLevel>
@@ -1516,7 +1516,7 @@
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release-Sanitize|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">CompileAsC</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\libpng\pngmem.c">
+    <ClCompile Include="..\..\lib\libpng\pngmem.c">
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Level2</WarningLevel>
@@ -1538,7 +1538,7 @@
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release-Sanitize|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">CompileAsC</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\libpng\pngpread.c">
+    <ClCompile Include="..\..\lib\libpng\pngpread.c">
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Level2</WarningLevel>
@@ -1560,7 +1560,7 @@
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release-Sanitize|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">CompileAsC</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\libpng\pngread.c">
+    <ClCompile Include="..\..\lib\libpng\pngread.c">
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Level2</WarningLevel>
@@ -1582,7 +1582,7 @@
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release-Sanitize|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">CompileAsC</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\libpng\pngrio.c">
+    <ClCompile Include="..\..\lib\libpng\pngrio.c">
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Level2</WarningLevel>
@@ -1604,7 +1604,7 @@
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release-Sanitize|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">CompileAsC</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\libpng\pngrtran.c">
+    <ClCompile Include="..\..\lib\libpng\pngrtran.c">
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Level2</WarningLevel>
@@ -1626,7 +1626,7 @@
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release-Sanitize|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">CompileAsC</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\libpng\pngrutil.c">
+    <ClCompile Include="..\..\lib\libpng\pngrutil.c">
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Level2</WarningLevel>
@@ -1648,7 +1648,7 @@
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release-Sanitize|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">CompileAsC</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\libpng\pngset.c">
+    <ClCompile Include="..\..\lib\libpng\pngset.c">
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Level2</WarningLevel>
@@ -1670,7 +1670,7 @@
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release-Sanitize|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">CompileAsC</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\libpng\pngtrans.c">
+    <ClCompile Include="..\..\lib\libpng\pngtrans.c">
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Level2</WarningLevel>
@@ -1692,7 +1692,7 @@
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release-Sanitize|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">CompileAsC</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\libpng\pngwio.c">
+    <ClCompile Include="..\..\lib\libpng\pngwio.c">
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Level2</WarningLevel>
@@ -1714,7 +1714,7 @@
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release-Sanitize|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">CompileAsC</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\libpng\pngwrite.c">
+    <ClCompile Include="..\..\lib\libpng\pngwrite.c">
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Level2</WarningLevel>
@@ -1736,7 +1736,7 @@
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release-Sanitize|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">CompileAsC</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\libpng\pngwtran.c">
+    <ClCompile Include="..\..\lib\libpng\pngwtran.c">
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Level2</WarningLevel>
@@ -1758,7 +1758,7 @@
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release-Sanitize|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">CompileAsC</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\libpng\pngwutil.c">
+    <ClCompile Include="..\..\lib\libpng\pngwutil.c">
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Level2</WarningLevel>
@@ -2162,19 +2162,19 @@
     <ClInclude Include="..\..\gui\ToolTip.hxx" />
     <ClInclude Include="..\..\gui\UndoHandler.hxx" />
     <ClInclude Include="..\..\gui\WhatsNewDialog.hxx" />
-    <ClInclude Include="..\..\httplib\httplib.h" />
-    <ClInclude Include="..\..\httplib\http_lib.hxx" />
-    <ClInclude Include="..\..\json\json.hxx" />
-    <ClInclude Include="..\..\json\json_lib.hxx" />
-    <ClInclude Include="..\..\libpng\pngdebug.h" />
-    <ClInclude Include="..\..\libpng\pnginfo.h" />
-    <ClInclude Include="..\..\libpng\pnglibconf.h" />
-    <ClInclude Include="..\..\libpng\pngstruct.h" />
-    <ClInclude Include="..\..\nanojpeg\nanojpeg_lib.hxx" />
-    <ClInclude Include="..\..\sqlite\source\sqlite3.h" />
-    <ClInclude Include="..\..\sqlite\sqlite3.h" />
-    <ClInclude Include="..\..\sqlite\sqlite_options.h" />
-    <ClInclude Include="..\..\tinyexif\tinyexif_lib.hxx" />
+    <ClInclude Include="..\..\lib\httplib\httplib.h" />
+    <ClInclude Include="..\..\lib\httplib\http_lib.hxx" />
+    <ClInclude Include="..\..\lib\json\json.hxx" />
+    <ClInclude Include="..\..\lib\json\json_lib.hxx" />
+    <ClInclude Include="..\..\lib\libpng\pngdebug.h" />
+    <ClInclude Include="..\..\lib\libpng\pnginfo.h" />
+    <ClInclude Include="..\..\lib\libpng\pnglibconf.h" />
+    <ClInclude Include="..\..\lib\libpng\pngstruct.h" />
+    <ClInclude Include="..\..\lib\nanojpeg\nanojpeg_lib.hxx" />
+    <ClInclude Include="..\..\lib\sqlite\source\sqlite3.h" />
+    <ClInclude Include="..\..\lib\sqlite\sqlite3.h" />
+    <ClInclude Include="..\..\lib\sqlite\sqlite_options.h" />
+    <ClInclude Include="..\..\lib\tinyexif\tinyexif_lib.hxx" />
     <ClInclude Include="FSNodeWINDOWS.hxx" />
     <ClInclude Include="HomeFinder.hxx" />
     <ClInclude Include="OSystemWINDOWS.hxx" />
@@ -2367,20 +2367,20 @@
     <ClInclude Include="..\..\gui\UIDialog.hxx" />
     <ClInclude Include="..\..\gui\VideoAudioDialog.hxx" />
     <ClInclude Include="..\..\gui\Widget.hxx" />
-    <ClInclude Include="..\..\zlib\crc32.h" />
-    <ClInclude Include="..\..\zlib\deflate.h" />
-    <ClInclude Include="..\..\zlib\gzguts.h" />
-    <ClInclude Include="..\..\zlib\inffast.h" />
-    <ClInclude Include="..\..\zlib\inffixed.h" />
-    <ClInclude Include="..\..\zlib\inflate.h" />
-    <ClInclude Include="..\..\zlib\inftrees.h" />
-    <ClInclude Include="..\..\zlib\trees.h" />
-    <ClInclude Include="..\..\zlib\zconf.h" />
-    <ClInclude Include="..\..\zlib\zlib.h" />
-    <ClInclude Include="..\..\zlib\zutil.h" />
-    <ClInclude Include="..\..\libpng\png.h" />
-    <ClInclude Include="..\..\libpng\pngconf.h" />
-    <ClInclude Include="..\..\libpng\pngpriv.h" />
+    <ClInclude Include="..\..\lib\zlib\crc32.h" />
+    <ClInclude Include="..\..\lib\zlib\deflate.h" />
+    <ClInclude Include="..\..\lib\zlib\gzguts.h" />
+    <ClInclude Include="..\..\lib\zlib\inffast.h" />
+    <ClInclude Include="..\..\lib\zlib\inffixed.h" />
+    <ClInclude Include="..\..\lib\zlib\inflate.h" />
+    <ClInclude Include="..\..\lib\zlib\inftrees.h" />
+    <ClInclude Include="..\..\lib\zlib\trees.h" />
+    <ClInclude Include="..\..\lib\zlib\zconf.h" />
+    <ClInclude Include="..\..\lib\zlib\zlib.h" />
+    <ClInclude Include="..\..\lib\zlib\zutil.h" />
+    <ClInclude Include="..\..\lib\libpng\png.h" />
+    <ClInclude Include="..\..\lib\libpng\pngconf.h" />
+    <ClInclude Include="..\..\lib\libpng\pngpriv.h" />
     <ClInclude Include="Windows.hxx" />
   </ItemGroup>
   <ItemGroup>
