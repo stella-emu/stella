@@ -103,8 +103,6 @@ bool FSNodePOSIX::hasParent() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FSNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode) const
 {
-uInt64 T = TimerManager::getTicks();
-
   if (!_isDirectory)
     return false;
 
@@ -171,7 +169,6 @@ uInt64 T = TimerManager::getTicks();
   }
   closedir(dirp);
 
-cerr << (TimerManager::getTicks() - T) << endl;
   return true;
 }
 
