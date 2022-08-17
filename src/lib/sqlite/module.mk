@@ -1,10 +1,10 @@
-MODULE := src/tinyexif
+MODULE := src/lib/sqlite
 
 MODULE_OBJS := \
-	src/tinyexif/tinyexif.o
+	src/lib/sqlite/sqlite3.o
 
 MODULE_DIRS += \
-	src/tinyexif
+	src/lib/sqlite
 
 # Include common rules
 include $(srcdir)/common.rules
