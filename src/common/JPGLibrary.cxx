@@ -21,6 +21,7 @@
 #include "FrameBuffer.hxx"
 #include "FBSurface.hxx"
 #include "nanojpeg_lib.hxx"
+#include "tinyexif_lib.hxx"
 
 #include "JPGLibrary.hxx"
 
@@ -63,8 +64,8 @@ void JPGLibrary::loadImage(const string& filename, FBSurface& surface,
   myReadInfo.height = njGetHeight();
   myReadInfo.pitch = myReadInfo.width * 3;
 
-  // TODO: Read the meta data we got
-  //readMetaData(png_ptr, info_ptr, metaData);
+  // Read the meta data we got
+  readMetaData(filename, metaData);
 
   // Load image into the surface, setting the correct dimensions
   loadImagetoSurface(surface);
@@ -102,22 +103,23 @@ void JPGLibrary::loadImagetoSurface(FBSurface& surface)
   }
 }
 
-//// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-//void JPGLibrary::readMetaData(const png_structp png_ptr, png_infop info_ptr,
-//  VariantList& metaData)
-//{
-//  png_textp text_ptr;
-//  int numComments = 0;
-//
-//  // TODO: currently works only if comments are *before* the image data
-//  png_get_text(png_ptr, info_ptr, &text_ptr, &numComments);
-//
-//  metaData.clear();
-//  for(int i = 0; i < numComments; ++i)
-//  {
-//    VarList::push_back(metaData, text_ptr[i].key, text_ptr[i].text);
-//  }
-//}
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void JPGLibrary::readMetaData(const string& filename, VariantList& metaData)
+{
+  metaData.clear();
+
+  // open a stream to read just the necessary parts of the image file
+  std::ifstream istream(filename, std::ifstream::binary);
+
+  // parse image EXIF metadata
+  TinyEXIF::EXIFInfo imageEXIF(istream);
+  if(imageEXIF.Fields)
+  {
+    // For now we only read the image description
+    if(!imageEXIF.ImageDescription.empty())
+      VarList::push_back(metaData, "ImageDescription", imageEXIF.ImageDescription);
+  }
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 std::vector<char> JPGLibrary::myFileBuffer;
