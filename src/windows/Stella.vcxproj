@@ -951,7 +951,7 @@
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release-Sanitize|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">CompileAsC</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\tinyexif\TinyEXIF.cpp" />
+    <ClCompile Include="..\tinyexif\tinyexif.cxx" />
     <ClCompile Include="FSNodeWINDOWS.cxx" />
     <ClCompile Include="OSystemWINDOWS.cxx" />
     <ClCompile Include="..\common\PNGLibrary.cxx" />
@@ -2174,8 +2174,7 @@
     <ClInclude Include="..\sqlite\source\sqlite3.h" />
     <ClInclude Include="..\sqlite\sqlite3.h" />
     <ClInclude Include="..\sqlite\sqlite_options.h" />
-    <ClInclude Include="..\tinyexif\TinyEXIF.h" />
-    <ClInclude Include="..\tinyexif\TinyEXIF_lib.hxx" />
+    <ClInclude Include="..\tinyexif\tinyexif_lib.hxx" />
     <ClInclude Include="FSNodeWINDOWS.hxx" />
     <ClInclude Include="HomeFinder.hxx" />
     <ClInclude Include="OSystemWINDOWS.hxx" />

@@ -1161,7 +1161,7 @@
     <ClCompile Include="..\common\JPGLibrary.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\tinyexif\TinyEXIF.cpp">
+    <ClCompile Include="..\tinyexif\tinyexif.cxx">
       <Filter>Source Files\tinyexif</Filter>
     </ClCompile>
   </ItemGroup>
@@ -2399,10 +2399,7 @@
     <ClInclude Include="..\nanojpeg\nanojpeg_lib.hxx">
       <Filter>Header Files\nanojpeg</Filter>
     </ClInclude>
-    <ClInclude Include="..\tinyexif\TinyEXIF.h">
-      <Filter>Header Files\tinyexif</Filter>
-    </ClInclude>
-    <ClInclude Include="..\tinyexif\TinyEXIF_lib.hxx">
+    <ClInclude Include="..\tinyexif\tinyexif_lib.hxx">
       <Filter>Header Files\tinyexif</Filter>
     </ClInclude>
   </ItemGroup>
