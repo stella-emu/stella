@@ -121,6 +121,18 @@
     <Filter Include="Source Files\debugger\gui">
       <UniqueIdentifier>{f379898f-6732-4ffd-ab68-28b275790ca8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\sdl_blitter">
+      <UniqueIdentifier>{ee0eac0c-bfb9-4009-bfe2-1da3c7392a3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\tv_filters">
+      <UniqueIdentifier>{5825497d-8a3a-4d66-8f1a-b8f381d22204}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\sdl_blitter">
+      <UniqueIdentifier>{ea74c030-5085-43da-9800-64525764ad3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\tv_filters">
+      <UniqueIdentifier>{30c7f8db-f036-4f42-8edf-88d7773a05b0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\common\FBBackendSDL2.cxx">
@@ -543,9 +555,6 @@
     <ClCompile Include="..\..\common\MouseControl.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\tv_filters\NTSCFilter.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\emucore\CartCTY.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
@@ -635,9 +644,6 @@
     </ClCompile>
     <ClCompile Include="..\..\emucore\CartCDF.cxx">
       <Filter>Source Files\emucore</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\common\tv_filters\AtariNTSC.cxx">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\emucore\CartDetector.cxx">
       <Filter>Source Files\emucore</Filter>
@@ -767,15 +773,6 @@
     </ClCompile>
     <ClCompile Include="..\..\emucore\CartFC.cxx">
       <Filter>Source Files\emucore</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\common\sdl_blitter\BilinearBlitter.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\common\sdl_blitter\QisBlitter.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\common\sdl_blitter\BlitterFactory.cxx">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\common\PhosphorHandler.cxx">
       <Filter>Source Files</Filter>
@@ -1181,6 +1178,21 @@
     </ClCompile>
     <ClCompile Include="..\..\debugger\gui\CpuWidget.cxx">
       <Filter>Source Files\debugger\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\tv_filters\AtariNTSC.cxx">
+      <Filter>Source Files\tv_filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\tv_filters\NTSCFilter.cxx">
+      <Filter>Source Files\tv_filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\sdl_blitter\BilinearBlitter.cxx">
+      <Filter>Source Files\sdl_blitter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\sdl_blitter\BlitterFactory.cxx">
+      <Filter>Source Files\sdl_blitter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\sdl_blitter\QisBlitter.cxx">
+      <Filter>Source Files\sdl_blitter</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1631,9 +1643,6 @@
     <ClInclude Include="..\..\common\MouseControl.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\common\tv_filters\NTSCFilter.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\emucore\CartCTY.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
@@ -1768,9 +1777,6 @@
     </ClInclude>
     <ClInclude Include="..\..\emucore\tia\DelayQueueIteratorImpl.hxx">
       <Filter>Header Files\emucore\tia</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\common\tv_filters\AtariNTSC.hxx">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\emucore\CartDetector.hxx">
       <Filter>Header Files\emucore</Filter>
@@ -1936,18 +1942,6 @@
     </ClInclude>
     <ClInclude Include="..\..\emucore\CartFC.hxx">
       <Filter>Header Files\emucore</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\common\sdl_blitter\BilinearBlitter.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\common\sdl_blitter\Blitter.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\common\sdl_blitter\QisBlitter.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\common\sdl_blitter\BlitterFactory.hxx">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\PhosphorHandler.hxx">
       <Filter>Header Files</Filter>
@@ -2419,6 +2413,27 @@
     </ClInclude>
     <ClInclude Include="..\..\debugger\gui\RomListSettings.hxx">
       <Filter>Header Files\debugger\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\tv_filters\AtariNTSC.hxx">
+      <Filter>Header Files\tv_filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\tv_filters\NTSCFilter.hxx">
+      <Filter>Header Files\tv_filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\sdl_blitter\BilinearBlitter.hxx">
+      <Filter>Header Files\sdl_blitter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\sdl_blitter\Blitter.hxx">
+      <Filter>Header Files\sdl_blitter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\sdl_blitter\BlitterFactory.hxx">
+      <Filter>Header Files\sdl_blitter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\sdl_blitter\QisBlitter.hxx">
+      <Filter>Header Files\sdl_blitter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\smartmod.hxx">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
