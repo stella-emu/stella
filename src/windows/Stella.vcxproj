@@ -939,7 +939,6 @@
     <ClCompile Include="..\gui\ToolTip.cxx" />
     <ClCompile Include="..\gui\UndoHandler.cxx" />
     <ClCompile Include="..\gui\WhatsNewDialog.cxx" />
-    <ClCompile Include="..\nanojpeg\nanojpeg.c" />
     <ClCompile Include="..\sqlite\source\sqlite3.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">CompileAsC</CompileAs>
@@ -2170,7 +2169,6 @@
     <ClInclude Include="..\libpng\pnginfo.h" />
     <ClInclude Include="..\libpng\pnglibconf.h" />
     <ClInclude Include="..\libpng\pngstruct.h" />
-    <ClInclude Include="..\nanojpeg\nanojpeg.h" />
     <ClInclude Include="..\nanojpeg\nanojpeg_lib.hxx" />
     <ClInclude Include="..\sqlite\source\sqlite3.h" />
     <ClInclude Include="..\sqlite\sqlite3.h" />

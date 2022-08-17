@@ -37,6 +37,7 @@
   #pragma GCC diagnostic pop
 #elif defined(BSPF_WINDOWS)
   #pragma warning(push, 0)
+  #pragma warning(disable : 4706)
   #include "nanojpeg.c"
   #pragma warning(pop)
 #else
