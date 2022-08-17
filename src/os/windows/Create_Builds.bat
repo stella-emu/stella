@@ -97,14 +97,14 @@ if %BUILD_64% == 1 (
 )
 
 echo Copying DOC files ...
-xcopy ..\..\docs\* %STELLA_DIR%\docs /s /q
-copy ..\..\Announce.txt   %STELLA_DIR%\docs
-copy ..\..\Changes.txt    %STELLA_DIR%\docs
-copy ..\..\Copyright.txt  %STELLA_DIR%\docs
-copy ..\..\License.txt    %STELLA_DIR%\docs
-copy ..\..\Readme.txt     %STELLA_DIR%\docs
-copy ..\..\README-SDL.txt %STELLA_DIR%\docs
-copy ..\..\Todo.txt       %STELLA_DIR%\docs
+xcopy ..\..\..\docs\* %STELLA_DIR%\docs /s /q
+copy ..\..\..\Announce.txt   %STELLA_DIR%\docs
+copy ..\..\..\Changes.txt    %STELLA_DIR%\docs
+copy ..\..\..\Copyright.txt  %STELLA_DIR%\docs
+copy ..\..\..\License.txt    %STELLA_DIR%\docs
+copy ..\..\..\Readme.txt     %STELLA_DIR%\docs
+copy ..\..\..\README-SDL.txt %STELLA_DIR%\docs
+copy ..\..\..\Todo.txt       %STELLA_DIR%\docs
 if %HAVE_FLIP% == 1 (
 	for %%a in (%STELLA_DIR%\docs\*.txt) do (
 		flip -d "%%a"
