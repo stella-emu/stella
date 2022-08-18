@@ -49,13 +49,13 @@ void JPGLibrary::loadImage(const string& filename, FBSurface& surface,
   in.seekg(0);
 
   // Create space for the entire file
-  if(size > myFileBuffer.size())
-    myFileBuffer.resize(size);
+  if(size > myFileBuffer.capacity())
+    myFileBuffer.reserve(size * 1.5);
   if(!in.read(myFileBuffer.data(), size))
-    loadImageERROR("Image data reading failed");
+    loadImageERROR("JPG image data reading failed");
 
   if(njDecode(myFileBuffer.data(), static_cast<int>(size)))
-    loadImageERROR("Error decoding the input file");
+    loadImageERROR("Error decoding the JPG image");
 
   // Read the entire image in one go
   myReadInfo.buffer = njGetImage();

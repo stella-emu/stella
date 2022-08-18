@@ -35,7 +35,8 @@ class RomImageWidget : public Widget
       return font.getFontHeight() * 9 / 8;
     }
 
-    void setProperties(const FSNode& node, const Properties properties, bool full = true);
+    void setProperties(const FSNode& node, const Properties properties,
+                       bool full = true);
     void clearProperties();
     void reloadProperties(const FSNode& node);
     bool changeImage(int direction = 1);
@@ -52,7 +53,8 @@ class RomImageWidget : public Widget
   private:
     void parseProperties(const FSNode& node, bool full = true);
   #ifdef IMAGE_SUPPORT
-    bool getImageList(const string& propName, const string& romName);
+    bool getImageList(const string& propName, const string& romName,
+                      const string& oldFileName);
     bool tryImageFormats(string& fileName);
     bool loadImage(const string& fileName);
     bool loadPng(const string& fileName);
