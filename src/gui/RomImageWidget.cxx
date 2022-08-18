@@ -90,6 +90,7 @@ void RomImageWidget::reloadProperties(const FSNode& node)
 void RomImageWidget::parseProperties(const FSNode& node, bool full)
 {
   uInt64 startTime = TimerManager::getTicks() / 1000;
+
   if(myNavSurface == nullptr)
   {
     // Create navigation surface
@@ -154,7 +155,8 @@ void RomImageWidget::parseProperties(const FSNode& node, bool full)
 
     // Try to find all snapshots by property and ROM file name
     myImageList.clear();
-    getImageList(myProperties.get(PropType::Cart_Name), node.getNameWithExt());
+    getImageList(myProperties.get(PropType::Cart_Name), node.getNameWithExt(),
+      oldFileName);
 
     // The first file found before must not be the first file now, if files by
     // property *and* ROM name are found (TODO: fix that!)
@@ -191,13 +193,14 @@ bool RomImageWidget::changeImage(int direction)
 
 #ifdef IMAGE_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool RomImageWidget::getImageList(const string& propName, const string& romName)
+bool RomImageWidget::getImageList(const string& propName, const string& romName,
+                                  const string& oldFileName)
 {
   const std::regex symbols{R"([-[\]{}()*+?.,\^$|#])"}; // \s
   const string rgxPropName = std::regex_replace(propName, symbols, R"(\$&)");
   const string rgxRomName  = std::regex_replace(romName,  symbols, R"(\$&)");
   // Look for <name.png|jpg> or <name_#.png|jpg> (# is a number)
-  const std::regex rgx("^(" + rgxPropName + "|" + rgxRomName + ")(_\\d+){0,1}\\.(png|jpg)$");
+  const std::regex rgx("^(" + rgxPropName + "|" + rgxRomName + ")(_\\d+)?\\.(png|jpg)$");
 
   FSNode::NameFilter filter = ([&](const FSNode& node)
     {
@@ -212,14 +215,17 @@ bool RomImageWidget::getImageList(const string& propName, const string& romName)
   // Sort again, not considering extensions, else <filename.png|jpg> would be at
   // the end of the list
   std::sort(myImageList.begin(), myImageList.end(),
-            [](const FSNode& node1, const FSNode& node2)
+            [oldFileName](const FSNode& node1, const FSNode& node2)
     {
       int compare = BSPF::compareIgnoreCase(node1.getNameWithExt(), node2.getNameWithExt());
       return
         compare < 0 ||
+        // PNGs first!
         (compare == 0 &&
           node1.getName().substr(node1.getName().find_last_of('.') + 1) >
-          node2.getName().substr(node2.getName().find_last_of('.') + 1)); // PNGs first!
+          node2.getName().substr(node2.getName().find_last_of('.') + 1)) ||
+        // Make sure that first image found in initial load is first image now too
+        node1.getName() == oldFileName;
     }
   );
   return myImageList.size() > 0;
@@ -348,7 +354,7 @@ void RomImageWidget::drawWidget(bool hilite)
   FBSurface& s = dialog().surface();
   const int yoff = myImageHeight;
 
-  s.fillRect(_x+1, _y+1, _w-2, _h-2, _bgcolor);
+  s.fillRect(_x, _y + 1, _w, _h - 1, _bgcolor);
   s.frameRect(_x, _y, _w, myImageHeight, kColor);
 
   if(!myHaveProperties)
