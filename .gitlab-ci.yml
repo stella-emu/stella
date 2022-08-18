@@ -7,8 +7,8 @@
 # Core definitions
 .core-defs:
   variables:
-    JNI_PATH: src/libretro
-    MAKEFILE_PATH: src/libretro
+    JNI_PATH: src/os/libretro
+    MAKEFILE_PATH: src/os/libretro
     CORENAME: stella
 
 # Inclusion templates, required for the build to work
