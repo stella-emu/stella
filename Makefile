@@ -321,7 +321,7 @@ install: all
 	$(INSTALL) -d "$(DESTDIR)$(DOCDIR)/graphics"
 	$(INSTALL) -c -m 644 $(wildcard $(srcdir)/docs/graphics/*.png) "$(DESTDIR)$(DOCDIR)/graphics"
 	$(INSTALL) -d "$(DESTDIR)$(DATADIR)/applications"
-	$(INSTALL) -c -m 644 "$(srcdir)/src/unix/stella.desktop" "$(DESTDIR)$(DATADIR)/applications"
+	$(INSTALL) -c -m 644 "$(srcdir)/src/os/unix/stella.desktop" "$(DESTDIR)$(DATADIR)/applications"
 	$(INSTALL) -d "$(DESTDIR)$(DATADIR)/icons/hicolor/16x16/apps"
 	$(INSTALL) -d "$(DESTDIR)$(DATADIR)/icons/hicolor/22x22/apps"
 	$(INSTALL) -d "$(DESTDIR)$(DATADIR)/icons/hicolor/24x24/apps"
@@ -357,7 +357,7 @@ src/emucore/M6502.ins: src/emucore/M6502.m4
 	m4 src/emucore/M6502.m4 > src/emucore/M6502.ins
 
 # Special rule for windows icon stuff (there's probably a better way to do this ...)
-src/windows/stella_icon.o: src/windows/stella.ico src/windows/stella.rc
-	windres --include-dir src/windows src/windows/stella.rc src/windows/stella_icon.o
+src/os/windows/stella_icon.o: src/os/windows/stella.ico src/os/windows/stella.rc
+	windres --include-dir src/os/windows src/os/windows/stella.rc src/os/windows/stella_icon.o
 
 .PHONY: deb bundle test install uninstall

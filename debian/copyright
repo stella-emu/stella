@@ -73,7 +73,7 @@ License: RSA
  These notices must be retained in any copies of any part of this
  documentation and/or software.
 
-Files: src/libpng/*
+Files: src/lib/libpng/*
 Copyright: 1995-1996 Guy Eric Schalnat, Group 42, Inc.
 	   1996-1997 Andreas Dilger
 	   1998-2013 Glenn Randers-Pehrson
@@ -112,7 +112,7 @@ License: libpng
  risk of satisfactory quality, performance, accuracy, and effort is
  with the user.
 
-Files: src/libretro/libretro.h
+Files: src/os/libretro/libretro.h
 Copyright: 2010-2017 The RetroArch team
 License: MIT
  Permission is hereby granted, free of charge, to any person obtaining
@@ -135,7 +135,7 @@ License: MIT
  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
 
-Files: src/macos/*
+Files: src/os/macos/*
 Copyright: 2005-2006 Mark Grebe
 License: GPL-2+
 
@@ -164,7 +164,7 @@ License: GPL-2
  License version 2 can be found in
  `/usr/share/common-licenses/GPL-2'.
 
-Files: src/zlib/*
+Files: src/lib/zlib/*
 Copyright: 1995-2012, 2016 Jean-loup Gailly and Mark Adler
 License: zlib
  This software is provided 'as-is', without any express or implied

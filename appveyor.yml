@@ -19,13 +19,13 @@ install:
       7z x "C:\SDL2-devel.zip" -o"C:\"
       xcopy /S "C:\SDL2-%SDL2_version%\include" src\common
 
-      if %Platform%==x64 xcopy /S "C:\SDL2-%SDL2_version%\lib\x64" src\windows
-      if %Platform%==Win32 xcopy /S "C:\SDL2-%SDL2_version%\lib\x86" src\windows
+      if %Platform%==x64 xcopy /S "C:\SDL2-%SDL2_version%\lib\x64" src\os\windows
+      if %Platform%==Win32 xcopy /S "C:\SDL2-%SDL2_version%\lib\x86" src\os\windows
 
 
 build_script:
   - cmd: |
-      msbuild src\windows\Stella.sln
+      msbuild src\os\windows\Stella.sln
 
 
 artifacts:
