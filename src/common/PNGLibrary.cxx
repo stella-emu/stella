@@ -49,18 +49,18 @@ void PNGLibrary::loadImage(const string& filename, FBSurface& surface, VariantLi
 
   std::ifstream in(filename, std::ios_base::binary);
   if(!in.is_open())
-    loadImageERROR("No snapshot found");
+    loadImageERROR("No image found");
 
   // Create the PNG loading context structure
   png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr,
                  png_user_error, png_user_warn);
   if(png_ptr == nullptr)
-    loadImageERROR("Couldn't allocate memory for PNG file");
+    loadImageERROR("Couldn't allocate memory for PNG image");
 
   // Allocate/initialize the memory for image information.  REQUIRED.
 	info_ptr = png_create_info_struct(png_ptr);
   if(info_ptr == nullptr)
-    loadImageERROR("Couldn't create image information for PNG file");
+    loadImageERROR("Couldn't create image information for PNG image");
 
   // Set up the input control
   png_set_read_fn(png_ptr, &in, png_read_data);
@@ -97,7 +97,7 @@ void PNGLibrary::loadImage(const string& filename, FBSurface& surface, VariantLi
 
   // Create/initialize storage area for the current image
   if(!allocateStorage(iwidth, iheight))
-    loadImageERROR("Not enough memory to read PNG file");
+    loadImageERROR("Not enough memory to read PNG image");
 
   // The PNG read function expects an array of rows, not a single 1-D array
   for(uInt32 irow = 0, offset = 0; irow < ReadInfo.height; ++irow, offset += ReadInfo.pitch)
@@ -385,12 +385,12 @@ bool PNGLibrary::allocateStorage(png_uint_32 w, png_uint_32 h)
 {
   // Create space for the entire image (3 bytes per pixel in RGB format)
   const size_t req_buffer_size = w * h * 3;
-  if(req_buffer_size > ReadInfo.buffer.size())
-    ReadInfo.buffer.resize(req_buffer_size);
+  if(req_buffer_size > ReadInfo.buffer.capacity())
+    ReadInfo.buffer.reserve(req_buffer_size * 1.5);
 
   const size_t req_row_size = h;
-  if(req_row_size > ReadInfo.row_pointers.size())
-    ReadInfo.row_pointers.resize(req_row_size);
+  if(req_row_size > ReadInfo.row_pointers.capacity())
+    ReadInfo.row_pointers.reserve(req_row_size * 1.5);
 
   ReadInfo.width  = w;
   ReadInfo.height = h;
