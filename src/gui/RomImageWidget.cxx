@@ -48,13 +48,13 @@ void RomImageWidget::setProperties(const FSNode& node, const Properties properti
   // Decide whether the information should be shown immediately
   if(instance().eventHandler().state() == EventHandlerState::LAUNCHER)
     parseProperties(node, full);
+#ifdef DEBUGGER_SUPPORT
   else
   {
-#ifdef DEBUGGER_SUPPORT
     cerr << "RomImageWidget::setProperties: else!" << endl;
     Logger::debug("RomImageWidget::setProperties: else!");
-#endif
   }
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -67,13 +67,13 @@ void RomImageWidget::clearProperties()
   // Decide whether the information should be shown immediately
   if(instance().eventHandler().state() == EventHandlerState::LAUNCHER)
     setDirty();
+#ifdef DEBUGGER_SUPPORT
   else
   {
-#ifdef DEBUGGER_SUPPORT
     cerr << "RomImageWidget::clearProperties: else!" << endl;
     Logger::debug("RomImageWidget::clearProperties: else!");
-#endif
   }
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -127,6 +127,7 @@ void RomImageWidget::parseProperties(const FSNode& node, bool full)
   {
     myImageIdx = 0;
     myImageList.clear();
+    myLabel.clear();
 
     // Get a valid filename representing a snapshot file for this rom and load the snapshot
     const string& path = instance().snapshotLoadDir().getPath();
@@ -352,10 +353,12 @@ void RomImageWidget::handleMouseMoved(int x, int y)
 void RomImageWidget::drawWidget(bool hilite)
 {
   FBSurface& s = dialog().surface();
-  const int yoff = myImageHeight;
 
-  s.fillRect(_x, _y + 1, _w, _h - 1, _bgcolor);
-  s.frameRect(_x, _y, _w, myImageHeight, kColor);
+  if(!myHaveProperties || !mySurfaceIsValid || !mySurfaceErrorMsg.empty())
+  {
+    s.fillRect(_x, _y + 1, _w, _h - 1, _bgcolor);
+    s.frameRect(_x, _y, _w, myImageHeight, kColor);
+  }
 
   if(!myHaveProperties)
   {
@@ -370,6 +373,7 @@ void RomImageWidget::drawWidget(bool hilite)
     const uInt32 x = _x * scale + ((_w * scale - dst.w()) >> 1);
     const uInt32 y = _y * scale + ((myImageHeight * scale - dst.h()) >> 1);
 
+    s.fillRect(_x, _y, _w, myImageHeight, 0);
     // Make sure when positioning the snapshot surface that we take
     // the dialog surface position into account
     const Common::Rect& s_dst = s.dstRect();
@@ -379,7 +383,7 @@ void RomImageWidget::drawWidget(bool hilite)
   else if(!mySurfaceErrorMsg.empty())
   {
     const uInt32 x = _x + ((_w - _font.getStringWidth(mySurfaceErrorMsg)) >> 1);
-    const uInt32 y = _y + ((yoff - _font.getLineHeight()) >> 1);
+    const uInt32 y = _y + ((myImageHeight - _font.getLineHeight()) >> 1);
     s.drawString(_font, mySurfaceErrorMsg, x, y, _w - 10, _textcolor);
   }
   // Draw the image label and counter
@@ -388,6 +392,7 @@ void RomImageWidget::drawWidget(bool hilite)
   const int yText = _y + myImageHeight + _font.getFontHeight() / 8;
   const int wText = _font.getStringWidth(buf.str());
 
+  s.fillRect(_x, yText, _w, _font.getFontHeight(), _bgcolor);
   if(myLabel.length())
     s.drawString(_font, myLabel, _x, yText, _w - wText - _font.getMaxCharWidth() * 2, _textcolor);
   if(myImageList.size())
@@ -396,7 +401,7 @@ void RomImageWidget::drawWidget(bool hilite)
   // Draw the navigation arrows
   myNavSurface->invalidate();
   if(isHighlighted() &&
-    ((myMouseLeft && myImageIdx) || (!myMouseLeft && myImageIdx < myImageList.size() - 1)))
+    ((myMouseLeft && myImageIdx) || (!myMouseLeft && myImageIdx + 1 < myImageList.size())))
   {
     const int w = _w / 64;
     const int w2 = 1; // w / 2;

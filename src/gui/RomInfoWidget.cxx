@@ -47,6 +47,13 @@ void RomInfoWidget::setProperties(const FSNode& node, const Properties propertie
   // Decide whether the information should be shown immediately
   if(instance().eventHandler().state() == EventHandlerState::LAUNCHER)
     parseProperties(node, full);
+#ifdef DEBUGGER_SUPPORT
+  else
+  {
+    cerr << "RomInfoWidget::setProperties: else!" << endl;
+    Logger::debug("RomInfoWidget::setProperties: else!");
+  }
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -57,6 +64,13 @@ void RomInfoWidget::clearProperties()
   // Decide whether the information should be shown immediately
   if(instance().eventHandler().state() == EventHandlerState::LAUNCHER)
     setDirty();
+#ifdef DEBUGGER_SUPPORT
+  else
+  {
+    cerr << "RomInfoWidget::clearProperties: else!" << endl;
+    Logger::debug("RomInfoWidget::clearProperties: else!");
+  }
+#endif
   myUrl.clear();
 }
 
