@@ -322,9 +322,6 @@ bool FileListWidget::handleKeyDown(StellaKey key, StellaMod mod)
   if(StellaModTest::isAlt(mod))
   {
     handled = true;
-#ifdef DEBUG_BUILD
-    cerr << "  FileListWidget::handleKeyDown  " << mod << ", " << key << endl;
-#endif
     switch(key)
     {
       case KBDK_HOME:

@@ -323,11 +323,11 @@ void LauncherDialog::addRomWidgets(int ypos)
   {
     xpos += myList->getWidth() + fontWidth;
 
-    // Initial surface size is the same as the viewable area
+    // Initial surface size is the viewable area's width squared
     const Common::Size imgSize(TIAConstants::viewableWidth * imgZoom,
-      TIAConstants::viewableHeight * imgZoom);
-    // Calculate font area, and in the process the font that can be used
+      TIAConstants::viewableWidth * imgZoom);
 
+    // Calculate font area, and in the process the font that can be used
     // Infofont is unknown yet, but used in image label too. Assuming maximum font height.
     int imageHeight = imgSize.h + RomImageWidget::labelHeight(_font);
 
@@ -340,7 +340,7 @@ void LauncherDialog::addRomWidgets(int ypos)
     myRomImageWidget = new RomImageWidget(this, *myROMInfoFont,
       xpos, ypos, imageWidth, imageHeight);
 
-    const int yofs = imageHeight + VGAP * 2;
+    const int yofs = imageHeight + myROMInfoFont->getFontHeight() / 2;
     myRomInfoWidget = new RomInfoWidget(this, *myROMInfoFont,
       xpos, ypos + yofs, imageWidth, myList->getHeight() - yofs);
   }
