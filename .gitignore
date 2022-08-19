@@ -18,7 +18,7 @@ project.xcworkspace/
 xcuserdata/
 .DS_Store
 build/
-src/macosx/M6502.ins
+src/os/macos/M6502.ins
 *.dSYM
 .vscode/c_cpp_properties.json
 .vscode/settings.json
