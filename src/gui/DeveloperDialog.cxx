@@ -103,8 +103,9 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
 
   // settings set
   mySettingsGroupEmulation = new RadioButtonGroup();
-  RadioButtonWidget* r = new RadioButtonWidget(myTab, font, HBORDER, ypos + 1,
-                                               "Player settings", mySettingsGroupEmulation, kPlrSettings);
+  auto* r = new RadioButtonWidget(myTab, font, HBORDER, ypos + 1,
+                                  "Player settings", mySettingsGroupEmulation,
+                                  kPlrSettings);
   r->setToolTip(Event::ToggleDeveloperSet);
   wid.push_back(r);
   ypos += lineHeight + VGAP;
@@ -241,8 +242,9 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
 
   // settings set
   mySettingsGroupTia = new RadioButtonGroup();
-  RadioButtonWidget* r = new RadioButtonWidget(myTab, font, HBORDER, ypos + 1,
-                                               "Player settings", mySettingsGroupTia, kPlrSettings);
+  auto* r = new RadioButtonWidget(myTab, font, HBORDER, ypos + 1,
+                                  "Player settings", mySettingsGroupTia,
+                                  kPlrSettings);
   r->setToolTip(Event::ToggleDeveloperSet);
   wid.push_back(r);
   ypos += lineHeight + VGAP;
@@ -359,8 +361,9 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
 
   // settings set
   mySettingsGroupVideo = new RadioButtonGroup();
-  RadioButtonWidget* r = new RadioButtonWidget(myTab, font, HBORDER, ypos + 1,
-                                               "Player settings", mySettingsGroupVideo, kPlrSettings);
+  auto* r = new RadioButtonWidget(myTab, font, HBORDER, ypos + 1,
+                                  "Player settings", mySettingsGroupVideo,
+                                  kPlrSettings);
   r->setToolTip(Event::ToggleDeveloperSet);
   wid.push_back(r);
   ypos += lineHeight + VGAP;
@@ -518,8 +521,9 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
 
   // settings set
   mySettingsGroupTM = new RadioButtonGroup();
-  RadioButtonWidget* r = new RadioButtonWidget(myTab, font, xpos, ypos + 1,
-                                               "Player settings", mySettingsGroupTM, kPlrSettings);
+  auto* r = new RadioButtonWidget(myTab, font, xpos, ypos + 1,
+                                  "Player settings", mySettingsGroupTM,
+                                  kPlrSettings);
   r->setToolTip(Event::ToggleDeveloperSet);
   wid.push_back(r);
   ypos += lineHeight + VGAP;
@@ -899,7 +903,8 @@ void DeveloperDialog::saveConfig()
 void DeveloperDialog::setDefaults()
 {
   const bool devSettings = mySettings;
-  const SettingsSet set = static_cast<SettingsSet>(mySettingsGroupEmulation->getSelected());
+  const auto set = static_cast<SettingsSet>
+      (mySettingsGroupEmulation->getSelected());
 
   switch(myTab->getActiveTab())
   {
@@ -1369,7 +1374,7 @@ void DeveloperDialog::handleDebugColours(int idx, int color)
   myDbgColour[idx]->setSelectedIndex(color);
 
   // make sure the selected debug colors are all different
-  std::array<bool, DEBUG_COLORS> usedCol = {0};
+  std::array<bool, DEBUG_COLORS> usedCol = {false};
 
   // identify used colors
   for(int i = 0; i < DEBUG_COLORS; ++i)

@@ -65,9 +65,10 @@ HighScoresManager::HighScoresManager(OSystem& osystem)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void HighScoresManager::setRepository(shared_ptr<CompositeKeyValueRepositoryAtomic> repo)
+void HighScoresManager::setRepository(
+    shared_ptr<CompositeKeyValueRepositoryAtomic> repo)
 {
-  myHighscoreRepository = repo;
+  myHighscoreRepository = std::move(repo);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -701,12 +702,12 @@ bool HighScoresManager::load(const json& hsData, ScoresData& data)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void HighScoresManager::clearHighScores(ScoresData& data)
 {
-  for(uInt32 r = 0; r < NUM_RANKS; ++r)
+  for(auto& s: data.scores)
   {
-    data.scores[r].score = 0;
-    data.scores[r].special = 0;
-    data.scores[r].name = "";
-    data.scores[r].date = "";
+    s.score = 0;
+    s.special = 0;
+    s.name = "";
+    s.date = "";
   }
 }
 

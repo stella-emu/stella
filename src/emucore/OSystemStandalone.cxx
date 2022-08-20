@@ -34,22 +34,23 @@ string OSystemStandalone::describePresistence()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 shared_ptr<KeyValueRepository> OSystemStandalone::getSettingsRepository()
 {
-  return shared_ptr<KeyValueRepository>(myStellaDb, &myStellaDb->settingsRepository());
+  return {myStellaDb, &myStellaDb->settingsRepository()};
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 shared_ptr<CompositeKeyValueRepository> OSystemStandalone::getPropertyRepository()
 {
-  return shared_ptr<CompositeKeyValueRepository>(myStellaDb, &myStellaDb->propertyRepository());
+  return {myStellaDb, &myStellaDb->propertyRepository()};
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 shared_ptr<CompositeKeyValueRepositoryAtomic> OSystemStandalone::getHighscoreRepository()
 {
-  return shared_ptr<CompositeKeyValueRepositoryAtomic>(myStellaDb, &myStellaDb->highscoreRepository());
+  return {myStellaDb, &myStellaDb->highscoreRepository()};
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystemStandalone::getBaseDirectories(string& basedir, string& homedir,
-                                    bool useappdir, const string& usedir)
-{}
+void OSystemStandalone::getBaseDirectories(
+    string& basedir, string& homedir, bool useappdir, const string& usedir)
+{
+}

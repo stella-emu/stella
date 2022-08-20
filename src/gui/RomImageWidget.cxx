@@ -40,7 +40,8 @@ RomImageWidget::RomImageWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomImageWidget::setProperties(const FSNode& node, const Properties properties, bool full)
+void RomImageWidget::setProperties(const FSNode& node,
+                                   const Properties& properties, bool full)
 {
   myHaveProperties = true;
   myProperties = properties;
@@ -176,7 +177,7 @@ void RomImageWidget::parseProperties(const FSNode& node, bool full)
 
   // Update maximum load time
   myMaxLoadTime = std::min(
-    static_cast<uInt64>(500ull / timeFactor),
+    static_cast<uInt64>(500ULL / timeFactor),
     std::max(myMaxLoadTime, TimerManager::getTicks() / 1000 - startTime));
 }
 
@@ -286,15 +287,15 @@ bool RomImageWidget::loadPng(const string& fileName)
 
     // Retrieve label for loaded image
     myLabel.clear();
-    for(auto data = metaData.begin(); data != metaData.end(); ++data)
+    for(const auto& data: metaData)
     {
-      if(data->first == "Title")
+      if(data.first == "Title")
       {
-        myLabel = data->second.toString();
+        myLabel = data.second.toString();
         break;
       }
-      if(data->first == "Software"
-          && data->second.toString().find("Stella") == 0)
+      if(data.first == "Software"
+          && data.second.toString().find("Stella") == 0)
         myLabel = "Snapshot"; // default for Stella snapshots with missing "Title" meta data
     }
     return true;
@@ -316,11 +317,11 @@ bool RomImageWidget::loadJpg(const string& fileName)
 
     // Retrieve label for loaded image
     myLabel.clear();
-    for(auto data = metaData.begin(); data != metaData.end(); ++data)
+    for(const auto& data: metaData)
     {
-      if(data->first == "ImageDescription")
+      if(data.first == "ImageDescription")
       {
-        myLabel = data->second.toString();
+        myLabel = data.second.toString();
         break;
       }
     }

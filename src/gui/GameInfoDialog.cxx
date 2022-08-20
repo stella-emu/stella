@@ -217,8 +217,8 @@ void GameInfoDialog::addConsoleTab()
 
   new StaticTextWidget(myTab, _font, xpos, ypos + 1, "TV type");
   myTVTypeGroup = new RadioButtonGroup();
-  RadioButtonWidget* r = new RadioButtonWidget(myTab, _font, xpos + lwidth, ypos + 1,
-                                               "Color", myTVTypeGroup);
+  auto* r = new RadioButtonWidget(myTab, _font, xpos + lwidth, ypos + 1,
+                                  "Color", myTVTypeGroup);
   r->setToolTip(Event::ConsoleColor, Event::ConsoleColorToggle);
   wid.push_back(r);
   ypos += lineHeight;
@@ -686,7 +686,7 @@ void GameInfoDialog::addHighScoresTab()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GameInfoDialog::~GameInfoDialog()
+GameInfoDialog::~GameInfoDialog()  // NOLINT (we need an empty d'tor)
 {
 }
 
@@ -1307,14 +1307,14 @@ void GameInfoDialog::eraseEEPROM()
   if(lport.type() == Controller::Type::SaveKey ||
      lport.type() == Controller::Type::AtariVox)
   {
-    SaveKey& skey = static_cast<SaveKey&>(lport);
+    auto& skey = static_cast<SaveKey&>(lport);
     skey.eraseCurrent();
   }
 
   if(rport.type() == Controller::Type::SaveKey ||
      rport.type() == Controller::Type::AtariVox)
   {
-    SaveKey& skey = static_cast<SaveKey&>(rport);
+    auto& skey = static_cast<SaveKey&>(rport);
     skey.eraseCurrent();
   }
 }

@@ -295,8 +295,8 @@ void RiotWidget::loadConfig()
   // We push the enumerated items as addresses, and deal with the real
   // address in the callback (handleCommand)
   RiotDebug& riot = instance().debugger().riotDebug();
-  const RiotState& state    = static_cast<const RiotState&>(riot.getState());
-  const RiotState& oldstate = static_cast<const RiotState&>(riot.getOldState());
+  const auto& state    = static_cast<const RiotState&>(riot.getState());
+  const auto& oldstate = static_cast<const RiotState&>(riot.getOldState());
 
   // Update the SWCHA register booleans (poke mode)
   IO_REGS_UPDATE(mySWCHAWriteBits, swchaWriteBits)

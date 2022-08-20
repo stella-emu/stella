@@ -113,7 +113,7 @@ uInt64 EmulationWorker::stop()
   // See EmulationWorker::start above for the gory details
   waitUntilPendingSignalHasProcessed();
 
-  uInt64 totalCycles;
+  uInt64 totalCycles{0};
   {
     std::unique_lock<std::mutex> lock(myThreadIsRunningMutex);
 

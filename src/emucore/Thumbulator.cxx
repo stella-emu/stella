@@ -699,7 +699,7 @@ uInt32 Thumbulator::read32(uInt32 addr)
     default:
 #endif
     {
-      switch(addr)
+      switch(addr)  // NOLINT  (FIXME: missing default)
       {
       #ifdef THUMB_CYCLE_COUNT
         case 0xE01FC000: //MAMCR
@@ -717,12 +717,12 @@ uInt32 Thumbulator::read32(uInt32 addr)
         #ifdef THUMB_CYCLE_COUNT
           if(T0TCR & 1)
             // timer is counting
-            data = T0TC + (tim0Total + (_totalCycles - tim0Start)) * _armCyclesFactor;
+            data = T0TC + (tim0Total + (_totalCycles - tim0Start)) * _armCyclesFactor;  // NOLINT
           else
             // timer is disabled
-            data = T0TC + tim0Total * _armCyclesFactor;
+            data = T0TC + tim0Total * _armCyclesFactor;  // NOLINT
         #else
-          data = T0TC;
+          data = T0TC;  // NOLINT
         #endif
           break;
       #endif
@@ -832,10 +832,8 @@ void Thumbulator::do_nflag(uInt32 x)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Thumbulator::do_cflag(uInt32 a, uInt32 b, uInt32 c)
 {
-  uInt32 rc;
-
-  rc = (a & 0x7FFFFFFF) + (b & 0x7FFFFFFF) + c; //carry in
-  rc = (rc >> 31) + (a >> 31) + (b >> 31);      //carry out
+  uInt32 rc = (a & 0x7FFFFFFF) + (b & 0x7FFFFFFF) + c; //carry in
+  rc = (rc >> 31) + (a >> 31) + (b >> 31);             //carry out
   if(rc & 2)
     cpsr |= CPSR_C;
   else
@@ -1095,9 +1093,9 @@ Thumbulator::Op Thumbulator::decodeInstructionWord(uint16_t inst) {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Thumbulator::execute()
 {
-  uInt32 pc, sp, inst, ra, rb, rc, rm, rd, rn, rs, op;
+  uInt32 sp, inst, ra, rb, rc, rm, rd, rn, rs, op;  // NOLINT
 
-  pc = read_register(15);
+  uInt32 pc = read_register(15);
 
   const uInt32 instructionPtr = pc - 2;
   inst = fetch16(instructionPtr);
@@ -1110,7 +1108,7 @@ int Thumbulator::execute()
   ++_stats.instructions;
 #endif
 
-  Op decodedOp;
+  Op decodedOp{};
 #ifndef UNSAFE_OPTIMIZATIONS
   if ((instructionPtr & 0xF0000000) == 0 && instructionPtr < romSize)
     decodedOp = decodedRom[instructionPtr >> 1];

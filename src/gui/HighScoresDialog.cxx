@@ -132,21 +132,22 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
   int ypos = VBORDER + _th;
   ypos += lineHeight + VGAP * 2; // space for game name
 
-  StaticTextWidget* s = new StaticTextWidget(this, _font, xpos, ypos + 1, "Variation ");
+  auto* s = new StaticTextWidget(this, _font, xpos, ypos + 1, "Variation ");
   myVariationPopup = new PopUpWidget(this, _font, s->getRight(), ypos,
-                                      _font.getStringWidth("256"), lineHeight, items, "", 0,
-                                      kVariationChanged);
+      _font.getStringWidth("256"), lineHeight, items, "", 0, kVariationChanged);
   wid.push_back(myVariationPopup);
   const int bWidth = fontWidth * 5;
-  myPrevVarButton = new ButtonWidget(this, _font, xposDelete + fontWidth * 2 - bWidth * 2 - BUTTON_GAP, ypos - 1,
-                                     bWidth, myVariationPopup->getHeight(),
-                                     smallFont ? PREV_GFX.data() : PREV_GFX_LARGE.data(),
-                                     buttonSize, buttonSize, kPrevVariation);
+  myPrevVarButton = new ButtonWidget(this, _font,
+      xposDelete + fontWidth * 2 - bWidth * 2 - BUTTON_GAP, ypos - 1,
+      bWidth, myVariationPopup->getHeight(),
+      smallFont ? PREV_GFX.data() : PREV_GFX_LARGE.data(),
+      buttonSize, buttonSize, kPrevVariation);
   wid.push_back(myPrevVarButton);
-  myNextVarButton = new ButtonWidget(this, _font, xposDelete + fontHeight - bWidth, ypos - 1,
-                                     bWidth, myVariationPopup->getHeight(),
-                                     smallFont ? NEXT_GFX.data() : NEXT_GFX_LARGE.data(),
-                                     buttonSize, buttonSize, kNextVariation);
+  myNextVarButton = new ButtonWidget(this, _font,
+      xposDelete + fontHeight - bWidth, ypos - 1,
+      bWidth, myVariationPopup->getHeight(),
+      smallFont ? NEXT_GFX.data() : NEXT_GFX_LARGE.data(),
+      buttonSize, buttonSize, kNextVariation);
   wid.push_back(myNextVarButton);
 
   ypos += lineHeight + VGAP * 4;
@@ -211,7 +212,7 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-HighScoresDialog::~HighScoresDialog()
+HighScoresDialog::~HighScoresDialog()  // NOLINT (we need an empty d'tor)
 {
 }
 

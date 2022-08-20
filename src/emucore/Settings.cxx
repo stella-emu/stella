@@ -686,7 +686,7 @@ void Settings::usage() const
     << "                                by attempting to use the application directory\n"
     << "  -plusroms.nick <nick>        Define a nickname for the PlusROMs backends.\n"
     << "  -plusroms.id   <id>          Define a temporary ID for the PlusROMs backends.\n"
-    << "  -filterbstypes <0|1>         Filter bankswitch type list by ROM size.\n"       
+    << "  -filterbstypes <0|1>         Filter bankswitch type list by ROM size.\n"
     << "  -help                        Show the text you're now reading\n"
   #ifdef DEBUGGER_SUPPORT
     << endl
@@ -852,7 +852,7 @@ void Settings::migrateOne()
   const int version = getInt(SETTINGS_VERSION_KEY);
   if (version >= SETTINGS_VERSION) return;
 
-  switch (version) {
+  switch (version) {  // NOLINT  (could be written as IF/ELSE)
     case 0:
       #if defined BSPF_MACOS || defined DARWIN
         setPermanent("video", "");

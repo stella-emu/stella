@@ -65,7 +65,7 @@ CartRamWidget::CartRamWidget(
   constexpr uInt16 maxlines = 6;
   const StringParser bs(desc, (fwidth - ScrollBarWidget::scrollBarWidth(_font)) / myFontWidth);
   const StringList& sl = bs.stringList();
-  uInt32 lines = static_cast<uInt32>(sl.size());
+  auto lines = static_cast<uInt32>(sl.size());
   bool useScrollbar = false;
 
   if(lines < 2) lines = 2;

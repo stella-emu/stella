@@ -59,9 +59,8 @@ AboutDialog::AboutDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myNextButton);
 
   xpos = _w - buttonWidth - HBORDER;
-  ButtonWidget* b =
-    new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                     "Close", GuiObject::kCloseCmd);
+  auto* b = new ButtonWidget(this, font, xpos, ypos,
+      buttonWidth, buttonHeight, "Close", GuiObject::kCloseCmd);
   wid.push_back(b);
   addCancelWidget(b);
 
@@ -80,8 +79,8 @@ AboutDialog::AboutDialog(OSystem& osystem, DialogContainer& parent,
   xpos = HBORDER * 2;  ypos += lineHeight + VGAP * 2;
   for(int i = 0; i < myLinesPerPage; i++)
   {
-    StaticTextWidget* s = new StaticTextWidget(this, font, xpos, ypos, _w - xpos * 2,
-                                               fontHeight, "", TextAlign::Left, kNone);
+    auto* s = new StaticTextWidget(this, font, xpos, ypos, _w - xpos * 2,
+                                   fontHeight, "", TextAlign::Left, kNone);
     s->setID(i);
     myDesc.push_back(s);
     myDescStr.emplace_back("");
@@ -94,7 +93,7 @@ AboutDialog::AboutDialog(OSystem& osystem, DialogContainer& parent,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AboutDialog::~AboutDialog()
+AboutDialog::~AboutDialog()  // NOLINT (we need an empty d'tor)
 {
 }
 

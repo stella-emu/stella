@@ -32,7 +32,7 @@ Cartridge3EWidget::Cartridge3EWidget(
 string Cartridge3EWidget::description()
 {
   ostringstream info;
-  size_t size;
+  size_t size{0};
   const ByteBuffer& image = myCart.getImage(size);
   const uInt16 numRomBanks = myCart.romBankCount();
   const uInt16 numRamBanks = myCart.ramBankCount();
@@ -69,9 +69,9 @@ void Cartridge3EWidget::bankList(uInt16 bankCount, int seg, VariantList& items, 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge3EWidget::bankSelect(int& ypos)
 {
-  int xpos = 2;
+  int xpos{2};
   VariantList items;
-  int pw;
+  int pw{0};
 
   myBankWidgets = make_unique<PopUpWidget* []>(2);
 
@@ -84,7 +84,8 @@ void Cartridge3EWidget::bankSelect(int& ypos)
   myBankWidgets[0]->setID(0);
   addFocusWidget(myBankWidgets[0]);
 
-  StaticTextWidget* t = new StaticTextWidget(_boss, _font, myBankWidgets[0]->getRight(), ypos - 1, " (ROM)");
+  auto* t = new StaticTextWidget(_boss, _font,
+      myBankWidgets[0]->getRight(), ypos - 1, " (ROM)");
 
   xpos = t->getRight() + 20;
   items.clear();

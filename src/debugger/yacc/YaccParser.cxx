@@ -35,7 +35,7 @@ void yyerror(const char* e);
   #pragma clang diagnostic ignored "-Wold-style-cast"
   #pragma clang diagnostic ignored "-Wimplicit-fallthrough"
   #pragma clang diagnostic ignored "-Wmissing-variable-declarations"
-  #include "y.tab.c"
+  #include "y.tab.c"  // NOLINT
   #pragma clang diagnostic pop
 #else
   #include "y.tab.c"
@@ -279,7 +279,7 @@ TiaMethod getTiaSpecial(char* ch)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int yylex() {
   static char idbuf[255];  // NOLINT  (will be rewritten soon)
-  char o, p;
+  char o{0}, p{0};
   yylval.val = 0;
   while(*c != '\0') {
     switch(state) {
@@ -392,7 +392,7 @@ int yylex() {
         } else if(is_operator(*c)) {
           state = State::OPERATOR;
         } else {
-          yylval.val = *c++;
+          yylval.val = *c++;  // NOLINT
           return yylval.val;
         }
         break;

@@ -66,7 +66,7 @@ FrameBuffer::FrameBuffer(OSystem& osystem)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FrameBuffer::~FrameBuffer()
+FrameBuffer::~FrameBuffer()  // NOLINT (we need an empty d'tor)
 {
 }
 
@@ -512,7 +512,7 @@ void FrameBuffer::update(UpdateMode mode)
         success = r.unwindStates(1);
 
         // Determine playback speed, the faster the more the states are apart
-        const Int64 frameCycles = 76 * std::max<Int32>(myOSystem.console().tia().scanlinesLastFrame(), 240);
+        const Int64 frameCycles = static_cast<Int64>(76) * std::max<Int32>(myOSystem.console().tia().scanlinesLastFrame(), 240);
         const Int64 intervalFrames = r.getInterval() / frameCycles;
         const Int64 stateFrames = (r.getCurrentCycles() - prevCycles) / frameCycles;
 
@@ -616,7 +616,7 @@ void FrameBuffer::createMessage(const string& message, MessagePosition position,
   const int fontHeight = font().getFontHeight();
   const int VBORDER = fontHeight / 4;
 
-  myMsg.counter = std::min(uInt32(myOSystem.frameRate()) * 2, 120u); // Show message for 2 seconds
+  myMsg.counter = std::min(uInt32(myOSystem.frameRate()) * 2, 120U); // Show message for 2 seconds
   if(myMsg.counter == 0)
     myMsg.counter = 120;
 
@@ -925,7 +925,7 @@ shared_ptr<FBSurface> FrameBuffer::allocateSurface(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::deallocateSurface(shared_ptr<FBSurface> surface)
+void FrameBuffer::deallocateSurface(const shared_ptr<FBSurface>& surface)
 {
   if(surface)
     mySurfaceList.remove(surface);

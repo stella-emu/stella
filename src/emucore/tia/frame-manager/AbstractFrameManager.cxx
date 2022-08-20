@@ -105,7 +105,7 @@ void AbstractFrameManager::layout(FrameLayout layout)
 
   myLayout = layout;
 
-  onLayoutChange();
+  onLayoutChange();  // NOLINT
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

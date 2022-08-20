@@ -56,7 +56,7 @@ SoundSDL2::SoundSDL2(OSystem& osystem, AudioSettings& audioSettings)
     return;
   }
 
-  queryHardware(myDevices);
+  queryHardware(myDevices);  // NOLINT
 
   SDL_zero(myHardwareSpec);
   if(!openDevice())
@@ -387,7 +387,7 @@ void SoundSDL2::initResampler()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL2::callback(void* udata, uInt8* stream, int len)
 {
-  SoundSDL2* self = static_cast<SoundSDL2*>(udata);
+  auto* self = static_cast<SoundSDL2*>(udata);
 
   if (self->myAudioQueue)
     self->processFragment(reinterpret_cast<float*>(stream), len >> 2);

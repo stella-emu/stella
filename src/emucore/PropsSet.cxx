@@ -35,7 +35,7 @@ PropertiesSet::PropertiesSet()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PropertiesSet::setRepository(shared_ptr<CompositeKeyValueRepository> repository)
 {
-  myRepository = repository;
+  myRepository = std::move(repository);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

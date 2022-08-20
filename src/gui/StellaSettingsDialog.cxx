@@ -88,7 +88,7 @@ StellaSettingsDialog::StellaSettingsDialog(OSystem& osystem, DialogContainer& pa
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-StellaSettingsDialog::~StellaSettingsDialog()
+StellaSettingsDialog::~StellaSettingsDialog() // NOLINT (we need an empty d'tor)
 {
 }
 

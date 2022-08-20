@@ -152,7 +152,7 @@ class PNGLibrary
       @param iwidth  The width of the PNG image
       @param iheight The height of the PNG image
     */
-    bool allocateStorage(png_uint_32 iwidth, png_uint_32 iheight);
+    bool allocateStorage(size_t iwidth, size_t iheight);
 
     /** The actual method which saves a PNG image.
 
@@ -163,7 +163,7 @@ class PNGLibrary
       @param metaData  The meta data to add to the PNG image
     */
     void saveImageToDisk(std::ofstream& out, const vector<png_bytep>& rows,
-                         png_uint_32 width, png_uint_32 height,
+                         size_t width, size_t height,
                          const VariantList& metaData);
 
     /**

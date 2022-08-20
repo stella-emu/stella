@@ -98,7 +98,10 @@ void EditTextWidget::drawWidget(bool hilite)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Common::Rect EditTextWidget::getEditRect() const
 {
-  return Common::Rect(_textOfs, 1, _w - _textOfs, _h);
+  return {
+    static_cast<uInt32>(_textOfs), 1,
+    static_cast<uInt32>(_w - _textOfs), static_cast<uInt32>(_h)
+  };
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -87,7 +87,7 @@ void JPGLibrary::loadImagetoSurface(FBSurface& surface)
   surface.setSrcSize(iw, ih);
 
   // Convert RGB triples into pixels and store in the surface
-  uInt32* s_buf, s_pitch;
+  uInt32 *s_buf{nullptr}, s_pitch{0};
   surface.basePtr(s_buf, s_pitch);
   const uInt8* i_buf = myReadInfo.buffer;
   const uInt32 i_pitch = myReadInfo.pitch;

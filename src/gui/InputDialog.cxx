@@ -93,7 +93,7 @@ InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-InputDialog::~InputDialog()
+InputDialog::~InputDialog()  // NOLINT (we need an empty d'tor)
 {
 }
 
@@ -696,13 +696,13 @@ void InputDialog::eraseEEPROM()
 
   if(lport.type() == Controller::Type::SaveKey || lport.type() == Controller::Type::AtariVox)
   {
-    SaveKey& skey = static_cast<SaveKey&>(lport);
+    auto& skey = static_cast<SaveKey&>(lport);
     skey.eraseCurrent();
   }
 
   if(rport.type() == Controller::Type::SaveKey || rport.type() == Controller::Type::AtariVox)
   {
-    SaveKey& skey = static_cast<SaveKey&>(rport);
+    auto& skey = static_cast<SaveKey&>(rport);
     skey.eraseCurrent();
   }
 }
@@ -728,18 +728,20 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kDDeadzoneChanged:
-      myDigitalDeadzone->setValueLabel(std::round(Controller::digitalDeadZoneValue(myDigitalDeadzone->getValue()) * 100.f /
-                                       (Paddles::ANALOG_RANGE / 2)));
+      myDigitalDeadzone->setValueLabel(std::round(
+          Controller::digitalDeadZoneValue(myDigitalDeadzone->getValue()) *
+          100.F / (Paddles::ANALOG_RANGE / 2)));  // NOLINT
       break;
 
     case kADeadzoneChanged:
-      myAnalogDeadzone->setValueLabel(std::round(Controller::analogDeadZoneValue(myAnalogDeadzone->getValue()) * 100.f /
-                                      (Paddles::ANALOG_RANGE / 2)));
+      myAnalogDeadzone->setValueLabel(std::round(
+          Controller::analogDeadZoneValue(myAnalogDeadzone->getValue()) *
+          100.F / (Paddles::ANALOG_RANGE / 2)));  // NOLINT
       break;
 
     case kPSpeedChanged:
       myPaddleSpeed->setValueLabel(std::round(Paddles::setAnalogSensitivity(
-            myPaddleSpeed->getValue()) * 100.F));
+          myPaddleSpeed->getValue()) * 100.F));
       break;
 
     case kDejitterAvChanged:

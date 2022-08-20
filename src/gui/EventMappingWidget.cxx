@@ -128,8 +128,7 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
   // Show message for currently selected event
   xpos = HBORDER;
   ypos = myActionsList->getBottom() + VGAP * 2;
-  StaticTextWidget* t;
-  t = new StaticTextWidget(boss, font, xpos, ypos+2, "Action");
+  auto* t = new StaticTextWidget(boss, font, xpos, ypos+2, "Action");
 
   myKeyMapping = new EditTextWidget(boss, font, xpos + t->getWidth() + fontWidth, ypos,
                                     _w - xpos - t->getWidth() - fontWidth - HBORDER + 2,

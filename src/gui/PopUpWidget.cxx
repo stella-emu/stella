@@ -300,7 +300,11 @@ void PopUpWidget::drawWidget(bool hilite)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Common::Rect PopUpWidget::getEditRect() const
 {
-  return Common::Rect(_labelWidth + _textOfs, 1, _w - _textOfs - dropDownWidth(_font), _h);
+  return {
+    static_cast<uInt32>(_labelWidth + _textOfs), 1,
+    static_cast<uInt32>(_w - _textOfs - dropDownWidth(_font)),
+    static_cast<uInt32>(_h)
+  };
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -140,7 +140,7 @@ static void MD5Update(MD5_CTX* context, const uInt8* const input,
   uInt32 i = 0;
 
   /* Compute number of bytes mod 64 */
-  uInt32 index = static_cast<uInt32>((context->count[0] >> 3) & 0x3F);
+  auto index = static_cast<uInt32>((context->count[0] >> 3) & 0x3F);
 
   /* Update number of bits */
   if ((context->count[0] += (inputLen << 3)) < (inputLen << 3))
@@ -176,7 +176,7 @@ static void MD5Final(uInt8 digest[16], MD5_CTX* context)
   Encode (bits, context->count, 8);
 
   /* Pad out to 56 mod 64. */
-  const uInt32 index = static_cast<uInt32>((context->count[0] >> 3) & 0x3f);
+  const auto index = static_cast<uInt32>((context->count[0] >> 3) & 0x3f);
   const uInt32 padLen = (index < 56) ? (56 - index) : (120 - index);
   MD5Update (context, PADDING, padLen);
 
@@ -320,17 +320,17 @@ string hash(const uInt8* buffer, size_t length)
   static constexpr char hex[] = "0123456789abcdef";
   MD5_CTX context{};
   uInt8 md5[16] = {0};
-  const uInt32 len32 = static_cast<uInt32>(length);  // Always use 32-bit for now
+  const auto len32 = static_cast<uInt32>(length);  // Always use 32-bit for now
 
   MD5Init(&context);
   MD5Update(&context, buffer, len32);
   MD5Final(md5, &context);
 
   string result;
-  for(int t = 0; t < 16; ++t)
+  for(auto c: md5)
   {
-    result += hex[(md5[t] >> 4) & 0x0f];
-    result += hex[md5[t] & 0x0f];
+    result += hex[(c >> 4) & 0x0f];
+    result += hex[c & 0x0f];
   }
 
   return result;

@@ -141,5 +141,8 @@ void StringListWidget::drawWidget(bool hilite)
 Common::Rect StringListWidget::getEditRect() const
 {
   const int offset = std::max(0, (_selectedItem - _currentPos) * _lineHeight);
-  return Common::Rect(_textOfs, 1 + offset, _w - _textOfs, _lineHeight + offset);
+  return {
+    static_cast<uInt32>(_textOfs), static_cast<uInt32>(1 + offset),
+    static_cast<uInt32>(_w - _textOfs), static_cast<uInt32>(_lineHeight + offset)
+  };
 }

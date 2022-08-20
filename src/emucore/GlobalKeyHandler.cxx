@@ -67,7 +67,7 @@ bool GlobalKeyHandler::handleEvent(const Event::Type event, bool pressed, bool r
       if(pressed && !repeated)
       {
         const int direction = (event == Event::PreviousSettingGroup ? -1 : +1);
-        const Group group = static_cast<Group>(
+        const auto group = static_cast<Group>(
             BSPF::clampw(static_cast<int>(getGroup()) + direction,
             0, static_cast<int>(Group::NUM_GROUPS) - 1));
         const std::map<Group, GroupData> GroupMap = {

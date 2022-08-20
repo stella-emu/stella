@@ -123,7 +123,7 @@ void DiStella::disasm(uInt32 distart, int pass)
     // and this results into an access at e.g. 0xffff,
     // we have to fix the consequences here (ugly!).
     if(myPC == myAppData.end)
-      goto FIX_LAST;
+      goto FIX_LAST;  // NOLINT
 
     if(checkBits(myPC, Device::GFX | Device::PGFX,
        Device::CODE))
@@ -1038,7 +1038,7 @@ void DiStella::addEntry(Device::AccessType type)
 
   // Only include addresses within the requested range
   if (tag.address < myAppData.start)
-    goto DONE_WITH_ADD;
+    goto DONE_WITH_ADD;  // NOLINT
 
   // Label (a user-defined label always overrides any auto-generated one)
   myDisasmBuf.seekg(5, std::ios::beg);

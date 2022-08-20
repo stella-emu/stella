@@ -23,7 +23,6 @@
 #include "TIADebug.hxx"
 #include "Widget.hxx"
 #include "Base.hxx"
-using Common::Base;
 
 #include "AudioWidget.hxx"
 
@@ -102,8 +101,8 @@ void AudioWidget::loadConfig()
 
   const Debugger& dbg = instance().debugger();
   TIADebug& tia = dbg.tiaDebug();
-  const TiaState& state    = static_cast<const TiaState&>(tia.getState());
-  const TiaState& oldstate = static_cast<const TiaState&>(tia.getOldState());
+  const auto& state    = static_cast<const TiaState&>(tia.getState());
+  const auto& oldstate = static_cast<const TiaState&>(tia.getOldState());
 
   // AUDF0/1
   alist.clear();  vlist.clear();  changed.clear();

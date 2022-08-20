@@ -100,27 +100,27 @@ void CartridgeEnhanced::install(System& system)
     // Set the page accessing method for the RAM writing pages
     // Note: Writes are mapped to poke() (NOT using directPokeBase) to check for read from write port (RWP)
     access.type = System::PageAccessType::WRITE;
-    for(uInt16 addr = ROM_OFFSET + myWriteOffset; addr < ROM_OFFSET + myWriteOffset + myRamSize; addr += System::PAGE_SIZE)
+    for(size_t addr = ROM_OFFSET + myWriteOffset; addr < ROM_OFFSET + myWriteOffset + myRamSize; addr += System::PAGE_SIZE)
     {
       const uInt16 offset = addr & myRamMask;
 
       access.romAccessBase = &myRomAccessBase[myWriteOffset + offset];
       access.romPeekCounter = &myRomAccessCounter[myWriteOffset + offset];
       access.romPokeCounter = &myRomAccessCounter[myWriteOffset + offset + myAccessSize];
-      mySystem->setPageAccess(addr, access);
+      mySystem->setPageAccess(static_cast<uInt16>(addr), access);
     }
 
     // Set the page accessing method for the RAM reading pages
     access.type = System::PageAccessType::READ;
-    for(uInt16 addr = ROM_OFFSET + myReadOffset; addr < ROM_OFFSET + myReadOffset + myRamSize; addr += System::PAGE_SIZE)
+    for(size_t addr = ROM_OFFSET + myReadOffset; addr < ROM_OFFSET + myReadOffset + myRamSize; addr += System::PAGE_SIZE)
     {
-      const uInt16 offset = addr & myRamMask;
+      const size_t offset = addr & myRamMask;
 
       access.directPeekBase = &myRAM[offset];
       access.romAccessBase = &myRomAccessBase[myReadOffset + offset];
       access.romPeekCounter = &myRomAccessCounter[myReadOffset + offset];
       access.romPokeCounter = &myRomAccessCounter[myReadOffset + offset + myAccessSize];
-      mySystem->setPageAccess(addr, access);
+      mySystem->setPageAccess(static_cast<uInt16>(addr), access);
     }
   }
 
@@ -221,7 +221,7 @@ bool CartridgeEnhanced::poke(uInt16 address, uInt8 value)
       }
     }
     // Writing to the read port should be ignored, but trigger a break if option enabled
-    uInt8 dummy;
+    uInt8 dummy{0};
 
     pokeRAM(dummy, pokeAddress, value);
     myRamWriteAccess = pokeAddress;

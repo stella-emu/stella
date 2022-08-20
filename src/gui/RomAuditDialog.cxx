@@ -57,9 +57,8 @@ RomAuditDialog::RomAuditDialog(OSystem& osystem, DialogContainer& parent,
   _h = _th + VBORDER * 2 + buttonHeight * 2 + lineHeight * 3 + VGAP * 10;
 
   // Audit path
-  ButtonWidget* romButton =
-    new ButtonWidget(this, font, HBORDER, ypos, buttonWidth, buttonHeight,
-                     "Audit path" + ELLIPSIS, kChooseAuditDirCmd);
+  auto* romButton = new ButtonWidget(this, font, HBORDER, ypos,
+      buttonWidth, buttonHeight, "Audit path" + ELLIPSIS, kChooseAuditDirCmd);
   wid.push_back(romButton);
   myRomPath = new EditTextWidget(this, font, xpos, ypos + (buttonHeight - lineHeight) / 2 - 1,
                                  _w - xpos - HBORDER, lineHeight);
@@ -88,7 +87,7 @@ RomAuditDialog::RomAuditDialog(OSystem& osystem, DialogContainer& parent,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-RomAuditDialog::~RomAuditDialog()
+RomAuditDialog::~RomAuditDialog()  // NOLINT (we need an empty d'tor)
 {
 }
 

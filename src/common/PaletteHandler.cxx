@@ -389,7 +389,7 @@ PaletteArray PaletteHandler::adjustedPalette(const PaletteArray& palette)
     // Fill the odd numbered palette entries with gray values (calculated
     // using the standard RGB -> grayscale conversion formula)
     // Used for PAL color-loss data and 'greying out' the frame in the debugger.
-    const uInt8 lum = static_cast<uInt8>((r * PR) + (g * PG) + (b * PB));
+    const auto lum = static_cast<uInt8>((r * PR) + (g * PG) + (b * PB));
 
     destPalette[i + 1] = (lum << 16) + (lum << 8) + lum;
   }

@@ -24,5 +24,5 @@ Cartridge3EX::Cartridge3EX(const ByteBuffer& image, size_t size,
 {
   // 0xFFFA contains RAM bank count - 1;
   myRamBankCount = image[size - 6] + 1;
-  myRamSize = (myBankSize >> 1) * myRamBankCount;
+  myRamSize = (myBankSize >> 1) * myRamBankCount;  // NOLINT
 }

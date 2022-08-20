@@ -94,12 +94,12 @@ inline void CartridgeDPC::clockRandomNumberGenerator()
 inline void CartridgeDPC::updateMusicModeDataFetchers()
 {
   // Calculate the number of cycles since the last update
-  const uInt32 cycles = static_cast<uInt32>(mySystem->cycles() - myAudioCycles);
+  const auto cycles = static_cast<uInt32>(mySystem->cycles() - myAudioCycles);
   myAudioCycles = mySystem->cycles();
 
   // Calculate the number of DPC OSC clocks since the last update
   const double clocks = ((myDpcPitch * cycles) / myClockRate) + myFractionalClocks;
-  const uInt32 wholeClocks = static_cast<uInt32>(clocks);
+  const auto wholeClocks = static_cast<uInt32>(clocks);
   myFractionalClocks = clocks - static_cast<double>(wholeClocks);
 
   if(wholeClocks == 0)
@@ -112,7 +112,7 @@ inline void CartridgeDPC::updateMusicModeDataFetchers()
     if(myMusicMode[x - 5])
     {
       const Int32 top = myTops[x] + 1;
-      Int32 newLow = static_cast<Int32>(myCounters[x] & 0x00ff);
+      auto newLow = static_cast<Int32>(myCounters[x] & 0x00ff);
 
       if(myTops[x] != 0)
       {

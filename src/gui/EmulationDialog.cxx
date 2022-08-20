@@ -140,9 +140,8 @@ EmulationDialog::EmulationDialog(OSystem& osystem, DialogContainer& parent,
                        "When entering/exiting emulation:");
   ypos += lineHeight + VGAP;
   mySaveOnExitGroup = new RadioButtonGroup();
-  RadioButtonWidget* r;
-  r = new RadioButtonWidget(this, font, xpos, ypos + 1,
-                            "Do nothing", mySaveOnExitGroup);
+  auto* r = new RadioButtonWidget(this, font, xpos, ypos + 1,
+                                  "Do nothing", mySaveOnExitGroup);
   wid.push_back(r);
   ypos += lineHeight + VGAP;
   r = new RadioButtonWidget(this, font, xpos, ypos + 1,
@@ -159,7 +158,6 @@ EmulationDialog::EmulationDialog(OSystem& osystem, DialogContainer& parent,
   myAutoSlotWidget = new CheckboxWidget(this, font, xpos, ypos + 1, "Automatically change save state slots");
   myAutoSlotWidget->setToolTip("Cycle to next state slot after saving.", Event::ToggleAutoSlot);
   wid.push_back(myAutoSlotWidget);
-  ypos += lineHeight + VGAP;
 
   // Add Defaults, OK and Cancel buttons
   addDefaultsOKCancelBGroup(wid, font);

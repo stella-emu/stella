@@ -28,7 +28,7 @@ namespace {
         {}
 
         std::map<string, Variant> load() override {
-          if (!myKvr.has(myKey)) return std::map<string, Variant>();
+          if (!myKvr.has(myKey)) return {};
 
           Variant serialized;
           myKvr.get(myKey, serialized);

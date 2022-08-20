@@ -174,11 +174,11 @@ void FBBackendSDL2::queryHardware(vector<Common::Size>& fullscreenRes,
     {
       // Map SDL names into nicer Stella names (if available)
       bool found = false;
-      for(size_t j = 0; j < RENDERER_NAMES.size(); ++j)
+      for(const auto& render: RENDERER_NAMES)
       {
-        if(RENDERER_NAMES[j].sdlName == info.name)
+        if(render.sdlName == info.name)
         {
-          VarList::push_back(renderers, RENDERER_NAMES[j].stellaName, info.name);
+          VarList::push_back(renderers, render.stellaName, info.name);
           found = true;
           break;
         }
@@ -284,7 +284,7 @@ bool FBBackendSDL2::setVideoMode(const VideoModeHandler::Mode& mode,
   if(myWindow)
   {
     const int d = SDL_GetWindowDisplayIndex(myWindow);
-    int w, h;
+    int w{0}, h{0};
 
     SDL_GetWindowSize(myWindow, &w, &h);
     if(d != displayIndex || static_cast<uInt32>(w) != mode.screenS.w ||
@@ -567,7 +567,7 @@ unique_ptr<FBSurface> FBBackendSDL2::createSurface(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBBackendSDL2::readPixels(uInt8* pixels, uInt32 pitch,
+void FBBackendSDL2::readPixels(uInt8* pixels, size_t pitch,
                                const Common::Rect& rect) const
 {
   ASSERT_MAIN_THREAD;
@@ -576,7 +576,7 @@ void FBBackendSDL2::readPixels(uInt8* pixels, uInt32 pitch,
   r.x = rect.x();  r.y = rect.y();
   r.w = rect.w();  r.h = rect.h();
 
-  SDL_RenderReadPixels(myRenderer, &r, 0, pixels, pitch);
+  SDL_RenderReadPixels(myRenderer, &r, 0, pixels, static_cast<int>(pitch));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

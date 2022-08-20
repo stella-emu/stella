@@ -34,7 +34,7 @@ Cartridge3EPlusWidget::Cartridge3EPlusWidget(
 string Cartridge3EPlusWidget::description()
 {
   ostringstream info;
-  size_t size;
+  size_t size{0};
   const ByteBuffer& image = myCart.getImage(size);
   const uInt16 numRomBanks = myCart.romBankCount();
   const uInt16 numRamBanks = myCart.ramBankCount();
@@ -59,7 +59,7 @@ string Cartridge3EPlusWidget::description()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge3EPlusWidget::bankSelect(int& ypos)
 {
-  size_t size;
+  size_t size{0};
   const ByteBuffer& image = myCart.getImage(size);
   const int VGAP = myFontHeight / 4;
   VariantList banktype;
@@ -118,22 +118,24 @@ void Cartridge3EPlusWidget::bankSelect(int& ypos)
     const int addr1 = start + (seg * 0x400), addr2 = addr1 + 0x200;
 
     label.str("");
-    label << "$" << Common::Base::HEX4 << addr1 << "-$" << Common::Base::HEX4 << (addr1 + 0x1FF);
-    StaticTextWidget* t = new StaticTextWidget(_boss, _font, xpos_s, ypos_s + 2, label.str());
+    label << "$" << Common::Base::HEX4 << addr1 << "-$"
+          << Common::Base::HEX4 << (addr1 + 0x1FF);
+    auto* t = new StaticTextWidget(_boss, _font, xpos_s, ypos_s + 2, label.str());
 
     const int xoffset = t->getRight() + _font.getMaxCharWidth();
-    myBankState[2 * seg] = new EditTextWidget(_boss, _font, xoffset, ypos_s,
-                                              _w - xoffset - 10, myLineHeight, "");
-    myBankState[2 * seg]->setEditable(false, true);
+    const size_t bank_off = static_cast<size_t>(seg) * 2;
+    myBankState[bank_off] = new EditTextWidget(_boss, _font, xoffset, ypos_s,
+                                               _w - xoffset - 10, myLineHeight, "");
+    myBankState[bank_off]->setEditable(false, true);
     ypos_s += myLineHeight + VGAP;
 
     label.str("");
     label << "$" << Common::Base::HEX4 << addr2 << "-$" << Common::Base::HEX4 << (addr2 + 0x1FF);
     new StaticTextWidget(_boss, _font, xpos_s, ypos_s + 2, label.str());
 
-    myBankState[2 * seg + 1] = new EditTextWidget(_boss, _font, xoffset, ypos_s,
-                                                  _w - xoffset - 10, myLineHeight, "");
-    myBankState[2 * seg + 1]->setEditable(false, true);
+    myBankState[bank_off + 1] = new EditTextWidget(_boss, _font,
+        xoffset, ypos_s, _w - xoffset - 10, myLineHeight, "");
+    myBankState[bank_off + 1]->setEditable(false, true);
 
     ypos += myLineHeight + VGAP * 4;
   }
@@ -198,6 +200,7 @@ void Cartridge3EPlusWidget::updateUIState()
   for(int seg = 0; seg < myCart3EP.myBankSegs; ++seg)
   {
     const uInt16 bank = myCart.getSegmentBank(seg);
+    const size_t bank_off = static_cast<size_t>(seg) * 2;
     ostringstream buf;
 
     if(bank >= myCart.romBankCount()) // was RAM mapped here?
@@ -205,13 +208,13 @@ void Cartridge3EPlusWidget::updateUIState()
       const uInt16 ramBank = bank - myCart.romBankCount();
 
       buf << "RAM @ $" << Common::Base::HEX4
-        << (ramBank << myCart3EP.myBankShift) << " (R)";
-      myBankState[seg * 2]->setText(buf.str());
+          << (ramBank << myCart3EP.myBankShift) << " (R)";
+      myBankState[bank_off]->setText(buf.str());
 
       buf.str("");
       buf << "RAM @ $" << Common::Base::HEX4
         << ((ramBank << myCart3EP.myBankShift) + myCart3EP.myBankSize) << " (W)";
-      myBankState[seg * 2 + 1]->setText(buf.str());
+      myBankState[bank_off + 1]->setText(buf.str());
 
       myBankWidgets[seg]->setSelectedIndex(ramBank);
       myBankType[seg]->setSelected("RAM");
@@ -220,12 +223,12 @@ void Cartridge3EPlusWidget::updateUIState()
     {
       buf << "ROM @ $" << Common::Base::HEX4
         << ((bank << myCart3EP.myBankShift));
-      myBankState[seg * 2]->setText(buf.str());
+      myBankState[bank_off]->setText(buf.str());
 
       buf.str("");
       buf << "ROM @ $" << Common::Base::HEX4
         << ((bank << myCart3EP.myBankShift) + myCart3EP.myBankSize);
-      myBankState[seg * 2 + 1]->setText(buf.str());
+      myBankState[bank_off + 1]->setText(buf.str());
 
       myBankWidgets[seg]->setSelectedIndex(bank);
       myBankType[seg]->setSelected("ROM");

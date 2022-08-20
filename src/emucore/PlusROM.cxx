@@ -48,14 +48,16 @@ class PlusROMRequest {
   public:
 
     struct Destination {
-      Destination(string _host, string _path) : host{_host}, path{_path} {}
+      Destination(const string& _host, const string& _path)
+        : host{_host}, path{_path} {}
 
       string host;
       string path;
     };
 
     struct PlusStoreId {
-      PlusStoreId(string _nick, string _id) : nick{_nick}, id{_id} {}
+      PlusStoreId(const string& _nick, const string& _id)
+        : nick{_nick}, id{_id} {}
 
       string nick;
       string id;
@@ -70,13 +72,14 @@ class PlusROMRequest {
 
   public:
 
-    PlusROMRequest(Destination destination, PlusStoreId id, const uInt8* request,
-                   uInt8 requestSize)
+    PlusROMRequest(const Destination& destination, const PlusStoreId& id,
+                   const uInt8* request, uInt8 requestSize)
       : myState{State::created}, myDestination{destination},
         myId{id}, myRequestSize{requestSize}
     {
       memcpy(myRequest.data(), request, myRequestSize);
     }
+    ~PlusROMRequest() = default;
 
   #if defined(HTTP_LIB_SUPPORT)
     void execute() {
@@ -153,16 +156,16 @@ class PlusROMRequest {
       myState = State::done;
     }
 
-    State getState() const {
+    [[nodiscard]] State getState() const {
       return myState;
     }
 
-    const Destination& getDestination() const
+    [[nodiscard]] const Destination& getDestination() const
     {
       return myDestination;
     }
 
-    const PlusStoreId& getPlusStoreId() const
+    [[nodiscard]] const PlusStoreId& getPlusStoreId() const
     {
       return myId;
     }
@@ -170,10 +173,10 @@ class PlusROMRequest {
     std::pair<size_t, const uInt8*> getResponse() {
       if (myState != State::done) throw runtime_error("invalid access to response");
 
-      return std::pair<size_t, const uInt8*>(
+      return {
         myResponse.size() - 1,
         myResponse.size() > 1 ? reinterpret_cast<const uInt8*>(myResponse.data() + 1) : nullptr
-      );
+      };
     }
   #endif
 

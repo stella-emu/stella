@@ -140,8 +140,8 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
 const DebuggerState& CartDebug::getState()
 {
   myState.ram.clear();
-  for(uInt32 i = 0; i < myState.rport.size(); ++i)
-    myState.ram.push_back(myDebugger.peek(myState.rport[i]));
+  for(auto addr: myState.rport)
+    myState.ram.push_back(myDebugger.peek(addr));
 
   if(myDebugWidget)
     myState.bank = myDebugWidget->bankState();
@@ -153,8 +153,8 @@ const DebuggerState& CartDebug::getState()
 void CartDebug::saveOldState()
 {
   myOldState.ram.clear();
-  for(uInt32 i = 0; i < myOldState.rport.size(); ++i)
-    myOldState.ram.push_back(myDebugger.peek(myOldState.rport[i]));
+  for(auto addr: myOldState.rport)
+    myOldState.ram.push_back(myDebugger.peek(addr));
 
   if(myDebugWidget)
   {
@@ -209,8 +209,8 @@ string CartDebug::toString()
       return DebuggerParser::red("invalid base, this is a BUG");
   }
 
-  const CartState& state    = static_cast<const CartState&>(getState());
-  const CartState& oldstate = static_cast<const CartState&>(getOldState());
+  const auto& state    = static_cast<const CartState&>(getState());
+  const auto& oldstate = static_cast<const CartState&>(getOldState());
 
   uInt32 curraddr = 0, bytesSoFar = 0;
   for(uInt32 i = 0; i < state.ram.size(); i += bytesPerLine, bytesSoFar += bytesPerLine)
@@ -221,7 +221,7 @@ string CartDebug::toString()
     if(state.rport[i] - curraddr > bytesPerLine || bytesSoFar >= 256)
     {
       char port[37];  // NOLINT (convert to stringstream)
-      std::snprintf(port, 36, "%04x: (rport = %04x, wport = %04x)\n",
+      std::ignore = std::snprintf(port, 36, "%04x: (rport = %04x, wport = %04x)\n",
               state.rport[i], state.rport[i], state.wport[i]);
       port[2] = port[3] = 'x';
       buf << DebuggerParser::red(port);
@@ -260,14 +260,10 @@ bool CartDebug::disassembleAddr(uInt16 address, bool force)
       const int bank = cart.getSegmentBank(seg);
       Disassembly disassembly;
       AddrToLineList addrToLineList;
-      uInt16 segAddress;
       BankInfo& info = myBankInfo[bank];
 
       info.offset = cart.bankOrigin(bank) | cart.bankSize() * seg;
-      if(bank == addrBank)
-        segAddress = address;
-      else
-        segAddress = info.offset;
+      const uInt16 segAddress = bank == addrBank ? address : info.offset;
       // Disassemble segment
       const bool newChanged = disassemble(bank, segAddress, disassembly, addrToLineList, force);
 
@@ -388,7 +384,7 @@ bool CartDebug::fillDisassemblyList(BankInfo& info, Disassembly& disassembly,
 
   disassembly.fieldwidth = 24 + myLabelLength;
   // line offset must be set before calling DiStella!
-  uInt32 lineOfs = static_cast<uInt32>(myDisassembly.list.size());
+  auto lineOfs = static_cast<uInt32>(myDisassembly.list.size());
   DiStella distella(*this, disassembly.list, info, DiStella::settings,
                     myDisLabels, myDisDirectives, myReserved);
 
@@ -569,7 +565,7 @@ bool CartDebug::addDirective(Device::AccessType type,
       // Can we also merge with the previous range (if any)?
       if(i != list.begin())
       {
-        DirectiveList::iterator p = i;
+        auto p = i;
         --p;
         if(p->type == tag.type && p->end + 1 == tag.start)
         {
@@ -1164,9 +1160,9 @@ string CartDebug::saveDisassembly(string path)
     origin += static_cast<uInt32>(info.size);
 
     // Format in 'distella' style
-    for(uInt32 i = 0; i < disasm.list.size(); ++i)
+    for(const auto& dt: disasm.list)
     {
-      const DisassemblyTag& tag = disasm.list[i];
+      const DisassemblyTag& tag = dt;
 
       // Add label (if any)
       if(tag.label != "")

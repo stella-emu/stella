@@ -68,8 +68,8 @@ void CartridgeARMWidget::addCycleWidgets(int xpos, int ypos)
   myThumbCycles->setEditable(false);
   myThumbCycles->setToolTip("Approximated CPU cycles of last ARM run.\n");
 
-  StaticTextWidget* s = new StaticTextWidget(_boss, _font, myCycleFactor->getLeft(), ypos + 1,
-                                             "Instructions #");
+  auto* s = new StaticTextWidget(_boss, _font, myCycleFactor->getLeft(), ypos + 1,
+                                 "Instructions #");
 
   myPrevThumbInstructions = new DataGridWidget(_boss, _font, s->getRight(), ypos - 1,
                                                1, 1, 6, 32, Common::Base::Fmt::_10_6);

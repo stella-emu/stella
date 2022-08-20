@@ -171,7 +171,7 @@ class FrameBuffer
 
       @param surface  The surface to remove/deallocate
     */
-    void deallocateSurface(shared_ptr<FBSurface> surface);
+    void deallocateSurface(const shared_ptr<FBSurface>& surface);
 
     /**
       Set up the TIA/emulation palette.  Due to the way the palette is stored,
@@ -370,7 +370,7 @@ class FrameBuffer
       @param pitch   The pitch (in bytes) for the pixel data
       @param rect    The bounding rectangle for the buffer
     */
-    void readPixels(uInt8* buffer, uInt32 pitch, const Common::Rect& rect) const {
+    void readPixels(uInt8* buffer, size_t pitch, const Common::Rect& rect) const {
       myBackend->readPixels(buffer, pitch, rect);
     }
 

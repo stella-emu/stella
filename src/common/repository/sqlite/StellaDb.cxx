@@ -201,7 +201,7 @@ void StellaDb::importOldPropset(const FSNode& node)
 void StellaDb::migrate()
 {
   const Int32 version = myDb->getUserVersion();
-  switch (version) {
+  switch (version) {  // NOLINT (could be written as IF/ELSE)
     case 1:
       return;
 

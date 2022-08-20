@@ -25,7 +25,7 @@ using json = nlohmann::json;
 namespace {
   json serializeModkeyMask(int mask)
   {
-    if(mask == StellaMod::KBDM_NONE) return json(nullptr);
+    if(mask == StellaMod::KBDM_NONE) return {};
 
     json serializedMask = json::array();
 

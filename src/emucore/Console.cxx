@@ -173,7 +173,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   setControllers(md5);
 
   // Mute audio and clear framebuffer while autodetection runs
-  myOSystem.sound().mute(1);
+  myOSystem.sound().mute(true);
   myOSystem.frameBuffer().clear();
 
   if(myDisplayFormat == "AUTO" || myOSystem.settings().getBool("rominfo"))
@@ -360,13 +360,13 @@ string Console::formatFromFilename() const
 
   // Get filename, and search using regex's above
   const string& filename = myOSystem.romFile().getName();
-  for(size_t i = 0; i < Pattern.size(); ++i)
+  for(const auto& pat: Pattern)
   {
     try
     {
-      std::regex rgx(Pattern[i][0], std::regex_constants::icase);
+      std::regex rgx(pat[0], std::regex_constants::icase);
       if(std::regex_search(filename, rgx))
-        return Pattern[i][1];
+        return pat[1];
     }
     catch(...)
     {
@@ -1129,7 +1129,7 @@ void Console::changePaddleAxesRange(int direction)
 {
   istringstream m_axis(myProperties.get(PropType::Controller_MouseAxis));
   string mode = "AUTO";
-  int range;
+  int range{0};
 
   m_axis >> mode;
   if(!(m_axis >> range))

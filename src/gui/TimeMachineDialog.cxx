@@ -33,7 +33,6 @@
 
 #include "TimeMachineDialog.hxx"
 #include "Base.hxx"
-using Common::Base;
 
 static constexpr int BUTTON_W = 14, BUTTON_H = 14;
 
@@ -498,17 +497,18 @@ void TimeMachineDialog::initBar()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string TimeMachineDialog::getTimeString(uInt64 cycles) const
 {
-  const Int32 scanlines = std::max<Int32>(instance().console().tia().scanlinesLastFrame(), 240);
+  const size_t scanlines =
+      std::max<size_t>(instance().console().tia().scanlinesLastFrame(), 240);
   const bool isNTSC = scanlines <= 287;
-  constexpr Int32 NTSC_FREQ = 1193182; // ~76*262*60
-  constexpr Int32 PAL_FREQ  = 1182298; // ~76*312*50
-  const Int32 freq = isNTSC ? NTSC_FREQ : PAL_FREQ; // = cycles/second
+  constexpr size_t NTSC_FREQ = 1193182; // ~76*262*60
+  constexpr size_t PAL_FREQ  = 1182298; // ~76*312*50
+  const size_t freq = isNTSC ? NTSC_FREQ : PAL_FREQ; // = cycles/second
 
-  const uInt32 minutes = static_cast<uInt32>(cycles / (freq * 60));
+  const auto minutes = static_cast<uInt32>(cycles / (freq * 60));
   cycles -= minutes * (freq * 60);
-  const uInt32 seconds = static_cast<uInt32>(cycles / freq);
+  const auto seconds = static_cast<uInt32>(cycles / freq);
   cycles -= seconds * freq;
-  const uInt32 frames = static_cast<uInt32>(cycles / (scanlines * 76));
+  const auto frames  = static_cast<uInt32>(cycles / (scanlines * 76));
 
   stringstream time;
   time << Common::Base::toString(minutes, Common::Base::Fmt::_10_02) << ":";

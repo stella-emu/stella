@@ -382,10 +382,9 @@ void PromptWidget::loadConfig()
     // fill the history from the saved breaks, traps and watches commands
     StringList history;
     print(instance().debugger().autoExec(&history));
-    for(uInt32 i = 0; i < history.size(); ++i)
-    {
-      addToHistory(history[i].c_str());
-    }
+    for(const auto& h: history)
+      addToHistory(h.c_str());
+
     history.clear();
     print(instance().debugger().cartDebug().loadConfigFile() + "\n");
     print(instance().debugger().cartDebug().loadListFile() + "\n");
@@ -595,11 +594,11 @@ void PromptWidget::addToHistory(const char* str)
 
       if(!BSPF::compareIgnoreCase(_history[i], str))
       {
-        int j = i, prevJ;
+        int j = i;
 
         do
         {
-          prevJ = j;
+          int prevJ = j;
           historyDir(j, +1);
           _history[prevJ] = _history[j];
         }

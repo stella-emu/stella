@@ -156,18 +156,18 @@ string ZipHandler::errorMessage(ZipError err)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ZipHandler::ZipFilePtr ZipHandler::findCached(const string& filename)
 {
-  for(size_t cachenum = 0; cachenum < myZipCache.size(); ++cachenum)
+  for(auto& cache: myZipCache)
   {
     // If we have a valid entry and it matches our filename,
     // use it and remove from the cache
-    if(myZipCache[cachenum] && (filename == myZipCache[cachenum]->myFilename))
+    if(cache && (filename == cache->myFilename))
     {
       ZipFilePtr result;
-      std::swap(myZipCache[cachenum], result);
+      std::swap(cache, result);
       return result;
     }
   }
-  return ZipFilePtr();
+  return {};
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -180,7 +180,7 @@ void ZipHandler::addToCache()
   myZip->close();
 
   // Find the first nullptr entry in the cache
-  size_t cachenum;
+  size_t cachenum{0};
   for(cachenum = 0; cachenum < myZipCache.size(); ++cachenum)
     if(myZipCache[cachenum] == nullptr)
       break;
