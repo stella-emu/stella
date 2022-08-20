@@ -35,7 +35,8 @@ class RomInfoWidget : public Widget, public CommandSender
                   int x, int y, int w, int h);
     ~RomInfoWidget() override = default;
 
-    void setProperties(const FSNode& node, const Properties properties, bool full = true);
+    void setProperties(const FSNode& node, const Properties& properties,
+                       bool full = true);
     void clearProperties();
     void reloadProperties(const FSNode& node);
 

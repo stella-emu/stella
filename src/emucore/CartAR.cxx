@@ -24,7 +24,7 @@
 CartridgeAR::CartridgeAR(const ByteBuffer& image, size_t size,
                          const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
-    mySize{std::max<size_t>(size, LOAD_SIZE)}
+    mySize{std::max(size, LOAD_SIZE)}
 {
   // Create a load image buffer and copy the given image
   myLoadImages = make_unique<uInt8[]>(mySize);
@@ -291,39 +291,43 @@ uInt8 CartridgeAR::checksum(const uInt8* s, uInt16 length)
 void CartridgeAR::loadIntoRAM(uInt8 load)
 {
   bool success = true;
-  uInt16 image;
 
   // Scan through all of the loads to see if we find the one we're looking for
-  for(image = 0; image < myNumberOfLoadImages; ++image)
+  for(uInt16 image = 0; image < myNumberOfLoadImages; ++image)
   {
+    const size_t image_off = image * LOAD_SIZE;
+
     // Is this the correct load?
-    if(myLoadImages[(image * LOAD_SIZE) + myImage.size() + 5] == load)
+    if(myLoadImages[image_off + myImage.size() + 5] == load)
     {
       // Copy the load's header
-      std::copy_n(myLoadImages.get() + (image * LOAD_SIZE) + myImage.size(), myHeader.size(), myHeader.data());
+      std::copy_n(myLoadImages.get() + image_off + myImage.size(),
+                  myHeader.size(), myHeader.data());
 
       // Verify the load's header
       if(checksum(myHeader.data(), 8) != 0x55)
       {
         cerr << "WARNING: The Supercharger header checksum is invalid...\n";
-        myMsgCallback("Supercharger load #" + std::to_string(load) + " done with hearder checksum error");
+        myMsgCallback("Supercharger load #" + std::to_string(load) +
+                      " done with hearder checksum error");
         success = false;
       }
 
       // Load all of the pages from the load
       bool invalidPageChecksumSeen = false;
-      for(uInt32 j = 0; j < myHeader[3]; ++j)
+      for(size_t j = 0; j < myHeader[3]; ++j)
       {
-        uInt32 bank = myHeader[16 + j] & 0b00011;
-        uInt32 page = (myHeader[16 + j] & 0b11100) >> 2;
-        const uInt8* const src = myLoadImages.get() + (image * LOAD_SIZE) + (j * 256);
+        const size_t bank = myHeader[16 + j] & 0b00011;
+        const size_t page = (myHeader[16 + j] & 0b11100) >> 2;
+        const uInt8* const src = myLoadImages.get() + image_off + j * 256;
         const uInt8 sum = checksum(src, 256) + myHeader[16 + j] + myHeader[64 + j];
 
         if(!invalidPageChecksumSeen && (sum != 0x55))
         {
           cerr << "WARNING: Some Supercharger page checksums are invalid...\n";
-          myMsgCallback("Supercharger load #" + std::to_string(load) + " done with page #"
-                           + std::to_string(j) + " checksum error");
+          myMsgCallback("Supercharger load #" + std::to_string(load) +
+                        " done with page #" + std::to_string(j) +
+                        " checksum error");
           invalidPageChecksumSeen = true;
         }
 

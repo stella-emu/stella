@@ -236,7 +236,7 @@ int DebuggerParser::decipher_arg(const string& str)
   }
 
   // Special cases (registers):
-  const CpuState& state = static_cast<const CpuState&>(debugger.cpuDebug().getState());
+  const auto& state = static_cast<const CpuState&>(debugger.cpuDebug().getState());
   int result = 0;
   if(arg == "a" && str != "$a") result = state.A;
   else if(arg == "x") result = state.X;
@@ -488,7 +488,9 @@ bool DebuggerParser::validateArgs(int cmd)
         if(curArgInt != 2 && curArgInt != 10 && curArgInt != 16
            && curArgStr != "hex" && curArgStr != "dec" && curArgStr != "bin")
         {
-          commandResult.str(red("invalid base (must be #2, #10, #16, \"bin\", \"dec\", or \"hex\")"));
+          commandResult.str(red(
+            R"(invalid base (must be #2, #10, #16, "bin", "dec", or "hex"))"
+          ));
           return false;
         }
         break;
@@ -1640,8 +1642,8 @@ void DebuggerParser::executeListTraps()
   if (names.size() > 0)
   {
     bool trapFound = false, trapifFound = false;
-    for(uInt32 i = 0; i < names.size(); ++i)
-      if(names[i] == "")
+    for(const auto& name: names)
+      if(name == "")
         trapFound = true;
       else
         trapifFound = true;

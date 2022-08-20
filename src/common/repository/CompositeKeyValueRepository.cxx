@@ -17,7 +17,6 @@
 
 #include "repository/CompositeKeyValueRepository.hxx"
 
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CompositeKeyValueRepositoryAtomic::get(const string& key1, const string& key2, Variant& value)
 {
@@ -28,8 +27,7 @@ bool CompositeKeyValueRepositoryAtomic::get(const string& key1, const string& ke
 shared_ptr<KeyValueRepositoryAtomic> CompositeKeyValueRepositoryAtomic::getAtomic(const string& key)
 {
   auto repo = get(key);
-
-  return shared_ptr<KeyValueRepositoryAtomic>(repo, repo->atomic());
+  return {repo, repo->atomic()};
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

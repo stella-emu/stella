@@ -1393,7 +1393,9 @@ void TIA::onFrameComplete()
   // Blank out any extra lines not drawn this frame
   const Int32 missingScanlines = myFrameManager->missingScanlines();
   if (missingScanlines > 0)
-    std::fill_n(myBackBuffer.begin() + TIAConstants::H_PIXEL * myFrameManager->getY(), missingScanlines * TIAConstants::H_PIXEL, 0);
+    std::fill_n(myBackBuffer.begin() +
+      static_cast<size_t>(TIAConstants::H_PIXEL * myFrameManager->getY()),
+      missingScanlines * TIAConstants::H_PIXEL, 0);
 
   myFrontBuffer = myBackBuffer;
 
@@ -1521,11 +1523,14 @@ void TIA::tickHframe()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::applyRsync()
 {
-  const uInt32 x = myHctr > TIAConstants::H_BLANK_CLOCKS ? myHctr - TIAConstants::H_BLANK_CLOCKS : 0;
+  const uInt32 x = myHctr > TIAConstants::H_BLANK_CLOCKS
+      ? myHctr - TIAConstants::H_BLANK_CLOCKS : 0;
 
   myHctrDelta = TIAConstants::H_CLOCKS - 3 - myHctr;
   if (myFrameManager->isRendering())
-    std::fill_n(myBackBuffer.begin() + myFrameManager->getY() * TIAConstants::H_PIXEL + x, TIAConstants::H_PIXEL - x, 0);
+    std::fill_n(myBackBuffer.begin() +
+      static_cast<size_t>(myFrameManager->getY() * TIAConstants::H_PIXEL + x),
+      TIAConstants::H_PIXEL - x, 0);
 
   myHctr = TIAConstants::H_CLOCKS - 3;
 }
@@ -1568,12 +1573,12 @@ void TIA::cloneLastLine()
   }
   else
   {
-    const auto y = myFrameManager->getY();
+    const size_t y = myFrameManager->getY();
 
     if(!myFrameManager->isRendering() || y == 0) return;
 
-    std::copy_n(myBackBuffer.begin() + (y - 1) * TIAConstants::H_PIXEL, TIAConstants::H_PIXEL,
-        myBackBuffer.begin() + y * TIAConstants::H_PIXEL);
+    std::copy_n(myBackBuffer.begin() + (y - 1) * TIAConstants::H_PIXEL,
+      TIAConstants::H_PIXEL, myBackBuffer.begin() + y * TIAConstants::H_PIXEL);
   }
 }
 
@@ -1679,7 +1684,9 @@ void TIA::flushLineCache()
 void TIA::clearHmoveComb()
 {
   if (myFrameManager->isRendering() && myHstate == HState::blank)
-    std::fill_n(myBackBuffer.begin() + myFrameManager->getY() * TIAConstants::H_PIXEL, 8, myColorHBlank);
+    std::fill_n(myBackBuffer.begin() +
+      static_cast<size_t>(myFrameManager->getY() * TIAConstants::H_PIXEL),
+      8, myColorHBlank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

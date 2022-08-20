@@ -40,7 +40,7 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
 
   // Show current bank state
   int xpos = x, ypos = y + 7;
-  StaticTextWidget* t = new StaticTextWidget(boss, lfont, xpos, ypos, "Info ");
+  auto* t = new StaticTextWidget(boss, lfont, xpos, ypos, "Info ");
 
   xpos += t->getRight();
   myBank = new EditTextWidget(boss, nfont, xpos, ypos-2,
@@ -60,8 +60,8 @@ void RomWidget::loadConfig()
 {
   const Debugger& dbg = instance().debugger();
   CartDebug& cart = dbg.cartDebug();
-  const CartState& state = static_cast<const CartState&>(cart.getState());
-  const CartState& oldstate = static_cast<const CartState&>(cart.getOldState());
+  const auto& state = static_cast<const CartState&>(cart.getState());
+  const auto& oldstate = static_cast<const CartState&>(cart.getOldState());
 
   // Fill romlist the current bank of source or disassembly
   myListIsDirty |= cart.disassemblePC(myListIsDirty);

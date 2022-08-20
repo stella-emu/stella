@@ -76,7 +76,7 @@ void FileListWidget::setDirectory(const FSNode& node, const string& select)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FileListWidget::setLocation(const FSNode& node, const string select)
+void FileListWidget::setLocation(const FSNode& node, const string& select)
 {
   progress().resetProgress();
   progress().open();

@@ -137,7 +137,7 @@ class FileListWidget : public StringListWidget
 
   protected:
     /** Very similar to setDirectory(), but also updates the history */
-    void setLocation(const FSNode& node, const string select);
+    void setLocation(const FSNode& node, const string& select);
     /** Select to home directory */
     void selectHomeDir();
     /** Select previous directory in history (if applicable) */

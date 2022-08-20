@@ -588,12 +588,12 @@ void CartridgeCTY::wipeAllScores()
 inline void CartridgeCTY::updateMusicModeDataFetchers()
 {
   // Calculate the number of cycles since the last update
-  const uInt32 cycles = static_cast<uInt32>(mySystem->cycles() - myAudioCycles);
+  const auto cycles = static_cast<uInt32>(mySystem->cycles() - myAudioCycles);
   myAudioCycles = mySystem->cycles();
 
   // Calculate the number of CTY OSC clocks since the last update
   const double clocks = ((20000.0 * cycles) / myClockRate) + myFractionalClocks;
-  const uInt32 wholeClocks = static_cast<uInt32>(clocks);
+  const auto wholeClocks = static_cast<uInt32>(clocks);
   myFractionalClocks = clocks - static_cast<double>(wholeClocks);
 
   // Let's update counters and flags of the music mode data fetchers

@@ -85,7 +85,7 @@ bool Cartridge::bankChanged()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 Cartridge::bankSize(uInt16 bank) const
 {
-  size_t size;
+  size_t size{0};
   getImage(size);
 
   return static_cast<uInt16>(

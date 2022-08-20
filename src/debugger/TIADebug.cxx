@@ -1037,7 +1037,7 @@ string TIADebug::audFreq(uInt8 dist, uInt8 div)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string TIADebug::stringOnly(string value, bool changed)
+string TIADebug::stringOnly(const string& value, bool changed)
 {
   ostringstream buf;
 
@@ -1051,7 +1051,8 @@ string TIADebug::stringOnly(string value, bool changed)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string TIADebug::decWithLabel(string label, uInt16 value, bool changed, uInt16 width)
+string TIADebug::decWithLabel(const string& label, uInt16 value,
+                              bool changed, uInt16 width)
 {
   ostringstream buf;
 
@@ -1068,7 +1069,8 @@ string TIADebug::decWithLabel(string label, uInt16 value, bool changed, uInt16 w
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string TIADebug::hexWithLabel(string label, uInt16 value, bool changed, uInt16 width)
+string TIADebug::hexWithLabel(const string& label, uInt16 value,
+                              bool changed, uInt16 width)
 {
   ostringstream buf;
 
@@ -1085,7 +1087,7 @@ string TIADebug::hexWithLabel(string label, uInt16 value, bool changed, uInt16 w
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string TIADebug::binWithLabel(string label, uInt16 value, bool changed)
+string TIADebug::binWithLabel(const string& label, uInt16 value, bool changed)
 {
   ostringstream buf;
 
@@ -1102,13 +1104,16 @@ string TIADebug::binWithLabel(string label, uInt16 value, bool changed)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string TIADebug::boolWithLabel(string label, bool value, bool changed)
+string TIADebug::boolWithLabel(const string& label, bool value, bool changed)
 {
   ostringstream buf;
 
   if(value)
-    buf << "\177" << BSPF::toUpperCase(label) << "\177";
+  {
+    string l = label;
+    buf << "\177" << BSPF::toUpperCase(l) << "\177";
     //return "+" + BSPF::toUpperCase(label);
+  }
   else
     buf << label;
     //return "-" + BSPF::toLowerCase(label);
@@ -1174,11 +1179,11 @@ string TIADebug::toString()
   // TODO: strobes? WSYNC RSYNC RESP0/1 RESM0/1 RESBL HMOVE HMCLR CXCLR
 
   RiotDebug& riot = myDebugger.riotDebug();
-  const RiotState& riotState = static_cast<const RiotState&>(riot.getState());
-  const RiotState& oldRiotState = static_cast<const RiotState&>(riot.getOldState());
+  const auto& riotState = static_cast<const RiotState&>(riot.getState());
+  const auto& oldRiotState = static_cast<const RiotState&>(riot.getOldState());
 
-  const TiaState& state = static_cast<const TiaState&>(getState());
-  const TiaState& oldState = static_cast<const TiaState&>(getOldState());
+  const auto& state = static_cast<const TiaState&>(getState());
+  const auto& oldState = static_cast<const TiaState&>(getOldState());
 
   // build up output, then return it.
   buf << std::setfill(' ') << std::left

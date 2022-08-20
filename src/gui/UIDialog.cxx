@@ -205,9 +205,8 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
 
   // ROM path
   int bwidth = font.getStringWidth("ROM path" + ELLIPSIS) + 20 + 1;
-  ButtonWidget* romButton =
-    new ButtonWidget(myTab, font, xpos, ypos, bwidth, buttonHeight,
-                     "ROM path" + ELLIPSIS, kChooseRomDirCmd);
+  auto* romButton = new ButtonWidget(myTab, font, xpos, ypos, bwidth,
+      buttonHeight, "ROM path" + ELLIPSIS, kChooseRomDirCmd);
   wid.push_back(romButton);
   xpos = romButton->getRight() + fontWidth;
   myRomPath = new EditTextWidget(myTab, font, xpos, ypos + (buttonHeight - lineHeight) / 2 - 1,

@@ -22,7 +22,7 @@ namespace {
   string readQuotedString(istream& in)
   {
     // Read characters until we see a quote
-    char c;
+    char c{0};
     while(in.get(c))
       if(c == '"')
         break;
@@ -49,24 +49,23 @@ namespace {
   void writeQuotedString(ostream& out, const string& s)
   {
     out.put('"');
-    for(uInt32 i = 0; i < s.length(); ++i)
+    for(auto c: s)
     {
-      if(s[i] == '\\')
+      if(c == '\\')
       {
         out.put('\\');
         out.put('\\');
       }
-      else if(s[i] == '\"')
+      else if(c == '\"')
       {
         out.put('\\');
         out.put('"');
       }
       else
-        out.put(s[i]);
+        out.put(c);
     }
     out.put('"');
   }
-
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -109,7 +108,8 @@ std::map<string, Variant> KeyValueRepositoryPropertyFile::load(istream& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool KeyValueRepositoryPropertyFile::save(ostream& out, const std::map<string, Variant>& values)
+bool KeyValueRepositoryPropertyFile::save(ostream& out,
+    const std::map<string, Variant>& values)
 {
   for (auto& [key, value]: values) {
     writeQuotedString(out, key);

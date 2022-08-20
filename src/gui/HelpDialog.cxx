@@ -67,9 +67,8 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myUpdateButton);
 
   xpos = _w - closeButtonWidth - HBORDER;
-  ButtonWidget* b =
-    new ButtonWidget(this, font, xpos, ypos, closeButtonWidth, buttonHeight,
-                     "Close", GuiObject::kCloseCmd);
+  auto* b = new ButtonWidget(this, font, xpos, ypos, closeButtonWidth,
+                             buttonHeight, "Close", GuiObject::kCloseCmd);
   wid.push_back(b);
   addCancelWidget(b);
 

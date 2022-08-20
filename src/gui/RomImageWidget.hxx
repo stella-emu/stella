@@ -35,7 +35,7 @@ class RomImageWidget : public Widget
       return font.getFontHeight() * 9 / 8;
     }
 
-    void setProperties(const FSNode& node, const Properties properties,
+    void setProperties(const FSNode& node, const Properties& properties,
                        bool full = true);
     void clearProperties();
     void reloadProperties(const FSNode& node);

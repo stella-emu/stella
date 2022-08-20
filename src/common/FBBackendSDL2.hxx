@@ -121,7 +121,7 @@ class FBBackendSDL2 : public FBBackend
       @param pitch   The pitch (in bytes) for the pixel data
       @param rect    The bounding rectangle for the buffer
     */
-    void readPixels(uInt8* buffer, uInt32 pitch,
+    void readPixels(uInt8* buffer, size_t pitch,
                     const Common::Rect& rect) const override;
 
     /**

@@ -978,8 +978,8 @@ void TiaWidget::loadConfig()
   BoolArray changed;
 
   TIADebug& tia = instance().debugger().tiaDebug();
-  const TiaState& state    = static_cast<const TiaState&>(tia.getState());
-  const TiaState& oldstate = static_cast<const TiaState&>(tia.getOldState());
+  const auto& state    = static_cast<const TiaState&>(tia.getState());
+  const auto& oldstate = static_cast<const TiaState&>(tia.getOldState());
 
   // Color registers
   alist.clear();  vlist.clear();  changed.clear();

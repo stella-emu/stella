@@ -169,9 +169,10 @@ void Dialog::initHelp()
     {
       string key = instance().eventHandler().getMappingDesc(Event::UIHelp, EventMode::kMenuMode);
 
-      _helpWidget = new ButtonWidget(this, _font, _w - _font.getMaxCharWidth() * 3.5, 0,
-                                     _font.getMaxCharWidth() * 3.5 + 0.5, buttonHeight(), "?",
-                                     kHelpCmd);
+      _helpWidget = new ButtonWidget(this, _font,
+          _w - _font.getMaxCharWidth() * 3.5, 0,
+          _font.getMaxCharWidth() * 3.5 + 0.5, buttonHeight(), "?",  // NOLINT
+          kHelpCmd);
       _helpWidget->setBGColor(kColorTitleBar);
       _helpWidget->setTextColor(kColorTitleText);
       _helpWidget->setToolTip("Click or press " + key + " for help.");

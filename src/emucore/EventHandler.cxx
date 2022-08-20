@@ -81,7 +81,7 @@ EventHandler::EventHandler(OSystem& osystem)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-EventHandler::~EventHandler()
+EventHandler::~EventHandler()  // NOLINT (we need an empty d'tor)
 {
 }
 
@@ -2015,7 +2015,7 @@ json EventHandler::convertLegacyComboMapping(string list)
 
   try
   {
-    int numCombos;
+    int numCombos{0};
     // Get combo count, which should be the first int in the list
     // If it isn't, then we treat the entire list as invalid
     buf >> numCombos;
@@ -2028,8 +2028,7 @@ json EventHandler::convertLegacyComboMapping(string list)
 
         for(int j = 0; j < EVENTS_PER_COMBO; ++j)
         {
-          int event;
-
+          int event{0};
           buf >> event;
           // skip all NoType events
           if(event != Event::NoType)
@@ -2362,10 +2361,10 @@ int EventHandler::getEmulActionListIndex(int idx, const Event::EventSet& events)
   //   ordered by 'ourEmulActionList'!
   Event::Type event = Event::NoType;
 
-  for(uInt32 i = 0; i < ourEmulActionList.size(); ++i)
+  for(auto& alist: ourEmulActionList)
   {
     for(const auto& item : events)
-      if(EventHandler::ourEmulActionList[i].event == item)
+      if(alist.event == item)
       {
         idx--;
         if(idx < 0)

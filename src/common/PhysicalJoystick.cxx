@@ -33,7 +33,7 @@ namespace {
   }
 
   EventMode eventModeFromJsonName(const string& name) {
-    EventMode result;
+    EventMode result{};
 
     from_json(json(name), result);
 
@@ -120,7 +120,7 @@ json PhysicalJoystick::convertLegacyMapping(const string& mapping, const string&
 
   while (getline(buf, map, MODE_DELIM))
   {
-    int mode;
+    int mode{0};
 
     // Get event mode
     std::replace(map.begin(), map.end(), '|', ' ');
@@ -158,7 +158,7 @@ void PhysicalJoystick::getValues(const string& list, IntArray& map) const
   map.clear();
   istringstream buf(list);
 
-  int value;
+  int value{0};
   buf >> value;  // we don't need to know the # of items at this point
   while(buf >> value)
     map.push_back(value);

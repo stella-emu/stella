@@ -98,7 +98,7 @@ void Keyboard::write(DigitalPin pin, bool value)
   const ColumnState stateCol1 = processColumn(col1);
   const ColumnState stateCol2 = processColumn(col2);
 
-  setPin(DigitalPin::Six, stateCol2 == ColumnState::gnd ? 0 : 1);
+  setPin(DigitalPin::Six, stateCol2 != ColumnState::gnd);
   setPin(AnalogPin::Five, columnStateToAnalogSignal(stateCol1));
   setPin(AnalogPin::Nine, columnStateToAnalogSignal(stateCol0));
 }

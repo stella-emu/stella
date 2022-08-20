@@ -46,7 +46,8 @@ class JPGLibrary
              runtime_error is thrown containing a more detailed
              error message.
     */
-    void loadImage(const string& filename, FBSurface& surface, VariantList& metaData);
+    void loadImage(const string& filename, FBSurface& surface,
+                   VariantList& metaData);
 
   private:
     // Global OSystem object

@@ -51,7 +51,7 @@ void SqliteDatabase::initialize()
     if (!dbInitialized && tries == 1) {
       Logger::info("sqlite DB " + myDatabaseFile + " seems to be corrupt, removing and retrying...");
 
-      remove(myDatabaseFile.c_str());
+      std::ignore = remove(myDatabaseFile.c_str());
       if (myHandle) sqlite3_close_v2(myHandle);
     }
   }

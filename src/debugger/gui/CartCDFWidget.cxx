@@ -111,8 +111,7 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   myJumpStreamPointers->setTarget(this);
   myJumpStreamPointers->setEditable(false);
 
-  uInt32 row;
-  for(row = 0; row < 8; ++row)
+  for(uInt32 row = 0; row < 8; ++row)
   {
     myDatastreamLabels[row] =
     new StaticTextWidget(_boss, _font, DS_X - _font.getStringWidth("xx "),

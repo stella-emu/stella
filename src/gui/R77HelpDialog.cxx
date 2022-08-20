@@ -56,9 +56,9 @@ R77HelpDialog::R77HelpDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myNextButton);
 
   xpos = _w - buttonWidth - HBORDER;
-  ButtonWidget* b =
-    new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-      "Close", GuiObject::kCloseCmd);
+  auto* b = new ButtonWidget(this, font, xpos, ypos,
+                             buttonWidth, buttonHeight,
+                             "Close", GuiObject::kCloseCmd);
   wid.push_back(b);
   addCancelWidget(b);
 

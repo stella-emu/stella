@@ -57,7 +57,7 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
     _valueList.push_back(0);
     _valueStringList.push_back(EmptyString);
     _toolTipList.push_back(EmptyString);
-    _changedList.push_back(0);
+    _changedList.push_back(false);
     _hiliteList.push_back(false);
   }
 
@@ -259,8 +259,7 @@ void DataGridWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount
 
   resetSelection();
   // First check whether the selection changed
-  int newSelectedItem;
-  newSelectedItem = findItem(x, y);
+  int newSelectedItem = findItem(x, y);
   if (newSelectedItem > static_cast<int>(_valueList.size()) - 1)
     newSelectedItem = -1;
 
@@ -714,11 +713,13 @@ void DataGridWidget::drawWidget(bool hilite)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Common::Rect DataGridWidget::getEditRect() const
 {
-  const int rowoffset = _currentRow * _rowHeight;
-  const int coloffset = _currentCol * _colWidth + 4;
+  const uInt32 rowoffset = _currentRow * _rowHeight;
+  const uInt32 coloffset = _currentCol * _colWidth + 4;
 
-  return Common::Rect(1 + coloffset, rowoffset,
-                      _colWidth + coloffset - 5, _rowHeight + rowoffset);
+  return {
+    1 + coloffset, rowoffset,
+    _colWidth + coloffset - 5, _rowHeight + rowoffset
+  };
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

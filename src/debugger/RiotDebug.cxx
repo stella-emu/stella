@@ -363,8 +363,8 @@ string RiotDebug::switchesString()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string RiotDebug::toString()
 {
-  const RiotState& state    = static_cast<const RiotState&>(getState());
-  const RiotState& oldstate = static_cast<const RiotState&>(getOldState());
+  const auto& state    = static_cast<const RiotState&>(getState());
+  const auto& oldstate = static_cast<const RiotState&>(getOldState());
 
   ostringstream buf;
   buf << "280/SWCHA(R)=" << myDebugger.invIfChanged(state.SWCHA_R, oldstate.SWCHA_R)

@@ -127,9 +127,10 @@ void NavigationWidget::updateUI()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void NavigationWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
+void NavigationWidget::handleCommand(CommandSender* sender, int cmd, int data,
+                                     int id)
 {
-  switch(cmd)
+  switch(cmd)  // NOLINT (could be written as IF/ELSE)
   {
     case kFolderClicked:
     {
@@ -212,8 +213,8 @@ void NavigationWidget::PathWidget::setPath(const string& path)
     else
     {
       // Add new widget to list
-      FolderLinkWidget* s = new FolderLinkWidget(_boss, _font, x, _y,
-        width, _h, name, curPath);
+      auto* s = new FolderLinkWidget(_boss, _font, x, _y,
+                                     width, _h, name, curPath);
       s->setID(static_cast<uInt32>(idx));
       s->setTarget(myTarget);
       myFolderList.push_back(s);

@@ -83,8 +83,8 @@ CartridgeARWidget::CartridgeARWidget(
 void CartridgeARWidget::loadConfig()
 {
   CartDebug& cart = instance().debugger().cartDebug();
-  const CartState& state = static_cast<const CartState&>(cart.getState());
-  const CartState& oldstate = static_cast<const CartState&>(cart.getOldState());
+  const auto& state = static_cast<const CartState&>(cart.getState());
+  const auto& oldstate = static_cast<const CartState&>(cart.getOldState());
 
   myBank->setSelectedIndex(myCart.getBank(), state.bank != oldstate.bank);
 

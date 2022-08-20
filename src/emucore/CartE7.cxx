@@ -37,7 +37,10 @@ void CartridgeE7::initialize(const ByteBuffer& image, size_t size)
   std::copy_n(image.get(), std::min<size_t>(romSize(), size), myImage.get());
   createRomAccessArrays(romSize() + myRAM.size());
 
-  myRAMBank = romBankCount() - 1;
+  myRAM.fill(0xFF);
+  myCurrentBank.fill(0);
+
+  myRAMBank = romBankCount() - 1;  // NOLINT
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -98,8 +101,10 @@ void CartridgeE7::install(System& system)
             0, nullptr, 0x1fc0, System::PA_NONE, 0x1fc0);*/
 
   // Setup the second segment to always point to the last ROM bank
+  const auto offset = static_cast<uInt16>(myRAMBank * BANK_SIZE);
   setAccess(0x1A00, 0x1FE0U & (~System::PAGE_MASK - 0x1A00),
-            myRAMBank * BANK_SIZE, myImage.get(), myRAMBank * BANK_SIZE, System::PageAccessType::READ, BANK_SIZE - 1);
+            offset, myImage.get(), offset,
+            System::PageAccessType::READ, static_cast<uInt16>(BANK_SIZE - 1));
   myCurrentBank[1] = myRAMBank;
 
   // Install some default banks for the RAM and first segment
@@ -177,7 +182,7 @@ bool CartridgeE7::poke(uInt16 address, uInt8 value)
     else
     {
       // Writing to the read port should be ignored, but trigger a break if option enabled
-      uInt8 dummy;
+      uInt8 dummy{0};
 
       pokeRAM(dummy, pokeAddress, value);
       myRamWriteAccess = pokeAddress;
@@ -197,7 +202,7 @@ bool CartridgeE7::poke(uInt16 address, uInt8 value)
       else
       {
         // Writing to the read port should be ignored, but trigger a break if option enabled
-        uInt8 dummy;
+        uInt8 dummy{0};
 
         pokeRAM(dummy, pokeAddress, value);
         myRamWriteAccess = pokeAddress;
@@ -345,5 +350,5 @@ uInt16 CartridgeE7::romBankCount() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeE7::romSize() const
 {
-  return romBankCount() * BANK_SIZE;
+  return romBankCount() * BANK_SIZE;  // NOLINT
 }

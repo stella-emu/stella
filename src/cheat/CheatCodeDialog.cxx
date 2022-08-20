@@ -111,7 +111,7 @@ CheatCodeDialog::CheatCodeDialog(OSystem& osystem, DialogContainer& parent,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CheatCodeDialog::~CheatCodeDialog()
+CheatCodeDialog::~CheatCodeDialog()  // NOLINT (we need an empty d'tor)
 {
 }
 

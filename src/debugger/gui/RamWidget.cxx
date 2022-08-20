@@ -121,7 +121,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
                          TextAlign::Left);
   }
 
-  uInt32 row;
+  uInt32 row{0};
   for(row = 0; row < myNumRows; ++row)
   {
     myRamLabels[row] =
@@ -190,7 +190,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-RamWidget::~RamWidget()
+RamWidget::~RamWidget()  // NOLINT (we need an empty d'tor)
 {
 }
 

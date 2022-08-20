@@ -289,9 +289,9 @@ void FavoritesManager::incPopular(const string& path)
     if(myPopularMap.size() >= max_popular)
     {
       PopularList sortedList = sortedPopularList(); // sorted by frequency!
-      for(auto item = sortedList.cbegin(); item != sortedList.cend(); ++item)
+      for(const auto& item: sortedList)
       {
-        const auto entry = myPopularMap.find(item->first);
+        const auto entry = myPopularMap.find(item.first);
         if(entry != myPopularMap.end())
         {
           if(entry->second >= scale * (1.0 - factor))

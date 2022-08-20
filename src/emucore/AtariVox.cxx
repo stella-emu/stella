@@ -43,7 +43,7 @@ AtariVox::AtariVox(Jack jack, const Event& event, const System& system,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AtariVox::~AtariVox()
+AtariVox::~AtariVox()  // NOLINT (we need an empty d'tor)
 {
 }
 

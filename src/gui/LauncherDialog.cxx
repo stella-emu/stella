@@ -268,8 +268,8 @@ void LauncherDialog::addPathWidgets(int& ypos)
     myRomCount = new StaticTextWidget(this, _font, xpos, ypos,
       lwFound, fontHeight, "", TextAlign::Right);
 
-    EditTextWidget* e = new EditTextWidget(this, _font, myNavigationBar->getRight() - 1, ypos - btnYOfs,
-      lwFound + LBL_GAP + 1, buttonHeight - 2, "");
+    auto* e = new EditTextWidget(this, _font, myNavigationBar->getRight() - 1,
+        ypos - btnYOfs, lwFound + LBL_GAP + 1, buttonHeight - 2, "");
     e->setEditable(false);
     e->setEnabled(false);
   } else {
@@ -652,16 +652,16 @@ void LauncherDialog::setRomInfoFont(const Common::Size& area)
   };
 
   // Try to pick a font that works best, based on the available area
-  for(size_t i = 0; i < sizeof(FONTS) / sizeof(FontDesc); ++i)
+  for(const auto& font: FONTS)
   {
     // only use fonts <= launcher fonts
-    if(Dialog::fontHeight() >= FONTS[i].height)
+    if(Dialog::fontHeight() >= font.height)
     {
-      if(area.h >= static_cast<uInt32>(MIN_ROMINFO_ROWS * FONTS[i].height + 2
-         + MIN_ROMINFO_LINES * FONTS[i].height)
-         && area.w >= static_cast<uInt32>(MIN_ROMINFO_CHARS * FONTS[i].maxwidth))
+      if(area.h >= static_cast<uInt32>(MIN_ROMINFO_ROWS * font.height + 2
+         + MIN_ROMINFO_LINES * font.height)
+         && area.w >= static_cast<uInt32>(MIN_ROMINFO_CHARS * font.maxwidth))
       {
-        myROMInfoFont = make_unique<GUI::Font>(FONTS[i]);
+        myROMInfoFont = make_unique<GUI::Font>(font);
         return;
       }
     }
@@ -701,7 +701,7 @@ void LauncherDialog::loadRomInfo()
   }
 }
 
-// --------------------------------------
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::loadPendingRomInfo()
 {
   myPendingRomInfo = false;
@@ -1146,11 +1146,12 @@ void LauncherDialog::openContextMenu(int x, int y)
     string label;
     string shortcut;
     string key;
-    explicit ContextItem(const string _label, const string _shortcut, const string _key)
-      : label{ _label }, shortcut{ _shortcut }, key{ _key } {}
+    explicit ContextItem(const string& _label, const string& _shortcut,
+                         const string& _key)
+      : label{_label}, shortcut{_shortcut}, key{_key} {}
     // No shortcuts displayed in minimal UI
-    ContextItem(const string _label, const string _key)
-      : label{ _label }, key{ _key } {}
+    ContextItem(const string& _label, const string& _key)
+      : label{_label}, key{_key} {}
   };
   using ContextList = std::vector<ContextItem>;
   ContextList items;

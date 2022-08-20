@@ -145,9 +145,7 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Paddles::swapEvents(Event::Type& event1, Event::Type& event2)
 {
-  Event::Type swappedEvent;
-
-  swappedEvent = event1;
+  Event::Type swappedEvent = event1;
   event1 = event2;
   event2 = swappedEvent;
 }

@@ -49,7 +49,7 @@ int CartridgeEnhancedWidget::initialize()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 size_t CartridgeEnhancedWidget::size()
 {
-  size_t size;
+  size_t size{0};
 
   myCart.getImage(size);
 
@@ -96,7 +96,7 @@ string CartridgeEnhancedWidget::ramDescription()
 string CartridgeEnhancedWidget::romDescription()
 {
   ostringstream info;
-  size_t size;
+  size_t size{0};
   const ByteBuffer& image = myCart.getImage(size);
 
   if(myCart.romBankCount() > 1)
@@ -328,15 +328,15 @@ void CartridgeEnhancedWidget::loadConfig()
     ostringstream buf;
     ByteArray arr = myCart.myPlusROM->getSend();
 
-    for(size_t i = 0; i < arr.size(); ++i)
-      buf << Common::Base::HEX2 << int(arr[i]) << " ";
+    for(auto i: arr)
+      buf << Common::Base::HEX2 << static_cast<int>(i) << " ";
     myPlusROMSendWidget->setText(buf.str(), arr != myOldState.send);
 
     buf.str("");
     arr = myCart.myPlusROM->getReceive();
 
-    for(size_t i = 0; i < arr.size(); ++i)
-      buf << Common::Base::HEX2 << int(arr[i]) << " ";
+    for(auto i: arr)
+      buf << Common::Base::HEX2 << static_cast<int>(i) << " ";
     myPlusROMReceiveWidget->setText(buf.str(), arr != myOldState.receive);
   }
   if(myBankWidgets != nullptr)

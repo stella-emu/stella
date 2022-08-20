@@ -208,7 +208,7 @@ class CartridgeE7 : public Cartridge
     void checkSwitchBank(uInt16 address);
 
     // Size of a ROM or RAM bank
-    static constexpr uInt32 BANK_SIZE = 0x800; // 2K
+    static constexpr size_t BANK_SIZE = 0x800; // 2K
 
   private:
     // Size of RAM in the cart
@@ -221,8 +221,9 @@ class CartridgeE7 : public Cartridge
     */
     uInt16 romSize() const;
 
-    void setAccess(uInt16 addrFrom, uInt16 size, uInt16 directOffset, uInt8* directData,
-                   uInt16 codeOffset, System::PageAccessType type, uInt16 addrMask = 0);
+    void setAccess(uInt16 addrFrom, uInt16 size, uInt16 directOffset,
+                   uInt8* directData, uInt16 codeOffset,
+                   System::PageAccessType type, uInt16 addrMask = 0);
 
   private:
     // Pointer to a dynamically allocated ROM image of the cartridge

@@ -93,8 +93,8 @@ void CheatManager::addPerFrame(const string& name, const string& code, bool enab
   }
 
   // Make sure there are no duplicates
-  bool found = false;
-  uInt32 i;
+  bool found{false};
+  uInt32 i{0};
   for(i = 0; i < myPerFrameList.size(); ++i)
   {
     if(myPerFrameList[i]->code() == cheat->code())

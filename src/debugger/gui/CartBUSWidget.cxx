@@ -99,8 +99,7 @@ CartridgeBUSWidget::CartridgeBUSWidget(
   myDatastreamPointers2->setTarget(this);
   myDatastreamPointers2->setEditable(false);
 
-  uInt32 row;
-  for(row = 0; row < 4; ++row)
+  for(uInt32 row = 0; row < 4; ++row)
   {
     myDatastreamLabels[row] =
     new StaticTextWidget(_boss, _font, DS_X - _font.getStringWidth("xx "),

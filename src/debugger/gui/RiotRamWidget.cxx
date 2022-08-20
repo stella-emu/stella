@@ -33,21 +33,21 @@ RiotRamWidget::RiotRamWidget(GuiObject* boss, const GUI::Font& lfont,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 RiotRamWidget::getValue(int addr) const
 {
-  const CartState& state = static_cast<const CartState&>(myDbg.getState());
+  const auto& state = static_cast<const CartState&>(myDbg.getState());
   return instance().debugger().peek(state.rport[addr]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RiotRamWidget::setValue(int addr, uInt8 value)
 {
-  const CartState& state = static_cast<const CartState&>(myDbg.getState());
+  const auto& state = static_cast<const CartState&>(myDbg.getState());
   instance().debugger().poke(state.wport[addr], value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string RiotRamWidget::getLabel(int addr) const
 {
-  const CartState& state = static_cast<const CartState&>(myDbg.getState());
+  const auto& state = static_cast<const CartState&>(myDbg.getState());
   return myDbg.getLabel(state.rport[addr], true);
 }
 
@@ -55,8 +55,8 @@ string RiotRamWidget::getLabel(int addr) const
 void RiotRamWidget::fillList(uInt32 start, uInt32 size, IntArray& alist,
                              IntArray& vlist, BoolArray& changed) const
 {
-  const CartState& state    = static_cast<const CartState&>(myDbg.getState());
-  const CartState& oldstate = static_cast<const CartState&>(myDbg.getOldState());
+  const auto& state    = static_cast<const CartState&>(myDbg.getState());
+  const auto& oldstate = static_cast<const CartState&>(myDbg.getOldState());
 
   for(uInt32 i = 0; i < size; ++i)
   {
@@ -69,13 +69,13 @@ void RiotRamWidget::fillList(uInt32 start, uInt32 size, IntArray& alist,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 RiotRamWidget::readPort(uInt32 start) const
 {
-  const CartState& state = static_cast<const CartState&>(myDbg.getState());
+  const auto& state = static_cast<const CartState&>(myDbg.getState());
   return state.rport[start];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const ByteArray& RiotRamWidget::currentRam(uInt32) const
 {
-  const CartState& state = static_cast<const CartState&>(myDbg.getState());
+  const auto& state = static_cast<const CartState&>(myDbg.getState());
   return state.ram;
 }

@@ -175,6 +175,7 @@ void MT24LC256::jpee_init()
   jpee_pagemask = PAGE_SIZE - 1;
   jpee_smallmode = 0;
   jpee_logmode = -1;
+  jpee_packet.fill(0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -39,7 +39,8 @@ RomInfoWidget::RomInfoWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomInfoWidget::setProperties(const FSNode& node, const Properties properties, bool full)
+void RomInfoWidget::setProperties(const FSNode& node,
+    const Properties& properties, bool full)
 {
   myHaveProperties = true;
   myProperties = properties;

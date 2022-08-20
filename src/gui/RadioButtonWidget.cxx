@@ -253,7 +253,7 @@ RadioButtonWidget::RadioButtonWidget(GuiObject* boss, const GUI::Font& font,
   else         // center text
     _textY = (_buttonSize - _font.getFontHeight()) / 2;
 
-  setFill(CheckboxWidget::FillType::Normal);
+  setFill(CheckboxWidget::FillType::Normal);  // NOLINT
   myGroup->addWidget(this);
 }
 
@@ -328,7 +328,7 @@ void RadioButtonGroup::addWidget(RadioButtonWidget* widget)
 {
   myWidgets.push_back(widget);
   // set first button as default
-  widget->setState(myWidgets.size() == 1, false);
+  widget->setState(myWidgets.size() == 1, false);  // NOLINT
   mySelected = 0;
 }
 

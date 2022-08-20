@@ -188,11 +188,11 @@ class TIADebug : public DebuggerSystem
     string colorSwatch(uInt8 c) const;
 
     string audFreq(uInt8 dist, uInt8 div);
-    string stringOnly(string value, bool changed = false);
-    string decWithLabel(string label, uInt16 value, bool changed = false, uInt16 width = 3);
-    string hexWithLabel(string label, uInt16 value, bool changed = false, uInt16 width = 2);
-    string binWithLabel(string label, uInt16 value, bool changed = false);
-    string boolWithLabel(string label, bool value, bool changed = false);
+    string stringOnly(const string& value, bool changed = false);
+    string decWithLabel(const string& label, uInt16 value, bool changed = false, uInt16 width = 3);
+    string hexWithLabel(const string& label, uInt16 value, bool changed = false, uInt16 width = 2);
+    string binWithLabel(const string& label, uInt16 value, bool changed = false);
+    string boolWithLabel(const string& label, bool value, bool changed = false);
 
   private:
     TiaState myState;

@@ -66,12 +66,12 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
 
   int xoffset = HBORDER, yoffset = VBORDER + _th;
   WidgetArray wid;
-  ButtonWidget* b = nullptr;
+  ButtonWidget* b{nullptr};
 
   if (minSettings)
   {
-    ButtonWidget* bw = new ButtonWidget(this, _font, xoffset, yoffset,
-      _w - HBORDER * 2, buttonHeight, "Use Basic Settings", kBasSetCmd);
+    auto* bw = new ButtonWidget(this, _font, xoffset, yoffset,
+        _w - HBORDER * 2, buttonHeight, "Use Basic Settings", kBasSetCmd);
     wid.push_back(bw);
     yoffset += rowHeight + VGAP * 2;
     _h += rowHeight + VGAP * 2;
@@ -79,8 +79,8 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
 
   const auto ADD_OD_BUTTON = [&](const string& label, int cmd)
   {
-    ButtonWidget* bw = new ButtonWidget(this, _font, xoffset, yoffset,
-            buttonWidth, buttonHeight, label, cmd);
+    auto* bw = new ButtonWidget(this, _font, xoffset, yoffset,
+                                buttonWidth, buttonHeight, label, cmd);
     yoffset += rowHeight;
     return bw;
   };
@@ -151,7 +151,7 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-OptionsDialog::~OptionsDialog()
+OptionsDialog::~OptionsDialog()  // NOLINT (we need an empty d'tor)
 {
 }
 

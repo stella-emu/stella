@@ -76,10 +76,9 @@ LoggerDialog::LoggerDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myLogToConsole);
 
   // Add Save, OK and Cancel buttons
-  ButtonWidget* b;
-  b = new ButtonWidget(this, font, HBORDER, _h - buttonHeight - VBORDER,
-                       buttonWidth, buttonHeight, "Save log to disk" + ELLIPSIS,
-                       GuiObject::kDefaultsCmd);
+  auto* b = new ButtonWidget(this, font, HBORDER, _h - buttonHeight - VBORDER,
+      buttonWidth, buttonHeight, "Save log to disk" + ELLIPSIS,
+      GuiObject::kDefaultsCmd);
   wid.push_back(b);
   addOKCancelBGroup(wid, font);
 

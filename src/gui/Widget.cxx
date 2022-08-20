@@ -877,7 +877,7 @@ CheckboxWidget::CheckboxWidget(GuiObject* boss, const GUI::Font& font,
   else         // center text
     _textY = (_boxSize - _font.getFontHeight()) / 2;
 
-  setFill(CheckboxWidget::FillType::Normal);
+  setFill(CheckboxWidget::FillType::Normal);  // NOLINT
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -43,8 +43,7 @@ void ToggleWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
     return;
 
   // First check whether the selection changed
-  int newSelectedItem;
-  newSelectedItem = findItem(x, y);
+  int newSelectedItem = findItem(x, y);
   if (newSelectedItem > static_cast<int>(_stateList.size()) - 1)
     newSelectedItem = -1;
 

@@ -219,10 +219,8 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
 void PhysicalKeyboardHandler::defineControllerMappings(
     const Controller::Type type, Controller::Jack port, const Properties& properties)
 {
-
-  //const string& test = myOSystem.settings().getString("aq");
-  // determine controller events to use
-  switch(type)
+  // Determine controller events to use
+  switch(type)  // NOLINT (could be written as IF/ELSE)
   {
     case Controller::Type::QuadTari:
       if(port == Controller::Jack::Left)
@@ -377,7 +375,7 @@ void PhysicalKeyboardHandler::enableCommonMappings()
 {
   for (int i = Event::NoType + 1; i < Event::LastType; i++)
   {
-    const Event::Type event = static_cast<Event::Type>(i);
+    const auto event = static_cast<Event::Type>(i);
 
     if (isCommonEvent(event))
       enableMapping(event, EventMode::kCommonMode);

@@ -135,7 +135,7 @@ class StreamReader : public Serializable
 
     uInt8 readAudio() { return *myAudio++; }
 
-    uInt8 peekAudio() const { return *myAudio; }
+    [[nodiscard]] uInt8 peekAudio() const { return *myAudio; }
 
     void startTimeCode() { myGraph = myTimecode; }
 
@@ -744,7 +744,7 @@ class MovieCart : public Serializable
     bool save(Serializer& out) const override;
     bool load(Serializer& in) override;
 
-    uInt8 readROM(uInt16 address) const {
+    [[nodiscard]] uInt8 readROM(uInt16 address) const {
       return myROM[address & 1023];
     }
 
@@ -1091,7 +1091,6 @@ void MovieCart::updateTransport()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MovieCart::fill_addr_right_line()
 {
-  uint8_t v;
   writeAudio(addr_set_aud_right + 1);
 
   writeGraph(addr_set_gdata5 + 1);
@@ -1100,7 +1099,7 @@ void MovieCart::fill_addr_right_line()
   writeGraph(addr_set_gdata8 + 1);
   writeGraph(addr_set_gdata9 + 1);
 
-  v = myStream.readColor();
+  uint8_t v = myStream.readColor();
   writeColor(addr_set_gcol5 + 1, v);
 
   v = myStream.readColor();
@@ -1118,21 +1117,19 @@ void MovieCart::fill_addr_right_line()
   // alternate between background color and playfield color
   if (myForceColor)
   {
-      v = 0;
-      writeROM(addr_set_colubk_r + 1, v);
+    v = 0;
+    writeROM(addr_set_colubk_r + 1, v);
   }
   else
   {
-      v = myStream.readColorBK();
-	  writeColor(addr_set_colubk_r + 1, v);
+    v = myStream.readColorBK();
+    writeColor(addr_set_colubk_r + 1, v);
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MovieCart::fill_addr_left_line(bool again)
 {
-  uint8_t v;
-
   writeAudio(addr_set_aud_left + 1);
 
   writeGraph(addr_set_gdata0 + 1);
@@ -1141,7 +1138,7 @@ void MovieCart::fill_addr_left_line(bool again)
   writeGraph(addr_set_gdata3 + 1);
   writeGraph(addr_set_gdata4 + 1);
 
-  v = myStream.readColor();
+  uint8_t v = myStream.readColor();
   writeColor(addr_set_gcol0 + 1, v);
 
   v = myStream.readColor();
@@ -1160,13 +1157,13 @@ void MovieCart::fill_addr_left_line(bool again)
   // alternate between background color and playfield color
   if (myForceColor)
   {
-      v = 0;
-      writeROM(addr_set_colupf_l + 1, v);
+    v = 0;
+    writeROM(addr_set_colupf_l + 1, v);
   }
   else
   {
-      v = myStream.readColorBK();
-      writeColor(addr_set_colupf_l + 1, v);
+    v = myStream.readColorBK();
+    writeColor(addr_set_colupf_l + 1, v);
   }
 
   // addr_pick_line_end
@@ -1330,9 +1327,11 @@ void MovieCart::runStateMachine()
             }
 
             if(myOdd)
-              myStream.overrideGraph(&levelBarsOddData[levelValue * 40]);
+              myStream.overrideGraph(
+                &levelBarsOddData[static_cast<ptrdiff_t>(levelValue) * 40]);
             else
-              myStream.overrideGraph(&levelBarsEvenData[levelValue * 40]);
+              myStream.overrideGraph(
+                &levelBarsEvenData[static_cast<ptrdiff_t>(levelValue) * 40]);
           }
         }
 
@@ -1362,14 +1361,14 @@ void MovieCart::runStateMachine()
 
         if(myLines >= 1)
         {
-          fill_addr_left_line(1);
+          fill_addr_left_line(true);
 
           myLines -= 1;
           myState = 1;
         }
         else
         {
-          fill_addr_left_line(0);
+          fill_addr_left_line(false);
           fill_addr_end_lines();
 
           myStream.swapField(myBufferIndex, myOdd);
@@ -1411,8 +1410,8 @@ void MovieCart::runStateMachine()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool MovieCart::process(uInt16 address)
 {
-  const bool a12 = (address & (1 << 12)) ? 1:0;
-  const bool a11 = (address & (1 << 11)) ? 1:0;
+  const bool a12 = (address & (1 << 12));
+  const bool a11 = (address & (1 << 11));
 
   // count a10 pulses
   const bool a10i = (address & (1 << 10));
@@ -1570,7 +1569,7 @@ CartridgeMVC::CartridgeMVC(const string& path, size_t size,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeMVC::~CartridgeMVC()
+CartridgeMVC::~CartridgeMVC()  // NOLINT (we need an empty d'tor)
 {
 }
 

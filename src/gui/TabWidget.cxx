@@ -73,11 +73,11 @@ int TabWidget::addTab(const string& title, int tabWidth)
 
   // Determine the new tab width
   int fixedWidth = 0, fixedTabs = 0;
-  for(int i = 0; i < static_cast<int>(_tabs.size()); ++i)
+  for(const auto& tab: _tabs)
   {
-    if(_tabs[i].tabWidth != NO_WIDTH)
+    if(tab.tabWidth != NO_WIDTH)
     {
-      fixedWidth += _tabs[i].tabWidth;
+      fixedWidth += tab.tabWidth;
       fixedTabs++;
     }
   }
@@ -196,8 +196,8 @@ Widget* TabWidget::parentWidget(int tabID)
 
   if(!_tabs[tabID].parentWidget)
   {
-    // create dummy widget if not existing
-    Widget* w = new Widget(_boss, _font, 0, 0, 0, 0);
+    // Create dummy widget if not existing
+    auto* w = new Widget(_boss, _font, 0, 0, 0, 0);
 
     setParentWidget(tabID, w);
   }

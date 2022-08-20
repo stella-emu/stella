@@ -149,11 +149,9 @@ int PhysicalJoystickHandler::add(const PhysicalJoystickPtr& stick)
   // We're potentially swapping out an input device behind the back of
   // the Event system, so we make sure all Stelladaptor-generated events
   // are reset
-  for(int port = 0; port < NUM_PORTS; ++port)
-  {
-    for(int axis = 0; axis < NUM_SA_AXIS; ++axis)
+  for(int port = 0; port < NUM_PORTS; ++port)     // NOLINT
+    for(int axis = 0; axis < NUM_SA_AXIS; ++axis) // NOLINT
       myEvent.set(SA_Axis[port][axis], 0);
-  }
 
   return stick->ID;
 }
@@ -588,7 +586,7 @@ void PhysicalJoystickHandler::enableCommonMappings()
 {
   for (int i = Event::NoType + 1; i < Event::LastType; i++)
   {
-    const Event::Type event = static_cast<Event::Type>(i);
+    const auto event = static_cast<Event::Type>(i);
 
     if(isCommonEvent(event))
       enableMapping(event, EventMode::kCommonMode);
