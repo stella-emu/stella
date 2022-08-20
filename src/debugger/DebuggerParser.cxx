@@ -148,7 +148,9 @@ string DebuggerParser::exec(const FSNode& file, StringList* history)
       if(!getline(in, command))
         break;
 
+      ++execDepth;
       run(command);
+      --execDepth;
       if (history != nullptr)
         history->push_back(command);
       count++;
@@ -1317,9 +1319,7 @@ void DebuggerParser::executeExec()
   // make sure the commands are added to prompt history
   StringList history;
 
-  ++execDepth;
   commandResult << exec(node, &history);
-  --execDepth;
 
   for(const auto& item: history)
     debugger.prompt().addToHistory(item.c_str());
@@ -2159,6 +2159,14 @@ void DebuggerParser::executeStepWhile()
 
   progress.close();
   commandResult << "executed " << ncycles << " cycles";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "swchb"
+void DebuggerParser::executeSwchb()
+{
+  debugger.riotDebug().switches(args[0]);
+  commandResult << "SWCHB set to " << std::hex << std::setw(2) << std::setfill('0') << args[0];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -3381,6 +3389,16 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeStepWhile)
+  },
+
+  {
+    "swchb",
+    "Set SWCHB to xx",
+    "Example: swchb fe",
+    true,
+    true,
+    { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executeSwchb)
   },
 
   {
