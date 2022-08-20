@@ -89,6 +89,7 @@ class RiotDebug : public DebuggerSystem
     int intimAsInt() const { return static_cast<int>(intim()); }   // so we can use _inTim pseudo-register
 
     /* Console switches */
+    bool switches(int newVal = -1);
     bool diffP0(int newVal = -1);
     bool diffP1(int newVal = -1);
     bool tvType(int newVal = -1);

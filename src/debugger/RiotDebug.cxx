@@ -258,6 +258,16 @@ int RiotDebug::timReadCycles() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool RiotDebug::switches(int newVal)
+{
+  uInt8& switches = myConsole.switches().mySwitches;
+  if(newVal > -1)
+    switches = newVal;
+
+  return switches;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool RiotDebug::diffP0(int newVal)
 {
   uInt8& switches = myConsole.switches().mySwitches;
