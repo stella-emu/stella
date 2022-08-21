@@ -63,7 +63,8 @@ void TiaOutputWidget::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TiaOutputWidget::saveSnapshot(int execDepth, const string& execPrefix)
+void TiaOutputWidget::saveSnapshot(int execDepth, const string& execPrefix,
+                                   bool mark)
 {
 #ifdef IMAGE_SUPPORT
   if(execDepth > 0)
@@ -72,12 +73,39 @@ void TiaOutputWidget::saveSnapshot(int execDepth, const string& execPrefix)
   ostringstream sspath;
   sspath << instance().snapshotSaveDir()
          << instance().console().properties().get(PropType::Cart_Name);
-  sspath << "_dbg_";
-  if (execDepth > 0 && !execPrefix.empty()) {
-    sspath << execPrefix << "_";
+
+  if(mark)
+  {
+    sspath << "_dbg_";
+    if(execDepth > 0 && !execPrefix.empty()) {
+      sspath << execPrefix << "_";
+    }
+    sspath << std::hex << std::setw(8) << std::setfill('0')
+      << static_cast<uInt32>(TimerManager::getTicks() / 1000);
   }
-  sspath << std::hex << std::setw(8) << std::setfill('0')
-         << static_cast<uInt32>(TimerManager::getTicks()/1000) << ".png";
+  else
+  {
+    // Determine if the file already exists, checking each successive filename
+    // until one doesn't exist
+    FSNode node(sspath.str() + ".png");
+    if(node.exists())
+    {
+      ostringstream suffix;
+      ostringstream buf;
+      for(uInt32 i = 1; ; ++i)
+      {
+        buf.str("");
+        suffix.str("");
+        suffix << "_" << i;
+        buf << sspath.str() << suffix.str() << ".png";
+        FSNode next(buf.str());
+        if(!next.exists())
+          break;
+      }
+      sspath << suffix.str();
+    }
+  }
+  sspath << ".png";
 
   const uInt32 width  = instance().console().tia().width(),
                height = instance().console().tia().height();

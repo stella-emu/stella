@@ -2063,7 +2063,7 @@ void DebuggerParser::executeSaveSes()
 // "saveSnap"
 void DebuggerParser::executeSaveSnap()
 {
-  debugger.tiaOutput().saveSnapshot(execDepth, execPrefix);
+  debugger.tiaOutput().saveSnapshot(execDepth, execPrefix, argCount == 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
