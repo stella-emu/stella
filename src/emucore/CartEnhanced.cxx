@@ -66,7 +66,8 @@ CartridgeEnhanced::CartridgeEnhanced(const ByteBuffer& image, size_t size,
 void CartridgeEnhanced::install(System& system)
 {
   // limit banked RAM size to the size of one RAM bank
-  const uInt16 ramSize = myRamBankCount > 0 ? 1 << (myBankShift - 1) : uInt16(myRamSize);
+  const uInt16 ramSize = myRamBankCount > 0 ? 1 << (myBankShift - 1) :
+    static_cast<uInt16>(myRamSize);
 
   // calculate bank switching and RAM sizes and masks
   myBankSize = 1 << myBankShift;                    // e.g. = 2 ^ 12 = 4K = 0x1000
@@ -74,7 +75,7 @@ void CartridgeEnhanced::install(System& system)
   // Either the bankswitching supports multiple segments
   //  or the ROM is < 4K (-> 1 segment)
   myBankSegs = std::min(1 << (MAX_BANK_SHIFT - myBankShift),
-                        int(mySize) / myBankSize);  // e.g. = 1
+                        static_cast<int>(mySize) / myBankSize);  // e.g. = 1
   // ROM has an offset if RAM inside a bank (e.g. for F8SC)
   myRomOffset = myRamBankCount > 0U ? 0U : static_cast<uInt16>(myRamSize * 2);
   myRamMask = ramSize - 1;                          // e.g. = 0xFFFF (doesn't matter for RAM size 0)
@@ -160,7 +161,7 @@ uInt8 CartridgeEnhanced::peek(uInt16 address)
 
   // hotspots in TIA range are reacting to pokes only
   if (hotspot() >= 0x80)
-    checkSwitchBank(address & ADDR_MASK);
+    checkSwitchBank(address & ADDR_MASK, 0);
 
   if(isRamBank(address))
   {
@@ -202,7 +203,7 @@ bool CartridgeEnhanced::poke(uInt16 address, uInt8 value)
 
     if(isRamBank(address))
     {
-      if(bool(address & (myBankSize >> 1)) == myRamWpHigh)
+      if(static_cast<bool>(address & (myBankSize >> 1)) == myRamWpHigh)
       {
         address &= myRamMask;
         // The RAM banks follow the ROM banks and are half the size of a ROM bank
@@ -214,7 +215,7 @@ bool CartridgeEnhanced::poke(uInt16 address, uInt8 value)
     else
     {
       //address &= myBankMask;
-      if(bool(address & myRamSize) == myRamWpHigh)
+      if(static_cast<bool>(address & myRamSize) == myRamWpHigh)
       {
         pokeRAM(myRAM[address & myRamMask], pokeAddress, value);
         return true;
@@ -272,10 +273,12 @@ bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment)
     // Setup RAM bank
     const uInt16 ramBank = (bank - romBankCount()) % myRamBankCount;
     // The RAM banks follow the ROM banks and are half the size of a ROM bank
-    const uInt32 bankOffset = uInt32(mySize) + (ramBank << (myBankShift - 1));
+    const uInt32 bankOffset = static_cast<uInt32>(mySize) +
+      (ramBank << (myBankShift - 1));
 
     // Remember what bank is in this segment
-    myCurrentSegOffset[segment] = uInt32(mySize) + (ramBank << myBankShift);
+    myCurrentSegOffset[segment] = static_cast<uInt32>(mySize) +
+      (ramBank << myBankShift);
 
     // Set the page accessing method for the RAM writing pages
     // Note: Writes are mapped to poke() (NOT using directPokeBase) to check for read from write port (RWP)

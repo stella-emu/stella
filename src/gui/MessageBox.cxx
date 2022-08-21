@@ -125,4 +125,4 @@ void MessageBox::handleCommand(CommandSender* sender, int cmd, int data, int id)
     Dialog::handleCommand(sender, cmd, data, id);
 }
 
-}  // namespace GUI
+} // namespace GUI

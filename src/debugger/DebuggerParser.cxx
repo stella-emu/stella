@@ -563,7 +563,7 @@ string DebuggerParser::eval()
     if(args[i] < 0x10000)
       buf << " %" << Base::toString(args[i], Base::Fmt::_2);
 
-    buf << " #" << int(args[i]);
+    buf << " #" << static_cast<int>(args[i]);
     if(i != argCount - 1)
       buf << endl;
   }
@@ -756,7 +756,7 @@ void DebuggerParser::executeDirective(Device::AccessType type)
 // "a"
 void DebuggerParser::executeA()
 {
-  debugger.cpuDebug().setA(uInt8(args[0]));
+  debugger.cpuDebug().setA(static_cast<uInt8>(args[0]));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1909,7 +1909,7 @@ void DebuggerParser::executeRunToPc()
 // "s"
 void DebuggerParser::executeS()
 {
-  debugger.cpuDebug().setSP(uInt8(args[0]));
+  debugger.cpuDebug().setSP(static_cast<uInt8>(args[0]));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2488,14 +2488,14 @@ void DebuggerParser::executeWinds(bool unwind)
 // "x"
 void DebuggerParser::executeX()
 {
-  debugger.cpuDebug().setX(uInt8(args[0]));
+  debugger.cpuDebug().setX(static_cast<uInt8>(args[0]));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "y"
 void DebuggerParser::executeY()
 {
-  debugger.cpuDebug().setY(uInt8(args[0]));
+  debugger.cpuDebug().setY(static_cast<uInt8>(args[0]));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

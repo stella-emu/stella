@@ -51,7 +51,7 @@ namespace {
       from++;
     }
   }
-}
+} // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ProfilingRunner::ProfilingRunner(int argc, char* argv[])
@@ -187,7 +187,8 @@ bool ProfilingRunner::runOne(const ProfilingRun& run)
 
     if (tia.newFramePending()) tia.renderToFrameBuffer();
 
-    const uInt32 percentNow = uInt32(std::min((100 * cycles) / cyclesTarget, static_cast<uInt64>(100)));
+    const uInt32 percentNow = static_cast<uInt32>(std::min((100 * cycles) /
+      cyclesTarget, static_cast<uInt64>(100)));
     updateProgress(percent, percentNow);
 
     percent = percentNow;

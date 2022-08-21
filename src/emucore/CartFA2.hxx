@@ -109,7 +109,7 @@ class CartridgeFA2 : public CartridgeFA
     bool poke(uInt16 address, uInt8 value) override;
 
   private:
-    bool checkSwitchBank(uInt16 address, uInt8 value = 0) override;
+    bool checkSwitchBank(uInt16 address, uInt8 value) override;
 
     uInt16 hotspot() const override { return 0x1FF5; }
 

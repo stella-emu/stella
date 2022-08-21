@@ -176,7 +176,7 @@ bool OSystem::initialize(const Settings::Options& options)
   createSound();
 
   // Create random number generator
-  myRandom = make_unique<Random>(uInt32(TimerManager::getTicks()));
+  myRandom = make_unique<Random>(static_cast<uInt32>(TimerManager::getTicks()));
 
 #ifdef CHEATCODE_SUPPORT
   myCheatManager = make_unique<CheatManager>(*this);

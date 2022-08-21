@@ -286,7 +286,7 @@ class CartridgeEnhanced : public Cartridge
 
       @return  True if a bank switch happened.
     */
-    virtual bool checkSwitchBank(uInt16 address, uInt8 value = 0) = 0;
+    virtual bool checkSwitchBank(uInt16 address, uInt8 value) = 0;
 
   private:
     /**

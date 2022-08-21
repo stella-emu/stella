@@ -437,8 +437,8 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
                                        pwidth, lineHeight, items, desc, lwidth, dbg_cmds[idx]);
     wid.push_back(myDbgColour[idx]);
     x += myDbgColour[idx]->getWidth() + fontWidth * 1.25;
-    myDbgColourSwatch[idx] = new ColorWidget(myTab, font, x, ypos - 1,
-                                             uInt32(2 * lineHeight), lineHeight);
+    myDbgColourSwatch[idx] = new ColorWidget(
+      myTab, font, x, ypos - 1, static_cast<uInt32>(2 * lineHeight), lineHeight);
     ypos += lineHeight + VGAP * 1;
   };
 

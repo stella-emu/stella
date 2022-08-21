@@ -63,7 +63,7 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
   const int fontWidth = lfont.getMaxCharWidth(),
             numchars = w / fontWidth;
 
-  _labelWidth = std::max(14, int(0.45 * (numchars - 8 - 8 - 9 - 2))) * fontWidth - 1;
+  _labelWidth = std::max(14, static_cast<int>(0.45 * (numchars - 8 - 8 - 9 - 2))) * fontWidth - 1;
   _bytesWidth = 9 * fontWidth;
 
   ///////////////////////////////////////////////////////

@@ -39,7 +39,7 @@ namespace {
   constexpr uInt16 WRITE_SEND_BUFFER    = 0x1FF1;
   constexpr uInt16 RECEIVE_BUFFER       = 0x1FF2;
   constexpr uInt16 RECEIVE_BUFFER_SIZE  = 0x1FF3;
-}
+} // namespace
 #endif
 
 using std::chrono::milliseconds;

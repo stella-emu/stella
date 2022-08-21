@@ -74,7 +74,7 @@ uInt8 CartridgeX07::peek(uInt16 address)
   else if(!(lowAddress & 0x200))
     value = mySystem->tia().peek(address);
 
-  checkSwitchBank(address);
+  checkSwitchBank(address, 0);
 
   return value;
 }
@@ -90,7 +90,7 @@ bool CartridgeX07::poke(uInt16 address, uInt8 value)
   else if(!(lowAddress & 0x200))
     mySystem->tia().poke(address, value);
 
-  checkSwitchBank(address);
+  checkSwitchBank(address, 0);
 
   return false;
 }

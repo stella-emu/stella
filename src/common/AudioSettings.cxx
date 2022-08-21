@@ -39,7 +39,7 @@ namespace {
       numericResamplingQuality <= static_cast<int>(AudioSettings::ResamplingQuality::lanczos_3)
     ) ? static_cast<AudioSettings::ResamplingQuality>(numericResamplingQuality) : AudioSettings::DEFAULT_RESAMPLING_QUALITY;
   }
-}
+} // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AudioSettings::AudioSettings(Settings& settings)

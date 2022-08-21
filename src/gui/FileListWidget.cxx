@@ -680,16 +680,17 @@ const FileListWidget::Icon* FileListWidget::getIcon(int i) const
     0b11111111111'11111111110,
     0b11111111111'11111111110
   };
-  static const Icon* small_icons[int(IconType::numTypes)] = {
+  const int idx = static_cast<int>(IconType::numTypes);
+  static const Icon* small_icons[idx] = {
     &unknown_small, &rom_small, &directory_small, &zip_small, &up_small
   };
-  static const Icon* large_icons[int(IconType::numTypes)] = {
+  static const Icon* large_icons[idx] = {
     &unknown_large, &rom_large, &directory_large, &zip_large, &up_large,
   };
   const bool smallIcon = iconWidth() < 24;
-  const int iconType = int(_iconTypeList[i]);
+  const int iconType = static_cast<int>(_iconTypeList[i]);
 
-  assert(iconType < int(IconType::numTypes));
+  assert(iconType < idx);
 
   return smallIcon ? small_icons[iconType] : large_icons[iconType];
 }

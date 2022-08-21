@@ -293,7 +293,7 @@ void TIADebug::saveOldState()
 bool TIADebug::vdelP0(int newVal)
 {
   if(newVal > -1)
-    mySystem.poke(VDELP0, bool(newVal));
+    mySystem.poke(VDELP0, static_cast<bool>(newVal));
 
   return myTIA.registerValue(VDELP0) & 0x01;
 }
@@ -302,7 +302,7 @@ bool TIADebug::vdelP0(int newVal)
 bool TIADebug::vdelP1(int newVal)
 {
   if(newVal > -1)
-    mySystem.poke(VDELP1, bool(newVal));
+    mySystem.poke(VDELP1, static_cast<bool>(newVal));
 
   return myTIA.registerValue(VDELP1) & 0x01;
 }
@@ -311,7 +311,7 @@ bool TIADebug::vdelP1(int newVal)
 bool TIADebug::vdelBL(int newVal)
 {
   if(newVal > -1)
-    mySystem.poke(VDELBL, bool(newVal));
+    mySystem.poke(VDELBL, static_cast<bool>(newVal));
 
   return myTIA.registerValue(VDELBL) & 0x01;
 }
@@ -320,7 +320,7 @@ bool TIADebug::vdelBL(int newVal)
 bool TIADebug::enaM0(int newVal)
 {
   if(newVal > -1)
-    mySystem.poke(ENAM0, bool(newVal) << 1);
+    mySystem.poke(ENAM0, static_cast<bool>(newVal) << 1);
 
   return myTIA.registerValue(ENAM0) & 0x02;
 }
@@ -329,7 +329,7 @@ bool TIADebug::enaM0(int newVal)
 bool TIADebug::enaM1(int newVal)
 {
   if(newVal > -1)
-    mySystem.poke(ENAM1, bool(newVal) << 1);
+    mySystem.poke(ENAM1, static_cast<bool>(newVal) << 1);
 
   return myTIA.registerValue(ENAM1) & 0x02;
 }
@@ -338,7 +338,7 @@ bool TIADebug::enaM1(int newVal)
 bool TIADebug::enaBL(int newVal)
 {
   if(newVal > -1)
-    mySystem.poke(ENABL, bool(newVal) << 1);
+    mySystem.poke(ENABL, static_cast<bool>(newVal) << 1);
 
   return myTIA.registerValue(ENABL) & 0x02;
 }
@@ -347,7 +347,7 @@ bool TIADebug::enaBL(int newVal)
 bool TIADebug::resMP0(int newVal)
 {
   if(newVal > -1)
-    mySystem.poke(RESMP0, bool(newVal) << 1);
+    mySystem.poke(RESMP0, static_cast<bool>(newVal) << 1);
 
   return myTIA.registerValue(RESMP0) & 0x02;
 }
@@ -356,7 +356,7 @@ bool TIADebug::resMP0(int newVal)
 bool TIADebug::resMP1(int newVal)
 {
   if(newVal > -1)
-    mySystem.poke(RESMP1, bool(newVal) << 1);
+    mySystem.poke(RESMP1, static_cast<bool>(newVal) << 1);
 
   return myTIA.registerValue(RESMP1) & 0x02;
 }
@@ -365,7 +365,7 @@ bool TIADebug::resMP1(int newVal)
 bool TIADebug::refP0(int newVal)
 {
   if(newVal > -1)
-    mySystem.poke(REFP0, bool(newVal) << 3);
+    mySystem.poke(REFP0, static_cast<bool>(newVal) << 3);
 
   return myTIA.registerValue(REFP0) & 0x08;
 }
@@ -374,7 +374,7 @@ bool TIADebug::refP0(int newVal)
 bool TIADebug::refP1(int newVal)
 {
   if(newVal > -1)
-    mySystem.poke(REFP1, bool(newVal) << 3);
+    mySystem.poke(REFP1, static_cast<bool>(newVal) << 3);
 
   return myTIA.registerValue(REFP1) & 0x08;
 }

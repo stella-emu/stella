@@ -74,7 +74,7 @@ bool CartridgeFC::poke(uInt16 address, uInt8 value)
       break;
 
     default:
-      checkSwitchBank(address);
+      checkSwitchBank(address, 0);
   }
   return false;
 }

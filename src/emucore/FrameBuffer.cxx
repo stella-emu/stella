@@ -616,7 +616,8 @@ void FrameBuffer::createMessage(const string& message, MessagePosition position,
   const int fontHeight = font().getFontHeight();
   const int VBORDER = fontHeight / 4;
 
-  myMsg.counter = std::min(uInt32(myOSystem.frameRate()) * 2, 120U); // Show message for 2 seconds
+  // Show message for 2 seconds
+  myMsg.counter = std::min(static_cast<uInt32>(myOSystem.frameRate()) * 2, 120U);
   if(myMsg.counter == 0)
     myMsg.counter = 120;
 

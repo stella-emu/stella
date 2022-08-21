@@ -186,6 +186,6 @@ public:
   }
 };
 
-}  // End of namespace Common
+} // namespace Common
 
 #endif

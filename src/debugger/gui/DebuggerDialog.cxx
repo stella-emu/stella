@@ -741,7 +741,7 @@ Common::Rect DebuggerDialog::getStatusBounds() const
   return {
       tia.x() + tia.w() + 1,
       0,
-      tia.x() + tia.w() + 225 + (_w > 1030 ? int(0.35 * (_w - 1030)) : 0),
+      tia.x() + tia.w() + 225 + (_w > 1030 ? static_cast<int>(0.35 * (_w - 1030)) : 0),
       tia.y() + tia.h()
   };
 }

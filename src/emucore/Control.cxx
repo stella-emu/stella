@@ -120,7 +120,8 @@ string Controller::getName(const Type type)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Controller::getPropName(const Type type)
 {
-  static constexpr std::array<const char*, int(Controller::Type::LastType)> PROP_NAMES =
+  static constexpr std::array<const char*,
+    static_cast<int>(Controller::Type::LastType)> PROP_NAMES =
   {
     "AUTO",
     "AMIGAMOUSE", "ATARIMOUSE", "ATARIVOX", "BOOSTERGRIP", "COMPUMATE",

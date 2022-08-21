@@ -2033,14 +2033,14 @@ json EventHandler::convertLegacyComboMapping(string list)
           buf >> event;
           // skip all NoType events
           if(event != Event::NoType)
-            events.push_back(Event::Type(event));
+            events.push_back(static_cast<Event::Type>(event));
         }
         // only store if there are any NoType events
         if(!events.empty())
         {
           json combo;
 
-          combo["combo"] = Event::Type(Event::Combo1 + i);
+          combo["combo"] = static_cast<Event::Type>(Event::Combo1 + i);
           combo["events"] = events;
           convertedMapping.push_back(combo);
         }
@@ -2171,14 +2171,14 @@ void EventHandler::saveComboMapping()
 
       // skip all NoType events
       if(event != Event::NoType)
-        events.push_back(Event::Type(event));
+        events.push_back(static_cast<Event::Type>(event));
     }
     // only store if there are any NoType events
     if(!events.empty())
     {
       json combo;
 
-      combo["combo"] = Event::Type(Event::Combo1 + i);
+      combo["combo"] = static_cast<Event::Type>(Event::Combo1 + i);
       combo["events"] = events;
       mapping.push_back(combo);
     }

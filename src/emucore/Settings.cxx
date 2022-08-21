@@ -194,7 +194,7 @@ Settings::Settings()
 
 
   // Misc options
-  setPermanent("loglevel", int(Logger::Level::INFO));
+  setPermanent("loglevel", static_cast<int>(Logger::Level::INFO));
   setPermanent("logtoconsole", "0");
   setPermanent("avoxport", "");
   setPermanent("fastscbios", "true");
@@ -473,7 +473,7 @@ void Settings::validate()
 
   i = getInt("loglevel");
   if(i < static_cast<int>(Logger::Level::MIN) || i > static_cast<int>(Logger::Level::MAX))
-    setValue("loglevel", int(Logger::Level::INFO));
+    setValue("loglevel", static_cast<int>(Logger::Level::INFO));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

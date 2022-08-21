@@ -31,7 +31,7 @@ namespace {
             (R_MAX + R * static_cast<double>(vMax)) / (R_MAX + R * static_cast<double>(v)))
     );
   }
-}
+} // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Audio::Audio()

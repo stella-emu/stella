@@ -287,6 +287,6 @@ class LinkedObjectPool
     LinkedObjectPool& operator=(LinkedObjectPool&&) = delete;
 };
 
-}  // Namespace Common
+} // namespace Common
 
 #endif

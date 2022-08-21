@@ -192,12 +192,3 @@ void NTSCFilter::convertToAdjustable(Adjustable& adjustable,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AtariNTSC::Setup NTSCFilter::myCustomSetup = AtariNTSC::TV_Composite;
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const std::array<NTSCFilter::AdjustableTag, int(NTSCFilter::Adjustables::NUM_ADJUSTABLES)> NTSCFilter::ourCustomAdjustables = { {
-  { "sharpness", &myCustomSetup.sharpness },
-  { "resolution", &myCustomSetup.resolution },
-  { "artifacts", &myCustomSetup.artifacts },
-  { "fringing", &myCustomSetup.fringing },
-  { "bleeding", &myCustomSetup.bleed }
-} };

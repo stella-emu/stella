@@ -46,7 +46,7 @@ PaletteHandler::PaletteType PaletteHandler::toPaletteType(const string& name) co
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string PaletteHandler::toPaletteName(PaletteType type)
 {
-  const string SETTING_NAMES[int(PaletteType::NumTypes)] = {
+  const string SETTING_NAMES[static_cast<int>(PaletteType::NumTypes)] = {
     SETTING_STANDARD, SETTING_Z26, SETTING_USER, SETTING_CUSTOM
   };
 
@@ -321,12 +321,13 @@ void PaletteHandler::setPalette()
 
     // Look at all the palettes, since we don't know which one is
     // currently active
-    static constexpr BSPF::array2D<const PaletteArray*, PaletteType::NumTypes, int(ConsoleTiming::numTimings)> palettes = {{
+    static constexpr BSPF::array2D<const PaletteArray*, PaletteType::NumTypes,
+    static_cast<int>(ConsoleTiming::numTimings)> palettes = {{
       { &ourNTSCPalette,       &ourPALPalette,       &ourSECAMPalette     },
       { &ourNTSCPaletteZ26,    &ourPALPaletteZ26,    &ourSECAMPaletteZ26  },
       { &ourUserNTSCPalette,   &ourUserPALPalette,   &ourUserSECAMPalette },
       { &ourCustomNTSCPalette, &ourCustomPALPalette, &ourSECAMPalette     }
-      }};
+    }};
     // See which format we should be using
     const ConsoleTiming timing = myOSystem.console().timing();
     const PaletteType paletteType = toPaletteType(name);

@@ -244,11 +244,12 @@ RadioButtonWidget::RadioButtonWidget(GuiObject* boss, const GUI::Font& font,
     _w = _buttonSize;
   else
     _w = font.getStringWidth(label) + _buttonSize + font.getMaxCharWidth() * 0.75;
-  _h = font.getFontHeight() < int(_buttonSize) ? _buttonSize : font.getFontHeight();
+  _h = font.getFontHeight() < static_cast<int>(_buttonSize)
+      ? _buttonSize : font.getFontHeight();
 
   // Depending on font size, either the font or box will need to be
   // centered vertically
-  if(_h > int(_buttonSize))  // center box
+  if(_h > static_cast<int>(_buttonSize))  // center box
     _boxY = (_h - _buttonSize) / 2;
   else         // center text
     _textY = (_buttonSize - _font.getFontHeight()) / 2;

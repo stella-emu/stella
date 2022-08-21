@@ -42,7 +42,7 @@ namespace {
       ScalingInterpolation::sharp;
 #endif
   }
-}
+} // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TIASurface::TIASurface(OSystem& system)
@@ -257,7 +257,7 @@ void TIASurface::changeScanlineIntensity(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TIASurface::ScanlineMask TIASurface::scanlineMaskType(int direction)
 {
-  const string Masks[int(ScanlineMask::NumMasks)] = {
+  const string Masks[static_cast<int>(ScanlineMask::NumMasks)] = {
     SETTING_STANDARD,
     SETTING_THIN,
     SETTING_PIXELS,
@@ -276,7 +276,7 @@ TIASurface::ScanlineMask TIASurface::scanlineMaskType(int direction)
         i = BSPF::clampw(i + direction, 0, static_cast<int>(ScanlineMask::NumMasks) - 1);
         myOSystem.settings().setValue("tv.scanmask", Masks[i]);
       }
-      return ScanlineMask(i);
+      return static_cast<ScanlineMask>(i);
     }
     ++i;
   }
@@ -286,7 +286,7 @@ TIASurface::ScanlineMask TIASurface::scanlineMaskType(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIASurface::cycleScanlineMask(int direction)
 {
-  const string Names[int(ScanlineMask::NumMasks)] = {
+  const string Names[static_cast<int>(ScanlineMask::NumMasks)] = {
     "Standard",
     "Thin lines",
     "Pixelated",
@@ -310,7 +310,9 @@ void TIASurface::enablePhosphor(bool enable, int blend)
   if(myPhosphorHandler.initialize(enable, blend))
   {
     myPBlend = blend;
-    myFilter = static_cast<Filter>(enable ? uInt8(myFilter) | 0x01 : uInt8(myFilter) & 0x10);
+    myFilter = static_cast<Filter>(
+        enable ? static_cast<uInt8>(myFilter) | 0x01
+               : static_cast<uInt8>(myFilter) & 0x10);
     myRGBFramebuffer.fill(0);
   }
 }
@@ -334,7 +336,7 @@ void TIASurface::createScanlineSurface()
       : vRepeats(c_vRepeats), data(c_data)
     {}
   };
-  static std::array<Pattern, int(ScanlineMask::NumMasks)> Patterns = {{
+  static std::array<Pattern, static_cast<int>(ScanlineMask::NumMasks)> Patterns = {{
     Pattern(1,  // standard
     {
       { 0x00000000 },
@@ -438,7 +440,9 @@ void TIASurface::createScanlineSurface()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIASurface::enableNTSC(bool enable)
 {
-  myFilter = static_cast<Filter>(enable ? uInt8(myFilter) | 0x10 : uInt8(myFilter) & 0x01);
+  myFilter = static_cast<Filter>(
+      enable ? static_cast<uInt8>(myFilter) | 0x10
+             : static_cast<uInt8>(myFilter) & 0x01);
 
   const uInt32 surfaceWidth = enable ?
     AtariNTSC::outWidth(TIAConstants::frameBufferWidth) : TIAConstants::frameBufferWidth;

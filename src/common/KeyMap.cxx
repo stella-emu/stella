@@ -66,7 +66,7 @@ namespace {
 
     return mask;
   }
-}
+} // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void KeyMap::add(const Event::Type event, const Mapping& mapping)
@@ -301,11 +301,11 @@ json KeyMap::convertLegacyMapping(string list)
   {
     json mapping = json::object();
 
-    mapping["event"] = Event::Type(event);
-    mapping["key"] = StellaKey(key);
+    mapping["event"] = static_cast<Event::Type>(event);
+    mapping["key"] = static_cast<StellaKey>(key);
 
-    if(StellaMod(mod) != StellaMod::KBDM_NONE)
-      mapping["mod"] = serializeModkeyMask(StellaMod(mod));
+    if(static_cast<StellaMod>(mod) != StellaMod::KBDM_NONE)
+      mapping["mod"] = serializeModkeyMask(static_cast<StellaMod>(mod));
 
     convertedMapping.push_back(mapping);
   }

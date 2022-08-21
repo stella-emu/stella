@@ -36,7 +36,7 @@
 
 namespace {
   constexpr Int32 CURRENT_VERSION = 1;
-}
+} // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StellaDb::StellaDb(const string& databaseDirectory, const string& databaseName)

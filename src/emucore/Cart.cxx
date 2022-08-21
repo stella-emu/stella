@@ -31,7 +31,7 @@ Cartridge::Cartridge(const Settings& settings, const string& md5)
   : mySettings{settings}
 {
   const auto to_uInt32 = [](const string& s, uInt32 pos) {
-    return uInt32(std::stoul(s.substr(pos, 8), nullptr, 16));
+    return static_cast<uInt32>(std::stoul(s.substr(pos, 8), nullptr, 16));
   };
 
   const uInt32 seed = to_uInt32(md5, 0)  ^ to_uInt32(md5, 8) ^

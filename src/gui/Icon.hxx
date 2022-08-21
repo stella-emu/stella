@@ -57,6 +57,6 @@ class Icon
     Icon& operator=(Icon&&) = delete;
 };
 
-}  // namespace GUI
+} // namespace GUI
 
 #endif

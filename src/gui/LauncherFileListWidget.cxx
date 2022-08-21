@@ -508,21 +508,25 @@ const FileListWidget::Icon* LauncherFileListWidget::getIcon(int i) const
     0b11111111111'11111111110,
     0b11111111111'11111111110
   };
-  static const Icon* small_icons[int(IconType::numLauncherTypes)] = {
-    &favrom_small, &favdir_small, &favzip_small, &user_small, &recent_small, &popular_small
+  static constexpr auto NLT = static_cast<int>(IconType::numLauncherTypes);
+  static const Icon* small_icons[NLT] = {
+    &favrom_small, &favdir_small, &favzip_small,
+    &user_small, &recent_small, &popular_small
 
   };
-  static const Icon* large_icons[int(IconType::numLauncherTypes)] = {
-    &favrom_large, &favdir_large, &favzip_large, &user_large, &recent_large, &popular_large
+  static const Icon* large_icons[NLT] = {
+    &favrom_large, &favdir_large, &favzip_large,
+    &user_large, &recent_large, &popular_large
   };
 
-  if(int(_iconTypeList[i]) < static_cast<int>(IconType::numTypes))
+  if(static_cast<int>(_iconTypeList[i]) < static_cast<int>(IconType::numTypes))
     return FileListWidget::getIcon(i);
 
   const bool smallIcon = iconWidth() < 24;
-  const int iconType = int(_iconTypeList[i]) - static_cast<int>(IconType::numTypes);
+  const int iconType =
+    static_cast<int>(_iconTypeList[i]) - static_cast<int>(IconType::numTypes);
 
-  assert(iconType < int(IconType::numLauncherTypes));
+  assert(iconType < NLT);
 
   return smallIcon ? small_icons[iconType] : large_icons[iconType];
 }
