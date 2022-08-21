@@ -159,7 +159,7 @@ void ToolTip::show(const string& tip)
     string leftStr, rightStr;
 
     surface()->splitString(*myFont, inStr, maxWidth, leftStr, rightStr);
-    width = std::max(width, uInt32(myFont->getStringWidth(leftStr)));
+    width = std::max(width, static_cast<uInt32>(myFont->getStringWidth(leftStr)));
     inStr = rightStr;
   }
   width += myTextXOfs * 2;
@@ -174,7 +174,7 @@ void ToolTip::show(const string& tip)
   // Limit position to app size and adjust accordingly
   const Int32 xAbs = myTipPos.x + dialogRect.x() / myScale;
   const uInt32 yAbs = myTipPos.y + dialogRect.y() / myScale;
-  Int32 x = std::min(xAbs, Int32(imageRect.w() / myScale - width));
+  Int32 x = std::min(xAbs, static_cast<Int32>(imageRect.w() / myScale - width));
   const uInt32 y = (yAbs + height + H_CURSOR > imageRect.h() / myScale)
     ? yAbs - height - V_GAP
     : yAbs + H_CURSOR / myScale + V_GAP;

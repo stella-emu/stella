@@ -158,7 +158,7 @@ class CartridgeWD : public CartridgeEnhanced
     */
     bool randomStartBank() const override { return false; }
 
-    bool checkSwitchBank(uInt16, uInt8 = 0) override { return false; }
+    bool checkSwitchBank(uInt16, uInt8) override { return false; }
 
     uInt16 hotspot() const override { return 0x0030; }
 

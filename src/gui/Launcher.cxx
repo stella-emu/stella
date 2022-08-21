@@ -39,8 +39,8 @@ Launcher::Launcher(OSystem& osystem)
   // Do not include overscan when launcher saving size
   myOSystem.settings().setValue("launcherres", mySize);
   // Now make overscan effective
-  mySize.w = std::min(mySize.w, uInt32(d.w * overscan));
-  mySize.h = std::min(mySize.h, uInt32(d.h * overscan));
+  mySize.w = std::min(mySize.w, static_cast<uInt32>(d.w * overscan));
+  mySize.h = std::min(mySize.h, static_cast<uInt32>(d.h * overscan));
 
   myBaseDialog = new LauncherDialog(myOSystem, *this, 0, 0, mySize.w, mySize.h);
 }

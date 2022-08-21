@@ -248,7 +248,8 @@ bool CartDebug::disassembleAddr(uInt16 address, bool force)
   const Cartridge& cart = myConsole.cartridge();
   const int segCount = cart.segmentCount();
   // ROM/RAM bank or ZP-RAM?
-  const int addrBank = (address & 0x1000) ? getBank(address) : int(myBankInfo.size()) - 1;
+  const int addrBank = (address & 0x1000)
+    ? getBank(address) : static_cast<int>(myBankInfo.size()) - 1;
 
   if(segCount > 1)
   {
@@ -476,7 +477,7 @@ bool CartDebug::addDirective(Device::AccessType type,
 
   if(bank < 0)  // Do we want the current bank or ZP RAM?
     bank = (myDebugger.cpuDebug().pc() & 0x1000) ?
-      getBank(myDebugger.cpuDebug().pc()) : int(myBankInfo.size())-1;
+      getBank(myDebugger.cpuDebug().pc()) : static_cast<int>(myBankInfo.size())-1;
 
   bank = std::min(bank, romBankCount());
   BankInfo& info = myBankInfo[bank];
@@ -628,7 +629,7 @@ bool CartDebug::addLabel(const string& label, uInt16 address)
       removeLabel(label);
       myUserAddresses.emplace(label, address);
       myUserLabels.emplace(address, label);
-      myLabelLength = std::max(myLabelLength, uInt16(label.size()));
+      myLabelLength = std::max(myLabelLength, static_cast<uInt16>(label.size()));
       mySystem.setDirtyPage(address);
       return true;
   }
@@ -1393,7 +1394,7 @@ string CartDebug::saveDisassembly(string path)
         << ";-----------------------------------------------------------\n\n";
     int max_len = 16;
     for(const auto& iter: myUserLabels)
-      max_len = std::max(max_len, int(iter.second.size()));
+      max_len = std::max(max_len, static_cast<int>(iter.second.size()));
     for(const auto& iter: myUserLabels)
       out << ALIGN(max_len) << iter.second << "= $" << iter.first << "\n";
   }

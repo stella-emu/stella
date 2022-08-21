@@ -357,8 +357,8 @@ bool FBBackendSDL2::adaptRefreshRate(Int32 displayIndex,
   const int wantedRefreshRate =
       myOSystem.hasConsole() ? myOSystem.console().gameRefreshRate() : 0;
   // Take care of rounded refresh rates (e.g. 59.94 Hz)
-  float factor = std::min(float(currentRefreshRate) / wantedRefreshRate,
-                          float(currentRefreshRate) / (wantedRefreshRate - 1));
+  float factor = std::min(
+      static_cast<float>(currentRefreshRate) / wantedRefreshRate, static_cast<float>(currentRefreshRate) / (wantedRefreshRate - 1));
   // Calculate difference taking care of integer factors (e.g. 100/120)
   float bestDiff = std::abs(factor - std::round(factor)) / factor;
   bool adapt = false;
@@ -377,8 +377,9 @@ bool FBBackendSDL2::adaptRefreshRate(Int32 displayIndex,
       Logger::error("ERROR: Closest display mode could not be retrieved");
       return adapt;
     }
-    factor = std::min(float(sdlMode.refresh_rate) / sdlMode.refresh_rate,
-                      float(sdlMode.refresh_rate) / (sdlMode.refresh_rate - 1));
+    factor = std::min(
+        static_cast<float>(sdlMode.refresh_rate) / sdlMode.refresh_rate,
+        static_cast<float>(sdlMode.refresh_rate) / (sdlMode.refresh_rate - 1));
     const float diff = std::abs(factor - std::round(factor)) / factor;
     if(diff < bestDiff)
     {

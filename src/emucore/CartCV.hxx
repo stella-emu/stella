@@ -79,7 +79,7 @@ class CartridgeCV : public CartridgeEnhanced
   #endif
 
   private:
-    bool checkSwitchBank(uInt16, uInt8 = 0) override { return false; }
+    bool checkSwitchBank(uInt16, uInt8) override { return false; }
 
   protected:
     // Initial RAM data from the cart (doesn't always exist)

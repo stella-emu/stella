@@ -39,7 +39,7 @@ namespace {
 
     return result;
   }
-}
+} // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalJoystick::initialize(int index, const string& desc,

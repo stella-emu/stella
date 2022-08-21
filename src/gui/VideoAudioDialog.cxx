@@ -982,7 +982,7 @@ void VideoAudioDialog::handleTVModeChange(NTSCFilter::Preset preset)
 void VideoAudioDialog::loadTVAdjustables(NTSCFilter::Preset preset)
 {
   NTSCFilter::Adjustable adj;
-  NTSCFilter::getAdjustables(adj, NTSCFilter::Preset(preset));
+  NTSCFilter::getAdjustables(adj, preset);
   myTVSharp->setValue(adj.sharpness);
   myTVRes->setValue(adj.resolution);
   myTVArtifacts->setValue(adj.artifacts);

@@ -263,4 +263,5 @@ class HighScoresManager
     HighScoresManager& operator=(const HighScoresManager&) = delete;
     HighScoresManager& operator=(HighScoresManager&&) = delete;
 };
+
 #endif

@@ -22,9 +22,9 @@
 
 /**
   Implementation of MovieCart.
-  1K of memory is presented on the bus, but is repeated to fill the 4K image space.
-  Contents are dynamically altered with streaming image and audio content as specific
-  128-byte regions are entered.
+  1K of memory is presented on the bus, but is repeated to fill the 4K image
+  space.  Contents are dynamically altered with streaming image and audio content
+  as specific 128-byte regions are entered.
   Original implementation: github.com/lodefmode/moviecart
 
   @author  Rob Bairos
@@ -45,7 +45,7 @@ namespace {
   constexpr int BACK_SECONDS = 10;
 
   constexpr int TITLE_CYCLES = 1000000;
-}
+} // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /**
@@ -61,7 +61,7 @@ class StreamReader : public Serializable
       if(myFile)
         myFileSize = myFile.size();
 
-      return bool(myFile);
+      return static_cast<bool>(myFile);
     }
 
     void blankPartialLines(bool index) {

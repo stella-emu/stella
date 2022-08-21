@@ -30,7 +30,8 @@ EventHandlerSDL2::EventHandlerSDL2(OSystem& osystem)
 #ifdef GUI_SUPPORT
   {
     ostringstream buf;
-    myQwertz = int{'y'} == static_cast<int>(SDL_GetKeyFromScancode(SDL_Scancode(KBDK_Z)));
+    myQwertz = int{'y'} == static_cast<int>
+      (SDL_GetKeyFromScancode(static_cast<SDL_Scancode>(KBDK_Z)));
     buf << "Keyboard: " << (myQwertz ? "QWERTZ" : "QWERTY");
     Logger::debug(buf.str());
   }

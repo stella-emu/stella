@@ -66,7 +66,7 @@ namespace {
     }
     out.put('"');
   }
-}
+} // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 KeyValueRepositoryPropertyFile::KeyValueRepositoryPropertyFile(

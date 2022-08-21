@@ -116,7 +116,7 @@ bool ToggleWidget::handleKeyDown(StellaKey key, StellaMod mod)
       break;
 
     case KBDK_DOWN:
-      if (_currentRow < int(_rows) - 1)
+      if (_currentRow < _rows - 1)
       {
         _currentRow++;
         dirty = true;
@@ -132,7 +132,7 @@ bool ToggleWidget::handleKeyDown(StellaKey key, StellaMod mod)
       break;
 
     case KBDK_RIGHT:
-      if (_currentCol < int(_cols) - 1)
+      if (_currentCol < _cols - 1)
       {
         _currentCol++;
         dirty = true;
@@ -148,7 +148,7 @@ bool ToggleWidget::handleKeyDown(StellaKey key, StellaMod mod)
       break;
 
     case KBDK_PAGEDOWN:
-      if (_currentRow < int(_rows) - 1)
+      if (_currentRow < _rows - 1)
       {
         _currentRow = _rows - 1;
         dirty = true;
@@ -164,7 +164,7 @@ bool ToggleWidget::handleKeyDown(StellaKey key, StellaMod mod)
       break;
 
     case KBDK_END:
-      if (_currentCol < int(_cols) - 1)
+      if (_currentCol < _cols - 1)
       {
         _currentCol = _cols - 1;
         dirty = true;

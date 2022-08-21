@@ -330,7 +330,8 @@ bool EventMappingWidget::handleKeyUp(StellaKey key, StellaMod mod)
       if(myMod & KBDM_GUI)
         myMod |= KBDM_GUI;
     }
-    if (instance().eventHandler().addKeyMapping(event, myEventMode, StellaKey(myLastKey), StellaMod(myMod)))
+    if (instance().eventHandler().addKeyMapping(event, myEventMode,
+        static_cast<StellaKey>(myLastKey), static_cast<StellaMod>(myMod)))
       stopRemapping();
   }
   return true;

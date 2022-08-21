@@ -50,7 +50,7 @@ namespace {
     return sinc(x) * sinc(x / static_cast<float>(a));
   }
 
-}
+} // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 LanczosResampler::LanczosResampler(
@@ -72,9 +72,9 @@ LanczosResampler::LanczosResampler(
   myPrecomputedKernelCount{reducedDenominator(formatFrom.sampleRate, formatTo.sampleRate)},
   myKernelSize{2 * kernelParameter},
   myKernelParameter{kernelParameter},
-  myHighPassL{HIGH_PASS_CUT_OFF, float(formatFrom.sampleRate)},
-  myHighPassR{HIGH_PASS_CUT_OFF, float(formatFrom.sampleRate)},
-  myHighPass{HIGH_PASS_CUT_OFF, float(formatFrom.sampleRate)}
+  myHighPassL{HIGH_PASS_CUT_OFF, static_cast<float>(formatFrom.sampleRate)},
+  myHighPassR{HIGH_PASS_CUT_OFF, static_cast<float>(formatFrom.sampleRate)},
+  myHighPass{HIGH_PASS_CUT_OFF, static_cast<float>(formatFrom.sampleRate)}
 {
   myPrecomputedKernels = make_unique<float[]>(
       static_cast<size_t>(myPrecomputedKernelCount) * myKernelSize);

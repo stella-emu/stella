@@ -90,7 +90,7 @@ void TimeLineWidget::setStepValues(const IntArray& steps)
 
     // Skip the very last value; we take care of it outside the end of the loop
     for(uInt32 i = 0; i < steps.size() - 1; ++i)
-      _stepValue.push_back(int(steps[i] * scale));
+      _stepValue.push_back(static_cast<int>(steps[i] * scale));
 
     // Due to integer <-> double conversion, the last value is sometimes
     // slightly less than the maximum value; we assign it manually to fix this
@@ -103,7 +103,7 @@ void TimeLineWidget::setStepValues(const IntArray& steps)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TimeLineWidget::handleMouseMoved(int x, int y)
 {
-  if(isEnabled() && _isDragging && x >= int(_labelWidth))
+  if(isEnabled() && _isDragging && x >= static_cast<int>(_labelWidth))
     setValue(posToValue(x - _labelWidth));
 }
 

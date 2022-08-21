@@ -356,7 +356,7 @@ int FBSurface::drawString(const GUI::Font& font, const string& s,
     drawString(font, leftStr, x, y, w, color, align, deltax, false, shadowColor,
                linkStart, linkLen, underline);
     if(linkStart != string::npos)
-      linkStart = std::max(0, int(linkStart - leftStr.length()));
+      linkStart = std::max(0, static_cast<int>(linkStart - leftStr.length()));
 
     h -= font.getFontHeight();
     y += font.getFontHeight();

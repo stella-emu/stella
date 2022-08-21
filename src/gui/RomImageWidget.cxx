@@ -266,8 +266,10 @@ bool RomImageWidget::loadImage(const string& fileName)
   {
     // Scale surface to available image area
     const Common::Rect& src = mySurface->srcRect();
-    const float scale = std::min(float(_w) / src.w(), float(myImageHeight) / src.h()) *
-      instance().frameBuffer().hidpiScaleFactor();
+    const float scale = std::min(
+      static_cast<float>(_w) / src.w(),
+      static_cast<float>(myImageHeight) / src.h()) *
+        instance().frameBuffer().hidpiScaleFactor();
     mySurface->setDstSize(static_cast<uInt32>(src.w() * scale), static_cast<uInt32>(src.h() * scale));
   }
 

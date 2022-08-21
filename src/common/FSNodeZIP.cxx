@@ -39,7 +39,7 @@ FSNodeZIP::FSNodeZIP(const string& p)
   if (_zipFile[0] == '~')
   {
 #if defined(BSPF_UNIX) || defined(BSPF_MACOS)
-    const char* home = std::getenv("HOME");
+    const char* home = std::getenv("HOME");  // NOLINT (not thread safe)
     if (home != nullptr)
       _zipFile.replace(0, 1, home);
 #elif defined(BSPF_WINDOWS)

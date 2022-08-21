@@ -128,7 +128,7 @@ void CheatCodeDialog::loadConfig()
   for(const auto& c: list)
   {
     l.push_back(c->name());
-    b.push_back(bool(c->enabled()));
+    b.push_back(c->enabled());
   }
   myCheatList->setList(l, b);
 

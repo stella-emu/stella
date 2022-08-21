@@ -51,12 +51,13 @@ namespace {
         KeyValueRepositoryAtomic& myKvr;
         const string& myKey;
     };
-}
+} // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CompositeKVRJsonAdapter::CompositeKVRJsonAdapter(KeyValueRepositoryAtomic& kvr)
   : myKvr{kvr}
-{}
+{
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 shared_ptr<KeyValueRepository> CompositeKVRJsonAdapter::get(const string& key)

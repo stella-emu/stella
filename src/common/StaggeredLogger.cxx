@@ -33,7 +33,7 @@ namespace {
 
     return formattedTime.data();
   }
-}
+} // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StaggeredLogger::StaggeredLogger(const string& message, Logger::Level level)

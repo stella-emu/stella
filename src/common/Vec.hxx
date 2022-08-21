@@ -40,6 +40,6 @@ void removeAt(vector<T>& dst, uInt32 idx)
   dst.erase(dst.cbegin()+idx);
 }
 
-}  // Namespace Vec
+} // namespace Vec
 
 #endif

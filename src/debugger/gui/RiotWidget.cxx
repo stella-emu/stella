@@ -69,15 +69,15 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
 
   StringList labels;
 
-#define CREATE_IO_REGS(desc, bits, bitsID, editable)                     \
-  t = new StaticTextWidget(boss, lfont, xpos, ypos+2, lwidth, fontHeight,\
-                           desc);                                        \
-  xpos += t->getWidth() + 5;                                             \
-  bits = new ToggleBitWidget(boss, nfont, xpos, ypos, 8, 1, 1, labels);  \
-  bits->setTarget(this);                                                 \
-  bits->setID(bitsID);                                                   \
-  if(editable) addFocusWidget(bits); else bits->setEditable(false);      \
-  bits->setList(off, on);
+#define CREATE_IO_REGS(desc, bits, bitsID, editable)                      \
+  t = new StaticTextWidget(boss, lfont, xpos, ypos+2, lwidth, fontHeight, \
+                           desc);                                         \
+  xpos += t->getWidth() + 5;                                              \
+  (bits) = new ToggleBitWidget(boss, nfont, xpos, ypos, 8, 1, 1, labels); \
+  (bits)->setTarget(this);                                                \
+  (bits)->setID(bitsID);                                                  \
+  if(editable) addFocusWidget(bits); else (bits)->setEditable(false);     \
+  (bits)->setList(off, on);
 
   // SWCHA bits in 'poke' mode
   labels.clear();
@@ -286,7 +286,7 @@ void RiotWidget::loadConfig()
   changed.clear();                                            \
   for(uInt32 i = 0; i < state.s_bits.size(); ++i)             \
     changed.push_back(state.s_bits[i] != oldstate.s_bits[i]); \
-  bits->setState(state.s_bits, changed);
+  (bits)->setState(state.s_bits, changed);
 
   IntArray alist;
   IntArray vlist;

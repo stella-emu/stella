@@ -275,7 +275,7 @@ bool TIA::save(Serializer& out) const
     if(!myInput0.save(out)) return false;
     if(!myInput1.save(out)) return false;
 
-    out.putInt(int(myHstate));
+    out.putInt(static_cast<int>(myHstate));
 
     out.putInt(myHctr);
     out.putInt(myHctrDelta);
@@ -291,7 +291,7 @@ bool TIA::save(Serializer& out) const
 
     out.putInt(myLinesSinceChange);
 
-    out.putInt(int(myPriority));
+    out.putInt(static_cast<int>(myPriority));
 
     out.putByte(mySubClock);
     out.putLong(myLastCycle);
@@ -1251,7 +1251,7 @@ bool TIA::driveUnusedPinsRandom(uInt8 mode)
   // If mode is 0 or 1, use it as a boolean (off or on)
   // Otherwise, return the state
   if (mode == 0 || mode == 1)
-    myTIAPinsDriven = bool(mode);
+    myTIAPinsDriven = static_cast<bool>(mode);
 
   return myTIAPinsDriven;
 }

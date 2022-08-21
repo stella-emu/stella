@@ -27,7 +27,7 @@ namespace {
 
     return parsed.is_discarded() ? json(s) : parsed;
   }
-}
+} // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 KeyValueRepositoryJsonFile::KeyValueRepositoryJsonFile(const FSNode& node)

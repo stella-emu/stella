@@ -77,9 +77,10 @@
 #include "Console.hxx"
 
 namespace {
-  // Emulation speed is a positive float that multiplies the framerate. However, the UI controls
-  // adjust speed in terms of a speedup factor (1/10, 1/9 .. 1/2, 1, 2, 3, .., 10). The following
-  // mapping and formatting functions implement this conversion. The speedup factor is represented
+  // Emulation speed is a positive float that multiplies the framerate. However,
+  // the UI controls adjust speed in terms of a speedup factor (1/10,
+  // 1/9 .. 1/2, 1, 2, 3, .., 10). The following mapping and formatting
+  // functions implement this conversion. The speedup factor is represented
   // by an integer value between -900 and 900 (0 means no speedup).
 
   constexpr int MAX_SPEED = 900;
@@ -112,8 +113,7 @@ namespace {
 
     return ss.str();
   }
-}
-
+} // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,

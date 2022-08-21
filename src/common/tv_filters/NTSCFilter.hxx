@@ -148,7 +148,14 @@ class NTSCFilter
       float* value{nullptr};
     };
     uInt32 myCurrentAdjustable{0};
-    static const std::array<AdjustableTag, 5> ourCustomAdjustables;
+
+    static constexpr std::array<AdjustableTag, 5> ourCustomAdjustables = {{
+      { "sharpness", &myCustomSetup.sharpness },
+      { "resolution", &myCustomSetup.resolution },
+      { "artifacts", &myCustomSetup.artifacts },
+      { "fringing", &myCustomSetup.fringing },
+      { "bleeding", &myCustomSetup.bleed }
+    }};
 
   private:
     // Following constructors and assignment operators not supported

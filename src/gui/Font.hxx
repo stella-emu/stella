@@ -79,6 +79,6 @@ class Font
     Font& operator=(Font&&) = delete;
 };
 
-}  // namespace GUI
+} // namespace GUI
 
 #endif

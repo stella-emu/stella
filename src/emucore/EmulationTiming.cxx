@@ -26,7 +26,7 @@ namespace {
   {
     return n / d + ((n % d == 0) ? 0 : 1);
   }
-}
+} // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EmulationTiming::EmulationTiming(FrameLayout frameLayout, ConsoleTiming consoleTiming)

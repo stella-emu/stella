@@ -39,7 +39,7 @@ FSNodePOSIX::FSNodePOSIX(const string& path, bool verify)
   // Expand '~' to the HOME environment variable
   if(_path[0] == '~')
   {
-    const char* home = std::getenv("HOME");
+    const char* home = std::getenv("HOME");  // NOLINT (not thread safe)
     if (home != nullptr)
       _path.replace(0, 1, home);
   }
@@ -80,7 +80,7 @@ void FSNodePOSIX::setFlags()
 string FSNodePOSIX::getShortPath() const
 {
   // If the path starts with the home directory, replace it with '~'
-  const char* env_home = std::getenv("HOME");
+  const char* env_home = std::getenv("HOME");  // NOLINT (not thread safe)
   const string& home = env_home != nullptr ? env_home : EmptyString;
 
   if(home != EmptyString && BSPF::startsWithIgnoreCase(_path, home))
@@ -112,7 +112,7 @@ bool FSNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode) const
 
   // Loop over dir entries using readdir
   struct dirent* dp = nullptr;
-  while ((dp = readdir(dirp)) != nullptr)
+  while ((dp = readdir(dirp)) != nullptr)  // NOLINT (not thread safe)
   {
     // Ignore all hidden files
     if (dp->d_name[0] == '.')
@@ -236,5 +236,5 @@ AbstractFSNodePtr FSNodePOSIX::getParent() const
   const char* start = _path.c_str();
   const char* end = lastPathComponent(_path);
 
-  return make_unique<FSNodePOSIX>(string(start, size_t(end - start)));
+  return make_unique<FSNodePOSIX>(string(start, static_cast<size_t>(end - start)));
 }

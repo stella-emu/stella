@@ -45,10 +45,10 @@ using Common::Base;
 #endif
 
 #ifdef __BIG_ENDIAN__
-  #define CONV_DATA(d)   (((d & 0xFFFF)>>8) | ((d & 0xffff)<<8)) & 0xffff
-  #define CONV_RAMROM(d) ((d>>8) | (d<<8)) & 0xffff
+  #define CONV_DATA(d)   ((((d) & 0xFFFF)>>8) | (((d) & 0xffff)<<8)) & 0xffff
+  #define CONV_RAMROM(d) (((d)>>8) | ((d)<<8)) & 0xffff
 #else
-  #define CONV_DATA(d)   (d & 0xFFFF)
+  #define CONV_DATA(d)   ((d) & 0xFFFF)
   #define CONV_RAMROM(d) (d)
 #endif
 
@@ -679,7 +679,7 @@ uInt32 Thumbulator::read32(uInt32 addr)
         fatalError("read32", addr, "abort - out of range");
 #endif
       data = read16(addr+0);
-      data |= (uInt32(read16(addr+2))) << 16;
+      data |= read16(addr+2) << 16;
       DO_DBUG(statusMsg << "read32(" << Base::HEX8 << addr << ")=" << Base::HEX8 << data << endl);
       return data;
 
@@ -689,7 +689,7 @@ uInt32 Thumbulator::read32(uInt32 addr)
         fatalError("read32", addr, "abort - out of range");
 #endif
       data = read16(addr+0);
-      data |= (static_cast<uInt32>(read16(addr+2))) << 16;
+      data |= read16(addr+2) << 16;
       DO_DBUG(statusMsg << "read32(" << Base::HEX8 << addr << ")=" << Base::HEX8 << data << endl);
       return data;
 

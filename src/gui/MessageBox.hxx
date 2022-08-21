@@ -76,6 +76,6 @@ class MessageBox : public Dialog, public CommandSender
     MessageBox& operator=(MessageBox&&) = delete;
 };
 
-}  // namespace GUI
+} // namespace GUI
 
 #endif

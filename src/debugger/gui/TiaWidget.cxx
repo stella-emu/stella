@@ -115,7 +115,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
     t = new StaticTextWidget(boss, lfont, xpos, ypos + 2, 2*fontWidth, fontHeight,
                              dbgLabels[row], TextAlign::Left);
     myFixedColors[row] = new ColorWidget(boss, nfont, xpos + 2 + t->getWidth() + 4,
-                               ypos + 2, uInt32(1.5*lineHeight), lineHeight - 4);
+        ypos + 2, static_cast<uInt32>(1.5*lineHeight), lineHeight - 4);
     myFixedColors[row]->setTarget(this);
   }
   xpos += t->getWidth() + myFixedColors[0]->getWidth() + 24;
@@ -126,7 +126,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
     t = new StaticTextWidget(boss, lfont, xpos, ypos + 2, 2*fontWidth, fontHeight,
                              dbgLabels[row], TextAlign::Left);
     myFixedColors[row] = new ColorWidget(boss, nfont, xpos + 2 + t->getWidth() + 4,
-                               ypos + 2, uInt32(1.5*lineHeight), lineHeight - 4);
+        ypos + 2, static_cast<uInt32>(1.5*lineHeight), lineHeight - 4);
     myFixedColors[row]->setTarget(this);
   }
 

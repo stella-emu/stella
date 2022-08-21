@@ -26,7 +26,7 @@ void OSystemUNIX::getBaseDirectories(string& basedir, string& homedir,
                                      bool useappdir, const string& usedir)
 {
   // Use XDG_CONFIG_HOME if defined, otherwise use the default
-  const char* cfg_home = std::getenv("XDG_CONFIG_HOME");
+  const char* cfg_home = std::getenv("XDG_CONFIG_HOME");  // NOLINT
   const string& configDir = cfg_home != nullptr ? cfg_home : "~/.config";
   basedir = configDir + "/stella";
   homedir = "~/";

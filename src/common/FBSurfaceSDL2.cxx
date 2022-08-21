@@ -38,7 +38,7 @@ namespace {
         throw runtime_error("unreachable");
     }
   }
-}
+} // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBSurfaceSDL2::FBSurfaceSDL2(FBBackendSDL2& backend,

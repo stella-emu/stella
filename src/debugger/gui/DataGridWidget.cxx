@@ -374,12 +374,12 @@ bool DataGridWidget::handleKeyDown(StellaKey key, StellaMod mod)
         break;
 
       case KBDK_DOWN:
-        if (_currentRow < int(_rows) - 1)
+        if (_currentRow < _rows - 1)
         {
           _currentRow++;
           dirty = true;
         }
-        else if(_currentCol < int(_cols) - 1)
+        else if(_currentCol < _cols - 1)
         {
           _currentRow = 0;
           _currentCol++;
@@ -402,12 +402,12 @@ bool DataGridWidget::handleKeyDown(StellaKey key, StellaMod mod)
         break;
 
       case KBDK_RIGHT:
-        if (_currentCol < int(_cols) - 1)
+        if (_currentCol < _cols - 1)
         {
           _currentCol++;
           dirty = true;
         }
-        else if(_currentRow < int(_rows) - 1)
+        else if(_currentRow < _rows - 1)
         {
           _currentCol = 0;
           _currentRow++;
@@ -428,7 +428,7 @@ bool DataGridWidget::handleKeyDown(StellaKey key, StellaMod mod)
       case KBDK_PAGEDOWN:
         if(StellaModTest::isShift(mod) && _scrollBar)
           handleMouseWheel(0, 0, +1);
-        else if (_currentRow < int(_rows) - 1)
+        else if (_currentRow < _rows - 1)
         {
           _currentRow = _rows - 1;
           dirty = true;
@@ -444,7 +444,7 @@ bool DataGridWidget::handleKeyDown(StellaKey key, StellaMod mod)
         break;
 
       case KBDK_END:
-        if (_currentCol < int(_cols) - 1)
+        if (_currentCol < _cols - 1)
         {
           _currentCol = _cols - 1;
           dirty = true;

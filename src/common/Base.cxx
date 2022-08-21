@@ -126,4 +126,4 @@ Base::Fmt Base::myDefaultBase = Base::Fmt::_16;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 std::ios_base::fmtflags Base::myHexflags = std::ios_base::hex;  // NOLINT
 
-} // Namespace Common
+} // namespace Common

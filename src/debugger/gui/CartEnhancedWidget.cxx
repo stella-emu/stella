@@ -123,7 +123,7 @@ string CartridgeEnhancedWidget::romDescription()
   else
   {
     uInt16 start = (image[myCart.mySize - 3] << 8) | image[myCart.mySize - 4];
-    start -= start % std::min(int(size), 0x1000);
+    start -= start % std::min(static_cast<int>(size), 0x1000);
     const uInt16 end = start + static_cast<uInt16>(myCart.mySize) - 1;
     // special check for ROMs where the extra RAM is not included in the image (e.g. CV).
     if((start & 0xFFFU) < size)

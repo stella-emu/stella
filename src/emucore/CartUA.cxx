@@ -85,7 +85,7 @@ uInt8 CartridgeUA::peek(uInt16 address)
 {
   address &= myBankMask;
 
-  checkSwitchBank(address);
+  checkSwitchBank(address, 0);
 
   // Because of the way accessing is set up, we will only get here
   // when doing a TIA read
@@ -98,7 +98,7 @@ bool CartridgeUA::poke(uInt16 address, uInt8 value)
 {
   address &= myBankMask;
 
-  checkSwitchBank(address);
+  checkSwitchBank(address, 0);
 
   // Because of the way accessing is set up, we will may get here by
   // doing a write to TIA or cart; we ignore the cart write

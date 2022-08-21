@@ -106,7 +106,7 @@ class CartridgeX07 : public CartridgeEnhanced
     bool poke(uInt16 address, uInt8 value) override;
 
   private:
-    bool checkSwitchBank(uInt16 address, uInt8 value = 0) override;
+    bool checkSwitchBank(uInt16 address, uInt8) override;
 
   private:
     // Following constructors and assignment operators not supported

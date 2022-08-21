@@ -89,10 +89,10 @@ static uInt8 PADDING[64] = {
 };
 
 // F, G, H and I are basic MD5 functions.
-#define F(x, y, z) (((x) & (y)) | ((~x) & (z)))
-#define G(x, y, z) (((x) & (z)) | ((y) & (~z)))
+#define F(x, y, z) (((x) & (y)) | ((~(x)) & (z)))
+#define G(x, y, z) (((x) & (z)) | ((y) & (~(z))))
 #define H(x, y, z) ((x) ^ (y) ^ (z))
-#define I(x, y, z) ((y) ^ ((x) | (~z)))
+#define I(x, y, z) ((y) ^ ((x) | (~(z))))
 
 // ROTATE_LEFT rotates x left n bits.
 #define ROTATE_LEFT(x, n) (((x) << (n)) | ((x) >> (32-(n))))
@@ -336,4 +336,4 @@ string hash(const uInt8* buffer, size_t length)
   return result;
 }
 
-}  // Namespace MD5
+} // namespace MD5
