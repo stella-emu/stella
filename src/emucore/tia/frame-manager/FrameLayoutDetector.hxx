@@ -46,7 +46,8 @@ class FrameLayoutDetector: public AbstractFrameManager
     /**
      * Simulate some input to pass a potential title screen.
     */
-    void simulateInput(M6532& riot, EventHandler& eventHandler, bool pressed) const;
+    static void simulateInput(M6532& riot, EventHandler& eventHandler,
+                              bool pressed);
 
   protected:
 

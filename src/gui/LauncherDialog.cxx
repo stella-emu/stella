@@ -427,7 +427,7 @@ const string& LauncherDialog::selectedRomMD5()
   // Lookup MD5, and if not present, cache it
   const auto iter = myMD5List.find(currentNode().getPath());
   if(iter == myMD5List.end())
-    myMD5List[currentNode().getPath()] = instance().getROMMD5(currentNode());
+    myMD5List[currentNode().getPath()] = OSystem::getROMMD5(currentNode());
 
   return myMD5List[currentNode().getPath()];
 }
@@ -506,7 +506,7 @@ void LauncherDialog::loadConfig()
   // has been called (and we should reload the list)
   if(myList->getList().empty())
   {
-    FSNode node(romdir == "" ? "~" : romdir);
+    FSNode node(romdir.empty() ? "~" : romdir);
     if(!myList->isDirectory(node))
       node = FSNode("~");
 
@@ -564,7 +564,8 @@ string LauncherDialog::getRomDir()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool LauncherDialog::matchWithWildcardsIgnoreCase(const string& str, const string& pattern)
+bool LauncherDialog::matchWithWildcardsIgnoreCase(
+    const string& str, const string& pattern)
 {
   string in = str;
   string pat = pattern;
@@ -591,7 +592,7 @@ void LauncherDialog::applyFiltering()
           return false;
 
         // Skip over files that don't match the pattern in the 'pattern' textbox
-        if(myPattern && myPattern->getText() != "" &&
+        if(myPattern && !myPattern->getText().empty() &&
            !matchWithWildcardsIgnoreCase(node.getName(), myPattern->getText()))
           return false;
       }

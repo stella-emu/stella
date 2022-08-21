@@ -210,7 +210,7 @@ bool OSystem::initialize(const Settings::Options& options)
   const string& avoxport = mySettings->getString("avoxport");
   const StringList ports = MediaFactory::createSerialPort()->portNames();
 
-  if(avoxport.empty() && ports.size() > 0)
+  if(avoxport.empty() && !ports.empty())
     mySettings->setValue("avoxport", ports[0]);
 
   return true;
@@ -484,7 +484,7 @@ string OSystem::createConsole(const FSNode& rom, const string& md5sum,
     if(showmessage)
     {
       const string& id = myConsole->cartridge().multiCartID();
-      if(id == "")
+      if(id.empty())
         myFrameBuffer->showTextMessage("New console created");
       else
         myFrameBuffer->showTextMessage("Multicart " +
@@ -655,7 +655,7 @@ unique_ptr<Console> OSystem::openConsole(const FSNode& romfile, string& md5)
     const auto CMDLINE_PROPS_UPDATE = [&](const string& name, PropType prop)
     {
       const string& s = mySettings->getString(name);
-      if(s != "") props.set(prop, s);
+      if(!s.empty()) props.set(prop, s);
     };
 
     CMDLINE_PROPS_UPDATE("bs", PropType::Cart_Type);
@@ -702,12 +702,12 @@ unique_ptr<Console> OSystem::openConsole(const FSNode& romfile, string& md5)
     CMDLINE_PROPS_UPDATE("rq1", PropType::Controller_Right1);
     CMDLINE_PROPS_UPDATE("rq2", PropType::Controller_Right2);
     const string& bc = mySettings->getString("bc");
-    if(bc != "") {
+    if(!bc.empty()) {
       props.set(PropType::Controller_Left, bc);
       props.set(PropType::Controller_Right, bc);
     }
     const string& aq = mySettings->getString("aq");
-    if(aq != "")
+    if(!aq.empty())
     {
       props.set(PropType::Controller_Left1, aq);
       props.set(PropType::Controller_Left2, aq);
@@ -762,7 +762,7 @@ ByteBuffer OSystem::openROM(const FSNode& rom, string& md5, size_t& size)
     // If we get to this point, we know we have a valid file to open
     // Now we make sure that the file has a valid properties entry
     // To save time, only generate an MD5 if we really need one
-    if(md5 == "")
+    if(md5.empty())
       md5 = MD5::hash(image, size);
 
     // Make sure to load a per-ROM properties entry, if one exists
@@ -773,7 +773,7 @@ ByteBuffer OSystem::openROM(const FSNode& rom, string& md5, size_t& size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string OSystem::getROMMD5(const FSNode& rom) const
+string OSystem::getROMMD5(const FSNode& rom)
 {
   size_t size = 0;
   const ByteBuffer image = openROM(rom, size, false);  // ignore error message
@@ -783,7 +783,7 @@ string OSystem::getROMMD5(const FSNode& rom) const
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ByteBuffer OSystem::openROM(const FSNode& rom, size_t& size,
-                            bool showErrorMessage) const
+                            bool showErrorMessage)
 {
   // First check if this is a valid ROM filename
   const bool isValidROM = rom.isFile() && Bankswitch::isValidRomName(rom);
@@ -991,5 +991,5 @@ void OSystem::mainLoop()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string OSystem::ourOverrideBaseDir = "";
+string OSystem::ourOverrideBaseDir;
 bool OSystem::ourOverrideBaseDirWithApp = false;

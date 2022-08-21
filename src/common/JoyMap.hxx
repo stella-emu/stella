@@ -122,10 +122,10 @@ class JoyMap
     void eraseEvent(const Event::Type event, const EventMode mode);
     /** clear all mappings for a modes */
     // void clear() { myMap.clear(); }
-    size_t size() { return myMap.size(); }
+    size_t size() const { return myMap.size(); }
 
   private:
-    string getDesc(const Event::Type event, const JoyMapping& mapping) const;
+    static string getDesc(const Event::Type event, const JoyMapping& mapping);
 
     struct JoyHash {
       size_t operator()(const JoyMapping& m)const {

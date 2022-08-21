@@ -70,9 +70,8 @@ json PhysicalJoystick::getMap() const
 
   mapping["name"] = name;
 
-  for (auto& mode: {
-    EventMode::kMenuMode, EventMode::kJoystickMode, EventMode::kPaddlesMode, EventMode::kKeyboardMode,
-    EventMode::kDrivingMode, EventMode::kCommonMode
+  for (const auto& mode: {
+    EventMode::kMenuMode, EventMode::kJoystickMode, EventMode::kPaddlesMode, EventMode::kKeyboardMode, EventMode::kDrivingMode, EventMode::kCommonMode
   })
     mapping[jsonName(mode)] = joyMap.saveMapping(mode);
 
@@ -153,7 +152,7 @@ void PhysicalJoystick::eraseEvent(Event::Type event, EventMode mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalJoystick::getValues(const string& list, IntArray& map) const
+void PhysicalJoystick::getValues(const string& list, IntArray& map)
 {
   map.clear();
   istringstream buf(list);

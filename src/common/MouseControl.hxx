@@ -73,7 +73,7 @@ class MouseControl
     void addLeftControllerModes(bool noswap);
     void addRightControllerModes(bool noswap);
     void addPaddleModes(int lport, int rport, int lname, int rname);
-    bool controllerSupportsMouse(Controller& controller);
+    static bool controllerSupportsMouse(Controller& controller);
 
   private:
     const Properties& myProps;

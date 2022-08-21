@@ -27,21 +27,25 @@
 class StellaDb
 {
   public:
-
     StellaDb(const string& databaseDirectory, const string& databaseName);
 
     void initialize();
 
-    KeyValueRepositoryAtomic& settingsRepository() const { return *mySettingsRepository; }
-    CompositeKeyValueRepository& propertyRepository() const { return *myPropertyRepository; }
-    CompositeKeyValueRepositoryAtomic& highscoreRepository() const { return *myHighscoreRepository; }
+    KeyValueRepositoryAtomic& settingsRepository() const {
+      return *mySettingsRepository;
+    }
+    CompositeKeyValueRepository& propertyRepository() const {
+      return *myPropertyRepository;
+    }
+    CompositeKeyValueRepositoryAtomic& highscoreRepository() const {
+      return *myHighscoreRepository;
+    }
 
-    const string databaseFileName() const;
+    string databaseFileName() const;
 
     bool isValid() const;
 
   private:
-
     void initializeDb();
     void importOldSettings();
     void importStellarc(const FSNode& node);
@@ -51,7 +55,6 @@ class StellaDb
     void migrate();
 
   private:
-
     string myDatabaseDirectory;
     string myDatabaseName;
 

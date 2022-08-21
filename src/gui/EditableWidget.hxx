@@ -104,9 +104,9 @@ class EditableWidget : public Widget, public CommandSender
     // access/edit the internal buffer
     string& editString() { return _editString; }
     string& backupString() { return _backupString; }
-    const string selectString() const;
+    string selectString() const;
     void resetSelection() { _selectSize = 0; }
-    int scrollOffset();
+    int scrollOffset() const;
 
   private:
     // Line editing
@@ -117,8 +117,8 @@ class EditableWidget : public Widget, public CommandSender
     bool markWord();
 
     bool killSelectedText(bool addEdit = true);
-    int selectStartPos();
-    int selectEndPos();
+    int selectStartPos() const;
+    int selectEndPos() const;
     // Clipboard
     bool cutSelectedText();
     bool copySelectedText();

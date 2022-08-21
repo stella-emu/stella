@@ -21,11 +21,11 @@
 #include "Switches.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Switches::Switches(const Event& event, const Properties& properties,
+Switches::Switches(const Event& event, const Properties& props,
                    const Settings& settings)
   : myEvent{event}
 {
-  if(properties.get(PropType::Console_RightDiff) == "B")
+  if(props.get(PropType::Console_RightDiff) == "B")
   {
     mySwitches &= ~0x80;
   }
@@ -34,7 +34,7 @@ Switches::Switches(const Event& event, const Properties& properties,
     mySwitches |= 0x80;
   }
 
-  if(properties.get(PropType::Console_LeftDiff) == "B")
+  if(props.get(PropType::Console_LeftDiff) == "B")
   {
     mySwitches &= ~0x40;
   }
@@ -43,7 +43,7 @@ Switches::Switches(const Event& event, const Properties& properties,
     mySwitches |= 0x40;
   }
 
-  if(properties.get(PropType::Console_TVType) == "COLOR")
+  if(props.get(PropType::Console_TVType) == "COLOR")
   {
     mySwitches |= 0x08;
   }

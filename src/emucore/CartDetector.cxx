@@ -430,16 +430,12 @@ bool CartDetector::isProbably4KSC(const ByteBuffer& image, size_t size)
 {
   // We check if the first 256 bytes are identical *and* if there's
   // an "SC" signature for one of our larger SC types at 1FFA.
-
   const uInt8 first = image[0];
   for(uInt32 i = 1; i < 256; ++i)
-      if(image[i] != first)
-        return false;
+    if(image[i] != first)
+      return false;
 
-  if((image[size-6]=='S') && (image[size-5]=='C'))
-      return true;
-
-  return false;
+  return (image[size-6] == 'S') && (image[size-5] == 'C');
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

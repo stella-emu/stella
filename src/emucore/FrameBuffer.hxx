@@ -324,7 +324,7 @@ class FrameBuffer
 
       @return  The description of the font
     */
-    FontDesc getFontDesc(const string& name) const;
+    static FontDesc getFontDesc(const string& name);
   #endif
 
     /**

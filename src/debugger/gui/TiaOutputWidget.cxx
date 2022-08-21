@@ -117,7 +117,7 @@ void TiaOutputWidget::saveSnapshot(int execDepth, const string& execPrefix,
   string message = "Snapshot saved";
   try
   {
-    instance().png().saveImage(sspath.str(), s, rect);
+    PNGLibrary::saveImage(sspath.str(), s, rect);
   }
   catch(const runtime_error& e)
   {

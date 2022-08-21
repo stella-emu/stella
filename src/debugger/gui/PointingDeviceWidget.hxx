@@ -52,7 +52,7 @@ class PointingDeviceWidget : public ControllerWidget
 
     void setGrayCodeH();
     void setGrayCodeV();
-    void setValue(DataGridWidget* greyValue, const int index, const int direction);
+    void setValue(DataGridWidget* grayValue, const int index, const int direction);
 
     // Following constructors and assignment operators not supported
     PointingDeviceWidget() = delete;

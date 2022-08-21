@@ -34,6 +34,6 @@ void OSystemUNIX::getBaseDirectories(string& basedir, string& homedir,
   // Check to see if basedir overrides are active
   if(useappdir)
     cout << "ERROR: base dir in app folder not supported" << endl;
-  else if(usedir != "")
+  else if(!usedir.empty())
     basedir = FSNode(usedir).getPath();
 }

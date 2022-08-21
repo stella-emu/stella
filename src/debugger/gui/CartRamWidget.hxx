@@ -65,7 +65,7 @@ class CartRamWidget : public Widget, public CommandSender
         InternalRamWidget(GuiObject* boss, const GUI::Font& lfont,
                           const GUI::Font& nfont,
                           int x, int y, int w, int h,
-                          CartDebugWidget& cartDebug);
+                          CartDebugWidget& dbg);
         ~InternalRamWidget() override = default;
         string getLabel(int addr) const override;
 

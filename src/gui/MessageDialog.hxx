@@ -32,8 +32,10 @@ class MessageDialog : public Dialog
     ~MessageDialog() override;
 
     // Define the message displayed
-    void setMessage(const string& title, const string& text, bool yesNo = false);
-    void setMessage(const string& title, const StringList& text, bool yesNo = false);
+    static void setMessage(const string& title, const string& text,
+                           bool yesNo = false);
+    static void setMessage(const string& title, const StringList& text,
+                           bool yesNo = false);
     bool confirmed() { return myConfirmed; }
 
   protected:

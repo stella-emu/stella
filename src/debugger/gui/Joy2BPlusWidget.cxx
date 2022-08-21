@@ -126,6 +126,3 @@ void Joy2BPlusWidget::handleCommand(
     }
   }
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-constexpr std::array<Controller::DigitalPin, 5> Joy2BPlusWidget::ourPinNo;

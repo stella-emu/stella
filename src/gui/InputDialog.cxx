@@ -418,7 +418,7 @@ void InputDialog::loadConfig()
     VarList::push_back(items, port, port);
   if(avoxport != EmptyString && !BSPF::contains(ports, avoxport))
     VarList::push_back(items, avoxport, avoxport);
-  if(items.size() == 0)
+  if(items.empty())
     VarList::push_back(items, "None detected");
 
   myAVoxPort->addItems(items);

@@ -50,7 +50,7 @@ TIASurface::TIASurface(OSystem& system)
     myFB{system.frameBuffer()}
 {
   // Load NTSC filter settings
-  myNTSCFilter.loadConfig(myOSystem.settings());
+  NTSCFilter::loadConfig(myOSystem.settings());
 
   // Create a surface for the TIA image and scanlines; we'll need them eventually
   myTiaSurface = myFB.allocateSurface(
@@ -216,7 +216,7 @@ void TIASurface::changeNTSCAdjustable(int adjustable, int direction)
 
   setNTSC(NTSCFilter::Preset::CUSTOM);
   ntsc().changeAdjustable(adjustable, direction, text, valueText, newValue);
-  ntsc().saveConfig(myOSystem.settings());
+  NTSCFilter::saveConfig(myOSystem.settings());
   myOSystem.frameBuffer().showGaugeMessage(text, valueText, newValue);
 }
 
@@ -228,7 +228,7 @@ void TIASurface::changeCurrentNTSCAdjustable(int direction)
 
   setNTSC(NTSCFilter::Preset::CUSTOM);
   ntsc().changeCurrentAdjustable(direction, text, valueText, newValue);
-  ntsc().saveConfig(myOSystem.settings());
+  NTSCFilter::saveConfig(myOSystem.settings());
   myOSystem.frameBuffer().showGaugeMessage(text, valueText, newValue);
 }
 
@@ -267,7 +267,7 @@ TIASurface::ScanlineMask TIASurface::scanlineMaskType(int direction)
   int i = 0;
   const string& name = myOSystem.settings().getString("tv.scanmask");
 
-  for(auto& mask : Masks)
+  for(const auto& mask: Masks)
   {
     if(mask == name)
     {

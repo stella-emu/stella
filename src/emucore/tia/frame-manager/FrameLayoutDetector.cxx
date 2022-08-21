@@ -22,7 +22,8 @@
 #include "FrameLayoutDetector.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameLayoutDetector::simulateInput(M6532& riot, EventHandler& eventHandler, bool pressed) const
+void FrameLayoutDetector::simulateInput(
+    M6532& riot, EventHandler& eventHandler, bool pressed)
 {
   // Console
   eventHandler.handleEvent(Event::ConsoleSelect, pressed);

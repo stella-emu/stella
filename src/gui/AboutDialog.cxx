@@ -313,15 +313,15 @@ void AboutDialog::handleCommand(CommandSender* sender, int cmd, int data, int id
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string AboutDialog::getUrl(const string& str) const
+string AboutDialog::getUrl(const string& text)
 {
   bool isUrl = false;
   size_t start = 0, len = 0;
 
-  for(size_t i = 0; i < str.size(); ++i)
+  for(size_t i = 0; i < text.size(); ++i)
   {
-    string remainder = str.substr(i);
-    const char ch = str[i];
+    string remainder = text.substr(i);
+    const char ch = text[i];
 
     if(!isUrl
        && (BSPF::startsWithIgnoreCase(remainder, "http://")
@@ -342,7 +342,7 @@ const string AboutDialog::getUrl(const string& str) const
     }
   }
   if(len)
-    return str.substr(start, len);
+    return text.substr(start, len);
   else
     return EmptyString;
 }

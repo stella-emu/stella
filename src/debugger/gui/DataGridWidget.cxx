@@ -308,7 +308,7 @@ void DataGridWidget::handleMouseWheel(int x, int y, int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int DataGridWidget::findItem(int x, int y)
+int DataGridWidget::findItem(int x, int y) const
 {
   int row = (y - 1) / _rowHeight;
   if(row >= _rows) row = _rows - 1;
@@ -759,8 +759,8 @@ void DataGridWidget::endEditMode()
   enableEditMode(false);
 
   // Update the both the string representation and the real data
-  if(editString().size() > 0 && !(editString()[0] == '$' ||
-        editString()[0] == '#' || editString()[0] == '\\'))
+  if(!editString().empty() && !(editString()[0] == '$' ||
+     editString()[0] == '#' || editString()[0] == '\\'))
   {
     switch(_base)
     {

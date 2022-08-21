@@ -110,7 +110,8 @@ BreakpointMap::BreakpointList BreakpointMap::getBreakpoints() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-BreakpointMap::Breakpoint BreakpointMap::convertBreakpoint(const Breakpoint& breakpoint)
+BreakpointMap::Breakpoint BreakpointMap::convertBreakpoint(
+    const Breakpoint& breakpoint)
 {
   if(breakpoint.bank == ANY_BANK)
     return Breakpoint(breakpoint.addr, ANY_BANK);

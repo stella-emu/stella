@@ -240,7 +240,7 @@ RadioButtonWidget::RadioButtonWidget(GuiObject* boss, const GUI::Font& font,
     _innerCircle = radio_img_innercircle_large.data();
   }
 
-  if(label == "")
+  if(label.empty())
     _w = _buttonSize;
   else
     _w = font.getStringWidth(label) + _buttonSize + font.getMaxCharWidth() * 0.75;

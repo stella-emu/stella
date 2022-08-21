@@ -84,7 +84,7 @@ void JoystickDialog::loadConfig()
   }
   myJoyList->setList(sticks);
   myJoyList->setSelected(0);
-  if(sticks.size() == 0)
+  if(sticks.empty())
   {
     myRemoveBtn->setEnabled(false);
     myJoyText->setText("");

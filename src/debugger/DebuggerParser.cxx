@@ -25,9 +25,7 @@
 #include "ControlLowLevel.hxx"
 #include "TIADebug.hxx"
 #include "TiaOutputWidget.hxx"
-#include "DebuggerParser.hxx"
 #include "YaccParser.hxx"
-#include "M6502.hxx"
 #include "Expression.hxx"
 #include "FSNode.hxx"
 #include "OSystem.hxx"
@@ -177,7 +175,7 @@ void DebuggerParser::outputCommandError(const string& errorMsg, int command)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Completion-related stuff:
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DebuggerParser::getCompletions(const char* in, StringList& completions) const
+void DebuggerParser::getCompletions(const char* in, StringList& completions)
 {
   // cerr << "Attempting to complete \"" << in << "\"" << endl;
   for(const auto& c: commands)
@@ -309,7 +307,7 @@ string DebuggerParser::showWatches()
   ostringstream buf;
   for(uInt32 i = 0; i < myWatches.size(); ++i)
   {
-    if(myWatches[i] != "")
+    if(!myWatches[i].empty())
     {
       // Clear the args, since we're going to pass them to eval()
       argStrings.clear();
@@ -337,7 +335,7 @@ bool DebuggerParser::getArgs(const string& command, string& verb)
   ParseState state = ParseState::IN_COMMAND;
   size_t i = 0;
   const size_t length = command.length();
-  string curArg = "";
+  string curArg;
   verb = "";
 
   argStrings.clear();
@@ -390,14 +388,14 @@ bool DebuggerParser::getArgs(const string& command, string& verb)
   while(i < length);
 
   // Take care of the last argument, if there is one
-  if(curArg != "")
+  if(!curArg.empty())
     argStrings.push_back(curArg);
 
   argCount = static_cast<uInt32>(argStrings.size());
 
   for(uInt32 arg = 0; arg < argCount; ++arg)
   {
-    if(!YaccParser::parse(argStrings[arg].c_str()))
+    if(!YaccParser::parse(argStrings[arg]))
     {
       unique_ptr<Expression> expr(YaccParser::getResult());
       args.push_back(expr->evaluate());
@@ -545,8 +543,8 @@ string DebuggerParser::eval()
     {
       string rlabel = debugger.cartDebug().getLabel(args[i], true);
       string wlabel = debugger.cartDebug().getLabel(args[i], false);
-      const bool validR = rlabel != "" && rlabel[0] != '$',
-                 validW = wlabel != "" && wlabel[0] != '$';
+      const bool validR = !rlabel.empty() && rlabel[0] != '$',
+                 validW = !wlabel.empty() && wlabel[0] != '$';
       if(validR && validW)
       {
         if(rlabel == wlabel)
@@ -587,7 +585,7 @@ void DebuggerParser::listTraps(bool listCond)
   commandResult << (listCond ? "trapifs:" : "traps:") << endl;
   for(uInt32 i = 0; i < names.size(); ++i)
   {
-    const bool hasCond = names[i] != "";
+    const bool hasCond = !names[i].empty();
     if(hasCond == listCond)
     {
       commandResult << Base::toString(i) << ": ";
@@ -619,23 +617,23 @@ string DebuggerParser::trapStatus(const Trap& trap)
   string lblb = debugger.cartDebug().getLabel(trap.begin, !trap.write);
   string lble = debugger.cartDebug().getLabel(trap.end, !trap.write);
 
-  if(lblb != "") {
+  if(!lblb.empty()) {
     result << " (";
     result << lblb;
   }
 
   if(trap.begin != trap.end)
   {
-    if(lble != "")
+    if(!lble.empty())
     {
-      if (lblb != "")
+      if(!lblb.empty())
         result << " ";
       else
         result << " (";
       result << lble;
     }
   }
-  if (lblb != "" || lble != "")
+  if(!lblb.empty() || !lble.empty())
     result << ")";
 
   return result.str();
@@ -647,7 +645,7 @@ string DebuggerParser::saveScriptFile(string file)
   stringstream out;
   Debugger::FunctionDefMap funcs = debugger.getFunctionDefMap();
   for(const auto& [name, cmd]: funcs)
-    if (!debugger.isBuiltinFunction(name))
+    if (!Debugger::isBuiltinFunction(name))
       out << "function " << name << " {" << cmd << "}" << endl;
 
   for(const auto& w: myWatches)
@@ -669,7 +667,7 @@ string DebuggerParser::saveScriptFile(string file)
   {
     const bool read = myTraps[i]->read,
                write = myTraps[i]->write,
-               hasCond = names[i] != "";
+               hasCond = !names[i].empty();
 
     if(read && write)
       out << "trap";
@@ -744,7 +742,7 @@ void DebuggerParser::executeDirective(Device::AccessType type)
   const bool result = debugger.cartDebug().addDirective(type, args[0], args[1]);
 
   commandResult << (result ? "added " : "removed ");
-  debugger.cartDebug().AccessTypeAsString(commandResult, type);
+  CartDebug::AccessTypeAsString(commandResult, type);
   commandResult << " directive on range $"
     << hex << args[0] << " $" << hex << args[1];
   debugger.rom().invalidate();
@@ -873,7 +871,7 @@ void DebuggerParser::executeBreak()
 // "breakIf"
 void DebuggerParser::executeBreakIf()
 {
-  int res = YaccParser::parse(argStrings[0].c_str());
+  int res = YaccParser::parse(argStrings[0]);
   if(res == 0)
   {
     string condition = argStrings[0];
@@ -1273,7 +1271,7 @@ void DebuggerParser::executeDump()
       DebuggerDialog* dlg = debugger.myDialog;
       BrowserDialog::show(dlg, "Save Dump as", path.str(),
                           BrowserDialog::Mode::FileSave,
-                          [this, dlg, outStr, resultStr]
+                          [dlg, outStr, resultStr]
                           (bool OK, const FSNode& node)
       {
         if(OK)
@@ -1352,7 +1350,7 @@ void DebuggerParser::executeFunction()
     return;
   }
 
-  int res = YaccParser::parse(argStrings[1].c_str());
+  int res = YaccParser::parse(argStrings[1]);
   if(res == 0)
   {
     debugger.addFunction(argStrings[0], argStrings[1], YaccParser::getResult());
@@ -1388,7 +1386,7 @@ void DebuggerParser::executeHelp()
       commandResult << setw(static_cast<int>(clen)) << right << c.cmdString
                     << " - " << c.description << endl;
 
-    commandResult << debugger.builtinHelp();
+    commandResult << Debugger::builtinHelp();
   }
   else  // get help for specific command
   {
@@ -1567,7 +1565,7 @@ void DebuggerParser::executeListBreaks()
 
   StringList conds = debugger.m6502().getCondBreakNames();
 
-  if(conds.size() > 0)
+  if(!conds.empty())
   {
     if(count)
       commandResult << endl;
@@ -1579,7 +1577,7 @@ void DebuggerParser::executeListBreaks()
     }
   }
 
-  if(commandResult.str() == "")
+  if(commandResult.str().empty())
     commandResult << "no breakpoints set";
 }
 
@@ -1599,7 +1597,7 @@ void DebuggerParser::executeListFunctions()
 {
   const Debugger::FunctionDefMap& functions = debugger.getFunctionDefMap();
 
-  if(functions.size() > 0)
+  if(!functions.empty())
     for(const auto& [name, cmd]: functions)
       commandResult << name << " -> " << cmd << endl;
   else
@@ -1613,7 +1611,7 @@ void DebuggerParser::executeListSaveStateIfs()
   ostringstream buf;
 
   StringList conds = debugger.m6502().getCondSaveStateNames();
-  if(conds.size() > 0)
+  if(!conds.empty())
   {
     commandResult << "saveStateIf:" << endl;
     for(uInt32 i = 0; i < conds.size(); ++i)
@@ -1623,7 +1621,7 @@ void DebuggerParser::executeListSaveStateIfs()
     }
   }
 
-  if(commandResult.str() == "")
+  if(commandResult.str().empty())
     commandResult << "no savestateifs defined";
 }
 
@@ -1639,11 +1637,11 @@ void DebuggerParser::executeListTraps()
     return;
   }
 
-  if (names.size() > 0)
+  if(!names.empty())
   {
     bool trapFound = false, trapifFound = false;
     for(const auto& name: names)
-      if(name == "")
+      if(name.empty())
         trapFound = true;
       else
         trapifFound = true;
@@ -1705,7 +1703,7 @@ void DebuggerParser::executeN()
 // "palette"
 void DebuggerParser::executePalette()
 {
-  commandResult << debugger.tiaDebug().palette();
+  commandResult << TIADebug::palette();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2087,7 +2085,7 @@ void DebuggerParser::executeSaveState()
 // "saveStateIf"
 void DebuggerParser::executeSaveStateIf()
 {
-  int res = YaccParser::parse(argStrings[0].c_str());
+  int res = YaccParser::parse(argStrings[0]);
   if(res == 0)
   {
     string condition = argStrings[0];
@@ -2130,7 +2128,7 @@ void DebuggerParser::executeStep()
 // "stepWhile"
 void DebuggerParser::executeStepWhile()
 {
-  int res = YaccParser::parse(argStrings[0].c_str());
+  int res = YaccParser::parse(argStrings[0]);
   if(res != 0) {
     commandResult << red("invalid expression");
     return;
@@ -2256,10 +2254,10 @@ void DebuggerParser::executeTraps(bool read, bool write, const string& command,
   }
 
   // base addresses of mirrors
-  const uInt32 beginRead = debugger.getBaseAddress(begin, true);
-  const uInt32 endRead = debugger.getBaseAddress(end, true);
-  const uInt32 beginWrite = debugger.getBaseAddress(begin, false);
-  const uInt32 endWrite = debugger.getBaseAddress(end, false);
+  const uInt32 beginRead  = Debugger::getBaseAddress(begin, true);
+  const uInt32 endRead    = Debugger::getBaseAddress(end, true);
+  const uInt32 beginWrite = Debugger::getBaseAddress(begin, false);
+  const uInt32 endWrite   = Debugger::getBaseAddress(end, false);
   stringstream conditionBuf;
 
   // parenthesize provided and address range condition(s) (begin)
@@ -2289,7 +2287,7 @@ void DebuggerParser::executeTraps(bool read, bool write, const string& command,
 
   const string condition = conditionBuf.str();
 
-  int res = YaccParser::parse(condition.c_str());
+  int res = YaccParser::parse(condition);
   if(res == 0)
   {
     // duplicates will remove each other
@@ -2334,7 +2332,7 @@ void DebuggerParser::executeTraps(bool read, bool write, const string& command,
 // wrapper function for trap(if)/trapRead(if)/trapWrite(if) commands
 void DebuggerParser::executeTrapRW(uInt32 addr, bool read, bool write, bool add)
 {
-  switch(debugger.cartDebug().addressType(addr))
+  switch(CartDebug::addressType(addr))
   {
     case CartDebug::AddrType::TIA:
     {

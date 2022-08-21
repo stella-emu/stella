@@ -382,20 +382,20 @@ void PNGLibrary::takeSnapshot(uInt32 number)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PNGLibrary::allocateStorage(size_t w, size_t h)
+bool PNGLibrary::allocateStorage(size_t width, size_t height)
 {
   // Create space for the entire image (3 bytes per pixel in RGB format)
-  const size_t req_buffer_size = w * h * 3;
+  const size_t req_buffer_size = width * height * 3;
   if(req_buffer_size > ReadInfo.buffer.capacity())
     ReadInfo.buffer.reserve(req_buffer_size * 1.5);
 
-  const size_t req_row_size = h;
+  const size_t req_row_size = height;
   if(req_row_size > ReadInfo.row_pointers.capacity())
     ReadInfo.row_pointers.reserve(req_row_size * 1.5);
 
-  ReadInfo.width  = static_cast<png_uint_32>(w);
-  ReadInfo.height = static_cast<png_uint_32>(h);
-  ReadInfo.pitch  = static_cast<png_uint_32>(w * 3);
+  ReadInfo.width  = static_cast<png_uint_32>(width);
+  ReadInfo.height = static_cast<png_uint_32>(height);
+  ReadInfo.pitch  = static_cast<png_uint_32>(width * 3);
 
   return true;
 }

@@ -97,7 +97,7 @@ string FSNodePOSIX::getShortPath() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FSNodePOSIX::hasParent() const
 {
-  return _path != "" && _path != ROOT_DIR;
+  return !_path.empty() && _path != ROOT_DIR;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -353,7 +353,7 @@ class OSystem
 
       @return  MD5 of the ROM image (if valid), otherwise EmptyString
     */
-    string getROMMD5(const FSNode& rom) const;
+    static string getROMMD5(const FSNode& rom);
 
     /**
       Creates a new game console from the specified romfile, and correctly
@@ -639,8 +639,8 @@ class OSystem
 
       @return  Unique pointer to the array, otherwise nullptr
     */
-    ByteBuffer openROM(const FSNode& romfile, size_t& size,
-                       bool showErrorMessage) const;
+    static ByteBuffer openROM(const FSNode& romfile, size_t& size,
+                              bool showErrorMessage);
 
     /**
       Creates an actual Console object based on the given info.
@@ -663,7 +663,7 @@ class OSystem
       @param console  The console to use
       @return  Some information about this console
     */
-    string getROMInfo(const Console& console);
+    static string getROMInfo(const Console& console);
 
     double dispatchEmulation(EmulationWorker& emulationWorker);
 

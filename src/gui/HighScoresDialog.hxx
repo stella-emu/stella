@@ -63,7 +63,7 @@ class HighScoresDialog : public Dialog
     bool handleDirty();
 
     string cartName() const;
-    string now() const;
+    static string now();
 
     enum {
       kVariationChanged = 'Vach',

@@ -521,8 +521,9 @@ void RiotWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ControllerWidget* RiotWidget::addControlWidget(GuiObject* boss, const GUI::Font& font,
-        int x, int y, Controller& controller)
+ControllerWidget*
+RiotWidget::addControlWidget(GuiObject* boss, const GUI::Font& font,
+                             int x, int y, Controller& controller)
 {
   switch(controller.type())
   {

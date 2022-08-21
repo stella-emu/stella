@@ -68,7 +68,7 @@ void LauncherFileListWidget::getChildren(const FSNode::CancelCheck& isCancelled)
 
     if(myVirtualDir == user_name)
     {
-      for(auto& item : myFavorites->userList())
+      for(const auto& item : myFavorites->userList())
       {
         FSNode node(item);
         string name = node.getName();
@@ -84,7 +84,7 @@ void LauncherFileListWidget::getChildren(const FSNode::CancelCheck& isCancelled)
     }
     else if(myVirtualDir == popular_name)
     {
-      for(auto& item : myFavorites->popularList())
+      for(const auto& item : myFavorites->popularList())
       {
         FSNode node(item.first);
         if(_filter(node))
@@ -93,7 +93,7 @@ void LauncherFileListWidget::getChildren(const FSNode::CancelCheck& isCancelled)
     }
     else if(myVirtualDir == recent_name)
     {
-      for(auto& item : myFavorites->recentList())
+      for(const auto& item : myFavorites->recentList())
       {
         FSNode node(item);
         if(_filter(node))
@@ -142,11 +142,11 @@ void LauncherFileListWidget::extendLists(StringList& list)
     // Add virtual directories behind ".."
     int offset = _fileList.begin()->getName() == ".." ? 1 : 0;
 
-    if(myFavorites->userList().size())
+    if(!myFavorites->userList().empty())
       addFolder(list, offset, user_name, IconType::userdir);
-    if(myFavorites->popularList().size())
+    if(!myFavorites->popularList().empty())
       addFolder(list, offset, popular_name, IconType::popdir);
-    if(myFavorites->recentList().size())
+    if(!myFavorites->recentList().empty())
       addFolder(list, offset, recent_name, IconType::recentdir);
   }
 }

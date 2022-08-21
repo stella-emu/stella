@@ -129,7 +129,7 @@ MouseControl::MouseControl(Console& console, const string& mode)
   Paddles::setDigitalPaddleRange(m_range);
 
   // If the mouse isn't used at all, we still need one item in the list
-  if(myModeList.size() == 0)
+  if(myModeList.empty())
     myModeList.emplace_back("Mouse not used for current controllers");
 
 #if 0

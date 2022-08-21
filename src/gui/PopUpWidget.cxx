@@ -26,7 +26,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
-                         int x, int y, int w, int h, const VariantList& list,
+                         int x, int y, int w, int h, const VariantList& items,
                          const string& label, int labelWidth, int cmd)
   : EditableWidget(boss, font, x, y - 1, w, h + 2),
     _label{label},
@@ -55,7 +55,8 @@ PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
   myTextY   = (_h - _font.getFontHeight()) / 2;
   myArrowsY = (_h - _arrowHeight) / 2;
 
-  myMenu = make_unique<ContextMenu>(this, font, list, cmd, w + dropDownWidth(font));
+  myMenu = make_unique<ContextMenu>(this, font, items, cmd,
+                                    w + dropDownWidth(font));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

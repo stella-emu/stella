@@ -153,7 +153,8 @@ void RomImageWidget::parseProperties(const FSNode& node, bool full)
   }
   else
   {
-    const string oldFileName = myImageList.size() ? myImageList[0].getPath() : EmptyString;
+    const string oldFileName = !myImageList.empty()
+        ? myImageList[0].getPath() : EmptyString;
 
     // Try to find all snapshots by property and ROM file name
     myImageList.clear();
@@ -162,7 +163,7 @@ void RomImageWidget::parseProperties(const FSNode& node, bool full)
 
     // The first file found before must not be the first file now, if files by
     // property *and* ROM name are found (TODO: fix that!)
-    if(myImageList.size() && myImageList[0].getPath() != oldFileName)
+    if(!myImageList.empty() && myImageList[0].getPath() != oldFileName)
       loadImage(myImageList[0].getPath());
     else
       setDirty(); // update the counter display
@@ -230,7 +231,7 @@ bool RomImageWidget::getImageList(const string& propName, const string& romName,
         node1.getName() == oldFileName;
     }
   );
-  return myImageList.size() > 0;
+  return !myImageList.empty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -396,7 +397,7 @@ void RomImageWidget::drawWidget(bool hilite)
   s.fillRect(_x, yText, _w, _font.getFontHeight(), _bgcolor);
   if(myLabel.length())
     s.drawString(_font, myLabel, _x, yText, _w - wText - _font.getMaxCharWidth() * 2, _textcolor);
-  if(myImageList.size())
+  if(!myImageList.empty())
     s.drawString(_font, buf.str(), _x + _w - wText, yText, wText, _textcolor);
 
   // Draw the navigation arrows

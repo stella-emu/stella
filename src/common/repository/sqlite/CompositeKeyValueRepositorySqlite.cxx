@@ -45,7 +45,7 @@ bool CompositeKeyValueRepositorySqlite::has(const string& key)
   try {
     (*myStmtCountSet)
       .reset()
-      .bind(1, key.c_str());
+      .bind(1, key);
 
     if (!myStmtCountSet->step())
       throw SqliteError("count failed");
@@ -68,7 +68,7 @@ void CompositeKeyValueRepositorySqlite::remove(const string& key)
   try {
     (*myStmtDeleteSet)
       .reset()
-      .bind(1, key.c_str())
+      .bind(1, key)
       .step();
 
     myStmtDelete->reset();
@@ -153,9 +153,9 @@ SqliteStatement& CompositeKeyValueRepositorySqlite::ProxyRepository::stmtInsert(
 ) {
   return (*myRepo.myStmtInsert)
     .reset()
-    .bind(1, myKey.c_str())
-    .bind(2, key.c_str())
-    .bind(3, value.c_str());
+    .bind(1, myKey)
+    .bind(2, key)
+    .bind(3, value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -163,7 +163,7 @@ SqliteStatement& CompositeKeyValueRepositorySqlite::ProxyRepository::stmtSelect(
 {
   return (*myRepo.myStmtSelect)
     .reset()
-    .bind(1, myKey.c_str());
+    .bind(1, myKey);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -172,8 +172,8 @@ SqliteStatement& CompositeKeyValueRepositorySqlite::ProxyRepository::stmtDelete(
   myRepo.myStmtDelete->reset();
 
   return (*myRepo.myStmtDelete)
-    .bind(1, myKey.c_str())
-    .bind(2, key.c_str());
+    .bind(1, myKey)
+    .bind(2, key);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -181,8 +181,8 @@ SqliteStatement& CompositeKeyValueRepositorySqlite::ProxyRepository::stmtSelectO
 {
   return (*myRepo.myStmtSelectOne)
     .reset()
-    .bind(1, myKey.c_str())
-    .bind(2, key.c_str());
+    .bind(1, myKey)
+    .bind(2, key);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -190,8 +190,8 @@ SqliteStatement& CompositeKeyValueRepositorySqlite::ProxyRepository::stmtCount(c
 {
   return (*myRepo.myStmtCount)
     .reset()
-    .bind(1, myKey.c_str())
-    .bind(2, key.c_str());
+    .bind(1, myKey)
+    .bind(2, key);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

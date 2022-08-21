@@ -80,7 +80,7 @@ void TimeLineWidget::setStepValues(const IntArray& steps)
   _stepValue.clear();
 
   // If no steps are defined, just use the maximum value
-  if(steps.size() > 0)
+  if(!steps.empty())
   {
     // Try to allocate as infrequently as possible
     if(steps.size() > _stepValue.capacity())

@@ -39,7 +39,8 @@ DelayQueueWidget::DelayQueueWidget(
   _w = 20 * font.getMaxCharWidth() + 6;
   _h = static_cast<int>(myLines.size() * font.getLineHeight() + 6);
 
-  for (auto&& line : myLines) line = "";
+  for (auto&& line : myLines)
+    line = "";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -50,7 +51,7 @@ void DelayQueueWidget::loadConfig() {
   using Common::Base;
   for (auto&& line : myLines) {
     if (!delayQueueIterator->isValid()) {
-      if(line != "")
+      if(!line.empty())
       {
         setDirty();
         line = "";

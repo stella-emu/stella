@@ -228,8 +228,8 @@ class Thumbulator
     uInt32 read16(uInt32 addr);
     uInt32 read32(uInt32 addr);
   #ifndef UNSAFE_OPTIMIZATIONS
-    bool isInvalidROM(uInt32 addr);
-    bool isInvalidRAM(uInt32 addr);
+    bool isInvalidROM(uInt32 addr) const;
+    bool isInvalidRAM(uInt32 addr) const;
     bool isProtectedRAM(uInt32 addr);
   #endif
     void write16(uInt32 addr, uInt32 data);
@@ -252,7 +252,7 @@ class Thumbulator
     int fatalError(const char* opcode, uInt32 v1, const char* msg);
     int fatalError(const char* opcode, uInt32 v1, uInt32 v2, const char* msg);
 
-    void dump_counters();
+    void dump_counters() const;
     void dump_regs();
   #endif
     int execute();

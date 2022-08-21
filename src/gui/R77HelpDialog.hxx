@@ -37,7 +37,7 @@ class R77HelpDialog : public Dialog
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
     void updateStrings(uInt8 page, uInt8 lines, string& title);
     void displayInfo();
-    void formatWidget(const string& label, StaticTextWidget* widget);
+    static void formatWidget(const string& label, StaticTextWidget* widget);
     void loadConfig() override;
 
   private:

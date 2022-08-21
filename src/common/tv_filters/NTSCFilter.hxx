@@ -80,12 +80,12 @@ class NTSCFilter
     // Get adjustables for the given preset
     // Values will be scaled to 0 - 100 range, independent of how
     // they're actually stored internally
-    void getAdjustables(Adjustable& adjustable, Preset preset) const;
+    static void getAdjustables(Adjustable& adjustable, Preset preset);
 
     // Set custom adjustables to given values
     // Values will be scaled to 0 - 100 range, independent of how
     // they're actually stored internally
-    void setCustomAdjustables(const Adjustable& adjustable);
+    static void setCustomAdjustables(const Adjustable& adjustable);
 
     // The following methods cycle through each custom adjustable
     // They are used in conjunction with the increase/decrease
@@ -101,8 +101,8 @@ class NTSCFilter
                                  string& text, string& valueText, Int32& newValue);
 
     // Load and save NTSC-related settings
-    void loadConfig(const Settings& settings);
-    void saveConfig(Settings& settings) const;
+    static void loadConfig(const Settings& settings);
+    static void saveConfig(Settings& settings);
 
     // Perform Blargg filtering on input buffer, place results in
     // output buffer
@@ -125,8 +125,8 @@ class NTSCFilter
 
   private:
     // Convert from atari_ntsc_setup_t values to equivalent adjustables
-    void convertToAdjustable(Adjustable& adjustable,
-                             const AtariNTSC::Setup& setup) const;
+    static void convertToAdjustable(Adjustable& adjustable,
+                                    const AtariNTSC::Setup& setup);
 
   private:
     // The NTSC object

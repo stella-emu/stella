@@ -23,7 +23,6 @@
 #include "Booster.hxx"
 #include "Cart.hxx"
 #include "Control.hxx"
-#include "Cart.hxx"
 #include "CartCM.hxx"
 #include "Driving.hxx"
 #include "Event.hxx"
@@ -161,7 +160,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   myDevSettingsHandler = make_unique<DevSettingsHandler>(myOSystem);
 
   // Auto-detect NTSC/PAL mode if it's requested
-  string autodetected = "";
+  string autodetected;
   myDisplayFormat = myProperties.get(PropType::Display_Format);
 
   if (myDisplayFormat == "AUTO")
@@ -296,9 +295,9 @@ void Console::autodetectFrameLayout(bool reset)
   for(int i = 0; i < 20; ++i)
     myTIA->update();
 
-  frameLayoutDetector.simulateInput(*myRiot, myOSystem.eventHandler(), true);
+  FrameLayoutDetector::simulateInput(*myRiot, myOSystem.eventHandler(), true);
   myTIA->update();
-  frameLayoutDetector.simulateInput(*myRiot, myOSystem.eventHandler(), false);
+  FrameLayoutDetector::simulateInput(*myRiot, myOSystem.eventHandler(), false);
 
   for(int i = 0; i < 40; ++i)
     myTIA->update();
@@ -441,8 +440,7 @@ void Console::setFormat(uInt32 format, bool force)
   if(!force && myCurrentFormat == format)
     return;
 
-  string saveformat, message;
-  string autodetected = "";
+  string saveformat, message, autodetected;
 
   myCurrentFormat = format;
   switch(myCurrentFormat)

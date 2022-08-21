@@ -726,7 +726,7 @@ void GameInfoDialog::loadEmulationProperties(const Properties& props)
   updateBSTypes();
 
   VariantList items;
-  string bsDetected = "";
+  string bsDetected;
 
   myBSType->setSelected(props.get(PropType::Cart_Type), "AUTO");
   if(myBSType->getSelectedTag().toString() == "AUTO")
@@ -915,7 +915,7 @@ void GameInfoDialog::loadHighScoresProperties(const Properties& props)
   for (uInt32 a = 0; a < HSM::MAX_SCORE_ADDR; ++a)
   {
     ss.str("");
-    if(a < instance().highScores().numAddrBytes(info.numDigits, info.trailingZeroes))
+    if(a < HighScoresManager::numAddrBytes(info.numDigits, info.trailingZeroes))
     {
       ss << hex << right // << setw(HSM::MAX_ADDR_CHARS) << setfill(' ')
         << uppercase << info.scoreAddr[a];
@@ -1075,8 +1075,8 @@ void GameInfoDialog::saveHighScoresProperties()
 
     string strVars = myVariations->getText();
 
-    instance().highScores().set(myGameProperties, stringToInt(strVars, HSM::DEFAULT_VARIATION),
-                                info);
+    HighScoresManager::set(myGameProperties, stringToInt(strVars,
+      HSM::DEFAULT_VARIATION), info);
   }
   else
   {
@@ -1198,7 +1198,7 @@ void GameInfoDialog::updateControllerStates()
 
     autoDetect = node.exists() && !node.isDirectory() && (image = instance().openROM(node, md5, size)) != nullptr;
   }
-  string label = "";
+  string label;
   Controller::Type type = Controller::getType(myLeftPort->getSelectedTag().toString());
 
   if(type == Controller::Type::Unknown)
@@ -1337,7 +1337,7 @@ void GameInfoDialog::updateHighScoresWidgets()
   const bool enableVars = enable && myVariations->getText() > "1";
   const bool enableSpecial = enable && !mySpecialName->getText().empty();
   const bool enableConsole = instance().hasConsole();
-  const uInt32 numAddr = instance().highScores().numAddrBytes(
+  const uInt32 numAddr = HighScoresManager::numAddrBytes(
       myScoreDigits->getSelected() + 1, myTrailingZeroes->getSelected());
 
   // enable widgets
@@ -1431,7 +1431,7 @@ void GameInfoDialog::setAddressVal(const EditTextWidget* addressWidget, EditText
     // convert to number and read from memory
     const uInt16 addr = stringToIntBase16(strAddr, HSM::DEFAULT_ADDRESS);
     uInt8 val = instance().highScores().peek(addr);
-    val = instance().highScores().convert(val, maxVal, isBCD, zeroBased);
+    val = HighScoresManager::convert(val, maxVal, isBCD, zeroBased);
 
     // format output and display in value widget
     // if (isBCD)

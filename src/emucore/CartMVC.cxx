@@ -31,20 +31,20 @@
 */
 
 namespace {
-  static constexpr uInt8 LO_JUMP_BYTE(uInt16 b) {
+  constexpr uInt8 LO_JUMP_BYTE(uInt16 b) {
     return b & 0xff;
   }
-  static constexpr uInt8 HI_JUMP_BYTE(uInt16 b) {
+  constexpr uInt8 HI_JUMP_BYTE(uInt16 b) {
     return ((b & 0xff00) >> 8) | 0x10;
   }
 
-  static constexpr uInt8 COLOR_BLUE = 0x9A;
-  // static constexpr uInt8 COLOR_WHITE = 0x0E;
+  constexpr uInt8 COLOR_BLUE = 0x9A;
+  // constexpr uInt8 COLOR_WHITE = 0x0E;
 
-  static constexpr uInt8 OSD_FRAMES = 180;
-  static constexpr int BACK_SECONDS = 10;
+  constexpr uInt8 OSD_FRAMES = 180;
+  constexpr int BACK_SECONDS = 10;
 
-  static constexpr int TITLE_CYCLES = 1000000;
+  constexpr int TITLE_CYCLES = 1000000;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -122,7 +122,7 @@ void RomInfoWidget::parseProperties(const FSNode& node, bool full)
     try
     {
       ByteBuffer image;
-      string md5 = "";
+      string md5;
 
       if(node.exists() && !node.isDirectory() &&
         (image = instance().openROM(node, md5, size)) != nullptr)
@@ -146,10 +146,10 @@ void RomInfoWidget::parseProperties(const FSNode& node, bool full)
       // failed for any reason
       left = right = "";
     }
-    if(left != "" && right != "")
+    if(!left.empty() && !right.empty())
       myRomInfo.push_back("Controllers: " + (left + " (left), " + right + " (right)"));
 
-    if(bsDetected != "")
+    if(!bsDetected.empty())
     {
       ostringstream buf;
 
