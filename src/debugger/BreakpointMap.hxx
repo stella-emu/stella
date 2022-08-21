@@ -90,7 +90,7 @@ class BreakpointMap
     size_t size() const { return myMap.size(); }
 
   private:
-    Breakpoint convertBreakpoint(const Breakpoint& breakpoint);
+    static Breakpoint convertBreakpoint(const Breakpoint& breakpoint);
 
     struct BreakpointHash {
       size_t operator()(const Breakpoint& bp) const {

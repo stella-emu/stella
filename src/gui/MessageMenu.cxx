@@ -37,22 +37,23 @@ MessageMenu::~MessageMenu()
 Dialog* MessageMenu::baseDialog()
 {
   if (myMessageDialog == nullptr)
-    myMessageDialog = new MessageDialog(myOSystem, *this, myOSystem.frameBuffer().font(),
-                                        FBMinimum::Width, FBMinimum::Height);
+    myMessageDialog = new MessageDialog(myOSystem, *this,
+      myOSystem.frameBuffer().font(), FBMinimum::Width, FBMinimum::Height);
 
   return myMessageDialog;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void MessageMenu::setMessage(const string& title, const StringList& text, bool yesNo)
+void MessageMenu::setMessage(const string& title, const StringList& text,
+                             bool yesNo)
 {
-  myMessageDialog->setMessage(title, text, yesNo);
+  MessageDialog::setMessage(title, text, yesNo);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MessageMenu::setMessage(const string& title, const string& text, bool yesNo)
 {
-  myMessageDialog->setMessage(title, text, yesNo);
+  MessageDialog::setMessage(title, text, yesNo);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

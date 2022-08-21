@@ -139,7 +139,7 @@ void Widget::draw()
     }
 
     // Now perform the actual widget draw
-    drawWidget((_flags & Widget::FLAG_HILITED) ? true : false);
+    drawWidget((_flags & Widget::FLAG_HILITED) != 0);
 
     // Restore w/hy
     if(hasBorder())
@@ -365,7 +365,7 @@ void Widget::setHelpURL(const string& helpURL)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string Widget::getHelpURL() const
+string Widget::getHelpURL() const
 {
   if(!_helpURL.empty())
     return _helpURL;
@@ -377,35 +377,36 @@ const string Widget::getHelpURL() const
     else
       return "https://stella-emu.github.io/docs/index.html#" + _helpAnchor;
   }
-  return EmptyString;
+  return {};
 }
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Widget* Widget::findWidgetInChain(Widget* w, int x, int y)
+Widget* Widget::findWidgetInChain(Widget* start, int x, int y)
 {
-  while(w)
+  while(start)
   {
-    // Stop as soon as we find a widget that contains the point (x,y)
-    if(x >= w->_x && x < w->_x + w->_w && y >= w->_y && y < w->_y + w->_h)
+    // Stop as soon as starte find a startidget that contains the point (x,y)
+    if(x >= start->_x && x < start->_x + start->_w &&
+       y >= start->_y && y < start->_y + start->_h)
       break;
-    w = w->_next;
+    start = start->_next;
   }
 
-  if(w)
-    w = w->findWidget(x - w->_x, y - w->_y);
+  if(start)
+    start = start->findWidget(x - start->_x, y - start->_y);
 
-  return w;
+  return start;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Widget::isWidgetInChain(Widget* w, const Widget* find)
+bool Widget::isWidgetInChain(Widget* start, const Widget* find)
 {
-  while(w)
+  while(start)
   {
-    // Stop as soon as we find the widget
-    if(w == find)  return true;
-    w = w->_next;
+    // Stop as soon as starte find the startidget
+    if(start == find)  return true;
+    start = start->_next;
   }
   return false;
 }
@@ -864,7 +865,7 @@ CheckboxWidget::CheckboxWidget(GuiObject* boss, const GUI::Font& font,
   _editable = true;
   _boxSize = boxSize(font);
 
-  if(label == "")
+  if(label.empty())
     _w = _boxSize;
   else
     _w = font.getStringWidth(label) + _boxSize + font.getMaxCharWidth() * 0.75;

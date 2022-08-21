@@ -121,7 +121,7 @@ class CheatManager
     /**
       Checks if a code is valid.
     */
-    bool isValidCode(const string& code) const;
+    static bool isValidCode(const string& code);
 
   private:
     /**

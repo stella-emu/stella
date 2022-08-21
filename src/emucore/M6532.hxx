@@ -146,8 +146,8 @@ class M6532 : public Device
 
   private:
 
-    void setTimerRegister(uInt8 data, uInt8 interval);
-    void setPinState(bool shcha);
+    void setTimerRegister(uInt8 value, uInt8 interval);
+    void setPinState(bool swcha);
 
   #ifdef DEBUGGER_SUPPORT
     // The following are used by the debugger to read INTIM/TIMINT

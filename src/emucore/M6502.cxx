@@ -121,7 +121,7 @@ inline uInt8 M6502::peek(uInt16 address, Device::AccessFlags flags)
   if(myReadTraps.isInitialized() && myReadTraps.isSet(address)
      && (myGhostReadsTrap || flags != DISASM_NONE))
   {
-    myLastPeekBaseAddress = myDebugger->getBaseAddress(myLastPeekAddress, true); // mirror handling
+    myLastPeekBaseAddress = Debugger::getBaseAddress(myLastPeekAddress, true); // mirror handling
     const int cond = evalCondTraps();
     if(cond > -1)
     {
@@ -157,7 +157,7 @@ inline void M6502::poke(uInt16 address, uInt8 value, Device::AccessFlags flags)
 #ifdef DEBUGGER_SUPPORT
   if(myWriteTraps.isInitialized() && myWriteTraps.isSet(address))
   {
-    myLastPokeBaseAddress = myDebugger->getBaseAddress(myLastPokeAddress, false); // mirror handling
+    myLastPokeBaseAddress = Debugger::getBaseAddress(myLastPokeAddress, false); // mirror handling
     const int cond = evalCondTraps();
     if(cond > -1)
     {
@@ -188,9 +188,9 @@ inline void M6502::handleHalt()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void M6502::execute(uInt64 number, DispatchResult& result)
+void M6502::execute(uInt64 cycles, DispatchResult& result)
 {
-  _execute(number, result);
+  _execute(cycles, result);
 
 #ifdef DEBUGGER_SUPPORT
   // Debugger hack: this ensures that stepping a "STA WSYNC" will actually end at the
@@ -208,16 +208,17 @@ void M6502::execute(uInt64 number, DispatchResult& result)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool M6502::execute(uInt64 number)
+bool M6502::execute(uInt64 cycles)
 {
   DispatchResult result;
 
-  execute(number, result);
+  execute(cycles, result);
 
   return result.isSuccess();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// NOLINTNEXTLINE (readability-function-size)
 inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
 {
   myExecutionStatus = 0;
@@ -682,7 +683,7 @@ const StringList& M6502::getCondTrapNames() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void M6502::updateStepStateByInstruction()
 {
-  myStepStateByInstruction = myCondBreaks.size() || myCondSaveStates.size() ||
-                             myTrapConds.size();
+  myStepStateByInstruction =
+    !myCondBreaks.empty() || !myCondSaveStates.empty() || !myTrapConds.empty();
 }
 #endif  // DEBUGGER_SUPPORT

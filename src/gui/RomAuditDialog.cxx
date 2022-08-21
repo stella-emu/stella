@@ -96,7 +96,7 @@ void RomAuditDialog::loadConfig()
 {
   const string& currentdir =
     instance().launcher().currentDir().getShortPath();
-  const string& path = currentdir == "" ?
+  const string& path = currentdir.empty() ?
     instance().settings().getString("romdir") : currentdir;
 
   myRomPath->setText(path);
@@ -138,13 +138,13 @@ void RomAuditDialog::auditRoms()
 
       // Calculate the MD5 so we can get the rest of the info
       // from the PropertiesSet (stella.pro)
-      const string& md5 = instance().getROMMD5(files[idx]);
+      const string& md5 = OSystem::getROMMD5(files[idx]);
       if(instance().propSet().getMD5(md5, props))
       {
         const string& name = props.get(PropType::Cart_Name);
 
         // Only rename the file if we found a valid properties entry
-        if(name != "" && name != files[idx].getName())
+        if(!name.empty() && name != files[idx].getName())
         {
           string newfile = node.getPath();
           newfile.append(name).append(".").append(extension);

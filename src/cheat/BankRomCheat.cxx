@@ -51,7 +51,7 @@ bool BankRomCheat::disable()
   myOSystem.console().cartridge().bank(bank);
 
   for(int i = 0; i < count; ++i)
-		myOSystem.console().cartridge().patch(address + i, savedRom[i]);
+    myOSystem.console().cartridge().patch(address + i, savedRom[i]);
 
   myOSystem.console().cartridge().bank(oldBank);
 

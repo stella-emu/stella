@@ -89,7 +89,7 @@ void InputTextDialog::initialize(const GUI::Font& lfont, const GUI::Font& nfont,
       maxIdx = i;
     }
   }
-  if(labels.size())
+  if(!labels.empty())
     lwidth = lfont.getStringWidth(labels[maxIdx]);
 
   // Create editboxes for all labels

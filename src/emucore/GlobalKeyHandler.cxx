@@ -164,7 +164,7 @@ GlobalKeyHandler::Group GlobalKeyHandler::getGroup() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool GlobalKeyHandler::isJoystick(const Controller& controller) const
+bool GlobalKeyHandler::isJoystick(const Controller& controller)
 {
   return controller.type() == Controller::Type::Joystick
     || controller.type() == Controller::Type::BoosterGrip
@@ -175,7 +175,7 @@ bool GlobalKeyHandler::isJoystick(const Controller& controller) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool GlobalKeyHandler::isPaddle(const Controller& controller) const
+bool GlobalKeyHandler::isPaddle(const Controller& controller)
 {
   return controller.type() == Controller::Type::Paddles
     || controller.type() == Controller::Type::PaddlesIAxDr
@@ -186,7 +186,7 @@ bool GlobalKeyHandler::isPaddle(const Controller& controller) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool GlobalKeyHandler::isTrackball(const Controller& controller) const
+bool GlobalKeyHandler::isTrackball(const Controller& controller)
 {
   return controller.type() == Controller::Type::AmigaMouse
     || controller.type() == Controller::Type::AtariMouse
@@ -283,7 +283,7 @@ bool GlobalKeyHandler::skipDebugSetting() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const GlobalKeyHandler::Function GlobalKeyHandler::cycleSetting(int direction)
+GlobalKeyHandler::Function GlobalKeyHandler::cycleSetting(int direction)
 {
   bool skip = false;
 

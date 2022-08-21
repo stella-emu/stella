@@ -186,7 +186,7 @@ Device::AccessFlags System::getAccessFlags(uInt16 addr) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void System::setAccessFlags(uInt16 addr, Device::AccessFlags flags)
+void System::setAccessFlags(uInt16 addr, Device::AccessFlags flags) const
 {
   const PageAccess& access = getPageAccess(addr);
 
@@ -197,10 +197,9 @@ void System::setAccessFlags(uInt16 addr, Device::AccessFlags flags)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void System::increaseAccessCounter(uInt16 addr, bool isWrite)
+void System::increaseAccessCounter(uInt16 addr, bool isWrite) const
 {
   const PageAccess& access = getPageAccess(addr);
-
 
   if(isWrite)
   {

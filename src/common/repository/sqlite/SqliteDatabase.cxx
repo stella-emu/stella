@@ -105,7 +105,7 @@ Int32 SqliteDatabase::getUserVersion() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SqliteDatabase::setUserVersion(Int32 version)
+void SqliteDatabase::setUserVersion(Int32 version) const
 {
   SqliteStatement(*this, "PRAGMA user_version = %i", static_cast<int>(version))
     .step();

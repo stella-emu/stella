@@ -272,11 +272,11 @@ void CheatManager::loadCheats(const string& md5sum)
   // Set up any cheatcodes that was on the command line
   // (and remove the key from the settings, so they won't get set again)
   const string& cheats = myOSystem.settings().getString("cheat");
-  if(cheats != "")
+  if(!cheats.empty())
     myOSystem.settings().setValue("cheat", "");
 
   const auto& iter = myCheatMap.find(md5sum);
-  if(iter == myCheatMap.end() && cheats == "")
+  if(iter == myCheatMap.end() && cheats.empty())
     return;
 
   // Remember the cheats for this ROM
@@ -311,7 +311,7 @@ void CheatManager::saveCheats(const string& md5sum)
       myCheatMap.erase(iter);
 
     // Add new entry only if there are any cheats defined
-    if(cheats.str() != "")
+    if(!cheats.str().empty())
       myCheatMap.emplace(md5sum, cheats.str());
   }
 
@@ -322,7 +322,7 @@ void CheatManager::saveCheats(const string& md5sum)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CheatManager::isValidCode(const string& code) const
+bool CheatManager::isValidCode(const string& code)
 {
   for(const auto c: code)
     if(!isxdigit(c))

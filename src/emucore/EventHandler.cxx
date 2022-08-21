@@ -270,7 +270,7 @@ void EventHandler::poll(uInt64 time)
       myOSystem.state().update();
 
   #ifdef CHEATCODE_SUPPORT
-    for(auto& cheat: myOSystem.cheat().perFrame())
+    for(const auto& cheat: myOSystem.cheat().perFrame())
       cheat->evaluate();
   #endif
 
@@ -392,6 +392,7 @@ void EventHandler::handleSystemEvent(SystemEvent e, int, int)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// NOLINTNEXTLINE (readability-function-size)
 void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
 {
   // Take care of special events that aren't part of the emulation core
@@ -1548,7 +1549,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
                 msg.push_back("");
                 msg.push_back("You will lose all your progress.");
               }
-              myOSystem.messageMenu().setMessage("Exit Emulation", msg, true);
+              MessageMenu::setMessage("Exit Emulation", msg, true);
               enterMenuMode(EventHandlerState::MESSAGEMENU);
             }
             else
@@ -1913,15 +1914,15 @@ void EventHandler::setActionMappings(EventMode mode)
 
     #ifdef JOYSTICK_SUPPORT
         const string joydesc = myPJoyHandler->getMappingDesc(event, mode);
-        if(joydesc != "")
+        if(!joydesc.empty())
         {
-          if(key != "")
+          if(!key.empty())
             key += ", ";
           key += joydesc;
         }
     #endif
 
-        if(key != "")
+        if(!key.empty())
           item.key = key;
       }
       break;
@@ -1935,15 +1936,15 @@ void EventHandler::setActionMappings(EventMode mode)
 
     #ifdef JOYSTICK_SUPPORT
         const string joydesc = myPJoyHandler->getMappingDesc(event, mode);
-        if(joydesc != "")
+        if(!joydesc.empty())
         {
-          if(key != "")
+          if(!key.empty())
             key += ", ";
           key += joydesc;
         }
     #endif
 
-        if(key != "")
+        if(!key.empty())
           item.key = key;
       }
       break;
@@ -2035,7 +2036,7 @@ json EventHandler::convertLegacyComboMapping(string list)
             events.push_back(Event::Type(event));
         }
         // only store if there are any NoType events
-        if(events.size())
+        if(!events.empty())
         {
           json combo;
 
@@ -2173,7 +2174,7 @@ void EventHandler::saveComboMapping()
         events.push_back(Event::Type(event));
     }
     // only store if there are any NoType events
-    if(events.size())
+    if(!events.empty())
     {
       json combo;
 
@@ -2186,7 +2187,7 @@ void EventHandler::saveComboMapping()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-StringList EventHandler::getActionList(EventMode mode) const
+StringList EventHandler::getActionList(EventMode mode)
 {
   StringList l;
   switch(mode)
@@ -2206,10 +2207,8 @@ StringList EventHandler::getActionList(EventMode mode) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-StringList EventHandler::getActionList(Event::Group group) const
+StringList EventHandler::getActionList(Event::Group group)
 {
-  StringList l;
-
   switch(group)
   {
     case Event::Group::Menu:
@@ -2252,12 +2251,13 @@ StringList EventHandler::getActionList(Event::Group group) const
       return getActionList(ComboEvents);
 
     default:
-      return l; // ToDo
+      return {}; // ToDo
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-StringList EventHandler::getActionList(const Event::EventSet& events, EventMode mode) const
+StringList EventHandler::getActionList(const Event::EventSet& events,
+                                       EventMode mode)
 {
   StringList l;
 
@@ -2286,7 +2286,7 @@ StringList EventHandler::getActionList(const Event::EventSet& events, EventMode 
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-VariantList EventHandler::getComboList() const
+VariantList EventHandler::getComboList()
 {
   // For now, this only works in emulation mode
   VariantList l;
@@ -2355,7 +2355,7 @@ void EventHandler::setComboListForEvent(Event::Type event, const StringList& eve
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int EventHandler::getEmulActionListIndex(int idx, const Event::EventSet& events) const
+int EventHandler::getEmulActionListIndex(int idx, const Event::EventSet& events)
 {
   // idx = index into intersection set of 'events' and 'ourEmulActionList'
   //   ordered by 'ourEmulActionList'!
@@ -2383,7 +2383,7 @@ int EventHandler::getEmulActionListIndex(int idx, const Event::EventSet& events)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int EventHandler::getActionListIndex(int idx, Event::Group group) const
+int EventHandler::getActionListIndex(int idx, Event::Group group)
 {
   switch(group)
   {
@@ -2432,7 +2432,7 @@ int EventHandler::getActionListIndex(int idx, Event::Group group) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Event::Type EventHandler::eventAtIndex(int idx, Event::Group group) const
+Event::Type EventHandler::eventAtIndex(int idx, Event::Group group)
 {
   const int index = getActionListIndex(idx, group);
 
@@ -2453,7 +2453,7 @@ Event::Type EventHandler::eventAtIndex(int idx, Event::Group group) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string EventHandler::actionAtIndex(int idx, Event::Group group) const
+string EventHandler::actionAtIndex(int idx, Event::Group group)
 {
   const int index = getActionListIndex(idx, group);
 
@@ -2474,7 +2474,7 @@ string EventHandler::actionAtIndex(int idx, Event::Group group) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string EventHandler::keyAtIndex(int idx, Event::Group group) const
+string EventHandler::keyAtIndex(int idx, Event::Group group)
 {
   const int index = getActionListIndex(idx, group);
 
@@ -2527,7 +2527,7 @@ void EventHandler::changeMouseControllerMode(int direction)
   string usemouse = myOSystem.settings().getString("usemouse");
 
   int i = 0;
-  for(auto& mode : MODES)
+  for(const auto& mode : MODES)
   {
     if(mode == usemouse)
     {

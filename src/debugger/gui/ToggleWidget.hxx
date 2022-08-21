@@ -70,7 +70,7 @@ class ToggleWidget : public Widget, public CommandSender
 
   private:
     void drawWidget(bool hilite) override = 0;
-    int findItem(int x, int y);
+    int findItem(int x, int y) const;
 
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;

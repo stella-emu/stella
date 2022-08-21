@@ -75,7 +75,7 @@ void ToggleWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int ToggleWidget::findItem(int x, int y)
+int ToggleWidget::findItem(int x, int y) const
 {
   int row = (y - 1) / _rowHeight;
   if(row >= _rows) row = _rows - 1;

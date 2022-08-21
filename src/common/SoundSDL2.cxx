@@ -137,12 +137,12 @@ bool SoundSDL2::openDevice()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL2::setEnabled(bool state)
+void SoundSDL2::setEnabled(bool enable)
 {
-  myAudioSettings.setEnabled(state);
-  if (myAudioQueue) myAudioQueue->ignoreOverflows(!state);
+  myAudioSettings.setEnabled(enable);
+  if (myAudioQueue) myAudioQueue->ignoreOverflows(!enable);
 
-  Logger::debug(state ? "SoundSDL2::setEnabled(true)" :
+  Logger::debug(enable ? "SoundSDL2::setEnabled(true)" :
                 "SoundSDL2::setEnabled(false)");
 }
 

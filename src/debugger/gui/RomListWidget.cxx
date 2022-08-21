@@ -658,7 +658,7 @@ void RomListWidget::startEditMode()
   if (isEditable() && !_editMode && _selectedItem >= 0)
   {
     // Does this line represent an editable area?
-    if(myDisasm->list[_selectedItem].bytes == "")
+    if(myDisasm->list[_selectedItem].bytes.empty())
       return;
 
     _editMode = true;

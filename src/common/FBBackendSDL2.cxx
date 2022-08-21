@@ -97,8 +97,7 @@ void FBBackendSDL2::queryHardware(vector<Common::Size>& fullscreenRes,
     s << "Supported video modes (" << numModes << ") for display " << i
       << " (" << SDL_GetDisplayName(i) << "):";
 
-    string lastRes = "";
-
+    string lastRes;
     for(int m = 0; m < numModes; ++m)
     {
       SDL_DisplayMode mode;
@@ -428,7 +427,7 @@ bool FBBackendSDL2::createRenderer()
     if(myRenderer)
       SDL_DestroyRenderer(myRenderer);
 
-    if(video != "")
+    if(!video.empty())
       SDL_SetHint(SDL_HINT_RENDER_DRIVER, video.c_str());
 
     myRenderer = SDL_CreateRenderer(myWindow, -1, renderFlags);
@@ -567,7 +566,7 @@ unique_ptr<FBSurface> FBBackendSDL2::createSurface(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBBackendSDL2::readPixels(uInt8* pixels, size_t pitch,
+void FBBackendSDL2::readPixels(uInt8* buffer, size_t pitch,
                                const Common::Rect& rect) const
 {
   ASSERT_MAIN_THREAD;
@@ -576,7 +575,7 @@ void FBBackendSDL2::readPixels(uInt8* pixels, size_t pitch,
   r.x = rect.x();  r.y = rect.y();
   r.w = rect.w();  r.h = rect.h();
 
-  SDL_RenderReadPixels(myRenderer, &r, 0, pixels, static_cast<int>(pitch));
+  SDL_RenderReadPixels(myRenderer, &r, 0, buffer, static_cast<int>(pitch));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

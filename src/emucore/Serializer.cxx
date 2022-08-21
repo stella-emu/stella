@@ -176,7 +176,7 @@ string Serializer::getString() const
   const int len = getInt();
   string str;
   str.resize(len);
-  myStream->read(&str[0], len);
+  myStream->read(str.data(), len);
 
   return str;
 }

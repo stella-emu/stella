@@ -94,7 +94,7 @@ void ListWidget::setSelected(const string& item)
   int selected = -1;
   if(!_list.empty())
   {
-    if(item == "")
+    if(item.empty())
       selected = 0;
     else
     {

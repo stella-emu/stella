@@ -111,13 +111,13 @@ class Debugger : public DialogContainer
 
     bool addFunction(const string& name, const string& def,
                      Expression* exp, bool builtin = false);
-    bool isBuiltinFunction(const string& name);
+    static bool isBuiltinFunction(const string& name);
     bool delFunction(const string& name);
     const Expression& getFunction(const string& name) const;
 
     const string& getFunctionDef(const string& name) const;
-    const FunctionDefMap getFunctionDefMap() const;
-    string builtinHelp() const;
+    FunctionDefMap getFunctionDefMap() const;
+    static string builtinHelp();
 
     /**
       Methods used by the command parser for tab-completion
@@ -168,33 +168,33 @@ class Debugger : public DialogContainer
       Returns true if successfully set
     */
     bool setBreakPoint(uInt16 addr, uInt8 bank = ANY_BANK,
-                       uInt32 flags = 0);
+                       uInt32 flags = 0) const;
 
     /**
       Clears a breakpoint.
 
       Returns true if successfully cleared
     */
-    bool clearBreakPoint(uInt16 addr, uInt8 bank);
+    bool clearBreakPoint(uInt16 addr, uInt8 bank) const;
 
     /**
       Toggles a breakpoint
 
       Returns new state of breakpoint
     */
-    bool toggleBreakPoint(uInt16 addr, uInt8 bank);
+    bool toggleBreakPoint(uInt16 addr, uInt8 bank) const;
 
     /**
       Checks for a breakpoint.
 
       Returns true if existing, else false
     */
-    bool checkBreakPoint(uInt16 addr, uInt8 bank);
+    bool checkBreakPoint(uInt16 addr, uInt8 bank) const;
 
     /**
       Run the debugger command and return the result.
     */
-    const string run(const string& command);
+    string run(const string& command);
 
     string autoExec(StringList* history);
 
@@ -235,7 +235,7 @@ class Debugger : public DialogContainer
     }
 
     /** Invert given input if it differs from its previous value */
-    const string invIfChanged(int reg, int oldReg);
+    static string invIfChanged(int reg, int oldReg);
 
     /**
       This is used when we want the debugger from a class that can't
@@ -261,7 +261,7 @@ class Debugger : public DialogContainer
     Device::AccessFlags getAccessFlags(uInt16 addr) const;
     void setAccessFlags(uInt16 addr, Device::AccessFlags flags);
 
-    uInt32 getBaseAddress(uInt32 addr, bool read);
+    static uInt32 getBaseAddress(uInt32 addr, bool read);
 
     bool patchROM(uInt16 addr, uInt8 value);
 
@@ -315,17 +315,17 @@ class Debugger : public DialogContainer
     uInt16 rewindStates(const uInt16 numStates, string& message);
     uInt16 unwindStates(const uInt16 numStates, string& message);
 
-    void clearAllBreakPoints();
+    void clearAllBreakPoints() const;
 
-    void addReadTrap(uInt16 t);
-    void addWriteTrap(uInt16 t);
-    void addTrap(uInt16 t);
-    void removeReadTrap(uInt16 t);
-    void removeWriteTrap(uInt16 t);
-    void removeTrap(uInt16 t);
-    bool readTrap(uInt16 t);
-    bool writeTrap(uInt16 t);
-    void clearAllTraps();
+    void addReadTrap(uInt16 t) const;
+    void addWriteTrap(uInt16 t) const;
+    void addTrap(uInt16 t) const;
+    void removeReadTrap(uInt16 t) const;
+    void removeWriteTrap(uInt16 t) const;
+    void removeTrap(uInt16 t) const;
+    bool readTrap(uInt16 t) const;
+    bool writeTrap(uInt16 t) const;
+    void clearAllTraps() const;
     void log(const string& triggerMsg);
 
     // Set a bunch of RAM locations at once

@@ -91,7 +91,7 @@ std::map<string, Variant> KeyValueRepositoryPropertyFile::load(istream& in)
     if(!in) return map;
 
     // A null key signifies the end of the property list
-    if(key == "")
+    if(key.empty())
       break;
 
     // Get the value associated with this property
@@ -111,7 +111,7 @@ std::map<string, Variant> KeyValueRepositoryPropertyFile::load(istream& in)
 bool KeyValueRepositoryPropertyFile::save(ostream& out,
     const std::map<string, Variant>& values)
 {
-  for (auto& [key, value]: values) {
+  for (const auto& [key, value]: values) {
     writeQuotedString(out, key);
     out.put(' ');
     writeQuotedString(out, value.toString());

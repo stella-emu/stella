@@ -788,11 +788,10 @@ void VideoAudioDialog::saveConfig()
   ntscAdj.artifacts = myTVArtifacts->getValue();
   ntscAdj.fringing = myTVFringe->getValue();
   ntscAdj.bleed = myTVBleed->getValue();
-  instance().frameBuffer().tiaSurface().ntsc().setCustomAdjustables(ntscAdj);
+  NTSCFilter::setCustomAdjustables(ntscAdj);
 
   Logger::debug("Saving TV effects options ...");
-  instance().frameBuffer().tiaSurface().ntsc().saveConfig(settings);
-
+  NTSCFilter::saveConfig(settings);
 
   // TV phosphor mode & blend
   settings.setValue("tv.phosphor",
@@ -983,8 +982,7 @@ void VideoAudioDialog::handleTVModeChange(NTSCFilter::Preset preset)
 void VideoAudioDialog::loadTVAdjustables(NTSCFilter::Preset preset)
 {
   NTSCFilter::Adjustable adj;
-  instance().frameBuffer().tiaSurface().ntsc().getAdjustables(
-      adj, NTSCFilter::Preset(preset));
+  NTSCFilter::getAdjustables(adj, NTSCFilter::Preset(preset));
   myTVSharp->setValue(adj.sharpness);
   myTVRes->setValue(adj.resolution);
   myTVArtifacts->setValue(adj.artifacts);

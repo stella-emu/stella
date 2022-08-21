@@ -139,7 +139,8 @@ class LauncherDialog : public Dialog, CommandSender
 
       @return True if pattern was found.
     */
-    bool matchWithWildcardsIgnoreCase(const string& str, const string& pattern);
+    static bool matchWithWildcardsIgnoreCase(const string& str,
+                                             const string& pattern);
 
     void applyFiltering();
 

@@ -61,8 +61,8 @@ class StellaSettingsDialog : public Dialog
     void loadControllerProperties(const Properties& props);
 
     // convert internal setting values to user friendly levels
-    int levelToValue(int level);
-    int valueToLevel(int value);
+    static int levelToValue(int level);
+    static int valueToLevel(int value);
 
     void openHelp();
 

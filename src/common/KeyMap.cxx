@@ -135,7 +135,7 @@ bool KeyMap::check(const EventMode mode, const int key, const int mod) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string KeyMap::getDesc(const Mapping& mapping) const
+string KeyMap::getDesc(const Mapping& mapping)
 {
   ostringstream buf;
 #if defined(BSPF_MACOS) || defined(MACOS_KEYS)
@@ -184,7 +184,7 @@ string KeyMap::getDesc(const Mapping& mapping) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string KeyMap::getDesc(const EventMode mode, const int key, const int mod) const
+string KeyMap::getDesc(const EventMode mode, const int key, const int mod)
 {
   return getDesc(Mapping(mode, key, mod));
 }
@@ -198,7 +198,7 @@ string KeyMap::getEventMappingDesc(const Event::Type event, const EventMode mode
   {
     if (_event == event && _mapping.mode == mode)
     {
-      if(buf.str() != "")
+      if(!buf.str().empty())
         buf << ", ";
       buf << getDesc(_mapping);
     }
@@ -336,7 +336,7 @@ void KeyMap::eraseEvent(const Event::Type event, const EventMode mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-KeyMap::Mapping KeyMap::convertMod(const Mapping& mapping) const
+KeyMap::Mapping KeyMap::convertMod(const Mapping& mapping)
 {
   Mapping m = mapping;
 

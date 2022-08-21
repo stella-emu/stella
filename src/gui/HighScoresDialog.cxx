@@ -540,7 +540,7 @@ string HighScoresDialog::cartName() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string HighScoresDialog::now() const
+string HighScoresDialog::now()
 {
   std::tm now = BSPF::localTime();
   ostringstream ss;

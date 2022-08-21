@@ -31,7 +31,6 @@
 #include "FrameManager.hxx"
 #include "FrameLayoutDetector.hxx"
 #include "EmulationTiming.hxx"
-#include "ConsoleTiming.hxx"
 #include "System.hxx"
 #include "Joystick.hxx"
 #include "Random.hxx"
@@ -40,7 +39,7 @@
 using namespace std::chrono;
 
 namespace {
-  static constexpr uInt32 RUNTIME_DEFAULT = 60;
+  constexpr uInt32 RUNTIME_DEFAULT = 60;
 
   void updateProgress(uInt32 from, uInt32 to) {
     while (from < to) {
@@ -111,7 +110,7 @@ bool ProfilingRunner::runOne(const ProfilingRun& run)
   }
 
   string md5 = MD5::hash(image, size);
-  string type = "";
+  string type;
   unique_ptr<Cartridge> cartridge = CartCreator::create(
       imageFile, image, size, md5, type, mySettings);
 

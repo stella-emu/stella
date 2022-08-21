@@ -218,13 +218,13 @@ TrapArray& Debugger::writeTraps() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string Debugger::run(const string& command)
+string Debugger::run(const string& command)
 {
   return myParser->run(command);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string Debugger::invIfChanged(int reg, int oldReg)
+string Debugger::invIfChanged(int reg, int oldReg)
 {
   string ret;
 
@@ -361,7 +361,7 @@ int Debugger::trace()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::setBreakPoint(uInt16 addr, uInt8 bank, uInt32 flags)
+bool Debugger::setBreakPoint(uInt16 addr, uInt8 bank, uInt32 flags) const
 {
   if(checkBreakPoint(addr, bank))
     return false;
@@ -371,7 +371,7 @@ bool Debugger::setBreakPoint(uInt16 addr, uInt8 bank, uInt32 flags)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::clearBreakPoint(uInt16 addr, uInt8 bank)
+bool Debugger::clearBreakPoint(uInt16 addr, uInt8 bank) const
 {
   if(!checkBreakPoint(addr, bank))
     return false;
@@ -381,13 +381,13 @@ bool Debugger::clearBreakPoint(uInt16 addr, uInt8 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::checkBreakPoint(uInt16 addr, uInt8 bank)
+bool Debugger::checkBreakPoint(uInt16 addr, uInt8 bank) const
 {
   return breakPoints().check(addr, bank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::toggleBreakPoint(uInt16 addr, uInt8 bank)
+bool Debugger::toggleBreakPoint(uInt16 addr, uInt8 bank) const
 {
   if(checkBreakPoint(addr, bank))
     clearBreakPoint(addr, bank);
@@ -398,53 +398,53 @@ bool Debugger::toggleBreakPoint(uInt16 addr, uInt8 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::addReadTrap(uInt16 t)
+void Debugger::addReadTrap(uInt16 t) const
 {
   readTraps().initialize();
   readTraps().add(t);
 }
 
-void Debugger::addWriteTrap(uInt16 t)
+void Debugger::addWriteTrap(uInt16 t) const
 {
   writeTraps().initialize();
   writeTraps().add(t);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::addTrap(uInt16 t)
+void Debugger::addTrap(uInt16 t) const
 {
   addReadTrap(t);
   addWriteTrap(t);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::removeReadTrap(uInt16 t)
+void Debugger::removeReadTrap(uInt16 t) const
 {
   readTraps().initialize();
   readTraps().remove(t);
 }
 
-void Debugger::removeWriteTrap(uInt16 t)
+void Debugger::removeWriteTrap(uInt16 t) const
 {
   writeTraps().initialize();
   writeTraps().remove(t);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::removeTrap(uInt16 t)
+void Debugger::removeTrap(uInt16 t) const
 {
   removeReadTrap(t);
   removeWriteTrap(t);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::readTrap(uInt16 t)
+bool Debugger::readTrap(uInt16 t) const
 {
   return readTraps().isInitialized() && readTraps().isSet(t);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::writeTrap(uInt16 t)
+bool Debugger::writeTrap(uInt16 t) const
 {
   return writeTraps().isInitialized() && writeTraps().isSet(t);
 }
@@ -700,13 +700,13 @@ uInt16 Debugger::unwindStates(const uInt16 numStates, string& message)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::clearAllBreakPoints()
+void Debugger::clearAllBreakPoints() const
 {
   breakPoints().clear();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::clearAllTraps()
+void Debugger::clearAllTraps() const
 {
   readTraps().clearAll();
   writeTraps().clearAll();
@@ -829,7 +829,7 @@ bool Debugger::delFunction(const string& name)
 const Expression& Debugger::getFunction(const string& name) const
 {
   const auto& iter = myFunctions.find(name);
-  return iter != myFunctions.end() ? *(iter->second.get()) : EmptyExpression;
+  return iter != myFunctions.end() ? *(iter->second) : EmptyExpression;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -840,13 +840,13 @@ const string& Debugger::getFunctionDef(const string& name) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const Debugger::FunctionDefMap Debugger::getFunctionDefMap() const
+Debugger::FunctionDefMap Debugger::getFunctionDefMap() const
 {
   return myFunctionDefs;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string Debugger::builtinHelp() const
+string Debugger::builtinHelp()
 {
   ostringstream buf;
   size_t c_maxlen = 0, i_maxlen = 0;

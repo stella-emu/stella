@@ -46,7 +46,6 @@ using std::chrono::milliseconds;
 
 class PlusROMRequest {
   public:
-
     struct Destination {
       Destination(const string& _host, const string& _path)
         : host{_host}, path{_path} {}
@@ -71,7 +70,6 @@ class PlusROMRequest {
     };
 
   public:
-
     PlusROMRequest(const Destination& destination, const PlusStoreId& id,
                    const uInt8* request, uInt8 requestSize)
       : myState{State::created}, myDestination{destination},
@@ -141,7 +139,7 @@ class PlusROMRequest {
         return;
       }
 
-      if (response->body.size() < 1 || static_cast<unsigned char>(response->body[0]) != (response->body.size() - 1)) {
+      if (response->body.empty() || static_cast<unsigned char>(response->body[0]) != (response->body.size() - 1)) {
         ostringstream ss;
         ss << "PlusCart: request to " << myDestination.host << "/" << myDestination.path << ": invalid response";
 
@@ -371,7 +369,7 @@ void PlusROM::reset()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PlusROM::isValidHost(const string& host) const
+bool PlusROM::isValidHost(const string& host)
 {
   // TODO: This isn't 100% either, as we're supposed to check for the length
   //       of each part between '.' in the range 1 .. 63
@@ -383,7 +381,7 @@ bool PlusROM::isValidHost(const string& host) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PlusROM::isValidPath(const string& path) const
+bool PlusROM::isValidPath(const string& path)
 {
   // TODO: This isn't 100%
   //  Perhaps a better function will be included with whatever network

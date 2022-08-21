@@ -58,7 +58,7 @@ class Settings
     /**
       This method should be called to display usage information.
     */
-    void usage() const;
+    static void usage();
 
     void setRepository(shared_ptr<KeyValueRepository> repository);
 

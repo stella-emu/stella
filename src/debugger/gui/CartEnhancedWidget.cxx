@@ -384,7 +384,7 @@ uInt32 CartridgeEnhancedWidget::internalRamRPort(int start)
 string CartridgeEnhancedWidget::internalRamDescription()
 {
   ostringstream desc;
-  string indent = "";
+  string indent;
 
   if(myCart.ramBankCount())
   {

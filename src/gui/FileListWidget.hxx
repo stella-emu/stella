@@ -151,7 +151,7 @@ class FileListWidget : public StringListWidget
     virtual const Icon* getIcon(int i) const;
     int iconWidth() const;
     virtual bool fullPathToolTip() const { return false; }
-    string& fixPath(string& path);
+    static string& fixPath(string& path);
     void addHistory(const FSNode& node);
 
   protected:

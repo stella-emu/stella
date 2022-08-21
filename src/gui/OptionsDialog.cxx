@@ -167,7 +167,7 @@ void OptionsDialog::loadConfig()
       myGameInfoButton->setFlags(Widget::FLAG_ENABLED);
       break;
     case EventHandlerState::LAUNCHER:
-      if(instance().launcher().selectedRomMD5() != "")
+      if(!instance().launcher().selectedRomMD5().empty())
         myGameInfoButton->setFlags(Widget::FLAG_ENABLED);
       else
         myGameInfoButton->clearFlags(Widget::FLAG_ENABLED);

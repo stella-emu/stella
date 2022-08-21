@@ -583,7 +583,7 @@ void PromptWidget::historyAdd(const string& entry)
 void PromptWidget::addToHistory(const char* str)
 {
   // Do not add duplicates, remove old duplicate
-  if(_history.size())
+  if(!_history.empty())
   {
     int i = _historyIndex;
     const int historyEnd = _historyIndex % _history.size();
@@ -618,7 +618,7 @@ void PromptWidget::addToHistory(const char* str)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PromptWidget::historyScroll(int direction)
 {
-  if(_history.size() == 0)
+  if(_history.empty())
     return false;
 
   // add current input temporarily to history
@@ -695,7 +695,7 @@ bool PromptWidget::execute()
     }
     else if(result == "_NO_PROMPT")
       return true;
-    else if(result != "")
+    else if(!result.empty())
       print(result + "\n");
   }
   return false;
@@ -741,7 +741,7 @@ bool PromptWidget::autoComplete(int direction)
 
   if(lastDelimPos == -1)
     // no delimiters, do only command completion:
-    instance().debugger().parser().getCompletions(_inputStr, list);
+    DebuggerParser::getCompletions(_inputStr, list);
   else
   {
     const size_t strLen = len - lastDelimPos - 1;
@@ -750,7 +750,7 @@ bool PromptWidget::autoComplete(int direction)
     {
       // Special case for 'help' command
       if(BSPF::startsWithIgnoreCase(_inputStr, "help"))
-        instance().debugger().parser().getCompletions(_inputStr + lastDelimPos + 1, list);
+        DebuggerParser::getCompletions(_inputStr + lastDelimPos + 1, list);
       else
       {
         // we got a delimiter, so this must be a label or a function
@@ -762,7 +762,7 @@ bool PromptWidget::autoComplete(int direction)
     }
 
   }
-  if(list.size() < 1)
+  if(list.empty())
     return false;
   sort(list.begin(), list.end());
 

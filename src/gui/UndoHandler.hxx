@@ -49,7 +49,7 @@ class UndoHandler
     bool endChars(const string& text);
 
     // Get index into text of last different character
-    uInt32 lastDiff(const string& text, const string& oldText) const;
+    static uInt32 lastDiff(const string& text, const string& oldText);
 
   private:
     std::deque<string> myBuffer;

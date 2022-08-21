@@ -277,17 +277,6 @@ void CartridgeAR::initializeROM()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 CartridgeAR::checksum(const uInt8* s, uInt16 length)
-{
-  uInt8 sum = 0;
-
-  for(uInt32 i = 0; i < length; ++i)
-    sum += s[i];
-
-  return sum;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeAR::loadIntoRAM(uInt8 load)
 {
   bool success = true;

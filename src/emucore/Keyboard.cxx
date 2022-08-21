@@ -55,7 +55,8 @@ Keyboard::Keyboard(Jack jack, const Event& event, const System& system)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Keyboard::ColumnState Keyboard::processColumn(const Event::Type buttons[]) {
+Keyboard::ColumnState Keyboard::processColumn(const Event::Type buttons[])
+{
   static constexpr DigitalPin signals[] =
     {DigitalPin::One, DigitalPin::Two, DigitalPin::Three, DigitalPin::Four};
 
@@ -69,8 +70,11 @@ Keyboard::ColumnState Keyboard::processColumn(const Event::Type buttons[]) {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AnalogReadout::Connection Keyboard::columnStateToAnalogSignal(ColumnState state) const {
-  switch (state) {
+AnalogReadout::Connection
+Keyboard::columnStateToAnalogSignal(ColumnState state)
+{
+  switch (state)
+  {
     case ColumnState::gnd:
       return AnalogReadout::connectToGround();
 

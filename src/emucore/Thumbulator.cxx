@@ -255,7 +255,7 @@ inline int Thumbulator::fatalError(const char* opcode, uInt32 v1, uInt32 v2,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Thumbulator::dump_counters()
+void Thumbulator::dump_counters() const
 {
   cout << endl << endl
        << "instructions " << _stats.instructions << endl;
@@ -548,7 +548,7 @@ void Thumbulator::write32(uInt32 addr, uInt32 data)
 
 #ifndef UNSAFE_OPTIMIZATIONS
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Thumbulator::isInvalidROM(uInt32 addr)
+bool Thumbulator::isInvalidROM(uInt32 addr) const
 {
   const uInt32 romStart = configuration == ConfigureFor::DPCplus ? 0xc00 : 0x750; // was 0x800
 
@@ -556,7 +556,7 @@ bool Thumbulator::isInvalidROM(uInt32 addr)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Thumbulator::isInvalidRAM(uInt32 addr)
+bool Thumbulator::isInvalidRAM(uInt32 addr) const
 {
   // Note: addr is already checked for RAM (0x4xxxxxxx)
   switch(romSize) // CDFJ+ allows more than 8 KB RAM depending on ROM sizes
@@ -1091,7 +1091,7 @@ Thumbulator::Op Thumbulator::decodeInstructionWord(uint16_t inst) {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Thumbulator::execute()
+int Thumbulator::execute()  // NOLINT (readability-function-size)
 {
   uInt32 sp, inst, ra, rb, rc, rm, rd, rn, rs, op;  // NOLINT
 

@@ -42,7 +42,7 @@ class DebuggerParser
 
     /** Given a substring, determine matching substrings from the list
         of available commands.  Used in the debugger prompt for tab-completion */
-    void getCompletions(const char* in, StringList& list) const;
+    static void getCompletions(const char* in, StringList& completions);
 
     /** Evaluate the given expression using operators, current base, etc */
     int decipher_arg(const string& str);
@@ -65,8 +65,8 @@ class DebuggerParser
     bool validateArgs(int cmd);
     string eval();
     string saveScriptFile(string file);
-    void saveDump(const FSNode& node, const stringstream& out,
-                  ostringstream& result);
+    static void saveDump(const FSNode& node, const stringstream& out,
+                         ostringstream& result);
     const string& cartName() const;
 
   private:

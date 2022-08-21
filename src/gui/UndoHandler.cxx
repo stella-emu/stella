@@ -91,7 +91,7 @@ bool UndoHandler::redo(string& text)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 UndoHandler::lastDiff(const string& text, const string& oldText) const
+uInt32 UndoHandler::lastDiff(const string& text, const string& oldText)
 {
   auto pos = static_cast<uInt32>(text.size());
 

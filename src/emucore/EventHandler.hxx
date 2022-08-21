@@ -160,11 +160,11 @@ class EventHandler
       Send an event directly to the event handler.
       These events cannot be remapped.
 
-      @param type      The event
+      @param event     The event
       @param value     The value to use for the event
       @param repeated  Repeated key (true) or first press/release (false)
     */
-    void handleEvent(Event::Type type, Int32 value = 1, bool repeated = false);
+    void handleEvent(Event::Type event, Int32 value = 1, bool repeated = false);
 
     /**
       Handle events that must be processed each time a new console is
@@ -174,8 +174,8 @@ class EventHandler
 
     bool frying() const { return myFryingFlag; }
 
-    StringList getActionList(Event::Group group) const;
-    VariantList getComboList() const;
+    static StringList getActionList(Event::Group group);
+    static VariantList getComboList();
 
     /** Used to access the list of events assigned to a specific combo event. */
     StringList getComboListForEvent(Event::Type event) const;
@@ -205,9 +205,9 @@ class EventHandler
       return myPKeyHandler->getMappingDesc(event, mode);
     }
 
-    Event::Type eventAtIndex(int idx, Event::Group group) const;
-    string actionAtIndex(int idx, Event::Group group) const;
-    string keyAtIndex(int idx, Event::Group group) const;
+    static Event::Type eventAtIndex(int idx, Event::Group group);
+    static string actionAtIndex(int idx, Event::Group group);
+    static string keyAtIndex(int idx, Event::Group group);
 
     /**
       Bind a key to an event/action and regenerate the mapping array(s).
@@ -427,14 +427,15 @@ class EventHandler
     void handleSystemEvent(SystemEvent e, int data1 = 0, int data2 = 0);
 
     /**
-      Add the given joystick to the list of physical joysticks available to the handler.
+      Add the given joystick to the list of physical joysticks available to
+      the handler.
     */
-    void addPhysicalJoystick(const PhysicalJoystickPtr& stick);
+    void addPhysicalJoystick(const PhysicalJoystickPtr& joy);
 
     /**
-      Remove physical joystick at the current index.
+      Remove physical joystick with the givem id.
     */
-    void removePhysicalJoystick(int index);
+    void removePhysicalJoystick(int id);
 
   private:
     // Define event groups
@@ -459,11 +460,12 @@ class EventHandler
     static nlohmann::json convertLegacyComboMapping(string list);
     void saveComboMapping();
 
-    StringList getActionList(EventMode mode) const;
-    StringList getActionList(const Event::EventSet& events, EventMode mode = EventMode::kEmulationMode) const;
+    static StringList getActionList(EventMode mode);
+    static StringList getActionList(const Event::EventSet& events,
+        EventMode mode = EventMode::kEmulationMode);
     // returns the action array index of the index in the provided group
-    int getEmulActionListIndex(int idx, const Event::EventSet& events) const;
-    int getActionListIndex(int idx, Event::Group group) const;
+    static int getEmulActionListIndex(int idx, const Event::EventSet& events);
+    static int getActionListIndex(int idx, Event::Group group);
 
   private:
     // Structure used for action menu items

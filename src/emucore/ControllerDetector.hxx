@@ -34,15 +34,15 @@ class ControllerDetector
     /**
       Detects the controller type at the given port if no controller is provided.
 
-      @param image      A reference to the ROM image
-      @param size       The size of the ROM image
-      @param controller The provided controller type of the ROM image
-      @param port       The port to be checked
-      @param settings   A reference to the various settings (read-only)
+      @param image     A reference to the ROM image
+      @param size      The size of the ROM image
+      @param type      The provided controller type of the ROM image
+      @param port      The port to be checked
+      @param settings  A reference to the various settings (read-only)
       @return   The detected controller type
     */
     static Controller::Type detectType(const ByteBuffer& image, size_t size,
-        const Controller::Type controller, const Controller::Jack port,
+        const Controller::Type type, const Controller::Jack port,
         const Settings& settings);
 
     /**

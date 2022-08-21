@@ -257,7 +257,7 @@ string& FileListWidget::fixPath(string& path)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FileListWidget::addHistory(const FSNode& node)
 {
-  if (_history.size() > 0) {
+  if (!_history.empty()) {
     while(_currentHistory != std::prev(_history.end(), 1))
       _history.pop_back();
 
@@ -284,7 +284,7 @@ void FileListWidget::reload()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const FSNode& FileListWidget::selected()
 {
-  if(_fileList.size() > 0)
+  if(!_fileList.empty())
   {
     _selected = BSPF::clamp(_selected, 0U, static_cast<uInt32>(_fileList.size()-1));
     return _fileList[_selected];

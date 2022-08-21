@@ -85,7 +85,7 @@ Int16 HighScoresManager::peek(uInt16 addr) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const json HighScoresManager::properties(const Properties& props) const
+json HighScoresManager::properties(const Properties& props)
 {
   const string& property = props.get(PropType::Cart_Highscore);
 
@@ -94,7 +94,6 @@ const json HighScoresManager::properties(const Properties& props) const
 
   return json::parse(property);
 }
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 json HighScoresManager::properties(json& jprops) const
@@ -114,7 +113,6 @@ json HighScoresManager::properties(json& jprops) const
   return jprops = properties(props);
 }
 
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool HighScoresManager::enabled() const
 {
@@ -124,11 +122,10 @@ bool HighScoresManager::enabled() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 HighScoresManager::numVariations(const json& jprops) const
+uInt32 HighScoresManager::numVariations(const json& jprops)
 {
   return min(getPropInt(jprops, VARIATIONS_COUNT, DEFAULT_VARIATION), MAX_VARIATIONS);
 }
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool HighScoresManager::get(const Properties& props, uInt32& numVariationsR,
@@ -159,7 +156,7 @@ bool HighScoresManager::get(const Properties& props, uInt32& numVariationsR,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void HighScoresManager::set(Properties& props, uInt32 numVariations,
-                            const ScoresProps& info) const
+                            const ScoresProps& info)
 {
   json jprops = json::object();
 
@@ -207,85 +204,79 @@ void HighScoresManager::set(Properties& props, uInt32 numVariations,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 HighScoresManager::numDigits(const json& jprops) const
+uInt32 HighScoresManager::numDigits(const json& jprops)
 {
   return min(getPropInt(jprops, SCORE_DIGITS, DEFAULT_DIGITS), MAX_SCORE_DIGITS);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 HighScoresManager::trailingZeroes(const json& jprops) const
+uInt32 HighScoresManager::trailingZeroes(const json& jprops)
 {
   return min(getPropInt(jprops, SCORE_TRAILING_ZEROES, DEFAULT_TRAILING), MAX_TRAILING);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool HighScoresManager::scoreBCD(const json& jprops) const
+bool HighScoresManager::scoreBCD(const json& jprops)
 {
   return getPropBool(jprops, SCORE_BCD, DEFAULT_SCORE_BCD);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool HighScoresManager::scoreInvert(const json& jprops) const
+bool HighScoresManager::scoreInvert(const json& jprops)
 {
   return getPropBool(jprops, SCORE_INVERTED, DEFAULT_SCORE_REVERSED);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool HighScoresManager::varBCD(const json& jprops) const
+bool HighScoresManager::varBCD(const json& jprops)
 {
   return getPropBool(jprops, VARIATIONS_BCD, DEFAULT_VARS_BCD);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool HighScoresManager::varZeroBased(const json& jprops) const
+bool HighScoresManager::varZeroBased(const json& jprops)
 {
   return getPropBool(jprops, VARIATIONS_ZERO_BASED, DEFAULT_VARS_ZERO_BASED);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string HighScoresManager::specialLabel(const json& jprops) const
+string HighScoresManager::specialLabel(const json& jprops)
 {
   return getPropStr(jprops, SPECIAL_LABEL);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool HighScoresManager::specialBCD(const json& jprops) const
+bool HighScoresManager::specialBCD(const json& jprops)
 {
   return getPropBool(jprops, SPECIAL_BCD, DEFAULT_SPECIAL_BCD);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool HighScoresManager::specialZeroBased(const json& jprops) const
+bool HighScoresManager::specialZeroBased(const json& jprops)
 {
   return getPropBool(jprops, SPECIAL_ZERO_BASED, DEFAULT_SPECIAL_ZERO_BASED);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string HighScoresManager::notes(const json& jprops) const
+string HighScoresManager::notes(const json& jprops)
 {
   return getPropStr(jprops, NOTES);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 HighScoresManager::varAddress(const json& jprops) const
+uInt16 HighScoresManager::varAddress(const json& jprops)
 {
   return getPropAddr(jprops, VARIATIONS_ADDRESS, DEFAULT_ADDRESS);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 HighScoresManager::specialAddress(const json& jprops) const
+uInt16 HighScoresManager::specialAddress(const json& jprops)
 {
   return getPropAddr(jprops, SPECIAL_ADDRESS, DEFAULT_ADDRESS);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 HighScoresManager::numAddrBytes(Int32 digits, Int32 trailing) const
-{
-  return (digits - trailing + 1) / 2;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 HighScoresManager::numAddrBytes(const json& jprops) const
+uInt32 HighScoresManager::numAddrBytes(const json& jprops)
 {
   return numAddrBytes(numDigits(jprops), trailingZeroes(jprops));
 }
@@ -299,7 +290,7 @@ Int32 HighScoresManager::numVariations() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string HighScoresManager::specialLabel() const
+string HighScoresManager::specialLabel() const
 {
   json jprops;
 
@@ -379,7 +370,7 @@ Int32 HighScoresManager::score() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string HighScoresManager::formattedScore(Int32 score, Int32 width) const
+string HighScoresManager::formattedScore(Int32 score, Int32 width) const
 {
   if(score <= 0)
     return "";
@@ -403,6 +394,7 @@ const string HighScoresManager::formattedScore(Int32 score, Int32 width) const
   return buf.str();
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string HighScoresManager::md5Props() const
 {
   json jprops;
@@ -425,6 +417,7 @@ string HighScoresManager::md5Props() const
   return MD5::hash(buf.str());
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool HighScoresManager::scoreInvert() const
 {
   json jprops;
@@ -455,7 +448,7 @@ Int32 HighScoresManager::special() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string HighScoresManager::notes() const
+string HighScoresManager::notes() const
 {
   json jprops;
 
@@ -463,7 +456,8 @@ const string HighScoresManager::notes() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Int32 HighScoresManager::convert(Int32 val, uInt32 maxVal, bool isBCD, bool zeroBased) const
+Int32 HighScoresManager::convert(Int32 val, uInt32 maxVal, bool isBCD,
+                                 bool zeroBased)
 {
   //maxVal += zeroBased ? 0 : 1;
   maxVal -= zeroBased ? 1 : 0;
@@ -487,29 +481,28 @@ Int32 HighScoresManager::convert(Int32 val, uInt32 maxVal, bool isBCD, bool zero
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool HighScoresManager::getPropBool(const json& jprops, const string& key,
-                                    bool defVal) const
+                                    bool defVal)
 {
   return jprops.contains(key) ? jprops.at(key).get<bool>() : defVal;
 }
 
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 HighScoresManager::getPropInt(const json& jprops, const string& key,
-                                     uInt32 defVal) const
+                                     uInt32 defVal)
 {
   return jprops.contains(key) ? jprops.at(key).get<uInt32>() : defVal;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string HighScoresManager::getPropStr(const json& jprops, const string& key,
-                                           const string& defVal) const
+string HighScoresManager::getPropStr(const json& jprops, const string& key,
+                                     const string& defVal)
 {
   return jprops.contains(key) ? jprops.at(key).get<string>() : defVal;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 HighScoresManager::getPropAddr(const json& jprops, const string& key,
-                                      uInt16 defVal) const
+                                      uInt16 defVal)
 {
   const string str = getPropStr(jprops, key);
 
@@ -517,7 +510,7 @@ uInt16 HighScoresManager::getPropAddr(const json& jprops, const string& key,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const HSM::ScoreAddresses HighScoresManager::getPropScoreAddr(const json& jprops) const
+HSM::ScoreAddresses HighScoresManager::getPropScoreAddr(const json& jprops)
 {
   ScoreAddresses scoreAddr{};
 
@@ -544,7 +537,7 @@ const HSM::ScoreAddresses HighScoresManager::getPropScoreAddr(const json& jprops
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 HighScoresManager::fromHexStr(const string& addr) const
+uInt16 HighScoresManager::fromHexStr(const string& addr)
 {
   string naked = addr;
 
@@ -555,7 +548,7 @@ uInt16 HighScoresManager::fromHexStr(const string& addr) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Int32 HighScoresManager::fromBCD(uInt8 bcd) const
+Int32 HighScoresManager::fromBCD(uInt8 bcd)
 {
   // verify if score is legit
   if ((bcd & 0xF0) >= 0xA0 || (bcd & 0xF) >= 0xA)

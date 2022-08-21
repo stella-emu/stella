@@ -1441,9 +1441,9 @@ void TIA::cycle(uInt32 colorClocks)
     if (++myHctr >= TIAConstants::H_CLOCKS)
       nextLine();
 
-    #ifdef SOUND_SUPPORT
-      myAudio.tick();
-    #endif
+  #ifdef SOUND_SUPPORT
+    myAudio.tick();
+  #endif
 
     ++myTimestamp;
   }

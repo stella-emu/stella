@@ -177,7 +177,7 @@ int const_to_int(char* ch)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // special methods that get Cart RAM/ROM internal state
-CartMethod getCartSpecial(char* ch)
+CartMethod getCartSpecial(const char* ch)
 {
   if(BSPF::equalsIgnoreCase(ch, "_bank"))
     return &CartDebug::getPCBank;
@@ -196,7 +196,7 @@ CartMethod getCartSpecial(char* ch)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // special methods that get e.g. CPU registers
-CpuMethod getCpuSpecial(char* ch)
+CpuMethod getCpuSpecial(const char* ch)
 {
   if(BSPF::equalsIgnoreCase(ch, "a"))
     return &CpuDebug::a;
@@ -230,7 +230,7 @@ CpuMethod getCpuSpecial(char* ch)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // special methods that get RIOT internal state
-RiotMethod getRiotSpecial(char* ch)
+RiotMethod getRiotSpecial(const char* ch)
 {
   if(BSPF::equalsIgnoreCase(ch, "_timWrapRead"))
     return &RiotDebug::timWrappedOnRead;
@@ -248,7 +248,7 @@ RiotMethod getRiotSpecial(char* ch)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // special methods that get TIA internal state
-TiaMethod getTiaSpecial(char* ch)
+TiaMethod getTiaSpecial(const char* ch)
 {
   if(BSPF::equalsIgnoreCase(ch, "_scan"))
     return &TIADebug::scanlines;

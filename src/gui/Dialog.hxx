@@ -213,7 +213,7 @@ class Dialog : public GuiObject
     bool handleNavEvent(Event::Type e, bool repeated = false);
     void getTabIdForWidget(const Widget* w);
     bool cycleTab(int direction);
-    const string getHelpURL() const override;
+    string getHelpURL() const override;
     bool hasHelp() const override { return !getHelpURL().empty(); }
     void openHelp();
 

@@ -147,7 +147,7 @@ class Widget : public GuiObject
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override
          { assert(_boss); _boss->handleCommand(sender, cmd, data, id); }
 
-    const string getHelpURL() const override;
+    string getHelpURL() const override;
     bool hasHelp() const override { return !getHelpURL().empty(); }
 
   protected:

@@ -76,7 +76,7 @@ class PhysicalJoystick
     JoyMap joyMap;
 
   private:
-    void getValues(const string& list, IntArray& map) const;
+    static void getValues(const string& list, IntArray& map);
 
     friend ostream& operator<<(ostream& os, const PhysicalJoystick& s) {
       os << "  ID: " << s.ID << ", name: " << s.name << ", numaxis: " << s.numAxes

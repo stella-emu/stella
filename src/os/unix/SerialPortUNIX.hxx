@@ -29,7 +29,7 @@
 class SerialPortUNIX : public SerialPort
 {
   public:
-    SerialPortUNIX();
+    SerialPortUNIX() = default;
     ~SerialPortUNIX() override;
 
     /**

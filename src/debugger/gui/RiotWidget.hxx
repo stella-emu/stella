@@ -37,7 +37,8 @@ class RiotWidget : public Widget, public CommandSender
     ~RiotWidget() override = default;
 
   private:
-    ControllerWidget* addControlWidget(GuiObject* boss, const GUI::Font& font,
+    static ControllerWidget* addControlWidget(
+        GuiObject* boss, const GUI::Font& font,
         int x, int y, Controller& controller);
 
     void handleConsole();

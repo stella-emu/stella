@@ -34,7 +34,6 @@
 #include "Console.hxx"
 #include "TIA.hxx"
 #include "JitterEmulation.hxx"
-#include "OSystem.hxx"
 #include "EventHandler.hxx"
 #include "StateManager.hxx"
 #include "RewindManager.hxx"
@@ -909,25 +908,25 @@ void DeveloperDialog::setDefaults()
   switch(myTab->getActiveTab())
   {
     case 0: // Emulation
-      myFrameStats[set] = devSettings ? true : false;
-      myDetectedInfo[set] = devSettings ? true : false;
+      myFrameStats[set] = devSettings;
+      myDetectedInfo[set] = devSettings;
       // AtariVox/SaveKey/PlusROM access
-      myExternAccess[set] = devSettings ? true : false;
+      myExternAccess[set] = devSettings;
       myConsole[set] = 0;
       // Randomization
-      myRandomBank[set] = devSettings ? true : false;
-      myRandomizeTIA[set] = devSettings ? true : false;
+      myRandomBank[set] = devSettings;
+      myRandomizeTIA[set] = devSettings;
       myRandomizeRAM[set] = true;
       myRandomizeCPU[set] = devSettings ? "SAXYP" : "AXYP";
       // Undriven TIA pins
-      myUndrivenPins[set] = devSettings ? true : false;
+      myUndrivenPins[set] = devSettings;
     #ifdef DEBUGGER_SUPPORT
       // Reads from write ports
-      myRWPortBreak[set] = devSettings ? true : false;
-      myWRPortBreak[set] = devSettings ? true : false;
+      myRWPortBreak[set] = devSettings;
+      myWRPortBreak[set] = devSettings;
     #endif
       // Thumb ARM emulation exception
-      myThumbException[set] = devSettings ? true : false;
+      myThumbException[set] = devSettings;
 
       setWidgetStates(set);
       break;
@@ -935,15 +934,15 @@ void DeveloperDialog::setDefaults()
     case 1: // TIA
       myTIAType[set] = "standard";
       // reset "custom" mode
-      myPlInvPhase[set] = devSettings ? true : false;
-      myMsInvPhase[set] = devSettings ? true : false;
-      myBlInvPhase[set] = devSettings ? true : false;
-      myPFBits[set] = devSettings ? true : false;
-      myPFColor[set] = devSettings ? true : false;
-      myPFScore[set] = devSettings ? true : false;
-      myBKColor[set] = devSettings ? true : false;
-      myPlSwap[set] = devSettings ? true : false;
-      myBlSwap[set] = devSettings ? true : false;
+      myPlInvPhase[set] = devSettings;
+      myMsInvPhase[set] = devSettings;
+      myBlInvPhase[set] = devSettings;
+      myPFBits[set] = devSettings;
+      myPFColor[set] = devSettings;
+      myPFScore[set] = devSettings;
+      myBKColor[set] = devSettings;
+      myPlSwap[set] = devSettings;
+      myBlSwap[set] = devSettings;
 
       setWidgetStates(set);
       break;
@@ -956,7 +955,7 @@ void DeveloperDialog::setDefaults()
         : JitterEmulation::PLR_SENSITIVITY;
       myTVJitterRec[set] = devSettings ? 2 : 10;
       // PAL color-loss effect
-      myColorLoss[set] = devSettings ? true : false;
+      myColorLoss[set] = devSettings;
       // Debug colors
       myDebugColors[set] = false;
       handleDebugColours("roygpb");

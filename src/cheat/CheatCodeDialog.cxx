@@ -133,9 +133,9 @@ void CheatCodeDialog::loadConfig()
   myCheatList->setList(l, b);
 
   // Redraw the list, auto-selecting the first item if possible
-  myCheatList->setSelected(l.size() > 0 ? 0 : -1);
+  myCheatList->setSelected(!l.empty() ? 0 : -1);
 
-  const bool enabled = (list.size() > 0);
+  const bool enabled = !list.empty();
   myEditButton->setEnabled(enabled);
   myRemoveButton->setEnabled(enabled);
 }
@@ -233,7 +233,7 @@ void CheatCodeDialog::handleCommand(CommandSender* sender, int cmd,
     {
       const string& name = myCheatInput->getResult(0);
       const string& code = myCheatInput->getResult(1);
-      if(instance().cheat().isValidCode(code))
+      if(CheatManager::isValidCode(code))
       {
         myCheatInput->close();
         instance().cheat().add(name, code);
@@ -250,7 +250,7 @@ void CheatCodeDialog::handleCommand(CommandSender* sender, int cmd,
       const string& code = myCheatInput->getResult(1);
       const bool enable = myCheatList->getSelectedState();
       const int idx = myCheatList->getSelected();
-      if(instance().cheat().isValidCode(code))
+      if(CheatManager::isValidCode(code))
       {
         myCheatInput->close();
         instance().cheat().add(name, code, enable, idx);
@@ -273,7 +273,7 @@ void CheatCodeDialog::handleCommand(CommandSender* sender, int cmd,
     {
       const string& name = myCheatInput->getResult(0);
       const string& code = myCheatInput->getResult(1);
-      if(instance().cheat().isValidCode(code))
+      if(CheatManager::isValidCode(code))
       {
         myCheatInput->close();
         instance().cheat().addOneShot(name, code);

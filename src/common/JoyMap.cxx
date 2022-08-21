@@ -112,7 +112,7 @@ bool JoyMap::check(const EventMode mode, const int button,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string JoyMap::getDesc(const Event::Type event, const JoyMapping& mapping) const
+string JoyMap::getDesc(const Event::Type event, const JoyMapping& mapping)
 {
   ostringstream buf;
 
@@ -166,7 +166,7 @@ string JoyMap::getEventMappingDesc(int stick, const Event::Type event, const Eve
   {
     if (_event == event && _mapping.mode == mode)
     {
-      if(buf.str() != "")
+      if(!buf.str().empty())
         buf << ", ";
       buf << "C" << stick << getDesc(event, _mapping);
     }
@@ -193,26 +193,26 @@ json JoyMap::saveMapping(const EventMode mode) const
   std::vector<MapType> sortedMap(myMap.begin(), myMap.end());
 
   std::sort(sortedMap.begin(), sortedMap.end(),
-            [](const MapType& a, const MapType& b)
-  {
-    // Event::Type first
-    if(a.first.button != b.first.button)
-      return a.first.button < b.first.button;
+      [](const MapType& a, const MapType& b)
+      {
+        // Event::Type first
+        if(a.first.button != b.first.button)
+          return a.first.button < b.first.button;
 
-    if(a.first.axis != b.first.axis)
-      return a.first.axis < b.first.axis;
+        if(a.first.axis != b.first.axis)
+          return a.first.axis < b.first.axis;
 
-    if(a.first.adir != b.first.adir)
-      return a.first.adir < b.first.adir;
+        if(a.first.adir != b.first.adir)
+          return a.first.adir < b.first.adir;
 
-    if(a.first.hat != b.first.hat)
-      return a.first.hat < b.first.hat;
+        if(a.first.hat != b.first.hat)
+          return a.first.hat < b.first.hat;
 
-    if(a.first.hdir != b.first.hdir)
-    return a.first.hdir < b.first.hdir;
+        if(a.first.hdir != b.first.hdir)
+          return a.first.hdir < b.first.hdir;
 
-    return a.second < b.second;
-  }
+        return a.second < b.second;
+      }
   );
 
   json eventMappings = json::array();

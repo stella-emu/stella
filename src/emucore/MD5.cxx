@@ -76,11 +76,11 @@ struct MD5_CTX
 #define S44 21
 
 static void MD5Init(MD5_CTX*);
-static void MD5Update(MD5_CTX*, const uInt8* const, uInt32);
+static void MD5Update(MD5_CTX*, const uInt8*, uInt32);
 static void MD5Final(uInt8[16], MD5_CTX*);
 static void MD5Transform(uInt32[4], const uInt8[64]);
-static void Encode(uInt8*, const uInt32* const, uInt32);
-static void Decode(uInt32*, const uInt8* const, uInt32);
+static void Encode(uInt8*, const uInt32*, uInt32);
+static void Decode(uInt32*, const uInt8*, uInt32);
 
 static uInt8 PADDING[64] = {
   0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,

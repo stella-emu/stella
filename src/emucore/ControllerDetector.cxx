@@ -45,10 +45,10 @@ Controller::Type ControllerDetector::detectType(
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string ControllerDetector::detectName(const ByteBuffer& image, size_t size,
-    const Controller::Type controller, const Controller::Jack port,
+    const Controller::Type type, const Controller::Jack port,
     const Settings& settings)
 {
-  return Controller::getName(detectType(image, size, controller, port, settings));
+  return Controller::getName(detectType(image, size, type, port, settings));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

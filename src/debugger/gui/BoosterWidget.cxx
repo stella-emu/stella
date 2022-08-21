@@ -126,6 +126,3 @@ void BoosterWidget::handleCommand(
     }
   }
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-constexpr std::array<Controller::DigitalPin, 5> BoosterWidget::ourPinNo;

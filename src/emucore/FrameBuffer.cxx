@@ -206,7 +206,7 @@ void FrameBuffer::setupFonts()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FontDesc FrameBuffer::getFontDesc(const string& name) const
+FontDesc FrameBuffer::getFontDesc(const string& name)
 {
   if(name == "small")
     return GUI::consoleDesc;        //  8x13

@@ -100,7 +100,7 @@ class Switches : public Serializable
     /**
       Sets 'Console_LeftDifficulty' switches bit.
     */
-    void setLeftDifficultyA(bool setA);
+    void setLeftDifficultyA(bool setToA);
 
     /**
       Query the 'Console_RightDifficulty' switches bit.
@@ -112,8 +112,7 @@ class Switches : public Serializable
     /**
       Sets 'Console_LeftDifficulty' switches bit.
     */
-    void setRightDifficultyA(bool setA);
-
+    void setRightDifficultyA(bool setToA);
 
     /**
       Toggle between 2600 and 7800 mode depending on settings.
