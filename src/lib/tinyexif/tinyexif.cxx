@@ -29,7 +29,7 @@
   #pragma GCC diagnostic ignored "-Wall"
   #pragma GCC diagnostic ignored "-Wcast-function-type"
   #pragma GCC diagnostic ignored "-Wshift-negative-value"
-  #pragma GCC diagnostic ignored "-Wregister"
+  #pragma GCC diagnostic ignored "-Wunused-function"
   #include "source/TinyEXIF.cpp"  // NOLINT
   #pragma GCC diagnostic pop
 #elif defined(BSPF_WINDOWS)
