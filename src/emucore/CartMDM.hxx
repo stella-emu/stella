@@ -137,6 +137,12 @@ class CartridgeMDM : public CartridgeEnhanced
     bool poke(uInt16 address, uInt8 value) override;
 
   private:
+    /**
+      Checks if startup bank randomization is enabled.  For this scheme,
+      randomization is not supported (see above).
+    */
+    bool randomStartBank() const override { return false; }
+
     bool checkSwitchBank(uInt16 address, uInt8) override;
 
   private:
