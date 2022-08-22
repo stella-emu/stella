@@ -140,8 +140,8 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
 const DebuggerState& CartDebug::getState()
 {
   myState.ram.clear();
-  for(uInt32 i = 0; i < myState.rport.size(); ++i)
-    myState.ram.push_back(myDebugger.peek(myState.rport[i]));
+  for(auto addr: myState.rport)
+    myState.ram.push_back(myDebugger.peek(addr));
 
   if(myDebugWidget)
     myState.bank = myDebugWidget->bankState();
@@ -153,8 +153,8 @@ const DebuggerState& CartDebug::getState()
 void CartDebug::saveOldState()
 {
   myOldState.ram.clear();
-  for(uInt32 i = 0; i < myOldState.rport.size(); ++i)
-    myOldState.ram.push_back(myDebugger.peek(myOldState.rport[i]));
+  for(auto addr: myOldState.rport)
+    myOldState.ram.push_back(myDebugger.peek(addr));
 
   if(myDebugWidget)
   {
@@ -209,8 +209,8 @@ string CartDebug::toString()
       return DebuggerParser::red("invalid base, this is a BUG");
   }
 
-  const CartState& state    = static_cast<const CartState&>(getState());
-  const CartState& oldstate = static_cast<const CartState&>(getOldState());
+  const auto& state    = static_cast<const CartState&>(getState());
+  const auto& oldstate = static_cast<const CartState&>(getOldState());
 
   uInt32 curraddr = 0, bytesSoFar = 0;
   for(uInt32 i = 0; i < state.ram.size(); i += bytesPerLine, bytesSoFar += bytesPerLine)
@@ -221,7 +221,7 @@ string CartDebug::toString()
     if(state.rport[i] - curraddr > bytesPerLine || bytesSoFar >= 256)
     {
       char port[37];  // NOLINT (convert to stringstream)
-      std::snprintf(port, 36, "%04x: (rport = %04x, wport = %04x)\n",
+      std::ignore = std::snprintf(port, 36, "%04x: (rport = %04x, wport = %04x)\n",
               state.rport[i], state.rport[i], state.wport[i]);
       port[2] = port[3] = 'x';
       buf << DebuggerParser::red(port);
@@ -232,7 +232,7 @@ string CartDebug::toString()
 
     for(uInt32 j = 0; j < bytesPerLine; ++j)
     {
-      buf << myDebugger.invIfChanged(state.ram[i+j], oldstate.ram[i+j]) << " ";
+      buf << Debugger::invIfChanged(state.ram[i+j], oldstate.ram[i+j]) << " ";
 
       if(j == 0x07) buf << " ";
     }
@@ -248,7 +248,8 @@ bool CartDebug::disassembleAddr(uInt16 address, bool force)
   const Cartridge& cart = myConsole.cartridge();
   const int segCount = cart.segmentCount();
   // ROM/RAM bank or ZP-RAM?
-  const int addrBank = (address & 0x1000) ? getBank(address) : int(myBankInfo.size()) - 1;
+  const int addrBank = (address & 0x1000)
+    ? getBank(address) : static_cast<int>(myBankInfo.size()) - 1;
 
   if(segCount > 1)
   {
@@ -260,14 +261,10 @@ bool CartDebug::disassembleAddr(uInt16 address, bool force)
       const int bank = cart.getSegmentBank(seg);
       Disassembly disassembly;
       AddrToLineList addrToLineList;
-      uInt16 segAddress;
       BankInfo& info = myBankInfo[bank];
 
       info.offset = cart.bankOrigin(bank) | cart.bankSize() * seg;
-      if(bank == addrBank)
-        segAddress = address;
-      else
-        segAddress = info.offset;
+      const uInt16 segAddress = bank == addrBank ? address : info.offset;
       // Disassemble segment
       const bool newChanged = disassemble(bank, segAddress, disassembly, addrToLineList, force);
 
@@ -383,12 +380,12 @@ bool CartDebug::fillDisassemblyList(BankInfo& info, Disassembly& disassembly,
   disassembly.list.clear();
   addrToLineList.clear();
   // An empty address list means that DiStella can't do a disassembly
-  if(info.addressList.size() == 0)
+  if(info.addressList.empty())
     return false;
 
   disassembly.fieldwidth = 24 + myLabelLength;
   // line offset must be set before calling DiStella!
-  uInt32 lineOfs = static_cast<uInt32>(myDisassembly.list.size());
+  auto lineOfs = static_cast<uInt32>(myDisassembly.list.size());
   DiStella distella(*this, disassembly.list, info, DiStella::settings,
                     myDisLabels, myDisDirectives, myReserved);
 
@@ -480,7 +477,7 @@ bool CartDebug::addDirective(Device::AccessType type,
 
   if(bank < 0)  // Do we want the current bank or ZP RAM?
     bank = (myDebugger.cpuDebug().pc() & 0x1000) ?
-      getBank(myDebugger.cpuDebug().pc()) : int(myBankInfo.size())-1;
+      getBank(myDebugger.cpuDebug().pc()) : static_cast<int>(myBankInfo.size())-1;
 
   bank = std::min(bank, romBankCount());
   BankInfo& info = myBankInfo[bank];
@@ -569,7 +566,7 @@ bool CartDebug::addDirective(Device::AccessType type,
       // Can we also merge with the previous range (if any)?
       if(i != list.begin())
       {
-        DirectiveList::iterator p = i;
+        auto p = i;
         --p;
         if(p->type == tag.type && p->end + 1 == tag.start)
         {
@@ -632,7 +629,7 @@ bool CartDebug::addLabel(const string& label, uInt16 address)
       removeLabel(label);
       myUserAddresses.emplace(label, address);
       myUserLabels.emplace(address, label);
-      myLabelLength = std::max(myLabelLength, uInt16(label.size()));
+      myLabelLength = std::max(myLabelLength, static_cast<uInt16>(label.size()));
       mySystem.setDirtyPage(address);
       return true;
   }
@@ -836,7 +833,7 @@ string CartDebug::loadListFile()
 
     getline(in, line);
 
-    if(!in.good() || line == "" || line[0] == '-')
+    if(!in.good() || line.empty() || line[0] == '-')
       continue;
     else  // Search for constants
     {
@@ -1137,7 +1134,7 @@ string CartDebug::saveDisassembly(string path)
     disassembleBank(bank);
 
     // An empty address list means that DiStella can't do a disassembly
-    if(info.addressList.size() == 0)
+    if(info.addressList.empty())
       continue;
 
     buf << "\n\n;***********************************************************\n"
@@ -1164,12 +1161,12 @@ string CartDebug::saveDisassembly(string path)
     origin += static_cast<uInt32>(info.size);
 
     // Format in 'distella' style
-    for(uInt32 i = 0; i < disasm.list.size(); ++i)
+    for(const auto& dt: disasm.list)
     {
-      const DisassemblyTag& tag = disasm.list[i];
+      const DisassemblyTag& tag = dt;
 
       // Add label (if any)
-      if(tag.label != "")
+      if(!tag.label.empty())
         buf << ALIGN(4) << (tag.label) << "\n";
       buf << "    ";
 
@@ -1381,7 +1378,7 @@ string CartDebug::saveDisassembly(string path)
     }
   }
 
-  if(myReserved.Label.size() > 0)
+  if(!myReserved.Label.empty())
   {
     out << "\n\n;-----------------------------------------------------------\n"
         << ";      Non Locatable Labels\n"
@@ -1390,14 +1387,14 @@ string CartDebug::saveDisassembly(string path)
         out << ALIGN(16) << iter.second << "= $" << iter.first << "\n";
   }
 
-  if(myUserLabels.size() > 0)
+  if(!myUserLabels.empty())
   {
     out << "\n\n;-----------------------------------------------------------\n"
         << ";      User Defined Labels\n"
         << ";-----------------------------------------------------------\n\n";
     int max_len = 16;
     for(const auto& iter: myUserLabels)
-      max_len = std::max(max_len, int(iter.second.size()));
+      max_len = std::max(max_len, static_cast<int>(iter.second.size()));
     for(const auto& iter: myUserLabels)
       out << ALIGN(max_len) << iter.second << "= $" << iter.first << "\n";
   }
@@ -1565,7 +1562,7 @@ void CartDebug::getCompletions(const char* in, StringList& completions) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartDebug::AddrType CartDebug::addressType(uInt16 addr) const
+CartDebug::AddrType CartDebug::addressType(uInt16 addr)
 {
   // Determine the type of address to access the correct list
   // These addresses were based on (and checked against) Kroko's 2600 memory
@@ -1647,7 +1644,7 @@ void CartDebug::accessTypeAsString(ostream& buf, uInt16 addr) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Device::AccessType CartDebug::accessTypeAbsolute(Device::AccessFlags flags) const
+Device::AccessType CartDebug::accessTypeAbsolute(Device::AccessFlags flags)
 {
   if(flags & Device::CODE)
     return Device::CODE;
@@ -1674,7 +1671,7 @@ Device::AccessType CartDebug::accessTypeAbsolute(Device::AccessFlags flags) cons
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartDebug::AccessTypeAsString(ostream& buf, Device::AccessType type) const
+void CartDebug::AccessTypeAsString(ostream& buf, Device::AccessType type)
 {
   switch(type)
   {
@@ -1693,7 +1690,7 @@ void CartDebug::AccessTypeAsString(ostream& buf, Device::AccessType type) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartDebug::AccessTypeAsString(ostream& buf, Device::AccessFlags flags) const
+void CartDebug::AccessTypeAsString(ostream& buf, Device::AccessFlags flags)
 {
   if(flags)
   {

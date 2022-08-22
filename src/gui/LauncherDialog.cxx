@@ -268,8 +268,8 @@ void LauncherDialog::addPathWidgets(int& ypos)
     myRomCount = new StaticTextWidget(this, _font, xpos, ypos,
       lwFound, fontHeight, "", TextAlign::Right);
 
-    EditTextWidget* e = new EditTextWidget(this, _font, myNavigationBar->getRight() - 1, ypos - btnYOfs,
-      lwFound + LBL_GAP + 1, buttonHeight - 2, "");
+    auto* e = new EditTextWidget(this, _font, myNavigationBar->getRight() - 1,
+        ypos - btnYOfs, lwFound + LBL_GAP + 1, buttonHeight - 2, "");
     e->setEditable(false);
     e->setEnabled(false);
   } else {
@@ -323,11 +323,11 @@ void LauncherDialog::addRomWidgets(int ypos)
   {
     xpos += myList->getWidth() + fontWidth;
 
-    // Initial surface size is the same as the viewable area
+    // Initial surface size is the viewable area's width squared
     const Common::Size imgSize(TIAConstants::viewableWidth * imgZoom,
-      TIAConstants::viewableHeight * imgZoom);
-    // Calculate font area, and in the process the font that can be used
+      TIAConstants::viewableWidth * imgZoom);
 
+    // Calculate font area, and in the process the font that can be used
     // Infofont is unknown yet, but used in image label too. Assuming maximum font height.
     int imageHeight = imgSize.h + RomImageWidget::labelHeight(_font);
 
@@ -340,7 +340,7 @@ void LauncherDialog::addRomWidgets(int ypos)
     myRomImageWidget = new RomImageWidget(this, *myROMInfoFont,
       xpos, ypos, imageWidth, imageHeight);
 
-    const int yofs = imageHeight + VGAP * 2;
+    const int yofs = imageHeight + myROMInfoFont->getFontHeight() / 2;
     myRomInfoWidget = new RomInfoWidget(this, *myROMInfoFont,
       xpos, ypos + yofs, imageWidth, myList->getHeight() - yofs);
   }
@@ -427,7 +427,7 @@ const string& LauncherDialog::selectedRomMD5()
   // Lookup MD5, and if not present, cache it
   const auto iter = myMD5List.find(currentNode().getPath());
   if(iter == myMD5List.end())
-    myMD5List[currentNode().getPath()] = instance().getROMMD5(currentNode());
+    myMD5List[currentNode().getPath()] = OSystem::getROMMD5(currentNode());
 
   return myMD5List[currentNode().getPath()];
 }
@@ -506,7 +506,7 @@ void LauncherDialog::loadConfig()
   // has been called (and we should reload the list)
   if(myList->getList().empty())
   {
-    FSNode node(romdir == "" ? "~" : romdir);
+    FSNode node(romdir.empty() ? "~" : romdir);
     if(!myList->isDirectory(node))
       node = FSNode("~");
 
@@ -564,7 +564,8 @@ string LauncherDialog::getRomDir()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool LauncherDialog::matchWithWildcardsIgnoreCase(const string& str, const string& pattern)
+bool LauncherDialog::matchWithWildcardsIgnoreCase(
+    const string& str, const string& pattern)
 {
   string in = str;
   string pat = pattern;
@@ -591,7 +592,7 @@ void LauncherDialog::applyFiltering()
           return false;
 
         // Skip over files that don't match the pattern in the 'pattern' textbox
-        if(myPattern && myPattern->getText() != "" &&
+        if(myPattern && !myPattern->getText().empty() &&
            !matchWithWildcardsIgnoreCase(node.getName(), myPattern->getText()))
           return false;
       }
@@ -652,16 +653,16 @@ void LauncherDialog::setRomInfoFont(const Common::Size& area)
   };
 
   // Try to pick a font that works best, based on the available area
-  for(size_t i = 0; i < sizeof(FONTS) / sizeof(FontDesc); ++i)
+  for(const auto& font: FONTS)
   {
     // only use fonts <= launcher fonts
-    if(Dialog::fontHeight() >= FONTS[i].height)
+    if(Dialog::fontHeight() >= font.height)
     {
-      if(area.h >= static_cast<uInt32>(MIN_ROMINFO_ROWS * FONTS[i].height + 2
-         + MIN_ROMINFO_LINES * FONTS[i].height)
-         && area.w >= static_cast<uInt32>(MIN_ROMINFO_CHARS * FONTS[i].maxwidth))
+      if(area.h >= static_cast<uInt32>(MIN_ROMINFO_ROWS * font.height + 2
+         + MIN_ROMINFO_LINES * font.height)
+         && area.w >= static_cast<uInt32>(MIN_ROMINFO_CHARS * font.maxwidth))
       {
-        myROMInfoFont = make_unique<GUI::Font>(FONTS[i]);
+        myROMInfoFont = make_unique<GUI::Font>(font);
         return;
       }
     }
@@ -701,7 +702,7 @@ void LauncherDialog::loadRomInfo()
   }
 }
 
-// --------------------------------------
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::loadPendingRomInfo()
 {
   myPendingRomInfo = false;
@@ -1146,11 +1147,12 @@ void LauncherDialog::openContextMenu(int x, int y)
     string label;
     string shortcut;
     string key;
-    explicit ContextItem(const string _label, const string _shortcut, const string _key)
-      : label{ _label }, shortcut{ _shortcut }, key{ _key } {}
+    explicit ContextItem(const string& _label, const string& _shortcut,
+                         const string& _key)
+      : label{_label}, shortcut{_shortcut}, key{_key} {}
     // No shortcuts displayed in minimal UI
-    ContextItem(const string _label, const string _key)
-      : label{ _label }, key{ _key } {}
+    ContextItem(const string& _label, const string& _key)
+      : label{_label}, key{_key} {}
   };
   using ContextList = std::vector<ContextItem>;
   ContextList items;

@@ -24,18 +24,18 @@
 #if defined(__clang__)
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Weverything"
-  #include "source/sqlite3.c"
+  #include "source/sqlite3.c"  // NOLINT
   #pragma clang diagnostic pop
 #elif defined(__GNUC__) || defined(__GNUG__)
   #pragma GCC diagnostic push
   #pragma GCC diagnostic ignored "-Wall"
   #pragma GCC diagnostic ignored "-Wcast-function-type"
-  #include "source/sqlite3.c"
+  #include "source/sqlite3.c"  // NOLINT
   #pragma GCC diagnostic pop
 #elif defined(BSPF_WINDOWS)
   #pragma warning(push, 0)
-  #include "source/sqlite3.c"
+  #include "source/sqlite3.c"  // NOLINT
   #pragma warning(pop)
 #else
-  #include "source/sqlite3.c"
+  #include "source/sqlite3.c"  // NOLINT
 #endif

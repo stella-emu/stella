@@ -267,11 +267,11 @@ bool CartDetector::searchForBytes(const uInt8* image, size_t imagesize,
                                   const uInt8* signature, uInt32 sigsize,
                                   uInt32 minhits)
 {
-  uInt32 count = 0;
+  uInt32 count{0};
 
   for(uInt32 i = 0; i < imagesize - sigsize; ++i)
   {
-    uInt32 j;
+    uInt32 j{0};
 
     for(j = 0; j < sigsize; ++j)
     {
@@ -331,16 +331,16 @@ bool CartDetector::isProbably0840(const ByteBuffer& image, size_t size)
     { 0xAD, 0x40, 0x08 },  // LDA $0840
     { 0x2C, 0x00, 0x08 }   // BIT $0800
   };
-  for(uInt32 i = 0; i < 3; ++i)
-    if(searchForBytes(image, size, signature1[i], 3, 2))
+  for(const auto* const sig: signature1)
+    if(searchForBytes(image, size, sig, 3, 2))
       return true;
 
   static constexpr uInt8 signature2[2][4] = {
     { 0x0C, 0x00, 0x08, 0x4C },  // NOP $0800; JMP ...
     { 0x0C, 0xFF, 0x0F, 0x4C }   // NOP $0FFF; JMP ...
   };
-  for(uInt32 i = 0; i < 2; ++i)
-    if(searchForBytes(image, size, signature2[i], 4, 2))
+  for(const auto* const sig: signature2)
+    if(searchForBytes(image, size, sig, 4, 2))
       return true;
 
   return false;
@@ -358,8 +358,8 @@ bool CartDetector::isProbably0FA0(const ByteBuffer& image, size_t size)
     { 0xAD, 0xC0, 0x0F },  // LDA $FC0  (Front Line, Zaxxon)
     { 0x2C, 0xC0, 0xEF }   // BIT $EFC0 (Motocross)
   };
-  for(uInt32 i = 0; i < 4; ++i)
-    if(searchForBytes(image, size, signature[i], 3))
+  for(const auto* const sig: signature)
+    if(searchForBytes(image, size, sig, 3))
       return true;
 
   return false;
@@ -430,16 +430,12 @@ bool CartDetector::isProbably4KSC(const ByteBuffer& image, size_t size)
 {
   // We check if the first 256 bytes are identical *and* if there's
   // an "SC" signature for one of our larger SC types at 1FFA.
-
   const uInt8 first = image[0];
   for(uInt32 i = 1; i < 256; ++i)
-      if(image[i] != first)
-        return false;
+    if(image[i] != first)
+      return false;
 
-  if((image[size-6]=='S') && (image[size-5]=='C'))
-      return true;
-
-  return false;
+  return (image[size-6] == 'S') && (image[size-5] == 'C');
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -560,8 +556,8 @@ bool CartDetector::isProbablyE0(const ByteBuffer& image, size_t size)
     { 0xAD, 0xED, 0xFF },  // LDA $FFED
     { 0xAD, 0xF3, 0xBF }   // LDA $BFF3
   };
-  for(uInt32 i = 0; i < 8; ++i)
-    if(searchForBytes(image, size, signature[i], 3))
+  for(const auto* const sig: signature)
+    if(searchForBytes(image, size, sig, 3))
       return true;
 
   return false;
@@ -585,8 +581,8 @@ bool CartDetector::isProbablyE7(const ByteBuffer& image, size_t size)
     { 0x8D, 0xE7, 0xFF },  // STA $FFE7
     { 0x8D, 0xE7, 0x1F }   // STA $1FE7
   };
-  for(uInt32 i = 0; i < 7; ++i)
-    if(searchForBytes(image, size, signature[i], 3))
+  for(const auto* const sig: signature)
+    if(searchForBytes(image, size, sig, 3))
       return true;
 
   return false;
@@ -604,8 +600,8 @@ bool CartDetector::isProbablyE78K(const ByteBuffer& image, size_t size)
     { 0xAD, 0xE5, 0xFF },  // LDA $FFE5
     { 0xAD, 0xE6, 0xFF },  // LDA $FFE6
   };
-  for(uInt32 i = 0; i < 3; ++i)
-    if(searchForBytes(image, size, signature[i], 3))
+  for(const auto* const sig: signature)
+    if(searchForBytes(image, size, sig, 3))
       return true;
 
   return false;
@@ -640,9 +636,9 @@ bool CartDetector::isProbablyEF(const ByteBuffer& image, size_t size,
     { 0x0C, 0xE0, 0x1F },  // NOP $1FE0
     { 0xAD, 0xE0, 0x1F }   // LDA $1FE0
   };
-  for(uInt32 i = 0; i < 4; ++i)
+  for(const auto* const sig: signature)
   {
-    if(searchForBytes(image, size, signature[i], 3))
+    if(searchForBytes(image, size, sig, 3))
     {
       isEF = true;
       break;
@@ -684,8 +680,8 @@ bool CartDetector::isProbablyFC(const ByteBuffer& image, size_t size)
     { 0x8d, 0xf8, 0xff, 0x8d, 0xfc, 0xff }, // STA $FFF8, STA $FFFC        Surf's Up (4K)
     { 0x8c, 0xf9, 0xff, 0xad, 0xfc, 0xff }  // STY $FFF9, LDA $FFFC        3-D Havoc
   };
-  for(uInt32 i = 0; i < 3; ++i)
-    if(searchForBytes(image, size, signature[i], 6))
+  for(const auto* const sig: signature)
+    if(searchForBytes(image, size, sig, 6))
       return true;
 
   return false;
@@ -703,8 +699,8 @@ bool CartDetector::isProbablyFE(const ByteBuffer& image, size_t size)
     { 0xD0, 0xFB, 0x20, 0x73, 0xFE },  // BNE $FB; JSR $FE73
     { 0x20, 0x00, 0xF0, 0x84, 0xD6 }   // JSR $F000; $84, $D6
   };
-  for(uInt32 i = 0; i < 4; ++i)
-    if(searchForBytes(image, size, signature[i], 5))
+  for(const auto* const sig: signature)
+    if(searchForBytes(image, size, sig, 5))
       return true;
 
   return false;
@@ -787,8 +783,8 @@ bool CartDetector::isProbablyUA(const ByteBuffer& image, size_t size)
     { 0x8D, 0xC0, 0x02 },  // STA $2C0 (Fathom, Vanguard)
     { 0xAD, 0xC0, 0x02 },  // LDA $2C0 (Mickey)
   };
-  for(uInt32 i = 0; i < 6; ++i)
-    if(searchForBytes(image, size, signature[i], 3))
+  for(const auto* const sig: signature)
+    if(searchForBytes(image, size, sig, 3))
       return true;
 
   return false;
@@ -816,8 +812,8 @@ bool CartDetector::isProbablyX07(const ByteBuffer& image, size_t size)
     { 0x0C, 0x1D, 0x08 },  // NOP $081D
     { 0x0C, 0x2D, 0x08 }   // NOP $082D
   };
-  for(uInt32 i = 0; i < 6; ++i)
-    if(searchForBytes(image, size, signature[i], 3))
+  for(const auto* const sig: signature)
+    if(searchForBytes(image, size, sig, 3))
       return true;
 
   return false;

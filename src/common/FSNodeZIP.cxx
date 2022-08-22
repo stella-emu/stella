@@ -38,7 +38,7 @@ FSNodeZIP::FSNodeZIP(const string& p)
   // Expand '~' to the users 'home' directory
   if (_zipFile[0] == '~')
   {
-    const char* home = std::getenv("HOME");
+    const char* home = std::getenv("HOME");  // NOLINT (not thread safe)
     if (home != nullptr)
       _zipFile.replace(0, 1, home);
   }
@@ -127,7 +127,7 @@ void FSNodeZIP::setFlags(const string& zipfile, const string& virtualpath,
   _shortPath = _realNode->getShortPath();
 
   // Is a file component present?
-  if(_virtualPath.size() != 0)
+  if(!_virtualPath.empty())
   {
     _path += ("/" + _virtualPath);
     _shortPath += ("/" + _virtualPath);
@@ -186,7 +186,7 @@ bool FSNodeZIP::getChildren(AbstractFSList& myList, ListMode mode) const
     {
       // First strip off the leading directory
       const string& curr = name.substr(
-          _virtualPath == "" ? 0 : _virtualPath.size()+1);
+          _virtualPath.empty() ? 0 : _virtualPath.size()+1);
 // cerr << "  curr: " << curr << endl;
       // Only add sub-directory entries once
       const auto pos = curr.find_first_of("/\\");
@@ -199,7 +199,7 @@ bool FSNodeZIP::getChildren(AbstractFSList& myList, ListMode mode) const
   for(const auto& dir: dirs)
   {
     // Prepend previous path
-    const string& vpath = _virtualPath != "" ? _virtualPath + "/" + dir : dir;
+    const string& vpath = !_virtualPath.empty() ? _virtualPath + "/" + dir : dir;
     myList.emplace_back(new FSNodeZIP(_zipFile, vpath, _realNode, 0, true));
   }
 
@@ -211,7 +211,7 @@ bool FSNodeZIP::getChildren(AbstractFSList& myList, ListMode mode) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-size_t FSNodeZIP::read(ByteBuffer& image, size_t) const
+size_t FSNodeZIP::read(ByteBuffer& buffer, size_t) const
 {
   switch(_error)
   {
@@ -230,24 +230,24 @@ size_t FSNodeZIP::read(ByteBuffer& image, size_t) const
     found = name == _virtualPath;
   }
 
-  return found ? myZipHandler->decompress(image) : 0;
+  return found ? myZipHandler->decompress(buffer) : 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-size_t FSNodeZIP::read(stringstream& image) const
+size_t FSNodeZIP::read(stringstream& buffer) const
 {
   // For now, we just read into a buffer and store in the stream
   // TODO: maybe there's a more efficient way to do this?
-  ByteBuffer buffer;
-  const size_t size = read(buffer, 0);
+  ByteBuffer read_buf;
+  const size_t size = read(read_buf, 0);
   if(size > 0)
-    image.write(reinterpret_cast<char*>(buffer.get()), size);
+    buffer.write(reinterpret_cast<char*>(read_buf.get()), size);
 
   return size;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-size_t FSNodeZIP::write(const ByteBuffer& buffer, size_t size) const
+size_t FSNodeZIP::write(const ByteBuffer& buffer, size_t) const
 {
   // TODO: Not yet implemented
   throw runtime_error("ZIP file not writable");
@@ -263,7 +263,7 @@ size_t FSNodeZIP::write(const stringstream& buffer) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AbstractFSNodePtr FSNodeZIP::getParent() const
 {
-  if(_virtualPath == "")
+  if(_virtualPath.empty())
     return _realNode ? _realNode->getParent() : nullptr;
 
   const char* start = _path.c_str();

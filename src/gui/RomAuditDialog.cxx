@@ -57,9 +57,8 @@ RomAuditDialog::RomAuditDialog(OSystem& osystem, DialogContainer& parent,
   _h = _th + VBORDER * 2 + buttonHeight * 2 + lineHeight * 3 + VGAP * 10;
 
   // Audit path
-  ButtonWidget* romButton =
-    new ButtonWidget(this, font, HBORDER, ypos, buttonWidth, buttonHeight,
-                     "Audit path" + ELLIPSIS, kChooseAuditDirCmd);
+  auto* romButton = new ButtonWidget(this, font, HBORDER, ypos,
+      buttonWidth, buttonHeight, "Audit path" + ELLIPSIS, kChooseAuditDirCmd);
   wid.push_back(romButton);
   myRomPath = new EditTextWidget(this, font, xpos, ypos + (buttonHeight - lineHeight) / 2 - 1,
                                  _w - xpos - HBORDER, lineHeight);
@@ -88,7 +87,7 @@ RomAuditDialog::RomAuditDialog(OSystem& osystem, DialogContainer& parent,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-RomAuditDialog::~RomAuditDialog()
+RomAuditDialog::~RomAuditDialog()  // NOLINT (we need an empty d'tor)
 {
 }
 
@@ -97,7 +96,7 @@ void RomAuditDialog::loadConfig()
 {
   const string& currentdir =
     instance().launcher().currentDir().getShortPath();
-  const string& path = currentdir == "" ?
+  const string& path = currentdir.empty() ?
     instance().settings().getString("romdir") : currentdir;
 
   myRomPath->setText(path);
@@ -139,13 +138,13 @@ void RomAuditDialog::auditRoms()
 
       // Calculate the MD5 so we can get the rest of the info
       // from the PropertiesSet (stella.pro)
-      const string& md5 = instance().getROMMD5(files[idx]);
+      const string& md5 = OSystem::getROMMD5(files[idx]);
       if(instance().propSet().getMD5(md5, props))
       {
         const string& name = props.get(PropType::Cart_Name);
 
         // Only rename the file if we found a valid properties entry
-        if(name != "" && name != files[idx].getName())
+        if(!name.empty() && name != files[idx].getName())
         {
           string newfile = node.getPath();
           newfile.append(name).append(".").append(extension);

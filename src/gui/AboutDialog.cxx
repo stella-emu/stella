@@ -59,9 +59,8 @@ AboutDialog::AboutDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myNextButton);
 
   xpos = _w - buttonWidth - HBORDER;
-  ButtonWidget* b =
-    new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                     "Close", GuiObject::kCloseCmd);
+  auto* b = new ButtonWidget(this, font, xpos, ypos,
+      buttonWidth, buttonHeight, "Close", GuiObject::kCloseCmd);
   wid.push_back(b);
   addCancelWidget(b);
 
@@ -80,8 +79,8 @@ AboutDialog::AboutDialog(OSystem& osystem, DialogContainer& parent,
   xpos = HBORDER * 2;  ypos += lineHeight + VGAP * 2;
   for(int i = 0; i < myLinesPerPage; i++)
   {
-    StaticTextWidget* s = new StaticTextWidget(this, font, xpos, ypos, _w - xpos * 2,
-                                               fontHeight, "", TextAlign::Left, kNone);
+    auto* s = new StaticTextWidget(this, font, xpos, ypos, _w - xpos * 2,
+                                   fontHeight, "", TextAlign::Left, kNone);
     s->setID(i);
     myDesc.push_back(s);
     myDescStr.emplace_back("");
@@ -94,7 +93,7 @@ AboutDialog::AboutDialog(OSystem& osystem, DialogContainer& parent,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AboutDialog::~AboutDialog()
+AboutDialog::~AboutDialog()  // NOLINT (we need an empty d'tor)
 {
 }
 
@@ -314,15 +313,15 @@ void AboutDialog::handleCommand(CommandSender* sender, int cmd, int data, int id
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string AboutDialog::getUrl(const string& str) const
+string AboutDialog::getUrl(const string& text)
 {
   bool isUrl = false;
   size_t start = 0, len = 0;
 
-  for(size_t i = 0; i < str.size(); ++i)
+  for(size_t i = 0; i < text.size(); ++i)
   {
-    string remainder = str.substr(i);
-    const char ch = str[i];
+    string remainder = text.substr(i);
+    const char ch = text[i];
 
     if(!isUrl
        && (BSPF::startsWithIgnoreCase(remainder, "http://")
@@ -343,7 +342,7 @@ const string AboutDialog::getUrl(const string& str) const
     }
   }
   if(len)
-    return str.substr(start, len);
+    return text.substr(start, len);
   else
     return EmptyString;
 }

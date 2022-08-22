@@ -1,6 +1,6 @@
 LOCAL_PATH := $(call my-dir)
 
-CORE_DIR := $(LOCAL_PATH)/../..
+CORE_DIR := $(LOCAL_PATH)/../../..
 
 include $(CORE_DIR)/os/libretro/Makefile.common
 
@@ -15,5 +15,5 @@ include $(CLEAR_VARS)
 LOCAL_MODULE    := retro
 LOCAL_SRC_FILES := $(SOURCES_CXX) $(SOURCES_C)
 LOCAL_CXXFLAGS  := $(COREFLAGS) -std=c++17
-LOCAL_LDFLAGS   := -Wl,-version-script=$(CORE_DIR)/libretro/link.T
+LOCAL_LDFLAGS   := -Wl,-version-script=$(CORE_DIR)/os/libretro/link.T
 include $(BUILD_SHARED_LIBRARY)

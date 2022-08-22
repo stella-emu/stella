@@ -39,7 +39,8 @@ RomInfoWidget::RomInfoWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomInfoWidget::setProperties(const FSNode& node, const Properties properties, bool full)
+void RomInfoWidget::setProperties(const FSNode& node,
+    const Properties& properties, bool full)
 {
   myHaveProperties = true;
   myProperties = properties;
@@ -47,6 +48,13 @@ void RomInfoWidget::setProperties(const FSNode& node, const Properties propertie
   // Decide whether the information should be shown immediately
   if(instance().eventHandler().state() == EventHandlerState::LAUNCHER)
     parseProperties(node, full);
+#ifdef DEBUGGER_SUPPORT
+  else
+  {
+    cerr << "RomInfoWidget::setProperties: else!" << endl;
+    Logger::debug("RomInfoWidget::setProperties: else!");
+  }
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -57,6 +65,13 @@ void RomInfoWidget::clearProperties()
   // Decide whether the information should be shown immediately
   if(instance().eventHandler().state() == EventHandlerState::LAUNCHER)
     setDirty();
+#ifdef DEBUGGER_SUPPORT
+  else
+  {
+    cerr << "RomInfoWidget::clearProperties: else!" << endl;
+    Logger::debug("RomInfoWidget::clearProperties: else!");
+  }
+#endif
   myUrl.clear();
 }
 
@@ -107,7 +122,7 @@ void RomInfoWidget::parseProperties(const FSNode& node, bool full)
     try
     {
       ByteBuffer image;
-      string md5 = "";
+      string md5;
 
       if(node.exists() && !node.isDirectory() &&
         (image = instance().openROM(node, md5, size)) != nullptr)
@@ -131,10 +146,10 @@ void RomInfoWidget::parseProperties(const FSNode& node, bool full)
       // failed for any reason
       left = right = "";
     }
-    if(left != "" && right != "")
+    if(!left.empty() && !right.empty())
       myRomInfo.push_back("Controllers: " + (left + " (left), " + right + " (right)"));
 
-    if(bsDetected != "")
+    if(!bsDetected.empty())
     {
       ostringstream buf;
 

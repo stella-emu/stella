@@ -36,7 +36,7 @@
 
 namespace {
   constexpr Int32 CURRENT_VERSION = 1;
-}
+} // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StellaDb::StellaDb(const string& databaseDirectory, const string& databaseName)
@@ -85,7 +85,7 @@ void StellaDb::initialize()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string StellaDb::databaseFileName() const
+string StellaDb::databaseFileName() const
 {
   return myDb ? FSNode(myDb->fileName()).getShortPath() : "[failed]";
 }
@@ -190,8 +190,11 @@ void StellaDb::importOldPropset(const FSNode& node)
   while (true) {
     auto props = KeyValueRepositoryPropertyFile::load(in);
 
-    if (props.size() == 0) break;
-    if ((props.find("Cart.MD5") == props.end()) || props["Cart.MD5"].toString() == "") continue;
+    if (props.empty())
+      break;
+    if ((props.find("Cart.MD5") == props.end()) ||
+         props["Cart.MD5"].toString().empty())
+      continue;
 
     myPropertyRepository->get(props["Cart.MD5"].toString())->save(props);
   }
@@ -201,7 +204,7 @@ void StellaDb::importOldPropset(const FSNode& node)
 void StellaDb::migrate()
 {
   const Int32 version = myDb->getUserVersion();
-  switch (version) {
+  switch (version) {  // NOLINT (could be written as IF/ELSE)
     case 1:
       return;
 

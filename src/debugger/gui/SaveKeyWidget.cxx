@@ -29,15 +29,13 @@ SaveKeyWidget::SaveKeyWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SaveKeyWidget::eraseCurrent()
 {
-  SaveKey& skey = static_cast<SaveKey&>(controller());
-
+  auto& skey = static_cast<SaveKey&>(controller());
   skey.eraseCurrent();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool SaveKeyWidget::isPageUsed(uInt32 page)
 {
-  const SaveKey& skey = static_cast<SaveKey&>(controller());
-
+  const auto& skey = static_cast<SaveKey&>(controller());
   return skey.isPageUsed(page);
 }

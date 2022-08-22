@@ -38,7 +38,7 @@ StateManager::StateManager(OSystem& osystem)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-StateManager::~StateManager()
+StateManager::~StateManager()  // NOLINT (we need an empty d'tor)
 {
 }
 

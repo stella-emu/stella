@@ -25,7 +25,6 @@
 #include "FrameBuffer.hxx"
 #include "EventHandler.hxx"
 #include "Event.hxx"
-#include "OSystem.hxx"
 #include "EditTextWidget.hxx"
 #include "StringListWidget.hxx"
 #include "Widget.hxx"
@@ -122,14 +121,13 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
   myComboButton->setTarget(this);
   addFocusWidget(myComboButton);
 
-  VariantList combolist = instance().eventHandler().getComboList();
+  VariantList combolist = EventHandler::getComboList();
   myComboDialog = make_unique<ComboDialog>(boss, font, combolist);
 
   // Show message for currently selected event
   xpos = HBORDER;
   ypos = myActionsList->getBottom() + VGAP * 2;
-  StaticTextWidget* t;
-  t = new StaticTextWidget(boss, font, xpos, ypos+2, "Action");
+  auto* t = new StaticTextWidget(boss, font, xpos, ypos+2, "Action");
 
   myKeyMapping = new EditTextWidget(boss, font, xpos + t->getWidth() + fontWidth, ypos,
                                     _w - xpos - t->getWidth() - fontWidth - HBORDER + 2,
@@ -168,7 +166,7 @@ void EventMappingWidget::updateActions()
     ? EventMode::kMenuMode
     : EventMode::kEmulationMode;
 
-  StringList actions = instance().eventHandler().getActionList(myEventGroup);
+  StringList actions = EventHandler::getActionList(myEventGroup);
 
   myActionsList->setList(actions);
   myActionSelected = myActionsList->getSelected();
@@ -209,7 +207,7 @@ void EventMappingWidget::startRemapping()
   // And show a message indicating which key is being remapped
   ostringstream buf;
   buf << "Select action for '"
-      << instance().eventHandler().actionAtIndex(myActionSelected, myEventGroup)
+      << EventHandler::actionAtIndex(myActionSelected, myEventGroup)
       << "' event";
   myKeyMapping->setTextColor(kTextColorEm);
   myKeyMapping->setText(buf.str());
@@ -226,7 +224,7 @@ void EventMappingWidget::eraseRemapping()
     return;
 
   const Event::Type event =
-    instance().eventHandler().eventAtIndex(myActionSelected, myEventGroup);
+    EventHandler::eventAtIndex(myActionSelected, myEventGroup);
   instance().eventHandler().eraseMapping(event, myEventMode);
 
   drawKeyMapping();
@@ -239,7 +237,7 @@ void EventMappingWidget::resetRemapping()
     return;
 
   const Event::Type event =
-    instance().eventHandler().eventAtIndex(myActionSelected, myEventGroup);
+    EventHandler::eventAtIndex(myActionSelected, myEventGroup);
   instance().eventHandler().setDefaultMapping(event, myEventMode);
 
   drawKeyMapping();
@@ -275,7 +273,7 @@ void EventMappingWidget::drawKeyMapping()
   if(myActionSelected >= 0)
   {
     myKeyMapping->setTextColor(kTextColor);
-    myKeyMapping->setText(instance().eventHandler().keyAtIndex(myActionSelected, myEventGroup));
+    myKeyMapping->setText(EventHandler::keyAtIndex(myActionSelected, myEventGroup));
   }
 }
 
@@ -288,8 +286,7 @@ void EventMappingWidget::enableButtons(bool state)
   myEraseButton->setEnabled(state);
   myResetButton->setEnabled(state);
 
-  const Event::Type e =
-    instance().eventHandler().eventAtIndex(myActionSelected, myEventGroup);
+  const Event::Type e = EventHandler::eventAtIndex(myActionSelected, myEventGroup);
 
   myComboButton->setEnabled(state && e >= Event::Combo1 && e <= Event::Combo16);
 }
@@ -319,7 +316,7 @@ bool EventMappingWidget::handleKeyUp(StellaKey key, StellaMod mod)
     && (mod & (KBDM_CTRL | KBDM_SHIFT | KBDM_ALT | KBDM_GUI)) == 0)
   {
     const Event::Type event =
-      instance().eventHandler().eventAtIndex(myActionSelected, myEventGroup);
+      EventHandler::eventAtIndex(myActionSelected, myEventGroup);
 
     // if not pressed alone, map left and right modifier keys
     if(myLastKey < KBDK_LCTRL || myLastKey > KBDK_RGUI)
@@ -333,7 +330,8 @@ bool EventMappingWidget::handleKeyUp(StellaKey key, StellaMod mod)
       if(myMod & KBDM_GUI)
         myMod |= KBDM_GUI;
     }
-    if (instance().eventHandler().addKeyMapping(event, myEventMode, StellaKey(myLastKey), StellaMod(myMod)))
+    if (instance().eventHandler().addKeyMapping(event, myEventMode,
+        static_cast<StellaKey>(myLastKey), static_cast<StellaMod>(myMod)))
       stopRemapping();
   }
   return true;
@@ -359,7 +357,8 @@ void EventMappingWidget::handleJoyUp(int stick, int button)
     if (myLastStick == stick && myLastButton == button)
     {
       EventHandler& eh = instance().eventHandler();
-      const Event::Type event = eh.eventAtIndex(myActionSelected, myEventGroup);
+      const Event::Type event =
+          EventHandler::eventAtIndex(myActionSelected, myEventGroup);
 
       // map either button/hat, solo button or button/axis combinations
       if(myLastHat != -1)
@@ -395,9 +394,10 @@ void EventMappingWidget::handleJoyAxis(int stick, JoyAxis axis, JoyDir adir, int
     else if(myLastStick == stick && axis == myLastAxis && adir == JoyDir::NONE)
     {
       EventHandler& eh = instance().eventHandler();
-      const Event::Type event = eh.eventAtIndex(myActionSelected, myEventGroup);
+      const Event::Type event =
+          EventHandler::eventAtIndex(myActionSelected, myEventGroup);
 
-      if (eh.addJoyMapping(event, myEventMode, stick, myLastButton, axis, myLastDir))
+      if(eh.addJoyMapping(event, myEventMode, stick, myLastButton, axis, myLastDir))
         stopRemapping();
     }
   }
@@ -426,9 +426,10 @@ bool EventMappingWidget::handleJoyHat(int stick, int hat, JoyHatDir hdir, int bu
     else if(myLastStick == stick && hat == myLastHat && hdir == JoyHatDir::CENTER)
     {
       EventHandler& eh = instance().eventHandler();
-      const Event::Type event = eh.eventAtIndex(myActionSelected, myEventGroup);
+      const Event::Type event =
+          EventHandler::eventAtIndex(myActionSelected, myEventGroup);
 
-      if (eh.addJoyHatMapping(event, myEventMode, stick, myLastButton, hat, myLastHatDir))
+      if(eh.addJoyHatMapping(event, myEventMode, stick, myLastButton, hat, myLastHatDir))
       {
         stopRemapping();
         return true;
@@ -485,8 +486,8 @@ void EventMappingWidget::handleCommand(CommandSender* sender, int cmd,
     case kComboCmd:
       if(myComboDialog)
         myComboDialog->show(
-          instance().eventHandler().eventAtIndex(myActionSelected, myEventGroup),
-          instance().eventHandler().actionAtIndex(myActionSelected, myEventGroup));
+          EventHandler::eventAtIndex(myActionSelected, myEventGroup),
+          EventHandler::actionAtIndex(myActionSelected, myEventGroup));
       break;
 
     default:

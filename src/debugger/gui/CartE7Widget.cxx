@@ -63,7 +63,7 @@ CartridgeE7Widget::CartridgeE7Widget(
 void CartridgeE7Widget::initialize(GuiObject* boss,
     const CartridgeE7& cart, const ostringstream& info)
 {
-  const uInt32 size = cart.romBankCount() * cart.BANK_SIZE;
+  const uInt32 size = cart.romBankCount() * CartridgeE7::BANK_SIZE;
 
   constexpr int xpos = 2;
   int ypos = addBaseInformation(size, "M Network", info.str(), 15) + myLineHeight;
@@ -148,7 +148,7 @@ string CartridgeE7Widget::bankState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 CartridgeE7Widget::internalRamSize()
 {
-  return myCart.RAM_SIZE;
+  return CartridgeE7::RAM_SIZE;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

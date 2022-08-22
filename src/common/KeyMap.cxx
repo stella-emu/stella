@@ -25,7 +25,7 @@ using json = nlohmann::json;
 namespace {
   json serializeModkeyMask(int mask)
   {
-    if(mask == StellaMod::KBDM_NONE) return json(nullptr);
+    if(mask == StellaMod::KBDM_NONE) return {};
 
     json serializedMask = json::array();
 
@@ -66,7 +66,7 @@ namespace {
 
     return mask;
   }
-}
+} // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void KeyMap::add(const Event::Type event, const Mapping& mapping)
@@ -135,7 +135,7 @@ bool KeyMap::check(const EventMode mode, const int key, const int mod) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string KeyMap::getDesc(const Mapping& mapping) const
+string KeyMap::getDesc(const Mapping& mapping)
 {
   ostringstream buf;
 #if defined(BSPF_MACOS) || defined(MACOS_KEYS)
@@ -184,7 +184,7 @@ string KeyMap::getDesc(const Mapping& mapping) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string KeyMap::getDesc(const EventMode mode, const int key, const int mod) const
+string KeyMap::getDesc(const EventMode mode, const int key, const int mod)
 {
   return getDesc(Mapping(mode, key, mod));
 }
@@ -198,7 +198,7 @@ string KeyMap::getEventMappingDesc(const Event::Type event, const EventMode mode
   {
     if (_event == event && _mapping.mode == mode)
     {
-      if(buf.str() != "")
+      if(!buf.str().empty())
         buf << ", ";
       buf << getDesc(_mapping);
     }
@@ -301,11 +301,11 @@ json KeyMap::convertLegacyMapping(string list)
   {
     json mapping = json::object();
 
-    mapping["event"] = Event::Type(event);
-    mapping["key"] = StellaKey(key);
+    mapping["event"] = static_cast<Event::Type>(event);
+    mapping["key"] = static_cast<StellaKey>(key);
 
-    if(StellaMod(mod) != StellaMod::KBDM_NONE)
-      mapping["mod"] = serializeModkeyMask(StellaMod(mod));
+    if(static_cast<StellaMod>(mod) != StellaMod::KBDM_NONE)
+      mapping["mod"] = serializeModkeyMask(static_cast<StellaMod>(mod));
 
     convertedMapping.push_back(mapping);
   }
@@ -336,7 +336,7 @@ void KeyMap::eraseEvent(const Event::Type event, const EventMode mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-KeyMap::Mapping KeyMap::convertMod(const Mapping& mapping) const
+KeyMap::Mapping KeyMap::convertMod(const Mapping& mapping)
 {
   Mapping m = mapping;
 

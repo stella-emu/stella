@@ -121,7 +121,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
                          TextAlign::Left);
   }
 
-  uInt32 row;
+  uInt32 row{0};
   for(row = 0; row < myNumRows; ++row)
   {
     myRamLabels[row] =
@@ -190,7 +190,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-RamWidget::~RamWidget()
+RamWidget::~RamWidget()  // NOLINT (we need an empty d'tor)
 {
 }
 
@@ -288,7 +288,7 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
     case kSValEntered:
     {
       const string& result = doSearch(myInputBox->getResult());
-      if(result != "")
+      if(!result.empty())
         myInputBox->setMessage(result);
       else
         myInputBox->close();
@@ -298,7 +298,7 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
     case kCValEntered:
     {
       const string& result = doCompare(myInputBox->getResult());
-      if(result != "")
+      if(!result.empty())
         myInputBox->setMessage(result);
       else
         myInputBox->close();
@@ -543,7 +543,7 @@ void RamWidget::showSearchResults()
   // Only update the search results for the bank currently being shown
   BoolArray temp;
   const uInt32 start = myCurrentRamBank * myPageSize;
-  if(mySearchState.size() == 0 || start > mySearchState.size())
+  if(mySearchState.empty() || start > mySearchState.size())
   {
     for(uInt32 i = 0; i < myPageSize; ++i)
       temp.push_back(false);

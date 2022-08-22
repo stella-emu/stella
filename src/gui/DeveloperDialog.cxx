@@ -34,7 +34,6 @@
 #include "Console.hxx"
 #include "TIA.hxx"
 #include "JitterEmulation.hxx"
-#include "OSystem.hxx"
 #include "EventHandler.hxx"
 #include "StateManager.hxx"
 #include "RewindManager.hxx"
@@ -103,8 +102,9 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
 
   // settings set
   mySettingsGroupEmulation = new RadioButtonGroup();
-  RadioButtonWidget* r = new RadioButtonWidget(myTab, font, HBORDER, ypos + 1,
-                                               "Player settings", mySettingsGroupEmulation, kPlrSettings);
+  auto* r = new RadioButtonWidget(myTab, font, HBORDER, ypos + 1,
+                                  "Player settings", mySettingsGroupEmulation,
+                                  kPlrSettings);
   r->setToolTip(Event::ToggleDeveloperSet);
   wid.push_back(r);
   ypos += lineHeight + VGAP;
@@ -241,8 +241,9 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
 
   // settings set
   mySettingsGroupTia = new RadioButtonGroup();
-  RadioButtonWidget* r = new RadioButtonWidget(myTab, font, HBORDER, ypos + 1,
-                                               "Player settings", mySettingsGroupTia, kPlrSettings);
+  auto* r = new RadioButtonWidget(myTab, font, HBORDER, ypos + 1,
+                                  "Player settings", mySettingsGroupTia,
+                                  kPlrSettings);
   r->setToolTip(Event::ToggleDeveloperSet);
   wid.push_back(r);
   ypos += lineHeight + VGAP;
@@ -359,8 +360,9 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
 
   // settings set
   mySettingsGroupVideo = new RadioButtonGroup();
-  RadioButtonWidget* r = new RadioButtonWidget(myTab, font, HBORDER, ypos + 1,
-                                               "Player settings", mySettingsGroupVideo, kPlrSettings);
+  auto* r = new RadioButtonWidget(myTab, font, HBORDER, ypos + 1,
+                                  "Player settings", mySettingsGroupVideo,
+                                  kPlrSettings);
   r->setToolTip(Event::ToggleDeveloperSet);
   wid.push_back(r);
   ypos += lineHeight + VGAP;
@@ -435,8 +437,8 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
                                        pwidth, lineHeight, items, desc, lwidth, dbg_cmds[idx]);
     wid.push_back(myDbgColour[idx]);
     x += myDbgColour[idx]->getWidth() + fontWidth * 1.25;
-    myDbgColourSwatch[idx] = new ColorWidget(myTab, font, x, ypos - 1,
-                                             uInt32(2 * lineHeight), lineHeight);
+    myDbgColourSwatch[idx] = new ColorWidget(
+      myTab, font, x, ypos - 1, static_cast<uInt32>(2 * lineHeight), lineHeight);
     ypos += lineHeight + VGAP * 1;
   };
 
@@ -518,8 +520,9 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
 
   // settings set
   mySettingsGroupTM = new RadioButtonGroup();
-  RadioButtonWidget* r = new RadioButtonWidget(myTab, font, xpos, ypos + 1,
-                                               "Player settings", mySettingsGroupTM, kPlrSettings);
+  auto* r = new RadioButtonWidget(myTab, font, xpos, ypos + 1,
+                                  "Player settings", mySettingsGroupTM,
+                                  kPlrSettings);
   r->setToolTip(Event::ToggleDeveloperSet);
   wid.push_back(r);
   ypos += lineHeight + VGAP;
@@ -899,30 +902,31 @@ void DeveloperDialog::saveConfig()
 void DeveloperDialog::setDefaults()
 {
   const bool devSettings = mySettings;
-  const SettingsSet set = static_cast<SettingsSet>(mySettingsGroupEmulation->getSelected());
+  const auto set = static_cast<SettingsSet>
+      (mySettingsGroupEmulation->getSelected());
 
   switch(myTab->getActiveTab())
   {
     case 0: // Emulation
-      myFrameStats[set] = devSettings ? true : false;
-      myDetectedInfo[set] = devSettings ? true : false;
+      myFrameStats[set] = devSettings;
+      myDetectedInfo[set] = devSettings;
       // AtariVox/SaveKey/PlusROM access
-      myExternAccess[set] = devSettings ? true : false;
+      myExternAccess[set] = devSettings;
       myConsole[set] = 0;
       // Randomization
-      myRandomBank[set] = devSettings ? true : false;
-      myRandomizeTIA[set] = devSettings ? true : false;
+      myRandomBank[set] = devSettings;
+      myRandomizeTIA[set] = devSettings;
       myRandomizeRAM[set] = true;
       myRandomizeCPU[set] = devSettings ? "SAXYP" : "AXYP";
       // Undriven TIA pins
-      myUndrivenPins[set] = devSettings ? true : false;
+      myUndrivenPins[set] = devSettings;
     #ifdef DEBUGGER_SUPPORT
       // Reads from write ports
-      myRWPortBreak[set] = devSettings ? true : false;
-      myWRPortBreak[set] = devSettings ? true : false;
+      myRWPortBreak[set] = devSettings;
+      myWRPortBreak[set] = devSettings;
     #endif
       // Thumb ARM emulation exception
-      myThumbException[set] = devSettings ? true : false;
+      myThumbException[set] = devSettings;
 
       setWidgetStates(set);
       break;
@@ -930,15 +934,15 @@ void DeveloperDialog::setDefaults()
     case 1: // TIA
       myTIAType[set] = "standard";
       // reset "custom" mode
-      myPlInvPhase[set] = devSettings ? true : false;
-      myMsInvPhase[set] = devSettings ? true : false;
-      myBlInvPhase[set] = devSettings ? true : false;
-      myPFBits[set] = devSettings ? true : false;
-      myPFColor[set] = devSettings ? true : false;
-      myPFScore[set] = devSettings ? true : false;
-      myBKColor[set] = devSettings ? true : false;
-      myPlSwap[set] = devSettings ? true : false;
-      myBlSwap[set] = devSettings ? true : false;
+      myPlInvPhase[set] = devSettings;
+      myMsInvPhase[set] = devSettings;
+      myBlInvPhase[set] = devSettings;
+      myPFBits[set] = devSettings;
+      myPFColor[set] = devSettings;
+      myPFScore[set] = devSettings;
+      myBKColor[set] = devSettings;
+      myPlSwap[set] = devSettings;
+      myBlSwap[set] = devSettings;
 
       setWidgetStates(set);
       break;
@@ -951,7 +955,7 @@ void DeveloperDialog::setDefaults()
         : JitterEmulation::PLR_SENSITIVITY;
       myTVJitterRec[set] = devSettings ? 2 : 10;
       // PAL color-loss effect
-      myColorLoss[set] = devSettings ? true : false;
+      myColorLoss[set] = devSettings;
       // Debug colors
       myDebugColors[set] = false;
       handleDebugColours("roygpb");
@@ -1369,7 +1373,7 @@ void DeveloperDialog::handleDebugColours(int idx, int color)
   myDbgColour[idx]->setSelectedIndex(color);
 
   // make sure the selected debug colors are all different
-  std::array<bool, DEBUG_COLORS> usedCol = {0};
+  std::array<bool, DEBUG_COLORS> usedCol = {false};
 
   // identify used colors
   for(int i = 0; i < DEBUG_COLORS; ++i)

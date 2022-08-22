@@ -135,16 +135,16 @@ void PNGLibrary::saveImage(const string& filename, const VariantList& metaData)
     fb.scaleX(rectUnscaled.w()), fb.scaleY(rectUnscaled.h())
   );
 
-  const png_uint_32 width = rect.w(), height = rect.h();
+  const size_t width = rect.w(), height = rect.h();
 
   // Get framebuffer pixel data (we get ABGR format)
   vector<png_byte> buffer(width * height * 4);
-  fb.readPixels(buffer.data(), width*4, rect);
+  fb.readPixels(buffer.data(), width * 4, rect);
 
   // Set up pointers into "buffer" byte array
   vector<png_bytep> rows(height);
-  for(png_uint_32 k = 0; k < height; ++k)
-    rows[k] = buffer.data() + k*width*4;
+  for(size_t k = 0; k < height; ++k)
+    rows[k] = buffer.data() + k * width * 4;
 
   // And save the image
   saveImageToDisk(out, rows, width, height, metaData);
@@ -159,7 +159,7 @@ void PNGLibrary::saveImage(const string& filename, const FBSurface& surface,
     throw runtime_error("ERROR: Couldn't create snapshot file");
 
   // Do we want the entire surface or just a section?
-  png_uint_32 width = rect.w(), height = rect.h();
+  size_t width = rect.w(), height = rect.h();
   if(rect.empty())
   {
     width = surface.width();
@@ -168,12 +168,12 @@ void PNGLibrary::saveImage(const string& filename, const FBSurface& surface,
 
   // Get the surface pixel data (we get ABGR format)
   vector<png_byte> buffer(width * height * 4);
-  surface.readPixels(buffer.data(), width, rect);
+  surface.readPixels(buffer.data(), static_cast<uInt32>(width), rect);
 
   // Set up pointers into "buffer" byte array
   vector<png_bytep> rows(height);
-  for(png_uint_32 k = 0; k < height; ++k)
-    rows[k] = buffer.data() + k*width*4;
+  for(size_t k = 0; k < height; ++k)
+    rows[k] = buffer.data() + k * width * 4;
 
   // And save the image
   saveImageToDisk(out, rows, width, height, metaData);
@@ -181,10 +181,10 @@ void PNGLibrary::saveImage(const string& filename, const FBSurface& surface,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PNGLibrary::saveImageToDisk(std::ofstream& out, const vector<png_bytep>& rows,
-    png_uint_32 width, png_uint_32 height, const VariantList& metaData)
+  size_t width, size_t height, const VariantList& metaData)
 {
-  png_structp png_ptr = nullptr;
-  png_infop info_ptr = nullptr;
+  png_structp png_ptr{nullptr};
+  png_infop info_ptr{nullptr};
 
   const auto saveImageERROR = [&](const char* s) {
     if(png_ptr)
@@ -208,7 +208,8 @@ void PNGLibrary::saveImageToDisk(std::ofstream& out, const vector<png_bytep>& ro
   png_set_write_fn(png_ptr, &out, png_write_data, png_io_flush);
 
   // Write PNG header info
-  png_set_IHDR(png_ptr, info_ptr, width, height, 8,
+  png_set_IHDR(png_ptr, info_ptr,
+      static_cast<png_uint_32>(width), static_cast<png_uint_32>(height), 8,
       PNG_COLOR_TYPE_RGB, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT,
       PNG_FILTER_TYPE_DEFAULT);
 
@@ -381,20 +382,20 @@ void PNGLibrary::takeSnapshot(uInt32 number)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PNGLibrary::allocateStorage(png_uint_32 w, png_uint_32 h)
+bool PNGLibrary::allocateStorage(size_t width, size_t height)
 {
   // Create space for the entire image (3 bytes per pixel in RGB format)
-  const size_t req_buffer_size = w * h * 3;
+  const size_t req_buffer_size = width * height * 3;
   if(req_buffer_size > ReadInfo.buffer.capacity())
     ReadInfo.buffer.reserve(req_buffer_size * 1.5);
 
-  const size_t req_row_size = h;
+  const size_t req_row_size = height;
   if(req_row_size > ReadInfo.row_pointers.capacity())
     ReadInfo.row_pointers.reserve(req_row_size * 1.5);
 
-  ReadInfo.width  = w;
-  ReadInfo.height = h;
-  ReadInfo.pitch  = w * 3;
+  ReadInfo.width  = static_cast<png_uint_32>(width);
+  ReadInfo.height = static_cast<png_uint_32>(height);
+  ReadInfo.pitch  = static_cast<png_uint_32>(width * 3);
 
   return true;
 }
@@ -413,7 +414,7 @@ void PNGLibrary::loadImagetoSurface(FBSurface& surface)
   surface.setSrcSize(iw, ih);
 
   // Convert RGB triples into pixels and store in the surface
-  uInt32 *s_buf, s_pitch;
+  uInt32 *s_buf{nullptr}, s_pitch{0};
   surface.basePtr(s_buf, s_pitch);
   const uInt8* i_buf = ReadInfo.buffer.data();
   const uInt32 i_pitch = ReadInfo.pitch;
@@ -429,30 +430,32 @@ void PNGLibrary::loadImagetoSurface(FBSurface& surface)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PNGLibrary::writeMetaData(const png_structp png_ptr, png_infop info_ptr,
-                               const VariantList& metaData)
+void PNGLibrary::writeMetaData(
+    const png_structp png_ptr, png_infop info_ptr,  // NOLINT
+    const VariantList& metaData)
 {
-  const uInt32 numMetaData = static_cast<uInt32>(metaData.size());
+  const size_t numMetaData = metaData.size();
   if(numMetaData == 0)
     return;
 
   vector<png_text> text_ptr(numMetaData);
-  for(uInt32 i = 0; i < numMetaData; ++i)
+  for(size_t i = 0; i < numMetaData; ++i)
   {
     text_ptr[i].key = const_cast<char*>(metaData[i].first.c_str());
     text_ptr[i].text = const_cast<char*>(metaData[i].second.toCString());
     text_ptr[i].compression = PNG_TEXT_COMPRESSION_NONE;
     text_ptr[i].text_length = 0;
   }
-  png_set_text(png_ptr, info_ptr, text_ptr.data(), numMetaData);
+  png_set_text(png_ptr, info_ptr, text_ptr.data(), static_cast<int>(numMetaData));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PNGLibrary::readMetaData(const png_structp png_ptr, png_infop info_ptr,
-  VariantList& metaData)
+void PNGLibrary::readMetaData(
+    const png_structp png_ptr, png_infop info_ptr,  // NOLINT
+    VariantList& metaData)
 {
-  png_textp text_ptr;
-  int numMetaData = 0;
+  png_textp text_ptr{nullptr};
+  int numMetaData{0};
 
   png_get_text(png_ptr, info_ptr, &text_ptr, &numMetaData);
 
@@ -464,33 +467,37 @@ void PNGLibrary::readMetaData(const png_structp png_ptr, png_infop info_ptr,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PNGLibrary::png_read_data(const png_structp ctx, png_bytep area, png_size_t size)
+void PNGLibrary::png_read_data(const png_structp ctx,  // NOLINT
+                               png_bytep area, png_size_t size)
 {
   (static_cast<std::ifstream*>(png_get_io_ptr(ctx)))->read(
     reinterpret_cast<char *>(area), size);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PNGLibrary::png_write_data(const png_structp ctx, png_bytep area, png_size_t size)
+void PNGLibrary::png_write_data(const png_structp ctx,  // NOLINT
+                                png_bytep area, png_size_t size)
 {
   (static_cast<std::ofstream*>(png_get_io_ptr(ctx)))->write(
     reinterpret_cast<const char *>(area), size);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PNGLibrary::png_io_flush(const png_structp ctx)
+void PNGLibrary::png_io_flush(const png_structp ctx)  // NOLINT
 {
   (static_cast<std::ofstream*>(png_get_io_ptr(ctx)))->flush();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PNGLibrary::png_user_warn(const png_structp ctx, png_const_charp str)
+void PNGLibrary::png_user_warn(const png_structp ctx,  // NOLINT
+                               png_const_charp str)
 {
   throw runtime_error(string("PNGLibrary warning: ") + str);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PNGLibrary::png_user_error(const png_structp ctx, png_const_charp str)
+void PNGLibrary::png_user_error(const png_structp ctx,  // NOLINT
+                                png_const_charp str)
 {
   throw runtime_error(string("PNGLibrary error: ") + str);
 }

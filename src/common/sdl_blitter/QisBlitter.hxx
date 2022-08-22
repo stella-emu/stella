@@ -37,7 +37,7 @@ class QisBlitter : public Blitter {
       SDL_Rect srcRect,
       SDL_Rect destRect,
       FBSurface::Attributes attributes,
-      SDL_Surface* staticData = nullptr
+      SDL_Surface* staticData
     ) override;
 
     void blit(SDL_Surface& surface) override;

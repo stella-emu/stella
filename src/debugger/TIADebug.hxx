@@ -63,7 +63,7 @@ class TIADebug : public DebuggerSystem
     void saveOldState() override;
     string toString() override;
     string debugColors() const;
-    string palette() const;
+    static string palette();
 
     // TIA byte (or part of a byte) registers
     uInt8 nusiz0(int newVal = -1);
@@ -185,14 +185,18 @@ class TIADebug : public DebuggerSystem
 
   private:
     /** Display a color patch for color at given index in the palette */
-    string colorSwatch(uInt8 c) const;
+    static string colorSwatch(uInt8 c);
 
-    string audFreq(uInt8 dist, uInt8 div);
-    string stringOnly(string value, bool changed = false);
-    string decWithLabel(string label, uInt16 value, bool changed = false, uInt16 width = 3);
-    string hexWithLabel(string label, uInt16 value, bool changed = false, uInt16 width = 2);
-    string binWithLabel(string label, uInt16 value, bool changed = false);
-    string boolWithLabel(string label, bool value, bool changed = false);
+    string audFreq(uInt8 dist, uInt8 div) const;
+    static string stringOnly(const string& value, bool changed = false);
+    static string decWithLabel(const string& label, uInt16 value,
+                               bool changed = false, uInt16 width = 3);
+    static string hexWithLabel(const string& label, uInt16 value,
+                               bool changed = false, uInt16 width = 2);
+    static string binWithLabel(const string& label, uInt16 value,
+                               bool changed = false);
+    static string boolWithLabel(const string& label, bool value,
+                                bool changed = false);
 
   private:
     TiaState myState;

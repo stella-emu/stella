@@ -128,7 +128,7 @@ class EmulationWorker
     /**
       Log a fatal error to cerr and throw a runtime exception.
      */
-    [[noreturn]] void fatal(const string& message);
+    [[noreturn]] static void fatal(const string& message);
 
   private:
   /**

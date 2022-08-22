@@ -187,10 +187,10 @@ class AtariNTSC
       0.9563F, 0.6210F, -0.2721F, -0.6474F, -1.1070F, 1.7046F
     };
 
-    void init(init_t& impl, const Setup& setup);
-    void initFilters(init_t& impl, const Setup& setup);
+    static void init(init_t& impl, const Setup& setup);
+    static void initFilters(init_t& impl, const Setup& setup);
     // Generate pixel at all burst phases and column alignments
-    void genKernel(init_t& impl, float y, float i, float q, uInt32* out);
+    static void genKernel(init_t& impl, float y, float i, float q, uInt32* out);
 
     // Begins outputting row and starts two pixels. First pixel will be cut
     // off a bit.  Use atari_ntsc_black for unused pixels.

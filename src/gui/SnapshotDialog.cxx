@@ -45,8 +45,8 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
   int xpos = HBORDER, ypos = VBORDER + _th;
 
   // Snapshot path (save files)
-  ButtonWidget* b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                                     "Save path" + ELLIPSIS, kChooseSnapSaveDirCmd);
+  auto* b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
+                             "Save path" + ELLIPSIS, kChooseSnapSaveDirCmd);
   wid.push_back(b);
   xpos += buttonWidth + fontWidth;
   mySnapSavePath = new EditTextWidget(this, font, xpos, ypos + (buttonHeight - lineHeight) / 2 - 1,

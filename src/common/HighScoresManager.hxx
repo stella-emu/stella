@@ -112,8 +112,8 @@ class HighScoresManager
     /**
       Set the highscore data of game's properties
     */
-    void set(Properties& props, uInt32 numVariations,
-             const HSM::ScoresProps& info) const;
+    static void set(Properties& props, uInt32 numVariations,
+                    const HSM::ScoresProps& info);
 
     /**
       Calculate the score from given parameters
@@ -125,24 +125,26 @@ class HighScoresManager
 
     // Convert the given value, using only the maximum bits required by maxVal
     //  and adjusted for BCD and zero based data
-    Int32 convert(Int32 val, uInt32 maxVal, bool isBCD, bool zeroBased) const;
+    static Int32 convert(Int32 val, uInt32 maxVal, bool isBCD, bool zeroBased);
 
     /**
       Calculate the number of bytes for one player's score from given parameters
 
       @return The number of score address bytes
     */
-    uInt32 numAddrBytes(Int32 digits, Int32 trailing) const;
+    static uInt32 numAddrBytes(Int32 digits, Int32 trailing) {
+      return (digits - trailing + 1) / 2;
+    }
 
     // Retrieve current values (using game's properties)
     Int32 numVariations() const;
-    const string specialLabel() const;
+    string specialLabel() const;
     Int32 variation() const;
     Int32 score() const;
-    const string formattedScore(Int32 score, Int32 width = -1) const;
+    string formattedScore(Int32 score, Int32 width = -1) const;
     bool scoreInvert() const;
     Int32 special() const;
-    const string notes() const;
+    string notes() const;
 
     // Get md5 property definition checksum
     string md5Props() const;
@@ -150,8 +152,8 @@ class HighScoresManager
     // Peek into memory
     Int16 peek(uInt16 addr) const;
 
-    void loadHighScores(HSM::ScoresData& scores);
-    void saveHighScores(HSM::ScoresData& scores) const;
+    void loadHighScores(HSM::ScoresData& data);
+    void saveHighScores(HSM::ScoresData& data) const;
 
   private:
     static const string VARIATIONS_COUNT;
@@ -198,53 +200,53 @@ class HighScoresManager
     Int32 variation(uInt16 addr, bool varBCD, bool zeroBased, uInt32 numVariations) const;
 
     // Get individual highscore info from properties
-    uInt32 numVariations(const json& jprops) const;
-    uInt16 varAddress(const json& jprops) const;
-    uInt16 specialAddress(const json& jprops) const;
-    uInt32 numDigits(const json& jprops) const;
-    uInt32 trailingZeroes(const json& jprops) const;
-    bool scoreBCD(const json& jprops) const;
-    bool scoreInvert(const json& jprops) const;
-    bool varBCD(const json& jprops) const;
-    bool varZeroBased(const json& jprops) const;
-    const string specialLabel(const json& jprops) const;
-    bool specialBCD(const json& jprops) const;
-    bool specialZeroBased(const json& jprops) const;
-    const string notes(const json& jprops) const;
+    static uInt32 numVariations(const json& jprops);
+    static uInt16 varAddress(const json& jprops);
+    static uInt16 specialAddress(const json& jprops);
+    static uInt32 numDigits(const json& jprops);
+    static uInt32 trailingZeroes(const json& jprops);
+    static bool scoreBCD(const json& jprops);
+    static bool scoreInvert(const json& jprops);
+    static bool varBCD(const json& jprops);
+    static bool varZeroBased(const json& jprops);
+    static string specialLabel(const json& jprops);
+    static bool specialBCD(const json& jprops);
+    static bool specialZeroBased(const json& jprops);
+    static string notes(const json& jprops);
 
     // Calculate the number of bytes for one player's score from property parameters
-    uInt32 numAddrBytes(const json& jprops) const;
+    static uInt32 numAddrBytes(const json& jprops);
 
     // Get properties
-    const json properties(const Properties& props) const;
+    static json properties(const Properties& props);
     json properties(json& jprops) const;
 
     // Get value from highscore properties for given key
-    bool getPropBool(const json& jprops, const string& key,
-                     bool defVal = false) const;
-    uInt32 getPropInt(const json& jprops, const string& key,
-                      uInt32 defVal = 0) const;
-    const string getPropStr(const json& jprops, const string& key,
-                            const string& defVal = "") const;
-    uInt16 getPropAddr(const json& jprops, const string& key,
-                       uInt16 defVal = 0) const;
-    const HSM::ScoreAddresses getPropScoreAddr(const json& jprops) const;
+    static bool getPropBool(const json& jprops, const string& key,
+                            bool defVal = false);
+    static uInt32 getPropInt(const json& jprops, const string& key,
+                             uInt32 defVal = 0);
+    static string getPropStr(const json& jprops, const string& key,
+                             const string& defVal = "");
+    static uInt16 getPropAddr(const json& jprops, const string& key,
+                              uInt16 defVal = 0);
+    static HSM::ScoreAddresses getPropScoreAddr(const json& jprops);
 
-    uInt16 fromHexStr(const string& addr) const;
-    Int32 fromBCD(uInt8 bcd) const;
+    static uInt16 fromHexStr(const string& addr);
+    static Int32 fromBCD(uInt8 bcd);
     string hash(const HSM::ScoresData& data) const;
 
     /**
       Loads the current high scores for this game and variation from the given JSON object.
 
       @param hsData  The JSON to parse
-      @param scores  The loaded high score data
+      @param data    The loaded high score data
 
       @return The result of the load.  True on success, false on failure.
     */
-    bool load(const json& hsData, HSM::ScoresData& scores);
+    static bool load(const json& hsData, HSM::ScoresData& data);
 
-    void clearHighScores(HSM::ScoresData& data);
+    static void clearHighScores(HSM::ScoresData& data);
 
   private:
     // Reference to the osystem object
@@ -261,4 +263,5 @@ class HighScoresManager
     HighScoresManager& operator=(const HighScoresManager&) = delete;
     HighScoresManager& operator=(HighScoresManager&&) = delete;
 };
+
 #endif

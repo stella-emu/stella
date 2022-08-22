@@ -36,10 +36,10 @@ namespace YaccParser
   int parse(const string& in);
   int const_to_int(char* ch);
 
-  CartMethod getCartSpecial(char* ch);
-  CpuMethod getCpuSpecial(char* ch);
-  RiotMethod getRiotSpecial(char* ch);
-  TiaMethod getTiaSpecial(char* ch);
+  CartMethod getCartSpecial(const char* ch);
+  CpuMethod getCpuSpecial(const char* ch);
+  RiotMethod getRiotSpecial(const char* ch);
+  TiaMethod getTiaSpecial(const char* ch);
 }
 
 #endif

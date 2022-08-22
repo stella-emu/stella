@@ -313,7 +313,7 @@ void VideoAudioDialog::addPaletteTab()
   CREATE_CUSTOM_SLIDERS(Gamma, "Gamma ", kPaletteUpdated)
 
   ypos += VGAP;
-  StaticTextWidget* s = new StaticTextWidget(myTab, _font, xpos, ypos + 1, "Autodetection");
+  auto* s = new StaticTextWidget(myTab, _font, xpos, ypos + 1, "Autodetection");
 
   myDetectPal60 = new CheckboxWidget(myTab, _font, s->getRight() + fontWidth * 2, ypos + 1, "PAL-60");
   myDetectPal60 ->setToolTip("Enable autodetection of PAL-60 based on colors used.");
@@ -788,11 +788,10 @@ void VideoAudioDialog::saveConfig()
   ntscAdj.artifacts = myTVArtifacts->getValue();
   ntscAdj.fringing = myTVFringe->getValue();
   ntscAdj.bleed = myTVBleed->getValue();
-  instance().frameBuffer().tiaSurface().ntsc().setCustomAdjustables(ntscAdj);
+  NTSCFilter::setCustomAdjustables(ntscAdj);
 
   Logger::debug("Saving TV effects options ...");
-  instance().frameBuffer().tiaSurface().ntsc().saveConfig(settings);
-
+  NTSCFilter::saveConfig(settings);
 
   // TV phosphor mode & blend
   settings.setValue("tv.phosphor",
@@ -842,13 +841,15 @@ void VideoAudioDialog::saveConfig()
   // DPC Pitch
   audioSettings.setDpcPitch(myDpcPitch->getValue());
   // update if current cart is Pitfall II
-  if (instance().hasConsole() && instance().console().cartridge().name() == "CartridgeDPC")
+  if (instance().hasConsole() &&
+      instance().console().cartridge().name() == "CartridgeDPC")
   {
-    CartridgeDPC& cart = static_cast<CartridgeDPC&>(instance().console().cartridge());
+    auto& cart = static_cast<CartridgeDPC&>(instance().console().cartridge());
     cart.setDpcPitch(myDpcPitch->getValue());
   }
 
-  const AudioSettings::Preset preset = static_cast<AudioSettings::Preset>(myModePopup->getSelectedTag().toInt());
+  const auto preset = static_cast<AudioSettings::Preset>
+      (myModePopup->getSelectedTag().toInt());
   audioSettings.setPreset(preset);
 
   if (preset == AudioSettings::Preset::custom) {
@@ -981,8 +982,7 @@ void VideoAudioDialog::handleTVModeChange(NTSCFilter::Preset preset)
 void VideoAudioDialog::loadTVAdjustables(NTSCFilter::Preset preset)
 {
   NTSCFilter::Adjustable adj;
-  instance().frameBuffer().tiaSurface().ntsc().getAdjustables(
-      adj, NTSCFilter::Preset(preset));
+  NTSCFilter::getAdjustables(adj, preset);
   myTVSharp->setValue(adj.sharpness);
   myTVRes->setValue(adj.resolution);
   myTVArtifacts->setValue(adj.artifacts);
@@ -1063,8 +1063,8 @@ void VideoAudioDialog::handlePaletteUpdate()
     constexpr int NUM_LUMA = 8;
     constexpr int NUM_CHROMA = 16;
 
-    for(int idx = 0; idx < NUM_CHROMA; ++idx)
-      for(int lum = 0; lum < NUM_LUMA; ++lum)
+    for(int idx = 0; idx < NUM_CHROMA; ++idx)  // NOLINT
+      for(int lum = 0; lum < NUM_LUMA; ++lum)  // NOLINT
         myColor[idx][lum]->setDirty();
   }
 }
@@ -1294,8 +1294,8 @@ void VideoAudioDialog::colorPalette()
   }
   else
     // disable palette
-    for(int idx = 0; idx < NUM_CHROMA; ++idx)
-      for(int lum = 0; lum < NUM_LUMA; ++lum)
+    for(int idx = 0; idx < NUM_CHROMA; ++idx)  // NOLINT
+      for(int lum = 0; lum < NUM_LUMA; ++lum)  // NOLINT
         myColor[idx][lum]->setEnabled(false);
 }
 
@@ -1303,7 +1303,8 @@ void VideoAudioDialog::colorPalette()
 void VideoAudioDialog::updateEnabledState()
 {
   const bool active = mySoundEnableCheckbox->getState();
-  const AudioSettings::Preset preset = static_cast<AudioSettings::Preset>(myModePopup->getSelectedTag().toInt());
+  const auto preset = static_cast<AudioSettings::Preset>
+      (myModePopup->getSelectedTag().toInt());
   const bool userMode = preset == AudioSettings::Preset::custom;
 
   myVolumeSlider->setEnabled(active);
@@ -1323,7 +1324,8 @@ void VideoAudioDialog::updateEnabledState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoAudioDialog::updatePreset()
 {
-  const AudioSettings::Preset preset = static_cast<AudioSettings::Preset>(myModePopup->getSelectedTag().toInt());
+  const auto preset = static_cast<AudioSettings::Preset>
+      (myModePopup->getSelectedTag().toInt());
 
   // Make a copy that does not affect the actual settings...
   AudioSettings audioSettings = instance().audioSettings();

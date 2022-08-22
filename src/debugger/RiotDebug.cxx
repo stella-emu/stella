@@ -258,6 +258,16 @@ int RiotDebug::timReadCycles() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool RiotDebug::switches(int newVal)
+{
+  uInt8& switches = myConsole.switches().mySwitches;
+  if(newVal > -1)
+    switches = newVal;
+
+  return switches;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool RiotDebug::diffP0(int newVal)
 {
   uInt8& switches = myConsole.switches().mySwitches;
@@ -363,33 +373,33 @@ string RiotDebug::switchesString()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string RiotDebug::toString()
 {
-  const RiotState& state    = static_cast<const RiotState&>(getState());
-  const RiotState& oldstate = static_cast<const RiotState&>(getOldState());
+  const auto& state    = static_cast<const RiotState&>(getState());
+  const auto& oldstate = static_cast<const RiotState&>(getOldState());
 
   ostringstream buf;
-  buf << "280/SWCHA(R)=" << myDebugger.invIfChanged(state.SWCHA_R, oldstate.SWCHA_R)
-      << " 280/SWCHA(W)=" << myDebugger.invIfChanged(state.SWCHA_W, oldstate.SWCHA_W)
-      << " 281/SWACNT=" << myDebugger.invIfChanged(state.SWACNT, oldstate.SWACNT)
+  buf << "280/SWCHA(R)=" << Debugger::invIfChanged(state.SWCHA_R, oldstate.SWCHA_R)
+      << " 280/SWCHA(W)=" << Debugger::invIfChanged(state.SWCHA_W, oldstate.SWCHA_W)
+      << " 281/SWACNT=" << Debugger::invIfChanged(state.SWACNT, oldstate.SWACNT)
       << endl
-      << "282/SWCHB(R)=" << myDebugger.invIfChanged(state.SWCHB_R, oldstate.SWCHB_R)
-      << " 282/SWCHB(W)=" << myDebugger.invIfChanged(state.SWCHB_W, oldstate.SWCHB_W)
-      << " 283/SWBCNT=" << myDebugger.invIfChanged(state.SWBCNT, oldstate.SWBCNT)
+      << "282/SWCHB(R)=" << Debugger::invIfChanged(state.SWCHB_R, oldstate.SWCHB_R)
+      << " 282/SWCHB(W)=" << Debugger::invIfChanged(state.SWCHB_W, oldstate.SWCHB_W)
+      << " 283/SWBCNT=" << Debugger::invIfChanged(state.SWBCNT, oldstate.SWBCNT)
       << endl
 
       // These are squirrely: some symbol files will define these as
       // 0x284-0x287. Doesn't actually matter, these registers repeat
       // every 16 bytes.
-      << "294/TIM1T=" << myDebugger.invIfChanged(state.TIM1T, oldstate.TIM1T)
-      << " 295/TIM8T=" << myDebugger.invIfChanged(state.TIM8T, oldstate.TIM8T)
-      << " 296/TIM64T=" << myDebugger.invIfChanged(state.TIM64T, oldstate.TIM64T)
-      << " 297/T1024T=" << myDebugger.invIfChanged(state.T1024T, oldstate.T1024T)
+      << "294/TIM1T=" << Debugger::invIfChanged(state.TIM1T, oldstate.TIM1T)
+      << " 295/TIM8T=" << Debugger::invIfChanged(state.TIM8T, oldstate.TIM8T)
+      << " 296/TIM64T=" << Debugger::invIfChanged(state.TIM64T, oldstate.TIM64T)
+      << " 297/T1024T=" << Debugger::invIfChanged(state.T1024T, oldstate.T1024T)
       << endl
 
-      << "0x284/INTIM=" << myDebugger.invIfChanged(state.INTIM, oldstate.INTIM)
-      << " 285/TIMINT=" << myDebugger.invIfChanged(state.TIMINT, oldstate.TIMINT)
-      << " Timer_Clocks=" << myDebugger.invIfChanged(state.TIMCLKS, oldstate.TIMCLKS)
-      << " INTIM_Clocks=" << myDebugger.invIfChanged(state.INTIMCLKS, oldstate.INTIMCLKS)
-      << " Divider=" << myDebugger.invIfChanged(state.TIMDIV, oldstate.TIMDIV)
+      << "0x284/INTIM=" << Debugger::invIfChanged(state.INTIM, oldstate.INTIM)
+      << " 285/TIMINT=" << Debugger::invIfChanged(state.TIMINT, oldstate.TIMINT)
+      << " Timer_Clocks=" << Debugger::invIfChanged(state.TIMCLKS, oldstate.TIMCLKS)
+      << " INTIM_Clocks=" << Debugger::invIfChanged(state.INTIMCLKS, oldstate.INTIMCLKS)
+      << " Divider=" << Debugger::invIfChanged(state.TIMDIV, oldstate.TIMDIV)
       << endl
 
       << "Left/P0diff: " << diffP0String() << "   Right/P1diff: " << diffP1String()

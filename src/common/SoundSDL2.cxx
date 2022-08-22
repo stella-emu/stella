@@ -56,7 +56,7 @@ SoundSDL2::SoundSDL2(OSystem& osystem, AudioSettings& audioSettings)
     return;
   }
 
-  queryHardware(myDevices);
+  queryHardware(myDevices);  // NOLINT
 
   SDL_zero(myHardwareSpec);
   if(!openDevice())
@@ -137,12 +137,12 @@ bool SoundSDL2::openDevice()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL2::setEnabled(bool state)
+void SoundSDL2::setEnabled(bool enable)
 {
-  myAudioSettings.setEnabled(state);
-  if (myAudioQueue) myAudioQueue->ignoreOverflows(!state);
+  myAudioSettings.setEnabled(enable);
+  if (myAudioQueue) myAudioQueue->ignoreOverflows(!enable);
 
-  Logger::debug(state ? "SoundSDL2::setEnabled(true)" :
+  Logger::debug(enable ? "SoundSDL2::setEnabled(true)" :
                 "SoundSDL2::setEnabled(false)");
 }
 
@@ -387,7 +387,7 @@ void SoundSDL2::initResampler()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL2::callback(void* udata, uInt8* stream, int len)
 {
-  SoundSDL2* self = static_cast<SoundSDL2*>(udata);
+  auto* self = static_cast<SoundSDL2*>(udata);
 
   if (self->myAudioQueue)
     self->processFragment(reinterpret_cast<float*>(stream), len >> 2);

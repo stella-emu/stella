@@ -72,10 +72,10 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 unique_ptr<Cartridge> CartCreator::create(const FSNode& file,
     const ByteBuffer& image, size_t size, string& md5,
-    const string& propertiesType, Settings& settings)
+    const string& dtype, Settings& settings)
 {
   unique_ptr<Cartridge> cartridge;
-  Bankswitch::Type type = Bankswitch::nameToType(propertiesType),
+  Bankswitch::Type type = Bankswitch::nameToType(dtype),
          detectedType = type;
   string id;
 

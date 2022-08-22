@@ -55,8 +55,8 @@ MinUICommandDialog::MinUICommandDialog(OSystem& osystem, DialogContainer& parent
 
   const auto ADD_CD_BUTTON = [&](const string& label, int cmd)
   {
-    ButtonWidget* b = new ButtonWidget(this, _font, xoffset, yoffset,
-                                       buttonWidth, buttonHeight, label, cmd);
+    auto* b = new ButtonWidget(this, _font, xoffset, yoffset,
+                               buttonWidth, buttonHeight, label, cmd);
     yoffset += buttonHeight + VGAP;
     return b;
   };

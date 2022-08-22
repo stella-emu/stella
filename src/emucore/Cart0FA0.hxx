@@ -105,7 +105,7 @@ class Cartridge0FA0 : public CartridgeEnhanced
     */
     bool randomStartBank() const override { return false; }
 
-    bool checkSwitchBank(uInt16 address, uInt8 value = 0) override;
+    bool checkSwitchBank(uInt16 address, uInt8) override;
 
     uInt16 hotspot() const override { return 0x06a0; }
 

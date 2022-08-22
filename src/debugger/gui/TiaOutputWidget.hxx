@@ -36,7 +36,8 @@ class TiaOutputWidget : public Widget, public CommandSender
     void loadConfig() override;
     void setZoomWidget(TiaZoomWidget* w) { myZoom = w; }
 
-    void saveSnapshot(int execDepth = 0, const string& execPrefix = "");
+    void saveSnapshot(int execDepth = 0, const string& execPrefix = EmptyString,
+                      bool mark = true);
 
 // Eventually, these methods will enable access to the onscreen TIA image
 // For example, clicking an area may cause an action

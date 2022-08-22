@@ -275,7 +275,7 @@ bool TIA::save(Serializer& out) const
     if(!myInput0.save(out)) return false;
     if(!myInput1.save(out)) return false;
 
-    out.putInt(int(myHstate));
+    out.putInt(static_cast<int>(myHstate));
 
     out.putInt(myHctr);
     out.putInt(myHctrDelta);
@@ -291,7 +291,7 @@ bool TIA::save(Serializer& out) const
 
     out.putInt(myLinesSinceChange);
 
-    out.putInt(int(myPriority));
+    out.putInt(static_cast<int>(myPriority));
 
     out.putByte(mySubClock);
     out.putLong(myLastCycle);
@@ -1251,7 +1251,7 @@ bool TIA::driveUnusedPinsRandom(uInt8 mode)
   // If mode is 0 or 1, use it as a boolean (off or on)
   // Otherwise, return the state
   if (mode == 0 || mode == 1)
-    myTIAPinsDriven = bool(mode);
+    myTIAPinsDriven = static_cast<bool>(mode);
 
   return myTIAPinsDriven;
 }
@@ -1393,7 +1393,9 @@ void TIA::onFrameComplete()
   // Blank out any extra lines not drawn this frame
   const Int32 missingScanlines = myFrameManager->missingScanlines();
   if (missingScanlines > 0)
-    std::fill_n(myBackBuffer.begin() + TIAConstants::H_PIXEL * myFrameManager->getY(), missingScanlines * TIAConstants::H_PIXEL, 0);
+    std::fill_n(myBackBuffer.begin() +
+      static_cast<size_t>(TIAConstants::H_PIXEL * myFrameManager->getY()),
+      missingScanlines * TIAConstants::H_PIXEL, 0);
 
   myFrontBuffer = myBackBuffer;
 
@@ -1439,9 +1441,9 @@ void TIA::cycle(uInt32 colorClocks)
     if (++myHctr >= TIAConstants::H_CLOCKS)
       nextLine();
 
-    #ifdef SOUND_SUPPORT
-      myAudio.tick();
-    #endif
+  #ifdef SOUND_SUPPORT
+    myAudio.tick();
+  #endif
 
     ++myTimestamp;
   }
@@ -1521,11 +1523,14 @@ void TIA::tickHframe()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::applyRsync()
 {
-  const uInt32 x = myHctr > TIAConstants::H_BLANK_CLOCKS ? myHctr - TIAConstants::H_BLANK_CLOCKS : 0;
+  const uInt32 x = myHctr > TIAConstants::H_BLANK_CLOCKS
+      ? myHctr - TIAConstants::H_BLANK_CLOCKS : 0;
 
   myHctrDelta = TIAConstants::H_CLOCKS - 3 - myHctr;
   if (myFrameManager->isRendering())
-    std::fill_n(myBackBuffer.begin() + myFrameManager->getY() * TIAConstants::H_PIXEL + x, TIAConstants::H_PIXEL - x, 0);
+    std::fill_n(myBackBuffer.begin() +
+      static_cast<size_t>(myFrameManager->getY() * TIAConstants::H_PIXEL + x),
+      TIAConstants::H_PIXEL - x, 0);
 
   myHctr = TIAConstants::H_CLOCKS - 3;
 }
@@ -1568,12 +1573,12 @@ void TIA::cloneLastLine()
   }
   else
   {
-    const auto y = myFrameManager->getY();
+    const size_t y = myFrameManager->getY();
 
     if(!myFrameManager->isRendering() || y == 0) return;
 
-    std::copy_n(myBackBuffer.begin() + (y - 1) * TIAConstants::H_PIXEL, TIAConstants::H_PIXEL,
-        myBackBuffer.begin() + y * TIAConstants::H_PIXEL);
+    std::copy_n(myBackBuffer.begin() + (y - 1) * TIAConstants::H_PIXEL,
+      TIAConstants::H_PIXEL, myBackBuffer.begin() + y * TIAConstants::H_PIXEL);
   }
 }
 
@@ -1679,7 +1684,9 @@ void TIA::flushLineCache()
 void TIA::clearHmoveComb()
 {
   if (myFrameManager->isRendering() && myHstate == HState::blank)
-    std::fill_n(myBackBuffer.begin() + myFrameManager->getY() * TIAConstants::H_PIXEL, 8, myColorHBlank);
+    std::fill_n(myBackBuffer.begin() +
+      static_cast<size_t>(myFrameManager->getY() * TIAConstants::H_PIXEL),
+      8, myColorHBlank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

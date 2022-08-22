@@ -44,7 +44,8 @@ SqliteStatement::~SqliteStatement()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SqliteStatement& SqliteStatement::bind(int index, const string& value)
 {
-  if (sqlite3_bind_text(myStmt, index, value.c_str(), -1, SQLITE_TRANSIENT) != SQLITE_OK)
+  if (sqlite3_bind_text(myStmt, index, value.c_str(), -1,
+      SQLITE_TRANSIENT) != SQLITE_OK)  // NOLINT (performance-no-int-to-ptr)
     throw SqliteError(myHandle);
 
   return *this;

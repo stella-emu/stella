@@ -97,8 +97,7 @@ void FBBackendSDL2::queryHardware(vector<Common::Size>& fullscreenRes,
     s << "Supported video modes (" << numModes << ") for display " << i
       << " (" << SDL_GetDisplayName(i) << "):";
 
-    string lastRes = "";
-
+    string lastRes;
     for(int m = 0; m < numModes; ++m)
     {
       SDL_DisplayMode mode;
@@ -174,11 +173,11 @@ void FBBackendSDL2::queryHardware(vector<Common::Size>& fullscreenRes,
     {
       // Map SDL names into nicer Stella names (if available)
       bool found = false;
-      for(size_t j = 0; j < RENDERER_NAMES.size(); ++j)
+      for(const auto& render: RENDERER_NAMES)
       {
-        if(RENDERER_NAMES[j].sdlName == info.name)
+        if(render.sdlName == info.name)
         {
-          VarList::push_back(renderers, RENDERER_NAMES[j].stellaName, info.name);
+          VarList::push_back(renderers, render.stellaName, info.name);
           found = true;
           break;
         }
@@ -284,7 +283,7 @@ bool FBBackendSDL2::setVideoMode(const VideoModeHandler::Mode& mode,
   if(myWindow)
   {
     const int d = SDL_GetWindowDisplayIndex(myWindow);
-    int w, h;
+    int w{0}, h{0};
 
     SDL_GetWindowSize(myWindow, &w, &h);
     if(d != displayIndex || static_cast<uInt32>(w) != mode.screenS.w ||
@@ -358,8 +357,8 @@ bool FBBackendSDL2::adaptRefreshRate(Int32 displayIndex,
   const int wantedRefreshRate =
       myOSystem.hasConsole() ? myOSystem.console().gameRefreshRate() : 0;
   // Take care of rounded refresh rates (e.g. 59.94 Hz)
-  float factor = std::min(float(currentRefreshRate) / wantedRefreshRate,
-                          float(currentRefreshRate) / (wantedRefreshRate - 1));
+  float factor = std::min(
+      static_cast<float>(currentRefreshRate) / wantedRefreshRate, static_cast<float>(currentRefreshRate) / (wantedRefreshRate - 1));
   // Calculate difference taking care of integer factors (e.g. 100/120)
   float bestDiff = std::abs(factor - std::round(factor)) / factor;
   bool adapt = false;
@@ -378,8 +377,9 @@ bool FBBackendSDL2::adaptRefreshRate(Int32 displayIndex,
       Logger::error("ERROR: Closest display mode could not be retrieved");
       return adapt;
     }
-    factor = std::min(float(sdlMode.refresh_rate) / sdlMode.refresh_rate,
-                      float(sdlMode.refresh_rate) / (sdlMode.refresh_rate - 1));
+    factor = std::min(
+        static_cast<float>(sdlMode.refresh_rate) / sdlMode.refresh_rate,
+        static_cast<float>(sdlMode.refresh_rate) / (sdlMode.refresh_rate - 1));
     const float diff = std::abs(factor - std::round(factor)) / factor;
     if(diff < bestDiff)
     {
@@ -428,7 +428,7 @@ bool FBBackendSDL2::createRenderer()
     if(myRenderer)
       SDL_DestroyRenderer(myRenderer);
 
-    if(video != "")
+    if(!video.empty())
       SDL_SetHint(SDL_HINT_RENDER_DRIVER, video.c_str());
 
     myRenderer = SDL_CreateRenderer(myWindow, -1, renderFlags);
@@ -567,7 +567,7 @@ unique_ptr<FBSurface> FBBackendSDL2::createSurface(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBBackendSDL2::readPixels(uInt8* pixels, uInt32 pitch,
+void FBBackendSDL2::readPixels(uInt8* buffer, size_t pitch,
                                const Common::Rect& rect) const
 {
   ASSERT_MAIN_THREAD;
@@ -576,7 +576,7 @@ void FBBackendSDL2::readPixels(uInt8* pixels, uInt32 pitch,
   r.x = rect.x();  r.y = rect.y();
   r.w = rect.w();  r.h = rect.h();
 
-  SDL_RenderReadPixels(myRenderer, &r, 0, pixels, pitch);
+  SDL_RenderReadPixels(myRenderer, &r, 0, buffer, static_cast<int>(pitch));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

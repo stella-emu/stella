@@ -31,7 +31,7 @@ namespace {
             (R_MAX + R * static_cast<double>(vMax)) / (R_MAX + R * static_cast<double>(v)))
     );
   }
-}
+} // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Audio::Audio()
@@ -102,8 +102,10 @@ void Audio::addSample(uInt8 sample0, uInt8 sample1)
   if(!myAudioQueue) return;
 
   if(myAudioQueue->isStereo()) {
-    myCurrentFragment[2 * mySampleIndex] = myMixingTableIndividual[sample0];
-    myCurrentFragment[2 * mySampleIndex + 1] = myMixingTableIndividual[sample1];
+    myCurrentFragment[static_cast<size_t>(2 * mySampleIndex)] =
+      myMixingTableIndividual[sample0];
+    myCurrentFragment[static_cast<size_t>(2 * mySampleIndex + 1)] =
+      myMixingTableIndividual[sample1];
   }
   else {
     myCurrentFragment[mySampleIndex] = myMixingTableSum[sample0 + sample1];

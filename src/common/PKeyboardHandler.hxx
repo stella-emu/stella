@@ -48,10 +48,12 @@ class PhysicalKeyboardHandler
 
     void loadSerializedMappings(const string& serializedMappings, EventMode mode);
 
-    void setDefaultMapping(Event::Type type, EventMode mode, bool updateDefaults = false);
+    void setDefaultMapping(Event::Type event, EventMode mode,
+                           bool updateDefaults = false);
 
     /** define mappings for current controllers */
-    void defineControllerMappings(const Controller::Type type, Controller::Jack port,
+    void defineControllerMappings(const Controller::Type type,
+                                  Controller::Jack port,
                                   const Properties& properties);
     /** enable mappings for emulation mode */
     void enableEmulationMappings();
@@ -100,13 +102,13 @@ class PhysicalKeyboardHandler
       EventMode mode = EventMode::kEmulationMode, bool updateDefaults = false);
 
     /** returns the event's controller mode */
-    EventMode getEventMode(const Event::Type event, const EventMode mode) const;
+    static EventMode getEventMode(const Event::Type event, const EventMode mode);
     /** Checks event type. */
-    bool isJoystickEvent(const Event::Type event) const;
-    bool isPaddleEvent(const Event::Type event) const;
-    bool isKeyboardEvent(const Event::Type event) const;
-    bool isDrivingEvent(const Event::Type event) const;
-    bool isCommonEvent(const Event::Type event) const;
+    static bool isJoystickEvent(const Event::Type event);
+    static bool isPaddleEvent(const Event::Type event);
+    static bool isKeyboardEvent(const Event::Type event);
+    static bool isDrivingEvent(const Event::Type event);
+    static bool isCommonEvent(const Event::Type event);
 
     void enableCommonMappings();
 
@@ -114,9 +116,9 @@ class PhysicalKeyboardHandler
     void enableMapping(const Event::Type event, EventMode mode);
 
     /** return event mode for given property */
-    EventMode getMode(const Properties& properties, const PropType propType);
+    static EventMode getMode(const Properties& properties, const PropType propType);
     /** return event mode for given controller type */
-    EventMode getMode(const Controller::Type type);
+    static EventMode getMode(const Controller::Type type);
 
   private:
     OSystem& myOSystem;

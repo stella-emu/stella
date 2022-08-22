@@ -38,7 +38,7 @@ namespace {
         throw runtime_error("unreachable");
     }
   }
-}
+} // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBSurfaceSDL2::FBSurfaceSDL2(FBBackendSDL2& backend,
@@ -249,9 +249,10 @@ void FBSurfaceSDL2::createSurface(uInt32 width, uInt32 height,
 
   myIsStatic = data != nullptr;
   if(myIsStatic)
-    SDL_memcpy(mySurface->pixels, data, mySurface->w * mySurface->h * 4);
+    SDL_memcpy(mySurface->pixels, data,
+               static_cast<size_t>(mySurface->w) * mySurface->h * 4);
 
-  reload();
+  reload();  // NOLINT
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

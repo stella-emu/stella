@@ -39,23 +39,24 @@ namespace {
   constexpr uInt16 WRITE_SEND_BUFFER    = 0x1FF1;
   constexpr uInt16 RECEIVE_BUFFER       = 0x1FF2;
   constexpr uInt16 RECEIVE_BUFFER_SIZE  = 0x1FF3;
-}
+} // namespace
 #endif
 
 using std::chrono::milliseconds;
 
 class PlusROMRequest {
   public:
-
     struct Destination {
-      Destination(string _host, string _path) : host{_host}, path{_path} {}
+      Destination(const string& _host, const string& _path)
+        : host{_host}, path{_path} {}
 
       string host;
       string path;
     };
 
     struct PlusStoreId {
-      PlusStoreId(string _nick, string _id) : nick{_nick}, id{_id} {}
+      PlusStoreId(const string& _nick, const string& _id)
+        : nick{_nick}, id{_id} {}
 
       string nick;
       string id;
@@ -69,14 +70,14 @@ class PlusROMRequest {
     };
 
   public:
-
-    PlusROMRequest(Destination destination, PlusStoreId id, const uInt8* request,
-                   uInt8 requestSize)
+    PlusROMRequest(const Destination& destination, const PlusStoreId& id,
+                   const uInt8* request, uInt8 requestSize)
       : myState{State::created}, myDestination{destination},
         myId{id}, myRequestSize{requestSize}
     {
       memcpy(myRequest.data(), request, myRequestSize);
     }
+    ~PlusROMRequest() = default;
 
   #if defined(HTTP_LIB_SUPPORT)
     void execute() {
@@ -138,7 +139,7 @@ class PlusROMRequest {
         return;
       }
 
-      if (response->body.size() < 1 || static_cast<unsigned char>(response->body[0]) != (response->body.size() - 1)) {
+      if (response->body.empty() || static_cast<unsigned char>(response->body[0]) != (response->body.size() - 1)) {
         ostringstream ss;
         ss << "PlusCart: request to " << myDestination.host << "/" << myDestination.path << ": invalid response";
 
@@ -153,16 +154,16 @@ class PlusROMRequest {
       myState = State::done;
     }
 
-    State getState() const {
+    [[nodiscard]] State getState() const {
       return myState;
     }
 
-    const Destination& getDestination() const
+    [[nodiscard]] const Destination& getDestination() const
     {
       return myDestination;
     }
 
-    const PlusStoreId& getPlusStoreId() const
+    [[nodiscard]] const PlusStoreId& getPlusStoreId() const
     {
       return myId;
     }
@@ -170,10 +171,10 @@ class PlusROMRequest {
     std::pair<size_t, const uInt8*> getResponse() {
       if (myState != State::done) throw runtime_error("invalid access to response");
 
-      return std::pair<size_t, const uInt8*>(
+      return {
         myResponse.size() - 1,
         myResponse.size() > 1 ? reinterpret_cast<const uInt8*>(myResponse.data() + 1) : nullptr
-      );
+      };
     }
   #endif
 
@@ -368,7 +369,7 @@ void PlusROM::reset()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PlusROM::isValidHost(const string& host) const
+bool PlusROM::isValidHost(const string& host)
 {
   // TODO: This isn't 100% either, as we're supposed to check for the length
   //       of each part between '.' in the range 1 .. 63
@@ -380,7 +381,7 @@ bool PlusROM::isValidHost(const string& host) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PlusROM::isValidPath(const string& path) const
+bool PlusROM::isValidPath(const string& path)
 {
   // TODO: This isn't 100%
   //  Perhaps a better function will be included with whatever network

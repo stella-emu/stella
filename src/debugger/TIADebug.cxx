@@ -293,7 +293,7 @@ void TIADebug::saveOldState()
 bool TIADebug::vdelP0(int newVal)
 {
   if(newVal > -1)
-    mySystem.poke(VDELP0, bool(newVal));
+    mySystem.poke(VDELP0, static_cast<bool>(newVal));
 
   return myTIA.registerValue(VDELP0) & 0x01;
 }
@@ -302,7 +302,7 @@ bool TIADebug::vdelP0(int newVal)
 bool TIADebug::vdelP1(int newVal)
 {
   if(newVal > -1)
-    mySystem.poke(VDELP1, bool(newVal));
+    mySystem.poke(VDELP1, static_cast<bool>(newVal));
 
   return myTIA.registerValue(VDELP1) & 0x01;
 }
@@ -311,7 +311,7 @@ bool TIADebug::vdelP1(int newVal)
 bool TIADebug::vdelBL(int newVal)
 {
   if(newVal > -1)
-    mySystem.poke(VDELBL, bool(newVal));
+    mySystem.poke(VDELBL, static_cast<bool>(newVal));
 
   return myTIA.registerValue(VDELBL) & 0x01;
 }
@@ -320,7 +320,7 @@ bool TIADebug::vdelBL(int newVal)
 bool TIADebug::enaM0(int newVal)
 {
   if(newVal > -1)
-    mySystem.poke(ENAM0, bool(newVal) << 1);
+    mySystem.poke(ENAM0, static_cast<bool>(newVal) << 1);
 
   return myTIA.registerValue(ENAM0) & 0x02;
 }
@@ -329,7 +329,7 @@ bool TIADebug::enaM0(int newVal)
 bool TIADebug::enaM1(int newVal)
 {
   if(newVal > -1)
-    mySystem.poke(ENAM1, bool(newVal) << 1);
+    mySystem.poke(ENAM1, static_cast<bool>(newVal) << 1);
 
   return myTIA.registerValue(ENAM1) & 0x02;
 }
@@ -338,7 +338,7 @@ bool TIADebug::enaM1(int newVal)
 bool TIADebug::enaBL(int newVal)
 {
   if(newVal > -1)
-    mySystem.poke(ENABL, bool(newVal) << 1);
+    mySystem.poke(ENABL, static_cast<bool>(newVal) << 1);
 
   return myTIA.registerValue(ENABL) & 0x02;
 }
@@ -347,7 +347,7 @@ bool TIADebug::enaBL(int newVal)
 bool TIADebug::resMP0(int newVal)
 {
   if(newVal > -1)
-    mySystem.poke(RESMP0, bool(newVal) << 1);
+    mySystem.poke(RESMP0, static_cast<bool>(newVal) << 1);
 
   return myTIA.registerValue(RESMP0) & 0x02;
 }
@@ -356,7 +356,7 @@ bool TIADebug::resMP0(int newVal)
 bool TIADebug::resMP1(int newVal)
 {
   if(newVal > -1)
-    mySystem.poke(RESMP1, bool(newVal) << 1);
+    mySystem.poke(RESMP1, static_cast<bool>(newVal) << 1);
 
   return myTIA.registerValue(RESMP1) & 0x02;
 }
@@ -365,7 +365,7 @@ bool TIADebug::resMP1(int newVal)
 bool TIADebug::refP0(int newVal)
 {
   if(newVal > -1)
-    mySystem.poke(REFP0, bool(newVal) << 3);
+    mySystem.poke(REFP0, static_cast<bool>(newVal) << 3);
 
   return myTIA.registerValue(REFP0) & 0x08;
 }
@@ -374,7 +374,7 @@ bool TIADebug::refP0(int newVal)
 bool TIADebug::refP1(int newVal)
 {
   if(newVal > -1)
-    mySystem.poke(REFP1, bool(newVal) << 3);
+    mySystem.poke(REFP1, static_cast<bool>(newVal) << 3);
 
   return myTIA.registerValue(REFP1) & 0x08;
 }
@@ -995,7 +995,7 @@ shared_ptr<DelayQueueIterator> TIADebug::delayQueueIterator() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string TIADebug::colorSwatch(uInt8 c) const
+string TIADebug::colorSwatch(uInt8 c)
 {
   string ret;
 
@@ -1019,7 +1019,7 @@ string TIADebug::audFreq1()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string TIADebug::audFreq(uInt8 dist, uInt8 div)
+string TIADebug::audFreq(uInt8 dist, uInt8 div) const
 {
   static constexpr uInt16 dist_div[16] = {
       1, 15, 465, 465, 2, 2, 31, 31,
@@ -1037,7 +1037,7 @@ string TIADebug::audFreq(uInt8 dist, uInt8 div)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string TIADebug::stringOnly(string value, bool changed)
+string TIADebug::stringOnly(const string& value, bool changed)
 {
   ostringstream buf;
 
@@ -1051,7 +1051,8 @@ string TIADebug::stringOnly(string value, bool changed)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string TIADebug::decWithLabel(string label, uInt16 value, bool changed, uInt16 width)
+string TIADebug::decWithLabel(const string& label, uInt16 value,
+                              bool changed, uInt16 width)
 {
   ostringstream buf;
 
@@ -1068,7 +1069,8 @@ string TIADebug::decWithLabel(string label, uInt16 value, bool changed, uInt16 w
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string TIADebug::hexWithLabel(string label, uInt16 value, bool changed, uInt16 width)
+string TIADebug::hexWithLabel(const string& label, uInt16 value,
+                              bool changed, uInt16 width)
 {
   ostringstream buf;
 
@@ -1085,7 +1087,7 @@ string TIADebug::hexWithLabel(string label, uInt16 value, bool changed, uInt16 w
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string TIADebug::binWithLabel(string label, uInt16 value, bool changed)
+string TIADebug::binWithLabel(const string& label, uInt16 value, bool changed)
 {
   ostringstream buf;
 
@@ -1102,13 +1104,16 @@ string TIADebug::binWithLabel(string label, uInt16 value, bool changed)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string TIADebug::boolWithLabel(string label, bool value, bool changed)
+string TIADebug::boolWithLabel(const string& label, bool value, bool changed)
 {
   ostringstream buf;
 
   if(value)
-    buf << "\177" << BSPF::toUpperCase(label) << "\177";
+  {
+    string l = label;
+    buf << "\177" << BSPF::toUpperCase(l) << "\177";
     //return "+" + BSPF::toUpperCase(label);
+  }
   else
     buf << label;
     //return "-" + BSPF::toLowerCase(label);
@@ -1149,7 +1154,7 @@ string TIADebug::debugColors() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string TIADebug::palette() const
+string TIADebug::palette()
 {
   ostringstream buf;
 
@@ -1174,11 +1179,11 @@ string TIADebug::toString()
   // TODO: strobes? WSYNC RSYNC RESP0/1 RESM0/1 RESBL HMOVE HMCLR CXCLR
 
   RiotDebug& riot = myDebugger.riotDebug();
-  const RiotState& riotState = static_cast<const RiotState&>(riot.getState());
-  const RiotState& oldRiotState = static_cast<const RiotState&>(riot.getOldState());
+  const auto& riotState = static_cast<const RiotState&>(riot.getState());
+  const auto& oldRiotState = static_cast<const RiotState&>(riot.getOldState());
 
-  const TiaState& state = static_cast<const TiaState&>(getState());
-  const TiaState& oldState = static_cast<const TiaState&>(getOldState());
+  const auto& state = static_cast<const TiaState&>(getState());
+  const auto& oldState = static_cast<const TiaState&>(getOldState());
 
   // build up output, then return it.
   buf << std::setfill(' ') << std::left

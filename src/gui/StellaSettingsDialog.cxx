@@ -88,7 +88,7 @@ StellaSettingsDialog::StellaSettingsDialog(OSystem& osystem, DialogContainer& pa
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-StellaSettingsDialog::~StellaSettingsDialog()
+StellaSettingsDialog::~StellaSettingsDialog() // NOLINT (we need an empty d'tor)
 {
 }
 
@@ -446,7 +446,7 @@ void StellaSettingsDialog::loadControllerProperties(const Properties& props)
       enable = true;
       break;
     case EventHandlerState::LAUNCHER:
-      enable = (instance().launcher().selectedRomMD5() != "");
+      enable = !instance().launcher().selectedRomMD5().empty();
       break;
     default:
       break;
@@ -533,7 +533,7 @@ void StellaSettingsDialog::updateControllerStates()
 
     autoDetect = node.exists() && !node.isDirectory() && (image = instance().openROM(node, md5, size)) != nullptr;
   }
-  string label = "";
+  string label;
   Controller::Type type = Controller::getType(myLeftPort->getSelectedTag().toString());
 
   if(type == Controller::Type::Unknown)

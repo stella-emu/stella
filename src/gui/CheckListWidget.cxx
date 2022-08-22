@@ -35,8 +35,8 @@ CheckListWidget::CheckListWidget(GuiObject* boss, const GUI::Font& font,
   // Create a CheckboxWidget for each row in the list
   for(int i = 0; i < _rows; ++i)
   {
-    CheckboxWidget* t = new CheckboxWidget(boss, font, _x + 2, ypos, "",
-                              CheckboxWidget::kCheckActionCmd);
+    auto* t = new CheckboxWidget(boss, font, _x + 2, ypos, "",
+                                 CheckboxWidget::kCheckActionCmd);
     t->setTextColor(kTextColor);
     t->setTarget(this);
     t->setID(i);
@@ -135,11 +135,13 @@ void CheckListWidget::drawWidget(bool hilite)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Common::Rect CheckListWidget::getEditRect() const
 {
-  const int yoffset = (_selectedItem - _currentPos) * _lineHeight,
-            xoffset = CheckboxWidget::boxSize(_font) + 10;
+  const uInt32 yoffset = (_selectedItem - _currentPos) * _lineHeight,
+               xoffset = CheckboxWidget::boxSize(_font) + 10;
 
-  return Common::Rect(2 + xoffset, 1 + yoffset,
-                      _w - (xoffset - 15), _lineHeight + yoffset);
+  return {
+    2 + xoffset, 1 + yoffset,
+    _w - (xoffset - 15), _lineHeight + yoffset
+  };
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -24,9 +24,10 @@
 #include "EmulationDialog.hxx"
 
 namespace {
-  // Emulation speed is a positive float that multiplies the framerate. However, the UI controls
-  // adjust speed in terms of a speedup factor (1/10, 1/9 .. 1/2, 1, 2, 3, .., 10). The following
-  // mapping and formatting functions implement this conversion. The speedup factor is represented
+  // Emulation speed is a positive float that multiplies the framerate. However,
+  // the UI controls adjust speed in terms of a speedup factor (1/10,
+  // 1/9 .. 1/2, 1, 2, 3, .., 10). The following mapping and formatting
+  // functions implement this conversion. The speedup factor is represented
   // by an integer value between -900 and 900 (0 means no speedup).
 
   constexpr int MAX_SPEED = 900;
@@ -59,7 +60,7 @@ namespace {
 
     return ss.str();
   }
-}
+} // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EmulationDialog::EmulationDialog(OSystem& osystem, DialogContainer& parent,
@@ -140,9 +141,8 @@ EmulationDialog::EmulationDialog(OSystem& osystem, DialogContainer& parent,
                        "When entering/exiting emulation:");
   ypos += lineHeight + VGAP;
   mySaveOnExitGroup = new RadioButtonGroup();
-  RadioButtonWidget* r;
-  r = new RadioButtonWidget(this, font, xpos, ypos + 1,
-                            "Do nothing", mySaveOnExitGroup);
+  auto* r = new RadioButtonWidget(this, font, xpos, ypos + 1,
+                                  "Do nothing", mySaveOnExitGroup);
   wid.push_back(r);
   ypos += lineHeight + VGAP;
   r = new RadioButtonWidget(this, font, xpos, ypos + 1,
@@ -159,7 +159,6 @@ EmulationDialog::EmulationDialog(OSystem& osystem, DialogContainer& parent,
   myAutoSlotWidget = new CheckboxWidget(this, font, xpos, ypos + 1, "Automatically change save state slots");
   myAutoSlotWidget->setToolTip("Cycle to next state slot after saving.", Event::ToggleAutoSlot);
   wid.push_back(myAutoSlotWidget);
-  ypos += lineHeight + VGAP;
 
   // Add Defaults, OK and Cancel buttons
   addDefaultsOKCancelBGroup(wid, font);

@@ -158,9 +158,9 @@ void TiaInfoWidget::loadConfig()
 {
   const Debugger& dbg = instance().debugger();
   TIADebug& tia = dbg.tiaDebug();
-  const TiaState& oldTia = static_cast<const TiaState&>(tia.getOldState());
+  const auto& oldTia = static_cast<const TiaState&>(tia.getOldState());
   RiotDebug& riot = dbg.riotDebug();
-  const RiotState& oldRiot = static_cast<const RiotState&>(riot.getOldState());
+  const auto& oldRiot = static_cast<const RiotState&>(riot.getOldState());
 
   myFrameCount->setText(Common::Base::toString(tia.frameCount(), Common::Base::Fmt::_10_5),
                         tia.frameCount() != oldTia.info[0]);

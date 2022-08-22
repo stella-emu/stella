@@ -34,7 +34,7 @@ class ProgressDialog : public Dialog
     ~ProgressDialog() override = default;
 
     void setMessage(const string& message);
-    void setRange(int begin, int end, int step);
+    void setRange(int start, int finish, int step);
     void resetProgress();
     void setProgress(int progress);
     void incProgress();

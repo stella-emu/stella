@@ -44,9 +44,9 @@ PaletteHandler::PaletteType PaletteHandler::toPaletteType(const string& name) co
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string PaletteHandler::toPaletteName(PaletteType type) const
+string PaletteHandler::toPaletteName(PaletteType type)
 {
-  const string SETTING_NAMES[int(PaletteType::NumTypes)] = {
+  const string SETTING_NAMES[static_cast<int>(PaletteType::NumTypes)] = {
     SETTING_STANDARD, SETTING_Z26, SETTING_USER, SETTING_CUSTOM
   };
 
@@ -321,12 +321,13 @@ void PaletteHandler::setPalette()
 
     // Look at all the palettes, since we don't know which one is
     // currently active
-    static constexpr BSPF::array2D<const PaletteArray*, PaletteType::NumTypes, int(ConsoleTiming::numTimings)> palettes = {{
+    static constexpr BSPF::array2D<const PaletteArray*, PaletteType::NumTypes,
+    static_cast<int>(ConsoleTiming::numTimings)> palettes = {{
       { &ourNTSCPalette,       &ourPALPalette,       &ourSECAMPalette     },
       { &ourNTSCPaletteZ26,    &ourPALPaletteZ26,    &ourSECAMPaletteZ26  },
       { &ourUserNTSCPalette,   &ourUserPALPalette,   &ourUserSECAMPalette },
       { &ourCustomNTSCPalette, &ourCustomPALPalette, &ourSECAMPalette     }
-      }};
+    }};
     // See which format we should be using
     const ConsoleTiming timing = myOSystem.console().timing();
     const PaletteType paletteType = toPaletteType(name);
@@ -341,7 +342,7 @@ void PaletteHandler::setPalette()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PaletteArray PaletteHandler::adjustedPalette(const PaletteArray& palette)
+PaletteArray PaletteHandler::adjustedPalette(const PaletteArray& palette) const
 {
   PaletteArray destPalette{0};
   // Constants for saturation and gray scale calculation
@@ -389,7 +390,7 @@ PaletteArray PaletteHandler::adjustedPalette(const PaletteArray& palette)
     // Fill the odd numbered palette entries with gray values (calculated
     // using the standard RGB -> grayscale conversion formula)
     // Used for PAL color-loss data and 'greying out' the frame in the debugger.
-    const uInt8 lum = static_cast<uInt8>((r * PR) + (g * PG) + (b * PB));
+    const auto lum = static_cast<uInt8>((r * PR) + (g * PG) + (b * PB));
 
     destPalette[i + 1] = (lum << 16) + (lum << 8) + lum;
   }
@@ -443,7 +444,7 @@ void PaletteHandler::loadUserPalette()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PaletteHandler::generateCustomPalette(ConsoleTiming timing)
+void PaletteHandler::generateCustomPalette(ConsoleTiming timing) const
 {
   constexpr int NUM_CHROMA = 16;
   constexpr int NUM_LUMA = 8;
@@ -572,7 +573,8 @@ void PaletteHandler::adjustHueSaturation(int& R, int& G, int& B, float H, float 
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PaletteHandler::vector2d PaletteHandler::rotate(const PaletteHandler::vector2d& vec, float angle) const
+PaletteHandler::vector2d
+PaletteHandler::rotate(const PaletteHandler::vector2d& vec, float angle)
 {
   const float r = angle * BSPF::PI_f / 180;
 
@@ -581,14 +583,15 @@ PaletteHandler::vector2d PaletteHandler::rotate(const PaletteHandler::vector2d& 
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PaletteHandler::vector2d PaletteHandler::scale(const PaletteHandler::vector2d& vec, float factor) const
+PaletteHandler::vector2d
+PaletteHandler::scale(const PaletteHandler::vector2d& vec, float factor)
 {
   return PaletteHandler::vector2d(vec.x * factor, vec.y * factor);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 float PaletteHandler::dotProduct(const PaletteHandler::vector2d& vec1,
-                                 const PaletteHandler::vector2d& vec2) const
+                                 const PaletteHandler::vector2d& vec2)
 {
   return vec1.x * vec2.x + vec1.y * vec2.y;
 }

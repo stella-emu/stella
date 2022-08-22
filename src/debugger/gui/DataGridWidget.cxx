@@ -57,7 +57,7 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
     _valueList.push_back(0);
     _valueStringList.push_back(EmptyString);
     _toolTipList.push_back(EmptyString);
-    _changedList.push_back(0);
+    _changedList.push_back(false);
     _hiliteList.push_back(false);
   }
 
@@ -259,8 +259,7 @@ void DataGridWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount
 
   resetSelection();
   // First check whether the selection changed
-  int newSelectedItem;
-  newSelectedItem = findItem(x, y);
+  int newSelectedItem = findItem(x, y);
   if (newSelectedItem > static_cast<int>(_valueList.size()) - 1)
     newSelectedItem = -1;
 
@@ -309,7 +308,7 @@ void DataGridWidget::handleMouseWheel(int x, int y, int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int DataGridWidget::findItem(int x, int y)
+int DataGridWidget::findItem(int x, int y) const
 {
   int row = (y - 1) / _rowHeight;
   if(row >= _rows) row = _rows - 1;
@@ -375,12 +374,12 @@ bool DataGridWidget::handleKeyDown(StellaKey key, StellaMod mod)
         break;
 
       case KBDK_DOWN:
-        if (_currentRow < int(_rows) - 1)
+        if (_currentRow < _rows - 1)
         {
           _currentRow++;
           dirty = true;
         }
-        else if(_currentCol < int(_cols) - 1)
+        else if(_currentCol < _cols - 1)
         {
           _currentRow = 0;
           _currentCol++;
@@ -403,12 +402,12 @@ bool DataGridWidget::handleKeyDown(StellaKey key, StellaMod mod)
         break;
 
       case KBDK_RIGHT:
-        if (_currentCol < int(_cols) - 1)
+        if (_currentCol < _cols - 1)
         {
           _currentCol++;
           dirty = true;
         }
-        else if(_currentRow < int(_rows) - 1)
+        else if(_currentRow < _rows - 1)
         {
           _currentCol = 0;
           _currentRow++;
@@ -429,7 +428,7 @@ bool DataGridWidget::handleKeyDown(StellaKey key, StellaMod mod)
       case KBDK_PAGEDOWN:
         if(StellaModTest::isShift(mod) && _scrollBar)
           handleMouseWheel(0, 0, +1);
-        else if (_currentRow < int(_rows) - 1)
+        else if (_currentRow < _rows - 1)
         {
           _currentRow = _rows - 1;
           dirty = true;
@@ -445,7 +444,7 @@ bool DataGridWidget::handleKeyDown(StellaKey key, StellaMod mod)
         break;
 
       case KBDK_END:
-        if (_currentCol < int(_cols) - 1)
+        if (_currentCol < _cols - 1)
         {
           _currentCol = _cols - 1;
           dirty = true;
@@ -714,11 +713,13 @@ void DataGridWidget::drawWidget(bool hilite)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Common::Rect DataGridWidget::getEditRect() const
 {
-  const int rowoffset = _currentRow * _rowHeight;
-  const int coloffset = _currentCol * _colWidth + 4;
+  const uInt32 rowoffset = _currentRow * _rowHeight;
+  const uInt32 coloffset = _currentCol * _colWidth + 4;
 
-  return Common::Rect(1 + coloffset, rowoffset,
-                      _colWidth + coloffset - 5, _rowHeight + rowoffset);
+  return {
+    1 + coloffset, rowoffset,
+    _colWidth + coloffset - 5, _rowHeight + rowoffset
+  };
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -758,8 +759,8 @@ void DataGridWidget::endEditMode()
   enableEditMode(false);
 
   // Update the both the string representation and the real data
-  if(editString().size() > 0 && !(editString()[0] == '$' ||
-        editString()[0] == '#' || editString()[0] == '\\'))
+  if(!editString().empty() && !(editString()[0] == '$' ||
+     editString()[0] == '#' || editString()[0] == '\\'))
   {
     switch(_base)
     {

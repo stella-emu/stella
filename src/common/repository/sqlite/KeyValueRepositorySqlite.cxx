@@ -34,8 +34,8 @@ SqliteStatement& KeyValueRepositorySqlite::stmtInsert(const string& key, const s
 {
   return (*myStmtInsert)
     .reset()
-    .bind(1, key.c_str())
-    .bind(2, value.c_str());
+    .bind(1, key)
+    .bind(2, value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -50,7 +50,7 @@ SqliteStatement& KeyValueRepositorySqlite::stmtDelete(const string& key)
 {
   return (*myStmtDelete)
     .reset()
-    .bind(1, key.c_str());
+    .bind(1, key);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -58,7 +58,7 @@ SqliteStatement& KeyValueRepositorySqlite::stmtCount(const string& key)
 {
   return (*myStmtCount)
     .reset()
-    .bind(1, key.c_str());
+    .bind(1, key);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -66,7 +66,7 @@ SqliteStatement& KeyValueRepositorySqlite::stmtSelectOne(const string& key)
 {
   return (*myStmtSelectOne)
     .reset()
-    .bind(1, key.c_str());
+    .bind(1, key);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

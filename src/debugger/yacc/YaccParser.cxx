@@ -35,7 +35,7 @@ void yyerror(const char* e);
   #pragma clang diagnostic ignored "-Wold-style-cast"
   #pragma clang diagnostic ignored "-Wimplicit-fallthrough"
   #pragma clang diagnostic ignored "-Wmissing-variable-declarations"
-  #include "y.tab.c"
+  #include "y.tab.c"  // NOLINT
   #pragma clang diagnostic pop
 #else
   #include "y.tab.c"
@@ -177,7 +177,7 @@ int const_to_int(char* ch)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // special methods that get Cart RAM/ROM internal state
-CartMethod getCartSpecial(char* ch)
+CartMethod getCartSpecial(const char* ch)
 {
   if(BSPF::equalsIgnoreCase(ch, "_bank"))
     return &CartDebug::getPCBank;
@@ -196,7 +196,7 @@ CartMethod getCartSpecial(char* ch)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // special methods that get e.g. CPU registers
-CpuMethod getCpuSpecial(char* ch)
+CpuMethod getCpuSpecial(const char* ch)
 {
   if(BSPF::equalsIgnoreCase(ch, "a"))
     return &CpuDebug::a;
@@ -230,7 +230,7 @@ CpuMethod getCpuSpecial(char* ch)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // special methods that get RIOT internal state
-RiotMethod getRiotSpecial(char* ch)
+RiotMethod getRiotSpecial(const char* ch)
 {
   if(BSPF::equalsIgnoreCase(ch, "_timWrapRead"))
     return &RiotDebug::timWrappedOnRead;
@@ -248,7 +248,7 @@ RiotMethod getRiotSpecial(char* ch)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // special methods that get TIA internal state
-TiaMethod getTiaSpecial(char* ch)
+TiaMethod getTiaSpecial(const char* ch)
 {
   if(BSPF::equalsIgnoreCase(ch, "_scan"))
     return &TIADebug::scanlines;
@@ -279,7 +279,7 @@ TiaMethod getTiaSpecial(char* ch)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int yylex() {
   static char idbuf[255];  // NOLINT  (will be rewritten soon)
-  char o, p;
+  char o{0}, p{0};
   yylval.val = 0;
   while(*c != '\0') {
     switch(state) {
@@ -392,7 +392,7 @@ int yylex() {
         } else if(is_operator(*c)) {
           state = State::OPERATOR;
         } else {
-          yylval.val = *c++;
+          yylval.val = *c++;  // NOLINT
           return yylval.val;
         }
         break;

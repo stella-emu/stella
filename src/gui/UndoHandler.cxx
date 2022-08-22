@@ -91,9 +91,9 @@ bool UndoHandler::redo(string& text)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 UndoHandler::lastDiff(const string& text, const string& oldText) const
+uInt32 UndoHandler::lastDiff(const string& text, const string& oldText)
 {
-  uInt32 pos = static_cast<uInt32>(text.size());
+  auto pos = static_cast<uInt32>(text.size());
 
   for(auto itn = text.crbegin(), ito = oldText.crbegin();
       itn != text.crend() && ito != oldText.crend(); ++itn, ++ito)

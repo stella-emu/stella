@@ -20,18 +20,11 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/termios.h>
-#include <sys/types.h>
 #include <sys/ioctl.h>
 #include <cstring>
 
 #include "FSNode.hxx"
 #include "SerialPortUNIX.hxx"
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SerialPortUNIX::SerialPortUNIX()
-  : SerialPort()
-{
-}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SerialPortUNIX::~SerialPortUNIX()

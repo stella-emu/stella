@@ -45,10 +45,10 @@ using Common::Base;
 #endif
 
 #ifdef __BIG_ENDIAN__
-  #define CONV_DATA(d)   (((d & 0xFFFF)>>8) | ((d & 0xffff)<<8)) & 0xffff
-  #define CONV_RAMROM(d) ((d>>8) | (d<<8)) & 0xffff
+  #define CONV_DATA(d)   ((((d) & 0xFFFF)>>8) | (((d) & 0xffff)<<8)) & 0xffff
+  #define CONV_RAMROM(d) (((d)>>8) | ((d)<<8)) & 0xffff
 #else
-  #define CONV_DATA(d)   (d & 0xFFFF)
+  #define CONV_DATA(d)   ((d) & 0xFFFF)
   #define CONV_RAMROM(d) (d)
 #endif
 
@@ -255,7 +255,7 @@ inline int Thumbulator::fatalError(const char* opcode, uInt32 v1, uInt32 v2,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Thumbulator::dump_counters()
+void Thumbulator::dump_counters() const
 {
   cout << endl << endl
        << "instructions " << _stats.instructions << endl;
@@ -548,7 +548,7 @@ void Thumbulator::write32(uInt32 addr, uInt32 data)
 
 #ifndef UNSAFE_OPTIMIZATIONS
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Thumbulator::isInvalidROM(uInt32 addr)
+bool Thumbulator::isInvalidROM(uInt32 addr) const
 {
   const uInt32 romStart = configuration == ConfigureFor::DPCplus ? 0xc00 : 0x750; // was 0x800
 
@@ -556,7 +556,7 @@ bool Thumbulator::isInvalidROM(uInt32 addr)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Thumbulator::isInvalidRAM(uInt32 addr)
+bool Thumbulator::isInvalidRAM(uInt32 addr) const
 {
   // Note: addr is already checked for RAM (0x4xxxxxxx)
   switch(romSize) // CDFJ+ allows more than 8 KB RAM depending on ROM sizes
@@ -679,7 +679,7 @@ uInt32 Thumbulator::read32(uInt32 addr)
         fatalError("read32", addr, "abort - out of range");
 #endif
       data = read16(addr+0);
-      data |= (uInt32(read16(addr+2))) << 16;
+      data |= read16(addr+2) << 16;
       DO_DBUG(statusMsg << "read32(" << Base::HEX8 << addr << ")=" << Base::HEX8 << data << endl);
       return data;
 
@@ -689,7 +689,7 @@ uInt32 Thumbulator::read32(uInt32 addr)
         fatalError("read32", addr, "abort - out of range");
 #endif
       data = read16(addr+0);
-      data |= (static_cast<uInt32>(read16(addr+2))) << 16;
+      data |= read16(addr+2) << 16;
       DO_DBUG(statusMsg << "read32(" << Base::HEX8 << addr << ")=" << Base::HEX8 << data << endl);
       return data;
 
@@ -699,7 +699,7 @@ uInt32 Thumbulator::read32(uInt32 addr)
     default:
 #endif
     {
-      switch(addr)
+      switch(addr)  // NOLINT  (FIXME: missing default)
       {
       #ifdef THUMB_CYCLE_COUNT
         case 0xE01FC000: //MAMCR
@@ -717,12 +717,12 @@ uInt32 Thumbulator::read32(uInt32 addr)
         #ifdef THUMB_CYCLE_COUNT
           if(T0TCR & 1)
             // timer is counting
-            data = T0TC + (tim0Total + (_totalCycles - tim0Start)) * _armCyclesFactor;
+            data = T0TC + (tim0Total + (_totalCycles - tim0Start)) * _armCyclesFactor;  // NOLINT
           else
             // timer is disabled
-            data = T0TC + tim0Total * _armCyclesFactor;
+            data = T0TC + tim0Total * _armCyclesFactor;  // NOLINT
         #else
-          data = T0TC;
+          data = T0TC;  // NOLINT
         #endif
           break;
       #endif
@@ -832,10 +832,8 @@ void Thumbulator::do_nflag(uInt32 x)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Thumbulator::do_cflag(uInt32 a, uInt32 b, uInt32 c)
 {
-  uInt32 rc;
-
-  rc = (a & 0x7FFFFFFF) + (b & 0x7FFFFFFF) + c; //carry in
-  rc = (rc >> 31) + (a >> 31) + (b >> 31);      //carry out
+  uInt32 rc = (a & 0x7FFFFFFF) + (b & 0x7FFFFFFF) + c; //carry in
+  rc = (rc >> 31) + (a >> 31) + (b >> 31);             //carry out
   if(rc & 2)
     cpsr |= CPSR_C;
   else
@@ -1093,11 +1091,11 @@ Thumbulator::Op Thumbulator::decodeInstructionWord(uint16_t inst) {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Thumbulator::execute()
+int Thumbulator::execute()  // NOLINT (readability-function-size)
 {
-  uInt32 pc, sp, inst, ra, rb, rc, rm, rd, rn, rs, op;
+  uInt32 sp, inst, ra, rb, rc, rm, rd, rn, rs, op;  // NOLINT
 
-  pc = read_register(15);
+  uInt32 pc = read_register(15);
 
   const uInt32 instructionPtr = pc - 2;
   inst = fetch16(instructionPtr);
@@ -1110,7 +1108,7 @@ int Thumbulator::execute()
   ++_stats.instructions;
 #endif
 
-  Op decodedOp;
+  Op decodedOp{};
 #ifndef UNSAFE_OPTIMIZATIONS
   if ((instructionPtr & 0xF0000000) == 0 && instructionPtr < romSize)
     decodedOp = decodedRom[instructionPtr >> 1];

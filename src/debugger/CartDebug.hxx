@@ -66,7 +66,7 @@ class CartDebug : public DebuggerSystem
 
     // Determine 'type' of address (ie, what part of the system accessed)
     enum class AddrType { TIA, IO, ZPRAM, ROM };
-    AddrType addressType(uInt16 addr) const;
+    static AddrType addressType(uInt16 addr);
 
   public:
     CartDebug(Debugger& dbg, Console& console, const OSystem& osystem);
@@ -260,13 +260,13 @@ class CartDebug : public DebuggerSystem
       Methods used by the command parser for tab-completion
       In this case, return completions from the equate list(s)
     */
-    void getCompletions(const char* in, StringList& list) const;
+    void getCompletions(const char* in, StringList& completions) const;
 
     // Convert given address to corresponding access type and append to buf
     void accessTypeAsString(ostream& buf, uInt16 addr) const;
 
     // Convert access enum type to corresponding string and append to buf
-    void AccessTypeAsString(ostream& buf, Device::AccessType type) const;
+    static void AccessTypeAsString(ostream& buf, Device::AccessType type);
 
   private:
     using AddrToLineList = std::map<uInt16, int>;
@@ -330,11 +330,11 @@ class CartDebug : public DebuggerSystem
     void getBankDirectives(ostream& buf, const BankInfo& info) const;
 
     // Get access enum type from 'flags', taking precendence into account
-    Device::AccessType accessTypeAbsolute(Device::AccessFlags flags) const;
+    static Device::AccessType accessTypeAbsolute(Device::AccessFlags flags);
 
     // Convert all access types in 'flags' to corresponding string and
     // append to buf
-    void AccessTypeAsString(ostream& buf, Device::AccessFlags flags) const;
+    static void AccessTypeAsString(ostream& buf, Device::AccessFlags flags);
 
   private:
     const OSystem& myOSystem;

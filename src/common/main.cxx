@@ -281,7 +281,7 @@ int main(int ac, char* av[])
   {
     attachConsole();
     Logger::debug("Displaying usage");
-    theOSystem->settings().usage();
+    Settings::usage();
     freeConsole();
     return Cleanup();
   }
@@ -294,15 +294,15 @@ int main(int ac, char* av[])
   // If not, use the built-in ROM launcher.  In this case, we enter 'launcher'
   //   mode and let the main event loop take care of opening a new console/ROM.
   FSNode romnode(romfile);
-  if(romfile == "" || romnode.isDirectory())
+  if(romfile.empty() || romnode.isDirectory())
   {
     Logger::debug("Attempting to use ROM launcher ...");
-    bool launcherOpened = romfile != "" ?
+    bool launcherOpened = !romfile.empty() ?
       theOSystem->createLauncher(romnode.getPath()) : theOSystem->createLauncher();
     if(!launcherOpened)
     {
       Logger::debug("Launcher could not be started, showing usage");
-      theOSystem->settings().usage();
+      Settings::usage();
       return Cleanup();
     }
   }
@@ -333,7 +333,7 @@ int main(int ac, char* av[])
 
 #ifdef DEBUGGER_SUPPORT
     // Set up any breakpoint that was on the command line
-    if(localOpts["break"].toString() != "")
+    if(!localOpts["break"].toString().empty())
     {
       Debugger& dbg = theOSystem->debugger();
       uInt16 bp = uInt16(dbg.stringToValue(localOpts["break"].toString()));

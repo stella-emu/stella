@@ -267,8 +267,8 @@ class FBSurface
       @param left   The left part of the split string
       @param right  The right part of the split string
     */
-    void splitString(const GUI::Font& font, const string& s, int w,
-                     string& left, string& right) const;
+    static void splitString(const GUI::Font& font, const string& s, int w,
+                            string& left, string& right);
 
     /**
       The rendering attributes that can be modified for this texture.
@@ -403,7 +403,9 @@ class FBSurface
       @param c      Character to check
       @return       True if whitespace character
     */
-    bool isWhiteSpace(const char c) const;
+    static bool isWhiteSpace(const char c) {
+      return string(" ,.;:+-*/\\'([\n").find(c) != string::npos;
+    }
 
   protected:
     uInt32* myPixels{nullptr};  // NOTE: MUST be set in child classes

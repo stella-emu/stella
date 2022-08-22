@@ -167,17 +167,21 @@ class GlobalKeyHandler
     // Get group based on given setting
     Group getGroup() const;
     // Cycle settings using given direction (can be 0)
-    const Function cycleSetting(int direction);
+    Function cycleSetting(int direction);
     // Get adjustment function and if it is repeated
     SettingData getSettingData(const Setting setting) const;
 
-    PhysicalJoystickHandler& joyHandler() const { return myOSystem.eventHandler().joyHandler(); }
-    PhysicalKeyboardHandler& keyHandler() const { return myOSystem.eventHandler().keyHandler(); }
+    PhysicalJoystickHandler& joyHandler() const {
+      return myOSystem.eventHandler().joyHandler();
+    }
+    PhysicalKeyboardHandler& keyHandler() const {
+      return myOSystem.eventHandler().keyHandler();
+    }
 
     // Check if controller type is used (skips related input settings if not)
-    bool isJoystick(const Controller& controller) const;
-    bool isPaddle(const Controller& controller) const;
-    bool isTrackball(const Controller& controller) const;
+    static bool isJoystick(const Controller& controller);
+    static bool isPaddle(const Controller& controller);
+    static bool isTrackball(const Controller& controller);
 
     // Check if a currently non-relevant adjustment can be skipped
     bool skipAVSetting() const;

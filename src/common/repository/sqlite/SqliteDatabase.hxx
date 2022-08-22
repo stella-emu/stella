@@ -42,7 +42,7 @@ class SqliteDatabase
     void exec(const string& sql, T arg1, Ts... args);
 
     Int32 getUserVersion() const;
-    void setUserVersion(Int32 version);
+    void setUserVersion(Int32 version) const;
 
   private:
 

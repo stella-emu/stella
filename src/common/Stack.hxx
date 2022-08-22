@@ -79,6 +79,6 @@ class FixedStack
     FixedStack& operator=(FixedStack&&) = delete;
 };
 
-}  // Namespace Common
+} // namespace Common
 
 #endif

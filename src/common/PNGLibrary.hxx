@@ -49,7 +49,8 @@ class PNGLibrary
              runtime_error is thrown containing a more detailed
              error message.
     */
-    void loadImage(const string& filename, FBSurface& surface, VariantList& metaData);
+    void loadImage(const string& filename, FBSurface& surface,
+                   VariantList& metaData);
 
     /**
       Save the current FrameBuffer image to a PNG file.  Note that in most
@@ -78,9 +79,9 @@ class PNGLibrary
              otherwise a runtime_error is thrown containing a
              more detailed error message.
     */
-    void saveImage(const string& filename, const FBSurface& surface,
-                   const Common::Rect& rect = Common::Rect{},
-                   const VariantList& metaData = VariantList{});
+    static void saveImage(const string& filename, const FBSurface& surface,
+                          const Common::Rect& rect = Common::Rect{},
+                          const VariantList& metaData = VariantList{});
 
     /**
       Called at regular intervals, and used to determine whether a
@@ -149,10 +150,10 @@ class PNGLibrary
       dependent on the given dimensions.  If memory has been previously
       allocated and it can accommodate the given dimensions, it is used directly.
 
-      @param iwidth  The width of the PNG image
-      @param iheight The height of the PNG image
+      @param width   The width of the PNG image
+      @param height  The height of the PNG image
     */
-    bool allocateStorage(png_uint_32 iwidth, png_uint_32 iheight);
+    static bool allocateStorage(size_t width, size_t height);
 
     /** The actual method which saves a PNG image.
 
@@ -162,9 +163,9 @@ class PNGLibrary
       @param height    The height of the PNG image
       @param metaData  The meta data to add to the PNG image
     */
-    void saveImageToDisk(std::ofstream& out, const vector<png_bytep>& rows,
-                         png_uint_32 width, png_uint_32 height,
-                         const VariantList& metaData);
+    static void saveImageToDisk(std::ofstream& out, const vector<png_bytep>& rows,
+                                size_t width, size_t height,
+                                const VariantList& metaData);
 
     /**
       Load the PNG data from 'ReadInfo' into the FBSurface.  The surface
@@ -177,21 +178,25 @@ class PNGLibrary
     /**
       Write PNG tEXt chunks to the image.
     */
-    void writeMetaData(const png_structp png_ptr, png_infop info_ptr,
-                       const VariantList& metaData);
+    static void writeMetaData(const png_structp png_ptr, png_infop info_ptr,
+                              const VariantList& metaData);
 
     /**
       Read PNG tEXt chunks from the image.
     */
-    void readMetaData(const png_structp png_ptr, png_infop info_ptr,
-      VariantList& metaData);
+    static void readMetaData(const png_structp png_ptr, png_infop info_ptr,
+                             VariantList& metaData);
 
     /** PNG library callback functions */
-    static void png_read_data(const png_structp ctx, png_bytep area, png_size_t size);
-    static void png_write_data(const png_structp ctx, png_bytep area, png_size_t size);
+    static void png_read_data(const png_structp ctx, png_bytep area,
+                              png_size_t size);
+    static void png_write_data(const png_structp ctx, png_bytep area,
+                               png_size_t size);
     static void png_io_flush(const png_structp ctx);
-    [[noreturn]] static void png_user_warn(const png_structp ctx, png_const_charp str);
-    [[noreturn]] static void png_user_error(const png_structp ctx, png_const_charp str);
+    [[noreturn]] static void png_user_warn(const png_structp ctx,
+                                           png_const_charp str);
+    [[noreturn]] static void png_user_error(const png_structp ctx,
+                                            png_const_charp str);
 
   private:
     // Following constructors and assignment operators not supported

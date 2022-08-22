@@ -80,7 +80,7 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
       // multi-byte instruction, then we make note of that address for reference
       //
       // However, we only do this for labels pointing to ROM (above $1000)
-      if (myDbg.addressType(k + myOffset) == CartDebug::AddrType::ROM) {
+      if (CartDebug::addressType(k + myOffset) == CartDebug::AddrType::ROM) {
         reservedLabel.str("");
         reservedLabel << "L" << Base::HEX4 << (k + myOffset);
         myReserved.Label.emplace(k + myOffset, reservedLabel.str());
@@ -123,7 +123,7 @@ void DiStella::disasm(uInt32 distart, int pass)
     // and this results into an access at e.g. 0xffff,
     // we have to fix the consequences here (ugly!).
     if(myPC == myAppData.end)
-      goto FIX_LAST;
+      goto FIX_LAST;  // NOLINT
 
     if(checkBits(myPC, Device::GFX | Device::PGFX,
        Device::CODE))
@@ -944,7 +944,7 @@ DiStella::AddressType DiStella::mark(uInt32 address, uInt16 mask, bool directive
 
   // Check for equates before ROM/ZP-RAM accesses, because the original logic
   // of Distella assumed either equates or ROM; it didn't take ZP-RAM into account
-  const CartDebug::AddrType type = myDbg.addressType(address);
+  const CartDebug::AddrType type = CartDebug::addressType(address);
   if(type == CartDebug::AddrType::TIA) {
     return AddressType::TIA;
   }
@@ -1003,18 +1003,18 @@ bool DiStella::checkBits(uInt16 address, uInt16 mask, uInt16 notMask, bool useDe
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool DiStella::check_range(uInt16 beg, uInt16 end) const
+bool DiStella::check_range(uInt16 start, uInt16 end) const
 {
-  if (beg > end) {
-    cerr << "Beginning of range greater than end: start = " << std::hex << beg
+  if (start > end) {
+    cerr << "Beginning of range greater than end: start = " << std::hex << start
       << ", end = " << std::hex << end << endl;
     return false;
-  } else if (beg > myAppData.end + myOffset) {
-    cerr << "Beginning of range out of range: start = " << std::hex << beg
+  } else if (start > myAppData.end + myOffset) {
+    cerr << "Beginning of range out of range: start = " << std::hex << start
       << ", range = " << std::hex << (myAppData.end + myOffset) << endl;
     return false;
-  } else if (beg < myOffset) {
-    cerr << "Beginning of range out of range: start = " << std::hex << beg
+  } else if (start < myOffset) {
+    cerr << "Beginning of range out of range: start = " << std::hex << start
       << ", offset = " << std::hex << myOffset << endl;
     return false;
   }
@@ -1038,7 +1038,7 @@ void DiStella::addEntry(Device::AccessType type)
 
   // Only include addresses within the requested range
   if (tag.address < myAppData.start)
-    goto DONE_WITH_ADD;
+    goto DONE_WITH_ADD;  // NOLINT
 
   // Label (a user-defined label always overrides any auto-generated one)
   myDisasmBuf.seekg(5, std::ios::beg);

@@ -68,7 +68,7 @@ void LauncherFileListWidget::getChildren(const FSNode::CancelCheck& isCancelled)
 
     if(myVirtualDir == user_name)
     {
-      for(auto& item : myFavorites->userList())
+      for(const auto& item : myFavorites->userList())
       {
         FSNode node(item);
         string name = node.getName();
@@ -84,7 +84,7 @@ void LauncherFileListWidget::getChildren(const FSNode::CancelCheck& isCancelled)
     }
     else if(myVirtualDir == popular_name)
     {
-      for(auto& item : myFavorites->popularList())
+      for(const auto& item : myFavorites->popularList())
       {
         FSNode node(item.first);
         if(_filter(node))
@@ -93,7 +93,7 @@ void LauncherFileListWidget::getChildren(const FSNode::CancelCheck& isCancelled)
     }
     else if(myVirtualDir == recent_name)
     {
-      for(auto& item : myFavorites->recentList())
+      for(const auto& item : myFavorites->recentList())
       {
         FSNode node(item);
         if(_filter(node))
@@ -142,11 +142,11 @@ void LauncherFileListWidget::extendLists(StringList& list)
     // Add virtual directories behind ".."
     int offset = _fileList.begin()->getName() == ".." ? 1 : 0;
 
-    if(myFavorites->userList().size())
+    if(!myFavorites->userList().empty())
       addFolder(list, offset, user_name, IconType::userdir);
-    if(myFavorites->popularList().size())
+    if(!myFavorites->popularList().empty())
       addFolder(list, offset, popular_name, IconType::popdir);
-    if(myFavorites->recentList().size())
+    if(!myFavorites->recentList().empty())
       addFolder(list, offset, recent_name, IconType::recentdir);
   }
 }
@@ -508,21 +508,25 @@ const FileListWidget::Icon* LauncherFileListWidget::getIcon(int i) const
     0b11111111111'11111111110,
     0b11111111111'11111111110
   };
-  static const Icon* small_icons[int(IconType::numLauncherTypes)] = {
-    &favrom_small, &favdir_small, &favzip_small, &user_small, &recent_small, &popular_small
+  static constexpr auto NLT = static_cast<int>(IconType::numLauncherTypes);
+  static const Icon* small_icons[NLT] = {
+    &favrom_small, &favdir_small, &favzip_small,
+    &user_small, &recent_small, &popular_small
 
   };
-  static const Icon* large_icons[int(IconType::numLauncherTypes)] = {
-    &favrom_large, &favdir_large, &favzip_large, &user_large, &recent_large, &popular_large
+  static const Icon* large_icons[NLT] = {
+    &favrom_large, &favdir_large, &favzip_large,
+    &user_large, &recent_large, &popular_large
   };
 
-  if(int(_iconTypeList[i]) < static_cast<int>(IconType::numTypes))
+  if(static_cast<int>(_iconTypeList[i]) < static_cast<int>(IconType::numTypes))
     return FileListWidget::getIcon(i);
 
   const bool smallIcon = iconWidth() < 24;
-  const int iconType = int(_iconTypeList[i]) - static_cast<int>(IconType::numTypes);
+  const int iconType =
+    static_cast<int>(_iconTypeList[i]) - static_cast<int>(IconType::numTypes);
 
-  assert(iconType < int(IconType::numLauncherTypes));
+  assert(iconType < NLT);
 
   return smallIcon ? small_icons[iconType] : large_icons[iconType];
 }

@@ -51,8 +51,8 @@ void M6532::reset()
   if(mySettings.getString(devSettings ? "dev.console" : "plr.console") == "7800")
     std::copy_n(RAM_7800.begin(), RAM_7800.size(), myRAM.begin());
   else if(mySettings.getBool(devSettings ? "dev.ramrandom" : "plr.ramrandom"))
-    for(size_t t = 0; t < myRAM.size(); ++t)
-      myRAM[t] = mySystem->randGenerator().next();
+    for(auto& ram: myRAM)
+      ram = mySystem->randGenerator().next();
   else
     myRAM.fill(0);
 
@@ -110,7 +110,7 @@ void M6532::update()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void M6532::updateEmulation()
 {
-  uInt32 cycles = static_cast<uInt32>(mySystem->cycles() - myLastCycle);
+  auto cycles = static_cast<uInt32>(mySystem->cycles() - myLastCycle);
   const uInt32 subTimer = mySubTimer;
 
   // Guard against further state changes if the debugger alread forwarded emulation

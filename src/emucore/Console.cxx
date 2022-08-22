@@ -23,7 +23,6 @@
 #include "Booster.hxx"
 #include "Cart.hxx"
 #include "Control.hxx"
-#include "Cart.hxx"
 #include "CartCM.hxx"
 #include "Driving.hxx"
 #include "Event.hxx"
@@ -78,9 +77,10 @@
 #include "Console.hxx"
 
 namespace {
-  // Emulation speed is a positive float that multiplies the framerate. However, the UI controls
-  // adjust speed in terms of a speedup factor (1/10, 1/9 .. 1/2, 1, 2, 3, .., 10). The following
-  // mapping and formatting functions implement this conversion. The speedup factor is represented
+  // Emulation speed is a positive float that multiplies the framerate. However,
+  // the UI controls adjust speed in terms of a speedup factor (1/10,
+  // 1/9 .. 1/2, 1, 2, 3, .., 10). The following mapping and formatting
+  // functions implement this conversion. The speedup factor is represented
   // by an integer value between -900 and 900 (0 means no speedup).
 
   constexpr int MAX_SPEED = 900;
@@ -113,8 +113,7 @@ namespace {
 
     return ss.str();
   }
-}
-
+} // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
@@ -161,7 +160,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   myDevSettingsHandler = make_unique<DevSettingsHandler>(myOSystem);
 
   // Auto-detect NTSC/PAL mode if it's requested
-  string autodetected = "";
+  string autodetected;
   myDisplayFormat = myProperties.get(PropType::Display_Format);
 
   if (myDisplayFormat == "AUTO")
@@ -173,7 +172,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   setControllers(md5);
 
   // Mute audio and clear framebuffer while autodetection runs
-  myOSystem.sound().mute(1);
+  myOSystem.sound().mute(true);
   myOSystem.frameBuffer().clear();
 
   if(myDisplayFormat == "AUTO" || myOSystem.settings().getBool("rominfo"))
@@ -296,9 +295,9 @@ void Console::autodetectFrameLayout(bool reset)
   for(int i = 0; i < 20; ++i)
     myTIA->update();
 
-  frameLayoutDetector.simulateInput(*myRiot, myOSystem.eventHandler(), true);
+  FrameLayoutDetector::simulateInput(*myRiot, myOSystem.eventHandler(), true);
   myTIA->update();
-  frameLayoutDetector.simulateInput(*myRiot, myOSystem.eventHandler(), false);
+  FrameLayoutDetector::simulateInput(*myRiot, myOSystem.eventHandler(), false);
 
   for(int i = 0; i < 40; ++i)
     myTIA->update();
@@ -360,13 +359,13 @@ string Console::formatFromFilename() const
 
   // Get filename, and search using regex's above
   const string& filename = myOSystem.romFile().getName();
-  for(size_t i = 0; i < Pattern.size(); ++i)
+  for(const auto& pat: Pattern)
   {
     try
     {
-      std::regex rgx(Pattern[i][0], std::regex_constants::icase);
+      std::regex rgx(pat[0], std::regex_constants::icase);
       if(std::regex_search(filename, rgx))
-        return Pattern[i][1];
+        return pat[1];
     }
     catch(...)
     {
@@ -441,8 +440,7 @@ void Console::setFormat(uInt32 format, bool force)
   if(!force && myCurrentFormat == format)
     return;
 
-  string saveformat, message;
-  string autodetected = "";
+  string saveformat, message, autodetected;
 
   myCurrentFormat = format;
   switch(myCurrentFormat)
@@ -1129,7 +1127,7 @@ void Console::changePaddleAxesRange(int direction)
 {
   istringstream m_axis(myProperties.get(PropType::Controller_MouseAxis));
   string mode = "AUTO";
-  int range;
+  int range{0};
 
   m_axis >> mode;
   if(!(m_axis >> range))

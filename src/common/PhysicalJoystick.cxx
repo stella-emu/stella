@@ -33,13 +33,13 @@ namespace {
   }
 
   EventMode eventModeFromJsonName(const string& name) {
-    EventMode result;
+    EventMode result{};
 
     from_json(json(name), result);
 
     return result;
   }
-}
+} // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalJoystick::initialize(int index, const string& desc,
@@ -70,9 +70,8 @@ json PhysicalJoystick::getMap() const
 
   mapping["name"] = name;
 
-  for (auto& mode: {
-    EventMode::kMenuMode, EventMode::kJoystickMode, EventMode::kPaddlesMode, EventMode::kKeyboardMode,
-    EventMode::kDrivingMode, EventMode::kCommonMode
+  for (const auto& mode: {
+    EventMode::kMenuMode, EventMode::kJoystickMode, EventMode::kPaddlesMode, EventMode::kKeyboardMode, EventMode::kDrivingMode, EventMode::kCommonMode
   })
     mapping[jsonName(mode)] = joyMap.saveMapping(mode);
 
@@ -120,7 +119,7 @@ json PhysicalJoystick::convertLegacyMapping(const string& mapping, const string&
 
   while (getline(buf, map, MODE_DELIM))
   {
-    int mode;
+    int mode{0};
 
     // Get event mode
     std::replace(map.begin(), map.end(), '|', ' ');
@@ -153,12 +152,12 @@ void PhysicalJoystick::eraseEvent(Event::Type event, EventMode mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalJoystick::getValues(const string& list, IntArray& map) const
+void PhysicalJoystick::getValues(const string& list, IntArray& map)
 {
   map.clear();
   istringstream buf(list);
 
-  int value;
+  int value{0};
   buf >> value;  // we don't need to know the # of items at this point
   while(buf >> value)
     map.push_back(value);

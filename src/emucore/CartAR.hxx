@@ -44,9 +44,9 @@ class CartridgeAR : public Cartridge
   friend class CartridgeARWidget;
 
   public:
-    static constexpr uInt32 BANK_SIZE = static_cast<uInt32>(2_KB);
-    static constexpr uInt32 RAM_SIZE = 3 * BANK_SIZE;
-    static constexpr uInt32 LOAD_SIZE = 8448;
+    static constexpr size_t BANK_SIZE = 2_KB;
+    static constexpr size_t RAM_SIZE  = 3 * BANK_SIZE;
+    static constexpr size_t LOAD_SIZE = 8448;
 
   public:
     /**
@@ -187,7 +187,13 @@ class CartridgeAR : public Cartridge
     bool bankConfiguration(uInt8 configuration);
 
     // Compute the sum of the array of bytes
-    uInt8 checksum(const uInt8* s, uInt16 length);
+    static uInt8 checksum(const uInt8* s, uInt16 length) {
+      uInt8 sum = 0;
+      for(uInt32 i = 0; i < length; ++i)
+        sum += s[i];
+
+      return sum;
+    }
 
     // Load the specified load into SC RAM
     void loadIntoRAM(uInt8 load);

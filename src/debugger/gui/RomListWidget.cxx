@@ -63,7 +63,7 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
   const int fontWidth = lfont.getMaxCharWidth(),
             numchars = w / fontWidth;
 
-  _labelWidth = std::max(14, int(0.45 * (numchars - 8 - 8 - 9 - 2))) * fontWidth - 1;
+  _labelWidth = std::max(14, static_cast<int>(0.45 * (numchars - 8 - 8 - 9 - 2))) * fontWidth - 1;
   _bytesWidth = 9 * fontWidth;
 
   ///////////////////////////////////////////////////////
@@ -78,7 +78,7 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
   // Create a CheckboxWidget for each row in the list
   for(int i = 0; i < _rows; ++i)
   {
-    CheckboxWidget* t = new CheckboxWidget(boss, lfont, _x + 2, ypos, "",
+    auto* t = new CheckboxWidget(boss, lfont, _x + 2, ypos, "",
         CheckboxWidget::kCheckActionCmd);
     t->setTarget(this);
     t->setID(i);
@@ -254,8 +254,7 @@ void RomListWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
   else
   {
     // First check whether the selection changed
-    int newSelectedItem;
-    newSelectedItem = findItem(x, y);
+    int newSelectedItem = findItem(x, y);
     if (newSelectedItem > static_cast<int>(myDisasm->list.size()) - 1)
       newSelectedItem = -1;
 
@@ -490,7 +489,7 @@ string RomListWidget::getToolTip(const Common::Point& pos) const
 
     if(idx.x < 2 || bytes.length() < 8)
       // 1 or 2 hex bytes, get one hex byte
-      valStr = bytes.substr((idx.x / 3) * 3, 2);
+      valStr = bytes.substr((static_cast<size_t>(idx.x) / 3) * 3, 2);
     else
       // 3 hex bytes, get two rightmost hex bytes
       valStr = bytes.substr(6, 2) + bytes.substr(3, 2);
@@ -632,20 +631,25 @@ void RomListWidget::drawWidget(bool hilite)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Common::Rect RomListWidget::getLineRect() const
 {
-  const int yoffset = std::max(0, (_selectedItem - _currentPos) * _lineHeight),
-            xoffset = CheckboxWidget::boxSize(_font) + 10;
+  const uInt32
+      yoffset = std::max(0, (_selectedItem - _currentPos) * _lineHeight),
+      xoffset = CheckboxWidget::boxSize(_font) + 10;
 
-  return Common::Rect(2 + xoffset, 1 + yoffset,
-                      _w - (xoffset - 15), _lineHeight + yoffset);
+  return {
+    2 + xoffset, 1 + yoffset,
+    _w - (xoffset - 15), _lineHeight + yoffset
+  };
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Common::Rect RomListWidget::getEditRect() const
 {
-  const int yoffset = std::max(0, (_selectedItem - _currentPos) * _lineHeight);
+  const uInt32 yoffset = std::max(0, (_selectedItem - _currentPos) * _lineHeight);
 
-  return Common::Rect(2 + _w - _bytesWidth, 1 + yoffset + 1,
-                      _w, _lineHeight + yoffset + 1);
+  return {
+    static_cast<uInt32>(2 + _w - _bytesWidth), 1 + yoffset + 1,
+    static_cast<uInt32>(_w), _lineHeight + yoffset + 1
+  };
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -654,7 +658,7 @@ void RomListWidget::startEditMode()
   if (isEditable() && !_editMode && _selectedItem >= 0)
   {
     // Does this line represent an editable area?
-    if(myDisasm->list[_selectedItem].bytes == "")
+    if(myDisasm->list[_selectedItem].bytes.empty())
       return;
 
     _editMode = true;

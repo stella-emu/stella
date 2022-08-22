@@ -87,9 +87,9 @@ void PointingDeviceWidget::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PointingDeviceWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
-  // since the PointingDevice uses its own, internal state (not reading the controller),
-  // we have to communicate directly with it
-  PointingDevice& pDev = static_cast<PointingDevice&>(controller());
+  // Since the PointingDevice uses its own, internal state (not reading the
+  // controller), we have to communicate directly with it
+  auto& pDev = static_cast<PointingDevice&>(controller());
 
   switch(cmd)
   {
@@ -124,7 +124,7 @@ void PointingDeviceWidget::handleCommand(CommandSender* sender, int cmd, int dat
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PointingDeviceWidget::setGrayCodeH()
 {
-  PointingDevice& pDev = static_cast<PointingDevice&>(controller());
+  auto& pDev = static_cast<PointingDevice&>(controller());
 
   pDev.myCountH &= 0b11;
   setValue(myGrayValueH, pDev.myCountH, pDev.myTrackBallLeft);
@@ -133,14 +133,15 @@ void PointingDeviceWidget::setGrayCodeH()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PointingDeviceWidget::setGrayCodeV()
 {
-  PointingDevice& pDev = static_cast<PointingDevice&>(controller());
+  auto& pDev = static_cast<PointingDevice&>(controller());
 
   pDev.myCountV &= 0b11;
   setValue(myGrayValueV, pDev.myCountV, !pDev.myTrackBallDown);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PointingDeviceWidget::setValue(DataGridWidget* grayValue, const int index, const int direction)
+void PointingDeviceWidget::setValue(DataGridWidget* grayValue,
+                                    const int index, const int direction)
 {
   const uInt8 grayCode = getGrayCodeTable(index, direction);
 

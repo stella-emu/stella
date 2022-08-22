@@ -89,22 +89,21 @@ void InputTextDialog::initialize(const GUI::Font& lfont, const GUI::Font& nfont,
       maxIdx = i;
     }
   }
-  if(labels.size())
+  if(!labels.empty())
     lwidth = lfont.getStringWidth(labels[maxIdx]);
 
   // Create editboxes for all labels
   int ypos = VBORDER + _th;
-  for(size_t i = 0; i < labels.size(); ++i)
+  for(const auto& label: labels)
   {
     xpos = HBORDER;
-    StaticTextWidget* s = new StaticTextWidget(this, lfont, xpos, ypos + 2,
-                                               lwidth, fontHeight,
-                                               labels[i]);
+    auto* s = new StaticTextWidget(this, lfont, xpos, ypos + 2,
+                                   lwidth, fontHeight, label);
     myLabel.push_back(s);
 
     xpos += lwidth + fontWidth;
-    EditTextWidget* w = new EditTextWidget(this, nfont, xpos, ypos,
-                                           _w - xpos - HBORDER, lineHeight, "");
+    auto* w = new EditTextWidget(this, nfont, xpos, ypos,
+                                 _w - xpos - HBORDER, lineHeight, "");
     if(numInput)
       w->setMaxLen(numInput);
     wid.push_back(w);

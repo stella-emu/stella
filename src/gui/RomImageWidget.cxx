@@ -40,7 +40,8 @@ RomImageWidget::RomImageWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomImageWidget::setProperties(const FSNode& node, const Properties properties, bool full)
+void RomImageWidget::setProperties(const FSNode& node,
+                                   const Properties& properties, bool full)
 {
   myHaveProperties = true;
   myProperties = properties;
@@ -48,13 +49,13 @@ void RomImageWidget::setProperties(const FSNode& node, const Properties properti
   // Decide whether the information should be shown immediately
   if(instance().eventHandler().state() == EventHandlerState::LAUNCHER)
     parseProperties(node, full);
+#ifdef DEBUGGER_SUPPORT
   else
   {
-#ifdef DEBUGGER_SUPPORT
     cerr << "RomImageWidget::setProperties: else!" << endl;
     Logger::debug("RomImageWidget::setProperties: else!");
-#endif
   }
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -67,13 +68,13 @@ void RomImageWidget::clearProperties()
   // Decide whether the information should be shown immediately
   if(instance().eventHandler().state() == EventHandlerState::LAUNCHER)
     setDirty();
+#ifdef DEBUGGER_SUPPORT
   else
   {
-#ifdef DEBUGGER_SUPPORT
     cerr << "RomImageWidget::clearProperties: else!" << endl;
     Logger::debug("RomImageWidget::clearProperties: else!");
-#endif
   }
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -127,6 +128,7 @@ void RomImageWidget::parseProperties(const FSNode& node, bool full)
   {
     myImageIdx = 0;
     myImageList.clear();
+    myLabel.clear();
 
     // Get a valid filename representing a snapshot file for this rom and load the snapshot
     const string& path = instance().snapshotLoadDir().getPath();
@@ -151,7 +153,8 @@ void RomImageWidget::parseProperties(const FSNode& node, bool full)
   }
   else
   {
-    const string oldFileName = myImageList.size() ? myImageList[0].getPath() : EmptyString;
+    const string oldFileName = !myImageList.empty()
+        ? myImageList[0].getPath() : EmptyString;
 
     // Try to find all snapshots by property and ROM file name
     myImageList.clear();
@@ -160,7 +163,7 @@ void RomImageWidget::parseProperties(const FSNode& node, bool full)
 
     // The first file found before must not be the first file now, if files by
     // property *and* ROM name are found (TODO: fix that!)
-    if(myImageList.size() && myImageList[0].getPath() != oldFileName)
+    if(!myImageList.empty() && myImageList[0].getPath() != oldFileName)
       loadImage(myImageList[0].getPath());
     else
       setDirty(); // update the counter display
@@ -175,7 +178,7 @@ void RomImageWidget::parseProperties(const FSNode& node, bool full)
 
   // Update maximum load time
   myMaxLoadTime = std::min(
-    static_cast<uInt64>(500ull / timeFactor),
+    static_cast<uInt64>(500ULL / timeFactor),
     std::max(myMaxLoadTime, TimerManager::getTicks() / 1000 - startTime));
 }
 
@@ -228,7 +231,7 @@ bool RomImageWidget::getImageList(const string& propName, const string& romName,
         node1.getName() == oldFileName;
     }
   );
-  return myImageList.size() > 0;
+  return !myImageList.empty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -263,8 +266,10 @@ bool RomImageWidget::loadImage(const string& fileName)
   {
     // Scale surface to available image area
     const Common::Rect& src = mySurface->srcRect();
-    const float scale = std::min(float(_w) / src.w(), float(myImageHeight) / src.h()) *
-      instance().frameBuffer().hidpiScaleFactor();
+    const float scale = std::min(
+      static_cast<float>(_w) / src.w(),
+      static_cast<float>(myImageHeight) / src.h()) *
+        instance().frameBuffer().hidpiScaleFactor();
     mySurface->setDstSize(static_cast<uInt32>(src.w() * scale), static_cast<uInt32>(src.h() * scale));
   }
 
@@ -285,15 +290,15 @@ bool RomImageWidget::loadPng(const string& fileName)
 
     // Retrieve label for loaded image
     myLabel.clear();
-    for(auto data = metaData.begin(); data != metaData.end(); ++data)
+    for(const auto& data: metaData)
     {
-      if(data->first == "Title")
+      if(data.first == "Title")
       {
-        myLabel = data->second.toString();
+        myLabel = data.second.toString();
         break;
       }
-      if(data->first == "Software"
-          && data->second.toString().find("Stella") == 0)
+      if(data.first == "Software"
+          && data.second.toString().find("Stella") == 0)
         myLabel = "Snapshot"; // default for Stella snapshots with missing "Title" meta data
     }
     return true;
@@ -315,11 +320,11 @@ bool RomImageWidget::loadJpg(const string& fileName)
 
     // Retrieve label for loaded image
     myLabel.clear();
-    for(auto data = metaData.begin(); data != metaData.end(); ++data)
+    for(const auto& data: metaData)
     {
-      if(data->first == "ImageDescription")
+      if(data.first == "ImageDescription")
       {
-        myLabel = data->second.toString();
+        myLabel = data.second.toString();
         break;
       }
     }
@@ -352,10 +357,12 @@ void RomImageWidget::handleMouseMoved(int x, int y)
 void RomImageWidget::drawWidget(bool hilite)
 {
   FBSurface& s = dialog().surface();
-  const int yoff = myImageHeight;
 
-  s.fillRect(_x, _y + 1, _w, _h - 1, _bgcolor);
-  s.frameRect(_x, _y, _w, myImageHeight, kColor);
+  if(!myHaveProperties || !mySurfaceIsValid || !mySurfaceErrorMsg.empty())
+  {
+    s.fillRect(_x, _y + 1, _w, _h - 1, _bgcolor);
+    s.frameRect(_x, _y, _w, myImageHeight, kColor);
+  }
 
   if(!myHaveProperties)
   {
@@ -370,6 +377,7 @@ void RomImageWidget::drawWidget(bool hilite)
     const uInt32 x = _x * scale + ((_w * scale - dst.w()) >> 1);
     const uInt32 y = _y * scale + ((myImageHeight * scale - dst.h()) >> 1);
 
+    s.fillRect(_x, _y, _w, myImageHeight, 0);
     // Make sure when positioning the snapshot surface that we take
     // the dialog surface position into account
     const Common::Rect& s_dst = s.dstRect();
@@ -379,7 +387,7 @@ void RomImageWidget::drawWidget(bool hilite)
   else if(!mySurfaceErrorMsg.empty())
   {
     const uInt32 x = _x + ((_w - _font.getStringWidth(mySurfaceErrorMsg)) >> 1);
-    const uInt32 y = _y + ((yoff - _font.getLineHeight()) >> 1);
+    const uInt32 y = _y + ((myImageHeight - _font.getLineHeight()) >> 1);
     s.drawString(_font, mySurfaceErrorMsg, x, y, _w - 10, _textcolor);
   }
   // Draw the image label and counter
@@ -388,15 +396,16 @@ void RomImageWidget::drawWidget(bool hilite)
   const int yText = _y + myImageHeight + _font.getFontHeight() / 8;
   const int wText = _font.getStringWidth(buf.str());
 
+  s.fillRect(_x, yText, _w, _font.getFontHeight(), _bgcolor);
   if(myLabel.length())
     s.drawString(_font, myLabel, _x, yText, _w - wText - _font.getMaxCharWidth() * 2, _textcolor);
-  if(myImageList.size())
+  if(!myImageList.empty())
     s.drawString(_font, buf.str(), _x + _w - wText, yText, wText, _textcolor);
 
   // Draw the navigation arrows
   myNavSurface->invalidate();
   if(isHighlighted() &&
-    ((myMouseLeft && myImageIdx) || (!myMouseLeft && myImageIdx < myImageList.size() - 1)))
+    ((myMouseLeft && myImageIdx) || (!myMouseLeft && myImageIdx + 1 < myImageList.size())))
   {
     const int w = _w / 64;
     const int w2 = 1; // w / 2;

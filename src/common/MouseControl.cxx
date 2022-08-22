@@ -41,8 +41,10 @@ MouseControl::MouseControl(Console& console, const string& mode)
           m_mode[0] >= '0' && m_mode[0] <= '8' &&
           m_mode[1] >= '0' && m_mode[1] <= '8')
   {
-    const MouseControl::Type xaxis = static_cast<MouseControl::Type>(static_cast<int>(m_mode[0]) - '0');
-    const MouseControl::Type yaxis = static_cast<MouseControl::Type>(static_cast<int>(m_mode[1]) - '0');
+    const auto xaxis = static_cast<MouseControl::Type>
+        (static_cast<int>(m_mode[0]) - '0');
+    const auto yaxis = static_cast<MouseControl::Type>
+        (static_cast<int>(m_mode[1]) - '0');
     ostringstream msg;
     Controller::Type xtype = Controller::Type::Joystick, ytype = Controller::Type::Joystick;
     int xid = -1, yid = -1;
@@ -127,7 +129,7 @@ MouseControl::MouseControl(Console& console, const string& mode)
   Paddles::setDigitalPaddleRange(m_range);
 
   // If the mouse isn't used at all, we still need one item in the list
-  if(myModeList.size() == 0)
+  if(myModeList.empty())
     myModeList.emplace_back("Mouse not used for current controllers");
 
 #if 0

@@ -146,7 +146,7 @@ class DeveloperDialog : public Dialog, DevSettingsHandler
     CheckboxWidget*     myGhostReadsTrapWidget{nullptr};
 #endif
 
-    bool    mySettings{false};
+    bool mySettings{false};
 
   private:
     void addEmulationTab(const GUI::Font& font);
@@ -164,7 +164,7 @@ class DeveloperDialog : public Dialog, DevSettingsHandler
 
     void handleTia();
 
-    void handleDebugColours(int cmd, int color);
+    void handleDebugColours(int idx, int color);
     void handleDebugColours(const string& colors);
 
     void handleTimeMachine();

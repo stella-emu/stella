@@ -526,6 +526,6 @@ static const Icon icon_help_large(
     0b0000000011100000000
   });
 
-}  // namespace GUI
+} // namespace GUI
 
 #endif

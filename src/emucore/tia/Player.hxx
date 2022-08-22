@@ -35,7 +35,7 @@ class Player : public Serializable
 
     void reset();
 
-    void grp(uInt8 value);
+    void grp(uInt8 pattern);
 
     void hmp(uInt8 value);
 

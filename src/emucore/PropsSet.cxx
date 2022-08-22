@@ -35,7 +35,7 @@ PropertiesSet::PropertiesSet()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PropertiesSet::setRepository(shared_ptr<CompositeKeyValueRepository> repository)
 {
-  myRepository = repository;
+  myRepository = std::move(repository);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -116,7 +116,7 @@ void PropertiesSet::insert(const Properties& properties, bool save)
 
   // Since the PropSet is keyed by md5, we can't insert without a valid one
   const string& md5 = properties.get(PropType::Cart_MD5);
-  if(md5 == "")
+  if(md5.empty())
     return;
 
   // Make sure the exact entry isn't already in any list
@@ -134,7 +134,7 @@ void PropertiesSet::insert(const Properties& properties, bool save)
     properties.save(*myRepository->get(md5));
   } else {
     const auto ret = myTempProps.emplace(md5, properties);
-    if(ret.second == false)
+    if(!ret.second)
     {
       // Remove old item and insert again
       myTempProps.erase(ret.first);

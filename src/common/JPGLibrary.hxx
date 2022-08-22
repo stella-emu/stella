@@ -46,7 +46,8 @@ class JPGLibrary
              runtime_error is thrown containing a more detailed
              error message.
     */
-    void loadImage(const string& filename, FBSurface& surface, VariantList& metaData);
+    void loadImage(const string& filename, FBSurface& surface,
+                   VariantList& metaData);
 
   private:
     // Global OSystem object
@@ -76,7 +77,7 @@ class JPGLibrary
       @param filename  The filename to load the JPG image
       @param metaData  The meta data of the JPG image
     */
-    void readMetaData(const string& filename, VariantList& metaData);
+    static void readMetaData(const string& filename, VariantList& metaData);
 
   private:
     // Following constructors and assignment operators not supported

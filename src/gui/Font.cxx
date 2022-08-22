@@ -59,4 +59,4 @@ int Font::getStringWidth(const string& str) const
         [&](int x, char c) { return x + getCharWidth(c); });
 }
 
-}  // namespace GUI
+} // namespace GUI

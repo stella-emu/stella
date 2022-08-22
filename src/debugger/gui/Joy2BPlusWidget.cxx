@@ -26,10 +26,8 @@ Joy2BPlusWidget::Joy2BPlusWidget(GuiObject* boss, const GUI::Font& font,
 
   const int fontHeight = font.getFontHeight();
   int xpos = x, ypos = y, lwidth = font.getStringWidth("Right (Joy 2B+)");
-  StaticTextWidget* t;
-
-  t = new StaticTextWidget(boss, font, xpos, ypos+2, lwidth,
-    fontHeight, label, TextAlign::Left);
+  auto* t = new StaticTextWidget(boss, font, xpos, ypos+2, lwidth,
+                                 fontHeight, label, TextAlign::Left);
   xpos += t->getWidth()/2 - 5;  ypos += t->getHeight() + 10;
   myPins[kJUp] = new CheckboxWidget(boss, font, xpos, ypos, "",
     CheckboxWidget::kCheckActionCmd);
@@ -128,6 +126,3 @@ void Joy2BPlusWidget::handleCommand(
     }
   }
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-constexpr std::array<Controller::DigitalPin, 5> Joy2BPlusWidget::ourPinNo;

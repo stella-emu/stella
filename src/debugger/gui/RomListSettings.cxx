@@ -36,21 +36,21 @@ RomListSettings::RomListSettings(GuiObject* boss, const GUI::Font& font)
   WidgetArray wid;
 
   // Set PC to current line
-  ButtonWidget* setPC =
+  auto* setPC =
     new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
                      "Set PC @ current line", RomListWidget::kSetPCCmd);
   wid.push_back(setPC);
 
   // RunTo PC on current line
   ypos += buttonHeight + 4;
-  ButtonWidget* runtoPC =
+  auto* runtoPC =
     new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
                      "RunTo PC @ current line", RomListWidget::kRuntoPCCmd);
   wid.push_back(runtoPC);
 
   // Re-disassemble
   ypos += buttonHeight + 4;
-  ButtonWidget* disasm =
+  auto* disasm =
     new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
                      "Disassemble @ current line", RomListWidget::kDisassembleCmd);
   wid.push_back(disasm);

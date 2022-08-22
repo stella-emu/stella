@@ -30,7 +30,7 @@ class DataGridRamWidget : public DataGridWidget
                       const GUI::Font& font,
                       int x, int y, int cols, int rows,
                       int colchars, int bits,
-                      Common::Base::Fmt format = Common::Base::Fmt::_DEFAULT,
+                      Common::Base::Fmt base = Common::Base::Fmt::_DEFAULT,
                       bool useScrollbar = false);
     ~DataGridRamWidget() override = default;
 

@@ -37,7 +37,7 @@ void Player::reset()
   myCopy = 1;
   myPatternOld = 0;
   myPatternNew = 0;
-  myIsReflected = 0;
+  myIsReflected = false;
   myIsDelaying = false;
   myColor = myObjectColor = myDebugColor = 0;
   myDebugEnabled = false;

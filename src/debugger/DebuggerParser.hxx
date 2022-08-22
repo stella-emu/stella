@@ -42,7 +42,7 @@ class DebuggerParser
 
     /** Given a substring, determine matching substrings from the list
         of available commands.  Used in the debugger prompt for tab-completion */
-    void getCompletions(const char* in, StringList& list) const;
+    static void getCompletions(const char* in, StringList& completions);
 
     /** Evaluate the given expression using operators, current base, etc */
     int decipher_arg(const string& str);
@@ -65,8 +65,8 @@ class DebuggerParser
     bool validateArgs(int cmd);
     string eval();
     string saveScriptFile(string file);
-    void saveDump(const FSNode& node, const stringstream& out,
-                  ostringstream& result);
+    static void saveDump(const FSNode& node, const stringstream& out,
+                         ostringstream& result);
     const string& cartName() const;
 
   private:
@@ -101,7 +101,7 @@ class DebuggerParser
       std::array<Parameters, 10> parms;
       std::function<void (DebuggerParser*)> executor;
     };
-    using CommandArray = std::array<Command, 103>;
+    using CommandArray = std::array<Command, 104>;
     static CommandArray commands;
 
     struct Trap
@@ -234,6 +234,7 @@ class DebuggerParser
     void executeScanLine();
     void executeStep();
     void executeStepWhile();
+    void executeSwchb();
     void executeTia();
     void executeTrace();
     void executeTrap();

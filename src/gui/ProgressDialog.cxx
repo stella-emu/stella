@@ -58,9 +58,9 @@ ProgressDialog::ProgressDialog(GuiObject* boss, const GUI::Font& font,
   mySlider->setMaxValue(100);
 
   ypos += lineHeight + VGAP * 4;
-  ButtonWidget* b = new ButtonWidget(this, font, (_w - buttonWidth) / 2, ypos,
-                                     buttonWidth, buttonHeight, "Cancel",
-                                     Event::UICancel);
+  auto* b = new ButtonWidget(this, font, (_w - buttonWidth) / 2, ypos,
+                             buttonWidth, buttonHeight, "Cancel",
+                             Event::UICancel);
   wid.push_back(b);
   addCancelWidget(b);
   addToFocusList(wid);

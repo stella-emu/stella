@@ -20,8 +20,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TimerManager::TimerManager()
-  : nextId{no_timer + 1},
-    queue()
+  : nextId{no_timer + 1}
 {
 }
 
@@ -66,7 +65,7 @@ TimerManager::TimerId TimerManager::addTimer(
       Duration(msPeriod), func));
 
   // Insert a reference to the Timer into ordering queue
-  const Queue::iterator place = queue.emplace(iter.first->second);
+  const auto place = queue.emplace(iter.first->second);
 
   // We need to notify the timer thread only if we inserted
   // this timer into the front of the timer queue
@@ -204,7 +203,7 @@ bool TimerManager::destroy_impl(ScopedLock& lock, TimerMap::iterator i,
     timer.running = false;
 
     // Assign a condition variable to this timer
-    timer.waitCond.reset(new ConditionVar);
+    timer.waitCond = std::make_unique<ConditionVar>();
 
     // Block until the callback is finished
     if (std::this_thread::get_id() != worker.get_id())

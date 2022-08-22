@@ -76,7 +76,7 @@ void FileListWidget::setDirectory(const FSNode& node, const string& select)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FileListWidget::setLocation(const FSNode& node, const string select)
+void FileListWidget::setLocation(const FSNode& node, const string& select)
 {
   progress().resetProgress();
   progress().open();
@@ -257,7 +257,7 @@ string& FileListWidget::fixPath(string& path)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FileListWidget::addHistory(const FSNode& node)
 {
-  if (_history.size() > 0) {
+  if (!_history.empty()) {
     while(_currentHistory != std::prev(_history.end(), 1))
       _history.pop_back();
 
@@ -313,9 +313,6 @@ bool FileListWidget::handleKeyDown(StellaKey key, StellaMod mod)
   if(StellaModTest::isAlt(mod))
   {
     handled = true;
-#ifdef DEBUG_BUILD
-    cerr << "  FileListWidget::handleKeyDown  " << mod << ", " << key << endl;
-#endif
     switch(key)
     {
       case KBDK_HOME:
@@ -674,16 +671,17 @@ const FileListWidget::Icon* FileListWidget::getIcon(int i) const
     0b11111111111'11111111110,
     0b11111111111'11111111110
   };
-  static const Icon* small_icons[int(IconType::numTypes)] = {
+  const int idx = static_cast<int>(IconType::numTypes);
+  static const Icon* small_icons[idx] = {
     &unknown_small, &rom_small, &directory_small, &zip_small, &up_small
   };
-  static const Icon* large_icons[int(IconType::numTypes)] = {
+  static const Icon* large_icons[idx] = {
     &unknown_large, &rom_large, &directory_large, &zip_large, &up_large,
   };
   const bool smallIcon = iconWidth() < 24;
-  const int iconType = int(_iconTypeList[i]);
+  const int iconType = static_cast<int>(_iconTypeList[i]);
 
-  assert(iconType < int(IconType::numTypes));
+  assert(iconType < idx);
 
   return smallIcon ? small_icons[iconType] : large_icons[iconType];
 }

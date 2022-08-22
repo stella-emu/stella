@@ -112,7 +112,7 @@ void Dialog::open()
 
   setPosition();
 
-  if(_myTabList.size())
+  if(!_myTabList.empty())
     // (Re)-build the focus list to use for all widgets of all tabs
     for(auto& tabfocus : _myTabList)
       buildCurrentFocusList(tabfocus.widget->getID());
@@ -169,9 +169,10 @@ void Dialog::initHelp()
     {
       string key = instance().eventHandler().getMappingDesc(Event::UIHelp, EventMode::kMenuMode);
 
-      _helpWidget = new ButtonWidget(this, _font, _w - _font.getMaxCharWidth() * 3.5, 0,
-                                     _font.getMaxCharWidth() * 3.5 + 0.5, buttonHeight(), "?",
-                                     kHelpCmd);
+      _helpWidget = new ButtonWidget(this, _font,
+          _w - _font.getMaxCharWidth() * 3.5, 0,
+          _font.getMaxCharWidth() * 3.5 + 0.5, buttonHeight(), "?",  // NOLINT
+          kHelpCmd);
       _helpWidget->setBGColor(kColorTitleBar);
       _helpWidget->setTextColor(kColorTitleText);
       _helpWidget->setToolTip("Click or press " + key + " for help.");
@@ -203,7 +204,7 @@ void Dialog::setHelpURL(const string& helpURL)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string Dialog::getHelpURL() const
+string Dialog::getHelpURL() const
 {
   // 1. check individual widget
   if(_focusedWidget && _focusedWidget->hasHelp())
@@ -411,7 +412,7 @@ void Dialog::addToFocusList(const WidgetArray& list)
   Vec::append(_myFocus.list, list);
   _focusList = _myFocus.list;
 
-  if(list.size() > 0)
+  if(!list.empty())
     _myFocus.widget = list[0];
 }
 
@@ -444,7 +445,7 @@ void Dialog::addToFocusList(const WidgetArray& list, const TabWidget* w, int tab
     Vec::append(focus[id].list, list);
   }
 
-  if(list.size() > 0)
+  if(!list.empty())
     focus[id].widget = list[0];
 }
 
@@ -508,14 +509,14 @@ void Dialog::buildCurrentFocusList(int tabID)
   // Add button group at end of current focus list
   // We do it this way for TabWidget, so that buttons are scanned
   // *after* the widgets in the current tab
-  if(_buttonGroup.size() > 0)
+  if(!_buttonGroup.empty())
     Vec::append(_focusList, _buttonGroup);
 
   // Finally, the moment we've all been waiting for :)
   // Set the actual focus widget
   if(tabFocusWidget)
     _focusedWidget = tabFocusWidget;
-  else if(!_focusedWidget && _focusList.size() > 0)
+  else if(!_focusedWidget && !_focusList.empty())
     _focusedWidget = _focusList[0];
 }
 
@@ -918,7 +919,7 @@ bool Dialog::handleNavEvent(Event::Type e, bool repeated)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::getTabIdForWidget(const Widget* w)
 {
-  if(_myTabList.size() == 0 || !w)
+  if(_myTabList.empty() || !w)
     return;
 
   for(uInt32 id = 0; id < _myTabList.size(); ++id)

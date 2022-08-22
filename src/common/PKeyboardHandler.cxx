@@ -145,7 +145,7 @@ void PhysicalKeyboardHandler::setDefaultKey(EventMapping map, Event::Type event,
   {
     // if there is no existing mapping for the event and
     //  the default mapping for the event is unused, set default key for event
-    if (myKeyMap.getEventMapping(map.event, mode).size() == 0 &&
+    if (myKeyMap.getEventMapping(map.event, mode).empty() &&
         !isMappingUsed(mode, map))
     {
       addMapping(map.event, mode, map.key, static_cast<StellaMod>(map.mod));
@@ -219,10 +219,8 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
 void PhysicalKeyboardHandler::defineControllerMappings(
     const Controller::Type type, Controller::Jack port, const Properties& properties)
 {
-
-  //const string& test = myOSystem.settings().getString("aq");
-  // determine controller events to use
-  switch(type)
+  // Determine controller events to use
+  switch(type)  // NOLINT (could be written as IF/ELSE)
   {
     case Controller::Type::QuadTari:
       if(port == Controller::Jack::Left)
@@ -251,7 +249,8 @@ void PhysicalKeyboardHandler::defineControllerMappings(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-EventMode PhysicalKeyboardHandler::getMode(const Properties& properties, const PropType propType)
+EventMode PhysicalKeyboardHandler::getMode(const Properties& properties,
+                                           const PropType propType)
 {
   const string& propName = properties.get(propType);
 
@@ -377,7 +376,7 @@ void PhysicalKeyboardHandler::enableCommonMappings()
 {
   for (int i = Event::NoType + 1; i < Event::LastType; i++)
   {
-    const Event::Type event = static_cast<Event::Type>(i);
+    const auto event = static_cast<Event::Type>(i);
 
     if (isCommonEvent(event))
       enableMapping(event, EventMode::kCommonMode);
@@ -405,7 +404,7 @@ void PhysicalKeyboardHandler::enableMapping(const Event::Type event,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventMode PhysicalKeyboardHandler::getEventMode(const Event::Type event,
-                                                const EventMode mode) const
+                                                const EventMode mode)
 {
   if (mode == EventMode::kEmulationMode)
   {
@@ -429,7 +428,7 @@ EventMode PhysicalKeyboardHandler::getEventMode(const Event::Type event,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PhysicalKeyboardHandler::isJoystickEvent(const Event::Type event) const
+bool PhysicalKeyboardHandler::isJoystickEvent(const Event::Type event)
 {
   return LeftJoystickEvents.find(event) != LeftJoystickEvents.end()
     || QTJoystick3Events.find(event) != QTJoystick3Events.end()
@@ -438,7 +437,7 @@ bool PhysicalKeyboardHandler::isJoystickEvent(const Event::Type event) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PhysicalKeyboardHandler::isPaddleEvent(const Event::Type event) const
+bool PhysicalKeyboardHandler::isPaddleEvent(const Event::Type event)
 {
   return LeftPaddlesEvents.find(event) != LeftPaddlesEvents.end()
     || QTPaddles3Events.find(event) != QTPaddles3Events.end()
@@ -447,21 +446,21 @@ bool PhysicalKeyboardHandler::isPaddleEvent(const Event::Type event) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PhysicalKeyboardHandler::isDrivingEvent(const Event::Type event) const
+bool PhysicalKeyboardHandler::isDrivingEvent(const Event::Type event)
 {
   return LeftDrivingEvents.find(event) != LeftDrivingEvents.end()
     || RightDrivingEvents.find(event) != RightDrivingEvents.end();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PhysicalKeyboardHandler::isKeyboardEvent(const Event::Type event) const
+bool PhysicalKeyboardHandler::isKeyboardEvent(const Event::Type event)
 {
   return LeftKeyboardEvents.find(event) != LeftKeyboardEvents.end()
     || RightKeyboardEvents.find(event) != RightKeyboardEvents.end();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PhysicalKeyboardHandler::isCommonEvent(const Event::Type event) const
+bool PhysicalKeyboardHandler::isCommonEvent(const Event::Type event)
 {
   return !(isJoystickEvent(event) || isPaddleEvent(event) || isKeyboardEvent(event));
 }

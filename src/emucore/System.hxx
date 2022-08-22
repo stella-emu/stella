@@ -215,14 +215,14 @@ class System : public Serializable
       only really acts on CODE/GFX/PGFX/COL/PCOL/BCOL/AUD/DATA/ROW.
     */
     Device::AccessFlags getAccessFlags(uInt16 address) const;
-    void setAccessFlags(uInt16 address, Device::AccessFlags flags);
+    void setAccessFlags(uInt16 address, Device::AccessFlags flags) const;
 
     /**
       Increase the given address's access counter
 
       @param address The address to modify
     */
-    void increaseAccessCounter(uInt16 address, bool isWrite);
+    void increaseAccessCounter(uInt16 address, bool isWrite) const;
   #endif
 
   public:

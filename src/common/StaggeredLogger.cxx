@@ -29,11 +29,11 @@ namespace {
 
     std::array<char, 100> formattedTime;
     formattedTime.fill(0);
-    std::strftime(formattedTime.data(), 99, "%H:%M:%S", &now);
+    std::ignore = std::strftime(formattedTime.data(), 99, "%H:%M:%S", &now);
 
     return formattedTime.data();
   }
-}
+} // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StaggeredLogger::StaggeredLogger(const string& message, Logger::Level level)

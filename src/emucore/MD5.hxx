@@ -49,6 +49,6 @@ namespace MD5 {
   */
   string hash(const string& buffer);
 
-}  // Namespace MD5
+} // namespace MD5
 
 #endif

@@ -127,7 +127,7 @@ bool AnalogReadout::save(Serializer& out) const
     myConnection.save(out);
     out.putLong(myTimestamp);
 
-    out.putInt(int(myConsoleTiming));
+    out.putInt(static_cast<int>(myConsoleTiming));
     out.putDouble(myClockFreq);
 
     out.putBool(myIsDumped);

@@ -217,8 +217,8 @@ void GameInfoDialog::addConsoleTab()
 
   new StaticTextWidget(myTab, _font, xpos, ypos + 1, "TV type");
   myTVTypeGroup = new RadioButtonGroup();
-  RadioButtonWidget* r = new RadioButtonWidget(myTab, _font, xpos + lwidth, ypos + 1,
-                                               "Color", myTVTypeGroup);
+  auto* r = new RadioButtonWidget(myTab, _font, xpos + lwidth, ypos + 1,
+                                  "Color", myTVTypeGroup);
   r->setToolTip(Event::ConsoleColor, Event::ConsoleColorToggle);
   wid.push_back(r);
   ypos += lineHeight;
@@ -686,7 +686,7 @@ void GameInfoDialog::addHighScoresTab()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GameInfoDialog::~GameInfoDialog()
+GameInfoDialog::~GameInfoDialog()  // NOLINT (we need an empty d'tor)
 {
 }
 
@@ -726,7 +726,7 @@ void GameInfoDialog::loadEmulationProperties(const Properties& props)
   updateBSTypes();
 
   VariantList items;
-  string bsDetected = "";
+  string bsDetected;
 
   myBSType->setSelected(props.get(PropType::Cart_Type), "AUTO");
   if(myBSType->getSelectedTag().toString() == "AUTO")
@@ -915,7 +915,7 @@ void GameInfoDialog::loadHighScoresProperties(const Properties& props)
   for (uInt32 a = 0; a < HSM::MAX_SCORE_ADDR; ++a)
   {
     ss.str("");
-    if(a < instance().highScores().numAddrBytes(info.numDigits, info.trailingZeroes))
+    if(a < HighScoresManager::numAddrBytes(info.numDigits, info.trailingZeroes))
     {
       ss << hex << right // << setw(HSM::MAX_ADDR_CHARS) << setfill(' ')
         << uppercase << info.scoreAddr[a];
@@ -1075,8 +1075,8 @@ void GameInfoDialog::saveHighScoresProperties()
 
     string strVars = myVariations->getText();
 
-    instance().highScores().set(myGameProperties, stringToInt(strVars, HSM::DEFAULT_VARIATION),
-                                info);
+    HighScoresManager::set(myGameProperties, stringToInt(strVars,
+      HSM::DEFAULT_VARIATION), info);
   }
   else
   {
@@ -1198,7 +1198,7 @@ void GameInfoDialog::updateControllerStates()
 
     autoDetect = node.exists() && !node.isDirectory() && (image = instance().openROM(node, md5, size)) != nullptr;
   }
-  string label = "";
+  string label;
   Controller::Type type = Controller::getType(myLeftPort->getSelectedTag().toString());
 
   if(type == Controller::Type::Unknown)
@@ -1307,14 +1307,14 @@ void GameInfoDialog::eraseEEPROM()
   if(lport.type() == Controller::Type::SaveKey ||
      lport.type() == Controller::Type::AtariVox)
   {
-    SaveKey& skey = static_cast<SaveKey&>(lport);
+    auto& skey = static_cast<SaveKey&>(lport);
     skey.eraseCurrent();
   }
 
   if(rport.type() == Controller::Type::SaveKey ||
      rport.type() == Controller::Type::AtariVox)
   {
-    SaveKey& skey = static_cast<SaveKey&>(rport);
+    auto& skey = static_cast<SaveKey&>(rport);
     skey.eraseCurrent();
   }
 }
@@ -1337,7 +1337,7 @@ void GameInfoDialog::updateHighScoresWidgets()
   const bool enableVars = enable && myVariations->getText() > "1";
   const bool enableSpecial = enable && !mySpecialName->getText().empty();
   const bool enableConsole = instance().hasConsole();
-  const uInt32 numAddr = instance().highScores().numAddrBytes(
+  const uInt32 numAddr = HighScoresManager::numAddrBytes(
       myScoreDigits->getSelected() + 1, myTrailingZeroes->getSelected());
 
   // enable widgets
@@ -1431,7 +1431,7 @@ void GameInfoDialog::setAddressVal(const EditTextWidget* addressWidget, EditText
     // convert to number and read from memory
     const uInt16 addr = stringToIntBase16(strAddr, HSM::DEFAULT_ADDRESS);
     uInt8 val = instance().highScores().peek(addr);
-    val = instance().highScores().convert(val, maxVal, isBCD, zeroBased);
+    val = HighScoresManager::convert(val, maxVal, isBCD, zeroBased);
 
     // format output and display in value widget
     // if (isBCD)

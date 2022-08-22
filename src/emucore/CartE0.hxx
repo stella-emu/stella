@@ -85,7 +85,7 @@ class CartridgeE0 : public CartridgeEnhanced
   #endif
 
   private:
-    bool checkSwitchBank(uInt16 address, uInt8 = 0) override;
+    bool checkSwitchBank(uInt16 address, uInt8) override;
 
     uInt16 hotspot() const override { return 0x1FE0; }
 

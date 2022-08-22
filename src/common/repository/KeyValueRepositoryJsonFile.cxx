@@ -27,7 +27,7 @@ namespace {
 
     return parsed.is_discarded() ? json(s) : parsed;
   }
-}
+} // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 KeyValueRepositoryJsonFile::KeyValueRepositoryJsonFile(const FSNode& node)
@@ -55,14 +55,16 @@ std::map<string, Variant> KeyValueRepositoryJsonFile::load(istream& in)
     return map;
   }
   catch (const json::exception& err) {
-    Logger::error("KeyValueRepositoryJsonFile: error during deserialization: " + string(err.what()));
+    Logger::error("KeyValueRepositoryJsonFile: error during deserialization: " +
+                  string(err.what()));
 
-    return std::map<string, Variant>();
+    return {};
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool KeyValueRepositoryJsonFile::save(ostream& out, const std::map<string, Variant>& values)
+bool KeyValueRepositoryJsonFile::save(ostream& out,
+    const std::map<string, Variant>& values)
 {
   try {
     json serializedJson = json::object();
@@ -75,7 +77,8 @@ bool KeyValueRepositoryJsonFile::save(ostream& out, const std::map<string, Varia
     return true;
   }
   catch (const json::exception& err) {
-    Logger::error("KeyValueRepositoryJsonFile: error during serialization: "  + string(err.what()));
+    Logger::error("KeyValueRepositoryJsonFile: error during serialization: "  +
+    string(err.what()));
 
     return false;
   }

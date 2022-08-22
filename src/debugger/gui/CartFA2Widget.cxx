@@ -30,7 +30,7 @@ CartridgeFA2Widget::CartridgeFA2Widget(
 
   const int bwidth = _font.getStringWidth("Erase") + 20;
 
-  StaticTextWidget* t = new StaticTextWidget(boss, _font, xpos, ypos,
+  auto* t = new StaticTextWidget(boss, _font, xpos, ypos,
       _font.getStringWidth("Harmony flash memory "),
       myFontHeight, "Harmony flash memory ", TextAlign::Left);
 

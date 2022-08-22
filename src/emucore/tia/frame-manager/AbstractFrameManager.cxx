@@ -105,7 +105,7 @@ void AbstractFrameManager::layout(FrameLayout layout)
 
   myLayout = layout;
 
-  onLayoutChange();
+  onLayoutChange();  // NOLINT
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -120,7 +120,7 @@ bool AbstractFrameManager::save(Serializer& out) const
     out.putInt(myCurrentFrameFinalLines);
     out.putInt(myPreviousFrameFinalLines);
     out.putInt(myTotalFrames);
-    out.putInt(uInt32(myLayout));
+    out.putInt(static_cast<uInt32>(myLayout));
 
     return onSave(out);
   }

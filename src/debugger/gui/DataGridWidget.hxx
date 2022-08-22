@@ -43,7 +43,7 @@ class DataGridWidget : public EditableWidget
     DataGridWidget(GuiObject* boss, const GUI::Font& font,
                    int x, int y, int cols, int rows,
                    int colchars, int bits,
-                   Common::Base::Fmt format = Common::Base::Fmt::_DEFAULT,
+                   Common::Base::Fmt base = Common::Base::Fmt::_DEFAULT,
                    bool useScrollbar = false);
     ~DataGridWidget() override = default;
 
@@ -92,7 +92,7 @@ class DataGridWidget : public EditableWidget
   protected:
     void drawWidget(bool hilite) override;
 
-    int findItem(int x, int y);
+    int findItem(int x, int y) const;
 
     void startEditMode() override;
     void endEditMode() override;

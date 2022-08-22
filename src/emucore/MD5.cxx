@@ -76,11 +76,11 @@ struct MD5_CTX
 #define S44 21
 
 static void MD5Init(MD5_CTX*);
-static void MD5Update(MD5_CTX*, const uInt8* const, uInt32);
+static void MD5Update(MD5_CTX*, const uInt8*, uInt32);
 static void MD5Final(uInt8[16], MD5_CTX*);
 static void MD5Transform(uInt32[4], const uInt8[64]);
-static void Encode(uInt8*, const uInt32* const, uInt32);
-static void Decode(uInt32*, const uInt8* const, uInt32);
+static void Encode(uInt8*, const uInt32*, uInt32);
+static void Decode(uInt32*, const uInt8*, uInt32);
 
 static uInt8 PADDING[64] = {
   0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -89,10 +89,10 @@ static uInt8 PADDING[64] = {
 };
 
 // F, G, H and I are basic MD5 functions.
-#define F(x, y, z) (((x) & (y)) | ((~x) & (z)))
-#define G(x, y, z) (((x) & (z)) | ((y) & (~z)))
+#define F(x, y, z) (((x) & (y)) | ((~(x)) & (z)))
+#define G(x, y, z) (((x) & (z)) | ((y) & (~(z))))
 #define H(x, y, z) ((x) ^ (y) ^ (z))
-#define I(x, y, z) ((y) ^ ((x) | (~z)))
+#define I(x, y, z) ((y) ^ ((x) | (~(z))))
 
 // ROTATE_LEFT rotates x left n bits.
 #define ROTATE_LEFT(x, n) (((x) << (n)) | ((x) >> (32-(n))))
@@ -140,7 +140,7 @@ static void MD5Update(MD5_CTX* context, const uInt8* const input,
   uInt32 i = 0;
 
   /* Compute number of bytes mod 64 */
-  uInt32 index = static_cast<uInt32>((context->count[0] >> 3) & 0x3F);
+  auto index = static_cast<uInt32>((context->count[0] >> 3) & 0x3F);
 
   /* Update number of bits */
   if ((context->count[0] += (inputLen << 3)) < (inputLen << 3))
@@ -176,7 +176,7 @@ static void MD5Final(uInt8 digest[16], MD5_CTX* context)
   Encode (bits, context->count, 8);
 
   /* Pad out to 56 mod 64. */
-  const uInt32 index = static_cast<uInt32>((context->count[0] >> 3) & 0x3f);
+  const auto index = static_cast<uInt32>((context->count[0] >> 3) & 0x3f);
   const uInt32 padLen = (index < 56) ? (56 - index) : (120 - index);
   MD5Update (context, PADDING, padLen);
 
@@ -320,20 +320,20 @@ string hash(const uInt8* buffer, size_t length)
   static constexpr char hex[] = "0123456789abcdef";
   MD5_CTX context{};
   uInt8 md5[16] = {0};
-  const uInt32 len32 = static_cast<uInt32>(length);  // Always use 32-bit for now
+  const auto len32 = static_cast<uInt32>(length);  // Always use 32-bit for now
 
   MD5Init(&context);
   MD5Update(&context, buffer, len32);
   MD5Final(md5, &context);
 
   string result;
-  for(int t = 0; t < 16; ++t)
+  for(auto c: md5)
   {
-    result += hex[(md5[t] >> 4) & 0x0f];
-    result += hex[md5[t] & 0x0f];
+    result += hex[(c >> 4) & 0x0f];
+    result += hex[c & 0x0f];
   }
 
   return result;
 }
 
-}  // Namespace MD5
+} // namespace MD5

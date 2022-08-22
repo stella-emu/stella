@@ -205,9 +205,8 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
 
   // ROM path
   int bwidth = font.getStringWidth("ROM path" + ELLIPSIS) + 20 + 1;
-  ButtonWidget* romButton =
-    new ButtonWidget(myTab, font, xpos, ypos, bwidth, buttonHeight,
-                     "ROM path" + ELLIPSIS, kChooseRomDirCmd);
+  auto* romButton = new ButtonWidget(myTab, font, xpos, ypos, bwidth,
+      buttonHeight, "ROM path" + ELLIPSIS, kChooseRomDirCmd);
   wid.push_back(romButton);
   xpos = romButton->getRight() + fontWidth;
   myRomPath = new EditTextWidget(myTab, font, xpos, ypos + (buttonHeight - lineHeight) / 2 - 1,
@@ -663,10 +662,14 @@ void UIDialog::handleLauncherSize()
 {
   // Determine minimal launcher sizebased on the default font
   //  So what fits with default font should fit for any font.
-  const FontDesc fd = instance().frameBuffer().getFontDesc(myDialogFontPopup->getSelectedTag().toString());
-  const int w = std::max(FBMinimum::Width, FBMinimum::Width * fd.maxwidth / GUI::stellaMediumDesc.maxwidth);
-  const int h = std::max(FBMinimum::Height, FBMinimum::Height * fd.height / GUI::stellaMediumDesc.height);
-  const Common::Size& ds = instance().frameBuffer().desktopSize(BufferType::Launcher);
+  const FontDesc& fd = FrameBuffer::getFontDesc(
+      myDialogFontPopup->getSelectedTag().toString());
+  const int w = std::max(FBMinimum::Width, FBMinimum::Width *
+      fd.maxwidth / GUI::stellaMediumDesc.maxwidth);
+  const int h = std::max(FBMinimum::Height, FBMinimum::Height *
+      fd.height / GUI::stellaMediumDesc.height);
+  const Common::Size& ds =
+      instance().frameBuffer().desktopSize(BufferType::Launcher);
 
   myLauncherWidthSlider->setMinValue(w);
   if(myLauncherWidthSlider->getValue() < myLauncherWidthSlider->getMinValue())

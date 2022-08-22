@@ -42,8 +42,7 @@ MessageDialog::~MessageDialog()
 void MessageDialog::loadConfig()
 {
   // ugly, but I can't do better
-  if (myMsg != nullptr)
-    delete myMsg;
+  delete myMsg;
 
   myMsg = new GUI::MessageBox(this, _font, myText,
                               FBMinimum::Width, FBMinimum::Height, kOKCmd, kCloseCmd,
@@ -69,7 +68,8 @@ void MessageDialog::handleCommand(CommandSender* sender, int cmd, int data, int 
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void MessageDialog::setMessage(const string& title, const StringList& text, bool yesNo)
+void MessageDialog::setMessage(const string& title, const StringList& text,
+                               bool yesNo)
 {
   myTitle = title;
   myText = text;
@@ -77,13 +77,14 @@ void MessageDialog::setMessage(const string& title, const StringList& text, bool
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void MessageDialog::setMessage(const string& title, const string& text, bool yesNo)
+void MessageDialog::setMessage(const string& title, const string& text,
+                               bool yesNo)
 {
   setMessage(title, StringParser(text).stringList(), yesNo);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string MessageDialog::myTitle = "";
+string MessageDialog::myTitle;
 StringList MessageDialog::myText;
 bool MessageDialog::myYesNo = false;
 bool MessageDialog::myConfirmed = false;

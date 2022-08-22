@@ -94,7 +94,7 @@ void ListWidget::setSelected(const string& item)
   int selected = -1;
   if(!_list.empty())
   {
-    if(item == "")
+    if(item.empty())
       selected = 0;
     else
     {
@@ -222,8 +222,7 @@ void ListWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 
   resetSelection();
   // First check whether the selection changed
-  int newSelectedItem;
-  newSelectedItem = findItem(x, y);
+  int newSelectedItem = findItem(x, y);
   if (newSelectedItem >= static_cast<int>(_list.size()))
     return;
 

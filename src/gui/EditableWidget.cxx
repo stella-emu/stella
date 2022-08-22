@@ -593,7 +593,7 @@ bool EditableWidget::adjustOffset()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int EditableWidget::scrollOffset()
+int EditableWidget::scrollOffset() const
 {
   return _editable ? -_editScrollOffset : 0;
 }
@@ -781,7 +781,7 @@ bool EditableWidget::markWord()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string EditableWidget::selectString() const
+string EditableWidget::selectString() const
 {
   if(_selectSize)
   {
@@ -799,7 +799,7 @@ const string EditableWidget::selectString() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int EditableWidget::selectStartPos()
+int EditableWidget::selectStartPos() const
 {
   if(_selectSize < 0)
     return _caretPos + _selectSize;
@@ -808,7 +808,7 @@ int EditableWidget::selectStartPos()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int EditableWidget::selectEndPos()
+int EditableWidget::selectEndPos() const
 {
   if(_selectSize > 0)
     return _caretPos + _selectSize;

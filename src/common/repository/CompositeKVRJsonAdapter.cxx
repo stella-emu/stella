@@ -28,7 +28,7 @@ namespace {
         {}
 
         std::map<string, Variant> load() override {
-          if (!myKvr.has(myKey)) return std::map<string, Variant>();
+          if (!myKvr.has(myKey)) return {};
 
           Variant serialized;
           myKvr.get(myKey, serialized);
@@ -51,12 +51,13 @@ namespace {
         KeyValueRepositoryAtomic& myKvr;
         const string& myKey;
     };
-}
+} // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CompositeKVRJsonAdapter::CompositeKVRJsonAdapter(KeyValueRepositoryAtomic& kvr)
   : myKvr{kvr}
-{}
+{
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 shared_ptr<KeyValueRepository> CompositeKVRJsonAdapter::get(const string& key)

@@ -79,8 +79,8 @@ class KeyMap
     bool check(const EventMode mode, const int key, const int mod) const;
 
     /** Get mapping description */
-    string getDesc(const Mapping& mapping) const;
-    string getDesc(const EventMode mode, const int key, const int mod) const;
+    static string getDesc(const Mapping& mapping);
+    static string getDesc(const EventMode mode, const int key, const int mod);
 
     /** Get the mapping description(s) for given event and mode */
     string getEventMappingDesc(const Event::Type event, const EventMode mode) const;
@@ -104,7 +104,7 @@ class KeyMap
 
   private:
     //** Convert modifiers */
-    Mapping convertMod(const Mapping& mapping) const;
+    static Mapping convertMod(const Mapping& mapping);
 
     struct KeyHash {
       size_t operator()(const Mapping& m) const {

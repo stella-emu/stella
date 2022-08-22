@@ -15,7 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "Logger.hxx"
 #include "OSystem.hxx"
 #include "Console.hxx"
 #include "Joystick.hxx"
@@ -149,11 +148,9 @@ int PhysicalJoystickHandler::add(const PhysicalJoystickPtr& stick)
   // We're potentially swapping out an input device behind the back of
   // the Event system, so we make sure all Stelladaptor-generated events
   // are reset
-  for(int port = 0; port < NUM_PORTS; ++port)
-  {
-    for(int axis = 0; axis < NUM_SA_AXIS; ++axis)
+  for(int port = 0; port < NUM_PORTS; ++port)     // NOLINT
+    for(int axis = 0; axis < NUM_SA_AXIS; ++axis) // NOLINT
       myEvent.set(SA_Axis[port][axis], 0);
-  }
 
   return stick->ID;
 }
@@ -300,7 +297,7 @@ bool PhysicalJoystickHandler::mapStelladaptors(const string& saport, int ID)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PhysicalJoystickHandler::hasStelladaptors() const
 {
-  for(auto& [_id, _joyptr] : mySticks)
+  for(const auto& [_id, _joyptr] : mySticks)
   {
     // remove previously added emulated ports
     const size_t pos = _joyptr->name.find(" (emulates ");
@@ -334,7 +331,7 @@ void PhysicalJoystickHandler::setDefaultAction(int stick,
   {
     // if there is no existing mapping for the event and
     //  the default mapping for the event is unused, set default key for event
-    if(j->joyMap.getEventMapping(map.event, mode).size() == 0 &&
+    if(j->joyMap.getEventMapping(map.event, mode).empty() &&
        !j->joyMap.check(mode, map.button, map.axis, map.adir, map.hat, map.hdir))
     {
       if (map.hat == JOY_CTRL_NONE)
@@ -355,8 +352,8 @@ void PhysicalJoystickHandler::setDefaultAction(int stick,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalJoystickHandler::setStickDefaultMapping(int stick, Event::Type event,
-                                                     EventMode mode, bool updateDefaults)
+void PhysicalJoystickHandler::setStickDefaultMapping(
+    int stick, Event::Type event, EventMode mode, bool updateDefaults)
 {
   const PhysicalJoystickPtr j = joy(stick);
 
@@ -588,7 +585,7 @@ void PhysicalJoystickHandler::enableCommonMappings()
 {
   for (int i = Event::NoType + 1; i < Event::LastType; i++)
   {
-    const Event::Type event = static_cast<Event::Type>(i);
+    const auto event = static_cast<Event::Type>(i);
 
     if(isCommonEvent(event))
       enableMapping(event, EventMode::kCommonMode);
@@ -619,7 +616,8 @@ void PhysicalJoystickHandler::enableMapping(const Event::Type event, EventMode m
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-EventMode PhysicalJoystickHandler::getEventMode(const Event::Type event, const EventMode mode) const
+EventMode PhysicalJoystickHandler::getEventMode(const Event::Type event,
+                                                const EventMode mode)
 {
   if(mode == EventMode::kEmulationMode)
   {
@@ -643,35 +641,35 @@ EventMode PhysicalJoystickHandler::getEventMode(const Event::Type event, const E
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PhysicalJoystickHandler::isJoystickEvent(const Event::Type event) const
+bool PhysicalJoystickHandler::isJoystickEvent(const Event::Type event)
 {
   return LeftJoystickEvents.find(event) != LeftJoystickEvents.end()
     || RightJoystickEvents.find(event) != RightJoystickEvents.end();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PhysicalJoystickHandler::isPaddleEvent(const Event::Type event) const
+bool PhysicalJoystickHandler::isPaddleEvent(const Event::Type event)
 {
   return LeftPaddlesEvents.find(event) != LeftPaddlesEvents.end()
     || RightPaddlesEvents.find(event) != RightPaddlesEvents.end();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PhysicalJoystickHandler::isKeyboardEvent(const Event::Type event) const
+bool PhysicalJoystickHandler::isKeyboardEvent(const Event::Type event)
 {
   return LeftKeyboardEvents.find(event) != LeftKeyboardEvents.end()
     || RightKeyboardEvents.find(event) != RightKeyboardEvents.end();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PhysicalJoystickHandler::isDrivingEvent(const Event::Type event) const
+bool PhysicalJoystickHandler::isDrivingEvent(const Event::Type event)
 {
   return LeftDrivingEvents.find(event) != LeftDrivingEvents.end()
     || RightDrivingEvents.find(event) != RightDrivingEvents.end();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PhysicalJoystickHandler::isCommonEvent(const Event::Type event) const
+bool PhysicalJoystickHandler::isCommonEvent(const Event::Type event)
 {
   return !(isJoystickEvent(event) || isPaddleEvent(event) || isKeyboardEvent(event) || isDrivingEvent(event));
 }
@@ -734,9 +732,9 @@ string PhysicalJoystickHandler::getMappingDesc(Event::Type event, EventMode mode
     if(_joyptr)
     {
       //Joystick mapping / labeling
-      if(_joyptr->joyMap.getEventMapping(event, evMode).size())
+      if(!_joyptr->joyMap.getEventMapping(event, evMode).empty())
       {
-        if(buf.str() != "")
+        if(!buf.str().empty())
           buf << ", ";
         buf << _joyptr->joyMap.getEventMappingDesc(_id, event, evMode);
       }

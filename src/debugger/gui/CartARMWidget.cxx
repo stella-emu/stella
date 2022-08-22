@@ -68,8 +68,8 @@ void CartridgeARMWidget::addCycleWidgets(int xpos, int ypos)
   myThumbCycles->setEditable(false);
   myThumbCycles->setToolTip("Approximated CPU cycles of last ARM run.\n");
 
-  StaticTextWidget* s = new StaticTextWidget(_boss, _font, myCycleFactor->getLeft(), ypos + 1,
-                                             "Instructions #");
+  auto* s = new StaticTextWidget(_boss, _font, myCycleFactor->getLeft(), ypos + 1,
+                                 "Instructions #");
 
   myPrevThumbInstructions = new DataGridWidget(_boss, _font, s->getRight(), ypos - 1,
                                                1, 1, 6, 32, Common::Base::Fmt::_10_6);
@@ -162,23 +162,26 @@ void CartridgeARMWidget::loadConfig()
 
   alist.clear();  vlist.clear();  changed.clear();
   alist.push_back(0);  vlist.push_back(myCart.prevCycles());
-  changed.push_back(myCart.prevCycles() != uInt32(myOldState.armPrevRun[0]));
+  changed.push_back(myCart.prevCycles() !=
+    static_cast<uInt32>(myOldState.armPrevRun[0]));
   myPrevThumbCycles->setList(alist, vlist, changed);
 
   alist.clear();  vlist.clear();  changed.clear();
   alist.push_back(0);  vlist.push_back(myCart.prevStats().instructions);
-  changed.push_back(myCart.prevStats().instructions != uInt32(myOldState.armPrevRun[1]));
+  changed.push_back(myCart.prevStats().instructions !=
+    static_cast<uInt32>(myOldState.armPrevRun[1]));
   myPrevThumbInstructions->setList(alist, vlist, changed);
 
   alist.clear();  vlist.clear();  changed.clear();
   alist.push_back(0);  vlist.push_back(myCart.cycles());
-  changed.push_back(myCart.cycles() != uInt32(myOldState.armRun[0]));
+  changed.push_back(myCart.cycles() !=
+    static_cast<uInt32>(myOldState.armRun[0]));
   myThumbCycles->setList(alist, vlist, changed);
-
 
   alist.clear();  vlist.clear();  changed.clear();
   alist.push_back(0);  vlist.push_back(myCart.stats().instructions);
-  changed.push_back(myCart.stats().instructions != uInt32(myOldState.armRun[1]));
+  changed.push_back(myCart.stats().instructions !=
+    static_cast<uInt32>(myOldState.armRun[1]));
   myThumbInstructions->setList(alist, vlist, changed);
 
   CartDebugWidget::loadConfig();

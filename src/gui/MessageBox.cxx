@@ -87,9 +87,9 @@ void MessageBox::addText(const GUI::Font& font, const StringList& text)
   int str_w = 0;
 
   for(const auto& s: text)
-    str_w = std::max(int(s.length()), str_w);
+    str_w = std::max(static_cast<int>(s.length()), str_w);
   _w = std::min(str_w * fontWidth + HBORDER * 2, _w);
-  _h = std::min(uInt32((text.size() + 2) * fontHeight + VBORDER * 2 + _th), uInt32(_h));
+  _h = std::min((static_cast<int>(text.size()) + 2) * fontHeight + VBORDER * 2 + _th, _h);
 
   const int xpos = HBORDER;
   int ypos = VBORDER + _th;
@@ -125,4 +125,4 @@ void MessageBox::handleCommand(CommandSender* sender, int cmd, int data, int id)
     Dialog::handleCommand(sender, cmd, data, id);
 }
 
-}  // namespace GUI
+} // namespace GUI

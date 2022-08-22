@@ -76,7 +76,7 @@ class PhysicalJoystickHandler
     bool remove(const string& name);
     bool mapStelladaptors(const string& saport, int ID = -1);
     bool hasStelladaptors() const;
-    void setDefaultMapping(Event::Type type, EventMode mode);
+    void setDefaultMapping(Event::Type event, EventMode mode);
 
     /** define mappings for current controllers */
     void defineControllerMappings(const Controller::Type type, Controller::Jack port);
@@ -150,7 +150,7 @@ class PhysicalJoystickHandler
     void addToDatabase(const PhysicalJoystickPtr& stick);
 
     // Set default mapping for given joystick when no mappings already exist
-    void setStickDefaultMapping(int stick, Event::Type type, EventMode mode,
+    void setStickDefaultMapping(int stick, Event::Type event, EventMode mode,
                                 bool updateDefaults = false);
 
     friend ostream& operator<<(ostream& os, const PhysicalJoystickHandler& jh);
@@ -180,13 +180,13 @@ class PhysicalJoystickHandler
                           bool updateDefaults = false);
 
     /** returns the event's controller mode */
-    EventMode getEventMode(const Event::Type event, const EventMode mode) const;
+    static EventMode getEventMode(const Event::Type event, const EventMode mode);
     /** Checks event type. */
-    bool isJoystickEvent(const Event::Type event) const;
-    bool isPaddleEvent(const Event::Type event) const;
-    bool isKeyboardEvent(const Event::Type event) const;
-    bool isDrivingEvent(const Event::Type event) const;
-    bool isCommonEvent(const Event::Type event) const;
+    static bool isJoystickEvent(const Event::Type event);
+    static bool isPaddleEvent(const Event::Type event);
+    static bool isKeyboardEvent(const Event::Type event);
+    static bool isDrivingEvent(const Event::Type event);
+    static bool isCommonEvent(const Event::Type event);
 
     void enableCommonMappings();
 

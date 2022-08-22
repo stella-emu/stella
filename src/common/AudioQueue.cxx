@@ -29,16 +29,20 @@ AudioQueue::AudioQueue(uInt32 fragmentSize, uInt32 capacity, bool isStereo)
 {
   const uInt8 sampleSize = myIsStereo ? 2 : 1;
 
-  myFragmentBuffer = make_unique<Int16[]>(myFragmentSize * sampleSize * (capacity + 2));
+  myFragmentBuffer = make_unique<Int16[]>(
+      static_cast<size_t>(myFragmentSize) * sampleSize * (capacity + 2));
 
   for (uInt32 i = 0; i < capacity; ++i)
-    myFragmentQueue[i] = myAllFragments[i] = myFragmentBuffer.get() + i * sampleSize * myFragmentSize;
+    myFragmentQueue[i] = myAllFragments[i] = myFragmentBuffer.get() +
+      static_cast<size_t>(myFragmentSize) * sampleSize * i;
 
   myAllFragments[capacity] = myFirstFragmentForEnqueue =
-    myFragmentBuffer.get() + capacity * sampleSize * myFragmentSize;
+    myFragmentBuffer.get() + static_cast<size_t>(myFragmentSize) * sampleSize *
+    capacity;
 
   myAllFragments[capacity + 1] = myFirstFragmentForDequeue =
-    myFragmentBuffer.get() + (capacity + 1) * sampleSize * myFragmentSize;
+    myFragmentBuffer.get() + static_cast<size_t>(myFragmentSize) * sampleSize *
+    (capacity + 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -83,7 +87,7 @@ Int16* AudioQueue::enqueue(Int16* fragment)
     return newFragment;
   }
 
-  const uInt8 capacity = static_cast<uInt8>(myFragmentQueue.size());
+  const auto capacity = static_cast<uInt8>(myFragmentQueue.size());
   const uInt8 fragmentIndex = (myNextFragment + mySize) % capacity;
 
   newFragment = myFragmentQueue.at(fragmentIndex);

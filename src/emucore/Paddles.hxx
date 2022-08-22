@@ -199,12 +199,8 @@ class Paddles : public Controller
     static int DIGITAL_SENSITIVITY, DIGITAL_DISTANCE;
     static int DEJITTER_BASE, DEJITTER_DIFF;
 
-    /**
-      Swap two events.
-    */
-    void swapEvents(Event::Type& event1, Event::Type& event2);
-
-    AnalogReadout::Connection getReadOut(int lastAxis, int& newAxis, int center);
+    static AnalogReadout::Connection getReadOut(int lastAxis,
+                                                int& newAxis, int center);
 
     void updateA();
     void updateB();

@@ -114,7 +114,7 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
 
   // Start with console joystick direction/buttons held down
   xpos = fontWidth * 4;  ypos += infofont.getLineHeight() + VGAP * 2;
-  ypos = addHoldWidgets(font, xpos, ypos, wid);
+  addHoldWidgets(font, xpos, ypos, wid);
 
   // Add message concerning usage
   xpos = HBORDER;
@@ -143,7 +143,7 @@ int GlobalPropsDialog::addHoldWidgets(const GUI::Font& font, int x, int y,
   const int xdiff = CheckboxWidget::boxSize(font) - 9;
 
   // Left joystick
-  StaticTextWidget* t = new StaticTextWidget(this, font, xpos, ypos + 2, "Left joy");
+  auto* t = new StaticTextWidget(this, font, xpos, ypos + 2, "Left joy");
   xpos += t->getWidth()/2 - xdiff - 2;  ypos += t->getHeight() + VGAP;
   myJoy[kJ0Up] = new CheckboxWidget(this, font, xpos, ypos, "", kJ0Up);
   ypos += myJoy[kJ0Up]->getHeight() * 2 + VGAP * 2;

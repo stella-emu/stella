@@ -72,7 +72,7 @@ DebuggerDialog::DebuggerDialog(OSystem& osystem, DialogContainer& parent,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-DebuggerDialog::~DebuggerDialog()
+DebuggerDialog::~DebuggerDialog()  // NOLINT (we need an empty d'tor)
 {
 }
 
@@ -475,22 +475,22 @@ void DebuggerDialog::addTabArea()
 
   // The TIA tab
   tabID = myTab->addTab("TIA");
-  TiaWidget* tia = new TiaWidget(myTab, *myLFont, *myNFont,
-                                 2, 2, widWidth, widHeight);
+  auto* tia = new TiaWidget(myTab, *myLFont, *myNFont,
+                            2, 2, widWidth, widHeight);
   myTab->setParentWidget(tabID, tia);
   addToFocusList(tia->getFocusList(), myTab, tabID);
 
   // The input/output tab (includes RIOT and INPTx from TIA)
   tabID = myTab->addTab("I/O");
-  RiotWidget* riot = new RiotWidget(myTab, *myLFont, *myNFont,
-                                    2, 2, widWidth, widHeight);
+  auto* riot = new RiotWidget(myTab, *myLFont, *myNFont,
+                              2, 2, widWidth, widHeight);
   myTab->setParentWidget(tabID, riot);
   addToFocusList(riot->getFocusList(), myTab, tabID);
 
   // The Audio tab
   tabID = myTab->addTab("Audio");
-  AudioWidget* aud = new AudioWidget(myTab, *myLFont, *myNFont,
-                                     2, 2, widWidth, widHeight);
+  auto* aud = new AudioWidget(myTab, *myLFont, *myNFont,
+                              2, 2, widWidth, widHeight);
   myTab->setParentWidget(tabID, aud);
   addToFocusList(aud->getFocusList(), myTab, tabID);
 
@@ -624,7 +624,7 @@ void DebuggerDialog::addRomArea()
   wid1.push_back(myRewindButton);
   wid1.push_back(myUnwindButton);
 
-  DataGridOpsWidget* ops = new DataGridOpsWidget(this, *myLFont, xpos, ypos);
+  auto* ops = new DataGridOpsWidget(this, *myLFont, xpos, ypos);
 
   const int max_w = xpos - r.x() - 10;
   xpos = r.x() + 10;  ypos = 5;
@@ -713,8 +713,10 @@ void DebuggerDialog::addRomArea()
 Common::Rect DebuggerDialog::getTiaBounds() const
 {
   // The area showing the TIA image (NTSC and PAL supported, up to 274 lines without scaling)
-  return Common::Rect(0, 0, 320, std::max(static_cast<int>(FrameManager::Metrics::baseHeightPAL),
-                                          static_cast<int>(_h * 0.35)));
+  return {
+    0, 0, 320,
+    std::max<uInt32>(FrameManager::Metrics::baseHeightPAL, _h * 0.35)
+  };
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -722,7 +724,10 @@ Common::Rect DebuggerDialog::getRomBounds() const
 {
   // The ROM area is the full area to the right of the tabs
   const Common::Rect& status = getStatusBounds();
-  return Common::Rect(status.x() + status.w() + 1, 0, _w, _h);
+  return {
+    status.x() + status.w() + 1, 0,
+    static_cast<uInt32>(_w), static_cast<uInt32>(_h)
+  };
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -733,11 +738,12 @@ Common::Rect DebuggerDialog::getStatusBounds() const
   // 30% of any space above 1030 pixels will be allocated to this area
   const Common::Rect& tia = getTiaBounds();
 
-  return Common::Rect(
+  return {
       tia.x() + tia.w() + 1,
       0,
-      tia.x() + tia.w() + 225 + (_w > 1030 ? int(0.35 * (_w - 1030)) : 0),
-      tia.y() + tia.h());
+      tia.x() + tia.w() + 225 + (_w > 1030 ? static_cast<int>(0.35 * (_w - 1030)) : 0),
+      tia.y() + tia.h()
+  };
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -747,6 +753,8 @@ Common::Rect DebuggerDialog::getTabBounds() const
   const Common::Rect& tia    = getTiaBounds();
   const Common::Rect& status = getStatusBounds();
 
-  return Common::Rect(0, tia.y() + tia.h() + 1,
-                      status.x() + status.w() + 1, _h);
+  return {
+    0, tia.y() + tia.h() + 1,
+    status.x() + status.w() + 1, static_cast<uInt32>(_h)
+  };
 }

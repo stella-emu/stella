@@ -61,7 +61,7 @@ class TiaZoomWidget : public Widget, public CommandSender
   private:
     unique_ptr<ContextMenu> myMenu;
 
-    int myZoomLevel{0};
+    int myZoomLevel{2};
     int myNumCols{0}, myNumRows{0};
     int myOffX{0}, myOffY{0};
     int myOffXLo{0}, myOffYLo{0};

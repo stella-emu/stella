@@ -187,7 +187,7 @@ class PaletteHandler
 
       @return  The palette's settings name
     */
-    string toPaletteName(PaletteType type) const;
+    static string toPaletteName(PaletteType type);
 
     /**
       Display current adjustable with gauge bar message
@@ -208,16 +208,16 @@ class PaletteHandler
 
       @param timing  Use NTSC or PAL phase shift and generate according palette
     */
-    void generateCustomPalette(ConsoleTiming timing);
+    void generateCustomPalette(ConsoleTiming timing) const;
 
     /**
       Create new palette by applying palette adjustments on given palette.
 
-      @param source  The palette which should be adjusted
+      @param palette  The palette which should be adjusted
 
       @return  An adjusted palette
     */
-    PaletteArray adjustedPalette(const PaletteArray& source);
+    PaletteArray adjustedPalette(const PaletteArray& palette) const;
 
     /**
       Adjust hue and saturation for given RGB values.
@@ -228,22 +228,22 @@ class PaletteHandler
       @param H  The hue adjustment value
       @param S  The saturation
     */
-    void adjustHueSaturation(int& R, int& G, int& B, float H, float S);
+    static void adjustHueSaturation(int& R, int& G, int& B, float H, float S);
 
     /**
       Rotate a 2D vector.
     */
-    vector2d rotate(const vector2d& vec, float angle) const;
+    static vector2d rotate(const vector2d& vec, float angle);
 
     /**
       Scale a 2D vector.
     */
-    vector2d scale(const vector2d& vec, float factor) const;
+    static vector2d scale(const vector2d& vec, float factor);
 
     /**
       Get the dot product of two 2D vectors.
     */
-    float dotProduct(const vector2d& vec1, const vector2d& vec2) const;
+    static float dotProduct(const vector2d& vec1, const vector2d& vec2);
 
     /**
       Loads a user-defined palette file (from OSystem::paletteFile), filling the

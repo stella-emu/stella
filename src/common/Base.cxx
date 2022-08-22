@@ -47,74 +47,83 @@ string Base::toString(int value, Common::Base::Fmt outputBase)
 
     case Base::Fmt::_10:    // base 10: 3 or 5 bytes (depending on value)
       if(value > -0x100 && value < 0x100)
-        std::snprintf(vToS_buf, 5, "%3d", static_cast<Int16>(value));
+        std::ignore = std::snprintf(vToS_buf, 5, "%3d", static_cast<Int16>(value));
       else
-        std::snprintf(vToS_buf, 6, "%5d", value);
+        std::ignore = std::snprintf(vToS_buf, 6, "%5d", value);
       break;
 
     case Base::Fmt::_10_02:  // base 10: 2 digits (with leading zero)
-      std::snprintf(vToS_buf, 3, "%02d", value);
+      std::ignore = std::snprintf(vToS_buf, 3, "%02d", value);
       break;
 
     case Base::Fmt::_10_3:  // base 10: 3 digits
-      std::snprintf(vToS_buf, 4, "%3d", value);
+      std::ignore = std::snprintf(vToS_buf, 4, "%3d", value);
       break;
 
     case Base::Fmt::_10_4:  // base 10: 4 digits
-      std::snprintf(vToS_buf, 5, "%4d", value);
+      std::ignore = std::snprintf(vToS_buf, 5, "%4d", value);
       break;
 
     case Base::Fmt::_10_5:  // base 10: 5 digits
-      std::snprintf(vToS_buf, 6, "%5d", value);
+      std::ignore = std::snprintf(vToS_buf, 6, "%5d", value);
       break;
 
     case Base::Fmt::_10_6:  // base 10: 6 digits
-      std::snprintf(vToS_buf, 7, "%6d", value);
+      std::ignore = std::snprintf(vToS_buf, 7, "%6d", value);
       break;
 
     case Base::Fmt::_10_8:  // base 10: 8 digits
-      std::snprintf(vToS_buf, 9, "%8d", value);
+      std::ignore = std::snprintf(vToS_buf, 9, "%8d", value);
       break;
 
     case Base::Fmt::_16_1:  // base 16: 1 byte wide
-      std::snprintf(vToS_buf, 2, hexUppercase() ? "%1X" : "%1x", value);
+      std::ignore = std::snprintf(
+          vToS_buf, 2, hexUppercase() ? "%1X" : "%1x", value);
       break;
     case Base::Fmt::_16_2:  // base 16: 2 bytes wide
-      std::snprintf(vToS_buf, 3, hexUppercase() ? "%02X" : "%02x", value);
+      std::ignore = std::snprintf(
+          vToS_buf, 3, hexUppercase() ? "%02X" : "%02x", value);
       break;
     case Base::Fmt::_16_2_2:
-      std::snprintf(vToS_buf, 6, hexUppercase() ? "%02X.%02X" : "%02x.%02x",
-                    value >> 8, value & 0xff );
+      std::ignore = std::snprintf(
+          vToS_buf, 6, hexUppercase() ? "%02X.%02X" : "%02x.%02x",
+          value >> 8, value & 0xff );
       break;
     case Base::Fmt::_16_3_2:
-      std::snprintf(vToS_buf, 7, hexUppercase() ? "%03X.%02X" : "%03x.%02x",
-                    value >> 8, value & 0xff );
+      std::ignore = std::snprintf(
+          vToS_buf, 7, hexUppercase() ? "%03X.%02X" : "%03x.%02x",
+          value >> 8, value & 0xff );
       break;
     case Base::Fmt::_16_4:  // base 16: 4 bytes wide
-      std::snprintf(vToS_buf, 5, hexUppercase() ? "%04X" : "%04x", value);
+      std::ignore = std::snprintf(
+          vToS_buf, 5, hexUppercase() ? "%04X" : "%04x", value);
       break;
     case Base::Fmt::_16_8:  // base 16: 8 bytes wide
-      std::snprintf(vToS_buf, 9, hexUppercase() ? "%08X" : "%08x", value);
+      std::ignore = std::snprintf(
+          vToS_buf, 9, hexUppercase() ? "%08X" : "%08x", value);
       break;
 
     case Base::Fmt::_16:    // base 16: 2, 4, 8 bytes (depending on value)
     default:
       if(value < 0x100)
-        std::snprintf(vToS_buf, 3, hexUppercase() ? "%02X" : "%02x", value);
+        std::ignore = std::snprintf(
+            vToS_buf, 3, hexUppercase() ? "%02X" : "%02x", value);
       else if(value < 0x10000)
-        std::snprintf(vToS_buf, 5, hexUppercase() ? "%04X" : "%04x", value);
+        std::ignore = std::snprintf(
+            vToS_buf, 5, hexUppercase() ? "%04X" : "%04x", value);
       else
-        std::snprintf(vToS_buf, 9, hexUppercase() ? "%08X" : "%08x", value);
+        std::ignore = std::snprintf(
+            vToS_buf, 9, hexUppercase() ? "%08X" : "%08x", value);
       break;
   }
 
-  return string(vToS_buf);
+  return {vToS_buf};
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Base::Fmt Base::myDefaultBase = Base::Fmt::_16;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-std::ios_base::fmtflags Base::myHexflags = std::ios_base::hex;
+std::ios_base::fmtflags Base::myHexflags = std::ios_base::hex;  // NOLINT
 
-} // Namespace Common
+} // namespace Common

@@ -99,8 +99,7 @@ CartridgeBUSWidget::CartridgeBUSWidget(
   myDatastreamPointers2->setTarget(this);
   myDatastreamPointers2->setEditable(false);
 
-  uInt32 row;
-  for(row = 0; row < 4; ++row)
+  for(uInt32 row = 0; row < 4; ++row)
   {
     myDatastreamLabels[row] =
     new StaticTextWidget(_boss, _font, DS_X - _font.getStringWidth("xx "),
@@ -369,7 +368,8 @@ void CartridgeBUSWidget::loadConfig()
   for(int i = 0; i < 3; ++i)
   {
     alist.push_back(0);  vlist.push_back(myCart.myMusicCounters[i]);
-    changed.push_back(myCart.myMusicCounters[i] != uInt32(myOldState.mcounters[i]));
+    changed.push_back(myCart.myMusicCounters[i] !=
+      static_cast<uInt32>(myOldState.mcounters[i]));
   }
   myMusicCounters->setList(alist, vlist, changed);
 
@@ -377,7 +377,8 @@ void CartridgeBUSWidget::loadConfig()
   for(int i = 0; i < 3; ++i)
   {
     alist.push_back(0);  vlist.push_back(myCart.myMusicFrequencies[i]);
-    changed.push_back(myCart.myMusicFrequencies[i] != uInt32(myOldState.mfreqs[i]));
+    changed.push_back(myCart.myMusicFrequencies[i] !=
+      static_cast<uInt32>(myOldState.mfreqs[i]));
   }
   myMusicFrequencies->setList(alist, vlist, changed);
 
@@ -385,7 +386,8 @@ void CartridgeBUSWidget::loadConfig()
   for(int i = 0; i < 3; ++i)
   {
     alist.push_back(0);  vlist.push_back(myCart.getWaveform(i) >> 5);
-    changed.push_back((myCart.getWaveform(i) >> 5) != uInt32(myOldState.mwaves[i]));
+    changed.push_back((myCart.getWaveform(i) >> 5) !=
+      static_cast<uInt32>(myOldState.mwaves[i]));
   }
   myMusicWaveforms->setList(alist, vlist, changed);
 
@@ -393,7 +395,8 @@ void CartridgeBUSWidget::loadConfig()
   for(int i = 0; i < 3; ++i)
   {
     alist.push_back(0);  vlist.push_back(myCart.getWaveformSize(i));
-    changed.push_back((myCart.getWaveformSize(i)) != uInt32(myOldState.mwavesizes[i]));
+    changed.push_back((myCart.getWaveformSize(i)) !=
+      static_cast<uInt32>(myOldState.mwavesizes[i]));
   }
   myMusicWaveformSizes->setList(alist, vlist, changed);
 
@@ -401,7 +404,8 @@ void CartridgeBUSWidget::loadConfig()
   {
     alist.clear();  vlist.clear();  changed.clear();
     alist.push_back(0);  vlist.push_back(myCart.getSample());
-    changed.push_back((myCart.getSample()) != uInt32(myOldState.samplepointer[0]));
+    changed.push_back((myCart.getSample()) !=
+      static_cast<uInt32>(myOldState.samplepointer[0]));
     mySamplePointer->setList(alist, vlist, changed);
   }
 

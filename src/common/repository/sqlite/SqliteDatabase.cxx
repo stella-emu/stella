@@ -53,7 +53,7 @@ void SqliteDatabase::initialize()
     if (!dbInitialized && tries == 1) {
       Logger::info("sqlite DB " + myDatabaseFile + " seems to be corrupt, removing and retrying...");
 
-      remove(myDatabaseFile.c_str());
+      std::ignore = remove(myDatabaseFile.c_str());
       if (myHandle) sqlite3_close_v2(myHandle);
     }
   }
@@ -107,7 +107,7 @@ Int32 SqliteDatabase::getUserVersion() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SqliteDatabase::setUserVersion(Int32 version)
+void SqliteDatabase::setUserVersion(Int32 version) const
 {
   SqliteStatement(*this, "PRAGMA user_version = %i", static_cast<int>(version))
     .step();
