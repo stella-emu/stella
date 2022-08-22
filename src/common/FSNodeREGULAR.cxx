@@ -43,7 +43,7 @@ FSNodeREGULAR::FSNodeREGULAR(const string& path, bool verify)
   // Expand '~' to the HOME environment variable
   if (_path[0] == '~')
   {
-    const char* home = std::getenv("HOME");
+    const char* home = std::getenv("HOME");  // NOLINT (not thread safe)
     if (home != nullptr)
       _path.replace(0, 1, home);
   }
@@ -88,7 +88,7 @@ void FSNodeREGULAR::setFlags()
 string FSNodeREGULAR::getShortPath() const
 {
   // If the path starts with the home directory, replace it with '~'
-  const char* env_home = std::getenv("HOME");
+  const char* env_home = std::getenv("HOME");  // NOLINT (not thread safe)
   const string& home = env_home != nullptr ? env_home : EmptyString;
 
   if (home != EmptyString && BSPF::startsWithIgnoreCase(_path, home))
@@ -106,7 +106,7 @@ string FSNodeREGULAR::getShortPath() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FSNodeREGULAR::hasParent() const
 {
-  return _path != "" && _path != ROOT_DIR;
+  return !_path.empty() && _path != ROOT_DIR;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -118,7 +118,7 @@ AbstractFSNodePtr FSNodeREGULAR::getParent() const
   const char* start = _path.c_str();
   const char* end = lastPathComponent(_path);
 // cerr << " => path: " << _path << ", new: " << string(start, size_t(end - start)) << endl;
-  return make_unique<FSNodeREGULAR>(string(start, size_t(end - start)));
+  return make_unique<FSNodeREGULAR>(string(start, static_cast<size_t>(end - start)));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
