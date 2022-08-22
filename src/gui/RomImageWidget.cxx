@@ -188,7 +188,7 @@ bool RomImageWidget::changeImage(int direction)
 #ifdef IMAGE_SUPPORT
   if(direction == -1 && myImageIdx)
     return loadImage(myImageList[--myImageIdx].getPath());
-  else if(direction == 1 && myImageIdx < myImageList.size() - 1)
+  else if(direction == 1 && myImageIdx + 1 < myImageList.size())
     return loadImage(myImageList[++myImageIdx].getPath());
 #endif
   return false;
