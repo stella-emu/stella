@@ -56,8 +56,7 @@ class JPGLibrary
     // The following data remains between invocations of allocateStorage,
     // and is only changed when absolutely necessary.
     struct ReadInfoType {
-      unsigned char* buffer;
-      //vector<unsigned char> buffer;
+      unsigned char* buffer{nullptr};
       uInt32 width{0}, height{0}, pitch{0};
     };
     ReadInfoType myReadInfo;
