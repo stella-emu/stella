@@ -1691,14 +1691,10 @@
 				2D605130089879BA00C6DE89 /* debugger */,
 				2D6050CC0898776500C6DE89 /* emucore */,
 				2D6050FA0898786C00C6DE89 /* gui */,
-				DC816CF32572F8B400FBCCDA /* json */,
 				DCED2B5F28C1052300243559 /* lib */,
-				DCD6FC5A11C281A1005DA767 /* libpng */,
 				2D6050C60898771C00C6DE89 /* macos */,
 				E0A383F72589730A0062AA93 /* sqlite */,
 				2D6050C90898774B00C6DE89 /* unix */,
-				2D60513708987A5400C6DE89 /* yacc */,
-				DC3EE83B1E2C0E4400905161 /* zlib */,
 			);
 			name = "Other Sources";
 			path = ..;
@@ -2391,6 +2387,7 @@
 				2D6CC10308C811A600B8F642 /* TiaZoomWidget.cxx */,
 				2D6CC10408C811A600B8F642 /* TiaZoomWidget.hxx */,
 				DC2874061F8F2278004BF21A /* TrapArray.hxx */,
+				2D60513708987A5400C6DE89 /* yacc */,
 			);
 			name = debugger;
 			path = ../debugger;
@@ -2570,6 +2567,9 @@
 		DCED2B5F28C1052300243559 /* lib */ = {
 			isa = PBXGroup;
 			children = (
+				DC3EE83B1E2C0E4400905161 /* zlib */,
+				DCD6FC5A11C281A1005DA767 /* libpng */,
+				DC816CF32572F8B400FBCCDA /* json */,
 			);
 			name = lib;
 			path = ../lib;
