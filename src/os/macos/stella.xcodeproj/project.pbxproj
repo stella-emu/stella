@@ -332,6 +332,13 @@
 		DC4AC6F30DC8DAEF00CD3AD2 /* SaveKey.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC4AC6F10DC8DAEF00CD3AD2 /* SaveKey.cxx */; };
 		DC4AC6F40DC8DAEF00CD3AD2 /* SaveKey.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC4AC6F20DC8DAEF00CD3AD2 /* SaveKey.hxx */; };
 		DC53B6AE1F3622DA00AA6BFB /* PointingDevice.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC53B6AD1F3622DA00AA6BFB /* PointingDevice.cxx */; };
+		DC564F6028C10A8500177588 /* http_lib.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC564F5E28C10A8500177588 /* http_lib.hxx */; };
+		DC564F6128C10A8500177588 /* httplib.h in Headers */ = {isa = PBXBuildFile; fileRef = DC564F5F28C10A8500177588 /* httplib.h */; };
+		DC564F6528C114D200177588 /* sqlite3.c in Sources */ = {isa = PBXBuildFile; fileRef = DC564F6328C114D200177588 /* sqlite3.c */; };
+		DC564F6628C114D200177588 /* sqlite3.h in Headers */ = {isa = PBXBuildFile; fileRef = DC564F6428C114D200177588 /* sqlite3.h */; };
+		DC564F6C28C1152100177588 /* nanojpeg_lib.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC564F6A28C1152100177588 /* nanojpeg_lib.hxx */; };
+		DC564F6F28C1154F00177588 /* tinyexif.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC564F6D28C1154F00177588 /* tinyexif.cxx */; };
+		DC564F7028C1154F00177588 /* tinyexif_lib.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC564F6E28C1154F00177588 /* tinyexif_lib.hxx */; };
 		DC56FCDE14CCCC4900A31CC3 /* MouseControl.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC56FCDC14CCCC4900A31CC3 /* MouseControl.cxx */; };
 		DC56FCDF14CCCC4900A31CC3 /* MouseControl.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC56FCDD14CCCC4900A31CC3 /* MouseControl.hxx */; };
 		DC5963132139FA14002736F2 /* Bankswitch.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC5963112139FA14002736F2 /* Bankswitch.cxx */; };
@@ -757,8 +764,6 @@
 		E09F4142201E9050004A3391 /* Audio.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E09F413E201E904F004A3391 /* Audio.cxx */; };
 		E09F4143201E9050004A3391 /* AudioChannel.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E09F413F201E904F004A3391 /* AudioChannel.cxx */; };
 		E09F4144201E9050004A3391 /* AudioChannel.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E09F4140201E904F004A3391 /* AudioChannel.hxx */; };
-		E0A383FA2589732E0062AA93 /* sqlite3.c in Sources */ = {isa = PBXBuildFile; fileRef = E0A383F82589732E0062AA93 /* sqlite3.c */; settings = {COMPILER_FLAGS = "-w"; }; };
-		E0A383FB2589732E0062AA93 /* sqlite3.h in Headers */ = {isa = PBXBuildFile; fileRef = E0A383F92589732E0062AA93 /* sqlite3.h */; };
 		E0A384142589741A0062AA93 /* KeyValueRepositorySqlite.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0A384022589741A0062AA93 /* KeyValueRepositorySqlite.cxx */; };
 		E0A384152589741A0062AA93 /* SqliteTransaction.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0A384032589741A0062AA93 /* SqliteTransaction.cxx */; };
 		E0A384172589741A0062AA93 /* SqliteDatabase.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0A384052589741A0062AA93 /* SqliteDatabase.hxx */; };
@@ -1166,6 +1171,13 @@
 		DC4AC6F10DC8DAEF00CD3AD2 /* SaveKey.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = SaveKey.cxx; sourceTree = "<group>"; };
 		DC4AC6F20DC8DAEF00CD3AD2 /* SaveKey.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = SaveKey.hxx; sourceTree = "<group>"; };
 		DC53B6AD1F3622DA00AA6BFB /* PointingDevice.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PointingDevice.cxx; sourceTree = "<group>"; };
+		DC564F5E28C10A8500177588 /* http_lib.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = http_lib.hxx; path = ../../lib/httplib/http_lib.hxx; sourceTree = "<group>"; };
+		DC564F5F28C10A8500177588 /* httplib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = httplib.h; path = ../../lib/httplib/httplib.h; sourceTree = "<group>"; };
+		DC564F6328C114D200177588 /* sqlite3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sqlite3.c; sourceTree = "<group>"; };
+		DC564F6428C114D200177588 /* sqlite3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sqlite3.h; sourceTree = "<group>"; };
+		DC564F6A28C1152100177588 /* nanojpeg_lib.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = nanojpeg_lib.hxx; sourceTree = "<group>"; };
+		DC564F6D28C1154F00177588 /* tinyexif.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = tinyexif.cxx; path = ../../lib/tinyexif/tinyexif.cxx; sourceTree = "<group>"; };
+		DC564F6E28C1154F00177588 /* tinyexif_lib.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = tinyexif_lib.hxx; path = ../../lib/tinyexif/tinyexif_lib.hxx; sourceTree = "<group>"; };
 		DC56FCDC14CCCC4900A31CC3 /* MouseControl.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MouseControl.cxx; sourceTree = "<group>"; };
 		DC56FCDD14CCCC4900A31CC3 /* MouseControl.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = MouseControl.hxx; sourceTree = "<group>"; };
 		DC5963112139FA14002736F2 /* Bankswitch.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Bankswitch.cxx; sourceTree = "<group>"; };
@@ -1592,8 +1604,6 @@
 		E09F413E201E904F004A3391 /* Audio.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Audio.cxx; sourceTree = "<group>"; };
 		E09F413F201E904F004A3391 /* AudioChannel.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AudioChannel.cxx; sourceTree = "<group>"; };
 		E09F4140201E904F004A3391 /* AudioChannel.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = AudioChannel.hxx; sourceTree = "<group>"; };
-		E0A383F82589732E0062AA93 /* sqlite3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sqlite3.c; path = sqlite/sqlite3.c; sourceTree = "<group>"; };
-		E0A383F92589732E0062AA93 /* sqlite3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sqlite3.h; path = sqlite/sqlite3.h; sourceTree = "<group>"; };
 		E0A384022589741A0062AA93 /* KeyValueRepositorySqlite.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = KeyValueRepositorySqlite.cxx; sourceTree = "<group>"; };
 		E0A384032589741A0062AA93 /* SqliteTransaction.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SqliteTransaction.cxx; sourceTree = "<group>"; };
 		E0A384052589741A0062AA93 /* SqliteDatabase.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SqliteDatabase.hxx; sourceTree = "<group>"; };
@@ -1693,7 +1703,6 @@
 				2D6050FA0898786C00C6DE89 /* gui */,
 				DCED2B5F28C1052300243559 /* lib */,
 				2D6050C60898771C00C6DE89 /* macos */,
-				E0A383F72589730A0062AA93 /* sqlite */,
 				2D6050C90898774B00C6DE89 /* unix */,
 			);
 			name = "Other Sources";
@@ -2435,6 +2444,42 @@
 			path = zlib;
 			sourceTree = "<group>";
 		};
+		DC564F5D28C10A6700177588 /* httplib */ = {
+			isa = PBXGroup;
+			children = (
+				DC564F5E28C10A8500177588 /* http_lib.hxx */,
+				DC564F5F28C10A8500177588 /* httplib.h */,
+			);
+			path = httplib;
+			sourceTree = "<group>";
+		};
+		DC564F6228C114A400177588 /* sqlite */ = {
+			isa = PBXGroup;
+			children = (
+				DC564F6328C114D200177588 /* sqlite3.c */,
+				DC564F6428C114D200177588 /* sqlite3.h */,
+			);
+			path = sqlite;
+			sourceTree = "<group>";
+		};
+		DC564F6728C114ED00177588 /* nanojpeg */ = {
+			isa = PBXGroup;
+			children = (
+				DC564F6A28C1152100177588 /* nanojpeg_lib.hxx */,
+			);
+			path = nanojpeg;
+			sourceTree = "<group>";
+		};
+		DC564F6828C114FA00177588 /* tinyexif */ = {
+			isa = PBXGroup;
+			children = (
+				DC564F6E28C1154F00177588 /* tinyexif_lib.hxx */,
+				DC564F6D28C1154F00177588 /* tinyexif.cxx */,
+			);
+			name = tinyexif;
+			path = ../os/tinyexif;
+			sourceTree = "<group>";
+		};
 		DC6F394621B897AD00897AD8 /* exception */ = {
 			isa = PBXGroup;
 			children = (
@@ -2567,9 +2612,13 @@
 		DCED2B5F28C1052300243559 /* lib */ = {
 			isa = PBXGroup;
 			children = (
-				DC3EE83B1E2C0E4400905161 /* zlib */,
-				DCD6FC5A11C281A1005DA767 /* libpng */,
+				DC564F5D28C10A6700177588 /* httplib */,
 				DC816CF32572F8B400FBCCDA /* json */,
+				DCD6FC5A11C281A1005DA767 /* libpng */,
+				DC564F6728C114ED00177588 /* nanojpeg */,
+				DC564F6228C114A400177588 /* sqlite */,
+				DC564F6828C114FA00177588 /* tinyexif */,
+				DC3EE83B1E2C0E4400905161 /* zlib */,
 			);
 			name = lib;
 			path = ../lib;
@@ -2609,15 +2658,6 @@
 				E08FCD5123A037EB0051F59B /* QisBlitter.hxx */,
 			);
 			name = sdl_blitter;
-			sourceTree = "<group>";
-		};
-		E0A383F72589730A0062AA93 /* sqlite */ = {
-			isa = PBXGroup;
-			children = (
-				E0A383F82589732E0062AA93 /* sqlite3.c */,
-				E0A383F92589732E0062AA93 /* sqlite3.h */,
-			);
-			name = sqlite;
 			sourceTree = "<group>";
 		};
 		E0A384012589741A0062AA93 /* sqlite */ = {
@@ -2677,6 +2717,7 @@
 				E034A5EF209FB25D00C89E9E /* EmulationTiming.hxx in Headers */,
 				DC3EE86A1E2C0E6D00905161 /* trees.h in Headers */,
 				2D9173D009BA90380026E9FF /* Cart4K.hxx in Headers */,
+				DC564F6028C10A8500177588 /* http_lib.hxx in Headers */,
 				2D9173D109BA90380026E9FF /* CartAR.hxx in Headers */,
 				2D9173D209BA90380026E9FF /* CartCV.hxx in Headers */,
 				2D9173D309BA90380026E9FF /* CartDPC.hxx in Headers */,
@@ -2725,6 +2766,7 @@
 				2D9173FA09BA90380026E9FF /* FrameBuffer.hxx in Headers */,
 				E08FCD5923A037EB0051F59B /* BlitterFactory.hxx in Headers */,
 				2D9173FB09BA90380026E9FF /* Settings.hxx in Headers */,
+				DC564F6128C10A8500177588 /* httplib.h in Headers */,
 				2D91740009BA90380026E9FF /* AboutDialog.hxx in Headers */,
 				DC2ABA64259BD56F007E57D3 /* AbstractKeyValueRepositorySqlite.hxx in Headers */,
 				DCF3A6EE1DFC75E3008A8AF3 /* DelayQueueMember.hxx in Headers */,
@@ -2778,6 +2820,7 @@
 				2D91741F09BA90380026E9FF /* AboutBox.h in Headers */,
 				DC84FC572677C64200E60ADE /* CartARMWidget.hxx in Headers */,
 				2D91742009BA90380026E9FF /* ConsoleFont.hxx in Headers */,
+				DC564F6628C114D200177588 /* sqlite3.h in Headers */,
 				2D91742109BA90380026E9FF /* Font.hxx in Headers */,
 				2D91742209BA90380026E9FF /* Debugger.hxx in Headers */,
 				2D91742309BA90380026E9FF /* DebuggerParser.hxx in Headers */,
@@ -2827,6 +2870,7 @@
 				DC21E5C021CA903E007D0E1A /* OSystemMACOS.hxx in Headers */,
 				DCFB9FAC1ECA2609004FD69B /* DelayQueueIteratorImpl.hxx in Headers */,
 				E0A3841D2589741A0062AA93 /* KeyValueRepositorySqlite.hxx in Headers */,
+				DC564F6C28C1152100177588 /* nanojpeg_lib.hxx in Headers */,
 				E08FCD5823A037EB0051F59B /* QisBlitter.hxx in Headers */,
 				DCA078351F8C1B04008EFEE5 /* SDL_lib.hxx in Headers */,
 				DCDA03B11A2009BB00711920 /* CartWD.hxx in Headers */,
@@ -2870,6 +2914,7 @@
 				DCC6A4B320A2622500863C59 /* SimpleResampler.hxx in Headers */,
 				DC6DC91F205DB879004A5FC3 /* PhysicalJoystick.hxx in Headers */,
 				DC0984860D3985160073C852 /* CartSB.hxx in Headers */,
+				DC564F7028C1154F00177588 /* tinyexif_lib.hxx in Headers */,
 				DCDE647E23E6638E00EE3EFF /* MessageMenu.hxx in Headers */,
 				DCEC585E1E945175002F0246 /* DelayQueueIterator.hxx in Headers */,
 				DC6F394A21B897C700897AD8 /* FatalEmulationError.hxx in Headers */,
@@ -3005,7 +3050,6 @@
 				DCAAE5E51715887B0080BB82 /* CartF4SCWidget.hxx in Headers */,
 				DC816CF62572F92A00FBCCDA /* json.hxx in Headers */,
 				DCAAE5E71715887B0080BB82 /* CartF4Widget.hxx in Headers */,
-				E0A383FB2589732E0062AA93 /* sqlite3.h in Headers */,
 				DC5963142139FA14002736F2 /* Bankswitch.hxx in Headers */,
 				DCAAE5E91715887B0080BB82 /* CartF6SCWidget.hxx in Headers */,
 				DCAAE5EB1715887B0080BB82 /* CartF6Widget.hxx in Headers */,
@@ -3163,7 +3207,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "m4 ../emucore/M6502.m4 > M6502.ins\n";
+			shellScript = "m4 ../../emucore/M6502.m4 > M6502.ins\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -3261,6 +3305,7 @@
 				2D9174BB09BA90380026E9FF /* TabWidget.cxx in Sources */,
 				DC2ABA7825A0E178007E57D3 /* StellaDb.cxx in Sources */,
 				DC6A18FC19B3E67A00DEB242 /* CartMDM.cxx in Sources */,
+				DC564F6F28C1154F00177588 /* tinyexif.cxx in Sources */,
 				2D9174BD09BA90380026E9FF /* Widget.cxx in Sources */,
 				2D9174BE09BA90380026E9FF /* CartUA.cxx in Sources */,
 				DC3EE86E1E2C0E6D00905161 /* zutil.c in Sources */,
@@ -3321,7 +3366,6 @@
 				DC73BD891915E5E3003FAFAD /* FBSurface.cxx in Sources */,
 				2D91750209BA90380026E9FF /* ToggleBitWidget.cxx in Sources */,
 				E0A3841B2589741A0062AA93 /* SqliteDatabase.cxx in Sources */,
-				E0A383FA2589732E0062AA93 /* sqlite3.c in Sources */,
 				E050876E25A1337400E4B62A /* OSystemStandalone.cxx in Sources */,
 				2D91750309BA90380026E9FF /* TogglePixelWidget.cxx in Sources */,
 				2D91750409BA90380026E9FF /* ToggleWidget.cxx in Sources */,
@@ -3450,6 +3494,7 @@
 				DCF3A6F31DFC75E3008A8AF3 /* LatchedInput.cxx in Sources */,
 				DC67270B1556F4860023653B /* CartCTY.cxx in Sources */,
 				DCE395F016CB0B5F008DB1E5 /* FSNodeZIP.cxx in Sources */,
+				DC564F6528C114D200177588 /* sqlite3.c in Sources */,
 				DCE395F216CB0B5F008DB1E5 /* ZipHandler.cxx in Sources */,
 				DCAAE5D31715887B0080BB82 /* Cart2KWidget.cxx in Sources */,
 				DCAAE5D51715887B0080BB82 /* Cart3FWidget.cxx in Sources */,
