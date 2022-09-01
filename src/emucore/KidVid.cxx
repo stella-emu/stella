@@ -42,7 +42,22 @@ KidVid::~KidVid()
   closeSampleFile();
 }
 
-#include "System.hxx"
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void KidVid::write(DigitalPin pin, bool value)
+{
+  // Change the pin state based on value
+  switch(pin)
+  {
+    // Pin 1: Signal tape running or stopped
+    case DigitalPin::One:
+      setPin(DigitalPin::One, value);
+      break;
+
+    default:
+      break;
+  }
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void KidVid::update()
@@ -92,26 +107,10 @@ void KidVid::update()
     openSampleFile();
   }
 
-  // Convert separate pin states into a 'register'
-  uInt8 IOPortA = 0b11110000;
-  if(getPin(DigitalPin::One))   IOPortA |= 0b0001;
-  if(getPin(DigitalPin::Two))   IOPortA |= 0b0010;
-  if(getPin(DigitalPin::Three)) IOPortA |= 0b0100;
-  if(getPin(DigitalPin::Four))  IOPortA |= 0b1000;
-
   // Is the tape running?
-  if((myTape != 0) && ((IOPortA & 0b0001) == 0b0001) && !myTapeBusy)
+  if(myTape != 0 && getPin(DigitalPin::One) && !myTapeBusy)
   {
-    IOPortA = (IOPortA & 0b11110111) | (((ourKVData[myIdx >> 3] << (myIdx & 0x07)) & 0x80) >> 4);
-
-    //cerr << endl << std::dec << IOPortA << " ";
-    // Now convert the register back into separate boolean values
-    //setPin(DigitalPin::One,   IOPortA & 0b0001);
-    //setPin(DigitalPin::Two,   IOPortA & 0b0010);
-    //setPin(DigitalPin::Three, IOPortA & 0b0100);
-    //if(IOPortA != 0xff)
-    //  int i = 0;
-    setPin(DigitalPin::Four, IOPortA & 0b1000);
+    setPin(DigitalPin::Four, (ourKVData[myIdx >> 3] << (myIdx & 0x07)) & 0x80);
 
     // increase to next bit
     ++myIdx;
@@ -131,7 +130,7 @@ void KidVid::update()
           else
           {
             myIdx = 36 * 8;//KVPause-KVData=36
-            cerr << endl << "Auto ";
+            //cerr << endl << "Auto ";
             setNextSong();
           }
         }
@@ -150,26 +149,10 @@ void KidVid::update()
       myBlockIdx = KVBLOCKBITS;
     }
   }
-#ifdef KID_TAPE
-  else
-    myTapeBusy = false;
-  //if(myFileOpened && ((IOPortA & 0b1000) == 0b1000) || myTapeBusy)
-  //{
-  //  for(int i = 0; i < 266 * 2; ++i)
-  //    getNextSampleByte();
-  //  cerr << mySongCounter << " ";
-  //}
-  ////else
-  //{
-  //  if((myTape != 0) && ((IOPortA & 0b1000) == 0b0000) && myTapeBusy)
-  //  {
-  //    //while(myBeep && myTapeBusy && ((IOPortA & 0b0001) == 0b0001)) // mySongCounter; ++i)
-  //    for(int i = mySongCounter / 8; i >= 0; --i)
-  //      getNextSampleByte();
-  //    cerr << mySongCounter << " ";
-  //  }
-  //}
-#endif
+  // emulate playing the songs (but MUCH faster!)
+  // TODO: this has to be done by an Audio class
+  for(int i = mySongCounter / 8; i >= 0; --i)
+    getNextSampleByte();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -235,6 +218,7 @@ void KidVid::closeSampleFile()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void KidVid::setNextSong()
 {
+#ifdef KID_TAPE
   if(myFileOpened)
   {
     cerr << endl << std::dec << mySongCounter << ", " << myFilePointer << endl;
@@ -244,33 +228,34 @@ void KidVid::setNextSong()
     mySharedData = (temp < 10);
     mySongCounter = ourSongStart[temp+1] - ourSongStart[temp];
 
-#ifdef KID_TAPE
     if(mySharedData)
       fseek(mySharedSampleFile, ourSongStart[temp], SEEK_SET);
     else
       fseek(mySampleFile, ourSongStart[temp], SEEK_SET);
-#endif
 
     ++myFilePointer;
     myTapeBusy = true;
   }
   else
+#endif
   {
     myBeep = true;
     myTapeBusy = true;
-    mySongCounter = 80*262;   /* delay needed for Harmony without tape */
+    mySongCounter = 10 * 80*262;   /* delay needed for Harmony without tape */
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void KidVid::getNextSampleByte()
 {
-#ifdef KID_TAPE
   static int oddeven = 0;
-#endif
+
   if(mySongCounter == 0)
-    mySampleByte = 0x80;
+  {
 #ifdef KID_TAPE
+    mySampleByte = 0x80;
+#endif
+  }
   else
   {
     oddeven = oddeven^1;
@@ -279,6 +264,7 @@ void KidVid::getNextSampleByte()
       mySongCounter--;
       myTapeBusy = (mySongCounter > 262 * 48) || !myBeep;
 
+#ifdef KID_TAPE
       if(myFileOpened)
       {
         if(mySharedData)
@@ -288,12 +274,12 @@ void KidVid::getNextSampleByte()
       }
       else
         mySampleByte = 0x80;
+#endif
 
       if(!myBeep && (mySongCounter == 0))
         setNextSong();
     }
   }
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

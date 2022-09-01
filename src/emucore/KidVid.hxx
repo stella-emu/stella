@@ -55,6 +55,16 @@ class KidVid : public Controller
 
   public:
     /**
+      Write the given value to the specified digital pin for this
+      controller.  Writing is only allowed to the pins associated
+      with the PIA.  Therefore you cannot write to pin six.
+
+      @param pin The pin of the controller jack to write to
+      @param value The value to write to the pin
+    */
+    void write(DigitalPin pin, bool value) override;
+
+    /**
       Update the entire digital and analog pin state according to the
       events currently set.
     */
@@ -95,17 +105,19 @@ class KidVid : public Controller
 #ifdef KID_TAPE
     // The file handles for the WAV files
     FILE *mySampleFile{nullptr}, *mySharedSampleFile{nullptr};
-#endif
-
     // Indicates if sample files have been successfully opened
     bool myFileOpened{false};
+
+    uInt32 myFilePointer{0};
+    bool mySharedData{false};
+    uInt8 mySampleByte{0};
+#endif
 
     // Is the tape currently 'busy' / in use?
     bool myTapeBusy{false};
 
-    uInt32 myFilePointer{0}, mySongCounter{0};
-    bool myBeep{false}, mySharedData{false};
-    uInt8 mySampleByte{0};
+    uInt32 mySongCounter{0};
+    bool myBeep{false};
     uInt32 myGame{0}, myTape{0};
     uInt32 myIdx{0}, myBlock{0}, myBlockIdx{0};
 
