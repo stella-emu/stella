@@ -29,7 +29,7 @@ distributions currently available are:
       Stella-6.7-x64.exe     (64-bit EXE installer)
       Stella-6.7-windows.zip (32/64 bit versions)
 
-  * Binary distribution for macOS 10.7 and above :
+  * Binary distribution for macOS 10.9 and above :
       Stella-6.7-macos.dmg (ARM M1 and 64-bit Intel)
 
   * Binary distribution for 64-bit Ubuntu :
