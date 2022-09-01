@@ -18,6 +18,8 @@
 #ifndef KIDVID_HXX
 #define KIDVID_HXX
 
+//#define KID_TAPE
+
 #include <cstdio>
 
 class Event;
@@ -48,7 +50,7 @@ class KidVid : public Controller
       @param romMd5 The md5 of the ROM using this controller
     */
     KidVid(Jack jack, const Event& event, const System& system,
-           const string& romMd5);
+           const string& baseDir, const string& romMd5);
     ~KidVid() override;
 
   public:
@@ -89,8 +91,11 @@ class KidVid : public Controller
     // supports, and if it's plugged into the right port
     bool myEnabled{false};
 
+    string myBaseDir;
+#ifdef KID_TAPE
     // The file handles for the WAV files
-    // FILE *mySampleFile, *mySharedSampleFile;
+    FILE *mySampleFile{nullptr}, *mySharedSampleFile{nullptr};
+#endif
 
     // Indicates if sample files have been successfully opened
     bool myFileOpened{false};

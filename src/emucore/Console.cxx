@@ -1028,7 +1028,7 @@ unique_ptr<Controller> Console::getControllerPort(const Controller::Type type,
       break;
 
     case Controller::Type::KidVid:
-      controller = make_unique<KidVid>(port, myEvent, *mySystem, romMd5);
+      controller = make_unique<KidVid>(port, myEvent, *mySystem, myOSystem.baseDir().getPath(), romMd5);
       break;
 
     case Controller::Type::MindLink:
