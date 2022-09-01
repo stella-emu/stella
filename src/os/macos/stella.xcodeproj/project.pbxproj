@@ -2482,8 +2482,7 @@
 				DC564F6E28C1154F00177588 /* tinyexif_lib.hxx */,
 				DC564F6D28C1154F00177588 /* tinyexif.cxx */,
 			);
-			name = tinyexif;
-			path = ../os/tinyexif;
+			path = tinyexif;
 			sourceTree = "<group>";
 		};
 		DC6F394621B897AD00897AD8 /* exception */ = {
