@@ -12,7 +12,7 @@
                               Release History
 ===========================================================================
 
-6.7 to 7.0 (XXXX XX, 202X)
+6.7 to 7.0 (XXXXX XX, 202X)
 
   * Enhanced ROM launcher to allow multiple images per ROM
     (TODO: controller support, doc)
