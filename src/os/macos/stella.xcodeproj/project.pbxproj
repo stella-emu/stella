@@ -852,7 +852,7 @@
 		2D05FF5F096E269100A518FE /* EventMappingWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = EventMappingWidget.hxx; sourceTree = "<group>"; };
 		2D05FF60096E269100A518FE /* InputDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = InputDialog.cxx; sourceTree = "<group>"; };
 		2D05FF61096E269100A518FE /* InputDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = InputDialog.hxx; sourceTree = "<group>"; };
-		2D113E090672BF2100317017 /* docs */ = {isa = PBXFileReference; explicitFileType = folder; name = docs; path = ../../docs; sourceTree = "<group>"; };
+		2D113E090672BF2100317017 /* docs */ = {isa = PBXFileReference; explicitFileType = folder; name = docs; path = ../../../docs; sourceTree = "<group>"; };
 		2D16A8E106324136005DF364 /* Stella.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Stella.icns; sourceTree = SOURCE_ROOT; };
 		2D17D98E08BC398400E47F69 /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = System/Library/Frameworks/ApplicationServices.framework; sourceTree = SDKROOT; };
 		2D1A6CD4085135F9007CDBA8 /* AboutBox.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = AboutBox.h; sourceTree = SOURCE_ROOT; };
@@ -1691,13 +1691,10 @@
 				2D605130089879BA00C6DE89 /* debugger */,
 				2D6050CC0898776500C6DE89 /* emucore */,
 				2D6050FA0898786C00C6DE89 /* gui */,
-				DC816CF32572F8B400FBCCDA /* json */,
-				DCD6FC5A11C281A1005DA767 /* libpng */,
+				DCED2B5F28C1052300243559 /* lib */,
 				2D6050C60898771C00C6DE89 /* macos */,
 				E0A383F72589730A0062AA93 /* sqlite */,
 				2D6050C90898774B00C6DE89 /* unix */,
-				2D60513708987A5400C6DE89 /* yacc */,
-				DC3EE83B1E2C0E4400905161 /* zlib */,
 			);
 			name = "Other Sources";
 			path = ..;
@@ -1983,7 +1980,8 @@
 				DCE395ED16CB0B5F008DB1E5 /* ZipHandler.cxx */,
 				DCE395EE16CB0B5F008DB1E5 /* ZipHandler.hxx */,
 			);
-			path = common;
+			name = common;
+			path = ../common;
 			sourceTree = "<group>";
 		};
 		2D6050C60898771C00C6DE89 /* macos */ = {
@@ -2215,7 +2213,8 @@
 				DC2AADAD194F389C0026C7A4 /* TIASurface.hxx */,
 				DC1B2EC21E50036100F62837 /* TrakBall.hxx */,
 			);
-			path = emucore;
+			name = emucore;
+			path = ../emucore;
 			sourceTree = "<group>";
 		};
 		2D6050FA0898786C00C6DE89 /* gui */ = {
@@ -2358,7 +2357,8 @@
 				2DDBEAD4084578BF00812C11 /* Widget.cxx */,
 				2DDBEAD5084578BF00812C11 /* Widget.hxx */,
 			);
-			path = gui;
+			name = gui;
+			path = ../gui;
 			sourceTree = "<group>";
 		};
 		2D605130089879BA00C6DE89 /* debugger */ = {
@@ -2387,8 +2387,10 @@
 				2D6CC10308C811A600B8F642 /* TiaZoomWidget.cxx */,
 				2D6CC10408C811A600B8F642 /* TiaZoomWidget.hxx */,
 				DC2874061F8F2278004BF21A /* TrapArray.hxx */,
+				2D60513708987A5400C6DE89 /* yacc */,
 			);
-			path = debugger;
+			name = debugger;
+			path = ../debugger;
 			sourceTree = "<group>";
 		};
 		2D60513708987A5400C6DE89 /* yacc */ = {
@@ -2493,7 +2495,8 @@
 				DC47455309C34BFA00EDDA3A /* RamCheat.cxx */,
 				DC47455409C34BFA00EDDA3A /* RamCheat.hxx */,
 			);
-			path = cheat;
+			name = cheat;
+			path = ../cheat;
 			sourceTree = "<group>";
 		};
 		DCD6FC5A11C281A1005DA767 /* libpng */ = {
@@ -2559,6 +2562,17 @@
 				DC68F88F1FA64C5300F4A2CC /* TIAConstants.hxx */,
 			);
 			path = tia;
+			sourceTree = "<group>";
+		};
+		DCED2B5F28C1052300243559 /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				DC3EE83B1E2C0E4400905161 /* zlib */,
+				DCD6FC5A11C281A1005DA767 /* libpng */,
+				DC816CF32572F8B400FBCCDA /* json */,
+			);
+			name = lib;
+			path = ../lib;
 			sourceTree = "<group>";
 		};
 		E06508B72272447200B341AC /* repository */ = {
