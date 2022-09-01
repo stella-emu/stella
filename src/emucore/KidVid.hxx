@@ -18,6 +18,8 @@
 #ifndef KIDVID_HXX
 #define KIDVID_HXX
 
+//#define KID_TAPE
+
 #include <cstdio>
 
 class Event;
@@ -48,10 +50,20 @@ class KidVid : public Controller
       @param romMd5 The md5 of the ROM using this controller
     */
     KidVid(Jack jack, const Event& event, const System& system,
-           const string& romMd5);
+           const string& baseDir, const string& romMd5);
     ~KidVid() override;
 
   public:
+    /**
+      Write the given value to the specified digital pin for this
+      controller.  Writing is only allowed to the pins associated
+      with the PIA.  Therefore you cannot write to pin six.
+
+      @param pin The pin of the controller jack to write to
+      @param value The value to write to the pin
+    */
+    void write(DigitalPin pin, bool value) override;
+
     /**
       Update the entire digital and analog pin state according to the
       events currently set.
@@ -89,18 +101,23 @@ class KidVid : public Controller
     // supports, and if it's plugged into the right port
     bool myEnabled{false};
 
+    string myBaseDir;
+#ifdef KID_TAPE
     // The file handles for the WAV files
-    // FILE *mySampleFile, *mySharedSampleFile;
-
+    FILE *mySampleFile{nullptr}, *mySharedSampleFile{nullptr};
     // Indicates if sample files have been successfully opened
     bool myFileOpened{false};
+
+    uInt32 myFilePointer{0};
+    bool mySharedData{false};
+    uInt8 mySampleByte{0};
+#endif
 
     // Is the tape currently 'busy' / in use?
     bool myTapeBusy{false};
 
-    uInt32 myFilePointer{0}, mySongCounter{0};
-    bool myBeep{false}, mySharedData{false};
-    uInt8 mySampleByte{0};
+    uInt32 mySongCounter{0};
+    bool myBeep{false};
     uInt32 myGame{0}, myTape{0};
     uInt32 myIdx{0}, myBlock{0}, myBlockIdx{0};
 
