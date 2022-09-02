@@ -20,8 +20,6 @@
 
 //#define KID_TAPE
 
-#include <cstdio>
-
 class Event;
 
 #include "bspf.hxx"
@@ -51,7 +49,7 @@ class KidVid : public Controller
     */
     KidVid(Jack jack, const Event& event, const System& system,
            const string& baseDir, const string& romMd5);
-    ~KidVid() override;
+    ~KidVid() override = default;
 
   public:
     /**
@@ -103,8 +101,8 @@ class KidVid : public Controller
 
     string myBaseDir;
 #ifdef KID_TAPE
-    // The file handles for the WAV files
-    FILE *mySampleFile{nullptr}, *mySharedSampleFile{nullptr};
+    // The file streams for the WAV files
+    std::ifstream mySampleFile, mySharedSampleFile;
     // Indicates if sample files have been successfully opened
     bool myFilesOpened{false};
 
