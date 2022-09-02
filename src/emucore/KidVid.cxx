@@ -15,8 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <cstdlib>
-
 #include "Event.hxx"
 #include "KidVid.hxx"
 
@@ -35,13 +33,6 @@ KidVid::KidVid(Jack jack, const Event& event, const System& system,
   else
     myEnabled = false;
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-KidVid::~KidVid()
-{
-  closeSampleFiles();
-}
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void KidVid::write(DigitalPin pin, bool value)
@@ -139,9 +130,9 @@ void KidVid::update()
 void KidVid::openSampleFiles()
 {
 #ifdef KID_TAPE
-  static constexpr char* const fileNames[6] = {
-    "kvs3.wav", "kvs1.wav", "kvs2.wav",
-    "kvb3.wav", "kvb1.wav", "kvb2.wav"
+  static constexpr const char* fileNames[6] = {
+    "KVS3.WAV", "KVS1.WAV", "KVS2.WAV",
+    "KVB3.WAV", "KVB1.WAV", "KVB2.WAV"
   };
   static constexpr uInt32 startSong[6] = {
     44 + 38,
@@ -157,17 +148,17 @@ void KidVid::openSampleFiles()
     int i = myGame == Smurfs ? myTape - 1 : myTape + 2;
     if(myTape == 4) i = 3;
 
-    mySampleFile = fopen((myBaseDir + fileNames[i]).c_str(), "rb");
-    if(mySampleFile != nullptr)
+    mySampleFile.open(myBaseDir + fileNames[i], std::ios::binary);
+    if(mySampleFile.is_open())
     {
 cerr << "opened file: " << fileNames[i] << endl;
-      mySharedSampleFile = fopen((myBaseDir + "kvshared.wav").c_str(), "rb");
-      if(mySharedSampleFile == nullptr)
-        fclose(mySampleFile);
+      mySharedSampleFile.open(myBaseDir + "KVSHARED.WAV", std::ios::binary);
+      if(!mySharedSampleFile.is_open())
+        mySampleFile.close();
       else
       {
 cerr << "opened file: " << "kvshared.wav" << endl;
-        fseek(mySampleFile, 45, SEEK_SET);
+        mySampleFile.seekg(45);
         myFilesOpened = true;
       }
     }
@@ -182,12 +173,12 @@ cerr << "opened file: " << "kvshared.wav" << endl;
 void KidVid::closeSampleFiles()
 {
 #ifdef KID_TAPE
-  if(myFilesOpened)
-  {
-    fclose(mySampleFile);
-    fclose(mySharedSampleFile);
-    myFilesOpened = false;
-  }
+  if(mySampleFile.is_open())
+    mySampleFile.close();
+  if(mySharedSampleFile.is_open())
+    mySharedSampleFile.close();
+
+  myFilesOpened = false;
 #endif
 }
 
@@ -204,7 +195,10 @@ void KidVid::setNextSong()
     mySharedData = (temp < 10);
     mySongCounter = ourSongStart[temp+1] - ourSongStart[temp];
 
-    fseek(mySharedData ? mySharedSampleFile : mySampleFile, ourSongStart[temp], SEEK_SET);
+    if(mySharedData)
+      mySharedSampleFile.seekg(ourSongStart[temp]);
+    else
+      mySampleFile.seekg(ourSongStart[temp]);
 
     ++myFilePointer;
     myTapeBusy = true;
@@ -238,7 +232,9 @@ void KidVid::getNextSampleByte()
       myTapeBusy = (mySongCounter > 262 * 48) || !myBeep;
 
 #ifdef KID_TAPE
-      mySampleByte = myFilesOpened ? getc(mySharedData ? mySharedSampleFile : mySampleFile) : 0x80;
+      mySampleByte = myFilesOpened
+        ? (mySharedData ? mySharedSampleFile.get() : mySampleFile.get())
+        : 0x80;
 #endif
 
       if(!myBeep && (mySongCounter == 0))
