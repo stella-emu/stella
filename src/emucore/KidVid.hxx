@@ -77,8 +77,8 @@ class KidVid : public Controller
 
   private:
     // Open/close a WAV sample file
-    void openSampleFile();
-    void closeSampleFile();
+    void openSampleFiles();
+    void closeSampleFiles();
 
     // Jump to next song in the sequence
     void setNextSong();
@@ -89,12 +89,12 @@ class KidVid : public Controller
 
   private:
     static constexpr uInt32
-      KVSMURFS = 0x44,
-      KVBBEARS = 0x48,
-      KVBLOCKS = 6,             // number of bytes / block
-      KVBLOCKBITS = KVBLOCKS*8, // number of bits / block
-      SONG_POS_SIZE   = 44+38+42+62+80+62,
-      SONG_START_SIZE = 104
+      Smurfs = 0x44,
+      BBears = 0x48,
+      Blocks = 6,             // number of bytes / block
+      BlockBits = Blocks*8, // number of bits / block
+      SongPosSize   = 44+38+42+62+80+62,
+      SongStartSize = 104
     ;
 
     // Whether the KidVid device is enabled (only for games that it
@@ -106,7 +106,7 @@ class KidVid : public Controller
     // The file handles for the WAV files
     FILE *mySampleFile{nullptr}, *mySharedSampleFile{nullptr};
     // Indicates if sample files have been successfully opened
-    bool myFileOpened{false};
+    bool myFilesOpened{false};
 
     uInt32 myFilePointer{0};
     bool mySharedData{false};
@@ -122,11 +122,11 @@ class KidVid : public Controller
     uInt32 myIdx{0}, myBlock{0}, myBlockIdx{0};
 
     // Number of blocks and data on tape
-    static const std::array<uInt8, KVBLOCKS> ourKVBlocks;
-    static const std::array<uInt8, KVBLOCKBITS> ourKVData;
+    static const std::array<uInt8, Blocks> ourBlocks;
+    static const std::array<uInt8, BlockBits> ourData;
 
-    static const std::array<uInt8, SONG_POS_SIZE> ourSongPositions;
-    static const std::array<uInt32, SONG_START_SIZE> ourSongStart;
+    static const std::array<uInt8, SongPosSize> ourSongPositions;
+    static const std::array<uInt32, SongStartSize> ourSongStart;
 
   private:
     // Following constructors and assignment operators not supported
