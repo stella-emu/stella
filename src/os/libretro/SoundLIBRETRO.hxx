@@ -151,10 +151,6 @@ class SoundLIBRETRO : public Sound
     bool toggleMute() override { return !myIsInitializedFlag; }
     string about() const override { return ""; }
 
-    bool playWav(const char*, uInt32, uInt32) override { return false; }
-    void stopWav() override { }
-    uInt32 wavSize() const override { return 0; }
-
   private:
     // Indicates if the sound device was successfully initialized
     bool myIsInitializedFlag{false};
