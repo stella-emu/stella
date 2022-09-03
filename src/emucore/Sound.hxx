@@ -103,7 +103,7 @@ class Sound
 
       @return  An array of supported devices
     */
-    const VariantList& supportedDevices() const {return myDevices;}
+    const VariantList& supportedDevices() const { return myDevices; }
 
     /**
       Play a WAV file.
