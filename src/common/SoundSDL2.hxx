@@ -164,7 +164,7 @@ class SoundSDL2 : public Sound
 
     // Current volume as a percentage (0 - 100)
     uInt32 myVolume{100};
-    float myVolumeFactor{0xffff};
+    static float myVolumeFactor;
 
     // Audio specification structure
     SDL_AudioSpec myHardwareSpec;
@@ -184,14 +184,20 @@ class SoundSDL2 : public Sound
 
     AudioSettings& myAudioSettings;
 
+    // WAV file sound variables
     SDL_AudioDeviceID myWavDevice{0};
     uInt8* myWavBuffer{nullptr};
+
+    static SDL_AudioSpec myWavSpec; // audio output format
+    static uInt8* myWavPos; // pointer to the audio buffer to be played
+    static uInt32 myWavLen; // remaining length of the sample we have to play
 
     string myAboutString;
 
   private:
-    // Callback function invoked by the SDL Audio library when it needs data
+    // Callback functions invoked by the SDL Audio library when it needs data
     static void callback(void* udata, uInt8* stream, int len);
+    static void wavCallback(void* udata, uInt8* stream, int len);
 
     // Following constructors and assignment operators not supported
     SoundSDL2() = delete;
