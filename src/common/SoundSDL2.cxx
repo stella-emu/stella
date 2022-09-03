@@ -28,15 +28,15 @@
 #include "System.hxx"
 #include "OSystem.hxx"
 #include "Console.hxx"
-#include "SoundSDL2.hxx"
 #include "AudioQueue.hxx"
 #include "EmulationTiming.hxx"
 #include "AudioSettings.hxx"
 #include "audio/SimpleResampler.hxx"
 #include "audio/LanczosResampler.hxx"
 #include "StaggeredLogger.hxx"
-
 #include "ThreadDebugging.hxx"
+
+#include "SoundSDL2.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SoundSDL2::SoundSDL2(OSystem& osystem, AudioSettings& audioSettings)
@@ -47,7 +47,8 @@ SoundSDL2::SoundSDL2(OSystem& osystem, AudioSettings& audioSettings)
 
   Logger::debug("SoundSDL2::SoundSDL2 started ...");
 
-  if (SDL_InitSubSystem(SDL_INIT_AUDIO) < 0) {
+  if(SDL_InitSubSystem(SDL_INIT_AUDIO) < 0)
+  {
     ostringstream buf;
 
     buf << "WARNING: Failed to initialize SDL audio system! " << endl
@@ -72,12 +73,14 @@ SoundSDL2::~SoundSDL2()
 {
   ASSERT_MAIN_THREAD;
 
-  stopWav();  // NOLINT
+  if(!myIsInitializedFlag)
+    return;
+
   if(myWavDevice)
+  {
     SDL_CloseAudioDevice(myWavDevice);
-
-  if (!myIsInitializedFlag) return;
-
+    SDL_FreeWAV(myWavBuffer);
+  }
   SDL_CloseAudioDevice(myDevice);
   SDL_QuitSubSystem(SDL_INIT_AUDIO);
 }
@@ -95,7 +98,8 @@ void SoundSDL2::queryHardware(VariantList& devices)
   Logger::debug(s.str());
 
   VarList::push_back(devices, "Default", 0);
-  for(int i = 0; i < numDevices; ++i) {
+  for(int i = 0; i < numDevices; ++i)
+  {
     ostringstream ss;
 
     ss << "  " << i + 1 << ": " << SDL_GetAudioDeviceName(i, 0);
@@ -144,7 +148,8 @@ bool SoundSDL2::openDevice()
 void SoundSDL2::setEnabled(bool enable)
 {
   myAudioSettings.setEnabled(enable);
-  if (myAudioQueue) myAudioQueue->ignoreOverflows(!enable);
+  if(myAudioQueue)
+    myAudioQueue->ignoreOverflows(!enable);
 
   Logger::debug(enable ? "SoundSDL2::setEnabled(true)" :
                 "SoundSDL2::setEnabled(false)");
@@ -199,11 +204,13 @@ void SoundSDL2::open(shared_ptr<AudioQueue> audioQueue,
 void SoundSDL2::close()
 {
   stopWav();
-  if(!myIsInitializedFlag) return;
+  if(!myIsInitializedFlag)
+    return;
 
   mute(true);
 
-  if (myAudioQueue) myAudioQueue->closeSink(myCurrentFragment);
+  if(myAudioQueue)
+    myAudioQueue->closeSink(myCurrentFragment);
   myAudioQueue.reset();
   myCurrentFragment = nullptr;
 }
@@ -233,21 +240,6 @@ bool SoundSDL2::toggleMute()
 
   myOSystem.frameBuffer().showTextMessage(message);
 
-  //ostringstream strval;
-  //uInt32 volume;
-  //// Now show an onscreen message
-  //if(enabled)
-  //{
-  //  volume = myVolume;
-  //  strval << volume << "%";
-  //}
-  //else
-  //{
-  //  volume = 0;
-  //  strval << "Muted";
-  //}
-  //myOSystem.frameBuffer().showMessage("Volume", strval.str(), volume);
-
   return enabled;
 }
 
@@ -268,9 +260,7 @@ void SoundSDL2::setVolume(uInt32 percent)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL2::adjustVolume(int direction)
 {
-  ostringstream strval;
   Int32 percent = myVolume;
-
   percent = BSPF::clamp(percent + direction * 2, 0, 100);
 
   setVolume(percent);
@@ -285,10 +275,8 @@ void SoundSDL2::adjustVolume(int direction)
   }
 
   // Now show an onscreen message
-  if(percent)
-    strval << percent << "%";
-  else
-    strval << "Off";
+  ostringstream strval;
+  (percent) ? strval << percent << "%" : strval << "Off";
   myOSystem.frameBuffer().showGaugeMessage("Volume", strval.str(), percent);
 }
 
@@ -302,7 +290,8 @@ string SoundSDL2::about() const
       << "  Channels: " << static_cast<uInt32>(myHardwareSpec.channels)
       << (myAudioQueue->isStereo() ? " (Stereo)" : " (Mono)") << endl
       << "  Preset:   ";
-  switch (myAudioSettings.preset()) {
+  switch(myAudioSettings.preset())
+  {
     case AudioSettings::Preset::custom:
       buf << "Custom" << endl;
       break;
@@ -319,8 +308,10 @@ string SoundSDL2::about() const
       buf << "Ultra quality, minimal lag" << endl;
       break;
   }
-  buf << "    Fragment size: " << static_cast<uInt32>(myHardwareSpec.samples) << " bytes" << endl
-      << "    Sample rate:   " << static_cast<uInt32>(myHardwareSpec.freq) << " Hz" << endl;
+  buf << "    Fragment size: " << static_cast<uInt32>(myHardwareSpec.samples)
+      << " bytes" << endl
+      << "    Sample rate:   " << static_cast<uInt32>(myHardwareSpec.freq)
+      << " Hz" << endl;
   buf << "    Resampling:    ";
   switch(myAudioSettings.resamplingQuality())
   {
@@ -346,7 +337,7 @@ void SoundSDL2::processFragment(float* stream, uInt32 length)
 {
   myResampler->fillFragment(stream, length);
 
-  for (uInt32 i = 0; i < length; ++i)
+  for(uInt32 i = 0; i < length; ++i)
     stream[i] *= myVolumeFactor;
 }
 
@@ -356,34 +347,41 @@ void SoundSDL2::initResampler()
   Resampler::NextFragmentCallback nextFragmentCallback = [this] () -> Int16* {
     Int16* nextFragment = nullptr;
 
-    if (myUnderrun)
+    if(myUnderrun)
       nextFragment = myAudioQueue->size() >= myEmulationTiming->prebufferFragmentCount() ?
           myAudioQueue->dequeue(myCurrentFragment) : nullptr;
     else
       nextFragment = myAudioQueue->dequeue(myCurrentFragment);
 
     myUnderrun = nextFragment == nullptr;
-    if (nextFragment) myCurrentFragment = nextFragment;
+    if(nextFragment)
+      myCurrentFragment = nextFragment;
 
     return nextFragment;
   };
 
   Resampler::Format formatFrom =
-    Resampler::Format(myEmulationTiming->audioSampleRate(), myAudioQueue->fragmentSize(), myAudioQueue->isStereo());
+    Resampler::Format(myEmulationTiming->audioSampleRate(),
+    myAudioQueue->fragmentSize(), myAudioQueue->isStereo());
   Resampler::Format formatTo =
-    Resampler::Format(myHardwareSpec.freq, myHardwareSpec.samples, myHardwareSpec.channels > 1);
+    Resampler::Format(myHardwareSpec.freq, myHardwareSpec.samples,
+    myHardwareSpec.channels > 1);
 
-  switch (myAudioSettings.resamplingQuality()) {
+  switch(myAudioSettings.resamplingQuality())
+  {
     case AudioSettings::ResamplingQuality::nearestNeightbour:
-      myResampler = make_unique<SimpleResampler>(formatFrom, formatTo, nextFragmentCallback);
+      myResampler = make_unique<SimpleResampler>(formatFrom, formatTo,
+                                                 nextFragmentCallback);
       break;
 
     case AudioSettings::ResamplingQuality::lanczos_2:
-      myResampler = make_unique<LanczosResampler>(formatFrom, formatTo, nextFragmentCallback, 2);
+      myResampler = make_unique<LanczosResampler>(formatFrom, formatTo,
+                                                  nextFragmentCallback, 2);
       break;
 
     case AudioSettings::ResamplingQuality::lanczos_3:
-      myResampler = make_unique<LanczosResampler>(formatFrom, formatTo, nextFragmentCallback, 3);
+      myResampler = make_unique<LanczosResampler>(formatFrom, formatTo,
+                                                  nextFragmentCallback, 3);
       break;
 
     default:
@@ -396,14 +394,14 @@ void SoundSDL2::callback(void* udata, uInt8* stream, int len)
 {
   auto* self = static_cast<SoundSDL2*>(udata);
 
-  if (self->myAudioQueue)
+  if(self->myAudioQueue)
     self->processFragment(reinterpret_cast<float*>(stream), len >> 2);
   else
     SDL_memset(stream, 0, len);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool SoundSDL2::playWav(const char* fileName, uInt32 position, uInt32 length)
+bool SoundSDL2::playWav(const string& fileName, uInt32 position, uInt32 length)
 {
   uInt32 wavLength{0};
 
@@ -411,7 +409,7 @@ bool SoundSDL2::playWav(const char* fileName, uInt32 position, uInt32 length)
   stopWav();
 
   // Load WAV file
-  SDL_AudioSpec* result = SDL_LoadWAV(fileName, &myWavSpec, &myWavBuffer, &wavLength);
+  auto* result = SDL_LoadWAV(fileName.c_str(), &myWavSpec, &myWavBuffer, &wavLength);
   if(result == nullptr || position > wavLength)
     return false;
 
@@ -452,6 +450,7 @@ void SoundSDL2::stopWav()
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 SoundSDL2::wavSize() const
 {
   return myWavBuffer ? myWavLen /*SDL_GetQueuedAudioSize(myWavDevice)*/ : 0;
@@ -465,6 +464,7 @@ void SoundSDL2::wavCallback(void* udata, uInt8* stream, int len)
   {
     if(static_cast<uInt32>(len) > myWavLen)
       len = myWavLen;
+
     // Mix volume adjusted WAV into silent buffer
     SDL_MixAudioFormat(stream, myWavPos, myWavSpec.format, len,
                        SDL_MIX_MAXVOLUME * myVolumeFactor);
@@ -473,6 +473,7 @@ void SoundSDL2::wavCallback(void* udata, uInt8* stream, int len)
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 float SoundSDL2::myVolumeFactor = 0xffff;
 SDL_AudioSpec SoundSDL2::myWavSpec;   // audio output format
 uInt8* SoundSDL2::myWavPos = nullptr; // pointer to the audio buffer to be played

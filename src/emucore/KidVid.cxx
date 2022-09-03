@@ -191,12 +191,11 @@ void KidVid::setNextSong()
     mySongLength = ourSongStart[temp + 1] - ourSongStart[temp];
 
     // Play the WAV file
-    const string fileName = (temp < 10) ? myBaseDir + "KVSHARED.WAV" : mySampleFile;
-    mySound.playWav(fileName.c_str(), ourSongStart[temp], mySongLength);
+    const string& fileName = (temp < 10) ? myBaseDir + "KVSHARED.WAV" : mySampleFile;
+    mySound.playWav(fileName, ourSongStart[temp], mySongLength);
 #ifdef DEBUG_BUILD
     cerr << fileName << ": " << (ourSongPositions[mySongPointer] & 0x7f) << endl;
 #endif
-
 
     mySongPlaying = myTapeBusy = true;
     ++mySongPointer;

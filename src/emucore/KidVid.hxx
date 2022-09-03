@@ -33,7 +33,7 @@ class Sound;
 
   This code was heavily borrowed from z26.
 
-  @author  Stephen Anthony & z26 team
+  @author  Thomas Jentzsch & z26 team
 */
 class KidVid : public Controller
 {
