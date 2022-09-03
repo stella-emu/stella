@@ -416,7 +416,7 @@ bool SoundSDL2::playWav(const char* fileName, uInt32 position, uInt32 length)
 
   // Load WAV file
   SDL_AudioSpec* result = SDL_LoadWAV(fileName, &wavSpec, &myWavBuffer, &wavLength);
-  if(result == NULL || position > wavLength)
+  if(result == nullptr || position > wavLength)
     return false;
 
   length = length
@@ -426,7 +426,7 @@ bool SoundSDL2::playWav(const char* fileName, uInt32 position, uInt32 length)
   // Open audio device
   const char* device = myDeviceId ? myDevices.at(myDeviceId).first.c_str() : nullptr;
 
-  myWavDevice = SDL_OpenAudioDevice(device, 0, &wavSpec, NULL, 0);
+  myWavDevice = SDL_OpenAudioDevice(device, 0, &wavSpec, nullptr, 0);
   if(!myWavDevice)
     return false;
 
