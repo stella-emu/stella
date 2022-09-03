@@ -114,19 +114,20 @@ class Sound
 
       @return  True, if the WAV file can be played
     */
-    virtual bool playWav(const char* fileName, uInt32 position = 0, uInt32 length = 0) = 0;
+    virtual bool playWav(const char* fileName, uInt32 position = 0,
+                         uInt32 length = 0) { return false; }
 
     /**
       Stop any currently playing WAV file.
     */
-    virtual void stopWav() = 0;
+    virtual void stopWav() { }
 
     /**
       Get the size of the WAV file which remains to be played.
 
       @return  The remaining number of bytes
     */
-    virtual uInt32 wavSize() const = 0;
+    virtual uInt32 wavSize() const { return 0; }
 
   protected:
     /**

@@ -72,7 +72,7 @@ SoundSDL2::~SoundSDL2()
 {
   ASSERT_MAIN_THREAD;
 
-  stopWav();
+  stopWav();  // NOLINT
   if(myWavDevice)
     SDL_CloseAudioDevice(myWavDevice);
 
@@ -409,7 +409,7 @@ bool SoundSDL2::playWav(const char* fileName, uInt32 position, uInt32 length)
   // - volume (requires callback using SDL_MixAudio)
   // - (un)mute
   SDL_AudioSpec wavSpec;
-  uInt32 wavLength;
+  uInt32 wavLength{0};
 
   // Stop any playing WAVs
   stopWav();
