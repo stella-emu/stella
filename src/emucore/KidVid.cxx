@@ -162,14 +162,17 @@ void KidVid::openSampleFiles()
     mySampleFile = myBaseDir + fileNames[i];
 
     std::ifstream f1, f2;
-    f1.open(mySampleFile, std::ios::binary);
-    f2.open(myBaseDir + "KVSHARED.WAV", std::ios::binary);
+    f1.open(mySampleFile);
+    f2.open(myBaseDir + "KVSHARED.WAV");
 
     myFilesFound = f1.is_open() && f2.is_open();
 
+#ifdef DEBUG_BUILD
     if(myFilesFound)
-      cerr << "found file: " << fileNames[i] << endl
+      cerr << endl
+           << "found file: " << fileNames[i] << endl
            << "found file: " << "KVSHARED.WAV" << endl;
+#endif
 
     mySongLength = 0;
     mySongPointer = firstSongPointer[i];
@@ -185,11 +188,15 @@ void KidVid::setNextSong()
     myBeep = (ourSongPositions[mySongPointer] & 0x80) == 0;
 
     const uInt8 temp = ourSongPositions[mySongPointer] & 0x7f;
-    mySongLength = ourSongStart[temp+1] - ourSongStart[temp];
+    mySongLength = ourSongStart[temp + 1] - ourSongStart[temp];
 
     // Play the WAV file
     const string fileName = (temp < 10) ? myBaseDir + "KVSHARED.WAV" : mySampleFile;
     mySound.playWav(fileName.c_str(), ourSongStart[temp], mySongLength);
+#ifdef DEBUG_BUILD
+    cerr << fileName << ": " << (ourSongPositions[mySongPointer] & 0x7f) << endl;
+#endif
+
 
     mySongPlaying = myTapeBusy = true;
     ++mySongPointer;

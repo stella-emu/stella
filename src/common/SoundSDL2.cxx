@@ -405,17 +405,13 @@ void SoundSDL2::callback(void* udata, uInt8* stream, int len)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool SoundSDL2::playWav(const char* fileName, uInt32 position, uInt32 length)
 {
-  // ToDos:
-  // - volume (requires callback using SDL_MixAudio)
-  // - (un)mute
-  SDL_AudioSpec wavSpec;
   uInt32 wavLength{0};
 
   // Stop any playing WAVs
   stopWav();
 
   // Load WAV file
-  SDL_AudioSpec* result = SDL_LoadWAV(fileName, &wavSpec, &myWavBuffer, &wavLength);
+  SDL_AudioSpec* result = SDL_LoadWAV(fileName, &myWavSpec, &myWavBuffer, &wavLength);
   if(result == nullptr || position > wavLength)
     return false;
 
@@ -423,18 +419,24 @@ bool SoundSDL2::playWav(const char* fileName, uInt32 position, uInt32 length)
     ? std::min(length, wavLength - position)
     : wavLength;
 
+  // Set the callback function
+  myWavSpec.callback = wavCallback;
+  myWavSpec.userdata = nullptr;
+
+  myWavPos = myWavBuffer + position;
+  myWavLen = length;
+
   // Open audio device
   const char* device = myDeviceId ? myDevices.at(myDeviceId).first.c_str() : nullptr;
 
-  myWavDevice = SDL_OpenAudioDevice(device, 0, &wavSpec, nullptr, 0);
+  myWavDevice = SDL_OpenAudioDevice(device, 0, &myWavSpec, nullptr, 0);
   if(!myWavDevice)
     return false;
 
   // Play audio
-  int success = SDL_QueueAudio(myWavDevice, myWavBuffer + position, length);
   SDL_PauseAudioDevice(myWavDevice, 0);
 
-  return success == 0;
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -452,7 +454,28 @@ void SoundSDL2::stopWav()
 
 uInt32 SoundSDL2::wavSize() const
 {
-  return myWavBuffer ? SDL_GetQueuedAudioSize(myWavDevice) : 0;
+  return myWavBuffer ? myWavLen /*SDL_GetQueuedAudioSize(myWavDevice)*/ : 0;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SoundSDL2::wavCallback(void* udata, uInt8* stream, int len)
+{
+  SDL_memset(stream, myWavSpec.silence, len);
+  if(myWavLen)
+  {
+    if(static_cast<uInt32>(len) > myWavLen)
+      len = myWavLen;
+    // Mix volume adjusted WAV into silent buffer
+    SDL_MixAudioFormat(stream, myWavPos, myWavSpec.format, len,
+                       SDL_MIX_MAXVOLUME * myVolumeFactor);
+    myWavPos += len;
+    myWavLen -= len;
+  }
+}
+
+float SoundSDL2::myVolumeFactor = 0xffff;
+SDL_AudioSpec SoundSDL2::myWavSpec;   // audio output format
+uInt8* SoundSDL2::myWavPos = nullptr; // pointer to the audio buffer to be played
+uInt32 SoundSDL2::myWavLen = 0;       // remaining length of the sample we have to play
 
 #endif  // SOUND_SUPPORT
