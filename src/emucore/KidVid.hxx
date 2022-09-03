@@ -18,9 +18,8 @@
 #ifndef KIDVID_HXX
 #define KIDVID_HXX
 
-//#define KID_TAPE
-
 class Event;
+class Sound;
 
 #include "bspf.hxx"
 #include "Control.hxx"
@@ -48,7 +47,7 @@ class KidVid : public Controller
       @param romMd5 The md5 of the ROM using this controller
     */
     KidVid(Jack jack, const Event& event, const System& system,
-           const string& baseDir, const string& romMd5);
+           const string& baseDir, Sound& sound, const string& romMd5);
     ~KidVid() override = default;
 
   public:
@@ -76,21 +75,16 @@ class KidVid : public Controller
   private:
     // Open/close a WAV sample file
     void openSampleFiles();
-    void closeSampleFiles();
 
     // Jump to next song in the sequence
     void setNextSong();
 
-    // Generate next sample byte
-    // TODO - rework this, perhaps send directly to sound class
-    void getNextSampleByte();
-
   private:
     static constexpr uInt32
-      Smurfs = 0x44,
-      BBears = 0x48,
-      Blocks = 6,             // number of bytes / block
-      BlockBits = Blocks*8, // number of bits / block
+      Smurfs        = 0x44,
+      BBears        = 0x48,
+      NumBlocks     = 6,            // number of bytes / block
+      NumBlockBits  = NumBlocks*8,  // number of bits / block
       SongPosSize   = 44+38+42+62+80+62,
       SongStartSize = 104
     ;
@@ -100,28 +94,27 @@ class KidVid : public Controller
     bool myEnabled{false};
 
     string myBaseDir;
-#ifdef KID_TAPE
-    // The file streams for the WAV files
-    std::ifstream mySampleFile, mySharedSampleFile;
-    // Indicates if sample files have been successfully opened
-    bool myFilesOpened{false};
+    Sound& mySound;
 
-    uInt32 myFilePointer{0};
-    bool mySharedData{false};
-    uInt8 mySampleByte{0};
-#endif
+    // Path and name of the current sample file
+    string mySampleFile;
+    // Indicates if the sample files have been found
+    bool myFilesFound{false};
+
+    uInt32 mySongPointer{0};
 
     // Is the tape currently 'busy' / in use?
     bool myTapeBusy{false};
 
-    uInt32 mySongCounter{0};
+    bool mySongPlaying{false};
+    uInt32 mySongLength{0};
     bool myBeep{false};
     uInt32 myGame{0}, myTape{0};
     uInt32 myIdx{0}, myBlock{0}, myBlockIdx{0};
 
     // Number of blocks and data on tape
-    static const std::array<uInt8, Blocks> ourBlocks;
-    static const std::array<uInt8, BlockBits> ourData;
+    static const std::array<uInt8, NumBlocks> ourBlocks;
+    static const std::array<uInt8, NumBlockBits> ourData;
 
     static const std::array<uInt8, SongPosSize> ourSongPositions;
     static const std::array<uInt32, SongStartSize> ourSongStart;

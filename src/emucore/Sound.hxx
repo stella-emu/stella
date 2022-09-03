@@ -23,6 +23,7 @@ class AudioQueue;
 class EmulationTiming;
 
 #include "bspf.hxx"
+#include "Variant.hxx"
 
 /**
   This class is an abstract base class for the various sound objects.
@@ -104,6 +105,29 @@ class Sound
     */
     const VariantList& supportedDevices() const {return myDevices;}
 
+    /**
+      Play a WAV file.
+
+      @param fileName  The name of the WAV file
+      @param position  The position to start playing
+      @param length    The played length
+
+      @return  True, if the WAV file can be played
+    */
+    virtual bool playWav(const char* fileName, uInt32 position = 0, uInt32 length = 0) = 0;
+
+    /**
+      Stop any currently playing WAV file.
+    */
+    virtual void stopWav() = 0;
+
+    /**
+      Get the size of the WAV file which remains to be played.
+
+      @return  The remaining number of bytes
+    */
+    virtual uInt32 wavSize() const = 0;
+
   protected:
     /**
       This method is called to query the audio devices.
@@ -111,6 +135,7 @@ class Sound
       @param devices  List of device names
     */
     virtual void queryHardware(VariantList& devices) = 0;
+
 
   protected:
     // The OSystem for this sound object
