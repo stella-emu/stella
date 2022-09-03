@@ -107,6 +107,29 @@ class SoundSDL2 : public Sound
     */
     string about() const override;
 
+    /**
+      Play a WAV file.
+
+      @param fileName  The name of the WAV file
+      @param position  The position to start playing
+      @param length    The played length
+
+      @return  True, if the WAV file can be played
+    */
+    bool playWav(const char* fileName, uInt32 position = 0, uInt32 length = 0) override;
+
+    /**
+      Stop any currently playing WAV file.
+    */
+    void stopWav() override;
+
+    /**
+      Get the size of the WAV file which remains to be played.
+
+      @return  The remaining number of bytes
+    */
+    uInt32 wavSize() const override;
+
   protected:
     /**
       This method is called to query the audio devices.
@@ -160,6 +183,9 @@ class SoundSDL2 : public Sound
     unique_ptr<Resampler> myResampler;
 
     AudioSettings& myAudioSettings;
+
+    SDL_AudioDeviceID myWavDevice{0};
+    uInt8* myWavBuffer{nullptr};
 
     string myAboutString;
 

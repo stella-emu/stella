@@ -72,6 +72,10 @@ SoundSDL2::~SoundSDL2()
 {
   ASSERT_MAIN_THREAD;
 
+  stopWav();
+  if(myWavDevice)
+    SDL_CloseAudioDevice(myWavDevice);
+
   if (!myIsInitializedFlag) return;
 
   SDL_CloseAudioDevice(myDevice);
@@ -194,6 +198,7 @@ void SoundSDL2::open(shared_ptr<AudioQueue> audioQueue,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL2::close()
 {
+  stopWav();
   if(!myIsInitializedFlag) return;
 
   mute(true);
@@ -209,6 +214,8 @@ bool SoundSDL2::mute(bool state)
   const bool oldstate = SDL_GetAudioDeviceStatus(myDevice) == SDL_AUDIO_PAUSED;
   if(myIsInitializedFlag)
     SDL_PauseAudioDevice(myDevice, state ? 1 : 0);
+  if(myWavDevice)
+    SDL_PauseAudioDevice(myWavDevice, state ? 1 : 0);
 
   return oldstate;
 }
@@ -393,6 +400,59 @@ void SoundSDL2::callback(void* udata, uInt8* stream, int len)
     self->processFragment(reinterpret_cast<float*>(stream), len >> 2);
   else
     SDL_memset(stream, 0, len);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool SoundSDL2::playWav(const char* fileName, uInt32 position, uInt32 length)
+{
+  // ToDos:
+  // - volume (requires callback using SDL_MixAudio)
+  // - (un)mute
+  SDL_AudioSpec wavSpec;
+  uInt32 wavLength;
+
+  // Stop any playing WAVs
+  stopWav();
+
+  // Load WAV file
+  SDL_AudioSpec* result = SDL_LoadWAV(fileName, &wavSpec, &myWavBuffer, &wavLength);
+  if(result == NULL || position > wavLength)
+    return false;
+
+  length = length
+    ? std::min(length, wavLength - position)
+    : wavLength;
+
+  // Open audio device
+  const char* device = myDeviceId ? myDevices.at(myDeviceId).first.c_str() : nullptr;
+
+  myWavDevice = SDL_OpenAudioDevice(device, 0, &wavSpec, NULL, 0);
+  if(!myWavDevice)
+    return false;
+
+  // Play audio
+  int success = SDL_QueueAudio(myWavDevice, myWavBuffer + position, length);
+  SDL_PauseAudioDevice(myWavDevice, 0);
+
+  return success == 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SoundSDL2::stopWav()
+{
+  if(myWavBuffer)
+  {
+    // Clean up
+    SDL_CloseAudioDevice(myWavDevice);
+    SDL_FreeWAV(myWavBuffer);
+
+    myWavBuffer = nullptr;
+  }
+}
+
+uInt32 SoundSDL2::wavSize() const
+{
+  return myWavBuffer ? SDL_GetQueuedAudioSize(myWavDevice) : 0;
 }
 
 #endif  // SOUND_SUPPORT
