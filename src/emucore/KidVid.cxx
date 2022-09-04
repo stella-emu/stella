@@ -65,7 +65,7 @@ void KidVid::update()
     const uInt32 songLength = ourSongStart[temp + 1] - ourSongStart[temp];
 
     // Play the remaining WAV file
-    const string& fileName = (temp < 10) ? myBaseDir + "KVSHARED.WAV" : mySampleFile;
+    const string& fileName = myBaseDir + ((temp < 10) ? "KVSHARED.WAV" : getFileName());
     mySound.playWav(fileName, ourSongStart[temp] + (songLength - mySongLength), mySongLength);
 
     myContinueSong = false;
@@ -75,6 +75,10 @@ void KidVid::update()
   {
     myTape = 0; // rewind Kid Vid tape
     myFilesFound = mySongPlaying = false;
+    mySound.stopWav();
+  }
+  else if(myEvent.get(Event::RightKeyboard6))
+  {
     mySound.stopWav();
   }
   if(!myTape)
@@ -158,7 +162,6 @@ bool KidVid::save(Serializer& out) const
   // Save WAV player state
   out.putInt(myTape);
   out.putBool(myFilesFound);
-  out.putString(mySampleFile);
   out.putBool(myTapeBusy);
   out.putBool(myBeep);
   out.putBool(mySongPlaying);
@@ -178,7 +181,6 @@ bool KidVid::load(Serializer& in)
   // Load WAV player state
   myTape = in.getInt();
   myFilesFound = in.getBool();
-  mySampleFile = in.getString();
   myTapeBusy = in.getBool();
   myBeep = in.getBool();
   mySongPlaying = in.getBool();
@@ -195,12 +197,22 @@ bool KidVid::load(Serializer& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void KidVid::openSampleFiles()
+const char* KidVid::getFileName() const
 {
   static constexpr const char* fileNames[6] = {
     "KVS3.WAV", "KVS1.WAV", "KVS2.WAV",
     "KVB3.WAV", "KVB1.WAV", "KVB2.WAV"
   };
+
+  int i = myGame == Game::Smurfs ? myTape - 1 : myTape + 2;
+  if(myTape == 4) i = 3;
+
+  return fileNames[i];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void KidVid::openSampleFiles()
+{
   static constexpr uInt32 firstSongPointer[6] = {
     44 + 38,
     0,
@@ -215,10 +227,8 @@ void KidVid::openSampleFiles()
     int i = myGame == Game::Smurfs ? myTape - 1 : myTape + 2;
     if(myTape == 4) i = 3;
 
-    mySampleFile = myBaseDir + fileNames[i];
-
     std::ifstream f1, f2;
-    f1.open(mySampleFile);
+    f1.open(myBaseDir + getFileName());
     f2.open(myBaseDir + "KVSHARED.WAV");
 
     myFilesFound = f1.is_open() && f2.is_open();
@@ -226,7 +236,7 @@ void KidVid::openSampleFiles()
 #ifdef DEBUG_BUILD
     if(myFilesFound)
       cerr << endl
-           << "found file: " << fileNames[i] << endl
+           << "found file: " << getFileName() << endl
            << "found file: " << "KVSHARED.WAV" << endl;
 #endif
 
@@ -247,8 +257,8 @@ void KidVid::setNextSong()
     mySongLength = ourSongStart[temp + 1] - ourSongStart[temp];
 
     // Play the WAV file
-    const string& fileName = (temp < 10) ? myBaseDir + "KVSHARED.WAV" : mySampleFile;
-    mySound.playWav(fileName, ourSongStart[temp], mySongLength);
+    const string& fileName = (temp < 10) ? "KVSHARED.WAV" : getFileName();
+    mySound.playWav(myBaseDir + fileName, ourSongStart[temp], mySongLength);
 #ifdef DEBUG_BUILD
     cerr << fileName << ": " << (ourSongPositions[mySongPointer] & 0x7f) << endl;
 #endif

@@ -89,6 +89,9 @@ class KidVid : public Controller
     string name() const override { return "KidVid"; }
 
   private:
+    // Get name of the current sample file
+    const char* getFileName() const;
+
     // Open/close a WAV sample file
     void openSampleFiles();
 
@@ -114,8 +117,6 @@ class KidVid : public Controller
     string myBaseDir;
     Sound& mySound;
 
-    // Path and name of the current sample file
-    string mySampleFile;
     // Indicates if the sample files have been found
     bool myFilesFound{false};
 
