@@ -18,11 +18,8 @@
 #ifndef KIDVID_HXX
 #define KIDVID_HXX
 
-//#define KID_TAPE
-
-#include <cstdio>
-
 class Event;
+class Sound;
 
 #include "bspf.hxx"
 #include "Control.hxx"
@@ -36,7 +33,7 @@ class Event;
 
   This code was heavily borrowed from z26.
 
-  @author  Stephen Anthony & z26 team
+  @author  Thomas Jentzsch & z26 team
 */
 class KidVid : public Controller
 {
@@ -50,8 +47,8 @@ class KidVid : public Controller
       @param romMd5 The md5 of the ROM using this controller
     */
     KidVid(Jack jack, const Event& event, const System& system,
-           const string& baseDir, const string& romMd5);
-    ~KidVid() override;
+           const string& baseDir, Sound& sound, const string& romMd5);
+    ~KidVid() override = default;
 
   public:
     /**
@@ -77,24 +74,19 @@ class KidVid : public Controller
 
   private:
     // Open/close a WAV sample file
-    void openSampleFile();
-    void closeSampleFile();
+    void openSampleFiles();
 
     // Jump to next song in the sequence
     void setNextSong();
 
-    // Generate next sample byte
-    // TODO - rework this, perhaps send directly to sound class
-    void getNextSampleByte();
-
   private:
     static constexpr uInt32
-      KVSMURFS = 0x44,
-      KVBBEARS = 0x48,
-      KVBLOCKS = 6,             // number of bytes / block
-      KVBLOCKBITS = KVBLOCKS*8, // number of bits / block
-      SONG_POS_SIZE   = 44+38+42+62+80+62,
-      SONG_START_SIZE = 104
+      Smurfs        = 0x44,
+      BBears        = 0x48,
+      NumBlocks     = 6,            // number of bytes / block
+      NumBlockBits  = NumBlocks*8,  // number of bits / block
+      SongPosSize   = 44+38+42+62+80+62,
+      SongStartSize = 104
     ;
 
     // Whether the KidVid device is enabled (only for games that it
@@ -102,31 +94,30 @@ class KidVid : public Controller
     bool myEnabled{false};
 
     string myBaseDir;
-#ifdef KID_TAPE
-    // The file handles for the WAV files
-    FILE *mySampleFile{nullptr}, *mySharedSampleFile{nullptr};
-    // Indicates if sample files have been successfully opened
-    bool myFileOpened{false};
+    Sound& mySound;
 
-    uInt32 myFilePointer{0};
-    bool mySharedData{false};
-    uInt8 mySampleByte{0};
-#endif
+    // Path and name of the current sample file
+    string mySampleFile;
+    // Indicates if the sample files have been found
+    bool myFilesFound{false};
+
+    uInt32 mySongPointer{0};
 
     // Is the tape currently 'busy' / in use?
     bool myTapeBusy{false};
 
-    uInt32 mySongCounter{0};
+    bool mySongPlaying{false};
+    uInt32 mySongLength{0};
     bool myBeep{false};
     uInt32 myGame{0}, myTape{0};
     uInt32 myIdx{0}, myBlock{0}, myBlockIdx{0};
 
     // Number of blocks and data on tape
-    static const std::array<uInt8, KVBLOCKS> ourKVBlocks;
-    static const std::array<uInt8, KVBLOCKBITS> ourKVData;
+    static const std::array<uInt8, NumBlocks> ourBlocks;
+    static const std::array<uInt8, NumBlockBits> ourData;
 
-    static const std::array<uInt8, SONG_POS_SIZE> ourSongPositions;
-    static const std::array<uInt32, SONG_START_SIZE> ourSongStart;
+    static const std::array<uInt8, SongPosSize> ourSongPositions;
+    static const std::array<uInt32, SongStartSize> ourSongStart;
 
   private:
     // Following constructors and assignment operators not supported
