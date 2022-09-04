@@ -108,7 +108,7 @@ class KidVid : public Controller
     ;
 
     // Whether the KidVid device is enabled (only for games that it
-    // supports, and if it's plugged into the right port
+    // supports, and if it's plugged into the right port)
     bool myEnabled{false};
 
     string myBaseDir;

@@ -175,7 +175,7 @@ bool KidVid::save(Serializer& out) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool KidVid::load(Serializer& in)
 {
-  // Save WAV player state
+  // Load WAV player state
   myTape = in.getInt();
   myFilesFound = in.getBool();
   mySampleFile = in.getString();
@@ -184,7 +184,7 @@ bool KidVid::load(Serializer& in)
   mySongPlaying = in.getBool();
   mySongPointer = in.getInt();
   mySongLength = in.getInt();
-  // Save tape input simulation state
+  // Load tape input simulation state
   myIdx = in.getInt();
   myBlockIdx = in.getInt();
   myBlock = in.getInt();
