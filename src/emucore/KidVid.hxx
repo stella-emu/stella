@@ -96,12 +96,14 @@ class KidVid : public Controller
     void setNextSong();
 
   private:
+    enum class Game {
+      Smurfs,
+      BBears
+    };
     static constexpr uInt32
-      Smurfs        = 0x44,
-      BBears        = 0x48,
-      NumBlocks     = 6,            // number of bytes / block
-      NumBlockBits  = NumBlocks*8,  // number of bits / block
-      SongPosSize   = 44+38+42+62+80+62,
+      NumBlocks     = 6,              // number of bytes / block
+      NumBlockBits  = NumBlocks * 8,  // number of bits / block
+      SongPosSize   = 44 + 38 + 42 + 62 + 80 + 62,
       SongStartSize = 104
     ;
 
@@ -117,15 +119,17 @@ class KidVid : public Controller
     // Indicates if the sample files have been found
     bool myFilesFound{false};
 
-    uInt32 mySongPointer{0};
-
     // Is the tape currently 'busy' / in use?
     bool myTapeBusy{false};
 
     bool mySongPlaying{false};
+    // Continue song after loading state?
+    bool myContinueSong{false};
+    uInt32 mySongPointer{0};
     uInt32 mySongLength{0};
     bool myBeep{false};
-    uInt32 myGame{0}, myTape{0};
+    Game myGame{Game::Smurfs};
+    uInt32 myTape{0};
     uInt32 myIdx{0}, myBlock{0}, myBlockIdx{0};
 
     // Number of blocks and data on tape
