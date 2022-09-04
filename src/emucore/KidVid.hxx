@@ -68,6 +68,22 @@ class KidVid : public Controller
     void update() override;
 
     /**
+      Saves the current state of this controller to the given Serializer.
+
+      @param out The serializer device to save to.
+      @return The result of the save.  True on success, false on failure.
+    */
+    bool save(Serializer& out) const override;
+
+    /**
+      Loads the current state of this controller from the given Serializer.
+
+      @param in The serializer device to load from.
+      @return The result of the load.  True on success, false on failure.
+    */
+    bool load(Serializer& in) override;
+
+    /**
       Returns the name of this controller.
     */
     string name() const override { return "KidVid"; }
