@@ -453,7 +453,7 @@ void SoundSDL2::stopWav()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 SoundSDL2::wavSize() const
 {
-  return myWavBuffer ? myWavLen /*SDL_GetQueuedAudioSize(myWavDevice)*/ : 0;
+  return myWavBuffer ? myWavLen : 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

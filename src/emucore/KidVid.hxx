@@ -68,11 +68,30 @@ class KidVid : public Controller
     void update() override;
 
     /**
+      Saves the current state of this controller to the given Serializer.
+
+      @param out The serializer device to save to.
+      @return The result of the save.  True on success, false on failure.
+    */
+    bool save(Serializer& out) const override;
+
+    /**
+      Loads the current state of this controller from the given Serializer.
+
+      @param in The serializer device to load from.
+      @return The result of the load.  True on success, false on failure.
+    */
+    bool load(Serializer& in) override;
+
+    /**
       Returns the name of this controller.
     */
     string name() const override { return "KidVid"; }
 
   private:
+    // Get name of the current sample file
+    const char* getFileName() const;
+
     // Open/close a WAV sample file
     void openSampleFiles();
 
@@ -80,36 +99,38 @@ class KidVid : public Controller
     void setNextSong();
 
   private:
+    enum class Game {
+      Smurfs,
+      BBears
+    };
     static constexpr uInt32
-      Smurfs        = 0x44,
-      BBears        = 0x48,
-      NumBlocks     = 6,            // number of bytes / block
-      NumBlockBits  = NumBlocks*8,  // number of bits / block
-      SongPosSize   = 44+38+42+62+80+62,
+      NumBlocks     = 6,              // number of bytes / block
+      NumBlockBits  = NumBlocks * 8,  // number of bits / block
+      SongPosSize   = 44 + 38 + 42 + 62 + 80 + 62,
       SongStartSize = 104
     ;
 
     // Whether the KidVid device is enabled (only for games that it
-    // supports, and if it's plugged into the right port
+    // supports, and if it's plugged into the right port)
     bool myEnabled{false};
 
     string myBaseDir;
     Sound& mySound;
 
-    // Path and name of the current sample file
-    string mySampleFile;
     // Indicates if the sample files have been found
     bool myFilesFound{false};
-
-    uInt32 mySongPointer{0};
 
     // Is the tape currently 'busy' / in use?
     bool myTapeBusy{false};
 
     bool mySongPlaying{false};
+    // Continue song after loading state?
+    bool myContinueSong{false};
+    uInt32 mySongPointer{0};
     uInt32 mySongLength{0};
     bool myBeep{false};
-    uInt32 myGame{0}, myTape{0};
+    Game myGame{Game::Smurfs};
+    uInt32 myTape{0};
     uInt32 myIdx{0}, myBlock{0}, myBlockIdx{0};
 
     // Number of blocks and data on tape

@@ -21,7 +21,7 @@
     <img src="graphics/stella_icon.png">
     <h2><b>A multi-platform Atari 2600 VCS emulator</b></h2>
 
-    <h4><b>Release 6.7</b></h4>
+    <h4><b>Release 7.0</b></h4>
     <br>
 
     <h2><b>User's Guide</b></h2>
@@ -282,6 +282,7 @@
     <li>Emulates <a href="https://en.wikipedia.org/wiki/CompuMate">Spectravideo CompuMate</a> system using your computer's keyboard,
       including mapping of CompuMate 'Backspace', 'Space' and 'Enter' functionality to
       to the actual keys on your keyboard</li>
+    <li>Emulates the Kid Vid Voice Module</li>
     <li>Supports autodetection for most common controller types</li>
     <li>Support for real Atari 2600 controllers using the
       <a href="http://www.grandideastudio.com/stelladaptor-2600">Stelladaptor</a> and
@@ -1048,6 +1049,17 @@
   </table>
 
   </br>
+  <p><b>Kid Vid Voice Module (can be remapped via Keyboard Controller)</b></p>
+
+  <table BORDER=2>
+    <tr><th>Function</th> <th>Key</th></tr>
+    <tr><td>Start game #1</td><td>8 (same as Right Pad Button '1')</td></tr>
+    <tr><td>Start game #2</td><td>9 (same as Right Pad Button '2')</td></tr>
+    <tr><td>Start game #3</td><td>0 (same as Right Pad Button '3')</td></tr>
+    <tr><td>Skip current song</td><td>P (same as Right Pad Button '6')</td></tr>
+  </table>
+
+  </br>
   <p><b>CompuMate Controller (cannot be remapped)</b></p>
 
   <table BORDER=2>
@@ -1071,7 +1083,6 @@
     <tr><td>[ </td><td>[ or Shift + 8 </td></tr>
     <tr><td>] </td><td>] or Shift + 9 </td></tr>
     <tr><td>&quot; </td><td>" (Shift + ') or Shift + 0 </td></tr>
-
   </table>
 
   </br>
@@ -5023,7 +5034,12 @@ Ms Pac-Man (Stella extended codes):
         <tr><td>CompuMate &#185</td><td>Spectravideo CompuMate (if either left or right is set, CompuMate is used for both).</td></tr>
         <tr><td>Lightgun</td><td>Atari XG-1 compatible Light Gun.</td></tr>
         <tr><td>MindLink &#185</td><td>MindLink controller.</td></tr>
-        <tr><td>KidVid</td><td>Kid Vid Voice Module, limited support (Right Keyboard controller buttons 1, 2 and 3 start the games, default mapping is 8, 9 and 0).</td></tr>
+        <tr><td>KidVid</td><td>Kid Vid Voice Module.</br>
+          Audio files can be downloaded e.g. from <a href="https://www.atariage.com/2600/archives/KidVidAudio/">AtariAge</a>.
+          Put unzipped .WAV files into Stella's base directory (see properties
+          or palette files below for details).</br>
+          Note: Stella supports playing the games without audio files too.
+        </td></tr>
         <tr><td>QuadTari</td><td><a href="#Quadtari">QuadTari</a> controller, limited support (see below).</td></tr>
       </table></td>
     </tr>
