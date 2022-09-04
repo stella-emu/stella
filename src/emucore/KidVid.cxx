@@ -139,6 +139,20 @@ void KidVid::update()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool KidVid::save(Serializer& out) const
+{
+  // TODO: save WAV player state
+  return Controller::save(out);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool KidVid::load(Serializer& in)
+{
+  // TODO: load WAV player state
+  return Controller::load(in);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void KidVid::openSampleFiles()
 {
   static constexpr const char* fileNames[6] = {
