@@ -79,7 +79,11 @@ void KidVid::update()
   }
   else if(myEvent.get(Event::RightKeyboard6))
   {
-    mySound.stopWav();
+    // Some first songs trigger a sequence of timed actions, they cannot be skipped
+    if(mySongPointer &&
+        ourSongPositions[mySongPointer - 1] != 0 && // First song of all BBears games
+        ourSongPositions[mySongPointer - 1] != 11)  // First song of Harmony Smurf
+      mySound.stopWav();
   }
   if(!myTape)
   {
@@ -135,7 +139,7 @@ void KidVid::update()
     if(mySongPlaying)
     {
       mySongLength = mySound.wavSize();
-      myTapeBusy = (mySongLength > 262 * 48) || !myBeep;
+      myTapeBusy = (mySongLength > 262 * ClickFrames) || !myBeep;
       // Check for end of played sample
       if(mySongLength == 0)
       {
@@ -151,7 +155,7 @@ void KidVid::update()
     if(mySongLength)
     {
       --mySongLength;
-      myTapeBusy = (mySongLength > 48);
+      myTapeBusy = (mySongLength > ClickFrames);
     }
   }
 }
@@ -254,7 +258,7 @@ void KidVid::setNextSong()
     myBeep = (ourSongPositions[mySongPointer] & 0x80) == 0;
 
     const uInt8 temp = ourSongPositions[mySongPointer] & 0x7f;
-    mySongLength = ourSongStart[temp + 1] - ourSongStart[temp];
+    mySongLength = ourSongStart[temp + 1] - ourSongStart[temp] - 262 * ClickFrames;
 
     // Play the WAV file
     const string& fileName = (temp < 10) ? "KVSHARED.WAV" : getFileName();
