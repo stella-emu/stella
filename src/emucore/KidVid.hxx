@@ -107,7 +107,8 @@ class KidVid : public Controller
       NumBlocks     = 6,              // number of bytes / block
       NumBlockBits  = NumBlocks * 8,  // number of bits / block
       SongPosSize   = 44 + 38 + 42 + 62 + 80 + 62,
-      SongStartSize = 104
+      SongStartSize = 104,
+      ClickFrames = 48                // eliminate click noise at song end
     ;
 
     // Whether the KidVid device is enabled (only for games that it
@@ -126,6 +127,7 @@ class KidVid : public Controller
     bool mySongPlaying{false};
     // Continue song after loading state?
     bool myContinueSong{false};
+
     uInt32 mySongPointer{0};
     uInt32 mySongLength{0};
     bool myBeep{false};
