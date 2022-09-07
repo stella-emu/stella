@@ -258,7 +258,7 @@ void KidVid::setNextSong()
     myBeep = (ourSongPositions[mySongPointer] & 0x80) == 0;
 
     const uInt8 temp = ourSongPositions[mySongPointer] & 0x7f;
-    mySongLength = ourSongStart[temp + 1] - ourSongStart[temp] - 262 * ClickFrames;
+    mySongLength = ourSongStart[temp + 1] - ourSongStart[temp];
 
     // Play the WAV file
     const string& fileName = (temp < 10) ? "KVSHARED.WAV" : getFileName();
