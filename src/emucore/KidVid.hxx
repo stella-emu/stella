@@ -41,13 +41,14 @@ class KidVid : public Controller
     /**
       Create a new KidVid controller plugged into the specified jack
 
-      @param jack   The jack the controller is plugged into
-      @param event  The event object to use for events
-      @param system The system using this controller
-      @param romMd5 The md5 of the ROM using this controller
+      @param jack    The jack the controller is plugged into
+      @param event   The event object to use for events
+      @param osystem The OSystem object to use
+      @param system  The system using this controller
+      @param romMd5  The md5 of the ROM using this controller
     */
-    KidVid(Jack jack, const Event& event, const System& system,
-           const string& baseDir, Sound& sound, const string& romMd5);
+    KidVid(Jack jack, const Event& event, const OSystem& osystem,
+           const System& system, const string& romMd5);
     ~KidVid() override = default;
 
   public:
@@ -115,8 +116,7 @@ class KidVid : public Controller
     // supports, and if it's plugged into the right port)
     bool myEnabled{false};
 
-    string myBaseDir;
-    Sound& mySound;
+    const OSystem& myOSystem;
 
     // Indicates if the sample files have been found
     bool myFilesFound{false};
