@@ -15,17 +15,21 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include "Console.hxx"
 #include "Event.hxx"
+#include "FSNode.hxx"
+#include "OSystem.hxx"
 #include "Sound.hxx"
+#include "Switches.hxx"
+
 #include "KidVid.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-KidVid::KidVid(Jack jack, const Event& event, const System& system,
-               const string& baseDir, Sound& sound, const string& romMd5)
+KidVid::KidVid(Jack jack, const Event& event, const OSystem& osystem,
+               const System& system, const string& romMd5)
   : Controller(jack, event, system, Controller::Type::KidVid),
     myEnabled{myJack == Jack::Right},
-    myBaseDir{baseDir},
-    mySound{sound}
+    myOSystem{osystem}
 {
   // Right now, there are only two games that use the KidVid
   if(romMd5 == "ee6665683ebdb539e89ba620981cb0f6")
@@ -65,8 +69,8 @@ void KidVid::update()
     const uInt32 songLength = ourSongStart[temp + 1] - ourSongStart[temp];
 
     // Play the remaining WAV file
-    const string& fileName = myBaseDir + ((temp < 10) ? "KVSHARED.WAV" : getFileName());
-    mySound.playWav(fileName, ourSongStart[temp] + (songLength - mySongLength), mySongLength);
+    const string& fileName = myOSystem.baseDir().getPath() + ((temp < 10) ? "KVSHARED.WAV" : getFileName());
+    myOSystem.sound().playWav(fileName, ourSongStart[temp] + (songLength - mySongLength), mySongLength);
 
     myContinueSong = false;
   }
@@ -75,7 +79,7 @@ void KidVid::update()
   {
     myTape = 0; // rewind Kid Vid tape
     myFilesFound = mySongPlaying = false;
-    mySound.stopWav();
+    myOSystem.sound().stopWav();
   }
   else if(myEvent.get(Event::RightKeyboard6))
   {
@@ -83,7 +87,7 @@ void KidVid::update()
     if(mySongPointer &&
         ourSongPositions[mySongPointer - 1] != 0 && // First song of all BBears games
         ourSongPositions[mySongPointer - 1] != 11)  // First song of Harmony Smurf
-      mySound.stopWav();
+      myOSystem.sound().stopWav();
   }
   if(!myTape)
   {
@@ -93,6 +97,21 @@ void KidVid::update()
       myTape = 3;
     else if(myEvent.get(Event::RightKeyboard3))
       myTape = myGame == Game::BBears ? 4 : 1; // Berenstain Bears or Smurfs Save The Day?
+    // If no Keyboard controller is available, use SELECT and the same
+    // switches settings as for playing Smurfs without a Kid Vid.
+    else if(myEvent.get(Event::ConsoleSelect) && myOSystem.hasConsole())
+    {
+      // Harmony (2) : A B
+      // Handy (3)   : B A
+      // Greedy (1/4): B B
+      myTape = 1
+        + (myOSystem.console().switches().leftDifficultyA() ? 1 : 0)
+        + (myOSystem.console().switches().rightDifficultyA() ? 2 : 0);
+      if(myTape == 4) // ignore A A
+        myTape = 0;
+      else if(myTape == 1 && myGame == Game::BBears)
+        myTape = 4;
+    }
     if(myTape)
     {
       myIdx = myGame == Game::BBears ? NumBlockBits : 0; // KVData48/KVData44
@@ -138,7 +157,7 @@ void KidVid::update()
   {
     if(mySongPlaying)
     {
-      mySongLength = mySound.wavSize();
+      mySongLength = myOSystem.sound().wavSize();
       myTapeBusy = (mySongLength > 262 * ClickFrames) || !myBeep;
       // Check for end of played sample
       if(mySongLength == 0)
@@ -231,11 +250,8 @@ void KidVid::openSampleFiles()
     int i = myGame == Game::Smurfs ? myTape - 1 : myTape + 2;
     if(myTape == 4) i = 3;
 
-    std::ifstream f1, f2;
-    f1.open(myBaseDir + getFileName());
-    f2.open(myBaseDir + "KVSHARED.WAV");
-
-    myFilesFound = f1.is_open() && f2.is_open();
+    myFilesFound = FSNode(myOSystem.baseDir().getPath() + getFileName()).exists() &&
+                   FSNode(myOSystem.baseDir().getPath() + "KVSHARED.WAV").exists();
 
 #ifdef DEBUG_BUILD
     if(myFilesFound)
@@ -262,7 +278,8 @@ void KidVid::setNextSong()
 
     // Play the WAV file
     const string& fileName = (temp < 10) ? "KVSHARED.WAV" : getFileName();
-    mySound.playWav(myBaseDir + fileName, ourSongStart[temp], mySongLength);
+    myOSystem.sound().playWav(myOSystem.baseDir().getPath() + fileName,
+                              ourSongStart[temp], mySongLength);
 #ifdef DEBUG_BUILD
     cerr << fileName << ": " << (ourSongPositions[mySongPointer] & 0x7f) << endl;
 #endif
