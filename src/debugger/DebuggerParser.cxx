@@ -2135,7 +2135,6 @@ void DebuggerParser::executeStepWhile()
   }
   const Expression* expr = YaccParser::getResult();
   int ncycles = 0;
-  uInt32 count = 0;
 
   // Create a progress dialog box to show the progress searching through the
   // disassembly, since this may be a time-consuming operation
@@ -2150,9 +2149,7 @@ void DebuggerParser::executeStepWhile()
 
   do {
     ncycles += debugger.step(false);
-
     progress.incProgress();
-    ++count;
   } while (expr->evaluate() && !progress.isCancelled());
 
   progress.close();
