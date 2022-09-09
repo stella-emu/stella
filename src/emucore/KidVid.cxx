@@ -81,7 +81,8 @@ void KidVid::update()
     myFilesFound = mySongPlaying = false;
     myOSystem.sound().stopWav();
   }
-  else if(myEvent.get(Event::RightKeyboard6))
+  else if(myEvent.get(Event::RightKeyboard6) || myEvent.get(Event::ConsoleSelect) ||
+          (myOSystem.hasConsole() && !myOSystem.console().switches().tvColor()))
   {
     // Some first songs trigger a sequence of timed actions, they cannot be skipped
     if(mySongPointer &&
