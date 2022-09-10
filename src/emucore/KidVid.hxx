@@ -41,14 +41,16 @@ class KidVid : public Controller
     /**
       Create a new KidVid controller plugged into the specified jack
 
-      @param jack    The jack the controller is plugged into
-      @param event   The event object to use for events
-      @param osystem The OSystem object to use
-      @param system  The system using this controller
-      @param romMd5  The md5 of the ROM using this controller
+      @param jack      The jack the controller is plugged into
+      @param event     The event object to use for events
+      @param osystem   The OSystem object to use
+      @param system    The system using this controller
+      @param romMd5    The md5 of the ROM using this controller
+      @param callback  Called to pass messages back to the parent controller
     */
     KidVid(Jack jack, const Event& event, const OSystem& osystem,
-           const System& system, const string& romMd5);
+           const System& system, const string& romMd5,
+           const onMessageCallbackForced& callback);
     ~KidVid() override = default;
 
   public:
@@ -117,6 +119,9 @@ class KidVid : public Controller
     bool myEnabled{false};
 
     const OSystem& myOSystem;
+
+    // Sends messages back to the parent class
+    Controller::onMessageCallbackForced myCallback;
 
     // Indicates if the sample files have been found
     bool myFilesFound{false};
