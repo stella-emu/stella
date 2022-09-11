@@ -1028,8 +1028,15 @@ unique_ptr<Controller> Console::getControllerPort(const Controller::Type type,
       break;
 
     case Controller::Type::KidVid:
-      controller = make_unique<KidVid>(port, myEvent, myOSystem, *mySystem, romMd5);
+    {
+      Controller::onMessageCallbackForced callback = [&os = myOSystem](const string& msg, bool force) {
+        bool devSettings = os.settings().getBool("dev.settings");
+        if(force || os.settings().getBool(devSettings ? "dev.extaccess" : "plr.extaccess"))
+          os.frameBuffer().showTextMessage(msg);
+      };
+      controller = make_unique<KidVid>(port, myEvent, myOSystem, *mySystem, romMd5, callback);
       break;
+    }
 
     case Controller::Type::MindLink:
       controller = make_unique<MindLink>(port, myEvent, *mySystem);

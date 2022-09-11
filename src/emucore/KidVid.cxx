@@ -26,10 +26,12 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 KidVid::KidVid(Jack jack, const Event& event, const OSystem& osystem,
-               const System& system, const string& romMd5)
+               const System& system, const string& romMd5,
+               const onMessageCallbackForced& callback)
   : Controller(jack, event, system, Controller::Type::KidVid),
     myEnabled{myJack == Jack::Right},
-    myOSystem{osystem}
+    myOSystem{osystem},
+    myCallback{callback}
 {
   // Right now, there are only two games that use the KidVid
   if(romMd5 == "ee6665683ebdb539e89ba620981cb0f6")
@@ -115,10 +117,21 @@ void KidVid::update()
     }
     if(myTape)
     {
+      static constexpr uInt32 gameNumber[4] = { 3, 1, 2, 3 };
+      static constexpr const char* gameName[6] = {
+        "Harmony Smurf", "Handy Smurf", "Greedy Smurf",
+        "Big Number Hunt", "Great Letter Roundup", "Spooky Spelling Bee"
+      };
+
       myIdx = myGame == Game::BBears ? NumBlockBits : 0; // KVData48/KVData44
       myBlockIdx = NumBlockBits;
       myBlock = 0;
       openSampleFiles();
+
+      ostringstream msg;
+      msg << "Game #" << gameNumber[myTape - 1] << " - \""
+        << gameName[gameNumber[myTape - 1] + (myGame == Game::Smurfs ? -1 : 2)] << "\"";
+      myCallback(msg.str(), true);
     }
   }
 
@@ -281,6 +294,10 @@ void KidVid::setNextSong()
     const string& fileName = (temp < 10) ? "KVSHARED.WAV" : getFileName();
     myOSystem.sound().playWav(myOSystem.baseDir().getPath() + fileName,
                               ourSongStart[temp], mySongLength);
+    ostringstream msg;
+    msg << "Read song #" << mySongPointer << " (" << fileName << ")";
+    myCallback(msg.str(), false);
+
 #ifdef DEBUG_BUILD
     cerr << fileName << ": " << (ourSongPositions[mySongPointer] & 0x7f) << endl;
 #endif
