@@ -116,8 +116,8 @@ class SoundSDL2 : public Sound
 
       @return  True, if the WAV file can be played
     */
-    bool playWav(const string& fileName, uInt32 position = 0,
-                 uInt32 length = 0) override;
+    bool playWav(const string& fileName, const uInt32 position = 0,
+                 const uInt32 length = 0) override;
 
     /**
       Stop any currently playing WAV file.
@@ -186,6 +186,8 @@ class SoundSDL2 : public Sound
     AudioSettings& myAudioSettings;
 
     // WAV file sound variables
+    string myWavFilename{EmptyString};
+    uInt32 myWavLength{0};
     SDL_AudioDeviceID myWavDevice{0};
     uInt8* myWavBuffer{nullptr};
 

@@ -114,8 +114,8 @@ class Sound
 
       @return  True, if the WAV file can be played
     */
-    virtual bool playWav(const string& fileName, uInt32 position = 0,
-                         uInt32 length = 0) { return false; }
+    virtual bool playWav(const string& fileName, const uInt32 position = 0,
+                         const uInt32 length = 0) { return false; }
 
     /**
       Stop any currently playing WAV file.

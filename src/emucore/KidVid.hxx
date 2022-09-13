@@ -111,7 +111,8 @@ class KidVid : public Controller
       NumBlockBits  = NumBlocks * 8,  // number of bits / block
       SongPosSize   = 44 + 38 + 42 + 62 + 80 + 62,
       SongStartSize = 104,
-      ClickFrames = 48                // eliminate click noise at song end
+      TapeFrames    = 60,
+      ClickFrames   = 3               // eliminate click noise at song end
     ;
 
     // Whether the KidVid device is enabled (only for games that it
