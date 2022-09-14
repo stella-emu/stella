@@ -159,7 +159,7 @@ void SoundSDL2::setEnabled(bool enable)
 void SoundSDL2::open(shared_ptr<AudioQueue> audioQueue,
                      EmulationTiming* emulationTiming)
 {
-  string pre_about = myAboutString;
+  const string pre_about = myAboutString;
 
   // Do we need to re-open the sound device?
   // Only do this when absolutely necessary
@@ -344,12 +344,13 @@ void SoundSDL2::processFragment(float* stream, uInt32 length)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL2::initResampler()
 {
-  Resampler::NextFragmentCallback nextFragmentCallback = [this] () -> Int16* {
+  const Resampler::NextFragmentCallback nextFragmentCallback = [this] () -> Int16* {
     Int16* nextFragment = nullptr;
 
     if(myUnderrun)
-      nextFragment = myAudioQueue->size() >= myEmulationTiming->prebufferFragmentCount() ?
-          myAudioQueue->dequeue(myCurrentFragment) : nullptr;
+      nextFragment = myAudioQueue->size() >= myEmulationTiming->prebufferFragmentCount()
+        ? myAudioQueue->dequeue(myCurrentFragment)
+        : nullptr;
     else
       nextFragment = myAudioQueue->dequeue(myCurrentFragment);
 
@@ -360,10 +361,10 @@ void SoundSDL2::initResampler()
     return nextFragment;
   };
 
-  Resampler::Format formatFrom =
+  const Resampler::Format formatFrom =
     Resampler::Format(myEmulationTiming->audioSampleRate(),
     myAudioQueue->fragmentSize(), myAudioQueue->isStereo());
-  Resampler::Format formatTo =
+  const Resampler::Format formatTo =
     Resampler::Format(myHardwareSpec.freq, myHardwareSpec.samples,
     myHardwareSpec.channels > 1);
 
@@ -401,39 +402,44 @@ void SoundSDL2::callback(void* udata, uInt8* stream, int len)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool SoundSDL2::playWav(const string& fileName, uInt32 position, uInt32 length)
+bool SoundSDL2::playWav(const string& fileName, const uInt32 position,
+                        const uInt32 length)
 {
-  uInt32 wavLength{0};
-
-  // Stop any playing WAVs
-  stopWav();
-
   // Load WAV file
-  auto* result = SDL_LoadWAV(fileName.c_str(), &myWavSpec, &myWavBuffer, &wavLength);
-  if(result == nullptr || position > wavLength)
+  if(fileName != myWavFilename || myWavBuffer == nullptr)
+  {
+    if(myWavBuffer)
+    {
+      SDL_FreeWAV(myWavBuffer);
+      myWavBuffer = nullptr;
+    }
+    if(SDL_LoadWAV(fileName.c_str(), &myWavSpec, &myWavBuffer, &myWavLength) == nullptr)
+      return false;
+    // Set the callback function
+    myWavSpec.callback = wavCallback;
+    myWavSpec.userdata = nullptr;
+  }
+  if(position > myWavLength)
     return false;
 
-  length = length
-    ? std::min(length, wavLength - position)
-    : wavLength;
+  myWavFilename = fileName;
 
-  // Set the callback function
-  myWavSpec.callback = wavCallback;
-  myWavSpec.userdata = nullptr;
-
+  myWavLen = length
+    ? std::min(length, myWavLength - position)
+    : myWavLength;
   myWavPos = myWavBuffer + position;
-  myWavLen = length;
 
   // Open audio device
-  const char* device = myDeviceId ? myDevices.at(myDeviceId).first.c_str() : nullptr;
-
-  myWavDevice = SDL_OpenAudioDevice(device, 0, &myWavSpec, nullptr, 0);
   if(!myWavDevice)
-    return false;
+  {
+    const char* device = myDeviceId ? myDevices.at(myDeviceId).first.c_str() : nullptr;
 
-  // Play audio
-  SDL_PauseAudioDevice(myWavDevice, 0);
-
+    myWavDevice = SDL_OpenAudioDevice(device, 0, &myWavSpec, nullptr, 0);
+    if(!myWavDevice)
+      return false;
+    // Play audio
+    SDL_PauseAudioDevice(myWavDevice, 0);
+  }
   return true;
 }
 
@@ -443,9 +449,10 @@ void SoundSDL2::stopWav()
   if(myWavBuffer)
   {
     // Clean up
+    myWavLen = 0;
     SDL_CloseAudioDevice(myWavDevice);
+    myWavDevice = 0;
     SDL_FreeWAV(myWavBuffer);
-
     myWavBuffer = nullptr;
   }
 }

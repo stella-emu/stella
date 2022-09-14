@@ -141,7 +141,7 @@ void CartridgeARMWidget::saveOldState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeARMWidget::loadConfig()
 {
-  bool devSettings = instance().settings().getBool("dev.settings");
+  const bool devSettings = instance().settings().getBool("dev.settings");
   IntArray alist;
   IntArray vlist;
   BoolArray changed;
@@ -218,16 +218,18 @@ void CartridgeARMWidget::handleCommand(CommandSender* sender,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeARMWidget::handleChipType()
 {
-  bool devSettings = instance().settings().getBool("dev.settings");
+  const bool devSettings = instance().settings().getBool("dev.settings");
 
   myChipType->setEnabled(devSettings);
 
   if(devSettings)
   {
-    instance().settings().setValue("dev.thumb.chiptype", myChipType->getSelectedTag().toInt());
+    instance().settings().setValue("dev.thumb.chiptype",
+      myChipType->getSelectedTag().toInt());
 
-    Thumbulator::ChipPropsType chipProps
-      = myCart.setChipType(static_cast<Thumbulator::ChipType>(myChipType->getSelectedTag().toInt()));
+    const Thumbulator::ChipPropsType chipProps =
+      myCart.setChipType(static_cast<Thumbulator::ChipType>
+      (myChipType->getSelectedTag().toInt()));
 
     // update tooltip with currently selecte chip's properties
     string tip = myChipType->getToolTip(Common::Point(0, 0));
@@ -258,9 +260,8 @@ void CartridgeARMWidget::handleMamMode()
   // override MAM mode set by ROM
   const Int32 mode = myMamMode->getSelected();
 
-  string name = myMamMode->getSelectedName();
+  const string name = myMamMode->getSelectedName();
   myMamMode->setSelectedName(name + "XXX");
-
 
   instance().settings().setValue("dev.thumb.mammode", mode);
   myCart.setMamMode(static_cast<Thumbulator::MamModeType>(mode));

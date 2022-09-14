@@ -3088,7 +3088,7 @@ bool Thumbulator::isMamBuffered(uInt32 addr, AccessType accessType)
   else // e.g. LPC2104_05_06
   {
     // dual Flash bank
-    uInt32 bank = (addr & 0x80) ? 1 : 0;
+    const uInt32 bank = (addr & 0x80) ? 1 : 0;
 
     addr &= ~0x7F; // 128-bit address line
 

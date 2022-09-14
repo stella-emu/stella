@@ -447,7 +447,7 @@ const FSNode& LauncherDialog::currentDir() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::reload()
 {
-  bool extensions = instance().settings().getBool("launcherextensions");
+  const bool extensions = instance().settings().getBool("launcherextensions");
 
   myMD5List.clear();
   myList->setShowFileExtensions(extensions);
@@ -646,7 +646,7 @@ void LauncherDialog::setRomInfoFont(const Common::Size& area)
 {
   // TODO: Perhaps offer a setting to override the font used?
 
-  FontDesc FONTS[7] = {
+  const FontDesc FONTS[7] = {
     GUI::stella16x32tDesc, GUI::stella14x28tDesc, GUI::stella12x24tDesc,
     GUI::stellaLargeDesc, GUI::stellaMediumDesc,
     GUI::consoleMediumBDesc, GUI::consoleBDesc
@@ -1352,7 +1352,7 @@ void LauncherDialog::toggleSubDirs(bool toggle)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::toggleExtensions()
 {
-  bool extensions = !instance().settings().getBool("launcherextensions");
+  const bool extensions = !instance().settings().getBool("launcherextensions");
 
   instance().settings().setValue("launcherextensions", extensions);
   myList->setShowFileExtensions(extensions);
@@ -1365,7 +1365,7 @@ void LauncherDialog::toggleSorting()
   if(myList->inVirtualDir())
   {
     // Toggle between normal and alternative sorting of virtual directories
-    bool altSorting = !instance().settings().getBool("altsorting");
+    const bool altSorting = !instance().settings().getBool("altsorting");
 
     instance().settings().setValue("altsorting", altSorting);
     reload();

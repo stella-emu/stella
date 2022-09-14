@@ -169,8 +169,8 @@ void MouseControl::addLeftControllerModes(bool noswap)
     {
       ostringstream msg;
       msg << "Mouse is left " << myLeftController.name() << " controller";
-      Controller::Type type = myLeftController.type();
-      int id = noswap ? 0 : 1;
+      const Controller::Type type = myLeftController.type();
+      const int id = noswap ? 0 : 1;
       myModeList.emplace_back(type, id, type, id, msg.str());
     }
   }
@@ -190,8 +190,8 @@ void MouseControl::addRightControllerModes(bool noswap)
     {
       ostringstream msg;
       msg << "Mouse is right " << myRightController.name() << " controller";
-      Controller::Type type = myRightController.type();
-      int id = noswap ? 1 : 0;
+      const Controller::Type type = myRightController.type();
+      const int id = noswap ? 1 : 0;
       myModeList.emplace_back(type, id, type, id, msg.str());
     }
   }

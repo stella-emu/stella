@@ -60,7 +60,7 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
 
   xpos += buttonWidth + fontWidth;
 
-  int updButtonWidth = Dialog::buttonWidth("Check for Update" + ELLIPSIS);
+  const int updButtonWidth = Dialog::buttonWidth("Check for Update" + ELLIPSIS);
   myUpdateButton =
     new ButtonWidget(this, font, xpos, ypos, updButtonWidth, buttonHeight,
                      "Check for Update" + ELLIPSIS, kUpdateCmd);

@@ -480,7 +480,7 @@ void TimeMachineDialog::handleCommand(CommandSender* sender, int cmd,
 void TimeMachineDialog::initBar()
 {
   const RewindManager& r = instance().state().rewindManager();
-  IntArray cycles = r.cyclesList();
+  const IntArray cycles = r.cyclesList();
 
   // Set range and intervals for timeline
   const uInt32 maxValue = cycles.size() > 1 ? static_cast<uInt32>(cycles.size() - 1) : 0;
@@ -532,7 +532,7 @@ void TimeMachineDialog::handleWinds(Int32 numWinds)
     const uInt64 elapsed = instance().console().tia().cycles() - startCycles;
     if(elapsed > 0)
     {
-      string message = r.getUnitString(elapsed);
+      const string message = r.getUnitString(elapsed);
 
       // TODO: add message text from addState()
       myMessageWidget->setLabel((numWinds < 0 ? "(-" : "(+") + message + ")");

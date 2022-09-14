@@ -90,7 +90,7 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
   }
 
   // Add filtering
-  EditableWidget::TextFilter f = [&](char c)
+  const EditableWidget::TextFilter f = [&](char c)
   {
     switch(_base)
     {

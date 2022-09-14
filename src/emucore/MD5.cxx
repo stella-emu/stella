@@ -143,7 +143,7 @@ static void MD5Update(MD5_CTX* context, const uInt8* const input,
   auto index = static_cast<uInt32>((context->count[0] >> 3) & 0x3F);
 
   /* Update number of bits */
-  if ((context->count[0] += (inputLen << 3)) < (inputLen << 3))
+  if ((context->count[0] += (inputLen << 3)) < (inputLen << 3)) // NOLINT
     context->count[1]++;
   context->count[1] += (inputLen >> 29);
 

@@ -111,7 +111,7 @@ void RomAuditDialog::auditRoms()
   myResults1->setText("");
   myResults2->setText("");
 
-  FSNode node(auditPath);
+  const FSNode node(auditPath);
   FSList files;
   files.reserve(2048);
   node.getChildren(files, FSNode::ListMode::FilesOnly);

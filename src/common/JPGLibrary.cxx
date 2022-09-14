@@ -36,7 +36,7 @@ JPGLibrary::JPGLibrary(OSystem& osystem)
 void JPGLibrary::loadImage(const string& filename, FBSurface& surface,
                            VariantList& metaData)
 {
-  const auto loadImageERROR = [&](const char* s) {
+  const auto loadImageERROR = [](const char* s) {
     if(s)
       throw runtime_error(s);
   };

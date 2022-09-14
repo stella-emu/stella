@@ -122,7 +122,7 @@ void PromptWidget::handleMouseWheel(int x, int y, int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::printPrompt()
 {
-  string watches = instance().debugger().showWatches();
+  const string watches = instance().debugger().showWatches();
   if(watches.length() > 0)
     print(watches);
 
@@ -374,7 +374,7 @@ void PromptWidget::loadConfig()
     _firstTime = false;
 
     // Display greetings & prompt
-    string version = string("Stella ") + STELLA_VERSION + "\n";
+    const string version = string("Stella ") + STELLA_VERSION + "\n";
     print(version);
     print(PROMPT);
 
@@ -534,9 +534,7 @@ void PromptWidget::textCut()
 void PromptWidget::textCopy()
 {
 #if defined(PSEUDO_CUT_COPY_PASTE)
-  string text = getLine();
-
-  instance().eventHandler().copyText(text);
+  instance().eventHandler().copyText(getLine());
 #endif
 }
 
@@ -598,7 +596,7 @@ void PromptWidget::addToHistory(const char* str)
 
         do
         {
-          int prevJ = j;
+          const int prevJ = j;
           historyDir(j, +1);
           _history[prevJ] = _history[j];
         }
@@ -676,13 +674,13 @@ bool PromptWidget::execute()
   if(len > 0)
   {
     // Copy the user input to command
-    string command = getLine();
+    const string command = getLine();
 
     // Add the input to the history
     addToHistory(command.c_str());
 
     // Pass the command to the debugger, and print the result
-    string result = instance().debugger().run(command);
+    const string result = instance().debugger().run(command);
 
     // This is a bit of a hack
     // Certain commands remove the debugger dialog from underneath us,

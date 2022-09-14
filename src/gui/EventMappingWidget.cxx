@@ -121,8 +121,7 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
   myComboButton->setTarget(this);
   addFocusWidget(myComboButton);
 
-  VariantList combolist = EventHandler::getComboList();
-  myComboDialog = make_unique<ComboDialog>(boss, font, combolist);
+  myComboDialog = make_unique<ComboDialog>(boss, font, EventHandler::getComboList());
 
   // Show message for currently selected event
   xpos = HBORDER;
@@ -166,9 +165,7 @@ void EventMappingWidget::updateActions()
     ? EventMode::kMenuMode
     : EventMode::kEmulationMode;
 
-  StringList actions = EventHandler::getActionList(myEventGroup);
-
-  myActionsList->setList(actions);
+  myActionsList->setList(EventHandler::getActionList(myEventGroup));
   myActionSelected = myActionsList->getSelected();
   drawKeyMapping();
   enableButtons(true);

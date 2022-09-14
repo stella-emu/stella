@@ -29,7 +29,7 @@ namespace {
 
     json serializedMask = json::array();
 
-    for(StellaMod mod: {
+    for(const StellaMod mod: {
       StellaMod::KBDM_CTRL,
       StellaMod::KBDM_SHIFT,
       StellaMod::KBDM_ALT,
@@ -207,15 +207,16 @@ string KeyMap::getEventMappingDesc(const Event::Type event, const EventMode mode
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-KeyMap::MappingArray KeyMap::getEventMapping(const Event::Type event, const EventMode mode) const
+KeyMap::MappingArray KeyMap::getEventMapping(const Event::Type event,
+                                             const EventMode mode) const
 {
-  MappingArray map;
+  MappingArray ma;
 
   for (const auto& [_mapping, _event]: myMap)
     if (_event == event && _mapping.mode == mode)
-      map.push_back(_mapping);
+      ma.push_back(_mapping);
 
-  return map;
+  return ma;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

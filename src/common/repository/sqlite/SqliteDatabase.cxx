@@ -60,7 +60,7 @@ void SqliteDatabase::initialize()
 
   if (!dbInitialized) {
     if (myHandle) {
-      string emsg = sqlite3_errmsg(myHandle);
+      const string emsg = sqlite3_errmsg(myHandle);
 
       sqlite3_close_v2(myHandle);
       myHandle = nullptr;

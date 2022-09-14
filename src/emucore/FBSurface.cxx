@@ -191,8 +191,8 @@ void FBSurface::drawChar(const GUI::Font& font, uInt8 chr,
     bby = desc.bbx[chr].y;  // NOLINT
   }
 
-  uInt32 cx = tx + bbx;
-  uInt32 cy = ty + desc.ascent - bby - bbh;
+  const uInt32 cx = tx + bbx;
+  const uInt32 cy = ty + desc.ascent - bby - bbh;
 
   if(!checkBounds(cx , cy) || !checkBounds(cx + bbw - 1, cy + bbh - 1))
     return;

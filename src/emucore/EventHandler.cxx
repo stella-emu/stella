@@ -1539,7 +1539,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
             {
               StringList msg;
               const string saveOnExit = myOSystem.settings().getString("saveonexit");
-              bool activeTM = myOSystem.settings().getBool(
+              const bool activeTM = myOSystem.settings().getBool(
                 myOSystem.settings().getBool("dev.settings") ? "dev.timemachine" : "plr.timemachine");
 
 
@@ -1986,11 +1986,11 @@ void EventHandler::setComboMap()
     {
       for(const json& combo : mapping)
       {
-        int i = combo.at("combo").get<Event::Type>() - Event::Combo1,
-          j = 0;
-        json events = combo.at("events");
+        const int i = combo.at("combo").get<Event::Type>() - Event::Combo1;
+        int j = 0;
+        const json events = combo.at("events");
 
-        for(const json& event : events)
+        for(const json& event: events)
           myComboTable[i][j++] = event;
       }
     }
@@ -2297,7 +2297,7 @@ VariantList EventHandler::getComboList()
   {
     const Event::Type event = EventHandler::ourEmulActionList[i].event;
     // exclude combos events
-    if(!(event >= Event::Combo1 && event <= Event::Combo16))
+    if(event < Event::Combo1 || event > Event::Combo16)
     {
       buf << i;
       VarList::push_back(l, EventHandler::ourEmulActionList[i].action, buf.str());
@@ -2549,7 +2549,7 @@ void EventHandler::changeMouseControllerMode(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::changeMouseCursor(int direction)
 {
-  int cursor = BSPF::clampw(myOSystem.settings().getInt("cursor") + direction, 0, 3);
+  const int cursor = BSPF::clampw(myOSystem.settings().getInt("cursor") + direction, 0, 3);
 
   myOSystem.settings().setValue("cursor", cursor);
   myOSystem.frameBuffer().setCursorState();

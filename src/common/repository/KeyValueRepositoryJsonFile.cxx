@@ -23,7 +23,7 @@ using nlohmann::json;
 
 namespace {
   json jsonIfValid(const string& s) {
-    json parsed = json::parse(s, nullptr, false);
+    const json parsed = json::parse(s, nullptr, false);
 
     return parsed.is_discarded() ? json(s) : parsed;
   }

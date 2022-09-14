@@ -66,7 +66,7 @@ InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
   addTabWidget(myTab);
 
   // 1) Event mapper
-  int tabID = myTab->addTab(" Event Mappings ", TabWidget::AUTO_WIDTH);
+  const int tabID = myTab->addTab(" Event Mappings ", TabWidget::AUTO_WIDTH);
   myEventMapper = new EventMappingWidget(myTab, _font, 2, 2,
                                              myTab->getWidth(),
                                              myTab->getHeight() - VGAP);
@@ -110,7 +110,7 @@ void InputDialog::addDevicePortTab()
   WidgetArray wid;
 
   // Devices/ports
-  int tabID = myTab->addTab(" Devices & Ports ", TabWidget::AUTO_WIDTH);
+  const int tabID = myTab->addTab(" Devices & Ports ", TabWidget::AUTO_WIDTH);
 
   int xpos = HBORDER, ypos = VBORDER;
   int lwidth = _font.getStringWidth("Digital paddle sensitivity ");
@@ -282,11 +282,11 @@ void InputDialog::addMouseTab()
   VariantList items;
 
   // Mouse
-  int tabID = myTab->addTab("  Mouse  ", TabWidget::AUTO_WIDTH);
+  const int tabID = myTab->addTab("  Mouse  ", TabWidget::AUTO_WIDTH);
 
   int xpos = HBORDER, ypos = VBORDER;
   int lwidth = _font.getStringWidth("Use mouse as a controller ");
-  int pwidth = _font.getStringWidth("-UI, -Emulation");
+  const int pwidth = _font.getStringWidth("-UI, -Emulation");
 
   // Use mouse as controller
   VarList::push_back(items, "Always", "always");

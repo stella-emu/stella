@@ -94,7 +94,7 @@ void FileListWidget::setLocation(const FSNode& node, const string& select)
   // Now fill the list widget with the names from the file list,
   // even if cancelled
   StringList list;
-  size_t orgLen = _node.getShortPath().length();
+  const size_t orgLen = _node.getShortPath().length();
 
   _dirList.clear();
   _iconTypeList.clear();
@@ -193,7 +193,7 @@ void FileListWidget::selectParent()
   if(_node.hasParent())
   {
     string name = _node.getName();
-    FSNode parent(_node.getParent());
+    const FSNode parent(_node.getParent());
 
     _currentHistory->selected = selected().getName();
     addHistory(parent);
@@ -672,10 +672,10 @@ const FileListWidget::Icon* FileListWidget::getIcon(int i) const
     0b11111111111'11111111110
   };
   const int idx = static_cast<int>(IconType::numTypes);
-  static const Icon* small_icons[idx] = {
+  static const Icon* const small_icons[idx] = {
     &unknown_small, &rom_small, &directory_small, &zip_small, &up_small
   };
-  static const Icon* large_icons[idx] = {
+  static const Icon* const large_icons[idx] = {
     &unknown_large, &rom_large, &directory_large, &zip_large, &up_large,
   };
   const bool smallIcon = iconWidth() < 24;

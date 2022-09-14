@@ -167,7 +167,8 @@ void Dialog::initHelp()
   {
     if(_helpWidget == nullptr)
     {
-      string key = instance().eventHandler().getMappingDesc(Event::UIHelp, EventMode::kMenuMode);
+      const string key = instance().eventHandler().getMappingDesc(
+        Event::UIHelp, EventMode::kMenuMode);
 
       _helpWidget = new ButtonWidget(this, _font,
           _w - _font.getMaxCharWidth() * 3.5, 0,

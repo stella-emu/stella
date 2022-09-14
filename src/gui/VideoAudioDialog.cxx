@@ -115,7 +115,6 @@ void VideoAudioDialog::addDisplayTab()
   const int xpos = HBORDER;
   int ypos = VBORDER;
   WidgetArray wid;
-  VariantList items;
   const int tabID = myTab->addTab(" Display ", TabWidget::AUTO_WIDTH);
 
   // Video renderer
@@ -192,7 +191,8 @@ void VideoAudioDialog::addDisplayTab()
 
   // Add message concerning usage
   ypos = myTab->getHeight() - fontHeight - ifont.getFontHeight() - VGAP - VBORDER;
-  int iwidth = ifont.getStringWidth("(*) Change may require an application restart");
+  const int iwidth =
+    ifont.getStringWidth("(*) Change may require an application restart");
   new StaticTextWidget(myTab, ifont, xpos, ypos,
                        std::min(iwidth, _w - HBORDER * 2), ifont.getFontHeight(),
                        "(*) Change may require an application restart");
@@ -664,7 +664,7 @@ void VideoAudioDialog::loadConfig()
   // TV Mode
   myTVMode->setSelected(
     settings.getString("tv.filter"), "0");
-  int preset = settings.getInt("tv.filter");
+  const int preset = settings.getInt("tv.filter");
   handleTVModeChange(static_cast<NTSCFilter::Preset>(preset));
 
   // TV Custom adjustables

@@ -112,7 +112,7 @@ void Debugger::initialize()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBInitStatus Debugger::initializeVideo()
 {
-  string title = string("Stella ") + STELLA_VERSION + ": Debugger mode";
+  const string title = string("Stella ") + STELLA_VERSION + ": Debugger mode";
   return myOSystem.frameBuffer().createDisplay(
       title, BufferType::Debugger, mySize
   );
@@ -177,13 +177,13 @@ string Debugger::autoExec(StringList* history)
   ostringstream buf;
 
   // autoexec.script is always run
-  FSNode autoexec(myOSystem.baseDir().getPath() + "autoexec.script");
+  const FSNode autoexec(myOSystem.baseDir().getPath() + "autoexec.script");
   buf << "autoExec():" << endl
       << myParser->exec(autoexec, history) << endl;
 
   // Also, "romname.script" if present
   const string path = myOSystem.userDir().getPath() + myOSystem.romFile().getNameWithExt(".script");
-  FSNode romname(path);
+  const FSNode romname(path);
   buf << myParser->exec(romname, history) << endl;
 
   // Init builtins

@@ -477,7 +477,6 @@ void PaletteHandler::generateCustomPalette(ConsoleTiming timing) const
         float G = Y + dotProduct(IQ[chroma], IQG);
         float B = Y + dotProduct(IQ[chroma], IQB);
 
-
         if(R < 0) R = 0;
         if(G < 0) G = 0;
         if(B < 0) B = 0;
@@ -486,9 +485,9 @@ void PaletteHandler::generateCustomPalette(ConsoleTiming timing) const
         G = powf(G, 0.9F);
         B = powf(B, 0.9F);
 
-        int r = BSPF::clamp(R * 255.F, 0.F, 255.F);
-        int g = BSPF::clamp(G * 255.F, 0.F, 255.F);
-        int b = BSPF::clamp(B * 255.F, 0.F, 255.F);
+        const int r = BSPF::clamp(R * 255.F, 0.F, 255.F),
+                  g = BSPF::clamp(G * 255.F, 0.F, 255.F),
+                  b = BSPF::clamp(B * 255.F, 0.F, 255.F);
 
         ourCustomNTSCPalette[(chroma * NUM_LUMA + luma) << 1] = (r << 16) + (g << 8) + b;
       }
@@ -504,7 +503,7 @@ void PaletteHandler::generateCustomPalette(ConsoleTiming timing) const
     // colors 0, 1, 14 and 15 are grayscale
     for(int chroma = 2; chroma < NUM_CHROMA - 2; chroma++)
     {
-      int idx = NUM_CHROMA - 1 - chroma;
+      const int idx = NUM_CHROMA - 1 - chroma;
 
       UV[idx].x = SATURATION * sinf(offset - fixedShift * chroma);
       if ((idx & 1) == 0)
@@ -539,9 +538,9 @@ void PaletteHandler::generateCustomPalette(ConsoleTiming timing) const
         G = powf(G, 1.2F);
         B = powf(B, 1.2F);
 
-        int r = BSPF::clamp(R * 255.F, 0.F, 255.F);
-        int g = BSPF::clamp(G * 255.F, 0.F, 255.F);
-        int b = BSPF::clamp(B * 255.F, 0.F, 255.F);
+        const int r = BSPF::clamp(R * 255.F, 0.F, 255.F),
+                  g = BSPF::clamp(G * 255.F, 0.F, 255.F),
+                  b = BSPF::clamp(B * 255.F, 0.F, 255.F);
 
         ourCustomPALPalette[(chroma * NUM_LUMA + luma) << 1] = (r << 16) + (g << 8) + b;
       }

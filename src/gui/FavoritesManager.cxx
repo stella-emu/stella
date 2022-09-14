@@ -42,10 +42,10 @@ void FavoritesManager::load()
     try
     {
       const json& jUser = json::parse(serializedUser);
-      for (const auto& u : jUser)
+      for (const auto& u: jUser)
       {
         const string& path = u.get<string>();
-        FSNode node(path);
+        const FSNode node(path);
         if (node.exists())
           addUser(path);
       }
@@ -66,10 +66,10 @@ void FavoritesManager::load()
       try
       {
         const json& jRecent = json::parse(serializedRecent);
-        for (const auto& r : jRecent)
+        for (const auto& r: jRecent)
         {
           const string& path = r.get<string>();
-          FSNode node(path);
+          const FSNode node(path);
           if (node.exists())
             addRecent(path);
         }
@@ -89,11 +89,11 @@ void FavoritesManager::load()
     try
     {
       const json& jPopular = json::parse(serializedPopular);
-      for (const auto& p : jPopular)
+      for (const auto& p: jPopular)
       {
         const string& path = p[0].get<string>();
         const uInt32 count = p[1].get<uInt32>();
-        FSNode node(path);
+        const FSNode node(path);
         if (node.exists())
           myPopularMap.emplace(path, count);
       }
@@ -186,9 +186,10 @@ const FavoritesManager::UserList& FavoritesManager::userList() const
       [](const string& a, const string& b)
     {
       // Sort without path
-      FSNode aNode(a);
-      FSNode bNode(b);
-      const bool realDir = aNode.isDirectory() && !BSPF::endsWithIgnoreCase(aNode.getPath(), ".zip");
+      const FSNode aNode(a);
+      const FSNode bNode(b);
+      const bool realDir = aNode.isDirectory() &&
+        !BSPF::endsWithIgnoreCase(aNode.getPath(), ".zip");
 
       if(realDir != (bNode.isDirectory() && !BSPF::endsWithIgnoreCase(bNode.getPath(), ".zip")))
         return realDir;
@@ -237,7 +238,7 @@ void FavoritesManager::removeAllRecent()
 const FavoritesManager::RecentList& FavoritesManager::recentList() const
 {
   static RecentList sortedList;
-  bool sortByName = mySettings.getBool("altsorting");
+  const bool sortByName = mySettings.getBool("altsorting");
 
   sortedList.clear();
   if(sortByName)
@@ -248,8 +249,8 @@ const FavoritesManager::RecentList& FavoritesManager::recentList() const
       [](const string& a, const string& b)
     {
       // Sort alphabetical, without path
-      FSNode aNode(a);
-      FSNode bNode(b);
+      const FSNode aNode(a);
+      const FSNode bNode(b);
       return BSPF::compareIgnoreCase(aNode.getName(), bNode.getName()) < 0;
     });
 
@@ -288,7 +289,7 @@ void FavoritesManager::incPopular(const string& path)
     // Limit number of entries and age data
     if(myPopularMap.size() >= max_popular)
     {
-      PopularList sortedList = sortedPopularList(); // sorted by frequency!
+      const PopularList& sortedList = sortedPopularList(); // sorted by frequency!
       for(const auto& item: sortedList)
       {
         const auto entry = myPopularMap.find(item.first);
@@ -313,7 +314,8 @@ const FavoritesManager::PopularList& FavoritesManager::popularList() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const FavoritesManager::PopularList& FavoritesManager::sortedPopularList(bool sortByName) const
+const FavoritesManager::PopularList&
+FavoritesManager::sortedPopularList(bool sortByName) const
 {
   // Return most to least popular or sorted by name
   static PopularList sortedList;
@@ -329,8 +331,8 @@ const FavoritesManager::PopularList& FavoritesManager::sortedPopularList(bool so
       return a.second > b.second;
 
     // 2. Sort alphabetical, without path
-    FSNode aNode(a.first);
-    FSNode bNode(b.first);
+    const FSNode aNode(a.first);
+    const FSNode bNode(b.first);
     return BSPF::compareIgnoreCase(aNode.getName(), bNode.getName()) < 0;
   });
   return sortedList;

@@ -259,7 +259,7 @@ int main(int ac, char* av[])
   // Check to see if the user requested info about a specific ROM,
   // or the list of internal ROMs
   // If so, show the information and immediately exit
-  string romfile = localOpts["ROMFILE"].toString();
+  const string romfile = localOpts["ROMFILE"].toString();
   if(localOpts["listrominfo"].toBool())
   {
     attachConsole();
@@ -272,7 +272,7 @@ int main(int ac, char* av[])
   {
     attachConsole();
     Logger::debug("Showing output from 'rominfo' ...");
-    FSNode romnode(romfile);
+    const FSNode romnode(romfile);
     Logger::error(theOSystem->getROMInfo(romnode));
     freeConsole();
     return Cleanup();
@@ -293,11 +293,11 @@ int main(int ac, char* av[])
   //   open the rom launcher in that directory.
   // If not, use the built-in ROM launcher.  In this case, we enter 'launcher'
   //   mode and let the main event loop take care of opening a new console/ROM.
-  FSNode romnode(romfile);
+  const FSNode romnode(romfile);
   if(romfile.empty() || romnode.isDirectory())
   {
     Logger::debug("Attempting to use ROM launcher ...");
-    bool launcherOpened = !romfile.empty() ?
+    const bool launcherOpened = !romfile.empty() ?
       theOSystem->createLauncher(romnode.getPath()) : theOSystem->createLauncher();
     if(!launcherOpened)
     {
@@ -336,7 +336,7 @@ int main(int ac, char* av[])
     if(!localOpts["break"].toString().empty())
     {
       Debugger& dbg = theOSystem->debugger();
-      uInt16 bp = uInt16(dbg.stringToValue(localOpts["break"].toString()));
+      const uInt16 bp = uInt16(dbg.stringToValue(localOpts["break"].toString()));
       dbg.setBreakPoint(bp);
     }
 #endif

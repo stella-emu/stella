@@ -46,7 +46,6 @@ StellaSettingsDialog::StellaSettingsDialog(OSystem& osystem, DialogContainer& pa
   ButtonWidget* bw = nullptr;
 
   WidgetArray wid;
-  VariantList items;
 
   // Set real dimensions
   setSize(35 * fontWidth + HBORDER * 2 + 5,
@@ -98,7 +97,7 @@ void StellaSettingsDialog::addUIOptions(WidgetArray& wid, int xpos, int& ypos)
   const int lineHeight = Dialog::lineHeight(),
             VGAP       = Dialog::vGap();
   VariantList items;
-  int pwidth = _font.getStringWidth("Right bottom"); // align width with other popup
+  const int pwidth = _font.getStringWidth("Right bottom"); // align width with other popup
 
   ypos += 1;
   VarList::push_back(items, "Standard", "standard");
@@ -139,8 +138,8 @@ void StellaSettingsDialog::addVideoOptions(WidgetArray& wid, int xpos, int& ypos
   VarList::push_back(items, "S-Video", static_cast<uInt32>(NTSCFilter::Preset::SVIDEO));
   VarList::push_back(items, "Composite", static_cast<uInt32>(NTSCFilter::Preset::COMPOSITE));
   VarList::push_back(items, "Bad adjust", static_cast<uInt32>(NTSCFilter::Preset::BAD));
-  int pwidth = _font.getStringWidth("Right bottom");
-  int lwidth = _font.getStringWidth("Scanline intensity ");
+  const int pwidth = _font.getStringWidth("Right bottom");
+  const int lwidth = _font.getStringWidth("Scanline intensity ");
 
   myTVMode = new PopUpWidget(this, _font, xpos, ypos, pwidth, lineHeight,
     items, "TV mode            ");
@@ -196,7 +195,7 @@ void StellaSettingsDialog::addGameOptions(WidgetArray& wid, int xpos, int& ypos)
   VarList::push_back(ctrls, "Joy2B+", "JOY_2B+"); // TODO: should work, but needs testing with real hardware
   VarList::push_back(ctrls, "QuadTari", "QUADTARI");
 
-  int pwidth = _font.getStringWidth("Sega Genesis");
+  const int pwidth = _font.getStringWidth("Sega Genesis");
   myLeftPortLabel = new StaticTextWidget(this, _font, xpos, ypos + 1, "Left port  ");
   myLeftPort = new PopUpWidget(this, _font, myLeftPortLabel->getRight(),
     myLeftPortLabel->getTop() - 1, pwidth, lineHeight, ctrls, "", 0, kLeftCChanged);
@@ -244,8 +243,6 @@ void StellaSettingsDialog::loadConfig()
   handleOverscanChange();
 
   // Controllers
-  Properties props;
-
   if (instance().hasConsole())
   {
     myGameProperties = instance().console().properties();

@@ -26,7 +26,7 @@ Serializer::Serializer(const string& filename, Mode m)
 {
   if(m == Mode::ReadOnly)
   {
-    FSNode node(filename);
+    const FSNode node(filename);
     if(node.isFile() && node.isReadable())
     {
       unique_ptr<fstream> str = make_unique<fstream>(filename, ios::in | ios::binary);

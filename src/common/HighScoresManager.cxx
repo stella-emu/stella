@@ -131,7 +131,7 @@ uInt32 HighScoresManager::numVariations(const json& jprops)
 bool HighScoresManager::get(const Properties& props, uInt32& numVariationsR,
                             ScoresProps& info) const
 {
-  json jprops = properties(props);
+  const json jprops = properties(props);
 
   numVariationsR = numVariations(jprops);
 
@@ -313,7 +313,7 @@ Int32 HighScoresManager::variation(uInt16 addr, bool varBCD, bool zeroBased,
 Int32 HighScoresManager::variation() const
 {
   json jprops;
-  uInt16 addr = varAddress(properties(jprops));
+  const uInt16 addr = varAddress(properties(jprops));
 
   if(addr == DEFAULT_ADDRESS) {
     if(numVariations() == 1)
@@ -361,7 +361,7 @@ Int32 HighScoresManager::score(uInt32 numAddrBytes, uInt32 trailingZeroes,
 Int32 HighScoresManager::score() const
 {
   json jprops;
-  uInt32 numBytes = numAddrBytes(properties(jprops));
+  const uInt32 numBytes = numAddrBytes(properties(jprops));
   const ScoreAddresses scoreAddr = getPropScoreAddr(jprops);
 
   if(static_cast<uInt32>(scoreAddr.size()) < numBytes)
@@ -432,7 +432,7 @@ Int32 HighScoresManager::special() const
     return NO_VALUE;
 
   json jprops;
-  uInt16 addr = specialAddress(properties(jprops));
+  const uInt16 addr = specialAddress(properties(jprops));
 
   if (addr == DEFAULT_ADDRESS)
     return NO_VALUE;

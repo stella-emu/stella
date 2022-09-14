@@ -154,7 +154,7 @@ void PropertiesSet::loadPerROM(const FSNode& rom, const string& md5)
 
   // First, does this ROM have a per-ROM properties entry?
   // If so, load it into the database
-  FSNode propsNode(rom.getPathWithExt(".pro"));
+  const FSNode propsNode(rom.getPathWithExt(".pro"));
   if (propsNode.exists()) {
     KeyValueRepositoryPropertyFile repo(propsNode);
     props.load(repo);

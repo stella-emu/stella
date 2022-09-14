@@ -188,7 +188,7 @@ bool Switches::load(Serializer& in)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Switches::check7800Mode(const Settings& settings)
 {
-  bool devSettings = settings.getBool("dev.settings");
+  const bool devSettings = settings.getBool("dev.settings");
   myIs7800 = (settings.getString(devSettings ? "dev.console" : "plr.console") == "7800");
 
   return myIs7800;

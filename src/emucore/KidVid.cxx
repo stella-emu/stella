@@ -68,7 +68,7 @@ void KidVid::update()
   {
     // Continue playing song after state load
     const uInt8 temp = ourSongPositions[mySongPointer - 1] & 0x7f;
-    const uInt32 songLength = ourSongStart[temp + 1] - ourSongStart[temp];
+    const uInt32 songLength = ourSongStart[temp + 1] - ourSongStart[temp] - (262 * ClickFrames);
 
     // Play the remaining WAV file
     const string& fileName = myOSystem.baseDir().getPath() + ((temp < 10) ? "KVSHARED.WAV" : getFileName());
@@ -140,6 +140,10 @@ void KidVid::update()
   {
     setPin(DigitalPin::Four, (ourData[myIdx >> 3] << (myIdx & 0x07)) & 0x80);
 
+  #ifdef DEBUG_BUILD
+    cerr << (DigitalPin::Four, (ourData[myIdx >> 3] << (myIdx & 0x07)) & 0x80 ? "X" : ".");
+  #endif
+
     // increase to next bit
     ++myIdx;
     --myBlockIdx;
@@ -172,7 +176,7 @@ void KidVid::update()
     if(mySongPlaying)
     {
       mySongLength = myOSystem.sound().wavSize();
-      myTapeBusy = (mySongLength > 262 * ClickFrames) || !myBeep;
+      myTapeBusy = (mySongLength > 262 * TapeFrames) || !myBeep;
       // Check for end of played sample
       if(mySongLength == 0)
       {
@@ -188,7 +192,7 @@ void KidVid::update()
     if(mySongLength)
     {
       --mySongLength;
-      myTapeBusy = (mySongLength > ClickFrames);
+      myTapeBusy = (mySongLength > TapeFrames);
     }
   }
 }
@@ -259,6 +263,7 @@ void KidVid::openSampleFiles()
     44 + 38 + 42 + 62
   };
 
+#ifdef SOUND_SUPPORT
   if(!myFilesFound)
   {
     int i = myGame == Game::Smurfs ? myTape - 1 : myTape + 2;
@@ -267,13 +272,14 @@ void KidVid::openSampleFiles()
     myFilesFound = FSNode(myOSystem.baseDir().getPath() + getFileName()).exists() &&
                    FSNode(myOSystem.baseDir().getPath() + "KVSHARED.WAV").exists();
 
-#ifdef DEBUG_BUILD
+  #ifdef DEBUG_BUILD
     if(myFilesFound)
       cerr << endl
            << "found file: " << getFileName() << endl
            << "found file: " << "KVSHARED.WAV" << endl;
-#endif
+  #endif
 
+#endif
     mySongLength = 0;
     mySongPointer = firstSongPointer[i];
   }
@@ -288,7 +294,7 @@ void KidVid::setNextSong()
     myBeep = (ourSongPositions[mySongPointer] & 0x80) == 0;
 
     const uInt8 temp = ourSongPositions[mySongPointer] & 0x7f;
-    mySongLength = ourSongStart[temp + 1] - ourSongStart[temp];
+    mySongLength = ourSongStart[temp + 1] - ourSongStart[temp] - (262 * ClickFrames);
 
     // Play the WAV file
     const string& fileName = (temp < 10) ? "KVSHARED.WAV" : getFileName();
@@ -298,9 +304,9 @@ void KidVid::setNextSong()
     msg << "Read song #" << mySongPointer << " (" << fileName << ")";
     myCallback(msg.str(), false);
 
-#ifdef DEBUG_BUILD
+  #ifdef DEBUG_BUILD
     cerr << fileName << ": " << (ourSongPositions[mySongPointer] & 0x7f) << endl;
-#endif
+  #endif
 
     mySongPlaying = myTapeBusy = true;
     ++mySongPointer;
@@ -309,7 +315,7 @@ void KidVid::setNextSong()
   {
     myBeep = true;
     myTapeBusy = true;
-    mySongLength = 80;   /* delay needed for Harmony without tape */
+    mySongLength = TapeFrames + 32;   /* delay needed for Harmony without tape */
   }
 }
 
@@ -438,14 +444,14 @@ const std::array<uInt32, KidVid::SongStartSize> KidVid::ourSongStart = {
   3059116,
 
 /* kvs1 */
-  44,          /* Harmony into 1 */
-  164685,      /* falling notes (into 2) */
+  44,          /* Harmony intro 1 */
+  164685,      /* falling notes (intro 2) */
   395182,      /* instructions */
   750335,      /* high notes are high */
   962016,      /* my hat's off to you */
   1204273,     /* 1 2 3 do re mi */
   1538258,     /* Harmony */
-  1801683,     /* concratulations (all of the Smurfs voted) */
+  1801683,     /* congratulations (all of the Smurfs voted) */
   2086276,     /* line or space */
   2399093,     /* hooray */
   2589606,     /* hear yeeh */

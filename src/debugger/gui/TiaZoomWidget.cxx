@@ -255,7 +255,7 @@ void TiaZoomWidget::handleCommand(CommandSender* sender, int cmd, int data, int 
       if(lines > 0)
       {
         command << "scanline #" << lines;
-        string message = instance().debugger().parser().run(command.str());
+        const string& message = instance().debugger().parser().run(command.str());
         instance().frameBuffer().showTextMessage(message);
       }
     }

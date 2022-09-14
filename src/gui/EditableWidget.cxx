@@ -412,7 +412,7 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
     case Event::Undo:
     case Event::Redo:
     {
-      string oldString = _editString;
+      const string oldString = _editString;
 
       myUndoHandler->endChars(_editString);
       // Reverse Y and Z for QWERTZ keyboards
@@ -846,7 +846,7 @@ bool EditableWidget::cutSelectedText()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool EditableWidget::copySelectedText()
 {
-  string selected = selectString();
+  const string selected = selectString();
 
   // only copy if anything is selected, else keep old copied text
   if(!selected.empty())
@@ -860,7 +860,7 @@ bool EditableWidget::copySelectedText()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool EditableWidget::pasteSelectedText()
 {
-  bool selected = !selectString().empty();
+  const bool selected = !selectString().empty();
   string pasted;
 
   myUndoHandler->endChars(_editString);

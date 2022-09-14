@@ -165,7 +165,7 @@ string DebuggerParser::exec(const FSNode& file, StringList* history)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerParser::outputCommandError(const string& errorMsg, int command)
 {
-  string example = commands[command].extendedDesc.substr(commands[command].extendedDesc.find("Example:"));
+  const string example = commands[command].extendedDesc.substr(commands[command].extendedDesc.find("Example:"));
 
   commandResult << red(errorMsg);
   if(!example.empty())
@@ -614,8 +614,8 @@ void DebuggerParser::listTraps(bool listCond)
 string DebuggerParser::trapStatus(const Trap& trap)
 {
   stringstream result;
-  string lblb = debugger.cartDebug().getLabel(trap.begin, !trap.write);
-  string lble = debugger.cartDebug().getLabel(trap.end, !trap.write);
+  const string lblb = debugger.cartDebug().getLabel(trap.begin, !trap.write);
+  const string lble = debugger.cartDebug().getLabel(trap.end, !trap.write);
 
   if(!lblb.empty()) {
     result << " (";
@@ -643,7 +643,7 @@ string DebuggerParser::trapStatus(const Trap& trap)
 string DebuggerParser::saveScriptFile(string file)
 {
   stringstream out;
-  Debugger::FunctionDefMap funcs = debugger.getFunctionDefMap();
+  const Debugger::FunctionDefMap funcs = debugger.getFunctionDefMap();
   for(const auto& [name, cmd]: funcs)
     if (!Debugger::isBuiltinFunction(name))
       out << "function " << name << " {" << cmd << "}" << endl;
@@ -691,7 +691,7 @@ string DebuggerParser::saveScriptFile(string file)
   if(file.find_first_of(FSNode::PATH_SEPARATOR) == string::npos)
     file = debugger.myOSystem.userDir().getPath() + file;
 
-  FSNode node(file);
+  const FSNode node(file);
 
   if(node.exists() || out.str().length())
   {
@@ -770,7 +770,7 @@ void DebuggerParser::executeAud()
 // "autoSave"
 void DebuggerParser::executeAutoSave()
 {
-  bool enable = !settings.getBool("dbg.autosave");
+  const bool enable = !settings.getBool("dbg.autosave");
 
   settings.setValue("dbg.autosave", enable);
   commandResult << "autoSave " << (enable ? "enabled" : "disabled");
@@ -871,10 +871,10 @@ void DebuggerParser::executeBreak()
 // "breakIf"
 void DebuggerParser::executeBreakIf()
 {
-  int res = YaccParser::parse(argStrings[0]);
+  const int res = YaccParser::parse(argStrings[0]);
   if(res == 0)
   {
-    string condition = argStrings[0];
+    const string condition = argStrings[0];
     for(uInt32 i = 0; i < debugger.m6502().getCondBreakNames().size(); ++i)
     {
       if(condition == debugger.m6502().getCondBreakNames()[i])
@@ -1276,7 +1276,7 @@ void DebuggerParser::executeDump()
       {
         if(OK)
         {
-          stringstream  localOut(outStr);
+          const stringstream  localOut(outStr);
           ostringstream localResult(resultStr, std::ios_base::app);
 
           saveDump(node, localOut, localResult);
@@ -1350,7 +1350,7 @@ void DebuggerParser::executeFunction()
     return;
   }
 
-  int res = YaccParser::parse(argStrings[1]);
+  const int res = YaccParser::parse(argStrings[1]);
   if(res == 0)
   {
     debugger.addFunction(argStrings[0], argStrings[1], YaccParser::getResult());
@@ -1608,8 +1608,6 @@ void DebuggerParser::executeListFunctions()
 // "listSaveStateIfs"
 void DebuggerParser::executeListSaveStateIfs()
 {
-  ostringstream buf;
-
   StringList conds = debugger.m6502().getCondSaveStateNames();
   if(!conds.empty())
   {
@@ -1629,7 +1627,7 @@ void DebuggerParser::executeListSaveStateIfs()
 // "listTraps"
 void DebuggerParser::executeListTraps()
 {
-  StringList names = debugger.m6502().getCondTrapNames();
+  const StringList names = debugger.m6502().getCondTrapNames();
 
   if(myTraps.size() != names.size())
   {
@@ -2085,10 +2083,10 @@ void DebuggerParser::executeSaveState()
 // "saveStateIf"
 void DebuggerParser::executeSaveStateIf()
 {
-  int res = YaccParser::parse(argStrings[0]);
+  const int res = YaccParser::parse(argStrings[0]);
   if(res == 0)
   {
-    string condition = argStrings[0];
+    const string condition = argStrings[0];
     for(uInt32 i = 0; i < debugger.m6502().getCondSaveStateNames().size(); ++i)
     {
       if(condition == debugger.m6502().getCondSaveStateNames()[i])
@@ -2128,7 +2126,7 @@ void DebuggerParser::executeStep()
 // "stepWhile"
 void DebuggerParser::executeStepWhile()
 {
-  int res = YaccParser::parse(argStrings[0]);
+  const int res = YaccParser::parse(argStrings[0]);
   if(res != 0) {
     commandResult << red("invalid expression");
     return;
@@ -2225,9 +2223,9 @@ void DebuggerParser::executeTrapWriteIf()
 void DebuggerParser::executeTraps(bool read, bool write, const string& command,
                                   bool hasCond)
 {
-  const uInt32 ofs = hasCond ? 1 : 0;
-  uInt32 begin = args[ofs];
-  uInt32 end = argCount == 2 + ofs ? args[1 + ofs] : begin;
+  const uInt32 ofs = hasCond ? 1 : 0,
+               begin = args[ofs],
+               end = argCount == 2 + ofs ? args[1 + ofs] : begin;
 
   if(argCount < 1 + ofs)
   {
@@ -2284,7 +2282,7 @@ void DebuggerParser::executeTraps(bool read, bool write, const string& command,
 
   const string condition = conditionBuf.str();
 
-  int res = YaccParser::parse(condition);
+  const int res = YaccParser::parse(condition);
   if(res == 0)
   {
     // duplicates will remove each other
@@ -2309,7 +2307,7 @@ void DebuggerParser::executeTraps(bool read, bool write, const string& command,
     }
     if(add)
     {
-      uInt32 ret = debugger.m6502().addCondTrap(
+      const uInt32 ret = debugger.m6502().addCondTrap(
         YaccParser::getResult(), hasCond ? argStrings[0] : "");
       commandResult << "added trap " << Base::toString(ret);
 
@@ -2466,7 +2464,7 @@ void DebuggerParser::executeWatch()
 void DebuggerParser::executeWinds(bool unwind)
 {
   const uInt16 states = (argCount == 0) ? 1 : args[0];
-  string type = unwind ? "unwind" : "rewind";
+  const string type = unwind ? "unwind" : "rewind";
   string message;
 
   const uInt16 winds = unwind ? debugger.unwindStates(states, message)

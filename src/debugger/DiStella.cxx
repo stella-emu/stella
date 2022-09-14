@@ -1139,19 +1139,19 @@ void DiStella::outputGraphics()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DiStella::outputColors()
 {
-  string NTSC_COLOR[16] = {
+  const string NTSC_COLOR[16] = {
     "BLACK", "YELLOW", "BROWN", "ORANGE",
     "RED", "MAUVE", "VIOLET", "PURPLE",
     "BLUE", "BLUE_CYAN", "CYAN", "CYAN_GREEN",
     "GREEN", "GREEN_YELLOW", "GREEN_BEIGE", "BEIGE"
   };
-  string PAL_COLOR[16] = {
+  const string PAL_COLOR[16] = {
     "BLACK0", "BLACK1", "YELLOW", "GREEN_YELLOW",
     "ORANGE", "GREEN", "RED", "CYAN_GREEN",
     "MAUVE", "CYAN", "VIOLET", "BLUE_CYAN",
     "PURPLE", "BLUE", "BLACKE", "BLACKF"
   };
-  string SECAM_COLOR[8] = {
+  const string SECAM_COLOR[8] = {
     "BLACK", "BLUE", "RED", "PURPLE",
     "GREEN", "CYAN", "YELLOW", "WHITE"
   };
