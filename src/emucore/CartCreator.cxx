@@ -200,7 +200,7 @@ CartCreator::createFromMultiCart(const ByteBuffer& image, size_t& size,
   settings.setValue("romloadcount", i);
 
   size /= numRoms;
-  ByteBuffer slice = make_unique<uInt8[]>(size);
+  const ByteBuffer slice = make_unique<uInt8[]>(size);
   std::copy_n(image.get() + i * size, size, slice.get());
 
   // We need a new md5 and name

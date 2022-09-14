@@ -47,7 +47,7 @@ void M6532::reset()
   };
 
   // Initialize the 128 bytes of memory
-  bool devSettings = mySettings.getBool("dev.settings");
+  const bool devSettings = mySettings.getBool("dev.settings");
   if(mySettings.getString(devSettings ? "dev.console" : "plr.console") == "7800")
     std::copy_n(RAM_7800.begin(), RAM_7800.size(), myRAM.begin());
   else if(mySettings.getBool(devSettings ? "dev.ramrandom" : "plr.ramrandom"))

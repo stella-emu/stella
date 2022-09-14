@@ -306,7 +306,7 @@ void Settings::setRepository(shared_ptr<KeyValueRepository> repository)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Settings::load(const Options& options)
 {
-  Options fromFile = myRespository->load();
+  const Options fromFile = myRespository->load();
   for (const auto& opt: fromFile)
     setValue(opt.first, opt.second, false);
 
@@ -330,7 +330,7 @@ void Settings::save()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Settings::validate()
 {
-  float f = getFloat("speed");
+  const float f = getFloat("speed");
   if (f <= 0) setValue("speed", "1.0");
 
   int i = getInt("tia.vsizeadjust");

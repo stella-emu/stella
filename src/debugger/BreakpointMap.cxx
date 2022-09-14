@@ -101,7 +101,7 @@ bool BreakpointMap::check(const uInt16 addr, const uInt8 bank) const
 BreakpointMap::BreakpointList BreakpointMap::getBreakpoints() const
 {
   BreakpointList map;
-  std::map<Breakpoint, uInt32> ordered(myMap.begin(), myMap.end());
+  const std::map<Breakpoint, uInt32> ordered(myMap.begin(), myMap.end());
 
   for(const auto& item : ordered)
     map.push_back(item.first);

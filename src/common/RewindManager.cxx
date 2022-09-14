@@ -245,7 +245,7 @@ string RewindManager::saveAllStates()
 
     const uInt32 curIdx = getCurrentIdx();
     rewindStates(MAX_BUF_SIZE);
-    uInt32 numStates = static_cast<uInt32>(cyclesList().size());
+    const uInt32 numStates = static_cast<uInt32>(cyclesList().size());
 
     // Save header
     buf.str("");
@@ -296,7 +296,7 @@ string RewindManager::loadAllStates()
       << ".sta";
 
     // Make sure the file can be opened for reading
-    Serializer in(buf.str(), Serializer::Mode::ReadOnly);
+    const Serializer in(buf.str(), Serializer::Mode::ReadOnly);
     if (!in)
       return "Can't load from all states file";
 

@@ -343,12 +343,10 @@ void AtariNTSC::init(init_t& impl, const Setup& setup)
       int n2 = 3;
       do
       {
-        float i = *in++;
-        float q = *in++;
-        *out++ = i;
-        *out++ = q;
+        *out++ = *in++;
+        *out++ = *in++;
       }
-      while ( --n2 );
+      while (--n2);
     #if 0  // burst_count is always 0
       if ( burst_count > 1 )
         ROTATE_IQ( s, c, 0.866025F, -0.5F ); /* +120 degrees */
@@ -387,7 +385,7 @@ void AtariNTSC::initFilters(init_t& impl, const Setup& setup)
             pow_a_n * cosf( maxh * angle ) +
             pow_a_n * rolloff * cosf( (maxh - 1) * angle );
         const float den = 1 - rolloff_cos_a - rolloff_cos_a + rolloff * rolloff;
-        float dsf = num / den;
+        const float dsf = num / den;
         kernels [kernel_size * 3 / 2 - kernel_half + i] = dsf - 0.5F;
       }
     }
@@ -397,7 +395,7 @@ void AtariNTSC::initFilters(init_t& impl, const Setup& setup)
     for ( int i = 0; i < kernel_half * 2 + 1; i++ )
     {
       const float x = BSPF::PI_f * 2 / (kernel_half * 2) * i;
-      float blackman = 0.42F - 0.5F * cosf( x ) + 0.08F * cosf( x * 2 );
+      const float blackman = 0.42F - 0.5F * cosf( x ) + 0.08F * cosf( x * 2 );
       sum += (kernels [kernel_size * 3 / 2 - kernel_half + i] *= blackman);
     }
 
@@ -454,12 +452,12 @@ void AtariNTSC::initFilters(init_t& impl, const Setup& setup)
     for ( int i = 0; i < kernel_size * 2; i++ )
     {
       const float cur = kernels [i];
-      float m = cur * weight;
+      const float m = cur * weight;
       *out++ = m + remain;
       remain = cur - m;
     }
   }
-  while ( --n );
+  while (--n);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

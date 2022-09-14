@@ -207,7 +207,7 @@ CartridgeCDFWidget::CartridgeCDFWidget(
 
   xpos = HBORDER + INDENT;  ypos += myLineHeight + VGAP;
 
-  int lwidth2 = _font.getStringWidth("Sample Pointer ");
+  const int lwidth2 = _font.getStringWidth("Sample Pointer ");
   new StaticTextWidget(boss, _font, xpos, ypos, "Sample Pointer");
 
   mySamplePointer = new DataGridWidget(boss, _nfont, xpos + lwidth2, ypos - 2, 1, 1, 8, 32,

@@ -89,12 +89,12 @@ CheatCodeDialog::CheatCodeDialog(OSystem& osystem, DialogContainer& parent,
   myCheatInput->setTarget(this);
 
   // Add filtering for each textfield
-  EditableWidget::TextFilter f0 = [](char c) {
+  const EditableWidget::TextFilter f0 = [](char c) {
     return isprint(c) && c != '\"' && c != ':';
   };
   myCheatInput->setTextFilter(f0, 0);
 
-  EditableWidget::TextFilter f1 = [](char c) {
+  const EditableWidget::TextFilter f1 = [](char c) {
     return (c >= 'a' && c <= 'f') || (c >= '0' && c <= '9');
   };
   myCheatInput->setTextFilter(f1, 1);

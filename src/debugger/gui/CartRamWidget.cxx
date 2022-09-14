@@ -39,8 +39,8 @@ CartRamWidget::CartRamWidget(
     myLineHeight{lfont.getLineHeight()},
     myButtonHeight{myLineHeight + 4}
 {
-  int lwidth = lfont.getStringWidth("Description ");
-  const int fwidth = w - lwidth - 20;
+  const int lwidth = lfont.getStringWidth("Description "),
+            fwidth = w - lwidth - 20;
 
   EditTextWidget* etw = nullptr;
   ostringstream buf;

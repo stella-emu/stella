@@ -74,9 +74,8 @@ EmulationDialog::EmulationDialog(OSystem& osystem, DialogContainer& parent,
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap(),
             INDENT       = Dialog::indent();
-  int lwidth = font.getStringWidth("Emulation speed ");
+  const int lwidth = font.getStringWidth("Emulation speed ");
   WidgetArray wid;
-  VariantList items;
   const int swidth = fontWidth * 10;
 
   // Set real dimensions
@@ -174,7 +173,7 @@ void EmulationDialog::loadConfig()
   const Settings& settings = instance().settings();
 
   // Emulation speed
-  int speed = mapSpeed(settings.getFloat("speed"));
+  const int speed = mapSpeed(settings.getFloat("speed"));
   mySpeed->setValue(speed);
   mySpeed->setValueLabel(formatSpeed(speed));
 
@@ -200,7 +199,7 @@ void EmulationDialog::loadConfig()
   myConfirmExitWidget->setState(settings.getBool("confirmexit"));
 
   // Save on exit
-  string saveOnExit = settings.getString("saveonexit");
+  const string saveOnExit = settings.getString("saveonexit");
   mySaveOnExitGroup->setSelected(saveOnExit == "all" ? 2 : saveOnExit == "current" ? 1 : 0);
   // Automatically change save state slots
   myAutoSlotWidget->setState(settings.getBool("autoslot"));

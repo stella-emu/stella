@@ -309,8 +309,10 @@ void Widget::setToolTip(Event::Type event1, Event::Type event2, EventMode mode)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Widget::getToolTip(const Common::Point& pos) const
 {
-  string hotkey = instance().eventHandler().keyHandler().getMappingDesc(_toolTipEvent1, _toolTipMode);
-  string hotkey2 = instance().eventHandler().keyHandler().getMappingDesc(_toolTipEvent2, _toolTipMode);
+  string hotkey = instance().eventHandler().keyHandler().getMappingDesc(
+    _toolTipEvent1, _toolTipMode);
+  const string hotkey2 = instance().eventHandler().keyHandler().getMappingDesc(
+    _toolTipEvent2, _toolTipMode);
 
   if(hotkey2 != EmptyString)
   {
@@ -320,9 +322,11 @@ string Widget::getToolTip(const Common::Point& pos) const
 
     if(p != string::npos)
     {
-      string testKey = hotkey.substr(0, p) + hotkey.substr(p + string(mod).length());
+      const string testKey = hotkey.substr(0, p) +
+                             hotkey.substr(p + string(mod).length());
       if(testKey == hotkey2)
-        hotkey = hotkey.substr(0, p) + "[" + mod + "]" + hotkey.substr(p + string(mod).length());
+        hotkey = hotkey.substr(0, p) + "[" + mod + "]" +
+                 hotkey.substr(p + string(mod).length());
       else
         hotkey += ", " + hotkey2;
     }

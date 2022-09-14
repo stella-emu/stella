@@ -191,9 +191,10 @@ void TIA::initialize()
   applyDeveloperSettings();
 
   // Must be done last, after all other items have reset
-  bool devSettings = mySettings.getBool("dev.settings");
+  const bool devSettings = mySettings.getBool("dev.settings");
   setFixedColorPalette(mySettings.getString("tia.dbgcolors"));
-  enableFixedColors(mySettings.getBool(devSettings ? "dev.debugcolors" : "plr.debugcolors"));
+  enableFixedColors(
+    mySettings.getBool(devSettings ? "dev.debugcolors" : "plr.debugcolors"));
 
 #ifdef DEBUGGER_SUPPORT
   createAccessArrays();
@@ -941,10 +942,11 @@ bool TIA::loadDisplay(const Serializer& in)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::applyDeveloperSettings()
 {
-  bool devSettings = mySettings.getBool("dev.settings");
+  const bool devSettings = mySettings.getBool("dev.settings");
   if(devSettings)
   {
-    bool custom = BSPF::equalsIgnoreCase("custom", mySettings.getString("dev.tia.type"));
+    const bool custom =
+      BSPF::equalsIgnoreCase("custom", mySettings.getString("dev.tia.type"));
 
     setPlInvertedPhaseClock(custom
                             ? mySettings.getBool("dev.tia.plinvphase")

@@ -105,13 +105,13 @@ string CartridgeEnhancedWidget::romDescription()
     {
       uInt16 start = (image[offset + 1] << 8) | image[offset];
       start -= start % 0x1000;
-      string hash = myCart.romBankCount() > 10 && bank < 10 ? " #" : "#";
+      const string hash = myCart.romBankCount() > 10 && bank < 10 ? " #" : "#";
 
       info << "Bank " << hash << std::dec << bank << " @ $"
         << Common::Base::HEX4 << (start + myCart.myRomOffset) << " - $" << (start + 0xFFF);
       if(myCart.hotspot() != 0)
       {
-        string hs = hotspotStr(bank, 0, true);
+        const string hs = hotspotStr(bank, 0, true);
         if(hs.length() > 22)
           info << "\n ";
         info << " " << hs;

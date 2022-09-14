@@ -384,7 +384,7 @@ void UIDialog::loadConfig()
   mySnapLoadPath->setText(settings.getString("snaploaddir"));
 
   // Exit to launcher
-  bool exitlauncher = settings.getBool("exitlauncher");
+  const bool exitlauncher = settings.getBool("exitlauncher");
   myLauncherExitWidget->setState(exitlauncher);
 
   // UI palette
@@ -413,23 +413,23 @@ void UIDialog::loadConfig()
   myCenter->setState(settings.getBool("center"));
 
   // Listwidget quick delay
-  int delay = settings.getInt("listdelay");
+  const int delay = settings.getInt("listdelay");
   myListDelaySlider->setValue(delay);
 
   // Mouse wheel lines
-  int mw = settings.getInt("mwheel");
+  const int mw = settings.getInt("mwheel");
   myWheelLinesSlider->setValue(mw);
 
   // Mouse double click
-  int md = settings.getInt("mdouble");
+  const int md = settings.getInt("mdouble");
   myDoubleClickSlider->setValue(md);
 
   // Controller input delay
-  int cs = settings.getInt("ctrldelay");
+  const int cs = settings.getInt("ctrldelay");
   myControllerDelaySlider->setValue(cs);
 
   // Controller input rate
-  int cr = settings.getInt("ctrlrate");
+  const int cr = settings.getInt("ctrlrate");
   myControllerRateSlider->setValue(cr);
 
   handleLauncherSize();
@@ -539,8 +539,9 @@ void UIDialog::setDefaults()
       break;
     case 1:  // Launcher options
     {
-      FSNode node("~");
-      const Common::Size& size = instance().frameBuffer().desktopSize(BufferType::Launcher);
+      const FSNode node("~");
+      const Common::Size& size =
+        instance().frameBuffer().desktopSize(BufferType::Launcher);
 
       myRomPath->setText(node.getShortPath());
       const uInt32 w = std::min<uInt32>(size.w, 900);
@@ -568,12 +569,12 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
   {
     case GuiObject::kOKCmd:
     {
-      bool informPath = myIsGlobal &&
+      const bool informPath = myIsGlobal &&
         (myRomPath->getText() != instance().settings().getString("romdir")
          || myRomPath->getText() != instance().settings().getString("startromdir"));
-      bool informFav = myIsGlobal &&
+      const bool informFav = myIsGlobal &&
         myFavoritesWidget->getState() != instance().settings().getBool("favorites");
-      bool informExt = myIsGlobal &&
+      const bool informExt = myIsGlobal &&
         myLauncherExtensionsWidget->getState() != instance().settings().getBool("launcherextensions");
       saveConfig();
       close();

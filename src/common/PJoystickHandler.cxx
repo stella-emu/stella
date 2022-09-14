@@ -190,7 +190,7 @@ bool PhysicalJoystickHandler::remove(int id)
   // So we use the 'active' joystick list to access them
   try
   {
-    PhysicalJoystickPtr stick = mySticks.at(id);
+    const PhysicalJoystickPtr stick = mySticks.at(id);
 
     const auto it = myDatabase.find(stick->name);
     if(it != myDatabase.end() && it->second.joy == stick)
@@ -607,7 +607,7 @@ void PhysicalJoystickHandler::enableMapping(const Event::Type event, EventMode m
   {
     const PhysicalJoystickPtr j = stick.second;
 
-    JoyMap::JoyMappingArray joyMappings = j->joyMap.getEventMapping(event, mode);
+    const JoyMap::JoyMappingArray joyMappings = j->joyMap.getEventMapping(event, mode);
 
     for (const auto& mapping : joyMappings)
       j->joyMap.add(event, EventMode::kEmulationMode, mapping.button,
@@ -713,7 +713,7 @@ void PhysicalJoystickHandler::saveMapping()
 
   for(const auto& [_name, _info]: myDatabase)
   {
-    json map = _info.joy ? _info.joy->getMap() : _info.mapping;
+    const json map = _info.joy ? _info.joy->getMap() : _info.mapping;
 
     if (!map.is_null()) mapping.emplace_back(map);
   }
@@ -1042,8 +1042,9 @@ ostream& operator<<(ostream& os, const PhysicalJoystickHandler& jh)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalJoystickHandler::changeDigitalDeadZone(int direction)
 {
-  int deadZone = BSPF::clamp(myOSystem.settings().getInt("joydeadzone") + direction,
-                             Controller::MIN_DIGITAL_DEADZONE, Controller::MAX_DIGITAL_DEADZONE);
+  const int deadZone =
+    BSPF::clamp(myOSystem.settings().getInt("joydeadzone") + direction,
+                Controller::MIN_DIGITAL_DEADZONE, Controller::MAX_DIGITAL_DEADZONE);
   myOSystem.settings().setValue("joydeadzone", deadZone);
 
   Controller::setDigitalDeadZone(deadZone);
@@ -1051,15 +1052,17 @@ void PhysicalJoystickHandler::changeDigitalDeadZone(int direction)
   ostringstream ss;
   ss << std::round(Controller::digitalDeadZoneValue(deadZone) * 100.F / 32768) << "%";
 
-  myOSystem.frameBuffer().showGaugeMessage("Digital controller dead zone", ss. str(), deadZone,
-                                           Controller::MIN_DIGITAL_DEADZONE, Controller::MAX_DIGITAL_DEADZONE);
+  myOSystem.frameBuffer().showGaugeMessage(
+    "Digital controller dead zone", ss. str(), deadZone,
+    Controller::MIN_DIGITAL_DEADZONE, Controller::MAX_DIGITAL_DEADZONE);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalJoystickHandler::changeAnalogPaddleDeadZone(int direction)
 {
-  int deadZone = BSPF::clamp(myOSystem.settings().getInt("adeadzone") + direction,
-                             Controller::MIN_ANALOG_DEADZONE, Controller::MAX_ANALOG_DEADZONE);
+  const int deadZone =
+    BSPF::clamp(myOSystem.settings().getInt("adeadzone") + direction,
+                Controller::MIN_ANALOG_DEADZONE, Controller::MAX_ANALOG_DEADZONE);
   myOSystem.settings().setValue("adeadzone", deadZone);
 
   Controller::setAnalogDeadZone(deadZone);
@@ -1067,15 +1070,17 @@ void PhysicalJoystickHandler::changeAnalogPaddleDeadZone(int direction)
   ostringstream ss;
   ss << std::round(Controller::analogDeadZoneValue(deadZone) * 100.F / 32768) << "%";
 
-  myOSystem.frameBuffer().showGaugeMessage("Analog controller dead zone", ss.str(), deadZone,
-                                           Controller::MIN_ANALOG_DEADZONE, Controller::MAX_ANALOG_DEADZONE);
+  myOSystem.frameBuffer().showGaugeMessage(
+    "Analog controller dead zone", ss.str(), deadZone,
+    Controller::MIN_ANALOG_DEADZONE, Controller::MAX_ANALOG_DEADZONE);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalJoystickHandler::changeAnalogPaddleSensitivity(int direction)
 {
-  int sense = BSPF::clamp(myOSystem.settings().getInt("psense") + direction,
-                          Paddles::MIN_ANALOG_SENSE, Paddles::MAX_ANALOG_SENSE);
+  const int sense =
+    BSPF::clamp(myOSystem.settings().getInt("psense") + direction,
+                Paddles::MIN_ANALOG_SENSE, Paddles::MAX_ANALOG_SENSE);
   myOSystem.settings().setValue("psense", sense);
 
   Paddles::setAnalogSensitivity(sense);
@@ -1083,15 +1088,17 @@ void PhysicalJoystickHandler::changeAnalogPaddleSensitivity(int direction)
   ostringstream ss;
   ss << std::round(Paddles::analogSensitivityValue(sense) * 100.F) << "%";
 
-  myOSystem.frameBuffer().showGaugeMessage("Analog paddle sensitivity", ss.str(), sense,
-                                           Paddles::MIN_ANALOG_SENSE, Paddles::MAX_ANALOG_SENSE);
+  myOSystem.frameBuffer().showGaugeMessage(
+    "Analog paddle sensitivity", ss.str(), sense,
+    Paddles::MIN_ANALOG_SENSE, Paddles::MAX_ANALOG_SENSE);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalJoystickHandler::changeAnalogPaddleLinearity(int direction)
 {
-  int linear = BSPF::clamp(myOSystem.settings().getInt("plinear") + direction * 5,
-                          Paddles::MIN_ANALOG_LINEARITY, Paddles::MAX_ANALOG_LINEARITY);
+  const int linear =
+    BSPF::clamp(myOSystem.settings().getInt("plinear") + direction * 5,
+                Paddles::MIN_ANALOG_LINEARITY, Paddles::MAX_ANALOG_LINEARITY);
   myOSystem.settings().setValue("plinear", linear);
 
   Paddles::setAnalogLinearity(linear);
@@ -1102,15 +1109,17 @@ void PhysicalJoystickHandler::changeAnalogPaddleLinearity(int direction)
   else
     ss << "Off";
 
-  myOSystem.frameBuffer().showGaugeMessage("Analog paddle linearity", ss.str(), linear,
-                                           Paddles::MIN_ANALOG_LINEARITY, Paddles::MAX_ANALOG_LINEARITY);
+  myOSystem.frameBuffer().showGaugeMessage(
+    "Analog paddle linearity", ss.str(), linear,
+    Paddles::MIN_ANALOG_LINEARITY, Paddles::MAX_ANALOG_LINEARITY);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalJoystickHandler::changePaddleDejitterAveraging(int direction)
 {
-  int dejitter = BSPF::clamp(myOSystem.settings().getInt("dejitter.base") + direction,
-                             Paddles::MIN_DEJITTER, Paddles::MAX_DEJITTER);
+  const int dejitter =
+    BSPF::clamp(myOSystem.settings().getInt("dejitter.base") + direction,
+                Paddles::MIN_DEJITTER, Paddles::MAX_DEJITTER);
   myOSystem.settings().setValue("dejitter.base", dejitter);
 
   Paddles::setDejitterBase(dejitter);
@@ -1121,16 +1130,17 @@ void PhysicalJoystickHandler::changePaddleDejitterAveraging(int direction)
   else
     ss << "Off";
 
-  myOSystem.frameBuffer().showGaugeMessage("Analog paddle dejitter averaging",
-                                           ss.str(), dejitter,
-                                           Paddles::MIN_DEJITTER, Paddles::MAX_DEJITTER);
+  myOSystem.frameBuffer().showGaugeMessage(
+    "Analog paddle dejitter averaging", ss.str(), dejitter,
+    Paddles::MIN_DEJITTER, Paddles::MAX_DEJITTER);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalJoystickHandler::changePaddleDejitterReaction(int direction)
 {
-  int dejitter = BSPF::clamp(myOSystem.settings().getInt("dejitter.diff") + direction,
-                             Paddles::MIN_DEJITTER, Paddles::MAX_DEJITTER);
+  const int dejitter =
+    BSPF::clamp(myOSystem.settings().getInt("dejitter.diff") + direction,
+                Paddles::MIN_DEJITTER, Paddles::MAX_DEJITTER);
   myOSystem.settings().setValue("dejitter.diff", dejitter);
 
   Paddles::setDejitterDiff(dejitter);
@@ -1141,16 +1151,17 @@ void PhysicalJoystickHandler::changePaddleDejitterReaction(int direction)
   else
     ss << "Off";
 
-  myOSystem.frameBuffer().showGaugeMessage("Analog paddle dejitter reaction",
-                                           ss.str(), dejitter,
-                                           Paddles::MIN_DEJITTER, Paddles::MAX_DEJITTER);
+  myOSystem.frameBuffer().showGaugeMessage(
+    "Analog paddle dejitter reaction", ss.str(), dejitter,
+    Paddles::MIN_DEJITTER, Paddles::MAX_DEJITTER);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalJoystickHandler::changeDigitalPaddleSensitivity(int direction)
 {
-  int sense = BSPF::clamp(myOSystem.settings().getInt("dsense") + direction,
-                          Paddles::MIN_DIGITAL_SENSE, Paddles::MAX_DIGITAL_SENSE);
+  const int sense =
+    BSPF::clamp(myOSystem.settings().getInt("dsense") + direction,
+                Paddles::MIN_DIGITAL_SENSE, Paddles::MAX_DIGITAL_SENSE);
   myOSystem.settings().setValue("dsense", sense);
 
   Paddles::setDigitalSensitivity(sense);
@@ -1161,16 +1172,17 @@ void PhysicalJoystickHandler::changeDigitalPaddleSensitivity(int direction)
   else
     ss << "Off";
 
-  myOSystem.frameBuffer().showGaugeMessage("Digital sensitivity",
-                                           ss.str(), sense,
-                                           Paddles::MIN_DIGITAL_SENSE, Paddles::MAX_DIGITAL_SENSE);
+  myOSystem.frameBuffer().showGaugeMessage(
+    "Digital sensitivity", ss.str(), sense,
+    Paddles::MIN_DIGITAL_SENSE, Paddles::MAX_DIGITAL_SENSE);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalJoystickHandler::changeMousePaddleSensitivity(int direction)
 {
-  int sense = BSPF::clamp(myOSystem.settings().getInt("msense") + direction,
-                          Controller::MIN_MOUSE_SENSE, Controller::MAX_MOUSE_SENSE);
+  const int sense =
+    BSPF::clamp(myOSystem.settings().getInt("msense") + direction,
+                Controller::MIN_MOUSE_SENSE, Controller::MAX_MOUSE_SENSE);
   myOSystem.settings().setValue("msense", sense);
 
   Controller::setMouseSensitivity(sense);
@@ -1178,16 +1190,17 @@ void PhysicalJoystickHandler::changeMousePaddleSensitivity(int direction)
   ostringstream ss;
   ss << sense * 10 << "%";
 
-  myOSystem.frameBuffer().showGaugeMessage("Mouse paddle sensitivity",
-                                           ss.str(), sense,
-                                           Controller::MIN_MOUSE_SENSE, Controller::MAX_MOUSE_SENSE);
+  myOSystem.frameBuffer().showGaugeMessage(
+    "Mouse paddle sensitivity", ss.str(), sense,
+    Controller::MIN_MOUSE_SENSE, Controller::MAX_MOUSE_SENSE);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalJoystickHandler::changeMouseTrackballSensitivity(int direction)
 {
-  int sense = BSPF::clamp(myOSystem.settings().getInt("tsense") + direction,
-                          PointingDevice::MIN_SENSE, PointingDevice::MAX_SENSE);
+  const int sense =
+    BSPF::clamp(myOSystem.settings().getInt("tsense") + direction,
+                PointingDevice::MIN_SENSE, PointingDevice::MAX_SENSE);
   myOSystem.settings().setValue("tsense", sense);
 
   PointingDevice::setSensitivity(sense);
@@ -1195,16 +1208,17 @@ void PhysicalJoystickHandler::changeMouseTrackballSensitivity(int direction)
   ostringstream ss;
   ss << sense * 10 << "%";
 
-  myOSystem.frameBuffer().showGaugeMessage("Mouse trackball sensitivity",
-                                           ss.str(), sense,
-                                           PointingDevice::MIN_SENSE, PointingDevice::MAX_SENSE);
+  myOSystem.frameBuffer().showGaugeMessage(
+    "Mouse trackball sensitivity", ss.str(), sense,
+    PointingDevice::MIN_SENSE, PointingDevice::MAX_SENSE);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalJoystickHandler::changeDrivingSensitivity(int direction)
 {
-  int sense = BSPF::clamp(myOSystem.settings().getInt("dcsense") + direction,
-                          Driving::MIN_SENSE, Driving::MAX_SENSE);
+  const int sense =
+    BSPF::clamp(myOSystem.settings().getInt("dcsense") + direction,
+                Driving::MIN_SENSE, Driving::MAX_SENSE);
   myOSystem.settings().setValue("dcsense", sense);
 
   Driving::setSensitivity(sense);
@@ -1212,9 +1226,9 @@ void PhysicalJoystickHandler::changeDrivingSensitivity(int direction)
   ostringstream ss;
   ss << sense * 10 << "%";
 
-  myOSystem.frameBuffer().showGaugeMessage("Driving controller sensitivity",
-                                           ss.str(), sense,
-                                           Driving::MIN_SENSE, Driving::MAX_SENSE);
+  myOSystem.frameBuffer().showGaugeMessage(
+    "Driving controller sensitivity", ss.str(), sense,
+    Driving::MIN_SENSE, Driving::MAX_SENSE);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -99,7 +99,7 @@ CartridgeCDF::CartridgeCDF(const ByteBuffer& image, size_t size,
   }
 
   // Create Thumbulator ARM emulator
-  bool devSettings = settings.getBool("dev.settings");
+  const bool devSettings = settings.getBool("dev.settings");
   myThumbEmulator = make_unique<Thumbulator>(
     reinterpret_cast<uInt16*>(myImage.get()),
     reinterpret_cast<uInt16*>(myRAM.data()),

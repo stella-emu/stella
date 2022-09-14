@@ -51,7 +51,7 @@ AudioSettings::AudioSettings(Settings& settings)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AudioSettings::normalize(Settings& settings)
 {
-  int settingPreset = settings.getInt(SETTING_PRESET);
+  const int settingPreset = settings.getInt(SETTING_PRESET);
   const Preset preset = normalizedPreset(settingPreset);
   if (static_cast<int>(preset) != settingPreset) settings.setValue(SETTING_PRESET, static_cast<int>(DEFAULT_PRESET));
 
@@ -80,18 +80,19 @@ void AudioSettings::normalize(Settings& settings)
       break;
   }
 
-  int settingBufferSize = settings.getInt(SETTING_BUFFER_SIZE);
+  const int settingBufferSize = settings.getInt(SETTING_BUFFER_SIZE);
   if (settingBufferSize < 0 || settingBufferSize > MAX_BUFFER_SIZE) settings.setValue(SETTING_BUFFER_SIZE, DEFAULT_BUFFER_SIZE);
 
-  int settingHeadroom = settings.getInt(SETTING_HEADROOM);
+  const int settingHeadroom = settings.getInt(SETTING_HEADROOM);
   if (settingHeadroom < 0 || settingHeadroom > MAX_HEADROOM) settings.setValue(SETTING_HEADROOM, DEFAULT_HEADROOM);
 
-  int settingResamplingQuality = settings.getInt(SETTING_RESAMPLING_QUALITY);
-  const ResamplingQuality resamplingQuality = normalizeResamplingQuality(settingResamplingQuality);
+  const int settingResamplingQuality = settings.getInt(SETTING_RESAMPLING_QUALITY);
+  const ResamplingQuality resamplingQuality =
+      normalizeResamplingQuality(settingResamplingQuality);
   if (static_cast<int>(resamplingQuality) != settingResamplingQuality)
     settings.setValue(SETTING_RESAMPLING_QUALITY, static_cast<int>(DEFAULT_RESAMPLING_QUALITY));
 
-  int settingVolume = settings.getInt(SETTING_VOLUME);
+  const int settingVolume = settings.getInt(SETTING_VOLUME);
   if (settingVolume < 0 || settingVolume > 100) settings.setValue(SETTING_VOLUME, DEFAULT_VOLUME);
 }
 

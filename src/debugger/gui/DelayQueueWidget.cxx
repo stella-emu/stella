@@ -45,7 +45,7 @@ DelayQueueWidget::DelayQueueWidget(
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DelayQueueWidget::loadConfig() {
-  shared_ptr<DelayQueueIterator> delayQueueIterator =
+  const shared_ptr<DelayQueueIterator> delayQueueIterator =
       instance().debugger().tiaDebug().delayQueueIterator();
 
   using Common::Base;

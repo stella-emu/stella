@@ -386,8 +386,8 @@ bool CartDebug::fillDisassemblyList(BankInfo& info, Disassembly& disassembly,
   disassembly.fieldwidth = 24 + myLabelLength;
   // line offset must be set before calling DiStella!
   auto lineOfs = static_cast<uInt32>(myDisassembly.list.size());
-  DiStella distella(*this, disassembly.list, info, DiStella::settings,
-                    myDisLabels, myDisDirectives, myReserved);
+  const DiStella distella(*this, disassembly.list, info, DiStella::settings,
+                          myDisLabels, myDisDirectives, myReserved);
 
   // Parts of the disassembly will be accessed later in different ways
   // We place those parts in separate maps, to speed up access
@@ -812,7 +812,7 @@ string CartDebug::loadListFile()
   // The default naming/location for list files is the ROM dir based on the
   // actual ROM filename
 
-  FSNode lst(myOSystem.romFile().getPathWithExt(".lst"));
+  const FSNode lst(myOSystem.romFile().getPathWithExt(".lst"));
   if(!lst.isReadable())
     return DebuggerParser::red("list file \'" + lst.getShortPath() + "\' not found");
 
@@ -873,7 +873,7 @@ string CartDebug::loadSymbolFile()
   // The default naming/location for symbol files is the ROM dir based on the
   // actual ROM filename
 
-  FSNode sym(myOSystem.romFile().getPathWithExt(".sym"));
+  const FSNode sym(myOSystem.romFile().getPathWithExt(".sym"));
   if(!sym.isReadable())
     return DebuggerParser::red("symbol file \'" + sym.getShortPath() + "\' not found");
 
@@ -934,7 +934,7 @@ string CartDebug::loadConfigFile()
   // The default naming/location for config files is the CFG dir and based
   // on the actual ROM filename
 
-  FSNode romNode(myOSystem.romFile().getPathWithExt(".cfg"));
+  const FSNode romNode(myOSystem.romFile().getPathWithExt(".cfg"));
   FSNode cfg = myOSystem.cfgDir();  cfg /= romNode.getName();
   if(!cfg.isReadable())
     return DebuggerParser::red("config file \'" + cfg.getShortPath() + "\' not found");
@@ -1073,7 +1073,7 @@ string CartDebug::saveConfigFile()
   stringstream retVal;
   try
   {
-    FSNode romNode(myOSystem.romFile().getPathWithExt(".cfg"));
+    const FSNode romNode(myOSystem.romFile().getPathWithExt(".cfg"));
     FSNode cfg = myOSystem.cfgDir();  cfg /= romNode.getName();
     if(!cfg.getParent().isWritable())
       return DebuggerParser::red("config file \'" + cfg.getShortPath() + "\' not writable");
@@ -1145,8 +1145,8 @@ string CartDebug::saveDisassembly(string path)
 
     // Disassemble bank
     disasm.list.clear();
-    DiStella distella(*this, disasm.list, info, settings,
-                      myDisLabels, myDisDirectives, myReserved);
+    const DiStella distella(*this, disasm.list, info, settings,
+                            myDisLabels, myDisDirectives, myReserved);
 
     if (myReserved.breakFound)
       addLabel("Break", myDebugger.dpeek(0xfffe));
@@ -1258,7 +1258,7 @@ string CartDebug::saveDisassembly(string path)
 
   if(myConsole.timing() == ConsoleTiming::ntsc)
   {
-    string NTSC_COLOR[16] = {
+    const string NTSC_COLOR[16] = {
       "BLACK", "YELLOW", "BROWN", "ORANGE",
       "RED", "MAUVE", "VIOLET", "PURPLE",
       "BLUE", "BLUE_CYAN", "CYAN", "CYAN_GREEN",
@@ -1270,7 +1270,7 @@ string CartDebug::saveDisassembly(string path)
   }
   else if(myConsole.timing() == ConsoleTiming::pal)
   {
-    string PAL_COLOR[16] = {
+    const string PAL_COLOR[16] = {
       "BLACK0", "BLACK1", "YELLOW", "GREEN_YELLOW",
       "ORANGE", "GREEN", "RED", "CYAN_GREEN",
       "MAUVE", "CYAN", "VIOLET", "BLUE_CYAN",
@@ -1282,7 +1282,7 @@ string CartDebug::saveDisassembly(string path)
   }
   else
   {
-    string SECAM_COLOR[8] = {
+    const string SECAM_COLOR[8] = {
       "BLACK", "BLUE", "RED", "PURPLE",
       "GREEN", "CYAN", "YELLOW", "WHITE"
     };
@@ -1410,7 +1410,7 @@ string CartDebug::saveDisassembly(string path)
     if(path.find_last_of('.') == string::npos)
       path += ".asm";
 
-  FSNode node(path);
+  const FSNode node(path);
   stringstream retVal;
   try
   {
@@ -1438,7 +1438,7 @@ string CartDebug::saveRom(string path)
     if(path.find_last_of('.') == string::npos)
       path += ".a26";
 
-  FSNode node(path);
+  const FSNode node(path);
 
   if(myConsole.cartridge().saveROM(node))
     return "saved ROM as " + node.getShortPath();
@@ -1464,7 +1464,7 @@ string CartDebug::saveAccessFile(string path)
       if(path.find_last_of('.') == string::npos)
         path += ".csv";
 
-    FSNode node(path);
+    const FSNode node(path);
 
     node.write(out);
     return "saved access counters as " + node.getShortPath();
@@ -1489,7 +1489,7 @@ string CartDebug::listConfig(int bank)
   buf << "(items marked '*' are user-defined)" << endl;
   for(uInt32 b = startbank; b < endbank; ++b)
   {
-    BankInfo& info = myBankInfo[b];
+    const BankInfo& info = myBankInfo[b];
     buf << "Bank [" << b << "]" << endl;
     for(const auto& i: info.directiveList)
     {

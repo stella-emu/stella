@@ -177,7 +177,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   myLabel->setEditable(false, true);
 
   // Inputbox which will pop up when searching RAM
-  StringList labels = { "Value" };
+  const StringList labels = { "Value" };
   myInputBox = make_unique<InputTextDialog>(boss, lfont, nfont, labels, " ");
   myInputBox->setTarget(this);
 

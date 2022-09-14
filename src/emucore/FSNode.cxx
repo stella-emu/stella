@@ -84,7 +84,7 @@ bool FSNode::getAllChildren(FSList& fslist, ListMode mode,
     {
       if(BSPF::endsWithIgnoreCase(i.getPath(), ".zip"))
       {
-        FSNodeZIP zipNode(i.getPath());
+        const FSNodeZIP zipNode(i.getPath());
         i.setName(zipNode.getName());
       }
     }
@@ -107,9 +107,9 @@ bool FSNode::getAllChildren(FSList& fslist, ListMode mode,
       if(BSPF::endsWithIgnoreCase(i.getPath(), ".zip"))
       {
         // Force ZIP c'tor to be called
-        AbstractFSNodePtr ptr = FSNodeFactory::create(
+        const AbstractFSNodePtr ptr = FSNodeFactory::create(
             i.getPath(), FSNodeFactory::Type::ZIP);
-        FSNode zipNode(ptr);
+        const FSNode zipNode(ptr);
         i = zipNode;
       }
     }
@@ -148,7 +148,7 @@ bool FSNode::getChildren(FSList& fslist, ListMode mode,
     {
       if(BSPF::endsWithIgnoreCase(i->getPath(), ".zip"))
       {
-        FSNodeZIP node(i->getPath());
+        const FSNodeZIP node(i->getPath());
         i->setName(node.getName());
       }
     }
@@ -183,9 +183,9 @@ bool FSNode::getChildren(FSList& fslist, ListMode mode,
     if (BSPF::endsWithIgnoreCase(i->getPath(), ".zip"))
     {
       // Force ZIP c'tor to be called
-      AbstractFSNodePtr ptr = FSNodeFactory::create(
+      const AbstractFSNodePtr ptr = FSNodeFactory::create(
           i->getPath(), FSNodeFactory::Type::ZIP);
-      FSNode zipNode(ptr);
+      const FSNode zipNode(ptr);
 
       if(filter(zipNode))
       {
@@ -194,7 +194,7 @@ bool FSNode::getChildren(FSList& fslist, ListMode mode,
         else
         {
           // filter by zip node but add file node
-          FSNode node(i);
+          const FSNode node(i);
           fslist.emplace_back(node);
         }
       }
@@ -202,7 +202,7 @@ bool FSNode::getChildren(FSList& fslist, ListMode mode,
     else
   #endif
     {
-      FSNode node(i);
+      const FSNode node(i);
 
       if(includeChildDirectories)
       {
@@ -286,7 +286,7 @@ FSNode FSNode::getParent() const
   if (!_realNode)
     return *this;
 
-  AbstractFSNodePtr node = _realNode->getParent();
+  const AbstractFSNodePtr node = _realNode->getParent();
   return node ? FSNode(node) : *this;
 }
 

@@ -98,7 +98,7 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   int ypos = VBORDER;
   WidgetArray wid;
   VariantList items;
-  int tabID = myTab->addTab(" Emulation ", TabWidget::AUTO_WIDTH);
+  const int tabID = myTab->addTab(" Emulation ", TabWidget::AUTO_WIDTH);
 
   // settings set
   mySettingsGroupEmulation = new RadioButtonGroup();
@@ -139,8 +139,8 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   items.clear();
   VarList::push_back(items, "Atari 2600", "2600");
   VarList::push_back(items, "Atari 7800", "7800");
-  int lwidth = font.getStringWidth("Console ");
-  int pwidth = font.getStringWidth("Atari 2600");
+  const int lwidth = font.getStringWidth("Console ");
+  const int pwidth = font.getStringWidth("Atari 2600");
 
   myConsoleWidget = new PopUpWidget(myTab, font, HBORDER + INDENT * 1, ypos, pwidth, lineHeight, items,
                                     "Console ", lwidth, kConsole);
@@ -232,10 +232,10 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
             VGAP       = Dialog::vGap(),
             INDENT     = Dialog::indent();
   int ypos = VBORDER;
-  int pwidth = font.getStringWidth("Faulty Cosmic Ark stars");
+  const int pwidth = font.getStringWidth("Faulty Cosmic Ark stars");
   WidgetArray wid;
   VariantList items;
-  int tabID = myTab->addTab("  TIA  ", TabWidget::AUTO_WIDTH);
+  const int tabID = myTab->addTab("  TIA  ", TabWidget::AUTO_WIDTH);
 
   wid.clear();
 
@@ -354,7 +354,7 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
   int pwidth = fontWidth * 6;
   WidgetArray wid;
   VariantList items;
-  int tabID = myTab->addTab(" Video ", TabWidget::AUTO_WIDTH);
+  const int tabID = myTab->addTab(" Video ", TabWidget::AUTO_WIDTH);
 
   wid.clear();
 
@@ -516,7 +516,7 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
       lwidth = fontWidth * 11;
   WidgetArray wid;
   VariantList items;
-  int tabID = myTab->addTab(" Time Machine ", TabWidget::AUTO_WIDTH);
+  const int tabID = myTab->addTab(" Time Machine ", TabWidget::AUTO_WIDTH);
 
   // settings set
   mySettingsGroupTM = new RadioButtonGroup();
@@ -574,7 +574,7 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
   items.clear();
   for(int i = 0; i < NUM_INTERVALS; ++i)
     VarList::push_back(items, INTERVALS[i], INT_SETTINGS[i]);
-  int pwidth = font.getStringWidth("10 seconds");
+  const int pwidth = font.getStringWidth("10 seconds");
   myStateIntervalWidget = new PopUpWidget(myTab, font, xpos, ypos, pwidth,
                                           lineHeight, items, "Interval          ", 0, kIntervalChanged);
   myStateIntervalWidget->setToolTip("Define the interval between each saved state.");
@@ -606,7 +606,7 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
 {
-  int tabID = myTab->addTab(" Debugger ", TabWidget::AUTO_WIDTH);
+  const int tabID = myTab->addTab(" Debugger ", TabWidget::AUTO_WIDTH);
   WidgetArray wid;
 
 #ifdef DEBUGGER_SUPPORT
@@ -816,7 +816,7 @@ void DeveloperDialog::setWidgetStates(SettingsSet set)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::loadConfig()
 {
-  bool devSettings = instance().settings().getBool("dev.settings");
+  const bool devSettings = instance().settings().getBool("dev.settings");
   handleSettings(devSettings);
   mySettings = devSettings;
   mySettingsGroupEmulation->setSelected(devSettings ? 1 : 0);
@@ -842,11 +842,11 @@ void DeveloperDialog::loadConfig()
   myDebuggerHeightSlider->setValue(h);
 
   // Debugger font size
-  string size = instance().settings().getString("dbg.fontsize");
+  const string size = instance().settings().getString("dbg.fontsize");
   myDebuggerFontSize->setSelected(size, "medium");
 
   // Debugger font style
-  int style = instance().settings().getInt("dbg.fontstyle");
+  const int style = instance().settings().getInt("dbg.fontstyle");
   myDebuggerFontStyle->setSelected(style, "0");
 
   // Ghost reads trap
@@ -1121,7 +1121,7 @@ void DeveloperDialog::handleSettings(bool devSettings)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::handleTVJitterChange()
 {
-  bool enable = myTVJitterWidget->getState();
+  const bool enable = myTVJitterWidget->getState();
 
   myTVJitterSenseWidget->setEnabled(enable);
   myTVJitterRecWidget->setEnabled(enable);

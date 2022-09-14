@@ -69,18 +69,19 @@ QuadTari::QuadTari(Jack jack, const OSystem& osystem, const System& system,
 unique_ptr<Controller> QuadTari::addController(const Controller::Type type, bool second)
 {
   FSNode nvramfile = myOSystem.nvramDir();
-  Controller::onMessageCallback callback = [&os = myOSystem](const string& msg) {
-    bool devSettings = os.settings().getBool("dev.settings");
-    if(os.settings().getBool(devSettings ? "dev.extaccess" : "plr.extaccess"))
-      os.frameBuffer().showTextMessage(msg);
-  };
+  const Controller::onMessageCallback callback = [&os = myOSystem]
+    (const string& msg) {
+      const bool devSettings = os.settings().getBool("dev.settings");
+      if(os.settings().getBool(devSettings ? "dev.extaccess" : "plr.extaccess"))
+        os.frameBuffer().showTextMessage(msg);
+    };
 
   switch(type)
   {
     case Controller::Type::Paddles:
     {
       // Check if we should swap the paddles plugged into a jack
-      bool swapPaddles = myProperties.get(PropType::Controller_SwapPaddles) == "YES";
+      const bool swapPaddles = myProperties.get(PropType::Controller_SwapPaddles) == "YES";
 
       return make_unique<Paddles>(myJack, myEvent, mySystem, swapPaddles,
                                   false, false, second);

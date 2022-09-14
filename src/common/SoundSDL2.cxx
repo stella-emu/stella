@@ -159,7 +159,7 @@ void SoundSDL2::setEnabled(bool enable)
 void SoundSDL2::open(shared_ptr<AudioQueue> audioQueue,
                      EmulationTiming* emulationTiming)
 {
-  string pre_about = myAboutString;
+  const string pre_about = myAboutString;
 
   // Do we need to re-open the sound device?
   // Only do this when absolutely necessary
@@ -344,12 +344,13 @@ void SoundSDL2::processFragment(float* stream, uInt32 length)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL2::initResampler()
 {
-  Resampler::NextFragmentCallback nextFragmentCallback = [this] () -> Int16* {
+  const Resampler::NextFragmentCallback nextFragmentCallback = [this] () -> Int16* {
     Int16* nextFragment = nullptr;
 
     if(myUnderrun)
-      nextFragment = myAudioQueue->size() >= myEmulationTiming->prebufferFragmentCount() ?
-          myAudioQueue->dequeue(myCurrentFragment) : nullptr;
+      nextFragment = myAudioQueue->size() >= myEmulationTiming->prebufferFragmentCount()
+        ? myAudioQueue->dequeue(myCurrentFragment)
+        : nullptr;
     else
       nextFragment = myAudioQueue->dequeue(myCurrentFragment);
 
@@ -360,10 +361,10 @@ void SoundSDL2::initResampler()
     return nextFragment;
   };
 
-  Resampler::Format formatFrom =
+  const Resampler::Format formatFrom =
     Resampler::Format(myEmulationTiming->audioSampleRate(),
     myAudioQueue->fragmentSize(), myAudioQueue->isStereo());
-  Resampler::Format formatTo =
+  const Resampler::Format formatTo =
     Resampler::Format(myHardwareSpec.freq, myHardwareSpec.samples,
     myHardwareSpec.channels > 1);
 

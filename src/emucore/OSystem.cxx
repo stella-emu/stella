@@ -474,9 +474,10 @@ string OSystem::createConsole(const FSNode& rom, const string& md5sum,
     }
     myConsole->initializeAudio();
 
-    string saveOnExit = settings().getString("saveonexit");
-    bool devSettings = settings().getBool("dev.settings");
-    bool activeTM = settings().getBool(devSettings ? "dev.timemachine" : "plr.timemachine");
+    const string saveOnExit = settings().getString("saveonexit");
+    const bool devSettings = settings().getBool("dev.settings");
+    const bool activeTM = settings().getBool(
+      devSettings ? "dev.timemachine" : "plr.timemachine");
 
     if (saveOnExit == "all" && activeTM)
       myEventHandler->handleEvent(Event::LoadAllStates);
@@ -492,7 +493,7 @@ string OSystem::createConsole(const FSNode& rom, const string& md5sum,
     }
     buf << "Game console created:" << endl
         << "  ROM file: " << myRomFile.getShortPath() << endl;
-    FSNode propsFile(myRomFile.getPathWithExt(".pro"));
+    const FSNode propsFile(myRomFile.getPathWithExt(".pro"));
     if(propsFile.exists())
       buf << "  PRO file: " << propsFile.getShortPath() << endl;
     buf << endl << getROMInfo(*myConsole);
@@ -528,7 +529,7 @@ string OSystem::createConsole(const FSNode& rom, const string& md5sum,
         constexpr int ID_LEN = 32;
         const char* HEX_DIGITS = "0123456789ABCDEF";
         char id_chr[ID_LEN] = { 0 };
-        Random rnd;
+        const Random rnd;
 
         for(char& c : id_chr)
           c = HEX_DIGITS[rnd.next() % 16];
@@ -667,7 +668,7 @@ unique_ptr<Console> OSystem::openConsole(const FSNode& romfile, string& md5)
     const string& type = props.get(PropType::Cart_Type);
     const Cartridge::messageCallback callback = [&os = *this](const string& msg)
     {
-      bool devSettings = os.settings().getBool("dev.settings");
+      const bool devSettings = os.settings().getBool("dev.settings");
 
       if(os.settings().getBool(devSettings ? "dev.extaccess" : "plr.extaccess"))
         os.frameBuffer().showTextMessage(msg);

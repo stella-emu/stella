@@ -117,16 +117,16 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap();
   const int xposRank = HBORDER;
-  int xposScore = xposRank + _font.getStringWidth("Rank");
-  int xposSpecial = xposScore + _font.getStringWidth("   Score  ");
-  int xposName = xposSpecial + _font.getStringWidth("Round  ");
-  int xposDate = xposName + _font.getStringWidth("Name  ");
-  int xposDelete = xposDate + _font.getStringWidth("YY-MM-DD HH:MM  ");
-  int nWidth = _font.getStringWidth("ABC") + fontWidth * 0.75;
+  const int xposScore = xposRank + _font.getStringWidth("Rank");
+  const int xposSpecial = xposScore + _font.getStringWidth("   Score  ");
+  const int xposName = xposSpecial + _font.getStringWidth("Round  ");
+  const int xposDate = xposName + _font.getStringWidth("Name  ");
+  const int xposDelete = xposDate + _font.getStringWidth("YY-MM-DD HH:MM  ");
+  const int nWidth = _font.getStringWidth("ABC") + fontWidth * 0.75;
   const bool smallFont = _font.getFontHeight() < 24;
   const int buttonSize = smallFont ? BUTTON_GFX_H : BUTTON_GFX_H_LARGE;
   WidgetArray wid;
-  VariantList items;
+  const VariantList items;
 
   const int xpos = HBORDER;
   int ypos = VBORDER + _th;
@@ -542,7 +542,7 @@ string HighScoresDialog::cartName() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string HighScoresDialog::now()
 {
-  std::tm now = BSPF::localTime();
+  const std::tm now = BSPF::localTime();
   ostringstream ss;
 
   ss << std::setfill('0') << std::right

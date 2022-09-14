@@ -377,8 +377,8 @@ void DebuggerDialog::doExitRom()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::createFont()
 {
-  string fontSize = instance().settings().getString("dbg.fontsize");
-  int fontStyle = instance().settings().getInt("dbg.fontstyle");
+  const string fontSize = instance().settings().getString("dbg.fontsize");
+  const int fontStyle = instance().settings().getInt("dbg.fontstyle");
 
   if(fontSize == "large")
   {

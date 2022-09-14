@@ -309,7 +309,7 @@ bool FBBackendSDL2::setVideoMode(const VideoModeHandler::Mode& mode,
                                 mode.screenS.w, mode.screenS.h, flags);
     if(myWindow == nullptr)
     {
-      string msg = "ERROR: Unable to open SDL window: " + string(SDL_GetError());
+      const string msg = "ERROR: Unable to open SDL window: " + string(SDL_GetError());
       Logger::error(msg);
       return false;
     }
@@ -438,7 +438,7 @@ bool FBBackendSDL2::createRenderer()
 
     if(myRenderer == nullptr)
     {
-      string msg = "ERROR: Unable to create SDL renderer: " + string(SDL_GetError());
+      const string msg = "ERROR: Unable to create SDL renderer: " + string(SDL_GetError());
       Logger::error(msg);
       return false;
     }

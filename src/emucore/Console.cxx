@@ -221,7 +221,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
 
   setTIAProperties();
 
-  bool joyallow4 = myOSystem.settings().getBool("joyallow4");
+  const bool joyallow4 = myOSystem.settings().getBool("joyallow4");
   myOSystem.eventHandler().allowAllDirections(joyallow4);
 
   // Reset the system to its power-on state
@@ -280,7 +280,7 @@ void Console::autodetectFrameLayout(bool reset)
   // will take over 250 frames!
   // The 'fastscbios' option must be changed before the system is reset
   Settings& settings = myOSystem.settings();
-  bool fastscbios = settings.getBool("fastscbios");
+  const bool fastscbios = settings.getBool("fastscbios");
   settings.setValue("fastscbios", true);
 
   FrameLayoutDetector frameLayoutDetector;
@@ -363,7 +363,7 @@ string Console::formatFromFilename() const
   {
     try
     {
-      std::regex rgx(pat[0], std::regex_constants::icase);
+      const std::regex rgx(pat[0], std::regex_constants::icase);
       if(std::regex_search(filename, rgx))
         return pat[1];
     }
@@ -426,7 +426,6 @@ bool Console::load(Serializer& in)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::selectFormat(int direction)
 {
-  string saveformat, message;
   Int32 format = myCurrentFormat;
 
   format = BSPF::clampw(format + direction, 0, 6);
@@ -534,8 +533,8 @@ void Console::toggleColorLoss(bool toggle)
     myOSystem.settings().setValue(
       myOSystem.settings().getBool("dev.settings") ? "dev.colorloss" : "plr.colorloss", colorloss);
 
-    string message = string("PAL color-loss ") +
-                     (colorloss ? "enabled" : "disabled");
+    const string message = string("PAL color-loss ") +
+                           (colorloss ? "enabled" : "disabled");
     myOSystem.frameBuffer().showTextMessage(message);
   }
   else
@@ -576,7 +575,7 @@ void Console::toggleInter(bool toggle)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::toggleTurbo()
 {
-  bool enabled = myOSystem.settings().getBool("turbo");
+  const bool enabled = myOSystem.settings().getBool("turbo");
 
   myOSystem.settings().setValue("turbo", !enabled);
 
@@ -595,7 +594,7 @@ void Console::toggleTurbo()
 void Console::changeSpeed(int direction)
 {
   int speed = mapSpeed(myOSystem.settings().getFloat("speed"));
-  bool turbo = myOSystem.settings().getBool("turbo");
+  const bool turbo = myOSystem.settings().getBool("turbo");
 
   speed = BSPF::clamp(speed + direction * SPEED_STEP, MIN_SPEED, MAX_SPEED);
   myOSystem.settings().setValue("speed", unmapSpeed(speed));
@@ -674,7 +673,7 @@ FBInitStatus Console::initializeVideo(bool full)
       Common::Size(TIAConstants::viewableWidth, TIAConstants::viewableHeight) :
       Common::Size(2 * myTIA->width(), myTIA->height());
 
-    bool devSettings = myOSystem.settings().getBool("dev.settings");
+    const bool devSettings = myOSystem.settings().getBool("dev.settings");
     const string& title = string("Stella ") + STELLA_VERSION +
                    ": \"" + myProperties.get(PropType::Cart_Name) + "\"";
     fbstatus = myOSystem.frameBuffer().createDisplay(title,
@@ -827,7 +826,7 @@ void Console::setTIAProperties()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::createAudioQueue()
 {
-  bool useStereo = myOSystem.settings().getBool(AudioSettings::SETTING_STEREO)
+  const bool useStereo = myOSystem.settings().getBool(AudioSettings::SETTING_STEREO)
     || myProperties.get(PropType::Cart_Sound) == "STEREO";
 
   myAudioQueue = make_shared<AudioQueue>(
@@ -971,7 +970,8 @@ unique_ptr<Controller> Console::getControllerPort(const Controller::Type type,
     case Controller::Type::PaddlesIAxDr:
     {
       // Also check if we should swap the paddles plugged into a jack
-      bool swapPaddles = myProperties.get(PropType::Controller_SwapPaddles) == "YES";
+      const bool swapPaddles =
+        myProperties.get(PropType::Controller_SwapPaddles) == "YES";
       bool swapAxis = false, swapDir = false;
       if(type == Controller::Type::PaddlesIAxis)
         swapAxis = true;
@@ -1002,8 +1002,9 @@ unique_ptr<Controller> Console::getControllerPort(const Controller::Type type,
     {
       FSNode nvramfile = myOSystem.nvramDir();
       nvramfile /= "atarivox_eeprom.dat";
-      Controller::onMessageCallback callback = [&os = myOSystem](const string& msg) {
-        bool devSettings = os.settings().getBool("dev.settings");
+      const Controller::onMessageCallback callback = [&os = myOSystem](const string& msg)
+      {
+        const bool devSettings = os.settings().getBool("dev.settings");
         if(os.settings().getBool(devSettings ? "dev.extaccess" : "plr.extaccess"))
           os.frameBuffer().showTextMessage(msg);
       };
@@ -1015,8 +1016,9 @@ unique_ptr<Controller> Console::getControllerPort(const Controller::Type type,
     {
       FSNode nvramfile = myOSystem.nvramDir();
       nvramfile /= "savekey_eeprom.dat";
-      Controller::onMessageCallback callback = [&os = myOSystem](const string& msg) {
-        bool devSettings = os.settings().getBool("dev.settings");
+      const Controller::onMessageCallback callback = [&os = myOSystem](const string& msg)
+      {
+        const bool devSettings = os.settings().getBool("dev.settings");
         if(os.settings().getBool(devSettings ? "dev.extaccess" : "plr.extaccess"))
           os.frameBuffer().showTextMessage(msg);
       };
@@ -1029,12 +1031,14 @@ unique_ptr<Controller> Console::getControllerPort(const Controller::Type type,
 
     case Controller::Type::KidVid:
     {
-      Controller::onMessageCallbackForced callback = [&os = myOSystem](const string& msg, bool force) {
-        bool devSettings = os.settings().getBool("dev.settings");
+      const Controller::onMessageCallbackForced callback =
+      [&os = myOSystem](const string& msg, bool force) {
+        const bool devSettings = os.settings().getBool("dev.settings");
         if(force || os.settings().getBool(devSettings ? "dev.extaccess" : "plr.extaccess"))
           os.frameBuffer().showTextMessage(msg);
       };
-      controller = make_unique<KidVid>(port, myEvent, myOSystem, *mySystem, romMd5, callback);
+      controller = make_unique<KidVid>
+        (port, myEvent, myOSystem, *mySystem, romMd5, callback);
       break;
     }
 
@@ -1043,7 +1047,8 @@ unique_ptr<Controller> Console::getControllerPort(const Controller::Type type,
       break;
 
     case Controller::Type::Lightgun:
-      controller = make_unique<Lightgun>(port, myEvent, *mySystem, romMd5, myOSystem.frameBuffer());
+      controller = make_unique<Lightgun>
+        (port, myEvent, *mySystem, romMd5, myOSystem.frameBuffer());
       break;
 
     case Controller::Type::QuadTari:
@@ -1159,7 +1164,7 @@ void Console::changePaddleAxesRange(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::toggleAutoFire(bool toggle)
 {
-  bool enabled = myOSystem.settings().getBool("autofire");
+  const bool enabled = myOSystem.settings().getBool("autofire");
 
   if(toggle)
   {

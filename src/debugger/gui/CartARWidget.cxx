@@ -31,7 +31,7 @@ CartridgeARWidget::CartridgeARWidget(
 {
   const size_t size = myCart.mySize;
 
-  string info =
+  const string info =
     "Supercharger cartridge, four 2K slices (3 RAM, 1 ROM)\n"
     "\nTHIS SCHEME IS NOT FULLY IMPLEMENTED OR TESTED\n";
 

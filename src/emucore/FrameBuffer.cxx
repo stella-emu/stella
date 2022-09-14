@@ -170,10 +170,12 @@ void FrameBuffer::setupFonts()
   else
   {
     constexpr int NUM_FONTS = 7;
-    FontDesc FONT_DESC[NUM_FONTS] = {GUI::consoleDesc, GUI::consoleMediumDesc, GUI::stellaMediumDesc,
-      GUI::stellaLargeDesc, GUI::stella12x24tDesc, GUI::stella14x28tDesc, GUI::stella16x32tDesc};
+    const FontDesc FONT_DESC[NUM_FONTS] = {
+      GUI::consoleDesc, GUI::consoleMediumDesc, GUI::stellaMediumDesc,
+      GUI::stellaLargeDesc, GUI::stella12x24tDesc, GUI::stella14x28tDesc,
+      GUI::stella16x32tDesc};
     const string& dialogFont = myOSystem.settings().getString("dialogfont");
-    FontDesc fd = getFontDesc(dialogFont);
+    const FontDesc fd = getFontDesc(dialogFont);
 
     // The general font used in all UI elements
     myFont = make_unique<GUI::Font>(fd);                                //  default: 9x18
@@ -274,9 +276,9 @@ FBInitStatus FrameBuffer::createDisplay(const string& title, BufferType type,
   if(myBufferType == BufferType::Emulator)
   {
     // Determine possible TIA windowed zoom levels
-    float currentTIAZoom = myOSystem.settings().getFloat("tia.zoom");
+    const float currentTIAZoom = myOSystem.settings().getFloat("tia.zoom");
     myOSystem.settings().setValue("tia.zoom",
-                                  BSPF::clampw(currentTIAZoom, supportedTIAMinZoom(), supportedTIAMaxZoom()));
+      BSPF::clampw(currentTIAZoom, supportedTIAMinZoom(), supportedTIAMaxZoom()));
   }
 
 #ifdef GUI_SUPPORT  // TODO: put message stuff in its own class
@@ -311,7 +313,7 @@ FBInitStatus FrameBuffer::createDisplay(const string& title, BufferType type,
   myVidModeHandler.setImageSize(size);
 
   // Initialize video subsystem
-  string pre_about = myBackend->about();
+  const string pre_about = myBackend->about();
   const FBInitStatus status = applyVideoMode();
 
   // Only set phosphor once when ROM is started
@@ -344,7 +346,7 @@ FBInitStatus FrameBuffer::createDisplay(const string& title, BufferType type,
   }
   else
   {
-    string post_about = myBackend->about();
+    const string post_about = myBackend->about();
     if(post_about != pre_about)
       Logger::info(post_about);
   }
@@ -383,7 +385,7 @@ void FrameBuffer::update(UpdateMode mode)
     case EventHandlerState::PAUSE:
     {
       // Show a pause message immediately and then every 7 seconds
-      bool shade = myOSystem.settings().getBool("pausedim");
+      const bool shade = myOSystem.settings().getBool("pausedim");
 
       if(myPausedCount-- <= 0)
       {
@@ -1214,7 +1216,7 @@ void FrameBuffer::switchVideoMode(int direction)
     // is irrelevant
     if(direction == +1 || direction == -1)
     {
-      bool stretch = myOSystem.settings().getBool("tia.fs_stretch");
+      const bool stretch = myOSystem.settings().getBool("tia.fs_stretch");
       myOSystem.settings().setValue("tia.fs_stretch", !stretch);
     }
   }
@@ -1366,7 +1368,7 @@ bool FrameBuffer::grabMouseAllowed()
   const bool alwaysUseMouse = BSPF::equalsIgnoreCase("always", myOSystem.settings().getString("usemouse"));
 
   // Disable grab while cursor is shown in emulation
-  bool cursorHidden = !(myOSystem.settings().getInt("cursor") & 1);
+  const bool cursorHidden = !(myOSystem.settings().getInt("cursor") & 1);
 
   return emulation && (analog || usesLightgun || alwaysUseMouse) && cursorHidden;
 }

@@ -167,7 +167,7 @@ void BrowserDialog::show(const string& startpath,
   if(_mode != Mode::Directories)
   {
     // split startpath into path and filename
-    FSNode fs = FSNode(startpath);
+    const FSNode fs = FSNode(startpath);
     fileName = fs.getName();
     directory = fs.isDirectory() ? "" : fs.getParent().getPath();
   }

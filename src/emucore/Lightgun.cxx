@@ -103,9 +103,8 @@ bool Lightgun::read(DigitalPin pin)
       if (xTia < 0)
         xTia += TIAConstants::H_CLOCKS;
 
-      const bool enable = !((xTia - xMouse) >= 0 && (xTia - xMouse) < 15 && (yTia - yMouse) >= 0);
-
-      return enable;
+      return (xTia - xMouse) < 0 || (xTia - xMouse) >= 15 ||
+             (yTia - yMouse) < 0;
     }
     default:
       return Controller::read(pin);

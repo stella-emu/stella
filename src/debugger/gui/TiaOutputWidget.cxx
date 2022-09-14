@@ -87,7 +87,7 @@ void TiaOutputWidget::saveSnapshot(int execDepth, const string& execPrefix,
   {
     // Determine if the file already exists, checking each successive filename
     // until one doesn't exist
-    FSNode node(sspath.str() + ".png");
+    const FSNode node(sspath.str() + ".png");
     if(node.exists())
     {
       ostringstream suffix;
@@ -98,7 +98,7 @@ void TiaOutputWidget::saveSnapshot(int execDepth, const string& execPrefix,
         suffix.str("");
         suffix << "_" << i;
         buf << sspath.str() << suffix.str() << ".png";
-        FSNode next(buf.str());
+        const FSNode next(buf.str());
         if(!next.exists())
           break;
       }
@@ -166,7 +166,7 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
       if(lines > 0)
       {
         command << "scanLine #" << lines;
-        string message = instance().debugger().parser().run(command.str());
+        const string message = instance().debugger().parser().run(command.str());
         instance().frameBuffer().showTextMessage(message);
       }
     }
@@ -266,7 +266,7 @@ void TiaOutputWidget::drawWidget(bool hilite)
     for(uInt32 x = 0; x < width; ++x, ++i)
     {
       const uInt8 shift = i >= scanoffset ? 1 : 0;
-      uInt32 pixel = tiaSurface.mapIndexedPixel(tiaOutputBuffer[i], shift);
+      const uInt32 pixel = tiaSurface.mapIndexedPixel(tiaOutputBuffer[i], shift);
       *line_ptr++ = pixel;
       *line_ptr++ = pixel;
     }

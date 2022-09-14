@@ -137,7 +137,7 @@ void ContextMenu::setSelected(const Variant& tag, const Variant& defaultTag)
   };
 
   // First try searching for a valid tag
-  bool tagSelected = tag != "" && SEARCH_AND_SELECT(tag);
+  const bool tagSelected = tag != "" && SEARCH_AND_SELECT(tag);
 
   // Otherwise use the default tag
   if(!tagSelected)
