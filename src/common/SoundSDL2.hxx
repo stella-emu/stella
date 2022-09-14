@@ -165,7 +165,9 @@ class SoundSDL2 : public Sound
 
     // Current volume as a percentage (0 - 100)
     uInt32 myVolume{100};
-    static float myVolumeFactor;
+    float myVolumeFactor{0xffff};
+    // Current mute state, used to control WAV file sound
+    bool myMuteState{false};
 
     // Audio specification structure
     SDL_AudioSpec myHardwareSpec;
@@ -191,6 +193,7 @@ class SoundSDL2 : public Sound
     SDL_AudioDeviceID myWavDevice{0};
     uInt8* myWavBuffer{nullptr};
 
+    static float myWavVolumeFactor;
     static SDL_AudioSpec myWavSpec; // audio output format
     static uInt8* myWavPos; // pointer to the audio buffer to be played
     static uInt32 myWavLen; // remaining length of the sample we have to play
