@@ -201,7 +201,7 @@ void SoundSDL2::open(shared_ptr<AudioQueue> audioQueue,
     Logger::info(myAboutString);
 
   // And start the SDL sound subsystem ...
-  mute(false && myMuteState);
+  mute(myMuteState);
 
   Logger::debug("SoundSDL2::open finished");
 }
@@ -284,6 +284,8 @@ void SoundSDL2::adjustVolume(int direction)
   {
     setEnabled(true);
     myOSystem.console().initializeAudio();
+    myMuteState = false;
+    mute(false);
   }
   setVolume(percent);
 
@@ -453,7 +455,7 @@ bool SoundSDL2::playWav(const string& fileName, const uInt32 position,
                             myWavSpec.format, myWavSpec.channels, myWavSpec.freq * speed);
   SDL_assert(myCvt.needed); // Obviously, this one is always needed.
   myCvt.len = myWavLen * myWavSpec.channels;  // Mono 8 bit sample frames
-  myCvt.buf = (uInt8*)SDL_malloc(myCvt.len * myCvt.len_mult * 2); // Double buffer size to avoid memory access exception
+  myCvt.buf = static_cast<uInt8*>(SDL_malloc(myCvt.len * myCvt.len_mult * 2)); // Double buffer size to avoid memory access exception
   // Read original data into conversion buffer
   SDL_memcpy(myCvt.buf, myWavBuffer + position, myCvt.len);
   SDL_ConvertAudio(&myCvt);
