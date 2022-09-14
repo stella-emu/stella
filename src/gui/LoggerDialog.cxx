@@ -90,7 +90,7 @@ LoggerDialog::LoggerDialog(OSystem& osystem, DialogContainer& parent,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LoggerDialog::loadConfig()
 {
-  StringParser parser(Logger::instance().logMessages());
+  const StringParser parser(Logger::instance().logMessages());
   myLogInfo->setList(parser.stringList());
   myLogInfo->setSelected(0);
   myLogInfo->scrollToEnd();

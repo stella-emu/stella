@@ -134,7 +134,7 @@ void NavigationWidget::handleCommand(CommandSender* sender, int cmd, int data,
   {
     case kFolderClicked:
     {
-      FSNode node(myPath->getPath(id));
+      const FSNode node(myPath->getPath(id));
       myList->selectDirectory(node);
       break;
     }

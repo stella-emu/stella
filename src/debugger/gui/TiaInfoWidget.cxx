@@ -38,7 +38,7 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
   const int VGAP = lfont.getLineHeight() / 4;
   constexpr int VBORDER = 5 + 1;
   const int COLUMN_GAP = _fontWidth * 1.25;
-  bool longstr = lfont.getStringWidth("Frame Cycls12345") + _fontWidth * 0.5
+  const bool longstr = lfont.getStringWidth("Frame Cycls12345") + _fontWidth * 0.5
     + COLUMN_GAP + lfont.getStringWidth("Scanline262262")
     + EditTextWidget::calcWidth(lfont) * 3 <= max_w;
   const int lineHeight = lfont.getLineHeight();

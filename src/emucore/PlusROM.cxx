@@ -90,7 +90,7 @@ class PlusROMRequest {
         << "nick=" << myId.nick;
 
       httplib::Client client(myDestination.host);
-      httplib::Headers headers = {
+      const httplib::Headers headers = {
         {"PlusROM-Info", content.str()}
       };
 
@@ -375,7 +375,7 @@ bool PlusROM::isValidHost(const string& host)
   //       of each part between '.' in the range 1 .. 63
   //  Perhaps a better function will be included with whatever network
   //  library we decide to use
-  static std::regex rgx(R"(^(([a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*([a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$)", std::regex_constants::icase);
+  static const std::regex rgx(R"(^(([a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*([a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$)", std::regex_constants::icase);
 
   return std::regex_match(host, rgx);
 }

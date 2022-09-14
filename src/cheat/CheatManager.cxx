@@ -36,7 +36,7 @@ CheatManager::CheatManager(OSystem& osystem)
 bool CheatManager::add(const string& name, const string& code,
                        bool enable, int idx)
 {
-  shared_ptr<Cheat> cheat = createCheat(name, code);
+  const shared_ptr<Cheat> cheat = createCheat(name, code);
   if(!cheat)
     return false;
 
@@ -120,7 +120,7 @@ void CheatManager::addPerFrame(const string& name, const string& code, bool enab
 void CheatManager::addOneShot(const string& name, const string& code)
 {
   // Evaluate this cheat once, and then immediately discard it
-  shared_ptr<Cheat> cheat = createCheat(name, code);
+  const shared_ptr<Cheat> cheat = createCheat(name, code);
   if(cheat)
     cheat->evaluate();
 }
@@ -299,7 +299,7 @@ void CheatManager::saveCheats(const string& md5sum)
       cheats << ",";
   }
 
-  bool changed = cheats.str() != myCurrentCheat;
+  const bool changed = cheats.str() != myCurrentCheat;
 
   // Only update the list if absolutely necessary
   if(changed)

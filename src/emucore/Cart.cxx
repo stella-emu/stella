@@ -36,7 +36,7 @@ Cartridge::Cartridge(const Settings& settings, const string& md5)
 
   const uInt32 seed = to_uInt32(md5, 0)  ^ to_uInt32(md5, 8) ^
                       to_uInt32(md5, 16) ^ to_uInt32(md5, 24);
-  Random rand(seed);
+  const Random rand(seed);
   for(uInt32 i = 0; i < 256; ++i)
     myRWPRandomValues[i] = rand.next();
 
@@ -95,7 +95,7 @@ uInt16 Cartridge::bankSize(uInt16 bank) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 Cartridge::peekRAM(uInt8& dest, uInt16 address)
 {
-  uInt8 value = myRWPRandomValues[address & 0xFF];
+  const uInt8 value = myRWPRandomValues[address & 0xFF];
 
   // Reading from the write port triggers an unwanted write
   // But this only happens when in normal emulation mode

@@ -295,9 +295,9 @@ void PNGLibrary::takeSnapshot(uInt32 number)
 
   // Figure out the correct snapshot name
   string filename;
-  string sspath = myOSystem.snapshotSaveDir().getPath() +
-      (myOSystem.settings().getString("snapname") != "int" ?
-          myOSystem.romFile().getNameWithExt("")
+  const string sspath = myOSystem.snapshotSaveDir().getPath() +
+      (myOSystem.settings().getString("snapname") != "int"
+        ? myOSystem.romFile().getNameWithExt("")
         : myOSystem.console().properties().get(PropType::Cart_Name));
 
   // Check whether we want multiple snapshots created
@@ -313,7 +313,7 @@ void PNGLibrary::takeSnapshot(uInt32 number)
     // Determine if the file already exists, checking each successive filename
     // until one doesn't exist
     filename = sspath + ".png";
-    FSNode node(filename);
+    const FSNode node(filename);
     if(node.exists())
     {
       ostringstream buf;
@@ -321,7 +321,7 @@ void PNGLibrary::takeSnapshot(uInt32 number)
       {
         buf.str("");
         buf << sspath << "_" << i << ".png";
-        FSNode next(buf.str());
+        const FSNode next(buf.str());
         if(!next.exists())
           break;
       }

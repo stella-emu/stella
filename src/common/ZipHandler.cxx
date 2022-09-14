@@ -284,7 +284,7 @@ void ZipHandler::ZipFile::readEcd()
       buflen = myLength;
 
     // Allocate buffer
-    ByteBuffer buffer = make_unique<uInt8[]>(buflen + 1);
+    const ByteBuffer buffer = make_unique<uInt8[]>(buflen + 1);
     if(buffer == nullptr)
       throw runtime_error(errorMessage(ZipError::OUT_OF_MEMORY));
 

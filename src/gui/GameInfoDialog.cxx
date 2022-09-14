@@ -114,7 +114,7 @@ void GameInfoDialog::addEmulationTab()
   VariantList items;
 
   // 1) Emulation properties
-  int tabID = myTab->addTab("Emulation", TabWidget::AUTO_WIDTH);
+  const int tabID = myTab->addTab("Emulation", TabWidget::AUTO_WIDTH);
 
   int ypos = VBORDER;
 
@@ -209,11 +209,11 @@ void GameInfoDialog::addConsoleTab()
   WidgetArray wid;
 
   // 2) Console properties
-  int tabID = myTab->addTab(" Console ", TabWidget::AUTO_WIDTH);
+  const int tabID = myTab->addTab(" Console ", TabWidget::AUTO_WIDTH);
 
   const int xpos = HBORDER;
   int ypos = VBORDER;
-  int lwidth = _font.getStringWidth(GUI::RIGHT_DIFFICULTY + " ");
+  const int lwidth = _font.getStringWidth(GUI::RIGHT_DIFFICULTY + " ");
 
   new StaticTextWidget(myTab, _font, xpos, ypos + 1, "TV type");
   myTVTypeGroup = new RadioButtonGroup();
@@ -275,7 +275,7 @@ void GameInfoDialog::addControllersTab()
 
   // 3) Controller properties
   wid.clear();
-  int tabID = myTab->addTab("Controllers", TabWidget::AUTO_WIDTH);
+  const int tabID = myTab->addTab("Controllers", TabWidget::AUTO_WIDTH);
 
   items.clear();
   VarList::push_back(items, "Auto-detect", "AUTO");
@@ -429,15 +429,14 @@ void GameInfoDialog::addCartridgeTab()
             VGAP       = Dialog::vGap(),
             HGAP       = Dialog::fontWidth() / 4;
   WidgetArray wid;
-  VariantList items;
 
   wid.clear();
-  int tabID = myTab->addTab("Cartridge", TabWidget::AUTO_WIDTH);
+  const int tabID = myTab->addTab("Cartridge", TabWidget::AUTO_WIDTH);
 
   const int xpos = HBORDER;
   int ypos = VBORDER;
-  int lwidth = _font.getStringWidth("Manufacturer ");
-  const int fwidth = _w - lwidth - HBORDER * 2 - 2;
+  const int lwidth = _font.getStringWidth("Manufacturer "),
+            fwidth = _w - lwidth - HBORDER * 2 - 2;
   new StaticTextWidget(myTab, _font, xpos, ypos + 1, lwidth, fontHeight, "Name");
   myName = new EditTextWidget(myTab, _font, xpos + lwidth, ypos - 1,
                               fwidth, lineHeight, "");
@@ -503,21 +502,20 @@ void GameInfoDialog::addHighScoresTab()
   WidgetArray wid;
   VariantList items;
 
-  int tabID = myTab->addTab("High Scores", TabWidget::AUTO_WIDTH);
+  const int tabID = myTab->addTab("High Scores", TabWidget::AUTO_WIDTH);
 
-  EditableWidget::TextFilter fAddr = [](char c) {
+  const EditableWidget::TextFilter fAddr = [](char c) {
     return (c >= 'a' && c <= 'f') || (c >= '0' && c <= '9');
   };
-  EditableWidget::TextFilter fVars = [](char c) {
+  const EditableWidget::TextFilter fVars = [](char c) {
     return (c >= '0' && c <= '9');
   };
-
-  EditableWidget::TextFilter fText = [](char c) {
+  const EditableWidget::TextFilter fText = [](char c) {
     return (c >= 'a' && c <= 'z') || (c >= ' ' && c < ',') || (c > ',' && c < '@');
   };
 
   int xpos = HBORDER, ypos = VBORDER;
-  int lwidth = _font.getStringWidth("Variations ");
+  const int lwidth = _font.getStringWidth("Variations ");
 
   myHighScores = new CheckboxWidget(myTab, _font, xpos, ypos + 1, "Enable High Scores",
                                     kHiScoresChanged);
@@ -976,7 +974,7 @@ void GameInfoDialog::saveProperties()
   if(myMouseControl->getState())
     mcontrol = myMouseX->getSelectedTag().toString() +
                myMouseY->getSelectedTag().toString();
-  string range = myMouseRange->getValueLabel();
+  const string range = myMouseRange->getValueLabel();
   if(range != "100")
     mcontrol += " " + range;
   myGameProperties.set(PropType::Controller_MouseAxis, mcontrol);
@@ -1073,7 +1071,7 @@ void GameInfoDialog::saveHighScoresProperties()
       info.scoreAddr[a] = stringToIntBase16(strAddr, HSM::DEFAULT_ADDRESS);
     }
 
-    string strVars = myVariations->getText();
+    const string strVars = myVariations->getText();
 
     HighScoresManager::set(myGameProperties, stringToInt(strVars,
       HSM::DEFAULT_VARIATION), info);
@@ -1322,7 +1320,7 @@ void GameInfoDialog::eraseEEPROM()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::updateLink()
 {
-  string link = myUrl->getText();
+  const string link = myUrl->getText();
   const bool enable = startsWithIgnoreCase(link, "http://")
     || startsWithIgnoreCase(link, "https://")
     || startsWithIgnoreCase(link, "www.");
@@ -1401,7 +1399,7 @@ void GameInfoDialog::updateHighScoresWidgets()
     if(a < numAddr)
     {
       setAddressVal(myScoreAddress[a], myScoreAddressVal[a]);
-      string strAddr = myScoreAddress[a]->getText();
+      const string strAddr = myScoreAddress[a]->getText();
       scoreAddr[a] = stringToIntBase16(strAddr, HSM::DEFAULT_ADDRESS);
     }
     else

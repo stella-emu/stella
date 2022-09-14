@@ -31,7 +31,7 @@ Launcher::Launcher(OSystem& osystem)
     mySize{myOSystem.settings().getSize("launcherres")}
 {
   const Common::Size& d = myOSystem.frameBuffer().desktopSize(BufferType::Launcher);
-  double overscan = 1 - myOSystem.settings().getInt("tia.fs_overscan") / 100.0;
+  const double overscan = 1 - myOSystem.settings().getInt("tia.fs_overscan") / 100.0;
 
   // The launcher dialog is resizable, within certain bounds
   // We check those bounds now
@@ -54,7 +54,7 @@ Launcher::~Launcher()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBInitStatus Launcher::initializeVideo()
 {
-  string title = string("Stella ") + STELLA_VERSION;
+  const string title = string("Stella ") + STELLA_VERSION;
   return myOSystem.frameBuffer().createDisplay(
       title, BufferType::Launcher, mySize
   );

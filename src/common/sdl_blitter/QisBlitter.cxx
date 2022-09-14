@@ -75,7 +75,7 @@ void QisBlitter::free()
 
   ASSERT_MAIN_THREAD;
 
-  std::array<SDL_Texture*, 3> textures = {
+  const std::array<SDL_Texture*, 3> textures = {
     mySrcTexture, myIntermediateTexture, mySecondaryIntermedateTexture
   };
   for (SDL_Texture* texture: textures) {
@@ -183,7 +183,7 @@ void QisBlitter::recreateTexturesIfNecessary()
   if (myAttributes.blending) {
     const auto blendAlpha = static_cast<uInt8>(myAttributes.blendalpha * 2.55);
 
-    std::array<SDL_Texture*, 3> textures = {
+    const std::array<SDL_Texture*, 3> textures = {
       mySrcTexture, myIntermediateTexture, mySecondaryIntermedateTexture
     };
     for (SDL_Texture* texture: textures) {

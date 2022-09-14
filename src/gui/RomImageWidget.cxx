@@ -90,7 +90,7 @@ void RomImageWidget::reloadProperties(const FSNode& node)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomImageWidget::parseProperties(const FSNode& node, bool full)
 {
-  uInt64 startTime = TimerManager::getTicks() / 1000;
+  const uInt64 startTime = TimerManager::getTicks() / 1000;
 
   if(myNavSurface == nullptr)
   {
@@ -205,14 +205,13 @@ bool RomImageWidget::getImageList(const string& propName, const string& romName,
   // Look for <name.png|jpg> or <name_#.png|jpg> (# is a number)
   const std::regex rgx("^(" + rgxPropName + "|" + rgxRomName + ")(_\\d+)?\\.(png|jpg)$");
 
-  FSNode::NameFilter filter = ([&](const FSNode& node)
-    {
+  const FSNode::NameFilter filter = ([&](const FSNode& node) {
       return std::regex_match(node.getName(), rgx);
     }
   );
 
   // Find all images matching the given names and the extension
-  FSNode node(instance().snapshotLoadDir().getPath());
+  const FSNode node(instance().snapshotLoadDir().getPath());
   node.getChildren(myImageList, FSNode::ListMode::FilesOnly, filter, false, false);
 
   // Sort again, not considering extensions, else <filename.png|jpg> would be at
@@ -220,7 +219,8 @@ bool RomImageWidget::getImageList(const string& propName, const string& romName,
   std::sort(myImageList.begin(), myImageList.end(),
             [oldFileName](const FSNode& node1, const FSNode& node2)
     {
-      int compare = BSPF::compareIgnoreCase(node1.getNameWithExt(), node2.getNameWithExt());
+      const int compare = BSPF::compareIgnoreCase(
+        node1.getNameWithExt(), node2.getNameWithExt());
       return
         compare < 0 ||
         // PNGs first!

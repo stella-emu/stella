@@ -51,7 +51,7 @@ void Logger::debug(const string& message)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Logger::logMessage(const string& message, Level level)
 {
-  std::lock_guard<std::mutex> lock(mutex);
+  const std::lock_guard<std::mutex> lock(mutex);
 
   if(level == Logger::Level::ERR)
   {

@@ -60,14 +60,14 @@ ProfilingRunner::ProfilingRunner(int argc, char* argv[])
   for (int i = 2; i < argc; i++) {
     ProfilingRun& run(profilingRuns[i-2]);
 
-    string arg = argv[i];
+    const string arg = argv[i];
     const size_t splitPoint = arg.find_first_of(':');
 
     run.romFile = splitPoint == string::npos ? arg : arg.substr(0, splitPoint);
 
     if (splitPoint == string::npos) run.runtime = RUNTIME_DEFAULT;
     else  {
-      int runtime = BSPF::stringToInt(arg.substr(splitPoint+1, string::npos));
+      const int runtime = BSPF::stringToInt(arg.substr(splitPoint+1, string::npos));
       run.runtime = runtime > 0 ? runtime : RUNTIME_DEFAULT;
     }
   }
@@ -95,7 +95,7 @@ bool ProfilingRunner::run()
 //                stacksize '16384'.  Consider moving some data to heap.
 bool ProfilingRunner::runOne(const ProfilingRun& run)
 {
-  FSNode imageFile(run.romFile);
+  const FSNode imageFile(run.romFile);
 
   if (!imageFile.isFile()) {
     cout << "ERROR: " << run.romFile << " is not a ROM image" << endl;
@@ -110,7 +110,7 @@ bool ProfilingRunner::runOne(const ProfilingRun& run)
   }
 
   string md5 = MD5::hash(image, size);
-  string type;
+  const string type;
   unique_ptr<Cartridge> cartridge = CartCreator::create(
       imageFile, image, size, md5, type, mySettings);
 
@@ -121,7 +121,7 @@ bool ProfilingRunner::runOne(const ProfilingRun& run)
 
   IO consoleIO;
   Random rng(0);
-  Event event;
+  const Event event;
 
   M6502 cpu(mySettings);
   M6532 riot(consoleIO, mySettings);

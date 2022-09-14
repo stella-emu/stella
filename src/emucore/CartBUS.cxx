@@ -59,7 +59,7 @@ CartridgeBUS::CartridgeBUS(const ByteBuffer& image, size_t size,
   // Pointer to BUS driver in RAM
   myDriverImage = myRAM.data();
 
-  bool devSettings = settings.getBool("dev.settings");
+  const bool devSettings = settings.getBool("dev.settings");
 
   if (myBUSSubtype == BUSSubtype::BUS0)
   {

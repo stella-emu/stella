@@ -53,7 +53,8 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
     myMode{mode}
 {
   // do not show basic settings options in debugger
-  bool minSettings = osystem.settings().getBool("minimal_ui") && mode != AppMode::debugger;
+  const bool minSettings = osystem.settings().getBool("minimal_ui")
+    && mode != AppMode::debugger;
   const int buttonHeight = Dialog::buttonHeight(),
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder(),
@@ -279,7 +280,7 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
     case kLoggerCmd:
     {
       uInt32 w = 0, h = 0;
-      bool uselargefont = getDynamicBounds(w, h);
+      const bool uselargefont = getDynamicBounds(w, h);
 
       myDialog = make_unique<LoggerDialog>(instance(), parent(), _font, w, h, uselargefont);
       myDialog->open();

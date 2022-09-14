@@ -313,7 +313,7 @@ void StateManager::changeState(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StateManager::toggleAutoSlot()
 {
-  bool autoSlot = !myOSystem.settings().getBool("autoslot");
+  const bool autoSlot = !myOSystem.settings().getBool("autoslot");
 
   // Print appropriate message
   ostringstream buf;

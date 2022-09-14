@@ -35,7 +35,7 @@ CartridgeCMWidget::CartridgeCMWidget(
 {
   constexpr uInt16 size = 4 * 4096;
 
-  string info =
+  const string info =
     "CM cartridge, four 4K banks + 2K RAM\n"
     "2K RAM accessible @ $1800 - $1FFF in read or write-only mode "
     "(no separate ports)\n"

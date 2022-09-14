@@ -26,7 +26,7 @@ Cartridge4A50Widget::Cartridge4A50Widget(
   : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
     myCart{cart}
 {
-  string info =
+  const string info =
     "4A50 cartridge - 128K ROM and 32K RAM, split in various bank configurations\n"
     "Multiple hotspots, see documentation for further details\n"
     "Lower bank region (2K)   : $F000 - $F7FF\n"
@@ -55,9 +55,9 @@ Cartridge4A50Widget::Cartridge4A50Widget(
     VarList::push_back(items256, i);
   VarList::push_back(items256, "Inactive", "");
 
-  string lowerlabel  = "Set lower 2K region ($F000 - $F7FF): ";
-  string middlelabel = "Set middle 1.5K region ($F800 - $FDFF): ";
-  string highlabel   = "Set high 256B region ($FE00 - $FEFF): ";
+  const string lowerlabel  = "Set lower 2K region ($F000 - $F7FF): ";
+  const string middlelabel = "Set middle 1.5K region ($F800 - $FDFF): ";
+  const string highlabel   = "Set high 256B region ($FE00 - $FEFF): ";
   const int lwidth  = _font.getStringWidth(middlelabel),
             fwidth  = _font.getStringWidth("Inactive"),
             flwidth = _font.getStringWidth("ROM ");

@@ -36,8 +36,6 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   : Widget(boss, lfont, x, y, w, h),
     CommandSender(boss)
 {
-  WidgetArray wid;
-
   // Show current bank state
   int xpos = x, ypos = y + 7;
   auto* t = new StaticTextWidget(boss, lfont, xpos, ypos, "Info ");
@@ -165,7 +163,7 @@ void RomWidget::toggleBreak(int disasm_line)
 
   if (address != 0)
   {
-    Debugger& debugger = instance().debugger();
+    const Debugger& debugger = instance().debugger();
 
     debugger.toggleBreakPoint(address, debugger.cartDebug().getBank(address));
   }

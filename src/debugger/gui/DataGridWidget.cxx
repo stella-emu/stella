@@ -133,7 +133,6 @@ void DataGridWidget::setList(const IntArray& alist, const IntArray& vlist,
   _changedList = changed;
 
   // An efficiency thing
-  string temp;
   for(size_t i = 0; i < size; ++i)
     _valueStringList.push_back(Common::Base::toString(_valueList[i], _base));
 
@@ -759,8 +758,8 @@ void DataGridWidget::endEditMode()
   enableEditMode(false);
 
   // Update the both the string representation and the real data
-  if(!editString().empty() && !(editString()[0] == '$' ||
-     editString()[0] == '#' || editString()[0] == '\\'))
+  if(!editString().empty() && editString()[0] != '$' &&
+     editString()[0] != '#' && editString()[0] != '\\')
   {
     switch(_base)
     {

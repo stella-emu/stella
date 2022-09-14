@@ -222,7 +222,7 @@ void ListWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 
   resetSelection();
   // First check whether the selection changed
-  int newSelectedItem = findItem(x, y);
+  const int newSelectedItem = findItem(x, y);
   if (newSelectedItem >= static_cast<int>(_list.size()))
     return;
 

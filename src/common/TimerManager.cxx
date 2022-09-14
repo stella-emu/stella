@@ -98,14 +98,14 @@ void TimerManager::clear()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 std::size_t TimerManager::size() const noexcept
 {
-  ScopedLock lock(sync);
+  const ScopedLock lock(sync);
   return active.size();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TimerManager::empty() const noexcept
 {
-  ScopedLock lock(sync);
+  const ScopedLock lock(sync);
   return active.empty();
 }
 

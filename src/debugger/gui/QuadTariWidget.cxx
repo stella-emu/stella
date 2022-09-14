@@ -33,7 +33,7 @@ QuadTariWidget::QuadTariWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, Controller& controller)
   : ControllerWidget(boss, font, x, y, controller)
 {
-  string label = (isLeftPort() ? "Left" : "Right") + string(" (QuadTari)");
+  const string label = (isLeftPort() ? "Left" : "Right") + string(" (QuadTari)");
   const StaticTextWidget* t = new StaticTextWidget(boss, font, x, y + 2, label);
   const QuadTari& qt = static_cast<QuadTari&>(controller);
 
@@ -79,7 +79,7 @@ void QuadTariWidget::addController(GuiObject* boss, int x, int y,
       widget = new NullControlWidget(boss, _font, x, y, controller, true);
       break;
   }
-  WidgetArray focusList = widget->getFocusList();
+  const WidgetArray focusList = widget->getFocusList();
   if(!focusList.empty())
     addToFocusList(focusList);
 }

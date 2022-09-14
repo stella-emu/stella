@@ -86,7 +86,7 @@ void LauncherFileListWidget::getChildren(const FSNode::CancelCheck& isCancelled)
     {
       for(const auto& item : myFavorites->popularList())
       {
-        FSNode node(item.first);
+        const FSNode node(item.first);
         if(_filter(node))
           _fileList.emplace_back(node);
       }
@@ -95,7 +95,7 @@ void LauncherFileListWidget::getChildren(const FSNode::CancelCheck& isCancelled)
     {
       for(const auto& item : myFavorites->recentList())
       {
-        FSNode node(item);
+        const FSNode node(item);
         if(_filter(node))
           _fileList.emplace_back(node);
       }
@@ -104,7 +104,8 @@ void LauncherFileListWidget::getChildren(const FSNode::CancelCheck& isCancelled)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherFileListWidget::addFolder(StringList& list, int& offset, const string& name, IconType icon)
+void LauncherFileListWidget::addFolder(StringList& list, int& offset,
+                                       const string& name, IconType icon)
 {
   _fileList.insert(_fileList.begin() + offset,
     FSNode(_node.getPath() + name));
@@ -115,10 +116,11 @@ void LauncherFileListWidget::addFolder(StringList& list, int& offset, const stri
   ++offset;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string LauncherFileListWidget::startRomDir()
 {
-  string romDir = instance().settings().getString("startromdir");
-  FSNode node(romDir);
+  const string romDir = instance().settings().getString("startromdir");
+  const FSNode node(romDir);
   return node.getPath();
 }
 
@@ -509,12 +511,11 @@ const FileListWidget::Icon* LauncherFileListWidget::getIcon(int i) const
     0b11111111111'11111111110
   };
   static constexpr auto NLT = static_cast<int>(IconType::numLauncherTypes);
-  static const Icon* small_icons[NLT] = {
+  static const Icon* const small_icons[NLT] = {
     &favrom_small, &favdir_small, &favzip_small,
     &user_small, &recent_small, &popular_small
-
   };
-  static const Icon* large_icons[NLT] = {
+  static const Icon* const large_icons[NLT] = {
     &favrom_large, &favdir_large, &favzip_large,
     &user_large, &recent_large, &popular_large
   };

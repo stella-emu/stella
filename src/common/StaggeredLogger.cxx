@@ -25,7 +25,7 @@ using namespace std::chrono;
 namespace {
   string currentTimestamp()
   {
-    std::tm now = BSPF::localTime();
+    const std::tm now = BSPF::localTime();
 
     std::array<char, 100> formattedTime;
     formattedTime.fill(0);
@@ -57,7 +57,7 @@ StaggeredLogger::~StaggeredLogger()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StaggeredLogger::log()
 {
-  std::lock_guard<std::mutex> lock(myMutex);
+  const std::lock_guard<std::mutex> lock(myMutex);
 
   _log();
 }
@@ -132,7 +132,7 @@ void StaggeredLogger::startInterval()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StaggeredLogger::onTimerExpired(uInt32 timerCallbackId)
 {
-  std::lock_guard<std::mutex> lock(myMutex);
+  const std::lock_guard<std::mutex> lock(myMutex);
 
   if (timerCallbackId != myTimerCallbackId) return;
 

@@ -31,7 +31,7 @@ CartridgeCTYWidget::CartridgeCTYWidget(
 {
   constexpr uInt16 size = 8 * 4096;
 
-  string info =
+  const string info =
     "Chetiry cartridge, eight 4K banks (bank 0 is ARM code and is ignored)\n"
     "64 bytes RAM @ $F000 - $F080\n"
     "  $F040 - $F07F (R), $F000 - $F03F (W)\n"

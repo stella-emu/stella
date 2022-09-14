@@ -215,7 +215,7 @@ Paddles::getReadOut(int lastAxis,int& newAxis, int center)
 
   // dejitter, suppress small changes only
   const float dejitter = powf(baseFactor, std::abs(newAxis - lastAxis) * diffFactor);
-  int newVal = newAxis * (1 - dejitter) + lastAxis * dejitter;
+  const int newVal = newAxis * (1 - dejitter) + lastAxis * dejitter;
 
   // only use new dejittered value for larger differences
   if(abs(newVal - newAxis) > 10)

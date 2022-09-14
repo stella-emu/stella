@@ -39,8 +39,8 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
             VBORDER      = Dialog::vBorder(),
             HBORDER      = Dialog::hBorder(),
             VGAP         = Dialog::vGap();
-  int lwidth = font.getStringWidth("Right difficulty "),
-      pwidth = font.getStringWidth("CM (SpectraVideo CompuMate)");
+  const int lwidth = font.getStringWidth("Right difficulty ");
+  int pwidth = font.getStringWidth("CM (SpectraVideo CompuMate)");
   WidgetArray wid;
   VariantList items;
   const GUI::Font& infofont = instance().frameBuffer().infoFont();

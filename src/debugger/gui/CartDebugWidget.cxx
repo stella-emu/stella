@@ -66,7 +66,8 @@ int CartDebugWidget::addBaseInformation(size_t bytes, const string& manufacturer
   w->setEditable(false);
   y += myLineHeight + 4;
 
-  StringParser bs(desc, (fwidth - ScrollBarWidget::scrollBarWidth(_font)) / myFontWidth - 4);
+  const StringParser bs(desc, (fwidth - ScrollBarWidget::scrollBarWidth(_font)) /
+    myFontWidth - 4);
   const StringList& sl = bs.stringList();
   size_t lines = sl.size();
   if(lines < 3) lines = 3;

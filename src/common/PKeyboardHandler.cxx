@@ -44,7 +44,7 @@ PhysicalKeyboardHandler::PhysicalKeyboardHandler(OSystem& system, EventHandler& 
   : myOSystem{system},
     myHandler{handler}
 {
-  Int32 version = myOSystem.settings().getInt("event_ver");
+  const Int32 version = myOSystem.settings().getInt("event_ver");
   bool updateDefaults = false;
 
   // Compare if event list version has changed so that key maps became invalid
@@ -396,7 +396,7 @@ void PhysicalKeyboardHandler::enableMapping(const Event::Type event,
                                             EventMode mode)
 {
   // copy from controller mode into emulation mode
-  KeyMap::MappingArray mappings = myKeyMap.getEventMapping(event, mode);
+  const KeyMap::MappingArray mappings = myKeyMap.getEventMapping(event, mode);
 
   for (const auto& mapping : mappings)
     myKeyMap.add(event, EventMode::kEmulationMode, mapping.key, mapping.mod);

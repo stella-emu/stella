@@ -98,7 +98,7 @@ StringList SerialPortUNIX::portNames()
   // Check if port is valid; for now that means if it can be opened
   // Eventually we may extend this to do more intensive checks
   const auto isPortValid = [](const string& port) {
-    int handle = open(port.c_str(), O_RDWR | O_NOCTTY | O_NONBLOCK);
+    const int handle = open(port.c_str(), O_RDWR | O_NOCTTY | O_NONBLOCK);
     if(handle > 0)  close(handle);
     return handle > 0;
   };
@@ -111,7 +111,7 @@ StringList SerialPortUNIX::portNames()
   FSList portList;
   portList.reserve(5);
 
-  FSNode dev("/dev/");
+  const FSNode dev("/dev/");
   dev.getChildren(portList, FSNode::ListMode::All, filter, false);
 
   // Add only those that can be opened
