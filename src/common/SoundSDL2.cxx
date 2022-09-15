@@ -175,7 +175,7 @@ void SoundSDL2::open(shared_ptr<AudioQueue> audioQueue,
     openDevice();
 
   myEmulationTiming = emulationTiming;
-#ifdef RESAMPLE_WAV_CB
+#ifdef RESAMPLE_WAV
   myWavSpeed = 262 * 60 * 2. / myEmulationTiming->audioSampleRate();
 #endif
 
@@ -446,26 +446,7 @@ bool SoundSDL2::playWav(const string& fileName, const uInt32 position,
   myWavLen = length
     ? std::min(length, myWavLength - position)
     : myWavLength;
-#ifndef RESAMPLE_WAV
   myWavPos = myWavBuffer + position;
-#else
-  SDL_free(myCvt.buf);
-
-  //const double speed = BSPF::clamp(262 * 60 * 2. / myEmulationTiming->audioSampleRate(), 0.5, 2.0);
-  const double speed = 262 * 60 * 2. / myEmulationTiming->audioSampleRate();
-
-  SDL_BuildAudioCVT(&myCvt, myWavSpec.format, myWavSpec.channels, myWavSpec.freq,
-                            myWavSpec.format, myWavSpec.channels, myWavSpec.freq * speed);
-  SDL_assert(myCvt.needed); // Obviously, this one is always needed.
-  myCvt.len = myWavLen * myWavSpec.channels;  // Mono 8 bit sample frames
-  myCvt.buf = static_cast<uInt8*>(SDL_malloc(myCvt.len * myCvt.len_mult * 2)); // Double buffer size to avoid memory access exception
-  // Read original data into conversion buffer
-  SDL_memcpy(myCvt.buf, myWavBuffer + position, myCvt.len);
-  SDL_ConvertAudio(&myCvt);
-
-  myWavPos = myCvt.buf;
-  myWavLen = myCvt.len_cvt;
-#endif
 
   // Open audio device
   if(!myWavDevice)
@@ -507,21 +488,23 @@ void SoundSDL2::wavCallback(void* udata, uInt8* stream, int len)
   SDL_memset(stream, myWavSpec.silence, len);
   if(myWavLen)
   {
-#ifdef RESAMPLE_WAV_CB
+#ifdef RESAMPLE_WAV
     if(myWavSpeed != 1.0)
     {
-      int newLen = std::round(len / myWavSpeed);
-      const int newFreq = std::round(static_cast<double>(myWavSpec.freq) * len / newLen);
+      const int origLen = len;
 
-      if(static_cast<uInt32>(newLen) > myWavLen)
-        newLen = myWavLen;
+      len = std::round(len / myWavSpeed);
+      const int newFreq = std::round(static_cast<double>(myWavSpec.freq) * origLen / len);
+
+      if(static_cast<uInt32>(len) > myWavLen)
+        len = myWavLen;
 
       SDL_AudioCVT cvt;
       SDL_BuildAudioCVT(&cvt, myWavSpec.format, myWavSpec.channels, myWavSpec.freq,
                               myWavSpec.format, myWavSpec.channels, newFreq);
       SDL_assert(cvt.needed); // Obviously, this one is always needed.
-      cvt.len = newLen * myWavSpec.channels;  // Mono 8 bit sample frames
-      cvt.buf = static_cast<uInt8*>(SDL_malloc(cvt.len * cvt.len_mult * 2)); // Double buffer size to avoid memory access exception
+      cvt.len = len * myWavSpec.channels;  // Mono 8 bit sample frames
+      cvt.buf = static_cast<uInt8*>(SDL_malloc(cvt.len * cvt.len_mult));
       // Read original data into conversion buffer
       SDL_memcpy(cvt.buf, myWavPos, cvt.len);
       SDL_ConvertAudio(&cvt);
@@ -552,7 +535,7 @@ float SoundSDL2::myWavVolumeFactor = 0xffff;
 SDL_AudioSpec SoundSDL2::myWavSpec;   // audio output format
 uInt8* SoundSDL2::myWavPos = nullptr; // pointer to the audio buffer to be played
 uInt32 SoundSDL2::myWavLen = 0;       // remaining length of the sample we have to play
-#ifdef RESAMPLE_WAV_CB
+#ifdef RESAMPLE_WAV
 double SoundSDL2::myWavSpeed = 1.0;
 #endif
 

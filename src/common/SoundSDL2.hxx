@@ -20,8 +20,7 @@
 #ifndef SOUND_SDL2_HXX
 #define SOUND_SDL2_HXX
 
-//#define RESAMPLE_WAV    // does not adjust to speed immediately
-//#define RESAMPLE_WAV_CB // causes echo in in-the-fly resampling
+#define RESAMPLE_WAV
 
 class OSystem;
 class AudioQueue;
@@ -196,9 +195,6 @@ class SoundSDL2 : public Sound
     SDL_AudioDeviceID myWavDevice{0};
     uInt8* myWavBuffer{nullptr};
 #ifdef RESAMPLE_WAV
-    SDL_AudioCVT myCvt{0};
-#endif
-#ifdef RESAMPLE_WAV_CB
     static double myWavSpeed;
 #endif
 
