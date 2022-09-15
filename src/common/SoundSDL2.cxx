@@ -175,6 +175,9 @@ void SoundSDL2::open(shared_ptr<AudioQueue> audioQueue,
     openDevice();
 
   myEmulationTiming = emulationTiming;
+#ifdef RESAMPLE_WAV_CB
+  myWavSpeed = 262 * 60 * 2. / myEmulationTiming->audioSampleRate();
+#endif
 
   Logger::debug("SoundSDL2::open started ...");
   mute(true);
@@ -504,12 +507,41 @@ void SoundSDL2::wavCallback(void* udata, uInt8* stream, int len)
   SDL_memset(stream, myWavSpec.silence, len);
   if(myWavLen)
   {
-    if(static_cast<uInt32>(len) > myWavLen)
-      len = myWavLen;
+#ifdef RESAMPLE_WAV_CB
+    if(myWavSpeed != 1.0)
+    {
+      int newLen = std::round(len / myWavSpeed);
+      const int newFreq = std::round(static_cast<double>(myWavSpec.freq) * len / newLen);
 
-    // Mix volume adjusted WAV data into silent buffer
-    SDL_MixAudioFormat(stream, myWavPos, myWavSpec.format, len,
-                       SDL_MIX_MAXVOLUME * myWavVolumeFactor);
+      if(static_cast<uInt32>(newLen) > myWavLen)
+        newLen = myWavLen;
+
+      SDL_AudioCVT cvt;
+      SDL_BuildAudioCVT(&cvt, myWavSpec.format, myWavSpec.channels, myWavSpec.freq,
+                              myWavSpec.format, myWavSpec.channels, newFreq);
+      SDL_assert(cvt.needed); // Obviously, this one is always needed.
+      cvt.len = newLen * myWavSpec.channels;  // Mono 8 bit sample frames
+      cvt.buf = static_cast<uInt8*>(SDL_malloc(cvt.len * cvt.len_mult * 2)); // Double buffer size to avoid memory access exception
+      // Read original data into conversion buffer
+      SDL_memcpy(cvt.buf, myWavPos, cvt.len);
+      SDL_ConvertAudio(&cvt);
+      // Mix volume adjusted WAV data into silent buffer
+      SDL_MixAudioFormat(stream, cvt.buf, myWavSpec.format, cvt.len_cvt,
+                         SDL_MIX_MAXVOLUME * myWavVolumeFactor);
+      SDL_free(cvt.buf);
+
+      cerr << cvt.len_cvt << " ";
+    }
+    else
+#endif
+    {
+      if(static_cast<uInt32>(len) > myWavLen)
+        len = myWavLen;
+
+      // Mix volume adjusted WAV data into silent buffer
+      SDL_MixAudioFormat(stream, myWavPos, myWavSpec.format, len,
+                         SDL_MIX_MAXVOLUME * myWavVolumeFactor);
+    }
     myWavPos += len;
     myWavLen -= len;
   }
@@ -520,5 +552,8 @@ float SoundSDL2::myWavVolumeFactor = 0xffff;
 SDL_AudioSpec SoundSDL2::myWavSpec;   // audio output format
 uInt8* SoundSDL2::myWavPos = nullptr; // pointer to the audio buffer to be played
 uInt32 SoundSDL2::myWavLen = 0;       // remaining length of the sample we have to play
+#ifdef RESAMPLE_WAV_CB
+double SoundSDL2::myWavSpeed = 1.0;
+#endif
 
 #endif  // SOUND_SUPPORT
