@@ -474,6 +474,12 @@ void SoundSDL2::stopWav()
     SDL_FreeWAV(myWavBuffer);
     myWavBuffer = nullptr;
   }
+  if(myWavCvtBuffer)
+  {
+    SDL_free(myWavCvtBuffer);
+    myWavCvtBuffer = nullptr;
+    myWavCvtBufferSize = 0;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -492,7 +498,6 @@ void SoundSDL2::wavCallback(void* udata, uInt8* stream, int len)
     if(myWavSpeed != 1.0)
     {
       const int origLen = len;
-
       len = std::round(len / myWavSpeed);
       const int newFreq = std::round(static_cast<double>(myWavSpec.freq) * origLen / len);
 
@@ -504,16 +509,22 @@ void SoundSDL2::wavCallback(void* udata, uInt8* stream, int len)
                               myWavSpec.format, myWavSpec.channels, newFreq);
       SDL_assert(cvt.needed); // Obviously, this one is always needed.
       cvt.len = len * myWavSpec.channels;  // Mono 8 bit sample frames
-      cvt.buf = static_cast<uInt8*>(SDL_malloc(cvt.len * cvt.len_mult));
+
+      if(!myWavCvtBuffer || myWavCvtBufferSize < static_cast<uInt32>(cvt.len * cvt.len_mult))
+      {
+        if(myWavCvtBuffer)
+          SDL_free(myWavCvtBuffer);
+        myWavCvtBufferSize = cvt.len * cvt.len_mult;
+        myWavCvtBuffer = static_cast<uInt8*>(SDL_malloc(myWavCvtBufferSize));
+      }
+      //cvt.buf = static_cast<uInt8*>(SDL_malloc(cvt.len * cvt.len_mult));
+      cvt.buf = myWavCvtBuffer;
       // Read original data into conversion buffer
       SDL_memcpy(cvt.buf, myWavPos, cvt.len);
       SDL_ConvertAudio(&cvt);
       // Mix volume adjusted WAV data into silent buffer
       SDL_MixAudioFormat(stream, cvt.buf, myWavSpec.format, cvt.len_cvt,
                          SDL_MIX_MAXVOLUME * myWavVolumeFactor);
-      SDL_free(cvt.buf);
-
-      cerr << cvt.len_cvt << " ";
     }
     else
 #endif
@@ -537,6 +548,8 @@ uInt8* SoundSDL2::myWavPos = nullptr; // pointer to the audio buffer to be playe
 uInt32 SoundSDL2::myWavLen = 0;       // remaining length of the sample we have to play
 #ifdef RESAMPLE_WAV
 double SoundSDL2::myWavSpeed = 1.0;
+uInt8* SoundSDL2::myWavCvtBuffer = nullptr;
+uInt32 SoundSDL2::myWavCvtBufferSize = 0;
 #endif
 
 #endif  // SOUND_SUPPORT
