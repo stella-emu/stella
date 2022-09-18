@@ -196,7 +196,7 @@ class SoundSDL2 : public Sound
     uInt8* myWavBuffer{nullptr};
 #ifdef RESAMPLE_WAV
     static double myWavSpeed;
-    static uInt8* myWavCvtBuffer;
+    static unique_ptr<uInt8> myWavCvtBuffer;
     static uInt32 myWavCvtBufferSize;
 #endif
 
