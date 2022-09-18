@@ -476,8 +476,7 @@ void SoundSDL2::stopWav()
   }
   if(myWavCvtBuffer)
   {
-    SDL_free(myWavCvtBuffer);
-    myWavCvtBuffer = nullptr;
+    myWavCvtBuffer.reset();
     myWavCvtBufferSize = 0;
   }
 }
@@ -510,15 +509,14 @@ void SoundSDL2::wavCallback(void* udata, uInt8* stream, int len)
       SDL_assert(cvt.needed); // Obviously, this one is always needed.
       cvt.len = len * myWavSpec.channels;  // Mono 8 bit sample frames
 
-      if(!myWavCvtBuffer || myWavCvtBufferSize < static_cast<uInt32>(cvt.len * cvt.len_mult))
+      if(!myWavCvtBuffer ||
+          myWavCvtBufferSize < static_cast<uInt32>(cvt.len * cvt.len_mult))
       {
-        if(myWavCvtBuffer)
-          SDL_free(myWavCvtBuffer);
         myWavCvtBufferSize = cvt.len * cvt.len_mult;
-        myWavCvtBuffer = static_cast<uInt8*>(SDL_malloc(myWavCvtBufferSize));
+        myWavCvtBuffer = make_unique<uInt8>(myWavCvtBufferSize);
       }
-      //cvt.buf = static_cast<uInt8*>(SDL_malloc(cvt.len * cvt.len_mult));
-      cvt.buf = myWavCvtBuffer;
+      cvt.buf = myWavCvtBuffer.get();
+
       // Read original data into conversion buffer
       SDL_memcpy(cvt.buf, myWavPos, cvt.len);
       SDL_ConvertAudio(&cvt);
@@ -548,7 +546,7 @@ uInt8* SoundSDL2::myWavPos = nullptr; // pointer to the audio buffer to be playe
 uInt32 SoundSDL2::myWavLen = 0;       // remaining length of the sample we have to play
 #ifdef RESAMPLE_WAV
 double SoundSDL2::myWavSpeed = 1.0;
-uInt8* SoundSDL2::myWavCvtBuffer = nullptr;
+unique_ptr<uInt8> SoundSDL2::myWavCvtBuffer = nullptr;
 uInt32 SoundSDL2::myWavCvtBufferSize = 0;
 #endif
 
