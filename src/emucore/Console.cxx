@@ -253,6 +253,7 @@ Console::~Console()
   // Close audio to prevent invalid access to myConsoleTiming from the audio
   // callback
   myOSystem.sound().close();
+  myOSystem.sound().stopWav();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

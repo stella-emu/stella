@@ -64,6 +64,8 @@ SoundSDL2::SoundSDL2(OSystem& osystem, AudioSettings& audioSettings)
     return;
 
   SoundSDL2::mute(true);
+  myMuteState = !audioSettings.enabled();
+  myWavVolumeFactor = myMuteState ? 0 : myVolumeFactor;
 
   Logger::debug("SoundSDL2::SoundSDL2 initialized");
 }
@@ -151,6 +153,10 @@ void SoundSDL2::setEnabled(bool enable)
   if(myAudioQueue)
     myAudioQueue->ignoreOverflows(!enable);
 
+  // Set new mute state and resulting WAV data volume
+  myMuteState = !enable;
+  myWavVolumeFactor = myMuteState ? 0 : myVolumeFactor;
+
   Logger::debug(enable ? "SoundSDL2::setEnabled(true)" :
                 "SoundSDL2::setEnabled(false)");
 }
@@ -169,6 +175,7 @@ void SoundSDL2::open(shared_ptr<AudioQueue> audioQueue,
     openDevice();
 
   myEmulationTiming = emulationTiming;
+  myWavSpeed = 262 * 60 * 2. / myEmulationTiming->audioSampleRate();
 
   Logger::debug("SoundSDL2::open started ...");
   mute(true);
@@ -195,7 +202,7 @@ void SoundSDL2::open(shared_ptr<AudioQueue> audioQueue,
     Logger::info(myAboutString);
 
   // And start the SDL sound subsystem ...
-  mute(false);
+  mute(myMuteState);
 
   Logger::debug("SoundSDL2::open finished");
 }
@@ -203,11 +210,11 @@ void SoundSDL2::open(shared_ptr<AudioQueue> audioQueue,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL2::close()
 {
-  stopWav();
   if(!myIsInitializedFlag)
     return;
 
-  mute(true);
+  // Mute and remember current mute state for 'open()'
+  myMuteState = mute(true);
 
   if(myAudioQueue)
     myAudioQueue->closeSink(myCurrentFragment);
@@ -235,6 +242,13 @@ bool SoundSDL2::toggleMute()
   setEnabled(enabled);
   myOSystem.console().initializeAudio();
 
+  // Adjust TIA sound to new mute state
+  myMuteState = !enabled;
+  mute(myMuteState);
+  // Make sure the current WAV file continues playing if it got stopped by 'mute()'
+  if(myWavDevice)
+    SDL_PauseAudioDevice(myWavDevice, 0);
+
   string message = "Sound ";
   message += enabled ? "unmuted" : "muted";
 
@@ -253,6 +267,7 @@ void SoundSDL2::setVolume(uInt32 percent)
 
     SDL_LockAudioDevice(myDevice);
     myVolumeFactor = static_cast<float>(percent) / 100.F;
+    myWavVolumeFactor = myAudioSettings.enabled() ? myVolumeFactor : 0;
     SDL_UnlockAudioDevice(myDevice);
   }
 }
@@ -263,16 +278,17 @@ void SoundSDL2::adjustVolume(int direction)
   Int32 percent = myVolume;
   percent = BSPF::clamp(percent + direction * 2, 0, 100);
 
-  setVolume(percent);
-
   // Enable audio if it is currently disabled
   const bool enabled = myAudioSettings.enabled();
 
-  if(percent > 0 && !enabled)
+  if(percent > 0 && direction && !enabled)
   {
     setEnabled(true);
     myOSystem.console().initializeAudio();
+    myMuteState = false;
+    mute(false);
   }
+  setVolume(percent);
 
   // Now show an onscreen message
   ostringstream strval;
@@ -418,6 +434,7 @@ bool SoundSDL2::playWav(const string& fileName, const uInt32 position,
     // Set the callback function
     myWavSpec.callback = wavCallback;
     myWavSpec.userdata = nullptr;
+    //myWavSpec.samples = 4096; // decrease for smaller samples;
   }
   if(position > myWavLength)
     return false;
@@ -455,6 +472,11 @@ void SoundSDL2::stopWav()
     SDL_FreeWAV(myWavBuffer);
     myWavBuffer = nullptr;
   }
+  if(myWavCvtBuffer)
+  {
+    myWavCvtBuffer.reset();
+    myWavCvtBufferSize = 0;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -469,21 +491,58 @@ void SoundSDL2::wavCallback(void* udata, uInt8* stream, int len)
   SDL_memset(stream, myWavSpec.silence, len);
   if(myWavLen)
   {
-    if(static_cast<uInt32>(len) > myWavLen)
-      len = myWavLen;
+    if(myWavSpeed != 1.0)
+    {
+      const int origLen = len;
+      len = std::round(len / myWavSpeed);
+      const int newFreq =
+        std::round(static_cast<double>(myWavSpec.freq) * origLen / len);
 
-    // Mix volume adjusted WAV into silent buffer
-    SDL_MixAudioFormat(stream, myWavPos, myWavSpec.format, len,
-                       SDL_MIX_MAXVOLUME * myVolumeFactor);
+      if(static_cast<uInt32>(len) > myWavLen)
+        len = myWavLen;
+
+      SDL_AudioCVT cvt;
+      SDL_BuildAudioCVT(&cvt, myWavSpec.format, myWavSpec.channels, myWavSpec.freq,
+                              myWavSpec.format, myWavSpec.channels, newFreq);
+      SDL_assert(cvt.needed); // Obviously, this one is always needed.
+      cvt.len = len * myWavSpec.channels;  // Mono 8 bit sample frames
+
+      if(!myWavCvtBuffer ||
+          myWavCvtBufferSize < static_cast<uInt32>(cvt.len * cvt.len_mult))
+      {
+        myWavCvtBufferSize = cvt.len * cvt.len_mult;
+        myWavCvtBuffer = make_unique<uInt8[]>(myWavCvtBufferSize);
+      }
+      cvt.buf = myWavCvtBuffer.get();
+
+      // Read original data into conversion buffer
+      SDL_memcpy(cvt.buf, myWavPos, cvt.len);
+      SDL_ConvertAudio(&cvt);
+      // Mix volume adjusted WAV data into silent buffer
+      SDL_MixAudioFormat(stream, cvt.buf, myWavSpec.format, cvt.len_cvt,
+                         SDL_MIX_MAXVOLUME * myWavVolumeFactor);
+    }
+    else
+    {
+      if(static_cast<uInt32>(len) > myWavLen)
+        len = myWavLen;
+
+      // Mix volume adjusted WAV data into silent buffer
+      SDL_MixAudioFormat(stream, myWavPos, myWavSpec.format, len,
+                         SDL_MIX_MAXVOLUME * myWavVolumeFactor);
+    }
     myWavPos += len;
     myWavLen -= len;
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-float SoundSDL2::myVolumeFactor = 0xffff;
+float SoundSDL2::myWavVolumeFactor = 0xffff;
 SDL_AudioSpec SoundSDL2::myWavSpec;   // audio output format
 uInt8* SoundSDL2::myWavPos = nullptr; // pointer to the audio buffer to be played
 uInt32 SoundSDL2::myWavLen = 0;       // remaining length of the sample we have to play
+double SoundSDL2::myWavSpeed = 1.0;
+unique_ptr<uInt8[]> SoundSDL2::myWavCvtBuffer;
+uInt32 SoundSDL2::myWavCvtBufferSize = 0;
 
 #endif  // SOUND_SUPPORT
