@@ -20,8 +20,6 @@
 #ifndef SOUND_SDL2_HXX
 #define SOUND_SDL2_HXX
 
-#define RESAMPLE_WAV
-
 class OSystem;
 class AudioQueue;
 class EmulationTiming;
@@ -194,12 +192,10 @@ class SoundSDL2 : public Sound
     uInt32 myWavLength{0};
     SDL_AudioDeviceID myWavDevice{0};
     uInt8* myWavBuffer{nullptr};
-#ifdef RESAMPLE_WAV
-    static double myWavSpeed;
-    static unique_ptr<uInt8> myWavCvtBuffer;
-    static uInt32 myWavCvtBufferSize;
-#endif
 
+    static double myWavSpeed;
+    static unique_ptr<uInt8[]> myWavCvtBuffer;
+    static uInt32 myWavCvtBufferSize;
     static float myWavVolumeFactor;
     static SDL_AudioSpec myWavSpec; // audio output format
     static uInt8* myWavPos; // pointer to the audio buffer to be played

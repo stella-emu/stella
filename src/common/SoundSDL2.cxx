@@ -175,9 +175,7 @@ void SoundSDL2::open(shared_ptr<AudioQueue> audioQueue,
     openDevice();
 
   myEmulationTiming = emulationTiming;
-#ifdef RESAMPLE_WAV
   myWavSpeed = 262 * 60 * 2. / myEmulationTiming->audioSampleRate();
-#endif
 
   Logger::debug("SoundSDL2::open started ...");
   mute(true);
@@ -493,12 +491,12 @@ void SoundSDL2::wavCallback(void* udata, uInt8* stream, int len)
   SDL_memset(stream, myWavSpec.silence, len);
   if(myWavLen)
   {
-#ifdef RESAMPLE_WAV
     if(myWavSpeed != 1.0)
     {
       const int origLen = len;
       len = std::round(len / myWavSpeed);
-      const int newFreq = std::round(static_cast<double>(myWavSpec.freq) * origLen / len);
+      const int newFreq =
+        std::round(static_cast<double>(myWavSpec.freq) * origLen / len);
 
       if(static_cast<uInt32>(len) > myWavLen)
         len = myWavLen;
@@ -513,7 +511,7 @@ void SoundSDL2::wavCallback(void* udata, uInt8* stream, int len)
           myWavCvtBufferSize < static_cast<uInt32>(cvt.len * cvt.len_mult))
       {
         myWavCvtBufferSize = cvt.len * cvt.len_mult;
-        myWavCvtBuffer = make_unique<uInt8>(myWavCvtBufferSize);
+        myWavCvtBuffer = make_unique<uInt8[]>(myWavCvtBufferSize);
       }
       cvt.buf = myWavCvtBuffer.get();
 
@@ -525,7 +523,6 @@ void SoundSDL2::wavCallback(void* udata, uInt8* stream, int len)
                          SDL_MIX_MAXVOLUME * myWavVolumeFactor);
     }
     else
-#endif
     {
       if(static_cast<uInt32>(len) > myWavLen)
         len = myWavLen;
@@ -544,10 +541,8 @@ float SoundSDL2::myWavVolumeFactor = 0xffff;
 SDL_AudioSpec SoundSDL2::myWavSpec;   // audio output format
 uInt8* SoundSDL2::myWavPos = nullptr; // pointer to the audio buffer to be played
 uInt32 SoundSDL2::myWavLen = 0;       // remaining length of the sample we have to play
-#ifdef RESAMPLE_WAV
 double SoundSDL2::myWavSpeed = 1.0;
-unique_ptr<uInt8> SoundSDL2::myWavCvtBuffer = nullptr;
+unique_ptr<uInt8[]> SoundSDL2::myWavCvtBuffer;
 uInt32 SoundSDL2::myWavCvtBufferSize = 0;
-#endif
 
 #endif  // SOUND_SUPPORT
