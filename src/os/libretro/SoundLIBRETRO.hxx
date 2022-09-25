@@ -147,8 +147,9 @@ class SoundLIBRETRO : public Sound
     void queryHardware(VariantList& devices) override { }
     void setVolume(uInt32 percent) override { }
     void adjustVolume(int direction = +1) override { }
-    bool mute(bool state) override { return !myIsInitializedFlag; }
-    bool toggleMute() override { return !myIsInitializedFlag; }
+    void mute(bool state) override { }
+    void toggleMute() override { }
+    bool pause(bool state) override { return !myIsInitializedFlag; }
     string about() const override { return ""; }
 
   private:
