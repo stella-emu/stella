@@ -171,8 +171,8 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   const string& md5 = myProperties.get(PropType::Cart_MD5);
   setControllers(md5);
 
-  // Mute audio and clear framebuffer while autodetection runs
-  myOSystem.sound().mute(true);
+  // Pause audio and clear framebuffer while autodetection runs
+  myOSystem.sound().pause(true);
   myOSystem.frameBuffer().clear();
 
   if(myDisplayFormat == "AUTO" || myOSystem.settings().getBool("rominfo"))

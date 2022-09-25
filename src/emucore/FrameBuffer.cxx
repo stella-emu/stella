@@ -521,8 +521,8 @@ void FrameBuffer::update(UpdateMode mode)
         //frames = intervalFrames + std::sqrt(std::max(stateFrames - intervalFrames, 0));
         frames = std::round(std::sqrt(stateFrames));
 
-        // Mute sound if saved states were removed or states are too far apart
-        myOSystem.sound().mute(stateFrames > intervalFrames ||
+        // Pause sound if saved states were removed or states are too far apart
+        myOSystem.sound().pause(stateFrames > intervalFrames ||
             frames > static_cast<Int32>(myOSystem.audioSettings().bufferSize() / 2 + 1));
       }
       redraw |= success;
@@ -534,7 +534,7 @@ void FrameBuffer::update(UpdateMode mode)
       if(!success)
       {
         frames = 0;
-        myOSystem.sound().mute(true);
+        myOSystem.sound().pause(true);
         myOSystem.eventHandler().enterMenuMode(EventHandlerState::TIMEMACHINE);
       }
       break;  // EventHandlerState::PLAYBACK
@@ -1253,8 +1253,8 @@ FBInitStatus FrameBuffer::applyVideoMode()
 
   // Changing the video mode can take some time, during which the last
   // sound played may get 'stuck'
-  // So we mute the sound until the operation completes
-  const bool oldMuteState = myOSystem.sound().mute(true);
+  // So we pause the sound until the operation completes
+  const bool oldPauseState = myOSystem.sound().pause(true);
   FBInitStatus status = FBInitStatus::FailNotSupported;
 
   if(myBackend->setVideoMode(mode,
@@ -1287,7 +1287,7 @@ FBInitStatus FrameBuffer::applyVideoMode()
     Logger::error("ERROR: Couldn't initialize video subsystem");
 
   // Restore sound settings
-  myOSystem.sound().mute(oldMuteState);
+  myOSystem.sound().pause(oldPauseState);
 
   return status;
 }
