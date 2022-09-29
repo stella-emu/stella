@@ -66,29 +66,39 @@ class SoundNull : public Sound
     void close() override { }
 
     /**
-      Set the mute state of the sound object.  While muted no sound is played.
+      Sets the sound mute state; sound processing continues.  When turned
+      off, sound volume is 0; when turned on, sound volume returns to
+      previously set level.
 
       @param state Mutes sound if true, unmute if false
-
-      @return  The previous (old) mute state
     */
-    bool mute(bool state) override { return true; }
+    void mute(bool state) override { }
 
     /**
-      Toggles the sound mute state.  While muted no sound is played.
-
-      @return  The previous (old) mute state
+      Toggles the sound mute state; sound processing continues.
+      Switches between mute(true) and mute(false).
     */
-    bool toggleMute() override { return true; }
+    void toggleMute() override { }
+
+    /**
+      Set the pause state of the sound object.  While paused, sound is
+      neither played nor processed (ie, the sound subsystem is temporarily
+      disabled).
+
+      @param state Pause sound if true, unpause if false
+
+      @return  The previous (old) pause state
+    */
+    bool pause(bool state) override { return false; }
 
     /**
       Sets the volume of the sound device to the specified level.  The
-      volume is given as a percentage from 0 to 100.  Values outside
-      this range indicate that the volume shouldn't be changed at all.
+      volume is given as a range from 0 to 100 (0 indicates mute).  Values
+      outside this range indicate that the volume shouldn't be changed at all.
 
-      @param percent The new volume percentage level for the sound device
+      @param volume  The new volume level for the sound device
     */
-    void setVolume(uInt32 percent) override { }
+    void setVolume(uInt32 volume) override { }
 
     /**
       Adjusts the volume of the sound device based on the given direction.
@@ -102,7 +112,7 @@ class SoundNull : public Sound
 
       @param device  The number of the device to select (0 = default).
     */
-    void setDevice(uInt32 device) override { };
+    void setDevice(uInt32 device) override { }
 
     /**
       This method is called to provide information about the sound device.

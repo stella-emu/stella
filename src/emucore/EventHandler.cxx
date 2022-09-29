@@ -2567,7 +2567,7 @@ void EventHandler::enterMenuMode(EventHandlerState state)
 #ifdef GUI_SUPPORT
   setState(state);
   myOverlay->reStack();
-  myOSystem.sound().mute(true);
+  myOSystem.sound().pause(true);
 #endif
 }
 
@@ -2577,7 +2577,7 @@ void EventHandler::leaveMenuMode()
 #ifdef GUI_SUPPORT
   myOverlay->removeDialog(); // remove the base dialog from dialog stack
   setState(EventHandlerState::EMULATION);
-  myOSystem.sound().mute(false);
+  myOSystem.sound().pause(false);
 #endif
 }
 
@@ -2673,12 +2673,12 @@ void EventHandler::setState(EventHandlerState state)
   {
     case EventHandlerState::EMULATION:
     case EventHandlerState::PLAYBACK:
-      myOSystem.sound().mute(false);
+      myOSystem.sound().pause(false);
       enableTextEvents(false);
       break;
 
     case EventHandlerState::PAUSE:
-      myOSystem.sound().mute(true);
+      myOSystem.sound().pause(true);
       enableTextEvents(false);
       break;
 

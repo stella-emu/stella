@@ -487,7 +487,7 @@ void VideoAudioDialog::addAudioTab()
   VarList::push_back(items, "Ultra quality, minimal lag", static_cast<int>(AudioSettings::Preset::ultraQualityMinimalLag));
   VarList::push_back(items, "Custom", static_cast<int>(AudioSettings::Preset::custom));
   myModePopup = new PopUpWidget(myTab, _font, xpos, ypos,
-                                _font.getStringWidth("Ultry quality, minimal lag"), lineHeight,
+                                _font.getStringWidth("Ultra quality, minimal lag"), lineHeight,
                                 items, "Mode", lwidth, kModeChanged);
   wid.push_back(myModePopup);
   ypos += lineHeight + VGAP;
@@ -1274,7 +1274,7 @@ void VideoAudioDialog::colorPalette()
 
   if(instance().hasConsole())
   {
-    const int order[2][NUM_CHROMA] =
+    static constexpr int order[2][NUM_CHROMA] =
     {
       {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
       {0, 1, 2, 4, 6, 8, 10, 12, 13, 11, 9, 7, 5, 3, 14, 15}
@@ -1312,7 +1312,8 @@ void VideoAudioDialog::updateEnabledState()
   myStereoSoundCheckbox->setEnabled(active);
   myModePopup->setEnabled(active);
   // enable only for Pitfall II cart
-  myDpcPitch->setEnabled(active && instance().hasConsole() && instance().console().cartridge().name() == "CartridgeDPC");
+  myDpcPitch->setEnabled(active && instance().hasConsole() &&
+      instance().console().cartridge().name() == "CartridgeDPC");
 
   myFragsizePopup->setEnabled(active && userMode);
   myFreqPopup->setEnabled(active && userMode);
