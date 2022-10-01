@@ -214,7 +214,7 @@ class DialogContainer
     } myCurrentButtonDown;
     uInt64 myButtonRepeatTime{0};
     uInt64 myButtonLongPressTime{0};
-    bool myButtonLongPress{false};
+    bool myIgnoreButtonUp{false};
 
     // For continuous 'joy axis down' events
     struct {
