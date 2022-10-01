@@ -67,7 +67,7 @@ void DialogContainer::updateTime(uInt64 time)
   // Joystick has been pressed long
   if(myCurrentButtonDown.stick != -1 && myButtonLongPressTime < myTime)
   {
-    myButtonLongPress = true;
+    myIgnoreButtonUp = true;
     activeDialog->handleJoyDown(myCurrentButtonDown.stick, myCurrentButtonDown.button, true);
     myButtonLongPressTime = myButtonRepeatTime = myTime + _REPEAT_NONE;
   }
@@ -348,8 +348,8 @@ void DialogContainer::handleJoyBtnEvent(int stick, int button, bool pressed)
       myCurrentButtonDown.stick = myCurrentButtonDown.button = -1;
       myButtonRepeatTime = myButtonLongPressTime = 0;
     }
-    if (myButtonLongPress)
-      myButtonLongPress = false;
+    if(myIgnoreButtonUp)
+      myIgnoreButtonUp = false;
     else
       activeDialog->handleJoyUp(stick, button);
   }
@@ -383,6 +383,8 @@ void DialogContainer::handleJoyAxisEvent(int stick, JoyAxis axis, JoyDir adir, i
     myCurrentAxisDown.adir = adir;
     myAxisRepeatTime = myTime + (activeDialog->repeatEnabled() ? _REPEAT_INITIAL_DELAY : _REPEAT_NONE);
   }
+  if(adir != JoyDir::NONE)
+    myIgnoreButtonUp = true; // prevent button released events
   activeDialog->handleJoyAxis(stick, axis, adir, button);
 }
 
