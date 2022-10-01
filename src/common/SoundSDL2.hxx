@@ -125,7 +125,7 @@ class SoundSDL2 : public Sound
       @param position  The position to start playing
       @param length    The played length
 
-      @return  True, if the WAV file can be played
+      @return  True if the WAV file can be played, else false
     */
     bool playWav(const string& fileName, const uInt32 position = 0,
                  const uInt32 length = 0) override;
@@ -142,7 +142,7 @@ class SoundSDL2 : public Sound
     */
     uInt32 wavSize() const override;
 
-  protected:
+  private:
     /**
       This method is called to query the audio devices.
 
@@ -150,17 +150,6 @@ class SoundSDL2 : public Sound
     */
     void queryHardware(VariantList& devices) override;
 
-    /**
-      Invoked by the sound callback to process the next sound fragment.
-      The stream is 16-bits (even though the callback is 8-bits), since
-      the TIASnd class always generates signed 16-bit stereo samples.
-
-      @param stream  Pointer to the start of the fragment
-      @param length  Length of the fragment
-    */
-    void processFragment(float* stream, uInt32 length);
-
-  private:
     /**
       The actual sound device is opened only when absolutely necessary.
       Typically this will only happen once per program run, but it can also
@@ -171,47 +160,75 @@ class SoundSDL2 : public Sound
     void initResampler();
 
   private:
+    AudioSettings& myAudioSettings;
+
     // Indicates if the sound device was successfully initialized
     bool myIsInitializedFlag{false};
 
     // Audio specification structure
     SDL_AudioSpec myHardwareSpec;
 
+    SDL_AudioDeviceID myDevice{0};
     uInt32 myDeviceId{0};
 
-    SDL_AudioDeviceID myDevice{0};
-
     shared_ptr<AudioQueue> myAudioQueue;
+    unique_ptr<Resampler> myResampler;
 
     EmulationTiming* myEmulationTiming{nullptr};
 
     Int16* myCurrentFragment{nullptr};
     bool myUnderrun{false};
 
-    unique_ptr<Resampler> myResampler;
+    string myAboutString;
 
-    AudioSettings& myAudioSettings;
+    /**
+      This class implements WAV file playback using the SDL2 sound API.
+    */
+    class WavHandlerSDL2
+    {
+      public:
+        explicit WavHandlerSDL2() = default;
+        ~WavHandlerSDL2();
 
-    // WAV file sound variables
-    string myWavFilename;
-    uInt32 myWavLength{0};
-    SDL_AudioDeviceID myWavDevice{0};
-    uInt8* myWavBuffer{nullptr};
+        bool play(const string& fileName, const char* device,
+                  const uInt32 position, const uInt32 length);
+        void stop();
+        uInt32 size() const { return myBuffer ? myRemaining : 0; }
+
+        void setSpeed(const double speed) { mySpeed = speed; }
+        void pause(bool state) const;
+
+      private:
+        string myFilename;
+        uInt32 myLength{0};
+        SDL_AudioDeviceID myDevice{0};
+        uInt8* myBuffer{nullptr};
+        double mySpeed{1.0};
+        unique_ptr<uInt8[]> myCvtBuffer;
+        uInt32 myCvtBufferSize{0};
+        SDL_AudioSpec mySpec;  // audio output format
+        uInt8* myPos{nullptr}; // pointer to the audio buffer to be played
+        uInt32 myRemaining{0}; // remaining length of the sample we have to play
+
+      private:
+        // Callback function invoked by the SDL Audio library when it needs data
+        void processWav(uInt8* stream, uInt32 len);
+        static void callback(void* object, uInt8* stream, int len);
+
+        // Following constructors and assignment operators not supported
+        WavHandlerSDL2(const WavHandlerSDL2&) = delete;
+        WavHandlerSDL2(WavHandlerSDL2&&) = delete;
+        WavHandlerSDL2& operator=(const WavHandlerSDL2&) = delete;
+        WavHandlerSDL2& operator=(WavHandlerSDL2&&) = delete;
+    };
+
+    WavHandlerSDL2 myWavHandler;
 
     static float myVolumeFactor;  // Current volume level (0 - 100)
-    static double myWavSpeed;
-    static unique_ptr<uInt8[]> myWavCvtBuffer;
-    static uInt32 myWavCvtBufferSize;
-    static SDL_AudioSpec myWavSpec; // audio output format
-    static uInt8* myWavPos; // pointer to the audio buffer to be played
-    static uInt32 myWavLen; // remaining length of the sample we have to play
-
-    string myAboutString;
 
   private:
     // Callback functions invoked by the SDL Audio library when it needs data
-    static void callback(void* udata, uInt8* stream, int len);
-    static void wavCallback(void* udata, uInt8* stream, int len);
+    static void callback(void* object, uInt8* stream, int len);
 
     // Following constructors and assignment operators not supported
     SoundSDL2() = delete;
