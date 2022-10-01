@@ -952,12 +952,13 @@ Event::Type LauncherDialog::getJoyAxisEvent(int stick, JoyAxis axis, JoyDir adir
       break;
 
     case Event::UITabPrev:
-      // TODO: check with controller, then update doc (R77 too)
       myRomImageWidget->changeImage(-1);
+      myEventHandled = true;
       break;
 
     case Event::UITabNext:
       myRomImageWidget->changeImage(1);
+      myEventHandled = true;
       break;
 
     default:
@@ -1136,11 +1137,13 @@ void LauncherDialog::openContextMenu(int x, int y)
 {
   // Dynamically create context menu for ROM list options
 
+  bool addCancel = false;
   if(x < 0 || y < 0)
   {
     // Long pressed button, determine position from currently selected list item
     x = myList->getLeft() + myList->getWidth() / 2;
     y = myList->getTop() + (myList->getSelected() - myList->currentPos() + 1) * _font.getLineHeight();
+    addCancel = true;
   }
 
   struct ContextItem {
@@ -1219,6 +1222,8 @@ void LauncherDialog::openContextMenu(int x, int y)
     //  items.push_back(ContextItem("Options" + ELLIPSIS, "Ctrl+O", "options"));
     //}
   }
+  if(addCancel)
+    items.push_back(ContextItem("Cancel", "")); // closes the context menu and does nothing
 
   // Format items for menu
   VariantList varItems;
