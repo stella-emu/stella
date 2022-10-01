@@ -74,11 +74,6 @@ SoundSDL2::~SoundSDL2()
   if(!myIsInitializedFlag)
     return;
 
-  if(myWavDevice)
-  {
-    SDL_CloseAudioDevice(myWavDevice);
-    SDL_FreeWAV(myWavBuffer);
-  }
   SDL_CloseAudioDevice(myDevice);
   SDL_QuitSubSystem(SDL_INIT_AUDIO);
 }
@@ -165,7 +160,7 @@ void SoundSDL2::open(shared_ptr<AudioQueue> audioQueue,
     openDevice();
 
   myEmulationTiming = emulationTiming;
-  myWavSpeed = 262 * 60 * 2. / myEmulationTiming->audioSampleRate();
+  myWavHandler.setSpeed(262 * 60 * 2. / myEmulationTiming->audioSampleRate());
 
   Logger::debug("SoundSDL2::open started ...");
 
@@ -214,11 +209,7 @@ void SoundSDL2::mute(bool state)
 {
   myAudioSettings.setEnabled(!state);
   if(state)
-  {
-    SDL_LockAudioDevice(myDevice);
     myVolumeFactor = 0;
-    SDL_UnlockAudioDevice(myDevice);
-  }
   else
     setVolume(myAudioSettings.volume());
 }
@@ -242,10 +233,10 @@ bool SoundSDL2::pause(bool state)
 
   const bool oldstate = SDL_GetAudioDeviceStatus(myDevice) == SDL_AUDIO_PAUSED;
   if(myIsInitializedFlag)
+  {
     SDL_PauseAudioDevice(myDevice, state ? 1 : 0);
-  if(myWavDevice)
-    SDL_PauseAudioDevice(myWavDevice, state ? 1 : 0);
-
+    myWavHandler.pause(state);
+  }
   return oldstate;
 }
 
@@ -255,10 +246,7 @@ void SoundSDL2::setVolume(uInt32 volume)
   if(myIsInitializedFlag && (volume <= 100))
   {
     myAudioSettings.setVolume(volume);
-
-    SDL_LockAudioDevice(myDevice);
     myVolumeFactor = myAudioSettings.enabled() ? static_cast<float>(volume) / 100.F : 0;
-    SDL_UnlockAudioDevice(myDevice);
   }
 }
 
@@ -337,15 +325,6 @@ string SoundSDL2::about() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL2::processFragment(float* stream, uInt32 length)
-{
-  myResampler->fillFragment(stream, length);
-
-  for(uInt32 i = 0; i < length; ++i)
-    stream[i] *= myVolumeFactor;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL2::initResampler()
 {
   const Resampler::NextFragmentCallback nextFragmentCallback = [this] () -> Int16* {
@@ -395,12 +374,21 @@ void SoundSDL2::initResampler()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL2::callback(void* udata, uInt8* stream, int len)
+void SoundSDL2::callback(void* object, uInt8* stream, int len)
 {
-  auto* self = static_cast<SoundSDL2*>(udata);
+  auto* self = static_cast<SoundSDL2*>(object);
 
   if(self->myAudioQueue)
-    self->processFragment(reinterpret_cast<float*>(stream), len >> 2);
+  {
+    // The stream is 32-bit float (even though this callback is 8-bits), since
+    // the resampler and TIA audio subsystem always generate float samples
+    auto* s = reinterpret_cast<float*>(stream);
+    const uInt32 length = len >> 2;
+    self->myResampler->fillFragment(s, length);
+
+    for(uInt32 i = 0; i < length; ++i)  // TODO - perhaps move into Resampler
+      s[i] *= SoundSDL2::myVolumeFactor;
+  }
   else
     SDL_memset(stream, 0, len);
 }
@@ -409,128 +397,160 @@ void SoundSDL2::callback(void* udata, uInt8* stream, int len)
 bool SoundSDL2::playWav(const string& fileName, const uInt32 position,
                         const uInt32 length)
 {
-  // Load WAV file
-  if(fileName != myWavFilename || myWavBuffer == nullptr)
-  {
-    if(myWavBuffer)
-    {
-      SDL_FreeWAV(myWavBuffer);
-      myWavBuffer = nullptr;
-    }
-    if(SDL_LoadWAV(fileName.c_str(), &myWavSpec, &myWavBuffer, &myWavLength) == nullptr)
-      return false;
-    // Set the callback function
-    myWavSpec.callback = wavCallback;
-    myWavSpec.userdata = nullptr;
-    //myWavSpec.samples = 4096; // decrease for smaller samples;
-  }
-  if(position > myWavLength)
-    return false;
+  const char* device = myDeviceId ? myDevices.at(myDeviceId).first.c_str() : nullptr;
 
-  myWavFilename = fileName;
-
-  myWavLen = length
-    ? std::min(length, myWavLength - position)
-    : myWavLength;
-  myWavPos = myWavBuffer + position;
-
-  // Open audio device
-  if(!myWavDevice)
-  {
-    const char* device = myDeviceId ? myDevices.at(myDeviceId).first.c_str() : nullptr;
-
-    myWavDevice = SDL_OpenAudioDevice(device, 0, &myWavSpec, nullptr, 0);
-    if(!myWavDevice)
-      return false;
-    // Play audio
-    SDL_PauseAudioDevice(myWavDevice, 0);
-  }
-  return true;
+  return myWavHandler.play(fileName, device, position, length);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL2::stopWav()
 {
-  if(myWavBuffer)
-  {
-    // Clean up
-    myWavLen = 0;
-    SDL_CloseAudioDevice(myWavDevice);
-    myWavDevice = 0;
-    SDL_FreeWAV(myWavBuffer);
-    myWavBuffer = nullptr;
-  }
-  if(myWavCvtBuffer)
-  {
-    myWavCvtBuffer.reset();
-    myWavCvtBufferSize = 0;
-  }
+  myWavHandler.stop();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 SoundSDL2::wavSize() const
 {
-  return myWavBuffer ? myWavLen : 0;
+  return myWavHandler.size();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL2::wavCallback(void* udata, uInt8* stream, int len)
+bool SoundSDL2::WavHandlerSDL2::play(
+    const string& fileName, const char* device,
+    const uInt32 position, const uInt32 length
+)
 {
-  SDL_memset(stream, myWavSpec.silence, len);
-  if(myWavLen)
+  // Load WAV file
+  if(fileName != myFilename || myBuffer == nullptr)
   {
-    if(myWavSpeed != 1.0)
+    if(myBuffer)
     {
-      const int origLen = len;
-      len = std::round(len / myWavSpeed);
-      const int newFreq =
-        std::round(static_cast<double>(myWavSpec.freq) * origLen / len);
-
-      if(static_cast<uInt32>(len) > myWavLen)
-        len = myWavLen;
-
-      SDL_AudioCVT cvt;
-      SDL_BuildAudioCVT(&cvt, myWavSpec.format, myWavSpec.channels, myWavSpec.freq,
-                              myWavSpec.format, myWavSpec.channels, newFreq);
-      SDL_assert(cvt.needed); // Obviously, this one is always needed.
-      cvt.len = len * myWavSpec.channels;  // Mono 8 bit sample frames
-
-      if(!myWavCvtBuffer ||
-          myWavCvtBufferSize < static_cast<uInt32>(cvt.len * cvt.len_mult))
-      {
-        myWavCvtBufferSize = cvt.len * cvt.len_mult;
-        myWavCvtBuffer = make_unique<uInt8[]>(myWavCvtBufferSize);
-      }
-      cvt.buf = myWavCvtBuffer.get();
-
-      // Read original data into conversion buffer
-      SDL_memcpy(cvt.buf, myWavPos, cvt.len);
-      SDL_ConvertAudio(&cvt);
-      // Mix volume adjusted WAV data into silent buffer
-      SDL_MixAudioFormat(stream, cvt.buf, myWavSpec.format, cvt.len_cvt,
-                         SDL_MIX_MAXVOLUME * myVolumeFactor);
+      SDL_FreeWAV(myBuffer);
+      myBuffer = nullptr;
     }
-    else
-    {
-      if(static_cast<uInt32>(len) > myWavLen)
-        len = myWavLen;
+    SDL_zero(mySpec);
+    if(SDL_LoadWAV(fileName.c_str(), &mySpec, &myBuffer, &myLength) == nullptr)
+      return false;
 
-      // Mix volume adjusted WAV data into silent buffer
-      SDL_MixAudioFormat(stream, myWavPos, myWavSpec.format, len,
-                         SDL_MIX_MAXVOLUME * myVolumeFactor);
-    }
-    myWavPos += len;
-    myWavLen -= len;
+    // Set the callback function
+    mySpec.callback = callback;
+    mySpec.userdata = this;
+  }
+  if(position > myLength)
+    return false;
+
+  myFilename = fileName;
+
+  myRemaining = length
+    ? std::min(length, myLength - position)
+    : myLength;
+  myPos = myBuffer + position;
+
+  // Open audio device
+  if(!myDevice)
+  {
+    myDevice = SDL_OpenAudioDevice(device, 0, &mySpec, nullptr, 0);
+    if(!myDevice)
+      return false;
+    // Play audio
+    SDL_PauseAudioDevice(myDevice, 0);
+  }
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SoundSDL2::WavHandlerSDL2::stop()
+{
+  if(myBuffer)
+  {
+    // Clean up
+    myRemaining = 0;
+    SDL_CloseAudioDevice(myDevice);  myDevice = 0;
+    SDL_FreeWAV(myBuffer);  myBuffer = nullptr;
+  }
+  if(myCvtBuffer)
+  {
+    myCvtBuffer.reset();
+    myCvtBufferSize = 0;
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SoundSDL2::WavHandlerSDL2::processWav(uInt8* stream, uInt32 len)
+{
+  SDL_memset(stream, mySpec.silence, len);
+  if(myRemaining)
+  {
+    if(mySpeed != 1.0)
+    {
+      const int origLen = len;
+      len = std::round(len / mySpeed);
+      const int newFreq =
+        std::round(static_cast<double>(mySpec.freq) * origLen / len);
+
+      if(static_cast<uInt32>(len) > myRemaining)
+        len = myRemaining;
+
+      SDL_AudioCVT cvt;
+      SDL_BuildAudioCVT(&cvt, mySpec.format, mySpec.channels, mySpec.freq,
+                              mySpec.format, mySpec.channels, newFreq);
+      SDL_assert(cvt.needed); // Obviously, this one is always needed.
+      cvt.len = len * mySpec.channels;  // Mono 8 bit sample frames
+
+      if(!myCvtBuffer ||
+          myCvtBufferSize < static_cast<uInt32>(cvt.len * cvt.len_mult))
+      {
+        myCvtBufferSize = cvt.len * cvt.len_mult;
+        myCvtBuffer = make_unique<uInt8[]>(myCvtBufferSize);
+      }
+      cvt.buf = myCvtBuffer.get();
+
+      // Read original data into conversion buffer
+      SDL_memcpy(cvt.buf, myPos, cvt.len);
+      SDL_ConvertAudio(&cvt);
+      // Mix volume adjusted WAV data into silent buffer
+      SDL_MixAudioFormat(stream, cvt.buf, mySpec.format, cvt.len_cvt,
+                         SDL_MIX_MAXVOLUME * SoundSDL2::myVolumeFactor);
+    }
+    else
+    {
+      if(static_cast<uInt32>(len) > myRemaining)
+        len = myRemaining;
+
+      // Mix volume adjusted WAV data into silent buffer
+      SDL_MixAudioFormat(stream, myPos, mySpec.format, len,
+                         SDL_MIX_MAXVOLUME * myVolumeFactor);
+    }
+    myPos += len;
+    myRemaining -= len;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SoundSDL2::WavHandlerSDL2::callback(void* object, uInt8* stream, int len)
+{
+  static_cast<WavHandlerSDL2*>(object)->processWav(
+      stream, static_cast<uInt32>(len));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+SoundSDL2::WavHandlerSDL2::~WavHandlerSDL2()
+{
+  if(myDevice)
+  {
+    SDL_CloseAudioDevice(myDevice);
+    SDL_FreeWAV(myBuffer);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SoundSDL2::WavHandlerSDL2::pause(bool state) const
+{
+  if(myDevice)
+    SDL_PauseAudioDevice(myDevice, state ? 1 : 0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 float SoundSDL2::myVolumeFactor = 0.F;
-SDL_AudioSpec SoundSDL2::myWavSpec;   // audio output format
-uInt8* SoundSDL2::myWavPos = nullptr; // pointer to the audio buffer to be played
-uInt32 SoundSDL2::myWavLen = 0;       // remaining length of the sample we have to play
-double SoundSDL2::myWavSpeed = 1.0;
-unique_ptr<uInt8[]> SoundSDL2::myWavCvtBuffer;
-uInt32 SoundSDL2::myWavCvtBufferSize = 0;
 
 #endif  // SOUND_SUPPORT
