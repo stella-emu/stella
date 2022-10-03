@@ -273,7 +273,12 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
             else
             {
               if(myLogBreaks)
+              {
+                // Make sure that the TIA state matches the current system clock.
+                // Else Scanlines, Cycles and Pixels are not updated for logging.
+                mySystem->tia().updateEmulation();
                 myDebugger->log("BP:");
+              }
               else
               {
                 ostringstream msg;
