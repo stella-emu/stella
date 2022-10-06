@@ -101,7 +101,7 @@ class DebuggerParser
       std::array<Parameters, 10> parms;
       std::function<void (DebuggerParser*)> executor;
     };
-    using CommandArray = std::array<Command, 104>;
+    using CommandArray = std::array<Command, 110>;
     static CommandArray commands;
 
     struct Trap
@@ -142,6 +142,9 @@ class DebuggerParser
     void listTraps(bool listCond);
     string trapStatus(const Trap& trap);
 
+    void printTimer(uInt32 idx,bool showHeader = true);
+    void listTimers();
+
     // output the error with the example provided for the command
     void outputCommandError(const string& errorMsg, int command);
 
@@ -162,6 +165,7 @@ class DebuggerParser
     void executeClearConfig();
     void executeClearHistory();
     void executeClearSaveStateIfs();
+    void executeClearTimers();
     void executeClearTraps();
     void executeClearWatches();
     void executeCls();
@@ -175,6 +179,7 @@ class DebuggerParser
     void executeDelBreakIf();
     void executeDelFunction();
     void executeDelSaveStateIf();
+    void executeDelTimer();
     void executeDelTrap();
     void executeDelWatch();
     void executeDisAsm();
@@ -200,6 +205,7 @@ class DebuggerParser
     void executeListConfig();
     void executeListFunctions();
     void executeListSaveStateIfs();
+    void executeListTimers();
     void executeListTraps();
     void executeLoadAllStates();
     void executeLoadConfig();
@@ -211,8 +217,10 @@ class DebuggerParser
     void executePCol();
     void executePGfx();
     void executePrint();
+    void executePrintTimer();
     void executeRam();
     void executeReset();
+    void executeResetTimers();
     void executeRewind();
     void executeRiot();
     void executeRom();
@@ -236,6 +244,7 @@ class DebuggerParser
     void executeStepWhile();
     void executeSwchb();
     void executeTia();
+    void executeTimer();
     void executeTrace();
     void executeTrap();
     void executeTrapIf();

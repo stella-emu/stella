@@ -105,6 +105,11 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       runtoPC(data);
       break;
 
+    case RomListWidget::kSetTimerCmd:
+      // 'data' is the line in the disassemblylist to be accessed
+      setTimer(data);
+      break;
+
     case RomListWidget::kDisassembleCmd:
       // 'data' is the line in the disassemblylist to be accessed
       disassemble(data);
@@ -191,6 +196,20 @@ void RomWidget::runtoPC(int disasm_line)
   {
     ostringstream command;
     command << "runtopc #" << address;
+    const string& msg = instance().debugger().run(command.str());
+    instance().frameBuffer().showTextMessage(msg);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RomWidget::setTimer(int disasm_line)
+{
+  const uInt16 address = getAddress(disasm_line);
+
+  if(address != 0)
+  {
+    ostringstream command;
+    command << "timer #" << address << " " << instance().debugger().cartDebug().getBank(address);
     const string& msg = instance().debugger().run(command.str());
     instance().frameBuffer().showTextMessage(msg);
   }

@@ -15,7 +15,8 @@
 6.7 to 7.0 (XXXXX XX, 202X)
 
   * Enhanced ROM launcher to allow multiple images per ROM
-    (TODO: controller support, doc)
+
+  * Made heaps of additional images available for the ROM launcher
 
   * Added searching by filename for ROM launcher images
 
@@ -30,6 +31,8 @@
   * Added BUS bankswitching support for some older demos
 
   * Fixed broken 7800 pause key support
+
+  * Added user defined CPU cycle timers to debugger (TODO: screenshots)
 
 -Have fun!
 
