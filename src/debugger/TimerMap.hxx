@@ -18,6 +18,7 @@
 #ifndef TIMER_MAP_HXX
 #define TIMER_MAP_HXX
 
+#include <cmath>
 #include <map>
 #include <deque>
 
@@ -222,7 +223,7 @@ class TimerMap
     void reset();
 
     /** Get timer */
-    const Timer& get(const uInt32 idx) const { return myList[idx]; };
+    const Timer& get(const uInt32 idx) const { return myList[idx]; }
     uInt32 size() const { return static_cast<uInt32>(myList.size()); }
 
     /** Update timer */
