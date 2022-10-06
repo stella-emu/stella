@@ -261,7 +261,7 @@ class M6502 : public Serializable
     void clearTimers();
     void resetTimers();
     uInt32 numTimers() const { return myTimer.size(); }
-    const TimerMap::Timer& getTimer(uInt32 idx) const { return myTimer.get(idx); };
+    const TimerMap::Timer& getTimer(uInt32 idx) const { return myTimer.get(idx); }
 
     void setGhostReadsTrap(bool enable) { myGhostReadsTrap = enable; }
     void setReadFromWritePortBreak(bool enable) { myReadFromWritePortBreak = enable; }
