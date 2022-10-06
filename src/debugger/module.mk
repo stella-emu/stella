@@ -9,7 +9,7 @@ MODULE_OBJS := \
         src/debugger/DiStella.o \
         src/debugger/RiotDebug.o \
         src/debugger/TIADebug.o \
-	src/debugger/TimerMap.o \
+        src/debugger/TimerMap.o
 
 MODULE_DIRS += \
         src/debugger
