@@ -45,6 +45,7 @@
                 <li><a href="#PseudoRegisters">Pseudo-Registers</a></li>
                 <li><a href="#Watches">Watches</a></li>
                 <li><a href="#Traps">Traps</a></li>
+                <li><a href="#Timers">Timers</a></li>
               </ul>
             </li>
             <li><a href="#SaveWork">Save your work!</a></li>
@@ -858,6 +859,23 @@ can remove a trap with "delTrap number", where the number comes from
 "listTraps" or by entering the identical trap again. You can get rid of
 all traps at once with the "clearTraps" command.</p></p>
 
+<h4><a name="Timers">Timers</a></h4>
+
+<p>Timers are used to measure cycles used between two timer points. They
+measure the minimum, maximum and average cycles executed between their two
+timer points. Start and end points can be set via prompt command or ROM
+Disassembly settings dialog.</p>
+
+<p>Timer points can be defined with or without a bank. With a bank, they
+are triggered in the given bank only, using all mirror addresses too. Without
+a bank, the timer points are triggered in all bank, using the given adress
+only.</p>
+
+<p>All timers can be shown in detail with "listTimers", a single timer
+with "printTimer number". "resetTimers" allows resetting all timer statistics,
+"delTimer number" removes a single timer. All timers can be deleted with the
+"clearTimers" command.</p>
+
 </br>
 <h3><a name="SaveWork">Save your work!</a></h3>
 <p>Stella offers several commands to save your work inside the debugger for
@@ -945,6 +963,7 @@ Type "help 'cmd'" to see extended information about the given command.</p>
       clearConfig - Clear DiStella config directives [bank xx]
      clearHistory - Clear the prompt history
 clearSaveStateIfs - Clear all saveState points
+      clearTimers - Clear all timers
        clearTraps - Clear all traps
      clearWatches - Clear all watches
               cls - Clear prompt area of text
@@ -959,6 +978,7 @@ clearSaveStateIfs - Clear all saveState points
       delFunction - Delete function with label xx
    delSaveStateIf - Delete conditional saveState point &lt;xx&gt;
           delTrap - Delete trap &lt;xx&gt;
+         delTimer - Delete timer &lt;xx&gt;
          delWatch - Delete watch &lt;xx&gt;
            disAsm - Disassemble address xx [yy lines] (default=PC)
              dump - Dump data at address &lt;xx&gt; [to yy] [1: memory; 2: CPU state; 4: input regs] [?]
@@ -994,8 +1014,10 @@ clearSaveStateIfs - Clear all saveState points
              pCol - Mark 'PCOL' range in disassembly
              pGfx - Mark 'PGFX' range in disassembly
             print - Evaluate/print expression xx in hex/dec/binary
+       printTimer - Print details of timer xx
               ram - Show ZP RAM, or set address xx to yy1 [yy2 ...]
             reset - Reset system to power-on state
+      resetTimers - Reset all timers' statistics
            rewind - Rewind state by one or [xx] steps/traces/scanlines/frames...
              riot - Show RIOT timer/input status
               rom - Set ROM address xx to yy1 [yy2 ...]
@@ -1017,8 +1039,9 @@ clearSaveStateIfs - Clear all saveState points
          scanLine - Advance emulation by &lt;xx&gt; scanlines (default=1)
              step - Single step CPU [with count xx]
         stepWhile - Single step CPU while &lt;condition&gt; is true
-	    swchb - Set SWCHB to value xx
+            swchb - Set SWCHB to value xx
               tia - Show TIA state
+            timer - Set a timer point
             trace - Single step CPU over subroutines [with count xx]
              trap - Trap read/write access to address(es) xx [yy]
            trapIf - On &lt;condition&gt; trap R/W access to address(es) xx [yy]
@@ -1562,6 +1585,9 @@ matches the address of the disassembly line where the mouse was clicked.</li>
 
 <li><b>Disassemble @ current line</b>: Disassemble from the disassembly line where the mouse was clicked.
 This allows to fill gaps in the disassembly and is most useful for bankswitched ROMs.</li>
+
+<li><b>Set timer @ current line</b>: Set a timer point using the current
+disassembly line's address and bank</li>
 
 <li><b>Show tentative code</b>: Allow DiStella to do a static analysis/disassembly.</li>
 

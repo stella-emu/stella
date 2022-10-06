@@ -1194,6 +1194,9 @@
     <ClCompile Include="..\..\common\sdl_blitter\QisBlitter.cxx">
       <Filter>Source Files\sdl_blitter</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\debugger\TimerMap.cxx">
+      <Filter>Source Files\debugger</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\common\bspf.hxx">
@@ -2434,6 +2437,9 @@
     </ClInclude>
     <ClInclude Include="..\..\common\smartmod.hxx">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\debugger\TimerMap.hxx">
+      <Filter>Header Files\debugger</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

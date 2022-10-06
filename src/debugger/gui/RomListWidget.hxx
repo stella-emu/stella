@@ -37,6 +37,7 @@ class RomListWidget : public EditableWidget
                                     // 'id' will be the Base::Format of the data
       kSetPCCmd          = 'STpc',  // 'data' will be disassembly line number
       kRuntoPCCmd        = 'RTpc',  // 'data' will be disassembly line number
+      kSetTimerCmd       = 'STtm',
       kDisassembleCmd    = 'REds',
       kTentativeCodeCmd  = 'TEcd',  // 'data' will be boolean
       kPCAddressesCmd    = 'PCad',  // 'data' will be boolean

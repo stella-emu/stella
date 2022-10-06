@@ -48,6 +48,13 @@ RomListSettings::RomListSettings(GuiObject* boss, const GUI::Font& font)
                      "RunTo PC @ current line", RomListWidget::kRuntoPCCmd);
   wid.push_back(runtoPC);
 
+  // Toggle timer
+  ypos += buttonHeight + 4;
+  auto* setTimer =
+    new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
+      "Set timer @ current line", RomListWidget::kSetTimerCmd);
+  wid.push_back(setTimer);
+
   // Re-disassemble
   ypos += buttonHeight + 4;
   auto* disasm =
@@ -150,6 +157,11 @@ void RomListSettings::handleCommand(CommandSender* sender, int cmd, int data, in
   {
     case RomListWidget::kSetPCCmd:
     case RomListWidget::kRuntoPCCmd:
+    {
+      sendCommand(cmd, _item, -1);
+      break;
+    }
+    case RomListWidget::kSetTimerCmd:
     {
       sendCommand(cmd, _item, -1);
       break;

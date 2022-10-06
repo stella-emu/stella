@@ -51,6 +51,7 @@ class RomWidget : public Widget, public CommandSender
     void toggleBreak(int disasm_line);
     void setPC(int disasm_line);
     void runtoPC(int disasm_line);
+    void setTimer(int disasm_line);
     void disassemble(int disasm_line);
     void patchROM(int disasm_line, const string& bytes,
                   Common::Base::Fmt base);
