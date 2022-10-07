@@ -97,7 +97,11 @@ void RomImageWidget::parseProperties(const FSNode& node, bool full)
     // Create navigation surface
     myNavSurface = instance().frameBuffer().allocateSurface(
       _w, myImageHeight);
-    myNavSurface->setDstRect(Common::Rect(_x, _y, _x + _w, _y + myImageHeight));
+
+    const uInt32 scale = instance().frameBuffer().hidpiScaleFactor();
+    myNavSurface->setDstRect(
+      Common::Rect(_x * scale, _y * scale,
+                   (_x + _w) * scale, (_y + myImageHeight) * scale));
 
     FBSurface::Attributes& attr = myNavSurface->attributes();
 
