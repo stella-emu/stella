@@ -1193,6 +1193,8 @@
     </ClCompile>
     <ClCompile Include="..\..\common\FSNodeREGULAR.cxx">
       <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\debugger\TimerMap.cxx">
+      <Filter>Source Files\debugger</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2434,6 +2436,8 @@
     </ClInclude>
     <ClInclude Include="..\..\common\FSNodeREGULAR.hxx">
       <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\debugger\TimerMap.hxx">
+      <Filter>Header Files\debugger</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

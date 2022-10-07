@@ -578,6 +578,83 @@ const string& DebuggerParser::cartName() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerParser::printTimer(uInt32 idx, bool showHeader)
+{
+  if(idx >= debugger.m6502().numTimers())
+  {
+    commandResult << red("invalid timer");
+    return;
+  }
+
+  const TimerMap::Timer& timer = debugger.m6502().getTimer(idx);
+  const bool banked = debugger.cartDebug().romBankCount() > 1;
+  ostringstream buf;
+
+  if(!debugger.cartDebug().getLabel(buf, timer.from.addr, true))
+    buf << "    $" << setw(4) << Base::HEX4 << timer.from.addr;
+  string labelFrom = buf.str();
+
+  buf.str("");
+  if(!debugger.cartDebug().getLabel(buf, timer.to.addr, true))
+    buf << "    $" << setw(4) << Base::HEX4 << timer.to.addr;
+  string labelTo = buf.str();
+
+  labelFrom = (labelFrom + "              ").substr(0, banked ? 12 : 15);
+  labelTo   = (labelTo   + "              ").substr(0, banked ? 12 : 15);
+
+  if(showHeader)
+  {
+    if(banked)
+      commandResult << " #|    From    /Bk|     To     /Bk| Execs| Avg. | Min. | Max. |";
+    else
+      commandResult << " #|     From      |      To       | Execs| Avg. | Min. | Max. |";
+  }
+  commandResult << endl << Base::toString(idx) << "|" << labelFrom;
+  if(banked)
+  {
+    commandResult << "/" << setw(2) << setfill(' ');
+    if(timer.from.bank == TimerMap::ANY_BANK)
+      commandResult << "-";
+    else
+      commandResult << dec << static_cast<uInt16>(timer.from.bank);
+  }
+  commandResult << "|";
+  if(timer.isPartial)
+    commandResult << (banked ? "       -       " : "      -        ")
+      << "|     -|     -|     -|     -|";
+  else
+  {
+    commandResult << labelTo;
+    if(banked)
+    {
+      commandResult << "/" << setw(2) << setfill(' ');
+      if(timer.to.bank == TimerMap::ANY_BANK)
+        commandResult << "-";
+      else
+        commandResult << dec << static_cast<uInt16>(timer.to.bank);
+    }
+    commandResult << "|"
+      << setw(6) << setfill(' ') << dec << timer.execs << "|";
+    if(!timer.execs)
+      commandResult << "     -|     -|     -|";
+    else
+      commandResult
+      << setw(6) << dec << timer.averageCycles() << "|"
+      << setw(6) << dec << timer.minCycles << "|"
+      << setw(6) << dec << timer.maxCycles << "|";
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerParser::listTimers()
+{
+  commandResult << "timers:" << endl;
+
+  for(uInt32 i = 0; i < debugger.m6502().numTimers(); ++i)
+    printTimer(i, i == 0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerParser::listTraps(bool listCond)
 {
   StringList names = debugger.m6502().getCondTrapNames();
@@ -974,6 +1051,14 @@ void DebuggerParser::executeClearSaveStateIfs()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "clearTimers"
+void DebuggerParser::executeClearTimers()
+{
+  debugger.m6502().clearTimers();
+  commandResult << "all timers cleared";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "clearTraps"
 void DebuggerParser::executeClearTraps()
 {
@@ -1083,6 +1168,17 @@ void DebuggerParser::executeDelSaveStateIf()
     commandResult << "removed saveStateIf " << Base::toString(args[0]);
   else
     commandResult << red("no such saveStateIf");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "delTimer"
+void DebuggerParser::executeDelTimer()
+{
+  const int index = args[0];
+  if(debugger.m6502().delTimer(index))
+    commandResult << "removed timer " << Base::toString(index);
+  else
+    commandResult << red("no such timer");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1624,6 +1720,16 @@ void DebuggerParser::executeListSaveStateIfs()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "listTimers"
+void DebuggerParser::executeListTimers()
+{
+  if(debugger.m6502().numTimers())
+    listTimers();
+  else
+    commandResult << "no timers set";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "listTraps"
 void DebuggerParser::executeListTraps()
 {
@@ -1733,6 +1839,13 @@ void DebuggerParser::executePrint()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "printTimer"
+void DebuggerParser::executePrintTimer()
+{
+  printTimer(args[0]);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "ram"
 void DebuggerParser::executeRam()
 {
@@ -1755,6 +1868,14 @@ void DebuggerParser::executeReset()
   rport.resetDigitalPins();
 
   commandResult << "reset system";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "resetTimers"
+void DebuggerParser::executeResetTimers()
+{
+  debugger.m6502().resetTimers();
+  commandResult << "all timers reset";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2167,6 +2288,65 @@ void DebuggerParser::executeSwchb()
 void DebuggerParser::executeTia()
 {
   commandResult << debugger.tiaDebug().toString();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "timer"
+void DebuggerParser::executeTimer()
+{
+  const uInt32 romBankCount = debugger.cartDebug().romBankCount();
+
+  if(argCount < 2)
+  {
+    const uInt16 addr = !argCount ? debugger.cpuDebug().pc() : args[0];
+    const uInt8 bank = !argCount ? debugger.cartDebug().getBank(addr) : TimerMap::ANY_BANK;
+    const uInt32 idx = debugger.m6502().addTimer(addr, bank);
+    commandResult << "set timer " << dec << idx << " "
+      << (debugger.m6502().getTimer(idx).isPartial ? "start" : "end");
+    if(!argCount)
+      commandResult << " at $" << Base::HEX4 << (addr & TimerMap::ADDRESS_MASK);
+    if(romBankCount > 1 && !argCount)
+      commandResult << " + mirrors in bank #" << std::dec << static_cast<int>(bank);
+    return;
+  }
+  else if(argCount > 4)
+  {
+    outputCommandError("too many arguments", myCommand);
+    return;
+  }
+
+  // Detect if 2nd parameter is bank
+  if(argCount == 2 && args[0] >= 0x1000 && args[1] <= TimerMap::ANY_BANK)
+  {
+    const uInt16 addr = args[0];
+    const uInt8 bank = args[1];
+    if(bank >= romBankCount && bank != TimerMap::ANY_BANK)
+    {
+      commandResult << red("invalid bank");
+      return;
+    }
+    const uInt32 idx = debugger.m6502().addTimer(addr, bank);
+    commandResult << "set timer " << dec << idx << " "
+      << (debugger.m6502().getTimer(idx).isPartial ? "start" : "end");
+    return;
+  }
+  else
+  {
+    const uInt8 bankFrom = argCount >= 3 ? args[2] : TimerMap::ANY_BANK;
+    if(bankFrom >= romBankCount && bankFrom != TimerMap::ANY_BANK)
+    {
+      commandResult << red("invalid bank");
+      return;
+    }
+    const uInt8 bankTo = argCount == 4 ? args[3] : bankFrom;
+    if(bankTo >= romBankCount && bankTo != TimerMap::ANY_BANK)
+    {
+      commandResult << red("invalid bank");
+      return;
+    }
+    const uInt32 idx = debugger.m6502().addTimer(args[0], args[1], bankFrom, bankTo);
+    commandResult << "timer " << idx << " added";
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2649,6 +2829,16 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   },
 
   {
+    "clearTimers",
+    "Clear all timers",
+    "All timers cleared\nExample: clearTimers (no parameters)",
+    false,
+    false,
+    { Parameters::ARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executeClearTimers)
+  },
+
+  {
     "clearTraps",
     "Clear all traps",
     "All traps cleared, including any mirrored ones\nExample: clearTraps (no parameters)",
@@ -2776,6 +2966,16 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeDelSaveStateIf)
+  },
+
+  {
+    "delTimer",
+    "Delete timer <xx>",
+    "Example: delTimer 0",
+    true,
+    false,
+    { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executeDelTimer)
   },
 
   {
@@ -3036,6 +3236,16 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   },
 
   {
+    "listTimers",
+    "List timers",
+    "Lists all timers\nExample: listTimers (no parameters)",
+    false,
+    false,
+    { Parameters::ARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executeListTimers)
+  },
+
+  {
     "listTraps",
     "List traps",
     "Lists all traps (read and/or write)\nExample: listTraps (no parameters)",
@@ -3147,6 +3357,16 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   },
 
   {
+    "printTimer",
+    "Print statistics for timer <xx>",
+    "Example: printTimer 0",
+    true,
+    false,
+    { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executePrintTimer)
+  },
+
+  {
     "ram",
     "Show ZP RAM, or set address xx to yy1 [yy2 ...]",
     "Example: ram, ram 80 00 ...",
@@ -3164,6 +3384,16 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     { Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeReset)
+  },
+
+  {
+    "resetTimers",
+    "Reset all timers' statistics" ,
+    "All timers resetted\nExample: resetTimers (no parameters)",
+    false,
+    false,
+    { Parameters::ARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executeResetTimers)
   },
 
   {
@@ -3402,6 +3632,16 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     false,
     { Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeTia)
+  },
+
+  {
+    "timer",
+    "Set a cycle counting timer from addresses xx to yy [banks aa bb]",
+    "Example: timer, timer 1000, timer 3000 3100, timer f000 f800 1",
+    false,
+    true,
+    { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
+    std::mem_fn(&DebuggerParser::executeTimer)
   },
 
   {

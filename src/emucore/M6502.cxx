@@ -264,8 +264,10 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
           if(myBreakPoints.check(PC, bank))
           {
             myLastBreakCycle = mySystem->cycles();
+            const uInt32 flags = myBreakPoints.get(PC, bank);
+
             // disable a one-shot breakpoint
-            if(myBreakPoints.get(PC, bank) & BreakpointMap::ONE_SHOT)
+            if(flags & BreakpointMap::ONE_SHOT)
             {
               myBreakPoints.erase(PC, bank);
               return;
@@ -291,6 +293,9 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
             }
           }
         }
+
+        if(myTimer.isInitialized())
+          myTimer.update(PC, mySystem->cart().getBank(PC), mySystem->cycles());
 
         const int cond = evalCondBreaks();
         if(cond > -1)
@@ -656,12 +661,12 @@ uInt32 M6502::addCondTrap(Expression* e, const string& name)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool M6502::delCondTrap(uInt32 brk)
+bool M6502::delCondTrap(uInt32 idx)
 {
-  if(brk < myTrapConds.size())
+  if(idx < myTrapConds.size())
   {
-    Vec::removeAt(myTrapConds, brk);
-    Vec::removeAt(myTrapCondNames, brk);
+    Vec::removeAt(myTrapConds, idx);
+    Vec::removeAt(myTrapCondNames, idx);
 
     updateStepStateByInstruction();
 
@@ -691,4 +696,36 @@ void M6502::updateStepStateByInstruction()
   myStepStateByInstruction =
     !myCondBreaks.empty() || !myCondSaveStates.empty() || !myTrapConds.empty();
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 M6502::addTimer(const uInt16 fromAddr, const uInt16 toAddr,
+                       const uInt8 fromBank, const uInt8 toBank)
+{
+  return myTimer.add(fromAddr, toAddr, fromBank, toBank);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 M6502::addTimer(const uInt16 addr, const uInt8 bank)
+{
+  return myTimer.add(addr, bank);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool M6502::delTimer(const uInt32 idx)
+{
+  return myTimer.erase(idx);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void M6502::clearTimers()
+{
+  myTimer.clear();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void M6502::resetTimers()
+{
+  myTimer.reset();
+}
+
 #endif  // DEBUGGER_SUPPORT

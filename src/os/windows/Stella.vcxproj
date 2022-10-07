@@ -857,6 +857,7 @@
     <ClCompile Include="..\..\debugger\gui\TrakBallWidget.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\debugger\TimerMap.cxx" />
     <ClCompile Include="..\..\emucore\Bankswitch.cxx" />
     <ClCompile Include="..\..\emucore\Cart3EPlus.cxx" />
     <ClCompile Include="..\..\emucore\Cart3EX.cxx" />
@@ -2052,6 +2053,7 @@
     <ClInclude Include="..\..\debugger\gui\TrakBallWidget.hxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="..\..\debugger\TimerMap.hxx" />
     <ClInclude Include="..\..\debugger\TrapArray.hxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClInclude>

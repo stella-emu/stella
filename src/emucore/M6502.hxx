@@ -31,6 +31,7 @@ class DispatchResult;
   #include "Expression.hxx"
   #include "TrapArray.hxx"
   #include "BreakpointMap.hxx"
+  #include "TimerMap.hxx"
 #endif
 
 #include "bspf.hxx"
@@ -248,15 +249,25 @@ class M6502 : public Serializable
 
     // methods for 'trapif' handling
     uInt32 addCondTrap(Expression* e, const string& name);
-    bool delCondTrap(uInt32 brk);
+    bool delCondTrap(uInt32 idx);
     void clearCondTraps();
     const StringList& getCondTrapNames() const;
+
+    // methods for 'timer' handling:
+    uInt32 addTimer(uInt16 fromAddr, uInt16 toAddr,
+                    uInt8 fromBank, uInt8 toBank);
+    uInt32 addTimer(uInt16 addr, uInt8 bank);
+    bool delTimer(uInt32 idx);
+    void clearTimers();
+    void resetTimers();
+    uInt32 numTimers() const { return myTimer.size(); }
+    const TimerMap::Timer& getTimer(uInt32 idx) const { return myTimer.get(idx); }
 
     void setGhostReadsTrap(bool enable) { myGhostReadsTrap = enable; }
     void setReadFromWritePortBreak(bool enable) { myReadFromWritePortBreak = enable; }
     void setWriteToReadPortBreak(bool enable) { myWriteToReadPortBreak = enable; }
     void setLogBreaks(bool enable) { myLogBreaks = enable; }
-    bool getLogBreaks() { return myLogBreaks; }
+    bool getLogBreaks() const { return myLogBreaks; }
 #endif  // DEBUGGER_SUPPORT
 
   private:
@@ -465,6 +476,9 @@ class M6502 : public Serializable
     StringList myCondSaveStateNames;
     vector<unique_ptr<Expression>> myTrapConds;
     StringList myTrapCondNames;
+
+    TimerMap myTimer;
+
 #endif  // DEBUGGER_SUPPORT
 
     bool myGhostReadsTrap{false};          // trap on ghost reads

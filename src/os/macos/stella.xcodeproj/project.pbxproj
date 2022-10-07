@@ -442,6 +442,8 @@
 		DC7A24D5173B1CF600B20FE9 /* Variant.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC7A24D4173B1CF600B20FE9 /* Variant.hxx */; };
 		DC7A24DF173B1DBC00B20FE9 /* FileListWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC7A24DD173B1DBC00B20FE9 /* FileListWidget.cxx */; };
 		DC7A24E0173B1DBC00B20FE9 /* FileListWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC7A24DE173B1DBC00B20FE9 /* FileListWidget.hxx */; };
+		DC7C83D628EF2E080097B5AE /* TimerMap.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC7C83D428EF2E080097B5AE /* TimerMap.cxx */; };
+		DC7C83D728EF2E080097B5AE /* TimerMap.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC7C83D528EF2E080097B5AE /* TimerMap.hxx */; };
 		DC8078DB0B4BD5F3005E9305 /* DebuggerExpressions.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8078DA0B4BD5F3005E9305 /* DebuggerExpressions.hxx */; };
 		DC8078EA0B4BD697005E9305 /* UIDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC8078E60B4BD697005E9305 /* UIDialog.cxx */; };
 		DC8078EB0B4BD697005E9305 /* UIDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8078E70B4BD697005E9305 /* UIDialog.hxx */; };
@@ -1283,6 +1285,8 @@
 		DC7A24D4173B1CF600B20FE9 /* Variant.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Variant.hxx; sourceTree = "<group>"; };
 		DC7A24DD173B1DBC00B20FE9 /* FileListWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileListWidget.cxx; sourceTree = "<group>"; };
 		DC7A24DE173B1DBC00B20FE9 /* FileListWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FileListWidget.hxx; sourceTree = "<group>"; };
+		DC7C83D428EF2E080097B5AE /* TimerMap.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TimerMap.cxx; sourceTree = "<group>"; };
+		DC7C83D528EF2E080097B5AE /* TimerMap.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TimerMap.hxx; sourceTree = "<group>"; };
 		DC8078DA0B4BD5F3005E9305 /* DebuggerExpressions.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = DebuggerExpressions.hxx; sourceTree = "<group>"; };
 		DC8078E60B4BD697005E9305 /* UIDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = UIDialog.cxx; sourceTree = "<group>"; };
 		DC8078E70B4BD697005E9305 /* UIDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = UIDialog.hxx; sourceTree = "<group>"; };
@@ -2393,6 +2397,8 @@
 				2D30F8760868A4DB00938B9D /* TIADebug.hxx */,
 				2D6CC10308C811A600B8F642 /* TiaZoomWidget.cxx */,
 				2D6CC10408C811A600B8F642 /* TiaZoomWidget.hxx */,
+				DC7C83D428EF2E080097B5AE /* TimerMap.cxx */,
+				DC7C83D528EF2E080097B5AE /* TimerMap.hxx */,
 				DC2874061F8F2278004BF21A /* TrapArray.hxx */,
 				2D60513708987A5400C6DE89 /* yacc */,
 			);
@@ -2814,6 +2820,7 @@
 				DC816CF72572F92A00FBCCDA /* json_lib.hxx in Headers */,
 				2D91741B09BA90380026E9FF /* OSystem.hxx in Headers */,
 				DC6A18F919B3E65500DEB242 /* CartMDMWidget.hxx in Headers */,
+				DC7C83D728EF2E080097B5AE /* TimerMap.hxx in Headers */,
 				CFB521D82853A2590083B9CE /* CartBUSInfoWidget.hxx in Headers */,
 				2D91741F09BA90380026E9FF /* AboutBox.h in Headers */,
 				DC84FC572677C64200E60ADE /* CartARMWidget.hxx in Headers */,
@@ -3270,6 +3277,7 @@
 				DC44019E1F1A5D01008C08F6 /* ColorWidget.cxx in Sources */,
 				2D91749309BA90380026E9FF /* Paddles.cxx in Sources */,
 				2D91749409BA90380026E9FF /* Props.cxx in Sources */,
+				DC7C83D628EF2E080097B5AE /* TimerMap.cxx in Sources */,
 				2D91749509BA90380026E9FF /* PropsSet.cxx in Sources */,
 				2D91749709BA90380026E9FF /* Serializer.cxx in Sources */,
 				2D91749809BA90380026E9FF /* Switches.cxx in Sources */,
