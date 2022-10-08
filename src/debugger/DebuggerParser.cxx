@@ -2342,7 +2342,7 @@ void DebuggerParser::executeTimer()
 
   for(uInt32 i = 0; i < argCount; ++i)
   {
-    if(static_cast<uInt32>(args[i]) >= std::max(0x80u, romBankCount - 1))
+    if(static_cast<uInt32>(args[i]) >= std::max(0x80U, romBankCount - 1))
     {
       if(numAddrs == 2)
       {
@@ -2367,7 +2367,7 @@ void DebuggerParser::executeTimer()
     }
   }
 
-  uInt32 idx;
+  uInt32 idx = 0;
   if(numAddrs < 2)
   {
     idx = debugger.m6502().addTimer(addr[0], bank[0], mirrors, anyBank);
