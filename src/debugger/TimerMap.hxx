@@ -207,7 +207,7 @@ class TimerMap
                 const uInt64 cycles);
 
   private:
-    void toKey(TimerPoint& tp, bool mirrors, bool anyBank);
+    static void toKey(TimerPoint& tp, bool mirrors, bool anyBank);
 
   private:
     using TimerList = std::deque<Timer>; // makes sure that the element pointers do NOT change

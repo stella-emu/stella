@@ -84,8 +84,8 @@ uInt32 TimerMap::add(uInt16 addr, uInt8 bank, bool mirrors, bool anyBank)
     // complete a partial timer:
     Timer& tmPartial = myList[idx];
     TimerPoint tpFrom = tmPartial.from;
-    bool oldMirrors = tmPartial.mirrors;
-    bool oldAnyBank = tmPartial.anyBank;
+    const bool oldMirrors = tmPartial.mirrors;
+    const bool oldAnyBank = tmPartial.anyBank;
 
     tmPartial.setTo(tp, mirrors, anyBank);
     toKey(tp, tmPartial.mirrors, tmPartial.anyBank);
@@ -153,8 +153,8 @@ void TimerMap::clear()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TimerMap::reset()
 {
-  for(auto it = myList.begin(); it != myList.end(); ++it)
-    it->reset();
+  for(auto& it: myList)
+    it.reset();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -163,7 +163,7 @@ void TimerMap::update(uInt16 addr, uInt8 bank, const uInt64 cycles)
   if((addr & ADDRESS_MASK) != addr)
   {
     // 13 bit timerpoint
-    TimerPoint tp(addr & ADDRESS_MASK, bank);
+    const TimerPoint tp(addr & ADDRESS_MASK, bank);
 
     // Find address in from and to maps
     const auto from = myFromMap.equal_range(tp);
@@ -178,7 +178,7 @@ void TimerMap::update(uInt16 addr, uInt8 bank, const uInt64 cycles)
   }
 
   // 16 bit timerpoint
-  TimerPoint tp(addr, bank);
+  const TimerPoint tp(addr, bank);
 
   // Find address in from and to maps
   const auto from = myFromMap.equal_range(tp);
