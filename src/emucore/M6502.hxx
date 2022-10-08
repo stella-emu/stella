@@ -254,9 +254,9 @@ class M6502 : public Serializable
     const StringList& getCondTrapNames() const;
 
     // methods for 'timer' handling:
-    uInt32 addTimer(uInt16 fromAddr, uInt16 toAddr,
-                    uInt8 fromBank, uInt8 toBank);
-    uInt32 addTimer(uInt16 addr, uInt8 bank);
+    uInt32 addTimer(uInt16 fromAddr, uInt16 toAddr, uInt8 fromBank, uInt8 toBank,
+                    bool mirrors, bool anyBank);
+    uInt32 addTimer(uInt16 addr, uInt8 bank, bool mirrors, bool anyBank);
     bool delTimer(uInt32 idx);
     void clearTimers();
     void resetTimers();

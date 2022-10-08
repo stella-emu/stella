@@ -698,20 +698,22 @@ void M6502::updateStepStateByInstruction()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 M6502::addTimer(const uInt16 fromAddr, const uInt16 toAddr,
-                       const uInt8 fromBank, const uInt8 toBank)
+uInt32 M6502::addTimer(uInt16 fromAddr, uInt16 toAddr,
+                       uInt8 fromBank, uInt8 toBank,
+                       bool mirrors, bool anyBank)
 {
-  return myTimer.add(fromAddr, toAddr, fromBank, toBank);
+  return myTimer.add(fromAddr, toAddr, fromBank, toBank, mirrors, anyBank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 M6502::addTimer(const uInt16 addr, const uInt8 bank)
+uInt32 M6502::addTimer(uInt16 addr, uInt8 bank,
+                       bool mirrors, bool anyBank)
 {
-  return myTimer.add(addr, bank);
+  return myTimer.add(addr, bank, mirrors, anyBank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool M6502::delTimer(const uInt32 idx)
+bool M6502::delTimer(uInt32 idx)
 {
   return myTimer.erase(idx);
 }

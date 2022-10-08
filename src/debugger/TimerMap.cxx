@@ -21,18 +21,34 @@
   TODOs:
     x unordered_multimap (not required for just a few timers)
     o 13 vs 16 bit, use ADDRESS_MASK & ANY_BANK, when???
+      - never, unless the user defines * for the bank
+    o any bank
+      - never unless the user defines *
     ? timer line display in disassembly? (color, symbol,...?)
+    - keep original from and to addresses for label display
 */
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 TimerMap::add(const uInt16 fromAddr, const uInt16 toAddr,
-                     const uInt8 fromBank, const uInt8 toBank)
+void TimerMap::toKey(TimerPoint& tp, bool mirrors, bool anyBank)
 {
-  const TimerPoint tpFrom(fromAddr, fromBank);
-  const TimerPoint tpTo(toAddr, toBank);
-  const Timer complete(tpFrom, tpTo);
+  if(mirrors)
+    tp.addr &= ADDRESS_MASK;
+  if(anyBank)
+    tp.bank = ANY_BANK;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 TimerMap::add(uInt16 fromAddr, uInt16 toAddr,
+                     uInt8 fromBank, uInt8 toBank,
+                     bool mirrors, bool anyBank)
+{
+  TimerPoint tpFrom(fromAddr, fromBank);
+  TimerPoint tpTo(toAddr, toBank);
+  const Timer complete(tpFrom, tpTo, mirrors, anyBank);
 
   myList.push_back(complete);
+  toKey(tpFrom, mirrors, anyBank);
+  toKey(tpTo, mirrors, anyBank);
   myFromMap.insert(TimerPair(tpFrom, &myList.back()));
   myToMap.insert(TimerPair(tpTo, &myList.back()));
 
@@ -40,31 +56,61 @@ uInt32 TimerMap::add(const uInt16 fromAddr, const uInt16 toAddr,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 TimerMap::add(const uInt16 addr, const uInt8 bank)
+uInt32 TimerMap::add(uInt16 addr, uInt8 bank, bool mirrors, bool anyBank)
 {
-  const uInt32 idx = size() - 1;
+  uInt32 idx = size() - 1;
+  uInt32 i = 0; // find first incomplete timer, if any
+  for(auto it = myList.begin(); it != myList.end(); ++it, ++i)
+    if(it->isPartial)
+    {
+      idx = i;
+      break;
+    }
   const bool isPartialTimer = size() && get(idx).isPartial;
-  const TimerPoint tp(addr, bank);
+  TimerPoint tp(addr, bank);
 
   if(!isPartialTimer)
   {
-    const Timer partial(tp);
+    // create a new timer:
+    const Timer tmNew(tp, mirrors, anyBank);
 
-    myList.push_back(partial);
+    myList.push_back(tmNew);
+    toKey(tp, mirrors, anyBank);
     myFromMap.insert(TimerPair(tp, &myList.back()));
+    return size() - 1;
   }
   else
   {
-    Timer& partial = myList[idx];
+    // complete a partial timer:
+    Timer& tmPartial = myList[idx];
+    TimerPoint tpFrom = tmPartial.from;
+    bool oldMirrors = tmPartial.mirrors;
+    bool oldAnyBank = tmPartial.anyBank;
 
-    partial.setTo(tp);
-    myToMap.insert(TimerPair(tp, &partial));
+    tmPartial.setTo(tp, mirrors, anyBank);
+    toKey(tp, tmPartial.mirrors, tmPartial.anyBank);
+    myToMap.insert(TimerPair(tp, &tmPartial));
+
+    // update tp key in myFromMap for new mirrors & anyBank settings
+    // 1. find map entry using OLD tp key settings:
+    toKey(tpFrom, oldMirrors, oldAnyBank);
+    auto from = myFromMap.equal_range(tpFrom);
+    for(auto it = from.first; it != from.second; ++it)
+      if(it->second == &tmPartial)
+      {
+        // 2. erase old map entry
+        myFromMap.erase(it);
+        // ...and add new map entry with NEW tp key settings:
+        toKey(tpFrom, tmPartial.mirrors, tmPartial.anyBank);
+        myFromMap.insert(TimerPair(tpFrom, &tmPartial));
+        break;
+      }
+    return idx;
   }
-  return size() - 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool TimerMap::erase(const uInt32 idx)
+bool TimerMap::erase(uInt32 idx)
 {
   if(size() > idx)
   {
@@ -112,13 +158,12 @@ void TimerMap::reset()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TimerMap::update(const uInt16 addr, const uInt8 bank,
-                      const uInt64 cycles)
+void TimerMap::update(uInt16 addr, uInt8 bank, const uInt64 cycles)
 {
-  // 13 bit timerpoint
   if((addr & ADDRESS_MASK) != addr)
   {
-    TimerPoint tp(addr, bank); // -> addr & ADDRESS_MASK
+    // 13 bit timerpoint
+    TimerPoint tp(addr & ADDRESS_MASK, bank);
 
     // Find address in from and to maps
     const auto from = myFromMap.equal_range(tp);
@@ -133,7 +178,7 @@ void TimerMap::update(const uInt16 addr, const uInt8 bank,
   }
 
   // 16 bit timerpoint
-  TimerPoint tp(addr, bank, false); // -> addr
+  TimerPoint tp(addr, bank);
 
   // Find address in from and to maps
   const auto from = myFromMap.equal_range(tp);
