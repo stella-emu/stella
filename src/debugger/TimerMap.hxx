@@ -92,10 +92,10 @@ class TimerMap
         : from{c_from}, to{c_to}, mirrors{c_mirrors}, anyBank{c_anyBank} {}
 
       Timer(uInt16 fromAddr, uInt16 toAddr, uInt8 fromBank, uInt8 toBank,
-            bool mirrors = false, bool anyBank = false)
+            bool c_mirrors = false, bool c_anyBank = false)
       {
         Timer(TimerPoint(fromAddr, fromBank), TimerPoint(fromAddr, fromBank),
-              mirrors, anyBank);
+              c_mirrors, c_anyBank);
       }
 
       Timer(const TimerPoint& tp, bool c_mirrors = false, bool c_anyBank = false)
@@ -106,9 +106,9 @@ class TimerMap
         isPartial = true;
       }
 
-      Timer(uInt16 addr, uInt8 bank, bool mirrors = false, bool anyBank = false)
+      Timer(uInt16 addr, uInt8 bank, bool c_mirrors = false, bool c_anyBank = false)
       {
-        Timer(TimerPoint(addr, bank), mirrors, anyBank);
+        Timer(TimerPoint(addr, bank), c_mirrors, c_anyBank);
       }
 
 #if 0 // unused
