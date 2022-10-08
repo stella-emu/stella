@@ -32,11 +32,9 @@
 */
 class TimerMap
 {
-  public:
-    static constexpr uInt8 ANY_BANK = 255;  // timer breakpoint valid in any bank
-
-  //private:
+  private:
     static constexpr uInt16 ADDRESS_MASK = 0x1fff;  // either 0x1fff or 0xffff (not needed then)
+    static constexpr uInt8 ANY_BANK = 255;  // timer point valid in any bank
 
   private:
     struct TimerPoint
@@ -44,12 +42,9 @@ class TimerMap
       uInt16 addr{0};
       uInt8  bank{ANY_BANK};
 
-      explicit constexpr TimerPoint(uInt16 c_addr, uInt8 c_bank, bool mask = true)
-        : addr{c_addr}, bank{c_bank}
-      {
-        if(mask && bank != ANY_BANK)
-          addr = addr & ADDRESS_MASK;
-      }
+      explicit constexpr TimerPoint(uInt16 c_addr, uInt8 c_bank)
+        : addr{c_addr}, bank{c_bank} {}
+
       TimerPoint()
         : addr{0}, bank(ANY_BANK) {}
 
@@ -81,6 +76,8 @@ class TimerMap
     {
       TimerPoint from{};
       TimerPoint to{};
+      bool       mirrors{false};
+      bool       anyBank{false};
       bool       isPartial{false};
 
       uInt64 execs{0};
@@ -90,46 +87,28 @@ class TimerMap
       uInt64 maxCycles{0};
       bool   isStarted{false};
 
-      explicit constexpr Timer(const TimerPoint& c_from, const TimerPoint& c_to)
-        : from{c_from}, to{c_to}
+      explicit constexpr Timer(const TimerPoint& c_from, const TimerPoint& c_to,
+                               bool c_mirrors = false, bool c_anyBank = false)
+        : from{c_from}, to{c_to}, mirrors{c_mirrors}, anyBank{c_anyBank} {}
+
+      Timer(uInt16 fromAddr, uInt16 toAddr, uInt8 fromBank, uInt8 toBank,
+            bool mirrors = false, bool anyBank = false)
       {
-        //if(to.bank == ANY_BANK) // TODO: check if this is required
-        //{
-        //  to.bank = from.bank;
-        //  if(to.bank != ANY_BANK)
-        //    to.addr &= ADDRESS_MASK;
-        //}
+        Timer(TimerPoint(fromAddr, fromBank), TimerPoint(fromAddr, fromBank),
+              mirrors, anyBank);
       }
 
-      Timer(uInt16 fromAddr, uInt16 toAddr, uInt8 fromBank, uInt8 toBank)
+      Timer(const TimerPoint& tp, bool c_mirrors = false, bool c_anyBank = false)
       {
-        Timer(TimerPoint(fromAddr, fromBank), TimerPoint(fromAddr, fromBank));
+        from = tp;
+        mirrors = c_mirrors;
+        anyBank = c_anyBank;
+        isPartial = true;
       }
 
-      Timer(const TimerPoint& tp)
+      Timer(uInt16 addr, uInt8 bank, bool mirrors = false, bool anyBank = false)
       {
-        if(!isPartial)
-        {
-          from = tp;
-          isPartial = true;
-        }
-        else
-        {
-          to = tp;
-          isPartial = false;
-
-          //if(to.bank == ANY_BANK) // TODO: check if this is required
-          //{
-          //  to.bank = from.bank;
-          //  if(to.bank != ANY_BANK)
-          //    to.addr &= ADDRESS_MASK;
-          //}
-        }
-      }
-
-      Timer(uInt16 addr, uInt8 bank)
-      {
-        Timer(TimerPoint(addr, bank));
+        Timer(TimerPoint(addr, bank), mirrors, anyBank);
       }
 
 #if 0 // unused
@@ -159,17 +138,12 @@ class TimerMap
       }
 #endif
 
-      void setTo(const TimerPoint& tp)
+      void setTo(const TimerPoint& tp, bool c_mirrors = false, bool c_anyBank = false)
       {
         to = tp;
+        mirrors |= c_mirrors;
+        anyBank |= c_anyBank;
         isPartial = false;
-
-        //if(to.bank == ANY_BANK) // TODO: check if this is required
-        //{
-        //  to.bank = from.bank;
-        //  if(to.bank != ANY_BANK)
-        //    to.addr &= ADDRESS_MASK;
-        //}
       }
 
       void reset()
@@ -209,9 +183,11 @@ class TimerMap
     bool isInitialized() const { return myList.size(); }
 
     /** Add new timer */
-    uInt32 add(const uInt16 fromAddr, const uInt16 toAddr,
-               const uInt8 fromBank, const uInt8 toBank);
-    uInt32 add(const uInt16 addr, const uInt8 bank);
+    uInt32 add(uInt16 fromAddr, uInt16 toAddr,
+               uInt8 fromBank, uInt8 toBank,
+               bool mirrors, bool anyBank);
+    uInt32 add(uInt16 addr, uInt8 bank,
+               bool mirrors, bool anyBank);
 
     /** Erase timer */
     bool erase(const uInt32 idx);
@@ -223,12 +199,15 @@ class TimerMap
     void reset();
 
     /** Get timer */
-    const Timer& get(const uInt32 idx) const { return myList[idx]; }
+    const Timer& get(uInt32 idx) const { return myList[idx]; }
     uInt32 size() const { return static_cast<uInt32>(myList.size()); }
 
     /** Update timer */
-    void update(const uInt16 addr, const uInt8 bank,
+    void update(uInt16 addr, uInt8 bank,
                 const uInt64 cycles);
+
+  private:
+    void toKey(TimerPoint& tp, bool mirrors, bool anyBank);
 
   private:
     using TimerList = std::deque<Timer>; // makes sure that the element pointers do NOT change

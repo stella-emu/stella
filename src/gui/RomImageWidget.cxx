@@ -386,7 +386,6 @@ void RomImageWidget::drawWidget(bool hilite)
     // the dialog surface position into account
     const Common::Rect& s_dst = s.dstRect();
     mySurface->setDstPos(x + s_dst.x(), y + s_dst.y());
-
   }
   else if(!mySurfaceErrorMsg.empty())
   {

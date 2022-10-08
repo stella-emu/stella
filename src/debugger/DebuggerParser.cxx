@@ -593,13 +593,16 @@ void DebuggerParser::printTimer(uInt32 idx, bool showHeader)
   if(!debugger.cartDebug().getLabel(buf, timer.from.addr, true))
     buf << "    $" << setw(4) << Base::HEX4 << timer.from.addr;
   string labelFrom = buf.str();
+  labelFrom = labelFrom.substr(0, (banked ? 12 : 15) - (timer.mirrors ? 1 : 0));
+  labelFrom += (timer.mirrors ? "+" : "");
+  labelFrom = (labelFrom + "              ").substr(0, banked ? 12 : 15);
 
   buf.str("");
   if(!debugger.cartDebug().getLabel(buf, timer.to.addr, true))
     buf << "    $" << setw(4) << Base::HEX4 << timer.to.addr;
   string labelTo = buf.str();
-
-  labelFrom = (labelFrom + "              ").substr(0, banked ? 12 : 15);
+  labelTo   = labelTo.substr(0, (banked ? 12 : 15) - (timer.mirrors ? 1 : 0));
+  labelTo += (timer.mirrors ? "+" : "");
   labelTo   = (labelTo   + "              ").substr(0, banked ? 12 : 15);
 
   if(showHeader)
@@ -613,8 +616,8 @@ void DebuggerParser::printTimer(uInt32 idx, bool showHeader)
   if(banked)
   {
     commandResult << "/" << setw(2) << setfill(' ');
-    if(timer.from.bank == TimerMap::ANY_BANK)
-      commandResult << "-";
+    if(timer.anyBank)
+      commandResult << "*";
     else
       commandResult << dec << static_cast<uInt16>(timer.from.bank);
   }
@@ -628,8 +631,8 @@ void DebuggerParser::printTimer(uInt32 idx, bool showHeader)
     if(banked)
     {
       commandResult << "/" << setw(2) << setfill(' ');
-      if(timer.to.bank == TimerMap::ANY_BANK)
-        commandResult << "-";
+      if(timer.anyBank)
+        commandResult << "*";
       else
         commandResult << dec << static_cast<uInt16>(timer.to.bank);
     }
@@ -2294,58 +2297,111 @@ void DebuggerParser::executeTia()
 // "timer"
 void DebuggerParser::executeTimer()
 {
+  // Input variants:
+  // timer                         current address @ current bank
+  // timer +                       current address + mirrors @ current bank
+  // timer *                       current address @ any bank
+  // timer + *                     current address + mirrors @ any bank
+  // timer addr                    addr @ current bank
+  // timer addr +                  addr + mirrors @ current bank
+  // timer addr *                  addr @ any bank
+  // timer addr + *                addr + mirrors @ any bank
+  // timer bank                    current address @ bank
+  // timer bank +                  current address + mirrors @ bank
+  // timer addr bank               addr @ bank
+  // timer addr bank +             addr + mirrors @ bank
+  // timer addr addr               addr, addr @ current bank
+  // timer addr addr +             addr, addr + mirrors @ current bank
+  // timer addr addr *             addr, addr @ any bank
+  // timer addr addr + *           addr, addr + mirrors @ any bank
+  // timer addr addr bank          addr, addr @ bank
+  // timer addr addr bank bank     addr, addr @ bank, bank
+  // timer addr addr bank bank +   addr, addr + mirrors @ bank, bank
   const uInt32 romBankCount = debugger.cartDebug().romBankCount();
+  const bool banked = romBankCount > 1;
+  bool mirrors = (argCount >= 1 && argStrings[argCount - 1] == "+")
+              || (argCount >= 2 && argStrings[argCount - 2] == "+");
+  bool anyBank = banked
+    && ((argCount >= 1 && argStrings[argCount - 1] == "*")
+     || (argCount >= 2 && argStrings[argCount - 2] == "*"));
 
-  if(argCount < 2)
-  {
-    const uInt16 addr = !argCount ? debugger.cpuDebug().pc() : args[0];
-    const uInt8 bank = !argCount ? debugger.cartDebug().getBank(addr) : TimerMap::ANY_BANK;
-    const uInt32 idx = debugger.m6502().addTimer(addr, bank);
-    commandResult << "set timer " << dec << idx << " "
-      << (debugger.m6502().getTimer(idx).isPartial ? "start" : "end");
-    if(!argCount)
-      commandResult << " at $" << Base::HEX4 << (addr & TimerMap::ADDRESS_MASK);
-    if(romBankCount > 1 && !argCount)
-      commandResult << " + mirrors in bank #" << std::dec << static_cast<int>(bank);
-    return;
-  }
-  else if(argCount > 4)
+  argCount -= ((mirrors ? 1 : 0) + (anyBank ? 1 : 0));
+  if(argCount > 4)
   {
     outputCommandError("too many arguments", myCommand);
     return;
   }
 
-  // Detect if 2nd parameter is bank
-  if(argCount == 2 && args[0] >= 0x1000 && args[1] <= TimerMap::ANY_BANK)
+  uInt32 numAddrs = 0, numBanks = 0;
+  uInt16 addr[2];
+  uInt8 bank[2];
+
+  // set defaults:
+  addr[0] = debugger.cpuDebug().pc() ;
+  bank[0] = debugger.cartDebug().getBank(addr[0]);
+
+  for(uInt32 i = 0; i < argCount; ++i)
   {
-    const uInt16 addr = args[0];
-    const uInt8 bank = args[1];
-    if(bank >= romBankCount && bank != TimerMap::ANY_BANK)
+    if(static_cast<uInt32>(args[i]) >= std::max(0x80u, romBankCount - 1))
     {
-      commandResult << red("invalid bank");
-      return;
+      if(numAddrs == 2)
+      {
+        outputCommandError("too many address arguments", myCommand);
+        return;
+      }
+      addr[numAddrs++] = args[i];
     }
-    const uInt32 idx = debugger.m6502().addTimer(addr, bank);
-    commandResult << "set timer " << dec << idx << " "
-      << (debugger.m6502().getTimer(idx).isPartial ? "start" : "end");
-    return;
+    else
+    {
+      if(anyBank || (numBanks == 1 && numAddrs < 2) || numBanks == 2)
+      {
+        outputCommandError("too many bank arguments", myCommand);
+        return;
+      }
+      if(static_cast<uInt32>(args[i]) >= romBankCount)
+      {
+        commandResult << red("invalid bank");
+        return;
+      }
+      bank[numBanks++] = args[i];
+    }
+  }
+
+  uInt32 idx;
+  if(numAddrs < 2)
+  {
+    idx = debugger.m6502().addTimer(addr[0], bank[0], mirrors, anyBank);
   }
   else
   {
-    const uInt8 bankFrom = argCount >= 3 ? args[2] : TimerMap::ANY_BANK;
-    if(bankFrom >= romBankCount && bankFrom != TimerMap::ANY_BANK)
+    idx = debugger.m6502().addTimer(addr[0], addr[1],
+                                    bank[0], numBanks < 2 ? bank[0] : bank[1],
+                                    mirrors, anyBank);
+  }
+
+  const bool isPartial = debugger.m6502().getTimer(idx).isPartial;
+  if(numAddrs < 2 && !isPartial)
+  {
+    mirrors |= debugger.m6502().getTimer(idx).mirrors;
+    anyBank |= debugger.m6502().getTimer(idx).anyBank;
+  }
+  commandResult << "set timer " << Base::toString(idx)
+    << (numAddrs < 2 ? (isPartial ? " start" : " end") : "")
+    << " at $" << Base::HEX4 << addr[0];
+  if(numAddrs == 2)
+    commandResult << ", $" << Base::HEX4 << addr[1];
+  if(mirrors)
+    commandResult << " + mirrors";
+  if(banked)
+  {
+    if(anyBank)
+      commandResult << " in all banks";
+    else
     {
-      commandResult << red("invalid bank");
-      return;
+      commandResult << " in bank #" << std::dec << static_cast<int>(bank[0]);
+      if(numBanks == 2)
+        commandResult << ", #" << std::dec << static_cast<int>(bank[1]);
     }
-    const uInt8 bankTo = argCount == 4 ? args[3] : bankFrom;
-    if(bankTo >= romBankCount && bankTo != TimerMap::ANY_BANK)
-    {
-      commandResult << red("invalid bank");
-      return;
-    }
-    const uInt32 idx = debugger.m6502().addTimer(args[0], args[1], bankFrom, bankTo);
-    commandResult << "timer " << idx << " added";
   }
 }
 
@@ -3637,10 +3693,11 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
   {
     "timer",
     "Set a cycle counting timer from addresses xx to yy [banks aa bb]",
-    "Example: timer, timer 1000, timer 3000 3100, timer f000 f800 1",
+    "Example: timer, timer 1000 + *, timer f000 f800 1 +",
     false,
     true,
-    { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
+    { Parameters::ARG_LABEL, Parameters::ARG_LABEL, Parameters::ARG_LABEL,
+      Parameters::ARG_LABEL, Parameters::ARG_LABEL, Parameters::ARG_MULTI_BYTE },
     std::mem_fn(&DebuggerParser::executeTimer)
   },
 
