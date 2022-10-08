@@ -866,10 +866,9 @@ measure the minimum, maximum and average cycles executed between their two
 timer points. Start and end points can be set via prompt command or ROM
 Disassembly settings dialog.</p>
 
-<p>Timer points can be defined with or without a bank. With a bank, they
-are triggered in the given bank only, using all mirror addresses too. Without
-a bank, the timer points are triggered in all bank, using the given adress
-only.</p>
+<p>If the timer point is defined without an address or bank, the current PC
+address or bank are used. If a '+' is added, both timer points use address
+mirrors too, a '*' triggers both timer points in any bank.</p>
 
 <p>All timers can be shown in detail with "listTimers", a single timer
 with "printTimer number". "resetTimers" allows resetting all timer statistics,
