@@ -66,19 +66,13 @@ class SoundSDL2 : public Sound
               EmulationTiming* emulationTiming) override;
 
     /**
-      Should be called to close the sound device.  Once called the sound
-      device can be started again using the open method.
-    */
-    void close() override;
+      Sets the sound mute state; sound processing continues.  When enabled,
+      sound volume is 0; when disabled, sound volume returns to previously
+      set level.
 
-    /**
-      Sets the sound mute state; sound processing continues.  When turned
-      off, sound volume is 0; when turned on, sound volume returns to
-      previously set level.
-
-      @param state Mutes sound if true, unmute if false
+      @param enable  Mutes sound if true, unmute if false
     */
-    void mute(bool state) override;
+    void mute(bool enable) override;
 
     /**
       Toggles the sound mute state; sound processing continues.
@@ -91,11 +85,11 @@ class SoundSDL2 : public Sound
       neither played nor processed (ie, the sound subsystem is temporarily
       disabled).
 
-      @param state Pause sound if true, unpause if false
+      @param enable  Pause sound if true, unpause if false
 
       @return  The previous (old) pause state
     */
-    bool pause(bool state) override;
+    bool pause(bool enable) override;
 
     /**
       Sets the volume of the sound device to the specified level.  The

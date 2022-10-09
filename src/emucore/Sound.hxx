@@ -56,12 +56,6 @@ class Sound
     virtual void open(shared_ptr<AudioQueue>, EmulationTiming*) = 0;
 
     /**
-      Should be called to stop the sound system.  Once called the sound
-      device can be started again using the ::open() method.
-    */
-    virtual void close() = 0;
-
-    /**
       Sets the sound mute state; sound processing continues.  When turned
       off, sound volume is 0; when turned on, sound volume returns to
       previously set level.
