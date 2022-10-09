@@ -84,7 +84,7 @@ void JitterEmulation::frameComplete(Int32 scanlineCount, Int32 vsyncCycles)
       {
         const Int32 scanlineDifference = scanlineCount - myLastFrameScanlines;
 
-        if(abs(scanlineDifference) < myScanlineDelta
+        if(abs(scanlineDifference) >= myScanlineDelta
           && abs(myJitter) < static_cast<Int32>(myRandom.next() % myJitterLines))
         {
           // Repeated invalid frames cause randomly repeated jitter
