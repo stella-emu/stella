@@ -48,20 +48,6 @@ class TimerMap
       TimerPoint()
         : addr{0}, bank(ANY_BANK) {}
 
-#if 0 // unused
-      bool operator==(const TimerPoint& other) const
-      {
-        if(addr == other.addr)
-        {
-          if(bank == ANY_BANK || other.bank == ANY_BANK)
-            return true;
-          else
-            return bank == other.bank;
-        }
-        return false;
-      }
-#endif
-
       bool operator<(const TimerPoint& other) const
       {
         if(bank == ANY_BANK || other.bank == ANY_BANK)
@@ -92,10 +78,10 @@ class TimerMap
         : from{c_from}, to{c_to}, mirrors{c_mirrors}, anyBank{c_anyBank} {}
 
       Timer(uInt16 fromAddr, uInt16 toAddr, uInt8 fromBank, uInt8 toBank,
-            bool mirrors = false, bool anyBank = false)
+            bool c_mirrors = false, bool c_anyBank = false)
       {
         Timer(TimerPoint(fromAddr, fromBank), TimerPoint(fromAddr, fromBank),
-              mirrors, anyBank);
+              c_mirrors, c_anyBank);
       }
 
       Timer(const TimerPoint& tp, bool c_mirrors = false, bool c_anyBank = false)
@@ -106,37 +92,10 @@ class TimerMap
         isPartial = true;
       }
 
-      Timer(uInt16 addr, uInt8 bank, bool mirrors = false, bool anyBank = false)
+      Timer(uInt16 addr, uInt8 bank, bool c_mirrors = false, bool c_anyBank = false)
       {
-        Timer(TimerPoint(addr, bank), mirrors, anyBank);
+        Timer(TimerPoint(addr, bank), c_mirrors, c_anyBank);
       }
-
-#if 0 // unused
-      bool operator==(const Timer& other) const
-      {
-        cerr << from.addr << ", " << to.addr << endl;
-        if(from.addr == other.from.addr && to.addr == other.to.addr)
-        {
-          if((from.bank == ANY_BANK || other.from.bank == ANY_BANK) &&
-            (to.bank == ANY_BANK || other.to.bank == ANY_BANK))
-            return true;
-          else
-            return from.bank == other.from.bank && to.bank == other.to.bank;
-        }
-        return false;
-      }
-
-      bool operator<(const Timer& other) const
-      {
-        if(from.bank < other.from.bank || (from.bank == other.from.bank && from.addr < other.from.addr))
-          return true;
-
-        if(from.bank == other.from.bank && from.addr == other.from.addr)
-          return to.bank < other.to.bank || (to.bank == other.to.bank && to.addr < other.to.addr);
-
-        return false;
-      }
-#endif
 
       void setTo(const TimerPoint& tp, bool c_mirrors = false, bool c_anyBank = false)
       {
@@ -207,7 +166,7 @@ class TimerMap
                 const uInt64 cycles);
 
   private:
-    void toKey(TimerPoint& tp, bool mirrors, bool anyBank);
+    static void toKey(TimerPoint& tp, bool mirrors, bool anyBank);
 
   private:
     using TimerList = std::deque<Timer>; // makes sure that the element pointers do NOT change
