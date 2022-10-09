@@ -24,7 +24,7 @@
 #include "StaggeredLogger.hxx"
 
 /**
-  This class implements a an audio queue that acts both like a ring buffer
+  This class implements an audio queue that acts both like a ring buffer
   and a pool of audio fragments. The TIA emulation core fills a fragment
   with samples and then returns it to the queue, receiving a new fragment
   in return. The sound driver removes fragments for playback from the

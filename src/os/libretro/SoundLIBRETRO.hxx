@@ -81,22 +81,6 @@ class SoundLIBRETRO : public Sound
     }
 
     /**
-      Should be called to close the sound device.  Once called the sound
-      device can be started again using the open method.
-    */
-    void close() override
-    {
-      if (!myIsInitializedFlag)
-        return;
-      if (myAudioQueue)
-        myAudioQueue->closeSink(myCurrentFragment);
-      myAudioQueue.reset();
-      myCurrentFragment = nullptr;
-
-      Logger::debug("SoundLIBRETRO::close");
-    }
-
-    /**
       Empties the playback buffer.
 
       @param stream   Output audio buffer

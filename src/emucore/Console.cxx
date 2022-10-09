@@ -250,10 +250,12 @@ Console::~Console()
   myLeftControl->close();
   myRightControl->close();
 
-  // Close audio to prevent invalid access to myConsoleTiming from the audio
-  // callback
-  myOSystem.sound().close();
-  myOSystem.sound().stopWav();
+  // Close audio to prevent invalid access in the audio callback
+  if(myAudioQueue)
+  {
+    myAudioQueue->closeSink(nullptr);  // TODO: is this needed?
+    myAudioQueue.reset();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -335,12 +337,10 @@ void Console::redetectFrameLayout()
 {
   Serializer s;
 
-  myOSystem.sound().close();
   save(s);
-
   autodetectFrameLayout(false);
-
   load(s);
+
   initializeAudio();
 }
 
@@ -691,8 +691,6 @@ FBInitStatus Console::initializeVideo(bool full)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::initializeAudio()
 {
-  myOSystem.sound().close();
-
   myEmulationTiming
     .updatePlaybackRate(myAudioSettings.sampleRate())
     .updatePlaybackPeriod(myAudioSettings.fragmentSize())
