@@ -99,7 +99,7 @@ class PlusROMRequest {
       client.set_write_timeout(milliseconds(WRITE_TIMEOUT_MSEC));
 
       auto response = client.Post(
-        myDestination.path.c_str(),
+        myDestination.path,
         headers,
         reinterpret_cast<const char*>(myRequest.data()),
         myRequestSize,

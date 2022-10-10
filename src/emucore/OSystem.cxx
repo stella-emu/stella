@@ -572,7 +572,7 @@ bool OSystem::createLauncher(const string& startdir)
   closeConsole();
 
   if(mySound)
-    mySound->close();
+    mySound->pause(true);
 
   mySettings->setValue("tmpromdir", startdir);
   bool status = false;

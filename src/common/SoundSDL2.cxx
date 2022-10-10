@@ -141,7 +141,6 @@ bool SoundSDL2::openDevice()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL2::setEnabled(bool enable)
 {
-cerr << "setEnabled: " << enable << endl;
   mute(!enable);
   pause(!enable);
 }
@@ -164,7 +163,6 @@ void SoundSDL2::open(shared_ptr<AudioQueue> audioQueue,
 
   Logger::debug("SoundSDL2::open started ...");
 
-  myAudioSettings.setEnabled(true);
   audioQueue->ignoreOverflows(!myAudioSettings.enabled());
   if(!myAudioSettings.enabled())
   {
@@ -193,22 +191,9 @@ void SoundSDL2::open(shared_ptr<AudioQueue> audioQueue,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL2::close()
+void SoundSDL2::mute(bool enable)
 {
-  if(!myIsInitializedFlag)
-    return;
-
-  if(myAudioQueue)
-    myAudioQueue->closeSink(myCurrentFragment);
-  myAudioQueue.reset();
-  myCurrentFragment = nullptr;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL2::mute(bool state)
-{
-  myAudioSettings.setEnabled(!state);
-  if(state)
+  if(enable)
     myVolumeFactor = 0;
   else
     setVolume(myAudioSettings.volume());
@@ -217,27 +202,29 @@ void SoundSDL2::mute(bool state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL2::toggleMute()
 {
-  const bool state = !myAudioSettings.enabled();
-  mute(!state);
+  const bool wasMuted = myVolumeFactor == 0;
+  mute(!wasMuted);
 
   string message = "Sound ";
-  message += state ? "unmuted" : "muted";
+  message += !myAudioSettings.enabled()
+    ? "disabled"
+    : (wasMuted ? "unmuted" : "muted");
 
   myOSystem.frameBuffer().showTextMessage(message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool SoundSDL2::pause(bool state)
+bool SoundSDL2::pause(bool enable)
 {
   ASSERT_MAIN_THREAD;
 
-  const bool oldstate = SDL_GetAudioDeviceStatus(myDevice) == SDL_AUDIO_PAUSED;
+  const bool wasPaused = SDL_GetAudioDeviceStatus(myDevice) == SDL_AUDIO_PAUSED;
   if(myIsInitializedFlag)
   {
-    SDL_PauseAudioDevice(myDevice, state ? 1 : 0);
-    myWavHandler.pause(state);
+    SDL_PauseAudioDevice(myDevice, enable ? 1 : 0);
+    myWavHandler.pause(enable);
   }
-  return oldstate;
+  return wasPaused;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -386,7 +373,7 @@ void SoundSDL2::callback(void* object, uInt8* stream, int len)
     const uInt32 length = len >> 2;
     self->myResampler->fillFragment(s, length);
 
-    for(uInt32 i = 0; i < length; ++i)  // TODO - perhaps move into Resampler
+    for(uInt32 i = 0; i < length; ++i)
       s[i] *= SoundSDL2::myVolumeFactor;
   }
   else
@@ -452,8 +439,9 @@ bool SoundSDL2::WavHandlerSDL2::play(
     myDevice = SDL_OpenAudioDevice(device, 0, &mySpec, nullptr, 0);
     if(!myDevice)
       return false;
+
     // Play audio
-    SDL_PauseAudioDevice(myDevice, 0);
+    pause(false);
   }
   return true;
 }

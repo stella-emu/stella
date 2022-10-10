@@ -60,12 +60,6 @@ class SoundNull : public Sound
     void open(shared_ptr<AudioQueue>, EmulationTiming*) override { }
 
     /**
-      Should be called to close the sound device.  Once called the sound
-      device can be started again using the initialize method.
-    */
-    void close() override { }
-
-    /**
       Sets the sound mute state; sound processing continues.  When turned
       off, sound volume is 0; when turned on, sound volume returns to
       previously set level.
