@@ -18,12 +18,8 @@
 #ifndef FS_NODE_WINDOWS_HXX
 #define FS_NODE_WINDOWS_HXX
 
-#include <tchar.h>
-
 #include "FSNode.hxx"
 #include "HomeFinder.hxx"
-
-static HomeFinder myHomeFinder;
 
 // TODO - fix isFile() functionality so that it actually determines if something
 //        is a file; for now, it assumes a file if it isn't a directory
@@ -41,9 +37,8 @@ class FSNodeWINDOWS : public AbstractFSNode
      * Creates a FSNodeWINDOWS with the root node as path.
      *
      * In regular windows systems, a virtual root path is used "".
-     * In windows CE, the "\" root is used instead.
      */
-    FSNodeWINDOWS();
+    FSNodeWINDOWS() : _isPseudoRoot{true}, _isDirectory{true} { }
 
     /**
      * Creates a FSNodeWINDOWS for a given path.
@@ -62,7 +57,6 @@ class FSNodeWINDOWS : public AbstractFSNode
     void setName(const string& name) override { _displayName = name; }
     const string& getPath() const override { return _path; }
     string getShortPath() const override;
-    bool hasParent() const override { return !_isPseudoRoot; }
     bool isDirectory() const override { return _isDirectory; }
     bool isFile() const override      { return _isFile;      }
     bool isReadable() const override;
@@ -71,16 +65,9 @@ class FSNodeWINDOWS : public AbstractFSNode
     bool rename(const string& newfile) override;
 
     size_t getSize() const override;
-    bool getChildren(AbstractFSList& list, ListMode mode) const override;
+    bool hasParent() const override { return !_isPseudoRoot; }
     AbstractFSNodePtr getParent() const override;
-
-  protected:
-    string _displayName;
-    string _path;
-    bool _isDirectory{true};
-    bool _isFile{false};
-    bool _isPseudoRoot{true};
-    bool _isValid{false};
+    bool getChildren(AbstractFSList& list, ListMode mode) const override;
 
   private:
     /**
@@ -98,23 +85,13 @@ class FSNodeWINDOWS : public AbstractFSNode
      * @param base       String with the directory being listed.
      * @param find_data  Describes a file that the FindFirstFile, FindFirstFileEx, or FindNextFile functions find.
      */
-    static void addFile(AbstractFSList& list, ListMode mode, const char* base, WIN32_FIND_DATA* find_data);
+    static void addFile(AbstractFSList& list, ListMode mode,
+                        const char* base, const WIN32_FIND_DATA* find_data);
 
-    /**
-     * Converts a Unicode string to Ascii format.
-     *
-     * @param str  String to convert from Unicode to Ascii.
-     * @return str in Ascii format.
-     */
-    static char* toAscii(TCHAR *str);
-
-    /**
-     * Converts an Ascii string to Unicode format.
-     *
-     * @param str  String to convert from Ascii to Unicode.
-     * @return str in Unicode format.
-     */
-    static const TCHAR* toUnicode(const char* str);
+  private:
+    string _displayName, _path;
+    bool _isPseudoRoot{false}, _isDirectory{false}, _isFile{false};
+    mutable size_t _size{0};
 };
 
 #endif
