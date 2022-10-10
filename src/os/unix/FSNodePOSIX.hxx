@@ -87,6 +87,7 @@ class FSNodePOSIX : public AbstractFSNode
   private:
     string _path, _displayName;
     bool _isValid{true}, _isFile{false}, _isDirectory{true};
+    mutable size_t _size{0};
 
     static const char* ourHomeDir;
 };
