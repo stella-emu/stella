@@ -65,7 +65,6 @@ class FSNodePOSIX : public AbstractFSNode
     void setName(const string& name) override { _displayName = name; }
     const string& getPath() const override { return _path; }
     string getShortPath() const override;
-    bool hasParent() const override;
     bool isDirectory() const override { return _isDirectory; }
     bool isFile() const override      { return _isFile;      }
     bool isReadable() const override  { return access(_path.c_str(), R_OK) == 0; }
@@ -74,15 +73,9 @@ class FSNodePOSIX : public AbstractFSNode
     bool rename(const string& newfile) override;
 
     size_t getSize() const override;
-    bool getChildren(AbstractFSList& list, ListMode mode) const override;
+    bool hasParent() const override;
     AbstractFSNodePtr getParent() const override;
-
-  protected:
-    string _path;
-    string _displayName;
-    bool _isValid{true};
-    bool _isFile{false};
-    bool _isDirectory{true};
+    bool getChildren(AbstractFSList& list, ListMode mode) const override;
 
   private:
     /**
@@ -90,6 +83,12 @@ class FSNodePOSIX : public AbstractFSNode
      * using the stat() function.
      */
     void setFlags();
+
+  private:
+    string _path, _displayName;
+    bool _isValid{true}, _isFile{false}, _isDirectory{true};
+
+    static const char* ourHomeDir;
 };
 
 #endif
