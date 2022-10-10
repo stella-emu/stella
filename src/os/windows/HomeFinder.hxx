@@ -31,7 +31,7 @@ class HomeFinder
     ~HomeFinder() = default;
 
     // Return the 'APPDATA' folder, or an empty string if the folder couldn't be determined.
-    const string& getAppDataPath() const
+    static const string& getAppDataPath()
     {
       if(ourAppDataPath == "")
       {
@@ -44,7 +44,7 @@ class HomeFinder
     }
 
     // Return the 'Desktop' folder, or an empty string if the folder couldn't be determined.
-    const string& getDesktopPath() const
+    static const string& getDesktopPath()
     {
       if(ourDesktopPath == "")
       {
@@ -57,7 +57,7 @@ class HomeFinder
     }
 
     // Return the 'My Documents' folder, or an empty string if the folder couldn't be determined.
-    const string& getDocumentsPath() const
+    static const string& getDocumentsPath()
     {
       if(ourDocumentsPath == "")
       {
@@ -70,7 +70,7 @@ class HomeFinder
     }
 
     // Return the 'HOME/User' folder, or an empty string if the folder couldn't be determined.
-    const string& getHomePath() const
+    static const string& getHomePath()
     {
       if(ourHomePath == "")
       {
