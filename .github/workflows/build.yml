@@ -1,0 +1,39 @@
+---
+name: Build
+
+on:
+  pull_request:
+
+permissions: {}
+
+jobs:
+  linux:
+    name: Linux
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+      - name: Install GCC 9 and SDL2
+        run: |
+          sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+          sudo apt update
+          sudo apt install g++-9 libsdl2-dev
+      - name: Build Stella
+        run: |
+          ./configure && make -j2 all
+
+  macos:
+    name: macOS
+    runs-on: macos-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+      - name: Install SDL2
+        run: |
+          curl https://www.libsdl.org/release/SDL2-2.0.10.tar.gz | tar xzf -
+          mkdir SDL2-2.0.10/build
+          cd SDL2-2.0.10/build
+          ../configure && make -j3 && sudo make install
+      - name: Build Stella
+        run: |
+          ./configure && make -j3 all
