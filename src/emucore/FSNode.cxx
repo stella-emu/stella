@@ -417,7 +417,6 @@ size_t FSNode::write(const ByteBuffer& buffer, size_t size) const
 
     out.seekp(0, std::ios::end);
     sizeWritten = static_cast<size_t>(out.tellp());
-    out.seekp(0, std::ios::beg);
   }
   else
     throw runtime_error("File open/write error");
@@ -442,7 +441,6 @@ size_t FSNode::write(const stringstream& buffer) const
 
     out.seekp(0, std::ios::end);
     sizeWritten = static_cast<size_t>(out.tellp());
-    out.seekp(0, std::ios::beg);
   }
   else
     throw runtime_error("File open/write error");

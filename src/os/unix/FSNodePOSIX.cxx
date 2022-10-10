@@ -15,8 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "TimerManager.hxx"
-
 #if defined(RETRON77)
   #define ROOT_DIR "/mnt/games/"
 #else
@@ -39,9 +37,8 @@ FSNodePOSIX::FSNodePOSIX(const string& path, bool verify)
   // Expand '~' to the HOME environment variable
   if(_path[0] == '~')
   {
-    const char* home = std::getenv("HOME");  // NOLINT (not thread safe)
-    if (home != nullptr)
-      _path.replace(0, 1, home);
+    if (ourHomeDir != nullptr)
+      _path.replace(0, 1, ourHomeDir);
   }
   // Get absolute path (only used for relative directories)
   else if(_path[0] == '.')
@@ -62,7 +59,7 @@ void FSNodePOSIX::setFlags()
 {
   struct stat st;
 
-  _isValid = (0 == stat(_path.c_str(), &st));
+  _isValid = stat(_path.c_str(), &st) == 0;
   if(_isValid)
   {
     _isDirectory = S_ISDIR(st.st_mode);
@@ -80,8 +77,7 @@ void FSNodePOSIX::setFlags()
 string FSNodePOSIX::getShortPath() const
 {
   // If the path starts with the home directory, replace it with '~'
-  const char* env_home = std::getenv("HOME");  // NOLINT (not thread safe)
-  const string& home = env_home != nullptr ? env_home : EmptyString;
+  const string& home = ourHomeDir != nullptr ? ourHomeDir : EmptyString;
 
   if(home != EmptyString && BSPF::startsWithIgnoreCase(_path, home))
   {
@@ -95,9 +91,28 @@ string FSNodePOSIX::getShortPath() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+size_t FSNodePOSIX::getSize() const
+{
+  struct stat st;
+  return (stat(_path.c_str(), &st) == 0) ? st.st_size : 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FSNodePOSIX::hasParent() const
 {
   return !_path.empty() && _path != ROOT_DIR;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+AbstractFSNodePtr FSNodePOSIX::getParent() const
+{
+  if (_path == ROOT_DIR)
+    return nullptr;
+
+  const char* start = _path.c_str();
+  const char* end = lastPathComponent(_path);
+
+  return make_unique<FSNodePOSIX>(string(start, static_cast<size_t>(end - start)));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -173,13 +188,6 @@ bool FSNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-size_t FSNodePOSIX::getSize() const
-{
-  struct stat st;
-  return (stat(_path.c_str(), &st) == 0) ? st.st_size : 0;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FSNodePOSIX::makeDir()
 {
   if(mkdir(_path.c_str(), 0777) == 0)
@@ -228,13 +236,4 @@ bool FSNodePOSIX::rename(const string& newfile)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AbstractFSNodePtr FSNodePOSIX::getParent() const
-{
-  if (_path == ROOT_DIR)
-    return nullptr;
-
-  const char* start = _path.c_str();
-  const char* end = lastPathComponent(_path);
-
-  return make_unique<FSNodePOSIX>(string(start, static_cast<size_t>(end - start)));
-}
+const char* FSNodePOSIX::ourHomeDir = std::getenv("HOME"); // NOLINT (not thread safe)
