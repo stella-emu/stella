@@ -64,6 +64,7 @@ void FSNodePOSIX::setFlags()
   {
     _isDirectory = S_ISDIR(st.st_mode);
     _isFile = S_ISREG(st.st_mode);
+    _size = st.st_size;
 
     // Add a trailing slash, if necessary
     if (_isDirectory && _path.length() > 0 && _path[_path.length()-1] != '/')
@@ -93,8 +94,12 @@ string FSNodePOSIX::getShortPath() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 size_t FSNodePOSIX::getSize() const
 {
-  struct stat st;
-  return (stat(_path.c_str(), &st) == 0) ? st.st_size : 0;
+  if (_size == 0)
+  {
+    struct stat st;
+    _size = (stat(_path.c_str(), &st) == 0) ? st.st_size : 0;
+  }
+  return _size;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
