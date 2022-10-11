@@ -17,6 +17,7 @@
 
 #include <cstdio>
 
+#include "FSNode.hxx"
 #include "SqliteDatabase.hxx"
 #include "Logger.hxx"
 #include "SqliteError.hxx"
@@ -25,7 +26,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SqliteDatabase::SqliteDatabase(const string& databaseDirectory,
                                const string& databaseName)
-  : myDatabaseFile{databaseDirectory + databaseName + ".sqlite3"}
+  : myDatabaseFile{FSNode(databaseDirectory).getPath() + databaseName + ".sqlite3"}
 {
 }
 
