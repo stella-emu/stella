@@ -23,7 +23,7 @@ echo "Mounting ${DMG} file ..."
 hdiutil attach "${DMG}"
 
 echo "Copying documentation ..."
-ditto ../../Announce.txt ../../Changes.txt ../../Copyright.txt ../../License.txt ../../Readme.txt ../../Todo.txt "${DISK}"
+ditto ../../Announce.txt ../../Changes.txt ../../Copyright.txt ../../License.txt ../../README.md ../../Todo.txt "${DISK}"
 
 echo "Copying application ..."
 cp -r DerivedData/Build/Products/Release/Stella.app "${DISK}"

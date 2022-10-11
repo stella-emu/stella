@@ -39,9 +39,9 @@ set RELEASE_32=Win32\Release
 set RELEASE_64=x64\Release
 
 echo.
-set /p STELLA_VER=Enter Stella version: 
+set /p STELLA_VER=Enter Stella version:
 echo.
-set /p TO_BUILD=Version to build (32/64/a=all): 
+set /p TO_BUILD=Version to build (32/64/a=all):
 
 set BUILD_32=0
 set BUILD_64=0
@@ -102,7 +102,7 @@ copy ..\..\..\Announce.txt   %STELLA_DIR%\docs
 copy ..\..\..\Changes.txt    %STELLA_DIR%\docs
 copy ..\..\..\Copyright.txt  %STELLA_DIR%\docs
 copy ..\..\..\License.txt    %STELLA_DIR%\docs
-copy ..\..\..\Readme.txt     %STELLA_DIR%\docs
+copy ..\..\..\Readme.md     %STELLA_DIR%\docs
 copy ..\..\..\README-SDL.txt %STELLA_DIR%\docs
 copy ..\..\..\Todo.txt       %STELLA_DIR%\docs
 if %HAVE_FLIP% == 1 (
