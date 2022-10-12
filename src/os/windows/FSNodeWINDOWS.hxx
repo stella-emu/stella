@@ -86,7 +86,7 @@ class FSNodeWINDOWS : public AbstractFSNode
      * @param find_data  Describes a file that the FindFirstFile, FindFirstFileEx, or FindNextFile functions find.
      */
     static void addFile(AbstractFSList& list, ListMode mode,
-                        const char* base, const WIN32_FIND_DATA* find_data);
+                        const string& base, const WIN32_FIND_DATA& find_data);
 
   private:
     string _displayName, _path;

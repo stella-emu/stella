@@ -59,8 +59,9 @@ void FSNodeWINDOWS::setFlags()
     _isFile = !_isDirectory;//((fileAttribs & FILE_ATTRIBUTE_NORMAL) != 0);
 
     // Add a trailing backslash, if necessary
-    if (_isDirectory && _path.length() > 0 && _path[_path.length()-1] != '\\')
-      _path += '\\';
+    if (_isDirectory && _path.length() > 0 &&
+        _path[_path.length()-1] != FSNode::PATH_SEPARATOR)
+      _path += FSNode::PATH_SEPARATOR;
   }
   _isPseudoRoot = false;
 }
@@ -74,7 +75,8 @@ string FSNodeWINDOWS::getShortPath() const
   {
     string path = "~";
     const char* offset = _path.c_str() + home.length();
-    if(*offset != '\\') path += '\\';
+    if(*offset != FSNode::PATH_SEPARATOR)
+      path += FSNode::PATH_SEPARATOR;
     path += offset;
     return path;
   }
@@ -149,10 +151,10 @@ bool FSNodeWINDOWS::getChildren(AbstractFSList& myList, ListMode mode) const
     if(handle == INVALID_HANDLE_VALUE)
       return false;
 
-    addFile(myList, mode, _path.c_str(), &desc);
+    addFile(myList, mode, _path, desc);
 
     while(FindNextFile(handle, &desc))
-      addFile(myList, mode, _path.c_str(), &desc);
+      addFile(myList, mode, _path, desc);
 
     FindClose(handle);
   }
@@ -162,16 +164,16 @@ bool FSNodeWINDOWS::getChildren(AbstractFSList& myList, ListMode mode) const
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FSNodeWINDOWS::addFile(AbstractFSList& list, ListMode mode,
-                            const char* base, const WIN32_FIND_DATA* find_data)
+                            const string& base, const WIN32_FIND_DATA& find_data)
 {
-  const char* const asciiName = find_data->cFileName;
+  const char* const asciiName = find_data.cFileName;
   bool isDirectory = false, isFile = false;
 
   // Skip local directory (.) and parent (..)
   if (!strncmp(asciiName, ".", 1) || !strncmp(asciiName, "..", 2))
     return;
 
-  isDirectory = static_cast<bool>(find_data->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY);
+  isDirectory = static_cast<bool>(find_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY);
   isFile = !isDirectory;//(find_data->dwFileAttributes & FILE_ATTRIBUTE_NORMAL ? true : false);
 
   if ((isFile && mode == FSNode::ListMode::DirectoriesOnly) ||
@@ -185,7 +187,7 @@ void FSNodeWINDOWS::addFile(AbstractFSList& list, ListMode mode,
   entry._path = base;
   entry._path += asciiName;
   if (entry._isDirectory)
-    entry._path += "\\";
+    entry._path += FSNode::PATH_SEPARATOR;
   entry._isPseudoRoot = false;
 
   list.emplace_back(make_shared<FSNodeWINDOWS>(entry));
@@ -217,8 +219,7 @@ bool FSNodeWINDOWS::makeDir()
     setFlags();
     return true;
   }
-  else
-    return false;
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -229,6 +230,5 @@ bool FSNodeWINDOWS::rename(const string& newfile)
     setFlags();
     return true;
   }
-  else
-    return false;
+  return false;
 }
