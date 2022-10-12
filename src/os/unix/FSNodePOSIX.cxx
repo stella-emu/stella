@@ -55,23 +55,29 @@ FSNodePOSIX::FSNodePOSIX(const string& path, bool verify)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FSNodePOSIX::setFlags()
+bool FSNodePOSIX::setFlags()
 {
   struct stat st;
-
-  _isValid = stat(_path.c_str(), &st) == 0;
-  if(_isValid)
+  if(stat(_path.c_str(), &st) == 0)
   {
     _isDirectory = S_ISDIR(st.st_mode);
     _isFile = S_ISREG(st.st_mode);
     _size = st.st_size;
 
     // Add a trailing slash, if necessary
-    if (_isDirectory && _path.length() > 0 && _path[_path.length()-1] != '/')
-      _path += '/';
+    if (_isDirectory && _path.length() > 0 &&
+        _path[_path.length()-1] != FSNode::PATH_SEPARATOR)
+      _path += FSNode::PATH_SEPARATOR;
+
+    return true;
   }
   else
+  {
     _isDirectory = _isFile = false;
+    _size = 0;
+
+    return false;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -84,7 +90,8 @@ string FSNodePOSIX::getShortPath() const
   {
     string path = "~";
     const char* offset = _path.c_str() + home.size();
-    if(*offset != '/') path += "/";
+    if(*offset != FSNode::PATH_SEPARATOR)
+      path += FSNode::PATH_SEPARATOR;
     path += offset;
     return path;
   }
@@ -139,45 +146,31 @@ bool FSNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode) const
       continue;
 
     string newPath(_path);
-    if (newPath.length() > 0 && newPath[newPath.length()-1] != '/')
-      newPath += '/';
+    if (newPath.length() > 0 && newPath[newPath.length()-1] != FSNode::PATH_SEPARATOR)
+      newPath += FSNode::PATH_SEPARATOR;
     newPath += dp->d_name;
 
     FSNodePOSIX entry(newPath, false);
+    bool valid = true;
 
-    if (dp->d_type == DT_UNKNOWN)
+    if (dp->d_type == DT_UNKNOWN || dp->d_type == DT_LNK)
     {
       // Fall back to stat()
-      entry.setFlags();
+      valid = entry.setFlags();
     }
     else
     {
-      if (dp->d_type == DT_LNK)
-      {
-        struct stat st;
-        if (stat(entry._path.c_str(), &st) == 0)
-        {
-          entry._isDirectory = S_ISDIR(st.st_mode);
-          entry._isFile = S_ISREG(st.st_mode);
-        }
-        else
-          entry._isDirectory = entry._isFile = false;
-      }
-      else
-      {
-        entry._isDirectory = (dp->d_type == DT_DIR);
-        entry._isFile = (dp->d_type == DT_REG);
-      }
+      entry._isDirectory = (dp->d_type == DT_DIR);
+      entry._isFile = (dp->d_type == DT_REG);
+      // entry._size will be calculated next time ::getSize() is called
 
       if (entry._isDirectory)
-        entry._path += "/";
-
-      entry._isValid = true;
+        entry._path += FSNode::PATH_SEPARATOR;
     }
 
     // Skip files that are invalid for some reason (e.g. because we couldn't
     // properly stat them).
-    if (!entry._isValid)
+    if (!valid)
       continue;
 
     // Honor the chosen mode
@@ -203,16 +196,9 @@ bool FSNodePOSIX::makeDir()
       _path = buf.data();
 
     _displayName = lastPathComponent(_path);
-    setFlags();
-
-    // Add a trailing slash, if necessary
-    if (_path.length() > 0 && _path[_path.length()-1] != '/')
-      _path += '/';
-
-    return true;
+    return setFlags();
   }
-  else
-    return false;
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -228,16 +214,9 @@ bool FSNodePOSIX::rename(const string& newfile)
       _path = buf.data();
 
     _displayName = lastPathComponent(_path);
-    setFlags();
-
-    // Add a trailing slash, if necessary
-    if (_isDirectory && _path.length() > 0 && _path[_path.length()-1] != '/')
-      _path += '/';
-
-    return true;
+    return setFlags();
   }
-  else
-    return false;
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

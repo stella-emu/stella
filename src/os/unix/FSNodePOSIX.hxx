@@ -79,14 +79,15 @@ class FSNodePOSIX : public AbstractFSNode
 
   private:
     /**
-     * Tests and sets the _isValid and _isDirectory/_isFile flags,
-     * using the stat() function.
+     * Set the _isDirectory/_isFile/_size flags using stat().
+     *
+     * @return  Success/failure of stat() function
      */
-    void setFlags();
+    bool setFlags();
 
   private:
     string _path, _displayName;
-    bool _isValid{true}, _isFile{false}, _isDirectory{true};
+    bool _isFile{false}, _isDirectory{true};
     mutable size_t _size{0};
 
     static const char* ourHomeDir;
