@@ -32,7 +32,7 @@
 
   * Fixed broken 7800 pause key support
 
-  * Added user defined CPU cycle timers to debugger (TODO: screenshots)
+  * Added user defined CPU cycle timers to debugger
 
 -Have fun!
 
