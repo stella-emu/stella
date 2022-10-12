@@ -3698,7 +3698,7 @@ DebuggerParser::CommandArray DebuggerParser::commands = { {
     true,
     { Parameters::ARG_LABEL, Parameters::ARG_LABEL, Parameters::ARG_LABEL,
       Parameters::ARG_LABEL, Parameters::ARG_LABEL, Parameters::ARG_MULTI_BYTE },
-    std::mem_fn(&DebuggerParser::executeTimer)
+    std::mmmmmmem_fn(&DebuggerParser::executeTimer)
   },
 
   {
