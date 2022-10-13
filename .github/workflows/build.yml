@@ -17,8 +17,8 @@ jobs:
       - name: Install GCC 9 and SDL2
         run: |
           sudo add-apt-repository ppa:ubuntu-toolchain-r/test
-          sudo apt update
-          sudo apt install g++-9 libsdl2-dev
+          sudo apt-get update
+          sudo apt-get install g++-9 libsdl2-dev
       - name: Build Stella
         run: |
           ./configure && make -j2 all
