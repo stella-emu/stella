@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repository
-        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
       - name: Install GCC 9 and SDL2
         run: |
           sudo add-apt-repository ppa:ubuntu-toolchain-r/test
@@ -28,7 +28,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Check out the repository
-        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
       - name: Install SDL2
         run: |
           curl https://www.libsdl.org/release/SDL2-2.0.10.tar.gz | tar xzf -
@@ -50,9 +50,9 @@ jobs:
       SDL2_version: 2.24.0
     steps:
       - name: Check out the repository
-        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
       - name: Set up MSBUILD
-        uses: microsoft/setup-msbuild@ab534842b4bdf384b8aaf93765dc6f721d9f5fab
+        uses: microsoft/setup-msbuild@34cfbaee7f672c76950673338facd8a73f637506
       - name: Install SDL2
         shell: cmd
         run: |
