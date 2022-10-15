@@ -71,10 +71,11 @@ class FSNodeWINDOWS : public AbstractFSNode
 
   private:
     /**
-     * Tests and sets the _isValid and _isDirectory/_isFile flags,
-     * using the GetFileAttributes() function.
+     * Set the _isDirectory/_isFile/_size flags using GetFileAttributes().
+     *
+     * @return  Success/failure of GetFileAttributes() function
      */
-    void setFlags();
+    bool setFlags();
 
     /**
      * Adds a single FSNodeWINDOWS to a given list.

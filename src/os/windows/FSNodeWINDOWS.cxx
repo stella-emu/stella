@@ -37,11 +37,11 @@ FSNodeWINDOWS::FSNodeWINDOWS(const string& p)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FSNodeWINDOWS::setFlags()
+bool FSNodeWINDOWS::setFlags()
 {
   // Get absolute path
   TCHAR buf[MAX_PATH];
-  if(GetFullPathName(_path.c_str(), MAX_PATH - 1, buf, NULL))
+  if (GetFullPathName(_path.c_str(), MAX_PATH - 1, buf, NULL))
     _path = buf;
 
   _displayName = lastPathComponent(_path);
@@ -49,9 +49,10 @@ void FSNodeWINDOWS::setFlags()
   // Check whether it is a directory, and whether the file actually exists
   const DWORD fileAttribs = GetFileAttributes(_path.c_str());
 
-  if(fileAttribs == INVALID_FILE_ATTRIBUTES)
+  if (fileAttribs == INVALID_FILE_ATTRIBUTES)
   {
     _isDirectory = _isFile = false;
+    return false;
   }
   else
   {
@@ -64,6 +65,8 @@ void FSNodeWINDOWS::setFlags()
       _path += FSNode::PATH_SEPARATOR;
   }
   _isPseudoRoot = false;
+
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -71,11 +74,11 @@ string FSNodeWINDOWS::getShortPath() const
 {
   // If the path starts with the home directory, replace it with '~'
   const string& home = HomeFinder::getHomePath();
-  if(home != "" && BSPF::startsWithIgnoreCase(_path, home))
+  if (home != "" && BSPF::startsWithIgnoreCase(_path, home))
   {
     string path = "~";
     const char* offset = _path.c_str() + home.length();
-    if(*offset != FSNode::PATH_SEPARATOR)
+    if (*offset != FSNode::PATH_SEPARATOR)
       path += FSNode::PATH_SEPARATOR;
     path += offset;
     return path;
@@ -114,16 +117,14 @@ AbstractFSNodePtr FSNodeWINDOWS::getParent() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FSNodeWINDOWS::getChildren(AbstractFSList& myList, ListMode mode) const
 {
-  assert(_isDirectory);
-
-  if(_isPseudoRoot)
+  if (_isPseudoRoot)
   {
     // Drives enumeration
     TCHAR drive_buffer[100];
     GetLogicalDriveStrings(sizeof(drive_buffer) / sizeof(TCHAR), drive_buffer);
 
-    for(TCHAR *current_drive = drive_buffer; *current_drive;
-        current_drive += _tcslen(current_drive) + 1)
+    for (TCHAR *current_drive = drive_buffer; *current_drive;
+         current_drive += _tcslen(current_drive) + 1)
     {
       FSNodeWINDOWS entry;
       char drive_name[2] = { 0, 0 };
@@ -142,18 +143,13 @@ bool FSNodeWINDOWS::getChildren(AbstractFSList& myList, ListMode mode) const
   {
     // Files enumeration
     WIN32_FIND_DATA desc;
-    HANDLE handle;
-
-    ostringstream searchPath;
-    searchPath << _path << "*";
-
-    handle = FindFirstFile(searchPath.str().c_str(), &desc);
-    if(handle == INVALID_HANDLE_VALUE)
+    HANDLE handle = FindFirstFile((_path + "*").c_str(), &desc);
+    if (handle == INVALID_HANDLE_VALUE)
       return false;
 
     addFile(myList, mode, _path, desc);
 
-    while(FindNextFile(handle, &desc))
+    while (FindNextFile(handle, &desc))
       addFile(myList, mode, _path, desc);
 
     FindClose(handle);
@@ -177,7 +173,7 @@ void FSNodeWINDOWS::addFile(AbstractFSList& list, ListMode mode,
   isFile = !isDirectory;//(find_data->dwFileAttributes & FILE_ATTRIBUTE_NORMAL ? true : false);
 
   if ((isFile && mode == FSNode::ListMode::DirectoriesOnly) ||
-    (isDirectory && mode == FSNode::ListMode::FilesOnly))
+      (isDirectory && mode == FSNode::ListMode::FilesOnly))
     return;
 
   FSNodeWINDOWS entry;
@@ -214,21 +210,17 @@ bool FSNodeWINDOWS::isWritable() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FSNodeWINDOWS::makeDir()
 {
-  if(!_isPseudoRoot && CreateDirectory(_path.c_str(), NULL) != 0)
-  {
-    setFlags();
-    return true;
-  }
+  if (!_isPseudoRoot && CreateDirectory(_path.c_str(), NULL) != 0)
+    return setFlags();
+
   return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FSNodeWINDOWS::rename(const string& newfile)
 {
-  if(!_isPseudoRoot && MoveFile(_path.c_str(), newfile.c_str()) != 0)
-  {
-    setFlags();
-    return true;
-  }
+  if (!_isPseudoRoot && MoveFile(_path.c_str(), newfile.c_str()) != 0)
+    return setFlags();
+
   return false;
 }
