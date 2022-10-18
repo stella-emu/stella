@@ -143,7 +143,8 @@ bool FSNodeWINDOWS::getChildren(AbstractFSList& myList, ListMode mode) const
   {
     // Files enumeration
     WIN32_FIND_DATA desc;
-    HANDLE handle = FindFirstFile((_path + "*").c_str(), &desc);
+    HANDLE handle = FindFirstFileEx((_path + "*").c_str(), FindExInfoBasic,
+        &desc, FindExSearchNameMatch, NULL, FIND_FIRST_EX_LARGE_FETCH);
     if (handle == INVALID_HANDLE_VALUE)
       return false;
 
