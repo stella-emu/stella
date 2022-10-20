@@ -368,6 +368,11 @@ class Console : public Serializable, public ConsoleIO
     void changeJitterRecovery(int direction = +1) const;
 
     /**
+      Return whether vertical sync length is according to spec.
+    */
+    bool vsyncCorrect() const { return myFrameManager->vsyncCorrect(); }
+
+    /**
      * Update vcenter
      */
     void updateVcenter(Int32 vcenter);

@@ -76,6 +76,8 @@ void JitterEmulation::frameComplete(Int32 scanlineCount, Int32 vsyncCycles)
   const bool vsyncLinesStable = abs(vsyncCycles - myLastFrameVsyncCycles) < myVsyncDelta1;
 #endif
 
+  myVsyncCorrect = abs(vsyncCycles - 76 * 3) <= 3; // 3 cycles tolerance
+
   if(!scanlinesStable || !vsyncCyclesStable || !vsyncLinesStable)
   {
     if(++myUnstableCount >= myUnstableFrames)

@@ -251,12 +251,14 @@ class FBSurface
       @param linkLen      The length of a link in drawn string
       @param underline    Whether to underline the link
 
+      @return    x coordinate of end of string
+
     */
-    virtual void drawString(const GUI::Font& font, const string& s, int x, int y, int w,
-                            ColorId color, TextAlign align = TextAlign::Left,
-                            int deltax = 0, bool useEllipsis = true, ColorId shadowColor = kNone,
-                            size_t linkStart = string::npos, size_t linkLen = string::npos,
-                            bool underline = false);
+    virtual int drawString(const GUI::Font& font, const string& s, int x, int y, int w,
+                           ColorId color, TextAlign align = TextAlign::Left,
+                           int deltax = 0, bool useEllipsis = true, ColorId shadowColor = kNone,
+                           size_t linkStart = string::npos, size_t linkLen = string::npos,
+                           bool underline = false);
 
     /**
       Splits a given string to a given width considering whitespaces.
