@@ -701,7 +701,7 @@ void FrameBuffer::drawFrameStats(float framesPerSecond)
   myStatsMsg.surface->invalidate();
 
   // draw scanlines
-  const ColorId color = myOSystem.console().tia().frameBufferScanlinesLastFrame() !=
+  ColorId color = myOSystem.console().tia().frameBufferScanlinesLastFrame() !=
     myLastScanlines ? kDbgColorRed : myStatsMsg.color;
 
   ss
@@ -734,10 +734,26 @@ void FrameBuffer::drawFrameStats(float framesPerSecond)
   ss.str("");
 
   ss << info.BankSwitch;
-  if (myOSystem.settings().getBool("dev.settings")) ss << "| Developer";
+  int xPosEnd =
+    myStatsMsg.surface->drawString(f, ss.str(), xPos, yPos,
+                                   myStatsMsg.w, myStatsMsg.color, TextAlign::Left, 0, true, kBGColor);
 
-  myStatsMsg.surface->drawString(f, ss.str(), xPos, yPos,
-      myStatsMsg.w, myStatsMsg.color, TextAlign::Left, 0, true, kBGColor);
+  if(myOSystem.settings().getBool("dev.settings"))
+  {
+    xPosEnd = myStatsMsg.surface->drawString(f, "| ", xPosEnd, yPos,
+                                  myStatsMsg.w, color, TextAlign::Left, 0, true, kBGColor);
+    ss.str("");
+    color = myStatsMsg.color;
+    if(myOSystem.console().vsyncCorrect())
+      ss << "Developer";
+    else
+    {
+      color = kDbgColorRed;
+      ss << "VSYNC!";
+    }
+    myStatsMsg.surface->drawString(f, ss.str(), xPosEnd, yPos,
+        myStatsMsg.w, color, TextAlign::Left, 0, true, kBGColor);
+  }
 
   myStatsMsg.surface->setDstPos(imageRect().x() + 10, imageRect().y() + 8);
   myStatsMsg.surface->setDstSize(myStatsMsg.w * hidpiScaleFactor(),

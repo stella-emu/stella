@@ -50,6 +50,8 @@ class JitterEmulation : public Serializable
     void frameComplete(Int32 scanlineCount, Int32 vsyncCycles);
     Int32 jitter() const { return myJitter; }
 
+    bool vsyncCorrect() const { return myVsyncCorrect; }
+
     /**
      * Save state.
      */
@@ -101,6 +103,7 @@ class JitterEmulation : public Serializable
     Int32 myUnstableFrames{MAX_UNSTABLE_FRAMES};
     Int32 myJitterLines{MIN_JITTER_LINES};
     Int32 myVsyncLines{MIN_VSYNC_LINES};
+    bool myVsyncCorrect{true};
 
   private:
     JitterEmulation(const JitterEmulation&) = delete;

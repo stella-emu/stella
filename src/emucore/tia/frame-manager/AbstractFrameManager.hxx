@@ -149,6 +149,11 @@ class AbstractFrameManager : public Serializable
     virtual void enableJitter(bool enabled) {}
 
     /**
+     * Is vsync according to spec?
+     */
+    virtual bool vsyncCorrect() const { return true; }
+
+    /**
      * The scanline difference between the last two frames. Used in the TIA to
      * clear any scanlines that were not repainted.
      */

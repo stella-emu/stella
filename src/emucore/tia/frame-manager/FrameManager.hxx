@@ -55,6 +55,8 @@ class FrameManager: public AbstractFrameManager {
 
     void enableJitter(bool enabled) override { myJitterEnabled = enabled; }
 
+    bool vsyncCorrect() const override { return !myJitterEnabled || myJitterEmulation.vsyncCorrect(); }
+
     uInt32 height() const override { return myHeight; }
 
     uInt32 getY() const override { return myY; }
