@@ -127,10 +127,9 @@ bool FSNodeWINDOWS::getChildren(AbstractFSList& myList, ListMode mode) const
          current_drive += _tcslen(current_drive) + 1)
     {
       FSNodeWINDOWS entry;
-      char drive_name[2] = { 0, 0 };
+      char drive_name[2] = { '\0', '\0' };
 
       drive_name[0] = current_drive[0];
-      drive_name[1] = '\0';
       entry._displayName = drive_name;
       entry._isDirectory = true;
       entry._isFile = false;
@@ -142,7 +141,7 @@ bool FSNodeWINDOWS::getChildren(AbstractFSList& myList, ListMode mode) const
   else
   {
     // Files enumeration
-    WIN32_FIND_DATA desc;
+    WIN32_FIND_DATA desc{};
     HANDLE handle = FindFirstFileEx((_path + "*").c_str(), FindExInfoBasic,
         &desc, FindExSearchNameMatch, NULL, FIND_FIRST_EX_LARGE_FETCH);
     if (handle == INVALID_HANDLE_VALUE)
@@ -164,14 +163,13 @@ void FSNodeWINDOWS::addFile(AbstractFSList& list, ListMode mode,
                             const string& base, const WIN32_FIND_DATA& find_data)
 {
   const char* const asciiName = find_data.cFileName;
-  bool isDirectory = false, isFile = false;
 
   // Skip local directory (.) and parent (..)
   if (!strncmp(asciiName, ".", 1) || !strncmp(asciiName, "..", 2))
     return;
 
-  isDirectory = static_cast<bool>(find_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY);
-  isFile = !isDirectory;//(find_data->dwFileAttributes & FILE_ATTRIBUTE_NORMAL ? true : false);
+  const bool isDirectory = static_cast<bool>(find_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY);
+  const bool isFile = !isDirectory;//(find_data->dwFileAttributes & FILE_ATTRIBUTE_NORMAL ? true : false);
 
   if ((isFile && mode == FSNode::ListMode::DirectoriesOnly) ||
       (isDirectory && mode == FSNode::ListMode::FilesOnly))
