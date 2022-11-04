@@ -132,6 +132,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   mySwitches = make_unique<Switches>(myEvent, myProperties, myOSystem.settings());
 
   myTIA->setFrameManager(myFrameManager.get());
+  myOSystem.sound().stopWav();
 
   // Reinitialize the RNG
   myOSystem.random().initSeed(static_cast<uInt32>(TimerManager::getTicks()));
