@@ -184,6 +184,7 @@ void FSNodeWINDOWS::addFile(AbstractFSList& list, ListMode mode,
   if (entry._isDirectory)
     entry._path += FSNode::PATH_SEPARATOR;
   entry._isPseudoRoot = false;
+  entry._size = find_data.nFileSizeHigh * (static_cast<size_t>(MAXDWORD) + 1) + find_data.nFileSizeLow;
 
   list.emplace_back(make_shared<FSNodeWINDOWS>(entry));
 }
