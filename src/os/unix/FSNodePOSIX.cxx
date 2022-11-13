@@ -35,13 +35,13 @@ FSNodePOSIX::FSNodePOSIX(const string& path, bool verify)
   : _path{path.length() > 0 ? path : "~"}  // Default to home directory
 {
   // Expand '~' to the HOME environment variable
-  if(_path[0] == '~')
+  if (_path[0] == '~')
   {
     if (ourHomeDir != nullptr)
       _path.replace(0, 1, ourHomeDir);
   }
   // Get absolute path (only used for relative directories)
-  else if(_path[0] == '.')
+  else if (_path[0] == '.')
   {
     std::array<char, MAXPATHLEN> buf;
     if(realpath(_path.c_str(), buf.data()))
@@ -50,7 +50,7 @@ FSNodePOSIX::FSNodePOSIX(const string& path, bool verify)
 
   _displayName = lastPathComponent(_path);
 
-  if(verify)
+  if (verify)
     setFlags();
 }
 
@@ -58,7 +58,7 @@ FSNodePOSIX::FSNodePOSIX(const string& path, bool verify)
 bool FSNodePOSIX::setFlags()
 {
   struct stat st;
-  if(stat(_path.c_str(), &st) == 0)
+  if (stat(_path.c_str(), &st) == 0)
   {
     _isDirectory = S_ISDIR(st.st_mode);
     _isFile = S_ISREG(st.st_mode);
@@ -86,11 +86,11 @@ string FSNodePOSIX::getShortPath() const
   // If the path starts with the home directory, replace it with '~'
   const string& home = ourHomeDir != nullptr ? ourHomeDir : EmptyString;
 
-  if(home != EmptyString && BSPF::startsWithIgnoreCase(_path, home))
+  if (home != EmptyString && BSPF::startsWithIgnoreCase(_path, home))
   {
     string path = "~";
-    const char* offset = _path.c_str() + home.size();
-    if(*offset != FSNode::PATH_SEPARATOR)
+    const char* const offset = _path.c_str() + home.size();
+    if (*offset != FSNode::PATH_SEPARATOR)
       path += FSNode::PATH_SEPARATOR;
     path += offset;
     return path;
@@ -121,8 +121,8 @@ AbstractFSNodePtr FSNodePOSIX::getParent() const
   if (_path == ROOT_DIR)
     return nullptr;
 
-  const char* start = _path.c_str();
-  const char* end = lastPathComponent(_path);
+  const char* const start = _path.c_str();
+  const char* const end = lastPathComponent(_path);
 
   return make_unique<FSNodePOSIX>(string(start, static_cast<size_t>(end - start)));
 }
@@ -146,7 +146,8 @@ bool FSNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode) const
       continue;
 
     string newPath(_path);
-    if (newPath.length() > 0 && newPath[newPath.length()-1] != FSNode::PATH_SEPARATOR)
+    if (newPath.length() > 0 &&
+        newPath[newPath.length()-1] != FSNode::PATH_SEPARATOR)
       newPath += FSNode::PATH_SEPARATOR;
     newPath += dp->d_name;
 
@@ -162,7 +163,7 @@ bool FSNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode) const
     {
       entry._isDirectory = (dp->d_type == DT_DIR);
       entry._isFile = (dp->d_type == DT_REG);
-      // entry._size will be calculated next time ::getSize() is called
+      // entry._size will be calculated first time ::getSize() is called
 
       if (entry._isDirectory)
         entry._path += FSNode::PATH_SEPARATOR;
@@ -178,7 +179,7 @@ bool FSNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode) const
         (mode == FSNode::ListMode::DirectoriesOnly && !entry._isDirectory))
       continue;
 
-    myList.emplace_back(make_shared<FSNodePOSIX>(entry));
+    myList.emplace_back(make_unique<FSNodePOSIX>(entry));
   }
   closedir(dirp);
 
@@ -188,11 +189,11 @@ bool FSNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FSNodePOSIX::makeDir()
 {
-  if(mkdir(_path.c_str(), 0777) == 0)
+  if (mkdir(_path.c_str(), 0777) == 0)
   {
     // Get absolute path
     std::array<char, MAXPATHLEN> buf;
-    if(realpath(_path.c_str(), buf.data()))
+    if (realpath(_path.c_str(), buf.data()))
       _path = buf.data();
 
     _displayName = lastPathComponent(_path);
@@ -204,13 +205,13 @@ bool FSNodePOSIX::makeDir()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FSNodePOSIX::rename(const string& newfile)
 {
-  if(std::rename(_path.c_str(), newfile.c_str()) == 0)
+  if (std::rename(_path.c_str(), newfile.c_str()) == 0)
   {
     _path = newfile;
 
     // Get absolute path
     std::array<char, MAXPATHLEN> buf;
-    if(realpath(_path.c_str(), buf.data()))
+    if (realpath(_path.c_str(), buf.data()))
       _path = buf.data();
 
     _displayName = lastPathComponent(_path);
@@ -220,4 +221,4 @@ bool FSNodePOSIX::rename(const string& newfile)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* FSNodePOSIX::ourHomeDir = std::getenv("HOME"); // NOLINT (not thread safe)
+const char* const FSNodePOSIX::ourHomeDir = std::getenv("HOME"); // NOLINT (not thread safe)
