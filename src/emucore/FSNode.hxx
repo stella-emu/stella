@@ -509,7 +509,7 @@ class AbstractFSNode
       if(str.empty())
         return "";
 
-      const char* start = str.c_str();
+      const char* const start = str.c_str();
       const char* cur = start + str.size() - 2;
 
       while (cur >= start && !(*cur == '/' || *cur == '\\'))

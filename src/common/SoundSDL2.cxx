@@ -120,7 +120,9 @@ bool SoundSDL2::openDevice()
 
   myDeviceId = BSPF::clamp(myAudioSettings.device(), 0U,
                            static_cast<uInt32>(myDevices.size() - 1));
-  const char* device = myDeviceId ? myDevices.at(myDeviceId).first.c_str() : nullptr;
+  const char* const device = myDeviceId
+    ? myDevices.at(myDeviceId).first.c_str()
+    : nullptr;
 
   myDevice = SDL_OpenAudioDevice(device, 0, &desired, &myHardwareSpec,
                                  SDL_AUDIO_ALLOW_FREQUENCY_CHANGE);
@@ -384,7 +386,9 @@ void SoundSDL2::callback(void* object, uInt8* stream, int len)
 bool SoundSDL2::playWav(const string& fileName, const uInt32 position,
                         const uInt32 length)
 {
-  const char* device = myDeviceId ? myDevices.at(myDeviceId).first.c_str() : nullptr;
+  const char* const device = myDeviceId
+    ? myDevices.at(myDeviceId).first.c_str()
+    : nullptr;
 
   return myWavHandler.play(fileName, device, position, length);
 }

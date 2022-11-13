@@ -899,7 +899,7 @@ void Debugger::getCompletions(const char* in, StringList& list) const
   {
     for(const auto& iter : myFunctions)
     {
-      const char* l = iter.first.c_str();
+      const char* const l = iter.first.c_str();
       if(BSPF::matchesCamelCase(l, in))
         list.push_back(l);
     }

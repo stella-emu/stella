@@ -39,7 +39,7 @@ FSNodeZIP::FSNodeZIP(const string& p)
   if (_zipFile[0] == '~')
   {
 #if defined(BSPF_UNIX) || defined(BSPF_MACOS)
-    const char* home = std::getenv("HOME");  // NOLINT (not thread safe)
+    const char* const home = std::getenv("HOME");  // NOLINT (not thread safe)
     if (home != nullptr)
       _zipFile.replace(0, 1, home);
 #elif defined(BSPF_WINDOWS)
@@ -270,8 +270,8 @@ AbstractFSNodePtr FSNodeZIP::getParent() const
   if(_virtualPath.empty())
     return _realNode ? _realNode->getParent() : nullptr;
 
-  const char* start = _path.c_str();
-  const char* end = lastPathComponent(_path);
+  const char* const start = _path.c_str();
+  const char* const end = lastPathComponent(_path);
 
   return make_unique<FSNodeZIP>(string(start, end - start - 1));
 }

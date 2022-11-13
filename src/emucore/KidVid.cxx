@@ -118,7 +118,7 @@ void KidVid::update()
     if(myTape)
     {
       static constexpr uInt32 gameNumber[4] = { 3, 1, 2, 3 };
-      static constexpr const char* gameName[6] = {
+      static constexpr const char* const gameName[6] = {
         "Harmony Smurf", "Handy Smurf", "Greedy Smurf",
         "Big Number Hunt", "Great Letter Roundup", "Spooky Spelling Bee"
       };
@@ -240,7 +240,7 @@ bool KidVid::load(Serializer& in)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const char* KidVid::getFileName() const
 {
-  static constexpr const char* fileNames[6] = {
+  static constexpr const char* const fileNames[6] = {
     "KVS3.WAV", "KVS1.WAV", "KVS2.WAV",
     "KVB3.WAV", "KVB1.WAV", "KVB2.WAV"
   };

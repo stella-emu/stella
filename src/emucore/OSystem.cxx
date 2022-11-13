@@ -527,7 +527,7 @@ string OSystem::createConsole(const FSNode& rom, const string& md5sum,
       {
         // Make sure there always is an id
         constexpr int ID_LEN = 32;
-        const char* HEX_DIGITS = "0123456789ABCDEF";
+        const char* const HEX_DIGITS = "0123456789ABCDEF";
         char id_chr[ID_LEN] = { 0 };
         const Random rnd;
 
