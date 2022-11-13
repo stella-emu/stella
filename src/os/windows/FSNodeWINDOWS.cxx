@@ -77,7 +77,7 @@ string FSNodeWINDOWS::getShortPath() const
   if (home != "" && BSPF::startsWithIgnoreCase(_path, home))
   {
     string path = "~";
-    const char* offset = _path.c_str() + home.length();
+    const char* const offset = _path.c_str() + home.length();
     if (*offset != FSNode::PATH_SEPARATOR)
       path += FSNode::PATH_SEPARATOR;
     path += offset;
@@ -105,13 +105,13 @@ AbstractFSNodePtr FSNodeWINDOWS::getParent() const
 
   if (_path.size() > 3)
   {
-    const char* start = _path.c_str();
-    const char* end = lastPathComponent(_path);
+    const char* const start = _path.c_str();
+    const char* const end = lastPathComponent(_path);
 
-    return make_shared<FSNodeWINDOWS>(string(start, static_cast<size_t>(end - start)));
+    return make_unique<FSNodeWINDOWS>(string(start, static_cast<size_t>(end - start)));
   }
   else
-    return make_shared<FSNodeWINDOWS>();
+    return make_unique<FSNodeWINDOWS>();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -135,7 +135,7 @@ bool FSNodeWINDOWS::getChildren(AbstractFSList& myList, ListMode mode) const
       entry._isFile = false;
       entry._isPseudoRoot = false;
       entry._path = current_drive;
-      myList.emplace_back(make_shared<FSNodeWINDOWS>(entry));
+      myList.emplace_back(make_unique<FSNodeWINDOWS>(entry));
     }
   }
   else
@@ -164,8 +164,8 @@ void FSNodeWINDOWS::addFile(AbstractFSList& list, ListMode mode,
 {
   const char* const asciiName = find_data.cFileName;
 
-  // Skip local directory (.) and parent (..)
-  if (!strncmp(asciiName, ".", 1) || !strncmp(asciiName, "..", 2))
+  // Skip files starting with '.' (we assume empty filesnames never occur)
+  if (asciiName[0] == '.')
     return;
 
   const bool isDirectory = static_cast<bool>(find_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY);
@@ -186,7 +186,7 @@ void FSNodeWINDOWS::addFile(AbstractFSList& list, ListMode mode,
   entry._isPseudoRoot = false;
   entry._size = find_data.nFileSizeHigh * (static_cast<size_t>(MAXDWORD) + 1) + find_data.nFileSizeLow;
 
-  list.emplace_back(make_shared<FSNodeWINDOWS>(entry));
+  list.emplace_back(make_unique<FSNodeWINDOWS>(entry));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

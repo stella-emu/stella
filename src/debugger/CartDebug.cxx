@@ -845,7 +845,7 @@ string CartDebug::loadListFile()
       buf >> addr >> addr_s;
       if(addr_s.length() == 0)
         continue;
-      const char* p = addr_s[0] == 'U' ? addr_s.c_str() + 1 : addr_s.c_str();
+      const char* const p = addr_s[0] == 'U' ? addr_s.c_str() + 1 : addr_s.c_str();
       addr = static_cast<int>(strtoul(p, nullptr, 16));
 
       // For now, completely ignore ROM addresses
@@ -1555,7 +1555,7 @@ void CartDebug::getCompletions(const char* in, StringList& completions) const
   // Now scan user-defined labels
   for(const auto& iter: myUserAddresses)
   {
-    const char* l = iter.first.c_str();
+    const char* const l = iter.first.c_str();
     if(BSPF::matchesCamelCase(l, in))
       completions.push_back(l);
   }
