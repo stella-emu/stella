@@ -164,7 +164,7 @@ void FSNodeWINDOWS::addFile(AbstractFSList& list, ListMode mode,
 {
   const char* const asciiName = find_data.cFileName;
 
-  // Skip files starting with '.' (we assume empty filesnames never occur)
+  // Skip files starting with '.' (we assume empty filenames never occur)
   if (asciiName[0] == '.')
     return;
 
