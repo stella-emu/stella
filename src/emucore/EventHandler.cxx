@@ -1660,12 +1660,13 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
         myOSystem.console().switches().update();
       }
       return;
-    case Event::Console7800Pause:
-      if(pressed && !repeated)
+    case Event::Console7800Pause: // only works in 7800 mode
+      if(myIs7800 && !repeated)
       {
-        myEvent.set(Event::Console7800Pause, myOSystem.console().switches().tvColor() ? 1 : 0);
-        if (myIs7800)
+        // Press and release pause button
+        if(pressed)
           myOSystem.frameBuffer().showTextMessage("Pause pressed");
+        myEvent.set(Event::Console7800Pause, pressed);
         myOSystem.console().switches().update();
       }
       return;
