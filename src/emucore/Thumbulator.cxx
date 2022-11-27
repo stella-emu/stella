@@ -135,12 +135,13 @@ Thumbulator::Thumbulator(const uInt16* rom_ptr, uInt16* ram_ptr, uInt32 rom_size
     cStart{c_start},
     cStack{c_stack},
     decodedRom{make_unique<Op[]>(romSize / 2)},  // NOLINT
+    decodedParam{make_unique<uInt32[]>(romSize / 2)},  // NOLINT
     ram{ram_ptr},
     configuration{configurefor},
     myCartridge{cartridge}
 {
   for(uInt32 i = 0; i < romSize / 2; ++i)
-    decodedRom[i] = decodeInstructionWord(CONV_RAMROM(rom[i]));
+    decodedRom[i] = decodeInstructionWord(CONV_RAMROM(rom[i]), i * 2);
 
   setConsoleTiming(ConsoleTiming::ntsc);
 #ifndef UNSAFE_OPTIMIZATIONS
@@ -867,7 +868,7 @@ void Thumbulator::do_vflag_bit(uInt32 x)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Thumbulator::Op Thumbulator::decodeInstructionWord(uint16_t inst) {
+Thumbulator::Op Thumbulator::decodeInstructionWord(uint16_t inst, uInt32 pc) {
   //ADC add with carry
   if((inst & 0xFFC0) == 0x4140) return Op::adc;
 
@@ -901,11 +902,82 @@ Thumbulator::Op Thumbulator::decodeInstructionWord(uint16_t inst) {
   //ASR(2) two register
   if((inst & 0xFFC0) == 0x4100) return Op::asr2;
 
-  //B(1) conditional branch
-  if((inst & 0xF000) == 0xD000) return Op::b1;
+  //B(1) conditional branch, decoded into its variants
+  if((inst & 0xF000) == 0xD000)
+  {
+    const uInt32 op = (inst >> 8) & 0xF;
+    uInt32 rb = inst & 0xFF;
+
+    if(rb & 0x80)
+      rb |= (~0U) << 8;
+    rb <<= 1;
+    rb += pc;
+    rb += 2;
+    decodedParam[pc / 2] = rb + 4;
+
+    switch(op)
+    {
+      case 0x0: //b eq  z set
+        return Op::beq;
+
+      case 0x1: //b ne  z clear
+        return Op::bne;
+
+      case 0x2: //b cs c set
+        return Op::bcs;
+
+      case 0x3: //b cc c clear
+        return Op::bcc;
+
+      case 0x4: //b mi n set
+        return Op::bmi;
+
+      case 0x5: //b pl n clear
+        return Op::bpl;
+
+      case 0x6: //b vs v set
+        return Op::bvs;
+
+      case 0x7: //b vc v clear
+        return Op::bvc;
+
+      case 0x8: //b hi c set z clear
+        return Op::bhi;
+
+      case 0x9: //b ls c clear or z set
+        return Op::bls;
+
+      case 0xA: //b ge N == V
+        return Op::bge;
+
+      case 0xB: //b lt N != V
+        return Op::blt;
+
+      case 0xC: //b gt Z==0 and N == V
+        return Op::bgt;
+
+      case 0xD: //b le Z==1 or N != V
+        return Op::ble;
+
+      default:
+        return Op::invalid;
+    }
+  }
 
   //B(2) unconditional branch
-  if((inst & 0xF800) == 0xE000) return Op::b2;
+  if((inst & 0xF800) == 0xE000)
+  {
+    uInt32 rb = (inst >> 0) & 0x7FF;
+
+    if(rb & (1 << 10))
+      rb |= (~0U) << 11;
+    rb <<= 1;
+    rb += pc;
+    rb += 2;
+    decodedParam[pc / 2] = rb + 4;
+
+    return Op::b2;
+  }
 
   //BIC
   if((inst & 0xFFC0) == 0x4380) return Op::bic;
@@ -913,8 +985,14 @@ Thumbulator::Op Thumbulator::decodeInstructionWord(uint16_t inst) {
   //BKPT
   if((inst & 0xFF00) == 0xBE00) return Op::bkpt;
 
-  //BL/BLX(1)
-  if((inst & 0xE000) == 0xE000) return Op::blx1;
+  //BL/BLX(1) decoded into its variants
+  if((inst & 0xE000) == 0xE000)
+  {
+    if((inst & 0x1800) == 0x1000) return Op::bl;
+    else if((inst & 0x1800) == 0x1800) return Op::blx_thumb;
+    else if((inst & 0x1800) == 0x0800) return Op::blx_arm;
+    return Op::invalid;
+  }
 
   //BLX(2)
   if((inst & 0xFF87) == 0x4780) return Op::blx2;
@@ -1091,9 +1169,9 @@ Thumbulator::Op Thumbulator::decodeInstructionWord(uint16_t inst) {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Thumbulator::execute()  // NOLINT (readability-function-size)
+inline int Thumbulator::execute()  // NOLINT (readability-function-size)
 {
-  uInt32 sp, inst, ra, rb, rc, rm, rd, rn, rs, op;  // NOLINT
+  uInt32 sp, inst, ra, rb, rc, rm, rd, rn, rs;  // NOLINT
 
   uInt32 pc = read_register(15);
 
@@ -1113,7 +1191,7 @@ int Thumbulator::execute()  // NOLINT (readability-function-size)
   if ((instructionPtr & 0xF0000000) == 0 && instructionPtr < romSize)
     decodedOp = decodedRom[instructionPtr >> 1];
   else
-    decodedOp = decodeInstructionWord(inst);
+    decodedOp = decodeInstructionWord(inst, pc);
 #else
   decodedOp = decodedRom[(instructionPtr & ROMADDMASK) >> 1];
 #endif
@@ -1350,125 +1428,168 @@ int Thumbulator::execute()  // NOLINT (readability-function-size)
       return 0;
     }
 
-    //B(1) conditional branch
-    case Op::b1: {
-    #ifdef THUMB_STATS
+    //B(1) conditional branch variants:
+    // (beq, bne, bcs, bcc, bmi, bpl, bvs, bvc, bhi, bls, bge, blt, bgt, ble)
+    case Op::beq: {
+#ifdef THUMB_STATS
       ++_stats.branches;
-    #endif
-      rb = inst & 0xFF;
-      if(rb & 0x80)
-        rb |= (~0U) << 8;
-      rb <<= 1;
-      rb += pc;
-      rb += 2;
+#endif
+      rb = decodedParam[instructionPtr >> 1];
+      DO_DISS(statusMsg << "beq 0x" << Base::HEX8 << (rb-3) << endl);
+      if(cpsr & CPSR_Z)
+        write_register(15, rb);
+      return 0;
+    }
 
-      op = (inst >> 8) & 0xF;
-      switch(op)
+    case Op::bne: {
+#ifdef THUMB_STATS
+      ++_stats.branches;
+#endif
+      rb = decodedParam[instructionPtr >> 1];
+      DO_DISS(statusMsg << "bne 0x" << Base::HEX8 << (rb-3) << endl);
+      if(!(cpsr & CPSR_Z))
+        write_register(15, rb);
+      return 0;
+    }
+
+    case Op::bcs: {
+#ifdef THUMB_STATS
+      ++_stats.branches;
+#endif
+      rb = decodedParam[instructionPtr >> 1];
+      DO_DISS(statusMsg << "bcs 0x" << Base::HEX8 << (rb-3) << endl);
+      if(cpsr & CPSR_C)
+        write_register(15, rb);
+      return 0;
+    }
+
+    case Op::bcc: {
+#ifdef THUMB_STATS
+      ++_stats.branches;
+#endif
+      rb = decodedParam[instructionPtr >> 1];
+      DO_DISS(statusMsg << "bcc 0x" << Base::HEX8 << (rb-3) << endl);
+      if(!(cpsr & CPSR_C))
+        write_register(15, rb);
+      return 0;
+    }
+
+    case Op::bmi: {
+#ifdef THUMB_STATS
+      ++_stats.branches;
+#endif
+      rb = decodedParam[instructionPtr >> 1];
+      DO_DISS(statusMsg << "bmi 0x" << Base::HEX8 << (rb-3) << endl);
+      if(cpsr & CPSR_N)
+        write_register(15, rb);
+      return 0;
+    }
+
+    case Op::bpl: {
+#ifdef THUMB_STATS
+      ++_stats.branches;
+#endif
+      rb = decodedParam[instructionPtr >> 1];
+      DO_DISS(statusMsg << "bpl 0x" << Base::HEX8 << (rb-3) << endl);
+      if(!(cpsr & CPSR_N))
+        write_register(15, rb);
+      return 0;
+    }
+
+    case Op::bvs: {
+#ifdef THUMB_STATS
+      ++_stats.branches;
+#endif
+      rb = decodedParam[instructionPtr >> 1];
+      DO_DISS(statusMsg << "bvs 0x" << Base::HEX8 << (rb-3) << endl);
+      if(cpsr & CPSR_V)
+        write_register(15, rb);
+      return 0;
+    }
+
+    case Op::bvc: {
+#ifdef THUMB_STATS
+      ++_stats.branches;
+#endif
+      rb = decodedParam[instructionPtr >> 1];
+      DO_DISS(statusMsg << "bvc 0x" << Base::HEX8 << (rb-3) << endl);
+      if(!(cpsr & CPSR_V))
+        write_register(15, rb);
+      return 0;
+    }
+
+    case Op::bhi: {
+#ifdef THUMB_STATS
+      ++_stats.branches;
+#endif
+      rb = decodedParam[instructionPtr >> 1];
+      DO_DISS(statusMsg << "bhi 0x" << Base::HEX8 << (rb-3) << endl);
+      if((cpsr & CPSR_C) && (!(cpsr & CPSR_Z)))
+        write_register(15, rb);
+      return 0;
+    }
+
+    case Op::bls: {
+#ifdef THUMB_STATS
+      ++_stats.branches;
+#endif
+      rb = decodedParam[instructionPtr >> 1];
+      DO_DISS(statusMsg << "bls 0x" << Base::HEX8 << (rb-3) << endl);
+      if((cpsr & CPSR_Z) || (!(cpsr & CPSR_C)))
+        write_register(15, rb);
+      return 0;
+    }
+
+    case Op::bge: {
+#ifdef THUMB_STATS
+      ++_stats.branches;
+#endif
+      rb = decodedParam[instructionPtr >> 1];
+      DO_DISS(statusMsg << "bge 0x" << Base::HEX8 << (rb-3) << endl);
+      if(((cpsr & CPSR_N) && (cpsr & CPSR_V)) ||
+         ((!(cpsr & CPSR_N)) && (!(cpsr & CPSR_V))))
+        write_register(15, rb);
+      return 0;
+    }
+
+    case Op::blt: {
+#ifdef THUMB_STATS
+      ++_stats.branches;
+#endif
+      rb = decodedParam[instructionPtr >> 1];
+      DO_DISS(statusMsg << "blt 0x" << Base::HEX8 << (rb-3) << endl);
+      if((!(cpsr & CPSR_N) && (cpsr & CPSR_V)) ||
+         (((cpsr & CPSR_N)) && !(cpsr & CPSR_V)))
+        write_register(15, rb);
+      return 0;
+    }
+
+    case Op::bgt: {
+#ifdef THUMB_STATS
+      ++_stats.branches;
+#endif
+      rb = decodedParam[instructionPtr >> 1];
+      DO_DISS(statusMsg << "bgt 0x" << Base::HEX8 << (rb-3) << endl);
+      if(!(cpsr & CPSR_Z))
       {
-        case 0x0: //b eq  z set
-          DO_DISS(statusMsg << "beq 0x" << Base::HEX8 << (rb-3) << endl);
-          if(cpsr & CPSR_Z)
-            write_register(15, rb);
-          return 0;
-
-        case 0x1: //b ne  z clear
-          DO_DISS(statusMsg << "bne 0x" << Base::HEX8 << (rb-3) << endl);
-          if(!(cpsr & CPSR_Z))
-            write_register(15, rb);
-          return 0;
-
-        case 0x2: //b cs c set
-          DO_DISS(statusMsg << "bcs 0x" << Base::HEX8 << (rb-3) << endl);
-          if(cpsr & CPSR_C)
-            write_register(15, rb);
-          return 0;
-
-        case 0x3: //b cc c clear
-          DO_DISS(statusMsg << "bcc 0x" << Base::HEX8 << (rb-3) << endl);
-          if(!(cpsr & CPSR_C))
-            write_register(15, rb);
-          return 0;
-
-        case 0x4: //b mi n set
-          DO_DISS(statusMsg << "bmi 0x" << Base::HEX8 << (rb-3) << endl);
-          if(cpsr & CPSR_N)
-            write_register(15, rb);
-          return 0;
-
-        case 0x5: //b pl n clear
-          DO_DISS(statusMsg << "bpl 0x" << Base::HEX8 << (rb-3) << endl);
-          if(!(cpsr & CPSR_N))
-            write_register(15, rb);
-          return 0;
-
-        case 0x6: //b vs v set
-          DO_DISS(statusMsg << "bvs 0x" << Base::HEX8 << (rb-3) << endl);
-          if(cpsr & CPSR_V)
-            write_register(15, rb);
-          return 0;
-
-        case 0x7: //b vc v clear
-          DO_DISS(statusMsg << "bvc 0x" << Base::HEX8 << (rb-3) << endl);
-          if(!(cpsr & CPSR_V))
-            write_register(15, rb);
-          return 0;
-
-        case 0x8: //b hi c set z clear
-          DO_DISS(statusMsg << "bhi 0x" << Base::HEX8 << (rb-3) << endl);
-          if((cpsr & CPSR_C) && (!(cpsr & CPSR_Z)))
-            write_register(15, rb);
-          return 0;
-
-        case 0x9: //b ls c clear or z set
-          DO_DISS(statusMsg << "bls 0x" << Base::HEX8 << (rb-3) << endl);
-          if((cpsr & CPSR_Z) || (!(cpsr & CPSR_C)))
-            write_register(15, rb);
-          return 0;
-
-        case 0xA: //b ge N == V
-          DO_DISS(statusMsg << "bge 0x" << Base::HEX8 << (rb-3) << endl);
-          if(((cpsr & CPSR_N) && (cpsr & CPSR_V)) ||
-             ((!(cpsr & CPSR_N)) && (!(cpsr & CPSR_V))))
-            write_register(15, rb);
-          return 0;
-
-        case 0xB: //b lt N != V
-          DO_DISS(statusMsg << "blt 0x" << Base::HEX8 << (rb-3) << endl);
-          if((!(cpsr & CPSR_N) && (cpsr & CPSR_V)) ||
-            (((cpsr & CPSR_N)) && !(cpsr & CPSR_V)))
-            write_register(15, rb);
-          return 0;
-
-        case 0xC: //b gt Z==0 and N == V
-          DO_DISS(statusMsg << "bgt 0x" << Base::HEX8 << (rb-3) << endl);
-          if(!(cpsr & CPSR_Z))
-          {
-            if(((cpsr & CPSR_N) && (cpsr & CPSR_V)) ||
-               ((!(cpsr & CPSR_N)) && (!(cpsr & CPSR_V))))
-              write_register(15, rb);
-          }
-          return 0;
-
-        case 0xD: //b le Z==1 or N != V
-          DO_DISS(statusMsg << "ble 0x" << Base::HEX8 << (rb-3) << endl);
-          if((cpsr & CPSR_Z) ||
-            (!(cpsr & CPSR_N) && (cpsr & CPSR_V)) ||
-            (((cpsr & CPSR_N)) && !(cpsr & CPSR_V)))
-            write_register(15, rb);
-          return 0;
-
-        case 0xE:
-          //undefined instruction
-          break;
-
-        case 0xF:
-          //swi
-          break;
-
-        default:
-          break;
+        if(((cpsr & CPSR_N) && (cpsr & CPSR_V)) ||
+           ((!(cpsr & CPSR_N)) && (!(cpsr & CPSR_V))))
+          write_register(15, rb);
       }
-      break;
+      return 0;
+    }
+
+    case Op::ble: {
+#ifdef THUMB_STATS
+      ++_stats.branches;
+#endif
+      rb = decodedParam[instructionPtr >> 1];
+      DO_DISS(statusMsg << "ble 0x" << Base::HEX8 << (rb-3) << endl);
+      if((cpsr & CPSR_Z) ||
+         (!(cpsr & CPSR_N) && (cpsr & CPSR_V)) ||
+         (((cpsr & CPSR_N)) && !(cpsr & CPSR_V)))
+        write_register(15, rb);
+      return 0;
     }
 
     //B(2) unconditional branch
@@ -1476,12 +1597,7 @@ int Thumbulator::execute()  // NOLINT (readability-function-size)
     #ifdef THUMB_STATS
       ++_stats.branches;
     #endif
-      rb = (inst >> 0) & 0x7FF;
-      if(rb & (1 << 10))
-        rb |= (~0U) << 11;
-      rb <<= 1;
-      rb += pc;
-      rb += 2;
+      rb = decodedParam[instructionPtr >> 1];
       DO_DISS(statusMsg << "B 0x" << Base::HEX8 << (rb-3) << endl);
       write_register(15, rb);
       return 0;
@@ -1510,44 +1626,43 @@ int Thumbulator::execute()  // NOLINT (readability-function-size)
     }
 #endif
 
-    //BL/BLX(1)
-    case Op::blx1: {
-      if((inst & 0x1800) == 0x1000) //H=b10
-      {
-        DO_DISS(statusMsg << endl);
-        rb = inst & ((1 << 11) - 1);
-        if(rb & 1<<10) rb |= (~((1 << 11) - 1)); //sign extend
-        rb <<= 12;
-        rb += pc;
-        write_register(14, rb);
-        return 0;
-      }
-      else if((inst & 0x1800) == 0x1800) //H=b11
-      {
-        //branch to thumb
-        rb = read_register(14);
-        rb += (inst & ((1 << 11) - 1)) << 1;
-        rb += 2;
-        DO_DISS(statusMsg << "bl 0x" << Base::HEX8 << (rb-3) << endl);
-        write_register(14, (pc-2) | 1);
-        write_register(15, rb);
-        return 0;
-      }
-      else if((inst & 0x1800) == 0x0800) //H=b01
-      {
-        //fprintf(stderr,"cannot branch to arm 0x%08X 0x%04X\n",pc,inst);
-        // fxq: this should exit the code without having to detect it
-        // TJ: seems to be not used
-        rb = read_register(14);
-        rb += (inst & ((1 << 11) - 1)) << 1;
-        rb &= 0xFFFFFFFC;
-        rb += 2;
-        DO_DISS(statusMsg << "bl 0x" << Base::HEX8 << (rb-3) << endl);
-        write_register(14, (pc-2) | 1);
-        write_register(15, rb);
-        return 0;
-      }
-      break;
+    //BL/BLX(1) variants
+    // (bl, blx_thumb, blx_arm)
+    case Op::bl: {
+      // branch to label
+      DO_DISS(statusMsg << endl);
+      rb = inst & ((1 << 11) - 1);
+      if(rb & 1 << 10) rb |= (~((1 << 11) - 1)); //sign extend
+      rb <<= 12;
+      rb += pc;
+      write_register(14, rb);
+      return 0;
+    }
+
+    case Op::blx_thumb: {
+      // branch to label, switch to thumb
+      rb = read_register(14);
+      rb += (inst & ((1 << 11) - 1)) << 1;
+      rb += 2;
+      DO_DISS(statusMsg << "bl 0x" << Base::HEX8 << (rb-3) << endl);
+      write_register(14, (pc-2) | 1);
+      write_register(15, rb);
+      return 0;
+    }
+
+    case Op::blx_arm: {
+      // branch to label, switch to arm
+      //fprintf(stderr,"cannot branch to arm 0x%08X 0x%04X\n",pc,inst);
+      // fxq: this should exit the code without having to detect it
+      // TJ: seems to be not used
+      rb = read_register(14);
+      rb += (inst & ((1 << 11) - 1)) << 1;
+      rb &= 0xFFFFFFFC;
+      rb += 2;
+      DO_DISS(statusMsg << "bl 0x" << Base::HEX8 << (rb-3) << endl);
+      write_register(14, (pc-2) | 1);
+      write_register(15, rb);
+      return 0;
     }
 
     //BLX(2)
