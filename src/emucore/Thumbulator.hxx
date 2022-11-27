@@ -47,7 +47,7 @@ class Cartridge;
 
 #ifdef DEBUGGER_SUPPORT
   #define THUMB_CYCLE_COUNT
-  //#define COUNT_OPS
+  #define COUNT_OPS
   #define THUMB_STATS
 #endif
 
@@ -160,10 +160,14 @@ class Thumbulator
       add1, add2, add3, add4, add5, add6, add7,
       and_,
       asr1, asr2,
-      b1, b2,
+      // b1 variants:
+      beq, bne, bcs, bcc, bmi, bpl, bvs, bvc, bhi, bls, bge, blt, bgt, ble,
+      b2,
       bic,
       bkpt,
-      blx1, blx2,
+      // blx1 variants:
+      bl, blx_thumb, blx_arm,
+      blx2,
       bx,
       cmn,
       cmp1, cmp2, cmp3,
@@ -236,7 +240,7 @@ class Thumbulator
     void write32(uInt32 addr, uInt32 data);
     void updateTimer(uInt32 cycles);
 
-    static Op decodeInstructionWord(uint16_t inst);
+    Op decodeInstructionWord(uint16_t inst, uInt32 pc);
 
     void do_zflag(uInt32 x);
     void do_nflag(uInt32 x);
@@ -274,6 +278,7 @@ class Thumbulator
     uInt32 cStart{0};
     uInt32 cStack{0};
     const unique_ptr<Op[]> decodedRom;  // NOLINT
+    const unique_ptr<uInt32[]> decodedParam;  // NOLINT
     uInt16* ram{nullptr};
     std::array<uInt32, 16> reg_norm; // normal execution mode, do not have a thread mode
     uInt32 cpsr{0};
