@@ -123,6 +123,10 @@ using Common::Base;
   #define INC_ARM_CYCLES(m)
 #endif
 
+#define do_znflags(x) znFlags=(x)
+#define do_cflag_bit(x) cFlag = (x)
+#define do_vflag_bit(x) vFlag = (x);
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Thumbulator::Thumbulator(const uInt16* rom_ptr, uInt16* ram_ptr, uInt32 rom_size,
                          const uInt32 c_base, const uInt32 c_start, const uInt32 c_stack,
@@ -819,52 +823,17 @@ void Thumbulator::write_register(uInt32 reg, uInt32 data, bool isFlowBreak)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Thumbulator::do_zflag(uInt32 x)
-{
-  if(x == 0) cpsr |= CPSR_Z;  else cpsr &= ~CPSR_Z;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Thumbulator::do_nflag(uInt32 x)
-{
-  if(x & 0x80000000) cpsr |= CPSR_N;  else cpsr &= ~CPSR_N;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Thumbulator::do_cflag(uInt32 a, uInt32 b, uInt32 c)
-{
-  uInt32 rc = (a & 0x7FFFFFFF) + (b & 0x7FFFFFFF) + c; //carry in
-  rc = (rc >> 31) + (a >> 31) + (b >> 31);             //carry out
-  if(rc & 2)
-    cpsr |= CPSR_C;
-  else
-    cpsr &= ~CPSR_C;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Thumbulator::do_vflag(uInt32 a, uInt32 b, uInt32 c)
+void Thumbulator::do_cvflag(uInt32 a, uInt32 b, uInt32 c)
 {
   uInt32 rc = (a & 0x7FFFFFFF) + (b & 0x7FFFFFFF) + c; //carry in
   rc >>= 31; //carry in in lsbit
   uInt32 rd = (rc & 1) + ((a >> 31) & 1) + ((b >> 31) & 1); //carry out
   rd >>= 1; //carry out in lsbit
-  rc = (rc^rd) & 1; //if carry in != carry out then signed overflow
-  if(rc)
-    cpsr |= CPSR_V;
-  else
-    cpsr &= ~CPSR_V;
-}
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Thumbulator::do_cflag_bit(uInt32 x)
-{
-  if(x) cpsr |= CPSR_C;  else cpsr &= ~CPSR_C;
-}
+  vFlag = (rc ^ rd) & 1; //if carry in != carry out then signed overflow
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Thumbulator::do_vflag_bit(uInt32 x)
-{
-  if(x) cpsr |= CPSR_V;  else cpsr &= ~CPSR_V;
+  rc += (a >> 31) + (b >> 31);             //carry out
+  cFlag = rc & 2;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1208,13 +1177,12 @@ inline int Thumbulator::execute()  // NOLINT (readability-function-size)
       ra = read_register(rd);
       rb = read_register(rm);
       rc = ra + rb;
-      if(cpsr & CPSR_C)
+      if(cFlag)
         ++rc;
       write_register(rd, rc);
-      do_nflag(rc);
-      do_zflag(rc);
-      if(cpsr & CPSR_C) { do_cflag(ra, rb, 1); do_vflag(ra, rb, 1); }
-      else              { do_cflag(ra, rb, 0); do_vflag(ra, rb, 0); }
+      do_znflags(rc);
+      if(cFlag) do_cvflag(ra, rb, 1);
+      else      do_cvflag(ra, rb, 0);
       return 0;
     }
 
@@ -1231,10 +1199,8 @@ inline int Thumbulator::execute()  // NOLINT (readability-function-size)
         rc = ra + rb;
         //fprintf(stderr,"0x%08X = 0x%08X + 0x%08X\n",rc,ra,rb);
         write_register(rd, rc);
-        do_nflag(rc);
-        do_zflag(rc);
-        do_cflag(ra, rb, 0);
-        do_vflag(ra, rb, 0);
+        do_znflags(rc);
+        do_cvflag(ra, rb, 0);
         return 0;
       }
       else
@@ -1252,10 +1218,8 @@ inline int Thumbulator::execute()  // NOLINT (readability-function-size)
       ra = read_register(rd);
       rc = ra + rb;
       write_register(rd, rc);
-      do_nflag(rc);
-      do_zflag(rc);
-      do_cflag(ra, rb, 0);
-      do_vflag(ra, rb, 0);
+      do_znflags(rc);
+      do_cvflag(ra, rb, 0);
       return 0;
     }
 
@@ -1269,10 +1233,8 @@ inline int Thumbulator::execute()  // NOLINT (readability-function-size)
       rb = read_register(rm);
       rc = ra + rb;
       write_register(rd, rc);
-      do_nflag(rc);
-      do_zflag(rc);
-      do_cflag(ra, rb, 0);
-      do_vflag(ra, rb, 0);
+      do_znflags(rc);
+      do_cvflag(ra, rb, 0);
       return 0;
     }
 
@@ -1295,7 +1257,7 @@ inline int Thumbulator::execute()  // NOLINT (readability-function-size)
         if((rc & 1) == 0)
           fatalError("add pc", pc, rc, " produced an arm address");
 #endif
-        //rc &= ~1; //write_register may do this as well
+        //rc &= ~1; //write_register may f this as well
         rc += 2;  //The program counter is special
       }
       //fprintf(stderr,"0x%08X = 0x%08X + 0x%08X\n",rc,ra,rb);
@@ -1347,8 +1309,7 @@ inline int Thumbulator::execute()  // NOLINT (readability-function-size)
       rb = read_register(rm);
       rc = ra & rb;
       write_register(rd, rc);
-      do_nflag(rc);
-      do_zflag(rc);
+      do_znflags(rc);
       return 0;
     }
 
@@ -1381,8 +1342,7 @@ inline int Thumbulator::execute()  // NOLINT (readability-function-size)
           rc |= (~0U) << (32-rb);
       }
       write_register(rd, rc);
-      do_nflag(rc);
-      do_zflag(rc);
+      do_znflags(rc);
       INC_SHIFT_CYCLES;
       return 0;
     }
@@ -1422,8 +1382,7 @@ inline int Thumbulator::execute()  // NOLINT (readability-function-size)
         }
       }
       write_register(rd, rc);
-      do_nflag(rc);
-      do_zflag(rc);
+      do_znflags(rc);
       INC_SHIFT_CYCLES;
       return 0;
     }
@@ -1436,7 +1395,7 @@ inline int Thumbulator::execute()  // NOLINT (readability-function-size)
 #endif
       rb = decodedParam[instructionPtr >> 1];
       DO_DISS(statusMsg << "beq 0x" << Base::HEX8 << (rb-3) << endl);
-      if(cpsr & CPSR_Z)
+      if(!znFlags)
         write_register(15, rb);
       return 0;
     }
@@ -1447,7 +1406,7 @@ inline int Thumbulator::execute()  // NOLINT (readability-function-size)
 #endif
       rb = decodedParam[instructionPtr >> 1];
       DO_DISS(statusMsg << "bne 0x" << Base::HEX8 << (rb-3) << endl);
-      if(!(cpsr & CPSR_Z))
+      if(znFlags)
         write_register(15, rb);
       return 0;
     }
@@ -1458,7 +1417,7 @@ inline int Thumbulator::execute()  // NOLINT (readability-function-size)
 #endif
       rb = decodedParam[instructionPtr >> 1];
       DO_DISS(statusMsg << "bcs 0x" << Base::HEX8 << (rb-3) << endl);
-      if(cpsr & CPSR_C)
+      if(cFlag)
         write_register(15, rb);
       return 0;
     }
@@ -1469,7 +1428,7 @@ inline int Thumbulator::execute()  // NOLINT (readability-function-size)
 #endif
       rb = decodedParam[instructionPtr >> 1];
       DO_DISS(statusMsg << "bcc 0x" << Base::HEX8 << (rb-3) << endl);
-      if(!(cpsr & CPSR_C))
+      if(!cFlag)
         write_register(15, rb);
       return 0;
     }
@@ -1480,7 +1439,7 @@ inline int Thumbulator::execute()  // NOLINT (readability-function-size)
 #endif
       rb = decodedParam[instructionPtr >> 1];
       DO_DISS(statusMsg << "bmi 0x" << Base::HEX8 << (rb-3) << endl);
-      if(cpsr & CPSR_N)
+      if(znFlags & 0x80000000)
         write_register(15, rb);
       return 0;
     }
@@ -1491,7 +1450,7 @@ inline int Thumbulator::execute()  // NOLINT (readability-function-size)
 #endif
       rb = decodedParam[instructionPtr >> 1];
       DO_DISS(statusMsg << "bpl 0x" << Base::HEX8 << (rb-3) << endl);
-      if(!(cpsr & CPSR_N))
+      if(!(znFlags & 0x80000000))
         write_register(15, rb);
       return 0;
     }
@@ -1502,7 +1461,7 @@ inline int Thumbulator::execute()  // NOLINT (readability-function-size)
 #endif
       rb = decodedParam[instructionPtr >> 1];
       DO_DISS(statusMsg << "bvs 0x" << Base::HEX8 << (rb-3) << endl);
-      if(cpsr & CPSR_V)
+      if(vFlag)
         write_register(15, rb);
       return 0;
     }
@@ -1513,7 +1472,7 @@ inline int Thumbulator::execute()  // NOLINT (readability-function-size)
 #endif
       rb = decodedParam[instructionPtr >> 1];
       DO_DISS(statusMsg << "bvc 0x" << Base::HEX8 << (rb-3) << endl);
-      if(!(cpsr & CPSR_V))
+      if(!vFlag)
         write_register(15, rb);
       return 0;
     }
@@ -1524,7 +1483,7 @@ inline int Thumbulator::execute()  // NOLINT (readability-function-size)
 #endif
       rb = decodedParam[instructionPtr >> 1];
       DO_DISS(statusMsg << "bhi 0x" << Base::HEX8 << (rb-3) << endl);
-      if((cpsr & CPSR_C) && (!(cpsr & CPSR_Z)))
+      if(cFlag && znFlags)
         write_register(15, rb);
       return 0;
     }
@@ -1535,7 +1494,7 @@ inline int Thumbulator::execute()  // NOLINT (readability-function-size)
 #endif
       rb = decodedParam[instructionPtr >> 1];
       DO_DISS(statusMsg << "bls 0x" << Base::HEX8 << (rb-3) << endl);
-      if((cpsr & CPSR_Z) || (!(cpsr & CPSR_C)))
+      if(!znFlags || !cFlag)
         write_register(15, rb);
       return 0;
     }
@@ -1546,8 +1505,8 @@ inline int Thumbulator::execute()  // NOLINT (readability-function-size)
 #endif
       rb = decodedParam[instructionPtr >> 1];
       DO_DISS(statusMsg << "bge 0x" << Base::HEX8 << (rb-3) << endl);
-      if(((cpsr & CPSR_N) && (cpsr & CPSR_V)) ||
-         ((!(cpsr & CPSR_N)) && (!(cpsr & CPSR_V))))
+      if(((znFlags & 0x80000000) && vFlag) ||
+         ((!(znFlags & 0x80000000)) && !vFlag))
         write_register(15, rb);
       return 0;
     }
@@ -1558,8 +1517,8 @@ inline int Thumbulator::execute()  // NOLINT (readability-function-size)
 #endif
       rb = decodedParam[instructionPtr >> 1];
       DO_DISS(statusMsg << "blt 0x" << Base::HEX8 << (rb-3) << endl);
-      if((!(cpsr & CPSR_N) && (cpsr & CPSR_V)) ||
-         (((cpsr & CPSR_N)) && !(cpsr & CPSR_V)))
+      if((!(znFlags & 0x80000000) && vFlag) ||
+         (((znFlags & 0x80000000)) && !vFlag))
         write_register(15, rb);
       return 0;
     }
@@ -1570,10 +1529,10 @@ inline int Thumbulator::execute()  // NOLINT (readability-function-size)
 #endif
       rb = decodedParam[instructionPtr >> 1];
       DO_DISS(statusMsg << "bgt 0x" << Base::HEX8 << (rb-3) << endl);
-      if(!(cpsr & CPSR_Z))
+      if(znFlags)
       {
-        if(((cpsr & CPSR_N) && (cpsr & CPSR_V)) ||
-           ((!(cpsr & CPSR_N)) && (!(cpsr & CPSR_V))))
+        if(((znFlags & 0x80000000) && vFlag) ||
+           ((!(znFlags & 0x80000000)) && !vFlag))
           write_register(15, rb);
       }
       return 0;
@@ -1585,9 +1544,9 @@ inline int Thumbulator::execute()  // NOLINT (readability-function-size)
 #endif
       rb = decodedParam[instructionPtr >> 1];
       DO_DISS(statusMsg << "ble 0x" << Base::HEX8 << (rb-3) << endl);
-      if((cpsr & CPSR_Z) ||
-         (!(cpsr & CPSR_N) && (cpsr & CPSR_V)) ||
-         (((cpsr & CPSR_N)) && !(cpsr & CPSR_V)))
+      if(!znFlags ||
+         (!(znFlags & 0x80000000) && vFlag) ||
+         (((znFlags & 0x80000000)) && !vFlag))
         write_register(15, rb);
       return 0;
     }
@@ -1612,8 +1571,7 @@ inline int Thumbulator::execute()  // NOLINT (readability-function-size)
       rb = read_register(rm);
       rc = ra & (~rb);
       write_register(rd, rc);
-      do_nflag(rc);
-      do_zflag(rc);
+      do_znflags(rc);
       return 0;
     }
 
@@ -1938,10 +1896,8 @@ inline int Thumbulator::execute()  // NOLINT (readability-function-size)
       ra = read_register(rn);
       rb = read_register(rm);
       rc = ra + rb;
-      do_nflag(rc);
-      do_zflag(rc);
-      do_cflag(ra, rb, 0);
-      do_vflag(ra, rb, 0);
+      do_znflags(rc);
+      do_cvflag(ra, rb, 0);
       return 0;
     }
 
@@ -1953,10 +1909,8 @@ inline int Thumbulator::execute()  // NOLINT (readability-function-size)
       ra = read_register(rn);
       rc = ra - rb;
       //fprintf(stderr,"0x%08X 0x%08X\n",ra,rb);
-      do_nflag(rc);
-      do_zflag(rc);
-      do_cflag(ra, ~rb, 1);
-      do_vflag(ra, ~rb, 1);
+      do_znflags(rc);
+      do_cvflag(ra, ~rb, 1);
       return 0;
     }
 
@@ -1969,10 +1923,8 @@ inline int Thumbulator::execute()  // NOLINT (readability-function-size)
       rb = read_register(rm);
       rc = ra - rb;
       //fprintf(stderr,"0x%08X 0x%08X\n",ra,rb);
-      do_nflag(rc);
-      do_zflag(rc);
-      do_cflag(ra, ~rb, 1);
-      do_vflag(ra, ~rb, 1);
+      do_znflags(rc);
+      do_cvflag(ra, ~rb, 1);
       return 0;
     }
 
@@ -1993,10 +1945,8 @@ inline int Thumbulator::execute()  // NOLINT (readability-function-size)
       ra = read_register(rn);
       rb = read_register(rm);
       rc = ra - rb;
-      do_nflag(rc);
-      do_zflag(rc);
-      do_cflag(ra, ~rb, 1);
-      do_vflag(ra, ~rb, 1);
+      do_znflags(rc);
+      do_cvflag(ra, ~rb, 1);
       return 0;
     }
 
@@ -2029,8 +1979,7 @@ inline int Thumbulator::execute()  // NOLINT (readability-function-size)
       rb = read_register(rm);
       rc = ra ^ rb;
       write_register(rd, rc);
-      do_nflag(rc);
-      do_zflag(rc);
+      do_znflags(rc);
       return 0;
     }
 
@@ -2267,8 +2216,7 @@ inline int Thumbulator::execute()  // NOLINT (readability-function-size)
         rc <<= rb;
       }
       write_register(rd, rc);
-      do_nflag(rc);
-      do_zflag(rc);
+      do_znflags(rc);
       INC_SHIFT_CYCLES;
       return 0;
     }
@@ -2300,8 +2248,7 @@ inline int Thumbulator::execute()  // NOLINT (readability-function-size)
         rc = 0;
       }
       write_register(rd, rc);
-      do_nflag(rc);
-      do_zflag(rc);
+      do_znflags(rc);
       INC_SHIFT_CYCLES;
       return 0;
     }
@@ -2324,8 +2271,7 @@ inline int Thumbulator::execute()  // NOLINT (readability-function-size)
         rc >>= rb;
       }
       write_register(rd, rc);
-      do_nflag(rc);
-      do_zflag(rc);
+      do_znflags(rc);
       INC_SHIFT_CYCLES;
       return 0;
     }
@@ -2357,8 +2303,7 @@ inline int Thumbulator::execute()  // NOLINT (readability-function-size)
         rc = 0;
       }
       write_register(rd, rc);
-      do_nflag(rc);
-      do_zflag(rc);
+      do_znflags(rc);
       INC_SHIFT_CYCLES;
       return 0;
     }
@@ -2369,8 +2314,7 @@ inline int Thumbulator::execute()  // NOLINT (readability-function-size)
       rd = (inst >> 8) & 0x07;
       DO_DISS(statusMsg << "movs r" << dec << rd << ",#0x" << Base::HEX2 << rb << endl);
       write_register(rd, rb);
-      do_nflag(rb);
-      do_zflag(rb);
+      do_znflags(rb);
       return 0;
     }
 
@@ -2382,8 +2326,7 @@ inline int Thumbulator::execute()  // NOLINT (readability-function-size)
       rc = read_register(rn);
       //fprintf(stderr,"0x%08X\n",rc);
       write_register(rd, rc);
-      do_nflag(rc);
-      do_zflag(rc);
+      do_znflags(rc);
       do_cflag_bit(0);
       do_vflag_bit(0);
       return 0;
@@ -2437,8 +2380,7 @@ inline int Thumbulator::execute()  // NOLINT (readability-function-size)
     #endif
       rc = ra * rb;
       write_register(rd, rc);
-      do_nflag(rc);
-      do_zflag(rc);
+      do_znflags(rc);
       return 0;
     }
 
@@ -2450,8 +2392,7 @@ inline int Thumbulator::execute()  // NOLINT (readability-function-size)
       ra = read_register(rm);
       rc = (~ra);
       write_register(rd, rc);
-      do_nflag(rc);
-      do_zflag(rc);
+      do_znflags(rc);
       return 0;
     }
 
@@ -2463,10 +2404,8 @@ inline int Thumbulator::execute()  // NOLINT (readability-function-size)
       ra = read_register(rm);
       rc = 0 - ra;
       write_register(rd, rc);
-      do_nflag(rc);
-      do_zflag(rc);
-      do_cflag(0, ~ra, 1);
-      do_vflag(0, ~ra, 1);
+      do_znflags(rc);
+      do_cvflag(0, ~ra, 1);
       return 0;
     }
 
@@ -2479,8 +2418,7 @@ inline int Thumbulator::execute()  // NOLINT (readability-function-size)
       rb = read_register(rm);
       rc = ra | rb;
       write_register(rd, rc);
-      do_nflag(rc);
-      do_zflag(rc);
+      do_znflags(rc);
       return 0;
     }
 
@@ -2688,8 +2626,7 @@ inline int Thumbulator::execute()  // NOLINT (readability-function-size)
         }
       }
       write_register(rd, rc);
-      do_nflag(rc);
-      do_zflag(rc);
+      do_znflags(rc);
       INC_SHIFT_CYCLES;
       return 0;
     }
@@ -2702,20 +2639,11 @@ inline int Thumbulator::execute()  // NOLINT (readability-function-size)
       ra = read_register(rd);
       rb = read_register(rm);
       rc = ra - rb;
-      if(!(cpsr & CPSR_C)) --rc;
+      if(!cFlag) --rc;
       write_register(rd, rc);
-      do_nflag(rc);
-      do_zflag(rc);
-      if(cpsr & CPSR_C)
-      {
-        do_cflag(ra, ~rb, 1);
-        do_vflag(ra, ~rb, 1);
-      }
-      else
-      {
-        do_cflag(ra, ~rb, 0);
-        do_vflag(ra, ~rb, 0);
-      }
+      do_znflags(rc);
+      if(cFlag) do_cvflag(ra, ~rb, 1);
+      else      do_cvflag(ra, ~rb, 0);
       return 0;
     }
 
@@ -2901,10 +2829,8 @@ inline int Thumbulator::execute()  // NOLINT (readability-function-size)
       ra = read_register(rn);
       rc = ra - rb;
       write_register(rd, rc);
-      do_nflag(rc);
-      do_zflag(rc);
-      do_cflag(ra, ~rb, 1);
-      do_vflag(ra, ~rb, 1);
+      do_znflags(rc);
+      do_cvflag(ra, ~rb, 1);
       return 0;
     }
 
@@ -2916,10 +2842,8 @@ inline int Thumbulator::execute()  // NOLINT (readability-function-size)
       ra = read_register(rd);
       rc = ra - rb;
       write_register(rd, rc);
-      do_nflag(rc);
-      do_zflag(rc);
-      do_cflag(ra, ~rb, 1);
-      do_vflag(ra, ~rb, 1);
+      do_znflags(rc);
+      do_cvflag(ra, ~rb, 1);
       return 0;
     }
 
@@ -2933,10 +2857,8 @@ inline int Thumbulator::execute()  // NOLINT (readability-function-size)
       rb = read_register(rm);
       rc = ra - rb;
       write_register(rd, rc);
-      do_nflag(rc);
-      do_zflag(rc);
-      do_cflag(ra, ~rb, 1);
-      do_vflag(ra, ~rb, 1);
+      do_znflags(rc);
+      do_cvflag(ra, ~rb, 1);
       return 0;
     }
 
@@ -2952,16 +2874,16 @@ inline int Thumbulator::execute()  // NOLINT (readability-function-size)
     }
 
     //SWI
-    case Op::swi: {
+    case Op::swi: { // never used
       rb = inst & 0xFF;
       DO_DISS(statusMsg << "swi 0x" << Base::HEX2 << rb << endl);
 
-      if(rb == 0xCC)
-      {
-        write_register(0, cpsr);
-        return 0;
-      }
-      else
+      //if(rb == 0xCC)
+      //{
+      //  write_register(0, cpsr);
+      //  return 0;
+      //}
+      //else
       {
 #if defined(THUMB_DISS)
         statusMsg << endl << endl << "swi 0x" << Base::HEX2 << rb << endl;
@@ -3004,8 +2926,7 @@ inline int Thumbulator::execute()  // NOLINT (readability-function-size)
       ra = read_register(rn);
       rb = read_register(rm);
       rc = ra & rb;
-      do_nflag(rc);
-      do_zflag(rc);
+      do_znflags(rc);
       return 0;
     }
 
@@ -3059,7 +2980,7 @@ int Thumbulator::reset()
   reg_norm[14] = cBase;               // LR
   reg_norm[15] = (cStart + 2) | 1;    // PC (+2 for pipeline, lower bit for THUMB)
 
-  cpsr = 0;
+  znFlags = cFlag = vFlag = 0;
   handler_mode = false;
 
   systick_ctrl = 0x00000004;
