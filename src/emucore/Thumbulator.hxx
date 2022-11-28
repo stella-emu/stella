@@ -242,12 +242,7 @@ class Thumbulator
 
     Op decodeInstructionWord(uint16_t inst, uInt32 pc);
 
-    void do_zflag(uInt32 x);
-    void do_nflag(uInt32 x);
-    void do_cflag(uInt32 a, uInt32 b, uInt32 c);
-    void do_vflag(uInt32 a, uInt32 b, uInt32 c);
-    void do_cflag_bit(uInt32 x);
-    void do_vflag_bit(uInt32 x);
+    void do_cvflag(uInt32 a, uInt32 b, uInt32 c);
 
   #ifndef UNSAFE_OPTIMIZATIONS
     // Throw a runtime_error exception containing an error referencing the
@@ -281,7 +276,9 @@ class Thumbulator
     const unique_ptr<uInt32[]> decodedParam;  // NOLINT
     uInt16* ram{nullptr};
     std::array<uInt32, 16> reg_norm; // normal execution mode, do not have a thread mode
-    uInt32 cpsr{0};
+    uInt32 znFlags{0};
+    uInt32 cFlag{0};
+    uInt32 vFlag{0};
     MamModeType mamcr{MamModeType::mode0};
     bool handler_mode{false};
     uInt32 systick_ctrl{0}, systick_reload{0}, systick_count{0}, systick_calibrate{0};
