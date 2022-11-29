@@ -132,9 +132,31 @@ class Playfield : public Serializable
     bool load(Serializer& in) override;
 
     /**
-      Tick one color clock. Inline for performance (implementation below).
+      Tick one color clock. Inline for performance.
      */
-    FORCE_INLINE void tick(uInt32 x);
+    FORCE_INLINE void tick(uInt32 x)
+    {
+      myX = x;
+
+      // Reflected flag is updated only at x = 0 or x = 79
+      if (myX == TIAConstants::H_PIXEL / 2-1 || myX == 0) myRefp = myReflected;
+
+      if (x & 0x03) return;
+
+      uInt32 currentPixel;
+
+      if (myEffectivePattern == 0) {
+        currentPixel = 0;
+      } else if (x < TIAConstants::H_PIXEL / 2 - 1) {
+        currentPixel = myEffectivePattern & (1 << (x >> 2));
+      } else if (myRefp) {
+        currentPixel = myEffectivePattern & (1 << (39 - (x >> 2)));
+      } else {
+        currentPixel = myEffectivePattern & (1 << ((x >> 2) - 20));
+      }
+
+      collision = currentPixel ? myCollisionMaskEnabled : myCollisionMaskDisabled;
+    }
 
   public:
 
@@ -260,34 +282,5 @@ class Playfield : public Serializable
     Playfield& operator=(const Playfield&) = delete;
     Playfield& operator=(Playfield&&) = delete;
 };
-
-// ############################################################################
-// Implementation
-// ############################################################################
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FORCE_INLINE void Playfield::tick(uInt32 x)
-{
-  myX = x;
-
-  // Reflected flag is updated only at x = 0 or x = 79
-  if (myX == TIAConstants::H_PIXEL / 2-1 || myX == 0) myRefp = myReflected;
-
-  if (x & 0x03) return;
-
-  uInt32 currentPixel;
-
-  if (myEffectivePattern == 0) {
-      currentPixel = 0;
-  } else if (x < TIAConstants::H_PIXEL / 2 - 1) {
-      currentPixel = myEffectivePattern & (1 << (x >> 2));
-  } else if (myRefp) {
-      currentPixel = myEffectivePattern & (1 << (39 - (x >> 2)));
-  } else {
-      currentPixel = myEffectivePattern & (1 << ((x >> 2) - 20));
-  }
-
-  collision = currentPixel ? myCollisionMaskEnabled : myCollisionMaskDisabled;
-}
 
 #endif // TIA_PLAYFIELD
