@@ -165,14 +165,80 @@ class Ball : public Serializable
     bool load(Serializer& in) override;
 
     /**
-      Process a single movement tick. Inline for performance (implementation below).
+      Process a single movement tick. Inline for performance.
      */
-    FORCE_INLINE void movementTick(uInt32 clock, bool hblank);
+    FORCE_INLINE void movementTick(uInt32 clock, bool hblank)
+    {
+      myLastMovementTick = myCounter;
+
+      // Stop movement once the number of clocks according to HMBL is reached
+      if (clock == myHmmClocks)
+        isMoving = false;
+
+      if(isMoving)
+      {
+        // Process the tick if we are in hblank. Otherwise, the tick is either masked
+        // by an ordinary tick or merges two consecutive ticks into a single tick (inverted
+        // movement clock phase mode).
+        if (hblank) tick(false);
+
+        // Track a tick outside hblank for later processing
+        myInvertedPhaseClock = !hblank;
+      }
+    }
 
     /**
-      Tick one color clock. Inline for performance (implementation below).
+      Tick one color clock. Inline for performance.
      */
-    FORCE_INLINE void tick(bool isReceivingRegularClock = true);
+    FORCE_INLINE void tick(bool isReceivingRegularClock = true)
+    {
+      // If we are in inverted movement clock phase mode and a movement tick occurred, it
+      // will supress the tick.
+      if(myUseInvertedPhaseClock && myInvertedPhaseClock)
+      {
+        myInvertedPhaseClock = false;
+        return;
+      }
+
+      // Turn on the signal if the render counter reaches the threshold
+      mySignalActive = myIsRendering && myRenderCounter >= 0;
+
+      // Consider enabled status and the signal to determine visibility (as represented
+      // by the collision mask)
+      collision = (mySignalActive && myIsEnabled) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
+
+      // Regular clock pulse during movement -> starfield mode
+      const bool starfieldEffect = isMoving && isReceivingRegularClock;
+
+      // Decode value that triggers rendering
+      if (myCounter == 156) {
+        myIsRendering = true;
+        myRenderCounter = renderCounterOffset;
+
+        // What follows is an effective description of ball width in starfield mode.
+        const uInt8 starfieldDelta = (myCounter + TIAConstants::H_PIXEL - myLastMovementTick) % 4;
+        if (starfieldEffect && starfieldDelta == 3 && myWidth < 4) ++myRenderCounter;
+
+        switch (starfieldDelta) {
+          case 3:
+            myEffectiveWidth = myWidth == 1 ? 2 : myWidth;
+            break;
+
+          case 2:
+            myEffectiveWidth = 0;
+            break;
+
+          default:
+            myEffectiveWidth = myWidth;
+            break;
+        }
+
+      } else if (myIsRendering && ++myRenderCounter >= (starfieldEffect ? myEffectiveWidth : myWidth))
+        myIsRendering = false;
+
+      if (++myCounter >= TIAConstants::H_PIXEL)
+        myCounter = 0;
+    }
 
   public:
 
@@ -335,81 +401,5 @@ class Ball : public Serializable
     Ball& operator=(const Ball&) = delete;
     Ball& operator=(Ball&&) = delete;
 };
-
-// ############################################################################
-// Implementation
-// ############################################################################
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FORCE_INLINE void Ball::movementTick(uInt32 clock, bool hblank)
-{
-  myLastMovementTick = myCounter;
-
-  // Stop movement once the number of clocks according to HMBL is reached
-  if (clock == myHmmClocks)
-    isMoving = false;
-
-  if(isMoving)
-  {
-    // Process the tick if we are in hblank. Otherwise, the tick is either masked
-    // by an ordinary tick or merges two consecutive ticks into a single tick (inverted
-    // movement clock phase mode).
-    if (hblank) tick(false);
-
-    // Track a tick outside hblank for later processing
-    myInvertedPhaseClock = !hblank;
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FORCE_INLINE void Ball::tick(bool isReceivingRegularClock)
-{
-  // If we are in inverted movement clock phase mode and a movement tick occurred, it
-  // will supress the tick.
-  if(myUseInvertedPhaseClock && myInvertedPhaseClock)
-  {
-    myInvertedPhaseClock = false;
-    return;
-  }
-
-  // Turn on the signal if the render counter reaches the threshold
-  mySignalActive = myIsRendering && myRenderCounter >= 0;
-
-  // Consider enabled status and the signal to determine visibility (as represented
-  // by the collision mask)
-  collision = (mySignalActive && myIsEnabled) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
-
-  // Regular clock pulse during movement -> starfield mode
-  const bool starfieldEffect = isMoving && isReceivingRegularClock;
-
-  // Decode value that triggers rendering
-  if (myCounter == 156) {
-    myIsRendering = true;
-    myRenderCounter = renderCounterOffset;
-
-    // What follows is an effective description of ball width in starfield mode.
-    const uInt8 starfieldDelta = (myCounter + TIAConstants::H_PIXEL - myLastMovementTick) % 4;
-    if (starfieldEffect && starfieldDelta == 3 && myWidth < 4) ++myRenderCounter;
-
-    switch (starfieldDelta) {
-      case 3:
-        myEffectiveWidth = myWidth == 1 ? 2 : myWidth;
-        break;
-
-      case 2:
-        myEffectiveWidth = 0;
-        break;
-
-      default:
-        myEffectiveWidth = myWidth;
-        break;
-    }
-
-  } else if (myIsRendering && ++myRenderCounter >= (starfieldEffect ? myEffectiveWidth : myWidth))
-    myIsRendering = false;
-
-  if (++myCounter >= TIAConstants::H_PIXEL)
-      myCounter = 0;
-}
 
 #endif // TIA_BALL

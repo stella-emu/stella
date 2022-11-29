@@ -1452,7 +1452,7 @@ void TIA::cycle(uInt32 colorClocks)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::tickMovement()
+FORCE_INLINE void TIA::tickMovement()
 {
   if (!myMovementInProgress) return;
 
@@ -1538,7 +1538,7 @@ void TIA::applyRsync()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::nextLine()
+FORCE_INLINE void TIA::nextLine()
 {
   if (myLinesSinceChange >= 2) {
     cloneLastLine();
