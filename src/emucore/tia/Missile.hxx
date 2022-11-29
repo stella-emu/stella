@@ -141,7 +141,7 @@ class Missile : public Serializable
 // ############################################################################
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Missile::movementTick(uInt8 clock, uInt8 hclock, bool hblank)
+FORCE_INLINE void Missile::movementTick(uInt8 clock, uInt8 hclock, bool hblank)
 {
   if(clock == myHmmClocks) isMoving = false;
 
@@ -153,7 +153,7 @@ void Missile::movementTick(uInt8 clock, uInt8 hclock, bool hblank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Missile::tick(uInt8 hclock, bool isReceivingMclock)
+FORCE_INLINE void Missile::tick(uInt8 hclock, bool isReceivingMclock)
 {
   if(myUseInvertedPhaseClock && myInvertedPhaseClock)
   {
