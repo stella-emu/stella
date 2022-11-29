@@ -137,7 +137,7 @@ namespace BSPF
   #if defined(BSPF_WINDOWS)
     #define FORCE_INLINE __forceinline
   #else
-    #define FORCE_INLINE __attribute__((always_inline))
+    #define FORCE_INLINE inline __attribute__((always_inline))
   #endif
 
   // Get next power of two greater than or equal to the given value
