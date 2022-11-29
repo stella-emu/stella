@@ -134,6 +134,12 @@ namespace BSPF
     static const string ARCH = "NOARCH";
   #endif
 
+  #if defined(BSPF_WINDOWS)
+    #define FORCE_INLINE __forceinline
+  #else
+    #define FORCE_INLINE __attribute__((always_inline))
+  #endif
+
   // Get next power of two greater than or equal to the given value
   inline constexpr size_t nextPowerOfTwo(size_t size) {
     if(size < 2) return 1;

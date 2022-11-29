@@ -291,7 +291,7 @@ void Thumbulator::dump_regs()
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 Thumbulator::fetch16(uInt32 addr)
+FORCE_INLINE uInt32 Thumbulator::fetch16(uInt32 addr)
 {
 #ifndef UNSAFE_OPTIMIZATIONS
   uInt32 data = 0;
@@ -553,7 +553,7 @@ void Thumbulator::write32(uInt32 addr, uInt32 data)
 
 #ifndef UNSAFE_OPTIMIZATIONS
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Thumbulator::isInvalidROM(uInt32 addr) const
+FORCE_INLINE bool Thumbulator::isInvalidROM(uInt32 addr) const
 {
   const uInt32 romStart = configuration == ConfigureFor::DPCplus ? 0xc00 : 0x750; // was 0x800
 
@@ -561,7 +561,7 @@ bool Thumbulator::isInvalidROM(uInt32 addr) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Thumbulator::isInvalidRAM(uInt32 addr) const
+FORCE_INLINE bool Thumbulator::isInvalidRAM(uInt32 addr) const
 {
   // Note: addr is already checked for RAM (0x4xxxxxxx)
   switch(romSize) // CDFJ+ allows more than 8 KB RAM depending on ROM sizes
@@ -580,7 +580,7 @@ bool Thumbulator::isInvalidRAM(uInt32 addr) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Thumbulator::isProtectedRAM(uInt32 addr)
+FORCE_INLINE bool Thumbulator::isProtectedRAM(uInt32 addr)
 {
   // Protected is within the driver RAM.
   // For CDF variations parts of the driver RAM are reused to hold the
@@ -1138,7 +1138,7 @@ Thumbulator::Op Thumbulator::decodeInstructionWord(uint16_t inst, uInt32 pc) {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline int Thumbulator::execute()  // NOLINT (readability-function-size)
+FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
 {
   uInt32 sp, inst, ra, rb, rc, rm, rd, rn, rs;  // NOLINT
 
