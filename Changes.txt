@@ -28,6 +28,8 @@
 
   * Enhanced Kid Vid support to play tape audio
 
+  * Acclerated emulation up to ~15% (ARM).
+
   * Added BUS bankswitching support for some older demos
 
   * Fixed broken 7800 pause key support

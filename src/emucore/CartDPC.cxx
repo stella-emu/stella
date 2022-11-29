@@ -73,7 +73,7 @@ void CartridgeDPC::install(System& system)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline void CartridgeDPC::clockRandomNumberGenerator()
+FORCE_INLINE void CartridgeDPC::clockRandomNumberGenerator()
 {
   // Table for computing the input bit of the random number generator's
   // shift register (it's the NOT of the EOR of four bits)
@@ -91,7 +91,7 @@ inline void CartridgeDPC::clockRandomNumberGenerator()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline void CartridgeDPC::updateMusicModeDataFetchers()
+FORCE_INLINE void CartridgeDPC::updateMusicModeDataFetchers()
 {
   // Calculate the number of cycles since the last update
   const auto cycles = static_cast<uInt32>(mySystem->cycles() - myAudioCycles);

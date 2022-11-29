@@ -98,7 +98,7 @@ class FBBackendSDL2 : public FBBackend
       @param g      The green component of the color
       @param b      The blue component of the color
     */
-    inline void getRGB(uInt32 pixel, uInt8* r, uInt8* g, uInt8* b) const override
+    FORCE_INLINE void getRGB(uInt32 pixel, uInt8* r, uInt8* g, uInt8* b) const override
       { SDL_GetRGB(pixel, myPixelFormat, r, g, b); }
 
     /**

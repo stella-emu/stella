@@ -179,7 +179,7 @@ void LanczosResampler::fillFragment(float* fragment, uInt32 length)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline void LanczosResampler::shiftSamples(uInt32 samplesToShift)
+FORCE_INLINE void LanczosResampler::shiftSamples(uInt32 samplesToShift)
 {
   while (samplesToShift-- > 0) {
     if (myFormatFrom.stereo) {

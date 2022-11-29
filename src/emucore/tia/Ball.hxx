@@ -167,12 +167,12 @@ class Ball : public Serializable
     /**
       Process a single movement tick. Inline for performance (implementation below).
      */
-    inline void movementTick(uInt32 clock, bool hblank);
+    FORCE_INLINE void movementTick(uInt32 clock, bool hblank);
 
     /**
       Tick one color clock. Inline for performance (implementation below).
      */
-    inline void tick(bool isReceivingRegularClock = true);
+    FORCE_INLINE void tick(bool isReceivingRegularClock = true);
 
   public:
 

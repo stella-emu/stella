@@ -134,7 +134,7 @@ class Playfield : public Serializable
     /**
       Tick one color clock. Inline for performance (implementation below).
      */
-    inline void tick(uInt32 x);
+    FORCE_INLINE void tick(uInt32 x);
 
   public:
 

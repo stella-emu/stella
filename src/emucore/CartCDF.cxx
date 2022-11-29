@@ -172,7 +172,7 @@ void CartridgeCDF::install(System& system)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline void CartridgeCDF::updateMusicModeDataFetchers()
+FORCE_INLINE void CartridgeCDF::updateMusicModeDataFetchers()
 {
   // Calculate the number of cycles since the last update
   const auto cycles = static_cast<uInt32>(mySystem->cycles() - myAudioCycles);
