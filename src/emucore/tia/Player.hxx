@@ -87,71 +87,9 @@ class Player : public Serializable
     bool save(Serializer& out) const override;
     bool load(Serializer& in) override;
 
-    /**
-      Process a single movement tick. Inline for performance.
-    */
-    FORCE_INLINE void movementTick(uInt32 clock, bool hblank)
-    {
-      if (clock == myHmmClocks)
-        isMoving = false;
+    FORCE_INLINE void movementTick(uInt32 clock, bool hblank);
 
-      if(isMoving)
-      {
-        if (hblank) tick();
-        myInvertedPhaseClock = !hblank;
-      }
-    }
-
-    /**
-      Tick one color clock. Inline for performance.
-    */
-    FORCE_INLINE void tick()
-    {
-      if(myUseInvertedPhaseClock && myInvertedPhaseClock)
-      {
-        myInvertedPhaseClock = false;
-        return;
-      }
-
-      if (!myIsRendering || myRenderCounter < myRenderCounterTripPoint)
-        collision = myCollisionMaskDisabled;
-      else
-        collision = (myPattern & (1 << mySampleCounter)) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
-
-      if (myDecodes[myCounter]) {
-        myIsRendering = true;
-        mySampleCounter = 0;
-        myRenderCounter = renderCounterOffset;
-        myCopy = myDecodes[myCounter];
-      } else if (myIsRendering) {
-        ++myRenderCounter;
-
-        switch (myDivider) {
-          case 1:
-            if (myRenderCounter > 0)
-              ++mySampleCounter;
-
-            if (myRenderCounter >= 0 && myDividerChangeCounter >= 0 && myDividerChangeCounter-- == 0)
-              setDivider(myDividerPending);
-
-            break;
-
-          default:
-            if (myRenderCounter > 1 && (((myRenderCounter - 1) % myDivider) == 0))
-              ++mySampleCounter;
-
-            if (myRenderCounter > 0 && myDividerChangeCounter >= 0 && myDividerChangeCounter-- == 0)
-              setDivider(myDividerPending);
-
-            break;
-        }
-
-        if (mySampleCounter > 7) myIsRendering = false;
-      }
-
-      if (++myCounter >= TIAConstants::H_PIXEL) myCounter = 0;
-    }
-
+    FORCE_INLINE void tick();
 
   public:
 
@@ -213,5 +151,70 @@ class Player : public Serializable
     Player& operator=(const Player&) = delete;
     Player& operator=(Player&&) = delete;
 };
+
+// ############################################################################
+// Implementation
+// ############################################################################
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FORCE_INLINE void Player::movementTick(uInt32 clock, bool hblank)
+{
+  if (clock == myHmmClocks)
+    isMoving = false;
+
+  if(isMoving)
+  {
+    if (hblank) tick();
+    myInvertedPhaseClock = !hblank;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FORCE_INLINE void Player::tick()
+{
+  if(myUseInvertedPhaseClock && myInvertedPhaseClock)
+  {
+    myInvertedPhaseClock = false;
+    return;
+  }
+
+  if (!myIsRendering || myRenderCounter < myRenderCounterTripPoint)
+    collision = myCollisionMaskDisabled;
+  else
+    collision = (myPattern & (1 << mySampleCounter)) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
+
+  if (myDecodes[myCounter]) {
+    myIsRendering = true;
+    mySampleCounter = 0;
+    myRenderCounter = renderCounterOffset;
+    myCopy = myDecodes[myCounter];
+  } else if (myIsRendering) {
+    ++myRenderCounter;
+
+    switch (myDivider) {
+      case 1:
+        if (myRenderCounter > 0)
+          ++mySampleCounter;
+
+        if (myRenderCounter >= 0 && myDividerChangeCounter >= 0 && myDividerChangeCounter-- == 0)
+          setDivider(myDividerPending);
+
+        break;
+
+      default:
+        if (myRenderCounter > 1 && (((myRenderCounter - 1) % myDivider) == 0))
+          ++mySampleCounter;
+
+        if (myRenderCounter > 0 && myDividerChangeCounter >= 0 && myDividerChangeCounter-- == 0)
+          setDivider(myDividerPending);
+
+        break;
+    }
+
+    if (mySampleCounter > 7) myIsRendering = false;
+  }
+
+  if (++myCounter >= TIAConstants::H_PIXEL) myCounter = 0;
+}
 
 #endif // TIA_PLAYER
