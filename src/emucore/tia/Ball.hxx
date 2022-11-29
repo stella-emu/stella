@@ -341,7 +341,7 @@ class Ball : public Serializable
 // ############################################################################
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FORCE_INLINE void Ball::movementTick(uInt32 clock, bool hblank)
+void Ball::movementTick(uInt32 clock, bool hblank)
 {
   myLastMovementTick = myCounter;
 
@@ -362,7 +362,7 @@ FORCE_INLINE void Ball::movementTick(uInt32 clock, bool hblank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FORCE_INLINE void Ball::tick(bool isReceivingRegularClock)
+void Ball::tick(bool isReceivingRegularClock)
 {
   // If we are in inverted movement clock phase mode and a movement tick occurred, it
   // will supress the tick.
