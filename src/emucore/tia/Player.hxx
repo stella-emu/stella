@@ -157,7 +157,7 @@ class Player : public Serializable
 // ############################################################################
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FORCE_INLINE void Player::movementTick(uInt32 clock, bool hblank)
+void Player::movementTick(uInt32 clock, bool hblank)
 {
   if (clock == myHmmClocks)
     isMoving = false;
@@ -170,7 +170,7 @@ FORCE_INLINE void Player::movementTick(uInt32 clock, bool hblank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FORCE_INLINE void Player::tick()
+void Player::tick()
 {
   if(myUseInvertedPhaseClock && myInvertedPhaseClock)
   {

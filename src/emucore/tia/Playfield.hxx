@@ -266,7 +266,7 @@ class Playfield : public Serializable
 // ############################################################################
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FORCE_INLINE void Playfield::tick(uInt32 x)
+void Playfield::tick(uInt32 x)
 {
   myX = x;
 
