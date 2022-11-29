@@ -48,7 +48,7 @@ class Cartridge;
 #ifdef DEBUGGER_SUPPORT
   #define THUMB_CYCLE_COUNT
   #define COUNT_OPS
-  #define THUMB_STATS
+  //#define THUMB_STATS
 #endif
 
 #ifdef THUMB_CYCLE_COUNT

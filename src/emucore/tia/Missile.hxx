@@ -76,9 +76,9 @@ class Missile : public Serializable
     bool save(Serializer& out) const override;
     bool load(Serializer& in) override;
 
-    inline void movementTick(uInt8 clock, uInt8 hclock, bool hblank);
+    FORCE_INLINE void movementTick(uInt8 clock, uInt8 hclock, bool hblank);
 
-    inline void tick(uInt8 hclock, bool isReceivingMclock = true);
+    FORCE_INLINE void tick(uInt8 hclock, bool isReceivingMclock = true);
 
   public:
 

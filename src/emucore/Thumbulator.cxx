@@ -237,7 +237,7 @@ string Thumbulator::run(uInt32& cycles, bool irqDrivenAudio)
 
 #ifndef UNSAFE_OPTIMIZATIONS
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline int Thumbulator::fatalError(const char* opcode, uInt32 v1, const char* msg)
+int Thumbulator::fatalError(const char* opcode, uInt32 v1, const char* msg)
 {
   statusMsg << "Thumb ARM emulation fatal error: " << endl
             << opcode << "(" << Base::HEX8 << v1 << "), " << msg << endl;
@@ -248,7 +248,7 @@ inline int Thumbulator::fatalError(const char* opcode, uInt32 v1, const char* ms
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline int Thumbulator::fatalError(const char* opcode, uInt32 v1, uInt32 v2,
+int Thumbulator::fatalError(const char* opcode, uInt32 v1, uInt32 v2,
                                    const char* msg)
 {
   statusMsg << "Thumb ARM emulation fatal error: " << endl
@@ -777,7 +777,7 @@ uInt32 Thumbulator::read32(uInt32 addr)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 Thumbulator::read_register(uInt32 reg)
+FORCE_INLINE uInt32 Thumbulator::read_register(uInt32 reg)
 {
   reg &= 0xF;
 
@@ -789,15 +789,15 @@ uInt32 Thumbulator::read_register(uInt32 reg)
     if(data & 1)
     {
       DO_DBUG(statusMsg << "pc has lsbit set 0x" << Base::HEX8 << data << endl);
+      data &= ~1;
     }
-    data &= ~1;
   }
 #endif
   return data;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Thumbulator::write_register(uInt32 reg, uInt32 data, bool isFlowBreak)
+FORCE_INLINE void Thumbulator::write_register(uInt32 reg, uInt32 data, bool isFlowBreak)
 {
   reg &= 0xF;
 
@@ -827,12 +827,14 @@ void Thumbulator::do_cvflag(uInt32 a, uInt32 b, uInt32 c)
 {
   uInt32 rc = (a & 0x7FFFFFFF) + (b & 0x7FFFFFFF) + c; //carry in
   rc >>= 31; //carry in in lsbit
-  uInt32 rd = (rc & 1) + ((a >> 31) & 1) + ((b >> 31) & 1); //carry out
+  a >>= 31;
+  b >>= 31;
+  uInt32 rd = (rc & 1) + (a & 1) + (b & 1); //carry out
   rd >>= 1; //carry out in lsbit
 
   vFlag = (rc ^ rd) & 1; //if carry in != carry out then signed overflow
 
-  rc += (a >> 31) + (b >> 31);             //carry out
+  rc += a + b;             //carry out
   cFlag = rc & 2;
 }
 

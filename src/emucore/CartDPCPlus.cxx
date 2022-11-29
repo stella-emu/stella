@@ -145,7 +145,7 @@ void CartridgeDPCPlus::install(System& system)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline void CartridgeDPCPlus::clockRandomNumberGenerator()
+FORCE_INLINE void CartridgeDPCPlus::clockRandomNumberGenerator()
 {
   // Update random number generator (32-bit LFSR)
   myRandomNumber = ((myRandomNumber & (1<<10)) ? 0x10adab1e: 0x00) ^
@@ -153,7 +153,7 @@ inline void CartridgeDPCPlus::clockRandomNumberGenerator()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline void CartridgeDPCPlus::priorClockRandomNumberGenerator()
+FORCE_INLINE void CartridgeDPCPlus::priorClockRandomNumberGenerator()
 {
   // Update random number generator (32-bit LFSR, reversed)
   myRandomNumber = ((myRandomNumber & (1U<<31)) ?
@@ -162,7 +162,7 @@ inline void CartridgeDPCPlus::priorClockRandomNumberGenerator()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline void CartridgeDPCPlus::updateMusicModeDataFetchers()
+FORCE_INLINE void CartridgeDPCPlus::updateMusicModeDataFetchers()
 {
   // Calculate the number of cycles since the last update
   const auto cycles = static_cast<uInt32>(mySystem->cycles() - myAudioCycles);

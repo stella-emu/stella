@@ -87,9 +87,9 @@ class Player : public Serializable
     bool save(Serializer& out) const override;
     bool load(Serializer& in) override;
 
-    inline void movementTick(uInt32 clock, bool hblank);
+    FORCE_INLINE void movementTick(uInt32 clock, bool hblank);
 
-    inline void tick();
+    FORCE_INLINE void tick();
 
   public:
 

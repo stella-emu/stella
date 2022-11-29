@@ -585,7 +585,7 @@ void CartridgeCTY::wipeAllScores()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline void CartridgeCTY::updateMusicModeDataFetchers()
+FORCE_INLINE void CartridgeCTY::updateMusicModeDataFetchers()
 {
   // Calculate the number of cycles since the last update
   const auto cycles = static_cast<uInt32>(mySystem->cycles() - myAudioCycles);
