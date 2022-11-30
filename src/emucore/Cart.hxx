@@ -165,7 +165,7 @@ class Cartridge : public Device
 
       @return  Address of illegal access if one occurred, else 0
     */
-    uInt16 getIllegalRAMReadAccess() const {
+    inline uInt16 getIllegalRAMReadAccess() const {
       return myRamReadAccesses.size() > 0 ? myRamReadAccesses[0] : 0;
     }
 
@@ -176,7 +176,7 @@ class Cartridge : public Device
 
       @return  Address of illegal access if one occurred, else 0
     */
-    uInt16 getIllegalRAMWriteAccess() const { return myRamWriteAccess; }
+    inline uInt16 getIllegalRAMWriteAccess() const { return myRamWriteAccess; }
 
     /**
       Query the access counters

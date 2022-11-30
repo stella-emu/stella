@@ -25,8 +25,8 @@ class TrapArray
   public:
     TrapArray() = default;
 
-    bool isSet(const uInt16 address) const { return myCount[address]; }
-    bool isClear(const uInt16 address) const { return myCount[address] == 0; }
+    inline bool isSet(const uInt16 address) const { return myCount[address]; }
+    inline bool isClear(const uInt16 address) const { return myCount[address] == 0; }
 
     void add(const uInt16 address) { myCount[address]++; }
     void remove(const uInt16 address) { myCount[address]--; }
@@ -39,7 +39,7 @@ class TrapArray
     }
     void clearAll() { myInitialized = false; myCount.fill(0); }
 
-    bool isInitialized() const { return myInitialized; }
+    inline bool isInitialized() const { return myInitialized; }
 
   private:
     // The actual counts

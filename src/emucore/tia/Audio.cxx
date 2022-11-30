@@ -62,28 +62,6 @@ void Audio::setAudioQueue(const shared_ptr<AudioQueue>& queue)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Audio::tick()
-{
-  switch (myCounter) {
-    case 9:
-    case 81:
-      myChannel0.phase0();
-      myChannel1.phase0();
-      break;
-
-    case 37:
-    case 149:
-      phase1();
-      break;
-
-    default:
-      break;
-  }
-
-  if (++myCounter == 228) myCounter = 0;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Audio::phase1()
 {
   const uInt8 sample0 = myChannel0.phase1();
@@ -115,18 +93,6 @@ void Audio::addSample(uInt8 sample0, uInt8 sample1)
     mySampleIndex = 0;
     myCurrentFragment = myAudioQueue->enqueue(myCurrentFragment);
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AudioChannel& Audio::channel0()
-{
-  return myChannel0;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AudioChannel& Audio::channel1()
-{
-  return myChannel1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

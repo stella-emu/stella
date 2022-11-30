@@ -1591,7 +1591,7 @@ void TIA::scheduleCollisionUpdate()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::updateCollision()
+FORCE_INLINE void TIA::updateCollision()
 {
   myCollisionMask |= (
     myPlayer0.collision &
@@ -1604,7 +1604,7 @@ void TIA::updateCollision()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::renderPixel(uInt32 x, uInt32 y)
+FORCE_INLINE void TIA::renderPixel(uInt32 x, uInt32 y)
 {
   if (x >= TIAConstants::H_PIXEL) return;
 

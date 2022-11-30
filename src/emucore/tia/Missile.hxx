@@ -64,7 +64,7 @@ class Missile : public Serializable
 
     void toggleEnabled(bool enabled);
 
-    bool isOn() const { return (collision & 0x8000); }
+    inline bool isOn() const { return (collision & 0x8000); }
     uInt8 getColor() const;
 
     uInt8 getPosition() const;

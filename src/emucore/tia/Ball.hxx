@@ -123,12 +123,12 @@ class Ball : public Serializable
       Is the ball visible? This is determined by looking at bit 15
       of the collision mask.
      */
-    bool isOn() const { return (collision & 0x8000); }
+    inline bool isOn() const { return (collision & 0x8000); }
 
     /**
       Get the current color.
      */
-    uInt8 getColor() const { return myColor; }
+    inline uInt8 getColor() const { return myColor; }
 
     /**
       Shuffle the enabled flag. This is called in VDELBL mode when GRP1 is
