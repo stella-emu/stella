@@ -118,7 +118,7 @@ class Playfield : public Serializable
       Is the playfield visible? This is determined by looking at bit 15
       of the collision mask.
      */
-    bool isOn() const { return (collision & 0x8000); }
+    inline bool isOn() const { return (collision & 0x8000); }
 
     /**
       Get the current color.

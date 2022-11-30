@@ -139,7 +139,7 @@ class TimerMap
 
     explicit TimerMap() = default;
 
-    bool isInitialized() const { return myList.size(); }
+    inline bool isInitialized() const { return myList.size(); }
 
     /** Add new timer */
     uInt32 add(uInt16 fromAddr, uInt16 toAddr,

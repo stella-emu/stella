@@ -44,11 +44,11 @@ class Audio : public Serializable
     #endif
     }
 
-    void tick();
+    FORCE_INLINE void tick();
 
-    AudioChannel& channel0();
+    inline AudioChannel& channel0() { return myChannel0; }
 
-    AudioChannel& channel1();
+    inline AudioChannel& channel1() { return myChannel1; }
 
     /**
       Serializable methods (see that class for more information).
@@ -84,5 +84,31 @@ class Audio : public Serializable
     Audio& operator=(const Audio&) = delete;
     Audio& operator=(Audio&&) = delete;
 };
+
+// ############################################################################
+// Implementation
+// ############################################################################
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Audio::tick()
+{
+  switch (myCounter) {
+    case 9:
+    case 81:
+      myChannel0.phase0();
+      myChannel1.phase0();
+      break;
+
+    case 37:
+    case 149:
+      phase1();
+      break;
+
+    default:
+      break;
+  }
+
+  if (++myCounter == 228) myCounter = 0;
+}
 
 #endif // TIA_AUDIO_HXX

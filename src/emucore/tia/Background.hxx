@@ -39,7 +39,7 @@ class Background : public Serializable
 
     void applyColorLoss();
 
-    uInt8 getColor() const { return myColor; }
+    inline uInt8 getColor() const { return myColor; }
 
     /**
       Serializable methods (see that class for more information).

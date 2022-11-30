@@ -66,7 +66,7 @@ class Player : public Serializable
 
     uInt8 getClock() const { return myCounter; }
 
-    bool isOn() const { return (collision & 0x8000); }
+    inline bool isOn() const { return (collision & 0x8000); }
     uInt8 getColor() const;
 
     void shufflePatterns();

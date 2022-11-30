@@ -64,7 +64,7 @@ class BreakpointMap
 
     BreakpointMap() = default;
 
-    bool isInitialized() const { return myInitialized; }
+    inline bool isInitialized() const { return myInitialized; }
 
     /** Add new breakpoint */
     void add(const Breakpoint& breakpoint, const uInt32 flags = 0);

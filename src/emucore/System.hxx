@@ -101,14 +101,14 @@ class System : public Serializable
 
       @return The attached 6532 microprocessor
     */
-    M6532& m6532() const { return myM6532; }
+    inline M6532& m6532() const { return myM6532; }
 
     /**
       Answer the TIA device attached to the system.
 
       @return The attached TIA device
     */
-    TIA& tia() const { return myTIA; }
+    inline TIA& tia() const { return myTIA; }
 
     /**
       Answer the Cart attached to the system.
@@ -140,14 +140,14 @@ class System : public Serializable
 
       @return The number of system cycles which have passed
     */
-    uInt64 cycles() const { return myCycles; }
+    inline uInt64 cycles() const { return myCycles; }
 
     /**
       Increment the system cycles by the specified number of cycles.
 
       @param amount The amount to add to the system cycles counter
     */
-    void incrementCycles(uInt32 amount) { myCycles += amount; }
+    inline void incrementCycles(uInt32 amount) { myCycles += amount; }
 
     /**
       Informs all attached devices that the console type has changed.
