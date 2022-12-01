@@ -274,7 +274,7 @@ void Thumbulator::dump_counters() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Thumbulator::dump_regs()
 {
-  for (int cnt = 0; cnt <= 12; cnt++)
+  for(int cnt = 0; cnt <= 12; ++cnt)
   {
     statusMsg << "R" << std::dec << std::setfill(' ') << std::setw(2) << std::left << cnt
       << "= " << Base::HEX8 << reg_norm[cnt];

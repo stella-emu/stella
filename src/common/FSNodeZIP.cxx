@@ -36,11 +36,11 @@ FSNodeZIP::FSNodeZIP(const string& p)
   _zipFile = p.substr(0, pos+4);
 
   // Expand '~' to the users 'home' directory
-  if (_zipFile[0] == '~')
+  if(_zipFile[0] == '~')
   {
 #if defined(BSPF_UNIX) || defined(BSPF_MACOS)
     const char* const home = std::getenv("HOME");  // NOLINT (not thread safe)
-    if (home != nullptr)
+    if(home != nullptr)
       _zipFile.replace(0, 1, home);
 #elif defined(BSPF_WINDOWS)
     _zipFile.replace(0, 1, HomeFinder::getHomePath());
@@ -267,12 +267,24 @@ size_t FSNodeZIP::write(const stringstream& buffer) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AbstractFSNodePtr FSNodeZIP::getParent() const
 {
+cerr << "zip : " << _zipFile << endl
+     << "vp  : " << _virtualPath << endl
+     << "path: " << _path << endl
+     << "name: " << _name << endl;
   if(_virtualPath.empty())
+  {
+if(_realNode)
+  cerr << "parent: " << _realNode->getParent()->getPath();
+else
+  cerr << "parent: nullptr";
+cerr << "\n\n\n";
     return _realNode ? _realNode->getParent() : nullptr;
+  }
 
   const char* const start = _path.c_str();
   const char* const end = lastPathComponent(_path);
 
+cerr << "new zip: " << string(start, end - start - 1) << "\n\n\n";
   return make_unique<FSNodeZIP>(string(start, end - start - 1));
 }
 
