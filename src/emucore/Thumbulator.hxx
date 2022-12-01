@@ -34,6 +34,17 @@ class Cartridge;
   #define UNSAFE_OPTIMIZATIONS
 #endif
 
+#define ROMADDMASK 0x7FFFF
+#define RAMADDMASK 0x7FFF
+
+#define ROMSIZE (ROMADDMASK+1)      // 512KB
+#define RAMSIZE (RAMADDMASK+1)      // 32KB
+
+#define CPSR_N (1u<<31)
+#define CPSR_Z (1u<<30)
+#define CPSR_C (1u<<29)
+#define CPSR_V (1u<<28)
+
 #ifdef DEBUGGER_SUPPORT
   #define THUMB_CYCLE_COUNT
   #define COUNT_OPS
@@ -324,19 +335,7 @@ class Thumbulator
 
     ConfigureFor configuration;
 
-    Cartridge* myCartridge{nullptr};
-
-    static constexpr uInt32
-      ROMADDMASK = 0x7FFFF,
-      RAMADDMASK = 0x7FFF,
-
-      ROMSIZE = ROMADDMASK + 1,  // 512KB
-      RAMSIZE = RAMADDMASK + 1,  // 32KB
-
-      CPSR_N = 1u << 31,
-      CPSR_Z = 1u << 30,
-      CPSR_C = 1u << 29,
-      CPSR_V = 1u << 28;
+    Cartridge* myCartridge;
 
   private:
     // Following constructors and assignment operators not supported
