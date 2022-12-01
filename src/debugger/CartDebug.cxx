@@ -1541,23 +1541,23 @@ void CartDebug::getCompletions(const char* in, StringList& completions) const
   // First scan system equates
   for(uInt16 addr = 0x00; addr <= 0x0F; ++addr)
     if(ourTIAMnemonicR[addr] && BSPF::matchesIgnoreCase(ourTIAMnemonicR[addr], in))
-      completions.push_back(ourTIAMnemonicR[addr]);
+      completions.emplace_back(ourTIAMnemonicR[addr]);
   for(uInt16 addr = 0x00; addr <= 0x3F; ++addr)
     if(ourTIAMnemonicW[addr] && BSPF::matchesIgnoreCase(ourTIAMnemonicW[addr], in))
-      completions.push_back(ourTIAMnemonicW[addr]);
+      completions.emplace_back(ourTIAMnemonicW[addr]);
   for(uInt16 addr = 0; addr <= 0x29F-0x280; ++addr)
     if(ourIOMnemonic[addr] && BSPF::matchesIgnoreCase(ourIOMnemonic[addr], in))
-      completions.push_back(ourIOMnemonic[addr]);
+      completions.emplace_back(ourIOMnemonic[addr]);
   for(uInt16 addr = 0; addr <= 0x7F; ++addr)
     if(ourZPMnemonic[addr] && BSPF::matchesIgnoreCase(ourZPMnemonic[addr], in))
-      completions.push_back(ourZPMnemonic[addr]);
+      completions.emplace_back(ourZPMnemonic[addr]);
 
   // Now scan user-defined labels
   for(const auto& iter: myUserAddresses)
   {
     const char* const l = iter.first.c_str();
     if(BSPF::matchesCamelCase(l, in))
-      completions.push_back(l);
+      completions.emplace_back(l);
   }
 }
 

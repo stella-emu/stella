@@ -901,12 +901,12 @@ void Debugger::getCompletions(const char* in, StringList& list) const
     {
       const char* const l = iter.first.c_str();
       if(BSPF::matchesCamelCase(l, in))
-        list.push_back(l);
+        list.emplace_back(l);
     }
 
     for(const auto& reg: ourPseudoRegisters)
       if(BSPF::matchesCamelCase(reg.name, in))
-        list.push_back(reg.name);
+        list.emplace_back(reg.name);
   }
 }
 

@@ -783,13 +783,13 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
       if(!myConfirmMsg)
       {
         StringList msg;
-        msg.push_back("This operation cannot be undone.");
-        msg.push_back("All data stored on your AtariVox");
-        msg.push_back("or SaveKey will be erased!");
-        msg.push_back("");
-        msg.push_back("If you are sure you want to erase");
-        msg.push_back("the data, click 'OK', otherwise ");
-        msg.push_back("click 'Cancel'.");
+        msg.emplace_back("This operation cannot be undone.");
+        msg.emplace_back("All data stored on your AtariVox");
+        msg.emplace_back("or SaveKey will be erased!");
+        msg.emplace_back("");
+        msg.emplace_back("If you are sure you want to erase");
+        msg.emplace_back("the data, click 'OK', otherwise ");
+        msg.emplace_back("click 'Cancel'.");
         myConfirmMsg = make_unique<GUI::MessageBox>
           (this, instance().frameBuffer().font(), msg,
            myMaxWidth, myMaxHeight, kConfirmEEEraseCmd,

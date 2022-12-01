@@ -412,15 +412,15 @@ void StellaSettingsDialog::switchSettingsMode()
 {
   StringList msg;
 
-  msg.push_back("Warning!");
-  msg.push_back("");
-  msg.push_back("Advanced settings should be");
-  msg.push_back("handled with care! When in");
-  msg.push_back("doubt, read the manual.");
-  msg.push_back("");
-  msg.push_back("If you are sure you want to");
-  msg.push_back("proceed with the switch, click");
-  msg.push_back("'OK', otherwise click 'Cancel'.");
+  msg.emplace_back("Warning!");
+  msg.emplace_back("");
+  msg.emplace_back("Advanced settings should be");
+  msg.emplace_back("handled with care! When in");
+  msg.emplace_back("doubt, read the manual.");
+  msg.emplace_back("");
+  msg.emplace_back("If you are sure you want to");
+  msg.emplace_back("proceed with the switch, click");
+  msg.emplace_back("'OK', otherwise click 'Cancel'.");
 
   myConfirmMsg = make_unique<GUI::MessageBox>(this, _font, msg,
       _w-16, _h, kConfirmSwitchCmd, "OK", "Cancel", "Switch settings mode", false);

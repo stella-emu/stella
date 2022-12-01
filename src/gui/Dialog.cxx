@@ -441,7 +441,7 @@ void Dialog::addToFocusList(const WidgetArray& list, const TabWidget* w, int tab
   {
     // Make sure the array is large enough
     while(focus.size() <= id)
-      focus.push_back(Focus());
+      focus.emplace_back();
 
     Vec::append(focus[id].list, list);
   }
@@ -459,9 +459,9 @@ void Dialog::addTabWidget(TabWidget* w)
   // Make sure the array is large enough
   const uInt32 id = w->getID();
   while(_myTabList.size() < id)
-    _myTabList.push_back(TabFocus());
+    _myTabList.emplace_back();
 
-  _myTabList.push_back(TabFocus(w));
+  _myTabList.emplace_back(w);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
