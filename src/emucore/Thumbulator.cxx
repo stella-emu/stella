@@ -1671,7 +1671,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
 
         switch(configuration)
         {
-          case ConfigureFor::BUS:
+          case ConfigureFor::BUS: {
             // this subroutine interface is used in the BUS driver,
             // it starts at address 0x000006d8
             // _SetNote:
@@ -1731,8 +1731,9 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
             }
 
             break;
+          }
 
-          case ConfigureFor::CDF:
+          case ConfigureFor::CDF: {
             // this subroutine interface is used in the CDF driver,
             // it starts at address 0x000006e0
             // _SetNote:
@@ -1792,10 +1793,11 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
             }
 
             break;
+          }
 
           case ConfigureFor::CDF1:
           case ConfigureFor::CDFJ:
-          case ConfigureFor::CDFJplus:
+          case ConfigureFor::CDFJplus: {
             // this subroutine interface is used in the CDF driver,
             // it starts at address 0x00000750
             // _SetNote:
@@ -1871,6 +1873,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
             }
 
             break;
+          }
 
           case ConfigureFor::DPCplus:
             // no 32-bit subroutines in DPC+
