@@ -300,7 +300,7 @@ class ZipHandler
 
   private:
     static constexpr size_t DECOMPRESS_BUFSIZE = 128_KB;
-    static constexpr size_t CACHE_SIZE = 16; // number of open files to cache
+    static constexpr size_t CACHE_SIZE = 64; // number of open files to cache
 
     ZipFilePtr myZip;
     std::array<ZipFilePtr, CACHE_SIZE> myZipCache;

@@ -51,14 +51,7 @@ void ZipHandler::open(const string& filename)
     // Open the file and initialize it
     if(!ptr->open())
       throw runtime_error(errorMessage(ZipError::FILE_ERROR));
-    try
-    {
-      ptr->initialize();
-    }
-    catch(...)
-    {
-      throw;
-    }
+    ptr->initialize();
 
     myZip = std::move(ptr);
 
@@ -100,7 +93,7 @@ std::tuple<string, size_t> ZipHandler::next()
 {
   if(hasNext())
   {
-    const ZipHeader* header = myZip->nextFile();
+    const ZipHeader* const header = myZip->nextFile();
     if(!header)
       throw runtime_error(errorMessage(ZipError::FILE_CORRUPT));
     else if(header->uncompressedLength == 0)
@@ -207,8 +200,8 @@ void ZipHandler::addToCache()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ZipHandler::ZipFile::ZipFile(const string& filename)
-  : myFilename(filename),
-    myBuffer(make_unique<uInt8[]>(DECOMPRESS_BUFSIZE))
+  : myFilename{filename},
+    myBuffer{make_unique<uInt8[]>(DECOMPRESS_BUFSIZE)}
 {
   std::fill(myBuffer.get(), myBuffer.get() + DECOMPRESS_BUFSIZE, 0);
 }
@@ -233,33 +226,26 @@ bool ZipHandler::ZipFile::open()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ZipHandler::ZipFile::initialize()
 {
-  try
-  {
-    // Read ecd data
-    readEcd();
+  // Read ecd data
+  readEcd();
 
-    // Verify that we can work with this zipfile (no disk spanning allowed)
-    if(myEcd.diskNumber != myEcd.cdStartDiskNumber ||
-       myEcd.cdDiskEntries != myEcd.cdTotalEntries)
-      throw runtime_error(errorMessage(ZipError::UNSUPPORTED));
+  // Verify that we can work with this zipfile (no disk spanning allowed)
+  if(myEcd.diskNumber != myEcd.cdStartDiskNumber ||
+     myEcd.cdDiskEntries != myEcd.cdTotalEntries)
+    throw runtime_error(errorMessage(ZipError::UNSUPPORTED));
 
-    // Allocate memory for the central directory
-    myCd = make_unique<uInt8[]>(myEcd.cdSize + 1);
-    if(myCd == nullptr)
-      throw runtime_error(errorMessage(ZipError::OUT_OF_MEMORY));
+  // Allocate memory for the central directory
+  myCd = make_unique<uInt8[]>(myEcd.cdSize + 1);
+  if(myCd == nullptr)
+    throw runtime_error(errorMessage(ZipError::OUT_OF_MEMORY));
 
-    // Read the central directory
-    uInt64 read_length = 0;
-    const bool success = readStream(myCd, myEcd.cdStartDiskOffset, myEcd.cdSize, read_length);
-    if(!success)
-      throw runtime_error(errorMessage(ZipError::FILE_ERROR));
-    else if(read_length != myEcd.cdSize)
-      throw runtime_error(errorMessage(ZipError::FILE_TRUNCATED));
-  }
-  catch(...)
-  {
-    throw;
-  }
+  // Read the central directory
+  uInt64 read_length = 0;
+  const bool success = readStream(myCd, myEcd.cdStartDiskOffset, myEcd.cdSize, read_length);
+  if(!success)
+    throw runtime_error(errorMessage(ZipError::FILE_ERROR));
+  else if(read_length != myEcd.cdSize)
+    throw runtime_error(errorMessage(ZipError::FILE_TRUNCATED));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -306,7 +292,7 @@ void ZipHandler::ZipFile::readEcd()
     if(offset >= 0)
     {
       // Extract ECD info
-      EcdReader const reader(buffer.get() + offset);
+      const EcdReader reader(buffer.get() + offset);
       myEcd.diskNumber        = reader.thisDiskNo();
       myEcd.cdStartDiskNumber = reader.dirStartDisk();
       myEcd.cdDiskEntries     = reader.dirDiskEntries();
@@ -348,7 +334,7 @@ const ZipHandler::ZipHeader* ZipHandler::ZipFile::nextFile()
 {
   // Make sure we have enough data
   // If we're at or past the end, we're done
-  CentralDirEntryReader const reader(myCd.get() + myCdPos);
+  const CentralDirEntryReader reader(myCd.get() + myCdPos);
   if(!reader.signatureCorrect() || ((myCdPos + reader.totalLength()) > myEcd.cdSize))
     return nullptr;
 
@@ -380,33 +366,26 @@ void ZipHandler::ZipFile::decompress(const ByteBuffer& out, uInt64 length)
   if(myHeader.startDiskNumber != myEcd.diskNumber)
     throw runtime_error(errorMessage(ZipError::UNSUPPORTED));
 
-  try
+  // Get the compressed data offset
+  const uInt64 offset = getCompressedDataOffset();
+
+  // Handle compression types
+  switch(myHeader.compression)
   {
-    // Get the compressed data offset
-    const uInt64 offset = getCompressedDataOffset();
+    case 0:
+      decompressDataType0(offset, out, length);
+      break;
 
-    // Handle compression types
-    switch(myHeader.compression)
-    {
-      case 0:
-        decompressDataType0(offset, out, length);
-        break;
+    case 8:
+      decompressDataType8(offset, out, length);
+      break;
 
-      case 8:
-        decompressDataType8(offset, out, length);
-        break;
+    case 14:
+      // FIXME - LZMA format not yet supported
+      throw runtime_error(errorMessage(ZipError::LZMA_UNSUPPORTED));
 
-      case 14:
-        // FIXME - LZMA format not yet supported
-        throw runtime_error(errorMessage(ZipError::LZMA_UNSUPPORTED));
-
-      default:
-        throw runtime_error(errorMessage(ZipError::UNSUPPORTED));
-    }
-  }
-  catch(...)
-  {
-    throw;
+    default:
+      throw runtime_error(errorMessage(ZipError::UNSUPPORTED));
   }
 }
 
@@ -414,7 +393,7 @@ void ZipHandler::ZipFile::decompress(const ByteBuffer& out, uInt64 length)
 uInt64 ZipHandler::ZipFile::getCompressedDataOffset()
 {
   // Don't support a number of features
-  GeneralFlagReader const flags(myHeader.bitFlag);
+  const GeneralFlagReader flags(myHeader.bitFlag);
   if(myHeader.startDiskNumber != myEcd.diskNumber ||
      myHeader.versionNeeded > 63 || flags.patchData() ||
      flags.encrypted() || flags.strongEncryption())
@@ -462,7 +441,7 @@ void ZipHandler::ZipFile::decompressDataType8(
   stream.opaque = Z_NULL;
   stream.avail_in = 0;
   stream.next_out = reinterpret_cast<Bytef *>(out.get());
-  stream.avail_out = static_cast<uInt32>(length); // TODO - use zip64
+  stream.avail_out = static_cast<uInt32>(length);
 
   // Initialize the decompressor
   int zerr = inflateInit2(&stream, -MAX_WBITS);
@@ -492,7 +471,7 @@ void ZipHandler::ZipFile::decompressDataType8(
 
     // Fill out the input data
     stream.next_in = myBuffer.get();
-    stream.avail_in = static_cast<uInt32>(read_length); // TODO - use zip64
+    stream.avail_in = static_cast<uInt32>(read_length);
     input_remaining -= read_length;
 
     // Add a dummy byte at end of compressed data
