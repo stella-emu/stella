@@ -177,13 +177,13 @@ void RomAuditDialog::handleCommand(CommandSender* sender, int cmd,
       if(!myConfirmMsg)
       {
         StringList msg;
-        msg.push_back("This operation cannot be undone.  Your ROMs");
-        msg.push_back("will be modified, and as such there is a chance");
-        msg.push_back("that files may be lost.  You are recommended");
-        msg.push_back("to back up your files before proceeding.");
-        msg.push_back("");
-        msg.push_back("If you're sure you want to proceed with the");
-        msg.push_back("audit, click 'OK', otherwise click 'Cancel'.");
+        msg.emplace_back("This operation cannot be undone.  Your ROMs");
+        msg.emplace_back("will be modified, and as such there is a chance");
+        msg.emplace_back("that files may be lost.  You are recommended");
+        msg.emplace_back("to back up your files before proceeding.");
+        msg.emplace_back("");
+        msg.emplace_back("If you're sure you want to proceed with the");
+        msg.emplace_back("audit, click 'OK', otherwise click 'Cancel'.");
         myConfirmMsg = make_unique<GUI::MessageBox>
           (this, _font, msg, myMaxWidth, myMaxHeight, kConfirmAuditCmd,
           "OK", "Cancel", "ROM Audit", false);

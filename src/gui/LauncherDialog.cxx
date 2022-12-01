@@ -1166,64 +1166,64 @@ void LauncherDialog::openContextMenu(int x, int y)
     if(!currentNode().isDirectory())
     {
       if(myList->isUserDir(currentNode().getName()))
-        items.push_back(ContextItem("Remove all from favorites", "removefavorites"));
+        items.emplace_back("Remove all from favorites", "removefavorites");
       if(myList->isPopularDir(currentNode().getName()))
-        items.push_back(ContextItem("Remove all from most popular", "removepopular"));
+        items.emplace_back("Remove all from most popular", "removepopular");
       if(myList->isRecentDir(currentNode().getName()))
-        items.push_back(ContextItem("Remove all from recently played", "removerecent"));
+        items.emplace_back("Remove all from recently played", "removerecent");
       if(myList->inRecentDir())
-        items.push_back(ContextItem("Remove from recently played", "Ctrl+X", "remove"));
+        items.emplace_back("Remove from recently played", "Ctrl+X", "remove");
       if(myList->inPopularDir())
-        items.push_back(ContextItem("Remove from most popular", "Ctrl+X", "remove"));
+        items.emplace_back("Remove from most popular", "Ctrl+X", "remove");
     }
     if((currentNode().isDirectory() && currentNode().getName() != "..")
       || Bankswitch::isValidRomName(currentNode()))
-      items.push_back(ContextItem(myList->isUserFavorite(myList->selected().getPath())
+      items.emplace_back(myList->isUserFavorite(myList->selected().getPath())
         ? "Remove from favorites"
-        : "Add to favorites", "Ctrl+F", "favorite"));
+        : "Add to favorites", "Ctrl+F", "favorite");
   }
   if(!currentNode().isDirectory() && Bankswitch::isValidRomName(currentNode()))
   {
-    items.push_back(ContextItem("Game properties" + ELLIPSIS, "Ctrl+G", "properties"));
-    items.push_back(ContextItem("Power-on options" + ELLIPSIS, "Ctrl+P", "override"));
+    items.emplace_back("Game properties" + ELLIPSIS, "Ctrl+G", "properties");
+    items.emplace_back("Power-on options" + ELLIPSIS, "Ctrl+P", "override");
     if(instance().highScores().enabled())
-      items.push_back(ContextItem("High scores" + ELLIPSIS, "Ctrl+H", "highscores"));
+      items.emplace_back("High scores" + ELLIPSIS, "Ctrl+H", "highscores");
   }
   if(myUseMinimalUI)
   {
   #ifndef RETRON77
-    items.push_back(ContextItem(instance().settings().getBool("launchersubdirs")
+    items.emplace_back(instance().settings().getBool("launchersubdirs")
       ? "Exclude subdirectories"
-      : "Include subdirectories", "subdirs"));
-    items.push_back(ContextItem(instance().settings().getBool("launcherroms")
+      : "Include subdirectories", "subdirs");
+    items.emplace_back(instance().settings().getBool("launcherroms")
       ? "Show all files"
-      : "Show only ROMs", "showall"));
+      : "Show only ROMs", "showall");
   #endif
-    items.push_back(ContextItem("Go to initial directory", "homedir"));
-    items.push_back(ContextItem("Go to parent directory", "prevdir"));
+    items.emplace_back("Go to initial directory", "homedir");
+    items.emplace_back("Go to parent directory", "prevdir");
   #ifndef RETRON77
-    items.push_back(ContextItem("Reload listing", "reload"));
-    items.push_back(ContextItem("Options" + ELLIPSIS, "options"));
+    items.emplace_back("Reload listing", "reload");
+    items.emplace_back("Options" + ELLIPSIS, "options");
   #else
-    items.push_back(ContextItem("Settings" + ELLIPSIS, "options"));
+    items.emplace_back("Settings" + ELLIPSIS, "options");
   #endif
   }
   else
   {
-    items.push_back(ContextItem(instance().settings().getBool("launcherextensions")
+    items.emplace_back(instance().settings().getBool("launcherextensions")
       ? "Disable file extensions"
-      : "Enable file extensions", "Ctrl+E", "extensions"));
+      : "Enable file extensions", "Ctrl+E", "extensions");
     if(useFavorites && myList->inVirtualDir())
-      items.push_back(ContextItem(instance().settings().getBool("altsorting")
+      items.emplace_back(instance().settings().getBool("altsorting")
         ? "Normal sorting"
-        : "Alternative sorting", "Ctrl+S", "sorting"));
+        : "Alternative sorting", "Ctrl+S", "sorting");
     //if(!instance().settings().getBool("launcherbuttons"))
     //{
-    //  items.push_back(ContextItem("Options" + ELLIPSIS, "Ctrl+O", "options"));
+    //  items.emplace_back("Options" + ELLIPSIS, "Ctrl+O", "options");
     //}
   }
   if(addCancel)
-    items.push_back(ContextItem("Cancel", "")); // closes the context menu and does nothing
+    items.emplace_back("Cancel", ""); // closes the context menu and does nothing
 
   // Format items for menu
   VariantList varItems;
@@ -1382,10 +1382,10 @@ void LauncherDialog::removeAllFavorites()
 {
   StringList msg;
 
-  msg.push_back("This will remove ALL ROMs from");
-  msg.push_back("your 'Favorites' list!");
-  msg.push_back("");
-  msg.push_back("Are you sure?");
+  msg.emplace_back("This will remove ALL ROMs from");
+  msg.emplace_back("your 'Favorites' list!");
+  msg.emplace_back("");
+  msg.emplace_back("Are you sure?");
   myConfirmMsg = make_unique<GUI::MessageBox>
     (this, _font, msg, _w, _h, kRmAllFav,
       "Yes", "No", "Remove all Favorites", false);
@@ -1397,10 +1397,10 @@ void LauncherDialog::removeAll(const string& name)
 {
   StringList msg;
 
-  msg.push_back("This will remove ALL ROMs from");
-  msg.push_back("your '" + name + "' list!");
-  msg.push_back("");
-  msg.push_back("Are you sure?");
+  msg.emplace_back("This will remove ALL ROMs from");
+  msg.emplace_back("your '" + name + "' list!");
+  msg.emplace_back("");
+  msg.emplace_back("Are you sure?");
   myConfirmMsg = make_unique<GUI::MessageBox>
     (this, _font, msg, _w, _h, kRmAllPop,
       "Yes", "No", "Remove all " + name, false);

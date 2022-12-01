@@ -63,8 +63,8 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   StringList off, on;
   for(int i = 0; i < 8; ++i)
   {
-    off.push_back("0");
-    on.push_back("1");
+    off.emplace_back("0");
+    on.emplace_back("1");
   }
 
   StringList labels;
@@ -91,14 +91,14 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   // SWCHA bits in 'peek' mode
   xpos = 10;  ypos += lineHeight + 5;
   labels.clear();
-  labels.push_back("Left right");
-  labels.push_back("Left left");
-  labels.push_back("Left down");
-  labels.push_back("Left up");
-  labels.push_back("Right right");
-  labels.push_back("Right left");
-  labels.push_back("Right down");
-  labels.push_back("Right up");
+  labels.emplace_back("Left right");
+  labels.emplace_back("Left left");
+  labels.emplace_back("Left down");
+  labels.emplace_back("Left up");
+  labels.emplace_back("Right right");
+  labels.emplace_back("Right left");
+  labels.emplace_back("Right down");
+  labels.emplace_back("Right up");
   CREATE_IO_REGS("SWCHA(R)", mySWCHAReadBits, kSWCHARBitsID, true)
 
   // SWCHB bits in 'poke' mode
@@ -113,14 +113,14 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   // SWCHB bits in 'peek' mode
   xpos = 10;  ypos += lineHeight + 5;
   labels.clear();
-  labels.push_back("Right difficulty");
-  labels.push_back("Left difficulty");
-  labels.push_back("");
-  labels.push_back("");
-  labels.push_back("Color/B+W");
-  labels.push_back("");
-  labels.push_back("Select");
-  labels.push_back("Reset");
+  labels.emplace_back("Right difficulty");
+  labels.emplace_back("Left difficulty");
+  labels.emplace_back("");
+  labels.emplace_back("");
+  labels.emplace_back("Color/B+W");
+  labels.emplace_back("");
+  labels.emplace_back("Select");
+  labels.emplace_back("Reset");
   CREATE_IO_REGS("SWCHB(R)", mySWCHBReadBits, kSWCHBRBitsID, true)
 
   // Timer registers (R/W)

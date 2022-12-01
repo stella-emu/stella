@@ -48,8 +48,9 @@ namespace {
 
       private:
 
-        KeyValueRepositoryAtomic& myKvr;
-        const string& myKey;
+        // NOLINT: cppcoreguidelines-avoid-const-or-ref-data-members
+        KeyValueRepositoryAtomic& myKvr;  // NOLINT
+        const string& myKey;              // NOLINT
     };
 } // namespace
 

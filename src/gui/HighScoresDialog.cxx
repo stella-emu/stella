@@ -509,9 +509,9 @@ bool HighScoresDialog::handleDirty()
     {
       StringList msg;
 
-      msg.push_back("Do you want to save the changes");
-      msg.push_back("for this variation?");
-      msg.push_back("");
+      msg.emplace_back("Do you want to save the changes");
+      msg.emplace_back("for this variation?");
+      msg.emplace_back("");
       myConfirmMsg = make_unique<GUI::MessageBox>
         (this, _font, msg, _max_w, _max_h, kConfirmSave, kCancelSave,
          "Yes", "No", "Save High Scores", false);

@@ -38,8 +38,8 @@ ToggleBitWidget::ToggleBitWidget(GuiObject* boss, const GUI::Font& font,
   int size = _rows * _cols;
   while(size--)
   {
-    _offList.push_back("0");
-    _onList.push_back("1");
+    _offList.emplace_back("0");
+    _onList.emplace_back("1");
     _stateList.push_back(false);
     _changedList.push_back(false);
   }

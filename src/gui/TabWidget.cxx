@@ -66,9 +66,9 @@ int TabWidget::addTab(const string& title, int tabWidth)
   const int newWidth = _font.getStringWidth(title) + 2 * kTabPadding;
 
   if(tabWidth == AUTO_WIDTH)
-    _tabs.push_back(Tab(title, newWidth));
+    _tabs.emplace_back(title, newWidth);
   else
-    _tabs.push_back(Tab(title, tabWidth));
+    _tabs.emplace_back(title, tabWidth);
   const int numTabs = static_cast<int>(_tabs.size());
 
   // Determine the new tab width

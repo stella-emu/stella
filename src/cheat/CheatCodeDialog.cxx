@@ -83,8 +83,8 @@ CheatCodeDialog::CheatCodeDialog(OSystem& osystem, DialogContainer& parent,
 
   // Inputbox which will pop up when adding/editing a cheat
   StringList labels;
-  labels.push_back("Name       ");
-  labels.push_back("Code (hex) ");
+  labels.emplace_back("Name       ");
+  labels.emplace_back("Code (hex) ");
   myCheatInput = make_unique<InputTextDialog>(this, font, labels, "Cheat code");
   myCheatInput->setTarget(this);
 

@@ -1543,11 +1543,11 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
                 myOSystem.settings().getBool("dev.settings") ? "dev.timemachine" : "plr.timemachine");
 
 
-              msg.push_back("Do you really want to exit emulation?");
+              msg.emplace_back("Do you really want to exit emulation?");
               if (saveOnExit != "all" || !activeTM)
               {
-                msg.push_back("");
-                msg.push_back("You will lose all your progress.");
+                msg.emplace_back("");
+                msg.emplace_back("You will lose all your progress.");
               }
               MessageMenu::setMessage("Exit Emulation", msg, true);
               enterMenuMode(EventHandlerState::MESSAGEMENU);
@@ -2330,7 +2330,7 @@ StringList EventHandler::getComboListForEvent(Event::Type event) const
       }
       // Make sure entries are 1-to-1, using '-1' to indicate Event::NoType
       if(i == l.size())
-        l.push_back("-1");
+        l.emplace_back("-1");
     }
   }
   return l;
