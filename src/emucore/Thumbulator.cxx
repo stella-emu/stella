@@ -125,7 +125,7 @@ using Common::Base;
 
 #define do_znflags(x) znFlags=(x)
 #define do_cflag_bit(x) cFlag = (x)
-#define do_vflag_bit(x) vFlag = (x);
+#define do_vflag_bit(x) vFlag = (x)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Thumbulator::Thumbulator(const uInt16* rom_ptr, uInt16* ram_ptr, uInt32 rom_size,
@@ -1168,7 +1168,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
 #endif
 
 #ifdef COUNT_OPS
-  ++opCount[int(decodedOp)];
+  ++opCount[static_cast<int>(decodedOp)];
 #endif
   switch (decodedOp) {
     //ADC
@@ -1688,11 +1688,11 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
             //   bx      r4   // bx instruction at 0x000006e6
 
             // address to test for is + 4 due to pipelining
-
-  #define BUS_SetNote     (0x000006da + 4)
-  #define BUS_ResetWave   (0x000006de + 4)
-  #define BUS_GetWavePtr  (0x000006e2 + 4)
-  #define BUS_SetWaveSize (0x000006e6 + 4)
+            static constexpr uInt32
+                BUS_SetNote     = (0x000006da + 4),
+                BUS_ResetWave   = (0x000006de + 4),
+                BUS_GetWavePtr  = (0x000006e2 + 4),
+                BUS_SetWaveSize = (0x000006e6 + 4);
 
             if      (pc == BUS_SetNote)
             {
@@ -1749,11 +1749,11 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
             //   bx      r4   // bx instruction at 0x000006ee
 
             // address to test for is + 4 due to pipelining
-
-          #define CDF_SetNote     (0x000006e2 + 4)
-          #define CDF_ResetWave   (0x000006e6 + 4)
-          #define CDF_GetWavePtr  (0x000006ea + 4)
-          #define CDF_SetWaveSize (0x000006ee + 4)
+            static constexpr uInt32
+                CDF_SetNote      = (0x000006e2 + 4),
+                CDF_ResetWave    = (0x000006e6 + 4),
+                CDF_GetWavePtr   = (0x000006ea + 4),
+                CDF_SetWaveSize  = (0x000006ee + 4);
 
             if      (pc == CDF_SetNote)
             {
@@ -1812,11 +1812,11 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
             //   bx      r4   // bx instruction at 0x000006ee
 
             // address to test for is + 4 due to pipelining
-
-  #define CDF1_SetNote     (0x00000752 + 4)
-  #define CDF1_ResetWave   (0x00000756 + 4)
-  #define CDF1_GetWavePtr  (0x0000075a + 4)
-  #define CDF1_SetWaveSize (0x0000075e + 4)
+            static constexpr uInt32
+                CDF1_SetNote     = (0x00000752 + 4),
+                CDF1_ResetWave   = (0x00000756 + 4),
+                CDF1_GetWavePtr  = (0x0000075a + 4),
+                CDF1_SetWaveSize = (0x0000075e + 4);
 
             if      (pc == CDF1_SetNote)
             {
