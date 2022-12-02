@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29613.14
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33110.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Stella", "Stella.vcxproj", "{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}"
 EndProject
@@ -12,6 +12,8 @@ Global
 		Debug-NoDebugger|x64 = Debug-NoDebugger|x64
 		Profile|Win32 = Profile|Win32
 		Profile|x64 = Profile|x64
+		Release PGO|Win32 = Release PGO|Win32
+		Release PGO|x64 = Release PGO|x64
 		Release|Win32 = Release|Win32
 		Release|x64 = Release|x64
 		Release-Sanitize|Win32 = Release-Sanitize|Win32
@@ -30,6 +32,10 @@ Global
 		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Profile|Win32.Build.0 = Profile|Win32
 		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Profile|x64.ActiveCfg = Profile|x64
 		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Profile|x64.Build.0 = Profile|x64
+		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Release PGO|Win32.ActiveCfg = Release PGO|Win32
+		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Release PGO|Win32.Build.0 = Release PGO|Win32
+		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Release PGO|x64.ActiveCfg = Release PGO|x64
+		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Release PGO|x64.Build.0 = Release PGO|x64
 		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Release|Win32.ActiveCfg = Release|Win32
 		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Release|Win32.Build.0 = Release|Win32
 		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Release|x64.ActiveCfg = Release|x64
