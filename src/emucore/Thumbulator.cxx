@@ -123,6 +123,12 @@ using Common::Base;
   #define INC_ARM_CYCLES(m)
 #endif
 
+#ifdef THUMB_STATS
+  #define THUMB_STAT(statement) ++statement;
+#else
+  #define THUMB_STAT(statement)
+#endif
+
 #define do_znflags(x) znFlags=(x)
 #define do_cflag_bit(x) cFlag = (x)
 #define do_vflag_bit(x) vFlag = (x)
@@ -364,10 +370,7 @@ void Thumbulator::write16(uInt32 addr, uInt32 data)
   if(addr & 1)
     fatalError("write16", addr, "abort - misaligned");
 #endif
-#ifdef THUMB_STATS
-  ++_stats.writes;
-#endif
-
+  THUMB_STAT(_stats.writes)
   DO_DBUG(statusMsg << "write16(" << Base::HEX8 << addr << "," << Base::HEX8 << data << ")" << endl);
 
   switch(addr & 0xF0000000)
@@ -622,9 +625,7 @@ uInt32 Thumbulator::read16(uInt32 addr)
   if(addr & 1)
     fatalError("read16", addr, "abort - misaligned");
 #endif
-#ifdef THUMB_STATS
-  ++_stats.reads;
-#endif
+  THUMB_STAT(_stats.reads)
 
   switch(addr & 0xF0000000)
   {
@@ -808,9 +809,7 @@ FORCE_INLINE void Thumbulator::write_register(uInt32 reg, uInt32 data, bool isFl
     data &= ~1;
     if(isFlowBreak)
     {
-    #ifdef THUMB_STATS
-      ++_stats.taken;
-    #endif
+      THUMB_STAT(_stats.taken)
       // dummy fetch + fill the pipeline
       //INC_N_CYCLES(reg_norm[15] - 2, AccessType::prefetch);
       //INC_S_CYCLES(data - 2, AccessType::branch);
@@ -1147,6 +1146,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
   uInt32 pc = read_register(15);
 
   const uInt32 instructionPtr = pc - 2;
+  const uInt32 instructionPtr2 = instructionPtr >> 1;
   inst = fetch16(instructionPtr);
 
   pc += 2;
@@ -1160,9 +1160,9 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
   Op decodedOp{};
 #ifndef UNSAFE_OPTIMIZATIONS
   if ((instructionPtr & 0xF0000000) == 0 && instructionPtr < romSize)
-    decodedOp = decodedRom[instructionPtr >> 1];
+    decodedOp = decodedRom[instructionPtr2];
   else
-    decodedOp = decodeInstructionWord(inst, pc);
+    decodedOp = decodeInstructionWord(CONV_RAMROM(rom[instructionPtr2]), instructionPtr);
 #else
   decodedOp = decodedRom[(instructionPtr & ROMADDMASK) >> 1];
 #endif
@@ -1392,175 +1392,114 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
     //B(1) conditional branch variants:
     // (beq, bne, bcs, bcc, bmi, bpl, bvs, bvc, bhi, bls, bge, blt, bgt, ble)
     case Op::beq: {
-#ifdef THUMB_STATS
-      ++_stats.branches;
-#endif
-      rb = decodedParam[instructionPtr >> 1];
-      DO_DISS(statusMsg << "beq 0x" << Base::HEX8 << (rb-3) << endl);
+      THUMB_STAT(_stats.branches)
       if(!znFlags)
-        write_register(15, rb);
+        write_register(15, decodedParam[instructionPtr2]);
       return 0;
     }
 
     case Op::bne: {
-#ifdef THUMB_STATS
-      ++_stats.branches;
-#endif
-      rb = decodedParam[instructionPtr >> 1];
-      DO_DISS(statusMsg << "bne 0x" << Base::HEX8 << (rb-3) << endl);
+      THUMB_STAT(_stats.branches)
       if(znFlags)
-        write_register(15, rb);
+        write_register(15, decodedParam[instructionPtr2]);
       return 0;
     }
 
     case Op::bcs: {
-#ifdef THUMB_STATS
-      ++_stats.branches;
-#endif
-      rb = decodedParam[instructionPtr >> 1];
-      DO_DISS(statusMsg << "bcs 0x" << Base::HEX8 << (rb-3) << endl);
+      THUMB_STAT(_stats.branches)
       if(cFlag)
-        write_register(15, rb);
+        write_register(15, decodedParam[instructionPtr2]);
       return 0;
     }
 
     case Op::bcc: {
-#ifdef THUMB_STATS
-      ++_stats.branches;
-#endif
-      rb = decodedParam[instructionPtr >> 1];
-      DO_DISS(statusMsg << "bcc 0x" << Base::HEX8 << (rb-3) << endl);
+      THUMB_STAT(_stats.branches)
       if(!cFlag)
-        write_register(15, rb);
+        write_register(15, decodedParam[instructionPtr2]);
       return 0;
     }
 
     case Op::bmi: {
-#ifdef THUMB_STATS
-      ++_stats.branches;
-#endif
-      rb = decodedParam[instructionPtr >> 1];
-      DO_DISS(statusMsg << "bmi 0x" << Base::HEX8 << (rb-3) << endl);
+      THUMB_STAT(_stats.branches)
       if(znFlags & 0x80000000)
-        write_register(15, rb);
+        write_register(15, decodedParam[instructionPtr2]);
       return 0;
     }
 
     case Op::bpl: {
-#ifdef THUMB_STATS
-      ++_stats.branches;
-#endif
-      rb = decodedParam[instructionPtr >> 1];
-      DO_DISS(statusMsg << "bpl 0x" << Base::HEX8 << (rb-3) << endl);
+      THUMB_STAT(_stats.branches)
       if(!(znFlags & 0x80000000))
-        write_register(15, rb);
+        write_register(15, decodedParam[instructionPtr2]);
       return 0;
     }
 
     case Op::bvs: {
-#ifdef THUMB_STATS
-      ++_stats.branches;
-#endif
-      rb = decodedParam[instructionPtr >> 1];
-      DO_DISS(statusMsg << "bvs 0x" << Base::HEX8 << (rb-3) << endl);
+      THUMB_STAT(_stats.branches)
       if(vFlag)
-        write_register(15, rb);
+        write_register(15, decodedParam[instructionPtr2]);
       return 0;
     }
 
     case Op::bvc: {
-#ifdef THUMB_STATS
-      ++_stats.branches;
-#endif
-      rb = decodedParam[instructionPtr >> 1];
-      DO_DISS(statusMsg << "bvc 0x" << Base::HEX8 << (rb-3) << endl);
+      THUMB_STAT(_stats.branches)
       if(!vFlag)
-        write_register(15, rb);
+        write_register(15, decodedParam[instructionPtr2]);
       return 0;
     }
 
     case Op::bhi: {
-#ifdef THUMB_STATS
-      ++_stats.branches;
-#endif
-      rb = decodedParam[instructionPtr >> 1];
-      DO_DISS(statusMsg << "bhi 0x" << Base::HEX8 << (rb-3) << endl);
+      THUMB_STAT(_stats.branches)
       if(cFlag && znFlags)
-        write_register(15, rb);
+        write_register(15, decodedParam[instructionPtr2]);
       return 0;
     }
 
     case Op::bls: {
-#ifdef THUMB_STATS
-      ++_stats.branches;
-#endif
-      rb = decodedParam[instructionPtr >> 1];
-      DO_DISS(statusMsg << "bls 0x" << Base::HEX8 << (rb-3) << endl);
+      THUMB_STAT(_stats.branches)
       if(!znFlags || !cFlag)
-        write_register(15, rb);
+        write_register(15, decodedParam[instructionPtr2]);
       return 0;
     }
 
     case Op::bge: {
-#ifdef THUMB_STATS
-      ++_stats.branches;
-#endif
-      rb = decodedParam[instructionPtr >> 1];
-      DO_DISS(statusMsg << "bge 0x" << Base::HEX8 << (rb-3) << endl);
+      THUMB_STAT(_stats.branches)
       if(((znFlags & 0x80000000) && vFlag) ||
          ((!(znFlags & 0x80000000)) && !vFlag))
-        write_register(15, rb);
+        write_register(15, decodedParam[instructionPtr2]);
       return 0;
     }
 
     case Op::blt: {
-#ifdef THUMB_STATS
-      ++_stats.branches;
-#endif
-      rb = decodedParam[instructionPtr >> 1];
-      DO_DISS(statusMsg << "blt 0x" << Base::HEX8 << (rb-3) << endl);
+      THUMB_STAT(_stats.branches)
       if((!(znFlags & 0x80000000) && vFlag) ||
          (((znFlags & 0x80000000)) && !vFlag))
-        write_register(15, rb);
+        write_register(15, decodedParam[instructionPtr2]);
       return 0;
     }
 
     case Op::bgt: {
-#ifdef THUMB_STATS
-      ++_stats.branches;
-#endif
-      rb = decodedParam[instructionPtr >> 1];
-      DO_DISS(statusMsg << "bgt 0x" << Base::HEX8 << (rb-3) << endl);
+      THUMB_STAT(_stats.branches)
       if(znFlags)
       {
         if(((znFlags & 0x80000000) && vFlag) ||
            ((!(znFlags & 0x80000000)) && !vFlag))
-          write_register(15, rb);
-      }
+          write_register(15, decodedParam[instructionPtr2]);      }
       return 0;
     }
 
     case Op::ble: {
-#ifdef THUMB_STATS
-      ++_stats.branches;
-#endif
-      rb = decodedParam[instructionPtr >> 1];
-      DO_DISS(statusMsg << "ble 0x" << Base::HEX8 << (rb-3) << endl);
+      THUMB_STAT(_stats.branches)
       if(!znFlags ||
          (!(znFlags & 0x80000000) && vFlag) ||
          (((znFlags & 0x80000000)) && !vFlag))
-        write_register(15, rb);
+        write_register(15, decodedParam[instructionPtr2]);
       return 0;
     }
 
     //B(2) unconditional branch
     case Op::b2: {
-    #ifdef THUMB_STATS
-      ++_stats.branches;
-    #endif
-      rb = decodedParam[instructionPtr >> 1];
-      DO_DISS(statusMsg << "B 0x" << Base::HEX8 << (rb-3) << endl);
-      write_register(15, rb);
+      THUMB_STAT(_stats.branches)
+      write_register(15, decodedParam[instructionPtr2]);
       return 0;
     }
 
@@ -2880,18 +2819,20 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
 
     //SWI
     case Op::swi: { // never used
+#if 0
       rb = inst & 0xFF;  // NOLINT: clang-analyzer-deadcode.DeadStores
       DO_DISS(statusMsg << "swi 0x" << Base::HEX2 << rb << endl);
 
-      //if(rb == 0xCC)
-      //{
-      //  write_register(0, cpsr);
-      //  return 0;
-      //}
-      //else
+      if(rb == 0xCC)
+      {
+        write_register(0, cpsr);
+        return 0;
+      }
+      else
       {
 #if defined(THUMB_DISS)
         statusMsg << endl << endl << "swi 0x" << Base::HEX2 << rb << endl;
+#endif
 #endif
         return 1;
       }
@@ -3085,44 +3026,31 @@ bool Thumbulator::isMamBuffered(uInt32 addr, AccessType accessType)
       case AccessType::prefetch:
         if(addr != _prefetchBufferAddr[0] && addr != _branchBufferAddr[0])
         {
-        #ifdef THUMB_STATS
-          ++_stats.mamPrefetchMisses;
-        #endif
+          THUMB_STAT(_stats.mamPrefetchMisses)
           _prefetchBufferAddr[0] = addr;
           return false;
         }
-      #ifdef THUMB_STATS
-        ++_stats.mamPrefetchHits;
-      #endif
+        THUMB_STAT(_stats.mamPrefetchHits)
         break;
 
       case AccessType::branch:
         if(addr != _prefetchBufferAddr[0] && addr != _branchBufferAddr[0])
         {
-        #ifdef THUMB_STATS
-          ++_stats.mamBranchMisses;
-        #endif
+          THUMB_STAT(_stats.mamBranchMisses)
           _branchBufferAddr[0] = addr;
           return false;
         }
-      #ifdef THUMB_STATS
-        ++_stats.mamBranchHits;
-      #endif
-
+        THUMB_STAT(_stats.mamBranchHits)
         break;
 
       default: // AccessType::data
         if(addr != _dataBufferAddr)
         {
-        #ifdef THUMB_STATS
-          ++_stats.mamDataMisses;
-        #endif
+          THUMB_STAT(_stats.mamDataMisses)
           _dataBufferAddr = addr;
           return false;
         }
-      #ifdef THUMB_STATS
-        ++_stats.mamDataHits;
-      #endif
+        THUMB_STAT(_stats.mamDataHits)
         break;
     }
   }
@@ -3140,45 +3068,33 @@ bool Thumbulator::isMamBuffered(uInt32 addr, AccessType accessType)
         _prefetchBufferAddr[bank ^ 1] = addr + 0x80;
         if(addr != _prefetchBufferAddr[bank] && addr != _branchBufferAddr[bank])
         {
-        #ifdef THUMB_STATS
-          ++_stats.mamPrefetchMisses;
-        #endif
+          THUMB_STAT(_stats.mamPrefetchMisses)
           _prefetchBufferAddr[bank] = addr;
           return false;
         }
-      #ifdef THUMB_STATS
-        ++_stats.mamPrefetchHits;
-      #endif
+        THUMB_STAT(_stats.mamPrefetchHits)
         break;
 
       case AccessType::branch:
         if(addr != _prefetchBufferAddr[bank] && addr != _branchBufferAddr[bank])
         {
-        #ifdef THUMB_STATS
-          ++_stats.mamBranchMisses;
-        #endif
+          THUMB_STAT(_stats.mamBranchMisses)
           // load both branch trail buffers at once
           _branchBufferAddr[bank] = addr;
           _branchBufferAddr[bank ^ 1] = addr + 0x80;
           return false;
         }
-      #ifdef THUMB_STATS
-        ++_stats.mamBranchHits;
-      #endif
+        THUMB_STAT(_stats.mamBranchHits)
         break;
 
       default: // AccessType::data
         if(addr != _dataBufferAddr)
         {
-        #ifdef THUMB_STATS
-          ++_stats.mamDataMisses;
-        #endif
+          THUMB_STAT(_stats.mamDataMisses)
           _dataBufferAddr = addr;
           return false;
         }
-      #ifdef THUMB_STATS
-        ++_stats.mamDataHits;
-      #endif
+        THUMB_STAT(_stats.mamDataHits)
         break;
     }
   }
@@ -3264,10 +3180,7 @@ void Thumbulator::incCycles(AccessType accessType, uInt32 cycles)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Thumbulator::incSCycles(uInt32 addr, AccessType accessType)
 {
-#ifdef THUMB_STATS
-  ++_stats.sCylces;
-#endif
-
+  THUMB_STAT(_stats.sCylces)
   uInt32 cycles = 0;
 
   if(addr & 0xC0000000) // RAM, peripherals
@@ -3327,10 +3240,7 @@ void Thumbulator::incSCycles(uInt32 addr, AccessType accessType)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Thumbulator::incNCycles(uInt32 addr, AccessType accessType)
 {
-#ifdef THUMB_STATS
-  ++_stats.nCylces;
-#endif
-
+  THUMB_STAT(_stats.nCylces)
   uInt32 cycles = 0;
 
   if(addr & 0xC0000000) // RAM, peripherals
@@ -3357,9 +3267,7 @@ void Thumbulator::incNCycles(uInt32 addr, AccessType accessType)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Thumbulator::incICycles(uInt32 m)
 {
-#ifdef THUMB_STATS
-  ++_stats.iCylces;
-#endif
+  THUMB_STAT(_stats.iCylces)
 
  #ifdef EMULATE_PIPELINE
   _fetchPipeline += m;
