@@ -2819,23 +2819,21 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
 
     //SWI
     case Op::swi: { // never used
-#if 0
-      rb = inst & 0xFF;  // NOLINT: clang-analyzer-deadcode.DeadStores
-      DO_DISS(statusMsg << "swi 0x" << Base::HEX2 << rb << endl);
-
-      if(rb == 0xCC)
-      {
-        write_register(0, cpsr);
-        return 0;
-      }
-      else
-      {
-#if defined(THUMB_DISS)
-        statusMsg << endl << endl << "swi 0x" << Base::HEX2 << rb << endl;
-#endif
-#endif
-        return 1;
-      }
+//      rb = inst & 0xFF;  // NOLINT: clang-analyzer-deadcode.DeadStores
+//      DO_DISS(statusMsg << "swi 0x" << Base::HEX2 << rb << endl);
+//
+//      if(rb == 0xCC)
+//      {
+//        write_register(0, cpsr);
+//        return 0;
+//      }
+//      else
+//      {
+//#if defined(THUMB_DISS)
+//        statusMsg << endl << endl << "swi 0x" << Base::HEX2 << rb << endl;
+//#endif
+          return 1;
+//      }
     }
 
     //SXTB
