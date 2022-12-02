@@ -215,8 +215,10 @@ class Thumbulator
 
   private:
     string doRun(uInt32& cycles, bool irqDrivenAudio);
+#ifndef UNSAFE_OPTIMIZATIONS
     uInt32 read_register(uInt32 reg);
     void write_register(uInt32 reg, uInt32 data, bool isFlowBreak = true);
+#endif
     uInt32 fetch16(uInt32 addr);
     uInt32 read16(uInt32 addr);
     uInt32 read32(uInt32 addr);
