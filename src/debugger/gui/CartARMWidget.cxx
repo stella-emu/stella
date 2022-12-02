@@ -38,7 +38,8 @@ void CartridgeARMWidget::addCycleWidgets(int xpos, int ypos)
   constexpr int INDENT = 20, VGAP = 4;
   VariantList items;
 
-  new StaticTextWidget(_boss, _font, xpos, ypos + 1, "ARM emulation cycles:");
+  auto* s = new StaticTextWidget(_boss, _font, xpos, ypos + 1, "ARM emulation cycles:");
+  s->setToolTip("Cycle count enabled by developer settings.");
   xpos += INDENT; ypos += myLineHeight + VGAP;
   myIncCycles = new CheckboxWidget(_boss, _font, xpos, ypos + 1, "Increase 6507 cycles",
                                    kIncCyclesChanged);
@@ -68,8 +69,8 @@ void CartridgeARMWidget::addCycleWidgets(int xpos, int ypos)
   myThumbCycles->setEditable(false);
   myThumbCycles->setToolTip("Approximated CPU cycles of last ARM run.\n");
 
-  auto* s = new StaticTextWidget(_boss, _font, myCycleFactor->getLeft(), ypos + 1,
-                                 "Instructions #");
+  s = new StaticTextWidget(_boss, _font, myCycleFactor->getLeft(), ypos + 1,
+                           "Instructions #");
 
   myPrevThumbInstructions = new DataGridWidget(_boss, _font, s->getRight(), ypos - 1,
                                                1, 1, 6, 32, Common::Base::Fmt::_10_6);

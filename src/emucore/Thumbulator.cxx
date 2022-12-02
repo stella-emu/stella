@@ -777,14 +777,13 @@ uInt32 Thumbulator::read32(uInt32 addr)
 #endif
 }
 
+#ifndef UNSAFE_OPTIMIZATIONS
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FORCE_INLINE uInt32 Thumbulator::read_register(uInt32 reg)
 {
   reg &= 0xF;
-
   uInt32 data = reg_norm[reg];
   DO_DBUG(statusMsg << "read_register(" << dec << reg << ")=" << Base::HEX8 << data << endl);
-#ifndef UNSAFE_OPTIMIZATIONS
   if(reg == 15)
   {
     if(data & 1)
@@ -793,7 +792,6 @@ FORCE_INLINE uInt32 Thumbulator::read_register(uInt32 reg)
       data &= ~1;
     }
   }
-#endif
   return data;
 }
 
@@ -801,9 +799,7 @@ FORCE_INLINE uInt32 Thumbulator::read_register(uInt32 reg)
 FORCE_INLINE void Thumbulator::write_register(uInt32 reg, uInt32 data, bool isFlowBreak)
 {
   reg &= 0xF;
-
   DO_DBUG(statusMsg << "write_register(" << dec << reg << "," << Base::HEX8 << data << ")" << endl);
-//#ifndef UNSAFE_OPTIMIZATIONS // this fails when combined with read_register UNSAFE_OPTIMIZATIONS
   if(reg == 15)
   {
     data &= ~1;
@@ -817,9 +813,12 @@ FORCE_INLINE void Thumbulator::write_register(uInt32 reg, uInt32 data, bool isFl
       INC_S_CYCLES(data, AccessType::branch);
     }
   }
-//#endif
   reg_norm[reg] = data;
 }
+#else
+  #define read_register(reg)        reg_norm[reg]
+  #define write_register(reg, data) reg_norm[reg]=(data)
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Thumbulator::do_cvflag(uInt32 a, uInt32 b, uInt32 c)
@@ -1143,14 +1142,22 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
 {
   uInt32 sp, inst, ra, rb, rc, rm, rd, rn, rs;  // NOLINT
 
+#ifndef UNSAFE_OPTIMIZATIONS
   uInt32 pc = read_register(15);
+#else
+  uInt32 pc = read_register(15) & ~1; // not checked and corrected in read_register
+#endif
 
   const uInt32 instructionPtr = pc - 2;
   const uInt32 instructionPtr2 = instructionPtr >> 1;
   inst = fetch16(instructionPtr);
 
   pc += 2;
+#ifndef UNSAFE_OPTIMIZATIONS
   write_register(15, pc, false);
+#else
+  write_register(15, pc);
+#endif
   DO_DISS(statusMsg << Base::HEX8 << (pc-5) << ": " << Base::HEX4 << inst << " ");
 
 #ifndef UNSAFE_OPTIMIZATIONS
@@ -1574,7 +1581,9 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
       if(rc & 1)
       {
         write_register(14, (pc-2) | 1);
-        //rc &= ~1;
+#ifdef UNSAFE_OPTIMIZATIONS
+        rc &= ~1; // not checked and corrected in write_register
+#endif
         write_register(15, rc);
         return 0;
       }
@@ -1596,7 +1605,7 @@ FORCE_INLINE int Thumbulator::execute()  // NOLINT (readability-function-size)
       if(rc & 1)
       {
         // branch to odd address denotes 16 bit ARM code
-        //rc &= ~1;
+        rc &= ~1;
         write_register(15, rc);
         return 0;
       }
