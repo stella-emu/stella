@@ -254,6 +254,10 @@ bool CartDebug::disassembleAddr(uInt16 address, bool force)
   if(segCount > 1)
   {
     bool changed = false;
+    // myDisassembly.list must be cleared before calling disassemble(),
+    // else the lineOfs in fillDisassemblyList will be too large
+    myDisassembly.list.clear();
+    myAddrToLineList.clear();
 
     myDisassembly.fieldwidth = 24;
     for(int seg = 0; seg < segCount; ++seg)
@@ -266,18 +270,9 @@ bool CartDebug::disassembleAddr(uInt16 address, bool force)
       info.offset = cart.bankOrigin(bank) | cart.bankSize() * seg;
       const uInt16 segAddress = bank == addrBank ? address : info.offset;
       // Disassemble segment
-      const bool newChanged = disassemble(bank, segAddress, disassembly, addrToLineList, force);
+      changed |= disassemble(bank, segAddress, disassembly, addrToLineList, force);
 
-      if(!changed && newChanged)
-      {
-        // Clear lists at first change
-        // Note: This is currently either true for all or no segments
-        changed = true;
-        myDisassembly.list.clear();
-        myAddrToLineList.clear();
-
-      }
-      // Add extra empty line between segments
+       // Add extra empty line between segments
       if(seg < segCount - 1)
       {
         CartDebug::DisassemblyTag tag;
