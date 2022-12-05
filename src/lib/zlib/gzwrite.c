@@ -474,7 +474,7 @@ int ZEXPORTVA gzprintf(gzFile file, const char *format, ...)
 #else /* !STDC && !Z_HAVE_STDARG_H */
 
 /* -- see zlib.h -- */
-int ZEXPORTVA gzprintf (
+int ZEXPORTVA gzprintf(
     gzFile file,
     const char *format,
     int a1,
