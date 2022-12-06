@@ -256,6 +256,7 @@ void DialogContainer::handleMouseButtonEvent(MouseButton b, bool pressed,
   {
     case MouseButton::LEFT:
     case MouseButton::RIGHT:
+    case MouseButton::MIDDLE:
       if(pressed)
       {
         // If more than two clicks have been recorded, we start over
@@ -266,7 +267,13 @@ void DialogContainer::handleMouseButtonEvent(MouseButton b, bool pressed,
           myLastClick.count = 0;
         }
 
-        if(myLastClick.count && (myTime < myLastClick.time + _DOUBLE_CLICK_DELAY)
+        if(b == MouseButton::MIDDLE)
+        {
+          // Middle mouse button emulates lef mouse button double click
+          myLastClick.count = 2;
+          b = MouseButton::LEFT;
+        }
+        else if(myLastClick.count && (myTime < myLastClick.time + _DOUBLE_CLICK_DELAY)
            && std::abs(myLastClick.x - x) < 3
            && std::abs(myLastClick.y - y) < 3)
         {

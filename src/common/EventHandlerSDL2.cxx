@@ -124,19 +124,23 @@ void EventHandlerSDL2::pollEvent()
       case SDL_MOUSEBUTTONUP:
       {
         // ToDo: check support of more buttons and double-click
+        MouseButton b{MouseButton::NONE};
         switch(myEvent.button.button)
         {
           case SDL_BUTTON_LEFT:
-            handleMouseButtonEvent(MouseButton::LEFT, myEvent.button.type == SDL_MOUSEBUTTONDOWN,
-                                   myEvent.button.x, myEvent.button.y);
+            b = MouseButton::LEFT;
             break;
           case SDL_BUTTON_RIGHT:
-            handleMouseButtonEvent(MouseButton::RIGHT, myEvent.button.type == SDL_MOUSEBUTTONDOWN,
-                                   myEvent.button.x, myEvent.button.y);
+            b = MouseButton::RIGHT;
+            break;
+          case SDL_BUTTON_MIDDLE:
+            b = MouseButton::MIDDLE;
             break;
           default:
             break;
         }
+        handleMouseButtonEvent(b, myEvent.button.type == SDL_MOUSEBUTTONDOWN,
+                               myEvent.button.x, myEvent.button.y);
         break;
       }
 
