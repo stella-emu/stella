@@ -47,13 +47,13 @@ bool Cartridge3EPlus::checkSwitchBank(uInt16 address, uInt8 value)
 {
   // Switch banks if necessary
   if(address == 0x003F) {
-    // Switch ROM bank into segment 0
+    // Switch ROM bank into segment
     bank(value & 0b111111, value >> 6);
     return true;
   }
   else if(address == 0x003E)
   {
-    // Switch RAM bank into segment 0
+    // Switch RAM bank into segment
     bank((value & 0b111111) + romBankCount(), value >> 6);
     return true;
   }

@@ -141,7 +141,7 @@ class Cartridge3EPlus: public Cartridge3E
     static constexpr uInt16 RAM_BANKS = 64;
 
     // RAM size
-    static constexpr size_t RAM_SIZE = RAM_BANKS << (BANK_SHIFT - 1); // = 32K = 0x4000;
+    static constexpr size_t RAM_SIZE = RAM_BANKS << (BANK_SHIFT - 1); // = 32K = 0x8000;
 
   private:
     // Following constructors and assignment operators not supported
