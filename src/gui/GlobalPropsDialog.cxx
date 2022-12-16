@@ -93,18 +93,6 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
   wid.push_back(myRightDiff);
   ypos += lineHeight + VGAP * 3;
 
-  // Start in debugger mode
-  new StaticTextWidget(this, font, xpos, ypos+1, "Startup mode");
-  items.clear();
-  VarList::push_back(items, "Console", "false");
-#ifdef DEBUGGER_SUPPORT
-  VarList::push_back(items, "Debugger", "true");
-#endif
-  myDebug = new PopUpWidget(this, font, xpos+lwidth, ypos,
-                            pwidth, lineHeight, items, "");
-  wid.push_back(myDebug);
-  ypos += lineHeight + VGAP * 3;
-
   // Start console with buttons held down
   new StaticTextWidget(this, font, xpos, ypos+1,
       "Start with the following held down:");
@@ -114,10 +102,17 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
 
   // Start with console joystick direction/buttons held down
   xpos = fontWidth * 4;  ypos += infofont.getLineHeight() + VGAP * 2;
-  addHoldWidgets(font, xpos, ypos, wid);
+  ypos = addHoldWidgets(font, xpos, ypos, wid) + VGAP * 4;
+
+  xpos = HBORDER;
+  // Start in debugger mode
+  myDebug = new CheckboxWidget(this, font, xpos, ypos, "Start in Debugger mode");
+#ifndef DEBUGGER_SUPPORT
+  myDebug->setEnabled(false);
+#endif
+  wid.push_back(myDebug);
 
   // Add message concerning usage
-  xpos = HBORDER;
   ypos = _h - VBORDER - buttonHeight - VGAP * 3 - infofont.getLineHeight() * 2;
   new StaticTextWidget(this, infofont, xpos, ypos,
     "(*) These options are not saved, but apply to all");
@@ -157,7 +152,6 @@ int GlobalPropsDialog::addHoldWidgets(const GUI::Font& font, int x, int y,
   ypos += myJoy[kJ0Down]->getHeight() * 2 + VGAP * 2;
   myJoy[kJ0Fire] = new CheckboxWidget(this, font, xpos, ypos, "Fire", kJ0Fire);
 
-  const int final_y = ypos;
   xpos = _w / 3;  ypos = y;
 
   // Right joystick
@@ -194,7 +188,7 @@ int GlobalPropsDialog::addHoldWidgets(const GUI::Font& font, int x, int y,
   wid.push_back(myHoldSelect);
   wid.push_back(myHoldReset);
 
-  return final_y;
+  return myJoy[kJ0Fire]->getBottom();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -206,7 +200,6 @@ void GlobalPropsDialog::loadConfig()
   myLeftDiff->setSelected(settings.getString("ld"), "DEFAULT");
   myRightDiff->setSelected(settings.getString("rd"), "DEFAULT");
   myTVType->setSelected(settings.getString("tv"), "DEFAULT");
-  myDebug->setSelected(settings.getBool("debug") ? "true" : "false");
 
   const string& holdjoy0 = settings.getString("holdjoy0");
   for(int i = kJ0Up; i <= kJ0Fire; ++i)
@@ -217,6 +210,7 @@ void GlobalPropsDialog::loadConfig()
 
   myHoldSelect->setState(settings.getBool("holdselect"));
   myHoldReset->setState(settings.getBool("holdreset"));
+  myDebug->setState(settings.getBool("debug"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -241,8 +235,6 @@ void GlobalPropsDialog::saveConfig()
   if(s == "DEFAULT") s = "";
   settings.setValue("tv", s);
 
-  settings.setValue("debug", myDebug->getSelectedTag().toBool());
-
   s = "";
   for(int i = kJ0Up; i <= kJ0Fire; ++i)
     if(myJoy[i]->getState())  s += ourJoyState[i];
@@ -254,6 +246,8 @@ void GlobalPropsDialog::saveConfig()
 
   settings.setValue("holdselect", myHoldSelect->getState());
   settings.setValue("holdreset", myHoldReset->getState());
+
+  settings.setValue("debug", myDebug->getState());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -263,13 +257,14 @@ void GlobalPropsDialog::setDefaults()
   myLeftDiff->setSelected("DEFAULT");
   myRightDiff->setSelected("DEFAULT");
   myTVType->setSelected("DEFAULT");
-  myDebug->setSelected("false");
 
   for(int i = kJ0Up; i <= kJ1Fire; ++i)
     myJoy[i]->setState(false);
 
   myHoldSelect->setState(false);
   myHoldReset->setState(false);
+
+  myDebug->setState(false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

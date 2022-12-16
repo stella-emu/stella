@@ -52,11 +52,11 @@ class GlobalPropsDialog : public Dialog, public CommandSender
     PopUpWidget* myLeftDiff{nullptr};
     PopUpWidget* myRightDiff{nullptr};
     PopUpWidget* myTVType{nullptr};
-    PopUpWidget* myDebug{nullptr};
 
     std::array<CheckboxWidget*, 10> myJoy{nullptr};
     CheckboxWidget* myHoldSelect{nullptr};
     CheckboxWidget* myHoldReset{nullptr};
+    CheckboxWidget* myDebug{nullptr};
 
     static const std::array<string, 10> ourJoyState;
 
