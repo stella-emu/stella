@@ -55,7 +55,7 @@ class MouseControl
       @param console The console in use by the system
       @param mode    Contains information about how to use the mouse axes/buttons
     */
-    MouseControl(Console& console, const string& mode);
+    MouseControl(Console& console, string_view mode);
 
     /**
       Cycle through each available mouse control mode
@@ -85,10 +85,10 @@ class MouseControl
       int xid{-1}, yid{-1};
       string message;
 
-      explicit MouseMode(const string& msg = "") : message{msg} { }
+      explicit MouseMode(string_view msg = "") : message{msg} { }
       MouseMode(Controller::Type xt, int xi,
                 Controller::Type yt, int yi,
-                const string& msg)
+                string_view msg)
         : xtype{xt}, ytype{yt}, xid{xi}, yid{yi}, message{msg}  { }
 
       friend ostream& operator<<(ostream& os, const MouseMode& mm)

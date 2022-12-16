@@ -569,10 +569,10 @@ int PromptWidget::historyDir(int& index, int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PromptWidget::historyAdd(const string& entry)
+void PromptWidget::historyAdd(string_view entry)
 {
   if(_historyIndex >= static_cast<int>(_history.size()))
-    _history.push_back(entry);
+    _history.emplace_back(entry);
   else
     _history[_historyIndex] = entry;
 }
@@ -882,7 +882,7 @@ void PromptWidget::putcharIntern(int c)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PromptWidget::print(const string& str)
+void PromptWidget::print(string_view str)
 {
   for(const auto c: str)
     putcharIntern(c);

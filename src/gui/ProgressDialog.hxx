@@ -30,10 +30,10 @@ class ProgressDialog : public Dialog
 {
   public:
     ProgressDialog(GuiObject* boss, const GUI::Font& font,
-                   const string& message = "");
+                   string_view message = "");
     ~ProgressDialog() override = default;
 
-    void setMessage(const string& message);
+    void setMessage(string_view message);
     void setRange(int start, int finish, int step);
     void resetProgress();
     void setProgress(int progress);

@@ -114,9 +114,9 @@ class Widget : public GuiObject
     void setBGColorHi(ColorId color)   { _bgcolorhi = color;   setDirty(); }
     void setShadowColor(ColorId color) { _shadowcolor = color; setDirty(); }
 
-    void setToolTip(const string& text,
+    void setToolTip(string_view text,
       Event::Type event1 = Event::Type::NoType, EventMode = EventMode::kEmulationMode);
-    void setToolTip(const string& text,
+    void setToolTip(string_view text,
       Event::Type event1, Event::Type event2, EventMode = EventMode::kEmulationMode);
     void setToolTip(Event::Type event1, EventMode mode = EventMode::kEmulationMode);
     void setToolTip(Event::Type event1, Event::Type event2,
@@ -125,8 +125,8 @@ class Widget : public GuiObject
     virtual bool changedToolTip(const Common::Point& oldPos,
                                 const Common::Point& newPos) const { return false; }
 
-    void setHelpAnchor(const string& helpAnchor, bool debugger = false);
-    void setHelpURL(const string& helpURL);
+    void setHelpAnchor(string_view helpAnchor, bool debugger = false);
+    void setHelpURL(string_view helpURL);
 
     virtual void loadConfig() { }
 
@@ -212,25 +212,25 @@ class StaticTextWidget : public Widget, public CommandSender
   public:
     StaticTextWidget(GuiObject* boss, const GUI::Font& font,
                      int x, int y, int w, int h,
-                     const string& text = "", TextAlign align = TextAlign::Left,
+                     string_view text = "", TextAlign align = TextAlign::Left,
                      ColorId shadowColor = kNone);
     StaticTextWidget(GuiObject* boss, const GUI::Font& font,
                      int x, int y,
-                     const string& text = "", TextAlign align = TextAlign::Left,
+                     string_view text = "", TextAlign align = TextAlign::Left,
                      ColorId shadowColor = kNone);
     ~StaticTextWidget() override = default;
 
     void setCmd(int cmd) { _cmd = cmd; }
 
     virtual void setValue(int value);
-    void setLabel(const string& label);
+    void setLabel(string_view label);
     void setAlign(TextAlign align) { _align = align; setDirty(); }
     const string& getLabel() const { return _label; }
     bool isEditable() const { return _editable; }
 
     void setLink(size_t start = string::npos, int len = 0, bool underline = false);
-    bool setUrl(const string& url = EmptyString, const string& label = EmptyString,
-                const string& placeHolder = EmptyString);
+    bool setUrl(string_view url = EmptyString, string_view label = EmptyString,
+                string_view placeHolder = EmptyString);
     const string& getUrl() const { return _url; }
 
   protected:
@@ -265,13 +265,13 @@ class ButtonWidget : public StaticTextWidget
   public:
     ButtonWidget(GuiObject* boss, const GUI::Font& font,
                  int x, int y, int w, int h,
-                 const string& label, int cmd = 0, bool repeat = false);
+                 string_view label, int cmd = 0, bool repeat = false);
     ButtonWidget(GuiObject* boss, const GUI::Font& font,
                  int x, int y, int dw,
-                 const string& label, int cmd = 0, bool repeat = false);
+                 string_view label, int cmd = 0, bool repeat = false);
     ButtonWidget(GuiObject* boss, const GUI::Font& font,
                  int x, int y,
-                 const string& label, int cmd = 0, bool repeat = false);
+                 string_view label, int cmd = 0, bool repeat = false);
     ButtonWidget(GuiObject* boss, const GUI::Font& font,
                  int x, int y, int dw, int dh,
                  const uInt32* bitmap, int bmw, int bmh,
@@ -283,7 +283,7 @@ class ButtonWidget : public StaticTextWidget
     ButtonWidget(GuiObject* boss, const GUI::Font& font,
                  int x, int y, int w, int h,
                  const GUI::Icon& icon, int bmx,
-                 const string& label,
+                 string_view label,
                  int cmd = 0, bool repeat= false);
     ~ButtonWidget() override = default;
 
@@ -327,7 +327,7 @@ class CheckboxWidget : public ButtonWidget
 
   public:
     CheckboxWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
-                   const string& label, int cmd = 0);
+                   string_view label, int cmd = 0);
     ~CheckboxWidget() override = default;
 
     void setEditable(bool editable);
@@ -380,13 +380,13 @@ class SliderWidget : public ButtonWidget
   public:
     SliderWidget(GuiObject* boss, const GUI::Font& font,
                  int x, int y, int w, int h,
-                 const string& label = "", int labelWidth = 0, int cmd = 0,
-                 int valueLabelWidth = 0, const string& valueUnit = "",
+                 string_view label = "", int labelWidth = 0, int cmd = 0,
+                 int valueLabelWidth = 0, string_view valueUnit = "",
                  int valueLabelGap = 0, bool forceLabelSign = false);
     SliderWidget(GuiObject* boss, const GUI::Font& font,
                  int x, int y,
-                 const string& label = "", int labelWidth = 0, int cmd = 0,
-                 int valueLabelWidth = 0, const string& valueUnit = "",
+                 string_view label = "", int labelWidth = 0, int cmd = 0,
+                 int valueLabelWidth = 0, string_view valueUnit = "",
                  int valueLabelGap = 0, bool forceLabelSign = false);
     ~SliderWidget() override = default;
 
@@ -399,10 +399,10 @@ class SliderWidget : public ButtonWidget
     int  getMaxValue() const { return _valueMax; }
     void setStepValue(int value);
     int  getStepValue() const { return _stepValue; }
-    void setValueLabel(const string& valueLabel);
+    void setValueLabel(string_view valueLabel);
     void setValueLabel(int value);
     const string& getValueLabel() const { return _valueLabel; }
-    void setValueUnit(const string& valueUnit);
+    void setValueUnit(string_view valueUnit);
 
     void setTickmarkIntervals(int numIntervals);
 

@@ -32,7 +32,7 @@ class CartridgeARM : public Cartridge
   friend class CartridgeARMWidget;
 
   public:
-    CartridgeARM(const string& md5, const Settings& settings);
+    CartridgeARM(const Settings& settings, string_view md5);
     ~CartridgeARM() override = default;
 
     /**

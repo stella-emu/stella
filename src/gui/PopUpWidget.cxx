@@ -27,7 +27,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
                          int x, int y, int w, int h, const VariantList& items,
-                         const string& label, int labelWidth, int cmd)
+                         string_view label, int labelWidth, int cmd)
   : EditableWidget(boss, font, x, y - 1, w, h + 2),
     _label{label},
     _labelWidth{labelWidth}
@@ -124,7 +124,7 @@ const string& PopUpWidget::getSelectedName() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PopUpWidget::setSelectedName(const string& name)
+void PopUpWidget::setSelectedName(string_view name)
 {
   myMenu->setSelectedName(name);
 }

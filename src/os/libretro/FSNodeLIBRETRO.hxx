@@ -31,11 +31,11 @@ class FSNodeLIBRETRO : public AbstractFSNode
   public:
     FSNodeLIBRETRO();
 
-    explicit FSNodeLIBRETRO(const string& path);
+    explicit FSNodeLIBRETRO(string_view path);
 
     bool exists() const override;
-    const string& getName() const override    { return _name; }
-    void setName(const string& name) override { _name = name; }
+    const string& getName() const override  { return _name; }
+    void setName(string_view name) override { _name = name; }
     const string& getPath() const override { return _path; }
     string getShortPath() const override;
     bool hasParent() const override { return false; }
@@ -44,7 +44,7 @@ class FSNodeLIBRETRO : public AbstractFSNode
     bool isReadable() const override;
     bool isWritable() const override;
     bool makeDir() override;
-    bool rename(const string& newfile) override;
+    bool rename(string_view newfile) override;
 
     bool getChildren(AbstractFSList& list, ListMode mode) const override;
     AbstractFSNodePtr getParent() const override;

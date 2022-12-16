@@ -23,7 +23,7 @@
 #include "RamCheat.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-RamCheat::RamCheat(OSystem& os, const string& name, const string& code)
+RamCheat::RamCheat(OSystem& os, string_view name, string_view code)
   : Cheat(os, name, code),
     address{static_cast<uInt16>(unhex(myCode.substr(0, 2)))},
     value{static_cast<uInt8>(unhex(myCode.substr(2, 2)))}

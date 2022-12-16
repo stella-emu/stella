@@ -77,7 +77,7 @@ class StateManager
       Optionally adds one extra state when entering the Time Machine dialog;
       this uses the RewindManager for its functionality.
     */
-    bool addExtraState(const string& message);
+    bool addExtraState(string_view message);
 
     /**
       Rewinds states; this uses the RewindManager for its functionality.

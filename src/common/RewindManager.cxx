@@ -96,7 +96,7 @@ void RewindManager::setup()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool RewindManager::addState(const string& message, bool timeMachine)
+bool RewindManager::addState(string_view message, bool timeMachine)
 {
   // only check for Time Machine states, ignore for debugger
   if(timeMachine && myStateList.currentIsValid())

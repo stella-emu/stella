@@ -217,7 +217,7 @@ bool PhysicalJoystickHandler::remove(int id)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PhysicalJoystickHandler::remove(const string& name)
+bool PhysicalJoystickHandler::remove(string_view name)
 {
   const auto it = myDatabase.find(name);
   if(it != myDatabase.end() && it->second.joy == nullptr)
@@ -229,7 +229,7 @@ bool PhysicalJoystickHandler::remove(const string& name)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PhysicalJoystickHandler::mapStelladaptors(const string& saport, int ID)
+bool PhysicalJoystickHandler::mapStelladaptors(string_view saport, int ID)
 {
   bool erased = false;
   // saport will have two values:

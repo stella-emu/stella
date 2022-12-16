@@ -47,7 +47,7 @@ class OSystemWINDOWS : public OSystemStandalone
                         they are free to ignore it
     */
     void getBaseDirectories(string& basedir, string& homedir,
-                            bool useappdir, const string& usedir) override;
+                            bool useappdir, string_view usedir) override;
 
   private:
     // Following constructors and assignment operators not supported

@@ -119,8 +119,8 @@ FBInitStatus Debugger::initializeVideo()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::start(const string& message, int address, bool read,
-                     const string& toolTip)
+bool Debugger::start(string_view message, int address, bool read,
+                     string_view toolTip)
 {
   if(myOSystem.eventHandler().enterDebugMode())
   {
@@ -139,7 +139,7 @@ bool Debugger::start(const string& message, int address, bool read,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::startWithFatalError(const string& message)
+bool Debugger::startWithFatalError(string_view message)
 {
   if(myOSystem.eventHandler().enterDebugMode())
   {
@@ -218,7 +218,7 @@ TrapArray& Debugger::writeTraps() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string Debugger::run(const string& command)
+string Debugger::run(string_view command)
 {
   return myParser->run(command);
 }
@@ -450,7 +450,7 @@ bool Debugger::writeTrap(uInt16 t) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::log(const string& triggerMsg)
+void Debugger::log(string_view triggerMsg)
 {
   const CartDebug::Disassembly& disasm = myCartDebug->disassembly();
   const int pc = myCpuDebug->pc();
@@ -719,7 +719,7 @@ string Debugger::showWatches()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Debugger::stringToValue(const string& stringval)
+int Debugger::stringToValue(string_view stringval)
 {
   return myParser->decipher_arg(stringval);
 }
@@ -745,7 +745,7 @@ void Debugger::saveOldState(bool clearDirtyPages)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::addState(const string& rewindMsg)
+void Debugger::addState(string_view rewindMsg)
 {
   // Add another rewind level to the Time Machine buffer
   RewindManager& r = myOSystem.state().rewindManager();
@@ -788,7 +788,7 @@ void Debugger::setQuitState()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::addFunction(const string& name, const string& definition,
+bool Debugger::addFunction(string_view name, string_view definition,
                            Expression* exp, bool builtin)
 {
   myFunctions.emplace(name, unique_ptr<Expression>(exp));
@@ -798,14 +798,14 @@ bool Debugger::addFunction(const string& name, const string& definition,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::isBuiltinFunction(const string& name)
+bool Debugger::isBuiltinFunction(string_view name)
 {
   return std::any_of(ourBuiltinFunctions.cbegin(), ourBuiltinFunctions.cend(),
       [&](const auto& func) { return name == func.name; });
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::delFunction(const string& name)
+bool Debugger::delFunction(string_view name)
 {
   const auto& iter = myFunctions.find(name);
   if(iter == myFunctions.end())
@@ -815,25 +815,25 @@ bool Debugger::delFunction(const string& name)
   if(isBuiltinFunction(name))
       return false;
 
-  myFunctions.erase(name);
+  myFunctions.erase(string{name});
 
   const auto& def_iter = myFunctionDefs.find(name);
   if(def_iter == myFunctionDefs.end())
     return false;
 
-  myFunctionDefs.erase(name);
+  myFunctionDefs.erase(string{name});
   return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const Expression& Debugger::getFunction(const string& name) const
+const Expression& Debugger::getFunction(string_view name) const
 {
   const auto& iter = myFunctions.find(name);
   return iter != myFunctions.end() ? *(iter->second) : EmptyExpression;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string& Debugger::getFunctionDef(const string& name) const
+const string& Debugger::getFunctionDef(string_view name) const
 {
   const auto& iter = myFunctionDefs.find(name);
   return iter != myFunctionDefs.end() ? iter->second : EmptyString;

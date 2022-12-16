@@ -49,7 +49,7 @@ int Font::getCharWidth(uInt8 chr) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Font::getStringWidth(const string& str) const
+int Font::getStringWidth(string_view str) const
 {
   // If no width table is specified, use the maximum width
   if(!myFontDesc.width)

@@ -57,7 +57,7 @@ class OSystemLIBRETRO : public OSystem
                         they are free to ignore it
     */
     void getBaseDirectories(string& basedir, string& homedir,
-                            bool useappdir, const string& usedir) override
+                            bool useappdir, string_view usedir) override
     {
       basedir = homedir = "." + slash;
     }

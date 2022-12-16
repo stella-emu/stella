@@ -81,7 +81,7 @@ class Console : public Serializable, public ConsoleIO
     /**
       Sets the left and right controllers for the console.
     */
-    void setControllers(const string& romMd5);
+    void setControllers(string_view romMd5);
 
     /**
       Get the controller plugged into the specified jack
@@ -424,11 +424,12 @@ class Console : public Serializable, public ConsoleIO
       Selects the left or right controller depending on ROM properties
     */
     unique_ptr<Controller> getControllerPort(const Controller::Type type,
-                                             const Controller::Jack port, const string& romMd5);
+                                             const Controller::Jack port,
+                                             string_view romMd5);
 
-    void toggleTIABit(TIABit bit, const string& bitname,
+    void toggleTIABit(TIABit bit, string_view bitname,
                       bool show = true, bool toggle = true) const;
-    void toggleTIACollision(TIABit bit, const string& bitname,
+    void toggleTIACollision(TIABit bit, string_view bitname,
                             bool show = true, bool toggle = true) const;
 
   private:

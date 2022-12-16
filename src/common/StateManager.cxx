@@ -139,7 +139,7 @@ void StateManager::toggleTimeMachine()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool StateManager::addExtraState(const string& message)
+bool StateManager::addExtraState(string_view message)
 {
   if(myActiveMode == Mode::TimeMachine)
   {

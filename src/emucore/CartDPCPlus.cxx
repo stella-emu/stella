@@ -26,8 +26,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeDPCPlus::CartridgeDPCPlus(const ByteBuffer& image, size_t size,
-                                   const string& md5, const Settings& settings)
-  : CartridgeARM(md5, settings),
+                                   string_view md5, const Settings& settings)
+  : CartridgeARM(settings, md5),
     myImage{make_unique<uInt8[]>(32_KB)},
     mySize{std::min(size, 32_KB)}
 {

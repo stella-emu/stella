@@ -38,7 +38,7 @@ class AboutDialog : public Dialog
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
     void updateStrings(int page, int lines, string& title);
     void displayInfo();
-    static string getUrl(const string& text);
+    static string getUrl(string_view text);
 
     void loadConfig() override { displayInfo(); }
 

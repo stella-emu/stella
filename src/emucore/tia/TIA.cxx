@@ -1185,14 +1185,9 @@ bool TIA::enableFixedColors(bool enable)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool TIA::setFixedColorPalette(const string& colors)
+bool TIA::setFixedColorPalette(string_view colors)
 {
-  string s = colors;
-  sort(s.begin(), s.end());
-  if(s != "bgopry")
-    return false;
-
-  for(int i = 0; i < 6; ++i)
+  for(size_t i = 0; i < std::max<size_t>(6, colors.size()); ++i)
   {
     switch(colors[i])
     {

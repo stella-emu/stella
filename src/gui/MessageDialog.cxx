@@ -68,7 +68,7 @@ void MessageDialog::handleCommand(CommandSender* sender, int cmd, int data, int 
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void MessageDialog::setMessage(const string& title, const StringList& text,
+void MessageDialog::setMessage(string_view title, const StringList& text,
                                bool yesNo)
 {
   myTitle = title;
@@ -77,7 +77,7 @@ void MessageDialog::setMessage(const string& title, const StringList& text,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void MessageDialog::setMessage(const string& title, const string& text,
+void MessageDialog::setMessage(string_view title, string_view text,
                                bool yesNo)
 {
   setMessage(title, StringParser(text).stringList(), yesNo);

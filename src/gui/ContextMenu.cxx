@@ -169,7 +169,7 @@ const string& ContextMenu::getSelectedName() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ContextMenu::setSelectedName(const string& name)
+void ContextMenu::setSelectedName(string_view name)
 {
   if(_selectedItem >= 0)
     _entries[_selectedItem].first = name;

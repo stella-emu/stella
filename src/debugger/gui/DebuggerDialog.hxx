@@ -49,7 +49,7 @@ class DebuggerDialog : public Dialog
 {
   public:
     // Note: these sizes make sure that all major tabs are fully visible
-    //  cart dependend information (e.g. DPC+) may require more space
+    //       cart dependend information (e.g. DPC+) may require more space
     enum {
       kSmallFontMinW  = 1090, kSmallFontMinH  = 720,
       kMediumFontMinW = 1160, kMediumFontMinH = 770,
@@ -73,7 +73,7 @@ class DebuggerDialog : public Dialog
     ButtonWidget& rewindButton() const { return *myRewindButton; }
     ButtonWidget& unwindButton() const { return *myUnwindButton; }
 
-    void showFatalMessage(const string& msg);
+    void showFatalMessage(string_view msg);
     void saveConfig() override;
 
   private:

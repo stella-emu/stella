@@ -56,7 +56,7 @@ class StreamReader : public Serializable
   public:
     StreamReader() { myBuffer1.fill(0);  myBuffer2.fill(0); }
 
-    bool open(const string& path) {
+    bool open(string_view path) {
       myFile = Serializer(path, Serializer::Mode::ReadOnly);
       if(myFile)
         myFileSize = myFile.size();
@@ -738,7 +738,7 @@ class MovieCart : public Serializable
   public:
     MovieCart() { myROM.fill(0); }
 
-    bool init(const string& path);
+    bool init(string_view path);
     bool process(uInt16 address);
 
     bool save(Serializer& out) const override;
@@ -837,7 +837,7 @@ class MovieCart : public Serializable
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool MovieCart::init(const string& path)
+bool MovieCart::init(string_view path)
 {
   std::copy_n(kernelROM, 1_KB, myROM.data());
 

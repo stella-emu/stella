@@ -49,7 +49,7 @@ class CheatManager
 
       @return  Whether the cheat was created and enabled.
     */
-    bool add(const string& name, const string& code,
+    bool add(string_view name, string_view code,
              bool enable = true, int idx = -1);
 
     /**
@@ -68,7 +68,7 @@ class CheatManager
       @param code    The actual cheatcode
       @param enable  Add or remove the cheat to the per-frame list
     */
-    void addPerFrame(const string& name, const string& code, bool enable);
+    void addPerFrame(string_view name, string_view code, bool enable);
 
     /**
       Creates and enables a one-shot cheat.  One-shot cheats are the
@@ -78,7 +78,7 @@ class CheatManager
       @param name  Name of the cheat (not absolutely required)
       @param code  The actual cheatcode (in hex)
     */
-    void addOneShot(const string& name, const string& code);
+    void addOneShot(string_view name, string_view code);
 
     /**
       Enable/disabled the cheat specified by the given code.
@@ -86,7 +86,7 @@ class CheatManager
       @param code    The actual cheatcode to search for
       @param enable  Enable/disable the cheat
     */
-    void enable(const string& code, bool enable);
+    void enable(string_view code, bool enable);
 
     /**
       Returns the game cheatlist.
@@ -111,17 +111,17 @@ class CheatManager
     /**
       Load cheats for ROM with given MD5sum to cheatlist(s).
     */
-    void loadCheats(const string& md5sum);
+    void loadCheats(string_view md5sum);
 
     /**
       Saves cheats for ROM with given MD5sum to cheat map.
     */
-    void saveCheats(const string& md5sum);
+    void saveCheats(string_view md5sum);
 
     /**
       Checks if a code is valid.
     */
-    static bool isValidCode(const string& code);
+    static bool isValidCode(string_view code);
 
   private:
     /**
@@ -132,14 +132,14 @@ class CheatManager
 
       @return  The cheat (if was created), else nullptr.
     */
-    shared_ptr<Cheat> createCheat(const string& name, const string& code) const;
+    shared_ptr<Cheat> createCheat(string_view name, string_view code) const;
 
     /**
       Parses a list of cheats and adds/enables each one.
 
       @param cheats  Comma-separated list of cheats (without any names)
     */
-    void parse(const string& cheats);
+    void parse(string_view cheats);
 
   private:
     OSystem& myOSystem;
@@ -147,7 +147,7 @@ class CheatManager
     CheatList myCheatList;
     CheatList myPerFrameList;
 
-    std::map<string,string> myCheatMap;
+    std::map<string,string, std::less<>> myCheatMap;
     string myCheatFile;
 
     // This is set each time a new cheat/ROM is loaded, for later

@@ -537,9 +537,9 @@ HSM::ScoreAddresses HighScoresManager::getPropScoreAddr(const json& jprops)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 HighScoresManager::fromHexStr(const string& addr)
+uInt16 HighScoresManager::fromHexStr(string_view addr)
 {
-  string naked = addr;
+  string naked{addr};
 
   if(const int pos = naked.find("0x") != std::string::npos)
     naked = naked.substr(pos + 1);

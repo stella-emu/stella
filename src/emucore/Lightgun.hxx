@@ -43,7 +43,7 @@ class Lightgun : public Controller
 
     */
     Lightgun(Jack jack, const Event& event, const System& system,
-             const string& romMd5, const FrameBuffer& frameBuffer);
+             string_view romMd5, const FrameBuffer& frameBuffer);
     ~Lightgun() override = default;
 
   public:

@@ -33,7 +33,7 @@ class ComboDialog : public Dialog
     ~ComboDialog() override = default;
 
     /** Place the dialog onscreen and center it */
-    void show(Event::Type event, const string& name);
+    void show(Event::Type event, string_view name);
 
   private:
     void loadConfig() override;

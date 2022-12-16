@@ -61,7 +61,7 @@ bool Properties::save(KeyValueRepository& repo) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Properties::set(PropType key, const string& value)
+void Properties::set(PropType key, string_view value)
 {
   const auto pos = static_cast<size_t>(key);
   if(pos < myProperties.size())
@@ -137,7 +137,7 @@ Properties& Properties::operator=(const Properties& properties)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Properties::setDefault(PropType key, const string& value)
+void Properties::setDefault(PropType key, string_view value)
 {
   ourDefaultProperties[static_cast<size_t>(key)] = value;
 }
@@ -200,7 +200,7 @@ void Properties::setDefaults()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PropType Properties::getPropType(const string& name)
+PropType Properties::getPropType(string_view name)
 {
   for(size_t i = 0; i < NUM_PROPS; ++i)
     if(ourPropertyNames[i] == name)

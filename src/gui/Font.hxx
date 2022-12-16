@@ -65,7 +65,7 @@ class Font
 
     int getCharWidth(uInt8 chr) const;
 
-    int getStringWidth(const string& str) const;
+    int getStringWidth(string_view str) const;
 
   private:
     FontDesc myFontDesc;

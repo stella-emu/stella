@@ -232,7 +232,7 @@ class HighScoresManager
                               uInt16 defVal = 0);
     static HSM::ScoreAddresses getPropScoreAddr(const json& jprops);
 
-    static uInt16 fromHexStr(const string& addr);
+    static uInt16 fromHexStr(string_view addr);
     static Int32 fromBCD(uInt8 bcd);
     string hash(const HSM::ScoresData& data) const;
 

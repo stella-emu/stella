@@ -113,7 +113,7 @@ class PaletteHandler
 
       @param name  The palette to switch to
     */
-    void setPalette(const string& name);
+    void setPalette(string_view name);
 
     /**
       Sets the palette from current settings.
@@ -178,7 +178,7 @@ class PaletteHandler
 
       @return  The palette type
     */
-    PaletteType toPaletteType(const string& name) const;
+    PaletteType toPaletteType(string_view name) const;
 
     /**
       Convert enumeration to palette settings name.

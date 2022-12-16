@@ -83,7 +83,7 @@ class FSNode
      * operating system doesn't support the concept), some other directory is
      * used (usually the root directory).
      */
-    explicit FSNode(const string& path);
+    explicit FSNode(string_view path);
 
     /**
      * Assignment operators.
@@ -106,7 +106,7 @@ class FSNode
      * Append the given path to the node, adding a directory separator
      * when necessary.  Modelled on the C++17 fs::path API.
      */
-    FSNode& operator/=(const string& path);
+    FSNode& operator/=(string_view path);
 
     /**
      * By default, the output operator simply outputs the fully-qualified
@@ -159,7 +159,7 @@ class FSNode
      * @return the file name
      */
     const string& getName() const;
-    void setName(const string& name);
+    void setName(string_view name);
 
     /**
      * Return a string representation of the file which can be passed to fopen().
@@ -241,7 +241,7 @@ class FSNode
      *
      * @return bool true if the node was renamed, false otherwise.
      */
-    bool rename(const string& newfile);
+    bool rename(string_view newfile);
 
     /**
      * Get the size of the current node path.
@@ -302,13 +302,13 @@ class FSNode
      * and replace the extension (if present) with the given one.  If no
      * extension is present, the given one is appended instead.
      */
-    string getNameWithExt(const string& ext = "") const;
-    string getPathWithExt(const string& ext = "") const;
+    string getNameWithExt(string_view ext = "") const;
+    string getPathWithExt(string_view ext = "") const;
 
   private:
     explicit FSNode(const AbstractFSNodePtr& realNode);
     AbstractFSNodePtr _realNode;
-    void setPath(const string& path);
+    void setPath(string_view path);
 };
 
 
@@ -370,7 +370,7 @@ class AbstractFSNode
      *       implementation for more information.
      */
     virtual const string& getName() const = 0;
-    virtual void setName(const string& name) = 0;
+    virtual void setName(string_view name) = 0;
 
     /**
      * Returns the 'path' of the current node, usable in fopen().
@@ -443,7 +443,7 @@ class AbstractFSNode
      *
      * @return bool true if the node was renamed, false otherwise.
      */
-    virtual bool rename(const string& newfile) = 0;
+    virtual bool rename(string_view newfile) = 0;
 
     /**
      * Get the size of the current node path.
@@ -504,12 +504,12 @@ class AbstractFSNode
      * @param str  String containing the path.
      * @return  Pointer to the first char of the last component inside str.
      */
-    static const char* lastPathComponent(const string& str)
+    static const char* lastPathComponent(string_view str)
     {
       if(str.empty())
         return "";
 
-      const char* const start = str.c_str();
+      const char* const start = str.data();
       const char* cur = start + str.size() - 2;
 
       while (cur >= start && !(*cur == '/' || *cur == '\\'))

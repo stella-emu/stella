@@ -21,11 +21,11 @@
 #include "BankRomCheat.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-BankRomCheat::BankRomCheat(OSystem& os, const string& name, const string& code)
+BankRomCheat::BankRomCheat(OSystem& os, string_view name, string_view code)
   : Cheat(os, name, code)
 {
   if(myCode.length() == 7)
-    myCode = "0" + code;
+    myCode = "0" + string{code};
 
   bank = unhex(myCode.substr(0, 2));
   address = 0xf000 + unhex(myCode.substr(2, 3));

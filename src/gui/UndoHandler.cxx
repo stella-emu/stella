@@ -39,7 +39,7 @@ void UndoHandler::doChar()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool UndoHandler::endChars(const string& text)
+bool UndoHandler::endChars(string_view text)
 {
   if(myCharMode)
   {
@@ -51,7 +51,7 @@ bool UndoHandler::endChars(const string& text)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void UndoHandler::doo(const string& text)
+void UndoHandler::doo(string_view text)
 {
   // clear redos
   for(; myRedoCount; myRedoCount--)
@@ -62,7 +62,7 @@ void UndoHandler::doo(const string& text)
     myBuffer.pop_back();
 
   // add text to buffer
-  myBuffer.push_front(text);
+  myBuffer.emplace_front(text);
   myCharMode = false;
 }
 
@@ -91,7 +91,7 @@ bool UndoHandler::redo(string& text)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 UndoHandler::lastDiff(const string& text, const string& oldText)
+uInt32 UndoHandler::lastDiff(string_view text, string_view oldText)
 {
   auto pos = static_cast<uInt32>(text.size());
 

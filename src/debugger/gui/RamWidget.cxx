@@ -31,7 +31,7 @@
 RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
                      int x, int y, int w, int h,
                      uInt32 ramsize, uInt32 numrows, uInt32 pagesize,
-                     const string& helpAnchor)
+                     string_view helpAnchor)
   : Widget(boss, lfont, x, y, w, h),
     CommandSender(boss),
     _nfont{nfont},
@@ -393,7 +393,7 @@ void RamWidget::showInputBox(int cmd)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string RamWidget::doSearch(const string& str)
+string RamWidget::doSearch(string_view str)
 {
   bool comparisonSearch = true;
 
@@ -450,7 +450,7 @@ string RamWidget::doSearch(const string& str)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string RamWidget::doCompare(const string& str)
+string RamWidget::doCompare(string_view str)
 {
   bool comparativeSearch = false;
   int searchVal = 0, offset = 0;
@@ -475,7 +475,7 @@ string RamWidget::doCompare(const string& str)
     if(str[0] == '-')
       negative = true;
 
-    string tmp = str;
+    string tmp{str};
     tmp.erase(0, 1);  // remove the operator
     offset = instance().debugger().stringToValue(tmp);
     if(negative)

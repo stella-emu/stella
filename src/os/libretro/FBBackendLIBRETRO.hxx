@@ -93,7 +93,7 @@ class FBBackendLIBRETRO : public FBBackend
 
     int scaleX(int x) const override { return x; }
     int scaleY(int y) const override { return y; }
-    void setTitle(const string&) override { }
+    void setTitle(string_view) override { }
     void showCursor(bool) override { }
     bool fullScreen() const override { return true; }
     void getRGB(uInt32, uInt8*, uInt8*, uInt8*) const override { }

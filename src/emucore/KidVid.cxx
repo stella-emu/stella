@@ -26,7 +26,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 KidVid::KidVid(Jack jack, const Event& event, const OSystem& osystem,
-               const System& system, const string& romMd5,
+               const System& system, string_view romMd5,
                const onMessageCallbackForced& callback)
   : Controller(jack, event, system, Controller::Type::KidVid),
     myEnabled{myJack == Jack::Right},

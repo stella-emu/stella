@@ -36,7 +36,7 @@ namespace {
 } // namespace
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-StaggeredLogger::StaggeredLogger(const string& message, Logger::Level level)
+StaggeredLogger::StaggeredLogger(string_view message, Logger::Level level)
   : myMessage{message},
     myLevel{level}
 {

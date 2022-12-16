@@ -83,7 +83,7 @@ class FrameBuffer
 
       @return  Status of initialization (see FBInitStatus 'enum')
     */
-    FBInitStatus createDisplay(const string& title, BufferType type,
+    FBInitStatus createDisplay(string_view title, BufferType type,
                                Common::Size size, bool honourHiDPI = true);
 
     /**
@@ -109,7 +109,7 @@ class FrameBuffer
       @param position Onscreen position for the message
       @param force    Force showing this message, even if messages are disabled
     */
-    void showTextMessage(const string& message,
+    void showTextMessage(string_view message,
                          MessagePosition position = MessagePosition::BottomCenter,
                          bool force = false);
     /**
@@ -121,7 +121,7 @@ class FrameBuffer
       @param minValue   The minimal value of the gauge bar
       @param maxValue   The maximal value of the gauge bar
     */
-    void showGaugeMessage(const string& message, const string& valueText,
+    void showGaugeMessage(string_view message, string_view valueText,
                           float value, float minValue = 0.F, float maxValue = 100.F);
 
     bool messageShown() const;
@@ -324,7 +324,7 @@ class FrameBuffer
 
       @return  The description of the font
     */
-    static FontDesc getFontDesc(const string& name);
+    static FontDesc getFontDesc(string_view name);
   #endif
 
     /**
@@ -407,7 +407,7 @@ class FrameBuffer
       @param position Onscreen position for the message
       @param force    Force showing this message, even if messages are disabled
     */
-    void createMessage(const string& message, MessagePosition position,
+    void createMessage(string_view message, MessagePosition position,
                        bool force = false);
   #endif
 

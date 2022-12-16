@@ -41,11 +41,11 @@ class NavigationWidget : public Widget
         {
           public:
             FolderLinkWidget(GuiObject* boss, const GUI::Font& font,
-              int x, int y, int w, int h, const string& text, const string& path);
+              int x, int y, int w, int h, string_view text, string_view path);
             ~FolderLinkWidget() override = default;
 
-            void setPath(const string& path) { myPath = path; }
-            const string& getPath() const { return myPath; }
+            void setPath(string_view path) { myPath = path; }
+            const string& getPath() const  { return myPath; }
 
           private:
             void drawWidget(bool hilite) override;
@@ -67,7 +67,7 @@ class NavigationWidget : public Widget
           const GUI::Font& font, int x, int y, int w, int h);
         ~PathWidget() override = default;
 
-        void setPath(const string& path);
+        void setPath(string_view path);
         const string& getPath(int idx) const;
 
       private:

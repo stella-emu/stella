@@ -279,7 +279,7 @@ class Controller : public Serializable
     /**
       Returns the controller type of the given property name
     */
-    static Type getType(const string& propName);
+    static Type getType(string_view propName);
 
     /**
       Sets the dead zone amount for real analog joysticks.

@@ -149,7 +149,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
 
   // Let the cart know how to query for the 'Cartridge.StartBank' property
   myCart->setStartBankFromPropsFunc([this]() {
-    const string& startbank = myProperties.get(PropType::Cart_StartBank);
+    const string_view startbank = myProperties.get(PropType::Cart_StartBank);
     return (startbank == EmptyString || BSPF::equalsIgnoreCase(startbank, "AUTO"))
         ? -1 : BSPF::stringToInt(startbank);
   });
@@ -169,8 +169,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
 
   // Add the real controllers for this system
   // This must be done before the debugger is initialized
-  const string& md5 = myProperties.get(PropType::Cart_MD5);
-  setControllers(md5);
+  setControllers(myProperties.get(PropType::Cart_MD5));
 
   // Pause audio and clear framebuffer while autodetection runs
   myOSystem.sound().pause(true);
@@ -238,7 +237,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   myConsoleInfo.BankSwitch = myCart->about();
 
   // Some carts have an associated nvram file
-  myCart->setNVRamFile(myOSystem.nvramDir().getPath(), myConsoleInfo.CartName);
+  myCart->setNVRamFile(myOSystem.nvramDir().getPath() + myConsoleInfo.CartName);
 
   // Let the other devices know about the new console
   mySystem->consoleChanged(myConsoleTiming);
@@ -360,13 +359,13 @@ string Console::formatFromFilename() const
   }};
 
   // Get filename, and search using regex's above
-  const string& filename = myOSystem.romFile().getName();
+  const string_view filename = myOSystem.romFile().getName();
   for(const auto& pat: Pattern)
   {
     try
     {
       const std::regex rgx(pat[0], std::regex_constants::icase);
-      if(std::regex_search(filename, rgx))
+      if(std::regex_search(filename.cbegin(), filename.cend(), rgx))
         return pat[1];
     }
     catch(...)
@@ -676,7 +675,7 @@ FBInitStatus Console::initializeVideo(bool full)
       Common::Size(2 * myTIA->width(), myTIA->height());
 
     const bool devSettings = myOSystem.settings().getBool("dev.settings");
-    const string& title = string("Stella ") + STELLA_VERSION +
+    const string title = string{"Stella "} + STELLA_VERSION +
                    ": \"" + myProperties.get(PropType::Cart_Name) + "\"";
     fbstatus = myOSystem.frameBuffer().createDisplay(title,
         BufferType::Emulator, size, false);
@@ -837,7 +836,7 @@ void Console::createAudioQueue()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::setControllers(const string& romMd5)
+void Console::setControllers(string_view romMd5)
 {
   // Check for CompuMate scheme; it is special in that a handler creates both
   // controllers for us, and associates them with the bankswitching class
@@ -942,9 +941,8 @@ void Console::changeRightController(int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-unique_ptr<Controller> Console::getControllerPort(const Controller::Type type,
-                                                  const Controller::Jack port,
-                                                  const string& romMd5)
+unique_ptr<Controller> Console::getControllerPort(
+    const Controller::Type type, const Controller::Jack port, string_view romMd5)
 {
   unique_ptr<Controller> controller;
 
@@ -1002,7 +1000,8 @@ unique_ptr<Controller> Console::getControllerPort(const Controller::Type type,
     {
       FSNode nvramfile = myOSystem.nvramDir();
       nvramfile /= "atarivox_eeprom.dat";
-      const Controller::onMessageCallback callback = [&os = myOSystem](const string& msg)
+      const Controller::onMessageCallback callback = [&os = myOSystem]
+      (string_view msg)
       {
         const bool devSettings = os.settings().getBool("dev.settings");
         if(os.settings().getBool(devSettings ? "dev.extaccess" : "plr.extaccess"))
@@ -1016,7 +1015,8 @@ unique_ptr<Controller> Console::getControllerPort(const Controller::Type type,
     {
       FSNode nvramfile = myOSystem.nvramDir();
       nvramfile /= "savekey_eeprom.dat";
-      const Controller::onMessageCallback callback = [&os = myOSystem](const string& msg)
+      const Controller::onMessageCallback callback = [&os = myOSystem]
+      (string_view msg)
       {
         const bool devSettings = os.settings().getBool("dev.settings");
         if(os.settings().getBool(devSettings ? "dev.extaccess" : "plr.extaccess"))
@@ -1031,8 +1031,8 @@ unique_ptr<Controller> Console::getControllerPort(const Controller::Type type,
 
     case Controller::Type::KidVid:
     {
-      const Controller::onMessageCallbackForced callback =
-      [&os = myOSystem](const string& msg, bool force) {
+      const Controller::onMessageCallbackForced callback = [&os = myOSystem]
+      (string_view msg, bool force) {
         const bool devSettings = os.settings().getBool("dev.settings");
         if(force || os.settings().getBool(devSettings ? "dev.extaccess" : "plr.extaccess"))
           os.frameBuffer().showTextMessage(msg);
@@ -1241,10 +1241,11 @@ void Console::toggleDeveloperSet(bool toggle)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::toggleTIABit(TIABit bit, const string& bitname, bool show, bool toggle) const
+void Console::toggleTIABit(TIABit bit, string_view bitname,
+                           bool show, bool toggle) const
 {
   const bool result = myTIA->toggleBit(bit, toggle ? 2 : 3);
-  const string message = bitname + (result ? " enabled" : " disabled");
+  const string message = string{bitname} + (result ? " enabled" : " disabled");
 
   myOSystem.frameBuffer().showTextMessage(message);
 }
@@ -1259,10 +1260,12 @@ void Console::toggleBits(bool toggle) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::toggleTIACollision(TIABit bit, const string& bitname, bool show, bool toggle) const
+void Console::toggleTIACollision(TIABit bit, string_view bitname,
+                                 bool show, bool toggle) const
 {
   const bool result = myTIA->toggleCollision(bit, toggle ? 2 : 3);
-  const string message = bitname + (result ? " collision enabled" : " collision disabled");
+  const string message = string{bitname} +
+      (result ? " collision enabled" : " collision disabled");
 
   myOSystem.frameBuffer().showTextMessage(message);
 }

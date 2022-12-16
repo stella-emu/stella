@@ -107,7 +107,7 @@ class RewindManager
 
       @param message  Message to display when replaying this state
     */
-    bool addState(const string& message, bool timeMachine = false);
+    bool addState(string_view message, bool timeMachine = false);
 
     /**
       Rewind numStates levels of the state list, and display the message associated

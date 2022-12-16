@@ -47,10 +47,10 @@ class EditableWidget : public Widget, public CommandSender
 
   public:
     EditableWidget(GuiObject* boss, const GUI::Font& font,
-                   int x, int y, int w, int h, const string& str = "");
+                   int x, int y, int w, int h, string_view str = "");
     ~EditableWidget() override = default;
 
-    virtual void setText(const string& str, bool changed = false);
+    virtual void setText(string_view str, bool changed = false);
     void setMaxLen(int len) { _maxLen = len; }
     const string& getText() const { return _editString; }
 

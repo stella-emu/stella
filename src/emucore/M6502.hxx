@@ -236,19 +236,19 @@ class M6502 : public Serializable
     BreakpointMap& breakPoints() { return myBreakPoints; }
 
     // methods for 'breakif' handling
-    uInt32 addCondBreak(Expression* e, const string& name, bool oneShot = false);
+    uInt32 addCondBreak(Expression* e, string_view name, bool oneShot = false);
     bool delCondBreak(uInt32 idx);
     void clearCondBreaks();
     const StringList& getCondBreakNames() const;
 
     // methods for 'savestateif' handling
-    uInt32 addCondSaveState(Expression* e, const string& name);
+    uInt32 addCondSaveState(Expression* e, string_view name);
     bool delCondSaveState(uInt32 idx);
     void clearCondSaveStates();
     const StringList& getCondSaveStateNames() const;
 
     // methods for 'trapif' handling
-    uInt32 addCondTrap(Expression* e, const string& name);
+    uInt32 addCondTrap(Expression* e, string_view name);
     bool delCondTrap(uInt32 idx);
     void clearCondTraps();
     const StringList& getCondTrapNames() const;

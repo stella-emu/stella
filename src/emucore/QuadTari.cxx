@@ -70,7 +70,7 @@ unique_ptr<Controller> QuadTari::addController(const Controller::Type type, bool
 {
   FSNode nvramfile = myOSystem.nvramDir();
   const Controller::onMessageCallback callback = [&os = myOSystem]
-    (const string& msg) {
+    (string_view msg) {
       const bool devSettings = os.settings().getBool("dev.settings");
       if(os.settings().getBool(devSettings ? "dev.extaccess" : "plr.extaccess"))
         os.frameBuffer().showTextMessage(msg);

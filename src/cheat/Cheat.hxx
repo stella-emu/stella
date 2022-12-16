@@ -25,7 +25,7 @@ class OSystem;
 class Cheat
 {
   public:
-    Cheat(OSystem& osystem, const string& name, const string& code)
+    Cheat(OSystem& osystem, string_view name, string_view code)
       : myOSystem{osystem},
         myName{name == "" ? code : name},
         myCode{code} { }
@@ -41,7 +41,7 @@ class Cheat
     virtual void evaluate() = 0;
 
   protected:
-    static uInt16 unhex(const string& hex)
+    static uInt16 unhex(string_view hex)
     {
       int ret = 0;
       for(const auto c: hex)

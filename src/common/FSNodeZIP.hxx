@@ -40,11 +40,11 @@ class FSNodeZIP : public AbstractFSNode
      *
      * @param path  String with the path the new node should point to.
      */
-    explicit FSNodeZIP(const string& path);
+    explicit FSNodeZIP(string_view path);
 
     bool exists() const override;
-    const string& getName() const override    { return _name; }
-    void setName(const string& name) override { _name = name; }
+    const string& getName() const override  { return _name; }
+    void setName(string_view name) override { _name = name; }
     const string& getPath() const override { return _path;      }
     string getShortPath() const   override { return _shortPath; }
     bool hasParent() const override   { return true; }
@@ -56,7 +56,7 @@ class FSNodeZIP : public AbstractFSNode
     //////////////////////////////////////////////////////////
     // For now, ZIP files cannot be modified in any way
     bool makeDir() override { return false; }
-    bool rename(const string& newfile) override { return false; }
+    bool rename(string_view) override { return false; }
     //////////////////////////////////////////////////////////
 
     size_t getSize() const override { return _size; }

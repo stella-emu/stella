@@ -157,8 +157,8 @@ class PlusROM : public Serializable
     }
 
   private:
-    static bool isValidHost(const string& host);
-    static bool isValidPath(const string& path);
+    static bool isValidHost(string_view host);
+    static bool isValidPath(string_view path);
 
     /**
       Receive data from all requests that have completed.

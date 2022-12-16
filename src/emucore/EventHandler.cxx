@@ -181,7 +181,7 @@ void EventHandler::removePhysicalJoystick(int id)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::mapStelladaptors(const string& saport)
+void EventHandler::mapStelladaptors(string_view saport)
 {
 #ifdef JOYSTICK_SUPPORT
   myPJoyHandler->mapStelladaptors(saport);
@@ -1767,7 +1767,7 @@ void EventHandler::handleConsoleStartupEvents()
   if(myOSystem.settings().getBool("holdselect"))
     handleEvent(Event::ConsoleSelect);
 
-  const string& holdjoy0 = myOSystem.settings().getString("holdjoy0");
+  const string_view holdjoy0 = myOSystem.settings().getString("holdjoy0");
 
   if(BSPF::containsIgnoreCase(holdjoy0, "U"))
     handleEvent(Event::LeftJoystickUp);
@@ -1780,7 +1780,7 @@ void EventHandler::handleConsoleStartupEvents()
   if(BSPF::containsIgnoreCase(holdjoy0, "F"))
     handleEvent(Event::LeftJoystickFire);
 
-  const string& holdjoy1 = myOSystem.settings().getString("holdjoy1");
+  const string_view holdjoy1 = myOSystem.settings().getString("holdjoy1");
   if(BSPF::containsIgnoreCase(holdjoy1, "U"))
     handleEvent(Event::RightJoystickUp);
   if(BSPF::containsIgnoreCase(holdjoy1, "D"))
@@ -2056,7 +2056,7 @@ json EventHandler::convertLegacyComboMapping(string list)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::removePhysicalJoystickFromDatabase(const string& name)
+void EventHandler::removePhysicalJoystickFromDatabase(string_view name)
 {
 #ifdef JOYSTICK_SUPPORT
   myPJoyHandler->remove(name);
@@ -2496,7 +2496,7 @@ string EventHandler::keyAtIndex(int idx, Event::Group group)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::setMouseControllerMode(const string& enable)
+void EventHandler::setMouseControllerMode(string_view enable)
 {
   if(myOSystem.hasConsole())
   {

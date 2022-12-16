@@ -29,7 +29,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& font,
-                                 const StringList& labels, const string& title)
+                                 const StringList& labels, string_view title)
   : Dialog(boss->instance(), boss->parent(), font, title),
     CommandSender(boss)
 {
@@ -39,7 +39,7 @@ InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& lfont,
                                  const GUI::Font& nfont,
-                                 const StringList& labels, const string& title)
+                                 const StringList& labels, string_view title)
   : Dialog(boss->instance(), boss->parent(), lfont, title),
     CommandSender(boss)
 {
@@ -48,22 +48,24 @@ InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& lfont,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 InputTextDialog::InputTextDialog(OSystem& osystem, DialogContainer& parent,
-                                 const GUI::Font& font, const string& label,
-                                 const string& title, int numInput)
+                                 const GUI::Font& font, string_view label,
+                                 string_view title, int numInput)
   : Dialog(osystem, parent, font, title),
     CommandSender(nullptr)
 {
   StringList labels;
 
   clear();
-  labels.push_back(label);
+  labels.emplace_back(label);
   initialize(font, font, labels,
-             static_cast<int>(label.length()) + (numInput ? numInput : 24) + 2, numInput);
+             static_cast<int>(label.length()) + (numInput ? numInput : 24) + 2,
+             numInput);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputTextDialog::initialize(const GUI::Font& lfont, const GUI::Font& nfont,
-                                 const StringList& labels, int widthChars, int numInput)
+                                 const StringList& labels, int widthChars,
+                                 int numInput)
 {
   const int lineHeight   = Dialog::lineHeight(),
             fontHeight   = Dialog::fontHeight(),
@@ -166,7 +168,7 @@ void InputTextDialog::setPosition()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void InputTextDialog::setMessage(const string& title)
+void InputTextDialog::setMessage(string_view title)
 {
   myMessage->setLabel(title);
   myErrorFlag = true;
@@ -182,7 +184,7 @@ const string& InputTextDialog::getResult(int idx)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void InputTextDialog::setText(const string& str, int idx)
+void InputTextDialog::setText(string_view str, int idx)
 {
   if(static_cast<uInt32>(idx) < myInput.size())
     myInput[idx]->setText(str);
@@ -196,7 +198,7 @@ void InputTextDialog::setTextFilter(const EditableWidget::TextFilter& f, int idx
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void InputTextDialog::setToolTip(const string& str, int idx)
+void InputTextDialog::setToolTip(string_view str, int idx)
 {
   if(static_cast<uInt32>(idx) < myLabel.size())
     myLabel[idx]->setToolTip(str);

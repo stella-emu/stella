@@ -58,11 +58,11 @@ class FSNodePOSIX : public AbstractFSNode
      * @param verify  true if the isValid and isDirectory/isFile flags should
      *                be verified during the construction.
      */
-    explicit FSNodePOSIX(const string& path, bool verify = true);
+    explicit FSNodePOSIX(string_view path, bool verify = true);
 
     bool exists() const override { return access(_path.c_str(), F_OK) == 0; }
-    const string& getName() const override    { return _displayName; }
-    void setName(const string& name) override { _displayName = name; }
+    const string& getName() const override  { return _displayName; }
+    void setName(string_view name) override { _displayName = name; }
     const string& getPath() const override { return _path; }
     string getShortPath() const override;
     bool isDirectory() const override { return _isDirectory; }
@@ -70,7 +70,7 @@ class FSNodePOSIX : public AbstractFSNode
     bool isReadable() const override  { return access(_path.c_str(), R_OK) == 0; }
     bool isWritable() const override  { return access(_path.c_str(), W_OK) == 0; }
     bool makeDir() override;
-    bool rename(const string& newfile) override;
+    bool rename(string_view newfile) override;
 
     size_t getSize() const override;
     bool hasParent() const override;

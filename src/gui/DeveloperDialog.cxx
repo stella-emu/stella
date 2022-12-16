@@ -430,7 +430,7 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
     kM1ColourChangedCmd,  kPFColourChangedCmd,  kBLColourChangedCmd
   };
 
-  const auto createDebugColourWidgets = [&](int idx, const string& desc)
+  const auto createDebugColourWidgets = [&](int idx, string_view desc)
   {
     int x = HBORDER + INDENT * 1;
     myDbgColour[idx] = new PopUpWidget(myTab, font, x, ypos - 1,
@@ -766,7 +766,7 @@ void DeveloperDialog::setWidgetStates(SettingsSet set)
   myRandomizeTIAWidget->setState(myRandomizeTIA[set]);
   myRandomizeRAMWidget->setState(myRandomizeRAM[set]);
 
-  const string& cpurandom = myRandomizeCPU[set];
+  const string_view cpurandom = myRandomizeCPU[set];
   const std::array<string, 5> cpuregs = {"S", "A", "X", "Y", "P"};
 
   for(int i = 0; i < 5; ++i)
@@ -1408,7 +1408,7 @@ void DeveloperDialog::handleDebugColours(int idx, int color)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DeveloperDialog::handleDebugColours(const string& colors)
+void DeveloperDialog::handleDebugColours(string_view colors)
 {
   for(int i = 0; i < DEBUG_COLORS; ++i)
   {

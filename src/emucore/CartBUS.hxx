@@ -41,7 +41,7 @@ class CartridgeBUS : public CartridgeARM
   friend class CartridgeBUSWidget;
   friend class CartridgeBUSInfoWidget;
   friend class CartridgeRamBUSWidget;
-  
+
   enum class BUSSubtype {
     BUS0, // very old demos when BUS was in flux, not supported in Stella
     BUS1, // draconian_20161102.bin
@@ -59,7 +59,7 @@ class CartridgeBUS : public CartridgeARM
       @param md5       The md5sum of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    CartridgeBUS(const ByteBuffer& image, size_t size, const string& md5,
+    CartridgeBUS(const ByteBuffer& image, size_t size, string_view md5,
                  const Settings& settings);
     ~CartridgeBUS() override = default;
 
@@ -168,12 +168,12 @@ class CartridgeBUS : public CartridgeARM
     */
     CartDebugWidget* debugWidget(GuiObject* boss, const GUI::Font& lfont,
                                  const GUI::Font& nfont, int x, int y, int w, int h) override;
-  
+
     CartDebugWidget* infoWidget(GuiObject* boss, const GUI::Font& lfont,
                                 const GUI::Font& nfont, int x, int y, int w, int h) override;
 
   #endif
-  
+
   public:
     /**
       Get the byte at the specified address.
@@ -220,7 +220,7 @@ class CartridgeBUS : public CartridgeARM
 
     uInt32 getDatastreamIncrement(uInt8 index) const;
     void setDatastreamIncrement(uInt8 index, uInt32 value);
-  
+
     uInt32 getAddressMap(uInt8 index) const;
     void setAddressMap(uInt8 index, uInt32 value);
 
@@ -269,16 +269,16 @@ class CartridgeBUS : public CartridgeARM
 
     // ARM cycle count from when the last callFunction() occurred
     uInt64 myARMCycles{0};
-  
+
     // Pointer to the array of datastream pointers
     uInt16 myDatastreamBase{0}; // was DSxPTR
 
     // Pointer to the array of datastream increments
     uInt16 myDatastreamIncrementBase{0};  // was DSxINC
-  
+
     // Pointer to the array of datastream maps
     uInt16 myDatastreamMapBase{0};  // was DSMAPS
-  
+
     // Pointer to the beginning of the waveform data block
     uInt16 myWaveformBase{0}; // was WAVEFORM
 
@@ -302,7 +302,7 @@ class CartridgeBUS : public CartridgeARM
     uInt8 myMode{0};
 
     uInt8 myFastJumpActive{false};
-  
+
   // BUS subtype
   BUSSubtype myBUSSubtype{BUSSubtype::BUS1};
 

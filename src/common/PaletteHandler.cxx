@@ -29,7 +29,7 @@ PaletteHandler::PaletteHandler(OSystem& system)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PaletteHandler::PaletteType PaletteHandler::toPaletteType(const string& name) const
+PaletteHandler::PaletteType PaletteHandler::toPaletteType(string_view name) const
 {
   if(name == SETTING_Z26)
     return PaletteType::Z26;
@@ -301,7 +301,7 @@ void PaletteHandler::getAdjustables(Adjustable& adjustable) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PaletteHandler::setPalette(const string& name)
+void PaletteHandler::setPalette(string_view name)
 {
   myOSystem.settings().setValue("palette", name);
 

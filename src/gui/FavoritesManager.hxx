@@ -46,28 +46,28 @@ class FavoritesManager
     void clear();
 
     // User favorites
-    void addUser(const string& path);
-    void removeUser(const string& path);    
+    void addUser(string_view path);
+    void removeUser(string_view path);
     void removeAllUser();
-    bool toggleUser(const string& path);
-    bool existsUser(const string& path) const;
+    bool toggleUser(string_view path);
+    bool existsUser(string_view path) const;
     const UserList& userList() const;
 
-    void update(const string& path);
+    void update(string_view path);
 
     // Recently played
-    bool removeRecent(const string& path);
+    bool removeRecent(string_view path);
     void removeAllRecent();
     const RecentList& recentList() const;
 
     // Most popular
-    bool removePopular(const string& path);
+    bool removePopular(string_view path);
     void removeAllPopular();
     const PopularList& popularList() const;
 
 
   private:
-    using PopularMap = std::map<string, uInt32>;
+    using PopularMap = std::map<string, uInt32, std::less<>>;
     using UserSet = std::unordered_set<string>;
 
     UserSet myUserSet;
@@ -78,8 +78,8 @@ class FavoritesManager
     Settings& mySettings;
 
   private:
-    void addRecent(const string& path);
-    void incPopular(const string& path);
+    void addRecent(string_view path);
+    void incPopular(string_view path);
     const PopularList& sortedPopularList(bool sortByName = false) const;
 
   private:

@@ -26,7 +26,7 @@
 #include "FSNodeZIP.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FSNodeZIP::FSNodeZIP(const string& p)
+FSNodeZIP::FSNodeZIP(string_view p)
 {
   // Extract ZIP file and virtual file (if specified)
   const size_t pos = BSPF::findIgnoreCase(p, ".zip");

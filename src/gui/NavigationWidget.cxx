@@ -153,7 +153,7 @@ NavigationWidget::PathWidget::PathWidget(GuiObject* boss, CommandReceiver* targe
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void NavigationWidget::PathWidget::setPath(const string& path)
+void NavigationWidget::PathWidget::setPath(string_view path)
 {
   if(path == myLastPath)
     return;
@@ -240,7 +240,7 @@ const string& NavigationWidget::PathWidget::getPath(int idx) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 NavigationWidget::PathWidget::FolderLinkWidget::FolderLinkWidget(
     GuiObject* boss, const GUI::Font& font,
-    int x, int y, int w, int h, const string& text, const string& path)
+    int x, int y, int w, int h, string_view text, string_view path)
   : ButtonWidget(boss, font, x, y, w, h, text, kFolderClicked),
     myPath{path}
 {

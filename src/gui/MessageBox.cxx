@@ -27,10 +27,9 @@ namespace GUI {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 MessageBox::MessageBox(GuiObject* boss, const GUI::Font& font,
-                       const StringList& text, int max_w, int max_h, int okCmd, int cancelCmd,
-                       const string& okText, const string& cancelText,
-                       const string& title,
-                       bool focusOKButton)
+                       const StringList& text, int max_w, int max_h, int okCmd,
+                       int cancelCmd, string_view okText, string_view cancelText,
+                       string_view title, bool focusOKButton)
   : Dialog(boss->instance(), boss->parent(), font, title, 0, 0, max_w, max_h),
     CommandSender(boss),
     myOkCmd{okCmd},
@@ -46,9 +45,8 @@ MessageBox::MessageBox(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 MessageBox::MessageBox(GuiObject* boss, const GUI::Font& font,
                        const StringList& text, int max_w, int max_h, int okCmd,
-                       const string& okText, const string& cancelText,
-                       const string& title,
-                       bool focusOKButton)
+                       string_view okText, string_view cancelText,
+                       string_view title, bool focusOKButton)
   : MessageBox(boss, font, text, max_w, max_h,
                okCmd, 0, okText, cancelText, title, focusOKButton)
 {
@@ -56,10 +54,9 @@ MessageBox::MessageBox(GuiObject* boss, const GUI::Font& font,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 MessageBox::MessageBox(GuiObject* boss, const GUI::Font& font,
-                       const string& text, int max_w, int max_h, int okCmd,
-                       const string& okText, const string& cancelText,
-                       const string& title,
-                       bool focusOKButton)
+                       string_view text, int max_w, int max_h, int okCmd,
+                       string_view okText, string_view cancelText,
+                       string_view title, bool focusOKButton)
   : MessageBox(boss, font, StringParser(text).stringList(), max_w, max_h,
                okCmd, okText, cancelText, title, focusOKButton)
 {
@@ -67,10 +64,9 @@ MessageBox::MessageBox(GuiObject* boss, const GUI::Font& font,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 MessageBox::MessageBox(GuiObject* boss, const GUI::Font& font,
-                       const string& text, int max_w, int max_h, int okCmd, int cancelCmd,
-                       const string& okText, const string& cancelText,
-                       const string& title,
-                       bool focusOKButton)
+                       string_view text, int max_w, int max_h, int okCmd,
+                       int cancelCmd, string_view okText, string_view cancelText,
+                       string_view title, bool focusOKButton)
   : MessageBox(boss, font, StringParser(text).stringList(), max_w, max_h,
                okCmd, cancelCmd, okText, cancelText, title, focusOKButton)
 {

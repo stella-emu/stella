@@ -82,7 +82,7 @@ class CartridgeCDF : public CartridgeARM
       @param md5       The md5sum of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    CartridgeCDF(const ByteBuffer& image, size_t size, const string& md5,
+    CartridgeCDF(const ByteBuffer& image, size_t size, string_view md5,
                  const Settings& settings);
     ~CartridgeCDF() override = default;
 

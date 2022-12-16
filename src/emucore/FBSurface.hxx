@@ -228,10 +228,13 @@ class FBSurface
       @return       Number of lines drawn
     */
 
-    virtual int drawString(const GUI::Font& font, const string& s, int x, int y, int w, int h,
-                           ColorId color, TextAlign align = TextAlign::Left,
-                           int deltax = 0, bool useEllipsis = true, ColorId shadowColor = kNone,
-                           size_t linkStart = string::npos, size_t linkLen = string::npos,
+    virtual int drawString(const GUI::Font& font, string_view s, int x, int y,
+                           int w, int h, ColorId color,
+                           TextAlign align = TextAlign::Left,
+                           int deltax = 0, bool useEllipsis = true,
+                           ColorId shadowColor = kNone,
+                           size_t linkStart = string::npos,
+                           size_t linkLen = string::npos,
                            bool underline = false);
 
     /**
@@ -254,10 +257,12 @@ class FBSurface
       @return    x coordinate of end of string
 
     */
-    virtual int drawString(const GUI::Font& font, const string& s, int x, int y, int w,
-                           ColorId color, TextAlign align = TextAlign::Left,
-                           int deltax = 0, bool useEllipsis = true, ColorId shadowColor = kNone,
-                           size_t linkStart = string::npos, size_t linkLen = string::npos,
+    virtual int drawString(const GUI::Font& font, string_view s, int x, int y,
+                           int w, ColorId color, TextAlign align = TextAlign::Left,
+                           int deltax = 0, bool useEllipsis = true,
+                           ColorId shadowColor = kNone,
+                           size_t linkStart = string::npos,
+                           size_t linkLen = string::npos,
                            bool underline = false);
 
     /**
@@ -269,7 +274,7 @@ class FBSurface
       @param left   The left part of the split string
       @param right  The right part of the split string
     */
-    static void splitString(const GUI::Font& font, const string& s, int w,
+    static void splitString(const GUI::Font& font, string_view s, int w,
                             string& left, string& right);
 
     /**

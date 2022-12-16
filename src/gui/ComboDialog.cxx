@@ -51,7 +51,7 @@ ComboDialog::ComboDialog(GuiObject* boss, const GUI::Font& font,
 
   // Add event popup for 8 events
   myEvents.fill(nullptr);
-  const auto ADD_EVENT_POPUP = [&](int idx, const string& label)
+  const auto ADD_EVENT_POPUP = [&](int idx, string_view label)
   {
     myEvents[idx] = new PopUpWidget(this, font, xpos, ypos,
                         pwidth, lineHeight, combolist, label);
@@ -76,13 +76,13 @@ ComboDialog::ComboDialog(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ComboDialog::show(Event::Type event, const string& name)
+void ComboDialog::show(Event::Type event, string_view name)
 {
   // Make sure the event is allowed
   if(event >= Event::Combo1 && event <= Event::Combo16)
   {
     myComboEvent = event;
-    setTitle("Add events for " + name);
+    setTitle("Add events for " + string{name});
     open();
   }
   else

@@ -62,8 +62,8 @@ namespace {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeCDF::CartridgeCDF(const ByteBuffer& image, size_t size,
-                           const string& md5, const Settings& settings)
-  : CartridgeARM(md5, settings)
+                           string_view md5, const Settings& settings)
+  : CartridgeARM(settings, md5)
 {
   // Copy the ROM image into my buffer
   mySize = std::min(size, 512_KB);

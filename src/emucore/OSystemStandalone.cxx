@@ -51,6 +51,6 @@ shared_ptr<CompositeKeyValueRepositoryAtomic> OSystemStandalone::getHighscoreRep
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystemStandalone::getBaseDirectories(
-    string& basedir, string& homedir, bool useappdir, const string& usedir)
+    string& basedir, string& homedir, bool useappdir, string_view usedir)
 {
 }

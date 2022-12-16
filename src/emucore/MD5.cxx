@@ -301,11 +301,9 @@ static void Decode(uInt32* output, const uInt8* const input, uInt32 len)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string hash(const string& buffer)
+string hash(string_view buffer)
 {
-  std::vector<uint8_t> vec(buffer.begin(), buffer.end());
-
-  return hash(vec.data(), vec.size());
+  return hash(reinterpret_cast<const uInt8*>(buffer.data()), buffer.size());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

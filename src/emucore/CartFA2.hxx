@@ -74,10 +74,9 @@ class CartridgeFA2 : public CartridgeFA
     /**
       Informs the cartridge about the name of the nvram file it will use.
 
-      @param nvramdir  The full path of the nvram directory
-      @param romfile   The name of the cart from ROM properties
+      @param path  The full path of the nvram file
     */
-    void setNVRamFile(const string& nvramdir, const string& romfile) override;
+    void setNVRamFile(string_view path) override;
 
   #ifdef DEBUGGER_SUPPORT
     /**

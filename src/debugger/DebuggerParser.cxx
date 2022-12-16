@@ -66,7 +66,7 @@ DebuggerParser::DebuggerParser(Debugger& d, Settings& s)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // main entry point: PromptWidget calls this method.
-string DebuggerParser::run(const string& command)
+string DebuggerParser::run(string_view command)
 {
 #if 0
   // this was our parser test code. Left for reference.
@@ -163,7 +163,7 @@ string DebuggerParser::exec(const FSNode& file, StringList* history)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DebuggerParser::outputCommandError(const string& errorMsg, int command)
+void DebuggerParser::outputCommandError(string_view errorMsg, int command)
 {
   const string example = commands[command].extendedDesc.substr(commands[command].extendedDesc.find("Example:"));
 
@@ -190,10 +190,10 @@ void DebuggerParser::getCompletions(const char* in, StringList& completions)
 // they're valid, or -1 if they're not.
 // decipher_arg may be called by the GUI as needed. It is also called
 // internally by DebuggerParser::run()
-int DebuggerParser::decipher_arg(const string& str)
+int DebuggerParser::decipher_arg(string_view str)
 {
   bool derefByte=false, derefWord=false, lobyte=false, hibyte=false, bin=false, dec=false;
-  string arg = str;
+  string arg{str};
 
   const Base::Fmt defaultBase = Base::format();
 
@@ -330,7 +330,7 @@ string DebuggerParser::showWatches()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool DebuggerParser::getArgs(const string& command, string& verb)
+bool DebuggerParser::getArgs(string_view command, string& verb)
 {
   ParseState state = ParseState::IN_COMMAND;
   size_t i = 0;
@@ -2456,7 +2456,7 @@ void DebuggerParser::executeTrapWriteIf()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Wrapper function for trap(if)s
-void DebuggerParser::executeTraps(bool read, bool write, const string& command,
+void DebuggerParser::executeTraps(bool read, bool write, string_view command,
                                   bool hasCond)
 {
   const uInt32 ofs = hasCond ? 1 : 0,

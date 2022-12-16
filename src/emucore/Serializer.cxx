@@ -22,14 +22,15 @@ using std::ios;
 using std::ios_base;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Serializer::Serializer(const string& filename, Mode m)
+Serializer::Serializer(string_view filename, Mode m)
 {
   if(m == Mode::ReadOnly)
   {
     const FSNode node(filename);
     if(node.isFile() && node.isReadable())
     {
-      unique_ptr<fstream> str = make_unique<fstream>(filename, ios::in | ios::binary);
+      unique_ptr<fstream> str = make_unique<fstream>(
+          string{filename}, ios::in | ios::binary);
       if(str && str->is_open())
       {
         myStream = std::move(str);
@@ -48,13 +49,14 @@ Serializer::Serializer(const string& filename, Mode m)
     // So we open in write and append mode - the write creates the file
     // when necessary, and the append doesn't delete any data if it
     // already exists
-    fstream temp(filename, ios::out | ios::app);
+    string f{filename};
+    fstream temp(f, ios::out | ios::app);
     temp.close();
 
     ios_base::openmode stream_mode = ios::in | ios::out | ios::binary;
     if(m == Mode::ReadWriteTrunc)
       stream_mode |= ios::trunc;
-    unique_ptr<fstream> str = make_unique<fstream>(filename, stream_mode);
+    unique_ptr<fstream> str = make_unique<fstream>(f, stream_mode);
     if(str && str->is_open())
     {
       myStream = std::move(str);
@@ -236,11 +238,10 @@ void Serializer::putDouble(double value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Serializer::putString(const string& str)
+void Serializer::putString(string_view str)
 {
-  const auto len = static_cast<uInt32>(str.length());
-  putInt(len);
-  myStream->write(str.data(), len);
+  putInt(static_cast<uInt32>(str.size()));
+  myStream->write(str.data(), str.size());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -89,7 +89,7 @@ void ListWidget::setSelected(int item)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ListWidget::setSelected(const string& item)
+void ListWidget::setSelected(string_view item)
 {
   int selected = -1;
   if(!_list.empty())

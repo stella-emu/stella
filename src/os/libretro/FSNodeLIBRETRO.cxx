@@ -33,7 +33,7 @@ FSNodeLIBRETRO::FSNodeLIBRETRO()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FSNodeLIBRETRO::FSNodeLIBRETRO(const string& p)
+FSNodeLIBRETRO::FSNodeLIBRETRO(string_view p)
   : _name{p},
     _path{p}
 {
@@ -80,7 +80,7 @@ bool FSNodeLIBRETRO::makeDir()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FSNodeLIBRETRO::rename(const string& newfile)
+bool FSNodeLIBRETRO::rename(string_view newfile)
 {
   return false;
 }

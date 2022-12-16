@@ -26,44 +26,46 @@ Logger& Logger::instance()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Logger::log(const string& message, Level level)
+void Logger::log(string_view message, Level level)
 {
   instance().logMessage(message, level);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Logger::error(const string& message)
+void Logger::error(string_view message)
 {
   instance().logMessage(message, Level::ERR);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Logger::info(const string& message)
+void Logger::info(string_view message)
 {
   instance().logMessage(message, Level::INFO);
 }
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Logger::debug(const string& message)
+void Logger::debug(string_view message)
 {
   instance().logMessage(message, Level::DEBUG);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Logger::logMessage(const string& message, Level level)
+void Logger::logMessage(string_view message, Level level)
 {
   const std::lock_guard<std::mutex> lock(mutex);
 
   if(level == Logger::Level::ERR)
   {
     cout << message << endl << std::flush;
-    myLogMessages += message + "\n";
+    myLogMessages += message;
+    myLogMessages += "\n";
   }
   else if(static_cast<int>(level) <= myLogLevel ||
           level == Logger::Level::ALWAYS)
   {
     if(myLogToConsole)
       cout << message << endl << std::flush;
-    myLogMessages += message + "\n";
+    myLogMessages += message;
+    myLogMessages += "\n";
   }
 }
 

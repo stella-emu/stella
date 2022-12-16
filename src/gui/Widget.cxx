@@ -278,13 +278,13 @@ void Widget::setEnabled(bool e)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Widget::setToolTip(const string& text, Event::Type event1, EventMode mode)
+void Widget::setToolTip(string_view text, Event::Type event1, EventMode mode)
 {
   setToolTip(text, event1, Event::Type::NoType, mode);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Widget::setToolTip(const string& text, Event::Type event1, Event::Type event2, EventMode mode)
+void Widget::setToolTip(string_view text, Event::Type event1, Event::Type event2, EventMode mode)
 {
   assert(text.length() <= ToolTip::MAX_LEN);
 
@@ -352,7 +352,7 @@ bool Widget::hasToolTip() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Widget::setHelpAnchor(const string& helpAnchor, bool debugger)
+void Widget::setHelpAnchor(string_view helpAnchor, bool debugger)
 {
   _helpAnchor = helpAnchor;
   _debuggerHelp = debugger;
@@ -361,7 +361,7 @@ void Widget::setHelpAnchor(const string& helpAnchor, bool debugger)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Widget::setHelpURL(const string& helpURL)
+void Widget::setHelpURL(string_view helpURL)
 {
   _helpURL = helpURL;
 
@@ -528,7 +528,7 @@ void Widget::setDirtyInChain(Widget* start)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StaticTextWidget::StaticTextWidget(GuiObject* boss, const GUI::Font& font,
                                    int x, int y, int w, int h,
-                                   const string& text, TextAlign align,
+                                   string_view text, TextAlign align,
                                    ColorId shadowColor)
   : Widget(boss, font, x, y, w, h),
     CommandSender(boss),
@@ -548,7 +548,7 @@ StaticTextWidget::StaticTextWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StaticTextWidget::StaticTextWidget(GuiObject* boss, const GUI::Font& font,
                                    int x, int y,
-                                   const string& text, TextAlign align,
+                                   string_view text, TextAlign align,
                                    ColorId shadowColor)
   : StaticTextWidget(boss, font, x, y, font.getStringWidth(text),
                      font.getLineHeight(), text, align, shadowColor)
@@ -562,7 +562,7 @@ void StaticTextWidget::setValue(int value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StaticTextWidget::setLabel(const string& label)
+void StaticTextWidget::setLabel(string_view label)
 {
   if(_label != label)
   {
@@ -585,12 +585,12 @@ void StaticTextWidget::setLink(size_t start, int len, bool underline)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool StaticTextWidget::setUrl(const string& url, const string& label,
-                              const string& placeHolder)
+bool StaticTextWidget::setUrl(string_view url, string_view label,
+                              string_view placeHolder)
 {
 #ifndef RETRON77
   size_t start = string::npos, len = 0;
-  const string& text = label != EmptyString ? label : url;
+  const string_view text = label != EmptyString ? label : url;
 
   if(text != EmptyString)
   {
@@ -692,7 +692,7 @@ void StaticTextWidget::drawWidget(bool hilite)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
                            int x, int y, int w, int h,
-                           const string& label, int cmd, bool repeat)
+                           string_view label, int cmd, bool repeat)
   : StaticTextWidget(boss, font, x, y, w, h, label, TextAlign::Center),
     _repeat{repeat}
 {
@@ -709,7 +709,7 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
                            int x, int y, int dw,
-                           const string& label, int cmd, bool repeat)
+                           string_view label, int cmd, bool repeat)
   : ButtonWidget(boss, font, x, y, font.getStringWidth(label) + dw,
                  font.getLineHeight() + 4, label, cmd, repeat)
 {
@@ -718,7 +718,7 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
                            int x, int y,
-                           const string& label, int cmd, bool repeat)
+                           string_view label, int cmd, bool repeat)
   : ButtonWidget(boss, font, x, y, 20, label, cmd, repeat)
 {
 }
@@ -751,7 +751,7 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
 ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
                            int x, int y, int w, int h,
                            const GUI::Icon& icon, int bmx,
-                           const string& label,
+                           string_view label,
                            int cmd, bool repeat)
   : ButtonWidget(boss, font, x, y, w + bmx * 1.5 + font.getStringWidth(label), h,
                  label, cmd, repeat)
@@ -857,7 +857,7 @@ void ButtonWidget::drawWidget(bool hilite)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CheckboxWidget::CheckboxWidget(GuiObject* boss, const GUI::Font& font,
-                               int x, int y, const string& label,
+                               int x, int y, string_view label,
                                int cmd)
   : ButtonWidget(boss, font, x, y, font.getFontHeight() < 24 ? 16 : 24,
                  font.getFontHeight() < 24 ? 16 : 24, label, cmd)
@@ -1004,8 +1004,8 @@ void CheckboxWidget::drawWidget(bool hilite)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SliderWidget::SliderWidget(GuiObject* boss, const GUI::Font& font,
                            int x, int y, int w, int h,
-                           const string& label, int labelWidth, int cmd,
-                           int valueLabelWidth, const string& valueUnit, int valueLabelGap,
+                           string_view label, int labelWidth, int cmd,
+                           int valueLabelWidth, string_view valueUnit, int valueLabelGap,
                            bool forceLabelSign)
   : ButtonWidget(boss, font, x, y, w, h, label, cmd),
     _labelWidth{labelWidth},
@@ -1032,8 +1032,8 @@ SliderWidget::SliderWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SliderWidget::SliderWidget(GuiObject* boss, const GUI::Font& font,
                            int x, int y,
-                           const string& label, int labelWidth, int cmd,
-                           int valueLabelWidth, const string& valueUnit, int valueLabelGap,
+                           string_view label, int labelWidth, int cmd,
+                           int valueLabelWidth, string_view valueUnit, int valueLabelGap,
                            bool forceLabelSign)
   : SliderWidget(boss, font, x, y, font.getMaxCharWidth() * 10, font.getLineHeight(),
                  label, labelWidth, cmd, valueLabelWidth, valueUnit, valueLabelGap,
@@ -1079,7 +1079,7 @@ void SliderWidget::setStepValue(int value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SliderWidget::setValueLabel(const string& valueLabel)
+void SliderWidget::setValueLabel(string_view valueLabel)
 {
   _valueLabel = valueLabel;
   setDirty();
@@ -1093,7 +1093,7 @@ void SliderWidget::setValueLabel(int value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SliderWidget::setValueUnit(const string& valueUnit)
+void SliderWidget::setValueUnit(string_view valueUnit)
 {
   _valueUnit = valueUnit;
   setDirty();

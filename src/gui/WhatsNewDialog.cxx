@@ -45,7 +45,7 @@ WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent,
   setSize(MAX_CHARS * fontWidth + HBORDER * 2, max_h,
           max_w, max_h);
 
-  const string& version = instance().settings().getString("stella.version");
+  const string_view version = instance().settings().getString("stella.version");
 #ifdef RETRON77
   add(ypos, "extensively redesigned and enhanced file launcher");
   add(ypos, "improved controller mappings for Paddles");
@@ -90,13 +90,13 @@ WhatsNewDialog::WhatsNewDialog(OSystem& osystem, DialogContainer& parent,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void WhatsNewDialog::add(int& ypos, const string& text)
+void WhatsNewDialog::add(int& ypos, string_view text)
 {
   const int lineHeight = Dialog::lineHeight(),
             fontHeight = Dialog::fontHeight(),
             HBORDER    = Dialog::hBorder();
-  const string DOT = "\x1f";
-  string txt = DOT + " " + text;
+  string txt = "\x1f ";
+  txt += text;
 
   // automatically wrap too long texts
   while(txt.length() > MAX_CHARS)

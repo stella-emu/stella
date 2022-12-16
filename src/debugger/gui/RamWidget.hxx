@@ -36,7 +36,7 @@ class RamWidget : public Widget, public CommandSender
     RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
               int x, int y, int w, int h,
               uInt32 ramsize, uInt32 numrows, uInt32 pagesize,
-              const string& helpAnchor);
+              string_view helpAnchor);
     ~RamWidget() override;
 
     void loadConfig() override;
@@ -60,8 +60,8 @@ class RamWidget : public Widget, public CommandSender
     void fillGrid(bool updateOld);
 
     void showInputBox(int cmd);
-    string doSearch(const string& str);
-    string doCompare(const string& str);
+    string doSearch(string_view str);
+    string doCompare(string_view str);
     void doRestart();
     void showSearchResults();
 

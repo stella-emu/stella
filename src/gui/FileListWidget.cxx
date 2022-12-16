@@ -37,7 +37,7 @@ FileListWidget::FileListWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FileListWidget::setDirectory(const FSNode& node, const string& select)
+void FileListWidget::setDirectory(const FSNode& node, string_view select)
 {
   _node = node;
 
@@ -56,7 +56,7 @@ void FileListWidget::setDirectory(const FSNode& node, const string& select)
 
   // Initialize history
   FSNode tmp = _node;
-  string name = select;
+  string name{select};
 
   _history.clear();
   while(tmp.hasParent())
@@ -76,7 +76,7 @@ void FileListWidget::setDirectory(const FSNode& node, const string& select)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FileListWidget::setLocation(const FSNode& node, const string& select)
+void FileListWidget::setLocation(const FSNode& node, string_view select)
 {
   progress().resetProgress();
   progress().open();
@@ -158,7 +158,7 @@ void FileListWidget::getChildren(const FSNode::CancelCheck& isCancelled)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FileListWidget::IconType FileListWidget::getIconType(const string& path) const
+FileListWidget::IconType FileListWidget::getIconType(string_view path) const
 {
   const FSNode node(path);
 

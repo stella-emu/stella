@@ -112,7 +112,7 @@ AboutDialog::~AboutDialog()  // NOLINT (we need an empty d'tor)
 void AboutDialog::updateStrings(int page, int lines, string& title)
 {
   int i = 0;
-  const auto ADD_ATEXT = [&](const string& d) { myDescStr[i] = d; i++; };
+  const auto ADD_ATEXT = [&](string_view d) { myDescStr[i] = d; i++; };
   const auto ADD_ALINE = [&]() { ADD_ATEXT(""); };
 
   switch(page)
@@ -315,14 +315,14 @@ void AboutDialog::handleCommand(CommandSender* sender, int cmd, int data, int id
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string AboutDialog::getUrl(const string& text)
+string AboutDialog::getUrl(string_view text)
 {
   bool isUrl = false;
   size_t start = 0, len = 0;
 
   for(size_t i = 0; i < text.size(); ++i)
   {
-    const string remainder = text.substr(i);
+    const string_view remainder = text.substr(i);
     const char ch = text[i];
 
     if(!isUrl
@@ -344,7 +344,7 @@ string AboutDialog::getUrl(const string& text)
     }
   }
   if(len)
-    return text.substr(start, len);
+    return string{text.substr(start, len)};
   else
     return EmptyString;
 }

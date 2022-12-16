@@ -26,13 +26,13 @@ FSNode::FSNode(const AbstractFSNodePtr& realNode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FSNode::FSNode(const string& path)
+FSNode::FSNode(string_view path)
 {
   setPath(path);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FSNode::setPath(const string& path)
+void FSNode::setPath(string_view path)
 {
   // Only create a new object when necessary
   if (path == getPath())
@@ -48,7 +48,7 @@ void FSNode::setPath(const string& path)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FSNode& FSNode::operator/=(const string& path)
+FSNode& FSNode::operator/=(string_view path)
 {
   if (path != EmptyString)
   {
@@ -230,7 +230,7 @@ const string& FSNode::getName() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FSNode::setName(const string& name)
+void FSNode::setName(string_view name)
 {
   if (_realNode)
     _realNode->setName(name);
@@ -249,7 +249,7 @@ string FSNode::getShortPath() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string FSNode::getNameWithExt(const string& ext) const
+string FSNode::getNameWithExt(string_view ext) const
 {
   if (!_realNode)
     return EmptyString;
@@ -259,11 +259,13 @@ string FSNode::getNameWithExt(const string& ext) const
         _realNode->getName().substr(pos+1);
 
   pos = s.find_last_of('.');
-  return (pos != string::npos) ? s.replace(pos, string::npos, ext) : s + ext;
+  return (pos != string::npos)
+    ? s.replace(pos, string::npos, ext)
+    : s + string{ext};
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string FSNode::getPathWithExt(const string& ext) const
+string FSNode::getPathWithExt(string_view ext) const
 {
   if (!_realNode)
     return EmptyString;
@@ -271,7 +273,9 @@ string FSNode::getPathWithExt(const string& ext) const
   string s = _realNode->getPath();
 
   const size_t pos = s.find_last_of('.');
-  return (pos != string::npos) ? s.replace(pos, string::npos, ext) : s + ext;
+  return (pos != string::npos)
+    ? s.replace(pos, string::npos, ext)
+    : s + string{ext};
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -321,7 +325,7 @@ bool FSNode::makeDir()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FSNode::rename(const string& newfile)
+bool FSNode::rename(string_view newfile)
 {
   return (_realNode && _realNode->exists()) ? _realNode->rename(newfile) : false;
 }

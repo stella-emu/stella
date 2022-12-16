@@ -106,7 +106,7 @@ class Properties
       @param key      The key of the property to set
       @param value    The value to assign to the property
     */
-    void set(PropType key, const string& value);
+    void set(PropType key, string_view value);
 
     /**
       Print the attributes of this properties object
@@ -148,7 +148,7 @@ class Properties
       @param key      The key of the property to set
       @param value    The value to assign to the property
     */
-    static void setDefault(PropType key, const string& value);
+    static void setDefault(PropType key, string_view value);
 
   private:
     /**
@@ -165,7 +165,7 @@ class Properties
 
       @param name  The PropType key associated with the given string
     */
-    static PropType getPropType(const string& name);
+    static PropType getPropType(string_view name);
 
     /**
       When printing each collection of ROM properties, it is useful to

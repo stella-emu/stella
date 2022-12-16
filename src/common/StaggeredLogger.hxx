@@ -38,7 +38,7 @@ class StaggeredLogger
 {
   public:
 
-    StaggeredLogger(const string& message, Logger::Level level);
+    StaggeredLogger(string_view message, Logger::Level level);
     ~StaggeredLogger();
 
     void log();

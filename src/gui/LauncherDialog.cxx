@@ -565,10 +565,10 @@ string LauncherDialog::getRomDir()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool LauncherDialog::matchWithWildcardsIgnoreCase(
-    const string& str, const string& pattern)
+    string_view str, string_view pattern)
 {
-  string in = str;
-  string pat = pattern;
+  string in{str};
+  string pat{pattern};
 
   BSPF::toUpperCase(in);
   BSPF::toUpperCase(pat);
@@ -1150,11 +1150,11 @@ void LauncherDialog::openContextMenu(int x, int y)
     string label;
     string shortcut;
     string key;
-    explicit ContextItem(const string& _label, const string& _shortcut,
-                         const string& _key)
+    explicit ContextItem(string_view _label, string_view _shortcut,
+                         string_view _key)
       : label{_label}, shortcut{_shortcut}, key{_key} {}
     // No shortcuts displayed in minimal UI
-    ContextItem(const string& _label, const string& _key)
+    ContextItem(string_view _label, string_view _key)
       : label{_label}, key{_key} {}
   };
   using ContextList = std::vector<ContextItem>;
@@ -1393,17 +1393,17 @@ void LauncherDialog::removeAllFavorites()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::removeAll(const string& name)
+void LauncherDialog::removeAll(string_view name)
 {
   StringList msg;
 
   msg.emplace_back("This will remove ALL ROMs from");
-  msg.emplace_back("your '" + name + "' list!");
+  msg.emplace_back("your '" + string{name} + "' list!");
   msg.emplace_back("");
   msg.emplace_back("Are you sure?");
   myConfirmMsg = make_unique<GUI::MessageBox>
     (this, _font, msg, _w, _h, kRmAllPop,
-      "Yes", "No", "Remove all " + name, false);
+      "Yes", "No", "Remove all " + string{name}, false);
   myConfirmMsg->show();
 }
 
