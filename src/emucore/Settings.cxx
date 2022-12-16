@@ -192,7 +192,6 @@ Settings::Settings()
   setPermanent("confirmexit", false);
   setPermanent("autopause", false);
 
-
   // Misc options
   setPermanent("loglevel", static_cast<int>(Logger::Level::INFO));
   setPermanent("logtoconsole", "0");

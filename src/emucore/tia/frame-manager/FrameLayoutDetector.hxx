@@ -40,8 +40,9 @@ class FrameLayoutDetector: public AbstractFrameManager
     /**
      * Return the detected frame layout.
      */
-    FrameLayout detectedLayout(bool detectPal60 = false, bool detectNtsc50 = false,
-      const string& name = EmptyString) const;
+    FrameLayout detectedLayout(bool detectPal60 = false,
+                               bool detectNtsc50 = false,
+                               string_view name = EmptyString) const;
 
     /**
      * Simulate some input to pass a potential title screen.
@@ -50,7 +51,6 @@ class FrameLayoutDetector: public AbstractFrameManager
                               bool pressed);
 
   protected:
-
     /**
      * Hook into vsync changes.
      */
@@ -72,7 +72,6 @@ class FrameLayoutDetector: public AbstractFrameManager
     void pixelColor(uInt8 color) override;
 
   private:
-
     /**
      * This frame manager only tracks frame boundaries, so we have only two states.
      */
@@ -101,7 +100,6 @@ class FrameLayoutDetector: public AbstractFrameManager
     };
 
   private:
-
     /**
      * Change state and change internal state accordingly.
      */
@@ -113,7 +111,6 @@ class FrameLayoutDetector: public AbstractFrameManager
     void finalizeFrame();
 
   private:
-
     /**
      * The current state.
      */
@@ -138,7 +135,6 @@ class FrameLayoutDetector: public AbstractFrameManager
     std::array<uInt64, NUM_HUES * NUM_LUMS> myColorCount{0};
 
   private:
-
     FrameLayoutDetector(const FrameLayoutDetector&) = delete;
     FrameLayoutDetector(FrameLayoutDetector&&) = delete;
     FrameLayoutDetector& operator=(const FrameLayoutDetector&) = delete;

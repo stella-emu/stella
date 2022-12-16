@@ -28,7 +28,7 @@ class WhatsNewDialog : public Dialog
     ~WhatsNewDialog() override = default;
 
   private:
-    void add(int& ypos, const string& text);
+    void add(int& ypos, string_view text);
 
   private:
     // Following constructors and assignment operators not supported

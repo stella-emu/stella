@@ -27,7 +27,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Lightgun::Lightgun(Jack jack, const Event& event, const System& system,
-                   const string& romMd5, const FrameBuffer& frameBuffer)
+                   string_view romMd5, const FrameBuffer& frameBuffer)
   : Controller(jack, event, system, Controller::Type::Lightgun),
     myFrameBuffer{frameBuffer}
 {

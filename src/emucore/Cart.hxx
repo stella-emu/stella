@@ -63,13 +63,13 @@ class Cartridge : public Device
       @param settings  A reference to the various settings (read-only)
       @param md5       The md5sum of the cart image
     */
-    Cartridge(const Settings& settings, const string& md5);
+    Cartridge(const Settings& settings, string_view md5);
     ~Cartridge() override = default;
 
     /**
       Set/query some information about this cartridge.
     */
-    void setAbout(const string& about, const string& type, const string& id);
+    void setAbout(string_view about, string_view type, string_view id);
     const string& about() const { return myAbout; }
     const string& detectedType() const { return myDetectedType; }
     const string& multiCartID() const  { return myMultiCartID;  }
@@ -295,10 +295,9 @@ class Cartridge : public Device
       Informs the cartridge about the name of the nvram file it will
       use; not all carts support this.
 
-      @param nvramdir  The full path of the nvram directory
-      @param romfile   The name of the cart from ROM properties
+      @param path  The full path of the nvram file
     */
-    virtual void setNVRamFile(const string& nvramdir, const string& romfile) { }
+    virtual void setNVRamFile(string_view path) { }
 
     /**
       Thumbulator only supports 16-bit ARM code.  Some Harmony/Melody drivers,

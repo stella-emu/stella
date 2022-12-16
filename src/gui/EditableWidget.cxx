@@ -28,7 +28,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EditableWidget::EditableWidget(GuiObject* boss, const GUI::Font& font,
-                               int x, int y, int w, int h, const string& str)
+                               int x, int y, int w, int h, string_view str)
   : Widget(boss, font, x, y, w, h),
     CommandSender(boss),
     _editString{str},
@@ -43,7 +43,7 @@ EditableWidget::EditableWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EditableWidget::setText(const string& str, bool changed)
+void EditableWidget::setText(string_view str, bool changed)
 {
   const string oldEditString = _editString;
   _backupString = str;
@@ -213,7 +213,7 @@ void EditableWidget::handleCommand(CommandSender* sender, int cmd, int data, int
 {
   if(cmd == ContextMenu::kItemSelectedCmd)
   {
-    const string& rmb = mouseMenu().getSelectedTag().toString();
+    const string_view rmb = mouseMenu().getSelectedTag().toString();
 
     if(rmb == "cut")
     {

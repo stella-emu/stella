@@ -88,7 +88,7 @@ class FBBackend
 
       @param title   The title of the application / window
     */
-    virtual void setTitle(const string& title) = 0;
+    virtual void setTitle(string_view title) = 0;
 
     /**
       Shows or hides the cursor based on the given boolean value.

@@ -165,7 +165,7 @@ class DeveloperDialog : public Dialog, DevSettingsHandler
     void handleTia();
 
     void handleDebugColours(int idx, int color);
-    void handleDebugColours(const string& colors);
+    void handleDebugColours(string_view colors);
 
     void handleTimeMachine();
     void handleSize();

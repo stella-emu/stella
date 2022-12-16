@@ -60,7 +60,7 @@ int TabWidget::getChildY() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int TabWidget::addTab(const string& title, int tabWidth)
+int TabWidget::addTab(string_view title, int tabWidth)
 {
   // Add a new tab page
   const int newWidth = _font.getStringWidth(title) + 2 * kTabPadding;

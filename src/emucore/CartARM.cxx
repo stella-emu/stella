@@ -20,7 +20,7 @@
 #include "CartARM.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeARM::CartridgeARM(const string& md5, const Settings& settings)
+CartridgeARM::CartridgeARM(const Settings& settings, string_view md5)
   : Cartridge(settings, md5)
 {
 }

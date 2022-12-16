@@ -37,9 +37,9 @@ class MessageMenu : public DialogContainer
     explicit MessageMenu(OSystem& osystem);
     ~MessageMenu() override;
 
-    static void setMessage(const string& title, const string& text,
+    static void setMessage(string_view title, string_view text,
                            bool yesNo = false);
-    static void setMessage(const string& title, const StringList& text,
+    static void setMessage(string_view title, const StringList& text,
                            bool yesNo = false);
     bool confirmed();
 

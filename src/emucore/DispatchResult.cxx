@@ -31,8 +31,9 @@ void DispatchResult::setOk(uInt64 cycles)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DispatchResult::setDebugger(uInt64 cycles, const string& message,
-                                 const string& tooltip, int address, bool wasReadTrap)
+void DispatchResult::setDebugger(uInt64 cycles, string_view message,
+                                 string_view tooltip, int address,
+                                 bool wasReadTrap)
 {
   myStatus = Status::debugger;
   myCycles = cycles;
@@ -51,7 +52,7 @@ void DispatchResult::setFatal(uInt64 cycles)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DispatchResult::setMessage(const string& message)
+void DispatchResult::setMessage(string_view message)
 {
   myMessage = message;
 }

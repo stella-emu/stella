@@ -207,7 +207,7 @@ bool OSystem::initialize(const Settings::Options& options)
   // Detect serial port for AtariVox-USB
   // If a previously set port is defined, use it;
   // otherwise use the first one found (if any)
-  const string& avoxport = mySettings->getString("avoxport");
+  const string_view avoxport = mySettings->getString("avoxport");
   const StringList ports = MediaFactory::createSerialPort()->portNames();
 
   if(avoxport.empty() && !ports.empty())
@@ -277,7 +277,7 @@ void OSystem::setConfigPaths()
   // Make sure all required directories actually exist
   const auto buildDirIfRequired = [](FSNode& path,
                                      const FSNode& initialPath,
-                                     const string& pathToAppend = EmptyString)
+                                     string_view pathToAppend = EmptyString)
   {
     path = initialPath;
     if(pathToAppend != EmptyString)
@@ -293,7 +293,7 @@ void OSystem::setConfigPaths()
 #endif
 
 #ifdef IMAGE_SUPPORT
-  const string& ssSaveDir = mySettings->getString("snapsavedir");
+  const string_view ssSaveDir = mySettings->getString("snapsavedir");
   if(ssSaveDir == EmptyString)
     mySnapshotSaveDir = userDir();
   else
@@ -301,7 +301,7 @@ void OSystem::setConfigPaths()
   if(!mySnapshotSaveDir.isDirectory())
     mySnapshotSaveDir.makeDir();
 
-  const string& ssLoadDir = mySettings->getString("snaploaddir");
+  const string_view ssLoadDir = mySettings->getString("snaploaddir");
   if(ssLoadDir == EmptyString)
     mySnapshotLoadDir = userDir();
   else
@@ -315,7 +315,7 @@ void OSystem::setConfigPaths()
 
 #if 0
   // Debug code
-  auto dbgPath = [](const string& desc, const FSNode& location)
+  auto dbgPath = [](string_view desc, const FSNode& location)
   {
     cerr << desc << ": " << location << endl;
   };
@@ -331,7 +331,7 @@ void OSystem::setConfigPaths()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystem::setUserDir(const string& path)
+void OSystem::setUserDir(string_view path)
 {
   mySettings->setValue("userdir", path);
 
@@ -416,8 +416,7 @@ void OSystem::createSound()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string OSystem::createConsole(const FSNode& rom, const string& md5sum,
-                              bool newrom)
+string OSystem::createConsole(const FSNode& rom, string_view md5sum, bool newrom)
 {
   bool showmessage = false;
 
@@ -567,7 +566,7 @@ bool OSystem::hasConsole() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool OSystem::createLauncher(const string& startdir)
+bool OSystem::createLauncher(string_view startdir)
 {
   closeConsole();
 
@@ -666,7 +665,7 @@ unique_ptr<Console> OSystem::openConsole(const FSNode& romfile, string& md5)
     // Now create the cartridge
     string cartmd5 = md5;
     const string& type = props.get(PropType::Cart_Type);
-    const Cartridge::messageCallback callback = [&os = *this](const string& msg)
+    const Cartridge::messageCallback callback = [&os = *this](string_view msg)
     {
       const bool devSettings = os.settings().getBool("dev.settings");
 

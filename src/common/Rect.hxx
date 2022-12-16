@@ -37,9 +37,9 @@ struct Point
 
   constexpr Point() = default;
   explicit constexpr Point(Int32 x1, Int32 y1) : x{x1}, y{y1} { }
-  explicit Point(const string& p) {
+  explicit Point(string_view p) {
     char c = '\0';
-    istringstream buf(p);
+    istringstream buf(string{p});  // TODO: fixed in C++20
     buf >> x >> c >> y;
     if(c != 'x')
       x = y = 0;
@@ -60,9 +60,9 @@ struct Size
 
   constexpr Size() = default;
   explicit constexpr Size(uInt32 w1, uInt32 h1) : w{w1}, h{h1} { }
-  explicit Size(const string& s) {
+  explicit Size(string_view s) {
     char c = '\0';
-    istringstream buf(s);
+    istringstream buf(string{s});  // TODO: fixed in C++20
     buf >> w >> c >> h;
     if(c != 'x')
       w = h = 0;

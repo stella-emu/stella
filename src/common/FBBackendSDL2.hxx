@@ -78,7 +78,7 @@ class FBBackendSDL2 : public FBBackend
 
       @param title  The title of the application / window
     */
-    void setTitle(const string& title) override;
+    void setTitle(string_view title) override;
 
     /**
       Shows or hides the cursor based on the given boolean value.

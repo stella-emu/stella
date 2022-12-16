@@ -188,14 +188,14 @@ class TIADebug : public DebuggerSystem
     static string colorSwatch(uInt8 c);
 
     string audFreq(uInt8 dist, uInt8 div) const;
-    static string stringOnly(const string& value, bool changed = false);
-    static string decWithLabel(const string& label, uInt16 value,
+    static string stringOnly(string_view value, bool changed = false);
+    static string decWithLabel(string_view label, uInt16 value,
                                bool changed = false, uInt16 width = 3);
-    static string hexWithLabel(const string& label, uInt16 value,
+    static string hexWithLabel(string_view label, uInt16 value,
                                bool changed = false, uInt16 width = 2);
-    static string binWithLabel(const string& label, uInt16 value,
+    static string binWithLabel(string_view label, uInt16 value,
                                bool changed = false);
-    static string boolWithLabel(const string& label, bool value,
+    static string boolWithLabel(string_view label, bool value,
                                 bool changed = false);
 
   private:

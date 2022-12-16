@@ -79,7 +79,7 @@ class EventHandler
 
       @param saport  How to map the ports ('lr' or 'rl')
     */
-    void mapStelladaptors(const string& saport);
+    void mapStelladaptors(string_view saport);
 
     /**
       Toggles if all four joystick directions are allowed at once
@@ -145,7 +145,7 @@ class EventHandler
                      Currently, this will be one of the following values:
                      'always', 'analog', 'never'
     */
-    void setMouseControllerMode(const string& enable);
+    void setMouseControllerMode(string_view enable);
     void changeMouseControllerMode(int direction = +1);
     void changeMouseCursor(int direction = +1);
 
@@ -338,7 +338,7 @@ class EventHandler
       Remove the physical joystick identified by 'name' from the joystick
       database, only if it is not currently active.
     */
-    void removePhysicalJoystickFromDatabase(const string& name);
+    void removePhysicalJoystickFromDatabase(string_view name);
 
     /**
       Enable/disable text events (distinct from single-key events).

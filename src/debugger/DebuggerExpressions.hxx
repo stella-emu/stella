@@ -134,7 +134,7 @@ class EqualsExpression : public Expression
 class EquateExpression : public Expression
 {
   public:
-    EquateExpression(const string& label) : Expression(), myLabel{label} { }
+    EquateExpression(string_view label) : Expression(), myLabel{label} { }
     Int32 evaluate() const override
       { return Debugger::debugger().cartDebug().getAddress(myLabel); }
 
@@ -146,7 +146,7 @@ class EquateExpression : public Expression
 class FunctionExpression : public Expression
 {
   public:
-    FunctionExpression(const string& label) : Expression(), myLabel{label} { }
+    FunctionExpression(string_view label) : Expression(), myLabel{label} { }
     Int32 evaluate() const override
       { return Debugger::debugger().getFunction(myLabel).evaluate(); }
 

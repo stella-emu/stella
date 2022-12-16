@@ -33,7 +33,7 @@ CheatManager::CheatManager(OSystem& osystem)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CheatManager::add(const string& name, const string& code,
+bool CheatManager::add(string_view name, string_view code,
                        bool enable, int idx)
 {
   const shared_ptr<Cheat> cheat = createCheat(name, code);
@@ -79,7 +79,7 @@ void CheatManager::remove(int idx)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CheatManager::addPerFrame(const string& name, const string& code, bool enable)
+void CheatManager::addPerFrame(string_view name, string_view code, bool enable)
 {
   // The actual cheat will always be in the main list; we look there first
   shared_ptr<Cheat> cheat;
@@ -117,7 +117,7 @@ void CheatManager::addPerFrame(const string& name, const string& code, bool enab
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CheatManager::addOneShot(const string& name, const string& code)
+void CheatManager::addOneShot(string_view name, string_view code)
 {
   // Evaluate this cheat once, and then immediately discard it
   const shared_ptr<Cheat> cheat = createCheat(name, code);
@@ -126,7 +126,7 @@ void CheatManager::addOneShot(const string& name, const string& code)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-shared_ptr<Cheat> CheatManager::createCheat(const string& name, const string& code) const
+shared_ptr<Cheat> CheatManager::createCheat(string_view name, string_view code) const
 {
   if(!isValidCode(code))
     return nullptr;
@@ -143,7 +143,7 @@ shared_ptr<Cheat> CheatManager::createCheat(const string& name, const string& co
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CheatManager::parse(const string& cheats)
+void CheatManager::parse(string_view cheats)
 {
   StringList s;
   string::size_type lastPos = cheats.find_first_not_of(',', 0);
@@ -198,7 +198,7 @@ void CheatManager::parse(const string& cheats)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CheatManager::enable(const string& code, bool enable)
+void CheatManager::enable(string_view code, bool enable)
 {
   for(const auto& cheat: myCheatList)
   {
@@ -263,7 +263,7 @@ void CheatManager::saveCheatDatabase()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CheatManager::loadCheats(const string& md5sum)
+void CheatManager::loadCheats(string_view md5sum)
 {
   myPerFrameList.clear();
   myCheatList.clear();
@@ -287,7 +287,7 @@ void CheatManager::loadCheats(const string& md5sum)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CheatManager::saveCheats(const string& md5sum)
+void CheatManager::saveCheats(string_view md5sum)
 {
   ostringstream cheats;
   for(uInt32 i = 0; i < myCheatList.size(); ++i)
@@ -322,7 +322,7 @@ void CheatManager::saveCheats(const string& md5sum)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CheatManager::isValidCode(const string& code)
+bool CheatManager::isValidCode(string_view code)
 {
   for(const auto c: code)
     if(!isxdigit(c))

@@ -27,12 +27,12 @@
 #include "Cart.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge::Cartridge(const Settings& settings, const string& md5)
+Cartridge::Cartridge(const Settings& settings, string_view md5)
   : mySettings{settings}
 {
-  const auto to_uInt32 = [](const string& s, uInt32 pos) {
-    return static_cast<uInt32>(std::stoul(s.substr(pos, 8), nullptr, 16));
-  };
+  const auto to_uInt32 = [](string_view s, uInt32 pos) {
+    return static_cast<uInt32>(std::stoul(string{s.substr(pos, 8)}, nullptr, 16));
+  };  // FIXME: convert to string_view by replacing std::stoul
 
   const uInt32 seed = to_uInt32(md5, 0)  ^ to_uInt32(md5, 8) ^
                       to_uInt32(md5, 16) ^ to_uInt32(md5, 24);
@@ -44,8 +44,7 @@ Cartridge::Cartridge(const Settings& settings, const string& md5)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge::setAbout(const string& about, const string& type,
-                         const string& id)
+void Cartridge::setAbout(string_view about, string_view type, string_view id)
 {
   myAbout = about;
   myDetectedType = type;

@@ -15,7 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-
 #ifndef UNDO_HANDLER_HXX
 #define UNDO_HANDLER_HXX
 
@@ -37,7 +36,7 @@ class UndoHandler
     void reset();
 
     // Add input to undo buffer
-    void doo(const string& text);
+    void doo(string_view text);
     // Retrieve last input from undo buffer
     bool undo(string& text);
     // Retrieve next input from undo buffer
@@ -46,10 +45,10 @@ class UndoHandler
     // Add single char for aggregation
     void doChar();
     // Add aggregated single chars to undo buffer
-    bool endChars(const string& text);
+    bool endChars(string_view text);
 
     // Get index into text of last different character
-    static uInt32 lastDiff(const string& text, const string& oldText);
+    static uInt32 lastDiff(string_view text, string_view oldText);
 
   private:
     std::deque<string> myBuffer;

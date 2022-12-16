@@ -98,7 +98,7 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
 void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
 {
   int i = 0;
-  const auto ADD_BIND = [&](const string& k, const string& d)
+  const auto ADD_BIND = [&](string_view k, string_view d)
   {
     myKeyStr[i] = k;  myDescStr[i] = d;  i++;
   };
@@ -109,7 +109,7 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
       desc = instance().eventHandler().getMappingDesc(e, EventMode::kMenuMode);
     ADD_BIND(desc.length() ? desc : "None", d);
   };
-  const auto ADD_TEXT = [&](const string& d) { ADD_BIND("", d); };
+  const auto ADD_TEXT = [&](string_view d) { ADD_BIND("", d); };
   const auto ADD_LINE = [&]() { ADD_BIND("", ""); };
 
   setHelpAnchor("Hotkeys");

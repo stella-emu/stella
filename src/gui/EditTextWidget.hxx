@@ -26,10 +26,10 @@ class EditTextWidget : public EditableWidget
 {
   public:
     EditTextWidget(GuiObject* boss, const GUI::Font& font,
-                   int x, int y, int w, int h, const string& text = "");
+                   int x, int y, int w, int h, string_view text = "");
     ~EditTextWidget() override = default;
 
-    void setText(const string& str, bool changed = false) override;
+    void setText(string_view str, bool changed = false) override;
 
     // Get total width of widget
     static int calcWidth(const GUI::Font& font, int length = 0)
@@ -38,9 +38,9 @@ class EditTextWidget : public EditableWidget
         + (font.getFontHeight() < 24 ? 3 * 2 : 5 * 2);
     }
     // Get total width of widget
-    static int calcWidth(const GUI::Font& font, const string& str)
+    static int calcWidth(const GUI::Font& font, string_view str)
     {
-      return calcWidth(font, static_cast<int>(str.length()));
+      return calcWidth(font, static_cast<int>(str.size()));
     }
 
   protected:

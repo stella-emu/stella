@@ -582,7 +582,7 @@ void DataGridWidget::handleCommand(CommandSender* sender, int cmd,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DataGridWidget::setToolTip(int column, int row, const string& text)
+void DataGridWidget::setToolTip(int column, int row, string_view text)
 {
   if(row >= 0 && row < _rows && column >= 0 && column < _cols)
     _toolTipList[row * _cols + column] = text;

@@ -47,7 +47,7 @@ namespace MD5 {
 
     @return   The message - digest
   */
-  string hash(const string& buffer);
+  string hash(string_view buffer);
 
 } // namespace MD5
 

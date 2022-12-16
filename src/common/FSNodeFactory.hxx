@@ -44,7 +44,7 @@ class FSNodeFactory
     enum class Type { SYSTEM, ZIP };
 
   public:
-    static unique_ptr<AbstractFSNode> create(const string& path, Type type)
+    static unique_ptr<AbstractFSNode> create(string_view path, Type type)
     {
       switch(type)
       {

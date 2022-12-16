@@ -193,6 +193,12 @@ namespace BSPF
   }
 
   // Convert string to integer, using default value on any error
+  inline int stringToInt(string_view s, const int defaultValue = 0)
+  {
+    try        { return std::stoi(string{s}); }
+    catch(...) { return defaultValue; }
+  }
+  // TODO: remove this once we reimplement stoi
   inline int stringToInt(const string& s, const int defaultValue = 0)
   {
     try        { return std::stoi(s); }
@@ -285,7 +291,7 @@ namespace BSPF
   //  (case sensitive for upper case characters in second string, except first one)
   // - the first character must match
   // - the following characters must appear in the order of the first string
-  inline bool matchesCamelCase(const string_view s1, const string_view s2)
+  inline bool matchesCamelCase(string_view s1, string_view s2)
   {
     // skip leading '_' for matching
     const uInt32 ofs = (s1[0] == '_' && s2[0] == '_') ? 1 : 0;
@@ -330,7 +336,7 @@ namespace BSPF
   // @param str      The searched string
   // @param pattern  The pattern to search for
   // @return  Position of pattern in string.
-  inline size_t matchWithJoker(const string& str, const string& pattern)
+  inline size_t matchWithJoker(string_view str, string_view pattern)
   {
     if(str.length() >= pattern.length())
     {
@@ -361,9 +367,9 @@ namespace BSPF
   // @param str      The searched string
   // @param pattern  The pattern to search for
   // @return  True if pattern was found.
-  inline bool matchWithWildcards(const string& str, const string& pattern)
+  inline bool matchWithWildcards(string_view str, string_view pattern)
   {
-    string pat = pattern;
+    string pat{pattern};  // TODO: don't use copy
 
     // remove leading and trailing '*'
     size_t i = 0;
@@ -394,7 +400,7 @@ namespace BSPF
   }
 
   // Modify 'str', replacing all occurrences of 'from' with 'to'
-  inline void replaceAll(string& str, const string& from, const string& to)
+  inline void replaceAll(string& str, string_view from, string_view to)
   {
     if(from.empty()) return;
     size_t start_pos = 0;
@@ -407,11 +413,11 @@ namespace BSPF
   }
 
   // Trim leading and trailing whitespace from a string
-  inline string trim(const string& str)
+  inline string trim(string_view str)
   {
     const auto first = str.find_first_not_of(' ');
     return (first == string::npos) ? EmptyString :
-            str.substr(first, str.find_last_not_of(' ')-first+1);
+            string{str.substr(first, str.find_last_not_of(' ')-first+1)};
   }
 
   // C++11 way to get local time

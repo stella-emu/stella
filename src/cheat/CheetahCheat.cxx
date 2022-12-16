@@ -21,7 +21,7 @@
 #include "CheetahCheat.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CheetahCheat::CheetahCheat(OSystem& os, const string& name, const string& code)
+CheetahCheat::CheetahCheat(OSystem& os, string_view name, string_view code)
   : Cheat(os, name, code),
     address{static_cast<uInt16>(0xf000 + unhex(code.substr(0, 3)))},
     value{static_cast<uInt8>(unhex(code.substr(3, 2)))},

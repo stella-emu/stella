@@ -38,7 +38,7 @@ class PopUpWidget : public EditableWidget
   public:
     PopUpWidget(GuiObject* boss, const GUI::Font& font,
                 int x, int y, int w, int h, const VariantList& items,
-                const string& label = "", int labelWidth = 0, int cmd = 0);
+                string_view label = "", int labelWidth = 0, int cmd = 0);
     ~PopUpWidget() override = default;
 
     void setID(uInt32 id) override;
@@ -61,7 +61,7 @@ class PopUpWidget : public EditableWidget
 
     int getSelected() const;
     const string& getSelectedName() const;
-    void setSelectedName(const string& name);
+    void setSelectedName(string_view name);
     const Variant& getSelectedTag() const;
 
     bool wantsFocus() const override { return true; }

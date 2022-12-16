@@ -81,8 +81,7 @@ class FileListWidget : public StringListWidget
                           will instead be used, and the file will be selected
         @param select     An optional entry to select (if applicable)
     */
-    void setDirectory(const FSNode& node,
-                      const string& select = EmptyString);
+    void setDirectory(const FSNode& node, string_view select = EmptyString);
 
     /** Descend into currently selected directory */
     void selectDirectory();
@@ -114,7 +113,7 @@ class FileListWidget : public StringListWidget
       FSNode node;
       string selected;
 
-      explicit HistoryType(const FSNode& _hnode, const string& _hselected)
+      explicit HistoryType(const FSNode& _hnode, string_view _hselected)
         : node{_hnode}, selected{_hselected} {}
     };
     enum class IconType {
@@ -137,7 +136,7 @@ class FileListWidget : public StringListWidget
 
   protected:
     /** Very similar to setDirectory(), but also updates the history */
-    void setLocation(const FSNode& node, const string& select);
+    void setLocation(const FSNode& node, string_view select);
     /** Select to home directory */
     void selectHomeDir();
     /** Select previous directory in history (if applicable) */
@@ -147,7 +146,7 @@ class FileListWidget : public StringListWidget
     virtual bool isDirectory(const FSNode& node) const;
     virtual void getChildren(const FSNode::CancelCheck& isCancelled);
     virtual void extendLists(StringList& list) { }
-    virtual IconType getIconType(const string& path) const;
+    virtual IconType getIconType(string_view path) const;
     virtual const Icon* getIcon(int i) const;
     int iconWidth() const;
     virtual bool fullPathToolTip() const { return false; }

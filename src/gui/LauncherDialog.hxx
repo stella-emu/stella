@@ -139,8 +139,7 @@ class LauncherDialog : public Dialog, CommandSender
 
       @return True if pattern was found.
     */
-    static bool matchWithWildcardsIgnoreCase(const string& str,
-                                             const string& pattern);
+    static bool matchWithWildcardsIgnoreCase(string_view str, string_view pattern);
 
     void applyFiltering();
 
@@ -165,7 +164,7 @@ class LauncherDialog : public Dialog, CommandSender
     void toggleSorting();
     void handleFavoritesChanged();
     void removeAllFavorites();
-    void removeAll(const string& name);
+    void removeAll(string_view name);
     void removeAllPopular();
     void removeAllRecent();
 

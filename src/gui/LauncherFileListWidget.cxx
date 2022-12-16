@@ -105,11 +105,12 @@ void LauncherFileListWidget::getChildren(const FSNode::CancelCheck& isCancelled)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherFileListWidget::addFolder(StringList& list, int& offset,
-                                       const string& name, IconType icon)
+                                       string_view name, IconType icon)
 {
+  const string n = string{name};
   _fileList.insert(_fileList.begin() + offset,
-    FSNode(_node.getPath() + name));
-  list.insert(list.begin() + offset, name);
+    FSNode(_node.getPath() + n));
+  list.insert(list.begin() + offset, n);
   _dirList.insert(_dirList.begin() + offset, "");
   _iconTypeList.insert((_iconTypeList.begin() + offset), icon);
 
@@ -186,7 +187,7 @@ void LauncherFileListWidget::updateFavorites()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool LauncherFileListWidget::isUserFavorite(const string& path) const
+bool LauncherFileListWidget::isUserFavorite(string_view path) const
 {
   return myFavorites->existsUser(path);
 }
@@ -220,7 +221,7 @@ void LauncherFileListWidget::removeFavorite()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherFileListWidget::userFavor(const string& path)
+void LauncherFileListWidget::userFavor(string_view path)
 {
   size_t pos = 0;
 
@@ -253,7 +254,7 @@ void LauncherFileListWidget::removeAllRecent()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FileListWidget::IconType LauncherFileListWidget::getIconType(const string& path) const
+FileListWidget::IconType LauncherFileListWidget::getIconType(string_view path) const
 {
   if(!isUserFavorite(path))
     return FileListWidget::getIconType(path);

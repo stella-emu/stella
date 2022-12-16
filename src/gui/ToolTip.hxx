@@ -80,7 +80,7 @@ class ToolTip
     */
     const shared_ptr<FBSurface>& surface();
 
-    void show(const string& tip);
+    void show(string_view tip);
 
   private:
     static constexpr uInt32 DELAY_TIME = 45;   // display delay [frames]

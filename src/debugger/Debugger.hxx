@@ -67,8 +67,8 @@ class Debugger : public DialogContainer
   friend class M6502;
 
   public:
-    using FunctionMap = std::map<string, unique_ptr<Expression>>;
-    using FunctionDefMap = std::map<string, string>;
+    using FunctionMap = std::map<string, unique_ptr<Expression>, std::less<>>;
+    using FunctionDefMap = std::map<string, string, std::less<>>;
 
     /**
       Create a new debugger parent object
@@ -94,9 +94,9 @@ class Debugger : public DialogContainer
       @param message  Message to display when entering debugger
       @param address  An address associated with the message
     */
-    bool start(const string& message = "", int address = -1, bool read = true,
-               const string& toolTip = "");
-    bool startWithFatalError(const string& message = "");
+    bool start(string_view message = "", int address = -1, bool read = true,
+               string_view toolTip = "");
+    bool startWithFatalError(string_view message = "");
 
     /**
       Wrapper method for EventHandler::leaveDebugMode() for those classes
@@ -109,13 +109,13 @@ class Debugger : public DialogContainer
     */
     void quit();
 
-    bool addFunction(const string& name, const string& def,
+    bool addFunction(string_view name, string_view def,
                      Expression* exp, bool builtin = false);
-    static bool isBuiltinFunction(const string& name);
-    bool delFunction(const string& name);
-    const Expression& getFunction(const string& name) const;
+    static bool isBuiltinFunction(string_view name);
+    bool delFunction(string_view name);
+    const Expression& getFunction(string_view name) const;
 
-    const string& getFunctionDef(const string& name) const;
+    const string& getFunctionDef(string_view name) const;
     FunctionDefMap getFunctionDefMap() const;
     static string builtinHelp();
 
@@ -194,7 +194,7 @@ class Debugger : public DialogContainer
     /**
       Run the debugger command and return the result.
     */
-    string run(const string& command);
+    string run(string_view command);
 
     string autoExec(StringList* history);
 
@@ -204,7 +204,7 @@ class Debugger : public DialogContainer
       Convert between string->integer and integer->string, taking into
       account the current base format.
     */
-    int stringToValue(const string& stringval);
+    int stringToValue(string_view stringval);
 
     /* Convenience methods to get/set bit(s) in an 8-bit register */
     static uInt8 set_bit(uInt8 input, uInt8 bit, bool on)
@@ -296,7 +296,7 @@ class Debugger : public DialogContainer
     /**
       Saves a rewind state with the given message.
     */
-    void addState(const string& rewindMsg);
+    void addState(string_view rewindMsg);
 
     /**
       Set initial state before entering the debugger.
@@ -326,7 +326,7 @@ class Debugger : public DialogContainer
     bool readTrap(uInt16 t) const;
     bool writeTrap(uInt16 t) const;
     void clearAllTraps() const;
-    void log(const string& triggerMsg);
+    void log(string_view triggerMsg);
 
     // Set a bunch of RAM locations at once
     string setRAM(IntArray& args);

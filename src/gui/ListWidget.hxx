@@ -51,7 +51,7 @@ class ListWidget : public EditableWidget
 
     int getSelected() const { return _selectedItem; }
     void setSelected(int item);
-    void setSelected(const string& item);
+    void setSelected(string_view item);
 
     int getHighlighted() const     { return _highlightedItem; }
     void setHighlighted(int item);

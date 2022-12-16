@@ -23,7 +23,7 @@
 class CheetahCheat : public Cheat
 {
   public:
-    CheetahCheat(OSystem& os, const string& name, const string& code);
+    CheetahCheat(OSystem& os, string_view name, string_view code);
     ~CheetahCheat() override = default;
 
     bool enable() override;

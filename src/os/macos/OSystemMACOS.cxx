@@ -20,7 +20,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystemMACOS::getBaseDirectories(string& basedir, string& homedir,
-                                      bool useappdir, const string& usedir)
+                                      bool useappdir, string_view usedir)
 {
   basedir = "~/Library/Application Support/Stella/";
 

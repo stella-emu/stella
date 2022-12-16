@@ -49,7 +49,7 @@ class Serializer
       The valid() method must immediately be called to verify the stream
       was correctly initialized.
     */
-    explicit Serializer(const string& filename, Mode m = Mode::ReadWrite);
+    explicit Serializer(string_view filename, Mode m = Mode::ReadWrite);
     Serializer();
 
   public:
@@ -207,11 +207,11 @@ class Serializer
     void putDouble(double value);
 
     /**
-      Writes a string to the current output stream.
+      Writes a string(view) to the current output stream.
 
       @param str The string to write to the output stream.
     */
-    void putString(const string& str);
+    void putString(string_view str);
 
     /**
       Writes a boolean value to the current output stream.

@@ -23,7 +23,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystemUNIX::getBaseDirectories(string& basedir, string& homedir,
-                                     bool useappdir, const string& usedir)
+                                     bool useappdir, string_view usedir)
 {
   // Use XDG_CONFIG_HOME if defined, otherwise use the default
   const char* const cfg_home = std::getenv("XDG_CONFIG_HOME");  // NOLINT

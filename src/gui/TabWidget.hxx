@@ -43,7 +43,7 @@ class TabWidget : public Widget, public CommandSender
 // First off, widget should allow non-dialog bosses, (i.e. also other widgets)
 // Could add a common base class for Widgets and Dialogs.
 // Then you add tabs using the following method, which returns a unique ID
-    int addTab(const string& title, int tabWidth = NO_WIDTH);
+    int addTab(string_view title, int tabWidth = NO_WIDTH);
 // Maybe we need to remove tabs again? Hm
     //void removeTab(int tabID);
 // Setting the active tab:
@@ -82,9 +82,10 @@ class TabWidget : public Widget, public CommandSender
       bool enabled{true};
       int tabWidth{0};
 
-      explicit Tab(const string& t, int tw = NO_WIDTH,
+      explicit Tab(string_view t, int tw = NO_WIDTH,
           Widget* first = nullptr, Widget* parent = nullptr, bool e = true)
-        : title{t}, firstWidget{first}, parentWidget{parent}, enabled{e}, tabWidth{tw} { }
+        : title{t}, firstWidget{first}, parentWidget{parent}, enabled{e},
+          tabWidth{tw} { }
     };
     using TabList = vector<Tab>;
 

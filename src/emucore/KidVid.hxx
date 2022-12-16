@@ -49,7 +49,7 @@ class KidVid : public Controller
       @param callback  Called to pass messages back to the parent controller
     */
     KidVid(Jack jack, const Event& event, const OSystem& osystem,
-           const System& system, const string& romMd5,
+           const System& system, string_view romMd5,
            const onMessageCallbackForced& callback);
     ~KidVid() override = default;
 

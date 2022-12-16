@@ -73,8 +73,8 @@ class PhysicalJoystickHandler
     /** Return stick ID on success, -1 on failure. */
     int add(const PhysicalJoystickPtr& stick);
     bool remove(int id);
-    bool remove(const string& name);
-    bool mapStelladaptors(const string& saport, int ID = -1);
+    bool remove(string_view name);
+    bool mapStelladaptors(string_view saport, int ID = -1);
     bool hasStelladaptors() const;
     void setDefaultMapping(Event::Type event, EventMode mode);
 
@@ -126,7 +126,7 @@ class PhysicalJoystickHandler
     void changeDrivingSensitivity(int direction = +1);
 
   private:
-    using StickDatabase = std::map<string,StickInfo>;
+    using StickDatabase = std::map<string, StickInfo, std::less<>>;
     using StickList = std::map<int, PhysicalJoystickPtr>;
 
     OSystem& myOSystem;

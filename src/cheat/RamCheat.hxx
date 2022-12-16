@@ -23,7 +23,7 @@
 class RamCheat : public Cheat
 {
   public:
-    RamCheat(OSystem& os, const string& name, const string& code);
+    RamCheat(OSystem& os, string_view name, string_view code);
     ~RamCheat() override = default;
 
     bool enable() override;

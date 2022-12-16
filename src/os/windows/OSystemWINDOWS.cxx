@@ -23,7 +23,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystemWINDOWS::getBaseDirectories(string& basedir, string& homedir,
-                                        bool useappdir, const string& usedir)
+                                        bool useappdir, string_view usedir)
 {
   HomeFinder homefinder;
   FSNode appdata(homefinder.getAppDataPath());

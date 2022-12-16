@@ -1037,7 +1037,7 @@ string TIADebug::audFreq(uInt8 dist, uInt8 div) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string TIADebug::stringOnly(const string& value, bool changed)
+string TIADebug::stringOnly(string_view value, bool changed)
 {
   ostringstream buf;
 
@@ -1051,7 +1051,7 @@ string TIADebug::stringOnly(const string& value, bool changed)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string TIADebug::decWithLabel(const string& label, uInt16 value,
+string TIADebug::decWithLabel(string_view label, uInt16 value,
                               bool changed, uInt16 width)
 {
   ostringstream buf;
@@ -1069,7 +1069,7 @@ string TIADebug::decWithLabel(const string& label, uInt16 value,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string TIADebug::hexWithLabel(const string& label, uInt16 value,
+string TIADebug::hexWithLabel(string_view label, uInt16 value,
                               bool changed, uInt16 width)
 {
   ostringstream buf;
@@ -1087,7 +1087,7 @@ string TIADebug::hexWithLabel(const string& label, uInt16 value,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string TIADebug::binWithLabel(const string& label, uInt16 value, bool changed)
+string TIADebug::binWithLabel(string_view label, uInt16 value, bool changed)
 {
   ostringstream buf;
 
@@ -1104,13 +1104,13 @@ string TIADebug::binWithLabel(const string& label, uInt16 value, bool changed)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string TIADebug::boolWithLabel(const string& label, bool value, bool changed)
+string TIADebug::boolWithLabel(string_view label, bool value, bool changed)
 {
   ostringstream buf;
 
   if(value)
   {
-    string l = label;
+    string l{label};
     buf << "\177" << BSPF::toUpperCase(l) << "\177";
     //return "+" + BSPF::toUpperCase(label);
   }

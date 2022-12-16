@@ -26,7 +26,7 @@
 #include "FSNodeWINDOWS.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FSNodeWINDOWS::FSNodeWINDOWS(const string& p)
+FSNodeWINDOWS::FSNodeWINDOWS(string_view p)
   : _path{p.length() > 0 ? p : "~"}  // Default to home directory
 {
   // Expand '~' to the users 'home' directory
@@ -217,9 +217,9 @@ bool FSNodeWINDOWS::makeDir()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FSNodeWINDOWS::rename(const string& newfile)
+bool FSNodeWINDOWS::rename(string_view newfile)
 {
-  if (!_isPseudoRoot && MoveFile(_path.c_str(), newfile.c_str()) != 0)
+  if (!_isPseudoRoot && MoveFile(_path.c_str(), string{newfile}.c_str()) != 0)
     return setFlags();
 
   return false;

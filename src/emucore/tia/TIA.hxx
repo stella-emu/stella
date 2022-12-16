@@ -420,7 +420,7 @@ class TIA : public Device
 
       @return  True if colors were changed successfully, else false
     */
-    bool setFixedColorPalette(const string& colors);
+    bool setFixedColorPalette(string_view colors);
 
     /**
       Enable/disable/query state of 'undriven/floating TIA pins'.

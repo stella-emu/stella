@@ -454,14 +454,14 @@ bool FBBackendSDL2::createRenderer()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBBackendSDL2::setTitle(const string& title)
+void FBBackendSDL2::setTitle(string_view title)
 {
   ASSERT_MAIN_THREAD;
 
   myScreenTitle = title;
 
   if(myWindow)
-    SDL_SetWindowTitle(myWindow, title.c_str());
+    SDL_SetWindowTitle(myWindow, string{title}.c_str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -297,7 +297,7 @@ void FBSurface::frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurface::splitString(const GUI::Font& font, const string& s, int w,
+void FBSurface::splitString(const GUI::Font& font, string_view s, int w,
                             string& left, string& right)
 {
 #ifdef GUI_SUPPORT
@@ -335,7 +335,7 @@ void FBSurface::splitString(const GUI::Font& font, const string& s, int w,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int FBSurface::drawString(const GUI::Font& font, const string& s,
+int FBSurface::drawString(const GUI::Font& font, string_view s,
                           int x, int y, int w, int h,
                           ColorId color, TextAlign align,
                           int deltax, bool useEllipsis, ColorId shadowColor,
@@ -344,7 +344,7 @@ int FBSurface::drawString(const GUI::Font& font, const string& s,
   int lines = 0;
 
 #ifdef GUI_SUPPORT
-  string inStr = s;
+  string inStr{s};
 
   // draw multiline string
   while(inStr.length() && h >= font.getFontHeight() * 2)
@@ -374,7 +374,7 @@ int FBSurface::drawString(const GUI::Font& font, const string& s,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int FBSurface::drawString(const GUI::Font& font, const string& s,
+int FBSurface::drawString(const GUI::Font& font, string_view s,
                           int x, int y, int w,
                           ColorId color, TextAlign align,
                           int deltax, bool useEllipsis, ColorId shadowColor,

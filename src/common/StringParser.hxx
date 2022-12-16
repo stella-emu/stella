@@ -34,9 +34,9 @@ class StringParser
 
       @param str  The string to split
     */
-    explicit StringParser(const string& str)
+    explicit StringParser(string_view str)
     {
-      istringstream buf(str);
+      istringstream buf(string{str});  // TODO: fixed in C++20
       string line;
 
       while(std::getline(buf, line, '\n'))

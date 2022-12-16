@@ -23,12 +23,12 @@
 #include "MouseControl.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-MouseControl::MouseControl(Console& console, const string& mode)
+MouseControl::MouseControl(Console& console, string_view mode)
   : myProps{console.properties()},
     myLeftController{console.leftController()},
     myRightController{console.rightController()}
 {
-  istringstream m_axis(mode);
+  istringstream m_axis(string{mode});  // TODO: fixed in C++20
   string m_mode;
   m_axis >> m_mode;
 

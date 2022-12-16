@@ -44,14 +44,14 @@ Dialog* MessageMenu::baseDialog()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void MessageMenu::setMessage(const string& title, const StringList& text,
+void MessageMenu::setMessage(string_view title, const StringList& text,
                              bool yesNo)
 {
   MessageDialog::setMessage(title, text, yesNo);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void MessageMenu::setMessage(const string& title, const string& text, bool yesNo)
+void MessageMenu::setMessage(string_view title, string_view text, bool yesNo)
 {
   MessageDialog::setMessage(title, text, yesNo);
 }

@@ -35,7 +35,7 @@ class DebuggerParser
     DebuggerParser(Debugger& debugger, Settings& settings);
 
     /** Run the given command, and return the result */
-    string run(const string& command);
+    string run(string_view command);
 
     /** Execute parser commands given in 'file' */
     string exec(const FSNode& file, StringList* history = nullptr);
@@ -45,23 +45,23 @@ class DebuggerParser
     static void getCompletions(const char* in, StringList& completions);
 
     /** Evaluate the given expression using operators, current base, etc */
-    int decipher_arg(const string& str);
+    int decipher_arg(string_view str);
 
     /** String representation of all watches currently defined */
     string showWatches();
 
-    static inline string red(const string& msg = "")
+    static inline string red(string_view msg = "")
     {
-      return char(kDbgColorRed & 0xff) + msg;
+      return char(kDbgColorRed & 0xff) + string{msg};
     }
-    static inline string inverse(const string& msg = "")
+    static inline string inverse(string_view msg = "")
     {
       // ASCII DEL char, decimal 127
-      return "\177" + msg;
+      return "\177" + string{msg};
     }
 
   private:
-    bool getArgs(const string& command, string& verb);
+    bool getArgs(string_view command, string& verb);
     bool validateArgs(int cmd);
     string eval();
     string saveScriptFile(string file);
@@ -112,7 +112,7 @@ class DebuggerParser
       uInt32 end{0};
       string condition;
 
-      Trap(bool r, bool w, uInt32 b, uInt32 e, const string& c)
+      Trap(bool r, bool w, uInt32 b, uInt32 e, string_view c)
         : read(r), write(w), begin(b), end(e), condition(c) {}
     };
 
@@ -146,7 +146,7 @@ class DebuggerParser
     void listTimers();
 
     // output the error with the example provided for the command
-    void outputCommandError(const string& errorMsg, int command);
+    void outputCommandError(string_view errorMsg, int command);
 
     void executeDirective(Device::AccessType type);
 
@@ -252,7 +252,7 @@ class DebuggerParser
     void executeTrapReadIf();
     void executeTrapWrite();
     void executeTrapWriteIf();
-    void executeTraps(bool read, bool write, const string& command, bool cond = false);
+    void executeTraps(bool read, bool write, string_view command, bool cond = false);
     void executeTrapRW(uInt32 addr, bool read, bool write, bool add = true);  // not exposed by debugger
     void executeType();
     void executeUHex();

@@ -357,9 +357,9 @@ bool CartridgeCTY::load(Serializer& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeCTY::setNVRamFile(const string& nvramdir, const string& romfile)
+void CartridgeCTY::setNVRamFile(string_view path)
 {
-  myEEPROMFile = nvramdir + romfile + "_eeprom.dat";
+  myEEPROMFile = string{path} + "_eeprom.dat";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

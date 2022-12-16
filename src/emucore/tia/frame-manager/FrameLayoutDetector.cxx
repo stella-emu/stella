@@ -42,7 +42,8 @@ void FrameLayoutDetector::simulateInput(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FrameLayout FrameLayoutDetector::detectedLayout(bool detectPal60, bool detectNtsc50, const string& name) const
+FrameLayout FrameLayoutDetector::detectedLayout(bool detectPal60,
+    bool detectNtsc50, string_view name) const
 {
 #if 0 // debug
   cerr << endl << name << endl;

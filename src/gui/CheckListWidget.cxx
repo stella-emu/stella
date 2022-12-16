@@ -67,7 +67,7 @@ void CheckListWidget::setList(const StringList& list, const BoolArray& state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CheckListWidget::setLine(int line, const string& str, const bool& state)
+void CheckListWidget::setLine(int line, string_view str, const bool& state)
 {
   if(line >= static_cast<int>(_list.size()))
     return;

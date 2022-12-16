@@ -23,7 +23,7 @@
 class BankRomCheat : public Cheat
 {
   public:
-    BankRomCheat(OSystem& os, const string& name, const string& code);
+    BankRomCheat(OSystem& os, string_view name, string_view code);
     ~BankRomCheat() override = default;
 
     bool enable() override;

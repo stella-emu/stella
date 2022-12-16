@@ -365,7 +365,7 @@ class OSystem
 
       @return  String indicating any error message (EmptyString for no errors)
     */
-    string createConsole(const FSNode& rom, const string& md5 = "",
+    string createConsole(const FSNode& rom, string_view md5 = "",
                          bool newrom = true);
 
     /**
@@ -386,7 +386,7 @@ class OSystem
 
       @return  True on successful creation, otherwise false
     */
-    bool createLauncher(const string& startdir = "");
+    bool createLauncher(string_view startdir = "");
 
     /**
       Answers whether the ROM launcher was actually successfully used
@@ -455,11 +455,11 @@ class OSystem
       Again, this is not supported on all systems, so it may be simply
       ignored.
     */
-    static void overrideBaseDir(const string& path) { ourOverrideBaseDir = path; }
+    static void overrideBaseDir(string_view path) { ourOverrideBaseDir = path; }
     static void overrideBaseDirWithApp() { ourOverrideBaseDirWithApp = true; }
 
     // Update the path of the user directory
-    void setUserDir(const string& path);
+    void setUserDir(string_view path);
 
   public:
     //////////////////////////////////////////////////////////////////////
@@ -505,7 +505,7 @@ class OSystem
                         they are free to ignore it
     */
     virtual void getBaseDirectories(string& basedir, string& homedir,
-                                    bool useappdir, const string& usedir) = 0;
+                                    bool useappdir, string_view usedir) = 0;
 
     virtual void initPersistence(FSNode& basedir) = 0;
 

@@ -42,7 +42,7 @@ class PromptWidget : public Widget, public CommandSender
     ~PromptWidget() override = default;
 
   public:
-    void print(const string& str);
+    void print(string_view str);
     void printPrompt();
     string saveBuffer(const FSNode& file);
 
@@ -134,7 +134,7 @@ class PromptWidget : public Widget, public CommandSender
     bool _exitedEarly{false};
 
     int historyDir(int& index, int direction);
-    void historyAdd(const string& entry);
+    void historyAdd(string_view entry);
 
   private:
     // Following constructors and assignment operators not supported

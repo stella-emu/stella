@@ -30,12 +30,13 @@ class InputTextDialog : public Dialog, public CommandSender
 {
   public:
     InputTextDialog(GuiObject* boss, const GUI::Font& font,
-                    const StringList& labels, const string& title = "");
+                    const StringList& labels, string_view title = "");
     InputTextDialog(GuiObject* boss, const GUI::Font& lfont,
                     const GUI::Font& nfont, const StringList& labels,
-                    const string& title = "");
-    InputTextDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font,
-                    const string& label, const string& title, int numInput = 0);
+                    string_view title = "");
+    InputTextDialog(OSystem& osystem, DialogContainer& parent,
+                    const GUI::Font& font, string_view label, string_view title,
+                    int numInput = 0);
 
     ~InputTextDialog() override = default;
 
@@ -47,18 +48,19 @@ class InputTextDialog : public Dialog, public CommandSender
 
     const string& getResult(int idx = 0);
 
-    void setText(const string& str, int idx = 0);
+    void setText(string_view str, int idx = 0);
     void setTextFilter(const EditableWidget::TextFilter& f, int idx = 0);
-    void setToolTip(const string& str, int idx = 0);
+    void setToolTip(string_view str, int idx = 0);
 
     void setEmitSignal(int cmd) { myCmd = cmd; }
-    void setMessage(const string& title);
+    void setMessage(string_view title);
 
     void setFocus(int idx = 0);
 
   protected:
     void initialize(const GUI::Font& lfont, const GUI::Font& nfont,
-                    const StringList& labels, int widthChars = 39, int numInput = 0);
+                    const StringList& labels, int widthChars = 39,
+                    int numInput = 0);
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
     /** This dialog uses its own positioning, so we override Dialog::center() */

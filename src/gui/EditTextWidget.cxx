@@ -24,7 +24,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EditTextWidget::EditTextWidget(GuiObject* boss, const GUI::Font& font,
-                               int x, int y, int w, int h, const string& text)
+                               int x, int y, int w, int h, string_view text)
   : EditableWidget(boss, font, x, y, w, h + 2, text)
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG
@@ -33,17 +33,13 @@ EditTextWidget::EditTextWidget(GuiObject* boss, const GUI::Font& font,
   EditableWidget::startEditMode();  // We're always in edit mode
 
   if(_font.getFontHeight() < 24)
-  {
     _textOfs = 3;
-  }
   else
-  {
     _textOfs = 5;
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EditTextWidget::setText(const string& str, bool changed)
+void EditTextWidget::setText(string_view str, bool changed)
 {
   EditableWidget::setText(str, changed);
 

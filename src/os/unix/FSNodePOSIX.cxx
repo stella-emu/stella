@@ -31,7 +31,7 @@ FSNodePOSIX::FSNodePOSIX()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FSNodePOSIX::FSNodePOSIX(const string& path, bool verify)
+FSNodePOSIX::FSNodePOSIX(string_view path, bool verify)
   : _path{path.length() > 0 ? path : "~"}  // Default to home directory
 {
   // Expand '~' to the HOME environment variable
@@ -203,9 +203,9 @@ bool FSNodePOSIX::makeDir()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FSNodePOSIX::rename(const string& newfile)
+bool FSNodePOSIX::rename(string_view newfile)
 {
-  if (std::rename(_path.c_str(), newfile.c_str()) == 0)
+  if (std::rename(_path.c_str(), string{newfile}.c_str()) == 0)
   {
     _path = newfile;
 

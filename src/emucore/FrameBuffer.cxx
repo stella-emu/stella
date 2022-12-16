@@ -174,7 +174,7 @@ void FrameBuffer::setupFonts()
       GUI::consoleDesc, GUI::consoleMediumDesc, GUI::stellaMediumDesc,
       GUI::stellaLargeDesc, GUI::stella12x24tDesc, GUI::stella14x28tDesc,
       GUI::stella16x32tDesc};
-    const string& dialogFont = myOSystem.settings().getString("dialogfont");
+    const string_view dialogFont = myOSystem.settings().getString("dialogfont");
     const FontDesc fd = getFontDesc(dialogFont);
 
     // The general font used in all UI elements
@@ -202,13 +202,13 @@ void FrameBuffer::setupFonts()
   }
 
   // The font used by the ROM launcher
-  const string& lf = myOSystem.settings().getString("launcherfont");
+  const string_view lf = myOSystem.settings().getString("launcherfont");
 
   myLauncherFont = make_unique<GUI::Font>(getFontDesc(lf));       //  8x13
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FontDesc FrameBuffer::getFontDesc(const string& name)
+FontDesc FrameBuffer::getFontDesc(string_view name)
 {
   if(name == "small")
     return GUI::consoleDesc;        //  8x13
@@ -228,7 +228,7 @@ FontDesc FrameBuffer::getFontDesc(const string& name)
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FBInitStatus FrameBuffer::createDisplay(const string& title, BufferType type,
+FBInitStatus FrameBuffer::createDisplay(string_view title, BufferType type,
                                         Common::Size size, bool honourHiDPI)
 {
   ++myInitializedCount;
@@ -609,7 +609,8 @@ void FrameBuffer::updateInEmulationMode(float framesPerSecond)
 
 #ifdef GUI_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::createMessage(const string& message, MessagePosition position, bool force)
+void FrameBuffer::createMessage(string_view message, MessagePosition position,
+                                bool force)
 {
   // Only show messages if they've been enabled
   if(myMsg.surface == nullptr || !(force || myOSystem.settings().getBool("uimessages")))
@@ -637,8 +638,8 @@ void FrameBuffer::createMessage(const string& message, MessagePosition position,
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::showTextMessage(const string& message, MessagePosition position,
-                                  bool force)
+void FrameBuffer::showTextMessage(string_view message,
+                                  MessagePosition position, bool force)
 {
 #ifdef GUI_SUPPORT
   const int fontWidth = font().getMaxCharWidth();
@@ -653,7 +654,7 @@ void FrameBuffer::showTextMessage(const string& message, MessagePosition positio
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::showGaugeMessage(const string& message, const string& valueText,
+void FrameBuffer::showGaugeMessage(string_view message, string_view valueText,
                                    float value, float minValue, float maxValue)
 {
 #ifdef GUI_SUPPORT

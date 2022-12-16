@@ -52,7 +52,7 @@ class Dialog : public GuiObject
     Dialog(OSystem& instance, DialogContainer& parent,
            int x = 0, int y = 0, int w = 0, int h = 0);
     Dialog(OSystem& instance, DialogContainer& parent, const GUI::Font& font,
-           const string& title = "", int x = 0, int y = 0, int w = 0, int h = 0);
+           string_view title = "", int x = 0, int y = 0, int w = 0, int h = 0);
     ~Dialog() override;
 
     void clear();
@@ -96,12 +96,12 @@ class Dialog : public GuiObject
     */
     void addRenderCallback(const RenderCallback& callback);
 
-    void setTitle(const string& title);
+    void setTitle(string_view title);
     bool hasTitle() { return !_title.empty(); }
 
     void initHelp();
-    void setHelpAnchor(const string& helpAnchor, bool debugger = false);
-    void setHelpURL(const string& helpURL);
+    void setHelpAnchor(string_view helpAnchor, bool debugger = false);
+    void setHelpURL(string_view helpURL);
 
     virtual bool isShading() const { return true; }
 
@@ -139,7 +139,7 @@ class Dialog : public GuiObject
     int fontHeight() const { return _font.getFontHeight(); }
     int fontWidth() const { return _font.getMaxCharWidth(); }
     int buttonHeight() const { return lineHeight() * 1.25; }
-    int buttonWidth(const string& label) const {
+    int buttonWidth(string_view label) const {
       return _font.getStringWidth(label) + fontWidth() * 2.5;
     }
     int buttonGap() const { return fontWidth(); }
@@ -175,28 +175,28 @@ class Dialog : public GuiObject
 
 
     void addOKBGroup(WidgetArray& wid, const GUI::Font& font,
-                     const string& okText = "OK",
+                     string_view okText = "OK",
                      int buttonWidth = 0);
 
     void addOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
-                           const string& okText = "OK",
-                           const string& cancelText = "Cancel",
+                           string_view okText = "OK",
+                           string_view cancelText = "Cancel",
                            bool focusOKButton = true,
                            int buttonWidth = 0);
 
     void addDefaultsOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
-                                   const string& okText = "OK",
-                                   const string& cancelText = "Cancel",
-                                   const string& defaultsText = "Defaults",
+                                   string_view okText = "OK",
+                                   string_view cancelText = "Cancel",
+                                   string_view defaultsText = "Defaults",
                                    bool focusOKButton = true);
 
     // NOTE: This method, and the three above it, are due to be refactored at some
     //       point, since the parameter list is kind of getting ridiculous
     void addDefaultsExtraOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
-                                        const string& extraText, int extraCmd,
-                                        const string& okText = "OK",
-                                        const string& cancelText = "Cancel",
-                                        const string& defaultsText = "Defaults",
+                                        string_view extraText, int extraCmd,
+                                        string_view okText = "OK",
+                                        string_view cancelText = "Cancel",
+                                        string_view defaultsText = "Defaults",
                                         bool focusOKButton = true);
 
     void processCancelWithoutWidget(bool state = true) { _processCancel = state; }

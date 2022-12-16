@@ -139,7 +139,7 @@ void ToolTip::release(bool emptyTip)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ToolTip::show(const string& tip)
+void ToolTip::show(string_view tip)
 {
   myTipPos = myMousePos;
 
@@ -153,7 +153,7 @@ void ToolTip::show(const string& tip)
                                                 kTextColor)));
   // Calculate maximum width of drawn string lines
   uInt32 width = 0;
-  string inStr = tip;
+  string inStr{tip};
   for(int i = 0; i < lines; ++i)
   {
     string leftStr, rightStr;

@@ -40,13 +40,13 @@ class Logger {
 
     static Logger& instance();
 
-    static void log(const string& message, Level level = Level::ALWAYS);
+    static void log(string_view message, Level level = Level::ALWAYS);
 
-    static void error(const string& message);
+    static void error(string_view message);
 
-    static void info(const string& message);
+    static void info(string_view message);
 
-    static void debug(const string& message);
+    static void debug(string_view message);
 
     void setLogParameters(int logLevel, bool logToConsole);
     void setLogParameters(Level logLevel, bool logToConsole);
@@ -66,7 +66,7 @@ class Logger {
     std::mutex mutex;
 
   private:
-    void logMessage(const string& message, Level level);
+    void logMessage(string_view message, Level level);
 
     Logger(const Logger&) = delete;
     Logger(Logger&&) = delete;

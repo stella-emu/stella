@@ -36,23 +36,23 @@ class MessageBox : public Dialog, public CommandSender
   public:
     MessageBox(GuiObject* boss, const GUI::Font& font, const StringList& text,
                int max_w, int max_h, int okCmd = 0, int cancelCmd = 0,
-               const string& okText = "OK", const string& cancelText = "Cancel",
-               const string& title = "",
+               string_view okText = "OK", string_view cancelText = "Cancel",
+               string_view title = "",
                bool focusOKButton = true);
     MessageBox(GuiObject* boss, const GUI::Font& font, const StringList& text,
                int max_w, int max_h, int okCmd = 0,
-               const string& okText = "OK", const string& cancelText = "Cancel",
-               const string& title = "",
+               string_view okText = "OK", string_view cancelText = "Cancel",
+               string_view title = "",
                bool focusOKButton = true);
-    MessageBox(GuiObject* boss, const GUI::Font& font, const string& text,
+    MessageBox(GuiObject* boss, const GUI::Font& font, string_view text,
                int max_w, int max_h, int okCmd = 0,
-               const string& okText = "OK", const string& cancelText = "Cancel",
-               const string& title = "",
+               string_view okText = "OK", string_view cancelText = "Cancel",
+               string_view title = "",
                bool focusOKButton = true);
-    MessageBox(GuiObject* boss, const GUI::Font& font, const string& text,
+    MessageBox(GuiObject* boss, const GUI::Font& font, string_view text,
                int max_w, int max_h, int okCmd, int cancelCmd,
-               const string& okText = "OK", const string& cancelText = "Cancel",
-               const string& title = "",
+               string_view okText = "OK", string_view cancelText = "Cancel",
+               string_view title = "",
                bool focusOKButton = true);
     ~MessageBox() override = default;
 

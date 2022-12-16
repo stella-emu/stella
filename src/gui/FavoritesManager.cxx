@@ -136,15 +136,15 @@ void FavoritesManager::clear()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FavoritesManager::addUser(const string& path)
+void FavoritesManager::addUser(string_view path)
 {
   myUserSet.emplace(path);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FavoritesManager::removeUser(const string& path)
+void FavoritesManager::removeUser(string_view path)
 {
-  myUserSet.erase(path);
+  myUserSet.erase(string{path});  // TODO: fixed in C++20
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -154,7 +154,7 @@ void FavoritesManager::removeAllUser()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FavoritesManager::toggleUser(const string& path)
+bool FavoritesManager::toggleUser(string_view path)
 {
   const bool favorize = !existsUser(path);
 
@@ -167,9 +167,9 @@ bool FavoritesManager::toggleUser(const string& path)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FavoritesManager::existsUser(const string& path) const
+bool FavoritesManager::existsUser(string_view path) const
 {
-  return myUserSet.find(path) != myUserSet.end();
+  return myUserSet.find(string{path}) != myUserSet.end();  // TODO: fixed in C++20
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -183,7 +183,7 @@ const FavoritesManager::UserList& FavoritesManager::userList() const
 
   if(!mySettings.getBool("altsorting"))
     std::sort(sortedList.begin(), sortedList.end(),
-      [](const string& a, const string& b)
+      [](string_view a, string_view b)
     {
       // Sort without path
       const FSNode aNode(a);
@@ -191,7 +191,8 @@ const FavoritesManager::UserList& FavoritesManager::userList() const
       const bool realDir = aNode.isDirectory() &&
         !BSPF::endsWithIgnoreCase(aNode.getPath(), ".zip");
 
-      if(realDir != (bNode.isDirectory() && !BSPF::endsWithIgnoreCase(bNode.getPath(), ".zip")))
+      if(realDir != (bNode.isDirectory() &&
+          !BSPF::endsWithIgnoreCase(bNode.getPath(), ".zip")))
         return realDir;
       return BSPF::compareIgnoreCase(aNode.getName(), bNode.getName()) < 0;
     });
@@ -199,14 +200,14 @@ const FavoritesManager::UserList& FavoritesManager::userList() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FavoritesManager::update(const string& path)
+void FavoritesManager::update(string_view path)
 {
   addRecent(path);
   incPopular(path);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FavoritesManager::addRecent(const string& path)
+void FavoritesManager::addRecent(string_view path)
 {
   // Always remove existing before adding at the end again
   removeRecent(path);
@@ -218,7 +219,7 @@ void FavoritesManager::addRecent(const string& path)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FavoritesManager::removeRecent(const string& path)
+bool FavoritesManager::removeRecent(string_view path)
 {
   auto it = std::find(myRecentList.begin(), myRecentList.end(), path);
 
@@ -246,7 +247,7 @@ const FavoritesManager::RecentList& FavoritesManager::recentList() const
     sortedList.assign(myRecentList.begin(), myRecentList.end());
 
     std::sort(sortedList.begin(), sortedList.end(),
-      [](const string& a, const string& b)
+      [](string_view a, string_view b)
     {
       // Sort alphabetical, without path
       const FSNode aNode(a);
@@ -263,9 +264,9 @@ const FavoritesManager::RecentList& FavoritesManager::recentList() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FavoritesManager::removePopular(const string& path)
+bool FavoritesManager::removePopular(string_view path)
 {
-  return myPopularMap.erase(path);
+  return myPopularMap.erase(string{path});  // TODO: fixed in C++20
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -275,7 +276,7 @@ void FavoritesManager::removeAllPopular()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FavoritesManager::incPopular(const string& path)
+void FavoritesManager::incPopular(string_view path)
 {
   static constexpr uInt32 scale = 100;
   static constexpr double factor = 0.7;

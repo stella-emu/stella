@@ -28,7 +28,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ProgressDialog::ProgressDialog(GuiObject* boss, const GUI::Font& font,
-                               const string& message)
+                               string_view message)
   : Dialog(boss->instance(), boss->parent(), font)
 {
   const int lineHeight   = Dialog::lineHeight(),
@@ -67,7 +67,7 @@ ProgressDialog::ProgressDialog(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ProgressDialog::setMessage(const string& message)
+void ProgressDialog::setMessage(string_view message)
 {
   const int buttonWidth  = Dialog::buttonWidth("Cancel"),
             HBORDER      = Dialog::hBorder();

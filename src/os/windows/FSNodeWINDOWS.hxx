@@ -50,11 +50,11 @@ class FSNodeWINDOWS : public AbstractFSNode
      *
      * @param path String with the path the new node should point to.
      */
-    explicit FSNodeWINDOWS(const string& path);
+    explicit FSNodeWINDOWS(string_view path);
 
     bool exists() const override;
-    const string& getName() const override    { return _displayName; }
-    void setName(const string& name) override { _displayName = name; }
+    const string& getName() const override  { return _displayName; }
+    void setName(string_view name) override { _displayName = name; }
     const string& getPath() const override { return _path; }
     string getShortPath() const override;
     bool isDirectory() const override { return _isDirectory; }
@@ -62,7 +62,7 @@ class FSNodeWINDOWS : public AbstractFSNode
     bool isReadable() const override;
     bool isWritable() const override;
     bool makeDir() override;
-    bool rename(const string& newfile) override;
+    bool rename(string_view newfile) override;
 
     size_t getSize() const override;
     bool hasParent() const override { return !_isPseudoRoot; }

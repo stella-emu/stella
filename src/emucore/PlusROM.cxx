@@ -47,7 +47,7 @@ using std::chrono::milliseconds;
 class PlusROMRequest {
   public:
     struct Destination {
-      Destination(const string& _host, const string& _path)
+      Destination(string_view _host, string_view _path)
         : host{_host}, path{_path} {}
 
       string host;
@@ -55,7 +55,7 @@ class PlusROMRequest {
     };
 
     struct PlusStoreId {
-      PlusStoreId(const string& _nick, const string& _id)
+      PlusStoreId(string_view _nick, string_view _id)
         : nick{_nick}, id{_id} {}
 
       string nick;
@@ -369,7 +369,7 @@ void PlusROM::reset()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PlusROM::isValidHost(const string& host)
+bool PlusROM::isValidHost(string_view host)
 {
   // TODO: This isn't 100% either, as we're supposed to check for the length
   //       of each part between '.' in the range 1 .. 63
@@ -377,11 +377,11 @@ bool PlusROM::isValidHost(const string& host)
   //  library we decide to use
   static const std::regex rgx(R"(^(([a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*([a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$)", std::regex_constants::icase);
 
-  return std::regex_match(host, rgx);
+  return std::regex_match(host.cbegin(), host.cend(), rgx);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PlusROM::isValidPath(const string& path)
+bool PlusROM::isValidPath(string_view path)
 {
   // TODO: This isn't 100%
   //  Perhaps a better function will be included with whatever network

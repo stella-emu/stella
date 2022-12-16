@@ -48,7 +48,7 @@
  */
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Dialog::Dialog(OSystem& instance, DialogContainer& parent, const GUI::Font& font,
-               const string& title, int x, int y, int w, int h)
+               string_view title, int x, int y, int w, int h)
   : GuiObject(instance, parent, *this, x, y, w, h),
     _font{font},
     _title{title},
@@ -148,7 +148,7 @@ void Dialog::close()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::setTitle(const string& title)
+void Dialog::setTitle(string_view title)
 {
   _title = title;
   _h -= _th;
@@ -188,7 +188,7 @@ void Dialog::initHelp()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::setHelpAnchor(const string& helpAnchor, bool debugger)
+void Dialog::setHelpAnchor(string_view helpAnchor, bool debugger)
 {
   _helpAnchor = helpAnchor;
   _debuggerHelp = debugger;
@@ -197,7 +197,7 @@ void Dialog::setHelpAnchor(const string& helpAnchor, bool debugger)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::setHelpURL(const string& helpURL)
+void Dialog::setHelpURL(string_view helpURL)
 {
   _helpURL = helpURL;
 
@@ -979,7 +979,7 @@ Widget* Dialog::findWidget(int x, int y) const
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::addOKBGroup(WidgetArray& wid, const GUI::Font& font,
-                         const string& okText, int buttonWidth)
+                         string_view okText, int buttonWidth)
 {
   const int buttonHeight = Dialog::buttonHeight(),
             BUTTON_GAP   = Dialog::buttonGap(),
@@ -998,7 +998,7 @@ void Dialog::addOKBGroup(WidgetArray& wid, const GUI::Font& font,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::addOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
-                               const string& okText, const string& cancelText,
+                               string_view okText, string_view cancelText,
                                bool focusOKButton, int buttonWidth)
 {
   const int buttonHeight = Dialog::buttonHeight(),
@@ -1043,8 +1043,8 @@ void Dialog::addOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::addDefaultsOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
-                                       const string& okText, const string& cancelText,
-                                       const string& defaultsText,
+                                       string_view okText, string_view cancelText,
+                                       string_view defaultsText,
                                        bool focusOKButton)
 {
   const int buttonHeight = Dialog::buttonHeight(),
@@ -1062,8 +1062,8 @@ void Dialog::addDefaultsOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::addDefaultsExtraOKCancelBGroup(
       WidgetArray& wid, const GUI::Font& font,
-      const string& extraText, int extraCmd,
-      const string& okText, const string& cancelText, const string& defaultsText,
+      string_view extraText, int extraCmd,
+      string_view okText, string_view cancelText, string_view defaultsText,
       bool focusOKButton)
 {
   const int buttonHeight = Dialog::buttonHeight(),

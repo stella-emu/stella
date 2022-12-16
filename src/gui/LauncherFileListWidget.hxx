@@ -43,7 +43,7 @@ class LauncherFileListWidget : public FileListWidget
     void saveFavorites(bool force = false);
     void clearFavorites();
     void updateFavorites();
-    bool isUserFavorite(const string& path) const;
+    bool isUserFavorite(string_view path) const;
     void toggleUserFavorite();
     void removeFavorite();
     void removeAllUserFavorites();
@@ -55,9 +55,9 @@ class LauncherFileListWidget : public FileListWidget
     bool inUserDir() const { return myVirtualDir == user_name; }
     bool inRecentDir() const { return myVirtualDir == recent_name; }
     bool inPopularDir() const { return myVirtualDir == popular_name; }
-    bool isUserDir(const string& name) const { return name == user_name; }
-    bool isRecentDir(const string& name) const { return name == recent_name; }
-    bool isPopularDir(const string& name) const { return name == popular_name; }
+    bool isUserDir(string_view name) const { return name == user_name; }
+    bool isRecentDir(string_view name) const { return name == recent_name; }
+    bool isPopularDir(string_view name) const { return name == popular_name; }
 
   private:
     static const string user_name;
@@ -72,10 +72,10 @@ class LauncherFileListWidget : public FileListWidget
   private:
     string startRomDir();
     void getChildren(const FSNode::CancelCheck& isCancelled) override;
-    void userFavor(const string& path);
-    void addFolder(StringList& list, int& offset, const string& name, IconType icon);
+    void userFavor(string_view path);
+    void addFolder(StringList& list, int& offset, string_view name, IconType icon);
     void extendLists(StringList& list) override;
-    IconType getIconType(const string& path) const override;
+    IconType getIconType(string_view path) const override;
     const Icon* getIcon(int i) const override;
     bool fullPathToolTip() const override { return myInVirtualDir; }
 
