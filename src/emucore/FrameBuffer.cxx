@@ -59,6 +59,8 @@
   #include "TimeMachine.hxx"
 #endif
 
+static constexpr int MESSAGE_TIME = 120; // display message for 2 seconds
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBuffer::FrameBuffer(OSystem& osystem)
   : myOSystem{osystem}
@@ -387,7 +389,7 @@ void FrameBuffer::update(UpdateMode mode)
       // Show a pause message immediately and then every 7 seconds
       const bool shade = myOSystem.settings().getBool("pausedim");
 
-      if(myPausedCount-- <= 0)
+      if(myMsg.counter < MESSAGE_TIME && myPausedCount-- <= 0)
       {
         myPausedCount = static_cast<uInt32>(7 * myOSystem.frameRate());
         showTextMessage("Paused", MessagePosition::MiddleCenter);
@@ -620,9 +622,9 @@ void FrameBuffer::createMessage(string_view message, MessagePosition position,
   const int VBORDER = fontHeight / 4;
 
   // Show message for 2 seconds
-  myMsg.counter = std::min(static_cast<uInt32>(myOSystem.frameRate()) * 2, 120U);
+  myMsg.counter = std::min(static_cast<Int32>(myOSystem.frameRate()) * 2, MESSAGE_TIME);
   if(myMsg.counter == 0)
-    myMsg.counter = 120;
+    myMsg.counter = MESSAGE_TIME;
 
   // Precompute the message coordinates
   myMsg.text      = message;
@@ -1009,9 +1011,12 @@ void FrameBuffer::setUIPalette()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::stateChanged(EventHandlerState state)
 {
-  // Make sure any onscreen messages are removed
-  hideMessage();
-
+  // Prevent removing state change messages
+  if(myMsg.counter < MESSAGE_TIME - 1)
+  {
+    // Make sure any onscreen messages are removed
+    hideMessage();
+  }
   update(); // update immediately
 }
 
