@@ -23,11 +23,11 @@
 namespace {
   class ProxyRepository : public KeyValueRepository {
       public:
-        ProxyRepository(KeyValueRepositoryAtomic& kvr, const string& key)
+        ProxyRepository(KeyValueRepositoryAtomic& kvr, string_view key)
           : myKvr{kvr}, myKey{key}
         {}
 
-        std::map<string, Variant> load() override {
+        KVRMap load() override {
           if (!myKvr.has(myKey)) return {};
 
           Variant serialized;
@@ -38,7 +38,7 @@ namespace {
           return KeyValueRepositoryJsonFile::load(in);
         }
 
-        bool save(const std::map<string, Variant>& values) override {
+        bool save(const KVRMap& values) override {
           stringstream out;
 
           if (!KeyValueRepositoryJsonFile::save(out, values)) return false;
@@ -50,7 +50,7 @@ namespace {
 
         // NOLINT: cppcoreguidelines-avoid-const-or-ref-data-members
         KeyValueRepositoryAtomic& myKvr;  // NOLINT
-        const string& myKey;              // NOLINT
+        string myKey;
     };
 } // namespace
 
@@ -61,19 +61,19 @@ CompositeKVRJsonAdapter::CompositeKVRJsonAdapter(KeyValueRepositoryAtomic& kvr)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-shared_ptr<KeyValueRepository> CompositeKVRJsonAdapter::get(const string& key)
+shared_ptr<KeyValueRepository> CompositeKVRJsonAdapter::get(string_view key)
 {
   return make_shared<ProxyRepository>(myKvr, key);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CompositeKVRJsonAdapter::has(const string& key)
+bool CompositeKVRJsonAdapter::has(string_view key)
 {
   return myKvr.has(key);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CompositeKVRJsonAdapter::remove(const string& key)
+void CompositeKVRJsonAdapter::remove(string_view key)
 {
   return myKvr.remove(key);
 }

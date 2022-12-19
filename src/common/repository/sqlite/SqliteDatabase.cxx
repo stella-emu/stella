@@ -89,9 +89,9 @@ void SqliteDatabase::initialize()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SqliteDatabase::exec(const string& sql)
+void SqliteDatabase::exec(string_view sql)
 {
-  if (sqlite3_exec(myHandle, sql.c_str(), nullptr, nullptr, nullptr) != SQLITE_OK)
+  if (sqlite3_exec(myHandle, string{sql}.c_str(), nullptr, nullptr, nullptr) != SQLITE_OK)
     throw SqliteError(myHandle);
 }
 

@@ -46,7 +46,7 @@ namespace {
     return s;
   }
 
-  void writeQuotedString(ostream& out, const string& s)
+  void writeQuotedString(ostream& out, string_view s)
   {
     out.put('"');
     for(auto c: s)
@@ -76,9 +76,9 @@ KeyValueRepositoryPropertyFile::KeyValueRepositoryPropertyFile(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-std::map<string, Variant> KeyValueRepositoryPropertyFile::load(istream& in)
+KVRMap KeyValueRepositoryPropertyFile::load(istream& in)
 {
-  std::map<string, Variant> map;
+  KVRMap map;
 
   // Loop reading properties
   string key, value;
@@ -109,7 +109,7 @@ std::map<string, Variant> KeyValueRepositoryPropertyFile::load(istream& in)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool KeyValueRepositoryPropertyFile::save(ostream& out,
-    const std::map<string, Variant>& values)
+    const KVRMap& values)
 {
   for (const auto& [key, value]: values) {
     writeQuotedString(out, key);

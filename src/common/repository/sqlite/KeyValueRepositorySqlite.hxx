@@ -27,18 +27,19 @@ class KeyValueRepositorySqlite : public AbstractKeyValueRepositorySqlite
 {
   public:
 
-    KeyValueRepositorySqlite(SqliteDatabase& db, const string& tableName, const string& colKey, const string& colValue);
+    KeyValueRepositorySqlite(SqliteDatabase& db, string_view tableName,
+                             string_view colKey, string_view colValue);
 
     void initialize();
 
   protected:
 
-    SqliteStatement& stmtInsert(const string& key, const string& value) override;
+    SqliteStatement& stmtInsert(string_view key, string_view value) override;
     SqliteStatement& stmtSelect() override;
-    SqliteStatement& stmtDelete(const string& key) override;
+    SqliteStatement& stmtDelete(string_view key) override;
     SqliteDatabase& database() override;
-    SqliteStatement& stmtCount(const string& key) override;
-    SqliteStatement& stmtSelectOne(const string& key) override;
+    SqliteStatement& stmtCount(string_view key) override;
+    SqliteStatement& stmtSelectOne(string_view key) override;
 
   private:
 

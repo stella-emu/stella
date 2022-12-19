@@ -22,16 +22,16 @@
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SqliteStatement::SqliteStatement(sqlite3* handle, const string& sql)
+SqliteStatement::SqliteStatement(sqlite3* handle, string_view sql)
   : myHandle{handle}
 {
   initialize(sql);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SqliteStatement::initialize(const string& sql)
+void SqliteStatement::initialize(string_view sql)
 {
-  if (sqlite3_prepare_v2(myHandle, sql.c_str(), -1, &myStmt, nullptr) != SQLITE_OK)
+  if (sqlite3_prepare_v2(myHandle, string{sql}.c_str(), -1, &myStmt, nullptr) != SQLITE_OK)
     throw SqliteError(myHandle);
 }
 
@@ -42,9 +42,9 @@ SqliteStatement::~SqliteStatement()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SqliteStatement& SqliteStatement::bind(int index, const string& value)
+SqliteStatement& SqliteStatement::bind(int index, string_view value)
 {
-  if (sqlite3_bind_text(myStmt, index, value.c_str(), -1,
+  if (sqlite3_bind_text(myStmt, index, string{value}.c_str(), -1,
       SQLITE_TRANSIENT) != SQLITE_OK)  // NOLINT (performance-no-int-to-ptr)
     throw SqliteError(myHandle);
 

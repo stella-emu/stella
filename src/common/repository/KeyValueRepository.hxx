@@ -23,6 +23,8 @@
 #include "Variant.hxx"
 #include "bspf.hxx"
 
+using KVRMap = std::map<string, Variant, std::less<>>;
+
 class KeyValueRepositoryAtomic;
 
 class KeyValueRepository
@@ -31,9 +33,9 @@ class KeyValueRepository
     KeyValueRepository() = default;
     virtual ~KeyValueRepository() = default;
 
-    virtual std::map<string, Variant> load() = 0;
+    virtual KVRMap load() = 0;
 
-    virtual bool save(const std::map<string, Variant>& values) = 0;
+    virtual bool save(const KVRMap& values) = 0;
 
     virtual KeyValueRepositoryAtomic* atomic() { return nullptr; }
 
@@ -49,13 +51,13 @@ class KeyValueRepositoryAtomic : public KeyValueRepository {
   public:
     using KeyValueRepository::save;
 
-    virtual bool has(const string& key) = 0;
+    virtual bool has(string_view key) = 0;
 
-    virtual bool get(const string& key, Variant& value) = 0;
+    virtual bool get(string_view key, Variant& value) = 0;
 
-    virtual bool save(const string& key, const Variant& value) = 0;
+    virtual bool save(string_view key, const Variant& value) = 0;
 
-    virtual void remove(const string& key) = 0;
+    virtual void remove(string_view key) = 0;
 
     KeyValueRepositoryAtomic* atomic() override { return this; }
 };

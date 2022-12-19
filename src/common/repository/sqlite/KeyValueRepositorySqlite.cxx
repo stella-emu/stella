@@ -20,7 +20,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 KeyValueRepositorySqlite::KeyValueRepositorySqlite(
-  SqliteDatabase& db, const string& tableName, const string& colKey, const string& colValue
+  SqliteDatabase& db, string_view tableName, string_view colKey,
+  string_view colValue
 )
   : myDb{db},
     myTableName{tableName},
@@ -30,7 +31,8 @@ KeyValueRepositorySqlite::KeyValueRepositorySqlite(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SqliteStatement& KeyValueRepositorySqlite::stmtInsert(const string& key, const string& value)
+SqliteStatement& KeyValueRepositorySqlite::stmtInsert(string_view key,
+                                                      string_view value)
 {
   return (*myStmtInsert)
     .reset()
@@ -46,7 +48,7 @@ SqliteStatement& KeyValueRepositorySqlite::stmtSelect()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SqliteStatement& KeyValueRepositorySqlite::stmtDelete(const string& key)
+SqliteStatement& KeyValueRepositorySqlite::stmtDelete(string_view key)
 {
   return (*myStmtDelete)
     .reset()
@@ -54,7 +56,7 @@ SqliteStatement& KeyValueRepositorySqlite::stmtDelete(const string& key)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SqliteStatement& KeyValueRepositorySqlite::stmtCount(const string& key)
+SqliteStatement& KeyValueRepositorySqlite::stmtCount(string_view key)
 {
   return (*myStmtCount)
     .reset()
@@ -62,7 +64,7 @@ SqliteStatement& KeyValueRepositorySqlite::stmtCount(const string& key)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SqliteStatement& KeyValueRepositorySqlite::stmtSelectOne(const string& key)
+SqliteStatement& KeyValueRepositorySqlite::stmtSelectOne(string_view key)
 {
   return (*myStmtSelectOne)
     .reset()

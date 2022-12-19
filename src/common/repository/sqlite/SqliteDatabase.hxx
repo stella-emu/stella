@@ -36,10 +36,10 @@ class SqliteDatabase
 
     operator sqlite3*() const { return myHandle; }
 
-    void exec(const string &sql);
+    void exec(string_view sql);
 
     template<class T, class ...Ts>
-    void exec(const string& sql, T arg1, Ts... args);
+    void exec(string_view sql, T arg1, Ts... args);
 
     Int32 getUserVersion() const;
     void setUserVersion(Int32 version) const;
@@ -68,11 +68,11 @@ class SqliteDatabase
 #endif
 
 template <class T, class ...Ts>
-void SqliteDatabase::exec(const string& sql, T arg1, Ts... args)
+void SqliteDatabase::exec(string_view sql, T arg1, Ts... args)
 {
   char buffer[512];
 
-  if (snprintf(buffer, 512, sql.c_str(), arg1, args...) >= 512)
+  if (snprintf(buffer, 512, string{sql}.c_str(), arg1, args...) >= 512)
     throw runtime_error("SQL statement too long");
 
   exec(buffer);
