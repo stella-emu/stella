@@ -97,7 +97,7 @@ class Cartridge3EPlus: public Cartridge3E
       @param bsSize    The size specified by the bankswitching scheme
                        (where 0 means variable-sized ROM)
     */
-    Cartridge3EPlus(const ByteBuffer& image, size_t size, const string& md5,
+    Cartridge3EPlus(const ByteBuffer& image, size_t size, string_view md5,
                     const Settings& settings, size_t bsSize = 0);
     ~Cartridge3EPlus() override = default;
 

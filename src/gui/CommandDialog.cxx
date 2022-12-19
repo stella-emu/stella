@@ -49,7 +49,7 @@ CommandDialog::CommandDialog(OSystem& osystem, DialogContainer& parent)
   WidgetArray wid;
   int xoffset = HBORDER, yoffset = VBORDER + _th;
 
-  const auto ADD_CD_BUTTON = [&](const string& label, int cmd,
+  const auto ADD_CD_BUTTON = [&](string_view label, int cmd,
     Event::Type event1 = Event::NoType, Event::Type event2 = Event::NoType)
   {
     auto* b = new ButtonWidget(this, _font, xoffset, yoffset,

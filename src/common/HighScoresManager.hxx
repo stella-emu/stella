@@ -222,13 +222,13 @@ class HighScoresManager
     json properties(json& jprops) const;
 
     // Get value from highscore properties for given key
-    static bool getPropBool(const json& jprops, const string& key,
+    static bool getPropBool(const json& jprops, string_view key,
                             bool defVal = false);
-    static uInt32 getPropInt(const json& jprops, const string& key,
+    static uInt32 getPropInt(const json& jprops, string_view key,
                              uInt32 defVal = 0);
-    static string getPropStr(const json& jprops, const string& key,
-                             const string& defVal = "");
-    static uInt16 getPropAddr(const json& jprops, const string& key,
+    static string getPropStr(const json& jprops, string_view key,
+                             string_view defVal = "");
+    static uInt16 getPropAddr(const json& jprops, string_view key,
                               uInt16 defVal = 0);
     static HSM::ScoreAddresses getPropScoreAddr(const json& jprops);
 

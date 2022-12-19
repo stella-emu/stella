@@ -1557,8 +1557,8 @@ bool MovieCart::load(Serializer& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeMVC::CartridgeMVC(const string& path, size_t size,
-                           const string& md5, const Settings& settings,
+CartridgeMVC::CartridgeMVC(string_view path, size_t size,
+                           string_view md5, const Settings& settings,
                            size_t bsSize)
   : Cartridge(settings, md5),
     myImage{make_unique<uInt8[]>(bsSize)},  // not used

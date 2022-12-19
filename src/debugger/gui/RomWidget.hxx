@@ -53,8 +53,7 @@ class RomWidget : public Widget, public CommandSender
     void runtoPC(int disasm_line);
     void setTimer(int disasm_line);
     void disassemble(int disasm_line);
-    void patchROM(int disasm_line, const string& bytes,
-                  Common::Base::Fmt base);
+    void patchROM(int disasm_line, string_view bytes, Common::Base::Fmt base);
     uInt16 getAddress(int disasm_line);
 
   private:

@@ -63,7 +63,7 @@ void TiaOutputWidget::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TiaOutputWidget::saveSnapshot(int execDepth, const string& execPrefix,
+void TiaOutputWidget::saveSnapshot(int execDepth, string_view execPrefix,
                                    bool mark)
 {
 #ifdef IMAGE_SUPPORT

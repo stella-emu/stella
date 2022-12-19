@@ -20,7 +20,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeFA2::CartridgeFA2(const ByteBuffer& image, size_t size,
-                           const string& md5, const Settings& settings,
+                           string_view md5, const Settings& settings,
                            size_t bsSize)
   : CartridgeFA(image, size, md5, settings, bsSize)
 {

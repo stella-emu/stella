@@ -39,7 +39,7 @@ void PropertiesSet::setRepository(shared_ptr<CompositeKeyValueRepository> reposi
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PropertiesSet::getMD5(const string& md5, Properties& properties,
+bool PropertiesSet::getMD5(string_view md5, Properties& properties,
                            bool useDefaults) const
 {
   properties.setDefaults();
@@ -144,7 +144,7 @@ void PropertiesSet::insert(const Properties& properties, bool save)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PropertiesSet::loadPerROM(const FSNode& rom, const string& md5)
+void PropertiesSet::loadPerROM(const FSNode& rom, string_view md5)
 {
   Properties props;
 

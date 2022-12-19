@@ -73,7 +73,8 @@ PhysicalKeyboardHandler::PhysicalKeyboardHandler(OSystem& system, EventHandler& 
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalKeyboardHandler::loadSerializedMappings(const string& serializedMapping, EventMode mode)
+void PhysicalKeyboardHandler::loadSerializedMappings(
+    string_view serializedMapping, EventMode mode)
 {
   json mapping;
 

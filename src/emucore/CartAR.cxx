@@ -22,7 +22,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeAR::CartridgeAR(const ByteBuffer& image, size_t size,
-                         const string& md5, const Settings& settings)
+                         string_view md5, const Settings& settings)
   : Cartridge(settings, md5),
     mySize{std::max(size, LOAD_SIZE)}
 {

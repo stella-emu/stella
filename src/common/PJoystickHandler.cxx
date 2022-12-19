@@ -47,7 +47,7 @@ PhysicalJoystickHandler::PhysicalJoystickHandler(
   }
 
   json mappings;
-  const string& serializedMapping = myOSystem.settings().getString("joymap");
+  string_view serializedMapping = myOSystem.settings().getString("joymap");
 
   try {
     mappings = json::parse(serializedMapping);
@@ -68,11 +68,11 @@ PhysicalJoystickHandler::PhysicalJoystickHandler(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-json PhysicalJoystickHandler::convertLegacyMapping(const string& mapping)
+json PhysicalJoystickHandler::convertLegacyMapping(string_view mapping)
 {
   constexpr char CTRL_DELIM = '^';
 
-  istringstream buf(mapping);
+  istringstream buf(string{mapping});  // TODO: fixed in C++20
   string joymap, joyname;
 
   getline(buf, joymap, CTRL_DELIM); // event list size, ignore

@@ -47,7 +47,7 @@ class CartridgeBFSC : public CartridgeBF
       @param settings  A reference to the various settings (read-only)
       @param bsSize    The size specified by the bankswitching scheme
     */
-    CartridgeBFSC(const ByteBuffer& image, size_t size, const string& md5,
+    CartridgeBFSC(const ByteBuffer& image, size_t size, string_view md5,
                   const Settings& settings, size_t bsSize = 256_KB);
     ~CartridgeBFSC() override = default;
 

@@ -50,9 +50,9 @@ class StringParser
       @param str    The string to split
       @param maxlen The maximum length of string to generate
     */
-    StringParser(const string& str, uInt32 maxlen)
+    StringParser(string_view str, uInt32 maxlen)
     {
-      istringstream buf(str);
+      istringstream buf(string{str});  // TODO: fixed in C++20
       string line;
 
       while(std::getline(buf, line, '\n'))

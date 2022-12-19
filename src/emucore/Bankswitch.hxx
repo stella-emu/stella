@@ -75,7 +75,7 @@ class Bankswitch
     static string typeToName(Bankswitch::Type type);
 
     // Convert string to BSType enum
-    static Bankswitch::Type nameToType(const string& name);
+    static Bankswitch::Type nameToType(string_view name);
 
     // Convert BSType enum to description string
     static string typeToDesc(Bankswitch::Type type);

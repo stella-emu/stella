@@ -24,7 +24,7 @@ class TimeLineWidget : public ButtonWidget
 {
   public:
     TimeLineWidget(GuiObject* boss, const GUI::Font& font,
-                   int x, int y, int w, int h, const string& label = "",
+                   int x, int y, int w, int h, string_view label = "",
                    uInt32 labelWidth = 0, int cmd = 0);
 
     void setValue(int value) override;

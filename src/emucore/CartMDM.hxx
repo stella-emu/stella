@@ -59,7 +59,7 @@ class CartridgeMDM : public CartridgeEnhanced
       @param bsSize    The size specified by the bankswitching scheme
                        (where 0 means variable-sized ROM)
     */
-    CartridgeMDM(const ByteBuffer& image, size_t size, const string& md5,
+    CartridgeMDM(const ByteBuffer& image, size_t size, string_view md5,
                  const Settings& settings, size_t bsSize = 0);
     ~CartridgeMDM() override = default;
 

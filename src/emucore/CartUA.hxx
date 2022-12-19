@@ -47,7 +47,7 @@ class CartridgeUA : public CartridgeEnhanced
       @param settings      A reference to the various settings (read-only)
       @param swapHotspots  Swap hotspots
     */
-    CartridgeUA(const ByteBuffer& image, size_t size, const string& md5,
+    CartridgeUA(const ByteBuffer& image, size_t size, string_view md5,
                 const Settings& settings, bool swapHotspots = false);
     ~CartridgeUA() override = default;
 

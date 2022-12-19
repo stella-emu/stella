@@ -49,7 +49,7 @@ class CartridgeCV : public CartridgeEnhanced
       @param settings  A reference to the various settings (read-only)
       @param bsSize    The size specified by the bankswitching scheme
     */
-    CartridgeCV(const ByteBuffer& image, size_t size, const string& md5,
+    CartridgeCV(const ByteBuffer& image, size_t size, string_view md5,
                 const Settings& settings, size_t bsSize = 2_KB);
     ~CartridgeCV() override = default;
 

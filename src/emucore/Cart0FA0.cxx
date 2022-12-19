@@ -20,7 +20,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge0FA0::Cartridge0FA0(const ByteBuffer& image, size_t size,
-    const string& md5, const Settings& settings)
+    string_view md5, const Settings& settings)
   : CartridgeEnhanced(image, size, md5, settings, 8_KB)
 {
 }

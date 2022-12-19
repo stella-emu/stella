@@ -43,7 +43,7 @@ class CartridgeF6 : public CartridgeEnhanced
       @param settings  A reference to the various settings (read-only)
       @param bsSize    The size specified by the bankswitching scheme
     */
-    CartridgeF6(const ByteBuffer& image, size_t size, const string& md5,
+    CartridgeF6(const ByteBuffer& image, size_t size, string_view md5,
                 const Settings& settings, size_t bsSize = 16_KB);
     ~CartridgeF6() override = default;
 

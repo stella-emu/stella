@@ -480,28 +480,28 @@ Int32 HighScoresManager::convert(Int32 val, uInt32 maxVal, bool isBCD,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool HighScoresManager::getPropBool(const json& jprops, const string& key,
+bool HighScoresManager::getPropBool(const json& jprops, string_view key,
                                     bool defVal)
 {
   return jprops.contains(key) ? jprops.at(key).get<bool>() : defVal;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 HighScoresManager::getPropInt(const json& jprops, const string& key,
+uInt32 HighScoresManager::getPropInt(const json& jprops, string_view key,
                                      uInt32 defVal)
 {
   return jprops.contains(key) ? jprops.at(key).get<uInt32>() : defVal;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string HighScoresManager::getPropStr(const json& jprops, const string& key,
-                                     const string& defVal)
+string HighScoresManager::getPropStr(const json& jprops, string_view key,
+                                     string_view defVal)
 {
-  return jprops.contains(key) ? jprops.at(key).get<string>() : defVal;
+  return jprops.contains(key) ? jprops.at(key).get<string>() : string{defVal};
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 HighScoresManager::getPropAddr(const json& jprops, const string& key,
+uInt16 HighScoresManager::getPropAddr(const json& jprops, string_view key,
                                       uInt16 defVal)
 {
   const string str = getPropStr(jprops, key);

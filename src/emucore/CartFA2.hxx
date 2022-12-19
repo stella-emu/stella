@@ -59,7 +59,7 @@ class CartridgeFA2 : public CartridgeFA
       @param settings  A reference to the settings object
       @param bsSize    The size specified by the bankswitching scheme
     */
-    CartridgeFA2(const ByteBuffer& image, size_t size, const string& md5,
+    CartridgeFA2(const ByteBuffer& image, size_t size, string_view md5,
                  const Settings& settings, size_t bsSize = 28_KB);
     ~CartridgeFA2() override = default;
 

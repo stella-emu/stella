@@ -56,7 +56,7 @@ class PropertiesSet
 
       @return  True if the set with the specified md5 was found, else false
     */
-    bool getMD5(const string& md5, Properties& properties,
+    bool getMD5(string_view md5, Properties& properties,
                 bool useDefaults = false) const;
 
     /**
@@ -82,7 +82,7 @@ class PropertiesSet
       @param rom  The node representing the rom file
       @param md5  The md5 of the property to get
     */
-    void loadPerROM(const FSNode& rom, const string& md5);
+    void loadPerROM(const FSNode& rom, string_view md5);
 
     /**
       Prints the contents of the PropertiesSet as a flat file.
@@ -90,7 +90,7 @@ class PropertiesSet
     void print() const;
 
   private:
-    using PropsList = std::map<string, Properties>;
+    using PropsList = std::map<string, Properties, std::less<>>;
 
     // The properties read from an external 'stella.pro' file
     PropsList myExternalProps;

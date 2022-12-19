@@ -22,7 +22,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeCM::CartridgeCM(const ByteBuffer& image, size_t size,
-                         const string& md5, const Settings& settings)
+                         string_view md5, const Settings& settings)
   : Cartridge(settings, md5),
     myImage{make_unique<uInt8[]>(16_KB)}
 {
